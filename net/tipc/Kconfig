@@ -3,8 +3,13 @@
 #
 
 menuconfig TIPC
+<<<<<<< HEAD
 	tristate "The TIPC Protocol (EXPERIMENTAL)"
 	depends on INET && EXPERIMENTAL
+=======
+	tristate "The TIPC Protocol"
+	depends on INET
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  The Transparent Inter Process Communication (TIPC) protocol is
 	  specially designed for intra cluster communication. This protocol
@@ -20,6 +25,7 @@ menuconfig TIPC
 
 	  If in doubt, say N.
 
+<<<<<<< HEAD
 if TIPC
 
 config TIPC_ADVANCED
@@ -32,6 +38,11 @@ config TIPC_ADVANCED
 config TIPC_PORTS
 	int "Maximum number of ports in a node"
 	depends on TIPC_ADVANCED
+=======
+config TIPC_PORTS
+	int "Maximum number of ports in a node"
+	depends on TIPC
+>>>>>>> refs/remotes/origin/master
 	range 127 65535
 	default "8191"
 	help
@@ -41,6 +52,7 @@ config TIPC_PORTS
 	  Setting this to a smaller value saves some memory,
 	  setting it to higher allows for more ports.
 
+<<<<<<< HEAD
 config TIPC_LOG
 	int "Size of log buffer"
 	depends on TIPC_ADVANCED
@@ -67,3 +79,11 @@ config TIPC_DEBUG
 	  interest using the dbg() or msg_dbg() macros.
 
 endif # TIPC
+=======
+config TIPC_MEDIA_IB
+	bool "InfiniBand media type support"
+	depends on TIPC && INFINIBAND_IPOIB
+	help
+	  Saying Y here will enable support for running TIPC on
+	  IP-over-InfiniBand devices.
+>>>>>>> refs/remotes/origin/master

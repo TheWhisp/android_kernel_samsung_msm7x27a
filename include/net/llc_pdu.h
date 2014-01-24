@@ -13,7 +13,10 @@
  */
 
 #include <linux/if_ether.h>
+<<<<<<< HEAD
 #include <linux/if_tr.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Lengths of frame formats */
 #define LLC_PDU_LEN_I	4       /* header and 2 control bytes */
@@ -143,7 +146,11 @@
 #define LLC_S_PF_IS_1(pdu)     ((pdu->ctrl_2 & LLC_S_PF_BIT_MASK) ? 1 : 0)
 
 #define PDU_SUPV_GET_Nr(pdu)   ((pdu->ctrl_2 & 0xFE) >> 1)
+<<<<<<< HEAD
 #define PDU_GET_NEXT_Vr(sn)    (++sn & ~LLC_2_SEQ_NBR_MODULO)
+=======
+#define PDU_GET_NEXT_Vr(sn)    (((sn) + 1) & ~LLC_2_SEQ_NBR_MODULO)
+>>>>>>> refs/remotes/origin/master
 
 /* FRMR information field macros */
 
@@ -253,10 +260,13 @@ static inline void llc_pdu_decode_sa(struct sk_buff *skb, u8 *sa)
 {
 	if (skb->protocol == htons(ETH_P_802_2))
 		memcpy(sa, eth_hdr(skb)->h_source, ETH_ALEN);
+<<<<<<< HEAD
 	else if (skb->protocol == htons(ETH_P_TR_802_2)) {
 		memcpy(sa, tr_hdr(skb)->saddr, ETH_ALEN);
 		*sa &= 0x7F;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -270,8 +280,11 @@ static inline void llc_pdu_decode_da(struct sk_buff *skb, u8 *da)
 {
 	if (skb->protocol == htons(ETH_P_802_2))
 		memcpy(da, eth_hdr(skb)->h_dest, ETH_ALEN);
+<<<<<<< HEAD
 	else if (skb->protocol == htons(ETH_P_TR_802_2))
 		memcpy(da, tr_hdr(skb)->daddr, ETH_ALEN);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -417,6 +430,7 @@ struct llc_frmr_info {
 	u8  ind_bits;		/* indicator bits set with macro */
 } __packed;
 
+<<<<<<< HEAD
 extern void llc_pdu_set_cmd_rsp(struct sk_buff *skb, u8 type);
 extern void llc_pdu_set_pf_bit(struct sk_buff *skb, u8 bit_value);
 extern void llc_pdu_decode_pf_bit(struct sk_buff *skb, u8 *pf_bit);
@@ -434,4 +448,22 @@ extern void llc_pdu_init_as_rr_rsp(struct sk_buff *skb, u8 f_bit, u8 nr);
 extern void llc_pdu_init_as_rej_rsp(struct sk_buff *skb, u8 f_bit, u8 nr);
 extern void llc_pdu_init_as_rnr_rsp(struct sk_buff *skb, u8 f_bit, u8 nr);
 extern void llc_pdu_init_as_ua_rsp(struct sk_buff *skb, u8 f_bit);
+=======
+void llc_pdu_set_cmd_rsp(struct sk_buff *skb, u8 type);
+void llc_pdu_set_pf_bit(struct sk_buff *skb, u8 bit_value);
+void llc_pdu_decode_pf_bit(struct sk_buff *skb, u8 *pf_bit);
+void llc_pdu_init_as_disc_cmd(struct sk_buff *skb, u8 p_bit);
+void llc_pdu_init_as_i_cmd(struct sk_buff *skb, u8 p_bit, u8 ns, u8 nr);
+void llc_pdu_init_as_rej_cmd(struct sk_buff *skb, u8 p_bit, u8 nr);
+void llc_pdu_init_as_rnr_cmd(struct sk_buff *skb, u8 p_bit, u8 nr);
+void llc_pdu_init_as_rr_cmd(struct sk_buff *skb, u8 p_bit, u8 nr);
+void llc_pdu_init_as_sabme_cmd(struct sk_buff *skb, u8 p_bit);
+void llc_pdu_init_as_dm_rsp(struct sk_buff *skb, u8 f_bit);
+void llc_pdu_init_as_frmr_rsp(struct sk_buff *skb, struct llc_pdu_sn *prev_pdu,
+			      u8 f_bit, u8 vs, u8 vr, u8 vzyxw);
+void llc_pdu_init_as_rr_rsp(struct sk_buff *skb, u8 f_bit, u8 nr);
+void llc_pdu_init_as_rej_rsp(struct sk_buff *skb, u8 f_bit, u8 nr);
+void llc_pdu_init_as_rnr_rsp(struct sk_buff *skb, u8 f_bit, u8 nr);
+void llc_pdu_init_as_ua_rsp(struct sk_buff *skb, u8 f_bit);
+>>>>>>> refs/remotes/origin/master
 #endif /* LLC_PDU_H */

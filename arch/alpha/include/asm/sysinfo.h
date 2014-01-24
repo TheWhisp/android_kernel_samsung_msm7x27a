@@ -27,6 +27,7 @@
 #define UAC_NOFIX			2
 #define UAC_SIGBUS			4
 
+<<<<<<< HEAD
 
 #ifdef __KERNEL__
 
@@ -36,4 +37,6 @@
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASM_ALPHA_SYSINFO_H */

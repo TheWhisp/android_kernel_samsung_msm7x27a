@@ -15,6 +15,14 @@
 #define MT9P012_KM_H
 
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <mach/board.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/board.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern struct mt9p012_km_reg mt9p012_km_regs;	/* from mt9p012_km_reg.c */
 

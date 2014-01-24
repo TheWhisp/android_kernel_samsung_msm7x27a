@@ -20,7 +20,11 @@
 #include <linux/mfd/core.h>
 #include <linux/mfd/tps6105x.h>
 
+<<<<<<< HEAD
 static const int tps6105x_voltages[] = {
+=======
+static const unsigned int tps6105x_voltages[] = {
+>>>>>>> refs/remotes/origin/master
 	4500000,
 	5000000,
 	5250000,
@@ -105,6 +109,7 @@ static int tps6105x_regulator_set_voltage_sel(struct regulator_dev *rdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tps6105x_regulator_list_voltage(struct regulator_dev *rdev,
 					   unsigned selector)
 {
@@ -114,36 +119,58 @@ static int tps6105x_regulator_list_voltage(struct regulator_dev *rdev,
 	return tps6105x_voltages[selector];
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct regulator_ops tps6105x_regulator_ops = {
 	.enable		= tps6105x_regulator_enable,
 	.disable	= tps6105x_regulator_disable,
 	.is_enabled	= tps6105x_regulator_is_enabled,
 	.get_voltage_sel = tps6105x_regulator_get_voltage_sel,
 	.set_voltage_sel = tps6105x_regulator_set_voltage_sel,
+<<<<<<< HEAD
 	.list_voltage	= tps6105x_regulator_list_voltage,
 };
 
 static struct regulator_desc tps6105x_regulator_desc = {
+=======
+	.list_voltage	= regulator_list_voltage_table,
+};
+
+static const struct regulator_desc tps6105x_regulator_desc = {
+>>>>>>> refs/remotes/origin/master
 	.name		= "tps6105x-boost",
 	.ops		= &tps6105x_regulator_ops,
 	.type		= REGULATOR_VOLTAGE,
 	.id		= 0,
 	.owner		= THIS_MODULE,
 	.n_voltages	= ARRAY_SIZE(tps6105x_voltages),
+<<<<<<< HEAD
+=======
+	.volt_table	= tps6105x_voltages,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
  * Registers the chip as a voltage regulator
  */
+<<<<<<< HEAD
 static int __devinit tps6105x_regulator_probe(struct platform_device *pdev)
 {
 	struct tps6105x *tps6105x = dev_get_platdata(&pdev->dev);
 	struct tps6105x_platform_data *pdata = tps6105x->pdata;
+=======
+static int tps6105x_regulator_probe(struct platform_device *pdev)
+{
+	struct tps6105x *tps6105x = dev_get_platdata(&pdev->dev);
+	struct tps6105x_platform_data *pdata = tps6105x->pdata;
+	struct regulator_config config = { };
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* This instance is not set for regulator mode so bail out */
 	if (pdata->mode != TPS6105X_MODE_VOLTAGE) {
 		dev_info(&pdev->dev,
+<<<<<<< HEAD
 			 "chip not in voltage mode mode, exit probe \n");
 		return 0;
 	}
@@ -151,7 +178,26 @@ static int __devinit tps6105x_regulator_probe(struct platform_device *pdev)
 	/* Register regulator with framework */
 	tps6105x->regulator = regulator_register(&tps6105x_regulator_desc,
 					     &tps6105x->client->dev,
+<<<<<<< HEAD
 					     pdata->regulator_data, tps6105x);
+=======
+					     pdata->regulator_data, tps6105x,
+					     NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"chip not in voltage mode mode, exit probe\n");
+		return 0;
+	}
+
+	config.dev = &tps6105x->client->dev;
+	config.init_data = pdata->regulator_data;
+	config.driver_data = tps6105x;
+
+	/* Register regulator with framework */
+	tps6105x->regulator = devm_regulator_register(&pdev->dev,
+						      &tps6105x_regulator_desc,
+						      &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(tps6105x->regulator)) {
 		ret = PTR_ERR(tps6105x->regulator);
 		dev_err(&tps6105x->client->dev,
@@ -163,6 +209,7 @@ static int __devinit tps6105x_regulator_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit tps6105x_regulator_remove(struct platform_device *pdev)
 {
 	struct tps6105x *tps6105x = dev_get_platdata(&pdev->dev);
@@ -170,13 +217,18 @@ static int __devexit tps6105x_regulator_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver tps6105x_regulator_driver = {
 	.driver = {
 		.name  = "tps6105x-regulator",
 		.owner = THIS_MODULE,
 	},
 	.probe = tps6105x_regulator_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tps6105x_regulator_remove),
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static __init int tps6105x_regulator_init(void)

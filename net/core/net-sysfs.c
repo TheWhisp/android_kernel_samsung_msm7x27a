@@ -18,9 +18,21 @@
 #include <net/sock.h>
 #include <net/net_namespace.h>
 #include <linux/rtnetlink.h>
+<<<<<<< HEAD
 #include <linux/wireless.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/wext.h>
+=======
+#include <linux/vmalloc.h>
+#include <linux/export.h>
+#include <linux/jiffies.h>
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "net-sysfs.h"
 
@@ -59,18 +71,35 @@ static ssize_t format_##field(const struct net_device *net, char *buf)	\
 {									\
 	return sprintf(buf, format_string, net->field);			\
 }									\
+<<<<<<< HEAD
 static ssize_t show_##field(struct device *dev,				\
 			    struct device_attribute *attr, char *buf)	\
 {									\
 	return netdev_show(dev, attr, buf, format_##field);		\
 }
 
+=======
+static ssize_t field##_show(struct device *dev,				\
+			    struct device_attribute *attr, char *buf)	\
+{									\
+	return netdev_show(dev, attr, buf, format_##field);		\
+}									\
+
+#define NETDEVICE_SHOW_RO(field, format_string)				\
+NETDEVICE_SHOW(field, format_string);					\
+static DEVICE_ATTR_RO(field)
+
+#define NETDEVICE_SHOW_RW(field, format_string)				\
+NETDEVICE_SHOW(field, format_string);					\
+static DEVICE_ATTR_RW(field)
+>>>>>>> refs/remotes/origin/master
 
 /* use same locking and permission rules as SIF* ioctl's */
 static ssize_t netdev_store(struct device *dev, struct device_attribute *attr,
 			    const char *buf, size_t len,
 			    int (*set)(struct net_device *, unsigned long))
 {
+<<<<<<< HEAD
 	struct net_device *net = to_net_dev(dev);
 	char *endp;
 	unsigned long new;
@@ -81,13 +110,30 @@ static ssize_t netdev_store(struct device *dev, struct device_attribute *attr,
 
 	new = simple_strtoul(buf, &endp, 0);
 	if (endp == buf)
+=======
+	struct net_device *netdev = to_net_dev(dev);
+	struct net *net = dev_net(netdev);
+	unsigned long new;
+	int ret = -EINVAL;
+
+	if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+		return -EPERM;
+
+	ret = kstrtoul(buf, 0, &new);
+	if (ret)
+>>>>>>> refs/remotes/origin/master
 		goto err;
 
 	if (!rtnl_trylock())
 		return restart_syscall();
 
+<<<<<<< HEAD
 	if (dev_isalive(net)) {
 		if ((ret = (*set)(net, new)) == 0)
+=======
+	if (dev_isalive(netdev)) {
+		if ((ret = (*set)(netdev, new)) == 0)
+>>>>>>> refs/remotes/origin/master
 			ret = len;
 	}
 	rtnl_unlock();
@@ -95,17 +141,33 @@ static ssize_t netdev_store(struct device *dev, struct device_attribute *attr,
 	return ret;
 }
 
+<<<<<<< HEAD
 NETDEVICE_SHOW(dev_id, fmt_hex);
 NETDEVICE_SHOW(addr_assign_type, fmt_dec);
 NETDEVICE_SHOW(addr_len, fmt_dec);
 NETDEVICE_SHOW(iflink, fmt_dec);
 NETDEVICE_SHOW(ifindex, fmt_dec);
+<<<<<<< HEAD
 NETDEVICE_SHOW(features, fmt_hex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 NETDEVICE_SHOW(type, fmt_dec);
 NETDEVICE_SHOW(link_mode, fmt_dec);
 
 /* use same locking rules as GIFHWADDR ioctl's */
 static ssize_t show_address(struct device *dev, struct device_attribute *attr,
+=======
+NETDEVICE_SHOW_RO(dev_id, fmt_hex);
+NETDEVICE_SHOW_RO(addr_assign_type, fmt_dec);
+NETDEVICE_SHOW_RO(addr_len, fmt_dec);
+NETDEVICE_SHOW_RO(iflink, fmt_dec);
+NETDEVICE_SHOW_RO(ifindex, fmt_dec);
+NETDEVICE_SHOW_RO(type, fmt_dec);
+NETDEVICE_SHOW_RO(link_mode, fmt_dec);
+
+/* use same locking rules as GIFHWADDR ioctl's */
+static ssize_t address_show(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			    char *buf)
 {
 	struct net_device *net = to_net_dev(dev);
@@ -117,17 +179,43 @@ static ssize_t show_address(struct device *dev, struct device_attribute *attr,
 	read_unlock(&dev_base_lock);
 	return ret;
 }
+<<<<<<< HEAD
 
 static ssize_t show_broadcast(struct device *dev,
 			    struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(address);
+
+static ssize_t broadcast_show(struct device *dev,
+			      struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *net = to_net_dev(dev);
 	if (dev_isalive(net))
 		return sysfs_format_mac(buf, net->broadcast, net->addr_len);
 	return -EINVAL;
 }
+<<<<<<< HEAD
 
 static ssize_t show_carrier(struct device *dev,
+=======
+static DEVICE_ATTR_RO(broadcast);
+
+static int change_carrier(struct net_device *net, unsigned long new_carrier)
+{
+	if (!netif_running(net))
+		return -EINVAL;
+	return dev_change_carrier(net, (bool) new_carrier);
+}
+
+static ssize_t carrier_store(struct device *dev, struct device_attribute *attr,
+			     const char *buf, size_t len)
+{
+	return netdev_store(dev, attr, buf, len, change_carrier);
+}
+
+static ssize_t carrier_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 			    struct device_attribute *attr, char *buf)
 {
 	struct net_device *netdev = to_net_dev(dev);
@@ -136,8 +224,14 @@ static ssize_t show_carrier(struct device *dev,
 	}
 	return -EINVAL;
 }
+<<<<<<< HEAD
 
 static ssize_t show_speed(struct device *dev,
+=======
+static DEVICE_ATTR_RW(carrier);
+
+static ssize_t speed_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 			  struct device_attribute *attr, char *buf)
 {
 	struct net_device *netdev = to_net_dev(dev);
@@ -148,14 +242,28 @@ static ssize_t show_speed(struct device *dev,
 
 	if (netif_running(netdev)) {
 		struct ethtool_cmd cmd;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!dev_ethtool_get_settings(netdev, &cmd))
+=======
+		if (!__ethtool_get_settings(netdev, &cmd))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!__ethtool_get_settings(netdev, &cmd))
+>>>>>>> refs/remotes/origin/master
 			ret = sprintf(buf, fmt_udec, ethtool_cmd_speed(&cmd));
 	}
 	rtnl_unlock();
 	return ret;
 }
+<<<<<<< HEAD
 
 static ssize_t show_duplex(struct device *dev,
+=======
+static DEVICE_ATTR_RO(speed);
+
+static ssize_t duplex_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 			   struct device_attribute *attr, char *buf)
 {
 	struct net_device *netdev = to_net_dev(dev);
@@ -166,15 +274,43 @@ static ssize_t show_duplex(struct device *dev,
 
 	if (netif_running(netdev)) {
 		struct ethtool_cmd cmd;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!dev_ethtool_get_settings(netdev, &cmd))
+=======
+		if (!__ethtool_get_settings(netdev, &cmd))
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret = sprintf(buf, "%s\n",
 				      cmd.duplex ? "full" : "half");
+=======
+		if (!__ethtool_get_settings(netdev, &cmd)) {
+			const char *duplex;
+			switch (cmd.duplex) {
+			case DUPLEX_HALF:
+				duplex = "half";
+				break;
+			case DUPLEX_FULL:
+				duplex = "full";
+				break;
+			default:
+				duplex = "unknown";
+				break;
+			}
+			ret = sprintf(buf, "%s\n", duplex);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	rtnl_unlock();
 	return ret;
 }
+<<<<<<< HEAD
 
 static ssize_t show_dormant(struct device *dev,
+=======
+static DEVICE_ATTR_RO(duplex);
+
+static ssize_t dormant_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 			    struct device_attribute *attr, char *buf)
 {
 	struct net_device *netdev = to_net_dev(dev);
@@ -184,6 +320,10 @@ static ssize_t show_dormant(struct device *dev,
 
 	return -EINVAL;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(dormant);
+>>>>>>> refs/remotes/origin/master
 
 static const char *const operstates[] = {
 	"unknown",
@@ -195,7 +335,11 @@ static const char *const operstates[] = {
 	"up"
 };
 
+<<<<<<< HEAD
 static ssize_t show_operstate(struct device *dev,
+=======
+static ssize_t operstate_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 			      struct device_attribute *attr, char *buf)
 {
 	const struct net_device *netdev = to_net_dev(dev);
@@ -212,20 +356,31 @@ static ssize_t show_operstate(struct device *dev,
 
 	return sprintf(buf, "%s\n", operstates[operstate]);
 }
+<<<<<<< HEAD
 
 /* read-write attributes */
 NETDEVICE_SHOW(mtu, fmt_dec);
+=======
+static DEVICE_ATTR_RO(operstate);
+
+/* read-write attributes */
+>>>>>>> refs/remotes/origin/master
 
 static int change_mtu(struct net_device *net, unsigned long new_mtu)
 {
 	return dev_set_mtu(net, (int) new_mtu);
 }
 
+<<<<<<< HEAD
 static ssize_t store_mtu(struct device *dev, struct device_attribute *attr,
+=======
+static ssize_t mtu_store(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			 const char *buf, size_t len)
 {
 	return netdev_store(dev, attr, buf, len, change_mtu);
 }
+<<<<<<< HEAD
 
 NETDEVICE_SHOW(flags, fmt_hex);
 
@@ -235,12 +390,26 @@ static int change_flags(struct net_device *net, unsigned long new_flags)
 }
 
 static ssize_t store_flags(struct device *dev, struct device_attribute *attr,
+=======
+NETDEVICE_SHOW_RW(mtu, fmt_dec);
+
+static int change_flags(struct net_device *net, unsigned long new_flags)
+{
+	return dev_change_flags(net, (unsigned int) new_flags);
+}
+
+static ssize_t flags_store(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			   const char *buf, size_t len)
 {
 	return netdev_store(dev, attr, buf, len, change_flags);
 }
+<<<<<<< HEAD
 
 NETDEVICE_SHOW(tx_queue_len, fmt_ulong);
+=======
+NETDEVICE_SHOW_RW(flags, fmt_hex);
+>>>>>>> refs/remotes/origin/master
 
 static int change_tx_queue_len(struct net_device *net, unsigned long new_len)
 {
@@ -248,6 +417,7 @@ static int change_tx_queue_len(struct net_device *net, unsigned long new_len)
 	return 0;
 }
 
+<<<<<<< HEAD
 static ssize_t store_tx_queue_len(struct device *dev,
 				  struct device_attribute *attr,
 				  const char *buf, size_t len)
@@ -263,6 +433,28 @@ static ssize_t store_ifalias(struct device *dev, struct device_attribute *attr,
 	ssize_t ret;
 
 	if (!capable(CAP_NET_ADMIN))
+=======
+static ssize_t tx_queue_len_store(struct device *dev,
+				  struct device_attribute *attr,
+				  const char *buf, size_t len)
+{
+	if (!capable(CAP_NET_ADMIN))
+		return -EPERM;
+
+	return netdev_store(dev, attr, buf, len, change_tx_queue_len);
+}
+NETDEVICE_SHOW_RW(tx_queue_len, fmt_ulong);
+
+static ssize_t ifalias_store(struct device *dev, struct device_attribute *attr,
+			     const char *buf, size_t len)
+{
+	struct net_device *netdev = to_net_dev(dev);
+	struct net *net = dev_net(netdev);
+	size_t count = len;
+	ssize_t ret;
+
+	if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	/* ignore trailing newline */
@@ -277,7 +469,11 @@ static ssize_t store_ifalias(struct device *dev, struct device_attribute *attr,
 	return ret < 0 ? ret : len;
 }
 
+<<<<<<< HEAD
 static ssize_t show_ifalias(struct device *dev,
+=======
+static ssize_t ifalias_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 			    struct device_attribute *attr, char *buf)
 {
 	const struct net_device *netdev = to_net_dev(dev);
@@ -290,8 +486,12 @@ static ssize_t show_ifalias(struct device *dev,
 	rtnl_unlock();
 	return ret;
 }
+<<<<<<< HEAD
 
 NETDEVICE_SHOW(group, fmt_dec);
+=======
+static DEVICE_ATTR_RW(ifalias);
+>>>>>>> refs/remotes/origin/master
 
 static int change_group(struct net_device *net, unsigned long new_group)
 {
@@ -299,6 +499,7 @@ static int change_group(struct net_device *net, unsigned long new_group)
 	return 0;
 }
 
+<<<<<<< HEAD
 static ssize_t store_group(struct device *dev, struct device_attribute *attr,
 			 const char *buf, size_t len)
 {
@@ -312,7 +513,10 @@ static struct device_attribute net_class_attributes[] = {
 	__ATTR(ifalias, S_IRUGO | S_IWUSR, show_ifalias, store_ifalias),
 	__ATTR(iflink, S_IRUGO, show_iflink, NULL),
 	__ATTR(ifindex, S_IRUGO, show_ifindex, NULL),
+<<<<<<< HEAD
 	__ATTR(features, S_IRUGO, show_features, NULL),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	__ATTR(type, S_IRUGO, show_type, NULL),
 	__ATTR(link_mode, S_IRUGO, show_link_mode, NULL),
 	__ATTR(address, S_IRUGO, show_address, NULL),
@@ -329,6 +533,62 @@ static struct device_attribute net_class_attributes[] = {
 	__ATTR(netdev_group, S_IRUGO | S_IWUSR, show_group, store_group),
 	{}
 };
+=======
+static ssize_t group_store(struct device *dev, struct device_attribute *attr,
+			   const char *buf, size_t len)
+{
+	return netdev_store(dev, attr, buf, len, change_group);
+}
+NETDEVICE_SHOW(group, fmt_dec);
+static DEVICE_ATTR(netdev_group, S_IRUGO | S_IWUSR, group_show, group_store);
+
+static ssize_t phys_port_id_show(struct device *dev,
+				 struct device_attribute *attr, char *buf)
+{
+	struct net_device *netdev = to_net_dev(dev);
+	ssize_t ret = -EINVAL;
+
+	if (!rtnl_trylock())
+		return restart_syscall();
+
+	if (dev_isalive(netdev)) {
+		struct netdev_phys_port_id ppid;
+
+		ret = dev_get_phys_port_id(netdev, &ppid);
+		if (!ret)
+			ret = sprintf(buf, "%*phN\n", ppid.id_len, ppid.id);
+	}
+	rtnl_unlock();
+
+	return ret;
+}
+static DEVICE_ATTR_RO(phys_port_id);
+
+static struct attribute *net_class_attrs[] = {
+	&dev_attr_netdev_group.attr,
+	&dev_attr_type.attr,
+	&dev_attr_dev_id.attr,
+	&dev_attr_iflink.attr,
+	&dev_attr_ifindex.attr,
+	&dev_attr_addr_assign_type.attr,
+	&dev_attr_addr_len.attr,
+	&dev_attr_link_mode.attr,
+	&dev_attr_address.attr,
+	&dev_attr_broadcast.attr,
+	&dev_attr_speed.attr,
+	&dev_attr_duplex.attr,
+	&dev_attr_dormant.attr,
+	&dev_attr_operstate.attr,
+	&dev_attr_ifalias.attr,
+	&dev_attr_carrier.attr,
+	&dev_attr_mtu.attr,
+	&dev_attr_flags.attr,
+	&dev_attr_tx_queue_len.attr,
+	&dev_attr_phys_port_id.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(net_class);
+>>>>>>> refs/remotes/origin/master
 
 /* Show a given an attribute in the statistics group */
 static ssize_t netstat_show(const struct device *d,
@@ -354,13 +614,21 @@ static ssize_t netstat_show(const struct device *d,
 
 /* generate a read-only statistics attribute */
 #define NETSTAT_ENTRY(name)						\
+<<<<<<< HEAD
 static ssize_t show_##name(struct device *d,				\
+=======
+static ssize_t name##_show(struct device *d,				\
+>>>>>>> refs/remotes/origin/master
 			   struct device_attribute *attr, char *buf) 	\
 {									\
 	return netstat_show(d, attr, buf,				\
 			    offsetof(struct rtnl_link_stats64, name));	\
 }									\
+<<<<<<< HEAD
 static DEVICE_ATTR(name, S_IRUGO, show_##name, NULL)
+=======
+static DEVICE_ATTR_RO(name)
+>>>>>>> refs/remotes/origin/master
 
 NETSTAT_ENTRY(rx_packets);
 NETSTAT_ENTRY(tx_packets);
@@ -419,6 +687,7 @@ static struct attribute_group netstat_group = {
 	.attrs  = netstat_attrs,
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_WIRELESS_EXT_SYSFS
 /* helper function that does all the locking etc for wireless stats */
 static ssize_t wireless_show(struct device *d, char *buf,
@@ -476,6 +745,10 @@ static struct attribute *wireless_attrs[] = {
 	&dev_attr_retries.attr,
 	&dev_attr_misc.attr,
 	&dev_attr_beacon.attr,
+=======
+#if IS_ENABLED(CONFIG_WIRELESS_EXT) || IS_ENABLED(CONFIG_CFG80211)
+static struct attribute *wireless_attrs[] = {
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 
@@ -484,6 +757,12 @@ static struct attribute_group wireless_group = {
 	.attrs = wireless_attrs,
 };
 #endif
+<<<<<<< HEAD
+=======
+
+#else /* CONFIG_SYSFS */
+#define net_class_groups	NULL
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_SYSFS */
 
 #ifdef CONFIG_RPS
@@ -582,7 +861,11 @@ static ssize_t store_rps_map(struct netdev_rx_queue *queue,
 		return err;
 	}
 
+<<<<<<< HEAD
 	map = kzalloc(max_t(unsigned,
+=======
+	map = kzalloc(max_t(unsigned int,
+>>>>>>> refs/remotes/origin/master
 	    RPS_MAP_SIZE(cpumask_weight(mask)), L1_CACHE_BYTES),
 	    GFP_KERNEL);
 	if (!map) {
@@ -607,9 +890,24 @@ static ssize_t store_rps_map(struct netdev_rx_queue *queue,
 	rcu_assign_pointer(queue->rps_map, map);
 	spin_unlock(&rps_map_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (old_map)
 		kfree_rcu(old_map, rcu);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (map)
+		static_key_slow_inc(&rps_needed);
+	if (old_map) {
+		kfree_rcu(old_map, rcu);
+		static_key_slow_dec(&rps_needed);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	free_cpumask_var(mask);
 	return len;
 }
@@ -619,15 +917,34 @@ static ssize_t show_rps_dev_flow_table_cnt(struct netdev_rx_queue *queue,
 					   char *buf)
 {
 	struct rps_dev_flow_table *flow_table;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int val = 0;
+=======
+	unsigned long val = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long val = 0;
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 	flow_table = rcu_dereference(queue->rps_flow_table);
 	if (flow_table)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		val = flow_table->mask + 1;
 	rcu_read_unlock();
 
 	return sprintf(buf, "%u\n", val);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		val = (unsigned long)flow_table->mask + 1;
+	rcu_read_unlock();
+
+	return sprintf(buf, "%lu\n", val);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rps_dev_flow_table_release_work(struct work_struct *work)
@@ -636,29 +953,50 @@ static void rps_dev_flow_table_release_work(struct work_struct *work)
 	    struct rps_dev_flow_table, free_work);
 
 	vfree(table);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rps_dev_flow_table_release(struct rcu_head *rcu)
 {
 	struct rps_dev_flow_table *table = container_of(rcu,
 	    struct rps_dev_flow_table, rcu);
+<<<<<<< HEAD
 
 	INIT_WORK(&table->free_work, rps_dev_flow_table_release_work);
 	schedule_work(&table->free_work);
+=======
+	vfree(table);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_rps_dev_flow_table_cnt(struct netdev_rx_queue *queue,
 				     struct rx_queue_attribute *attr,
 				     const char *buf, size_t len)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int count;
 	char *endp;
 	struct rps_dev_flow_table *table, *old_table;
 	static DEFINE_SPINLOCK(rps_dev_flow_lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long mask, count;
+	struct rps_dev_flow_table *table, *old_table;
+	static DEFINE_SPINLOCK(rps_dev_flow_lock);
+	int rc;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!capable(CAP_NET_ADMIN))
 		return -EPERM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	count = simple_strtoul(buf, &endp, 0);
 	if (endp == buf)
 		return -EINVAL;
@@ -678,6 +1016,45 @@ static ssize_t store_rps_dev_flow_table_cnt(struct netdev_rx_queue *queue,
 		table->mask = count - 1;
 		for (i = 0; i < count; i++)
 			table->flows[i].cpu = RPS_NO_CPU;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rc = kstrtoul(buf, 0, &count);
+	if (rc < 0)
+		return rc;
+
+	if (count) {
+		mask = count - 1;
+		/* mask = roundup_pow_of_two(count) - 1;
+		 * without overflows...
+		 */
+		while ((mask | (mask >> 1)) != mask)
+			mask |= (mask >> 1);
+		/* On 64 bit arches, must check mask fits in table->mask (u32),
+		 * and on 32bit arches, must check RPS_DEV_FLOW_TABLE_SIZE(mask + 1)
+		 * doesnt overflow.
+		 */
+#if BITS_PER_LONG > 32
+		if (mask > (unsigned long)(u32)mask)
+			return -EINVAL;
+#else
+		if (mask > (ULONG_MAX - RPS_DEV_FLOW_TABLE_SIZE(1))
+				/ sizeof(struct rps_dev_flow)) {
+			/* Enforce a limit to prevent overflow */
+			return -EINVAL;
+		}
+#endif
+		table = vmalloc(RPS_DEV_FLOW_TABLE_SIZE(mask + 1));
+		if (!table)
+			return -ENOMEM;
+
+		table->mask = mask;
+		for (count = 0; count <= mask; count++)
+			table->flows[count].cpu = RPS_NO_CPU;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else
 		table = NULL;
 
@@ -714,13 +1091,29 @@ static void rx_queue_release(struct kobject *kobj)
 	struct rps_dev_flow_table *flow_table;
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	map = rcu_dereference_raw(queue->rps_map);
+=======
+	map = rcu_dereference_protected(queue->rps_map, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	map = rcu_dereference_protected(queue->rps_map, 1);
+>>>>>>> refs/remotes/origin/master
 	if (map) {
 		RCU_INIT_POINTER(queue->rps_map, NULL);
 		kfree_rcu(map, rcu);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	flow_table = rcu_dereference_raw(queue->rps_flow_table);
+=======
+	flow_table = rcu_dereference_protected(queue->rps_flow_table, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	flow_table = rcu_dereference_protected(queue->rps_flow_table, 1);
+>>>>>>> refs/remotes/origin/master
 	if (flow_table) {
 		RCU_INIT_POINTER(queue->rps_flow_table, NULL);
 		call_rcu(&flow_table->rcu, rps_dev_flow_table_release);
@@ -781,7 +1174,15 @@ net_rx_queue_update_kobjects(struct net_device *net, int old_num, int new_num)
 #endif
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_XPS
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/master
 /*
  * netdev_queue sysfs structures and functions.
  */
@@ -827,6 +1228,146 @@ static const struct sysfs_ops netdev_queue_sysfs_ops = {
 	.store = netdev_queue_attr_store,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static ssize_t show_trans_timeout(struct netdev_queue *queue,
+				  struct netdev_queue_attribute *attribute,
+				  char *buf)
+{
+	unsigned long trans_timeout;
+
+	spin_lock_irq(&queue->_xmit_lock);
+	trans_timeout = queue->trans_timeout;
+	spin_unlock_irq(&queue->_xmit_lock);
+
+	return sprintf(buf, "%lu", trans_timeout);
+}
+
+static struct netdev_queue_attribute queue_trans_timeout =
+	__ATTR(tx_timeout, S_IRUGO, show_trans_timeout, NULL);
+
+#ifdef CONFIG_BQL
+/*
+ * Byte queue limits sysfs structures and functions.
+ */
+static ssize_t bql_show(char *buf, unsigned int value)
+{
+	return sprintf(buf, "%u\n", value);
+}
+
+static ssize_t bql_set(const char *buf, const size_t count,
+		       unsigned int *pvalue)
+{
+	unsigned int value;
+	int err;
+
+	if (!strcmp(buf, "max") || !strcmp(buf, "max\n"))
+		value = DQL_MAX_LIMIT;
+	else {
+		err = kstrtouint(buf, 10, &value);
+		if (err < 0)
+			return err;
+		if (value > DQL_MAX_LIMIT)
+			return -EINVAL;
+	}
+
+	*pvalue = value;
+
+	return count;
+}
+
+static ssize_t bql_show_hold_time(struct netdev_queue *queue,
+				  struct netdev_queue_attribute *attr,
+				  char *buf)
+{
+	struct dql *dql = &queue->dql;
+
+	return sprintf(buf, "%u\n", jiffies_to_msecs(dql->slack_hold_time));
+}
+
+static ssize_t bql_set_hold_time(struct netdev_queue *queue,
+				 struct netdev_queue_attribute *attribute,
+				 const char *buf, size_t len)
+{
+	struct dql *dql = &queue->dql;
+<<<<<<< HEAD
+	unsigned value;
+=======
+	unsigned int value;
+>>>>>>> refs/remotes/origin/master
+	int err;
+
+	err = kstrtouint(buf, 10, &value);
+	if (err < 0)
+		return err;
+
+	dql->slack_hold_time = msecs_to_jiffies(value);
+
+	return len;
+}
+
+static struct netdev_queue_attribute bql_hold_time_attribute =
+	__ATTR(hold_time, S_IRUGO | S_IWUSR, bql_show_hold_time,
+	    bql_set_hold_time);
+
+static ssize_t bql_show_inflight(struct netdev_queue *queue,
+				 struct netdev_queue_attribute *attr,
+				 char *buf)
+{
+	struct dql *dql = &queue->dql;
+
+	return sprintf(buf, "%u\n", dql->num_queued - dql->num_completed);
+}
+
+static struct netdev_queue_attribute bql_inflight_attribute =
+	__ATTR(inflight, S_IRUGO, bql_show_inflight, NULL);
+
+#define BQL_ATTR(NAME, FIELD)						\
+static ssize_t bql_show_ ## NAME(struct netdev_queue *queue,		\
+				 struct netdev_queue_attribute *attr,	\
+				 char *buf)				\
+{									\
+	return bql_show(buf, queue->dql.FIELD);				\
+}									\
+									\
+static ssize_t bql_set_ ## NAME(struct netdev_queue *queue,		\
+				struct netdev_queue_attribute *attr,	\
+				const char *buf, size_t len)		\
+{									\
+	return bql_set(buf, len, &queue->dql.FIELD);			\
+}									\
+									\
+static struct netdev_queue_attribute bql_ ## NAME ## _attribute =	\
+	__ATTR(NAME, S_IRUGO | S_IWUSR, bql_show_ ## NAME,		\
+	    bql_set_ ## NAME);
+
+BQL_ATTR(limit, limit)
+BQL_ATTR(limit_max, max_limit)
+BQL_ATTR(limit_min, min_limit)
+
+static struct attribute *dql_attrs[] = {
+	&bql_limit_attribute.attr,
+	&bql_limit_max_attribute.attr,
+	&bql_limit_min_attribute.attr,
+	&bql_hold_time_attribute.attr,
+	&bql_inflight_attribute.attr,
+	NULL
+};
+
+static struct attribute_group dql_group = {
+	.name  = "byte_queue_limits",
+	.attrs  = dql_attrs,
+};
+#endif /* CONFIG_BQL */
+
+#ifdef CONFIG_XPS
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline unsigned int get_netdev_queue_index(struct netdev_queue *queue)
 {
 	struct net_device *dev = queue->dev;
@@ -887,22 +1428,84 @@ static ssize_t show_xps_map(struct netdev_queue *queue,
 	return len;
 }
 
+<<<<<<< HEAD
 static DEFINE_MUTEX(xps_map_mutex);
 #define xmap_dereference(P)		\
 	rcu_dereference_protected((P), lockdep_is_held(&xps_map_mutex))
 
+<<<<<<< HEAD
+=======
+static void xps_queue_release(struct netdev_queue *queue)
+{
+	struct net_device *dev = queue->dev;
+	struct xps_dev_maps *dev_maps;
+	struct xps_map *map;
+	unsigned long index;
+	int i, pos, nonempty = 0;
+
+	index = get_netdev_queue_index(queue);
+
+	mutex_lock(&xps_map_mutex);
+	dev_maps = xmap_dereference(dev->xps_maps);
+
+	if (dev_maps) {
+		for_each_possible_cpu(i) {
+			map = xmap_dereference(dev_maps->cpu_map[i]);
+			if (!map)
+				continue;
+
+			for (pos = 0; pos < map->len; pos++)
+				if (map->queues[pos] == index)
+					break;
+
+			if (pos < map->len) {
+				if (map->len > 1)
+					map->queues[pos] =
+					    map->queues[--map->len];
+				else {
+					RCU_INIT_POINTER(dev_maps->cpu_map[i],
+					    NULL);
+					kfree_rcu(map, rcu);
+					map = NULL;
+				}
+			}
+			if (map)
+				nonempty = 1;
+		}
+
+		if (!nonempty) {
+			RCU_INIT_POINTER(dev->xps_maps, NULL);
+			kfree_rcu(dev_maps, rcu);
+		}
+	}
+	mutex_unlock(&xps_map_mutex);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t store_xps_map(struct netdev_queue *queue,
 		      struct netdev_queue_attribute *attribute,
 		      const char *buf, size_t len)
 {
 	struct net_device *dev = queue->dev;
+<<<<<<< HEAD
 	cpumask_var_t mask;
 	int err, i, cpu, pos, map_len, alloc_len, need_set;
 	unsigned long index;
 	struct xps_map *map, *new_map;
 	struct xps_dev_maps *dev_maps, *new_dev_maps;
 	int nonempty = 0;
+<<<<<<< HEAD
 	int numa_node = -2;
+=======
+	int numa_node_id = -2;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long index;
+	cpumask_var_t mask;
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	if (!capable(CAP_NET_ADMIN))
 		return -EPERM;
@@ -918,6 +1521,7 @@ static ssize_t store_xps_map(struct netdev_queue *queue,
 		return err;
 	}
 
+<<<<<<< HEAD
 	new_dev_maps = kzalloc(max_t(unsigned,
 	    XPS_DEV_MAPS_SIZE, L1_CACHE_BYTES), GFP_KERNEL);
 	if (!new_dev_maps) {
@@ -945,10 +1549,17 @@ static ssize_t store_xps_map(struct netdev_queue *queue,
 		need_set = cpumask_test_cpu(cpu, mask) && cpu_online(cpu);
 #ifdef CONFIG_NUMA
 		if (need_set) {
+<<<<<<< HEAD
 			if (numa_node == -2)
 				numa_node = cpu_to_node(cpu);
 			else if (numa_node != cpu_to_node(cpu))
 				numa_node = -1;
+=======
+			if (numa_node_id == -2)
+				numa_node_id = cpu_to_node(cpu);
+			else if (numa_node_id != cpu_to_node(cpu))
+				numa_node_id = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 #endif
 		if (need_set && pos >= map_len) {
@@ -988,17 +1599,29 @@ static ssize_t store_xps_map(struct netdev_queue *queue,
 			nonempty = 1;
 	}
 
+<<<<<<< HEAD
 	if (nonempty)
 		rcu_assign_pointer(dev->xps_maps, new_dev_maps);
 	else {
 		kfree(new_dev_maps);
 		rcu_assign_pointer(dev->xps_maps, NULL);
+=======
+	if (nonempty) {
+		rcu_assign_pointer(dev->xps_maps, new_dev_maps);
+	} else {
+		kfree(new_dev_maps);
+		RCU_INIT_POINTER(dev->xps_maps, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (dev_maps)
 		kfree_rcu(dev_maps, rcu);
 
+<<<<<<< HEAD
 	netdev_queue_numa_node_write(queue, (numa_node >= 0) ? numa_node :
+=======
+	netdev_queue_numa_node_write(queue, (numa_node_id >= 0) ? numa_node_id :
+>>>>>>> refs/remotes/origin/cm-10.0
 					    NUMA_NO_NODE);
 
 	mutex_unlock(&xps_map_mutex);
@@ -1017,19 +1640,44 @@ error:
 	kfree(new_dev_maps);
 	free_cpumask_var(mask);
 	return -ENOMEM;
+=======
+	err = netif_set_xps_queue(dev, mask, index);
+
+	free_cpumask_var(mask);
+
+	return err ? : len;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct netdev_queue_attribute xps_cpus_attribute =
     __ATTR(xps_cpus, S_IRUGO | S_IWUSR, show_xps_map, store_xps_map);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static struct attribute *netdev_queue_default_attrs[] = {
 	&xps_cpus_attribute.attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#endif /* CONFIG_XPS */
+
+static struct attribute *netdev_queue_default_attrs[] = {
+	&queue_trans_timeout.attr,
+#ifdef CONFIG_XPS
+	&xps_cpus_attribute.attr,
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 
 static void netdev_queue_release(struct kobject *kobj)
 {
 	struct netdev_queue *queue = to_netdev_queue(kobj);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *dev = queue->dev;
 	struct xps_dev_maps *dev_maps;
 	struct xps_map *map;
@@ -1073,6 +1721,14 @@ static void netdev_queue_release(struct kobject *kobj)
 	}
 
 	mutex_unlock(&xps_map_mutex);
+=======
+
+#ifdef CONFIG_XPS
+	xps_queue_release(queue);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	memset(kobj, 0, sizeof(*kobj));
 	dev_put(queue->dev);
@@ -1093,22 +1749,62 @@ static int netdev_queue_add_kobject(struct net_device *net, int index)
 	kobj->kset = net->queues_kset;
 	error = kobject_init_and_add(kobj, &netdev_queue_ktype, NULL,
 	    "tx-%u", index);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (error) {
 		kobject_put(kobj);
 		return error;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (error)
+		goto exit;
+
+#ifdef CONFIG_BQL
+	error = sysfs_create_group(kobj, &dql_group);
+	if (error)
+		goto exit;
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	kobject_uevent(kobj, KOBJ_ADD);
 	dev_hold(queue->dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return error;
 }
 #endif /* CONFIG_XPS */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	return 0;
+exit:
+	kobject_put(kobj);
+	return error;
+}
+#endif /* CONFIG_SYSFS */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int
 netdev_queue_update_kobjects(struct net_device *net, int old_num, int new_num)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_XPS
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int error = 0;
 
@@ -1120,20 +1816,53 @@ netdev_queue_update_kobjects(struct net_device *net, int old_num, int new_num)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (--i >= new_num)
 		kobject_put(&net->_tx[i].kobj);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	while (--i >= new_num) {
+		struct netdev_queue *queue = net->_tx + i;
+
+#ifdef CONFIG_BQL
+		sysfs_remove_group(&queue->kobj, &dql_group);
+#endif
+		kobject_put(&queue->kobj);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 #else
 	return 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
+=======
+#endif /* CONFIG_SYSFS */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_SYSFS */
+>>>>>>> refs/remotes/origin/master
 }
 
 static int register_queue_kobjects(struct net_device *net)
 {
 	int error = 0, txq = 0, rxq = 0, real_rx = 0, real_tx = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_RPS) || defined(CONFIG_XPS)
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/master
 	net->queues_kset = kset_create_and_add("queues",
 	    NULL, &net->dev.kobj);
 	if (!net->queues_kset)
@@ -1174,11 +1903,29 @@ static void remove_queue_kobjects(struct net_device *net)
 
 	net_rx_queue_update_kobjects(net, real_rx, 0);
 	netdev_queue_update_kobjects(net, real_tx, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_RPS) || defined(CONFIG_XPS)
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/master
 	kset_unregister(net->queues_kset);
 #endif
 }
 
+<<<<<<< HEAD
+=======
+static bool net_current_may_mount(void)
+{
+	struct net *net = current->nsproxy->net_ns;
+
+	return ns_capable(net->user_ns, CAP_SYS_ADMIN);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void *net_grab_current_ns(void)
 {
 	struct net *ns = current->nsproxy->net_ns;
@@ -1201,6 +1948,10 @@ static const void *net_netlink_ns(struct sock *sk)
 
 struct kobj_ns_type_operations net_ns_type_operations = {
 	.type = KOBJ_NS_TYPE_NET,
+<<<<<<< HEAD
+=======
+	.current_may_mount = net_current_may_mount,
+>>>>>>> refs/remotes/origin/master
 	.grab_current_ns = net_grab_current_ns,
 	.netlink_ns = net_netlink_ns,
 	.initial_ns = net_initial_ns,
@@ -1208,7 +1959,10 @@ struct kobj_ns_type_operations net_ns_type_operations = {
 };
 EXPORT_SYMBOL_GPL(net_ns_type_operations);
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
 static int netdev_uevent(struct device *d, struct kobj_uevent_env *env)
 {
 	struct net_device *dev = to_net_dev(d);
@@ -1227,7 +1981,10 @@ static int netdev_uevent(struct device *d, struct kobj_uevent_env *env)
 exit:
 	return retval;
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	netdev_release -- destroy and free a dead device.
@@ -1240,7 +1997,11 @@ static void netdev_release(struct device *d)
 	BUG_ON(dev->reg_state != NETREG_RELEASED);
 
 	kfree(dev->ifalias);
+<<<<<<< HEAD
 	kfree((char *)dev - dev->padded);
+=======
+	netdev_freemem(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const void *net_namespace(struct device *d)
@@ -1253,12 +2014,17 @@ static const void *net_namespace(struct device *d)
 static struct class net_class = {
 	.name = "net",
 	.dev_release = netdev_release,
+<<<<<<< HEAD
 #ifdef CONFIG_SYSFS
 	.dev_attrs = net_class_attributes,
 #endif /* CONFIG_SYSFS */
 #ifdef CONFIG_HOTPLUG
 	.dev_uevent = netdev_uevent,
 #endif
+=======
+	.dev_groups = net_class_groups,
+	.dev_uevent = netdev_uevent,
+>>>>>>> refs/remotes/origin/master
 	.ns_type = &net_ns_type_operations,
 	.namespace = net_namespace,
 };
@@ -1274,6 +2040,11 @@ void netdev_unregister_kobject(struct net_device * net)
 
 	remove_queue_kobjects(net);
 
+<<<<<<< HEAD
+=======
+	pm_runtime_set_memalloc_noio(dev, false);
+
+>>>>>>> refs/remotes/origin/master
 	device_del(dev);
 }
 
@@ -1297,10 +2068,18 @@ int netdev_register_kobject(struct net_device *net)
 		groups++;
 
 	*groups++ = &netstat_group;
+<<<<<<< HEAD
 #ifdef CONFIG_WIRELESS_EXT_SYSFS
 	if (net->ieee80211_ptr)
 		*groups++ = &wireless_group;
 #ifdef CONFIG_WIRELESS_EXT
+=======
+
+#if IS_ENABLED(CONFIG_WIRELESS_EXT) || IS_ENABLED(CONFIG_CFG80211)
+	if (net->ieee80211_ptr)
+		*groups++ = &wireless_group;
+#if IS_ENABLED(CONFIG_WIRELESS_EXT)
+>>>>>>> refs/remotes/origin/master
 	else if (net->wireless_handlers)
 		*groups++ = &wireless_group;
 #endif
@@ -1317,6 +2096,7 @@ int netdev_register_kobject(struct net_device *net)
 		return error;
 	}
 
+<<<<<<< HEAD
 	return error;
 }
 
@@ -1331,6 +2111,26 @@ void netdev_class_remove_file(struct class_attribute *class_attr)
 	class_remove_file(&net_class, class_attr);
 }
 EXPORT_SYMBOL(netdev_class_remove_file);
+=======
+	pm_runtime_set_memalloc_noio(dev, true);
+
+	return error;
+}
+
+int netdev_class_create_file_ns(struct class_attribute *class_attr,
+				const void *ns)
+{
+	return class_create_file_ns(&net_class, class_attr, ns);
+}
+EXPORT_SYMBOL(netdev_class_create_file_ns);
+
+void netdev_class_remove_file_ns(struct class_attribute *class_attr,
+				 const void *ns)
+{
+	class_remove_file_ns(&net_class, class_attr, ns);
+}
+EXPORT_SYMBOL(netdev_class_remove_file_ns);
+>>>>>>> refs/remotes/origin/master
 
 int netdev_kobject_init(void)
 {

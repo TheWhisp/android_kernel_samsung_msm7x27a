@@ -21,9 +21,17 @@ struct pagevec {
 };
 
 void __pagevec_release(struct pagevec *pvec);
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __pagevec_free(struct pagevec *pvec);
 void ____pagevec_lru_add(struct pagevec *pvec, enum lru_list lru);
 void pagevec_strip(struct pagevec *pvec);
+=======
+void __pagevec_lru_add(struct pagevec *pvec, enum lru_list lru);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __pagevec_lru_add(struct pagevec *pvec);
+>>>>>>> refs/remotes/origin/master
 unsigned pagevec_lookup(struct pagevec *pvec, struct address_space *mapping,
 		pgoff_t start, unsigned nr_pages);
 unsigned pagevec_lookup_tag(struct pagevec *pvec,
@@ -60,13 +68,21 @@ static inline unsigned pagevec_add(struct pagevec *pvec, struct page *page)
 	return pagevec_space(pvec);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void pagevec_release(struct pagevec *pvec)
 {
 	if (pagevec_count(pvec))
 		__pagevec_release(pvec);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void pagevec_free(struct pagevec *pvec)
 {
 	if (pagevec_count(pvec))
@@ -76,21 +92,38 @@ static inline void pagevec_free(struct pagevec *pvec)
 static inline void __pagevec_lru_add_anon(struct pagevec *pvec)
 {
 	____pagevec_lru_add(pvec, LRU_INACTIVE_ANON);
+=======
+static inline void __pagevec_lru_add_anon(struct pagevec *pvec)
+{
+	__pagevec_lru_add(pvec, LRU_INACTIVE_ANON);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void __pagevec_lru_add_active_anon(struct pagevec *pvec)
 {
+<<<<<<< HEAD
 	____pagevec_lru_add(pvec, LRU_ACTIVE_ANON);
+=======
+	__pagevec_lru_add(pvec, LRU_ACTIVE_ANON);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void __pagevec_lru_add_file(struct pagevec *pvec)
 {
+<<<<<<< HEAD
 	____pagevec_lru_add(pvec, LRU_INACTIVE_FILE);
+=======
+	__pagevec_lru_add(pvec, LRU_INACTIVE_FILE);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void __pagevec_lru_add_active_file(struct pagevec *pvec)
 {
+<<<<<<< HEAD
 	____pagevec_lru_add(pvec, LRU_ACTIVE_FILE);
+=======
+	__pagevec_lru_add(pvec, LRU_ACTIVE_FILE);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void pagevec_lru_add_file(struct pagevec *pvec)
@@ -105,4 +138,6 @@ static inline void pagevec_lru_add_anon(struct pagevec *pvec)
 		__pagevec_lru_add_anon(pvec);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_PAGEVEC_H */

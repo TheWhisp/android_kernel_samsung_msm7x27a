@@ -26,6 +26,7 @@
  *
  * Please send any bug reports or fixes you make to the
  * email address(es):
+<<<<<<< HEAD
  *    lksctp developers <lksctp-developers@lists.sourceforge.net>
  *
  * Or submit a bug report through the following website:
@@ -36,6 +37,12 @@
  *
  * Any bugs reported given to us we will try to fix... any fixes shared will
  * be incorporated into the next SCTP release.
+=======
+ *    lksctp developers <linux-sctp@vger.kernel.org>
+ *
+ * Written or modified by:
+ *    Jon Grimm             <jgrimm@us.ibm.com>
+>>>>>>> refs/remotes/origin/master
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
@@ -85,12 +92,22 @@ static sctp_dbg_objcnt_entry_t sctp_dbg_objcnt[] = {
  */
 static int sctp_objcnt_seq_show(struct seq_file *seq, void *v)
 {
+<<<<<<< HEAD
 	int i, len;
 
 	i = (int)*(loff_t *)v;
 	seq_printf(seq, "%s: %d%n", sctp_dbg_objcnt[i].label,
 				atomic_read(sctp_dbg_objcnt[i].counter), &len);
 	seq_printf(seq, "%*s\n", 127 - len, "");
+=======
+	int i;
+
+	i = (int)*(loff_t *)v;
+	seq_setwidth(seq, 127);
+	seq_printf(seq, "%s: %d", sctp_dbg_objcnt[i].label,
+				atomic_read(sctp_dbg_objcnt[i].counter));
+	seq_pad(seq, '\n');
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -129,20 +146,34 @@ static const struct file_operations sctp_objcnt_ops = {
 };
 
 /* Initialize the objcount in the proc filesystem.  */
+<<<<<<< HEAD
 void sctp_dbg_objcnt_init(void)
+=======
+void sctp_dbg_objcnt_init(struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 	struct proc_dir_entry *ent;
 
 	ent = proc_create("sctp_dbg_objcnt", 0,
+<<<<<<< HEAD
 			  proc_net_sctp, &sctp_objcnt_ops);
+=======
+			  net->sctp.proc_net_sctp, &sctp_objcnt_ops);
+>>>>>>> refs/remotes/origin/master
 	if (!ent)
 		pr_warn("sctp_dbg_objcnt: Unable to create /proc entry.\n");
 }
 
 /* Cleanup the objcount entry in the proc filesystem.  */
+<<<<<<< HEAD
 void sctp_dbg_objcnt_exit(void)
 {
 	remove_proc_entry("sctp_dbg_objcnt", proc_net_sctp);
+=======
+void sctp_dbg_objcnt_exit(struct net *net)
+{
+	remove_proc_entry("sctp_dbg_objcnt", net->sctp.proc_net_sctp);
+>>>>>>> refs/remotes/origin/master
 }
 
 

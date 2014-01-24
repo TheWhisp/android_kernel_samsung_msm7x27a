@@ -29,7 +29,10 @@
 #ifndef __POWER_H__
 #define __POWER_H__
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*---------------------  Export Definitions -------------------------*/
 #define     C_PWBT                   1000      // micro sec. power up before TBTT
 #define     PS_FAST_INTERVAL         1         // Fast power saving listen interval
@@ -39,10 +42,15 @@
 
 /*---------------------  Export Variables  --------------------------*/
 
+<<<<<<< HEAD
 
 /*---------------------  Export Types  ------------------------------*/
 
 
+=======
+/*---------------------  Export Types  ------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 /*---------------------  Export Functions  --------------------------*/
 
 // PSDevice pDevice
@@ -50,6 +58,7 @@
 
 bool
 PSbConsiderPowerDown(
+<<<<<<< HEAD
     void *hDeviceContext,
     bool bCheckRxDMA,
     bool bCheckCountToWakeUp
@@ -80,5 +89,37 @@ bool
 PSbIsNextTBTTWakeUp(
     void *hDeviceContext
     );
+=======
+	void *hDeviceContext,
+	bool bCheckRxDMA,
+	bool bCheckCountToWakeUp
+);
+
+void
+PSvDisablePowerSaving(
+	void *hDeviceContext
+);
+
+void
+PSvEnablePowerSaving(
+	void *hDeviceContext,
+	unsigned short wListenInterval
+);
+
+void
+PSvSendPSPOLL(
+	void *hDeviceContext
+);
+
+bool
+PSbSendNullPacket(
+	void *hDeviceContext
+);
+
+bool
+PSbIsNextTBTTWakeUp(
+	void *hDeviceContext
+);
+>>>>>>> refs/remotes/origin/master
 
 #endif //__POWER_H__

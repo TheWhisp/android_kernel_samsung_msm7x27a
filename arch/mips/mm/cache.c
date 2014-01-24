@@ -35,6 +35,20 @@ void (*local_flush_icache_range)(unsigned long start, unsigned long end);
 void (*__flush_cache_vmap)(void);
 void (*__flush_cache_vunmap)(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void (*__flush_kernel_vmap_range)(unsigned long vaddr, int size);
+void (*__invalidate_kernel_vmap_range)(unsigned long vaddr, int size);
+
+EXPORT_SYMBOL_GPL(__flush_kernel_vmap_range);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* MIPS specific cache operations */
 void (*flush_cache_sigtramp)(unsigned long addr);
 void (*local_flush_data_cache_page)(void * addr);
@@ -43,6 +57,10 @@ void (*flush_icache_all)(void);
 
 EXPORT_SYMBOL_GPL(local_flush_data_cache_page);
 EXPORT_SYMBOL(flush_data_cache_page);
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(flush_icache_all);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DMA_NONCOHERENT
 
@@ -137,7 +155,11 @@ EXPORT_SYMBOL(_page_cachable_default);
 
 static inline void setup_protection_map(void)
 {
+<<<<<<< HEAD
 	if (kernel_uses_smartmips_rixi) {
+=======
+	if (cpu_has_rixi) {
+>>>>>>> refs/remotes/origin/master
 		protection_map[0]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
 		protection_map[1]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC);
 		protection_map[2]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
@@ -176,7 +198,11 @@ static inline void setup_protection_map(void)
 	}
 }
 
+<<<<<<< HEAD
 void __cpuinit cpu_cache_init(void)
+=======
+void cpu_cache_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (cpu_has_3k_cache) {
 		extern void __weak r3k_cache_init(void);

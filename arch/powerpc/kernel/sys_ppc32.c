@@ -50,6 +50,14 @@
 #include <asm/mmu_context.h>
 #include <asm/ppc-pci.h>
 #include <asm/syscalls.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 
 
 asmlinkage long ppc32_select(u32 n, compat_ulong_t __user *inp,
@@ -60,6 +68,7 @@ asmlinkage long ppc32_select(u32 n, compat_ulong_t __user *inp,
 	return compat_sys_select((int)n, inp, outp, exp, compat_ptr(tvp_x));
 }
 
+<<<<<<< HEAD
 /* Note: it is necessary to treat option as an unsigned int,
  * with the corresponding cast to a signed int to insure that the 
  * proper conversion (sign extension) between the register representation of a signed int (msr in 32-bit mode)
@@ -520,6 +529,8 @@ asmlinkage long compat_sys_umask(u32 mask)
 	return sys_umask((int)mask);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long compat_sys_mmap2(unsigned long addr, size_t len,
 			  unsigned long prot, unsigned long flags,
 			  unsigned long fd, unsigned long pgoff)
@@ -528,12 +539,15 @@ unsigned long compat_sys_mmap2(unsigned long addr, size_t len,
 	return sys_mmap(addr, len, prot, flags, fd, pgoff << 12);
 }
 
+<<<<<<< HEAD
 long compat_sys_tgkill(u32 tgid, u32 pid, int sig)
 {
 	/* sign extend tgid, pid */
 	return sys_tgkill((int)tgid, (int)pid, sig);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* 
  * long long munging:
  * The 32 bit ABI passes long longs in an odd even register pair.
@@ -575,6 +589,7 @@ asmlinkage int compat_sys_ftruncate64(unsigned int fd, u32 reg4, unsigned long h
 	return sys_ftruncate(fd, (high << 32) | low);
 }
 
+<<<<<<< HEAD
 long ppc32_lookup_dcookie(u32 cookie_high, u32 cookie_low, char __user *buf,
 			  size_t len)
 {
@@ -582,6 +597,8 @@ long ppc32_lookup_dcookie(u32 cookie_high, u32 cookie_low, char __user *buf,
 				  buf, len);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 long ppc32_fadvise64(int fd, u32 unused, u32 offset_high, u32 offset_low,
 		     size_t len, int advice)
 {
@@ -589,6 +606,7 @@ long ppc32_fadvise64(int fd, u32 unused, u32 offset_high, u32 offset_low,
 			     advice);
 }
 
+<<<<<<< HEAD
 asmlinkage long compat_sys_add_key(const char __user *_type,
 			      const char __user *_description,
 			      const void __user *_payload,
@@ -606,6 +624,8 @@ asmlinkage long compat_sys_request_key(const char __user *_type,
 	return sys_request_key(_type, _description, _callout_info, destringid);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage long compat_sys_sync_file_range2(int fd, unsigned int flags,
 				   unsigned offset_hi, unsigned offset_lo,
 				   unsigned nbytes_hi, unsigned nbytes_lo)
@@ -615,6 +635,7 @@ asmlinkage long compat_sys_sync_file_range2(int fd, unsigned int flags,
 
 	return sys_sync_file_range(fd, offset, nbytes, flags);
 }
+<<<<<<< HEAD
 
 asmlinkage long compat_sys_fanotify_mark(int fanotify_fd, unsigned int flags,
 					 unsigned mask_hi, unsigned mask_lo,
@@ -623,3 +644,5 @@ asmlinkage long compat_sys_fanotify_mark(int fanotify_fd, unsigned int flags,
 	u64 mask = ((u64)mask_hi << 32) | mask_lo;
 	return sys_fanotify_mark(fanotify_fd, flags, mask, dfd, pathname);
 }
+=======
+>>>>>>> refs/remotes/origin/master

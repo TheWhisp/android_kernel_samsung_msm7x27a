@@ -6,7 +6,15 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <sound/core.h>
 #include <sound/initval.h>
@@ -25,8 +33,18 @@ MODULE_ALIAS("platform:pcspkr");
 
 static int index = SNDRV_DEFAULT_IDX1;	/* Index 0-MAX */
 static char *id = SNDRV_DEFAULT_STR1;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable = SNDRV_DEFAULT_ENABLE1;	/* Enable this card */
 static int nopcm;	/* Disable PCM capability of the driver */
+=======
+static bool enable = SNDRV_DEFAULT_ENABLE1;	/* Enable this card */
+static bool nopcm;	/* Disable PCM capability of the driver */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable = SNDRV_DEFAULT_ENABLE1;	/* Enable this card */
+static bool nopcm;	/* Disable PCM capability of the driver */
+>>>>>>> refs/remotes/origin/master
 
 module_param(index, int, 0444);
 MODULE_PARM_DESC(index, "Index value for pcsp soundcard.");
@@ -39,15 +57,25 @@ MODULE_PARM_DESC(nopcm, "Disable PC-Speaker PCM sound. Only beeps remain.");
 
 struct snd_pcsp pcsp_chip;
 
+<<<<<<< HEAD
 static int __devinit snd_pcsp_create(struct snd_card *card)
+=======
+static int snd_pcsp_create(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	static struct snd_device_ops ops = { };
 	struct timespec tp;
 	int err;
 	int div, min_div, order;
 
+<<<<<<< HEAD
 	if (!nopcm) {
 		hrtimer_get_res(CLOCK_MONOTONIC, &tp);
+=======
+	hrtimer_get_res(CLOCK_MONOTONIC, &tp);
+
+	if (!nopcm) {
+>>>>>>> refs/remotes/origin/master
 		if (tp.tv_sec || tp.tv_nsec > PCSP_MAX_PERIOD_NS) {
 			printk(KERN_ERR "PCSP: Timer resolution is not sufficient "
 				"(%linS)\n", tp.tv_nsec);
@@ -93,7 +121,11 @@ static int __devinit snd_pcsp_create(struct snd_card *card)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_card_pcsp_probe(int devnum, struct device *dev)
+=======
+static int snd_card_pcsp_probe(int devnum, struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	int err;
@@ -142,7 +174,11 @@ static int __devinit snd_card_pcsp_probe(int devnum, struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit alsa_card_pcsp_init(struct device *dev)
+=======
+static int alsa_card_pcsp_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -161,12 +197,20 @@ static int __devinit alsa_card_pcsp_init(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit alsa_card_pcsp_exit(struct snd_pcsp *chip)
+=======
+static void alsa_card_pcsp_exit(struct snd_pcsp *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_card_free(chip->card);
 }
 
+<<<<<<< HEAD
 static int __devinit pcsp_probe(struct platform_device *dev)
+=======
+static int pcsp_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -184,12 +228,20 @@ static int __devinit pcsp_probe(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit pcsp_remove(struct platform_device *dev)
 {
 	struct snd_pcsp *chip = platform_get_drvdata(dev);
 	alsa_card_pcsp_exit(chip);
 	pcspkr_input_remove(chip->input_dev);
 	platform_set_drvdata(dev, NULL);
+=======
+static int pcsp_remove(struct platform_device *dev)
+{
+	struct snd_pcsp *chip = platform_get_drvdata(dev);
+	pcspkr_input_remove(chip->input_dev);
+	alsa_card_pcsp_exit(chip);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -199,17 +251,33 @@ static void pcsp_stop_beep(struct snd_pcsp *chip)
 	pcspkr_stop_sound();
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int pcsp_suspend(struct platform_device *dev, pm_message_t state)
 {
 	struct snd_pcsp *chip = platform_get_drvdata(dev);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int pcsp_suspend(struct device *dev)
+{
+	struct snd_pcsp *chip = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	pcsp_stop_beep(chip);
 	snd_pcm_suspend_all(chip->pcm);
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define pcsp_suspend NULL
 #endif	/* CONFIG_PM */
+=======
+
+static SIMPLE_DEV_PM_OPS(pcsp_pm, pcsp_suspend, NULL);
+#define PCSP_PM_OPS	&pcsp_pm
+#else
+#define PCSP_PM_OPS	NULL
+#endif	/* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 static void pcsp_shutdown(struct platform_device *dev)
 {
@@ -221,10 +289,17 @@ static struct platform_driver pcsp_platform_driver = {
 	.driver		= {
 		.name	= "pcspkr",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= pcsp_probe,
 	.remove		= __devexit_p(pcsp_remove),
 	.suspend	= pcsp_suspend,
+=======
+		.pm	= PCSP_PM_OPS,
+	},
+	.probe		= pcsp_probe,
+	.remove		= pcsp_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= pcsp_shutdown,
 };
 

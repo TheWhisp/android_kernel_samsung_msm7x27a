@@ -30,10 +30,16 @@
 #ifndef __LINUX_RCUTREE_H
 #define __LINUX_RCUTREE_H
 
+<<<<<<< HEAD
 extern void rcu_init(void);
 extern void rcu_note_context_switch(int cpu);
 extern int rcu_needs_cpu(int cpu);
 extern void rcu_cpu_stall_reset(void);
+=======
+void rcu_note_context_switch(int cpu);
+int rcu_needs_cpu(int cpu, unsigned long *delta_jiffies);
+void rcu_cpu_stall_reset(void);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Note a virtualization-based context switch.  This is simply a
@@ -45,6 +51,7 @@ static inline void rcu_virt_note_context_switch(int cpu)
 	rcu_note_context_switch(cpu);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_TREE_PREEMPT_RCU
 
 extern void exit_rcu(void);
@@ -61,12 +68,48 @@ extern void synchronize_rcu_bh(void);
 extern void synchronize_sched_expedited(void);
 extern void synchronize_rcu_expedited(void);
 
+<<<<<<< HEAD
+=======
+=======
+void synchronize_rcu_bh(void);
+void synchronize_sched_expedited(void);
+void synchronize_rcu_expedited(void);
+
+>>>>>>> refs/remotes/origin/master
+void kfree_call_rcu(struct rcu_head *head, void (*func)(struct rcu_head *rcu));
+
+/**
+ * synchronize_rcu_bh_expedited - Brute-force RCU-bh grace period
+ *
+ * Wait for an RCU-bh grace period to elapse, but use a "big hammer"
+ * approach to force the grace period to end quickly.  This consumes
+ * significant time on all CPUs and is unfriendly to real-time workloads,
+ * so is thus not recommended for any sort of common-case code.  In fact,
+ * if you are using synchronize_rcu_bh_expedited() in a loop, please
+ * restructure your code to batch your updates, and then use a single
+ * synchronize_rcu_bh() instead.
+ *
+ * Note that it is illegal to call this function while holding any lock
+ * that is acquired by a CPU-hotplug notifier.  And yes, it is also illegal
+ * to call this function from a CPU-hotplug notifier.  Failing to observe
+ * these restriction will result in deadlock.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void synchronize_rcu_bh_expedited(void)
 {
 	synchronize_sched_expedited();
 }
 
+<<<<<<< HEAD
 extern void rcu_barrier(void);
+<<<<<<< HEAD
+=======
+extern void rcu_barrier_bh(void);
+extern void rcu_barrier_sched(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern unsigned long rcutorture_testseq;
 extern unsigned long rcutorture_vernum;
@@ -81,10 +124,37 @@ extern void rcu_sched_force_quiescent_state(void);
 /* A context switch is a grace period for RCU-sched and RCU-bh. */
 static inline int rcu_blocking_is_gp(void)
 {
+<<<<<<< HEAD
+=======
+	might_sleep();  /* Check for RCU read-side critical section. */
+>>>>>>> refs/remotes/origin/cm-10.0
 	return num_online_cpus() == 1;
 }
 
 extern void rcu_scheduler_starting(void);
 extern int rcu_scheduler_active __read_mostly;
 
+=======
+void rcu_barrier(void);
+void rcu_barrier_bh(void);
+void rcu_barrier_sched(void);
+
+extern unsigned long rcutorture_testseq;
+extern unsigned long rcutorture_vernum;
+long rcu_batches_completed(void);
+long rcu_batches_completed_bh(void);
+long rcu_batches_completed_sched(void);
+
+void rcu_force_quiescent_state(void);
+void rcu_bh_force_quiescent_state(void);
+void rcu_sched_force_quiescent_state(void);
+
+void exit_rcu(void);
+
+void rcu_scheduler_starting(void);
+extern int rcu_scheduler_active __read_mostly;
+
+bool rcu_is_watching(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_RCUTREE_H */

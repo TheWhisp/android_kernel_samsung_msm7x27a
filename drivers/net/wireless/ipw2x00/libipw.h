@@ -66,6 +66,8 @@ extern u32 libipw_debug_level;
 do { if (libipw_debug_level & (level)) \
   printk(KERN_DEBUG "libipw: %c %s " fmt, \
          in_interrupt() ? 'I' : 'U', __func__ , ## args); } while (0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline bool libipw_ratelimit_debug(u32 level)
 {
 	return (libipw_debug_level & level) && net_ratelimit();
@@ -76,6 +78,14 @@ static inline bool libipw_ratelimit_debug(u32 level)
 {
 	return false;
 }
+=======
+#else
+#define LIBIPW_DEBUG(level, fmt, args...) do {} while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else
+#define LIBIPW_DEBUG(level, fmt, args...) do {} while (0)
+>>>>>>> refs/remotes/origin/master
 #endif				/* CONFIG_LIBIPW_DEBUG */
 
 /*
@@ -592,6 +602,7 @@ struct libipw_tim_parameters {
 
 /*******************************************************/
 
+<<<<<<< HEAD
 enum {				/* libipw_basic_report.map */
 	LIBIPW_BASIC_MAP_BSS = (1 << 0),
 	LIBIPW_BASIC_MAP_OFDM = (1 << 1),
@@ -647,6 +658,8 @@ struct libipw_measurement_report {
 	} u;
 } __packed;
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct libipw_tpc_report {
 	u8 transmit_power;
 	u8 link_margin;
@@ -813,9 +826,15 @@ struct libipw_device {
 	/* WEP and other encryption related settings at the device level */
 	int open_wep;		/* Set to 1 to allow unencrypted frames */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int reset_on_keychange;	/* Set to 1 if the HW needs to be reset on
 				 * WEP key changes */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* If the host performs {en,de}cryption, then set to 1 */
 	int host_encrypt;
 	int host_encrypt_msdu;
@@ -868,7 +887,13 @@ struct libipw_device {
 			      struct libipw_security * sec);
 	netdev_tx_t (*hard_start_xmit) (struct libipw_txb * txb,
 					struct net_device * dev, int pri);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int (*reset_port) (struct net_device * dev);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int (*is_queue_full) (struct net_device * dev, int pri);
 
 	int (*handle_management) (struct net_device * dev,
@@ -1017,6 +1042,7 @@ static inline int libipw_is_cck_rate(u8 rate)
 }
 
 /* libipw.c */
+<<<<<<< HEAD
 extern void free_libipw(struct net_device *dev, int monitor);
 extern struct net_device *alloc_libipw(int sizeof_priv, int monitor);
 extern int libipw_change_mtu(struct net_device *dev, int new_mtu);
@@ -1077,6 +1103,57 @@ extern int libipw_wx_set_encodeext(struct libipw_device *ieee,
 extern int libipw_wx_get_encodeext(struct libipw_device *ieee,
 				      struct iw_request_info *info,
 				      union iwreq_data *wrqu, char *extra);
+=======
+void free_libipw(struct net_device *dev, int monitor);
+struct net_device *alloc_libipw(int sizeof_priv, int monitor);
+int libipw_change_mtu(struct net_device *dev, int new_mtu);
+
+void libipw_networks_age(struct libipw_device *ieee, unsigned long age_secs);
+
+int libipw_set_encryption(struct libipw_device *ieee);
+
+/* libipw_tx.c */
+netdev_tx_t libipw_xmit(struct sk_buff *skb, struct net_device *dev);
+void libipw_txb_free(struct libipw_txb *);
+
+/* libipw_rx.c */
+void libipw_rx_any(struct libipw_device *ieee, struct sk_buff *skb,
+		   struct libipw_rx_stats *stats);
+int libipw_rx(struct libipw_device *ieee, struct sk_buff *skb,
+	      struct libipw_rx_stats *rx_stats);
+/* make sure to set stats->len */
+void libipw_rx_mgt(struct libipw_device *ieee, struct libipw_hdr_4addr *header,
+		   struct libipw_rx_stats *stats);
+void libipw_network_reset(struct libipw_network *network);
+
+/* libipw_geo.c */
+const struct libipw_geo *libipw_get_geo(struct libipw_device *ieee);
+void libipw_set_geo(struct libipw_device *ieee, const struct libipw_geo *geo);
+
+int libipw_is_valid_channel(struct libipw_device *ieee, u8 channel);
+int libipw_channel_to_index(struct libipw_device *ieee, u8 channel);
+u8 libipw_freq_to_channel(struct libipw_device *ieee, u32 freq);
+u8 libipw_get_channel_flags(struct libipw_device *ieee, u8 channel);
+const struct libipw_channel *libipw_get_channel(struct libipw_device *ieee,
+						u8 channel);
+u32 libipw_channel_to_freq(struct libipw_device *ieee, u8 channel);
+
+/* libipw_wx.c */
+int libipw_wx_get_scan(struct libipw_device *ieee, struct iw_request_info *info,
+		       union iwreq_data *wrqu, char *key);
+int libipw_wx_set_encode(struct libipw_device *ieee,
+			 struct iw_request_info *info, union iwreq_data *wrqu,
+			 char *key);
+int libipw_wx_get_encode(struct libipw_device *ieee,
+			 struct iw_request_info *info, union iwreq_data *wrqu,
+			 char *key);
+int libipw_wx_set_encodeext(struct libipw_device *ieee,
+			    struct iw_request_info *info,
+			    union iwreq_data *wrqu, char *extra);
+int libipw_wx_get_encodeext(struct libipw_device *ieee,
+			    struct iw_request_info *info,
+			    union iwreq_data *wrqu, char *extra);
+>>>>>>> refs/remotes/origin/master
 
 static inline void libipw_increment_scans(struct libipw_device *ieee)
 {

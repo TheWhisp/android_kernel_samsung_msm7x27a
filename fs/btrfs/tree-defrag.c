@@ -23,27 +23,43 @@
 #include "transaction.h"
 #include "locking.h"
 
+<<<<<<< HEAD
 /* defrag all the leaves in a given btree.  If cache_only == 1, don't read
  * things from disk, otherwise read all the leaves and try to get key order to
+=======
+/*
+ * Defrag all the leaves in a given btree.
+ * Read all the leaves and try to get key order to
+>>>>>>> refs/remotes/origin/master
  * better reflect disk order
  */
 
 int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
+<<<<<<< HEAD
 			struct btrfs_root *root, int cache_only)
+=======
+			struct btrfs_root *root)
+>>>>>>> refs/remotes/origin/master
 {
 	struct btrfs_path *path = NULL;
 	struct btrfs_key key;
 	int ret = 0;
 	int wret;
 	int level;
+<<<<<<< HEAD
 	int is_extent = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	int next_key_ret = 0;
 	u64 last_ret = 0;
 	u64 min_trans = 0;
 
+<<<<<<< HEAD
 	if (cache_only)
 		goto out;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (root->fs_info->extent_root == root) {
 		/*
 		 * there's recursion here right now in the tree locking,
@@ -52,7 +68,11 @@ int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (root->ref_cows == 0 && !is_extent)
+=======
+	if (root->ref_cows == 0)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	if (btrfs_test_opt(root, SSD))
@@ -86,11 +106,16 @@ int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
 	}
 
 	path->keep_locks = 1;
+<<<<<<< HEAD
 	if (cache_only)
 		min_trans = root->defrag_trans_start;
 
 	ret = btrfs_search_forward(root, &key, NULL, path,
 				   cache_only, min_trans);
+=======
+
+	ret = btrfs_search_forward(root, &key, path, min_trans);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto out;
 	if (ret > 0) {
@@ -109,11 +134,19 @@ int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
 		goto out;
 	}
 	path->slots[1] = btrfs_header_nritems(path->nodes[1]);
+<<<<<<< HEAD
 	next_key_ret = btrfs_find_next_key(root, path, &key, 1, cache_only,
 					   min_trans);
 	ret = btrfs_realloc_node(trans, root,
 				 path->nodes[1], 0,
 				 cache_only, &last_ret,
+=======
+	next_key_ret = btrfs_find_next_key(root, path, &key, 1,
+					   min_trans);
+	ret = btrfs_realloc_node(trans, root,
+				 path->nodes[1], 0,
+				 &last_ret,
+>>>>>>> refs/remotes/origin/master
 				 &root->defrag_progress);
 	if (ret) {
 		WARN_ON(ret == -EAGAIN);

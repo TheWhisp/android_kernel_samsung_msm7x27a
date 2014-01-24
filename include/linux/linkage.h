@@ -2,6 +2,11 @@
 #define _LINUX_LINKAGE_H
 
 #include <linux/compiler.h>
+<<<<<<< HEAD
+=======
+#include <linux/stringify.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/linkage.h>
 
 #ifdef __cplusplus
@@ -14,6 +19,23 @@
 #define asmlinkage CPP_ASMLINKAGE
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef cond_syscall
+#define cond_syscall(x)	asm(				\
+	".weak " VMLINUX_SYMBOL_STR(x) "\n\t"		\
+	".set  " VMLINUX_SYMBOL_STR(x) ","		\
+		 VMLINUX_SYMBOL_STR(sys_ni_syscall))
+#endif
+
+#ifndef SYSCALL_ALIAS
+#define SYSCALL_ALIAS(alias, name) asm(			\
+	".globl " VMLINUX_SYMBOL_STR(alias) "\n\t"	\
+	".set   " VMLINUX_SYMBOL_STR(alias) ","		\
+		  VMLINUX_SYMBOL_STR(name))
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #define __page_aligned_data	__section(.data..page_aligned) __aligned(PAGE_SIZE)
 #define __page_aligned_bss	__section(.bss..page_aligned) __aligned(PAGE_SIZE)
 
@@ -88,8 +110,14 @@
 
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define NORET_TYPE    /**/
 #define ATTRIB_NORET  __attribute__((noreturn))
 #define NORET_AND     noreturn,
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

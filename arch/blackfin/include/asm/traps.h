@@ -125,5 +125,10 @@
 	level "   for Supervisor use: Supervisor only registers, all MMRs, and Supervisor\n" \
 	level "   only instructions.\n"
 
+<<<<<<< HEAD
+=======
+extern void double_fault_c(struct pt_regs *fp);
+
+>>>>>>> refs/remotes/origin/master
 #endif				/* __ASSEMBLY__ */
 #endif				/* _BFIN_TRAPS_H */

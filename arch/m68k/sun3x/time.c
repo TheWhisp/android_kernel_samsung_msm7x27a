@@ -15,7 +15,13 @@
 
 #include <asm/irq.h>
 #include <asm/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/traps.h>
 #include <asm/sun3x.h>
 #include <asm/sun3ints.h>
@@ -72,7 +78,11 @@ int sun3x_hwclk(int set, struct rtc_time *t)
 	return 0;
 }
 /* Not much we can do here */
+<<<<<<< HEAD
 unsigned long sun3x_gettimeoffset (void)
+=======
+u32 sun3x_gettimeoffset(void)
+>>>>>>> refs/remotes/origin/master
 {
     return 0L;
 }

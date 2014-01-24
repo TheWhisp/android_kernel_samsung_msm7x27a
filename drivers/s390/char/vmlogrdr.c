@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  * drivers/s390/char/vmlogrdr.c
+=======
+>>>>>>> refs/remotes/origin/master
  *	character device driver for reading z/VM system service records
  *
  *
@@ -21,7 +24,15 @@
 #include <linux/types.h>
 #include <linux/interrupt.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/cpcmd.h>
 #include <asm/debug.h>
@@ -314,7 +325,11 @@ static int vmlogrdr_open (struct inode *inode, struct file *filp)
 	int ret;
 
 	dev_num = iminor(inode);
+<<<<<<< HEAD
 	if (dev_num > MAXMINOR)
+=======
+	if (dev_num >= MAXMINOR)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	logptr = &sys_ser[dev_num];
 
@@ -322,7 +337,11 @@ static int vmlogrdr_open (struct inode *inode, struct file *filp)
 	 * only allow for blocking reads to be open
 	 */
 	if (filp->f_flags & O_NONBLOCK)
+<<<<<<< HEAD
 		return -ENOSYS;
+=======
+		return -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 
 	/* Besure this device hasn't already been opened */
 	spin_lock_bh(&logptr->priv_lock);
@@ -656,10 +675,26 @@ static ssize_t vmlogrdr_recording_status_show(struct device_driver *driver,
 	len = strlen(buf);
 	return len;
 }
+<<<<<<< HEAD
 
 
 static DRIVER_ATTR(recording_status, 0444, vmlogrdr_recording_status_show,
 		   NULL);
+=======
+static DRIVER_ATTR(recording_status, 0444, vmlogrdr_recording_status_show,
+		   NULL);
+static struct attribute *vmlogrdr_drv_attrs[] = {
+	&driver_attr_recording_status.attr,
+	NULL,
+};
+static struct attribute_group vmlogrdr_drv_attr_group = {
+	.attrs = vmlogrdr_drv_attrs,
+};
+static const struct attribute_group *vmlogrdr_drv_attr_groups[] = {
+	&vmlogrdr_drv_attr_group,
+	NULL,
+};
+>>>>>>> refs/remotes/origin/master
 
 static struct attribute *vmlogrdr_attrs[] = {
 	&dev_attr_autopurge.attr,
@@ -668,6 +703,16 @@ static struct attribute *vmlogrdr_attrs[] = {
 	&dev_attr_recording.attr,
 	NULL,
 };
+<<<<<<< HEAD
+=======
+static struct attribute_group vmlogrdr_attr_group = {
+	.attrs = vmlogrdr_attrs,
+};
+static const struct attribute_group *vmlogrdr_attr_groups[] = {
+	&vmlogrdr_attr_group,
+	NULL,
+};
+>>>>>>> refs/remotes/origin/master
 
 static int vmlogrdr_pm_prepare(struct device *dev)
 {
@@ -692,18 +737,27 @@ static const struct dev_pm_ops vmlogrdr_pm_ops = {
 	.prepare = vmlogrdr_pm_prepare,
 };
 
+<<<<<<< HEAD
 static struct attribute_group vmlogrdr_attr_group = {
 	.attrs = vmlogrdr_attrs,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct class *vmlogrdr_class;
 static struct device_driver vmlogrdr_driver = {
 	.name = "vmlogrdr",
 	.bus  = &iucv_bus,
 	.pm = &vmlogrdr_pm_ops,
+<<<<<<< HEAD
 };
 
 
+=======
+	.groups = vmlogrdr_drv_attr_groups,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int vmlogrdr_register_driver(void)
 {
 	int ret;
@@ -717,21 +771,31 @@ static int vmlogrdr_register_driver(void)
 	if (ret)
 		goto out_iucv;
 
+<<<<<<< HEAD
 	ret = driver_create_file(&vmlogrdr_driver,
 				 &driver_attr_recording_status);
 	if (ret)
 		goto out_driver;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	vmlogrdr_class = class_create(THIS_MODULE, "vmlogrdr");
 	if (IS_ERR(vmlogrdr_class)) {
 		ret = PTR_ERR(vmlogrdr_class);
 		vmlogrdr_class = NULL;
+<<<<<<< HEAD
 		goto out_attr;
 	}
 	return 0;
 
 out_attr:
 	driver_remove_file(&vmlogrdr_driver, &driver_attr_recording_status);
+=======
+		goto out_driver;
+	}
+	return 0;
+
+>>>>>>> refs/remotes/origin/master
 out_driver:
 	driver_unregister(&vmlogrdr_driver);
 out_iucv:
@@ -745,7 +809,10 @@ static void vmlogrdr_unregister_driver(void)
 {
 	class_destroy(vmlogrdr_class);
 	vmlogrdr_class = NULL;
+<<<<<<< HEAD
 	driver_remove_file(&vmlogrdr_driver, &driver_attr_recording_status);
+=======
+>>>>>>> refs/remotes/origin/master
 	driver_unregister(&vmlogrdr_driver);
 	iucv_unregister(&vmlogrdr_iucv_handler, 1);
 }
@@ -762,6 +829,10 @@ static int vmlogrdr_register_device(struct vmlogrdr_priv_t *priv)
 		dev->bus = &iucv_bus;
 		dev->parent = iucv_root;
 		dev->driver = &vmlogrdr_driver;
+<<<<<<< HEAD
+=======
+		dev->groups = vmlogrdr_attr_groups;
+>>>>>>> refs/remotes/origin/master
 		dev_set_drvdata(dev, priv);
 		/*
 		 * The release function could be called after the
@@ -779,11 +850,14 @@ static int vmlogrdr_register_device(struct vmlogrdr_priv_t *priv)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	ret = sysfs_create_group(&dev->kobj, &vmlogrdr_attr_group);
 	if (ret) {
 		device_unregister(dev);
 		return ret;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->class_device = device_create(vmlogrdr_class, dev,
 					   MKDEV(vmlogrdr_major,
 						 priv->minor_num),
@@ -791,7 +865,10 @@ static int vmlogrdr_register_device(struct vmlogrdr_priv_t *priv)
 	if (IS_ERR(priv->class_device)) {
 		ret = PTR_ERR(priv->class_device);
 		priv->class_device=NULL;
+<<<<<<< HEAD
 		sysfs_remove_group(&dev->kobj, &vmlogrdr_attr_group);
+=======
+>>>>>>> refs/remotes/origin/master
 		device_unregister(dev);
 		return ret;
 	}
@@ -804,7 +881,10 @@ static int vmlogrdr_unregister_device(struct vmlogrdr_priv_t *priv)
 {
 	device_destroy(vmlogrdr_class, MKDEV(vmlogrdr_major, priv->minor_num));
 	if (priv->device != NULL) {
+<<<<<<< HEAD
 		sysfs_remove_group(&priv->device->kobj, &vmlogrdr_attr_group);
+=======
+>>>>>>> refs/remotes/origin/master
 		device_unregister(priv->device);
 		priv->device=NULL;
 	}

@@ -30,6 +30,14 @@
 #include <linux/platform_device.h>
 #include <linux/io.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/ip32/ip32_ints.h>
 #include <asm/ip32/mace.h>
@@ -236,7 +244,11 @@ static int sgio2audio_source_put(struct snd_kcontrol *kcontrol,
 }
 
 /* dac1/pcm0 mixer control */
+<<<<<<< HEAD
 static struct snd_kcontrol_new sgio2audio_ctrl_pcm0 __devinitdata = {
+=======
+static struct snd_kcontrol_new sgio2audio_ctrl_pcm0 = {
+>>>>>>> refs/remotes/origin/master
 	.iface          = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name           = "PCM Playback Volume",
 	.index          = 0,
@@ -248,7 +260,11 @@ static struct snd_kcontrol_new sgio2audio_ctrl_pcm0 __devinitdata = {
 };
 
 /* dac2/pcm1 mixer control */
+<<<<<<< HEAD
 static struct snd_kcontrol_new sgio2audio_ctrl_pcm1 __devinitdata = {
+=======
+static struct snd_kcontrol_new sgio2audio_ctrl_pcm1 = {
+>>>>>>> refs/remotes/origin/master
 	.iface          = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name           = "PCM Playback Volume",
 	.index          = 1,
@@ -260,7 +276,11 @@ static struct snd_kcontrol_new sgio2audio_ctrl_pcm1 __devinitdata = {
 };
 
 /* record level mixer control */
+<<<<<<< HEAD
 static struct snd_kcontrol_new sgio2audio_ctrl_reclevel __devinitdata = {
+=======
+static struct snd_kcontrol_new sgio2audio_ctrl_reclevel = {
+>>>>>>> refs/remotes/origin/master
 	.iface          = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name           = "Capture Volume",
 	.access         = SNDRV_CTL_ELEM_ACCESS_READWRITE,
@@ -271,7 +291,11 @@ static struct snd_kcontrol_new sgio2audio_ctrl_reclevel __devinitdata = {
 };
 
 /* record level source control */
+<<<<<<< HEAD
 static struct snd_kcontrol_new sgio2audio_ctrl_recsource __devinitdata = {
+=======
+static struct snd_kcontrol_new sgio2audio_ctrl_recsource = {
+>>>>>>> refs/remotes/origin/master
 	.iface          = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name           = "Capture Source",
 	.access         = SNDRV_CTL_ELEM_ACCESS_READWRITE,
@@ -281,7 +305,11 @@ static struct snd_kcontrol_new sgio2audio_ctrl_recsource __devinitdata = {
 };
 
 /* line mixer control */
+<<<<<<< HEAD
 static struct snd_kcontrol_new sgio2audio_ctrl_line __devinitdata = {
+=======
+static struct snd_kcontrol_new sgio2audio_ctrl_line = {
+>>>>>>> refs/remotes/origin/master
 	.iface          = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name           = "Line Playback Volume",
 	.index          = 0,
@@ -293,7 +321,11 @@ static struct snd_kcontrol_new sgio2audio_ctrl_line __devinitdata = {
 };
 
 /* cd mixer control */
+<<<<<<< HEAD
 static struct snd_kcontrol_new sgio2audio_ctrl_cd __devinitdata = {
+=======
+static struct snd_kcontrol_new sgio2audio_ctrl_cd = {
+>>>>>>> refs/remotes/origin/master
 	.iface          = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name           = "Line Playback Volume",
 	.index          = 1,
@@ -305,7 +337,11 @@ static struct snd_kcontrol_new sgio2audio_ctrl_cd __devinitdata = {
 };
 
 /* mic mixer control */
+<<<<<<< HEAD
 static struct snd_kcontrol_new sgio2audio_ctrl_mic __devinitdata = {
+=======
+static struct snd_kcontrol_new sgio2audio_ctrl_mic = {
+>>>>>>> refs/remotes/origin/master
 	.iface          = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name           = "Mic Playback Volume",
 	.access         = SNDRV_CTL_ELEM_ACCESS_READWRITE,
@@ -316,7 +352,11 @@ static struct snd_kcontrol_new sgio2audio_ctrl_mic __devinitdata = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit snd_sgio2audio_new_mixer(struct snd_sgio2audio *chip)
+=======
+static int snd_sgio2audio_new_mixer(struct snd_sgio2audio *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -725,7 +765,11 @@ static struct snd_pcm_ops snd_sgio2audio_capture_ops = {
  */
 
 /* create a pcm device */
+<<<<<<< HEAD
 static int __devinit snd_sgio2audio_new_pcm(struct snd_sgio2audio *chip)
+=======
+static int snd_sgio2audio_new_pcm(struct snd_sgio2audio *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -833,8 +877,13 @@ static struct snd_device_ops ops = {
 	.dev_free = snd_sgio2audio_dev_free,
 };
 
+<<<<<<< HEAD
 static int __devinit snd_sgio2audio_create(struct snd_card *card,
 					   struct snd_sgio2audio **rchip)
+=======
+static int snd_sgio2audio_create(struct snd_card *card,
+				 struct snd_sgio2audio **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_sgio2audio *chip;
 	int i, err;
@@ -913,7 +962,11 @@ static int __devinit snd_sgio2audio_create(struct snd_card *card,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_sgio2audio_probe(struct platform_device *pdev)
+=======
+static int snd_sgio2audio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct snd_sgio2audio *chip;
@@ -957,24 +1010,37 @@ static int __devinit snd_sgio2audio_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_sgio2audio_remove(struct platform_device *pdev)
+=======
+static int snd_sgio2audio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = platform_get_drvdata(pdev);
 
 	snd_card_free(card);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver sgio2audio_driver = {
 	.probe	= snd_sgio2audio_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(snd_sgio2audio_remove),
+=======
+	.remove	= snd_sgio2audio_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name	= "sgio2audio",
 		.owner	= THIS_MODULE,
 	}
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init alsa_card_sgio2audio_init(void)
 {
 	return platform_driver_register(&sgio2audio_driver);
@@ -987,3 +1053,9 @@ static void __exit alsa_card_sgio2audio_exit(void)
 
 module_init(alsa_card_sgio2audio_init)
 module_exit(alsa_card_sgio2audio_exit)
+=======
+module_platform_driver(sgio2audio_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(sgio2audio_driver);
+>>>>>>> refs/remotes/origin/master

@@ -17,8 +17,16 @@
 #include <linux/quotaops.h>
 #include <linux/slab.h>
 #include "ext4_jbd2.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "ext4_extents.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ext4.h"
+=======
+#include "ext4.h"
+#include "ext4_extents.h"
+>>>>>>> refs/remotes/origin/master
 
 /**
  * get_ext_path - Find an extent path for designated logical block number.
@@ -32,6 +40,7 @@
  */
 static inline int
 get_ext_path(struct inode *inode, ext4_lblk_t lblock,
+<<<<<<< HEAD
 		struct ext4_ext_path **path)
 {
 	int ret = 0;
@@ -42,6 +51,20 @@ get_ext_path(struct inode *inode, ext4_lblk_t lblock,
 		*path = NULL;
 	} else if ((*path)[ext_depth(inode)].p_ext == NULL)
 		ret = -ENODATA;
+=======
+		struct ext4_ext_path **orig_path)
+{
+	int ret = 0;
+	struct ext4_ext_path *path;
+
+	path = ext4_ext_find_extent(inode, lblock, *orig_path, EXT4_EX_NOCACHE);
+	if (IS_ERR(path))
+		ret = PTR_ERR(path);
+	else if (path[ext_depth(inode)].p_ext == NULL)
+		ret = -ENODATA;
+	else
+		*orig_path = path;
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -142,6 +165,9 @@ mext_next_extent(struct inode *inode, struct ext4_ext_path *path,
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
  * mext_check_null_inode - NULL check for two inodes
  *
  * If inode1 or inode2 is NULL, return -EIO. Otherwise, return 0.
@@ -167,41 +193,79 @@ mext_check_null_inode(struct inode *inode1, struct inode *inode2,
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * double_down_write_data_sem - Acquire two inodes' write lock of i_data_sem
  *
- * @orig_inode:		original inode structure
- * @donor_inode:	donor inode structure
- * Acquire write lock of i_data_sem of the two inodes (orig and donor) by
- * i_ino order.
+ * Acquire write lock of i_data_sem of the two inodes
  */
 static void
-double_down_write_data_sem(struct inode *orig_inode, struct inode *donor_inode)
+double_down_write_data_sem(struct inode *first, struct inode *second)
 {
-	struct inode *first = orig_inode, *second = donor_inode;
+	if (first < second) {
+		down_write(&EXT4_I(first)->i_data_sem);
+		down_write_nested(&EXT4_I(second)->i_data_sem, SINGLE_DEPTH_NESTING);
+	} else {
+		down_write(&EXT4_I(second)->i_data_sem);
+		down_write_nested(&EXT4_I(first)->i_data_sem, SINGLE_DEPTH_NESTING);
 
-	/*
-	 * Use the inode number to provide the stable locking order instead
-	 * of its address, because the C language doesn't guarantee you can
-	 * compare pointers that don't come from the same array.
-	 */
-	if (donor_inode->i_ino < orig_inode->i_ino) {
-		first = donor_inode;
-		second = orig_inode;
 	}
+<<<<<<< HEAD
 
 	down_write(&EXT4_I(first)->i_data_sem);
 	down_write_nested(&EXT4_I(second)->i_data_sem, SINGLE_DEPTH_NESTING);
+=======
+ * double_down_write_data_sem - Acquire two inodes' write lock of i_data_sem
+ *
+ * Acquire write lock of i_data_sem of the two inodes
+ */
+static void
+double_down_write_data_sem(struct inode *first, struct inode *second)
+=======
+ * ext4_double_down_write_data_sem - Acquire two inodes' write lock
+ *                                   of i_data_sem
+ *
+ * Acquire write lock of i_data_sem of the two inodes
+ */
+void
+ext4_double_down_write_data_sem(struct inode *first, struct inode *second)
+>>>>>>> refs/remotes/origin/master
+{
+	if (first < second) {
+		down_write(&EXT4_I(first)->i_data_sem);
+		down_write_nested(&EXT4_I(second)->i_data_sem, SINGLE_DEPTH_NESTING);
+	} else {
+		down_write(&EXT4_I(second)->i_data_sem);
+		down_write_nested(&EXT4_I(first)->i_data_sem, SINGLE_DEPTH_NESTING);
+
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
  * double_up_write_data_sem - Release two inodes' write lock of i_data_sem
+=======
+}
+
+/**
+ * ext4_double_up_write_data_sem - Release two inodes' write lock of i_data_sem
+>>>>>>> refs/remotes/origin/master
  *
  * @orig_inode:		original inode structure to be released its lock first
  * @donor_inode:	donor inode structure to be released its lock second
  * Release write lock of i_data_sem of two inodes (orig and donor).
  */
+<<<<<<< HEAD
 static void
 double_up_write_data_sem(struct inode *orig_inode, struct inode *donor_inode)
+=======
+void
+ext4_double_up_write_data_sem(struct inode *orig_inode,
+			      struct inode *donor_inode)
+>>>>>>> refs/remotes/origin/master
 {
 	up_write(&EXT4_I(orig_inode)->i_data_sem);
 	up_write(&EXT4_I(donor_inode)->i_data_sem);
@@ -439,6 +503,7 @@ mext_insert_extents(handle_t *handle, struct inode *orig_inode,
 		mext_insert_inside_block(o_start, o_end, start_ext, new_ext,
 						end_ext, eh, range_to_move);
 
+<<<<<<< HEAD
 	if (depth) {
 		ret = ext4_handle_dirty_metadata(handle, orig_inode,
 						 orig_path->p_bh);
@@ -451,6 +516,9 @@ mext_insert_extents(handle_t *handle, struct inode *orig_inode,
 	}
 
 	return 0;
+=======
+	return ext4_ext_dirty(handle, orig_inode, orig_path);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -605,9 +673,14 @@ mext_calc_swap_extents(struct ext4_extent *tmp_dext,
 	diff = donor_off - le32_to_cpu(tmp_dext->ee_block);
 
 	ext4_ext_store_pblock(tmp_dext, ext4_ext_pblock(tmp_dext) + diff);
+<<<<<<< HEAD
 	tmp_dext->ee_block =
 			cpu_to_le32(le32_to_cpu(tmp_dext->ee_block) + diff);
 	tmp_dext->ee_len = cpu_to_le16(le16_to_cpu(tmp_dext->ee_len) - diff);
+=======
+	le32_add_cpu(&tmp_dext->ee_block, diff);
+	le16_add_cpu(&tmp_dext->ee_len, -diff);
+>>>>>>> refs/remotes/origin/master
 
 	if (max_count < ext4_ext_get_actual_len(tmp_dext))
 		tmp_dext->ee_len = cpu_to_le16(max_count);
@@ -630,6 +703,47 @@ mext_calc_swap_extents(struct ext4_extent *tmp_dext,
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * mext_check_coverage - Check that all extents in range has the same type
+ *
+ * @inode:		inode in question
+ * @from:		block offset of inode
+ * @count:		block count to be checked
+ * @uninit:		extents expected to be uninitialized
+ * @err:		pointer to save error value
+ *
+ * Return 1 if all extents in range has expected type, and zero otherwise.
+ */
+static int
+mext_check_coverage(struct inode *inode, ext4_lblk_t from, ext4_lblk_t count,
+			  int uninit, int *err)
+{
+	struct ext4_ext_path *path = NULL;
+	struct ext4_extent *ext;
+	int ret = 0;
+	ext4_lblk_t last = from + count;
+	while (from < last) {
+		*err = get_ext_path(inode, from, &path);
+		if (*err)
+			goto out;
+		ext = path[ext_depth(inode)].p_ext;
+		if (uninit != ext4_ext_is_uninitialized(ext))
+			goto out;
+		from += ext4_ext_get_actual_len(ext);
+		ext4_ext_drop_refs(path);
+	}
+	ret = 1;
+out:
+	if (path) {
+		ext4_ext_drop_refs(path);
+		kfree(path);
+	}
+	return ret;
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * mext_replace_branches - Replace original extents with new extents
  *
  * @handle:		journal handle
@@ -664,8 +778,18 @@ mext_replace_branches(handle_t *handle, struct inode *orig_inode,
 	int replaced_count = 0;
 	int dext_alen;
 
+<<<<<<< HEAD
 	/* Protect extent trees against block allocations via delalloc */
 	double_down_write_data_sem(orig_inode, donor_inode);
+=======
+	*err = ext4_es_remove_extent(orig_inode, from, count);
+	if (*err)
+		goto out;
+
+	*err = ext4_es_remove_extent(donor_inode, from, count);
+	if (*err)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	/* Get the original extent for the block "orig_off" */
 	*err = get_ext_path(orig_inode, orig_off, &orig_path);
@@ -682,6 +806,11 @@ mext_replace_branches(handle_t *handle, struct inode *orig_inode,
 
 	depth = ext_depth(donor_inode);
 	dext = donor_path[depth].p_ext;
+<<<<<<< HEAD
+=======
+	if (unlikely(!dext))
+		goto missing_donor_extent;
+>>>>>>> refs/remotes/origin/master
 	tmp_dext = *dext;
 
 	*err = mext_calc_swap_extents(&tmp_dext, &tmp_oext, orig_off,
@@ -692,7 +821,12 @@ mext_replace_branches(handle_t *handle, struct inode *orig_inode,
 	/* Loop for the donor extents */
 	while (1) {
 		/* The extent for donor must be found. */
+<<<<<<< HEAD
 		if (!dext) {
+=======
+		if (unlikely(!dext)) {
+		missing_donor_extent:
+>>>>>>> refs/remotes/origin/master
 			EXT4_ERROR_INODE(donor_inode,
 				   "The extent for donor must be found");
 			*err = -EIO;
@@ -724,6 +858,10 @@ mext_replace_branches(handle_t *handle, struct inode *orig_inode,
 		donor_off += dext_alen;
 		orig_off += dext_alen;
 
+<<<<<<< HEAD
+=======
+		BUG_ON(replaced_count > count);
+>>>>>>> refs/remotes/origin/master
 		/* Already moved the expected blocks */
 		if (replaced_count >= count)
 			break;
@@ -762,12 +900,133 @@ out:
 		kfree(donor_path);
 	}
 
+<<<<<<< HEAD
 	ext4_ext_invalidate_cache(orig_inode);
 	ext4_ext_invalidate_cache(donor_inode);
 
 	double_up_write_data_sem(orig_inode, donor_inode);
 
 	return replaced_count;
+=======
+	return replaced_count;
+}
+
+/**
+ * mext_page_double_lock - Grab and lock pages on both @inode1 and @inode2
+ *
+ * @inode1:	the inode structure
+ * @inode2:	the inode structure
+ * @index:	page index
+ * @page:	result page vector
+ *
+ * Grab two locked pages for inode's by inode order
+ */
+static int
+mext_page_double_lock(struct inode *inode1, struct inode *inode2,
+		      pgoff_t index, struct page *page[2])
+{
+	struct address_space *mapping[2];
+	unsigned fl = AOP_FLAG_NOFS;
+
+	BUG_ON(!inode1 || !inode2);
+	if (inode1 < inode2) {
+		mapping[0] = inode1->i_mapping;
+		mapping[1] = inode2->i_mapping;
+	} else {
+		mapping[0] = inode2->i_mapping;
+		mapping[1] = inode1->i_mapping;
+	}
+
+	page[0] = grab_cache_page_write_begin(mapping[0], index, fl);
+	if (!page[0])
+		return -ENOMEM;
+
+	page[1] = grab_cache_page_write_begin(mapping[1], index, fl);
+	if (!page[1]) {
+		unlock_page(page[0]);
+		page_cache_release(page[0]);
+		return -ENOMEM;
+	}
+	/*
+	 * grab_cache_page_write_begin() may not wait on page's writeback if
+	 * BDI not demand that. But it is reasonable to be very conservative
+	 * here and explicitly wait on page's writeback
+	 */
+	wait_on_page_writeback(page[0]);
+	wait_on_page_writeback(page[1]);
+	if (inode1 > inode2) {
+		struct page *tmp;
+		tmp = page[0];
+		page[0] = page[1];
+		page[1] = tmp;
+	}
+	return 0;
+}
+
+/* Force page buffers uptodate w/o dropping page's lock */
+static int
+mext_page_mkuptodate(struct page *page, unsigned from, unsigned to)
+{
+	struct inode *inode = page->mapping->host;
+	sector_t block;
+	struct buffer_head *bh, *head, *arr[MAX_BUF_PER_PAGE];
+	unsigned int blocksize, block_start, block_end;
+	int i, err,  nr = 0, partial = 0;
+	BUG_ON(!PageLocked(page));
+	BUG_ON(PageWriteback(page));
+
+	if (PageUptodate(page))
+		return 0;
+
+	blocksize = 1 << inode->i_blkbits;
+	if (!page_has_buffers(page))
+		create_empty_buffers(page, blocksize, 0);
+
+	head = page_buffers(page);
+	block = (sector_t)page->index << (PAGE_CACHE_SHIFT - inode->i_blkbits);
+	for (bh = head, block_start = 0; bh != head || !block_start;
+	     block++, block_start = block_end, bh = bh->b_this_page) {
+		block_end = block_start + blocksize;
+		if (block_end <= from || block_start >= to) {
+			if (!buffer_uptodate(bh))
+				partial = 1;
+			continue;
+		}
+		if (buffer_uptodate(bh))
+			continue;
+		if (!buffer_mapped(bh)) {
+			err = ext4_get_block(inode, block, bh, 0);
+			if (err) {
+				SetPageError(page);
+				return err;
+			}
+			if (!buffer_mapped(bh)) {
+				zero_user(page, block_start, blocksize);
+				if (!err)
+					set_buffer_uptodate(bh);
+				continue;
+			}
+		}
+		BUG_ON(nr >= MAX_BUF_PER_PAGE);
+		arr[nr++] = bh;
+	}
+	/* No io required */
+	if (!nr)
+		goto out;
+
+	for (i = 0; i < nr; i++) {
+		bh = arr[i];
+		if (!bh_uptodate_or_lock(bh)) {
+			err = bh_submit_read(bh);
+			if (err)
+				return err;
+		}
+	}
+out:
+	if (!partial)
+		SetPageUptodate(page);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -791,6 +1050,7 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
 		  pgoff_t orig_page_offset, int data_offset_in_page,
 		  int block_len_in_page, int uninit, int *err)
 {
+<<<<<<< HEAD
 	struct inode *orig_inode = o_filp->f_dentry->d_inode;
 	struct address_space *mapping = orig_inode->i_mapping;
 	struct buffer_head *bh;
@@ -806,14 +1066,33 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
 	int i, jblocks;
 	int err2 = 0;
 	int replaced_count = 0;
+=======
+	struct inode *orig_inode = file_inode(o_filp);
+	struct page *pagep[2] = {NULL, NULL};
+	handle_t *handle;
+	ext4_lblk_t orig_blk_offset;
+	unsigned long blocksize = orig_inode->i_sb->s_blocksize;
+	unsigned int w_flags = 0;
+	unsigned int tmp_data_size, data_size, replaced_size;
+	int err2, jblocks, retries = 0;
+	int replaced_count = 0;
+	int from = data_offset_in_page << orig_inode->i_blkbits;
+>>>>>>> refs/remotes/origin/master
 	int blocks_per_page = PAGE_CACHE_SIZE >> orig_inode->i_blkbits;
 
 	/*
 	 * It needs twice the amount of ordinary journal buffers because
 	 * inode and donor_inode may change each different metadata blocks.
 	 */
+<<<<<<< HEAD
 	jblocks = ext4_writepage_trans_blocks(orig_inode) * 2;
 	handle = ext4_journal_start(orig_inode, jblocks);
+=======
+again:
+	*err = 0;
+	jblocks = ext4_writepage_trans_blocks(orig_inode) * 2;
+	handle = ext4_journal_start(orig_inode, EXT4_HT_MOVE_EXTENTS, jblocks);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(handle)) {
 		*err = PTR_ERR(handle);
 		return 0;
@@ -825,6 +1104,7 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
 	orig_blk_offset = orig_page_offset * blocks_per_page +
 		data_offset_in_page;
 
+<<<<<<< HEAD
 	/*
 	 * If orig extent is uninitialized one,
 	 * it's not necessary force the page into memory
@@ -840,6 +1120,8 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
 
 	offs = (long long)orig_blk_offset << orig_inode->i_blkbits;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Calculate data_size */
 	if ((orig_blk_offset + block_len_in_page - 1) ==
 	    ((orig_inode->i_size - 1) >> orig_inode->i_blkbits)) {
@@ -859,6 +1141,7 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
 
 	replaced_size = data_size;
 
+<<<<<<< HEAD
 	*err = a_ops->write_begin(o_filp, mapping, offs, data_size, w_flags,
 				 &page, &fsdata);
 	if (unlikely(*err < 0))
@@ -885,11 +1168,74 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
 					orig_blk_offset, block_len_in_page,
 					&err2);
 	if (err2) {
+=======
+	*err = mext_page_double_lock(orig_inode, donor_inode, orig_page_offset,
+				     pagep);
+	if (unlikely(*err < 0))
+		goto stop_journal;
+	/*
+	 * If orig extent was uninitialized it can become initialized
+	 * at any time after i_data_sem was dropped, in order to
+	 * serialize with delalloc we have recheck extent while we
+	 * hold page's lock, if it is still the case data copy is not
+	 * necessary, just swap data blocks between orig and donor.
+	 */
+	if (uninit) {
+		ext4_double_down_write_data_sem(orig_inode, donor_inode);
+		/* If any of extents in range became initialized we have to
+		 * fallback to data copying */
+		uninit = mext_check_coverage(orig_inode, orig_blk_offset,
+					     block_len_in_page, 1, err);
+		if (*err)
+			goto drop_data_sem;
+
+		uninit &= mext_check_coverage(donor_inode, orig_blk_offset,
+					      block_len_in_page, 1, err);
+		if (*err)
+			goto drop_data_sem;
+
+		if (!uninit) {
+			ext4_double_up_write_data_sem(orig_inode, donor_inode);
+			goto data_copy;
+		}
+		if ((page_has_private(pagep[0]) &&
+		     !try_to_release_page(pagep[0], 0)) ||
+		    (page_has_private(pagep[1]) &&
+		     !try_to_release_page(pagep[1], 0))) {
+			*err = -EBUSY;
+			goto drop_data_sem;
+		}
+		replaced_count = mext_replace_branches(handle, orig_inode,
+						donor_inode, orig_blk_offset,
+						block_len_in_page, err);
+	drop_data_sem:
+		ext4_double_up_write_data_sem(orig_inode, donor_inode);
+		goto unlock_pages;
+	}
+data_copy:
+	*err = mext_page_mkuptodate(pagep[0], from, from + replaced_size);
+	if (*err)
+		goto unlock_pages;
+
+	/* At this point all buffers in range are uptodate, old mapping layout
+	 * is no longer required, try to drop it now. */
+	if ((page_has_private(pagep[0]) && !try_to_release_page(pagep[0], 0)) ||
+	    (page_has_private(pagep[1]) && !try_to_release_page(pagep[1], 0))) {
+		*err = -EBUSY;
+		goto unlock_pages;
+	}
+
+	replaced_count = mext_replace_branches(handle, orig_inode, donor_inode,
+					       orig_blk_offset,
+					       block_len_in_page, err);
+	if (*err) {
+>>>>>>> refs/remotes/origin/master
 		if (replaced_count) {
 			block_len_in_page = replaced_count;
 			replaced_size =
 				block_len_in_page << orig_inode->i_blkbits;
 		} else
+<<<<<<< HEAD
 			goto out;
 	}
 
@@ -928,6 +1274,57 @@ out2:
 		*err = err2;
 
 	return replaced_count;
+=======
+			goto unlock_pages;
+	}
+	/* Perform all necessary steps similar write_begin()/write_end()
+	 * but keeping in mind that i_size will not change */
+	*err = __block_write_begin(pagep[0], from, replaced_size,
+				   ext4_get_block);
+	if (!*err)
+		*err = block_commit_write(pagep[0], from, from + replaced_size);
+
+	if (unlikely(*err < 0))
+		goto repair_branches;
+
+	/* Even in case of data=writeback it is reasonable to pin
+	 * inode to transaction, to prevent unexpected data loss */
+	*err = ext4_jbd2_file_inode(handle, orig_inode);
+
+unlock_pages:
+	unlock_page(pagep[0]);
+	page_cache_release(pagep[0]);
+	unlock_page(pagep[1]);
+	page_cache_release(pagep[1]);
+stop_journal:
+	ext4_journal_stop(handle);
+	/* Buffer was busy because probably is pinned to journal transaction,
+	 * force transaction commit may help to free it. */
+	if (*err == -EBUSY && ext4_should_retry_alloc(orig_inode->i_sb,
+						      &retries))
+		goto again;
+	return replaced_count;
+
+repair_branches:
+	/*
+	 * This should never ever happen!
+	 * Extents are swapped already, but we are not able to copy data.
+	 * Try to swap extents to it's original places
+	 */
+	ext4_double_down_write_data_sem(orig_inode, donor_inode);
+	replaced_count = mext_replace_branches(handle, donor_inode, orig_inode,
+					       orig_blk_offset,
+					       block_len_in_page, &err2);
+	ext4_double_up_write_data_sem(orig_inode, donor_inode);
+	if (replaced_count != block_len_in_page) {
+		EXT4_ERROR_INODE_BLOCK(orig_inode, (sector_t)(orig_blk_offset),
+				       "Unable to copy data block,"
+				       " data will be lost.");
+		*err = -EIO;
+	}
+	replaced_count = 0;
+	goto unlock_pages;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -970,6 +1367,9 @@ mext_check_arguments(struct inode *orig_inode,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Files should be in the same ext4 FS */
 	if (orig_inode->i_sb != donor_inode->i_sb) {
 		ext4_debug("ext4 move extent: The argument files "
@@ -978,6 +1378,12 @@ mext_check_arguments(struct inode *orig_inode,
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Ext4 move extent supports only extent based file */
 	if (!(ext4_test_inode_flag(orig_inode, EXT4_INODE_EXTENTS))) {
 		ext4_debug("ext4 move extent: orig file is not extents "
@@ -1003,7 +1409,10 @@ mext_check_arguments(struct inode *orig_inode,
 	}
 
 	if ((orig_start >= EXT_MAX_BLOCKS) ||
+<<<<<<< HEAD
 	    (donor_start >= EXT_MAX_BLOCKS) ||
+=======
+>>>>>>> refs/remotes/origin/master
 	    (*len > EXT_MAX_BLOCKS) ||
 	    (orig_start + *len >= EXT_MAX_BLOCKS))  {
 		ext4_debug("ext4 move extent: Can't handle over [%u] blocks "
@@ -1068,17 +1477,24 @@ mext_check_arguments(struct inode *orig_inode,
 }
 
 /**
+<<<<<<< HEAD
  * mext_inode_double_lock - Lock i_mutex on both @inode1 and @inode2
  *
  * @inode1:	the inode structure
  * @inode2:	the inode structure
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Lock two inodes' i_mutex by i_ino order.
  * If inode1 or inode2 is NULL, return -EIO. Otherwise, return 0.
+=======
+ * Lock two inodes' i_mutex
+>>>>>>> refs/remotes/origin/cm-11.0
  */
-static int
+static void
 mext_inode_double_lock(struct inode *inode1, struct inode *inode2)
 {
+<<<<<<< HEAD
 	int ret = 0;
 
 	BUG_ON(inode1 == NULL && inode2 == NULL);
@@ -1093,15 +1509,34 @@ mext_inode_double_lock(struct inode *inode1, struct inode *inode2)
 	}
 
 	if (inode1->i_ino < inode2->i_ino) {
+=======
+ * Lock two inodes' i_mutex
+ */
+static void
+mext_inode_double_lock(struct inode *inode1, struct inode *inode2)
+{
+	BUG_ON(inode1 == inode2);
+	if (inode1 < inode2) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(inode1 == inode2);
+	if (inode1 < inode2) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_lock_nested(&inode1->i_mutex, I_MUTEX_PARENT);
 		mutex_lock_nested(&inode2->i_mutex, I_MUTEX_CHILD);
 	} else {
 		mutex_lock_nested(&inode2->i_mutex, I_MUTEX_PARENT);
 		mutex_lock_nested(&inode1->i_mutex, I_MUTEX_CHILD);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 out:
 	return ret;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -1110,12 +1545,17 @@ out:
  * @inode1:     the inode that is released first
  * @inode2:     the inode that is released second
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * If inode1 or inode2 is NULL, return -EIO. Otherwise, return 0.
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
-static int
+static void
 mext_inode_double_unlock(struct inode *inode1, struct inode *inode2)
 {
+<<<<<<< HEAD
 	int ret = 0;
 
 	BUG_ON(inode1 == NULL && inode2 == NULL);
@@ -1132,9 +1572,24 @@ mext_inode_double_unlock(struct inode *inode1, struct inode *inode2)
 
 out:
 	return ret;
+=======
+ */
+
+static void
+mext_inode_double_unlock(struct inode *inode1, struct inode *inode2)
+{
+	mutex_unlock(&inode1->i_mutex);
+	mutex_unlock(&inode2->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&inode1->i_mutex);
+	mutex_unlock(&inode2->i_mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * ext4_move_extents - Exchange the specified range of a file
  *
  * @o_filp:		file structure of the original file
@@ -1180,24 +1635,75 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp,
 		 __u64 orig_start, __u64 donor_start, __u64 len,
 		 __u64 *moved_len)
 {
+<<<<<<< HEAD
 	struct inode *orig_inode = o_filp->f_dentry->d_inode;
 	struct inode *donor_inode = d_filp->f_dentry->d_inode;
+=======
+	struct inode *orig_inode = file_inode(o_filp);
+	struct inode *donor_inode = file_inode(d_filp);
+>>>>>>> refs/remotes/origin/master
 	struct ext4_ext_path *orig_path = NULL, *holecheck_path = NULL;
 	struct ext4_extent *ext_prev, *ext_cur, *ext_dummy;
 	ext4_lblk_t block_start = orig_start;
 	ext4_lblk_t block_end, seq_start, add_blocks, file_end, seq_blocks = 0;
 	ext4_lblk_t rest_blocks;
 	pgoff_t orig_page_offset = 0, seq_end_page;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret1, ret2, depth, last_extent = 0;
+=======
+	int ret, depth, last_extent = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret, depth, last_extent = 0;
+>>>>>>> refs/remotes/origin/master
+=======
+	int ret, depth, last_extent = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int blocks_per_page = PAGE_CACHE_SIZE >> orig_inode->i_blkbits;
 	int data_offset_in_page;
 	int block_len_in_page;
 	int uninit;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* orig and donor should be different file */
 	if (orig_inode->i_ino == donor_inode->i_ino) {
 		ext4_debug("ext4 move extent: The argument files should not "
 			"be same file [ino:orig %lu, donor %lu]\n",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (orig_inode->i_sb != donor_inode->i_sb) {
+		ext4_debug("ext4 move extent: The argument files "
+			"should be in same FS [ino:orig %lu, donor %lu]\n",
+			orig_inode->i_ino, donor_inode->i_ino);
+		return -EINVAL;
+	}
+
+	/* orig and donor should be different inodes */
+	if (orig_inode == donor_inode) {
+		ext4_debug("ext4 move extent: The argument files should not "
+			"be same inode [ino:orig %lu, donor %lu]\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	if (orig_inode->i_sb != donor_inode->i_sb) {
+		ext4_debug("ext4 move extent: The argument files "
+			"should be in same FS [ino:orig %lu, donor %lu]\n",
+			orig_inode->i_ino, donor_inode->i_ino);
+		return -EINVAL;
+	}
+
+	/* orig and donor should be different inodes */
+	if (orig_inode == donor_inode) {
+		ext4_debug("ext4 move extent: The argument files should not "
+			"be same inode [ino:orig %lu, donor %lu]\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			orig_inode->i_ino, donor_inode->i_ino);
 		return -EINVAL;
 	}
@@ -1216,16 +1722,53 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp,
 		return -EINVAL;
 	}
 	/* Protect orig and donor inodes against a truncate */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret1 = mext_inode_double_lock(orig_inode, donor_inode);
 	if (ret1 < 0)
 		return ret1;
+=======
+	mext_inode_double_lock(orig_inode, donor_inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mext_inode_double_lock(orig_inode, donor_inode);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Protect extent tree against block allocations via delalloc */
 	double_down_write_data_sem(orig_inode, donor_inode);
 	/* Check the filesystem environment whether move_extent can be done */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret1 = mext_check_arguments(orig_inode, donor_inode, orig_start,
 				    donor_start, &len);
 	if (ret1)
+=======
+	ret = mext_check_arguments(orig_inode, donor_inode, orig_start,
+				    donor_start, &len);
+	if (ret)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lock_two_nondirectories(orig_inode, donor_inode);
+
+	/* Wait for all existing dio workers */
+	ext4_inode_block_unlocked_dio(orig_inode);
+	ext4_inode_block_unlocked_dio(donor_inode);
+	inode_dio_wait(orig_inode);
+	inode_dio_wait(donor_inode);
+
+	/* Protect extent tree against block allocations via delalloc */
+	ext4_double_down_write_data_sem(orig_inode, donor_inode);
+	/* Check the filesystem environment whether move_extent can be done */
+	ret = mext_check_arguments(orig_inode, donor_inode, orig_start,
+				    donor_start, &len);
+	if (ret)
+>>>>>>> refs/remotes/origin/master
+=======
+	ret = mext_check_arguments(orig_inode, donor_inode, orig_start,
+				    donor_start, &len);
+	if (ret)
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 
 	file_end = (i_size_read(orig_inode) - 1) >> orig_inode->i_blkbits;
@@ -1233,6 +1776,9 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp,
 	if (file_end < block_end)
 		len -= block_end - file_end;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret1 = get_ext_path(orig_inode, block_start, &orig_path);
 	if (ret1)
 		goto out;
@@ -1240,6 +1786,29 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp,
 	/* Get path structure to check the hole */
 	ret1 = get_ext_path(orig_inode, block_start, &holecheck_path);
 	if (ret1)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = get_ext_path(orig_inode, block_start, &orig_path);
+	if (ret)
+		goto out;
+
+	/* Get path structure to check the hole */
+	ret = get_ext_path(orig_inode, block_start, &holecheck_path);
+	if (ret)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	ret = get_ext_path(orig_inode, block_start, &orig_path);
+	if (ret)
+		goto out;
+
+	/* Get path structure to check the hole */
+	ret = get_ext_path(orig_inode, block_start, &holecheck_path);
+	if (ret)
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 
 	depth = ext_depth(orig_inode);
@@ -1258,13 +1827,37 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp,
 		last_extent = mext_next_extent(orig_inode,
 					holecheck_path, &ext_cur);
 		if (last_extent < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ret1 = last_extent;
+=======
+			ret = last_extent;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = last_extent;
+>>>>>>> refs/remotes/origin/master
+=======
+			ret = last_extent;
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto out;
 		}
 		last_extent = mext_next_extent(orig_inode, orig_path,
 							&ext_dummy);
 		if (last_extent < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ret1 = last_extent;
+=======
+			ret = last_extent;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = last_extent;
+>>>>>>> refs/remotes/origin/master
+=======
+			ret = last_extent;
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto out;
 		}
 		seq_start = le32_to_cpu(ext_cur->ee_block);
@@ -1278,7 +1871,19 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp,
 	if (le32_to_cpu(ext_cur->ee_block) > block_end) {
 		ext4_debug("ext4 move extent: The specified range of file "
 							"may be the hole\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret1 = -EINVAL;
+=======
+		ret = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = -EINVAL;
+>>>>>>> refs/remotes/origin/master
+=======
+		ret = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 
@@ -1298,7 +1903,19 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp,
 		last_extent = mext_next_extent(orig_inode, holecheck_path,
 						&ext_cur);
 		if (last_extent < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ret1 = last_extent;
+=======
+			ret = last_extent;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = last_extent;
+>>>>>>> refs/remotes/origin/master
+=======
+			ret = last_extent;
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 		add_blocks = ext4_ext_get_actual_len(ext_cur);
@@ -1345,7 +1962,11 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp,
 		 * b. racing with ->readpage, ->write_begin, and ext4_get_block
 		 *    in move_extent_per_page
 		 */
+<<<<<<< HEAD
 		double_up_write_data_sem(orig_inode, donor_inode);
+=======
+		ext4_double_up_write_data_sem(orig_inode, donor_inode);
+>>>>>>> refs/remotes/origin/master
 
 		while (orig_page_offset <= seq_end_page) {
 
@@ -1355,18 +1976,52 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp,
 						orig_page_offset,
 						data_offset_in_page,
 						block_len_in_page, uninit,
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 						&ret1);
 
 			/* Count how many blocks we have exchanged */
 			*moved_len += block_len_in_page;
 			if (ret1 < 0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+						&ret);
+
+			/* Count how many blocks we have exchanged */
+			*moved_len += block_len_in_page;
+			if (ret < 0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+						&ret);
+
+			/* Count how many blocks we have exchanged */
+			*moved_len += block_len_in_page;
+			if (ret < 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			if (*moved_len > len) {
 				EXT4_ERROR_INODE(orig_inode,
 					"We replaced blocks too much! "
 					"sum of replaced: %llu requested: %llu",
 					*moved_len, len);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 				ret1 = -EIO;
+=======
+				ret = -EIO;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ret = -EIO;
+>>>>>>> refs/remotes/origin/master
+=======
+				ret = -EIO;
+>>>>>>> refs/remotes/origin/cm-11.0
 				break;
 			}
 
@@ -1379,23 +2034,66 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp,
 				block_len_in_page = rest_blocks;
 		}
 
+<<<<<<< HEAD
 		double_down_write_data_sem(orig_inode, donor_inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ret1 < 0)
+=======
+		if (ret < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ext4_double_down_write_data_sem(orig_inode, donor_inode);
+		if (ret < 0)
+>>>>>>> refs/remotes/origin/master
+=======
+		if (ret < 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 
 		/* Decrease buffer counter */
 		if (holecheck_path)
 			ext4_ext_drop_refs(holecheck_path);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret1 = get_ext_path(orig_inode, seq_start, &holecheck_path);
 		if (ret1)
+=======
+		ret = get_ext_path(orig_inode, seq_start, &holecheck_path);
+		if (ret)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = get_ext_path(orig_inode, seq_start, &holecheck_path);
+		if (ret)
+>>>>>>> refs/remotes/origin/master
+=======
+		ret = get_ext_path(orig_inode, seq_start, &holecheck_path);
+		if (ret)
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		depth = holecheck_path->p_depth;
 
 		/* Decrease buffer counter */
 		if (orig_path)
 			ext4_ext_drop_refs(orig_path);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret1 = get_ext_path(orig_inode, seq_start, &orig_path);
 		if (ret1)
+=======
+		ret = get_ext_path(orig_inode, seq_start, &orig_path);
+		if (ret)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = get_ext_path(orig_inode, seq_start, &orig_path);
+		if (ret)
+>>>>>>> refs/remotes/origin/master
+=======
+		ret = get_ext_path(orig_inode, seq_start, &orig_path);
+		if (ret)
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 
 		ext_cur = holecheck_path[depth].p_ext;
@@ -1417,7 +2115,10 @@ out:
 		ext4_ext_drop_refs(holecheck_path);
 		kfree(holecheck_path);
 	}
+<<<<<<< HEAD
 	double_up_write_data_sem(orig_inode, donor_inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret2 = mext_inode_double_unlock(orig_inode, donor_inode);
 
 	if (ret1)
@@ -1426,4 +2127,22 @@ out:
 		return ret2;
 
 	return 0;
+=======
+	mext_inode_double_unlock(orig_inode, donor_inode);
+
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ext4_double_up_write_data_sem(orig_inode, donor_inode);
+	ext4_inode_resume_unlocked_dio(orig_inode);
+	ext4_inode_resume_unlocked_dio(donor_inode);
+	unlock_two_nondirectories(orig_inode, donor_inode);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
+=======
+	mext_inode_double_unlock(orig_inode, donor_inode);
+
+	return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 }

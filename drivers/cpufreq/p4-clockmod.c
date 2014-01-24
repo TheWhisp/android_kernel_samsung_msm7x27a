@@ -31,6 +31,14 @@
 #include <asm/processor.h>
 #include <asm/msr.h>
 #include <asm/timer.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "speedstep-lib.h"
 
@@ -57,8 +65,12 @@ static int cpufreq_p4_setdc(unsigned int cpu, unsigned int newstate)
 {
 	u32 l, h;
 
+<<<<<<< HEAD
 	if (!cpu_online(cpu) ||
 	    (newstate > DC_DISABLE) || (newstate == DC_RESV))
+=======
+	if ((newstate > DC_DISABLE) || (newstate == DC_RESV))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	rdmsr_on_cpu(cpu, MSR_IA32_THERM_STATUS, &l, &h);
@@ -105,6 +117,7 @@ static struct cpufreq_frequency_table p4clockmod_table[] = {
 };
 
 
+<<<<<<< HEAD
 static int cpufreq_p4_target(struct cpufreq_policy *policy,
 			     unsigned int target_freq,
 			     unsigned int relation)
@@ -129,11 +142,18 @@ static int cpufreq_p4_target(struct cpufreq_policy *policy,
 		cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
 	}
 
+=======
+static int cpufreq_p4_target(struct cpufreq_policy *policy, unsigned int index)
+{
+	int i;
+
+>>>>>>> refs/remotes/origin/master
 	/* run on each logical CPU,
 	 * see section 13.15.3 of IA32 Intel Architecture Software
 	 * Developer's Manual, Volume 3
 	 */
 	for_each_cpu(i, policy->cpus)
+<<<<<<< HEAD
 		cpufreq_p4_setdc(i, p4clockmod_table[newstate].index);
 
 	/* notifiers */
@@ -141,17 +161,23 @@ static int cpufreq_p4_target(struct cpufreq_policy *policy,
 		freqs.cpu = i;
 		cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
 	}
+=======
+		cpufreq_p4_setdc(i, p4clockmod_table[index].driver_data);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 
+<<<<<<< HEAD
 static int cpufreq_p4_verify(struct cpufreq_policy *policy)
 {
 	return cpufreq_frequency_table_verify(policy, &p4clockmod_table[0]);
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int cpufreq_p4_get_frequency(struct cpuinfo_x86 *c)
 {
 	if (c->x86 == 0x06) {
@@ -236,13 +262,17 @@ static int cpufreq_p4_cpu_init(struct cpufreq_policy *policy)
 		else
 			p4clockmod_table[i].frequency = (stock_freq * i)/8;
 	}
+<<<<<<< HEAD
 	cpufreq_frequency_table_get_attr(p4clockmod_table, policy->cpu);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* cpuinfo and default policy values */
 
 	/* the transition latency is set to be 1 higher than the maximum
 	 * transition latency of the ondemand governor */
 	policy->cpuinfo.transition_latency = 10000001;
+<<<<<<< HEAD
 	policy->cur = stock_freq;
 
 	return cpufreq_frequency_table_cpuinfo(policy, &p4clockmod_table[0]);
@@ -255,6 +285,13 @@ static int cpufreq_p4_cpu_exit(struct cpufreq_policy *policy)
 	return 0;
 }
 
+=======
+
+	return cpufreq_table_validate_and_show(policy, &p4clockmod_table[0]);
+}
+
+
+>>>>>>> refs/remotes/origin/master
 static unsigned int cpufreq_p4_get(unsigned int cpu)
 {
 	u32 l, h;
@@ -273,6 +310,7 @@ static unsigned int cpufreq_p4_get(unsigned int cpu)
 	return stock_freq;
 }
 
+<<<<<<< HEAD
 static struct freq_attr *p4clockmod_attr[] = {
 	&cpufreq_freq_attr_scaling_available_freqs,
 	NULL,
@@ -289,21 +327,59 @@ static struct cpufreq_driver p4clockmod_driver = {
 	.attr		= p4clockmod_attr,
 };
 
+<<<<<<< HEAD
 
 static int __init cpufreq_p4_init(void)
 {
 	struct cpuinfo_x86 *c = &cpu_data(0);
+=======
+=======
+static struct cpufreq_driver p4clockmod_driver = {
+	.verify		= cpufreq_generic_frequency_table_verify,
+	.target_index	= cpufreq_p4_target,
+	.init		= cpufreq_p4_cpu_init,
+	.exit		= cpufreq_generic_exit,
+	.get		= cpufreq_p4_get,
+	.name		= "p4-clockmod",
+	.attr		= cpufreq_generic_attr,
+};
+
+>>>>>>> refs/remotes/origin/master
+static const struct x86_cpu_id cpufreq_p4_id[] = {
+	{ X86_VENDOR_INTEL, X86_FAMILY_ANY, X86_MODEL_ANY, X86_FEATURE_ACC },
+	{}
+};
+
+/*
+ * Intentionally no MODULE_DEVICE_TABLE here: this driver should not
+ * be auto loaded.  Please don't add one.
+ */
+
+static int __init cpufreq_p4_init(void)
+{
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/*
 	 * THERM_CONTROL is architectural for IA32 now, so
 	 * we can rely on the capability checks
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (c->x86_vendor != X86_VENDOR_INTEL)
 		return -ENODEV;
 
 	if (!test_cpu_cap(c, X86_FEATURE_ACPI) ||
 				!test_cpu_cap(c, X86_FEATURE_ACC))
+=======
+	if (!x86_match_cpu(cpufreq_p4_id) || !boot_cpu_has(X86_FEATURE_ACPI))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!x86_match_cpu(cpufreq_p4_id) || !boot_cpu_has(X86_FEATURE_ACPI))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	ret = cpufreq_register_driver(&p4clockmod_driver);

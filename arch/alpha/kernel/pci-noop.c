@@ -108,7 +108,17 @@ sys_pciconfig_write(unsigned long bus, unsigned long dfn,
 }
 
 static void *alpha_noop_alloc_coherent(struct device *dev, size_t size,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				       dma_addr_t *dma_handle, gfp_t gfp)
+=======
+				       dma_addr_t *dma_handle, gfp_t gfp,
+				       struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       dma_addr_t *dma_handle, gfp_t gfp,
+				       struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	void *ret;
 
@@ -123,7 +133,17 @@ static void *alpha_noop_alloc_coherent(struct device *dev, size_t size,
 }
 
 static void alpha_noop_free_coherent(struct device *dev, size_t size,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				     void *cpu_addr, dma_addr_t dma_addr)
+=======
+				     void *cpu_addr, dma_addr_t dma_addr,
+				     struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     void *cpu_addr, dma_addr_t dma_addr,
+				     struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	free_pages((unsigned long)cpu_addr, get_order(size));
 }
@@ -174,8 +194,18 @@ static int alpha_noop_set_mask(struct device *dev, u64 mask)
 }
 
 struct dma_map_ops alpha_noop_ops = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.alloc_coherent		= alpha_noop_alloc_coherent,
 	.free_coherent		= alpha_noop_free_coherent,
+=======
+	.alloc			= alpha_noop_alloc_coherent,
+	.free			= alpha_noop_free_coherent,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.alloc			= alpha_noop_alloc_coherent,
+	.free			= alpha_noop_free_coherent,
+>>>>>>> refs/remotes/origin/master
 	.map_page		= alpha_noop_map_page,
 	.map_sg			= alpha_noop_map_sg,
 	.mapping_error		= alpha_noop_mapping_error,
@@ -185,6 +215,8 @@ struct dma_map_ops alpha_noop_ops = {
 
 struct dma_map_ops *dma_ops = &alpha_noop_ops;
 EXPORT_SYMBOL(dma_ops);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
 {
@@ -197,3 +229,7 @@ void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
 
 EXPORT_SYMBOL(pci_iomap);
 EXPORT_SYMBOL(pci_iounmap);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

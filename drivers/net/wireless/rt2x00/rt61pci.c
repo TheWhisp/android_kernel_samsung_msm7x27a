@@ -35,13 +35,25 @@
 #include <linux/eeprom_93cx6.h>
 
 #include "rt2x00.h"
+<<<<<<< HEAD
+=======
+#include "rt2x00mmio.h"
+>>>>>>> refs/remotes/origin/master
 #include "rt2x00pci.h"
 #include "rt61pci.h"
 
 /*
  * Allow hardware encryption to be disabled.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int modparam_nohwcrypt = 0;
+=======
+static bool modparam_nohwcrypt = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool modparam_nohwcrypt = false;
+>>>>>>> refs/remotes/origin/master
 module_param_named(nohwcrypt, modparam_nohwcrypt, bool, S_IRUGO);
 MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption.");
 
@@ -57,12 +69,21 @@ MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption.");
  * and we will print an error.
  */
 #define WAIT_FOR_BBP(__dev, __reg) \
+<<<<<<< HEAD
 	rt2x00pci_regbusy_read((__dev), PHY_CSR3, PHY_CSR3_BUSY, (__reg))
 #define WAIT_FOR_RF(__dev, __reg) \
 	rt2x00pci_regbusy_read((__dev), PHY_CSR4, PHY_CSR4_BUSY, (__reg))
 #define WAIT_FOR_MCU(__dev, __reg) \
 	rt2x00pci_regbusy_read((__dev), H2M_MAILBOX_CSR, \
 			       H2M_MAILBOX_CSR_OWNER, (__reg))
+=======
+	rt2x00mmio_regbusy_read((__dev), PHY_CSR3, PHY_CSR3_BUSY, (__reg))
+#define WAIT_FOR_RF(__dev, __reg) \
+	rt2x00mmio_regbusy_read((__dev), PHY_CSR4, PHY_CSR4_BUSY, (__reg))
+#define WAIT_FOR_MCU(__dev, __reg) \
+	rt2x00mmio_regbusy_read((__dev), H2M_MAILBOX_CSR, \
+				H2M_MAILBOX_CSR_OWNER, (__reg))
+>>>>>>> refs/remotes/origin/master
 
 static void rt61pci_bbp_write(struct rt2x00_dev *rt2x00dev,
 			      const unsigned int word, const u8 value)
@@ -82,7 +103,11 @@ static void rt61pci_bbp_write(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&reg, PHY_CSR3_BUSY, 1);
 		rt2x00_set_field32(&reg, PHY_CSR3_READ_CONTROL, 0);
 
+<<<<<<< HEAD
 		rt2x00pci_register_write(rt2x00dev, PHY_CSR3, reg);
+=======
+		rt2x00mmio_register_write(rt2x00dev, PHY_CSR3, reg);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&rt2x00dev->csr_mutex);
@@ -109,7 +134,11 @@ static void rt61pci_bbp_read(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&reg, PHY_CSR3_BUSY, 1);
 		rt2x00_set_field32(&reg, PHY_CSR3_READ_CONTROL, 1);
 
+<<<<<<< HEAD
 		rt2x00pci_register_write(rt2x00dev, PHY_CSR3, reg);
+=======
+		rt2x00mmio_register_write(rt2x00dev, PHY_CSR3, reg);
+>>>>>>> refs/remotes/origin/master
 
 		WAIT_FOR_BBP(rt2x00dev, &reg);
 	}
@@ -137,7 +166,11 @@ static void rt61pci_rf_write(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&reg, PHY_CSR4_IF_SELECT, 0);
 		rt2x00_set_field32(&reg, PHY_CSR4_BUSY, 1);
 
+<<<<<<< HEAD
 		rt2x00pci_register_write(rt2x00dev, PHY_CSR4, reg);
+=======
+		rt2x00mmio_register_write(rt2x00dev, PHY_CSR4, reg);
+>>>>>>> refs/remotes/origin/master
 		rt2x00_rf_write(rt2x00dev, word, value);
 	}
 
@@ -161,12 +194,21 @@ static void rt61pci_mcu_request(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&reg, H2M_MAILBOX_CSR_CMD_TOKEN, token);
 		rt2x00_set_field32(&reg, H2M_MAILBOX_CSR_ARG0, arg0);
 		rt2x00_set_field32(&reg, H2M_MAILBOX_CSR_ARG1, arg1);
+<<<<<<< HEAD
 		rt2x00pci_register_write(rt2x00dev, H2M_MAILBOX_CSR, reg);
 
 		rt2x00pci_register_read(rt2x00dev, HOST_CMD_CSR, &reg);
 		rt2x00_set_field32(&reg, HOST_CMD_CSR_HOST_COMMAND, command);
 		rt2x00_set_field32(&reg, HOST_CMD_CSR_INTERRUPT_MCU, 1);
 		rt2x00pci_register_write(rt2x00dev, HOST_CMD_CSR, reg);
+=======
+		rt2x00mmio_register_write(rt2x00dev, H2M_MAILBOX_CSR, reg);
+
+		rt2x00mmio_register_read(rt2x00dev, HOST_CMD_CSR, &reg);
+		rt2x00_set_field32(&reg, HOST_CMD_CSR_HOST_COMMAND, command);
+		rt2x00_set_field32(&reg, HOST_CMD_CSR_INTERRUPT_MCU, 1);
+		rt2x00mmio_register_write(rt2x00dev, HOST_CMD_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&rt2x00dev->csr_mutex);
@@ -178,7 +220,11 @@ static void rt61pci_eepromregister_read(struct eeprom_93cx6 *eeprom)
 	struct rt2x00_dev *rt2x00dev = eeprom->data;
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, E2PROM_CSR, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, E2PROM_CSR, &reg);
+>>>>>>> refs/remotes/origin/master
 
 	eeprom->reg_data_in = !!rt2x00_get_field32(reg, E2PROM_CSR_DATA_IN);
 	eeprom->reg_data_out = !!rt2x00_get_field32(reg, E2PROM_CSR_DATA_OUT);
@@ -200,15 +246,24 @@ static void rt61pci_eepromregister_write(struct eeprom_93cx6 *eeprom)
 	rt2x00_set_field32(&reg, E2PROM_CSR_CHIP_SELECT,
 			   !!eeprom->reg_chip_select);
 
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, E2PROM_CSR, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, E2PROM_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_RT2X00_LIB_DEBUGFS
 static const struct rt2x00debug rt61pci_rt2x00debug = {
 	.owner	= THIS_MODULE,
 	.csr	= {
+<<<<<<< HEAD
 		.read		= rt2x00pci_register_read,
 		.write		= rt2x00pci_register_write,
+=======
+		.read		= rt2x00mmio_register_read,
+		.write		= rt2x00mmio_register_write,
+>>>>>>> refs/remotes/origin/master
 		.flags		= RT2X00DEBUGFS_OFFSET,
 		.word_base	= CSR_REG_BASE,
 		.word_size	= sizeof(u32),
@@ -242,8 +297,13 @@ static int rt61pci_rfkill_poll(struct rt2x00_dev *rt2x00dev)
 {
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, MAC_CSR13, &reg);
 	return rt2x00_get_field32(reg, MAC_CSR13_BIT5);
+=======
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR13, &reg);
+	return rt2x00_get_field32(reg, MAC_CSR13_VAL5);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_RT2X00_LIB_LEDS
@@ -293,10 +353,17 @@ static int rt61pci_blink_set(struct led_classdev *led_cdev,
 	    container_of(led_cdev, struct rt2x00_led, led_dev);
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(led->rt2x00dev, MAC_CSR14, &reg);
 	rt2x00_set_field32(&reg, MAC_CSR14_ON_PERIOD, *delay_on);
 	rt2x00_set_field32(&reg, MAC_CSR14_OFF_PERIOD, *delay_off);
 	rt2x00pci_register_write(led->rt2x00dev, MAC_CSR14, reg);
+=======
+	rt2x00mmio_register_read(led->rt2x00dev, MAC_CSR14, &reg);
+	rt2x00_set_field32(&reg, MAC_CSR14_ON_PERIOD, *delay_on);
+	rt2x00_set_field32(&reg, MAC_CSR14_OFF_PERIOD, *delay_off);
+	rt2x00mmio_register_write(led->rt2x00dev, MAC_CSR14, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -338,7 +405,11 @@ static int rt61pci_config_shared_key(struct rt2x00_dev *rt2x00dev,
 		 */
 		mask = (0xf << crypto->bssidx);
 
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, SEC_CSR0, &reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, SEC_CSR0, &reg);
+>>>>>>> refs/remotes/origin/master
 		reg &= mask;
 
 		if (reg && reg == mask)
@@ -357,8 +428,13 @@ static int rt61pci_config_shared_key(struct rt2x00_dev *rt2x00dev,
 		       sizeof(key_entry.rx_mic));
 
 		reg = SHARED_KEY_ENTRY(key->hw_key_idx);
+<<<<<<< HEAD
 		rt2x00pci_register_multiwrite(rt2x00dev, reg,
 					      &key_entry, sizeof(key_entry));
+=======
+		rt2x00mmio_register_multiwrite(rt2x00dev, reg,
+					       &key_entry, sizeof(key_entry));
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * The cipher types are stored over 2 registers.
@@ -371,16 +447,28 @@ static int rt61pci_config_shared_key(struct rt2x00_dev *rt2x00dev,
 			field.bit_offset = (3 * key->hw_key_idx);
 			field.bit_mask = 0x7 << field.bit_offset;
 
+<<<<<<< HEAD
 			rt2x00pci_register_read(rt2x00dev, SEC_CSR1, &reg);
 			rt2x00_set_field32(&reg, field, crypto->cipher);
 			rt2x00pci_register_write(rt2x00dev, SEC_CSR1, reg);
+=======
+			rt2x00mmio_register_read(rt2x00dev, SEC_CSR1, &reg);
+			rt2x00_set_field32(&reg, field, crypto->cipher);
+			rt2x00mmio_register_write(rt2x00dev, SEC_CSR1, reg);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			field.bit_offset = (3 * (key->hw_key_idx - 8));
 			field.bit_mask = 0x7 << field.bit_offset;
 
+<<<<<<< HEAD
 			rt2x00pci_register_read(rt2x00dev, SEC_CSR5, &reg);
 			rt2x00_set_field32(&reg, field, crypto->cipher);
 			rt2x00pci_register_write(rt2x00dev, SEC_CSR5, reg);
+=======
+			rt2x00mmio_register_read(rt2x00dev, SEC_CSR5, &reg);
+			rt2x00_set_field32(&reg, field, crypto->cipher);
+			rt2x00mmio_register_write(rt2x00dev, SEC_CSR5, reg);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/*
@@ -403,12 +491,20 @@ static int rt61pci_config_shared_key(struct rt2x00_dev *rt2x00dev,
 	 */
 	mask = 1 << key->hw_key_idx;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, SEC_CSR0, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, SEC_CSR0, &reg);
+>>>>>>> refs/remotes/origin/master
 	if (crypto->cmd == SET_KEY)
 		reg |= mask;
 	else if (crypto->cmd == DISABLE_KEY)
 		reg &= ~mask;
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, SEC_CSR0, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, SEC_CSR0, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -432,10 +528,17 @@ static int rt61pci_config_pairwise_key(struct rt2x00_dev *rt2x00dev,
 		 * When both registers are full, we drop the key.
 		 * Otherwise, we use the first invalid entry.
 		 */
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, SEC_CSR2, &reg);
 		if (reg && reg == ~0) {
 			key->hw_key_idx = 32;
 			rt2x00pci_register_read(rt2x00dev, SEC_CSR3, &reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, SEC_CSR2, &reg);
+		if (reg && reg == ~0) {
+			key->hw_key_idx = 32;
+			rt2x00mmio_register_read(rt2x00dev, SEC_CSR3, &reg);
+>>>>>>> refs/remotes/origin/master
 			if (reg && reg == ~0)
 				return -ENOSPC;
 		}
@@ -457,21 +560,36 @@ static int rt61pci_config_pairwise_key(struct rt2x00_dev *rt2x00dev,
 		addr_entry.cipher = crypto->cipher;
 
 		reg = PAIRWISE_KEY_ENTRY(key->hw_key_idx);
+<<<<<<< HEAD
 		rt2x00pci_register_multiwrite(rt2x00dev, reg,
 					      &key_entry, sizeof(key_entry));
 
 		reg = PAIRWISE_TA_ENTRY(key->hw_key_idx);
 		rt2x00pci_register_multiwrite(rt2x00dev, reg,
 					      &addr_entry, sizeof(addr_entry));
+=======
+		rt2x00mmio_register_multiwrite(rt2x00dev, reg,
+					       &key_entry, sizeof(key_entry));
+
+		reg = PAIRWISE_TA_ENTRY(key->hw_key_idx);
+		rt2x00mmio_register_multiwrite(rt2x00dev, reg,
+					       &addr_entry, sizeof(addr_entry));
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Enable pairwise lookup table for given BSS idx.
 		 * Without this, received frames will not be decrypted
 		 * by the hardware.
 		 */
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, SEC_CSR4, &reg);
 		reg |= (1 << crypto->bssidx);
 		rt2x00pci_register_write(rt2x00dev, SEC_CSR4, reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, SEC_CSR4, &reg);
+		reg |= (1 << crypto->bssidx);
+		rt2x00mmio_register_write(rt2x00dev, SEC_CSR4, reg);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * The driver does not support the IV/EIV generation
@@ -494,21 +612,37 @@ static int rt61pci_config_pairwise_key(struct rt2x00_dev *rt2x00dev,
 	if (key->hw_key_idx < 32) {
 		mask = 1 << key->hw_key_idx;
 
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, SEC_CSR2, &reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, SEC_CSR2, &reg);
+>>>>>>> refs/remotes/origin/master
 		if (crypto->cmd == SET_KEY)
 			reg |= mask;
 		else if (crypto->cmd == DISABLE_KEY)
 			reg &= ~mask;
+<<<<<<< HEAD
 		rt2x00pci_register_write(rt2x00dev, SEC_CSR2, reg);
 	} else {
 		mask = 1 << (key->hw_key_idx - 32);
 
 		rt2x00pci_register_read(rt2x00dev, SEC_CSR3, &reg);
+=======
+		rt2x00mmio_register_write(rt2x00dev, SEC_CSR2, reg);
+	} else {
+		mask = 1 << (key->hw_key_idx - 32);
+
+		rt2x00mmio_register_read(rt2x00dev, SEC_CSR3, &reg);
+>>>>>>> refs/remotes/origin/master
 		if (crypto->cmd == SET_KEY)
 			reg |= mask;
 		else if (crypto->cmd == DISABLE_KEY)
 			reg &= ~mask;
+<<<<<<< HEAD
 		rt2x00pci_register_write(rt2x00dev, SEC_CSR3, reg);
+=======
+		rt2x00mmio_register_write(rt2x00dev, SEC_CSR3, reg);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -525,7 +659,11 @@ static void rt61pci_config_filter(struct rt2x00_dev *rt2x00dev,
 	 * and broadcast frames will always be accepted since
 	 * there is no filter for it at this time.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR0, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR0, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, TXRX_CSR0_DROP_CRC,
 			   !(filter_flags & FIF_FCSFAIL));
 	rt2x00_set_field32(&reg, TXRX_CSR0_DROP_PHYSICAL,
@@ -543,7 +681,11 @@ static void rt61pci_config_filter(struct rt2x00_dev *rt2x00dev,
 	rt2x00_set_field32(&reg, TXRX_CSR0_DROP_BROADCAST, 0);
 	rt2x00_set_field32(&reg, TXRX_CSR0_DROP_ACK_CTS,
 			   !(filter_flags & FIF_CONTROL));
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR0, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR0, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rt61pci_config_intf(struct rt2x00_dev *rt2x00dev,
@@ -557,9 +699,15 @@ static void rt61pci_config_intf(struct rt2x00_dev *rt2x00dev,
 		/*
 		 * Enable synchronisation.
 		 */
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, TXRX_CSR9, &reg);
 		rt2x00_set_field32(&reg, TXRX_CSR9_TSF_SYNC, conf->sync);
 		rt2x00pci_register_write(rt2x00dev, TXRX_CSR9, reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, TXRX_CSR9, &reg);
+		rt2x00_set_field32(&reg, TXRX_CSR9_TSF_SYNC, conf->sync);
+		rt2x00mmio_register_write(rt2x00dev, TXRX_CSR9, reg);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (flags & CONFIG_UPDATE_MAC) {
@@ -567,8 +715,13 @@ static void rt61pci_config_intf(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&reg, MAC_CSR3_UNICAST_TO_ME_MASK, 0xff);
 		conf->mac[1] = cpu_to_le32(reg);
 
+<<<<<<< HEAD
 		rt2x00pci_register_multiwrite(rt2x00dev, MAC_CSR2,
 					      conf->mac, sizeof(conf->mac));
+=======
+		rt2x00mmio_register_multiwrite(rt2x00dev, MAC_CSR2,
+					       conf->mac, sizeof(conf->mac));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (flags & CONFIG_UPDATE_BSSID) {
@@ -576,8 +729,14 @@ static void rt61pci_config_intf(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&reg, MAC_CSR5_BSS_ID_MASK, 3);
 		conf->bssid[1] = cpu_to_le32(reg);
 
+<<<<<<< HEAD
 		rt2x00pci_register_multiwrite(rt2x00dev, MAC_CSR4,
 					      conf->bssid, sizeof(conf->bssid));
+=======
+		rt2x00mmio_register_multiwrite(rt2x00dev, MAC_CSR4,
+					       conf->bssid,
+					       sizeof(conf->bssid));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -587,6 +746,7 @@ static void rt61pci_config_erp(struct rt2x00_dev *rt2x00dev,
 {
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR0, &reg);
 	rt2x00_set_field32(&reg, TXRX_CSR0_RX_ACK_TIMEOUT, 0x32);
 	rt2x00_set_field32(&reg, TXRX_CSR0_TSF_OFFSET, IEEE80211_HEADER);
@@ -621,6 +781,42 @@ static void rt61pci_config_erp(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&reg, MAC_CSR8_SIFS_AFTER_RX_OFDM, 3);
 		rt2x00_set_field32(&reg, MAC_CSR8_EIFS, erp->eifs);
 		rt2x00pci_register_write(rt2x00dev, MAC_CSR8, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR0, &reg);
+	rt2x00_set_field32(&reg, TXRX_CSR0_RX_ACK_TIMEOUT, 0x32);
+	rt2x00_set_field32(&reg, TXRX_CSR0_TSF_OFFSET, IEEE80211_HEADER);
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR0, reg);
+
+	if (changed & BSS_CHANGED_ERP_PREAMBLE) {
+		rt2x00mmio_register_read(rt2x00dev, TXRX_CSR4, &reg);
+		rt2x00_set_field32(&reg, TXRX_CSR4_AUTORESPOND_ENABLE, 1);
+		rt2x00_set_field32(&reg, TXRX_CSR4_AUTORESPOND_PREAMBLE,
+				   !!erp->short_preamble);
+		rt2x00mmio_register_write(rt2x00dev, TXRX_CSR4, reg);
+	}
+
+	if (changed & BSS_CHANGED_BASIC_RATES)
+		rt2x00mmio_register_write(rt2x00dev, TXRX_CSR5,
+					  erp->basic_rates);
+
+	if (changed & BSS_CHANGED_BEACON_INT) {
+		rt2x00mmio_register_read(rt2x00dev, TXRX_CSR9, &reg);
+		rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_INTERVAL,
+				   erp->beacon_int * 16);
+		rt2x00mmio_register_write(rt2x00dev, TXRX_CSR9, reg);
+	}
+
+	if (changed & BSS_CHANGED_ERP_SLOT) {
+		rt2x00mmio_register_read(rt2x00dev, MAC_CSR9, &reg);
+		rt2x00_set_field32(&reg, MAC_CSR9_SLOT_TIME, erp->slot_time);
+		rt2x00mmio_register_write(rt2x00dev, MAC_CSR9, reg);
+
+		rt2x00mmio_register_read(rt2x00dev, MAC_CSR8, &reg);
+		rt2x00_set_field32(&reg, MAC_CSR8_SIFS, erp->sifs);
+		rt2x00_set_field32(&reg, MAC_CSR8_SIFS_AFTER_RX_OFDM, 3);
+		rt2x00_set_field32(&reg, MAC_CSR8_EIFS, erp->eifs);
+		rt2x00mmio_register_write(rt2x00dev, MAC_CSR8, reg);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -683,7 +879,11 @@ static void rt61pci_config_antenna_2x(struct rt2x00_dev *rt2x00dev,
 
 	rt2x00_set_field8(&r3, BBP_R3_SMART_MODE, rt2x00_rf(rt2x00dev, RF2529));
 	rt2x00_set_field8(&r4, BBP_R4_RX_FRAME_END,
+<<<<<<< HEAD
 			  !test_bit(CAPABILITY_FRAME_TYPE, &rt2x00dev->cap_flags));
+=======
+			  !rt2x00_has_cap_frame_type(rt2x00dev));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Configure the RX antenna.
@@ -713,6 +913,7 @@ static void rt61pci_config_antenna_2529_rx(struct rt2x00_dev *rt2x00dev,
 {
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, MAC_CSR13, &reg);
 
 	rt2x00_set_field32(&reg, MAC_CSR13_BIT4, p1);
@@ -722,6 +923,17 @@ static void rt61pci_config_antenna_2529_rx(struct rt2x00_dev *rt2x00dev,
 	rt2x00_set_field32(&reg, MAC_CSR13_BIT11, 0);
 
 	rt2x00pci_register_write(rt2x00dev, MAC_CSR13, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR13, &reg);
+
+	rt2x00_set_field32(&reg, MAC_CSR13_DIR4, 0);
+	rt2x00_set_field32(&reg, MAC_CSR13_VAL4, p1);
+
+	rt2x00_set_field32(&reg, MAC_CSR13_DIR3, 0);
+	rt2x00_set_field32(&reg, MAC_CSR13_VAL3, !p2);
+
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR13, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rt61pci_config_antenna_2529(struct rt2x00_dev *rt2x00dev,
@@ -811,30 +1023,49 @@ static void rt61pci_config_ant(struct rt2x00_dev *rt2x00dev,
 
 	if (rt2x00dev->curr_band == IEEE80211_BAND_5GHZ) {
 		sel = antenna_sel_a;
+<<<<<<< HEAD
 		lna = test_bit(CAPABILITY_EXTERNAL_LNA_A, &rt2x00dev->cap_flags);
 	} else {
 		sel = antenna_sel_bg;
 		lna = test_bit(CAPABILITY_EXTERNAL_LNA_BG, &rt2x00dev->cap_flags);
+=======
+		lna = rt2x00_has_cap_external_lna_a(rt2x00dev);
+	} else {
+		sel = antenna_sel_bg;
+		lna = rt2x00_has_cap_external_lna_bg(rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < ARRAY_SIZE(antenna_sel_a); i++)
 		rt61pci_bbp_write(rt2x00dev, sel[i].word, sel[i].value[lna]);
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, PHY_CSR0, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, PHY_CSR0, &reg);
+>>>>>>> refs/remotes/origin/master
 
 	rt2x00_set_field32(&reg, PHY_CSR0_PA_PE_BG,
 			   rt2x00dev->curr_band == IEEE80211_BAND_2GHZ);
 	rt2x00_set_field32(&reg, PHY_CSR0_PA_PE_A,
 			   rt2x00dev->curr_band == IEEE80211_BAND_5GHZ);
 
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, PHY_CSR0, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, PHY_CSR0, reg);
+>>>>>>> refs/remotes/origin/master
 
 	if (rt2x00_rf(rt2x00dev, RF5225) || rt2x00_rf(rt2x00dev, RF5325))
 		rt61pci_config_antenna_5x(rt2x00dev, ant);
 	else if (rt2x00_rf(rt2x00dev, RF2527))
 		rt61pci_config_antenna_2x(rt2x00dev, ant);
 	else if (rt2x00_rf(rt2x00dev, RF2529)) {
+<<<<<<< HEAD
 		if (test_bit(CAPABILITY_DOUBLE_ANTENNA, &rt2x00dev->cap_flags))
+=======
+		if (rt2x00_has_cap_double_antenna(rt2x00dev))
+>>>>>>> refs/remotes/origin/master
 			rt61pci_config_antenna_2x(rt2x00dev, ant);
 		else
 			rt61pci_config_antenna_2529(rt2x00dev, ant);
@@ -847,14 +1078,23 @@ static void rt61pci_config_lna_gain(struct rt2x00_dev *rt2x00dev,
 	u16 eeprom;
 	short lna_gain = 0;
 
+<<<<<<< HEAD
 	if (libconf->conf->channel->band == IEEE80211_BAND_2GHZ) {
 		if (test_bit(CAPABILITY_EXTERNAL_LNA_BG, &rt2x00dev->cap_flags))
+=======
+	if (libconf->conf->chandef.chan->band == IEEE80211_BAND_2GHZ) {
+		if (rt2x00_has_cap_external_lna_bg(rt2x00dev))
+>>>>>>> refs/remotes/origin/master
 			lna_gain += 14;
 
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_RSSI_OFFSET_BG, &eeprom);
 		lna_gain -= rt2x00_get_field16(eeprom, EEPROM_RSSI_OFFSET_BG_1);
 	} else {
+<<<<<<< HEAD
 		if (test_bit(CAPABILITY_EXTERNAL_LNA_A, &rt2x00dev->cap_flags))
+=======
+		if (rt2x00_has_cap_external_lna_a(rt2x00dev))
+>>>>>>> refs/remotes/origin/master
 			lna_gain += 14;
 
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_RSSI_OFFSET_A, &eeprom);
@@ -927,7 +1167,11 @@ static void rt61pci_config_retry_limit(struct rt2x00_dev *rt2x00dev,
 {
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR4, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR4, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, TXRX_CSR4_OFDM_TX_RATE_DOWN, 1);
 	rt2x00_set_field32(&reg, TXRX_CSR4_OFDM_TX_RATE_STEP, 0);
 	rt2x00_set_field32(&reg, TXRX_CSR4_OFDM_TX_FALLBACK_CCK, 0);
@@ -935,7 +1179,11 @@ static void rt61pci_config_retry_limit(struct rt2x00_dev *rt2x00dev,
 			   libconf->conf->long_frame_max_tx_count);
 	rt2x00_set_field32(&reg, TXRX_CSR4_SHORT_RETRY_LIMIT,
 			   libconf->conf->short_frame_max_tx_count);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR4, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR4, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rt61pci_config_ps(struct rt2x00_dev *rt2x00dev,
@@ -947,7 +1195,11 @@ static void rt61pci_config_ps(struct rt2x00_dev *rt2x00dev,
 	u32 reg;
 
 	if (state == STATE_SLEEP) {
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, MAC_CSR11, &reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, MAC_CSR11, &reg);
+>>>>>>> refs/remotes/origin/master
 		rt2x00_set_field32(&reg, MAC_CSR11_DELAY_AFTER_TBCN,
 				   rt2x00dev->beacon_int - 10);
 		rt2x00_set_field32(&reg, MAC_CSR11_TBCN_BEFORE_WAKEUP,
@@ -956,6 +1208,7 @@ static void rt61pci_config_ps(struct rt2x00_dev *rt2x00dev,
 
 		/* We must first disable autowake before it can be enabled */
 		rt2x00_set_field32(&reg, MAC_CSR11_AUTOWAKE, 0);
+<<<<<<< HEAD
 		rt2x00pci_register_write(rt2x00dev, MAC_CSR11, reg);
 
 		rt2x00_set_field32(&reg, MAC_CSR11_AUTOWAKE, 1);
@@ -968,15 +1221,39 @@ static void rt61pci_config_ps(struct rt2x00_dev *rt2x00dev,
 		rt61pci_mcu_request(rt2x00dev, MCU_SLEEP, 0xff, 0, 0);
 	} else {
 		rt2x00pci_register_read(rt2x00dev, MAC_CSR11, &reg);
+=======
+		rt2x00mmio_register_write(rt2x00dev, MAC_CSR11, reg);
+
+		rt2x00_set_field32(&reg, MAC_CSR11_AUTOWAKE, 1);
+		rt2x00mmio_register_write(rt2x00dev, MAC_CSR11, reg);
+
+		rt2x00mmio_register_write(rt2x00dev, SOFT_RESET_CSR,
+					  0x00000005);
+		rt2x00mmio_register_write(rt2x00dev, IO_CNTL_CSR, 0x0000001c);
+		rt2x00mmio_register_write(rt2x00dev, PCI_USEC_CSR, 0x00000060);
+
+		rt61pci_mcu_request(rt2x00dev, MCU_SLEEP, 0xff, 0, 0);
+	} else {
+		rt2x00mmio_register_read(rt2x00dev, MAC_CSR11, &reg);
+>>>>>>> refs/remotes/origin/master
 		rt2x00_set_field32(&reg, MAC_CSR11_DELAY_AFTER_TBCN, 0);
 		rt2x00_set_field32(&reg, MAC_CSR11_TBCN_BEFORE_WAKEUP, 0);
 		rt2x00_set_field32(&reg, MAC_CSR11_AUTOWAKE, 0);
 		rt2x00_set_field32(&reg, MAC_CSR11_WAKEUP_LATENCY, 0);
+<<<<<<< HEAD
 		rt2x00pci_register_write(rt2x00dev, MAC_CSR11, reg);
 
 		rt2x00pci_register_write(rt2x00dev, SOFT_RESET_CSR, 0x00000007);
 		rt2x00pci_register_write(rt2x00dev, IO_CNTL_CSR, 0x00000018);
 		rt2x00pci_register_write(rt2x00dev, PCI_USEC_CSR, 0x00000020);
+=======
+		rt2x00mmio_register_write(rt2x00dev, MAC_CSR11, reg);
+
+		rt2x00mmio_register_write(rt2x00dev, SOFT_RESET_CSR,
+					  0x00000007);
+		rt2x00mmio_register_write(rt2x00dev, IO_CNTL_CSR, 0x00000018);
+		rt2x00mmio_register_write(rt2x00dev, PCI_USEC_CSR, 0x00000020);
+>>>>>>> refs/remotes/origin/master
 
 		rt61pci_mcu_request(rt2x00dev, MCU_WAKEUP, 0xff, 0, 0);
 	}
@@ -1012,13 +1289,21 @@ static void rt61pci_link_stats(struct rt2x00_dev *rt2x00dev,
 	/*
 	 * Update FCS error count from register.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, STA_CSR0, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, STA_CSR0, &reg);
+>>>>>>> refs/remotes/origin/master
 	qual->rx_failed = rt2x00_get_field32(reg, STA_CSR0_FCS_ERROR);
 
 	/*
 	 * Update False CCA count from register.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, STA_CSR1, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, STA_CSR1, &reg);
+>>>>>>> refs/remotes/origin/master
 	qual->false_cca = rt2x00_get_field32(reg, STA_CSR1_FALSE_CCA_ERROR);
 }
 
@@ -1050,14 +1335,22 @@ static void rt61pci_link_tuner(struct rt2x00_dev *rt2x00dev,
 	if (rt2x00dev->curr_band == IEEE80211_BAND_5GHZ) {
 		low_bound = 0x28;
 		up_bound = 0x48;
+<<<<<<< HEAD
 		if (test_bit(CAPABILITY_EXTERNAL_LNA_A, &rt2x00dev->cap_flags)) {
+=======
+		if (rt2x00_has_cap_external_lna_a(rt2x00dev)) {
+>>>>>>> refs/remotes/origin/master
 			low_bound += 0x10;
 			up_bound += 0x10;
 		}
 	} else {
 		low_bound = 0x20;
 		up_bound = 0x40;
+<<<<<<< HEAD
 		if (test_bit(CAPABILITY_EXTERNAL_LNA_BG, &rt2x00dev->cap_flags)) {
+=======
+		if (rt2x00_has_cap_external_lna_bg(rt2x00dev)) {
+>>>>>>> refs/remotes/origin/master
 			low_bound += 0x10;
 			up_bound += 0x10;
 		}
@@ -1137,21 +1430,37 @@ static void rt61pci_start_queue(struct data_queue *queue)
 
 	switch (queue->qid) {
 	case QID_RX:
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, TXRX_CSR0, &reg);
 		rt2x00_set_field32(&reg, TXRX_CSR0_DISABLE_RX, 0);
 		rt2x00pci_register_write(rt2x00dev, TXRX_CSR0, reg);
 		break;
 	case QID_BEACON:
+<<<<<<< HEAD
 		/*
 		 * Allow the tbtt tasklet to be scheduled.
 		 */
 		tasklet_enable(&rt2x00dev->tbtt_tasklet);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		rt2x00pci_register_read(rt2x00dev, TXRX_CSR9, &reg);
 		rt2x00_set_field32(&reg, TXRX_CSR9_TSF_TICKING, 1);
 		rt2x00_set_field32(&reg, TXRX_CSR9_TBTT_ENABLE, 1);
 		rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 1);
 		rt2x00pci_register_write(rt2x00dev, TXRX_CSR9, reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, TXRX_CSR0, &reg);
+		rt2x00_set_field32(&reg, TXRX_CSR0_DISABLE_RX, 0);
+		rt2x00mmio_register_write(rt2x00dev, TXRX_CSR0, reg);
+		break;
+	case QID_BEACON:
+		rt2x00mmio_register_read(rt2x00dev, TXRX_CSR9, &reg);
+		rt2x00_set_field32(&reg, TXRX_CSR9_TSF_TICKING, 1);
+		rt2x00_set_field32(&reg, TXRX_CSR9_TBTT_ENABLE, 1);
+		rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 1);
+		rt2x00mmio_register_write(rt2x00dev, TXRX_CSR9, reg);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
@@ -1165,6 +1474,7 @@ static void rt61pci_kick_queue(struct data_queue *queue)
 
 	switch (queue->qid) {
 	case QID_AC_VO:
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
 		rt2x00_set_field32(&reg, TX_CNTL_CSR_KICK_TX_AC0, 1);
 		rt2x00pci_register_write(rt2x00dev, TX_CNTL_CSR, reg);
@@ -1183,6 +1493,26 @@ static void rt61pci_kick_queue(struct data_queue *queue)
 		rt2x00pci_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
 		rt2x00_set_field32(&reg, TX_CNTL_CSR_KICK_TX_AC3, 1);
 		rt2x00pci_register_write(rt2x00dev, TX_CNTL_CSR, reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
+		rt2x00_set_field32(&reg, TX_CNTL_CSR_KICK_TX_AC0, 1);
+		rt2x00mmio_register_write(rt2x00dev, TX_CNTL_CSR, reg);
+		break;
+	case QID_AC_VI:
+		rt2x00mmio_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
+		rt2x00_set_field32(&reg, TX_CNTL_CSR_KICK_TX_AC1, 1);
+		rt2x00mmio_register_write(rt2x00dev, TX_CNTL_CSR, reg);
+		break;
+	case QID_AC_BE:
+		rt2x00mmio_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
+		rt2x00_set_field32(&reg, TX_CNTL_CSR_KICK_TX_AC2, 1);
+		rt2x00mmio_register_write(rt2x00dev, TX_CNTL_CSR, reg);
+		break;
+	case QID_AC_BK:
+		rt2x00mmio_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
+		rt2x00_set_field32(&reg, TX_CNTL_CSR_KICK_TX_AC3, 1);
+		rt2x00mmio_register_write(rt2x00dev, TX_CNTL_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
@@ -1196,6 +1526,7 @@ static void rt61pci_stop_queue(struct data_queue *queue)
 
 	switch (queue->qid) {
 	case QID_AC_VO:
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
 		rt2x00_set_field32(&reg, TX_CNTL_CSR_ABORT_TX_AC0, 1);
 		rt2x00pci_register_write(rt2x00dev, TX_CNTL_CSR, reg);
@@ -1226,11 +1557,51 @@ static void rt61pci_stop_queue(struct data_queue *queue)
 		rt2x00_set_field32(&reg, TXRX_CSR9_TBTT_ENABLE, 0);
 		rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 0);
 		rt2x00pci_register_write(rt2x00dev, TXRX_CSR9, reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
+		rt2x00_set_field32(&reg, TX_CNTL_CSR_ABORT_TX_AC0, 1);
+		rt2x00mmio_register_write(rt2x00dev, TX_CNTL_CSR, reg);
+		break;
+	case QID_AC_VI:
+		rt2x00mmio_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
+		rt2x00_set_field32(&reg, TX_CNTL_CSR_ABORT_TX_AC1, 1);
+		rt2x00mmio_register_write(rt2x00dev, TX_CNTL_CSR, reg);
+		break;
+	case QID_AC_BE:
+		rt2x00mmio_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
+		rt2x00_set_field32(&reg, TX_CNTL_CSR_ABORT_TX_AC2, 1);
+		rt2x00mmio_register_write(rt2x00dev, TX_CNTL_CSR, reg);
+		break;
+	case QID_AC_BK:
+		rt2x00mmio_register_read(rt2x00dev, TX_CNTL_CSR, &reg);
+		rt2x00_set_field32(&reg, TX_CNTL_CSR_ABORT_TX_AC3, 1);
+		rt2x00mmio_register_write(rt2x00dev, TX_CNTL_CSR, reg);
+		break;
+	case QID_RX:
+		rt2x00mmio_register_read(rt2x00dev, TXRX_CSR0, &reg);
+		rt2x00_set_field32(&reg, TXRX_CSR0_DISABLE_RX, 1);
+		rt2x00mmio_register_write(rt2x00dev, TXRX_CSR0, reg);
+		break;
+	case QID_BEACON:
+		rt2x00mmio_register_read(rt2x00dev, TXRX_CSR9, &reg);
+		rt2x00_set_field32(&reg, TXRX_CSR9_TSF_TICKING, 0);
+		rt2x00_set_field32(&reg, TXRX_CSR9_TBTT_ENABLE, 0);
+		rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 0);
+		rt2x00mmio_register_write(rt2x00dev, TXRX_CSR9, reg);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Wait for possibly running tbtt tasklets.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		tasklet_disable(&rt2x00dev->tbtt_tasklet);
+=======
+		tasklet_kill(&rt2x00dev->tbtt_tasklet);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tasklet_kill(&rt2x00dev->tbtt_tasklet);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
@@ -1303,14 +1674,22 @@ static int rt61pci_load_firmware(struct rt2x00_dev *rt2x00dev,
 	 * Wait for stable hardware.
 	 */
 	for (i = 0; i < 100; i++) {
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, MAC_CSR0, &reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, MAC_CSR0, &reg);
+>>>>>>> refs/remotes/origin/master
 		if (reg)
 			break;
 		msleep(1);
 	}
 
 	if (!reg) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Unstable hardware.\n");
+=======
+		rt2x00_err(rt2x00dev, "Unstable hardware\n");
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
@@ -1319,10 +1698,17 @@ static int rt61pci_load_firmware(struct rt2x00_dev *rt2x00dev,
 	 */
 	reg = 0;
 	rt2x00_set_field32(&reg, MCU_CNTL_CSR_RESET, 1);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, MCU_CNTL_CSR, reg);
 	rt2x00pci_register_write(rt2x00dev, M2H_CMD_DONE_CSR, 0xffffffff);
 	rt2x00pci_register_write(rt2x00dev, H2M_MAILBOX_CSR, 0);
 	rt2x00pci_register_write(rt2x00dev, HOST_CMD_CSR, 0);
+=======
+	rt2x00mmio_register_write(rt2x00dev, MCU_CNTL_CSR, reg);
+	rt2x00mmio_register_write(rt2x00dev, M2H_CMD_DONE_CSR, 0xffffffff);
+	rt2x00mmio_register_write(rt2x00dev, H2M_MAILBOX_CSR, 0);
+	rt2x00mmio_register_write(rt2x00dev, HOST_CMD_CSR, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Write firmware to device.
@@ -1330,6 +1716,7 @@ static int rt61pci_load_firmware(struct rt2x00_dev *rt2x00dev,
 	reg = 0;
 	rt2x00_set_field32(&reg, MCU_CNTL_CSR_RESET, 1);
 	rt2x00_set_field32(&reg, MCU_CNTL_CSR_SELECT_BANK, 1);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, MCU_CNTL_CSR, reg);
 
 	rt2x00pci_register_multiwrite(rt2x00dev, FIRMWARE_IMAGE_BASE,
@@ -1343,13 +1730,32 @@ static int rt61pci_load_firmware(struct rt2x00_dev *rt2x00dev,
 
 	for (i = 0; i < 100; i++) {
 		rt2x00pci_register_read(rt2x00dev, MCU_CNTL_CSR, &reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, MCU_CNTL_CSR, reg);
+
+	rt2x00mmio_register_multiwrite(rt2x00dev, FIRMWARE_IMAGE_BASE,
+				       data, len);
+
+	rt2x00_set_field32(&reg, MCU_CNTL_CSR_SELECT_BANK, 0);
+	rt2x00mmio_register_write(rt2x00dev, MCU_CNTL_CSR, reg);
+
+	rt2x00_set_field32(&reg, MCU_CNTL_CSR_RESET, 0);
+	rt2x00mmio_register_write(rt2x00dev, MCU_CNTL_CSR, reg);
+
+	for (i = 0; i < 100; i++) {
+		rt2x00mmio_register_read(rt2x00dev, MCU_CNTL_CSR, &reg);
+>>>>>>> refs/remotes/origin/master
 		if (rt2x00_get_field32(reg, MCU_CNTL_CSR_READY))
 			break;
 		msleep(1);
 	}
 
 	if (i == 100) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "MCU Control register not ready.\n");
+=======
+		rt2x00_err(rt2x00dev, "MCU Control register not ready\n");
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
@@ -1364,6 +1770,7 @@ static int rt61pci_load_firmware(struct rt2x00_dev *rt2x00dev,
 	reg = 0;
 	rt2x00_set_field32(&reg, MAC_CSR1_SOFT_RESET, 1);
 	rt2x00_set_field32(&reg, MAC_CSR1_BBP_RESET, 1);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, MAC_CSR1, reg);
 
 	rt2x00pci_register_read(rt2x00dev, MAC_CSR1, &reg);
@@ -1374,6 +1781,18 @@ static int rt61pci_load_firmware(struct rt2x00_dev *rt2x00dev,
 	rt2x00pci_register_read(rt2x00dev, MAC_CSR1, &reg);
 	rt2x00_set_field32(&reg, MAC_CSR1_HOST_READY, 1);
 	rt2x00pci_register_write(rt2x00dev, MAC_CSR1, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR1, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR1, &reg);
+	rt2x00_set_field32(&reg, MAC_CSR1_SOFT_RESET, 0);
+	rt2x00_set_field32(&reg, MAC_CSR1_BBP_RESET, 0);
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR1, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR1, &reg);
+	rt2x00_set_field32(&reg, MAC_CSR1_HOST_READY, 1);
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR1, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1383,7 +1802,11 @@ static int rt61pci_load_firmware(struct rt2x00_dev *rt2x00dev,
  */
 static bool rt61pci_get_entry_state(struct queue_entry *entry)
 {
+<<<<<<< HEAD
 	struct queue_entry_priv_pci *entry_priv = entry->priv_data;
+=======
+	struct queue_entry_priv_mmio *entry_priv = entry->priv_data;
+>>>>>>> refs/remotes/origin/master
 	u32 word;
 
 	if (entry->queue->qid == QID_RX) {
@@ -1400,7 +1823,11 @@ static bool rt61pci_get_entry_state(struct queue_entry *entry)
 
 static void rt61pci_clear_entry(struct queue_entry *entry)
 {
+<<<<<<< HEAD
 	struct queue_entry_priv_pci *entry_priv = entry->priv_data;
+=======
+	struct queue_entry_priv_mmio *entry_priv = entry->priv_data;
+>>>>>>> refs/remotes/origin/master
 	struct skb_frame_desc *skbdesc = get_skb_frame_desc(entry->skb);
 	u32 word;
 
@@ -1423,13 +1850,21 @@ static void rt61pci_clear_entry(struct queue_entry *entry)
 
 static int rt61pci_init_queues(struct rt2x00_dev *rt2x00dev)
 {
+<<<<<<< HEAD
 	struct queue_entry_priv_pci *entry_priv;
+=======
+	struct queue_entry_priv_mmio *entry_priv;
+>>>>>>> refs/remotes/origin/master
 	u32 reg;
 
 	/*
 	 * Initialize registers.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, TX_RING_CSR0, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, TX_RING_CSR0, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, TX_RING_CSR0_AC0_RING_SIZE,
 			   rt2x00dev->tx[0].limit);
 	rt2x00_set_field32(&reg, TX_RING_CSR0_AC1_RING_SIZE,
@@ -1438,6 +1873,7 @@ static int rt61pci_init_queues(struct rt2x00_dev *rt2x00dev)
 			   rt2x00dev->tx[2].limit);
 	rt2x00_set_field32(&reg, TX_RING_CSR0_AC3_RING_SIZE,
 			   rt2x00dev->tx[3].limit);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TX_RING_CSR0, reg);
 
 	rt2x00pci_register_read(rt2x00dev, TX_RING_CSR1, &reg);
@@ -1470,10 +1906,45 @@ static int rt61pci_init_queues(struct rt2x00_dev *rt2x00dev)
 	rt2x00pci_register_write(rt2x00dev, AC3_BASE_CSR, reg);
 
 	rt2x00pci_register_read(rt2x00dev, RX_RING_CSR, &reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TX_RING_CSR0, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, TX_RING_CSR1, &reg);
+	rt2x00_set_field32(&reg, TX_RING_CSR1_TXD_SIZE,
+			   rt2x00dev->tx[0].desc_size / 4);
+	rt2x00mmio_register_write(rt2x00dev, TX_RING_CSR1, reg);
+
+	entry_priv = rt2x00dev->tx[0].entries[0].priv_data;
+	rt2x00mmio_register_read(rt2x00dev, AC0_BASE_CSR, &reg);
+	rt2x00_set_field32(&reg, AC0_BASE_CSR_RING_REGISTER,
+			   entry_priv->desc_dma);
+	rt2x00mmio_register_write(rt2x00dev, AC0_BASE_CSR, reg);
+
+	entry_priv = rt2x00dev->tx[1].entries[0].priv_data;
+	rt2x00mmio_register_read(rt2x00dev, AC1_BASE_CSR, &reg);
+	rt2x00_set_field32(&reg, AC1_BASE_CSR_RING_REGISTER,
+			   entry_priv->desc_dma);
+	rt2x00mmio_register_write(rt2x00dev, AC1_BASE_CSR, reg);
+
+	entry_priv = rt2x00dev->tx[2].entries[0].priv_data;
+	rt2x00mmio_register_read(rt2x00dev, AC2_BASE_CSR, &reg);
+	rt2x00_set_field32(&reg, AC2_BASE_CSR_RING_REGISTER,
+			   entry_priv->desc_dma);
+	rt2x00mmio_register_write(rt2x00dev, AC2_BASE_CSR, reg);
+
+	entry_priv = rt2x00dev->tx[3].entries[0].priv_data;
+	rt2x00mmio_register_read(rt2x00dev, AC3_BASE_CSR, &reg);
+	rt2x00_set_field32(&reg, AC3_BASE_CSR_RING_REGISTER,
+			   entry_priv->desc_dma);
+	rt2x00mmio_register_write(rt2x00dev, AC3_BASE_CSR, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, RX_RING_CSR, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, RX_RING_CSR_RING_SIZE, rt2x00dev->rx->limit);
 	rt2x00_set_field32(&reg, RX_RING_CSR_RXD_SIZE,
 			   rt2x00dev->rx->desc_size / 4);
 	rt2x00_set_field32(&reg, RX_RING_CSR_RXD_WRITEBACK_SIZE, 4);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, RX_RING_CSR, reg);
 
 	entry_priv = rt2x00dev->rx->entries[0].priv_data;
@@ -1483,22 +1954,47 @@ static int rt61pci_init_queues(struct rt2x00_dev *rt2x00dev)
 	rt2x00pci_register_write(rt2x00dev, RX_BASE_CSR, reg);
 
 	rt2x00pci_register_read(rt2x00dev, TX_DMA_DST_CSR, &reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, RX_RING_CSR, reg);
+
+	entry_priv = rt2x00dev->rx->entries[0].priv_data;
+	rt2x00mmio_register_read(rt2x00dev, RX_BASE_CSR, &reg);
+	rt2x00_set_field32(&reg, RX_BASE_CSR_RING_REGISTER,
+			   entry_priv->desc_dma);
+	rt2x00mmio_register_write(rt2x00dev, RX_BASE_CSR, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, TX_DMA_DST_CSR, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, TX_DMA_DST_CSR_DEST_AC0, 2);
 	rt2x00_set_field32(&reg, TX_DMA_DST_CSR_DEST_AC1, 2);
 	rt2x00_set_field32(&reg, TX_DMA_DST_CSR_DEST_AC2, 2);
 	rt2x00_set_field32(&reg, TX_DMA_DST_CSR_DEST_AC3, 2);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TX_DMA_DST_CSR, reg);
 
 	rt2x00pci_register_read(rt2x00dev, LOAD_TX_RING_CSR, &reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TX_DMA_DST_CSR, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, LOAD_TX_RING_CSR, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, LOAD_TX_RING_CSR_LOAD_TXD_AC0, 1);
 	rt2x00_set_field32(&reg, LOAD_TX_RING_CSR_LOAD_TXD_AC1, 1);
 	rt2x00_set_field32(&reg, LOAD_TX_RING_CSR_LOAD_TXD_AC2, 1);
 	rt2x00_set_field32(&reg, LOAD_TX_RING_CSR_LOAD_TXD_AC3, 1);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, LOAD_TX_RING_CSR, reg);
 
 	rt2x00pci_register_read(rt2x00dev, RX_CNTL_CSR, &reg);
 	rt2x00_set_field32(&reg, RX_CNTL_CSR_LOAD_RXD, 1);
 	rt2x00pci_register_write(rt2x00dev, RX_CNTL_CSR, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, LOAD_TX_RING_CSR, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, RX_CNTL_CSR, &reg);
+	rt2x00_set_field32(&reg, RX_CNTL_CSR_LOAD_RXD, 1);
+	rt2x00mmio_register_write(rt2x00dev, RX_CNTL_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1507,6 +2003,7 @@ static int rt61pci_init_registers(struct rt2x00_dev *rt2x00dev)
 {
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR0, &reg);
 	rt2x00_set_field32(&reg, TXRX_CSR0_AUTO_TX_SEQ, 1);
 	rt2x00_set_field32(&reg, TXRX_CSR0_DISABLE_RX, 0);
@@ -1514,6 +2011,15 @@ static int rt61pci_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR0, reg);
 
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR1, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR0, &reg);
+	rt2x00_set_field32(&reg, TXRX_CSR0_AUTO_TX_SEQ, 1);
+	rt2x00_set_field32(&reg, TXRX_CSR0_DISABLE_RX, 0);
+	rt2x00_set_field32(&reg, TXRX_CSR0_TX_WITHOUT_WAITING, 0);
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR0, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR1, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, TXRX_CSR1_BBP_ID0, 47); /* CCK Signal */
 	rt2x00_set_field32(&reg, TXRX_CSR1_BBP_ID0_VALID, 1);
 	rt2x00_set_field32(&reg, TXRX_CSR1_BBP_ID1, 30); /* Rssi */
@@ -1522,12 +2028,20 @@ static int rt61pci_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00_set_field32(&reg, TXRX_CSR1_BBP_ID2_VALID, 1);
 	rt2x00_set_field32(&reg, TXRX_CSR1_BBP_ID3, 30); /* Rssi */
 	rt2x00_set_field32(&reg, TXRX_CSR1_BBP_ID3_VALID, 1);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR1, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR1, reg);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * CCK TXD BBP registers
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR2, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR2, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, TXRX_CSR2_BBP_ID0, 13);
 	rt2x00_set_field32(&reg, TXRX_CSR2_BBP_ID0_VALID, 1);
 	rt2x00_set_field32(&reg, TXRX_CSR2_BBP_ID1, 12);
@@ -1536,41 +2050,68 @@ static int rt61pci_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00_set_field32(&reg, TXRX_CSR2_BBP_ID2_VALID, 1);
 	rt2x00_set_field32(&reg, TXRX_CSR2_BBP_ID3, 10);
 	rt2x00_set_field32(&reg, TXRX_CSR2_BBP_ID3_VALID, 1);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR2, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR2, reg);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * OFDM TXD BBP registers
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR3, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR3, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, TXRX_CSR3_BBP_ID0, 7);
 	rt2x00_set_field32(&reg, TXRX_CSR3_BBP_ID0_VALID, 1);
 	rt2x00_set_field32(&reg, TXRX_CSR3_BBP_ID1, 6);
 	rt2x00_set_field32(&reg, TXRX_CSR3_BBP_ID1_VALID, 1);
 	rt2x00_set_field32(&reg, TXRX_CSR3_BBP_ID2, 5);
 	rt2x00_set_field32(&reg, TXRX_CSR3_BBP_ID2_VALID, 1);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR3, reg);
 
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR7, &reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR3, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR7, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, TXRX_CSR7_ACK_CTS_6MBS, 59);
 	rt2x00_set_field32(&reg, TXRX_CSR7_ACK_CTS_9MBS, 53);
 	rt2x00_set_field32(&reg, TXRX_CSR7_ACK_CTS_12MBS, 49);
 	rt2x00_set_field32(&reg, TXRX_CSR7_ACK_CTS_18MBS, 46);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR7, reg);
 
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR8, &reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR7, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR8, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, TXRX_CSR8_ACK_CTS_24MBS, 44);
 	rt2x00_set_field32(&reg, TXRX_CSR8_ACK_CTS_36MBS, 42);
 	rt2x00_set_field32(&reg, TXRX_CSR8_ACK_CTS_48MBS, 42);
 	rt2x00_set_field32(&reg, TXRX_CSR8_ACK_CTS_54MBS, 42);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR8, reg);
 
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR9, &reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR8, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR9, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_INTERVAL, 0);
 	rt2x00_set_field32(&reg, TXRX_CSR9_TSF_TICKING, 0);
 	rt2x00_set_field32(&reg, TXRX_CSR9_TSF_SYNC, 0);
 	rt2x00_set_field32(&reg, TXRX_CSR9_TBTT_ENABLE, 0);
 	rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 0);
 	rt2x00_set_field32(&reg, TXRX_CSR9_TIMESTAMP_COMPENSATE, 0);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR9, reg);
 
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR15, 0x0000000f);
@@ -1582,16 +2123,34 @@ static int rt61pci_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00pci_register_write(rt2x00dev, MAC_CSR9, reg);
 
 	rt2x00pci_register_write(rt2x00dev, MAC_CSR10, 0x0000071c);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR9, reg);
+
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR15, 0x0000000f);
+
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR6, 0x00000fff);
+
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR9, &reg);
+	rt2x00_set_field32(&reg, MAC_CSR9_CW_SELECT, 0);
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR9, reg);
+
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR10, 0x0000071c);
+>>>>>>> refs/remotes/origin/master
 
 	if (rt2x00dev->ops->lib->set_device_state(rt2x00dev, STATE_AWAKE))
 		return -EBUSY;
 
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, MAC_CSR13, 0x0000e000);
+=======
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR13, 0x0000e000);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Invalidate all Shared Keys (SEC_CSR0),
 	 * and clear the Shared key Cipher algorithms (SEC_CSR1 & SEC_CSR5)
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, SEC_CSR0, 0x00000000);
 	rt2x00pci_register_write(rt2x00dev, SEC_CSR1, 0x00000000);
 	rt2x00pci_register_write(rt2x00dev, SEC_CSR5, 0x00000000);
@@ -1606,6 +2165,22 @@ static int rt61pci_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00pci_register_write(rt2x00dev, TEST_MODE_CSR, 0x00000200);
 
 	rt2x00pci_register_write(rt2x00dev, M2H_CMD_DONE_CSR, 0xffffffff);
+=======
+	rt2x00mmio_register_write(rt2x00dev, SEC_CSR0, 0x00000000);
+	rt2x00mmio_register_write(rt2x00dev, SEC_CSR1, 0x00000000);
+	rt2x00mmio_register_write(rt2x00dev, SEC_CSR5, 0x00000000);
+
+	rt2x00mmio_register_write(rt2x00dev, PHY_CSR1, 0x000023b0);
+	rt2x00mmio_register_write(rt2x00dev, PHY_CSR5, 0x060a100c);
+	rt2x00mmio_register_write(rt2x00dev, PHY_CSR6, 0x00080606);
+	rt2x00mmio_register_write(rt2x00dev, PHY_CSR7, 0x00000a08);
+
+	rt2x00mmio_register_write(rt2x00dev, PCI_CFG_CSR, 0x28ca4404);
+
+	rt2x00mmio_register_write(rt2x00dev, TEST_MODE_CSR, 0x00000200);
+
+	rt2x00mmio_register_write(rt2x00dev, M2H_CMD_DONE_CSR, 0xffffffff);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Clear all beacons
@@ -1613,23 +2188,37 @@ static int rt61pci_init_registers(struct rt2x00_dev *rt2x00dev)
 	 * the first byte since that byte contains the VALID and OWNER
 	 * bits which (when set to 0) will invalidate the entire beacon.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, HW_BEACON_BASE0, 0);
 	rt2x00pci_register_write(rt2x00dev, HW_BEACON_BASE1, 0);
 	rt2x00pci_register_write(rt2x00dev, HW_BEACON_BASE2, 0);
 	rt2x00pci_register_write(rt2x00dev, HW_BEACON_BASE3, 0);
+=======
+	rt2x00mmio_register_write(rt2x00dev, HW_BEACON_BASE0, 0);
+	rt2x00mmio_register_write(rt2x00dev, HW_BEACON_BASE1, 0);
+	rt2x00mmio_register_write(rt2x00dev, HW_BEACON_BASE2, 0);
+	rt2x00mmio_register_write(rt2x00dev, HW_BEACON_BASE3, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We must clear the error counters.
 	 * These registers are cleared on read,
 	 * so we may pass a useless variable to store the value.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, STA_CSR0, &reg);
 	rt2x00pci_register_read(rt2x00dev, STA_CSR1, &reg);
 	rt2x00pci_register_read(rt2x00dev, STA_CSR2, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, STA_CSR0, &reg);
+	rt2x00mmio_register_read(rt2x00dev, STA_CSR1, &reg);
+	rt2x00mmio_register_read(rt2x00dev, STA_CSR2, &reg);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Reset MAC and BBP registers.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, MAC_CSR1, &reg);
 	rt2x00_set_field32(&reg, MAC_CSR1_SOFT_RESET, 1);
 	rt2x00_set_field32(&reg, MAC_CSR1_BBP_RESET, 1);
@@ -1643,6 +2232,21 @@ static int rt61pci_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00pci_register_read(rt2x00dev, MAC_CSR1, &reg);
 	rt2x00_set_field32(&reg, MAC_CSR1_HOST_READY, 1);
 	rt2x00pci_register_write(rt2x00dev, MAC_CSR1, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR1, &reg);
+	rt2x00_set_field32(&reg, MAC_CSR1_SOFT_RESET, 1);
+	rt2x00_set_field32(&reg, MAC_CSR1_BBP_RESET, 1);
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR1, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR1, &reg);
+	rt2x00_set_field32(&reg, MAC_CSR1_SOFT_RESET, 0);
+	rt2x00_set_field32(&reg, MAC_CSR1_BBP_RESET, 0);
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR1, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR1, &reg);
+	rt2x00_set_field32(&reg, MAC_CSR1_HOST_READY, 1);
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR1, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1659,7 +2263,11 @@ static int rt61pci_wait_bbp_ready(struct rt2x00_dev *rt2x00dev)
 		udelay(REGISTER_BUSY_DELAY);
 	}
 
+<<<<<<< HEAD
 	ERROR(rt2x00dev, "BBP register access failed, aborting.\n");
+=======
+	rt2x00_err(rt2x00dev, "BBP register access failed, aborting\n");
+>>>>>>> refs/remotes/origin/master
 	return -EACCES;
 }
 
@@ -1726,11 +2334,13 @@ static void rt61pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 	 * should clear the register to assure a clean state.
 	 */
 	if (state == STATE_RADIO_IRQ_ON) {
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, INT_SOURCE_CSR, &reg);
 		rt2x00pci_register_write(rt2x00dev, INT_SOURCE_CSR, reg);
 
 		rt2x00pci_register_read(rt2x00dev, MCU_INT_SOURCE_CSR, &reg);
 		rt2x00pci_register_write(rt2x00dev, MCU_INT_SOURCE_CSR, reg);
+<<<<<<< HEAD
 
 		/*
 		 * Enable tasklets.
@@ -1738,6 +2348,15 @@ static void rt61pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 		tasklet_enable(&rt2x00dev->txstatus_tasklet);
 		tasklet_enable(&rt2x00dev->rxdone_tasklet);
 		tasklet_enable(&rt2x00dev->autowake_tasklet);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rt2x00mmio_register_read(rt2x00dev, INT_SOURCE_CSR, &reg);
+		rt2x00mmio_register_write(rt2x00dev, INT_SOURCE_CSR, reg);
+
+		rt2x00mmio_register_read(rt2x00dev, MCU_INT_SOURCE_CSR, &reg);
+		rt2x00mmio_register_write(rt2x00dev, MCU_INT_SOURCE_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1746,15 +2365,25 @@ static void rt61pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 	 */
 	spin_lock_irqsave(&rt2x00dev->irqmask_lock, flags);
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, INT_MASK_CSR, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, INT_MASK_CSR, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, INT_MASK_CSR_TXDONE, mask);
 	rt2x00_set_field32(&reg, INT_MASK_CSR_RXDONE, mask);
 	rt2x00_set_field32(&reg, INT_MASK_CSR_BEACON_DONE, mask);
 	rt2x00_set_field32(&reg, INT_MASK_CSR_ENABLE_MITIGATION, mask);
 	rt2x00_set_field32(&reg, INT_MASK_CSR_MITIGATION_PERIOD, 0xff);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, INT_MASK_CSR, reg);
 
 	rt2x00pci_register_read(rt2x00dev, MCU_INT_MASK_CSR, &reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, INT_MASK_CSR, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, MCU_INT_MASK_CSR, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, MCU_INT_MASK_CSR_0, mask);
 	rt2x00_set_field32(&reg, MCU_INT_MASK_CSR_1, mask);
 	rt2x00_set_field32(&reg, MCU_INT_MASK_CSR_2, mask);
@@ -1764,7 +2393,11 @@ static void rt61pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 	rt2x00_set_field32(&reg, MCU_INT_MASK_CSR_6, mask);
 	rt2x00_set_field32(&reg, MCU_INT_MASK_CSR_7, mask);
 	rt2x00_set_field32(&reg, MCU_INT_MASK_CSR_TWAKEUP, mask);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, MCU_INT_MASK_CSR, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, MCU_INT_MASK_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&rt2x00dev->irqmask_lock, flags);
 
@@ -1772,9 +2405,22 @@ static void rt61pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 		/*
 		 * Ensure that all tasklets are finished.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		tasklet_disable(&rt2x00dev->txstatus_tasklet);
 		tasklet_disable(&rt2x00dev->rxdone_tasklet);
 		tasklet_disable(&rt2x00dev->autowake_tasklet);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		tasklet_kill(&rt2x00dev->txstatus_tasklet);
+		tasklet_kill(&rt2x00dev->rxdone_tasklet);
+		tasklet_kill(&rt2x00dev->autowake_tasklet);
+		tasklet_kill(&rt2x00dev->tbtt_tasklet);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1793,9 +2439,15 @@ static int rt61pci_enable_radio(struct rt2x00_dev *rt2x00dev)
 	/*
 	 * Enable RX.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, RX_CNTL_CSR, &reg);
 	rt2x00_set_field32(&reg, RX_CNTL_CSR_ENABLE_RX_DMA, 1);
 	rt2x00pci_register_write(rt2x00dev, RX_CNTL_CSR, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, RX_CNTL_CSR, &reg);
+	rt2x00_set_field32(&reg, RX_CNTL_CSR_ENABLE_RX_DMA, 1);
+	rt2x00mmio_register_write(rt2x00dev, RX_CNTL_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1805,7 +2457,11 @@ static void rt61pci_disable_radio(struct rt2x00_dev *rt2x00dev)
 	/*
 	 * Disable power
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, MAC_CSR10, 0x00001818);
+=======
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR10, 0x00001818);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int rt61pci_set_state(struct rt2x00_dev *rt2x00dev, enum dev_state state)
@@ -1816,10 +2472,17 @@ static int rt61pci_set_state(struct rt2x00_dev *rt2x00dev, enum dev_state state)
 
 	put_to_sleep = (state != STATE_AWAKE);
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, MAC_CSR12, &reg);
 	rt2x00_set_field32(&reg, MAC_CSR12_FORCE_WAKEUP, !put_to_sleep);
 	rt2x00_set_field32(&reg, MAC_CSR12_PUT_TO_SLEEP, put_to_sleep);
 	rt2x00pci_register_write(rt2x00dev, MAC_CSR12, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR12, &reg);
+	rt2x00_set_field32(&reg, MAC_CSR12_FORCE_WAKEUP, !put_to_sleep);
+	rt2x00_set_field32(&reg, MAC_CSR12_PUT_TO_SLEEP, put_to_sleep);
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR12, reg);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Device is not guaranteed to be in the requested state yet.
@@ -1827,11 +2490,19 @@ static int rt61pci_set_state(struct rt2x00_dev *rt2x00dev, enum dev_state state)
 	 * device has entered the correct state.
 	 */
 	for (i = 0; i < REGISTER_BUSY_COUNT; i++) {
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, MAC_CSR12, &reg2);
 		state = rt2x00_get_field32(reg2, MAC_CSR12_BBP_CURRENT_STATE);
 		if (state == !put_to_sleep)
 			return 0;
 		rt2x00pci_register_write(rt2x00dev, MAC_CSR12, reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, MAC_CSR12, &reg2);
+		state = rt2x00_get_field32(reg2, MAC_CSR12_BBP_CURRENT_STATE);
+		if (state == !put_to_sleep)
+			return 0;
+		rt2x00mmio_register_write(rt2x00dev, MAC_CSR12, reg);
+>>>>>>> refs/remotes/origin/master
 		msleep(10);
 	}
 
@@ -1866,8 +2537,13 @@ static int rt61pci_set_device_state(struct rt2x00_dev *rt2x00dev,
 	}
 
 	if (unlikely(retval))
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Device failed to enter state %d (%d).\n",
 		      state, retval);
+=======
+		rt2x00_err(rt2x00dev, "Device failed to enter state %d (%d)\n",
+			   state, retval);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -1879,7 +2555,11 @@ static void rt61pci_write_tx_desc(struct queue_entry *entry,
 				  struct txentry_desc *txdesc)
 {
 	struct skb_frame_desc *skbdesc = get_skb_frame_desc(entry->skb);
+<<<<<<< HEAD
 	struct queue_entry_priv_pci *entry_priv = entry->priv_data;
+=======
+	struct queue_entry_priv_mmio *entry_priv = entry->priv_data;
+>>>>>>> refs/remotes/origin/master
 	__le32 *txd = entry_priv->desc;
 	u32 word;
 
@@ -1977,7 +2657,11 @@ static void rt61pci_write_beacon(struct queue_entry *entry,
 				 struct txentry_desc *txdesc)
 {
 	struct rt2x00_dev *rt2x00dev = entry->queue->rt2x00dev;
+<<<<<<< HEAD
 	struct queue_entry_priv_pci *entry_priv = entry->priv_data;
+=======
+	struct queue_entry_priv_mmio *entry_priv = entry->priv_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned int beacon_base;
 	unsigned int padding_len;
 	u32 orig_reg, reg;
@@ -1986,10 +2670,17 @@ static void rt61pci_write_beacon(struct queue_entry *entry,
 	 * Disable beaconing while we are reloading the beacon data,
 	 * otherwise we might be sending out invalid data.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR9, &reg);
 	orig_reg = reg;
 	rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 0);
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR9, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR9, &reg);
+	orig_reg = reg;
+	rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 0);
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR9, reg);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Write the TX descriptor for the beacon.
@@ -2006,19 +2697,34 @@ static void rt61pci_write_beacon(struct queue_entry *entry,
 	 */
 	padding_len = roundup(entry->skb->len, 4) - entry->skb->len;
 	if (padding_len && skb_pad(entry->skb, padding_len)) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Failure padding beacon, aborting\n");
 		/* skb freed by skb_pad() on failure */
 		entry->skb = NULL;
 		rt2x00pci_register_write(rt2x00dev, TXRX_CSR9, orig_reg);
+=======
+		rt2x00_err(rt2x00dev, "Failure padding beacon, aborting\n");
+		/* skb freed by skb_pad() on failure */
+		entry->skb = NULL;
+		rt2x00mmio_register_write(rt2x00dev, TXRX_CSR9, orig_reg);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	beacon_base = HW_BEACON_OFFSET(entry->entry_idx);
+<<<<<<< HEAD
 	rt2x00pci_register_multiwrite(rt2x00dev, beacon_base,
 				      entry_priv->desc, TXINFO_SIZE);
 	rt2x00pci_register_multiwrite(rt2x00dev, beacon_base + TXINFO_SIZE,
 				      entry->skb->data,
 				      entry->skb->len + padding_len);
+=======
+	rt2x00mmio_register_multiwrite(rt2x00dev, beacon_base,
+				       entry_priv->desc, TXINFO_SIZE);
+	rt2x00mmio_register_multiwrite(rt2x00dev, beacon_base + TXINFO_SIZE,
+				       entry->skb->data,
+				       entry->skb->len + padding_len);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Enable beaconing again.
@@ -2026,10 +2732,17 @@ static void rt61pci_write_beacon(struct queue_entry *entry,
 	 * For Wi-Fi faily generated beacons between participating
 	 * stations. Set TBTT phase adaptive adjustment step to 8us.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR10, 0x00001008);
 
 	rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 1);
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR9, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR10, 0x00001008);
+
+	rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 1);
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR9, reg);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Clean up beacon skb.
@@ -2047,21 +2760,36 @@ static void rt61pci_clear_beacon(struct queue_entry *entry)
 	 * Disable beaconing while we are reloading the beacon data,
 	 * otherwise we might be sending out invalid data.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR9, &reg);
 	rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 0);
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR9, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR9, &reg);
+	rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 0);
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR9, reg);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Clear beacon.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev,
 				 HW_BEACON_OFFSET(entry->entry_idx), 0);
+=======
+	rt2x00mmio_register_write(rt2x00dev,
+				  HW_BEACON_OFFSET(entry->entry_idx), 0);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Enable beaconing again.
 	 */
 	rt2x00_set_field32(&reg, TXRX_CSR9_BEACON_GEN, 1);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, TXRX_CSR9, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, TXRX_CSR9, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2099,7 +2827,11 @@ static void rt61pci_fill_rxdone(struct queue_entry *entry,
 				struct rxdone_entry_desc *rxdesc)
 {
 	struct rt2x00_dev *rt2x00dev = entry->queue->rt2x00dev;
+<<<<<<< HEAD
 	struct queue_entry_priv_pci *entry_priv = entry->priv_data;
+=======
+	struct queue_entry_priv_mmio *entry_priv = entry->priv_data;
+>>>>>>> refs/remotes/origin/master
 	u32 word0;
 	u32 word1;
 
@@ -2165,7 +2897,11 @@ static void rt61pci_txdone(struct rt2x00_dev *rt2x00dev)
 	struct data_queue *queue;
 	struct queue_entry *entry;
 	struct queue_entry *entry_done;
+<<<<<<< HEAD
 	struct queue_entry_priv_pci *entry_priv;
+=======
+	struct queue_entry_priv_mmio *entry_priv;
+>>>>>>> refs/remotes/origin/master
 	struct txdone_entry_desc txdesc;
 	u32 word;
 	u32 reg;
@@ -2182,8 +2918,13 @@ static void rt61pci_txdone(struct rt2x00_dev *rt2x00dev)
 	 * that the TX_STA_FIFO stack has a size of 16. We stick to our
 	 * tx ring size for now.
 	 */
+<<<<<<< HEAD
 	for (i = 0; i < rt2x00dev->ops->tx->entry_num; i++) {
 		rt2x00pci_register_read(rt2x00dev, STA_CSR4, &reg);
+=======
+	for (i = 0; i < rt2x00dev->tx->limit; i++) {
+		rt2x00mmio_register_read(rt2x00dev, STA_CSR4, &reg);
+>>>>>>> refs/remotes/origin/master
 		if (!rt2x00_get_field32(reg, STA_CSR4_VALID))
 			break;
 
@@ -2217,9 +2958,14 @@ static void rt61pci_txdone(struct rt2x00_dev *rt2x00dev)
 			/* Catch up.
 			 * Just report any entries we missed as failed.
 			 */
+<<<<<<< HEAD
 			WARNING(rt2x00dev,
 				"TX status report missed for entry %d\n",
 				entry_done->entry_idx);
+=======
+			rt2x00_warn(rt2x00dev, "TX status report missed for entry %d\n",
+				    entry_done->entry_idx);
+>>>>>>> refs/remotes/origin/master
 
 			rt2x00lib_txdone_noinfo(entry_done, TXDONE_UNKNOWN);
 			entry_done = rt2x00queue_get_entry(queue, Q_INDEX_DONE);
@@ -2270,9 +3016,15 @@ static inline void rt61pci_enable_interrupt(struct rt2x00_dev *rt2x00dev,
 	 */
 	spin_lock_irq(&rt2x00dev->irqmask_lock);
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, INT_MASK_CSR, &reg);
 	rt2x00_set_field32(&reg, irq_field, 0);
 	rt2x00pci_register_write(rt2x00dev, INT_MASK_CSR, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, INT_MASK_CSR, &reg);
+	rt2x00_set_field32(&reg, irq_field, 0);
+	rt2x00mmio_register_write(rt2x00dev, INT_MASK_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irq(&rt2x00dev->irqmask_lock);
 }
@@ -2288,9 +3040,15 @@ static void rt61pci_enable_mcu_interrupt(struct rt2x00_dev *rt2x00dev,
 	 */
 	spin_lock_irq(&rt2x00dev->irqmask_lock);
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, MCU_INT_MASK_CSR, &reg);
 	rt2x00_set_field32(&reg, irq_field, 0);
 	rt2x00pci_register_write(rt2x00dev, MCU_INT_MASK_CSR, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, MCU_INT_MASK_CSR, &reg);
+	rt2x00_set_field32(&reg, irq_field, 0);
+	rt2x00mmio_register_write(rt2x00dev, MCU_INT_MASK_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irq(&rt2x00dev->irqmask_lock);
 }
@@ -2299,22 +3057,53 @@ static void rt61pci_txstatus_tasklet(unsigned long data)
 {
 	struct rt2x00_dev *rt2x00dev = (struct rt2x00_dev *)data;
 	rt61pci_txdone(rt2x00dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rt61pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_TXDONE);
+=======
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		rt61pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_TXDONE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		rt61pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_TXDONE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rt61pci_tbtt_tasklet(unsigned long data)
 {
 	struct rt2x00_dev *rt2x00dev = (struct rt2x00_dev *)data;
 	rt2x00lib_beacondone(rt2x00dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rt61pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_BEACON_DONE);
+=======
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		rt61pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_BEACON_DONE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		rt61pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_BEACON_DONE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rt61pci_rxdone_tasklet(unsigned long data)
 {
 	struct rt2x00_dev *rt2x00dev = (struct rt2x00_dev *)data;
+<<<<<<< HEAD
 	if (rt2x00pci_rxdone(rt2x00dev))
+<<<<<<< HEAD
 		rt2x00pci_rxdone(rt2x00dev);
 	else
+=======
+		tasklet_schedule(&rt2x00dev->rxdone_tasklet);
+	else if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rt2x00mmio_rxdone(rt2x00dev))
+		tasklet_schedule(&rt2x00dev->rxdone_tasklet);
+	else if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+>>>>>>> refs/remotes/origin/master
 		rt61pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_RXDONE);
 }
 
@@ -2322,9 +3111,21 @@ static void rt61pci_autowake_tasklet(unsigned long data)
 {
 	struct rt2x00_dev *rt2x00dev = (struct rt2x00_dev *)data;
 	rt61pci_wakeup(rt2x00dev);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev,
 				 M2H_CMD_DONE_CSR, 0xffffffff);
+<<<<<<< HEAD
 	rt61pci_enable_mcu_interrupt(rt2x00dev, MCU_INT_MASK_CSR_TWAKEUP);
+=======
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		rt61pci_enable_mcu_interrupt(rt2x00dev, MCU_INT_MASK_CSR_TWAKEUP);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rt2x00mmio_register_write(rt2x00dev,
+				  M2H_CMD_DONE_CSR, 0xffffffff);
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		rt61pci_enable_mcu_interrupt(rt2x00dev, MCU_INT_MASK_CSR_TWAKEUP);
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t rt61pci_interrupt(int irq, void *dev_instance)
@@ -2337,11 +3138,19 @@ static irqreturn_t rt61pci_interrupt(int irq, void *dev_instance)
 	 * Get the interrupt sources & saved to local variable.
 	 * Write register value back to clear pending interrupts.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, MCU_INT_SOURCE_CSR, &reg_mcu);
 	rt2x00pci_register_write(rt2x00dev, MCU_INT_SOURCE_CSR, reg_mcu);
 
 	rt2x00pci_register_read(rt2x00dev, INT_SOURCE_CSR, &reg);
 	rt2x00pci_register_write(rt2x00dev, INT_SOURCE_CSR, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, MCU_INT_SOURCE_CSR, &reg_mcu);
+	rt2x00mmio_register_write(rt2x00dev, MCU_INT_SOURCE_CSR, reg_mcu);
+
+	rt2x00mmio_register_read(rt2x00dev, INT_SOURCE_CSR, &reg);
+	rt2x00mmio_register_write(rt2x00dev, INT_SOURCE_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 
 	if (!reg && !reg_mcu)
 		return IRQ_NONE;
@@ -2378,6 +3187,7 @@ static irqreturn_t rt61pci_interrupt(int irq, void *dev_instance)
 	 */
 	spin_lock(&rt2x00dev->irqmask_lock);
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, INT_MASK_CSR, &reg);
 	reg |= mask;
 	rt2x00pci_register_write(rt2x00dev, INT_MASK_CSR, reg);
@@ -2385,6 +3195,15 @@ static irqreturn_t rt61pci_interrupt(int irq, void *dev_instance)
 	rt2x00pci_register_read(rt2x00dev, MCU_INT_MASK_CSR, &reg);
 	reg |= mask_mcu;
 	rt2x00pci_register_write(rt2x00dev, MCU_INT_MASK_CSR, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, INT_MASK_CSR, &reg);
+	reg |= mask;
+	rt2x00mmio_register_write(rt2x00dev, INT_MASK_CSR, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, MCU_INT_MASK_CSR, &reg);
+	reg |= mask_mcu;
+	rt2x00mmio_register_write(rt2x00dev, MCU_INT_MASK_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock(&rt2x00dev->irqmask_lock);
 
@@ -2402,7 +3221,11 @@ static int rt61pci_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 	u8 *mac;
 	s8 value;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, E2PROM_CSR, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, E2PROM_CSR, &reg);
+>>>>>>> refs/remotes/origin/master
 
 	eeprom.data = rt2x00dev;
 	eeprom.register_read = rt61pci_eepromregister_read;
@@ -2422,8 +3245,13 @@ static int rt61pci_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 	 */
 	mac = rt2x00_eeprom_addr(rt2x00dev, EEPROM_MAC_ADDR_0);
 	if (!is_valid_ether_addr(mac)) {
+<<<<<<< HEAD
 		random_ether_addr(mac);
 		EEPROM(rt2x00dev, "MAC: %pM\n", mac);
+=======
+		eth_random_addr(mac);
+		rt2x00_eeprom_dbg(rt2x00dev, "MAC: %pM\n", mac);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_ANTENNA, &word);
@@ -2438,7 +3266,11 @@ static int rt61pci_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_ANTENNA_HARDWARE_RADIO, 0);
 		rt2x00_set_field16(&word, EEPROM_ANTENNA_RF_TYPE, RF5225);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_ANTENNA, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "Antenna: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "Antenna: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC, &word);
@@ -2451,7 +3283,11 @@ static int rt61pci_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_NIC_CARDBUS_ACCEL, 0);
 		rt2x00_set_field16(&word, EEPROM_NIC_EXTERNAL_LNA_A, 0);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_NIC, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "NIC: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "NIC: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_LED, &word);
@@ -2459,7 +3295,11 @@ static int rt61pci_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_LED_LED_MODE,
 				   LED_MODE_DEFAULT);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_LED, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "Led: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "Led: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_FREQ, &word);
@@ -2467,7 +3307,11 @@ static int rt61pci_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_FREQ_OFFSET, 0);
 		rt2x00_set_field16(&word, EEPROM_FREQ_SEQ, 0);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_FREQ, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "Freq: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "Freq: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_RSSI_OFFSET_BG, &word);
@@ -2475,7 +3319,11 @@ static int rt61pci_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_RSSI_OFFSET_BG_1, 0);
 		rt2x00_set_field16(&word, EEPROM_RSSI_OFFSET_BG_2, 0);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_RSSI_OFFSET_BG, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "RSSI OFFSET BG: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "RSSI OFFSET BG: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		value = rt2x00_get_field16(word, EEPROM_RSSI_OFFSET_BG_1);
 		if (value < -10 || value > 10)
@@ -2491,7 +3339,11 @@ static int rt61pci_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_RSSI_OFFSET_A_1, 0);
 		rt2x00_set_field16(&word, EEPROM_RSSI_OFFSET_A_2, 0);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_RSSI_OFFSET_A, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "RSSI OFFSET A: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "RSSI OFFSET A: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		value = rt2x00_get_field16(word, EEPROM_RSSI_OFFSET_A_1);
 		if (value < -10 || value > 10)
@@ -2520,7 +3372,11 @@ static int rt61pci_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	 * Identify RF chipset.
 	 */
 	value = rt2x00_get_field16(eeprom, EEPROM_ANTENNA_RF_TYPE);
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, MAC_CSR0, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR0, &reg);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_chip(rt2x00dev, rt2x00_get_field32(reg, MAC_CSR0_CHIPSET),
 			value, rt2x00_get_field32(reg, MAC_CSR0_REVISION));
 
@@ -2528,7 +3384,11 @@ static int rt61pci_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	    !rt2x00_rf(rt2x00dev, RF5325) &&
 	    !rt2x00_rf(rt2x00dev, RF2527) &&
 	    !rt2x00_rf(rt2x00dev, RF2529)) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Invalid RF chipset detected.\n");
+=======
+		rt2x00_err(rt2x00dev, "Invalid RF chipset detected\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -2583,7 +3443,11 @@ static int rt61pci_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	 * eeprom word.
 	 */
 	if (rt2x00_rf(rt2x00dev, RF2529) &&
+<<<<<<< HEAD
 	    !test_bit(CAPABILITY_DOUBLE_ANTENNA, &rt2x00dev->cap_flags)) {
+=======
+	    !rt2x00_has_cap_double_antenna(rt2x00dev)) {
+>>>>>>> refs/remotes/origin/master
 		rt2x00dev->default_ant.rx =
 		    ANTENNA_A + rt2x00_get_field16(eeprom, EEPROM_NIC_RX_FIXED);
 		rt2x00dev->default_ant.tx =
@@ -2798,7 +3662,11 @@ static int rt61pci_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 	spec->supported_bands = SUPPORT_BAND_2GHZ;
 	spec->supported_rates = SUPPORT_RATE_CCK | SUPPORT_RATE_OFDM;
 
+<<<<<<< HEAD
 	if (!test_bit(CAPABILITY_RF_SEQUENCE, &rt2x00dev->cap_flags)) {
+=======
+	if (!rt2x00_has_cap_rf_sequence(rt2x00dev)) {
+>>>>>>> refs/remotes/origin/master
 		spec->num_channels = 14;
 		spec->channels = rf_vals_noseq;
 	} else {
@@ -2846,7 +3714,11 @@ static int rt61pci_probe_hw(struct rt2x00_dev *rt2x00dev)
 	/*
 	 * Disable power saving.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, SOFT_RESET_CSR, 0x00000007);
+=======
+	rt2x00mmio_register_write(rt2x00dev, SOFT_RESET_CSR, 0x00000007);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Allocate eeprom data.
@@ -2863,9 +3735,21 @@ static int rt61pci_probe_hw(struct rt2x00_dev *rt2x00dev)
 	 * Enable rfkill polling by setting GPIO direction of the
 	 * rfkill switch GPIO pin correctly.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, MAC_CSR13, &reg);
 	rt2x00_set_field32(&reg, MAC_CSR13_BIT13, 1);
 	rt2x00pci_register_write(rt2x00dev, MAC_CSR13, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, MAC_CSR13, &reg);
+	rt2x00_set_field32(&reg, MAC_CSR13_DIR5, 1);
+	rt2x00mmio_register_write(rt2x00dev, MAC_CSR13, reg);
+>>>>>>> refs/remotes/origin/master
+=======
+	rt2x00pci_register_read(rt2x00dev, MAC_CSR13, &reg);
+	rt2x00_set_field32(&reg, MAC_CSR13_BIT13, 1);
+	rt2x00pci_register_write(rt2x00dev, MAC_CSR13, reg);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Initialize hw specifications.
@@ -2900,7 +3784,17 @@ static int rt61pci_probe_hw(struct rt2x00_dev *rt2x00dev)
 /*
  * IEEE80211 stack callback functions.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int rt61pci_conf_tx(struct ieee80211_hw *hw, u16 queue_idx,
+=======
+static int rt61pci_conf_tx(struct ieee80211_hw *hw,
+			   struct ieee80211_vif *vif, u16 queue_idx,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int rt61pci_conf_tx(struct ieee80211_hw *hw,
+			   struct ieee80211_vif *vif, u16 queue_idx,
+>>>>>>> refs/remotes/origin/master
 			   const struct ieee80211_tx_queue_params *params)
 {
 	struct rt2x00_dev *rt2x00dev = hw->priv;
@@ -2916,7 +3810,15 @@ static int rt61pci_conf_tx(struct ieee80211_hw *hw, u16 queue_idx,
 	 * we are free to update the registers based on the value
 	 * in the queue parameter.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = rt2x00mac_conf_tx(hw, queue_idx, params);
+=======
+	retval = rt2x00mac_conf_tx(hw, vif, queue_idx, params);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = rt2x00mac_conf_tx(hw, vif, queue_idx, params);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
@@ -2934,14 +3836,21 @@ static int rt61pci_conf_tx(struct ieee80211_hw *hw, u16 queue_idx,
 	field.bit_offset = (queue_idx & 1) * 16;
 	field.bit_mask = 0xffff << field.bit_offset;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, offset, &reg);
 	rt2x00_set_field32(&reg, field, queue->txop);
 	rt2x00pci_register_write(rt2x00dev, offset, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, offset, &reg);
+	rt2x00_set_field32(&reg, field, queue->txop);
+	rt2x00mmio_register_write(rt2x00dev, offset, reg);
+>>>>>>> refs/remotes/origin/master
 
 	/* Update WMM registers */
 	field.bit_offset = queue_idx * 4;
 	field.bit_mask = 0xf << field.bit_offset;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, AIFSN_CSR, &reg);
 	rt2x00_set_field32(&reg, field, queue->aifs);
 	rt2x00pci_register_write(rt2x00dev, AIFSN_CSR, reg);
@@ -2953,19 +3862,46 @@ static int rt61pci_conf_tx(struct ieee80211_hw *hw, u16 queue_idx,
 	rt2x00pci_register_read(rt2x00dev, CWMAX_CSR, &reg);
 	rt2x00_set_field32(&reg, field, queue->cw_max);
 	rt2x00pci_register_write(rt2x00dev, CWMAX_CSR, reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, AIFSN_CSR, &reg);
+	rt2x00_set_field32(&reg, field, queue->aifs);
+	rt2x00mmio_register_write(rt2x00dev, AIFSN_CSR, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, CWMIN_CSR, &reg);
+	rt2x00_set_field32(&reg, field, queue->cw_min);
+	rt2x00mmio_register_write(rt2x00dev, CWMIN_CSR, reg);
+
+	rt2x00mmio_register_read(rt2x00dev, CWMAX_CSR, &reg);
+	rt2x00_set_field32(&reg, field, queue->cw_max);
+	rt2x00mmio_register_write(rt2x00dev, CWMAX_CSR, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u64 rt61pci_get_tsf(struct ieee80211_hw *hw)
+=======
+static u64 rt61pci_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u64 rt61pci_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rt2x00_dev *rt2x00dev = hw->priv;
 	u64 tsf;
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR13, &reg);
 	tsf = (u64) rt2x00_get_field32(reg, TXRX_CSR13_HIGH_TSFTIMER) << 32;
 	rt2x00pci_register_read(rt2x00dev, TXRX_CSR12, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR13, &reg);
+	tsf = (u64) rt2x00_get_field32(reg, TXRX_CSR13_HIGH_TSFTIMER) << 32;
+	rt2x00mmio_register_read(rt2x00dev, TXRX_CSR12, &reg);
+>>>>>>> refs/remotes/origin/master
 	tsf |= rt2x00_get_field32(reg, TXRX_CSR12_LOW_TSFTIMER);
 
 	return tsf;
@@ -2991,6 +3927,14 @@ static const struct ieee80211_ops rt61pci_mac80211_ops = {
 	.set_antenna		= rt2x00mac_set_antenna,
 	.get_antenna		= rt2x00mac_get_antenna,
 	.get_ringparam		= rt2x00mac_get_ringparam,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.tx_frames_pending	= rt2x00mac_tx_frames_pending,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.tx_frames_pending	= rt2x00mac_tx_frames_pending,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct rt2x00lib_ops rt61pci_rt2x00_ops = {
@@ -3003,8 +3947,13 @@ static const struct rt2x00lib_ops rt61pci_rt2x00_ops = {
 	.get_firmware_name	= rt61pci_get_firmware_name,
 	.check_firmware		= rt61pci_check_firmware,
 	.load_firmware		= rt61pci_load_firmware,
+<<<<<<< HEAD
 	.initialize		= rt2x00pci_initialize,
 	.uninitialize		= rt2x00pci_uninitialize,
+=======
+	.initialize		= rt2x00mmio_initialize,
+	.uninitialize		= rt2x00mmio_uninitialize,
+>>>>>>> refs/remotes/origin/master
 	.get_entry_state	= rt61pci_get_entry_state,
 	.clear_entry		= rt61pci_clear_entry,
 	.set_device_state	= rt61pci_set_device_state,
@@ -3015,7 +3964,11 @@ static const struct rt2x00lib_ops rt61pci_rt2x00_ops = {
 	.start_queue		= rt61pci_start_queue,
 	.kick_queue		= rt61pci_kick_queue,
 	.stop_queue		= rt61pci_stop_queue,
+<<<<<<< HEAD
 	.flush_queue		= rt2x00pci_flush_queue,
+=======
+	.flush_queue		= rt2x00mmio_flush_queue,
+>>>>>>> refs/remotes/origin/master
 	.write_tx_desc		= rt61pci_write_tx_desc,
 	.write_beacon		= rt61pci_write_beacon,
 	.clear_beacon		= rt61pci_clear_beacon,
@@ -3029,6 +3982,7 @@ static const struct rt2x00lib_ops rt61pci_rt2x00_ops = {
 	.config			= rt61pci_config,
 };
 
+<<<<<<< HEAD
 static const struct data_queue_desc rt61pci_queue_rx = {
 	.entry_num		= 32,
 	.data_size		= DATA_FRAME_SIZE,
@@ -3053,14 +4007,57 @@ static const struct data_queue_desc rt61pci_queue_bcn = {
 static const struct rt2x00_ops rt61pci_ops = {
 	.name			= KBUILD_MODNAME,
 	.max_sta_intf		= 1,
+=======
+static void rt61pci_queue_init(struct data_queue *queue)
+{
+	switch (queue->qid) {
+	case QID_RX:
+		queue->limit = 32;
+		queue->data_size = DATA_FRAME_SIZE;
+		queue->desc_size = RXD_DESC_SIZE;
+		queue->priv_size = sizeof(struct queue_entry_priv_mmio);
+		break;
+
+	case QID_AC_VO:
+	case QID_AC_VI:
+	case QID_AC_BE:
+	case QID_AC_BK:
+		queue->limit = 32;
+		queue->data_size = DATA_FRAME_SIZE;
+		queue->desc_size = TXD_DESC_SIZE;
+		queue->priv_size = sizeof(struct queue_entry_priv_mmio);
+		break;
+
+	case QID_BEACON:
+		queue->limit = 4;
+		queue->data_size = 0; /* No DMA required for beacons */
+		queue->desc_size = TXINFO_SIZE;
+		queue->priv_size = sizeof(struct queue_entry_priv_mmio);
+		break;
+
+	case QID_ATIM:
+		/* fallthrough */
+	default:
+		BUG();
+		break;
+	}
+}
+
+static const struct rt2x00_ops rt61pci_ops = {
+	.name			= KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/master
 	.max_ap_intf		= 4,
 	.eeprom_size		= EEPROM_SIZE,
 	.rf_size		= RF_SIZE,
 	.tx_queues		= NUM_TX_QUEUES,
+<<<<<<< HEAD
 	.extra_tx_headroom	= 0,
 	.rx			= &rt61pci_queue_rx,
 	.tx			= &rt61pci_queue_tx,
 	.bcn			= &rt61pci_queue_bcn,
+=======
+	.queue_init		= rt61pci_queue_init,
+>>>>>>> refs/remotes/origin/master
 	.lib			= &rt61pci_rt2x00_ops,
 	.hw			= &rt61pci_mac80211_ops,
 #ifdef CONFIG_RT2X00_LIB_DEBUGFS
@@ -3102,11 +4099,16 @@ static struct pci_driver rt61pci_driver = {
 	.name		= KBUILD_MODNAME,
 	.id_table	= rt61pci_device_table,
 	.probe		= rt61pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rt2x00pci_remove),
+=======
+	.remove		= rt2x00pci_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= rt2x00pci_suspend,
 	.resume		= rt2x00pci_resume,
 };
 
+<<<<<<< HEAD
 static int __init rt61pci_init(void)
 {
 	return pci_register_driver(&rt61pci_driver);
@@ -3119,3 +4121,6 @@ static void __exit rt61pci_exit(void)
 
 module_init(rt61pci_init);
 module_exit(rt61pci_exit);
+=======
+module_pci_driver(rt61pci_driver);
+>>>>>>> refs/remotes/origin/master

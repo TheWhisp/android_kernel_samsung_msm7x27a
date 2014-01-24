@@ -22,6 +22,10 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Touchscreen controller register offsets
@@ -202,7 +206,11 @@ static void lpc32xx_ts_close(struct input_dev *dev)
 	lpc32xx_stop_tsc(tsc);
 }
 
+<<<<<<< HEAD
 static int __devinit lpc32xx_ts_probe(struct platform_device *pdev)
+=======
+static int lpc32xx_ts_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lpc32xx_tsc *tsc;
 	struct input_dev *input;
@@ -276,7 +284,15 @@ static int __devinit lpc32xx_ts_probe(struct platform_device *pdev)
 	input_set_drvdata(input, tsc);
 
 	error = request_irq(tsc->irq, lpc32xx_ts_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    IRQF_DISABLED, pdev->name, tsc);
+=======
+			    0, pdev->name, tsc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    0, pdev->name, tsc);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		dev_err(&pdev->dev, "failed requesting interrupt\n");
 		goto err_put_clock;
@@ -308,7 +324,11 @@ err_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit lpc32xx_ts_remove(struct platform_device *pdev)
+=======
+static int lpc32xx_ts_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lpc32xx_tsc *tsc = platform_get_drvdata(pdev);
 	struct resource *res;
@@ -383,15 +403,31 @@ static const struct dev_pm_ops lpc32xx_ts_pm_ops = {
 #define LPC32XX_TS_PM_OPS NULL
 #endif
 
+<<<<<<< HEAD
 static struct platform_driver lpc32xx_ts_driver = {
 	.probe		= lpc32xx_ts_probe,
 	.remove		= __devexit_p(lpc32xx_ts_remove),
+=======
+#ifdef CONFIG_OF
+static struct of_device_id lpc32xx_tsc_of_match[] = {
+	{ .compatible = "nxp,lpc3220-tsc", },
+	{ },
+};
+MODULE_DEVICE_TABLE(of, lpc32xx_tsc_of_match);
+#endif
+
+static struct platform_driver lpc32xx_ts_driver = {
+	.probe		= lpc32xx_ts_probe,
+	.remove		= lpc32xx_ts_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= MOD_NAME,
 		.owner	= THIS_MODULE,
 		.pm	= LPC32XX_TS_PM_OPS,
+<<<<<<< HEAD
 	},
 };
+<<<<<<< HEAD
 
 static int __init lpc32xx_ts_init(void)
 {
@@ -404,6 +440,15 @@ static void __exit lpc32xx_ts_exit(void)
 	platform_driver_unregister(&lpc32xx_ts_driver);
 }
 module_exit(lpc32xx_ts_exit);
+=======
+module_platform_driver(lpc32xx_ts_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.of_match_table = of_match_ptr(lpc32xx_tsc_of_match),
+	},
+};
+module_platform_driver(lpc32xx_ts_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kevin Wells <kevin.wells@nxp.com");
 MODULE_DESCRIPTION("LPC32XX TSC Driver");

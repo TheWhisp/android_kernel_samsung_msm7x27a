@@ -14,6 +14,7 @@
 
 #include <linux/types.h>
 
+<<<<<<< HEAD
 struct kovaplus_control {
 	uint8_t command; /* KOVAPLUS_COMMAND_CONTROL */
 	uint8_t value;
@@ -23,18 +24,31 @@ struct kovaplus_control {
 enum kovaplus_control_requests {
 	/* read after write; value = 1 */
 	KOVAPLUS_CONTROL_REQUEST_STATUS = 0x0,
+=======
+enum {
+	KOVAPLUS_SIZE_CONTROL = 0x03,
+	KOVAPLUS_SIZE_INFO = 0x06,
+	KOVAPLUS_SIZE_PROFILE_SETTINGS = 0x10,
+	KOVAPLUS_SIZE_PROFILE_BUTTONS = 0x17,
+};
+
+enum kovaplus_control_requests {
+>>>>>>> refs/remotes/origin/master
 	/* write; value = profile number range 0-4 */
 	KOVAPLUS_CONTROL_REQUEST_PROFILE_SETTINGS = 0x10,
 	/* write; value = profile number range 0-4 */
 	KOVAPLUS_CONTROL_REQUEST_PROFILE_BUTTONS = 0x20,
 };
 
+<<<<<<< HEAD
 enum kovaplus_control_values {
 	KOVAPLUS_CONTROL_REQUEST_STATUS_OVERLOAD = 0, /* supposed */
 	KOVAPLUS_CONTROL_REQUEST_STATUS_OK = 1,
 	KOVAPLUS_CONTROL_REQUEST_STATUS_WAIT = 3, /* supposed */
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct kovaplus_actual_profile {
 	uint8_t command; /* KOVAPLUS_COMMAND_ACTUAL_PROFILE */
 	uint8_t size; /* always 3 */
@@ -67,6 +81,7 @@ struct kovaplus_info {
 	uint8_t unknown[3];
 } __packed;
 
+<<<<<<< HEAD
 /* writes 1 on plugin */
 struct kovaplus_a {
 	uint8_t command; /* KOVAPLUS_COMMAND_A */
@@ -77,12 +92,19 @@ struct kovaplus_a {
 enum kovaplus_commands {
 	KOVAPLUS_COMMAND_CONTROL = 0x4,
 	KOVAPLUS_COMMAND_ACTUAL_PROFILE = 0x5,
+=======
+enum kovaplus_commands {
+	KOVAPLUS_COMMAND_ACTUAL_PROFILE = 0x5,
+	KOVAPLUS_COMMAND_CONTROL = 0x4,
+>>>>>>> refs/remotes/origin/master
 	KOVAPLUS_COMMAND_PROFILE_SETTINGS = 0x6,
 	KOVAPLUS_COMMAND_PROFILE_BUTTONS = 0x7,
 	KOVAPLUS_COMMAND_INFO = 0x9,
 	KOVAPLUS_COMMAND_A = 0xa,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum kovaplus_usb_commands {
 	KOVAPLUS_USB_COMMAND_CONTROL = 0x304,
 	KOVAPLUS_USB_COMMAND_ACTUAL_PROFILE = 0x305,
@@ -92,6 +114,10 @@ enum kovaplus_usb_commands {
 	KOVAPLUS_USB_COMMAND_A = 0x30a,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum kovaplus_mouse_report_numbers {
 	KOVAPLUS_MOUSE_REPORT_NUMBER_MOUSE = 1,
 	KOVAPLUS_MOUSE_REPORT_NUMBER_AUDIO = 2,
@@ -149,7 +175,10 @@ struct kovaplus_device {
 	int roccat_claimed;
 	int chrdev_minor;
 	struct mutex kovaplus_lock;
+<<<<<<< HEAD
 	struct kovaplus_info info;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct kovaplus_profile_settings profile_settings[5];
 	struct kovaplus_profile_buttons profile_buttons[5];
 };

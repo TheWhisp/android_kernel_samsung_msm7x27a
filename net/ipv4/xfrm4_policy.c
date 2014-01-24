@@ -79,6 +79,7 @@ static int xfrm4_fill_dst(struct xfrm_dst *xdst, struct net_device *dev,
 	struct rtable *rt = (struct rtable *)xdst->route;
 	const struct flowi4 *fl4 = &fl->u.ip4;
 
+<<<<<<< HEAD
 	xdst->u.rt.rt_key_dst = fl4->daddr;
 	xdst->u.rt.rt_key_src = fl4->saddr;
 	xdst->u.rt.rt_key_tos = fl4->flowi4_tos;
@@ -86,10 +87,14 @@ static int xfrm4_fill_dst(struct xfrm_dst *xdst, struct net_device *dev,
 	xdst->u.rt.rt_iif = fl4->flowi4_iif;
 	xdst->u.rt.rt_oif = fl4->flowi4_oif;
 	xdst->u.rt.rt_mark = fl4->flowi4_mark;
+=======
+	xdst->u.rt.rt_iif = fl4->flowi4_iif;
+>>>>>>> refs/remotes/origin/master
 
 	xdst->u.dst.dev = dev;
 	dev_hold(dev);
 
+<<<<<<< HEAD
 	xdst->u.rt.peer = rt->peer;
 	if (rt->peer)
 		atomic_inc(&rt->peer->refcnt);
@@ -103,6 +108,18 @@ static int xfrm4_fill_dst(struct xfrm_dst *xdst, struct net_device *dev,
 	xdst->u.rt.rt_dst = rt->rt_dst;
 	xdst->u.rt.rt_gateway = rt->rt_gateway;
 	xdst->u.rt.rt_spec_dst = rt->rt_spec_dst;
+=======
+	/* Sheit... I remember I did this right. Apparently,
+	 * it was magically lost, so this code needs audit */
+	xdst->u.rt.rt_is_input = rt->rt_is_input;
+	xdst->u.rt.rt_flags = rt->rt_flags & (RTCF_BROADCAST | RTCF_MULTICAST |
+					      RTCF_LOCAL);
+	xdst->u.rt.rt_type = rt->rt_type;
+	xdst->u.rt.rt_gateway = rt->rt_gateway;
+	xdst->u.rt.rt_uses_gateway = rt->rt_uses_gateway;
+	xdst->u.rt.rt_pmtu = rt->rt_pmtu;
+	INIT_LIST_HEAD(&xdst->u.rt.rt_uncached);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -113,11 +130,28 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 	const struct iphdr *iph = ip_hdr(skb);
 	u8 *xprth = skb_network_header(skb) + iph->ihl * 4;
 	struct flowi4 *fl4 = &fl->u.ip4;
+<<<<<<< HEAD
 
 	memset(fl4, 0, sizeof(struct flowi4));
 	fl4->flowi4_mark = skb->mark;
 
+<<<<<<< HEAD
 	if (!(iph->frag_off & htons(IP_MF | IP_OFFSET))) {
+=======
+	if (!ip_is_fragment(iph)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int oif = 0;
+
+	if (skb_dst(skb))
+		oif = skb_dst(skb)->dev->ifindex;
+
+	memset(fl4, 0, sizeof(struct flowi4));
+	fl4->flowi4_mark = skb->mark;
+	fl4->flowi4_oif = reverse ? skb->skb_iif : oif;
+
+	if (!ip_is_fragment(iph)) {
+>>>>>>> refs/remotes/origin/master
 		switch (iph->protocol) {
 		case IPPROTO_UDP:
 		case IPPROTO_UDPLITE:
@@ -152,7 +186,11 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 
 		case IPPROTO_AH:
 			if (pskb_may_pull(skb, xprth + 8 - skb->data)) {
+<<<<<<< HEAD
 				__be32 *ah_hdr = (__be32*)xprth;
+=======
+				__be32 *ah_hdr = (__be32 *)xprth;
+>>>>>>> refs/remotes/origin/master
 
 				fl4->fl4_ipsec_spi = ah_hdr[1];
 			}
@@ -198,12 +236,30 @@ static inline int xfrm4_garbage_collect(struct dst_ops *ops)
 	return (dst_entries_get_slow(ops) > ops->gc_thresh * 2);
 }
 
+<<<<<<< HEAD
 static void xfrm4_update_pmtu(struct dst_entry *dst, u32 mtu)
+=======
+static void xfrm4_update_pmtu(struct dst_entry *dst, struct sock *sk,
+			      struct sk_buff *skb, u32 mtu)
 {
 	struct xfrm_dst *xdst = (struct xfrm_dst *)dst;
 	struct dst_entry *path = xdst->route;
 
+	path->ops->update_pmtu(path, sk, skb, mtu);
+}
+
+static void xfrm4_redirect(struct dst_entry *dst, struct sock *sk,
+			   struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
+{
+	struct xfrm_dst *xdst = (struct xfrm_dst *)dst;
+	struct dst_entry *path = xdst->route;
+
+<<<<<<< HEAD
 	path->ops->update_pmtu(path, mtu);
+=======
+	path->ops->redirect(path, sk, skb);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void xfrm4_dst_destroy(struct dst_entry *dst)
@@ -212,9 +268,12 @@ static void xfrm4_dst_destroy(struct dst_entry *dst)
 
 	dst_destroy_metrics_generic(dst);
 
+<<<<<<< HEAD
 	if (likely(xdst->u.rt.peer))
 		inet_putpeer(xdst->u.rt.peer);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	xfrm_dst_destroy(xdst);
 }
 
@@ -232,11 +291,19 @@ static struct dst_ops xfrm4_dst_ops = {
 	.protocol =		cpu_to_be16(ETH_P_IP),
 	.gc =			xfrm4_garbage_collect,
 	.update_pmtu =		xfrm4_update_pmtu,
+<<<<<<< HEAD
+=======
+	.redirect =		xfrm4_redirect,
+>>>>>>> refs/remotes/origin/master
 	.cow_metrics =		dst_cow_metrics_generic,
 	.destroy =		xfrm4_dst_destroy,
 	.ifdown =		xfrm4_dst_ifdown,
 	.local_out =		__ip_local_out,
+<<<<<<< HEAD
 	.gc_thresh =		1024,
+=======
+	.gc_thresh =		32768,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct xfrm_policy_afinfo xfrm4_policy_afinfo = {
@@ -263,6 +330,7 @@ static struct ctl_table xfrm4_policy_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static struct ctl_table_header *sysctl_hdr;
 #endif
 
@@ -293,13 +361,73 @@ void __init xfrm4_init(int rt_max_size)
 	 * and start cleaning when were 1/2 full
 	 */
 	xfrm4_dst_ops.gc_thresh = rt_max_size/2;
+=======
+static int __net_init xfrm4_net_init(struct net *net)
+{
+	struct ctl_table *table;
+	struct ctl_table_header *hdr;
+
+	table = xfrm4_policy_table;
+	if (!net_eq(net, &init_net)) {
+		table = kmemdup(table, sizeof(xfrm4_policy_table), GFP_KERNEL);
+		if (!table)
+			goto err_alloc;
+
+		table[0].data = &net->xfrm.xfrm4_dst_ops.gc_thresh;
+	}
+
+	hdr = register_net_sysctl(net, "net/ipv4", table);
+	if (!hdr)
+		goto err_reg;
+
+	net->ipv4.xfrm4_hdr = hdr;
+	return 0;
+
+err_reg:
+	if (!net_eq(net, &init_net))
+		kfree(table);
+err_alloc:
+	return -ENOMEM;
+}
+
+static void __net_exit xfrm4_net_exit(struct net *net)
+{
+	struct ctl_table *table;
+
+	if (net->ipv4.xfrm4_hdr == NULL)
+		return;
+
+	table = net->ipv4.xfrm4_hdr->ctl_table_arg;
+	unregister_net_sysctl_table(net->ipv4.xfrm4_hdr);
+	if (!net_eq(net, &init_net))
+		kfree(table);
+}
+
+static struct pernet_operations __net_initdata xfrm4_net_ops = {
+	.init	= xfrm4_net_init,
+	.exit	= xfrm4_net_exit,
+};
+#endif
+
+static void __init xfrm4_policy_init(void)
+{
+	xfrm_policy_register_afinfo(&xfrm4_policy_afinfo);
+}
+
+void __init xfrm4_init(void)
+{
+>>>>>>> refs/remotes/origin/master
 	dst_entries_init(&xfrm4_dst_ops);
 
 	xfrm4_state_init();
 	xfrm4_policy_init();
 #ifdef CONFIG_SYSCTL
+<<<<<<< HEAD
 	sysctl_hdr = register_net_sysctl_table(&init_net, net_ipv4_ctl_path,
 						xfrm4_policy_table);
+=======
+	register_pernet_subsys(&xfrm4_net_ops);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 

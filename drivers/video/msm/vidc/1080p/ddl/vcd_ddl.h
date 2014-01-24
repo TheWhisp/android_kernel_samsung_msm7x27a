@@ -84,6 +84,16 @@
 
 #define DDL_MAX_NUM_IN_INPUTFRAME_POOL          (DDL_MAX_NUM_OF_B_FRAME + 1)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define MDP_MIN_TILE_HEIGHT			96
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MDP_MIN_TILE_HEIGHT			96
+
+>>>>>>> refs/remotes/origin/cm-11.0
 enum ddl_mem_area {
 	DDL_FW_MEM	= 0x0,
 	DDL_MM_MEM	= 0x1,
@@ -274,6 +284,14 @@ struct ddl_encoder_data{
 	u32  ext_enc_control_val;
 	u32  num_references_for_p_frame;
 	u32  closed_gop;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u32  num_slices_comp;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32  num_slices_comp;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct vcd_property_slice_delivery_info slice_delivery_info;
 	struct ddl_batch_frame_data batch_frame;
 };
@@ -307,6 +325,14 @@ struct ddl_decoder_data {
 	u32  header_in_start;
 	u32  min_dpb_num;
 	u32  y_cb_cr_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u32  yuv_size;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32  yuv_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32  dynamic_prop_change;
 	u32  dynmic_prop_change_req;
 	u32  flush_pending;
@@ -317,6 +343,16 @@ struct ddl_decoder_data {
 	u32  cont_mode;
 	u32  reconfig_detected;
 	u32  dmx_disable;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int avg_dec_time;
+	int dec_time_sum;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int avg_dec_time;
+	int dec_time_sum;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 union ddl_codec_data{
 	struct ddl_codec_data_hdr  hdr;
@@ -481,4 +517,17 @@ u32 ddl_fw_init(struct ddl_buf_addr *dram_base);
 void ddl_get_fw_info(const unsigned char **fw_array_addr,
 	unsigned int *fw_size);
 void ddl_fw_release(struct ddl_buf_addr *);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int ddl_vidc_decode_get_avg_time(struct ddl_client_context *ddl);
+void ddl_vidc_decode_reset_avg_time(struct ddl_client_context *ddl);
+void ddl_calc_core_proc_time(const char *func_name, u32 index,
+		struct ddl_client_context *ddl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

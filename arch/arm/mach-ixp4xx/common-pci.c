@@ -26,12 +26,26 @@
 #include <linux/delay.h>
 #include <linux/device.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma-mapping.h>
 
 #include <asm/cputype.h>
 #include <asm/irq.h>
 #include <asm/sizes.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/pci.h>
 #include <mach/hardware.h>
 
@@ -316,6 +330,20 @@ static int abort_handler(unsigned long addr, unsigned int fsr, struct pt_regs *r
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int ixp4xx_needs_bounce(struct device *dev, dma_addr_t dma_addr, size_t size)
+{
+	return (dma_addr + size) >= SZ_64M;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Setup DMA mask to 64MB on PCI devices. Ignore all other devices.
  */
@@ -324,7 +352,15 @@ static int ixp4xx_pci_platform_notify(struct device *dev)
 	if(dev->bus == &pci_bus_type) {
 		*dev->dma_mask =  SZ_64M - 1;
 		dev->coherent_dma_mask = SZ_64M - 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dmabounce_register_dev(dev, 2048, 4096);
+=======
+		dmabounce_register_dev(dev, 2048, 4096, ixp4xx_needs_bounce);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dmabounce_register_dev(dev, 2048, 4096, ixp4xx_needs_bounce);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -337,15 +373,35 @@ static int ixp4xx_pci_platform_notify_remove(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int dma_needs_bounce(struct device *dev, dma_addr_t dma_addr, size_t size)
 {
 	return (dev->bus == &pci_bus_type ) && ((dma_addr + size) >= SZ_64M);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void __init ixp4xx_pci_preinit(void)
 {
 	unsigned long cpuid = read_cpuid_id();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_IXP4XX_INDIRECT_PCI
+	pcibios_min_mem = 0x10000000; /* 1 GB of indirect PCI MMIO space */
+#else
+	pcibios_min_mem = 0x48000000; /* 64 MB of PCI MMIO space */
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Determine which PCI read method to use.
 	 * Rev 0 IXP425 requires workaround.
@@ -392,7 +448,17 @@ void __init ixp4xx_pci_preinit(void)
 		local_write_config(PCI_BASE_ADDRESS_0, 4, PHYS_OFFSET);
 		local_write_config(PCI_BASE_ADDRESS_1, 4, PHYS_OFFSET + SZ_16M);
 		local_write_config(PCI_BASE_ADDRESS_2, 4, PHYS_OFFSET + SZ_32M);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		local_write_config(PCI_BASE_ADDRESS_3, 4, PHYS_OFFSET + SZ_48M);
+=======
+		local_write_config(PCI_BASE_ADDRESS_3, 4,
+					PHYS_OFFSET + SZ_32M + SZ_16M);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		local_write_config(PCI_BASE_ADDRESS_3, 4,
+					PHYS_OFFSET + SZ_32M + SZ_16M);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Enable CSR window at 64 MiB to allow PCI masters
@@ -404,6 +470,10 @@ void __init ixp4xx_pci_preinit(void)
 		 * Enable the IO window to be way up high, at 0xfffffc00
 		 */
 		local_write_config(PCI_BASE_ADDRESS_5, 4, 0xfffffc01);
+<<<<<<< HEAD
+=======
+		local_write_config(0x40, 4, 0x000080FF); /* No TRDY time limit */
+>>>>>>> refs/remotes/origin/master
 	} else {
 		printk("PCI: IXP4xx is target - No bus scan performed\n");
 	}
@@ -465,9 +535,19 @@ int ixp4xx_setup(int nr, struct pci_sys_data *sys)
 	request_resource(&ioport_resource, &res[0]);
 	request_resource(&iomem_resource, &res[1]);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sys->resource[0] = &res[0];
 	sys->resource[1] = &res[1];
 	sys->resource[2] = NULL;
+=======
+	pci_add_resource_offset(&sys->resources, &res[0], sys->io_offset);
+	pci_add_resource_offset(&sys->resources, &res[1], sys->mem_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_add_resource_offset(&sys->resources, &res[0], sys->io_offset);
+	pci_add_resource_offset(&sys->resources, &res[1], sys->mem_offset);
+>>>>>>> refs/remotes/origin/master
 
 	platform_notify = ixp4xx_pci_platform_notify;
 	platform_notify_remove = ixp4xx_pci_platform_notify_remove;
@@ -475,11 +555,19 @@ int ixp4xx_setup(int nr, struct pci_sys_data *sys)
 	return 1;
 }
 
+<<<<<<< HEAD
 struct pci_bus * __devinit ixp4xx_scan_bus(int nr, struct pci_sys_data *sys)
 {
+<<<<<<< HEAD
 	return pci_scan_bus(sys->busnr, &ixp4xx_ops, sys);
+=======
+	return pci_scan_root_bus(NULL, sys->busnr, &ixp4xx_ops, sys,
+				 &sys->resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int dma_set_coherent_mask(struct device *dev, u64 mask)
 {
 	if (mask >= SZ_64M - 1)

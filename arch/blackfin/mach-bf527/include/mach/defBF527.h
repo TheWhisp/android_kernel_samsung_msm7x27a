@@ -1,7 +1,11 @@
 /*
  * Copyright 2007-2010 Analog Devices Inc.
  *
+<<<<<<< HEAD
  * Licensed under the ADI BSD license or the GPL-2 (or later)
+=======
+ * Licensed under the Clear BSD license or the GPL-2 (or later)
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _DEF_BF527_H

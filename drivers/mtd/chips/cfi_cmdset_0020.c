@@ -139,8 +139,20 @@ struct mtd_info *cfi_cmdset_0020(struct map_info *map, int primary)
 		}
 
 		/* Do some byteswapping if necessary */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		extp->FeatureSupport = cfi32_to_cpu(extp->FeatureSupport);
 		extp->BlkStatusRegMask = cfi32_to_cpu(extp->BlkStatusRegMask);
+=======
+		extp->FeatureSupport = cfi32_to_cpu(map, extp->FeatureSupport);
+		extp->BlkStatusRegMask = cfi32_to_cpu(map,
+						extp->BlkStatusRegMask);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		extp->FeatureSupport = cfi32_to_cpu(map, extp->FeatureSupport);
+		extp->BlkStatusRegMask = cfi32_to_cpu(map,
+						extp->BlkStatusRegMask);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG_CFI_FEATURES
 		/* Tell the user about it in lots of lovely detail */
@@ -227,6 +239,8 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
 		}
 
 	/* Also select the correct geometry setup too */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mtd->erase = cfi_staa_erase_varsize;
 	mtd->read = cfi_staa_read;
         mtd->write = cfi_staa_write_buffers;
@@ -236,6 +250,22 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
 	mtd->unlock = cfi_staa_unlock;
 	mtd->suspend = cfi_staa_suspend;
 	mtd->resume = cfi_staa_resume;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mtd->_erase = cfi_staa_erase_varsize;
+	mtd->_read = cfi_staa_read;
+	mtd->_write = cfi_staa_write_buffers;
+	mtd->_writev = cfi_staa_writev;
+	mtd->_sync = cfi_staa_sync;
+	mtd->_lock = cfi_staa_lock;
+	mtd->_unlock = cfi_staa_unlock;
+	mtd->_suspend = cfi_staa_suspend;
+	mtd->_resume = cfi_staa_resume;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mtd->flags = MTD_CAP_NORFLASH & ~MTD_BIT_WRITEABLE;
 	mtd->writesize = 8; /* FIXME: Should be 0 for STMicro flashes w/out ECC */
 	mtd->writebufsize = cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
@@ -393,8 +423,14 @@ static int cfi_staa_read (struct mtd_info *mtd, loff_t from, size_t len, size_t 
 	chipnum = (from >> cfi->chipshift);
 	ofs = from - (chipnum <<  cfi->chipshift);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*retlen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (len) {
 		unsigned long thislen;
 
@@ -616,10 +652,16 @@ static int cfi_staa_write_buffers (struct mtd_info *mtd, loff_t to,
 	int chipnum;
 	unsigned long ofs;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*retlen = 0;
 	if (!len)
 		return 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	chipnum = to >> cfi->chipshift;
 	ofs = to  - (chipnum << cfi->chipshift);
 
@@ -698,7 +740,17 @@ cfi_staa_writev(struct mtd_info *mtd, const struct kvec *vecs,
 				continue;
 			}
 			memcpy(buffer+buflen, elem_base, ECCBUF_SIZE-buflen);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ret = mtd->write(mtd, to, ECCBUF_SIZE, &thislen, buffer);
+=======
+			ret = mtd_write(mtd, to, ECCBUF_SIZE, &thislen,
+					buffer);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = mtd_write(mtd, to, ECCBUF_SIZE, &thislen,
+					buffer);
+>>>>>>> refs/remotes/origin/master
 			totlen += thislen;
 			if (ret || thislen != ECCBUF_SIZE)
 				goto write_error;
@@ -707,7 +759,17 @@ cfi_staa_writev(struct mtd_info *mtd, const struct kvec *vecs,
 			to += ECCBUF_SIZE;
 		}
 		if (ECCBUF_DIV(elem_len)) { /* write clean aligned data */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ret = mtd->write(mtd, to, ECCBUF_DIV(elem_len), &thislen, elem_base);
+=======
+			ret = mtd_write(mtd, to, ECCBUF_DIV(elem_len),
+					&thislen, elem_base);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = mtd_write(mtd, to, ECCBUF_DIV(elem_len),
+					&thislen, elem_base);
+>>>>>>> refs/remotes/origin/master
 			totlen += thislen;
 			if (ret || thislen != ECCBUF_DIV(elem_len))
 				goto write_error;
@@ -721,7 +783,15 @@ cfi_staa_writev(struct mtd_info *mtd, const struct kvec *vecs,
 	}
 	if (buflen) { /* flush last page, even if not full */
 		/* This is sometimes intended behaviour, really */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = mtd->write(mtd, to, buflen, &thislen, buffer);
+=======
+		ret = mtd_write(mtd, to, buflen, &thislen, buffer);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = mtd_write(mtd, to, buflen, &thislen, buffer);
+>>>>>>> refs/remotes/origin/master
 		totlen += thislen;
 		if (ret || thislen != ECCBUF_SIZE)
 			goto write_error;
@@ -901,12 +971,18 @@ static int cfi_staa_erase_varsize(struct mtd_info *mtd,
 	int i, first;
 	struct mtd_erase_region_info *regions = mtd->eraseregions;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (instr->addr > mtd->size)
 		return -EINVAL;
 
 	if ((instr->len + instr->addr) > mtd->size)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Check that both start and end of the requested erase are
 	 * aligned with the erasesize at the appropriate addresses.
 	 */
@@ -1152,9 +1228,15 @@ static int cfi_staa_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
 	if (len & (mtd->erasesize -1))
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((len + ofs) > mtd->size)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	chipnum = ofs >> cfi->chipshift;
 	adr = ofs - (chipnum << cfi->chipshift);
 

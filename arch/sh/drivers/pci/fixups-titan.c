@@ -27,7 +27,15 @@ static char titan_irq_tab[] __initdata = {
 	TITAN_IRQ_USB,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __init pcibios_map_platform_irq(struct pci_dev *pdev, u8 slot, u8 pin)
+=======
+int __init pcibios_map_platform_irq(const struct pci_dev *pdev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init pcibios_map_platform_irq(const struct pci_dev *pdev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq = titan_irq_tab[slot];
 

@@ -30,7 +30,10 @@
 #include <asm/sections.h>
 
 #include <asm/mach-ar7/ar7.h>
+<<<<<<< HEAD
 #include <asm/mips-boards/prom.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int __init memsize(void)
 {

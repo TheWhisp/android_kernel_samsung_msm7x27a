@@ -15,10 +15,26 @@
  * SMD RPCROUTER CLIENTS module.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/kthread.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/msm_rpcrouter.h>
 #include "smd_rpcrouter.h"

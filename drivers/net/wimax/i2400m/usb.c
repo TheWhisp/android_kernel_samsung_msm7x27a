@@ -67,6 +67,14 @@
 #include <linux/wimax/i2400m.h>
 #include <linux/debugfs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 
 #define D_SUBMODULE usb
@@ -338,6 +346,38 @@ int i2400mu_bus_reset(struct i2400m *i2400m, enum i2400m_reset_type rt)
 	return result;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void i2400mu_get_drvinfo(struct net_device *net_dev,
+                                struct ethtool_drvinfo *info)
+{
+	struct i2400m *i2400m = net_dev_to_i2400m(net_dev);
+	struct i2400mu *i2400mu = container_of(i2400m, struct i2400mu, i2400m);
+	struct usb_device *udev = i2400mu->usb_dev;
+
+<<<<<<< HEAD
+	strncpy(info->driver, KBUILD_MODNAME, sizeof(info->driver) - 1);
+	strncpy(info->fw_version,
+	        i2400m->fw_name ? : "", sizeof(info->fw_version) - 1);
+=======
+	strlcpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
+	strlcpy(info->fw_version, i2400m->fw_name ? : "",
+		sizeof(info->fw_version));
+>>>>>>> refs/remotes/origin/master
+	usb_make_path(udev, info->bus_info, sizeof(info->bus_info));
+}
+
+static const struct ethtool_ops i2400mu_ethtool_ops = {
+	.get_drvinfo = i2400mu_get_drvinfo,
+	.get_link = ethtool_op_get_link,
+};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static
 void i2400mu_netdev_setup(struct net_device *net_dev)
@@ -346,6 +386,14 @@ void i2400mu_netdev_setup(struct net_device *net_dev)
 	struct i2400mu *i2400mu = container_of(i2400m, struct i2400mu, i2400m);
 	i2400mu_init(i2400mu);
 	i2400m_netdev_setup(net_dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	net_dev->ethtool_ops = &i2400mu_ethtool_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	net_dev->ethtool_ops = &i2400mu_ethtool_ops;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -602,7 +650,15 @@ void i2400mu_disconnect(struct usb_interface *iface)
  *
  *    As well, the device might refuse going to sleep for whichever
  *    reason. In this case we just fail. For system suspend/hibernate,
+<<<<<<< HEAD
+<<<<<<< HEAD
  *    we *can't* fail. We check PM_EVENT_AUTO to see if the
+=======
+ *    we *can't* fail. We check PMSG_IS_AUTO to see if the
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    we *can't* fail. We check PMSG_IS_AUTO to see if the
+>>>>>>> refs/remotes/origin/master
  *    suspend call comes from the USB stack or from the system and act
  *    in consequence.
  *
@@ -618,7 +674,15 @@ int i2400mu_suspend(struct usb_interface *iface, pm_message_t pm_msg)
 	struct i2400m *i2400m = &i2400mu->i2400m;
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (pm_msg.event & PM_EVENT_AUTO)
+=======
+	if (PMSG_IS_AUTO(pm_msg))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (PMSG_IS_AUTO(pm_msg))
+>>>>>>> refs/remotes/origin/master
 		is_autosuspend = 1;
 #endif
 
@@ -679,7 +743,11 @@ int i2400mu_resume(struct usb_interface *iface)
 	d_fnstart(3, dev, "(iface %p)\n", iface);
 	rmb();		/* see i2400m->updown's documentation  */
 	if (i2400m->updown == 0) {
+<<<<<<< HEAD
 		d_printf(1, dev, "fw was down, no resume neeed\n");
+=======
+		d_printf(1, dev, "fw was down, no resume needed\n");
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	d_printf(1, dev, "fw was up, resuming\n");

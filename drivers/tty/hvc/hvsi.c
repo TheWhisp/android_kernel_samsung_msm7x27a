@@ -49,6 +49,14 @@
 #include <asm/uaccess.h>
 #include <asm/vio.h>
 #include <asm/param.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/hvsi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/hvsi.h>
+>>>>>>> refs/remotes/origin/master
 
 #define HVSI_MAJOR	229
 #define HVSI_MINOR	128
@@ -68,14 +76,21 @@
 #define __ALIGNED__	__attribute__((__aligned__(sizeof(long))))
 
 struct hvsi_struct {
+<<<<<<< HEAD
+=======
+	struct tty_port port;
+>>>>>>> refs/remotes/origin/master
 	struct delayed_work writer;
 	struct work_struct handshaker;
 	wait_queue_head_t emptyq; /* woken when outbuf is emptied */
 	wait_queue_head_t stateq; /* woken when HVSI state changes */
 	spinlock_t lock;
 	int index;
+<<<<<<< HEAD
 	struct tty_struct *tty;
 	int count;
+=======
+>>>>>>> refs/remotes/origin/master
 	uint8_t throttle_buf[128];
 	uint8_t outbuf[N_OUTBUF]; /* to implement write_room and chars_in_buffer */
 	/* inbuf is for packet reassembly. leave a little room for leftovers. */
@@ -109,6 +124,8 @@ enum HVSI_PROTOCOL_STATE {
 };
 #define HVSI_CONSOLE 0x1
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define VS_DATA_PACKET_HEADER           0xff
 #define VS_CONTROL_PACKET_HEADER        0xfe
 #define VS_QUERY_PACKET_HEADER          0xfd
@@ -171,6 +188,10 @@ struct hvsi_query_response {
 
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int is_console(struct hvsi_struct *hp)
 {
 	return hp->flags & HVSI_CONSOLE;
@@ -298,7 +319,11 @@ static int hvsi_read(struct hvsi_struct *hp, char *buf, int count)
 }
 
 static void hvsi_recv_control(struct hvsi_struct *hp, uint8_t *packet,
+<<<<<<< HEAD
 	struct tty_struct **to_hangup, struct hvsi_struct **to_handshake)
+=======
+	struct tty_struct *tty, struct hvsi_struct **to_handshake)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hvsi_control *header = (struct hvsi_control *)packet;
 
@@ -308,9 +333,14 @@ static void hvsi_recv_control(struct hvsi_struct *hp, uint8_t *packet,
 				/* CD went away; no more connection */
 				pr_debug("hvsi%i: CD dropped\n", hp->index);
 				hp->mctrl &= TIOCM_CD;
+<<<<<<< HEAD
 				/* If userland hasn't done an open(2) yet, hp->tty is NULL. */
 				if (hp->tty && !(hp->tty->flags & CLOCAL))
 					*to_hangup = hp->tty;
+=======
+				if (tty && !C_CLOCAL(tty))
+					tty_hangup(tty);
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case VSV_CLOSE_PROTOCOL:
@@ -356,18 +386,44 @@ static int hvsi_version_respond(struct hvsi_struct *hp, uint16_t query_seqno)
 	struct hvsi_query_response packet __ALIGNED__;
 	int wrote;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	packet.type = VS_QUERY_RESPONSE_PACKET_HEADER;
 	packet.len = sizeof(struct hvsi_query_response);
 	packet.seqno = atomic_inc_return(&hp->seqno);
+=======
+	packet.hdr.type = VS_QUERY_RESPONSE_PACKET_HEADER;
+	packet.hdr.len = sizeof(struct hvsi_query_response);
+	packet.hdr.seqno = atomic_inc_return(&hp->seqno);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	packet.hdr.type = VS_QUERY_RESPONSE_PACKET_HEADER;
+	packet.hdr.len = sizeof(struct hvsi_query_response);
+	packet.hdr.seqno = atomic_inc_return(&hp->seqno);
+>>>>>>> refs/remotes/origin/master
 	packet.verb = VSV_SEND_VERSION_NUMBER;
 	packet.u.version = HVSI_VERSION;
 	packet.query_seqno = query_seqno+1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s: sending %i bytes\n", __func__, packet.len);
 	dbg_dump_hex((uint8_t*)&packet, packet.len);
 
 	wrote = hvc_put_chars(hp->vtermno, (char *)&packet, packet.len);
 	if (wrote != packet.len) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pr_debug("%s: sending %i bytes\n", __func__, packet.hdr.len);
+	dbg_dump_hex((uint8_t*)&packet, packet.hdr.len);
+
+	wrote = hvc_put_chars(hp->vtermno, (char *)&packet, packet.hdr.len);
+	if (wrote != packet.hdr.len) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "hvsi%i: couldn't send query response!\n",
 			hp->index);
 		return -EIO;
@@ -382,7 +438,15 @@ static void hvsi_recv_query(struct hvsi_struct *hp, uint8_t *packet)
 
 	switch (hp->state) {
 		case HVSI_WAIT_FOR_VER_QUERY:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			hvsi_version_respond(hp, query->seqno);
+=======
+			hvsi_version_respond(hp, query->hdr.seqno);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			hvsi_version_respond(hp, query->hdr.seqno);
+>>>>>>> refs/remotes/origin/master
 			__set_state(hp, HVSI_OPEN);
 			break;
 		default:
@@ -408,7 +472,11 @@ static void hvsi_insert_chars(struct hvsi_struct *hp, const char *buf, int len)
 			continue;
 		}
 #endif /* CONFIG_MAGIC_SYSRQ */
+<<<<<<< HEAD
 		tty_insert_flip_char(hp->tty, c, 0);
+=======
+		tty_insert_flip_char(&hp->port, c, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -421,8 +489,12 @@ static void hvsi_insert_chars(struct hvsi_struct *hp, const char *buf, int len)
  * revisited.
  */
 #define TTY_THRESHOLD_THROTTLE 128
+<<<<<<< HEAD
 static struct tty_struct *hvsi_recv_data(struct hvsi_struct *hp,
 		const uint8_t *packet)
+=======
+static bool hvsi_recv_data(struct hvsi_struct *hp, const uint8_t *packet)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct hvsi_header *header = (const struct hvsi_header *)packet;
 	const uint8_t *data = packet + sizeof(struct hvsi_header);
@@ -432,7 +504,11 @@ static struct tty_struct *hvsi_recv_data(struct hvsi_struct *hp,
 	pr_debug("queueing %i chars '%.*s'\n", datalen, datalen, data);
 
 	if (datalen == 0)
+<<<<<<< HEAD
 		return NULL;
+=======
+		return false;
+>>>>>>> refs/remotes/origin/master
 
 	if (overflow > 0) {
 		pr_debug("%s: got >TTY_THRESHOLD_THROTTLE bytes\n", __func__);
@@ -451,7 +527,11 @@ static struct tty_struct *hvsi_recv_data(struct hvsi_struct *hp,
 		hp->n_throttle = overflow;
 	}
 
+<<<<<<< HEAD
 	return hp->tty;
+=======
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -460,6 +540,7 @@ static struct tty_struct *hvsi_recv_data(struct hvsi_struct *hp,
  * machine during console handshaking (in which case tty = NULL and we ignore
  * incoming data).
  */
+<<<<<<< HEAD
 static int hvsi_load_chunk(struct hvsi_struct *hp, struct tty_struct **flip,
 		struct tty_struct **hangup, struct hvsi_struct **handshake)
 {
@@ -468,6 +549,15 @@ static int hvsi_load_chunk(struct hvsi_struct *hp, struct tty_struct **flip,
 
 	*flip = NULL;
 	*hangup = NULL;
+=======
+static int hvsi_load_chunk(struct hvsi_struct *hp, struct tty_struct *tty,
+		struct hvsi_struct **handshake)
+{
+	uint8_t *packet = hp->inbuf;
+	int chunklen;
+	bool flip = false;
+
+>>>>>>> refs/remotes/origin/master
 	*handshake = NULL;
 
 	chunklen = hvsi_read(hp, hp->inbuf_end, HVSI_MAX_READ);
@@ -501,12 +591,19 @@ static int hvsi_load_chunk(struct hvsi_struct *hp, struct tty_struct **flip,
 			case VS_DATA_PACKET_HEADER:
 				if (!is_open(hp))
 					break;
+<<<<<<< HEAD
 				if (hp->tty == NULL)
 					break; /* no tty buffer to put data in */
 				*flip = hvsi_recv_data(hp, packet);
 				break;
 			case VS_CONTROL_PACKET_HEADER:
 				hvsi_recv_control(hp, packet, hangup, handshake);
+=======
+				flip = hvsi_recv_data(hp, packet);
+				break;
+			case VS_CONTROL_PACKET_HEADER:
+				hvsi_recv_control(hp, packet, tty, handshake);
+>>>>>>> refs/remotes/origin/master
 				break;
 			case VS_QUERY_RESPONSE_PACKET_HEADER:
 				hvsi_recv_response(hp, packet);
@@ -523,6 +620,7 @@ static int hvsi_load_chunk(struct hvsi_struct *hp, struct tty_struct **flip,
 
 		packet += len_packet(packet);
 
+<<<<<<< HEAD
 		if (*hangup || *handshake) {
 			pr_debug("%s: hangup or handshake\n", __func__);
 			/*
@@ -530,12 +628,22 @@ static int hvsi_load_chunk(struct hvsi_struct *hp, struct tty_struct **flip,
 			 * If we get "data, hangup, data", we can't deliver the second
 			 * data before the hangup.
 			 */
+=======
+		if (*handshake) {
+			pr_debug("%s: handshake\n", __func__);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
 
 	compact_inbuf(hp, packet);
 
+<<<<<<< HEAD
+=======
+	if (flip)
+		tty_flip_buffer_push(&hp->port);
+
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -555,14 +663,20 @@ static void hvsi_send_overflow(struct hvsi_struct *hp)
 static irqreturn_t hvsi_interrupt(int irq, void *arg)
 {
 	struct hvsi_struct *hp = (struct hvsi_struct *)arg;
+<<<<<<< HEAD
 	struct tty_struct *flip;
 	struct tty_struct *hangup;
 	struct hvsi_struct *handshake;
+=======
+	struct hvsi_struct *handshake;
+	struct tty_struct *tty;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int again = 1;
 
 	pr_debug("%s\n", __func__);
 
+<<<<<<< HEAD
 	while (again) {
 		spin_lock_irqsave(&hp->lock, flags);
 		again = hvsi_load_chunk(hp, &flip, &hangup, &handshake);
@@ -584,6 +698,15 @@ static irqreturn_t hvsi_interrupt(int irq, void *arg)
 			tty_hangup(hangup);
 		}
 
+=======
+	tty = tty_port_tty_get(&hp->port);
+
+	while (again) {
+		spin_lock_irqsave(&hp->lock, flags);
+		again = hvsi_load_chunk(hp, tty, &handshake);
+		spin_unlock_irqrestore(&hp->lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 		if (handshake) {
 			pr_debug("hvsi%i: attempting re-handshake\n", handshake->index);
 			schedule_work(&handshake->handshaker);
@@ -591,6 +714,7 @@ static irqreturn_t hvsi_interrupt(int irq, void *arg)
 	}
 
 	spin_lock_irqsave(&hp->lock, flags);
+<<<<<<< HEAD
 	if (hp->tty && hp->n_throttle
 			&& (!test_bit(TTY_THROTTLED, &hp->tty->flags))) {
 		/* we weren't hung up and we weren't throttled, so we can deliver the
@@ -603,6 +727,17 @@ static irqreturn_t hvsi_interrupt(int irq, void *arg)
 	if (flip) {
 		tty_flip_buffer_push(flip);
 	}
+=======
+	if (tty && hp->n_throttle && !test_bit(TTY_THROTTLED, &tty->flags)) {
+		/* we weren't hung up and we weren't throttled, so we can
+		 * deliver the rest now */
+		hvsi_send_overflow(hp);
+		tty_flip_buffer_push(&hp->port);
+	}
+	spin_unlock_irqrestore(&hp->lock, flags);
+
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
@@ -640,6 +775,8 @@ static int hvsi_query(struct hvsi_struct *hp, uint16_t verb)
 	struct hvsi_query packet __ALIGNED__;
 	int wrote;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	packet.type = VS_QUERY_PACKET_HEADER;
 	packet.len = sizeof(struct hvsi_query);
 	packet.seqno = atomic_inc_return(&hp->seqno);
@@ -650,6 +787,23 @@ static int hvsi_query(struct hvsi_struct *hp, uint16_t verb)
 
 	wrote = hvc_put_chars(hp->vtermno, (char *)&packet, packet.len);
 	if (wrote != packet.len) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	packet.hdr.type = VS_QUERY_PACKET_HEADER;
+	packet.hdr.len = sizeof(struct hvsi_query);
+	packet.hdr.seqno = atomic_inc_return(&hp->seqno);
+	packet.verb = verb;
+
+	pr_debug("%s: sending %i bytes\n", __func__, packet.hdr.len);
+	dbg_dump_hex((uint8_t*)&packet, packet.hdr.len);
+
+	wrote = hvc_put_chars(hp->vtermno, (char *)&packet, packet.hdr.len);
+	if (wrote != packet.hdr.len) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "hvsi%i: couldn't send query (%i)!\n", hp->index,
 			wrote);
 		return -EIO;
@@ -683,20 +837,46 @@ static int hvsi_set_mctrl(struct hvsi_struct *hp, uint16_t mctrl)
 	struct hvsi_control packet __ALIGNED__;
 	int wrote;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	packet.type = VS_CONTROL_PACKET_HEADER,
 	packet.seqno = atomic_inc_return(&hp->seqno);
 	packet.len = sizeof(struct hvsi_control);
+=======
+	packet.hdr.type = VS_CONTROL_PACKET_HEADER,
+	packet.hdr.seqno = atomic_inc_return(&hp->seqno);
+	packet.hdr.len = sizeof(struct hvsi_control);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	packet.hdr.type = VS_CONTROL_PACKET_HEADER,
+	packet.hdr.seqno = atomic_inc_return(&hp->seqno);
+	packet.hdr.len = sizeof(struct hvsi_control);
+>>>>>>> refs/remotes/origin/master
 	packet.verb = VSV_SET_MODEM_CTL;
 	packet.mask = HVSI_TSDTR;
 
 	if (mctrl & TIOCM_DTR)
 		packet.word = HVSI_TSDTR;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%s: sending %i bytes\n", __func__, packet.len);
 	dbg_dump_hex((uint8_t*)&packet, packet.len);
 
 	wrote = hvc_put_chars(hp->vtermno, (char *)&packet, packet.len);
 	if (wrote != packet.len) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pr_debug("%s: sending %i bytes\n", __func__, packet.hdr.len);
+	dbg_dump_hex((uint8_t*)&packet, packet.hdr.len);
+
+	wrote = hvc_put_chars(hp->vtermno, (char *)&packet, packet.hdr.len);
+	if (wrote != packet.hdr.len) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "hvsi%i: couldn't set DTR!\n", hp->index);
 		return -EIO;
 	}
@@ -766,6 +946,8 @@ static int hvsi_put_chars(struct hvsi_struct *hp, const char *buf, int count)
 
 	BUG_ON(count > HVSI_MAX_OUTGOING_DATA);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	packet.type = VS_DATA_PACKET_HEADER;
 	packet.seqno = atomic_inc_return(&hp->seqno);
 	packet.len = count + sizeof(struct hvsi_header);
@@ -773,6 +955,20 @@ static int hvsi_put_chars(struct hvsi_struct *hp, const char *buf, int count)
 
 	ret = hvc_put_chars(hp->vtermno, (char *)&packet, packet.len);
 	if (ret == packet.len) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	packet.hdr.type = VS_DATA_PACKET_HEADER;
+	packet.hdr.seqno = atomic_inc_return(&hp->seqno);
+	packet.hdr.len = count + sizeof(struct hvsi_header);
+	memcpy(&packet.data, buf, count);
+
+	ret = hvc_put_chars(hp->vtermno, (char *)&packet, packet.hdr.len);
+	if (ret == packet.hdr.len) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* return the number of chars written, not the packet length */
 		return count;
 	}
@@ -783,6 +979,8 @@ static void hvsi_close_protocol(struct hvsi_struct *hp)
 {
 	struct hvsi_control packet __ALIGNED__;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	packet.type = VS_CONTROL_PACKET_HEADER;
 	packet.seqno = atomic_inc_return(&hp->seqno);
 	packet.len = 6;
@@ -792,20 +990,50 @@ static void hvsi_close_protocol(struct hvsi_struct *hp)
 	dbg_dump_hex((uint8_t*)&packet, packet.len);
 
 	hvc_put_chars(hp->vtermno, (char *)&packet, packet.len);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	packet.hdr.type = VS_CONTROL_PACKET_HEADER;
+	packet.hdr.seqno = atomic_inc_return(&hp->seqno);
+	packet.hdr.len = 6;
+	packet.verb = VSV_CLOSE_PROTOCOL;
+
+	pr_debug("%s: sending %i bytes\n", __func__, packet.hdr.len);
+	dbg_dump_hex((uint8_t*)&packet, packet.hdr.len);
+
+	hvc_put_chars(hp->vtermno, (char *)&packet, packet.hdr.len);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int hvsi_open(struct tty_struct *tty, struct file *filp)
 {
 	struct hvsi_struct *hp;
 	unsigned long flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int line = tty->index;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	pr_debug("%s\n", __func__);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (line < 0 || line >= hvsi_count)
 		return -ENODEV;
 	hp = &hvsi_ports[line];
+=======
+	hp = &hvsi_ports[tty->index];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hp = &hvsi_ports[tty->index];
+>>>>>>> refs/remotes/origin/master
 
 	tty->driver_data = hp;
 
@@ -813,9 +1041,15 @@ static int hvsi_open(struct tty_struct *tty, struct file *filp)
 	if (hp->state == HVSI_FSP_DIED)
 		return -EIO;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&hp->lock, flags);
 	hp->tty = tty;
 	hp->count++;
+=======
+	tty_port_tty_set(&hp->port, tty);
+	spin_lock_irqsave(&hp->lock, flags);
+	hp->port.count++;
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&hp->seqno, 0);
 	h_vio_signal(hp->vtermno, VIO_IRQ_ENABLE);
 	spin_unlock_irqrestore(&hp->lock, flags);
@@ -851,7 +1085,11 @@ static void hvsi_flush_output(struct hvsi_struct *hp)
 
 	/* 'writer' could still be pending if it didn't see n_outbuf = 0 yet */
 	cancel_delayed_work_sync(&hp->writer);
+<<<<<<< HEAD
 	flush_work_sync(&hp->handshaker);
+=======
+	flush_work(&hp->handshaker);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * it's also possible that our timeout expired and hvsi_write_worker
@@ -872,8 +1110,13 @@ static void hvsi_close(struct tty_struct *tty, struct file *filp)
 
 	spin_lock_irqsave(&hp->lock, flags);
 
+<<<<<<< HEAD
 	if (--hp->count == 0) {
 		hp->tty = NULL;
+=======
+	if (--hp->port.count == 0) {
+		tty_port_tty_set(&hp->port, NULL);
+>>>>>>> refs/remotes/origin/master
 		hp->inbuf_end = hp->inbuf; /* discard remaining partial packets */
 
 		/* only close down connection if it is not the console */
@@ -905,9 +1148,15 @@ static void hvsi_close(struct tty_struct *tty, struct file *filp)
 
 			spin_lock_irqsave(&hp->lock, flags);
 		}
+<<<<<<< HEAD
 	} else if (hp->count < 0)
 		printk(KERN_ERR "hvsi_close %lu: oops, count is %d\n",
 		       hp - hvsi_ports, hp->count);
+=======
+	} else if (hp->port.count < 0)
+		printk(KERN_ERR "hvsi_close %lu: oops, count is %d\n",
+		       hp - hvsi_ports, hp->port.count);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&hp->lock, flags);
 }
@@ -919,12 +1168,20 @@ static void hvsi_hangup(struct tty_struct *tty)
 
 	pr_debug("%s\n", __func__);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&hp->lock, flags);
 
 	hp->count = 0;
 	hp->n_outbuf = 0;
 	hp->tty = NULL;
 
+=======
+	tty_port_tty_set(&hp->port, NULL);
+
+	spin_lock_irqsave(&hp->lock, flags);
+	hp->port.count = 0;
+	hp->n_outbuf = 0;
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&hp->lock, flags);
 }
 
@@ -985,7 +1242,11 @@ static void hvsi_write_worker(struct work_struct *work)
 		start_j = 0;
 #endif /* DEBUG */
 		wake_up_all(&hp->emptyq);
+<<<<<<< HEAD
 		tty_wakeup(hp->tty);
+=======
+		tty_port_tty_wakeup(&hp->port);
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:
@@ -1030,8 +1291,13 @@ static int hvsi_write(struct tty_struct *tty,
 	 * and hvsi_write_worker will be scheduled. subsequent hvsi_write() calls
 	 * will see there is no room in outbuf and return.
 	 */
+<<<<<<< HEAD
 	while ((count > 0) && (hvsi_write_room(hp->tty) > 0)) {
 		int chunksize = min(count, hvsi_write_room(hp->tty));
+=======
+	while ((count > 0) && (hvsi_write_room(tty) > 0)) {
+		int chunksize = min(count, hvsi_write_room(tty));
+>>>>>>> refs/remotes/origin/master
 
 		BUG_ON(hp->n_outbuf < 0);
 		memcpy(hp->outbuf + hp->n_outbuf, source, chunksize);
@@ -1078,19 +1344,29 @@ static void hvsi_unthrottle(struct tty_struct *tty)
 {
 	struct hvsi_struct *hp = tty->driver_data;
 	unsigned long flags;
+<<<<<<< HEAD
 	int shouldflip = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s\n", __func__);
 
 	spin_lock_irqsave(&hp->lock, flags);
 	if (hp->n_throttle) {
 		hvsi_send_overflow(hp);
+<<<<<<< HEAD
 		shouldflip = 1;
 	}
 	spin_unlock_irqrestore(&hp->lock, flags);
 
 	if (shouldflip)
 		tty_flip_buffer_push(hp->tty);
+=======
+		tty_flip_buffer_push(&hp->port);
+	}
+	spin_unlock_irqrestore(&hp->lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 
 	h_vio_signal(hp->vtermno, VIO_IRQ_ENABLE);
 }
@@ -1149,7 +1425,13 @@ static int __init hvsi_init(void)
 	if (!hvsi_driver)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hvsi_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hvsi_driver->driver_name = "hvsi";
 	hvsi_driver->name = "hvsi";
 	hvsi_driver->major = HVSI_MAJOR;
@@ -1166,7 +1448,17 @@ static int __init hvsi_init(void)
 		struct hvsi_struct *hp = &hvsi_ports[i];
 		int ret = 1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = request_irq(hp->virq, hvsi_interrupt, IRQF_DISABLED, "hvsi", hp);
+=======
+		ret = request_irq(hp->virq, hvsi_interrupt, 0, "hvsi", hp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tty_port_link_device(&hp->port, hvsi_driver, i);
+
+		ret = request_irq(hp->virq, hvsi_interrupt, 0, "hvsi", hp);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			printk(KERN_ERR "HVSI: couldn't reserve irq 0x%x (error %i)\n",
 				hp->virq, ret);
@@ -1271,9 +1563,13 @@ static int __init hvsi_console_init(void)
 	hvsi_wait = poll_for_state; /* no irqs yet; must poll */
 
 	/* search device tree for vty nodes */
+<<<<<<< HEAD
 	for (vty = of_find_compatible_node(NULL, "serial", "hvterm-protocol");
 			vty != NULL;
 			vty = of_find_compatible_node(vty, "serial", "hvterm-protocol")) {
+=======
+	for_each_compatible_node(vty, "serial", "hvterm-protocol") {
+>>>>>>> refs/remotes/origin/master
 		struct hvsi_struct *hp;
 		const uint32_t *vtermno, *irq;
 
@@ -1293,14 +1589,29 @@ static int __init hvsi_console_init(void)
 		init_waitqueue_head(&hp->emptyq);
 		init_waitqueue_head(&hp->stateq);
 		spin_lock_init(&hp->lock);
+<<<<<<< HEAD
+=======
+		tty_port_init(&hp->port);
+>>>>>>> refs/remotes/origin/master
 		hp->index = hvsi_count;
 		hp->inbuf_end = hp->inbuf;
 		hp->state = HVSI_CLOSED;
 		hp->vtermno = *vtermno;
 		hp->virq = irq_create_mapping(NULL, irq[0]);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (hp->virq == NO_IRQ) {
+=======
+		if (hp->virq == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			printk(KERN_ERR "%s: couldn't create irq mapping for 0x%x\n",
 				__func__, irq[0]);
+=======
+		if (hp->virq == 0) {
+			printk(KERN_ERR "%s: couldn't create irq mapping for 0x%x\n",
+				__func__, irq[0]);
+			tty_port_destroy(&hp->port);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 

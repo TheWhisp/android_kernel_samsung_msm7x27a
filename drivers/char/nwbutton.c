@@ -93,9 +93,15 @@ int button_del_callback (void (*callback) (void))
 			button_callback_list [lp].count = 0;
 			callback_count--;
 			return 0;
+<<<<<<< HEAD
 		};
 		lp--;
 	};
+=======
+		}
+		lp--;
+	}
+>>>>>>> refs/remotes/origin/master
 	return -EINVAL;
 }
 
@@ -168,7 +174,14 @@ static irqreturn_t button_handler (int irq, void *dev_id)
 static int button_read (struct file *filp, char __user *buffer,
 			size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	interruptible_sleep_on (&button_wait_queue);
+=======
+	DEFINE_WAIT(wait);
+	prepare_to_wait(&button_wait_queue, &wait, TASK_INTERRUPTIBLE);
+	schedule();
+	finish_wait(&button_wait_queue, &wait);
+>>>>>>> refs/remotes/origin/master
 	return (copy_to_user (buffer, &button_output_buffer, bcount))
 		 ? -EFAULT : bcount;
 }
@@ -220,7 +233,11 @@ static int __init nwbutton_init(void)
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 	if (request_irq (IRQ_NETWINDER_BUTTON, button_handler, IRQF_DISABLED,
+=======
+	if (request_irq (IRQ_NETWINDER_BUTTON, button_handler, 0,
+>>>>>>> refs/remotes/origin/master
 			"nwbutton", NULL)) {
 		printk (KERN_WARNING "nwbutton: IRQ %d is not free.\n",
 				IRQ_NETWINDER_BUTTON);

@@ -759,8 +759,13 @@ int cx88_set_scale(struct cx88_core *core, unsigned int width, unsigned int heig
 	if (nocomb)
 		value |= (3 << 5); // disable comb filter
 
+<<<<<<< HEAD
 	cx_write(MO_FILTER_EVEN,  value);
 	cx_write(MO_FILTER_ODD,   value);
+=======
+	cx_andor(MO_FILTER_EVEN,  0x7ffc7f, value); /* preserve PEAKEN, PSEL */
+	cx_andor(MO_FILTER_ODD,   0x7ffc7f, value);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dprintk(1,"set_scale: filter  0x%04x\n", value);
 
 	return 0;
@@ -994,10 +999,17 @@ int cx88_set_tvnorm(struct cx88_core *core, v4l2_std_id norm)
 	// htotal
 	tmp64 = norm_htotal(norm) * (u64)vdec_clock;
 	do_div(tmp64, fsc8);
+<<<<<<< HEAD
 	htotal = (u32)tmp64 | (HLNotchFilter4xFsc << 11);
 	dprintk(1,"set_tvnorm: MO_HTOTAL        0x%08x [old=0x%08x,htotal=%d]\n",
 		htotal, cx_read(MO_HTOTAL), (u32)tmp64);
 	cx_write(MO_HTOTAL, htotal);
+=======
+	htotal = (u32)tmp64;
+	dprintk(1,"set_tvnorm: MO_HTOTAL        0x%08x [old=0x%08x,htotal=%d]\n",
+		htotal, cx_read(MO_HTOTAL), (u32)tmp64);
+	cx_andor(MO_HTOTAL, 0x07ff, htotal);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	// vbi stuff, set vbi offset to 10 (for 20 Clk*2 pixels), this makes
 	// the effective vbi offset ~244 samples, the same as the Bt8x8

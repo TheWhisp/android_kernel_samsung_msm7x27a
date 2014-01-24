@@ -15,6 +15,10 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/regs-icu.h>
 #include <mach/mmp2.h>
 

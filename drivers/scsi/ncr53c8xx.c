@@ -115,7 +115,13 @@
 
 #include <asm/dma.h>
 #include <asm/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>
@@ -1616,7 +1622,11 @@ struct ncb {
 	spinlock_t	smp_lock;	/* Lock for SMP threading       */
 
 	/*----------------------------------------------------------------
+<<<<<<< HEAD
 	**	Chip and controller indentification.
+=======
+	**	Chip and controller identification.
+>>>>>>> refs/remotes/origin/master
 	**----------------------------------------------------------------
 	*/
 	int		unit;		/* Unit number			*/

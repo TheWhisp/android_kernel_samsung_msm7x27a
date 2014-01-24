@@ -13,6 +13,14 @@
  */
 #include <linux/module.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/init.h>
 #include <linux/serial.h>
@@ -152,7 +160,10 @@ static void ks8695uart_disable_ms(struct uart_port *port)
 static irqreturn_t ks8695uart_rx_chars(int irq, void *dev_id)
 {
 	struct uart_port *port = dev_id;
+<<<<<<< HEAD
 	struct tty_struct *tty = port->state->port.tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int status, ch, lsr, flg, max_count = 256;
 
 	status = UART_GET_LSR(port);		/* clears pending LSR interrupts */
@@ -199,7 +210,11 @@ static irqreturn_t ks8695uart_rx_chars(int irq, void *dev_id)
 ignore_char:
 		status = UART_GET_LSR(port);
 	}
+<<<<<<< HEAD
 	tty_flip_buffer_push(tty);
+=======
+	tty_flip_buffer_push(&port->state->port);
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
@@ -336,6 +351,8 @@ static int ks8695uart_startup(struct uart_port *port)
 	/*
 	 * Allocate the IRQ
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = request_irq(KS8695_IRQ_UART_TX, ks8695uart_tx_chars, IRQF_DISABLED, "UART TX", port);
 	if (retval)
 		goto err_tx;
@@ -349,6 +366,26 @@ static int ks8695uart_startup(struct uart_port *port)
 		goto err_ls;
 
 	retval = request_irq(KS8695_IRQ_UART_MODEM_STATUS, ks8695uart_modem_status, IRQF_DISABLED, "UART ModemStatus", port);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	retval = request_irq(KS8695_IRQ_UART_TX, ks8695uart_tx_chars, 0, "UART TX", port);
+	if (retval)
+		goto err_tx;
+
+	retval = request_irq(KS8695_IRQ_UART_RX, ks8695uart_rx_chars, 0, "UART RX", port);
+	if (retval)
+		goto err_rx;
+
+	retval = request_irq(KS8695_IRQ_UART_LINE_STATUS, ks8695uart_rx_chars, 0, "UART LineStatus", port);
+	if (retval)
+		goto err_ls;
+
+	retval = request_irq(KS8695_IRQ_UART_MODEM_STATUS, ks8695uart_modem_status, 0, "UART ModemStatus", port);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		goto err_ms;
 
@@ -547,8 +584,13 @@ static struct uart_ops ks8695uart_pops = {
 
 static struct uart_port ks8695uart_ports[SERIAL_KS8695_NR] = {
 	{
+<<<<<<< HEAD
 		.membase	= (void *) KS8695_UART_VA,
 		.mapbase	= KS8695_UART_VA,
+=======
+		.membase	= KS8695_UART_VA,
+		.mapbase	= KS8695_UART_PA,
+>>>>>>> refs/remotes/origin/master
 		.iotype		= SERIAL_IO_MEM,
 		.irq		= KS8695_IRQ_UART_TX,
 		.uartclk	= KS8695_CLOCK_RATE * 16,

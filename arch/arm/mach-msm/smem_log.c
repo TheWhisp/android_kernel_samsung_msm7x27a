@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -59,10 +67,33 @@ do { \
 #define D(x...) do {} while (0)
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSM7X30) || defined(CONFIG_ARCH_MSM8X60) \
 	|| defined(CONFIG_ARCH_FSM9XXX)
 #define TIMESTAMP_ADDR (MSM_TMR_BASE + 0x08)
 #else
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/*
+ * Legacy targets use the 32KHz hardware timer and new targets will use
+ * the scheduler timer scaled to a 32KHz tick count.
+ *
+ * As testing on legacy targets permits, we will move them to use
+ * sched_clock() and eventually remove the conditiona compilation.
+ */
+#if defined(CONFIG_ARCH_MSM7X30) || defined(CONFIG_ARCH_MSM8X60) \
+	|| defined(CONFIG_ARCH_FSM9XXX)
+#define TIMESTAMP_ADDR (MSM_TMR_BASE + 0x08)
+#elif defined(CONFIG_ARCH_APQ8064) || defined(CONFIG_ARCH_MSM7X01A) || \
+	defined(CONFIG_ARCH_MSM7x25) || defined(CONFIG_ARCH_MSM7X27) || \
+	defined(CONFIG_ARCH_MSM7X27A) || defined(CONFIG_ARCH_MSM8960) || \
+	defined(CONFIG_ARCH_MSM9615) || defined(CONFIG_ARCH_QSD8X50)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define TIMESTAMP_ADDR (MSM_TMR_BASE + 0x04)
 #endif
 
@@ -133,6 +164,14 @@ struct sym id_syms[] = {
 	{ SMEM_LOG_PROC_ID_MODEM, "MODM" },
 	{ SMEM_LOG_PROC_ID_Q6, "QDSP" },
 	{ SMEM_LOG_PROC_ID_APPS, "APPS" },
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	{ SMEM_LOG_PROC_ID_WCNSS, "WCNSS" },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ SMEM_LOG_PROC_ID_WCNSS, "WCNSS" },
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct sym base_syms[] = {
@@ -622,6 +661,16 @@ static char *find_sym(uint32_t id, uint32_t val)
 static void init_syms(void) {}
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef TIMESTAMP_ADDR
+/* legacy timestamp using 32.768KHz clock */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef TIMESTAMP_ADDR
+/* legacy timestamp using 32.768KHz clock */
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline unsigned int read_timestamp(void)
 {
 	unsigned int tick = 0;
@@ -636,6 +685,27 @@ static inline unsigned int read_timestamp(void)
 
 	return tick;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#else
+static inline unsigned int read_timestamp(void)
+{
+	unsigned long long val;
+
+	/* SMEM LOG uses a 32.768KHz timestamp */
+	val = sched_clock() * 32768U;
+	do_div(val, 1000000000U);
+
+	return (unsigned int)val;
+}
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void smem_log_event_from_user(struct smem_log_inst *inst,
 				     const char __user *buf, int size, int num)
@@ -648,6 +718,20 @@ static void smem_log_event_from_user(struct smem_log_inst *inst,
 	int first = 1;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!inst->idx) {
+		pr_err("%s: invalid write index\n", __func__);
+		return;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	remote_spin_lock_irqsave(inst->remote_spinlock, flags);
 
 	while (num--) {
@@ -820,9 +904,21 @@ static int _smem_log_init(void)
 
 	inst[GEN].which_log = GEN;
 	inst[GEN].events =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(struct smem_log_item *)smem_alloc(SMEM_SMEM_LOG_EVENTS,
 						  SMEM_LOG_EVENTS_SIZE);
 	inst[GEN].idx = (uint32_t *)smem_alloc(SMEM_SMEM_LOG_IDX,
+=======
+		(struct smem_log_item *)smem_alloc2(SMEM_SMEM_LOG_EVENTS,
+						  SMEM_LOG_EVENTS_SIZE);
+	inst[GEN].idx = (uint32_t *)smem_alloc2(SMEM_SMEM_LOG_IDX,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(struct smem_log_item *)smem_alloc2(SMEM_SMEM_LOG_EVENTS,
+						  SMEM_LOG_EVENTS_SIZE);
+	inst[GEN].idx = (uint32_t *)smem_alloc2(SMEM_SMEM_LOG_IDX,
+>>>>>>> refs/remotes/origin/cm-11.0
 					     sizeof(uint32_t));
 	if (!inst[GEN].events || !inst[GEN].idx)
 		pr_info("%s: no log or log_idx allocated\n", __func__);
@@ -836,9 +932,21 @@ static int _smem_log_init(void)
 	inst[STA].which_log = STA;
 	inst[STA].events =
 		(struct smem_log_item *)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		smem_alloc(SMEM_SMEM_STATIC_LOG_EVENTS,
 			   SMEM_STATIC_LOG_EVENTS_SIZE);
 	inst[STA].idx = (uint32_t *)smem_alloc(SMEM_SMEM_STATIC_LOG_IDX,
+=======
+		smem_alloc2(SMEM_SMEM_STATIC_LOG_EVENTS,
+			   SMEM_STATIC_LOG_EVENTS_SIZE);
+	inst[STA].idx = (uint32_t *)smem_alloc2(SMEM_SMEM_STATIC_LOG_IDX,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		smem_alloc2(SMEM_SMEM_STATIC_LOG_EVENTS,
+			   SMEM_STATIC_LOG_EVENTS_SIZE);
+	inst[STA].idx = (uint32_t *)smem_alloc2(SMEM_SMEM_STATIC_LOG_IDX,
+>>>>>>> refs/remotes/origin/cm-11.0
 						     sizeof(uint32_t));
 	if (!inst[STA].events || !inst[STA].idx)
 		pr_info("%s: no static log or log_idx allocated\n", __func__);
@@ -852,9 +960,21 @@ static int _smem_log_init(void)
 	inst[POW].which_log = POW;
 	inst[POW].events =
 		(struct smem_log_item *)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		smem_alloc(SMEM_SMEM_LOG_POWER_EVENTS,
 			   SMEM_POWER_LOG_EVENTS_SIZE);
 	inst[POW].idx = (uint32_t *)smem_alloc(SMEM_SMEM_LOG_POWER_IDX,
+=======
+		smem_alloc2(SMEM_SMEM_LOG_POWER_EVENTS,
+			   SMEM_POWER_LOG_EVENTS_SIZE);
+	inst[POW].idx = (uint32_t *)smem_alloc2(SMEM_SMEM_LOG_POWER_IDX,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		smem_alloc2(SMEM_SMEM_LOG_POWER_EVENTS,
+			   SMEM_POWER_LOG_EVENTS_SIZE);
+	inst[POW].idx = (uint32_t *)smem_alloc2(SMEM_SMEM_LOG_POWER_IDX,
+>>>>>>> refs/remotes/origin/cm-11.0
 						     sizeof(uint32_t));
 	if (!inst[POW].events || !inst[POW].idx)
 		pr_info("%s: no power log or log_idx allocated\n", __func__);
@@ -897,6 +1017,18 @@ static ssize_t smem_log_read_bin(struct file *fp, char __user *buf,
 
 	local_inst = fp->private_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!local_inst->idx)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!local_inst->idx)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	remote_spin_lock_irqsave(local_inst->remote_spinlock, flags);
 
 	orig_idx = *local_inst->idx;
@@ -946,6 +1078,16 @@ static ssize_t smem_log_read(struct file *fp, char __user *buf,
 	struct smem_log_inst *inst;
 
 	inst = fp->private_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!inst->idx)
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!inst->idx)
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	remote_spin_lock_irqsave(inst->remote_spinlock, flags);
 
@@ -1184,8 +1326,21 @@ static int update_read_avail(struct smem_log_inst *inst)
 	int curr_read_avail;
 	unsigned long flags = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	remote_spin_lock_irqsave(inst->remote_spinlock, flags);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!inst->idx)
+		return 0;
+
+	remote_spin_lock_irqsave(inst->remote_spinlock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	curr_read_avail = (*inst->idx - inst->read_idx);
 	if (curr_read_avail < 0)
 		curr_read_avail = inst->num - inst->read_idx + *inst->idx;
@@ -1693,6 +1848,19 @@ static int _debug_dump_sym(int log, char *buf, int max, uint32_t cont)
 static int debug_dump(char *buf, int max, uint32_t cont)
 {
 	int r;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (!inst[GEN].idx || !inst[GEN].events)
+		return -ENODEV;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (cont) {
 		update_read_avail(&inst[GEN]);
 		r = wait_event_interruptible_timeout(inst[GEN].read_wait,
@@ -1713,6 +1881,19 @@ static int debug_dump(char *buf, int max, uint32_t cont)
 static int debug_dump_sym(char *buf, int max, uint32_t cont)
 {
 	int r;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (!inst[GEN].idx || !inst[GEN].events)
+		return -ENODEV;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (cont) {
 		update_read_avail(&inst[GEN]);
 		r = wait_event_interruptible_timeout(inst[GEN].read_wait,
@@ -1733,6 +1914,19 @@ static int debug_dump_sym(char *buf, int max, uint32_t cont)
 static int debug_dump_static(char *buf, int max, uint32_t cont)
 {
 	int r;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (!inst[STA].idx || !inst[STA].events)
+		return -ENODEV;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (cont) {
 		update_read_avail(&inst[STA]);
 		r = wait_event_interruptible_timeout(inst[STA].read_wait,
@@ -1753,6 +1947,19 @@ static int debug_dump_static(char *buf, int max, uint32_t cont)
 static int debug_dump_static_sym(char *buf, int max, uint32_t cont)
 {
 	int r;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (!inst[STA].idx || !inst[STA].events)
+		return -ENODEV;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (cont) {
 		update_read_avail(&inst[STA]);
 		r = wait_event_interruptible_timeout(inst[STA].read_wait,
@@ -1773,6 +1980,19 @@ static int debug_dump_static_sym(char *buf, int max, uint32_t cont)
 static int debug_dump_power(char *buf, int max, uint32_t cont)
 {
 	int r;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (!inst[POW].idx || !inst[POW].events)
+		return -ENODEV;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (cont) {
 		update_read_avail(&inst[POW]);
 		r = wait_event_interruptible_timeout(inst[POW].read_wait,
@@ -1793,6 +2013,19 @@ static int debug_dump_power(char *buf, int max, uint32_t cont)
 static int debug_dump_power_sym(char *buf, int max, uint32_t cont)
 {
 	int r;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (!inst[POW].idx || !inst[POW].events)
+		return -ENODEV;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	while (cont) {
 		update_read_avail(&inst[POW]);
 		r = wait_event_interruptible_timeout(inst[POW].read_wait,
@@ -1821,10 +2054,28 @@ static ssize_t debug_read(struct file *file, char __user *buf,
 			  size_t count, loff_t *ppos)
 {
 	int r;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static int bsize;
 	int (*fill)(char *, int, uint32_t) = file->private_data;
 	if (!(*ppos))
 		bsize = fill(debug_buffer, EVENTS_PRINT_SIZE, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int bsize = 0;
+	int (*fill)(char *, int, uint32_t) = file->private_data;
+	if (!(*ppos)) {
+		bsize = fill(debug_buffer, EVENTS_PRINT_SIZE, 0);
+
+		if (bsize < 0)
+			bsize = scnprintf(debug_buffer,
+				EVENTS_PRINT_SIZE, "Log not available\n");
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DBG("%s: count %d ppos %d\n", __func__, count, (unsigned int)*ppos);
 	r =  simple_read_from_buffer(buf, count, ppos, debug_buffer,
 				     bsize);
@@ -1839,12 +2090,38 @@ static ssize_t debug_read_cont(struct file *file, char __user *buf,
 	int bsize;
 	if (!buffer)
 		return -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bsize = fill(buffer, count, 1);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	bsize = fill(buffer, count, 1);
+	if (bsize < 0) {
+		if (*ppos == 0)
+			bsize = scnprintf(buffer, count, "Log not available\n");
+		else
+			bsize = 0;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DBG("%s: count %d bsize %d\n", __func__, count, bsize);
 	if (copy_to_user(buf, buffer, bsize)) {
 		kfree(buffer);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	*ppos += bsize;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*ppos += bsize;
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(buffer);
 	return bsize;
 }
@@ -1933,6 +2210,8 @@ static int smem_log_initialize(void)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int modem_notifier(struct notifier_block *this,
 			  unsigned long code,
 			  void *_cmd)
@@ -1950,11 +2229,38 @@ static int modem_notifier(struct notifier_block *this,
 
 static struct notifier_block nb = {
 	.notifier_call = modem_notifier,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int smd_module_init_notifier(struct notifier_block *this,
+				    unsigned long code,
+				    void *_cmd)
+{
+	int ret = 0;
+	if (!smem_log_initialized)
+		ret = smem_log_initialize();
+	return ret;
+}
+
+static struct notifier_block nb = {
+	.notifier_call = smd_module_init_notifier,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __init smem_log_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return modem_register_notifier(&nb);
+=======
+	return smd_module_init_notifier_register(&nb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return smd_module_init_notifier_register(&nb);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 

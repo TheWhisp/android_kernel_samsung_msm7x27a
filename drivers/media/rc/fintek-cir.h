@@ -76,8 +76,13 @@ struct fintek_dev {
 	} tx;
 
 	/* Config register index/data port pair */
+<<<<<<< HEAD
 	u8 cr_ip;
 	u8 cr_dp;
+=======
+	u32 cr_ip;
+	u32 cr_dp;
+>>>>>>> refs/remotes/origin/master
 
 	/* hardware I/O settings */
 	unsigned long cir_addr;
@@ -88,6 +93,14 @@ struct fintek_dev {
 	u8 chip_major;
 	u8 chip_minor;
 	u16 chip_vendor;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8 logical_dev_cir;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 logical_dev_cir;
+>>>>>>> refs/remotes/origin/master
 
 	/* hardware features */
 	bool hw_learning_capable;
@@ -172,7 +185,17 @@ struct fintek_dev {
 #define LOGICAL_DEV_ENABLE	0x01
 
 /* Logical device number of the CIR function */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define LOGICAL_DEV_CIR		0x05
+=======
+#define LOGICAL_DEV_CIR_REV1	0x05
+#define LOGICAL_DEV_CIR_REV2	0x08
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LOGICAL_DEV_CIR_REV1	0x05
+#define LOGICAL_DEV_CIR_REV2	0x08
+>>>>>>> refs/remotes/origin/master
 
 /* CIR Logical Device (LDN 0x08) config registers */
 #define CIR_CR_COMMAND_INDEX	0x04

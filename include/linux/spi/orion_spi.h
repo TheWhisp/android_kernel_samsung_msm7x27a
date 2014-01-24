@@ -11,7 +11,10 @@
 
 struct orion_spi_info {
 	u32	tclk;		/* no <linux/clk.h> support yet */
+<<<<<<< HEAD
 	u32	enable_clock_fix;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 

@@ -327,7 +327,11 @@ static void htcpld_chip_reset(struct i2c_client *client)
 		client, (chip_data->cache_out = chip_data->reset));
 }
 
+<<<<<<< HEAD
 static int __devinit htcpld_setup_chip_irq(
+=======
+static int htcpld_setup_chip_irq(
+>>>>>>> refs/remotes/origin/master
 		struct platform_device *pdev,
 		int chip_index)
 {
@@ -340,7 +344,11 @@ static int __devinit htcpld_setup_chip_irq(
 	int ret = 0;
 
 	/* Get the platform and driver data */
+<<<<<<< HEAD
 	pdata = dev->platform_data;
+=======
+	pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	htcpld = platform_get_drvdata(pdev);
 	chip = &htcpld->chip[chip_index];
 	plat_chip_data = &pdata->chip[chip_index];
@@ -361,7 +369,11 @@ static int __devinit htcpld_setup_chip_irq(
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit htcpld_register_chip_i2c(
+=======
+static int htcpld_register_chip_i2c(
+>>>>>>> refs/remotes/origin/master
 		struct platform_device *pdev,
 		int chip_index)
 {
@@ -375,7 +387,11 @@ static int __devinit htcpld_register_chip_i2c(
 	struct i2c_board_info info;
 
 	/* Get the platform and driver data */
+<<<<<<< HEAD
 	pdata = dev->platform_data;
+=======
+	pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	htcpld = platform_get_drvdata(pdev);
 	chip = &htcpld->chip[chip_index];
 	plat_chip_data = &pdata->chip[chip_index];
@@ -419,7 +435,11 @@ static int __devinit htcpld_register_chip_i2c(
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit htcpld_unregister_chip_i2c(
+=======
+static void htcpld_unregister_chip_i2c(
+>>>>>>> refs/remotes/origin/master
 		struct platform_device *pdev,
 		int chip_index)
 {
@@ -434,7 +454,11 @@ static void __devinit htcpld_unregister_chip_i2c(
 		i2c_unregister_device(chip->client);
 }
 
+<<<<<<< HEAD
 static int __devinit htcpld_register_chip_gpio(
+=======
+static int htcpld_register_chip_gpio(
+>>>>>>> refs/remotes/origin/master
 		struct platform_device *pdev,
 		int chip_index)
 {
@@ -447,7 +471,11 @@ static int __devinit htcpld_register_chip_gpio(
 	int ret = 0;
 
 	/* Get the platform and driver data */
+<<<<<<< HEAD
 	pdata = dev->platform_data;
+=======
+	pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	htcpld = platform_get_drvdata(pdev);
 	chip = &htcpld->chip[chip_index];
 	plat_chip_data = &pdata->chip[chip_index];
@@ -501,7 +529,11 @@ static int __devinit htcpld_register_chip_gpio(
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit htcpld_setup_chips(struct platform_device *pdev)
+=======
+static int htcpld_setup_chips(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct htcpld_data *htcpld;
 	struct device *dev = &pdev->dev;
@@ -509,13 +541,22 @@ static int __devinit htcpld_setup_chips(struct platform_device *pdev)
 	int i;
 
 	/* Get the platform and driver data */
+<<<<<<< HEAD
 	pdata = dev->platform_data;
+=======
+	pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	htcpld = platform_get_drvdata(pdev);
 
 	/* Setup each chip's output GPIOs */
 	htcpld->nchips = pdata->num_chip;
+<<<<<<< HEAD
 	htcpld->chip = kzalloc(sizeof(struct htcpld_chip) * htcpld->nchips,
 			       GFP_KERNEL);
+=======
+	htcpld->chip = devm_kzalloc(dev, sizeof(struct htcpld_chip) * htcpld->nchips,
+				    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!htcpld->chip) {
 		dev_warn(dev, "Unable to allocate memory for chips\n");
 		return -ENOMEM;
@@ -563,7 +604,11 @@ static int __devinit htcpld_setup_chips(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit htcpld_core_probe(struct platform_device *pdev)
+=======
+static int htcpld_core_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct htcpld_data *htcpld;
 	struct device *dev = &pdev->dev;
@@ -574,18 +619,29 @@ static int __devinit htcpld_core_probe(struct platform_device *pdev)
 	if (!dev)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	pdata = dev->platform_data;
+=======
+	pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_warn(dev, "Platform data not found for htcpld core!\n");
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 	htcpld = kzalloc(sizeof(struct htcpld_data), GFP_KERNEL);
+=======
+	htcpld = devm_kzalloc(dev, sizeof(struct htcpld_data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!htcpld)
 		return -ENOMEM;
 
 	/* Find chained irq */
+<<<<<<< HEAD
 	ret = -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/master
 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (res) {
 		int flags;
@@ -598,7 +654,11 @@ static int __devinit htcpld_core_probe(struct platform_device *pdev)
 					   flags, pdev->name, htcpld);
 		if (ret) {
 			dev_warn(dev, "Unable to setup chained irq handler: %d\n", ret);
+<<<<<<< HEAD
 			goto fail;
+=======
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		} else
 			device_init_wakeup(dev, 0);
 	}
@@ -609,7 +669,11 @@ static int __devinit htcpld_core_probe(struct platform_device *pdev)
 	/* Setup the htcpld chips */
 	ret = htcpld_setup_chips(pdev);
 	if (ret)
+<<<<<<< HEAD
 		goto fail;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* Request the GPIO(s) for the int reset and set them up */
 	if (pdata->int_reset_gpio_hi) {
@@ -644,10 +708,13 @@ static int __devinit htcpld_core_probe(struct platform_device *pdev)
 
 	dev_info(dev, "Initialized successfully\n");
 	return 0;
+<<<<<<< HEAD
 
 fail:
 	kfree(htcpld);
 	return ret;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* The I2C Driver -- used internally */

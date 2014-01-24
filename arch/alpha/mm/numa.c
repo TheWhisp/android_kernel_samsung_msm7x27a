@@ -17,6 +17,10 @@
 
 #include <asm/hwrpb.h>
 #include <asm/pgalloc.h>
+<<<<<<< HEAD
+=======
+#include <asm/sections.h>
+>>>>>>> refs/remotes/origin/master
 
 pg_data_t node_data[MAX_NUMNODES];
 EXPORT_SYMBOL(node_data);
@@ -128,8 +132,11 @@ setup_memory_node(int nid, void *kernel_end)
 	if (node_max_pfn > max_low_pfn)
 		max_pfn = max_low_pfn = node_max_pfn;
 
+<<<<<<< HEAD
 	num_physpages += node_max_pfn - node_min_pfn;
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if 0 /* we'll try this one again in a little while */
 	/* Cute trick to make sure our local node data is on local memory */
 	node_data[nid] = (pg_data_t *)(__va(node_min_pfn << PAGE_SHIFT));
@@ -320,6 +327,7 @@ void __init paging_init(void)
 	/* Initialize the kernel's ZERO_PGE. */
 	memset((void *)ZERO_PGE, 0, PAGE_SIZE);
 }
+<<<<<<< HEAD
 
 void __init mem_init(void)
 {
@@ -360,3 +368,5 @@ void __init mem_init(void)
 	mem_stress();
 #endif
 }
+=======
+>>>>>>> refs/remotes/origin/master

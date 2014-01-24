@@ -3,6 +3,14 @@
 
 #include <rdma/ib_verbs.h>
 #include <rdma/rdma_cm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include "rds.h"
@@ -49,7 +57,11 @@ struct rds_ib_cache_head {
 };
 
 struct rds_ib_refill_cache {
+<<<<<<< HEAD
 	struct rds_ib_cache_head *percpu;
+=======
+	struct rds_ib_cache_head __percpu *percpu;
+>>>>>>> refs/remotes/origin/master
 	struct list_head	 *xfer;
 	struct list_head	 *ready;
 };
@@ -185,8 +197,12 @@ struct rds_ib_device {
 	struct work_struct	free_work;
 };
 
+<<<<<<< HEAD
 #define pcidev_to_node(pcidev) pcibus_to_node(pcidev->bus)
 #define ibdev_to_node(ibdev) pcidev_to_node(to_pci_dev(ibdev->dma_device))
+=======
+#define ibdev_to_node(ibdev) dev_to_node(ibdev->dma_device)
+>>>>>>> refs/remotes/origin/master
 #define rdsibdev_to_node(rdsibdev) ibdev_to_node(rdsibdev->dev)
 
 /* bits for i_ack_flags */

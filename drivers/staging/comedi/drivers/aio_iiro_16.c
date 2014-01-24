@@ -14,10 +14,13 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+>>>>>>> refs/remotes/origin/master
 */
 
 /*
@@ -34,8 +37,13 @@ Configuration Options:
 
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 #include <linux/ioport.h>
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+>>>>>>> refs/remotes/origin/master
 
 #define AIO_IIRO_16_SIZE	0x08
 #define AIO_IIRO_16_RELAY_0_7	0x00
@@ -44,6 +52,7 @@ Configuration Options:
 #define AIO_IIRO_16_RELAY_8_15	0x04
 #define AIO_IIRO_16_INPUT_8_15	0x05
 
+<<<<<<< HEAD
 struct aio_iiro_16_board {
 	const char *name;
 	int do_;
@@ -81,20 +90,49 @@ static struct comedi_driver driver_aio_iiro_16 = {
 	.offset = sizeof(struct aio_iiro_16_board),
 	.num_names = ARRAY_SIZE(aio_iiro_16_boards),
 };
+=======
+static int aio_iiro_16_dio_insn_bits_write(struct comedi_device *dev,
+					   struct comedi_subdevice *s,
+					   struct comedi_insn *insn,
+					   unsigned int *data)
+{
+	if (comedi_dio_update_state(s, data)) {
+		outb(s->state & 0xff, dev->iobase + AIO_IIRO_16_RELAY_0_7);
+		outb((s->state >> 8) & 0xff,
+		     dev->iobase + AIO_IIRO_16_RELAY_8_15);
+	}
+
+	data[1] = s->state;
+
+	return insn->n;
+}
+>>>>>>> refs/remotes/origin/master
 
 static int aio_iiro_16_dio_insn_bits_read(struct comedi_device *dev,
 					  struct comedi_subdevice *s,
 					  struct comedi_insn *insn,
+<<<<<<< HEAD
 					  unsigned int *data);
 
 static int aio_iiro_16_dio_insn_bits_write(struct comedi_device *dev,
 					   struct comedi_subdevice *s,
 					   struct comedi_insn *insn,
 					   unsigned int *data);
+=======
+					  unsigned int *data)
+{
+	data[1] = 0;
+	data[1] |= inb(dev->iobase + AIO_IIRO_16_INPUT_0_7);
+	data[1] |= inb(dev->iobase + AIO_IIRO_16_INPUT_8_15) << 8;
+
+	return insn->n;
+}
+>>>>>>> refs/remotes/origin/master
 
 static int aio_iiro_16_attach(struct comedi_device *dev,
 			      struct comedi_devconfig *it)
 {
+<<<<<<< HEAD
 	int iobase;
 	struct comedi_subdevice *s;
 
@@ -118,6 +156,20 @@ static int aio_iiro_16_attach(struct comedi_device *dev,
 		return -ENOMEM;
 
 	s = dev->subdevices + 0;
+=======
+	struct comedi_subdevice *s;
+	int ret;
+
+	ret = comedi_request_region(dev, it->options[0], AIO_IIRO_16_SIZE);
+	if (ret)
+		return ret;
+
+	ret = comedi_alloc_subdevices(dev, 2);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	s->type = COMEDI_SUBD_DIO;
 	s->subdev_flags = SDF_WRITABLE;
 	s->n_chan = 16;
@@ -125,7 +177,11 @@ static int aio_iiro_16_attach(struct comedi_device *dev,
 	s->range_table = &range_digital;
 	s->insn_bits = aio_iiro_16_dio_insn_bits_write;
 
+<<<<<<< HEAD
 	s = dev->subdevices + 1;
+=======
+	s = &dev->subdevices[1];
+>>>>>>> refs/remotes/origin/master
 	s->type = COMEDI_SUBD_DIO;
 	s->subdev_flags = SDF_READABLE;
 	s->n_chan = 16;
@@ -133,6 +189,7 @@ static int aio_iiro_16_attach(struct comedi_device *dev,
 	s->range_table = &range_digital;
 	s->insn_bits = aio_iiro_16_dio_insn_bits_read;
 
+<<<<<<< HEAD
 	printk("attached\n");
 
 	return 1;
@@ -196,6 +253,18 @@ static void __exit driver_aio_iiro_16_cleanup_module(void)
 
 module_init(driver_aio_iiro_16_init_module);
 module_exit(driver_aio_iiro_16_cleanup_module);
+=======
+	return 1;
+}
+
+static struct comedi_driver aio_iiro_16_driver = {
+	.driver_name	= "aio_iiro_16",
+	.module		= THIS_MODULE,
+	.attach		= aio_iiro_16_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(aio_iiro_16_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

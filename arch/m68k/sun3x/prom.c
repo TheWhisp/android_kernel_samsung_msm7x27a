@@ -10,7 +10,10 @@
 
 #include <asm/page.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/bootinfo.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/setup.h>
 #include <asm/traps.h>
 #include <asm/sun3xprom.h>

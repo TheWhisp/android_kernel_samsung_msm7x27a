@@ -3,6 +3,7 @@
 
 #include <asm-generic/int-ll64.h>
 
+<<<<<<< HEAD
 #if !defined(__ASSEMBLY__)
 
 /*
@@ -18,12 +19,17 @@ typedef unsigned short umode_t;
 /*
  * These aren't exported outside the kernel to avoid name space clashes
  */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef __KERNEL__
 
 #define BITS_PER_LONG 32
 
 #endif /* __KERNEL__ */
 
+<<<<<<< HEAD
 #endif /* __ASSEMBLY__ */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _H8300_TYPES_H */

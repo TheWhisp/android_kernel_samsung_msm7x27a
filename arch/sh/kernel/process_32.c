@@ -22,20 +22,39 @@
 #include <linux/ftrace.h>
 #include <linux/hw_breakpoint.h>
 #include <linux/prefetch.h>
+<<<<<<< HEAD
 #include <asm/uaccess.h>
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/fpu.h>
 #include <asm/syscalls.h>
+=======
+#include <asm/fpu.h>
+#include <asm/syscalls.h>
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stackprotector.h>
+#include <asm/uaccess.h>
+#include <asm/mmu_context.h>
+#include <asm/fpu.h>
+#include <asm/syscalls.h>
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 
 void show_regs(struct pt_regs * regs)
 {
 	printk("\n");
+<<<<<<< HEAD
 	printk("Pid : %d, Comm: \t\t%s\n", task_pid_nr(current), current->comm);
 	printk("CPU : %d        \t\t%s  (%s %.*s)\n\n",
 	       smp_processor_id(), print_tainted(), init_utsname()->release,
 	       (int)strcspn(init_utsname()->version, " "),
 	       init_utsname()->version);
+=======
+	show_regs_print_info(KERN_DEFAULT);
+>>>>>>> refs/remotes/origin/master
 
 	print_symbol("PC is at %s\n", instruction_pointer(regs));
 	print_symbol("PR is at %s\n", regs->pr);
@@ -67,10 +86,15 @@ void show_regs(struct pt_regs * regs)
 	show_code(regs);
 }
 
+<<<<<<< HEAD
 /*
  * Create a kernel thread
  */
+<<<<<<< HEAD
 ATTRIB_NORET void kernel_thread_helper(void *arg, int (*fn)(void *))
+=======
+__noreturn void kernel_thread_helper(void *arg, int (*fn)(void *))
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	do_exit(fn(arg));
 }
@@ -99,6 +123,8 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 }
 EXPORT_SYMBOL(kernel_thread);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void start_thread(struct pt_regs *regs, unsigned long new_pc,
 		  unsigned long new_sp)
 {
@@ -155,6 +181,7 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fpu)
 }
 EXPORT_SYMBOL(dump_fpu);
 
+<<<<<<< HEAD
 /*
  * This gets called before we allocate a new thread and copy
  * the current task into it.
@@ -169,6 +196,13 @@ asmlinkage void ret_from_fork(void);
 int copy_thread(unsigned long clone_flags, unsigned long usp,
 		unsigned long unused,
 		struct task_struct *p, struct pt_regs *regs)
+=======
+asmlinkage void ret_from_fork(void);
+asmlinkage void ret_from_kernel_thread(void);
+
+int copy_thread(unsigned long clone_flags, unsigned long usp,
+		unsigned long arg, struct task_struct *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct thread_info *ti = task_thread_info(p);
 	struct pt_regs *childregs;
@@ -185,6 +219,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	}
 #endif
 
+<<<<<<< HEAD
 	childregs = task_pt_regs(p);
 	*childregs = *regs;
 
@@ -197,17 +232,46 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 		ti->status &= ~TS_USEDFPU;
 		p->fpu_counter = 0;
 	}
+=======
+	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
+
+	childregs = task_pt_regs(p);
+	p->thread.sp = (unsigned long) childregs;
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(childregs, 0, sizeof(struct pt_regs));
+		p->thread.pc = (unsigned long) ret_from_kernel_thread;
+		childregs->regs[4] = arg;
+		childregs->regs[5] = usp;
+		childregs->sr = SR_MD;
+#if defined(CONFIG_SH_FPU)
+		childregs->sr |= SR_FD;
+#endif
+		ti->addr_limit = KERNEL_DS;
+		ti->status &= ~TS_USEDFPU;
+		p->thread.fpu_counter = 0;
+		return 0;
+	}
+	*childregs = *current_pt_regs();
+
+	if (usp)
+		childregs->regs[15] = usp;
+	ti->addr_limit = USER_DS;
+>>>>>>> refs/remotes/origin/master
 
 	if (clone_flags & CLONE_SETTLS)
 		childregs->gbr = childregs->regs[0];
 
 	childregs->regs[0] = 0; /* Set return value for child */
+<<<<<<< HEAD
 
 	p->thread.sp = (unsigned long) childregs;
 	p->thread.pc = (unsigned long) ret_from_fork;
 
 	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
 
+=======
+	p->thread.pc = (unsigned long) ret_from_fork;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -220,10 +284,21 @@ __switch_to(struct task_struct *prev, struct task_struct *next)
 {
 	struct thread_struct *next_t = &next->thread;
 
+<<<<<<< HEAD
 	unlazy_fpu(prev, task_pt_regs(prev));
 
 	/* we're going to use this soon, after a few expensive things */
 	if (next->fpu_counter > 5)
+=======
+#if defined(CONFIG_CC_STACKPROTECTOR) && !defined(CONFIG_SMP)
+	__stack_chk_guard = next->stack_canary;
+#endif
+
+	unlazy_fpu(prev, task_pt_regs(prev));
+
+	/* we're going to use this soon, after a few expensive things */
+	if (next->thread.fpu_counter > 5)
+>>>>>>> refs/remotes/origin/master
 		prefetch(next_t->xstate);
 
 #ifdef CONFIG_MMU
@@ -241,12 +316,17 @@ __switch_to(struct task_struct *prev, struct task_struct *next)
 	 * restore of the math state immediately to avoid the trap; the
 	 * chances of needing FPU soon are obviously high now
 	 */
+<<<<<<< HEAD
 	if (next->fpu_counter > 5)
+=======
+	if (next->thread.fpu_counter > 5)
+>>>>>>> refs/remotes/origin/master
 		__fpu_state_restore();
 
 	return prev;
 }
 
+<<<<<<< HEAD
 asmlinkage int sys_fork(unsigned long r4, unsigned long r5,
 			unsigned long r6, unsigned long r7,
 			struct pt_regs __regs)
@@ -315,6 +395,8 @@ out:
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long get_wchan(struct task_struct *p)
 {
 	unsigned long pc;

@@ -31,7 +31,15 @@ static int ixp4xx_set_mode(struct ata_link *link, struct ata_device **error)
 	struct ata_device *dev;
 
 	ata_for_each_dev(dev, link, ENABLED) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO, "configured for PIO0\n");
+=======
+		ata_dev_info(dev, "configured for PIO0\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev, "configured for PIO0\n");
+>>>>>>> refs/remotes/origin/master
 		dev->pio_mode = XFER_PIO_0;
 		dev->xfer_mode = XFER_PIO_0;
 		dev->xfer_shift = ATA_SHIFT_PIO;
@@ -48,7 +56,11 @@ static unsigned int ixp4xx_mmio_data_xfer(struct ata_device *dev,
 	u16 *buf16 = (u16 *) buf;
 	struct ata_port *ap = dev->link->ap;
 	void __iomem *mmio = ap->ioaddr.data_addr;
+<<<<<<< HEAD
 	struct ixp4xx_pata_data *data = ap->host->dev->platform_data;
+=======
+	struct ixp4xx_pata_data *data = dev_get_platdata(ap->host->dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* set the expansion bus in 16bit mode and restore
 	 * 8 bit mode after the transaction.
@@ -137,13 +149,22 @@ static void ixp4xx_setup_port(struct ata_port *ap,
 	ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx", raw_cmd, raw_ctl);
 }
 
+<<<<<<< HEAD
 static __devinit int ixp4xx_pata_probe(struct platform_device *pdev)
+=======
+static int ixp4xx_pata_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int irq;
 	struct resource *cs0, *cs1;
 	struct ata_host *host;
 	struct ata_port *ap;
+<<<<<<< HEAD
 	struct ixp4xx_pata_data *data = pdev->dev.platform_data;
+=======
+	struct ixp4xx_pata_data *data = dev_get_platdata(&pdev->dev);
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	cs0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	cs1 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
@@ -157,7 +178,13 @@ static __devinit int ixp4xx_pata_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 	/* acquire resources and fill host */
+<<<<<<< HEAD
 	pdev->dev.coherent_dma_mask = DMA_BIT_MASK(32);
+=======
+	ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	data->cs0 = devm_ioremap(&pdev->dev, cs0->start, 0x1000);
 	data->cs1 = devm_ioremap(&pdev->dev, cs1->start, 0x1000);
@@ -181,12 +208,21 @@ static __devinit int ixp4xx_pata_probe(struct platform_device *pdev)
 
 	ixp4xx_setup_port(ap, data, cs0->start, cs1->start);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_printk(KERN_INFO, &pdev->dev, "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/* activate host */
 	return ata_host_activate(host, irq, ata_sff_interrupt, 0, &ixp4xx_sht);
 }
 
+<<<<<<< HEAD
 static __devexit int ixp4xx_pata_remove(struct platform_device *dev)
 {
 	struct ata_host *host = platform_get_drvdata(dev);
@@ -196,15 +232,19 @@ static __devexit int ixp4xx_pata_remove(struct platform_device *dev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver ixp4xx_pata_platform_driver = {
 	.driver	 = {
 		.name   = DRV_NAME,
 		.owner  = THIS_MODULE,
 	},
 	.probe		= ixp4xx_pata_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ixp4xx_pata_remove),
 };
 
+<<<<<<< HEAD
 static int __init ixp4xx_pata_init(void)
 {
 	return platform_driver_register(&ixp4xx_pata_platform_driver);
@@ -214,12 +254,27 @@ static void __exit ixp4xx_pata_exit(void)
 {
 	platform_driver_unregister(&ixp4xx_pata_platform_driver);
 }
+=======
+module_platform_driver(ixp4xx_pata_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= ata_platform_remove_one,
+};
+
+module_platform_driver(ixp4xx_pata_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
 MODULE_DESCRIPTION("low-level driver for ixp4xx Compact Flash PATA");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 MODULE_ALIAS("platform:" DRV_NAME);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(ixp4xx_pata_init);
 module_exit(ixp4xx_pata_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

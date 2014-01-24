@@ -18,6 +18,14 @@
 
 #include <linux/bitops.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/notifier.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/notifier.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PM8XXX_BATT_ALARM_DEV_NAME	"pm8xxx-batt-alarm"
 

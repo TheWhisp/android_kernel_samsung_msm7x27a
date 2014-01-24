@@ -1,10 +1,18 @@
 /*
  *  Atheros AR71XX/AR724X/AR913X specific setup
  *
+<<<<<<< HEAD
  *  Copyright (C) 2008-2011 Gabor Juhos <juhosg@openwrt.org>
  *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
  *
  *  Parts of this file are based on Atheros' 2.6.15 BSP
+=======
+ *  Copyright (C) 2010-2011 Jaiganesh Narayanan <jnarayanan@atheros.com>
+ *  Copyright (C) 2008-2011 Gabor Juhos <juhosg@openwrt.org>
+ *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
+ *
+ *  Parts of this file are based on Atheros' 2.6.15/2.6.31 BSP
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License version 2 as published
@@ -18,6 +26,10 @@
 #include <linux/clk.h>
 
 #include <asm/bootinfo.h>
+<<<<<<< HEAD
+=======
+#include <asm/idle.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>		/* for mips_hpt_frequency */
 #include <asm/reboot.h>		/* for _machine_{restart,halt} */
 #include <asm/mips_machine.h>
@@ -50,6 +62,7 @@ static void ath79_halt(void)
 		cpu_wait();
 }
 
+<<<<<<< HEAD
 static void __init ath79_detect_mem_size(void)
 {
 	unsigned long size;
@@ -64,6 +77,8 @@ static void __init ath79_detect_mem_size(void)
 	add_memory_region(0, size, BOOT_MEM_RAM);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init ath79_detect_sys_type(void)
 {
 	char *chip = "????";
@@ -101,21 +116,59 @@ static void __init ath79_detect_sys_type(void)
 	case REV_ID_MAJOR_AR7240:
 		ath79_soc = ATH79_SOC_AR7240;
 		chip = "7240";
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rev = (id & AR724X_REV_ID_REVISION_MASK);
+=======
+		rev = id & AR724X_REV_ID_REVISION_MASK;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rev = id & AR724X_REV_ID_REVISION_MASK;
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case REV_ID_MAJOR_AR7241:
 		ath79_soc = ATH79_SOC_AR7241;
 		chip = "7241";
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rev = (id & AR724X_REV_ID_REVISION_MASK);
+=======
+		rev = id & AR724X_REV_ID_REVISION_MASK;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rev = id & AR724X_REV_ID_REVISION_MASK;
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case REV_ID_MAJOR_AR7242:
 		ath79_soc = ATH79_SOC_AR7242;
 		chip = "7242";
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rev = (id & AR724X_REV_ID_REVISION_MASK);
+=======
+		rev = id & AR724X_REV_ID_REVISION_MASK;
 		break;
 
+	case REV_ID_MAJOR_AR9330:
+		ath79_soc = ATH79_SOC_AR9330;
+		chip = "9330";
+		rev = id & AR933X_REV_ID_REVISION_MASK;
+		break;
+
+	case REV_ID_MAJOR_AR9331:
+		ath79_soc = ATH79_SOC_AR9331;
+		chip = "9331";
+		rev = id & AR933X_REV_ID_REVISION_MASK;
+>>>>>>> refs/remotes/origin/cm-10.0
+		break;
+
+=======
+		rev = id & AR724X_REV_ID_REVISION_MASK;
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case REV_ID_MAJOR_AR913X:
 		minor = id & AR913X_REV_ID_MINOR_MASK;
 		rev = id >> AR913X_REV_ID_REVISION_SHIFT;
@@ -133,11 +186,73 @@ static void __init ath79_detect_sys_type(void)
 		}
 		break;
 
+<<<<<<< HEAD
 	default:
+<<<<<<< HEAD
 		panic("ath79: unknown SoC, id:0x%08x\n", id);
 	}
 
+=======
+=======
+	case REV_ID_MAJOR_AR9330:
+		ath79_soc = ATH79_SOC_AR9330;
+		chip = "9330";
+		rev = id & AR933X_REV_ID_REVISION_MASK;
+		break;
+
+	case REV_ID_MAJOR_AR9331:
+		ath79_soc = ATH79_SOC_AR9331;
+		chip = "9331";
+		rev = id & AR933X_REV_ID_REVISION_MASK;
+		break;
+
+	case REV_ID_MAJOR_AR9341:
+		ath79_soc = ATH79_SOC_AR9341;
+		chip = "9341";
+		rev = id & AR934X_REV_ID_REVISION_MASK;
+		break;
+
+	case REV_ID_MAJOR_AR9342:
+		ath79_soc = ATH79_SOC_AR9342;
+		chip = "9342";
+		rev = id & AR934X_REV_ID_REVISION_MASK;
+		break;
+
+	case REV_ID_MAJOR_AR9344:
+		ath79_soc = ATH79_SOC_AR9344;
+		chip = "9344";
+		rev = id & AR934X_REV_ID_REVISION_MASK;
+		break;
+
+	case REV_ID_MAJOR_QCA9556:
+		ath79_soc = ATH79_SOC_QCA9556;
+		chip = "9556";
+		rev = id & QCA955X_REV_ID_REVISION_MASK;
+		break;
+
+	case REV_ID_MAJOR_QCA9558:
+		ath79_soc = ATH79_SOC_QCA9558;
+		chip = "9558";
+		rev = id & QCA955X_REV_ID_REVISION_MASK;
+		break;
+
+	default:
+>>>>>>> refs/remotes/origin/master
+		panic("ath79: unknown SoC, id:0x%08x", id);
+	}
+
+	ath79_soc_rev = rev;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	sprintf(ath79_sys_type, "Atheros AR%s rev %u", chip, rev);
+=======
+	if (soc_is_qca955x())
+		sprintf(ath79_sys_type, "Qualcomm Atheros QCA%s rev %u",
+			chip, rev);
+	else
+		sprintf(ath79_sys_type, "Atheros AR%s rev %u", chip, rev);
+>>>>>>> refs/remotes/origin/master
 	pr_info("SoC: %s\n", ath79_sys_type);
 }
 
@@ -146,7 +261,11 @@ const char *get_system_type(void)
 	return ath79_sys_type;
 }
 
+<<<<<<< HEAD
 unsigned int __cpuinit get_c0_compare_int(void)
+=======
+unsigned int get_c0_compare_int(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return CP0_LEGACY_COMPARE_IRQ;
 }
@@ -163,8 +282,12 @@ void __init plat_mem_setup(void)
 					 AR71XX_DDR_CTRL_SIZE);
 
 	ath79_detect_sys_type();
+<<<<<<< HEAD
 	ath79_detect_mem_size();
 	ath79_clocks_init();
+=======
+	detect_memory_region(0, ATH79_MEM_SIZE_MIN, ATH79_MEM_SIZE_MAX);
+>>>>>>> refs/remotes/origin/master
 
 	_machine_restart = ath79_restart;
 	_machine_halt = ath79_halt;
@@ -173,6 +296,7 @@ void __init plat_mem_setup(void)
 
 void __init plat_time_init(void)
 {
+<<<<<<< HEAD
 	struct clk *clk;
 
 	clk = clk_get(NULL, "cpu");
@@ -180,6 +304,27 @@ void __init plat_time_init(void)
 		panic("unable to get CPU clock, err=%ld", PTR_ERR(clk));
 
 	mips_hpt_frequency = clk_get_rate(clk) / 2;
+=======
+	unsigned long cpu_clk_rate;
+	unsigned long ahb_clk_rate;
+	unsigned long ddr_clk_rate;
+	unsigned long ref_clk_rate;
+
+	ath79_clocks_init();
+
+	cpu_clk_rate = ath79_get_sys_clk_rate("cpu");
+	ahb_clk_rate = ath79_get_sys_clk_rate("ahb");
+	ddr_clk_rate = ath79_get_sys_clk_rate("ddr");
+	ref_clk_rate = ath79_get_sys_clk_rate("ref");
+
+	pr_info("Clocks: CPU:%lu.%03luMHz, DDR:%lu.%03luMHz, AHB:%lu.%03luMHz, Ref:%lu.%03luMHz",
+		cpu_clk_rate / 1000000, (cpu_clk_rate / 1000) % 1000,
+		ddr_clk_rate / 1000000, (ddr_clk_rate / 1000) % 1000,
+		ahb_clk_rate / 1000000, (ahb_clk_rate / 1000) % 1000,
+		ref_clk_rate / 1000000, (ref_clk_rate / 1000) % 1000);
+
+	mips_hpt_frequency = cpu_clk_rate / 2;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init ath79_setup(void)

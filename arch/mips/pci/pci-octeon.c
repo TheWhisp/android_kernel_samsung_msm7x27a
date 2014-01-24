@@ -11,6 +11,10 @@
 #include <linux/interrupt.h>
 #include <linux/time.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/swiotlb.h>
 
 #include <asm/time.h>
@@ -29,8 +33,13 @@
  * addresses. Use PCI endian swapping 1 so no address swapping is
  * necessary. The Linux io routines will endian swap the data.
  */
+<<<<<<< HEAD
 #define OCTEON_PCI_IOSPACE_BASE     0x80011a0400000000ull
 #define OCTEON_PCI_IOSPACE_SIZE     (1ull<<32)
+=======
+#define OCTEON_PCI_IOSPACE_BASE	    0x80011a0400000000ull
+#define OCTEON_PCI_IOSPACE_SIZE	    (1ull<<32)
+>>>>>>> refs/remotes/origin/master
 
 /* Octeon't PCI controller uses did=3, subdid=3 for PCI memory. */
 #define OCTEON_PCI_MEMSPACE_OFFSET  (0x00011b0000000000ull)
@@ -58,7 +67,11 @@ union octeon_pci_address {
 	} s;
 };
 
+<<<<<<< HEAD
 int __initdata (*octeon_pcibios_map_irq)(const struct pci_dev *dev,
+=======
+int __initconst (*octeon_pcibios_map_irq)(const struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 					 u8 slot, u8 pin);
 enum octeon_dma_bar_type octeon_dma_bar_type = OCTEON_DMA_BAR_TYPE_INVALID;
 
@@ -67,10 +80,17 @@ enum octeon_dma_bar_type octeon_dma_bar_type = OCTEON_DMA_BAR_TYPE_INVALID;
  *
  * @dev:    The Linux PCI device structure for the device to map
  * @slot:   The slot number for this device on __BUS 0__. Linux
+<<<<<<< HEAD
  *               enumerates through all the bridges and figures out the
  *               slot on Bus 0 where this device eventually hooks to.
  * @pin:    The PCI interrupt pin read from the device, then swizzled
  *               as it goes through each bridge.
+=======
+ *		 enumerates through all the bridges and figures out the
+ *		 slot on Bus 0 where this device eventually hooks to.
+ * @pin:    The PCI interrupt pin read from the device, then swizzled
+ *		 as it goes through each bridge.
+>>>>>>> refs/remotes/origin/master
  * Returns Interrupt number for the device
  */
 int __init pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
@@ -99,7 +119,15 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 	 */
 	pci_write_config_byte(dev, PCI_CACHE_LINE_SIZE, 64 / 4);
 	/* Set latency timers for all devices */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_write_config_byte(dev, PCI_LATENCY_TIMER, 48);
+=======
+	pci_write_config_byte(dev, PCI_LATENCY_TIMER, 64);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_write_config_byte(dev, PCI_LATENCY_TIMER, 64);
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable reporting System errors and parity errors on all devices */
 	/* Enable parity checking and error reporting */
@@ -109,7 +137,15 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 
 	if (dev->subordinate) {
 		/* Set latency timers on sub bridges */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pci_write_config_byte(dev, PCI_SEC_LATENCY_TIMER, 48);
+=======
+		pci_write_config_byte(dev, PCI_SEC_LATENCY_TIMER, 64);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pci_write_config_byte(dev, PCI_SEC_LATENCY_TIMER, 64);
+>>>>>>> refs/remotes/origin/master
 		/* More bridge error detection */
 		pci_read_config_word(dev, PCI_BRIDGE_CONTROL, &config);
 		config |= PCI_BRIDGE_CTL_PARITY | PCI_BRIDGE_CTL_SERR;
@@ -117,10 +153,12 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 	}
 
 	/* Enable the PCIe normal error reporting */
+<<<<<<< HEAD
 	pos = pci_find_capability(dev, PCI_CAP_ID_EXP);
 	if (pos) {
 		/* Update Device Control */
 		pci_read_config_word(dev, pos + PCI_EXP_DEVCTL, &config);
+<<<<<<< HEAD
 		/* Correctable Error Reporting */
 		config |= PCI_EXP_DEVCTL_CERE;
 		/* Non-Fatal Error Reporting */
@@ -129,8 +167,21 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 		config |= PCI_EXP_DEVCTL_FERE;
 		/* Unsupported Request */
 		config |= PCI_EXP_DEVCTL_URRE;
+=======
+		config |= PCI_EXP_DEVCTL_CERE; /* Correctable Error Reporting */
+		config |= PCI_EXP_DEVCTL_NFERE; /* Non-Fatal Error Reporting */
+		config |= PCI_EXP_DEVCTL_FERE;  /* Fatal Error Reporting */
+		config |= PCI_EXP_DEVCTL_URRE;  /* Unsupported Request */
+>>>>>>> refs/remotes/origin/cm-10.0
 		pci_write_config_word(dev, pos + PCI_EXP_DEVCTL, config);
 	}
+=======
+	config = PCI_EXP_DEVCTL_CERE; /* Correctable Error Reporting */
+	config |= PCI_EXP_DEVCTL_NFERE; /* Non-Fatal Error Reporting */
+	config |= PCI_EXP_DEVCTL_FERE;	/* Fatal Error Reporting */
+	config |= PCI_EXP_DEVCTL_URRE;	/* Unsupported Request */
+	pcie_capability_set_word(dev, PCI_EXP_DEVCTL, config);
+>>>>>>> refs/remotes/origin/master
 
 	/* Find the Advanced Error Reporting capability */
 	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
@@ -234,10 +285,17 @@ const char *octeon_get_pci_interrupts(void)
  *
  * @dev:    The Linux PCI device structure for the device to map
  * @slot:   The slot number for this device on __BUS 0__. Linux
+<<<<<<< HEAD
  *               enumerates through all the bridges and figures out the
  *               slot on Bus 0 where this device eventually hooks to.
  * @pin:    The PCI interrupt pin read from the device, then swizzled
  *               as it goes through each bridge.
+=======
+ *		 enumerates through all the bridges and figures out the
+ *		 slot on Bus 0 where this device eventually hooks to.
+ * @pin:    The PCI interrupt pin read from the device, then swizzled
+ *		 as it goes through each bridge.
+>>>>>>> refs/remotes/origin/master
  * Returns Interrupt number for the device
  */
 int __init octeon_pci_pcibios_map_irq(const struct pci_dev *dev,
@@ -412,8 +470,13 @@ static void octeon_pci_initialize(void)
 		ctl_status_2.s.bb1_siz = 1;  /* BAR1 is 2GB */
 		ctl_status_2.s.bb_ca = 1;    /* Don't use L2 with big bars */
 		ctl_status_2.s.bb_es = 1;    /* Big bar in byte swap mode */
+<<<<<<< HEAD
 		ctl_status_2.s.bb1 = 1;      /* BAR1 is big */
 		ctl_status_2.s.bb0 = 1;      /* BAR0 is big */
+=======
+		ctl_status_2.s.bb1 = 1;	     /* BAR1 is big */
+		ctl_status_2.s.bb0 = 1;	     /* BAR0 is big */
+>>>>>>> refs/remotes/origin/master
 	}
 
 	octeon_npi_write32(CVMX_NPI_PCI_CTL_STATUS_2, ctl_status_2.u32);
@@ -454,7 +517,11 @@ static void octeon_pci_initialize(void)
 		 * count. [1..31] and 0=32.  NOTE: If the user
 		 * programs these bits beyond the Designed Maximum
 		 * outstanding count, then the designed maximum table
+<<<<<<< HEAD
 		 * depth will be used instead.  No additional
+=======
+		 * depth will be used instead.	No additional
+>>>>>>> refs/remotes/origin/master
 		 * Deferred/Split transactions will be accepted if
 		 * this outstanding maximum count is
 		 * reached. Furthermore, no additional deferred/split
@@ -464,7 +531,11 @@ static void octeon_pci_initialize(void)
 		cfg19.s.tdomc = 4;
 		/*
 		 * Master Deferred Read Request Outstanding Max Count
+<<<<<<< HEAD
 		 * (PCI only).  CR4C[26:24] Max SAC cycles MAX DAC
+=======
+		 * (PCI only).	CR4C[26:24] Max SAC cycles MAX DAC
+>>>>>>> refs/remotes/origin/master
 		 * cycles 000 8 4 001 1 0 010 2 1 011 3 1 100 4 2 101
 		 * 5 2 110 6 3 111 7 3 For example, if these bits are
 		 * programmed to 100, the core can support 2 DAC
@@ -558,7 +629,11 @@ static void octeon_pci_initialize(void)
 
 	/*
 	 * Affects PCI performance when OCTEON services reads to its
+<<<<<<< HEAD
 	 * BAR1/BAR2. Refer to Section 10.6.1.  The recommended values are
+=======
+	 * BAR1/BAR2. Refer to Section 10.6.1.	The recommended values are
+>>>>>>> refs/remotes/origin/master
 	 * 0x22, 0x33, and 0x33 for PCI_READ_CMD_6, PCI_READ_CMD_C, and
 	 * PCI_READ_CMD_E, respectively. Unfortunately due to errata DDR-700,
 	 * these values need to be changed so they won't possibly prefetch off
@@ -594,15 +669,26 @@ static int __init octeon_pci_setup(void)
 	else
 		octeon_dma_bar_type = OCTEON_DMA_BAR_TYPE_BIG;
 
+<<<<<<< HEAD
 	/* PCI I/O and PCI MEM values */
 	set_io_port_base(OCTEON_PCI_IOSPACE_BASE);
 	ioport_resource.start = 0;
 	ioport_resource.end = OCTEON_PCI_IOSPACE_SIZE - 1;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!octeon_is_pci_host()) {
 		pr_notice("Not in host mode, PCI Controller not initialized\n");
 		return 0;
 	}
 
+<<<<<<< HEAD
+=======
+	/* PCI I/O and PCI MEM values */
+	set_io_port_base(OCTEON_PCI_IOSPACE_BASE);
+	ioport_resource.start = 0;
+	ioport_resource.end = OCTEON_PCI_IOSPACE_SIZE - 1;
+
+>>>>>>> refs/remotes/origin/master
 	pr_notice("%s Octeon big bar support\n",
 		  (octeon_dma_bar_type ==
 		  OCTEON_DMA_BAR_TYPE_BIG) ? "Enabling" : "Disabling");
@@ -713,6 +799,13 @@ static int __init octeon_pci_setup(void)
 	 */
 	cvmx_write_csr(CVMX_NPI_PCI_INT_SUM2, -1);
 
+<<<<<<< HEAD
+=======
+	if (IS_ERR(platform_device_register_simple("octeon_pci_edac",
+						   -1, NULL, 0)))
+		pr_err("Registation of co_pci_edac failed!\n");
+
+>>>>>>> refs/remotes/origin/master
 	octeon_pci_dma_init();
 
 	return 0;

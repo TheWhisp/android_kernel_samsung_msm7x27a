@@ -22,10 +22,19 @@
 
 #include <linux/blkdev.h>
 #include <linux/mempool.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bio.h>
 #include <linux/workqueue.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 struct integrity_slab {
 	struct kmem_cache *slab;
 	unsigned short nr_vecs;
@@ -74,11 +83,24 @@ static inline int use_bip_pool(unsigned int idx)
  * @gfp_mask:	Memory allocation mask
  * @nr_vecs:	Number of integrity metadata scatter-gather elements
  * @bs:		bio_set to allocate from
+=======
+#define BIP_INLINE_VECS	4
+
+static struct kmem_cache *bip_slab;
+static struct workqueue_struct *kintegrityd_wq;
+
+/**
+ * bio_integrity_alloc - Allocate integrity payload and attach it to bio
+ * @bio:	bio to attach integrity metadata to
+ * @gfp_mask:	Memory allocation mask
+ * @nr_vecs:	Number of integrity metadata scatter-gather elements
+>>>>>>> refs/remotes/origin/master
  *
  * Description: This function prepares a bio for attaching integrity
  * metadata.  nr_vecs specifies the maximum number of pages containing
  * integrity metadata that can be attached.
  */
+<<<<<<< HEAD
 struct bio_integrity_payload *bio_integrity_alloc_bioset(struct bio *bio,
 							 gfp_t gfp_mask,
 							 unsigned int nr_vecs,
@@ -107,11 +129,46 @@ struct bio_integrity_payload *bio_integrity_alloc_bioset(struct bio *bio,
 
 	memset(bip, 0, sizeof(*bip));
 
+=======
+struct bio_integrity_payload *bio_integrity_alloc(struct bio *bio,
+						  gfp_t gfp_mask,
+						  unsigned int nr_vecs)
+{
+	struct bio_integrity_payload *bip;
+	struct bio_set *bs = bio->bi_pool;
+	unsigned long idx = BIO_POOL_NONE;
+	unsigned inline_vecs;
+
+	if (!bs) {
+		bip = kmalloc(sizeof(struct bio_integrity_payload) +
+			      sizeof(struct bio_vec) * nr_vecs, gfp_mask);
+		inline_vecs = nr_vecs;
+	} else {
+		bip = mempool_alloc(bs->bio_integrity_pool, gfp_mask);
+		inline_vecs = BIP_INLINE_VECS;
+	}
+
+	if (unlikely(!bip))
+		return NULL;
+
+	memset(bip, 0, sizeof(*bip));
+
+	if (nr_vecs > inline_vecs) {
+		bip->bip_vec = bvec_alloc(gfp_mask, nr_vecs, &idx,
+					  bs->bvec_integrity_pool);
+		if (!bip->bip_vec)
+			goto err;
+	} else {
+		bip->bip_vec = bip->bip_inline_vecs;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	bip->bip_slab = idx;
 	bip->bip_bio = bio;
 	bio->bi_integrity = bip;
 
 	return bip;
+<<<<<<< HEAD
 }
 EXPORT_SYMBOL(bio_integrity_alloc_bioset);
 
@@ -130,17 +187,26 @@ struct bio_integrity_payload *bio_integrity_alloc(struct bio *bio,
 						  unsigned int nr_vecs)
 {
 	return bio_integrity_alloc_bioset(bio, gfp_mask, nr_vecs, fs_bio_set);
+=======
+err:
+	mempool_free(bip, bs->bio_integrity_pool);
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(bio_integrity_alloc);
 
 /**
  * bio_integrity_free - Free bio integrity payload
  * @bio:	bio containing bip to be freed
+<<<<<<< HEAD
  * @bs:		bio_set this bio was allocated from
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Description: Used to free the integrity portion of a bio. Usually
  * called from bio_free().
  */
+<<<<<<< HEAD
 void bio_integrity_free(struct bio *bio, struct bio_set *bs)
 {
 	struct bio_integrity_payload *bip = bio->bi_integrity;
@@ -156,6 +222,25 @@ void bio_integrity_free(struct bio *bio, struct bio_set *bs)
 		mempool_free(bip, bs->bio_integrity_pool);
 	else
 		kmem_cache_free(bip_slab[bip->bip_slab].slab, bip);
+=======
+void bio_integrity_free(struct bio *bio)
+{
+	struct bio_integrity_payload *bip = bio->bi_integrity;
+	struct bio_set *bs = bio->bi_pool;
+
+	if (bip->bip_owns_buf)
+		kfree(bip->bip_buf);
+
+	if (bs) {
+		if (bip->bip_slab != BIO_POOL_NONE)
+			bvec_free(bs->bvec_integrity_pool, bip->bip_vec,
+				  bip->bip_slab);
+
+		mempool_free(bip, bs->bio_integrity_pool);
+	} else {
+		kfree(bip);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	bio->bi_integrity = NULL;
 }
@@ -356,7 +441,15 @@ static void bio_integrity_generate(struct bio *bio)
 	bix.sector_size = bi->sector_size;
 
 	bio_for_each_segment(bv, bio, i) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		void *kaddr = kmap_atomic(bv->bv_page, KM_USER0);
+=======
+		void *kaddr = kmap_atomic(bv->bv_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		void *kaddr = kmap_atomic(bv->bv_page);
+>>>>>>> refs/remotes/origin/master
 		bix.data_buf = kaddr + bv->bv_offset;
 		bix.data_size = bv->bv_len;
 		bix.prot_buf = prot_buf;
@@ -370,7 +463,15 @@ static void bio_integrity_generate(struct bio *bio)
 		total += sectors * bi->tuple_size;
 		BUG_ON(total > bio->bi_integrity->bip_size);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -431,6 +532,10 @@ int bio_integrity_prep(struct bio *bio)
 		return -EIO;
 	}
 
+<<<<<<< HEAD
+=======
+	bip->bip_owns_buf = 1;
+>>>>>>> refs/remotes/origin/master
 	bip->bip_buf = buf;
 	bip->bip_size = len;
 	bip->bip_sector = bio->bi_sector;
@@ -497,7 +602,15 @@ static int bio_integrity_verify(struct bio *bio)
 	bix.sector_size = bi->sector_size;
 
 	bio_for_each_segment(bv, bio, i) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		void *kaddr = kmap_atomic(bv->bv_page, KM_USER0);
+=======
+		void *kaddr = kmap_atomic(bv->bv_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		void *kaddr = kmap_atomic(bv->bv_page);
+>>>>>>> refs/remotes/origin/master
 		bix.data_buf = kaddr + bv->bv_offset;
 		bix.data_size = bv->bv_len;
 		bix.prot_buf = prot_buf;
@@ -506,7 +619,15 @@ static int bio_integrity_verify(struct bio *bio)
 		ret = bi->verify_fn(&bix);
 
 		if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(kaddr, KM_USER0);
+=======
+			kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 			return ret;
 		}
 
@@ -516,7 +637,15 @@ static int bio_integrity_verify(struct bio *bio)
 		total += sectors * bi->tuple_size;
 		BUG_ON(total > bio->bi_integrity->bip_size);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -706,11 +835,19 @@ void bio_integrity_split(struct bio *bio, struct bio_pair *bp, int sectors)
 	bp->bio1.bi_integrity = &bp->bip1;
 	bp->bio2.bi_integrity = &bp->bip2;
 
+<<<<<<< HEAD
 	bp->iv1 = bip->bip_vec[0];
 	bp->iv2 = bip->bip_vec[0];
 
 	bp->bip1.bip_vec[0] = bp->iv1;
 	bp->bip2.bip_vec[0] = bp->iv2;
+=======
+	bp->iv1 = bip->bip_vec[bip->bip_idx];
+	bp->iv2 = bip->bip_vec[bip->bip_idx];
+
+	bp->bip1.bip_vec = &bp->iv1;
+	bp->bip2.bip_vec = &bp->iv2;
+>>>>>>> refs/remotes/origin/master
 
 	bp->iv1.bv_len = sectors * bi->tuple_size;
 	bp->iv2.bv_offset += sectors * bi->tuple_size;
@@ -729,19 +866,30 @@ EXPORT_SYMBOL(bio_integrity_split);
  * @bio:	New bio
  * @bio_src:	Original bio
  * @gfp_mask:	Memory allocation mask
+<<<<<<< HEAD
  * @bs:		bio_set to allocate bip from
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Description:	Called to allocate a bip when cloning a bio
  */
 int bio_integrity_clone(struct bio *bio, struct bio *bio_src,
+<<<<<<< HEAD
 			gfp_t gfp_mask, struct bio_set *bs)
+=======
+			gfp_t gfp_mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bio_integrity_payload *bip_src = bio_src->bi_integrity;
 	struct bio_integrity_payload *bip;
 
 	BUG_ON(bip_src == NULL);
 
+<<<<<<< HEAD
 	bip = bio_integrity_alloc_bioset(bio, gfp_mask, bip_src->bip_vcnt, bs);
+=======
+	bip = bio_integrity_alloc(bio, gfp_mask, bip_src->bip_vcnt);
+>>>>>>> refs/remotes/origin/master
 
 	if (bip == NULL)
 		return -EIO;
@@ -759,6 +907,7 @@ EXPORT_SYMBOL(bio_integrity_clone);
 
 int bioset_integrity_create(struct bio_set *bs, int pool_size)
 {
+<<<<<<< HEAD
 	unsigned int max_slab = vecs_to_idx(BIO_MAX_PAGES);
 
 	if (bs->bio_integrity_pool)
@@ -770,6 +919,21 @@ int bioset_integrity_create(struct bio_set *bs, int pool_size)
 	if (!bs->bio_integrity_pool)
 		return -1;
 
+=======
+	if (bs->bio_integrity_pool)
+		return 0;
+
+	bs->bio_integrity_pool = mempool_create_slab_pool(pool_size, bip_slab);
+	if (!bs->bio_integrity_pool)
+		return -1;
+
+	bs->bvec_integrity_pool = biovec_create_pool(bs, pool_size);
+	if (!bs->bvec_integrity_pool) {
+		mempool_destroy(bs->bio_integrity_pool);
+		return -1;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(bioset_integrity_create);
@@ -778,13 +942,22 @@ void bioset_integrity_free(struct bio_set *bs)
 {
 	if (bs->bio_integrity_pool)
 		mempool_destroy(bs->bio_integrity_pool);
+<<<<<<< HEAD
+=======
+
+	if (bs->bvec_integrity_pool)
+		mempool_destroy(bs->bvec_integrity_pool);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(bioset_integrity_free);
 
 void __init bio_integrity_init(void)
 {
+<<<<<<< HEAD
 	unsigned int i;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * kintegrityd won't block much but may burn a lot of CPU cycles.
 	 * Make it highpri CPU intensive wq with max concurrency of 1.
@@ -794,6 +967,7 @@ void __init bio_integrity_init(void)
 	if (!kintegrityd_wq)
 		panic("Failed to create kintegrityd\n");
 
+<<<<<<< HEAD
 	for (i = 0 ; i < BIOVEC_NR_POOLS ; i++) {
 		unsigned int size;
 
@@ -804,4 +978,12 @@ void __init bio_integrity_init(void)
 			kmem_cache_create(bip_slab[i].name, size, 0,
 					  SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
 	}
+=======
+	bip_slab = kmem_cache_create("bio_integrity_payload",
+				     sizeof(struct bio_integrity_payload) +
+				     sizeof(struct bio_vec) * BIP_INLINE_VECS,
+				     0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
+	if (!bip_slab)
+		panic("Failed to create slab\n");
+>>>>>>> refs/remotes/origin/master
 }

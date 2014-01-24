@@ -14,11 +14,14 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+<<<<<<< HEAD
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
  */
 /*
 Driver: rti802
@@ -37,16 +40,23 @@ Configuration Options:
     [17] - dac#7 ...
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <linux/ioport.h>
 
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+>>>>>>> refs/remotes/origin/master
 #define RTI802_SIZE 4
 
 #define RTI802_SELECT 0
 #define RTI802_DATALOW 1
 #define RTI802_DATAHIGH 2
 
+<<<<<<< HEAD
 static int rti802_attach(struct comedi_device *dev,
 			 struct comedi_devconfig *it);
 static int rti802_detach(struct comedi_device *dev);
@@ -70,6 +80,8 @@ static void __exit driver_rti802_cleanup_module(void)
 module_init(driver_rti802_init_module);
 module_exit(driver_rti802_cleanup_module);
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct rti802_private {
 	enum {
 		dac_2comp, dac_straight
@@ -78,12 +90,19 @@ struct rti802_private {
 	unsigned int ao_readback[8];
 };
 
+<<<<<<< HEAD
 #define devpriv ((struct rti802_private *)dev->private)
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int rti802_ao_insn_read(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct rti802_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = 0; i < insn->n; i++)
@@ -96,6 +115,10 @@ static int rti802_ao_insn_write(struct comedi_device *dev,
 				struct comedi_subdevice *s,
 				struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct rti802_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i, d;
 	int chan = CR_CHAN(insn->chanspec);
 
@@ -112,6 +135,7 @@ static int rti802_ao_insn_write(struct comedi_device *dev,
 
 static int rti802_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 {
+<<<<<<< HEAD
 	struct comedi_subdevice *s;
 	int i;
 	unsigned long iobase;
@@ -132,6 +156,26 @@ static int rti802_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	}
 
 	s = dev->subdevices;
+=======
+	struct rti802_private *devpriv;
+	struct comedi_subdevice *s;
+	int i;
+	int ret;
+
+	ret = comedi_request_region(dev, it->options[0], RTI802_SIZE);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	/* ao subdevice */
 	s->type = COMEDI_SUBD_AO;
 	s->subdev_flags = SDF_WRITABLE;
@@ -152,6 +196,7 @@ static int rti802_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int rti802_detach(struct comedi_device *dev)
 {
 	printk(KERN_INFO "comedi%d: rti802: remove\n", dev->minor);
@@ -161,6 +206,15 @@ static int rti802_detach(struct comedi_device *dev)
 
 	return 0;
 }
+=======
+static struct comedi_driver rti802_driver = {
+	.driver_name	= "rti802",
+	.module		= THIS_MODULE,
+	.attach		= rti802_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(rti802_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

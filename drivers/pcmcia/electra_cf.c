@@ -30,6 +30,11 @@
 #include <linux/interrupt.h>
 #include <linux/mm.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/slab.h>
 
@@ -181,7 +186,11 @@ static struct pccard_operations electra_cf_ops = {
 	.set_mem_map		= electra_cf_set_mem_map,
 };
 
+<<<<<<< HEAD
 static int __devinit electra_cf_probe(struct platform_device *ofdev)
+=======
+static int electra_cf_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *device = &ofdev->dev;
 	struct device_node *np = ofdev->dev.of_node;
@@ -209,9 +218,21 @@ static int __devinit electra_cf_probe(struct platform_device *ofdev)
 
 	cf->ofdev = ofdev;
 	cf->mem_phys = mem.start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cf->mem_size = PAGE_ALIGN(mem.end - mem.start);
 	cf->mem_base = ioremap(cf->mem_phys, cf->mem_size);
 	cf->io_size = PAGE_ALIGN(io.end - io.start);
+=======
+	cf->mem_size = PAGE_ALIGN(resource_size(&mem));
+	cf->mem_base = ioremap(cf->mem_phys, cf->mem_size);
+	cf->io_size = PAGE_ALIGN(resource_size(&io));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cf->mem_size = PAGE_ALIGN(resource_size(&mem));
+	cf->mem_base = ioremap(cf->mem_phys, cf->mem_size);
+	cf->io_size = PAGE_ALIGN(resource_size(&io));
+>>>>>>> refs/remotes/origin/master
 
 	area = __get_vm_area(cf->io_size, 0, PHB_IO_BASE, PHB_IO_END);
 	if (area == NULL)
@@ -324,7 +345,11 @@ fail1:
 
 }
 
+<<<<<<< HEAD
 static int __devexit electra_cf_remove(struct platform_device *ofdev)
+=======
+static int electra_cf_remove(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *device = &ofdev->dev;
 	struct electra_cf_socket *cf;
@@ -357,7 +382,11 @@ MODULE_DEVICE_TABLE(of, electra_cf_match);
 
 static struct platform_driver electra_cf_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name = (char *)driver_name,
+=======
+		.name = driver_name,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 		.of_match_table = electra_cf_match,
 	},
@@ -365,6 +394,8 @@ static struct platform_driver electra_cf_driver = {
 	.remove   = electra_cf_remove,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init electra_cf_init(void)
 {
 	return platform_driver_register(&electra_cf_driver);
@@ -376,6 +407,12 @@ static void __exit electra_cf_exit(void)
 	platform_driver_unregister(&electra_cf_driver);
 }
 module_exit(electra_cf_exit);
+=======
+module_platform_driver(electra_cf_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(electra_cf_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR ("Olof Johansson <olof@lixom.net>");

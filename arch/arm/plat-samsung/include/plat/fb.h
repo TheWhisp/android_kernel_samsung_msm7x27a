@@ -15,6 +15,7 @@
 #ifndef __PLAT_S3C_FB_H
 #define __PLAT_S3C_FB_H __FILE__
 
+<<<<<<< HEAD
 /* S3C_FB_MAX_WIN
  * Set to the maximum number of windows that any of the supported hardware
  * can use. Since the platform data uses this for an array size, having it
@@ -64,6 +65,9 @@ struct s3c_fb_platdata {
 	u32			 vidcon0;
 	u32			 vidcon1;
 };
+=======
+#include <linux/platform_data/video_s3c.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * s3c_fb_set_platdata() - Setup the FB device with platform data.
@@ -74,6 +78,23 @@ struct s3c_fb_platdata {
 extern void s3c_fb_set_platdata(struct s3c_fb_platdata *pd);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * s5p_fimd0_set_platdata() - Setup the FB device with platform data.
+ * @pd: The platform data to set. The data is copied from the passed structure
+ *      so the machine data can mark the data __initdata so that any unused
+ *      machines will end up dumping their data at runtime.
+ */
+extern void s5p_fimd0_set_platdata(struct s3c_fb_platdata *pd);
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * s3c64xx_fb_gpio_setup_24bpp() - S3C64XX setup function for 24bpp LCD
  *
  * Initialise the GPIO for an 24bpp LCD display on the RGB interface.
@@ -94,4 +115,27 @@ extern void s5pc100_fb_gpio_setup_24bpp(void);
  */
 extern void s5pv210_fb_gpio_setup_24bpp(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * exynos4_fimd0_gpio_setup_24bpp() - Exynos4 setup function for 24bpp LCD0
+ *
+ * Initialise the GPIO for an 24bpp LCD display on the RGB interface 0.
+ */
+extern void exynos4_fimd0_gpio_setup_24bpp(void);
+
+/**
+ * s5p64x0_fb_gpio_setup_24bpp() - S5P6440/S5P6450 setup function for 24bpp LCD
+ *
+ * Initialise the GPIO for an 24bpp LCD display on the RGB interface.
+ */
+extern void s5p64x0_fb_gpio_setup_24bpp(void);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __PLAT_S3C_FB_H */

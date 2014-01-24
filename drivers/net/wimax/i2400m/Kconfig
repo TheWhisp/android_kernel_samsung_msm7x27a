@@ -7,9 +7,12 @@ config WIMAX_I2400M
 comment "Enable USB support to see WiMAX USB drivers"
 	depends on USB = n
 
+<<<<<<< HEAD
 comment "Enable MMC support to see WiMAX SDIO drivers"
 	depends on MMC = n
 
+=======
+>>>>>>> refs/remotes/origin/master
 config WIMAX_I2400M_USB
 	tristate "Intel Wireless WiMAX Connection 2400 over USB (including 5x50)"
 	depends on WIMAX && USB
@@ -21,6 +24,7 @@ config WIMAX_I2400M_USB
 
 	  If unsure, it is safe to select M (module).
 
+<<<<<<< HEAD
 config WIMAX_I2400M_SDIO
 	tristate "Intel Wireless WiMAX Connection 2400 over SDIO"
 	depends on WIMAX && MMC
@@ -39,6 +43,8 @@ config WIMAX_IWMC3200_SDIO
 	  Select if you have a device based on the Intel Multicom WiMAX
           Connection 3200 over SDIO.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config WIMAX_I2400M_DEBUG_LEVEL
 	int "WiMAX i2400m debug level"
 	depends on WIMAX_I2400M

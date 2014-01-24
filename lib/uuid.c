@@ -19,12 +19,21 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/uuid.h>
 #include <linux/random.h>
 
 static void __uuid_gen_common(__u8 b[16])
 {
+<<<<<<< HEAD
 	int i;
 	u32 r;
 
@@ -32,6 +41,9 @@ static void __uuid_gen_common(__u8 b[16])
 		r = random32();
 		memcpy(b + i * 4, &r, 4);
 	}
+=======
+	prandom_bytes(b, 16);
+>>>>>>> refs/remotes/origin/master
 	/* reversion 0b10 */
 	b[8] = (b[8] & 0x3F) | 0x80;
 }

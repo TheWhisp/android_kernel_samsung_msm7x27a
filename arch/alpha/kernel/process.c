@@ -28,10 +28,27 @@
 #include <linux/tty.h>
 #include <linux/console.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/reg.h>
 #include <asm/uaccess.h>
 #include <asm/system.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/rcupdate.h>
+
+#include <asm/reg.h>
+#include <asm/uaccess.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/pgtable.h>
 #include <asm/hwrpb.h>
@@ -46,6 +63,7 @@
 void (*pm_power_off)(void) = machine_power_off;
 EXPORT_SYMBOL(pm_power_off);
 
+<<<<<<< HEAD
 void
 cpu_idle(void)
 {
@@ -55,12 +73,44 @@ cpu_idle(void)
 		/* FIXME -- EV6 and LCA45 know how to power down
 		   the CPU.  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		while (!need_resched())
 			cpu_relax();
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		rcu_idle_enter();
+		while (!need_resched())
+			cpu_relax();
+
+		rcu_idle_exit();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		schedule();
 	}
 }
 
+=======
+#ifdef CONFIG_ALPHA_WTINT
+/*
+ * Sleep the CPU.
+ * EV6, LCA45 and QEMU know how to power down, skipping N timer interrupts.
+ */
+void arch_cpu_idle(void)
+{
+	wtint(0);
+	local_irq_enable();
+}
+
+void arch_cpu_idle_dead(void)
+{
+	wtint(INT_MAX);
+}
+#endif /* ALPHA_WTINT */
+>>>>>>> refs/remotes/origin/master
 
 struct halt_info {
 	int mode;
@@ -133,7 +183,13 @@ common_shutdown_1(void *generic_ptr)
 		if (in_interrupt())
 			irq_exit();
 		/* This has the effect of resetting the VGA video origin.  */
+<<<<<<< HEAD
 		take_over_console(&dummy_con, 0, MAX_NR_CONSOLES-1, 1);
+=======
+		console_lock();
+		do_take_over_console(&dummy_con, 0, MAX_NR_CONSOLES-1, 1);
+		console_unlock();
+>>>>>>> refs/remotes/origin/master
 #endif
 		pci_restore_srm_config();
 		set_hae(srm_hae);
@@ -191,6 +247,10 @@ machine_power_off(void)
 void
 show_regs(struct pt_regs *regs)
 {
+<<<<<<< HEAD
+=======
+	show_regs_print_info(KERN_DEFAULT);
+>>>>>>> refs/remotes/origin/master
 	dik_show_regs(regs, NULL);
 }
 
@@ -200,7 +260,13 @@ show_regs(struct pt_regs *regs)
 void
 start_thread(struct pt_regs * regs, unsigned long pc, unsigned long sp)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set_fs(USER_DS);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	regs->pc = pc;
 	regs->ps = 8;
 	wrusp(sp);
@@ -233,6 +299,7 @@ release_thread(struct task_struct *dead_task)
 }
 
 /*
+<<<<<<< HEAD
  * "alpha_clone()".. By the time we get here, the
  * non-volatile registers have also been saved on the
  * stack. We do some ugly pointer stuff here.. (see
@@ -268,10 +335,14 @@ alpha_vfork(struct pt_regs *regs)
  * the space needed by the syscall stack frame (ie "struct pt_regs").
  * Use the passed "regs" pointer to determine how much space we need
  * for a kernel fork().
+=======
+ * Copy an alpha thread..
+>>>>>>> refs/remotes/origin/master
  */
 
 int
 copy_thread(unsigned long clone_flags, unsigned long usp,
+<<<<<<< HEAD
 	    unsigned long unused,
 	    struct task_struct * p, struct pt_regs * regs)
 {
@@ -306,14 +377,55 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
 	   syscall arguments that we saved on syscall entry.  Oops,
 	   except we'd have clobbered it with the parent/child set
 	   of r20.  Read the saved copy.  */
+=======
+	    unsigned long arg,
+	    struct task_struct *p)
+{
+	extern void ret_from_fork(void);
+	extern void ret_from_kernel_thread(void);
+
+	struct thread_info *childti = task_thread_info(p);
+	struct pt_regs *childregs = task_pt_regs(p);
+	struct pt_regs *regs = current_pt_regs();
+	struct switch_stack *childstack, *stack;
+
+	childstack = ((struct switch_stack *) childregs) - 1;
+	childti->pcb.ksp = (unsigned long) childstack;
+	childti->pcb.flags = 1;	/* set FEN, clear everything else */
+
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		/* kernel thread */
+		memset(childstack, 0,
+			sizeof(struct switch_stack) + sizeof(struct pt_regs));
+		childstack->r26 = (unsigned long) ret_from_kernel_thread;
+		childstack->r9 = usp;	/* function */
+		childstack->r10 = arg;
+		childregs->hae = alpha_mv.hae_cache,
+		childti->pcb.usp = 0;
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 	/* Note: if CLONE_SETTLS is not set, then we must inherit the
 	   value from the parent, which will have been set by the block
 	   copy in dup_task_struct.  This is non-intuitive, but is
 	   required for proper operation in the case of a threaded
 	   application calling fork.  */
 	if (clone_flags & CLONE_SETTLS)
+<<<<<<< HEAD
 		childti->pcb.unique = settls;
 
+=======
+		childti->pcb.unique = regs->r20;
+	childti->pcb.usp = usp ?: rdusp();
+	*childregs = *regs;
+	childregs->r0 = 0;
+	childregs->r19 = 0;
+	childregs->r20 = 1;	/* OSF/1 has some strange fork() semantics.  */
+	regs->r20 = 0;
+	stack = ((struct switch_stack *) regs) - 1;
+	*childstack = *stack;
+	childstack->r26 = (unsigned long) ret_from_fork;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -384,6 +496,7 @@ dump_elf_task_fp(elf_fpreg_t *dest, struct task_struct *task)
 EXPORT_SYMBOL(dump_elf_task_fp);
 
 /*
+<<<<<<< HEAD
  * sys_execve() executes a new program.
  */
 asmlinkage int
@@ -405,6 +518,8 @@ out:
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Return saved PC of a blocked thread.  This assumes the frame
  * pointer is the 6th saved long on the kernel stack and that the
  * saved return address is the first long in the frame.  This all

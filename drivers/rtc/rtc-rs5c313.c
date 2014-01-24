@@ -39,16 +39,28 @@
  *	1.13	Nobuhiro Iwamatsu: Updata driver.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/err.h>
 #include <linux/rtc.h>
 #include <linux/platform_device.h>
 #include <linux/bcd.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <asm/io.h>
 
 #define DRV_NAME	"rs5c313"
 #define DRV_VERSION 	"1.13"
+=======
+#include <linux/io.h>
+
+#define DRV_NAME	"rs5c313"
+#define DRV_VERSION	"1.13"
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SH_LANDISK
 /*****************************************************/
@@ -299,7 +311,11 @@ static int rs5c313_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	rs5c313_write_reg(RS5C313_ADDR_SEC10, (data >> 4));
 
 	data = bin2bcd(tm->tm_min);
+<<<<<<< HEAD
 	rs5c313_write_reg(RS5C313_ADDR_MIN, data );
+=======
+	rs5c313_write_reg(RS5C313_ADDR_MIN, data);
+>>>>>>> refs/remotes/origin/master
 	rs5c313_write_reg(RS5C313_ADDR_MIN10, (data >> 4));
 
 	data = bin2bcd(tm->tm_hour);
@@ -308,7 +324,11 @@ static int rs5c313_rtc_set_time(struct device *dev, struct rtc_time *tm)
 
 	data = bin2bcd(tm->tm_mday);
 	rs5c313_write_reg(RS5C313_ADDR_DAY, data);
+<<<<<<< HEAD
 	rs5c313_write_reg(RS5C313_ADDR_DAY10, (data>> 4));
+=======
+	rs5c313_write_reg(RS5C313_ADDR_DAY10, (data >> 4));
+>>>>>>> refs/remotes/origin/master
 
 	data = bin2bcd(tm->tm_mon + 1);
 	rs5c313_write_reg(RS5C313_ADDR_MON, data);
@@ -347,6 +367,7 @@ static void rs5c313_check_xstp_bit(void)
 		}
 
 		memset(&tm, 0, sizeof(struct rtc_time));
+<<<<<<< HEAD
 		tm.tm_mday 	= 1;
 		tm.tm_mon 	= 1 - 1;
 		tm.tm_year 	= 2000 - 1900;
@@ -354,6 +375,14 @@ static void rs5c313_check_xstp_bit(void)
 		rs5c313_rtc_set_time(NULL, &tm);
 		printk(KERN_ERR "RICHO RS5C313: invalid value, resetting to "
 				"1 Jan 2000\n");
+=======
+		tm.tm_mday	= 1;
+		tm.tm_mon	= 1 - 1;
+		tm.tm_year	= 2000 - 1900;
+
+		rs5c313_rtc_set_time(NULL, &tm);
+		pr_err("invalid value, resetting to 1 Jan 2000\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	RS5C313_CEDISABLE;
 	ndelay(700);		/* CE:L */
@@ -366,7 +395,11 @@ static const struct rtc_class_ops rs5c313_rtc_ops = {
 
 static int rs5c313_rtc_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct rtc_device *rtc = rtc_device_register("rs5c313", &pdev->dev,
+=======
+	struct rtc_device *rtc = devm_rtc_device_register(&pdev->dev, "rs5c313",
+>>>>>>> refs/remotes/origin/master
 				&rs5c313_rtc_ops, THIS_MODULE);
 
 	if (IS_ERR(rtc))
@@ -377,6 +410,7 @@ static int rs5c313_rtc_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit rs5c313_rtc_remove(struct platform_device *pdev)
 {
 	struct rtc_device *rtc = platform_get_drvdata( pdev );
@@ -386,13 +420,19 @@ static int __devexit rs5c313_rtc_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver rs5c313_rtc_platform_driver = {
 	.driver         = {
 		.name   = DRV_NAME,
 		.owner  = THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.probe 	= rs5c313_rtc_probe,
 	.remove = __devexit_p( rs5c313_rtc_remove ),
+=======
+	.probe	= rs5c313_rtc_probe,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init rs5c313_rtc_init(void)
@@ -411,7 +451,11 @@ static int __init rs5c313_rtc_init(void)
 
 static void __exit rs5c313_rtc_exit(void)
 {
+<<<<<<< HEAD
 	platform_driver_unregister( &rs5c313_rtc_platform_driver );
+=======
+	platform_driver_unregister(&rs5c313_rtc_platform_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(rs5c313_rtc_init);

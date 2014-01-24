@@ -24,7 +24,18 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drm_encoder_slave.h"
+=======
+#include <linux/module.h>
+
+#include <drm/drm_encoder_slave.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * drm_i2c_encoder_init - Initialize an I2C slave encoder
@@ -52,16 +63,23 @@ int drm_i2c_encoder_init(struct drm_device *dev,
 			 struct i2c_adapter *adap,
 			 const struct i2c_board_info *info)
 {
+<<<<<<< HEAD
 	char modalias[sizeof(I2C_MODULE_PREFIX)
 		      + I2C_NAME_SIZE];
+=======
+>>>>>>> refs/remotes/origin/master
 	struct module *module = NULL;
 	struct i2c_client *client;
 	struct drm_i2c_encoder_driver *encoder_drv;
 	int err = 0;
 
+<<<<<<< HEAD
 	snprintf(modalias, sizeof(modalias),
 		 "%s%s", I2C_MODULE_PREFIX, info->type);
 	request_module(modalias);
+=======
+	request_module("%s%s", I2C_MODULE_PREFIX, info->type);
+>>>>>>> refs/remotes/origin/master
 
 	client = i2c_new_device(adap, info);
 	if (!client) {
@@ -69,12 +87,20 @@ int drm_i2c_encoder_init(struct drm_device *dev,
 		goto fail;
 	}
 
+<<<<<<< HEAD
 	if (!client->driver) {
+=======
+	if (!client->dev.driver) {
+>>>>>>> refs/remotes/origin/master
 		err = -ENODEV;
 		goto fail_unregister;
 	}
 
+<<<<<<< HEAD
 	module = client->driver->driver.owner;
+=======
+	module = client->dev.driver->owner;
+>>>>>>> refs/remotes/origin/master
 	if (!try_module_get(module)) {
 		err = -ENODEV;
 		goto fail_unregister;
@@ -82,7 +108,11 @@ int drm_i2c_encoder_init(struct drm_device *dev,
 
 	encoder->bus_priv = client;
 
+<<<<<<< HEAD
 	encoder_drv = to_drm_i2c_encoder_driver(client->driver);
+=======
+	encoder_drv = to_drm_i2c_encoder_driver(to_i2c_driver(client->dev.driver));
+>>>>>>> refs/remotes/origin/master
 
 	err = encoder_drv->encoder_init(client, dev, encoder);
 	if (err)
@@ -113,7 +143,11 @@ void drm_i2c_encoder_destroy(struct drm_encoder *drm_encoder)
 {
 	struct drm_encoder_slave *encoder = to_encoder_slave(drm_encoder);
 	struct i2c_client *client = drm_i2c_encoder_get_client(drm_encoder);
+<<<<<<< HEAD
 	struct module *module = client->driver->driver.owner;
+=======
+	struct module *module = client->dev.driver->owner;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_unregister_device(client);
 	encoder->bus_priv = NULL;
@@ -121,3 +155,69 @@ void drm_i2c_encoder_destroy(struct drm_encoder *drm_encoder)
 	module_put(module);
 }
 EXPORT_SYMBOL(drm_i2c_encoder_destroy);
+<<<<<<< HEAD
+=======
+
+/*
+ * Wrapper fxns which can be plugged in to drm_encoder_helper_funcs:
+ */
+
+static inline struct drm_encoder_slave_funcs *
+get_slave_funcs(struct drm_encoder *enc)
+{
+	return to_encoder_slave(enc)->slave_funcs;
+}
+
+void drm_i2c_encoder_dpms(struct drm_encoder *encoder, int mode)
+{
+	get_slave_funcs(encoder)->dpms(encoder, mode);
+}
+EXPORT_SYMBOL(drm_i2c_encoder_dpms);
+
+bool drm_i2c_encoder_mode_fixup(struct drm_encoder *encoder,
+		const struct drm_display_mode *mode,
+		struct drm_display_mode *adjusted_mode)
+{
+	return get_slave_funcs(encoder)->mode_fixup(encoder, mode, adjusted_mode);
+}
+EXPORT_SYMBOL(drm_i2c_encoder_mode_fixup);
+
+void drm_i2c_encoder_prepare(struct drm_encoder *encoder)
+{
+	drm_i2c_encoder_dpms(encoder, DRM_MODE_DPMS_OFF);
+}
+EXPORT_SYMBOL(drm_i2c_encoder_prepare);
+
+void drm_i2c_encoder_commit(struct drm_encoder *encoder)
+{
+	drm_i2c_encoder_dpms(encoder, DRM_MODE_DPMS_ON);
+}
+EXPORT_SYMBOL(drm_i2c_encoder_commit);
+
+void drm_i2c_encoder_mode_set(struct drm_encoder *encoder,
+		struct drm_display_mode *mode,
+		struct drm_display_mode *adjusted_mode)
+{
+	get_slave_funcs(encoder)->mode_set(encoder, mode, adjusted_mode);
+}
+EXPORT_SYMBOL(drm_i2c_encoder_mode_set);
+
+enum drm_connector_status drm_i2c_encoder_detect(struct drm_encoder *encoder,
+	    struct drm_connector *connector)
+{
+	return get_slave_funcs(encoder)->detect(encoder, connector);
+}
+EXPORT_SYMBOL(drm_i2c_encoder_detect);
+
+void drm_i2c_encoder_save(struct drm_encoder *encoder)
+{
+	get_slave_funcs(encoder)->save(encoder);
+}
+EXPORT_SYMBOL(drm_i2c_encoder_save);
+
+void drm_i2c_encoder_restore(struct drm_encoder *encoder)
+{
+	get_slave_funcs(encoder)->restore(encoder);
+}
+EXPORT_SYMBOL(drm_i2c_encoder_restore);
+>>>>>>> refs/remotes/origin/master

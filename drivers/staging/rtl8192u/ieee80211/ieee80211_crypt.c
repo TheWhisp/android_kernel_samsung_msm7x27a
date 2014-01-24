@@ -12,7 +12,13 @@
  */
 
 //#include <linux/config.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/slab.h>
@@ -156,7 +162,11 @@ int ieee80211_unregister_crypto_ops(struct ieee80211_crypto_ops *ops)
 }
 
 
+<<<<<<< HEAD
 struct ieee80211_crypto_ops * ieee80211_get_crypto_ops(const char *name)
+=======
+struct ieee80211_crypto_ops *ieee80211_get_crypto_ops(const char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	struct list_head *ptr;
@@ -183,7 +193,11 @@ struct ieee80211_crypto_ops * ieee80211_get_crypto_ops(const char *name)
 }
 
 
+<<<<<<< HEAD
 static void * ieee80211_crypt_null_init(int keyidx) { return (void *) 1; }
+=======
+static void *ieee80211_crypt_null_init(int keyidx) { return (void *) 1; }
+>>>>>>> refs/remotes/origin/master
 static void ieee80211_crypt_null_deinit(void *priv) {}
 
 static struct ieee80211_crypto_ops ieee80211_crypt_null = {

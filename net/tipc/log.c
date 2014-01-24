@@ -36,6 +36,7 @@
 
 #include "core.h"
 #include "config.h"
+<<<<<<< HEAD
 #include "log.h"
 
 /*
@@ -304,7 +305,11 @@ struct sk_buff *tipc_log_resize_cmd(const void *req_tlv_area, int req_tlv_space)
 		return tipc_cfg_reply_error_string(TIPC_CFG_TLV_ERROR);
 
 	value = ntohl(*(__be32 *)TLV_DATA(req_tlv_area));
+<<<<<<< HEAD
 	if (value != delimit(value, 0, 32768))
+=======
+	if (value > 32768)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return tipc_cfg_reply_error_string(TIPC_CFG_INVALID_VALUE
 						   " (log size must be 0-32768)");
 	if (tipc_log_resize(value))
@@ -348,4 +353,22 @@ struct sk_buff *tipc_log_dump(void)
 		}
 	}
 	return reply;
+=======
+
+/**
+ * tipc_snprintf - append formatted output to print buffer
+ * @buf: pointer to print buffer
+ * @len: buffer length
+ * @fmt: formatted info to be printed
+ */
+int tipc_snprintf(char *buf, int len, const char *fmt, ...)
+{
+	int i;
+	va_list args;
+
+	va_start(args, fmt);
+	i = vscnprintf(buf, len, fmt, args);
+	va_end(args);
+	return i;
+>>>>>>> refs/remotes/origin/master
 }

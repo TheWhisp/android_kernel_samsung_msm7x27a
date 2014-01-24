@@ -13,12 +13,20 @@
 
 /* dentry case-handling: just lowercase everything */
 
+<<<<<<< HEAD
 static int hfs_revalidate_dentry(struct dentry *dentry, struct nameidata *nd)
+=======
+static int hfs_revalidate_dentry(struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	int diff;
 
+<<<<<<< HEAD
 	if (nd->flags & LOOKUP_RCU)
+=======
+	if (flags & LOOKUP_RCU)
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 
 	inode = dentry->d_inode;

@@ -15,6 +15,8 @@
 #include <sys/socket.h>
 #include <sys/mman.h>
 #include <sys/param.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "asm/types.h"
 #include "user.h"
 #include "ubd_user.h"
@@ -24,10 +26,24 @@
 #include <endian.h>
 #include <byteswap.h>
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <endian.h>
+#include <byteswap.h>
+
+#include "ubd.h"
+<<<<<<< HEAD
+#include "os.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void ignore_sigwinch_sig(void)
 {
 	signal(SIGWINCH, SIG_IGN);
 }
+=======
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 int start_io_thread(unsigned long sp, int *fd_out)
 {

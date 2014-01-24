@@ -36,6 +36,11 @@
 
 #include <linux/atmel-ssc.h>
 
+<<<<<<< HEAD
+=======
+#define ATMEL_SSC_DMABUF_SIZE	(64 * 1024)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Registers and status bits that are required by the PCM driver.
  */
@@ -50,6 +55,10 @@ struct atmel_pdc_regs {
 struct atmel_ssc_mask {
 	u32	ssc_enable;		/* SSC recv/trans enable */
 	u32	ssc_disable;		/* SSC recv/trans disable */
+<<<<<<< HEAD
+=======
+	u32	ssc_error;		/* SSC error conditions */
+>>>>>>> refs/remotes/origin/master
 	u32	ssc_endx;		/* SSC ENDTX or ENDRX */
 	u32	ssc_endbuf;		/* SSC TXBUFE or RXBUFF */
 	u32	pdc_enable;		/* PDC recv/trans enable */
@@ -60,7 +69,15 @@ struct atmel_ssc_mask {
  * This structure, shared between the PCM driver and the interface,
  * contains all information required by the PCM driver to perform the
  * PDC DMA operation.  All fields except dma_intr_handler() are initialized
+<<<<<<< HEAD
+<<<<<<< HEAD
  * by the interface.  The dms_intr_handler() pointer is set by the PCM
+=======
+ * by the interface.  The dma_intr_handler() pointer is set by the PCM
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * by the interface.  The dma_intr_handler() pointer is set by the PCM
+>>>>>>> refs/remotes/origin/master
  * driver and called by the interface SSC interrupt handler if it is
  * non-NULL.
  */
@@ -80,4 +97,40 @@ struct atmel_pcm_dma_params {
 #define ssc_readx(base, reg)            (__raw_readl((base) + (reg)))
 #define ssc_writex(base, reg, value)    __raw_writel((value), (base) + (reg))
 
+<<<<<<< HEAD
+=======
+int atmel_pcm_new(struct snd_soc_pcm_runtime *rtd);
+void atmel_pcm_free(struct snd_pcm *pcm);
+int atmel_pcm_mmap(struct snd_pcm_substream *substream,
+		struct vm_area_struct *vma);
+
+#if defined(CONFIG_SND_ATMEL_SOC_PDC) || \
+	defined(CONFIG_SND_ATMEL_SOC_PDC_MODULE)
+int atmel_pcm_pdc_platform_register(struct device *dev);
+void atmel_pcm_pdc_platform_unregister(struct device *dev);
+#else
+static inline int atmel_pcm_pdc_platform_register(struct device *dev)
+{
+	return 0;
+}
+static inline void atmel_pcm_pdc_platform_unregister(struct device *dev)
+{
+}
+#endif
+
+#if defined(CONFIG_SND_ATMEL_SOC_DMA) || \
+	defined(CONFIG_SND_ATMEL_SOC_DMA_MODULE)
+int atmel_pcm_dma_platform_register(struct device *dev);
+void atmel_pcm_dma_platform_unregister(struct device *dev);
+#else
+static inline int atmel_pcm_dma_platform_register(struct device *dev)
+{
+	return 0;
+}
+static inline void atmel_pcm_dma_platform_unregister(struct device *dev)
+{
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ATMEL_PCM_H */

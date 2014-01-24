@@ -77,6 +77,7 @@ to work with it.
 	where the charging failed.
 
  d. int res_counter_charge_locked
+<<<<<<< HEAD
 			(struct res_counter *rc, unsigned long val)
 
 	The same as res_counter_charge(), but it must not acquire/release the
@@ -84,14 +85,39 @@ to work with it.
 	held).
 
  e. void res_counter_uncharge[_locked]
+=======
+			(struct res_counter *rc, unsigned long val, bool force)
+
+	The same as res_counter_charge(), but it must not acquire/release the
+	res_counter->lock internally (it must be called with res_counter->lock
+	held). The force parameter indicates whether we can bypass the limit.
+
+ e. u64 res_counter_uncharge[_locked]
+>>>>>>> refs/remotes/origin/master
 			(struct res_counter *rc, unsigned long val)
 
 	When a resource is released (freed) it should be de-accounted
 	from the resource counter it was accounted to.  This is called
+<<<<<<< HEAD
 	"uncharging".
 
 	The _locked routines imply that the res_counter->lock is taken.
 
+=======
+	"uncharging". The return value of this function indicate the amount
+	of charges still present in the counter.
+
+	The _locked routines imply that the res_counter->lock is taken.
+
+ f. u64 res_counter_uncharge_until
+		(struct res_counter *rc, struct res_counter *top,
+		 unsinged long val)
+
+	Almost same as res_counter_uncharge() but propagation of uncharge
+	stops when rc == top. This is useful when kill a res_counter in
+	child cgroup.
+
+>>>>>>> refs/remotes/origin/master
  2.1 Other accounting routines
 
     There are more routines that may help you with common needs, like

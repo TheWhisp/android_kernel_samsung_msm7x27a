@@ -27,6 +27,7 @@ struct xfs_trans;
 extern kmem_zone_t	*xfs_btree_cur_zone;
 
 /*
+<<<<<<< HEAD
  * This nonsense is to make -wlint happy.
  */
 #define	XFS_LOOKUP_EQ	((xfs_lookup_t)XFS_LOOKUP_EQi)
@@ -69,6 +70,8 @@ struct xfs_btree_block {
 
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Generic key, ptr and record wrapper structures.
  *
  * These are disk format structures, and are converted where necessary
@@ -94,6 +97,7 @@ union xfs_btree_rec {
 };
 
 /*
+<<<<<<< HEAD
  * For logging record fields.
  */
 #define	XFS_BB_MAGIC		0x01
@@ -108,6 +112,35 @@ union xfs_btree_rec {
  * Magic numbers for btree blocks.
  */
 extern const __uint32_t	xfs_magics[];
+=======
+ * This nonsense is to make -wlint happy.
+ */
+#define	XFS_LOOKUP_EQ	((xfs_lookup_t)XFS_LOOKUP_EQi)
+#define	XFS_LOOKUP_LE	((xfs_lookup_t)XFS_LOOKUP_LEi)
+#define	XFS_LOOKUP_GE	((xfs_lookup_t)XFS_LOOKUP_GEi)
+
+#define	XFS_BTNUM_BNO	((xfs_btnum_t)XFS_BTNUM_BNOi)
+#define	XFS_BTNUM_CNT	((xfs_btnum_t)XFS_BTNUM_CNTi)
+#define	XFS_BTNUM_BMAP	((xfs_btnum_t)XFS_BTNUM_BMAPi)
+#define	XFS_BTNUM_INO	((xfs_btnum_t)XFS_BTNUM_INOi)
+
+/*
+ * For logging record fields.
+ */
+#define	XFS_BB_MAGIC		(1 << 0)
+#define	XFS_BB_LEVEL		(1 << 1)
+#define	XFS_BB_NUMRECS		(1 << 2)
+#define	XFS_BB_LEFTSIB		(1 << 3)
+#define	XFS_BB_RIGHTSIB		(1 << 4)
+#define	XFS_BB_BLKNO		(1 << 5)
+#define	XFS_BB_LSN		(1 << 6)
+#define	XFS_BB_UUID		(1 << 7)
+#define	XFS_BB_OWNER		(1 << 8)
+#define	XFS_BB_NUM_BITS		5
+#define	XFS_BB_ALL_BITS		((1 << XFS_BB_NUM_BITS) - 1)
+#define	XFS_BB_NUM_BITS_CRC	9
+#define	XFS_BB_ALL_BITS_CRC	((1 << XFS_BB_NUM_BITS_CRC) - 1)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Generic stats interface
@@ -188,7 +221,13 @@ struct xfs_btree_ops {
 	__int64_t (*key_diff)(struct xfs_btree_cur *cur,
 			      union xfs_btree_key *key);
 
+<<<<<<< HEAD
 #ifdef DEBUG
+=======
+	const struct xfs_buf_ops	*buf_ops;
+
+#if defined(DEBUG) || defined(XFS_WARN)
+>>>>>>> refs/remotes/origin/master
 	/* check that k1 is lower than k2 */
 	int	(*keys_inorder)(struct xfs_btree_cur *cur,
 				union xfs_btree_key *k1,
@@ -199,6 +238,8 @@ struct xfs_btree_ops {
 				union xfs_btree_rec *r1,
 				union xfs_btree_rec *r2);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* btree tracing */
 #ifdef XFS_BTREE_TRACE
@@ -218,6 +259,10 @@ struct xfs_btree_ops {
 					union xfs_btree_rec *, __uint64_t *,
 					__uint64_t *, __uint64_t *);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -273,6 +318,10 @@ typedef struct xfs_btree_cur
 #define XFS_BTREE_LONG_PTRS		(1<<0)	/* pointers are 64bits long */
 #define XFS_BTREE_ROOT_IN_INODE		(1<<1)	/* root may be variable size */
 #define XFS_BTREE_LASTREC_UPDATE	(1<<2)	/* track last rec externally */
+<<<<<<< HEAD
+=======
+#define XFS_BTREE_CRC_BLOCKS		(1<<3)	/* uses extended btree blocks */
+>>>>>>> refs/remotes/origin/master
 
 
 #define	XFS_BTREE_NOERROR	0
@@ -281,7 +330,15 @@ typedef struct xfs_btree_cur
 /*
  * Convert from buffer to btree block header.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define	XFS_BUF_TO_BLOCK(bp)	((struct xfs_btree_block *)XFS_BUF_PTR(bp))
+=======
+#define	XFS_BUF_TO_BLOCK(bp)	((struct xfs_btree_block *)((bp)->b_addr))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	XFS_BUF_TO_BLOCK(bp)	((struct xfs_btree_block *)((bp)->b_addr))
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -374,7 +431,12 @@ xfs_btree_read_bufl(
 	xfs_fsblock_t		fsbno,	/* file system block number */
 	uint			lock,	/* lock flags for read_buf */
 	struct xfs_buf		**bpp,	/* buffer for fsbno */
+<<<<<<< HEAD
 	int			refval);/* ref count value for buffer */
+=======
+	int			refval,	/* ref count value for buffer */
+	const struct xfs_buf_ops *ops);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Read-ahead the block, don't wait for it, don't return a buffer.
@@ -384,7 +446,12 @@ void					/* error */
 xfs_btree_reada_bufl(
 	struct xfs_mount	*mp,	/* file system mount point */
 	xfs_fsblock_t		fsbno,	/* file system block number */
+<<<<<<< HEAD
 	xfs_extlen_t		count);	/* count of filesystem blocks */
+=======
+	xfs_extlen_t		count,	/* count of filesystem blocks */
+	const struct xfs_buf_ops *ops);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Read-ahead the block, don't wait for it, don't return a buffer.
@@ -395,8 +462,37 @@ xfs_btree_reada_bufs(
 	struct xfs_mount	*mp,	/* file system mount point */
 	xfs_agnumber_t		agno,	/* allocation group number */
 	xfs_agblock_t		agbno,	/* allocation group block number */
+<<<<<<< HEAD
 	xfs_extlen_t		count);	/* count of filesystem blocks */
 
+=======
+	xfs_extlen_t		count,	/* count of filesystem blocks */
+	const struct xfs_buf_ops *ops);
+
+/*
+ * Initialise a new btree block header
+ */
+void
+xfs_btree_init_block(
+	struct xfs_mount *mp,
+	struct xfs_buf	*bp,
+	__u32		magic,
+	__u16		level,
+	__u16		numrecs,
+	__u64		owner,
+	unsigned int	flags);
+
+void
+xfs_btree_init_block_int(
+	struct xfs_mount	*mp,
+	struct xfs_btree_block	*buf,
+	xfs_daddr_t		blkno,
+	__u32			magic,
+	__u16			level,
+	__u16			numrecs,
+	__u64			owner,
+	unsigned int		flags);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Common btree core entry points.
@@ -409,6 +505,19 @@ int xfs_btree_new_iroot(struct xfs_btree_cur *, int *, int *);
 int xfs_btree_insert(struct xfs_btree_cur *, int *);
 int xfs_btree_delete(struct xfs_btree_cur *, int *);
 int xfs_btree_get_rec(struct xfs_btree_cur *, union xfs_btree_rec **, int *);
+<<<<<<< HEAD
+=======
+int xfs_btree_change_owner(struct xfs_btree_cur *cur, __uint64_t new_owner,
+			   struct list_head *buffer_list);
+
+/*
+ * btree block CRC helpers
+ */
+void xfs_btree_lblock_calc_crc(struct xfs_buf *);
+bool xfs_btree_lblock_verify_crc(struct xfs_buf *);
+void xfs_btree_sblock_calc_crc(struct xfs_buf *);
+bool xfs_btree_sblock_verify_crc(struct xfs_buf *);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Internal btree helpers also used by xfs_bmap.c.
@@ -452,4 +561,32 @@ static inline int xfs_btree_get_level(struct xfs_btree_block *block)
 	(XFS_FSB_TO_AGNO(mp, fsb) < mp->m_sb.sb_agcount && \
 		XFS_FSB_TO_AGBNO(mp, fsb) < mp->m_sb.sb_agblocks)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Trace hooks.  Currently not implemented as they need to be ported
+ * over to the generic tracing functionality, which is some effort.
+ *
+ * i,j = integer (32 bit)
+ * b = btree block buffer (xfs_buf_t)
+ * p = btree ptr
+ * r = btree record
+ * k = btree key
+ */
+#define	XFS_BTREE_TRACE_ARGBI(c, b, i)
+#define	XFS_BTREE_TRACE_ARGBII(c, b, i, j)
+#define	XFS_BTREE_TRACE_ARGI(c, i)
+#define	XFS_BTREE_TRACE_ARGIPK(c, i, p, s)
+#define	XFS_BTREE_TRACE_ARGIPR(c, i, p, r)
+#define	XFS_BTREE_TRACE_ARGIK(c, i, k)
+#define XFS_BTREE_TRACE_ARGR(c, r)
+#define	XFS_BTREE_TRACE_CURSOR(c, t)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* __XFS_BTREE_H__ */

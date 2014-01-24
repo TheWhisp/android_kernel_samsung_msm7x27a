@@ -155,8 +155,13 @@ int cvmx_bootmem_init(void *mem_desc_ptr)
 	 *
 	 * Linux 64 bit: Set XKPHYS bit
 	 * Linux 32 bit: use mmap to create mapping, use virtual address
+<<<<<<< HEAD
 	 * CVMX 64 bit:  use physical address directly
 	 * CVMX 32 bit:  use physical address directly
+=======
+	 * CVMX 64 bit:	 use physical address directly
+	 * CVMX 32 bit:	 use physical address directly
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * Note that the CVMX environment assumes the use of 1-1 TLB
 	 * mappings so that the physical addresses can be used
@@ -398,7 +403,11 @@ error_out:
 int __cvmx_bootmem_phy_free(uint64_t phy_addr, uint64_t size, uint32_t flags)
 {
 	uint64_t cur_addr;
+<<<<<<< HEAD
 	uint64_t prev_addr = 0;	/* zero is invalid */
+=======
+	uint64_t prev_addr = 0; /* zero is invalid */
+>>>>>>> refs/remotes/origin/master
 	int retval = 0;
 
 #ifdef DEBUG
@@ -424,7 +433,11 @@ int __cvmx_bootmem_phy_free(uint64_t phy_addr, uint64_t size, uint32_t flags)
 	if (cur_addr == 0 || phy_addr < cur_addr) {
 		/* add at front of list - special case with changing head ptr */
 		if (cur_addr && phy_addr + size > cur_addr)
+<<<<<<< HEAD
 			goto bootmem_free_done;	/* error, overlapping section */
+=======
+			goto bootmem_free_done; /* error, overlapping section */
+>>>>>>> refs/remotes/origin/master
 		else if (phy_addr + size == cur_addr) {
 			/* Add to front of existing first block */
 			cvmx_bootmem_phy_set_next(phy_addr,
@@ -611,7 +624,11 @@ int cvmx_bootmem_phy_named_block_free(char *name, uint32_t flags)
 	}
 
 	cvmx_bootmem_unlock();
+<<<<<<< HEAD
 	return named_block_ptr != NULL;	/* 0 on failure, 1 on success */
+=======
+	return named_block_ptr != NULL; /* 0 on failure, 1 on success */
+>>>>>>> refs/remotes/origin/master
 }
 
 int64_t cvmx_bootmem_phy_named_block_alloc(uint64_t size, uint64_t min_addr,
@@ -688,3 +705,11 @@ int64_t cvmx_bootmem_phy_named_block_alloc(uint64_t size, uint64_t min_addr,
 		cvmx_spinlock_unlock((cvmx_spinlock_t *)&(cvmx_bootmem_desc->lock));
 	return addr_allocated;
 }
+<<<<<<< HEAD
+=======
+
+struct cvmx_bootmem_desc *cvmx_bootmem_get_desc(void)
+{
+	return cvmx_bootmem_desc;
+}
+>>>>>>> refs/remotes/origin/master

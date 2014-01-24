@@ -11,7 +11,11 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/nfs_fs.h>
+<<<<<<< HEAD
 #include <linux/sunrpc/clnt.h>
+=======
+#include <linux/sunrpc/addr.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sunrpc/svc.h>
 #include <linux/lockd/lockd.h>
 #include <linux/kthread.h>
@@ -56,19 +60,57 @@ struct nlm_host *nlmclnt_init(const struct nlmclnt_initdata *nlm_init)
 	u32 nlm_version = (nlm_init->nfs_version == 2) ? 1 : 4;
 	int status;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	status = lockd_up();
+=======
+	status = lockd_up(nlm_init->net);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = lockd_up(nlm_init->net);
+>>>>>>> refs/remotes/origin/master
+=======
+	status = lockd_up(nlm_init->net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (status < 0)
 		return ERR_PTR(status);
 
 	host = nlmclnt_lookup_host(nlm_init->address, nlm_init->addrlen,
 				   nlm_init->protocol, nlm_version,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				   nlm_init->hostname, nlm_init->noresvport);
 	if (host == NULL) {
 		lockd_down();
+=======
+				   nlm_init->hostname, nlm_init->noresvport,
+				   nlm_init->net);
+	if (host == NULL) {
+		lockd_down(nlm_init->net);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return ERR_PTR(-ENOLCK);
 	}
 
 	return host;
+=======
+				   nlm_init->hostname, nlm_init->noresvport,
+				   nlm_init->net);
+	if (host == NULL)
+		goto out_nohost;
+	if (host->h_rpcclnt == NULL && nlm_bind_host(host) == NULL)
+		goto out_nobind;
+
+	return host;
+out_nobind:
+	nlmclnt_release_host(host);
+out_nohost:
+	lockd_down(nlm_init->net);
+	return ERR_PTR(-ENOLCK);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(nlmclnt_init);
 
@@ -79,8 +121,28 @@ EXPORT_SYMBOL_GPL(nlmclnt_init);
  */
 void nlmclnt_done(struct nlm_host *host)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nlmclnt_release_host(host);
 	lockd_down();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct net *net = host->net;
+
+	nlmclnt_release_host(host);
+	lockd_down(net);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	struct net *net = host->net;
+
+	nlmclnt_release_host(host);
+	lockd_down(net);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(nlmclnt_done);
 
@@ -178,7 +240,11 @@ __be32 nlmclnt_grant(const struct sockaddr *addr, const struct nlm_lock *lock)
 			continue;
 		if (!rpc_cmp_addr(nlm_addr(block->b_host), addr))
 			continue;
+<<<<<<< HEAD
 		if (nfs_compare_fh(NFS_FH(fl_blocked->fl_file->f_path.dentry->d_inode) ,fh) != 0)
+=======
+		if (nfs_compare_fh(NFS_FH(file_inode(fl_blocked->fl_file)) ,fh) != 0)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		/* Alright, we found a lock. Set the return status
 		 * and wake up the caller
@@ -220,13 +286,48 @@ reclaimer(void *ptr)
 {
 	struct nlm_host	  *host = (struct nlm_host *) ptr;
 	struct nlm_wait	  *block;
+<<<<<<< HEAD
 	struct file_lock *fl, *next;
 	u32 nsmstate;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct net *net = host->net;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nlm_rqst   *req;
+	struct file_lock *fl, *next;
+	u32 nsmstate;
+	struct net *net = host->net;
+
+	req = kmalloc(sizeof(*req), GFP_KERNEL);
+	if (!req) {
+		printk(KERN_ERR "lockd: reclaimer unable to alloc memory."
+				" Locks for %s won't be reclaimed!\n",
+				host->h_name);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
+=======
+	struct net *net = host->net;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	allow_signal(SIGKILL);
 
 	down_write(&host->h_rwsem);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lockd_up();	/* note: this cannot fail as lockd is already running */
+=======
+	lockd_up(net);	/* note: this cannot fail as lockd is already running */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lockd_up(net);	/* note: this cannot fail as lockd is already running */
+>>>>>>> refs/remotes/origin/master
+=======
+	lockd_up(net);	/* note: this cannot fail as lockd is already running */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dprintk("lockd: reclaiming locks for host %s\n", host->h_name);
 
@@ -252,7 +353,11 @@ restart:
 		 */
 		if (signalled())
 			continue;
+<<<<<<< HEAD
 		if (nlmclnt_reclaim(host, fl) != 0)
+=======
+		if (nlmclnt_reclaim(host, fl, req) != 0)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		list_add_tail(&fl->fl_u.nfs_fl.list, &host->h_granted);
 		if (host->h_nsmstate != nsmstate) {
@@ -277,6 +382,19 @@ restart:
 
 	/* Release host handle after use */
 	nlmclnt_release_host(host);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lockd_down();
+=======
+	lockd_down(net);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lockd_down(net);
+	kfree(req);
+>>>>>>> refs/remotes/origin/master
+=======
+	lockd_down(net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }

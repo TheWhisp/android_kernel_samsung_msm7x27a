@@ -13,6 +13,14 @@
 #include <linux/delay.h>
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/board.h>
 #include <mach/camera.h>
 #include <mach/vreg.h>
@@ -38,6 +46,16 @@
 #define MIPI_CSIPHY_LNCK_MISC1_ADDR              0x128
 #define MIPI_CSIPHY_GLBL_T_INIT_CFG0_ADDR        0x1E0
 #define MIPI_CSIPHY_T_WAKEUP_CFG0_ADDR           0x1E8
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define MIPI_CSIPHY_T_WAKEUP_CFG1_ADDR           0x1EC
+#define MIPI_CSIPHY_GLBL_RESET_ADDR             0x0140
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MIPI_CSIPHY_T_WAKEUP_CFG1_ADDR           0x1EC
+#define MIPI_CSIPHY_GLBL_RESET_ADDR             0x0140
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MIPI_CSIPHY_GLBL_PWR_CFG_ADDR           0x0144
 #define MIPI_CSIPHY_INTERRUPT_STATUS0_ADDR      0x0180
 #define MIPI_CSIPHY_INTERRUPT_STATUS1_ADDR      0x0184
@@ -58,14 +76,41 @@
 int msm_csiphy_config(struct csiphy_cfg_params *cfg_params)
 {
 	int rc = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i = 0;
 	uint32_t val = 0;
+=======
+	int j = 0;
+	uint32_t val = 0;
+	uint8_t lane_cnt = 0, lane_mask = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int j = 0;
+	uint32_t val = 0;
+	uint8_t lane_cnt = 0, lane_mask = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct csiphy_device *csiphy_dev;
 	struct msm_camera_csiphy_params *csiphy_params;
 	void __iomem *csiphybase;
 	csiphy_dev = v4l2_get_subdevdata(cfg_params->subdev);
 	csiphybase = csiphy_dev->base;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	csiphy_params = cfg_params->parms;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (csiphybase == NULL)
+		return -ENOMEM;
+
+	csiphy_params = cfg_params->parms;
+	lane_mask = csiphy_params->lane_mask;
+	lane_cnt = csiphy_params->lane_cnt;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (csiphy_params->lane_cnt < 1 || csiphy_params->lane_cnt > 4) {
 		CDBG("%s: unsupported lane cnt %d\n",
 			__func__, csiphy_params->lane_cnt);
@@ -73,6 +118,8 @@ int msm_csiphy_config(struct csiphy_cfg_params *cfg_params)
 	}
 
 	val = 0x3;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w((((1 << csiphy_params->lane_cnt) - 1) << 2) | val,
 			 csiphybase + MIPI_CSIPHY_GLBL_PWR_CFG_ADDR);
 	msm_io_w(0x1, csiphybase + MIPI_CSIPHY_GLBL_T_INIT_CFG0_ADDR);
@@ -99,6 +146,46 @@ int msm_csiphy_config(struct csiphy_cfg_params *cfg_params)
 		msm_io_w(0x6F,
 			csiphybase + MIPI_CSIPHY_INTERRUPT_CLEAR0_ADDR + 0x4*i);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msm_camera_io_w((csiphy_params->lane_mask << 2) | val,
+			csiphybase + MIPI_CSIPHY_GLBL_PWR_CFG_ADDR);
+	msm_camera_io_w(0x1, csiphybase + MIPI_CSIPHY_GLBL_T_INIT_CFG0_ADDR);
+	msm_camera_io_w(0x1, csiphybase + MIPI_CSIPHY_T_WAKEUP_CFG0_ADDR);
+
+	while (lane_mask & 0xf) {
+		if (!(lane_mask & 0x1)) {
+			j++;
+			lane_mask >>= 1;
+			continue;
+		}
+		msm_camera_io_w(0x10,
+			csiphybase + MIPI_CSIPHY_LNn_CFG2_ADDR + 0x40*j);
+		msm_camera_io_w(csiphy_params->settle_cnt,
+			csiphybase + MIPI_CSIPHY_LNn_CFG3_ADDR + 0x40*j);
+		msm_camera_io_w(0x6F,
+			csiphybase + MIPI_CSIPHY_INTERRUPT_MASK0_ADDR +
+				0x4*(j+1));
+		msm_camera_io_w(0x6F,
+			csiphybase + MIPI_CSIPHY_INTERRUPT_CLEAR0_ADDR +
+				0x4*(j+1));
+		j++;
+		lane_mask >>= 1;
+	}
+
+	msm_camera_io_w(0x10, csiphybase + MIPI_CSIPHY_LNCK_CFG2_ADDR);
+	msm_camera_io_w(csiphy_params->settle_cnt,
+			 csiphybase + MIPI_CSIPHY_LNCK_CFG3_ADDR);
+
+	msm_camera_io_w(0x24,
+		csiphybase + MIPI_CSIPHY_INTERRUPT_MASK0_ADDR);
+	msm_camera_io_w(0x24,
+		csiphybase + MIPI_CSIPHY_INTERRUPT_CLEAR0_ADDR);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -106,6 +193,8 @@ static irqreturn_t msm_csiphy_irq(int irq_num, void *data)
 {
 	uint32_t irq;
 	struct csiphy_device *csiphy_dev = data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	irq = msm_io_r(csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_STATUS0_ADDR);
 	msm_io_w(irq, csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_CLEAR0_ADDR);
 	CDBG("%s MIPI_CSIPHY%d_INTERRUPT_STATUS0 = 0x%x\n",
@@ -131,6 +220,60 @@ static irqreturn_t msm_csiphy_irq(int irq_num, void *data)
 	return IRQ_HANDLED;
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	irq = msm_camera_io_r(
+		csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_STATUS0_ADDR);
+	msm_camera_io_w(irq,
+		csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_CLEAR0_ADDR);
+	CDBG("%s MIPI_CSIPHY%d_INTERRUPT_STATUS0 = 0x%x\n",
+		 __func__, csiphy_dev->pdev->id, irq);
+
+	irq = msm_camera_io_r(
+		csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_STATUS1_ADDR);
+	msm_camera_io_w(irq,
+		csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_CLEAR1_ADDR);
+	CDBG("%s MIPI_CSIPHY%d_INTERRUPT_STATUS1 = 0x%x\n",
+		__func__, csiphy_dev->pdev->id, irq);
+
+	irq = msm_camera_io_r(
+		csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_STATUS2_ADDR);
+	msm_camera_io_w(irq,
+		csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_CLEAR2_ADDR);
+	CDBG("%s MIPI_CSIPHY%d_INTERRUPT_STATUS2 = 0x%x\n",
+		__func__, csiphy_dev->pdev->id, irq);
+
+	irq = msm_camera_io_r(
+		csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_STATUS3_ADDR);
+	msm_camera_io_w(irq,
+		csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_CLEAR3_ADDR);
+	CDBG("%s MIPI_CSIPHY%d_INTERRUPT_STATUS3 = 0x%x\n",
+		__func__, csiphy_dev->pdev->id, irq);
+
+	irq = msm_camera_io_r(
+		csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_STATUS4_ADDR);
+	msm_camera_io_w(irq,
+		csiphy_dev->base + MIPI_CSIPHY_INTERRUPT_CLEAR4_ADDR);
+	CDBG("%s MIPI_CSIPHY%d_INTERRUPT_STATUS4 = 0x%x\n",
+		__func__, csiphy_dev->pdev->id, irq);
+	msm_camera_io_w(0x1, csiphy_dev->base + 0x164);
+	msm_camera_io_w(0x0, csiphy_dev->base + 0x164);
+	return IRQ_HANDLED;
+}
+
+static void msm_csiphy_reset(struct csiphy_device *csiphy_dev)
+{
+	msm_camera_io_w(0x1, csiphy_dev->base + MIPI_CSIPHY_GLBL_RESET_ADDR);
+	usleep_range(5000, 8000);
+	msm_camera_io_w(0x0, csiphy_dev->base + MIPI_CSIPHY_GLBL_RESET_ADDR);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_csiphy_subdev_g_chip_ident(struct v4l2_subdev *sd,
 			struct v4l2_dbg_chip_ident *chip)
 {
@@ -174,6 +317,14 @@ static int msm_csiphy_init(struct v4l2_subdev *sd)
 #if DBG_CSIPHY
 	enable_irq(csiphy_dev->irq->start);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	msm_csiphy_reset(csiphy_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_csiphy_reset(csiphy_dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -184,11 +335,25 @@ static int msm_csiphy_release(struct v4l2_subdev *sd)
 	int i;
 	csiphy_dev = v4l2_get_subdevdata(sd);
 	for (i = 0; i < 4; i++)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_w(0x0, csiphy_dev->base +
 		MIPI_CSIPHY_LNn_CFG2_ADDR + 0x40*i);
 
 	msm_io_w(0x0, csiphy_dev->base + MIPI_CSIPHY_LNCK_CFG2_ADDR);
 	msm_io_w(0x0, csiphy_dev->base + MIPI_CSIPHY_GLBL_PWR_CFG_ADDR);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		msm_camera_io_w(0x0, csiphy_dev->base +
+		MIPI_CSIPHY_LNn_CFG2_ADDR + 0x40*i);
+
+	msm_camera_io_w(0x0, csiphy_dev->base + MIPI_CSIPHY_LNCK_CFG2_ADDR);
+	msm_camera_io_w(0x0, csiphy_dev->base + MIPI_CSIPHY_GLBL_PWR_CFG_ADDR);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if DBG_CSIPHY
 	disable_irq(csiphy_dev->irq->start);
@@ -228,6 +393,16 @@ static long msm_csiphy_subdev_ioctl(struct v4l2_subdev *sd,
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static const struct v4l2_subdev_internal_ops msm_csiphy_internal_ops;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct v4l2_subdev_internal_ops msm_csiphy_internal_ops;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct v4l2_subdev_core_ops msm_csiphy_subdev_core_ops = {
 	.g_chip_ident = &msm_csiphy_subdev_g_chip_ident,
 	.ioctl = &msm_csiphy_subdev_ioctl,
@@ -249,6 +424,19 @@ static int __devinit csiphy_probe(struct platform_device *pdev)
 	}
 
 	v4l2_subdev_init(&new_csiphy_dev->subdev, &msm_csiphy_subdev_ops);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	new_csiphy_dev->subdev.internal_ops = &msm_csiphy_internal_ops;
+	new_csiphy_dev->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+	snprintf(new_csiphy_dev->subdev.name,
+			ARRAY_SIZE(new_csiphy_dev->subdev.name), "msm_csiphy");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	v4l2_set_subdevdata(&new_csiphy_dev->subdev, new_csiphy_dev);
 	platform_set_drvdata(pdev, &new_csiphy_dev->subdev);
 
@@ -288,6 +476,16 @@ static int __devinit csiphy_probe(struct platform_device *pdev)
 	disable_irq(new_csiphy_dev->irq->start);
 
 	new_csiphy_dev->pdev = pdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	msm_cam_register_subdev_node(
+		&new_csiphy_dev->subdev, CSIPHY_DEV, pdev->id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_cam_register_subdev_node(
+		&new_csiphy_dev->subdev, CSIPHY_DEV, pdev->id);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 csiphy_no_resource:

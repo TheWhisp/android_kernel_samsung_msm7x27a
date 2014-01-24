@@ -11,7 +11,10 @@
  */
 struct xspi_platform_data {
 	u16 num_chipselect;
+<<<<<<< HEAD
 	bool little_endian;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 bits_per_word;
 	struct spi_board_info *devices;
 	u8 num_devices;

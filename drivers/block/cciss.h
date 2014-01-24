@@ -92,6 +92,14 @@ struct ctlr_info
 	unsigned int intr[4];
 	unsigned int msix_vector;
 	unsigned int msi_vector;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int	intr_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int	intr_mode;
+>>>>>>> refs/remotes/origin/master
 	int 	cciss_max_sectors;
 	BYTE	cciss_read;
 	BYTE	cciss_write;

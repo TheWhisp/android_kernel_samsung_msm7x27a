@@ -29,6 +29,10 @@
 #include <linux/pfn.h>
 #include <linux/hardirq.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/kcore.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/asm-offsets.h>
 #include <asm/bootinfo.h>
@@ -66,7 +70,11 @@
 
 /*
  * We have up to 8 empty zeroed pages so we can map one of the right colour
+<<<<<<< HEAD
  * when needed.  This is necessary only on R4000 / R4400 SC and MC versions
+=======
+ * when needed.	 This is necessary only on R4000 / R4400 SC and MC versions
+>>>>>>> refs/remotes/origin/master
  * where we have to avoid VCED / VECI exceptions for good performance at
  * any price.  Since page is never written to after the initialization we
  * don't have to care about aliases on other CPUs.
@@ -77,10 +85,16 @@ EXPORT_SYMBOL_GPL(empty_zero_page);
 /*
  * Not static inline because used by IP27 special magic initialization code
  */
+<<<<<<< HEAD
 unsigned long setup_zero_pages(void)
 {
 	unsigned int order;
 	unsigned long size;
+=======
+void setup_zero_pages(void)
+{
+	unsigned int order, i;
+>>>>>>> refs/remotes/origin/master
 	struct page *page;
 
 	if (cpu_has_vce)
@@ -94,6 +108,7 @@ unsigned long setup_zero_pages(void)
 
 	page = virt_to_page((void *)empty_zero_page);
 	split_page(page, order);
+<<<<<<< HEAD
 	while (page < virt_to_page((void *)(empty_zero_page + (PAGE_SIZE << order)))) {
 		SetPageReserved(page);
 		page++;
@@ -103,6 +118,12 @@ unsigned long setup_zero_pages(void)
 	zero_page_mask = (size - 1) & PAGE_MASK;
 
 	return 1UL << order;
+=======
+	for (i = 0; i < (1 << order); i++, page++)
+		mark_page_reserved(page);
+
+	zero_page_mask = ((PAGE_SIZE << order) - 1) & PAGE_MASK;
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_MIPS_MT_SMTC
@@ -129,7 +150,11 @@ void *kmap_coherent(struct page *page, unsigned long addr)
 
 	BUG_ON(Page_dcache_dirty(page));
 
+<<<<<<< HEAD
 	inc_preempt_count();
+=======
+	pagefault_disable();
+>>>>>>> refs/remotes/origin/master
 	idx = (addr >> PAGE_SHIFT) & (FIX_N_COLOURS - 1);
 #ifdef CONFIG_MIPS_MT_SMTC
 	idx += FIX_N_COLOURS * smp_processor_id() +
@@ -198,8 +223,12 @@ void kunmap_coherent(void)
 	write_c0_entryhi(old_ctx);
 	EXIT_CRITICAL(flags);
 #endif
+<<<<<<< HEAD
 	dec_preempt_count();
 	preempt_check_resched();
+=======
+	pagefault_enable();
+>>>>>>> refs/remotes/origin/master
 }
 
 void copy_user_highpage(struct page *to, struct page *from,
@@ -207,21 +236,49 @@ void copy_user_highpage(struct page *to, struct page *from,
 {
 	void *vfrom, *vto;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vto = kmap_atomic(to, KM_USER1);
+=======
+	vto = kmap_atomic(to);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vto = kmap_atomic(to);
+>>>>>>> refs/remotes/origin/master
 	if (cpu_has_dc_aliases &&
 	    page_mapped(from) && !Page_dcache_dirty(from)) {
 		vfrom = kmap_coherent(from, vaddr);
 		copy_page(vto, vfrom);
 		kunmap_coherent();
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		vfrom = kmap_atomic(from, KM_USER0);
 		copy_page(vto, vfrom);
 		kunmap_atomic(vfrom, KM_USER0);
+=======
+		vfrom = kmap_atomic(from);
+		copy_page(vto, vfrom);
+		kunmap_atomic(vfrom);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		vfrom = kmap_atomic(from);
+		copy_page(vto, vfrom);
+		kunmap_atomic(vfrom);
+>>>>>>> refs/remotes/origin/master
 	}
 	if ((!cpu_has_ic_fills_f_dc) ||
 	    pages_do_alias((unsigned long)vto, vaddr & PAGE_MASK))
 		flush_data_cache_page((unsigned long)vto);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(vto, KM_USER1);
+=======
+	kunmap_atomic(vto);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(vto);
+>>>>>>> refs/remotes/origin/master
 	/* Make sure this page is cleared on other CPU's too before using it */
 	smp_wmb();
 }
@@ -259,6 +316,10 @@ void copy_from_user_page(struct vm_area_struct *vma,
 			SetPageDcacheDirty(page);
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(copy_from_user_page);
+>>>>>>> refs/remotes/origin/master
 
 void __init fixrange_init(unsigned long start, unsigned long end,
 	pgd_t *pgd_base)
@@ -277,11 +338,25 @@ void __init fixrange_init(unsigned long start, unsigned long end,
 	k = __pmd_offset(vaddr);
 	pgd = pgd_base + i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for ( ; (i < PTRS_PER_PGD) && (vaddr != end); pgd++, i++) {
 		pud = (pud_t *)pgd;
 		for ( ; (j < PTRS_PER_PUD) && (vaddr != end); pud++, j++) {
 			pmd = (pmd_t *)pud;
 			for (; (k < PTRS_PER_PMD) && (vaddr != end); pmd++, k++) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
+		pud = (pud_t *)pgd;
+		for ( ; (j < PTRS_PER_PUD) && (vaddr < end); pud++, j++) {
+			pmd = (pmd_t *)pud;
+			for (; (k < PTRS_PER_PMD) && (vaddr < end); pmd++, k++) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				if (pmd_none(*pmd)) {
 					pte = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
 					set_pmd(pmd, __pmd((unsigned long)pte));
@@ -304,9 +379,26 @@ int page_is_ram(unsigned long pagenr)
 	for (i = 0; i < boot_mem_map.nr_map; i++) {
 		unsigned long addr, end;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (boot_mem_map.map[i].type != BOOT_MEM_RAM)
 			/* not usable memory */
 			continue;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		switch (boot_mem_map.map[i].type) {
+		case BOOT_MEM_RAM:
+		case BOOT_MEM_INIT_RAM:
+			break;
+		default:
+			/* not usable memory */
+			continue;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		addr = PFN_UP(boot_mem_map.map[i].addr);
 		end = PFN_DOWN(boot_mem_map.map[i].addr +
@@ -359,27 +451,61 @@ void __init paging_init(void)
 static struct kcore_list kcore_kseg0;
 #endif
 
+<<<<<<< HEAD
 void __init mem_init(void)
 {
 	unsigned long codesize, reservedpages, datasize, initsize;
 	unsigned long tmp, ram;
 
+=======
+static inline void mem_init_free_highmem(void)
+{
+#ifdef CONFIG_HIGHMEM
+	unsigned long tmp;
+
+	for (tmp = highstart_pfn; tmp < highend_pfn; tmp++) {
+		struct page *page = pfn_to_page(tmp);
+
+		if (!page_is_ram(tmp))
+			SetPageReserved(page);
+		else
+			free_highmem_page(page);
+	}
+#endif
+}
+
+void __init mem_init(void)
+{
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HIGHMEM
 #ifdef CONFIG_DISCONTIGMEM
 #error "CONFIG_HIGHMEM and CONFIG_DISCONTIGMEM dont work together yet"
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	max_mapnr = highend_pfn;
+=======
+	max_mapnr = highend_pfn ? highend_pfn : max_low_pfn;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max_mapnr = highend_pfn ? highend_pfn : max_low_pfn;
+>>>>>>> refs/remotes/origin/master
 #else
 	max_mapnr = max_low_pfn;
 #endif
 	high_memory = (void *) __va(max_low_pfn << PAGE_SHIFT);
 
+<<<<<<< HEAD
 	totalram_pages += free_all_bootmem();
 	totalram_pages -= setup_zero_pages();	/* Setup zeroed pages.  */
 
 	reservedpages = ram = 0;
 	for (tmp = 0; tmp < max_low_pfn; tmp++)
+<<<<<<< HEAD
 		if (page_is_ram(tmp)) {
+=======
+		if (page_is_ram(tmp) && pfn_valid(tmp)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ram++;
 			if (PageReserved(pfn_to_page(tmp)))
 				reservedpages++;
@@ -406,6 +532,12 @@ void __init mem_init(void)
 	codesize =  (unsigned long) &_etext - (unsigned long) &_text;
 	datasize =  (unsigned long) &_edata - (unsigned long) &_etext;
 	initsize =  (unsigned long) &__init_end - (unsigned long) &__init_begin;
+=======
+	free_all_bootmem();
+	setup_zero_pages();	/* Setup zeroed pages.  */
+	mem_init_free_highmem();
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_64BIT
 	if ((unsigned long) &_text > (unsigned long) CKSEG0)
@@ -414,6 +546,7 @@ void __init mem_init(void)
 		kclist_add(&kcore_kseg0, (void *) CKSEG0,
 				0x80000000 - 4, KCORE_TEXT);
 #endif
+<<<<<<< HEAD
 
 	printk(KERN_INFO "Memory: %luk/%luk available (%ldk kernel code, "
 	       "%ldk reserved, %ldk data, %ldk init, %ldk highmem)\n",
@@ -424,6 +557,8 @@ void __init mem_init(void)
 	       datasize >> 10,
 	       initsize >> 10,
 	       totalhigh_pages << (PAGE_SHIFT-10));
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* !CONFIG_NEED_MULTIPLE_NODES */
 
@@ -435,11 +570,16 @@ void free_init_pages(const char *what, unsigned long begin, unsigned long end)
 		struct page *page = pfn_to_page(pfn);
 		void *addr = phys_to_virt(PFN_PHYS(pfn));
 
+<<<<<<< HEAD
 		ClearPageReserved(page);
 		init_page_count(page);
 		memset(addr, POISON_FREE_INITMEM, PAGE_SIZE);
 		__free_page(page);
 		totalram_pages++;
+=======
+		memset(addr, POISON_FREE_INITMEM, PAGE_SIZE);
+		free_reserved_page(page);
+>>>>>>> refs/remotes/origin/master
 	}
 	printk(KERN_INFO "Freeing %s: %ldk freed\n", what, (end - begin) >> 10);
 }
@@ -447,36 +587,63 @@ void free_init_pages(const char *what, unsigned long begin, unsigned long end)
 #ifdef CONFIG_BLK_DEV_INITRD
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	free_init_pages("initrd memory",
 			virt_to_phys((void *)start),
 			virt_to_phys((void *)end));
+=======
+	free_reserved_area((void *)start, (void *)end, POISON_FREE_INITMEM,
+			   "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 void __init_refok free_initmem(void)
 {
 	prom_free_prom_memory();
+<<<<<<< HEAD
 	free_init_pages("unused kernel memory",
 			__pa_symbol(&__init_begin),
 			__pa_symbol(&__init_end));
+=======
+	free_initmem_default(POISON_FREE_INITMEM);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifndef CONFIG_MIPS_PGD_C0_CONTEXT
 unsigned long pgd_current[NR_CPUS];
 #endif
+<<<<<<< HEAD
 /*
  * On 64-bit we've got three-level pagetables with a slightly
  * different layout ...
  */
 #define __page_aligned(order) __attribute__((__aligned__(PAGE_SIZE<<order)))
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * gcc 3.3 and older have trouble determining that PTRS_PER_PGD and PGD_ORDER
  * are constants.  So we use the variants from asm-offset.h until that gcc
  * will officially be retired.
+<<<<<<< HEAD
  */
 pgd_t swapper_pg_dir[_PTRS_PER_PGD] __page_aligned(_PGD_ORDER);
 #ifndef __PAGETABLE_PMD_FOLDED
 pmd_t invalid_pmd_table[PTRS_PER_PMD] __page_aligned(PMD_ORDER);
 #endif
 pte_t invalid_pte_table[PTRS_PER_PTE] __page_aligned(PTE_ORDER);
+=======
+ *
+ * Align swapper_pg_dir in to 64K, allows its address to be loaded
+ * with a single LUI instruction in the TLB handlers.  If we used
+ * __aligned(64K), its size would get rounded up to the alignment
+ * size, and waste space.  So we place it in its own section and align
+ * it in the linker script.
+ */
+pgd_t swapper_pg_dir[_PTRS_PER_PGD] __section(.bss..swapper_pg_dir);
+#ifndef __PAGETABLE_PMD_FOLDED
+pmd_t invalid_pmd_table[PTRS_PER_PMD] __page_aligned_bss;
+#endif
+pte_t invalid_pte_table[PTRS_PER_PTE] __page_aligned_bss;
+>>>>>>> refs/remotes/origin/master

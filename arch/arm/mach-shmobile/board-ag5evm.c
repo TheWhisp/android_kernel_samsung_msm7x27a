@@ -30,6 +30,10 @@
 #include <linux/serial_sci.h>
 #include <linux/smsc911x.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/videodev2.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/input.h>
 #include <linux/input/sh_keysc.h>
 #include <linux/mmc/host.h>
@@ -37,16 +41,27 @@
 #include <linux/mmc/sh_mobile_sdhi.h>
 #include <linux/mfd/tmio.h>
 #include <linux/sh_clk.h>
+<<<<<<< HEAD
+=======
+#include <linux/videodev2.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <video/sh_mobile_lcdc.h>
 #include <video/sh_mipi_dsi.h>
 #include <sound/sh_fsi.h>
 #include <mach/hardware.h>
+<<<<<<< HEAD
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/sh73a0.h>
 #include <mach/common.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
+<<<<<<< HEAD
 #include <asm/mach/map.h>
 #include <asm/mach/time.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hardware/gic.h>
 #include <asm/hardware/cache-l2x0.h>
 #include <asm/traps.h>
@@ -58,7 +73,11 @@ static struct resource smsc9220_resources[] = {
 		.flags		= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start		= gic_spi(33), /* PINT1 */
+=======
+		.start		= SH73A0_PINT0_IRQ(2), /* PINTA2 */
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags		= IORESOURCE_IRQ,
 	},
 };
@@ -158,6 +177,7 @@ static struct resource sh_mmcif_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct sh_mmcif_dma sh_mmcif_dma = {
 	.chan_priv_rx	= {
 		.slave_id	= SHDMA_SLAVE_MMCIF_RX,
@@ -166,11 +186,18 @@ static struct sh_mmcif_dma sh_mmcif_dma = {
 		.slave_id	= SHDMA_SLAVE_MMCIF_TX,
 	},
 };
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct sh_mmcif_plat_data sh_mmcif_platdata = {
 	.sup_pclk	= 0,
 	.ocr		= MMC_VDD_165_195,
 	.caps		= MMC_CAP_8_BIT_DATA | MMC_CAP_NONREMOVABLE,
+<<<<<<< HEAD
 	.dma		= &sh_mmcif_dma,
+=======
+	.slave_id_tx	= SHDMA_SLAVE_MMCIF_TX,
+	.slave_id_rx	= SHDMA_SLAVE_MMCIF_RX,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device mmc_device = {
@@ -235,6 +262,7 @@ static void lcd_backlight_reset(void)
 	gpio_set_value(GPIO_PORT235, 1);
 }
 
+<<<<<<< HEAD
 static void lcd_on(void *board_data, struct fb_info *info)
 {
 	lcd_backlight_on();
@@ -245,6 +273,8 @@ static void lcd_off(void *board_data)
 	lcd_backlight_reset();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* LCDC0 */
 static const struct fb_videomode lcdc0_modes[] = {
 	{
@@ -268,6 +298,7 @@ static struct sh_mobile_lcdc_info lcdc0_info = {
 		.interface_type = RGB24,
 		.clock_divider = 1,
 		.flags = LCDC_FLAGS_DWPOL,
+<<<<<<< HEAD
 		.lcd_size_cfg.width = 44,
 		.lcd_size_cfg.height = 79,
 		.bpp = 16,
@@ -276,6 +307,16 @@ static struct sh_mobile_lcdc_info lcdc0_info = {
 		.board_cfg = {
 			.display_on = lcd_on,
 			.display_off = lcd_off,
+=======
+		.fourcc = V4L2_PIX_FMT_RGB565,
+		.lcd_modes = lcdc0_modes,
+		.num_modes = ARRAY_SIZE(lcdc0_modes),
+		.panel_cfg = {
+			.width = 44,
+			.height = 79,
+			.display_on = lcd_backlight_on,
+			.display_off = lcd_backlight_reset,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 	}
 };
@@ -320,12 +361,63 @@ static struct resource mipidsi0_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct sh_mipi_dsi_info mipidsi0_info = {
 	.data_format	= MIPI_RGB888,
 	.lcd_chan	= &lcdc0_info.ch[0],
 	.vsynw_offset	= 20,
 	.clksrc		= 1,
 	.flags		= SH_MIPI_DSI_HSABM,
+=======
+static int sh_mipi_set_dot_clock(struct platform_device *pdev,
+				 void __iomem *base,
+				 int enable)
+{
+	struct clk *pck, *phy;
+	int ret;
+
+	pck = clk_get(&pdev->dev, "dsip_clk");
+	if (IS_ERR(pck)) {
+		ret = PTR_ERR(pck);
+		goto sh_mipi_set_dot_clock_pck_err;
+	}
+
+	phy = clk_get(&pdev->dev, "dsiphy_clk");
+	if (IS_ERR(phy)) {
+		ret = PTR_ERR(phy);
+		goto sh_mipi_set_dot_clock_phy_err;
+	}
+
+	if (enable) {
+		clk_set_rate(pck, clk_round_rate(pck,  24000000));
+		clk_set_rate(phy, clk_round_rate(pck, 510000000));
+		clk_enable(pck);
+		clk_enable(phy);
+	} else {
+		clk_disable(pck);
+		clk_disable(phy);
+	}
+
+	ret = 0;
+
+	clk_put(phy);
+sh_mipi_set_dot_clock_phy_err:
+	clk_put(pck);
+sh_mipi_set_dot_clock_pck_err:
+	return ret;
+}
+
+static struct sh_mipi_dsi_info mipidsi0_info = {
+	.data_format	= MIPI_RGB888,
+	.lcd_chan	= &lcdc0_info.ch[0],
+	.lane		= 2,
+	.vsynw_offset	= 20,
+	.clksrc		= 1,
+	.flags		= SH_MIPI_DSI_HSABM		|
+			  SH_MIPI_DSI_SYNC_PULSES_MODE	|
+			  SH_MIPI_DSI_HSbyteCLK,
+	.set_dot_clock	= sh_mipi_set_dot_clock,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device mipidsi0_device = {
@@ -338,11 +430,22 @@ static struct platform_device mipidsi0_device = {
 	},
 };
 
+<<<<<<< HEAD
 static struct sh_mobile_sdhi_info sdhi0_info = {
 	.dma_slave_tx	= SHDMA_SLAVE_SDHI0_TX,
 	.dma_slave_rx	= SHDMA_SLAVE_SDHI0_RX,
 	.tmio_caps	= MMC_CAP_SD_HIGHSPEED,
 	.tmio_ocr_mask	= MMC_VDD_27_28 | MMC_VDD_28_29,
+=======
+/* SDHI0 */
+static struct sh_mobile_sdhi_info sdhi0_info = {
+	.dma_slave_tx	= SHDMA_SLAVE_SDHI0_TX,
+	.dma_slave_rx	= SHDMA_SLAVE_SDHI0_RX,
+	.tmio_flags	= TMIO_MMC_HAS_IDLE_WAIT | TMIO_MMC_USE_GPIO_CD,
+	.tmio_caps	= MMC_CAP_SD_HIGHSPEED,
+	.tmio_ocr_mask	= MMC_VDD_27_28 | MMC_VDD_28_29,
+	.cd_gpio	= GPIO_PORT251,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct resource sdhi0_resources[] = {
@@ -353,14 +456,26 @@ static struct resource sdhi0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_CARD_DETECT,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= gic_spi(83),
 		.flags	= IORESOURCE_IRQ,
 	},
 	[2] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_SDCARD,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= gic_spi(84),
 		.flags	= IORESOURCE_IRQ,
 	},
 	[3] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_SDIO,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= gic_spi(85),
 		.flags	= IORESOURCE_IRQ,
 	},
@@ -382,7 +497,11 @@ void ag5evm_sdhi1_set_pwr(struct platform_device *pdev, int state)
 }
 
 static struct sh_mobile_sdhi_info sh_sdhi1_info = {
+<<<<<<< HEAD
 	.tmio_flags	= TMIO_MMC_WRPROTECT_DISABLE,
+=======
+	.tmio_flags	= TMIO_MMC_WRPROTECT_DISABLE | TMIO_MMC_HAS_IDLE_WAIT,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.tmio_caps	= MMC_CAP_NONREMOVABLE | MMC_CAP_SDIO_IRQ,
 	.tmio_ocr_mask	= MMC_VDD_32_33 | MMC_VDD_33_34,
 	.set_pwr	= ag5evm_sdhi1_set_pwr,
@@ -396,14 +515,26 @@ static struct resource sdhi1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_CARD_DETECT,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= gic_spi(87),
 		.flags	= IORESOURCE_IRQ,
 	},
 	[2] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_SDCARD,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= gic_spi(88),
 		.flags	= IORESOURCE_IRQ,
 	},
 	[3] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_SDIO,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= gic_spi(89),
 		.flags	= IORESOURCE_IRQ,
 	},
@@ -431,6 +562,7 @@ static struct platform_device *ag5evm_devices[] __initdata = {
 	&sdhi1_device,
 };
 
+<<<<<<< HEAD
 static struct map_desc ag5evm_io_desc[] __initdata = {
 	/* create a 1:1 entity map for 0xe6xxxxxx
 	 * used by CPGA, INTC and PFC.
@@ -467,6 +599,8 @@ void __init ag5evm_init_irq(void)
 
 #define DSI0PHYCR	0xe615006c
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init ag5evm_init(void)
 {
 	sh73a0_pinmux_init();
@@ -506,6 +640,7 @@ static void __init ag5evm_init(void)
 	/* enable MMCIF */
 	gpio_request(GPIO_FN_MMCCLK0, NULL);
 	gpio_request(GPIO_FN_MMCCMD0_PU, NULL);
+<<<<<<< HEAD
 	gpio_request(GPIO_FN_MMCD0_0, NULL);
 	gpio_request(GPIO_FN_MMCD0_1, NULL);
 	gpio_request(GPIO_FN_MMCD0_2, NULL);
@@ -514,6 +649,16 @@ static void __init ag5evm_init(void)
 	gpio_request(GPIO_FN_MMCD0_5, NULL);
 	gpio_request(GPIO_FN_MMCD0_6, NULL);
 	gpio_request(GPIO_FN_MMCD0_7, NULL);
+=======
+	gpio_request(GPIO_FN_MMCD0_0_PU, NULL);
+	gpio_request(GPIO_FN_MMCD0_1_PU, NULL);
+	gpio_request(GPIO_FN_MMCD0_2_PU, NULL);
+	gpio_request(GPIO_FN_MMCD0_3_PU, NULL);
+	gpio_request(GPIO_FN_MMCD0_4_PU, NULL);
+	gpio_request(GPIO_FN_MMCD0_5_PU, NULL);
+	gpio_request(GPIO_FN_MMCD0_6_PU, NULL);
+	gpio_request(GPIO_FN_MMCD0_7_PU, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	gpio_request(GPIO_PORT208, NULL); /* Reset */
 	gpio_direction_output(GPIO_PORT208, 1);
 
@@ -547,11 +692,15 @@ static void __init ag5evm_init(void)
 	gpio_direction_output(GPIO_PORT235, 0);
 	lcd_backlight_reset();
 
+<<<<<<< HEAD
 	/* MIPI-DSI clock setup */
 	__raw_writel(0x2a809010, DSI0PHYCR);
 
 	/* enable SDHI0 on CN15 [SD I/F] */
 	gpio_request(GPIO_FN_SDHICD0, NULL);
+=======
+	/* enable SDHI0 on CN15 [SD I/F] */
+>>>>>>> refs/remotes/origin/cm-10.0
 	gpio_request(GPIO_FN_SDHIWP0, NULL);
 	gpio_request(GPIO_FN_SDHICMD0, NULL);
 	gpio_request(GPIO_FN_SDHICLK0, NULL);
@@ -572,12 +721,17 @@ static void __init ag5evm_init(void)
 
 #ifdef CONFIG_CACHE_L2X0
 	/* Shared attribute override enable, 64K*8way */
+<<<<<<< HEAD
 	l2x0_init(__io(0xf0100000), 0x00460000, 0xc2000fff);
+=======
+	l2x0_init(IOMEM(0xf0100000), 0x00460000, 0xc2000fff);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	sh73a0_add_standard_devices();
 	platform_add_devices(ag5evm_devices, ARRAY_SIZE(ag5evm_devices));
 }
 
+<<<<<<< HEAD
 static void __init ag5evm_timer_init(void)
 {
 	sh73a0_clock_init();
@@ -595,4 +749,14 @@ MACHINE_START(AG5EVM, "ag5evm")
 	.handle_irq	= shmobile_handle_irq_gic,
 	.init_machine	= ag5evm_init,
 	.timer		= &ag5evm_timer,
+=======
+MACHINE_START(AG5EVM, "ag5evm")
+	.map_io		= sh73a0_map_io,
+	.init_early	= sh73a0_add_early_devices,
+	.nr_irqs	= NR_IRQS_LEGACY,
+	.init_irq	= sh73a0_init_irq,
+	.handle_irq	= gic_handle_irq,
+	.init_machine	= ag5evm_init,
+	.timer		= &shmobile_timer,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

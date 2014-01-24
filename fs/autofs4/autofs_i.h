@@ -39,6 +39,8 @@
 
 /* #define DEBUG */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef DEBUG
 #define DPRINTK(fmt, args...)				\
 do {							\
@@ -60,6 +62,24 @@ do {							\
 	printk(KERN_ERR "pid %d: %s: " fmt "\n",	\
 		current->pid, __func__, ##args);	\
 } while (0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define DPRINTK(fmt, ...)				\
+	pr_debug("pid %d: %s: " fmt "\n",		\
+		current->pid, __func__, ##__VA_ARGS__)
+
+#define AUTOFS_WARN(fmt, ...)				\
+	printk(KERN_WARNING "pid %d: %s: " fmt "\n",	\
+		current->pid, __func__, ##__VA_ARGS__)
+
+#define AUTOFS_ERROR(fmt, ...)				\
+	printk(KERN_ERR "pid %d: %s: " fmt "\n",	\
+		current->pid, __func__, ##__VA_ARGS__)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Unified info structure.  This is pointed to by both the dentry and
    inode structures.  Each file in the filesystem has an instance of this
@@ -84,8 +104,13 @@ struct autofs_info {
 	unsigned long last_used;
 	atomic_t count;
 
+<<<<<<< HEAD
 	uid_t uid;
 	gid_t gid;
+=======
+	kuid_t uid;
+	kgid_t gid;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define AUTOFS_INF_EXPIRING	(1<<0) /* dentry is in the process of expiring */
@@ -99,8 +124,13 @@ struct autofs_wait_queue {
 	struct qstr name;
 	u32 dev;
 	u64 ino;
+<<<<<<< HEAD
 	uid_t uid;
 	gid_t gid;
+=======
+	kuid_t uid;
+	kgid_t gid;
+>>>>>>> refs/remotes/origin/master
 	pid_t pid;
 	pid_t tgid;
 	/* This is for status reporting upon return */
@@ -126,11 +156,23 @@ struct autofs_sb_info {
 	int needs_reghost;
 	struct super_block *sb;
 	struct mutex wq_mutex;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct mutex pipe_mutex;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mutex pipe_mutex;
+>>>>>>> refs/remotes/origin/master
 	spinlock_t fs_lock;
 	struct autofs_wait_queue *queues; /* Wait queue pointer */
 	spinlock_t lookup_lock;
 	struct list_head active_list;
 	struct list_head expiring_list;
+<<<<<<< HEAD
+=======
+	struct rcu_head rcu;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct autofs_sb_info *autofs4_sbi(struct super_block *sb)
@@ -165,7 +207,15 @@ static inline int autofs4_ispending(struct dentry *dentry)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct inode *autofs4_get_inode(struct super_block *, mode_t);
+=======
+struct inode *autofs4_get_inode(struct super_block *, umode_t);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct inode *autofs4_get_inode(struct super_block *, umode_t);
+>>>>>>> refs/remotes/origin/master
 void autofs4_free_ino(struct autofs_info *);
 
 /* Expiration */
@@ -280,9 +330,15 @@ void autofs4_clean_ino(struct autofs_info *);
 
 static inline int autofs_prepare_pipe(struct file *pipe)
 {
+<<<<<<< HEAD
 	if (!pipe->f_op || !pipe->f_op->write)
 		return -EINVAL;
 	if (!S_ISFIFO(pipe->f_dentry->d_inode->i_mode))
+=======
+	if (!pipe->f_op->write)
+		return -EINVAL;
+	if (!S_ISFIFO(file_inode(pipe)->i_mode))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	/* We want a packet pipe */
 	pipe->f_flags |= O_DIRECT;

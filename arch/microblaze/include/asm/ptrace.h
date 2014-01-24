@@ -5,6 +5,7 @@
  * License. See the file "COPYING" in the main directory of this archive
  * for more details.
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_MICROBLAZE_PTRACE_H
 #define _ASM_MICROBLAZE_PTRACE_H
@@ -55,13 +56,34 @@ struct pt_regs {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_MICROBLAZE_PTRACE_H
+#define _ASM_MICROBLAZE_PTRACE_H
+
+#include <uapi/asm/ptrace.h>
+
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 #define kernel_mode(regs)		((regs)->pt_mode)
 #define user_mode(regs)			(!kernel_mode(regs))
 
 #define instruction_pointer(regs)	((regs)->pc)
 #define profile_pc(regs)		instruction_pointer(regs)
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 void show_regs(struct pt_regs *);
+=======
+=======
+#define user_stack_pointer(regs)	((regs)->r1)
+
+>>>>>>> refs/remotes/origin/master
+static inline long regs_return_value(struct pt_regs *regs)
+{
+	return regs->r3;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else /* __KERNEL__ */
 
@@ -78,4 +100,8 @@ void show_regs(struct pt_regs *);
 
 #endif /* __ASSEMBLY__ */
 
+=======
+
+#endif /* __ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_MICROBLAZE_PTRACE_H */

@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/tty3270.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *    Copyright IBM Corp. 2007
  *
  */

@@ -31,8 +31,14 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 #include <linux/miscdevice.h>
@@ -103,7 +109,10 @@ struct pxa3xx_gcu_priv {
 	dma_addr_t		  shared_phys;
 	struct resource		 *resource_mem;
 	struct miscdevice	  misc_dev;
+<<<<<<< HEAD
 	struct file_operations	  misc_fops;
+=======
+>>>>>>> refs/remotes/origin/master
 	wait_queue_head_t	  wait_idle;
 	wait_queue_head_t	  wait_free;
 	spinlock_t		  spinlock;
@@ -318,12 +327,18 @@ pxa3xx_gcu_wait_idle(struct pxa3xx_gcu_priv *priv)
 		ret = wait_event_interruptible_timeout(priv->wait_idle,
 					!priv->shared->hw_running, HZ*4);
 
+<<<<<<< HEAD
 		if (ret < 0)
 			break;
 
 		if (ret > 0)
 			continue;
 
+=======
+		if (ret != 0)
+			break;
+
+>>>>>>> refs/remotes/origin/master
 		if (gc_readl(priv, REG_GCRBEXHR) == rbexhr &&
 		    priv->shared->num_interrupts == num) {
 			QERROR("TIMEOUT");
@@ -374,15 +389,30 @@ pxa3xx_gcu_wait_free(struct pxa3xx_gcu_priv *priv)
 
 /* Misc device layer */
 
+<<<<<<< HEAD
 static ssize_t
 pxa3xx_gcu_misc_write(struct file *filp, const char *buff,
+=======
+static inline struct pxa3xx_gcu_priv *file_dev(struct file *file)
+{
+	struct miscdevice *dev = file->private_data;
+	return container_of(dev, struct pxa3xx_gcu_priv, misc_dev);
+}
+
+static ssize_t
+pxa3xx_gcu_misc_write(struct file *file, const char *buff,
+>>>>>>> refs/remotes/origin/master
 		      size_t count, loff_t *offp)
 {
 	int ret;
 	unsigned long flags;
 	struct pxa3xx_gcu_batch	*buffer;
+<<<<<<< HEAD
 	struct pxa3xx_gcu_priv *priv =
 		container_of(filp->f_op, struct pxa3xx_gcu_priv, misc_fops);
+=======
+	struct pxa3xx_gcu_priv *priv = file_dev(file);
+>>>>>>> refs/remotes/origin/master
 
 	int words = count / 4;
 
@@ -455,11 +485,18 @@ pxa3xx_gcu_misc_write(struct file *filp, const char *buff,
 
 
 static long
+<<<<<<< HEAD
 pxa3xx_gcu_misc_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	unsigned long flags;
 	struct pxa3xx_gcu_priv *priv =
 		container_of(filp->f_op, struct pxa3xx_gcu_priv, misc_fops);
+=======
+pxa3xx_gcu_misc_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+{
+	unsigned long flags;
+	struct pxa3xx_gcu_priv *priv = file_dev(file);
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case PXA3XX_GCU_IOCTL_RESET:
@@ -476,11 +513,18 @@ pxa3xx_gcu_misc_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 }
 
 static int
+<<<<<<< HEAD
 pxa3xx_gcu_misc_mmap(struct file *filp, struct vm_area_struct *vma)
 {
 	unsigned int size = vma->vm_end - vma->vm_start;
 	struct pxa3xx_gcu_priv *priv =
 		container_of(filp->f_op, struct pxa3xx_gcu_priv, misc_fops);
+=======
+pxa3xx_gcu_misc_mmap(struct file *file, struct vm_area_struct *vma)
+{
+	unsigned int size = vma->vm_end - vma->vm_start;
+	struct pxa3xx_gcu_priv *priv = file_dev(file);
+>>>>>>> refs/remotes/origin/master
 
 	switch (vma->vm_pgoff) {
 	case 0:
@@ -497,7 +541,10 @@ pxa3xx_gcu_misc_mmap(struct file *filp, struct vm_area_struct *vma)
 		if (size != resource_size(priv->resource_mem))
 			return -EINVAL;
 
+<<<<<<< HEAD
 		vma->vm_flags |= VM_IO;
+=======
+>>>>>>> refs/remotes/origin/master
 		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 
 		return io_remap_pfn_range(vma, vma->vm_start,
@@ -579,8 +626,19 @@ free_buffers(struct platform_device *dev,
 	priv->free = NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit
 pxa3xx_gcu_probe(struct platform_device *dev)
+=======
+static const struct file_operations misc_fops = {
+	.owner	= THIS_MODULE,
+	.write	= pxa3xx_gcu_misc_write,
+	.unlocked_ioctl = pxa3xx_gcu_misc_ioctl,
+	.mmap	= pxa3xx_gcu_misc_mmap
+};
+
+static int pxa3xx_gcu_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, ret, irq;
 	struct resource *r;
@@ -607,6 +665,7 @@ pxa3xx_gcu_probe(struct platform_device *dev)
 	 * container_of(). This isn't really necessary as we have a fixed minor
 	 * number anyway, but this is to avoid statics. */
 
+<<<<<<< HEAD
 	priv->misc_fops.owner	= THIS_MODULE;
 	priv->misc_fops.write	= pxa3xx_gcu_misc_write;
 	priv->misc_fops.unlocked_ioctl = pxa3xx_gcu_misc_ioctl;
@@ -615,6 +674,11 @@ pxa3xx_gcu_probe(struct platform_device *dev)
 	priv->misc_dev.minor	= MISCDEV_MINOR,
 	priv->misc_dev.name	= DRV_NAME,
 	priv->misc_dev.fops	= &priv->misc_fops,
+=======
+	priv->misc_dev.minor	= MISCDEV_MINOR,
+	priv->misc_dev.name	= DRV_NAME,
+	priv->misc_dev.fops	= &misc_fops,
+>>>>>>> refs/remotes/origin/master
 
 	/* register misc device */
 	ret = misc_register(&priv->misc_dev);
@@ -678,7 +742,15 @@ pxa3xx_gcu_probe(struct platform_device *dev)
 	}
 
 	ret = request_irq(irq, pxa3xx_gcu_handle_irq,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  IRQF_DISABLED, DRV_NAME, priv);
+=======
+			  0, DRV_NAME, priv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  0, DRV_NAME, priv);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&dev->dev, "request_irq failed\n");
 		ret = -EBUSY;
@@ -713,14 +785,21 @@ err_misc_deregister:
 	misc_deregister(&priv->misc_dev);
 
 err_free_priv:
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_buffers(dev, priv);
 	kfree(priv);
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit
 pxa3xx_gcu_remove(struct platform_device *dev)
+=======
+static int pxa3xx_gcu_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxa3xx_gcu_priv *priv = platform_get_drvdata(dev);
 	struct resource *r = priv->resource_mem;
@@ -732,7 +811,10 @@ pxa3xx_gcu_remove(struct platform_device *dev)
 			priv->shared, priv->shared_phys);
 	iounmap(priv->mmio_base);
 	release_mem_region(r->start, resource_size(r));
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	clk_disable(priv->clk);
 	free_buffers(dev, priv);
 	kfree(priv);
@@ -742,13 +824,19 @@ pxa3xx_gcu_remove(struct platform_device *dev)
 
 static struct platform_driver pxa3xx_gcu_driver = {
 	.probe	  = pxa3xx_gcu_probe,
+<<<<<<< HEAD
 	.remove	 = __devexit_p(pxa3xx_gcu_remove),
+=======
+	.remove	 = pxa3xx_gcu_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	 = {
 		.owner  = THIS_MODULE,
 		.name   = DRV_NAME,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init
 pxa3xx_gcu_init(void)
 {
@@ -763,6 +851,12 @@ pxa3xx_gcu_exit(void)
 
 module_init(pxa3xx_gcu_init);
 module_exit(pxa3xx_gcu_exit);
+=======
+module_platform_driver(pxa3xx_gcu_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(pxa3xx_gcu_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("PXA3xx graphics controller unit driver");
 MODULE_LICENSE("GPL");

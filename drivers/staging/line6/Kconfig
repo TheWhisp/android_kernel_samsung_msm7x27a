@@ -23,6 +23,7 @@ menuconfig LINE6_USB
 
 if LINE6_USB
 
+<<<<<<< HEAD
 config LINE6_USB_DEBUG
 	bool "print debug messages"
 	default n
@@ -70,6 +71,8 @@ config LINE6_USB_RAW
 
 	  If unsure, say N.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config LINE6_USB_IMPULSE_RESPONSE
 	bool "measure impulse response"
 	default n

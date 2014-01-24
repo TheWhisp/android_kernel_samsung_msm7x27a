@@ -1,7 +1,11 @@
 /*******************************************************************
  * This file is part of the Emulex Linux Device Driver for         *
  * Fibre Channel Host Bus Adapters.                                *
+<<<<<<< HEAD
  * Copyright (C) 2004-2009 Emulex.  All rights reserved.           *
+=======
+ * Copyright (C) 2004-2013 Emulex.  All rights reserved.           *
+>>>>>>> refs/remotes/origin/master
  * EMULEX and SLI are trademarks of Emulex.                        *
  * www.emulex.com                                                  *
  * Portions Copyright (C) 2004-2005 Christoph Hellwig              *
@@ -92,7 +96,11 @@ lpfc_dump_static_vport(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb,
 	memset(mp->virt, 0, LPFC_BPL_SIZE);
 	INIT_LIST_HEAD(&mp->list);
 	/* save address for completion */
+<<<<<<< HEAD
 	pmb->context2 = (uint8_t *) mp;
+=======
+	pmb->context1 = (uint8_t *)mp;
+>>>>>>> refs/remotes/origin/master
 	mb->un.varWords[3] = putPaddrLow(mp->phys);
 	mb->un.varWords[4] = putPaddrHigh(mp->phys);
 	mb->un.varDmp.sli4_length = sizeof(struct static_vport_info);
@@ -178,7 +186,12 @@ lpfc_dump_wakeup_param(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
 	mb->mbxOwner = OWN_HOST;
 	mb->un.varDmp.cv = 1;
 	mb->un.varDmp.type = DMP_NV_PARAMS;
+<<<<<<< HEAD
 	mb->un.varDmp.entry_index = 0;
+=======
+	if (phba->sli_rev < LPFC_SLI_REV4)
+		mb->un.varDmp.entry_index = 0;
+>>>>>>> refs/remotes/origin/master
 	mb->un.varDmp.region_id = WAKE_UP_PARMS_REGION_ID;
 	mb->un.varDmp.word_cnt = WAKE_UP_PARMS_WORD_SIZE;
 	mb->un.varDmp.co = 0;
@@ -361,7 +374,11 @@ lpfc_config_link(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb)
 	/* NEW_FEATURE
 	 * SLI-2, Coalescing Response Feature.
 	 */
+<<<<<<< HEAD
 	if (phba->cfg_cr_delay) {
+=======
+	if (phba->cfg_cr_delay && (phba->sli_rev < LPFC_SLI_REV4)) {
+>>>>>>> refs/remotes/origin/master
 		mb->un.varCfgLnk.cr = 1;
 		mb->un.varCfgLnk.ci = 1;
 		mb->un.varCfgLnk.cr_delay = phba->cfg_cr_delay;
@@ -377,7 +394,11 @@ lpfc_config_link(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb)
 	mb->un.varCfgLnk.crtov = phba->fc_crtov;
 	mb->un.varCfgLnk.citov = phba->fc_citov;
 
+<<<<<<< HEAD
 	if (phba->cfg_ack0)
+=======
+	if (phba->cfg_ack0 && (phba->sli_rev < LPFC_SLI_REV4))
+>>>>>>> refs/remotes/origin/master
 		mb->un.varCfgLnk.ack0_enable = 1;
 
 	mb->mbxCommand = MBX_CONFIG_LINK;
@@ -950,6 +971,7 @@ lpfc_config_pcb_setup(struct lpfc_hba * phba)
 	for (i = 0; i < psli->num_rings; i++) {
 		pring = &psli->ring[i];
 
+<<<<<<< HEAD
 		pring->sizeCiocb = phba->sli_rev == 3 ? SLI3_IOCB_CMD_SIZE:
 							SLI2_IOCB_CMD_SIZE;
 		pring->sizeRiocb = phba->sli_rev == 3 ? SLI3_IOCB_RSP_SIZE:
@@ -957,12 +979,25 @@ lpfc_config_pcb_setup(struct lpfc_hba * phba)
 		/* A ring MUST have both cmd and rsp entries defined to be
 		   valid */
 		if ((pring->numCiocb == 0) || (pring->numRiocb == 0)) {
+=======
+		pring->sli.sli3.sizeCiocb =
+			phba->sli_rev == 3 ? SLI3_IOCB_CMD_SIZE :
+							SLI2_IOCB_CMD_SIZE;
+		pring->sli.sli3.sizeRiocb =
+			phba->sli_rev == 3 ? SLI3_IOCB_RSP_SIZE :
+							SLI2_IOCB_RSP_SIZE;
+		/* A ring MUST have both cmd and rsp entries defined to be
+		   valid */
+		if ((pring->sli.sli3.numCiocb == 0) ||
+			(pring->sli.sli3.numRiocb == 0)) {
+>>>>>>> refs/remotes/origin/master
 			pcbp->rdsc[i].cmdEntries = 0;
 			pcbp->rdsc[i].rspEntries = 0;
 			pcbp->rdsc[i].cmdAddrHigh = 0;
 			pcbp->rdsc[i].rspAddrHigh = 0;
 			pcbp->rdsc[i].cmdAddrLow = 0;
 			pcbp->rdsc[i].rspAddrLow = 0;
+<<<<<<< HEAD
 			pring->cmdringaddr = NULL;
 			pring->rspringaddr = NULL;
 			continue;
@@ -970,24 +1005,46 @@ lpfc_config_pcb_setup(struct lpfc_hba * phba)
 		/* Command ring setup for ring */
 		pring->cmdringaddr = (void *)&phba->IOCBs[iocbCnt];
 		pcbp->rdsc[i].cmdEntries = pring->numCiocb;
+=======
+			pring->sli.sli3.cmdringaddr = NULL;
+			pring->sli.sli3.rspringaddr = NULL;
+			continue;
+		}
+		/* Command ring setup for ring */
+		pring->sli.sli3.cmdringaddr = (void *)&phba->IOCBs[iocbCnt];
+		pcbp->rdsc[i].cmdEntries = pring->sli.sli3.numCiocb;
+>>>>>>> refs/remotes/origin/master
 
 		offset = (uint8_t *) &phba->IOCBs[iocbCnt] -
 			 (uint8_t *) phba->slim2p.virt;
 		pdma_addr = phba->slim2p.phys + offset;
 		pcbp->rdsc[i].cmdAddrHigh = putPaddrHigh(pdma_addr);
 		pcbp->rdsc[i].cmdAddrLow = putPaddrLow(pdma_addr);
+<<<<<<< HEAD
 		iocbCnt += pring->numCiocb;
 
 		/* Response ring setup for ring */
 		pring->rspringaddr = (void *) &phba->IOCBs[iocbCnt];
 
 		pcbp->rdsc[i].rspEntries = pring->numRiocb;
+=======
+		iocbCnt += pring->sli.sli3.numCiocb;
+
+		/* Response ring setup for ring */
+		pring->sli.sli3.rspringaddr = (void *) &phba->IOCBs[iocbCnt];
+
+		pcbp->rdsc[i].rspEntries = pring->sli.sli3.numRiocb;
+>>>>>>> refs/remotes/origin/master
 		offset = (uint8_t *)&phba->IOCBs[iocbCnt] -
 			 (uint8_t *)phba->slim2p.virt;
 		pdma_addr = phba->slim2p.phys + offset;
 		pcbp->rdsc[i].rspAddrHigh = putPaddrHigh(pdma_addr);
 		pcbp->rdsc[i].rspAddrLow = putPaddrLow(pdma_addr);
+<<<<<<< HEAD
 		iocbCnt += pring->numRiocb;
+=======
+		iocbCnt += pring->sli.sli3.numRiocb;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1293,6 +1350,19 @@ lpfc_config_port(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
 		phba->sli_rev = LPFC_SLI_REV2;
 	mb->un.varCfgPort.sli_mode = phba->sli_rev;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* If this is an SLI3 port, configure async status notification. */
+	if (phba->sli_rev == LPFC_SLI_REV3)
+		mb->un.varCfgPort.casabt = 1;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Now setup pcb */
 	phba->pcb->type = TYPE_NATIVE_SLI2;
 	phba->pcb->feature = FEATURE_INITIAL_SLI2;
@@ -1598,9 +1668,22 @@ lpfc_mbox_dev_check(struct lpfc_hba *phba)
  *    Timeout value to be used for the given mailbox command
  **/
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 lpfc_mbox_tmo_val(struct lpfc_hba *phba, int cmd)
 {
 	switch (cmd) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+lpfc_mbox_tmo_val(struct lpfc_hba *phba, LPFC_MBOXQ_t *mboxq)
+{
+	MAILBOX_t *mbox = &mboxq->u.mb;
+	uint8_t subsys, opcode;
+
+	switch (mbox->mbxCommand) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	case MBX_WRITE_NV:	/* 0x03 */
 	case MBX_UPDATE_CFG:	/* 0x1B */
 	case MBX_DOWN_LOAD:	/* 0x1C */
@@ -1610,6 +1693,62 @@ lpfc_mbox_tmo_val(struct lpfc_hba *phba, int cmd)
 	case MBX_LOAD_EXP_ROM:	/* 0x9C */
 		return LPFC_MBOX_TMO_FLASH_CMD;
 	case MBX_SLI4_CONFIG:	/* 0x9b */
+<<<<<<< HEAD
+=======
+=======
+	case MBX_WRITE_NV:	/* 0x03 */
+	case MBX_DUMP_MEMORY:	/* 0x17 */
+	case MBX_UPDATE_CFG:	/* 0x1B */
+	case MBX_DOWN_LOAD:	/* 0x1C */
+	case MBX_DEL_LD_ENTRY:	/* 0x1D */
+	case MBX_WRITE_VPARMS:	/* 0x32 */
+	case MBX_LOAD_AREA:	/* 0x81 */
+	case MBX_WRITE_WWN:     /* 0x98 */
+	case MBX_LOAD_EXP_ROM:	/* 0x9C */
+	case MBX_ACCESS_VDATA:	/* 0xA5 */
+		return LPFC_MBOX_TMO_FLASH_CMD;
+	case MBX_SLI4_CONFIG:	/* 0x9b */
+>>>>>>> refs/remotes/origin/master
+		subsys = lpfc_sli_config_mbox_subsys_get(phba, mboxq);
+		opcode = lpfc_sli_config_mbox_opcode_get(phba, mboxq);
+		if (subsys == LPFC_MBOX_SUBSYSTEM_COMMON) {
+			switch (opcode) {
+			case LPFC_MBOX_OPCODE_READ_OBJECT:
+			case LPFC_MBOX_OPCODE_WRITE_OBJECT:
+			case LPFC_MBOX_OPCODE_READ_OBJECT_LIST:
+			case LPFC_MBOX_OPCODE_DELETE_OBJECT:
+<<<<<<< HEAD
+			case LPFC_MBOX_OPCODE_GET_FUNCTION_CONFIG:
+			case LPFC_MBOX_OPCODE_GET_PROFILE_LIST:
+			case LPFC_MBOX_OPCODE_SET_ACT_PROFILE:
+			case LPFC_MBOX_OPCODE_SET_PROFILE_CONFIG:
+			case LPFC_MBOX_OPCODE_GET_FACTORY_PROFILE_CONFIG:
+=======
+			case LPFC_MBOX_OPCODE_GET_PROFILE_LIST:
+			case LPFC_MBOX_OPCODE_SET_ACT_PROFILE:
+			case LPFC_MBOX_OPCODE_GET_PROFILE_CONFIG:
+			case LPFC_MBOX_OPCODE_SET_PROFILE_CONFIG:
+			case LPFC_MBOX_OPCODE_GET_FACTORY_PROFILE_CONFIG:
+			case LPFC_MBOX_OPCODE_GET_PROFILE_CAPACITIES:
+			case LPFC_MBOX_OPCODE_SEND_ACTIVATION:
+			case LPFC_MBOX_OPCODE_RESET_LICENSES:
+			case LPFC_MBOX_OPCODE_SET_BOOT_CONFIG:
+			case LPFC_MBOX_OPCODE_GET_VPD_DATA:
+			case LPFC_MBOX_OPCODE_SET_PHYSICAL_LINK_CONFIG:
+>>>>>>> refs/remotes/origin/master
+				return LPFC_MBOX_SLI4_CONFIG_EXTENDED_TMO;
+			}
+		}
+		if (subsys == LPFC_MBOX_SUBSYSTEM_FCOE) {
+			switch (opcode) {
+			case LPFC_MBOX_OPCODE_FCOE_SET_FCLINK_SETTINGS:
+				return LPFC_MBOX_SLI4_CONFIG_EXTENDED_TMO;
+			}
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return LPFC_MBOX_SLI4_CONFIG_TMO;
 	}
 	return LPFC_MBOX_TMO;
@@ -1859,7 +1998,15 @@ lpfc_sli4_mbox_rsrc_extent(struct lpfc_hba *phba, struct lpfcMboxq *mbox,
 	}
 
 	/* Complete the initialization for the particular Opcode. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	opcode = lpfc_sli4_mbox_opcode_get(phba, mbox);
+=======
+	opcode = lpfc_sli_config_mbox_opcode_get(phba, mbox);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	opcode = lpfc_sli_config_mbox_opcode_get(phba, mbox);
+>>>>>>> refs/remotes/origin/master
 	switch (opcode) {
 	case LPFC_MBOX_OPCODE_ALLOC_RSRC_EXTENT:
 		if (emb == LPFC_SLI4_MBX_EMBED)
@@ -1886,6 +2033,8 @@ lpfc_sli4_mbox_rsrc_extent(struct lpfc_hba *phba, struct lpfcMboxq *mbox,
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * lpfc_sli4_mbox_opcode_get - Get the opcode from a sli4 mailbox command
  * @phba: pointer to lpfc hba data structure.
  * @mbox: pointer to lpfc mbox command.
@@ -1897,12 +2046,71 @@ lpfc_sli4_mbox_rsrc_extent(struct lpfc_hba *phba, struct lpfcMboxq *mbox,
  **/
 uint8_t
 lpfc_sli4_mbox_opcode_get(struct lpfc_hba *phba, struct lpfcMboxq *mbox)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * lpfc_sli_config_mbox_subsys_get - Get subsystem from a sli_config mbox cmd
+ * @phba: pointer to lpfc hba data structure.
+ * @mbox: pointer to lpfc mbox command queue entry.
+ *
+ * This routine gets the subsystem from a SLI4 specific SLI_CONFIG mailbox
+ * command. If the mailbox command is not MBX_SLI4_CONFIG (0x9B) or if the
+ * sub-header is not present, subsystem LPFC_MBOX_SUBSYSTEM_NA (0x0) shall
+ * be returned.
+ **/
+uint8_t
+lpfc_sli_config_mbox_subsys_get(struct lpfc_hba *phba, LPFC_MBOXQ_t *mbox)
 {
 	struct lpfc_mbx_sli4_config *sli4_cfg;
 	union lpfc_sli4_cfg_shdr *cfg_shdr;
 
 	if (mbox->u.mb.mbxCommand != MBX_SLI4_CONFIG)
+		return LPFC_MBOX_SUBSYSTEM_NA;
+	sli4_cfg = &mbox->u.mqe.un.sli4_config;
+
+	/* For embedded mbox command, get opcode from embedded sub-header*/
+	if (bf_get(lpfc_mbox_hdr_emb, &sli4_cfg->header.cfg_mhdr)) {
+		cfg_shdr = &mbox->u.mqe.un.sli4_config.header.cfg_shdr;
+		return bf_get(lpfc_mbox_hdr_subsystem, &cfg_shdr->request);
+	}
+
+	/* For non-embedded mbox command, get opcode from first dma page */
+	if (unlikely(!mbox->sge_array))
+		return LPFC_MBOX_SUBSYSTEM_NA;
+	cfg_shdr = (union lpfc_sli4_cfg_shdr *)mbox->sge_array->addr[0];
+	return bf_get(lpfc_mbox_hdr_subsystem, &cfg_shdr->request);
+}
+
+/**
+ * lpfc_sli_config_mbox_opcode_get - Get opcode from a sli_config mbox cmd
+ * @phba: pointer to lpfc hba data structure.
+ * @mbox: pointer to lpfc mbox command queue entry.
+ *
+ * This routine gets the opcode from a SLI4 specific SLI_CONFIG mailbox
+ * command. If the mailbox command is not MBX_SLI4_CONFIG (0x9B) or if
+ * the sub-header is not present, opcode LPFC_MBOX_OPCODE_NA (0x0) be
+ * returned.
+ **/
+uint8_t
+lpfc_sli_config_mbox_opcode_get(struct lpfc_hba *phba, LPFC_MBOXQ_t *mbox)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+{
+	struct lpfc_mbx_sli4_config *sli4_cfg;
+	union lpfc_sli4_cfg_shdr *cfg_shdr;
+
+	if (mbox->u.mb.mbxCommand != MBX_SLI4_CONFIG)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
+=======
+		return LPFC_MBOX_OPCODE_NA;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return LPFC_MBOX_OPCODE_NA;
+>>>>>>> refs/remotes/origin/master
 	sli4_cfg = &mbox->u.mqe.un.sli4_config;
 
 	/* For embedded mbox command, get opcode from embedded sub-header*/
@@ -1913,7 +2121,15 @@ lpfc_sli4_mbox_opcode_get(struct lpfc_hba *phba, struct lpfcMboxq *mbox)
 
 	/* For non-embedded mbox command, get opcode from first dma page */
 	if (unlikely(!mbox->sge_array))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
+=======
+		return LPFC_MBOX_OPCODE_NA;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return LPFC_MBOX_OPCODE_NA;
+>>>>>>> refs/remotes/origin/master
 	cfg_shdr = (union lpfc_sli4_cfg_shdr *)mbox->sge_array->addr[0];
 	return bf_get(lpfc_mbox_hdr_opcode, &cfg_shdr->request);
 }
@@ -2052,12 +2268,17 @@ void
 lpfc_reg_vfi(struct lpfcMboxq *mbox, struct lpfc_vport *vport, dma_addr_t phys)
 {
 	struct lpfc_mbx_reg_vfi *reg_vfi;
+<<<<<<< HEAD
+=======
+	struct lpfc_hba *phba = vport->phba;
+>>>>>>> refs/remotes/origin/master
 
 	memset(mbox, 0, sizeof(*mbox));
 	reg_vfi = &mbox->u.mqe.un.reg_vfi;
 	bf_set(lpfc_mqe_command, &mbox->u.mqe, MBX_REG_VFI);
 	bf_set(lpfc_reg_vfi_vp, reg_vfi, 1);
 	bf_set(lpfc_reg_vfi_vfi, reg_vfi,
+<<<<<<< HEAD
 	       vport->phba->sli4_hba.vfi_ids[vport->vfi]);
 	bf_set(lpfc_reg_vfi_fcfi, reg_vfi, vport->phba->fcf.fcfi);
 	bf_set(lpfc_reg_vfi_vpi, reg_vfi, vport->phba->vpi_ids[vport->vpi]);
@@ -2066,11 +2287,53 @@ lpfc_reg_vfi(struct lpfcMboxq *mbox, struct lpfc_vport *vport, dma_addr_t phys)
 	reg_vfi->wwn[1] = cpu_to_le32(reg_vfi->wwn[1]);
 	reg_vfi->e_d_tov = vport->phba->fc_edtov;
 	reg_vfi->r_a_tov = vport->phba->fc_ratov;
+=======
+	       phba->sli4_hba.vfi_ids[vport->vfi]);
+	bf_set(lpfc_reg_vfi_fcfi, reg_vfi, phba->fcf.fcfi);
+	bf_set(lpfc_reg_vfi_vpi, reg_vfi, phba->vpi_ids[vport->vpi]);
+	memcpy(reg_vfi->wwn, &vport->fc_portname, sizeof(struct lpfc_name));
+	reg_vfi->wwn[0] = cpu_to_le32(reg_vfi->wwn[0]);
+	reg_vfi->wwn[1] = cpu_to_le32(reg_vfi->wwn[1]);
+	reg_vfi->e_d_tov = phba->fc_edtov;
+	reg_vfi->r_a_tov = phba->fc_ratov;
+>>>>>>> refs/remotes/origin/master
 	reg_vfi->bde.addrHigh = putPaddrHigh(phys);
 	reg_vfi->bde.addrLow = putPaddrLow(phys);
 	reg_vfi->bde.tus.f.bdeSize = sizeof(vport->fc_sparam);
 	reg_vfi->bde.tus.f.bdeFlags = BUFF_TYPE_BDE_64;
 	bf_set(lpfc_reg_vfi_nport_id, reg_vfi, vport->fc_myDID);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	lpfc_printf_vlog(vport, KERN_INFO, LOG_MBOX,
+			"3134 Register VFI, mydid:x%x, fcfi:%d, "
+			" vfi:%d, vpi:%d, fc_pname:%x%x\n",
+			vport->fc_myDID,
+			vport->phba->fcf.fcfi,
+			vport->phba->sli4_hba.vfi_ids[vport->vfi],
+			vport->phba->vpi_ids[vport->vpi],
+			reg_vfi->wwn[0], reg_vfi->wwn[1]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* Only FC supports upd bit */
+	if ((phba->sli4_hba.lnk_info.lnk_tp == LPFC_LNK_TYPE_FC) &&
+	    (vport->fc_flag & FC_VFI_REGISTERED) &&
+	    (!phba->fc_topology_changed)) {
+		bf_set(lpfc_reg_vfi_vp, reg_vfi, 0);
+		bf_set(lpfc_reg_vfi_upd, reg_vfi, 1);
+	}
+	lpfc_printf_vlog(vport, KERN_INFO, LOG_MBOX,
+			"3134 Register VFI, mydid:x%x, fcfi:%d, "
+			" vfi:%d, vpi:%d, fc_pname:%x%x fc_flag:x%x"
+			" port_state:x%x topology chg:%d\n",
+			vport->fc_myDID,
+			phba->fcf.fcfi,
+			phba->sli4_hba.vfi_ids[vport->vfi],
+			phba->vpi_ids[vport->vpi],
+			reg_vfi->wwn[0], reg_vfi->wwn[1], vport->fc_flag,
+			vport->port_state, phba->fc_topology_changed);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2117,6 +2380,8 @@ lpfc_unreg_vfi(struct lpfcMboxq *mbox, struct lpfc_vport *vport)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * lpfc_dump_fcoe_param - Dump config region 23 to get FCoe parameters.
  * @phba: pointer to the hba structure containing.
  * @mbox: pointer to lpfc mbox command to initialize.
@@ -2127,6 +2392,22 @@ lpfc_unreg_vfi(struct lpfcMboxq *mbox, struct lpfc_vport *vport)
 int
 lpfc_dump_fcoe_param(struct lpfc_hba *phba,
 		struct lpfcMboxq *mbox)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * lpfc_sli4_dump_cfg_rg23 - Dump sli4 port config region 23
+ * @phba: pointer to the hba structure containing.
+ * @mbox: pointer to lpfc mbox command to initialize.
+ *
+ * This function create a SLI4 dump mailbox command to dump configure
+ * region 23.
+ **/
+int
+lpfc_sli4_dump_cfg_rg23(struct lpfc_hba *phba, struct lpfcMboxq *mbox)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct lpfc_dmabuf *mp = NULL;
 	MAILBOX_t *mb;
@@ -2140,9 +2421,21 @@ lpfc_dump_fcoe_param(struct lpfc_hba *phba,
 
 	if (!mp || !mp->virt) {
 		kfree(mp);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* dump_fcoe_param failed to allocate memory */
 		lpfc_printf_log(phba, KERN_WARNING, LOG_MBOX,
 			"2569 lpfc_dump_fcoe_param: memory"
+=======
+		/* dump config region 23 failed to allocate memory */
+		lpfc_printf_log(phba, KERN_WARNING, LOG_MBOX,
+			"2569 lpfc dump config region 23: memory"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* dump config region 23 failed to allocate memory */
+		lpfc_printf_log(phba, KERN_WARNING, LOG_MBOX,
+			"2569 lpfc dump config region 23: memory"
+>>>>>>> refs/remotes/origin/master
 			" allocation failed\n");
 		return 1;
 	}

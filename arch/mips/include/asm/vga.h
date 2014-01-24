@@ -6,6 +6,10 @@
 #ifndef _ASM_VGA_H
 #define _ASM_VGA_H
 
+<<<<<<< HEAD
+=======
+#include <asm/addrspace.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 
 /*
@@ -13,7 +17,11 @@
  *	access the videoram directly without any black magic.
  */
 
+<<<<<<< HEAD
 #define VGA_MAP_MEM(x, s)	(0xb0000000L + (unsigned long)(x))
+=======
+#define VGA_MAP_MEM(x, s)	CKSEG1ADDR(0x10000000L + (unsigned long)(x))
+>>>>>>> refs/remotes/origin/master
 
 #define vga_readb(x)	(*(x))
 #define vga_writeb(x, y)	(*(y) = (x))

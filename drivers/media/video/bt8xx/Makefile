@@ -8,6 +8,12 @@ bttv-objs      :=      bttv-driver.o bttv-cards.o bttv-if.o \
 
 obj-$(CONFIG_VIDEO_BT848) += bttv.o
 
+<<<<<<< HEAD
 EXTRA_CFLAGS += -Idrivers/media/video
 EXTRA_CFLAGS += -Idrivers/media/common/tuners
 EXTRA_CFLAGS += -Idrivers/media/dvb/dvb-core
+=======
+ccflags-y += -Idrivers/media/video
+ccflags-y += -Idrivers/media/common/tuners
+ccflags-y += -Idrivers/media/dvb/dvb-core
+>>>>>>> refs/remotes/origin/cm-10.0

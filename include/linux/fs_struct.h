@@ -17,11 +17,18 @@ struct fs_struct {
 extern struct kmem_cache *fs_cachep;
 
 extern void exit_fs(struct task_struct *);
+<<<<<<< HEAD
 extern void set_fs_root(struct fs_struct *, struct path *);
 extern void set_fs_pwd(struct fs_struct *, struct path *);
 extern struct fs_struct *copy_fs_struct(struct fs_struct *);
 extern void free_fs_struct(struct fs_struct *);
 extern void daemonize_fs_struct(void);
+=======
+extern void set_fs_root(struct fs_struct *, const struct path *);
+extern void set_fs_pwd(struct fs_struct *, const struct path *);
+extern struct fs_struct *copy_fs_struct(struct fs_struct *);
+extern void free_fs_struct(struct fs_struct *);
+>>>>>>> refs/remotes/origin/master
 extern int unshare_fs_struct(void);
 
 static inline void get_fs_root(struct fs_struct *fs, struct path *root)
@@ -40,6 +47,7 @@ static inline void get_fs_pwd(struct fs_struct *fs, struct path *pwd)
 	spin_unlock(&fs->lock);
 }
 
+<<<<<<< HEAD
 static inline void get_fs_root_and_pwd(struct fs_struct *fs, struct path *root,
 				       struct path *pwd)
 {
@@ -50,5 +58,8 @@ static inline void get_fs_root_and_pwd(struct fs_struct *fs, struct path *root,
 	path_get(pwd);
 	spin_unlock(&fs->lock);
 }
+=======
+extern bool current_chrooted(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_FS_STRUCT_H */

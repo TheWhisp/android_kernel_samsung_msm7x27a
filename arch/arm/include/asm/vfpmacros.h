@@ -5,7 +5,11 @@
  */
 #include <asm/hwcap.h>
 
+<<<<<<< HEAD
 #include "vfp.h"
+=======
+#include <asm/vfp.h>
+>>>>>>> refs/remotes/origin/master
 
 @ Macros to allow building with old toolkits (with no VFP support)
 	.macro	VFPFMRX, rd, sysreg, cond
@@ -27,9 +31,27 @@
 #if __LINUX_ARM_ARCH__ <= 6
 	ldr	\tmp, =elf_hwcap		    @ may not have MVFR regs
 	ldr	\tmp, [\tmp, #0]
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tst	\tmp, #HWCAP_VFPv3D16
 	ldceql	p11, cr0, [\base],#32*4		    @ FLDMIAD \base!, {d16-d31}
 	addne	\base, \base, #32*4		    @ step over unused register space
+=======
+	tst	\tmp, #HWCAP_VFPD32
+	ldcnel	p11, cr0, [\base],#32*4		    @ FLDMIAD \base!, {d16-d31}
+	addeq	\base, \base, #32*4		    @ step over unused register space
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tst	\tmp, #HWCAP_VFPD32
+	ldcnel	p11, cr0, [\base],#32*4		    @ FLDMIAD \base!, {d16-d31}
+	addeq	\base, \base, #32*4		    @ step over unused register space
+>>>>>>> refs/remotes/origin/master
+=======
+	tst	\tmp, #HWCAP_VFPD32
+	ldcnel	p11, cr0, [\base],#32*4		    @ FLDMIAD \base!, {d16-d31}
+	addeq	\base, \base, #32*4		    @ step over unused register space
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 	VFPFMRX	\tmp, MVFR0			    @ Media and VFP Feature Register 0
 	and	\tmp, \tmp, #MVFR0_A_SIMD_MASK	    @ A_SIMD field
@@ -51,9 +73,27 @@
 #if __LINUX_ARM_ARCH__ <= 6
 	ldr	\tmp, =elf_hwcap		    @ may not have MVFR regs
 	ldr	\tmp, [\tmp, #0]
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tst	\tmp, #HWCAP_VFPv3D16
 	stceql	p11, cr0, [\base],#32*4		    @ FSTMIAD \base!, {d16-d31}
 	addne	\base, \base, #32*4		    @ step over unused register space
+=======
+	tst	\tmp, #HWCAP_VFPD32
+	stcnel	p11, cr0, [\base],#32*4		    @ FSTMIAD \base!, {d16-d31}
+	addeq	\base, \base, #32*4		    @ step over unused register space
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tst	\tmp, #HWCAP_VFPD32
+	stcnel	p11, cr0, [\base],#32*4		    @ FSTMIAD \base!, {d16-d31}
+	addeq	\base, \base, #32*4		    @ step over unused register space
+>>>>>>> refs/remotes/origin/master
+=======
+	tst	\tmp, #HWCAP_VFPD32
+	stcnel	p11, cr0, [\base],#32*4		    @ FSTMIAD \base!, {d16-d31}
+	addeq	\base, \base, #32*4		    @ step over unused register space
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 	VFPFMRX	\tmp, MVFR0			    @ Media and VFP Feature Register 0
 	and	\tmp, \tmp, #MVFR0_A_SIMD_MASK	    @ A_SIMD field

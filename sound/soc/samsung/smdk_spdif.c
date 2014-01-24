@@ -11,6 +11,14 @@
  */
 
 #include <linux/clk.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/soc.h>
 
@@ -150,7 +158,11 @@ static struct snd_soc_ops smdk_spdif_ops = {
 static struct snd_soc_dai_link smdk_dai = {
 	.name = "S/PDIF",
 	.stream_name = "S/PDIF PCM Playback",
+<<<<<<< HEAD
 	.platform_name = "samsung-audio",
+=======
+	.platform_name = "samsung-spdif",
+>>>>>>> refs/remotes/origin/master
 	.cpu_dai_name = "samsung-spdif",
 	.codec_dai_name = "dit-hifi",
 	.codec_name = "spdif-dit",
@@ -159,6 +171,14 @@ static struct snd_soc_dai_link smdk_dai = {
 
 static struct snd_soc_card smdk = {
 	.name = "SMDK-S/PDIF",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = &smdk_dai,
 	.num_links = 1,
 };

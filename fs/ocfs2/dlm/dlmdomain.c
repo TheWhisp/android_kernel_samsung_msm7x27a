@@ -43,8 +43,11 @@
 #include "dlmdomain.h"
 #include "dlmdebug.h"
 
+<<<<<<< HEAD
 #include "dlmver.h"
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define MLOG_MASK_PREFIX (ML_DLM|ML_DLM_DOMAIN)
 #include "cluster/masklog.h"
 
@@ -157,6 +160,8 @@ static int dlm_protocol_compare(struct dlm_protocol_version *existing,
 
 static void dlm_unregister_domain_handlers(struct dlm_ctxt *dlm);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __dlm_unhash_lockres(struct dlm_lock_resource *lockres)
 {
 	if (!hlist_unhashed(&lockres->hash_node)) {
@@ -167,6 +172,25 @@ void __dlm_unhash_lockres(struct dlm_lock_resource *lockres)
 
 void __dlm_insert_lockres(struct dlm_ctxt *dlm,
 		       struct dlm_lock_resource *res)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void __dlm_unhash_lockres(struct dlm_ctxt *dlm, struct dlm_lock_resource *res)
+{
+	if (hlist_unhashed(&res->hash_node))
+		return;
+
+	mlog(0, "%s: Unhash res %.*s\n", dlm->name, res->lockname.len,
+	     res->lockname.name);
+	hlist_del_init(&res->hash_node);
+	dlm_lockres_put(res);
+}
+
+void __dlm_insert_lockres(struct dlm_ctxt *dlm, struct dlm_lock_resource *res)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct hlist_head *bucket;
 	struct qstr *q;
@@ -180,6 +204,18 @@ void __dlm_insert_lockres(struct dlm_ctxt *dlm,
 	dlm_lockres_get(res);
 
 	hlist_add_head(&res->hash_node, bucket);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	mlog(0, "%s: Hash res %.*s\n", dlm->name, res->lockname.len,
+	     res->lockname.name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	mlog(0, "%s: Hash res %.*s\n", dlm->name, res->lockname.len,
+	     res->lockname.name);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct dlm_lock_resource * __dlm_lookup_lockres_full(struct dlm_ctxt *dlm,
@@ -188,7 +224,11 @@ struct dlm_lock_resource * __dlm_lookup_lockres_full(struct dlm_ctxt *dlm,
 						     unsigned int hash)
 {
 	struct hlist_head *bucket;
+<<<<<<< HEAD
 	struct hlist_node *list;
+=======
+	struct dlm_lock_resource *res;
+>>>>>>> refs/remotes/origin/master
 
 	mlog(0, "%.*s\n", len, name);
 
@@ -196,9 +236,13 @@ struct dlm_lock_resource * __dlm_lookup_lockres_full(struct dlm_ctxt *dlm,
 
 	bucket = dlm_lockres_hash(dlm, hash);
 
+<<<<<<< HEAD
 	hlist_for_each(list, bucket) {
 		struct dlm_lock_resource *res = hlist_entry(list,
 			struct dlm_lock_resource, hash_node);
+=======
+	hlist_for_each_entry(res, bucket, hash_node) {
+>>>>>>> refs/remotes/origin/master
 		if (res->lockname.name[0] != name[0])
 			continue;
 		if (unlikely(res->lockname.len != len))
@@ -257,13 +301,18 @@ struct dlm_lock_resource * dlm_lookup_lockres(struct dlm_ctxt *dlm,
 
 static struct dlm_ctxt * __dlm_lookup_domain_full(const char *domain, int len)
 {
+<<<<<<< HEAD
 	struct dlm_ctxt *tmp = NULL;
 	struct list_head *iter;
+=======
+	struct dlm_ctxt *tmp;
+>>>>>>> refs/remotes/origin/master
 
 	assert_spin_locked(&dlm_domain_lock);
 
 	/* tmp->name here is always NULL terminated,
 	 * but domain may not be! */
+<<<<<<< HEAD
 	list_for_each(iter, &dlm_domains) {
 		tmp = list_entry (iter, struct dlm_ctxt, list);
 		if (strlen(tmp->name) == len &&
@@ -273,6 +322,15 @@ static struct dlm_ctxt * __dlm_lookup_domain_full(const char *domain, int len)
 	}
 
 	return tmp;
+=======
+	list_for_each_entry(tmp, &dlm_domains, list) {
+		if (strlen(tmp->name) == len &&
+		    memcmp(tmp->name, domain, len)==0)
+			return tmp;
+	}
+
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* For null terminated domain strings ONLY */
@@ -314,9 +372,13 @@ static void dlm_free_ctxt_mem(struct dlm_ctxt *dlm)
 	if (dlm->master_hash)
 		dlm_free_pagevec((void **)dlm->master_hash, DLM_HASH_PAGES);
 
+<<<<<<< HEAD
 	if (dlm->name)
 		kfree(dlm->name);
 
+=======
+	kfree(dlm->name);
+>>>>>>> refs/remotes/origin/master
 	kfree(dlm);
 }
 
@@ -363,6 +425,7 @@ static void __dlm_get(struct dlm_ctxt *dlm)
  * you shouldn't trust your pointer. */
 struct dlm_ctxt *dlm_grab(struct dlm_ctxt *dlm)
 {
+<<<<<<< HEAD
 	struct list_head *iter;
 	struct dlm_ctxt *target = NULL;
 
@@ -377,11 +440,28 @@ struct dlm_ctxt *dlm_grab(struct dlm_ctxt *dlm)
 		}
 
 		target = NULL;
+=======
+	struct dlm_ctxt *target;
+	struct dlm_ctxt *ret = NULL;
+
+	spin_lock(&dlm_domain_lock);
+
+	list_for_each_entry(target, &dlm_domains, list) {
+		if (target == dlm) {
+			__dlm_get(target);
+			ret = target;
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_unlock(&dlm_domain_lock);
 
+<<<<<<< HEAD
 	return target;
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 int dlm_domain_fully_joined(struct dlm_ctxt *dlm)
@@ -539,6 +619,8 @@ again:
 
 static void __dlm_print_nodes(struct dlm_ctxt *dlm)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int node = -1;
 
 	assert_spin_locked(&dlm->spinlock);
@@ -550,6 +632,24 @@ static void __dlm_print_nodes(struct dlm_ctxt *dlm)
 		printk("%d ", node);
 	}
 	printk("\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int node = -1, num = 0;
+
+	assert_spin_locked(&dlm->spinlock);
+
+	printk("( ");
+	while ((node = find_next_bit(dlm->domain_map, O2NM_MAX_NODES,
+				     node + 1)) < O2NM_MAX_NODES) {
+		printk("%d ", node);
+		++num;
+	}
+	printk(") %u nodes\n", num);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int dlm_exit_domain_handler(struct o2net_msg *msg, u32 len, void *data,
@@ -566,11 +666,24 @@ static int dlm_exit_domain_handler(struct o2net_msg *msg, u32 len, void *data,
 
 	node = exit_msg->node_idx;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_NOTICE "o2dlm: Node %u leaves domain %s\n", node, dlm->name);
 
 	spin_lock(&dlm->spinlock);
 	clear_bit(node, dlm->domain_map);
 	clear_bit(node, dlm->exit_domain_map);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_lock(&dlm->spinlock);
+	clear_bit(node, dlm->domain_map);
+	clear_bit(node, dlm->exit_domain_map);
+	printk(KERN_NOTICE "o2dlm: Node %u leaves domain %s ", node, dlm->name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__dlm_print_nodes(dlm);
 
 	/* notify anything attached to the heartbeat events */
@@ -755,6 +868,14 @@ void dlm_unregister_domain(struct dlm_ctxt *dlm)
 
 		dlm_mark_domain_leaving(dlm);
 		dlm_leave_domain(dlm);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		printk(KERN_NOTICE "o2dlm: Leaving domain %s\n", dlm->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_NOTICE "o2dlm: Leaving domain %s\n", dlm->name);
+>>>>>>> refs/remotes/origin/master
 		dlm_force_free_mles(dlm);
 		dlm_complete_dlm_shutdown(dlm);
 	}
@@ -813,7 +934,11 @@ static void dlm_query_join_packet_to_wire(struct dlm_query_join_packet *packet,
 	union dlm_query_join_response response;
 
 	response.packet = *packet;
+<<<<<<< HEAD
 	*wire = cpu_to_be32(response.intval);
+=======
+	*wire = be32_to_cpu(response.intval);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dlm_query_join_wire_to_packet(u32 wire,
@@ -970,7 +1095,15 @@ static int dlm_assert_joined_handler(struct o2net_msg *msg, u32 len, void *data,
 		clear_bit(assert->node_idx, dlm->exit_domain_map);
 		__dlm_set_joining_node(dlm, DLM_LOCK_RES_OWNER_UNKNOWN);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "o2dlm: Node %u joins domain %s\n",
+=======
+		printk(KERN_NOTICE "o2dlm: Node %u joins domain %s ",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_NOTICE "o2dlm: Node %u joins domain %s ",
+>>>>>>> refs/remotes/origin/master
 		       assert->node_idx, dlm->name);
 		__dlm_print_nodes(dlm);
 
@@ -1701,8 +1834,21 @@ static int dlm_try_to_join_domain(struct dlm_ctxt *dlm)
 bail:
 	spin_lock(&dlm->spinlock);
 	__dlm_set_joining_node(dlm, DLM_LOCK_RES_OWNER_UNKNOWN);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!status)
 		__dlm_print_nodes(dlm);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!status) {
+		printk(KERN_NOTICE "o2dlm: Joining domain %s ", dlm->name);
+		__dlm_print_nodes(dlm);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&dlm->spinlock);
 
 	if (ctxt) {
@@ -2131,6 +2277,8 @@ struct dlm_ctxt * dlm_register_domain(const char *domain,
 		goto leave;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!o2hb_check_local_node_heartbeating()) {
 		mlog(ML_ERROR, "the local node has not been configured, or is "
 		     "not heartbeating\n");
@@ -2138,6 +2286,10 @@ struct dlm_ctxt * dlm_register_domain(const char *domain,
 		goto leave;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mlog(0, "register called for domain \"%s\"\n", domain);
 
 retry:
@@ -2298,6 +2450,7 @@ static DECLARE_RWSEM(dlm_callback_sem);
 void dlm_fire_domain_eviction_callbacks(struct dlm_ctxt *dlm,
 					int node_num)
 {
+<<<<<<< HEAD
 	struct list_head *iter;
 	struct dlm_eviction_cb *cb;
 
@@ -2305,6 +2458,12 @@ void dlm_fire_domain_eviction_callbacks(struct dlm_ctxt *dlm,
 	list_for_each(iter, &dlm->dlm_eviction_callbacks) {
 		cb = list_entry(iter, struct dlm_eviction_cb, ec_item);
 
+=======
+	struct dlm_eviction_cb *cb;
+
+	down_read(&dlm_callback_sem);
+	list_for_each_entry(cb, &dlm->dlm_eviction_callbacks, ec_item) {
+>>>>>>> refs/remotes/origin/master
 		cb->ec_func(node_num, cb->ec_data);
 	}
 	up_read(&dlm_callback_sem);
@@ -2341,8 +2500,11 @@ static int __init dlm_init(void)
 {
 	int status;
 
+<<<<<<< HEAD
 	dlm_print_version();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	status = dlm_init_mle_cache();
 	if (status) {
 		mlog(ML_ERROR, "Could not create o2dlm_mle slabcache\n");
@@ -2392,6 +2554,10 @@ static void __exit dlm_exit (void)
 
 MODULE_AUTHOR("Oracle");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_DESCRIPTION("OCFS2 Distributed Lock Management");
+>>>>>>> refs/remotes/origin/master
 
 module_init(dlm_init);
 module_exit(dlm_exit);

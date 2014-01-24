@@ -8,9 +8,18 @@
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation; either version 2 of the License, or
  *	(at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
+=======
+ */
+
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/mm.h>
 #include <linux/list.h>
@@ -19,7 +28,16 @@
 #include <linux/videodev2.h>
 #include <linux/vmalloc.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <media/videobuf2-vmalloc.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "uvc.h"
 
@@ -29,6 +47,7 @@
  * Video queues is initialized by uvc_queue_init(). The function performs
  * basic initialization of the uvc_video_queue struct and never fails.
  *
+<<<<<<< HEAD
  * Video buffer allocation and freeing are performed by uvc_alloc_buffers and
  * uvc_free_buffers respectively. The former acquires the video queue lock,
  * while the later must be called with the lock held (so that allocation can
@@ -106,10 +125,36 @@ static int uvc_free_buffers(struct uvc_video_queue *queue)
 		vfree(queue->mem);
 		queue->count = 0;
 	}
+=======
+ * Video buffers are managed by videobuf2. The driver uses a mutex to protect
+ * the videobuf2 queue operations by serializing calls to videobuf2 and a
+ * spinlock to protect the IRQ queue that holds the buffers to be processed by
+ * the driver.
+ */
+
+/* -----------------------------------------------------------------------------
+ * videobuf2 queue operations
+ */
+
+static int uvc_queue_setup(struct vb2_queue *vq, const struct v4l2_format *fmt,
+			   unsigned int *nbuffers, unsigned int *nplanes,
+			   unsigned int sizes[], void *alloc_ctxs[])
+{
+	struct uvc_video_queue *queue = vb2_get_drv_priv(vq);
+	struct uvc_video *video = container_of(queue, struct uvc_video, queue);
+
+	if (*nbuffers > UVC_MAX_VIDEO_BUFFERS)
+		*nbuffers = UVC_MAX_VIDEO_BUFFERS;
+
+	*nplanes = 1;
+
+	sizes[0] = video->imagesize;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Allocate the video buffers.
  *
@@ -276,6 +321,150 @@ uvc_queue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *v4l2_buf)
 
 	list_add_tail(&buf->stream, &queue->mainqueue);
 	list_add_tail(&buf->queue, &queue->irqqueue);
+=======
+static int uvc_buffer_prepare(struct vb2_buffer *vb)
+{
+	struct uvc_video_queue *queue = vb2_get_drv_priv(vb->vb2_queue);
+	struct uvc_buffer *buf = container_of(vb, struct uvc_buffer, buf);
+
+	if (vb->v4l2_buf.type == V4L2_BUF_TYPE_VIDEO_OUTPUT &&
+	    vb2_get_plane_payload(vb, 0) > vb2_plane_size(vb, 0)) {
+		uvc_trace(UVC_TRACE_CAPTURE, "[E] Bytes used out of bounds.\n");
+		return -EINVAL;
+	}
+
+	if (unlikely(queue->flags & UVC_QUEUE_DISCONNECTED))
+		return -ENODEV;
+
+	buf->state = UVC_BUF_STATE_QUEUED;
+	buf->mem = vb2_plane_vaddr(vb, 0);
+	buf->length = vb2_plane_size(vb, 0);
+	if (vb->v4l2_buf.type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
+		buf->bytesused = 0;
+	else
+		buf->bytesused = vb2_get_plane_payload(vb, 0);
+
+	return 0;
+}
+
+static void uvc_buffer_queue(struct vb2_buffer *vb)
+{
+	struct uvc_video_queue *queue = vb2_get_drv_priv(vb->vb2_queue);
+	struct uvc_buffer *buf = container_of(vb, struct uvc_buffer, buf);
+	unsigned long flags;
+
+	spin_lock_irqsave(&queue->irqlock, flags);
+
+	if (likely(!(queue->flags & UVC_QUEUE_DISCONNECTED))) {
+		list_add_tail(&buf->queue, &queue->irqqueue);
+	} else {
+		/* If the device is disconnected return the buffer to userspace
+		 * directly. The next QBUF call will fail with -ENODEV.
+		 */
+		buf->state = UVC_BUF_STATE_ERROR;
+		vb2_buffer_done(&buf->buf, VB2_BUF_STATE_ERROR);
+	}
+
+	spin_unlock_irqrestore(&queue->irqlock, flags);
+}
+
+static void uvc_wait_prepare(struct vb2_queue *vq)
+{
+	struct uvc_video_queue *queue = vb2_get_drv_priv(vq);
+
+	mutex_unlock(&queue->mutex);
+}
+
+static void uvc_wait_finish(struct vb2_queue *vq)
+{
+	struct uvc_video_queue *queue = vb2_get_drv_priv(vq);
+
+	mutex_lock(&queue->mutex);
+}
+
+static struct vb2_ops uvc_queue_qops = {
+	.queue_setup = uvc_queue_setup,
+	.buf_prepare = uvc_buffer_prepare,
+	.buf_queue = uvc_buffer_queue,
+	.wait_prepare = uvc_wait_prepare,
+	.wait_finish = uvc_wait_finish,
+};
+
+static int uvc_queue_init(struct uvc_video_queue *queue,
+			  enum v4l2_buf_type type)
+{
+	int ret;
+
+	queue->queue.type = type;
+	queue->queue.io_modes = VB2_MMAP | VB2_USERPTR;
+	queue->queue.drv_priv = queue;
+	queue->queue.buf_struct_size = sizeof(struct uvc_buffer);
+	queue->queue.ops = &uvc_queue_qops;
+	queue->queue.mem_ops = &vb2_vmalloc_memops;
+	ret = vb2_queue_init(&queue->queue);
+	if (ret)
+		return ret;
+
+	mutex_init(&queue->mutex);
+	spin_lock_init(&queue->irqlock);
+	INIT_LIST_HEAD(&queue->irqqueue);
+	queue->flags = 0;
+
+	return 0;
+}
+
+/*
+ * Free the video buffers.
+ */
+static void uvc_free_buffers(struct uvc_video_queue *queue)
+{
+	mutex_lock(&queue->mutex);
+	vb2_queue_release(&queue->queue);
+	mutex_unlock(&queue->mutex);
+}
+
+/*
+ * Allocate the video buffers.
+ */
+static int uvc_alloc_buffers(struct uvc_video_queue *queue,
+			     struct v4l2_requestbuffers *rb)
+{
+	int ret;
+
+	mutex_lock(&queue->mutex);
+	ret = vb2_reqbufs(&queue->queue, rb);
+	mutex_unlock(&queue->mutex);
+
+	return ret ? ret : rb->count;
+}
+
+static int uvc_query_buffer(struct uvc_video_queue *queue,
+			    struct v4l2_buffer *buf)
+{
+	int ret;
+
+	mutex_lock(&queue->mutex);
+	ret = vb2_querybuf(&queue->queue, buf);
+	mutex_unlock(&queue->mutex);
+
+	return ret;
+}
+
+static int uvc_queue_buffer(struct uvc_video_queue *queue,
+			    struct v4l2_buffer *buf)
+{
+	unsigned long flags;
+	int ret;
+
+	mutex_lock(&queue->mutex);
+	ret = vb2_qbuf(&queue->queue, buf);
+	if (ret < 0)
+		goto done;
+
+	spin_lock_irqsave(&queue->irqlock, flags);
+	ret = (queue->flags & UVC_QUEUE_PAUSED) != 0;
+	queue->flags &= ~UVC_QUEUE_PAUSED;
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&queue->irqlock, flags);
 
 done:
@@ -283,6 +472,7 @@ done:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int uvc_queue_waiton(struct uvc_buffer *buf, int nonblocking)
 {
 	if (nonblocking) {
@@ -296,10 +486,13 @@ static int uvc_queue_waiton(struct uvc_buffer *buf, int nonblocking)
 		buf->state != UVC_BUF_STATE_ACTIVE);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Dequeue a video buffer. If nonblocking is false, block until a buffer is
  * available.
  */
+<<<<<<< HEAD
 static int
 uvc_dequeue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *v4l2_buf,
 		   int nonblocking)
@@ -353,6 +546,17 @@ uvc_dequeue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *v4l2_buf,
 
 done:
 	mutex_unlock(&queue->mutex);
+=======
+static int uvc_dequeue_buffer(struct uvc_video_queue *queue,
+			      struct v4l2_buffer *buf, int nonblocking)
+{
+	int ret;
+
+	mutex_lock(&queue->mutex);
+	ret = vb2_dqbuf(&queue->queue, buf, nonblocking);
+	mutex_unlock(&queue->mutex);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -362,6 +566,7 @@ done:
  * This function implements video queue polling and is intended to be used by
  * the device poll handler.
  */
+<<<<<<< HEAD
 static unsigned int
 uvc_queue_poll(struct uvc_video_queue *queue, struct file *file,
 	       poll_table *wait)
@@ -461,6 +666,49 @@ done:
 	mutex_unlock(&queue->mutex);
 	return ret;
 }
+=======
+static unsigned int uvc_queue_poll(struct uvc_video_queue *queue,
+				   struct file *file, poll_table *wait)
+{
+	unsigned int ret;
+
+	mutex_lock(&queue->mutex);
+	ret = vb2_poll(&queue->queue, file, wait);
+	mutex_unlock(&queue->mutex);
+
+	return ret;
+}
+
+static int uvc_queue_mmap(struct uvc_video_queue *queue,
+			  struct vm_area_struct *vma)
+{
+	int ret;
+
+	mutex_lock(&queue->mutex);
+	ret = vb2_mmap(&queue->queue, vma);
+	mutex_unlock(&queue->mutex);
+
+	return ret;
+}
+
+#ifndef CONFIG_MMU
+/*
+ * Get unmapped area.
+ *
+ * NO-MMU arch need this function to make mmap() work correctly.
+ */
+static unsigned long uvc_queue_get_unmapped_area(struct uvc_video_queue *queue,
+		unsigned long pgoff)
+{
+	unsigned long ret;
+
+	mutex_lock(&queue->mutex);
+	ret = vb2_get_unmapped_area(&queue->queue, 0, 0, pgoff, 0);
+	mutex_unlock(&queue->mutex);
+	return ret;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Cancel the video buffers queue.
@@ -485,7 +733,11 @@ static void uvc_queue_cancel(struct uvc_video_queue *queue, int disconnect)
 				       queue);
 		list_del(&buf->queue);
 		buf->state = UVC_BUF_STATE_ERROR;
+<<<<<<< HEAD
 		wake_up(&buf->wait);
+=======
+		vb2_buffer_done(&buf->buf, VB2_BUF_STATE_ERROR);
+>>>>>>> refs/remotes/origin/master
 	}
 	/* This must be protected by the irqlock spinlock to avoid race
 	 * conditions between uvc_queue_buffer and the disconnection event that
@@ -517,11 +769,16 @@ static void uvc_queue_cancel(struct uvc_video_queue *queue, int disconnect)
  */
 static int uvc_queue_enable(struct uvc_video_queue *queue, int enable)
 {
+<<<<<<< HEAD
 	unsigned int i;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	mutex_lock(&queue->mutex);
 	if (enable) {
+<<<<<<< HEAD
 		if (uvc_queue_streaming(queue)) {
 			ret = -EBUSY;
 			goto done;
@@ -537,6 +794,30 @@ static int uvc_queue_enable(struct uvc_video_queue *queue, int enable)
 			queue->buffer[i].state = UVC_BUF_STATE_IDLE;
 
 		queue->flags &= ~UVC_QUEUE_STREAMING;
+=======
+		ret = vb2_streamon(&queue->queue, queue->queue.type);
+		if (ret < 0)
+			goto done;
+
+		queue->sequence = 0;
+		queue->buf_used = 0;
+	} else {
+		ret = vb2_streamoff(&queue->queue, queue->queue.type);
+		if (ret < 0)
+			goto done;
+
+		spin_lock_irqsave(&queue->irqlock, flags);
+		INIT_LIST_HEAD(&queue->irqqueue);
+
+		/*
+		 * FIXME: We need to clear the DISCONNECTED flag to ensure that
+		 * applications will be able to queue buffers for the next
+		 * streaming run. However, clearing it here doesn't guarantee
+		 * that the device will be reconnected in the meantime.
+		 */
+		queue->flags &= ~UVC_QUEUE_DISCONNECTED;
+		spin_unlock_irqrestore(&queue->irqlock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 
 done:
@@ -544,11 +825,19 @@ done:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* called with queue->irqlock held.. */
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct uvc_buffer *
 uvc_queue_next_buffer(struct uvc_video_queue *queue, struct uvc_buffer *buf)
 {
 	struct uvc_buffer *nextbuf;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((queue->flags & UVC_QUEUE_DROP_INCOMPLETE) &&
 	    buf->buf.length != buf->buf.bytesused) {
@@ -557,19 +846,56 @@ uvc_queue_next_buffer(struct uvc_video_queue *queue, struct uvc_buffer *buf)
 		return buf;
 	}
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&queue->irqlock, flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* called with &queue_irqlock held.. */
+static struct uvc_buffer *uvc_queue_next_buffer(struct uvc_video_queue *queue,
+						struct uvc_buffer *buf)
+{
+	struct uvc_buffer *nextbuf;
+
+	if ((queue->flags & UVC_QUEUE_DROP_INCOMPLETE) &&
+	     buf->length != buf->bytesused) {
+		buf->state = UVC_BUF_STATE_QUEUED;
+		vb2_set_plane_payload(&buf->buf, 0, 0);
+		return buf;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	list_del(&buf->queue);
 	if (!list_empty(&queue->irqqueue))
 		nextbuf = list_first_entry(&queue->irqqueue, struct uvc_buffer,
 					   queue);
 	else
 		nextbuf = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&queue->irqlock, flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	buf->buf.sequence = queue->sequence++;
 	do_gettimeofday(&buf->buf.timestamp);
 
 	wake_up(&buf->wait);
+=======
+
+	/*
+	 * FIXME: with videobuf2, the sequence number or timestamp fields
+	 * are valid only for video capture devices and the UVC gadget usually
+	 * is a video output device. Keeping these until the specs are clear on
+	 * this aspect.
+	 */
+	buf->buf.v4l2_buf.sequence = queue->sequence++;
+	do_gettimeofday(&buf->buf.v4l2_buf.timestamp);
+
+	vb2_set_plane_payload(&buf->buf, 0, buf->bytesused);
+	vb2_buffer_done(&buf->buf, VB2_BUF_STATE_DONE);
+
+>>>>>>> refs/remotes/origin/master
 	return nextbuf;
 }
 

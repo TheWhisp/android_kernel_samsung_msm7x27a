@@ -18,7 +18,15 @@ MODULE_LICENSE("GPL");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+>>>>>>> refs/remotes/origin/master
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;
 
 module_param_array(index, int, NULL, 0444);
@@ -30,7 +38,11 @@ MODULE_PARM_DESC(enable, "Enable " CRD_NAME " soundcard.");
 module_param_array(port, long, NULL, 0444);
 MODULE_PARM_DESC(port, "Port # for " CRD_NAME " driver.");
 
+<<<<<<< HEAD
 static int __devinit snd_adlib_match(struct device *dev, unsigned int n)
+=======
+static int snd_adlib_match(struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!enable[n])
 		return 0;
@@ -47,7 +59,11 @@ static void snd_adlib_free(struct snd_card *card)
 	release_and_free_resource(card->private_data);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_adlib_probe(struct device *dev, unsigned int n)
+=======
+static int snd_adlib_probe(struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct snd_opl3 *opl3;
@@ -98,17 +114,27 @@ out:	snd_card_free(card);
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_adlib_remove(struct device *dev, unsigned int n)
 {
 	snd_card_free(dev_get_drvdata(dev));
 	dev_set_drvdata(dev, NULL);
+=======
+static int snd_adlib_remove(struct device *dev, unsigned int n)
+{
+	snd_card_free(dev_get_drvdata(dev));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct isa_driver snd_adlib_driver = {
 	.match		= snd_adlib_match,
 	.probe		= snd_adlib_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_adlib_remove),
+=======
+	.remove		= snd_adlib_remove,
+>>>>>>> refs/remotes/origin/master
 
 	.driver		= {
 		.name	= DEV_NAME

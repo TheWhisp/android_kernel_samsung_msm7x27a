@@ -1,6 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: Mike Lockwood <lockwood@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -16,9 +24,17 @@
 #ifndef __ASM_ARCH_MSM_GPIO_H
 #define __ASM_ARCH_MSM_GPIO_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM8X60
 #define ARCH_NR_GPIOS 512
 #endif
+=======
+#define ARCH_NR_GPIOS 512
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ARCH_NR_GPIOS 512
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/interrupt.h>
 #include <asm-generic/gpio.h>
@@ -28,6 +44,8 @@
 
 extern struct irq_chip msm_gpio_irq_extn;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int gpio_get_value(unsigned gpio)
 {
 	return __gpio_get_value(gpio);
@@ -48,6 +66,10 @@ static inline int gpio_to_irq(unsigned gpio)
 	return __gpio_to_irq(gpio);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * struct msm_gpio - GPIO pin description
  * @gpio_cfg - configuration bitmap, as per gpio_tlmm_config()
@@ -184,23 +206,65 @@ enum msm_tlmm_hdrive_tgt {
 	TLMM_HDRV_SDC3_CLK,
 	TLMM_HDRV_SDC3_CMD,
 	TLMM_HDRV_SDC3_DATA,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	TLMM_HDRV_SDC2_CLK,
+	TLMM_HDRV_SDC2_CMD,
+	TLMM_HDRV_SDC2_DATA,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TLMM_HDRV_SDC2_CLK,
+	TLMM_HDRV_SDC2_CMD,
+	TLMM_HDRV_SDC2_DATA,
+>>>>>>> refs/remotes/origin/cm-11.0
 	TLMM_HDRV_SDC1_CLK,
 	TLMM_HDRV_SDC1_CMD,
 	TLMM_HDRV_SDC1_DATA,
 };
 
 enum msm_tlmm_pull_tgt {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	TLMM_PULL_SDC4_CMD = 0,
+=======
+	TLMM_PULL_SDC4_CLK = 0,
+	TLMM_PULL_SDC4_CMD,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TLMM_PULL_SDC4_CLK = 0,
+	TLMM_PULL_SDC4_CMD,
+>>>>>>> refs/remotes/origin/cm-11.0
 	TLMM_PULL_SDC4_DATA,
 	TLMM_PULL_SDC3_CLK,
 	TLMM_PULL_SDC3_CMD,
 	TLMM_PULL_SDC3_DATA,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	TLMM_PULL_SDC2_CLK,
+	TLMM_PULL_SDC2_CMD,
+	TLMM_PULL_SDC2_DATA,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TLMM_PULL_SDC2_CLK,
+	TLMM_PULL_SDC2_CMD,
+	TLMM_PULL_SDC2_DATA,
+>>>>>>> refs/remotes/origin/cm-11.0
 	TLMM_PULL_SDC1_CLK,
 	TLMM_PULL_SDC1_CMD,
 	TLMM_PULL_SDC1_DATA,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_V2_TLMM
+=======
+#if defined(CONFIG_GPIO_MSM_V2) || defined(CONFIG_GPIO_MSM_V3)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_GPIO_MSM_V2) || defined(CONFIG_GPIO_MSM_V3)
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_tlmm_set_hdrive(enum msm_tlmm_hdrive_tgt tgt, int drv_str);
 void msm_tlmm_set_pull(enum msm_tlmm_pull_tgt tgt, int pull);
 
@@ -238,4 +302,18 @@ static inline int msm_gpio_install_direct_irq(unsigned gpio, unsigned irq,
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef CONFIG_OF
+int __init msm_gpio_of_init(struct device_node *node,
+			    struct device_node *parent);
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __ASM_ARCH_MSM_GPIO_H */

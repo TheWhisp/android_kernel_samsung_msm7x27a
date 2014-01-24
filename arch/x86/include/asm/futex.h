@@ -9,11 +9,24 @@
 #include <asm/asm.h>
 #include <asm/errno.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define __futex_atomic_op1(insn, ret, oldval, uaddr, oparg)	\
 	asm volatile("1:\t" insn "\n"				\
 		     "2:\t.section .fixup,\"ax\"\n"		\
+=======
+#include <asm/smap.h>
+
+#define __futex_atomic_op1(insn, ret, oldval, uaddr, oparg)	\
+	asm volatile("\t" ASM_STAC "\n"				\
+		     "1:\t" insn "\n"				\
+		     "2:\t" ASM_CLAC "\n"			\
+		     "\t.section .fixup,\"ax\"\n"		\
+>>>>>>> refs/remotes/origin/master
 		     "3:\tmov\t%3, %1\n"			\
 		     "\tjmp\t2b\n"				\
 		     "\t.previous\n"				\
@@ -22,12 +35,22 @@
 		     : "i" (-EFAULT), "0" (oparg), "1" (0))
 
 #define __futex_atomic_op2(insn, ret, oldval, uaddr, oparg)	\
+<<<<<<< HEAD
 	asm volatile("1:\tmovl	%2, %0\n"			\
+=======
+	asm volatile("\t" ASM_STAC "\n"				\
+		     "1:\tmovl	%2, %0\n"			\
+>>>>>>> refs/remotes/origin/master
 		     "\tmovl\t%0, %3\n"				\
 		     "\t" insn "\n"				\
 		     "2:\t" LOCK_PREFIX "cmpxchgl %3, %2\n"	\
 		     "\tjnz\t1b\n"				\
+<<<<<<< HEAD
 		     "3:\t.section .fixup,\"ax\"\n"		\
+=======
+		     "3:\t" ASM_CLAC "\n"			\
+		     "\t.section .fixup,\"ax\"\n"		\
+>>>>>>> refs/remotes/origin/master
 		     "4:\tmov\t%5, %1\n"			\
 		     "\tjmp\t3b\n"				\
 		     "\t.previous\n"				\
@@ -51,12 +74,15 @@ static inline int futex_atomic_op_inuser(int encoded_op, u32 __user *uaddr)
 	if (!access_ok(VERIFY_WRITE, uaddr, sizeof(u32)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 #if defined(CONFIG_X86_32) && !defined(CONFIG_X86_BSWAP)
 	/* Real i386 machines can only support FUTEX_OP_SET */
 	if (op != FUTEX_OP_SET && boot_cpu_data.x86 == 3)
 		return -ENOSYS;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pagefault_disable();
 
 	switch (op) {
@@ -112,6 +138,7 @@ static inline int futex_atomic_op_inuser(int encoded_op, u32 __user *uaddr)
 static inline int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
 						u32 oldval, u32 newval)
 {
+<<<<<<< HEAD
 	int ret = 0;
 
 #if defined(CONFIG_X86_32) && !defined(CONFIG_X86_BSWAP)
@@ -136,6 +163,9 @@ static inline int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
 
 	*uval = oldval;
 	return ret;
+=======
+	return user_atomic_cmpxchg_inatomic(uval, uaddr, oldval, newval);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif

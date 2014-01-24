@@ -44,22 +44,57 @@ enum sis_family {
 	SIS_CHIP_315 = 1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "drm_sman.h"
 
 
 #define SIS_BASE (dev_priv->mmio)
 #define SIS_READ(reg)         DRM_READ32(SIS_BASE, reg);
 #define SIS_WRITE(reg, val)   DRM_WRITE32(SIS_BASE, reg, val);
+=======
+#include "drm_mm.h"
+=======
+#include <drm/drm_mm.h>
+>>>>>>> refs/remotes/origin/master
+
+
+#define SIS_BASE (dev_priv->mmio)
+#define SIS_READ(reg)         DRM_READ32(SIS_BASE, reg)
+#define SIS_WRITE(reg, val)   DRM_WRITE32(SIS_BASE, reg, val)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 typedef struct drm_sis_private {
 	drm_local_map_t *mmio;
 	unsigned int idle_fault;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct drm_sman sman;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int chipset;
 	int vram_initialized;
 	int agp_initialized;
 	unsigned long vram_offset;
 	unsigned long agp_offset;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct drm_mm vram_mm;
+	struct drm_mm agp_mm;
+	/** Mapping of userspace keys to mm objects */
+	struct idr object_idr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } drm_sis_private_t;
 
 extern int sis_idle(struct drm_device *dev);
@@ -67,7 +102,11 @@ extern void sis_reclaim_buffers_locked(struct drm_device *dev,
 				       struct drm_file *file_priv);
 extern void sis_lastclose(struct drm_device *dev);
 
+<<<<<<< HEAD
 extern struct drm_ioctl_desc sis_ioctls[];
+=======
+extern const struct drm_ioctl_desc sis_ioctls[];
+>>>>>>> refs/remotes/origin/master
 extern int sis_max_ioctl;
 
 #endif

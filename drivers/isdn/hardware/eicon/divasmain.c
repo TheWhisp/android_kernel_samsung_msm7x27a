@@ -50,7 +50,15 @@ module_param(dbgmask, int, 0);
 MODULE_PARM_DESC(dbgmask, "initial debug mask");
 
 static char *DRIVERNAME =
+<<<<<<< HEAD
+<<<<<<< HEAD
     "Eicon DIVA Server driver (http://www.melware.net)";
+=======
+	"Eicon DIVA Server driver (http://www.melware.net)";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"Eicon DIVA Server driver (http://www.melware.net)";
+>>>>>>> refs/remotes/origin/master
 static char *DRIVERLNAME = "divas";
 static char *DEVNAME = "Divas";
 char *DRIVERRELEASE_DIVAS = "2.0";
@@ -68,7 +76,15 @@ typedef struct _diva_os_thread_dpc {
 } diva_os_thread_dpc_t;
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
     PCI driver interface section
+=======
+   PCI driver interface section
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   PCI driver interface section
+>>>>>>> refs/remotes/origin/master
    -------------------------------------------------------------------------- */
 /*
   vendor, device	Vendor and device ID to match (or PCI_ANY_ID)
@@ -77,7 +93,15 @@ typedef struct _diva_os_thread_dpc {
   class,		Device class to match. The class_mask tells which bits
   class_mask	of the class are honored during the comparison.
   driver_data	Data private to the driver.
+<<<<<<< HEAD
+<<<<<<< HEAD
   */
+=======
+*/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+*/
+>>>>>>> refs/remotes/origin/master
 
 #if !defined(PCI_DEVICE_ID_EICON_MAESTRAP_2)
 #define PCI_DEVICE_ID_EICON_MAESTRAP_2       0xE015
@@ -109,6 +133,8 @@ typedef struct _diva_os_thread_dpc {
 
 /*
   This table should be sorted by PCI device ID
+<<<<<<< HEAD
+<<<<<<< HEAD
   */
 static struct pci_device_id divas_pci_tbl[] = {
 	/* Diva Server BRI-2M PCI 0xE010 */
@@ -144,18 +170,68 @@ static struct pci_device_id divas_pci_tbl[] = {
 	/* Diva Server Voice BRI-2M 2.0 PCI 0xE01B */
 	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_BRI2M_2_VOIP),
 		CARDTYPE_DIVASRV_VOICE_B_2M_V2_PCI },
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+*/
+static struct pci_device_id divas_pci_tbl[] = {
+	/* Diva Server BRI-2M PCI 0xE010 */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_MAESTRA),
+	  CARDTYPE_MAESTRA_PCI },
+	/* Diva Server 4BRI-8M PCI 0xE012 */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_MAESTRAQ),
+	  CARDTYPE_DIVASRV_Q_8M_PCI },
+	/* Diva Server 4BRI-8M 2.0 PCI 0xE013 */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_MAESTRAQ_U),
+	  CARDTYPE_DIVASRV_Q_8M_V2_PCI },
+	/* Diva Server PRI-30M PCI 0xE014 */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_MAESTRAP),
+	  CARDTYPE_DIVASRV_P_30M_PCI },
+	/* Diva Server PRI 2.0 adapter 0xE015 */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_MAESTRAP_2),
+	  CARDTYPE_DIVASRV_P_30M_V2_PCI },
+	/* Diva Server Voice 4BRI-8M PCI 0xE016 */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_4BRI_VOIP),
+	  CARDTYPE_DIVASRV_VOICE_Q_8M_PCI },
+	/* Diva Server Voice 4BRI-8M 2.0 PCI 0xE017 */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_4BRI_2_VOIP),
+	  CARDTYPE_DIVASRV_VOICE_Q_8M_V2_PCI },
+	/* Diva Server BRI-2M 2.0 PCI 0xE018 */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_BRI2M_2),
+	  CARDTYPE_DIVASRV_B_2M_V2_PCI },
+	/* Diva Server Voice PRI 2.0 PCI 0xE019 */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_MAESTRAP_2_VOIP),
+	  CARDTYPE_DIVASRV_VOICE_P_30M_V2_PCI },
+	/* Diva Server 2FX 0xE01A */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_2F),
+	  CARDTYPE_DIVASRV_B_2F_PCI },
+	/* Diva Server Voice BRI-2M 2.0 PCI 0xE01B */
+	{ PCI_VDEVICE(EICON, PCI_DEVICE_ID_EICON_BRI2M_2_VOIP),
+	  CARDTYPE_DIVASRV_VOICE_B_2M_V2_PCI },
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 0, }			/* 0 terminated list. */
 };
 MODULE_DEVICE_TABLE(pci, divas_pci_tbl);
 
 static int divas_init_one(struct pci_dev *pdev,
 			  const struct pci_device_id *ent);
+<<<<<<< HEAD
 static void __devexit divas_remove_one(struct pci_dev *pdev);
+=======
+static void divas_remove_one(struct pci_dev *pdev);
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_driver diva_pci_driver = {
 	.name     = "divas",
 	.probe    = divas_init_one,
+<<<<<<< HEAD
 	.remove   = __devexit_p(divas_remove_one),
+=======
+	.remove   = divas_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.id_table = divas_pci_tbl,
 };
 
@@ -197,7 +273,15 @@ void divas_get_version(char *p)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
     PCI Bus services  
+=======
+   PCI Bus services
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   PCI Bus services
+>>>>>>> refs/remotes/origin/master
    -------------------------------------------------------------------------- */
 byte diva_os_get_pci_bus(void *pci_dev_handle)
 {
@@ -332,10 +416,23 @@ void PCIread(byte bus, byte func, int offset, void *data, int length,
   Init map with DMA pages. It is not problem if some allocations fail -
   the channels that will not get one DMA page will use standard PIO
   interface
+<<<<<<< HEAD
+<<<<<<< HEAD
   */
 static void *diva_pci_alloc_consistent(struct pci_dev *hwdev,
 				       size_t size,
 				       dma_addr_t * dma_handle,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+*/
+static void *diva_pci_alloc_consistent(struct pci_dev *hwdev,
+				       size_t size,
+				       dma_addr_t *dma_handle,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				       void **addr_handle)
 {
 	void *addr = pci_alloc_consistent(hwdev, size, dma_handle);
@@ -350,7 +447,15 @@ void diva_init_dma_map(void *hdev,
 {
 	struct pci_dev *pdev = (struct pci_dev *) hdev;
 	struct _diva_dma_map_entry *pmap =
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    diva_alloc_dma_map(hdev, nentries);
+=======
+		diva_alloc_dma_map(hdev, nentries);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		diva_alloc_dma_map(hdev, nentries);
+>>>>>>> refs/remotes/origin/master
 
 	if (pmap) {
 		int i;
@@ -381,7 +486,15 @@ void diva_init_dma_map(void *hdev,
 /*
   Free all contained in the map entries and memory used by the map
   Should be always called after adapter removal from DIDD array
+<<<<<<< HEAD
+<<<<<<< HEAD
   */
+=======
+*/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+*/
+>>>>>>> refs/remotes/origin/master
 void diva_free_dma_map(void *hdev, struct _diva_dma_map_entry *pmap)
 {
 	struct pci_dev *pdev = (struct pci_dev *) hdev;
@@ -403,14 +516,30 @@ void diva_free_dma_map(void *hdev, struct _diva_dma_map_entry *pmap)
 		DBG_TRC(("dma map free [%d]=(%08lx:%08x:%08lx)", i,
 			 (unsigned long) cpu_addr, (dword) dma_handle,
 			 (unsigned long) addr_handle))
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
+=======
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			}
+>>>>>>> refs/remotes/origin/master
 
 	diva_free_dma_mapping(pmap);
 }
 
 
 /*********************************************************
+<<<<<<< HEAD
+<<<<<<< HEAD
  ** I/O port utilities  
+=======
+ ** I/O port utilities
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ ** I/O port utilities
+>>>>>>> refs/remotes/origin/master
  *********************************************************/
 
 int
@@ -420,7 +549,15 @@ diva_os_register_io_port(void *adapter, int on, unsigned long port,
 	if (on) {
 		if (!request_region(port, length, name)) {
 			DBG_ERR(("A: I/O: can't register port=%08x", port))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return (-1);
+=======
+				return (-1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				return (-1);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		release_region(port, length);
@@ -443,7 +580,15 @@ void divasa_unmap_pci_bar(void __iomem *bar)
 }
 
 /*********************************************************
+<<<<<<< HEAD
+<<<<<<< HEAD
  ** I/O port access 
+=======
+ ** I/O port access
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ ** I/O port access
+>>>>>>> refs/remotes/origin/master
  *********************************************************/
 byte __inline__ inpp(void __iomem *addr)
 {
@@ -476,12 +621,24 @@ void __inline__ outpp(void __iomem *addr, word p)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
     IRQ request / remove  
+=======
+   IRQ request / remove
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   IRQ request / remove
+>>>>>>> refs/remotes/origin/master
    -------------------------------------------------------------------------- */
 int diva_os_register_irq(void *context, byte irq, const char *name)
 {
 	int result = request_irq(irq, diva_os_irq_wrapper,
+<<<<<<< HEAD
 				 IRQF_DISABLED | IRQF_SHARED, name, context);
+=======
+				 IRQF_SHARED, name, context);
+>>>>>>> refs/remotes/origin/master
 	return (result);
 }
 
@@ -491,7 +648,15 @@ void diva_os_remove_irq(void *context, byte irq)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
     DPC framework implementation
+=======
+   DPC framework implementation
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   DPC framework implementation
+>>>>>>> refs/remotes/origin/master
    -------------------------------------------------------------------------- */
 static void diva_os_dpc_proc(unsigned long context)
 {
@@ -501,7 +666,15 @@ static void diva_os_dpc_proc(unsigned long context)
 	(*(pisr->callback)) (pisr, pisr->callback_context);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int diva_os_initialize_soft_isr(diva_os_soft_isr_t * psoft_isr,
+=======
+int diva_os_initialize_soft_isr(diva_os_soft_isr_t *psoft_isr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int diva_os_initialize_soft_isr(diva_os_soft_isr_t *psoft_isr,
+>>>>>>> refs/remotes/origin/master
 				diva_os_soft_isr_callback_t callback,
 				void *callback_context)
 {
@@ -520,11 +693,25 @@ int diva_os_initialize_soft_isr(diva_os_soft_isr_t * psoft_isr,
 	return (0);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int diva_os_schedule_soft_isr(diva_os_soft_isr_t * psoft_isr)
 {
 	if (psoft_isr && psoft_isr->object) {
 		diva_os_thread_dpc_t *pdpc =
 		    (diva_os_thread_dpc_t *) psoft_isr->object;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int diva_os_schedule_soft_isr(diva_os_soft_isr_t *psoft_isr)
+{
+	if (psoft_isr && psoft_isr->object) {
+		diva_os_thread_dpc_t *pdpc =
+			(diva_os_thread_dpc_t *) psoft_isr->object;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		tasklet_schedule(&pdpc->divas_task);
 	}
@@ -532,16 +719,38 @@ int diva_os_schedule_soft_isr(diva_os_soft_isr_t * psoft_isr)
 	return (1);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int diva_os_cancel_soft_isr(diva_os_soft_isr_t * psoft_isr)
+=======
+int diva_os_cancel_soft_isr(diva_os_soft_isr_t *psoft_isr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int diva_os_cancel_soft_isr(diva_os_soft_isr_t *psoft_isr)
+>>>>>>> refs/remotes/origin/master
 {
 	return (0);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void diva_os_remove_soft_isr(diva_os_soft_isr_t * psoft_isr)
 {
 	if (psoft_isr && psoft_isr->object) {
 		diva_os_thread_dpc_t *pdpc =
 		    (diva_os_thread_dpc_t *) psoft_isr->object;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void diva_os_remove_soft_isr(diva_os_soft_isr_t *psoft_isr)
+{
+	if (psoft_isr && psoft_isr->object) {
+		diva_os_thread_dpc_t *pdpc =
+			(diva_os_thread_dpc_t *) psoft_isr->object;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		void *mem;
 
 		tasklet_kill(&pdpc->divas_task);
@@ -589,7 +798,15 @@ static int divas_release(struct inode *inode, struct file *file)
 }
 
 static ssize_t divas_write(struct file *file, const char __user *buf,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   size_t count, loff_t * ppos)
+=======
+			   size_t count, loff_t *ppos)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   size_t count, loff_t *ppos)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -EINVAL;
 
@@ -620,7 +837,15 @@ static ssize_t divas_write(struct file *file, const char __user *buf,
 }
 
 static ssize_t divas_read(struct file *file, char __user *buf,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  size_t count, loff_t * ppos)
+=======
+			  size_t count, loff_t *ppos)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  size_t count, loff_t *ppos)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -EINVAL;
 
@@ -650,7 +875,15 @@ static ssize_t divas_read(struct file *file, char __user *buf,
 	return (ret);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int divas_poll(struct file *file, poll_table * wait)
+=======
+static unsigned int divas_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int divas_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!file->private_data) {
 		return (POLLERR);
@@ -673,7 +906,11 @@ static void divas_unregister_chrdev(void)
 	unregister_chrdev(major, DEVNAME);
 }
 
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION divas_register_chrdev(void)
+=======
+static int __init divas_register_chrdev(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if ((major = register_chrdev(0, DEVNAME, &divas_fops)) < 0)
 	{
@@ -686,10 +923,20 @@ static int DIVA_INIT_FUNCTION divas_register_chrdev(void)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
     PCI driver section
+=======
+   PCI driver section
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 static int __devinit divas_init_one(struct pci_dev *pdev,
 				    const struct pci_device_id *ent)
+=======
+   PCI driver section
+   -------------------------------------------------------------------------- */
+static int divas_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	void *pdiva = NULL;
 	u8 pci_latency;
@@ -698,9 +945,21 @@ static int __devinit divas_init_one(struct pci_dev *pdev,
 	DBG_TRC(("%s bus: %08x fn: %08x insertion.\n",
 		 CardProperties[ent->driver_data].Name,
 		 pdev->bus->number, pdev->devfn))
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: %s bus: %08x fn: %08x insertion.\n",
 		DRIVERLNAME, CardProperties[ent->driver_data].Name,
 		pdev->bus->number, pdev->devfn);
+=======
+		printk(KERN_INFO "%s: %s bus: %08x fn: %08x insertion.\n",
+		       DRIVERLNAME, CardProperties[ent->driver_data].Name,
+		       pdev->bus->number, pdev->devfn);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_INFO "%s: %s bus: %08x fn: %08x insertion.\n",
+		       DRIVERLNAME, CardProperties[ent->driver_data].Name,
+		       pdev->bus->number, pdev->devfn);
+>>>>>>> refs/remotes/origin/master
 
 	if (pci_enable_device(pdev)) {
 		DBG_TRC(("%s: %s bus: %08x fn: %08x device init failed.\n",
@@ -708,12 +967,27 @@ static int __devinit divas_init_one(struct pci_dev *pdev,
 			 CardProperties[ent->driver_data].Name,
 			 pdev->bus->number,
 			 pdev->devfn))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR
 			"%s: %s bus: %08x fn: %08x device init failed.\n",
 			DRIVERLNAME,
 			CardProperties[ent->driver_data].
 			Name, pdev->bus->number,
 			pdev->devfn);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			printk(KERN_ERR
+			       "%s: %s bus: %08x fn: %08x device init failed.\n",
+			       DRIVERLNAME,
+			       CardProperties[ent->driver_data].
+			       Name, pdev->bus->number,
+			       pdev->devfn);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return (-EIO);
 	}
 
@@ -723,9 +997,21 @@ static int __devinit divas_init_one(struct pci_dev *pdev,
 	if (!pci_latency) {
 		DBG_TRC(("%s: bus: %08x fn: %08x fix latency.\n",
 			 DRIVERLNAME, pdev->bus->number, pdev->devfn))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO
 			"%s: bus: %08x fn: %08x fix latency.\n",
 			 DRIVERLNAME, pdev->bus->number, pdev->devfn);
+=======
+			printk(KERN_INFO
+			       "%s: bus: %08x fn: %08x fix latency.\n",
+			       DRIVERLNAME, pdev->bus->number, pdev->devfn);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk(KERN_INFO
+			       "%s: bus: %08x fn: %08x fix latency.\n",
+			       DRIVERLNAME, pdev->bus->number, pdev->devfn);
+>>>>>>> refs/remotes/origin/master
 		pci_write_config_byte(pdev, PCI_LATENCY_TIMER, new_latency);
 	}
 
@@ -735,12 +1021,27 @@ static int __devinit divas_init_one(struct pci_dev *pdev,
 			 CardProperties[ent->driver_data].Name,
 			 pdev->bus->number,
 			 pdev->devfn))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR
 			"%s: %s bus: %08x fn: %08x card init failed.\n",
 			DRIVERLNAME,
 			CardProperties[ent->driver_data].
 			Name, pdev->bus->number,
 			pdev->devfn);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			printk(KERN_ERR
+			       "%s: %s bus: %08x fn: %08x card init failed.\n",
+			       DRIVERLNAME,
+			       CardProperties[ent->driver_data].
+			       Name, pdev->bus->number,
+			       pdev->devfn);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return (-EIO);
 	}
 
@@ -749,14 +1050,28 @@ static int __devinit divas_init_one(struct pci_dev *pdev,
 	return (0);
 }
 
+<<<<<<< HEAD
 static void __devexit divas_remove_one(struct pci_dev *pdev)
+=======
+static void divas_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	void *pdiva = pci_get_drvdata(pdev);
 
 	DBG_TRC(("bus: %08x fn: %08x removal.\n",
 		 pdev->bus->number, pdev->devfn))
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: bus: %08x fn: %08x removal.\n",
 		DRIVERLNAME, pdev->bus->number, pdev->devfn);
+=======
+		printk(KERN_INFO "%s: bus: %08x fn: %08x removal.\n",
+		       DRIVERLNAME, pdev->bus->number, pdev->devfn);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_INFO "%s: bus: %08x fn: %08x removal.\n",
+		       DRIVERLNAME, pdev->bus->number, pdev->devfn);
+>>>>>>> refs/remotes/origin/master
 
 	if (pdiva) {
 		diva_driver_remove_card(pdiva);
@@ -765,9 +1080,19 @@ static void __devexit divas_remove_one(struct pci_dev *pdev)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
     Driver Load / Startup  
+=======
+   Driver Load / Startup
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 static int DIVA_INIT_FUNCTION divas_init(void)
+=======
+   Driver Load / Startup
+   -------------------------------------------------------------------------- */
+static int __init divas_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	char tmprev[50];
 	int ret = 0;
@@ -824,14 +1149,32 @@ static int DIVA_INIT_FUNCTION divas_init(void)
 	}
 	printk(KERN_INFO "%s: started with major %d\n", DRIVERLNAME, major);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
       out:
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	return (ret);
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
     Driver Unload
+=======
+   Driver Unload
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 static void DIVA_EXIT_FUNCTION divas_exit(void)
+=======
+   Driver Unload
+   -------------------------------------------------------------------------- */
+static void __exit divas_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	pci_unregister_driver(&diva_pci_driver);
 	remove_divas_proc();

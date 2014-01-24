@@ -72,7 +72,15 @@ struct snd_info_entry_ops {
 
 struct snd_info_entry {
 	const char *name;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode;
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/master
 	long size;
 	unsigned short content;
 	union {
@@ -110,8 +118,18 @@ void snd_card_info_read_oss(struct snd_info_buffer *buffer);
 static inline void snd_card_info_read_oss(struct snd_info_buffer *buffer) {}
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int snd_iprintf(struct snd_info_buffer *buffer, const char *fmt, ...) \
 				__attribute__ ((format (printf, 2, 3)));
+=======
+__printf(2, 3)
+int snd_iprintf(struct snd_info_buffer *buffer, const char *fmt, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+__printf(2, 3)
+int snd_iprintf(struct snd_info_buffer *buffer, const char *fmt, ...);
+>>>>>>> refs/remotes/origin/master
 int snd_info_init(void);
 int snd_info_done(void);
 

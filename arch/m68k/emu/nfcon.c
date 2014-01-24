@@ -15,26 +15,46 @@
 #include <linux/slab.h>
 #include <linux/err.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/natfeat.h>
 
 static int stderr_id;
+<<<<<<< HEAD
+=======
+static struct tty_port nfcon_tty_port;
+>>>>>>> refs/remotes/origin/master
 static struct tty_driver *nfcon_tty_driver;
 
 static void nfputs(const char *str, unsigned int count)
 {
 	char buf[68];
+<<<<<<< HEAD
+=======
+	unsigned long phys = virt_to_phys(buf);
+>>>>>>> refs/remotes/origin/master
 
 	buf[64] = 0;
 	while (count > 64) {
 		memcpy(buf, str, 64);
+<<<<<<< HEAD
 		nf_call(stderr_id, buf);
+=======
+		nf_call(stderr_id, phys);
+>>>>>>> refs/remotes/origin/master
 		str += 64;
 		count -= 64;
 	}
 	memcpy(buf, str, count);
 	buf[count] = 0;
+<<<<<<< HEAD
 	nf_call(stderr_id, buf);
+=======
+	nf_call(stderr_id, phys);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void nfcon_write(struct console *con, const char *str,
@@ -78,7 +98,11 @@ static int nfcon_tty_put_char(struct tty_struct *tty, unsigned char ch)
 {
 	char temp[2] = { ch, 0 };
 
+<<<<<<< HEAD
 	nf_call(stderr_id, temp);
+=======
+	nf_call(stderr_id, virt_to_phys(temp));
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -127,7 +151,15 @@ static int __init nfcon_init(void)
 	if (!nfcon_tty_driver)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nfcon_tty_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tty_port_init(&nfcon_tty_port);
+
+>>>>>>> refs/remotes/origin/master
 	nfcon_tty_driver->driver_name = "nfcon";
 	nfcon_tty_driver->name = "nfcon";
 	nfcon_tty_driver->type = TTY_DRIVER_TYPE_SYSTEM;
@@ -136,10 +168,18 @@ static int __init nfcon_init(void)
 	nfcon_tty_driver->flags = TTY_DRIVER_REAL_RAW;
 
 	tty_set_operations(nfcon_tty_driver, &nfcon_tty_ops);
+<<<<<<< HEAD
+=======
+	tty_port_link_device(&nfcon_tty_port, nfcon_tty_driver, 0);
+>>>>>>> refs/remotes/origin/master
 	res = tty_register_driver(nfcon_tty_driver);
 	if (res) {
 		pr_err("failed to register nfcon tty driver\n");
 		put_tty_driver(nfcon_tty_driver);
+<<<<<<< HEAD
+=======
+		tty_port_destroy(&nfcon_tty_port);
+>>>>>>> refs/remotes/origin/master
 		return res;
 	}
 
@@ -154,6 +194,10 @@ static void __exit nfcon_exit(void)
 	unregister_console(&nf_console);
 	tty_unregister_driver(nfcon_tty_driver);
 	put_tty_driver(nfcon_tty_driver);
+<<<<<<< HEAD
+=======
+	tty_port_destroy(&nfcon_tty_port);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(nfcon_init);

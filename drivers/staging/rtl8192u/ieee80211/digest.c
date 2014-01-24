@@ -39,12 +39,28 @@ static void update(struct crypto_tfm *tfm,
 			unsigned int bytes_from_page = min(l, ((unsigned int)
 							   (PAGE_SIZE)) -
 							   offset);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			char *p = crypto_kmap(pg, 0) + offset;
+=======
+			char *p = kmap_atomic(pg) + offset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			char *p = kmap_atomic(pg) + offset;
+>>>>>>> refs/remotes/origin/master
 
 			tfm->__crt_alg->cra_digest.dia_update
 					(crypto_tfm_ctx(tfm), p,
 					 bytes_from_page);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			crypto_kunmap(p, 0);
+=======
+			kunmap_atomic(p);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(p);
+>>>>>>> refs/remotes/origin/master
 			crypto_yield(tfm);
 			offset = 0;
 			pg++;
@@ -75,10 +91,23 @@ static void digest(struct crypto_tfm *tfm,
 	tfm->crt_digest.dit_init(tfm);
 
 	for (i = 0; i < nsg; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		char *p = crypto_kmap(sg[i].page, 0) + sg[i].offset;
 		tfm->__crt_alg->cra_digest.dia_update(crypto_tfm_ctx(tfm),
 						      p, sg[i].length);
 		crypto_kunmap(p, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		char *p = kmap_atomic(sg[i].page) + sg[i].offset;
+		tfm->__crt_alg->cra_digest.dia_update(crypto_tfm_ctx(tfm),
+						      p, sg[i].length);
+		kunmap_atomic(p);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		crypto_yield(tfm);
 	}
 	crypto_digest_final(tfm, out);

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/include/asm/kvm.h \
 		  $(srctree)/include/asm-$(SRCARCH)/kvm.h),)
 header-y  += kvm.h
@@ -43,3 +44,6 @@ header-y += termbits.h
 header-y += termios.h
 header-y += types.h
 header-y += unistd.h
+=======
+include include/uapi/asm-generic/Kbuild.asm
+>>>>>>> refs/remotes/origin/master

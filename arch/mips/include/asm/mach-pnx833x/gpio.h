@@ -30,7 +30,11 @@
    - including locking between different uses
 */
 
+<<<<<<< HEAD
 #include "pnx833x.h"
+=======
+#include <asm/mach-pnx833x/pnx833x.h>
+>>>>>>> refs/remotes/origin/master
 
 #define SET_REG_BIT(reg, bit)		do { (reg |= (1 << (bit))); } while (0)
 #define CLEAR_REG_BIT(reg, bit)		do { (reg &= ~(1 << (bit))); } while (0)

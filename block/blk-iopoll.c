@@ -35,7 +35,11 @@ void blk_iopoll_sched(struct blk_iopoll *iop)
 	unsigned long flags;
 
 	local_irq_save(flags);
+<<<<<<< HEAD
 	list_add_tail(&iop->list, &__get_cpu_var(blk_cpu_iopoll));
+=======
+	list_add_tail(&iop->list, this_cpu_ptr(&blk_cpu_iopoll));
+>>>>>>> refs/remotes/origin/master
 	__raise_softirq_irqoff(BLOCK_IOPOLL_SOFTIRQ);
 	local_irq_restore(flags);
 }
@@ -79,7 +83,11 @@ EXPORT_SYMBOL(blk_iopoll_complete);
 
 static void blk_iopoll_softirq(struct softirq_action *h)
 {
+<<<<<<< HEAD
 	struct list_head *list = &__get_cpu_var(blk_cpu_iopoll);
+=======
+	struct list_head *list = this_cpu_ptr(&blk_cpu_iopoll);
+>>>>>>> refs/remotes/origin/master
 	int rearm = 0, budget = blk_iopoll_budget;
 	unsigned long start_time = jiffies;
 
@@ -189,8 +197,13 @@ void blk_iopoll_init(struct blk_iopoll *iop, int weight, blk_iopoll_fn *poll_fn)
 }
 EXPORT_SYMBOL(blk_iopoll_init);
 
+<<<<<<< HEAD
 static int __cpuinit blk_iopoll_cpu_notify(struct notifier_block *self,
 					  unsigned long action, void *hcpu)
+=======
+static int blk_iopoll_cpu_notify(struct notifier_block *self,
+				 unsigned long action, void *hcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * If a CPU goes away, splice its entries to the current CPU
@@ -201,7 +214,11 @@ static int __cpuinit blk_iopoll_cpu_notify(struct notifier_block *self,
 
 		local_irq_disable();
 		list_splice_init(&per_cpu(blk_cpu_iopoll, cpu),
+<<<<<<< HEAD
 				 &__get_cpu_var(blk_cpu_iopoll));
+=======
+				 this_cpu_ptr(&blk_cpu_iopoll));
+>>>>>>> refs/remotes/origin/master
 		__raise_softirq_irqoff(BLOCK_IOPOLL_SOFTIRQ);
 		local_irq_enable();
 	}
@@ -209,7 +226,11 @@ static int __cpuinit blk_iopoll_cpu_notify(struct notifier_block *self,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata blk_iopoll_cpu_notifier = {
+=======
+static struct notifier_block blk_iopoll_cpu_notifier = {
+>>>>>>> refs/remotes/origin/master
 	.notifier_call	= blk_iopoll_cpu_notify,
 };
 

@@ -18,7 +18,11 @@
  *
  * File: tcrc.c
  *
+<<<<<<< HEAD
  * Purpose: Implement functions to caculate CRC
+=======
+ * Purpose: Implement functions to calculate CRC
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Tevin Chen
  *
@@ -35,6 +39,7 @@
 
 #include "tcrc.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 
 /*---------------------  Static Classes  ----------------------------*/
@@ -43,6 +48,10 @@
 
 /* 32-bit CRC table */
 static const DWORD s_adwCrc32Table[256] = {
+=======
+/* 32-bit CRC table */
+static const u32 s_adwCrc32Table[256] = {
+>>>>>>> refs/remotes/origin/master
     0x00000000L, 0x77073096L, 0xEE0E612CL, 0x990951BAL,
     0x076DC419L, 0x706AF48FL, 0xE963A535L, 0x9E6495A3L,
     0x0EDB8832L, 0x79DCB8A4L, 0xE0D5E91EL, 0x97D2D988L,
@@ -109,6 +118,7 @@ static const DWORD s_adwCrc32Table[256] = {
     0xB40BBE37L, 0xC30C8EA1L, 0x5A05DF1BL, 0x2D02EF8DL
 };
 
+<<<<<<< HEAD
 /*---------------------  Static Functions  --------------------------*/
 
 /*---------------------  Export Variables  --------------------------*/
@@ -116,6 +126,8 @@ static const DWORD s_adwCrc32Table[256] = {
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*+
  *
  * Description:
@@ -132,6 +144,7 @@ static const DWORD s_adwCrc32Table[256] = {
  * Return Value: CRC-32
  *
 -*/
+<<<<<<< HEAD
 DWORD CRCdwCrc32(PBYTE pbyData, unsigned int cbByte, DWORD dwCrcSeed)
 {
 	DWORD dwCrc;
@@ -139,6 +152,15 @@ DWORD CRCdwCrc32(PBYTE pbyData, unsigned int cbByte, DWORD dwCrcSeed)
 	dwCrc = dwCrcSeed;
 	while (cbByte--) {
 		dwCrc = s_adwCrc32Table[(BYTE)((dwCrc ^ (*pbyData)) & 0xFF)] ^
+=======
+u32 CRCdwCrc32(u8 * pbyData, unsigned int cbByte, u32 dwCrcSeed)
+{
+	u32 dwCrc;
+
+	dwCrc = dwCrcSeed;
+	while (cbByte--) {
+		dwCrc = s_adwCrc32Table[(u8)((dwCrc ^ (*pbyData)) & 0xFF)] ^
+>>>>>>> refs/remotes/origin/master
 			(dwCrc >> 8);
 		pbyData++;
 	}
@@ -146,7 +168,10 @@ DWORD CRCdwCrc32(PBYTE pbyData, unsigned int cbByte, DWORD dwCrcSeed)
 	return dwCrc;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*+
  *
  * Description:
@@ -165,12 +190,19 @@ DWORD CRCdwCrc32(PBYTE pbyData, unsigned int cbByte, DWORD dwCrcSeed)
  * Return Value: CRC-32
  *
 -*/
+<<<<<<< HEAD
 DWORD CRCdwGetCrc32(PBYTE pbyData, unsigned int cbByte)
+=======
+u32 CRCdwGetCrc32(u8 * pbyData, unsigned int cbByte)
+>>>>>>> refs/remotes/origin/master
 {
     return ~CRCdwCrc32(pbyData, cbByte, 0xFFFFFFFFL);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*+
  *
  * Description:
@@ -191,9 +223,16 @@ DWORD CRCdwGetCrc32(PBYTE pbyData, unsigned int cbByte)
  * Return Value: CRC-32
  *
 -*/
+<<<<<<< HEAD
 DWORD CRCdwGetCrc32Ex(PBYTE pbyData, unsigned int cbByte, DWORD dwPreCRC)
+=======
+u32 CRCdwGetCrc32Ex(u8 * pbyData, unsigned int cbByte, u32 dwPreCRC)
+>>>>>>> refs/remotes/origin/master
 {
     return CRCdwCrc32(pbyData, cbByte, dwPreCRC);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

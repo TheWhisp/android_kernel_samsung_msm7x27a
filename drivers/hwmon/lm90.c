@@ -54,6 +54,26 @@
  * and extended mode. They are mostly compatible with LM90 except for a data
  * format difference for the temperature value registers.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * This driver also supports the SA56004 from Philips. This device is
+ * pin-compatible with the LM86, the ED/EDP parts are also address-compatible.
+ *
+ * This driver also supports the G781 from GMT. This device is compatible
+ * with the ADM1032.
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This driver also supports TMP451 from Texas Instruments. This device is
+ * supported in both compatibility and extended mode. It's mostly compatible
+ * with ADT7461 except for local temperature low byte register and max
+ * conversion rate.
+ *
+>>>>>>> refs/remotes/origin/master
  * Since the LM90 was the first chipset supported by this driver, most
  * comments will refer to this chipset, but are actually general and
  * concern all supported chipsets, unless mentioned otherwise.
@@ -83,6 +103,11 @@
 #include <linux/err.h>
 #include <linux/mutex.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+#include <linux/regulator/consumer.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Addresses to scan
@@ -96,6 +121,8 @@
  * MAX6659 can have address 0x4c, 0x4d or 0x4e.
  * MAX6680 and MAX6681 can have address 0x18, 0x19, 0x1a, 0x29, 0x2a, 0x2b,
  * 0x4c, 0x4d or 0x4e.
+<<<<<<< HEAD
+<<<<<<< HEAD
  */
 
 static const unsigned short normal_i2c[] = {
@@ -103,6 +130,23 @@ static const unsigned short normal_i2c[] = {
 
 enum chips { lm90, adm1032, lm99, lm86, max6657, max6659, adt7461, max6680,
 	max6646, w83l771, max6696 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * SA56004 can have address 0x48 through 0x4F.
+ */
+
+static const unsigned short normal_i2c[] = {
+	0x18, 0x19, 0x1a, 0x29, 0x2a, 0x2b, 0x48, 0x49, 0x4a, 0x4b, 0x4c,
+	0x4d, 0x4e, 0x4f, I2C_CLIENT_END };
+
+enum chips { lm90, adm1032, lm99, lm86, max6657, max6659, adt7461, max6680,
+<<<<<<< HEAD
+	max6646, w83l771, max6696, sa56004, g781 };
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max6646, w83l771, max6696, sa56004, g781, tmp451 };
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The LM90 registers
@@ -152,22 +196,67 @@ enum chips { lm90, adm1032, lm99, lm86, max6657, max6659, adt7461, max6680,
 #define MAX6659_REG_R_LOCAL_EMERG	0x17
 #define MAX6659_REG_W_LOCAL_EMERG	0x17
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*  SA56004 registers */
+
+#define SA56004_REG_R_LOCAL_TEMPL 0x22
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #define LM90_DEF_CONVRATE_RVAL	6	/* Def conversion rate register value */
 #define LM90_MAX_CONVRATE_MS	16000	/* Maximum conversion rate in ms */
 
+=======
+#define LM90_DEF_CONVRATE_RVAL	6	/* Def conversion rate register value */
+#define LM90_MAX_CONVRATE_MS	16000	/* Maximum conversion rate in ms */
+
+/* TMP451 registers */
+#define TMP451_REG_R_LOCAL_TEMPL	0x15
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Device flags
  */
 #define LM90_FLAG_ADT7461_EXT	(1 << 0) /* ADT7461 extended mode	*/
 /* Device features */
 #define LM90_HAVE_OFFSET	(1 << 1) /* temperature offset register	*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define LM90_HAVE_LOCAL_EXT	(1 << 2) /* extended local temperature	*/
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define LM90_HAVE_REM_LIMIT_EXT	(1 << 3) /* extended remote limit	*/
 #define LM90_HAVE_EMERGENCY	(1 << 4) /* 3rd upper (emergency) limit	*/
 #define LM90_HAVE_EMERGENCY_ALARM (1 << 5)/* emergency alarm		*/
 #define LM90_HAVE_TEMP3		(1 << 6) /* 3rd temperature sensor	*/
 #define LM90_HAVE_BROKEN_ALERT	(1 << 7) /* Broken alert		*/
 
+<<<<<<< HEAD
+=======
+/* LM90 status */
+#define LM90_STATUS_LTHRM	(1 << 0) /* local THERM limit tripped */
+#define LM90_STATUS_RTHRM	(1 << 1) /* remote THERM limit tripped */
+#define LM90_STATUS_ROPEN	(1 << 2) /* remote is an open circuit */
+#define LM90_STATUS_RLOW	(1 << 3) /* remote low temp limit tripped */
+#define LM90_STATUS_RHIGH	(1 << 4) /* remote high temp limit tripped */
+#define LM90_STATUS_LLOW	(1 << 5) /* local low temp limit tripped */
+#define LM90_STATUS_LHIGH	(1 << 6) /* local high temp limit tripped */
+
+#define MAX6696_STATUS2_R2THRM	(1 << 1) /* remote2 THERM limit tripped */
+#define MAX6696_STATUS2_R2OPEN	(1 << 2) /* remote2 is an open circuit */
+#define MAX6696_STATUS2_R2LOW	(1 << 3) /* remote2 low temp limit tripped */
+#define MAX6696_STATUS2_R2HIGH	(1 << 4) /* remote2 high temp limit tripped */
+#define MAX6696_STATUS2_ROT2	(1 << 5) /* remote emergency limit tripped */
+#define MAX6696_STATUS2_R2OT2	(1 << 6) /* remote2 emergency limit tripped */
+#define MAX6696_STATUS2_LOT2	(1 << 7) /* local emergency limit tripped */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Driver data (common to all clients)
  */
@@ -176,6 +265,14 @@ static const struct i2c_device_id lm90_id[] = {
 	{ "adm1032", adm1032 },
 	{ "adt7461", adt7461 },
 	{ "adt7461a", adt7461 },
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	{ "g781", g781 },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "g781", g781 },
+>>>>>>> refs/remotes/origin/master
 	{ "lm90", lm90 },
 	{ "lm86", lm86 },
 	{ "lm89", lm86 },
@@ -192,6 +289,15 @@ static const struct i2c_device_id lm90_id[] = {
 	{ "max6696", max6696 },
 	{ "nct1008", adt7461 },
 	{ "w83l771", w83l771 },
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	{ "sa56004", sa56004 },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "sa56004", sa56004 },
+	{ "tmp451", tmp451 },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, lm90_id);
@@ -204,6 +310,14 @@ struct lm90_params {
 	u16 alert_alarms;	/* Which alarm bits trigger ALERT# */
 				/* Upper 8 bits for max6695/96 */
 	u8 max_convrate;	/* Maximum conversion rate register value */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8 reg_local_ext;	/* Extended local temp register (optional) */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 reg_local_ext;	/* Extended local temp register (optional) */
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct lm90_params lm90_params[] = {
@@ -219,6 +333,21 @@ static const struct lm90_params lm90_params[] = {
 		.alert_alarms = 0x7c,
 		.max_convrate = 10,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	[g781] = {
+		.flags = LM90_HAVE_OFFSET | LM90_HAVE_REM_LIMIT_EXT
+		  | LM90_HAVE_BROKEN_ALERT,
+		.alert_alarms = 0x7c,
+		.max_convrate = 8,
+	},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	[lm86] = {
 		.flags = LM90_HAVE_OFFSET | LM90_HAVE_REM_LIMIT_EXT,
 		.alert_alarms = 0x7b,
@@ -235,6 +364,8 @@ static const struct lm90_params lm90_params[] = {
 		.max_convrate = 9,
 	},
 	[max6646] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.flags = LM90_HAVE_LOCAL_EXT,
 		.alert_alarms = 0x7c,
 		.max_convrate = 6,
@@ -248,6 +379,27 @@ static const struct lm90_params lm90_params[] = {
 		.flags = LM90_HAVE_LOCAL_EXT | LM90_HAVE_EMERGENCY,
 		.alert_alarms = 0x7c,
 		.max_convrate = 8,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.alert_alarms = 0x7c,
+		.max_convrate = 6,
+		.reg_local_ext = MAX6657_REG_R_LOCAL_TEMPL,
+	},
+	[max6657] = {
+		.alert_alarms = 0x7c,
+		.max_convrate = 8,
+		.reg_local_ext = MAX6657_REG_R_LOCAL_TEMPL,
+	},
+	[max6659] = {
+		.flags = LM90_HAVE_EMERGENCY,
+		.alert_alarms = 0x7c,
+		.max_convrate = 8,
+		.reg_local_ext = MAX6657_REG_R_LOCAL_TEMPL,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[max6680] = {
 		.flags = LM90_HAVE_OFFSET,
@@ -255,16 +407,84 @@ static const struct lm90_params lm90_params[] = {
 		.max_convrate = 7,
 	},
 	[max6696] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.flags = LM90_HAVE_LOCAL_EXT | LM90_HAVE_EMERGENCY
 		  | LM90_HAVE_EMERGENCY_ALARM | LM90_HAVE_TEMP3,
 		.alert_alarms = 0x187c,
 		.max_convrate = 6,
+=======
+		.flags = LM90_HAVE_EMERGENCY
+		  | LM90_HAVE_EMERGENCY_ALARM | LM90_HAVE_TEMP3,
+		.alert_alarms = 0x1c7c,
+		.max_convrate = 6,
+		.reg_local_ext = MAX6657_REG_R_LOCAL_TEMPL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.flags = LM90_HAVE_EMERGENCY
+		  | LM90_HAVE_EMERGENCY_ALARM | LM90_HAVE_TEMP3,
+		.alert_alarms = 0x1c7c,
+		.max_convrate = 6,
+		.reg_local_ext = MAX6657_REG_R_LOCAL_TEMPL,
+>>>>>>> refs/remotes/origin/master
 	},
 	[w83l771] = {
 		.flags = LM90_HAVE_OFFSET | LM90_HAVE_REM_LIMIT_EXT,
 		.alert_alarms = 0x7c,
 		.max_convrate = 8,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	[sa56004] = {
+		.flags = LM90_HAVE_OFFSET | LM90_HAVE_REM_LIMIT_EXT,
+		.alert_alarms = 0x7b,
+		.max_convrate = 9,
+		.reg_local_ext = SA56004_REG_R_LOCAL_TEMPL,
+	},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[tmp451] = {
+		.flags = LM90_HAVE_OFFSET | LM90_HAVE_REM_LIMIT_EXT
+		  | LM90_HAVE_BROKEN_ALERT,
+		.alert_alarms = 0x7c,
+		.max_convrate = 9,
+		.reg_local_ext = TMP451_REG_R_LOCAL_TEMPL,
+	}
+};
+
+/*
+ * TEMP8 register index
+ */
+enum lm90_temp8_reg_index {
+	LOCAL_LOW = 0,
+	LOCAL_HIGH,
+	LOCAL_CRIT,
+	REMOTE_CRIT,
+	LOCAL_EMERG,	/* max6659 and max6695/96 */
+	REMOTE_EMERG,	/* max6659 and max6695/96 */
+	REMOTE2_CRIT,	/* max6695/96 only */
+	REMOTE2_EMERG,	/* max6695/96 only */
+	TEMP8_REG_NUM
+};
+
+/*
+ * TEMP11 register index
+ */
+enum lm90_temp11_reg_index {
+	REMOTE_TEMP = 0,
+	REMOTE_LOW,
+	REMOTE_HIGH,
+	REMOTE_OFFSET,	/* except max6646, max6657/58/59, and max6695/96 */
+	LOCAL_TEMP,
+	REMOTE2_TEMP,	/* max6695/96 only */
+	REMOTE2_LOW,	/* max6695/96 only */
+	REMOTE2_HIGH,	/* max6695/96 only */
+	TEMP11_REG_NUM
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -274,6 +494,10 @@ static const struct lm90_params lm90_params[] = {
 struct lm90_data {
 	struct device *hwmon_dev;
 	struct mutex update_lock;
+<<<<<<< HEAD
+=======
+	struct regulator *regulator;
+>>>>>>> refs/remotes/origin/master
 	char valid; /* zero until following fields are valid */
 	unsigned long last_updated; /* in jiffies */
 	int kind;
@@ -286,6 +510,8 @@ struct lm90_data {
 	u16 alert_alarms;	/* Which alarm bits trigger ALERT# */
 				/* Upper 8 bits for max6695/96 */
 	u8 max_convrate;	/* Maximum conversion rate */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* registers values */
 	s8 temp8[8];	/* 0: local low limit
@@ -305,6 +531,37 @@ struct lm90_data {
 			   5: remote 2 input (max6695/96 only)
 			   6: remote 2 low limit (max6695/96 only)
 			   7: remote 2 high limit (ma6695/96 only) */
+=======
+	u8 reg_local_ext;	/* local extension register offset */
+
+	/* registers values */
+	s8 temp8[8];	/* 0: local low limit
+			 * 1: local high limit
+			 * 2: local critical limit
+			 * 3: remote critical limit
+			 * 4: local emergency limit (max6659 and max6695/96)
+			 * 5: remote emergency limit (max6659 and max6695/96)
+			 * 6: remote 2 critical limit (max6695/96 only)
+			 * 7: remote 2 emergency limit (max6695/96 only)
+			 */
+	s16 temp11[8];	/* 0: remote input
+			 * 1: remote low limit
+			 * 2: remote high limit
+			 * 3: remote offset (except max6646, max6657/58/59,
+			 *		     and max6695/96)
+			 * 4: local input
+			 * 5: remote 2 input (max6695/96 only)
+			 * 6: remote 2 low limit (max6695/96 only)
+			 * 7: remote 2 high limit (max6695/96 only)
+			 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 reg_local_ext;	/* local extension register offset */
+
+	/* registers values */
+	s8 temp8[TEMP8_REG_NUM];
+	s16 temp11[TEMP11_REG_NUM];
+>>>>>>> refs/remotes/origin/master
 	u8 temp_hyst;
 	u16 alarms; /* bitvector (upper 8 bits for max6695/96) */
 };
@@ -439,22 +696,34 @@ static struct lm90_data *lm90_update_device(struct device *dev)
 
 	mutex_lock(&data->update_lock);
 
+<<<<<<< HEAD
 	next_update = data->last_updated
 	  + msecs_to_jiffies(data->update_interval) + 1;
+=======
+	next_update = data->last_updated +
+		      msecs_to_jiffies(data->update_interval);
+>>>>>>> refs/remotes/origin/master
 	if (time_after(jiffies, next_update) || !data->valid) {
 		u8 h, l;
 		u8 alarms;
 
 		dev_dbg(&client->dev, "Updating lm90 data.\n");
+<<<<<<< HEAD
 		lm90_read_reg(client, LM90_REG_R_LOCAL_LOW, &data->temp8[0]);
 		lm90_read_reg(client, LM90_REG_R_LOCAL_HIGH, &data->temp8[1]);
 		lm90_read_reg(client, LM90_REG_R_LOCAL_CRIT, &data->temp8[2]);
 		lm90_read_reg(client, LM90_REG_R_REMOTE_CRIT, &data->temp8[3]);
 		lm90_read_reg(client, LM90_REG_R_TCRIT_HYST, &data->temp_hyst);
 
+<<<<<<< HEAD
 		if (data->flags & LM90_HAVE_LOCAL_EXT) {
 			lm90_read16(client, LM90_REG_R_LOCAL_TEMP,
 				    MAX6657_REG_R_LOCAL_TEMPL,
+=======
+		if (data->reg_local_ext) {
+			lm90_read16(client, LM90_REG_R_LOCAL_TEMP,
+				    data->reg_local_ext,
+>>>>>>> refs/remotes/origin/cm-10.0
 				    &data->temp11[4]);
 		} else {
 			if (lm90_read_reg(client, LM90_REG_R_LOCAL_TEMP,
@@ -477,6 +746,44 @@ static struct lm90_data *lm90_update_device(struct device *dev)
 			 && lm90_read_reg(client, LM90_REG_R_REMOTE_HIGHL,
 					  &l) == 0)
 				data->temp11[2] |= l;
+=======
+		lm90_read_reg(client, LM90_REG_R_LOCAL_LOW,
+			      &data->temp8[LOCAL_LOW]);
+		lm90_read_reg(client, LM90_REG_R_LOCAL_HIGH,
+			      &data->temp8[LOCAL_HIGH]);
+		lm90_read_reg(client, LM90_REG_R_LOCAL_CRIT,
+			      &data->temp8[LOCAL_CRIT]);
+		lm90_read_reg(client, LM90_REG_R_REMOTE_CRIT,
+			      &data->temp8[REMOTE_CRIT]);
+		lm90_read_reg(client, LM90_REG_R_TCRIT_HYST, &data->temp_hyst);
+
+		if (data->reg_local_ext) {
+			lm90_read16(client, LM90_REG_R_LOCAL_TEMP,
+				    data->reg_local_ext,
+				    &data->temp11[LOCAL_TEMP]);
+		} else {
+			if (lm90_read_reg(client, LM90_REG_R_LOCAL_TEMP,
+					  &h) == 0)
+				data->temp11[LOCAL_TEMP] = h << 8;
+		}
+		lm90_read16(client, LM90_REG_R_REMOTE_TEMPH,
+			    LM90_REG_R_REMOTE_TEMPL,
+			    &data->temp11[REMOTE_TEMP]);
+
+		if (lm90_read_reg(client, LM90_REG_R_REMOTE_LOWH, &h) == 0) {
+			data->temp11[REMOTE_LOW] = h << 8;
+			if ((data->flags & LM90_HAVE_REM_LIMIT_EXT)
+			 && lm90_read_reg(client, LM90_REG_R_REMOTE_LOWL,
+					  &l) == 0)
+				data->temp11[REMOTE_LOW] |= l;
+		}
+		if (lm90_read_reg(client, LM90_REG_R_REMOTE_HIGHH, &h) == 0) {
+			data->temp11[REMOTE_HIGH] = h << 8;
+			if ((data->flags & LM90_HAVE_REM_LIMIT_EXT)
+			 && lm90_read_reg(client, LM90_REG_R_REMOTE_HIGHL,
+					  &l) == 0)
+				data->temp11[REMOTE_HIGH] |= l;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (data->flags & LM90_HAVE_OFFSET) {
@@ -484,6 +791,7 @@ static struct lm90_data *lm90_update_device(struct device *dev)
 					  &h) == 0
 			 && lm90_read_reg(client, LM90_REG_R_REMOTE_OFFSL,
 					  &l) == 0)
+<<<<<<< HEAD
 				data->temp11[3] = (h << 8) | l;
 		}
 		if (data->flags & LM90_HAVE_EMERGENCY) {
@@ -491,6 +799,15 @@ static struct lm90_data *lm90_update_device(struct device *dev)
 				      &data->temp8[4]);
 			lm90_read_reg(client, MAX6659_REG_R_REMOTE_EMERG,
 				      &data->temp8[5]);
+=======
+				data->temp11[REMOTE_OFFSET] = (h << 8) | l;
+		}
+		if (data->flags & LM90_HAVE_EMERGENCY) {
+			lm90_read_reg(client, MAX6659_REG_R_LOCAL_EMERG,
+				      &data->temp8[LOCAL_EMERG]);
+			lm90_read_reg(client, MAX6659_REG_R_REMOTE_EMERG,
+				      &data->temp8[REMOTE_EMERG]);
+>>>>>>> refs/remotes/origin/master
 		}
 		lm90_read_reg(client, LM90_REG_R_STATUS, &alarms);
 		data->alarms = alarms;	/* save as 16 bit value */
@@ -498,6 +815,7 @@ static struct lm90_data *lm90_update_device(struct device *dev)
 		if (data->kind == max6696) {
 			lm90_select_remote_channel(client, data, 1);
 			lm90_read_reg(client, LM90_REG_R_REMOTE_CRIT,
+<<<<<<< HEAD
 				      &data->temp8[6]);
 			lm90_read_reg(client, MAX6659_REG_R_REMOTE_EMERG,
 				      &data->temp8[7]);
@@ -507,6 +825,18 @@ static struct lm90_data *lm90_update_device(struct device *dev)
 				data->temp11[6] = h << 8;
 			if (!lm90_read_reg(client, LM90_REG_R_REMOTE_HIGHH, &h))
 				data->temp11[7] = h << 8;
+=======
+				      &data->temp8[REMOTE2_CRIT]);
+			lm90_read_reg(client, MAX6659_REG_R_REMOTE_EMERG,
+				      &data->temp8[REMOTE2_EMERG]);
+			lm90_read16(client, LM90_REG_R_REMOTE_TEMPH,
+				    LM90_REG_R_REMOTE_TEMPL,
+				    &data->temp11[REMOTE2_TEMP]);
+			if (!lm90_read_reg(client, LM90_REG_R_REMOTE_LOWH, &h))
+				data->temp11[REMOTE2_LOW] = h << 8;
+			if (!lm90_read_reg(client, LM90_REG_R_REMOTE_HIGHH, &h))
+				data->temp11[REMOTE2_HIGH] = h << 8;
+>>>>>>> refs/remotes/origin/master
 			lm90_select_remote_channel(client, data, 0);
 
 			if (!lm90_read_reg(client, MAX6696_REG_R_STATUS2,
@@ -514,8 +844,21 @@ static struct lm90_data *lm90_update_device(struct device *dev)
 				data->alarms |= alarms << 8;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* Re-enable ALERT# output if it was originally enabled and
 		 * relevant alarms are all clear */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * Re-enable ALERT# output if it was originally enabled and
+		 * relevant alarms are all clear
+		 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if ((data->config_orig & 0x80) == 0
 		 && (data->alarms & data->alert_alarms) == 0) {
 			u8 config;
@@ -676,7 +1019,11 @@ static ssize_t show_temp8(struct device *dev, struct device_attribute *devattr,
 	struct lm90_data *data = lm90_update_device(dev);
 	int temp;
 
+<<<<<<< HEAD
 	if (data->kind == adt7461)
+=======
+	if (data->kind == adt7461 || data->kind == tmp451)
+>>>>>>> refs/remotes/origin/master
 		temp = temp_from_u8_adt7461(data, data->temp8[attr->index]);
 	else if (data->kind == max6646)
 		temp = temp_from_u8(data->temp8[attr->index]);
@@ -693,7 +1040,11 @@ static ssize_t show_temp8(struct device *dev, struct device_attribute *devattr,
 static ssize_t set_temp8(struct device *dev, struct device_attribute *devattr,
 			 const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	static const u8 reg[8] = {
+=======
+	static const u8 reg[TEMP8_REG_NUM] = {
+>>>>>>> refs/remotes/origin/master
 		LM90_REG_W_LOCAL_LOW,
 		LM90_REG_W_LOCAL_HIGH,
 		LM90_REG_W_LOCAL_CRIT,
@@ -711,7 +1062,15 @@ static ssize_t set_temp8(struct device *dev, struct device_attribute *devattr,
 	long val;
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -720,7 +1079,11 @@ static ssize_t set_temp8(struct device *dev, struct device_attribute *devattr,
 		val -= 16000;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	if (data->kind == adt7461)
+=======
+	if (data->kind == adt7461 || data->kind == tmp451)
+>>>>>>> refs/remotes/origin/master
 		data->temp8[nr] = temp_to_u8_adt7461(data, val);
 	else if (data->kind == max6646)
 		data->temp8[nr] = temp_to_u8(val);
@@ -742,7 +1105,11 @@ static ssize_t show_temp11(struct device *dev, struct device_attribute *devattr,
 	struct lm90_data *data = lm90_update_device(dev);
 	int temp;
 
+<<<<<<< HEAD
 	if (data->kind == adt7461)
+=======
+	if (data->kind == adt7461 || data->kind == tmp451)
+>>>>>>> refs/remotes/origin/master
 		temp = temp_from_u16_adt7461(data, data->temp11[attr->index]);
 	else if (data->kind == max6646)
 		temp = temp_from_u16(data->temp11[attr->index]);
@@ -779,7 +1146,15 @@ static ssize_t set_temp11(struct device *dev, struct device_attribute *devattr,
 	long val;
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -788,7 +1163,11 @@ static ssize_t set_temp11(struct device *dev, struct device_attribute *devattr,
 		val -= 16000;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	if (data->kind == adt7461)
+=======
+	if (data->kind == adt7461 || data->kind == tmp451)
+>>>>>>> refs/remotes/origin/master
 		data->temp11[index] = temp_to_u16_adt7461(data, val);
 	else if (data->kind == max6646)
 		data->temp11[index] = temp_to_u8(val) << 8;
@@ -817,7 +1196,11 @@ static ssize_t show_temphyst(struct device *dev,
 	struct lm90_data *data = lm90_update_device(dev);
 	int temp;
 
+<<<<<<< HEAD
 	if (data->kind == adt7461)
+=======
+	if (data->kind == adt7461 || data->kind == tmp451)
+>>>>>>> refs/remotes/origin/master
 		temp = temp_from_u8_adt7461(data, data->temp8[attr->index]);
 	else if (data->kind == max6646)
 		temp = temp_from_u8(data->temp8[attr->index]);
@@ -840,17 +1223,34 @@ static ssize_t set_temphyst(struct device *dev, struct device_attribute *dummy,
 	int err;
 	int temp;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	if (data->kind == adt7461)
 		temp = temp_from_u8_adt7461(data, data->temp8[2]);
 	else if (data->kind == max6646)
 		temp = temp_from_u8(data->temp8[2]);
 	else
 		temp = temp_from_s8(data->temp8[2]);
+=======
+	if (data->kind == adt7461 || data->kind == tmp451)
+		temp = temp_from_u8_adt7461(data, data->temp8[LOCAL_CRIT]);
+	else if (data->kind == max6646)
+		temp = temp_from_u8(data->temp8[LOCAL_CRIT]);
+	else
+		temp = temp_from_s8(data->temp8[LOCAL_CRIT]);
+>>>>>>> refs/remotes/origin/master
 
 	data->temp_hyst = hyst_to_reg(temp - val);
 	i2c_smbus_write_byte_data(client, LM90_REG_W_TCRIT_HYST,
@@ -893,17 +1293,34 @@ static ssize_t set_update_interval(struct device *dev,
 	unsigned long val;
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lm90_set_convrate(client, data, val);
+=======
+	lm90_set_convrate(client, data, SENSORS_LIMIT(val, 0, 100000));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lm90_set_convrate(client, data, clamp_val(val, 0, 100000));
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 
 	return count;
 }
 
+<<<<<<< HEAD
 static SENSOR_DEVICE_ATTR_2(temp1_input, S_IRUGO, show_temp11, NULL, 0, 4);
 static SENSOR_DEVICE_ATTR_2(temp2_input, S_IRUGO, show_temp11, NULL, 0, 0);
 static SENSOR_DEVICE_ATTR(temp1_min, S_IWUSR | S_IRUGO, show_temp8,
@@ -923,6 +1340,30 @@ static SENSOR_DEVICE_ATTR(temp1_crit_hyst, S_IWUSR | S_IRUGO, show_temphyst,
 static SENSOR_DEVICE_ATTR(temp2_crit_hyst, S_IRUGO, show_temphyst, NULL, 3);
 static SENSOR_DEVICE_ATTR_2(temp2_offset, S_IWUSR | S_IRUGO, show_temp11,
 	set_temp11, 2, 3);
+=======
+static SENSOR_DEVICE_ATTR_2(temp1_input, S_IRUGO, show_temp11, NULL,
+	0, LOCAL_TEMP);
+static SENSOR_DEVICE_ATTR_2(temp2_input, S_IRUGO, show_temp11, NULL,
+	0, REMOTE_TEMP);
+static SENSOR_DEVICE_ATTR(temp1_min, S_IWUSR | S_IRUGO, show_temp8,
+	set_temp8, LOCAL_LOW);
+static SENSOR_DEVICE_ATTR_2(temp2_min, S_IWUSR | S_IRUGO, show_temp11,
+	set_temp11, 0, REMOTE_LOW);
+static SENSOR_DEVICE_ATTR(temp1_max, S_IWUSR | S_IRUGO, show_temp8,
+	set_temp8, LOCAL_HIGH);
+static SENSOR_DEVICE_ATTR_2(temp2_max, S_IWUSR | S_IRUGO, show_temp11,
+	set_temp11, 1, REMOTE_HIGH);
+static SENSOR_DEVICE_ATTR(temp1_crit, S_IWUSR | S_IRUGO, show_temp8,
+	set_temp8, LOCAL_CRIT);
+static SENSOR_DEVICE_ATTR(temp2_crit, S_IWUSR | S_IRUGO, show_temp8,
+	set_temp8, REMOTE_CRIT);
+static SENSOR_DEVICE_ATTR(temp1_crit_hyst, S_IWUSR | S_IRUGO, show_temphyst,
+	set_temphyst, LOCAL_CRIT);
+static SENSOR_DEVICE_ATTR(temp2_crit_hyst, S_IRUGO, show_temphyst, NULL,
+	REMOTE_CRIT);
+static SENSOR_DEVICE_ATTR_2(temp2_offset, S_IWUSR | S_IRUGO, show_temp11,
+	set_temp11, 2, REMOTE_OFFSET);
+>>>>>>> refs/remotes/origin/master
 
 /* Individual alarm files */
 static SENSOR_DEVICE_ATTR(temp1_crit_alarm, S_IRUGO, show_alarm, NULL, 0);
@@ -970,6 +1411,7 @@ static const struct attribute_group lm90_group = {
  * Additional attributes for devices with emergency sensors
  */
 static SENSOR_DEVICE_ATTR(temp1_emergency, S_IWUSR | S_IRUGO, show_temp8,
+<<<<<<< HEAD
 	set_temp8, 4);
 static SENSOR_DEVICE_ATTR(temp2_emergency, S_IWUSR | S_IRUGO, show_temp8,
 	set_temp8, 5);
@@ -977,6 +1419,15 @@ static SENSOR_DEVICE_ATTR(temp1_emergency_hyst, S_IRUGO, show_temphyst,
 			  NULL, 4);
 static SENSOR_DEVICE_ATTR(temp2_emergency_hyst, S_IRUGO, show_temphyst,
 			  NULL, 5);
+=======
+	set_temp8, LOCAL_EMERG);
+static SENSOR_DEVICE_ATTR(temp2_emergency, S_IWUSR | S_IRUGO, show_temp8,
+	set_temp8, REMOTE_EMERG);
+static SENSOR_DEVICE_ATTR(temp1_emergency_hyst, S_IRUGO, show_temphyst,
+			  NULL, LOCAL_EMERG);
+static SENSOR_DEVICE_ATTR(temp2_emergency_hyst, S_IRUGO, show_temphyst,
+			  NULL, REMOTE_EMERG);
+>>>>>>> refs/remotes/origin/master
 
 static struct attribute *lm90_emergency_attributes[] = {
 	&sensor_dev_attr_temp1_emergency.dev_attr.attr,
@@ -1006,6 +1457,7 @@ static const struct attribute_group lm90_emergency_alarm_group = {
 /*
  * Additional attributes for devices with 3 temperature sensors
  */
+<<<<<<< HEAD
 static SENSOR_DEVICE_ATTR_2(temp3_input, S_IRUGO, show_temp11, NULL, 0, 5);
 static SENSOR_DEVICE_ATTR_2(temp3_min, S_IWUSR | S_IRUGO, show_temp11,
 	set_temp11, 3, 6);
@@ -1018,6 +1470,22 @@ static SENSOR_DEVICE_ATTR(temp3_emergency, S_IWUSR | S_IRUGO, show_temp8,
 	set_temp8, 7);
 static SENSOR_DEVICE_ATTR(temp3_emergency_hyst, S_IRUGO, show_temphyst,
 			  NULL, 7);
+=======
+static SENSOR_DEVICE_ATTR_2(temp3_input, S_IRUGO, show_temp11, NULL,
+	0, REMOTE2_TEMP);
+static SENSOR_DEVICE_ATTR_2(temp3_min, S_IWUSR | S_IRUGO, show_temp11,
+	set_temp11, 3, REMOTE2_LOW);
+static SENSOR_DEVICE_ATTR_2(temp3_max, S_IWUSR | S_IRUGO, show_temp11,
+	set_temp11, 4, REMOTE2_HIGH);
+static SENSOR_DEVICE_ATTR(temp3_crit, S_IWUSR | S_IRUGO, show_temp8,
+	set_temp8, REMOTE2_CRIT);
+static SENSOR_DEVICE_ATTR(temp3_crit_hyst, S_IRUGO, show_temphyst, NULL,
+	REMOTE2_CRIT);
+static SENSOR_DEVICE_ATTR(temp3_emergency, S_IWUSR | S_IRUGO, show_temp8,
+	set_temp8, REMOTE2_EMERG);
+static SENSOR_DEVICE_ATTR(temp3_emergency_hyst, S_IRUGO, show_temphyst,
+			  NULL, REMOTE2_EMERG);
+>>>>>>> refs/remotes/origin/master
 
 static SENSOR_DEVICE_ATTR(temp3_crit_alarm, S_IRUGO, show_alarm, NULL, 9);
 static SENSOR_DEVICE_ATTR(temp3_fault, S_IRUGO, show_alarm, NULL, 10);
@@ -1061,7 +1529,15 @@ static ssize_t set_pec(struct device *dev, struct device_attribute *dummy,
 	long val;
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -1086,6 +1562,8 @@ static DEVICE_ATTR(pec, S_IWUSR | S_IRUGO, show_pec, set_pec);
  */
 
 /* Return 0 if detection is successful, -ENODEV otherwise */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int lm90_detect(struct i2c_client *new_client,
 		       struct i2c_board_info *info)
 {
@@ -1093,11 +1571,27 @@ static int lm90_detect(struct i2c_client *new_client,
 	int address = new_client->addr;
 	const char *name = NULL;
 	int man_id, chip_id, reg_config1, reg_convrate;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int lm90_detect(struct i2c_client *client,
+		       struct i2c_board_info *info)
+{
+	struct i2c_adapter *adapter = client->adapter;
+	int address = client->addr;
+	const char *name = NULL;
+	int man_id, chip_id, config1, config2, convrate;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
 		return -ENODEV;
 
 	/* detection and identification */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((man_id = i2c_smbus_read_byte_data(new_client,
 						LM90_REG_R_MAN_ID)) < 0
 	 || (chip_id = i2c_smbus_read_byte_data(new_client,
@@ -1120,6 +1614,32 @@ static int lm90_detect(struct i2c_client *new_client,
 		if ((reg_config1 & 0x2A) == 0x00
 		 && (reg_config2 & 0xF8) == 0x00
 		 && reg_convrate <= 0x09) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	man_id = i2c_smbus_read_byte_data(client, LM90_REG_R_MAN_ID);
+	chip_id = i2c_smbus_read_byte_data(client, LM90_REG_R_CHIP_ID);
+	config1 = i2c_smbus_read_byte_data(client, LM90_REG_R_CONFIG1);
+	convrate = i2c_smbus_read_byte_data(client, LM90_REG_R_CONVRATE);
+	if (man_id < 0 || chip_id < 0 || config1 < 0 || convrate < 0)
+		return -ENODEV;
+
+	if (man_id == 0x01 || man_id == 0x5C || man_id == 0x41) {
+		config2 = i2c_smbus_read_byte_data(client, LM90_REG_R_CONFIG2);
+		if (config2 < 0)
+			return -ENODEV;
+	} else
+		config2 = 0;		/* Make compiler happy */
+
+	if ((address == 0x4C || address == 0x4D)
+	 && man_id == 0x01) { /* National Semiconductor */
+		if ((config1 & 0x2A) == 0x00
+		 && (config2 & 0xF8) == 0x00
+		 && convrate <= 0x09) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (address == 0x4C
 			 && (chip_id & 0xF0) == 0x20) { /* LM90 */
 				name = "lm90";
@@ -1143,16 +1663,34 @@ static int lm90_detect(struct i2c_client *new_client,
 	if ((address == 0x4C || address == 0x4D)
 	 && man_id == 0x41) { /* Analog Devices */
 		if ((chip_id & 0xF0) == 0x40 /* ADM1032 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 && (reg_config1 & 0x3F) == 0x00
 		 && reg_convrate <= 0x0A) {
 			name = "adm1032";
 			/* The ADM1032 supports PEC, but only if combined
 			   transactions are not used. */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		 && (config1 & 0x3F) == 0x00
+		 && convrate <= 0x0A) {
+			name = "adm1032";
+			/*
+			 * The ADM1032 supports PEC, but only if combined
+			 * transactions are not used.
+			 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (i2c_check_functionality(adapter,
 						    I2C_FUNC_SMBUS_BYTE))
 				info->flags |= I2C_CLIENT_PEC;
 		} else
 		if (chip_id == 0x51 /* ADT7461 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 && (reg_config1 & 0x1B) == 0x00
 		 && reg_convrate <= 0x0A) {
 			name = "adt7461";
@@ -1160,11 +1698,33 @@ static int lm90_detect(struct i2c_client *new_client,
 		if (chip_id == 0x57 /* ADT7461A, NCT1008 */
 		 && (reg_config1 & 0x1B) == 0x00
 		 && reg_convrate <= 0x0A) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		 && (config1 & 0x1B) == 0x00
+		 && convrate <= 0x0A) {
+			name = "adt7461";
+		} else
+		if (chip_id == 0x57 /* ADT7461A, NCT1008 */
+		 && (config1 & 0x1B) == 0x00
+		 && convrate <= 0x0A) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			name = "adt7461a";
 		}
 	} else
 	if (man_id == 0x4D) { /* Maxim */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int reg_emerg, reg_emerg2, reg_status2;
+=======
+		int emerg, emerg2, status2;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int emerg, emerg2, status2;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * We read MAX6659_REG_R_REMOTE_EMERG twice, and re-read
@@ -1172,6 +1732,8 @@ static int lm90_detect(struct i2c_client *new_client,
 		 * exists, both readings will reflect the same value. Otherwise,
 		 * the readings will be different.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((reg_emerg = i2c_smbus_read_byte_data(new_client,
 						MAX6659_REG_R_REMOTE_EMERG)) < 0
 		 || i2c_smbus_read_byte_data(new_client, LM90_REG_R_MAN_ID) < 0
@@ -1179,6 +1741,22 @@ static int lm90_detect(struct i2c_client *new_client,
 						MAX6659_REG_R_REMOTE_EMERG)) < 0
 		 || (reg_status2 = i2c_smbus_read_byte_data(new_client,
 						MAX6696_REG_R_STATUS2)) < 0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		emerg = i2c_smbus_read_byte_data(client,
+						 MAX6659_REG_R_REMOTE_EMERG);
+		man_id = i2c_smbus_read_byte_data(client,
+						  LM90_REG_R_MAN_ID);
+		emerg2 = i2c_smbus_read_byte_data(client,
+						  MAX6659_REG_R_REMOTE_EMERG);
+		status2 = i2c_smbus_read_byte_data(client,
+						   MAX6696_REG_R_STATUS2);
+		if (emerg < 0 || man_id < 0 || emerg2 < 0 || status2 < 0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return -ENODEV;
 
 		/*
@@ -1196,8 +1774,18 @@ static int lm90_detect(struct i2c_client *new_client,
 		 */
 		if (chip_id == man_id
 		 && (address == 0x4C || address == 0x4D || address == 0x4E)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 && (reg_config1 & 0x1F) == (man_id & 0x0F)
 		 && reg_convrate <= 0x09) {
+=======
+		 && (config1 & 0x1F) == (man_id & 0x0F)
+		 && convrate <= 0x09) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 && (config1 & 0x1F) == (man_id & 0x0F)
+		 && convrate <= 0x09) {
+>>>>>>> refs/remotes/origin/master
 			if (address == 0x4C)
 				name = "max6657";
 			else
@@ -1215,10 +1803,23 @@ static int lm90_detect(struct i2c_client *new_client,
 		 * one of those registers exists.
 		 */
 		if (chip_id == 0x01
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 && (reg_config1 & 0x10) == 0x00
 		 && (reg_status2 & 0x01) == 0x00
 		 && reg_emerg == reg_emerg2
 		 && reg_convrate <= 0x07) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		 && (config1 & 0x10) == 0x00
+		 && (status2 & 0x01) == 0x00
+		 && emerg == emerg2
+		 && convrate <= 0x07) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			name = "max6696";
 		} else
 		/*
@@ -1228,8 +1829,18 @@ static int lm90_detect(struct i2c_client *new_client,
 		 * second to last bit of config1 (software reset).
 		 */
 		if (chip_id == 0x01
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 && (reg_config1 & 0x03) == 0x00
 		 && reg_convrate <= 0x07) {
+=======
+		 && (config1 & 0x03) == 0x00
+		 && convrate <= 0x07) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 && (config1 & 0x03) == 0x00
+		 && convrate <= 0x07) {
+>>>>>>> refs/remotes/origin/master
 			name = "max6680";
 		} else
 		/*
@@ -1238,13 +1849,25 @@ static int lm90_detect(struct i2c_client *new_client,
 		 * register are unused and should return zero when read.
 		 */
 		if (chip_id == 0x59
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 && (reg_config1 & 0x3f) == 0x00
 		 && reg_convrate <= 0x07) {
+=======
+		 && (config1 & 0x3f) == 0x00
+		 && convrate <= 0x07) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 && (config1 & 0x3f) == 0x00
+		 && convrate <= 0x07) {
+>>>>>>> refs/remotes/origin/master
 			name = "max6646";
 		}
 	} else
 	if (address == 0x4C
 	 && man_id == 0x5C) { /* Winbond/Nuvoton */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int reg_config2;
 
 		reg_config2 = i2c_smbus_read_byte_data(new_client,
@@ -1263,6 +1886,53 @@ static int lm90_detect(struct i2c_client *new_client,
 				name = "w83l771";
 			}
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if ((config1 & 0x2A) == 0x00
+		 && (config2 & 0xF8) == 0x00) {
+			if (chip_id == 0x01 /* W83L771W/G */
+			 && convrate <= 0x09) {
+				name = "w83l771";
+			} else
+			if ((chip_id & 0xFE) == 0x10 /* W83L771AWG/ASG */
+			 && convrate <= 0x08) {
+				name = "w83l771";
+			}
+		}
+	} else
+	if (address >= 0x48 && address <= 0x4F
+	 && man_id == 0xA1) { /*  NXP Semiconductor/Philips */
+		if (chip_id == 0x00
+		 && (config1 & 0x2A) == 0x00
+		 && (config2 & 0xFE) == 0x00
+		 && convrate <= 0x09) {
+			name = "sa56004";
+		}
+	} else
+	if ((address == 0x4C || address == 0x4D)
+	 && man_id == 0x47) { /* GMT */
+		if (chip_id == 0x01 /* G781 */
+		 && (config1 & 0x3F) == 0x00
+		 && convrate <= 0x08)
+			name = "g781";
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else
+	if (address == 0x4C
+	 && man_id == 0x55) { /* Texas Instruments */
+		int local_ext;
+
+		local_ext = i2c_smbus_read_byte_data(client,
+						     TMP451_REG_R_LOCAL_TEMPL);
+
+		if (chip_id == 0x00 /* TMP451 */
+		 && (config1 & 0x1B) == 0x00
+		 && convrate <= 0x09
+		 && (local_ext & 0x0F) == 0x00)
+			name = "tmp451";
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!name) { /* identification failed */
@@ -1279,6 +1949,8 @@ static int lm90_detect(struct i2c_client *new_client,
 
 static void lm90_remove_files(struct i2c_client *client, struct lm90_data *data)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (data->flags & LM90_HAVE_TEMP3)
 		sysfs_remove_group(&client->dev.kobj, &lm90_temp3_group);
 	if (data->flags & LM90_HAVE_EMERGENCY_ALARM)
@@ -1292,6 +1964,34 @@ static void lm90_remove_files(struct i2c_client *client, struct lm90_data *data)
 				   &sensor_dev_attr_temp2_offset.dev_attr);
 	device_remove_file(&client->dev, &dev_attr_pec);
 	sysfs_remove_group(&client->dev.kobj, &lm90_group);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct device *dev = &client->dev;
+
+	if (data->flags & LM90_HAVE_TEMP3)
+		sysfs_remove_group(&dev->kobj, &lm90_temp3_group);
+	if (data->flags & LM90_HAVE_EMERGENCY_ALARM)
+		sysfs_remove_group(&dev->kobj, &lm90_emergency_alarm_group);
+	if (data->flags & LM90_HAVE_EMERGENCY)
+		sysfs_remove_group(&dev->kobj, &lm90_emergency_group);
+	if (data->flags & LM90_HAVE_OFFSET)
+		device_remove_file(dev, &sensor_dev_attr_temp2_offset.dev_attr);
+	device_remove_file(dev, &dev_attr_pec);
+	sysfs_remove_group(&dev->kobj, &lm90_group);
+}
+
+static void lm90_restore_conf(struct i2c_client *client, struct lm90_data *data)
+{
+	/* Restore initial configuration */
+	i2c_smbus_write_byte_data(client, LM90_REG_W_CONVRATE,
+				  data->convrate_orig);
+	i2c_smbus_write_byte_data(client, LM90_REG_W_CONFIG1,
+				  data->config_orig);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void lm90_init_client(struct i2c_client *client)
@@ -1316,7 +2016,11 @@ static void lm90_init_client(struct i2c_client *client)
 	data->config_orig = config;
 
 	/* Check Temperature Range Select */
+<<<<<<< HEAD
 	if (data->kind == adt7461) {
+=======
+	if (data->kind == adt7461 || data->kind == tmp451) {
+>>>>>>> refs/remotes/origin/master
 		if (config & 0x04)
 			data->flags |= LM90_FLAG_ADT7461_EXT;
 	}
@@ -1340,10 +2044,70 @@ static void lm90_init_client(struct i2c_client *client)
 		i2c_smbus_write_byte_data(client, LM90_REG_W_CONFIG1, config);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int lm90_probe(struct i2c_client *new_client,
 		      const struct i2c_device_id *id)
 {
 	struct i2c_adapter *adapter = to_i2c_adapter(new_client->dev.parent);
+=======
+=======
+static bool lm90_is_tripped(struct i2c_client *client, u16 *status)
+{
+	struct lm90_data *data = i2c_get_clientdata(client);
+	u8 st, st2 = 0;
+
+	lm90_read_reg(client, LM90_REG_R_STATUS, &st);
+
+	if (data->kind == max6696)
+		lm90_read_reg(client, MAX6696_REG_R_STATUS2, &st2);
+
+	*status = st | (st2 << 8);
+
+	if ((st & 0x7f) == 0 && (st2 & 0xfe) == 0)
+		return false;
+
+	if ((st & (LM90_STATUS_LLOW | LM90_STATUS_LHIGH | LM90_STATUS_LTHRM)) ||
+	    (st2 & MAX6696_STATUS2_LOT2))
+		dev_warn(&client->dev,
+			 "temp%d out of range, please check!\n", 1);
+	if ((st & (LM90_STATUS_RLOW | LM90_STATUS_RHIGH | LM90_STATUS_RTHRM)) ||
+	    (st2 & MAX6696_STATUS2_ROT2))
+		dev_warn(&client->dev,
+			 "temp%d out of range, please check!\n", 2);
+	if (st & LM90_STATUS_ROPEN)
+		dev_warn(&client->dev,
+			 "temp%d diode open, please check!\n", 2);
+	if (st2 & (MAX6696_STATUS2_R2LOW | MAX6696_STATUS2_R2HIGH |
+		   MAX6696_STATUS2_R2THRM | MAX6696_STATUS2_R2OT2))
+		dev_warn(&client->dev,
+			 "temp%d out of range, please check!\n", 3);
+	if (st2 & MAX6696_STATUS2_R2OPEN)
+		dev_warn(&client->dev,
+			 "temp%d diode open, please check!\n", 3);
+
+	return true;
+}
+
+static irqreturn_t lm90_irq_thread(int irq, void *dev_id)
+{
+	struct i2c_client *client = dev_id;
+	u16 status;
+
+	if (lm90_is_tripped(client, &status))
+		return IRQ_HANDLED;
+	else
+		return IRQ_NONE;
+}
+
+>>>>>>> refs/remotes/origin/master
+static int lm90_probe(struct i2c_client *client,
+		      const struct i2c_device_id *id)
+{
+	struct device *dev = &client->dev;
+	struct i2c_adapter *adapter = to_i2c_adapter(dev->parent);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct lm90_data *data;
 	int err;
 
@@ -1352,27 +2116,83 @@ static int lm90_probe(struct i2c_client *new_client,
 		err = -ENOMEM;
 		goto exit;
 	}
+<<<<<<< HEAD
 	i2c_set_clientdata(new_client, data);
+=======
+	i2c_set_clientdata(client, data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_init(&data->update_lock);
 
+=======
+	struct lm90_data *data;
+	struct regulator *regulator;
+	int err;
+
+	regulator = devm_regulator_get(dev, "vcc");
+	if (IS_ERR(regulator))
+		return PTR_ERR(regulator);
+
+	err = regulator_enable(regulator);
+	if (err < 0) {
+		dev_err(&client->dev,
+			"Failed to enable regulator: %d\n", err);
+		return err;
+	}
+
+	data = devm_kzalloc(&client->dev, sizeof(struct lm90_data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+
+	i2c_set_clientdata(client, data);
+	mutex_init(&data->update_lock);
+
+	data->regulator = regulator;
+
+>>>>>>> refs/remotes/origin/master
 	/* Set the device type */
 	data->kind = id->driver_data;
 	if (data->kind == adm1032) {
 		if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			new_client->flags &= ~I2C_CLIENT_PEC;
 	}
 
 	/* Different devices have different alarm bits triggering the
 	 * ALERT# output */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			client->flags &= ~I2C_CLIENT_PEC;
+	}
+
+	/*
+	 * Different devices have different alarm bits triggering the
+	 * ALERT# output
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	data->alert_alarms = lm90_params[data->kind].alert_alarms;
 
 	/* Set chip capabilities */
 	data->flags = lm90_params[data->kind].flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	data->reg_local_ext = lm90_params[data->kind].reg_local_ext;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data->reg_local_ext = lm90_params[data->kind].reg_local_ext;
+>>>>>>> refs/remotes/origin/master
 
 	/* Set maximum conversion rate */
 	data->max_convrate = lm90_params[data->kind].max_convrate;
 
 	/* Initialize the LM90 chip */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lm90_init_client(new_client);
 
 	/* Register sysfs hooks */
@@ -1381,47 +2201,133 @@ static int lm90_probe(struct i2c_client *new_client,
 		goto exit_free;
 	if (new_client->flags & I2C_CLIENT_PEC) {
 		err = device_create_file(&new_client->dev, &dev_attr_pec);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	lm90_init_client(client);
+
+	/* Register sysfs hooks */
+	err = sysfs_create_group(&dev->kobj, &lm90_group);
+	if (err)
+		goto exit_restore;
+	if (client->flags & I2C_CLIENT_PEC) {
+		err = device_create_file(dev, &dev_attr_pec);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto exit_remove_files;
 	}
 	if (data->flags & LM90_HAVE_OFFSET) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = device_create_file(&new_client->dev,
+=======
+		err = device_create_file(dev,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = device_create_file(dev,
+>>>>>>> refs/remotes/origin/master
 					&sensor_dev_attr_temp2_offset.dev_attr);
 		if (err)
 			goto exit_remove_files;
 	}
 	if (data->flags & LM90_HAVE_EMERGENCY) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = sysfs_create_group(&new_client->dev.kobj,
 					 &lm90_emergency_group);
+=======
+		err = sysfs_create_group(&dev->kobj, &lm90_emergency_group);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = sysfs_create_group(&dev->kobj, &lm90_emergency_group);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto exit_remove_files;
 	}
 	if (data->flags & LM90_HAVE_EMERGENCY_ALARM) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = sysfs_create_group(&new_client->dev.kobj,
+=======
+		err = sysfs_create_group(&dev->kobj,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = sysfs_create_group(&dev->kobj,
+>>>>>>> refs/remotes/origin/master
 					 &lm90_emergency_alarm_group);
 		if (err)
 			goto exit_remove_files;
 	}
 	if (data->flags & LM90_HAVE_TEMP3) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = sysfs_create_group(&new_client->dev.kobj,
 					 &lm90_temp3_group);
+=======
+		err = sysfs_create_group(&dev->kobj, &lm90_temp3_group);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = sysfs_create_group(&dev->kobj, &lm90_temp3_group);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto exit_remove_files;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	data->hwmon_dev = hwmon_device_register(&new_client->dev);
+=======
+	data->hwmon_dev = hwmon_device_register(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data->hwmon_dev = hwmon_device_register(dev);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(data->hwmon_dev)) {
 		err = PTR_ERR(data->hwmon_dev);
 		goto exit_remove_files;
 	}
 
+<<<<<<< HEAD
 	return 0;
 
 exit_remove_files:
+<<<<<<< HEAD
 	lm90_remove_files(new_client, data);
 exit_free:
+=======
+	lm90_remove_files(client, data);
+exit_restore:
+	lm90_restore_conf(client, data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(data);
 exit:
+=======
+	if (client->irq) {
+		dev_dbg(dev, "IRQ: %d\n", client->irq);
+		err = devm_request_threaded_irq(dev, client->irq,
+						NULL, lm90_irq_thread,
+						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+						"lm90", client);
+		if (err < 0) {
+			dev_err(dev, "cannot request IRQ %d\n", client->irq);
+			goto exit_unregister;
+		}
+	}
+
+	return 0;
+
+exit_unregister:
+	hwmon_device_unregister(data->hwmon_dev);
+exit_remove_files:
+	lm90_remove_files(client, data);
+exit_restore:
+	lm90_restore_conf(client, data);
+	regulator_disable(data->regulator);
+
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1431,19 +2337,30 @@ static int lm90_remove(struct i2c_client *client)
 
 	hwmon_device_unregister(data->hwmon_dev);
 	lm90_remove_files(client, data);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Restore initial configuration */
 	i2c_smbus_write_byte_data(client, LM90_REG_W_CONVRATE,
 				  data->convrate_orig);
 	i2c_smbus_write_byte_data(client, LM90_REG_W_CONFIG1,
 				  data->config_orig);
+=======
+	lm90_restore_conf(client, data);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kfree(data);
+=======
+	lm90_restore_conf(client, data);
+	regulator_disable(data->regulator);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void lm90_alert(struct i2c_client *client, unsigned int flag)
 {
+<<<<<<< HEAD
 	struct lm90_data *data = i2c_get_clientdata(client);
 	u8 config, alarms, alarms2 = 0;
 
@@ -1455,30 +2372,59 @@ static void lm90_alert(struct i2c_client *client, unsigned int flag)
 	if ((alarms & 0x7f) == 0 && (alarms2 & 0xfe) == 0) {
 		dev_info(&client->dev, "Everything OK\n");
 	} else {
-		if (alarms & 0x61)
+		if ((alarms & 0x61) || (alarms2 & 0x80))
 			dev_warn(&client->dev,
 				 "temp%d out of range, please check!\n", 1);
-		if (alarms & 0x1a)
+		if ((alarms & 0x1a) || (alarms2 & 0x20))
 			dev_warn(&client->dev,
 				 "temp%d out of range, please check!\n", 2);
 		if (alarms & 0x04)
 			dev_warn(&client->dev,
 				 "temp%d diode open, please check!\n", 2);
 
-		if (alarms2 & 0x18)
+		if (alarms2 & 0x5a)
 			dev_warn(&client->dev,
 				 "temp%d out of range, please check!\n", 3);
+		if (alarms2 & 0x04)
+			dev_warn(&client->dev,
+				 "temp%d diode open, please check!\n", 3);
 
+<<<<<<< HEAD
 		/* Disable ALERT# output, because these chips don't implement
 		  SMBus alert correctly; they should only hold the alert line
 		  low briefly. */
+=======
+=======
+	u16 alarms;
+
+	if (lm90_is_tripped(client, &alarms)) {
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * Disable ALERT# output, because these chips don't implement
+		 * SMBus alert correctly; they should only hold the alert line
+		 * low briefly.
+		 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		if ((data->flags & LM90_HAVE_BROKEN_ALERT)
 		 && (alarms & data->alert_alarms)) {
+=======
+		struct lm90_data *data = i2c_get_clientdata(client);
+
+		if ((data->flags & LM90_HAVE_BROKEN_ALERT)
+		 && (alarms & data->alert_alarms)) {
+			u8 config;
+>>>>>>> refs/remotes/origin/master
 			dev_dbg(&client->dev, "Disabling ALERT#\n");
 			lm90_read_reg(client, LM90_REG_R_CONFIG1, &config);
 			i2c_smbus_write_byte_data(client, LM90_REG_W_CONFIG1,
 						  config | 0x80);
 		}
+<<<<<<< HEAD
+=======
+	} else {
+		dev_info(&client->dev, "Everything OK\n");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1495,6 +2441,8 @@ static struct i2c_driver lm90_driver = {
 	.address_list	= normal_i2c,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_lm90_init(void)
 {
 	return i2c_add_driver(&lm90_driver);
@@ -1504,10 +2452,22 @@ static void __exit sensors_lm90_exit(void)
 {
 	i2c_del_driver(&lm90_driver);
 }
+=======
+module_i2c_driver(lm90_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(lm90_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jean Delvare <khali@linux-fr.org>");
 MODULE_DESCRIPTION("LM90/ADM1032 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(sensors_lm90_init);
 module_exit(sensors_lm90_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

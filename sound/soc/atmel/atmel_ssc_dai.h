@@ -117,6 +117,11 @@ struct atmel_ssc_info {
 	struct atmel_ssc_state ssc_state;
 };
 
+<<<<<<< HEAD
 int atmel_ssc_set_audio(int ssc);
+=======
+int atmel_ssc_set_audio(int ssc_id);
+void atmel_ssc_put_audio(int ssc_id);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _AT91_SSC_DAI_H */

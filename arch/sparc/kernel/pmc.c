@@ -11,11 +11,23 @@
 #include <linux/pm.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 #include <asm/oplib.h>
 #include <asm/uaccess.h>
 #include <asm/auxio.h>
+<<<<<<< HEAD
+=======
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Debug
  *
@@ -51,7 +63,11 @@ static void pmc_swift_idle(void)
 #endif
 }
 
+<<<<<<< HEAD
 static int __devinit pmc_probe(struct platform_device *op)
+=======
+static int pmc_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	regs = of_ioremap(&op->resource[0], 0,
 			  resource_size(&op->resource[0]), PMC_OBPNAME);
@@ -62,7 +78,11 @@ static int __devinit pmc_probe(struct platform_device *op)
 
 #ifndef PMC_NO_IDLE
 	/* Assign power management IDLE handler */
+<<<<<<< HEAD
 	pm_idle = pmc_swift_idle;
+=======
+	sparc_idle = pmc_swift_idle;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	printk(KERN_INFO "%s: power management initialized\n", PMC_DEVNAME);

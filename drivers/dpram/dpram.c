@@ -26,6 +26,14 @@
 #include <linux/irq.h>
 
 #include <linux/version.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef _ENABLE_ERROR_DEVICE
 #include <linux/poll.h>
@@ -45,7 +53,15 @@
 
 #include "dpram.h"
 #include "../../arch/arm/mach-msm/smd_private.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "../../arch/arm/mach-msm/proc_comm.h"
+=======
+#include "../../arch/arm/mach-msm/include/mach/proc_comm.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "../../arch/arm/mach-msm/include/mach/proc_comm.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_SEC_MISC
 #include <linux/sec_param.h>
@@ -133,7 +149,13 @@ static dpram_device_t dpram_table[MAX_INDEX] = {
 
 static struct tty_struct *dpram_tty[MAX_INDEX];
 static struct ktermios *dpram_termios[MAX_INDEX];
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct ktermios *dpram_termios_locked[MAX_INDEX];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern void *smem_alloc(unsigned, unsigned);
 extern void *smem_do_alloc(unsigned id, unsigned size_in);
@@ -1630,7 +1652,13 @@ static int register_dpram_driver(void)
 
 	dpram_tty_driver->ttys = dpram_tty;
 	dpram_tty_driver->termios = dpram_termios;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dpram_tty_driver->termios_locked = dpram_termios_locked;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* @LDK@ register tty driver */
 	retval = tty_register_driver(dpram_tty_driver);
@@ -1654,7 +1682,15 @@ static void init_devices(void)
 	int i;
 
 	for (i = 0; i < MAX_INDEX; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		init_MUTEX(&dpram_table[i].serial.sem);
+=======
+		sema_init(&dpram_table[i].serial.sem, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sema_init(&dpram_table[i].serial.sem, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		dpram_table[i].serial.open_count = 0;
 		dpram_table[i].serial.tty = NULL;

@@ -102,6 +102,15 @@
 #include <linux/nmi.h>
 #include <linux/delay.h>
 #include <linux/kthread.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <asm/sections.h>
+>>>>>>> refs/remotes/origin/master
 
 #define v1printk(a...) do { \
 	if (verbose) \
@@ -221,6 +230,10 @@ static unsigned long lookup_addr(char *arg)
 		addr = (unsigned long)do_fork;
 	else if (!strcmp(arg, "hw_break_val"))
 		addr = (unsigned long)&hw_break_val;
+<<<<<<< HEAD
+=======
+	addr = (unsigned long) dereference_function_descriptor((void *)addr);
+>>>>>>> refs/remotes/origin/master
 	return addr;
 }
 

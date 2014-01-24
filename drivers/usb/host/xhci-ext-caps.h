@@ -66,6 +66,23 @@
 #define	XHCI_LEGACY_DISABLE_SMI		((0x7 << 1) + (0xff << 5) + (0x7 << 17))
 #define XHCI_LEGACY_SMI_EVENTS		(0x7 << 29)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* USB 2.0 xHCI 0.96 L1C capability - section 7.2.2.1.3.2 */
+#define XHCI_L1C               (1 << 16)
+
+/* USB 2.0 xHCI 1.0 hardware LMP capability - section 7.2.2.1.3.2 */
+#define XHCI_HLC               (1 << 19)
+<<<<<<< HEAD
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define XHCI_BLC               (1 << 20)
+
+>>>>>>> refs/remotes/origin/master
 /* command register values to disable interrupts and halt the HC */
 /* start/stop HC execution - do not write unless HC is halted*/
 #define XHCI_CMD_RUN		(1 << 0)

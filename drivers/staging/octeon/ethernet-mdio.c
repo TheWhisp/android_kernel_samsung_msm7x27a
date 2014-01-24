@@ -27,6 +27,15 @@
 #include <linux/kernel.h>
 #include <linux/ethtool.h>
 #include <linux/phy.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+#include <linux/of_mdio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/dst.h>
 
@@ -37,16 +46,34 @@
 #include "ethernet-mdio.h"
 #include "ethernet-util.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "cvmx-helper-board.h"
 
 #include "cvmx-smix-defs.h"
+=======
+#include <asm/octeon/cvmx-helper-board.h>
+
+#include <asm/octeon/cvmx-smix-defs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/octeon/cvmx-helper-board.h>
+
+#include <asm/octeon/cvmx-smix-defs.h>
+>>>>>>> refs/remotes/origin/master
 
 static void cvm_oct_get_drvinfo(struct net_device *dev,
 				struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strcpy(info->driver, "cavium-ethernet");
 	strcpy(info->version, OCTEON_ETHERNET_VERSION);
 	strcpy(info->bus_info, "Builtin");
+=======
+	strlcpy(info->driver, "cavium-ethernet", sizeof(info->driver));
+	strlcpy(info->version, OCTEON_ETHERNET_VERSION, sizeof(info->version));
+	strlcpy(info->bus_info, "Builtin", sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int cvm_oct_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
@@ -129,6 +156,8 @@ static void cvm_oct_adjust_link(struct net_device *dev)
 		if (priv->last_link) {
 			netif_carrier_on(dev);
 			if (priv->queue != -1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				DEBUGPRINT("%s: %u Mbps %s duplex, "
 					   "port %2d, queue %2d\n",
 					   dev->name, priv->phydev->speed,
@@ -145,6 +174,29 @@ static void cvm_oct_adjust_link(struct net_device *dev)
 		} else {
 			netif_carrier_off(dev);
 			DEBUGPRINT("%s: Link down\n", dev->name);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				printk_ratelimited("%s: %u Mbps %s duplex, "
+						   "port %2d, queue %2d\n",
+						   dev->name, priv->phydev->speed,
+						   priv->phydev->duplex ?
+						   "Full" : "Half",
+						   priv->port, priv->queue);
+			else
+				printk_ratelimited("%s: %u Mbps %s duplex, "
+						   "port %2d, POW\n",
+						   dev->name, priv->phydev->speed,
+						   priv->phydev->duplex ?
+						   "Full" : "Half",
+						   priv->port);
+		} else {
+			netif_carrier_off(dev);
+			printk_ratelimited("%s: Link down\n", dev->name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -160,12 +212,19 @@ static void cvm_oct_adjust_link(struct net_device *dev)
 int cvm_oct_phy_setup_device(struct net_device *dev)
 {
 	struct octeon_ethernet *priv = netdev_priv(dev);
+<<<<<<< HEAD
 
 	int phy_addr = cvmx_helper_board_get_mii_address(priv->port);
 	if (phy_addr != -1) {
+<<<<<<< HEAD
 		char phy_id[20];
 
 		snprintf(phy_id, sizeof(phy_id), PHY_ID_FMT, "0", phy_addr);
+=======
+		char phy_id[MII_BUS_ID_SIZE + 3];
+
+		snprintf(phy_id, sizeof(phy_id), PHY_ID_FMT, "mdio-octeon-0", phy_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		priv->phydev = phy_connect(dev, phy_id, cvm_oct_adjust_link, 0,
 					PHY_INTERFACE_MODE_GMII);
@@ -177,5 +236,25 @@ int cvm_oct_phy_setup_device(struct net_device *dev)
 		priv->last_link = 0;
 		phy_start_aneg(priv->phydev);
 	}
+=======
+	struct device_node *phy_node;
+
+	if (!priv->of_node)
+		return 0;
+
+	phy_node = of_parse_phandle(priv->of_node, "phy-handle", 0);
+	if (!phy_node)
+		return 0;
+
+	priv->phydev = of_phy_connect(dev, phy_node, cvm_oct_adjust_link, 0,
+				      PHY_INTERFACE_MODE_GMII);
+
+	if (priv->phydev == NULL)
+		return -ENODEV;
+
+	priv->last_link = 0;
+	phy_start_aneg(priv->phydev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

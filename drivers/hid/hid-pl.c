@@ -9,10 +9,25 @@
  *   - contains two reports, one for each port (HID_QUIRK_MULTI_INPUT)
  *
  *  0e8f:0003 "GreenAsia Inc.    USB Joystick     "
+<<<<<<< HEAD
+<<<<<<< HEAD
  *   - tested with König Gaming gamepad
  *
  *  0e8f:0003 "GASIA USB Gamepad"
  *   - another version of the König gamepad
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *   - tested with KÃ¶nig Gaming gamepad
+ *
+ *  0e8f:0003 "GASIA USB Gamepad"
+ *   - another version of the KÃ¶nig gamepad
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+ *  0f30:0111 "Saitek Color Rumble Pad"
+>>>>>>> refs/remotes/origin/master
  *
  *  Copyright (c) 2007, 2009 Anssi Hannula <anssi.hannula@gmail.com>
  */
@@ -40,16 +55,31 @@
 
 #include <linux/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/usb.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/hid.h>
 
 #include "hid-ids.h"
 
 #ifdef CONFIG_PANTHERLORD_FF
+<<<<<<< HEAD
 #include "usbhid/usbhid.h"
 
 struct plff_device {
 	struct hid_report *report;
+=======
+
+struct plff_device {
+	struct hid_report *report;
+	s32 maxval;
+>>>>>>> refs/remotes/origin/master
 	s32 *strong;
 	s32 *weak;
 };
@@ -65,13 +95,22 @@ static int hid_plff_play(struct input_dev *dev, void *data,
 	right = effect->u.rumble.weak_magnitude;
 	debug("called with 0x%04x 0x%04x", left, right);
 
+<<<<<<< HEAD
 	left = left * 0x7f / 0xffff;
 	right = right * 0x7f / 0xffff;
+=======
+	left = left * plff->maxval / 0xffff;
+	right = right * plff->maxval / 0xffff;
+>>>>>>> refs/remotes/origin/master
 
 	*plff->strong = left;
 	*plff->weak = right;
 	debug("running with 0x%02x 0x%02x", left, right);
+<<<<<<< HEAD
 	usbhid_submit_report(hid, plff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, plff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -86,6 +125,10 @@ static int plff_init(struct hid_device *hid)
 	struct list_head *report_ptr = report_list;
 	struct input_dev *dev;
 	int error;
+<<<<<<< HEAD
+=======
+	s32 maxval;
+>>>>>>> refs/remotes/origin/master
 	s32 *strong;
 	s32 *weak;
 
@@ -122,6 +165,10 @@ static int plff_init(struct hid_device *hid)
 			return -ENODEV;
 		}
 
+<<<<<<< HEAD
+=======
+		maxval = 0x7f;
+>>>>>>> refs/remotes/origin/master
 		if (report->field[0]->report_count >= 4) {
 			report->field[0]->value[0] = 0x00;
 			report->field[0]->value[1] = 0x00;
@@ -140,6 +187,11 @@ static int plff_init(struct hid_device *hid)
 			report->field[1]->value[0] = 0x00;
 			strong = &report->field[2]->value[0];
 			weak = &report->field[3]->value[0];
+<<<<<<< HEAD
+=======
+			if (hid->vendor == USB_VENDOR_ID_JESS2)
+				maxval = 0xff;
+>>>>>>> refs/remotes/origin/master
 			debug("detected 4-field device");
 		} else {
 			hid_err(hid, "not enough fields or values\n");
@@ -163,10 +215,18 @@ static int plff_init(struct hid_device *hid)
 		plff->report = report;
 		plff->strong = strong;
 		plff->weak = weak;
+<<<<<<< HEAD
 
 		*strong = 0x00;
 		*weak = 0x00;
 		usbhid_submit_report(hid, plff->report, USB_DIR_OUT);
+=======
+		plff->maxval = maxval;
+
+		*strong = 0x00;
+		*weak = 0x00;
+		hid_hw_request(hid, plff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	hid_info(hid, "Force feedback for PantherLord/GreenAsia devices by Anssi Hannula <anssi.hannula@gmail.com>\n");
@@ -212,6 +272,10 @@ static const struct hid_device_id pl_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMERON, USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR),
 		.driver_data = 1 }, /* Twin USB Joystick */
 	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, 0x0003), },
+<<<<<<< HEAD
+=======
+	{ HID_USB_DEVICE(USB_VENDOR_ID_JESS2, USB_DEVICE_ID_JESS2_COLOR_RUMBLE_PAD), },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(hid, pl_devices);
@@ -221,6 +285,7 @@ static struct hid_driver pl_driver = {
 	.id_table = pl_devices,
 	.probe = pl_probe,
 };
+<<<<<<< HEAD
 
 static int __init pl_init(void)
 {
@@ -234,4 +299,8 @@ static void __exit pl_exit(void)
 
 module_init(pl_init);
 module_exit(pl_exit);
+=======
+module_hid_driver(pl_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

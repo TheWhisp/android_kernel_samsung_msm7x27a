@@ -18,7 +18,11 @@ Table of Contents
 
 1.0 Introduction
 
+<<<<<<< HEAD
   The file ../../drivers/media/video/c-qcam.c is a device driver for
+=======
+  The file ../../drivers/media/parport/c-qcam.c is a device driver for
+>>>>>>> refs/remotes/origin/master
 the Logitech (nee Connectix) parallel port interface color CCD camera.
 This is a fairly inexpensive device for capturing images.  Logitech
 does not currently provide information for developers, but many people
@@ -61,29 +65,51 @@ But that is my personal preference.
 2.2 Configuration
 
   The configuration requires module configuration and device
+<<<<<<< HEAD
+<<<<<<< HEAD
 configuration.  I like kmod or kerneld process with the
 /etc/modprobe.conf file so the modules can automatically load/unload as
 they are used.  The video devices could already exist, be generated
 using MAKEDEV, or need to be created.  The following sections detail
 these procedures.
+=======
+configuration.  The following sections detail these procedures.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+configuration.  The following sections detail these procedures.
+>>>>>>> refs/remotes/origin/master
 
 
 2.1 Module Configuration
 
   Using modules requires a bit of work to install and pass the
+<<<<<<< HEAD
+<<<<<<< HEAD
 parameters.  Understand that entries in /etc/modprobe.conf of:
+=======
+parameters.  Understand that entries in /etc/modprobe.d/*.conf of:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+parameters.  Understand that entries in /etc/modprobe.d/*.conf of:
+>>>>>>> refs/remotes/origin/master
 
    alias parport_lowlevel parport_pc
    options parport_pc io=0x378 irq=none
    alias char-major-81 videodev
    alias char-major-81-0 c-qcam
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 will cause the kmod/modprobe to do certain things.  If you are
 using kmod, then a request for a 'char-major-81-0' will cause
 the 'c-qcam' module to load.  If you have other video sources with
 modules, you might want to assign the different minor numbers to
 different modules.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 2.2 Device Configuration
 
   At this point, we need to ensure that the device files exist.

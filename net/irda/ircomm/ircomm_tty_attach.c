@@ -130,6 +130,11 @@ static int (*state[])(struct ircomm_tty_cb *self, IRCOMM_TTY_EVENT event,
  */
 int ircomm_tty_attach_cable(struct ircomm_tty_cb *self)
 {
+<<<<<<< HEAD
+=======
+	struct tty_struct *tty;
+
+>>>>>>> refs/remotes/origin/master
 	IRDA_DEBUG(0, "%s()\n", __func__ );
 
 	IRDA_ASSERT(self != NULL, return -1;);
@@ -142,7 +147,15 @@ int ircomm_tty_attach_cable(struct ircomm_tty_cb *self)
 	}
 
 	/* Make sure nobody tries to write before the link is up */
+<<<<<<< HEAD
 	self->tty->hw_stopped = 1;
+=======
+	tty = tty_port_tty_get(&self->port);
+	if (tty) {
+		tty->hw_stopped = 1;
+		tty_kref_put(tty);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ircomm_tty_ias_register(self);
 
@@ -382,7 +395,15 @@ static void ircomm_tty_discovery_indication(discinfo_t *discovery,
 	info.daddr = discovery->daddr;
 	info.saddr = discovery->saddr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	self = (struct ircomm_tty_cb *) priv;
+=======
+	self = priv;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	self = priv;
+>>>>>>> refs/remotes/origin/master
 	ircomm_tty_do_event(self, IRCOMM_TTY_DISCOVERY_INDICATION,
 			    NULL, &info);
 }
@@ -398,23 +419,40 @@ void ircomm_tty_disconnect_indication(void *instance, void *sap,
 				      struct sk_buff *skb)
 {
 	struct ircomm_tty_cb *self = (struct ircomm_tty_cb *) instance;
+<<<<<<< HEAD
+=======
+	struct tty_struct *tty;
+>>>>>>> refs/remotes/origin/master
 
 	IRDA_DEBUG(2, "%s()\n", __func__ );
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRCOMM_TTY_MAGIC, return;);
 
+<<<<<<< HEAD
 	if (!self->tty)
+=======
+	tty = tty_port_tty_get(&self->port);
+	if (!tty)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/* This will stop control data transfers */
 	self->flow = FLOW_STOP;
 
 	/* Stop data transfers */
+<<<<<<< HEAD
 	self->tty->hw_stopped = 1;
 
 	ircomm_tty_do_event(self, IRCOMM_TTY_DISCONNECT_INDICATION, NULL,
 			    NULL);
+=======
+	tty->hw_stopped = 1;
+
+	ircomm_tty_do_event(self, IRCOMM_TTY_DISCONNECT_INDICATION, NULL,
+			    NULL);
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -550,12 +588,22 @@ void ircomm_tty_connect_indication(void *instance, void *sap,
  */
 void ircomm_tty_link_established(struct ircomm_tty_cb *self)
 {
+<<<<<<< HEAD
+=======
+	struct tty_struct *tty;
+
+>>>>>>> refs/remotes/origin/master
 	IRDA_DEBUG(2, "%s()\n", __func__ );
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRCOMM_TTY_MAGIC, return;);
 
+<<<<<<< HEAD
 	if (!self->tty)
+=======
+	tty = tty_port_tty_get(&self->port);
+	if (!tty)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	del_timer(&self->watchdog_timer);
@@ -566,6 +614,7 @@ void ircomm_tty_link_established(struct ircomm_tty_cb *self)
 	 * will have to wait for the peer device (DCE) to raise the CTS
 	 * line.
 	 */
+<<<<<<< HEAD
 	if ((self->flags & ASYNC_CTS_FLOW) && ((self->settings.dce & IRCOMM_CTS) == 0)) {
 		IRDA_DEBUG(0, "%s(), waiting for CTS ...\n", __func__ );
 		return;
@@ -579,6 +628,24 @@ void ircomm_tty_link_established(struct ircomm_tty_cb *self)
 	}
 
 	schedule_work(&self->tqueue);
+=======
+	if (tty_port_cts_enabled(&self->port) &&
+			((self->settings.dce & IRCOMM_CTS) == 0)) {
+		IRDA_DEBUG(0, "%s(), waiting for CTS ...\n", __func__ );
+		goto put;
+	} else {
+		IRDA_DEBUG(1, "%s(), starting hardware!\n", __func__ );
+
+		tty->hw_stopped = 0;
+
+		/* Wake up processes blocked on open */
+		wake_up_interruptible(&self->port.open_wait);
+	}
+
+	schedule_work(&self->tqueue);
+put:
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -977,14 +1044,22 @@ static int ircomm_tty_state_ready(struct ircomm_tty_cb *self,
 		ircomm_tty_next_state(self, IRCOMM_TTY_SEARCH);
 		ircomm_tty_start_watchdog_timer(self, 3*HZ);
 
+<<<<<<< HEAD
 		if (self->flags & ASYNC_CHECK_CD) {
+=======
+		if (self->port.flags & ASYNC_CHECK_CD) {
+>>>>>>> refs/remotes/origin/master
 			/* Drop carrier */
 			self->settings.dce = IRCOMM_DELTA_CD;
 			ircomm_tty_check_modem_status(self);
 		} else {
 			IRDA_DEBUG(0, "%s(), hanging up!\n", __func__ );
+<<<<<<< HEAD
 			if (self->tty)
 				tty_hangup(self->tty);
+=======
+			tty_port_tty_hangup(&self->port, false);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	default:

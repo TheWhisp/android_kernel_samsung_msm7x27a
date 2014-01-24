@@ -24,11 +24,16 @@ static struct man_viewer_info_list {
 } *man_viewer_info_list;
 
 enum help_format {
+<<<<<<< HEAD
+=======
+	HELP_FORMAT_NONE,
+>>>>>>> refs/remotes/origin/master
 	HELP_FORMAT_MAN,
 	HELP_FORMAT_INFO,
 	HELP_FORMAT_WEB,
 };
 
+<<<<<<< HEAD
 static bool show_all = false;
 static enum help_format help_format = HELP_FORMAT_MAN;
 static struct option builtin_help_options[] = {
@@ -46,6 +51,8 @@ static const char * const builtin_help_usage[] = {
 	NULL
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static enum help_format parse_help_format(const char *format)
 {
 	if (!strcmp(format, "man"))
@@ -54,7 +61,13 @@ static enum help_format parse_help_format(const char *format)
 		return HELP_FORMAT_INFO;
 	if (!strcmp(format, "web") || !strcmp(format, "html"))
 		return HELP_FORMAT_WEB;
+<<<<<<< HEAD
 	die("unrecognized help format '%s'", format);
+=======
+
+	pr_err("unrecognized help format '%s'", format);
+	return HELP_FORMAT_NONE;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const char *get_man_viewer_info(const char *name)
@@ -255,10 +268,21 @@ static int add_man_viewer_info(const char *var, const char *value)
 
 static int perf_help_config(const char *var, const char *value, void *cb)
 {
+<<<<<<< HEAD
 	if (!strcmp(var, "help.format")) {
 		if (!value)
 			return config_error_nonbool(var);
 		help_format = parse_help_format(value);
+=======
+	enum help_format *help_formatp = cb;
+
+	if (!strcmp(var, "help.format")) {
+		if (!value)
+			return config_error_nonbool(var);
+		*help_formatp = parse_help_format(value);
+		if (*help_formatp == HELP_FORMAT_NONE)
+			return -1;
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	if (!strcmp(var, "man.viewer")) {
@@ -352,7 +376,11 @@ static void exec_viewer(const char *name, const char *page)
 		warning("'%s': unknown man viewer.", name);
 }
 
+<<<<<<< HEAD
 static void show_man_page(const char *perf_cmd)
+=======
+static int show_man_page(const char *perf_cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct man_viewer_list *viewer;
 	const char *page = cmd_to_page(perf_cmd);
@@ -365,28 +393,56 @@ static void show_man_page(const char *perf_cmd)
 	if (fallback)
 		exec_viewer(fallback, page);
 	exec_viewer("man", page);
+<<<<<<< HEAD
 	die("no man viewer handled the request");
 }
 
 static void show_info_page(const char *perf_cmd)
+=======
+
+	pr_err("no man viewer handled the request");
+	return -1;
+}
+
+static int show_info_page(const char *perf_cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *page = cmd_to_page(perf_cmd);
 	setenv("INFOPATH", system_path(PERF_INFO_PATH), 1);
 	execlp("info", "info", "perfman", page, NULL);
+<<<<<<< HEAD
 }
 
 static void get_html_page_path(struct strbuf *page_path, const char *page)
+=======
+	return -1;
+}
+
+static int get_html_page_path(struct strbuf *page_path, const char *page)
+>>>>>>> refs/remotes/origin/master
 {
 	struct stat st;
 	const char *html_path = system_path(PERF_HTML_PATH);
 
 	/* Check that we have a perf documentation directory. */
 	if (stat(mkpath("%s/perf.html", html_path), &st)
+<<<<<<< HEAD
 	    || !S_ISREG(st.st_mode))
 		die("'%s': not a documentation directory.", html_path);
 
 	strbuf_init(page_path, 0);
 	strbuf_addf(page_path, "%s/%s.html", html_path, page);
+=======
+	    || !S_ISREG(st.st_mode)) {
+		pr_err("'%s': not a documentation directory.", html_path);
+		return -1;
+	}
+
+	strbuf_init(page_path, 0);
+	strbuf_addf(page_path, "%s/%s.html", html_path, page);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -401,11 +457,16 @@ static void open_html(const char *path)
 }
 #endif
 
+<<<<<<< HEAD
 static void show_html_page(const char *perf_cmd)
+=======
+static int show_html_page(const char *perf_cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *page = cmd_to_page(perf_cmd);
 	struct strbuf page_path; /* it leaks but we exec bellow */
 
+<<<<<<< HEAD
 	get_html_page_path(&page_path, page);
 
 	open_html(page_path.buf);
@@ -418,6 +479,39 @@ int cmd_help(int argc, const char **argv, const char *prefix __used)
 	load_command_list("perf-", &main_cmds, &other_cmds);
 
 	perf_config(perf_help_config, NULL);
+=======
+	if (get_html_page_path(&page_path, page) != 0)
+		return -1;
+
+	open_html(page_path.buf);
+
+	return 0;
+}
+
+int cmd_help(int argc, const char **argv, const char *prefix __maybe_unused)
+{
+	bool show_all = false;
+	enum help_format help_format = HELP_FORMAT_MAN;
+	struct option builtin_help_options[] = {
+	OPT_BOOLEAN('a', "all", &show_all, "print all available commands"),
+	OPT_SET_UINT('m', "man", &help_format, "show man page", HELP_FORMAT_MAN),
+	OPT_SET_UINT('w', "web", &help_format, "show manual in web browser",
+			HELP_FORMAT_WEB),
+	OPT_SET_UINT('i', "info", &help_format, "show info page",
+			HELP_FORMAT_INFO),
+	OPT_END(),
+	};
+	const char * const builtin_help_usage[] = {
+		"perf help [--all] [--man|--web|--info] [command]",
+		NULL
+	};
+	const char *alias;
+	int rc = 0;
+
+	load_command_list("perf-", &main_cmds, &other_cmds);
+
+	perf_config(perf_help_config, &help_format);
+>>>>>>> refs/remotes/origin/master
 
 	argc = parse_options(argc, argv, builtin_help_options,
 			builtin_help_usage, 0);
@@ -444,6 +538,7 @@ int cmd_help(int argc, const char **argv, const char *prefix __used)
 
 	switch (help_format) {
 	case HELP_FORMAT_MAN:
+<<<<<<< HEAD
 		show_man_page(argv[0]);
 		break;
 	case HELP_FORMAT_INFO:
@@ -456,4 +551,22 @@ int cmd_help(int argc, const char **argv, const char *prefix __used)
 	}
 
 	return 0;
+=======
+		rc = show_man_page(argv[0]);
+		break;
+	case HELP_FORMAT_INFO:
+		rc = show_info_page(argv[0]);
+		break;
+	case HELP_FORMAT_WEB:
+		rc = show_html_page(argv[0]);
+		break;
+	case HELP_FORMAT_NONE:
+		/* fall-through */
+	default:
+		rc = -1;
+		break;
+	}
+
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }

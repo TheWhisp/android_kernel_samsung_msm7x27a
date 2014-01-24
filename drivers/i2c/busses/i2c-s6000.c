@@ -3,7 +3,11 @@
  *
  * Description: Driver for S6000 Family I2C Interface
  * Copyright (c) 2008 emlix GmbH
+<<<<<<< HEAD
  * Author:	Oskar Schirmer <os@emlix.com>
+=======
+ * Author:	Oskar Schirmer <oskar@scara.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Partially based on i2c-bfin-twi.c driver by <sonic.zhang@analog.com>
  * Copyright (c) 2005-2007 Analog Devices, Inc.
@@ -248,7 +252,11 @@ static struct i2c_algorithm s6i2c_algorithm = {
 	.functionality = s6i2c_functionality,
 };
 
+<<<<<<< HEAD
 static u16 __devinit nanoseconds_on_clk(struct s6i2c_if *iface, u32 ns)
+=======
+static u16 nanoseconds_on_clk(struct s6i2c_if *iface, u32 ns)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 dividend = ((clk_get_rate(iface->clk) / 1000) * ns) / 1000000;
 	if (dividend > 0xffff)
@@ -256,7 +264,11 @@ static u16 __devinit nanoseconds_on_clk(struct s6i2c_if *iface, u32 ns)
 	return dividend;
 }
 
+<<<<<<< HEAD
 static int __devinit s6i2c_probe(struct platform_device *dev)
+=======
+static int s6i2c_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s6i2c_if *iface = &s6i2c_if;
 	struct i2c_adapter *p_adap;
@@ -290,8 +302,14 @@ static int __devinit s6i2c_probe(struct platform_device *dev)
 
 	clock = 0;
 	bus_num = -1;
+<<<<<<< HEAD
 	if (dev->dev.platform_data) {
 		struct s6_i2c_platform_data *pdata = dev->dev.platform_data;
+=======
+	if (dev_get_platdata(&dev->dev)) {
+		struct s6_i2c_platform_data *pdata =
+			dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 		bus_num = pdata->bus_num;
 		clock = pdata->clock;
 	}
@@ -341,10 +359,18 @@ static int __devinit s6i2c_probe(struct platform_device *dev)
 	i2c_wr16(iface, S6_I2C_TXTL, 0);
 
 	platform_set_drvdata(dev, iface);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (bus_num < 0)
 		rc = i2c_add_adapter(p_adap);
 	else
 		rc = i2c_add_numbered_adapter(p_adap);
+=======
+	rc = i2c_add_numbered_adapter(p_adap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = i2c_add_numbered_adapter(p_adap);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto err_irq_free;
 	return 0;
@@ -364,11 +390,18 @@ err_out:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int __devexit s6i2c_remove(struct platform_device *pdev)
 {
 	struct s6i2c_if *iface = platform_get_drvdata(pdev);
 	i2c_wr16(iface, S6_I2C_ENABLE, 0);
 	platform_set_drvdata(pdev, NULL);
+=======
+static int s6i2c_remove(struct platform_device *pdev)
+{
+	struct s6i2c_if *iface = platform_get_drvdata(pdev);
+	i2c_wr16(iface, S6_I2C_ENABLE, 0);
+>>>>>>> refs/remotes/origin/master
 	i2c_del_adapter(&iface->adap);
 	free_irq(iface->irq, iface);
 	clk_disable(iface->clk);
@@ -381,7 +414,11 @@ static int __devexit s6i2c_remove(struct platform_device *pdev)
 
 static struct platform_driver s6i2c_driver = {
 	.probe		= s6i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(s6i2c_remove),
+=======
+	.remove		= s6i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= DRV_NAME,
 		.owner	= THIS_MODULE,

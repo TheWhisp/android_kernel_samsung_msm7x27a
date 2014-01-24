@@ -104,7 +104,11 @@ enum savage_family {
 	S3_LAST
 };
 
+<<<<<<< HEAD
 extern struct drm_ioctl_desc savage_ioctls[];
+=======
+extern const struct drm_ioctl_desc savage_ioctls[];
+>>>>>>> refs/remotes/origin/master
 extern int savage_max_ioctl;
 
 #define S3_SAVAGE3D_SERIES(chip)  ((chip>=S3_SAVAGE3D) && (chip<=S3_SAVAGE_MX))
@@ -160,10 +164,14 @@ typedef struct drm_savage_private {
 	drm_local_map_t *cmd_dma;
 	drm_local_map_t fake_dma;
 
+<<<<<<< HEAD
 	struct {
 		int handle;
 		unsigned long base, size;
 	} mtrr[3];
+=======
+	int mtrr_handles[3];
+>>>>>>> refs/remotes/origin/master
 
 	/* BCI and status-related stuff */
 	volatile uint32_t *status_ptr, *bci_ptr;

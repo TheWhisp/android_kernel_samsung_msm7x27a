@@ -188,7 +188,15 @@ void dc_intr_rx(struct channel *sc)
 			}
 
 			if (sc->s.LOS) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				error_mask &= ~(SBE_2T3E3_RX_DESC_DRIBBLING_BIT ||
+=======
+				error_mask &= ~(SBE_2T3E3_RX_DESC_DRIBBLING_BIT |
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				error_mask &= ~(SBE_2T3E3_RX_DESC_DRIBBLING_BIT |
+>>>>>>> refs/remotes/origin/master
 						SBE_2T3E3_RX_DESC_MII_ERROR);
 			}
 
@@ -434,11 +442,14 @@ void exar7250_intr(struct channel *sc)
 {
 	u32 status, old_OOF;
 
+<<<<<<< HEAD
 #if 0
 	/* disable interrupts */
 	exar7250_write(sc, SBE_2T3E3_FRAMER_REG_BLOCK_INTERRUPT_ENABLE, 0);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	old_OOF = sc->s.OOF;
 
 	status = exar7250_read(sc, SBE_2T3E3_FRAMER_REG_BLOCK_INTERRUPT_STATUS);
@@ -479,6 +490,7 @@ void exar7250_intr(struct channel *sc)
 			dc_start_intr(sc);
 		}
 	}
+<<<<<<< HEAD
 #if 0
 	/* reenable interrupts */
 	exar7250_write(sc, SBE_2T3E3_FRAMER_REG_BLOCK_INTERRUPT_ENABLE,
@@ -486,6 +498,8 @@ void exar7250_intr(struct channel *sc)
 		       SBE_2T3E3_FRAMER_VAL_TX_INTERRUPT_ENABLE
 		);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -503,6 +517,7 @@ void exar7250_T3_intr(struct channel *sc, u32 block_status)
 
 			result = exar7250_read(sc, SBE_2T3E3_FRAMER_REG_T3_RX_CONFIGURATION_STATUS);
 
+<<<<<<< HEAD
 #if 0
 			if (status & SBE_2T3E3_FRAMER_VAL_T3_RX_LOS_INTERRUPT_STATUS) {
 				dev_dbg(&sc->pdev->dev,
@@ -513,6 +528,10 @@ void exar7250_T3_intr(struct channel *sc, u32 block_status)
 #else
 			cpld_LOS_update(sc);
 #endif
+=======
+			cpld_LOS_update(sc);
+
+>>>>>>> refs/remotes/origin/master
 			if (status & SBE_2T3E3_FRAMER_VAL_T3_RX_OOF_INTERRUPT_STATUS) {
 				sc->s.OOF = result & SBE_2T3E3_FRAMER_VAL_T3_RX_OOF ? 1 : 0;
 				dev_dbg(&sc->pdev->dev,
@@ -523,6 +542,7 @@ void exar7250_T3_intr(struct channel *sc, u32 block_status)
 			exar7250_write(sc, SBE_2T3E3_FRAMER_REG_T3_RX_INTERRUPT_ENABLE,
 				       SBE_2T3E3_FRAMER_VAL_T3_RX_LOS_INTERRUPT_ENABLE |
 				       SBE_2T3E3_FRAMER_VAL_T3_RX_OOF_INTERRUPT_ENABLE);
+<<<<<<< HEAD
 #if 0
 			SBE_2T3E3_FRAMER_VAL_T3_RX_CP_BIT_ERROR_INTERRUPT_ENABLE |
 				SBE_2T3E3_FRAMER_VAL_T3_RX_LOS_INTERRUPT_ENABLE |
@@ -533,6 +553,8 @@ void exar7250_T3_intr(struct channel *sc, u32 block_status)
 				SBE_2T3E3_FRAMER_VAL_T3_RX_OOF_INTERRUPT_ENABLE |
 				SBE_2T3E3_FRAMER_VAL_T3_RX_P_BIT_INTERRUPT_ENABLE
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 
 		status = exar7250_read(sc, SBE_2T3E3_FRAMER_REG_T3_RX_FEAC_INTERRUPT_ENABLE_STATUS);
@@ -540,12 +562,15 @@ void exar7250_T3_intr(struct channel *sc, u32 block_status)
 			dev_dbg(&sc->pdev->dev,
 				"Framer interrupt T3 RX (REG[0x17] = %02X)\n",
 				status);
+<<<<<<< HEAD
 #if 0
 			exar7250_write(sc, SBE_2T3E3_FRAMER_REG_T3_RX_FEAC_INTERRUPT_ENABLE_STATUS,
 				       SBE_2T3E3_FRAMER_VAL_T3_RX_FEAC_REMOVE_INTERRUPT_ENABLE |
 				       SBE_2T3E3_FRAMER_VAL_T3_RX_FEAC_VALID_INTERRUPT_ENABLE
 				);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		status = exar7250_read(sc, SBE_2T3E3_FRAMER_REG_T3_RX_LAPD_CONTROL);
@@ -582,6 +607,7 @@ void exar7250_E3_intr(struct channel *sc, u32 block_status)
 
 			result = exar7250_read(sc, SBE_2T3E3_FRAMER_REG_E3_RX_CONFIGURATION_STATUS_2);
 
+<<<<<<< HEAD
 #if 0
 			if (status & SBE_2T3E3_FRAMER_VAL_E3_RX_LOS_INTERRUPT_STATUS) {
 				dev_dbg(&sc->pdev->dev,
@@ -591,6 +617,10 @@ void exar7250_E3_intr(struct channel *sc, u32 block_status)
 #else
 			cpld_LOS_update(sc);
 #endif
+=======
+			cpld_LOS_update(sc);
+
+>>>>>>> refs/remotes/origin/master
 			if (status & SBE_2T3E3_FRAMER_VAL_E3_RX_OOF_INTERRUPT_STATUS) {
 				sc->s.OOF = result & SBE_2T3E3_FRAMER_VAL_E3_RX_OOF ? 1 : 0;
 				dev_dbg(&sc->pdev->dev,
@@ -602,6 +632,7 @@ void exar7250_E3_intr(struct channel *sc, u32 block_status)
 				       SBE_2T3E3_FRAMER_VAL_E3_RX_OOF_INTERRUPT_ENABLE |
 				       SBE_2T3E3_FRAMER_VAL_E3_RX_LOS_INTERRUPT_ENABLE
 				);
+<<<<<<< HEAD
 #if 0
 			SBE_2T3E3_FRAMER_VAL_E3_RX_COFA_INTERRUPT_ENABLE |
 				SBE_2T3E3_FRAMER_VAL_E3_RX_OOF_INTERRUPT_ENABLE |
@@ -609,6 +640,8 @@ void exar7250_E3_intr(struct channel *sc, u32 block_status)
 				SBE_2T3E3_FRAMER_VAL_E3_RX_LOS_INTERRUPT_ENABLE |
 				SBE_2T3E3_FRAMER_VAL_E3_RX_AIS_INTERRUPT_ENABLE
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 
 		status = exar7250_read(sc, SBE_2T3E3_FRAMER_REG_E3_RX_INTERRUPT_STATUS_2);
@@ -617,12 +650,15 @@ void exar7250_E3_intr(struct channel *sc, u32 block_status)
 				"Framer interrupt E3 RX (REG[0x15] = %02X)\n",
 				status);
 
+<<<<<<< HEAD
 #if 0
 			exar7250_write(sc, SBE_2T3E3_FRAMER_REG_E3_RX_INTERRUPT_ENABLE_2,
 				       SBE_2T3E3_FRAMER_VAL_E3_RX_FEBE_INTERRUPT_ENABLE |
 				       SBE_2T3E3_FRAMER_VAL_E3_RX_FERF_INTERRUPT_ENABLE |
 				       SBE_2T3E3_FRAMER_VAL_E3_RX_FRAMING_BYTE_ERROR_INTERRUPT_ENABLE);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 	}

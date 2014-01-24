@@ -2,6 +2,10 @@
 #define _ASM_IA64_HUGETLB_H
 
 #include <asm/page.h>
+<<<<<<< HEAD
+=======
+#include <asm-generic/hugetlb.h>
+>>>>>>> refs/remotes/origin/master
 
 
 void hugetlb_free_pgd_range(struct mmu_gather *tlb, unsigned long addr,
@@ -77,4 +81,11 @@ static inline void arch_release_hugepage(struct page *page)
 {
 }
 
+<<<<<<< HEAD
+=======
+static inline void arch_clear_hugepage_flags(struct page *page)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_IA64_HUGETLB_H */

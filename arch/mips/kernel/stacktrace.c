@@ -5,7 +5,15 @@
  */
 #include <linux/sched.h>
 #include <linux/stacktrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/stacktrace.h>
 
 /*

@@ -9,7 +9,15 @@
 #include <linux/sonet.h>
 #include <linux/bitops.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 int atm_charge(struct atm_vcc *vcc, int truesize)
 {
@@ -26,7 +34,15 @@ struct sk_buff *atm_alloc_charge(struct atm_vcc *vcc, int pdu_size,
 				 gfp_t gfp_flags)
 {
 	struct sock *sk = sk_atm(vcc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int guess = atm_guess_pdu2truesize(pdu_size);
+=======
+	int guess = SKB_TRUESIZE(pdu_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int guess = SKB_TRUESIZE(pdu_size);
+>>>>>>> refs/remotes/origin/master
 
 	atm_force_charge(vcc, guess);
 	if (atomic_read(&sk->sk_rmem_alloc) <= sk->sk_rcvbuf) {

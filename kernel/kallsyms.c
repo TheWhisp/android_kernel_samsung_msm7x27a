@@ -84,9 +84,17 @@ static int is_ksym_addr(unsigned long addr)
 
 /*
  * Expand a compressed symbol data into the resulting uncompressed string,
+<<<<<<< HEAD
  * given the offset to where the symbol is in the compressed stream.
  */
 static unsigned int kallsyms_expand_symbol(unsigned int off, char *result)
+=======
+ * if uncompressed string is too long (>= maxlen), it will be truncated,
+ * given the offset to where the symbol is in the compressed stream.
+ */
+static unsigned int kallsyms_expand_symbol(unsigned int off,
+					   char *result, size_t maxlen)
+>>>>>>> refs/remotes/origin/master
 {
 	int len, skipped_first = 0;
 	const u8 *tptr, *data;
@@ -113,15 +121,29 @@ static unsigned int kallsyms_expand_symbol(unsigned int off, char *result)
 
 		while (*tptr) {
 			if (skipped_first) {
+<<<<<<< HEAD
 				*result = *tptr;
 				result++;
+=======
+				if (maxlen <= 1)
+					goto tail;
+				*result = *tptr;
+				result++;
+				maxlen--;
+>>>>>>> refs/remotes/origin/master
 			} else
 				skipped_first = 1;
 			tptr++;
 		}
 	}
 
+<<<<<<< HEAD
 	*result = '\0';
+=======
+tail:
+	if (maxlen)
+		*result = '\0';
+>>>>>>> refs/remotes/origin/master
 
 	/* Return to offset to the next symbol. */
 	return off;
@@ -176,7 +198,11 @@ unsigned long kallsyms_lookup_name(const char *name)
 	unsigned int off;
 
 	for (i = 0, off = 0; i < kallsyms_num_syms; i++) {
+<<<<<<< HEAD
 		off = kallsyms_expand_symbol(off, namebuf);
+=======
+		off = kallsyms_expand_symbol(off, namebuf, ARRAY_SIZE(namebuf));
+>>>>>>> refs/remotes/origin/master
 
 		if (strcmp(namebuf, name) == 0)
 			return kallsyms_addresses[i];
@@ -195,7 +221,11 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
 	int ret;
 
 	for (i = 0, off = 0; i < kallsyms_num_syms; i++) {
+<<<<<<< HEAD
 		off = kallsyms_expand_symbol(off, namebuf);
+=======
+		off = kallsyms_expand_symbol(off, namebuf, ARRAY_SIZE(namebuf));
+>>>>>>> refs/remotes/origin/master
 		ret = fn(data, namebuf, NULL, kallsyms_addresses[i]);
 		if (ret != 0)
 			return ret;
@@ -294,7 +324,12 @@ const char *kallsyms_lookup(unsigned long addr,
 
 		pos = get_symbol_pos(addr, symbolsize, offset);
 		/* Grab name */
+<<<<<<< HEAD
 		kallsyms_expand_symbol(get_symbol_offset(pos), namebuf);
+=======
+		kallsyms_expand_symbol(get_symbol_offset(pos),
+				       namebuf, KSYM_NAME_LEN);
+>>>>>>> refs/remotes/origin/master
 		if (modname)
 			*modname = NULL;
 		return namebuf;
@@ -315,7 +350,12 @@ int lookup_symbol_name(unsigned long addr, char *symname)
 
 		pos = get_symbol_pos(addr, NULL, NULL);
 		/* Grab name */
+<<<<<<< HEAD
 		kallsyms_expand_symbol(get_symbol_offset(pos), symname);
+=======
+		kallsyms_expand_symbol(get_symbol_offset(pos),
+				       symname, KSYM_NAME_LEN);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	/* See if it's in a module. */
@@ -333,7 +373,12 @@ int lookup_symbol_attrs(unsigned long addr, unsigned long *size,
 
 		pos = get_symbol_pos(addr, size, offset);
 		/* Grab name */
+<<<<<<< HEAD
 		kallsyms_expand_symbol(get_symbol_offset(pos), name);
+=======
+		kallsyms_expand_symbol(get_symbol_offset(pos),
+				       name, KSYM_NAME_LEN);
+>>>>>>> refs/remotes/origin/master
 		modname[0] = '\0';
 		return 0;
 	}
@@ -343,7 +388,19 @@ int lookup_symbol_attrs(unsigned long addr, unsigned long *size,
 
 /* Look up a kernel symbol and return it in a text buffer. */
 static int __sprint_symbol(char *buffer, unsigned long address,
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   int symbol_offset)
+=======
+			   int symbol_offset, int add_offset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   int symbol_offset, int add_offset)
+>>>>>>> refs/remotes/origin/master
+=======
+			   int symbol_offset, int add_offset)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	char *modname;
 	const char *name;
@@ -358,13 +415,39 @@ static int __sprint_symbol(char *buffer, unsigned long address,
 	if (name != buffer)
 		strcpy(buffer, name);
 	len = strlen(buffer);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	buffer += len;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	offset -= symbol_offset;
 
+	if (add_offset)
+		len += sprintf(buffer + len, "+%#lx/%#lx", offset, size);
+
 	if (modname)
+<<<<<<< HEAD
 		len += sprintf(buffer, "+%#lx/%#lx [%s]", offset, size, modname);
 	else
 		len += sprintf(buffer, "+%#lx/%#lx", offset, size);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	offset -= symbol_offset;
+
+	if (add_offset)
+		len += sprintf(buffer + len, "+%#lx/%#lx", offset, size);
+
+	if (modname)
+		len += sprintf(buffer + len, " [%s]", modname);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+		len += sprintf(buffer + len, " [%s]", modname);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return len;
 }
@@ -382,12 +465,52 @@ static int __sprint_symbol(char *buffer, unsigned long address,
  */
 int sprint_symbol(char *buffer, unsigned long address)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return __sprint_symbol(buffer, address, 0);
+=======
+	return __sprint_symbol(buffer, address, 0, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
-
 EXPORT_SYMBOL_GPL(sprint_symbol);
 
 /**
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	return __sprint_symbol(buffer, address, 0, 1);
+}
+EXPORT_SYMBOL_GPL(sprint_symbol);
+
+/**
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ * sprint_symbol_no_offset - Look up a kernel symbol and return it in a text buffer
+ * @buffer: buffer to be stored
+ * @address: address to lookup
+ *
+ * This function looks up a kernel symbol with @address and stores its name
+ * and module name to @buffer if possible. If no symbol was found, just saves
+ * its @address as is.
+ *
+ * This function returns the number of bytes stored in @buffer.
+ */
+int sprint_symbol_no_offset(char *buffer, unsigned long address)
+{
+	return __sprint_symbol(buffer, address, 0, 0);
+}
+EXPORT_SYMBOL_GPL(sprint_symbol_no_offset);
+
+/**
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * sprint_backtrace - Look up a backtrace symbol and return it in a text buffer
  * @buffer: buffer to be stored
  * @address: address to lookup
@@ -403,7 +526,19 @@ EXPORT_SYMBOL_GPL(sprint_symbol);
  */
 int sprint_backtrace(char *buffer, unsigned long address)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return __sprint_symbol(buffer, address, -1);
+=======
+	return __sprint_symbol(buffer, address, -1, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return __sprint_symbol(buffer, address, -1, 1);
+>>>>>>> refs/remotes/origin/master
+=======
+	return __sprint_symbol(buffer, address, -1, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Look up a kernel symbol and print it to the kernel messages. */
@@ -447,7 +582,11 @@ static unsigned long get_ksymbol_core(struct kallsym_iter *iter)
 
 	iter->type = kallsyms_get_symbol_type(off);
 
+<<<<<<< HEAD
 	off = kallsyms_expand_symbol(off, iter->name);
+=======
+	off = kallsyms_expand_symbol(off, iter->name, ARRAY_SIZE(iter->name));
+>>>>>>> refs/remotes/origin/master
 
 	return off - iter->nameoff;
 }

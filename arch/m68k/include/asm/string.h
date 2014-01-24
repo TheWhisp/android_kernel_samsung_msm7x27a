@@ -4,6 +4,7 @@
 #include <linux/types.h>
 #include <linux/compiler.h>
 
+<<<<<<< HEAD
 static inline size_t __kernel_strlen(const char *s)
 {
 	const char *sc;
@@ -32,6 +33,8 @@ static inline char *__kernel_strcpy(char *dest, const char *src)
 			 __builtin_strlen(s) :		\
 			 __kernel_strlen(s))
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define __HAVE_ARCH_STRNLEN
 static inline size_t strnlen(const char *s, size_t count)
 {
@@ -48,6 +51,7 @@ static inline size_t strnlen(const char *s, size_t count)
 	return sc - s;
 }
 
+<<<<<<< HEAD
 #define __HAVE_ARCH_STRCPY
 #if __GNUC__ >= 4
 #define strcpy(d, s)	(__builtin_constant_p(s) &&	\
@@ -58,6 +62,8 @@ static inline size_t strnlen(const char *s, size_t count)
 #define strcpy(d, s)	__kernel_strcpy(d, s)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define __HAVE_ARCH_STRNCPY
 static inline char *strncpy(char *dest, const char *src, size_t n)
 {
@@ -75,12 +81,15 @@ static inline char *strncpy(char *dest, const char *src, size_t n)
 	return xdest;
 }
 
+<<<<<<< HEAD
 #define __HAVE_ARCH_STRCAT
 #define strcat(d, s)	({			\
 	char *__d = (d);			\
 	strcpy(__d + strlen(__d), (s));		\
 })
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_COLDFIRE
 #define __HAVE_ARCH_STRCMP
 static inline int strcmp(const char *cs, const char *ct)
@@ -114,6 +123,9 @@ extern void *memset(void *, int, __kernel_size_t);
 extern void *memcpy(void *, const void *, __kernel_size_t);
 #define memcpy(d, s, n) __builtin_memcpy(d, s, n)
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _M68K_STRING_H_ */

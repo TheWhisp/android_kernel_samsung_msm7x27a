@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -17,6 +25,14 @@
 #include <linux/msm_ssbi.h>
 #include <linux/mfd/pmic8901.h>
 #include <linux/mfd/pm8xxx/core.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* PMIC8901 Revision */
 #define PM8901_REG_REV			0x002
@@ -270,11 +286,37 @@ bail:
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int pm8901_probe(struct platform_device *pdev)
 {
 	int rc;
 	struct pm8901_platform_data *pdata = pdev->dev.platform_data;
 	struct pm8901_chip *pmic;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static const char * const pm8901_rev_names[] = {
+	[PM8XXX_REVISION_8901_TEST]	= "test",
+	[PM8XXX_REVISION_8901_1p0]	= "1.0",
+	[PM8XXX_REVISION_8901_1p1]	= "1.1",
+	[PM8XXX_REVISION_8901_2p0]	= "2.0",
+	[PM8XXX_REVISION_8901_2p1]	= "2.1",
+	[PM8XXX_REVISION_8901_2p2]	= "2.2",
+	[PM8XXX_REVISION_8901_2p3]	= "2.3",
+};
+
+static int __devinit pm8901_probe(struct platform_device *pdev)
+{
+	int rc;
+	struct pm8901_platform_data *pdata = pdev->dev.platform_data;
+	const char *revision_name = "unknown";
+	struct pm8901_chip *pmic;
+	int revision;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pdata == NULL) {
 		pr_err("%s: No platform_data or IRQ.\n", __func__);
@@ -298,7 +340,21 @@ static int pm8901_probe(struct platform_device *pdev)
 		pr_err("%s: Failed reading version register rc=%d.\n",
 			__func__, rc);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: PMIC REVISION = %X\n", __func__, pmic->revision);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	pr_info("%s: PMIC revision reg: %02X\n", __func__, pmic->revision);
+	revision =  pm8xxx_get_revision(pmic->dev);
+	if (revision >= 0 && revision < ARRAY_SIZE(pm8901_rev_names))
+		revision_name = pm8901_rev_names[revision];
+	pr_info("%s: PMIC version: PM8901 rev %s\n", __func__, revision_name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	(void) memcpy((void *)&pmic->pdata, (const void *)pdata,
 		      sizeof(pmic->pdata));

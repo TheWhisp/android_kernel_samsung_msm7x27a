@@ -12,6 +12,14 @@
 #include <linux/netdevice.h>
 #include <linux/rtnetlink.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/jiffies.h>
 #include <net/neighbour.h>
 #include <asm/processor.h>
@@ -35,20 +43,82 @@ struct dst_entry {
 	struct net_device       *dev;
 	struct  dst_ops	        *ops;
 	unsigned long		_metrics;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long		expires;
 	struct dst_entry	*path;
 	struct neighbour __rcu	*_neighbour;
 	struct hh_cache		*hh;
+=======
+	union {
+		unsigned long           expires;
+		/* point to where the dst_entry copied from */
+		struct dst_entry        *from;
+	};
+	struct dst_entry	*path;
+	struct neighbour __rcu	*_neighbour;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long           expires;
+	struct dst_entry	*path;
+	struct dst_entry	*from;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_XFRM
 	struct xfrm_state	*xfrm;
 #else
 	void			*__pad1;
 #endif
+<<<<<<< HEAD
 	int			(*input)(struct sk_buff*);
 	int			(*output)(struct sk_buff*);
 
+<<<<<<< HEAD
+=======
+	int			flags;
+=======
+	int			(*input)(struct sk_buff *);
+	int			(*output)(struct sk_buff *);
+
+	unsigned short		flags;
+>>>>>>> refs/remotes/origin/master
+#define DST_HOST		0x0001
+#define DST_NOXFRM		0x0002
+#define DST_NOPOLICY		0x0004
+#define DST_NOHASH		0x0008
+#define DST_NOCACHE		0x0010
+#define DST_NOCOUNT		0x0020
+#define DST_NOPEER		0x0040
+#define DST_FAKE_RTABLE		0x0080
+#define DST_XFRM_TUNNEL		0x0100
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	short			error;
 	short			obsolete;
+=======
+#define DST_XFRM_QUEUE		0x0200
+
+	unsigned short		pending_confirm;
+
+	short			error;
+
+	/* A non-zero value of dst->obsolete forces by-hand validation
+	 * of the route entry.  Positive values are set by the generic
+	 * dst layer to indicate that the entry has been forcefully
+	 * destroyed.
+	 *
+	 * Negative values are used by the implementation layer code to
+	 * force invocation of the dst_ops->check() method.
+	 */
+	short			obsolete;
+#define DST_OBSOLETE_NONE	0
+#define DST_OBSOLETE_DEAD	2
+#define DST_OBSOLETE_FORCE_CHK	-1
+#define DST_OBSOLETE_KILL	-2
+>>>>>>> refs/remotes/origin/master
 	unsigned short		header_len;	/* more space at head required */
 	unsigned short		trailer_len;	/* space to reserve at tail */
 #ifdef CONFIG_IP_ROUTE_CLASSID
@@ -62,7 +132,15 @@ struct dst_entry {
 	 * (L1_CACHE_SIZE would be too much)
 	 */
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
+<<<<<<< HEAD
 	long			__pad_to_align_refcnt[1];
+=======
+	long			__pad_to_align_refcnt[2];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	long			__pad_to_align_refcnt[2];
+>>>>>>> refs/remotes/origin/master
 #endif
 	/*
 	 * __refcnt wants to be on a different cache line from
@@ -71,6 +149,8 @@ struct dst_entry {
 	atomic_t		__refcnt;	/* client references	*/
 	int			__use;
 	unsigned long		lastuse;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int			flags;
 #define DST_HOST		0x0001
 #define DST_NOXFRM		0x0002
@@ -79,6 +159,10 @@ struct dst_entry {
 #define DST_NOCACHE		0x0010
 #define DST_NOCOUNT		0x0020
 #define DST_XFRM_TUNNEL		0x0100
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union {
 		struct dst_entry	*next;
 		struct rtable __rcu	*rt_next;
@@ -87,12 +171,21 @@ struct dst_entry {
 	};
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct neighbour *dst_get_neighbour(struct dst_entry *dst)
+=======
+static inline struct neighbour *dst_get_neighbour_noref(struct dst_entry *dst)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return rcu_dereference(dst->_neighbour);
 }
 
+<<<<<<< HEAD
 static inline struct neighbour *dst_get_neighbour_raw(struct dst_entry *dst)
+=======
+static inline struct neighbour *dst_get_neighbour_noref_raw(struct dst_entry *dst)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return rcu_dereference_raw(dst->_neighbour);
 }
@@ -104,6 +197,10 @@ static inline void dst_set_neighbour(struct dst_entry *dst, struct neighbour *ne
 
 extern u32 *dst_cow_metrics_generic(struct dst_entry *dst, unsigned long old);
 extern const u32 dst_default_metrics[RTAX_MAX];
+=======
+u32 *dst_cow_metrics_generic(struct dst_entry *dst, unsigned long old);
+extern const u32 dst_default_metrics[];
+>>>>>>> refs/remotes/origin/master
 
 #define DST_METRICS_READ_ONLY	0x1UL
 #define __DST_METRICS_PTR(Y)	\
@@ -115,7 +212,11 @@ static inline bool dst_metrics_read_only(const struct dst_entry *dst)
 	return dst->_metrics & DST_METRICS_READ_ONLY;
 }
 
+<<<<<<< HEAD
 extern void __dst_destroy_metrics_generic(struct dst_entry *dst, unsigned long old);
+=======
+void __dst_destroy_metrics_generic(struct dst_entry *dst, unsigned long old);
+>>>>>>> refs/remotes/origin/master
 
 static inline void dst_destroy_metrics_generic(struct dst_entry *dst)
 {
@@ -206,12 +307,20 @@ dst_feature(const struct dst_entry *dst, u32 feature)
 
 static inline u32 dst_mtu(const struct dst_entry *dst)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 mtu = dst_metric_raw(dst, RTAX_MTU);
 
 	if (!mtu)
 		mtu = dst->ops->default_mtu(dst);
 
 	return mtu;
+=======
+	return dst->ops->mtu(dst);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return dst->ops->mtu(dst);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* RTT metrics are stored in milliseconds for user ABI, but used as jiffies */
@@ -220,12 +329,15 @@ static inline unsigned long dst_metric_rtt(const struct dst_entry *dst, int metr
 	return msecs_to_jiffies(dst_metric(dst, metric));
 }
 
+<<<<<<< HEAD
 static inline void set_dst_metric_rtt(struct dst_entry *dst, int metric,
 				      unsigned long rtt)
 {
 	dst_metric_set(dst, metric, jiffies_to_msecs(rtt));
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32
 dst_allfrag(const struct dst_entry *dst)
 {
@@ -239,7 +351,11 @@ dst_metric_locked(const struct dst_entry *dst, int metric)
 	return dst_metric(dst, RTAX_LOCK) & (1<<metric);
 }
 
+<<<<<<< HEAD
 static inline void dst_hold(struct dst_entry * dst)
+=======
+static inline void dst_hold(struct dst_entry *dst)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * If your kernel compilation stops here, please check
@@ -262,15 +378,23 @@ static inline void dst_use_noref(struct dst_entry *dst, unsigned long time)
 	dst->lastuse = time;
 }
 
+<<<<<<< HEAD
 static inline
 struct dst_entry * dst_clone(struct dst_entry * dst)
+=======
+static inline struct dst_entry *dst_clone(struct dst_entry *dst)
+>>>>>>> refs/remotes/origin/master
 {
 	if (dst)
 		atomic_inc(&dst->__refcnt);
 	return dst;
 }
 
+<<<<<<< HEAD
 extern void dst_release(struct dst_entry *dst);
+=======
+void dst_release(struct dst_entry *dst);
+>>>>>>> refs/remotes/origin/master
 
 static inline void refdst_drop(unsigned long refdst)
 {
@@ -319,17 +443,44 @@ static inline void skb_dst_force(struct sk_buff *skb)
  *	__skb_tunnel_rx - prepare skb for rx reinsert
  *	@skb: buffer
  *	@dev: tunnel device
+<<<<<<< HEAD
+=======
+ *	@net: netns for packet i/o
+>>>>>>> refs/remotes/origin/master
  *
  *	After decapsulation, packet is going to re-enter (netif_rx()) our stack,
  *	so make some cleanups. (no accounting done)
  */
+<<<<<<< HEAD
 static inline void __skb_tunnel_rx(struct sk_buff *skb, struct net_device *dev)
 {
 	skb->dev = dev;
+<<<<<<< HEAD
 	skb->rxhash = 0;
+=======
+=======
+static inline void __skb_tunnel_rx(struct sk_buff *skb, struct net_device *dev,
+				   struct net *net)
+{
+	skb->dev = dev;
+>>>>>>> refs/remotes/origin/master
+
+	/*
+	 * Clear rxhash so that we can recalulate the hash for the
+	 * encapsulated packet, unless we have already determine the hash
+	 * over the L4 4-tuple.
+	 */
+	if (!skb->l4_rxhash)
+		skb->rxhash = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	skb_set_queue_mapping(skb, 0);
 	skb_dst_drop(skb);
 	nf_reset(skb);
+=======
+	skb_set_queue_mapping(skb, 0);
+	skb_scrub_packet(skb, !net_eq(net, dev_net(dev)));
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -341,12 +492,21 @@ static inline void __skb_tunnel_rx(struct sk_buff *skb, struct net_device *dev)
  *	so make some cleanups, and perform accounting.
  *	Note: this accounting is not SMP safe.
  */
+<<<<<<< HEAD
 static inline void skb_tunnel_rx(struct sk_buff *skb, struct net_device *dev)
+=======
+static inline void skb_tunnel_rx(struct sk_buff *skb, struct net_device *dev,
+				 struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 	/* TODO : stats should be SMP safe */
 	dev->stats.rx_packets++;
 	dev->stats.rx_bytes += skb->len;
+<<<<<<< HEAD
 	__skb_tunnel_rx(skb, dev);
+=======
+	__skb_tunnel_rx(skb, dev, net);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Children define the path of the packet through the
@@ -361,6 +521,7 @@ static inline struct dst_entry *skb_dst_pop(struct sk_buff *skb)
 	return child;
 }
 
+<<<<<<< HEAD
 extern int dst_discard(struct sk_buff *skb);
 extern void *dst_alloc(struct dst_ops * ops, struct net_device *dev,
 		       int initial_ref, int initial_obsolete, int flags);
@@ -370,6 +531,17 @@ extern struct dst_entry *dst_destroy(struct dst_entry * dst);
 static inline void dst_free(struct dst_entry * dst)
 {
 	if (dst->obsolete > 1)
+=======
+int dst_discard(struct sk_buff *skb);
+void *dst_alloc(struct dst_ops *ops, struct net_device *dev, int initial_ref,
+		int initial_obsolete, unsigned short flags);
+void __dst_free(struct dst_entry *dst);
+struct dst_entry *dst_destroy(struct dst_entry *dst);
+
+static inline void dst_free(struct dst_entry *dst)
+{
+	if (dst->obsolete > 0)
+>>>>>>> refs/remotes/origin/master
 		return;
 	if (!atomic_read(&dst->__refcnt)) {
 		dst = dst_destroy(dst);
@@ -387,16 +559,68 @@ static inline void dst_rcu_free(struct rcu_head *head)
 
 static inline void dst_confirm(struct dst_entry *dst)
 {
+<<<<<<< HEAD
 	if (dst) {
 		struct neighbour *n;
 
 		rcu_read_lock();
+<<<<<<< HEAD
 		n = dst_get_neighbour(dst);
+=======
+		n = dst_get_neighbour_noref(dst);
+>>>>>>> refs/remotes/origin/cm-10.0
 		neigh_confirm(n);
 		rcu_read_unlock();
 	}
 }
 
+<<<<<<< HEAD
+=======
+static inline struct neighbour *dst_neigh_lookup(const struct dst_entry *dst, const void *daddr)
+{
+	return dst->ops->neigh_lookup(dst, daddr);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dst->pending_confirm = 1;
+}
+
+static inline int dst_neigh_output(struct dst_entry *dst, struct neighbour *n,
+				   struct sk_buff *skb)
+{
+	const struct hh_cache *hh;
+
+	if (dst->pending_confirm) {
+		unsigned long now = jiffies;
+
+		dst->pending_confirm = 0;
+		/* avoid dirtying neighbour */
+		if (n->confirmed != now)
+			n->confirmed = now;
+	}
+
+	hh = &n->hh;
+	if ((n->nud_state & NUD_CONNECTED) && hh->hh_len)
+		return neigh_hh_output(hh, skb);
+	else
+		return n->output(n, skb);
+}
+
+static inline struct neighbour *dst_neigh_lookup(const struct dst_entry *dst, const void *daddr)
+{
+	struct neighbour *n = dst->ops->neigh_lookup(dst, NULL, daddr);
+	return IS_ERR(n) ? NULL : n;
+}
+
+static inline struct neighbour *dst_neigh_lookup_skb(const struct dst_entry *dst,
+						     struct sk_buff *skb)
+{
+	struct neighbour *n =  dst->ops->neigh_lookup(dst, skb, NULL);
+	return IS_ERR(n) ? NULL : n;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void dst_link_failure(struct sk_buff *skb)
 {
 	struct dst_entry *dst = skb_dst(skb);
@@ -434,7 +658,11 @@ static inline struct dst_entry *dst_check(struct dst_entry *dst, u32 cookie)
 	return dst;
 }
 
+<<<<<<< HEAD
 extern void		dst_init(void);
+=======
+void dst_init(void);
+>>>>>>> refs/remotes/origin/master
 
 /* Flags for xfrm_lookup flags argument. */
 enum {
@@ -450,10 +678,53 @@ static inline struct dst_entry *xfrm_lookup(struct net *net,
 {
 	return dst_orig;
 } 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+static inline struct xfrm_state *dst_xfrm(const struct dst_entry *dst)
+{
+	return NULL;
+}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 extern struct dst_entry *xfrm_lookup(struct net *net, struct dst_entry *dst_orig,
 				     const struct flowi *fl, struct sock *sk,
 				     int flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+#else
+struct dst_entry *xfrm_lookup(struct net *net, struct dst_entry *dst_orig,
+			      const struct flowi *fl, struct sock *sk,
+			      int flags);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+/* skb attached with this dst needs transformation if dst->xfrm is valid */
+static inline struct xfrm_state *dst_xfrm(const struct dst_entry *dst)
+{
+	return dst->xfrm;
+}
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 #endif /* _NET_DST_H */

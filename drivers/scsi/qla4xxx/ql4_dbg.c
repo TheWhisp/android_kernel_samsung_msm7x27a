@@ -1,6 +1,10 @@
 /*
  * QLogic iSCSI HBA Driver
+<<<<<<< HEAD
  * Copyright (c)  2003-2010 QLogic Corporation
+=======
+ * Copyright (c)  2003-2012 QLogic Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * See LICENSE.qla4xxx for copyright and licensing details.
  */
@@ -20,12 +24,27 @@ void qla4xxx_dump_buffer(void *b, uint32_t size)
 	printk("------------------------------------------------------------"
 	       "--\n");
 	for (cnt = 0; cnt < size; c++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%02x", *c);
 		if (!(++cnt % 16))
 			printk(KERN_INFO "\n");
 
 		else
 			printk(KERN_INFO "  ");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		printk("%02x", *c);
+		if (!(++cnt % 16))
+			printk("\n");
+
+		else
+			printk("  ");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	printk(KERN_INFO "\n");
 }
@@ -37,7 +56,11 @@ void qla4xxx_dump_registers(struct scsi_qla_host *ha)
 	if (is_qla8022(ha)) {
 		for (i = 1; i < MBOX_REG_COUNT; i++)
 			printk(KERN_INFO "mailbox[%d]     = 0x%08X\n",
+<<<<<<< HEAD
 			    i, readl(&ha->qla4_8xxx_reg->mailbox_in[i]));
+=======
+			    i, readl(&ha->qla4_82xx_reg->mailbox_in[i]));
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -131,3 +154,35 @@ void qla4xxx_dump_registers(struct scsi_qla_host *ha)
 		    &ha->reg->ctrl_status);
 	}
 }
+<<<<<<< HEAD
+=======
+
+void qla4_8xxx_dump_peg_reg(struct scsi_qla_host *ha)
+{
+	uint32_t halt_status1, halt_status2;
+
+	halt_status1 = qla4_8xxx_rd_direct(ha, QLA8XXX_PEG_HALT_STATUS1);
+	halt_status2 = qla4_8xxx_rd_direct(ha, QLA8XXX_PEG_HALT_STATUS2);
+
+	if (is_qla8022(ha)) {
+		ql4_printk(KERN_INFO, ha,
+			   "scsi(%ld): %s, ISP%04x Dumping hw/fw registers:\n"
+			   " PEG_HALT_STATUS1: 0x%x, PEG_HALT_STATUS2: 0x%x,\n"
+			   " PEG_NET_0_PC: 0x%x, PEG_NET_1_PC: 0x%x,\n"
+			   " PEG_NET_2_PC: 0x%x, PEG_NET_3_PC: 0x%x,\n"
+			   " PEG_NET_4_PC: 0x%x\n", ha->host_no, __func__,
+			   ha->pdev->device, halt_status1, halt_status2,
+			   qla4_82xx_rd_32(ha, QLA82XX_CRB_PEG_NET_0 + 0x3c),
+			   qla4_82xx_rd_32(ha, QLA82XX_CRB_PEG_NET_1 + 0x3c),
+			   qla4_82xx_rd_32(ha, QLA82XX_CRB_PEG_NET_2 + 0x3c),
+			   qla4_82xx_rd_32(ha, QLA82XX_CRB_PEG_NET_3 + 0x3c),
+			   qla4_82xx_rd_32(ha, QLA82XX_CRB_PEG_NET_4 + 0x3c));
+	} else if (is_qla8032(ha) || is_qla8042(ha)) {
+		ql4_printk(KERN_INFO, ha,
+			   "scsi(%ld): %s, ISP%04x Dumping hw/fw registers:\n"
+			   " PEG_HALT_STATUS1: 0x%x, PEG_HALT_STATUS2: 0x%x,\n",
+			   ha->host_no, __func__, ha->pdev->device,
+			   halt_status1, halt_status2);
+	}
+}
+>>>>>>> refs/remotes/origin/master

@@ -21,7 +21,13 @@
 #include <linux/io.h>
 
 static int debug_pci;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int use_firmware;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define CONFIG_CMD(bus, devfn, where)	\
 	(0x80000000 | (bus->number << 16) | (devfn << 8) | (where & ~3))
@@ -102,7 +108,15 @@ void pci_puv3_preinit(void)
 	writel(readl(PCIBRI_CMD) | PCIBRI_CMD_IO | PCIBRI_CMD_MEM, PCIBRI_CMD);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init pci_puv3_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int __init pci_puv3_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init pci_puv3_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	if (dev->bus->number == 0) {
 #ifdef CONFIG_ARCH_FPGA /* 4 pci slots */
@@ -155,6 +169,7 @@ void __init puv3_pci_adjust_zones(unsigned long *zone_size,
 	zhole_size[0] = 0;
 }
 
+<<<<<<< HEAD
 void __devinit pcibios_update_irq(struct pci_dev *dev, int irq)
 {
 	if (debug_pci)
@@ -163,6 +178,8 @@ void __devinit pcibios_update_irq(struct pci_dev *dev, int irq)
 	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * If the bus contains any of these devices, then we must not turn on
  * parity checking of any kind.
@@ -176,7 +193,11 @@ static inline int pdev_bad_for_parity(struct pci_dev *dev)
  * pcibios_fixup_bus - Called after each bus is probed,
  * but before its children are examined.
  */
+<<<<<<< HEAD
 void __devinit pcibios_fixup_bus(struct pci_bus *bus)
+=======
+void pcibios_fixup_bus(struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev;
 	u16 features = PCI_COMMAND_SERR
@@ -259,9 +280,13 @@ void __devinit pcibios_fixup_bus(struct pci_bus *bus)
 	printk(KERN_INFO "PCI: bus%d: Fast back to back transfers %sabled\n",
 		bus->number, (features & PCI_COMMAND_FAST_BACK) ? "en" : "dis");
 }
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
 EXPORT_SYMBOL(pcibios_fixup_bus);
 #endif
+=======
+EXPORT_SYMBOL(pcibios_fixup_bus);
+>>>>>>> refs/remotes/origin/master
 
 static int __init pci_common_init(void)
 {
@@ -276,7 +301,15 @@ static int __init pci_common_init(void)
 
 	pci_fixup_irqs(pci_common_swizzle, pci_puv3_map_irq);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!use_firmware) {
+=======
+	if (!pci_has_flag(PCI_PROBE_ONLY)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!pci_has_flag(PCI_PROBE_ONLY)) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Size the bridge windows.
 		 */
@@ -288,27 +321,56 @@ static int __init pci_common_init(void)
 		pci_bus_assign_resources(puv3_bus);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Tell drivers about devices found.
 	 */
 	pci_bus_add_devices(puv3_bus);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 subsys_initcall(pci_common_init);
 
+<<<<<<< HEAD
 char * __devinit pcibios_setup(char *str)
+=======
+char * __init pcibios_setup(char *str)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!strcmp(str, "debug")) {
 		debug_pci = 1;
 		return NULL;
 	} else if (!strcmp(str, "firmware")) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		use_firmware = 1;
+=======
+		pci_add_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pci_add_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 	return str;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void pcibios_set_master(struct pci_dev *dev)
+{
+	/* No special bus mastering setup handling */
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * From arch/i386/kernel/pci-i386.c:
  *

@@ -107,6 +107,14 @@ SECTIONS
 		*(.sun4v_2insn_patch)
 		__sun4v_2insn_patch_end = .;
 	}
+<<<<<<< HEAD
+=======
+	.leon_1insn_patch : {
+		__leon_1insn_patch = .;
+		*(.leon_1insn_patch)
+		__leon_1insn_patch_end = .;
+	}
+>>>>>>> refs/remotes/origin/master
 	.swapper_tsb_phys_patch : {
 		__swapper_tsb_phys_patch = .;
 		*(.swapper_tsb_phys_patch)
@@ -117,6 +125,14 @@ SECTIONS
 		*(.swapper_4m_tsb_phys_patch)
 		__swapper_4m_tsb_phys_patch_end = .;
 	}
+<<<<<<< HEAD
+=======
+	.page_offset_shift_patch : {
+		__page_offset_shift_patch = .;
+		*(.page_offset_shift_patch)
+		__page_offset_shift_patch_end = .;
+	}
+>>>>>>> refs/remotes/origin/master
 	.popc_3insn_patch : {
 		__popc_3insn_patch = .;
 		*(.popc_3insn_patch)
@@ -127,6 +143,14 @@ SECTIONS
 		*(.popc_6insn_patch)
 		__popc_6insn_patch_end = .;
 	}
+<<<<<<< HEAD
+=======
+	.pause_3insn_patch : {
+		__pause_3insn_patch = .;
+		*(.pause_3insn_patch)
+		__pause_3insn_patch_end = .;
+	}
+>>>>>>> refs/remotes/origin/master
 	PERCPU_SECTION(SMP_CACHE_BYTES)
 
 	. = ALIGN(PAGE_SIZE);

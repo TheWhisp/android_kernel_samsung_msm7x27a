@@ -20,7 +20,15 @@
 #include "cthardware.h"
 #include <linux/slab.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SRC_RESOURCE_NUM	64
+=======
+#define SRC_RESOURCE_NUM	256
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SRC_RESOURCE_NUM	256
+>>>>>>> refs/remotes/origin/master
 #define SRCIMP_RESOURCE_NUM	256
 
 static unsigned int conj_mask;
@@ -437,7 +445,15 @@ get_src_rsc(struct src_mgr *mgr, const struct src_desc *desc, struct src **rsrc)
 
 	/* Allocate mem for master src resource */
 	if (MEMRD == desc->mode)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		src = kzalloc(sizeof(*src)*desc->multi, GFP_KERNEL);
+=======
+		src = kcalloc(desc->multi, sizeof(*src), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		src = kcalloc(desc->multi, sizeof(*src), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	else
 		src = kzalloc(sizeof(*src), GFP_KERNEL);
 

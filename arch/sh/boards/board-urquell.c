@@ -20,6 +20,10 @@
 #include <linux/gpio.h>
 #include <linux/irq.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/urquell.h>
 #include <cpu/sh7786.h>
 #include <asm/heartbeat.h>
@@ -78,7 +82,11 @@ static struct resource smc91x_eth_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 11,
+=======
+		.start  = evt2irq(0x360),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -190,7 +198,15 @@ static int urquell_clk_init(void)
 		return -EINVAL;
 
 	clk = clk_get(NULL, "extal");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!clk || IS_ERR(clk))
+=======
+	if (IS_ERR(clk))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (IS_ERR(clk))
+>>>>>>> refs/remotes/origin/master
 		return PTR_ERR(clk);
 	ret = clk_set_rate(clk, 33333333);
 	clk_put(clk);

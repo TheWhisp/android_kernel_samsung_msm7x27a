@@ -13,7 +13,15 @@
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/mmzone.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/nodemask.h>
 #include <linux/cpu.h>
 #include <linux/notifier.h>
@@ -22,13 +30,36 @@
 #include <linux/pfn.h>
 #include <linux/cpuset.h>
 #include <linux/node.h>
+<<<<<<< HEAD
 #include <asm/sparsemem.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stop_machine.h>
+#include <linux/proc_fs.h>
+#include <linux/seq_file.h>
+#include <linux/uaccess.h>
+#include <linux/slab.h>
+#include <asm/cputhreads.h>
+#include <asm/sparsemem.h>
+#include <asm/prom.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/smp.h>
 #include <asm/firmware.h>
 #include <asm/paca.h>
 #include <asm/hvcall.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+#include <asm/vdso.h>
+>>>>>>> refs/remotes/origin/master
 
 static int numa_enabled = 1;
 
@@ -51,14 +82,23 @@ static int form1_affinity;
 
 #define MAX_DISTANCE_REF_POINTS 4
 static int distance_ref_points_depth;
+<<<<<<< HEAD
 static const unsigned int *distance_ref_points;
+=======
+static const __be32 *distance_ref_points;
+>>>>>>> refs/remotes/origin/master
 static int distance_lookup_table[MAX_NUMNODES][MAX_DISTANCE_REF_POINTS];
 
 /*
  * Allocate node_to_cpumask_map based on number of available nodes
  * Requires node_possible_map to be valid.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Note: node_to_cpumask() is not valid until after this is done.
+=======
+ * Note: cpumask_of_node() is not valid until after this is done.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void __init setup_node_to_cpumask_map(void)
 {
@@ -70,6 +110,17 @@ static void __init setup_node_to_cpumask_map(void)
 			num = node;
 		nr_node_ids = num + 1;
 	}
+=======
+ * Note: cpumask_of_node() is not valid until after this is done.
+ */
+static void __init setup_node_to_cpumask_map(void)
+{
+	unsigned int node;
+
+	/* setup nr_node_ids if not done yet */
+	if (nr_node_ids == MAX_NUMNODES)
+		setup_nr_node_ids();
+>>>>>>> refs/remotes/origin/master
 
 	/* allocate the map */
 	for (node = 0; node < nr_node_ids; node++)
@@ -79,7 +130,11 @@ static void __init setup_node_to_cpumask_map(void)
 	dbg("Node to cpumask map for %d nodes\n", nr_node_ids);
 }
 
+<<<<<<< HEAD
 static int __cpuinit fake_numa_create_new_node(unsigned long end_pfn,
+=======
+static int __init fake_numa_create_new_node(unsigned long end_pfn,
+>>>>>>> refs/remotes/origin/master
 						unsigned int *nid)
 {
 	unsigned long long mem;
@@ -127,6 +182,8 @@ static int __cpuinit fake_numa_create_new_node(unsigned long end_pfn,
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * get_active_region_work_fn - A helper function for get_node_active_region
  *	Returns datax set to the start_pfn and end_pfn if they contain
  *	the initial value of datax->start_pfn between them
@@ -166,6 +223,32 @@ static void __init get_node_active_region(unsigned long start_pfn,
 	node_ar->start_pfn = start_pfn;
 	node_ar->end_pfn = start_pfn;
 	work_with_active_regions(nid, get_active_region_work_fn, node_ar);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * get_node_active_region - Return active region containing pfn
+ * Active range returned is empty if none found.
+ * @pfn: The page to return the region for
+ * @node_ar: Returned set to the active region containing @pfn
+ */
+static void __init get_node_active_region(unsigned long pfn,
+					  struct node_active_region *node_ar)
+{
+	unsigned long start_pfn, end_pfn;
+	int i, nid;
+
+	for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
+		if (pfn >= start_pfn && pfn < end_pfn) {
+			node_ar->nid = nid;
+			node_ar->start_pfn = start_pfn;
+			node_ar->end_pfn = end_pfn;
+			break;
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void map_cpu_to_node(int cpu, int node)
@@ -195,7 +278,11 @@ static void unmap_cpu_from_node(unsigned long cpu)
 #endif /* CONFIG_HOTPLUG_CPU || CONFIG_PPC_SPLPAR */
 
 /* must hold reference to node during call */
+<<<<<<< HEAD
 static const int *of_get_associativity(struct device_node *dev)
+=======
+static const __be32 *of_get_associativity(struct device_node *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return of_get_property(dev, "ibm,associativity", NULL);
 }
@@ -205,6 +292,7 @@ static const int *of_get_associativity(struct device_node *dev)
  * it exists (the property exists only in kexec/kdump kernels,
  * added by kexec-tools)
  */
+<<<<<<< HEAD
 static const u32 *of_get_usable_memory(struct device_node *memory)
 {
 	const u32 *prop;
@@ -212,6 +300,15 @@ static const u32 *of_get_usable_memory(struct device_node *memory)
 	prop = of_get_property(memory, "linux,drconf-usable-memory", &len);
 	if (!prop || len < sizeof(unsigned int))
 		return 0;
+=======
+static const __be32 *of_get_usable_memory(struct device_node *memory)
+{
+	const __be32 *prop;
+	u32 len;
+	prop = of_get_property(memory, "linux,drconf-usable-memory", &len);
+	if (!prop || len < sizeof(unsigned int))
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	return prop;
 }
 
@@ -235,7 +332,11 @@ int __node_distance(int a, int b)
 }
 
 static void initialize_distance_lookup_table(int nid,
+<<<<<<< HEAD
 		const unsigned int *associativity)
+=======
+		const __be32 *associativity)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -243,29 +344,50 @@ static void initialize_distance_lookup_table(int nid,
 		return;
 
 	for (i = 0; i < distance_ref_points_depth; i++) {
+<<<<<<< HEAD
 		distance_lookup_table[nid][i] =
 			associativity[distance_ref_points[i]];
+=======
+		const __be32 *entry;
+
+		entry = &associativity[be32_to_cpu(distance_ref_points[i])];
+		distance_lookup_table[nid][i] = of_read_number(entry, 1);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 /* Returns nid in the range [0..MAX_NUMNODES-1], or -1 if no useful numa
  * info is found.
  */
+<<<<<<< HEAD
 static int associativity_to_nid(const unsigned int *associativity)
+=======
+static int associativity_to_nid(const __be32 *associativity)
+>>>>>>> refs/remotes/origin/master
 {
 	int nid = -1;
 
 	if (min_common_depth == -1)
 		goto out;
 
+<<<<<<< HEAD
 	if (associativity[0] >= min_common_depth)
 		nid = associativity[min_common_depth];
+=======
+	if (of_read_number(associativity, 1) >= min_common_depth)
+		nid = of_read_number(&associativity[min_common_depth], 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* POWER4 LPAR uses 0xffff as invalid node */
 	if (nid == 0xffff || nid >= MAX_NUMNODES)
 		nid = -1;
 
+<<<<<<< HEAD
 	if (nid > 0 && associativity[0] >= distance_ref_points_depth)
+=======
+	if (nid > 0 &&
+	    of_read_number(associativity, 1) >= distance_ref_points_depth)
+>>>>>>> refs/remotes/origin/master
 		initialize_distance_lookup_table(nid, associativity);
 
 out:
@@ -278,7 +400,11 @@ out:
 static int of_node_to_nid_single(struct device_node *device)
 {
 	int nid = -1;
+<<<<<<< HEAD
 	const unsigned int *tmp;
+=======
+	const __be32 *tmp;
+>>>>>>> refs/remotes/origin/master
 
 	tmp = of_get_associativity(device);
 	if (tmp)
@@ -311,11 +437,26 @@ EXPORT_SYMBOL_GPL(of_node_to_nid);
 static int __init find_min_common_depth(void)
 {
 	int depth;
+<<<<<<< HEAD
 	struct device_node *chosen;
 	struct device_node *root;
 	const char *vec5;
 
+<<<<<<< HEAD
 	root = of_find_node_by_path("/rtas");
+=======
+=======
+	struct device_node *root;
+
+>>>>>>> refs/remotes/origin/master
+	if (firmware_has_feature(FW_FEATURE_OPAL))
+		root = of_find_node_by_path("/ibm,opal");
+	else
+		root = of_find_node_by_path("/rtas");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!root)
 		root = of_find_node_by_path("/");
 
@@ -342,19 +483,46 @@ static int __init find_min_common_depth(void)
 
 	distance_ref_points_depth /= sizeof(int);
 
+<<<<<<< HEAD
 #define VEC5_AFFINITY_BYTE	5
 #define VEC5_AFFINITY		0x80
+<<<<<<< HEAD
 	chosen = of_find_node_by_path("/chosen");
 	if (chosen) {
 		vec5 = of_get_property(chosen, "ibm,architecture-vec-5", NULL);
 		if (vec5 && (vec5[VEC5_AFFINITY_BYTE] & VEC5_AFFINITY)) {
 			dbg("Using form 1 affinity\n");
 			form1_affinity = 1;
+=======
+
+	if (firmware_has_feature(FW_FEATURE_OPAL))
+		form1_affinity = 1;
+	else {
+		chosen = of_find_node_by_path("/chosen");
+		if (chosen) {
+			vec5 = of_get_property(chosen,
+					       "ibm,architecture-vec-5", NULL);
+			if (vec5 && (vec5[VEC5_AFFINITY_BYTE] &
+							VEC5_AFFINITY)) {
+				dbg("Using form 1 affinity\n");
+				form1_affinity = 1;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
 	if (form1_affinity) {
 		depth = distance_ref_points[0];
+=======
+	if (firmware_has_feature(FW_FEATURE_OPAL) ||
+	    firmware_has_feature(FW_FEATURE_TYPE1_AFFINITY)) {
+		dbg("Using form 1 affinity\n");
+		form1_affinity = 1;
+	}
+
+	if (form1_affinity) {
+		depth = of_read_number(distance_ref_points, 1);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (distance_ref_points_depth < 2) {
 			printk(KERN_WARNING "NUMA: "
@@ -362,7 +530,11 @@ static int __init find_min_common_depth(void)
 			goto err;
 		}
 
+<<<<<<< HEAD
 		depth = distance_ref_points[1];
+=======
+		depth = of_read_number(&distance_ref_points[1], 1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -396,17 +568,30 @@ static void __init get_n_mem_cells(int *n_addr_cells, int *n_size_cells)
 	of_node_put(memory);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long __devinit read_n_cells(int n, const unsigned int **buf)
+=======
+static unsigned long read_n_cells(int n, const unsigned int **buf)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned long read_n_cells(int n, const __be32 **buf)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long result = 0;
 
 	while (n--) {
+<<<<<<< HEAD
 		result = (result << 32) | **buf;
+=======
+		result = (result << 32) | of_read_number(*buf, 1);
+>>>>>>> refs/remotes/origin/master
 		(*buf)++;
 	}
 	return result;
 }
 
+<<<<<<< HEAD
 struct of_drconf_cell {
 	u64	base_addr;
 	u32	drc_index;
@@ -419,21 +604,36 @@ struct of_drconf_cell {
 #define DRCONF_MEM_AI_INVALID	0x00000040
 #define DRCONF_MEM_RESERVED	0x00000080
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Read the next memblock list entry from the ibm,dynamic-memory property
  * and return the information in the provided of_drconf_cell structure.
  */
+<<<<<<< HEAD
 static void read_drconf_cell(struct of_drconf_cell *drmem, const u32 **cellp)
 {
 	const u32 *cp;
+=======
+static void read_drconf_cell(struct of_drconf_cell *drmem, const __be32 **cellp)
+{
+	const __be32 *cp;
+>>>>>>> refs/remotes/origin/master
 
 	drmem->base_addr = read_n_cells(n_mem_addr_cells, cellp);
 
 	cp = *cellp;
+<<<<<<< HEAD
 	drmem->drc_index = cp[0];
 	drmem->reserved = cp[1];
 	drmem->aa_index = cp[2];
 	drmem->flags = cp[3];
+=======
+	drmem->drc_index = of_read_number(cp, 1);
+	drmem->reserved = of_read_number(&cp[1], 1);
+	drmem->aa_index = of_read_number(&cp[2], 1);
+	drmem->flags = of_read_number(&cp[3], 1);
+>>>>>>> refs/remotes/origin/master
 
 	*cellp = cp + 4;
 }
@@ -445,16 +645,26 @@ static void read_drconf_cell(struct of_drconf_cell *drmem, const u32 **cellp)
  * list entries followed by N memblock list entries.  Each memblock list entry
  * contains information as laid out in the of_drconf_cell struct above.
  */
+<<<<<<< HEAD
 static int of_get_drconf_memory(struct device_node *memory, const u32 **dm)
 {
 	const u32 *prop;
+=======
+static int of_get_drconf_memory(struct device_node *memory, const __be32 **dm)
+{
+	const __be32 *prop;
+>>>>>>> refs/remotes/origin/master
 	u32 len, entries;
 
 	prop = of_get_property(memory, "ibm,dynamic-memory", &len);
 	if (!prop || len < sizeof(unsigned int))
 		return 0;
 
+<<<<<<< HEAD
 	entries = *prop++;
+=======
+	entries = of_read_number(prop++, 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* Now that we know the number of entries, revalidate the size
 	 * of the property read in to ensure we have everything
@@ -472,7 +682,11 @@ static int of_get_drconf_memory(struct device_node *memory, const u32 **dm)
  */
 static u64 of_get_lmb_size(struct device_node *memory)
 {
+<<<<<<< HEAD
 	const u32 *prop;
+=======
+	const __be32 *prop;
+>>>>>>> refs/remotes/origin/master
 	u32 len;
 
 	prop = of_get_property(memory, "ibm,lmb-size", &len);
@@ -485,7 +699,11 @@ static u64 of_get_lmb_size(struct device_node *memory)
 struct assoc_arrays {
 	u32	n_arrays;
 	u32	array_sz;
+<<<<<<< HEAD
 	const u32 *arrays;
+=======
+	const __be32 *arrays;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -501,17 +719,32 @@ struct assoc_arrays {
 static int of_get_assoc_arrays(struct device_node *memory,
 			       struct assoc_arrays *aa)
 {
+<<<<<<< HEAD
 	const u32 *prop;
+=======
+	const __be32 *prop;
+>>>>>>> refs/remotes/origin/master
 	u32 len;
 
 	prop = of_get_property(memory, "ibm,associativity-lookup-arrays", &len);
 	if (!prop || len < 2 * sizeof(unsigned int))
 		return -1;
 
+<<<<<<< HEAD
 	aa->n_arrays = *prop++;
 	aa->array_sz = *prop++;
 
+<<<<<<< HEAD
 	/* Now that we know the number of arrrays and size of each array,
+=======
+	/* Now that we know the number of arrays and size of each array,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	aa->n_arrays = of_read_number(prop++, 1);
+	aa->array_sz = of_read_number(prop++, 1);
+
+	/* Now that we know the number of arrays and size of each array,
+>>>>>>> refs/remotes/origin/master
 	 * revalidate the size of the property read in.
 	 */
 	if (len < (aa->n_arrays * aa->array_sz + 2) * sizeof(unsigned int))
@@ -536,7 +769,11 @@ static int of_drconf_to_nid_single(struct of_drconf_cell *drmem,
 	    !(drmem->flags & DRCONF_MEM_AI_INVALID) &&
 	    drmem->aa_index < aa->n_arrays) {
 		index = drmem->aa_index * aa->array_sz + min_common_depth - 1;
+<<<<<<< HEAD
 		nid = aa->arrays[index];
+=======
+		nid = of_read_number(&aa->arrays[index], 1);
+>>>>>>> refs/remotes/origin/master
 
 		if (nid == 0xffff || nid >= MAX_NUMNODES)
 			nid = default_nid;
@@ -549,7 +786,11 @@ static int of_drconf_to_nid_single(struct of_drconf_cell *drmem,
  * Figure out to which domain a cpu belongs and stick it there.
  * Return the id of the domain used.
  */
+<<<<<<< HEAD
 static int __cpuinit numa_setup_cpu(unsigned long lcpu)
+=======
+static int numa_setup_cpu(unsigned long lcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int nid = 0;
 	struct device_node *cpu = of_get_cpu_node(lcpu, NULL);
@@ -571,8 +812,12 @@ out:
 	return nid;
 }
 
+<<<<<<< HEAD
 static int __cpuinit cpu_numa_callback(struct notifier_block *nfb,
 			     unsigned long action,
+=======
+static int cpu_numa_callback(struct notifier_block *nfb, unsigned long action,
+>>>>>>> refs/remotes/origin/master
 			     void *hcpu)
 {
 	unsigned long lcpu = (unsigned long)hcpu;
@@ -628,7 +873,11 @@ static unsigned long __init numa_enforce_memory_limit(unsigned long start,
  * Reads the counter for a given entry in
  * linux,drconf-usable-memory property
  */
+<<<<<<< HEAD
 static inline int __init read_usm_ranges(const u32 **usm)
+=======
+static inline int __init read_usm_ranges(const __be32 **usm)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * For each lmb in ibm,dynamic-memory a corresponding
@@ -645,11 +894,34 @@ static inline int __init read_usm_ranges(const u32 **usm)
  */
 static void __init parse_drconf_memory(struct device_node *memory)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const u32 *dm, *usm;
 	unsigned int n, rc, ranges, is_kexec_kdump = 0;
 	unsigned long lmb_size, base, size, sz;
 	int nid;
 	struct assoc_arrays aa;
+=======
+	const u32 *uninitialized_var(dm), *usm;
+=======
+	const __be32 *uninitialized_var(dm), *usm;
+>>>>>>> refs/remotes/origin/master
+	unsigned int n, rc, ranges, is_kexec_kdump = 0;
+	unsigned long lmb_size, base, size, sz;
+	int nid;
+	struct assoc_arrays aa = { .arrays = NULL };
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	const u32 *uninitialized_var(dm), *usm;
+	unsigned int n, rc, ranges, is_kexec_kdump = 0;
+	unsigned long lmb_size, base, size, sz;
+	int nid;
+	struct assoc_arrays aa = { .arrays = NULL };
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	n = of_get_drconf_memory(memory, &dm);
 	if (!n)
@@ -700,17 +972,34 @@ static void __init parse_drconf_memory(struct device_node *memory)
 			node_set_online(nid);
 			sz = numa_enforce_memory_limit(base, size);
 			if (sz)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				add_active_range(nid, base >> PAGE_SHIFT,
 						 (base >> PAGE_SHIFT)
 						 + (sz >> PAGE_SHIFT));
+=======
+				memblock_set_node(base, sz, nid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				memblock_set_node(base, sz,
+						  &memblock.memory, nid);
+>>>>>>> refs/remotes/origin/master
 		} while (--ranges);
 	}
 }
 
 static int __init parse_numa_properties(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct device_node *cpu = NULL;
 	struct device_node *memory = NULL;
+=======
+	struct device_node *memory;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device_node *memory;
+>>>>>>> refs/remotes/origin/master
 	int default_nid = 0;
 	unsigned long i;
 
@@ -732,6 +1021,14 @@ static int __init parse_numa_properties(void)
 	 * each node to be onlined must have NODE_DATA etc backing it.
 	 */
 	for_each_present_cpu(i) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		struct device_node *cpu;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct device_node *cpu;
+>>>>>>> refs/remotes/origin/master
 		int nid;
 
 		cpu = of_get_cpu_node(i, NULL);
@@ -750,13 +1047,27 @@ static int __init parse_numa_properties(void)
 	}
 
 	get_n_mem_cells(&n_mem_addr_cells, &n_mem_size_cells);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memory = NULL;
 	while ((memory = of_find_node_by_type(memory, "memory")) != NULL) {
+=======
+
+	for_each_node_by_type(memory, "memory") {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	for_each_node_by_type(memory, "memory") {
+>>>>>>> refs/remotes/origin/master
 		unsigned long start;
 		unsigned long size;
 		int nid;
 		int ranges;
+<<<<<<< HEAD
 		const unsigned int *memcell_buf;
+=======
+		const __be32 *memcell_buf;
+>>>>>>> refs/remotes/origin/master
 		unsigned int len;
 
 		memcell_buf = of_get_property(memory,
@@ -792,16 +1103,36 @@ new_range:
 				continue;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		add_active_range(nid, start >> PAGE_SHIFT,
 				(start >> PAGE_SHIFT) + (size >> PAGE_SHIFT));
+=======
+		memblock_set_node(start, size, nid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memblock_set_node(start, size, &memblock.memory, nid);
+>>>>>>> refs/remotes/origin/master
 
 		if (--ranges)
 			goto new_range;
 	}
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * Now do the same thing for each MEMBLOCK listed in the ibm,dynamic-memory
 	 * property in the ibm,dynamic-reconfiguration-memory node.
+=======
+	 * Now do the same thing for each MEMBLOCK listed in the
+	 * ibm,dynamic-memory property in the
+	 * ibm,dynamic-reconfiguration-memory node.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Now do the same thing for each MEMBLOCK listed in the
+	 * ibm,dynamic-memory property in the
+	 * ibm,dynamic-reconfiguration-memory node.
+>>>>>>> refs/remotes/origin/master
 	 */
 	memory = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
 	if (memory)
@@ -828,7 +1159,18 @@ static void __init setup_nonnuma(void)
 		end_pfn = memblock_region_memory_end_pfn(reg);
 
 		fake_numa_create_new_node(end_pfn, &nid);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		add_active_range(nid, start_pfn, end_pfn);
+=======
+		memblock_set_node(PFN_PHYS(start_pfn),
+				  PFN_PHYS(end_pfn - start_pfn), nid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memblock_set_node(PFN_PHYS(start_pfn),
+				  PFN_PHYS(end_pfn - start_pfn),
+				  &memblock.memory, nid);
+>>>>>>> refs/remotes/origin/master
 		node_set_online(nid);
 	}
 }
@@ -953,12 +1295,24 @@ static void __init *careful_zallocation(int nid, unsigned long size,
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata ppc64_numa_nb = {
+=======
+static struct notifier_block ppc64_numa_nb = {
+>>>>>>> refs/remotes/origin/master
 	.notifier_call = cpu_numa_callback,
 	.priority = 1 /* Must run before sched domains notifier. */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void mark_reserved_regions_for_nid(int nid)
+=======
+static void __init mark_reserved_regions_for_nid(int nid)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init mark_reserved_regions_for_nid(int nid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pglist_data *node = NODE_DATA(nid);
 	struct memblock_region *reg;
@@ -969,8 +1323,12 @@ static void mark_reserved_regions_for_nid(int nid)
 		unsigned long start_pfn = physbase >> PAGE_SHIFT;
 		unsigned long end_pfn = PFN_UP(physbase + size);
 		struct node_active_region node_ar;
+<<<<<<< HEAD
 		unsigned long node_end_pfn = node->node_start_pfn +
 					     node->node_spanned_pages;
+=======
+		unsigned long node_end_pfn = pgdat_end_pfn(node);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Check to make sure that this memblock.reserved area is
@@ -1140,7 +1498,11 @@ early_param("numa", early_numa);
 static int hot_add_drconf_scn_to_nid(struct device_node *memory,
 				     unsigned long scn_addr)
 {
+<<<<<<< HEAD
 	const u32 *dm;
+=======
+	const __be32 *dm;
+>>>>>>> refs/remotes/origin/master
 	unsigned int drconf_cell_cnt, rc;
 	unsigned long lmb_size;
 	struct assoc_arrays aa;
@@ -1185,15 +1547,33 @@ static int hot_add_drconf_scn_to_nid(struct device_node *memory,
  * represented in the device tree as a node (i.e. memory@XXXX) for
  * each memblock.
  */
+<<<<<<< HEAD
 int hot_add_node_scn_to_nid(unsigned long scn_addr)
 {
+<<<<<<< HEAD
 	struct device_node *memory = NULL;
 	int nid = -1;
 
 	while ((memory = of_find_node_by_type(memory, "memory")) != NULL) {
+=======
+=======
+static int hot_add_node_scn_to_nid(unsigned long scn_addr)
+{
+>>>>>>> refs/remotes/origin/master
+	struct device_node *memory;
+	int nid = -1;
+
+	for_each_node_by_type(memory, "memory") {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		unsigned long start, size;
 		int ranges;
 		const unsigned int *memcell_buf;
+=======
+		unsigned long start, size;
+		int ranges;
+		const __be32 *memcell_buf;
+>>>>>>> refs/remotes/origin/master
 		unsigned int len;
 
 		memcell_buf = of_get_property(memory, "reg", &len);
@@ -1266,7 +1646,11 @@ static u64 hot_add_drconf_memory_max(void)
         struct device_node *memory = NULL;
         unsigned int drconf_cell_cnt = 0;
         u64 lmb_size = 0;
+<<<<<<< HEAD
         const u32 *dm = 0;
+=======
+	const __be32 *dm = NULL;
+>>>>>>> refs/remotes/origin/master
 
         memory = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
         if (memory) {
@@ -1291,10 +1675,25 @@ u64 memory_hotplug_max(void)
 
 /* Virtual Processor Home Node (VPHN) support */
 #ifdef CONFIG_PPC_SPLPAR
+<<<<<<< HEAD
 static u8 vphn_cpu_change_counts[NR_CPUS][MAX_DISTANCE_REF_POINTS];
 static cpumask_t cpu_associativity_changes_mask;
 static int vphn_enabled;
 static void set_topology_timer(void);
+=======
+struct topology_update_data {
+	struct topology_update_data *next;
+	unsigned int cpu;
+	int old_nid;
+	int new_nid;
+};
+
+static u8 vphn_cpu_change_counts[NR_CPUS][MAX_DISTANCE_REF_POINTS];
+static cpumask_t cpu_associativity_changes_mask;
+static int vphn_enabled;
+static int prrn_enabled;
+static void reset_topology_timer(void);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Store the current values of the associativity change counters in the
@@ -1330,11 +1729,17 @@ static void setup_cpu_associativity_change_counters(void)
  */
 static int update_cpu_associativity_changes_mask(void)
 {
+<<<<<<< HEAD
 	int cpu, nr_cpus = 0;
 	cpumask_t *changes = &cpu_associativity_changes_mask;
 
 	cpumask_clear(changes);
 
+=======
+	int cpu;
+	cpumask_t *changes = &cpu_associativity_changes_mask;
+
+>>>>>>> refs/remotes/origin/master
 	for_each_possible_cpu(cpu) {
 		int i, changed = 0;
 		u8 *counts = vphn_cpu_change_counts[cpu];
@@ -1347,12 +1752,21 @@ static int update_cpu_associativity_changes_mask(void)
 			}
 		}
 		if (changed) {
+<<<<<<< HEAD
 			cpumask_set_cpu(cpu, changes);
 			nr_cpus++;
 		}
 	}
 
 	return nr_cpus;
+=======
+			cpumask_or(changes, changes, cpu_sibling_mask(cpu));
+			cpu = cpu_last_thread_sibling(cpu);
+		}
+	}
+
+	return cpumask_weight(changes);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1365,40 +1779,68 @@ static int update_cpu_associativity_changes_mask(void)
  * Convert the associativity domain numbers returned from the hypervisor
  * to the sequence they would appear in the ibm,associativity property.
  */
+<<<<<<< HEAD
 static int vphn_unpack_associativity(const long *packed, unsigned int *unpacked)
 {
 	int i, nr_assoc_doms = 0;
 	const u16 *field = (const u16*) packed;
+=======
+static int vphn_unpack_associativity(const long *packed, __be32 *unpacked)
+{
+	int i, nr_assoc_doms = 0;
+	const __be16 *field = (const __be16 *) packed;
+>>>>>>> refs/remotes/origin/master
 
 #define VPHN_FIELD_UNUSED	(0xffff)
 #define VPHN_FIELD_MSB		(0x8000)
 #define VPHN_FIELD_MASK		(~VPHN_FIELD_MSB)
 
 	for (i = 1; i < VPHN_ASSOC_BUFSIZE; i++) {
+<<<<<<< HEAD
 		if (*field == VPHN_FIELD_UNUSED) {
+=======
+		if (be16_to_cpup(field) == VPHN_FIELD_UNUSED) {
+>>>>>>> refs/remotes/origin/master
 			/* All significant fields processed, and remaining
 			 * fields contain the reserved value of all 1's.
 			 * Just store them.
 			 */
+<<<<<<< HEAD
 			unpacked[i] = *((u32*)field);
 			field += 2;
 		} else if (*field & VPHN_FIELD_MSB) {
 			/* Data is in the lower 15 bits of this field */
 			unpacked[i] = *field & VPHN_FIELD_MASK;
+=======
+			unpacked[i] = *((__be32 *)field);
+			field += 2;
+		} else if (be16_to_cpup(field) & VPHN_FIELD_MSB) {
+			/* Data is in the lower 15 bits of this field */
+			unpacked[i] = cpu_to_be32(
+				be16_to_cpup(field) & VPHN_FIELD_MASK);
+>>>>>>> refs/remotes/origin/master
 			field++;
 			nr_assoc_doms++;
 		} else {
 			/* Data is in the lower 15 bits of this field
 			 * concatenated with the next 16 bit field
 			 */
+<<<<<<< HEAD
 			unpacked[i] = *((u32*)field);
+=======
+			unpacked[i] = *((__be32 *)field);
+>>>>>>> refs/remotes/origin/master
 			field += 2;
 			nr_assoc_doms++;
 		}
 	}
 
 	/* The first cell contains the length of the property */
+<<<<<<< HEAD
 	unpacked[0] = nr_assoc_doms;
+=======
+	unpacked[0] = cpu_to_be32(nr_assoc_doms);
+>>>>>>> refs/remotes/origin/master
 
 	return nr_assoc_doms;
 }
@@ -1407,7 +1849,11 @@ static int vphn_unpack_associativity(const long *packed, unsigned int *unpacked)
  * Retrieve the new associativity information for a virtual processor's
  * home node.
  */
+<<<<<<< HEAD
 static long hcall_vphn(unsigned long cpu, unsigned int *associativity)
+=======
+static long hcall_vphn(unsigned long cpu, __be32 *associativity)
+>>>>>>> refs/remotes/origin/master
 {
 	long rc;
 	long retbuf[PLPAR_HCALL9_BUFSIZE] = {0};
@@ -1421,7 +1867,11 @@ static long hcall_vphn(unsigned long cpu, unsigned int *associativity)
 }
 
 static long vphn_get_associativity(unsigned long cpu,
+<<<<<<< HEAD
 					unsigned int *associativity)
+=======
+					__be32 *associativity)
+>>>>>>> refs/remotes/origin/master
 {
 	long rc;
 
@@ -1444,6 +1894,7 @@ static long vphn_get_associativity(unsigned long cpu,
 }
 
 /*
+<<<<<<< HEAD
  * Update the node maps and sysfs entries for each cpu whose home node
  * has changed.
  */
@@ -1451,7 +1902,11 @@ int arch_update_cpu_topology(void)
 {
 	int cpu, nid, old_nid;
 	unsigned int associativity[VPHN_ASSOC_BUFSIZE] = {0};
+<<<<<<< HEAD
 	struct sys_device *sysdev;
+=======
+	struct device *dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for_each_cpu(cpu,&cpu_associativity_changes_mask) {
 		vphn_get_associativity(cpu, associativity);
@@ -1472,12 +1927,127 @@ int arch_update_cpu_topology(void)
 		register_cpu_under_node(cpu, nid);
 		put_online_cpus();
 
+<<<<<<< HEAD
 		sysdev = get_cpu_sysdev(cpu);
 		if (sysdev)
 			kobject_uevent(&sysdev->kobj, KOBJ_CHANGE);
+=======
+		dev = get_cpu_device(cpu);
+		if (dev)
+			kobject_uevent(&dev->kobj, KOBJ_CHANGE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 1;
+=======
+ * Update the CPU maps and sysfs entries for a single CPU when its NUMA
+ * characteristics change. This function doesn't perform any locking and is
+ * only safe to call from stop_machine().
+ */
+static int update_cpu_topology(void *data)
+{
+	struct topology_update_data *update;
+	unsigned long cpu;
+
+	if (!data)
+		return -EINVAL;
+
+	cpu = smp_processor_id();
+
+	for (update = data; update; update = update->next) {
+		if (cpu != update->cpu)
+			continue;
+
+		unmap_cpu_from_node(update->cpu);
+		map_cpu_to_node(update->cpu, update->new_nid);
+		vdso_getcpu_init();
+	}
+
+	return 0;
+}
+
+/*
+ * Update the node maps and sysfs entries for each cpu whose home node
+ * has changed. Returns 1 when the topology has changed, and 0 otherwise.
+ */
+int arch_update_cpu_topology(void)
+{
+	unsigned int cpu, sibling, changed = 0;
+	struct topology_update_data *updates, *ud;
+	__be32 associativity[VPHN_ASSOC_BUFSIZE] = {0};
+	cpumask_t updated_cpus;
+	struct device *dev;
+	int weight, new_nid, i = 0;
+
+	weight = cpumask_weight(&cpu_associativity_changes_mask);
+	if (!weight)
+		return 0;
+
+	updates = kzalloc(weight * (sizeof(*updates)), GFP_KERNEL);
+	if (!updates)
+		return 0;
+
+	cpumask_clear(&updated_cpus);
+
+	for_each_cpu(cpu, &cpu_associativity_changes_mask) {
+		/*
+		 * If siblings aren't flagged for changes, updates list
+		 * will be too short. Skip on this update and set for next
+		 * update.
+		 */
+		if (!cpumask_subset(cpu_sibling_mask(cpu),
+					&cpu_associativity_changes_mask)) {
+			pr_info("Sibling bits not set for associativity "
+					"change, cpu%d\n", cpu);
+			cpumask_or(&cpu_associativity_changes_mask,
+					&cpu_associativity_changes_mask,
+					cpu_sibling_mask(cpu));
+			cpu = cpu_last_thread_sibling(cpu);
+			continue;
+		}
+
+		/* Use associativity from first thread for all siblings */
+		vphn_get_associativity(cpu, associativity);
+		new_nid = associativity_to_nid(associativity);
+		if (new_nid < 0 || !node_online(new_nid))
+			new_nid = first_online_node;
+
+		if (new_nid == numa_cpu_lookup_table[cpu]) {
+			cpumask_andnot(&cpu_associativity_changes_mask,
+					&cpu_associativity_changes_mask,
+					cpu_sibling_mask(cpu));
+			cpu = cpu_last_thread_sibling(cpu);
+			continue;
+		}
+
+		for_each_cpu(sibling, cpu_sibling_mask(cpu)) {
+			ud = &updates[i++];
+			ud->cpu = sibling;
+			ud->new_nid = new_nid;
+			ud->old_nid = numa_cpu_lookup_table[sibling];
+			cpumask_set_cpu(sibling, &updated_cpus);
+			if (i < weight)
+				ud->next = &updates[i];
+		}
+		cpu = cpu_last_thread_sibling(cpu);
+	}
+
+	stop_machine(update_cpu_topology, &updates[0], &updated_cpus);
+
+	for (ud = &updates[0]; ud; ud = ud->next) {
+		unregister_cpu_under_node(ud->cpu, ud->old_nid);
+		register_cpu_under_node(ud->cpu, ud->new_nid);
+
+		dev = get_cpu_device(ud->cpu);
+		if (dev)
+			kobject_uevent(&dev->kobj, KOBJ_CHANGE);
+		cpumask_clear_cpu(ud->cpu, &cpu_associativity_changes_mask);
+		changed = 1;
+	}
+
+	kfree(updates);
+	return changed;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void topology_work_fn(struct work_struct *work)
@@ -1486,22 +2056,37 @@ static void topology_work_fn(struct work_struct *work)
 }
 static DECLARE_WORK(topology_work, topology_work_fn);
 
+<<<<<<< HEAD
 void topology_schedule_update(void)
+=======
+static void topology_schedule_update(void)
+>>>>>>> refs/remotes/origin/master
 {
 	schedule_work(&topology_work);
 }
 
 static void topology_timer_fn(unsigned long ignored)
 {
+<<<<<<< HEAD
 	if (!vphn_enabled)
 		return;
 	if (update_cpu_associativity_changes_mask() > 0)
 		topology_schedule_update();
 	set_topology_timer();
+=======
+	if (prrn_enabled && cpumask_weight(&cpu_associativity_changes_mask))
+		topology_schedule_update();
+	else if (vphn_enabled) {
+		if (update_cpu_associativity_changes_mask() > 0)
+			topology_schedule_update();
+		reset_topology_timer();
+	}
+>>>>>>> refs/remotes/origin/master
 }
 static struct timer_list topology_timer =
 	TIMER_INITIALIZER(topology_timer_fn, 0, 0);
 
+<<<<<<< HEAD
 static void set_topology_timer(void)
 {
 	topology_timer.data = 0;
@@ -1511,11 +2096,60 @@ static void set_topology_timer(void)
 
 /*
  * Start polling for VPHN associativity changes.
+=======
+static void reset_topology_timer(void)
+{
+	topology_timer.data = 0;
+	topology_timer.expires = jiffies + 60 * HZ;
+	mod_timer(&topology_timer, topology_timer.expires);
+}
+
+#ifdef CONFIG_SMP
+
+static void stage_topology_update(int core_id)
+{
+	cpumask_or(&cpu_associativity_changes_mask,
+		&cpu_associativity_changes_mask, cpu_sibling_mask(core_id));
+	reset_topology_timer();
+}
+
+static int dt_update_callback(struct notifier_block *nb,
+				unsigned long action, void *data)
+{
+	struct of_prop_reconfig *update;
+	int rc = NOTIFY_DONE;
+
+	switch (action) {
+	case OF_RECONFIG_UPDATE_PROPERTY:
+		update = (struct of_prop_reconfig *)data;
+		if (!of_prop_cmp(update->dn->type, "cpu") &&
+		    !of_prop_cmp(update->prop->name, "ibm,associativity")) {
+			u32 core_id;
+			of_property_read_u32(update->dn, "reg", &core_id);
+			stage_topology_update(core_id);
+			rc = NOTIFY_OK;
+		}
+		break;
+	}
+
+	return rc;
+}
+
+static struct notifier_block dt_update_nb = {
+	.notifier_call = dt_update_callback,
+};
+
+#endif
+
+/*
+ * Start polling for associativity changes.
+>>>>>>> refs/remotes/origin/master
  */
 int start_topology_update(void)
 {
 	int rc = 0;
 
+<<<<<<< HEAD
 	/* Disabled until races with load balancing are fixed */
 	if (0 && firmware_has_feature(FW_FEATURE_VPHN) &&
 	    get_lppaca()->shared_proc) {
@@ -1524,18 +2158,115 @@ int start_topology_update(void)
 		init_timer_deferrable(&topology_timer);
 		set_topology_timer();
 		rc = 1;
+=======
+	if (firmware_has_feature(FW_FEATURE_PRRN)) {
+		if (!prrn_enabled) {
+			prrn_enabled = 1;
+			vphn_enabled = 0;
+#ifdef CONFIG_SMP
+			rc = of_reconfig_notifier_register(&dt_update_nb);
+#endif
+		}
+	} else if (firmware_has_feature(FW_FEATURE_VPHN) &&
+		   lppaca_shared_proc(get_lppaca())) {
+		if (!vphn_enabled) {
+			prrn_enabled = 0;
+			vphn_enabled = 1;
+			setup_cpu_associativity_change_counters();
+			init_timer_deferrable(&topology_timer);
+			reset_topology_timer();
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return rc;
 }
+<<<<<<< HEAD
 __initcall(start_topology_update);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Disable polling for VPHN associativity changes.
  */
 int stop_topology_update(void)
 {
+<<<<<<< HEAD
 	vphn_enabled = 0;
 	return del_timer_sync(&topology_timer);
 }
+=======
+	int rc = 0;
+
+	if (prrn_enabled) {
+		prrn_enabled = 0;
+#ifdef CONFIG_SMP
+		rc = of_reconfig_notifier_unregister(&dt_update_nb);
+#endif
+	} else if (vphn_enabled) {
+		vphn_enabled = 0;
+		rc = del_timer_sync(&topology_timer);
+	}
+
+	return rc;
+}
+
+int prrn_is_enabled(void)
+{
+	return prrn_enabled;
+}
+
+static int topology_read(struct seq_file *file, void *v)
+{
+	if (vphn_enabled || prrn_enabled)
+		seq_puts(file, "on\n");
+	else
+		seq_puts(file, "off\n");
+
+	return 0;
+}
+
+static int topology_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, topology_read, NULL);
+}
+
+static ssize_t topology_write(struct file *file, const char __user *buf,
+			      size_t count, loff_t *off)
+{
+	char kbuf[4]; /* "on" or "off" plus null. */
+	int read_len;
+
+	read_len = count < 3 ? count : 3;
+	if (copy_from_user(kbuf, buf, read_len))
+		return -EINVAL;
+
+	kbuf[read_len] = '\0';
+
+	if (!strncmp(kbuf, "on", 2))
+		start_topology_update();
+	else if (!strncmp(kbuf, "off", 3))
+		stop_topology_update();
+	else
+		return -EINVAL;
+
+	return count;
+}
+
+static const struct file_operations topology_ops = {
+	.read = seq_read,
+	.write = topology_write,
+	.open = topology_open,
+	.release = single_release
+};
+
+static int topology_update_init(void)
+{
+	start_topology_update();
+	proc_create("powerpc/topology_updates", 644, NULL, &topology_ops);
+
+	return 0;
+}
+device_initcall(topology_update_init);
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PPC_SPLPAR */

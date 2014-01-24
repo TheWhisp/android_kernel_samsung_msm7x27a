@@ -54,7 +54,15 @@
  * @QID_RX: RX queue
  * @QID_OTHER: None of the above (don't use, only present for completeness)
  * @QID_BEACON: Beacon queue (value unspecified, don't send it to device)
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @QID_ATIM: Atim queue (value unspeficied, don't send it to device)
+=======
+ * @QID_ATIM: Atim queue (value unspecified, don't send it to device)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @QID_ATIM: Atim queue (value unspecified, don't send it to device)
+>>>>>>> refs/remotes/origin/master
  */
 enum data_queue_qid {
 	QID_AC_VO = 0,
@@ -288,8 +296,18 @@ enum txentry_desc_flags {
  * @signal: PLCP signal.
  * @service: PLCP service.
  * @msc: MCS.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @stbc: STBC.
  * @ba_size: BA size.
+=======
+ * @stbc: Use Space Time Block Coding (only available for MCS rates < 8).
+ * @ba_size: Size of the recepients RX reorder buffer - 1.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @stbc: Use Space Time Block Coding (only available for MCS rates < 8).
+ * @ba_size: Size of the recepients RX reorder buffer - 1.
+>>>>>>> refs/remotes/origin/master
  * @rate_mode: Rate mode (See @enum rate_modulation).
  * @mpdu_density: MDPU density.
  * @retry_limit: Max number of retries.
@@ -321,6 +339,14 @@ struct txentry_desc {
 			u8 ba_size;
 			u8 mpdu_density;
 			enum txop txop;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			int wcid;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			int wcid;
+>>>>>>> refs/remotes/origin/master
 		} ht;
 	} u;
 
@@ -358,6 +384,10 @@ enum queue_entry_flags {
 	ENTRY_DATA_PENDING,
 	ENTRY_DATA_IO_FAILED,
 	ENTRY_DATA_STATUS_PENDING,
+<<<<<<< HEAD
+=======
+	ENTRY_DATA_STATUS_SET,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -371,6 +401,10 @@ enum queue_entry_flags {
  * @entry_idx: The entry index number.
  * @priv_data: Private data belonging to this queue entry. The pointer
  *	points to data specific to a particular driver and queue type.
+<<<<<<< HEAD
+=======
+ * @status: Device specific status
+>>>>>>> refs/remotes/origin/master
  */
 struct queue_entry {
 	unsigned long flags;
@@ -382,6 +416,11 @@ struct queue_entry {
 
 	unsigned int entry_idx;
 
+<<<<<<< HEAD
+=======
+	u32 status;
+
+>>>>>>> refs/remotes/origin/master
 	void *priv_data;
 };
 
@@ -448,6 +487,10 @@ enum data_queue_flags {
  * @cw_max: The cw max value for outgoing frames (field ignored in RX queue).
  * @data_size: Maximum data size for the frames in this queue.
  * @desc_size: Hardware descriptor size for the data in this queue.
+<<<<<<< HEAD
+=======
+ * @priv_size: Size of per-queue_entry private data.
+>>>>>>> refs/remotes/origin/master
  * @usb_endpoint: Device endpoint used for communication (USB only)
  * @usb_maxpacket: Max packet size for given endpoint (USB only)
  */
@@ -474,13 +517,20 @@ struct data_queue {
 	unsigned short cw_max;
 
 	unsigned short data_size;
+<<<<<<< HEAD
 	unsigned short desc_size;
+=======
+	unsigned char  desc_size;
+	unsigned char  winfo_size;
+	unsigned short priv_size;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned short usb_endpoint;
 	unsigned short usb_maxpacket;
 };
 
 /**
+<<<<<<< HEAD
  * struct data_queue_desc: Data queue description
  *
  * The information in this structure is used by drivers
@@ -499,6 +549,8 @@ struct data_queue_desc {
 };
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * queue_end - Return pointer to the last queue (HELPER MACRO).
  * @__dev: Pointer to &struct rt2x00_dev
  *
@@ -635,6 +687,8 @@ static inline int rt2x00queue_threshold(struct data_queue *queue)
 {
 	return rt2x00queue_available(queue) < queue->threshold;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /**
  * rt2x00queue_status_timeout - Check if a timeout occurred for STATUS reports
@@ -647,6 +701,10 @@ static inline int rt2x00queue_status_timeout(struct queue_entry *entry)
 	return time_after(jiffies, entry->last_action + msecs_to_jiffies(100));
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * rt2x00queue_dma_timeout - Check if a timeout occurred for DMA transfers
  * @entry: Queue entry to check.

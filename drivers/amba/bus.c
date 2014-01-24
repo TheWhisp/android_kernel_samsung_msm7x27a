@@ -16,9 +16,15 @@
 #include <linux/pm.h>
 #include <linux/pm_runtime.h>
 #include <linux/amba/bus.h>
+<<<<<<< HEAD
 
 #include <asm/irq.h>
 #include <asm/sizes.h>
+=======
+#include <linux/sizes.h>
+
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/master
 
 #define to_amba_driver(d)	container_of(d, struct amba_driver, drv)
 
@@ -45,18 +51,36 @@ static int amba_match(struct device *dev, struct device_driver *drv)
 	return amba_lookup(pcdrv->id_table, pcdev) != NULL;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
 static int amba_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
 	struct amba_device *pcdev = to_amba_device(dev);
 	int retval = 0;
 
 	retval = add_uevent_var(env, "AMBA_ID=%08x", pcdev->periphid);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (retval)
+		return retval;
+
+	retval = add_uevent_var(env, "MODALIAS=amba:d%08X", pcdev->periphid);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 #else
 #define amba_uevent NULL
 #endif
+=======
+	return retval;
+}
+>>>>>>> refs/remotes/origin/master
 
 #define amba_attr_func(name,fmt,arg...)					\
 static ssize_t name##_show(struct device *_dev,				\
@@ -109,6 +133,8 @@ static int amba_legacy_resume(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int amba_pm_prepare(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -134,6 +160,12 @@ static void amba_pm_complete(struct device *dev)
 #define amba_pm_complete		NULL
 
 #endif /* !CONFIG_PM_SLEEP */
+=======
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SUSPEND
 
@@ -155,6 +187,8 @@ static int amba_pm_suspend(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int amba_pm_suspend_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -171,6 +205,10 @@ static int amba_pm_suspend_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int amba_pm_resume(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -189,6 +227,8 @@ static int amba_pm_resume(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int amba_pm_resume_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -205,12 +245,22 @@ static int amba_pm_resume_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* !CONFIG_SUSPEND */
 
 #define amba_pm_suspend		NULL
 #define amba_pm_resume		NULL
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define amba_pm_suspend_noirq	NULL
 #define amba_pm_resume_noirq	NULL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* !CONFIG_SUSPEND */
 
@@ -234,6 +284,8 @@ static int amba_pm_freeze(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int amba_pm_freeze_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -250,6 +302,10 @@ static int amba_pm_freeze_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int amba_pm_thaw(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -268,6 +324,8 @@ static int amba_pm_thaw(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int amba_pm_thaw_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -284,6 +342,10 @@ static int amba_pm_thaw_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int amba_pm_poweroff(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -302,6 +364,8 @@ static int amba_pm_poweroff(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int amba_pm_poweroff_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -318,6 +382,10 @@ static int amba_pm_poweroff_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int amba_pm_restore(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -336,6 +404,8 @@ static int amba_pm_restore(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int amba_pm_restore_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -352,12 +422,18 @@ static int amba_pm_restore_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* !CONFIG_HIBERNATE_CALLBACKS */
 
 #define amba_pm_freeze		NULL
 #define amba_pm_thaw		NULL
 #define amba_pm_poweroff		NULL
 #define amba_pm_restore		NULL
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define amba_pm_freeze_noirq	NULL
 #define amba_pm_thaw_noirq		NULL
 #define amba_pm_poweroff_noirq	NULL
@@ -370,12 +446,60 @@ static int amba_pm_restore_noirq(struct device *dev)
 static const struct dev_pm_ops amba_pm = {
 	.prepare	= amba_pm_prepare,
 	.complete	= amba_pm_complete,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#endif /* !CONFIG_HIBERNATE_CALLBACKS */
+
+#ifdef CONFIG_PM_RUNTIME
+/*
+ * Hooks to provide runtime PM of the pclk (bus clock).  It is safe to
+ * enable/disable the bus clock at runtime PM suspend/resume as this
+ * does not result in loss of context.
+ */
+static int amba_pm_runtime_suspend(struct device *dev)
+{
+	struct amba_device *pcdev = to_amba_device(dev);
+	int ret = pm_generic_runtime_suspend(dev);
+
+	if (ret == 0 && dev->driver)
+		clk_disable(pcdev->pclk);
+
+	return ret;
+}
+
+static int amba_pm_runtime_resume(struct device *dev)
+{
+	struct amba_device *pcdev = to_amba_device(dev);
+	int ret;
+
+	if (dev->driver) {
+		ret = clk_enable(pcdev->pclk);
+		/* Failure is probably fatal to the system, but... */
+		if (ret)
+			return ret;
+	}
+
+	return pm_generic_runtime_resume(dev);
+}
+#endif
+
+#ifdef CONFIG_PM
+
+static const struct dev_pm_ops amba_pm = {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.suspend	= amba_pm_suspend,
 	.resume		= amba_pm_resume,
 	.freeze		= amba_pm_freeze,
 	.thaw		= amba_pm_thaw,
 	.poweroff	= amba_pm_poweroff,
 	.restore	= amba_pm_restore,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.suspend_noirq	= amba_pm_suspend_noirq,
 	.resume_noirq	= amba_pm_resume_noirq,
 	.freeze_noirq	= amba_pm_freeze_noirq,
@@ -385,7 +509,18 @@ static const struct dev_pm_ops amba_pm = {
 	SET_RUNTIME_PM_OPS(
 		pm_generic_runtime_suspend,
 		pm_generic_runtime_resume,
+=======
+	SET_RUNTIME_PM_OPS(
+		amba_pm_runtime_suspend,
+		amba_pm_runtime_resume,
+>>>>>>> refs/remotes/origin/cm-10.0
 		pm_generic_runtime_idle
+=======
+	SET_RUNTIME_PM_OPS(
+		amba_pm_runtime_suspend,
+		amba_pm_runtime_resume,
+		NULL
+>>>>>>> refs/remotes/origin/master
 	)
 };
 
@@ -426,9 +561,29 @@ static int amba_get_enable_pclk(struct amba_device *pcdev)
 	if (IS_ERR(pclk))
 		return PTR_ERR(pclk);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = clk_enable(pclk);
 	if (ret)
 		clk_put(pclk);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = clk_prepare(pclk);
+	if (ret) {
+		clk_put(pclk);
+		return ret;
+	}
+
+	ret = clk_enable(pclk);
+	if (ret) {
+		clk_unprepare(pclk);
+		clk_put(pclk);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -438,6 +593,8 @@ static void amba_put_disable_pclk(struct amba_device *pcdev)
 	struct clk *pclk = pcdev->pclk;
 
 	clk_disable(pclk);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clk_put(pclk);
 }
 
@@ -474,6 +631,17 @@ static void amba_put_disable_vcore(struct amba_device *pcdev)
 	}
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	clk_unprepare(pclk);
+	clk_put(pclk);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * These are the device model conversion veneers; they convert the
  * device model structures to our more specific structures.
@@ -486,20 +654,53 @@ static int amba_probe(struct device *dev)
 	int ret;
 
 	do {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = amba_get_enable_vcore(pcdev);
 		if (ret)
 			break;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = amba_get_enable_pclk(pcdev);
 		if (ret)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pm_runtime_get_noresume(dev);
+		pm_runtime_set_active(dev);
+		pm_runtime_enable(dev);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = pcdrv->probe(pcdev, id);
 		if (ret == 0)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		amba_put_disable_pclk(pcdev);
 		amba_put_disable_vcore(pcdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pm_runtime_disable(dev);
+		pm_runtime_set_suspended(dev);
+		pm_runtime_put_noidle(dev);
+
+		amba_put_disable_pclk(pcdev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} while (0);
 
 	return ret;
@@ -509,10 +710,31 @@ static int amba_remove(struct device *dev)
 {
 	struct amba_device *pcdev = to_amba_device(dev);
 	struct amba_driver *drv = to_amba_driver(dev->driver);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = drv->remove(pcdev);
 
 	amba_put_disable_pclk(pcdev);
 	amba_put_disable_vcore(pcdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ret;
+
+	pm_runtime_get_sync(dev);
+	ret = drv->remove(pcdev);
+	pm_runtime_put_noidle(dev);
+
+	/* Undo the runtime PM settings in amba_probe() */
+	pm_runtime_disable(dev);
+	pm_runtime_set_suspended(dev);
+	pm_runtime_put_noidle(dev);
+
+	amba_put_disable_pclk(pcdev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -567,6 +789,8 @@ static void amba_device_release(struct device *dev)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	amba_device_register - register an AMBA device
  *	@dev: AMBA device to register
  *	@parent: parent memory resource
@@ -576,11 +800,29 @@ static void amba_device_release(struct device *dev)
  *	the Linux device manager.
  */
 int amba_device_register(struct amba_device *dev, struct resource *parent)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *	amba_device_add - add a previously allocated AMBA device structure
+ *	@dev: AMBA device allocated by amba_device_alloc
+ *	@parent: resource parent for this devices resources
+ *
+ *	Claim the resource, and read the device cell ID if not already
+ *	initialized.  Register the AMBA device with the Linux device
+ *	manager.
+ */
+int amba_device_add(struct amba_device *dev, struct resource *parent)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 size;
 	void __iomem *tmp;
 	int i, ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	device_initialize(&dev->dev);
 
 	/*
@@ -598,6 +840,14 @@ int amba_device_register(struct amba_device *dev, struct resource *parent)
 
 	if (!dev->dev.coherent_dma_mask && dev->dma_mask)
 		dev_warn(&dev->dev, "coherent dma mask is unset\n");
+=======
+	WARN_ON(dev->irq[0] == (unsigned int)-1);
+	WARN_ON(dev->irq[1] == (unsigned int)-1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(dev->irq[0] == (unsigned int)-1);
+	WARN_ON(dev->irq[1] == (unsigned int)-1);
+>>>>>>> refs/remotes/origin/master
 
 	ret = request_resource(parent, &dev->res);
 	if (ret)
@@ -652,9 +902,21 @@ int amba_device_register(struct amba_device *dev, struct resource *parent)
 	if (ret)
 		goto err_release;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev->irq[0] != NO_IRQ)
 		ret = device_create_file(&dev->dev, &dev_attr_irq0);
 	if (ret == 0 && dev->irq[1] != NO_IRQ)
+=======
+	if (dev->irq[0] && dev->irq[0] != NO_IRQ)
+		ret = device_create_file(&dev->dev, &dev_attr_irq0);
+	if (ret == 0 && dev->irq[1] && dev->irq[1] != NO_IRQ)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->irq[0])
+		ret = device_create_file(&dev->dev, &dev_attr_irq0);
+	if (ret == 0 && dev->irq[1])
+>>>>>>> refs/remotes/origin/master
 		ret = device_create_file(&dev->dev, &dev_attr_irq1);
 	if (ret == 0)
 		return ret;
@@ -666,6 +928,164 @@ int amba_device_register(struct amba_device *dev, struct resource *parent)
  err_out:
 	return ret;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(amba_device_add);
+
+=======
+EXPORT_SYMBOL_GPL(amba_device_add);
+
+static struct amba_device *
+amba_aphb_device_add(struct device *parent, const char *name,
+		     resource_size_t base, size_t size, int irq1, int irq2,
+		     void *pdata, unsigned int periphid, u64 dma_mask,
+		     struct resource *resbase)
+{
+	struct amba_device *dev;
+	int ret;
+
+	dev = amba_device_alloc(name, base, size);
+	if (!dev)
+		return ERR_PTR(-ENOMEM);
+
+	dev->dev.coherent_dma_mask = dma_mask;
+	dev->irq[0] = irq1;
+	dev->irq[1] = irq2;
+	dev->periphid = periphid;
+	dev->dev.platform_data = pdata;
+	dev->dev.parent = parent;
+
+	ret = amba_device_add(dev, resbase);
+	if (ret) {
+		amba_device_put(dev);
+		return ERR_PTR(ret);
+	}
+
+	return dev;
+}
+
+struct amba_device *
+amba_apb_device_add(struct device *parent, const char *name,
+		    resource_size_t base, size_t size, int irq1, int irq2,
+		    void *pdata, unsigned int periphid)
+{
+	return amba_aphb_device_add(parent, name, base, size, irq1, irq2, pdata,
+				    periphid, 0, &iomem_resource);
+}
+EXPORT_SYMBOL_GPL(amba_apb_device_add);
+
+struct amba_device *
+amba_ahb_device_add(struct device *parent, const char *name,
+		    resource_size_t base, size_t size, int irq1, int irq2,
+		    void *pdata, unsigned int periphid)
+{
+	return amba_aphb_device_add(parent, name, base, size, irq1, irq2, pdata,
+				    periphid, ~0ULL, &iomem_resource);
+}
+EXPORT_SYMBOL_GPL(amba_ahb_device_add);
+
+struct amba_device *
+amba_apb_device_add_res(struct device *parent, const char *name,
+			resource_size_t base, size_t size, int irq1,
+			int irq2, void *pdata, unsigned int periphid,
+			struct resource *resbase)
+{
+	return amba_aphb_device_add(parent, name, base, size, irq1, irq2, pdata,
+				    periphid, 0, resbase);
+}
+EXPORT_SYMBOL_GPL(amba_apb_device_add_res);
+
+struct amba_device *
+amba_ahb_device_add_res(struct device *parent, const char *name,
+			resource_size_t base, size_t size, int irq1,
+			int irq2, void *pdata, unsigned int periphid,
+			struct resource *resbase)
+{
+	return amba_aphb_device_add(parent, name, base, size, irq1, irq2, pdata,
+				    periphid, ~0ULL, resbase);
+}
+EXPORT_SYMBOL_GPL(amba_ahb_device_add_res);
+
+
+>>>>>>> refs/remotes/origin/master
+static void amba_device_initialize(struct amba_device *dev, const char *name)
+{
+	device_initialize(&dev->dev);
+	if (name)
+		dev_set_name(&dev->dev, "%s", name);
+	dev->dev.release = amba_device_release;
+	dev->dev.bus = &amba_bustype;
+<<<<<<< HEAD
+	dev->dev.dma_mask = &dev->dma_mask;
+=======
+	dev->dev.dma_mask = &dev->dev.coherent_dma_mask;
+>>>>>>> refs/remotes/origin/master
+	dev->res.name = dev_name(&dev->dev);
+}
+
+/**
+ *	amba_device_alloc - allocate an AMBA device
+ *	@name: sysfs name of the AMBA device
+ *	@base: base of AMBA device
+ *	@size: size of AMBA device
+ *
+ *	Allocate and initialize an AMBA device structure.  Returns %NULL
+ *	on failure.
+ */
+struct amba_device *amba_device_alloc(const char *name, resource_size_t base,
+	size_t size)
+{
+	struct amba_device *dev;
+
+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+	if (dev) {
+		amba_device_initialize(dev, name);
+		dev->res.start = base;
+		dev->res.end = base + size - 1;
+		dev->res.flags = IORESOURCE_MEM;
+	}
+
+	return dev;
+}
+EXPORT_SYMBOL_GPL(amba_device_alloc);
+
+/**
+ *	amba_device_register - register an AMBA device
+ *	@dev: AMBA device to register
+ *	@parent: parent memory resource
+ *
+ *	Setup the AMBA device, reading the cell ID if present.
+ *	Claim the resource, and register the AMBA device with
+ *	the Linux device manager.
+ */
+int amba_device_register(struct amba_device *dev, struct resource *parent)
+{
+	amba_device_initialize(dev, dev->dev.init_name);
+	dev->dev.init_name = NULL;
+
+<<<<<<< HEAD
+	if (!dev->dev.coherent_dma_mask && dev->dma_mask)
+		dev_warn(&dev->dev, "coherent dma mask is unset\n");
+
+=======
+>>>>>>> refs/remotes/origin/master
+	return amba_device_add(dev, parent);
+}
+
+/**
+ *	amba_device_put - put an AMBA device
+ *	@dev: AMBA device to put
+ */
+void amba_device_put(struct amba_device *dev)
+{
+	put_device(&dev->dev);
+}
+EXPORT_SYMBOL_GPL(amba_device_put);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	amba_device_unregister - unregister an AMBA device

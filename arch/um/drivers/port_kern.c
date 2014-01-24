@@ -3,6 +3,7 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "linux/completion.h"
 #include "linux/interrupt.h"
 #include "linux/list.h"
@@ -13,6 +14,18 @@
 #include "init.h"
 #include "irq_kern.h"
 #include "os.h"
+=======
+#include <linux/completion.h>
+#include <linux/interrupt.h>
+#include <linux/list.h>
+#include <linux/mutex.h>
+#include <linux/slab.h>
+#include <linux/workqueue.h>
+#include <asm/atomic.h>
+#include <init.h>
+#include <irq_kern.h>
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 #include "port.h"
 
 struct port_list {
@@ -100,8 +113,16 @@ static int port_accept(struct port_list *port)
 		  .port 	= port });
 
 	if (um_request_irq(TELNETD_IRQ, socket[0], IRQ_READ, pipe_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+=======
+			  IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  "telnetd", conn)) {
+=======
+			  IRQF_SHARED, "telnetd", conn)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "port_accept : failed to get IRQ for "
 		       "telnetd\n");
 		goto out_free;
@@ -184,8 +205,16 @@ void *port_data(int port_num)
 	}
 
 	if (um_request_irq(ACCEPT_IRQ, fd, IRQ_READ, port_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+=======
+			  IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  "port", port)) {
+=======
+			  IRQF_SHARED, "port", port)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "Failed to get IRQ for port %d\n", port_num);
 		goto out_close;
 	}
@@ -254,7 +283,11 @@ int port_wait(void *data)
 		 * connection.  Then we loop here throwing out failed
 		 * connections until a good one is found.
 		 */
+<<<<<<< HEAD
 		free_irq(TELNETD_IRQ, conn);
+=======
+		um_free_irq(TELNETD_IRQ, conn);
+>>>>>>> refs/remotes/origin/master
 
 		if (conn->fd >= 0)
 			break;

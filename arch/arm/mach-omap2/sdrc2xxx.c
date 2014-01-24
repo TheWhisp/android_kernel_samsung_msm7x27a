@@ -24,6 +24,8 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/clock.h>
 #include <plat/sram.h>
@@ -31,7 +33,27 @@
 #include "prm2xxx_3xxx.h"
 #include "clock.h"
 #include <plat/sdrc.h>
+=======
+#include <plat/hardware.h>
+#include <plat/clock.h>
+#include <plat/sram.h>
+#include <plat/sdrc.h>
+
+#include "iomap.h"
+#include "common.h"
+#include "prm2xxx_3xxx.h"
+#include "clock.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "sdrc.h"
+=======
+#include "soc.h"
+#include "iomap.h"
+#include "common.h"
+#include "prm2xxx.h"
+#include "clock.h"
+#include "sdrc.h"
+#include "sram.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Memory timing, DLL mode flags */
 #define M_DDR		1

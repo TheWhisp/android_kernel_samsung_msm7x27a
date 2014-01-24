@@ -1,9 +1,19 @@
 #
+<<<<<<< HEAD
+<<<<<<< HEAD
 # Makefile for the new OMAP framebuffer device driver
+=======
+# Makefile for the OMAP1 framebuffer device driver
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+# Makefile for the OMAP1 framebuffer device driver
+>>>>>>> refs/remotes/origin/master
 #
 
 obj-$(CONFIG_FB_OMAP) += omapfb.o
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 objs-yy := omapfb_main.o
 
 objs-y$(CONFIG_ARCH_OMAP1) += lcdc.o
@@ -18,6 +28,20 @@ objs-y$(CONFIG_FB_OMAP_LCDC_BLIZZARD) += blizzard.o
 
 objs-y$(CONFIG_MACH_AMS_DELTA) += lcd_ams_delta.o
 objs-y$(CONFIG_MACH_OMAP_H4) += lcd_h4.o
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+objs-yy := omapfb_main.o lcdc.o
+
+objs-y$(CONFIG_FB_OMAP_LCDC_EXTERNAL) += sossi.o
+
+objs-y$(CONFIG_FB_OMAP_LCDC_HWA742) += hwa742.o
+
+objs-y$(CONFIG_MACH_AMS_DELTA) += lcd_ams_delta.o
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 objs-y$(CONFIG_MACH_OMAP_H3) += lcd_h3.o
 objs-y$(CONFIG_MACH_OMAP_PALMTE) += lcd_palmte.o
 objs-y$(CONFIG_MACH_OMAP_PALMTT) += lcd_palmtt.o
@@ -26,6 +50,8 @@ objs-$(CONFIG_ARCH_OMAP16XX)$(CONFIG_MACH_OMAP_INNOVATOR) += lcd_inn1610.o
 objs-$(CONFIG_ARCH_OMAP15XX)$(CONFIG_MACH_OMAP_INNOVATOR) += lcd_inn1510.o
 objs-y$(CONFIG_MACH_OMAP_OSK) += lcd_osk.o
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 objs-y$(CONFIG_MACH_OMAP_APOLLON) += lcd_apollon.o
 objs-y$(CONFIG_MACH_OMAP_2430SDP) += lcd_2430sdp.o
 objs-y$(CONFIG_MACH_OMAP_3430SDP) += lcd_2430sdp.o
@@ -34,6 +60,12 @@ objs-y$(CONFIG_MACH_OMAP3EVM) += lcd_omap3evm.o
 objs-y$(CONFIG_MACH_OMAP3_BEAGLE) += lcd_omap3beagle.o
 objs-y$(CONFIG_FB_OMAP_LCD_MIPID) += lcd_mipid.o
 objs-y$(CONFIG_MACH_OVERO) += lcd_overo.o
+=======
+objs-y$(CONFIG_FB_OMAP_LCD_MIPID) += lcd_mipid.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+objs-y$(CONFIG_FB_OMAP_LCD_MIPID) += lcd_mipid.o
+>>>>>>> refs/remotes/origin/master
 objs-y$(CONFIG_MACH_HERALD) += lcd_htcherald.o
 
 omapfb-objs := $(objs-yy)

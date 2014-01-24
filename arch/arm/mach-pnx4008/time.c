@@ -24,7 +24,10 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 #include <asm/leds.h>
 #include <asm/mach/time.h>

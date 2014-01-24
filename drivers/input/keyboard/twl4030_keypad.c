@@ -34,7 +34,13 @@
 #include <linux/i2c/twl.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The TWL4030 family chips include a keypad controller that supports
  * up to an 8x8 switch matrix.  The controller can issue system wakeup
@@ -272,7 +278,11 @@ static irqreturn_t do_kp_irq(int irq, void *_kp)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit twl4030_kp_program(struct twl4030_keypad *kp)
+=======
+static int twl4030_kp_program(struct twl4030_keypad *kp)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 reg;
 	int i;
@@ -302,7 +312,15 @@ static int __devinit twl4030_kp_program(struct twl4030_keypad *kp)
 	if (twl4030_kpwrite_u8(kp, i, KEYP_DEB) < 0)
 		return -EIO;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Set timeout period to 100 ms */
+=======
+	/* Set timeout period to 200 ms */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Set timeout period to 200 ms */
+>>>>>>> refs/remotes/origin/master
 	i = KEYP_PERIOD_US(200000, PTV_PRESCALER);
 	if (twl4030_kpwrite_u8(kp, (i & 0xFF), KEYP_TIMEOUT_L) < 0)
 		return -EIO;
@@ -329,7 +347,11 @@ static int __devinit twl4030_kp_program(struct twl4030_keypad *kp)
  * Registers keypad device with input subsystem
  * and configures TWL4030 keypad registers
  */
+<<<<<<< HEAD
 static int __devinit twl4030_kp_probe(struct platform_device *pdev)
+=======
+static int twl4030_kp_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct twl4030_keypad_data *pdata = pdev->dev.platform_data;
 	const struct matrix_keymap_data *keymap_data;
@@ -362,6 +384,7 @@ static int __devinit twl4030_kp_probe(struct platform_device *pdev)
 	kp->irq = platform_get_irq(pdev, 0);
 
 	/* setup input device */
+<<<<<<< HEAD
 	__set_bit(EV_KEY, input->evbit);
 
 	/* Enable auto repeat feature of Linux input subsystem */
@@ -370,6 +393,8 @@ static int __devinit twl4030_kp_probe(struct platform_device *pdev)
 
 	input_set_capability(input, EV_MSC, MSC_SCAN);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	input->name		= "TWL4030 Keypad";
 	input->phys		= "twl4030_keypad/input0";
 	input->dev.parent	= &pdev->dev;
@@ -379,12 +404,28 @@ static int __devinit twl4030_kp_probe(struct platform_device *pdev)
 	input->id.product	= 0x0001;
 	input->id.version	= 0x0003;
 
+<<<<<<< HEAD
 	input->keycode		= kp->keymap;
 	input->keycodesize	= sizeof(kp->keymap[0]);
 	input->keycodemax	= ARRAY_SIZE(kp->keymap);
 
 	matrix_keypad_build_keymap(keymap_data, TWL4030_ROW_SHIFT,
 				   input->keycode, input->keybit);
+=======
+	error = matrix_keypad_build_keymap(keymap_data, NULL,
+					   TWL4030_MAX_ROWS,
+					   1 << TWL4030_ROW_SHIFT,
+					   kp->keymap, input);
+	if (error) {
+		dev_err(kp->dbg_dev, "Failed to build keymap\n");
+		goto err1;
+	}
+
+	input_set_capability(input, EV_MSC, MSC_SCAN);
+	/* Enable auto repeat feature of Linux input subsystem */
+	if (pdata->rep)
+		__set_bit(EV_REP, input->evbit);
+>>>>>>> refs/remotes/origin/master
 
 	error = input_register_device(input);
 	if (error) {
@@ -424,7 +465,11 @@ static int __devinit twl4030_kp_probe(struct platform_device *pdev)
 err3:
 	/* mask all events - we don't care about the result */
 	(void) twl4030_kpwrite_u8(kp, 0xff, KEYP_IMR1);
+<<<<<<< HEAD
 	free_irq(kp->irq, NULL);
+=======
+	free_irq(kp->irq, kp);
+>>>>>>> refs/remotes/origin/master
 err2:
 	input_unregister_device(input);
 	input = NULL;
@@ -434,13 +479,20 @@ err1:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit twl4030_kp_remove(struct platform_device *pdev)
+=======
+static int twl4030_kp_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct twl4030_keypad *kp = platform_get_drvdata(pdev);
 
 	free_irq(kp->irq, kp);
 	input_unregister_device(kp->input);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(kp);
 
 	return 0;
@@ -454,12 +506,18 @@ static int __devexit twl4030_kp_remove(struct platform_device *pdev)
 
 static struct platform_driver twl4030_kp_driver = {
 	.probe		= twl4030_kp_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(twl4030_kp_remove),
+=======
+	.remove		= twl4030_kp_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "twl4030_keypad",
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init twl4030_kp_init(void)
 {
@@ -472,9 +530,21 @@ static void __exit twl4030_kp_exit(void)
 	platform_driver_unregister(&twl4030_kp_driver);
 }
 module_exit(twl4030_kp_exit);
+=======
+module_platform_driver(twl4030_kp_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(twl4030_kp_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Texas Instruments");
 MODULE_DESCRIPTION("TWL4030 Keypad Driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:twl4030_keypad");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

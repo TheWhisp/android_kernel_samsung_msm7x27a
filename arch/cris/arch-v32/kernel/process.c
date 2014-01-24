@@ -16,6 +16,7 @@
 #include <hwregs/reg_map.h>
 #include <hwregs/timer_defs.h>
 #include <hwregs/intr_vect_defs.h>
+<<<<<<< HEAD
 
 extern void stop_watchdog(void);
 
@@ -31,6 +32,18 @@ void default_idle(void)
                                  "halt      ");
 	}
 	local_irq_enable();
+=======
+#include <linux/ptrace.h>
+
+extern void stop_watchdog(void);
+
+/* We use this if we don't have any better idle routine. */
+void default_idle(void)
+{
+	/* Halt until exception. */
+	__asm__ volatile("ei    \n\t"
+			 "halt      ");
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -94,6 +107,7 @@ unsigned long thread_saved_pc(struct task_struct *t)
 	return task_pt_regs(t)->erp;
 }
 
+<<<<<<< HEAD
 static void
 kernel_thread_helper(void* dummy, int (*fn)(void *), void * arg)
 {
@@ -119,6 +133,8 @@ kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
         return do_fork(flags | CLONE_VM | CLONE_UNTRACED, 0, &regs, 0, NULL, NULL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Setup the child's kernel stack with a pt_regs and call switch_stack() on it.
  * It will be unnested during _resume and _ret_from_sys_call when the new thread
@@ -129,6 +145,7 @@ kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
  */
 
 extern asmlinkage void ret_from_fork(void);
+<<<<<<< HEAD
 
 int
 copy_thread(unsigned long clone_flags, unsigned long usp,
@@ -137,26 +154,58 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
 {
 	struct pt_regs *childregs;
 	struct switch_stack *swstack;
+=======
+extern asmlinkage void ret_from_kernel_thread(void);
+
+int
+copy_thread(unsigned long clone_flags, unsigned long usp,
+	unsigned long arg, struct task_struct *p)
+{
+	struct pt_regs *childregs = task_pt_regs(p);
+	struct switch_stack *swstack = ((struct switch_stack *) childregs) - 1;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Put the pt_regs structure at the end of the new kernel stack page and
 	 * fix it up. Note: the task_struct doubles as the kernel stack for the
 	 * task.
 	 */
+<<<<<<< HEAD
 	childregs = task_pt_regs(p);
 	*childregs = *regs;	/* Struct copy of pt_regs. */
         p->set_child_tid = p->clear_child_tid = NULL;
+=======
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(swstack, 0,
+			sizeof(struct switch_stack) + sizeof(struct pt_regs));
+		swstack->r1 = usp;
+		swstack->r2 = arg;
+		childregs->ccs = 1 << (I_CCS_BITNR + CCS_SHIFT);
+		swstack->return_ip = (unsigned long) ret_from_kernel_thread;
+		p->thread.ksp = (unsigned long) swstack;
+		p->thread.usp = 0;
+		return 0;
+	}
+	*childregs = *current_pt_regs();	/* Struct copy of pt_regs. */
+>>>>>>> refs/remotes/origin/master
         childregs->r10 = 0;	/* Child returns 0 after a fork/clone. */
 
 	/* Set a new TLS ?
 	 * The TLS is in $mof because it is the 5th argument to sys_clone.
 	 */
 	if (p->mm && (clone_flags & CLONE_SETTLS)) {
+<<<<<<< HEAD
 		task_thread_info(p)->tls = regs->mof;
 	}
 
 	/* Put the switch stack right below the pt_regs. */
 	swstack = ((struct switch_stack *) childregs) - 1;
+=======
+		task_thread_info(p)->tls = childregs->mof;
+	}
+
+	/* Put the switch stack right below the pt_regs. */
+>>>>>>> refs/remotes/origin/master
 
 	/* Parameter to ret_from_sys_call. 0 is don't restart the syscall. */
 	swstack->r9 = 0;
@@ -168,12 +217,17 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
 	swstack->return_ip = (unsigned long) ret_from_fork;
 
 	/* Fix the user-mode and kernel-mode stackpointer. */
+<<<<<<< HEAD
 	p->thread.usp = usp;
+=======
+	p->thread.usp = usp ?: rdusp();
+>>>>>>> refs/remotes/origin/master
 	p->thread.ksp = (unsigned long) swstack;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Be aware of the "magic" 7th argument in the four system-calls below.
  * They need the latest stackframe, which is put as the 7th argument by
@@ -238,6 +292,8 @@ sys_execve(const char *fname,
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long
 get_wchan(struct task_struct *p)
 {
@@ -250,6 +306,12 @@ get_wchan(struct task_struct *p)
 void show_regs(struct pt_regs * regs)
 {
 	unsigned long usp = rdusp();
+<<<<<<< HEAD
+=======
+
+	show_regs_print_info(KERN_DEFAULT);
+
+>>>>>>> refs/remotes/origin/master
         printk("ERP: %08lx SRP: %08lx  CCS: %08lx USP: %08lx MOF: %08lx\n",
 		regs->erp, regs->srp, regs->ccs, usp, regs->mof);
 

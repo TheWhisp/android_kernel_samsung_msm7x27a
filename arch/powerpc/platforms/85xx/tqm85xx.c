@@ -26,7 +26,13 @@
 #include <linux/seq_file.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -38,6 +44,8 @@
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_CPM2
 #include <asm/cpm2.h>
 #include <sysdev/cpm2_pic.h>
@@ -52,10 +60,23 @@ static void cpm2_cascade(unsigned int irq, struct irq_desc *desc)
 
 	chip->irq_eoi(&desc->irq_data);
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include "mpc85xx.h"
+
+#ifdef CONFIG_CPM2
+#include <asm/cpm2.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_CPM2 */
 
 static void __init tqm85xx_pic_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct mpic *mpic;
 	struct resource r;
 	struct device_node *np;
@@ -102,6 +123,20 @@ static void __init tqm85xx_pic_init(void)
 	of_node_put(np);
 	irq_set_chained_handler(irq, cpm2_cascade);
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct mpic *mpic = mpic_alloc(NULL, 0,
+			MPIC_BIG_ENDIAN,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+	mpic_init(mpic);
+
+	mpc85xx_cpm2_pic_init();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -109,10 +144,13 @@ static void __init tqm85xx_pic_init(void)
  */
 static void __init tqm85xx_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ppc_md.progress)
 		ppc_md.progress("tqm85xx_setup_arch()", 0);
 
@@ -120,6 +158,7 @@ static void __init tqm85xx_setup_arch(void)
 	cpm2_reset();
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	for_each_node_by_type(np, "pci") {
 		if (of_device_is_compatible(np, "fsl,mpc8540-pci") ||
@@ -134,6 +173,9 @@ static void __init tqm85xx_setup_arch(void)
 		}
 	}
 #endif
+=======
+	fsl_pci_assign_primary();
+>>>>>>> refs/remotes/origin/master
 }
 
 static void tqm85xx_show_cpuinfo(struct seq_file *m)
@@ -152,7 +194,11 @@ static void tqm85xx_show_cpuinfo(struct seq_file *m)
 	seq_printf(m, "PLL setting\t: 0x%x\n", ((phid1 >> 24) & 0x3f));
 }
 
+<<<<<<< HEAD
 static void __init tqm85xx_ti1520_fixup(struct pci_dev *pdev)
+=======
+static void tqm85xx_ti1520_fixup(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int val;
 
@@ -173,6 +219,8 @@ static void __init tqm85xx_ti1520_fixup(struct pci_dev *pdev)
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_1520,
 		tqm85xx_ti1520_fixup);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_device_id __initdata of_bus_ids[] = {
 	{ .compatible = "simple-bus", },
 	{ .compatible = "gianfar", },
@@ -186,8 +234,16 @@ static int __init declare_of_platform_devices(void)
 	return 0;
 }
 machine_device_initcall(tqm85xx, declare_of_platform_devices);
+=======
+machine_device_initcall(tqm85xx, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const char *board[] __initdata = {
+=======
+machine_arch_initcall(tqm85xx, mpc85xx_common_publish_devices);
+
+static const char * const board[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	"tqc,tqm8540",
 	"tqc,tqm8541",
 	"tqc,tqm8548",

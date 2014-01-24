@@ -12,9 +12,23 @@
 
 #include <linux/slab.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/uaccess.h>
 #include <linux/termios.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/module.h>
+#include <linux/device.h>
+#include <linux/uaccess.h>
+#include <linux/termios.h>
+#include <linux/poll.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/ratelimit.h>
 #include <linux/debugfs.h>
 #include "rmnet_usb_ctrl.h"
@@ -110,7 +124,15 @@ static int is_dev_connected(struct rmnet_ctrl_dev *dev)
 {
 	if (dev) {
 		mutex_lock(&dev->dev_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!dev->intf) {
+=======
+		if (!dev->is_connected) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!dev->is_connected) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			mutex_unlock(&dev->dev_lock);
 			return 0;
 		}
@@ -173,6 +195,16 @@ static void notification_available_cb(struct urb *urb)
 			goto resubmit_int_urb;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		usb_mark_last_busy(udev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_mark_last_busy(udev);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!dev->resp_available) {
 			dev->resp_available = true;
 			wake_up(&dev->open_wait_queue);
@@ -231,6 +263,21 @@ static void resp_avail_cb(struct urb *urb)
 
 	cpkt = urb->transfer_buffer;
 	cpkt_size = urb->actual_length;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!cpkt_size) {
+		dev->zlp_cnt++;
+		dev_dbg(dev->devicep, "%s: zero length pkt received\n",
+				__func__);
+		goto resubmit_int_urb;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	list_elem = kmalloc(sizeof(struct ctrl_pkt_list_elem), GFP_ATOMIC);
 	if (!list_elem) {
@@ -254,12 +301,22 @@ static void resp_avail_cb(struct urb *urb)
 
 resubmit_int_urb:
 	/*re-submit int urb to check response available*/
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	usb_mark_last_busy(udev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_mark_last_busy(udev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	status = usb_submit_urb(dev->inturb, GFP_ATOMIC);
 	if (status)
 		dev_err(dev->devicep, "%s: Error re-submitting Int URB %d\n",
 			__func__, status);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int rmnet_usb_ctrl_start_rx(struct rmnet_ctrl_dev *dev)
 {
 	int	retval = 0;
@@ -270,13 +327,30 @@ static int rmnet_usb_ctrl_start_rx(struct rmnet_ctrl_dev *dev)
 		goto done_nopm;
 	}
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int rmnet_usb_ctrl_start_rx(struct rmnet_ctrl_dev *dev)
+{
+	int	retval = 0;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	retval = usb_submit_urb(dev->inturb, GFP_KERNEL);
 	if (retval < 0)
 		dev_err(dev->devicep, "%s Intr submit %d\n", __func__, retval);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	usb_autopm_put_interface(dev->intf);
 
 done_nopm:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return retval;
 }
 
@@ -296,6 +370,8 @@ int rmnet_usb_ctrl_stop_rx(struct rmnet_ctrl_dev *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int rmnet_usb_ctrl_start(struct rmnet_ctrl_dev *dev)
 {
 	int	status = 0;
@@ -308,6 +384,10 @@ int rmnet_usb_ctrl_start(struct rmnet_ctrl_dev *dev)
 	return status;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int rmnet_usb_ctrl_alloc_rx(struct rmnet_ctrl_dev *dev)
 {
 	int	retval = -ENOMEM;
@@ -342,13 +422,21 @@ nomem:
 }
 static int rmnet_usb_ctrl_write_cmd(struct rmnet_ctrl_dev *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int			retval = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct usb_device	*udev;
 
 	if (!is_dev_connected(dev))
 		return -ENODEV;
 
 	udev = interface_to_usbdev(dev->intf);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = usb_autopm_get_interface(dev->intf);
 	if (retval < 0) {
 		dev_err(dev->devicep, "%s: Unable to resume interface: %d\n",
@@ -363,14 +451,28 @@ static int rmnet_usb_ctrl_write_cmd(struct rmnet_ctrl_dev *dev)
 	}
 	dev->set_ctrl_line_state_cnt++;
 	retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+=======
+	dev->set_ctrl_line_state_cnt++;
+	return usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->set_ctrl_line_state_cnt++;
+	return usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+>>>>>>> refs/remotes/origin/cm-11.0
 		USB_CDC_REQ_SET_CONTROL_LINE_STATE,
 		(USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE),
 		dev->cbits_tomdm,
 		dev->intf->cur_altsetting->desc.bInterfaceNumber,
 		NULL, 0, USB_CTRL_SET_TIMEOUT);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	usb_autopm_put_interface(dev->intf);
 
 	return retval;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ctrl_write_callback(struct urb *urb)
@@ -428,9 +530,21 @@ static int rmnet_usb_ctrl_write(struct rmnet_ctrl_dev *dev, char *buf,
 			     (unsigned char *)out_ctlreq, (void *)buf, size,
 			     ctrl_write_callback, dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	result = usb_autopm_get_interface_async(dev->intf);
 	if (result < 0) {
 		dev_err(dev->devicep, "%s: Unable to resume interface: %d\n",
+=======
+	result = usb_autopm_get_interface(dev->intf);
+	if (result < 0) {
+		dev_dbg(dev->devicep, "%s: Unable to resume interface: %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	result = usb_autopm_get_interface(dev->intf);
+	if (result < 0) {
+		dev_dbg(dev->devicep, "%s: Unable to resume interface: %d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__, result);
 
 		/*
@@ -450,7 +564,15 @@ static int rmnet_usb_ctrl_write(struct rmnet_ctrl_dev *dev, char *buf,
 		dev_err(dev->devicep, "%s: Submit URB error %d\n",
 			__func__, result);
 		dev->snd_encap_cmd_cnt--;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		usb_autopm_put_interface_async(dev->intf);
+=======
+		usb_autopm_put_interface(dev->intf);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_autopm_put_interface(dev->intf);
+>>>>>>> refs/remotes/origin/cm-11.0
 		usb_unanchor_urb(sndurb);
 		usb_free_urb(sndurb);
 		kfree(out_ctlreq);
@@ -472,6 +594,8 @@ static int rmnet_ctl_open(struct inode *inode, struct file *file)
 	if (dev->is_opened)
 		goto already_opened;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ctrl_open:
 	if (!is_dev_connected(dev)) {
 		dev_dbg(dev->devicep, "%s: Device not connected\n",
@@ -479,12 +603,24 @@ ctrl_open:
 		return -ENODEV;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*block open to get first response available from mdm*/
 	if (dev->mdm_wait_timeout && !dev->resp_available) {
 		retval = wait_event_interruptible_timeout(
 					dev->open_wait_queue,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					dev->resp_available ||
 					!is_dev_connected(dev),
+=======
+					dev->resp_available,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					dev->resp_available,
+>>>>>>> refs/remotes/origin/cm-11.0
 					msecs_to_jiffies(dev->mdm_wait_timeout *
 									1000));
 		if (retval == 0) {
@@ -496,8 +632,14 @@ ctrl_open:
 						__func__, dev->name);
 			return retval;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		goto ctrl_open;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (!dev->resp_available) {
@@ -546,8 +688,14 @@ static int rmnet_ctl_release(struct inode *inode, struct file *file)
 	dev->is_opened = 0;
 	mutex_unlock(&dev->dev_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rmnet_usb_ctrl_stop_rx(dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (is_dev_connected(dev))
 		usb_kill_anchored_urbs(&dev->tx_submitted);
 
@@ -556,6 +704,37 @@ static int rmnet_ctl_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static unsigned int rmnet_ctl_poll(struct file *file, poll_table *wait)
+{
+	unsigned int		mask = 0;
+	struct rmnet_ctrl_dev	*dev;
+
+	dev = file->private_data;
+	if (!dev)
+		return POLLERR;
+
+	poll_wait(file, &dev->read_wait_queue, wait);
+	if (!is_dev_connected(dev)) {
+		dev_dbg(dev->devicep, "%s: Device not connected\n",
+			__func__);
+		return POLLERR;
+	}
+
+	if (!list_empty(&dev->rx_list))
+		mask |= POLLIN | POLLRDNORM;
+
+	return mask;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t rmnet_ctl_read(struct file *file, char __user *buf, size_t count,
 		loff_t *ppos)
 {
@@ -573,7 +752,15 @@ static ssize_t rmnet_ctl_read(struct file *file, char __user *buf, size_t count,
 
 ctrl_read:
 	if (!is_dev_connected(dev)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev->devicep, "%s: Device not connected\n",
+=======
+		dev_dbg(dev->devicep, "%s: Device not connected\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(dev->devicep, "%s: Device not connected\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__);
 		return -ENETRESET;
 	}
@@ -662,6 +849,16 @@ static ssize_t rmnet_ctl_write(struct file *file, const char __user * buf,
 static int rmnet_ctrl_tiocmset(struct rmnet_ctrl_dev *dev, unsigned int set,
 		unsigned int clear)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int retval;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retval;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&dev->dev_lock);
 	if (set & TIOCM_DTR)
 		dev->cbits_tomdm |= ACM_CTRL_DTR;
@@ -681,7 +878,27 @@ static int rmnet_ctrl_tiocmset(struct rmnet_ctrl_dev *dev, unsigned int set,
 
 	mutex_unlock(&dev->dev_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return rmnet_usb_ctrl_write_cmd(dev);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	retval = usb_autopm_get_interface(dev->intf);
+	if (retval < 0) {
+		dev_dbg(dev->devicep, "%s: Unable to resume interface: %d\n",
+			__func__, retval);
+		return retval;
+	}
+
+	retval = rmnet_usb_ctrl_write_cmd(dev);
+
+	usb_autopm_put_interface(dev->intf);
+	return retval;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int rmnet_ctrl_tiocmget(struct rmnet_ctrl_dev *dev)
@@ -737,6 +954,14 @@ static const struct file_operations ctrldev_fops = {
 	.unlocked_ioctl = rmnet_ctrl_ioctl,
 	.open  = rmnet_ctl_open,
 	.release = rmnet_ctl_release,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.poll = rmnet_ctl_poll,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.poll = rmnet_ctl_poll,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int rmnet_usb_ctrl_probe(struct usb_interface *intf,
@@ -774,6 +999,26 @@ int rmnet_usb_ctrl_probe(struct usb_interface *intf,
 	dev->tx_ctrl_err_cnt = 0;
 	dev->set_ctrl_line_state_cnt = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+			USB_CDC_REQ_SET_CONTROL_LINE_STATE,
+			(USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE),
+			dev->cbits_tomdm,
+			dev->intf->cur_altsetting->desc.bInterfaceNumber,
+			NULL, 0, USB_CTRL_SET_TIMEOUT);
+	if (ret < 0)
+		return ret;
+
+	dev->set_ctrl_line_state_cnt++;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->inturb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!dev->inturb) {
 		dev_err(dev->devicep, "Error allocating int urb\n");
@@ -799,20 +1044,47 @@ int rmnet_usb_ctrl_probe(struct usb_interface *intf,
 		dev->intf->cur_altsetting->desc.bInterfaceNumber;
 	dev->in_ctlreq->wLength = cpu_to_le16(DEFAULT_READ_URB_LENGTH);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	interval =
 		max((int)int_in->desc.bInterval,
 		(udev->speed == USB_SPEED_HIGH) ? HS_INTERVAL : FS_LS_INTERVAL);
+=======
+	interval = max((int)int_in->desc.bInterval,
+			(udev->speed == USB_SPEED_HIGH) ? HS_INTERVAL
+							: FS_LS_INTERVAL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	interval = max((int)int_in->desc.bInterval,
+			(udev->speed == USB_SPEED_HIGH) ? HS_INTERVAL
+							: FS_LS_INTERVAL);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	usb_fill_int_urb(dev->inturb, udev,
 			 dev->int_pipe,
 			 dev->intbuf, wMaxPacketSize,
 			 notification_available_cb, dev, interval);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = rmnet_usb_ctrl_write_cmd(dev);
 	if (ret < 0)
 		return ret;
 
 	return rmnet_usb_ctrl_start_rx(dev);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	usb_mark_last_busy(udev);
+	ret = rmnet_usb_ctrl_start_rx(dev);
+	if (!ret)
+		dev->is_connected = true;
+
+	return ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void rmnet_usb_ctrl_disconnect(struct rmnet_ctrl_dev *dev)
@@ -825,9 +1097,23 @@ void rmnet_usb_ctrl_disconnect(struct rmnet_ctrl_dev *dev)
 	dev->cbits_tolocal = ~ACM_CTRL_CD;
 
 	dev->cbits_tomdm = ~ACM_CTRL_DTR;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev->intf = NULL;
 	mutex_unlock(&dev->dev_lock);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	dev->is_connected = false;
+	mutex_unlock(&dev->dev_lock);
+
+	wake_up(&dev->read_wait_queue);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_free_urb(dev->inturb);
 	dev->inturb = NULL;
 
@@ -838,7 +1124,15 @@ void rmnet_usb_ctrl_disconnect(struct rmnet_ctrl_dev *dev)
 }
 
 #if defined(CONFIG_DEBUG_FS)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DEBUG_BUF_SIZE	1024
+=======
+#define DEBUG_BUF_SIZE	4096
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DEBUG_BUF_SIZE	4096
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t rmnet_usb_ctrl_read_stats(struct file *file, char __user *ubuf,
 		size_t count, loff_t *ppos)
 {
@@ -867,6 +1161,14 @@ static ssize_t rmnet_usb_ctrl_read_stats(struct file *file, char __user *ubuf,
 				"cbits_tolocal:            %d\n"
 				"cbits_tomdm:              %d\n"
 				"mdm_wait_timeout:         %u\n"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				"zlp_cnt:                  %u\n"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				"zlp_cnt:                  %u\n"
+>>>>>>> refs/remotes/origin/cm-11.0
 				"dev opened:               %s\n",
 				dev, dev->name,
 				dev->snd_encap_cmd_cnt,
@@ -877,6 +1179,14 @@ static ssize_t rmnet_usb_ctrl_read_stats(struct file *file, char __user *ubuf,
 				dev->cbits_tolocal,
 				dev->cbits_tomdm,
 				dev->mdm_wait_timeout,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				dev->zlp_cnt,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dev->zlp_cnt,
+>>>>>>> refs/remotes/origin/cm-11.0
 				dev->is_opened ? "OPEN" : "CLOSE");
 
 	}
@@ -904,6 +1214,14 @@ static ssize_t rmnet_usb_ctrl_reset_stats(struct file *file, const char __user *
 		dev->get_encap_resp_cnt = 0;
 		dev->set_ctrl_line_state_cnt = 0;
 		dev->tx_ctrl_err_cnt = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		dev->zlp_cnt = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev->zlp_cnt = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return count;
 }

@@ -6,6 +6,10 @@
  * The TUSB6020, using VLYNQ, has CPPI that looks much like DaVinci.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/usb.h>
@@ -104,7 +108,11 @@ static void cppi_reset_tx(struct cppi_tx_stateram __iomem *tx, u32 ptr)
 	musb_writel(&tx->tx_complete, 0, ptr);
 }
 
+<<<<<<< HEAD
 static void __init cppi_pool_init(struct cppi *cppi, struct cppi_channel *c)
+=======
+static void cppi_pool_init(struct cppi *cppi, struct cppi_channel *c)
+>>>>>>> refs/remotes/origin/master
 {
 	int	j;
 
@@ -149,6 +157,7 @@ static void cppi_pool_free(struct cppi_channel *c)
 	c->last_processed = NULL;
 }
 
+<<<<<<< HEAD
 static int __init cppi_controller_start(struct dma_controller *c)
 {
 	struct cppi	*controller;
@@ -157,6 +166,13 @@ static int __init cppi_controller_start(struct dma_controller *c)
 
 	controller = container_of(c, struct cppi, controller);
 
+=======
+static void cppi_controller_start(struct cppi *controller)
+{
+	void __iomem	*tibase;
+	int		i;
+
+>>>>>>> refs/remotes/origin/master
 	/* do whatever is necessary to start controller */
 	for (i = 0; i < ARRAY_SIZE(controller->tx); i++) {
 		controller->tx[i].transmit = true;
@@ -211,8 +227,11 @@ static int __init cppi_controller_start(struct dma_controller *c)
 	/* disable RNDIS mode, also host rx RNDIS autorequest */
 	musb_writel(tibase, DAVINCI_RNDIS_REG, 0);
 	musb_writel(tibase, DAVINCI_AUTOREQ_REG, 0);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -221,14 +240,22 @@ static int __init cppi_controller_start(struct dma_controller *c)
  *  De-Init the DMA controller as necessary.
  */
 
+<<<<<<< HEAD
 static int cppi_controller_stop(struct dma_controller *c)
 {
 	struct cppi		*controller;
+=======
+static void cppi_controller_stop(struct cppi *controller)
+{
+>>>>>>> refs/remotes/origin/master
 	void __iomem		*tibase;
 	int			i;
 	struct musb		*musb;
 
+<<<<<<< HEAD
 	controller = container_of(c, struct cppi, controller);
+=======
+>>>>>>> refs/remotes/origin/master
 	musb = controller->musb;
 
 	tibase = controller->tibase;
@@ -254,8 +281,11 @@ static int cppi_controller_stop(struct dma_controller *c)
 	/*disable tx/rx cppi */
 	musb_writel(tibase, DAVINCI_TXCPPI_CTRL_REG, DAVINCI_DMA_CTRL_DISABLE);
 	musb_writel(tibase, DAVINCI_RXCPPI_CTRL_REG, DAVINCI_DMA_CTRL_DISABLE);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* While dma channel is allocated, we only want the core irqs active
@@ -434,7 +464,10 @@ cppi_rndis_update(struct cppi_channel *c, int is_rx,
 	}
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_DEBUG
+=======
+>>>>>>> refs/remotes/origin/master
 static void cppi_dump_rxbd(const char *tag, struct cppi_descriptor *bd)
 {
 	pr_debug("RXBD/%s %08x: "
@@ -443,6 +476,7 @@ static void cppi_dump_rxbd(const char *tag, struct cppi_descriptor *bd)
 			bd->hw_next, bd->hw_bufp, bd->hw_off_len,
 			bd->hw_options);
 }
+<<<<<<< HEAD
 #endif
 
 static void cppi_dump_rxq(int level, const char *tag, struct cppi_channel *rx)
@@ -452,12 +486,22 @@ static void cppi_dump_rxq(int level, const char *tag, struct cppi_channel *rx)
 
 	if (!_dbg_level(level))
 		return;
+=======
+
+static void cppi_dump_rxq(int level, const char *tag, struct cppi_channel *rx)
+{
+	struct cppi_descriptor	*bd;
+
+>>>>>>> refs/remotes/origin/master
 	cppi_dump_rx(level, rx, tag);
 	if (rx->last_processed)
 		cppi_dump_rxbd("last", rx->last_processed);
 	for (bd = rx->head; bd; bd = bd->next)
 		cppi_dump_rxbd("active", bd);
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -513,7 +557,15 @@ static inline int cppi_autoreq_update(struct cppi_channel *rx,
 		if (!(val & MUSB_RXCSR_H_REQPKT)) {
 			val |= MUSB_RXCSR_H_REQPKT | MUSB_RXCSR_H_WZC_BITS;
 			musb_writew(regs, MUSB_RXCSR, val);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			/* flush writebufer */
+=======
+			/* flush writebuffer */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* flush writebuffer */
+>>>>>>> refs/remotes/origin/master
 			val = musb_readw(regs, MUSB_RXCSR);
 		}
 	}
@@ -750,7 +802,15 @@ cppi_next_tx_segment(struct musb *musb, struct cppi_channel *tx)
  * So this module parameter lets the heuristic be disabled.  When using
  * gadgetfs, the heuristic will probably need to be disabled.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int cppi_rx_rndis = 1;
+=======
+static bool cppi_rx_rndis = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool cppi_rx_rndis = 1;
+>>>>>>> refs/remotes/origin/master
 
 module_param(cppi_rx_rndis, bool, 0);
 MODULE_PARM_DESC(cppi_rx_rndis, "enable/disable RX RNDIS heuristic");
@@ -783,6 +843,10 @@ cppi_next_rx_segment(struct musb *musb, struct cppi_channel *rx, int onepacket)
 	void __iomem		*tibase = musb->ctrl_base;
 	int			is_rndis = 0;
 	struct cppi_rx_stateram	__iomem *rx_ram = rx->state_ram;
+<<<<<<< HEAD
+=======
+	struct cppi_descriptor	*d;
+>>>>>>> refs/remotes/origin/master
 
 	if (onepacket) {
 		/* almost every USB driver, host or peripheral side */
@@ -896,6 +960,7 @@ cppi_next_rx_segment(struct musb *musb, struct cppi_channel *rx, int onepacket)
 	bd->hw_options |= CPPI_SOP_SET;
 	tail->hw_options |= CPPI_EOP_SET;
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_DEBUG
 	if (_dbg_level(5)) {
 		struct cppi_descriptor	*d;
@@ -904,6 +969,10 @@ cppi_next_rx_segment(struct musb *musb, struct cppi_channel *rx, int onepacket)
 			cppi_dump_rxbd("S", d);
 	}
 #endif
+=======
+	for (d = rx->head; d; d = d->next)
+		cppi_dump_rxbd("S", d);
+>>>>>>> refs/remotes/origin/master
 
 	/* in case the preceding transfer left some state... */
 	tail = rx->last_processed;
@@ -1313,10 +1382,25 @@ irqreturn_t cppi_interrupt(int irq, void *dev_id)
 
 	return IRQ_HANDLED;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(cppi_interrupt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(cppi_interrupt);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Instantiate a software object representing a DMA controller. */
 struct dma_controller *__init
 dma_controller_create(struct musb *musb, void __iomem *mregs)
+=======
+EXPORT_SYMBOL_GPL(cppi_interrupt);
+
+/* Instantiate a software object representing a DMA controller. */
+struct dma_controller *dma_controller_create(struct musb *musb, void __iomem *mregs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cppi		*controller;
 	struct device		*dev = musb->controller;
@@ -1331,8 +1415,11 @@ dma_controller_create(struct musb *musb, void __iomem *mregs)
 	controller->tibase = mregs - DAVINCI_BASE_OFFSET;
 
 	controller->musb = musb;
+<<<<<<< HEAD
 	controller->controller.start = cppi_controller_start;
 	controller->controller.stop = cppi_controller_stop;
+=======
+>>>>>>> refs/remotes/origin/master
 	controller->controller.channel_alloc = cppi_channel_allocate;
 	controller->controller.channel_release = cppi_channel_release;
 	controller->controller.channel_program = cppi_channel_program;
@@ -1361,6 +1448,10 @@ dma_controller_create(struct musb *musb, void __iomem *mregs)
 		controller->irq = irq;
 	}
 
+<<<<<<< HEAD
+=======
+	cppi_controller_start(controller);
+>>>>>>> refs/remotes/origin/master
 	return &controller->controller;
 }
 
@@ -1373,6 +1464,11 @@ void dma_controller_destroy(struct dma_controller *c)
 
 	cppi = container_of(c, struct cppi, controller);
 
+<<<<<<< HEAD
+=======
+	cppi_controller_stop(cppi);
+
+>>>>>>> refs/remotes/origin/master
 	if (cppi->irq)
 		free_irq(cppi->irq, cppi->musb);
 

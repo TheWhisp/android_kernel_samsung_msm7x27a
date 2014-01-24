@@ -1,5 +1,13 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2009 Intel Corporation.  All rights reserved.
+=======
+ * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This software is available to you under a choice of one of two
  * licenses.  You may choose to be licensed under the terms of the GNU
@@ -55,7 +63,12 @@ static void nes_unregister_ofa_device(struct nes_ib_device *nesibdev);
 /**
  * nes_alloc_mw
  */
+<<<<<<< HEAD
 static struct ib_mw *nes_alloc_mw(struct ib_pd *ibpd) {
+=======
+static struct ib_mw *nes_alloc_mw(struct ib_pd *ibpd, enum ib_mw_type type)
+{
+>>>>>>> refs/remotes/origin/master
 	struct nes_pd *nespd = to_nespd(ibpd);
 	struct nes_vnic *nesvnic = to_nesvnic(ibpd->device);
 	struct nes_device *nesdev = nesvnic->nesdev;
@@ -71,6 +84,12 @@ static struct ib_mw *nes_alloc_mw(struct ib_pd *ibpd) {
 	u32 driver_key = 0;
 	u8 stag_key = 0;
 
+<<<<<<< HEAD
+=======
+	if (type != IB_MW_TYPE_1)
+		return ERR_PTR(-EINVAL);
+
+>>>>>>> refs/remotes/origin/master
 	get_random_bytes(&next_stag_index, sizeof(next_stag_index));
 	stag_key = (u8)next_stag_index;
 
@@ -80,7 +99,11 @@ static struct ib_mw *nes_alloc_mw(struct ib_pd *ibpd) {
 	next_stag_index %= nesadapter->max_mr;
 
 	ret = nes_alloc_resource(nesadapter, nesadapter->allocated_mrs,
+<<<<<<< HEAD
 			nesadapter->max_mr, &stag_index, &next_stag_index);
+=======
+			nesadapter->max_mr, &stag_index, &next_stag_index, NES_RESOURCE_MW);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		return ERR_PTR(ret);
 	}
@@ -244,6 +267,7 @@ static int nes_bind_mw(struct ib_qp *ibqp, struct ib_mw *ibmw,
 	if (ibmw_bind->send_flags & IB_SEND_SIGNALED)
 		wqe_misc |= NES_IWARP_SQ_WQE_SIGNALED_COMPL;
 
+<<<<<<< HEAD
 	if (ibmw_bind->mw_access_flags & IB_ACCESS_REMOTE_WRITE) {
 		wqe_misc |= NES_CQP_STAG_RIGHTS_REMOTE_WRITE;
 	}
@@ -258,6 +282,21 @@ static int nes_bind_mw(struct ib_qp *ibqp, struct ib_mw *ibmw,
 			ibmw_bind->length);
 	wqe->wqe_words[NES_IWARP_SQ_BIND_WQE_LENGTH_HIGH_IDX] = 0;
 	u64temp = (u64)ibmw_bind->addr;
+=======
+	if (ibmw_bind->bind_info.mw_access_flags & IB_ACCESS_REMOTE_WRITE)
+		wqe_misc |= NES_CQP_STAG_RIGHTS_REMOTE_WRITE;
+	if (ibmw_bind->bind_info.mw_access_flags & IB_ACCESS_REMOTE_READ)
+		wqe_misc |= NES_CQP_STAG_RIGHTS_REMOTE_READ;
+
+	set_wqe_32bit_value(wqe->wqe_words, NES_IWARP_SQ_WQE_MISC_IDX, wqe_misc);
+	set_wqe_32bit_value(wqe->wqe_words, NES_IWARP_SQ_BIND_WQE_MR_IDX,
+			    ibmw_bind->bind_info.mr->lkey);
+	set_wqe_32bit_value(wqe->wqe_words, NES_IWARP_SQ_BIND_WQE_MW_IDX, ibmw->rkey);
+	set_wqe_32bit_value(wqe->wqe_words, NES_IWARP_SQ_BIND_WQE_LENGTH_LOW_IDX,
+			ibmw_bind->bind_info.length);
+	wqe->wqe_words[NES_IWARP_SQ_BIND_WQE_LENGTH_HIGH_IDX] = 0;
+	u64temp = (u64)ibmw_bind->bind_info.addr;
+>>>>>>> refs/remotes/origin/master
 	set_wqe_64bit_value(wqe->wqe_words, NES_IWARP_SQ_BIND_WQE_VA_FBO_LOW_IDX, u64temp);
 
 	head++;
@@ -404,7 +443,11 @@ static struct ib_mr *nes_alloc_fast_reg_mr(struct ib_pd *ibpd, int max_page_list
 
 	err = nes_alloc_resource(nesadapter, nesadapter->allocated_mrs,
 				 nesadapter->max_mr, &stag_index,
+<<<<<<< HEAD
 				 &next_stag_index);
+=======
+				 &next_stag_index, NES_RESOURCE_FAST_MR);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return ERR_PTR(err);
 
@@ -597,7 +640,15 @@ static int nes_query_port(struct ib_device *ibdev, u8 port, struct ib_port_attr 
 	props->pkey_tbl_len = 1;
 	props->qkey_viol_cntr = 0;
 	props->active_width = IB_WIDTH_4X;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	props->active_speed = 1;
+=======
+	props->active_speed = IB_SPEED_SDR;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	props->active_speed = IB_SPEED_SDR;
+>>>>>>> refs/remotes/origin/master
 	props->max_msg_sz = 0x80000000;
 
 	return 0;
@@ -605,6 +656,8 @@ static int nes_query_port(struct ib_device *ibdev, u8 port, struct ib_port_attr 
 
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * nes_modify_port
  */
 static int nes_modify_port(struct ib_device *ibdev, u8 port,
@@ -615,6 +668,10 @@ static int nes_modify_port(struct ib_device *ibdev, u8 port,
 
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * nes_query_pkey
  */
 static int nes_query_pkey(struct ib_device *ibdev, u8 port, u16 index, u16 *pkey)
@@ -790,7 +847,11 @@ static struct ib_pd *nes_alloc_pd(struct ib_device *ibdev,
 			netdev_refcnt_read(nesvnic->netdev));
 
 	err = nes_alloc_resource(nesadapter, nesadapter->allocated_pds,
+<<<<<<< HEAD
 			nesadapter->max_pd, &pd_num, &nesadapter->next_pd);
+=======
+			nesadapter->max_pd, &pd_num, &nesadapter->next_pd, NES_RESOURCE_PD);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		return ERR_PTR(err);
 	}
@@ -1167,7 +1228,11 @@ static struct ib_qp *nes_create_qp(struct ib_pd *ibpd,
 			nes_debug(NES_DBG_QP, "RQ size=%u, SQ Size=%u\n", rq_size, sq_size);
 
 			ret = nes_alloc_resource(nesadapter, nesadapter->allocated_qps,
+<<<<<<< HEAD
 					nesadapter->max_qp, &qp_num, &nesadapter->next_qp);
+=======
+					nesadapter->max_qp, &qp_num, &nesadapter->next_qp, NES_RESOURCE_QP);
+>>>>>>> refs/remotes/origin/master
 			if (ret) {
 				return ERR_PTR(ret);
 			}
@@ -1391,6 +1456,10 @@ static struct ib_qp *nes_create_qp(struct ib_pd *ibpd,
 
 			if (ibpd->uobject) {
 				uresp.mmap_sq_db_index = nesqp->mmap_sq_db_index;
+<<<<<<< HEAD
+=======
+				uresp.mmap_rq_db_index = 0;
+>>>>>>> refs/remotes/origin/master
 				uresp.actual_sq_size = sq_size;
 				uresp.actual_rq_size = rq_size;
 				uresp.qp_id = nesqp->hwqp.qp_id;
@@ -1470,7 +1539,15 @@ static int nes_destroy_qp(struct ib_qp *ibqp)
 	struct ib_qp_attr attr;
 	struct iw_cm_id *cm_id;
 	struct iw_cm_event cm_event;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	atomic_inc(&sw_qps_destroyed);
 	nesqp->destroyed = 1;
@@ -1523,7 +1600,13 @@ static int nes_destroy_qp(struct ib_qp *ibqp)
 		if ((nesqp->nesrcq) && (nesqp->nesrcq != nesqp->nesscq))
 			nes_clean_cq(nesqp, nesqp->nesrcq);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	nes_rem_ref(&nesqp->ibqp);
 	return 0;
 }
@@ -1559,7 +1642,11 @@ static struct ib_cq *nes_create_cq(struct ib_device *ibdev, int entries,
 		return ERR_PTR(-EINVAL);
 
 	err = nes_alloc_resource(nesadapter, nesadapter->allocated_cqs,
+<<<<<<< HEAD
 			nesadapter->max_cq, &cq_num, &nesadapter->next_cq);
+=======
+			nesadapter->max_cq, &cq_num, &nesadapter->next_cq, NES_RESOURCE_CQ);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		return ERR_PTR(err);
 	}
@@ -1775,7 +1862,11 @@ static struct ib_cq *nes_create_cq(struct ib_device *ibdev, int entries,
 		resp.cq_id = nescq->hw_cq.cq_number;
 		resp.cq_size = nescq->hw_cq.cq_size;
 		resp.mmap_db_index = 0;
+<<<<<<< HEAD
 		if (ib_copy_to_udata(udata, &resp, sizeof resp)) {
+=======
+		if (ib_copy_to_udata(udata, &resp, sizeof resp - sizeof resp.reserved)) {
+>>>>>>> refs/remotes/origin/master
 			nes_free_resource(nesadapter, nesadapter->allocated_cqs, cq_num);
 			kfree(nescq);
 			return ERR_PTR(-EFAULT);
@@ -2142,7 +2233,11 @@ static struct ib_mr *nes_reg_phys_mr(struct ib_pd *ib_pd,
 		return ERR_PTR(-EINVAL);
 
 	err = nes_alloc_resource(nesadapter, nesadapter->allocated_mrs, nesadapter->max_mr,
+<<<<<<< HEAD
 			&stag_index, &next_stag_index);
+=======
+			&stag_index, &next_stag_index, NES_RESOURCE_PHYS_MR);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		return ERR_PTR(err);
 	}
@@ -2350,8 +2445,21 @@ static struct ib_mr *nes_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
 
 	skip_pages = ((u32)region->offset) >> 12;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ib_copy_from_udata(&req, udata, sizeof(req)))
 		return ERR_PTR(-EFAULT);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (ib_copy_from_udata(&req, udata, sizeof(req))) {
+		ib_umem_release(region);
+		return ERR_PTR(-EFAULT);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	nes_debug(NES_DBG_MR, "Memory Registration type = %08X.\n", req.reg_type);
 
 	switch (req.reg_type) {
@@ -2371,7 +2479,11 @@ static struct ib_mr *nes_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
 			next_stag_index %= nesadapter->max_mr;
 
 			err = nes_alloc_resource(nesadapter, nesadapter->allocated_mrs,
+<<<<<<< HEAD
 					nesadapter->max_mr, &stag_index, &next_stag_index);
+=======
+					nesadapter->max_mr, &stag_index, &next_stag_index, NES_RESOURCE_USER_MR);
+>>>>>>> refs/remotes/origin/master
 			if (err) {
 				ib_umem_release(region);
 				return ERR_PTR(err);
@@ -2648,6 +2760,14 @@ static struct ib_mr *nes_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
 			return &nesmr->ibmr;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ib_umem_release(region);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ib_umem_release(region);
+>>>>>>> refs/remotes/origin/master
 	return ERR_PTR(-ENOSYS);
 }
 
@@ -2838,7 +2958,11 @@ static int nes_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 	init_attr->qp_context = nesqp->ibqp.qp_context;
 	init_attr->send_cq = nesqp->ibqp.send_cq;
 	init_attr->recv_cq = nesqp->ibqp.recv_cq;
+<<<<<<< HEAD
 	init_attr->srq = nesqp->ibqp.srq = nesqp->ibqp.srq;
+=======
+	init_attr->srq = nesqp->ibqp.srq;
+>>>>>>> refs/remotes/origin/master
 	init_attr->cap = attr->cap;
 
 	return 0;
@@ -3021,6 +3145,10 @@ int nes_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 					switch (nesqp->hw_iwarp_state) {
 						case NES_AEQE_IWARP_STATE_CLOSING:
 							next_iwarp_state = NES_CQP_QP_IWARP_STATE_CLOSING;
+<<<<<<< HEAD
+=======
+							break;
+>>>>>>> refs/remotes/origin/master
 						case NES_AEQE_IWARP_STATE_TERMINATE:
 							next_iwarp_state = NES_CQP_QP_IWARP_STATE_TERMINATE;
 							break;
@@ -3083,6 +3211,7 @@ int nes_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 		}
 
 		nesqp->ibqp_state = attr->qp_state;
+<<<<<<< HEAD
 		if (((nesqp->iwarp_state & NES_CQP_QP_IWARP_STATE_MASK) ==
 				(u32)NES_CQP_QP_IWARP_STATE_RTS) &&
 				((next_iwarp_state & NES_CQP_QP_IWARP_STATE_MASK) >
@@ -3095,6 +3224,11 @@ int nes_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 			nes_debug(NES_DBG_MOD_QP, "Change nesqp->iwarp_state=%08x\n",
 					nesqp->iwarp_state);
 		}
+=======
+		nesqp->iwarp_state = next_iwarp_state & NES_CQP_QP_IWARP_STATE_MASK;
+		nes_debug(NES_DBG_MOD_QP, "Change nesqp->iwarp_state=%08x\n",
+				nesqp->iwarp_state);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (attr_mask & IB_QP_ACCESS_FLAGS) {
@@ -3443,6 +3577,16 @@ static int nes_post_send(struct ib_qp *ibqp, struct ib_send_wr *ib_wr,
 					    NES_IWARP_SQ_FMR_WQE_LENGTH_LOW_IDX,
 					    ib_wr->wr.fast_reg.length);
 			set_wqe_32bit_value(wqe->wqe_words,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+					    NES_IWARP_SQ_FMR_WQE_LENGTH_HIGH_IDX, 0);
+			set_wqe_32bit_value(wqe->wqe_words,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    NES_IWARP_SQ_FMR_WQE_LENGTH_HIGH_IDX, 0);
+			set_wqe_32bit_value(wqe->wqe_words,
+>>>>>>> refs/remotes/origin/master
 					    NES_IWARP_SQ_FMR_WQE_MR_STAG_IDX,
 					    ib_wr->wr.fast_reg.rkey);
 			/* Set page size: */
@@ -3739,7 +3883,15 @@ static int nes_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *entry)
 						entry->opcode = IB_WC_SEND;
 						break;
 					case NES_IWARP_SQ_OP_LOCINV:
+<<<<<<< HEAD
+<<<<<<< HEAD
 						entry->opcode = IB_WR_LOCAL_INV;
+=======
+						entry->opcode = IB_WC_LOCAL_INV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						entry->opcode = IB_WC_LOCAL_INV;
+>>>>>>> refs/remotes/origin/master
 						break;
 					case NES_IWARP_SQ_OP_FAST_REG:
 						entry->opcode = IB_WC_FAST_REG_MR;
@@ -3889,7 +4041,13 @@ struct nes_ib_device *nes_init_ofa_device(struct net_device *netdev)
 	nesibdev->ibdev.dev.parent = &nesdev->pcidev->dev;
 	nesibdev->ibdev.query_device = nes_query_device;
 	nesibdev->ibdev.query_port = nes_query_port;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nesibdev->ibdev.modify_port = nes_modify_port;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	nesibdev->ibdev.query_pkey = nes_query_pkey;
 	nesibdev->ibdev.query_gid = nes_query_gid;
 	nesibdev->ibdev.alloc_ucontext = nes_alloc_ucontext;

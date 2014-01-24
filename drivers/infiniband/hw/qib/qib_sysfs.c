@@ -1,5 +1,10 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2006, 2007, 2008, 2009 QLogic Corporation. All rights reserved.
+=======
+ * Copyright (c) 2012 Intel Corporation.  All rights reserved.
+ * Copyright (c) 2006 - 2012 QLogic Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2006 PathScale, Inc. All rights reserved.
  *
  * This software is available to you under a choice of one of two
@@ -33,6 +38,7 @@
 #include <linux/ctype.h>
 
 #include "qib.h"
+<<<<<<< HEAD
 
 /**
  * qib_parse_ushort - parse an unsigned short value in an arbitrary base
@@ -68,6 +74,9 @@ static int qib_parse_ushort(const char *str, unsigned short *valp)
 bail:
 	return ret;
 }
+=======
+#include "qib_mad.h"
+>>>>>>> refs/remotes/origin/master
 
 /* start of per-port functions */
 /*
@@ -90,7 +99,15 @@ static ssize_t store_hrtbt_enb(struct qib_pportdata *ppd, const char *buf,
 	int ret;
 	u16 val;
 
+<<<<<<< HEAD
 	ret = qib_parse_ushort(buf, &val);
+=======
+	ret = kstrtou16(buf, 0, &val);
+	if (ret) {
+		qib_dev_err(dd, "attempt to set invalid Heartbeat enable\n");
+		return ret;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Set the "intentional" heartbeat enable per either of
@@ -99,10 +116,14 @@ static ssize_t store_hrtbt_enb(struct qib_pportdata *ppd, const char *buf,
 	 * because entering loopback mode overrides it and automatically
 	 * disables heartbeat.
 	 */
+<<<<<<< HEAD
 	if (ret >= 0)
 		ret = dd->f_set_ib_cfg(ppd, QIB_IB_CFG_HRTBT, val);
 	if (ret < 0)
 		qib_dev_err(dd, "attempt to set invalid Heartbeat enable\n");
+=======
+	ret = dd->f_set_ib_cfg(ppd, QIB_IB_CFG_HRTBT, val);
+>>>>>>> refs/remotes/origin/master
 	return ret < 0 ? ret : count;
 }
 
@@ -126,12 +147,23 @@ static ssize_t store_led_override(struct qib_pportdata *ppd, const char *buf,
 	int ret;
 	u16 val;
 
+<<<<<<< HEAD
 	ret = qib_parse_ushort(buf, &val);
 	if (ret > 0)
 		qib_set_led_override(ppd, val);
 	else
 		qib_dev_err(dd, "attempt to set invalid LED override\n");
 	return ret < 0 ? ret : count;
+=======
+	ret = kstrtou16(buf, 0, &val);
+	if (ret) {
+		qib_dev_err(dd, "attempt to set invalid LED override\n");
+		return ret;
+	}
+
+	qib_set_led_override(ppd, val);
+	return count;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_status(struct qib_pportdata *ppd, char *buf)
@@ -150,7 +182,15 @@ static ssize_t show_status(struct qib_pportdata *ppd, char *buf)
  * For userland compatibility, these offsets must remain fixed.
  * They are strings for QIB_STATUS_*
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const char *qib_status_str[] = {
+=======
+static const char * const qib_status_str[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char * const qib_status_str[] = {
+>>>>>>> refs/remotes/origin/master
 	"Initted",
 	"",
 	"",
@@ -231,6 +271,101 @@ static struct attribute *port_default_attributes[] = {
 	NULL
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * Start of per-port congestion control structures and support code
+ */
+
+/*
+ * Congestion control table size followed by table entries
+ */
+static ssize_t read_cc_table_bin(struct file *filp, struct kobject *kobj,
+		struct bin_attribute *bin_attr,
+		char *buf, loff_t pos, size_t count)
+{
+	int ret;
+	struct qib_pportdata *ppd =
+		container_of(kobj, struct qib_pportdata, pport_cc_kobj);
+
+	if (!qib_cc_table_size || !ppd->ccti_entries_shadow)
+		return -EINVAL;
+
+	ret = ppd->total_cct_entry * sizeof(struct ib_cc_table_entry_shadow)
+		 + sizeof(__be16);
+
+	if (pos > ret)
+		return -EINVAL;
+
+	if (count > ret - pos)
+		count = ret - pos;
+
+	if (!count)
+		return count;
+
+	spin_lock(&ppd->cc_shadow_lock);
+	memcpy(buf, ppd->ccti_entries_shadow, count);
+	spin_unlock(&ppd->cc_shadow_lock);
+
+	return count;
+}
+
+static void qib_port_release(struct kobject *kobj)
+{
+	/* nothing to do since memory is freed by qib_free_devdata() */
+}
+
+static struct kobj_type qib_port_cc_ktype = {
+	.release = qib_port_release,
+};
+
+static struct bin_attribute cc_table_bin_attr = {
+	.attr = {.name = "cc_table_bin", .mode = 0444},
+	.read = read_cc_table_bin,
+	.size = PAGE_SIZE,
+};
+
+/*
+ * Congestion settings: port control, control map and an array of 16
+ * entries for the congestion entries - increase, timer, event log
+ * trigger threshold and the minimum injection rate delay.
+ */
+static ssize_t read_cc_setting_bin(struct file *filp, struct kobject *kobj,
+		struct bin_attribute *bin_attr,
+		char *buf, loff_t pos, size_t count)
+{
+	int ret;
+	struct qib_pportdata *ppd =
+		container_of(kobj, struct qib_pportdata, pport_cc_kobj);
+
+	if (!qib_cc_table_size || !ppd->congestion_entries_shadow)
+		return -EINVAL;
+
+	ret = sizeof(struct ib_cc_congestion_setting_attr_shadow);
+
+	if (pos > ret)
+		return -EINVAL;
+	if (count > ret - pos)
+		count = ret - pos;
+
+	if (!count)
+		return count;
+
+	spin_lock(&ppd->cc_shadow_lock);
+	memcpy(buf, ppd->congestion_entries_shadow, count);
+	spin_unlock(&ppd->cc_shadow_lock);
+
+	return count;
+}
+
+static struct bin_attribute cc_setting_bin_attr = {
+	.attr = {.name = "cc_settings_bin", .mode = 0444},
+	.read = read_cc_setting_bin,
+	.size = PAGE_SIZE,
+};
+
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t qib_portattr_show(struct kobject *kobj,
 	struct attribute *attr, char *buf)
 {
@@ -253,10 +388,13 @@ static ssize_t qib_portattr_store(struct kobject *kobj,
 	return pattr->store(ppd, buf, len);
 }
 
+<<<<<<< HEAD
 static void qib_port_release(struct kobject *kobj)
 {
 	/* nothing to do since memory is freed by qib_free_devdata() */
 }
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const struct sysfs_ops qib_port_ops = {
 	.show = qib_portattr_show,
@@ -411,12 +549,21 @@ static ssize_t diagc_attr_store(struct kobject *kobj, struct attribute *attr,
 	struct qib_pportdata *ppd =
 		container_of(kobj, struct qib_pportdata, diagc_kobj);
 	struct qib_ibport *qibp = &ppd->ibport_data;
+<<<<<<< HEAD
 	char *endp;
 	long val = simple_strtol(buf, &endp, 0);
 
 	if (val < 0 || endp == buf)
 		return -EINVAL;
 
+=======
+	u32 val;
+	int ret;
+
+	ret = kstrtou32(buf, 0, &val);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	*(u32 *)((char *) qibp + dattr->counter) = val;
 	return size;
 }
@@ -503,10 +650,37 @@ static ssize_t show_nctxts(struct device *device,
 	struct qib_devdata *dd = dd_from_dev(dev);
 
 	/* Return the number of user ports (contexts) available. */
+<<<<<<< HEAD
 	return scnprintf(buf, PAGE_SIZE, "%u\n", dd->cfgctxts -
 		dd->first_user_ctxt);
 }
 
+<<<<<<< HEAD
+=======
+=======
+	/* The calculation below deals with a special case where
+	 * cfgctxts is set to 1 on a single-port board. */
+	return scnprintf(buf, PAGE_SIZE, "%u\n",
+			(dd->first_user_ctxt > dd->cfgctxts) ? 0 :
+			(dd->cfgctxts - dd->first_user_ctxt));
+}
+
+>>>>>>> refs/remotes/origin/master
+static ssize_t show_nfreectxts(struct device *device,
+			   struct device_attribute *attr, char *buf)
+{
+	struct qib_ibdev *dev =
+		container_of(device, struct qib_ibdev, ibdev.dev);
+	struct qib_devdata *dd = dd_from_dev(dev);
+
+	/* Return the number of free user ports (contexts) available. */
+	return scnprintf(buf, PAGE_SIZE, "%u\n", dd->freectxts);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_serial(struct device *device,
 			   struct device_attribute *attr, char *buf)
 {
@@ -604,6 +778,14 @@ static DEVICE_ATTR(hca_type, S_IRUGO, show_hca, NULL);
 static DEVICE_ATTR(board_id, S_IRUGO, show_hca, NULL);
 static DEVICE_ATTR(version, S_IRUGO, show_version, NULL);
 static DEVICE_ATTR(nctxts, S_IRUGO, show_nctxts, NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(nfreectxts, S_IRUGO, show_nfreectxts, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR(nfreectxts, S_IRUGO, show_nfreectxts, NULL);
+>>>>>>> refs/remotes/origin/master
 static DEVICE_ATTR(serial, S_IRUGO, show_serial, NULL);
 static DEVICE_ATTR(boardversion, S_IRUGO, show_boardversion, NULL);
 static DEVICE_ATTR(logged_errors, S_IRUGO, show_logged_errs, NULL);
@@ -617,6 +799,14 @@ static struct device_attribute *qib_attributes[] = {
 	&dev_attr_board_id,
 	&dev_attr_version,
 	&dev_attr_nctxts,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	&dev_attr_nfreectxts,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_nfreectxts,
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_serial,
 	&dev_attr_boardversion,
 	&dev_attr_logged_errors,
@@ -633,8 +823,14 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
 	int ret;
 
 	if (!port_num || port_num > dd->num_pports) {
+<<<<<<< HEAD
 		qib_dev_err(dd, "Skipping infiniband class with "
 			    "invalid port %u\n", port_num);
+=======
+		qib_dev_err(dd,
+			"Skipping infiniband class with invalid port %u\n",
+			port_num);
+>>>>>>> refs/remotes/origin/master
 		ret = -ENODEV;
 		goto bail;
 	}
@@ -643,8 +839,14 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
 	ret = kobject_init_and_add(&ppd->pport_kobj, &qib_port_ktype, kobj,
 				   "linkcontrol");
 	if (ret) {
+<<<<<<< HEAD
 		qib_dev_err(dd, "Skipping linkcontrol sysfs info, "
 			    "(err %d) port %u\n", ret, port_num);
+=======
+		qib_dev_err(dd,
+			"Skipping linkcontrol sysfs info, (err %d) port %u\n",
+			ret, port_num);
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 	}
 	kobject_uevent(&ppd->pport_kobj, KOBJ_ADD);
@@ -652,15 +854,23 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
 	ret = kobject_init_and_add(&ppd->sl2vl_kobj, &qib_sl2vl_ktype, kobj,
 				   "sl2vl");
 	if (ret) {
+<<<<<<< HEAD
 		qib_dev_err(dd, "Skipping sl2vl sysfs info, "
 			    "(err %d) port %u\n", ret, port_num);
 		goto bail_sl;
+=======
+		qib_dev_err(dd,
+			"Skipping sl2vl sysfs info, (err %d) port %u\n",
+			ret, port_num);
+		goto bail_link;
+>>>>>>> refs/remotes/origin/master
 	}
 	kobject_uevent(&ppd->sl2vl_kobj, KOBJ_ADD);
 
 	ret = kobject_init_and_add(&ppd->diagc_kobj, &qib_diagc_ktype, kobj,
 				   "diag_counters");
 	if (ret) {
+<<<<<<< HEAD
 		qib_dev_err(dd, "Skipping diag_counters sysfs info, "
 			    "(err %d) port %u\n", ret, port_num);
 		goto bail_diagc;
@@ -672,6 +882,62 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
 bail_diagc:
 	kobject_put(&ppd->sl2vl_kobj);
 bail_sl:
+=======
+		qib_dev_err(dd,
+			"Skipping diag_counters sysfs info, (err %d) port %u\n",
+			ret, port_num);
+		goto bail_sl;
+	}
+	kobject_uevent(&ppd->diagc_kobj, KOBJ_ADD);
+
+	if (!qib_cc_table_size || !ppd->congestion_entries_shadow)
+		return 0;
+
+	ret = kobject_init_and_add(&ppd->pport_cc_kobj, &qib_port_cc_ktype,
+				kobj, "CCMgtA");
+	if (ret) {
+		qib_dev_err(dd,
+		 "Skipping Congestion Control sysfs info, (err %d) port %u\n",
+		 ret, port_num);
+		goto bail_diagc;
+	}
+
+	kobject_uevent(&ppd->pport_cc_kobj, KOBJ_ADD);
+
+	ret = sysfs_create_bin_file(&ppd->pport_cc_kobj,
+				&cc_setting_bin_attr);
+	if (ret) {
+		qib_dev_err(dd,
+		 "Skipping Congestion Control setting sysfs info, (err %d) port %u\n",
+		 ret, port_num);
+		goto bail_cc;
+	}
+
+	ret = sysfs_create_bin_file(&ppd->pport_cc_kobj,
+				&cc_table_bin_attr);
+	if (ret) {
+		qib_dev_err(dd,
+		 "Skipping Congestion Control table sysfs info, (err %d) port %u\n",
+		 ret, port_num);
+		goto bail_cc_entry_bin;
+	}
+
+	qib_devinfo(dd->pcidev,
+		"IB%u: Congestion Control Agent enabled for port %d\n",
+		dd->unit, port_num);
+
+	return 0;
+
+bail_cc_entry_bin:
+	sysfs_remove_bin_file(&ppd->pport_cc_kobj, &cc_setting_bin_attr);
+bail_cc:
+	kobject_put(&ppd->pport_cc_kobj);
+bail_diagc:
+	kobject_put(&ppd->diagc_kobj);
+bail_sl:
+	kobject_put(&ppd->sl2vl_kobj);
+bail_link:
+>>>>>>> refs/remotes/origin/master
 	kobject_put(&ppd->pport_kobj);
 bail:
 	return ret;
@@ -688,10 +954,21 @@ int qib_verbs_register_sysfs(struct qib_devdata *dd)
 	for (i = 0; i < ARRAY_SIZE(qib_attributes); ++i) {
 		ret = device_create_file(&dev->dev, qib_attributes[i]);
 		if (ret)
+<<<<<<< HEAD
 			return ret;
 	}
 
 	return 0;
+=======
+			goto bail;
+	}
+
+	return 0;
+bail:
+	for (i = 0; i < ARRAY_SIZE(qib_attributes); ++i)
+		device_remove_file(&dev->dev, qib_attributes[i]);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -704,7 +981,20 @@ void qib_verbs_unregister_sysfs(struct qib_devdata *dd)
 
 	for (i = 0; i < dd->num_pports; i++) {
 		ppd = &dd->pport[i];
+<<<<<<< HEAD
 		kobject_put(&ppd->pport_kobj);
 		kobject_put(&ppd->sl2vl_kobj);
+=======
+		if (qib_cc_table_size &&
+			ppd->congestion_entries_shadow) {
+			sysfs_remove_bin_file(&ppd->pport_cc_kobj,
+				&cc_setting_bin_attr);
+			sysfs_remove_bin_file(&ppd->pport_cc_kobj,
+				&cc_table_bin_attr);
+			kobject_put(&ppd->pport_cc_kobj);
+		}
+		kobject_put(&ppd->sl2vl_kobj);
+		kobject_put(&ppd->pport_kobj);
+>>>>>>> refs/remotes/origin/master
 	}
 }

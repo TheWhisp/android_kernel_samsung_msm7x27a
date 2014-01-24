@@ -2,22 +2,40 @@
  * is 16 bits, but aligned on a 32 bit PCI boundary
  */
 
+<<<<<<< HEAD
 static inline u16 get_u16(volatile const u32 * p)
 {
 	return (u16) readl(p);
 }
 
 static inline void set_u16(volatile u32 * p, u16 val)
+=======
+static inline u16 get_u16(const u32 __iomem *p)
+{
+	return (u16)readl(p);
+}
+
+static inline void set_u16(u32 __iomem *p, u16 val)
+>>>>>>> refs/remotes/origin/master
 {
 	writel(val, p);
 }
 
+<<<<<<< HEAD
 static inline s16 get_s16(volatile const s32 * p)
 {
 	return (s16) readl(p);
 }
 
 static inline void set_s16(volatile s32 * p, s16 val)
+=======
+static inline s16 get_s16(const s32 __iomem *p)
+{
+	return (s16)readl(p);
+}
+
+static inline void set_s16(s32 __iomem *p, s16 val)
+>>>>>>> refs/remotes/origin/master
 {
 	writel(val, p);
 }
@@ -97,7 +115,11 @@ enum {
 	mz = 0x0020,
 	changeV2 = 0x0040,
 	changeV1 = 0x0080
+<<<<<<< HEAD
 } vect_bits_t;
+=======
+};
+>>>>>>> refs/remotes/origin/master
 
 /* WARNING_BITS */
 /* The warning_bits structure shows the bit pattern for the warning
@@ -116,7 +138,11 @@ enum {
 	mx_near_sat = 0x0008,
 	my_near_sat = 0x0010,
 	mz_near_sat = 0x0020
+<<<<<<< HEAD
 } warning_bits_t;
+=======
+};
+>>>>>>> refs/remotes/origin/master
 
 /*  ERROR_BITS */
 /*  XX_SAT */

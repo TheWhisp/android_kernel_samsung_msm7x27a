@@ -157,6 +157,27 @@ struct lockdep_map {
 #endif
 };
 
+<<<<<<< HEAD
+=======
+static inline void lockdep_copy_map(struct lockdep_map *to,
+				    struct lockdep_map *from)
+{
+	int i;
+
+	*to = *from;
+	/*
+	 * Since the class cache can be modified concurrently we could observe
+	 * half pointers (64bit arch using 32bit copy insns). Therefore clear
+	 * the caches and take the performance hit.
+	 *
+	 * XXX it doesn't work well with lockdep_set_class_and_subclass(), since
+	 *     that relies on cache abuse.
+	 */
+	for (i = 0; i < NR_LOCKDEP_CACHING_CLASSES; i++)
+		to->class_cache[i] = NULL;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Every lock has a list of other locks that were taken after it.
  * We only grow the list, never remove from it:
@@ -341,9 +362,24 @@ extern void lockdep_trace_alloc(gfp_t mask);
 
 #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
 
+<<<<<<< HEAD
 #define lockdep_assert_held(l)	WARN_ON(debug_locks && !lockdep_is_held(l))
 
+<<<<<<< HEAD
+=======
+#define lockdep_recursing(tsk)	((tsk)->lockdep_recursion)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #else /* !LOCKDEP */
+=======
+#define lockdep_assert_held(l)	do {				\
+		WARN_ON(debug_locks && !lockdep_is_held(l));	\
+	} while (0)
+
+#define lockdep_recursing(tsk)	((tsk)->lockdep_recursion)
+
+#else /* !CONFIG_LOCKDEP */
+>>>>>>> refs/remotes/origin/master
 
 static inline void lockdep_off(void)
 {
@@ -390,8 +426,20 @@ struct lock_class_key { };
 
 #define lockdep_depth(tsk)	(0)
 
+<<<<<<< HEAD
 #define lockdep_assert_held(l)			do { } while (0)
 
+<<<<<<< HEAD
+=======
+#define lockdep_recursing(tsk)			(0)
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define lockdep_assert_held(l)			do { (void)(l); } while (0)
+
+#define lockdep_recursing(tsk)			(0)
+
+>>>>>>> refs/remotes/origin/master
 #endif /* !LOCKDEP */
 
 #ifdef CONFIG_LOCK_STAT
@@ -455,6 +503,7 @@ static inline void print_irqtrace_events(struct task_struct *curr)
  * on the per lock-class debug mode:
  */
 
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 # ifdef CONFIG_PROVE_LOCKING
 #  define spin_acquire(l, s, t, i)		lock_acquire(l, s, t, 0, 2, NULL, i)
@@ -528,6 +577,42 @@ static inline void print_irqtrace_events(struct task_struct *curr)
 # define lock_map_acquire_read(l)		do { } while (0)
 # define lock_map_release(l)			do { } while (0)
 #endif
+=======
+#ifdef CONFIG_PROVE_LOCKING
+ #define lock_acquire_exclusive(l, s, t, n, i)		lock_acquire(l, s, t, 0, 2, n, i)
+ #define lock_acquire_shared(l, s, t, n, i)		lock_acquire(l, s, t, 1, 2, n, i)
+ #define lock_acquire_shared_recursive(l, s, t, n, i)	lock_acquire(l, s, t, 2, 2, n, i)
+#else
+ #define lock_acquire_exclusive(l, s, t, n, i)		lock_acquire(l, s, t, 0, 1, n, i)
+ #define lock_acquire_shared(l, s, t, n, i)		lock_acquire(l, s, t, 1, 1, n, i)
+ #define lock_acquire_shared_recursive(l, s, t, n, i)	lock_acquire(l, s, t, 2, 1, n, i)
+#endif
+
+#define spin_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
+#define spin_acquire_nest(l, s, t, n, i)	lock_acquire_exclusive(l, s, t, n, i)
+#define spin_release(l, n, i)			lock_release(l, n, i)
+
+#define rwlock_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
+#define rwlock_acquire_read(l, s, t, i)		lock_acquire_shared_recursive(l, s, t, NULL, i)
+#define rwlock_release(l, n, i)			lock_release(l, n, i)
+
+#define seqcount_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
+#define seqcount_acquire_read(l, s, t, i)	lock_acquire_shared_recursive(l, s, t, NULL, i)
+#define seqcount_release(l, n, i)		lock_release(l, n, i)
+
+#define mutex_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
+#define mutex_acquire_nest(l, s, t, n, i)	lock_acquire_exclusive(l, s, t, n, i)
+#define mutex_release(l, n, i)			lock_release(l, n, i)
+
+#define rwsem_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
+#define rwsem_acquire_nest(l, s, t, n, i)	lock_acquire_exclusive(l, s, t, n, i)
+#define rwsem_acquire_read(l, s, t, i)		lock_acquire_shared(l, s, t, NULL, i)
+#define rwsem_release(l, n, i)			lock_release(l, n, i)
+
+#define lock_map_acquire(l)			lock_acquire_exclusive(l, 0, 0, NULL, _THIS_IP_)
+#define lock_map_acquire_read(l)		lock_acquire_shared_recursive(l, 0, 0, NULL, _THIS_IP_)
+#define lock_map_release(l)			lock_release(l, 1, _THIS_IP_)
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PROVE_LOCKING
 # define might_lock(lock) 						\
@@ -548,7 +633,15 @@ do {									\
 #endif
 
 #ifdef CONFIG_PROVE_RCU
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void lockdep_rcu_dereference(const char *file, const int line);
+=======
+void lockdep_rcu_suspicious(const char *file, const int line, const char *s);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void lockdep_rcu_suspicious(const char *file, const int line, const char *s);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* __LINUX_LOCKDEP_H */

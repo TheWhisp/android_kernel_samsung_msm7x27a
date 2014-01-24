@@ -15,7 +15,11 @@
 #include <linux/string.h>
 #include <linux/init.h>
 
+<<<<<<< HEAD
 #include <asm/io.h>
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/prom.h>
 #include <asm/pci-bridge.h>
 

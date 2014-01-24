@@ -26,10 +26,16 @@
  *		  - slot 6: timer 1 (not on IIci)
  *		  - slot 7: status of IRQ; signals 'any enabled int.'
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	2	- OSS (IIfx only?)
  *		  - slot 0: SCSI interrupt
  *		  - slot 1: Sound interrupt
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Levels 3-6 vary by machine type. For VIA or RBV Macintoshes:
  *
  *	3	- unused (?)
@@ -42,6 +48,8 @@
  *
  *	6	- off switch (?)
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * For OSS Macintoshes (IIfx only at this point):
  *
  *	3	- Nubus interrupt
@@ -57,6 +65,37 @@
  *	5	- ISM IOP (ADB?)
  *
  *	6	- unused
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Machines with Quadra-like VIA hardware, except PSC and PMU machines, support
+ * an alternate interrupt mapping, as used by A/UX. It spreads ethernet and
+ * sound out to their own autovector IRQs and gives VIA1 a higher priority:
+ *
+ *	1	- unused (?)
+ *
+ *	3	- on-board SONIC
+ *
+ *	5	- Apple Sound Chip (ASC)
+ *
+ *	6	- VIA1
+ *
+ * For OSS Macintoshes (IIfx only), we apply an interrupt mapping similar to
+ * the Quadra (A/UX) mapping:
+ *
+ *	1	- ISM IOP (ADB)
+ *
+ *	2	- SCSI
+ *
+ *	3	- NuBus
+ *
+ *	4	- SCC IOP
+ *
+ *	6	- VIA1
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * For PSC Macintoshes (660AV, 840AV):
  *
@@ -100,6 +139,8 @@
  *   case. They're hidden behind the Nubus slot $C interrupt thus adding a
  *   third layer of indirection. Why oh why did the Apple engineers do that?
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * - We support "fast" and "slow" handlers, just like the Amiga port. The
  *   fast handlers are called first and with all interrupts disabled. They
  *   are expected to execute quickly (hence the name). The slow handlers are
@@ -131,10 +172,38 @@
 #include <asm/macints.h>
 #include <asm/irq_regs.h>
 #include <asm/mac_oss.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ */
+
+#include <linux/types.h>
+#include <linux/kernel.h>
+#include <linux/sched.h>
+#include <linux/interrupt.h>
+#include <linux/irq.h>
+#include <linux/delay.h>
+
+#include <asm/irq.h>
+#include <asm/macintosh.h>
+#include <asm/macints.h>
+#include <asm/mac_via.h>
+#include <asm/mac_psc.h>
+#include <asm/mac_oss.h>
+#include <asm/mac_iop.h>
+#include <asm/mac_baboon.h>
+#include <asm/hwtest.h>
+#include <asm/irq_regs.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SHUTUP_SONIC
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * VIA/RBV hooks
  */
 
@@ -182,6 +251,10 @@ extern void baboon_irq_disable(int);
 extern void baboon_irq_clear(int);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * console_loglevel determines NMI handler function
  */
 
@@ -190,6 +263,8 @@ irqreturn_t mac_debug_handler(int, void *);
 
 /* #define DEBUG_MACINTS */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void mac_enable_irq(unsigned int irq);
 void mac_disable_irq(unsigned int irq);
 
@@ -198,6 +273,22 @@ static struct irq_controller mac_irq_controller = {
 	.lock		= __SPIN_LOCK_UNLOCKED(mac_irq_controller.lock),
 	.enable		= mac_enable_irq,
 	.disable	= mac_disable_irq,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static unsigned int mac_irq_startup(struct irq_data *);
+static void mac_irq_shutdown(struct irq_data *);
+
+static struct irq_chip mac_irq_chip = {
+	.name		= "mac",
+	.irq_enable	= mac_irq_enable,
+	.irq_disable	= mac_irq_disable,
+	.irq_startup	= mac_irq_startup,
+	.irq_shutdown	= mac_irq_shutdown,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init mac_init_IRQ(void)
@@ -205,7 +296,15 @@ void __init mac_init_IRQ(void)
 #ifdef DEBUG_MACINTS
 	printk("mac_init_IRQ(): Setting things up...\n");
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	m68k_setup_irq_controller(&mac_irq_controller, IRQ_USER,
+=======
+	m68k_setup_irq_controller(&mac_irq_chip, handle_simple_irq, IRQ_USER,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	m68k_setup_irq_controller(&mac_irq_chip, handle_simple_irq, IRQ_USER,
+>>>>>>> refs/remotes/origin/master
 				  NUM_MAC_SOURCES - IRQ_USER);
 	/* Make sure the SONIC interrupt is cleared or things get ugly */
 #ifdef SHUTUP_SONIC
@@ -241,22 +340,50 @@ void __init mac_init_IRQ(void)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  mac_enable_irq - enable an interrupt source
  * mac_disable_irq - disable an interrupt source
  *   mac_clear_irq - clears a pending interrupt
  * mac_pending_irq - Returns the pending status of an IRQ (nonzero = pending)
+=======
+ *  mac_irq_enable - enable an interrupt source
+ * mac_irq_disable - disable an interrupt source
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  mac_irq_enable - enable an interrupt source
+ * mac_irq_disable - disable an interrupt source
+>>>>>>> refs/remotes/origin/master
  *
  * These routines are just dispatchers to the VIA/OSS/PSC routines.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void mac_enable_irq(unsigned int irq)
 {
+=======
+void mac_irq_enable(struct irq_data *data)
+{
+	int irq = data->irq;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void mac_irq_enable(struct irq_data *data)
+{
+	int irq = data->irq;
+>>>>>>> refs/remotes/origin/master
 	int irq_src = IRQ_SRC(irq);
 
 	switch(irq_src) {
 	case 1:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		via_irq_enable(irq);
 		break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case 2:
 	case 7:
 		if (oss_present)
@@ -265,6 +392,14 @@ void mac_enable_irq(unsigned int irq)
 			via_irq_enable(irq);
 		break;
 	case 3:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case 4:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case 4:
+>>>>>>> refs/remotes/origin/master
 	case 5:
 	case 6:
 		if (psc_present)
@@ -272,10 +407,16 @@ void mac_enable_irq(unsigned int irq)
 		else if (oss_present)
 			oss_irq_enable(irq);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case 4:
 		if (psc_present)
 			psc_irq_enable(irq);
 		break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case 8:
 		if (baboon_present)
 			baboon_irq_enable(irq);
@@ -283,14 +424,32 @@ void mac_enable_irq(unsigned int irq)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void mac_disable_irq(unsigned int irq)
 {
+=======
+void mac_irq_disable(struct irq_data *data)
+{
+	int irq = data->irq;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void mac_irq_disable(struct irq_data *data)
+{
+	int irq = data->irq;
+>>>>>>> refs/remotes/origin/master
 	int irq_src = IRQ_SRC(irq);
 
 	switch(irq_src) {
 	case 1:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		via_irq_disable(irq);
 		break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case 2:
 	case 7:
 		if (oss_present)
@@ -299,6 +458,14 @@ void mac_disable_irq(unsigned int irq)
 			via_irq_disable(irq);
 		break;
 	case 3:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case 4:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case 4:
+>>>>>>> refs/remotes/origin/master
 	case 5:
 	case 6:
 		if (psc_present)
@@ -306,10 +473,16 @@ void mac_disable_irq(unsigned int irq)
 		else if (oss_present)
 			oss_irq_disable(irq);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case 4:
 		if (psc_present)
 			psc_irq_disable(irq);
 		break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case 8:
 		if (baboon_present)
 			baboon_irq_disable(irq);
@@ -317,6 +490,8 @@ void mac_disable_irq(unsigned int irq)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void mac_clear_irq(unsigned int irq)
 {
 	switch(IRQ_SRC(irq)) {
@@ -376,6 +551,34 @@ int mac_irq_pending(unsigned int irq)
 	return 0;
 }
 EXPORT_SYMBOL(mac_irq_pending);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static unsigned int mac_irq_startup(struct irq_data *data)
+{
+	int irq = data->irq;
+
+	if (IRQ_SRC(irq) == 7 && !oss_present)
+		via_nubus_irq_startup(irq);
+	else
+		mac_irq_enable(data);
+
+	return 0;
+}
+
+static void mac_irq_shutdown(struct irq_data *data)
+{
+	int irq = data->irq;
+
+	if (IRQ_SRC(irq) == 7 && !oss_present)
+		via_nubus_irq_shutdown(irq);
+	else
+		mac_irq_disable(data);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int num_debug[8];
 

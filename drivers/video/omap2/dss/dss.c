@@ -24,13 +24,42 @@
 
 #include <linux/kernel.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/delay.h>
 #include <linux/seq_file.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <video/omapdss.h>
 #include <plat/clock.h>
+=======
+#include <linux/platform_device.h>
+#include <linux/pm_runtime.h>
+
+#include <video/omapdss.h>
+
+#include <plat/cpu.h>
+#include <plat/clock.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_device.h>
+#include <linux/pm_runtime.h>
+#include <linux/gfp.h>
+#include <linux/sizes.h>
+
+#include <video/omapdss.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "dss.h"
 #include "dss_features.h"
 
@@ -56,9 +85,11 @@ struct dss_reg {
 #define REG_FLD_MOD(idx, val, start, end) \
 	dss_write_reg(idx, FLD_MOD(dss_read_reg(idx), val, start, end))
 
+<<<<<<< HEAD
 static struct {
 	struct platform_device *pdev;
 	void __iomem    *base;
+<<<<<<< HEAD
 	int             ctx_id;
 
 	struct clk	*dpll4_m4_ck;
@@ -68,6 +99,30 @@ static struct {
 	struct clk	*dss_tv_fck;
 	struct clk	*dss_video_fck;
 	unsigned	num_clks_enabled;
+=======
+
+	struct clk	*dpll4_m4_ck;
+	struct clk	*dss_clk;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int dss_runtime_get(void);
+static void dss_runtime_put(void);
+
+struct dss_features {
+	u8 fck_div_max;
+	u8 dss_fck_multiplier;
+	const char *clk_name;
+	int (*dpi_select_source)(enum omap_channel channel);
+};
+
+static struct {
+	struct platform_device *pdev;
+	void __iomem    *base;
+
+	struct clk	*dpll4_m4_ck;
+	struct clk	*dss_clk;
+	unsigned long	dss_clk_rate;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned long	cache_req_pck;
 	unsigned long	cache_prate;
@@ -78,15 +133,28 @@ static struct {
 	enum omap_dss_clk_source dispc_clk_source;
 	enum omap_dss_clk_source lcd_clk_source[MAX_DSS_LCD_MANAGERS];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool		ctx_valid;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32		ctx[DSS_SZ_REGS / sizeof(u32)];
+=======
+	bool		ctx_valid;
+	u32		ctx[DSS_SZ_REGS / sizeof(u32)];
+
+	const struct dss_features *feat;
+>>>>>>> refs/remotes/origin/master
 } dss;
 
 static const char * const dss_generic_clk_source_names[] = {
 	[OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC]	= "DSI_PLL_HSDIV_DISPC",
 	[OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DSI]	= "DSI_PLL_HSDIV_DSI",
 	[OMAP_DSS_CLK_SRC_FCK]			= "DSS_FCK",
+<<<<<<< HEAD
 };
 
+<<<<<<< HEAD
 static void dss_clk_enable_all_no_ctx(void);
 static void dss_clk_disable_all_no_ctx(void);
 static void dss_clk_enable_no_ctx(enum dss_clock clks);
@@ -94,6 +162,14 @@ static void dss_clk_disable_no_ctx(enum dss_clock clks);
 
 static int _omap_dss_wait_reset(void);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DISPC]	= "DSI_PLL2_HSDIV_DISPC",
+	[OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DSI]	= "DSI_PLL2_HSDIV_DSI",
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline void dss_write_reg(const struct dss_reg idx, u32 val)
 {
 	__raw_writel(val, dss.base + idx.idx);
@@ -109,12 +185,25 @@ static inline u32 dss_read_reg(const struct dss_reg idx)
 #define RR(reg) \
 	dss_write_reg(DSS_##reg, dss.ctx[(DSS_##reg).idx / sizeof(u32)])
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void dss_save_context(void)
 {
 	if (cpu_is_omap24xx())
 		return;
 
 	SR(SYSCONFIG);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void dss_save_context(void)
+{
+	DSSDBG("dss_save_context\n");
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	SR(CONTROL);
 
 	if (dss_feat_get_supported_displays(OMAP_DSS_CHANNEL_LCD) &
@@ -122,6 +211,8 @@ void dss_save_context(void)
 		SR(SDI_CONTROL);
 		SR(PLL_CONTROL);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 void dss_restore_context(void)
@@ -130,6 +221,26 @@ void dss_restore_context(void)
 		DSSERR("DSS not coming out of reset after sleep\n");
 
 	RR(SYSCONFIG);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	dss.ctx_valid = true;
+
+	DSSDBG("context saved\n");
+}
+
+static void dss_restore_context(void)
+{
+	DSSDBG("dss_restore_context\n");
+
+	if (!dss.ctx_valid)
+		return;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	RR(CONTROL);
 
 	if (dss_feat_get_supported_displays(OMAP_DSS_CHANNEL_LCD) &
@@ -137,12 +248,42 @@ void dss_restore_context(void)
 		RR(SDI_CONTROL);
 		RR(PLL_CONTROL);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	DSSDBG("context restored\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	DSSDBG("context restored\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 #undef SR
 #undef RR
 
+<<<<<<< HEAD
 void dss_sdi_init(u8 datapairs)
+=======
+int dss_get_ctx_loss_count(void)
+{
+	struct platform_device *core_pdev = dss_get_core_pdev();
+	struct omap_dss_board_info *board_data = core_pdev->dev.platform_data;
+	int cnt;
+
+	if (!board_data->get_context_loss_count)
+		return -ENOENT;
+
+	cnt = board_data->get_context_loss_count(&dss.pdev->dev);
+
+	WARN_ONCE(cnt < 0, "get_context_loss_count failed: %d\n", cnt);
+
+	return cnt;
+}
+
+void dss_sdi_init(int datapairs)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 l;
 
@@ -234,6 +375,13 @@ const char *dss_get_generic_clk_source_name(enum omap_dss_clk_source clk_src)
 	return dss_generic_clk_source_names[clk_src];
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void dss_dump_clocks(struct seq_file *s)
 {
 	unsigned long dpll4_ck_rate;
@@ -241,13 +389,31 @@ void dss_dump_clocks(struct seq_file *s)
 	const char *fclk_name, *fclk_real_name;
 	unsigned long fclk_rate;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dss_clk_enable(DSS_CLK_ICK | DSS_CLK_FCK);
+=======
+	if (dss_runtime_get())
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dss_runtime_get())
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	seq_printf(s, "- DSS -\n");
 
 	fclk_name = dss_get_generic_clk_source_name(OMAP_DSS_CLK_SRC_FCK);
 	fclk_real_name = dss_feat_get_clk_source_name(OMAP_DSS_CLK_SRC_FCK);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fclk_rate = dss_clk_get_rate(DSS_CLK_FCK);
+=======
+	fclk_rate = clk_get_rate(dss.dss_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fclk_rate = clk_get_rate(dss.dss_clk);
+>>>>>>> refs/remotes/origin/master
 
 	if (dss.dpll4_m4_ck) {
 		dpll4_ck_rate = clk_get_rate(clk_get_parent(dss.dpll4_m4_ck));
@@ -255,6 +421,7 @@ void dss_dump_clocks(struct seq_file *s)
 
 		seq_printf(s, "dpll4_ck %lu\n", dpll4_ck_rate);
 
+<<<<<<< HEAD
 		if (cpu_is_omap3630() || cpu_is_omap44xx())
 			seq_printf(s, "%s (%s) = %lu / %lu  = %lu\n",
 					fclk_name, fclk_real_name,
@@ -267,20 +434,47 @@ void dss_dump_clocks(struct seq_file *s)
 					dpll4_ck_rate,
 					dpll4_ck_rate / dpll4_m4_ck_rate,
 					fclk_rate);
+=======
+		seq_printf(s, "%s (%s) = %lu / %lu * %d  = %lu\n",
+				fclk_name, fclk_real_name, dpll4_ck_rate,
+				dpll4_ck_rate / dpll4_m4_ck_rate,
+				dss.feat->dss_fck_multiplier, fclk_rate);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		seq_printf(s, "%s (%s) = %lu\n",
 				fclk_name, fclk_real_name,
 				fclk_rate);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dss_clk_disable(DSS_CLK_ICK | DSS_CLK_FCK);
+=======
+	dss_runtime_put();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void dss_dump_regs(struct seq_file *s)
 {
 #define DUMPREG(r) seq_printf(s, "%-35s %08x\n", #r, dss_read_reg(r))
 
+<<<<<<< HEAD
 	dss_clk_enable(DSS_CLK_ICK | DSS_CLK_FCK);
+=======
+	if (dss_runtime_get())
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dss_runtime_put();
+}
+
+static void dss_dump_regs(struct seq_file *s)
+{
+#define DUMPREG(r) seq_printf(s, "%-35s %08x\n", #r, dss_read_reg(r))
+
+	if (dss_runtime_get())
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	DUMPREG(DSS_REVISION);
 	DUMPREG(DSS_SYSCONFIG);
@@ -294,11 +488,23 @@ void dss_dump_regs(struct seq_file *s)
 		DUMPREG(DSS_SDI_STATUS);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dss_clk_disable(DSS_CLK_ICK | DSS_CLK_FCK);
+=======
+	dss_runtime_put();
+>>>>>>> refs/remotes/origin/cm-10.0
 #undef DUMPREG
 }
 
 void dss_select_dispc_clk_source(enum omap_dss_clk_source clk_src)
+=======
+	dss_runtime_put();
+#undef DUMPREG
+}
+
+static void dss_select_dispc_clk_source(enum omap_dss_clk_source clk_src)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_device *dsidev;
 	int b;
@@ -320,6 +526,10 @@ void dss_select_dispc_clk_source(enum omap_dss_clk_source clk_src)
 		break;
 	default:
 		BUG();
+<<<<<<< HEAD
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dss_feat_get_reg_field(FEAT_REG_DISPC_CLK_SWITCH, &start, &end);
@@ -333,7 +543,11 @@ void dss_select_dsi_clk_source(int dsi_module,
 		enum omap_dss_clk_source clk_src)
 {
 	struct platform_device *dsidev;
+<<<<<<< HEAD
 	int b;
+=======
+	int b, pos;
+>>>>>>> refs/remotes/origin/master
 
 	switch (clk_src) {
 	case OMAP_DSS_CLK_SRC_FCK:
@@ -353,9 +567,17 @@ void dss_select_dsi_clk_source(int dsi_module,
 		break;
 	default:
 		BUG();
+<<<<<<< HEAD
 	}
 
 	REG_FLD_MOD(DSS_CONTROL, b, 1, 1);	/* DSI_CLK_SWITCH */
+=======
+		return;
+	}
+
+	pos = dsi_module == 0 ? 1 : 10;
+	REG_FLD_MOD(DSS_CONTROL, b, pos, pos);	/* DSIx_CLK_SWITCH */
+>>>>>>> refs/remotes/origin/master
 
 	dss.dsi_clk_source[dsi_module] = clk_src;
 }
@@ -366,8 +588,15 @@ void dss_select_lcd_clk_source(enum omap_channel channel,
 	struct platform_device *dsidev;
 	int b, ix, pos;
 
+<<<<<<< HEAD
 	if (!dss_has_feature(FEAT_LCD_CLK_SRC))
 		return;
+=======
+	if (!dss_has_feature(FEAT_LCD_CLK_SRC)) {
+		dss_select_dispc_clk_source(clk_src);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	switch (clk_src) {
 	case OMAP_DSS_CLK_SRC_FCK:
@@ -380,19 +609,36 @@ void dss_select_lcd_clk_source(enum omap_channel channel,
 		dsi_wait_pll_hsdiv_dispc_active(dsidev);
 		break;
 	case OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DISPC:
+<<<<<<< HEAD
 		BUG_ON(channel != OMAP_DSS_CHANNEL_LCD2);
+=======
+		BUG_ON(channel != OMAP_DSS_CHANNEL_LCD2 &&
+		       channel != OMAP_DSS_CHANNEL_LCD3);
+>>>>>>> refs/remotes/origin/master
 		b = 1;
 		dsidev = dsi_get_dsidev_from_id(1);
 		dsi_wait_pll_hsdiv_dispc_active(dsidev);
 		break;
 	default:
 		BUG();
+<<<<<<< HEAD
 	}
 
 	pos = channel == OMAP_DSS_CHANNEL_LCD ? 0 : 12;
 	REG_FLD_MOD(DSS_CONTROL, b, pos, pos);	/* LCDx_CLK_SWITCH */
 
 	ix = channel == OMAP_DSS_CHANNEL_LCD ? 0 : 1;
+=======
+		return;
+	}
+
+	pos = channel == OMAP_DSS_CHANNEL_LCD ? 0 :
+	     (channel == OMAP_DSS_CHANNEL_LCD2 ? 12 : 19);
+	REG_FLD_MOD(DSS_CONTROL, b, pos, pos);	/* LCDx_CLK_SWITCH */
+
+	ix = channel == OMAP_DSS_CHANNEL_LCD ? 0 :
+	    (channel == OMAP_DSS_CHANNEL_LCD2 ? 1 : 2);
+>>>>>>> refs/remotes/origin/master
 	dss.lcd_clk_source[ix] = clk_src;
 }
 
@@ -409,7 +655,12 @@ enum omap_dss_clk_source dss_get_dsi_clk_source(int dsi_module)
 enum omap_dss_clk_source dss_get_lcd_clk_source(enum omap_channel channel)
 {
 	if (dss_has_feature(FEAT_LCD_CLK_SRC)) {
+<<<<<<< HEAD
 		int ix = channel == OMAP_DSS_CHANNEL_LCD ? 0 : 1;
+=======
+		int ix = channel == OMAP_DSS_CHANNEL_LCD ? 0 :
+			(channel == OMAP_DSS_CHANNEL_LCD2 ? 1 : 2);
+>>>>>>> refs/remotes/origin/master
 		return dss.lcd_clk_source[ix];
 	} else {
 		/* LCD_CLK source is the same as DISPC_FCLK source for
@@ -423,26 +674,89 @@ int dss_calc_clock_rates(struct dss_clock_info *cinfo)
 {
 	if (dss.dpll4_m4_ck) {
 		unsigned long prate;
+<<<<<<< HEAD
 		u16 fck_div_max = 16;
 
 		if (cpu_is_omap3630() || cpu_is_omap44xx())
 			fck_div_max = 32;
 
 		if (cinfo->fck_div > fck_div_max || cinfo->fck_div == 0)
+=======
+
+		if (cinfo->fck_div > dss.feat->fck_div_max ||
+				cinfo->fck_div == 0)
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 
 		prate = clk_get_rate(clk_get_parent(dss.dpll4_m4_ck));
 
+<<<<<<< HEAD
 		cinfo->fck = prate / cinfo->fck_div;
 	} else {
 		if (cinfo->fck_div != 0)
 			return -EINVAL;
+<<<<<<< HEAD
 		cinfo->fck = dss_clk_get_rate(DSS_CLK_FCK);
+=======
+		cinfo->fck = clk_get_rate(dss.dss_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cinfo->fck = prate / cinfo->fck_div *
+			dss.feat->dss_fck_multiplier;
+	} else {
+		if (cinfo->fck_div != 0)
+			return -EINVAL;
+		cinfo->fck = clk_get_rate(dss.dss_clk);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+bool dss_div_calc(unsigned long fck_min, dss_div_calc_func func, void *data)
+{
+	int fckd, fckd_start, fckd_stop;
+	unsigned long fck;
+	unsigned long fck_hw_max;
+	unsigned long fckd_hw_max;
+	unsigned long prate;
+	unsigned m;
+
+	if (dss.dpll4_m4_ck == NULL) {
+		/*
+		 * TODO: dss1_fclk can be changed on OMAP2, but the available
+		 * dividers are not continuous. We just use the pre-set rate for
+		 * now.
+		 */
+		fck = clk_get_rate(dss.dss_clk);
+		fckd = 1;
+		return func(fckd, fck, data);
+	}
+
+	fck_hw_max = dss_feat_get_param_max(FEAT_PARAM_DSS_FCK);
+	fckd_hw_max = dss.feat->fck_div_max;
+
+	m = dss.feat->dss_fck_multiplier;
+	prate = dss_get_dpll4_rate();
+
+	fck_min = fck_min ? fck_min : 1;
+
+	fckd_start = min(prate * m / fck_min, fckd_hw_max);
+	fckd_stop = max(DIV_ROUND_UP(prate * m, fck_hw_max), 1ul);
+
+	for (fckd = fckd_start; fckd >= fckd_stop; --fckd) {
+		fck = prate / fckd * m;
+
+		if (func(fckd, fck, data))
+			return true;
+	}
+
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 int dss_set_clock_div(struct dss_clock_info *cinfo)
 {
 	if (dss.dpll4_m4_ck) {
@@ -452,7 +766,12 @@ int dss_set_clock_div(struct dss_clock_info *cinfo)
 		prate = clk_get_rate(clk_get_parent(dss.dpll4_m4_ck));
 		DSSDBG("dpll4_m4 = %ld\n", prate);
 
+<<<<<<< HEAD
 		r = clk_set_rate(dss.dpll4_m4_ck, prate / cinfo->fck_div);
+=======
+		r = clk_set_rate(dss.dpll4_m4_ck,
+				DIV_ROUND_UP(prate, cinfo->fck_div));
+>>>>>>> refs/remotes/origin/master
 		if (r)
 			return r;
 	} else {
@@ -460,6 +779,7 @@ int dss_set_clock_div(struct dss_clock_info *cinfo)
 			return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	DSSDBG("fck = %ld (%d)\n", cinfo->fck, cinfo->fck_div);
 
 	return 0;
@@ -467,7 +787,11 @@ int dss_set_clock_div(struct dss_clock_info *cinfo)
 
 int dss_get_clock_div(struct dss_clock_info *cinfo)
 {
+<<<<<<< HEAD
 	cinfo->fck = dss_clk_get_rate(DSS_CLK_FCK);
+=======
+	cinfo->fck = clk_get_rate(dss.dss_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (dss.dpll4_m4_ck) {
 		unsigned long prate;
@@ -481,6 +805,15 @@ int dss_get_clock_div(struct dss_clock_info *cinfo)
 	} else {
 		cinfo->fck_div = 0;
 	}
+=======
+	dss.dss_clk_rate = clk_get_rate(dss.dss_clk);
+
+	WARN_ONCE(dss.dss_clk_rate != cinfo->fck,
+			"clk rate mismatch: %lu != %lu", dss.dss_clk_rate,
+			cinfo->fck);
+
+	DSSDBG("fck = %ld (%d)\n", cinfo->fck, cinfo->fck_div);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -493,6 +826,7 @@ unsigned long dss_get_dpll4_rate(void)
 		return 0;
 }
 
+<<<<<<< HEAD
 int dss_calc_clock_div(bool is_tft, unsigned long req_pck,
 		struct dss_clock_info *dss_cinfo,
 		struct dispc_clock_info *dispc_cinfo)
@@ -512,7 +846,11 @@ int dss_calc_clock_div(bool is_tft, unsigned long req_pck,
 
 	max_dss_fck = dss_feat_get_param_max(FEAT_PARAM_DSS_FCK);
 
+<<<<<<< HEAD
 	fck = dss_clk_get_rate(DSS_CLK_FCK);
+=======
+	fck = clk_get_rate(dss.dss_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (req_pck == dss.cache_req_pck &&
 			((cpu_is_omap34xx() && prate == dss.cache_prate) ||
 			 dss.cache_dss_cinfo.fck == fck)) {
@@ -539,7 +877,11 @@ retry:
 	if (dss.dpll4_m4_ck == NULL) {
 		struct dispc_clock_info cur_dispc;
 		/* XXX can we change the clock on omap2? */
+<<<<<<< HEAD
 		fck = dss_clk_get_rate(DSS_CLK_FCK);
+=======
+		fck = clk_get_rate(dss.dss_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		fck_div = 1;
 
 		dispc_find_clk_divs(is_tft, req_pck, fck, &cur_dispc);
@@ -616,6 +958,7 @@ found:
 	return 0;
 }
 
+<<<<<<< HEAD
 static int _omap_dss_wait_reset(void)
 {
 	int t = 0;
@@ -627,10 +970,44 @@ static int _omap_dss_wait_reset(void)
 		}
 		udelay(1);
 	}
+=======
+unsigned long dss_get_dispc_clk_rate(void)
+{
+	return dss.dss_clk_rate;
+}
+
+static int dss_setup_default_clock(void)
+{
+	unsigned long max_dss_fck, prate;
+	unsigned fck_div;
+	struct dss_clock_info dss_cinfo = { 0 };
+	int r;
+
+	if (dss.dpll4_m4_ck == NULL)
+		return 0;
+
+	max_dss_fck = dss_feat_get_param_max(FEAT_PARAM_DSS_FCK);
+
+	prate = dss_get_dpll4_rate();
+
+	fck_div = DIV_ROUND_UP(prate * dss.feat->dss_fck_multiplier,
+			max_dss_fck);
+
+	dss_cinfo.fck_div = fck_div;
+
+	r = dss_calc_clock_rates(&dss_cinfo);
+	if (r)
+		return r;
+
+	r = dss_set_clock_div(&dss_cinfo);
+	if (r)
+		return r;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int _omap_dss_reset(void)
 {
 	/* Soft reset */
@@ -638,6 +1015,10 @@ static int _omap_dss_reset(void)
 	return _omap_dss_wait_reset();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void dss_set_venc_output(enum omap_dss_venc_type type)
 {
 	int l = 0;
@@ -658,11 +1039,13 @@ void dss_set_dac_pwrdn_bgz(bool enable)
 	REG_FLD_MOD(DSS_CONTROL, enable, 5, 5);	/* DAC Power-Down Control */
 }
 
+<<<<<<< HEAD
 void dss_select_hdmi_venc_clk_source(enum dss_hdmi_venc_clk_source_select hdmi)
 {
 	REG_FLD_MOD(DSS_CONTROL, hdmi, 15, 15);	/* VENC_HDMI_SWITCH */
 }
 
+<<<<<<< HEAD
 static int dss_init(void)
 {
 	int r;
@@ -839,10 +1222,110 @@ static int dss_get_clock(struct clk **clock, const char *clk_name)
 	DSSDBG("clk %s, rate %ld\n", clk_name, clk_get_rate(clk));
 
 	return 0;
+=======
+enum dss_hdmi_venc_clk_source_select dss_get_hdmi_venc_clk_source(void)
+{
+	enum omap_display_type displays;
+
+	displays = dss_feat_get_supported_displays(OMAP_DSS_CHANNEL_DIGIT);
+	if ((displays & OMAP_DISPLAY_TYPE_HDMI) == 0)
+		return DSS_VENC_TV_CLK;
+
+	return REG_GET(DSS_CONTROL, 15, 15);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void dss_select_hdmi_venc_clk_source(enum dss_hdmi_venc_clk_source_select src)
+{
+	enum omap_display_type dp;
+	dp = dss_feat_get_supported_displays(OMAP_DSS_CHANNEL_DIGIT);
+
+	/* Complain about invalid selections */
+	WARN_ON((src == DSS_VENC_TV_CLK) && !(dp & OMAP_DISPLAY_TYPE_VENC));
+	WARN_ON((src == DSS_HDMI_M_PCLK) && !(dp & OMAP_DISPLAY_TYPE_HDMI));
+
+	/* Select only if we have options */
+	if ((dp & OMAP_DISPLAY_TYPE_VENC) && (dp & OMAP_DISPLAY_TYPE_HDMI))
+		REG_FLD_MOD(DSS_CONTROL, src, 15, 15);	/* VENC_HDMI_SWITCH */
+}
+
+enum dss_hdmi_venc_clk_source_select dss_get_hdmi_venc_clk_source(void)
+{
+	enum omap_display_type displays;
+
+	displays = dss_feat_get_supported_displays(OMAP_DSS_CHANNEL_DIGIT);
+	if ((displays & OMAP_DISPLAY_TYPE_HDMI) == 0)
+		return DSS_VENC_TV_CLK;
+
+	if ((displays & OMAP_DISPLAY_TYPE_VENC) == 0)
+		return DSS_HDMI_M_PCLK;
+
+	return REG_GET(DSS_CONTROL, 15, 15);
+}
+
+static int dss_dpi_select_source_omap2_omap3(enum omap_channel channel)
+{
+	if (channel != OMAP_DSS_CHANNEL_LCD)
+		return -EINVAL;
+
+	return 0;
+}
+
+static int dss_dpi_select_source_omap4(enum omap_channel channel)
+{
+	int val;
+
+	switch (channel) {
+	case OMAP_DSS_CHANNEL_LCD2:
+		val = 0;
+		break;
+	case OMAP_DSS_CHANNEL_DIGIT:
+		val = 1;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	REG_FLD_MOD(DSS_CONTROL, val, 17, 17);
+
+	return 0;
+}
+
+static int dss_dpi_select_source_omap5(enum omap_channel channel)
+{
+	int val;
+
+	switch (channel) {
+	case OMAP_DSS_CHANNEL_LCD:
+		val = 1;
+		break;
+	case OMAP_DSS_CHANNEL_LCD2:
+		val = 2;
+		break;
+	case OMAP_DSS_CHANNEL_LCD3:
+		val = 3;
+		break;
+	case OMAP_DSS_CHANNEL_DIGIT:
+		val = 0;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	REG_FLD_MOD(DSS_CONTROL, val, 17, 16);
+
+	return 0;
+}
+
+int dss_dpi_select_source(enum omap_channel channel)
+{
+	return dss.feat->dpi_select_source(channel);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int dss_get_clocks(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int r;
 	struct omap_display_platform_data *pdata = dss.pdev->dev.platform_data;
 
@@ -896,12 +1379,76 @@ err:
 		clk_put(dss.dss_tv_fck);
 	if (dss.dss_video_fck)
 		clk_put(dss.dss_video_fck);
+=======
+	struct clk *clk;
+	int r;
+
+	clk = clk_get(&dss.pdev->dev, "fck");
+	if (IS_ERR(clk)) {
+		DSSERR("can't get clock fck\n");
+		r = PTR_ERR(clk);
+		goto err;
+=======
+	struct clk *clk;
+
+	clk = devm_clk_get(&dss.pdev->dev, "fck");
+	if (IS_ERR(clk)) {
+		DSSERR("can't get clock fck\n");
+		return PTR_ERR(clk);
+>>>>>>> refs/remotes/origin/master
+	}
+
+	dss.dss_clk = clk;
+
+<<<<<<< HEAD
+	if (cpu_is_omap34xx()) {
+		clk = clk_get(NULL, "dpll4_m4_ck");
+		if (IS_ERR(clk)) {
+			DSSERR("Failed to get dpll4_m4_ck\n");
+			r = PTR_ERR(clk);
+			goto err;
+		}
+	} else if (cpu_is_omap44xx()) {
+		clk = clk_get(NULL, "dpll_per_m5x2_ck");
+		if (IS_ERR(clk)) {
+			DSSERR("Failed to get dpll_per_m5x2_ck\n");
+			r = PTR_ERR(clk);
+			goto err;
+		}
+	} else { /* omap24xx */
+=======
+	if (dss.feat->clk_name) {
+		clk = clk_get(NULL, dss.feat->clk_name);
+		if (IS_ERR(clk)) {
+			DSSERR("Failed to get %s\n", dss.feat->clk_name);
+			return PTR_ERR(clk);
+		}
+	} else {
+>>>>>>> refs/remotes/origin/master
+		clk = NULL;
+	}
+
+	dss.dpll4_m4_ck = clk;
+
+	return 0;
+<<<<<<< HEAD
+
+err:
+	if (dss.dss_clk)
+		clk_put(dss.dss_clk);
+	if (dss.dpll4_m4_ck)
+		clk_put(dss.dpll4_m4_ck);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return r;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dss_put_clocks(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dss.dss_video_fck)
 		clk_put(dss.dss_video_fck);
 	if (dss.dss_tv_fck)
@@ -1075,12 +1622,63 @@ static void core_dump_clocks(struct seq_file *s)
 	}
 }
 #endif /* defined(CONFIG_DEBUG_FS) && defined(CONFIG_OMAP2_DSS_DEBUG_SUPPORT) */
+=======
+	if (dss.dpll4_m4_ck)
+		clk_put(dss.dpll4_m4_ck);
+	clk_put(dss.dss_clk);
+}
+
+int dss_runtime_get(void)
+=======
+	if (dss.dpll4_m4_ck)
+		clk_put(dss.dpll4_m4_ck);
+}
+
+static int dss_runtime_get(void)
+>>>>>>> refs/remotes/origin/master
+{
+	int r;
+
+	DSSDBG("dss_runtime_get\n");
+
+	r = pm_runtime_get_sync(&dss.pdev->dev);
+	WARN_ON(r < 0);
+	return r < 0 ? r : 0;
+}
+
+<<<<<<< HEAD
+void dss_runtime_put(void)
+=======
+static void dss_runtime_put(void)
+>>>>>>> refs/remotes/origin/master
+{
+	int r;
+
+	DSSDBG("dss_runtime_put\n");
+
+	r = pm_runtime_put_sync(&dss.pdev->dev);
+<<<<<<< HEAD
+	WARN_ON(r < 0);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* DEBUGFS */
 #if defined(CONFIG_DEBUG_FS) && defined(CONFIG_OMAP2_DSS_DEBUG_SUPPORT)
 void dss_debug_dump_clocks(struct seq_file *s)
 {
+<<<<<<< HEAD
 	core_dump_clocks(s);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(r < 0 && r != -ENOSYS && r != -EBUSY);
+}
+
+/* DEBUGFS */
+#if defined(CONFIG_OMAP2_DSS_DEBUGFS)
+void dss_debug_dump_clocks(struct seq_file *s)
+{
+>>>>>>> refs/remotes/origin/master
 	dss_dump_clocks(s);
 	dispc_dump_clocks(s);
 #ifdef CONFIG_OMAP2_DSS_DSI
@@ -1089,14 +1687,113 @@ void dss_debug_dump_clocks(struct seq_file *s)
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /* DSS HW IP initialisation */
 static int omap_dsshw_probe(struct platform_device *pdev)
 {
+=======
+/* DSS HW IP initialisation */
+static int omap_dsshw_probe(struct platform_device *pdev)
+{
+	struct resource *dss_mem;
+	u32 rev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct dss_features omap24xx_dss_feats __initconst = {
+	.fck_div_max		=	16,
+	.dss_fck_multiplier	=	2,
+	.clk_name		=	NULL,
+	.dpi_select_source	=	&dss_dpi_select_source_omap2_omap3,
+};
+
+static const struct dss_features omap34xx_dss_feats __initconst = {
+	.fck_div_max		=	16,
+	.dss_fck_multiplier	=	2,
+	.clk_name		=	"dpll4_m4_ck",
+	.dpi_select_source	=	&dss_dpi_select_source_omap2_omap3,
+};
+
+static const struct dss_features omap3630_dss_feats __initconst = {
+	.fck_div_max		=	32,
+	.dss_fck_multiplier	=	1,
+	.clk_name		=	"dpll4_m4_ck",
+	.dpi_select_source	=	&dss_dpi_select_source_omap2_omap3,
+};
+
+static const struct dss_features omap44xx_dss_feats __initconst = {
+	.fck_div_max		=	32,
+	.dss_fck_multiplier	=	1,
+	.clk_name		=	"dpll_per_m5x2_ck",
+	.dpi_select_source	=	&dss_dpi_select_source_omap4,
+};
+
+static const struct dss_features omap54xx_dss_feats __initconst = {
+	.fck_div_max		=	64,
+	.dss_fck_multiplier	=	1,
+	.clk_name		=	"dpll_per_h12x2_ck",
+	.dpi_select_source	=	&dss_dpi_select_source_omap5,
+};
+
+static int __init dss_init_features(struct platform_device *pdev)
+{
+	const struct dss_features *src;
+	struct dss_features *dst;
+
+	dst = devm_kzalloc(&pdev->dev, sizeof(*dst), GFP_KERNEL);
+	if (!dst) {
+		dev_err(&pdev->dev, "Failed to allocate local DSS Features\n");
+		return -ENOMEM;
+	}
+
+	switch (omapdss_get_version()) {
+	case OMAPDSS_VER_OMAP24xx:
+		src = &omap24xx_dss_feats;
+		break;
+
+	case OMAPDSS_VER_OMAP34xx_ES1:
+	case OMAPDSS_VER_OMAP34xx_ES3:
+	case OMAPDSS_VER_AM35xx:
+		src = &omap34xx_dss_feats;
+		break;
+
+	case OMAPDSS_VER_OMAP3630:
+		src = &omap3630_dss_feats;
+		break;
+
+	case OMAPDSS_VER_OMAP4430_ES1:
+	case OMAPDSS_VER_OMAP4430_ES2:
+	case OMAPDSS_VER_OMAP4:
+		src = &omap44xx_dss_feats;
+		break;
+
+	case OMAPDSS_VER_OMAP5:
+		src = &omap54xx_dss_feats;
+		break;
+
+	default:
+		return -ENODEV;
+	}
+
+	memcpy(dst, src, sizeof(*dst));
+	dss.feat = dst;
+
+	return 0;
+}
+
+/* DSS HW IP initialisation */
+static int __init omap_dsshw_probe(struct platform_device *pdev)
+{
+	struct resource *dss_mem;
+	u32 rev;
+>>>>>>> refs/remotes/origin/master
 	int r;
 
 	dss.pdev = pdev;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r = dss_get_clocks();
 	if (r)
 		goto err_clocks;
@@ -1111,6 +1808,68 @@ static int omap_dsshw_probe(struct platform_device *pdev)
 		DSSERR("Failed to initialize DSS\n");
 		goto err_dss;
 	}
+=======
+=======
+	r = dss_init_features(dss.pdev);
+	if (r)
+		return r;
+
+>>>>>>> refs/remotes/origin/master
+	dss_mem = platform_get_resource(dss.pdev, IORESOURCE_MEM, 0);
+	if (!dss_mem) {
+		DSSERR("can't get IORESOURCE_MEM DSS\n");
+		return -EINVAL;
+	}
+
+	dss.base = devm_ioremap(&pdev->dev, dss_mem->start,
+				resource_size(dss_mem));
+	if (!dss.base) {
+		DSSERR("can't ioremap DSS\n");
+		return -ENOMEM;
+	}
+
+	r = dss_get_clocks();
+	if (r)
+		return r;
+
+<<<<<<< HEAD
+=======
+	r = dss_setup_default_clock();
+	if (r)
+		goto err_setup_clocks;
+
+>>>>>>> refs/remotes/origin/master
+	pm_runtime_enable(&pdev->dev);
+
+	r = dss_runtime_get();
+	if (r)
+		goto err_runtime_get;
+
+<<<<<<< HEAD
+	/* Select DPLL */
+	REG_FLD_MOD(DSS_CONTROL, 0, 0, 0);
+
+=======
+	dss.dss_clk_rate = clk_get_rate(dss.dss_clk);
+
+	/* Select DPLL */
+	REG_FLD_MOD(DSS_CONTROL, 0, 0, 0);
+
+	dss_select_dispc_clk_source(OMAP_DSS_CLK_SRC_FCK);
+
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_OMAP2_DSS_VENC
+	REG_FLD_MOD(DSS_CONTROL, 1, 4, 4);	/* venc dac demen */
+	REG_FLD_MOD(DSS_CONTROL, 1, 3, 3);	/* venc clock 4x enable */
+	REG_FLD_MOD(DSS_CONTROL, 0, 2, 2);	/* venc clock mode = normal */
+#endif
+	dss.dsi_clk_source[0] = OMAP_DSS_CLK_SRC_FCK;
+	dss.dsi_clk_source[1] = OMAP_DSS_CLK_SRC_FCK;
+	dss.dispc_clk_source = OMAP_DSS_CLK_SRC_FCK;
+	dss.lcd_clk_source[0] = OMAP_DSS_CLK_SRC_FCK;
+	dss.lcd_clk_source[1] = OMAP_DSS_CLK_SRC_FCK;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	r = dpi_init();
 	if (r) {
@@ -1124,21 +1883,42 @@ static int omap_dsshw_probe(struct platform_device *pdev)
 		goto err_sdi;
 	}
 
+<<<<<<< HEAD
 	dss_clk_disable_all_no_ctx();
+=======
+=======
+
+>>>>>>> refs/remotes/origin/master
+	rev = dss_read_reg(DSS_REVISION);
+	printk(KERN_INFO "OMAP DSS rev %d.%d\n",
+			FLD_GET(rev, 7, 4), FLD_GET(rev, 3, 0));
+
+	dss_runtime_put();
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 err_sdi:
 	dpi_exit();
 err_dpi:
+<<<<<<< HEAD
 	dss_exit();
 err_dss:
 	dss_clk_disable_all_no_ctx();
 	dss_put_clocks();
 err_clocks:
+=======
+	dss_runtime_put();
+err_runtime_get:
+	pm_runtime_disable(&pdev->dev);
+	dss_put_clocks();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return r;
 }
 
 static int omap_dsshw_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 
 	dss_exit();
 
@@ -1154,21 +1934,107 @@ static int omap_dsshw_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+	dpi_exit();
+	sdi_exit();
+
+=======
+	dss_debugfs_create_file("dss", dss_dump_regs);
+
+	return 0;
+
+err_runtime_get:
+	pm_runtime_disable(&pdev->dev);
+err_setup_clocks:
+	dss_put_clocks();
+	return r;
+}
+
+static int __exit omap_dsshw_remove(struct platform_device *pdev)
+{
+>>>>>>> refs/remotes/origin/master
+	pm_runtime_disable(&pdev->dev);
+
+	dss_put_clocks();
+
+	return 0;
+}
+
+static int dss_runtime_suspend(struct device *dev)
+{
+	dss_save_context();
+<<<<<<< HEAD
+=======
+	dss_set_min_bus_tput(dev, 0);
+>>>>>>> refs/remotes/origin/master
+	return 0;
+}
+
+static int dss_runtime_resume(struct device *dev)
+{
+<<<<<<< HEAD
+=======
+	int r;
+	/*
+	 * Set an arbitrarily high tput request to ensure OPP100.
+	 * What we should really do is to make a request to stay in OPP100,
+	 * without any tput requirements, but that is not currently possible
+	 * via the PM layer.
+	 */
+
+	r = dss_set_min_bus_tput(dev, 1000000000);
+	if (r)
+		return r;
+
+>>>>>>> refs/remotes/origin/master
+	dss_restore_context();
+	return 0;
+}
+
+static const struct dev_pm_ops dss_pm_ops = {
+	.runtime_suspend = dss_runtime_suspend,
+	.runtime_resume = dss_runtime_resume,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver omap_dsshw_driver = {
 	.probe          = omap_dsshw_probe,
 	.remove         = omap_dsshw_remove,
 	.driver         = {
 		.name   = "omapdss_dss",
 		.owner  = THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.pm	= &dss_pm_ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
 int dss_init_platform_driver(void)
 {
 	return platform_driver_register(&omap_dsshw_driver);
+=======
+static struct platform_driver omap_dsshw_driver = {
+	.remove         = __exit_p(omap_dsshw_remove),
+	.driver         = {
+		.name   = "omapdss_dss",
+		.owner  = THIS_MODULE,
+		.pm	= &dss_pm_ops,
+	},
+};
+
+int __init dss_init_platform_driver(void)
+{
+	return platform_driver_probe(&omap_dsshw_driver, omap_dsshw_probe);
+>>>>>>> refs/remotes/origin/master
 }
 
 void dss_uninit_platform_driver(void)
 {
+<<<<<<< HEAD
 	return platform_driver_unregister(&omap_dsshw_driver);
+=======
+	platform_driver_unregister(&omap_dsshw_driver);
+>>>>>>> refs/remotes/origin/master
 }

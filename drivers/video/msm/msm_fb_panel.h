@@ -82,6 +82,14 @@ struct lcdc_panel_info {
 	uint32 xres_pad;
 	/* Pad height */
 	uint32 yres_pad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	boolean is_sync_active_high;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	boolean is_sync_active_high;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct mddi_panel_info {
@@ -137,6 +145,26 @@ struct mipi_panel_info {
 	char force_clk_lane_hs;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+enum lvds_mode {
+	LVDS_SINGLE_CHANNEL_MODE,
+	LVDS_DUAL_CHANNEL_MODE,
+};
+
+struct lvds_panel_info {
+	enum lvds_mode channel_mode;
+	/* Channel swap in dual mode */
+	char channel_swap;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct msm_panel_info {
 	__u32 xres;
 	__u32 yres;
@@ -162,6 +190,14 @@ struct msm_panel_info {
 	struct lcd_panel_info lcd;
 	struct lcdc_panel_info lcdc;
 	struct mipi_panel_info mipi;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct lvds_panel_info lvds;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct lvds_panel_info lvds;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define MSM_FB_SINGLE_MODE_PANEL(pinfo)		\

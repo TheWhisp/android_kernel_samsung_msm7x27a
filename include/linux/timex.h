@@ -53,6 +53,7 @@
 #ifndef _LINUX_TIMEX_H
 #define _LINUX_TIMEX_H
 
+<<<<<<< HEAD
 #include <linux/time.h>
 
 #define NTP_API		4	/* NTP API version */
@@ -167,12 +168,36 @@ struct timex {
 #define TIME_BAD	TIME_ERROR /* bw compat */
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/timex.h>
+
+#define ADJ_ADJTIME		0x8000	/* switch between adjtime/adjtimex modes */
+#define ADJ_OFFSET_SINGLESHOT	0x0001	/* old-fashioned adjtime */
+#define ADJ_OFFSET_READONLY	0x2000	/* read-only adjtime */
+>>>>>>> refs/remotes/origin/master
 #include <linux/compiler.h>
 #include <linux/types.h>
 #include <linux/param.h>
 
 #include <asm/timex.h>
 
+<<<<<<< HEAD
+=======
+#ifndef random_get_entropy
+/*
+ * The random_get_entropy() function is used by the /dev/random driver
+ * in order to extract entropy via the relative unpredictability of
+ * when an interrupt takes places versus a high speed, fine-grained
+ * timing source or cycle counter.  Since it will be occurred on every
+ * single interrupt, it must have a very low cost/overhead.
+ *
+ * By default we use get_cycles() for this purpose, but individual
+ * architectures may override this in their asm/timex.h header file.
+ */
+#define random_get_entropy()	get_cycles()
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * SHIFT_PLL is used as a dampening factor to define how much we
  * adjust the frequency correction for a given offset in PLL mode.
@@ -232,8 +257,10 @@ struct timex {
  * estimated error = NTP dispersion.
  */
 extern unsigned long tick_usec;		/* USER_HZ period (usec) */
+<<<<<<< HEAD
 extern unsigned long tick_nsec;		/* ACTHZ          period (nsec) */
 
+<<<<<<< HEAD
 /*
  * phase-lock loop variables
  */
@@ -251,6 +278,15 @@ static inline int ntp_synced(void)
 	return !(time_status & STA_UNSYNC);
 }
 
+=======
+extern void ntp_init(void);
+extern void ntp_clear(void);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern unsigned long tick_nsec;		/* SHIFTED_HZ period (nsec) */
+
+>>>>>>> refs/remotes/origin/master
 /* Required to safely shift negative values */
 #define shift_right(x, s) ({	\
 	__typeof__(x) __x = (x);	\
@@ -263,19 +299,35 @@ static inline int ntp_synced(void)
 #define NTP_INTERVAL_FREQ  (HZ)
 #define NTP_INTERVAL_LENGTH (NSEC_PER_SEC/NTP_INTERVAL_FREQ)
 
+<<<<<<< HEAD
 /* Returns how long ticks are at present, in ns / 2^NTP_SCALE_SHIFT. */
+<<<<<<< HEAD
 extern u64 tick_length;
 
 extern int second_overflow(unsigned long secs);
 extern void update_ntp_one_tick(void);
+=======
+extern u64 ntp_tick_length(void);
+
+extern int second_overflow(unsigned long secs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int do_adjtimex(struct timex *);
 extern void hardpps(const struct timespec *, const struct timespec *);
 
 int read_current_timer(unsigned long *timer_val);
+<<<<<<< HEAD
+=======
+void ntp_notify_cmos_timer(void);
+>>>>>>> refs/remotes/origin/master
 
 /* The clock frequency of the i8253/i8254 PIT */
 #define PIT_TICK_RATE 1193182ul
 
+<<<<<<< HEAD
 #endif /* KERNEL */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* LINUX_TIMEX_H */

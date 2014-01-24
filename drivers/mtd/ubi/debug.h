@@ -21,6 +21,8 @@
 #ifndef __UBI_DEBUG_H__
 #define __UBI_DEBUG_H__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct ubi_ec_hdr;
 struct ubi_vid_hdr;
 struct ubi_volume;
@@ -29,11 +31,20 @@ struct ubi_scan_volume;
 struct ubi_scan_leb;
 struct ubi_mkvol_req;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_MTD_UBI_DEBUG
+=======
+void ubi_dump_flash(struct ubi_device *ubi, int pnum, int offset, int len);
+void ubi_dump_ec_hdr(const struct ubi_ec_hdr *ec_hdr);
+void ubi_dump_vid_hdr(const struct ubi_vid_hdr *vid_hdr);
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/random.h>
 
 #define ubi_assert(expr)  do {                                               \
 	if (unlikely(!(expr))) {                                             \
+<<<<<<< HEAD
 		printk(KERN_CRIT "UBI assert failed in %s at %u (pid %d)\n", \
 		       __func__, __LINE__, current->pid);                    \
 		ubi_dbg_dump_stack();                                        \
@@ -54,6 +65,20 @@ struct ubi_mkvol_req;
 #define dbg_msg(fmt, ...)                                    \
 	printk(KERN_DEBUG "UBI DBG (pid %d): %s: " fmt "\n", \
 	       current->pid, __func__, ##__VA_ARGS__)
+=======
+		pr_crit("UBI assert failed in %s at %u (pid %d)\n",          \
+		       __func__, __LINE__, current->pid);                    \
+		dump_stack();                                                \
+	}                                                                    \
+} while (0)
+
+#define ubi_dbg_print_hex_dump(l, ps, pt, r, g, b, len, a)                   \
+		print_hex_dump(l, ps, pt, r, g, b, len, a)
+
+#define ubi_dbg_msg(type, fmt, ...) \
+	pr_debug("UBI DBG " type " (pid %d): " fmt "\n", current->pid,       \
+		 ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 
 /* General debugging messages */
 #define dbg_gen(fmt, ...) ubi_dbg_msg("gen", fmt, ##__VA_ARGS__)
@@ -66,6 +91,7 @@ struct ubi_mkvol_req;
 /* Initialization and build messages */
 #define dbg_bld(fmt, ...) ubi_dbg_msg("bld", fmt, ##__VA_ARGS__)
 
+<<<<<<< HEAD
 void ubi_dbg_dump_ec_hdr(const struct ubi_ec_hdr *ec_hdr);
 void ubi_dbg_dump_vid_hdr(const struct ubi_vid_hdr *vid_hdr);
 void ubi_dbg_dump_vol_info(const struct ubi_volume *vol);
@@ -74,6 +100,7 @@ void ubi_dbg_dump_sv(const struct ubi_scan_volume *sv);
 void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb, int type);
 void ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req);
 void ubi_dbg_dump_flash(struct ubi_device *ubi, int pnum, int offset, int len);
+<<<<<<< HEAD
 
 extern unsigned int ubi_chk_flags;
 
@@ -107,53 +134,186 @@ enum {
 	UBI_TST_EMULATE_BITFLIPS       = 0x2,
 	UBI_TST_EMULATE_WRITE_FAILURES = 0x4,
 	UBI_TST_EMULATE_ERASE_FAILURES = 0x8,
+=======
+int ubi_dbg_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len);
+int ubi_dbg_check_write(struct ubi_device *ubi, const void *buf, int pnum,
+			int offset, int len);
+int ubi_debugging_init_dev(struct ubi_device *ubi);
+void ubi_debugging_exit_dev(struct ubi_device *ubi);
+=======
+void ubi_dump_vol_info(const struct ubi_volume *vol);
+void ubi_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx);
+void ubi_dump_av(const struct ubi_ainf_volume *av);
+void ubi_dump_aeb(const struct ubi_ainf_peb *aeb, int type);
+void ubi_dump_mkvol_req(const struct ubi_mkvol_req *req);
+int ubi_self_check_all_ff(struct ubi_device *ubi, int pnum, int offset,
+			  int len);
+>>>>>>> refs/remotes/origin/master
+int ubi_debugfs_init(void);
+void ubi_debugfs_exit(void);
+int ubi_debugfs_init_dev(struct ubi_device *ubi);
+void ubi_debugfs_exit_dev(struct ubi_device *ubi);
+
+<<<<<<< HEAD
+/*
+ * The UBI debugfs directory name pattern and maximum name length (3 for "ubi"
+ * + 2 for the number plus 1 for the trailing zero byte.
+ */
+#define UBI_DFS_DIR_NAME "ubi%d"
+#define UBI_DFS_DIR_LEN  (3 + 2 + 1)
+
+/**
+ * struct ubi_debug_info - debugging information for an UBI device.
+ *
+ * @chk_gen: if UBI general extra checks are enabled
+ * @chk_io: if UBI I/O extra checks are enabled
+ * @disable_bgt: disable the background task for testing purposes
+ * @emulate_bitflips: emulate bit-flips for testing purposes
+ * @emulate_io_failures: emulate write/erase failures for testing purposes
+ * @dfs_dir_name: name of debugfs directory containing files of this UBI device
+ * @dfs_dir: direntry object of the UBI device debugfs directory
+ * @dfs_chk_gen: debugfs knob to enable UBI general extra checks
+ * @dfs_chk_io: debugfs knob to enable UBI I/O extra checks
+ * @dfs_disable_bgt: debugfs knob to disable the background task
+ * @dfs_emulate_bitflips: debugfs knob to emulate bit-flips
+ * @dfs_emulate_io_failures: debugfs knob to emulate write/erase failures
+ */
+struct ubi_debug_info {
+	unsigned int chk_gen:1;
+	unsigned int chk_io:1;
+	unsigned int disable_bgt:1;
+	unsigned int emulate_bitflips:1;
+	unsigned int emulate_io_failures:1;
+	char dfs_dir_name[UBI_DFS_DIR_LEN + 1];
+	struct dentry *dfs_dir;
+	struct dentry *dfs_chk_gen;
+	struct dentry *dfs_chk_io;
+	struct dentry *dfs_disable_bgt;
+	struct dentry *dfs_emulate_bitflips;
+	struct dentry *dfs_emulate_io_failures;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
  * ubi_dbg_is_bgt_disabled - if the background thread is disabled.
+<<<<<<< HEAD
+=======
+ * @ubi: UBI device description object
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ * ubi_dbg_is_bgt_disabled - if the background thread is disabled.
+ * @ubi: UBI device description object
+>>>>>>> refs/remotes/origin/master
  *
  * Returns non-zero if the UBI background thread is disabled for testing
  * purposes.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int ubi_dbg_is_bgt_disabled(void)
 {
 	return ubi_tst_flags & UBI_TST_DISABLE_BGT;
+=======
+static inline int ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)
+{
+	return ubi->dbg->disable_bgt;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)
+{
+	return ubi->dbg.disable_bgt;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * ubi_dbg_is_bitflip - if it is time to emulate a bit-flip.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Returns non-zero if a bit-flip should be emulated, otherwise returns zero.
  */
 static inline int ubi_dbg_is_bitflip(void)
 {
 	if (ubi_tst_flags & UBI_TST_EMULATE_BITFLIPS)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @ubi: UBI device description object
+ *
+ * Returns non-zero if a bit-flip should be emulated, otherwise returns zero.
+ */
+static inline int ubi_dbg_is_bitflip(const struct ubi_device *ubi)
+{
+<<<<<<< HEAD
+	if (ubi->dbg->emulate_bitflips)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return !(random32() % 200);
+=======
+	if (ubi->dbg.emulate_bitflips)
+		return !(prandom_u32() % 200);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /**
  * ubi_dbg_is_write_failure - if it is time to emulate a write failure.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @ubi: UBI device description object
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @ubi: UBI device description object
+>>>>>>> refs/remotes/origin/master
  *
  * Returns non-zero if a write failure should be emulated, otherwise returns
  * zero.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int ubi_dbg_is_write_failure(void)
 {
 	if (ubi_tst_flags & UBI_TST_EMULATE_WRITE_FAILURES)
+=======
+static inline int ubi_dbg_is_write_failure(const struct ubi_device *ubi)
+{
+	if (ubi->dbg->emulate_io_failures)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return !(random32() % 500);
+=======
+static inline int ubi_dbg_is_write_failure(const struct ubi_device *ubi)
+{
+	if (ubi->dbg.emulate_io_failures)
+		return !(prandom_u32() % 500);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /**
  * ubi_dbg_is_erase_failure - if its time to emulate an erase failure.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @ubi: UBI device description object
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @ubi: UBI device description object
+>>>>>>> refs/remotes/origin/master
  *
  * Returns non-zero if an erase failure should be emulated, otherwise returns
  * zero.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int ubi_dbg_is_erase_failure(void)
 {
 	if (ubi_tst_flags & UBI_TST_EMULATE_ERASE_FAILURES)
+=======
+static inline int ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
+{
+	if (ubi->dbg->emulate_io_failures)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return !(random32() % 400);
 	return 0;
 }
@@ -175,7 +335,11 @@ static inline int ubi_dbg_is_erase_failure(void)
 
 #define ubi_dbg_msg(fmt, ...) do {                                           \
 	if (0)                                                               \
+<<<<<<< HEAD
 		pr_debug(fmt "\n", ##__VA_ARGS__);                           \
+=======
+		printk(KERN_DEBUG fmt "\n", ##__VA_ARGS__);                  \
+>>>>>>> refs/remotes/origin/cm-10.0
 } while (0)
 
 #define dbg_msg(fmt, ...)  ubi_dbg_msg(fmt, ##__VA_ARGS__)
@@ -204,11 +368,14 @@ static inline void ubi_dbg_dump_flash(struct ubi_device *ubi,
 static inline void
 ubi_dbg_print_hex_dump(const char *l, const char *ps, int pt, int r,
 		       int g, const void *b, size_t len, bool a)     { return; }
+<<<<<<< HEAD
 
 static inline int ubi_dbg_is_bgt_disabled(void)                    { return 0; }
 static inline int ubi_dbg_is_bitflip(void)                         { return 0; }
 static inline int ubi_dbg_is_write_failure(void)                   { return 0; }
 static inline int ubi_dbg_is_erase_failure(void)                   { return 0; }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int ubi_dbg_check_all_ff(struct ubi_device *ubi,
 				       int pnum, int offset,
 				       int len)                    { return 0; }
@@ -216,5 +383,41 @@ static inline int ubi_dbg_check_write(struct ubi_device *ubi,
 				      const void *buf, int pnum,
 				      int offset, int len)         { return 0; }
 
+<<<<<<< HEAD
+=======
+static inline int ubi_debugging_init_dev(struct ubi_device *ubi)   { return 0; }
+static inline void ubi_debugging_exit_dev(struct ubi_device *ubi)  { return; }
+static inline int ubi_debugfs_init(void)                           { return 0; }
+static inline void ubi_debugfs_exit(void)                          { return; }
+static inline int ubi_debugfs_init_dev(struct ubi_device *ubi)     { return 0; }
+static inline void ubi_debugfs_exit_dev(struct ubi_device *ubi)    { return; }
+
+static inline int
+ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)              { return 0; }
+static inline int ubi_dbg_is_bitflip(const struct ubi_device *ubi) { return 0; }
+static inline int
+ubi_dbg_is_write_failure(const struct ubi_device *ubi)             { return 0; }
+static inline int
+ubi_dbg_is_erase_failure(const struct ubi_device *ubi)             { return 0; }
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !CONFIG_MTD_UBI_DEBUG */
+=======
+static inline int ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
+{
+	if (ubi->dbg.emulate_io_failures)
+		return !(prandom_u32() % 400);
+	return 0;
+}
+
+static inline int ubi_dbg_chk_io(const struct ubi_device *ubi)
+{
+	return ubi->dbg.chk_io;
+}
+
+static inline int ubi_dbg_chk_gen(const struct ubi_device *ubi)
+{
+	return ubi->dbg.chk_gen;
+}
+>>>>>>> refs/remotes/origin/master
 #endif /* !__UBI_DEBUG_H__ */

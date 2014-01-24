@@ -20,7 +20,13 @@
 #include <asm/page.h>
 #include <asm/pgalloc.h>
 #include <asm/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #undef DEBUG
 
@@ -28,9 +34,15 @@
 
 /*
  * For 040/060 we can use the virtual memory area like other architectures,
+<<<<<<< HEAD
  * but for 020/030 we want to use early termination page descriptor and we
  * can't mix this with normal page descriptors, so we have to copy that code
  * (mm/vmalloc.c) and return appriorate aligned addresses.
+=======
+ * but for 020/030 we want to use early termination page descriptors and we
+ * can't mix this with normal page descriptors, so we have to copy that code
+ * (mm/vmalloc.c) and return appropriately aligned addresses.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifdef CPU_M68040_OR_M68060_ONLY
@@ -171,7 +183,17 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
 			break;
 		}
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		physaddr |= (_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_DIRTY);
+=======
+		physaddr |= (_PAGE_PRESENT | _PAGE_ACCESSED |
+			     _PAGE_DIRTY | _PAGE_READWRITE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		physaddr |= (_PAGE_PRESENT | _PAGE_ACCESSED |
+			     _PAGE_DIRTY | _PAGE_READWRITE);
+>>>>>>> refs/remotes/origin/master
 		switch (cacheflag) {
 		case IOMAP_NOCACHE_SER:
 		case IOMAP_NOCACHE_NONSER:
@@ -224,7 +246,11 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
 EXPORT_SYMBOL(__ioremap);
 
 /*
+<<<<<<< HEAD
  * Unmap a ioremap()ed region again
+=======
+ * Unmap an ioremap()ed region again
+>>>>>>> refs/remotes/origin/master
  */
 void iounmap(void __iomem *addr)
 {
@@ -241,8 +267,13 @@ EXPORT_SYMBOL(iounmap);
 
 /*
  * __iounmap unmaps nearly everything, so be careful
+<<<<<<< HEAD
  * it doesn't free currently pointer/page tables anymore but it
  * wans't used anyway and might be added later.
+=======
+ * Currently it doesn't free pointer/page tables anymore but this
+ * wasn't used anyway and might be added later.
+>>>>>>> refs/remotes/origin/master
  */
 void __iounmap(void *addr, unsigned long size)
 {

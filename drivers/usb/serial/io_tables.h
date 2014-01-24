@@ -95,21 +95,33 @@ static const struct usb_device_id id_table_combined[] = {
 
 MODULE_DEVICE_TABLE(usb, id_table_combined);
 
+<<<<<<< HEAD
 static struct usb_driver io_driver = {
 	.name =		"io_edgeport",
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_serial_driver edgeport_2port_device = {
 	.driver = {
 		.owner		= THIS_MODULE,
 		.name		= "edgeport_2",
 	},
 	.description		= "Edgeport 2 port adapter",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver		= &io_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table		= edgeport_2port_id_table,
 	.num_ports		= 2,
 	.open			= edge_open,
@@ -119,11 +131,21 @@ static struct usb_serial_driver edgeport_2port_device = {
 	.attach			= edge_startup,
 	.disconnect		= edge_disconnect,
 	.release		= edge_release,
+<<<<<<< HEAD
+=======
+	.port_probe		= edge_port_probe,
+	.port_remove		= edge_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.ioctl			= edge_ioctl,
 	.set_termios		= edge_set_termios,
 	.tiocmget		= edge_tiocmget,
 	.tiocmset		= edge_tiocmset,
+<<<<<<< HEAD
 	.get_icount		= edge_get_icount,
+=======
+	.tiocmiwait		= usb_serial_generic_tiocmiwait,
+	.get_icount		= usb_serial_generic_get_icount,
+>>>>>>> refs/remotes/origin/master
 	.write			= edge_write,
 	.write_room		= edge_write_room,
 	.chars_in_buffer	= edge_chars_in_buffer,
@@ -139,7 +161,13 @@ static struct usb_serial_driver edgeport_4port_device = {
 		.name		= "edgeport_4",
 	},
 	.description		= "Edgeport 4 port adapter",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver		= &io_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table		= edgeport_4port_id_table,
 	.num_ports		= 4,
 	.open			= edge_open,
@@ -149,11 +177,21 @@ static struct usb_serial_driver edgeport_4port_device = {
 	.attach			= edge_startup,
 	.disconnect		= edge_disconnect,
 	.release		= edge_release,
+<<<<<<< HEAD
+=======
+	.port_probe		= edge_port_probe,
+	.port_remove		= edge_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.ioctl			= edge_ioctl,
 	.set_termios		= edge_set_termios,
 	.tiocmget		= edge_tiocmget,
 	.tiocmset		= edge_tiocmset,
+<<<<<<< HEAD
 	.get_icount		= edge_get_icount,
+=======
+	.tiocmiwait		= usb_serial_generic_tiocmiwait,
+	.get_icount		= usb_serial_generic_get_icount,
+>>>>>>> refs/remotes/origin/master
 	.write			= edge_write,
 	.write_room		= edge_write_room,
 	.chars_in_buffer	= edge_chars_in_buffer,
@@ -169,7 +207,13 @@ static struct usb_serial_driver edgeport_8port_device = {
 		.name		= "edgeport_8",
 	},
 	.description		= "Edgeport 8 port adapter",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver		= &io_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table		= edgeport_8port_id_table,
 	.num_ports		= 8,
 	.open			= edge_open,
@@ -179,11 +223,21 @@ static struct usb_serial_driver edgeport_8port_device = {
 	.attach			= edge_startup,
 	.disconnect		= edge_disconnect,
 	.release		= edge_release,
+<<<<<<< HEAD
+=======
+	.port_probe		= edge_port_probe,
+	.port_remove		= edge_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.ioctl			= edge_ioctl,
 	.set_termios		= edge_set_termios,
 	.tiocmget		= edge_tiocmget,
 	.tiocmset		= edge_tiocmset,
+<<<<<<< HEAD
 	.get_icount		= edge_get_icount,
+=======
+	.tiocmiwait		= usb_serial_generic_tiocmiwait,
+	.get_icount		= usb_serial_generic_get_icount,
+>>>>>>> refs/remotes/origin/master
 	.write			= edge_write,
 	.write_room		= edge_write_room,
 	.chars_in_buffer	= edge_chars_in_buffer,
@@ -199,7 +253,13 @@ static struct usb_serial_driver epic_device = {
 		.name		= "epic",
 	},
 	.description		= "EPiC device",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver		= &io_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table		= Epic_port_id_table,
 	.num_ports		= 1,
 	.open			= edge_open,
@@ -209,11 +269,21 @@ static struct usb_serial_driver epic_device = {
 	.attach			= edge_startup,
 	.disconnect		= edge_disconnect,
 	.release		= edge_release,
+<<<<<<< HEAD
+=======
+	.port_probe		= edge_port_probe,
+	.port_remove		= edge_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.ioctl			= edge_ioctl,
 	.set_termios		= edge_set_termios,
 	.tiocmget		= edge_tiocmget,
 	.tiocmset		= edge_tiocmset,
+<<<<<<< HEAD
 	.get_icount		= edge_get_icount,
+=======
+	.tiocmiwait		= usb_serial_generic_tiocmiwait,
+	.get_icount		= usb_serial_generic_get_icount,
+>>>>>>> refs/remotes/origin/master
 	.write			= edge_write,
 	.write_room		= edge_write_room,
 	.chars_in_buffer	= edge_chars_in_buffer,
@@ -223,5 +293,19 @@ static struct usb_serial_driver epic_device = {
 	.write_bulk_callback	= edge_bulk_out_data_callback,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct usb_serial_driver * const serial_drivers[] = {
+	&edgeport_2port_device, &edgeport_4port_device,
+	&edgeport_8port_device, &epic_device, NULL
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 

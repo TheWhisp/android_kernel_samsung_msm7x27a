@@ -24,7 +24,15 @@
  *
  *
  ***********************************************************************/
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/slab.h>
 
@@ -54,7 +62,11 @@ static pci_ers_result_t jsm_io_error_detected(struct pci_dev *pdev,
 static pci_ers_result_t jsm_io_slot_reset(struct pci_dev *pdev);
 static void jsm_io_resume(struct pci_dev *pdev);
 
+<<<<<<< HEAD
 static struct pci_error_handlers jsm_err_handler = {
+=======
+static const struct pci_error_handlers jsm_err_handler = {
+>>>>>>> refs/remotes/origin/master
 	.error_detected = jsm_io_error_detected,
 	.slot_reset = jsm_io_slot_reset,
 	.resume = jsm_io_resume,
@@ -64,7 +76,11 @@ int jsm_debug;
 module_param(jsm_debug, int, 0);
 MODULE_PARM_DESC(jsm_debug, "Driver debugging level");
 
+<<<<<<< HEAD
 static int __devinit jsm_probe_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+=======
+static int jsm_probe_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc = 0;
 	struct jsm_board *brd;
@@ -107,8 +123,12 @@ static int __devinit jsm_probe_one(struct pci_dev *pdev, const struct pci_device
 
 	brd->irq = pdev->irq;
 
+<<<<<<< HEAD
 	jsm_printk(INIT, INFO, &brd->pci_dev,
 		"jsm_found_board - NEO adapter\n");
+=======
+	jsm_dbg(INIT, &brd->pci_dev, "jsm_found_board - NEO adapter\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* get the PCI Base Address Registers */
 	brd->membase	= pci_resource_start(pdev, 0);
@@ -160,6 +180,8 @@ static int __devinit jsm_probe_one(struct pci_dev *pdev, const struct pci_device
 	dev_info(&pdev->dev, "board %d: Digi Neo (rev %d), irq %d\n",
 			adapter_count, brd->rev, brd->irq);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * allocate flip buffer for board.
 	 *
@@ -175,12 +197,22 @@ static int __devinit jsm_probe_one(struct pci_dev *pdev, const struct pci_device
 		goto out_free_uart;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_set_drvdata(pdev, brd);
 	pci_save_state(pdev);
 
 	return 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
  out_free_uart:
 	jsm_remove_uart_port(brd);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  out_free_irq:
 	jsm_remove_uart_port(brd);
 	free_irq(brd->irq, brd);
@@ -196,7 +228,11 @@ static int __devinit jsm_probe_one(struct pci_dev *pdev, const struct pci_device
 	return rc;
 }
 
+<<<<<<< HEAD
 static void __devexit jsm_remove_one(struct pci_dev *pdev)
+=======
+static void jsm_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jsm_board *brd = pci_get_drvdata(pdev);
 	int i = 0;
@@ -217,7 +253,13 @@ static void __devexit jsm_remove_one(struct pci_dev *pdev)
 
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(brd->flipbuf);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(brd);
 }
 
@@ -236,7 +278,11 @@ static struct pci_driver jsm_driver = {
 	.name		= "jsm",
 	.id_table	= jsm_pci_tbl,
 	.probe		= jsm_probe_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(jsm_remove_one),
+=======
+	.remove		= jsm_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.err_handler    = &jsm_err_handler,
 };
 

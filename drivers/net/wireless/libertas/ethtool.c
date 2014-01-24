@@ -1,9 +1,25 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/netdevice.h>
 #include <linux/ethtool.h>
 #include <linux/delay.h>
 
 #include "decl.h"
 #include "cmd.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "mesh.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "mesh.h"
+>>>>>>> refs/remotes/origin/master
 
 
 static void lbs_ethtool_get_drvinfo(struct net_device *dev,
@@ -11,13 +27,33 @@ static void lbs_ethtool_get_drvinfo(struct net_device *dev,
 {
 	struct lbs_private *priv = dev->ml_priv;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snprintf(info->fw_version, 32, "%u.%u.%u.p%u",
+=======
+	snprintf(info->fw_version, sizeof(info->fw_version),
+		"%u.%u.%u.p%u",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snprintf(info->fw_version, sizeof(info->fw_version),
+		"%u.%u.%u.p%u",
+>>>>>>> refs/remotes/origin/master
 		priv->fwrelease >> 24 & 0xff,
 		priv->fwrelease >> 16 & 0xff,
 		priv->fwrelease >>  8 & 0xff,
 		priv->fwrelease       & 0xff);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	strcpy(info->driver, "libertas");
 	strcpy(info->version, lbs_driver_version);
+=======
+	strlcpy(info->driver, "libertas", sizeof(info->driver));
+	strlcpy(info->version, lbs_driver_version, sizeof(info->version));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	strlcpy(info->driver, "libertas", sizeof(info->driver));
+	strlcpy(info->version, lbs_driver_version, sizeof(info->version));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

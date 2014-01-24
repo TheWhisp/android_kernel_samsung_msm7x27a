@@ -16,11 +16,16 @@
 #include <linux/io.h>
 #include <linux/suspend.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/init.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/tlbflush.h>
 #include <asm/mmu_context.h>
 #include <asm/debugreg.h>
 
+<<<<<<< HEAD
 static int init_one_level2_page(struct kimage *image, pgd_t *pgd,
 				unsigned long addr)
 {
@@ -135,6 +140,8 @@ out:
 	return result;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void free_transition_pgtable(struct kimage *image)
 {
 	free_page((unsigned long)image->arch.pud);
@@ -184,6 +191,7 @@ err:
 	return result;
 }
 
+<<<<<<< HEAD
 
 static int init_pgtable(struct kimage *image, unsigned long start_pgtable)
 {
@@ -200,6 +208,64 @@ static int init_pgtable(struct kimage *image, unsigned long start_pgtable)
 	result = init_one_level2_page(image, level4p, image->start);
 	if (result)
 		return result;
+=======
+static void *alloc_pgt_page(void *data)
+{
+	struct kimage *image = (struct kimage *)data;
+	struct page *page;
+	void *p = NULL;
+
+	page = kimage_alloc_control_pages(image, 0);
+	if (page) {
+		p = page_address(page);
+		clear_page(p);
+	}
+
+	return p;
+}
+
+static int init_pgtable(struct kimage *image, unsigned long start_pgtable)
+{
+	struct x86_mapping_info info = {
+		.alloc_pgt_page	= alloc_pgt_page,
+		.context	= image,
+		.pmd_flag	= __PAGE_KERNEL_LARGE_EXEC,
+	};
+	unsigned long mstart, mend;
+	pgd_t *level4p;
+	int result;
+	int i;
+
+	level4p = (pgd_t *)__va(start_pgtable);
+	clear_page(level4p);
+	for (i = 0; i < nr_pfn_mapped; i++) {
+		mstart = pfn_mapped[i].start << PAGE_SHIFT;
+		mend   = pfn_mapped[i].end << PAGE_SHIFT;
+
+		result = kernel_ident_mapping_init(&info,
+						 level4p, mstart, mend);
+		if (result)
+			return result;
+	}
+
+	/*
+	 * segments's mem ranges could be outside 0 ~ max_pfn,
+	 * for example when jump back to original kernel from kexeced kernel.
+	 * or first kernel is booted with user mem map, and second kernel
+	 * could be loaded out of that range.
+	 */
+	for (i = 0; i < image->nr_segments; i++) {
+		mstart = image->segment[i].mem;
+		mend   = mstart + image->segment[i].memsz;
+
+		result = kernel_ident_mapping_init(&info,
+						 level4p, mstart, mend);
+
+		if (result)
+			return result;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return init_transition_pgtable(image, level4p);
 }
 

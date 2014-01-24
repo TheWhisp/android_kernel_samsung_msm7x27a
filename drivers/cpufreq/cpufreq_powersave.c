@@ -1,7 +1,13 @@
 /*
+<<<<<<< HEAD
  *  linux/drivers/cpufreq/cpufreq_powersave.c
  *
  *  Copyright (C) 2002 - 2003 Dominik Brodowski <linux@brodo.de>
+=======
+ * linux/drivers/cpufreq/cpufreq_powersave.c
+ *
+ * Copyright (C) 2002 - 2003 Dominik Brodowski <linux@brodo.de>
+>>>>>>> refs/remotes/origin/master
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -10,10 +16,18 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/cpufreq.h>
 #include <linux/init.h>
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/cpufreq.h>
+#include <linux/init.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 static int cpufreq_governor_powersave(struct cpufreq_policy *policy,
 					unsigned int event)
@@ -46,13 +60,19 @@ static int __init cpufreq_gov_powersave_init(void)
 	return cpufreq_register_governor(&cpufreq_gov_powersave);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __exit cpufreq_gov_powersave_exit(void)
 {
 	cpufreq_unregister_governor(&cpufreq_gov_powersave);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Dominik Brodowski <linux@brodo.de>");
 MODULE_DESCRIPTION("CPUfreq policy governor 'powersave'");
 MODULE_LICENSE("GPL");

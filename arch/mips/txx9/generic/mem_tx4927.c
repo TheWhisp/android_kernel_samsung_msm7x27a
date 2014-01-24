@@ -2,7 +2,11 @@
  * common tx4927 memory interface
  *
  * Author: MontaVista Software, Inc.
+<<<<<<< HEAD
  *         source@mvista.com
+=======
+ *	   source@mvista.com
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2001-2002 MontaVista Software Inc.
  *

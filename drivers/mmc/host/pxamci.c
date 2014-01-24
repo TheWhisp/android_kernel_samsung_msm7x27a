@@ -30,12 +30,22 @@
 #include <linux/regulator/consumer.h>
 #include <linux/gpio.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/of_gpio.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/sizes.h>
 
 #include <mach/hardware.h>
 #include <mach/dma.h>
+<<<<<<< HEAD
 #include <mach/mmc.h>
+=======
+#include <linux/platform_data/mmc-pxamci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "pxamci.h"
 
@@ -80,7 +90,11 @@ struct pxamci_host {
 static inline void pxamci_init_ocr(struct pxamci_host *host)
 {
 #ifdef CONFIG_REGULATOR
+<<<<<<< HEAD
 	host->vcc = regulator_get(mmc_dev(host->mmc), "vmmc");
+=======
+	host->vcc = regulator_get_optional(mmc_dev(host->mmc), "vmmc");
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(host->vcc))
 		host->vcc = NULL;
@@ -125,7 +139,11 @@ static inline int pxamci_set_power(struct pxamci_host *host,
 			       !!on ^ host->pdata->gpio_power_invert);
 	}
 	if (!host->vcc && host->pdata && host->pdata->setpower)
+<<<<<<< HEAD
 		host->pdata->setpower(mmc_dev(host->mmc), vdd);
+=======
+		return host->pdata->setpower(mmc_dev(host->mmc), vdd);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -558,7 +576,15 @@ static void pxamci_dma_irq(int dma, void *devid)
 	if (dcsr & DCSR_ENDINTR) {
 		writel(BUF_PART_FULL, host->base + MMC_PRTBUF);
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: DMA error on channel %d (DCSR=%#x)\n",
+=======
+		pr_err("%s: DMA error on channel %d (DCSR=%#x)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: DMA error on channel %d (DCSR=%#x)\n",
+>>>>>>> refs/remotes/origin/master
 		       mmc_hostname(host->mmc), dma, dcsr);
 		host->data->error = -EIO;
 		pxamci_data_done(host, 0);
@@ -573,6 +599,53 @@ static irqreturn_t pxamci_detect_irq(int irq, void *devid)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id pxa_mmc_dt_ids[] = {
+        { .compatible = "marvell,pxa-mmc" },
+        { }
+};
+
+MODULE_DEVICE_TABLE(of, pxa_mmc_dt_ids);
+
+static int pxamci_of_init(struct platform_device *pdev)
+{
+        struct device_node *np = pdev->dev.of_node;
+        struct pxamci_platform_data *pdata;
+        u32 tmp;
+
+        if (!np)
+                return 0;
+
+        pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+        if (!pdata)
+                return -ENOMEM;
+
+	pdata->gpio_card_detect =
+		of_get_named_gpio(np, "cd-gpios", 0);
+	pdata->gpio_card_ro =
+		of_get_named_gpio(np, "wp-gpios", 0);
+
+	/* pxa-mmc specific */
+	pdata->gpio_power =
+		of_get_named_gpio(np, "pxa-mmc,gpio-power", 0);
+
+	if (of_property_read_u32(np, "pxa-mmc,detect-delay-ms", &tmp) == 0)
+		pdata->detect_delay_ms = tmp;
+
+        pdev->dev.platform_data = pdata;
+
+        return 0;
+}
+#else
+static int pxamci_of_init(struct platform_device *pdev)
+{
+        return 0;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int pxamci_probe(struct platform_device *pdev)
 {
 	struct mmc_host *mmc;
@@ -580,6 +653,13 @@ static int pxamci_probe(struct platform_device *pdev)
 	struct resource *r, *dmarx, *dmatx;
 	int ret, irq, gpio_cd = -1, gpio_ro = -1, gpio_power = -1;
 
+<<<<<<< HEAD
+=======
+	ret = pxamci_of_init(pdev);
+	if (ret)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	irq = platform_get_irq(pdev, 0);
 	if (!r || irq < 0)
@@ -783,8 +863,11 @@ static int pxamci_remove(struct platform_device *pdev)
 	struct mmc_host *mmc = platform_get_drvdata(pdev);
 	int gpio_cd = -1, gpio_ro = -1, gpio_power = -1;
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (mmc) {
 		struct pxamci_host *host = mmc_priv(mmc);
 
@@ -831,6 +914,7 @@ static int pxamci_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int pxamci_suspend(struct device *dev)
 {
@@ -860,18 +944,22 @@ static const struct dev_pm_ops pxamci_pm_ops = {
 };
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver pxamci_driver = {
 	.probe		= pxamci_probe,
 	.remove		= pxamci_remove,
 	.driver		= {
 		.name	= DRIVER_NAME,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 		.pm	= &pxamci_pm_ops,
 #endif
 	},
 };
 
+<<<<<<< HEAD
 static int __init pxamci_init(void)
 {
 	return platform_driver_register(&pxamci_driver);
@@ -884,6 +972,16 @@ static void __exit pxamci_exit(void)
 
 module_init(pxamci_init);
 module_exit(pxamci_exit);
+=======
+module_platform_driver(pxamci_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.of_match_table = of_match_ptr(pxa_mmc_dt_ids),
+	},
+};
+
+module_platform_driver(pxamci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("PXA Multimedia Card Interface Driver");
 MODULE_LICENSE("GPL");

@@ -36,22 +36,98 @@
 #define ATH_BT_CNT_THRESHOLD	       3
 #define ATH_BT_CNT_SCAN_THRESHOLD      15
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Defines the BT AR_BT_COEX_WGHT used */
 enum ath_stomp_type {
 	ATH_BTCOEX_NO_STOMP,
 	ATH_BTCOEX_STOMP_ALL,
 	ATH_BTCOEX_STOMP_LOW,
 	ATH_BTCOEX_STOMP_NONE
+=======
+=======
+#define ATH_BTCOEX_RX_WAIT_TIME       100
+#define ATH_BTCOEX_STOMP_FTP_THRESH   5
+
+#define ATH_BTCOEX_HT20_MAX_TXPOWER   0x14
+#define ATH_BTCOEX_HT40_MAX_TXPOWER   0x10
+
+>>>>>>> refs/remotes/origin/master
+#define AR9300_NUM_BT_WEIGHTS   4
+#define AR9300_NUM_WLAN_WEIGHTS 4
+/* Defines the BT AR_BT_COEX_WGHT used */
+enum ath_stomp_type {
+	ATH_BTCOEX_STOMP_ALL,
+	ATH_BTCOEX_STOMP_LOW,
+	ATH_BTCOEX_STOMP_NONE,
+	ATH_BTCOEX_STOMP_LOW_FTP,
+<<<<<<< HEAD
+	ATH_BTCOEX_STOMP_MAX
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ATH_BTCOEX_STOMP_AUDIO,
+	ATH_BTCOEX_STOMP_MAX
+>>>>>>> refs/remotes/origin/master
 };
 
 enum ath_btcoex_scheme {
 	ATH_BTCOEX_CFG_NONE,
 	ATH_BTCOEX_CFG_2WIRE,
 	ATH_BTCOEX_CFG_3WIRE,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ATH_BTCOEX_CFG_MCI,
+=======
+>>>>>>> refs/remotes/origin/master
+};
+
+struct ath9k_hw_mci {
+	u32 raw_intr;
+	u32 rx_msg_intr;
+	u32 cont_status;
+	u32 gpm_addr;
+	u32 gpm_len;
+	u32 gpm_idx;
+	u32 sched_addr;
+	u32 wlan_channels[4];
+	u32 wlan_cal_seq;
+	u32 wlan_cal_done;
+	u32 config;
+	u8 *gpm_buf;
+	bool ready;
+	bool update_2g5g;
+	bool is_2g;
+	bool query_bt;
+	bool unhalt_bt_gpm; /* need send UNHALT */
+	bool halted_bt_gpm; /* HALT sent */
+	bool need_flush_btinfo;
+	bool bt_version_known;
+	bool wlan_channels_update;
+	u8 wlan_ver_major;
+	u8 wlan_ver_minor;
+	u8 bt_ver_major;
+	u8 bt_ver_minor;
+	u8 bt_state;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 stomp_ftp;
+	bool concur_tx;
+	u32 last_recovery;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ath_btcoex_hw {
 	enum ath_btcoex_scheme scheme;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct ath9k_hw_mci mci;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ath9k_hw_mci mci;
+>>>>>>> refs/remotes/origin/master
 	bool enabled;
 	u8 wlanactive_gpio;
 	u8 btactive_gpio;
@@ -59,17 +135,49 @@ struct ath_btcoex_hw {
 	u32 bt_coex_mode; 	/* Register setting for AR_BT_COEX_MODE */
 	u32 bt_coex_weights; 	/* Register setting for AR_BT_COEX_WEIGHT */
 	u32 bt_coex_mode2; 	/* Register setting for AR_BT_COEX_MODE2 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 void ath9k_hw_btcoex_init_2wire(struct ath_hw *ah);
 void ath9k_hw_btcoex_init_3wire(struct ath_hw *ah);
+=======
+	u32 bt_weight[AR9300_NUM_BT_WEIGHTS];
+	u32 wlan_weight[AR9300_NUM_WLAN_WEIGHTS];
+=======
+	u32 bt_weight[AR9300_NUM_BT_WEIGHTS];
+	u32 wlan_weight[AR9300_NUM_WLAN_WEIGHTS];
+	u8 tx_prio[ATH_BTCOEX_STOMP_MAX];
+>>>>>>> refs/remotes/origin/master
+};
+
+void ath9k_hw_btcoex_init_scheme(struct ath_hw *ah);
+void ath9k_hw_btcoex_init_2wire(struct ath_hw *ah);
+void ath9k_hw_btcoex_init_3wire(struct ath_hw *ah);
+void ath9k_hw_btcoex_init_mci(struct ath_hw *ah);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 void ath9k_hw_init_btcoex_hw(struct ath_hw *ah, int qnum);
 void ath9k_hw_btcoex_set_weight(struct ath_hw *ah,
 				u32 bt_weight,
 				u32 wlan_weight);
+<<<<<<< HEAD
 void ath9k_hw_btcoex_enable(struct ath_hw *ah);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void ath9k_hw_btcoex_disable(struct ath_hw *ah);
 void ath9k_hw_btcoex_bt_stomp(struct ath_hw *ah,
 			      enum ath_stomp_type stomp_type);
+=======
+void ath9k_hw_init_btcoex_hw(struct ath_hw *ah, int qnum);
+void ath9k_hw_btcoex_set_weight(struct ath_hw *ah,
+				u32 bt_weight,
+				u32 wlan_weight,
+				enum ath_stomp_type stomp_type);
+void ath9k_hw_btcoex_disable(struct ath_hw *ah);
+void ath9k_hw_btcoex_bt_stomp(struct ath_hw *ah,
+			      enum ath_stomp_type stomp_type);
+void ath9k_hw_btcoex_set_concur_txprio(struct ath_hw *ah, u8 *stomp_txprio);
+>>>>>>> refs/remotes/origin/master
 
 #endif

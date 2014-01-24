@@ -13,10 +13,25 @@
 #include <linux/perf_event.h>		/* perf_sw_event		*/
 #include <linux/hugetlb.h>		/* hstate_index_to_shift	*/
 #include <linux/prefetch.h>		/* prefetchw			*/
+<<<<<<< HEAD
+=======
+#include <linux/context_tracking.h>	/* exception_enter(), ...	*/
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/traps.h>			/* dotraplinkage, ...		*/
 #include <asm/pgalloc.h>		/* pgd_*(), ...			*/
 #include <asm/kmemcheck.h>		/* kmemcheck_*(), ...		*/
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/fixmap.h>			/* VSYSCALL_START		*/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/fixmap.h>			/* VSYSCALL_START		*/
+
+#define CREATE_TRACE_POINTS
+#include <asm/trace/exceptions.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Page fault error code bits:
@@ -49,7 +64,11 @@ kmmio_fault(struct pt_regs *regs, unsigned long addr)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int __kprobes notify_page_fault(struct pt_regs *regs)
+=======
+static inline int __kprobes kprobes_fault(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 
@@ -105,7 +124,15 @@ check_prefetch_opcode(struct pt_regs *regs, unsigned char *instr,
 		 * but for now it's good enough to assume that long
 		 * mode only uses well known segments or kernel.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return (!user_mode(regs)) || (regs->cs == __USER_CS);
+=======
+		return (!user_mode(regs) || user_64bit_mode(regs));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (!user_mode(regs) || user_64bit_mode(regs));
+>>>>>>> refs/remotes/origin/master
 #endif
 	case 0x60:
 		/* 0x64 thru 0x67 are valid prefixes in all modes. */
@@ -421,12 +448,28 @@ static noinline __kprobes int vmalloc_fault(unsigned long address)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CPU_SUP_AMD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_CPU_SUP_AMD
+>>>>>>> refs/remotes/origin/master
 static const char errata93_warning[] =
 KERN_ERR 
 "******* Your BIOS seems to not contain a fix for K8 errata #93\n"
 "******* Working around it, but it may cause SEGVs or burn power.\n"
 "******* Please consider a BIOS update.\n"
 "******* Disabling USB legacy in the BIOS may also help.\n";
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * No vm86 mode in 64-bit mode:
@@ -506,7 +549,21 @@ bad:
  */
 static int is_errata93(struct pt_regs *regs, unsigned long address)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_X86_64
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if defined(CONFIG_X86_64) && defined(CONFIG_CPU_SUP_AMD)
+	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD
+	    || boot_cpu_data.x86 != 0xf)
+		return 0;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (address != regs->ip)
 		return 0;
 
@@ -549,7 +606,11 @@ static int is_f00f_bug(struct pt_regs *regs, unsigned long address)
 	/*
 	 * Pentium F0 0F C7 C8 bug workaround:
 	 */
+<<<<<<< HEAD
 	if (boot_cpu_data.f00f_bug) {
+=======
+	if (boot_cpu_has_bug(X86_BUG_F00F)) {
+>>>>>>> refs/remotes/origin/master
 		nr = (address - idt_descr.address) >> 3;
 
 		if (nr == 6) {
@@ -577,7 +638,11 @@ show_fault_oops(struct pt_regs *regs, unsigned long error_code,
 		pte_t *pte = lookup_address(address, &level);
 
 		if (pte && pte_present(*pte) && !pte_exec(*pte))
+<<<<<<< HEAD
 			printk(nx_warning, current_uid());
+=======
+			printk(nx_warning, from_kuid(&init_user_ns, current_uid()));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	printk(KERN_ALERT "BUG: unable to handle kernel ");
@@ -588,7 +653,11 @@ show_fault_oops(struct pt_regs *regs, unsigned long error_code,
 
 	printk(KERN_CONT " at %p\n", (void *) address);
 	printk(KERN_ALERT "IP:");
+<<<<<<< HEAD
 	printk_address(regs->ip, 1);
+=======
+	printk_address(regs->ip);
+>>>>>>> refs/remotes/origin/master
 
 	dump_pagetable(address);
 }
@@ -610,7 +679,15 @@ pgtable_bad(struct pt_regs *regs, unsigned long error_code,
 	dump_pagetable(address);
 
 	tsk->thread.cr2		= address;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tsk->thread.trap_no	= 14;
+=======
+	tsk->thread.trap_nr	= X86_TRAP_PF;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tsk->thread.trap_nr	= X86_TRAP_PF;
+>>>>>>> refs/remotes/origin/master
 	tsk->thread.error_code	= error_code;
 
 	if (__die("Bad pagetable", regs, error_code))
@@ -621,7 +698,15 @@ pgtable_bad(struct pt_regs *regs, unsigned long error_code,
 
 static noinline void
 no_context(struct pt_regs *regs, unsigned long error_code,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	   unsigned long address)
+=======
+	   unsigned long address, int signal, int si_code)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	   unsigned long address, int signal, int si_code)
+>>>>>>> refs/remotes/origin/master
 {
 	struct task_struct *tsk = current;
 	unsigned long *stackend;
@@ -629,8 +714,49 @@ no_context(struct pt_regs *regs, unsigned long error_code,
 	int sig;
 
 	/* Are we prepared to handle this kernel fault? */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (fixup_exception(regs))
 		return;
+=======
+	if (fixup_exception(regs)) {
+=======
+	if (fixup_exception(regs)) {
+		/*
+		 * Any interrupt that takes a fault gets the fixup. This makes
+		 * the below recursive fault logic only apply to a faults from
+		 * task context.
+		 */
+		if (in_interrupt())
+			return;
+
+		/*
+		 * Per the above we're !in_interrupt(), aka. task context.
+		 *
+		 * In this case we need to make sure we're not recursively
+		 * faulting through the emulate_vsyscall() logic.
+		 */
+>>>>>>> refs/remotes/origin/master
+		if (current_thread_info()->sig_on_uaccess_error && signal) {
+			tsk->thread.trap_nr = X86_TRAP_PF;
+			tsk->thread.error_code = error_code | PF_USER;
+			tsk->thread.cr2 = address;
+
+			/* XXX: hwpoison faults will set the wrong code. */
+			force_sig_info_fault(signal, si_code, address, tsk, 0);
+		}
+<<<<<<< HEAD
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		/*
+		 * Barring that, we can do the fixup and be happy.
+		 */
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * 32-bit:
@@ -659,10 +785,23 @@ no_context(struct pt_regs *regs, unsigned long error_code,
 
 	stackend = end_of_stack(tsk);
 	if (tsk != &init_task && *stackend != STACK_END_MAGIC)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT "Thread overran stack, or stack corrupted\n");
 
 	tsk->thread.cr2		= address;
 	tsk->thread.trap_no	= 14;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		printk(KERN_EMERG "Thread overran stack, or stack corrupted\n");
+
+	tsk->thread.cr2		= address;
+	tsk->thread.trap_nr	= X86_TRAP_PF;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tsk->thread.error_code	= error_code;
 
 	sig = SIGKILL;
@@ -670,7 +809,15 @@ no_context(struct pt_regs *regs, unsigned long error_code,
 		sig = 0;
 
 	/* Executive summary in case the body of the oops scrolled away */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_EMERG "CR2: %016lx\n", address);
+=======
+	printk(KERN_DEFAULT "CR2: %016lx\n", address);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_DEFAULT "CR2: %016lx\n", address);
+>>>>>>> refs/remotes/origin/master
 
 	oops_end(flags, regs, sig);
 }
@@ -722,6 +869,29 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
 		if (is_errata100(regs, address))
 			return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_X86_64
+		/*
+		 * Instruction fetch faults in the vsyscall page might need
+		 * emulation.
+		 */
+		if (unlikely((error_code & PF_INSTR) &&
+			     ((address & ~0xfff) == VSYSCALL_START))) {
+			if (emulate_vsyscall(regs, address))
+				return;
+		}
+#endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Kernel addresses are always protection faults: */
 		if (address >= TASK_SIZE)
 			error_code |= PF_PROT;
@@ -731,7 +901,18 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
 
 		tsk->thread.cr2		= address;
 		tsk->thread.error_code	= error_code;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		tsk->thread.trap_no	= 14;
+=======
+		tsk->thread.trap_nr	= X86_TRAP_PF;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		tsk->thread.trap_nr	= X86_TRAP_PF;
+>>>>>>> refs/remotes/origin/master
 
 		force_sig_info_fault(SIGSEGV, si_code, address, tsk, 0);
 
@@ -741,7 +922,15 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
 	if (is_f00f_bug(regs, address))
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	no_context(regs, error_code, address);
+=======
+	no_context(regs, error_code, address, SIGSEGV, si_code);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	no_context(regs, error_code, address, SIGSEGV, si_code);
+>>>>>>> refs/remotes/origin/master
 }
 
 static noinline void
@@ -779,6 +968,7 @@ bad_area_access_error(struct pt_regs *regs, unsigned long error_code,
 	__bad_area(regs, error_code, address, SEGV_ACCERR);
 }
 
+<<<<<<< HEAD
 /* TODO: fixup for "mm-invoke-oom-killer-from-page-fault.patch" */
 static void
 out_of_memory(struct pt_regs *regs, unsigned long error_code,
@@ -793,6 +983,8 @@ out_of_memory(struct pt_regs *regs, unsigned long error_code,
 	pagefault_out_of_memory();
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
 	  unsigned int fault)
@@ -805,7 +997,15 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
 
 	/* Kernel mode? Handle exceptions or die: */
 	if (!(error_code & PF_USER)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		no_context(regs, error_code, address);
+=======
+		no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -815,7 +1015,15 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
 
 	tsk->thread.cr2		= address;
 	tsk->thread.error_code	= error_code;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tsk->thread.trap_no	= 14;
+=======
+	tsk->thread.trap_nr	= X86_TRAP_PF;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tsk->thread.trap_nr	= X86_TRAP_PF;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_MEMORY_FAILURE
 	if (fault & (VM_FAULT_HWPOISON|VM_FAULT_HWPOISON_LARGE)) {
@@ -828,6 +1036,7 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
 	force_sig_info_fault(SIGBUS, code, address, tsk, fault);
 }
 
+<<<<<<< HEAD
 static noinline int
 mm_fault_error(struct pt_regs *regs, unsigned long error_code,
 	       unsigned long address, unsigned int fault)
@@ -840,21 +1049,57 @@ mm_fault_error(struct pt_regs *regs, unsigned long error_code,
 		if (!(fault & VM_FAULT_RETRY))
 			up_read(&current->mm->mmap_sem);
 		if (!(error_code & PF_USER))
+<<<<<<< HEAD
 			no_context(regs, error_code, address);
+=======
+			no_context(regs, error_code, address, 0, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 	}
 	if (!(fault & VM_FAULT_ERROR))
 		return 0;
+=======
+static noinline void
+mm_fault_error(struct pt_regs *regs, unsigned long error_code,
+	       unsigned long address, unsigned int fault)
+{
+	if (fatal_signal_pending(current) && !(error_code & PF_USER)) {
+		up_read(&current->mm->mmap_sem);
+		no_context(regs, error_code, address, 0, 0);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (fault & VM_FAULT_OOM) {
 		/* Kernel mode? Handle exceptions or die: */
 		if (!(error_code & PF_USER)) {
 			up_read(&current->mm->mmap_sem);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			no_context(regs, error_code, address);
+=======
+			no_context(regs, error_code, address,
+				   SIGSEGV, SEGV_MAPERR);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return 1;
 		}
 
 		out_of_memory(regs, error_code, address);
+=======
+			no_context(regs, error_code, address,
+				   SIGSEGV, SEGV_MAPERR);
+			return;
+		}
+
+		up_read(&current->mm->mmap_sem);
+
+		/*
+		 * We ran out of memory, call the OOM killer, and return the
+		 * userspace (which will retry the fault, or kill us if we got
+		 * oom-killed):
+		 */
+		pagefault_out_of_memory();
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (fault & (VM_FAULT_SIGBUS|VM_FAULT_HWPOISON|
 			     VM_FAULT_HWPOISON_LARGE))
@@ -862,7 +1107,10 @@ mm_fault_error(struct pt_regs *regs, unsigned long error_code,
 		else
 			BUG();
 	}
+<<<<<<< HEAD
 	return 1;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int spurious_fault_check(unsigned long error_code, pte_t *pte)
@@ -919,6 +1167,7 @@ spurious_fault(unsigned long error_code, unsigned long address)
 	if (pmd_large(*pmd))
 		return spurious_fault_check(error_code, (pte_t *) pmd);
 
+<<<<<<< HEAD
 	/*
 	 * Note: don't use pte_present() here, since it returns true
 	 * if the _PAGE_PROTNONE bit is set.  However, this aliases the
@@ -927,6 +1176,10 @@ spurious_fault(unsigned long error_code, unsigned long address)
 	 */
 	pte = pte_offset_kernel(pmd, address);
 	if (!(pte_flags(*pte) & _PAGE_PRESENT))
+=======
+	pte = pte_offset_kernel(pmd, address);
+	if (!pte_present(*pte))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	ret = spurious_fault_check(error_code, pte);
@@ -971,22 +1224,45 @@ static int fault_in_kernel_space(unsigned long address)
 	return address >= TASK_SIZE_MAX;
 }
 
+<<<<<<< HEAD
+=======
+static inline bool smap_violation(int error_code, struct pt_regs *regs)
+{
+	if (error_code & PF_USER)
+		return false;
+
+	if (!user_mode_vm(regs) && (regs->flags & X86_EFLAGS_AC))
+		return false;
+
+	return true;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This routine handles page faults.  It determines the address,
  * and the problem, and then passes it off to one of the appropriate
  * routines.
  */
+<<<<<<< HEAD
 dotraplinkage void __kprobes
 do_page_fault(struct pt_regs *regs, unsigned long error_code)
+=======
+static void __kprobes
+__do_page_fault(struct pt_regs *regs, unsigned long error_code)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vm_area_struct *vma;
 	struct task_struct *tsk;
 	unsigned long address;
 	struct mm_struct *mm;
 	int fault;
+<<<<<<< HEAD
 	int write = error_code & PF_WRITE;
 	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
 					(write ? FAULT_FLAG_WRITE : 0);
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+>>>>>>> refs/remotes/origin/master
 
 	tsk = current;
 	mm = tsk->mm;
@@ -1032,7 +1308,11 @@ do_page_fault(struct pt_regs *regs, unsigned long error_code)
 			return;
 
 		/* kprobes don't want to hook the spurious faults: */
+<<<<<<< HEAD
 		if (notify_page_fault(regs))
+=======
+		if (kprobes_fault(regs))
+>>>>>>> refs/remotes/origin/master
 			return;
 		/*
 		 * Don't take the mm semaphore here. If we fixup a prefetch
@@ -1044,8 +1324,33 @@ do_page_fault(struct pt_regs *regs, unsigned long error_code)
 	}
 
 	/* kprobes don't want to hook the spurious faults: */
+<<<<<<< HEAD
 	if (unlikely(notify_page_fault(regs)))
 		return;
+=======
+	if (unlikely(kprobes_fault(regs)))
+		return;
+
+	if (unlikely(error_code & PF_RSVD))
+		pgtable_bad(regs, error_code, address);
+
+	if (static_cpu_has(X86_FEATURE_SMAP)) {
+		if (unlikely(smap_violation(error_code, regs))) {
+			bad_area_nosemaphore(regs, error_code, address);
+			return;
+		}
+	}
+
+	/*
+	 * If we're in an interrupt, have no user context or are running
+	 * in an atomic region then we must not take the fault:
+	 */
+	if (unlikely(in_atomic() || !mm)) {
+		bad_area_nosemaphore(regs, error_code, address);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * It's safe to allow irq's after cr2 has been saved and the
 	 * vmalloc fault has been handled.
@@ -1056,15 +1361,24 @@ do_page_fault(struct pt_regs *regs, unsigned long error_code)
 	if (user_mode_vm(regs)) {
 		local_irq_enable();
 		error_code |= PF_USER;
+<<<<<<< HEAD
+=======
+		flags |= FAULT_FLAG_USER;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (regs->flags & X86_EFLAGS_IF)
 			local_irq_enable();
 	}
 
+<<<<<<< HEAD
 	if (unlikely(error_code & PF_RSVD))
 		pgtable_bad(regs, error_code, address);
 
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, 0, regs, address);
+=======
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * If we're in an interrupt, have no user context or are running
@@ -1074,6 +1388,12 @@ do_page_fault(struct pt_regs *regs, unsigned long error_code)
 		bad_area_nosemaphore(regs, error_code, address);
 		return;
 	}
+=======
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+
+	if (error_code & PF_WRITE)
+		flags |= FAULT_FLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * When running in the kernel we expect faults to occur only to
@@ -1153,9 +1473,23 @@ good_area:
 	 */
 	fault = handle_mm_fault(mm, vma, address, flags);
 
+<<<<<<< HEAD
 	if (unlikely(fault & (VM_FAULT_RETRY|VM_FAULT_ERROR))) {
 		if (mm_fault_error(regs, error_code, address, fault))
 			return;
+=======
+	/*
+	 * If we need to retry but a fatal signal is pending, handle the
+	 * signal first. We do not need to release the mmap_sem because it
+	 * would already be released in __lock_page_or_retry in mm/filemap.c.
+	 */
+	if (unlikely((fault & VM_FAULT_RETRY) && fatal_signal_pending(current)))
+		return;
+
+	if (unlikely(fault & VM_FAULT_ERROR)) {
+		mm_fault_error(regs, error_code, address, fault);
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1166,17 +1500,35 @@ good_area:
 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
 		if (fault & VM_FAULT_MAJOR) {
 			tsk->maj_flt++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1, 0,
 				      regs, address);
 		} else {
 			tsk->min_flt++;
 			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1, 0,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
+				      regs, address);
+		} else {
+			tsk->min_flt++;
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				      regs, address);
 		}
 		if (fault & VM_FAULT_RETRY) {
 			/* Clear FAULT_FLAG_ALLOW_RETRY to avoid any risk
 			 * of starvation. */
 			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+<<<<<<< HEAD
+=======
+			flags |= FAULT_FLAG_TRIED;
+>>>>>>> refs/remotes/origin/master
 			goto retry;
 		}
 	}
@@ -1185,3 +1537,36 @@ good_area:
 
 	up_read(&mm->mmap_sem);
 }
+<<<<<<< HEAD
+=======
+
+dotraplinkage void __kprobes
+do_page_fault(struct pt_regs *regs, unsigned long error_code)
+{
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+	__do_page_fault(regs, error_code);
+	exception_exit(prev_state);
+}
+
+static void trace_page_fault_entries(struct pt_regs *regs,
+				     unsigned long error_code)
+{
+	if (user_mode(regs))
+		trace_page_fault_user(read_cr2(), regs, error_code);
+	else
+		trace_page_fault_kernel(read_cr2(), regs, error_code);
+}
+
+dotraplinkage void __kprobes
+trace_do_page_fault(struct pt_regs *regs, unsigned long error_code)
+{
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+	trace_page_fault_entries(regs, error_code);
+	__do_page_fault(regs, error_code);
+	exception_exit(prev_state);
+}
+>>>>>>> refs/remotes/origin/master

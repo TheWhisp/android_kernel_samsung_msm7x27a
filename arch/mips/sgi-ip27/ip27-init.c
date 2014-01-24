@@ -54,7 +54,11 @@ extern void pcibr_setup(cnodeid_t);
 
 extern void xtalk_probe_node(cnodeid_t nid);
 
+<<<<<<< HEAD
 static void __cpuinit per_hub_init(cnodeid_t cnode)
+=======
+static void per_hub_init(cnodeid_t cnode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hub_data *hub = hub_data(cnode);
 	nasid_t nasid = COMPACT_TO_NASID_NODEID(cnode);
@@ -110,7 +114,11 @@ static void __cpuinit per_hub_init(cnodeid_t cnode)
 	}
 }
 
+<<<<<<< HEAD
 void __cpuinit per_cpu_init(void)
+=======
+void per_cpu_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpu = smp_processor_id();
 	int slice = LOCAL_HUB_L(PI_CPU_NUM);
@@ -151,7 +159,11 @@ nasid_t
 get_nasid(void)
 {
 	return (nasid_t)((LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_NODEID_MASK)
+<<<<<<< HEAD
 	                 >> NSRI_NODEID_SHFT);
+=======
+			 >> NSRI_NODEID_SHFT);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

@@ -37,16 +37,29 @@
 #include <asm/irq_regs.h>
 #include <asm/mips-boards/malta.h>
 #include <asm/mips-boards/maltaint.h>
+<<<<<<< HEAD
 #include <asm/mips-boards/piix4.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/gt64120.h>
 #include <asm/mips-boards/generic.h>
 #include <asm/mips-boards/msc01_pci.h>
 #include <asm/msc01_ic.h>
 #include <asm/gic.h>
 #include <asm/gcmpregs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int gcmp_present = -1;
 int gic_present;
+=======
+#include <asm/setup.h>
+
+int gcmp_present = -1;
+>>>>>>> refs/remotes/origin/master
 static unsigned long _msc01_biu_base;
 static unsigned long _gcmp_base;
 static unsigned int ipi_map[NR_CPUS];
@@ -83,10 +96,17 @@ static inline int mips_pcibios_iack(void)
 
 		/* Flush Bonito register block */
 		(void) BONITO_PCIMAP_CFG;
+<<<<<<< HEAD
 		iob();    /* sync */
 
 		irq = __raw_readl((u32 *)_pcictrl_bonito_pcicfg);
 		iob();    /* sync */
+=======
+		iob();	  /* sync */
+
+		irq = __raw_readl((u32 *)_pcictrl_bonito_pcicfg);
+		iob();	  /* sync */
+>>>>>>> refs/remotes/origin/master
 		irq &= 0xff;
 		BONITO_PCIMAP_CFG = 0;
 		break;
@@ -133,9 +153,18 @@ static void malta_ipi_irqdispatch(void)
 {
 	int irq;
 
+<<<<<<< HEAD
 	irq = gic_get_int();
 	if (irq < 0)
 		return;  /* interrupt has already been cleared */
+=======
+	if (gic_compare_int())
+		do_IRQ(MIPS_GIC_IRQ_BASE);
+
+	irq = gic_get_int();
+	if (irq < 0)
+		return;	 /* interrupt has already been cleared */
+>>>>>>> refs/remotes/origin/master
 
 	do_IRQ(MIPS_GIC_IRQ_BASE + irq);
 }
@@ -148,7 +177,11 @@ static void corehi_irqdispatch(void)
 	struct pt_regs *regs = get_irq_regs();
 
 	printk(KERN_EMERG "CoreHI interrupt, shouldn't happen, we die here!\n");
+<<<<<<< HEAD
 	printk(KERN_EMERG "epc   : %08lx\nStatus: %08lx\n"
+=======
+	printk(KERN_EMERG "epc	 : %08lx\nStatus: %08lx\n"
+>>>>>>> refs/remotes/origin/master
 			"Cause : %08lx\nbadVaddr : %08lx\n",
 			regs->cp0_epc, regs->cp0_status,
 			regs->cp0_cause, regs->cp0_badvaddr);
@@ -248,6 +281,7 @@ static inline unsigned int irq_ffs(unsigned int pending)
  * on hardware interrupt 0 (MIPS IRQ 2)) like:
  *
  *	MIPS IRQ	Source
+<<<<<<< HEAD
  *      --------        ------
  *             0	Software (ignored)
  *             1        Software (ignored)
@@ -262,6 +296,22 @@ static inline unsigned int irq_ffs(unsigned int pending)
  *
  * Highest ----     R4k Timer
  * Lowest  ----     Combined hardware interrupt
+=======
+ *	--------	------
+ *	       0	Software (ignored)
+ *	       1	Software (ignored)
+ *	       2	Combined hardware interrupt (hw0)
+ *	       3	Hardware (ignored)
+ *	       4	Hardware (ignored)
+ *	       5	Hardware (ignored)
+ *	       6	Hardware (ignored)
+ *	       7	R4k timer (what we use)
+ *
+ * We handle the IRQ according to _our_ priority which is:
+ *
+ * Highest ----	    R4k Timer
+ * Lowest  ----	    Combined hardware interrupt
+>>>>>>> refs/remotes/origin/master
  *
  * then we just return, if multiple IRQs are pending then we will just take
  * another exception, big deal.
@@ -272,16 +322,29 @@ asmlinkage void plat_irq_dispatch(void)
 	unsigned int pending = read_c0_cause() & read_c0_status() & ST0_IM;
 	int irq;
 
+<<<<<<< HEAD
+=======
+	if (unlikely(!pending)) {
+		spurious_interrupt();
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	irq = irq_ffs(pending);
 
 	if (irq == MIPSCPU_INT_I8259A)
 		malta_hw0_irqdispatch();
 	else if (gic_present && ((1 << irq) & ipi_map[smp_processor_id()]))
 		malta_ipi_irqdispatch();
+<<<<<<< HEAD
 	else if (irq >= 0)
 		do_IRQ(MIPS_CPU_IRQ_BASE + irq);
 	else
 		spurious_interrupt();
+=======
+	else
+		do_IRQ(MIPS_CPU_IRQ_BASE + irq);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_MIPS_MT_SMP
@@ -322,13 +385,29 @@ static irqreturn_t ipi_call_interrupt(int irq, void *dev_id)
 
 static struct irqaction irq_resched = {
 	.handler	= ipi_resched_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED|IRQF_PERCPU,
+=======
+	.flags		= IRQF_PERCPU,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= IRQF_PERCPU,
+>>>>>>> refs/remotes/origin/master
 	.name		= "IPI_resched"
 };
 
 static struct irqaction irq_call = {
 	.handler	= ipi_call_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED|IRQF_PERCPU,
+=======
+	.flags		= IRQF_PERCPU,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= IRQF_PERCPU,
+>>>>>>> refs/remotes/origin/master
 	.name		= "IPI_call"
 };
 #endif /* CONFIG_MIPS_MT_SMP */
@@ -350,12 +429,32 @@ unsigned int plat_ipi_resched_int_xlate(unsigned int cpu)
 
 static struct irqaction i8259irq = {
 	.handler = no_action,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.name = "XT-PIC cascade"
+=======
+	.name = "XT-PIC cascade",
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name = "XT-PIC cascade",
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct irqaction corehi_irqaction = {
 	.handler = no_action,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.name = "CoreHi"
+=======
+	.name = "CoreHi",
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name = "CoreHi",
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/master
 };
 
 static msc_irqmap_t __initdata msc_irqmap[] = {
@@ -390,7 +489,11 @@ static int __initdata msc_nr_eicirqs = ARRAY_SIZE(msc_eicirqmap);
 
 static struct gic_intr_map gic_intr_map[GIC_NUM_INTRS] = {
 	{ X, X,		   X,		X,		0 },
+<<<<<<< HEAD
 	{ X, X,		   X,	 	X,		0 },
+=======
+	{ X, X,		   X,		X,		0 },
+>>>>>>> refs/remotes/origin/master
 	{ X, X,		   X,		X,		0 },
 	{ 0, GIC_CPU_INT0, GIC_POL_POS, GIC_TRIG_LEVEL, GIC_FLAG_TRANSPARENT },
 	{ 0, GIC_CPU_INT1, GIC_POL_POS, GIC_TRIG_LEVEL, GIC_FLAG_TRANSPARENT },
@@ -404,7 +507,11 @@ static struct gic_intr_map gic_intr_map[GIC_NUM_INTRS] = {
 	{ 0, GIC_CPU_INT3, GIC_POL_POS, GIC_TRIG_LEVEL, GIC_FLAG_TRANSPARENT },
 	{ 0, GIC_CPU_NMI,  GIC_POL_POS, GIC_TRIG_LEVEL, GIC_FLAG_TRANSPARENT },
 	{ 0, GIC_CPU_NMI,  GIC_POL_POS, GIC_TRIG_LEVEL, GIC_FLAG_TRANSPARENT },
+<<<<<<< HEAD
 	{ X, X,		   X,		X,	        0 },
+=======
+	{ X, X,		   X,		X,		0 },
+>>>>>>> refs/remotes/origin/master
 	/* The remainder of this table is initialised by fill_ipi_map */
 };
 #undef X
@@ -414,8 +521,15 @@ static struct gic_intr_map gic_intr_map[GIC_NUM_INTRS] = {
  */
 int __init gcmp_probe(unsigned long addr, unsigned long size)
 {
+<<<<<<< HEAD
 	if (mips_revision_sconid != MIPS_REVISION_SCON_ROCIT) {
 		gcmp_present = 0;
+=======
+	if ((mips_revision_sconid != MIPS_REVISION_SCON_ROCIT)  &&
+	    (mips_revision_sconid != MIPS_REVISION_SCON_GT64120)) {
+		gcmp_present = 0;
+		pr_debug("GCMP NOT present\n");
+>>>>>>> refs/remotes/origin/master
 		return gcmp_present;
 	}
 
@@ -463,7 +577,11 @@ static void __init fill_ipi_map(void)
 {
 	int cpu;
 
+<<<<<<< HEAD
 	for (cpu = 0; cpu < NR_CPUS; cpu++) {
+=======
+	for (cpu = 0; cpu < nr_cpu_ids; cpu++) {
+>>>>>>> refs/remotes/origin/master
 		fill_ipi_map1(gic_resched_int_base, cpu, GIC_CPU_INT1);
 		fill_ipi_map1(gic_call_int_base, cpu, GIC_CPU_INT2);
 	}
@@ -564,8 +682,14 @@ void __init arch_init_irq(void)
 		/* FIXME */
 		int i;
 #if defined(CONFIG_MIPS_MT_SMP)
+<<<<<<< HEAD
 		gic_call_int_base = GIC_NUM_INTRS - NR_CPUS;
 		gic_resched_int_base = gic_call_int_base - NR_CPUS;
+=======
+		gic_call_int_base = GIC_NUM_INTRS -
+			(NR_CPUS - nr_cpu_ids) * 2 - nr_cpu_ids;
+		gic_resched_int_base = gic_call_int_base - nr_cpu_ids;
+>>>>>>> refs/remotes/origin/master
 		fill_ipi_map();
 #endif
 		gic_init(GIC_BASE_ADDR, GIC_ADDRSPACE_SZ, gic_intr_map,
@@ -589,7 +713,11 @@ void __init arch_init_irq(void)
 		printk("CPU%d: status register now %08x\n", smp_processor_id(), read_c0_status());
 		write_c0_status(0x1100dc00);
 		printk("CPU%d: status register frc %08x\n", smp_processor_id(), read_c0_status());
+<<<<<<< HEAD
 		for (i = 0; i < NR_CPUS; i++) {
+=======
+		for (i = 0; i < nr_cpu_ids; i++) {
+>>>>>>> refs/remotes/origin/master
 			arch_init_ipiirq(MIPS_GIC_IRQ_BASE +
 					 GIC_RESCHED_INT(i), &irq_resched);
 			arch_init_ipiirq(MIPS_GIC_IRQ_BASE +
@@ -628,7 +756,11 @@ void malta_be_init(void)
 
 static char *tr[8] = {
 	"mem",	"gcr",	"gic",	"mmio",
+<<<<<<< HEAD
 	"0x04",	"0x05",	"0x06",	"0x07"
+=======
+	"0x04", "0x05", "0x06", "0x07"
+>>>>>>> refs/remotes/origin/master
 };
 
 static char *mcmd[32] = {
@@ -667,10 +799,17 @@ static char *mcmd[32] = {
 };
 
 static char *core[8] = {
+<<<<<<< HEAD
 	"Invalid/OK", 	"Invalid/Data",
 	"Shared/OK",	"Shared/Data",
 	"Modified/OK",	"Modified/Data",
 	"Exclusive/OK",	"Exclusive/Data"
+=======
+	"Invalid/OK",	"Invalid/Data",
+	"Shared/OK",	"Shared/Data",
+	"Modified/OK",	"Modified/Data",
+	"Exclusive/OK", "Exclusive/Data"
+>>>>>>> refs/remotes/origin/master
 };
 
 static char *causes[32] = {
@@ -744,3 +883,40 @@ int malta_be_handler(struct pt_regs *regs, int is_fixup)
 
 	return retval;
 }
+<<<<<<< HEAD
+=======
+
+void gic_enable_interrupt(int irq_vec)
+{
+	GIC_SET_INTR_MASK(irq_vec);
+}
+
+void gic_disable_interrupt(int irq_vec)
+{
+	GIC_CLR_INTR_MASK(irq_vec);
+}
+
+void gic_irq_ack(struct irq_data *d)
+{
+	int irq = (d->irq - gic_irq_base);
+
+	GIC_CLR_INTR_MASK(irq);
+
+	if (gic_irq_flags[irq] & GIC_TRIG_EDGE)
+		GICWRITE(GIC_REG(SHARED, GIC_SH_WEDGE), irq);
+}
+
+void gic_finish_irq(struct irq_data *d)
+{
+	/* Enable interrupts. */
+	GIC_SET_INTR_MASK(d->irq - gic_irq_base);
+}
+
+void __init gic_platform_init(int irqs, struct irq_chip *irq_controller)
+{
+	int i;
+
+	for (i = gic_irq_base; i < (gic_irq_base + irqs); i++)
+		irq_set_chip(i, irq_controller);
+}
+>>>>>>> refs/remotes/origin/master

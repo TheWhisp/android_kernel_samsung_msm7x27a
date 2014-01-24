@@ -174,7 +174,11 @@ void rds_tcp_write_space(struct sock *sk)
 	struct rds_connection *conn;
 	struct rds_tcp_connection *tc;
 
+<<<<<<< HEAD
 	read_lock_bh(&sk->sk_callback_lock);
+=======
+	read_lock(&sk->sk_callback_lock);
+>>>>>>> refs/remotes/origin/master
 	conn = sk->sk_user_data;
 	if (!conn) {
 		write_space = sk->sk_write_space;
@@ -194,7 +198,11 @@ void rds_tcp_write_space(struct sock *sk)
 		queue_delayed_work(rds_wq, &conn->c_send_w, 0);
 
 out:
+<<<<<<< HEAD
 	read_unlock_bh(&sk->sk_callback_lock);
+=======
+	read_unlock(&sk->sk_callback_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * write_space is only called when data leaves tcp's send queue if

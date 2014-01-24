@@ -4,9 +4,21 @@
  * Provides type definitions and function prototypes used to link the
  * DHD OS, bus, and protocol modules.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -24,7 +36,15 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: dhd_bus.h,v 1.14.28.1 2010-12-23 01:13:17 Exp $
+=======
+ * $Id: dhd_bus.h 313456 2012-02-07 22:03:40Z $
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: dhd_bus.h 313456 2012-02-07 22:03:40Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #ifndef _dhd_bus_h_
@@ -51,8 +71,20 @@ extern int dhd_bus_init(dhd_pub_t *dhdp, bool enforce_mutex);
 /* Get the Bus Idle Time */
 extern void dhd_bus_getidletime(dhd_pub_t *dhdp, int *idletime);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Set the Bus Idle Time*/
 extern void dhd_bus_setidletime(dhd_pub_t *dhdp, int idle_time);
+=======
+/* Set the Bus Idle Time */
+extern void dhd_bus_setidletime(dhd_pub_t *dhdp, int idle_time);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Set the Bus Idle Time */
+extern void dhd_bus_setidletime(dhd_pub_t *dhdp, int idle_time);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Send a data frame to the dongle.  Callee disposes of txp. */
 extern int dhd_bus_txdata(struct dhd_bus *bus, void *txp);
 
@@ -96,4 +128,22 @@ extern void *dhd_bus_pub(struct dhd_bus *bus);
 extern void *dhd_bus_txq(struct dhd_bus *bus);
 extern uint dhd_bus_hdrlen(struct dhd_bus *bus);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+#define DHD_SET_BUS_STATE_DOWN(_bus)  do { \
+	(_bus)->dhd->busstate = DHD_BUS_DOWN; \
+} while (0)
+
+/* Register a dummy SDIO client driver in order to be notified of new SDIO device */
+extern int dhd_bus_reg_sdio_notify(void* semaphore);
+extern void dhd_bus_unreg_sdio_notify(void);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* _dhd_bus_h_ */

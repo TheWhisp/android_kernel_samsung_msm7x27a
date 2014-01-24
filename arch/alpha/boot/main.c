@@ -11,7 +11,13 @@
 #include <generated/utsrelease.h>
 #include <linux/mm.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/console.h>
 #include <asm/hwrpb.h>
 #include <asm/pgtable.h>

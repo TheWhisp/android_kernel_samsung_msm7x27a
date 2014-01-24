@@ -1,6 +1,7 @@
 #ifndef __SPARC_SIGINFO_H
 #define __SPARC_SIGINFO_H
 
+<<<<<<< HEAD
 #if defined(__sparc__) && defined(__arch64__)
 
 #define SI_PAD_SIZE32	((SI_MAX_SIZE/sizeof(int)) - 3)
@@ -16,14 +17,23 @@
 
 #ifdef __KERNEL__
 
+<<<<<<< HEAD
 #include <linux/compat.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <uapi/asm/siginfo.h>
+
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 
 struct compat_siginfo;
 
 #endif /* CONFIG_COMPAT */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #define SI_NOINFO	32767		/* no information in siginfo_t */
@@ -34,4 +44,6 @@ struct compat_siginfo;
 #define EMT_TAGOVF	(__SI_FAULT|1)	/* tag overflow */
 #define NSIGEMT		1
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(__SPARC_SIGINFO_H) */

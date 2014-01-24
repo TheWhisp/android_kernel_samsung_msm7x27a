@@ -1,5 +1,6 @@
 #ifndef _ASM_GENERIC_TERMIOS_H
 #define _ASM_GENERIC_TERMIOS_H
+<<<<<<< HEAD
 /*
  * Most architectures have straight copies of the x86 code, with
  * varying levels of bug fixes on top. Usually it's a good idea
@@ -49,6 +50,12 @@ struct termio {
 #ifdef __KERNEL__
 
 #include <asm/uaccess.h>
+=======
+
+
+#include <asm/uaccess.h>
+#include <uapi/asm-generic/termios.h>
+>>>>>>> refs/remotes/origin/master
 
 /*	intr=^C		quit=^\		erase=del	kill=^U
 	eof=^D		vtime=\0	vmin=\1		sxtc=\0
@@ -149,6 +156,9 @@ static inline int kernel_termios_to_user_termios(struct termios __user *u,
 }
 #endif /* TCGETS2 */
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_GENERIC_TERMIOS_H */

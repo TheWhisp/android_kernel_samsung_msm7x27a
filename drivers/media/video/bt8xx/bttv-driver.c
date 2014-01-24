@@ -34,6 +34,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/delay.h>
@@ -57,6 +62,10 @@
 
 #include <media/saa6588.h>
 
+<<<<<<< HEAD
+=======
+#define BTTV_VERSION "0.9.19"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned int bttv_num;			/* number of Bt848s in use */
 struct bttv *bttvs[BTTV_MAX];
@@ -163,6 +172,10 @@ MODULE_PARM_DESC(radio_nr, "radio device numbers");
 MODULE_DESCRIPTION("bttv - v4l/v4l2 driver module for bt848/878 based cards");
 MODULE_AUTHOR("Ralph Metzler & Marcus Metzler & Gerd Knorr");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_VERSION(BTTV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ----------------------------------------------------------------------- */
 /* sysfs                                                                   */
@@ -940,8 +953,13 @@ static
 void free_btres_lock(struct bttv *btv, struct bttv_fh *fh, int bits)
 {
 	if ((fh->resources & bits) != bits) {
+<<<<<<< HEAD
 		/* trying to free ressources not allocated by us ... */
 		printk("bttv: BUG! (btres)\n");
+=======
+		/* trying to free resources not allocated by us ... */
+		pr_err("BUG! (btres)\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	fh->resources  &= ~bits;
 	btv->resources &= ~bits;
@@ -998,7 +1016,11 @@ static void set_pll(struct bttv *btv)
 		return;
 
 	if (btv->pll.pll_ofreq == btv->pll.pll_current) {
+<<<<<<< HEAD
 		dprintk("bttv%d: PLL: no change required\n",btv->c.nr);
+=======
+		dprintk("%d: PLL: no change required\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -1006,21 +1028,37 @@ static void set_pll(struct bttv *btv)
 		/* no PLL needed */
 		if (btv->pll.pll_current == 0)
 			return;
+<<<<<<< HEAD
 		bttv_printk(KERN_INFO "bttv%d: PLL can sleep, using XTAL (%d).\n",
 			btv->c.nr,btv->pll.pll_ifreq);
+=======
+		if (bttv_verbose)
+			pr_info("%d: PLL can sleep, using XTAL (%d)\n",
+				btv->c.nr, btv->pll.pll_ifreq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		btwrite(0x00,BT848_TGCTRL);
 		btwrite(0x00,BT848_PLL_XCI);
 		btv->pll.pll_current = 0;
 		return;
 	}
 
+<<<<<<< HEAD
 	bttv_printk(KERN_INFO "bttv%d: PLL: %d => %d ",btv->c.nr,
 		btv->pll.pll_ifreq, btv->pll.pll_ofreq);
+=======
+	if (bttv_verbose)
+		pr_info("%d: Setting PLL: %d => %d (needs up to 100ms)\n",
+			btv->c.nr,
+			btv->pll.pll_ifreq, btv->pll.pll_ofreq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	set_pll_freq(btv, btv->pll.pll_ifreq, btv->pll.pll_ofreq);
 
 	for (i=0; i<10; i++) {
 		/*  Let other people run while the PLL stabilizes */
+<<<<<<< HEAD
 		bttv_printk(".");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		msleep(10);
 
 		if (btread(BT848_DSTATUS) & BT848_DSTATUS_PLOCK) {
@@ -1028,12 +1066,22 @@ static void set_pll(struct bttv *btv)
 		} else {
 			btwrite(0x08,BT848_TGCTRL);
 			btv->pll.pll_current = btv->pll.pll_ofreq;
+<<<<<<< HEAD
 			bttv_printk(" ok\n");
+=======
+			if (bttv_verbose)
+				pr_info("PLL set ok\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 	}
 	btv->pll.pll_current = -1;
+<<<<<<< HEAD
 	bttv_printk("failed\n");
+=======
+	if (bttv_verbose)
+		pr_info("Setting PLL failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return;
 }
 
@@ -1045,7 +1093,11 @@ static void bt848A_set_timing(struct bttv *btv)
 	int fsc       = bttv_tvnorms[btv->tvnorm].Fsc;
 
 	if (btv->input == btv->dig) {
+<<<<<<< HEAD
 		dprintk("bttv%d: load digital timing table (table_idx=%d)\n",
+=======
+		dprintk("%d: load digital timing table (table_idx=%d)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			btv->c.nr,table_idx);
 
 		/* timing change...reset timing generator address */
@@ -1074,7 +1126,11 @@ static void bt848_bright(struct bttv *btv, int bright)
 {
 	int value;
 
+<<<<<<< HEAD
 	// printk("bttv: set bright: %d\n",bright); // DEBUG
+=======
+	// printk("set bright: %d\n", bright); // DEBUG
+>>>>>>> refs/remotes/origin/cm-10.0
 	btv->bright = bright;
 
 	/* We want -128 to 127 we get 0-65535 */
@@ -1148,8 +1204,12 @@ video_mux(struct bttv *btv, unsigned int input)
 	}
 	mux = bttv_muxsel(btv, input);
 	btaor(mux<<5, ~(3<<5), BT848_IFORM);
+<<<<<<< HEAD
 	dprintk(KERN_DEBUG "bttv%d: video mux: input=%d mux=%d\n",
 		btv->c.nr,input,mux);
+=======
+	dprintk("%d: video mux: input=%d mux=%d\n", btv->c.nr, input, mux);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* card specific hook */
 	if(bttv_tvcards[btv->c.type].muxsel_hook)
@@ -1438,7 +1498,11 @@ static void bttv_reinit_bt848(struct bttv *btv)
 	unsigned long flags;
 
 	if (bttv_verbose)
+<<<<<<< HEAD
 		printk(KERN_INFO "bttv%d: reset, reinitialize\n",btv->c.nr);
+=======
+		pr_info("%d: reset, reinitialize\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&btv->s_lock,flags);
 	btv->errors=0;
 	bttv_set_dma(btv,0);
@@ -1620,8 +1684,13 @@ void bttv_gpio_tracking(struct bttv *btv, char *comment)
 	unsigned int outbits, data;
 	outbits = btread(BT848_GPIO_OUT_EN);
 	data    = btread(BT848_GPIO_DATA);
+<<<<<<< HEAD
 	printk(KERN_DEBUG "bttv%d: gpio: en=%08x, out=%08x in=%08x [%s]\n",
 	       btv->c.nr,outbits,data & outbits, data & ~outbits, comment);
+=======
+	pr_debug("%d: gpio: en=%08x, out=%08x in=%08x [%s]\n",
+		 btv->c.nr, outbits, data & outbits, data & ~outbits, comment);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void bttv_field_count(struct bttv *btv)
@@ -1666,7 +1735,11 @@ bttv_switch_overlay(struct bttv *btv, struct bttv_fh *fh,
 	unsigned long flags;
 	int retval = 0;
 
+<<<<<<< HEAD
 	dprintk("switch_overlay: enter [new=%p]\n",new);
+=======
+	dprintk("switch_overlay: enter [new=%p]\n", new);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (new)
 		new->vb.state = VIDEOBUF_DONE;
 	spin_lock_irqsave(&btv->s_lock,flags);
@@ -1676,7 +1749,12 @@ bttv_switch_overlay(struct bttv *btv, struct bttv_fh *fh,
 	bttv_set_dma(btv, 0x03);
 	spin_unlock_irqrestore(&btv->s_lock,flags);
 	if (NULL != old) {
+<<<<<<< HEAD
 		dprintk("switch_overlay: old=%p state is %d\n",old,old->vb.state);
+=======
+		dprintk("switch_overlay: old=%p state is %d\n",
+			old, old->vb.state);
+>>>>>>> refs/remotes/origin/cm-10.0
 		bttv_dma_free(&fh->cap,btv, old);
 		kfree(old);
 	}
@@ -2027,11 +2105,15 @@ static int bttv_log_status(struct file *file, void *f)
 	struct bttv_fh *fh  = f;
 	struct bttv *btv = fh->btv;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "bttv%d: ========  START STATUS CARD #%d  ========\n",
 			btv->c.nr, btv->c.nr);
 	bttv_call_all(btv, core, log_status);
 	printk(KERN_INFO "bttv%d: ========  END STATUS CARD   #%d  ========\n",
 			btv->c.nr, btv->c.nr);
+=======
+	bttv_call_all(btv, core, log_status);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -2596,7 +2678,11 @@ static int bttv_s_fmt_vid_overlay(struct file *file, void *priv,
 	struct bttv *btv = fh->btv;
 
 	if (no_overlay > 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "V4L2_BUF_TYPE_VIDEO_OVERLAY: no_overlay\n");
+=======
+		pr_err("V4L2_BUF_TYPE_VIDEO_OVERLAY: no_overlay\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -2616,7 +2702,10 @@ static int bttv_querycap(struct file *file, void  *priv,
 	strlcpy(cap->card, btv->video_dev->name, sizeof(cap->card));
 	snprintf(cap->bus_info, sizeof(cap->bus_info),
 		 "PCI:%s", pci_name(btv->c.pci));
+<<<<<<< HEAD
 	cap->version = BTTV_VERSION_CODE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	cap->capabilities =
 		V4L2_CAP_VIDEO_CAPTURE |
 		V4L2_CAP_VBI_CAPTURE |
@@ -2672,7 +2761,11 @@ static int bttv_enum_fmt_vid_overlay(struct file *file, void  *priv,
 	int rc;
 
 	if (no_overlay > 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "V4L2_BUF_TYPE_VIDEO_OVERLAY: no_overlay\n");
+=======
+		pr_err("V4L2_BUF_TYPE_VIDEO_OVERLAY: no_overlay\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -2713,7 +2806,11 @@ static int bttv_overlay(struct file *file, void *f, unsigned int on)
 			return -EINVAL;
 		}
 		if (unlikely(!fh->ov.setup_ok)) {
+<<<<<<< HEAD
 			dprintk("bttv%d: overlay: !setup_ok\n", btv->c.nr);
+=======
+			dprintk("%d: overlay: !setup_ok\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 			retval = -EINVAL;
 		}
 		if (retval)
@@ -3090,8 +3187,13 @@ static ssize_t bttv_read(struct file *file, char __user *data,
 
 	if (fh->btv->errors)
 		bttv_reinit_bt848(fh->btv);
+<<<<<<< HEAD
 	dprintk("bttv%d: read count=%d type=%s\n",
 		fh->btv->c.nr,(int)count,v4l2_type_names[fh->type]);
+=======
+	dprintk("%d: read count=%d type=%s\n",
+		fh->btv->c.nr, (int)count, v4l2_type_names[fh->type]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (fh->type) {
 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
@@ -3173,7 +3275,11 @@ static int bttv_open(struct file *file)
 	struct bttv_fh *fh;
 	enum v4l2_buf_type type = 0;
 
+<<<<<<< HEAD
 	dprintk(KERN_DEBUG "bttv: open dev=%s\n", video_device_node_name(vdev));
+=======
+	dprintk("open dev=%s\n", video_device_node_name(vdev));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (vdev->vfl_type == VFL_TYPE_GRABBER) {
 		type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -3184,8 +3290,13 @@ static int bttv_open(struct file *file)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	dprintk(KERN_DEBUG "bttv%d: open called (type=%s)\n",
 		btv->c.nr,v4l2_type_names[type]);
+=======
+	dprintk("%d: open called (type=%s)\n",
+		btv->c.nr, v4l2_type_names[type]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* allocate per filehandle data */
 	fh = kmalloc(sizeof(*fh), GFP_KERNEL);
@@ -3287,7 +3398,11 @@ bttv_mmap(struct file *file, struct vm_area_struct *vma)
 {
 	struct bttv_fh *fh = file->private_data;
 
+<<<<<<< HEAD
 	dprintk("bttv%d: mmap type=%s 0x%lx+%ld\n",
+=======
+	dprintk("%d: mmap type=%s 0x%lx+%ld\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		fh->btv->c.nr, v4l2_type_names[fh->type],
 		vma->vm_start, vma->vm_end - vma->vm_start);
 	return videobuf_mmap_mapper(bttv_queue(fh),vma);
@@ -3369,9 +3484,15 @@ static int radio_open(struct file *file)
 	struct bttv *btv = video_drvdata(file);
 	struct bttv_fh *fh;
 
+<<<<<<< HEAD
 	dprintk("bttv: open dev=%s\n", video_device_node_name(vdev));
 
 	dprintk("bttv%d: open called (radio)\n",btv->c.nr);
+=======
+	dprintk("open dev=%s\n", video_device_node_name(vdev));
+
+	dprintk("%d: open called (radio)\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* allocate per filehandle data */
 	fh = kmalloc(sizeof(*fh), GFP_KERNEL);
@@ -3416,7 +3537,10 @@ static int radio_querycap(struct file *file, void *priv,
 	strcpy(cap->driver, "bttv");
 	strlcpy(cap->card, btv->radio_dev->name, sizeof(cap->card));
 	sprintf(cap->bus_info, "PCI:%s", pci_name(btv->c.pci));
+<<<<<<< HEAD
 	cap->version = BTTV_VERSION_CODE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	cap->capabilities = V4L2_CAP_TUNER;
 
 	return 0;
@@ -3616,12 +3740,21 @@ static int bttv_risc_decode(u32 risc)
 	};
 	int i;
 
+<<<<<<< HEAD
 	printk("0x%08x [ %s", risc,
 	       instr[risc >> 28] ? instr[risc >> 28] : "INVALID");
 	for (i = ARRAY_SIZE(bits)-1; i >= 0; i--)
 		if (risc & (1 << (i + 12)))
 			printk(" %s",bits[i]);
 	printk(" count=%d ]\n", risc & 0xfff);
+=======
+	pr_cont("0x%08x [ %s", risc,
+	       instr[risc >> 28] ? instr[risc >> 28] : "INVALID");
+	for (i = ARRAY_SIZE(bits)-1; i >= 0; i--)
+		if (risc & (1 << (i + 12)))
+			pr_cont(" %s", bits[i]);
+	pr_cont(" count=%d ]\n", risc & 0xfff);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return incr[risc >> 28] ? incr[risc >> 28] : 1;
 }
 
@@ -3630,6 +3763,7 @@ static void bttv_risc_disasm(struct bttv *btv,
 {
 	unsigned int i,j,n;
 
+<<<<<<< HEAD
 	printk("%s: risc disasm: %p [dma=0x%08lx]\n",
 	       btv->c.v4l2_dev.name, risc->cpu, (unsigned long)risc->dma);
 	for (i = 0; i < (risc->size >> 2); i += n) {
@@ -3640,6 +3774,20 @@ static void bttv_risc_disasm(struct bttv *btv,
 			printk("%s:   0x%lx: 0x%08x [ arg #%d ]\n",
 			       btv->c.v4l2_dev.name, (unsigned long)(risc->dma + ((i+j)<<2)),
 			       risc->cpu[i+j], j);
+=======
+	pr_info("%s: risc disasm: %p [dma=0x%08lx]\n",
+		btv->c.v4l2_dev.name, risc->cpu, (unsigned long)risc->dma);
+	for (i = 0; i < (risc->size >> 2); i += n) {
+		pr_info("%s:   0x%lx: ",
+			btv->c.v4l2_dev.name,
+			(unsigned long)(risc->dma + (i<<2)));
+		n = bttv_risc_decode(le32_to_cpu(risc->cpu[i]));
+		for (j = 1; j < n; j++)
+			pr_info("%s:   0x%lx: 0x%08x [ arg #%d ]\n",
+				btv->c.v4l2_dev.name,
+				(unsigned long)(risc->dma + ((i+j)<<2)),
+				risc->cpu[i+j], j);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (0 == risc->cpu[i])
 			break;
 	}
@@ -3647,6 +3795,7 @@ static void bttv_risc_disasm(struct bttv *btv,
 
 static void bttv_print_riscaddr(struct bttv *btv)
 {
+<<<<<<< HEAD
 	printk("  main: %08Lx\n",
 	       (unsigned long long)btv->main.dma);
 	printk("  vbi : o=%08Lx e=%08Lx\n",
@@ -3658,6 +3807,20 @@ static void bttv_print_riscaddr(struct bttv *btv)
 	printk("  scr : o=%08Lx e=%08Lx\n",
 	       btv->screen ? (unsigned long long)btv->screen->top.dma : 0,
 	       btv->screen ? (unsigned long long)btv->screen->bottom.dma : 0);
+=======
+	pr_info("  main: %08llx\n", (unsigned long long)btv->main.dma);
+	pr_info("  vbi : o=%08llx e=%08llx\n",
+		btv->cvbi ? (unsigned long long)btv->cvbi->top.dma : 0,
+		btv->cvbi ? (unsigned long long)btv->cvbi->bottom.dma : 0);
+	pr_info("  cap : o=%08llx e=%08llx\n",
+		btv->curr.top
+		? (unsigned long long)btv->curr.top->top.dma : 0,
+		btv->curr.bottom
+		? (unsigned long long)btv->curr.bottom->bottom.dma : 0);
+	pr_info("  scr : o=%08llx e=%08llx\n",
+		btv->screen ? (unsigned long long)btv->screen->top.dma : 0,
+		btv->screen ? (unsigned long long)btv->screen->bottom.dma : 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	bttv_risc_disasm(btv, &btv->main);
 }
 
@@ -3690,17 +3853,27 @@ static void bttv_print_irqbits(u32 print, u32 mark)
 {
 	unsigned int i;
 
+<<<<<<< HEAD
 	printk("bits:");
 	for (i = 0; i < ARRAY_SIZE(irq_name); i++) {
 		if (print & (1 << i))
 			printk(" %s",irq_name[i]);
 		if (mark & (1 << i))
 			printk("*");
+=======
+	pr_cont("bits:");
+	for (i = 0; i < ARRAY_SIZE(irq_name); i++) {
+		if (print & (1 << i))
+			pr_cont(" %s", irq_name[i]);
+		if (mark & (1 << i))
+			pr_cont("*");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
 static void bttv_irq_debug_low_latency(struct bttv *btv, u32 rc)
 {
+<<<<<<< HEAD
 	printk("bttv%d: irq: skipped frame [main=%lx,o_vbi=%lx,o_field=%lx,rc=%lx]\n",
 	       btv->c.nr,
 	       (unsigned long)btv->main.dma,
@@ -3718,6 +3891,25 @@ static void bttv_irq_debug_low_latency(struct bttv *btv, u32 rc)
 	       btv->c.nr);
 	printk("bttv%d: Lets try to catch the culpit red-handed ...\n",
 	       btv->c.nr);
+=======
+	pr_warn("%d: irq: skipped frame [main=%lx,o_vbi=%lx,o_field=%lx,rc=%lx]\n",
+		btv->c.nr,
+		(unsigned long)btv->main.dma,
+		(unsigned long)le32_to_cpu(btv->main.cpu[RISC_SLOT_O_VBI+1]),
+		(unsigned long)le32_to_cpu(btv->main.cpu[RISC_SLOT_O_FIELD+1]),
+		(unsigned long)rc);
+
+	if (0 == (btread(BT848_DSTATUS) & BT848_DSTATUS_HLOC)) {
+		pr_notice("%d: Oh, there (temporarily?) is no input signal. "
+			  "Ok, then this is harmless, don't worry ;)\n",
+			  btv->c.nr);
+		return;
+	}
+	pr_notice("%d: Uhm. Looks like we have unusual high IRQ latencies\n",
+		  btv->c.nr);
+	pr_notice("%d: Lets try to catch the culpit red-handed ...\n",
+		  btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dump_stack();
 }
 
@@ -3798,9 +3990,15 @@ bttv_irq_next_video(struct bttv *btv, struct bttv_buffer_set *set)
 		}
 	}
 
+<<<<<<< HEAD
 	dprintk("bttv%d: next set: top=%p bottom=%p [screen=%p,irq=%d,%d]\n",
 		btv->c.nr,set->top, set->bottom,
 		btv->screen,set->frame_irq,set->top_irq);
+=======
+	dprintk("%d: next set: top=%p bottom=%p [screen=%p,irq=%d,%d]\n",
+		btv->c.nr, set->top, set->bottom,
+		btv->screen, set->frame_irq, set->top_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -3815,7 +4013,12 @@ bttv_irq_wakeup_video(struct bttv *btv, struct bttv_buffer_set *wakeup,
 	if (wakeup->top == wakeup->bottom) {
 		if (NULL != wakeup->top && curr->top != wakeup->top) {
 			if (irq_debug > 1)
+<<<<<<< HEAD
 				printk("bttv%d: wakeup: both=%p\n",btv->c.nr,wakeup->top);
+=======
+				pr_debug("%d: wakeup: both=%p\n",
+					 btv->c.nr, wakeup->top);
+>>>>>>> refs/remotes/origin/cm-10.0
 			wakeup->top->vb.ts = ts;
 			wakeup->top->vb.field_count = btv->field_count;
 			wakeup->top->vb.state = state;
@@ -3824,7 +4027,12 @@ bttv_irq_wakeup_video(struct bttv *btv, struct bttv_buffer_set *wakeup,
 	} else {
 		if (NULL != wakeup->top && curr->top != wakeup->top) {
 			if (irq_debug > 1)
+<<<<<<< HEAD
 				printk("bttv%d: wakeup: top=%p\n",btv->c.nr,wakeup->top);
+=======
+				pr_debug("%d: wakeup: top=%p\n",
+					 btv->c.nr, wakeup->top);
+>>>>>>> refs/remotes/origin/cm-10.0
 			wakeup->top->vb.ts = ts;
 			wakeup->top->vb.field_count = btv->field_count;
 			wakeup->top->vb.state = state;
@@ -3832,7 +4040,12 @@ bttv_irq_wakeup_video(struct bttv *btv, struct bttv_buffer_set *wakeup,
 		}
 		if (NULL != wakeup->bottom && curr->bottom != wakeup->bottom) {
 			if (irq_debug > 1)
+<<<<<<< HEAD
 				printk("bttv%d: wakeup: bottom=%p\n",btv->c.nr,wakeup->bottom);
+=======
+				pr_debug("%d: wakeup: bottom=%p\n",
+					 btv->c.nr, wakeup->bottom);
+>>>>>>> refs/remotes/origin/cm-10.0
 			wakeup->bottom->vb.ts = ts;
 			wakeup->bottom->vb.field_count = btv->field_count;
 			wakeup->bottom->vb.state = state;
@@ -3866,11 +4079,19 @@ static void bttv_irq_timeout(unsigned long data)
 	unsigned long flags;
 
 	if (bttv_verbose) {
+<<<<<<< HEAD
 		printk(KERN_INFO "bttv%d: timeout: drop=%d irq=%d/%d, risc=%08x, ",
 		       btv->c.nr, btv->framedrop, btv->irq_me, btv->irq_total,
 		       btread(BT848_RISC_COUNT));
 		bttv_print_irqbits(btread(BT848_INT_STAT),0);
 		printk("\n");
+=======
+		pr_info("%d: timeout: drop=%d irq=%d/%d, risc=%08x, ",
+			btv->c.nr, btv->framedrop, btv->irq_me, btv->irq_total,
+			btread(BT848_RISC_COUNT));
+		bttv_print_irqbits(btread(BT848_INT_STAT),0);
+		pr_cont("\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	spin_lock_irqsave(&btv->s_lock,flags);
@@ -4033,6 +4254,7 @@ static irqreturn_t bttv_irq(int irq, void *dev_id)
 		dstat=btread(BT848_DSTATUS);
 
 		if (irq_debug) {
+<<<<<<< HEAD
 			printk(KERN_DEBUG "bttv%d: irq loop=%d fc=%d "
 			       "riscs=%x, riscc=%08x, ",
 			       btv->c.nr, count, btv->field_count,
@@ -4048,6 +4270,25 @@ static irqreturn_t bttv_irq(int irq, void *dev_id)
 				printk("   NUML => %s", (dstat & BT848_DSTATUS_NUML)
 				       ? "625" : "525");
 			printk("\n");
+=======
+			pr_debug("%d: irq loop=%d fc=%d riscs=%x, riscc=%08x, ",
+				 btv->c.nr, count, btv->field_count,
+				 stat>>28, btread(BT848_RISC_COUNT));
+			bttv_print_irqbits(stat,astat);
+			if (stat & BT848_INT_HLOCK)
+				pr_cont("   HLOC => %s",
+					dstat & BT848_DSTATUS_HLOC
+					? "yes" : "no");
+			if (stat & BT848_INT_VPRES)
+				pr_cont("   PRES => %s",
+					dstat & BT848_DSTATUS_PRES
+					? "yes" : "no");
+			if (stat & BT848_INT_FMTCHG)
+				pr_cont("   NUML => %s",
+					dstat & BT848_DSTATUS_NUML
+					? "625" : "525");
+			pr_cont("\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		if (astat&BT848_INT_VSYNC)
@@ -4075,18 +4316,33 @@ static irqreturn_t bttv_irq(int irq, void *dev_id)
 			audio_mute(btv, btv->mute);  /* trigger automute */
 
 		if (astat & (BT848_INT_SCERR|BT848_INT_OCERR)) {
+<<<<<<< HEAD
 			printk(KERN_INFO "bttv%d: %s%s @ %08x,",btv->c.nr,
 			       (astat & BT848_INT_SCERR) ? "SCERR" : "",
 			       (astat & BT848_INT_OCERR) ? "OCERR" : "",
 			       btread(BT848_RISC_COUNT));
 			bttv_print_irqbits(stat,astat);
 			printk("\n");
+=======
+			pr_info("%d: %s%s @ %08x,",
+				btv->c.nr,
+				(astat & BT848_INT_SCERR) ? "SCERR" : "",
+				(astat & BT848_INT_OCERR) ? "OCERR" : "",
+				btread(BT848_RISC_COUNT));
+			bttv_print_irqbits(stat,astat);
+			pr_cont("\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (bttv_debug)
 				bttv_print_riscaddr(btv);
 		}
 		if (fdsr && astat & BT848_INT_FDSR) {
+<<<<<<< HEAD
 			printk(KERN_INFO "bttv%d: FDSR @ %08x\n",
 			       btv->c.nr,btread(BT848_RISC_COUNT));
+=======
+			pr_info("%d: FDSR @ %08x\n",
+				btv->c.nr, btread(BT848_RISC_COUNT));
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (bttv_debug)
 				bttv_print_riscaddr(btv);
 		}
@@ -4097,11 +4353,19 @@ static irqreturn_t bttv_irq(int irq, void *dev_id)
 			if (count > 8 || !(astat & BT848_INT_GPINT)) {
 				btwrite(0, BT848_INT_MASK);
 
+<<<<<<< HEAD
 				printk(KERN_ERR
 					   "bttv%d: IRQ lockup, cleared int mask [", btv->c.nr);
 			} else {
 				printk(KERN_ERR
 					   "bttv%d: IRQ lockup, clearing GPINT from int mask [", btv->c.nr);
+=======
+				pr_err("%d: IRQ lockup, cleared int mask [",
+				       btv->c.nr);
+			} else {
+				pr_err("%d: IRQ lockup, clearing GPINT from int mask [",
+				       btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 				btwrite(btread(BT848_INT_MASK) & (-1 ^ BT848_INT_GPINT),
 						BT848_INT_MASK);
@@ -4109,7 +4373,11 @@ static irqreturn_t bttv_irq(int irq, void *dev_id)
 
 			bttv_print_irqbits(stat,astat);
 
+<<<<<<< HEAD
 			printk("]\n");
+=======
+			pr_cont("]\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	btv->irq_total++;
@@ -4171,7 +4439,11 @@ static void bttv_unregister_video(struct bttv *btv)
 static int __devinit bttv_register_video(struct bttv *btv)
 {
 	if (no_overlay > 0)
+<<<<<<< HEAD
 		printk("bttv: Overlay support disabled.\n");
+=======
+		pr_notice("Overlay support disabled\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* video */
 	btv->video_dev = vdev_init(btv, &bttv_video_template, "video");
@@ -4181,12 +4453,20 @@ static int __devinit bttv_register_video(struct bttv *btv)
 	if (video_register_device(btv->video_dev, VFL_TYPE_GRABBER,
 				  video_nr[btv->c.nr]) < 0)
 		goto err;
+<<<<<<< HEAD
 	printk(KERN_INFO "bttv%d: registered device %s\n",
 	       btv->c.nr, video_device_node_name(btv->video_dev));
 	if (device_create_file(&btv->video_dev->dev,
 				     &dev_attr_card)<0) {
 		printk(KERN_ERR "bttv%d: device_create_file 'card' "
 		       "failed\n", btv->c.nr);
+=======
+	pr_info("%d: registered device %s\n",
+		btv->c.nr, video_device_node_name(btv->video_dev));
+	if (device_create_file(&btv->video_dev->dev,
+				     &dev_attr_card)<0) {
+		pr_err("%d: device_create_file 'card' failed\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto err;
 	}
 
@@ -4198,8 +4478,13 @@ static int __devinit bttv_register_video(struct bttv *btv)
 	if (video_register_device(btv->vbi_dev, VFL_TYPE_VBI,
 				  vbi_nr[btv->c.nr]) < 0)
 		goto err;
+<<<<<<< HEAD
 	printk(KERN_INFO "bttv%d: registered device %s\n",
 	       btv->c.nr, video_device_node_name(btv->vbi_dev));
+=======
+	pr_info("%d: registered device %s\n",
+		btv->c.nr, video_device_node_name(btv->vbi_dev));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!btv->has_radio)
 		return 0;
@@ -4210,8 +4495,13 @@ static int __devinit bttv_register_video(struct bttv *btv)
 	if (video_register_device(btv->radio_dev, VFL_TYPE_RADIO,
 				  radio_nr[btv->c.nr]) < 0)
 		goto err;
+<<<<<<< HEAD
 	printk(KERN_INFO "bttv%d: registered device %s\n",
 	       btv->c.nr, video_device_node_name(btv->radio_dev));
+=======
+	pr_info("%d: registered device %s\n",
+		btv->c.nr, video_device_node_name(btv->radio_dev));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* all done */
 	return 0;
@@ -4244,10 +4534,17 @@ static int __devinit bttv_probe(struct pci_dev *dev,
 
 	if (bttv_num == BTTV_MAX)
 		return -ENOMEM;
+<<<<<<< HEAD
 	printk(KERN_INFO "bttv: Bt8xx card found (%d).\n", bttv_num);
 	bttvs[bttv_num] = btv = kzalloc(sizeof(*btv), GFP_KERNEL);
 	if (btv == NULL) {
 		printk(KERN_ERR "bttv: out of memory.\n");
+=======
+	pr_info("Bt8xx card found (%d)\n", bttv_num);
+	bttvs[bttv_num] = btv = kzalloc(sizeof(*btv), GFP_KERNEL);
+	if (btv == NULL) {
+		pr_err("out of memory\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 	btv->c.nr  = bttv_num;
@@ -4277,6 +4574,7 @@ static int __devinit bttv_probe(struct pci_dev *dev,
 	btv->c.pci = dev;
 	btv->id  = dev->device;
 	if (pci_enable_device(dev)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "bttv%d: Can't enable device.\n",
 		       btv->c.nr);
 		return -EIO;
@@ -4284,14 +4582,27 @@ static int __devinit bttv_probe(struct pci_dev *dev,
 	if (pci_set_dma_mask(dev, DMA_BIT_MASK(32))) {
 		printk(KERN_WARNING "bttv%d: No suitable DMA available.\n",
 		       btv->c.nr);
+=======
+		pr_warn("%d: Can't enable device\n", btv->c.nr);
+		return -EIO;
+	}
+	if (pci_set_dma_mask(dev, DMA_BIT_MASK(32))) {
+		pr_warn("%d: No suitable DMA available\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 	}
 	if (!request_mem_region(pci_resource_start(dev,0),
 				pci_resource_len(dev,0),
 				btv->c.v4l2_dev.name)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "bttv%d: can't request iomem (0x%llx).\n",
 		       btv->c.nr,
 		       (unsigned long long)pci_resource_start(dev,0));
+=======
+		pr_warn("%d: can't request iomem (0x%llx)\n",
+			btv->c.nr,
+			(unsigned long long)pci_resource_start(dev, 0));
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EBUSY;
 	}
 	pci_set_master(dev);
@@ -4299,22 +4610,37 @@ static int __devinit bttv_probe(struct pci_dev *dev,
 
 	result = v4l2_device_register(&dev->dev, &btv->c.v4l2_dev);
 	if (result < 0) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "bttv%d: v4l2_device_register() failed\n", btv->c.nr);
+=======
+		pr_warn("%d: v4l2_device_register() failed\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto fail0;
 	}
 
 	btv->revision = dev->revision;
 	pci_read_config_byte(dev, PCI_LATENCY_TIMER, &lat);
+<<<<<<< HEAD
 	printk(KERN_INFO "bttv%d: Bt%d (rev %d) at %s, ",
 	       bttv_num,btv->id, btv->revision, pci_name(dev));
 	printk("irq: %d, latency: %d, mmio: 0x%llx\n",
 	       btv->c.pci->irq, lat,
 	       (unsigned long long)pci_resource_start(dev,0));
+=======
+	pr_info("%d: Bt%d (rev %d) at %s, irq: %d, latency: %d, mmio: 0x%llx\n",
+		bttv_num, btv->id, btv->revision, pci_name(dev),
+		btv->c.pci->irq, lat,
+		(unsigned long long)pci_resource_start(dev, 0));
+>>>>>>> refs/remotes/origin/cm-10.0
 	schedule();
 
 	btv->bt848_mmio = ioremap(pci_resource_start(dev, 0), 0x1000);
 	if (NULL == btv->bt848_mmio) {
+<<<<<<< HEAD
 		printk("bttv%d: ioremap() failed\n", btv->c.nr);
+=======
+		pr_err("%d: ioremap() failed\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		result = -EIO;
 		goto fail1;
 	}
@@ -4327,8 +4653,13 @@ static int __devinit bttv_probe(struct pci_dev *dev,
 	result = request_irq(btv->c.pci->irq, bttv_irq,
 	    IRQF_SHARED | IRQF_DISABLED, btv->c.v4l2_dev.name, (void *)btv);
 	if (result < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "bttv%d: can't get IRQ %d\n",
 		       bttv_num,btv->c.pci->irq);
+=======
+		pr_err("%d: can't get IRQ %d\n",
+		       bttv_num, btv->c.pci->irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto fail1;
 	}
 
@@ -4433,7 +4764,11 @@ static void __devexit bttv_remove(struct pci_dev *pci_dev)
 	struct bttv *btv = to_bttv(v4l2_dev);
 
 	if (bttv_verbose)
+<<<<<<< HEAD
 		printk("bttv%d: unloading\n",btv->c.nr);
+=======
+		pr_info("%d: unloading\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (bttv_tvcards[btv->c.type].has_dvb)
 		flush_request_modules(btv);
@@ -4481,7 +4816,11 @@ static int bttv_suspend(struct pci_dev *pci_dev, pm_message_t state)
 	struct bttv_buffer_set idle;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dprintk("bttv%d: suspend %d\n", btv->c.nr, state.event);
+=======
+	dprintk("%d: suspend %d\n", btv->c.nr, state.event);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* stop dma + irqs */
 	spin_lock_irqsave(&btv->s_lock,flags);
@@ -4517,14 +4856,22 @@ static int bttv_resume(struct pci_dev *pci_dev)
 	unsigned long flags;
 	int err;
 
+<<<<<<< HEAD
 	dprintk("bttv%d: resume\n", btv->c.nr);
+=======
+	dprintk("%d: resume\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* restore pci state */
 	if (btv->state.disabled) {
 		err=pci_enable_device(pci_dev);
 		if (err) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "bttv%d: Can't enable device.\n",
 								btv->c.nr);
+=======
+			pr_warn("%d: Can't enable device\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return err;
 		}
 		btv->state.disabled = 0;
@@ -4532,8 +4879,12 @@ static int bttv_resume(struct pci_dev *pci_dev)
 	err=pci_set_power_state(pci_dev, PCI_D0);
 	if (err) {
 		pci_disable_device(pci_dev);
+<<<<<<< HEAD
 		printk(KERN_WARNING "bttv%d: Can't enable device.\n",
 							btv->c.nr);
+=======
+		pr_warn("%d: Can't enable device\n", btv->c.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		btv->state.disabled = 1;
 		return err;
 	}
@@ -4563,6 +4914,10 @@ static struct pci_device_id bttv_pci_tbl[] = {
 	{PCI_VDEVICE(BROOKTREE, PCI_DEVICE_ID_BT849), 0},
 	{PCI_VDEVICE(BROOKTREE, PCI_DEVICE_ID_BT878), 0},
 	{PCI_VDEVICE(BROOKTREE, PCI_DEVICE_ID_BT879), 0},
+<<<<<<< HEAD
+=======
+	{PCI_VDEVICE(BROOKTREE, PCI_DEVICE_ID_FUSION879), 0},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{0,}
 };
 
@@ -4585,6 +4940,7 @@ static int __init bttv_init_module(void)
 
 	bttv_num = 0;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "bttv: driver version %d.%d.%d loaded\n",
 	       (BTTV_VERSION_CODE >> 16) & 0xff,
 	       (BTTV_VERSION_CODE >> 8) & 0xff,
@@ -4593,20 +4949,32 @@ static int __init bttv_init_module(void)
 	printk(KERN_INFO "bttv: snapshot date %04d-%02d-%02d\n",
 	       SNAPSHOT/10000, (SNAPSHOT/100)%100, SNAPSHOT%100);
 #endif
+=======
+	pr_info("driver version %s loaded\n", BTTV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (gbuffers < 2 || gbuffers > VIDEO_MAX_FRAME)
 		gbuffers = 2;
 	if (gbufsize > BTTV_MAX_FBUF)
 		gbufsize = BTTV_MAX_FBUF;
 	gbufsize = (gbufsize + PAGE_SIZE - 1) & PAGE_MASK;
 	if (bttv_verbose)
+<<<<<<< HEAD
 		printk(KERN_INFO "bttv: using %d buffers with %dk (%d pages) each for capture\n",
 		       gbuffers, gbufsize >> 10, gbufsize >> PAGE_SHIFT);
+=======
+		pr_info("using %d buffers with %dk (%d pages) each for capture\n",
+			gbuffers, gbufsize >> 10, gbufsize >> PAGE_SHIFT);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	bttv_check_chipset();
 
 	ret = bus_register(&bttv_sub_bus_type);
 	if (ret < 0) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "bttv: bus_register error: %d\n", ret);
+=======
+		pr_warn("bus_register error: %d\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret;
 	}
 	ret = pci_register_driver(&bttv_pci_driver);

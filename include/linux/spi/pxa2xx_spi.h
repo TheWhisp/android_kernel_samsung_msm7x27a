@@ -28,6 +28,18 @@ struct pxa2xx_spi_master {
 	u32 clock_enable;
 	u16 num_chipselect;
 	u8 enable_dma;
+<<<<<<< HEAD
+=======
+
+	/* DMA engine specific config */
+	int rx_chan_id;
+	int tx_chan_id;
+	int rx_slave_id;
+	int tx_slave_id;
+
+	/* For non-PXA arches */
+	struct ssp_device ssp;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* spi_board_info.controller_data for SPI slave devices,
@@ -35,6 +47,10 @@ struct pxa2xx_spi_master {
  */
 struct pxa2xx_spi_chip {
 	u8 tx_threshold;
+<<<<<<< HEAD
+=======
+	u8 tx_hi_threshold;
+>>>>>>> refs/remotes/origin/master
 	u8 rx_threshold;
 	u8 dma_burst_size;
 	u32 timeout;
@@ -43,13 +59,18 @@ struct pxa2xx_spi_chip {
 	void (*cs_control)(u32 command);
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_PXA
+=======
+#if defined(CONFIG_ARCH_PXA) || defined(CONFIG_ARCH_MMP)
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/clk.h>
 #include <mach/dma.h>
 
 extern void pxa2xx_set_spi_info(unsigned id, struct pxa2xx_spi_master *info);
 
+<<<<<<< HEAD
 #else
 /*
  * This is the implemtation for CE4100 on x86. ARM defines them in mach/ or
@@ -148,5 +169,7 @@ static inline unsigned long clk_get_rate(struct clk *clk)
 	return 3686400;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 #endif

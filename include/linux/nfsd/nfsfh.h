@@ -10,15 +10,27 @@
  *
  * Copyright (C) 1995, 1996, 1997 Olaf Kirch <okir@monad.swb.de>
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_NFSD_FH_H
 #define _LINUX_NFSD_FH_H
 
+<<<<<<< HEAD
 # include <linux/types.h>
 #ifdef __KERNEL__
 # include <linux/sunrpc/svc.h>
 #endif
 #include <linux/nfsd/const.h>
+=======
+#include <linux/types.h>
+#include <linux/nfs.h>
+#include <linux/nfs2.h>
+#include <linux/nfs3.h>
+#include <linux/nfs4.h>
+#ifdef __KERNEL__
+# include <linux/sunrpc/svc.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * This is the old "dentry style" Linux NFSv2 file handle.
@@ -118,6 +130,13 @@ struct knfsd_fh {
 #define	fh_fsid			fh_base.fh_new.fb_auth
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_NFSD_FH_H
+#define _LINUX_NFSD_FH_H
+
+# include <linux/sunrpc/svc.h>
+#include <uapi/linux/nfsd/nfsfh.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline __u32 ino_t_to_u32(ino_t ino)
 {
@@ -140,6 +159,10 @@ typedef struct svc_fh {
 	int			fh_maxsize;	/* max size for fh_handle */
 
 	unsigned char		fh_locked;	/* inode locked by us */
+<<<<<<< HEAD
+=======
+	unsigned char		fh_want_write;	/* remount protection taken */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_NFSD_V3
 	unsigned char		fh_post_saved;	/* post-op attrs saved */
@@ -162,7 +185,10 @@ typedef struct svc_fh {
 
 } svc_fh;
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_NFSD_FH_H */

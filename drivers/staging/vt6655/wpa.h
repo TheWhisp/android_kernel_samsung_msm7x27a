@@ -55,11 +55,15 @@
 
 /*---------------------  Export Types  ------------------------------*/
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*---------------------  Export Functions  --------------------------*/
 
 void
 WPA_ClearRSN(
+<<<<<<< HEAD
     PKnownBSS        pBSSList
     );
 
@@ -80,5 +84,27 @@ bool
 WPAb_Is_RSN(
     PWLAN_IE_RSN_EXT pRSN
     );
+=======
+	PKnownBSS        pBSSList
+);
+
+void
+WPA_ParseRSN(
+	PKnownBSS        pBSSList,
+	PWLAN_IE_RSN_EXT pRSN
+);
+
+bool
+WPA_SearchRSN(
+	unsigned char byCmd,
+	unsigned char byEncrypt,
+	PKnownBSS        pBSSList
+);
+
+bool
+WPAb_Is_RSN(
+	PWLAN_IE_RSN_EXT pRSN
+);
+>>>>>>> refs/remotes/origin/master
 
 #endif // __WPA_H__

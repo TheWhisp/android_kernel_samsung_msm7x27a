@@ -43,10 +43,20 @@
 static int poodle_jack_func;
 static int poodle_spk_func;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void poodle_ext_control(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 
+=======
+static void poodle_ext_control(struct snd_soc_dapm_context *dapm)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void poodle_ext_control(struct snd_soc_dapm_context *dapm)
+{
+>>>>>>> refs/remotes/origin/master
 	/* set up jack connection */
 	if (poodle_jack_func == POODLE_HP) {
 		/* set = unmute headphone */
@@ -81,7 +91,15 @@ static int poodle_startup(struct snd_pcm_substream *substream)
 	mutex_lock(&codec->mutex);
 
 	/* check the jack status at stream startup */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	poodle_ext_control(codec);
+=======
+	poodle_ext_control(&codec->dapm);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	poodle_ext_control(&codec->dapm);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&codec->mutex);
 
@@ -121,6 +139,8 @@ static int poodle_hw_params(struct snd_pcm_substream *substream,
 		break;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* set codec DAI configuration */
 	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
@@ -133,6 +153,10 @@ static int poodle_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* set the codec system clock for DAC and ADC */
 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL, clk,
 		SND_SOC_CLOCK_IN);
@@ -164,13 +188,29 @@ static int poodle_get_jack(struct snd_kcontrol *kcontrol,
 static int poodle_set_jack(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+=======
+	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/master
 
 	if (poodle_jack_func == ucontrol->value.integer.value[0])
 		return 0;
 
 	poodle_jack_func = ucontrol->value.integer.value[0];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	poodle_ext_control(codec);
+=======
+	poodle_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	poodle_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -184,13 +224,29 @@ static int poodle_get_spk(struct snd_kcontrol *kcontrol,
 static int poodle_set_spk(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+=======
+	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/master
 
 	if (poodle_spk_func == ucontrol->value.integer.value[0])
 		return 0;
 
 	poodle_spk_func = ucontrol->value.integer.value[0];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	poodle_ext_control(codec);
+=======
+	poodle_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	poodle_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -214,7 +270,15 @@ SND_SOC_DAPM_SPK("Ext Spk", poodle_amp_event),
 };
 
 /* Corgi machine connections to the codec pins */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route poodle_audio_map[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route poodle_audio_map[] = {
+>>>>>>> refs/remotes/origin/master
 
 	/* headphone connected to LHPOUT1, RHPOUT1 */
 	{"Headphone Jack", NULL, "LHPOUT"},
@@ -246,12 +310,20 @@ static int poodle_wm8731_init(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_soc_codec *codec = rtd->codec;
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	snd_soc_dapm_nc_pin(dapm, "LLINEIN");
 	snd_soc_dapm_nc_pin(dapm, "RLINEIN");
 	snd_soc_dapm_enable_pin(dapm, "MICIN");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Add poodle specific controls */
 	err = snd_soc_add_controls(codec, wm8731_poodle_controls,
 				ARRAY_SIZE(wm8731_poodle_controls));
@@ -266,6 +338,10 @@ static int poodle_wm8731_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 
 	snd_soc_dapm_sync(dapm);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -278,15 +354,35 @@ static struct snd_soc_dai_link poodle_dai = {
 	.platform_name = "pxa-pcm-audio",
 	.codec_name = "wm8731.0-001b",
 	.init = poodle_wm8731_init,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+		   SND_SOC_DAIFMT_CBS_CFS,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+		   SND_SOC_DAIFMT_CBS_CFS,
+>>>>>>> refs/remotes/origin/master
 	.ops = &poodle_ops,
 };
 
 /* poodle audio machine driver */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_card snd_soc_poodle = {
+=======
+static struct snd_soc_card poodle = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_soc_card poodle = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Poodle",
 	.dai_link = &poodle_dai,
 	.num_links = 1,
 	.owner = THIS_MODULE,
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static struct platform_device *poodle_snd_device;
@@ -298,6 +394,31 @@ static int __init poodle_init(void)
 	if (!machine_is_poodle())
 		return -ENODEV;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	.controls = wm8731_poodle_controls,
+	.num_controls = ARRAY_SIZE(wm8731_poodle_controls),
+	.dapm_widgets = wm8731_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8731_dapm_widgets),
+	.dapm_routes = poodle_audio_map,
+	.num_dapm_routes = ARRAY_SIZE(poodle_audio_map),
+};
+
+<<<<<<< HEAD
+static int __devinit poodle_probe(struct platform_device *pdev)
+=======
+static int poodle_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
+{
+	struct snd_soc_card *card = &poodle;
+	int ret;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	locomo_gpio_set_dir(&poodle_locomo_device.dev,
 		POODLE_LOCOMO_GPIO_AMP_ON, 0);
 	/* should we mute HP at startup - burning power ?*/
@@ -306,6 +427,8 @@ static int __init poodle_init(void)
 	locomo_gpio_set_dir(&poodle_locomo_device.dev,
 		POODLE_LOCOMO_GPIO_MUTE_R, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	poodle_snd_device = platform_device_alloc("soc-audio", -1);
 	if (!poodle_snd_device)
 		return -ENOMEM;
@@ -326,8 +449,61 @@ static void __exit poodle_exit(void)
 
 module_init(poodle_init);
 module_exit(poodle_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	card->dev = &pdev->dev;
+
+	ret = snd_soc_register_card(card);
+	if (ret)
+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+			ret);
+	return ret;
+}
+
+<<<<<<< HEAD
+static int __devexit poodle_remove(struct platform_device *pdev)
+=======
+static int poodle_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
+{
+	struct snd_soc_card *card = platform_get_drvdata(pdev);
+
+	snd_soc_unregister_card(card);
+	return 0;
+}
+
+static struct platform_driver poodle_driver = {
+	.driver		= {
+		.name	= "poodle-audio",
+		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+	},
+	.probe		= poodle_probe,
+	.remove		= __devexit_p(poodle_remove),
+};
+
+module_platform_driver(poodle_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm     = &snd_soc_pm_ops,
+	},
+	.probe		= poodle_probe,
+	.remove		= poodle_remove,
+};
+
+module_platform_driver(poodle_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Richard Purdie");
 MODULE_DESCRIPTION("ALSA SoC Poodle");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:poodle-audio");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:poodle-audio");
+>>>>>>> refs/remotes/origin/master

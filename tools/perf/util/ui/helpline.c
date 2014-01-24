@@ -1,11 +1,18 @@
+<<<<<<< HEAD
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <newt.h>
+=======
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "../debug.h"
 #include "helpline.h"
 #include "ui.h"
+<<<<<<< HEAD
 
 void ui_helpline__pop(void)
 {
@@ -15,6 +22,25 @@ void ui_helpline__pop(void)
 void ui_helpline__push(const char *msg)
 {
 	newtPushHelpLine(msg);
+=======
+#include "libslang.h"
+
+void ui_helpline__pop(void)
+{
+}
+
+char ui_helpline__current[512];
+
+void ui_helpline__push(const char *msg)
+{
+	const size_t sz = sizeof(ui_helpline__current);
+
+	SLsmg_gotorc(SLtt_Screen_Rows - 1, 0);
+	SLsmg_set_color(0);
+	SLsmg_write_nstring((char *)msg, SLtt_Screen_Cols);
+	SLsmg_refresh();
+	strncpy(ui_helpline__current, msg, sz)[sz - 1] = '\0';
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void ui_helpline__vpush(const char *fmt, va_list ap)
@@ -57,13 +83,21 @@ int ui_helpline__show_help(const char *format, va_list ap)
 	static int backlog;
 
 	pthread_mutex_lock(&ui__lock);
+<<<<<<< HEAD
 	ret = vsnprintf(ui_helpline__last_msg + backlog,
+=======
+	ret = vscnprintf(ui_helpline__last_msg + backlog,
+>>>>>>> refs/remotes/origin/cm-10.0
 			sizeof(ui_helpline__last_msg) - backlog, format, ap);
 	backlog += ret;
 
 	if (ui_helpline__last_msg[backlog - 1] == '\n') {
 		ui_helpline__puts(ui_helpline__last_msg);
+<<<<<<< HEAD
 		newtRefresh();
+=======
+		SLsmg_refresh();
+>>>>>>> refs/remotes/origin/cm-10.0
 		backlog = 0;
 	}
 	pthread_mutex_unlock(&ui__lock);

@@ -1,5 +1,13 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	OSS handling
+=======
+ *	Operating System Services (OSS) chip handling
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Operating System Services (OSS) chip handling
+>>>>>>> refs/remotes/origin/master
  *	Written by Joshua M. Thompson (funaho@jurai.org)
  *
  *
@@ -19,8 +27,17 @@
 #include <linux/mm.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/irq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/bootinfo.h>
+=======
+#include <linux/irq.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/macintosh.h>
 #include <asm/macints.h>
 #include <asm/mac_via.h>
@@ -29,11 +46,17 @@
 int oss_present;
 volatile struct mac_oss *oss;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static irqreturn_t oss_irq(int, void *);
 static irqreturn_t oss_nubus_irq(int, void *);
 
 extern irqreturn_t via1_irq(int, void *);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialize the OSS
  *
@@ -53,6 +76,8 @@ void __init oss_init(void)
 	/* do this by setting the source's interrupt level to zero. */
 
 	for (i = 0; i <= OSS_NUM_SOURCES; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		oss->irq_level[i] = OSS_IRQLEV_DISABLED;
 	}
 	/* If we disable VIA1 here, we never really handle it... */
@@ -77,6 +102,14 @@ void __init oss_register_interrupts(void)
 	if (request_irq(OSS_IRQLEV_VIA1, via1_irq, IRQ_FLG_LOCK,
 			"via1", (void *) via1))
 		pr_err("Couldn't register %s interrupt\n", "via1");
+=======
+		oss->irq_level[i] = 0;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		oss->irq_level[i] = 0;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -88,6 +121,8 @@ void __init oss_nubus_init(void)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Handle miscellaneous OSS interrupts. Right now that's just sound
  * and SCSI; everything else is routed to its own autovector IRQ.
  */
@@ -118,6 +153,42 @@ static irqreturn_t oss_irq(int irq, void *dev_id)
 		/* FIXME: error check here? */
 	}
 	return IRQ_HANDLED;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Handle miscellaneous OSS interrupts.
+ */
+
+static void oss_irq(unsigned int irq, struct irq_desc *desc)
+{
+	int events = oss->irq_pending &
+	             (OSS_IP_IOPSCC | OSS_IP_SCSI | OSS_IP_IOPISM);
+
+#ifdef DEBUG_IRQS
+	if ((console_loglevel == 10) && !(events & OSS_IP_SCSI)) {
+		printk("oss_irq: irq %u events = 0x%04X\n", irq,
+			(int) oss->irq_pending);
+	}
+#endif
+
+	if (events & OSS_IP_IOPSCC) {
+		oss->irq_pending &= ~OSS_IP_IOPSCC;
+		generic_handle_irq(IRQ_MAC_SCC);
+	}
+
+	if (events & OSS_IP_SCSI) {
+		oss->irq_pending &= ~OSS_IP_SCSI;
+		generic_handle_irq(IRQ_MAC_SCSI);
+	}
+
+	if (events & OSS_IP_IOPISM) {
+		oss->irq_pending &= ~OSS_IP_IOPISM;
+		generic_handle_irq(IRQ_MAC_ADB);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -126,13 +197,29 @@ static irqreturn_t oss_irq(int irq, void *dev_id)
  * Unlike the VIA/RBV this is on its own autovector interrupt level.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static irqreturn_t oss_nubus_irq(int irq, void *dev_id)
+=======
+static void oss_nubus_irq(unsigned int irq, struct irq_desc *desc)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void oss_nubus_irq(unsigned int irq, struct irq_desc *desc)
+>>>>>>> refs/remotes/origin/master
 {
 	int events, irq_bit, i;
 
 	events = oss->irq_pending & OSS_IP_NUBUS;
 	if (!events)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return IRQ_NONE;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG_NUBUS_INT
 	if (console_loglevel > 7) {
@@ -148,10 +235,49 @@ static irqreturn_t oss_nubus_irq(int irq, void *dev_id)
 		irq_bit >>= 1;
 		if (events & irq_bit) {
 			oss->irq_pending &= ~irq_bit;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			m68k_handle_int(NUBUS_SOURCE_BASE + i);
 		}
 	} while(events & (irq_bit - 1));
 	return IRQ_HANDLED;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			generic_handle_irq(NUBUS_SOURCE_BASE + i);
+		}
+	} while(events & (irq_bit - 1));
+}
+
+/*
+ * Register the OSS and NuBus interrupt dispatchers.
+ *
+ * This IRQ mapping is laid out with two things in mind: first, we try to keep
+ * things on their own levels to avoid having to do double-dispatches. Second,
+ * the levels match as closely as possible the alternate IRQ mapping mode (aka
+ * "A/UX mode") available on some VIA machines.
+ */
+
+#define OSS_IRQLEV_IOPISM    IRQ_AUTO_1
+#define OSS_IRQLEV_SCSI      IRQ_AUTO_2
+#define OSS_IRQLEV_NUBUS     IRQ_AUTO_3
+#define OSS_IRQLEV_IOPSCC    IRQ_AUTO_4
+#define OSS_IRQLEV_VIA1      IRQ_AUTO_6
+
+void __init oss_register_interrupts(void)
+{
+	irq_set_chained_handler(OSS_IRQLEV_IOPISM, oss_irq);
+	irq_set_chained_handler(OSS_IRQLEV_SCSI,   oss_irq);
+	irq_set_chained_handler(OSS_IRQLEV_NUBUS,  oss_nubus_irq);
+	irq_set_chained_handler(OSS_IRQLEV_IOPSCC, oss_irq);
+	irq_set_chained_handler(OSS_IRQLEV_VIA1,   via1_irq);
+
+	/* OSS_VIA1 gets enabled here because it has no machspec interrupt. */
+	oss->irq_level[OSS_VIA1] = IRQ_AUTO_6;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -170,6 +296,8 @@ void oss_irq_enable(int irq) {
 	switch(irq) {
 		case IRQ_MAC_SCC:
 			oss->irq_level[OSS_IOPSCC] = OSS_IRQLEV_IOPSCC;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			break;
 		case IRQ_MAC_ADB:
 			oss->irq_level[OSS_IOPISM] = OSS_IRQLEV_IOPISM;
@@ -177,6 +305,20 @@ void oss_irq_enable(int irq) {
 		case IRQ_MAC_SCSI:
 			oss->irq_level[OSS_SCSI] = OSS_IRQLEV_SCSI;
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			return;
+		case IRQ_MAC_ADB:
+			oss->irq_level[OSS_IOPISM] = OSS_IRQLEV_IOPISM;
+			return;
+		case IRQ_MAC_SCSI:
+			oss->irq_level[OSS_SCSI] = OSS_IRQLEV_SCSI;
+			return;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case IRQ_NUBUS_9:
 		case IRQ_NUBUS_A:
 		case IRQ_NUBUS_B:
@@ -185,6 +327,8 @@ void oss_irq_enable(int irq) {
 		case IRQ_NUBUS_E:
 			irq -= NUBUS_SOURCE_BASE;
 			oss->irq_level[irq] = OSS_IRQLEV_NUBUS;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			break;
 #ifdef DEBUG_IRQUSE
 		default:
@@ -192,6 +336,18 @@ void oss_irq_enable(int irq) {
 			break;
 #endif
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			return;
+	}
+
+	if (IRQ_SRC(irq) == 1)
+		via_irq_enable(irq);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -207,6 +363,8 @@ void oss_irq_disable(int irq) {
 #endif
 	switch(irq) {
 		case IRQ_MAC_SCC:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			oss->irq_level[OSS_IOPSCC] = OSS_IRQLEV_DISABLED;
 			break;
 		case IRQ_MAC_ADB:
@@ -251,6 +409,21 @@ void oss_irq_clear(int irq) {
 		case IRQ_MAC_SCSI:
 			oss->irq_pending &= ~OSS_IP_SCSI;
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			oss->irq_level[OSS_IOPSCC] = 0;
+			return;
+		case IRQ_MAC_ADB:
+			oss->irq_level[OSS_IOPISM] = 0;
+			return;
+		case IRQ_MAC_SCSI:
+			oss->irq_level[OSS_SCSI] = 0;
+			return;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case IRQ_NUBUS_9:
 		case IRQ_NUBUS_A:
 		case IRQ_NUBUS_B:
@@ -258,6 +431,8 @@ void oss_irq_clear(int irq) {
 		case IRQ_NUBUS_D:
 		case IRQ_NUBUS_E:
 			irq -= NUBUS_SOURCE_BASE;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			oss->irq_pending &= ~(1 << irq);
 			break;
 	}
@@ -290,4 +465,17 @@ int oss_irq_pending(int irq)
 			break;
 	}
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			oss->irq_level[irq] = 0;
+			return;
+	}
+
+	if (IRQ_SRC(irq) == 1)
+		via_irq_disable(irq);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

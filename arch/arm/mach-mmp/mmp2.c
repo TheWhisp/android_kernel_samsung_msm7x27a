@@ -9,23 +9,46 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irq.h>
+#include <linux/irqchip/mmp.h>
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/hardware/cache-tauros2.h>
 
 #include <asm/mach/time.h>
 #include <mach/addr-map.h>
 #include <mach/regs-apbc.h>
+<<<<<<< HEAD
 #include <mach/regs-apmu.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/cputype.h>
 #include <mach/irqs.h>
 #include <mach/dma.h>
 #include <mach/mfp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/devices.h>
 #include <mach/mmp2.h>
 
@@ -34,8 +57,21 @@
 
 #define MFPR_VIRT_BASE	(APB_VIRT_BASE + 0x1e000)
 
+<<<<<<< HEAD
 #define APMASK(i)	(GPIO_REGS_VIRT + BANK_OFF(i) + 0x9c)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/devices.h>
+#include <mach/mmp2.h>
+#include <mach/pm-mmp2.h>
+
+#include "common.h"
+
+#define MFPR_VIRT_BASE	(APB_VIRT_BASE + 0x1e000)
+
+>>>>>>> refs/remotes/origin/master
 static struct mfp_addr_map mmp2_addr_map[] __initdata = {
 
 	MFP_ADDR_X(GPIO0, GPIO58, 0x54),
@@ -87,7 +123,17 @@ static struct mfp_addr_map mmp2_addr_map[] __initdata = {
 
 void mmp2_clear_pmic_int(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long mfpr_pmic, data;
+=======
+	void __iomem *mfpr_pmic;
+	unsigned long data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __iomem *mfpr_pmic;
+	unsigned long data;
+>>>>>>> refs/remotes/origin/master
 
 	mfpr_pmic = APB_VIRT_BASE + 0x1e000 + 0x2c4;
 	data = __raw_readl(mfpr_pmic);
@@ -95,6 +141,8 @@ void mmp2_clear_pmic_int(void)
 	__raw_writel(data, mfpr_pmic);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __init mmp2_init_gpio(void)
 {
 	int i;
@@ -113,6 +161,11 @@ void __init mmp2_init_irq(void)
 {
 	mmp2_init_icu();
 	mmp2_init_gpio();
+=======
+void __init mmp2_init_irq(void)
+{
+	mmp2_init_icu();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void sdhc_clk_enable(struct clk *clk)
@@ -149,6 +202,10 @@ static APBC_CLK(twsi3, MMP2_TWSI3, 0, 26000000);
 static APBC_CLK(twsi4, MMP2_TWSI4, 0, 26000000);
 static APBC_CLK(twsi5, MMP2_TWSI5, 0, 26000000);
 static APBC_CLK(twsi6, MMP2_TWSI6, 0, 26000000);
+<<<<<<< HEAD
+=======
+static APBC_CLK(gpio, MMP2_GPIO, 0, 26000000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static APMU_CLK(nand, NAND, 0xbf, 100000000);
 static APMU_CLK_OPS(sdh0, SDH0, 0x1b, 200000000, &sdhc_clk_ops);
@@ -168,48 +225,91 @@ static struct clk_lookup mmp2_clkregs[] = {
 	INIT_CLKREG(&clk_twsi5, "pxa2xx-i2c.4", NULL),
 	INIT_CLKREG(&clk_twsi6, "pxa2xx-i2c.5", NULL),
 	INIT_CLKREG(&clk_nand, "pxa3xx-nand", NULL),
+<<<<<<< HEAD
 	INIT_CLKREG(&clk_sdh0, "sdhci-pxa.0", "PXA-SDHCLK"),
 	INIT_CLKREG(&clk_sdh1, "sdhci-pxa.1", "PXA-SDHCLK"),
 	INIT_CLKREG(&clk_sdh2, "sdhci-pxa.2", "PXA-SDHCLK"),
 	INIT_CLKREG(&clk_sdh3, "sdhci-pxa.3", "PXA-SDHCLK"),
+=======
+	INIT_CLKREG(&clk_gpio, "pxa-gpio", NULL),
+	INIT_CLKREG(&clk_sdh0, "sdhci-pxav3.0", "PXA-SDHCLK"),
+	INIT_CLKREG(&clk_sdh1, "sdhci-pxav3.1", "PXA-SDHCLK"),
+	INIT_CLKREG(&clk_sdh2, "sdhci-pxav3.2", "PXA-SDHCLK"),
+	INIT_CLKREG(&clk_sdh3, "sdhci-pxav3.3", "PXA-SDHCLK"),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+void __init mmp2_init_irq(void)
+{
+	mmp2_init_icu();
+#ifdef CONFIG_PM
+	icu_irq_chip.irq_set_wake = mmp2_set_wake;
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __init mmp2_init(void)
 {
 	if (cpu_is_mmp2()) {
 #ifdef CONFIG_CACHE_TAUROS2
+<<<<<<< HEAD
 		tauros2_init();
+=======
+		tauros2_init(0);
+>>>>>>> refs/remotes/origin/master
 #endif
 		mfp_init_base(MFPR_VIRT_BASE);
 		mfp_init_addr(mmp2_addr_map);
 		pxa_init_dma(IRQ_MMP2_DMA_RIQ, 16);
+<<<<<<< HEAD
 		clkdev_add_table(ARRAY_AND_SIZE(mmp2_clkregs));
+=======
+		mmp2_clk_init();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
 postcore_initcall(mmp2_init);
 
+<<<<<<< HEAD
 static void __init mmp2_timer_init(void)
 {
 	unsigned long clk_rst;
 
 	__raw_writel(APBC_APBCLK | APBC_RST, APBC_MMP2_TIMERS);
+=======
+#define APBC_TIMERS	APBC_REG(0x024)
+
+void __init mmp2_timer_init(void)
+{
+	unsigned long clk_rst;
+
+	__raw_writel(APBC_APBCLK | APBC_RST, APBC_TIMERS);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * enable bus/functional clock, enable 6.5MHz (divider 4),
 	 * release reset
 	 */
 	clk_rst = APBC_APBCLK | APBC_FNCLK | APBC_FNCLKSEL(1);
+<<<<<<< HEAD
 	__raw_writel(clk_rst, APBC_MMP2_TIMERS);
+=======
+	__raw_writel(clk_rst, APBC_TIMERS);
+>>>>>>> refs/remotes/origin/master
 
 	timer_init(IRQ_MMP2_TIMER1);
 }
 
+<<<<<<< HEAD
 struct sys_timer mmp2_timer = {
 	.init	= mmp2_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* on-chip devices */
 MMP2_DEVICE(uart1, "pxa2xx-uart", 0, UART1, 0xd4030000, 0x30, 4, 5);
 MMP2_DEVICE(uart2, "pxa2xx-uart", 1, UART2, 0xd4017000, 0x30, 20, 21);
@@ -222,8 +322,48 @@ MMP2_DEVICE(twsi4, "pxa2xx-i2c", 3, TWSI4, 0xd4033000, 0x70);
 MMP2_DEVICE(twsi5, "pxa2xx-i2c", 4, TWSI5, 0xd4033800, 0x70);
 MMP2_DEVICE(twsi6, "pxa2xx-i2c", 5, TWSI6, 0xd4034000, 0x70);
 MMP2_DEVICE(nand, "pxa3xx-nand", -1, NAND, 0xd4283000, 0x100, 28, 29);
+<<<<<<< HEAD
+<<<<<<< HEAD
 MMP2_DEVICE(sdh0, "sdhci-pxa", 0, MMC, 0xd4280000, 0x120);
 MMP2_DEVICE(sdh1, "sdhci-pxa", 1, MMC2, 0xd4280800, 0x120);
 MMP2_DEVICE(sdh2, "sdhci-pxa", 2, MMC3, 0xd4281000, 0x120);
 MMP2_DEVICE(sdh3, "sdhci-pxa", 3, MMC4, 0xd4281800, 0x120);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+MMP2_DEVICE(sdh0, "sdhci-pxav3", 0, MMC, 0xd4280000, 0x120);
+MMP2_DEVICE(sdh1, "sdhci-pxav3", 1, MMC2, 0xd4280800, 0x120);
+MMP2_DEVICE(sdh2, "sdhci-pxav3", 2, MMC3, 0xd4281000, 0x120);
+MMP2_DEVICE(sdh3, "sdhci-pxav3", 3, MMC4, 0xd4281800, 0x120);
+MMP2_DEVICE(asram, "asram", -1, NONE, 0xe0000000, 0x4000);
+/* 0xd1000000 ~ 0xd101ffff is reserved for secure processor */
+MMP2_DEVICE(isram, "isram", -1, NONE, 0xd1020000, 0x18000);
+
+struct resource mmp2_resource_gpio[] = {
+	{
+		.start	= 0xd4019000,
+		.end	= 0xd4019fff,
+		.flags	= IORESOURCE_MEM,
+	}, {
+		.start	= IRQ_MMP2_GPIO,
+		.end	= IRQ_MMP2_GPIO,
+		.name	= "gpio_mux",
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+struct platform_device mmp2_device_gpio = {
+<<<<<<< HEAD
+	.name		= "pxa-gpio",
+=======
+	.name		= "mmp2-gpio",
+>>>>>>> refs/remotes/origin/master
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(mmp2_resource_gpio),
+	.resource	= mmp2_resource_gpio,
+};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

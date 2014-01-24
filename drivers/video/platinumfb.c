@@ -313,7 +313,12 @@ static void platinum_set_hardware(struct fb_info_platinum *pinfo)
 /*
  * Set misc info vars for this driver
  */
+<<<<<<< HEAD
 static void __devinit platinum_init_info(struct fb_info *info, struct fb_info_platinum *pinfo)
+=======
+static void platinum_init_info(struct fb_info *info,
+			       struct fb_info_platinum *pinfo)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Fill fb_info */
 	info->fbops = &platinumfb_ops;
@@ -338,7 +343,11 @@ static void __devinit platinum_init_info(struct fb_info *info, struct fb_info_pl
 }
 
 
+<<<<<<< HEAD
 static int __devinit platinum_init_fb(struct fb_info *info)
+=======
+static int platinum_init_fb(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info_platinum *pinfo = info->par;
 	struct fb_var_screeninfo var;
@@ -402,7 +411,11 @@ try_again:
 	if (rc < 0)
 		return rc;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: Apple Platinum frame buffer device\n", info->node);
+=======
+	fb_info(info, "Apple Platinum frame buffer device\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -490,7 +503,15 @@ static int platinum_var_to_par(struct fb_var_screeninfo *var,
 
 
 /* 
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Parse user speficied options (`video=platinumfb:')
+=======
+ * Parse user specified options (`video=platinumfb:')
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Parse user specified options (`video=platinumfb:')
+>>>>>>> refs/remotes/origin/master
  */
 static int __init platinumfb_setup(char *options)
 {
@@ -533,7 +554,11 @@ static int __init platinumfb_setup(char *options)
 #define invalidate_cache(addr)
 #endif
 
+<<<<<<< HEAD
 static int __devinit platinumfb_probe(struct platform_device* odev)
+=======
+static int platinumfb_probe(struct platform_device* odev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node	*dp = odev->dev.of_node;
 	struct fb_info		*info;
@@ -567,7 +592,15 @@ static int __devinit platinumfb_probe(struct platform_device* odev)
 	 * northbridge and that can fail. Only request framebuffer
 	 */
 	if (!request_mem_region(pinfo->rsrc_fb.start,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				pinfo->rsrc_fb.end - pinfo->rsrc_fb.start + 1,
+=======
+				resource_size(&pinfo->rsrc_fb),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				resource_size(&pinfo->rsrc_fb),
+>>>>>>> refs/remotes/origin/master
 				"platinumfb framebuffer")) {
 		printk(KERN_ERR "platinumfb: Can't request framebuffer !\n");
 		framebuffer_release(info);
@@ -638,14 +671,21 @@ static int __devinit platinumfb_probe(struct platform_device* odev)
 		iounmap(pinfo->frame_buffer);
 		iounmap(pinfo->platinum_regs);
 		iounmap(pinfo->cmap_regs);
+<<<<<<< HEAD
 		dev_set_drvdata(&odev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		framebuffer_release(info);
 	}
 
 	return rc;
 }
 
+<<<<<<< HEAD
 static int __devexit platinumfb_remove(struct platform_device* odev)
+=======
+static int platinumfb_remove(struct platform_device* odev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info		*info = dev_get_drvdata(&odev->dev);
 	struct fb_info_platinum	*pinfo = info->par;
@@ -658,8 +698,16 @@ static int __devexit platinumfb_remove(struct platform_device* odev)
 	iounmap(pinfo->cmap_regs);
 
 	release_mem_region(pinfo->rsrc_fb.start,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   pinfo->rsrc_fb.end -
 			   pinfo->rsrc_fb.start + 1);
+=======
+			   resource_size(&pinfo->rsrc_fb));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   resource_size(&pinfo->rsrc_fb));
+>>>>>>> refs/remotes/origin/master
 
 	release_mem_region(pinfo->cmap_regs_phys, 0x1000);
 
@@ -684,7 +732,15 @@ static struct platform_driver platinum_driver =
 		.of_match_table = platinumfb_match,
 	},
 	.probe		= platinumfb_probe,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.remove		= platinumfb_remove,
+=======
+	.remove		= __devexit_p(platinumfb_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= platinumfb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init platinumfb_init(void)

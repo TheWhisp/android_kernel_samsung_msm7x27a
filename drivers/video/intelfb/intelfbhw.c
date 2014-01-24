@@ -390,12 +390,27 @@ int intelfbhw_pan_display(struct fb_var_screeninfo *var, struct fb_info *info)
 	xoffset = ROUND_DOWN_TO(var->xoffset, 8);
 	yoffset = var->yoffset;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((xoffset + var->xres > var->xres_virtual) ||
 	    (yoffset + var->yres > var->yres_virtual))
 		return -EINVAL;
 
 	offset = (yoffset * dinfo->pitch) +
 		 (xoffset * var->bits_per_pixel) / 8;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if ((xoffset + info->var.xres > info->var.xres_virtual) ||
+	    (yoffset + info->var.yres > info->var.yres_virtual))
+		return -EINVAL;
+
+	offset = (yoffset * dinfo->pitch) +
+		 (xoffset * info->var.bits_per_pixel) / 8;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	offset += dinfo->fb.offset << 12;
 

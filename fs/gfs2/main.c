@@ -16,7 +16,17 @@
 #include <linux/gfs2_ondisk.h>
 #include <linux/rcupdate.h>
 #include <linux/rculist_bl.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+#include <linux/mempool.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <linux/mempool.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "gfs2.h"
 #include "incore.h"
@@ -28,11 +38,21 @@
 #include "recovery.h"
 #include "dir.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct workqueue_struct *gfs2_control_wq;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct shrinker qd_shrinker = {
 	.shrink = gfs2_shrink_qd_memory,
 	.seeks = DEFAULT_SEEKS,
 };
 
+=======
+struct workqueue_struct *gfs2_control_wq;
+
+>>>>>>> refs/remotes/origin/master
 static void gfs2_init_inode_once(void *foo)
 {
 	struct gfs2_inode *ip = foo;
@@ -40,7 +60,18 @@ static void gfs2_init_inode_once(void *foo)
 	inode_init_once(&ip->i_inode);
 	init_rwsem(&ip->i_rw_mutex);
 	INIT_LIST_HEAD(&ip->i_trunc_list);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ip->i_alloc = NULL;
+=======
+	ip->i_qadata = NULL;
+	ip->i_res = NULL;
+	ip->i_hash_cache = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ip->i_res = NULL;
+	ip->i_hash_cache = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void gfs2_init_glock_once(void *foo)
@@ -65,6 +96,22 @@ static void gfs2_init_gl_aspace_once(void *foo)
 	address_space_init_once(mapping);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static void *gfs2_bh_alloc(gfp_t mask, void *data)
+{
+	return alloc_buffer_head(mask);
+}
+
+static void gfs2_bh_free(void *ptr, void *data)
+{
+	return free_buffer_head(ptr);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * init_gfs2_fs - Register GFS2 as a filesystem
  *
@@ -77,11 +124,22 @@ static int __init init_gfs2_fs(void)
 
 	gfs2_str2qstr(&gfs2_qdot, ".");
 	gfs2_str2qstr(&gfs2_qdotdot, "..");
+<<<<<<< HEAD
+=======
+	gfs2_quota_hash_init();
+>>>>>>> refs/remotes/origin/master
 
 	error = gfs2_sys_init();
 	if (error)
 		return error;
 
+<<<<<<< HEAD
+=======
+	error = list_lru_init(&gfs2_qd_lru);
+	if (error)
+		goto fail_lru;
+
+>>>>>>> refs/remotes/origin/master
 	error = gfs2_glock_init();
 	if (error)
 		goto fail;
@@ -128,7 +186,17 @@ static int __init init_gfs2_fs(void)
 	if (!gfs2_quotad_cachep)
 		goto fail;
 
+<<<<<<< HEAD
 	register_shrinker(&qd_shrinker);
+=======
+	gfs2_rsrv_cachep = kmem_cache_create("gfs2_mblk",
+					     sizeof(struct gfs2_blkreserv),
+					       0, 0, NULL);
+	if (!gfs2_rsrv_cachep)
+		goto fail;
+
+	register_shrinker(&gfs2_qd_shrinker);
+>>>>>>> refs/remotes/origin/master
 
 	error = register_filesystem(&gfs2_fs_type);
 	if (error)
@@ -144,20 +212,68 @@ static int __init init_gfs2_fs(void)
 	if (!gfs_recovery_wq)
 		goto fail_wq;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	gfs2_control_wq = alloc_workqueue("gfs2_control",
+			       WQ_NON_REENTRANT | WQ_UNBOUND | WQ_FREEZABLE, 0);
+	if (!gfs2_control_wq)
+		goto fail_recovery;
+
+	gfs2_bh_pool = mempool_create(1024, gfs2_bh_alloc, gfs2_bh_free, NULL);
+	if (!gfs2_bh_pool)
+		goto fail_control;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gfs2_control_wq = alloc_workqueue("gfs2_control",
+					  WQ_UNBOUND | WQ_FREEZABLE, 0);
+	if (!gfs2_control_wq)
+		goto fail_recovery;
+
+	gfs2_page_pool = mempool_create_page_pool(64, 0);
+	if (!gfs2_page_pool)
+		goto fail_control;
+
+>>>>>>> refs/remotes/origin/master
 	gfs2_register_debugfs();
 
 	printk("GFS2 installed\n");
 
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+fail_control:
+	destroy_workqueue(gfs2_control_wq);
+fail_recovery:
+	destroy_workqueue(gfs_recovery_wq);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 fail_wq:
 	unregister_filesystem(&gfs2meta_fs_type);
 fail_unregister:
 	unregister_filesystem(&gfs2_fs_type);
 fail:
+<<<<<<< HEAD
 	unregister_shrinker(&qd_shrinker);
 	gfs2_glock_exit();
 
+=======
+	list_lru_destroy(&gfs2_qd_lru);
+fail_lru:
+	unregister_shrinker(&gfs2_qd_shrinker);
+	gfs2_glock_exit();
+
+	if (gfs2_rsrv_cachep)
+		kmem_cache_destroy(gfs2_rsrv_cachep);
+
+>>>>>>> refs/remotes/origin/master
 	if (gfs2_quotad_cachep)
 		kmem_cache_destroy(gfs2_quotad_cachep);
 
@@ -187,15 +303,37 @@ fail:
 
 static void __exit exit_gfs2_fs(void)
 {
+<<<<<<< HEAD
 	unregister_shrinker(&qd_shrinker);
+=======
+	unregister_shrinker(&gfs2_qd_shrinker);
+>>>>>>> refs/remotes/origin/master
 	gfs2_glock_exit();
 	gfs2_unregister_debugfs();
 	unregister_filesystem(&gfs2_fs_type);
 	unregister_filesystem(&gfs2meta_fs_type);
 	destroy_workqueue(gfs_recovery_wq);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	rcu_barrier();
 
+=======
+	destroy_workqueue(gfs2_control_wq);
+
+	rcu_barrier();
+
+	mempool_destroy(gfs2_bh_pool);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	destroy_workqueue(gfs2_control_wq);
+	list_lru_destroy(&gfs2_qd_lru);
+
+	rcu_barrier();
+
+	mempool_destroy(gfs2_page_pool);
+	kmem_cache_destroy(gfs2_rsrv_cachep);
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(gfs2_quotad_cachep);
 	kmem_cache_destroy(gfs2_rgrpd_cachep);
 	kmem_cache_destroy(gfs2_bufdata_cachep);

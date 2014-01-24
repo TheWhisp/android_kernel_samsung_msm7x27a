@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 config RTL8192E
 	tristate "RealTek RTL8192E Wireless LAN NIC driver"
 	depends on PCI && WLAN
@@ -7,3 +9,66 @@ config RTL8192E
 	select CRYPTO
 	default N
 	---help---
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config RTLLIB
+	tristate "Support for rtllib wireless devices"
+	depends on WLAN && m
+	default n
+	select LIB80211
+	---help---
+	  If you have a wireless card that uses rtllib, say
+	  Y. Currently the only card is the rtl8192e.
+
+	  If unsure, say N.
+
+if RTLLIB
+
+config RTLLIB_CRYPTO_CCMP
+	tristate "Support for rtllib CCMP crypto"
+	depends on RTLLIB
+<<<<<<< HEAD
+=======
+	select CRYPTO_AES
+>>>>>>> refs/remotes/origin/master
+	default y
+	---help---
+	  CCMP crypto driver for rtllib.
+
+	  If you enabled RTLLIB, you want this.
+
+config RTLLIB_CRYPTO_TKIP
+	tristate "Support for rtllib TKIP crypto"
+	depends on RTLLIB
+<<<<<<< HEAD
+=======
+	select CRYPTO_ARC4
+	select CRYPTO_MICHAEL_MIC
+>>>>>>> refs/remotes/origin/master
+	default y
+	---help---
+	  TKIP crypto driver for rtllib.
+
+	  If you enabled RTLLIB, you want this.
+
+config RTLLIB_CRYPTO_WEP
+	tristate "Support for rtllib WEP crypto"
+<<<<<<< HEAD
+=======
+	select CRYPTO_ARC4
+>>>>>>> refs/remotes/origin/master
+	depends on RTLLIB
+	default y
+	---help---
+	  TKIP crypto driver for rtllib.
+
+	  If you enabled RTLLIB, you want this.
+
+source "drivers/staging/rtl8192e/rtl8192e/Kconfig"
+
+endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

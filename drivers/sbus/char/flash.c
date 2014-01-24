@@ -16,7 +16,13 @@
 #include <linux/of.h>
 #include <linux/of_device.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/io.h>
@@ -160,7 +166,11 @@ static const struct file_operations flash_fops = {
 
 static struct miscdevice flash_dev = { FLASH_MINOR, "flash", &flash_fops };
 
+<<<<<<< HEAD
 static int __devinit flash_probe(struct platform_device *op)
+=======
+static int flash_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	struct device_node *parent;
@@ -191,7 +201,11 @@ static int __devinit flash_probe(struct platform_device *op)
 	return misc_register(&flash_dev);
 }
 
+<<<<<<< HEAD
 static int __devexit flash_remove(struct platform_device *op)
+=======
+static int flash_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	misc_deregister(&flash_dev);
 
@@ -213,9 +227,11 @@ static struct platform_driver flash_driver = {
 		.of_match_table = flash_match,
 	},
 	.probe		= flash_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(flash_remove),
 };
 
+<<<<<<< HEAD
 static int __init flash_init(void)
 {
 	return platform_driver_register(&flash_driver);
@@ -228,4 +244,15 @@ static void __exit flash_cleanup(void)
 
 module_init(flash_init);
 module_exit(flash_cleanup);
+=======
+module_platform_driver(flash_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= flash_remove,
+};
+
+module_platform_driver(flash_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

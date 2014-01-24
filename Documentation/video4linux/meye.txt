@@ -55,7 +55,15 @@ Module use:
 -----------
 
 In order to automatically load the meye module on use, you can put those lines
+<<<<<<< HEAD
+<<<<<<< HEAD
 in your /etc/modprobe.conf file:
+=======
+in your /etc/modprobe.d/meye.conf file:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+in your /etc/modprobe.d/meye.conf file:
+>>>>>>> refs/remotes/origin/master
 
 	alias char-major-81 videodev
 	alias char-major-81-0 meye

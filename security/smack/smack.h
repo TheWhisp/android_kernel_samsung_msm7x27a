@@ -23,13 +23,60 @@
 #include <linux/lsm_audit.h>
 
 /*
+<<<<<<< HEAD
+=======
+ * Smack labels were limited to 23 characters for a long time.
+ */
+#define SMK_LABELLEN	24
+#define SMK_LONGLABEL	256
+
+/*
+ * This is the repository for labels seen so that it is
+ * not necessary to keep allocating tiny chuncks of memory
+ * and so that they can be shared.
+ *
+ * Labels are never modified in place. Anytime a label
+ * is imported (e.g. xattrset on a file) the list is checked
+ * for it and it is added if it doesn't exist. The address
+ * is passed out in either case. Entries are added, but
+ * never deleted.
+ *
+ * Since labels are hanging around anyway it doesn't
+ * hurt to maintain a secid for those awkward situations
+ * where kernel components that ought to use LSM independent
+ * interfaces don't. The secid should go away when all of
+ * these components have been repaired.
+ *
+ * The cipso value associated with the label gets stored here, too.
+ *
+ * Keep the access rules for this subject label here so that
+ * the entire set of rules does not need to be examined every
+ * time.
+ */
+struct smack_known {
+	struct list_head		list;
+	struct hlist_node		smk_hashed;
+	char				*smk_known;
+	u32				smk_secid;
+	struct netlbl_lsm_secattr	smk_netlabel;	/* on wire labels */
+	struct list_head		smk_rules;	/* access rules */
+	struct mutex			smk_rules_lock;	/* lock for rules */
+};
+
+/*
+ * Maximum number of bytes for the levels in a CIPSO IP option.
+>>>>>>> refs/remotes/origin/master
  * Why 23? CIPSO is constrained to 30, so a 32 byte buffer is
  * bigger than can be used, and 24 is the next lower multiple
  * of 8, and there are too many issues if there isn't space set
  * aside for the terminating null byte.
  */
+<<<<<<< HEAD
 #define SMK_MAXLEN	23
 #define SMK_LABELLEN	(SMK_MAXLEN+1)
+=======
+#define SMK_CIPSOLEN	24
+>>>>>>> refs/remotes/origin/master
 
 struct superblock_smack {
 	char		*smk_root;
@@ -37,19 +84,35 @@ struct superblock_smack {
 	char		*smk_hat;
 	char		*smk_default;
 	int		smk_initialized;
+<<<<<<< HEAD
 	spinlock_t	smk_sblock;	/* for initialization */
 };
 
 struct socket_smack {
+<<<<<<< HEAD
 	char		*smk_out;			/* outbound label */
 	char		*smk_in;			/* inbound label */
 	char		smk_packet[SMK_LABELLEN];	/* TCP peer label */
+=======
+	char		*smk_out;	/* outbound label */
+	char		*smk_in;	/* inbound label */
+	char		*smk_packet;	/* TCP peer label */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+struct socket_smack {
+	struct smack_known	*smk_out;	/* outbound label */
+	char			*smk_in;	/* inbound label */
+	char			*smk_packet;	/* TCP peer label */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
  * Inode smack data
  */
 struct inode_smack {
+<<<<<<< HEAD
 	char		*smk_inode;	/* label of the fso */
 	char		*smk_task;	/* label of the task */
 	char		*smk_mmap;	/* label of the mmap domain */
@@ -60,24 +123,45 @@ struct inode_smack {
 struct task_smack {
 	char			*smk_task;	/* label for access control */
 	char			*smk_forked;	/* label when forked */
+=======
+	char			*smk_inode;	/* label of the fso */
+	struct smack_known	*smk_task;	/* label of the task */
+	struct smack_known	*smk_mmap;	/* label of the mmap domain */
+	struct mutex		smk_lock;	/* initialization lock */
+	int			smk_flags;	/* smack inode flags */
+};
+
+struct task_smack {
+	struct smack_known	*smk_task;	/* label for access control */
+	struct smack_known	*smk_forked;	/* label when forked */
+>>>>>>> refs/remotes/origin/master
 	struct list_head	smk_rules;	/* per task access rules */
 	struct mutex		smk_rules_lock;	/* lock for the rules */
 };
 
 #define	SMK_INODE_INSTANT	0x01	/* inode is instantiated */
 #define	SMK_INODE_TRANSMUTE	0x02	/* directory is transmuting */
+<<<<<<< HEAD
+=======
+#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * A label access rule.
  */
 struct smack_rule {
 	struct list_head	list;
+<<<<<<< HEAD
 	char			*smk_subject;
+=======
+	struct smack_known	*smk_subject;
+>>>>>>> refs/remotes/origin/master
 	char			*smk_object;
 	int			smk_access;
 };
 
 /*
+<<<<<<< HEAD
  * An entry in the table mapping smack values to
  * CIPSO level/category-set values.
  */
@@ -87,6 +171,8 @@ struct smack_cipso {
 };
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * An entry in the table identifying hosts.
  */
 struct smk_netlbladdr {
@@ -97,6 +183,7 @@ struct smk_netlbladdr {
 };
 
 /*
+<<<<<<< HEAD
  * This is the repository for labels seen so that it is
  * not necessary to keep allocating tiny chuncks of memory
  * and so that they can be shared.
@@ -116,13 +203,36 @@ struct smk_netlbladdr {
  * If there is a cipso value associated with the label it
  * gets stored here, too. This will most likely be rare as
  * the cipso direct mapping in used internally.
+<<<<<<< HEAD
+=======
+ *
+ * Keep the access rules for this subject label here so that
+ * the entire set of rules does not need to be examined every
+ * time.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct smack_known {
 	struct list_head	list;
 	char			smk_known[SMK_LABELLEN];
 	u32			smk_secid;
 	struct smack_cipso	*smk_cipso;
+<<<<<<< HEAD
 	spinlock_t		smk_cipsolock; /* for changing cipso map */
+=======
+	spinlock_t		smk_cipsolock;	/* for changing cipso map */
+	struct list_head	smk_rules;	/* access rules */
+	struct mutex		smk_rules_lock;	/* lock for the rules */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * An entry in the table identifying ports.
+ */
+struct smk_port_label {
+	struct list_head	list;
+	struct sock		*smk_sock;	/* socket initialized on */
+	unsigned short		smk_port;	/* the port number */
+	char			*smk_in;	/* incoming label */
+	struct smack_known	*smk_out;	/* outgoing label */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -132,6 +242,10 @@ struct smack_known {
 #define SMK_FSFLOOR	"smackfsfloor="
 #define SMK_FSHAT	"smackfshat="
 #define SMK_FSROOT	"smackfsroot="
+<<<<<<< HEAD
+=======
+#define SMK_FSTRANS	"smackfstransmute="
+>>>>>>> refs/remotes/origin/master
 
 #define SMACK_CIPSO_OPTION 	"-CIPSO"
 
@@ -149,17 +263,24 @@ struct smack_known {
 #define SMACK_CIPSO_SOCKET	1
 
 /*
+<<<<<<< HEAD
  * smackfs magic number
+<<<<<<< HEAD
  * smackfs macic number
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 #define SMACK_MAGIC	0x43415d53 /* "SMAC" */
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * CIPSO defaults.
  */
 #define SMACK_CIPSO_DOI_DEFAULT		3	/* Historical */
 #define SMACK_CIPSO_DOI_INVALID		-1	/* Not a DOI */
 #define SMACK_CIPSO_DIRECT_DEFAULT	250	/* Arbitrary */
+<<<<<<< HEAD
 #define SMACK_CIPSO_MAXCATVAL		63	/* Bigger gets harder */
 #define SMACK_CIPSO_MAXLEVEL            255     /* CIPSO 2.2 standard */
 #define SMACK_CIPSO_MAXCATNUM           239     /* CIPSO 2.2 standard */
@@ -168,6 +289,25 @@ struct smack_known {
  * Flag for transmute access
  */
 #define MAY_TRANSMUTE	64
+=======
+#define SMACK_CIPSO_MAPPED_DEFAULT	251	/* Also arbitrary */
+#define SMACK_CIPSO_MAXLEVEL            255     /* CIPSO 2.2 standard */
+/*
+ * CIPSO 2.2 standard is 239, but Smack wants to use the
+ * categories in a structured way that limits the value to
+ * the bits in 23 bytes, hence the unusual number.
+ */
+#define SMACK_CIPSO_MAXCATNUM           184     /* 23 * 8 */
+
+/*
+ * Flags for untraditional access modes.
+ * It shouldn't be necessary to avoid conflicts with definitions
+ * in fs.h, but do so anyway.
+ */
+#define MAY_TRANSMUTE	0x00001000	/* Controls directory labeling */
+#define MAY_LOCK	0x00002000	/* Locks should be writes, but ... */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Just to make the common cases easier to deal with
  */
@@ -176,9 +316,33 @@ struct smack_known {
 #define MAY_NOT		0
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Number of access types used by Smack (rwxa)
  */
 #define SMK_NUM_ACCESS_TYPE 4
+=======
+ * Number of access types used by Smack (rwxat)
+ */
+#define SMK_NUM_ACCESS_TYPE 5
+=======
+ * Number of access types used by Smack (rwxatl)
+ */
+#define SMK_NUM_ACCESS_TYPE 6
+>>>>>>> refs/remotes/origin/master
+
+/* SMACK data */
+struct smack_audit_data {
+	const char *function;
+	char *subject;
+	char *object;
+	char *request;
+	int result;
+};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Smack audit data; is empty if CONFIG_AUDIT not set
@@ -187,6 +351,14 @@ struct smack_known {
 struct smk_audit_info {
 #ifdef CONFIG_AUDIT
 	struct common_audit_data a;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct smack_audit_data sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct smack_audit_data sad;
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 /*
@@ -198,21 +370,49 @@ struct inode_smack *new_inode_smack(char *);
  * These functions are in smack_access.c
  */
 int smk_access_entry(char *, char *, struct list_head *);
+<<<<<<< HEAD
 int smk_access(char *, char *, int, struct smk_audit_info *);
 int smk_curacc(char *, u32, struct smk_audit_info *);
 int smack_to_cipso(const char *, struct smack_cipso *);
+<<<<<<< HEAD
 void smack_from_cipso(u32, char *, char *);
 char *smack_from_secid(const u32);
 char *smk_import(const char *, int);
 struct smack_known *smk_import_entry(const char *, int);
+=======
+char *smack_from_cipso(u32, char *);
+char *smack_from_secid(const u32);
+void smk_parse_smack(const char *string, int len, char *smack);
+char *smk_import(const char *, int);
+struct smack_known *smk_import_entry(const char *, int);
+struct smack_known *smk_find_entry(const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int smk_access(struct smack_known *, char *, int, struct smk_audit_info *);
+int smk_curacc(char *, u32, struct smk_audit_info *);
+struct smack_known *smack_from_secid(const u32);
+char *smk_parse_smack(const char *string, int len);
+int smk_netlbl_mls(int, char *, struct netlbl_lsm_secattr *, int);
+char *smk_import(const char *, int);
+struct smack_known *smk_import_entry(const char *, int);
+void smk_insert_entry(struct smack_known *skp);
+struct smack_known *smk_find_entry(const char *);
+>>>>>>> refs/remotes/origin/master
 u32 smack_to_secid(const char *);
 
 /*
  * Shared data.
  */
 extern int smack_cipso_direct;
+<<<<<<< HEAD
 extern char *smack_net_ambient;
 extern char *smack_onlycap;
+=======
+extern int smack_cipso_mapped;
+extern struct smack_known *smack_net_ambient;
+extern struct smack_known *smack_onlycap;
+extern struct smack_known *smack_syslog_label;
+>>>>>>> refs/remotes/origin/master
 extern const char *smack_cipso_option;
 
 extern struct smack_known smack_known_floor;
@@ -222,12 +422,21 @@ extern struct smack_known smack_known_invalid;
 extern struct smack_known smack_known_star;
 extern struct smack_known smack_known_web;
 
+<<<<<<< HEAD
 extern struct list_head smack_known_list;
+<<<<<<< HEAD
 extern struct list_head smack_rule_list;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct mutex	smack_known_lock;
+extern struct list_head smack_known_list;
+>>>>>>> refs/remotes/origin/master
 extern struct list_head smk_netlbladdr_list;
 
 extern struct security_operations smack_ops;
 
+<<<<<<< HEAD
 /*
  * Stricly for CIPSO level manipulation.
  * Set the category bit number in a smack label sized buffer.
@@ -239,6 +448,10 @@ static inline void smack_catset_bit(int cat, char *catsetp)
 
 	catsetp[(cat - 1) / 8] |= 0x80 >> ((cat - 1) % 8);
 }
+=======
+#define SMACK_HASH_SLOTS 16
+extern struct hlist_head smack_known_hash[SMACK_HASH_SLOTS];
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Is the directory transmuting?
@@ -259,17 +472,29 @@ static inline char *smk_of_inode(const struct inode *isp)
 }
 
 /*
+<<<<<<< HEAD
  * Present a pointer to the smack label in an task blob.
  */
 static inline char *smk_of_task(const struct task_smack *tsp)
+=======
+ * Present a pointer to the smack label entry in an task blob.
+ */
+static inline struct smack_known *smk_of_task(const struct task_smack *tsp)
+>>>>>>> refs/remotes/origin/master
 {
 	return tsp->smk_task;
 }
 
 /*
+<<<<<<< HEAD
  * Present a pointer to the forked smack label in an task blob.
  */
 static inline char *smk_of_forked(const struct task_smack *tsp)
+=======
+ * Present a pointer to the forked smack label entry in an task blob.
+ */
+static inline struct smack_known *smk_of_forked(const struct task_smack *tsp)
+>>>>>>> refs/remotes/origin/master
 {
 	return tsp->smk_forked;
 }
@@ -277,12 +502,34 @@ static inline char *smk_of_forked(const struct task_smack *tsp)
 /*
  * Present a pointer to the smack label in the current task blob.
  */
+<<<<<<< HEAD
 static inline char *smk_of_current(void)
+=======
+static inline struct smack_known *smk_of_current(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return smk_of_task(current_security());
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Is the task privileged and allowed to be privileged
+ * by the onlycap rule.
+ */
+static inline int smack_privileged(int cap)
+{
+	struct smack_known *skp = smk_of_current();
+
+	if (!capable(cap))
+		return 0;
+	if (smack_onlycap == NULL || smack_onlycap == skp)
+		return 1;
+	return 0;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * logging functions
  */
 #define SMACK_AUDIT_DENIED 0x1
@@ -303,9 +550,30 @@ void smack_log(char *subject_label, char *object_label,
 static inline void smk_ad_init(struct smk_audit_info *a, const char *func,
 			       char type)
 {
+<<<<<<< HEAD
 	memset(a, 0, sizeof(*a));
 	a->a.type = type;
+<<<<<<< HEAD
 	a->a.smack_audit_data.function = func;
+=======
+=======
+	memset(&a->sad, 0, sizeof(a->sad));
+	a->a.type = type;
+>>>>>>> refs/remotes/origin/master
+	a->a.smack_audit_data = &a->sad;
+	a->a.smack_audit_data->function = func;
+}
+
+static inline void smk_ad_init_net(struct smk_audit_info *a, const char *func,
+				   char type, struct lsm_network_audit *net)
+{
+	smk_ad_init(a, func, type);
+	memset(net, 0, sizeof(*net));
+	a->a.u.net = net;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void smk_ad_setfield_u_tsk(struct smk_audit_info *a,
@@ -331,7 +599,15 @@ static inline void smk_ad_setfield_u_fs_path(struct smk_audit_info *a,
 static inline void smk_ad_setfield_u_net_sk(struct smk_audit_info *a,
 					    struct sock *sk)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	a->a.u.net.sk = sk;
+=======
+	a->a.u.net->sk = sk;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	a->a.u.net->sk = sk;
+>>>>>>> refs/remotes/origin/master
 }
 
 #else /* no AUDIT */

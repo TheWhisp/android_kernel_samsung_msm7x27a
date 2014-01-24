@@ -9,6 +9,7 @@
 
 struct mm_struct;
 
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_VM
 extern void assert_pte_locked(struct mm_struct *mm, unsigned long addr);
 #else /* CONFIG_DEBUG_VM */
@@ -17,6 +18,8 @@ static inline void assert_pte_locked(struct mm_struct *mm, unsigned long addr)
 }
 #endif /* !CONFIG_DEBUG_VM */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !__ASSEMBLY__ */
 
 #if defined(CONFIG_PPC64)
@@ -25,8 +28,21 @@ static inline void assert_pte_locked(struct mm_struct *mm, unsigned long addr)
 #  include <asm/pgtable-ppc32.h>
 #endif
 
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
 
+=======
+/*
+ * We save the slot number & secondary bit in the second half of the
+ * PTE page. We use the 8 bytes per each pte entry.
+ */
+#define PTE_PAGE_HIDX_OFFSET (PTRS_PER_PTE * 8)
+
+#ifndef __ASSEMBLY__
+
+#include <asm/tlbflush.h>
+
+>>>>>>> refs/remotes/origin/master
 /* Generic accessors to PTE bits */
 static inline int pte_write(pte_t pte)		{ return pte_val(pte) & _PAGE_RW; }
 static inline int pte_dirty(pte_t pte)		{ return pte_val(pte) & _PAGE_DIRTY; }
@@ -170,6 +186,18 @@ extern int ptep_set_access_flags(struct vm_area_struct *vma, unsigned long addre
 #define pgprot_cached_wthru(prot) (__pgprot((pgprot_val(prot) & ~_PAGE_CACHE_CTL) | \
 				            _PAGE_COHERENT | _PAGE_WRITETHRU))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pgprot_cached_noncoherent(prot) \
+		(__pgprot(pgprot_val(prot) & ~_PAGE_CACHE_CTL))
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pgprot_cached_noncoherent(prot) \
+		(__pgprot(pgprot_val(prot) & ~_PAGE_CACHE_CTL))
+
+>>>>>>> refs/remotes/origin/master
 #define pgprot_writecombine pgprot_noncached_wc
 
 struct file;
@@ -195,9 +223,12 @@ extern void paging_init(void);
  */
 #define kern_addr_valid(addr)	(1)
 
+<<<<<<< HEAD
 #define io_remap_pfn_range(vma, vaddr, pfn, size, prot)		\
 		remap_pfn_range(vma, vaddr, pfn, size, prot)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/pgtable.h>
 
 
@@ -215,6 +246,17 @@ extern void update_mmu_cache(struct vm_area_struct *, unsigned long, pte_t *);
 extern int gup_hugepd(hugepd_t *hugepd, unsigned pdshift, unsigned long addr,
 		      unsigned long end, int write, struct page **pages, int *nr);
 
+<<<<<<< HEAD
+=======
+extern int gup_hugepte(pte_t *ptep, unsigned long sz, unsigned long addr,
+		       unsigned long end, int write, struct page **pages, int *nr);
+#ifndef CONFIG_TRANSPARENT_HUGEPAGE
+#define pmd_large(pmd)		0
+#define has_transparent_hugepage() 0
+#endif
+pte_t *find_linux_pte_or_hugepte(pgd_t *pgdir, unsigned long ea,
+				 unsigned *shift);
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 
 #endif /* __KERNEL__ */

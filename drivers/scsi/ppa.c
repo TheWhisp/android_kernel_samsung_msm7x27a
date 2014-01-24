@@ -118,8 +118,14 @@ static inline void ppa_pb_release(ppa_struct *dev)
  * Also gives a method to use a script to obtain optimum timings (TODO)
  */
 
+<<<<<<< HEAD
 static inline int ppa_proc_write(ppa_struct *dev, char *buffer, int length)
 {
+=======
+static inline int ppa_write_info(struct Scsi_Host *host, char *buffer, int length)
+{
+	ppa_struct *dev = ppa_dev(host);
+>>>>>>> refs/remotes/origin/master
 	unsigned long x;
 
 	if ((length > 5) && (strncmp(buffer, "mode=", 5) == 0)) {
@@ -137,6 +143,7 @@ static inline int ppa_proc_write(ppa_struct *dev, char *buffer, int length)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int ppa_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_t offset, int length, int inout)
 {
 	int len = 0;
@@ -166,6 +173,19 @@ static int ppa_proc_info(struct Scsi_Host *host, char *buffer, char **start, off
 	if (len > length)
 		len = length;
 	return len;
+=======
+static int ppa_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	ppa_struct *dev = ppa_dev(host);
+
+	seq_printf(m, "Version : %s\n", PPA_VERSION);
+	seq_printf(m, "Parport : %s\n", dev->dev->port->name);
+	seq_printf(m, "Mode    : %s\n", PPA_MODE_STRING[dev->mode]);
+#if PPA_DEBUG > 0
+	seq_printf(m, "recon_tmo : %lu\n", dev->recon_tmo);
+#endif
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int device_check(ppa_struct *dev);
@@ -981,7 +1001,12 @@ static int ppa_adjust_queue(struct scsi_device *device)
 static struct scsi_host_template ppa_template = {
 	.module			= THIS_MODULE,
 	.proc_name		= "ppa",
+<<<<<<< HEAD
 	.proc_info		= ppa_proc_info,
+=======
+	.show_info		= ppa_show_info,
+	.write_info		= ppa_write_info,
+>>>>>>> refs/remotes/origin/master
 	.name			= "Iomega VPI0 (ppa) interface",
 	.queuecommand		= ppa_queuecommand,
 	.eh_abort_handler	= ppa_abort,

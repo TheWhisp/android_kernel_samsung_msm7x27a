@@ -8,6 +8,14 @@
 #define PSMOUSE_CMD_SETSTREAM	0x00ea
 #define PSMOUSE_CMD_SETPOLL	0x00f0
 #define PSMOUSE_CMD_POLL	0x00eb	/* caller sets number of bytes to receive */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define PSMOUSE_CMD_RESET_WRAP	0x00ec
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PSMOUSE_CMD_RESET_WRAP	0x00ec
+>>>>>>> refs/remotes/origin/master
 #define PSMOUSE_CMD_GETID	0x02f2
 #define PSMOUSE_CMD_SETRATE	0x10f3
 #define PSMOUSE_CMD_ENABLE	0x00f4
@@ -93,6 +101,15 @@ enum psmouse_type {
 	PSMOUSE_HGPK,
 	PSMOUSE_ELANTECH,
 	PSMOUSE_FSP,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	PSMOUSE_SYNAPTICS_RELATIVE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PSMOUSE_SYNAPTICS_RELATIVE,
+	PSMOUSE_CYPRESS,
+>>>>>>> refs/remotes/origin/master
 	PSMOUSE_AUTO		/* This one should always be last */
 };
 
@@ -102,6 +119,18 @@ int psmouse_sliced_command(struct psmouse *psmouse, unsigned char command);
 int psmouse_reset(struct psmouse *psmouse);
 void psmouse_set_state(struct psmouse *psmouse, enum psmouse_state new_state);
 void psmouse_set_resolution(struct psmouse *psmouse, unsigned int resolution);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+psmouse_ret_t psmouse_process_byte(struct psmouse *psmouse);
+int psmouse_activate(struct psmouse *psmouse);
+int psmouse_deactivate(struct psmouse *psmouse);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+psmouse_ret_t psmouse_process_byte(struct psmouse *psmouse);
+int psmouse_activate(struct psmouse *psmouse);
+int psmouse_deactivate(struct psmouse *psmouse);
+>>>>>>> refs/remotes/origin/master
 
 struct psmouse_attribute {
 	struct device_attribute dattr;
@@ -150,4 +179,38 @@ static struct psmouse_attribute psmouse_attr_##_name = {			\
 	static ssize_t _set(struct psmouse *, void *, const char *, size_t);	\
 	__PSMOUSE_DEFINE_ATTR_VAR(_name, _mode, _data, NULL, _set, true)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifndef psmouse_fmt
+#define psmouse_fmt(fmt)	KBUILD_BASENAME ": " fmt
+#endif
+
+#define psmouse_dbg(psmouse, format, ...)		\
+	dev_dbg(&(psmouse)->ps2dev.serio->dev,		\
+		psmouse_fmt(format), ##__VA_ARGS__)
+#define psmouse_info(psmouse, format, ...)		\
+	dev_info(&(psmouse)->ps2dev.serio->dev,		\
+		 psmouse_fmt(format), ##__VA_ARGS__)
+#define psmouse_warn(psmouse, format, ...)		\
+	dev_warn(&(psmouse)->ps2dev.serio->dev,		\
+		 psmouse_fmt(format), ##__VA_ARGS__)
+#define psmouse_err(psmouse, format, ...)		\
+	dev_err(&(psmouse)->ps2dev.serio->dev,		\
+		psmouse_fmt(format), ##__VA_ARGS__)
+#define psmouse_notice(psmouse, format, ...)		\
+	dev_notice(&(psmouse)->ps2dev.serio->dev,	\
+		   psmouse_fmt(format), ##__VA_ARGS__)
+#define psmouse_printk(level, psmouse, format, ...)	\
+	dev_printk(level,				\
+		   &(psmouse)->ps2dev.serio->dev,	\
+		   psmouse_fmt(format), ##__VA_ARGS__)
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _PSMOUSE_H */

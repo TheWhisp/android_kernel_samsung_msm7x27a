@@ -6,6 +6,7 @@
  * (c) Copyright 1997 by Carsten Paeth (calle@calle.in-berlin.de)
  * 
  */
+<<<<<<< HEAD
 
 #ifndef __KERNELCAPI_H__
 #define __KERNELCAPI_H__
@@ -44,11 +45,20 @@ typedef struct kcapi_carddef {
 
 
 #ifdef __KERNEL__
+=======
+#ifndef __KERNELCAPI_H__
+#define __KERNELCAPI_H__
+
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/list.h>
 #include <linux/skbuff.h>
 #include <linux/workqueue.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
+=======
+#include <uapi/linux/kernelcapi.h>
+>>>>>>> refs/remotes/origin/master
 
 struct capi20_appl {
 	u16 applid;
@@ -150,6 +160,9 @@ typedef enum {
 	CapiCallGivenToOtherApplication                 = 0x3304,
 } CAPI_REASON;
 
+<<<<<<< HEAD
 #endif				/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif				/* __KERNELCAPI_H__ */

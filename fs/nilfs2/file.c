@@ -27,7 +27,15 @@
 #include "nilfs.h"
 #include "segment.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int nilfs_sync_file(struct file *file, int datasync)
+=======
+int nilfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int nilfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Called from fsync() system call
@@ -37,11 +45,31 @@ int nilfs_sync_file(struct file *file, int datasync)
 	 * This function should be implemented when the writeback function
 	 * will be implemented.
 	 */
+<<<<<<< HEAD
 	struct inode *inode = file->f_mapping->host;
 	int err;
 
+<<<<<<< HEAD
 	if (!nilfs_inode_dirty(inode))
 		return 0;
+=======
+=======
+	struct the_nilfs *nilfs;
+	struct inode *inode = file->f_mapping->host;
+	int err;
+
+>>>>>>> refs/remotes/origin/master
+	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (err)
+		return err;
+	mutex_lock(&inode->i_mutex);
+
+<<<<<<< HEAD
+	if (!nilfs_inode_dirty(inode)) {
+		mutex_unlock(&inode->i_mutex);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (datasync)
 		err = nilfs_construct_dsync_segment(inode->i_sb, inode, 0,
@@ -49,24 +77,60 @@ int nilfs_sync_file(struct file *file, int datasync)
 	else
 		err = nilfs_construct_segment(inode->i_sb);
 
+<<<<<<< HEAD
+=======
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (nilfs_inode_dirty(inode)) {
+		if (datasync)
+			err = nilfs_construct_dsync_segment(inode->i_sb, inode,
+							    0, LLONG_MAX);
+		else
+			err = nilfs_construct_segment(inode->i_sb);
+	}
+	mutex_unlock(&inode->i_mutex);
+
+	nilfs = inode->i_sb->s_fs_info;
+	if (!err && nilfs_test_opt(nilfs, BARRIER)) {
+		err = blkdev_issue_flush(inode->i_sb->s_bdev, GFP_KERNEL, NULL);
+		if (err != -EIO)
+			err = 0;
+	}
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 static int nilfs_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 {
 	struct page *page = vmf->page;
+<<<<<<< HEAD
 	struct inode *inode = vma->vm_file->f_dentry->d_inode;
 	struct nilfs_transaction_info ti;
 	int ret;
+=======
+	struct inode *inode = file_inode(vma->vm_file);
+	struct nilfs_transaction_info ti;
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(nilfs_near_disk_full(inode->i_sb->s_fs_info)))
 		return VM_FAULT_SIGBUS; /* -ENOSPC */
 
+<<<<<<< HEAD
+=======
+	sb_start_pagefault(inode->i_sb);
+>>>>>>> refs/remotes/origin/master
 	lock_page(page);
 	if (page->mapping != inode->i_mapping ||
 	    page_offset(page) >= i_size_read(inode) || !PageUptodate(page)) {
 		unlock_page(page);
+<<<<<<< HEAD
 		return VM_FAULT_NOPAGE; /* make the VM retry the fault */
+=======
+		ret = -EFAULT;	/* make the VM retry the fault */
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -100,31 +164,55 @@ static int nilfs_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 	ret = nilfs_transaction_begin(inode->i_sb, &ti, 1);
 	/* never returns -ENOMEM, but may return -ENOSPC */
 	if (unlikely(ret))
+<<<<<<< HEAD
 		return VM_FAULT_SIGBUS;
 
 	ret = block_page_mkwrite(vma, vmf, nilfs_get_block);
 	if (ret != VM_FAULT_LOCKED) {
 		nilfs_transaction_abort(inode->i_sb);
 		return ret;
+=======
+		goto out;
+
+	file_update_time(vma->vm_file);
+	ret = __block_page_mkwrite(vma, vmf, nilfs_get_block);
+	if (ret) {
+		nilfs_transaction_abort(inode->i_sb);
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 	nilfs_set_file_dirty(inode, 1 << (PAGE_SHIFT - inode->i_blkbits));
 	nilfs_transaction_commit(inode->i_sb);
 
  mapped:
+<<<<<<< HEAD
 	wait_on_page_writeback(page);
 	return VM_FAULT_LOCKED;
+=======
+	wait_for_stable_page(page);
+ out:
+	sb_end_pagefault(inode->i_sb);
+	return block_page_mkwrite_return(ret);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct vm_operations_struct nilfs_file_vm_ops = {
 	.fault		= filemap_fault,
 	.page_mkwrite	= nilfs_page_mkwrite,
+<<<<<<< HEAD
+=======
+	.remap_pages	= generic_file_remap_pages,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int nilfs_file_mmap(struct file *file, struct vm_area_struct *vma)
 {
 	file_accessed(file);
 	vma->vm_ops = &nilfs_file_vm_ops;
+<<<<<<< HEAD
 	vma->vm_flags |= VM_CAN_NONLINEAR;
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -150,7 +238,10 @@ const struct file_operations nilfs_file_operations = {
 };
 
 const struct inode_operations nilfs_file_inode_operations = {
+<<<<<<< HEAD
 	.truncate	= nilfs_truncate,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setattr	= nilfs_setattr,
 	.permission     = nilfs_permission,
 	.fiemap		= nilfs_fiemap,

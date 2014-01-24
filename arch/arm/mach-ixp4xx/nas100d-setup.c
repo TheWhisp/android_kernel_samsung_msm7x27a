@@ -17,7 +17,15 @@
  * Maintainers: http://www.nslu2-linux.org/
  *
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/if_ether.h>
 #include <linux/irq.h>
 #include <linux/jiffies.h>
@@ -32,7 +40,13 @@
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/flash.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define NAS100D_SDA_PIN		5
 #define NAS100D_SCL_PIN		6
@@ -185,11 +199,16 @@ static void nas100d_power_off(void)
 {
 	/* This causes the box to drop the power and go dead. */
 
+<<<<<<< HEAD
 	/* enable the pwr cntl gpio */
 	gpio_line_config(NAS100D_PO_GPIO, IXP4XX_GPIO_OUT);
 
 	/* do the deed */
 	gpio_line_set(NAS100D_PO_GPIO, IXP4XX_GPIO_HIGH);
+=======
+	/* enable the pwr cntl gpio and assert power off */
+	gpio_direction_output(NAS100D_PO_GPIO, 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* This is used to make sure the power-button pusher is serious.  The button
@@ -226,7 +245,11 @@ static void nas100d_power_handler(unsigned long data)
 			ctrl_alt_del();
 
 			/* Change the state of the power LED to "blink" */
+<<<<<<< HEAD
 			gpio_line_set(NAS100D_LED_PWR_GPIO, IXP4XX_GPIO_LOW);
+=======
+			gpio_set_value(NAS100D_LED_PWR_GPIO, 0);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			power_button_countdown = PBUTTON_HOLDDOWN_COUNT;
 		}
@@ -243,6 +266,36 @@ static irqreturn_t nas100d_reset_handler(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+=======
+static int __init nas100d_gpio_init(void)
+{
+	if (!machine_is_nas100d())
+		return 0;
+
+	/*
+	 * The power button on the Iomega NAS100d is on GPIO 14, but
+	 * it cannot handle interrupts on that GPIO line.  So we'll
+	 * have to poll it with a kernel timer.
+	 */
+
+	/* Request the power off GPIO */
+	gpio_request(NAS100D_PO_GPIO, "power off");
+
+	/* Make sure that the power button GPIO is set up as an input */
+	gpio_request(NAS100D_PB_GPIO, "power button");
+	gpio_direction_input(NAS100D_PB_GPIO);
+
+	/* Set the initial value for the power button IRQ handler */
+	power_button_countdown = PBUTTON_HOLDDOWN_COUNT;
+
+	mod_timer(&nas100d_power_timer, jiffies + msecs_to_jiffies(500));
+
+	return 0;
+}
+device_initcall(nas100d_gpio_init);
+
+>>>>>>> refs/remotes/origin/master
 static void __init nas100d_init(void)
 {
 	uint8_t __iomem *f;
@@ -279,6 +332,7 @@ static void __init nas100d_init(void)
 			gpio_to_irq(NAS100D_RB_GPIO));
 	}
 
+<<<<<<< HEAD
 	/* The power button on the Iomega NAS100d is on GPIO 14, but
 	 * it cannot handle interrupts on that GPIO line.  So we'll
 	 * have to poll it with a kernel timer.
@@ -292,6 +346,8 @@ static void __init nas100d_init(void)
 
 	mod_timer(&nas100d_power_timer, jiffies + msecs_to_jiffies(500));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Map in a portion of the flash and read the MAC address.
 	 * Since it is stored in BE in the flash itself, we need to
@@ -314,9 +370,32 @@ static void __init nas100d_init(void)
 
 MACHINE_START(NAS100D, "Iomega NAS 100d")
 	/* Maintainer: www.nslu2-linux.org */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 	.map_io		= ixp4xx_map_io,
 	.init_irq	= ixp4xx_init_irq,
 	.timer          = &ixp4xx_timer,
 	.init_machine	= nas100d_init,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.atag_offset	= 0x100,
+	.map_io		= ixp4xx_map_io,
+	.init_early	= ixp4xx_init_early,
+	.init_irq	= ixp4xx_init_irq,
+<<<<<<< HEAD
+	.timer          = &ixp4xx_timer,
+=======
+	.init_time	= ixp4xx_timer_init,
+>>>>>>> refs/remotes/origin/master
+	.init_machine	= nas100d_init,
+#if defined(CONFIG_PCI)
+	.dma_zone_size	= SZ_64M,
+#endif
+	.restart	= ixp4xx_restart,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

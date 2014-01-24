@@ -12,12 +12,28 @@
 #include <linux/types.h>
 #include <linux/init.h>
 #include <linux/crash_dump.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bootmem.h>
 #include <linux/pfn.h>
 #include <linux/suspend.h>
 #include <linux/acpi.h>
 #include <linux/firmware-map.h>
 #include <linux/memblock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/sort.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sort.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/e820.h>
 #include <asm/proto.h>
@@ -111,7 +127,13 @@ static void __init __e820_add_region(struct e820map *e820x, u64 start, u64 size,
 	int x = e820x->nr_map;
 
 	if (x >= ARRAY_SIZE(e820x->map)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Ooops! Too many entries in the memory map!\n");
+=======
+		printk(KERN_ERR "e820: too many entries; ignoring [mem %#010llx-%#010llx]\n",
+		       (unsigned long long) start,
+		       (unsigned long long) (start + size - 1));
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -131,6 +153,7 @@ static void __init e820_print_type(u32 type)
 	switch (type) {
 	case E820_RAM:
 	case E820_RESERVED_KERN:
+<<<<<<< HEAD
 		printk(KERN_CONT "(usable)");
 		break;
 	case E820_RESERVED:
@@ -144,6 +167,21 @@ static void __init e820_print_type(u32 type)
 		break;
 	case E820_UNUSABLE:
 		printk(KERN_CONT "(unusable)");
+=======
+		printk(KERN_CONT "usable");
+		break;
+	case E820_RESERVED:
+		printk(KERN_CONT "reserved");
+		break;
+	case E820_ACPI:
+		printk(KERN_CONT "ACPI data");
+		break;
+	case E820_NVS:
+		printk(KERN_CONT "ACPI NVS");
+		break;
+	case E820_UNUSABLE:
+		printk(KERN_CONT "unusable");
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		printk(KERN_CONT "type %u", type);
@@ -156,10 +194,17 @@ void __init e820_print_map(char *who)
 	int i;
 
 	for (i = 0; i < e820.nr_map; i++) {
+<<<<<<< HEAD
 		printk(KERN_INFO " %s: %016Lx - %016Lx ", who,
 		       (unsigned long long) e820.map[i].addr,
 		       (unsigned long long)
 		       (e820.map[i].addr + e820.map[i].size));
+=======
+		printk(KERN_INFO "%s: [mem %#018Lx-%#018Lx] ", who,
+		       (unsigned long long) e820.map[i].addr,
+		       (unsigned long long)
+		       (e820.map[i].addr + e820.map[i].size - 1));
+>>>>>>> refs/remotes/origin/master
 		e820_print_type(e820.map[i].type);
 		printk(KERN_CONT "\n");
 	}
@@ -226,22 +271,70 @@ void __init e820_print_map(char *who)
  *	   ____________________33__
  *	   ______________________4_
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct change_member {
+	struct e820entry *pbios; /* pointer to original bios entry */
+	unsigned long long addr; /* address for this change point */
+};
+
+static int __init cpcompare(const void *a, const void *b)
+{
+	struct change_member * const *app = a, * const *bpp = b;
+	const struct change_member *ap = *app, *bp = *bpp;
+
+	/*
+	 * Inputs are pointers to two elements of change_point[].  If their
+	 * addresses are unequal, their difference dominates.  If the addresses
+	 * are equal, then consider one that represents the end of its region
+	 * to be greater than one that does not.
+	 */
+	if (ap->addr != bp->addr)
+		return ap->addr > bp->addr ? 1 : -1;
+
+	return (ap->addr != ap->pbios->addr) - (bp->addr != bp->pbios->addr);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int __init sanitize_e820_map(struct e820entry *biosmap, int max_nr_map,
 			     u32 *pnr_map)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct change_member {
 		struct e820entry *pbios; /* pointer to original bios entry */
 		unsigned long long addr; /* address for this change point */
 	};
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	static struct change_member change_point_list[2*E820_X_MAX] __initdata;
 	static struct change_member *change_point[2*E820_X_MAX] __initdata;
 	static struct e820entry *overlap_list[E820_X_MAX] __initdata;
 	static struct e820entry new_bios[E820_X_MAX] __initdata;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct change_member *change_tmp;
 	unsigned long current_type, last_type;
 	unsigned long long last_addr;
 	int chgidx, still_changing;
+=======
+	unsigned long current_type, last_type;
+	unsigned long long last_addr;
+	int chgidx;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long current_type, last_type;
+	unsigned long long last_addr;
+	int chgidx;
+>>>>>>> refs/remotes/origin/master
 	int overlap_entries;
 	int new_bios_entry;
 	int old_nr, new_nr, chg_nr;
@@ -278,6 +371,8 @@ int __init sanitize_e820_map(struct e820entry *biosmap, int max_nr_map,
 	chg_nr = chgidx;
 
 	/* sort change-point list by memory addresses (low -> high) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	still_changing = 1;
 	while (still_changing)	{
 		still_changing = 0;
@@ -307,6 +402,12 @@ int __init sanitize_e820_map(struct e820entry *biosmap, int max_nr_map,
 			}
 		}
 	}
+=======
+	sort(change_point, chg_nr, sizeof *change_point, cpcompare, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sort(change_point, chg_nr, sizeof *change_point, cpcompare, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/* create a new bios memory map, removing overlaps */
 	overlap_entries = 0;	 /* number of entries in the overlap table */
@@ -438,9 +539,14 @@ static u64 __init __e820_update_range(struct e820map *e820x, u64 start,
 		size = ULLONG_MAX - start;
 
 	end = start + size;
+<<<<<<< HEAD
 	printk(KERN_DEBUG "e820 update range: %016Lx - %016Lx ",
 		       (unsigned long long) start,
 		       (unsigned long long) end);
+=======
+	printk(KERN_DEBUG "e820: update [mem %#010Lx-%#010Lx] ",
+	       (unsigned long long) start, (unsigned long long) (end - 1));
+>>>>>>> refs/remotes/origin/master
 	e820_print_type(old_type);
 	printk(KERN_CONT " ==> ");
 	e820_print_type(new_type);
@@ -519,9 +625,14 @@ u64 __init e820_remove_range(u64 start, u64 size, unsigned old_type,
 		size = ULLONG_MAX - start;
 
 	end = start + size;
+<<<<<<< HEAD
 	printk(KERN_DEBUG "e820 remove range: %016Lx - %016Lx ",
 		       (unsigned long long) start,
 		       (unsigned long long) end);
+=======
+	printk(KERN_DEBUG "e820: remove [mem %#010Lx-%#010Lx] ",
+	       (unsigned long long) start, (unsigned long long) (end - 1));
+>>>>>>> refs/remotes/origin/master
 	if (checktype)
 		e820_print_type(old_type);
 	printk(KERN_CONT "\n");
@@ -577,7 +688,11 @@ void __init update_e820(void)
 	if (sanitize_e820_map(e820.map, ARRAY_SIZE(e820.map), &nr_map))
 		return;
 	e820.nr_map = nr_map;
+<<<<<<< HEAD
 	printk(KERN_INFO "modified physical RAM map:\n");
+=======
+	printk(KERN_INFO "e820: modified physical RAM map:\n");
+>>>>>>> refs/remotes/origin/master
 	e820_print_map("modified");
 }
 static void __init update_e820_saved(void)
@@ -647,8 +762,13 @@ __init void e820_setup_gap(void)
 	if (!found) {
 		gapstart = (max_pfn << PAGE_SHIFT) + 1024*1024;
 		printk(KERN_ERR
+<<<<<<< HEAD
 	"PCI: Warning: Cannot find a gap in the 32bit address range\n"
 	"PCI: Unassigned devices with 32bit resource registers may break!\n");
+=======
+	"e820: cannot find a gap in the 32bit address range\n"
+	"e820: PCI devices with unassigned 32bit BARs may break!\n");
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -658,8 +778,13 @@ __init void e820_setup_gap(void)
 	pci_mem_start = gapstart;
 
 	printk(KERN_INFO
+<<<<<<< HEAD
 	       "Allocating PCI resources starting at %lx (gap: %lx:%lx)\n",
 	       pci_mem_start, gapstart, gapsize);
+=======
+	       "e820: [mem %#010lx-%#010lx] available for PCI devices\n",
+	       gapstart, gapstart + gapsize - 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -668,16 +793,31 @@ __init void e820_setup_gap(void)
  * boot_params.e820_map, others are passed via SETUP_E820_EXT node of
  * linked list of struct setup_data, which is parsed here.
  */
+<<<<<<< HEAD
 void __init parse_e820_ext(struct setup_data *sdata)
 {
 	int entries;
 	struct e820entry *extmap;
 
+=======
+void __init parse_e820_ext(u64 phys_addr, u32 data_len)
+{
+	int entries;
+	struct e820entry *extmap;
+	struct setup_data *sdata;
+
+	sdata = early_memremap(phys_addr, data_len);
+>>>>>>> refs/remotes/origin/master
 	entries = sdata->len / sizeof(struct e820entry);
 	extmap = (struct e820entry *)(sdata->data);
 	__append_e820_map(extmap, entries);
 	sanitize_e820_map(e820.map, ARRAY_SIZE(e820.map), &e820.nr_map);
+<<<<<<< HEAD
 	printk(KERN_INFO "extended physical RAM map:\n");
+=======
+	early_iounmap(sdata, data_len);
+	printk(KERN_INFO "e820: extended physical RAM map:\n");
+>>>>>>> refs/remotes/origin/master
 	e820_print_map("extended");
 }
 
@@ -713,7 +853,15 @@ void __init e820_mark_nosave_regions(unsigned long limit_pfn)
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_HIBERNATION
+=======
+#ifdef CONFIG_ACPI
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_ACPI
+>>>>>>> refs/remotes/origin/master
 /**
  * Mark ACPI NVS memory region, so that we can save/restore it during
  * hibernation and the subsequent resume.
@@ -726,7 +874,15 @@ static int __init e820_mark_nvs_memory(void)
 		struct e820entry *ei = &e820.map[i];
 
 		if (ei->type == E820_NVS)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			suspend_nvs_register(ei->addr, ei->size);
+=======
+			acpi_nvs_register(ei->addr, ei->size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			acpi_nvs_register(ei->addr, ei->size);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -737,6 +893,8 @@ core_initcall(e820_mark_nvs_memory);
 /*
  * pre allocated 4k and reserved it in memblock and e820_saved
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 u64 __init early_reserve_e820(u64 startt, u64 sizet, u64 align)
 {
 	u64 size = 0;
@@ -766,6 +924,28 @@ u64 __init early_reserve_e820(u64 startt, u64 sizet, u64 align)
 	printk(KERN_INFO "update e820_saved for early_reserve_e820\n");
 	update_e820_saved();
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+u64 __init early_reserve_e820(u64 size, u64 align)
+{
+	u64 addr;
+
+	addr = __memblock_alloc_base(size, align, MEMBLOCK_ALLOC_ACCESSIBLE);
+	if (addr) {
+		e820_update_range_saved(addr, size, E820_RAM, E820_RESERVED);
+<<<<<<< HEAD
+		printk(KERN_INFO "update e820_saved for early_reserve_e820\n");
+		update_e820_saved();
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_INFO "e820: update e820_saved for early_reserve_e820\n");
+		update_e820_saved();
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return addr;
 }
 
@@ -812,7 +992,11 @@ static unsigned long __init e820_end_pfn(unsigned long limit_pfn, unsigned type)
 	if (last_pfn > max_arch_pfn)
 		last_pfn = max_arch_pfn;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "last_pfn = %#lx max_arch_pfn = %#lx\n",
+=======
+	printk(KERN_INFO "e820: last_pfn = %#lx max_arch_pfn = %#lx\n",
+>>>>>>> refs/remotes/origin/master
 			 last_pfn, max_arch_pfn);
 	return last_pfn;
 }
@@ -863,7 +1047,11 @@ static int __init parse_memopt(char *p)
 }
 early_param("mem", parse_memopt);
 
+<<<<<<< HEAD
 static int __init parse_memmap_opt(char *p)
+=======
+static int __init parse_memmap_one(char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *oldp;
 	u64 start_at, mem_size;
@@ -905,6 +1093,23 @@ static int __init parse_memmap_opt(char *p)
 
 	return *p == '\0' ? 0 : -EINVAL;
 }
+<<<<<<< HEAD
+=======
+static int __init parse_memmap_opt(char *str)
+{
+	while (str) {
+		char *k = strchr(str, ',');
+
+		if (k)
+			*k++ = 0;
+
+		parse_memmap_one(str);
+		str = k;
+	}
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 early_param("memmap", parse_memmap_opt);
 
 void __init finish_e820_parsing(void)
@@ -916,7 +1121,11 @@ void __init finish_e820_parsing(void)
 			early_panic("Invalid user supplied memory map");
 		e820.nr_map = nr;
 
+<<<<<<< HEAD
 		printk(KERN_INFO "user-defined physical RAM map:\n");
+=======
+		printk(KERN_INFO "e820: user-defined physical RAM map:\n");
+>>>>>>> refs/remotes/origin/master
 		e820_print_map("user");
 	}
 }
@@ -972,7 +1181,11 @@ void __init e820_reserve_resources(void)
 	for (i = 0; i < e820_saved.nr_map; i++) {
 		struct e820entry *entry = &e820_saved.map[i];
 		firmware_map_add_early(entry->addr,
+<<<<<<< HEAD
 			entry->addr + entry->size - 1,
+=======
+			entry->addr + entry->size,
+>>>>>>> refs/remotes/origin/master
 			e820_type_to_string(entry->type));
 	}
 }
@@ -1024,8 +1237,14 @@ void __init e820_reserve_resources_late(void)
 			end = MAX_RESOURCE_SIZE;
 		if (start >= end)
 			continue;
+<<<<<<< HEAD
 		printk(KERN_DEBUG "reserve RAM buffer: %016llx - %016llx ",
 			       start, end);
+=======
+		printk(KERN_DEBUG
+		       "e820: reserve RAM buffer [mem %#010llx-%#010llx]\n",
+		       start, end);
+>>>>>>> refs/remotes/origin/master
 		reserve_region_with_split(&iomem_resource, start, end,
 					  "RAM buffer");
 	}
@@ -1075,7 +1294,11 @@ void __init setup_memory_map(void)
 
 	who = x86_init.resources.memory_setup();
 	memcpy(&e820_saved, &e820, sizeof(struct e820map));
+<<<<<<< HEAD
 	printk(KERN_INFO "BIOS-provided physical RAM map:\n");
+=======
+	printk(KERN_INFO "e820: BIOS-provided physical RAM map:\n");
+>>>>>>> refs/remotes/origin/master
 	e820_print_map(who);
 }
 
@@ -1089,7 +1312,15 @@ void __init memblock_x86_fill(void)
 	 * We are safe to enable resizing, beause memblock_x86_fill()
 	 * is rather later for x86
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_can_resize = 1;
+=======
+	memblock_allow_resize();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_allow_resize();
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < e820.nr_map; i++) {
 		struct e820entry *ei = &e820.map[i];
@@ -1104,22 +1335,82 @@ void __init memblock_x86_fill(void)
 		memblock_add(ei->addr, ei->size);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_analyze();
+=======
+	/* throw away partial pages */
+	memblock_trim_memory(PAGE_SIZE);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* throw away partial pages */
+	memblock_trim_memory(PAGE_SIZE);
+
+>>>>>>> refs/remotes/origin/master
+=======
+	/* throw away partial pages */
+	memblock_trim_memory(PAGE_SIZE);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	memblock_dump_all();
 }
 
 void __init memblock_find_dma_reserve(void)
 {
 #ifdef CONFIG_X86_64
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u64 free_size_pfn;
 	u64 mem_size_pfn;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u64 nr_pages = 0, nr_free_pages = 0;
+	unsigned long start_pfn, end_pfn;
+	phys_addr_t start, end;
+	int i;
+	u64 u;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * need to find out used area below MAX_DMA_PFN
 	 * need to use memblock to get free size in [0, MAX_DMA_PFN]
 	 * at first, and assume boot_mem will not take below MAX_DMA_PFN
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mem_size_pfn = memblock_x86_memory_in_range(0, MAX_DMA_PFN << PAGE_SHIFT) >> PAGE_SHIFT;
 	free_size_pfn = memblock_x86_free_memory_in_range(0, MAX_DMA_PFN << PAGE_SHIFT) >> PAGE_SHIFT;
 	set_dma_reserve(mem_size_pfn - free_size_pfn);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, NULL) {
+		start_pfn = min_t(unsigned long, start_pfn, MAX_DMA_PFN);
+		end_pfn = min_t(unsigned long, end_pfn, MAX_DMA_PFN);
+		nr_pages += end_pfn - start_pfn;
+	}
+
+<<<<<<< HEAD
+	for_each_free_mem_range(u, MAX_NUMNODES, &start, &end, NULL) {
+=======
+	for_each_free_mem_range(u, NUMA_NO_NODE, &start, &end, NULL) {
+>>>>>>> refs/remotes/origin/master
+		start_pfn = min_t(unsigned long, PFN_UP(start), MAX_DMA_PFN);
+		end_pfn = min_t(unsigned long, PFN_DOWN(end), MAX_DMA_PFN);
+		if (start_pfn < end_pfn)
+			nr_free_pages += end_pfn - start_pfn;
+	}
+
+	set_dma_reserve(nr_pages - nr_free_pages);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 }

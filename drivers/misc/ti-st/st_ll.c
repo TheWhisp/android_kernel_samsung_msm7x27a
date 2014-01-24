@@ -22,6 +22,14 @@
 #define pr_fmt(fmt) "(stll) :" fmt
 #include <linux/skbuff.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ti_wilink_st.h>
 
 /**********************************************************************/
@@ -37,6 +45,18 @@ static void send_ll_cmd(struct st_data_s *st_data,
 
 static void ll_device_want_to_sleep(struct st_data_s *st_data)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct kim_data_s	*kim_data;
+	struct ti_st_plat_data	*pdata;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct kim_data_s	*kim_data;
+	struct ti_st_plat_data	*pdata;
+
+>>>>>>> refs/remotes/origin/master
 	pr_debug("%s", __func__);
 	/* sanity check */
 	if (st_data->ll_state != ST_LL_AWAKE)
@@ -46,10 +66,37 @@ static void ll_device_want_to_sleep(struct st_data_s *st_data)
 	send_ll_cmd(st_data, LL_SLEEP_ACK);
 	/* update state */
 	st_data->ll_state = ST_LL_ASLEEP;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/* communicate to platform about chip asleep */
+	kim_data = st_data->kim_data;
+	pdata = kim_data->kim_pdev->dev.platform_data;
+	if (pdata->chip_asleep)
+		pdata->chip_asleep(NULL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ll_device_want_to_wakeup(struct st_data_s *st_data)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct kim_data_s	*kim_data;
+	struct ti_st_plat_data	*pdata;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct kim_data_s	*kim_data;
+	struct ti_st_plat_data	*pdata;
+
+>>>>>>> refs/remotes/origin/master
 	/* diff actions in diff states */
 	switch (st_data->ll_state) {
 	case ST_LL_ASLEEP:
@@ -70,6 +117,23 @@ static void ll_device_want_to_wakeup(struct st_data_s *st_data)
 	}
 	/* update state */
 	st_data->ll_state = ST_LL_AWAKE;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/* communicate to platform about chip wakeup */
+	kim_data = st_data->kim_data;
+	pdata = kim_data->kim_pdev->dev.platform_data;
+<<<<<<< HEAD
+	if (pdata->chip_asleep)
+		pdata->chip_awake(NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pdata->chip_awake)
+		pdata->chip_awake(NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**********************************************************************/

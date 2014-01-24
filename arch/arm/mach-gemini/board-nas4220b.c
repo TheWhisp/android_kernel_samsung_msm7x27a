@@ -31,10 +31,13 @@
 
 #include "common.h"
 
+<<<<<<< HEAD
 static struct sys_timer ib4220b_timer = {
 	.init	= gemini_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct gpio_led ib4220b_leds[] = {
 	{
 		.name			= "nas4220b:orange:hdd",
@@ -102,9 +105,22 @@ static void __init ib4220b_init(void)
 }
 
 MACHINE_START(NAS4220B, "Raidsonic NAS IB-4220-B")
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= gemini_map_io,
 	.init_irq	= gemini_init_irq,
 	.timer		= &ib4220b_timer,
 	.init_machine	= ib4220b_init,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= gemini_map_io,
+	.init_irq	= gemini_init_irq,
+	.init_time	= gemini_timer_init,
+	.init_machine	= ib4220b_init,
+	.restart	= gemini_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

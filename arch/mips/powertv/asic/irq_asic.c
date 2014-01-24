@@ -17,7 +17,10 @@
 
 #include <asm/irq_cpu.h>
 #include <asm/mipsregs.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach-powertv/asic_regs.h>
 

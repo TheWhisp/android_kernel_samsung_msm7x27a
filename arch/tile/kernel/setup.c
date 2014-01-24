@@ -23,11 +23,21 @@
 #include <linux/irq.h>
 #include <linux/kexec.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/swiotlb.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/initrd.h>
 #include <linux/io.h>
 #include <linux/highmem.h>
 #include <linux/smp.h>
 #include <linux/timex.h>
+<<<<<<< HEAD
+=======
+#include <linux/hugetlb.h>
+#include <linux/start_kernel.h>
+#include <linux/screen_info.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/setup.h>
 #include <asm/sections.h>
 #include <asm/cacheflush.h>
@@ -46,6 +56,7 @@ static inline int ABS(int x) { return x >= 0 ? x : -x; }
 /* Chip information */
 char chip_model[64] __write_once;
 
+<<<<<<< HEAD
 struct pglist_data node_data[MAX_NUMNODES] __read_mostly;
 EXPORT_SYMBOL(node_data);
 
@@ -55,15 +66,49 @@ static bootmem_data_t __initdata node0_bdata;
 /* Information on the NUMA nodes that we compute early */
 unsigned long __cpuinitdata node_start_pfn[MAX_NUMNODES];
 unsigned long __cpuinitdata node_end_pfn[MAX_NUMNODES];
+=======
+#ifdef CONFIG_VT
+struct screen_info screen_info;
+#endif
+
+struct pglist_data node_data[MAX_NUMNODES] __read_mostly;
+EXPORT_SYMBOL(node_data);
+
+/* Information on the NUMA nodes that we compute early */
+unsigned long node_start_pfn[MAX_NUMNODES];
+unsigned long node_end_pfn[MAX_NUMNODES];
+>>>>>>> refs/remotes/origin/master
 unsigned long __initdata node_memmap_pfn[MAX_NUMNODES];
 unsigned long __initdata node_percpu_pfn[MAX_NUMNODES];
 unsigned long __initdata node_free_pfn[MAX_NUMNODES];
 
 static unsigned long __initdata node_percpu[MAX_NUMNODES];
 
+<<<<<<< HEAD
 #ifdef CONFIG_HIGHMEM
 /* Page frame index of end of lowmem on each controller. */
 unsigned long __cpuinitdata node_lowmem_end_pfn[MAX_NUMNODES];
+=======
+/*
+ * per-CPU stack and boot info.
+ */
+DEFINE_PER_CPU(unsigned long, boot_sp) =
+	(unsigned long)init_stack + THREAD_SIZE;
+
+#ifdef CONFIG_SMP
+DEFINE_PER_CPU(unsigned long, boot_pc) = (unsigned long)start_kernel;
+#else
+/*
+ * The variable must be __initdata since it references __init code.
+ * With CONFIG_SMP it is per-cpu data, which is exempt from validation.
+ */
+unsigned long __initdata boot_pc = (unsigned long)start_kernel;
+#endif
+
+#ifdef CONFIG_HIGHMEM
+/* Page frame index of end of lowmem on each controller. */
+unsigned long node_lowmem_end_pfn[MAX_NUMNODES];
+>>>>>>> refs/remotes/origin/master
 
 /* Number of pages that can be mapped into lowmem. */
 static unsigned long __initdata mappable_physpages;
@@ -94,7 +139,11 @@ static unsigned int __initdata maxnodemem_pfn[MAX_NUMNODES] = {
 };
 static nodemask_t __initdata isolnodes;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
+=======
+#if defined(CONFIG_PCI) && !defined(__tilegx__)
+>>>>>>> refs/remotes/origin/master
 enum { DEFAULT_PCI_RESERVE_MB = 64 };
 static unsigned int __initdata pci_reserve_mb = DEFAULT_PCI_RESERVE_MB;
 unsigned long __initdata pci_reserve_start_pfn = -1U;
@@ -103,6 +152,8 @@ unsigned long __initdata pci_reserve_end_pfn = -1U;
 
 static int __init setup_maxmem(char *str)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	long maxmem_mb;
 	if (str == NULL || strict_strtol(str, 0, &maxmem_mb) != 0 ||
 	    maxmem_mb == 0)
@@ -110,6 +161,18 @@ static int __init setup_maxmem(char *str)
 
 	maxmem_pfn = (maxmem_mb >> (HPAGE_SHIFT - 20)) <<
 		(HPAGE_SHIFT - PAGE_SHIFT);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long long maxmem;
+	if (str == NULL || (maxmem = memparse(str, NULL)) == 0)
+		return -EINVAL;
+
+	maxmem_pfn = (maxmem >> HPAGE_SHIFT) << (HPAGE_SHIFT - PAGE_SHIFT);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("Forcing RAM used to no more than %dMB\n",
 	       maxmem_pfn >> (20 - PAGE_SHIFT));
 	return 0;
@@ -119,6 +182,8 @@ early_param("maxmem", setup_maxmem);
 static int __init setup_maxnodemem(char *str)
 {
 	char *endp;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	long maxnodemem_mb, node;
 
 	node = str ? simple_strtoul(str, &endp, 0) : INT_MAX;
@@ -127,6 +192,22 @@ static int __init setup_maxnodemem(char *str)
 		return -EINVAL;
 
 	maxnodemem_pfn[node] = (maxnodemem_mb >> (HPAGE_SHIFT - 20)) <<
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long long maxnodemem;
+	long node;
+
+	node = str ? simple_strtoul(str, &endp, 0) : INT_MAX;
+	if (node >= MAX_NUMNODES || *endp != ':')
+		return -EINVAL;
+
+	maxnodemem = memparse(endp+1, NULL);
+	maxnodemem_pfn[node] = (maxnodemem >> HPAGE_SHIFT) <<
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		(HPAGE_SHIFT - PAGE_SHIFT);
 	pr_info("Forcing RAM used on node %ld to no more than %dMB\n",
 	       node, maxnodemem_pfn[node] >> (20 - PAGE_SHIFT));
@@ -134,6 +215,68 @@ static int __init setup_maxnodemem(char *str)
 }
 early_param("maxnodemem", setup_maxnodemem);
 
+<<<<<<< HEAD
+=======
+struct memmap_entry {
+	u64 addr;	/* start of memory segment */
+	u64 size;	/* size of memory segment */
+};
+static struct memmap_entry memmap_map[64];
+static int memmap_nr;
+
+static void add_memmap_region(u64 addr, u64 size)
+{
+	if (memmap_nr >= ARRAY_SIZE(memmap_map)) {
+		pr_err("Ooops! Too many entries in the memory map!\n");
+		return;
+	}
+	memmap_map[memmap_nr].addr = addr;
+	memmap_map[memmap_nr].size = size;
+	memmap_nr++;
+}
+
+static int __init setup_memmap(char *p)
+{
+	char *oldp;
+	u64 start_at, mem_size;
+
+	if (!p)
+		return -EINVAL;
+
+	if (!strncmp(p, "exactmap", 8)) {
+		pr_err("\"memmap=exactmap\" not valid on tile\n");
+		return 0;
+	}
+
+	oldp = p;
+	mem_size = memparse(p, &p);
+	if (p == oldp)
+		return -EINVAL;
+
+	if (*p == '@') {
+		pr_err("\"memmap=nn@ss\" (force RAM) invalid on tile\n");
+	} else if (*p == '#') {
+		pr_err("\"memmap=nn#ss\" (force ACPI data) invalid on tile\n");
+	} else if (*p == '$') {
+		start_at = memparse(p+1, &p);
+		add_memmap_region(start_at, mem_size);
+	} else {
+		if (mem_size == 0)
+			return -EINVAL;
+		maxmem_pfn = (mem_size >> HPAGE_SHIFT) <<
+			(HPAGE_SHIFT - PAGE_SHIFT);
+	}
+	return *p == '\0' ? 0 : -EINVAL;
+}
+early_param("memmap", setup_memmap);
+
+static int __init setup_mem(char *str)
+{
+	return setup_maxmem(str);
+}
+early_param("mem", setup_mem);  /* compatibility with x86 */
+
+>>>>>>> refs/remotes/origin/master
 static int __init setup_isolnodes(char *str)
 {
 	char buf[MAX_NUMNODES * 5];
@@ -146,7 +289,11 @@ static int __init setup_isolnodes(char *str)
 }
 early_param("isolnodes", setup_isolnodes);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
+=======
+#if defined(CONFIG_PCI) && !defined(__tilegx__)
+>>>>>>> refs/remotes/origin/master
 static int __init setup_pci_reserve(char* str)
 {
 	unsigned long mb;
@@ -157,7 +304,11 @@ static int __init setup_pci_reserve(char* str)
 
 	pci_reserve_mb = mb;
 	pr_info("Reserving %dMB for PCIE root complex mappings\n",
+<<<<<<< HEAD
 	       pci_reserve_mb);
+=======
+		pci_reserve_mb);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 early_param("pci_reserve", setup_pci_reserve);
@@ -189,7 +340,11 @@ early_param("vmalloc", parse_vmalloc);
 /*
  * Determine for each controller where its lowmem is mapped and how much of
  * it is mapped there.  On controller zero, the first few megabytes are
+<<<<<<< HEAD
  * already mapped in as code at MEM_SV_INTRPT, so in principle we could
+=======
+ * already mapped in as code at MEM_SV_START, so in principle we could
+>>>>>>> refs/remotes/origin/master
  * start our data mappings higher up, but for now we don't bother, to avoid
  * additional confusion.
  *
@@ -270,7 +425,11 @@ static void *__init setup_pa_va_mapping(void)
  * This is up to 4 mappings for lowmem, one mapping per memory
  * controller, plus one for our text segment.
  */
+<<<<<<< HEAD
 static void __cpuinit store_permanent_mappings(void)
+=======
+static void store_permanent_mappings(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -287,8 +446,13 @@ static void __cpuinit store_permanent_mappings(void)
 		hv_store_mapping(addr, pages << PAGE_SHIFT, pa);
 	}
 
+<<<<<<< HEAD
 	hv_store_mapping((HV_VirtAddr)_stext,
 			 (uint32_t)(_einittext - _stext), 0);
+=======
+	hv_store_mapping((HV_VirtAddr)_text,
+			 (uint32_t)(_einittext - _text), 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -309,6 +473,10 @@ static void __init setup_memory(void)
 #if defined(CONFIG_HIGHMEM) || defined(__tilegx__)
 	long lowmem_pages;
 #endif
+<<<<<<< HEAD
+=======
+	unsigned long physpages = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* We are using a char to hold the cpu_2_node[] mapping */
 	BUILD_BUG_ON(MAX_NUMNODES > 127);
@@ -368,8 +536,13 @@ static void __init setup_memory(void)
 				continue;
 			}
 		}
+<<<<<<< HEAD
 		if (num_physpages + PFN_DOWN(range.size) > maxmem_pfn) {
 			int max_size = maxmem_pfn - num_physpages;
+=======
+		if (physpages + PFN_DOWN(range.size) > maxmem_pfn) {
+			int max_size = maxmem_pfn - physpages;
+>>>>>>> refs/remotes/origin/master
 			if (max_size > 0) {
 				pr_err("Maxmem reduced node %d to %d pages\n",
 				       i, max_size);
@@ -397,7 +570,11 @@ static void __init setup_memory(void)
 			continue;
 		}
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
+=======
+#if defined(CONFIG_PCI) && !defined(__tilegx__)
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Blocks that overlap the pci reserved region must
 		 * have enough space to hold the maximum percpu data
@@ -426,7 +603,11 @@ static void __init setup_memory(void)
 		node_start_pfn[i] = start;
 		node_end_pfn[i] = end;
 		node_controller[i] = range.controller;
+<<<<<<< HEAD
 		num_physpages += size;
+=======
+		physpages += size;
+>>>>>>> refs/remotes/origin/master
 		max_pfn = end;
 
 		/* Mark node as online */
@@ -445,7 +626,11 @@ static void __init setup_memory(void)
 	 * we're willing to use at 8 million pages (32GB of 4KB pages).
 	 */
 	cap = 8 * 1024 * 1024;  /* 8 million pages */
+<<<<<<< HEAD
 	if (num_physpages > cap) {
+=======
+	if (physpages > cap) {
+>>>>>>> refs/remotes/origin/master
 		int num_nodes = num_online_nodes();
 		int cap_each = cap / num_nodes;
 		unsigned long dropped_pages = 0;
@@ -456,10 +641,17 @@ static void __init setup_memory(void)
 				node_end_pfn[i] = node_start_pfn[i] + cap_each;
 			}
 		}
+<<<<<<< HEAD
 		num_physpages -= dropped_pages;
 		pr_warning("Only using %ldMB memory;"
 		       " ignoring %ldMB.\n",
 		       num_physpages >> (20 - PAGE_SHIFT),
+=======
+		physpages -= dropped_pages;
+		pr_warning("Only using %ldMB memory;"
+		       " ignoring %ldMB.\n",
+		       physpages >> (20 - PAGE_SHIFT),
+>>>>>>> refs/remotes/origin/master
 		       dropped_pages >> (20 - PAGE_SHIFT));
 		pr_warning("Consider using a larger page size.\n");
 	}
@@ -477,7 +669,11 @@ static void __init setup_memory(void)
 
 	lowmem_pages = (mappable_physpages > MAXMEM_PFN) ?
 		MAXMEM_PFN : mappable_physpages;
+<<<<<<< HEAD
 	highmem_pages = (long) (num_physpages - lowmem_pages);
+=======
+	highmem_pages = (long) (physpages - lowmem_pages);
+>>>>>>> refs/remotes/origin/master
 
 	pr_notice("%ldMB HIGHMEM available.\n",
 	       pages_to_mb(highmem_pages > 0 ? highmem_pages : 0));
@@ -494,7 +690,10 @@ static void __init setup_memory(void)
 		pr_warning("Use a HIGHMEM enabled kernel.\n");
 		max_low_pfn = MAXMEM_PFN;
 		max_pfn = MAXMEM_PFN;
+<<<<<<< HEAD
 		num_physpages = MAXMEM_PFN;
+=======
+>>>>>>> refs/remotes/origin/master
 		node_end_pfn[0] = MAXMEM_PFN;
 	} else {
 		pr_notice("%ldMB memory available.\n",
@@ -519,6 +718,7 @@ static void __init setup_memory(void)
 #endif
 }
 
+<<<<<<< HEAD
 static void __init setup_bootmem_allocator(void)
 {
 	unsigned long bootmap_size, first_alloc_pfn, last_alloc_pfn;
@@ -553,8 +753,132 @@ static void __init setup_bootmem_allocator(void)
 
 #ifdef CONFIG_KEXEC
 	if (crashk_res.start != crashk_res.end)
+<<<<<<< HEAD
 		reserve_bootmem(crashk_res.start,
 			crashk_res.end - crashk_res.start + 1, 0);
+=======
+		reserve_bootmem(crashk_res.start, resource_size(&crashk_res), 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * On 32-bit machines, we only put bootmem on the low controller,
+ * since PAs > 4GB can't be used in bootmem.  In principle one could
+ * imagine, e.g., multiple 1 GB controllers all of which could support
+ * bootmem, but in practice using controllers this small isn't a
+ * particularly interesting scenario, so we just keep it simple and
+ * use only the first controller for bootmem on 32-bit machines.
+ */
+static inline int node_has_bootmem(int nid)
+{
+#ifdef CONFIG_64BIT
+	return 1;
+#else
+	return nid == 0;
+#endif
+}
+
+static inline unsigned long alloc_bootmem_pfn(int nid,
+					      unsigned long size,
+					      unsigned long goal)
+{
+	void *kva = __alloc_bootmem_node(NODE_DATA(nid), size,
+					 PAGE_SIZE, goal);
+	unsigned long pfn = kaddr_to_pfn(kva);
+	BUG_ON(goal && PFN_PHYS(pfn) != goal);
+	return pfn;
+}
+
+static void __init setup_bootmem_allocator_node(int i)
+{
+	unsigned long start, end, mapsize, mapstart;
+
+	if (node_has_bootmem(i)) {
+		NODE_DATA(i)->bdata = &bootmem_node_data[i];
+	} else {
+		/* Share controller zero's bdata for now. */
+		NODE_DATA(i)->bdata = &bootmem_node_data[0];
+		return;
+	}
+
+	/* Skip up to after the bss in node 0. */
+	start = (i == 0) ? min_low_pfn : node_start_pfn[i];
+
+	/* Only lowmem, if we're a HIGHMEM build. */
+#ifdef CONFIG_HIGHMEM
+	end = node_lowmem_end_pfn[i];
+#else
+	end = node_end_pfn[i];
+#endif
+
+	/* No memory here. */
+	if (end == start)
+		return;
+
+	/* Figure out where the bootmem bitmap is located. */
+	mapsize = bootmem_bootmap_pages(end - start);
+	if (i == 0) {
+		/* Use some space right before the heap on node 0. */
+		mapstart = start;
+		start += mapsize;
+	} else {
+		/* Allocate bitmap on node 0 to avoid page table issues. */
+		mapstart = alloc_bootmem_pfn(0, PFN_PHYS(mapsize), 0);
+	}
+
+	/* Initialize a node. */
+	init_bootmem_node(NODE_DATA(i), mapstart, start, end);
+
+	/* Free all the space back into the allocator. */
+	free_bootmem(PFN_PHYS(start), PFN_PHYS(end - start));
+
+#if defined(CONFIG_PCI) && !defined(__tilegx__)
+	/*
+	 * Throw away any memory aliased by the PCI region.
+	 */
+	if (pci_reserve_start_pfn < end && pci_reserve_end_pfn > start) {
+		start = max(pci_reserve_start_pfn, start);
+		end = min(pci_reserve_end_pfn, end);
+		reserve_bootmem(PFN_PHYS(start), PFN_PHYS(end - start),
+				BOOTMEM_EXCLUSIVE);
+	}
+#endif
+}
+
+static void __init setup_bootmem_allocator(void)
+{
+	int i;
+	for (i = 0; i < MAX_NUMNODES; ++i)
+		setup_bootmem_allocator_node(i);
+
+	/* Reserve any memory excluded by "memmap" arguments. */
+	for (i = 0; i < memmap_nr; ++i) {
+		struct memmap_entry *m = &memmap_map[i];
+		reserve_bootmem(m->addr, m->size, 0);
+	}
+
+#ifdef CONFIG_BLK_DEV_INITRD
+	if (initrd_start) {
+		/* Make sure the initrd memory region is not modified. */
+		if (reserve_bootmem(initrd_start, initrd_end - initrd_start,
+				    BOOTMEM_EXCLUSIVE)) {
+			pr_crit("The initrd memory region has been polluted. Disabling it.\n");
+			initrd_start = 0;
+			initrd_end = 0;
+		} else {
+			/*
+			 * Translate initrd_start & initrd_end from PA to VA for
+			 * future access.
+			 */
+			initrd_start += PAGE_OFFSET;
+			initrd_end += PAGE_OFFSET;
+		}
+	}
+#endif
+
+#ifdef CONFIG_KEXEC
+	if (crashk_res.start != crashk_res.end)
+		reserve_bootmem(crashk_res.start, resource_size(&crashk_res), 0);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -581,6 +905,7 @@ static int __init percpu_size(void)
 	return size;
 }
 
+<<<<<<< HEAD
 static inline unsigned long alloc_bootmem_pfn(int size, unsigned long goal)
 {
 	void *kva = __alloc_bootmem(size, PAGE_SIZE, goal);
@@ -589,11 +914,18 @@ static inline unsigned long alloc_bootmem_pfn(int size, unsigned long goal)
 	return pfn;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init zone_sizes_init(void)
 {
 	unsigned long zones_size[MAX_NR_ZONES] = { 0 };
 	int size = percpu_size();
 	int num_cpus = smp_height * smp_width;
+<<<<<<< HEAD
+=======
+	const unsigned long dma_end = (1UL << (32 - PAGE_SHIFT));
+
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = 0; i < num_cpus; ++i)
@@ -626,21 +958,39 @@ static void __init zone_sizes_init(void)
 		 * though, there'll be no lowmem, so we just alloc_bootmem
 		 * the memmap.  There will be no percpu memory either.
 		 */
+<<<<<<< HEAD
 		if (__pfn_to_highbits(start) == 0) {
 			/* In low PAs, allocate via bootmem. */
 			unsigned long goal = 0;
 			node_memmap_pfn[i] =
 				alloc_bootmem_pfn(memmap_size, goal);
+=======
+		if (i != 0 && cpu_isset(i, isolnodes)) {
+			node_memmap_pfn[i] =
+				alloc_bootmem_pfn(0, memmap_size, 0);
+			BUG_ON(node_percpu[i] != 0);
+		} else if (node_has_bootmem(start)) {
+			unsigned long goal = 0;
+			node_memmap_pfn[i] =
+				alloc_bootmem_pfn(i, memmap_size, 0);
+>>>>>>> refs/remotes/origin/master
 			if (kdata_huge)
 				goal = PFN_PHYS(lowmem_end) - node_percpu[i];
 			if (node_percpu[i])
 				node_percpu_pfn[i] =
+<<<<<<< HEAD
 				    alloc_bootmem_pfn(node_percpu[i], goal);
 		} else if (cpu_isset(i, isolnodes)) {
 			node_memmap_pfn[i] = alloc_bootmem_pfn(memmap_size, 0);
 			BUG_ON(node_percpu[i] != 0);
 		} else {
 			/* In high PAs, just reserve some pages. */
+=======
+					alloc_bootmem_pfn(i, node_percpu[i],
+							  goal);
+		} else {
+			/* In non-bootmem zones, just reserve some pages. */
+>>>>>>> refs/remotes/origin/master
 			node_memmap_pfn[i] = node_free_pfn[i];
 			node_free_pfn[i] += PFN_UP(memmap_size);
 			if (!kdata_huge) {
@@ -664,6 +1014,7 @@ static void __init zone_sizes_init(void)
 		zones_size[ZONE_NORMAL] = end - start;
 #endif
 
+<<<<<<< HEAD
 		/*
 		 * Everyone shares node 0's bootmem allocator, but
 		 * we use alloc_remap(), above, to put the actual
@@ -674,13 +1025,30 @@ static void __init zone_sizes_init(void)
 		 * operate on 32-bit physical addresses.
 		 */
 		NODE_DATA(i)->bdata = NODE_DATA(0)->bdata;
+=======
+		if (start < dma_end) {
+			zones_size[ZONE_DMA] = min(zones_size[ZONE_NORMAL],
+						   dma_end - start);
+			zones_size[ZONE_NORMAL] -= zones_size[ZONE_DMA];
+		} else {
+			zones_size[ZONE_DMA] = 0;
+		}
+
+		/* Take zone metadata from controller 0 if we're isolnode. */
+		if (node_isset(i, isolnodes))
+			NODE_DATA(i)->bdata = &bootmem_node_data[0];
+>>>>>>> refs/remotes/origin/master
 
 		free_area_init_node(i, zones_size, start, NULL);
 		printk(KERN_DEBUG "  Normal zone: %ld per-cpu pages\n",
 		       PFN_UP(node_percpu[i]));
 
 		/* Track the type of memory on each node */
+<<<<<<< HEAD
 		if (zones_size[ZONE_NORMAL])
+=======
+		if (zones_size[ZONE_NORMAL] || zones_size[ZONE_DMA])
+>>>>>>> refs/remotes/origin/master
 			node_set_state(i, N_NORMAL_MEMORY);
 #ifdef CONFIG_HIGHMEM
 		if (end != start)
@@ -856,13 +1224,36 @@ subsys_initcall(topology_init);
 
 #endif /* CONFIG_NUMA */
 
+<<<<<<< HEAD
+=======
+/*
+ * Initialize hugepage support on this cpu.  We do this on all cores
+ * early in boot: before argument parsing for the boot cpu, and after
+ * argument parsing but before the init functions run on the secondaries.
+ * So the values we set up here in the hypervisor may be overridden on
+ * the boot cpu as arguments are parsed.
+ */
+static void init_super_pages(void)
+{
+#ifdef CONFIG_HUGETLB_SUPER_PAGES
+	int i;
+	for (i = 0; i < HUGE_SHIFT_ENTRIES; ++i)
+		hv_set_pte_super_shift(i, huge_shift[i]);
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * setup_cpu() - Do all necessary per-cpu, tile-specific initialization.
  * @boot: Is this the boot cpu?
  *
  * Called from setup_arch() on the boot cpu, or online_secondary().
  */
+<<<<<<< HEAD
 void __cpuinit setup_cpu(int boot)
+=======
+void setup_cpu(int boot)
+>>>>>>> refs/remotes/origin/master
 {
 	/* The boot cpu sets up its permanent mappings much earlier. */
 	if (!boot)
@@ -873,9 +1264,12 @@ void __cpuinit setup_cpu(int boot)
 	arch_local_irq_unmask(INT_DMATLB_MISS);
 	arch_local_irq_unmask(INT_DMATLB_ACCESS);
 #endif
+<<<<<<< HEAD
 #if CHIP_HAS_SN_PROC()
 	arch_local_irq_unmask(INT_SNITLB_MISS);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef __tilegx__
 	arch_local_irq_unmask(INT_SINGLE_STEP_K);
 #endif
@@ -890,10 +1284,13 @@ void __cpuinit setup_cpu(int boot)
 	/* Static network is not restricted. */
 	__insn_mtspr(SPR_MPL_SN_ACCESS_SET_0, 1);
 #endif
+<<<<<<< HEAD
 #if CHIP_HAS_SN_PROC()
 	__insn_mtspr(SPR_MPL_SN_NOTIFY_SET_0, 1);
 	__insn_mtspr(SPR_MPL_SN_CPL_SET_0, 1);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Set the MPL for interrupt control 0 & 1 to the corresponding
@@ -910,12 +1307,29 @@ void __cpuinit setup_cpu(int boot)
 	/* Reset the network state on this cpu. */
 	reset_network_state();
 #endif
+<<<<<<< HEAD
+=======
+
+	init_super_pages();
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_BLK_DEV_INITRD
 
 static int __initdata set_initramfs_file;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char __initdata initramfs_file[128] = "initramfs.cpio.gz";
+=======
+static char __initdata initramfs_file[128] = "initramfs";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char __initdata initramfs_file[128] = "initramfs";
+>>>>>>> refs/remotes/origin/master
+=======
+static char __initdata initramfs_file[128] = "initramfs";
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int __init setup_initramfs_file(char *str)
 {
@@ -929,9 +1343,27 @@ static int __init setup_initramfs_file(char *str)
 early_param("initramfs_file", setup_initramfs_file);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
  * We look for an additional "initramfs.cpio.gz" file in the hvfs.
  * If there is one, we allocate some memory for it and it will be
  * unpacked to the initramfs after any built-in initramfs_data.
+=======
+ * We look for a file called "initramfs" in the hvfs.  If there is one, we
+ * allocate some memory for it and it will be unpacked to the initramfs.
+ * If it's compressed, the initd code will uncompress it first.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * We look for a file called "initramfs" in the hvfs.  If there is one, we
+ * allocate some memory for it and it will be unpacked to the initramfs.
+ * If it's compressed, the initd code will uncompress it first.
+>>>>>>> refs/remotes/origin/master
+=======
+ * We look for a file called "initramfs" in the hvfs.  If there is one, we
+ * allocate some memory for it and it will be unpacked to the initramfs.
+ * If it's compressed, the initd code will uncompress it first.
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 static void __init load_hv_initrd(void)
 {
@@ -939,12 +1371,46 @@ static void __init load_hv_initrd(void)
 	int fd, rc;
 	void *initrd;
 
+<<<<<<< HEAD
 	fd = hv_fs_findfile((HV_VirtAddr) initramfs_file);
 	if (fd == HV_ENOENT) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (set_initramfs_file)
 			pr_warning("No such hvfs initramfs file '%s'\n",
 				   initramfs_file);
 		return;
+=======
+=======
+	/* If initrd has already been set, skip initramfs file in hvfs. */
+	if (initrd_start)
+		return;
+
+	fd = hv_fs_findfile((HV_VirtAddr) initramfs_file);
+	if (fd == HV_ENOENT) {
+>>>>>>> refs/remotes/origin/master
+		if (set_initramfs_file) {
+			pr_warning("No such hvfs initramfs file '%s'\n",
+				   initramfs_file);
+=======
+		if (set_initramfs_file) {
+			pr_warning("No such hvfs initramfs file '%s'\n",
+				   initramfs_file);
+>>>>>>> refs/remotes/origin/cm-11.0
+			return;
+		} else {
+			/* Try old backwards-compatible name. */
+			fd = hv_fs_findfile((HV_VirtAddr)"initramfs.cpio.gz");
+			if (fd == HV_ENOENT)
+				return;
+		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	BUG_ON(fd < 0);
 	stat = hv_fs_fstat(fd);
@@ -971,6 +1437,28 @@ void __init free_initrd_mem(unsigned long begin, unsigned long end)
 	free_bootmem(__pa(begin), end - begin);
 }
 
+<<<<<<< HEAD
+=======
+static int __init setup_initrd(char *str)
+{
+	char *endp;
+	unsigned long initrd_size;
+
+	initrd_size = str ? simple_strtoul(str, &endp, 0) : 0;
+	if (initrd_size == 0 || *endp != '@')
+		return -EINVAL;
+
+	initrd_start = simple_strtoul(endp+1, &endp, 0);
+	if (initrd_start == 0)
+		return -EINVAL;
+
+	initrd_end = initrd_start + initrd_size;
+
+	return 0;
+}
+early_param("initrd", setup_initrd);
+
+>>>>>>> refs/remotes/origin/master
 #else
 static inline void load_hv_initrd(void) {}
 #endif /* CONFIG_BLK_DEV_INITRD */
@@ -1038,7 +1526,11 @@ static void __init validate_va(void)
 #ifndef __tilegx__   /* FIXME: GX: probably some validation relevant here */
 	/*
 	 * Similarly, make sure we're only using allowed VAs.
+<<<<<<< HEAD
 	 * We assume we can contiguously use MEM_USER_INTRPT .. MEM_HV_INTRPT,
+=======
+	 * We assume we can contiguously use MEM_USER_INTRPT .. MEM_HV_START,
+>>>>>>> refs/remotes/origin/master
 	 * and 0 .. KERNEL_HIGH_VADDR.
 	 * In addition, make sure we CAN'T use the end of memory, since
 	 * we use the last chunk of each pgd for the pgd_list.
@@ -1053,7 +1545,11 @@ static void __init validate_va(void)
 		if (range.size == 0)
 			break;
 		if (range.start <= MEM_USER_INTRPT &&
+<<<<<<< HEAD
 		    range.start + range.size >= MEM_HV_INTRPT)
+=======
+		    range.start + range.size >= MEM_HV_START)
+>>>>>>> refs/remotes/origin/master
 			user_kernel_ok = 1;
 		if (range.start == 0)
 			max_va = range.size;
@@ -1071,8 +1567,12 @@ static void __init validate_va(void)
 	if ((long)VMALLOC_START >= 0)
 		early_panic(
 			"Linux VMALLOC region below the 2GB line (%#lx)!\n"
+<<<<<<< HEAD
 			"Reconfigure the kernel with fewer NR_HUGE_VMAPS\n"
 			"or smaller VMALLOC_RESERVE.\n",
+=======
+			"Reconfigure the kernel with smaller VMALLOC_RESERVE.\n",
+>>>>>>> refs/remotes/origin/master
 			VMALLOC_START);
 #endif
 }
@@ -1087,7 +1587,10 @@ static void __init validate_va(void)
 struct cpumask __write_once cpu_lotar_map;
 EXPORT_SYMBOL(cpu_lotar_map);
 
+<<<<<<< HEAD
 #if CHIP_HAS_CBOX_HOME_MAP()
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * hash_for_home_map lists all the tiles that hash-for-home data
  * will be cached on.  Note that this may includes tiles that are not
@@ -1097,11 +1600,22 @@ EXPORT_SYMBOL(cpu_lotar_map);
  */
 struct cpumask hash_for_home_map;
 EXPORT_SYMBOL(hash_for_home_map);
+<<<<<<< HEAD
 #endif
 
 /*
  * cpu_cacheable_map lists all the cpus whose caches the hypervisor can
+<<<<<<< HEAD
  * flush on our behalf.  It is set to cpu_possible_map OR'ed with
+=======
+ * flush on our behalf.  It is set to cpu_possible_mask OR'ed with
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/*
+ * cpu_cacheable_map lists all the cpus whose caches the hypervisor can
+ * flush on our behalf.  It is set to cpu_possible_mask OR'ed with
+>>>>>>> refs/remotes/origin/master
  * hash_for_home_map, and it is what should be passed to
  * hv_flush_remote() to flush all caches.  Note that if there are
  * dedicated hypervisor driver tiles that have authorized use of their
@@ -1187,20 +1701,40 @@ static void __init setup_cpu_maps(void)
 			      sizeof(cpu_lotar_map));
 	if (rc < 0) {
 		pr_err("warning: no HV_INQ_TILES_LOTAR; using AVAIL\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		cpu_lotar_map = cpu_possible_map;
+=======
+		cpu_lotar_map = *cpu_possible_mask;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 #if CHIP_HAS_CBOX_HOME_MAP()
+=======
+		cpu_lotar_map = *cpu_possible_mask;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Retrieve set of CPUs used for hash-for-home caching */
 	rc = hv_inquire_tiles(HV_INQ_TILES_HFH_CACHE,
 			      (HV_VirtAddr) hash_for_home_map.bits,
 			      sizeof(hash_for_home_map));
 	if (rc < 0)
 		early_panic("hv_inquire_tiles(HFH_CACHE) failed: rc %d\n", rc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpumask_or(&cpu_cacheable_map, &cpu_possible_map, &hash_for_home_map);
 #else
 	cpu_cacheable_map = cpu_possible_map;
+=======
+	cpumask_or(&cpu_cacheable_map, cpu_possible_mask, &hash_for_home_map);
+#else
+	cpu_cacheable_map = *cpu_possible_mask;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+	cpumask_or(&cpu_cacheable_map, cpu_possible_mask, &hash_for_home_map);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1260,7 +1794,11 @@ void __init setup_arch(char **cmdline_p)
 	setup_cpu_maps();
 
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
+=======
+#if defined(CONFIG_PCI) && !defined(__tilegx__)
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Initialize the PCI structures.  This is done before memory
 	 * setup so that we know whether or not a pci_reserve region
@@ -1289,6 +1827,13 @@ void __init setup_arch(char **cmdline_p)
 	 * any memory using the bootmem allocator.
 	 */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SWIOTLB
+	swiotlb_init(0);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	paging_init();
 	setup_numa_mapping();
 	zone_sizes_init();
@@ -1391,26 +1936,47 @@ void __init setup_per_cpu_areas(void)
 		for (i = 0; i < size; i += PAGE_SIZE, ++pfn, ++pg) {
 
 			/* Update the vmalloc mapping and page home. */
+<<<<<<< HEAD
 			pte_t *ptep =
 				virt_to_pte(NULL, (unsigned long)ptr + i);
+=======
+			unsigned long addr = (unsigned long)ptr + i;
+			pte_t *ptep = virt_to_kpte(addr);
+>>>>>>> refs/remotes/origin/master
 			pte_t pte = *ptep;
 			BUG_ON(pfn != pte_pfn(pte));
 			pte = hv_pte_set_mode(pte, HV_PTE_MODE_CACHE_TILE_L3);
 			pte = set_remote_cache_cpu(pte, cpu);
+<<<<<<< HEAD
 			set_pte(ptep, pte);
 
 			/* Update the lowmem mapping for consistency. */
 			lowmem_va = (unsigned long)pfn_to_kaddr(pfn);
 			ptep = virt_to_pte(NULL, lowmem_va);
+=======
+			set_pte_at(&init_mm, addr, ptep, pte);
+
+			/* Update the lowmem mapping for consistency. */
+			lowmem_va = (unsigned long)pfn_to_kaddr(pfn);
+			ptep = virt_to_kpte(lowmem_va);
+>>>>>>> refs/remotes/origin/master
 			if (pte_huge(*ptep)) {
 				printk(KERN_DEBUG "early shatter of huge page"
 				       " at %#lx\n", lowmem_va);
 				shatter_pmd((pmd_t *)ptep);
+<<<<<<< HEAD
 				ptep = virt_to_pte(NULL, lowmem_va);
 				BUG_ON(pte_huge(*ptep));
 			}
 			BUG_ON(pfn != pte_pfn(*ptep));
 			set_pte(ptep, pte);
+=======
+				ptep = virt_to_kpte(lowmem_va);
+				BUG_ON(pte_huge(*ptep));
+			}
+			BUG_ON(pfn != pte_pfn(*ptep));
+			set_pte_at(&init_mm, lowmem_va, ptep, pte);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1439,16 +2005,28 @@ static struct resource code_resource = {
 };
 
 /*
+<<<<<<< HEAD
  * We reserve all resources above 4GB so that PCI won't try to put
  * mappings above 4GB; the standard allows that for some devices but
  * the probing code trunates values to 32 bits.
  */
 #ifdef CONFIG_PCI
+=======
+ * On Pro, we reserve all resources above 4GB so that PCI won't try to put
+ * mappings above 4GB.
+ */
+#if defined(CONFIG_PCI) && !defined(__tilegx__)
+>>>>>>> refs/remotes/origin/master
 static struct resource* __init
 insert_non_bus_resource(void)
 {
 	struct resource *res =
 		kzalloc(sizeof(struct resource), GFP_ATOMIC);
+<<<<<<< HEAD
+=======
+	if (!res)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	res->name = "Non-Bus Physical Address Space";
 	res->start = (1ULL << 32);
 	res->end = -1LL;
@@ -1462,11 +2040,21 @@ insert_non_bus_resource(void)
 #endif
 
 static struct resource* __init
+<<<<<<< HEAD
 insert_ram_resource(u64 start_pfn, u64 end_pfn)
 {
 	struct resource *res =
 		kzalloc(sizeof(struct resource), GFP_ATOMIC);
 	res->name = "System RAM";
+=======
+insert_ram_resource(u64 start_pfn, u64 end_pfn, bool reserved)
+{
+	struct resource *res =
+		kzalloc(sizeof(struct resource), GFP_ATOMIC);
+	if (!res)
+		return NULL;
+	res->name = reserved ? "Reserved" : "System RAM";
+>>>>>>> refs/remotes/origin/master
 	res->start = start_pfn << PAGE_SHIFT;
 	res->end = (end_pfn << PAGE_SHIFT) - 1;
 	res->flags = IORESOURCE_BUSY | IORESOURCE_MEM;
@@ -1486,10 +2074,16 @@ insert_ram_resource(u64 start_pfn, u64 end_pfn)
 static int __init request_standard_resources(void)
 {
 	int i;
+<<<<<<< HEAD
 	enum { CODE_DELTA = MEM_SV_INTRPT - PAGE_OFFSET };
 
 	iomem_resource.end = -1LL;
 #ifdef CONFIG_PCI
+=======
+	enum { CODE_DELTA = MEM_SV_START - PAGE_OFFSET };
+
+#if defined(CONFIG_PCI) && !defined(__tilegx__)
+>>>>>>> refs/remotes/origin/master
 	insert_non_bus_resource();
 #endif
 
@@ -1497,16 +2091,28 @@ static int __init request_standard_resources(void)
 		u64 start_pfn = node_start_pfn[i];
 		u64 end_pfn = node_end_pfn[i];
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
+=======
+#if defined(CONFIG_PCI) && !defined(__tilegx__)
+>>>>>>> refs/remotes/origin/master
 		if (start_pfn <= pci_reserve_start_pfn &&
 		    end_pfn > pci_reserve_start_pfn) {
 			if (end_pfn > pci_reserve_end_pfn)
 				insert_ram_resource(pci_reserve_end_pfn,
+<<<<<<< HEAD
 						     end_pfn);
 			end_pfn = pci_reserve_start_pfn;
 		}
 #endif
 		insert_ram_resource(start_pfn, end_pfn);
+=======
+						    end_pfn, 0);
+			end_pfn = pci_reserve_start_pfn;
+		}
+#endif
+		insert_ram_resource(start_pfn, end_pfn, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	code_resource.start = __pa(_text - CODE_DELTA);
@@ -1517,6 +2123,16 @@ static int __init request_standard_resources(void)
 	insert_resource(&iomem_resource, &code_resource);
 	insert_resource(&iomem_resource, &data_resource);
 
+<<<<<<< HEAD
+=======
+	/* Mark any "memmap" regions busy for the resource manager. */
+	for (i = 0; i < memmap_nr; ++i) {
+		struct memmap_entry *m = &memmap_map[i];
+		insert_ram_resource(PFN_DOWN(m->addr),
+				    PFN_UP(m->addr + m->size - 1), 1);
+	}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_KEXEC
 	insert_resource(&iomem_resource, &crashk_res);
 #endif

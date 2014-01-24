@@ -87,6 +87,7 @@ EXPORT_SYMBOL(p9_idpool_destroy);
 
 int p9_idpool_get(struct p9_idpool *p)
 {
+<<<<<<< HEAD
 	int i = 0;
 	int error;
 	unsigned long flags;
@@ -106,7 +107,28 @@ retry:
 	else if (error)
 		return -1;
 
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_MUX, " id %d pool %p\n", i, p);
+=======
+	p9_debug(P9_DEBUG_MUX, " id %d pool %p\n", i, p);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i;
+	unsigned long flags;
+
+	idr_preload(GFP_NOFS);
+	spin_lock_irqsave(&p->lock, flags);
+
+	/* no need to store exactly p, we just need something non-null */
+	i = idr_alloc(&p->pool, p, 0, 0, GFP_NOWAIT);
+
+	spin_unlock_irqrestore(&p->lock, flags);
+	idr_preload_end();
+	if (i < 0)
+		return -1;
+
+	p9_debug(P9_DEBUG_MUX, " id %d pool %p\n", i, p);
+>>>>>>> refs/remotes/origin/master
 	return i;
 }
 EXPORT_SYMBOL(p9_idpool_get);
@@ -124,7 +146,15 @@ void p9_idpool_put(int id, struct p9_idpool *p)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_MUX, " id %d pool %p\n", id, p);
+=======
+	p9_debug(P9_DEBUG_MUX, " id %d pool %p\n", id, p);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_MUX, " id %d pool %p\n", id, p);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&p->lock, flags);
 	idr_remove(&p->pool, id);

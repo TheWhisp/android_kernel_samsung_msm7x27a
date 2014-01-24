@@ -20,13 +20,30 @@
 
 #include <linux/mm.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/common.h>
+<<<<<<< HEAD
 #include <asm/pgtable.h>
 #include <asm/mach/map.h>
 #include <mach/gpio.h>
+=======
+#include <mach/devices-common.h>
+#include <asm/pgtable.h>
+#include <asm/mach/map.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/irqs.h>
 #include <mach/iomux-v1.h>
+=======
+#include <linux/pinctrl/machine.h>
+#include <asm/pgtable.h>
+#include <asm/mach/map.h>
+
+#include "common.h"
+#include "devices/devices-common.h"
+#include "hardware.h"
+#include "iomux-v1.h"
+>>>>>>> refs/remotes/origin/master
 
 /* MX21 memory map definition */
 static struct map_desc imx21_io_desc[] __initdata = {
@@ -65,11 +82,16 @@ void __init mx21_map_io(void)
 void __init imx21_init_early(void)
 {
 	mxc_set_cpu_type(MXC_CPU_MX21);
+<<<<<<< HEAD
 	mxc_arch_reset_init(MX21_IO_ADDRESS(MX21_WDOG_BASE_ADDR));
+=======
+>>>>>>> refs/remotes/origin/master
 	imx_iomuxv1_init(MX21_IO_ADDRESS(MX21_GPIO_BASE_ADDR),
 			MX21_NUM_GPIO_PORT);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct mxc_gpio_port imx21_gpio_ports[] = {
 	DEFINE_IMX_GPIO_PORT_IRQ(MX21, 0, 1, MX21_INT_GPIO),
 	DEFINE_IMX_GPIO_PORT(MX21, 1, 2),
@@ -83,4 +105,43 @@ void __init mx21_init_irq(void)
 {
 	mxc_init_irq(MX21_IO_ADDRESS(MX21_AVIC_BASE_ADDR));
 	mxc_gpio_init(imx21_gpio_ports,	ARRAY_SIZE(imx21_gpio_ports));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void __init mx21_init_irq(void)
+{
+	mxc_init_irq(MX21_IO_ADDRESS(MX21_AVIC_BASE_ADDR));
+}
+
+static const struct resource imx21_audmux_res[] __initconst = {
+	DEFINE_RES_MEM(MX21_AUDMUX_BASE_ADDR, SZ_4K),
+};
+
+void __init imx21_soc_init(void)
+{
+<<<<<<< HEAD
+=======
+	mxc_arch_reset_init(MX21_IO_ADDRESS(MX21_WDOG_BASE_ADDR));
+	mxc_device_init();
+
+>>>>>>> refs/remotes/origin/master
+	mxc_register_gpio("imx21-gpio", 0, MX21_GPIO1_BASE_ADDR, SZ_256, MX21_INT_GPIO, 0);
+	mxc_register_gpio("imx21-gpio", 1, MX21_GPIO2_BASE_ADDR, SZ_256, MX21_INT_GPIO, 0);
+	mxc_register_gpio("imx21-gpio", 2, MX21_GPIO3_BASE_ADDR, SZ_256, MX21_INT_GPIO, 0);
+	mxc_register_gpio("imx21-gpio", 3, MX21_GPIO4_BASE_ADDR, SZ_256, MX21_INT_GPIO, 0);
+	mxc_register_gpio("imx21-gpio", 4, MX21_GPIO5_BASE_ADDR, SZ_256, MX21_INT_GPIO, 0);
+	mxc_register_gpio("imx21-gpio", 5, MX21_GPIO6_BASE_ADDR, SZ_256, MX21_INT_GPIO, 0);
+
+<<<<<<< HEAD
+	imx_add_imx_dma();
+	platform_device_register_simple("imx21-audmux", 0, imx21_audmux_res,
+					ARRAY_SIZE(imx21_audmux_res));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pinctrl_provide_dummies();
+	imx_add_imx_dma("imx21-dma", MX21_DMA_BASE_ADDR,
+			MX21_INT_DMACH0, 0); /* No ERR irq */
+	platform_device_register_simple("imx21-audmux", 0, imx21_audmux_res,
+					ARRAY_SIZE(imx21_audmux_res));
+>>>>>>> refs/remotes/origin/master
 }

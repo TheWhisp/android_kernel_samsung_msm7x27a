@@ -3,6 +3,16 @@
  * Copyright (C) 2003 David S. Miller (davem@redhat.com)
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "IPsec: " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "IPsec: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/skbuff.h>
 #include <linux/module.h>
 #include <linux/mutex.h>
@@ -61,10 +71,21 @@ static int xfrm_tunnel_err(struct sk_buff *skb, u32 info)
 static struct xfrm_tunnel xfrm_tunnel_handler __read_mostly = {
 	.handler	=	xfrm_tunnel_rcv,
 	.err_handler	=	xfrm_tunnel_err,
+<<<<<<< HEAD
 	.priority	=	2,
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.priority	=	3,
+};
+
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 static struct xfrm_tunnel xfrm64_tunnel_handler __read_mostly = {
 	.handler	=	xfrm_tunnel_rcv,
 	.err_handler	=	xfrm_tunnel_err,
@@ -75,11 +96,21 @@ static struct xfrm_tunnel xfrm64_tunnel_handler __read_mostly = {
 static int __init ipip_init(void)
 {
 	if (xfrm_register_type(&ipip_type, AF_INET) < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "ipip init: can't add xfrm type\n");
+=======
+		pr_info("%s: can't add xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("%s: can't add xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;
 	}
 
 	if (xfrm4_tunnel_register(&xfrm_tunnel_handler, AF_INET)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "ipip init: can't add xfrm handler for AF_INET\n");
 		xfrm_unregister_type(&ipip_type, AF_INET);
 		return -EAGAIN;
@@ -87,6 +118,20 @@ static int __init ipip_init(void)
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 	if (xfrm4_tunnel_register(&xfrm64_tunnel_handler, AF_INET6)) {
 		printk(KERN_INFO "ipip init: can't add xfrm handler for AF_INET6\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_info("%s: can't add xfrm handler for AF_INET\n", __func__);
+		xfrm_unregister_type(&ipip_type, AF_INET);
+		return -EAGAIN;
+	}
+#if IS_ENABLED(CONFIG_IPV6)
+	if (xfrm4_tunnel_register(&xfrm64_tunnel_handler, AF_INET6)) {
+		pr_info("%s: can't add xfrm handler for AF_INET6\n", __func__);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		xfrm4_tunnel_deregister(&xfrm_tunnel_handler, AF_INET);
 		xfrm_unregister_type(&ipip_type, AF_INET);
 		return -EAGAIN;
@@ -97,6 +142,8 @@ static int __init ipip_init(void)
 
 static void __exit ipip_fini(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 	if (xfrm4_tunnel_deregister(&xfrm64_tunnel_handler, AF_INET6))
 		printk(KERN_INFO "ipip close: can't remove xfrm handler for AF_INET6\n");
@@ -105,6 +152,23 @@ static void __exit ipip_fini(void)
 		printk(KERN_INFO "ipip close: can't remove xfrm handler for AF_INET\n");
 	if (xfrm_unregister_type(&ipip_type, AF_INET) < 0)
 		printk(KERN_INFO "ipip close: can't remove xfrm type\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if IS_ENABLED(CONFIG_IPV6)
+	if (xfrm4_tunnel_deregister(&xfrm64_tunnel_handler, AF_INET6))
+		pr_info("%s: can't remove xfrm handler for AF_INET6\n",
+			__func__);
+#endif
+	if (xfrm4_tunnel_deregister(&xfrm_tunnel_handler, AF_INET))
+		pr_info("%s: can't remove xfrm handler for AF_INET\n",
+			__func__);
+	if (xfrm_unregister_type(&ipip_type, AF_INET) < 0)
+		pr_info("%s: can't remove xfrm type\n", __func__);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(ipip_init);

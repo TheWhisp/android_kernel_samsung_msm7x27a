@@ -13,7 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/map.h>
@@ -21,16 +29,30 @@
 #include <linux/mtd/physmap.h>
 #include <linux/i2c.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/iomux-mx27.h>
 
 #include "devices-imx27.h"
+=======
+
+#include "common.h"
+#include "devices-imx27.h"
+#include "hardware.h"
+#include "iomux-mx27.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Base address of PBC controller, CS4
@@ -247,25 +269,43 @@ static const struct imx_fb_platform_data mx27ads_fb_data __initconst = {
 static int mx27ads_sdhc1_init(struct device *dev, irq_handler_t detect_irq,
 			      void *data)
 {
+<<<<<<< HEAD
 	return request_irq(IRQ_GPIOE(21), detect_irq, IRQF_TRIGGER_RISING,
 			   "sdhc1-card-detect", data);
+=======
+	return request_irq(gpio_to_irq(IMX_GPIO_NR(5, 21)), detect_irq,
+			   IRQF_TRIGGER_RISING, "sdhc1-card-detect", data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mx27ads_sdhc2_init(struct device *dev, irq_handler_t detect_irq,
 			      void *data)
 {
+<<<<<<< HEAD
 	return request_irq(IRQ_GPIOB(7), detect_irq, IRQF_TRIGGER_RISING,
 			   "sdhc2-card-detect", data);
+=======
+	return request_irq(gpio_to_irq(IMX_GPIO_NR(2, 7)), detect_irq,
+			   IRQF_TRIGGER_RISING, "sdhc2-card-detect", data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mx27ads_sdhc1_exit(struct device *dev, void *data)
 {
+<<<<<<< HEAD
 	free_irq(IRQ_GPIOE(21), data);
+=======
+	free_irq(gpio_to_irq(IMX_GPIO_NR(5, 21)), data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mx27ads_sdhc2_exit(struct device *dev, void *data)
 {
+<<<<<<< HEAD
 	free_irq(IRQ_GPIOB(7), data);
+=======
+	free_irq(gpio_to_irq(IMX_GPIO_NR(2, 7)), data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct imxmmc_platform_data sdhc1_pdata __initconst = {
@@ -288,6 +328,16 @@ static const struct imxuart_platform_data uart_pdata __initconst = {
 
 static void __init mx27ads_board_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	imx27_soc_init();
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx27_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	mxc_gpio_setup_multiple_pins(mx27ads_pins, ARRAY_SIZE(mx27ads_pins),
 			"mx27ads");
 
@@ -309,7 +359,11 @@ static void __init mx27ads_board_init(void)
 
 	imx27_add_fec(NULL);
 	platform_add_devices(platform_devices, ARRAY_SIZE(platform_devices));
+<<<<<<< HEAD
 	imx27_add_mxc_w1(NULL);
+=======
+	imx27_add_mxc_w1();
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init mx27ads_timer_init(void)
@@ -322,10 +376,13 @@ static void __init mx27ads_timer_init(void)
 	mx27_clocks_init(fref);
 }
 
+<<<<<<< HEAD
 static struct sys_timer mx27ads_timer = {
 	.init	= mx27ads_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct map_desc mx27ads_io_desc[] __initdata = {
 	{
 		.virtual = PBC_BASE_ADDRESS,
@@ -343,10 +400,30 @@ static void __init mx27ads_map_io(void)
 
 MACHINE_START(MX27ADS, "Freescale i.MX27ADS")
 	/* maintainer: Freescale Semiconductor, Inc. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params = MX27_PHYS_OFFSET + 0x100,
 	.map_io = mx27ads_map_io,
 	.init_early = imx27_init_early,
 	.init_irq = mx27_init_irq,
 	.timer = &mx27ads_timer,
 	.init_machine = mx27ads_board_init,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.atag_offset = 0x100,
+	.map_io = mx27ads_map_io,
+	.init_early = imx27_init_early,
+	.init_irq = mx27_init_irq,
+	.handle_irq = imx27_handle_irq,
+<<<<<<< HEAD
+	.timer = &mx27ads_timer,
+	.init_machine = mx27ads_board_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= mx27ads_timer_init,
+	.init_machine = mx27ads_board_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

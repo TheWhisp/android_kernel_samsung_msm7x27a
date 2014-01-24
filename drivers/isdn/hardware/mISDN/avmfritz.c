@@ -20,6 +20,14 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/pci.h>
 #include <linux/delay.h>
@@ -29,7 +37,11 @@
 #include "ipac.h"
 
 
+<<<<<<< HEAD
 #define AVMFRITZ_REV	"2.1"
+=======
+#define AVMFRITZ_REV	"2.3"
+>>>>>>> refs/remotes/origin/master
 
 static int AVM_cnt;
 static int debug;
@@ -68,6 +80,10 @@ enum {
 #define HDLC_MODE_TRANS		0x02
 #define HDLC_MODE_CCR_7		0x04
 #define HDLC_MODE_CCR_16	0x08
+<<<<<<< HEAD
+=======
+#define HDLC_FIFO_SIZE_128	0x20
+>>>>>>> refs/remotes/origin/master
 #define HDLC_MODE_TESTLOOP	0x80
 
 #define HDLC_INT_XPR		0x80
@@ -79,13 +95,24 @@ enum {
 #define HDLC_STAT_RDO		0x10
 #define HDLC_STAT_CRCVFRRAB	0x0E
 #define HDLC_STAT_CRCVFR	0x06
+<<<<<<< HEAD
 #define HDLC_STAT_RML_MASK	0x3f00
+=======
+#define HDLC_STAT_RML_MASK_V1	0x3f00
+#define HDLC_STAT_RML_MASK_V2	0x7f00
+>>>>>>> refs/remotes/origin/master
 
 #define HDLC_CMD_XRS		0x80
 #define HDLC_CMD_XME		0x01
 #define HDLC_CMD_RRS		0x20
 #define HDLC_CMD_XML_MASK	0x3f00
+<<<<<<< HEAD
 #define HDLC_FIFO_SIZE		32
+=======
+
+#define HDLC_FIFO_SIZE_V1	32
+#define HDLC_FIFO_SIZE_V2	128
+>>>>>>> refs/remotes/origin/master
 
 /* Fritz PCI v2.0 */
 
@@ -256,10 +283,23 @@ static struct bchannel *
 Sel_BCS(struct fritzcard *fc, u32 channel)
 {
 	if (test_bit(FLG_ACTIVE, &fc->bch[0].Flags) &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(fc->bch[0].nr & channel))
 		return &fc->bch[0];
 	else if (test_bit(FLG_ACTIVE, &fc->bch[1].Flags) &&
 		(fc->bch[1].nr & channel))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	    (fc->bch[0].nr & channel))
+		return &fc->bch[0];
+	else if (test_bit(FLG_ACTIVE, &fc->bch[1].Flags) &&
+		 (fc->bch[1].nr & channel))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return &fc->bch[1];
 	else
 		return NULL;
@@ -276,7 +316,15 @@ __write_ctrl_pci(struct fritzcard *fc, struct hdlc_hw *hdlc, u32 channel) {
 static inline void
 __write_ctrl_pciv2(struct fritzcard *fc, struct hdlc_hw *hdlc, u32 channel) {
 	outl(hdlc->ctrl.ctrl, fc->addr + (channel == 2 ? AVM_HDLC_STATUS_2 :
+<<<<<<< HEAD
+<<<<<<< HEAD
 		AVM_HDLC_STATUS_1));
+=======
+					  AVM_HDLC_STATUS_1));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  AVM_HDLC_STATUS_1));
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -286,7 +334,15 @@ write_ctrl(struct bchannel *bch, int which) {
 
 	hdlc = &fc->hdlc[(bch->nr - 1) & 1];
 	pr_debug("%s: hdlc %c wr%x ctrl %x\n", fc->name, '@' + bch->nr,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		which, hdlc->ctrl.ctrl);
+=======
+		 which, hdlc->ctrl.ctrl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 which, hdlc->ctrl.ctrl);
+>>>>>>> refs/remotes/origin/master
 	switch (fc->type) {
 	case AVM_FRITZ_PCIV2:
 		__write_ctrl_pciv2(fc, hdlc, bch->nr);
@@ -309,7 +365,15 @@ static inline u32
 __read_status_pciv2(u_long addr, u32 channel)
 {
 	return inl(addr + (channel == 2 ? AVM_HDLC_STATUS_2 :
+<<<<<<< HEAD
+<<<<<<< HEAD
 		AVM_HDLC_STATUS_1));
+=======
+			   AVM_HDLC_STATUS_1));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   AVM_HDLC_STATUS_1));
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -345,11 +409,26 @@ modehdlc(struct bchannel *bch, int protocol)
 {
 	struct fritzcard *fc = bch->hw;
 	struct hdlc_hw *hdlc;
+<<<<<<< HEAD
 
 	hdlc = &fc->hdlc[(bch->nr - 1) & 1];
 	pr_debug("%s: hdlc %c protocol %x-->%x ch %d\n", fc->name,
+<<<<<<< HEAD
 		'@' + bch->nr, bch->state, protocol, bch->nr);
+=======
+		 '@' + bch->nr, bch->state, protocol, bch->nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	hdlc->ctrl.ctrl = 0;
+=======
+	u8 mode;
+
+	hdlc = &fc->hdlc[(bch->nr - 1) & 1];
+	pr_debug("%s: hdlc %c protocol %x-->%x ch %d\n", fc->name,
+		 '@' + bch->nr, bch->state, protocol, bch->nr);
+	hdlc->ctrl.ctrl = 0;
+	mode = (fc->type == AVM_FRITZ_PCIV2) ? HDLC_FIFO_SIZE_128 : 0;
+
+>>>>>>> refs/remotes/origin/master
 	switch (protocol) {
 	case -1: /* used for init */
 		bch->state = -1;
@@ -357,7 +436,11 @@ modehdlc(struct bchannel *bch, int protocol)
 		if (bch->state == ISDN_P_NONE)
 			break;
 		hdlc->ctrl.sr.cmd  = HDLC_CMD_XRS | HDLC_CMD_RRS;
+<<<<<<< HEAD
 		hdlc->ctrl.sr.mode = HDLC_MODE_TRANS;
+=======
+		hdlc->ctrl.sr.mode = mode | HDLC_MODE_TRANS;
+>>>>>>> refs/remotes/origin/master
 		write_ctrl(bch, 5);
 		bch->state = ISDN_P_NONE;
 		test_and_clear_bit(FLG_HDLC, &bch->Flags);
@@ -366,7 +449,11 @@ modehdlc(struct bchannel *bch, int protocol)
 	case ISDN_P_B_RAW:
 		bch->state = protocol;
 		hdlc->ctrl.sr.cmd  = HDLC_CMD_XRS | HDLC_CMD_RRS;
+<<<<<<< HEAD
 		hdlc->ctrl.sr.mode = HDLC_MODE_TRANS;
+=======
+		hdlc->ctrl.sr.mode = mode | HDLC_MODE_TRANS;
+>>>>>>> refs/remotes/origin/master
 		write_ctrl(bch, 5);
 		hdlc->ctrl.sr.cmd = HDLC_CMD_XRS;
 		write_ctrl(bch, 1);
@@ -376,7 +463,11 @@ modehdlc(struct bchannel *bch, int protocol)
 	case ISDN_P_B_HDLC:
 		bch->state = protocol;
 		hdlc->ctrl.sr.cmd  = HDLC_CMD_XRS | HDLC_CMD_RRS;
+<<<<<<< HEAD
 		hdlc->ctrl.sr.mode = HDLC_MODE_ITF_FLG;
+=======
+		hdlc->ctrl.sr.mode = mode | HDLC_MODE_ITF_FLG;
+>>>>>>> refs/remotes/origin/master
 		write_ctrl(bch, 5);
 		hdlc->ctrl.sr.cmd = HDLC_CMD_XRS;
 		write_ctrl(bch, 1);
@@ -396,6 +487,7 @@ hdlc_empty_fifo(struct bchannel *bch, int count)
 	u32 *ptr;
 	u8 *p;
 	u32  val, addr;
+<<<<<<< HEAD
 	int cnt = 0;
 	struct fritzcard *fc = bch->hw;
 
@@ -410,18 +502,49 @@ hdlc_empty_fifo(struct bchannel *bch, int count)
 	}
 	if ((bch->rx_skb->len + count) > bch->maxlen) {
 		pr_debug("%s: overrun %d\n", fc->name,
+<<<<<<< HEAD
 			bch->rx_skb->len + count);
+=======
+			 bch->rx_skb->len + count);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	p = skb_put(bch->rx_skb, count);
 	ptr = (u32 *)p;
 	if (AVM_FRITZ_PCIV2 == fc->type)
 		addr = fc->addr + (bch->nr == 2 ?
+<<<<<<< HEAD
 			AVM_HDLC_FIFO_2 : AVM_HDLC_FIFO_1);
+=======
+				   AVM_HDLC_FIFO_2 : AVM_HDLC_FIFO_1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int cnt;
+	struct fritzcard *fc = bch->hw;
+
+	pr_debug("%s: %s %d\n", fc->name, __func__, count);
+	if (test_bit(FLG_RX_OFF, &bch->Flags)) {
+		p = NULL;
+		bch->dropcnt += count;
+	} else {
+		cnt = bchannel_get_rxbuf(bch, count);
+		if (cnt < 0) {
+			pr_warning("%s.B%d: No bufferspace for %d bytes\n",
+				   fc->name, bch->nr, count);
+			return;
+		}
+		p = skb_put(bch->rx_skb, count);
+	}
+	ptr = (u32 *)p;
+	if (fc->type == AVM_FRITZ_PCIV2)
+		addr = fc->addr + (bch->nr == 2 ?
+				   AVM_HDLC_FIFO_2 : AVM_HDLC_FIFO_1);
+>>>>>>> refs/remotes/origin/master
 	else {
 		addr = fc->addr + CHIP_WINDOW;
 		outl(bch->nr == 2 ? AVM_HDLC_2 : AVM_HDLC_1, fc->addr);
 	}
+<<<<<<< HEAD
 	while (cnt < count) {
 		val = le32_to_cpu(inl(addr));
 		put_unaligned(val, ptr);
@@ -430,7 +553,25 @@ hdlc_empty_fifo(struct bchannel *bch, int count)
 	}
 	if (debug & DEBUG_HW_BFIFO) {
 		snprintf(fc->log, LOG_SIZE, "B%1d-recv %s %d ",
+<<<<<<< HEAD
 			bch->nr, fc->name, count);
+=======
+			 bch->nr, fc->name, count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cnt = 0;
+	while (cnt < count) {
+		val = le32_to_cpu(inl(addr));
+		if (p) {
+			put_unaligned(val, ptr);
+			ptr++;
+		}
+		cnt += 4;
+	}
+	if (p && (debug & DEBUG_HW_BFIFO)) {
+		snprintf(fc->log, LOG_SIZE, "B%1d-recv %s %d ",
+			 bch->nr, fc->name, count);
+>>>>>>> refs/remotes/origin/master
 		print_hex_dump_bytes(fc->log, DUMP_PREFIX_OFFSET, p, count);
 	}
 }
@@ -440,6 +581,7 @@ hdlc_fill_fifo(struct bchannel *bch)
 {
 	struct fritzcard *fc = bch->hw;
 	struct hdlc_hw *hdlc;
+<<<<<<< HEAD
 	int count, cnt = 0;
 	u8 *p;
 	u32 *ptr, val, addr;
@@ -454,23 +596,74 @@ hdlc_fill_fifo(struct bchannel *bch)
 	hdlc->ctrl.sr.cmd &= ~HDLC_CMD_XME;
 	if (count > HDLC_FIFO_SIZE) {
 		count = HDLC_FIFO_SIZE;
+=======
+	int count, fs, cnt = 0, idx;
+	bool fillempty = false;
+	u8 *p;
+	u32 *ptr, val, addr;
+
+	idx = (bch->nr - 1) & 1;
+	hdlc = &fc->hdlc[idx];
+	fs = (fc->type == AVM_FRITZ_PCIV2) ?
+		HDLC_FIFO_SIZE_V2 : HDLC_FIFO_SIZE_V1;
+	if (!bch->tx_skb) {
+		if (!test_bit(FLG_TX_EMPTY, &bch->Flags))
+			return;
+		count = fs;
+		p = bch->fill;
+		fillempty = true;
+	} else {
+		count = bch->tx_skb->len - bch->tx_idx;
+		if (count <= 0)
+			return;
+		p = bch->tx_skb->data + bch->tx_idx;
+	}
+	hdlc->ctrl.sr.cmd &= ~HDLC_CMD_XME;
+	if (count > fs) {
+		count = fs;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (test_bit(FLG_HDLC, &bch->Flags))
 			hdlc->ctrl.sr.cmd |= HDLC_CMD_XME;
 	}
+<<<<<<< HEAD
 	pr_debug("%s: %s %d/%d/%d", fc->name, __func__, count,
+<<<<<<< HEAD
 		bch->tx_idx, bch->tx_skb->len);
+=======
+		 bch->tx_idx, bch->tx_skb->len);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ptr = (u32 *)p;
 	bch->tx_idx += count;
 	hdlc->ctrl.sr.xml = ((count == HDLC_FIFO_SIZE) ? 0 : count);
 	if (AVM_FRITZ_PCIV2 == fc->type) {
 		__write_ctrl_pciv2(fc, hdlc, bch->nr);
 		addr = fc->addr + (bch->nr == 2 ?
+<<<<<<< HEAD
 			AVM_HDLC_FIFO_2 : AVM_HDLC_FIFO_1);
+=======
+				   AVM_HDLC_FIFO_2 : AVM_HDLC_FIFO_1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ptr = (u32 *)p;
+	if (!fillempty) {
+		pr_debug("%s.B%d: %d/%d/%d", fc->name, bch->nr, count,
+			 bch->tx_idx, bch->tx_skb->len);
+		bch->tx_idx += count;
+	} else {
+		pr_debug("%s.B%d: fillempty %d\n", fc->name, bch->nr, count);
+	}
+	hdlc->ctrl.sr.xml = ((count == fs) ? 0 : count);
+	if (fc->type == AVM_FRITZ_PCIV2) {
+		__write_ctrl_pciv2(fc, hdlc, bch->nr);
+		addr = fc->addr + (bch->nr == 2 ?
+				   AVM_HDLC_FIFO_2 : AVM_HDLC_FIFO_1);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		__write_ctrl_pci(fc, hdlc, bch->nr);
 		addr = fc->addr + CHIP_WINDOW;
 	}
+<<<<<<< HEAD
 	while (cnt < count) {
 		val = get_unaligned(ptr);
 		outl(cpu_to_le32(val), addr);
@@ -479,7 +672,30 @@ hdlc_fill_fifo(struct bchannel *bch)
 	}
 	if (debug & DEBUG_HW_BFIFO) {
 		snprintf(fc->log, LOG_SIZE, "B%1d-send %s %d ",
+<<<<<<< HEAD
 			bch->nr, fc->name, count);
+=======
+			 bch->nr, fc->name, count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fillempty) {
+		while (cnt < count) {
+			/* all bytes the same - no worry about endian */
+			outl(*ptr, addr);
+			cnt += 4;
+		}
+	} else {
+		while (cnt < count) {
+			val = get_unaligned(ptr);
+			outl(cpu_to_le32(val), addr);
+			ptr++;
+			cnt += 4;
+		}
+	}
+	if ((debug & DEBUG_HW_BFIFO) && !fillempty) {
+		snprintf(fc->log, LOG_SIZE, "B%1d-send %s %d ",
+			 bch->nr, fc->name, count);
+>>>>>>> refs/remotes/origin/master
 		print_hex_dump_bytes(fc->log, DUMP_PREFIX_OFFSET, p, count);
 	}
 }
@@ -487,6 +703,7 @@ hdlc_fill_fifo(struct bchannel *bch)
 static void
 HDLC_irq_xpr(struct bchannel *bch)
 {
+<<<<<<< HEAD
 	if (bch->tx_skb && bch->tx_idx < bch->tx_skb->len)
 		hdlc_fill_fifo(bch);
 	else {
@@ -498,6 +715,19 @@ HDLC_irq_xpr(struct bchannel *bch)
 		}
 		if (get_next_bframe(bch))
 			hdlc_fill_fifo(bch);
+=======
+	if (bch->tx_skb && bch->tx_idx < bch->tx_skb->len) {
+		hdlc_fill_fifo(bch);
+	} else {
+		if (bch->tx_skb)
+			dev_kfree_skb(bch->tx_skb);
+		if (get_next_bframe(bch)) {
+			hdlc_fill_fifo(bch);
+			test_and_clear_bit(FLG_TX_EMPTY, &bch->Flags);
+		} else if (test_bit(FLG_TX_EMPTY, &bch->Flags)) {
+			hdlc_fill_fifo(bch);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -505,13 +735,32 @@ static void
 HDLC_irq(struct bchannel *bch, u32 stat)
 {
 	struct fritzcard *fc = bch->hw;
+<<<<<<< HEAD
 	int		len;
+=======
+	int		len, fs;
+	u32		rmlMask;
+>>>>>>> refs/remotes/origin/master
 	struct hdlc_hw	*hdlc;
 
 	hdlc = &fc->hdlc[(bch->nr - 1) & 1];
 	pr_debug("%s: ch%d stat %#x\n", fc->name, bch->nr, stat);
+<<<<<<< HEAD
 	if (stat & HDLC_INT_RPR) {
 		if (stat & HDLC_STAT_RDO) {
+=======
+	if (fc->type == AVM_FRITZ_PCIV2) {
+		rmlMask = HDLC_STAT_RML_MASK_V2;
+		fs = HDLC_FIFO_SIZE_V2;
+	} else {
+		rmlMask = HDLC_STAT_RML_MASK_V1;
+		fs = HDLC_FIFO_SIZE_V1;
+	}
+	if (stat & HDLC_INT_RPR) {
+		if (stat & HDLC_STAT_RDO) {
+			pr_warning("%s: ch%d stat %x RDO\n",
+				   fc->name, bch->nr, stat);
+>>>>>>> refs/remotes/origin/master
 			hdlc->ctrl.sr.xml = 0;
 			hdlc->ctrl.sr.cmd |= HDLC_CMD_RRS;
 			write_ctrl(bch, 1);
@@ -520,6 +769,7 @@ HDLC_irq(struct bchannel *bch, u32 stat)
 			if (bch->rx_skb)
 				skb_trim(bch->rx_skb, 0);
 		} else {
+<<<<<<< HEAD
 			len = (stat & HDLC_STAT_RML_MASK) >> 8;
 			if (!len)
 				len = 32;
@@ -527,14 +777,41 @@ HDLC_irq(struct bchannel *bch, u32 stat)
 			if (!bch->rx_skb)
 				goto handle_tx;
 			if ((stat & HDLC_STAT_RME) || test_bit(FLG_TRANSPARENT,
+<<<<<<< HEAD
 			    &bch->Flags)) {
 				if (((stat & HDLC_STAT_CRCVFRRAB) ==
 				    HDLC_STAT_CRCVFR) ||
+=======
+							       &bch->Flags)) {
+				if (((stat & HDLC_STAT_CRCVFRRAB) ==
+				     HDLC_STAT_CRCVFR) ||
+>>>>>>> refs/remotes/origin/cm-10.0
 				    test_bit(FLG_TRANSPARENT, &bch->Flags)) {
 					recv_Bchannel(bch, 0);
 				} else {
 					pr_debug("%s: got invalid frame\n",
+<<<<<<< HEAD
 						fc->name);
+=======
+						 fc->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			len = (stat & rmlMask) >> 8;
+			if (!len)
+				len = fs;
+			hdlc_empty_fifo(bch, len);
+			if (!bch->rx_skb)
+				goto handle_tx;
+			if (test_bit(FLG_TRANSPARENT, &bch->Flags)) {
+				recv_Bchannel(bch, 0, false);
+			} else if (stat & HDLC_STAT_RME) {
+				if ((stat & HDLC_STAT_CRCVFRRAB) ==
+				    HDLC_STAT_CRCVFR) {
+					recv_Bchannel(bch, 0, false);
+				} else {
+					pr_warning("%s: got invalid frame\n",
+						   fc->name);
+>>>>>>> refs/remotes/origin/master
 					skb_trim(bch->rx_skb, 0);
 				}
 			}
@@ -546,16 +823,34 @@ handle_tx:
 		 * restart transmitting the whole frame on HDLC
 		 * in transparent mode we send the next data
 		 */
+<<<<<<< HEAD
 		if (bch->tx_skb)
 			pr_debug("%s: ch%d XDU len(%d) idx(%d) Flags(%lx)\n",
+<<<<<<< HEAD
 				fc->name, bch->nr, bch->tx_skb->len,
 				bch->tx_idx, bch->Flags);
 		else
 			pr_debug("%s: ch%d XDU no tx_skb Flags(%lx)\n",
 				fc->name, bch->nr, bch->Flags);
+=======
+				 fc->name, bch->nr, bch->tx_skb->len,
+				 bch->tx_idx, bch->Flags);
+		else
+			pr_debug("%s: ch%d XDU no tx_skb Flags(%lx)\n",
+				 fc->name, bch->nr, bch->Flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (bch->tx_skb && bch->tx_skb->len) {
 			if (!test_bit(FLG_TRANSPARENT, &bch->Flags))
 				bch->tx_idx = 0;
+=======
+		pr_warning("%s: ch%d stat %x XDU %s\n", fc->name, bch->nr,
+			   stat, bch->tx_skb ? "tx_skb" : "no tx_skb");
+		if (bch->tx_skb && bch->tx_skb->len) {
+			if (!test_bit(FLG_TRANSPARENT, &bch->Flags))
+				bch->tx_idx = 0;
+		} else if (test_bit(FLG_FILLEMPTY, &bch->Flags)) {
+			test_and_set_bit(FLG_TX_EMPTY, &bch->Flags);
+>>>>>>> refs/remotes/origin/master
 		}
 		hdlc->ctrl.sr.xml = 0;
 		hdlc->ctrl.sr.cmd |= HDLC_CMD_XRS;
@@ -658,14 +953,19 @@ avm_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 	struct fritzcard *fc = bch->hw;
 	int ret = -EINVAL;
 	struct mISDNhead *hh = mISDN_HEAD_P(skb);
+<<<<<<< HEAD
 	u32 id;
 	u_long flags;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	switch (hh->prim) {
 	case PH_DATA_REQ:
 		spin_lock_irqsave(&fc->lock, flags);
 		ret = bchannel_senddata(bch, skb);
 		if (ret > 0) { /* direct TX */
+<<<<<<< HEAD
 			id = hh->id; /* skb can be freed */
 			hdlc_fill_fifo(bch);
 			ret = 0;
@@ -674,6 +974,12 @@ avm_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 				queue_ch_frame(ch, PH_DATA_CNF, id, NULL);
 		} else
 			spin_unlock_irqrestore(&fc->lock, flags);
+=======
+			hdlc_fill_fifo(bch);
+			ret = 0;
+		}
+		spin_unlock_irqrestore(&fc->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	case PH_ACTIVATE_REQ:
 		spin_lock_irqsave(&fc->lock, flags);
@@ -684,7 +990,15 @@ avm_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 		spin_unlock_irqrestore(&fc->lock, flags);
 		if (!ret)
 			_queue_data(ch, PH_ACTIVATE_IND, MISDN_ID_ANY, 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				NULL, GFP_KERNEL);
+=======
+				    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case PH_DEACTIVATE_REQ:
 		spin_lock_irqsave(&fc->lock, flags);
@@ -692,7 +1006,15 @@ avm_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 		modehdlc(bch, ISDN_P_NONE);
 		spin_unlock_irqrestore(&fc->lock, flags);
 		_queue_data(ch, PH_DEACTIVATE_IND, MISDN_ID_ANY, 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			NULL, GFP_KERNEL);
+=======
+			    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		break;
 	}
@@ -748,7 +1070,15 @@ reset_avm(struct fritzcard *fc)
 	mdelay(1);
 	if (debug & DEBUG_HW)
 		pr_notice("%s: S0/S1 %x/%x\n", fc->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			inb(fc->addr + 2), inb(fc->addr + 3));
+=======
+			  inb(fc->addr + 2), inb(fc->addr + 3));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  inb(fc->addr + 2), inb(fc->addr + 3));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -760,10 +1090,23 @@ init_card(struct fritzcard *fc)
 	reset_avm(fc); /* disable IRQ */
 	if (fc->type == AVM_FRITZ_PCIV2)
 		ret = request_irq(fc->irq, avm_fritzv2_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_SHARED, fc->name, fc);
 	else
 		ret = request_irq(fc->irq, avm_fritz_interrupt,
 			IRQF_SHARED, fc->name, fc);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				  IRQF_SHARED, fc->name, fc);
+	else
+		ret = request_irq(fc->irq, avm_fritz_interrupt,
+				  IRQF_SHARED, fc->name, fc);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		pr_info("%s: couldn't get interrupt %d\n",
 			fc->name, fc->irq);
@@ -782,7 +1125,11 @@ init_card(struct fritzcard *fc)
 		inithdlc(fc);
 		enable_hwirq(fc);
 		/* RESET Receiver and Transmitter */
+<<<<<<< HEAD
 		if (AVM_FRITZ_PCIV2 == fc->type) {
+=======
+		if (fc->type == AVM_FRITZ_PCIV2) {
+>>>>>>> refs/remotes/origin/master
 			WriteISAC_V2(fc, ISACX_MASK, 0);
 			WriteISAC_V2(fc, ISACX_CMDRD, 0x41);
 		} else {
@@ -794,7 +1141,15 @@ init_card(struct fritzcard *fc)
 		msleep_interruptible(10);
 		if (debug & DEBUG_HW)
 			pr_notice("%s: IRQ %d count %d\n", fc->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				fc->irq, fc->irqcnt);
+=======
+				  fc->irq, fc->irqcnt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  fc->irq, fc->irqcnt);
+>>>>>>> refs/remotes/origin/master
 		if (!fc->irqcnt) {
 			pr_info("%s: IRQ(%d) getting no IRQs during init %d\n",
 				fc->name, fc->irq, 3 - cnt);
@@ -809,6 +1164,7 @@ init_card(struct fritzcard *fc)
 static int
 channel_bctrl(struct bchannel *bch, struct mISDN_ctrl_req *cq)
 {
+<<<<<<< HEAD
 	int ret = 0;
 	struct fritzcard *fc = bch->hw;
 
@@ -816,7 +1172,11 @@ channel_bctrl(struct bchannel *bch, struct mISDN_ctrl_req *cq)
 	case MISDN_CTRL_GETOP:
 		cq->op = 0;
 		break;
+<<<<<<< HEAD
 	/* Nothing implemented yet */
+=======
+		/* Nothing implemented yet */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case MISDN_CTRL_FILL_EMPTY:
 	default:
 		pr_info("%s: %s unknown Op %x\n", fc->name, __func__, cq->op);
@@ -824,6 +1184,9 @@ channel_bctrl(struct bchannel *bch, struct mISDN_ctrl_req *cq)
 		break;
 	}
 	return ret;
+=======
+	return mISDN_ctrl_bchannel(bch, cq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -838,6 +1201,7 @@ avm_bctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 	switch (cmd) {
 	case CLOSE_CHANNEL:
 		test_and_clear_bit(FLG_OPEN, &bch->Flags);
+<<<<<<< HEAD
 		if (test_bit(FLG_ACTIVE, &bch->Flags)) {
 			spin_lock_irqsave(&fc->lock, flags);
 			mISDN_freebchannel(bch);
@@ -846,6 +1210,13 @@ avm_bctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 			modehdlc(bch, ISDN_P_NONE);
 			spin_unlock_irqrestore(&fc->lock, flags);
 		}
+=======
+		cancel_work_sync(&bch->workq);
+		spin_lock_irqsave(&fc->lock, flags);
+		mISDN_clear_bchannel(bch);
+		modehdlc(bch, ISDN_P_NONE);
+		spin_unlock_irqrestore(&fc->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		ch->protocol = ISDN_P_NONE;
 		ch->peer = NULL;
 		module_put(THIS_MODULE);
@@ -867,7 +1238,11 @@ channel_ctrl(struct fritzcard  *fc, struct mISDN_ctrl_req *cq)
 
 	switch (cq->op) {
 	case MISDN_CTRL_GETOP:
+<<<<<<< HEAD
 		cq->op = MISDN_CTRL_LOOP;
+=======
+		cq->op = MISDN_CTRL_LOOP | MISDN_CTRL_L1_TIMER3;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MISDN_CTRL_LOOP:
 		/* cq->channel: 0 disable, 1 B1 loop 2 B2 loop, 3 both */
@@ -877,6 +1252,12 @@ channel_ctrl(struct fritzcard  *fc, struct mISDN_ctrl_req *cq)
 		}
 		ret = fc->isac.ctrl(&fc->isac, HW_TESTLOOP, cq->channel);
 		break;
+<<<<<<< HEAD
+=======
+	case MISDN_CTRL_L1_TIMER3:
+		ret = fc->isac.ctrl(&fc->isac, HW_TIMER3_VALUE, cq->p1);
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		pr_info("%s: %s unknown Op %x\n", fc->name, __func__, cq->op);
 		ret = -EINVAL;
@@ -890,14 +1271,25 @@ open_bchannel(struct fritzcard *fc, struct channel_req *rq)
 {
 	struct bchannel		*bch;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rq->adr.channel > 2)
+=======
+	if (rq->adr.channel == 0 || rq->adr.channel > 2)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rq->adr.channel == 0 || rq->adr.channel > 2)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (rq->protocol == ISDN_P_NONE)
 		return -EINVAL;
 	bch = &fc->bch[rq->adr.channel - 1];
 	if (test_and_set_bit(FLG_OPEN, &bch->Flags))
 		return -EBUSY; /* b-channel can be only open once */
+<<<<<<< HEAD
 	test_and_clear_bit(FLG_FILLEMPTY, &bch->Flags);
+=======
+>>>>>>> refs/remotes/origin/master
 	bch->ch.protocol = rq->protocol;
 	rq->ch = &bch->ch;
 	return 0;
@@ -930,7 +1322,15 @@ avm_dctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 		break;
 	case CLOSE_CHANNEL:
 		pr_debug("%s: dev(%d) close from %p\n", fc->name, dch->dev.id,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			__builtin_return_address(0));
+=======
+			 __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/master
 		module_put(THIS_MODULE);
 		break;
 	case CONTROL_CHANNEL:
@@ -938,7 +1338,15 @@ avm_dctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 		break;
 	default:
 		pr_debug("%s: %s unknown command %x\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			fc->name, __func__, cmd);
+=======
+			 fc->name, __func__, cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 fc->name, __func__, cmd);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	return err;
@@ -962,7 +1370,15 @@ setup_fritz(struct fritzcard *fc)
 		if (debug & DEBUG_HW) {
 			pr_notice("%s: PCI stat %#x\n", fc->name, val);
 			pr_notice("%s: PCI Class %X Rev %d\n", fc->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				val & 0xff, (val >> 8) & 0xff);
+=======
+				  val & 0xff, (val >> 8) & 0xff);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  val & 0xff, (val >> 8) & 0xff);
+>>>>>>> refs/remotes/origin/master
 			pr_notice("%s: HDLC version %x\n", fc->name, ver & 0xf);
 		}
 		ASSIGN_FUNC(V1, ISAC, fc->isac);
@@ -974,7 +1390,15 @@ setup_fritz(struct fritzcard *fc)
 		if (debug & DEBUG_HW) {
 			pr_notice("%s: PCI V2 stat %#x\n", fc->name, val);
 			pr_notice("%s: PCI V2 Class %X Rev %d\n", fc->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				val & 0xff, (val>>8) & 0xff);
+=======
+				  val & 0xff, (val >> 8) & 0xff);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  val & 0xff, (val >> 8) & 0xff);
+>>>>>>> refs/remotes/origin/master
 			pr_notice("%s: HDLC version %x\n", fc->name, ver & 0xf);
 		}
 		ASSIGN_FUNC(V2, ISAC, fc->isac);
@@ -986,8 +1410,18 @@ setup_fritz(struct fritzcard *fc)
 		return -ENODEV;
 	}
 	pr_notice("%s: %s config irq:%d base:0x%X\n", fc->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(fc->type == AVM_FRITZ_PCI) ? "AVM Fritz!CARD PCI" :
 		"AVM Fritz!CARD PCIv2", fc->irq, fc->addr);
+=======
+		  (fc->type == AVM_FRITZ_PCI) ? "AVM Fritz!CARD PCI" :
+		  "AVM Fritz!CARD PCIv2", fc->irq, fc->addr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  (fc->type == AVM_FRITZ_PCI) ? "AVM Fritz!CARD PCI" :
+		  "AVM Fritz!CARD PCIv2", fc->irq, fc->addr);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1016,10 +1450,18 @@ release_card(struct fritzcard *card)
 	AVM_cnt--;
 }
 
+<<<<<<< HEAD
 static int __devinit
 setup_instance(struct fritzcard *card)
 {
 	int i, err;
+=======
+static int
+setup_instance(struct fritzcard *card)
+{
+	int i, err;
+	unsigned short minsize;
+>>>>>>> refs/remotes/origin/master
 	u_long flags;
 
 	snprintf(card->name, MISDN_MAX_IDLEN - 1, "AVM.%d", AVM_cnt + 1);
@@ -1034,12 +1476,28 @@ setup_instance(struct fritzcard *card)
 	mISDNisac_init(&card->isac, card);
 
 	card->isac.dch.dev.Bprotocols = (1 << (ISDN_P_B_RAW & ISDN_P_B_MASK)) |
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    (1 << (ISDN_P_B_HDLC & ISDN_P_B_MASK));
+=======
+		(1 << (ISDN_P_B_HDLC & ISDN_P_B_MASK));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(1 << (ISDN_P_B_HDLC & ISDN_P_B_MASK));
+>>>>>>> refs/remotes/origin/master
 	card->isac.dch.dev.D.ctrl = avm_dctrl;
 	for (i = 0; i < 2; i++) {
 		card->bch[i].nr = i + 1;
 		set_channelmap(i + 1, card->isac.dch.dev.channelmap);
+<<<<<<< HEAD
 		mISDN_initbchannel(&card->bch[i], MAX_DATA_MEM);
+=======
+		if (AVM_FRITZ_PCIV2 == card->type)
+			minsize = HDLC_FIFO_SIZE_V2;
+		else
+			minsize = HDLC_FIFO_SIZE_V1;
+		mISDN_initbchannel(&card->bch[i], MAX_DATA_MEM, minsize);
+>>>>>>> refs/remotes/origin/master
 		card->bch[i].hw = card;
 		card->bch[i].ch.send = avm_l2l1B;
 		card->bch[i].ch.ctrl = avm_bctrl;
@@ -1050,7 +1508,15 @@ setup_instance(struct fritzcard *card)
 	if (err)
 		goto error;
 	err = mISDN_register_device(&card->isac.dch.dev, &card->pdev->dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		card->name);
+=======
+				    card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    card->name);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto error_reg;
 	err = init_card(card);
@@ -1073,7 +1539,11 @@ error:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 fritzpci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	int err = -ENOMEM;
@@ -1096,7 +1566,15 @@ fritzpci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 
 	pr_notice("mISDN: found adapter %s at %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	       (char *) ent->driver_data, pci_name(pdev));
+=======
+		  (char *) ent->driver_data, pci_name(pdev));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  (char *) ent->driver_data, pci_name(pdev));
+>>>>>>> refs/remotes/origin/master
 
 	card->addr = pci_resource_start(pdev, 1);
 	card->irq = pdev->irq;
@@ -1107,7 +1585,11 @@ fritzpci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 fritz_remove_pci(struct pci_dev *pdev)
 {
 	struct fritzcard *card = pci_get_drvdata(pdev);
@@ -1119,7 +1601,11 @@ fritz_remove_pci(struct pci_dev *pdev)
 			pr_info("%s: drvdata already removed\n", __func__);
 }
 
+<<<<<<< HEAD
 static struct pci_device_id fcpci_ids[] __devinitdata = {
+=======
+static struct pci_device_id fcpci_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VENDOR_ID_AVM, PCI_DEVICE_ID_AVM_A1, PCI_ANY_ID, PCI_ANY_ID,
 	  0, 0, (unsigned long) "Fritz!Card PCI"},
 	{ PCI_VENDOR_ID_AVM, PCI_DEVICE_ID_AVM_A1_V2, PCI_ANY_ID, PCI_ANY_ID,
@@ -1131,7 +1617,11 @@ MODULE_DEVICE_TABLE(pci, fcpci_ids);
 static struct pci_driver fcpci_driver = {
 	.name = "fcpci",
 	.probe = fritzpci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(fritz_remove_pci),
+=======
+	.remove = fritz_remove_pci,
+>>>>>>> refs/remotes/origin/master
 	.id_table = fcpci_ids,
 };
 

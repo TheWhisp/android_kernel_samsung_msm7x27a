@@ -34,9 +34,18 @@ static int minix_setattr(struct dentry *dentry, struct iattr *attr)
 
 	if ((attr->ia_valid & ATTR_SIZE) &&
 	    attr->ia_size != i_size_read(inode)) {
+<<<<<<< HEAD
 		error = vmtruncate(inode, attr->ia_size);
 		if (error)
 			return error;
+=======
+		error = inode_newsize_ok(inode, attr->ia_size);
+		if (error)
+			return error;
+
+		truncate_setsize(inode, attr->ia_size);
+		minix_truncate(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	setattr_copy(inode, attr);
@@ -45,7 +54,10 @@ static int minix_setattr(struct dentry *dentry, struct iattr *attr)
 }
 
 const struct inode_operations minix_file_inode_operations = {
+<<<<<<< HEAD
 	.truncate	= minix_truncate,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setattr	= minix_setattr,
 	.getattr	= minix_getattr,
 };

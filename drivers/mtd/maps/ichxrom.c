@@ -84,8 +84,13 @@ static void ichxrom_cleanup(struct ichxrom_window *window)
 }
 
 
+<<<<<<< HEAD
 static int __devinit ichxrom_init_one (struct pci_dev *pdev,
 	const struct pci_device_id *ent)
+=======
+static int ichxrom_init_one(struct pci_dev *pdev,
+			    const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	static char *rom_probe_types[] = { "cfi_probe", "jedec_probe", NULL };
 	struct ichxrom_window *window = &ichxrom_window;
@@ -315,13 +320,21 @@ static int __devinit ichxrom_init_one (struct pci_dev *pdev,
 }
 
 
+<<<<<<< HEAD
 static void __devexit ichxrom_remove_one (struct pci_dev *pdev)
+=======
+static void ichxrom_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ichxrom_window *window = &ichxrom_window;
 	ichxrom_cleanup(window);
 }
 
+<<<<<<< HEAD
 static struct pci_device_id ichxrom_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id ichxrom_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82801BA_0,
 	  PCI_ANY_ID, PCI_ANY_ID, },
 	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82801CA_0,

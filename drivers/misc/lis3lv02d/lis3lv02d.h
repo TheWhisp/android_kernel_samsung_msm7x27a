@@ -21,16 +21,33 @@
 #include <linux/platform_device.h>
 #include <linux/input-polldev.h>
 #include <linux/regulator/consumer.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/miscdevice.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/miscdevice.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This driver tries to support the "digital" accelerometer chips from
  * STMicroelectronics such as LIS3LV02DL, LIS302DL, LIS3L02DQ, LIS331DL,
+<<<<<<< HEAD
  * LIS35DE, or LIS202DL. They are very similar in terms of programming, with
  * almost the same registers. In addition to differing on physical properties,
  * they differ on the number of axes (2/3), precision (8/12 bits), and special
  * features (freefall detection, click...). Unfortunately, not all the
  * differences can be probed via a register.
  * They can be connected either via I²C or SPI.
+=======
+ * LIS331DLH, LIS35DE, or LIS202DL. They are very similar in terms of
+ * programming, with almost the same registers. In addition to differing
+ * on physical properties, they differ on the number of axes (2/3),
+ * precision (8/12 bits), and special features (freefall detection,
+ * click...). Unfortunately, not all the differences can be probed via
+ * a register. They can be connected either via I²C or SPI.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/lis3lv02d.h>
@@ -95,12 +112,28 @@ enum lis3lv02d_reg {
 };
 
 enum lis3_who_am_i {
+<<<<<<< HEAD
+=======
+	WAI_3DLH	= 0x32,	/* 16 bits: LIS331DLH */
+>>>>>>> refs/remotes/origin/master
 	WAI_3DC		= 0x33,	/* 8 bits: LIS3DC, HP3DC */
 	WAI_12B		= 0x3A, /* 12 bits: LIS3LV02D[LQ]... */
 	WAI_8B		= 0x3B, /* 8 bits: LIS[23]02D[LQ]... */
 	WAI_6B		= 0x52, /* 6 bits: LIS331DLF - not supported */
 };
 
+<<<<<<< HEAD
+=======
+enum lis3_type {
+	LIS3LV02D,
+	LIS3DC,
+	HP3DC,
+	LIS2302D,
+	LIS331DLF,
+	LIS331DLH,
+};
+
+>>>>>>> refs/remotes/origin/master
 enum lis3lv02d_ctrl1_12b {
 	CTRL1_Xen	= 0x01,
 	CTRL1_Yen	= 0x02,
@@ -128,6 +161,30 @@ enum lis3lv02d_ctrl1_3dc {
 	CTRL1_ODR3	= 0x80,
 };
 
+<<<<<<< HEAD
+=======
+enum lis331dlh_ctrl1 {
+	CTRL1_DR0	= 0x08,
+	CTRL1_DR1	= 0x10,
+	CTRL1_PM0	= 0x20,
+	CTRL1_PM1	= 0x40,
+	CTRL1_PM2	= 0x80,
+};
+
+enum lis331dlh_ctrl2 {
+	CTRL2_HPEN1	= 0x04,
+	CTRL2_HPEN2	= 0x08,
+	CTRL2_FDS_3DLH	= 0x10,
+	CTRL2_BOOT_3DLH	= 0x80,
+};
+
+enum lis331dlh_ctrl4 {
+	CTRL4_STSIGN	= 0x08,
+	CTRL4_BLE	= 0x40,
+	CTRL4_BDU	= 0x80,
+};
+
+>>>>>>> refs/remotes/origin/master
 enum lis3lv02d_ctrl2 {
 	CTRL2_DAS	= 0x01,
 	CTRL2_SIM	= 0x02,
@@ -273,6 +330,12 @@ struct lis3lv02d {
 	struct fasync_struct	*async_queue; /* queue for the misc device */
 	wait_queue_head_t	misc_wait; /* Wait queue for the misc device */
 	unsigned long		misc_opened; /* bit0: whether the device is open */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct miscdevice	miscdev;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	int                     data_ready_count[2];
 	atomic_t		wake_thread;
 	unsigned char           irq_cfg;
@@ -282,10 +345,40 @@ struct lis3lv02d {
 };
 
 int lis3lv02d_init_device(struct lis3lv02d *lis3);
+<<<<<<< HEAD
 int lis3lv02d_joystick_enable(void);
 void lis3lv02d_joystick_disable(void);
 void lis3lv02d_poweroff(struct lis3lv02d *lis3);
 void lis3lv02d_poweron(struct lis3lv02d *lis3);
+=======
+=======
+	struct miscdevice	miscdev;
+
+	int                     data_ready_count[2];
+	atomic_t		wake_thread;
+	unsigned char           irq_cfg;
+	unsigned int		shift_adj;
+
+	struct lis3lv02d_platform_data *pdata;	/* for passing board config */
+	struct mutex		mutex;     /* Serialize poll and selftest */
+
+#ifdef CONFIG_OF
+	struct device_node	*of_node;
+#endif
+};
+
+int lis3lv02d_init_device(struct lis3lv02d *lis3);
+>>>>>>> refs/remotes/origin/master
+int lis3lv02d_joystick_enable(struct lis3lv02d *lis3);
+void lis3lv02d_joystick_disable(struct lis3lv02d *lis3);
+void lis3lv02d_poweroff(struct lis3lv02d *lis3);
+int lis3lv02d_poweron(struct lis3lv02d *lis3);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 int lis3lv02d_remove_fs(struct lis3lv02d *lis3);
+=======
+int lis3lv02d_remove_fs(struct lis3lv02d *lis3);
+int lis3lv02d_init_dt(struct lis3lv02d *lis3);
+>>>>>>> refs/remotes/origin/master
 
 extern struct lis3lv02d lis3_dev;

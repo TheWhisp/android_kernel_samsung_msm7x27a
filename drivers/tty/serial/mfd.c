@@ -21,6 +21,13 @@
  *    be triggered
  */
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SERIAL_MFD_HSU_CONSOLE) && defined(CONFIG_MAGIC_SYSRQ)
+#define SUPPORT_SYSRQ
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/console.h>
@@ -36,8 +43,19 @@
 #include <linux/serial_mfd.h>
 #include <linux/dma-mapping.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/io.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/nmi.h>
+#include <linux/io.h>
+#include <linux/debugfs.h>
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/master
 
 #define HSU_DMA_BUF_SIZE	2048
 
@@ -126,11 +144,17 @@ static inline void serial_out(struct uart_hsu_port *up, int offset, int value)
 
 #define HSU_REGS_BUFSIZE	1024
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hsu_show_regs_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t port_show_regs(struct file *file, char __user *user_buf,
 				size_t count, loff_t *ppos)
@@ -230,14 +254,30 @@ static ssize_t dma_show_regs(struct file *file, char __user *user_buf,
 
 static const struct file_operations port_regs_ops = {
 	.owner		= THIS_MODULE,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.open		= hsu_show_regs_open,
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/master
 	.read		= port_show_regs,
 	.llseek		= default_llseek,
 };
 
 static const struct file_operations dma_regs_ops = {
 	.owner		= THIS_MODULE,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.open		= hsu_show_regs_open,
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/master
 	.read		= dma_show_regs,
 	.llseek		= default_llseek,
 };
@@ -292,7 +332,11 @@ static void serial_hsu_enable_ms(struct uart_port *port)
 	serial_out(up, UART_IER, up->ier);
 }
 
+<<<<<<< HEAD
 void hsu_dma_tx(struct uart_hsu_port *up)
+=======
+static void hsu_dma_tx(struct uart_hsu_port *up)
+>>>>>>> refs/remotes/origin/master
 {
 	struct circ_buf *xmit = &up->port.state->xmit;
 	struct hsu_dma_buffer *dbuf = &up->txbuf;
@@ -339,7 +383,12 @@ void hsu_dma_tx(struct uart_hsu_port *up)
 }
 
 /* The buffer is already cache coherent */
+<<<<<<< HEAD
 void hsu_dma_start_rx_chan(struct hsu_dma_chan *rxc, struct hsu_dma_buffer *dbuf)
+=======
+static void hsu_dma_start_rx_chan(struct hsu_dma_chan *rxc,
+					struct hsu_dma_buffer *dbuf)
+>>>>>>> refs/remotes/origin/master
 {
 	dbuf->ofs = 0;
 
@@ -385,17 +434,28 @@ static void serial_hsu_stop_tx(struct uart_port *port)
 
 /* This is always called in spinlock protected mode, so
  * modify timeout timer is safe here */
+<<<<<<< HEAD
 void hsu_dma_rx(struct uart_hsu_port *up, u32 int_sts)
+=======
+static void hsu_dma_rx(struct uart_hsu_port *up, u32 int_sts,
+			unsigned long *flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hsu_dma_buffer *dbuf = &up->rxbuf;
 	struct hsu_dma_chan *chan = up->rxc;
 	struct uart_port *port = &up->port;
+<<<<<<< HEAD
 	struct tty_struct *tty = port->state->port.tty;
 	int count;
 
 	if (!tty)
 		return;
 
+=======
+	struct tty_port *tport = &port->state->port;
+	int count;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * First need to know how many is already transferred,
 	 * then check if its a timeout DMA irq, and return
@@ -426,7 +486,11 @@ void hsu_dma_rx(struct uart_hsu_port *up, u32 int_sts)
 	 * explicitly set tail to 0. So head will
 	 * always be greater than tail.
 	 */
+<<<<<<< HEAD
 	tty_insert_flip_string(tty, dbuf->buf, count);
+=======
+	tty_insert_flip_string(tport, dbuf->buf, count);
+>>>>>>> refs/remotes/origin/master
 	port->icount.rx += count;
 
 	dma_sync_single_for_device(up->port.dev, dbuf->dma_addr,
@@ -440,7 +504,13 @@ void hsu_dma_rx(struct uart_hsu_port *up, u32 int_sts)
 					 | (0x1 << 16)
 					 | (0x1 << 24)	/* timeout bit, see HSU Errata 1 */
 					 );
+<<<<<<< HEAD
 	tty_flip_buffer_push(tty);
+=======
+	spin_unlock_irqrestore(&up->port.lock, *flags);
+	tty_flip_buffer_push(tport);
+	spin_lock_irqsave(&up->port.lock, *flags);
+>>>>>>> refs/remotes/origin/master
 
 	chan_writel(chan, HSU_CH_CR, 0x3);
 
@@ -461,6 +531,7 @@ static void serial_hsu_stop_rx(struct uart_port *port)
 	}
 }
 
+<<<<<<< HEAD
 static inline void receive_chars(struct uart_hsu_port *up, int *status)
 {
 	struct tty_struct *tty = up->port.state->port.tty;
@@ -470,6 +541,14 @@ static inline void receive_chars(struct uart_hsu_port *up, int *status)
 	if (!tty)
 		return;
 
+=======
+static inline void receive_chars(struct uart_hsu_port *up, int *status,
+		unsigned long *flags)
+{
+	unsigned int ch, flag;
+	unsigned int max_count = 256;
+
+>>>>>>> refs/remotes/origin/master
 	do {
 		ch = serial_in(up, UART_RX);
 		flag = TTY_NORMAL;
@@ -525,7 +604,14 @@ static inline void receive_chars(struct uart_hsu_port *up, int *status)
 	ignore_char:
 		*status = serial_in(up, UART_LSR);
 	} while ((*status & UART_LSR_DR) && max_count--);
+<<<<<<< HEAD
 	tty_flip_buffer_push(tty);
+=======
+
+	spin_unlock_irqrestore(&up->port.lock, *flags);
+	tty_flip_buffer_push(&up->port.state->port);
+	spin_lock_irqsave(&up->port.lock, *flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void transmit_chars(struct uart_hsu_port *up)
@@ -619,7 +705,11 @@ static irqreturn_t port_irq(int irq, void *dev_id)
 
 	lsr = serial_in(up, UART_LSR);
 	if (lsr & UART_LSR_DR)
+<<<<<<< HEAD
 		receive_chars(up, &lsr);
+=======
+		receive_chars(up, &lsr, &flags);
+>>>>>>> refs/remotes/origin/master
 	check_modem_status(up);
 
 	/* lsr will be renewed during the receive_chars */
@@ -649,7 +739,11 @@ static inline void dma_chan_irq(struct hsu_dma_chan *chan)
 
 	/* Rx channel */
 	if (chan->dirt == DMA_FROM_DEVICE)
+<<<<<<< HEAD
 		hsu_dma_rx(up, int_sts);
+=======
+		hsu_dma_rx(up, int_sts, &flags);
+>>>>>>> refs/remotes/origin/master
 
 	/* Tx channel */
 	if (chan->dirt == DMA_TO_DEVICE) {
@@ -764,6 +858,16 @@ static int serial_hsu_startup(struct uart_port *port)
 		container_of(port, struct uart_hsu_port, port);
 	unsigned long flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pm_runtime_get_sync(up->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_runtime_get_sync(up->dev);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Clear the FIFO buffers and disable them.
 	 * (they will be reenabled in set_termios())
@@ -871,6 +975,16 @@ static void serial_hsu_shutdown(struct uart_port *port)
 				  UART_FCR_CLEAR_RCVR |
 				  UART_FCR_CLEAR_XMIT);
 	serial_out(up, UART_FCR, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	pm_runtime_put(up->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	pm_runtime_put(up->dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -879,7 +993,13 @@ serial_hsu_set_termios(struct uart_port *port, struct ktermios *termios,
 {
 	struct uart_hsu_port *up =
 			container_of(port, struct uart_hsu_port, port);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct tty_struct *tty = port->state->port.tty;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char cval, fcr = 0;
 	unsigned long flags;
 	unsigned int baud, quot;
@@ -902,8 +1022,16 @@ serial_hsu_set_termios(struct uart_port *port, struct ktermios *termios,
 	}
 
 	/* CMSPAR isn't supported by this driver */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (tty)
 		tty->termios->c_cflag &= ~CMSPAR;
+=======
+	termios->c_cflag &= ~CMSPAR;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	termios->c_cflag &= ~CMSPAR;
+>>>>>>> refs/remotes/origin/master
 
 	if (termios->c_cflag & CSTOPB)
 		cval |= UART_LCR_STOP;
@@ -1115,6 +1243,11 @@ serial_hsu_console_write(struct console *co, const char *s, unsigned int count)
 	unsigned int ier;
 	int locked = 1;
 
+<<<<<<< HEAD
+=======
+	touch_nmi_watchdog();
+
+>>>>>>> refs/remotes/origin/master
 	local_irq_save(flags);
 	if (up->port.sysrq)
 		locked = 0;
@@ -1151,7 +1284,13 @@ serial_hsu_console_setup(struct console *co, char *options)
 	int bits = 8;
 	int parity = 'n';
 	int flow = 'n';
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (co->index == -1 || co->index >= serial_hsu_reg.nr)
 		co->index = 0;
@@ -1162,9 +1301,17 @@ serial_hsu_console_setup(struct console *co, char *options)
 	if (options)
 		uart_parse_options(options, &baud, &parity, &bits, &flow);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = uart_set_options(&up->port, co, baud, parity, bits, flow);
 
 	return ret;
+=======
+	return uart_set_options(&up->port, co, baud, parity, bits, flow);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return uart_set_options(&up->port, co, baud, parity, bits, flow);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct console serial_hsu_console = {
@@ -1173,12 +1320,31 @@ static struct console serial_hsu_console = {
 	.device		= uart_console_device,
 	.setup		= serial_hsu_console_setup,
 	.flags		= CON_PRINTBUFFER,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.index		= 2,
 	.data		= &serial_hsu_reg,
 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.index		= -1,
+	.data		= &serial_hsu_reg,
+};
+
+#define SERIAL_HSU_CONSOLE	(&serial_hsu_console)
+#else
+#define SERIAL_HSU_CONSOLE	NULL
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 struct uart_ops serial_hsu_pops = {
+=======
+#endif
+
+static struct uart_ops serial_hsu_pops = {
+>>>>>>> refs/remotes/origin/master
 	.tx_empty	= serial_hsu_tx_empty,
 	.set_mctrl	= serial_hsu_set_mctrl,
 	.get_mctrl	= serial_hsu_get_mctrl,
@@ -1205,6 +1371,14 @@ static struct uart_driver serial_hsu_reg = {
 	.major		= TTY_MAJOR,
 	.minor		= 128,
 	.nr		= 3,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.cons		= SERIAL_HSU_CONSOLE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.cons		= SERIAL_HSU_CONSOLE,
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_PM
@@ -1249,6 +1423,53 @@ static int serial_hsu_resume(struct pci_dev *pdev)
 #define serial_hsu_resume	NULL
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_RUNTIME
+static int serial_hsu_runtime_idle(struct device *dev)
+{
+	int err;
+
+	err = pm_schedule_suspend(dev, 500);
+	if (err)
+		return -EBUSY;
+
+	return 0;
+=======
+#ifdef CONFIG_PM_RUNTIME
+static int serial_hsu_runtime_idle(struct device *dev)
+{
+	pm_schedule_suspend(dev, 500);
+	return -EBUSY;
+>>>>>>> refs/remotes/origin/master
+}
+
+static int serial_hsu_runtime_suspend(struct device *dev)
+{
+	return 0;
+}
+
+static int serial_hsu_runtime_resume(struct device *dev)
+{
+	return 0;
+}
+#else
+#define serial_hsu_runtime_idle		NULL
+#define serial_hsu_runtime_suspend	NULL
+#define serial_hsu_runtime_resume	NULL
+#endif
+
+static const struct dev_pm_ops serial_hsu_pm_ops = {
+	.runtime_suspend = serial_hsu_runtime_suspend,
+	.runtime_resume = serial_hsu_runtime_resume,
+	.runtime_idle = serial_hsu_runtime_idle,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* temp global pointer before we settle down on using one or four PCI dev */
 static struct hsu_port *phsu;
 
@@ -1306,6 +1527,8 @@ static int serial_hsu_probe(struct pci_dev *pdev,
 		}
 		uart_add_one_port(&serial_hsu_reg, &uport->port);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SERIAL_MFD_HSU_CONSOLE
 		if (index == 2) {
 			register_console(&serial_hsu_console);
@@ -1315,6 +1538,19 @@ static int serial_hsu_probe(struct pci_dev *pdev,
 		pci_set_drvdata(pdev, uport);
 	}
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pci_set_drvdata(pdev, uport);
+	}
+
+	pm_runtime_put_noidle(&pdev->dev);
+	pm_runtime_allow(&pdev->dev);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_disable:
@@ -1411,19 +1647,42 @@ static void serial_hsu_remove(struct pci_dev *pdev)
 	if (!priv)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pm_runtime_forbid(&pdev->dev);
+	pm_runtime_get_noresume(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_runtime_forbid(&pdev->dev);
+	pm_runtime_get_noresume(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	/* For port 0/1/2, priv is the address of uart_hsu_port */
 	if (pdev->device != 0x081E) {
 		up = priv;
 		uart_remove_one_port(&serial_hsu_reg, &up->port);
 	}
 
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_irq(pdev->irq, priv);
 	pci_disable_device(pdev);
 }
 
 /* First 3 are UART ports, and the 4th is the DMA */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id pci_ids[] __devinitdata = {
+=======
+static const struct pci_device_id pci_ids[] __devinitconst = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_device_id pci_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x081B) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x081C) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x081D) },
@@ -1435,9 +1694,24 @@ static struct pci_driver hsu_pci_driver = {
 	.name =		"HSU serial",
 	.id_table =	pci_ids,
 	.probe =	serial_hsu_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(serial_hsu_remove),
 	.suspend =	serial_hsu_suspend,
 	.resume	=	serial_hsu_resume,
+<<<<<<< HEAD
+=======
+	.driver = {
+		.pm = &serial_hsu_pm_ops,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove =	serial_hsu_remove,
+	.suspend =	serial_hsu_suspend,
+	.resume	=	serial_hsu_resume,
+	.driver = {
+		.pm = &serial_hsu_pm_ops,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init hsu_pci_init(void)
@@ -1467,4 +1741,8 @@ module_init(hsu_pci_init);
 module_exit(hsu_pci_exit);
 
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 MODULE_ALIAS("platform:medfield-hsu");
+=======
+MODULE_DEVICE_TABLE(pci, pci_ids);
+>>>>>>> refs/remotes/origin/master

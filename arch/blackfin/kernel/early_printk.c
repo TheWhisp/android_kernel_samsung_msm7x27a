@@ -25,8 +25,11 @@ extern struct console *bfin_earlyserial_init(unsigned int port,
 extern struct console *bfin_jc_early_init(void);
 #endif
 
+<<<<<<< HEAD
 static struct console *early_console;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Default console */
 #define DEFAULT_PORT 0
 #define DEFAULT_CFLAG CS8|B57600

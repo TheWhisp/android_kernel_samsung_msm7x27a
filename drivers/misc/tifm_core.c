@@ -13,6 +13,14 @@
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/idr.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_NAME "tifm_core"
 #define DRIVER_VERSION "0.8"
@@ -144,6 +152,7 @@ static ssize_t type_show(struct device *dev, struct device_attribute *attr,
 	struct tifm_dev *sock = container_of(dev, struct tifm_dev, dev);
 	return sprintf(buf, "%x", sock->type);
 }
+<<<<<<< HEAD
 
 static struct device_attribute tifm_dev_attrs[] = {
 	__ATTR(type, S_IRUGO, type_show, NULL),
@@ -153,6 +162,19 @@ static struct device_attribute tifm_dev_attrs[] = {
 static struct bus_type tifm_bus_type = {
 	.name      = "tifm",
 	.dev_attrs = tifm_dev_attrs,
+=======
+static DEVICE_ATTR_RO(type);
+
+static struct attribute *tifm_dev_attrs[] = {
+	&dev_attr_type.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(tifm_dev);
+
+static struct bus_type tifm_bus_type = {
+	.name      = "tifm",
+	.dev_groups = tifm_dev_groups,
+>>>>>>> refs/remotes/origin/master
 	.match     = tifm_bus_match,
 	.uevent    = tifm_uevent,
 	.probe     = tifm_device_probe,
@@ -195,6 +217,7 @@ int tifm_add_adapter(struct tifm_adapter *fm)
 {
 	int rc;
 
+<<<<<<< HEAD
 	if (!idr_pre_get(&tifm_adapter_idr, GFP_KERNEL))
 		return -ENOMEM;
 
@@ -202,6 +225,16 @@ int tifm_add_adapter(struct tifm_adapter *fm)
 	rc = idr_get_new(&tifm_adapter_idr, fm, &fm->id);
 	spin_unlock(&tifm_adapter_lock);
 	if (rc)
+=======
+	idr_preload(GFP_KERNEL);
+	spin_lock(&tifm_adapter_lock);
+	rc = idr_alloc(&tifm_adapter_idr, fm, 0, 0, GFP_NOWAIT);
+	if (rc >= 0)
+		fm->id = rc;
+	spin_unlock(&tifm_adapter_lock);
+	idr_preload_end();
+	if (rc < 0)
+>>>>>>> refs/remotes/origin/master
 		return rc;
 
 	dev_set_name(&fm->dev, "tifm%u", fm->id);

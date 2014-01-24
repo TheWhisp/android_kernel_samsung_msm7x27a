@@ -27,7 +27,13 @@
 #include <linux/netfilter.h>
 #include <net/sock.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>
@@ -351,7 +357,11 @@ void ax25_transmit_buffer(ax25_cb *ax25, struct sk_buff *skb, int type)
 		if (skb->sk != NULL)
 			skb_set_owner_w(skbn, skb->sk);
 
+<<<<<<< HEAD
 		kfree_skb(skb);
+=======
+		consume_skb(skb);
+>>>>>>> refs/remotes/origin/master
 		skb = skbn;
 	}
 

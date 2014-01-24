@@ -12,7 +12,15 @@
  */
 
 #include <linux/cpumask.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/vfp.h>
 #include <asm/system.h>
 #include "../vfp/vfpinstr.h"
@@ -21,6 +29,16 @@
 #define SCORPION_EVT_PREFIX 1
 #define SCORPION_MAX_L1_REG 4
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define SCORPION_EVTYPE_EVENT 0xfffff
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SCORPION_EVTYPE_EVENT 0xfffff
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static u32 scorpion_evt_type_base[] = {0x4c, 0x50, 0x54, 0x58, 0x5c};
 
 enum scorpion_perf_common {
@@ -141,12 +159,31 @@ static unsigned armv7_scorpion_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 		 * combined.
 		 */
 		[C(OP_READ)] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DCACHE_REFILL,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DCACHE_REFILL,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			[C(RESULT_ACCESS)]
+					= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]
+					= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]
+					= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]
+					= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -234,6 +271,22 @@ static unsigned armv7_scorpion_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int msm_scorpion_map_event(struct perf_event *event)
+{
+	return map_cpu_event(event, &armv7_scorpion_perf_map,
+			&armv7_scorpion_perf_cache_map, 0xfffff);
+}
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct scorpion_evt {
 	/*
 	 * The scorpion_evt_type field corresponds to the actual Scorpion
@@ -380,12 +433,28 @@ static unsigned int get_scorpion_evtinfo(unsigned int scorpion_evt_type,
 		evtinfo->group_setval = 0x80000000 | (code << (group * 8));
 		evtinfo->groupcode = reg;
 		evtinfo->armv7_evt_type = scorpion_evt_type_base[reg] | group;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		return evtinfo->armv7_evt_type;
 	}
 
 	if (scorpion_evt_type < SCORPION_EVT_START_IDX || scorpion_evt_type >=
 		(ARRAY_SIZE(scorpion_event) + SCORPION_EVT_START_IDX))
 		return -EINVAL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	idx = scorpion_evt_type - SCORPION_EVT_START_IDX;
 	if (scorpion_event[idx].scorpion_evt_type == scorpion_evt_type) {
 		evtinfo->group_setval = scorpion_event[idx].group_setval;
@@ -479,9 +548,21 @@ static void scorpion_pre_vlpm(void)
 	u32 v_orig_val;
 	u32 f_orig_val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* CPACR Enable CP10 access */
 	v_orig_val = get_copro_access();
 	venum_new_val = v_orig_val | CPACC_SVC(10);
+=======
+	/* CPACR Enable CP10 and CP11 access */
+	v_orig_val = get_copro_access();
+	venum_new_val = v_orig_val | CPACC_SVC(10) | CPACC_SVC(11);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* CPACR Enable CP10 and CP11 access */
+	v_orig_val = get_copro_access();
+	venum_new_val = v_orig_val | CPACC_SVC(10) | CPACC_SVC(11);
+>>>>>>> refs/remotes/origin/cm-11.0
 	set_copro_access(venum_new_val);
 	/* Store orig venum val */
 	__get_cpu_var(venum_orig_val) = v_orig_val;
@@ -547,17 +628,35 @@ static void scorpion_evt_setup(u32 gr, u32 setval, u32 evt_code)
 
 static void scorpion_clear_pmuregs(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	scorpion_write_lpm0(0);
 	scorpion_write_lpm1(0);
 	scorpion_write_lpm2(0);
 	scorpion_write_l2lpm(0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&pmu_lock, flags);
 	scorpion_pre_vlpm();
 	scorpion_write_vlpm(0);
 	scorpion_post_vlpm();
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
+=======
+	scorpion_pre_vlpm();
+	scorpion_write_vlpm(0);
+	scorpion_post_vlpm();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	scorpion_pre_vlpm();
+	scorpion_write_vlpm(0);
+	scorpion_post_vlpm();
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void scorpion_clearpmu(u32 grp, u32 val, u32 evt_code)
@@ -581,9 +680,23 @@ static void scorpion_pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	u32 gr;
 	unsigned long event;
 	struct scorpion_evt evtinfo;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Disable counter and interrupt */
 	raw_spin_lock_irqsave(&pmu_lock, flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+
+
+	/* Disable counter and interrupt */
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Disable counter */
 	armv7_pmnc_disable_counter(idx);
@@ -592,9 +705,21 @@ static void scorpion_pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	 * Clear lpm code (if destined for PMNx counters)
 	 * We don't need to set the event if it's a cycle count
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (idx != ARMV7_CYCLE_COUNTER) {
 		val = hwc->config_base;
 		val &= ARMV7_EVTYPE_EVENT;
+=======
+	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
+		val = hwc->config_base;
+		val &= SCORPION_EVTYPE_EVENT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
+		val = hwc->config_base;
+		val &= SCORPION_EVTYPE_EVENT;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (val > 0x40) {
 			event = get_scorpion_evtinfo(val, &evtinfo);
@@ -609,10 +734,24 @@ static void scorpion_pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	armv7_pmnc_disable_intens(idx);
 
 scorpion_dis_out:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 }
 
 static void scorpion_pmu_enable_event(struct hw_perf_event *hwc, int idx)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+}
+
+static void scorpion_pmu_enable_event(struct hw_perf_event *hwc,
+		int idx, int cpu)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long flags;
 	u32 val = 0;
@@ -620,12 +759,28 @@ static void scorpion_pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	unsigned long event;
 	struct scorpion_evt evtinfo;
 	unsigned long long prev_count = local64_read(&hwc->prev_count);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Enable counter and interrupt, and set the counter to count
 	 * the event that we're interested in.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&pmu_lock, flags);
+=======
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Disable counter */
 	armv7_pmnc_disable_counter(idx);
@@ -634,9 +789,21 @@ static void scorpion_pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	 * Set event (if destined for PMNx counters)
 	 * We don't need to set the event if it's a cycle count
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (idx != ARMV7_CYCLE_COUNTER) {
 		val = hwc->config_base;
 		val &= ARMV7_EVTYPE_EVENT;
+=======
+	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
+		val = hwc->config_base;
+		val &= SCORPION_EVTYPE_EVENT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
+		val = hwc->config_base;
+		val &= SCORPION_EVTYPE_EVENT;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (val < 0x40) {
 			armv7_pmnc_write_evtsel(idx, hwc->config_base);
@@ -669,6 +836,8 @@ static void scorpion_pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	armv7_pmnc_enable_counter(idx);
 
 scorpion_out:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 }
 
@@ -717,11 +886,25 @@ msm_free_irq(int irq)
 		}
 		free_percpu_irq(irq, &cpu_hw_events);
 	}
+=======
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void scorpion_pmu_reset(void *info)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 idx, nb_cnt = armpmu->num_events;
+=======
+	u32 idx, nb_cnt = cpu_pmu->num_events;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 idx, nb_cnt = cpu_pmu->num_events;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Stop all counters and their interrupts */
 	for (idx = 1; idx < nb_cnt; ++idx) {
@@ -741,15 +924,35 @@ static void scorpion_pmu_reset(void *info)
 
 static struct arm_pmu scorpion_pmu = {
 	.handle_irq		= armv7pmu_handle_irq,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.request_pmu_irq	= msm_request_irq,
+	.free_pmu_irq		= msm_free_irq,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.request_pmu_irq	= msm_request_irq,
+	.free_pmu_irq		= msm_free_irq,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.enable			= scorpion_pmu_enable_event,
 	.disable		= scorpion_pmu_disable_event,
 	.read_counter		= armv7pmu_read_counter,
 	.write_counter		= armv7pmu_write_counter,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.raw_event_mask		= 0xFFFFF,
+=======
+	.map_event		= msm_scorpion_map_event,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.map_event		= msm_scorpion_map_event,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.get_event_idx		= armv7pmu_get_event_idx,
 	.start			= armv7pmu_start,
 	.stop			= armv7pmu_stop,
 	.reset			= scorpion_pmu_reset,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.max_period		= (1LLU << 32) - 1,
 };
 
@@ -763,10 +966,30 @@ static const struct arm_pmu *__init armv7_scorpion_pmu_init(void)
 	/* Unicore can't use the percpu IRQ API. */
 	scorpion_pmu.request_pmu_irq	= armpmu_generic_request_irq;
 	scorpion_pmu.free_pmu_irq	= armpmu_generic_free_irq;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	.test_set_event_constraints	= msm_test_set_ev_constraint,
+	.clear_event_constraints	= msm_clear_ev_constraint,
+	.max_period		= (1LLU << 32) - 1,
+};
+
+static struct arm_pmu *__init armv7_scorpion_pmu_init(void)
+{
+	scorpion_pmu.id		= ARM_PERF_PMU_ID_SCORPION;
+	scorpion_pmu.name	= "ARMv7 Scorpion";
+	scorpion_pmu.num_events	= armv7_read_num_pmnc_events();
+	scorpion_pmu.pmu.attr_groups	= msm_l1_pmu_attr_grps;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	scorpion_clear_pmuregs();
 	return &scorpion_pmu;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_scorpionmp_pmu_init(void)
 {
 	scorpion_pmu.id		= ARM_PERF_PMU_ID_SCORPIONMP;
@@ -776,15 +999,42 @@ static const struct arm_pmu *__init armv7_scorpionmp_pmu_init(void)
 	scorpion_pmu.num_events	= armv7_read_num_pmnc_events();
 	scorpion_pmu.request_pmu_irq	= msm_request_irq;
 	scorpion_pmu.free_pmu_irq	= msm_free_irq;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct arm_pmu *__init armv7_scorpionmp_pmu_init(void)
+{
+	scorpion_pmu.id		= ARM_PERF_PMU_ID_SCORPIONMP;
+	scorpion_pmu.name	= "ARMv7 Scorpion-MP";
+	scorpion_pmu.num_events	= armv7_read_num_pmnc_events();
+	scorpion_pmu.pmu.attr_groups	= msm_l1_pmu_attr_grps;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	scorpion_clear_pmuregs();
 	return &scorpion_pmu;
 }
 #else
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_scorpion_pmu_init(void)
 {
 	return NULL;
 }
 static const struct arm_pmu *__init armv7_scorpionmp_pmu_init(void)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct arm_pmu *__init armv7_scorpion_pmu_init(void)
+{
+	return NULL;
+}
+static struct arm_pmu *__init armv7_scorpionmp_pmu_init(void)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return NULL;
 }

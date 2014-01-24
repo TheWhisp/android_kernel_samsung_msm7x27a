@@ -22,6 +22,12 @@
 #include <asm/uaccess.h>
 #include "br_private.h"
 
+<<<<<<< HEAD
+=======
+#define COMMON_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HIGHDMA | \
+			 NETIF_F_GSO_MASK | NETIF_F_HW_CSUM)
+
+>>>>>>> refs/remotes/origin/master
 /* net device transmit always called with BH disabled */
 netdev_tx_t br_dev_xmit(struct sk_buff *skb, struct net_device *dev)
 {
@@ -30,14 +36,26 @@ netdev_tx_t br_dev_xmit(struct sk_buff *skb, struct net_device *dev)
 	struct net_bridge_fdb_entry *dst;
 	struct net_bridge_mdb_entry *mdst;
 	struct br_cpu_netstats *brstats = this_cpu_ptr(br->stats);
+<<<<<<< HEAD
 
 #ifdef CONFIG_BRIDGE_NETFILTER
 	if (skb->nf_bridge && (skb->nf_bridge->mask & BRNF_BRIDGED_DNAT)) {
 		br_nf_pre_routing_finish_bridge_slow(skb);
+=======
+	u16 vid = 0;
+
+	rcu_read_lock();
+#ifdef CONFIG_BRIDGE_NETFILTER
+	if (skb->nf_bridge && (skb->nf_bridge->mask & BRNF_BRIDGED_DNAT)) {
+		br_nf_pre_routing_finish_bridge_slow(skb);
+		rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 		return NETDEV_TX_OK;
 	}
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BR_INPUT_SKB_CB(skb)->brdev = dev;
 
 	skb_reset_mac_header(skb);
@@ -58,10 +76,46 @@ netdev_tx_t br_dev_xmit(struct sk_buff *skb, struct net_device *dev)
 			goto out;
 		}
 		if (br_multicast_rcv(br, NULL, skb)) {
+=======
+	u64_stats_update_begin(&brstats->syncp);
+	brstats->tx_packets++;
+	brstats->tx_bytes += skb->len;
+	u64_stats_update_end(&brstats->syncp);
+
+	if (!br_allowed_ingress(br, br_get_vlan_info(br), skb, &vid))
+		goto out;
+
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	BR_INPUT_SKB_CB(skb)->brdev = dev;
+
+	skb_reset_mac_header(skb);
+	skb_pull(skb, ETH_HLEN);
+
+<<<<<<< HEAD
+=======
+	u64_stats_update_begin(&brstats->syncp);
+	brstats->tx_packets++;
+	/* Exclude ETH_HLEN from byte stats for consistency with Rx chain */
+	brstats->tx_bytes += skb->len;
+	u64_stats_update_end(&brstats->syncp);
+
+	rcu_read_lock();
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (is_broadcast_ether_addr(dest))
+		br_flood_deliver(br, skb, false);
+	else if (is_multicast_ether_addr(dest)) {
+		if (unlikely(netpoll_tx_running(dev))) {
+			br_flood_deliver(br, skb, false);
+			goto out;
+		}
+		if (br_multicast_rcv(br, NULL, skb, vid)) {
+>>>>>>> refs/remotes/origin/master
 			kfree_skb(skb);
 			goto out;
 		}
 
+<<<<<<< HEAD
 		mdst = br_mdb_get(br, skb);
 		if (mdst || BR_INPUT_SKB_CB_MROUTERS_ONLY(skb))
 			br_multicast_deliver(mdst, skb);
@@ -71,6 +125,18 @@ netdev_tx_t br_dev_xmit(struct sk_buff *skb, struct net_device *dev)
 		br_deliver(dst->dst, skb);
 	else
 		br_flood_deliver(br, skb);
+=======
+		mdst = br_mdb_get(br, skb, vid);
+		if ((mdst || BR_INPUT_SKB_CB_MROUTERS_ONLY(skb)) &&
+		    br_multicast_querier_exists(br, eth_hdr(skb)))
+			br_multicast_deliver(mdst, skb);
+		else
+			br_flood_deliver(br, skb, false);
+	} else if ((dst = __br_fdb_get(br, dest, vid)) != NULL)
+		br_deliver(dst->dst, skb);
+	else
+		br_flood_deliver(br, skb, true);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	rcu_read_unlock();
@@ -80,11 +146,24 @@ out:
 static int br_dev_init(struct net_device *dev)
 {
 	struct net_bridge *br = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	br->stats = alloc_percpu(struct br_cpu_netstats);
 	if (!br->stats)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	for_each_possible_cpu(i) {
+		struct br_cpu_netstats *br_dev_stats;
+		br_dev_stats = per_cpu_ptr(br->stats, i);
+		u64_stats_init(&br_dev_stats->syncp);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -128,9 +207,15 @@ static struct rtnl_link_stats64 *br_get_stats64(struct net_device *dev,
 		const struct br_cpu_netstats *bstats
 			= per_cpu_ptr(br->stats, cpu);
 		do {
+<<<<<<< HEAD
 			start = u64_stats_fetch_begin(&bstats->syncp);
 			memcpy(&tmp, bstats, sizeof(tmp));
 		} while (u64_stats_fetch_retry(&bstats->syncp, start));
+=======
+			start = u64_stats_fetch_begin_bh(&bstats->syncp);
+			memcpy(&tmp, bstats, sizeof(tmp));
+		} while (u64_stats_fetch_retry_bh(&bstats->syncp, start));
+>>>>>>> refs/remotes/origin/master
 		sum.tx_bytes   += tmp.tx_bytes;
 		sum.tx_packets += tmp.tx_packets;
 		sum.rx_bytes   += tmp.rx_bytes;
@@ -168,12 +253,34 @@ static int br_set_mac_address(struct net_device *dev, void *p)
 	struct sockaddr *addr = p;
 
 	if (!is_valid_ether_addr(addr->sa_data))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -EINVAL;
 
 	spin_lock_bh(&br->lock);
 	memcpy(dev->dev_addr, addr->sa_data, ETH_ALEN);
 	br_stp_change_bridge_id(br, addr->sa_data);
+=======
+		return -EADDRNOTAVAIL;
+
+	spin_lock_bh(&br->lock);
+	if (compare_ether_addr(dev->dev_addr, addr->sa_data)) {
+		dev->addr_assign_type &= ~NET_ADDR_RANDOM;
+=======
+		return -EADDRNOTAVAIL;
+
+	spin_lock_bh(&br->lock);
+	if (!ether_addr_equal(dev->dev_addr, addr->sa_data)) {
+>>>>>>> refs/remotes/origin/master
+		memcpy(dev->dev_addr, addr->sa_data, ETH_ALEN);
+		br_fdb_change_mac_address(br, addr->sa_data);
+		br_stp_change_bridge_id(br, addr->sa_data);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	br->flags |= BR_SET_MAC_ADDR;
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&br->lock);
 
 	return 0;
@@ -181,13 +288,29 @@ static int br_set_mac_address(struct net_device *dev, void *p)
 
 static void br_getinfo(struct net_device *dev, struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strcpy(info->driver, "bridge");
 	strcpy(info->version, BR_VERSION);
 	strcpy(info->fw_version, "N/A");
 	strcpy(info->bus_info, "N/A");
 }
 
+<<<<<<< HEAD
 static u32 br_fix_features(struct net_device *dev, u32 features)
+=======
+static netdev_features_t br_fix_features(struct net_device *dev,
+	netdev_features_t features)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	strlcpy(info->driver, "bridge", sizeof(info->driver));
+	strlcpy(info->version, BR_VERSION, sizeof(info->version));
+	strlcpy(info->fw_version, "N/A", sizeof(info->fw_version));
+	strlcpy(info->bus_info, "N/A", sizeof(info->bus_info));
+}
+
+static netdev_features_t br_fix_features(struct net_device *dev,
+	netdev_features_t features)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_bridge *br = netdev_priv(dev);
 
@@ -202,6 +325,7 @@ static void br_poll_controller(struct net_device *br_dev)
 static void br_netpoll_cleanup(struct net_device *dev)
 {
 	struct net_bridge *br = netdev_priv(dev);
+<<<<<<< HEAD
 	struct net_bridge_port *p, *n;
 
 	list_for_each_entry_safe(p, n, &br->port_list, list) {
@@ -220,6 +344,25 @@ static int br_netpoll_setup(struct net_device *dev, struct netpoll_info *ni)
 			continue;
 
 		err = br_netpoll_enable(p);
+=======
+	struct net_bridge_port *p;
+
+	list_for_each_entry(p, &br->port_list, list)
+		br_netpoll_disable(p);
+}
+
+static int br_netpoll_setup(struct net_device *dev, struct netpoll_info *ni,
+			    gfp_t gfp)
+{
+	struct net_bridge *br = netdev_priv(dev);
+	struct net_bridge_port *p;
+	int err = 0;
+
+	list_for_each_entry(p, &br->port_list, list) {
+		if (!p->dev)
+			continue;
+		err = br_netpoll_enable(p, gfp);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto fail;
 	}
@@ -232,6 +375,7 @@ fail:
 	goto out;
 }
 
+<<<<<<< HEAD
 int br_netpoll_enable(struct net_bridge_port *p)
 {
 	struct netpoll *np;
@@ -254,6 +398,27 @@ int br_netpoll_enable(struct net_bridge_port *p)
 	p->np = np;
 
 out:
+=======
+int br_netpoll_enable(struct net_bridge_port *p, gfp_t gfp)
+{
+	struct netpoll *np;
+	int err;
+
+	if (!p->br->dev->npinfo)
+		return 0;
+
+	np = kzalloc(sizeof(*p->np), gfp);
+	if (!np)
+		return -ENOMEM;
+
+	err = __netpoll_setup(np, p->dev, gfp);
+	if (err) {
+		kfree(np);
+		return err;
+	}
+
+	p->np = np;
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -266,11 +431,15 @@ void br_netpoll_disable(struct net_bridge_port *p)
 
 	p->np = NULL;
 
+<<<<<<< HEAD
 	/* Wait for transmitting packets to finish before freeing. */
 	synchronize_rcu_bh();
 
 	__netpoll_cleanup(np);
 	kfree(np);
+=======
+	__netpoll_free_async(np);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif
@@ -302,7 +471,15 @@ static const struct net_device_ops br_netdev_ops = {
 	.ndo_start_xmit		 = br_dev_xmit,
 	.ndo_get_stats64	 = br_get_stats64,
 	.ndo_set_mac_address	 = br_set_mac_address,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	 = br_dev_set_multicast_list,
+=======
+	.ndo_set_rx_mode	 = br_dev_set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	 = br_dev_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_change_mtu		 = br_change_mtu,
 	.ndo_do_ioctl		 = br_dev_ioctl,
 #ifdef CONFIG_NET_POLL_CONTROLLER
@@ -313,6 +490,15 @@ static const struct net_device_ops br_netdev_ops = {
 	.ndo_add_slave		 = br_add_slave,
 	.ndo_del_slave		 = br_del_slave,
 	.ndo_fix_features        = br_fix_features,
+<<<<<<< HEAD
+=======
+	.ndo_fdb_add		 = br_fdb_add,
+	.ndo_fdb_del		 = br_fdb_delete,
+	.ndo_fdb_dump		 = br_fdb_dump,
+	.ndo_bridge_getlink	 = br_getlink,
+	.ndo_bridge_setlink	 = br_setlink,
+	.ndo_bridge_dellink	 = br_dellink,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void br_dev_free(struct net_device *dev)
@@ -331,7 +517,15 @@ void br_dev_setup(struct net_device *dev)
 {
 	struct net_bridge *br = netdev_priv(dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	random_ether_addr(dev->dev_addr);
+=======
+	eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/master
 	ether_setup(dev);
 
 	dev->netdev_ops = &br_netdev_ops;
@@ -341,12 +535,26 @@ void br_dev_setup(struct net_device *dev)
 	dev->tx_queue_len = 0;
 	dev->priv_flags = IFF_EBRIDGE;
 
+<<<<<<< HEAD
 	dev->features = NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HIGHDMA |
+<<<<<<< HEAD
 			NETIF_F_GSO_MASK | NETIF_F_NO_CSUM | NETIF_F_LLTX |
 			NETIF_F_NETNS_LOCAL | NETIF_F_HW_VLAN_TX;
 	dev->hw_features = NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HIGHDMA |
 			   NETIF_F_GSO_MASK | NETIF_F_NO_CSUM |
+=======
+			NETIF_F_GSO_MASK | NETIF_F_HW_CSUM | NETIF_F_LLTX |
+			NETIF_F_NETNS_LOCAL | NETIF_F_HW_VLAN_TX;
+	dev->hw_features = NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HIGHDMA |
+			   NETIF_F_GSO_MASK | NETIF_F_HW_CSUM |
+>>>>>>> refs/remotes/origin/cm-10.0
 			   NETIF_F_HW_VLAN_TX;
+=======
+	dev->features = COMMON_FEATURES | NETIF_F_LLTX | NETIF_F_NETNS_LOCAL |
+			NETIF_F_HW_VLAN_CTAG_TX;
+	dev->hw_features = COMMON_FEATURES | NETIF_F_HW_VLAN_CTAG_TX;
+	dev->vlan_features = COMMON_FEATURES;
+>>>>>>> refs/remotes/origin/master
 
 	br->dev = dev;
 	spin_lock_init(&br->lock);
@@ -356,9 +564,22 @@ void br_dev_setup(struct net_device *dev)
 	br->bridge_id.prio[0] = 0x80;
 	br->bridge_id.prio[1] = 0x00;
 
+<<<<<<< HEAD
 	memcpy(br->group_addr, br_group_address, ETH_ALEN);
 
 	br->stp_enabled = BR_NO_STP;
+<<<<<<< HEAD
+=======
+	br->group_fwd_mask = BR_GROUPFWD_DEFAULT;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(br->group_addr, eth_reserved_addr_base, ETH_ALEN);
+
+	br->stp_enabled = BR_NO_STP;
+	br->group_fwd_mask = BR_GROUPFWD_DEFAULT;
+
+>>>>>>> refs/remotes/origin/master
 	br->designated_root = br->bridge_id;
 	br->bridge_max_age = br->max_age = 20 * HZ;
 	br->bridge_hello_time = br->hello_time = 2 * HZ;

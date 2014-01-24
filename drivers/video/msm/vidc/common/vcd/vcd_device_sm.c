@@ -219,6 +219,14 @@ u32 vcd_init_device_context(struct vcd_drv_ctxt *drv_ctxt,
 						   VCD_DEVICE_STATE_INITING,
 						   ev_code);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dev_ctxt->turbo_mode_set = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_ctxt->turbo_mode_set = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -758,6 +766,14 @@ static u32 vcd_open_cmn
 	client = dev_ctxt->cctxt_list_head;
 	dev_ctxt->cctxt_list_head = cctxt;
 	cctxt->next = client;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dev_ctxt->turbo_mode_set = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_ctxt->turbo_mode_set = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	*clnt_cctxt = cctxt;
 

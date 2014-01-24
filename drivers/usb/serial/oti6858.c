@@ -39,7 +39,10 @@
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -57,7 +60,10 @@
 #define OTI6858_DESCRIPTION \
 	"Ours Technology Inc. OTi-6858 USB to serial adapter driver"
 #define OTI6858_AUTHOR "Tomasz Michal Lukaszewski <FIXME@FIXME>"
+<<<<<<< HEAD
 #define OTI6858_VERSION "0.2"
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const struct usb_device_id id_table[] = {
 	{ USB_DEVICE(OTI6858_VENDOR_ID, OTI6858_PRODUCT_ID) },
@@ -66,16 +72,25 @@ static const struct usb_device_id id_table[] = {
 
 MODULE_DEVICE_TABLE(usb, id_table);
 
+<<<<<<< HEAD
 static struct usb_driver oti6858_driver = {
 	.name =		"oti6858",
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
 };
 
 static int debug;
+=======
+};
 
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
+
+=======
+>>>>>>> refs/remotes/origin/master
 /* requests */
 #define	OTI6858_REQ_GET_STATUS		(USB_DIR_IN | USB_TYPE_VENDOR | 0x00)
 #define	OTI6858_REQ_T_GET_STATUS	0x01
@@ -114,6 +129,10 @@ struct oti6858_control_pkt {
 #define	TX_BUFFER_EMPTIED	0x09
 	u8	pin_state;
 #define PIN_MASK		0x3f
+<<<<<<< HEAD
+=======
+#define PIN_MSR_MASK		0x1b
+>>>>>>> refs/remotes/origin/master
 #define PIN_RTS			0x20	/* output pin */
 #define PIN_CTS			0x10	/* input pin, active low */
 #define PIN_DSR			0x08	/* input pin, active low */
@@ -135,8 +154,11 @@ static void oti6858_close(struct usb_serial_port *port);
 static void oti6858_set_termios(struct tty_struct *tty,
 			struct usb_serial_port *port, struct ktermios *old);
 static void oti6858_init_termios(struct tty_struct *tty);
+<<<<<<< HEAD
 static int oti6858_ioctl(struct tty_struct *tty,
 			unsigned int cmd, unsigned long arg);
+=======
+>>>>>>> refs/remotes/origin/master
 static void oti6858_read_int_callback(struct urb *urb);
 static void oti6858_read_bulk_callback(struct urb *urb);
 static void oti6858_write_bulk_callback(struct urb *urb);
@@ -147,8 +169,13 @@ static int oti6858_chars_in_buffer(struct tty_struct *tty);
 static int oti6858_tiocmget(struct tty_struct *tty);
 static int oti6858_tiocmset(struct tty_struct *tty,
 				unsigned int set, unsigned int clear);
+<<<<<<< HEAD
 static int oti6858_startup(struct usb_serial *serial);
 static void oti6858_release(struct usb_serial *serial);
+=======
+static int oti6858_port_probe(struct usb_serial_port *port);
+static int oti6858_port_remove(struct usb_serial_port *port);
+>>>>>>> refs/remotes/origin/master
 
 /* device info */
 static struct usb_serial_driver oti6858_device = {
@@ -157,25 +184,55 @@ static struct usb_serial_driver oti6858_device = {
 		.name =		"oti6858",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver =		&oti6858_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.num_ports =		1,
 	.open =			oti6858_open,
 	.close =		oti6858_close,
 	.write =		oti6858_write,
+<<<<<<< HEAD
 	.ioctl =		oti6858_ioctl,
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_termios =		oti6858_set_termios,
 	.init_termios = 	oti6858_init_termios,
 	.tiocmget =		oti6858_tiocmget,
 	.tiocmset =		oti6858_tiocmset,
+<<<<<<< HEAD
+=======
+	.tiocmiwait =		usb_serial_generic_tiocmiwait,
+>>>>>>> refs/remotes/origin/master
 	.read_bulk_callback =	oti6858_read_bulk_callback,
 	.read_int_callback =	oti6858_read_int_callback,
 	.write_bulk_callback =	oti6858_write_bulk_callback,
 	.write_room =		oti6858_write_room,
 	.chars_in_buffer =	oti6858_chars_in_buffer,
+<<<<<<< HEAD
 	.attach =		oti6858_startup,
 	.release =		oti6858_release,
 };
 
+<<<<<<< HEAD
+=======
+=======
+	.port_probe =		oti6858_port_probe,
+	.port_remove =		oti6858_port_remove,
+};
+
+>>>>>>> refs/remotes/origin/master
+static struct usb_serial_driver * const serial_drivers[] = {
+	&oti6858_device, NULL
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct oti6858_private {
 	spinlock_t lock;
 
@@ -196,7 +253,10 @@ struct oti6858_private {
 	u8 setup_done;
 	struct delayed_work delayed_setup_work;
 
+<<<<<<< HEAD
 	wait_queue_head_t intr_wait;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usb_serial_port *port;   /* USB port with which associated */
 };
 
@@ -209,11 +269,16 @@ static void setup_line(struct work_struct *work)
 	unsigned long flags;
 	int result;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d)", __func__, port->number);
 
 	new_setup = kmalloc(OTI6858_CTRL_PKT_SIZE, GFP_KERNEL);
 	if (new_setup == NULL) {
 		dev_err(&port->dev, "%s(): out of memory!\n", __func__);
+=======
+	new_setup = kmalloc(OTI6858_CTRL_PKT_SIZE, GFP_KERNEL);
+	if (!new_setup) {
+>>>>>>> refs/remotes/origin/master
 		/* we will try again */
 		schedule_delayed_work(&priv->delayed_setup_work,
 						msecs_to_jiffies(2));
@@ -263,12 +328,23 @@ static void setup_line(struct work_struct *work)
 	priv->setup_done = 1;
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
 	dbg("%s(): submitting interrupt urb", __func__);
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	result = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
 	if (result != 0) {
 		dev_err(&port->dev, "%s(): usb_submit_urb() failed"
 				" with error %d\n", __func__, result);
+=======
+	dev_dbg(&port->dev, "%s(): submitting interrupt urb\n", __func__);
+	result = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
+	if (result != 0) {
+		dev_err(&port->dev, "%s(): usb_submit_urb() failed with error %d\n",
+			__func__, result);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -281,8 +357,11 @@ static void send_data(struct work_struct *work)
 	unsigned long flags;
 	u8 *allow;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d)", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	if (priv->flags.write_urb_in_use) {
 		spin_unlock_irqrestore(&priv->lock, flags);
@@ -302,11 +381,21 @@ static void send_data(struct work_struct *work)
 
 	if (count != 0) {
 		allow = kmalloc(1, GFP_KERNEL);
+<<<<<<< HEAD
 		if (!allow) {
+<<<<<<< HEAD
 			dev_err(&port->dev, "%s(): kmalloc failed\n",
+=======
+			dev_err_console(port, "%s(): kmalloc failed\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 					__func__);
 			return;
 		}
+=======
+		if (!allow)
+			return;
+
+>>>>>>> refs/remotes/origin/master
 		result = usb_control_msg(port->serial->dev,
 				usb_rcvctrlpipe(port->serial->dev, 0),
 				OTI6858_REQ_T_CHECK_TXBUFF,
@@ -320,12 +409,23 @@ static void send_data(struct work_struct *work)
 	if (count == 0) {
 		priv->flags.write_urb_in_use = 0;
 
+<<<<<<< HEAD
 		dbg("%s(): submitting interrupt urb", __func__);
+<<<<<<< HEAD
 		port->interrupt_in_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		result = usb_submit_urb(port->interrupt_in_urb, GFP_NOIO);
 		if (result != 0) {
 			dev_err(&port->dev, "%s(): usb_submit_urb() failed"
 				" with error %d\n", __func__, result);
+=======
+		dev_dbg(&port->dev, "%s(): submitting interrupt urb\n", __func__);
+		result = usb_submit_urb(port->interrupt_in_urb, GFP_NOIO);
+		if (result != 0) {
+			dev_err(&port->dev, "%s(): usb_submit_urb() failed with error %d\n",
+				__func__, result);
+>>>>>>> refs/remotes/origin/master
 		}
 		return;
 	}
@@ -334,17 +434,31 @@ static void send_data(struct work_struct *work)
 					port->write_urb->transfer_buffer,
 					count, &port->lock);
 	port->write_urb->transfer_buffer_length = count;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	port->write_urb->dev = port->serial->dev;
 	result = usb_submit_urb(port->write_urb, GFP_NOIO);
 	if (result != 0) {
 		dev_err(&port->dev, "%s(): usb_submit_urb() failed"
+=======
+	result = usb_submit_urb(port->write_urb, GFP_NOIO);
+	if (result != 0) {
+		dev_err_console(port, "%s(): usb_submit_urb() failed"
+>>>>>>> refs/remotes/origin/cm-10.0
 			       " with error %d\n", __func__, result);
+=======
+	result = usb_submit_urb(port->write_urb, GFP_NOIO);
+	if (result != 0) {
+		dev_err_console(port, "%s(): usb_submit_urb() failed with error %d\n",
+				__func__, result);
+>>>>>>> refs/remotes/origin/master
 		priv->flags.write_urb_in_use = 0;
 	}
 
 	usb_serial_port_softint(port);
 }
 
+<<<<<<< HEAD
 static int oti6858_startup(struct usb_serial *serial)
 {
 	struct usb_serial_port *port = serial->port[0];
@@ -375,13 +489,46 @@ static int oti6858_startup(struct usb_serial *serial)
 		usb_set_serial_port_data(serial->port[i], NULL);
 	}
 	return -ENOMEM;
+=======
+static int oti6858_port_probe(struct usb_serial_port *port)
+{
+	struct oti6858_private *priv;
+
+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	spin_lock_init(&priv->lock);
+	priv->port = port;
+	INIT_DELAYED_WORK(&priv->delayed_setup_work, setup_line);
+	INIT_DELAYED_WORK(&priv->delayed_write_work, send_data);
+
+	usb_set_serial_port_data(port, priv);
+
+	port->port.drain_delay = 256;	/* FIXME: check the FIFO length */
+
+	return 0;
+}
+
+static int oti6858_port_remove(struct usb_serial_port *port)
+{
+	struct oti6858_private *priv;
+
+	priv = usb_get_serial_port_data(port);
+	kfree(priv);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int oti6858_write(struct tty_struct *tty, struct usb_serial_port *port,
 			const unsigned char *buf, int count)
 {
+<<<<<<< HEAD
 	dbg("%s(port = %d, count = %d)", __func__, port->number, count);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!count)
 		return count;
 
@@ -396,8 +543,11 @@ static int oti6858_write_room(struct tty_struct *tty)
 	int room = 0;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d)", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&port->lock, flags);
 	room = kfifo_avail(&port->write_fifo);
 	spin_unlock_irqrestore(&port->lock, flags);
@@ -411,8 +561,11 @@ static int oti6858_chars_in_buffer(struct tty_struct *tty)
 	int chars = 0;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d)", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&port->lock, flags);
 	chars = kfifo_len(&port->write_fifo);
 	spin_unlock_irqrestore(&port->lock, flags);
@@ -422,10 +575,17 @@ static int oti6858_chars_in_buffer(struct tty_struct *tty)
 
 static void oti6858_init_termios(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	*(tty->termios) = tty_std_termios;
 	tty->termios->c_cflag = B38400 | CS8 | CREAD | HUPCL | CLOCAL;
 	tty->termios->c_ispeed = 38400;
 	tty->termios->c_ospeed = 38400;
+=======
+	tty->termios = tty_std_termios;
+	tty->termios.c_cflag = B38400 | CS8 | CREAD | HUPCL | CLOCAL;
+	tty->termios.c_ispeed = 38400;
+	tty->termios.c_ospeed = 38400;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void oti6858_set_termios(struct tty_struct *tty,
@@ -438,6 +598,7 @@ static void oti6858_set_termios(struct tty_struct *tty,
 	__le16 divisor;
 	int br;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d)", __func__, port->number);
 
 	if (!tty) {
@@ -446,6 +607,9 @@ static void oti6858_set_termios(struct tty_struct *tty,
 	}
 
 	cflag = tty->termios->c_cflag;
+=======
+	cflag = tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&priv->lock, flags);
 	divisor = priv->pending_setup.divisor;
@@ -540,22 +704,33 @@ static void oti6858_set_termios(struct tty_struct *tty,
 static int oti6858_open(struct tty_struct *tty, struct usb_serial_port *port)
 {
 	struct oti6858_private *priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
 	struct ktermios tmp_termios;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usb_serial *serial = port->serial;
 	struct oti6858_control_pkt *buf;
 	unsigned long flags;
 	int result;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d)", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	usb_clear_halt(serial->dev, port->write_urb->pipe);
 	usb_clear_halt(serial->dev, port->read_urb->pipe);
 
 	buf = kmalloc(OTI6858_CTRL_PKT_SIZE, GFP_KERNEL);
+<<<<<<< HEAD
 	if (buf == NULL) {
 		dev_err(&port->dev, "%s(): out of memory!\n", __func__);
 		return -ENOMEM;
 	}
+=======
+	if (!buf)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
 				OTI6858_REQ_T_GET_STATUS,
@@ -582,20 +757,42 @@ static int oti6858_open(struct tty_struct *tty, struct usb_serial_port *port)
 	spin_unlock_irqrestore(&priv->lock, flags);
 	kfree(buf);
 
+<<<<<<< HEAD
 	dbg("%s(): submitting interrupt urb", __func__);
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	result = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
 	if (result != 0) {
 		dev_err(&port->dev, "%s(): usb_submit_urb() failed"
 			       " with error %d\n", __func__, result);
 		oti6858_close(port);
+<<<<<<< HEAD
 		return -EPROTO;
+=======
+		return result;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&port->dev, "%s(): submitting interrupt urb\n", __func__);
+	result = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
+	if (result != 0) {
+		dev_err(&port->dev, "%s(): usb_submit_urb() failed with error %d\n",
+			__func__, result);
+		oti6858_close(port);
+		return result;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* setup termios */
 	if (tty)
+<<<<<<< HEAD
 		oti6858_set_termios(tty, port, &tmp_termios);
 	port->port.drain_delay = 256;	/* FIXME: check the FIFO length */
+=======
+		oti6858_set_termios(tty, port, NULL);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -604,21 +801,32 @@ static void oti6858_close(struct usb_serial_port *port)
 	struct oti6858_private *priv = usb_get_serial_port_data(port);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d)", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&port->lock, flags);
 	/* clear out any remaining data in the buffer */
 	kfifo_reset_out(&port->write_fifo);
 	spin_unlock_irqrestore(&port->lock, flags);
 
+<<<<<<< HEAD
 	dbg("%s(): after buf_clear()", __func__);
+=======
+	dev_dbg(&port->dev, "%s(): after buf_clear()\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* cancel scheduled setup */
 	cancel_delayed_work_sync(&priv->delayed_setup_work);
 	cancel_delayed_work_sync(&priv->delayed_write_work);
 
 	/* shutdown our urbs */
+<<<<<<< HEAD
 	dbg("%s(): shutting down urbs", __func__);
+=======
+	dev_dbg(&port->dev, "%s(): shutting down urbs\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	usb_kill_urb(port->write_urb);
 	usb_kill_urb(port->read_urb);
 	usb_kill_urb(port->interrupt_in_urb);
@@ -632,11 +840,16 @@ static int oti6858_tiocmset(struct tty_struct *tty,
 	unsigned long flags;
 	u8 control;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d, set = 0x%08x, clear = 0x%08x)",
 				__func__, port->number, set, clear);
 
 	if (!usb_get_intfdata(port->serial->interface))
 		return -ENODEV;
+=======
+	dev_dbg(&port->dev, "%s(set = 0x%08x, clear = 0x%08x)\n",
+		__func__, set, clear);
+>>>>>>> refs/remotes/origin/master
 
 	/* FIXME: check if this is correct (active high/low) */
 	spin_lock_irqsave(&priv->lock, flags);
@@ -665,11 +878,14 @@ static int oti6858_tiocmget(struct tty_struct *tty)
 	unsigned pin_state;
 	unsigned result = 0;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d)", __func__, port->number);
 
 	if (!usb_get_intfdata(port->serial->interface))
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	pin_state = priv->status.pin_state & PIN_MASK;
 	spin_unlock_irqrestore(&priv->lock, flags);
@@ -688,11 +904,16 @@ static int oti6858_tiocmget(struct tty_struct *tty)
 	if ((pin_state & PIN_DCD) != 0)
 		result |= TIOCM_CD;
 
+<<<<<<< HEAD
 	dbg("%s() = 0x%08x", __func__, result);
+=======
+	dev_dbg(&port->dev, "%s() = 0x%08x\n", __func__, result);
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
 
+<<<<<<< HEAD
 static int wait_modem_info(struct usb_serial_port *port, unsigned int arg)
 {
 	struct oti6858_private *priv = usb_get_serial_port_data(port);
@@ -758,6 +979,8 @@ static void oti6858_release(struct usb_serial *serial)
 		kfree(usb_get_serial_port_data(serial->port[i]));
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void oti6858_read_int_callback(struct urb *urb)
 {
 	struct usb_serial_port *port =  urb->context;
@@ -765,9 +988,12 @@ static void oti6858_read_int_callback(struct urb *urb)
 	int transient = 0, can_recv = 0, resubmit = 1;
 	int status = urb->status;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d, status = %d)",
 				__func__, port->number, status);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (status) {
 	case 0:
 		/* success */
@@ -776,12 +1002,21 @@ static void oti6858_read_int_callback(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s(): urb shutting down with status: %d",
 					__func__, status);
 		return;
 	default:
 		dbg("%s(): nonzero urb status received: %d",
 					__func__, status);
+=======
+		dev_dbg(&urb->dev->dev, "%s(): urb shutting down with status: %d\n",
+			__func__, status);
+		return;
+	default:
+		dev_dbg(&urb->dev->dev, "%s(): nonzero urb status received: %d\n",
+			__func__, status);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -797,8 +1032,12 @@ static void oti6858_read_int_callback(struct urb *urb)
 					priv->transient = 4;
 					priv->setup_done = 0;
 					resubmit = 0;
+<<<<<<< HEAD
 					dbg("%s(): scheduling setup_line()",
 					    __func__);
+=======
+					dev_dbg(&port->dev, "%s(): scheduling setup_line()\n", __func__);
+>>>>>>> refs/remotes/origin/master
 					schedule_delayed_work(&priv->delayed_setup_work, 0);
 				}
 			}
@@ -812,16 +1051,38 @@ static void oti6858_read_int_callback(struct urb *urb)
 					priv->transient = 4;
 					priv->setup_done = 0;
 					resubmit = 0;
+<<<<<<< HEAD
 					dbg("%s(): scheduling setup_line()",
 					    __func__);
+=======
+					dev_dbg(&port->dev, "%s(): scheduling setup_line()\n", __func__);
+>>>>>>> refs/remotes/origin/master
 					schedule_delayed_work(&priv->delayed_setup_work, 0);
 				}
 			}
 		}
 
 		if (!priv->transient) {
+<<<<<<< HEAD
 			if (xs->pin_state != priv->status.pin_state)
 				wake_up_interruptible(&priv->intr_wait);
+=======
+			u8 delta = xs->pin_state ^ priv->status.pin_state;
+
+			if (delta & PIN_MSR_MASK) {
+				if (delta & PIN_CTS)
+					port->icount.cts++;
+				if (delta & PIN_DSR)
+					port->icount.dsr++;
+				if (delta & PIN_RI)
+					port->icount.rng++;
+				if (delta & PIN_DCD)
+					port->icount.dcd++;
+
+				wake_up_interruptible(&port->port.delta_msr_wait);
+			}
+
+>>>>>>> refs/remotes/origin/master
 			memcpy(&priv->status, xs, OTI6858_CTRL_PKT_SIZE);
 		}
 
@@ -837,7 +1098,13 @@ static void oti6858_read_int_callback(struct urb *urb)
 	if (can_recv) {
 		int result;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		port->read_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		result = usb_submit_urb(port->read_urb, GFP_ATOMIC);
 		if (result != 0) {
 			priv->flags.read_urb_in_use = 0;
@@ -865,8 +1132,15 @@ static void oti6858_read_int_callback(struct urb *urb)
 	if (resubmit) {
 		int result;
 
+<<<<<<< HEAD
 /*		dbg("%s(): submitting interrupt urb", __func__); */
+<<<<<<< HEAD
 		urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*		dev_dbg(&urb->dev->dev, "%s(): submitting interrupt urb\n", __func__); */
+>>>>>>> refs/remotes/origin/master
 		result = usb_submit_urb(urb, GFP_ATOMIC);
 		if (result != 0) {
 			dev_err(&urb->dev->dev,
@@ -880,20 +1154,28 @@ static void oti6858_read_bulk_callback(struct urb *urb)
 {
 	struct usb_serial_port *port =  urb->context;
 	struct oti6858_private *priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char *data = urb->transfer_buffer;
 	unsigned long flags;
 	int status = urb->status;
 	int result;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d, status = %d)",
 				__func__, port->number, status);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	priv->flags.read_urb_in_use = 0;
 	spin_unlock_irqrestore(&priv->lock, flags);
 
 	if (status != 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/*
 		if (status == -EPROTO) {
 			* PL2303 mysteriously fails with -EPROTO reschedule
@@ -906,6 +1188,8 @@ static void oti6858_read_bulk_callback(struct urb *urb)
 			return;
 		}
 		*/
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		dbg("%s(): unable to handle the error, exiting", __func__);
 		return;
 	}
@@ -918,7 +1202,22 @@ static void oti6858_read_bulk_callback(struct urb *urb)
 	tty_kref_put(tty);
 
 	/* schedule the interrupt urb */
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(&urb->dev->dev, "%s(): unable to handle the error, exiting\n", __func__);
+		return;
+	}
+
+	if (urb->actual_length > 0) {
+		tty_insert_flip_string(&port->port, data, urb->actual_length);
+		tty_flip_buffer_push(&port->port);
+	}
+
+	/* schedule the interrupt urb */
+>>>>>>> refs/remotes/origin/master
 	result = usb_submit_urb(port->interrupt_in_urb, GFP_ATOMIC);
 	if (result != 0 && result != -EPERM) {
 		dev_err(&port->dev, "%s(): usb_submit_urb() failed,"
@@ -933,9 +1232,12 @@ static void oti6858_write_bulk_callback(struct urb *urb)
 	int status = urb->status;
 	int result;
 
+<<<<<<< HEAD
 	dbg("%s(port = %d, status = %d)",
 				__func__, port->number, status);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (status) {
 	case 0:
 		/* success */
@@ -944,21 +1246,41 @@ static void oti6858_write_bulk_callback(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s(): urb shutting down with status: %d",
 					__func__, status);
+=======
+		dev_dbg(&urb->dev->dev, "%s(): urb shutting down with status: %d\n", __func__, status);
+>>>>>>> refs/remotes/origin/master
 		priv->flags.write_urb_in_use = 0;
 		return;
 	default:
 		/* error in the urb, so we have to resubmit it */
+<<<<<<< HEAD
 		dbg("%s(): nonzero write bulk status received: %d",
 					__func__, status);
 		dbg("%s(): overflow in write", __func__);
 
 		port->write_urb->transfer_buffer_length = 1;
+<<<<<<< HEAD
 		port->write_urb->dev = port->serial->dev;
 		result = usb_submit_urb(port->write_urb, GFP_ATOMIC);
 		if (result) {
 			dev_err(&port->dev, "%s(): usb_submit_urb() failed,"
+=======
+		result = usb_submit_urb(port->write_urb, GFP_ATOMIC);
+		if (result) {
+			dev_err_console(port, "%s(): usb_submit_urb() failed,"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(&urb->dev->dev, "%s(): nonzero write bulk status received: %d\n", __func__, status);
+		dev_dbg(&urb->dev->dev, "%s(): overflow in write\n", __func__);
+
+		port->write_urb->transfer_buffer_length = 1;
+		result = usb_submit_urb(port->write_urb, GFP_ATOMIC);
+		if (result) {
+			dev_err_console(port, "%s(): usb_submit_urb() failed,"
+>>>>>>> refs/remotes/origin/master
 					" error %d\n", __func__, result);
 		} else {
 			return;
@@ -968,8 +1290,15 @@ static void oti6858_write_bulk_callback(struct urb *urb)
 	priv->flags.write_urb_in_use = 0;
 
 	/* schedule the interrupt urb if we are still open */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dbg("%s(): submitting interrupt urb", __func__);
+=======
+	dev_dbg(&port->dev, "%s(): submitting interrupt urb\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	result = usb_submit_urb(port->interrupt_in_urb, GFP_ATOMIC);
 	if (result != 0) {
 		dev_err(&port->dev, "%s(): failed submitting int urb,"
@@ -977,6 +1306,8 @@ static void oti6858_write_bulk_callback(struct urb *urb)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* module description and (de)initialization */
 
 static int __init oti6858_init(void)
@@ -1000,6 +1331,9 @@ static void __exit oti6858_exit(void)
 
 module_init(oti6858_init);
 module_exit(oti6858_exit);
+=======
+module_usb_serial_driver(oti6858_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION(OTI6858_DESCRIPTION);
 MODULE_AUTHOR(OTI6858_AUTHOR);
@@ -1009,3 +1343,10 @@ MODULE_LICENSE("GPL");
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "enable debug output");
 
+=======
+module_usb_serial_driver(serial_drivers, id_table);
+
+MODULE_DESCRIPTION(OTI6858_DESCRIPTION);
+MODULE_AUTHOR(OTI6858_AUTHOR);
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

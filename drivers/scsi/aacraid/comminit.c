@@ -58,7 +58,12 @@ static int aac_alloc_comm(struct aac_dev *dev, void **commaddr, unsigned long co
 	dma_addr_t phys;
 	unsigned long aac_max_hostphysmempages;
 
+<<<<<<< HEAD
 	if (dev->comm_interface == AAC_COMM_MESSAGE_TYPE1)
+=======
+	if (dev->comm_interface == AAC_COMM_MESSAGE_TYPE1 ||
+	    dev->comm_interface == AAC_COMM_MESSAGE_TYPE2)
+>>>>>>> refs/remotes/origin/master
 		host_rrq_size = (dev->scsi_host_ptr->can_queue
 			+ AAC_NUM_MGT_FIB) * sizeof(u32);
 	size = fibsize + sizeof(struct aac_init) + commsize +
@@ -75,7 +80,12 @@ static int aac_alloc_comm(struct aac_dev *dev, void **commaddr, unsigned long co
 	dev->comm_phys = phys;
 	dev->comm_size = size;
 	
+<<<<<<< HEAD
 	if (dev->comm_interface == AAC_COMM_MESSAGE_TYPE1) {
+=======
+	if (dev->comm_interface == AAC_COMM_MESSAGE_TYPE1 ||
+	    dev->comm_interface == AAC_COMM_MESSAGE_TYPE2) {
+>>>>>>> refs/remotes/origin/master
 		dev->host_rrq = (u32 *)(base + fibsize);
 		dev->host_rrq_pa = phys + fibsize;
 		memset(dev->host_rrq, 0, host_rrq_size);
@@ -115,12 +125,23 @@ static int aac_alloc_comm(struct aac_dev *dev, void **commaddr, unsigned long co
 	else
 		init->HostPhysMemPages = cpu_to_le32(AAC_MAX_HOSTPHYSMEMPAGES);
 
+<<<<<<< HEAD
 	init->InitFlags = 0;
+=======
+	init->InitFlags = cpu_to_le32(INITFLAGS_DRIVER_USES_UTC_TIME |
+		INITFLAGS_DRIVER_SUPPORTS_PM);
+	init->MaxIoCommands = cpu_to_le32(dev->scsi_host_ptr->can_queue + AAC_NUM_MGT_FIB);
+	init->MaxIoSize = cpu_to_le32(dev->scsi_host_ptr->max_sectors << 9);
+	init->MaxFibSize = cpu_to_le32(dev->max_fib_size);
+	init->MaxNumAif = cpu_to_le32(dev->max_num_aif);
+
+>>>>>>> refs/remotes/origin/master
 	if (dev->comm_interface == AAC_COMM_MESSAGE) {
 		init->InitFlags |= cpu_to_le32(INITFLAGS_NEW_COMM_SUPPORTED);
 		dprintk((KERN_WARNING"aacraid: New Comm Interface enabled\n"));
 	} else if (dev->comm_interface == AAC_COMM_MESSAGE_TYPE1) {
 		init->InitStructRevision = cpu_to_le32(ADAPTER_INIT_STRUCT_REVISION_6);
+<<<<<<< HEAD
 		init->InitFlags |= cpu_to_le32(INITFLAGS_NEW_COMM_TYPE1_SUPPORTED);
 		dprintk((KERN_WARNING
 			"aacraid: New Comm Interface type1 enabled\n"));
@@ -135,6 +156,22 @@ static int aac_alloc_comm(struct aac_dev *dev, void **commaddr, unsigned long co
 	init->HostRRQ_AddrHigh = (u32)((u64)dev->host_rrq_pa >> 32);
 	init->HostRRQ_AddrLow = (u32)(dev->host_rrq_pa & 0xffffffff);
 
+=======
+		init->InitFlags |= cpu_to_le32(INITFLAGS_NEW_COMM_SUPPORTED |
+			INITFLAGS_NEW_COMM_TYPE1_SUPPORTED | INITFLAGS_FAST_JBOD_SUPPORTED);
+		init->HostRRQ_AddrHigh = cpu_to_le32((u32)((u64)dev->host_rrq_pa >> 32));
+		init->HostRRQ_AddrLow = cpu_to_le32((u32)(dev->host_rrq_pa & 0xffffffff));
+		dprintk((KERN_WARNING"aacraid: New Comm Interface type1 enabled\n"));
+	} else if (dev->comm_interface == AAC_COMM_MESSAGE_TYPE2) {
+		init->InitStructRevision = cpu_to_le32(ADAPTER_INIT_STRUCT_REVISION_7);
+		init->InitFlags |= cpu_to_le32(INITFLAGS_NEW_COMM_SUPPORTED |
+			INITFLAGS_NEW_COMM_TYPE2_SUPPORTED | INITFLAGS_FAST_JBOD_SUPPORTED);
+		init->HostRRQ_AddrHigh = cpu_to_le32((u32)((u64)dev->host_rrq_pa >> 32));
+		init->HostRRQ_AddrLow = cpu_to_le32((u32)(dev->host_rrq_pa & 0xffffffff));
+		init->MiniPortRevision = cpu_to_le32(0L);		/* number of MSI-X */
+		dprintk((KERN_WARNING"aacraid: New Comm Interface type2 enabled\n"));
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Increment the base address by the amount already used
@@ -206,7 +243,11 @@ int aac_send_shutdown(struct aac_dev * dev)
 	cmd = (struct aac_close *) fib_data(fibctx);
 
 	cmd->command = cpu_to_le32(VM_CloseAll);
+<<<<<<< HEAD
 	cmd->cid = cpu_to_le32(0xffffffff);
+=======
+	cmd->cid = cpu_to_le32(0xfffffffe);
+>>>>>>> refs/remotes/origin/master
 
 	status = aac_fib_send(ContainerCommand,
 			  fibctx,
@@ -325,12 +366,28 @@ struct aac_dev *aac_init_adapter(struct aac_dev *dev)
 {
 	u32 status[5];
 	struct Scsi_Host * host = dev->scsi_host_ptr;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	extern int aac_sync_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	extern int aac_sync_mode;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *	Check the preferred comm settings, defaults from template.
 	 */
 	dev->management_fib_count = 0;
 	spin_lock_init(&dev->manage_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	spin_lock_init(&dev->sync_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&dev->sync_lock);
+>>>>>>> refs/remotes/origin/master
 	dev->max_fib_size = sizeof(struct hw_fib);
 	dev->sg_tablesize = host->sg_tablesize = (dev->max_fib_size
 		- sizeof(struct aac_fibhdr)
@@ -344,6 +401,8 @@ struct aac_dev *aac_init_adapter(struct aac_dev *dev)
 	 		(status[0] == 0x00000001)) {
 		if (status[1] & le32_to_cpu(AAC_OPT_NEW_COMM_64))
 			dev->raw_io_64 = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (dev->a_ops.adapter_comm) {
 			if (status[1] & le32_to_cpu(AAC_OPT_NEW_COMM_TYPE1)) {
 				dev->comm_interface = AAC_COMM_MESSAGE_TYPE1;
@@ -351,6 +410,37 @@ struct aac_dev *aac_init_adapter(struct aac_dev *dev)
 			} else if (status[1] & le32_to_cpu(AAC_OPT_NEW_COMM)) {
 				dev->comm_interface = AAC_COMM_MESSAGE;
 				dev->raw_io_interface = 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		dev->sync_mode = aac_sync_mode;
+		if (dev->a_ops.adapter_comm &&
+			(status[1] & le32_to_cpu(AAC_OPT_NEW_COMM))) {
+				dev->comm_interface = AAC_COMM_MESSAGE;
+				dev->raw_io_interface = 1;
+			if ((status[1] & le32_to_cpu(AAC_OPT_NEW_COMM_TYPE1))) {
+				/* driver supports TYPE1 (Tupelo) */
+				dev->comm_interface = AAC_COMM_MESSAGE_TYPE1;
+<<<<<<< HEAD
+			} else if ((status[1] & le32_to_cpu(AAC_OPT_NEW_COMM_TYPE4)) ||
+				  (status[1] & le32_to_cpu(AAC_OPT_NEW_COMM_TYPE3)) ||
+				  (status[1] & le32_to_cpu(AAC_OPT_NEW_COMM_TYPE2))) {
+					/* driver doesn't support TYPE2 (Series7), TYPE3 and TYPE4 */
+					/* switch to sync. mode */
+					dev->comm_interface = AAC_COMM_MESSAGE_TYPE1;
+					dev->sync_mode = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} else if ((status[1] & le32_to_cpu(AAC_OPT_NEW_COMM_TYPE2))) {
+				/* driver supports TYPE2 (Denali) */
+				dev->comm_interface = AAC_COMM_MESSAGE_TYPE2;
+			} else if ((status[1] & le32_to_cpu(AAC_OPT_NEW_COMM_TYPE4)) ||
+				  (status[1] & le32_to_cpu(AAC_OPT_NEW_COMM_TYPE3))) {
+				/* driver doesn't TYPE3 and TYPE4 */
+				/* switch to sync. mode */
+				dev->comm_interface = AAC_COMM_MESSAGE_TYPE2;
+				dev->sync_mode = 1;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		if ((dev->comm_interface == AAC_COMM_MESSAGE) &&
@@ -384,7 +474,17 @@ struct aac_dev *aac_init_adapter(struct aac_dev *dev)
 		dev->max_fib_size = status[1] & 0xFFE0;
 		host->sg_tablesize = status[2] >> 16;
 		dev->sg_tablesize = status[2] & 0xFFFF;
+<<<<<<< HEAD
 		host->can_queue = (status[3] & 0xFFFF) - AAC_NUM_MGT_FIB;
+=======
+		if (dev->pdev->device == PMC_DEVICE_S7 ||
+		    dev->pdev->device == PMC_DEVICE_S8 ||
+		    dev->pdev->device == PMC_DEVICE_S9)
+			host->can_queue = ((status[3] >> 16) ? (status[3] >> 16) :
+				(status[3] & 0xFFFF)) - AAC_NUM_MGT_FIB;
+		else
+			host->can_queue = (status[3] & 0xFFFF) - AAC_NUM_MGT_FIB;
+>>>>>>> refs/remotes/origin/master
 		dev->max_num_aif = status[4] & 0xFFFF;
 		/*
 		 *	NOTE:
@@ -432,6 +532,12 @@ struct aac_dev *aac_init_adapter(struct aac_dev *dev)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (host->can_queue > AAC_NUM_IO_FIB)
+		host->can_queue = AAC_NUM_IO_FIB;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *	Ok now init the communication subsystem
 	 */
@@ -455,6 +561,14 @@ struct aac_dev *aac_init_adapter(struct aac_dev *dev)
 	}
 		
 	INIT_LIST_HEAD(&dev->fib_list);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&dev->sync_fib_list);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&dev->sync_fib_list);
+>>>>>>> refs/remotes/origin/master
 
 	return dev;
 }

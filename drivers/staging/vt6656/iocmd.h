@@ -29,10 +29,13 @@
 #ifndef __IOCMD_H__
 #define __IOCMD_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 
 /*---------------------  Export Definitions -------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/master
 // ioctl Command code
 #define MAGIC_CODE	                 0x3142
 #define IOCTL_CMD_TEST	            (SIOCDEVPRIVATE + 0)
@@ -122,8 +125,13 @@ typedef struct tagSCmdBSSJoin {
     u16     wBBPType;
     u8	    ssid[SSID_MAXLEN + 2];
     u32	    uChannel;
+<<<<<<< HEAD
     BOOL    bPSEnable;
     BOOL    bShareKeyAuth;
+=======
+    bool    bPSEnable;
+    bool    bShareKeyAuth;
+>>>>>>> refs/remotes/origin/master
 
 } __packed SCmdBSSJoin, *PSCmdBSSJoin;
 
@@ -133,7 +141,11 @@ typedef struct tagSCmdBSSJoin {
 
 typedef struct tagSCmdZoneTypeSet {
 
+<<<<<<< HEAD
  BOOL       bWrite;
+=======
+ bool       bWrite;
+>>>>>>> refs/remotes/origin/master
  WZONETYPE  ZoneType;
 
 } __packed SCmdZoneTypeSet, *PSCmdZoneTypeSet;
@@ -143,7 +155,14 @@ typedef struct tagSWPAResult {
 	u8 proto;
 	u8 key_mgmt;
 	u8 eap_type;
+<<<<<<< HEAD
          BOOL authenticated;
+<<<<<<< HEAD
+=======
+         bool authenticated;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 } __packed SWPAResult, *PSWPAResult;
 
 typedef struct tagSCmdStartAP {
@@ -153,17 +172,28 @@ typedef struct tagSCmdStartAP {
     u8	    ssid[SSID_MAXLEN + 2];
 	u32 uChannel;
 	u32 uBeaconInt;
+<<<<<<< HEAD
     BOOL    bShareKeyAuth;
+=======
+    bool    bShareKeyAuth;
+>>>>>>> refs/remotes/origin/master
     u8      byBasicRate;
 
 } __packed SCmdStartAP, *PSCmdStartAP;
 
 typedef struct tagSCmdSetWEP {
 
+<<<<<<< HEAD
     BOOL    bEnableWep;
     u8      byKeyIndex;
     u8      abyWepKey[WEP_NKEYS][WEP_KEYMAXLEN];
     BOOL    bWepKeyAvailable[WEP_NKEYS];
+=======
+    bool    bEnableWep;
+    u8      byKeyIndex;
+    u8      abyWepKey[WEP_NKEYS][WEP_KEYMAXLEN];
+    bool    bWepKeyAvailable[WEP_NKEYS];
+>>>>>>> refs/remotes/origin/master
     u32     auWepKeyLength[WEP_NKEYS];
 
 } __packed SCmdSetWEP, *PSCmdSetWEP;
@@ -176,19 +206,29 @@ typedef struct tagSBSSIDItem {
     u16	    wBeaconInterval;
     u16	    wCapInfo;
     u8      byNetType;
+<<<<<<< HEAD
     BOOL    bWEPOn;
+=======
+    bool    bWEPOn;
+>>>>>>> refs/remotes/origin/master
     u32     uRSSI;
 
 } __packed SBSSIDItem;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct tagSBSSIDList {
 
 	u32		    uItem;
 	SBSSIDItem	sBSSIDList[0];
 } __packed SBSSIDList, *PSBSSIDList;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct tagSNodeItem {
     // STA info
     u16            wAID;
@@ -197,19 +237,30 @@ typedef struct tagSNodeItem {
     u16            wInActiveCount;
     u16            wEnQueueCnt;
     u16            wFlags;
+<<<<<<< HEAD
     BOOL           bPWBitOn;
+=======
+    bool           bPWBitOn;
+>>>>>>> refs/remotes/origin/master
     u8             byKeyIndex;
     u16            wWepKeyLength;
     u8            abyWepKey[WEP_KEYMAXLEN];
     // Auto rate fallback vars
+<<<<<<< HEAD
     BOOL           bIsInFallback;
+=======
+    bool           bIsInFallback;
+>>>>>>> refs/remotes/origin/master
     u32            uTxFailures;
     u32            uTxAttempts;
     u16            wFailureRatio;
 
 } __packed SNodeItem;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct tagSNodeList {
 
 	u32		    uItem;
@@ -217,10 +268,16 @@ typedef struct tagSNodeList {
 
 } __packed SNodeList, *PSNodeList;
 
+<<<<<<< HEAD
 
 typedef struct tagSCmdLinkStatus {
 
     BOOL    bLink;
+=======
+typedef struct tagSCmdLinkStatus {
+
+    bool    bLink;
+>>>>>>> refs/remotes/origin/master
 	u16	    wBSSType;
 	u8      byState;
     u8      abyBSSID[BSSID_LEN];
@@ -248,8 +305,11 @@ typedef struct tagSDot11MIBCount {
     u32 FCSErrorCount;
 } __packed SDot11MIBCount, *PSDot11MIBCount;
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 //
 // statistic counter
 //
@@ -432,6 +492,7 @@ struct viawget_hostapd_param {
 	} u;
 } __packed;
 
+<<<<<<< HEAD
 /*---------------------  Export Classes  ----------------------------*/
 
 /*---------------------  Export Variables  --------------------------*/
@@ -440,4 +501,6 @@ struct viawget_hostapd_param {
 
 /*---------------------  Export Functions  --------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __IOCMD_H__ */

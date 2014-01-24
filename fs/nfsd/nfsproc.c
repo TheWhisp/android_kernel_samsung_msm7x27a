@@ -26,17 +26,25 @@ static __be32
 nfsd_return_attrs(__be32 err, struct nfsd_attrstat *resp)
 {
 	if (err) return err;
+<<<<<<< HEAD
 	return nfserrno(vfs_getattr(resp->fh.fh_export->ex_path.mnt,
 				    resp->fh.fh_dentry,
 				    &resp->stat));
+=======
+	return fh_getattr(&resp->fh, &resp->stat);
+>>>>>>> refs/remotes/origin/master
 }
 static __be32
 nfsd_return_dirop(__be32 err, struct nfsd_diropres *resp)
 {
 	if (err) return err;
+<<<<<<< HEAD
 	return nfserrno(vfs_getattr(resp->fh.fh_export->ex_path.mnt,
 				    resp->fh.fh_dentry,
 				    &resp->stat));
+=======
+	return fh_getattr(&resp->fh, &resp->stat);
+>>>>>>> refs/remotes/origin/master
 }
 /*
  * Get a file's attributes
@@ -150,9 +158,13 @@ nfsd_proc_read(struct svc_rqst *rqstp, struct nfsd_readargs *argp,
 				  &resp->count);
 
 	if (nfserr) return nfserr;
+<<<<<<< HEAD
 	return nfserrno(vfs_getattr(resp->fh.fh_export->ex_path.mnt,
 				    resp->fh.fh_dentry,
 				    &resp->stat));
+=======
+	return fh_getattr(&resp->fh, &resp->stat);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -196,6 +208,10 @@ nfsd_proc_create(struct svc_rqst *rqstp, struct nfsd_createargs *argp,
 	struct dentry	*dchild;
 	int		type, mode;
 	__be32		nfserr;
+<<<<<<< HEAD
+=======
+	int		hosterr;
+>>>>>>> refs/remotes/origin/master
 	dev_t		rdev = 0, wanted = new_decode_dev(attr->ia_size);
 
 	dprintk("nfsd: CREATE   %s %.*s\n",
@@ -214,6 +230,15 @@ nfsd_proc_create(struct svc_rqst *rqstp, struct nfsd_createargs *argp,
 	nfserr = nfserr_exist;
 	if (isdotent(argp->name, argp->len))
 		goto done;
+<<<<<<< HEAD
+=======
+	hosterr = fh_want_write(dirfhp);
+	if (hosterr) {
+		nfserr = nfserrno(hosterr);
+		goto done;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	fh_lock_nested(dirfhp, I_MUTEX_PARENT);
 	dchild = lookup_one_len(argp->name, dirfhp->fh_dentry, argp->len);
 	if (IS_ERR(dchild)) {
@@ -330,7 +355,11 @@ nfsd_proc_create(struct svc_rqst *rqstp, struct nfsd_createargs *argp,
 out_unlock:
 	/* We don't really need to unlock, as fh_put does it. */
 	fh_unlock(dirfhp);
+<<<<<<< HEAD
 
+=======
+	fh_drop_write(dirfhp);
+>>>>>>> refs/remotes/origin/master
 done:
 	fh_put(dirfhp);
 	return nfsd_return_dirop(nfserr, resp);

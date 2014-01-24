@@ -10,7 +10,11 @@ extern ia64_mv_setup_t dig_setup;
  * platform's machvec structure.  When compiling a non-generic kernel,
  * the macros are used directly.
  */
+<<<<<<< HEAD
 #define platform_name		"dig"
+=======
+#define ia64_platform_name	"dig"
+>>>>>>> refs/remotes/origin/master
 #define platform_setup		dig_setup
 
 #endif /* _ASM_IA64_MACHVEC_DIG_h */

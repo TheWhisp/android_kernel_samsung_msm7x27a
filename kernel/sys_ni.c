@@ -16,16 +16,30 @@ asmlinkage long sys_ni_syscall(void)
 	return -ENOSYS;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 cond_syscall(sys_nfsservctl);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 cond_syscall(sys_quotactl);
 cond_syscall(sys32_quotactl);
 cond_syscall(sys_acct);
 cond_syscall(sys_lookup_dcookie);
+<<<<<<< HEAD
+=======
+cond_syscall(compat_sys_lookup_dcookie);
+>>>>>>> refs/remotes/origin/master
 cond_syscall(sys_swapon);
 cond_syscall(sys_swapoff);
 cond_syscall(sys_kexec_load);
 cond_syscall(compat_sys_kexec_load);
 cond_syscall(sys_init_module);
+<<<<<<< HEAD
+=======
+cond_syscall(sys_finit_module);
+>>>>>>> refs/remotes/origin/master
 cond_syscall(sys_delete_module);
 cond_syscall(sys_socketpair);
 cond_syscall(sys_bind);
@@ -146,12 +160,29 @@ cond_syscall(sys_io_submit);
 cond_syscall(sys_io_cancel);
 cond_syscall(sys_io_getevents);
 cond_syscall(sys_syslog);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+cond_syscall(sys_process_vm_readv);
+cond_syscall(sys_process_vm_writev);
+cond_syscall(compat_sys_process_vm_readv);
+cond_syscall(compat_sys_process_vm_writev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* arch-specific weak syscall entries */
 cond_syscall(sys_pciconfig_read);
 cond_syscall(sys_pciconfig_write);
 cond_syscall(sys_pciconfig_iobase);
+<<<<<<< HEAD
 cond_syscall(sys32_ipc);
+=======
+cond_syscall(compat_sys_s390_ipc);
+>>>>>>> refs/remotes/origin/master
 cond_syscall(ppc_rtas);
 cond_syscall(sys_spu_run);
 cond_syscall(sys_spu_create);
@@ -195,8 +226,18 @@ cond_syscall(sys_perf_event_open);
 /* fanotify! */
 cond_syscall(sys_fanotify_init);
 cond_syscall(sys_fanotify_mark);
+<<<<<<< HEAD
+=======
+cond_syscall(compat_sys_fanotify_mark);
+>>>>>>> refs/remotes/origin/master
 
 /* open by handle */
 cond_syscall(sys_name_to_handle_at);
 cond_syscall(sys_open_by_handle_at);
 cond_syscall(compat_sys_open_by_handle_at);
+<<<<<<< HEAD
+=======
+
+/* compare kernel pointers */
+cond_syscall(sys_kcmp);
+>>>>>>> refs/remotes/origin/master

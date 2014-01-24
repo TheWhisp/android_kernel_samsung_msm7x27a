@@ -25,7 +25,20 @@
 #include <linux/tty.h>
 #include <linux/tty_flip.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/debugfs.h>
+=======
+#include <linux/export.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/debugfs.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "u_serial.h"
 
@@ -35,11 +48,20 @@
  * "serial port" functionality through the USB gadget stack.  Each such
  * port is exposed through a /dev/ttyGS* node.
  *
+<<<<<<< HEAD
  * After initialization (gserial_setup), these TTY port devices stay
  * available until they are removed (gserial_cleanup).  Each one may be
  * connected to a USB function (gserial_connect), or disconnected (with
  * gserial_disconnect) when the USB host issues a config change event.
  * Data can only flow when the port is connected to the host.
+=======
+ * After this module has been loaded, the individual TTY port can be requested
+ * (gserial_alloc_line()) and it will stay available until they are removed
+ * (gserial_free_line()). Each one may be connected to a USB function
+ * (gserial_connect), or disconnected (with gserial_disconnect) when the USB
+ * host issues a config change event. Data can only flow when the port is
+ * connected to the host.
+>>>>>>> refs/remotes/origin/master
  *
  * A given TTY port can be made available in multiple configurations.
  * For example, each one might expose a ttyGS0 node which provides a
@@ -78,6 +100,8 @@
  * next layer of buffering.  For TX that's a circular buffer; for RX
  * consider it a NOP.  A third layer is provided by the TTY code.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define TX_QUEUE_SIZE		8
 #define TX_BUF_SIZE		4096
 #define WRITE_BUF_SIZE		8192		/* TX only */
@@ -86,6 +110,21 @@
 #define RX_BUF_SIZE		4096
 
 
+=======
+#define QUEUE_SIZE		16
+#define WRITE_BUF_SIZE		8192		/* TX only */
+
+>>>>>>> refs/remotes/origin/master
+=======
+#define TX_QUEUE_SIZE		8
+#define TX_BUF_SIZE		4096
+#define WRITE_BUF_SIZE		8192		/* TX only */
+
+#define RX_QUEUE_SIZE		8
+#define RX_BUF_SIZE		4096
+
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* circular buffer */
 struct gs_buf {
 	unsigned		buf_size;
@@ -99,6 +138,7 @@ struct gs_buf {
  * (and thus for each /dev/ node).
  */
 struct gs_port {
+<<<<<<< HEAD
 	spinlock_t		port_lock;	/* guard port_* access */
 
 	struct gserial		*port_usb;
@@ -110,12 +150,30 @@ struct gs_port {
 
 	wait_queue_head_t	close_wait;	/* wait for last close */
 
+=======
+	struct tty_port		port;
+	spinlock_t		port_lock;	/* guard port_* access */
+
+	struct gserial		*port_usb;
+
+	bool			openclose;	/* open/close in progress */
+	u8			port_num;
+
+>>>>>>> refs/remotes/origin/master
 	struct list_head	read_pool;
 	int read_started;
 	int read_allocated;
 	struct list_head	read_queue;
 	unsigned		n_read;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct work_struct	push;
+=======
+	struct tasklet_struct	push;
+>>>>>>> refs/remotes/origin/master
+=======
+	struct work_struct	push;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct list_head	write_pool;
 	int write_started;
@@ -125,6 +183,10 @@ struct gs_port {
 
 	/* REVISIT this state ... */
 	struct usb_cdc_line_coding port_line_coding;	/* 8-N-1 etc */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long           nbytes_from_host;
 	unsigned long           nbytes_to_tty;
 	unsigned long           nbytes_from_tty;
@@ -140,17 +202,40 @@ static struct portmaster {
 static unsigned	n_ports;
 
 static struct workqueue_struct *gserial_wq;
+<<<<<<< HEAD
+=======
+};
+
+static struct portmaster {
+	struct mutex	lock;			/* protect open/close */
+	struct gs_port	*port;
+} ports[MAX_U_SERIAL_PORTS];
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define GS_CLOSE_TIMEOUT		15		/* seconds */
 
 
 
 #ifdef VERBOSE_DEBUG
+<<<<<<< HEAD
 #define pr_vdebug(fmt, arg...) \
 	pr_debug(fmt, ##arg)
 #else
 #define pr_vdebug(fmt, arg...) \
 	({ if (0) pr_debug(fmt, ##arg); })
+=======
+#ifndef pr_vdebug
+#define pr_vdebug(fmt, arg...) \
+	pr_debug(fmt, ##arg)
+#endif /* pr_vdebug */
+#else
+#ifndef pr_vdebug
+#define pr_vdebug(fmt, arg...) \
+	({ if (0) pr_debug(fmt, ##arg); })
+#endif /* pr_vdebug */
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*-------------------------------------------------------------------------*/
@@ -319,6 +404,10 @@ gs_alloc_req(struct usb_ep *ep, unsigned len, gfp_t kmalloc_flags)
 
 	return req;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(gs_alloc_req);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * gs_free_req
@@ -330,6 +419,10 @@ void gs_free_req(struct usb_ep *ep, struct usb_request *req)
 	kfree(req->buf);
 	usb_ep_free_request(ep, req);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(gs_free_req);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * gs_send_packet
@@ -373,20 +466,35 @@ __acquires(&port->port_lock)
 	struct list_head	*pool = &port->write_pool;
 	struct usb_ep		*in = port->port_usb->in;
 	int			status = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static long 		prev_len;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	static long 		prev_len;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bool			do_tty_wake = false;
 
 	while (!list_empty(pool)) {
 		struct usb_request	*req;
 		int			len;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (port->write_started >= TX_QUEUE_SIZE)
 			break;
 
 		req = list_entry(pool->next, struct usb_request, list);
 		len = gs_send_packet(port, req->buf, TX_BUF_SIZE);
 		if (len == 0) {
+<<<<<<< HEAD
 			/* Queue zero length packet */
+=======
+			/* Queue zero length packet explicitly to make it
+			 * work with UDCs which don't support req->zero flag
+			 */
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (prev_len && (prev_len % in->maxpacket == 0)) {
 				req->length = 0;
 				list_del(&req->list);
@@ -404,6 +512,40 @@ __acquires(&port->port_lock)
 				}
 				prev_len = 0;
 			}
+=======
+		if (port->write_started >= QUEUE_SIZE)
+=======
+		if (port->write_started >= TX_QUEUE_SIZE)
+>>>>>>> refs/remotes/origin/cm-11.0
+			break;
+
+		req = list_entry(pool->next, struct usb_request, list);
+		len = gs_send_packet(port, req->buf, TX_BUF_SIZE);
+		if (len == 0) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+			/* Queue zero length packet explicitly to make it
+			 * work with UDCs which don't support req->zero flag
+			 */
+			if (prev_len && (prev_len % in->maxpacket == 0)) {
+				req->length = 0;
+				list_del(&req->list);
+				spin_unlock(&port->port_lock);
+				status = usb_ep_queue(in, req, GFP_ATOMIC);
+				spin_lock(&port->port_lock);
+				if (!port->port_usb) {
+					gs_free_req(in, req);
+					break;
+				}
+				if (status) {
+					printk(KERN_ERR "%s: %s err %d\n",
+					__func__, "queue", status);
+					list_add(&req->list, pool);
+				}
+				prev_len = 0;
+			}
+>>>>>>> refs/remotes/origin/cm-11.0
 			wake_up_interruptible(&port->drain_wait);
 			break;
 		}
@@ -411,7 +553,17 @@ __acquires(&port->port_lock)
 
 		req->length = len;
 		list_del(&req->list);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		req->zero = (gs_buf_data_avail(&port->port_write_buf) == 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		req->zero = (gs_buf_data_avail(&port->port_write_buf) == 0);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		pr_vdebug(PREFIX "%d: tx len=%d, 0x%02x 0x%02x 0x%02x ...\n",
 				port->port_num, len, *((u8 *)req->buf),
@@ -427,6 +579,10 @@ __acquires(&port->port_lock)
 		spin_unlock(&port->port_lock);
 		status = usb_ep_queue(in, req, GFP_ATOMIC);
 		spin_lock(&port->port_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * If port_usb is NULL, gserial disconnect is called
 		 * while the spinlock is dropped and all requests are
@@ -437,12 +593,20 @@ __acquires(&port->port_lock)
 			gs_free_req(in, req);
 			break;
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (status) {
 			pr_debug("%s: %s %s err %d\n",
 					__func__, "queue", in->name, status);
 			list_add(&req->list, pool);
 			break;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		prev_len = req->length;
 		port->nbytes_from_tty += req->length;
 
@@ -450,6 +614,17 @@ __acquires(&port->port_lock)
 
 	if (do_tty_wake && port->port_tty)
 		tty_wakeup(port->port_tty);
+=======
+=======
+		prev_len = req->length;
+		port->nbytes_from_tty += req->length;
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	}
+
+	if (do_tty_wake && port->port.tty)
+		tty_wakeup(port->port.tty);
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -464,7 +639,14 @@ __acquires(&port->port_lock)
 {
 	struct list_head	*pool = &port->read_pool;
 	struct usb_ep		*out = port->port_usb->out;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned		started = 0;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	unsigned		started = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	while (!list_empty(pool)) {
 		struct usb_request	*req;
@@ -472,16 +654,35 @@ __acquires(&port->port_lock)
 		struct tty_struct	*tty;
 
 		/* no more rx if closed */
+<<<<<<< HEAD
 		tty = port->port_tty;
 		if (!tty)
 			break;
 
 		if (port->read_started >= RX_QUEUE_SIZE)
+<<<<<<< HEAD
+=======
+		tty = port->port.tty;
+		if (!tty)
+			break;
+
+		if (port->read_started >= QUEUE_SIZE)
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 
 		req = list_entry(pool->next, struct usb_request, list);
 		list_del(&req->list);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		req->length = RX_BUF_SIZE;
+=======
+		req->length = out->maxpacket;
+>>>>>>> refs/remotes/origin/master
+=======
+		req->length = RX_BUF_SIZE;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* drop lock while we call out; the controller driver
 		 * may need to call us back (e.g. for disconnect)
@@ -489,6 +690,10 @@ __acquires(&port->port_lock)
 		spin_unlock(&port->port_lock);
 		status = usb_ep_queue(out, req, GFP_ATOMIC);
 		spin_lock(&port->port_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * If port_usb is NULL, gserial disconnect is called
 		 * while the spinlock is dropped and all requests are
@@ -499,6 +704,12 @@ __acquires(&port->port_lock)
 			gs_free_req(out, req);
 			break;
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (status) {
 			pr_debug("%s: %s %s err %d\n",
 					__func__, "queue", out->name, status);
@@ -507,6 +718,15 @@ __acquires(&port->port_lock)
 		}
 		port->read_started++;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		/* abort immediately after disconnect */
+		if (!port->port_usb)
+			break;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return port->read_started;
 }
@@ -521,9 +741,21 @@ __acquires(&port->port_lock)
  * So QUEUE_SIZE packets plus however many the FIFO holds (usually two)
  * can be buffered before the TTY layer's buffers (currently 64 KB).
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void gs_rx_push(struct work_struct *w)
 {
 	struct gs_port		*port = container_of(w, struct gs_port, push);
+=======
+static void gs_rx_push(unsigned long _port)
+{
+	struct gs_port		*port = (void *)_port;
+>>>>>>> refs/remotes/origin/master
+=======
+static void gs_rx_push(struct work_struct *w)
+{
+	struct gs_port		*port = container_of(w, struct gs_port, push);
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct tty_struct	*tty;
 	struct list_head	*queue = &port->read_queue;
 	bool			disconnect = false;
@@ -531,18 +763,27 @@ static void gs_rx_push(struct work_struct *w)
 
 	/* hand any queued data to the tty */
 	spin_lock_irq(&port->port_lock);
+<<<<<<< HEAD
 	tty = port->port_tty;
+=======
+	tty = port->port.tty;
+>>>>>>> refs/remotes/origin/master
 	while (!list_empty(queue)) {
 		struct usb_request	*req;
 
 		req = list_first_entry(queue, struct usb_request, list);
 
+<<<<<<< HEAD
 		/* discard data if tty was closed */
 		if (!tty)
 			goto recycle;
 
 		/* leave data queued if tty was rx throttled */
 		if (test_bit(TTY_THROTTLED, &tty->flags))
+=======
+		/* leave data queued if tty was rx throttled */
+		if (tty && test_bit(TTY_THROTTLED, &tty->flags))
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		switch (req->status) {
@@ -575,8 +816,16 @@ static void gs_rx_push(struct work_struct *w)
 				size -= n;
 			}
 
+<<<<<<< HEAD
 			count = tty_insert_flip_string(tty, packet, size);
 			port->nbytes_to_tty += count;
+<<<<<<< HEAD
+=======
+			count = tty_insert_flip_string(&port->port, packet,
+					size);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (count)
 				do_push = true;
 			if (count != size) {
@@ -589,11 +838,17 @@ static void gs_rx_push(struct work_struct *w)
 			}
 			port->n_read = 0;
 		}
+<<<<<<< HEAD
 recycle:
+=======
+
+>>>>>>> refs/remotes/origin/master
 		list_move(&req->list, &port->read_pool);
 		port->read_started--;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Push from tty to ldisc; this is immediate with low_latency, and
 	 * may trigger callbacks to this driver ... so drop the spinlock.
 	 */
@@ -607,19 +862,53 @@ recycle:
 		tty = port->port_tty;
 	}
 
+=======
+	/* Push from tty to ldisc; without low_latency set this is handled by
+	 * a workqueue, so we won't get callbacks and can hold port_lock
+	 */
+	if (tty && do_push)
+		tty_flip_buffer_push(tty);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Push from tty to ldisc; without low_latency set this is handled by
+	 * a workqueue, so we won't get callbacks and can hold port_lock
+	 */
+	if (do_push)
+		tty_flip_buffer_push(&port->port);
 
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* We want our data queue to become empty ASAP, keeping data
 	 * in the tty and ldisc (not here).  If we couldn't push any
 	 * this time around, there may be trouble unless there's an
 	 * implicit tty_unthrottle() call on its way...
 	 *
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * REVISIT we should probably add a timer to keep the work queue
+=======
+	 * REVISIT we should probably add a timer to keep the tasklet
+>>>>>>> refs/remotes/origin/master
+=======
+	 * REVISIT we should probably add a timer to keep the work queue
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * from starving ... but it's not clear that case ever happens.
 	 */
 	if (!list_empty(queue) && tty) {
 		if (!test_bit(TTY_THROTTLED, &tty->flags)) {
 			if (do_push)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				queue_work(gserial_wq, &port->push);
+=======
+				tasklet_schedule(&port->push);
+>>>>>>> refs/remotes/origin/master
+=======
+				queue_work(gserial_wq, &port->push);
+>>>>>>> refs/remotes/origin/cm-11.0
 			else
 				pr_warning(PREFIX "%d: RX not scheduled?\n",
 					port->port_num);
@@ -636,6 +925,8 @@ recycle:
 static void gs_read_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct gs_port	*port = ep->driver_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 
 	/* Queue all received data until the tty layer is ready for it. */
@@ -644,15 +935,44 @@ static void gs_read_complete(struct usb_ep *ep, struct usb_request *req)
 	list_add_tail(&req->list, &port->read_queue);
 	queue_work(gserial_wq, &port->push);
 	spin_unlock_irqrestore(&port->port_lock, flags);
+=======
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	/* Queue all received data until the tty layer is ready for it. */
+	spin_lock_irqsave(&port->port_lock, flags);
+	port->nbytes_from_host += req->actual;
+	list_add_tail(&req->list, &port->read_queue);
+<<<<<<< HEAD
+	tasklet_schedule(&port->push);
+	spin_unlock(&port->port_lock);
+>>>>>>> refs/remotes/origin/master
+=======
+	queue_work(gserial_wq, &port->push);
+	spin_unlock_irqrestore(&port->port_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void gs_write_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct gs_port	*port = ep->driver_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(&port->port_lock, flags);
 	port->nbytes_to_host += req->actual;
+=======
+
+	spin_lock(&port->port_lock);
+>>>>>>> refs/remotes/origin/master
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&port->port_lock, flags);
+	port->nbytes_to_host += req->actual;
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_add(&req->list, &port->write_pool);
 	port->write_started--;
 
@@ -664,8 +984,17 @@ static void gs_write_complete(struct usb_ep *ep, struct usb_request *req)
 		/* FALL THROUGH */
 	case 0:
 		/* normal completion */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (port->port_usb)
 			gs_start_tx(port);
+=======
+		gs_start_tx(port);
+>>>>>>> refs/remotes/origin/master
+=======
+		if (port->port_usb)
+			gs_start_tx(port);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case -ESHUTDOWN:
@@ -674,7 +1003,15 @@ static void gs_write_complete(struct usb_ep *ep, struct usb_request *req)
 		break;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&port->port_lock, flags);
+=======
+	spin_unlock(&port->port_lock);
+>>>>>>> refs/remotes/origin/master
+=======
+	spin_unlock_irqrestore(&port->port_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void gs_free_requests(struct usb_ep *ep, struct list_head *head,
@@ -692,18 +1029,43 @@ static void gs_free_requests(struct usb_ep *ep, struct list_head *head,
 }
 
 static int gs_alloc_requests(struct usb_ep *ep, struct list_head *head,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int num, int size, void (*fn)(struct usb_ep *, struct usb_request *),
+=======
+		void (*fn)(struct usb_ep *, struct usb_request *),
+>>>>>>> refs/remotes/origin/master
+=======
+		int num, int size, void (*fn)(struct usb_ep *, struct usb_request *),
+>>>>>>> refs/remotes/origin/cm-11.0
 		int *allocated)
 {
 	int			i;
 	struct usb_request	*req;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int n = allocated ? QUEUE_SIZE - *allocated : QUEUE_SIZE;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Pre-allocate up to QUEUE_SIZE transfers, but if we can't
 	 * do quite that many this time, don't fail ... we just won't
 	 * be as speedy as we might otherwise be.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < num; i++) {
 		req = gs_alloc_req(ep, size, GFP_ATOMIC);
+=======
+	for (i = 0; i < n; i++) {
+		req = gs_alloc_req(ep, ep->maxpacket, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
+=======
+	for (i = 0; i < num; i++) {
+		req = gs_alloc_req(ep, size, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!req)
 			return list_empty(head) ? -ENOMEM : 0;
 		req->complete = fn;
@@ -736,13 +1098,31 @@ static int gs_start_io(struct gs_port *port)
 	 * configurations may use different endpoints with a given port;
 	 * and high speed vs full speed changes packet sizes too.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	status = gs_alloc_requests(ep, head, RX_QUEUE_SIZE, RX_BUF_SIZE,
 			 gs_read_complete, &port->read_allocated);
+=======
+	status = gs_alloc_requests(ep, head, gs_read_complete,
+		&port->read_allocated);
+>>>>>>> refs/remotes/origin/master
+=======
+	status = gs_alloc_requests(ep, head, RX_QUEUE_SIZE, RX_BUF_SIZE,
+			 gs_read_complete, &port->read_allocated);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (status)
 		return status;
 
 	status = gs_alloc_requests(port->port_usb->in, &port->write_pool,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			TX_QUEUE_SIZE, TX_BUF_SIZE, gs_write_complete, &port->write_allocated);
+=======
+			gs_write_complete, &port->write_allocated);
+>>>>>>> refs/remotes/origin/master
+=======
+			TX_QUEUE_SIZE, TX_BUF_SIZE, gs_write_complete, &port->write_allocated);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (status) {
 		gs_free_requests(ep, head, &port->read_allocated);
 		return status;
@@ -752,11 +1132,20 @@ static int gs_start_io(struct gs_port *port)
 	port->n_read = 0;
 	started = gs_start_rx(port);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!port->port_usb)
 		return -EIO;
 	/* unblock any pending writes into our circular buffer */
 	if (started) {
 		tty_wakeup(port->port_tty);
+=======
+	/* unblock any pending writes into our circular buffer */
+	if (started) {
+		tty_wakeup(port->port.tty);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		gs_free_requests(ep, head, &port->read_allocated);
 		gs_free_requests(port->port_usb->in, &port->write_pool,
@@ -782,9 +1171,15 @@ static int gs_open(struct tty_struct *tty, struct file *file)
 	struct gs_port	*port;
 	int		status;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (port_num < 0 || port_num >= n_ports)
 		return -ENXIO;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	do {
 		mutex_lock(&ports[port_num].lock);
 		port = ports[port_num].port;
@@ -794,9 +1189,15 @@ static int gs_open(struct tty_struct *tty, struct file *file)
 			spin_lock_irq(&port->port_lock);
 
 			/* already open?  Great. */
+<<<<<<< HEAD
 			if (port->open_count) {
 				status = 0;
 				port->open_count++;
+=======
+			if (port->port.count) {
+				status = 0;
+				port->port.count++;
+>>>>>>> refs/remotes/origin/master
 
 			/* currently opening/closing? wait ... */
 			} else if (port->openclose) {
@@ -853,11 +1254,13 @@ static int gs_open(struct tty_struct *tty, struct file *file)
 	/* REVISIT maybe wait for "carrier detect" */
 
 	tty->driver_data = port;
+<<<<<<< HEAD
 	port->port_tty = tty;
 
 	port->open_count = 1;
 	port->openclose = false;
 
+<<<<<<< HEAD
 	/* low_latency means ldiscs work is carried in the same context
 	 * of tty_flip_buffer_push. The same can be called from IRQ with
 	 * low_latency = 0. But better to use a dedicated worker thread
@@ -865,6 +1268,15 @@ static int gs_open(struct tty_struct *tty, struct file *file)
 	 */
 	tty->low_latency = 1;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	port->port.tty = tty;
+
+	port->port.count = 1;
+	port->openclose = false;
+
+>>>>>>> refs/remotes/origin/master
 	/* if connected, start the I/O stream */
 	if (port->port_usb) {
 		struct gserial	*gser = port->port_usb;
@@ -904,11 +1316,19 @@ static void gs_close(struct tty_struct *tty, struct file *file)
 
 	spin_lock_irq(&port->port_lock);
 
+<<<<<<< HEAD
 	if (port->open_count != 1) {
 		if (port->open_count == 0)
 			WARN_ON(1);
 		else
 			--port->open_count;
+=======
+	if (port->port.count != 1) {
+		if (port->port.count == 0)
+			WARN_ON(1);
+		else
+			--port->port.count;
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -918,7 +1338,11 @@ static void gs_close(struct tty_struct *tty, struct file *file)
 	 * and sleep if necessary
 	 */
 	port->openclose = true;
+<<<<<<< HEAD
 	port->open_count = 0;
+=======
+	port->port.count = 0;
+>>>>>>> refs/remotes/origin/master
 
 	gser = port->port_usb;
 	if (gser && gser->disconnect)
@@ -938,7 +1362,15 @@ static void gs_close(struct tty_struct *tty, struct file *file)
 
 	/* Iff we're disconnected, there can be no I/O in flight so it's
 	 * ok to free the circular buffer; else just scrub it.  And don't
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * let the push work queue fire again until we're re-opened.
+=======
+	 * let the push tasklet fire again until we're re-opened.
+>>>>>>> refs/remotes/origin/master
+=======
+	 * let the push work queue fire again until we're re-opened.
+>>>>>>> refs/remotes/origin/cm-11.0
 	 */
 	if (gser == NULL)
 		gs_buf_free(&port->port_write_buf);
@@ -946,13 +1378,18 @@ static void gs_close(struct tty_struct *tty, struct file *file)
 		gs_buf_clear(&port->port_write_buf);
 
 	tty->driver_data = NULL;
+<<<<<<< HEAD
 	port->port_tty = NULL;
+=======
+	port->port.tty = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	port->openclose = false;
 
 	pr_debug("gs_close: ttyGS%d (%p,%p) done!\n",
 			port->port_num, tty, file);
 
+<<<<<<< HEAD
 	wake_up_interruptible(&port->close_wait);
 
 	/*
@@ -970,6 +1407,12 @@ static void gs_close(struct tty_struct *tty, struct file *file)
 	}
 	port->read_allocated = port->read_started =
 		port->write_allocated = port->write_started = 0;
+<<<<<<< HEAD
+=======
+	wake_up(&port->port.close_wait);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 exit:
 	spin_unlock_irq(&port->port_lock);
 }
@@ -1000,7 +1443,11 @@ static int gs_put_char(struct tty_struct *tty, unsigned char ch)
 	unsigned long	flags;
 	int		status;
 
+<<<<<<< HEAD
 	pr_vdebug("gs_put_char: (%d,%p) char=0x%x, called from %p\n",
+=======
+	pr_vdebug("gs_put_char: (%d,%p) char=0x%x, called from %pf\n",
+>>>>>>> refs/remotes/origin/master
 		port->port_num, tty, ch, __builtin_return_address(0));
 
 	spin_lock_irqsave(&port->port_lock, flags);
@@ -1068,7 +1515,15 @@ static void gs_unthrottle(struct tty_struct *tty)
 		 * rts/cts, or other handshaking with the host, but if the
 		 * read queue backs up enough we'll be NAKing OUT packets.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		queue_work(gserial_wq, &port->push);
+=======
+		tasklet_schedule(&port->push);
+>>>>>>> refs/remotes/origin/master
+=======
+		queue_work(gserial_wq, &port->push);
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_vdebug(PREFIX "%d: unthrottle\n", port->port_num);
 	}
 	spin_unlock_irqrestore(&port->port_lock, flags);
@@ -1092,6 +1547,10 @@ static int gs_break_ctl(struct tty_struct *tty, int duration)
 	return status;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int gs_tiocmget(struct tty_struct *tty)
 {
 	struct gs_port	*port = tty->driver_data;
@@ -1163,6 +1622,11 @@ fail:
 	spin_unlock_irq(&port->port_lock);
 	return status;
 }
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct tty_operations gs_tty_ops = {
 	.open =			gs_open,
 	.close =		gs_close,
@@ -1173,8 +1637,16 @@ static const struct tty_operations gs_tty_ops = {
 	.chars_in_buffer =	gs_chars_in_buffer,
 	.unthrottle =		gs_unthrottle,
 	.break_ctl =		gs_break_ctl,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.tiocmget  =		gs_tiocmget,
 	.tiocmset  =		gs_tiocmset,
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	.tiocmget  =		gs_tiocmget,
+	.tiocmset  =		gs_tiocmset,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*-------------------------------------------------------------------------*/
@@ -1185,6 +1657,7 @@ static int
 gs_port_alloc(unsigned port_num, struct usb_cdc_line_coding *coding)
 {
 	struct gs_port	*port;
+<<<<<<< HEAD
 
 	port = kzalloc(sizeof(struct gs_port), GFP_KERNEL);
 	if (port == NULL)
@@ -1195,6 +1668,30 @@ gs_port_alloc(unsigned port_num, struct usb_cdc_line_coding *coding)
 	init_waitqueue_head(&port->drain_wait);
 
 	INIT_WORK(&port->push, gs_rx_push);
+<<<<<<< HEAD
+=======
+	int		ret = 0;
+
+	mutex_lock(&ports[port_num].lock);
+	if (ports[port_num].port) {
+		ret = -EBUSY;
+		goto out;
+	}
+
+	port = kzalloc(sizeof(struct gs_port), GFP_KERNEL);
+	if (port == NULL) {
+		ret = -ENOMEM;
+		goto out;
+	}
+
+	tty_port_init(&port->port);
+	spin_lock_init(&port->port_lock);
+	init_waitqueue_head(&port->drain_wait);
+
+	tasklet_init(&port->push, gs_rx_push, (unsigned long) port);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	INIT_LIST_HEAD(&port->read_pool);
 	INIT_LIST_HEAD(&port->read_queue);
@@ -1204,6 +1701,7 @@ gs_port_alloc(unsigned port_num, struct usb_cdc_line_coding *coding)
 	port->port_line_coding = *coding;
 
 	ports[port_num].port = port;
+<<<<<<< HEAD
 
 	return 0;
 }
@@ -1350,7 +1848,10 @@ int gserial_setup(struct usb_gadget *g, unsigned count)
 	if (!gs_tty_driver)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	gs_tty_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	gs_tty_driver->driver_name = "g_serial";
 	gs_tty_driver->name = PREFIX;
 	/* uses dynamically assigned dev_t values */
@@ -1369,12 +1870,64 @@ int gserial_setup(struct usb_gadget *g, unsigned count)
 			B9600 | CS8 | CREAD | HUPCL | CLOCAL;
 	gs_tty_driver->init_termios.c_ispeed = 9600;
 	gs_tty_driver->init_termios.c_ospeed = 9600;
+=======
+out:
+	mutex_unlock(&ports[port_num].lock);
+	return ret;
+}
+
+static int gs_closed(struct gs_port *port)
+{
+	int cond;
+
+	spin_lock_irq(&port->port_lock);
+	cond = (port->port.count == 0) && !port->openclose;
+	spin_unlock_irq(&port->port_lock);
+	return cond;
+}
+
+static void gserial_free_port(struct gs_port *port)
+{
+	tasklet_kill(&port->push);
+	/* wait for old opens to finish */
+	wait_event(port->port.close_wait, gs_closed(port));
+	WARN_ON(port->port_usb != NULL);
+	tty_port_destroy(&port->port);
+	kfree(port);
+}
+
+void gserial_free_line(unsigned char port_num)
+{
+	struct gs_port	*port;
+
+	mutex_lock(&ports[port_num].lock);
+	if (WARN_ON(!ports[port_num].port)) {
+		mutex_unlock(&ports[port_num].lock);
+		return;
+	}
+	port = ports[port_num].port;
+	ports[port_num].port = NULL;
+	mutex_unlock(&ports[port_num].lock);
+
+	gserial_free_port(port);
+	tty_unregister_device(gs_tty_driver, port_num);
+}
+EXPORT_SYMBOL_GPL(gserial_free_line);
+
+int gserial_alloc_line(unsigned char *line_num)
+{
+	struct usb_cdc_line_coding	coding;
+	struct device			*tty_dev;
+	int				ret;
+	int				port_num;
+>>>>>>> refs/remotes/origin/master
 
 	coding.dwDTERate = cpu_to_le32(9600);
 	coding.bCharFormat = 8;
 	coding.bParityType = USB_CDC_NO_PARITY;
 	coding.bDataBits = USB_CDC_1_STOP_BITS;
 
+<<<<<<< HEAD
 	tty_set_operations(gs_tty_driver, &gs_tty_ops);
 
 	gserial_wq = create_singlethread_workqueue("k_gserial");
@@ -1489,6 +2042,39 @@ void gserial_cleanup(void)
 
 	pr_debug("%s: cleaned up ttyGS* support\n", __func__);
 }
+=======
+	for (port_num = 0; port_num < MAX_U_SERIAL_PORTS; port_num++) {
+		ret = gs_port_alloc(port_num, &coding);
+		if (ret == -EBUSY)
+			continue;
+		if (ret)
+			return ret;
+		break;
+	}
+	if (ret)
+		return ret;
+
+	/* ... and sysfs class devices, so mdev/udev make /dev/ttyGS* */
+
+	tty_dev = tty_port_register_device(&ports[port_num].port->port,
+			gs_tty_driver, port_num, NULL);
+	if (IS_ERR(tty_dev)) {
+		struct gs_port	*port;
+		pr_err("%s: failed to register tty for port %d, err %ld\n",
+				__func__, port_num, PTR_ERR(tty_dev));
+
+		ret = PTR_ERR(tty_dev);
+		port = ports[port_num].port;
+		ports[port_num].port = NULL;
+		gserial_free_port(port);
+		goto err;
+	}
+	*line_num = port_num;
+err:
+	return ret;
+}
+EXPORT_SYMBOL_GPL(gserial_alloc_line);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * gserial_connect - notify TTY I/O glue that USB link is active
@@ -1505,8 +2091,13 @@ void gserial_cleanup(void)
  *
  * Caller needs to have set up the endpoints and USB function in @dev
  * before calling this, as well as the appropriate (speed-specific)
+<<<<<<< HEAD
  * endpoint descriptors, and also have set up the TTY driver by calling
  * @gserial_setup().
+=======
+ * endpoint descriptors, and also have allocate @port_num by calling
+ * @gserial_alloc_line().
+>>>>>>> refs/remotes/origin/master
  *
  * Returns negative errno or zero.
  * On success, ep->driver_data will be overwritten.
@@ -1517,6 +2108,7 @@ int gserial_connect(struct gserial *gser, u8 port_num)
 	unsigned long	flags;
 	int		status;
 
+<<<<<<< HEAD
 	if (!gs_tty_driver || port_num >= n_ports)
 		return -ENXIO;
 
@@ -1524,12 +2116,41 @@ int gserial_connect(struct gserial *gser, u8 port_num)
 	port = ports[port_num].port;
 
 	/* activate the endpoints */
+<<<<<<< HEAD
 	status = usb_ep_enable(gser->in, gser->in_desc);
+=======
+	status = usb_ep_enable(gser->in);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (port_num >= MAX_U_SERIAL_PORTS)
+		return -ENXIO;
+
+	port = ports[port_num].port;
+	if (!port) {
+		pr_err("serial line %d not allocated.\n", port_num);
+		return -EINVAL;
+	}
+	if (port->port_usb) {
+		pr_err("serial line %d is in use.\n", port_num);
+		return -EBUSY;
+	}
+
+	/* activate the endpoints */
+	status = usb_ep_enable(gser->in);
+>>>>>>> refs/remotes/origin/master
 	if (status < 0)
 		return status;
 	gser->in->driver_data = port;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	status = usb_ep_enable(gser->out, gser->out_desc);
+=======
+	status = usb_ep_enable(gser->out);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = usb_ep_enable(gser->out);
+>>>>>>> refs/remotes/origin/master
 	if (status < 0)
 		goto fail_out;
 	gser->out->driver_data = port;
@@ -1549,7 +2170,11 @@ int gserial_connect(struct gserial *gser, u8 port_num)
 	/* if it's already open, start I/O ... and notify the serial
 	 * protocol about open/close status (connect/disconnect).
 	 */
+<<<<<<< HEAD
 	if (port->open_count) {
+=======
+	if (port->port.count) {
+>>>>>>> refs/remotes/origin/master
 		pr_debug("gserial_connect: start ttyGS%d\n", port->port_num);
 		gs_start_io(port);
 		if (gser->connect)
@@ -1568,7 +2193,11 @@ fail_out:
 	gser->in->driver_data = NULL;
 	return status;
 }
+<<<<<<< HEAD
 
+=======
+EXPORT_SYMBOL_GPL(gserial_connect);
+>>>>>>> refs/remotes/origin/master
 /**
  * gserial_disconnect - notify TTY I/O glue that USB link is inactive
  * @gser: the function, on which gserial_connect() was called
@@ -1596,10 +2225,17 @@ void gserial_disconnect(struct gserial *gser)
 
 	port->port_usb = NULL;
 	gser->ioport = NULL;
+<<<<<<< HEAD
 	if (port->open_count > 0 || port->openclose) {
 		wake_up_interruptible(&port->drain_wait);
 		if (port->port_tty)
 			tty_hangup(port->port_tty);
+=======
+	if (port->port.count > 0 || port->openclose) {
+		wake_up_interruptible(&port->drain_wait);
+		if (port->port.tty)
+			tty_hangup(port->port.tty);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(&port->port_lock, flags);
 
@@ -1612,7 +2248,11 @@ void gserial_disconnect(struct gserial *gser)
 
 	/* finally, free any unused/unusable I/O buffers */
 	spin_lock_irqsave(&port->port_lock, flags);
+<<<<<<< HEAD
 	if (port->open_count == 0 && !port->openclose)
+=======
+	if (port->port.count == 0 && !port->openclose)
+>>>>>>> refs/remotes/origin/master
 		gs_buf_free(&port->port_write_buf);
 	gs_free_requests(gser->out, &port->read_pool, NULL);
 	gs_free_requests(gser->out, &port->read_queue, NULL);
@@ -1621,8 +2261,81 @@ void gserial_disconnect(struct gserial *gser)
 	port->read_allocated = port->read_started =
 		port->write_allocated = port->write_started = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	port->nbytes_from_host = port->nbytes_to_tty =
 		port->nbytes_from_tty = port->nbytes_to_host = 0;
 
 	spin_unlock_irqrestore(&port->port_lock, flags);
 }
+=======
+=======
+	port->nbytes_from_host = port->nbytes_to_tty =
+		port->nbytes_from_tty = port->nbytes_to_host = 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
+	spin_unlock_irqrestore(&port->port_lock, flags);
+}
+EXPORT_SYMBOL_GPL(gserial_disconnect);
+
+static int userial_init(void)
+{
+	unsigned			i;
+	int				status;
+
+	gs_tty_driver = alloc_tty_driver(MAX_U_SERIAL_PORTS);
+	if (!gs_tty_driver)
+		return -ENOMEM;
+
+	gs_tty_driver->driver_name = "g_serial";
+	gs_tty_driver->name = PREFIX;
+	/* uses dynamically assigned dev_t values */
+
+	gs_tty_driver->type = TTY_DRIVER_TYPE_SERIAL;
+	gs_tty_driver->subtype = SERIAL_TYPE_NORMAL;
+	gs_tty_driver->flags = TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV;
+	gs_tty_driver->init_termios = tty_std_termios;
+
+	/* 9600-8-N-1 ... matches defaults expected by "usbser.sys" on
+	 * MS-Windows.  Otherwise, most of these flags shouldn't affect
+	 * anything unless we were to actually hook up to a serial line.
+	 */
+	gs_tty_driver->init_termios.c_cflag =
+			B9600 | CS8 | CREAD | HUPCL | CLOCAL;
+	gs_tty_driver->init_termios.c_ispeed = 9600;
+	gs_tty_driver->init_termios.c_ospeed = 9600;
+
+	tty_set_operations(gs_tty_driver, &gs_tty_ops);
+	for (i = 0; i < MAX_U_SERIAL_PORTS; i++)
+		mutex_init(&ports[i].lock);
+
+	/* export the driver ... */
+	status = tty_register_driver(gs_tty_driver);
+	if (status) {
+		pr_err("%s: cannot register, err %d\n",
+				__func__, status);
+		goto fail;
+	}
+
+	pr_debug("%s: registered %d ttyGS* device%s\n", __func__,
+			MAX_U_SERIAL_PORTS,
+			(MAX_U_SERIAL_PORTS == 1) ? "" : "s");
+
+	return status;
+fail:
+	put_tty_driver(gs_tty_driver);
+	gs_tty_driver = NULL;
+	return status;
+}
+module_init(userial_init);
+
+static void userial_cleanup(void)
+{
+	tty_unregister_driver(gs_tty_driver);
+	put_tty_driver(gs_tty_driver);
+	gs_tty_driver = NULL;
+}
+module_exit(userial_cleanup);
+
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

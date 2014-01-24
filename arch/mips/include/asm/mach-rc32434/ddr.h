@@ -138,4 +138,8 @@ struct ddr_ram {
 #define RC32434_DLLED_DBE_BIT		0
 #define RC32434_DLLED_DTE_BIT		1
 
+<<<<<<< HEAD
 #endif  /* _ASM_RC32434_DDR_H_ */
+=======
+#endif	/* _ASM_RC32434_DDR_H_ */
+>>>>>>> refs/remotes/origin/master

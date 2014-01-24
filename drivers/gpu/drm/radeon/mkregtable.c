@@ -373,6 +373,7 @@ static inline void list_splice_tail_init(struct list_head *list,
 		pos = pos->next)
 
 /**
+<<<<<<< HEAD
  * __list_for_each	-	iterate over a list
  * @pos:	the &struct list_head to use as a loop cursor.
  * @head:	the head for your list.
@@ -386,6 +387,8 @@ static inline void list_splice_tail_init(struct list_head *list,
 	for (pos = (head)->next; pos != (head); pos = pos->next)
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * list_for_each_prev	-	iterate over a list backwards
  * @pos:	the &struct list_head to use as a loop cursor.
  * @head:	the head for your list.

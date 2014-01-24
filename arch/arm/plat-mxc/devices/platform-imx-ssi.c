@@ -69,13 +69,30 @@ const struct imx_imx_ssi_data imx35_imx_ssi_data[] __initconst = {
 #ifdef CONFIG_SOC_IMX51
 const struct imx_imx_ssi_data imx51_imx_ssi_data[] __initconst = {
 #define imx51_imx_ssi_data_entry(_id, _hwid)				\
+<<<<<<< HEAD
 	imx_imx_ssi_data_entry(MX51, _id, _hwid, SZ_4K)
+=======
+	imx_imx_ssi_data_entry(MX51, _id, _hwid, SZ_16K)
+>>>>>>> refs/remotes/origin/cm-10.0
 	imx51_imx_ssi_data_entry(0, 1),
 	imx51_imx_ssi_data_entry(1, 2),
 	imx51_imx_ssi_data_entry(2, 3),
 };
 #endif /* ifdef CONFIG_SOC_IMX51 */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SOC_IMX53
+const struct imx_imx_ssi_data imx53_imx_ssi_data[] __initconst = {
+#define imx53_imx_ssi_data_entry(_id, _hwid)				\
+	imx_imx_ssi_data_entry(MX53, _id, _hwid, SZ_16K)
+	imx53_imx_ssi_data_entry(0, 1),
+	imx53_imx_ssi_data_entry(1, 2),
+	imx53_imx_ssi_data_entry(2, 3),
+};
+#endif /* ifdef CONFIG_SOC_IMX53 */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct platform_device *__init imx_add_imx_ssi(
 		const struct imx_imx_ssi_data *data,
 		const struct imx_ssi_platform_data *pdata)

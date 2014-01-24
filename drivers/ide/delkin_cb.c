@@ -71,8 +71,12 @@ static const struct ide_port_info delkin_cb_port_info = {
 	.chipset		= ide_pci,
 };
 
+<<<<<<< HEAD
 static int __devinit
 delkin_cb_probe (struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int delkin_cb_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ide_host *host;
 	unsigned long base;
@@ -158,7 +162,11 @@ static int delkin_cb_resume(struct pci_dev *dev)
 #define delkin_cb_resume NULL
 #endif
 
+<<<<<<< HEAD
 static struct pci_device_id delkin_cb_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id delkin_cb_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ 0x1145, 0xf021, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{ 0x1145, 0xf024, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{ 0, },
@@ -174,6 +182,7 @@ static struct pci_driver delkin_cb_pci_driver = {
 	.resume		= delkin_cb_resume,
 };
 
+<<<<<<< HEAD
 static int __init delkin_cb_init(void)
 {
 	return pci_register_driver(&delkin_cb_pci_driver);
@@ -186,6 +195,9 @@ static void __exit delkin_cb_exit(void)
 
 module_init(delkin_cb_init);
 module_exit(delkin_cb_exit);
+=======
+module_pci_driver(delkin_cb_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark Lord");
 MODULE_DESCRIPTION("Basic support for Delkin/ASKA/Workbit Cardbus IDE");

@@ -600,11 +600,28 @@ gss_krb5_cts_crypt(struct crypto_blkcipher *cipher, struct xdr_buf *buf,
 	u32 ret;
 	struct scatterlist sg[1];
 	struct blkcipher_desc desc = { .tfm = cipher, .info = iv };
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 data[crypto_blkcipher_blocksize(cipher) * 2];
 	struct page **save_pages;
 	u32 len = buf->len - offset;
 
 	BUG_ON(len > crypto_blkcipher_blocksize(cipher) * 2);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u8 data[GSS_KRB5_MAX_BLOCKSIZE * 2];
+	struct page **save_pages;
+	u32 len = buf->len - offset;
+
+	if (len > ARRAY_SIZE(data)) {
+		WARN_ON(0);
+		return -ENOMEM;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * For encryption, we want to read from the cleartext

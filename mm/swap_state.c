@@ -6,7 +6,13 @@
  *
  *  Rewritten to use page cache, (C) 1998 Stephen Tweedie
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/gfp.h>
 #include <linux/kernel_stat.h>
@@ -14,8 +20,16 @@
 #include <linux/swapops.h>
 #include <linux/init.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/backing-dev.h>
+=======
+#include <linux/backing-dev.h>
+#include <linux/blkdev.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pagevec.h>
 #include <linux/migrate.h>
 #include <linux/page_cgroup.h>
@@ -28,7 +42,11 @@
  */
 static const struct address_space_operations swap_aops = {
 	.writepage	= swap_writepage,
+<<<<<<< HEAD
 	.set_page_dirty	= __set_page_dirty_no_writeback,
+=======
+	.set_page_dirty	= swap_set_page_dirty,
+>>>>>>> refs/remotes/origin/master
 	.migratepage	= migrate_page,
 };
 
@@ -37,12 +55,21 @@ static struct backing_dev_info swap_backing_dev_info = {
 	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK | BDI_CAP_SWAP_BACKED,
 };
 
+<<<<<<< HEAD
 struct address_space swapper_space = {
 	.page_tree	= RADIX_TREE_INIT(GFP_ATOMIC|__GFP_NOWARN),
 	.tree_lock	= __SPIN_LOCK_UNLOCKED(swapper_space.tree_lock),
 	.a_ops		= &swap_aops,
 	.i_mmap_nonlinear = LIST_HEAD_INIT(swapper_space.i_mmap_nonlinear),
 	.backing_dev_info = &swap_backing_dev_info,
+=======
+struct address_space swapper_spaces[MAX_SWAPFILES] = {
+	[0 ... MAX_SWAPFILES - 1] = {
+		.page_tree	= RADIX_TREE_INIT(GFP_ATOMIC|__GFP_NOWARN),
+		.a_ops		= &swap_aops,
+		.backing_dev_info = &swap_backing_dev_info,
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 #define INC_CACHE_INFO(x)	do { swap_cache_info.x++; } while (0)
@@ -54,6 +81,7 @@ static struct {
 	unsigned long find_total;
 } swap_cache_info;
 
+<<<<<<< HEAD
 void show_swap_cache_info(void)
 {
 	printk("%lu pages in swap cache\n", total_swapcache_pages);
@@ -61,6 +89,26 @@ void show_swap_cache_info(void)
 		swap_cache_info.add_total, swap_cache_info.del_total,
 		swap_cache_info.find_success, swap_cache_info.find_total);
 	printk("Free swap  = %ldkB\n", nr_swap_pages << (PAGE_SHIFT - 10));
+=======
+unsigned long total_swapcache_pages(void)
+{
+	int i;
+	unsigned long ret = 0;
+
+	for (i = 0; i < MAX_SWAPFILES; i++)
+		ret += swapper_spaces[i].nrpages;
+	return ret;
+}
+
+void show_swap_cache_info(void)
+{
+	printk("%lu pages in swap cache\n", total_swapcache_pages());
+	printk("Swap cache stats: add %lu, delete %lu, find %lu/%lu\n",
+		swap_cache_info.add_total, swap_cache_info.del_total,
+		swap_cache_info.find_success, swap_cache_info.find_total);
+	printk("Free swap  = %ldkB\n",
+		get_nr_swap_pages() << (PAGE_SHIFT - 10));
+>>>>>>> refs/remotes/origin/master
 	printk("Total swap = %lukB\n", total_swap_pages << (PAGE_SHIFT - 10));
 }
 
@@ -68,9 +116,16 @@ void show_swap_cache_info(void)
  * __add_to_swap_cache resembles add_to_page_cache_locked on swapper_space,
  * but sets SwapCache flag and private instead of mapping and index.
  */
+<<<<<<< HEAD
 static int __add_to_swap_cache(struct page *page, swp_entry_t entry)
 {
 	int error;
+=======
+int __add_to_swap_cache(struct page *page, swp_entry_t entry)
+{
+	int error;
+	struct address_space *address_space;
+>>>>>>> refs/remotes/origin/master
 
 	VM_BUG_ON(!PageLocked(page));
 	VM_BUG_ON(PageSwapCache(page));
@@ -80,6 +135,7 @@ static int __add_to_swap_cache(struct page *page, swp_entry_t entry)
 	SetPageSwapCache(page);
 	set_page_private(page, entry.val);
 
+<<<<<<< HEAD
 	spin_lock_irq(&swapper_space.tree_lock);
 	error = radix_tree_insert(&swapper_space.page_tree, entry.val, page);
 	if (likely(!error)) {
@@ -88,6 +144,18 @@ static int __add_to_swap_cache(struct page *page, swp_entry_t entry)
 		INC_CACHE_INFO(add_total);
 	}
 	spin_unlock_irq(&swapper_space.tree_lock);
+=======
+	address_space = swap_address_space(entry);
+	spin_lock_irq(&address_space->tree_lock);
+	error = radix_tree_insert(&address_space->page_tree,
+					entry.val, page);
+	if (likely(!error)) {
+		address_space->nrpages++;
+		__inc_zone_page_state(page, NR_FILE_PAGES);
+		INC_CACHE_INFO(add_total);
+	}
+	spin_unlock_irq(&address_space->tree_lock);
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(error)) {
 		/*
@@ -109,7 +177,11 @@ int add_to_swap_cache(struct page *page, swp_entry_t entry, gfp_t gfp_mask)
 {
 	int error;
 
+<<<<<<< HEAD
 	error = radix_tree_preload(gfp_mask);
+=======
+	error = radix_tree_maybe_preload(gfp_mask);
+>>>>>>> refs/remotes/origin/master
 	if (!error) {
 		error = __add_to_swap_cache(page, entry);
 		radix_tree_preload_end();
@@ -123,14 +195,29 @@ int add_to_swap_cache(struct page *page, swp_entry_t entry, gfp_t gfp_mask)
  */
 void __delete_from_swap_cache(struct page *page)
 {
+<<<<<<< HEAD
+=======
+	swp_entry_t entry;
+	struct address_space *address_space;
+
+>>>>>>> refs/remotes/origin/master
 	VM_BUG_ON(!PageLocked(page));
 	VM_BUG_ON(!PageSwapCache(page));
 	VM_BUG_ON(PageWriteback(page));
 
+<<<<<<< HEAD
 	radix_tree_delete(&swapper_space.page_tree, page_private(page));
 	set_page_private(page, 0);
 	ClearPageSwapCache(page);
 	total_swapcache_pages--;
+=======
+	entry.val = page_private(page);
+	address_space = swap_address_space(entry);
+	radix_tree_delete(&address_space->page_tree, page_private(page));
+	set_page_private(page, 0);
+	ClearPageSwapCache(page);
+	address_space->nrpages--;
+>>>>>>> refs/remotes/origin/master
 	__dec_zone_page_state(page, NR_FILE_PAGES);
 	INC_CACHE_INFO(del_total);
 }
@@ -142,7 +229,11 @@ void __delete_from_swap_cache(struct page *page)
  * Allocate swap space for the page and add the page to the
  * swap cache.  Caller needs to hold the page lock. 
  */
+<<<<<<< HEAD
 int add_to_swap(struct page *page)
+=======
+int add_to_swap(struct page *page, struct list_head *list)
+>>>>>>> refs/remotes/origin/master
 {
 	swp_entry_t entry;
 	int err;
@@ -155,7 +246,11 @@ int add_to_swap(struct page *page)
 		return 0;
 
 	if (unlikely(PageTransHuge(page)))
+<<<<<<< HEAD
 		if (unlikely(split_huge_page(page))) {
+=======
+		if (unlikely(split_huge_page_to_list(page, list))) {
+>>>>>>> refs/remotes/origin/master
 			swapcache_free(entry, NULL);
 			return 0;
 		}
@@ -196,12 +291,23 @@ int add_to_swap(struct page *page)
 void delete_from_swap_cache(struct page *page)
 {
 	swp_entry_t entry;
+<<<<<<< HEAD
 
 	entry.val = page_private(page);
 
 	spin_lock_irq(&swapper_space.tree_lock);
 	__delete_from_swap_cache(page);
 	spin_unlock_irq(&swapper_space.tree_lock);
+=======
+	struct address_space *address_space;
+
+	entry.val = page_private(page);
+
+	address_space = swap_address_space(entry);
+	spin_lock_irq(&address_space->tree_lock);
+	__delete_from_swap_cache(page);
+	spin_unlock_irq(&address_space->tree_lock);
+>>>>>>> refs/remotes/origin/master
 
 	swapcache_free(entry, page);
 	page_cache_release(page);
@@ -264,7 +370,11 @@ struct page * lookup_swap_cache(swp_entry_t entry)
 {
 	struct page *page;
 
+<<<<<<< HEAD
 	page = find_get_page(&swapper_space, entry.val);
+=======
+	page = find_get_page(swap_address_space(entry), entry.val);
+>>>>>>> refs/remotes/origin/master
 
 	if (page)
 		INC_CACHE_INFO(find_success);
@@ -291,7 +401,12 @@ struct page *read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
 		 * called after lookup_swap_cache() failed, re-calling
 		 * that would confuse statistics.
 		 */
+<<<<<<< HEAD
 		found_page = find_get_page(&swapper_space, entry.val);
+=======
+		found_page = find_get_page(swap_address_space(entry),
+					entry.val);
+>>>>>>> refs/remotes/origin/master
 		if (found_page)
 			break;
 
@@ -307,7 +422,11 @@ struct page *read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
 		/*
 		 * call radix_tree_preload() while we can wait.
 		 */
+<<<<<<< HEAD
 		err = radix_tree_preload(gfp_mask & GFP_KERNEL);
+=======
+		err = radix_tree_maybe_preload(gfp_mask & GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			break;
 
@@ -390,6 +509,8 @@ struct page *read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
 struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
 			struct vm_area_struct *vma, unsigned long addr)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int nr_pages;
 	struct page *page;
 	unsigned long offset;
@@ -404,13 +525,50 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
 	 */
 	nr_pages = valid_swaphandles(entry, &offset);
 	for (end_offset = offset + nr_pages; offset < end_offset; offset++) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct page *page;
+	unsigned long offset = swp_offset(entry);
+	unsigned long start_offset, end_offset;
+	unsigned long mask = (1UL << page_cluster) - 1;
+<<<<<<< HEAD
+=======
+	struct blk_plug plug;
+>>>>>>> refs/remotes/origin/master
+
+	/* Read a page_cluster sized and aligned cluster around offset. */
+	start_offset = offset & ~mask;
+	end_offset = offset | mask;
+	if (!start_offset)	/* First page is swap header. */
+		start_offset++;
+
+<<<<<<< HEAD
+	for (offset = start_offset; offset <= end_offset ; offset++) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	blk_start_plug(&plug);
+	for (offset = start_offset; offset <= end_offset ; offset++) {
+>>>>>>> refs/remotes/origin/master
 		/* Ok, do the async read-ahead now */
 		page = read_swap_cache_async(swp_entry(swp_type(entry), offset),
 						gfp_mask, vma, addr);
 		if (!page)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			break;
+=======
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		page_cache_release(page);
 	}
+=======
+			continue;
+		page_cache_release(page);
+	}
+	blk_finish_plug(&plug);
+
+>>>>>>> refs/remotes/origin/master
 	lru_add_drain();	/* Push any new pages onto the LRU now */
 	return read_swap_cache_async(entry, gfp_mask, vma, addr);
 }

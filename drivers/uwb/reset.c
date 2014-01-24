@@ -32,6 +32,14 @@
 #include <linux/err.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "uwb-internal.h"
 
@@ -96,6 +104,10 @@ int uwb_rc_cmd_async(struct uwb_rc *rc, const char *cmd_name,
 	neh = uwb_rc_neh_add(rc, cmd, expected_type, expected_event, cb, arg);
 	if (IS_ERR(neh)) {
 		result = PTR_ERR(neh);
+<<<<<<< HEAD
+=======
+		uwb_dev_unlock(&rc->uwb_dev);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 

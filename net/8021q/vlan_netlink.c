@@ -11,6 +11,14 @@
 #include <linux/kernel.h>
 #include <linux/netdevice.h>
 #include <linux/if_vlan.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/net_namespace.h>
 #include <net/netlink.h>
 #include <net/rtnetlink.h>
@@ -22,6 +30,10 @@ static const struct nla_policy vlan_policy[IFLA_VLAN_MAX + 1] = {
 	[IFLA_VLAN_FLAGS]	= { .len = sizeof(struct ifla_vlan_flags) },
 	[IFLA_VLAN_EGRESS_QOS]	= { .type = NLA_NESTED },
 	[IFLA_VLAN_INGRESS_QOS] = { .type = NLA_NESTED },
+<<<<<<< HEAD
+=======
+	[IFLA_VLAN_PROTOCOL]	= { .type = NLA_U16 },
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct nla_policy vlan_map_policy[IFLA_VLAN_QOS_MAX + 1] = {
@@ -52,6 +64,19 @@ static int vlan_validate(struct nlattr *tb[], struct nlattr *data[])
 	if (!data)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (data[IFLA_VLAN_PROTOCOL]) {
+		switch (nla_get_be16(data[IFLA_VLAN_PROTOCOL])) {
+		case __constant_htons(ETH_P_8021Q):
+		case __constant_htons(ETH_P_8021AD):
+			break;
+		default:
+			return -EPROTONOSUPPORT;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (data[IFLA_VLAN_ID]) {
 		id = nla_get_u16(data[IFLA_VLAN_ID]);
 		if (id >= VLAN_VID_MASK)
@@ -61,7 +86,11 @@ static int vlan_validate(struct nlattr *tb[], struct nlattr *data[])
 		flags = nla_data(data[IFLA_VLAN_FLAGS]);
 		if ((flags->flags & flags->mask) &
 		    ~(VLAN_FLAG_REORDER_HDR | VLAN_FLAG_GVRP |
+<<<<<<< HEAD
 		      VLAN_FLAG_LOOSE_BINDING))
+=======
+		      VLAN_FLAG_LOOSE_BINDING | VLAN_FLAG_MVRP))
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 	}
 
@@ -104,8 +133,18 @@ static int vlan_changelink(struct net_device *dev,
 static int vlan_newlink(struct net *src_net, struct net_device *dev,
 			struct nlattr *tb[], struct nlattr *data[])
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct vlan_dev_info *vlan = vlan_dev_info(dev);
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct net_device *real_dev;
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+	struct net_device *real_dev;
+	__be16 proto;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (!data[IFLA_VLAN_ID])
@@ -117,11 +156,25 @@ static int vlan_newlink(struct net *src_net, struct net_device *dev,
 	if (!real_dev)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	vlan->vlan_id  = nla_get_u16(data[IFLA_VLAN_ID]);
 	vlan->real_dev = real_dev;
 	vlan->flags    = VLAN_FLAG_REORDER_HDR;
 
 	err = vlan_check_real_dev(real_dev, vlan->vlan_id);
+=======
+	if (data[IFLA_VLAN_PROTOCOL])
+		proto = nla_get_be16(data[IFLA_VLAN_PROTOCOL]);
+	else
+		proto = htons(ETH_P_8021Q);
+
+	vlan->vlan_proto = proto;
+	vlan->vlan_id	 = nla_get_u16(data[IFLA_VLAN_ID]);
+	vlan->real_dev	 = real_dev;
+	vlan->flags	 = VLAN_FLAG_REORDER_HDR;
+
+	err = vlan_check_real_dev(real_dev, vlan->vlan_proto, vlan->vlan_id);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -148,28 +201,70 @@ static inline size_t vlan_qos_map_size(unsigned int n)
 
 static size_t vlan_get_size(const struct net_device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct vlan_dev_info *vlan = vlan_dev_info(dev);
 
 	return nla_total_size(2) +	/* IFLA_VLAN_ID */
+<<<<<<< HEAD
 	       sizeof(struct ifla_vlan_flags) + /* IFLA_VLAN_FLAGS */
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+
+	return nla_total_size(2) +	/* IFLA_VLAN_ID */
+	       nla_total_size(sizeof(struct ifla_vlan_flags)) + /* IFLA_VLAN_FLAGS */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+
+	return nla_total_size(2) +	/* IFLA_VLAN_PROTOCOL */
+	       nla_total_size(2) +	/* IFLA_VLAN_ID */
+	       nla_total_size(sizeof(struct ifla_vlan_flags)) + /* IFLA_VLAN_FLAGS */
+>>>>>>> refs/remotes/origin/master
+=======
+	       nla_total_size(sizeof(struct ifla_vlan_flags)) + /* IFLA_VLAN_FLAGS */
+>>>>>>> refs/remotes/origin/cm-11.0
 	       vlan_qos_map_size(vlan->nr_ingress_mappings) +
 	       vlan_qos_map_size(vlan->nr_egress_mappings);
 }
 
 static int vlan_fill_info(struct sk_buff *skb, const struct net_device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct vlan_dev_info *vlan = vlan_dev_info(dev);
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+>>>>>>> refs/remotes/origin/master
 	struct vlan_priority_tci_mapping *pm;
 	struct ifla_vlan_flags f;
 	struct ifla_vlan_qos_mapping m;
 	struct nlattr *nest;
 	unsigned int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	NLA_PUT_U16(skb, IFLA_VLAN_ID, vlan_dev_info(dev)->vlan_id);
+=======
+	NLA_PUT_U16(skb, IFLA_VLAN_ID, vlan_dev_priv(dev)->vlan_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (vlan->flags) {
 		f.flags = vlan->flags;
 		f.mask  = ~0;
 		NLA_PUT(skb, IFLA_VLAN_FLAGS, sizeof(f), &f);
+=======
+	if (nla_put_be16(skb, IFLA_VLAN_PROTOCOL, vlan->vlan_proto) ||
+	    nla_put_u16(skb, IFLA_VLAN_ID, vlan->vlan_id))
+		goto nla_put_failure;
+	if (vlan->flags) {
+		f.flags = vlan->flags;
+		f.mask  = ~0;
+		if (nla_put(skb, IFLA_VLAN_FLAGS, sizeof(f), &f))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (vlan->nr_ingress_mappings) {
 		nest = nla_nest_start(skb, IFLA_VLAN_INGRESS_QOS);
@@ -182,8 +277,14 @@ static int vlan_fill_info(struct sk_buff *skb, const struct net_device *dev)
 
 			m.from = i;
 			m.to   = vlan->ingress_priority_map[i];
+<<<<<<< HEAD
 			NLA_PUT(skb, IFLA_VLAN_QOS_MAPPING,
 				sizeof(m), &m);
+=======
+			if (nla_put(skb, IFLA_VLAN_QOS_MAPPING,
+				    sizeof(m), &m))
+				goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 		}
 		nla_nest_end(skb, nest);
 	}
@@ -201,8 +302,14 @@ static int vlan_fill_info(struct sk_buff *skb, const struct net_device *dev)
 
 				m.from = pm->priority;
 				m.to   = (pm->vlan_qos >> 13) & 0x7;
+<<<<<<< HEAD
 				NLA_PUT(skb, IFLA_VLAN_QOS_MAPPING,
 					sizeof(m), &m);
+=======
+				if (nla_put(skb, IFLA_VLAN_QOS_MAPPING,
+					    sizeof(m), &m))
+					goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		nla_nest_end(skb, nest);
@@ -217,7 +324,15 @@ struct rtnl_link_ops vlan_link_ops __read_mostly = {
 	.kind		= "vlan",
 	.maxtype	= IFLA_VLAN_MAX,
 	.policy		= vlan_policy,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.priv_size	= sizeof(struct vlan_dev_info),
+=======
+	.priv_size	= sizeof(struct vlan_dev_priv),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.priv_size	= sizeof(struct vlan_dev_priv),
+>>>>>>> refs/remotes/origin/master
 	.setup		= vlan_setup,
 	.validate	= vlan_validate,
 	.newlink	= vlan_newlink,

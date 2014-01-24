@@ -442,8 +442,16 @@ static int spu_request_irqs(struct spu *spu)
 		snprintf(spu->irq_c0, sizeof (spu->irq_c0), "spe%02d.0",
 			 spu->number);
 		ret = request_irq(spu->irqs[0], spu_irq_class_0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				  IRQF_DISABLED,
 				  spu->irq_c0, spu);
+=======
+				  0, spu->irq_c0, spu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  0, spu->irq_c0, spu);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			goto bail0;
 	}
@@ -451,8 +459,16 @@ static int spu_request_irqs(struct spu *spu)
 		snprintf(spu->irq_c1, sizeof (spu->irq_c1), "spe%02d.1",
 			 spu->number);
 		ret = request_irq(spu->irqs[1], spu_irq_class_1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				  IRQF_DISABLED,
 				  spu->irq_c1, spu);
+=======
+				  0, spu->irq_c1, spu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  0, spu->irq_c1, spu);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			goto bail1;
 	}
@@ -460,8 +476,16 @@ static int spu_request_irqs(struct spu *spu)
 		snprintf(spu->irq_c2, sizeof (spu->irq_c2), "spe%02d.2",
 			 spu->number);
 		ret = request_irq(spu->irqs[2], spu_irq_class_2,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				  IRQF_DISABLED,
 				  spu->irq_c2, spu);
+=======
+				  0, spu->irq_c2, spu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  0, spu->irq_c2, spu);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			goto bail2;
 	}
@@ -522,31 +546,74 @@ void spu_init_channels(struct spu *spu)
 }
 EXPORT_SYMBOL_GPL(spu_init_channels);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct sysdev_class spu_sysdev_class = {
 	.name = "spu",
 };
 
 int spu_add_sysdev_attr(struct sysdev_attribute *attr)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct bus_type spu_subsys = {
+	.name = "spu",
+	.dev_name = "spu",
+};
+
+int spu_add_dev_attr(struct device_attribute *attr)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct spu *spu;
 
 	mutex_lock(&spu_full_list_mutex);
 	list_for_each_entry(spu, &spu_full_list, full_list)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sysdev_create_file(&spu->sysdev, attr);
+=======
+		device_create_file(&spu->dev, attr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		device_create_file(&spu->dev, attr);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&spu_full_list_mutex);
 
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(spu_add_sysdev_attr);
 
 int spu_add_sysdev_attr_group(struct attribute_group *attrs)
+=======
+EXPORT_SYMBOL_GPL(spu_add_dev_attr);
+
+int spu_add_dev_attr_group(struct attribute_group *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(spu_add_dev_attr);
+
+int spu_add_dev_attr_group(struct attribute_group *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spu *spu;
 	int rc = 0;
 
 	mutex_lock(&spu_full_list_mutex);
 	list_for_each_entry(spu, &spu_full_list, full_list) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rc = sysfs_create_group(&spu->sysdev.kobj, attrs);
+=======
+		rc = sysfs_create_group(&spu->dev.kobj, attrs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = sysfs_create_group(&spu->dev.kobj, attrs);
+>>>>>>> refs/remotes/origin/master
 
 		/* we're in trouble here, but try unwinding anyway */
 		if (rc) {
@@ -555,7 +622,15 @@ int spu_add_sysdev_attr_group(struct attribute_group *attrs)
 
 			list_for_each_entry_continue_reverse(spu,
 					&spu_full_list, full_list)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				sysfs_remove_group(&spu->sysdev.kobj, attrs);
+=======
+				sysfs_remove_group(&spu->dev.kobj, attrs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				sysfs_remove_group(&spu->dev.kobj, attrs);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -564,26 +639,56 @@ int spu_add_sysdev_attr_group(struct attribute_group *attrs)
 
 	return rc;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(spu_add_sysdev_attr_group);
 
 
 void spu_remove_sysdev_attr(struct sysdev_attribute *attr)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+EXPORT_SYMBOL_GPL(spu_add_dev_attr_group);
+
+
+void spu_remove_dev_attr(struct device_attribute *attr)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct spu *spu;
 
 	mutex_lock(&spu_full_list_mutex);
 	list_for_each_entry(spu, &spu_full_list, full_list)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sysdev_remove_file(&spu->sysdev, attr);
 	mutex_unlock(&spu_full_list_mutex);
 }
 EXPORT_SYMBOL_GPL(spu_remove_sysdev_attr);
 
 void spu_remove_sysdev_attr_group(struct attribute_group *attrs)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		device_remove_file(&spu->dev, attr);
+	mutex_unlock(&spu_full_list_mutex);
+}
+EXPORT_SYMBOL_GPL(spu_remove_dev_attr);
+
+void spu_remove_dev_attr_group(struct attribute_group *attrs)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct spu *spu;
 
 	mutex_lock(&spu_full_list_mutex);
 	list_for_each_entry(spu, &spu_full_list, full_list)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sysfs_remove_group(&spu->sysdev.kobj, attrs);
 	mutex_unlock(&spu_full_list_mutex);
 }
@@ -596,13 +701,40 @@ static int spu_create_sysdev(struct spu *spu)
 	spu->sysdev.id = spu->number;
 	spu->sysdev.cls = &spu_sysdev_class;
 	ret = sysdev_register(&spu->sysdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		sysfs_remove_group(&spu->dev.kobj, attrs);
+	mutex_unlock(&spu_full_list_mutex);
+}
+EXPORT_SYMBOL_GPL(spu_remove_dev_attr_group);
+
+static int spu_create_dev(struct spu *spu)
+{
+	int ret;
+
+	spu->dev.id = spu->number;
+	spu->dev.bus = &spu_subsys;
+	ret = device_register(&spu->dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		printk(KERN_ERR "Can't register SPU %d with sysfs\n",
 				spu->number);
 		return ret;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sysfs_add_device_to_node(&spu->sysdev, spu->node);
+=======
+	sysfs_add_device_to_node(&spu->dev, spu->node);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sysfs_add_device_to_node(&spu->dev, spu->node);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -638,7 +770,15 @@ static int __init create_spu(void *data)
 	if (ret)
 		goto out_destroy;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = spu_create_sysdev(spu);
+=======
+	ret = spu_create_dev(spu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = spu_create_dev(spu);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto out_free_irqs;
 
@@ -695,10 +835,23 @@ static unsigned long long spu_acct_time(struct spu *spu,
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t spu_stat_show(struct sys_device *sysdev,
 				struct sysdev_attribute *attr, char *buf)
 {
 	struct spu *spu = container_of(sysdev, struct spu, sysdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static ssize_t spu_stat_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	struct spu *spu = container_of(dev, struct spu, dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%s %llu %llu %llu %llu "
 		      "%llu %llu %llu %llu %llu %llu %llu %llu\n",
@@ -717,7 +870,15 @@ static ssize_t spu_stat_show(struct sys_device *sysdev,
 		spu->stats.libassist);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(stat, 0644, spu_stat_show, NULL);
+=======
+static DEVICE_ATTR(stat, 0644, spu_stat_show, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR(stat, 0444, spu_stat_show, NULL);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_KEXEC
 
@@ -816,8 +977,18 @@ static int __init init_spu_base(void)
 	if (!spu_management_ops)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* create sysdev class for spus */
 	ret = sysdev_class_register(&spu_sysdev_class);
+=======
+	/* create system subsystem for spus */
+	ret = subsys_system_register(&spu_subsys, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* create system subsystem for spus */
+	ret = subsys_system_register(&spu_subsys, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto out;
 
@@ -826,7 +997,15 @@ static int __init init_spu_base(void)
 	if (ret < 0) {
 		printk(KERN_WARNING "%s: Error initializing spus\n",
 			__func__);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_unregister_sysdev_class;
+=======
+		goto out_unregister_subsys;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_unregister_subsys;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ret > 0)
@@ -836,15 +1015,33 @@ static int __init init_spu_base(void)
 	xmon_register_spus(&spu_full_list);
 	crash_register_spus(&spu_full_list);
 	mutex_unlock(&spu_full_list_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spu_add_sysdev_attr(&attr_stat);
+=======
+	spu_add_dev_attr(&dev_attr_stat);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spu_add_dev_attr(&dev_attr_stat);
+>>>>>>> refs/remotes/origin/master
 	register_syscore_ops(&spu_syscore_ops);
 
 	spu_init_affinity();
 
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
  out_unregister_sysdev_class:
 	sysdev_class_unregister(&spu_sysdev_class);
+=======
+ out_unregister_subsys:
+	bus_unregister(&spu_subsys);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ out_unregister_subsys:
+	bus_unregister(&spu_subsys);
+>>>>>>> refs/remotes/origin/master
  out:
 	return ret;
 }

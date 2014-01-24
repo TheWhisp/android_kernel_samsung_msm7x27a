@@ -4,7 +4,11 @@
  * for more details.
  *
  * Based on linux/arch/mips/kernel/cevt-r4k.c,
+<<<<<<< HEAD
  *          linux/arch/mips/jmr3927/rbhma3100/setup.c
+=======
+ *	    linux/arch/mips/jmr3927/rbhma3100/setup.c
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2001 MontaVista Software Inc.
  * Copyright (C) 2000-2001 Toshiba Corporation
@@ -129,7 +133,11 @@ static struct txx9_clock_event_device txx9_clock_event_device = {
 				  CLOCK_EVT_FEAT_ONESHOT,
 		.rating		= 200,
 		.set_mode	= txx9tmr_set_mode,
+<<<<<<< HEAD
 		.set_next_event	= txx9tmr_set_next_event,
+=======
+		.set_next_event = txx9tmr_set_next_event,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -139,14 +147,26 @@ static irqreturn_t txx9tmr_interrupt(int irq, void *dev_id)
 	struct clock_event_device *cd = &txx9_cd->cd;
 	struct txx9_tmr_reg __iomem *tmrptr = txx9_cd->tmrptr;
 
+<<<<<<< HEAD
 	__raw_writel(0, &tmrptr->tisr);	/* ack interrupt */
+=======
+	__raw_writel(0, &tmrptr->tisr); /* ack interrupt */
+>>>>>>> refs/remotes/origin/master
 	cd->event_handler(cd);
 	return IRQ_HANDLED;
 }
 
 static struct irqaction txx9tmr_irq = {
 	.handler	= txx9tmr_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_PERCPU | IRQF_TIMER,
+=======
+	.flags		= IRQF_PERCPU | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= IRQF_PERCPU | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 	.name		= "txx9tmr",
 	.dev_id		= &txx9_clock_event_device,
 };

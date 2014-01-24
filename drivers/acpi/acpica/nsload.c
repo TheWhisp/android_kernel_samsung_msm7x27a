@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +71,11 @@ static acpi_status acpi_ns_delete_subtree(acpi_handle start_handle);
  * FUNCTION:    acpi_ns_load_table
  *
  * PARAMETERS:  table_index     - Index for table to be loaded
+<<<<<<< HEAD
  *              Node            - Owning NS node
+=======
+ *              node            - Owning NS node
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -80,8 +92,13 @@ acpi_ns_load_table(u32 table_index, struct acpi_namespace_node *node)
 
 	/*
 	 * Parse the table and load the namespace with all named
+<<<<<<< HEAD
 	 * objects found within.  Control methods are NOT parsed
 	 * at this time.  In fact, the control methods cannot be
+=======
+	 * objects found within. Control methods are NOT parsed
+	 * at this time. In fact, the control methods cannot be
+>>>>>>> refs/remotes/origin/master
 	 * parsed until the entire namespace is loaded, because
 	 * if a control method makes a forward reference (call)
 	 * to another control method, we can't continue parsing
@@ -114,7 +131,11 @@ acpi_ns_load_table(u32 table_index, struct acpi_namespace_node *node)
 		(void)acpi_tb_release_owner_id(table_index);
 	}
 
+<<<<<<< HEAD
       unlock:
+=======
+unlock:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 
 	if (ACPI_FAILURE(status)) {
@@ -122,7 +143,11 @@ acpi_ns_load_table(u32 table_index, struct acpi_namespace_node *node)
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Now we can parse the control methods.  We always parse
+=======
+	 * Now we can parse the control methods. We always parse
+>>>>>>> refs/remotes/origin/master
 	 * them here for a sanity check, and if configured for
 	 * just-in-time parsing, we delete the control method
 	 * parse trees.
@@ -166,7 +191,11 @@ acpi_status acpi_ns_load_namespace(void)
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Load the namespace.  The DSDT is required,
+=======
+	 * Load the namespace. The DSDT is required,
+>>>>>>> refs/remotes/origin/master
 	 * but the SSDT and PSDT tables are optional.
 	 */
 	status = acpi_ns_load_table_by_type(ACPI_TABLE_ID_DSDT);
@@ -278,12 +307,20 @@ static acpi_status acpi_ns_delete_subtree(acpi_handle start_handle)
  *
  *  FUNCTION:       acpi_ns_unload_name_space
  *
+<<<<<<< HEAD
  *  PARAMETERS:     Handle          - Root of namespace subtree to be deleted
+=======
+ *  PARAMETERS:     handle          - Root of namespace subtree to be deleted
+>>>>>>> refs/remotes/origin/master
  *
  *  RETURN:         Status
  *
  *  DESCRIPTION:    Shrinks the namespace, typically in response to an undocking
+<<<<<<< HEAD
  *                  event.  Deletes an entire subtree starting from (and
+=======
+ *                  event. Deletes an entire subtree starting from (and
+>>>>>>> refs/remotes/origin/master
  *                  including) the given handle.
  *
  ******************************************************************************/

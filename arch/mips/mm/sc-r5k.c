@@ -12,7 +12,13 @@
 #include <asm/cacheops.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu_context.h>
 #include <asm/r4kcache.h>
 
@@ -59,7 +65,11 @@ static void r5k_dma_cache_inv_sc(unsigned long addr, unsigned long size)
 
 static void r5k_sc_enable(void)
 {
+<<<<<<< HEAD
         unsigned long flags;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_save(flags);
 	set_c0_config(R5K_CONF_SE);
@@ -69,7 +79,11 @@ static void r5k_sc_enable(void)
 
 static void r5k_sc_disable(void)
 {
+<<<<<<< HEAD
         unsigned long flags;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_save(flags);
 	blast_r5000_scache();
@@ -99,7 +113,11 @@ static struct bcache_ops r5k_sc_ops = {
 	.bc_inv = r5k_dma_cache_inv_sc
 };
 
+<<<<<<< HEAD
 void __cpuinit r5k_sc_init(void)
+=======
+void r5k_sc_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (r5k_sc_probe()) {
 		r5k_sc_enable();

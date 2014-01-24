@@ -15,6 +15,16 @@
  * or implied.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
@@ -58,8 +68,18 @@ static unsigned int bus_clk;
 static char expect_close;
 static DEFINE_SPINLOCK(mv64x60_wdt_spinlock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -100,7 +120,15 @@ static void mv64x60_wdt_handler_enable(void)
 	if (mv64x60_wdt_toggle_wdc(MV64x60_WDC_ENABLED_FALSE,
 				   MV64x60_WDC_ENABLE_SHIFT)) {
 		mv64x60_wdt_service();
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "mv64x60_wdt: watchdog activated\n");
+=======
+		pr_notice("watchdog activated\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_notice("watchdog activated\n");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -108,7 +136,15 @@ static void mv64x60_wdt_handler_disable(void)
 {
 	if (mv64x60_wdt_toggle_wdc(MV64x60_WDC_ENABLED_TRUE,
 				   MV64x60_WDC_ENABLE_SHIFT))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "mv64x60_wdt: watchdog deactivated\n");
+=======
+		pr_notice("watchdog deactivated\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_notice("watchdog deactivated\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mv64x60_wdt_set_timeout(unsigned int timeout)
@@ -139,8 +175,16 @@ static int mv64x60_wdt_release(struct inode *inode, struct file *file)
 	if (expect_close == 42)
 		mv64x60_wdt_handler_disable();
 	else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT
 		       "mv64x60_wdt: unexpected close, not stopping timer!\n");
+=======
+		pr_crit("unexpected close, not stopping timer!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("unexpected close, not stopping timer!\n");
+>>>>>>> refs/remotes/origin/master
 		mv64x60_wdt_service();
 	}
 	expect_close = 0;
@@ -252,9 +296,15 @@ static struct miscdevice mv64x60_wdt_miscdev = {
 	.fops = &mv64x60_wdt_fops,
 };
 
+<<<<<<< HEAD
 static int __devinit mv64x60_wdt_probe(struct platform_device *dev)
 {
 	struct mv64x60_wdt_pdata *pdata = dev->dev.platform_data;
+=======
+static int mv64x60_wdt_probe(struct platform_device *dev)
+{
+	struct mv64x60_wdt_pdata *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct resource *r;
 	int timeout = 10;
 
@@ -275,7 +325,11 @@ static int __devinit mv64x60_wdt_probe(struct platform_device *dev)
 	if (!r)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	mv64x60_wdt_regs = ioremap(r->start, resource_size(r));
+=======
+	mv64x60_wdt_regs = devm_ioremap(&dev->dev, r->start, resource_size(r));
+>>>>>>> refs/remotes/origin/master
 	if (mv64x60_wdt_regs == NULL)
 		return -ENOMEM;
 
@@ -286,20 +340,31 @@ static int __devinit mv64x60_wdt_probe(struct platform_device *dev)
 	return misc_register(&mv64x60_wdt_miscdev);
 }
 
+<<<<<<< HEAD
 static int __devexit mv64x60_wdt_remove(struct platform_device *dev)
+=======
+static int mv64x60_wdt_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	misc_deregister(&mv64x60_wdt_miscdev);
 
 	mv64x60_wdt_handler_disable();
 
+<<<<<<< HEAD
 	iounmap(mv64x60_wdt_regs);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver mv64x60_wdt_driver = {
 	.probe = mv64x60_wdt_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(mv64x60_wdt_remove),
+=======
+	.remove = mv64x60_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.owner = THIS_MODULE,
 		.name = MV64x60_WDT_NAME,
@@ -308,7 +373,15 @@ static struct platform_driver mv64x60_wdt_driver = {
 
 static int __init mv64x60_wdt_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "MV64x60 watchdog driver\n");
+=======
+	pr_info("MV64x60 watchdog driver\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("MV64x60 watchdog driver\n");
+>>>>>>> refs/remotes/origin/master
 
 	return platform_driver_register(&mv64x60_wdt_driver);
 }
@@ -324,5 +397,8 @@ module_exit(mv64x60_wdt_exit);
 MODULE_AUTHOR("James Chapman <jchapman@katalix.com>");
 MODULE_DESCRIPTION("MV64x60 watchdog driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:" MV64x60_WDT_NAME);

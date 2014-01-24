@@ -77,4 +77,11 @@ static inline unsigned int get_d(u32 inst)
 	return inst & 0xffff;
 }
 
+<<<<<<< HEAD
+=======
+static inline unsigned int get_oc(u32 inst)
+{
+	return (inst >> 11) & 0x7fff;
+}
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_PPC_DISASSEMBLE_H__ */

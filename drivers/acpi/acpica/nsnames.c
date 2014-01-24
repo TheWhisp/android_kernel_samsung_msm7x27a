@@ -5,7 +5,15 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,8 +61,13 @@ ACPI_MODULE_NAME("nsnames")
  *
  * FUNCTION:    acpi_ns_build_external_path
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node            - NS node whose pathname is needed
  *              Size            - Size of the pathname
+=======
+ * PARAMETERS:  node            - NS node whose pathname is needed
+ *              size            - Size of the pathname
+>>>>>>> refs/remotes/origin/master
  *              *name_buffer    - Where to return the pathname
  *
  * RETURN:      Status
@@ -120,13 +133,22 @@ acpi_ns_build_external_path(struct acpi_namespace_node *node,
  *
  * FUNCTION:    acpi_ns_get_external_pathname
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node            - Namespace node whose pathname is needed
+=======
+ * PARAMETERS:  node            - Namespace node whose pathname is needed
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Pointer to storage containing the fully qualified name of
  *              the node, In external format (name segments separated by path
  *              separators.)
  *
+<<<<<<< HEAD
  * DESCRIPTION: Used for debug printing in acpi_ns_search_table().
+=======
+ * DESCRIPTION: Used to obtain the full pathname to a namespace node, usually
+ *              for error and debug statements.
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
@@ -168,7 +190,11 @@ char *acpi_ns_get_external_pathname(struct acpi_namespace_node *node)
  *
  * FUNCTION:    acpi_ns_get_pathname_length
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node        - Namespace node
+=======
+ * PARAMETERS:  node        - Namespace node
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Length of path, including prefix
  *
@@ -195,7 +221,11 @@ acpi_size acpi_ns_get_pathname_length(struct acpi_namespace_node *node)
 			ACPI_ERROR((AE_INFO,
 				    "Invalid Namespace Node (%p) while traversing namespace",
 				    next_node));
+<<<<<<< HEAD
 			return 0;
+=======
+			return (0);
+>>>>>>> refs/remotes/origin/master
 		}
 		size += ACPI_PATH_SEGMENT_LENGTH;
 		next_node = next_node->parent;
@@ -214,7 +244,11 @@ acpi_size acpi_ns_get_pathname_length(struct acpi_namespace_node *node)
  *
  * PARAMETERS:  target_handle           - Handle of named object whose name is
  *                                        to be found
+<<<<<<< HEAD
  *              Buffer                  - Where the pathname is returned
+=======
+ *              buffer                  - Where the pathname is returned
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status, Buffer is filled with pathname if status is AE_OK
  *

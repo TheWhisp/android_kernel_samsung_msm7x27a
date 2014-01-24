@@ -56,7 +56,11 @@ struct xdr_buf {
 	struct kvec	head[1],	/* RPC header + non-page data */
 			tail[1];	/* Appended after page data */
 
+<<<<<<< HEAD
 	struct page **	pages;		/* Array of contiguous pages */
+=======
+	struct page **	pages;		/* Array of pages */
+>>>>>>> refs/remotes/origin/master
 	unsigned int	page_base,	/* Start of page data */
 			page_len,	/* Length of page data */
 			flags;		/* Flags for data disposition */
@@ -104,8 +108,11 @@ __be32 *xdr_decode_string_inplace(__be32 *p, char **sp, unsigned int *lenp,
 __be32 *xdr_encode_netobj(__be32 *p, const struct xdr_netobj *);
 __be32 *xdr_decode_netobj(__be32 *p, struct xdr_netobj *);
 
+<<<<<<< HEAD
 void	xdr_encode_pages(struct xdr_buf *, struct page **, unsigned int,
 			 unsigned int);
+=======
+>>>>>>> refs/remotes/origin/master
 void	xdr_inline_pages(struct xdr_buf *, unsigned int,
 			 struct page **, unsigned int, unsigned int);
 void	xdr_terminate_string(struct xdr_buf *, const u32);
@@ -154,6 +161,10 @@ xdr_adjust_iovec(struct kvec *iov, __be32 *p)
 extern void xdr_shift_buf(struct xdr_buf *, size_t);
 extern void xdr_buf_from_iov(struct kvec *, struct xdr_buf *);
 extern int xdr_buf_subsegment(struct xdr_buf *, struct xdr_buf *, unsigned int, unsigned int);
+<<<<<<< HEAD
+=======
+extern void xdr_buf_trim(struct xdr_buf *, unsigned int);
+>>>>>>> refs/remotes/origin/master
 extern int xdr_buf_read_netobj(struct xdr_buf *, struct xdr_netobj *, unsigned int);
 extern int read_bytes_from_xdr_buf(struct xdr_buf *, unsigned int, void *, unsigned int);
 extern int write_bytes_to_xdr_buf(struct xdr_buf *, unsigned int, void *, unsigned int);
@@ -205,6 +216,10 @@ struct xdr_stream {
 	struct kvec *iov;	/* pointer to the current kvec */
 	struct kvec scratch;	/* Scratch buffer */
 	struct page **page_ptr;	/* pointer to the current page */
+<<<<<<< HEAD
+=======
+	unsigned int nwords;	/* Remaining decode buffer length */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -217,12 +232,20 @@ extern void xdr_init_encode(struct xdr_stream *xdr, struct xdr_buf *buf, __be32 
 extern __be32 *xdr_reserve_space(struct xdr_stream *xdr, size_t nbytes);
 extern void xdr_write_pages(struct xdr_stream *xdr, struct page **pages,
 		unsigned int base, unsigned int len);
+<<<<<<< HEAD
+=======
+extern unsigned int xdr_stream_pos(const struct xdr_stream *xdr);
+>>>>>>> refs/remotes/origin/master
 extern void xdr_init_decode(struct xdr_stream *xdr, struct xdr_buf *buf, __be32 *p);
 extern void xdr_init_decode_pages(struct xdr_stream *xdr, struct xdr_buf *buf,
 		struct page **pages, unsigned int len);
 extern void xdr_set_scratch_buffer(struct xdr_stream *xdr, void *buf, size_t buflen);
 extern __be32 *xdr_inline_decode(struct xdr_stream *xdr, size_t nbytes);
+<<<<<<< HEAD
 extern void xdr_read_pages(struct xdr_stream *xdr, unsigned int len);
+=======
+extern unsigned int xdr_read_pages(struct xdr_stream *xdr, unsigned int len);
+>>>>>>> refs/remotes/origin/master
 extern void xdr_enter_page(struct xdr_stream *xdr, unsigned int len);
 extern int xdr_process_buf(struct xdr_buf *buf, unsigned int offset, unsigned int len, int (*actor)(struct scatterlist *, void *), void *data);
 

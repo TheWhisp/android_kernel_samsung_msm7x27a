@@ -17,9 +17,16 @@
 #include <linux/seq_file.h>
 #include <linux/interrupt.h>
 #include <linux/of_platform.h>
+<<<<<<< HEAD
 #include <linux/memblock.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -32,6 +39,8 @@
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __init mpc8536_ds_pic_init(void)
 {
 	struct mpic *mpic;
@@ -57,6 +66,20 @@ void __init mpc8536_ds_pic_init(void)
 	BUG_ON(mpic == NULL);
 	of_node_put(np);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include "mpc85xx.h"
+
+void __init mpc8536_ds_pic_init(void)
+{
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mpic_init(mpic);
 }
 
@@ -65,6 +88,7 @@ void __init mpc8536_ds_pic_init(void)
  */
 static void __init mpc8536_ds_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 	struct pci_controller *hose;
@@ -100,10 +124,20 @@ static void __init mpc8536_ds_setup_arch(void)
 		ppc_md.pci_dma_dev_setup = pci_dma_dev_setup_swiotlb;
 	}
 #endif
+=======
+	if (ppc_md.progress)
+		ppc_md.progress("mpc8536_ds_setup_arch()", 0);
+
+	fsl_pci_assign_primary();
+
+	swiotlb_detect_4g();
+>>>>>>> refs/remotes/origin/master
 
 	printk("MPC8536 DS board from Freescale Semiconductor\n");
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_device_id __initdata mpc8536_ds_ids[] = {
 	{ .type = "soc", },
 	{ .compatible = "soc", },
@@ -117,6 +151,12 @@ static int __init mpc8536_ds_publish_devices(void)
 	return of_platform_bus_probe(NULL, mpc8536_ds_ids, NULL);
 }
 machine_device_initcall(mpc8536_ds, mpc8536_ds_publish_devices);
+=======
+machine_device_initcall(mpc8536_ds, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_arch_initcall(mpc8536_ds, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 
 machine_arch_initcall(mpc8536_ds, swiotlb_setup_bus_notifier);
 

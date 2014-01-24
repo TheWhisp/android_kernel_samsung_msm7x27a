@@ -22,7 +22,11 @@
  *
  */
 
+<<<<<<< HEAD
 #include "seq_oss_legacy.h"
+=======
+#include <sound/seq_oss_legacy.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * awe hardware controls

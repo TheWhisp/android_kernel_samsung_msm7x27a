@@ -1,6 +1,7 @@
 #ifndef _SPARC_TERMBITS_H
 #define _SPARC_TERMBITS_H
 
+<<<<<<< HEAD
 #include <linux/posix_types.h>
 
 typedef unsigned char   cc_t;
@@ -263,4 +264,10 @@ struct ktermios {
 #define	TCSADRAIN	1
 #define	TCSAFLUSH	2
 
+=======
+#include <uapi/asm/termbits.h>
+
+#define VMIN     16
+#define VTIME    17
+>>>>>>> refs/remotes/origin/master
 #endif /* !(_SPARC_TERMBITS_H) */

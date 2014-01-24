@@ -98,13 +98,30 @@ static unsigned int ipr_transop_timeout = 0;
 static unsigned int ipr_debug = 0;
 static unsigned int ipr_max_devs = IPR_DEFAULT_SIS64_DEVS;
 static unsigned int ipr_dual_ioa_raid = 1;
+<<<<<<< HEAD
+=======
+static unsigned int ipr_number_of_msix = 2;
+>>>>>>> refs/remotes/origin/master
 static DEFINE_SPINLOCK(ipr_driver_lock);
 
 /* This table describes the differences between DMA controller chips */
 static const struct ipr_chip_cfg_t ipr_chip_cfg[] = {
 	{ /* Gemstone, Citrine, Obsidian, and Obsidian-E */
 		.mailbox = 0x0042C,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.cache_line_size = 0x20,
+=======
+		.max_cmds = 100,
+		.cache_line_size = 0x20,
+		.clear_isr = 1,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.max_cmds = 100,
+		.cache_line_size = 0x20,
+		.clear_isr = 1,
+		.iopoll_weight = 0,
+>>>>>>> refs/remotes/origin/master
 		{
 			.set_interrupt_mask_reg = 0x0022C,
 			.clr_interrupt_mask_reg = 0x00230,
@@ -126,7 +143,20 @@ static const struct ipr_chip_cfg_t ipr_chip_cfg[] = {
 	},
 	{ /* Snipe and Scamp */
 		.mailbox = 0x0052C,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.cache_line_size = 0x20,
+=======
+		.max_cmds = 100,
+		.cache_line_size = 0x20,
+		.clear_isr = 1,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.max_cmds = 100,
+		.cache_line_size = 0x20,
+		.clear_isr = 1,
+		.iopoll_weight = 0,
+>>>>>>> refs/remotes/origin/master
 		{
 			.set_interrupt_mask_reg = 0x00288,
 			.clr_interrupt_mask_reg = 0x0028C,
@@ -148,7 +178,20 @@ static const struct ipr_chip_cfg_t ipr_chip_cfg[] = {
 	},
 	{ /* CRoC */
 		.mailbox = 0x00044,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.cache_line_size = 0x20,
+=======
+		.max_cmds = 1000,
+		.cache_line_size = 0x20,
+		.clear_isr = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.max_cmds = 1000,
+		.cache_line_size = 0x20,
+		.clear_isr = 0,
+		.iopoll_weight = 64,
+>>>>>>> refs/remotes/origin/master
 		{
 			.set_interrupt_mask_reg = 0x00010,
 			.clr_interrupt_mask_reg = 0x00018,
@@ -183,10 +226,21 @@ static const struct ipr_chip_t ipr_chip[] = {
 	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_SNIPE, IPR_USE_LSI, IPR_SIS32, IPR_PCI_CFG, &ipr_chip_cfg[1] },
 	{ PCI_VENDOR_ID_ADAPTEC2, PCI_DEVICE_ID_ADAPTEC2_SCAMP, IPR_USE_LSI, IPR_SIS32, IPR_PCI_CFG, &ipr_chip_cfg[1] },
 	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROC_FPGA_E2, IPR_USE_MSI, IPR_SIS64, IPR_MMIO, &ipr_chip_cfg[2] },
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROC_ASIC_E2, IPR_USE_MSI, IPR_SIS64, IPR_MMIO, &ipr_chip_cfg[2] }
+=======
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE, IPR_USE_MSI, IPR_SIS64, IPR_MMIO, &ipr_chip_cfg[2] }
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int ipr_max_bus_speeds [] = {
+=======
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE, IPR_USE_MSI, IPR_SIS64, IPR_MMIO, &ipr_chip_cfg[2] }
+};
+
+static int ipr_max_bus_speeds[] = {
+>>>>>>> refs/remotes/origin/master
 	IPR_80MBs_SCSI_RATE, IPR_U160_SCSI_RATE, IPR_U320_SCSI_RATE
 };
 
@@ -209,6 +263,11 @@ MODULE_PARM_DESC(dual_ioa_raid, "Enable dual adapter RAID support. Set to 1 to e
 module_param_named(max_devs, ipr_max_devs, int, 0);
 MODULE_PARM_DESC(max_devs, "Specify the maximum number of physical devices. "
 		 "[Default=" __stringify(IPR_DEFAULT_SIS64_DEVS) "]");
+<<<<<<< HEAD
+=======
+module_param_named(number_of_msix, ipr_number_of_msix, int, 0);
+MODULE_PARM_DESC(number_of_msix, "Specify the number of MSIX interrupts to use on capable adapters (1 - 5).  (default:2)");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 MODULE_VERSION(IPR_DRIVER_VERSION);
 
@@ -269,12 +328,30 @@ struct ipr_error_table_t ipr_error_table[] = {
 	"FFF6: Failure prediction threshold exceeded"},
 	{0x015D9200, 0, IPR_DEFAULT_LOG_LEVEL,
 	"8009: Impending cache battery pack failure"},
+<<<<<<< HEAD
 	{0x02040400, 0, 0,
 	"34FF: Disk device format in progress"},
+=======
+	{0x02040100, 0, 0,
+	"Logical Unit in process of becoming ready"},
+	{0x02040200, 0, 0,
+	"Initializing command required"},
+	{0x02040400, 0, 0,
+	"34FF: Disk device format in progress"},
+	{0x02040C00, 0, 0,
+	"Logical unit not accessible, target port in unavailable state"},
+>>>>>>> refs/remotes/origin/master
 	{0x02048000, 0, IPR_DEFAULT_LOG_LEVEL,
 	"9070: IOA requested reset"},
 	{0x023F0000, 0, 0,
 	"Synchronization required"},
+<<<<<<< HEAD
+=======
+	{0x02408500, 0, 0,
+	"IOA microcode download required"},
+	{0x02408600, 0, 0,
+	"Device bus connection is prohibited by host"},
+>>>>>>> refs/remotes/origin/master
 	{0x024E0000, 0, 0,
 	"No ready, IOA shutdown"},
 	{0x025A0000, 0, 0,
@@ -373,6 +450,11 @@ struct ipr_error_table_t ipr_error_table[] = {
 	"4030: Incorrect multipath connection"},
 	{0x04679000, 0, IPR_DEFAULT_LOG_LEVEL,
 	"4110: Unsupported enclosure function"},
+<<<<<<< HEAD
+=======
+	{0x04679800, 0, IPR_DEFAULT_LOG_LEVEL,
+	"4120: SAS cable VPD cannot be read"},
+>>>>>>> refs/remotes/origin/master
 	{0x046E0000, 0, IPR_DEFAULT_LOG_LEVEL,
 	"FFF4: Command to logical unit failed"},
 	{0x05240000, 1, 0,
@@ -395,10 +477,24 @@ struct ipr_error_table_t ipr_error_table[] = {
 	"Illegal request, command sequence error"},
 	{0x052C8000, 1, 0,
 	"Illegal request, dual adapter support not enabled"},
+<<<<<<< HEAD
+=======
+	{0x052C8100, 1, 0,
+	"Illegal request, another cable connector was physically disabled"},
+	{0x054E8000, 1, 0,
+	"Illegal request, inconsistent group id/group count"},
+>>>>>>> refs/remotes/origin/master
 	{0x06040500, 0, IPR_DEFAULT_LOG_LEVEL,
 	"9031: Array protection temporarily suspended, protection resuming"},
 	{0x06040600, 0, IPR_DEFAULT_LOG_LEVEL,
 	"9040: Array protection temporarily suspended, protection resuming"},
+<<<<<<< HEAD
+=======
+	{0x060B0100, 0, IPR_DEFAULT_LOG_LEVEL,
+	"4080: IOA exceeded maximum operating temperature"},
+	{0x060B8000, 0, IPR_DEFAULT_LOG_LEVEL,
+	"4085: Service required"},
+>>>>>>> refs/remotes/origin/master
 	{0x06288000, 0, IPR_DEFAULT_LOG_LEVEL,
 	"3140: Device bus not ready to ready transition"},
 	{0x06290000, 0, IPR_DEFAULT_LOG_LEVEL,
@@ -411,6 +507,11 @@ struct ipr_error_table_t ipr_error_table[] = {
 	"FFFB: SCSI bus was reset by another initiator"},
 	{0x063F0300, 0, IPR_DEFAULT_LOG_LEVEL,
 	"3029: A device replacement has occurred"},
+<<<<<<< HEAD
+=======
+	{0x063F8300, 0, IPR_DEFAULT_LOG_LEVEL,
+	"4102: Device bus fabric performance degradation"},
+>>>>>>> refs/remotes/origin/master
 	{0x064C8000, 0, IPR_DEFAULT_LOG_LEVEL,
 	"9051: IOA cache data exists for a missing or failed device"},
 	{0x064C8100, 0, IPR_DEFAULT_LOG_LEVEL,
@@ -433,6 +534,17 @@ struct ipr_error_table_t ipr_error_table[] = {
 	"9076: Configuration error, missing remote IOA"},
 	{0x06679100, 0, IPR_DEFAULT_LOG_LEVEL,
 	"4050: Enclosure does not support a required multipath function"},
+<<<<<<< HEAD
+=======
+	{0x06679800, 0, IPR_DEFAULT_LOG_LEVEL,
+	"4121: Configuration error, required cable is missing"},
+	{0x06679900, 0, IPR_DEFAULT_LOG_LEVEL,
+	"4122: Cable is not plugged into the correct location on remote IOA"},
+	{0x06679A00, 0, IPR_DEFAULT_LOG_LEVEL,
+	"4123: Configuration error, invalid cable vital product data"},
+	{0x06679B00, 0, IPR_DEFAULT_LOG_LEVEL,
+	"4124: Configuration error, both cable ends are plugged into the same IOA"},
+>>>>>>> refs/remotes/origin/master
 	{0x06690000, 0, IPR_DEFAULT_LOG_LEVEL,
 	"4070: Logically bad block written on device"},
 	{0x06690200, 0, IPR_DEFAULT_LOG_LEVEL,
@@ -495,10 +607,25 @@ struct ipr_error_table_t ipr_error_table[] = {
 	"9062: One or more disks are missing from an array"},
 	{0x07279900, 0, IPR_DEFAULT_LOG_LEVEL,
 	"9063: Maximum number of functional arrays has been exceeded"},
+<<<<<<< HEAD
 	{0x0B260000, 0, 0,
 	"Aborted command, invalid descriptor"},
 	{0x0B5A0000, 0, 0,
 	"Command terminated by host"}
+=======
+	{0x07279A00, 0, 0,
+	"Data protect, other volume set problem"},
+	{0x0B260000, 0, 0,
+	"Aborted command, invalid descriptor"},
+	{0x0B3F9000, 0, 0,
+	"Target operating conditions have changed, dual adapter takeover"},
+	{0x0B530200, 0, 0,
+	"Aborted command, medium removal prevented"},
+	{0x0B5A0000, 0, 0,
+	"Command terminated by host"},
+	{0x0B5B8000, 0, 0,
+	"Aborted command, command terminated by host"}
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct ipr_ses_table_entry ipr_ses_table[] = {
@@ -543,7 +670,12 @@ static void ipr_trc_hook(struct ipr_cmnd *ipr_cmd,
 	struct ipr_trace_entry *trace_entry;
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
 
+<<<<<<< HEAD
 	trace_entry = &ioa_cfg->trace[ioa_cfg->trace_index++];
+=======
+	trace_entry = &ioa_cfg->trace[atomic_add_return
+			(1, &ioa_cfg->trace_index)%IPR_NUM_TRACE_ENTRIES];
+>>>>>>> refs/remotes/origin/master
 	trace_entry->time = jiffies;
 	trace_entry->op_code = ipr_cmd->ioarcb.cmd_pkt.cdb[0];
 	trace_entry->type = type;
@@ -554,12 +686,39 @@ static void ipr_trc_hook(struct ipr_cmnd *ipr_cmd,
 	trace_entry->cmd_index = ipr_cmd->cmd_index & 0xff;
 	trace_entry->res_handle = ipr_cmd->ioarcb.res_handle;
 	trace_entry->u.add_data = add_data;
+<<<<<<< HEAD
 }
 #else
 #define ipr_trc_hook(ipr_cmd, type, add_data) do { } while(0)
 #endif
 
 /**
+=======
+	wmb();
+}
+#else
+#define ipr_trc_hook(ipr_cmd, type, add_data) do { } while (0)
+#endif
+
+/**
+ * ipr_lock_and_done - Acquire lock and complete command
+ * @ipr_cmd:	ipr command struct
+ *
+ * Return value:
+ *	none
+ **/
+static void ipr_lock_and_done(struct ipr_cmnd *ipr_cmd)
+{
+	unsigned long lock_flags;
+	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
+
+	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+	ipr_cmd->done(ipr_cmd);
+	spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * ipr_reinit_ipr_cmnd - Re-initialize an IPR Cmnd block for reuse
  * @ipr_cmd:	ipr command struct
  *
@@ -572,8 +731,16 @@ static void ipr_reinit_ipr_cmnd(struct ipr_cmnd *ipr_cmd)
 	struct ipr_ioasa *ioasa = &ipr_cmd->s.ioasa;
 	struct ipr_ioasa64 *ioasa64 = &ipr_cmd->s.ioasa64;
 	dma_addr_t dma_addr = ipr_cmd->dma_addr;
+<<<<<<< HEAD
 
 	memset(&ioarcb->cmd_pkt, 0, sizeof(struct ipr_cmd_pkt));
+=======
+	int hrrq_id;
+
+	hrrq_id = ioarcb->cmd_pkt.hrrq_id;
+	memset(&ioarcb->cmd_pkt, 0, sizeof(struct ipr_cmd_pkt));
+	ioarcb->cmd_pkt.hrrq_id = hrrq_id;
+>>>>>>> refs/remotes/origin/master
 	ioarcb->data_transfer_length = 0;
 	ioarcb->read_data_transfer_length = 0;
 	ioarcb->ioadl_len = 0;
@@ -605,22 +772,36 @@ static void ipr_reinit_ipr_cmnd(struct ipr_cmnd *ipr_cmd)
  * Return value:
  * 	none
  **/
+<<<<<<< HEAD
 static void ipr_init_ipr_cmnd(struct ipr_cmnd *ipr_cmd)
+=======
+static void ipr_init_ipr_cmnd(struct ipr_cmnd *ipr_cmd,
+			      void (*fast_done) (struct ipr_cmnd *))
+>>>>>>> refs/remotes/origin/master
 {
 	ipr_reinit_ipr_cmnd(ipr_cmd);
 	ipr_cmd->u.scratch = 0;
 	ipr_cmd->sibling = NULL;
+<<<<<<< HEAD
+=======
+	ipr_cmd->fast_done = fast_done;
+>>>>>>> refs/remotes/origin/master
 	init_timer(&ipr_cmd->timer);
 }
 
 /**
+<<<<<<< HEAD
  * ipr_get_free_ipr_cmnd - Get a free IPR Cmnd block
+=======
+ * __ipr_get_free_ipr_cmnd - Get a free IPR Cmnd block
+>>>>>>> refs/remotes/origin/master
  * @ioa_cfg:	ioa config struct
  *
  * Return value:
  * 	pointer to ipr command struct
  **/
 static
+<<<<<<< HEAD
 struct ipr_cmnd *ipr_get_free_ipr_cmnd(struct ipr_ioa_cfg *ioa_cfg)
 {
 	struct ipr_cmnd *ipr_cmd;
@@ -629,6 +810,35 @@ struct ipr_cmnd *ipr_get_free_ipr_cmnd(struct ipr_ioa_cfg *ioa_cfg)
 	list_del(&ipr_cmd->queue);
 	ipr_init_ipr_cmnd(ipr_cmd);
 
+=======
+struct ipr_cmnd *__ipr_get_free_ipr_cmnd(struct ipr_hrr_queue *hrrq)
+{
+	struct ipr_cmnd *ipr_cmd = NULL;
+
+	if (likely(!list_empty(&hrrq->hrrq_free_q))) {
+		ipr_cmd = list_entry(hrrq->hrrq_free_q.next,
+			struct ipr_cmnd, queue);
+		list_del(&ipr_cmd->queue);
+	}
+
+
+	return ipr_cmd;
+}
+
+/**
+ * ipr_get_free_ipr_cmnd - Get a free IPR Cmnd block and initialize it
+ * @ioa_cfg:	ioa config struct
+ *
+ * Return value:
+ *	pointer to ipr command struct
+ **/
+static
+struct ipr_cmnd *ipr_get_free_ipr_cmnd(struct ipr_ioa_cfg *ioa_cfg)
+{
+	struct ipr_cmnd *ipr_cmd =
+		__ipr_get_free_ipr_cmnd(&ioa_cfg->hrrq[IPR_INIT_HRRQ]);
+	ipr_init_ipr_cmnd(ipr_cmd, ipr_lock_and_done);
+>>>>>>> refs/remotes/origin/master
 	return ipr_cmd;
 }
 
@@ -647,9 +857,21 @@ static void ipr_mask_and_clear_interrupts(struct ipr_ioa_cfg *ioa_cfg,
 					  u32 clr_ints)
 {
 	volatile u32 int_reg;
+<<<<<<< HEAD
 
 	/* Stop new interrupts */
 	ioa_cfg->allow_interrupts = 0;
+=======
+	int i;
+
+	/* Stop new interrupts */
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		spin_lock(&ioa_cfg->hrrq[i]._lock);
+		ioa_cfg->hrrq[i].allow_interrupts = 0;
+		spin_unlock(&ioa_cfg->hrrq[i]._lock);
+	}
+	wmb();
+>>>>>>> refs/remotes/origin/master
 
 	/* Set interrupt mask to stop all new interrupts */
 	if (ioa_cfg->sis64)
@@ -722,13 +944,20 @@ static int ipr_set_pcix_cmd_reg(struct ipr_ioa_cfg *ioa_cfg)
  **/
 static void ipr_sata_eh_done(struct ipr_cmnd *ipr_cmd)
 {
+<<<<<<< HEAD
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ata_queued_cmd *qc = ipr_cmd->qc;
 	struct ipr_sata_port *sata_port = qc->ap->private_data;
 
 	qc->err_mask |= AC_ERR_OTHER;
 	sata_port->ioasa.status |= ATA_BUSY;
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 	ata_qc_complete(qc);
 }
 
@@ -744,14 +973,21 @@ static void ipr_sata_eh_done(struct ipr_cmnd *ipr_cmd)
  **/
 static void ipr_scsi_eh_done(struct ipr_cmnd *ipr_cmd)
 {
+<<<<<<< HEAD
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct scsi_cmnd *scsi_cmd = ipr_cmd->scsi_cmd;
 
 	scsi_cmd->result |= (DID_ERROR << 16);
 
 	scsi_dma_unmap(ipr_cmd->scsi_cmd);
 	scsi_cmd->scsi_done(scsi_cmd);
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -766,6 +1002,7 @@ static void ipr_scsi_eh_done(struct ipr_cmnd *ipr_cmd)
 static void ipr_fail_all_ops(struct ipr_ioa_cfg *ioa_cfg)
 {
 	struct ipr_cmnd *ipr_cmd, *temp;
+<<<<<<< HEAD
 
 	ENTER;
 	list_for_each_entry_safe(ipr_cmd, temp, &ioa_cfg->pending_q, queue) {
@@ -784,6 +1021,34 @@ static void ipr_fail_all_ops(struct ipr_ioa_cfg *ioa_cfg)
 		ipr_cmd->done(ipr_cmd);
 	}
 
+=======
+	struct ipr_hrr_queue *hrrq;
+
+	ENTER;
+	for_each_hrrq(hrrq, ioa_cfg) {
+		spin_lock(&hrrq->_lock);
+		list_for_each_entry_safe(ipr_cmd,
+					temp, &hrrq->hrrq_pending_q, queue) {
+			list_del(&ipr_cmd->queue);
+
+			ipr_cmd->s.ioasa.hdr.ioasc =
+				cpu_to_be32(IPR_IOASC_IOA_WAS_RESET);
+			ipr_cmd->s.ioasa.hdr.ilid =
+				cpu_to_be32(IPR_DRIVER_ILID);
+
+			if (ipr_cmd->scsi_cmd)
+				ipr_cmd->done = ipr_scsi_eh_done;
+			else if (ipr_cmd->qc)
+				ipr_cmd->done = ipr_sata_eh_done;
+
+			ipr_trc_hook(ipr_cmd, IPR_TRACE_FINISH,
+				     IPR_IOASC_IOA_WAS_RESET);
+			del_timer(&ipr_cmd->timer);
+			ipr_cmd->done(ipr_cmd);
+		}
+		spin_unlock(&hrrq->_lock);
+	}
+>>>>>>> refs/remotes/origin/master
 	LEAVE;
 }
 
@@ -833,9 +1098,13 @@ static void ipr_do_req(struct ipr_cmnd *ipr_cmd,
 		       void (*done) (struct ipr_cmnd *),
 		       void (*timeout_func) (struct ipr_cmnd *), u32 timeout)
 {
+<<<<<<< HEAD
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
 
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->pending_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_pending_q);
+>>>>>>> refs/remotes/origin/master
 
 	ipr_cmd->done = done;
 
@@ -847,8 +1116,14 @@ static void ipr_do_req(struct ipr_cmnd *ipr_cmd,
 
 	ipr_trc_hook(ipr_cmd, IPR_TRACE_START, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mb();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ipr_send_command(ipr_cmd);
 }
 
@@ -938,6 +1213,17 @@ static void ipr_send_blocking_cmd(struct ipr_cmnd *ipr_cmd,
 	spin_lock_irq(ioa_cfg->host->host_lock);
 }
 
+<<<<<<< HEAD
+=======
+static int ipr_get_hrrq_index(struct ipr_ioa_cfg *ioa_cfg)
+{
+	if (ioa_cfg->hrrq_num == 1)
+		return 0;
+	else
+		return (atomic_add_return(1, &ioa_cfg->hrrq_index) % (ioa_cfg->hrrq_num - 1)) + 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * ipr_send_hcam - Send an HCAM to the adapter.
  * @ioa_cfg:	ioa config struct
@@ -957,9 +1243,15 @@ static void ipr_send_hcam(struct ipr_ioa_cfg *ioa_cfg, u8 type,
 	struct ipr_cmnd *ipr_cmd;
 	struct ipr_ioarcb *ioarcb;
 
+<<<<<<< HEAD
 	if (ioa_cfg->allow_cmds) {
 		ipr_cmd = ipr_get_free_ipr_cmnd(ioa_cfg);
 		list_add_tail(&ipr_cmd->queue, &ioa_cfg->pending_q);
+=======
+	if (ioa_cfg->hrrq[IPR_INIT_HRRQ].allow_cmds) {
+		ipr_cmd = ipr_get_free_ipr_cmnd(ioa_cfg);
+		list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_pending_q);
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&hostrcb->queue, &ioa_cfg->hostrcb_pending_q);
 
 		ipr_cmd->u.hostrcb = hostrcb;
@@ -982,8 +1274,14 @@ static void ipr_send_hcam(struct ipr_ioa_cfg *ioa_cfg, u8 type,
 
 		ipr_trc_hook(ipr_cmd, IPR_TRACE_START, IPR_IOA_RES_ADDR);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mb();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ipr_send_command(ipr_cmd);
 	} else {
 		list_add_tail(&hostrcb->queue, &ioa_cfg->hostrcb_free_q);
@@ -1000,7 +1298,11 @@ static void ipr_send_hcam(struct ipr_ioa_cfg *ioa_cfg, u8 type,
  **/
 static void ipr_update_ata_class(struct ipr_resource_entry *res, unsigned int proto)
 {
+<<<<<<< HEAD
 	switch(proto) {
+=======
+	switch (proto) {
+>>>>>>> refs/remotes/origin/master
 	case IPR_PROTO_SATA:
 	case IPR_PROTO_SAS_STP:
 		res->ata_class = ATA_DEV_ATA;
@@ -1131,14 +1433,25 @@ static int ipr_is_same_device(struct ipr_resource_entry *res,
 }
 
 /**
+<<<<<<< HEAD
  * ipr_format_res_path - Format the resource path for printing.
  * @res_path:	resource path
  * @buf:	buffer
+=======
+ * __ipr_format_res_path - Format the resource path for printing.
+ * @res_path:	resource path
+ * @buf:	buffer
+ * @len:	length of buffer provided
+>>>>>>> refs/remotes/origin/master
  *
  * Return value:
  * 	pointer to buffer
  **/
+<<<<<<< HEAD
 static char *ipr_format_res_path(u8 *res_path, char *buffer, int len)
+=======
+static char *__ipr_format_res_path(u8 *res_path, char *buffer, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	char *p = buffer;
@@ -1152,6 +1465,30 @@ static char *ipr_format_res_path(u8 *res_path, char *buffer, int len)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * ipr_format_res_path - Format the resource path for printing.
+ * @ioa_cfg:	ioa config struct
+ * @res_path:	resource path
+ * @buf:	buffer
+ * @len:	length of buffer provided
+ *
+ * Return value:
+ *	pointer to buffer
+ **/
+static char *ipr_format_res_path(struct ipr_ioa_cfg *ioa_cfg,
+				 u8 *res_path, char *buffer, int len)
+{
+	char *p = buffer;
+
+	*p = '\0';
+	p += snprintf(p, buffer + len - p, "%d/", ioa_cfg->host->host_no);
+	__ipr_format_res_path(res_path, p, len - (buffer - p));
+	return buffer;
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * ipr_update_res_entry - Update the resource entry.
  * @res:	resource entry struct
  * @cfgtew:	config table entry wrapper struct
@@ -1191,8 +1528,13 @@ static void ipr_update_res_entry(struct ipr_resource_entry *res,
 
 		if (res->sdev && new_path)
 			sdev_printk(KERN_INFO, res->sdev, "Resource path: %s\n",
+<<<<<<< HEAD
 				    ipr_format_res_path(res->res_path, buffer,
 							sizeof(buffer)));
+=======
+				    ipr_format_res_path(res->ioa_cfg,
+					res->res_path, buffer, sizeof(buffer)));
+>>>>>>> refs/remotes/origin/master
 	} else {
 		res->flags = cfgtew->u.cfgte->flags;
 		if (res->flags & IPR_IS_IOA_RESOURCE)
@@ -1328,7 +1670,11 @@ static void ipr_process_ccn(struct ipr_cmnd *ipr_cmd)
 	u32 ioasc = be32_to_cpu(ipr_cmd->s.ioasa.hdr.ioasc);
 
 	list_del(&hostrcb->queue);
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 
 	if (ioasc) {
 		if (ioasc != IPR_IOASC_IOA_WAS_RESET)
@@ -1578,8 +1924,13 @@ static void ipr_log_sis64_config_error(struct ipr_ioa_cfg *ioa_cfg,
 		ipr_err_separator;
 
 		ipr_err("Device %d : %s", i + 1,
+<<<<<<< HEAD
 			 ipr_format_res_path(dev_entry->res_path, buffer,
 					     sizeof(buffer)));
+=======
+			__ipr_format_res_path(dev_entry->res_path,
+					      buffer, sizeof(buffer)));
+>>>>>>> refs/remotes/origin/master
 		ipr_log_ext_vpd(&dev_entry->vpd);
 
 		ipr_err("-----New Device Information-----\n");
@@ -1925,14 +2276,25 @@ static void ipr_log64_fabric_path(struct ipr_hostrcb *hostrcb,
 
 			ipr_hcam_err(hostrcb, "%s %s: Resource Path=%s\n",
 				     path_active_desc[i].desc, path_state_desc[j].desc,
+<<<<<<< HEAD
 				     ipr_format_res_path(fabric->res_path, buffer,
 							 sizeof(buffer)));
+=======
+				     ipr_format_res_path(hostrcb->ioa_cfg,
+						fabric->res_path,
+						buffer, sizeof(buffer)));
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 	}
 
 	ipr_err("Path state=%02X Resource Path=%s\n", path_state,
+<<<<<<< HEAD
 		ipr_format_res_path(fabric->res_path, buffer, sizeof(buffer)));
+=======
+		ipr_format_res_path(hostrcb->ioa_cfg, fabric->res_path,
+				    buffer, sizeof(buffer)));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct {
@@ -2073,18 +2435,33 @@ static void ipr_log64_path_elem(struct ipr_hostrcb *hostrcb,
 
 			ipr_hcam_err(hostrcb, "%s %s: Resource Path=%s, Link rate=%s, WWN=%08X%08X\n",
 				     path_status_desc[j].desc, path_type_desc[i].desc,
+<<<<<<< HEAD
 				     ipr_format_res_path(cfg->res_path, buffer,
 							 sizeof(buffer)),
 				     link_rate[cfg->link_rate & IPR_PHY_LINK_RATE_MASK],
 				     be32_to_cpu(cfg->wwid[0]), be32_to_cpu(cfg->wwid[1]));
+=======
+				     ipr_format_res_path(hostrcb->ioa_cfg,
+					cfg->res_path, buffer, sizeof(buffer)),
+					link_rate[cfg->link_rate & IPR_PHY_LINK_RATE_MASK],
+					be32_to_cpu(cfg->wwid[0]),
+					be32_to_cpu(cfg->wwid[1]));
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 	}
 	ipr_hcam_err(hostrcb, "Path element=%02X: Resource Path=%s, Link rate=%s "
 		     "WWN=%08X%08X\n", cfg->type_status,
+<<<<<<< HEAD
 		     ipr_format_res_path(cfg->res_path, buffer, sizeof(buffer)),
 		     link_rate[cfg->link_rate & IPR_PHY_LINK_RATE_MASK],
 		     be32_to_cpu(cfg->wwid[0]), be32_to_cpu(cfg->wwid[1]));
+=======
+		     ipr_format_res_path(hostrcb->ioa_cfg,
+			cfg->res_path, buffer, sizeof(buffer)),
+			link_rate[cfg->link_rate & IPR_PHY_LINK_RATE_MASK],
+			be32_to_cpu(cfg->wwid[0]), be32_to_cpu(cfg->wwid[1]));
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2147,7 +2524,12 @@ static void ipr_log_sis64_array_error(struct ipr_ioa_cfg *ioa_cfg,
 
 	ipr_err("RAID %s Array Configuration: %s\n",
 		error->protection_level,
+<<<<<<< HEAD
 		ipr_format_res_path(error->last_res_path, buffer, sizeof(buffer)));
+=======
+		ipr_format_res_path(ioa_cfg, error->last_res_path,
+			buffer, sizeof(buffer)));
+>>>>>>> refs/remotes/origin/master
 
 	ipr_err_separator;
 
@@ -2168,11 +2550,20 @@ static void ipr_log_sis64_array_error(struct ipr_ioa_cfg *ioa_cfg,
 		ipr_err("Array Member %d:\n", i);
 		ipr_log_ext_vpd(&array_entry->vpd);
 		ipr_err("Current Location: %s\n",
+<<<<<<< HEAD
 			 ipr_format_res_path(array_entry->res_path, buffer,
 					     sizeof(buffer)));
 		ipr_err("Expected Location: %s\n",
 			 ipr_format_res_path(array_entry->expected_res_path,
 					     buffer, sizeof(buffer)));
+=======
+			 ipr_format_res_path(ioa_cfg, array_entry->res_path,
+				buffer, sizeof(buffer)));
+		ipr_err("Expected Location: %s\n",
+			 ipr_format_res_path(ioa_cfg,
+				array_entry->expected_res_path,
+				buffer, sizeof(buffer)));
+>>>>>>> refs/remotes/origin/master
 
 		ipr_err_separator;
 	}
@@ -2374,7 +2765,11 @@ static void ipr_process_error(struct ipr_cmnd *ipr_cmd)
 		fd_ioasc = be32_to_cpu(hostrcb->hcam.u.error.fd_ioasc);
 
 	list_del(&hostrcb->queue);
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 
 	if (!ioasc) {
 		ipr_handle_log_data(ioa_cfg, hostrcb);
@@ -2456,6 +2851,7 @@ static void ipr_oper_timeout(struct ipr_cmnd *ipr_cmd)
 }
 
 /**
+<<<<<<< HEAD
  * ipr_reset_reload - Reset/Reload the IOA
  * @ioa_cfg:		ioa config struct
  * @shutdown_type:	shutdown type
@@ -2486,6 +2882,8 @@ static int ipr_reset_reload(struct ipr_ioa_cfg *ioa_cfg,
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * ipr_find_ses_entry - Find matching SES in SES table
  * @res:	resource entry struct of SES
  *
@@ -2901,7 +3299,15 @@ static void ipr_get_ioa_dump(struct ipr_ioa_cfg *ioa_cfg, struct ipr_dump *dump)
 
 	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ioa_cfg->sdt_state != GET_DUMP) {
+=======
+	if (ioa_cfg->sdt_state != READ_DUMP) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ioa_cfg->sdt_state != READ_DUMP) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
 		return;
 	}
@@ -3041,7 +3447,11 @@ static void ipr_get_ioa_dump(struct ipr_ioa_cfg *ioa_cfg, struct ipr_dump *dump)
 }
 
 #else
+<<<<<<< HEAD
 #define ipr_get_ioa_dump(ioa_cfg, dump) do { } while(0)
+=======
+#define ipr_get_ioa_dump(ioa_cfg, dump) do { } while (0)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /**
@@ -3053,7 +3463,11 @@ static void ipr_get_ioa_dump(struct ipr_ioa_cfg *ioa_cfg, struct ipr_dump *dump)
  **/
 static void ipr_release_dump(struct kref *kref)
 {
+<<<<<<< HEAD
 	struct ipr_dump *dump = container_of(kref,struct ipr_dump,kref);
+=======
+	struct ipr_dump *dump = container_of(kref, struct ipr_dump, kref);
+>>>>>>> refs/remotes/origin/master
 	struct ipr_ioa_cfg *ioa_cfg = dump->ioa_cfg;
 	unsigned long lock_flags = 0;
 	int i;
@@ -3097,7 +3511,15 @@ static void ipr_worker_thread(struct work_struct *work)
 	ENTER;
 	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ioa_cfg->sdt_state == GET_DUMP) {
+=======
+	if (ioa_cfg->sdt_state == READ_DUMP) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ioa_cfg->sdt_state == READ_DUMP) {
+>>>>>>> refs/remotes/origin/master
 		dump = ioa_cfg->dump;
 		if (!dump) {
 			spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
@@ -3109,7 +3531,15 @@ static void ipr_worker_thread(struct work_struct *work)
 		kref_put(&dump->kref, ipr_release_dump);
 
 		spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ioa_cfg->sdt_state == DUMP_OBTAINED)
+=======
+		if (ioa_cfg->sdt_state == DUMP_OBTAINED && !ioa_cfg->dump_timeout)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ioa_cfg->sdt_state == DUMP_OBTAINED && !ioa_cfg->dump_timeout)
+>>>>>>> refs/remotes/origin/master
 			ipr_initiate_ioa_reset(ioa_cfg, IPR_SHUTDOWN_NONE);
 		spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
 		return;
@@ -3118,7 +3548,12 @@ static void ipr_worker_thread(struct work_struct *work)
 restart:
 	do {
 		did_work = 0;
+<<<<<<< HEAD
 		if (!ioa_cfg->allow_cmds || !ioa_cfg->allow_ml_add_del) {
+=======
+		if (!ioa_cfg->hrrq[IPR_INIT_HRRQ].allow_cmds ||
+		    !ioa_cfg->allow_ml_add_del) {
+>>>>>>> refs/remotes/origin/master
 			spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
 			return;
 		}
@@ -3140,7 +3575,11 @@ restart:
 				break;
 			}
 		}
+<<<<<<< HEAD
 	} while(did_work);
+=======
+	} while (did_work);
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry(res, &ioa_cfg->used_res_q, queue) {
 		if (res->add_to_ml) {
@@ -3266,7 +3705,11 @@ static ssize_t ipr_show_log_level(struct device *dev,
  * 	number of bytes printed to buffer
  **/
 static ssize_t ipr_store_log_level(struct device *dev,
+<<<<<<< HEAD
 			           struct device_attribute *attr,
+=======
+				   struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 				   const char *buf, size_t count)
 {
 	struct Scsi_Host *shost = class_to_shost(dev);
@@ -3313,7 +3756,11 @@ static ssize_t ipr_store_diagnostics(struct device *dev,
 		return -EACCES;
 
 	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+<<<<<<< HEAD
 	while(ioa_cfg->in_reset_reload) {
+=======
+	while (ioa_cfg->in_reset_reload) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
 		wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
 		spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
@@ -3366,7 +3813,11 @@ static ssize_t ipr_show_adapter_state(struct device *dev,
 	int len;
 
 	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+<<<<<<< HEAD
 	if (ioa_cfg->ioa_is_dead)
+=======
+	if (ioa_cfg->hrrq[IPR_INIT_HRRQ].ioa_is_dead)
+>>>>>>> refs/remotes/origin/master
 		len = snprintf(buf, PAGE_SIZE, "offline\n");
 	else
 		len = snprintf(buf, PAGE_SIZE, "online\n");
@@ -3392,14 +3843,29 @@ static ssize_t ipr_store_adapter_state(struct device *dev,
 	struct Scsi_Host *shost = class_to_shost(dev);
 	struct ipr_ioa_cfg *ioa_cfg = (struct ipr_ioa_cfg *)shost->hostdata;
 	unsigned long lock_flags;
+<<<<<<< HEAD
 	int result = count;
+=======
+	int result = count, i;
+>>>>>>> refs/remotes/origin/master
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EACCES;
 
 	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+<<<<<<< HEAD
 	if (ioa_cfg->ioa_is_dead && !strncmp(buf, "online", 6)) {
 		ioa_cfg->ioa_is_dead = 0;
+=======
+	if (ioa_cfg->hrrq[IPR_INIT_HRRQ].ioa_is_dead &&
+	    !strncmp(buf, "online", 6)) {
+		for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+			spin_lock(&ioa_cfg->hrrq[i]._lock);
+			ioa_cfg->hrrq[i].ioa_is_dead = 0;
+			spin_unlock(&ioa_cfg->hrrq[i]._lock);
+		}
+		wmb();
+>>>>>>> refs/remotes/origin/master
 		ioa_cfg->reset_retries = 0;
 		ioa_cfg->in_ioa_bringdown = 0;
 		ipr_initiate_ioa_reset(ioa_cfg, IPR_SHUTDOWN_NONE);
@@ -3459,6 +3925,98 @@ static struct device_attribute ipr_ioa_reset_attr = {
 	.store = ipr_store_reset_adapter
 };
 
+<<<<<<< HEAD
+=======
+static int ipr_iopoll(struct blk_iopoll *iop, int budget);
+ /**
+ * ipr_show_iopoll_weight - Show ipr polling mode
+ * @dev:	class device struct
+ * @buf:	buffer
+ *
+ * Return value:
+ *	number of bytes printed to buffer
+ **/
+static ssize_t ipr_show_iopoll_weight(struct device *dev,
+				   struct device_attribute *attr, char *buf)
+{
+	struct Scsi_Host *shost = class_to_shost(dev);
+	struct ipr_ioa_cfg *ioa_cfg = (struct ipr_ioa_cfg *)shost->hostdata;
+	unsigned long lock_flags = 0;
+	int len;
+
+	spin_lock_irqsave(shost->host_lock, lock_flags);
+	len = snprintf(buf, PAGE_SIZE, "%d\n", ioa_cfg->iopoll_weight);
+	spin_unlock_irqrestore(shost->host_lock, lock_flags);
+
+	return len;
+}
+
+/**
+ * ipr_store_iopoll_weight - Change the adapter's polling mode
+ * @dev:	class device struct
+ * @buf:	buffer
+ *
+ * Return value:
+ *	number of bytes printed to buffer
+ **/
+static ssize_t ipr_store_iopoll_weight(struct device *dev,
+					struct device_attribute *attr,
+					const char *buf, size_t count)
+{
+	struct Scsi_Host *shost = class_to_shost(dev);
+	struct ipr_ioa_cfg *ioa_cfg = (struct ipr_ioa_cfg *)shost->hostdata;
+	unsigned long user_iopoll_weight;
+	unsigned long lock_flags = 0;
+	int i;
+
+	if (!ioa_cfg->sis64) {
+		dev_info(&ioa_cfg->pdev->dev, "blk-iopoll not supported on this adapter\n");
+		return -EINVAL;
+	}
+	if (kstrtoul(buf, 10, &user_iopoll_weight))
+		return -EINVAL;
+
+	if (user_iopoll_weight > 256) {
+		dev_info(&ioa_cfg->pdev->dev, "Invalid blk-iopoll weight. It must be less than 256\n");
+		return -EINVAL;
+	}
+
+	if (user_iopoll_weight == ioa_cfg->iopoll_weight) {
+		dev_info(&ioa_cfg->pdev->dev, "Current blk-iopoll weight has the same weight\n");
+		return strlen(buf);
+	}
+
+	if (blk_iopoll_enabled && ioa_cfg->iopoll_weight &&
+			ioa_cfg->sis64 && ioa_cfg->nvectors > 1) {
+		for (i = 1; i < ioa_cfg->hrrq_num; i++)
+			blk_iopoll_disable(&ioa_cfg->hrrq[i].iopoll);
+	}
+
+	spin_lock_irqsave(shost->host_lock, lock_flags);
+	ioa_cfg->iopoll_weight = user_iopoll_weight;
+	if (blk_iopoll_enabled && ioa_cfg->iopoll_weight &&
+			ioa_cfg->sis64 && ioa_cfg->nvectors > 1) {
+		for (i = 1; i < ioa_cfg->hrrq_num; i++) {
+			blk_iopoll_init(&ioa_cfg->hrrq[i].iopoll,
+					ioa_cfg->iopoll_weight, ipr_iopoll);
+			blk_iopoll_enable(&ioa_cfg->hrrq[i].iopoll);
+		}
+	}
+	spin_unlock_irqrestore(shost->host_lock, lock_flags);
+
+	return strlen(buf);
+}
+
+static struct device_attribute ipr_iopoll_weight_attr = {
+	.attr = {
+		.name =		"iopoll_weight",
+		.mode =		S_IRUGO | S_IWUSR,
+	},
+	.show = ipr_show_iopoll_weight,
+	.store = ipr_store_iopoll_weight
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * ipr_alloc_ucode_buffer - Allocates a microcode download buffer
  * @buf_len:		buffer length
@@ -3680,7 +4238,11 @@ static int ipr_update_ioa_ucode(struct ipr_ioa_cfg *ioa_cfg,
 	unsigned long lock_flags;
 
 	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+<<<<<<< HEAD
 	while(ioa_cfg->in_reset_reload) {
+=======
+	while (ioa_cfg->in_reset_reload) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
 		wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
 		spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
@@ -3744,13 +4306,19 @@ static ssize_t ipr_store_update_fw(struct device *dev,
 	len = snprintf(fname, 99, "%s", buf);
 	fname[len-1] = '\0';
 
+<<<<<<< HEAD
 	if(request_firmware(&fw_entry, fname, &ioa_cfg->pdev->dev)) {
+=======
+	if (request_firmware(&fw_entry, fname, &ioa_cfg->pdev->dev)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&ioa_cfg->pdev->dev, "Firmware file %s not found\n", fname);
 		return -EIO;
 	}
 
 	image_hdr = (struct ipr_ucode_image_header *)fw_entry->data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (be32_to_cpu(image_hdr->header_length) > fw_entry->size ||
 	    (ioa_cfg->vpd_cbs->page3_data.card_type &&
 	     ioa_cfg->vpd_cbs->page3_data.card_type != image_hdr->card_type)) {
@@ -3759,6 +4327,10 @@ static ssize_t ipr_store_update_fw(struct device *dev,
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	src = (u8 *)image_hdr + be32_to_cpu(image_hdr->header_length);
 	dnld_size = fw_entry->size - be32_to_cpu(image_hdr->header_length);
 	sglist = ipr_alloc_ucode_buffer(dnld_size);
@@ -3777,6 +4349,16 @@ static ssize_t ipr_store_update_fw(struct device *dev,
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ipr_info("Updating microcode, please be patient.  This may take up to 30 minutes.\n");
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ipr_info("Updating microcode, please be patient.  This may take up to 30 minutes.\n");
+
+>>>>>>> refs/remotes/origin/master
 	result = ipr_update_ioa_ucode(ioa_cfg, sglist);
 
 	if (!result)
@@ -3833,6 +4415,10 @@ static struct device_attribute *ipr_ioa_attrs[] = {
 	&ipr_ioa_reset_attr,
 	&ipr_update_fw_attr,
 	&ipr_ioa_fw_type_attr,
+<<<<<<< HEAD
+=======
+	&ipr_iopoll_weight_attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -3985,7 +4571,11 @@ static int ipr_alloc_dump(struct ipr_ioa_cfg *ioa_cfg)
 
 	ioa_cfg->dump = dump;
 	ioa_cfg->sdt_state = WAIT_FOR_DUMP;
+<<<<<<< HEAD
 	if (ioa_cfg->ioa_is_dead && !ioa_cfg->dump_taken) {
+=======
+	if (ioa_cfg->hrrq[IPR_INIT_HRRQ].ioa_is_dead && !ioa_cfg->dump_taken) {
+>>>>>>> refs/remotes/origin/master
 		ioa_cfg->dump_taken = 1;
 		schedule_work(&ioa_cfg->work_q);
 	}
@@ -4198,8 +4788,13 @@ static ssize_t ipr_show_resource_path(struct device *dev, struct device_attribut
 	res = (struct ipr_resource_entry *)sdev->hostdata;
 	if (res && ioa_cfg->sis64)
 		len = snprintf(buf, PAGE_SIZE, "%s\n",
+<<<<<<< HEAD
 			       ipr_format_res_path(res->res_path, buffer,
 						   sizeof(buffer)));
+=======
+			       __ipr_format_res_path(res->res_path, buffer,
+						     sizeof(buffer)));
+>>>>>>> refs/remotes/origin/master
 	else if (res)
 		len = snprintf(buf, PAGE_SIZE, "%d:%d:%d:%d\n", ioa_cfg->host->host_no,
 			       res->bus, res->target, res->lun);
@@ -4345,8 +4940,16 @@ static struct ipr_resource_entry *ipr_find_starget(struct scsi_target *starget)
 
 	list_for_each_entry(res, &ioa_cfg->used_res_q, queue) {
 		if ((res->bus == starget->channel) &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    (res->target == starget->id) &&
 		    (res->lun == 0)) {
+=======
+		    (res->target == starget->id)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    (res->target == starget->id)) {
+>>>>>>> refs/remotes/origin/master
 			return res;
 		}
 	}
@@ -4420,12 +5023,29 @@ static void ipr_target_destroy(struct scsi_target *starget)
 	struct ipr_ioa_cfg *ioa_cfg = (struct ipr_ioa_cfg *) shost->hostdata;
 
 	if (ioa_cfg->sis64) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (starget->channel == IPR_ARRAY_VIRTUAL_BUS)
 			clear_bit(starget->id, ioa_cfg->array_ids);
 		else if (starget->channel == IPR_VSET_VIRTUAL_BUS)
 			clear_bit(starget->id, ioa_cfg->vset_ids);
 		else if (starget->channel == 0)
 			clear_bit(starget->id, ioa_cfg->target_ids);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (!ipr_find_starget(starget)) {
+			if (starget->channel == IPR_ARRAY_VIRTUAL_BUS)
+				clear_bit(starget->id, ioa_cfg->array_ids);
+			else if (starget->channel == IPR_VSET_VIRTUAL_BUS)
+				clear_bit(starget->id, ioa_cfg->vset_ids);
+			else if (starget->channel == 0)
+				clear_bit(starget->id, ioa_cfg->target_ids);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (sata_port) {
@@ -4526,8 +5146,13 @@ static int ipr_slave_configure(struct scsi_device *sdev)
 			scsi_adjust_queue_depth(sdev, 0, sdev->host->cmd_per_lun);
 		if (ioa_cfg->sis64)
 			sdev_printk(KERN_INFO, sdev, "Resource path: %s\n",
+<<<<<<< HEAD
 				    ipr_format_res_path(res->res_path, buffer,
 							sizeof(buffer)));
+=======
+				    ipr_format_res_path(ioa_cfg,
+				res->res_path, buffer, sizeof(buffer)));
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
@@ -4552,8 +5177,23 @@ static int ipr_ata_slave_alloc(struct scsi_device *sdev)
 	ENTER;
 	if (sdev->sdev_target)
 		sata_port = sdev->sdev_target->hostdata;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (sata_port)
 		rc = ata_sas_port_init(sata_port->ap);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (sata_port) {
+		rc = ata_sas_port_init(sata_port->ap);
+		if (rc == 0)
+			rc = ata_sas_sync_probe(sata_port->ap);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		ipr_slave_destroy(sdev);
 
@@ -4604,6 +5244,7 @@ static int ipr_slave_alloc(struct scsi_device *sdev)
 	return rc;
 }
 
+<<<<<<< HEAD
 /**
  * ipr_eh_host_reset - Reset the host adapter
  * @scsi_cmd:	scsi command struct
@@ -4619,11 +5260,36 @@ static int __ipr_eh_host_reset(struct scsi_cmnd * scsi_cmd)
 	ENTER;
 	ioa_cfg = (struct ipr_ioa_cfg *) scsi_cmd->device->host->hostdata;
 
+<<<<<<< HEAD
 	dev_err(&ioa_cfg->pdev->dev,
 		"Adapter being reset as a result of error recovery.\n");
 
 	if (WAIT_FOR_DUMP == ioa_cfg->sdt_state)
 		ioa_cfg->sdt_state = GET_DUMP;
+=======
+	if (!ioa_cfg->in_reset_reload) {
+=======
+static int ipr_eh_host_reset(struct scsi_cmnd *cmd)
+{
+	struct ipr_ioa_cfg *ioa_cfg;
+	unsigned long lock_flags = 0;
+	int rc = SUCCESS;
+
+	ENTER;
+	ioa_cfg = (struct ipr_ioa_cfg *) cmd->device->host->hostdata;
+	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+
+	if (!ioa_cfg->in_reset_reload && !ioa_cfg->hrrq[IPR_INIT_HRRQ].ioa_is_dead) {
+		ipr_initiate_ioa_reset(ioa_cfg, IPR_SHUTDOWN_ABBREV);
+>>>>>>> refs/remotes/origin/master
+		dev_err(&ioa_cfg->pdev->dev,
+			"Adapter being reset as a result of error recovery.\n");
+
+		if (WAIT_FOR_DUMP == ioa_cfg->sdt_state)
+			ioa_cfg->sdt_state = GET_DUMP;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rc = ipr_reset_reload(ioa_cfg, IPR_SHUTDOWN_ABBREV);
 
@@ -4639,6 +5305,22 @@ static int ipr_eh_host_reset(struct scsi_cmnd * cmd)
 	rc = __ipr_eh_host_reset(cmd);
 	spin_unlock_irq(cmd->device->host->host_lock);
 
+=======
+
+	spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
+	wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
+	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+
+	/* If we got hit with a host reset while we were already resetting
+	 the adapter for some reason, and the reset failed. */
+	if (ioa_cfg->hrrq[IPR_INIT_HRRQ].ioa_is_dead) {
+		ipr_trace;
+		rc = FAILED;
+	}
+
+	spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
+	LEAVE;
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -4687,7 +5369,11 @@ static int ipr_device_reset(struct ipr_ioa_cfg *ioa_cfg,
 
 	ipr_send_blocking_cmd(ipr_cmd, ipr_timeout, IPR_DEVICE_RESET_TIMEOUT);
 	ioasc = be32_to_cpu(ipr_cmd->s.ioasa.hdr.ioasc);
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 	if (ipr_is_gata(res) && res->sata_port && ioasc != IPR_IOASC_IOA_WAS_RESET) {
 		if (ipr_cmd->ioa_cfg->sis64)
 			memcpy(&res->sata_port->ioasa, &ipr_cmd->s.ioasa64.u.gata,
@@ -4698,7 +5384,11 @@ static int ipr_device_reset(struct ipr_ioa_cfg *ioa_cfg,
 	}
 
 	LEAVE;
+<<<<<<< HEAD
 	return (IPR_IOASC_SENSE_KEY(ioasc) ? -EIO : 0);
+=======
+	return IPR_IOASC_SENSE_KEY(ioasc) ? -EIO : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -4722,7 +5412,11 @@ static int ipr_sata_reset(struct ata_link *link, unsigned int *classes,
 
 	ENTER;
 	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+<<<<<<< HEAD
 	while(ioa_cfg->in_reset_reload) {
+=======
+	while (ioa_cfg->in_reset_reload) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
 		wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
 		spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
@@ -4750,13 +5444,21 @@ static int ipr_sata_reset(struct ata_link *link, unsigned int *classes,
  * Return value:
  *	SUCCESS / FAILED
  **/
+<<<<<<< HEAD
 static int __ipr_eh_dev_reset(struct scsi_cmnd * scsi_cmd)
+=======
+static int __ipr_eh_dev_reset(struct scsi_cmnd *scsi_cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipr_cmnd *ipr_cmd;
 	struct ipr_ioa_cfg *ioa_cfg;
 	struct ipr_resource_entry *res;
 	struct ata_port *ap;
 	int rc = 0;
+<<<<<<< HEAD
+=======
+	struct ipr_hrr_queue *hrrq;
+>>>>>>> refs/remotes/origin/master
 
 	ENTER;
 	ioa_cfg = (struct ipr_ioa_cfg *) scsi_cmd->device->host->hostdata;
@@ -4772,6 +5474,7 @@ static int __ipr_eh_dev_reset(struct scsi_cmnd * scsi_cmd)
 	 */
 	if (ioa_cfg->in_reset_reload)
 		return FAILED;
+<<<<<<< HEAD
 	if (ioa_cfg->ioa_is_dead)
 		return FAILED;
 
@@ -4788,6 +5491,28 @@ static int __ipr_eh_dev_reset(struct scsi_cmnd * scsi_cmd)
 		}
 	}
 
+=======
+	if (ioa_cfg->hrrq[IPR_INIT_HRRQ].ioa_is_dead)
+		return FAILED;
+
+	for_each_hrrq(hrrq, ioa_cfg) {
+		spin_lock(&hrrq->_lock);
+		list_for_each_entry(ipr_cmd, &hrrq->hrrq_pending_q, queue) {
+			if (ipr_cmd->ioarcb.res_handle == res->res_handle) {
+				if (ipr_cmd->scsi_cmd)
+					ipr_cmd->done = ipr_scsi_eh_done;
+				if (ipr_cmd->qc)
+					ipr_cmd->done = ipr_sata_eh_done;
+				if (ipr_cmd->qc &&
+				    !(ipr_cmd->qc->flags & ATA_QCFLAG_FAILED)) {
+					ipr_cmd->qc->err_mask |= AC_ERR_TIMEOUT;
+					ipr_cmd->qc->flags |= ATA_QCFLAG_FAILED;
+				}
+			}
+		}
+		spin_unlock(&hrrq->_lock);
+	}
+>>>>>>> refs/remotes/origin/master
 	res->resetting_device = 1;
 	scmd_printk(KERN_ERR, scsi_cmd, "Resetting device\n");
 
@@ -4797,21 +5522,42 @@ static int __ipr_eh_dev_reset(struct scsi_cmnd * scsi_cmd)
 		ata_std_error_handler(ap);
 		spin_lock_irq(scsi_cmd->device->host->host_lock);
 
+<<<<<<< HEAD
 		list_for_each_entry(ipr_cmd, &ioa_cfg->pending_q, queue) {
 			if (ipr_cmd->ioarcb.res_handle == res->res_handle) {
 				rc = -EIO;
 				break;
 			}
+=======
+		for_each_hrrq(hrrq, ioa_cfg) {
+			spin_lock(&hrrq->_lock);
+			list_for_each_entry(ipr_cmd,
+					    &hrrq->hrrq_pending_q, queue) {
+				if (ipr_cmd->ioarcb.res_handle ==
+				    res->res_handle) {
+					rc = -EIO;
+					break;
+				}
+			}
+			spin_unlock(&hrrq->_lock);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else
 		rc = ipr_device_reset(ioa_cfg, res);
 	res->resetting_device = 0;
 
 	LEAVE;
+<<<<<<< HEAD
 	return (rc ? FAILED : SUCCESS);
 }
 
 static int ipr_eh_dev_reset(struct scsi_cmnd * cmd)
+=======
+	return rc ? FAILED : SUCCESS;
+}
+
+static int ipr_eh_dev_reset(struct scsi_cmnd *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
@@ -4854,7 +5600,11 @@ static void ipr_bus_reset_done(struct ipr_cmnd *ipr_cmd)
 	else
 		ipr_cmd->sibling->done(ipr_cmd->sibling);
 
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 	LEAVE;
 }
 
@@ -4907,14 +5657,28 @@ static void ipr_abort_timeout(struct ipr_cmnd *ipr_cmd)
  * Return value:
  *	SUCCESS / FAILED
  **/
+<<<<<<< HEAD
 static int ipr_cancel_op(struct scsi_cmnd * scsi_cmd)
+=======
+static int ipr_cancel_op(struct scsi_cmnd *scsi_cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipr_cmnd *ipr_cmd;
 	struct ipr_ioa_cfg *ioa_cfg;
 	struct ipr_resource_entry *res;
 	struct ipr_cmd_pkt *cmd_pkt;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 ioasc;
+=======
+	u32 ioasc, int_reg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int op_found = 0;
+=======
+	u32 ioasc, int_reg;
+	int op_found = 0;
+	struct ipr_hrr_queue *hrrq;
+>>>>>>> refs/remotes/origin/master
 
 	ENTER;
 	ioa_cfg = (struct ipr_ioa_cfg *)scsi_cmd->device->host->hostdata;
@@ -4924,9 +5688,30 @@ static int ipr_cancel_op(struct scsi_cmnd * scsi_cmd)
 	 * This will force the mid-layer to call ipr_eh_host_reset,
 	 * which will then go to sleep and wait for the reset to complete
 	 */
+<<<<<<< HEAD
 	if (ioa_cfg->in_reset_reload || ioa_cfg->ioa_is_dead)
 		return FAILED;
+<<<<<<< HEAD
 	if (!res || !ipr_is_gscsi(res))
+=======
+=======
+	if (ioa_cfg->in_reset_reload ||
+	    ioa_cfg->hrrq[IPR_INIT_HRRQ].ioa_is_dead)
+		return FAILED;
+>>>>>>> refs/remotes/origin/master
+	if (!res)
+		return FAILED;
+
+	/*
+	 * If we are aborting a timed out op, chances are that the timeout was caused
+	 * by a still not detected EEH error. In such cases, reading a register will
+	 * trigger the EEH recovery infrastructure.
+	 */
+	int_reg = readl(ioa_cfg->regs.sense_interrupt_reg);
+
+	if (!ipr_is_gscsi(res))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		return FAILED;
 
 	list_for_each_entry(ipr_cmd, &ioa_cfg->pending_q, queue) {
@@ -4935,6 +5720,20 @@ static int ipr_cancel_op(struct scsi_cmnd * scsi_cmd)
 			op_found = 1;
 			break;
 		}
+=======
+		return FAILED;
+
+	for_each_hrrq(hrrq, ioa_cfg) {
+		spin_lock(&hrrq->_lock);
+		list_for_each_entry(ipr_cmd, &hrrq->hrrq_pending_q, queue) {
+			if (ipr_cmd->scsi_cmd == scsi_cmd) {
+				ipr_cmd->done = ipr_scsi_eh_done;
+				op_found = 1;
+				break;
+			}
+		}
+		spin_unlock(&hrrq->_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!op_found)
@@ -4961,12 +5760,20 @@ static int ipr_cancel_op(struct scsi_cmnd * scsi_cmd)
 		ipr_trace;
 	}
 
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 	if (!ipr_is_naca_model(res))
 		res->needs_sync_complete = 1;
 
 	LEAVE;
+<<<<<<< HEAD
 	return (IPR_IOASC_SENSE_KEY(ioasc) ? FAILED : SUCCESS);
+=======
+	return IPR_IOASC_SENSE_KEY(ioasc) ? FAILED : SUCCESS;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -4976,7 +5783,11 @@ static int ipr_cancel_op(struct scsi_cmnd * scsi_cmd)
  * Return value:
  * 	SUCCESS / FAILED
  **/
+<<<<<<< HEAD
 static int ipr_eh_abort(struct scsi_cmnd * scsi_cmd)
+=======
+static int ipr_eh_abort(struct scsi_cmnd *scsi_cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	int rc;
@@ -5042,15 +5853,38 @@ static irqreturn_t ipr_handle_other_interrupt(struct ipr_ioa_cfg *ioa_cfg,
 		del_timer(&ioa_cfg->reset_cmd->timer);
 		ipr_reset_ioa_job(ioa_cfg->reset_cmd);
 	} else if ((int_reg & IPR_PCII_HRRQ_UPDATED) == int_reg) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ipr_debug && printk_ratelimit())
 			dev_err(&ioa_cfg->pdev->dev,
 				"Spurious interrupt detected. 0x%08X\n", int_reg);
 		writel(IPR_PCII_HRRQ_UPDATED, ioa_cfg->regs.clr_interrupt_reg32);
 		int_reg = readl(ioa_cfg->regs.sense_interrupt_reg32);
 		return IRQ_NONE;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (ioa_cfg->clear_isr) {
+			if (ipr_debug && printk_ratelimit())
+				dev_err(&ioa_cfg->pdev->dev,
+					"Spurious interrupt detected. 0x%08X\n", int_reg);
+			writel(IPR_PCII_HRRQ_UPDATED, ioa_cfg->regs.clr_interrupt_reg32);
+			int_reg = readl(ioa_cfg->regs.sense_interrupt_reg32);
+			return IRQ_NONE;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		if (int_reg & IPR_PCII_IOA_UNIT_CHECKED)
 			ioa_cfg->ioa_unit_checked = 1;
+=======
+	} else {
+		if (int_reg & IPR_PCII_IOA_UNIT_CHECKED)
+			ioa_cfg->ioa_unit_checked = 1;
+		else if (int_reg & IPR_PCII_NO_HOST_RRQ)
+			dev_err(&ioa_cfg->pdev->dev,
+				"No Host RRQ. 0x%08X\n", int_reg);
+>>>>>>> refs/remotes/origin/master
 		else
 			dev_err(&ioa_cfg->pdev->dev,
 				"Permanent IOA failure. 0x%08X\n", int_reg);
@@ -5073,10 +5907,17 @@ static irqreturn_t ipr_handle_other_interrupt(struct ipr_ioa_cfg *ioa_cfg,
  * Return value:
  * 	none
  **/
+<<<<<<< HEAD
 static void ipr_isr_eh(struct ipr_ioa_cfg *ioa_cfg, char *msg)
 {
 	ioa_cfg->errors_logged++;
 	dev_err(&ioa_cfg->pdev->dev, "%s\n", msg);
+=======
+static void ipr_isr_eh(struct ipr_ioa_cfg *ioa_cfg, char *msg, u16 number)
+{
+	ioa_cfg->errors_logged++;
+	dev_err(&ioa_cfg->pdev->dev, "%s %d\n", msg, number);
+>>>>>>> refs/remotes/origin/master
 
 	if (WAIT_FOR_DUMP == ioa_cfg->sdt_state)
 		ioa_cfg->sdt_state = GET_DUMP;
@@ -5084,6 +5925,7 @@ static void ipr_isr_eh(struct ipr_ioa_cfg *ioa_cfg, char *msg)
 	ipr_initiate_ioa_reset(ioa_cfg, IPR_SHUTDOWN_NONE);
 }
 
+<<<<<<< HEAD
 /**
  * ipr_isr - Interrupt service routine
  * @irq:	irq number
@@ -5147,6 +5989,12 @@ static irqreturn_t ipr_isr(int irq, void *devp)
 			}
 		}
 
+<<<<<<< HEAD
+=======
+		if (ipr_cmd && !ioa_cfg->clear_isr)
+			break;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ipr_cmd != NULL) {
 			/* Clear the PCI interrupt */
 			num_hrrq = 0;
@@ -5155,15 +6003,143 @@ static irqreturn_t ipr_isr(int irq, void *devp)
 				int_reg = readl(ioa_cfg->regs.sense_interrupt_reg32);
 			} while (int_reg & IPR_PCII_HRRQ_UPDATED &&
 					num_hrrq++ < IPR_MAX_HRRQ_RETRIES);
+=======
+static int ipr_process_hrrq(struct ipr_hrr_queue *hrr_queue, int budget,
+						struct list_head *doneq)
+{
+	u32 ioasc;
+	u16 cmd_index;
+	struct ipr_cmnd *ipr_cmd;
+	struct ipr_ioa_cfg *ioa_cfg = hrr_queue->ioa_cfg;
+	int num_hrrq = 0;
+
+	/* If interrupts are disabled, ignore the interrupt */
+	if (!hrr_queue->allow_interrupts)
+		return 0;
+
+	while ((be32_to_cpu(*hrr_queue->hrrq_curr) & IPR_HRRQ_TOGGLE_BIT) ==
+	       hrr_queue->toggle_bit) {
+
+		cmd_index = (be32_to_cpu(*hrr_queue->hrrq_curr) &
+			     IPR_HRRQ_REQ_RESP_HANDLE_MASK) >>
+			     IPR_HRRQ_REQ_RESP_HANDLE_SHIFT;
+
+		if (unlikely(cmd_index > hrr_queue->max_cmd_id ||
+			     cmd_index < hrr_queue->min_cmd_id)) {
+			ipr_isr_eh(ioa_cfg,
+				"Invalid response handle from IOA: ",
+				cmd_index);
+			break;
+		}
+
+		ipr_cmd = ioa_cfg->ipr_cmnd_list[cmd_index];
+		ioasc = be32_to_cpu(ipr_cmd->s.ioasa.hdr.ioasc);
+
+		ipr_trc_hook(ipr_cmd, IPR_TRACE_FINISH, ioasc);
+
+		list_move_tail(&ipr_cmd->queue, doneq);
+
+		if (hrr_queue->hrrq_curr < hrr_queue->hrrq_end) {
+			hrr_queue->hrrq_curr++;
+		} else {
+			hrr_queue->hrrq_curr = hrr_queue->hrrq_start;
+			hrr_queue->toggle_bit ^= 1u;
+		}
+		num_hrrq++;
+		if (budget > 0 && num_hrrq >= budget)
+			break;
+	}
+
+	return num_hrrq;
+}
+
+static int ipr_iopoll(struct blk_iopoll *iop, int budget)
+{
+	struct ipr_ioa_cfg *ioa_cfg;
+	struct ipr_hrr_queue *hrrq;
+	struct ipr_cmnd *ipr_cmd, *temp;
+	unsigned long hrrq_flags;
+	int completed_ops;
+	LIST_HEAD(doneq);
+
+	hrrq = container_of(iop, struct ipr_hrr_queue, iopoll);
+	ioa_cfg = hrrq->ioa_cfg;
+
+	spin_lock_irqsave(hrrq->lock, hrrq_flags);
+	completed_ops = ipr_process_hrrq(hrrq, budget, &doneq);
+
+	if (completed_ops < budget)
+		blk_iopoll_complete(iop);
+	spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+
+	list_for_each_entry_safe(ipr_cmd, temp, &doneq, queue) {
+		list_del(&ipr_cmd->queue);
+		del_timer(&ipr_cmd->timer);
+		ipr_cmd->fast_done(ipr_cmd);
+	}
+
+	return completed_ops;
+}
+
+/**
+ * ipr_isr - Interrupt service routine
+ * @irq:	irq number
+ * @devp:	pointer to ioa config struct
+ *
+ * Return value:
+ * 	IRQ_NONE / IRQ_HANDLED
+ **/
+static irqreturn_t ipr_isr(int irq, void *devp)
+{
+	struct ipr_hrr_queue *hrrq = (struct ipr_hrr_queue *)devp;
+	struct ipr_ioa_cfg *ioa_cfg = hrrq->ioa_cfg;
+	unsigned long hrrq_flags = 0;
+	u32 int_reg = 0;
+	int num_hrrq = 0;
+	int irq_none = 0;
+	struct ipr_cmnd *ipr_cmd, *temp;
+	irqreturn_t rc = IRQ_NONE;
+	LIST_HEAD(doneq);
+
+	spin_lock_irqsave(hrrq->lock, hrrq_flags);
+	/* If interrupts are disabled, ignore the interrupt */
+	if (!hrrq->allow_interrupts) {
+		spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+		return IRQ_NONE;
+	}
+
+	while (1) {
+		if (ipr_process_hrrq(hrrq, -1, &doneq)) {
+			rc =  IRQ_HANDLED;
+
+			if (!ioa_cfg->clear_isr)
+				break;
+
+			/* Clear the PCI interrupt */
+			num_hrrq = 0;
+			do {
+				writel(IPR_PCII_HRRQ_UPDATED,
+				     ioa_cfg->regs.clr_interrupt_reg32);
+				int_reg = readl(ioa_cfg->regs.sense_interrupt_reg32);
+			} while (int_reg & IPR_PCII_HRRQ_UPDATED &&
+				num_hrrq++ < IPR_MAX_HRRQ_RETRIES);
+>>>>>>> refs/remotes/origin/master
 
 		} else if (rc == IRQ_NONE && irq_none == 0) {
 			int_reg = readl(ioa_cfg->regs.sense_interrupt_reg32);
 			irq_none++;
 		} else if (num_hrrq == IPR_MAX_HRRQ_RETRIES &&
 			   int_reg & IPR_PCII_HRRQ_UPDATED) {
+<<<<<<< HEAD
 			ipr_isr_eh(ioa_cfg, "Error clearing HRRQ");
 			spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
 			return IRQ_HANDLED;
+=======
+			ipr_isr_eh(ioa_cfg,
+				"Error clearing HRRQ: ", num_hrrq);
+			rc = IRQ_HANDLED;
+			break;
+>>>>>>> refs/remotes/origin/master
 		} else
 			break;
 	}
@@ -5171,7 +6147,68 @@ static irqreturn_t ipr_isr(int irq, void *devp)
 	if (unlikely(rc == IRQ_NONE))
 		rc = ipr_handle_other_interrupt(ioa_cfg, int_reg);
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
+=======
+	spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+	list_for_each_entry_safe(ipr_cmd, temp, &doneq, queue) {
+		list_del(&ipr_cmd->queue);
+		del_timer(&ipr_cmd->timer);
+		ipr_cmd->fast_done(ipr_cmd);
+	}
+	return rc;
+}
+
+/**
+ * ipr_isr_mhrrq - Interrupt service routine
+ * @irq:	irq number
+ * @devp:	pointer to ioa config struct
+ *
+ * Return value:
+ *	IRQ_NONE / IRQ_HANDLED
+ **/
+static irqreturn_t ipr_isr_mhrrq(int irq, void *devp)
+{
+	struct ipr_hrr_queue *hrrq = (struct ipr_hrr_queue *)devp;
+	struct ipr_ioa_cfg *ioa_cfg = hrrq->ioa_cfg;
+	unsigned long hrrq_flags = 0;
+	struct ipr_cmnd *ipr_cmd, *temp;
+	irqreturn_t rc = IRQ_NONE;
+	LIST_HEAD(doneq);
+
+	spin_lock_irqsave(hrrq->lock, hrrq_flags);
+
+	/* If interrupts are disabled, ignore the interrupt */
+	if (!hrrq->allow_interrupts) {
+		spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+		return IRQ_NONE;
+	}
+
+	if (blk_iopoll_enabled && ioa_cfg->iopoll_weight &&
+			ioa_cfg->sis64 && ioa_cfg->nvectors > 1) {
+		if ((be32_to_cpu(*hrrq->hrrq_curr) & IPR_HRRQ_TOGGLE_BIT) ==
+		       hrrq->toggle_bit) {
+			if (!blk_iopoll_sched_prep(&hrrq->iopoll))
+				blk_iopoll_sched(&hrrq->iopoll);
+			spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+			return IRQ_HANDLED;
+		}
+	} else {
+		if ((be32_to_cpu(*hrrq->hrrq_curr) & IPR_HRRQ_TOGGLE_BIT) ==
+			hrrq->toggle_bit)
+
+			if (ipr_process_hrrq(hrrq, -1, &doneq))
+				rc =  IRQ_HANDLED;
+	}
+
+	spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+
+	list_for_each_entry_safe(ipr_cmd, temp, &doneq, queue) {
+		list_del(&ipr_cmd->queue);
+		del_timer(&ipr_cmd->timer);
+		ipr_cmd->fast_done(ipr_cmd);
+	}
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -5331,7 +6368,10 @@ static void ipr_erp_done(struct ipr_cmnd *ipr_cmd)
 {
 	struct scsi_cmnd *scsi_cmd = ipr_cmd->scsi_cmd;
 	struct ipr_resource_entry *res = scsi_cmd->device->hostdata;
+<<<<<<< HEAD
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 ioasc = be32_to_cpu(ipr_cmd->s.ioasa.hdr.ioasc);
 
 	if (IPR_IOASC_SENSE_KEY(ioasc) > 0) {
@@ -5349,7 +6389,11 @@ static void ipr_erp_done(struct ipr_cmnd *ipr_cmd)
 		res->in_erp = 0;
 	}
 	scsi_dma_unmap(ipr_cmd->scsi_cmd);
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 	scsi_cmd->scsi_done(scsi_cmd);
 }
 
@@ -5733,7 +6777,11 @@ static void ipr_erp_start(struct ipr_ioa_cfg *ioa_cfg,
 	}
 
 	scsi_dma_unmap(ipr_cmd->scsi_cmd);
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 	scsi_cmd->scsi_done(scsi_cmd);
 }
 
@@ -5752,21 +6800,44 @@ static void ipr_scsi_done(struct ipr_cmnd *ipr_cmd)
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
 	struct scsi_cmnd *scsi_cmd = ipr_cmd->scsi_cmd;
 	u32 ioasc = be32_to_cpu(ipr_cmd->s.ioasa.hdr.ioasc);
+<<<<<<< HEAD
+=======
+	unsigned long hrrq_flags;
+>>>>>>> refs/remotes/origin/master
 
 	scsi_set_resid(scsi_cmd, be32_to_cpu(ipr_cmd->s.ioasa.hdr.residual_data_len));
 
 	if (likely(IPR_IOASC_SENSE_KEY(ioasc) == 0)) {
+<<<<<<< HEAD
 		scsi_dma_unmap(ipr_cmd->scsi_cmd);
 		list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
 		scsi_cmd->scsi_done(scsi_cmd);
 	} else
 		ipr_erp_start(ioa_cfg, ipr_cmd);
+=======
+		scsi_dma_unmap(scsi_cmd);
+
+		spin_lock_irqsave(ipr_cmd->hrrq->lock, hrrq_flags);
+		list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+		scsi_cmd->scsi_done(scsi_cmd);
+		spin_unlock_irqrestore(ipr_cmd->hrrq->lock, hrrq_flags);
+	} else {
+		spin_lock_irqsave(ipr_cmd->hrrq->lock, hrrq_flags);
+		ipr_erp_start(ioa_cfg, ipr_cmd);
+		spin_unlock_irqrestore(ipr_cmd->hrrq->lock, hrrq_flags);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * ipr_queuecommand - Queue a mid-layer request
+<<<<<<< HEAD
  * @scsi_cmd:	scsi command struct
  * @done:		done function
+=======
+ * @shost:		scsi host struct
+ * @scsi_cmd:	scsi command struct
+>>>>>>> refs/remotes/origin/master
  *
  * This function queues a request generated by the mid-layer.
  *
@@ -5775,13 +6846,19 @@ static void ipr_scsi_done(struct ipr_cmnd *ipr_cmd)
  *	SCSI_MLQUEUE_DEVICE_BUSY if device is busy
  *	SCSI_MLQUEUE_HOST_BUSY if host is busy
  **/
+<<<<<<< HEAD
 static int ipr_queuecommand_lck(struct scsi_cmnd *scsi_cmd,
 			    void (*done) (struct scsi_cmnd *))
+=======
+static int ipr_queuecommand(struct Scsi_Host *shost,
+			    struct scsi_cmnd *scsi_cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipr_ioa_cfg *ioa_cfg;
 	struct ipr_resource_entry *res;
 	struct ipr_ioarcb *ioarcb;
 	struct ipr_cmnd *ipr_cmd;
+<<<<<<< HEAD
 	int rc = 0;
 
 	scsi_cmd->scsi_done = done;
@@ -5789,18 +6866,49 @@ static int ipr_queuecommand_lck(struct scsi_cmnd *scsi_cmd,
 	res = scsi_cmd->device->hostdata;
 	scsi_cmd->result = (DID_OK << 16);
 
+=======
+	unsigned long hrrq_flags, lock_flags;
+	int rc;
+	struct ipr_hrr_queue *hrrq;
+	int hrrq_id;
+
+	ioa_cfg = (struct ipr_ioa_cfg *)shost->hostdata;
+
+	scsi_cmd->result = (DID_OK << 16);
+	res = scsi_cmd->device->hostdata;
+
+	if (ipr_is_gata(res) && res->sata_port) {
+		spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+		rc = ata_sas_queuecmd(scsi_cmd, res->sata_port->ap);
+		spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
+		return rc;
+	}
+
+	hrrq_id = ipr_get_hrrq_index(ioa_cfg);
+	hrrq = &ioa_cfg->hrrq[hrrq_id];
+
+	spin_lock_irqsave(hrrq->lock, hrrq_flags);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We are currently blocking all devices due to a host reset
 	 * We have told the host to stop giving us new requests, but
 	 * ERP ops don't count. FIXME
 	 */
+<<<<<<< HEAD
 	if (unlikely(!ioa_cfg->allow_cmds && !ioa_cfg->ioa_is_dead))
 		return SCSI_MLQUEUE_HOST_BUSY;
+=======
+	if (unlikely(!hrrq->allow_cmds && !hrrq->ioa_is_dead && !hrrq->removing_ioa)) {
+		spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+		return SCSI_MLQUEUE_HOST_BUSY;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * FIXME - Create scsi_set_host_offline interface
 	 *  and the ioa_is_dead check can be removed
 	 */
+<<<<<<< HEAD
 	if (unlikely(ioa_cfg->ioa_is_dead || !res)) {
 		memset(scsi_cmd->sense_buffer, 0, SCSI_SENSE_BUFFERSIZE);
 		scsi_cmd->result = (DID_NO_CONNECT << 16);
@@ -5820,16 +6928,39 @@ static int ipr_queuecommand_lck(struct scsi_cmnd *scsi_cmd,
 	ioarcb->res_handle = res->res_handle;
 	ipr_cmd->done = ipr_scsi_done;
 	ipr_trc_hook(ipr_cmd, IPR_TRACE_START, IPR_GET_RES_PHYS_LOC(res));
+=======
+	if (unlikely(hrrq->ioa_is_dead || hrrq->removing_ioa || !res)) {
+		spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+		goto err_nodev;
+	}
+
+	ipr_cmd = __ipr_get_free_ipr_cmnd(hrrq);
+	if (ipr_cmd == NULL) {
+		spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+		return SCSI_MLQUEUE_HOST_BUSY;
+	}
+	spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+
+	ipr_init_ipr_cmnd(ipr_cmd, ipr_scsi_done);
+	ioarcb = &ipr_cmd->ioarcb;
+
+	memcpy(ioarcb->cmd_pkt.cdb, scsi_cmd->cmnd, scsi_cmd->cmd_len);
+	ipr_cmd->scsi_cmd = scsi_cmd;
+	ipr_cmd->done = ipr_scsi_eh_done;
+>>>>>>> refs/remotes/origin/master
 
 	if (ipr_is_gscsi(res) || ipr_is_vset_device(res)) {
 		if (scsi_cmd->underflow == 0)
 			ioarcb->cmd_pkt.flags_hi |= IPR_FLAGS_HI_NO_ULEN_CHK;
 
+<<<<<<< HEAD
 		if (res->needs_sync_complete) {
 			ioarcb->cmd_pkt.flags_hi |= IPR_FLAGS_HI_SYNC_COMPLETE;
 			res->needs_sync_complete = 0;
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		ioarcb->cmd_pkt.flags_hi |= IPR_FLAGS_HI_NO_LINK_DESC;
 		if (ipr_is_gscsi(res))
 			ioarcb->cmd_pkt.flags_lo |= IPR_FLAGS_LO_DELAY_AFTER_RST;
@@ -5838,6 +6969,7 @@ static int ipr_queuecommand_lck(struct scsi_cmnd *scsi_cmd,
 	}
 
 	if (scsi_cmd->cmnd[0] >= 0xC0 &&
+<<<<<<< HEAD
 	    (!ipr_is_gscsi(res) || scsi_cmd->cmnd[0] == IPR_QUERY_RSRC_STATE))
 		ioarcb->cmd_pkt.request_type = IPR_RQTYPE_IOACMD;
 
@@ -5848,6 +6980,7 @@ static int ipr_queuecommand_lck(struct scsi_cmnd *scsi_cmd,
 			rc = ipr_build_ioadl(ioa_cfg, ipr_cmd);
 	}
 
+<<<<<<< HEAD
 	if (likely(rc == 0)) {
 		mb();
 		ipr_send_command(ipr_cmd);
@@ -5856,10 +6989,64 @@ static int ipr_queuecommand_lck(struct scsi_cmnd *scsi_cmd,
 		 return SCSI_MLQUEUE_HOST_BUSY;
 	}
 
+=======
+	if (unlikely(rc != 0)) {
+		list_move_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+		return SCSI_MLQUEUE_HOST_BUSY;
+	}
+
+	ipr_send_command(ipr_cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static DEF_SCSI_QCMD(ipr_queuecommand)
+=======
+	    (!ipr_is_gscsi(res) || scsi_cmd->cmnd[0] == IPR_QUERY_RSRC_STATE)) {
+		ioarcb->cmd_pkt.request_type = IPR_RQTYPE_IOACMD;
+	}
+
+	if (ioa_cfg->sis64)
+		rc = ipr_build_ioadl64(ioa_cfg, ipr_cmd);
+	else
+		rc = ipr_build_ioadl(ioa_cfg, ipr_cmd);
+
+	spin_lock_irqsave(hrrq->lock, hrrq_flags);
+	if (unlikely(rc || (!hrrq->allow_cmds && !hrrq->ioa_is_dead))) {
+		list_add_tail(&ipr_cmd->queue, &hrrq->hrrq_free_q);
+		spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+		if (!rc)
+			scsi_dma_unmap(scsi_cmd);
+		return SCSI_MLQUEUE_HOST_BUSY;
+	}
+
+	if (unlikely(hrrq->ioa_is_dead)) {
+		list_add_tail(&ipr_cmd->queue, &hrrq->hrrq_free_q);
+		spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+		scsi_dma_unmap(scsi_cmd);
+		goto err_nodev;
+	}
+
+	ioarcb->res_handle = res->res_handle;
+	if (res->needs_sync_complete) {
+		ioarcb->cmd_pkt.flags_hi |= IPR_FLAGS_HI_SYNC_COMPLETE;
+		res->needs_sync_complete = 0;
+	}
+	list_add_tail(&ipr_cmd->queue, &hrrq->hrrq_pending_q);
+	ipr_trc_hook(ipr_cmd, IPR_TRACE_START, IPR_GET_RES_PHYS_LOC(res));
+	ipr_send_command(ipr_cmd);
+	spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+	return 0;
+
+err_nodev:
+	spin_lock_irqsave(hrrq->lock, hrrq_flags);
+	memset(scsi_cmd->sense_buffer, 0, SCSI_SENSE_BUFFERSIZE);
+	scsi_cmd->result = (DID_NO_CONNECT << 16);
+	scsi_cmd->scsi_done(scsi_cmd);
+	spin_unlock_irqrestore(hrrq->lock, hrrq_flags);
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ipr_ioctl - IOCTL handler
@@ -5891,7 +7078,11 @@ static int ipr_ioctl(struct scsi_device *sdev, int cmd, void __user *arg)
  * Return value:
  * 	pointer to buffer with description string
  **/
+<<<<<<< HEAD
 static const char * ipr_ioa_info(struct Scsi_Host *host)
+=======
+static const char *ipr_ioa_info(struct Scsi_Host *host)
+>>>>>>> refs/remotes/origin/master
 {
 	static char buffer[512];
 	struct ipr_ioa_cfg *ioa_cfg;
@@ -5931,7 +7122,12 @@ static struct scsi_host_template driver_template = {
 	.use_clustering = ENABLE_CLUSTERING,
 	.shost_attrs = ipr_ioa_attrs,
 	.sdev_attrs = ipr_dev_attrs,
+<<<<<<< HEAD
 	.proc_name = IPR_NAME
+=======
+	.proc_name = IPR_NAME,
+	.no_write_same = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -5949,13 +7145,21 @@ static void ipr_ata_phy_reset(struct ata_port *ap)
 
 	ENTER;
 	spin_lock_irqsave(ioa_cfg->host->host_lock, flags);
+<<<<<<< HEAD
 	while(ioa_cfg->in_reset_reload) {
+=======
+	while (ioa_cfg->in_reset_reload) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(ioa_cfg->host->host_lock, flags);
 		wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
 		spin_lock_irqsave(ioa_cfg->host->host_lock, flags);
 	}
 
+<<<<<<< HEAD
 	if (!ioa_cfg->allow_cmds)
+=======
+	if (!ioa_cfg->hrrq[IPR_INIT_HRRQ].allow_cmds)
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 
 	rc = ipr_device_reset(ioa_cfg, res);
@@ -5986,20 +7190,40 @@ static void ipr_ata_post_internal(struct ata_queued_cmd *qc)
 	struct ipr_sata_port *sata_port = qc->ap->private_data;
 	struct ipr_ioa_cfg *ioa_cfg = sata_port->ioa_cfg;
 	struct ipr_cmnd *ipr_cmd;
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(ioa_cfg->host->host_lock, flags);
 	while(ioa_cfg->in_reset_reload) {
+=======
+	struct ipr_hrr_queue *hrrq;
+	unsigned long flags;
+
+	spin_lock_irqsave(ioa_cfg->host->host_lock, flags);
+	while (ioa_cfg->in_reset_reload) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(ioa_cfg->host->host_lock, flags);
 		wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
 		spin_lock_irqsave(ioa_cfg->host->host_lock, flags);
 	}
 
+<<<<<<< HEAD
 	list_for_each_entry(ipr_cmd, &ioa_cfg->pending_q, queue) {
 		if (ipr_cmd->qc == qc) {
 			ipr_device_reset(ioa_cfg, sata_port->res);
 			break;
 		}
+=======
+	for_each_hrrq(hrrq, ioa_cfg) {
+		spin_lock(&hrrq->_lock);
+		list_for_each_entry(ipr_cmd, &hrrq->hrrq_pending_q, queue) {
+			if (ipr_cmd->qc == qc) {
+				ipr_device_reset(ioa_cfg, sata_port->res);
+				break;
+			}
+		}
+		spin_unlock(&hrrq->_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(ioa_cfg->host->host_lock, flags);
 }
@@ -6048,6 +7272,10 @@ static void ipr_sata_done(struct ipr_cmnd *ipr_cmd)
 	struct ipr_resource_entry *res = sata_port->res;
 	u32 ioasc = be32_to_cpu(ipr_cmd->s.ioasa.hdr.ioasc);
 
+<<<<<<< HEAD
+=======
+	spin_lock(&ipr_cmd->hrrq->_lock);
+>>>>>>> refs/remotes/origin/master
 	if (ipr_cmd->ioa_cfg->sis64)
 		memcpy(&sata_port->ioasa, &ipr_cmd->s.ioasa64.u.gata,
 		       sizeof(struct ipr_ioasa_gata));
@@ -6063,7 +7291,12 @@ static void ipr_sata_done(struct ipr_cmnd *ipr_cmd)
 		qc->err_mask |= __ac_err_mask(sata_port->ioasa.status);
 	else
 		qc->err_mask |= ac_err_mask(sata_port->ioasa.status);
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+	spin_unlock(&ipr_cmd->hrrq->_lock);
+>>>>>>> refs/remotes/origin/master
 	ata_qc_complete(qc);
 }
 
@@ -6078,7 +7311,11 @@ static void ipr_build_ata_ioadl64(struct ipr_cmnd *ipr_cmd,
 {
 	u32 ioadl_flags = 0;
 	struct ipr_ioarcb *ioarcb = &ipr_cmd->ioarcb;
+<<<<<<< HEAD
 	struct ipr_ioadl64_desc *ioadl64 = ipr_cmd->i.ioadl64;
+=======
+	struct ipr_ioadl64_desc *ioadl64 = ipr_cmd->i.ata_ioadl.ioadl64;
+>>>>>>> refs/remotes/origin/master
 	struct ipr_ioadl64_desc *last_ioadl64 = NULL;
 	int len = qc->nbytes;
 	struct scatterlist *sg;
@@ -6098,7 +7335,11 @@ static void ipr_build_ata_ioadl64(struct ipr_cmnd *ipr_cmd,
 	ioarcb->ioadl_len =
 		cpu_to_be32(sizeof(struct ipr_ioadl64_desc) * ipr_cmd->dma_use_sg);
 	ioarcb->u.sis64_addr_data.data_ioadl_addr =
+<<<<<<< HEAD
 		cpu_to_be64(dma_addr + offsetof(struct ipr_cmnd, i.ata_ioadl));
+=======
+		cpu_to_be64(dma_addr + offsetof(struct ipr_cmnd, i.ata_ioadl.ioadl64));
+>>>>>>> refs/remotes/origin/master
 
 	for_each_sg(qc->sg, sg, qc->n_elem, si) {
 		ioadl64->flags = cpu_to_be32(ioadl_flags);
@@ -6159,6 +7400,51 @@ static void ipr_build_ata_ioadl(struct ipr_cmnd *ipr_cmd,
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * ipr_qc_defer - Get a free ipr_cmd
+ * @qc:	queued command
+ *
+ * Return value:
+ *	0 if success
+ **/
+static int ipr_qc_defer(struct ata_queued_cmd *qc)
+{
+	struct ata_port *ap = qc->ap;
+	struct ipr_sata_port *sata_port = ap->private_data;
+	struct ipr_ioa_cfg *ioa_cfg = sata_port->ioa_cfg;
+	struct ipr_cmnd *ipr_cmd;
+	struct ipr_hrr_queue *hrrq;
+	int hrrq_id;
+
+	hrrq_id = ipr_get_hrrq_index(ioa_cfg);
+	hrrq = &ioa_cfg->hrrq[hrrq_id];
+
+	qc->lldd_task = NULL;
+	spin_lock(&hrrq->_lock);
+	if (unlikely(hrrq->ioa_is_dead)) {
+		spin_unlock(&hrrq->_lock);
+		return 0;
+	}
+
+	if (unlikely(!hrrq->allow_cmds)) {
+		spin_unlock(&hrrq->_lock);
+		return ATA_DEFER_LINK;
+	}
+
+	ipr_cmd = __ipr_get_free_ipr_cmnd(hrrq);
+	if (ipr_cmd == NULL) {
+		spin_unlock(&hrrq->_lock);
+		return ATA_DEFER_LINK;
+	}
+
+	qc->lldd_task = ipr_cmd;
+	spin_unlock(&hrrq->_lock);
+	return 0;
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * ipr_qc_issue - Issue a SATA qc to a device
  * @qc:	queued command
  *
@@ -6175,10 +7461,30 @@ static unsigned int ipr_qc_issue(struct ata_queued_cmd *qc)
 	struct ipr_ioarcb *ioarcb;
 	struct ipr_ioarcb_ata_regs *regs;
 
+<<<<<<< HEAD
 	if (unlikely(!ioa_cfg->allow_cmds || ioa_cfg->ioa_is_dead))
 		return AC_ERR_SYSTEM;
 
 	ipr_cmd = ipr_get_free_ipr_cmnd(ioa_cfg);
+=======
+	if (qc->lldd_task == NULL)
+		ipr_qc_defer(qc);
+
+	ipr_cmd = qc->lldd_task;
+	if (ipr_cmd == NULL)
+		return AC_ERR_SYSTEM;
+
+	qc->lldd_task = NULL;
+	spin_lock(&ipr_cmd->hrrq->_lock);
+	if (unlikely(!ipr_cmd->hrrq->allow_cmds ||
+			ipr_cmd->hrrq->ioa_is_dead)) {
+		list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+		spin_unlock(&ipr_cmd->hrrq->_lock);
+		return AC_ERR_SYSTEM;
+	}
+
+	ipr_init_ipr_cmnd(ipr_cmd, ipr_lock_and_done);
+>>>>>>> refs/remotes/origin/master
 	ioarcb = &ipr_cmd->ioarcb;
 
 	if (ioa_cfg->sis64) {
@@ -6190,7 +7496,11 @@ static unsigned int ipr_qc_issue(struct ata_queued_cmd *qc)
 	memset(regs, 0, sizeof(*regs));
 	ioarcb->add_cmd_parms_len = cpu_to_be16(sizeof(*regs));
 
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->pending_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_pending_q);
+>>>>>>> refs/remotes/origin/master
 	ipr_cmd->qc = qc;
 	ipr_cmd->done = ipr_sata_done;
 	ipr_cmd->ioarcb.res_handle = res->res_handle;
@@ -6230,12 +7540,24 @@ static unsigned int ipr_qc_issue(struct ata_queued_cmd *qc)
 
 	default:
 		WARN_ON(1);
+<<<<<<< HEAD
 		return AC_ERR_INVALID;
 	}
 
+<<<<<<< HEAD
 	mb();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ipr_send_command(ipr_cmd);
+=======
+		spin_unlock(&ipr_cmd->hrrq->_lock);
+		return AC_ERR_INVALID;
+	}
+
+	ipr_send_command(ipr_cmd);
+	spin_unlock(&ipr_cmd->hrrq->_lock);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -6264,7 +7586,10 @@ static bool ipr_qc_fill_rtf(struct ata_queued_cmd *qc)
 	tf->hob_lbal = g->hob_lbal;
 	tf->hob_lbam = g->hob_lbam;
 	tf->hob_lbah = g->hob_lbah;
+<<<<<<< HEAD
 	tf->ctl = g->alt_status;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return true;
 }
@@ -6274,6 +7599,10 @@ static struct ata_port_operations ipr_sata_ops = {
 	.hardreset = ipr_sata_reset,
 	.post_internal_cmd = ipr_ata_post_internal,
 	.qc_prep = ata_noop_qc_prep,
+<<<<<<< HEAD
+=======
+	.qc_defer = ipr_qc_defer,
+>>>>>>> refs/remotes/origin/master
 	.qc_issue = ipr_qc_issue,
 	.qc_fill_rtf = ipr_qc_fill_rtf,
 	.port_start = ata_sas_port_start,
@@ -6290,6 +7619,7 @@ static struct ata_port_info sata_port_info = {
 
 #ifdef CONFIG_PPC_PSERIES
 static const u16 ipr_blocked_processors[] = {
+<<<<<<< HEAD
 	PV_NORTHSTAR,
 	PV_PULSAR,
 	PV_POWER4,
@@ -6298,6 +7628,16 @@ static const u16 ipr_blocked_processors[] = {
 	PV_POWER4p,
 	PV_630,
 	PV_630p
+=======
+	PVR_NORTHSTAR,
+	PVR_PULSAR,
+	PVR_POWER4,
+	PVR_ICESTAR,
+	PVR_SSTAR,
+	PVR_POWER4p,
+	PVR_630,
+	PVR_630p
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -6316,8 +7656,13 @@ static int ipr_invalid_adapter(struct ipr_ioa_cfg *ioa_cfg)
 	int i;
 
 	if ((ioa_cfg->type == 0x5702) && (ioa_cfg->pdev->revision < 4)) {
+<<<<<<< HEAD
 		for (i = 0; i < ARRAY_SIZE(ipr_blocked_processors); i++){
 			if (__is_processor(ipr_blocked_processors[i]))
+=======
+		for (i = 0; i < ARRAY_SIZE(ipr_blocked_processors); i++) {
+			if (pvr_version_is(ipr_blocked_processors[i]))
+>>>>>>> refs/remotes/origin/master
 				return 1;
 		}
 	}
@@ -6340,6 +7685,7 @@ static int ipr_invalid_adapter(struct ipr_ioa_cfg *ioa_cfg)
 static int ipr_ioa_bringdown_done(struct ipr_cmnd *ipr_cmd)
 {
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
+<<<<<<< HEAD
 
 	ENTER;
 	ioa_cfg->in_reset_reload = 0;
@@ -6350,6 +7696,29 @@ static int ipr_ioa_bringdown_done(struct ipr_cmnd *ipr_cmd)
 	spin_unlock_irq(ioa_cfg->host->host_lock);
 	scsi_unblock_requests(ioa_cfg->host);
 	spin_lock_irq(ioa_cfg->host->host_lock);
+=======
+	int i;
+
+	ENTER;
+	if (!ioa_cfg->hrrq[IPR_INIT_HRRQ].removing_ioa) {
+		ipr_trace;
+		spin_unlock_irq(ioa_cfg->host->host_lock);
+		scsi_unblock_requests(ioa_cfg->host);
+		spin_lock_irq(ioa_cfg->host->host_lock);
+	}
+
+	ioa_cfg->in_reset_reload = 0;
+	ioa_cfg->reset_retries = 0;
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		spin_lock(&ioa_cfg->hrrq[i]._lock);
+		ioa_cfg->hrrq[i].ioa_is_dead = 1;
+		spin_unlock(&ioa_cfg->hrrq[i]._lock);
+	}
+	wmb();
+
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+	wake_up_all(&ioa_cfg->reset_wait_q);
+>>>>>>> refs/remotes/origin/master
 	LEAVE;
 
 	return IPR_RC_JOB_RETURN;
@@ -6371,11 +7740,24 @@ static int ipr_ioa_reset_done(struct ipr_cmnd *ipr_cmd)
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
 	struct ipr_resource_entry *res;
 	struct ipr_hostrcb *hostrcb, *temp;
+<<<<<<< HEAD
 	int i = 0;
 
 	ENTER;
 	ioa_cfg->in_reset_reload = 0;
 	ioa_cfg->allow_cmds = 1;
+=======
+	int i = 0, j;
+
+	ENTER;
+	ioa_cfg->in_reset_reload = 0;
+	for (j = 0; j < ioa_cfg->hrrq_num; j++) {
+		spin_lock(&ioa_cfg->hrrq[j]._lock);
+		ioa_cfg->hrrq[j].allow_cmds = 1;
+		spin_unlock(&ioa_cfg->hrrq[j]._lock);
+	}
+	wmb();
+>>>>>>> refs/remotes/origin/master
 	ioa_cfg->reset_cmd = NULL;
 	ioa_cfg->doorbell |= IPR_RUNTIME_RESET;
 
@@ -6399,14 +7781,22 @@ static int ipr_ioa_reset_done(struct ipr_cmnd *ipr_cmd)
 	dev_info(&ioa_cfg->pdev->dev, "IOA initialized.\n");
 
 	ioa_cfg->reset_retries = 0;
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 	wake_up_all(&ioa_cfg->reset_wait_q);
 
 	spin_unlock(ioa_cfg->host->host_lock);
 	scsi_unblock_requests(ioa_cfg->host);
 	spin_lock(ioa_cfg->host->host_lock);
 
+<<<<<<< HEAD
 	if (!ioa_cfg->allow_cmds)
+=======
+	if (!ioa_cfg->hrrq[IPR_INIT_HRRQ].allow_cmds)
+>>>>>>> refs/remotes/origin/master
 		scsi_block_requests(ioa_cfg->host);
 
 	LEAVE;
@@ -6477,9 +7867,17 @@ static int ipr_set_supported_devs(struct ipr_cmnd *ipr_cmd)
 
 		if (!ioa_cfg->sis64)
 			ipr_cmd->job_step = ipr_set_supported_devs;
+<<<<<<< HEAD
 		return IPR_RC_JOB_RETURN;
 	}
 
+=======
+		LEAVE;
+		return IPR_RC_JOB_RETURN;
+	}
+
+	LEAVE;
+>>>>>>> refs/remotes/origin/master
 	return IPR_RC_JOB_CONTINUE;
 }
 
@@ -6594,7 +7992,11 @@ static void ipr_scsi_bus_speed_limit(struct ipr_ioa_cfg *ioa_cfg)
  * 	none
  **/
 static void ipr_modify_ioafp_mode_page_28(struct ipr_ioa_cfg *ioa_cfg,
+<<<<<<< HEAD
 					  	struct ipr_mode_pages *mode_pages)
+=======
+					  struct ipr_mode_pages *mode_pages)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, entry_length;
 	struct ipr_dev_bus_entry *bus;
@@ -6737,7 +8139,11 @@ static int ipr_reset_cmd_failed(struct ipr_cmnd *ipr_cmd)
 		ipr_cmd->ioarcb.cmd_pkt.cdb[0], ioasc);
 
 	ipr_initiate_ioa_reset(ioa_cfg, IPR_SHUTDOWN_NONE);
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 	return IPR_RC_JOB_RETURN;
 }
 
@@ -7195,6 +8601,7 @@ static int ipr_ioafp_identify_hrrq(struct ipr_cmnd *ipr_cmd)
 {
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
 	struct ipr_ioarcb *ioarcb = &ipr_cmd->ioarcb;
+<<<<<<< HEAD
 
 	ENTER;
 	dev_info(&ioa_cfg->pdev->dev, "Starting IOA initialization sequence.\n");
@@ -7235,6 +8642,73 @@ static int ipr_ioafp_identify_hrrq(struct ipr_cmnd *ipr_cmd)
 
 	LEAVE;
 	return IPR_RC_JOB_RETURN;
+=======
+	struct ipr_hrr_queue *hrrq;
+
+	ENTER;
+	ipr_cmd->job_step = ipr_ioafp_std_inquiry;
+	dev_info(&ioa_cfg->pdev->dev, "Starting IOA initialization sequence.\n");
+
+	if (ioa_cfg->identify_hrrq_index < ioa_cfg->hrrq_num) {
+		hrrq = &ioa_cfg->hrrq[ioa_cfg->identify_hrrq_index];
+
+		ioarcb->cmd_pkt.cdb[0] = IPR_ID_HOST_RR_Q;
+		ioarcb->res_handle = cpu_to_be32(IPR_IOA_RES_HANDLE);
+
+		ioarcb->cmd_pkt.request_type = IPR_RQTYPE_IOACMD;
+		if (ioa_cfg->sis64)
+			ioarcb->cmd_pkt.cdb[1] = 0x1;
+
+		if (ioa_cfg->nvectors == 1)
+			ioarcb->cmd_pkt.cdb[1] &= ~IPR_ID_HRRQ_SELE_ENABLE;
+		else
+			ioarcb->cmd_pkt.cdb[1] |= IPR_ID_HRRQ_SELE_ENABLE;
+
+		ioarcb->cmd_pkt.cdb[2] =
+			((u64) hrrq->host_rrq_dma >> 24) & 0xff;
+		ioarcb->cmd_pkt.cdb[3] =
+			((u64) hrrq->host_rrq_dma >> 16) & 0xff;
+		ioarcb->cmd_pkt.cdb[4] =
+			((u64) hrrq->host_rrq_dma >> 8) & 0xff;
+		ioarcb->cmd_pkt.cdb[5] =
+			((u64) hrrq->host_rrq_dma) & 0xff;
+		ioarcb->cmd_pkt.cdb[7] =
+			((sizeof(u32) * hrrq->size) >> 8) & 0xff;
+		ioarcb->cmd_pkt.cdb[8] =
+			(sizeof(u32) * hrrq->size) & 0xff;
+
+		if (ioarcb->cmd_pkt.cdb[1] & IPR_ID_HRRQ_SELE_ENABLE)
+			ioarcb->cmd_pkt.cdb[9] =
+					ioa_cfg->identify_hrrq_index;
+
+		if (ioa_cfg->sis64) {
+			ioarcb->cmd_pkt.cdb[10] =
+				((u64) hrrq->host_rrq_dma >> 56) & 0xff;
+			ioarcb->cmd_pkt.cdb[11] =
+				((u64) hrrq->host_rrq_dma >> 48) & 0xff;
+			ioarcb->cmd_pkt.cdb[12] =
+				((u64) hrrq->host_rrq_dma >> 40) & 0xff;
+			ioarcb->cmd_pkt.cdb[13] =
+				((u64) hrrq->host_rrq_dma >> 32) & 0xff;
+		}
+
+		if (ioarcb->cmd_pkt.cdb[1] & IPR_ID_HRRQ_SELE_ENABLE)
+			ioarcb->cmd_pkt.cdb[14] =
+					ioa_cfg->identify_hrrq_index;
+
+		ipr_do_req(ipr_cmd, ipr_reset_ioa_job, ipr_timeout,
+			   IPR_INTERNAL_TIMEOUT);
+
+		if (++ioa_cfg->identify_hrrq_index < ioa_cfg->hrrq_num)
+			ipr_cmd->job_step = ipr_ioafp_identify_hrrq;
+
+		LEAVE;
+		return IPR_RC_JOB_RETURN;
+	}
+
+	LEAVE;
+	return IPR_RC_JOB_CONTINUE;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -7282,7 +8756,13 @@ static void ipr_reset_timer_done(struct ipr_cmnd *ipr_cmd)
 static void ipr_reset_start_timer(struct ipr_cmnd *ipr_cmd,
 				  unsigned long timeout)
 {
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ipr_cmd->ioa_cfg->pending_q);
+=======
+
+	ENTER;
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_pending_q);
+>>>>>>> refs/remotes/origin/master
 	ipr_cmd->done = ipr_reset_ioa_job;
 
 	ipr_cmd->timer.data = (unsigned long) ipr_cmd;
@@ -7300,6 +8780,7 @@ static void ipr_reset_start_timer(struct ipr_cmnd *ipr_cmd,
  **/
 static void ipr_init_ioa_mem(struct ipr_ioa_cfg *ioa_cfg)
 {
+<<<<<<< HEAD
 	memset(ioa_cfg->host_rrq, 0, sizeof(u32) * IPR_NUM_CMD_BLKS);
 
 	/* Initialize Host RRQ pointers */
@@ -7307,6 +8788,28 @@ static void ipr_init_ioa_mem(struct ipr_ioa_cfg *ioa_cfg)
 	ioa_cfg->hrrq_end = &ioa_cfg->host_rrq[IPR_NUM_CMD_BLKS - 1];
 	ioa_cfg->hrrq_curr = ioa_cfg->hrrq_start;
 	ioa_cfg->toggle_bit = 1;
+=======
+	struct ipr_hrr_queue *hrrq;
+
+	for_each_hrrq(hrrq, ioa_cfg) {
+		spin_lock(&hrrq->_lock);
+		memset(hrrq->host_rrq, 0, sizeof(u32) * hrrq->size);
+
+		/* Initialize Host RRQ pointers */
+		hrrq->hrrq_start = hrrq->host_rrq;
+		hrrq->hrrq_end = &hrrq->host_rrq[hrrq->size - 1];
+		hrrq->hrrq_curr = hrrq->hrrq_start;
+		hrrq->toggle_bit = 1;
+		spin_unlock(&hrrq->_lock);
+	}
+	wmb();
+
+	ioa_cfg->identify_hrrq_index = 0;
+	if (ioa_cfg->hrrq_num == 1)
+		atomic_set(&ioa_cfg->hrrq_index, 0);
+	else
+		atomic_set(&ioa_cfg->hrrq_index, 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* Zero out config table */
 	memset(ioa_cfg->u.cfg_table, 0, ioa_cfg->cfg_table_size);
@@ -7363,7 +8866,12 @@ static int ipr_reset_next_stage(struct ipr_cmnd *ipr_cmd)
 	ipr_cmd->timer.function = (void (*)(unsigned long))ipr_oper_timeout;
 	ipr_cmd->done = ipr_reset_ioa_job;
 	add_timer(&ipr_cmd->timer);
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->pending_q);
+=======
+
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_pending_q);
+>>>>>>> refs/remotes/origin/master
 
 	return IPR_RC_JOB_RETURN;
 }
@@ -7383,12 +8891,25 @@ static int ipr_reset_enable_ioa(struct ipr_cmnd *ipr_cmd)
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
 	volatile u32 int_reg;
 	volatile u64 maskval;
+<<<<<<< HEAD
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	ENTER;
 	ipr_cmd->job_step = ipr_ioafp_identify_hrrq;
 	ipr_init_ioa_mem(ioa_cfg);
 
+<<<<<<< HEAD
 	ioa_cfg->allow_interrupts = 1;
+=======
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		spin_lock(&ioa_cfg->hrrq[i]._lock);
+		ioa_cfg->hrrq[i].allow_interrupts = 1;
+		spin_unlock(&ioa_cfg->hrrq[i]._lock);
+	}
+	wmb();
+>>>>>>> refs/remotes/origin/master
 	if (ioa_cfg->sis64) {
 		/* Set the adapter to the correct endian mode. */
 		writel(IPR_ENDIAN_SWAP_KEY, ioa_cfg->regs.endian_swap_reg);
@@ -7428,7 +8949,11 @@ static int ipr_reset_enable_ioa(struct ipr_cmnd *ipr_cmd)
 	ipr_cmd->timer.function = (void (*)(unsigned long))ipr_oper_timeout;
 	ipr_cmd->done = ipr_reset_ioa_job;
 	add_timer(&ipr_cmd->timer);
+<<<<<<< HEAD
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->pending_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_pending_q);
+>>>>>>> refs/remotes/origin/master
 
 	LEAVE;
 	return IPR_RC_JOB_RETURN;
@@ -7449,8 +8974,22 @@ static int ipr_reset_wait_for_dump(struct ipr_cmnd *ipr_cmd)
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
 
 	if (ioa_cfg->sdt_state == GET_DUMP)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ioa_cfg->sdt_state = ABORT_DUMP;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ioa_cfg->sdt_state = WAIT_FOR_DUMP;
+	else if (ioa_cfg->sdt_state == READ_DUMP)
+		ioa_cfg->sdt_state = ABORT_DUMP;
+
+	ioa_cfg->dump_timeout = 1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ipr_cmd->job_step = ipr_reset_alert;
 
 	return IPR_RC_JOB_CONTINUE;
@@ -7614,6 +9153,16 @@ static int ipr_reset_restore_cfg_space(struct ipr_cmnd *ipr_cmd)
 		ipr_cmd->job_step = ipr_reset_enable_ioa;
 
 		if (GET_DUMP == ioa_cfg->sdt_state) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			ioa_cfg->sdt_state = READ_DUMP;
+			ioa_cfg->dump_timeout = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ioa_cfg->sdt_state = READ_DUMP;
+			ioa_cfg->dump_timeout = 0;
+>>>>>>> refs/remotes/origin/master
 			if (ioa_cfg->sis64)
 				ipr_reset_start_timer(ipr_cmd, IPR_SIS64_DUMP_TIMEOUT);
 			else
@@ -7639,8 +9188,23 @@ static int ipr_reset_restore_cfg_space(struct ipr_cmnd *ipr_cmd)
  **/
 static int ipr_reset_bist_done(struct ipr_cmnd *ipr_cmd)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ENTER;
 	pci_unblock_user_cfg_access(ipr_cmd->ioa_cfg->pdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
+
+	ENTER;
+	if (ioa_cfg->cfg_locked)
+		pci_cfg_access_unlock(ioa_cfg->pdev);
+	ioa_cfg->cfg_locked = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ipr_cmd->job_step = ipr_reset_restore_cfg_space;
 	LEAVE;
 	return IPR_RC_JOB_CONTINUE;
@@ -7661,8 +9225,14 @@ static int ipr_reset_start_bist(struct ipr_cmnd *ipr_cmd)
 	int rc = PCIBIOS_SUCCESSFUL;
 
 	ENTER;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_block_user_cfg_access(ioa_cfg->pdev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ioa_cfg->ipr_chip->bist_method == IPR_MMIO)
 		writel(IPR_UPROCI_SIS64_START_BIST,
 		       ioa_cfg->regs.set_uproc_interrupt_reg32);
@@ -7674,7 +9244,19 @@ static int ipr_reset_start_bist(struct ipr_cmnd *ipr_cmd)
 		ipr_reset_start_timer(ipr_cmd, IPR_WAIT_FOR_BIST_TIMEOUT);
 		rc = IPR_RC_JOB_RETURN;
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pci_unblock_user_cfg_access(ipr_cmd->ioa_cfg->pdev);
+=======
+		if (ioa_cfg->cfg_locked)
+			pci_cfg_access_unlock(ipr_cmd->ioa_cfg->pdev);
+		ioa_cfg->cfg_locked = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ioa_cfg->cfg_locked)
+			pci_cfg_access_unlock(ipr_cmd->ioa_cfg->pdev);
+		ioa_cfg->cfg_locked = 0;
+>>>>>>> refs/remotes/origin/master
 		ipr_cmd->s.ioasa.hdr.ioasc = cpu_to_be32(IPR_IOASC_PCI_ACCESS_ERROR);
 		rc = IPR_RC_JOB_CONTINUE;
 	}
@@ -7717,7 +9299,13 @@ static int ipr_reset_slot_reset(struct ipr_cmnd *ipr_cmd)
 	struct pci_dev *pdev = ioa_cfg->pdev;
 
 	ENTER;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_block_user_cfg_access(pdev);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_set_pcie_reset_state(pdev, pcie_warm_reset);
 	ipr_cmd->job_step = ipr_reset_slot_reset_done;
 	ipr_reset_start_timer(ipr_cmd, IPR_PCI_RESET_TIMEOUT);
@@ -7726,6 +9314,65 @@ static int ipr_reset_slot_reset(struct ipr_cmnd *ipr_cmd)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * ipr_reset_block_config_access_wait - Wait for permission to block config access
+ * @ipr_cmd:	ipr command struct
+ *
+ * Description: This attempts to block config access to the IOA.
+ *
+ * Return value:
+ * 	IPR_RC_JOB_CONTINUE / IPR_RC_JOB_RETURN
+ **/
+static int ipr_reset_block_config_access_wait(struct ipr_cmnd *ipr_cmd)
+{
+	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
+	int rc = IPR_RC_JOB_CONTINUE;
+
+	if (pci_cfg_access_trylock(ioa_cfg->pdev)) {
+		ioa_cfg->cfg_locked = 1;
+		ipr_cmd->job_step = ioa_cfg->reset;
+	} else {
+		if (ipr_cmd->u.time_left) {
+			rc = IPR_RC_JOB_RETURN;
+			ipr_cmd->u.time_left -= IPR_CHECK_FOR_RESET_TIMEOUT;
+			ipr_reset_start_timer(ipr_cmd,
+					      IPR_CHECK_FOR_RESET_TIMEOUT);
+		} else {
+			ipr_cmd->job_step = ioa_cfg->reset;
+			dev_err(&ioa_cfg->pdev->dev,
+				"Timed out waiting to lock config access. Resetting anyway.\n");
+		}
+	}
+
+	return rc;
+}
+
+/**
+ * ipr_reset_block_config_access - Block config access to the IOA
+ * @ipr_cmd:	ipr command struct
+ *
+ * Description: This attempts to block config access to the IOA
+ *
+ * Return value:
+ * 	IPR_RC_JOB_CONTINUE
+ **/
+static int ipr_reset_block_config_access(struct ipr_cmnd *ipr_cmd)
+{
+	ipr_cmd->ioa_cfg->cfg_locked = 0;
+	ipr_cmd->job_step = ipr_reset_block_config_access_wait;
+	ipr_cmd->u.time_left = IPR_WAIT_FOR_RESET_TIMEOUT;
+	return IPR_RC_JOB_CONTINUE;
+}
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * ipr_reset_allowed - Query whether or not IOA can be reset
  * @ioa_cfg:	ioa config struct
  *
@@ -7764,7 +9411,15 @@ static int ipr_reset_wait_to_start_bist(struct ipr_cmnd *ipr_cmd)
 		ipr_cmd->u.time_left -= IPR_CHECK_FOR_RESET_TIMEOUT;
 		ipr_reset_start_timer(ipr_cmd, IPR_CHECK_FOR_RESET_TIMEOUT);
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ipr_cmd->job_step = ioa_cfg->reset;
+=======
+		ipr_cmd->job_step = ipr_reset_block_config_access;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ipr_cmd->job_step = ipr_reset_block_config_access;
+>>>>>>> refs/remotes/origin/master
 		rc = IPR_RC_JOB_CONTINUE;
 	}
 
@@ -7797,7 +9452,15 @@ static int ipr_reset_alert(struct ipr_cmnd *ipr_cmd)
 		writel(IPR_UPROCI_RESET_ALERT, ioa_cfg->regs.set_uproc_interrupt_reg32);
 		ipr_cmd->job_step = ipr_reset_wait_to_start_bist;
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ipr_cmd->job_step = ioa_cfg->reset;
+=======
+		ipr_cmd->job_step = ipr_reset_block_config_access;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ipr_cmd->job_step = ipr_reset_block_config_access;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ipr_cmd->u.time_left = IPR_WAIT_FOR_RESET_TIMEOUT;
@@ -7889,7 +9552,12 @@ static int ipr_reset_shutdown_ioa(struct ipr_cmnd *ipr_cmd)
 	int rc = IPR_RC_JOB_CONTINUE;
 
 	ENTER;
+<<<<<<< HEAD
 	if (shutdown_type != IPR_SHUTDOWN_NONE && !ioa_cfg->ioa_is_dead) {
+=======
+	if (shutdown_type != IPR_SHUTDOWN_NONE &&
+			!ioa_cfg->hrrq[IPR_INIT_HRRQ].ioa_is_dead) {
+>>>>>>> refs/remotes/origin/master
 		ipr_cmd->ioarcb.res_handle = cpu_to_be32(IPR_IOA_RES_HANDLE);
 		ipr_cmd->ioarcb.cmd_pkt.request_type = IPR_RQTYPE_IOACMD;
 		ipr_cmd->ioarcb.cmd_pkt.cdb[0] = IPR_IOA_SHUTDOWN;
@@ -7937,7 +9605,12 @@ static void ipr_reset_ioa_job(struct ipr_cmnd *ipr_cmd)
 			 * We are doing nested adapter resets and this is
 			 * not the current reset job.
 			 */
+<<<<<<< HEAD
 			list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+			list_add_tail(&ipr_cmd->queue,
+					&ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 
@@ -7950,7 +9623,11 @@ static void ipr_reset_ioa_job(struct ipr_cmnd *ipr_cmd)
 		ipr_reinit_ipr_cmnd(ipr_cmd);
 		ipr_cmd->job_step_failed = ipr_reset_cmd_failed;
 		rc = ipr_cmd->job_step(ipr_cmd);
+<<<<<<< HEAD
 	} while(rc == IPR_RC_JOB_CONTINUE);
+=======
+	} while (rc == IPR_RC_JOB_CONTINUE);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -7972,10 +9649,24 @@ static void _ipr_initiate_ioa_reset(struct ipr_ioa_cfg *ioa_cfg,
 				    enum ipr_shutdown_type shutdown_type)
 {
 	struct ipr_cmnd *ipr_cmd;
+<<<<<<< HEAD
 
 	ioa_cfg->in_reset_reload = 1;
 	ioa_cfg->allow_cmds = 0;
 	scsi_block_requests(ioa_cfg->host);
+=======
+	int i;
+
+	ioa_cfg->in_reset_reload = 1;
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		spin_lock(&ioa_cfg->hrrq[i]._lock);
+		ioa_cfg->hrrq[i].allow_cmds = 0;
+		spin_unlock(&ioa_cfg->hrrq[i]._lock);
+	}
+	wmb();
+	if (!ioa_cfg->hrrq[IPR_INIT_HRRQ].removing_ioa)
+		scsi_block_requests(ioa_cfg->host);
+>>>>>>> refs/remotes/origin/master
 
 	ipr_cmd = ipr_get_free_ipr_cmnd(ioa_cfg);
 	ioa_cfg->reset_cmd = ipr_cmd;
@@ -8000,18 +9691,47 @@ static void _ipr_initiate_ioa_reset(struct ipr_ioa_cfg *ioa_cfg,
 static void ipr_initiate_ioa_reset(struct ipr_ioa_cfg *ioa_cfg,
 				   enum ipr_shutdown_type shutdown_type)
 {
+<<<<<<< HEAD
 	if (ioa_cfg->ioa_is_dead)
 		return;
 
+<<<<<<< HEAD
 	if (ioa_cfg->in_reset_reload && ioa_cfg->sdt_state == GET_DUMP)
 		ioa_cfg->sdt_state = ABORT_DUMP;
+=======
+=======
+	int i;
+
+	if (ioa_cfg->hrrq[IPR_INIT_HRRQ].ioa_is_dead)
+		return;
+
+>>>>>>> refs/remotes/origin/master
+	if (ioa_cfg->in_reset_reload) {
+		if (ioa_cfg->sdt_state == GET_DUMP)
+			ioa_cfg->sdt_state = WAIT_FOR_DUMP;
+		else if (ioa_cfg->sdt_state == READ_DUMP)
+			ioa_cfg->sdt_state = ABORT_DUMP;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ioa_cfg->reset_retries++ >= IPR_NUM_RESET_RELOAD_RETRIES) {
 		dev_err(&ioa_cfg->pdev->dev,
 			"IOA taken offline - error recovery failed\n");
 
 		ioa_cfg->reset_retries = 0;
+<<<<<<< HEAD
 		ioa_cfg->ioa_is_dead = 1;
+=======
+		for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+			spin_lock(&ioa_cfg->hrrq[i]._lock);
+			ioa_cfg->hrrq[i].ioa_is_dead = 1;
+			spin_unlock(&ioa_cfg->hrrq[i]._lock);
+		}
+		wmb();
+>>>>>>> refs/remotes/origin/master
 
 		if (ioa_cfg->in_ioa_bringdown) {
 			ioa_cfg->reset_cmd = NULL;
@@ -8019,9 +9739,17 @@ static void ipr_initiate_ioa_reset(struct ipr_ioa_cfg *ioa_cfg,
 			ipr_fail_all_ops(ioa_cfg);
 			wake_up_all(&ioa_cfg->reset_wait_q);
 
+<<<<<<< HEAD
 			spin_unlock_irq(ioa_cfg->host->host_lock);
 			scsi_unblock_requests(ioa_cfg->host);
 			spin_lock_irq(ioa_cfg->host->host_lock);
+=======
+			if (!ioa_cfg->hrrq[IPR_INIT_HRRQ].removing_ioa) {
+				spin_unlock_irq(ioa_cfg->host->host_lock);
+				scsi_unblock_requests(ioa_cfg->host);
+				spin_lock_irq(ioa_cfg->host->host_lock);
+			}
+>>>>>>> refs/remotes/origin/master
 			return;
 		} else {
 			ioa_cfg->in_ioa_bringdown = 1;
@@ -8043,9 +9771,23 @@ static void ipr_initiate_ioa_reset(struct ipr_ioa_cfg *ioa_cfg,
  */
 static int ipr_reset_freeze(struct ipr_cmnd *ipr_cmd)
 {
+<<<<<<< HEAD
 	/* Disallow new interrupts, avoid loop */
 	ipr_cmd->ioa_cfg->allow_interrupts = 0;
 	list_add_tail(&ipr_cmd->queue, &ipr_cmd->ioa_cfg->pending_q);
+=======
+	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
+	int i;
+
+	/* Disallow new interrupts, avoid loop */
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		spin_lock(&ioa_cfg->hrrq[i]._lock);
+		ioa_cfg->hrrq[i].allow_interrupts = 0;
+		spin_unlock(&ioa_cfg->hrrq[i]._lock);
+	}
+	wmb();
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_pending_q);
+>>>>>>> refs/remotes/origin/master
 	ipr_cmd->done = ipr_reset_ioa_job;
 	return IPR_RC_JOB_RETURN;
 }
@@ -8102,13 +9844,28 @@ static void ipr_pci_perm_failure(struct pci_dev *pdev)
 {
 	unsigned long flags = 0;
 	struct ipr_ioa_cfg *ioa_cfg = pci_get_drvdata(pdev);
+<<<<<<< HEAD
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(ioa_cfg->host->host_lock, flags);
 	if (ioa_cfg->sdt_state == WAIT_FOR_DUMP)
 		ioa_cfg->sdt_state = ABORT_DUMP;
+<<<<<<< HEAD
 	ioa_cfg->reset_retries = IPR_NUM_RESET_RELOAD_RETRIES;
 	ioa_cfg->in_ioa_bringdown = 1;
 	ioa_cfg->allow_cmds = 0;
+=======
+	ioa_cfg->reset_retries = IPR_NUM_RESET_RELOAD_RETRIES - 1;
+	ioa_cfg->in_ioa_bringdown = 1;
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		spin_lock(&ioa_cfg->hrrq[i]._lock);
+		ioa_cfg->hrrq[i].allow_cmds = 0;
+		spin_unlock(&ioa_cfg->hrrq[i]._lock);
+	}
+	wmb();
+>>>>>>> refs/remotes/origin/master
 	ipr_initiate_ioa_reset(ioa_cfg, IPR_SHUTDOWN_NONE);
 	spin_unlock_irqrestore(ioa_cfg->host->host_lock, flags);
 }
@@ -8151,7 +9908,11 @@ static pci_ers_result_t ipr_pci_error_detected(struct pci_dev *pdev,
  * Return value:
  * 	0 on success / -EIO on failure
  **/
+<<<<<<< HEAD
 static int __devinit ipr_probe_ioa_part2(struct ipr_ioa_cfg *ioa_cfg)
+=======
+static int ipr_probe_ioa_part2(struct ipr_ioa_cfg *ioa_cfg)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc = 0;
 	unsigned long host_lock_flags = 0;
@@ -8165,12 +9926,19 @@ static int __devinit ipr_probe_ioa_part2(struct ipr_ioa_cfg *ioa_cfg)
 	} else
 		_ipr_initiate_ioa_reset(ioa_cfg, ipr_reset_enable_ioa,
 					IPR_SHUTDOWN_NONE);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(ioa_cfg->host->host_lock, host_lock_flags);
 	wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
 	spin_lock_irqsave(ioa_cfg->host->host_lock, host_lock_flags);
 
+<<<<<<< HEAD
 	if (ioa_cfg->ioa_is_dead) {
+=======
+	if (ioa_cfg->hrrq[IPR_INIT_HRRQ].ioa_is_dead) {
+>>>>>>> refs/remotes/origin/master
 		rc = -EIO;
 	} else if (ipr_invalid_adapter(ioa_cfg)) {
 		if (!ipr_testmode)
@@ -8207,8 +9975,23 @@ static void ipr_free_cmd_blks(struct ipr_ioa_cfg *ioa_cfg)
 	}
 
 	if (ioa_cfg->ipr_cmd_pool)
+<<<<<<< HEAD
 		pci_pool_destroy (ioa_cfg->ipr_cmd_pool);
 
+<<<<<<< HEAD
+=======
+=======
+		pci_pool_destroy(ioa_cfg->ipr_cmd_pool);
+
+>>>>>>> refs/remotes/origin/master
+	kfree(ioa_cfg->ipr_cmnd_list);
+	kfree(ioa_cfg->ipr_cmnd_list_dma);
+	ioa_cfg->ipr_cmnd_list = NULL;
+	ioa_cfg->ipr_cmnd_list_dma = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ioa_cfg->ipr_cmd_pool = NULL;
 }
 
@@ -8227,8 +10010,18 @@ static void ipr_free_mem(struct ipr_ioa_cfg *ioa_cfg)
 	pci_free_consistent(ioa_cfg->pdev, sizeof(struct ipr_misc_cbs),
 			    ioa_cfg->vpd_cbs, ioa_cfg->vpd_cbs_dma);
 	ipr_free_cmd_blks(ioa_cfg);
+<<<<<<< HEAD
 	pci_free_consistent(ioa_cfg->pdev, sizeof(u32) * IPR_NUM_CMD_BLKS,
 			    ioa_cfg->host_rrq, ioa_cfg->host_rrq_dma);
+=======
+
+	for (i = 0; i < ioa_cfg->hrrq_num; i++)
+		pci_free_consistent(ioa_cfg->pdev,
+					sizeof(u32) * ioa_cfg->hrrq[i].size,
+					ioa_cfg->hrrq[i].host_rrq,
+					ioa_cfg->hrrq[i].host_rrq_dma);
+
+>>>>>>> refs/remotes/origin/master
 	pci_free_consistent(ioa_cfg->pdev, ioa_cfg->cfg_table_size,
 			    ioa_cfg->u.cfg_table,
 			    ioa_cfg->cfg_table_dma);
@@ -8259,8 +10052,28 @@ static void ipr_free_all_resources(struct ipr_ioa_cfg *ioa_cfg)
 	struct pci_dev *pdev = ioa_cfg->pdev;
 
 	ENTER;
+<<<<<<< HEAD
 	free_irq(pdev->irq, ioa_cfg);
 	pci_disable_msi(pdev);
+=======
+	if (ioa_cfg->intr_flag == IPR_USE_MSI ||
+	    ioa_cfg->intr_flag == IPR_USE_MSIX) {
+		int i;
+		for (i = 0; i < ioa_cfg->nvectors; i++)
+			free_irq(ioa_cfg->vectors_info[i].vec,
+				&ioa_cfg->hrrq[i]);
+	} else
+		free_irq(pdev->irq, &ioa_cfg->hrrq[0]);
+
+	if (ioa_cfg->intr_flag == IPR_USE_MSI) {
+		pci_disable_msi(pdev);
+		ioa_cfg->intr_flag &= ~IPR_USE_MSI;
+	} else if (ioa_cfg->intr_flag == IPR_USE_MSIX) {
+		pci_disable_msix(pdev);
+		ioa_cfg->intr_flag &= ~IPR_USE_MSIX;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	iounmap(ioa_cfg->hdw_dma_regs);
 	pci_release_regions(pdev);
 	ipr_free_mem(ioa_cfg);
@@ -8276,21 +10089,90 @@ static void ipr_free_all_resources(struct ipr_ioa_cfg *ioa_cfg)
  * Return value:
  * 	0 on success / -ENOMEM on allocation failure
  **/
+<<<<<<< HEAD
 static int __devinit ipr_alloc_cmd_blks(struct ipr_ioa_cfg *ioa_cfg)
+=======
+static int ipr_alloc_cmd_blks(struct ipr_ioa_cfg *ioa_cfg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipr_cmnd *ipr_cmd;
 	struct ipr_ioarcb *ioarcb;
 	dma_addr_t dma_addr;
+<<<<<<< HEAD
 	int i;
 
 	ioa_cfg->ipr_cmd_pool = pci_pool_create (IPR_NAME, ioa_cfg->pdev,
+<<<<<<< HEAD
 						 sizeof(struct ipr_cmnd), 16, 0);
+=======
+						 sizeof(struct ipr_cmnd), 512, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, entries_each_hrrq, hrrq_id = 0;
+
+	ioa_cfg->ipr_cmd_pool = pci_pool_create(IPR_NAME, ioa_cfg->pdev,
+						sizeof(struct ipr_cmnd), 512, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (!ioa_cfg->ipr_cmd_pool)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ioa_cfg->ipr_cmnd_list = kcalloc(IPR_NUM_CMD_BLKS, sizeof(struct ipr_cmnd *), GFP_KERNEL);
+	ioa_cfg->ipr_cmnd_list_dma = kcalloc(IPR_NUM_CMD_BLKS, sizeof(dma_addr_t), GFP_KERNEL);
+
+	if (!ioa_cfg->ipr_cmnd_list || !ioa_cfg->ipr_cmnd_list_dma) {
+		ipr_free_cmd_blks(ioa_cfg);
+		return -ENOMEM;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < IPR_NUM_CMD_BLKS; i++) {
 		ipr_cmd = pci_pool_alloc (ioa_cfg->ipr_cmd_pool, GFP_KERNEL, &dma_addr);
+=======
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		if (ioa_cfg->hrrq_num > 1) {
+			if (i == 0) {
+				entries_each_hrrq = IPR_NUM_INTERNAL_CMD_BLKS;
+				ioa_cfg->hrrq[i].min_cmd_id = 0;
+					ioa_cfg->hrrq[i].max_cmd_id =
+						(entries_each_hrrq - 1);
+			} else {
+				entries_each_hrrq =
+					IPR_NUM_BASE_CMD_BLKS/
+					(ioa_cfg->hrrq_num - 1);
+				ioa_cfg->hrrq[i].min_cmd_id =
+					IPR_NUM_INTERNAL_CMD_BLKS +
+					(i - 1) * entries_each_hrrq;
+				ioa_cfg->hrrq[i].max_cmd_id =
+					(IPR_NUM_INTERNAL_CMD_BLKS +
+					i * entries_each_hrrq - 1);
+			}
+		} else {
+			entries_each_hrrq = IPR_NUM_CMD_BLKS;
+			ioa_cfg->hrrq[i].min_cmd_id = 0;
+			ioa_cfg->hrrq[i].max_cmd_id = (entries_each_hrrq - 1);
+		}
+		ioa_cfg->hrrq[i].size = entries_each_hrrq;
+	}
+
+	BUG_ON(ioa_cfg->hrrq_num == 0);
+
+	i = IPR_NUM_CMD_BLKS -
+		ioa_cfg->hrrq[ioa_cfg->hrrq_num - 1].max_cmd_id - 1;
+	if (i > 0) {
+		ioa_cfg->hrrq[ioa_cfg->hrrq_num - 1].size += i;
+		ioa_cfg->hrrq[ioa_cfg->hrrq_num - 1].max_cmd_id += i;
+	}
+
+	for (i = 0; i < IPR_NUM_CMD_BLKS; i++) {
+		ipr_cmd = pci_pool_alloc(ioa_cfg->ipr_cmd_pool, GFP_KERNEL, &dma_addr);
+>>>>>>> refs/remotes/origin/master
 
 		if (!ipr_cmd) {
 			ipr_free_cmd_blks(ioa_cfg);
@@ -8327,7 +10209,15 @@ static int __devinit ipr_alloc_cmd_blks(struct ipr_ioa_cfg *ioa_cfg)
 		ipr_cmd->sense_buffer_dma = dma_addr +
 			offsetof(struct ipr_cmnd, sense_buffer);
 
+<<<<<<< HEAD
 		list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+		ipr_cmd->ioarcb.cmd_pkt.hrrq_id = hrrq_id;
+		ipr_cmd->hrrq = &ioa_cfg->hrrq[hrrq_id];
+		list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+		if (i >= ioa_cfg->hrrq[hrrq_id].max_cmd_id)
+			hrrq_id++;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -8340,7 +10230,11 @@ static int __devinit ipr_alloc_cmd_blks(struct ipr_ioa_cfg *ioa_cfg)
  * Return value:
  * 	0 on success / non-zero for error
  **/
+<<<<<<< HEAD
 static int __devinit ipr_alloc_mem(struct ipr_ioa_cfg *ioa_cfg)
+=======
+static int ipr_alloc_mem(struct ipr_ioa_cfg *ioa_cfg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pdev = ioa_cfg->pdev;
 	int i, rc = -ENOMEM;
@@ -8352,6 +10246,7 @@ static int __devinit ipr_alloc_mem(struct ipr_ioa_cfg *ioa_cfg)
 	if (!ioa_cfg->res_entries)
 		goto out;
 
+<<<<<<< HEAD
 	if (ioa_cfg->sis64) {
 		ioa_cfg->target_ids = kzalloc(sizeof(unsigned long) *
 					      BITS_TO_LONGS(ioa_cfg->max_devs_supported), GFP_KERNEL);
@@ -8361,6 +10256,8 @@ static int __devinit ipr_alloc_mem(struct ipr_ioa_cfg *ioa_cfg)
 					    BITS_TO_LONGS(ioa_cfg->max_devs_supported), GFP_KERNEL);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ioa_cfg->max_devs_supported; i++) {
 		list_add_tail(&ioa_cfg->res_entries[i].queue, &ioa_cfg->free_res_q);
 		ioa_cfg->res_entries[i].ioa_cfg = ioa_cfg;
@@ -8373,6 +10270,7 @@ static int __devinit ipr_alloc_mem(struct ipr_ioa_cfg *ioa_cfg)
 	if (!ioa_cfg->vpd_cbs)
 		goto out_free_res_entries;
 
+<<<<<<< HEAD
 	if (ipr_alloc_cmd_blks(ioa_cfg))
 		goto out_free_vpd_cbs;
 
@@ -8382,6 +10280,36 @@ static int __devinit ipr_alloc_mem(struct ipr_ioa_cfg *ioa_cfg)
 
 	if (!ioa_cfg->host_rrq)
 		goto out_ipr_free_cmd_blocks;
+=======
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		INIT_LIST_HEAD(&ioa_cfg->hrrq[i].hrrq_free_q);
+		INIT_LIST_HEAD(&ioa_cfg->hrrq[i].hrrq_pending_q);
+		spin_lock_init(&ioa_cfg->hrrq[i]._lock);
+		if (i == 0)
+			ioa_cfg->hrrq[i].lock = ioa_cfg->host->host_lock;
+		else
+			ioa_cfg->hrrq[i].lock = &ioa_cfg->hrrq[i]._lock;
+	}
+
+	if (ipr_alloc_cmd_blks(ioa_cfg))
+		goto out_free_vpd_cbs;
+
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		ioa_cfg->hrrq[i].host_rrq = pci_alloc_consistent(ioa_cfg->pdev,
+					sizeof(u32) * ioa_cfg->hrrq[i].size,
+					&ioa_cfg->hrrq[i].host_rrq_dma);
+
+		if (!ioa_cfg->hrrq[i].host_rrq)  {
+			while (--i > 0)
+				pci_free_consistent(pdev,
+					sizeof(u32) * ioa_cfg->hrrq[i].size,
+					ioa_cfg->hrrq[i].host_rrq,
+					ioa_cfg->hrrq[i].host_rrq_dma);
+			goto out_ipr_free_cmd_blocks;
+		}
+		ioa_cfg->hrrq[i].ioa_cfg = ioa_cfg;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ioa_cfg->u.cfg_table = pci_alloc_consistent(ioa_cfg->pdev,
 						    ioa_cfg->cfg_table_size,
@@ -8425,8 +10353,17 @@ out_free_hostrcb_dma:
 			    ioa_cfg->u.cfg_table,
 			    ioa_cfg->cfg_table_dma);
 out_free_host_rrq:
+<<<<<<< HEAD
 	pci_free_consistent(pdev, sizeof(u32) * IPR_NUM_CMD_BLKS,
 			    ioa_cfg->host_rrq, ioa_cfg->host_rrq_dma);
+=======
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		pci_free_consistent(pdev,
+				sizeof(u32) * ioa_cfg->hrrq[i].size,
+				ioa_cfg->hrrq[i].host_rrq,
+				ioa_cfg->hrrq[i].host_rrq_dma);
+	}
+>>>>>>> refs/remotes/origin/master
 out_ipr_free_cmd_blocks:
 	ipr_free_cmd_blks(ioa_cfg);
 out_free_vpd_cbs:
@@ -8444,7 +10381,11 @@ out_free_res_entries:
  * Return value:
  * 	none
  **/
+<<<<<<< HEAD
 static void __devinit ipr_initialize_bus_attr(struct ipr_ioa_cfg *ioa_cfg)
+=======
+static void ipr_initialize_bus_attr(struct ipr_ioa_cfg *ioa_cfg)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -8468,8 +10409,13 @@ static void __devinit ipr_initialize_bus_attr(struct ipr_ioa_cfg *ioa_cfg)
  * Return value:
  * 	none
  **/
+<<<<<<< HEAD
 static void __devinit ipr_init_ioa_cfg(struct ipr_ioa_cfg *ioa_cfg,
 				       struct Scsi_Host *host, struct pci_dev *pdev)
+=======
+static void ipr_init_ioa_cfg(struct ipr_ioa_cfg *ioa_cfg,
+			     struct Scsi_Host *host, struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ipr_interrupt_offsets *p;
 	struct ipr_interrupts *t;
@@ -8481,15 +10427,21 @@ static void __devinit ipr_init_ioa_cfg(struct ipr_ioa_cfg *ioa_cfg,
 	ioa_cfg->doorbell = IPR_DOORBELL;
 	sprintf(ioa_cfg->eye_catcher, IPR_EYECATCHER);
 	sprintf(ioa_cfg->trace_start, IPR_TRACE_START_LABEL);
+<<<<<<< HEAD
 	sprintf(ioa_cfg->ipr_free_label, IPR_FREEQ_LABEL);
 	sprintf(ioa_cfg->ipr_pending_label, IPR_PENDQ_LABEL);
+=======
+>>>>>>> refs/remotes/origin/master
 	sprintf(ioa_cfg->cfg_table_start, IPR_CFG_TBL_START);
 	sprintf(ioa_cfg->resource_table_label, IPR_RES_TABLE_LABEL);
 	sprintf(ioa_cfg->ipr_hcam_label, IPR_HCAM_LABEL);
 	sprintf(ioa_cfg->ipr_cmd_label, IPR_CMD_LABEL);
 
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&ioa_cfg->free_q);
 	INIT_LIST_HEAD(&ioa_cfg->pending_q);
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&ioa_cfg->hostrcb_free_q);
 	INIT_LIST_HEAD(&ioa_cfg->hostrcb_pending_q);
 	INIT_LIST_HEAD(&ioa_cfg->free_res_q);
@@ -8516,6 +10468,14 @@ static void __devinit ipr_init_ioa_cfg(struct ipr_ioa_cfg *ioa_cfg,
 	host->max_channel = IPR_MAX_BUS_TO_SCAN;
 	host->unique_id = host->host_no;
 	host->max_cmd_len = IPR_MAX_CDB_LEN;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	host->can_queue = ioa_cfg->max_cmds;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	host->can_queue = ioa_cfg->max_cmds;
+>>>>>>> refs/remotes/origin/master
 	pci_set_drvdata(pdev, ioa_cfg);
 
 	p = &ioa_cfg->chip_cfg->regs;
@@ -8554,7 +10514,11 @@ static void __devinit ipr_init_ioa_cfg(struct ipr_ioa_cfg *ioa_cfg,
  * Return value:
  * 	ptr to chip information on success / NULL on failure
  **/
+<<<<<<< HEAD
 static const struct ipr_chip_t * __devinit
+=======
+static const struct ipr_chip_t *
+>>>>>>> refs/remotes/origin/master
 ipr_get_chip_info(const struct pci_device_id *dev_id)
 {
 	int i;
@@ -8566,6 +10530,91 @@ ipr_get_chip_info(const struct pci_device_id *dev_id)
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+static int ipr_enable_msix(struct ipr_ioa_cfg *ioa_cfg)
+{
+	struct msix_entry entries[IPR_MAX_MSIX_VECTORS];
+	int i, err, vectors;
+
+	for (i = 0; i < ARRAY_SIZE(entries); ++i)
+		entries[i].entry = i;
+
+	vectors = ipr_number_of_msix;
+
+	while ((err = pci_enable_msix(ioa_cfg->pdev, entries, vectors)) > 0)
+			vectors = err;
+
+	if (err < 0) {
+		pci_disable_msix(ioa_cfg->pdev);
+		return err;
+	}
+
+	if (!err) {
+		for (i = 0; i < vectors; i++)
+			ioa_cfg->vectors_info[i].vec = entries[i].vector;
+		ioa_cfg->nvectors = vectors;
+	}
+
+	return err;
+}
+
+static int ipr_enable_msi(struct ipr_ioa_cfg *ioa_cfg)
+{
+	int i, err, vectors;
+
+	vectors = ipr_number_of_msix;
+
+	while ((err = pci_enable_msi_block(ioa_cfg->pdev, vectors)) > 0)
+			vectors = err;
+
+	if (err < 0) {
+		pci_disable_msi(ioa_cfg->pdev);
+		return err;
+	}
+
+	if (!err) {
+		for (i = 0; i < vectors; i++)
+			ioa_cfg->vectors_info[i].vec = ioa_cfg->pdev->irq + i;
+		ioa_cfg->nvectors = vectors;
+	}
+
+	return err;
+}
+
+static void name_msi_vectors(struct ipr_ioa_cfg *ioa_cfg)
+{
+	int vec_idx, n = sizeof(ioa_cfg->vectors_info[0].desc) - 1;
+
+	for (vec_idx = 0; vec_idx < ioa_cfg->nvectors; vec_idx++) {
+		snprintf(ioa_cfg->vectors_info[vec_idx].desc, n,
+			 "host%d-%d", ioa_cfg->host->host_no, vec_idx);
+		ioa_cfg->vectors_info[vec_idx].
+			desc[strlen(ioa_cfg->vectors_info[vec_idx].desc)] = 0;
+	}
+}
+
+static int ipr_request_other_msi_irqs(struct ipr_ioa_cfg *ioa_cfg)
+{
+	int i, rc;
+
+	for (i = 1; i < ioa_cfg->nvectors; i++) {
+		rc = request_irq(ioa_cfg->vectors_info[i].vec,
+			ipr_isr_mhrrq,
+			0,
+			ioa_cfg->vectors_info[i].desc,
+			&ioa_cfg->hrrq[i]);
+		if (rc) {
+			while (--i >= 0)
+				free_irq(ioa_cfg->vectors_info[i].vec,
+					&ioa_cfg->hrrq[i]);
+			return rc;
+		}
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * ipr_test_intr - Handle the interrupt generated in ipr_test_msi().
  * @pdev:		PCI device struct
@@ -8576,12 +10625,20 @@ ipr_get_chip_info(const struct pci_device_id *dev_id)
  * Return value:
  * 	0 on success / non-zero on failure
  **/
+<<<<<<< HEAD
 static irqreturn_t __devinit ipr_test_intr(int irq, void *devp)
+=======
+static irqreturn_t ipr_test_intr(int irq, void *devp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipr_ioa_cfg *ioa_cfg = (struct ipr_ioa_cfg *)devp;
 	unsigned long lock_flags = 0;
 	irqreturn_t rc = IRQ_HANDLED;
 
+<<<<<<< HEAD
+=======
+	dev_info(&ioa_cfg->pdev->dev, "Received IRQ : %d\n", irq);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
 
 	ioa_cfg->msi_received = 1;
@@ -8603,8 +10660,12 @@ static irqreturn_t __devinit ipr_test_intr(int irq, void *devp)
  * Return value:
  * 	0 on success / non-zero on failure
  **/
+<<<<<<< HEAD
 static int __devinit ipr_test_msi(struct ipr_ioa_cfg *ioa_cfg,
 				  struct pci_dev *pdev)
+=======
+static int ipr_test_msi(struct ipr_ioa_cfg *ioa_cfg, struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	volatile u32 int_reg;
@@ -8620,7 +10681,14 @@ static int __devinit ipr_test_msi(struct ipr_ioa_cfg *ioa_cfg,
 	int_reg = readl(ioa_cfg->regs.sense_interrupt_mask_reg);
 	spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
 
+<<<<<<< HEAD
 	rc = request_irq(pdev->irq, ipr_test_intr, 0, IPR_NAME, ioa_cfg);
+=======
+	if (ioa_cfg->intr_flag == IPR_USE_MSIX)
+		rc = request_irq(ioa_cfg->vectors_info[0].vec, ipr_test_intr, 0, IPR_NAME, ioa_cfg);
+	else
+		rc = request_irq(pdev->irq, ipr_test_intr, 0, IPR_NAME, ioa_cfg);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		dev_err(&pdev->dev, "Can not assign irq %d\n", pdev->irq);
 		return rc;
@@ -8630,9 +10698,15 @@ static int __devinit ipr_test_msi(struct ipr_ioa_cfg *ioa_cfg,
 	writel(IPR_PCII_IO_DEBUG_ACKNOWLEDGE, ioa_cfg->regs.sense_interrupt_reg32);
 	int_reg = readl(ioa_cfg->regs.sense_interrupt_reg);
 	wait_event_timeout(ioa_cfg->msi_wait_q, ioa_cfg->msi_received, HZ);
+<<<<<<< HEAD
 	ipr_mask_and_clear_interrupts(ioa_cfg, ~IPR_PCII_IOA_TRANS_TO_OPER);
 
 	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+=======
+	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+	ipr_mask_and_clear_interrupts(ioa_cfg, ~IPR_PCII_IOA_TRANS_TO_OPER);
+
+>>>>>>> refs/remotes/origin/master
 	if (!ioa_cfg->msi_received) {
 		/* MSI test failed */
 		dev_info(&pdev->dev, "MSI test failed.  Falling back to LSI.\n");
@@ -8642,23 +10716,39 @@ static int __devinit ipr_test_msi(struct ipr_ioa_cfg *ioa_cfg,
 
 	spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
 
+<<<<<<< HEAD
 	free_irq(pdev->irq, ioa_cfg);
+=======
+	if (ioa_cfg->intr_flag == IPR_USE_MSIX)
+		free_irq(ioa_cfg->vectors_info[0].vec, ioa_cfg);
+	else
+		free_irq(pdev->irq, ioa_cfg);
+>>>>>>> refs/remotes/origin/master
 
 	LEAVE;
 
 	return rc;
 }
 
+<<<<<<< HEAD
 /**
  * ipr_probe_ioa - Allocates memory and does first stage of initialization
+=======
+ /* ipr_probe_ioa - Allocates memory and does first stage of initialization
+>>>>>>> refs/remotes/origin/master
  * @pdev:		PCI device struct
  * @dev_id:		PCI device id struct
  *
  * Return value:
  * 	0 on success / non-zero on failure
  **/
+<<<<<<< HEAD
 static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 				   const struct pci_device_id *dev_id)
+=======
+static int ipr_probe_ioa(struct pci_dev *pdev,
+			 const struct pci_device_id *dev_id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipr_ioa_cfg *ioa_cfg;
 	struct Scsi_Host *host;
@@ -8666,6 +10756,10 @@ static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 	void __iomem *ipr_regs;
 	int rc = PCIBIOS_SUCCESSFUL;
 	volatile u32 mask, uproc, interrupts;
+<<<<<<< HEAD
+=======
+	unsigned long lock_flags, driver_lock_flags;
+>>>>>>> refs/remotes/origin/master
 
 	ENTER;
 
@@ -8686,8 +10780,12 @@ static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 
 	ioa_cfg = (struct ipr_ioa_cfg *)host->hostdata;
 	memset(ioa_cfg, 0, sizeof(struct ipr_ioa_cfg));
+<<<<<<< HEAD
 	ata_host_init(&ioa_cfg->ata_host, &pdev->dev,
 		      sata_port_info.flags, &ipr_sata_ops);
+=======
+	ata_host_init(&ioa_cfg->ata_host, &pdev->dev, &ipr_sata_ops);
+>>>>>>> refs/remotes/origin/master
 
 	ioa_cfg->ipr_chip = ipr_get_chip_info(dev_id);
 
@@ -8700,6 +10798,16 @@ static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 	/* set SIS 32 or SIS 64 */
 	ioa_cfg->sis64 = ioa_cfg->ipr_chip->sis_type == IPR_SIS64 ? 1 : 0;
 	ioa_cfg->chip_cfg = ioa_cfg->ipr_chip->cfg;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ioa_cfg->clear_isr = ioa_cfg->chip_cfg->clear_isr;
+	ioa_cfg->max_cmds = ioa_cfg->chip_cfg->max_cmds;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ioa_cfg->clear_isr = ioa_cfg->chip_cfg->clear_isr;
+	ioa_cfg->max_cmds = ioa_cfg->chip_cfg->max_cmds;
+>>>>>>> refs/remotes/origin/master
 
 	if (ipr_transop_timeout)
 		ioa_cfg->transop_timeout = ipr_transop_timeout;
@@ -8760,6 +10868,7 @@ static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 		goto cleanup_nomem;
 	}
 
+<<<<<<< HEAD
 	/* Enable MSI style interrupts if they are supported. */
 	if (ioa_cfg->ipr_chip->intr_type == IPR_USE_MSI && !pci_enable_msi(pdev)) {
 		rc = ipr_test_msi(ioa_cfg, pdev);
@@ -8771,6 +10880,58 @@ static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 			dev_info(&pdev->dev, "MSI enabled with IRQ: %d\n", pdev->irq);
 	} else if (ipr_debug)
 		dev_info(&pdev->dev, "Cannot enable MSI.\n");
+=======
+	if (ipr_number_of_msix > IPR_MAX_MSIX_VECTORS) {
+		dev_err(&pdev->dev, "The max number of MSIX is %d\n",
+			IPR_MAX_MSIX_VECTORS);
+		ipr_number_of_msix = IPR_MAX_MSIX_VECTORS;
+	}
+
+	if (ioa_cfg->ipr_chip->intr_type == IPR_USE_MSI &&
+			ipr_enable_msix(ioa_cfg) == 0)
+		ioa_cfg->intr_flag = IPR_USE_MSIX;
+	else if (ioa_cfg->ipr_chip->intr_type == IPR_USE_MSI &&
+			ipr_enable_msi(ioa_cfg) == 0)
+		ioa_cfg->intr_flag = IPR_USE_MSI;
+	else {
+		ioa_cfg->intr_flag = IPR_USE_LSI;
+		ioa_cfg->nvectors = 1;
+		dev_info(&pdev->dev, "Cannot enable MSI.\n");
+	}
+
+	if (ioa_cfg->intr_flag == IPR_USE_MSI ||
+	    ioa_cfg->intr_flag == IPR_USE_MSIX) {
+		rc = ipr_test_msi(ioa_cfg, pdev);
+		if (rc == -EOPNOTSUPP) {
+			if (ioa_cfg->intr_flag == IPR_USE_MSI) {
+				ioa_cfg->intr_flag &= ~IPR_USE_MSI;
+				pci_disable_msi(pdev);
+			 } else if (ioa_cfg->intr_flag == IPR_USE_MSIX) {
+				ioa_cfg->intr_flag &= ~IPR_USE_MSIX;
+				pci_disable_msix(pdev);
+			}
+
+			ioa_cfg->intr_flag = IPR_USE_LSI;
+			ioa_cfg->nvectors = 1;
+		}
+		else if (rc)
+			goto out_msi_disable;
+		else {
+			if (ioa_cfg->intr_flag == IPR_USE_MSI)
+				dev_info(&pdev->dev,
+					"Request for %d MSIs succeeded with starting IRQ: %d\n",
+					ioa_cfg->nvectors, pdev->irq);
+			else if (ioa_cfg->intr_flag == IPR_USE_MSIX)
+				dev_info(&pdev->dev,
+					"Request for %d MSIXs succeeded.",
+					ioa_cfg->nvectors);
+		}
+	}
+
+	ioa_cfg->hrrq_num = min3(ioa_cfg->nvectors,
+				(unsigned int)num_online_cpus(),
+				(unsigned int)IPR_MAX_HRRQ_NUM);
+>>>>>>> refs/remotes/origin/master
 
 	/* Save away PCI config space for use following IOA reset */
 	rc = pci_save_state(pdev);
@@ -8778,6 +10939,8 @@ static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 	if (rc != PCIBIOS_SUCCESSFUL) {
 		dev_err(&pdev->dev, "Failed to save PCI config space\n");
 		rc = -EIO;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto cleanup_nomem;
 	}
 
@@ -8786,6 +10949,21 @@ static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 
 	if ((rc = ipr_set_pcix_cmd_reg(ioa_cfg)))
 		goto cleanup_nomem;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		goto out_msi_disable;
+	}
+
+	if ((rc = ipr_save_pcix_cmd_reg(ioa_cfg)))
+		goto out_msi_disable;
+
+	if ((rc = ipr_set_pcix_cmd_reg(ioa_cfg)))
+		goto out_msi_disable;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ioa_cfg->sis64)
 		ioa_cfg->cfg_table_size = (sizeof(struct ipr_config_table_hdr64)
@@ -8800,7 +10978,15 @@ static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 	if (rc < 0) {
 		dev_err(&pdev->dev,
 			"Couldn't allocate enough memory for device driver!\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto cleanup_nomem;
+=======
+		goto out_msi_disable;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_msi_disable;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -8817,11 +11003,32 @@ static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 	if (interrupts & IPR_PCII_IOA_UNIT_CHECKED)
 		ioa_cfg->ioa_unit_checked = 1;
 
+<<<<<<< HEAD
 	ipr_mask_and_clear_interrupts(ioa_cfg, ~IPR_PCII_IOA_TRANS_TO_OPER);
 	rc = request_irq(pdev->irq, ipr_isr,
 			 ioa_cfg->msi_received ? 0 : IRQF_SHARED,
 			 IPR_NAME, ioa_cfg);
 
+=======
+	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+	ipr_mask_and_clear_interrupts(ioa_cfg, ~IPR_PCII_IOA_TRANS_TO_OPER);
+	spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
+
+	if (ioa_cfg->intr_flag == IPR_USE_MSI
+			|| ioa_cfg->intr_flag == IPR_USE_MSIX) {
+		name_msi_vectors(ioa_cfg);
+		rc = request_irq(ioa_cfg->vectors_info[0].vec, ipr_isr,
+			0,
+			ioa_cfg->vectors_info[0].desc,
+			&ioa_cfg->hrrq[0]);
+		if (!rc)
+			rc = ipr_request_other_msi_irqs(ioa_cfg);
+	} else {
+		rc = request_irq(pdev->irq, ipr_isr,
+			 IRQF_SHARED,
+			 IPR_NAME, &ioa_cfg->hrrq[0]);
+	}
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		dev_err(&pdev->dev, "Couldn't register IRQ %d! rc=%d\n",
 			pdev->irq, rc);
@@ -8835,9 +11042,15 @@ static int __devinit ipr_probe_ioa(struct pci_dev *pdev,
 	} else
 		ioa_cfg->reset = ipr_reset_start_bist;
 
+<<<<<<< HEAD
 	spin_lock(&ipr_driver_lock);
 	list_add_tail(&ioa_cfg->queue, &ipr_ioa_head);
 	spin_unlock(&ipr_driver_lock);
+=======
+	spin_lock_irqsave(&ipr_driver_lock, driver_lock_flags);
+	list_add_tail(&ioa_cfg->queue, &ipr_ioa_head);
+	spin_unlock_irqrestore(&ipr_driver_lock, driver_lock_flags);
+>>>>>>> refs/remotes/origin/master
 
 	LEAVE;
 out:
@@ -8845,10 +11058,27 @@ out:
 
 cleanup_nolog:
 	ipr_free_mem(ioa_cfg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 cleanup_nomem:
 	iounmap(ipr_regs);
 out_msi_disable:
 	pci_disable_msi(pdev);
+=======
+out_msi_disable:
+	pci_disable_msi(pdev);
+cleanup_nomem:
+	iounmap(ipr_regs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_msi_disable:
+	if (ioa_cfg->intr_flag == IPR_USE_MSI)
+		pci_disable_msi(pdev);
+	else if (ioa_cfg->intr_flag == IPR_USE_MSIX)
+		pci_disable_msix(pdev);
+cleanup_nomem:
+	iounmap(ipr_regs);
+>>>>>>> refs/remotes/origin/master
 out_release_regions:
 	pci_release_regions(pdev);
 out_scsi_host_put:
@@ -8873,7 +11103,11 @@ static void ipr_scan_vsets(struct ipr_ioa_cfg *ioa_cfg)
 	int target, lun;
 
 	for (target = 0; target < IPR_MAX_NUM_TARGETS_PER_BUS; target++)
+<<<<<<< HEAD
 		for (lun = 0; lun < IPR_MAX_NUM_VSET_LUNS_PER_TARGET; lun++ )
+=======
+		for (lun = 0; lun < IPR_MAX_NUM_VSET_LUNS_PER_TARGET; lun++)
+>>>>>>> refs/remotes/origin/master
 			scsi_add_device(ioa_cfg->host, IPR_VSET_BUS, target, lun);
 }
 
@@ -8916,25 +11150,53 @@ static void __ipr_remove(struct pci_dev *pdev)
 {
 	unsigned long host_lock_flags = 0;
 	struct ipr_ioa_cfg *ioa_cfg = pci_get_drvdata(pdev);
+<<<<<<< HEAD
 	ENTER;
 
 	spin_lock_irqsave(ioa_cfg->host->host_lock, host_lock_flags);
 	while(ioa_cfg->in_reset_reload) {
+=======
+	int i;
+	unsigned long driver_lock_flags;
+	ENTER;
+
+	spin_lock_irqsave(ioa_cfg->host->host_lock, host_lock_flags);
+	while (ioa_cfg->in_reset_reload) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(ioa_cfg->host->host_lock, host_lock_flags);
 		wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
 		spin_lock_irqsave(ioa_cfg->host->host_lock, host_lock_flags);
 	}
 
+<<<<<<< HEAD
+=======
+	for (i = 0; i < ioa_cfg->hrrq_num; i++) {
+		spin_lock(&ioa_cfg->hrrq[i]._lock);
+		ioa_cfg->hrrq[i].removing_ioa = 1;
+		spin_unlock(&ioa_cfg->hrrq[i]._lock);
+	}
+	wmb();
+>>>>>>> refs/remotes/origin/master
 	ipr_initiate_ioa_bringdown(ioa_cfg, IPR_SHUTDOWN_NORMAL);
 
 	spin_unlock_irqrestore(ioa_cfg->host->host_lock, host_lock_flags);
 	wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
+<<<<<<< HEAD
 	flush_work_sync(&ioa_cfg->work_q);
 	spin_lock_irqsave(ioa_cfg->host->host_lock, host_lock_flags);
 
 	spin_lock(&ipr_driver_lock);
 	list_del(&ioa_cfg->queue);
 	spin_unlock(&ipr_driver_lock);
+=======
+	flush_work(&ioa_cfg->work_q);
+	INIT_LIST_HEAD(&ioa_cfg->used_res_q);
+	spin_lock_irqsave(ioa_cfg->host->host_lock, host_lock_flags);
+
+	spin_lock_irqsave(&ipr_driver_lock, driver_lock_flags);
+	list_del(&ioa_cfg->queue);
+	spin_unlock_irqrestore(&ipr_driver_lock, driver_lock_flags);
+>>>>>>> refs/remotes/origin/master
 
 	if (ioa_cfg->sdt_state == ABORT_DUMP)
 		ioa_cfg->sdt_state = WAIT_FOR_DUMP;
@@ -8954,7 +11216,11 @@ static void __ipr_remove(struct pci_dev *pdev)
  * Return value:
  * 	none
  **/
+<<<<<<< HEAD
 static void __devexit ipr_remove(struct pci_dev *pdev)
+=======
+static void ipr_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipr_ioa_cfg *ioa_cfg = pci_get_drvdata(pdev);
 
@@ -8977,11 +11243,18 @@ static void __devexit ipr_remove(struct pci_dev *pdev)
  * Return value:
  * 	0 on success / non-zero on failure
  **/
+<<<<<<< HEAD
 static int __devinit ipr_probe(struct pci_dev *pdev,
 			       const struct pci_device_id *dev_id)
 {
 	struct ipr_ioa_cfg *ioa_cfg;
 	int rc;
+=======
+static int ipr_probe(struct pci_dev *pdev, const struct pci_device_id *dev_id)
+{
+	struct ipr_ioa_cfg *ioa_cfg;
+	int rc, i;
+>>>>>>> refs/remotes/origin/master
 
 	rc = ipr_probe_ioa(pdev, dev_id);
 
@@ -9028,6 +11301,20 @@ static int __devinit ipr_probe(struct pci_dev *pdev,
 	scsi_add_device(ioa_cfg->host, IPR_IOA_BUS, IPR_IOA_TARGET, IPR_IOA_LUN);
 	ioa_cfg->allow_ml_add_del = 1;
 	ioa_cfg->host->max_channel = IPR_VSET_BUS;
+<<<<<<< HEAD
+=======
+	ioa_cfg->iopoll_weight = ioa_cfg->chip_cfg->iopoll_weight;
+
+	if (blk_iopoll_enabled && ioa_cfg->iopoll_weight &&
+			ioa_cfg->sis64 && ioa_cfg->nvectors > 1) {
+		for (i = 1; i < ioa_cfg->hrrq_num; i++) {
+			blk_iopoll_init(&ioa_cfg->hrrq[i].iopoll,
+					ioa_cfg->iopoll_weight, ipr_iopoll);
+			blk_iopoll_enable(&ioa_cfg->hrrq[i].iopoll);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	schedule_work(&ioa_cfg->work_q);
 	return 0;
 }
@@ -9046,9 +11333,23 @@ static void ipr_shutdown(struct pci_dev *pdev)
 {
 	struct ipr_ioa_cfg *ioa_cfg = pci_get_drvdata(pdev);
 	unsigned long lock_flags = 0;
+<<<<<<< HEAD
 
 	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
 	while(ioa_cfg->in_reset_reload) {
+=======
+	int i;
+
+	spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
+	if (blk_iopoll_enabled && ioa_cfg->iopoll_weight &&
+			ioa_cfg->sis64 && ioa_cfg->nvectors > 1) {
+		ioa_cfg->iopoll_weight = 0;
+		for (i = 1; i < ioa_cfg->hrrq_num; i++)
+			blk_iopoll_disable(&ioa_cfg->hrrq[i].iopoll);
+	}
+
+	while (ioa_cfg->in_reset_reload) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(ioa_cfg->host->host_lock, lock_flags);
 		wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
 		spin_lock_irqsave(ioa_cfg->host->host_lock, lock_flags);
@@ -9059,7 +11360,11 @@ static void ipr_shutdown(struct pci_dev *pdev)
 	wait_event(ioa_cfg->reset_wait_q, !ioa_cfg->in_reset_reload);
 }
 
+<<<<<<< HEAD
 static struct pci_device_id ipr_pci_table[] __devinitdata = {
+=======
+static struct pci_device_id ipr_pci_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VENDOR_ID_MYLEX, PCI_DEVICE_ID_IBM_GEMSTONE,
 		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_5702, 0, 0, 0 },
 	{ PCI_VENDOR_ID_MYLEX, PCI_DEVICE_ID_IBM_GEMSTONE,
@@ -9120,6 +11425,8 @@ static struct pci_device_id ipr_pci_table[] __devinitdata = {
 	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROC_FPGA_E2,
 		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57B2, 0, 0, 0 },
 	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROC_FPGA_E2,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57C4, 0, 0, 0 },
 	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROC_ASIC_E2,
 		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57B4, 0, 0, 0 },
@@ -9130,12 +11437,60 @@ static struct pci_device_id ipr_pci_table[] __devinitdata = {
 	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROC_ASIC_E2,
 		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_575D, 0, 0, 0 },
 	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROC_ASIC_E2,
+=======
+=======
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57C0, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROC_FPGA_E2,
+>>>>>>> refs/remotes/origin/master
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57C3, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROC_FPGA_E2,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57C4, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57B4, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57B1, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57C6, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57C8, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57CE, 0, 0, 0 },
+=======
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57CE, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57D5, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57D6, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57D7, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57D8, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57D9, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57EB, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57EC, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57ED, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57EE, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57EF, 0, 0, 0 },
+	{ PCI_VENDOR_ID_IBM, PCI_DEVICE_ID_IBM_CROCODILE,
+		PCI_VENDOR_ID_IBM, IPR_SUBS_DEV_ID_57F0, 0, 0, 0 },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(pci, ipr_pci_table);
 
+<<<<<<< HEAD
 static struct pci_error_handlers ipr_err_handler = {
+=======
+static const struct pci_error_handlers ipr_err_handler = {
+>>>>>>> refs/remotes/origin/master
 	.error_detected = ipr_pci_error_detected,
 	.slot_reset = ipr_pci_slot_reset,
 };
@@ -9144,7 +11499,11 @@ static struct pci_driver ipr_driver = {
 	.name = IPR_NAME,
 	.id_table = ipr_pci_table,
 	.probe = ipr_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ipr_remove),
+=======
+	.remove = ipr_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown = ipr_shutdown,
 	.err_handler = &ipr_err_handler,
 };
@@ -9157,9 +11516,13 @@ static struct pci_driver ipr_driver = {
  **/
 static void ipr_halt_done(struct ipr_cmnd *ipr_cmd)
 {
+<<<<<<< HEAD
 	struct ipr_ioa_cfg *ioa_cfg = ipr_cmd->ioa_cfg;
 
 	list_add_tail(&ipr_cmd->queue, &ioa_cfg->free_q);
+=======
+	list_add_tail(&ipr_cmd->queue, &ipr_cmd->hrrq->hrrq_free_q);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -9172,16 +11535,28 @@ static int ipr_halt(struct notifier_block *nb, ulong event, void *buf)
 {
 	struct ipr_cmnd *ipr_cmd;
 	struct ipr_ioa_cfg *ioa_cfg;
+<<<<<<< HEAD
 	unsigned long flags = 0;
+=======
+	unsigned long flags = 0, driver_lock_flags;
+>>>>>>> refs/remotes/origin/master
 
 	if (event != SYS_RESTART && event != SYS_HALT && event != SYS_POWER_OFF)
 		return NOTIFY_DONE;
 
+<<<<<<< HEAD
 	spin_lock(&ipr_driver_lock);
 
 	list_for_each_entry(ioa_cfg, &ipr_ioa_head, queue) {
 		spin_lock_irqsave(ioa_cfg->host->host_lock, flags);
 		if (!ioa_cfg->allow_cmds) {
+=======
+	spin_lock_irqsave(&ipr_driver_lock, driver_lock_flags);
+
+	list_for_each_entry(ioa_cfg, &ipr_ioa_head, queue) {
+		spin_lock_irqsave(ioa_cfg->host->host_lock, flags);
+		if (!ioa_cfg->hrrq[IPR_INIT_HRRQ].allow_cmds) {
+>>>>>>> refs/remotes/origin/master
 			spin_unlock_irqrestore(ioa_cfg->host->host_lock, flags);
 			continue;
 		}
@@ -9195,7 +11570,11 @@ static int ipr_halt(struct notifier_block *nb, ulong event, void *buf)
 		ipr_do_req(ipr_cmd, ipr_halt_done, ipr_timeout, IPR_DEVICE_RESET_TIMEOUT);
 		spin_unlock_irqrestore(ioa_cfg->host->host_lock, flags);
 	}
+<<<<<<< HEAD
 	spin_unlock(&ipr_driver_lock);
+=======
+	spin_unlock_irqrestore(&ipr_driver_lock, driver_lock_flags);
+>>>>>>> refs/remotes/origin/master
 
 	return NOTIFY_OK;
 }

@@ -997,6 +997,7 @@ static void onyx_exit_codec(struct aoa_codec *codec)
 	onyx->codec.soundbus_dev->detach_codec(onyx->codec.soundbus_dev, onyx);
 }
 
+<<<<<<< HEAD
 static int onyx_create(struct i2c_adapter *adapter,
 		       struct device_node *node,
 		       int addr)
@@ -1036,6 +1037,12 @@ static int onyx_i2c_probe(struct i2c_client *client,
 			  const struct i2c_device_id *id)
 {
 	struct device_node *node = client->dev.platform_data;
+=======
+static int onyx_i2c_probe(struct i2c_client *client,
+			  const struct i2c_device_id *id)
+{
+	struct device_node *node = client->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 	struct onyx *onyx;
 	u8 dummy;
 
@@ -1067,11 +1074,18 @@ static int onyx_i2c_probe(struct i2c_client *client,
 	printk(KERN_DEBUG PFX "created and attached onyx instance\n");
 	return 0;
  fail:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	i2c_set_clientdata(client, NULL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(onyx);
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int onyx_i2c_attach(struct i2c_adapter *adapter)
 {
 	struct device_node *busnode, *dev = NULL;
@@ -1106,34 +1120,56 @@ static int onyx_i2c_attach(struct i2c_adapter *adapter)
 	return onyx_create(adapter, NULL, 0x47);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int onyx_i2c_remove(struct i2c_client *client)
 {
 	struct onyx *onyx = i2c_get_clientdata(client);
 
 	aoa_codec_unregister(&onyx->codec);
 	of_node_put(onyx->codec.node);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (onyx->codec_info)
 		kfree(onyx->codec_info);
+=======
+	kfree(onyx->codec_info);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(onyx->codec_info);
+>>>>>>> refs/remotes/origin/master
 	kfree(onyx);
 	return 0;
 }
 
 static const struct i2c_device_id onyx_i2c_id[] = {
+<<<<<<< HEAD
 	{ "aoa_codec_onyx", 0 },
 	{ }
 };
+=======
+	{ "MAC,pcm3052", 0 },
+	{ }
+};
+MODULE_DEVICE_TABLE(i2c,onyx_i2c_id);
+>>>>>>> refs/remotes/origin/master
 
 static struct i2c_driver onyx_driver = {
 	.driver = {
 		.name = "aoa_codec_onyx",
 		.owner = THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.attach_adapter = onyx_i2c_attach,
+=======
+>>>>>>> refs/remotes/origin/master
 	.probe = onyx_i2c_probe,
 	.remove = onyx_i2c_remove,
 	.id_table = onyx_i2c_id,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init onyx_init(void)
 {
 	return i2c_add_driver(&onyx_driver);
@@ -1146,3 +1182,9 @@ static void __exit onyx_exit(void)
 
 module_init(onyx_init);
 module_exit(onyx_exit);
+=======
+module_i2c_driver(onyx_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(onyx_driver);
+>>>>>>> refs/remotes/origin/master

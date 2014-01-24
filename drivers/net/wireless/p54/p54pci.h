@@ -1,5 +1,13 @@
 #ifndef P54PCI_H
 #define P54PCI_H
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Defines for PCI based mac80211 Prism54 driver
@@ -104,6 +112,10 @@ struct p54p_priv {
 	struct sk_buff *tx_buf_data[32];
 	struct sk_buff *tx_buf_mgmt[4];
 	struct completion boot_comp;
+<<<<<<< HEAD
+=======
+	struct completion fw_loaded;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* P54USB_H */

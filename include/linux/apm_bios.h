@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef _LINUX_APM_H
 #define _LINUX_APM_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Include file for the interface to an APM BIOS
  * Copyright 1994-2001 Stephen Rothwell (sfr@canb.auug.org.au)
@@ -15,6 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
  */
+<<<<<<< HEAD
 
 #include <linux/types.h>
 
@@ -34,6 +38,13 @@ struct apm_bios_info {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_APM_H
+#define _LINUX_APM_H
+
+#include <uapi/linux/apm_bios.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define APM_CS		(GDT_ENTRY_APMBIOS_BASE * 8)
 #define APM_CS_16	(APM_CS + 8)
@@ -110,6 +121,7 @@ struct apm_info {
  */
 extern struct apm_info	apm_info;
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
 /*
@@ -185,11 +197,14 @@ extern struct apm_info	apm_info;
 #define APM_DEVICE_MASK		0xff00
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This is the "All Devices" ID communicated to the BIOS
  */
 #define APM_DEVICE_BALL		((apm_info.connection_version > 0x0100) ? \
 				 APM_DEVICE_ALL : APM_DEVICE_OLD_ALL)
+<<<<<<< HEAD
 #endif
 
 /*
@@ -217,4 +232,6 @@ extern struct apm_info	apm_info;
 #define APM_IOC_STANDBY		_IO('A', 1)
 #define APM_IOC_SUSPEND		_IO('A', 2)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* LINUX_APM_H */

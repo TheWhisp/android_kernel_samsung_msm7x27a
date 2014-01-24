@@ -32,20 +32,37 @@
 
 #include <linux/module.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/init.h>
 #include <linux/console.h>
 #include <linux/sysrq.h>
 #include <linux/serial.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/serialP.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 
 #include <asm/m32r.h>
 #include <asm/io.h>
 #include <asm/irq.h>
 
+<<<<<<< HEAD
 #define PORT_M32R_BASE	PORT_M32R_SIO
 #define PORT_INDEX(x)	(x - PORT_M32R_BASE + 1)
+=======
+>>>>>>> refs/remotes/origin/master
 #define BAUD_RATE	115200
 
 #include <linux/serial_core.h>
@@ -69,6 +86,8 @@
 
 #define PASS_LIMIT	256
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * We default to IRQ0 for the "no irq" hack.   Some
  * machine types want others as well - they're free
@@ -76,6 +95,10 @@
  */
 #define is_real_interrupt(irq)	((irq) != 0)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define BASE_BAUD	115200
 
 /* Standard COM flags */
@@ -139,6 +162,7 @@ struct irq_info {
 
 static struct irq_info irq_lists[NR_IRQS];
 
+<<<<<<< HEAD
 /*
  * Here we define the default xmit fifo size used for each type of UART.
  */
@@ -155,6 +179,8 @@ static const struct serial_uart_config uart_config[] = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SERIAL_M32R_PLDSIO
 
 #define __sio_in(x) inw((unsigned long)(x))
@@ -325,7 +351,11 @@ static void m32r_sio_enable_ms(struct uart_port *port)
 
 static void receive_chars(struct uart_sio_port *up, int *status)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty = up->port.state->port.tty;
+=======
+	struct tty_port *port = &up->port.state->port;
+>>>>>>> refs/remotes/origin/master
 	unsigned char ch;
 	unsigned char flag;
 	int max_count = 256;
@@ -380,7 +410,11 @@ static void receive_chars(struct uart_sio_port *up, int *status)
 		if (uart_handle_sysrq_char(&up->port, ch))
 			goto ignore_char;
 		if ((*status & up->port.ignore_status_mask) == 0)
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, ch, flag);
+=======
+			tty_insert_flip_char(port, ch, flag);
+>>>>>>> refs/remotes/origin/master
 
 		if (*status & UART_LSR_OE) {
 			/*
@@ -388,12 +422,23 @@ static void receive_chars(struct uart_sio_port *up, int *status)
 			 * immediately, and doesn't affect the current
 			 * character.
 			 */
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+=======
+			tty_insert_flip_char(port, 0, TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 		}
 	ignore_char:
 		*status = serial_in(up, UART_LSR);
 	} while ((*status & UART_LSR_DR) && (max_count-- > 0));
+<<<<<<< HEAD
 	tty_flip_buffer_push(tty);
+=======
+
+	spin_unlock(&up->port.lock);
+	tty_flip_buffer_push(port);
+	spin_lock(&up->port.lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void transmit_chars(struct uart_sio_port *up)
@@ -639,7 +684,15 @@ static int m32r_sio_startup(struct uart_port *port)
 	 * hardware interrupt, we use a timer-based system.  The original
 	 * driver used to do this with IRQ0.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!is_real_interrupt(up->port.irq)) {
+=======
+	if (!up->port.irq) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!up->port.irq) {
+>>>>>>> refs/remotes/origin/master
 		unsigned int timeout = up->port.timeout;
 
 		timeout = timeout > 6 ? (timeout / 2 - 2) : 1;
@@ -686,7 +739,15 @@ static void m32r_sio_shutdown(struct uart_port *port)
 
 	sio_init();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!is_real_interrupt(up->port.irq))
+=======
+	if (!up->port.irq)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!up->port.irq)
+>>>>>>> refs/remotes/origin/master
 		del_timer_sync(&up->timer);
 	else
 		serial_unlink_irq_chain(up);
@@ -892,7 +953,15 @@ static int m32r_sio_request_port(struct uart_port *port)
 	 * If we have a mapbase, then request that as well.
 	 */
 	if (ret == 0 && up->port.flags & UPF_IOREMAP) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int size = res->end - res->start + 1;
+=======
+		int size = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int size = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 
 		up->port.membase = ioremap(up->port.mapbase, size);
 		if (!up->port.membase)
@@ -914,8 +983,12 @@ static void m32r_sio_config_port(struct uart_port *port, int unused)
 
 	spin_lock_irqsave(&up->port.lock, flags);
 
+<<<<<<< HEAD
 	up->port.type = (PORT_M32R_SIO - PORT_M32R_BASE + 1);
 	up->port.fifosize = uart_config[up->port.type].dfl_xmit_fifo_size;
+=======
+	up->port.fifosize = 1;
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&up->port.lock, flags);
 }
@@ -923,13 +996,18 @@ static void m32r_sio_config_port(struct uart_port *port, int unused)
 static int
 m32r_sio_verify_port(struct uart_port *port, struct serial_struct *ser)
 {
+<<<<<<< HEAD
 	if (ser->irq >= nr_irqs || ser->irq < 0 ||
 	    ser->baud_base < 9600 || ser->type < PORT_UNKNOWN ||
 	    ser->type >= ARRAY_SIZE(uart_config))
+=======
+	if (ser->irq >= nr_irqs || ser->irq < 0 || ser->baud_base < 9600)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	return 0;
 }
 
+<<<<<<< HEAD
 static const char *
 m32r_sio_type(struct uart_port *port)
 {
@@ -940,6 +1018,8 @@ m32r_sio_type(struct uart_port *port)
 	return uart_config[type].name;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct uart_ops m32r_sio_pops = {
 	.tx_empty	= m32r_sio_tx_empty,
 	.set_mctrl	= m32r_sio_set_mctrl,
@@ -953,7 +1033,10 @@ static struct uart_ops m32r_sio_pops = {
 	.shutdown	= m32r_sio_shutdown,
 	.set_termios	= m32r_sio_set_termios,
 	.pm		= m32r_sio_pm,
+<<<<<<< HEAD
 	.type		= m32r_sio_type,
+=======
+>>>>>>> refs/remotes/origin/master
 	.release_port	= m32r_sio_release_port,
 	.request_port	= m32r_sio_request_port,
 	.config_port	= m32r_sio_config_port,
@@ -999,11 +1082,21 @@ static void __init m32r_sio_register_ports(struct uart_driver *drv)
 		init_timer(&up->timer);
 		up->timer.function = m32r_sio_timeout;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/*
 		 * ALPHA_KLUDGE_MCR needs to be killed.
 		 */
 		up->mcr_mask = ~ALPHA_KLUDGE_MCR;
 		up->mcr_force = ALPHA_KLUDGE_MCR;
+=======
+		up->mcr_mask = ~0;
+		up->mcr_force = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		up->mcr_mask = ~0;
+		up->mcr_force = 0;
+>>>>>>> refs/remotes/origin/master
 
 		uart_add_one_port(drv, &up->port);
 	}

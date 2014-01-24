@@ -63,7 +63,15 @@
 static void shrink_liability(struct ubifs_info *c, int nr_to_write)
 {
 	down_read(&c->vfs_sb->s_umount);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writeback_inodes_sb(c->vfs_sb);
+=======
+	writeback_inodes_sb(c->vfs_sb, WB_REASON_FS_FREE_SPACE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writeback_inodes_sb(c->vfs_sb, WB_REASON_FS_FREE_SPACE);
+>>>>>>> refs/remotes/origin/master
 	up_read(&c->vfs_sb->s_umount);
 }
 
@@ -272,8 +280,13 @@ long long ubifs_calc_available(const struct ubifs_info *c, int min_idx_lebs)
  */
 static int can_use_rp(struct ubifs_info *c)
 {
+<<<<<<< HEAD
 	if (current_fsuid() == c->rp_uid || capable(CAP_SYS_RESOURCE) ||
 	    (c->rp_gid != 0 && in_group_p(c->rp_gid)))
+=======
+	if (uid_eq(current_fsuid(), c->rp_uid) || capable(CAP_SYS_RESOURCE) ||
+	    (!gid_eq(c->rp_gid, GLOBAL_ROOT_GID) && in_group_p(c->rp_gid)))
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	return 0;
 }
@@ -342,9 +355,14 @@ static int do_budget_space(struct ubifs_info *c)
 	lebs = c->lst.empty_lebs + c->freeable_cnt + c->idx_gc_cnt -
 	       c->lst.taken_empty_lebs;
 	if (unlikely(rsvd_idx_lebs > lebs)) {
+<<<<<<< HEAD
 		dbg_budg("out of indexing space: min_idx_lebs %d (old %d), "
 			 "rsvd_idx_lebs %d", min_idx_lebs, c->bi.min_idx_lebs,
 			 rsvd_idx_lebs);
+=======
+		dbg_budg("out of indexing space: min_idx_lebs %d (old %d), rsvd_idx_lebs %d",
+			 min_idx_lebs, c->bi.min_idx_lebs, rsvd_idx_lebs);
+>>>>>>> refs/remotes/origin/master
 		return -ENOSPC;
 	}
 

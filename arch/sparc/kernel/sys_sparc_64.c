@@ -23,7 +23,16 @@
 #include <linux/ipc.h>
 #include <linux/personality.h>
 #include <linux/random.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/context_tracking.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 #include <asm/utrap.h>
@@ -39,9 +48,12 @@ asmlinkage unsigned long sys_getpagesize(void)
 	return PAGE_SIZE;
 }
 
+<<<<<<< HEAD
 #define VA_EXCLUDE_START (0x0000080000000000UL - (1UL << 32UL))
 #define VA_EXCLUDE_END   (0xfffff80000000000UL + (1UL << 32UL))
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Does addr --> addr+len fall within 4GB of the VA-space hole or
  * overflow past the end of the 64-bit address space?
  */
@@ -66,6 +78,7 @@ static inline int invalid_64bit_range(unsigned long addr, unsigned long len)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Does start,end straddle the VA-space hole?  */
 static inline int straddles_64bit_va_hole(unsigned long start, unsigned long end)
 {
@@ -83,6 +96,8 @@ static inline int straddles_64bit_va_hole(unsigned long start, unsigned long end
 	return 1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* These functions differ from the default implementations in
  * mm/mmap.c in two ways:
  *
@@ -92,7 +107,11 @@ static inline int straddles_64bit_va_hole(unsigned long start, unsigned long end
  *    the spitfire/niagara VA-hole.
  */
 
+<<<<<<< HEAD
 static inline unsigned long COLOUR_ALIGN(unsigned long addr,
+=======
+static inline unsigned long COLOR_ALIGN(unsigned long addr,
+>>>>>>> refs/remotes/origin/master
 					 unsigned long pgoff)
 {
 	unsigned long base = (addr+SHMLBA-1)&~(SHMLBA-1);
@@ -101,6 +120,7 @@ static inline unsigned long COLOUR_ALIGN(unsigned long addr,
 	return base + off;
 }
 
+<<<<<<< HEAD
 static inline unsigned long COLOUR_ALIGN_DOWN(unsigned long addr,
 					      unsigned long pgoff)
 {
@@ -112,13 +132,20 @@ static inline unsigned long COLOUR_ALIGN_DOWN(unsigned long addr,
 	return base - off;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr, unsigned long len, unsigned long pgoff, unsigned long flags)
 {
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct * vma;
 	unsigned long task_size = TASK_SIZE;
+<<<<<<< HEAD
 	unsigned long start_addr;
 	int do_color_align;
+=======
+	int do_color_align;
+	struct vm_unmapped_area_info info;
+>>>>>>> refs/remotes/origin/master
 
 	if (flags & MAP_FIXED) {
 		/* We do not accept a shared mapping if it would violate
@@ -141,7 +168,11 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr, unsi
 
 	if (addr) {
 		if (do_color_align)
+<<<<<<< HEAD
 			addr = COLOUR_ALIGN(addr, pgoff);
+=======
+			addr = COLOR_ALIGN(addr, pgoff);
+>>>>>>> refs/remotes/origin/master
 		else
 			addr = PAGE_ALIGN(addr);
 
@@ -151,6 +182,7 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr, unsi
 			return addr;
 	}
 
+<<<<<<< HEAD
 	if (len > mm->cached_hole_size) {
 	        start_addr = addr = mm->free_area_cache;
 	} else {
@@ -195,6 +227,24 @@ full_search:
 		if (do_color_align)
 			addr = COLOUR_ALIGN(addr, pgoff);
 	}
+=======
+	info.flags = 0;
+	info.length = len;
+	info.low_limit = TASK_UNMAPPED_BASE;
+	info.high_limit = min(task_size, VA_EXCLUDE_START);
+	info.align_mask = do_color_align ? (PAGE_MASK & (SHMLBA - 1)) : 0;
+	info.align_offset = pgoff << PAGE_SHIFT;
+	addr = vm_unmapped_area(&info);
+
+	if ((addr & ~PAGE_MASK) && task_size > VA_EXCLUDE_END) {
+		VM_BUG_ON(addr != -ENOMEM);
+		info.low_limit = VA_EXCLUDE_END;
+		info.high_limit = task_size;
+		addr = vm_unmapped_area(&info);
+	}
+
+	return addr;
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned long
@@ -207,6 +257,10 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 	unsigned long task_size = STACK_TOP32;
 	unsigned long addr = addr0;
 	int do_color_align;
+<<<<<<< HEAD
+=======
+	struct vm_unmapped_area_info info;
+>>>>>>> refs/remotes/origin/master
 
 	/* This should only ever run for 32-bit processes.  */
 	BUG_ON(!test_thread_flag(TIF_32BIT));
@@ -231,7 +285,11 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 	/* requesting a specific address */
 	if (addr) {
 		if (do_color_align)
+<<<<<<< HEAD
 			addr = COLOUR_ALIGN(addr, pgoff);
+=======
+			addr = COLOR_ALIGN(addr, pgoff);
+>>>>>>> refs/remotes/origin/master
 		else
 			addr = PAGE_ALIGN(addr);
 
@@ -241,6 +299,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 			return addr;
 	}
 
+<<<<<<< HEAD
 	/* check if free_area_cache is useful for us */
 	if (len <= mm->cached_hole_size) {
  	        mm->cached_hole_size = 0;
@@ -294,12 +353,23 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 	} while (likely(len < vma->vm_start));
 
 bottomup:
+=======
+	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
+	info.length = len;
+	info.low_limit = PAGE_SIZE;
+	info.high_limit = mm->mmap_base;
+	info.align_mask = do_color_align ? (PAGE_MASK & (SHMLBA - 1)) : 0;
+	info.align_offset = pgoff << PAGE_SHIFT;
+	addr = vm_unmapped_area(&info);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * A failed mmap() very likely causes application failure,
 	 * so fall back to the bottom-up function here. This scenario
 	 * can happen with large stack limits and large mmap()
 	 * allocations.
 	 */
+<<<<<<< HEAD
 	mm->cached_hole_size = ~0UL;
   	mm->free_area_cache = TASK_UNMAPPED_BASE;
 	addr = arch_get_unmapped_area(filp, addr0, len, pgoff, flags);
@@ -308,6 +378,15 @@ bottomup:
 	 */
 	mm->free_area_cache = mm->mmap_base;
 	mm->cached_hole_size = ~0UL;
+=======
+	if (addr & ~PAGE_MASK) {
+		VM_BUG_ON(addr != -ENOMEM);
+		info.flags = 0;
+		info.low_limit = TASK_UNMAPPED_BASE;
+		info.high_limit = STACK_TOP32;
+		addr = vm_unmapped_area(&info);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return addr;
 }
@@ -368,11 +447,25 @@ static unsigned long mmap_rnd(void)
 	if (current->flags & PF_RANDOMIZE) {
 		unsigned long val = get_random_int();
 		if (test_thread_flag(TIF_32BIT))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			rnd = (val % (1UL << (22UL-PAGE_SHIFT)));
 		else
 			rnd = (val % (1UL << (29UL-PAGE_SHIFT)));
 	}
 	return (rnd << PAGE_SHIFT) * 2;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			rnd = (val % (1UL << (23UL-PAGE_SHIFT)));
+		else
+			rnd = (val % (1UL << (30UL-PAGE_SHIFT)));
+	}
+	return rnd << PAGE_SHIFT;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void arch_pick_mmap_layout(struct mm_struct *mm)
@@ -391,7 +484,10 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 	    sysctl_legacy_va_layout) {
 		mm->mmap_base = TASK_UNMAPPED_BASE + random_factor;
 		mm->get_unmapped_area = arch_get_unmapped_area;
+<<<<<<< HEAD
 		mm->unmap_area = arch_unmap_area;
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* We know it's 32-bit */
 		unsigned long task_size = STACK_TOP32;
@@ -403,7 +499,10 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 
 		mm->mmap_base = PAGE_ALIGN(task_size - gap - random_factor);
 		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
+<<<<<<< HEAD
 		mm->unmap_area = arch_unmap_area_topdown;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -454,7 +553,11 @@ SYSCALL_DEFINE6(sparc_ipc, unsigned int, call, int, first, unsigned long, second
 		case SEMCTL: {
 			err = sys_semctl(first, second,
 					 (int)third | IPC_64,
+<<<<<<< HEAD
 					 (union semun) ptr);
+=======
+					 (unsigned long) ptr);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 		default:
@@ -487,7 +590,11 @@ SYSCALL_DEFINE6(sparc_ipc, unsigned int, call, int, first, unsigned long, second
 		switch (call) {
 		case SHMAT: {
 			ulong raddr;
+<<<<<<< HEAD
 			err = do_shmat(first, ptr, (int)second, &raddr);
+=======
+			err = do_shmat(first, ptr, (int)second, &raddr, SHMLBA);
+>>>>>>> refs/remotes/origin/master
 			if (!err) {
 				if (put_user(raddr,
 					     (ulong __user *) third))
@@ -566,6 +673,8 @@ out:
 
 SYSCALL_DEFINE2(64_munmap, unsigned long, addr, size_t, len)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	long ret;
 
 	if (invalid_64bit_range(addr, len))
@@ -575,16 +684,29 @@ SYSCALL_DEFINE2(64_munmap, unsigned long, addr, size_t, len)
 	ret = do_munmap(current->mm, addr, len);
 	up_write(&current->mm->mmap_sem);
 	return ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (invalid_64bit_range(addr, len))
+		return -EINVAL;
+
+	return vm_munmap(addr, len);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 extern unsigned long do_mremap(unsigned long addr,
 	unsigned long old_len, unsigned long new_len,
 	unsigned long flags, unsigned long new_addr);
+=======
+}
+>>>>>>> refs/remotes/origin/master
                 
 SYSCALL_DEFINE5(64_mremap, unsigned long, addr,	unsigned long, old_len,
 		unsigned long, new_len, unsigned long, flags,
 		unsigned long, new_addr)
 {
+<<<<<<< HEAD
 	unsigned long ret = -EINVAL;
 
 	if (test_thread_flag(TIF_32BIT))
@@ -595,6 +717,11 @@ SYSCALL_DEFINE5(64_mremap, unsigned long, addr,	unsigned long, old_len,
 	up_write(&current->mm->mmap_sem);
 out:
 	return ret;       
+=======
+	if (test_thread_flag(TIF_32BIT))
+		return -EINVAL;
+	return sys_mremap(addr, old_len, new_len, flags, new_addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* we come to here via sys_nis_syscall so it can setup the regs argument */
@@ -618,6 +745,10 @@ asmlinkage unsigned long c_sys_nis_syscall(struct pt_regs *regs)
 
 asmlinkage void sparc_breakpoint(struct pt_regs *regs)
 {
+<<<<<<< HEAD
+=======
+	enum ctx_state prev_state = exception_enter();
+>>>>>>> refs/remotes/origin/master
 	siginfo_t info;
 
 	if (test_thread_flag(TIF_32BIT)) {
@@ -636,6 +767,10 @@ asmlinkage void sparc_breakpoint(struct pt_regs *regs)
 #ifdef DEBUG_SPARC_BREAKPOINT
 	printk ("TRAP: Returning to space: PC=%lx nPC=%lx\n", regs->tpc, regs->tnpc);
 #endif
+<<<<<<< HEAD
+=======
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 extern void check_pending(int signum);
@@ -759,6 +894,7 @@ SYSCALL_DEFINE5(rt_sigaction, int, sig, const struct sigaction __user *, act,
 	return ret;
 }
 
+<<<<<<< HEAD
 /*
  * Do a system call from kernel instead of calling sys_execve so we
  * end up with proper pt_regs.
@@ -779,4 +915,9 @@ int kernel_execve(const char *filename,
 		      : "1" (__o0), "r" (__o1), "r" (__o2), "r" (__g1)
 		      : "cc");
 	return __res;
+=======
+asmlinkage long sys_kern_features(void)
+{
+	return KERN_FEATURE_MIXED_MODE_STACK;
+>>>>>>> refs/remotes/origin/master
 }

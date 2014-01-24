@@ -11,6 +11,14 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/workqueue.h>
 #include <linux/delay.h>
 #include <linux/types.h>
@@ -84,8 +92,21 @@ int msm_isp_vfe_msg_to_img_mode(struct msm_cam_media_controller *pmctl,
 				int vfe_msg)
 {
 	int image_mode;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (vfe_msg == VFE_MSG_OUTPUT_PRIMARY) {
 		switch (pmctl->vfe_output_mode) {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	uint32_t vfe_output_mode = pmctl->vfe_output_mode;
+	vfe_output_mode &= ~(VFE_OUTPUTS_RDI0|VFE_OUTPUTS_RDI1);
+	if (vfe_msg == VFE_MSG_OUTPUT_PRIMARY) {
+		switch (vfe_output_mode) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		case VFE_OUTPUTS_MAIN_AND_PREVIEW:
 		case VFE_OUTPUTS_MAIN_AND_VIDEO:
 		case VFE_OUTPUTS_MAIN_AND_THUMB:
@@ -109,7 +130,15 @@ int msm_isp_vfe_msg_to_img_mode(struct msm_cam_media_controller *pmctl,
 			break;
 		}
 	} else if (vfe_msg == VFE_MSG_OUTPUT_SECONDARY) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		switch (pmctl->vfe_output_mode) {
+=======
+		switch (vfe_output_mode) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		switch (vfe_output_mode) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		case VFE_OUTPUTS_MAIN_AND_PREVIEW:
 		case VFE_OUTPUTS_VIDEO_AND_PREVIEW:
 			image_mode = MSM_V4L2_EXT_CAPTURE_MODE_PREVIEW;
@@ -127,10 +156,42 @@ int msm_isp_vfe_msg_to_img_mode(struct msm_cam_media_controller *pmctl,
 		case VFE_OUTPUTS_JPEG_AND_THUMB:
 			image_mode = MSM_V4L2_EXT_CAPTURE_MODE_THUMBNAIL;
 			break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		case VFE_OUTPUTS_PREVIEW:
+		case VFE_OUTPUTS_VIDEO:
+			image_mode = MSM_V4L2_EXT_CAPTURE_MODE_PREVIEW;
+			break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		default:
 			image_mode = -1;
 			break;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	} else if (vfe_msg == VFE_MSG_OUTPUT_TERTIARY1) {
+		if (pmctl->vfe_output_mode & VFE_OUTPUTS_RDI0)
+			image_mode = MSM_V4L2_EXT_CAPTURE_MODE_RDI;
+		else
+			image_mode = -1;
+	} else if (vfe_msg == VFE_MSG_OUTPUT_TERTIARY2) {
+		if (pmctl->vfe_output_mode & VFE_OUTPUTS_RDI1)
+			image_mode = MSM_V4L2_EXT_CAPTURE_MODE_RDI1;
+		else
+			image_mode = -1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else
 		image_mode = -1;
 
@@ -146,9 +207,21 @@ static int msm_isp_notify_VFE_BUF_EVT(struct v4l2_subdev *sd, void *arg)
 	struct msm_free_buf free_buf, temp_free_buf;
 	struct msm_camvfe_params vfe_params;
 	struct msm_vfe_cfg_cmd cfgcmd;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_sync *sync =
 		(struct msm_sync *)v4l2_get_subdev_hostdata(sd);
 	struct msm_cam_v4l2_device *pcam = sync->pcam_sync;
+=======
+	struct msm_cam_media_controller *pmctl =
+		(struct msm_cam_media_controller *)v4l2_get_subdev_hostdata(sd);
+	struct msm_cam_v4l2_device *pcam = pmctl->pcam_ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *pmctl =
+		(struct msm_cam_media_controller *)v4l2_get_subdev_hostdata(sd);
+	struct msm_cam_v4l2_device *pcam = pmctl->pcam_ptr;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int vfe_id = vdata->evt_msg.msg_id;
 	if (!pcam) {
@@ -157,7 +230,15 @@ static int msm_isp_notify_VFE_BUF_EVT(struct v4l2_subdev *sd, void *arg)
 		return rc;
 	}
 	/* Convert the vfe msg to the image mode */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	image_mode = msm_isp_vfe_msg_to_img_mode(&pcam->mctl, vfe_id);
+=======
+	image_mode = msm_isp_vfe_msg_to_img_mode(pmctl, vfe_id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	image_mode = msm_isp_vfe_msg_to_img_mode(pmctl, vfe_id);
+>>>>>>> refs/remotes/origin/cm-11.0
 	BUG_ON(image_mode < 0);
 	switch (vdata->type) {
 	case VFE_MSG_V32_START:
@@ -165,14 +246,30 @@ static int msm_isp_notify_VFE_BUF_EVT(struct v4l2_subdev *sd, void *arg)
 	case VFE_MSG_V2X_PREVIEW:
 		D("%s Got V32_START_*: Getting ping addr id = %d",
 						__func__, vfe_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msm_mctl_reserve_free_buf(&pcam->mctl, NULL,
+=======
+		msm_mctl_reserve_free_buf(pmctl, NULL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_mctl_reserve_free_buf(pmctl, NULL,
+>>>>>>> refs/remotes/origin/cm-11.0
 					image_mode, &free_buf);
 		cfgcmd.cmd_type = CMD_CONFIG_PING_ADDR;
 		cfgcmd.value = &vfe_id;
 		vfe_params.vfe_cfg = &cfgcmd;
 		vfe_params.data = (void *)&free_buf;
 		rc = v4l2_subdev_call(sd, core, ioctl, 0, &vfe_params);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msm_mctl_reserve_free_buf(&pcam->mctl, NULL,
+=======
+		msm_mctl_reserve_free_buf(pmctl, NULL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_mctl_reserve_free_buf(pmctl, NULL,
+>>>>>>> refs/remotes/origin/cm-11.0
 					image_mode, &free_buf);
 		cfgcmd.cmd_type = CMD_CONFIG_PONG_ADDR;
 		cfgcmd.value = &vfe_id;
@@ -184,7 +281,15 @@ static int msm_isp_notify_VFE_BUF_EVT(struct v4l2_subdev *sd, void *arg)
 	case VFE_MSG_V2X_CAPTURE:
 		pr_debug("%s Got V32_CAPTURE: getting buffer for id = %d",
 						__func__, vfe_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msm_mctl_reserve_free_buf(&pcam->mctl, NULL,
+=======
+		msm_mctl_reserve_free_buf(pmctl, NULL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_mctl_reserve_free_buf(pmctl, NULL,
+>>>>>>> refs/remotes/origin/cm-11.0
 					image_mode, &free_buf);
 		cfgcmd.cmd_type = CMD_CONFIG_PING_ADDR;
 		cfgcmd.value = &vfe_id;
@@ -192,7 +297,15 @@ static int msm_isp_notify_VFE_BUF_EVT(struct v4l2_subdev *sd, void *arg)
 		vfe_params.data = (void *)&free_buf;
 		rc = v4l2_subdev_call(sd, core, ioctl, 0, &vfe_params);
 		temp_free_buf = free_buf;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (msm_mctl_reserve_free_buf(&pcam->mctl, NULL,
+=======
+		if (msm_mctl_reserve_free_buf(pmctl, NULL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (msm_mctl_reserve_free_buf(pmctl, NULL,
+>>>>>>> refs/remotes/origin/cm-11.0
 					image_mode, &free_buf)) {
 			/* Write the same buffer into PONG */
 			free_buf = temp_free_buf;
@@ -206,9 +319,21 @@ static int msm_isp_notify_VFE_BUF_EVT(struct v4l2_subdev *sd, void *arg)
 	case VFE_MSG_V32_JPEG_CAPTURE:
 		D("%s:VFE_MSG_V32_JPEG_CAPTURE vdata->type %d\n", __func__,
 			vdata->type);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		free_buf.num_planes = 1;
 		free_buf.ch_paddr[0] = IMEM_Y_PING_OFFSET;
 		free_buf.ch_paddr[1] = IMEM_CBCR_PING_OFFSET;
+=======
+		free_buf.num_planes = 2;
+		free_buf.ch_paddr[0] = pmctl->ping_imem_y;
+		free_buf.ch_paddr[1] = pmctl->ping_imem_cbcr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		free_buf.num_planes = 2;
+		free_buf.ch_paddr[0] = pmctl->ping_imem_y;
+		free_buf.ch_paddr[1] = pmctl->ping_imem_cbcr;
+>>>>>>> refs/remotes/origin/cm-11.0
 		cfgcmd.cmd_type = CMD_CONFIG_PING_ADDR;
 		cfgcmd.value = &vfe_id;
 		vfe_params.vfe_cfg = &cfgcmd;
@@ -217,8 +342,18 @@ static int msm_isp_notify_VFE_BUF_EVT(struct v4l2_subdev *sd, void *arg)
 			__func__, free_buf.ch_paddr[0], free_buf.ch_paddr[1]);
 		rc = v4l2_subdev_call(sd, core, ioctl, 0, &vfe_params);
 		/* Write the same buffer into PONG */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		free_buf.ch_paddr[0] = IMEM_Y_PONG_OFFSET;
 		free_buf.ch_paddr[1] = IMEM_CBCR_PONG_OFFSET;
+=======
+		free_buf.ch_paddr[0] = pmctl->pong_imem_y;
+		free_buf.ch_paddr[1] = pmctl->pong_imem_cbcr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		free_buf.ch_paddr[0] = pmctl->pong_imem_y;
+		free_buf.ch_paddr[1] = pmctl->pong_imem_cbcr;
+>>>>>>> refs/remotes/origin/cm-11.0
 		cfgcmd.cmd_type = CMD_CONFIG_PONG_ADDR;
 		cfgcmd.value = &vfe_id;
 		vfe_params.vfe_cfg = &cfgcmd;
@@ -230,7 +365,15 @@ static int msm_isp_notify_VFE_BUF_EVT(struct v4l2_subdev *sd, void *arg)
 	case VFE_MSG_OUTPUT_IRQ:
 		D("%s Got OUTPUT_IRQ: Getting free buf id = %d",
 						__func__, vfe_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msm_mctl_reserve_free_buf(&pcam->mctl, NULL,
+=======
+		msm_mctl_reserve_free_buf(pmctl, NULL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_mctl_reserve_free_buf(pmctl, NULL,
+>>>>>>> refs/remotes/origin/cm-11.0
 					image_mode, &free_buf);
 		cfgcmd.cmd_type = CMD_CONFIG_FREE_BUF_ADDR;
 		cfgcmd.value = &vfe_id;
@@ -254,12 +397,26 @@ static int msm_isp_notify_vfe(struct v4l2_subdev *sd,
 	int rc = 0;
 	struct v4l2_event v4l2_evt;
 	struct msm_isp_event_ctrl *isp_event;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_sync *sync =
 		(struct msm_sync *)v4l2_get_subdev_hostdata(sd);
 	struct msm_cam_media_controller *pmctl = &sync->pcam_sync->mctl;
 	struct msm_free_buf buf;
 
 	if (!sync) {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct msm_cam_media_controller *pmctl =
+		(struct msm_cam_media_controller *)v4l2_get_subdev_hostdata(sd);
+	struct msm_free_buf buf;
+
+	if (!pmctl) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: no context in dsp callback.\n", __func__);
 		rc = -EINVAL;
 		return rc;
@@ -279,6 +436,16 @@ static int msm_isp_notify_vfe(struct v4l2_subdev *sd,
 
 	v4l2_evt.type = V4L2_EVENT_PRIVATE_START +
 					MSM_CAM_RESP_STAT_EVT_MSG;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	v4l2_evt.id = 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	v4l2_evt.id = 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	*((uint32_t *)v4l2_evt.u.data) = (uint32_t)isp_event;
 
 	isp_event->resptype = MSM_CAM_RESP_STAT_EVT_MSG;
@@ -291,6 +458,14 @@ static int msm_isp_notify_vfe(struct v4l2_subdev *sd,
 
 		isp_event->isp_data.isp_msg.msg_id = isp_msg->msg_id;
 		isp_event->isp_data.isp_msg.frame_id = isp_msg->sof_count;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		getnstimeofday(&(isp_event->isp_data.isp_msg.timestamp));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		getnstimeofday(&(isp_event->isp_data.isp_msg.timestamp));
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case NOTIFY_VFE_MSG_OUT: {
@@ -316,6 +491,21 @@ static int msm_isp_notify_vfe(struct v4l2_subdev *sd,
 		case MSG_ID_OUTPUT_SECONDARY:
 			msgid = VFE_MSG_OUTPUT_SECONDARY;
 			break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		case MSG_ID_OUTPUT_TERTIARY1:
+			msgid = VFE_MSG_OUTPUT_TERTIARY1;
+			break;
+		case MSG_ID_OUTPUT_TERTIARY2:
+			msgid = VFE_MSG_OUTPUT_TERTIARY2;
+			break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		default:
 			pr_err("%s: Invalid VFE output id: %d\n",
 				__func__, isp_output->output_id);
@@ -341,6 +531,8 @@ static int msm_isp_notify_vfe(struct v4l2_subdev *sd,
 		struct msm_stats_buf *stats_buf = NULL;
 
 		isp_event->isp_data.isp_msg.msg_id = MSG_ID_STATS_COMPOSITE;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		stats->aec.buff = msm_pmem_stats_ptov_lookup(&pmctl->sync,
 					stats->aec.buff, &(stats->aec.fd));
 		stats->awb.buff = msm_pmem_stats_ptov_lookup(&pmctl->sync,
@@ -352,6 +544,24 @@ static int msm_isp_notify_vfe(struct v4l2_subdev *sd,
 		stats->rs.buff = msm_pmem_stats_ptov_lookup(&pmctl->sync,
 					stats->rs.buff, &(stats->rs.fd));
 		stats->cs.buff = msm_pmem_stats_ptov_lookup(&pmctl->sync,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		stats->aec.buff = msm_pmem_stats_ptov_lookup(pmctl,
+					stats->aec.buff, &(stats->aec.fd));
+		stats->awb.buff = msm_pmem_stats_ptov_lookup(pmctl,
+					stats->awb.buff, &(stats->awb.fd));
+		stats->af.buff = msm_pmem_stats_ptov_lookup(pmctl,
+					stats->af.buff, &(stats->af.fd));
+		stats->ihist.buff = msm_pmem_stats_ptov_lookup(pmctl,
+					stats->ihist.buff, &(stats->ihist.fd));
+		stats->rs.buff = msm_pmem_stats_ptov_lookup(pmctl,
+					stats->rs.buff, &(stats->rs.fd));
+		stats->cs.buff = msm_pmem_stats_ptov_lookup(pmctl,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					stats->cs.buff, &(stats->cs.fd));
 
 		stats_buf = kmalloc(sizeof(struct msm_stats_buf), GFP_ATOMIC);
@@ -373,7 +583,15 @@ static int msm_isp_notify_vfe(struct v4l2_subdev *sd,
 		isp_event->isp_data.isp_msg.msg_id = isp_stats->id;
 		isp_event->isp_data.isp_msg.frame_id =
 			isp_stats->frameCounter;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		stats.buffer = msm_pmem_stats_ptov_lookup(&pmctl->sync,
+=======
+		stats.buffer = msm_pmem_stats_ptov_lookup(pmctl,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		stats.buffer = msm_pmem_stats_ptov_lookup(pmctl,
+>>>>>>> refs/remotes/origin/cm-11.0
 						isp_stats->buffer,
 						&(stats.fd));
 		switch (isp_stats->id) {
@@ -401,6 +619,16 @@ static int msm_isp_notify_vfe(struct v4l2_subdev *sd,
 			stats.cs.buff = stats.buffer;
 			stats.cs.fd = stats.fd;
 			break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		case MSG_ID_STATS_AWB_AEC:
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case MSG_ID_STATS_AWB_AEC:
+			break;
+>>>>>>> refs/remotes/origin/cm-11.0
 		default:
 			pr_err("%s: Invalid msg type", __func__);
 			break;
@@ -440,6 +668,8 @@ static int msm_isp_notify_vfe(struct v4l2_subdev *sd,
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_isp_notify_vpe(struct v4l2_subdev *sd, void *arg)
 {
 	struct msm_sync *sync =
@@ -462,21 +692,50 @@ static int msm_isp_notify(struct v4l2_subdev *sd,
 		return msm_isp_notify_vpe(sd, arg);
 	else
 		return msm_isp_notify_vfe(sd, notification, arg);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int msm_isp_notify(struct v4l2_subdev *sd,
+	unsigned int notification, void *arg)
+{
+	return msm_isp_notify_vfe(sd, notification, arg);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* This function is called by open() function, so we need to init HW*/
 static int msm_isp_open(struct v4l2_subdev *sd,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct v4l2_subdev *sd_vpe, struct v4l2_subdev *gemini_sdev,
 	struct msm_sync *sync)
+=======
+	struct msm_cam_media_controller *mctl)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *mctl)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/* init vfe and senor, register sync callbacks for init*/
 	int rc = 0;
 	D("%s\n", __func__);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sync) {
+=======
+	if (!mctl) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!mctl) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: param is NULL", __func__);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	rc = msm_vfe_subdev_init(sd, sync, sync->pdev);
 	if (rc < 0) {
@@ -488,10 +747,48 @@ static int msm_isp_open(struct v4l2_subdev *sd,
 	if (rc < 0) {
 		pr_err("%s: vpe_init failed at %d\n",
 					__func__, rc);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	rc = msm_iommu_map_contig_buffer(
+		(unsigned long)IMEM_Y_PING_OFFSET, CAMERA_DOMAIN, GEN_POOL,
+		((IMEM_Y_SIZE + IMEM_CBCR_SIZE + 4095) & (~4095)),
+		SZ_4K, IOMMU_WRITE | IOMMU_READ,
+		(unsigned long *)&mctl->ping_imem_y);
+	mctl->ping_imem_cbcr = mctl->ping_imem_y + IMEM_Y_SIZE;
+	if (rc < 0) {
+		pr_err("%s: ping iommu mapping returned error %d\n",
+			__func__, rc);
+		mctl->ping_imem_y = 0;
+		mctl->ping_imem_cbcr = 0;
+	}
+	msm_iommu_map_contig_buffer(
+		(unsigned long)IMEM_Y_PONG_OFFSET, CAMERA_DOMAIN, GEN_POOL,
+		((IMEM_Y_SIZE + IMEM_CBCR_SIZE + 4095) & (~4095)),
+		SZ_4K, IOMMU_WRITE | IOMMU_READ,
+		(unsigned long *)&mctl->pong_imem_y);
+	mctl->pong_imem_cbcr = mctl->pong_imem_y + IMEM_Y_SIZE;
+	if (rc < 0) {
+		pr_err("%s: pong iommu mapping returned error %d\n",
+			 __func__, rc);
+		mctl->pong_imem_y = 0;
+		mctl->pong_imem_cbcr = 0;
+	}
+
+	rc = msm_vfe_subdev_init(sd, mctl);
+	if (rc < 0) {
+		pr_err("%s: vfe_init failed at %d\n",
+			__func__, rc);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void msm_isp_release(struct msm_sync *psync,
 		struct v4l2_subdev *gemini_sdev)
 {
@@ -502,6 +799,34 @@ static void msm_isp_release(struct msm_sync *psync,
 
 static int msm_config_vfe(struct v4l2_subdev *sd,
 	struct msm_sync *sync, void __user *arg)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void msm_isp_release(struct msm_cam_media_controller *mctl,
+	struct v4l2_subdev *sd)
+{
+	D("%s\n", __func__);
+	msm_vfe_subdev_release(sd);
+	if (mctl->ping_imem_y)
+		msm_iommu_unmap_contig_buffer(mctl->ping_imem_y,
+			CAMERA_DOMAIN, GEN_POOL,
+			((IMEM_Y_SIZE + IMEM_CBCR_SIZE + 4095) & (~4095)));
+	if (mctl->pong_imem_y)
+		msm_iommu_unmap_contig_buffer(mctl->pong_imem_y,
+			CAMERA_DOMAIN, GEN_POOL,
+			((IMEM_Y_SIZE + IMEM_CBCR_SIZE + 4095) & (~4095)));
+	mctl->ping_imem_y = 0;
+	mctl->ping_imem_cbcr = 0;
+	mctl->pong_imem_y = 0;
+	mctl->pong_imem_cbcr = 0;
+}
+
+static int msm_config_vfe(struct v4l2_subdev *sd,
+	struct msm_cam_media_controller *mctl, void __user *arg)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct msm_vfe_cfg_cmd cfgcmd;
 	struct msm_pmem_region region[8];
@@ -517,9 +842,22 @@ static int msm_config_vfe(struct v4l2_subdev *sd,
 	switch (cfgcmd.cmd_type) {
 	case CMD_STATS_AF_ENABLE:
 		axi_data.bufnum1 =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			msm_pmem_region_lookup(&sync->pmem_stats,
 					MSM_PMEM_AF, &region[0],
 					NUM_STAT_OUTPUT_BUFFERS);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			msm_pmem_region_lookup(
+				&mctl->stats_info.pmem_stats_list,
+				MSM_PMEM_AF, &region[0],
+				NUM_STAT_OUTPUT_BUFFERS);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -530,9 +868,22 @@ static int msm_config_vfe(struct v4l2_subdev *sd,
 							&axi_data);
 	case CMD_STATS_AEC_ENABLE:
 		axi_data.bufnum1 =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_AEC, &region[0],
 			NUM_STAT_OUTPUT_BUFFERS);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			msm_pmem_region_lookup(
+				&mctl->stats_info.pmem_stats_list,
+				MSM_PMEM_AEC, &region[0],
+				NUM_STAT_OUTPUT_BUFFERS);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -543,9 +894,22 @@ static int msm_config_vfe(struct v4l2_subdev *sd,
 							&axi_data);
 	case CMD_STATS_AWB_ENABLE:
 		axi_data.bufnum1 =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_AWB, &region[0],
 			NUM_STAT_OUTPUT_BUFFERS);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			msm_pmem_region_lookup(
+				&mctl->stats_info.pmem_stats_list,
+				MSM_PMEM_AWB, &region[0],
+				NUM_STAT_OUTPUT_BUFFERS);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -556,9 +920,22 @@ static int msm_config_vfe(struct v4l2_subdev *sd,
 							&axi_data);
 	case CMD_STATS_AEC_AWB_ENABLE:
 		axi_data.bufnum1 =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_AEC_AWB, &region[0],
 			NUM_STAT_OUTPUT_BUFFERS);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			msm_pmem_region_lookup(
+				&mctl->stats_info.pmem_stats_list,
+				MSM_PMEM_AEC_AWB, &region[0],
+				NUM_STAT_OUTPUT_BUFFERS);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -569,9 +946,22 @@ static int msm_config_vfe(struct v4l2_subdev *sd,
 							&axi_data);
 	case CMD_STATS_IHIST_ENABLE:
 		axi_data.bufnum1 =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_IHIST, &region[0],
 			NUM_STAT_OUTPUT_BUFFERS);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			msm_pmem_region_lookup(
+				&mctl->stats_info.pmem_stats_list,
+				MSM_PMEM_IHIST, &region[0],
+				NUM_STAT_OUTPUT_BUFFERS);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -582,9 +972,22 @@ static int msm_config_vfe(struct v4l2_subdev *sd,
 							&axi_data);
 	case CMD_STATS_RS_ENABLE:
 		axi_data.bufnum1 =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_RS, &region[0],
 			NUM_STAT_OUTPUT_BUFFERS);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			msm_pmem_region_lookup(
+				&mctl->stats_info.pmem_stats_list,
+				MSM_PMEM_RS, &region[0],
+				NUM_STAT_OUTPUT_BUFFERS);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -595,9 +998,22 @@ static int msm_config_vfe(struct v4l2_subdev *sd,
 							&axi_data);
 	case CMD_STATS_CS_ENABLE:
 		axi_data.bufnum1 =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_CS, &region[0],
 			NUM_STAT_OUTPUT_BUFFERS);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			msm_pmem_region_lookup(
+				&mctl->stats_info.pmem_stats_list,
+				MSM_PMEM_CS, &region[0],
+				NUM_STAT_OUTPUT_BUFFERS);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -618,6 +1034,8 @@ static int msm_config_vfe(struct v4l2_subdev *sd,
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_vpe_frame_cfg(struct msm_sync *sync,
 				void *cfgcmdin)
 {
@@ -704,6 +1122,14 @@ static int msm_stats_axi_cfg(struct v4l2_subdev *sd,
 
 static int msm_axi_config(struct v4l2_subdev *sd,
 			struct msm_sync *sync, void __user *arg)
+=======
+static int msm_axi_config(struct v4l2_subdev *sd,
+		struct msm_cam_media_controller *mctl, void __user *arg)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_axi_config(struct v4l2_subdev *sd,
+		struct msm_cam_media_controller *mctl, void __user *arg)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct msm_vfe_cfg_cmd cfgcmd;
 
@@ -713,6 +1139,8 @@ static int msm_axi_config(struct v4l2_subdev *sd,
 	}
 
 	switch (cfgcmd.cmd_type) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case CMD_AXI_CFG_VIDEO:
 	case CMD_AXI_CFG_PREVIEW:
 	case CMD_AXI_CFG_SNAP:
@@ -721,15 +1149,38 @@ static int msm_axi_config(struct v4l2_subdev *sd,
 	case CMD_AXI_CFG_ZSL_ALL_CHNLS:
 	case CMD_RAW_PICT_AXI_CFG:
 	case CMD_AXI_CFG_PRIM:
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	case CMD_AXI_CFG_PRIM:
+	case CMD_AXI_CFG_SEC:
+	case CMD_AXI_CFG_ZSL:
+	case CMD_RAW_PICT_AXI_CFG:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case CMD_AXI_CFG_PRIM_ALL_CHNLS:
 	case CMD_AXI_CFG_PRIM|CMD_AXI_CFG_SEC:
 	case CMD_AXI_CFG_PRIM|CMD_AXI_CFG_SEC_ALL_CHNLS:
 	case CMD_AXI_CFG_PRIM_ALL_CHNLS|CMD_AXI_CFG_SEC:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case CMD_AXI_CFG_TERT1:
+	case CMD_AXI_CFG_TERT2:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case CMD_AXI_CFG_TERT1:
+	case CMD_AXI_CFG_TERT2:
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Dont need to pass buffer information.
 		 * subdev will get the buffer from media
 		 * controller free queue.
 		 */
 		return msm_isp_subdev_ioctl(sd, &cfgcmd, NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case CMD_AXI_CFG_VPE:
 		return 0;
 		return msm_vpe_frame_cfg(sync, (void *)&cfgcmd);
@@ -737,6 +1188,10 @@ static int msm_axi_config(struct v4l2_subdev *sd,
 	case CMD_STATS_AXI_CFG:
 	case CMD_STATS_AF_AXI_CFG:
 		return msm_stats_axi_cfg(sd, sync, &cfgcmd);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	default:
 		pr_err("%s: unknown command type %d\n",
@@ -748,6 +1203,8 @@ static int msm_axi_config(struct v4l2_subdev *sd,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_set_crop(struct msm_sync *sync, void __user *arg)
 {
 	struct crop_info crop;
@@ -781,6 +1238,14 @@ static int msm_set_crop(struct msm_sync *sync, void __user *arg)
 
 static int msm_put_stats_buffer(struct v4l2_subdev *sd,
 			struct msm_sync *sync, void __user *arg)
+=======
+static int msm_put_stats_buffer(struct v4l2_subdev *sd,
+			struct msm_cam_media_controller *mctl, void __user *arg)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_put_stats_buffer(struct v4l2_subdev *sd,
+			struct msm_cam_media_controller *mctl, void __user *arg)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int rc = -EIO;
 
@@ -795,7 +1260,15 @@ static int msm_put_stats_buffer(struct v4l2_subdev *sd,
 	}
 
 	CDBG("%s\n", __func__);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pphy = msm_pmem_stats_vtop_lookup(sync, buf.buffer, buf.fd);
+=======
+	pphy = msm_pmem_stats_vtop_lookup(mctl, buf.buffer, buf.fd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pphy = msm_pmem_stats_vtop_lookup(mctl, buf.buffer, buf.fd);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pphy != 0) {
 		if (buf.type == STAT_AF)
@@ -853,6 +1326,8 @@ static int msm_isp_config(struct msm_cam_media_controller *pmctl,
 
 	case MSM_CAM_IOCTL_CONFIG_VFE:
 		/* Coming from config thread for update */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rc = msm_config_vfe(sd, &pmctl->sync, argp);
 		break;
 
@@ -874,6 +1349,23 @@ static int msm_isp_config(struct msm_cam_media_controller *pmctl,
 
 	case MSM_CAM_IOCTL_RELEASE_STATS_BUFFER:
 		rc = msm_put_stats_buffer(sd, &pmctl->sync, argp);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		rc = msm_config_vfe(sd, pmctl, argp);
+		break;
+
+	case MSM_CAM_IOCTL_AXI_CONFIG:
+		D("Received MSM_CAM_IOCTL_AXI_CONFIG\n");
+		rc = msm_axi_config(sd, pmctl, argp);
+		break;
+
+	case MSM_CAM_IOCTL_RELEASE_STATS_BUFFER:
+		rc = msm_put_stats_buffer(sd, pmctl, argp);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -936,6 +1428,8 @@ int msm_isp_subdev_ioctl(struct v4l2_subdev *isp_subdev,
 	vfe_params.data = data;
 	return v4l2_subdev_call(isp_subdev, core, ioctl, 0, &vfe_params);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 int msm_isp_subdev_ioctl_vpe(struct v4l2_subdev *isp_subdev,
 	struct msm_mctl_pp_cmd *cmd, void *data)
@@ -948,3 +1442,7 @@ int msm_isp_subdev_ioctl_vpe(struct v4l2_subdev *isp_subdev,
 	return rc;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

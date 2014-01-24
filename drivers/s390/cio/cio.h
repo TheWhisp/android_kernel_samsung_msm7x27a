@@ -68,8 +68,24 @@ struct schib {
 	__u8 mda[4];		 /* model dependent area */
 } __attribute__ ((packed,aligned(4)));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum sch_todo {
 	SCH_TODO_NOTHING,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * When rescheduled, todo's with higher values will overwrite those
+ * with lower values.
+ */
+enum sch_todo {
+	SCH_TODO_NOTHING,
+	SCH_TODO_EVAL,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	SCH_TODO_UNREG,
 };
 
@@ -116,6 +132,7 @@ extern int cio_commit_config(struct subchannel *sch);
 int cio_tm_start_key(struct subchannel *sch, struct tcw *tcw, u8 lpm, u8 key);
 int cio_tm_intrg(struct subchannel *sch);
 
+<<<<<<< HEAD
 int cio_create_sch_lock(struct subchannel *);
 void do_adapter_IO(u8 isc);
 void do_IRQ(struct pt_regs *);
@@ -133,6 +150,17 @@ extern void *cio_get_console_priv(void);
 #define cio_get_console_subchannel() NULL
 #define cio_get_console_lock() NULL
 #define cio_get_console_priv() NULL
+=======
+/* Use with care. */
+#ifdef CONFIG_CCW_CONSOLE
+extern struct subchannel *cio_probe_console(void);
+extern int cio_is_console(struct subchannel_id);
+extern void cio_register_early_subchannels(void);
+extern void cio_tsch(struct subchannel *sch);
+#else
+#define cio_is_console(schid) 0
+static inline void cio_register_early_subchannels(void) {}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif

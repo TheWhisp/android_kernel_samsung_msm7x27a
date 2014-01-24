@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright IBM Corp. 2004,2010
+=======
+ * Copyright IBM Corp. 2004, 2010
+>>>>>>> refs/remotes/origin/master
  * Interface implementation for communication with the z/VM control program
  *
  * Author(s): Christian Borntraeger <borntraeger@de.ibm.com>
@@ -17,6 +21,14 @@
 #include <linux/kernel.h>
 #include <linux/miscdevice.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/compat.h>
 #include <asm/cpcmd.h>
 #include <asm/debug.h>

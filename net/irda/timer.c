@@ -24,7 +24,13 @@
  *
  ********************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 
 #include <net/irda/timer.h>
@@ -58,7 +64,11 @@ void irlap_start_query_timer(struct irlap_cb *self, int S, int s)
 	 * Basically, we multiply the number of remaining slots by our
 	 * slot time, plus add some extra time to properly receive the last
 	 * discovery packet (which is longer due to extra discovery info),
+<<<<<<< HEAD
 	 * to avoid messing with for incomming connections requests and
+=======
+	 * to avoid messing with for incoming connections requests and
+>>>>>>> refs/remotes/origin/master
 	 * to accommodate devices that perform discovery slower than us.
 	 * Jean II */
 	timeout = ((sysctl_slot_timeout * HZ / 1000) * (S - s)

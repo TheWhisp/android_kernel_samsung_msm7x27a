@@ -6,10 +6,22 @@
 #
 menuconfig DRM
 	tristate "Direct Rendering Manager (XFree86 4.1.0 and higher DRI support)"
+<<<<<<< HEAD
 	depends on (AGP || AGP=n) && !EMULATED_CMPXCHG && MMU
 	select I2C
 	select I2C_ALGOBIT
+<<<<<<< HEAD
 	select SLOW_WORK
+=======
+	select DMA_SHARED_BUFFER
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on (AGP || AGP=n) && !EMULATED_CMPXCHG && MMU && HAS_DMA
+	select HDMI
+	select I2C
+	select I2C_ALGOBIT
+	select DMA_SHARED_BUFFER
+>>>>>>> refs/remotes/origin/master
 	help
 	  Kernel-level support for the Direct Rendering Infrastructure (DRI)
 	  introduced in XFree86 4.0. If you say Y here, you need to select
@@ -19,15 +31,64 @@ menuconfig DRM
 	  details.  You should also select and configure AGP
 	  (/dev/agpgart) support if it is available for your platform.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+config DRM_USB
+	tristate
+	depends on DRM
+	select USB
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config DRM_KMS_HELPER
 	tristate
 	depends on DRM
+=======
+config DRM_USB
+	tristate
+	depends on DRM
+	depends on USB_SUPPORT && USB_ARCH_HAS_HCD
+	select USB
+
+config DRM_KMS_HELPER
+	tristate
+	depends on DRM
+	help
+	  CRTC helpers for KMS drivers.
+
+config DRM_KMS_FB_HELPER
+	bool
+	depends on DRM_KMS_HELPER
+>>>>>>> refs/remotes/origin/master
 	select FB
 	select FRAMEBUFFER_CONSOLE if !EXPERT
 	select FRAMEBUFFER_CONSOLE_DETECT_PRIMARY if FRAMEBUFFER_CONSOLE
 	help
+<<<<<<< HEAD
 	  FB and CRTC helpers for KMS drivers.
 
+<<<<<<< HEAD
+=======
+=======
+	  FBDEV helpers for KMS drivers.
+
+>>>>>>> refs/remotes/origin/master
+config DRM_LOAD_EDID_FIRMWARE
+	bool "Allow to specify an EDID data set instead of probing for it"
+	depends on DRM_KMS_HELPER
+	help
+	  Say Y here, if you want to use EDID data to be loaded from the
+	  /lib/firmware directory or one of the provided built-in
+	  data sets. This may be necessary, if the graphics adapter or
+	  monitor are unable to provide appropriate EDID data. Since this
+	  feature is provided as a workaround for broken hardware, the
+	  default case is N. Details and instructions how to build your own
+	  EDID data are given in Documentation/EDID/HOWTO.txt.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config DRM_TTM
 	tristate
 	depends on DRM
@@ -36,6 +97,27 @@ config DRM_TTM
 	  GPU memory types. Will be enabled automatically if a device driver
 	  uses it.
 
+<<<<<<< HEAD
+=======
+config DRM_GEM_CMA_HELPER
+	bool
+	depends on DRM
+	help
+	  Choose this if you need the GEM CMA helper functions
+
+config DRM_KMS_CMA_HELPER
+	bool
+	select DRM_GEM_CMA_HELPER
+	select DRM_KMS_FB_HELPER
+	select FB_SYS_FILLRECT
+	select FB_SYS_COPYAREA
+	select FB_SYS_IMAGEBLIT
+	help
+	  Choose this if you need the KMS CMA helper functions
+
+source "drivers/gpu/drm/i2c/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 config DRM_TDFX
 	tristate "3dfx Banshee/Voodoo3+"
 	depends on DRM && PCI
@@ -60,9 +142,17 @@ config DRM_RADEON
 	select FB_CFB_IMAGEBLIT
 	select FW_LOADER
         select DRM_KMS_HELPER
+<<<<<<< HEAD
         select DRM_TTM
 	select POWER_SUPPLY
 	select HWMON
+=======
+	select DRM_KMS_FB_HELPER
+        select DRM_TTM
+	select POWER_SUPPLY
+	select HWMON
+	select BACKLIGHT_CLASS_DEVICE
+>>>>>>> refs/remotes/origin/master
 	help
 	  Choose this option if you have an ATI Radeon graphics card.  There
 	  are both PCI and AGP versions.  You don't need to choose this to
@@ -72,6 +162,16 @@ config DRM_RADEON
 
 source "drivers/gpu/drm/radeon/Kconfig"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+source "drivers/gpu/drm/nouveau/Kconfig"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "drivers/gpu/drm/nouveau/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 config DRM_I810
 	tristate "Intel I810"
 	# !PREEMPT because of missing ioctl locking
@@ -81,6 +181,7 @@ config DRM_I810
 	  selected, the module will be called i810.  AGP support is required
 	  for this driver to work.
 
+<<<<<<< HEAD
 config DRM_I915
 	tristate "Intel 8xx/9xx/G3x/G4x/HD Graphics"
 	depends on DRM
@@ -96,6 +197,10 @@ config DRM_I915
 	select FB_CFB_IMAGEBLIT
 	# i915 depends on ACPI_VIDEO when ACPI is enabled
 	# but for select to work, need to select ACPI_VIDEO's dependencies, ick
+<<<<<<< HEAD
+=======
+	select BACKLIGHT_LCD_SUPPORT if ACPI
+>>>>>>> refs/remotes/origin/cm-10.0
 	select BACKLIGHT_CLASS_DEVICE if ACPI
 	select VIDEO_OUTPUT_CONTROL if ACPI
 	select INPUT if ACPI
@@ -126,6 +231,9 @@ config DRM_I915_KMS
 	  userspaces with this enabled will cause pain.  Note that this causes
 	  the driver to bind to PCI devices, which precludes loading things
 	  like intelfb.
+=======
+source "drivers/gpu/drm/i915/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 config DRM_MGA
 	tristate "Matrox g200/g400"
@@ -158,3 +266,42 @@ config DRM_SAVAGE
 	help
 	  Choose this option if you have a Savage3D/4/SuperSavage/Pro/Twister
 	  chipset. If M is selected the module will be called savage.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+source "drivers/gpu/drm/exynos/Kconfig"
+
+source "drivers/gpu/drm/vmwgfx/Kconfig"
+
+source "drivers/gpu/drm/gma500/Kconfig"
+
+source "drivers/gpu/drm/udl/Kconfig"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+source "drivers/gpu/drm/ast/Kconfig"
+
+source "drivers/gpu/drm/mgag200/Kconfig"
+
+source "drivers/gpu/drm/cirrus/Kconfig"
+
+source "drivers/gpu/drm/armada/Kconfig"
+
+source "drivers/gpu/drm/rcar-du/Kconfig"
+
+source "drivers/gpu/drm/shmobile/Kconfig"
+
+source "drivers/gpu/drm/omapdrm/Kconfig"
+
+source "drivers/gpu/drm/tilcdc/Kconfig"
+
+source "drivers/gpu/drm/qxl/Kconfig"
+
+source "drivers/gpu/drm/msm/Kconfig"
+
+source "drivers/gpu/drm/tegra/Kconfig"
+>>>>>>> refs/remotes/origin/master

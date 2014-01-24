@@ -4,7 +4,15 @@
  */
 
 #include <linux/mm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/swap.h>
 #include <linux/gfp.h>
 #include <linux/bio.h>
@@ -14,6 +22,14 @@
 #include <linux/init.h>
 #include <linux/hash.h>
 #include <linux/highmem.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/bootmem.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bootmem.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/tlbflush.h>
 
 #include <trace/events/block.h>
@@ -23,25 +39,52 @@
 
 static mempool_t *page_pool, *isa_page_pool;
 
+<<<<<<< HEAD
 #ifdef CONFIG_HIGHMEM
 static __init int init_emergency_pool(void)
 {
+<<<<<<< HEAD
 	struct sysinfo i;
 	si_meminfo(&i);
 	si_swapinfo(&i);
 
 	if (!i.totalhigh)
 		return 0;
+=======
+#ifndef CONFIG_MEMORY_HOTPLUG
+	if (max_pfn <= max_low_pfn)
+		return 0;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	page_pool = mempool_create_page_pool(POOL_SIZE, 0);
 	BUG_ON(!page_pool);
 	printk("highmem bounce pool size: %d pages\n", POOL_SIZE);
+=======
+#if defined(CONFIG_HIGHMEM) || defined(CONFIG_NEED_BOUNCE_POOL)
+static __init int init_emergency_pool(void)
+{
+#if defined(CONFIG_HIGHMEM) && !defined(CONFIG_MEMORY_HOTPLUG)
+	if (max_pfn <= max_low_pfn)
+		return 0;
+#endif
+
+	page_pool = mempool_create_page_pool(POOL_SIZE, 0);
+	BUG_ON(!page_pool);
+	printk("bounce pool size: %d pages\n", POOL_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 __initcall(init_emergency_pool);
+<<<<<<< HEAD
 
+=======
+#endif
+
+#ifdef CONFIG_HIGHMEM
+>>>>>>> refs/remotes/origin/master
 /*
  * highmem version, map in to vec
  */
@@ -51,9 +94,21 @@ static void bounce_copy_vec(struct bio_vec *to, unsigned char *vfrom)
 	unsigned char *vto;
 
 	local_irq_save(flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vto = kmap_atomic(to->bv_page, KM_BOUNCE_READ);
 	memcpy(vto + to->bv_offset, vfrom, to->bv_len);
 	kunmap_atomic(vto, KM_BOUNCE_READ);
+=======
+	vto = kmap_atomic(to->bv_page);
+	memcpy(vto + to->bv_offset, vfrom, to->bv_len);
+	kunmap_atomic(vto);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vto = kmap_atomic(to->bv_page);
+	memcpy(vto + to->bv_offset, vfrom, to->bv_len);
+	kunmap_atomic(vto);
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 }
 
@@ -100,7 +155,11 @@ static void copy_to_high_bio_irq(struct bio *to, struct bio *from)
 	struct bio_vec *tovec, *fromvec;
 	int i;
 
+<<<<<<< HEAD
 	__bio_for_each_segment(tovec, to, i, 0) {
+=======
+	bio_for_each_segment(tovec, to, i) {
+>>>>>>> refs/remotes/origin/master
 		fromvec = from->bi_io_vec + i;
 
 		/*
@@ -133,7 +192,11 @@ static void bounce_end_io(struct bio *bio, mempool_t *pool, int err)
 	/*
 	 * free up bounce indirect pages used
 	 */
+<<<<<<< HEAD
 	__bio_for_each_segment(bvec, bio, i, 0) {
+=======
+	bio_for_each_segment_all(bvec, bio, i) {
+>>>>>>> refs/remotes/origin/master
 		org_vec = bio_orig->bi_io_vec + i;
 		if (bvec->bv_page == org_vec->bv_page)
 			continue;
@@ -177,6 +240,7 @@ static void bounce_end_io_read_isa(struct bio *bio, int err)
 	__bounce_end_io_read(bio, isa_page_pool, err);
 }
 
+<<<<<<< HEAD
 static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
 			       mempool_t *pool)
 {
@@ -211,10 +275,57 @@ static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
 		to->bv_len = from->bv_len;
 		to->bv_offset = from->bv_offset;
 		inc_zone_page_state(to->bv_page, NR_BOUNCE);
+=======
+#ifdef CONFIG_NEED_BOUNCE_POOL
+static int must_snapshot_stable_pages(struct request_queue *q, struct bio *bio)
+{
+	if (bio_data_dir(bio) != WRITE)
+		return 0;
+
+	if (!bdi_cap_stable_pages_required(&q->backing_dev_info))
+		return 0;
+
+	return test_bit(BIO_SNAP_STABLE, &bio->bi_flags);
+}
+#else
+static int must_snapshot_stable_pages(struct request_queue *q, struct bio *bio)
+{
+	return 0;
+}
+#endif /* CONFIG_NEED_BOUNCE_POOL */
+
+static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
+			       mempool_t *pool, int force)
+{
+	struct bio *bio;
+	int rw = bio_data_dir(*bio_orig);
+	struct bio_vec *to, *from;
+	unsigned i;
+
+	if (force)
+		goto bounce;
+	bio_for_each_segment(from, *bio_orig, i)
+		if (page_to_pfn(from->bv_page) > queue_bounce_pfn(q))
+			goto bounce;
+
+	return;
+bounce:
+	bio = bio_clone_bioset(*bio_orig, GFP_NOIO, fs_bio_set);
+
+	bio_for_each_segment_all(to, bio, i) {
+		struct page *page = to->bv_page;
+
+		if (page_to_pfn(page) <= queue_bounce_pfn(q) && !force)
+			continue;
+
+		inc_zone_page_state(to->bv_page, NR_BOUNCE);
+		to->bv_page = mempool_alloc(pool, q->bounce_gfp);
+>>>>>>> refs/remotes/origin/master
 
 		if (rw == WRITE) {
 			char *vto, *vfrom;
 
+<<<<<<< HEAD
 			flush_dcache_page(from->bv_page);
 			vto = page_address(to->bv_page) + to->bv_offset;
 			vfrom = kmap(from->bv_page) + from->bv_offset;
@@ -252,6 +363,20 @@ static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
 	bio->bi_vcnt = (*bio_orig)->bi_vcnt;
 	bio->bi_idx = (*bio_orig)->bi_idx;
 	bio->bi_size = (*bio_orig)->bi_size;
+=======
+			flush_dcache_page(page);
+
+			vto = page_address(to->bv_page) + to->bv_offset;
+			vfrom = kmap_atomic(page) + to->bv_offset;
+			memcpy(vto, vfrom, to->bv_len);
+			kunmap_atomic(vfrom);
+		}
+	}
+
+	trace_block_bio_bounce(q, *bio_orig);
+
+	bio->bi_flags |= (1 << BIO_BOUNCED);
+>>>>>>> refs/remotes/origin/master
 
 	if (pool == page_pool) {
 		bio->bi_end_io = bounce_end_io_write;
@@ -269,6 +394,10 @@ static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
 
 void blk_queue_bounce(struct request_queue *q, struct bio **bio_orig)
 {
+<<<<<<< HEAD
+=======
+	int must_bounce;
+>>>>>>> refs/remotes/origin/master
 	mempool_t *pool;
 
 	/*
@@ -277,13 +406,22 @@ void blk_queue_bounce(struct request_queue *q, struct bio **bio_orig)
 	if (!bio_has_data(*bio_orig))
 		return;
 
+<<<<<<< HEAD
+=======
+	must_bounce = must_snapshot_stable_pages(q, *bio_orig);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * for non-isa bounce case, just check if the bounce pfn is equal
 	 * to or bigger than the highest pfn in the system -- in that case,
 	 * don't waste time iterating over bio segments
 	 */
 	if (!(q->bounce_gfp & GFP_DMA)) {
+<<<<<<< HEAD
 		if (queue_bounce_pfn(q) >= blk_max_pfn)
+=======
+		if (queue_bounce_pfn(q) >= blk_max_pfn && !must_bounce)
+>>>>>>> refs/remotes/origin/master
 			return;
 		pool = page_pool;
 	} else {
@@ -294,7 +432,11 @@ void blk_queue_bounce(struct request_queue *q, struct bio **bio_orig)
 	/*
 	 * slow path
 	 */
+<<<<<<< HEAD
 	__blk_queue_bounce(q, bio_orig, pool);
+=======
+	__blk_queue_bounce(q, bio_orig, pool, must_bounce);
+>>>>>>> refs/remotes/origin/master
 }
 
 EXPORT_SYMBOL(blk_queue_bounce);

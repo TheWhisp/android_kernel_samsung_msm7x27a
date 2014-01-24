@@ -1,6 +1,14 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * Tmis program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -106,6 +114,11 @@
 #define COMP_REGD			BIT(27)
 #define COMP_CHAN			BIT(28)
 #define COMP_USB			BIT(29)
+<<<<<<< HEAD
+=======
+#define COMP_EASY_CONCURRENT	COMP_USB /* reuse of this bit is OK */
+#define COMP_BT_COEXIST			BIT(30)
+>>>>>>> refs/remotes/origin/master
 
 /*--------------------------------------------------------------
 		Define the rt_print components
@@ -113,11 +126,19 @@
 /* Define EEPROM and EFUSE  check module bit*/
 #define EEPROM_W			BIT(0)
 #define EFUSE_PG			BIT(1)
+<<<<<<< HEAD
 #define EFUSE_READ_ALL		BIT(2)
 
 /* Define init check for module bit*/
 #define	INIT_EEPROM			BIT(0)
 #define	INIT_TxPower		BIT(1)
+=======
+#define EFUSE_READ_ALL			BIT(2)
+
+/* Define init check for module bit*/
+#define	INIT_EEPROM			BIT(0)
+#define	INIT_TXPOWER			BIT(1)
+>>>>>>> refs/remotes/origin/master
 #define	INIT_IQK			BIT(2)
 #define	INIT_RF				BIT(3)
 
@@ -133,6 +154,18 @@
 #define	PHY_TXPWR			BIT(8)
 #define	PHY_PWRDIFF			BIT(9)
 
+<<<<<<< HEAD
+=======
+/* Define Dynamic Mechanism check module bit --> FDM */
+#define WA_IOT				BIT(0)
+#define DM_PWDB				BIT(1)
+#define DM_MONITOR			BIT(2)
+#define DM_DIG				BIT(3)
+#define DM_EDCA_TURBO			BIT(4)
+
+#define DM_PWDB				BIT(1)
+
+>>>>>>> refs/remotes/origin/master
 enum dbgp_flag_e {
 	FQOS = 0,
 	FTX = 1,
@@ -156,6 +189,8 @@ enum dbgp_flag_e {
 	DBGP_TYPE_MAX
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define RT_ASSERT(_exp, fmt)				\
 	do {						\
 		if (!(_exp)) {			\
@@ -208,6 +243,85 @@ enum dbgp_flag_e {
 #define MAC_ARG(x) \
 	((u8 *)(x))[0], ((u8 *)(x))[1], ((u8 *)(x))[2],\
 	((u8 *)(x))[3], ((u8 *)(x))[4], ((u8 *)(x))[5]
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_RTLWIFI_DEBUG
+
+#define RT_ASSERT(_exp, fmt, ...)					\
+do {									\
+	if (!(_exp)) {							\
+		printk(KERN_DEBUG KBUILD_MODNAME ":%s(): " fmt,		\
+		       __func__, ##__VA_ARGS__);			\
+	}								\
+} while (0)
+
+#define RT_TRACE(rtlpriv, comp, level, fmt, ...)			\
+do {									\
+	if (unlikely(((comp) & rtlpriv->dbg.global_debugcomponents) &&	\
+		     ((level) <= rtlpriv->dbg.global_debuglevel))) {	\
+		printk(KERN_DEBUG KBUILD_MODNAME ":%s():<%lx-%x> " fmt,	\
+		       __func__, in_interrupt(), in_atomic(),		\
+		       ##__VA_ARGS__);					\
+	}								\
+} while (0)
+
+#define RTPRINT(rtlpriv, dbgtype, dbgflag, fmt, ...)			\
+do {									\
+	if (unlikely(rtlpriv->dbg.dbgp_type[dbgtype] & dbgflag)) {	\
+		printk(KERN_DEBUG KBUILD_MODNAME ": " fmt,		\
+		       ##__VA_ARGS__);					\
+	}								\
+} while (0)
+
+#define RT_PRINT_DATA(rtlpriv, _comp, _level, _titlestring, _hexdata,	\
+		      _hexdatalen)					\
+do {									\
+	if (unlikely(((_comp) & rtlpriv->dbg.global_debugcomponents) &&	\
+		     (_level <= rtlpriv->dbg.global_debuglevel))) {	\
+		printk(KERN_DEBUG "%s: In process \"%s\" (pid %i): %s\n", \
+		       KBUILD_MODNAME, current->comm, current->pid,	\
+		       _titlestring);					\
+		print_hex_dump_bytes("", DUMP_PREFIX_NONE,		\
+				     _hexdata, _hexdatalen);		\
+	}								\
+} while (0)
+
+#else
+
+struct rtl_priv;
+
+__printf(2, 3)
+static inline void RT_ASSERT(int exp, const char *fmt, ...)
+{
+}
+
+__printf(4, 5)
+static inline void RT_TRACE(struct rtl_priv *rtlpriv,
+			    int comp, int level,
+			    const char *fmt, ...)
+{
+}
+
+__printf(4, 5)
+static inline void RTPRINT(struct rtl_priv *rtlpriv,
+			   int dbgtype, int dbgflag,
+			   const char *fmt, ...)
+{
+}
+
+static inline void RT_PRINT_DATA(struct rtl_priv *rtlpriv,
+				 int comp, int level,
+				 const char *titlestring,
+				 const void *hexdata, size_t hexdatalen)
+{
+}
+
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void rtl_dbgp_flag_init(struct ieee80211_hw *hw);
 #endif

@@ -7,7 +7,13 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/errno.h>
 #include <linux/pm.h>
@@ -147,7 +153,15 @@ static int adp8860_set_bits(struct i2c_client *client, int reg, uint8_t bit_mask
 
 	ret = adp8860_read(client, reg, &reg_val);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ret && ((reg_val & bit_mask) == 0)) {
+=======
+	if (!ret && ((reg_val & bit_mask) != bit_mask)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ret && ((reg_val & bit_mask) != bit_mask)) {
+>>>>>>> refs/remotes/origin/master
 		reg_val |= bit_mask;
 		ret = adp8860_write(client, reg, reg_val);
 	}
@@ -214,16 +228,28 @@ static int adp8860_led_setup(struct adp8860_led *led)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit adp8860_led_probe(struct i2c_client *client)
 {
 	struct adp8860_backlight_platform_data *pdata =
 		client->dev.platform_data;
+=======
+static int adp8860_led_probe(struct i2c_client *client)
+{
+	struct adp8860_backlight_platform_data *pdata =
+		dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct adp8860_bl *data = i2c_get_clientdata(client);
 	struct adp8860_led *led, *led_dat;
 	struct led_info *cur_led;
 	int ret, i;
 
+<<<<<<< HEAD
 	led = kzalloc(sizeof(*led) * pdata->num_leds, GFP_KERNEL);
+=======
+	led = devm_kzalloc(&client->dev, sizeof(*led) * pdata->num_leds,
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (led == NULL) {
 		dev_err(&client->dev, "failed to alloc memory\n");
 		return -ENOMEM;
@@ -237,7 +263,11 @@ static int __devinit adp8860_led_probe(struct i2c_client *client)
 
 	if (ret) {
 		dev_err(&client->dev, "failed to write\n");
+<<<<<<< HEAD
 		goto err_free;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < pdata->num_leds; ++i) {
@@ -249,12 +279,20 @@ static int __devinit adp8860_led_probe(struct i2c_client *client)
 		if (led_dat->id > 7 || led_dat->id < 1) {
 			dev_err(&client->dev, "Invalid LED ID %d\n",
 				led_dat->id);
+<<<<<<< HEAD
+=======
+			ret = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 			goto err;
 		}
 
 		if (pdata->bl_led_assign & (1 << (led_dat->id - 1))) {
 			dev_err(&client->dev, "LED %d used by Backlight\n",
 				led_dat->id);
+<<<<<<< HEAD
+=======
+			ret = -EBUSY;
+>>>>>>> refs/remotes/origin/master
 			goto err;
 		}
 
@@ -292,6 +330,7 @@ static int __devinit adp8860_led_probe(struct i2c_client *client)
 		cancel_work_sync(&led[i].work);
 	}
 
+<<<<<<< HEAD
  err_free:
 	kfree(led);
 
@@ -302,6 +341,15 @@ static int __devexit adp8860_led_remove(struct i2c_client *client)
 {
 	struct adp8860_backlight_platform_data *pdata =
 		client->dev.platform_data;
+=======
+	return ret;
+}
+
+static int adp8860_led_remove(struct i2c_client *client)
+{
+	struct adp8860_backlight_platform_data *pdata =
+		dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct adp8860_bl *data = i2c_get_clientdata(client);
 	int i;
 
@@ -310,16 +358,27 @@ static int __devexit adp8860_led_remove(struct i2c_client *client)
 		cancel_work_sync(&data->led[i].work);
 	}
 
+<<<<<<< HEAD
 	kfree(data->led);
 	return 0;
 }
 #else
 static int __devinit adp8860_led_probe(struct i2c_client *client)
+=======
+	return 0;
+}
+#else
+static int adp8860_led_probe(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit adp8860_led_remove(struct i2c_client *client)
+=======
+static int adp8860_led_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -452,7 +511,11 @@ static ssize_t adp8860_store(struct device *dev, const char *buf,
 	unsigned long val;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &val);
+=======
+	ret = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -502,7 +565,11 @@ static ssize_t adp8860_bl_l1_daylight_max_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct adp8860_bl *data = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	int ret = strict_strtoul(buf, 10, &data->cached_daylight_max);
+=======
+	int ret = kstrtoul(buf, 10, &data->cached_daylight_max);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -609,7 +676,11 @@ static ssize_t adp8860_bl_ambient_light_zone_store(struct device *dev,
 	uint8_t reg_val;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &val);
+=======
+	ret = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -654,13 +725,21 @@ static const struct attribute_group adp8860_bl_attr_group = {
 	.attrs = adp8860_bl_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit adp8860_probe(struct i2c_client *client,
+=======
+static int adp8860_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 					const struct i2c_device_id *id)
 {
 	struct backlight_device *bl;
 	struct adp8860_bl *data;
 	struct adp8860_backlight_platform_data *pdata =
+<<<<<<< HEAD
 		client->dev.platform_data;
+=======
+		dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct backlight_properties props;
 	uint8_t reg_val;
 	int ret;
@@ -676,13 +755,21 @@ static int __devinit adp8860_probe(struct i2c_client *client,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (data == NULL)
 		return -ENOMEM;
 
 	ret = adp8860_read(client, ADP8860_MFDVID, &reg_val);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto out2;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	switch (ADP8860_MANID(reg_val)) {
 	case ADP8863_MANUFID:
@@ -695,8 +782,12 @@ static int __devinit adp8860_probe(struct i2c_client *client,
 		break;
 	default:
 		dev_err(&client->dev, "failed to probe\n");
+<<<<<<< HEAD
 		ret = -ENODEV;
 		goto out2;
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* It's confirmed that the DEVID field is actually a REVID */
@@ -714,6 +805,7 @@ static int __devinit adp8860_probe(struct i2c_client *client,
 
 	mutex_init(&data->lock);
 
+<<<<<<< HEAD
 	bl = backlight_device_register(dev_driver_string(&client->dev),
 			&client->dev, data, &adp8860_bl_ops, &props);
 	if (IS_ERR(bl)) {
@@ -722,8 +814,23 @@ static int __devinit adp8860_probe(struct i2c_client *client,
 		goto out2;
 	}
 
+<<<<<<< HEAD
 	bl->props.max_brightness =
 		bl->props.brightness = ADP8860_MAX_BRIGHTNESS;
+=======
+	bl->props.brightness = ADP8860_MAX_BRIGHTNESS;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bl = devm_backlight_device_register(&client->dev,
+				dev_driver_string(&client->dev),
+				&client->dev, data, &adp8860_bl_ops, &props);
+	if (IS_ERR(bl)) {
+		dev_err(&client->dev, "failed to register backlight\n");
+		return PTR_ERR(bl);
+	}
+
+	bl->props.brightness = ADP8860_MAX_BRIGHTNESS;
+>>>>>>> refs/remotes/origin/master
 
 	data->bl = bl;
 
@@ -733,7 +840,11 @@ static int __devinit adp8860_probe(struct i2c_client *client,
 
 	if (ret) {
 		dev_err(&client->dev, "failed to register sysfs\n");
+<<<<<<< HEAD
 		goto out1;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = adp8860_bl_setup(bl);
@@ -756,15 +867,22 @@ out:
 	if (data->en_ambl_sens)
 		sysfs_remove_group(&data->bl->dev.kobj,
 			&adp8860_bl_attr_group);
+<<<<<<< HEAD
 out1:
 	backlight_device_unregister(bl);
 out2:
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit adp8860_remove(struct i2c_client *client)
+=======
+static int adp8860_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adp8860_bl *data = i2c_get_clientdata(client);
 
@@ -777,6 +895,7 @@ static int __devexit adp8860_remove(struct i2c_client *client)
 		sysfs_remove_group(&data->bl->dev.kobj,
 			&adp8860_bl_attr_group);
 
+<<<<<<< HEAD
 	backlight_device_unregister(data->bl);
 	kfree(data);
 
@@ -786,22 +905,50 @@ static int __devexit adp8860_remove(struct i2c_client *client)
 #ifdef CONFIG_PM
 static int adp8860_i2c_suspend(struct i2c_client *client, pm_message_t message)
 {
+=======
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int adp8860_i2c_suspend(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+
+>>>>>>> refs/remotes/origin/master
 	adp8860_clr_bits(client, ADP8860_MDCR, NSTBY);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int adp8860_i2c_resume(struct i2c_client *client)
 {
+<<<<<<< HEAD
+=======
+static int adp8860_i2c_resume(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	adp8860_set_bits(client, ADP8860_MDCR, NSTBY | BLEN);
 
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define adp8860_i2c_suspend NULL
 #define adp8860_i2c_resume NULL
 #endif
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(adp8860_i2c_pm_ops, adp8860_i2c_suspend,
+			adp8860_i2c_resume);
+
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_device_id adp8860_id[] = {
 	{ "adp8860", adp8860 },
 	{ "adp8861", adp8861 },
@@ -812,6 +959,7 @@ MODULE_DEVICE_TABLE(i2c, adp8860_id);
 
 static struct i2c_driver adp8860_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name = KBUILD_MODNAME,
 	},
 	.probe    = adp8860_probe,
@@ -821,6 +969,7 @@ static struct i2c_driver adp8860_driver = {
 	.id_table = adp8860_id,
 };
 
+<<<<<<< HEAD
 static int __init adp8860_init(void)
 {
 	return i2c_add_driver(&adp8860_driver);
@@ -832,6 +981,20 @@ static void __exit adp8860_exit(void)
 	i2c_del_driver(&adp8860_driver);
 }
 module_exit(adp8860_exit);
+=======
+module_i2c_driver(adp8860_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name	= KBUILD_MODNAME,
+		.pm	= &adp8860_i2c_pm_ops,
+	},
+	.probe    = adp8860_probe,
+	.remove   = adp8860_remove,
+	.id_table = adp8860_id,
+};
+
+module_i2c_driver(adp8860_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");

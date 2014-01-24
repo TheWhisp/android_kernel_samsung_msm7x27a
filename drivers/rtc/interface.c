@@ -13,6 +13,14 @@
 
 #include <linux/rtc.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/log2.h>
 #include <linux/workqueue.h>
 
@@ -71,7 +79,19 @@ int rtc_set_time(struct rtc_device *rtc, struct rtc_time *tm)
 	} else
 		err = -EINVAL;
 
+<<<<<<< HEAD
 	mutex_unlock(&rtc->ops_lock);
+<<<<<<< HEAD
+=======
+	/* A timer might have just expired */
+	schedule_work(&rtc->irqwork);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_stay_awake(rtc->dev.parent);
+	mutex_unlock(&rtc->ops_lock);
+	/* A timer might have just expired */
+	schedule_work(&rtc->irqwork);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 EXPORT_SYMBOL_GPL(rtc_set_time);
@@ -106,11 +126,27 @@ int rtc_set_mmss(struct rtc_device *rtc, unsigned long secs)
 				err = rtc->ops->set_time(rtc->dev.parent,
 						&new);
 		}
+<<<<<<< HEAD
 	}
 	else
 		err = -EINVAL;
 
 	mutex_unlock(&rtc->ops_lock);
+<<<<<<< HEAD
+=======
+	/* A timer might have just expired */
+	schedule_work(&rtc->irqwork);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+		err = -EINVAL;
+	}
+
+	pm_stay_awake(rtc->dev.parent);
+	mutex_unlock(&rtc->ops_lock);
+	/* A timer might have just expired */
+	schedule_work(&rtc->irqwork);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -362,6 +398,7 @@ int rtc_set_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
 	err = mutex_lock_interruptible(&rtc->ops_lock);
 	if (err)
 		return err;
+<<<<<<< HEAD
 	if (rtc->aie_timer.enabled) {
 		rtc_timer_remove(rtc, &rtc->aie_timer);
 	}
@@ -370,6 +407,16 @@ int rtc_set_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
 	if (alarm->enabled) {
 		err = rtc_timer_enqueue(rtc, &rtc->aie_timer);
 	}
+=======
+	if (rtc->aie_timer.enabled)
+		rtc_timer_remove(rtc, &rtc->aie_timer);
+
+	rtc->aie_timer.node.expires = rtc_tm_to_ktime(alarm->time);
+	rtc->aie_timer.period = ktime_set(0, 0);
+	if (alarm->enabled)
+		err = rtc_timer_enqueue(rtc, &rtc->aie_timer);
+
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&rtc->ops_lock);
 	return err;
 }
@@ -379,18 +426,53 @@ EXPORT_SYMBOL_GPL(rtc_set_alarm);
 int rtc_initialize_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
 {
 	int err;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct rtc_time now;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rtc_time now;
+>>>>>>> refs/remotes/origin/master
 
 	err = rtc_valid_tm(&alarm->time);
 	if (err != 0)
 		return err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	err = rtc_read_time(rtc, &now);
+	if (err)
+		return err;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = mutex_lock_interruptible(&rtc->ops_lock);
 	if (err)
 		return err;
 
 	rtc->aie_timer.node.expires = rtc_tm_to_ktime(alarm->time);
 	rtc->aie_timer.period = ktime_set(0, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (alarm->enabled) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/* Alarm has to be enabled & in the futrure for us to enqueue it */
+	if (alarm->enabled && (rtc_tm_to_ktime(now).tv64 <
+			 rtc->aie_timer.node.expires.tv64)) {
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rtc->aie_timer.enabled = 1;
 		timerqueue_add(&rtc->timerqueue, &rtc->aie_timer.node);
 	}
@@ -444,6 +526,20 @@ int rtc_update_irq_enable(struct rtc_device *rtc, unsigned int enabled)
 	if (rtc->uie_rtctimer.enabled == enabled)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (rtc->uie_unsupported) {
+		err = -EINVAL;
+		goto out;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (enabled) {
 		struct rtc_time tm;
 		ktime_t now, onesec;
@@ -563,20 +659,34 @@ enum hrtimer_restart rtc_pie_update_irq(struct hrtimer *timer)
 void rtc_update_irq(struct rtc_device *rtc,
 		unsigned long num, unsigned long events)
 {
+<<<<<<< HEAD
+=======
+	pm_stay_awake(rtc->dev.parent);
+>>>>>>> refs/remotes/origin/master
 	schedule_work(&rtc->irqwork);
 }
 EXPORT_SYMBOL_GPL(rtc_update_irq);
 
+<<<<<<< HEAD
 static int __rtc_match(struct device *dev, void *data)
 {
 	char *name = (char *)data;
+=======
+static int __rtc_match(struct device *dev, const void *data)
+{
+	const char *name = data;
+>>>>>>> refs/remotes/origin/master
 
 	if (strcmp(dev_name(dev), name) == 0)
 		return 1;
 	return 0;
 }
 
+<<<<<<< HEAD
 struct rtc_device *rtc_class_open(char *name)
+=======
+struct rtc_device *rtc_class_open(const char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev;
 	struct rtc_device *rtc = NULL;
@@ -639,7 +749,15 @@ EXPORT_SYMBOL_GPL(rtc_irq_unregister);
 static int rtc_update_hrtimer(struct rtc_device *rtc, int enabled)
 {
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * We unconditionally cancel the timer here, because otherwise
+=======
+	 * We always cancel the timer here first, because otherwise
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * We always cancel the timer here first, because otherwise
+>>>>>>> refs/remotes/origin/master
 	 * we could run into BUG_ON(timer->state != HRTIMER_STATE_CALLBACK);
 	 * when we manage to start the timer before the callback
 	 * returns HRTIMER_RESTART.
@@ -678,9 +796,15 @@ retry:
 	spin_lock_irqsave(&rtc->irq_task_lock, flags);
 	if (rtc->irq_task != NULL && task == NULL)
 		err = -EBUSY;
+<<<<<<< HEAD
 	if (rtc->irq_task != task)
 		err = -EACCES;
 	if (!err) {
+=======
+	else if (rtc->irq_task != task)
+		err = -EACCES;
+	else {
+>>>>>>> refs/remotes/origin/master
 		if (rtc_update_hrtimer(rtc, enabled) < 0) {
 			spin_unlock_irqrestore(&rtc->irq_task_lock, flags);
 			cpu_relax();
@@ -714,9 +838,15 @@ retry:
 	spin_lock_irqsave(&rtc->irq_task_lock, flags);
 	if (rtc->irq_task != NULL && task == NULL)
 		err = -EBUSY;
+<<<<<<< HEAD
 	if (rtc->irq_task != task)
 		err = -EACCES;
 	if (!err) {
+=======
+	else if (rtc->irq_task != task)
+		err = -EACCES;
+	else {
+>>>>>>> refs/remotes/origin/master
 		rtc->irq_freq = freq;
 		if (rtc->pie_enabled && rtc_update_hrtimer(rtc, 1) < 0) {
 			spin_unlock_irqrestore(&rtc->irq_task_lock, flags);
@@ -751,9 +881,16 @@ static int rtc_timer_enqueue(struct rtc_device *rtc, struct rtc_timer *timer)
 		alarm.time = rtc_ktime_to_tm(timer->node.expires);
 		alarm.enabled = 1;
 		err = __rtc_set_alarm(rtc, &alarm);
+<<<<<<< HEAD
 		if (err == -ETIME)
 			schedule_work(&rtc->irqwork);
 		else if (err) {
+=======
+		if (err == -ETIME) {
+			pm_stay_awake(rtc->dev.parent);
+			schedule_work(&rtc->irqwork);
+		} else if (err) {
+>>>>>>> refs/remotes/origin/master
 			timerqueue_del(&rtc->timerqueue, &timer->node);
 			timer->enabled = 0;
 			return err;
@@ -798,8 +935,15 @@ static void rtc_timer_remove(struct rtc_device *rtc, struct rtc_timer *timer)
 		alarm.time = rtc_ktime_to_tm(next->expires);
 		alarm.enabled = 1;
 		err = __rtc_set_alarm(rtc, &alarm);
+<<<<<<< HEAD
 		if (err == -ETIME)
 			schedule_work(&rtc->irqwork);
+=======
+		if (err == -ETIME) {
+			pm_stay_awake(rtc->dev.parent);
+			schedule_work(&rtc->irqwork);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -859,6 +1003,10 @@ again:
 	} else
 		rtc_alarm_disable(rtc);
 
+<<<<<<< HEAD
+=======
+	pm_relax(rtc->dev.parent);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&rtc->ops_lock);
 }
 
@@ -870,7 +1018,11 @@ again:
  *
  * Kernel interface to initializing an rtc_timer.
  */
+<<<<<<< HEAD
 void rtc_timer_init(struct rtc_timer *timer, void (*f)(void* p), void* data)
+=======
+void rtc_timer_init(struct rtc_timer *timer, void (*f)(void *p), void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	timerqueue_init(&timer->node);
 	timer->enabled = 0;
@@ -886,7 +1038,11 @@ void rtc_timer_init(struct rtc_timer *timer, void (*f)(void* p), void* data)
  *
  * Kernel interface to set an rtc_timer
  */
+<<<<<<< HEAD
 int rtc_timer_start(struct rtc_device *rtc, struct rtc_timer* timer,
+=======
+int rtc_timer_start(struct rtc_device *rtc, struct rtc_timer *timer,
+>>>>>>> refs/remotes/origin/master
 			ktime_t expires, ktime_t period)
 {
 	int ret = 0;
@@ -909,7 +1065,11 @@ int rtc_timer_start(struct rtc_device *rtc, struct rtc_timer* timer,
  *
  * Kernel interface to cancel an rtc_timer
  */
+<<<<<<< HEAD
 int rtc_timer_cancel(struct rtc_device *rtc, struct rtc_timer* timer)
+=======
+int rtc_timer_cancel(struct rtc_device *rtc, struct rtc_timer *timer)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	mutex_lock(&rtc->ops_lock);

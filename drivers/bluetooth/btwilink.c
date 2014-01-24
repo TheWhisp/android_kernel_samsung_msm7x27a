@@ -29,6 +29,13 @@
 #include <net/bluetooth/hci.h>
 
 #include <linux/ti_wilink_st.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Bluetooth Driver Version */
 #define VERSION               "1.0"
@@ -107,10 +114,15 @@ static long st_receive(void *priv_data, struct sk_buff *skb)
 		return -EFAULT;
 	}
 
+<<<<<<< HEAD
 	skb->dev = (void *) lhst->hdev;
 
 	/* Forward skb to HCI core layer */
 	err = hci_recv_frame(skb);
+=======
+	/* Forward skb to HCI core layer */
+	err = hci_recv_frame(lhst->hdev, skb);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		BT_ERR("Unable to push skb to HCI core(%d)", err);
 		return err;
@@ -125,6 +137,19 @@ static long st_receive(void *priv_data, struct sk_buff *skb)
 /* protocol structure registered with shared transport */
 static struct st_proto_s ti_st_proto[MAX_BT_CHNL_IDS] = {
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.chnl_id = HCI_EVENT_PKT, /* HCI Events */
+		.hdr_len = sizeof(struct hci_event_hdr),
+		.offset_len_in_hdr = offsetof(struct hci_event_hdr, plen),
+		.len_size = 1, /* sizeof(plen) in struct hci_event_hdr */
+		.reserve = 8,
+	},
+	{
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.chnl_id = HCI_ACLDATA_PKT, /* ACL */
 		.hdr_len = sizeof(struct hci_acl_hdr),
 		.offset_len_in_hdr = offsetof(struct hci_acl_hdr, dlen),
@@ -138,6 +163,10 @@ static struct st_proto_s ti_st_proto[MAX_BT_CHNL_IDS] = {
 		.len_size = 1, /* sizeof(dlen) in struct hci_sco_hdr */
 		.reserve = 8,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		.chnl_id = HCI_EVENT_PKT, /* HCI Events */
 		.hdr_len = sizeof(struct hci_event_hdr),
@@ -145,6 +174,11 @@ static struct st_proto_s ti_st_proto[MAX_BT_CHNL_IDS] = {
 		.len_size = 1, /* sizeof(plen) in struct hci_event_hdr */
 		.reserve = 8,
 	},
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* Called from HCI core to initialize the device */
@@ -160,7 +194,15 @@ static int ti_st_open(struct hci_dev *hdev)
 		return -EBUSY;
 
 	/* provide contexts for callbacks from ST */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hst = hdev->driver_data;
+=======
+	hst = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
+=======
+	hst = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < MAX_BT_CHNL_IDS; i++) {
 		ti_st_proto[i].priv_data = hst;
@@ -235,12 +277,28 @@ done:
 static int ti_st_close(struct hci_dev *hdev)
 {
 	int err, i;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ti_st *hst = hdev->driver_data;
+=======
+	struct ti_st *hst = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
+=======
+	struct ti_st *hst = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!test_and_clear_bit(HCI_RUNNING, &hdev->flags))
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_BT_CHNL_IDS; i++) {
+=======
+	for (i = MAX_BT_CHNL_IDS-1; i >= 0; i--) {
+>>>>>>> refs/remotes/origin/master
+=======
+	for (i = 0; i < MAX_BT_CHNL_IDS; i++) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = st_unregister(&ti_st_proto[i]);
 		if (err)
 			BT_ERR("st_unregister(%d) failed with error %d",
@@ -252,6 +310,7 @@ static int ti_st_close(struct hci_dev *hdev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int ti_st_send_frame(struct sk_buff *skb)
 {
 	struct hci_dev *hdev;
@@ -264,6 +323,20 @@ static int ti_st_send_frame(struct sk_buff *skb)
 		return -EBUSY;
 
 	hst = hdev->driver_data;
+<<<<<<< HEAD
+=======
+static int ti_st_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
+{
+	struct ti_st *hst;
+	long len;
+
+	if (!test_bit(HCI_RUNNING, &hdev->flags))
+		return -EBUSY;
+
+	hst = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Prepend skb with frame type */
 	memcpy(skb_push(skb, 1), &bt_cb(skb)->pkt_type, 1);
@@ -290,6 +363,10 @@ static int ti_st_send_frame(struct sk_buff *skb)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void ti_st_destruct(struct hci_dev *hdev)
 {
 	BT_DBG("%s", hdev->name);
@@ -298,39 +375,72 @@ static void ti_st_destruct(struct hci_dev *hdev)
 	 */
 }
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int bt_ti_probe(struct platform_device *pdev)
 {
 	static struct ti_st *hst;
 	struct hci_dev *hdev;
 	int err;
 
+<<<<<<< HEAD
 	hst = kzalloc(sizeof(struct ti_st), GFP_KERNEL);
+=======
+	hst = devm_kzalloc(&pdev->dev, sizeof(struct ti_st), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!hst)
 		return -ENOMEM;
 
 	/* Expose "hciX" device to user space */
 	hdev = hci_alloc_dev();
+<<<<<<< HEAD
 	if (!hdev) {
 		kfree(hst);
 		return -ENOMEM;
 	}
+=======
+	if (!hdev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	BT_DBG("hdev %p", hdev);
 
 	hst->hdev = hdev;
 	hdev->bus = HCI_UART;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hdev->driver_data = hst;
+=======
+	hci_set_drvdata(hdev, hst);
+>>>>>>> refs/remotes/origin/master
+=======
+	hdev->driver_data = hst;
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->open = ti_st_open;
 	hdev->close = ti_st_close;
 	hdev->flush = NULL;
 	hdev->send = ti_st_send_frame;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hdev->destruct = ti_st_destruct;
 	hdev->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	hdev->destruct = ti_st_destruct;
+	hdev->owner = THIS_MODULE;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = hci_register_dev(hdev);
 	if (err < 0) {
 		BT_ERR("Can't register HCI device error %d", err);
+<<<<<<< HEAD
 		kfree(hst);
+=======
+>>>>>>> refs/remotes/origin/master
 		hci_free_dev(hdev);
 		return err;
 	}
@@ -356,7 +466,10 @@ static int bt_ti_remove(struct platform_device *pdev)
 	hci_unregister_dev(hdev);
 
 	hci_free_dev(hdev);
+<<<<<<< HEAD
 	kfree(hst);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dev_set_drvdata(&pdev->dev, NULL);
 	return 0;
@@ -371,6 +484,7 @@ static struct platform_driver btwilink_driver = {
 	},
 };
 
+<<<<<<< HEAD
 /* ------- Module Init/Exit interfaces ------ */
 static int __init btwilink_init(void)
 {
@@ -386,6 +500,9 @@ static void __exit btwilink_exit(void)
 
 module_init(btwilink_init);
 module_exit(btwilink_exit);
+=======
+module_platform_driver(btwilink_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* ------ Module Info ------ */
 

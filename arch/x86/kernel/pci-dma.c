@@ -1,6 +1,14 @@
 #include <linux/dma-mapping.h>
 #include <linux/dma-debug.h>
 #include <linux/dmar.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bootmem.h>
 #include <linux/gfp.h>
 #include <linux/pci.h>
@@ -44,6 +52,21 @@ int iommu_detected __read_mostly = 0;
  */
 int iommu_pass_through __read_mostly;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/*
+ * Group multi-function PCI devices into a single device-group for the
+ * iommu_device_group interface.  This tells the iommu driver to pretend
+ * it cannot distinguish between functions of a device, exposing only one
+ * group for the device.  Useful for disallowing use of individual PCI
+ * functions from userspace drivers.
+ */
+int iommu_group_mf __read_mostly;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct iommu_table_entry __iommu_table[], __iommu_table_end[];
 
 /* Dummy device used for NULL arguments (normally ISA). */
@@ -55,7 +78,11 @@ struct device x86_dma_fallback_dev = {
 EXPORT_SYMBOL(x86_dma_fallback_dev);
 
 /* Number of entries preallocated for DMA-API debugging */
+<<<<<<< HEAD
 #define PREALLOC_DMA_DEBUG_ENTRIES       32768
+=======
+#define PREALLOC_DMA_DEBUG_ENTRIES       65536
+>>>>>>> refs/remotes/origin/master
 
 int dma_set_mask(struct device *dev, u64 mask)
 {
@@ -86,17 +113,59 @@ void __init pci_iommu_alloc(void)
 	}
 }
 void *dma_generic_alloc_coherent(struct device *dev, size_t size,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				 dma_addr_t *dma_addr, gfp_t flag)
 {
 	unsigned long dma_mask;
 	struct page *page;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				 dma_addr_t *dma_addr, gfp_t flag,
+				 struct dma_attrs *attrs)
+{
+	unsigned long dma_mask;
+<<<<<<< HEAD
+<<<<<<< HEAD
+	struct page *page = NULL;
+	unsigned int count = PAGE_ALIGN(size) >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct page *page;
+	unsigned int count = PAGE_ALIGN(size) >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
+=======
+	struct page *page = NULL;
+	unsigned int count = PAGE_ALIGN(size) >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/cm-11.0
 	dma_addr_t addr;
 
 	dma_mask = dma_alloc_coherent_mask(dev, flag);
 
 	flag |= __GFP_ZERO;
 again:
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	page = alloc_pages_node(dev_to_node(dev), flag, get_order(size));
+=======
+=======
+	page = NULL;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!(flag & GFP_ATOMIC))
+		page = dma_alloc_from_contiguous(dev, count, get_order(size));
+	if (!page)
+		page = alloc_pages_node(dev_to_node(dev), flag, get_order(size));
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!page)
 		return NULL;
 
@@ -116,9 +185,34 @@ again:
 	return page_address(page);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * See <Documentation/x86_64/boot-options.txt> for the iommu kernel parameter
  * documentation.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+void dma_generic_free_coherent(struct device *dev, size_t size, void *vaddr,
+			       dma_addr_t dma_addr, struct dma_attrs *attrs)
+{
+	unsigned int count = PAGE_ALIGN(size) >> PAGE_SHIFT;
+	struct page *page = virt_to_page(vaddr);
+
+	if (!dma_release_from_contiguous(dev, page, count))
+		free_pages((unsigned long)vaddr, get_order(size));
+}
+
+/*
+ * See <Documentation/x86/x86_64/boot-options.txt> for the iommu kernel
+ * parameter documentation.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static __init int iommu_setup(char *p)
 {
@@ -168,6 +262,14 @@ static __init int iommu_setup(char *p)
 #endif
 		if (!strncmp(p, "pt", 2))
 			iommu_pass_through = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (!strncmp(p, "group_mf", 8))
+			iommu_group_mf = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		gart_parse_options(p);
 
@@ -248,12 +350,32 @@ rootfs_initcall(pci_iommu_init);
 #ifdef CONFIG_PCI
 /* Many VIA bridges seem to corrupt data for DAC. Disable it here */
 
+<<<<<<< HEAD
 static __devinit void via_no_dac(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	if ((dev->class >> 8) == PCI_CLASS_BRIDGE_PCI && forbid_dac == 0) {
+=======
+	if (forbid_dac == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void via_no_dac(struct pci_dev *dev)
+{
+	if (forbid_dac == 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_info(&dev->dev, "disabling DAC on VIA PCI bridge\n");
 		forbid_dac = 1;
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_VIA, PCI_ANY_ID, via_no_dac);
+=======
+DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_VIA, PCI_ANY_ID,
+				PCI_CLASS_BRIDGE_PCI, 8, via_no_dac);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_VIA, PCI_ANY_ID,
+				PCI_CLASS_BRIDGE_PCI, 8, via_no_dac);
+>>>>>>> refs/remotes/origin/master
 #endif

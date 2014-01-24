@@ -43,7 +43,11 @@ struct pps_source_info {
 			int event, void *data);	/* PPS echo function */
 
 	struct module *owner;
+<<<<<<< HEAD
 	struct device *dev;
+=======
+	struct device *dev;		/* Parent device for device_create */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct pps_event_time {
@@ -69,6 +73,10 @@ struct pps_device {
 	wait_queue_head_t queue;		/* PPS event queue */
 
 	unsigned int id;			/* PPS source unique ID */
+<<<<<<< HEAD
+=======
+	void const *lookup_cookie;		/* pps_lookup_dev only */
+>>>>>>> refs/remotes/origin/master
 	struct cdev cdev;
 	struct device *dev;
 	struct fasync_struct *async_queue;	/* fasync method */
@@ -79,7 +87,21 @@ struct pps_device {
  * Global variables
  */
 
+<<<<<<< HEAD
 extern struct device_attribute pps_attrs[];
+=======
+extern const struct attribute_group *pps_groups[];
+
+/*
+ * Internal functions.
+ *
+ * These are not actually part of the exported API, but this is a
+ * convenient header file to put them in.
+ */
+
+extern int pps_register_cdev(struct pps_device *pps);
+extern void pps_unregister_cdev(struct pps_device *pps);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Exported functions
@@ -88,10 +110,17 @@ extern struct device_attribute pps_attrs[];
 extern struct pps_device *pps_register_source(
 		struct pps_source_info *info, int default_params);
 extern void pps_unregister_source(struct pps_device *pps);
+<<<<<<< HEAD
 extern int pps_register_cdev(struct pps_device *pps);
 extern void pps_unregister_cdev(struct pps_device *pps);
 extern void pps_event(struct pps_device *pps,
 		struct pps_event_time *ts, int event, void *data);
+=======
+extern void pps_event(struct pps_device *pps,
+		struct pps_event_time *ts, int event, void *data);
+/* Look up a pps device by magic cookie */
+struct pps_device *pps_lookup_dev(void const *cookie);
+>>>>>>> refs/remotes/origin/master
 
 static inline void timespec_to_pps_ktime(struct pps_ktime *kt,
 		struct timespec ts)
@@ -116,5 +145,17 @@ static inline void pps_get_ts(struct pps_event_time *ts)
 
 #endif /* CONFIG_NTP_PPS */
 
+<<<<<<< HEAD
+=======
+/* Subtract known time delay from PPS event time(s) */
+static inline void pps_sub_ts(struct pps_event_time *ts, struct timespec delta)
+{
+	ts->ts_real = timespec_sub(ts->ts_real, delta);
+#ifdef CONFIG_NTP_PPS
+	ts->ts_raw = timespec_sub(ts->ts_raw, delta);
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* LINUX_PPS_KERNEL_H */
 

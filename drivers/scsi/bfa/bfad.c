@@ -56,6 +56,8 @@ int		fdmi_enable = BFA_TRUE;
 int		pcie_max_read_reqsz;
 int		bfa_debugfs_enable = 1;
 int		msix_disable_cb = 0, msix_disable_ct = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /* Firmware releated */
 u32	bfi_image_ct_fc_size, bfi_image_ct_cna_size, bfi_image_cb_fc_size;
@@ -64,6 +66,27 @@ u32     *bfi_image_ct_fc, *bfi_image_ct_cna, *bfi_image_cb_fc;
 #define BFAD_FW_FILE_CT_FC      "ctfw_fc.bin"
 #define BFAD_FW_FILE_CT_CNA     "ctfw_cna.bin"
 #define BFAD_FW_FILE_CB_FC      "cbfw_fc.bin"
+=======
+int		max_xfer_size = BFAD_MAX_SECTORS >> 1;
+=======
+int		max_xfer_size = BFAD_MAX_SECTORS >> 1;
+int		max_rport_logins = BFA_FCS_MAX_RPORT_LOGINS;
+>>>>>>> refs/remotes/origin/master
+
+/* Firmware releated */
+u32	bfi_image_cb_size, bfi_image_ct_size, bfi_image_ct2_size;
+u32	*bfi_image_cb, *bfi_image_ct, *bfi_image_ct2;
+
+<<<<<<< HEAD
+#define BFAD_FW_FILE_CB		"cbfw.bin"
+#define BFAD_FW_FILE_CT		"ctfw.bin"
+#define BFAD_FW_FILE_CT2	"ct2fw.bin"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BFAD_FW_FILE_CB		"cbfw-3.2.1.1.bin"
+#define BFAD_FW_FILE_CT		"ctfw-3.2.1.1.bin"
+#define BFAD_FW_FILE_CT2	"ct2fw-3.2.1.1.bin"
+>>>>>>> refs/remotes/origin/master
 
 static u32 *bfad_load_fwimg(struct pci_dev *pdev);
 static void bfad_free_fwimg(void);
@@ -71,18 +94,42 @@ static void bfad_read_firmware(struct pci_dev *pdev, u32 **bfi_image,
 		u32 *bfi_image_size, char *fw_name);
 
 static const char *msix_name_ct[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	"cpe0", "cpe1", "cpe2", "cpe3",
 	"rme0", "rme1", "rme2", "rme3",
 	"ctrl" };
+=======
+	"ctrl",
+	"cpe0", "cpe1", "cpe2", "cpe3",
+	"rme0", "rme1", "rme2", "rme3" };
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"ctrl",
+	"cpe0", "cpe1", "cpe2", "cpe3",
+	"rme0", "rme1", "rme2", "rme3" };
+>>>>>>> refs/remotes/origin/master
 
 static const char *msix_name_cb[] = {
 	"cpe0", "cpe1", "cpe2", "cpe3",
 	"rme0", "rme1", "rme2", "rme3",
 	"eemc", "elpu0", "elpu1", "epss", "mlpu" };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_FIRMWARE(BFAD_FW_FILE_CT_FC);
 MODULE_FIRMWARE(BFAD_FW_FILE_CT_CNA);
 MODULE_FIRMWARE(BFAD_FW_FILE_CB_FC);
+=======
+MODULE_FIRMWARE(BFAD_FW_FILE_CB);
+MODULE_FIRMWARE(BFAD_FW_FILE_CT);
+MODULE_FIRMWARE(BFAD_FW_FILE_CT2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_FIRMWARE(BFAD_FW_FILE_CB);
+MODULE_FIRMWARE(BFAD_FW_FILE_CT);
+MODULE_FIRMWARE(BFAD_FW_FILE_CT2);
+>>>>>>> refs/remotes/origin/master
 
 module_param(os_name, charp, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(os_name, "OS name of the hba host machine");
@@ -144,6 +191,20 @@ MODULE_PARM_DESC(pcie_max_read_reqsz, "PCIe max read request size, default=0 "
 module_param(bfa_debugfs_enable, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(bfa_debugfs_enable, "Enables debugfs feature, default=1,"
 		" Range[false:0|true:1]");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+module_param(max_xfer_size, int, S_IRUGO | S_IWUSR);
+MODULE_PARM_DESC(max_xfer_size, "default=32MB,"
+		" Range[64k|128k|256k|512k|1024k|2048k]");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(max_xfer_size, int, S_IRUGO | S_IWUSR);
+MODULE_PARM_DESC(max_xfer_size, "default=32MB,"
+		" Range[64k|128k|256k|512k|1024k|2048k]");
+module_param(max_rport_logins, int, S_IRUGO | S_IWUSR);
+MODULE_PARM_DESC(max_rport_logins, "Max number of logins to initiator and target rports on a port (physical/logical), default=1024");
+>>>>>>> refs/remotes/origin/master
 
 static void
 bfad_sm_uninit(struct bfad_s *bfad, enum bfad_sm_event event);
@@ -452,6 +513,7 @@ bfa_fcb_lport_new(struct bfad_s *bfad, struct bfa_fcs_lport_s *port,
 	return port_drv;
 }
 
+<<<<<<< HEAD
 void
 bfa_fcb_lport_delete(struct bfad_s *bfad, enum bfa_lport_role roles,
 		    struct bfad_vf_s *vf_drv, struct bfad_vport_s *vp_drv)
@@ -469,6 +531,8 @@ bfa_fcb_lport_delete(struct bfad_s *bfad, enum bfa_lport_role roles,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * FCS RPORT alloc callback, after successful PLOGI by FCS
  */
@@ -527,6 +591,8 @@ bfa_fcb_pbc_vport_create(struct bfad_s *bfad, struct bfi_pbc_vport_s pbc_vport)
 void
 bfad_hal_mem_release(struct bfad_s *bfad)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int		i;
 	struct bfa_meminfo_s *hal_meminfo = &bfad->meminfo;
 	struct bfa_mem_elem_s *meminfo_elem;
@@ -549,6 +615,33 @@ bfad_hal_mem_release(struct bfad_s *bfad)
 				break;
 			}
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct bfa_meminfo_s *hal_meminfo = &bfad->meminfo;
+	struct bfa_mem_dma_s *dma_info, *dma_elem;
+	struct bfa_mem_kva_s *kva_info, *kva_elem;
+	struct list_head *dm_qe, *km_qe;
+
+	dma_info = &hal_meminfo->dma_info;
+	kva_info = &hal_meminfo->kva_info;
+
+	/* Iterate through the KVA meminfo queue */
+	list_for_each(km_qe, &kva_info->qe) {
+		kva_elem = (struct bfa_mem_kva_s *) km_qe;
+		vfree(kva_elem->kva);
+	}
+
+	/* Iterate through the DMA meminfo queue */
+	list_for_each(dm_qe, &dma_info->qe) {
+		dma_elem = (struct bfa_mem_dma_s *) dm_qe;
+		dma_free_coherent(&bfad->pcidev->dev,
+				dma_elem->mem_len, dma_elem->kva,
+				(dma_addr_t) dma_elem->dma);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	memset(hal_meminfo, 0, sizeof(struct bfa_meminfo_s));
@@ -563,15 +656,35 @@ bfad_update_hal_cfg(struct bfa_iocfc_cfg_s *bfa_cfg)
 		bfa_cfg->fwcfg.num_ioim_reqs = num_ios;
 	if (num_tms > 0)
 		bfa_cfg->fwcfg.num_tskim_reqs = num_tms;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (num_fcxps > 0)
 		bfa_cfg->fwcfg.num_fcxp_reqs = num_fcxps;
 	if (num_ufbufs > 0)
+=======
+	if (num_fcxps > 0 && num_fcxps <= BFA_FCXP_MAX)
+		bfa_cfg->fwcfg.num_fcxp_reqs = num_fcxps;
+	if (num_ufbufs > 0 && num_ufbufs <= BFA_UF_MAX)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (num_fcxps > 0 && num_fcxps <= BFA_FCXP_MAX)
+		bfa_cfg->fwcfg.num_fcxp_reqs = num_fcxps;
+	if (num_ufbufs > 0 && num_ufbufs <= BFA_UF_MAX)
+>>>>>>> refs/remotes/origin/master
 		bfa_cfg->fwcfg.num_uf_bufs = num_ufbufs;
 	if (reqq_size > 0)
 		bfa_cfg->drvcfg.num_reqq_elems = reqq_size;
 	if (rspq_size > 0)
 		bfa_cfg->drvcfg.num_rspq_elems = rspq_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (num_sgpgs > 0)
+=======
+	if (num_sgpgs > 0 && num_sgpgs <= BFA_SGPG_MAX)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (num_sgpgs > 0 && num_sgpgs <= BFA_SGPG_MAX)
+>>>>>>> refs/remotes/origin/master
 		bfa_cfg->drvcfg.num_sgpgs = num_sgpgs;
 
 	/*
@@ -591,6 +704,8 @@ bfad_update_hal_cfg(struct bfa_iocfc_cfg_s *bfa_cfg)
 bfa_status_t
 bfad_hal_mem_alloc(struct bfad_s *bfad)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int		i;
 	struct bfa_meminfo_s *hal_meminfo = &bfad->meminfo;
 	struct bfa_mem_elem_s *meminfo_elem;
@@ -670,6 +785,53 @@ retry:
 			break;
 
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct bfa_meminfo_s *hal_meminfo = &bfad->meminfo;
+	struct bfa_mem_dma_s *dma_info, *dma_elem;
+	struct bfa_mem_kva_s *kva_info, *kva_elem;
+	struct list_head *dm_qe, *km_qe;
+	bfa_status_t	rc = BFA_STATUS_OK;
+	dma_addr_t	phys_addr;
+
+	bfa_cfg_get_default(&bfad->ioc_cfg);
+	bfad_update_hal_cfg(&bfad->ioc_cfg);
+	bfad->cfg_data.ioc_queue_depth = bfad->ioc_cfg.fwcfg.num_ioim_reqs;
+	bfa_cfg_get_meminfo(&bfad->ioc_cfg, hal_meminfo, &bfad->bfa);
+
+	dma_info = &hal_meminfo->dma_info;
+	kva_info = &hal_meminfo->kva_info;
+
+	/* Iterate through the KVA meminfo queue */
+	list_for_each(km_qe, &kva_info->qe) {
+		kva_elem = (struct bfa_mem_kva_s *) km_qe;
+		kva_elem->kva = vmalloc(kva_elem->mem_len);
+		if (kva_elem->kva == NULL) {
+			bfad_hal_mem_release(bfad);
+			rc = BFA_STATUS_ENOMEM;
+			goto ext;
+		}
+		memset(kva_elem->kva, 0, kva_elem->mem_len);
+	}
+
+	/* Iterate through the DMA meminfo queue */
+	list_for_each(dm_qe, &dma_info->qe) {
+		dma_elem = (struct bfa_mem_dma_s *) dm_qe;
+		dma_elem->kva = dma_alloc_coherent(&bfad->pcidev->dev,
+						dma_elem->mem_len,
+						&phys_addr, GFP_KERNEL);
+		if (dma_elem->kva == NULL) {
+			bfad_hal_mem_release(bfad);
+			rc = BFA_STATUS_ENOMEM;
+			goto ext;
+		}
+		dma_elem->dma = phys_addr;
+		memset(dma_elem->kva, 0, dma_elem->mem_len);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 ext:
 	return rc;
@@ -711,6 +873,14 @@ bfad_vport_create(struct bfad_s *bfad, u16 vf_id,
 
 	spin_lock_irqsave(&bfad->bfad_lock, flags);
 	bfa_fcs_vport_start(&vport->fcs_vport);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	list_add_tail(&vport->list_entry, &bfad->vport_list);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_add_tail(&vport->list_entry, &bfad->vport_list);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
 
 	return BFA_STATUS_OK;
@@ -780,6 +950,8 @@ bfad_pci_init(struct pci_dev *pdev, struct bfad_s *bfad)
 	pci_set_master(pdev);
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) != 0)
 		if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) != 0) {
 			printk(KERN_ERR "pci_set_dma_mask fail %p\n", pdev);
@@ -787,6 +959,29 @@ bfad_pci_init(struct pci_dev *pdev, struct bfad_s *bfad)
 		}
 
 	bfad->pci_bar0_kva = pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) != 0) ||
+	    (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)) != 0)) {
+		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) != 0) ||
+		   (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32)) != 0)) {
+			printk(KERN_ERR "pci_set_dma_mask fail %p\n", pdev);
+			goto out_release_region;
+		}
+	}
+
+<<<<<<< HEAD
+	bfad->pci_bar0_kva = pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
+	bfad->pci_bar2_kva = pci_iomap(pdev, 2, pci_resource_len(pdev, 2));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Enable PCIE Advanced Error Recovery (AER) if kernel supports */
+	pci_enable_pcie_error_reporting(pdev);
+
+	bfad->pci_bar0_kva = pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
+	bfad->pci_bar2_kva = pci_iomap(pdev, 2, pci_resource_len(pdev, 2));
+>>>>>>> refs/remotes/origin/master
 
 	if (bfad->pci_bar0_kva == NULL) {
 		printk(KERN_ERR "Fail to map bar0\n");
@@ -797,6 +992,14 @@ bfad_pci_init(struct pci_dev *pdev, struct bfad_s *bfad)
 	bfad->hal_pcidev.pci_func = PCI_FUNC(pdev->devfn);
 	bfad->hal_pcidev.pci_bar_kva = bfad->pci_bar0_kva;
 	bfad->hal_pcidev.device_id = pdev->device;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bfad->hal_pcidev.ssid = pdev->subsystem_device;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfad->hal_pcidev.ssid = pdev->subsystem_device;
+>>>>>>> refs/remotes/origin/master
 	bfad->pci_name = pci_name(pdev);
 
 	bfad->pci_attr.vendor_id = pdev->vendor;
@@ -808,6 +1011,7 @@ bfad_pci_init(struct pci_dev *pdev, struct bfad_s *bfad)
 	bfad->pcidev = pdev;
 
 	/* Adjust PCIe Maximum Read Request Size */
+<<<<<<< HEAD
 	if (pcie_max_read_reqsz > 0) {
 		int pcie_cap_reg;
 		u16 pcie_dev_ctl;
@@ -854,6 +1058,27 @@ bfad_pci_init(struct pci_dev *pdev, struct bfad_s *bfad)
 		}
 	}
 
+=======
+	if (pci_is_pcie(pdev) && pcie_max_read_reqsz) {
+		if (pcie_max_read_reqsz >= 128 &&
+		    pcie_max_read_reqsz <= 4096 &&
+		    is_power_of_2(pcie_max_read_reqsz)) {
+			int max_rq = pcie_get_readrq(pdev);
+			printk(KERN_WARNING "BFA[%s]: "
+				"pcie_max_read_request_size is %d, "
+				"reset to %d\n", bfad->pci_name, max_rq,
+				pcie_max_read_reqsz);
+			pcie_set_readrq(pdev, pcie_max_read_reqsz);
+		} else {
+			printk(KERN_WARNING "BFA[%s]: invalid "
+			       "pcie_max_read_request_size %d ignored\n",
+			       bfad->pci_name, pcie_max_read_reqsz);
+		}
+	}
+
+	pci_save_state(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out_release_region:
@@ -868,9 +1093,21 @@ void
 bfad_pci_uninit(struct pci_dev *pdev, struct bfad_s *bfad)
 {
 	pci_iounmap(pdev, bfad->pci_bar0_kva);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pci_iounmap(pdev, bfad->pci_bar2_kva);
+>>>>>>> refs/remotes/origin/cm-10.0
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
 	pci_set_drvdata(pdev, NULL);
+=======
+	pci_iounmap(pdev, bfad->pci_bar2_kva);
+	pci_release_regions(pdev);
+	/* Disable PCIE Advanced Error Recovery (AER) */
+	pci_disable_pcie_error_reporting(pdev);
+	pci_disable_device(pdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 bfa_status_t
@@ -908,12 +1145,47 @@ bfad_drv_init(struct bfad_s *bfad)
 	bfad->bfa_fcs.trcmod = bfad->trcmod;
 	bfa_fcs_attach(&bfad->bfa_fcs, &bfad->bfa, bfad, BFA_FALSE);
 	bfad->bfa_fcs.fdmi_enabled = fdmi_enable;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bfa_fcs_init(&bfad->bfa_fcs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_fcs_init(&bfad->bfa_fcs);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
 
 	bfad->bfad_flags |= BFAD_DRV_INIT_DONE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return BFA_STATUS_OK;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* configure base port */
+	rc = bfad_cfg_pport(bfad, BFA_LPORT_ROLE_FCP_IM);
+	if (rc != BFA_STATUS_OK)
+		goto out_cfg_pport_fail;
+
+	return BFA_STATUS_OK;
+
+out_cfg_pport_fail:
+	/* fcs exit - on cfg pport failure */
+	spin_lock_irqsave(&bfad->bfad_lock, flags);
+	init_completion(&bfad->comp);
+	bfad->pport.flags |= BFAD_PORT_DELETE;
+	bfa_fcs_exit(&bfad->bfa_fcs);
+	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+	wait_for_completion(&bfad->comp);
+	/* bfa detach - free hal memory */
+	bfa_detach(&bfad->bfa);
+	bfad_hal_mem_release(bfad);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_hal_mem_alloc_failure:
 	return BFA_STATUS_FAILED;
 }
@@ -945,6 +1217,14 @@ bfad_drv_start(struct bfad_s *bfad)
 
 	spin_lock_irqsave(&bfad->bfad_lock, flags);
 	bfa_iocfc_start(&bfad->bfa);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bfa_fcs_pbc_vport_init(&bfad->bfa_fcs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_fcs_pbc_vport_init(&bfad->bfa_fcs);
+>>>>>>> refs/remotes/origin/master
 	bfa_fcs_fabric_modstart(&bfad->bfa_fcs);
 	bfad->bfad_flags |= BFAD_HAL_START_DONE;
 	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
@@ -1032,6 +1312,21 @@ bfad_start_ops(struct bfad_s *bfad) {
 	struct bfad_vport_s *vport, *vport_new;
 	struct bfa_fcs_driver_info_s driver_info;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Limit min/max. xfer size to [64k-32MB] */
+	if (max_xfer_size < BFAD_MIN_SECTORS >> 1)
+		max_xfer_size = BFAD_MIN_SECTORS >> 1;
+	if (max_xfer_size > BFAD_MAX_SECTORS >> 1)
+		max_xfer_size = BFAD_MAX_SECTORS >> 1;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Fill the driver_info info to fcs*/
 	memset(&driver_info, 0, sizeof(driver_info));
 	strncpy(driver_info.version, BFAD_DRIVER_VERSION,
@@ -1047,8 +1342,10 @@ bfad_start_ops(struct bfad_s *bfad) {
 			sizeof(driver_info.host_os_patch) - 1);
 
 	strncpy(driver_info.os_device_name, bfad->pci_name,
+<<<<<<< HEAD
 		sizeof(driver_info.os_device_name - 1));
 
+<<<<<<< HEAD
 	/* FCS INIT */
 	spin_lock_irqsave(&bfad->bfad_lock, flags);
 	bfa_fcs_driver_info_init(&bfad->bfa_fcs, &driver_info);
@@ -1062,6 +1359,28 @@ bfad_start_ops(struct bfad_s *bfad) {
 		bfad_stop(bfad);
 		return BFA_STATUS_FAILED;
 	}
+=======
+=======
+		sizeof(driver_info.os_device_name) - 1);
+
+>>>>>>> refs/remotes/origin/master
+	/* FCS driver info init */
+	spin_lock_irqsave(&bfad->bfad_lock, flags);
+	bfa_fcs_driver_info_init(&bfad->bfa_fcs, &driver_info);
+	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+
+	/*
+	 * FCS update cfg - reset the pwwn/nwwn of fabric base logical port
+	 * with values learned during bfa_init firmware GETATTR REQ.
+	 */
+	bfa_fcs_update_cfg(&bfad->bfa_fcs);
+
+	/* Setup fc host fixed attribute if the lk supports */
+	bfad_fc_host_init(bfad->pport.im_port);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* BFAD level FC4 IM specific resource allocation */
 	retval = bfad_im_probe(bfad);
@@ -1233,8 +1552,18 @@ bfad_install_msix_handler(struct bfad_s *bfad)
 	for (i = 0; i < bfad->nvec; i++) {
 		sprintf(bfad->msix_tab[i].name, "bfa-%s-%s",
 				bfad->pci_name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				((bfa_asic_id_ct(bfad->hal_pcidev.device_id)) ?
 				msix_name_ct[i] : msix_name_cb[i]));
+=======
+				((bfa_asic_id_cb(bfad->hal_pcidev.device_id)) ?
+				msix_name_cb[i] : msix_name_ct[i]));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				((bfa_asic_id_cb(bfad->hal_pcidev.device_id)) ?
+				msix_name_cb[i] : msix_name_ct[i]));
+>>>>>>> refs/remotes/origin/master
 
 		error = request_irq(bfad->msix_tab[i].msix.vector,
 				    (irq_handler_t) bfad_msix, 0,
@@ -1248,6 +1577,18 @@ bfad_install_msix_handler(struct bfad_s *bfad)
 				free_irq(bfad->msix_tab[j].msix.vector,
 						&bfad->msix_tab[j]);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			bfad->bfad_flags &= ~BFAD_MSIX_ON;
+			pci_disable_msix(bfad->pcidev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			bfad->bfad_flags &= ~BFAD_MSIX_ON;
+			pci_disable_msix(bfad->pcidev);
+
+>>>>>>> refs/remotes/origin/master
 			return 1;
 		}
 	}
@@ -1265,6 +1606,14 @@ bfad_setup_intr(struct bfad_s *bfad)
 	u32 mask = 0, i, num_bit = 0, max_bit = 0;
 	struct msix_entry msix_entries[MAX_MSIX_ENTRY];
 	struct pci_dev *pdev = bfad->pcidev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u16	reg;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16	reg;
+>>>>>>> refs/remotes/origin/master
 
 	/* Call BFA to get the msix map for this PCI function.  */
 	bfa_msix_getvecs(&bfad->bfa, &mask, &num_bit, &max_bit);
@@ -1272,11 +1621,34 @@ bfad_setup_intr(struct bfad_s *bfad)
 	/* Set up the msix entry table */
 	bfad_init_msix_entry(bfad, msix_entries, mask, max_bit);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((bfa_asic_id_ct(pdev->device) && !msix_disable_ct) ||
 	    (!bfa_asic_id_ct(pdev->device) && !msix_disable_cb)) {
+=======
+	if ((bfa_asic_id_ctc(pdev->device) && !msix_disable_ct) ||
+	   (bfa_asic_id_cb(pdev->device) && !msix_disable_cb)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		error = pci_enable_msix(bfad->pcidev, msix_entries, bfad->nvec);
 		if (error) {
+=======
+	if ((bfa_asic_id_ctc(pdev->device) && !msix_disable_ct) ||
+	   (bfa_asic_id_cb(pdev->device) && !msix_disable_cb)) {
+
+		error = pci_enable_msix(bfad->pcidev, msix_entries, bfad->nvec);
+		if (error) {
+			/* In CT1 & CT2, try to allocate just one vector */
+			if (bfa_asic_id_ctc(pdev->device)) {
+				printk(KERN_WARNING "bfa %s: trying one msix "
+				       "vector failed to allocate %d[%d]\n",
+				       bfad->pci_name, bfad->nvec, error);
+				bfad->nvec = 1;
+				error = pci_enable_msix(bfad->pcidev,
+						msix_entries, bfad->nvec);
+			}
+
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Only error number of vector is available.
 			 * We don't have a mechanism to map multiple
@@ -1286,6 +1658,7 @@ bfad_setup_intr(struct bfad_s *bfad)
 			 *  vectors. Linux doesn't duplicate vectors
 			 * in the MSIX table for this case.
 			 */
+<<<<<<< HEAD
 
 			printk(KERN_WARNING "bfad%d: "
 				"pci_enable_msix failed (%d),"
@@ -1294,6 +1667,30 @@ bfad_setup_intr(struct bfad_s *bfad)
 			goto line_based;
 		}
 
+<<<<<<< HEAD
+=======
+=======
+			if (error) {
+				printk(KERN_WARNING "bfad%d: "
+				       "pci_enable_msix failed (%d), "
+				       "use line based.\n",
+					bfad->inst_no, error);
+				goto line_based;
+			}
+		}
+
+>>>>>>> refs/remotes/origin/master
+		/* Disable INTX in MSI-X mode */
+		pci_read_config_word(pdev, PCI_COMMAND, &reg);
+
+		if (!(reg & PCI_COMMAND_INTX_DISABLE))
+			pci_write_config_word(pdev, PCI_COMMAND,
+				reg | PCI_COMMAND_INTX_DISABLE);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Save the vectors */
 		for (i = 0; i < bfad->nvec; i++) {
 			bfa_trc(bfad, msix_entries[i].vector);
@@ -1315,6 +1712,14 @@ line_based:
 		/* Enable interrupt handler failed */
 		return 1;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bfad->bfad_flags |= BFAD_INTX_ON;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfad->bfad_flags |= BFAD_INTX_ON;
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 }
@@ -1331,7 +1736,15 @@ bfad_remove_intr(struct bfad_s *bfad)
 
 		pci_disable_msix(bfad->pcidev);
 		bfad->bfad_flags &= ~BFAD_MSIX_ON;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
+=======
+	} else if (bfad->bfad_flags & BFAD_INTX_ON) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (bfad->bfad_flags & BFAD_INTX_ON) {
+>>>>>>> refs/remotes/origin/master
 		free_irq(bfad->pcidev->irq, bfad);
 	}
 }
@@ -1343,7 +1756,15 @@ int
 bfad_pci_probe(struct pci_dev *pdev, const struct pci_device_id *pid)
 {
 	struct bfad_s	*bfad;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int		error = -ENODEV, retval;
+=======
+	int		error = -ENODEV, retval, i;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		error = -ENODEV, retval, i;
+>>>>>>> refs/remotes/origin/master
 
 	/* For single port cards - only claim function 0 */
 	if ((pdev->device == BFA_PCI_DEVICE_ID_FC_8G1P) &&
@@ -1367,6 +1788,21 @@ bfad_pci_probe(struct pci_dev *pdev, const struct pci_device_id *pid)
 	bfa_trc_init(bfad->trcmod);
 	bfa_trc(bfad, bfad_inst);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* AEN INIT */
+	INIT_LIST_HEAD(&bfad->free_aen_q);
+	INIT_LIST_HEAD(&bfad->active_aen_q);
+	for (i = 0; i < BFA_AEN_MAX_ENTRY; i++)
+		list_add_tail(&bfad->aen_list[i].qe, &bfad->free_aen_q);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!(bfad_load_fwimg(pdev))) {
 		kfree(bfad->trcmod);
 		goto out_alloc_trace_failure;
@@ -1388,11 +1824,24 @@ bfad_pci_probe(struct pci_dev *pdev, const struct pci_device_id *pid)
 	bfa_sm_set_state(bfad, bfad_sm_uninit);
 
 	spin_lock_init(&bfad->bfad_lock);
+<<<<<<< HEAD
+=======
+	spin_lock_init(&bfad->bfad_aen_spinlock);
+
+>>>>>>> refs/remotes/origin/master
 	pci_set_drvdata(pdev, bfad);
 
 	bfad->ref_count = 0;
 	bfad->pport.bfad = bfad;
 	INIT_LIST_HEAD(&bfad->pbc_vport_list);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&bfad->vport_list);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&bfad->vport_list);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the debugfs node for this bfad */
 	if (bfa_debugfs_enable)
@@ -1472,6 +1921,200 @@ bfad_pci_remove(struct pci_dev *pdev)
 	kfree(bfad);
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * PCI Error Recovery entry, error detected.
+ */
+static pci_ers_result_t
+bfad_pci_error_detected(struct pci_dev *pdev, pci_channel_state_t state)
+{
+	struct bfad_s *bfad = pci_get_drvdata(pdev);
+	unsigned long	flags;
+	pci_ers_result_t ret = PCI_ERS_RESULT_NONE;
+
+	dev_printk(KERN_ERR, &pdev->dev,
+		   "error detected state: %d - flags: 0x%x\n",
+		   state, bfad->bfad_flags);
+
+	switch (state) {
+	case pci_channel_io_normal: /* non-fatal error */
+		spin_lock_irqsave(&bfad->bfad_lock, flags);
+		bfad->bfad_flags &= ~BFAD_EEH_BUSY;
+		/* Suspend/fail all bfa operations */
+		bfa_ioc_suspend(&bfad->bfa.ioc);
+		spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+		del_timer_sync(&bfad->hal_tmo);
+		ret = PCI_ERS_RESULT_CAN_RECOVER;
+		break;
+	case pci_channel_io_frozen: /* fatal error */
+		init_completion(&bfad->comp);
+		spin_lock_irqsave(&bfad->bfad_lock, flags);
+		bfad->bfad_flags |= BFAD_EEH_BUSY;
+		/* Suspend/fail all bfa operations */
+		bfa_ioc_suspend(&bfad->bfa.ioc);
+		bfa_fcs_stop(&bfad->bfa_fcs);
+		spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+		wait_for_completion(&bfad->comp);
+
+		bfad_remove_intr(bfad);
+		del_timer_sync(&bfad->hal_tmo);
+		pci_disable_device(pdev);
+		ret = PCI_ERS_RESULT_NEED_RESET;
+		break;
+	case pci_channel_io_perm_failure: /* PCI Card is DEAD */
+		spin_lock_irqsave(&bfad->bfad_lock, flags);
+		bfad->bfad_flags |= BFAD_EEH_BUSY |
+				    BFAD_EEH_PCI_CHANNEL_IO_PERM_FAILURE;
+		spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+
+		/* If the error_detected handler is called with the reason
+		 * pci_channel_io_perm_failure - it will subsequently call
+		 * pci_remove() entry point to remove the pci device from the
+		 * system - So defer the cleanup to pci_remove(); cleaning up
+		 * here causes inconsistent state during pci_remove().
+		 */
+		ret = PCI_ERS_RESULT_DISCONNECT;
+		break;
+	default:
+		WARN_ON(1);
+	}
+
+	return ret;
+}
+
+int
+restart_bfa(struct bfad_s *bfad)
+{
+	unsigned long flags;
+	struct pci_dev *pdev = bfad->pcidev;
+
+	bfa_attach(&bfad->bfa, bfad, &bfad->ioc_cfg,
+		   &bfad->meminfo, &bfad->hal_pcidev);
+
+	/* Enable Interrupt and wait bfa_init completion */
+	if (bfad_setup_intr(bfad)) {
+		dev_printk(KERN_WARNING, &pdev->dev,
+			   "%s: bfad_setup_intr failed\n", bfad->pci_name);
+		bfa_sm_send_event(bfad, BFAD_E_INTR_INIT_FAILED);
+		return -1;
+	}
+
+	init_completion(&bfad->comp);
+	spin_lock_irqsave(&bfad->bfad_lock, flags);
+	bfa_iocfc_init(&bfad->bfa);
+	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+
+	/* Set up interrupt handler for each vectors */
+	if ((bfad->bfad_flags & BFAD_MSIX_ON) &&
+	    bfad_install_msix_handler(bfad))
+		dev_printk(KERN_WARNING, &pdev->dev,
+			   "%s: install_msix failed.\n", bfad->pci_name);
+
+	bfad_init_timer(bfad);
+	wait_for_completion(&bfad->comp);
+	bfad_drv_start(bfad);
+
+	return 0;
+}
+
+/*
+ * PCI Error Recovery entry, re-initialize the chip.
+ */
+static pci_ers_result_t
+bfad_pci_slot_reset(struct pci_dev *pdev)
+{
+	struct bfad_s *bfad = pci_get_drvdata(pdev);
+	u8 byte;
+
+	dev_printk(KERN_ERR, &pdev->dev,
+		   "bfad_pci_slot_reset flags: 0x%x\n", bfad->bfad_flags);
+
+	if (pci_enable_device(pdev)) {
+		dev_printk(KERN_ERR, &pdev->dev, "Cannot re-enable "
+			   "PCI device after reset.\n");
+		return PCI_ERS_RESULT_DISCONNECT;
+	}
+
+	pci_restore_state(pdev);
+
+	/*
+	 * Read some byte (e.g. DMA max. payload size which can't
+	 * be 0xff any time) to make sure - we did not hit another PCI error
+	 * in the middle of recovery. If we did, then declare permanent failure.
+	 */
+	pci_read_config_byte(pdev, 0x68, &byte);
+	if (byte == 0xff) {
+		dev_printk(KERN_ERR, &pdev->dev,
+			   "slot_reset failed ... got another PCI error !\n");
+		goto out_disable_device;
+	}
+
+	pci_save_state(pdev);
+	pci_set_master(pdev);
+
+	if (pci_set_dma_mask(bfad->pcidev, DMA_BIT_MASK(64)) != 0)
+		if (pci_set_dma_mask(bfad->pcidev, DMA_BIT_MASK(32)) != 0)
+			goto out_disable_device;
+
+	pci_cleanup_aer_uncorrect_error_status(pdev);
+
+	if (restart_bfa(bfad) == -1)
+		goto out_disable_device;
+
+	pci_enable_pcie_error_reporting(pdev);
+	dev_printk(KERN_WARNING, &pdev->dev,
+		   "slot_reset completed  flags: 0x%x!\n", bfad->bfad_flags);
+
+	return PCI_ERS_RESULT_RECOVERED;
+
+out_disable_device:
+	pci_disable_device(pdev);
+	return PCI_ERS_RESULT_DISCONNECT;
+}
+
+static pci_ers_result_t
+bfad_pci_mmio_enabled(struct pci_dev *pdev)
+{
+	unsigned long	flags;
+	struct bfad_s *bfad = pci_get_drvdata(pdev);
+
+	dev_printk(KERN_INFO, &pdev->dev, "mmio_enabled\n");
+
+	/* Fetch FW diagnostic information */
+	bfa_ioc_debug_save_ftrc(&bfad->bfa.ioc);
+
+	/* Cancel all pending IOs */
+	spin_lock_irqsave(&bfad->bfad_lock, flags);
+	init_completion(&bfad->comp);
+	bfa_fcs_stop(&bfad->bfa_fcs);
+	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+	wait_for_completion(&bfad->comp);
+
+	bfad_remove_intr(bfad);
+	del_timer_sync(&bfad->hal_tmo);
+	pci_disable_device(pdev);
+
+	return PCI_ERS_RESULT_NEED_RESET;
+}
+
+static void
+bfad_pci_resume(struct pci_dev *pdev)
+{
+	unsigned long	flags;
+	struct bfad_s *bfad = pci_get_drvdata(pdev);
+
+	dev_printk(KERN_WARNING, &pdev->dev, "resume\n");
+
+	/* wait until the link is online */
+	bfad_rport_online_wait(bfad);
+
+	spin_lock_irqsave(&bfad->bfad_lock, flags);
+	bfad->bfad_flags &= ~BFAD_EEH_BUSY;
+	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+}
+
+>>>>>>> refs/remotes/origin/master
 struct pci_device_id bfad_id_table[] = {
 	{
 		.vendor = BFA_PCI_VENDOR_ID_BROCADE,
@@ -1501,17 +2144,61 @@ struct pci_device_id bfad_id_table[] = {
 		.class = (PCI_CLASS_SERIAL_FIBER << 8),
 		.class_mask = ~0,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	{
+		.vendor = BFA_PCI_VENDOR_ID_BROCADE,
+		.device = BFA_PCI_DEVICE_ID_CT2,
+		.subvendor = PCI_ANY_ID,
+		.subdevice = PCI_ANY_ID,
+		.class = (PCI_CLASS_SERIAL_FIBER << 8),
+		.class_mask = ~0,
+	},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+	{
+		.vendor = BFA_PCI_VENDOR_ID_BROCADE,
+		.device = BFA_PCI_DEVICE_ID_CT2_QUAD,
+		.subvendor = PCI_ANY_ID,
+		.subdevice = PCI_ANY_ID,
+		.class = (PCI_CLASS_SERIAL_FIBER << 8),
+		.class_mask = ~0,
+	},
+>>>>>>> refs/remotes/origin/master
 	{0, 0},
 };
 
 MODULE_DEVICE_TABLE(pci, bfad_id_table);
 
+<<<<<<< HEAD
+=======
+/*
+ * PCI error recovery handlers.
+ */
+static struct pci_error_handlers bfad_err_handler = {
+	.error_detected = bfad_pci_error_detected,
+	.slot_reset = bfad_pci_slot_reset,
+	.mmio_enabled = bfad_pci_mmio_enabled,
+	.resume = bfad_pci_resume,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct pci_driver bfad_pci_driver = {
 	.name = BFAD_DRIVER_NAME,
 	.id_table = bfad_id_table,
 	.probe = bfad_pci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(bfad_pci_remove),
+=======
+	.remove = bfad_pci_remove,
+	.err_handler = &bfad_err_handler,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1540,6 +2227,10 @@ bfad_init(void)
 
 	bfa_auto_recover = ioc_auto_recover;
 	bfa_fcs_rport_set_del_timeout(rport_del_timeout);
+<<<<<<< HEAD
+=======
+	bfa_fcs_rport_set_max_logins(max_rport_logins);
+>>>>>>> refs/remotes/origin/master
 
 	error = pci_register_driver(&bfad_pci_driver);
 	if (error) {
@@ -1594,6 +2285,8 @@ out:
 static u32 *
 bfad_load_fwimg(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (pdev->device == BFA_PCI_DEVICE_ID_CT_FC) {
 		if (bfi_image_ct_fc_size == 0)
 			bfad_read_firmware(pdev, &bfi_image_ct_fc,
@@ -1609,18 +2302,55 @@ bfad_load_fwimg(struct pci_dev *pdev)
 			bfad_read_firmware(pdev, &bfi_image_cb_fc,
 				&bfi_image_cb_fc_size, BFAD_FW_FILE_CB_FC);
 		return bfi_image_cb_fc;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (pdev->device == BFA_PCI_DEVICE_ID_CT2) {
+		if (bfi_image_ct2_size == 0)
+			bfad_read_firmware(pdev, &bfi_image_ct2,
+				&bfi_image_ct2_size, BFAD_FW_FILE_CT2);
+		return bfi_image_ct2;
+	} else if (bfa_asic_id_ct(pdev->device)) {
+		if (bfi_image_ct_size == 0)
+			bfad_read_firmware(pdev, &bfi_image_ct,
+				&bfi_image_ct_size, BFAD_FW_FILE_CT);
+		return bfi_image_ct;
+	} else {
+		if (bfi_image_cb_size == 0)
+			bfad_read_firmware(pdev, &bfi_image_cb,
+				&bfi_image_cb_size, BFAD_FW_FILE_CB);
+		return bfi_image_cb;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static void
 bfad_free_fwimg(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfi_image_ct_fc_size && bfi_image_ct_fc)
 		vfree(bfi_image_ct_fc);
 	if (bfi_image_ct_cna_size && bfi_image_ct_cna)
 		vfree(bfi_image_ct_cna);
 	if (bfi_image_cb_fc_size && bfi_image_cb_fc)
 		vfree(bfi_image_cb_fc);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (bfi_image_ct2_size && bfi_image_ct2)
+		vfree(bfi_image_ct2);
+	if (bfi_image_ct_size && bfi_image_ct)
+		vfree(bfi_image_ct);
+	if (bfi_image_cb_size && bfi_image_cb)
+		vfree(bfi_image_cb);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(bfad_init);

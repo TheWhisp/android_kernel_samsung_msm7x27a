@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,6 +66,7 @@
 #define _COMPONENT          ACPI_PARSER
 ACPI_MODULE_NAME("psloop")
 
+<<<<<<< HEAD
 static u32 acpi_gbl_depth = 0;
 
 /* Local prototypes */
@@ -74,10 +83,14 @@ static acpi_status
 acpi_ps_create_op(struct acpi_walk_state *walk_state,
 		  u8 * aml_op_start, union acpi_parse_object **new_op);
 
+=======
+/* Local prototypes */
+>>>>>>> refs/remotes/origin/master
 static acpi_status
 acpi_ps_get_arguments(struct acpi_walk_state *walk_state,
 		      u8 * aml_op_start, union acpi_parse_object *op);
 
+<<<<<<< HEAD
 static acpi_status
 acpi_ps_complete_op(struct acpi_walk_state *walk_state,
 		    union acpi_parse_object **op, acpi_status status);
@@ -86,12 +99,15 @@ static acpi_status
 acpi_ps_complete_final_op(struct acpi_walk_state *walk_state,
 			  union acpi_parse_object *op, acpi_status status);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 acpi_ps_link_module_code(union acpi_parse_object *parent_op,
 			 u8 *aml_start, u32 aml_length, acpi_owner_id owner_id);
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_ps_get_aml_opcode
  *
  * PARAMETERS:  walk_state          - Current state
@@ -376,11 +392,17 @@ acpi_ps_create_op(struct acpi_walk_state *walk_state,
 
 /*******************************************************************************
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * FUNCTION:    acpi_ps_get_arguments
  *
  * PARAMETERS:  walk_state          - Current state
  *              aml_op_start        - Op start in AML
+<<<<<<< HEAD
  *              Op                  - Current Op
+=======
+ *              op                  - Current Op
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -471,7 +493,10 @@ acpi_ps_get_arguments(struct acpi_walk_state *walk_state,
 			case AML_IF_OP:
 			case AML_ELSE_OP:
 			case AML_WHILE_OP:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 				/*
 				 * Currently supported module-level opcodes are:
 				 * IF/ELSE/WHILE. These appear to be the most common,
@@ -519,11 +544,26 @@ acpi_ps_get_arguments(struct acpi_walk_state *walk_state,
 					if ((op_info->class ==
 					     AML_CLASS_EXECUTE) && (!arg)) {
 						ACPI_WARNING((AE_INFO,
+<<<<<<< HEAD
 							      "Detected an unsupported executable opcode "
 							      "at module-level: [0x%.4X] at table offset 0x%.4X",
 							      op->common.aml_opcode,
 							      (u32)((aml_op_start - walk_state->parser_state.aml_start)
 								+ sizeof(struct acpi_table_header))));
+=======
+							      "Unsupported module-level executable opcode "
+							      "0x%.2X at table offset 0x%.4X",
+							      op->common.
+							      aml_opcode,
+							      (u32)
+							      (ACPI_PTR_DIFF
+							       (aml_op_start,
+								walk_state->
+								parser_state.
+								aml_start) +
+							       sizeof(struct
+								      acpi_table_header))));
+>>>>>>> refs/remotes/origin/master
 					}
 				}
 				break;
@@ -589,6 +629,10 @@ acpi_ps_get_arguments(struct acpi_walk_state *walk_state,
 		default:
 
 			/* No action for all other opcodes */
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -676,6 +720,7 @@ acpi_ps_link_module_code(union acpi_parse_object *parent_op,
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_ps_complete_op
  *
  * PARAMETERS:  walk_state          - Current state
@@ -960,6 +1005,8 @@ acpi_ps_complete_final_op(struct acpi_walk_state *walk_state,
 
 /*******************************************************************************
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * FUNCTION:    acpi_ps_parse_loop
  *
  * PARAMETERS:  walk_state          - Current state
@@ -1144,10 +1191,13 @@ acpi_status acpi_ps_parse_loop(struct acpi_walk_state *walk_state)
 		walk_state->op_info =
 		    acpi_ps_get_opcode_info(op->common.aml_opcode);
 		if (walk_state->op_info->flags & AML_NAMED) {
+<<<<<<< HEAD
 			if (acpi_gbl_depth) {
 				acpi_gbl_depth--;
 			}
 
+=======
+>>>>>>> refs/remotes/origin/master
 			if (op->common.aml_opcode == AML_REGION_OP ||
 			    op->common.aml_opcode == AML_DATA_REGION_OP) {
 				/*
@@ -1165,7 +1215,11 @@ acpi_status acpi_ps_parse_loop(struct acpi_walk_state *walk_state)
 
 		if (walk_state->op_info->flags & AML_CREATE) {
 			/*
+<<<<<<< HEAD
 			 * Backup to beginning of create_xXXfield declaration (1 for
+=======
+			 * Backup to beginning of create_XXXfield declaration (1 for
+>>>>>>> refs/remotes/origin/master
 			 * Opcode)
 			 *
 			 * body_length is unknown until we parse the body

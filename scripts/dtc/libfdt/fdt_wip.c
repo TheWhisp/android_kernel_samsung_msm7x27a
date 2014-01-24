@@ -94,6 +94,7 @@ int fdt_nop_property(void *fdt, int nodeoffset, const char *name)
 	return 0;
 }
 
+<<<<<<< HEAD
 int _fdt_node_end_offset(void *fdt, int nodeoffset)
 {
 	int level = 0;
@@ -129,6 +130,16 @@ int _fdt_node_end_offset(void *fdt, int nodeoffset)
 	} while (level >= 0);
 
 	return nextoffset;
+=======
+int _fdt_node_end_offset(void *fdt, int offset)
+{
+	int depth = 0;
+
+	while ((offset >= 0) && (depth >= 0))
+		offset = fdt_next_node(fdt, offset, &depth);
+
+	return offset;
+>>>>>>> refs/remotes/origin/master
 }
 
 int fdt_nop_node(void *fdt, int nodeoffset)

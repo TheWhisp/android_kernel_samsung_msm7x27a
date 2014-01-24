@@ -4,14 +4,30 @@
  *
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
  */
 
 #define HFC_CTMT	0xe0
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define HFC_CIRM  	0xc0
+=======
+#define HFC_CIRM	0xc0
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HFC_CIRM	0xc0
+>>>>>>> refs/remotes/origin/master
 #define HFC_CIP		0x80
 #define HFC_Z1		0x00
 #define HFC_Z2		0x08
@@ -46,7 +62,15 @@
 #define HFC_TRANSB1 0x01
 
 /* CIRM (Write) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define HFC_RESET  	0x08
+=======
+#define HFC_RESET	0x08
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HFC_RESET	0x08
+>>>>>>> refs/remotes/origin/master
 #define HFC_MEM8K	0x10
 #define HFC_INTA	0x01
 #define HFC_INTB	0x02

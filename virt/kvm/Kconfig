@@ -6,6 +6,12 @@ config HAVE_KVM
 config HAVE_KVM_IRQCHIP
        bool
 
+<<<<<<< HEAD
+=======
+config HAVE_KVM_IRQ_ROUTING
+       bool
+
+>>>>>>> refs/remotes/origin/master
 config HAVE_KVM_EVENTFD
        bool
        select EVENTFD
@@ -18,3 +24,15 @@ config KVM_MMIO
 
 config KVM_ASYNC_PF
        bool
+<<<<<<< HEAD
+=======
+
+config HAVE_KVM_MSI
+       bool
+
+config HAVE_KVM_CPU_RELAX_INTERCEPT
+       bool
+
+config KVM_VFIO
+       bool
+>>>>>>> refs/remotes/origin/master

@@ -10,6 +10,10 @@
  */
 
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/sh_fsi.h>
 
 struct fsi_ak4642_data {
@@ -48,6 +52,10 @@ static struct snd_soc_dai_link fsi_dai_link = {
 };
 
 static struct snd_soc_card fsi_soc_card  = {
+<<<<<<< HEAD
+=======
+	.owner		= THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link	= &fsi_dai_link,
 	.num_links	= 1,
 };
@@ -57,6 +65,7 @@ static struct platform_device *fsi_snd_device;
 static int fsi_ak4642_probe(struct platform_device *pdev)
 {
 	int ret = -ENOMEM;
+<<<<<<< HEAD
 	const struct platform_device_id	*id_entry;
 	struct fsi_ak4642_data *pdata;
 
@@ -78,6 +87,25 @@ static int fsi_ak4642_probe(struct platform_device *pdev)
 	fsi_dai_link.platform_name	= pdata->platform;
 	fsi_dai_link.codec_name		= pdata->codec;
 	fsi_soc_card.name		= pdata->card;
+=======
+	struct fsi_ak4642_info *pinfo = pdev->dev.platform_data;
+
+	if (!pinfo) {
+		dev_err(&pdev->dev, "no info for fsi ak4642\n");
+		goto out;
+	}
+
+	fsi_snd_device = platform_device_alloc("soc-audio", pinfo->id);
+	if (!fsi_snd_device)
+		goto out;
+
+	fsi_dai_link.name		= pinfo->name;
+	fsi_dai_link.stream_name	= pinfo->name;
+	fsi_dai_link.cpu_dai_name	= pinfo->cpu_dai;
+	fsi_dai_link.platform_name	= pinfo->platform;
+	fsi_dai_link.codec_name		= pinfo->codec;
+	fsi_soc_card.name		= pinfo->card;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	platform_set_drvdata(fsi_snd_device, &fsi_soc_card);
 	ret = platform_device_add(fsi_snd_device);
@@ -95,6 +123,7 @@ static int fsi_ak4642_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct fsi_ak4642_data fsi_a_ak4642 = {
 	.name		= "AK4642",
 	.card		= "FSIA-AK4642",
@@ -182,12 +211,15 @@ static struct platform_device_id fsi_id_table[] = {
 	{},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver fsi_ak4642 = {
 	.driver = {
 		.name	= "fsi-ak4642-audio",
 	},
 	.probe		= fsi_ak4642_probe,
 	.remove		= fsi_ak4642_remove,
+<<<<<<< HEAD
 	.id_table	= fsi_id_table,
 };
 
@@ -203,6 +235,11 @@ static void __exit fsi_ak4642_exit(void)
 
 module_init(fsi_ak4642_init);
 module_exit(fsi_ak4642_exit);
+=======
+};
+
+module_platform_driver(fsi_ak4642);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Generic SH4 FSI-AK4642 sound card");

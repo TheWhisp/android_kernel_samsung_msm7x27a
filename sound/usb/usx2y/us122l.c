@@ -19,6 +19,14 @@
 #include <linux/slab.h>
 #include <linux/usb.h>
 #include <linux/usb/audio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/hwdep.h>
 #include <sound/pcm.h>
@@ -36,7 +44,15 @@ MODULE_LICENSE("GPL");
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-max */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* Id for this card */
 							/* Enable this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for "NAME_ALLCAPS".");
@@ -261,7 +277,13 @@ static int usb_stream_hwdep_mmap(struct snd_hwdep *hw,
 	}
 
 	area->vm_ops = &usb_stream_hwdep_vm_ops;
+<<<<<<< HEAD
 	area->vm_flags |= VM_RESERVED;
+=======
+	area->vm_flags |= VM_DONTDUMP;
+	if (!read)
+		area->vm_flags |= VM_DONTEXPAND;
+>>>>>>> refs/remotes/origin/master
 	area->vm_private_data = us122l;
 	atomic_inc(&us122l->mmap_count);
 out:
@@ -771,6 +793,8 @@ static struct usb_driver snd_us122l_usb_driver = {
 	.supports_autosuspend = 1
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init snd_us122l_module_init(void)
 {
@@ -784,3 +808,9 @@ static void __exit snd_us122l_module_exit(void)
 
 module_init(snd_us122l_module_init)
 module_exit(snd_us122l_module_exit)
+=======
+module_usb_driver(snd_us122l_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(snd_us122l_usb_driver);
+>>>>>>> refs/remotes/origin/master

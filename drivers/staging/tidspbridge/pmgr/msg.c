@@ -23,9 +23,15 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- Bridge Driver */
 #include <dspbridge/dspdefs.h>
 
@@ -36,9 +42,15 @@
 #include <msgobj.h>
 #include <dspbridge/msg.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Globals */
 static u32 refs;		/* module reference count */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  ======== msg_create ========
  *  Purpose:
@@ -53,11 +65,17 @@ int msg_create(struct msg_mgr **msg_man,
 	struct msg_mgr *hmsg_mgr;
 	int status = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(msg_man != NULL);
 	DBC_REQUIRE(msg_callback != NULL);
 	DBC_REQUIRE(hdev_obj != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*msg_man = NULL;
 
 	dev_get_intf_fxns(hdev_obj, &intf_fxns);
@@ -90,8 +108,14 @@ void msg_delete(struct msg_mgr *hmsg_mgr)
 	struct msg_mgr_ *msg_mgr_obj = (struct msg_mgr_ *)hmsg_mgr;
 	struct bridge_drv_interface *intf_fxns;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (msg_mgr_obj) {
 		intf_fxns = msg_mgr_obj->intf_fxns;
 
@@ -102,6 +126,8 @@ void msg_delete(struct msg_mgr *hmsg_mgr)
 			__func__, hmsg_mgr);
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  *  ======== msg_exit ========
@@ -127,3 +153,7 @@ bool msg_mod_init(void)
 
 	return true;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

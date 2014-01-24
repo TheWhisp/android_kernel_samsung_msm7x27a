@@ -1,6 +1,18 @@
 #include <linux/mm.h>
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
+=======
+#include <asm/cache_insns.h>
+#include <asm/cacheflush.h>
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cache_insns.h>
+#include <asm/cacheflush.h>
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Write back the dirty D-caches, but not invalidate them.

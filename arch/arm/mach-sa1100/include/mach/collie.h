@@ -1,7 +1,15 @@
 /*
  * arch/arm/mach-sa1100/include/mach/collie.h
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * This file contains the hardware specific definitions for Assabet
+=======
+ * This file contains the hardware specific definitions for Collie
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This file contains the hardware specific definitions for Collie
+>>>>>>> refs/remotes/origin/master
  * Only include this file from SA1100-specific files.
  *
  * ChangeLog:
@@ -13,6 +21,14 @@
 #ifndef __ASM_ARCH_COLLIE_H
 #define __ASM_ARCH_COLLIE_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern void locomolcd_power(int on);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void locomolcd_power(int on);
+>>>>>>> refs/remotes/origin/master
 
 #define COLLIE_SCOOP_GPIO_BASE	(GPIO_MAX + 1)
 #define COLLIE_GPIO_CHARGE_ON	(COLLIE_SCOOP_GPIO_BASE + 0)

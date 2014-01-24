@@ -4,16 +4,38 @@
 #include <linux/err.h>
 #include <linux/sched.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct task_struct *kthread_create_on_node(int (*threadfn)(void *data),
 					   void *data,
 					   int node,
 					   const char namefmt[], ...)
 	__attribute__((format(printf, 4, 5)));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+__printf(4, 5)
+struct task_struct *kthread_create_on_node(int (*threadfn)(void *data),
+					   void *data,
+					   int node,
+					   const char namefmt[], ...);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define kthread_create(threadfn, data, namefmt, arg...) \
 	kthread_create_on_node(threadfn, data, -1, namefmt, ##arg)
 
 
+<<<<<<< HEAD
+=======
+struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
+					  void *data,
+					  unsigned int cpu,
+					  const char *namefmt);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * kthread_run - create and wake a thread.
  * @threadfn: the function to run until signal_pending(current).
@@ -34,8 +56,23 @@ struct task_struct *kthread_create_on_node(int (*threadfn)(void *data),
 
 void kthread_bind(struct task_struct *k, unsigned int cpu);
 int kthread_stop(struct task_struct *k);
+<<<<<<< HEAD
 int kthread_should_stop(void);
+<<<<<<< HEAD
+=======
+bool kthread_freezable_should_stop(bool *was_frozen);
+>>>>>>> refs/remotes/origin/cm-10.0
 void *kthread_data(struct task_struct *k);
+=======
+bool kthread_should_stop(void);
+bool kthread_should_park(void);
+bool kthread_freezable_should_stop(bool *was_frozen);
+void *kthread_data(struct task_struct *k);
+void *probe_kthread_data(struct task_struct *k);
+int kthread_park(struct task_struct *k);
+void kthread_unpark(struct task_struct *k);
+void kthread_parkme(void);
+>>>>>>> refs/remotes/origin/master
 
 int kthreadd(void *unused);
 extern struct task_struct *kthreadd_task;
@@ -48,8 +85,17 @@ extern int tsk_fork_get_node(struct task_struct *tsk);
  * can be queued and flushed using queue/flush_kthread_work()
  * respectively.  Queued kthread_works are processed by a kthread
  * running kthread_worker_fn().
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * A kthread_work can't be freed while it is executing.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 struct kthread_work;
 typedef void (*kthread_work_func_t)(struct kthread_work *work);
@@ -58,15 +104,39 @@ struct kthread_worker {
 	spinlock_t		lock;
 	struct list_head	work_list;
 	struct task_struct	*task;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct kthread_work	*current_work;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct kthread_work	*current_work;
+>>>>>>> refs/remotes/origin/master
+=======
+	struct kthread_work	*current_work;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct kthread_work {
 	struct list_head	node;
 	kthread_work_func_t	func;
 	wait_queue_head_t	done;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	atomic_t		flushing;
 	int			queue_seq;
 	int			done_seq;
+=======
+	struct kthread_worker	*worker;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct kthread_worker	*worker;
+>>>>>>> refs/remotes/origin/master
+=======
+	struct kthread_worker	*worker;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define KTHREAD_WORKER_INIT(worker)	{				\
@@ -78,7 +148,16 @@ struct kthread_work {
 	.node = LIST_HEAD_INIT((work).node),				\
 	.func = (fn),							\
 	.done = __WAIT_QUEUE_HEAD_INITIALIZER((work).done),		\
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flushing = ATOMIC_INIT(0),					\
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 #define DEFINE_KTHREAD_WORKER(worker)					\

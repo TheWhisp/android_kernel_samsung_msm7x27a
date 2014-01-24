@@ -15,4 +15,10 @@
 #define XON	0x11
 #define XOFF	0x13
 #define DC2	0x12
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -4,3 +4,7 @@ vmlinux.*
 zImage
 zImage.tmp
 calc_vmlinuz_load_addr
+<<<<<<< HEAD
+=======
+uImage
+>>>>>>> refs/remotes/origin/master

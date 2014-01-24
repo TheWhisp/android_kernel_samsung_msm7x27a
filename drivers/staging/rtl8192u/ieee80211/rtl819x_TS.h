@@ -28,7 +28,11 @@ typedef struct _TS_COMMON_INFO{
 typedef struct _TX_TS_RECORD{
 	TS_COMMON_INFO		TsCommonInfo;
 	u16				TxCurSeq;
+<<<<<<< HEAD
 	BA_RECORD			TxPendingBARecord;  	// For BA Originator
+=======
+	BA_RECORD			TxPendingBARecord;	// For BA Originator
+>>>>>>> refs/remotes/origin/master
 	BA_RECORD			TxAdmittedBARecord;	// For BA Originator
 //	QOS_DL_RECORD		DLRecord;
 	u8				bAddBaReqInProgress;
@@ -53,4 +57,7 @@ typedef struct _RX_TS_RECORD {
 
 
 #endif
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

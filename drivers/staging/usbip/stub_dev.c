@@ -18,11 +18,23 @@
  */
 
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/kthread.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/file.h>
+#include <linux/kthread.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "usbip_common.h"
 #include "stub.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int stub_probe(struct usb_interface *interface,
 		      const struct usb_device_id *id);
 static void stub_disconnect(struct usb_interface *interface);
@@ -33,6 +45,17 @@ static int stub_post_reset(struct usb_interface *interface);
  * Define device IDs here if you want to explicitly limit exportable devices.
  * In the most cases, wild card matching will be ok because driver binding can
  * be changed dynamically by a userland program.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Define device IDs here if you want to explicitly limit exportable devices.
+ * In most cases, wildcard matching will be okay because driver binding can be
+ * changed dynamically by a userland program.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static struct usb_device_id stub_table[] = {
 #if 0
@@ -56,6 +79,8 @@ static struct usb_device_id stub_table[] = {
 };
 MODULE_DEVICE_TABLE(usb, stub_table);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct usb_driver stub_driver = {
 	.name		= "usbip",
 	.probe		= stub_probe,
@@ -68,9 +93,22 @@ struct usb_driver stub_driver = {
 /*
  * usbip_status shows status of usbip as long as this driver is bound to the
  * target device.
+=======
+/*
+ * usbip_status shows the status of usbip-host as long as this driver is bound
+ * to the target device.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static ssize_t show_status(struct device *dev, struct device_attribute *attr,
 			   char *buf)
+=======
+/*
+ * usbip_status shows the status of usbip-host as long as this driver is bound
+ * to the target device.
+ */
+static ssize_t usbip_status_show(struct device *dev,
+				 struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct stub_device *sdev = dev_get_drvdata(dev);
 	int status;
@@ -80,6 +118,7 @@ static ssize_t show_status(struct device *dev, struct device_attribute *attr,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	spin_lock(&sdev->ud.lock);
 	status = sdev->ud.status;
 	spin_unlock(&sdev->ud.lock);
@@ -87,6 +126,15 @@ static ssize_t show_status(struct device *dev, struct device_attribute *attr,
 	return snprintf(buf, PAGE_SIZE, "%d\n", status);
 }
 static DEVICE_ATTR(usbip_status, S_IRUGO, show_status, NULL);
+=======
+	spin_lock_irq(&sdev->ud.lock);
+	status = sdev->ud.status;
+	spin_unlock_irq(&sdev->ud.lock);
+
+	return snprintf(buf, PAGE_SIZE, "%d\n", status);
+}
+static DEVICE_ATTR_RO(usbip_status);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * usbip_sockfd gets a socket descriptor of an established TCP connection that
@@ -99,6 +147,10 @@ static ssize_t store_sockfd(struct device *dev, struct device_attribute *attr,
 	struct stub_device *sdev = dev_get_drvdata(dev);
 	int sockfd = 0;
 	struct socket *socket;
+<<<<<<< HEAD
+=======
+	ssize_t err = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	if (!sdev) {
 		dev_err(dev, "sdev is null\n");
@@ -110,6 +162,7 @@ static ssize_t store_sockfd(struct device *dev, struct device_attribute *attr,
 	if (sockfd != -1) {
 		dev_info(dev, "stub up\n");
 
+<<<<<<< HEAD
 		spin_lock(&sdev->ud.lock);
 
 		if (sdev->ud.status != SDEV_ST_AVAILABLE) {
@@ -123,11 +176,14 @@ static ssize_t store_sockfd(struct device *dev, struct device_attribute *attr,
 			spin_unlock(&sdev->ud.lock);
 			return -EINVAL;
 		}
+<<<<<<< HEAD
 #if 0
 		setnodelay(socket);
 		setkeepalive(socket);
 		setreuse(socket);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		sdev->ud.tcp_socket = socket;
 
 		spin_unlock(&sdev->ud.lock);
@@ -138,21 +194,61 @@ static ssize_t store_sockfd(struct device *dev, struct device_attribute *attr,
 		spin_lock(&sdev->ud.lock);
 		sdev->ud.status = SDEV_ST_USED;
 		spin_unlock(&sdev->ud.lock);
+=======
+		spin_lock_irq(&sdev->ud.lock);
+
+		if (sdev->ud.status != SDEV_ST_AVAILABLE) {
+			dev_err(dev, "not ready\n");
+			goto err;
+		}
+
+		socket = sockfd_to_socket(sockfd);
+		if (!socket)
+			goto err;
+
+		sdev->ud.tcp_socket = socket;
+
+		spin_unlock_irq(&sdev->ud.lock);
+
+		sdev->ud.tcp_rx = kthread_get_run(stub_rx_loop, &sdev->ud,
+						  "stub_rx");
+		sdev->ud.tcp_tx = kthread_get_run(stub_tx_loop, &sdev->ud,
+						  "stub_tx");
+
+		spin_lock_irq(&sdev->ud.lock);
+		sdev->ud.status = SDEV_ST_USED;
+		spin_unlock_irq(&sdev->ud.lock);
+>>>>>>> refs/remotes/origin/master
 
 	} else {
 		dev_info(dev, "stub down\n");
 
+<<<<<<< HEAD
 		spin_lock(&sdev->ud.lock);
 		if (sdev->ud.status != SDEV_ST_USED) {
 			spin_unlock(&sdev->ud.lock);
 			return -EINVAL;
 		}
 		spin_unlock(&sdev->ud.lock);
+=======
+		spin_lock_irq(&sdev->ud.lock);
+		if (sdev->ud.status != SDEV_ST_USED)
+			goto err;
+
+		spin_unlock_irq(&sdev->ud.lock);
+>>>>>>> refs/remotes/origin/master
 
 		usbip_event_add(&sdev->ud, SDEV_EVENT_DOWN);
 	}
 
 	return count;
+<<<<<<< HEAD
+=======
+
+err:
+	spin_unlock_irq(&sdev->ud.lock);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 static DEVICE_ATTR(usbip_sockfd, S_IWUSR, NULL, store_sockfd);
 
@@ -206,18 +302,44 @@ static void stub_shutdown_connection(struct usbip_device *ud)
 	}
 
 	/* 1. stop threads */
+<<<<<<< HEAD
 	if (ud->tcp_rx && !task_is_dead(ud->tcp_rx))
 		kthread_stop(ud->tcp_rx);
 	if (ud->tcp_tx && !task_is_dead(ud->tcp_tx))
 		kthread_stop(ud->tcp_tx);
 
+<<<<<<< HEAD
 	/* 2. close the socket */
 	/*
 	 * tcp_socket is freed after threads are killed.
 	 * So usbip_xmit do not touch NULL socket.
+=======
+=======
+	if (ud->tcp_rx) {
+		kthread_stop_put(ud->tcp_rx);
+		ud->tcp_rx = NULL;
+	}
+	if (ud->tcp_tx) {
+		kthread_stop_put(ud->tcp_tx);
+		ud->tcp_tx = NULL;
+	}
+
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * 2. close the socket
+	 *
+	 * tcp_socket is freed after threads are killed so that usbip_xmit does
+	 * not touch NULL socket.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	if (ud->tcp_socket) {
 		sock_release(ud->tcp_socket);
+=======
+	 */
+	if (ud->tcp_socket) {
+		fput(ud->tcp_socket->file);
+>>>>>>> refs/remotes/origin/master
 		ud->tcp_socket = NULL;
 	}
 
@@ -234,8 +356,18 @@ static void stub_shutdown_connection(struct usbip_device *ud)
 			list_del(&unlink->list);
 			kfree(unlink);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		list_for_each_entry_safe(unlink, tmp,
 						 &sdev->unlink_free, list) {
+=======
+		list_for_each_entry_safe(unlink, tmp, &sdev->unlink_free,
+					 list) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_for_each_entry_safe(unlink, tmp, &sdev->unlink_free,
+					 list) {
+>>>>>>> refs/remotes/origin/master
 			list_del(&unlink->list);
 			kfree(unlink);
 		}
@@ -254,21 +386,32 @@ static void stub_device_reset(struct usbip_device *ud)
 	ret = usb_lock_device_for_reset(udev, sdev->interface);
 	if (ret < 0) {
 		dev_err(&udev->dev, "lock for reset\n");
+<<<<<<< HEAD
 		spin_lock(&ud->lock);
 		ud->status = SDEV_ST_ERROR;
 		spin_unlock(&ud->lock);
+=======
+		spin_lock_irq(&ud->lock);
+		ud->status = SDEV_ST_ERROR;
+		spin_unlock_irq(&ud->lock);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	/* try to reset the device */
 	ret = usb_reset_device(udev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_unlock_device(udev);
 
 	spin_lock(&ud->lock);
 	if (ret) {
 		dev_err(&udev->dev, "device reset\n");
 		ud->status = SDEV_ST_ERROR;
+<<<<<<< HEAD
 
 	} else {
 		dev_info(&udev->dev, "device reset\n");
@@ -278,13 +421,38 @@ static void stub_device_reset(struct usbip_device *ud)
 	spin_unlock(&ud->lock);
 
 	return;
+=======
+=======
+	usb_unlock_device(udev);
+
+	spin_lock_irq(&ud->lock);
+	if (ret) {
+		dev_err(&udev->dev, "device reset\n");
+		ud->status = SDEV_ST_ERROR;
+>>>>>>> refs/remotes/origin/master
+	} else {
+		dev_info(&udev->dev, "device reset\n");
+		ud->status = SDEV_ST_AVAILABLE;
+	}
+<<<<<<< HEAD
+	spin_unlock(&ud->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irq(&ud->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void stub_device_unusable(struct usbip_device *ud)
 {
+<<<<<<< HEAD
 	spin_lock(&ud->lock);
 	ud->status = SDEV_ST_ERROR;
 	spin_unlock(&ud->lock);
+=======
+	spin_lock_irq(&ud->lock);
+	ud->status = SDEV_ST_ERROR;
+	spin_unlock_irq(&ud->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -304,10 +472,15 @@ static struct stub_device *stub_device_alloc(struct usb_device *udev,
 
 	/* yes, it's a new device */
 	sdev = kzalloc(sizeof(struct stub_device), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!sdev) {
 		dev_err(&interface->dev, "no memory for stub_device\n");
 		return NULL;
 	}
+=======
+	if (!sdev)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	sdev->interface = usb_get_intf(interface);
 	sdev->udev = usb_get_dev(udev);
@@ -320,7 +493,13 @@ static struct stub_device *stub_device_alloc(struct usb_device *udev,
 	sdev->devid		= (busnum << 16) | devnum;
 	sdev->ud.side		= USBIP_STUB;
 	sdev->ud.status		= SDEV_ST_AVAILABLE;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* sdev->ud.lock = SPIN_LOCK_UNLOCKED; */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&sdev->ud.lock);
 	sdev->ud.tcp_socket	= NULL;
 
@@ -329,7 +508,13 @@ static struct stub_device *stub_device_alloc(struct usb_device *udev,
 	INIT_LIST_HEAD(&sdev->priv_free);
 	INIT_LIST_HEAD(&sdev->unlink_free);
 	INIT_LIST_HEAD(&sdev->unlink_tx);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* sdev->priv_lock = SPIN_LOCK_UNLOCKED; */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&sdev->priv_lock);
 
 	init_waitqueue_head(&sdev->tx_waitq);
@@ -345,6 +530,7 @@ static struct stub_device *stub_device_alloc(struct usb_device *udev,
 	return sdev;
 }
 
+<<<<<<< HEAD
 static int stub_device_free(struct stub_device *sdev)
 {
 	if (!sdev)
@@ -354,6 +540,11 @@ static int stub_device_free(struct stub_device *sdev)
 	pr_debug("kfree udev ok\n");
 
 	return 0;
+=======
+static void stub_device_free(struct stub_device *sdev)
+{
+	kfree(sdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -379,10 +570,22 @@ static int stub_probe(struct usb_interface *interface,
 
 	/* check we should claim or not by busid_table */
 	busid_priv = get_busid_priv(udev_busid);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!busid_priv  || (busid_priv->status == STUB_BUSID_REMOV) ||
+=======
+	if (!busid_priv || (busid_priv->status == STUB_BUSID_REMOV) ||
+>>>>>>> refs/remotes/origin/cm-10.0
 	    (busid_priv->status == STUB_BUSID_OTHER)) {
 		dev_info(&interface->dev, "%s is not in match_busid table... "
 			 "skip!\n", udev_busid);
+=======
+	if (!busid_priv || (busid_priv->status == STUB_BUSID_REMOV) ||
+	    (busid_priv->status == STUB_BUSID_OTHER)) {
+		dev_info(&interface->dev,
+			"%s is not in match_busid table... skip!\n",
+			udev_busid);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Return value should be ENODEV or ENOXIO to continue trying
@@ -399,8 +602,15 @@ static int stub_probe(struct usb_interface *interface,
 	}
 
 	if (!strcmp(udev->bus->bus_name, "vhci_hcd")) {
+<<<<<<< HEAD
 		dev_dbg(&udev->dev, "%s is attached on vhci_hcd... skip!\n",
 			 udev_busid);
+=======
+		dev_dbg(&udev->dev,
+			"%s is attached on vhci_hcd... skip!\n",
+			udev_busid);
+
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -410,10 +620,17 @@ static int stub_probe(struct usb_interface *interface,
 			return -ENODEV;
 
 		busid_priv->interf_count++;
+<<<<<<< HEAD
 		dev_info(&interface->dev, "usbip-host: register new interface "
 			 "(bus %u dev %u ifn %u)\n",
 			 udev->bus->busnum, udev->devnum,
 			 interface->cur_altsetting->desc.bInterfaceNumber);
+=======
+		dev_info(&interface->dev,
+			"usbip-host: register new interface (bus %u dev %u ifn %u)\n",
+			udev->bus->busnum, udev->devnum,
+			interface->cur_altsetting->desc.bInterfaceNumber);
+>>>>>>> refs/remotes/origin/master
 
 		/* set private data to usb_interface */
 		usb_set_intfdata(interface, sdev);
@@ -424,7 +641,13 @@ static int stub_probe(struct usb_interface *interface,
 				udev_busid);
 			usb_set_intfdata(interface, NULL);
 			busid_priv->interf_count--;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return err;
 		}
 
@@ -432,14 +655,29 @@ static int stub_probe(struct usb_interface *interface,
 		return 0;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* ok. this is my device. */
+=======
+	/* ok, this is my device */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* ok, this is my device */
+>>>>>>> refs/remotes/origin/master
 	sdev = stub_device_alloc(udev, interface);
 	if (!sdev)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	dev_info(&interface->dev, "usbip-host: register new device "
 		 "(bus %u dev %u ifn %u)\n", udev->bus->busnum, udev->devnum,
 		 interface->cur_altsetting->desc.bInterfaceNumber);
+=======
+	dev_info(&interface->dev,
+		"usbip-host: register new device (bus %u dev %u ifn %u)\n",
+		udev->bus->busnum, udev->devnum,
+		interface->cur_altsetting->desc.bInterfaceNumber);
+>>>>>>> refs/remotes/origin/master
 
 	busid_priv->interf_count = 0;
 	busid_priv->shutdown_busid = 0;
@@ -447,7 +685,13 @@ static int stub_probe(struct usb_interface *interface,
 	/* set private data to usb_interface */
 	usb_set_intfdata(interface, sdev);
 	busid_priv->interf_count++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	busid_priv->sdev = sdev;
 
 	err = stub_add_files(&interface->dev);
@@ -455,9 +699,19 @@ static int stub_probe(struct usb_interface *interface,
 		dev_err(&interface->dev, "stub_add_files for %s\n", udev_busid);
 		usb_set_intfdata(interface, NULL);
 		usb_put_intf(interface);
+<<<<<<< HEAD
 
 		busid_priv->interf_count = 0;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_put_dev(udev);
+		kthread_stop_put(sdev->ud.eh);
+
+		busid_priv->interf_count = 0;
+>>>>>>> refs/remotes/origin/master
 		busid_priv->sdev = NULL;
 		stub_device_free(sdev);
 		return err;
@@ -473,7 +727,11 @@ static void shutdown_busid(struct bus_id_priv *busid_priv)
 		busid_priv->shutdown_busid = 1;
 		usbip_event_add(&busid_priv->sdev->ud, SDEV_EVENT_REMOVED);
 
+<<<<<<< HEAD
 		/* 2. wait for the stop of the event handler */
+=======
+		/* wait for the stop of the event handler */
+>>>>>>> refs/remotes/origin/master
 		usbip_stop_eh(&busid_priv->sdev->ud);
 	}
 }
@@ -501,19 +759,30 @@ static void stub_disconnect(struct usb_interface *interface)
 	/* get stub_device */
 	if (!sdev) {
 		dev_err(&interface->dev, "could not get device");
+<<<<<<< HEAD
 		/* BUG(); */
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	usb_set_intfdata(interface, NULL);
 
 	/*
+<<<<<<< HEAD
 	 * NOTE:
 	 * rx/tx threads are invoked for each usb_device.
 	 */
 	stub_remove_files(&interface->dev);
 
 	/*If usb reset called from event handler*/
+=======
+	 * NOTE: rx/tx threads are invoked for each usb_device.
+	 */
+	stub_remove_files(&interface->dev);
+
+	/* If usb reset is called from event handler */
+>>>>>>> refs/remotes/origin/master
 	if (busid_priv->sdev->ud.eh == current) {
 		busid_priv->interf_count--;
 		return;
@@ -528,13 +797,21 @@ static void stub_disconnect(struct usb_interface *interface)
 
 	busid_priv->interf_count = 0;
 
+<<<<<<< HEAD
 	/* 1. shutdown the current connection */
+=======
+	/* shutdown the current connection */
+>>>>>>> refs/remotes/origin/master
 	shutdown_busid(busid_priv);
 
 	usb_put_dev(sdev->udev);
 	usb_put_intf(interface);
 
+<<<<<<< HEAD
 	/* 3. free sdev */
+=======
+	/* free sdev */
+>>>>>>> refs/remotes/origin/master
 	busid_priv->sdev = NULL;
 	stub_device_free(sdev);
 
@@ -546,19 +823,56 @@ static void stub_disconnect(struct usb_interface *interface)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* 
  * Presence of pre_reset and post_reset prevents the driver from being unbound
  * when the device is being reset
  */
  
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Presence of pre_reset and post_reset prevents the driver from being unbound
+ * when the device is being reset
+ */
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 int stub_pre_reset(struct usb_interface *interface)
+=======
+static int stub_pre_reset(struct usb_interface *interface)
+>>>>>>> refs/remotes/origin/master
 {
 	dev_dbg(&interface->dev, "pre_reset\n");
 	return 0;
 }
 
+<<<<<<< HEAD
 int stub_post_reset(struct usb_interface *interface)
+=======
+static int stub_post_reset(struct usb_interface *interface)
+>>>>>>> refs/remotes/origin/master
 {
 	dev_dbg(&interface->dev, "post_reset\n");
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+struct usb_driver stub_driver = {
+	.name		= "usbip-host",
+	.probe		= stub_probe,
+	.disconnect	= stub_disconnect,
+	.id_table	= stub_table,
+	.pre_reset	= stub_pre_reset,
+	.post_reset	= stub_post_reset,
+};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

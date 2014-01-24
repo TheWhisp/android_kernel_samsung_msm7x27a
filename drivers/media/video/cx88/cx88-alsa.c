@@ -96,7 +96,11 @@ typedef struct cx88_audio_dev snd_cx88_card_t;
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static const char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 1};
+=======
+static bool enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 1};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param_array(enable, bool, NULL, 0444);
 MODULE_PARM_DESC(enable, "Enable cx88x soundcard. default enabled.");
@@ -113,6 +117,11 @@ MODULE_DESCRIPTION("ALSA driver module for cx2388x based TV cards");
 MODULE_AUTHOR("Ricardo Cerqueira");
 MODULE_AUTHOR("Mauro Carvalho Chehab <mchehab@infradead.org>");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_VERSION(CX88_VERSION);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_SUPPORTED_DEVICE("{{Conexant,23881},"
 			"{{Conexant,23882},"
 			"{{Conexant,23883}");
@@ -973,6 +982,7 @@ static struct pci_driver cx88_audio_pci_driver = {
  */
 static int __init cx88_audio_init(void)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO "cx2388x alsa driver version %d.%d.%d loaded\n",
 	       (CX88_VERSION_CODE >> 16) & 0xff,
 	       (CX88_VERSION_CODE >>  8) & 0xff,
@@ -981,6 +991,10 @@ static int __init cx88_audio_init(void)
 	printk(KERN_INFO "cx2388x: snapshot date %04d-%02d-%02d\n",
 	       SNAPSHOT/10000, (SNAPSHOT/100)%100, SNAPSHOT%100);
 #endif
+=======
+	printk(KERN_INFO "cx2388x alsa driver version %s loaded\n",
+	       CX88_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return pci_register_driver(&cx88_audio_pci_driver);
 }
 
@@ -994,6 +1008,7 @@ static void __exit cx88_audio_fini(void)
 
 module_init(cx88_audio_init);
 module_exit(cx88_audio_fini);
+<<<<<<< HEAD
 
 /* ----------------------------------------------------------- */
 /*
@@ -1001,3 +1016,5 @@ module_exit(cx88_audio_fini);
  * c-basic-offset: 8
  * End:
  */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

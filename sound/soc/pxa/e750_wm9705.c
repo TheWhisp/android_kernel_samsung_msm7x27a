@@ -90,8 +90,14 @@ static int e750_ac97_init(struct snd_soc_pcm_runtime *rtd)
 
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -118,10 +124,20 @@ static struct snd_soc_dai_link e750_dai[] = {
 
 static struct snd_soc_card e750 = {
 	.name = "Toshiba e750",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = e750_dai,
 	.num_links = ARRAY_SIZE(e750_dai),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device *e750_snd_device;
 
 static int __init e750_init(void)
@@ -178,8 +194,83 @@ static void __exit e750_exit(void)
 
 module_init(e750_init);
 module_exit(e750_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct gpio e750_audio_gpios[] = {
+	{ GPIO_E750_HP_AMP_OFF, GPIOF_OUT_INIT_HIGH, "Headphone amp" },
+	{ GPIO_E750_SPK_AMP_OFF, GPIOF_OUT_INIT_HIGH, "Speaker amp" },
+};
+
+<<<<<<< HEAD
+static int __devinit e750_probe(struct platform_device *pdev)
+=======
+static int e750_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
+{
+	struct snd_soc_card *card = &e750;
+	int ret;
+
+	ret = gpio_request_array(e750_audio_gpios,
+				 ARRAY_SIZE(e750_audio_gpios));
+	if (ret)
+		return ret;
+
+	card->dev = &pdev->dev;
+
+	ret = snd_soc_register_card(card);
+	if (ret) {
+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+			ret);
+		gpio_free_array(e750_audio_gpios, ARRAY_SIZE(e750_audio_gpios));
+	}
+	return ret;
+}
+
+<<<<<<< HEAD
+static int __devexit e750_remove(struct platform_device *pdev)
+=======
+static int e750_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
+{
+	struct snd_soc_card *card = platform_get_drvdata(pdev);
+
+	gpio_free_array(e750_audio_gpios, ARRAY_SIZE(e750_audio_gpios));
+	snd_soc_unregister_card(card);
+	return 0;
+}
+
+static struct platform_driver e750_driver = {
+	.driver		= {
+		.name	= "e750-audio",
+		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+	},
+	.probe		= e750_probe,
+	.remove		= __devexit_p(e750_remove),
+};
+
+module_platform_driver(e750_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm     = &snd_soc_pm_ops,
+	},
+	.probe		= e750_probe,
+	.remove		= e750_remove,
+};
+
+module_platform_driver(e750_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Ian Molton <spyro@f2s.com>");
 MODULE_DESCRIPTION("ALSA SoC driver for e750");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:e750-audio");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:e750-audio");
+>>>>>>> refs/remotes/origin/master

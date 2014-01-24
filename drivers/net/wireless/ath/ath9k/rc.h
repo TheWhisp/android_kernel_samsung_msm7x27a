@@ -25,8 +25,14 @@ struct ath_softc;
 
 #define ATH_RATE_MAX     30
 #define RATE_TABLE_SIZE  72
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_TX_RATE_PHY  48
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define RC_INVALID	0x0000
 #define RC_LEGACY	0x0001
@@ -162,10 +168,13 @@ struct ath_rate_table {
 		u32 user_ratekbps;
 		u8 ratecode;
 		u8 dot11rate;
+<<<<<<< HEAD
 		u8 ctrl_rate;
 		u8 cw40index;
 		u8 sgi_index;
 		u8 ht_index;
+=======
+>>>>>>> refs/remotes/origin/master
 	} info[RATE_TABLE_SIZE];
 	u32 probe_interval;
 	u8 initial_ratemax;
@@ -217,10 +226,13 @@ struct ath_rate_priv {
 	struct ath_rateset neg_ht_rates;
 	const struct ath_rate_table *rate_table;
 
+<<<<<<< HEAD
 	struct dentry *debugfs_rcstats;
 	struct ath_rc_stats rcstats[RATE_TABLE_SIZE];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum ath9k_internal_frame_type {
 	ATH9K_IFT_NOT_INTERNAL,
 	ATH9K_IFT_PAUSE,
@@ -228,6 +240,35 @@ enum ath9k_internal_frame_type {
 };
 
 #ifdef CONFIG_ATH9K_RATE_CONTROL
+=======
+#ifdef CONFIG_ATH9K_LEGACY_RATE_CONTROL
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_MAC80211_DEBUGFS) && defined(CONFIG_ATH9K_DEBUGFS)
+	struct dentry *debugfs_rcstats;
+	struct ath_rc_stats rcstats[RATE_TABLE_SIZE];
+#endif
+};
+
+#if defined(CONFIG_MAC80211_DEBUGFS) && defined(CONFIG_ATH9K_DEBUGFS)
+void ath_debug_stat_rc(struct ath_rate_priv *rc, int final_rate);
+void ath_debug_stat_retries(struct ath_rate_priv *rc, int rix,
+			    int xretries, int retries, u8 per);
+#else
+static inline void ath_debug_stat_rc(struct ath_rate_priv *rc, int final_rate)
+{
+}
+static inline void ath_debug_stat_retries(struct ath_rate_priv *rc, int rix,
+					  int xretries, int retries, u8 per)
+{
+}
+#endif
+
+#ifdef CONFIG_ATH9K_LEGACY_RATE_CONTROL
+>>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_ATH9K_LEGACY_RATE_CONTROL
+>>>>>>> refs/remotes/origin/cm-11.0
 int ath_rate_control_register(void);
 void ath_rate_control_unregister(void);
 #else

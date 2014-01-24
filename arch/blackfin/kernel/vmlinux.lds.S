@@ -155,6 +155,14 @@ SECTIONS
 		SECURITY_INITCALL
 		INIT_RAM_FS
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		. = ALIGN(PAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		. = ALIGN(PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 		___per_cpu_load = .;
 		PERCPU_INPUT(32)
 

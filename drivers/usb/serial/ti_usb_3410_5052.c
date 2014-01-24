@@ -21,7 +21,10 @@
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/firmware.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -40,14 +43,20 @@
 
 /* Defines */
 
+<<<<<<< HEAD
 #define TI_DRIVER_VERSION	"v0.10"
+=======
+>>>>>>> refs/remotes/origin/master
 #define TI_DRIVER_AUTHOR	"Al Borchers <alborchers@steinerpoint.com>"
 #define TI_DRIVER_DESC		"TI USB 3410/5052 Serial Driver"
 
 #define TI_FIRMWARE_BUF_SIZE	16284
 
+<<<<<<< HEAD
 #define TI_WRITE_BUF_SIZE	1024
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define TI_TRANSFER_TIMEOUT	2
 
 #define TI_DEFAULT_CLOSING_WAIT	4000		/* in .01 secs */
@@ -68,21 +77,30 @@
 struct ti_port {
 	int			tp_is_open;
 	__u8			tp_msr;
+<<<<<<< HEAD
 	__u8			tp_lsr;
+=======
+>>>>>>> refs/remotes/origin/master
 	__u8			tp_shadow_mcr;
 	__u8			tp_uart_mode;	/* 232 or 485 modes */
 	unsigned int		tp_uart_base_addr;
 	int			tp_flags;
+<<<<<<< HEAD
 	int			tp_closing_wait;/* in .01 secs */
 	struct async_icount	tp_icount;
 	wait_queue_head_t	tp_msr_wait;	/* wait for msr change */
 	wait_queue_head_t	tp_write_wait;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ti_device	*tp_tdev;
 	struct usb_serial_port	*tp_port;
 	spinlock_t		tp_lock;
 	int			tp_read_urb_state;
 	int			tp_write_urb_in_use;
+<<<<<<< HEAD
 	struct kfifo		write_fifo;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ti_device {
@@ -98,18 +116,30 @@ struct ti_device {
 
 static int ti_startup(struct usb_serial *serial);
 static void ti_release(struct usb_serial *serial);
+<<<<<<< HEAD
+=======
+static int ti_port_probe(struct usb_serial_port *port);
+static int ti_port_remove(struct usb_serial_port *port);
+>>>>>>> refs/remotes/origin/master
 static int ti_open(struct tty_struct *tty, struct usb_serial_port *port);
 static void ti_close(struct usb_serial_port *port);
 static int ti_write(struct tty_struct *tty, struct usb_serial_port *port,
 		const unsigned char *data, int count);
 static int ti_write_room(struct tty_struct *tty);
 static int ti_chars_in_buffer(struct tty_struct *tty);
+<<<<<<< HEAD
+=======
+static bool ti_tx_empty(struct usb_serial_port *port);
+>>>>>>> refs/remotes/origin/master
 static void ti_throttle(struct tty_struct *tty);
 static void ti_unthrottle(struct tty_struct *tty);
 static int ti_ioctl(struct tty_struct *tty,
 		unsigned int cmd, unsigned long arg);
+<<<<<<< HEAD
 static int ti_get_icount(struct tty_struct *tty,
 		struct serial_icounter_struct *icount);
+=======
+>>>>>>> refs/remotes/origin/master
 static void ti_set_termios(struct tty_struct *tty,
 		struct usb_serial_port *port, struct ktermios *old_termios);
 static int ti_tiocmget(struct tty_struct *tty);
@@ -120,19 +150,30 @@ static void ti_interrupt_callback(struct urb *urb);
 static void ti_bulk_in_callback(struct urb *urb);
 static void ti_bulk_out_callback(struct urb *urb);
 
+<<<<<<< HEAD
 static void ti_recv(struct device *dev, struct tty_struct *tty,
 	unsigned char *data, int length);
 static void ti_send(struct ti_port *tport);
 static int ti_set_mcr(struct ti_port *tport, unsigned int mcr);
 static int ti_get_lsr(struct ti_port *tport);
+=======
+static void ti_recv(struct usb_serial_port *port, unsigned char *data,
+		int length);
+static void ti_send(struct ti_port *tport);
+static int ti_set_mcr(struct ti_port *tport, unsigned int mcr);
+static int ti_get_lsr(struct ti_port *tport, u8 *lsr);
+>>>>>>> refs/remotes/origin/master
 static int ti_get_serial_info(struct ti_port *tport,
 	struct serial_struct __user *ret_arg);
 static int ti_set_serial_info(struct tty_struct *tty, struct ti_port *tport,
 	struct serial_struct __user *new_arg);
 static void ti_handle_new_msr(struct ti_port *tport, __u8 msr);
 
+<<<<<<< HEAD
 static void ti_drain(struct ti_port *tport, unsigned long timeout, int flush);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void ti_stop_read(struct ti_port *tport, struct tty_struct *tty);
 static int ti_restart_read(struct ti_port *tport, struct tty_struct *tty);
 
@@ -141,8 +182,13 @@ static int ti_command_out_sync(struct ti_device *tdev, __u8 command,
 static int ti_command_in_sync(struct ti_device *tdev, __u8 command,
 	__u16 moduleid, __u16 value, __u8 *data, int size);
 
+<<<<<<< HEAD
 static int ti_write_byte(struct ti_device *tdev, unsigned long addr,
 	__u8 mask, __u8 byte);
+=======
+static int ti_write_byte(struct usb_serial_port *port, struct ti_device *tdev,
+			 unsigned long addr, __u8 mask, __u8 byte);
+>>>>>>> refs/remotes/origin/master
 
 static int ti_download_firmware(struct ti_device *tdev);
 
@@ -150,7 +196,12 @@ static int ti_download_firmware(struct ti_device *tdev);
 /* Data */
 
 /* module parameters */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 static int closing_wait = TI_DEFAULT_CLOSING_WAIT;
 static ushort vendor_3410[TI_EXTRA_VID_PID_COUNT];
 static unsigned int vendor_3410_count;
@@ -165,7 +216,17 @@ static unsigned int product_5052_count;
 /* the array dimension is the number of default entries plus */
 /* TI_EXTRA_VID_PID_COUNT user defined entries plus 1 terminating */
 /* null entry */
+<<<<<<< HEAD
 static struct usb_device_id ti_id_table_3410[15+TI_EXTRA_VID_PID_COUNT+1] = {
+=======
+static struct usb_device_id ti_id_table_3410[14+TI_EXTRA_VID_PID_COUNT+1] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int closing_wait = TI_DEFAULT_CLOSING_WAIT;
+
+/* supported devices */
+static const struct usb_device_id ti_id_table_3410[] = {
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(TI_VENDOR_ID, TI_3410_PRODUCT_ID) },
 	{ USB_DEVICE(TI_VENDOR_ID, TI_3410_EZ430_ID) },
 	{ USB_DEVICE(MTS_VENDOR_ID, MTS_GSM_NO_FW_PRODUCT_ID) },
@@ -182,16 +243,37 @@ static struct usb_device_id ti_id_table_3410[15+TI_EXTRA_VID_PID_COUNT+1] = {
 	{ USB_DEVICE(ABBOTT_VENDOR_ID, ABBOTT_STEREO_PLUG_ID) },
 	{ USB_DEVICE(ABBOTT_VENDOR_ID, ABBOTT_STRIP_PORT_ID) },
 	{ USB_DEVICE(TI_VENDOR_ID, FRI2_PRODUCT_ID) },
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct usb_device_id ti_id_table_5052[5+TI_EXTRA_VID_PID_COUNT+1] = {
+=======
+	{ }	/* terminator */
+};
+
+static const struct usb_device_id ti_id_table_5052[] = {
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(TI_VENDOR_ID, TI_5052_BOOT_PRODUCT_ID) },
 	{ USB_DEVICE(TI_VENDOR_ID, TI_5152_BOOT_PRODUCT_ID) },
 	{ USB_DEVICE(TI_VENDOR_ID, TI_5052_EEPROM_PRODUCT_ID) },
 	{ USB_DEVICE(TI_VENDOR_ID, TI_5052_FIRMWARE_PRODUCT_ID) },
+<<<<<<< HEAD
 };
 
+<<<<<<< HEAD
 static struct usb_device_id ti_id_table_combined[19+2*TI_EXTRA_VID_PID_COUNT+1] = {
+=======
+static struct usb_device_id ti_id_table_combined[18+2*TI_EXTRA_VID_PID_COUNT+1] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ }	/* terminator */
+};
+
+static const struct usb_device_id ti_id_table_combined[] = {
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(TI_VENDOR_ID, TI_3410_PRODUCT_ID) },
 	{ USB_DEVICE(TI_VENDOR_ID, TI_3410_EZ430_ID) },
 	{ USB_DEVICE(MTS_VENDOR_ID, MTS_GSM_NO_FW_PRODUCT_ID) },
@@ -210,6 +292,15 @@ static struct usb_device_id ti_id_table_combined[19+2*TI_EXTRA_VID_PID_COUNT+1] 
 	{ USB_DEVICE(IBM_VENDOR_ID, IBM_454B_PRODUCT_ID) },
 	{ USB_DEVICE(IBM_VENDOR_ID, IBM_454C_PRODUCT_ID) },
 	{ USB_DEVICE(ABBOTT_VENDOR_ID, ABBOTT_PRODUCT_ID) },
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	{ USB_DEVICE(ABBOTT_VENDOR_ID, ABBOTT_STRIP_PORT_ID) },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(ABBOTT_VENDOR_ID, ABBOTT_STRIP_PORT_ID) },
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ USB_DEVICE(TI_VENDOR_ID, FRI2_PRODUCT_ID) },
 	{ }
 };
@@ -219,7 +310,15 @@ static struct usb_driver ti_usb_driver = {
 	.probe			= usb_serial_probe,
 	.disconnect		= usb_serial_disconnect,
 	.id_table		= ti_id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(ABBOTT_VENDOR_ID, ABBOTT_STRIP_PORT_ID) },
+	{ USB_DEVICE(TI_VENDOR_ID, FRI2_PRODUCT_ID) },
+	{ }	/* terminator */
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_serial_driver ti_1port_device = {
@@ -228,23 +327,43 @@ static struct usb_serial_driver ti_1port_device = {
 		.name		= "ti_usb_3410_5052_1",
 	},
 	.description		= "TI USB 3410 1 port adapter",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver		= &ti_usb_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table		= ti_id_table_3410,
 	.num_ports		= 1,
 	.attach			= ti_startup,
 	.release		= ti_release,
+<<<<<<< HEAD
+=======
+	.port_probe		= ti_port_probe,
+	.port_remove		= ti_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.open			= ti_open,
 	.close			= ti_close,
 	.write			= ti_write,
 	.write_room		= ti_write_room,
 	.chars_in_buffer	= ti_chars_in_buffer,
+<<<<<<< HEAD
+=======
+	.tx_empty		= ti_tx_empty,
+>>>>>>> refs/remotes/origin/master
 	.throttle		= ti_throttle,
 	.unthrottle		= ti_unthrottle,
 	.ioctl			= ti_ioctl,
 	.set_termios		= ti_set_termios,
 	.tiocmget		= ti_tiocmget,
 	.tiocmset		= ti_tiocmset,
+<<<<<<< HEAD
 	.get_icount		= ti_get_icount,
+=======
+	.tiocmiwait		= usb_serial_generic_tiocmiwait,
+	.get_icount		= usb_serial_generic_get_icount,
+>>>>>>> refs/remotes/origin/master
 	.break_ctl		= ti_break,
 	.read_int_callback	= ti_interrupt_callback,
 	.read_bulk_callback	= ti_bulk_in_callback,
@@ -257,35 +376,70 @@ static struct usb_serial_driver ti_2port_device = {
 		.name		= "ti_usb_3410_5052_2",
 	},
 	.description		= "TI USB 5052 2 port adapter",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver		= &ti_usb_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table		= ti_id_table_5052,
 	.num_ports		= 2,
 	.attach			= ti_startup,
 	.release		= ti_release,
+<<<<<<< HEAD
+=======
+	.port_probe		= ti_port_probe,
+	.port_remove		= ti_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.open			= ti_open,
 	.close			= ti_close,
 	.write			= ti_write,
 	.write_room		= ti_write_room,
 	.chars_in_buffer	= ti_chars_in_buffer,
+<<<<<<< HEAD
+=======
+	.tx_empty		= ti_tx_empty,
+>>>>>>> refs/remotes/origin/master
 	.throttle		= ti_throttle,
 	.unthrottle		= ti_unthrottle,
 	.ioctl			= ti_ioctl,
 	.set_termios		= ti_set_termios,
 	.tiocmget		= ti_tiocmget,
 	.tiocmset		= ti_tiocmset,
+<<<<<<< HEAD
 	.get_icount		= ti_get_icount,
+=======
+	.tiocmiwait		= usb_serial_generic_tiocmiwait,
+	.get_icount		= usb_serial_generic_get_icount,
+>>>>>>> refs/remotes/origin/master
 	.break_ctl		= ti_break,
 	.read_int_callback	= ti_interrupt_callback,
 	.read_bulk_callback	= ti_bulk_in_callback,
 	.write_bulk_callback	= ti_bulk_out_callback,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&ti_1port_device, &ti_2port_device, NULL
+};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&ti_1port_device, &ti_2port_device, NULL
+};
+>>>>>>> refs/remotes/origin/master
 
 /* Module */
 
 MODULE_AUTHOR(TI_DRIVER_AUTHOR);
 MODULE_DESCRIPTION(TI_DRIVER_DESC);
+<<<<<<< HEAD
 MODULE_VERSION(TI_DRIVER_VERSION);
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 
 MODULE_FIRMWARE("ti_3410.fw");
@@ -296,13 +450,17 @@ MODULE_FIRMWARE("mts_edge.fw");
 MODULE_FIRMWARE("mts_mt9234mu.fw");
 MODULE_FIRMWARE("mts_mt9234zba.fw");
 
+<<<<<<< HEAD
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Enable debugging, 0=no, 1=yes");
 
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(closing_wait, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(closing_wait,
     "Maximum wait for data to drain in close, in .01 secs, default is 4000");
 
+<<<<<<< HEAD
 module_param_array(vendor_3410, ushort, &vendor_3410_count, S_IRUGO);
 MODULE_PARM_DESC(vendor_3410,
 		"Vendor ids for 3410 based devices, 1-5 short integers");
@@ -347,6 +505,7 @@ static int __init ti_init(void)
 		ti_id_table_combined[c].match_flags = USB_DEVICE_ID_MATCH_DEVICE;
 	}
 
+<<<<<<< HEAD
 	ret = usb_serial_register(&ti_1port_device);
 	if (ret)
 		goto failed_1port;
@@ -368,15 +527,25 @@ failed_usb:
 failed_2port:
 	usb_serial_deregister(&ti_1port_device);
 failed_1port:
+=======
+	ret = usb_serial_register_drivers(&ti_usb_driver, serial_drivers);
+	if (ret == 0)
+		printk(KERN_INFO KBUILD_MODNAME ": " TI_DRIVER_VERSION ":"
+			       TI_DRIVER_DESC "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 
 static void __exit ti_exit(void)
 {
+<<<<<<< HEAD
 	usb_deregister(&ti_usb_driver);
 	usb_serial_deregister(&ti_1port_device);
 	usb_serial_deregister(&ti_2port_device);
+=======
+	usb_serial_deregister_drivers(&ti_usb_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -404,6 +573,31 @@ static int ti_startup(struct usb_serial *serial)
 		dev_err(&dev->dev, "%s - out of memory\n", __func__);
 		return -ENOMEM;
 	}
+=======
+MODULE_DEVICE_TABLE(usb, ti_id_table_combined);
+
+module_usb_serial_driver(serial_drivers, ti_id_table_combined);
+
+/* Functions */
+
+static int ti_startup(struct usb_serial *serial)
+{
+	struct ti_device *tdev;
+	struct usb_device *dev = serial->dev;
+	int status;
+
+	dev_dbg(&dev->dev,
+		"%s - product 0x%4X, num configurations %d, configuration value %d",
+		__func__, le16_to_cpu(dev->descriptor.idProduct),
+		dev->descriptor.bNumConfigurations,
+		dev->actconfig->desc.bConfigurationValue);
+
+	/* create device structure */
+	tdev = kzalloc(sizeof(struct ti_device), GFP_KERNEL);
+	if (!tdev)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&tdev->td_open_close_lock);
 	tdev->td_serial = serial;
 	usb_set_serial_data(serial, tdev);
@@ -411,12 +605,23 @@ static int ti_startup(struct usb_serial *serial)
 	/* determine device type */
 	if (serial->type == &ti_1port_device)
 		tdev->td_is_3410 = 1;
+<<<<<<< HEAD
 	dbg("%s - device type is %s", __func__,
 				tdev->td_is_3410 ? "3410" : "5052");
 
 	/* if we have only 1 configuration, download firmware */
 	if (dev->descriptor.bNumConfigurations == 1) {
 		if ((status = ti_download_firmware(tdev)) != 0)
+=======
+	dev_dbg(&dev->dev, "%s - device type is %s\n", __func__,
+		tdev->td_is_3410 ? "3410" : "5052");
+
+	/* if we have only 1 configuration, download firmware */
+	if (dev->descriptor.bNumConfigurations == 1) {
+		status = ti_download_firmware(tdev);
+
+		if (status != 0)
+>>>>>>> refs/remotes/origin/master
 			goto free_tdev;
 
 		/* 3410 must be reset, 5052 resets itself */
@@ -436,6 +641,7 @@ static int ti_startup(struct usb_serial *serial)
 		goto free_tdev;
 	}
 
+<<<<<<< HEAD
 	/* set up port structures */
 	for (i = 0; i < serial->num_ports; ++i) {
 		tport = kzalloc(sizeof(struct ti_port), GFP_KERNEL);
@@ -472,6 +678,10 @@ free_tports:
 		kfree(tport);
 		usb_set_serial_port_data(serial->port[i], NULL);
 	}
+=======
+	return 0;
+
+>>>>>>> refs/remotes/origin/master
 free_tdev:
 	kfree(tdev);
 	usb_set_serial_data(serial, NULL);
@@ -481,6 +691,7 @@ free_tdev:
 
 static void ti_release(struct usb_serial *serial)
 {
+<<<<<<< HEAD
 	int i;
 	struct ti_device *tdev = usb_get_serial_data(serial);
 	struct ti_port *tport;
@@ -498,6 +709,47 @@ static void ti_release(struct usb_serial *serial)
 	kfree(tdev);
 }
 
+=======
+	struct ti_device *tdev = usb_get_serial_data(serial);
+
+	kfree(tdev);
+}
+
+static int ti_port_probe(struct usb_serial_port *port)
+{
+	struct ti_port *tport;
+
+	tport = kzalloc(sizeof(*tport), GFP_KERNEL);
+	if (!tport)
+		return -ENOMEM;
+
+	spin_lock_init(&tport->tp_lock);
+	if (port == port->serial->port[0])
+		tport->tp_uart_base_addr = TI_UART1_BASE_ADDR;
+	else
+		tport->tp_uart_base_addr = TI_UART2_BASE_ADDR;
+	port->port.closing_wait = msecs_to_jiffies(10 * closing_wait);
+	tport->tp_port = port;
+	tport->tp_tdev = usb_get_serial_data(port->serial);
+	tport->tp_uart_mode = 0;	/* default is RS232 */
+
+	usb_set_serial_port_data(port, tport);
+
+	port->port.drain_delay = 3;
+
+	return 0;
+}
+
+static int ti_port_remove(struct usb_serial_port *port)
+{
+	struct ti_port *tport;
+
+	tport = usb_get_serial_port_data(port);
+	kfree(tport);
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 static int ti_open(struct tty_struct *tty, struct usb_serial_port *port)
 {
@@ -511,8 +763,11 @@ static int ti_open(struct tty_struct *tty, struct usb_serial_port *port)
 			     TI_PIPE_TIMEOUT_ENABLE |
 			     (TI_TRANSFER_TIMEOUT << 2));
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tport == NULL)
 		return -ENODEV;
 
@@ -523,15 +778,20 @@ static int ti_open(struct tty_struct *tty, struct usb_serial_port *port)
 	if (mutex_lock_interruptible(&tdev->td_open_close_lock))
 		return -ERESTARTSYS;
 
+<<<<<<< HEAD
 	port_number = port->number - port->serial->minor;
 
 	memset(&(tport->tp_icount), 0x00, sizeof(tport->tp_icount));
+=======
+	port_number = port->port_number;
+>>>>>>> refs/remotes/origin/master
 
 	tport->tp_msr = 0;
 	tport->tp_shadow_mcr |= (TI_MCR_RTS | TI_MCR_DTR);
 
 	/* start interrupt urb the first time a port is opened on this device */
 	if (tdev->td_open_port_count == 0) {
+<<<<<<< HEAD
 		dbg("%s - start interrupt in urb", __func__);
 		urb = tdev->td_serial->port[0]->interrupt_in_urb;
 		if (!urb) {
@@ -540,31 +800,62 @@ static int ti_open(struct tty_struct *tty, struct usb_serial_port *port)
 			status = -EINVAL;
 			goto release_lock;
 		}
+<<<<<<< HEAD
 		urb->complete = ti_interrupt_callback;
 		urb->context = tdev;
 		urb->dev = dev;
+=======
+		urb->context = tdev;
+>>>>>>> refs/remotes/origin/cm-10.0
 		status = usb_submit_urb(urb, GFP_KERNEL);
 		if (status) {
 			dev_err(&port->dev,
 				"%s - submit interrupt urb failed, %d\n",
 					__func__, status);
+=======
+		dev_dbg(&port->dev, "%s - start interrupt in urb\n", __func__);
+		urb = tdev->td_serial->port[0]->interrupt_in_urb;
+		if (!urb) {
+			dev_err(&port->dev, "%s - no interrupt urb\n", __func__);
+			status = -EINVAL;
+			goto release_lock;
+		}
+		urb->context = tdev;
+		status = usb_submit_urb(urb, GFP_KERNEL);
+		if (status) {
+			dev_err(&port->dev, "%s - submit interrupt urb failed, %d\n", __func__, status);
+>>>>>>> refs/remotes/origin/master
 			goto release_lock;
 		}
 	}
 
 	if (tty)
+<<<<<<< HEAD
 		ti_set_termios(tty, port, tty->termios);
 
 	dbg("%s - sending TI_OPEN_PORT", __func__);
+=======
+		ti_set_termios(tty, port, &tty->termios);
+
+	dev_dbg(&port->dev, "%s - sending TI_OPEN_PORT\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	status = ti_command_out_sync(tdev, TI_OPEN_PORT,
 		(__u8)(TI_UART1_PORT + port_number), open_settings, NULL, 0);
 	if (status) {
 		dev_err(&port->dev, "%s - cannot send open command, %d\n",
+<<<<<<< HEAD
 							__func__, status);
 		goto unlink_int_urb;
 	}
 
 	dbg("%s - sending TI_START_PORT", __func__);
+=======
+			__func__, status);
+		goto unlink_int_urb;
+	}
+
+	dev_dbg(&port->dev, "%s - sending TI_START_PORT\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	status = ti_command_out_sync(tdev, TI_START_PORT,
 		(__u8)(TI_UART1_PORT + port_number), 0, NULL, 0);
 	if (status) {
@@ -573,7 +864,11 @@ static int ti_open(struct tty_struct *tty, struct usb_serial_port *port)
 		goto unlink_int_urb;
 	}
 
+<<<<<<< HEAD
 	dbg("%s - sending TI_PURGE_PORT", __func__);
+=======
+	dev_dbg(&port->dev, "%s - sending TI_PURGE_PORT\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	status = ti_command_out_sync(tdev, TI_PURGE_PORT,
 		(__u8)(TI_UART1_PORT + port_number), TI_PURGE_INPUT, NULL, 0);
 	if (status) {
@@ -595,9 +890,15 @@ static int ti_open(struct tty_struct *tty, struct usb_serial_port *port)
 	usb_clear_halt(dev, port->read_urb->pipe);
 
 	if (tty)
+<<<<<<< HEAD
 		ti_set_termios(tty, port, tty->termios);
 
 	dbg("%s - sending TI_OPEN_PORT (2)", __func__);
+=======
+		ti_set_termios(tty, port, &tty->termios);
+
+	dev_dbg(&port->dev, "%s - sending TI_OPEN_PORT (2)\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	status = ti_command_out_sync(tdev, TI_OPEN_PORT,
 		(__u8)(TI_UART1_PORT + port_number), open_settings, NULL, 0);
 	if (status) {
@@ -606,7 +907,11 @@ static int ti_open(struct tty_struct *tty, struct usb_serial_port *port)
 		goto unlink_int_urb;
 	}
 
+<<<<<<< HEAD
 	dbg("%s - sending TI_START_PORT (2)", __func__);
+=======
+	dev_dbg(&port->dev, "%s - sending TI_START_PORT (2)\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	status = ti_command_out_sync(tdev, TI_START_PORT,
 		(__u8)(TI_UART1_PORT + port_number), 0, NULL, 0);
 	if (status) {
@@ -616,7 +921,11 @@ static int ti_open(struct tty_struct *tty, struct usb_serial_port *port)
 	}
 
 	/* start read urb */
+<<<<<<< HEAD
 	dbg("%s - start read urb", __func__);
+=======
+	dev_dbg(&port->dev, "%s - start read urb\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	urb = port->read_urb;
 	if (!urb) {
 		dev_err(&port->dev, "%s - no read urb\n", __func__);
@@ -624,9 +933,17 @@ static int ti_open(struct tty_struct *tty, struct usb_serial_port *port)
 		goto unlink_int_urb;
 	}
 	tport->tp_read_urb_state = TI_READ_URB_RUNNING;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	urb->complete = ti_bulk_in_callback;
 	urb->context = tport;
 	urb->dev = dev;
+=======
+	urb->context = tport;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	urb->context = tport;
+>>>>>>> refs/remotes/origin/master
 	status = usb_submit_urb(urb, GFP_KERNEL);
 	if (status) {
 		dev_err(&port->dev, "%s - submit read urb failed, %d\n",
@@ -644,7 +961,11 @@ unlink_int_urb:
 		usb_kill_urb(port->serial->port[0]->interrupt_in_urb);
 release_lock:
 	mutex_unlock(&tdev->td_open_close_lock);
+<<<<<<< HEAD
 	dbg("%s - exit %d", __func__, status);
+=======
+	dev_dbg(&port->dev, "%s - exit %d\n", __func__, status);
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -656,8 +977,12 @@ static void ti_close(struct usb_serial_port *port)
 	int port_number;
 	int status;
 	int do_unlock;
+<<<<<<< HEAD
 
 	dbg("%s - port %d", __func__, port->number);
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	tdev = usb_get_serial_data(port->serial);
 	tport = usb_get_serial_port_data(port);
@@ -666,6 +991,7 @@ static void ti_close(struct usb_serial_port *port)
 
 	tport->tp_is_open = 0;
 
+<<<<<<< HEAD
 	ti_drain(tport, (tport->tp_closing_wait*HZ)/100, 1);
 
 	usb_kill_urb(port->read_urb);
@@ -675,6 +1001,18 @@ static void ti_close(struct usb_serial_port *port)
 	port_number = port->number - port->serial->minor;
 
 	dbg("%s - sending TI_CLOSE_PORT", __func__);
+=======
+	usb_kill_urb(port->read_urb);
+	usb_kill_urb(port->write_urb);
+	tport->tp_write_urb_in_use = 0;
+	spin_lock_irqsave(&tport->tp_lock, flags);
+	kfifo_reset_out(&port->write_fifo);
+	spin_unlock_irqrestore(&tport->tp_lock, flags);
+
+	port_number = port->port_number;
+
+	dev_dbg(&port->dev, "%s - sending TI_CLOSE_PORT\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	status = ti_command_out_sync(tdev, TI_CLOSE_PORT,
 		     (__u8)(TI_UART1_PORT + port_number), 0, NULL, 0);
 	if (status)
@@ -692,8 +1030,11 @@ static void ti_close(struct usb_serial_port *port)
 	}
 	if (do_unlock)
 		mutex_unlock(&tdev->td_open_close_lock);
+<<<<<<< HEAD
 
 	dbg("%s - exit", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -702,17 +1043,26 @@ static int ti_write(struct tty_struct *tty, struct usb_serial_port *port,
 {
 	struct ti_port *tport = usb_get_serial_port_data(port);
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
 	if (count == 0) {
 		dbg("%s - write request of 0 bytes", __func__);
+=======
+	if (count == 0) {
+		dev_dbg(&port->dev, "%s - write request of 0 bytes\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	if (tport == NULL || !tport->tp_is_open)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	count = kfifo_in_locked(&tport->write_fifo, data, count,
+=======
+	count = kfifo_in_locked(&port->write_fifo, data, count,
+>>>>>>> refs/remotes/origin/master
 							&tport->tp_lock);
 	ti_send(tport);
 
@@ -727,16 +1077,26 @@ static int ti_write_room(struct tty_struct *tty)
 	int room = 0;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tport == NULL)
 		return 0;
 
 	spin_lock_irqsave(&tport->tp_lock, flags);
+<<<<<<< HEAD
 	room = kfifo_avail(&tport->write_fifo);
 	spin_unlock_irqrestore(&tport->tp_lock, flags);
 
 	dbg("%s - returns %d", __func__, room);
+=======
+	room = kfifo_avail(&port->write_fifo);
+	spin_unlock_irqrestore(&tport->tp_lock, flags);
+
+	dev_dbg(&port->dev, "%s - returns %d\n", __func__, room);
+>>>>>>> refs/remotes/origin/master
 	return room;
 }
 
@@ -748,12 +1108,16 @@ static int ti_chars_in_buffer(struct tty_struct *tty)
 	int chars = 0;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tport == NULL)
 		return 0;
 
 	spin_lock_irqsave(&tport->tp_lock, flags);
+<<<<<<< HEAD
 	chars = kfifo_len(&tport->write_fifo);
 	spin_unlock_irqrestore(&tport->tp_lock, flags);
 
@@ -761,14 +1125,38 @@ static int ti_chars_in_buffer(struct tty_struct *tty)
 	return chars;
 }
 
+=======
+	chars = kfifo_len(&port->write_fifo);
+	spin_unlock_irqrestore(&tport->tp_lock, flags);
+
+	dev_dbg(&port->dev, "%s - returns %d\n", __func__, chars);
+	return chars;
+}
+
+static bool ti_tx_empty(struct usb_serial_port *port)
+{
+	struct ti_port *tport = usb_get_serial_port_data(port);
+	int ret;
+	u8 lsr;
+
+	ret = ti_get_lsr(tport, &lsr);
+	if (!ret && !(lsr & TI_LSR_TX_EMPTY))
+		return false;
+
+	return true;
+}
+>>>>>>> refs/remotes/origin/master
 
 static void ti_throttle(struct tty_struct *tty)
 {
 	struct usb_serial_port *port = tty->driver_data;
 	struct ti_port *tport = usb_get_serial_port_data(port);
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tport == NULL)
 		return;
 
@@ -784,8 +1172,11 @@ static void ti_unthrottle(struct tty_struct *tty)
 	struct ti_port *tport = usb_get_serial_port_data(port);
 	int status;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tport == NULL)
 		return;
 
@@ -797,6 +1188,7 @@ static void ti_unthrottle(struct tty_struct *tty)
 	}
 }
 
+<<<<<<< HEAD
 static int ti_get_icount(struct tty_struct *tty,
 		struct serial_icounter_struct *icount)
 {
@@ -823,21 +1215,27 @@ static int ti_get_icount(struct tty_struct *tty,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ti_ioctl(struct tty_struct *tty,
 	unsigned int cmd, unsigned long arg)
 {
 	struct usb_serial_port *port = tty->driver_data;
 	struct ti_port *tport = usb_get_serial_port_data(port);
+<<<<<<< HEAD
 	struct async_icount cnow;
 	struct async_icount cprev;
 
 	dbg("%s - port %d, cmd = 0x%04X", __func__, port->number, cmd);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (tport == NULL)
 		return -ENODEV;
 
 	switch (cmd) {
 	case TIOCGSERIAL:
+<<<<<<< HEAD
 		dbg("%s - (%d) TIOCGSERIAL", __func__, port->number);
 		return ti_get_serial_info(tport,
 				(struct serial_struct __user *)arg);
@@ -864,6 +1262,15 @@ static int ti_ioctl(struct tty_struct *tty,
 			cprev = cnow;
 		}
 		break;
+=======
+		dev_dbg(&port->dev, "%s - TIOCGSERIAL\n", __func__);
+		return ti_get_serial_info(tport,
+				(struct serial_struct __user *)arg);
+	case TIOCSSERIAL:
+		dev_dbg(&port->dev, "%s - TIOCSSERIAL\n", __func__);
+		return ti_set_serial_info(tty, tport,
+				(struct serial_struct __user *)arg);
+>>>>>>> refs/remotes/origin/master
 	}
 	return -ENOIOCTLCMD;
 }
@@ -877,6 +1284,7 @@ static void ti_set_termios(struct tty_struct *tty,
 	tcflag_t cflag, iflag;
 	int baud;
 	int status;
+<<<<<<< HEAD
 	int port_number = port->number - port->serial->minor;
 	unsigned int mcr;
 
@@ -888,15 +1296,31 @@ static void ti_set_termios(struct tty_struct *tty,
 	dbg("%s - cflag %08x, iflag %08x", __func__, cflag, iflag);
 	dbg("%s - old clfag %08x, old iflag %08x", __func__,
 				old_termios->c_cflag, old_termios->c_iflag);
+=======
+	int port_number = port->port_number;
+	unsigned int mcr;
+
+	cflag = tty->termios.c_cflag;
+	iflag = tty->termios.c_iflag;
+
+	dev_dbg(&port->dev, "%s - cflag %08x, iflag %08x\n", __func__, cflag, iflag);
+	dev_dbg(&port->dev, "%s - old clfag %08x, old iflag %08x\n", __func__,
+		old_termios->c_cflag, old_termios->c_iflag);
+>>>>>>> refs/remotes/origin/master
 
 	if (tport == NULL)
 		return;
 
 	config = kmalloc(sizeof(*config), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!config) {
 		dev_err(&port->dev, "%s - out of memory\n", __func__);
 		return;
 	}
+=======
+	if (!config)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	config->wFlags = 0;
 
@@ -922,7 +1346,11 @@ static void ti_set_termios(struct tty_struct *tty,
 	}
 
 	/* CMSPAR isn't supported by this driver */
+<<<<<<< HEAD
 	tty->termios->c_cflag &= ~CMSPAR;
+=======
+	tty->termios.c_cflag &= ~CMSPAR;
+>>>>>>> refs/remotes/origin/master
 
 	if (cflag & PARENB) {
 		if (cflag & PARODD) {
@@ -977,8 +1405,16 @@ static void ti_set_termios(struct tty_struct *tty,
 	if ((cflag & CBAUD) != B0)
 		tty_encode_baud_rate(tty, baud, baud);
 
+<<<<<<< HEAD
 	dbg("%s - BaudRate=%d, wBaudRate=%d, wFlags=0x%04X, bDataBits=%d, bParity=%d, bStopBits=%d, cXon=%d, cXoff=%d, bUartMode=%d",
 	__func__, baud, config->wBaudRate, config->wFlags, config->bDataBits, config->bParity, config->bStopBits, config->cXon, config->cXoff, config->bUartMode);
+=======
+	dev_dbg(&port->dev,
+		"%s - BaudRate=%d, wBaudRate=%d, wFlags=0x%04X, bDataBits=%d, bParity=%d, bStopBits=%d, cXon=%d, cXoff=%d, bUartMode=%d",
+		__func__, baud, config->wBaudRate, config->wFlags,
+		config->bDataBits, config->bParity, config->bStopBits,
+		config->cXon, config->cXoff, config->bUartMode);
+>>>>>>> refs/remotes/origin/master
 
 	cpu_to_be16s(&config->wBaudRate);
 	cpu_to_be16s(&config->wFlags);
@@ -1014,8 +1450,11 @@ static int ti_tiocmget(struct tty_struct *tty)
 	unsigned int mcr;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tport == NULL)
 		return -ENODEV;
 
@@ -1032,7 +1471,11 @@ static int ti_tiocmget(struct tty_struct *tty)
 		| ((msr & TI_MSR_RI) ? TIOCM_RI : 0)
 		| ((msr & TI_MSR_DSR) ? TIOCM_DSR : 0);
 
+<<<<<<< HEAD
 	dbg("%s - 0x%04X", __func__, result);
+=======
+	dev_dbg(&port->dev, "%s - 0x%04X\n", __func__, result);
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
@@ -1046,8 +1489,11 @@ static int ti_tiocmset(struct tty_struct *tty,
 	unsigned int mcr;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tport == NULL)
 		return -ENODEV;
 
@@ -1079,19 +1525,31 @@ static void ti_break(struct tty_struct *tty, int break_state)
 	struct ti_port *tport = usb_get_serial_port_data(port);
 	int status;
 
+<<<<<<< HEAD
 	dbg("%s - state = %d", __func__, break_state);
+=======
+	dev_dbg(&port->dev, "%s - state = %d\n", __func__, break_state);
+>>>>>>> refs/remotes/origin/master
 
 	if (tport == NULL)
 		return;
 
+<<<<<<< HEAD
 	ti_drain(tport, (tport->tp_closing_wait*HZ)/100, 0);
 
 	status = ti_write_byte(tport->tp_tdev,
+=======
+	status = ti_write_byte(port, tport->tp_tdev,
+>>>>>>> refs/remotes/origin/master
 		tport->tp_uart_base_addr + TI_UART_OFFSET_LCR,
 		TI_LCR_BREAK, break_state == -1 ? TI_LCR_BREAK : 0);
 
 	if (status)
+<<<<<<< HEAD
 		dbg("%s - error setting break, %d", __func__, status);
+=======
+		dev_dbg(&port->dev, "%s - error setting break, %d\n", __func__, status);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1110,26 +1568,41 @@ static void ti_interrupt_callback(struct urb *urb)
 	int retval;
 	__u8 msr;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (status) {
 	case 0:
 		break;
 	case -ECONNRESET:
 	case -ENOENT:
 	case -ESHUTDOWN:
+<<<<<<< HEAD
 		dbg("%s - urb shutting down, %d", __func__, status);
 		tdev->td_urb_error = 1;
 		return;
 	default:
 		dev_err(dev, "%s - nonzero urb status, %d\n",
 			__func__, status);
+=======
+		dev_dbg(dev, "%s - urb shutting down, %d\n", __func__, status);
+		tdev->td_urb_error = 1;
+		return;
+	default:
+		dev_err(dev, "%s - nonzero urb status, %d\n", __func__, status);
+>>>>>>> refs/remotes/origin/master
 		tdev->td_urb_error = 1;
 		goto exit;
 	}
 
 	if (length != 2) {
+<<<<<<< HEAD
 		dbg("%s - bad packet size, %d", __func__, length);
+=======
+		dev_dbg(dev, "%s - bad packet size, %d\n", __func__, length);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -1141,8 +1614,13 @@ static void ti_interrupt_callback(struct urb *urb)
 	port_number = TI_GET_PORT_FROM_CODE(data[0]);
 	function = TI_GET_FUNC_FROM_CODE(data[0]);
 
+<<<<<<< HEAD
 	dbg("%s - port_number %d, function %d, data 0x%02X",
 				__func__, port_number, function, data[1]);
+=======
+	dev_dbg(dev, "%s - port_number %d, function %d, data 0x%02X\n",
+		__func__, port_number, function, data[1]);
+>>>>>>> refs/remotes/origin/master
 
 	if (port_number >= serial->num_ports) {
 		dev_err(dev, "%s - bad port number, %d\n",
@@ -1159,12 +1637,20 @@ static void ti_interrupt_callback(struct urb *urb)
 	switch (function) {
 	case TI_CODE_DATA_ERROR:
 		dev_err(dev, "%s - DATA ERROR, port %d, data 0x%02X\n",
+<<<<<<< HEAD
 					__func__, port_number, data[1]);
+=======
+			__func__, port_number, data[1]);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case TI_CODE_MODEM_STATUS:
 		msr = data[1];
+<<<<<<< HEAD
 		dbg("%s - port %d, msr 0x%02X", __func__, port_number, msr);
+=======
+		dev_dbg(dev, "%s - port %d, msr 0x%02X\n", __func__, port_number, msr);
+>>>>>>> refs/remotes/origin/master
 		ti_handle_new_msr(tport, msr);
 		break;
 
@@ -1189,9 +1675,12 @@ static void ti_bulk_in_callback(struct urb *urb)
 	struct device *dev = &urb->dev->dev;
 	int status = urb->status;
 	int retval = 0;
+<<<<<<< HEAD
 	struct tty_struct *tty;
 
 	dbg("%s", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (status) {
 	case 0:
@@ -1199,15 +1688,23 @@ static void ti_bulk_in_callback(struct urb *urb)
 	case -ECONNRESET:
 	case -ENOENT:
 	case -ESHUTDOWN:
+<<<<<<< HEAD
 		dbg("%s - urb shutting down, %d", __func__, status);
 		tport->tp_tdev->td_urb_error = 1;
 		wake_up_interruptible(&tport->tp_write_wait);
+=======
+		dev_dbg(dev, "%s - urb shutting down, %d\n", __func__, status);
+		tport->tp_tdev->td_urb_error = 1;
+>>>>>>> refs/remotes/origin/master
 		return;
 	default:
 		dev_err(dev, "%s - nonzero urb status, %d\n",
 			__func__, status);
 		tport->tp_tdev->td_urb_error = 1;
+<<<<<<< HEAD
 		wake_up_interruptible(&tport->tp_write_wait);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (status == -EPIPE)
@@ -1218,6 +1715,7 @@ static void ti_bulk_in_callback(struct urb *urb)
 		return;
 	}
 
+<<<<<<< HEAD
 	tty = tty_port_tty_get(&port->port);
 	if (tty) {
 		if (urb->actual_length) {
@@ -1236,17 +1734,45 @@ static void ti_bulk_in_callback(struct urb *urb)
 			spin_unlock(&tport->tp_lock);
 		}
 		tty_kref_put(tty);
+=======
+	if (urb->actual_length) {
+		usb_serial_debug_data(dev, __func__, urb->actual_length,
+				      urb->transfer_buffer);
+
+		if (!tport->tp_is_open)
+			dev_dbg(dev, "%s - port closed, dropping data\n",
+				__func__);
+		else
+			ti_recv(port, urb->transfer_buffer, urb->actual_length);
+		spin_lock(&tport->tp_lock);
+		port->icount.rx += urb->actual_length;
+		spin_unlock(&tport->tp_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 
 exit:
 	/* continue to read unless stopping */
 	spin_lock(&tport->tp_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (tport->tp_read_urb_state == TI_READ_URB_RUNNING) {
 		urb->dev = port->serial->dev;
 		retval = usb_submit_urb(urb, GFP_ATOMIC);
 	} else if (tport->tp_read_urb_state == TI_READ_URB_STOPPING) {
 		tport->tp_read_urb_state = TI_READ_URB_STOPPED;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (tport->tp_read_urb_state == TI_READ_URB_RUNNING)
+		retval = usb_submit_urb(urb, GFP_ATOMIC);
+	else if (tport->tp_read_urb_state == TI_READ_URB_STOPPING)
+		tport->tp_read_urb_state = TI_READ_URB_STOPPED;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&tport->tp_lock);
 	if (retval)
 		dev_err(dev, "%s - resubmit read urb failed, %d\n",
@@ -1258,11 +1784,19 @@ static void ti_bulk_out_callback(struct urb *urb)
 {
 	struct ti_port *tport = urb->context;
 	struct usb_serial_port *port = tport->tp_port;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct device *dev = &urb->dev->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int status = urb->status;
 
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+	int status = urb->status;
+
+>>>>>>> refs/remotes/origin/master
 	tport->tp_write_urb_in_use = 0;
 
 	switch (status) {
@@ -1271,15 +1805,29 @@ static void ti_bulk_out_callback(struct urb *urb)
 	case -ECONNRESET:
 	case -ENOENT:
 	case -ESHUTDOWN:
+<<<<<<< HEAD
 		dbg("%s - urb shutting down, %d", __func__, status);
 		tport->tp_tdev->td_urb_error = 1;
 		wake_up_interruptible(&tport->tp_write_wait);
 		return;
 	default:
+<<<<<<< HEAD
 		dev_err(dev, "%s - nonzero urb status, %d\n",
+=======
+		dev_err_console(port, "%s - nonzero urb status, %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			__func__, status);
 		tport->tp_tdev->td_urb_error = 1;
 		wake_up_interruptible(&tport->tp_write_wait);
+=======
+		dev_dbg(&port->dev, "%s - urb shutting down, %d\n", __func__, status);
+		tport->tp_tdev->td_urb_error = 1;
+		return;
+	default:
+		dev_err_console(port, "%s - nonzero urb status, %d\n",
+			__func__, status);
+		tport->tp_tdev->td_urb_error = 1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* send any buffered data */
@@ -1287,24 +1835,42 @@ static void ti_bulk_out_callback(struct urb *urb)
 }
 
 
+<<<<<<< HEAD
 static void ti_recv(struct device *dev, struct tty_struct *tty,
 	unsigned char *data, int length)
+=======
+static void ti_recv(struct usb_serial_port *port, unsigned char *data,
+		int length)
+>>>>>>> refs/remotes/origin/master
 {
 	int cnt;
 
 	do {
+<<<<<<< HEAD
 		cnt = tty_insert_flip_string(tty, data, length);
 		if (cnt < length) {
 			dev_err(dev, "%s - dropping data, %d bytes lost\n",
+=======
+		cnt = tty_insert_flip_string(&port->port, data, length);
+		if (cnt < length) {
+			dev_err(&port->dev, "%s - dropping data, %d bytes lost\n",
+>>>>>>> refs/remotes/origin/master
 						__func__, length - cnt);
 			if (cnt == 0)
 				break;
 		}
+<<<<<<< HEAD
 		tty_flip_buffer_push(tty);
 		data += cnt;
 		length -= cnt;
 	} while (length > 0);
 
+=======
+		tty_flip_buffer_push(&port->port);
+		data += cnt;
+		length -= cnt;
+	} while (length > 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1312,18 +1878,27 @@ static void ti_send(struct ti_port *tport)
 {
 	int count, result;
 	struct usb_serial_port *port = tport->tp_port;
+<<<<<<< HEAD
 	struct tty_struct *tty = tty_port_tty_get(&port->port);	/* FIXME */
 	unsigned long flags;
 
 
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&tport->tp_lock, flags);
 
 	if (tport->tp_write_urb_in_use)
 		goto unlock;
 
+<<<<<<< HEAD
 	count = kfifo_out(&tport->write_fifo,
+=======
+	count = kfifo_out(&port->write_fifo,
+>>>>>>> refs/remotes/origin/master
 				port->write_urb->transfer_buffer,
 				port->bulk_out_size);
 
@@ -1334,8 +1909,13 @@ static void ti_send(struct ti_port *tport)
 
 	spin_unlock_irqrestore(&tport->tp_lock, flags);
 
+<<<<<<< HEAD
 	usb_serial_debug_data(debug, &port->dev, __func__, count,
 					port->write_urb->transfer_buffer);
+=======
+	usb_serial_debug_data(&port->dev, __func__, count,
+			      port->write_urb->transfer_buffer);
+>>>>>>> refs/remotes/origin/master
 
 	usb_fill_bulk_urb(port->write_urb, port->serial->dev,
 			   usb_sndbulkpipe(port->serial->dev,
@@ -1345,17 +1925,30 @@ static void ti_send(struct ti_port *tport)
 
 	result = usb_submit_urb(port->write_urb, GFP_ATOMIC);
 	if (result) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&port->dev, "%s - submit write urb failed, %d\n",
+=======
+		dev_err_console(port, "%s - submit write urb failed, %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err_console(port, "%s - submit write urb failed, %d\n",
+>>>>>>> refs/remotes/origin/master
 							__func__, result);
 		tport->tp_write_urb_in_use = 0;
 		/* TODO: reschedule ti_send */
 	} else {
 		spin_lock_irqsave(&tport->tp_lock, flags);
+<<<<<<< HEAD
 		tport->tp_icount.tx += count;
+=======
+		port->icount.tx += count;
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&tport->tp_lock, flags);
 	}
 
 	/* more room in the buffer for new writes, wakeup */
+<<<<<<< HEAD
 	if (tty)
 		tty_wakeup(tty);
 	tty_kref_put(tty);
@@ -1364,6 +1957,13 @@ static void ti_send(struct ti_port *tport)
 unlock:
 	spin_unlock_irqrestore(&tport->tp_lock, flags);
 	tty_kref_put(tty);
+=======
+	tty_port_tty_wakeup(&port->port);
+
+	return;
+unlock:
+	spin_unlock_irqrestore(&tport->tp_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
@@ -1373,7 +1973,11 @@ static int ti_set_mcr(struct ti_port *tport, unsigned int mcr)
 	unsigned long flags;
 	int status;
 
+<<<<<<< HEAD
 	status = ti_write_byte(tport->tp_tdev,
+=======
+	status = ti_write_byte(tport->tp_port, tport->tp_tdev,
+>>>>>>> refs/remotes/origin/master
 		tport->tp_uart_base_addr + TI_UART_OFFSET_MCR,
 		TI_MCR_RTS | TI_MCR_DTR | TI_MCR_LOOP, mcr);
 
@@ -1386,11 +1990,16 @@ static int ti_set_mcr(struct ti_port *tport, unsigned int mcr)
 }
 
 
+<<<<<<< HEAD
 static int ti_get_lsr(struct ti_port *tport)
+=======
+static int ti_get_lsr(struct ti_port *tport, u8 *lsr)
+>>>>>>> refs/remotes/origin/master
 {
 	int size, status;
 	struct ti_device *tdev = tport->tp_tdev;
 	struct usb_serial_port *port = tport->tp_port;
+<<<<<<< HEAD
 	int port_number = port->number - port->serial->minor;
 	struct ti_port_status *data;
 
@@ -1402,6 +2011,15 @@ static int ti_get_lsr(struct ti_port *tport)
 		dev_err(&port->dev, "%s - out of memory\n", __func__);
 		return -ENOMEM;
 	}
+=======
+	int port_number = port->port_number;
+	struct ti_port_status *data;
+
+	size = sizeof(struct ti_port_status);
+	data = kmalloc(size, GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	status = ti_command_in_sync(tdev, TI_GET_PORT_STATUS,
 		(__u8)(TI_UART1_PORT+port_number), 0, (__u8 *)data, size);
@@ -1412,9 +2030,15 @@ static int ti_get_lsr(struct ti_port *tport)
 		goto free_data;
 	}
 
+<<<<<<< HEAD
 	dbg("%s - lsr 0x%02X", __func__, data->bLSR);
 
 	tport->tp_lsr = data->bLSR;
+=======
+	dev_dbg(&port->dev, "%s - lsr 0x%02X\n", __func__, data->bLSR);
+
+	*lsr = data->bLSR;
+>>>>>>> refs/remotes/origin/master
 
 free_data:
 	kfree(data);
@@ -1427,10 +2051,15 @@ static int ti_get_serial_info(struct ti_port *tport,
 {
 	struct usb_serial_port *port = tport->tp_port;
 	struct serial_struct ret_serial;
+<<<<<<< HEAD
+=======
+	unsigned cwait;
+>>>>>>> refs/remotes/origin/master
 
 	if (!ret_arg)
 		return -EFAULT;
 
+<<<<<<< HEAD
 	memset(&ret_serial, 0, sizeof(ret_serial));
 
 	ret_serial.type = PORT_16550A;
@@ -1440,6 +2069,21 @@ static int ti_get_serial_info(struct ti_port *tport,
 	ret_serial.xmit_fifo_size = TI_WRITE_BUF_SIZE;
 	ret_serial.baud_base = tport->tp_tdev->td_is_3410 ? 921600 : 460800;
 	ret_serial.closing_wait = tport->tp_closing_wait;
+=======
+	cwait = port->port.closing_wait;
+	if (cwait != ASYNC_CLOSING_WAIT_NONE)
+		cwait = jiffies_to_msecs(cwait) / 10;
+
+	memset(&ret_serial, 0, sizeof(ret_serial));
+
+	ret_serial.type = PORT_16550A;
+	ret_serial.line = port->minor;
+	ret_serial.port = port->port_number;
+	ret_serial.flags = tport->tp_flags;
+	ret_serial.xmit_fifo_size = kfifo_size(&port->write_fifo);
+	ret_serial.baud_base = tport->tp_tdev->td_is_3410 ? 921600 : 460800;
+	ret_serial.closing_wait = cwait;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_to_user(ret_arg, &ret_serial, sizeof(*ret_arg)))
 		return -EFAULT;
@@ -1452,12 +2096,25 @@ static int ti_set_serial_info(struct tty_struct *tty, struct ti_port *tport,
 	struct serial_struct __user *new_arg)
 {
 	struct serial_struct new_serial;
+<<<<<<< HEAD
+=======
+	unsigned cwait;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&new_serial, new_arg, sizeof(new_serial)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	tport->tp_flags = new_serial.flags & TI_SET_SERIAL_FLAGS;
 	tport->tp_closing_wait = new_serial.closing_wait;
+=======
+	cwait = new_serial.closing_wait;
+	if (cwait != ASYNC_CLOSING_WAIT_NONE)
+		cwait = msecs_to_jiffies(10 * new_serial.closing_wait);
+
+	tport->tp_flags = new_serial.flags & TI_SET_SERIAL_FLAGS;
+	tport->tp_port->port.closing_wait = cwait;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1469,11 +2126,19 @@ static void ti_handle_new_msr(struct ti_port *tport, __u8 msr)
 	struct tty_struct *tty;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - msr 0x%02X", __func__, msr);
 
 	if (msr & TI_MSR_DELTA_MASK) {
 		spin_lock_irqsave(&tport->tp_lock, flags);
 		icount = &tport->tp_icount;
+=======
+	dev_dbg(&tport->tp_port->dev, "%s - msr 0x%02X\n", __func__, msr);
+
+	if (msr & TI_MSR_DELTA_MASK) {
+		spin_lock_irqsave(&tport->tp_lock, flags);
+		icount = &tport->tp_port->icount;
+>>>>>>> refs/remotes/origin/master
 		if (msr & TI_MSR_DELTA_CTS)
 			icount->cts++;
 		if (msr & TI_MSR_DELTA_DSR)
@@ -1482,7 +2147,11 @@ static void ti_handle_new_msr(struct ti_port *tport, __u8 msr)
 			icount->dcd++;
 		if (msr & TI_MSR_DELTA_RI)
 			icount->rng++;
+<<<<<<< HEAD
 		wake_up_interruptible(&tport->tp_msr_wait);
+=======
+		wake_up_interruptible(&tport->tp_port->port.delta_msr_wait);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&tport->tp_lock, flags);
 	}
 
@@ -1502,6 +2171,7 @@ static void ti_handle_new_msr(struct ti_port *tport, __u8 msr)
 }
 
 
+<<<<<<< HEAD
 static void ti_drain(struct ti_port *tport, unsigned long timeout, int flush)
 {
 	struct ti_device *tdev = tport->tp_tdev;
@@ -1554,6 +2224,8 @@ static void ti_drain(struct ti_port *tport, unsigned long timeout, int flush)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void ti_stop_read(struct ti_port *tport, struct tty_struct *tty)
 {
 	unsigned long flags;
@@ -1579,9 +2251,17 @@ static int ti_restart_read(struct ti_port *tport, struct tty_struct *tty)
 		tport->tp_read_urb_state = TI_READ_URB_RUNNING;
 		urb = tport->tp_port->read_urb;
 		spin_unlock_irqrestore(&tport->tp_lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		urb->complete = ti_bulk_in_callback;
 		urb->context = tport;
 		urb->dev = tport->tp_port->serial->dev;
+=======
+		urb->context = tport;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		urb->context = tport;
+>>>>>>> refs/remotes/origin/master
 		status = usb_submit_urb(urb, GFP_KERNEL);
 	} else  {
 		tport->tp_read_urb_state = TI_READ_URB_RUNNING;
@@ -1632,12 +2312,19 @@ static int ti_command_in_sync(struct ti_device *tdev, __u8 command,
 }
 
 
+<<<<<<< HEAD
 static int ti_write_byte(struct ti_device *tdev, unsigned long addr,
 	__u8 mask, __u8 byte)
+=======
+static int ti_write_byte(struct usb_serial_port *port,
+			struct ti_device *tdev, unsigned long addr,
+			__u8 mask, __u8 byte)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 	unsigned int size;
 	struct ti_write_data_bytes *data;
+<<<<<<< HEAD
 	struct device *dev = &tdev->td_serial->dev->dev;
 
 	dbg("%s - addr 0x%08lX, mask 0x%02X, byte 0x%02X",
@@ -1649,6 +2336,16 @@ static int ti_write_byte(struct ti_device *tdev, unsigned long addr,
 		dev_err(dev, "%s - out of memory\n", __func__);
 		return -ENOMEM;
 	}
+=======
+
+	dev_dbg(&port->dev, "%s - addr 0x%08lX, mask 0x%02X, byte 0x%02X\n", __func__,
+		addr, mask, byte);
+
+	size = sizeof(struct ti_write_data_bytes) + 2;
+	data = kmalloc(size, GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	data->bAddrType = TI_RW_DATA_ADDR_XDATA;
 	data->bDataType = TI_RW_DATA_BYTE;
@@ -1662,7 +2359,11 @@ static int ti_write_byte(struct ti_device *tdev, unsigned long addr,
 		(__u8 *)data, size);
 
 	if (status < 0)
+<<<<<<< HEAD
 		dev_err(dev, "%s - failed, %d\n", __func__, status);
+=======
+		dev_err(&port->dev, "%s - failed, %d\n", __func__, status);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(data);
 
@@ -1687,7 +2388,11 @@ static int ti_do_download(struct usb_device *dev, int pipe,
 					- sizeof(struct ti_firmware_header)));
 	header->bCheckSum = cs;
 
+<<<<<<< HEAD
 	dbg("%s - downloading firmware", __func__);
+=======
+	dev_dbg(&dev->dev, "%s - downloading firmware\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	for (pos = 0; pos < size; pos += done) {
 		len = min(size - pos, TI_DOWNLOAD_MAX_PACKET_SIZE);
 		status = usb_bulk_msg(dev, pipe, buffer + pos, len,
@@ -1709,6 +2414,7 @@ static int ti_download_firmware(struct ti_device *tdev)
 	const struct firmware *fw_p;
 	char buf[32];
 
+<<<<<<< HEAD
 	dbg("%s\n", __func__);
 	/* try ID specific firmware first, then try generic firmware */
 	sprintf(buf, "ti_usb-v%04x-p%04x.fw", dev->descriptor.idVendor,
@@ -1717,6 +2423,18 @@ static int ti_download_firmware(struct ti_device *tdev)
 		buf[0] = '\0';
 		if (dev->descriptor.idVendor == MTS_VENDOR_ID) {
 			switch (dev->descriptor.idProduct) {
+=======
+	/* try ID specific firmware first, then try generic firmware */
+	sprintf(buf, "ti_usb-v%04x-p%04x.fw",
+			le16_to_cpu(dev->descriptor.idVendor),
+			le16_to_cpu(dev->descriptor.idProduct));
+	status = request_firmware(&fw_p, buf, &dev->dev);
+
+	if (status != 0) {
+		buf[0] = '\0';
+		if (le16_to_cpu(dev->descriptor.idVendor) == MTS_VENDOR_ID) {
+			switch (le16_to_cpu(dev->descriptor.idProduct)) {
+>>>>>>> refs/remotes/origin/master
 			case MTS_CDMA_PRODUCT_ID:
 				strcpy(buf, "mts_cdma.fw");
 				break;
@@ -1762,7 +2480,10 @@ static int ti_download_firmware(struct ti_device *tdev)
 		status = ti_do_download(dev, pipe, buffer, fw_p->size);
 		kfree(buffer);
 	} else {
+<<<<<<< HEAD
 		dbg("%s ENOMEM\n", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 		status = -ENOMEM;
 	}
 	release_firmware(fw_p);
@@ -1772,7 +2493,11 @@ static int ti_download_firmware(struct ti_device *tdev)
 		return status;
 	}
 
+<<<<<<< HEAD
 	dbg("%s - download successful", __func__);
+=======
+	dev_dbg(&dev->dev, "%s - download successful\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

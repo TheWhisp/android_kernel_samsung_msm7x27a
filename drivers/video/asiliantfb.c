@@ -451,7 +451,11 @@ static struct chips_init_reg chips_init_xr[] =
 	{0xd1, 0x01},
 };
 
+<<<<<<< HEAD
 static void __devinit chips_hw_init(struct fb_info *p)
+=======
+static void chips_hw_init(struct fb_info *p)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -474,7 +478,11 @@ static void __devinit chips_hw_init(struct fb_info *p)
 		write_fr(chips_init_fr[i].addr, chips_init_fr[i].data);
 }
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo asiliantfb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo asiliantfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id =		"Asiliant 69000",
 	.type =		FB_TYPE_PACKED_PIXELS,
 	.visual =	FB_VISUAL_PSEUDOCOLOR,
@@ -483,7 +491,11 @@ static struct fb_fix_screeninfo asiliantfb_fix __devinitdata = {
 	.smem_len =	0x200000,	/* 2MB */
 };
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo asiliantfb_var __devinitdata = {
+=======
+static struct fb_var_screeninfo asiliantfb_var = {
+>>>>>>> refs/remotes/origin/master
 	.xres 		= 640,
 	.yres 		= 480,
 	.xres_virtual 	= 640,
@@ -504,7 +516,11 @@ static struct fb_var_screeninfo asiliantfb_var __devinitdata = {
 	.vsync_len 	= 2,
 };
 
+<<<<<<< HEAD
 static int __devinit init_asiliant(struct fb_info *p, unsigned long addr)
+=======
+static int init_asiliant(struct fb_info *p, unsigned long addr)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -527,16 +543,26 @@ static int __devinit init_asiliant(struct fb_info *p, unsigned long addr)
 		return err;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: Asiliant 69000 frame buffer (%dK RAM detected)\n",
 		p->node, p->fix.smem_len / 1024);
+=======
+	fb_info(p, "Asiliant 69000 frame buffer (%dK RAM detected)\n",
+		p->fix.smem_len / 1024);
+>>>>>>> refs/remotes/origin/master
 
 	writeb(0xff, mmio_base + 0x78c);
 	chips_hw_init(p);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit
 asiliantfb_pci_init(struct pci_dev *dp, const struct pci_device_id *ent)
+=======
+static int asiliantfb_pci_init(struct pci_dev *dp,
+			       const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long addr, size;
 	struct fb_info *p;
@@ -581,7 +607,11 @@ asiliantfb_pci_init(struct pci_dev *dp, const struct pci_device_id *ent)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit asiliantfb_remove(struct pci_dev *dp)
+=======
+static void asiliantfb_remove(struct pci_dev *dp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *p = pci_get_drvdata(dp);
 
@@ -593,7 +623,11 @@ static void __devexit asiliantfb_remove(struct pci_dev *dp)
 	framebuffer_release(p);
 }
 
+<<<<<<< HEAD
 static struct pci_device_id asiliantfb_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id asiliantfb_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VENDOR_ID_CT, PCI_DEVICE_ID_CT_69000, PCI_ANY_ID, PCI_ANY_ID },
 	{ 0 }
 };
@@ -604,7 +638,11 @@ static struct pci_driver asiliantfb_driver = {
 	.name =		"asiliantfb",
 	.id_table =	asiliantfb_pci_tbl,
 	.probe =	asiliantfb_pci_init,
+<<<<<<< HEAD
 	.remove =	__devexit_p(asiliantfb_remove),
+=======
+	.remove =	asiliantfb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init asiliantfb_init(void)

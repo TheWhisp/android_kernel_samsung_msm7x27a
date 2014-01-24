@@ -117,7 +117,11 @@ struct ircomm_cb *ircomm_open(notify_t *notify, __u8 service_type, int line)
 
 	IRDA_ASSERT(ircomm != NULL, return NULL;);
 
+<<<<<<< HEAD
 	self = kzalloc(sizeof(struct ircomm_cb), GFP_ATOMIC);
+=======
+	self = kzalloc(sizeof(struct ircomm_cb), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (self == NULL)
 		return NULL;
 

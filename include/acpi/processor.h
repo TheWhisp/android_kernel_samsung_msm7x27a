@@ -3,10 +3,20 @@
 
 #include <linux/kernel.h>
 #include <linux/cpu.h>
+<<<<<<< HEAD
 #include <linux/cpuidle.h>
 #include <linux/thermal.h>
 #include <asm/acpi.h>
 
+=======
+#include <linux/thermal.h>
+#include <asm/acpi.h>
+
+#define ACPI_PROCESSOR_CLASS		"processor"
+#define ACPI_PROCESSOR_DEVICE_NAME	"Processor"
+#define ACPI_PROCESSOR_DEVICE_HID	"ACPI0007"
+
+>>>>>>> refs/remotes/origin/master
 #define ACPI_PROCESSOR_BUSY_METRIC	10
 
 #define ACPI_PROCESSOR_MAX_POWER	8
@@ -59,16 +69,22 @@ struct acpi_processor_cx {
 	u8 entry_method;
 	u8 index;
 	u32 latency;
+<<<<<<< HEAD
 	u32 latency_ticks;
 	u32 power;
 	u32 usage;
 	u64 time;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 bm_sts_skip;
 	char desc[ACPI_CX_DESC_LEN];
 };
 
 struct acpi_processor_power {
+<<<<<<< HEAD
 	struct cpuidle_device dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct acpi_processor_cx *state;
 	unsigned long bm_check_timestamp;
 	u32 default_state;
@@ -195,11 +211,23 @@ struct acpi_processor_flags {
 	u8 has_cst:1;
 	u8 power_setup_done:1;
 	u8 bm_rld_set:1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8 need_hotplug_init:1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 need_hotplug_init:1;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct acpi_processor {
 	acpi_handle handle;
 	u32 acpi_id;
+<<<<<<< HEAD
+=======
+	u32 apic_id;
+>>>>>>> refs/remotes/origin/master
 	u32 id;
 	u32 pblk;
 	int performance_platform_limit;
@@ -212,6 +240,10 @@ struct acpi_processor {
 	struct acpi_processor_throttling throttling;
 	struct acpi_processor_limit limit;
 	struct thermal_cooling_device *cdev;
+<<<<<<< HEAD
+=======
+	struct device *dev; /* Processor device. */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct acpi_processor_errata {
@@ -224,6 +256,13 @@ struct acpi_processor_errata {
 	} piix4;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern void acpi_processor_load_module(struct acpi_processor *pr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int acpi_processor_preregister_performance(struct
 						  acpi_processor_performance
 						  __percpu *performance);
@@ -239,6 +278,12 @@ extern void acpi_processor_unregister_performance(struct
          if a _PPC object exists, rmmod is disallowed then */
 int acpi_processor_notify_smm(struct module *calling_module);
 
+<<<<<<< HEAD
+=======
+/* parsing the _P* objects. */
+extern int acpi_processor_get_performance_info(struct acpi_processor *pr);
+
+>>>>>>> refs/remotes/origin/master
 /* for communication between multiple parts of the processor kernel module */
 DECLARE_PER_CPU(struct acpi_processor *, processors);
 extern struct acpi_processor_errata errata;
@@ -310,6 +355,11 @@ static inline int acpi_processor_get_bios_limit(int cpu, unsigned int *limit)
 
 /* in processor_core.c */
 void acpi_processor_set_pdc(acpi_handle handle);
+<<<<<<< HEAD
+=======
+int acpi_get_apicid(acpi_handle, int type, u32 acpi_id);
+int acpi_map_cpuid(int apic_id, u32 acpi_id);
+>>>>>>> refs/remotes/origin/master
 int acpi_get_cpuid(acpi_handle, int type, u32 acpi_id);
 
 /* in processor_throttling.c */
@@ -326,9 +376,14 @@ extern void acpi_processor_reevaluate_tstate(struct acpi_processor *pr,
 extern const struct file_operations acpi_processor_throttling_fops;
 extern void acpi_processor_throttling_init(void);
 /* in processor_idle.c */
+<<<<<<< HEAD
 int acpi_processor_power_init(struct acpi_processor *pr,
 			      struct acpi_device *device);
 int acpi_processor_cst_has_changed(struct acpi_processor *pr);
+<<<<<<< HEAD
+=======
+int acpi_processor_hotplug(struct acpi_processor *pr);
+>>>>>>> refs/remotes/origin/cm-10.0
 int acpi_processor_power_exit(struct acpi_processor *pr,
 			      struct acpi_device *device);
 int acpi_processor_suspend(struct acpi_device * device, pm_message_t state);
@@ -337,7 +392,30 @@ extern struct cpuidle_driver acpi_idle_driver;
 
 /* in processor_thermal.c */
 int acpi_processor_get_limit_info(struct acpi_processor *pr);
+<<<<<<< HEAD
 extern struct thermal_cooling_device_ops processor_cooling_ops;
+=======
+extern const struct thermal_cooling_device_ops processor_cooling_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int acpi_processor_power_init(struct acpi_processor *pr);
+int acpi_processor_power_exit(struct acpi_processor *pr);
+int acpi_processor_cst_has_changed(struct acpi_processor *pr);
+int acpi_processor_hotplug(struct acpi_processor *pr);
+extern struct cpuidle_driver acpi_idle_driver;
+
+#ifdef CONFIG_PM_SLEEP
+void acpi_processor_syscore_init(void);
+void acpi_processor_syscore_exit(void);
+#else
+static inline void acpi_processor_syscore_init(void) {}
+static inline void acpi_processor_syscore_exit(void) {}
+#endif
+
+/* in processor_thermal.c */
+int acpi_processor_get_limit_info(struct acpi_processor *pr);
+extern const struct thermal_cooling_device_ops processor_cooling_ops;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CPU_FREQ
 void acpi_thermal_cpufreq_init(void);
 void acpi_thermal_cpufreq_exit(void);

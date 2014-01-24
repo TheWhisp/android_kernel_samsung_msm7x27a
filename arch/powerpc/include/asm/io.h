@@ -15,10 +15,21 @@
 extern int check_legacy_ioport(unsigned long base_port);
 #define I8042_DATA_REG	0x60
 #define FDC_BASE	0x3f0
+<<<<<<< HEAD
 /* only relevant for PReP */
 #define _PIDXR		0x279
 #define _PNPWRP		0xa79
 #define PNPBIOS_BASE	0xf000
+=======
+
+#if defined(CONFIG_PPC64) && defined(CONFIG_PCI)
+extern struct pci_dev *isa_bridge_pcidev;
+/*
+ * has legacy ISA devices ?
+ */
+#define arch_has_dev_port()	(isa_bridge_pcidev != NULL || isa_io_special)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/device.h>
 #include <linux/io.h>
@@ -65,8 +76,23 @@ extern unsigned long pci_dram_offset;
 
 extern resource_size_t isa_mem_base;
 
+<<<<<<< HEAD
 #if defined(CONFIG_PPC32) && defined(CONFIG_PPC_INDIRECT_IO)
 #error CONFIG_PPC_INDIRECT_IO is not yet supported on 32 bits
+=======
+/* Boolean set by platform if PIO accesses are suppored while _IO_BASE
+ * is not set or addresses cannot be translated to MMIO. This is typically
+ * set when the platform supports "special" PIO accesses via a non memory
+ * mapped mechanism, and allows things like the early udbg UART code to
+ * function.
+ */
+extern bool isa_io_special;
+
+#ifdef CONFIG_PPC32
+#if defined(CONFIG_PPC_INDIRECT_PIO) || defined(CONFIG_PPC_INDIRECT_MMIO)
+#error CONFIG_PPC_INDIRECT_{PIO,MMIO} are not yet supported on 32 bits
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -99,7 +125,11 @@ extern resource_size_t isa_mem_base;
 
 /* gcc 4.0 and older doesn't have 'Z' constraint */
 #if __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ == 0)
+<<<<<<< HEAD
 #define DEF_MMIO_IN_LE(name, size, insn)				\
+=======
+#define DEF_MMIO_IN_X(name, size, insn)				\
+>>>>>>> refs/remotes/origin/master
 static inline u##size name(const volatile u##size __iomem *addr)	\
 {									\
 	u##size ret;							\
@@ -108,7 +138,11 @@ static inline u##size name(const volatile u##size __iomem *addr)	\
 	return ret;							\
 }
 
+<<<<<<< HEAD
 #define DEF_MMIO_OUT_LE(name, size, insn) 				\
+=======
+#define DEF_MMIO_OUT_X(name, size, insn)				\
+>>>>>>> refs/remotes/origin/master
 static inline void name(volatile u##size __iomem *addr, u##size val)	\
 {									\
 	__asm__ __volatile__("sync;"#insn" %1,0,%2"			\
@@ -116,7 +150,11 @@ static inline void name(volatile u##size __iomem *addr, u##size val)	\
 	IO_SET_SYNC_FLAG();						\
 }
 #else /* newer gcc */
+<<<<<<< HEAD
 #define DEF_MMIO_IN_LE(name, size, insn)				\
+=======
+#define DEF_MMIO_IN_X(name, size, insn)				\
+>>>>>>> refs/remotes/origin/master
 static inline u##size name(const volatile u##size __iomem *addr)	\
 {									\
 	u##size ret;							\
@@ -125,7 +163,11 @@ static inline u##size name(const volatile u##size __iomem *addr)	\
 	return ret;							\
 }
 
+<<<<<<< HEAD
 #define DEF_MMIO_OUT_LE(name, size, insn) 				\
+=======
+#define DEF_MMIO_OUT_X(name, size, insn)				\
+>>>>>>> refs/remotes/origin/master
 static inline void name(volatile u##size __iomem *addr, u##size val)	\
 {									\
 	__asm__ __volatile__("sync;"#insn" %1,%y0"			\
@@ -134,7 +176,11 @@ static inline void name(volatile u##size __iomem *addr, u##size val)	\
 }
 #endif
 
+<<<<<<< HEAD
 #define DEF_MMIO_IN_BE(name, size, insn)				\
+=======
+#define DEF_MMIO_IN_D(name, size, insn)				\
+>>>>>>> refs/remotes/origin/master
 static inline u##size name(const volatile u##size __iomem *addr)	\
 {									\
 	u##size ret;							\
@@ -143,7 +189,11 @@ static inline u##size name(const volatile u##size __iomem *addr)	\
 	return ret;							\
 }
 
+<<<<<<< HEAD
 #define DEF_MMIO_OUT_BE(name, size, insn)				\
+=======
+#define DEF_MMIO_OUT_D(name, size, insn)				\
+>>>>>>> refs/remotes/origin/master
 static inline void name(volatile u##size __iomem *addr, u##size val)	\
 {									\
 	__asm__ __volatile__("sync;"#insn"%U0%X0 %1,%0"			\
@@ -151,6 +201,7 @@ static inline void name(volatile u##size __iomem *addr, u##size val)	\
 	IO_SET_SYNC_FLAG();						\
 }
 
+<<<<<<< HEAD
 
 DEF_MMIO_IN_BE(in_8,     8, lbz);
 DEF_MMIO_IN_BE(in_be16, 16, lhz);
@@ -167,6 +218,39 @@ DEF_MMIO_OUT_LE(out_le32, 32, stwbrx);
 #ifdef __powerpc64__
 DEF_MMIO_OUT_BE(out_be64, 64, std);
 DEF_MMIO_IN_BE(in_be64, 64, ld);
+=======
+DEF_MMIO_IN_D(in_8,     8, lbz);
+DEF_MMIO_OUT_D(out_8,   8, stb);
+
+#ifdef __BIG_ENDIAN__
+DEF_MMIO_IN_D(in_be16, 16, lhz);
+DEF_MMIO_IN_D(in_be32, 32, lwz);
+DEF_MMIO_IN_X(in_le16, 16, lhbrx);
+DEF_MMIO_IN_X(in_le32, 32, lwbrx);
+
+DEF_MMIO_OUT_D(out_be16, 16, sth);
+DEF_MMIO_OUT_D(out_be32, 32, stw);
+DEF_MMIO_OUT_X(out_le16, 16, sthbrx);
+DEF_MMIO_OUT_X(out_le32, 32, stwbrx);
+#else
+DEF_MMIO_IN_X(in_be16, 16, lhbrx);
+DEF_MMIO_IN_X(in_be32, 32, lwbrx);
+DEF_MMIO_IN_D(in_le16, 16, lhz);
+DEF_MMIO_IN_D(in_le32, 32, lwz);
+
+DEF_MMIO_OUT_X(out_be16, 16, sthbrx);
+DEF_MMIO_OUT_X(out_be32, 32, stwbrx);
+DEF_MMIO_OUT_D(out_le16, 16, sth);
+DEF_MMIO_OUT_D(out_le32, 32, stw);
+
+#endif /* __BIG_ENDIAN */
+
+#ifdef __powerpc64__
+
+#ifdef __BIG_ENDIAN__
+DEF_MMIO_OUT_D(out_be64, 64, std);
+DEF_MMIO_IN_D(in_be64, 64, ld);
+>>>>>>> refs/remotes/origin/master
 
 /* There is no asm instructions for 64 bits reverse loads and stores */
 static inline u64 in_le64(const volatile u64 __iomem *addr)
@@ -178,6 +262,25 @@ static inline void out_le64(volatile u64 __iomem *addr, u64 val)
 {
 	out_be64(addr, swab64(val));
 }
+<<<<<<< HEAD
+=======
+#else
+DEF_MMIO_OUT_D(out_le64, 64, std);
+DEF_MMIO_IN_D(in_le64, 64, ld);
+
+/* There is no asm instructions for 64 bits reverse loads and stores */
+static inline u64 in_be64(const volatile u64 __iomem *addr)
+{
+	return swab64(in_le64(addr));
+}
+
+static inline void out_be64(volatile u64 __iomem *addr, u64 val)
+{
+	out_le64(addr, swab64(val));
+}
+
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif /* __powerpc64__ */
 
 /*
@@ -218,9 +321,15 @@ extern void _memcpy_toio(volatile void __iomem *dest, const void *src,
  * for PowerPC is as close as possible to the x86 version of these, and thus
  * provides fairly heavy weight barriers for the non-raw versions
  *
+<<<<<<< HEAD
  * In addition, they support a hook mechanism when CONFIG_PPC_INDIRECT_IO
  * allowing the platform to provide its own implementation of some or all
  * of the accessors.
+=======
+ * In addition, they support a hook mechanism when CONFIG_PPC_INDIRECT_MMIO
+ * or CONFIG_PPC_INDIRECT_PIO are set allowing the platform to provide its
+ * own implementation of some or all of the accessors.
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
@@ -236,8 +345,13 @@ extern void _memcpy_toio(volatile void __iomem *dest, const void *src,
 
 /* Indirect IO address tokens:
  *
+<<<<<<< HEAD
  * When CONFIG_PPC_INDIRECT_IO is set, the platform can provide hooks
  * on all IOs. (Note that this is all 64 bits only for now)
+=======
+ * When CONFIG_PPC_INDIRECT_MMIO is set, the platform can provide hooks
+ * on all MMIOs. (Note that this is all 64 bits only for now)
+>>>>>>> refs/remotes/origin/master
  *
  * To help platforms who may need to differenciate MMIO addresses in
  * their hooks, a bitfield is reserved for use by the platform near the
@@ -259,11 +373,22 @@ extern void _memcpy_toio(volatile void __iomem *dest, const void *src,
  *
  * The direct IO mapping operations will then mask off those bits
  * before doing the actual access, though that only happen when
+<<<<<<< HEAD
  * CONFIG_PPC_INDIRECT_IO is set, thus be careful when you use that
  * mechanism
  */
 
 #ifdef CONFIG_PPC_INDIRECT_IO
+=======
+ * CONFIG_PPC_INDIRECT_MMIO is set, thus be careful when you use that
+ * mechanism
+ *
+ * For PIO, there is a separate CONFIG_PPC_INDIRECT_PIO which makes
+ * all PIO functions call through a hook.
+ */
+
+#ifdef CONFIG_PPC_INDIRECT_MMIO
+>>>>>>> refs/remotes/origin/master
 #define PCI_IO_IND_TOKEN_MASK	0x0fff000000000000ul
 #define PCI_IO_IND_TOKEN_SHIFT	48
 #define PCI_FIX_ADDR(addr)						\
@@ -394,7 +519,15 @@ __do_out_asm(_rec_outl, "stwbrx")
 #endif /* CONFIG_PPC32 */
 
 /* The "__do_*" operations below provide the actual "base" implementation
+<<<<<<< HEAD
+<<<<<<< HEAD
  * for each of the defined acccessor. Some of them use the out_* functions
+=======
+ * for each of the defined accessors. Some of them use the out_* functions
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * for each of the defined accessors. Some of them use the out_* functions
+>>>>>>> refs/remotes/origin/master
  * directly, some of them still use EEH, though we might change that in the
  * future. Those macros below provide the necessary argument swapping and
  * handling of the IO base for PIO.
@@ -668,7 +801,11 @@ extern void __iomem * __ioremap_at(phys_addr_t pa, void *ea,
 extern void __iounmap_at(void *ea, unsigned long size);
 
 /*
+<<<<<<< HEAD
  * When CONFIG_PPC_INDIRECT_IO is set, we use the generic iomap implementation
+=======
+ * When CONFIG_PPC_INDIRECT_PIO is set, we use the generic iomap implementation
+>>>>>>> refs/remotes/origin/master
  * which needs some additional definitions here. They basically allow PIO
  * space overall to be 1GB. This will work as long as we never try to use
  * iomap to map MMIO below 1GB which should be fine on ppc64

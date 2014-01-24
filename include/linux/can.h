@@ -8,8 +8,11 @@
  * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
  * All rights reserved.
  *
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #ifndef CAN_H
@@ -78,7 +81,11 @@ struct can_frame {
  * @can_addr:    protocol specific address information
  */
 struct sockaddr_can {
+<<<<<<< HEAD
 	sa_family_t can_family;
+=======
+	__kernel_sa_family_t can_family;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int         can_ifindex;
 	union {
 		/* transport protocol class address information (e.g. ISOTP) */

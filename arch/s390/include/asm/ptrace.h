@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/ptrace.h
  *
  *  S390 version
@@ -230,17 +231,34 @@ typedef struct
 #define PSW_MASK_IO		0x02000000UL
 #define PSW_MASK_EXT		0x01000000UL
 #define PSW_MASK_KEY		0x00F00000UL
+<<<<<<< HEAD
+=======
+#define PSW_MASK_BASE		0x00080000UL	/* always one */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PSW_MASK_MCHECK		0x00040000UL
 #define PSW_MASK_WAIT		0x00020000UL
 #define PSW_MASK_PSTATE		0x00010000UL
 #define PSW_MASK_ASC		0x0000C000UL
 #define PSW_MASK_CC		0x00003000UL
 #define PSW_MASK_PM		0x00000F00UL
+<<<<<<< HEAD
+=======
+#define PSW_MASK_EA		0x00000000UL
+#define PSW_MASK_BA		0x00000000UL
+
+#define PSW_MASK_USER		0x0000FF00UL
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PSW_ADDR_AMODE		0x80000000UL
 #define PSW_ADDR_INSN		0x7FFFFFFFUL
 
+<<<<<<< HEAD
 #define PSW_BASE_BITS		0x00080000UL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PSW_DEFAULT_KEY		(((unsigned long) PAGE_DEFAULT_ACC) << 20)
 
 #define PSW_ASC_PRIMARY		0x00000000UL
@@ -254,6 +272,10 @@ typedef struct
 #define PSW_MASK_DAT		0x0400000000000000UL
 #define PSW_MASK_IO		0x0200000000000000UL
 #define PSW_MASK_EXT		0x0100000000000000UL
+<<<<<<< HEAD
+=======
+#define PSW_MASK_BASE		0x0000000000000000UL
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PSW_MASK_KEY		0x00F0000000000000UL
 #define PSW_MASK_MCHECK		0x0004000000000000UL
 #define PSW_MASK_WAIT		0x0002000000000000UL
@@ -261,12 +283,25 @@ typedef struct
 #define PSW_MASK_ASC		0x0000C00000000000UL
 #define PSW_MASK_CC		0x0000300000000000UL
 #define PSW_MASK_PM		0x00000F0000000000UL
+<<<<<<< HEAD
+=======
+#define PSW_MASK_EA		0x0000000100000000UL
+#define PSW_MASK_BA		0x0000000080000000UL
+
+#define PSW_MASK_USER		0x0000FF0180000000UL
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PSW_ADDR_AMODE		0x0000000000000000UL
 #define PSW_ADDR_INSN		0xFFFFFFFFFFFFFFFFUL
 
+<<<<<<< HEAD
 #define PSW_BASE_BITS		0x0000000180000000UL
 #define PSW_BASE32_BITS		0x0000000080000000UL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PSW_DEFAULT_KEY		(((unsigned long) PAGE_DEFAULT_ACC) << 52)
 
 #define PSW_ASC_PRIMARY		0x0000000000000000UL
@@ -279,6 +314,7 @@ typedef struct
 #ifdef __KERNEL__
 extern long psw_kernel_bits;
 extern long psw_user_bits;
+<<<<<<< HEAD
 #ifdef CONFIG_64BIT
 extern long psw_user32_bits;
 #endif
@@ -291,6 +327,9 @@ extern long psw_user32_bits;
 #define PSW_MASK_MERGE(CURRENT,NEW) \
 	(((CURRENT) & ~(PSW_MASK_CC|PSW_MASK_PM)) | \
 	 ((NEW) & (PSW_MASK_CC|PSW_MASK_PM)))
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The s390_regs structure is used to define the elf_gregset_t.
@@ -317,6 +356,24 @@ typedef struct
 } s390_compat_regs_high;
 
 #ifdef __KERNEL__
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999, 2000
+ *    Author(s): Denis Joseph Barrow (djbarrow@de.ibm.com,barrow_dj@yahoo.com)
+ */
+#ifndef _S390_PTRACE_H
+#define _S390_PTRACE_H
+
+#include <uapi/asm/ptrace.h>
+
+#ifndef __ASSEMBLY__
+
+#define PSW_KERNEL_BITS	(PSW_DEFAULT_KEY | PSW_MASK_BASE | PSW_ASC_HOME | \
+			 PSW_MASK_EA | PSW_MASK_BA)
+#define PSW_USER_BITS	(PSW_MASK_DAT | PSW_MASK_IO | PSW_MASK_EXT | \
+			 PSW_DEFAULT_KEY | PSW_MASK_BASE | PSW_MASK_MCHECK | \
+			 PSW_MASK_PSTATE | PSW_ASC_PRIMARY)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The pt_regs struct defines the way the registers are stored on
@@ -328,8 +385,19 @@ struct pt_regs
 	psw_t psw;
 	unsigned long gprs[NUM_GPRS];
 	unsigned long orig_gpr2;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned short ilc;
 	unsigned short svcnr;
+=======
+	unsigned int int_code;
+	unsigned long int_parm_long;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int int_code;
+	unsigned int int_parm;
+	unsigned long int_parm_long;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -365,12 +433,17 @@ struct per_struct_kernel {
 	unsigned char access_id;	/* PER trap access identification */
 };
 
+<<<<<<< HEAD
 #define PER_EVENT_MASK			0xE9000000UL
+=======
+#define PER_EVENT_MASK			0xEB000000UL
+>>>>>>> refs/remotes/origin/master
 
 #define PER_EVENT_BRANCH		0x80000000UL
 #define PER_EVENT_IFETCH		0x40000000UL
 #define PER_EVENT_STORE			0x20000000UL
 #define PER_EVENT_STORE_REAL		0x08000000UL
+<<<<<<< HEAD
 #define PER_EVENT_NULLIFICATION		0x01000000UL
 
 #define PER_CONTROL_MASK		0x00a00000UL
@@ -487,6 +560,11 @@ typedef struct
 #define PTRACE_POKETEXT_AREA	      0x5004
 #define PTRACE_POKEDATA_AREA 	      0x5005
 #define PTRACE_GET_LAST_BREAK	      0x5006
+<<<<<<< HEAD
+=======
+#define PTRACE_PEEK_SYSTEM_CALL       0x5007
+#define PTRACE_POKE_SYSTEM_CALL	      0x5008
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * PT_PROT definition is loosely based on hppa bsd definition in
@@ -535,18 +613,51 @@ struct user_regs_struct
 };
 
 #ifdef __KERNEL__
+=======
+#define PER_EVENT_TRANSACTION_END	0x02000000UL
+#define PER_EVENT_NULLIFICATION		0x01000000UL
+
+#define PER_CONTROL_MASK		0x00e00000UL
+
+#define PER_CONTROL_BRANCH_ADDRESS	0x00800000UL
+#define PER_CONTROL_SUSPENSION		0x00400000UL
+#define PER_CONTROL_ALTERATION		0x00200000UL
+
+>>>>>>> refs/remotes/origin/master
 /*
  * These are defined as per linux/ptrace.h, which see.
  */
 #define arch_has_single_step()	(1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs * regs);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define user_mode(regs) (((regs)->psw.mask & PSW_MASK_PSTATE) != 0)
 #define instruction_pointer(regs) ((regs)->psw.addr & PSW_ADDR_INSN)
 #define user_stack_pointer(regs)((regs)->gprs[15])
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define regs_return_value(regs)((regs)->gprs[2])
 #define profile_pc(regs) instruction_pointer(regs)
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define profile_pc(regs) instruction_pointer(regs)
+
+static inline long regs_return_value(struct pt_regs *regs)
+{
+	return regs->gprs[2];
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int regs_query_register_offset(const char *name);
 const char *regs_query_register_name(unsigned int offset);
 unsigned long regs_get_register(struct pt_regs *regs, unsigned int offset);
@@ -557,7 +668,11 @@ static inline unsigned long kernel_stack_pointer(struct pt_regs *regs)
 	return regs->gprs[15] & PSW_ADDR_INSN;
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 #endif /* __ASSEMBLY__ */
 
+=======
+#endif /* __ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _S390_PTRACE_H */

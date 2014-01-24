@@ -18,12 +18,21 @@
 #include <linux/skbuff.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include "init.h"
 #include "irq_kern.h"
 #include "irq_user.h"
 #include "mconsole_kern.h"
 #include "net_kern.h"
 #include "net_user.h"
+=======
+#include <init.h>
+#include <irq_kern.h>
+#include <irq_user.h>
+#include "mconsole_kern.h"
+#include <net_kern.h>
+#include <net_user.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_NAME "uml-netdev"
 
@@ -161,7 +170,15 @@ static int uml_net_open(struct net_device *dev)
 	}
 
 	err = um_request_irq(dev->irq, lp->fd, IRQ_READ, uml_net_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			     IRQF_DISABLED | IRQF_SHARED, dev->name, dev);
+=======
+			     IRQF_SHARED, dev->name, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     IRQF_SHARED, dev->name, dev);
+>>>>>>> refs/remotes/origin/master
 	if (err != 0) {
 		printk(KERN_ERR "uml_net_open: failed to get irq(%d)\n", err);
 		err = -ENETUNREACH;
@@ -195,7 +212,11 @@ static int uml_net_close(struct net_device *dev)
 
 	netif_stop_queue(dev);
 
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
+=======
+	um_free_irq(dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 	if (lp->close != NULL)
 		(*lp->close)(lp->fd, &lp->user);
 	lp->fd = -1;
@@ -218,6 +239,10 @@ static int uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	spin_lock_irqsave(&lp->lock, flags);
 
 	len = (*lp->write)(lp->fd, skb, lp);
+<<<<<<< HEAD
+=======
+	skb_tx_timestamp(skb);
+>>>>>>> refs/remotes/origin/master
 
 	if (len == skb->len) {
 		dev->stats.tx_packets++;
@@ -262,16 +287,43 @@ static int uml_net_change_mtu(struct net_device *dev, int new_mtu)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_NET_POLL_CONTROLLER
+static void uml_net_poll_controller(struct net_device *dev)
+{
+	disable_irq(dev->irq);
+	uml_net_interrupt(dev->irq, dev);
+	enable_irq(dev->irq);
+}
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static void uml_net_get_drvinfo(struct net_device *dev,
 				struct ethtool_drvinfo *info)
 {
 	strcpy(info->driver, DRIVER_NAME);
 	strcpy(info->version, "42");
+=======
+static void uml_net_get_drvinfo(struct net_device *dev,
+				struct ethtool_drvinfo *info)
+{
+	strlcpy(info->driver, DRIVER_NAME, sizeof(info->driver));
+	strlcpy(info->version, "42", sizeof(info->version));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct ethtool_ops uml_net_ethtool_ops = {
 	.get_drvinfo	= uml_net_get_drvinfo,
 	.get_link	= ethtool_op_get_link,
+<<<<<<< HEAD
+=======
+	.get_ts_info	= ethtool_op_get_ts_info,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void uml_net_user_timer_expire(unsigned long _conn)
@@ -284,8 +336,18 @@ static void uml_net_user_timer_expire(unsigned long _conn)
 #endif
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void setup_etheraddr(char *str, unsigned char *addr, char *name)
+=======
+static int setup_etheraddr(char *str, unsigned char *addr, char *name)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
+=======
+static void setup_etheraddr(struct net_device *dev, char *str)
+{
+	unsigned char *addr = dev->dev_addr;
+>>>>>>> refs/remotes/origin/master
 	char *end;
 	int i;
 
@@ -325,12 +387,29 @@ static void setup_etheraddr(char *str, unsigned char *addr, char *name)
 		       addr[0] | 0x02, addr[1], addr[2], addr[3], addr[4],
 		       addr[5]);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 random:
 	printk(KERN_INFO
 	       "Choosing a random ethernet address for device %s\n", name);
 	random_ether_addr(addr);
+<<<<<<< HEAD
+=======
+	return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return;
+
+random:
+	printk(KERN_INFO
+	       "Choosing a random ethernet address for device %s\n", dev->name);
+	eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static DEFINE_SPINLOCK(devices_lock);
@@ -359,11 +438,31 @@ static const struct net_device_ops uml_netdev_ops = {
 	.ndo_open 		= uml_net_open,
 	.ndo_stop 		= uml_net_close,
 	.ndo_start_xmit 	= uml_net_start_xmit,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list = uml_net_set_multicast_list,
+=======
+	.ndo_set_rx_mode	= uml_net_set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= uml_net_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_tx_timeout 	= uml_net_tx_timeout,
 	.ndo_set_mac_address	= eth_mac_addr,
 	.ndo_change_mtu 	= uml_net_change_mtu,
 	.ndo_validate_addr	= eth_validate_addr,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller = uml_net_poll_controller,
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller = uml_net_poll_controller,
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -379,6 +478,13 @@ static void eth_configure(int n, void *init, char *mac,
 	struct net_device *dev;
 	struct uml_net_private *lp;
 	int err, size;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int random_mac;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	size = transport->private_size + sizeof(struct uml_net_private);
 
@@ -405,9 +511,19 @@ static void eth_configure(int n, void *init, char *mac,
 	 */
 	snprintf(dev->name, sizeof(dev->name), "eth%d", n);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	setup_etheraddr(mac, device->mac, dev->name);
+=======
+	random_mac = setup_etheraddr(mac, device->mac, dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO "Netdevice %d (%pM) : ", n, device->mac);
+=======
+	setup_etheraddr(dev, mac);
+
+	printk(KERN_INFO "Netdevice %d (%pM) : ", n, dev->dev_addr);
+>>>>>>> refs/remotes/origin/master
 
 	lp = netdev_priv(dev);
 	/* This points to the transport private data. It's still clear, but we
@@ -454,14 +570,27 @@ static void eth_configure(int n, void *init, char *mac,
 	init_timer(&lp->tl);
 	spin_lock_init(&lp->lock);
 	lp->tl.function = uml_net_user_timer_expire;
+<<<<<<< HEAD
 	memcpy(lp->mac, device->mac, sizeof(lp->mac));
+=======
+	memcpy(lp->mac, dev->dev_addr, sizeof(lp->mac));
+>>>>>>> refs/remotes/origin/master
 
 	if ((transport->user->init != NULL) &&
 	    ((*transport->user->init)(&lp->user, dev) != 0))
 		goto out_unregister;
 
+<<<<<<< HEAD
 	/* don't use eth_mac_addr, it will not work here */
 	memcpy(dev->dev_addr, device->mac, ETH_ALEN);
+<<<<<<< HEAD
+=======
+	if (random_mac)
+		dev->addr_assign_type |= NET_ADDR_RANDOM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->mtu = transport->user->mtu;
 	dev->netdev_ops = &uml_netdev_ops;
 	dev->ethtool_ops = &uml_net_ethtool_ops;
@@ -818,7 +947,11 @@ static void close_devices(void)
 	spin_lock(&opened_lock);
 	list_for_each(ele, &opened) {
 		lp = list_entry(ele, struct uml_net_private, list);
+<<<<<<< HEAD
 		free_irq(lp->dev->irq, lp->dev);
+=======
+		um_free_irq(lp->dev->irq, lp->dev);
+>>>>>>> refs/remotes/origin/master
 		if ((lp->close != NULL) && (lp->fd >= 0))
 			(*lp->close)(lp->fd, &lp->user);
 		if (lp->remove != NULL)

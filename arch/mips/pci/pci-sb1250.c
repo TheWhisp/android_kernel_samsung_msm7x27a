@@ -55,9 +55,15 @@
 
 static void *cfg_space;
 
+<<<<<<< HEAD
 #define PCI_BUS_ENABLED	1
 #define LDT_BUS_ENABLED	2
 #define PCI_DEVICE_MODE	4
+=======
+#define PCI_BUS_ENABLED 1
+#define LDT_BUS_ENABLED 2
+#define PCI_DEVICE_MODE 4
+>>>>>>> refs/remotes/origin/master
 
 static int sb1250_bus_status;
 
@@ -213,7 +219,15 @@ static int __init sb1250_pcibios_init(void)
 	uint64_t reg;
 
 	/* CFE will assign PCI resources */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_probe_only = 1;
+=======
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/master
 
 	/* Avoid ISA compat ranges.  */
 	PCIBIOS_MIN_IO = 0x00008000UL;
@@ -239,7 +253,11 @@ static int __init sb1250_pcibios_init(void)
 			       PCI_COMMAND));
 		if (!(cmdreg & PCI_COMMAND_MASTER)) {
 			printk
+<<<<<<< HEAD
 			    ("PCI: Skipping PCI probe.  Bus is not initialized.\n");
+=======
+			    ("PCI: Skipping PCI probe.	Bus is not initialized.\n");
+>>>>>>> refs/remotes/origin/master
 			iounmap(cfg_space);
 			return 0;
 		}
@@ -283,7 +301,13 @@ static int __init sb1250_pcibios_init(void)
 	register_pci_controller(&sb1250_controller);
 
 #ifdef CONFIG_VGA_CONSOLE
+<<<<<<< HEAD
 	take_over_console(&vga_con, 0, MAX_NR_CONSOLES - 1, 1);
+=======
+	console_lock();
+	do_take_over_console(&vga_con, 0, MAX_NR_CONSOLES - 1, 1);
+	console_unlock();
+>>>>>>> refs/remotes/origin/master
 #endif
 	return 0;
 }

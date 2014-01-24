@@ -9,21 +9,36 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/cpu.h>
 #include <linux/sysfs.h>
 #include <linux/cpufreq.h>
+=======
+#include <linux/cpu.h>
+#include <linux/sysfs.h>
+#include <linux/cpufreq.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/jiffies.h>
 #include <linux/percpu.h>
 #include <linux/kobject.h>
 #include <linux/spinlock.h>
 #include <linux/notifier.h>
+=======
+#include <linux/cpu.h>
+#include <linux/cpufreq.h>
+#include <linux/module.h>
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/cputime.h>
 
 static spinlock_t cpufreq_stats_lock;
 
+<<<<<<< HEAD
 #define CPUFREQ_STATDEVICE_ATTR(_name, _mode, _show) \
 static struct freq_attr _attr_##_name = {\
 	.attr = {.name = __stringify(_name), .mode = _mode, }, \
@@ -38,6 +53,16 @@ struct cpufreq_stats {
 	unsigned int state_num;
 	unsigned int last_index;
 	cputime64_t *time_in_state;
+=======
+struct cpufreq_stats {
+	unsigned int cpu;
+	unsigned int total_trans;
+	unsigned long long last_time;
+	unsigned int max_state;
+	unsigned int state_num;
+	unsigned int last_index;
+	u64 *time_in_state;
+>>>>>>> refs/remotes/origin/master
 	unsigned int *freq_table;
 #ifdef CONFIG_CPU_FREQ_STAT_DETAILS
 	unsigned int *trans_table;
@@ -60,9 +85,19 @@ static int cpufreq_stats_update(unsigned int cpu)
 	spin_lock(&cpufreq_stats_lock);
 	stat = per_cpu(cpufreq_stats_table, cpu);
 	if (stat->time_in_state)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		stat->time_in_state[stat->last_index] =
 			cputime64_add(stat->time_in_state[stat->last_index],
 				      cputime_sub(cur_time, stat->last_time));
+=======
+		stat->time_in_state[stat->last_index] +=
+			cur_time - stat->last_time;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		stat->time_in_state[stat->last_index] +=
+			cur_time - stat->last_time;
+>>>>>>> refs/remotes/origin/master
 	stat->last_time = cur_time;
 	spin_unlock(&cpufreq_stats_lock);
 	return 0;
@@ -88,7 +123,11 @@ static ssize_t show_time_in_state(struct cpufreq_policy *policy, char *buf)
 	for (i = 0; i < stat->state_num; i++) {
 		len += sprintf(buf + len, "%u %llu\n", stat->freq_table[i],
 			(unsigned long long)
+<<<<<<< HEAD
 			cputime64_to_clock_t(stat->time_in_state[i]));
+=======
+			jiffies_64_to_clock_t(stat->time_in_state[i]));
+>>>>>>> refs/remotes/origin/master
 	}
 	return len;
 }
@@ -123,7 +162,11 @@ static ssize_t show_trans_table(struct cpufreq_policy *policy, char *buf)
 		len += snprintf(buf + len, PAGE_SIZE - len, "%9u: ",
 				stat->freq_table[i]);
 
+<<<<<<< HEAD
 		for (j = 0; j < stat->state_num; j++)   {
+=======
+		for (j = 0; j < stat->state_num; j++) {
+>>>>>>> refs/remotes/origin/master
 			if (len >= PAGE_SIZE)
 				break;
 			len += snprintf(buf + len, PAGE_SIZE - len, "%9u ",
@@ -137,6 +180,7 @@ static ssize_t show_trans_table(struct cpufreq_policy *policy, char *buf)
 		return PAGE_SIZE;
 	return len;
 }
+<<<<<<< HEAD
 CPUFREQ_STATDEVICE_ATTR(trans_table, 0444, show_trans_table);
 #endif
 
@@ -148,6 +192,19 @@ static struct attribute *default_attrs[] = {
 	&_attr_time_in_state.attr,
 #ifdef CONFIG_CPU_FREQ_STAT_DETAILS
 	&_attr_trans_table.attr,
+=======
+cpufreq_freq_attr_ro(trans_table);
+#endif
+
+cpufreq_freq_attr_ro(total_trans);
+cpufreq_freq_attr_ro(time_in_state);
+
+static struct attribute *default_attrs[] = {
+	&total_trans.attr,
+	&time_in_state.attr,
+#ifdef CONFIG_CPU_FREQ_STAT_DETAILS
+	&trans_table.attr,
+>>>>>>> refs/remotes/origin/master
 #endif
 	NULL
 };
@@ -171,11 +228,21 @@ static int freq_table_get_index(struct cpufreq_stats *stat, unsigned int freq)
 static void cpufreq_stats_free_table(unsigned int cpu)
 {
 	struct cpufreq_stats *stat = per_cpu(cpufreq_stats_table, cpu);
+<<<<<<< HEAD
 	if (stat) {
 		kfree(stat->time_in_state);
 		kfree(stat);
 	}
 	per_cpu(cpufreq_stats_table, cpu) = NULL;
+=======
+
+	if (stat) {
+		pr_debug("%s: Free stat table\n", __func__);
+		kfree(stat->time_in_state);
+		kfree(stat);
+		per_cpu(cpufreq_stats_table, cpu) = NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /* must be called early in the CPU removal sequence (before
@@ -184,10 +251,27 @@ static void cpufreq_stats_free_table(unsigned int cpu)
 static void cpufreq_stats_free_sysfs(unsigned int cpu)
 {
 	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+<<<<<<< HEAD
 	if (policy && policy->cpu == cpu)
 		sysfs_remove_group(&policy->kobj, &stats_attr_group);
 	if (policy)
 		cpufreq_cpu_put(policy);
+=======
+
+	if (!policy)
+		return;
+
+	if (!cpufreq_frequency_get_table(cpu))
+		goto put_ref;
+
+	if (!policy_is_shared(policy)) {
+		pr_debug("%s: Free sysfs stat\n", __func__);
+		sysfs_remove_group(&policy->kobj, &stats_attr_group);
+	}
+
+put_ref:
+	cpufreq_cpu_put(policy);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int cpufreq_stats_create_table(struct cpufreq_policy *policy,
@@ -195,22 +279,39 @@ static int cpufreq_stats_create_table(struct cpufreq_policy *policy,
 {
 	unsigned int i, j, count = 0, ret = 0;
 	struct cpufreq_stats *stat;
+<<<<<<< HEAD
 	struct cpufreq_policy *data;
+=======
+	struct cpufreq_policy *current_policy;
+>>>>>>> refs/remotes/origin/master
 	unsigned int alloc_size;
 	unsigned int cpu = policy->cpu;
 	if (per_cpu(cpufreq_stats_table, cpu))
 		return -EBUSY;
+<<<<<<< HEAD
 	stat = kzalloc(sizeof(struct cpufreq_stats), GFP_KERNEL);
 	if ((stat) == NULL)
 		return -ENOMEM;
 
 	data = cpufreq_cpu_get(cpu);
 	if (data == NULL) {
+=======
+	stat = kzalloc(sizeof(*stat), GFP_KERNEL);
+	if ((stat) == NULL)
+		return -ENOMEM;
+
+	current_policy = cpufreq_cpu_get(cpu);
+	if (current_policy == NULL) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto error_get_fail;
 	}
 
+<<<<<<< HEAD
 	ret = sysfs_create_group(&data->kobj, &stats_attr_group);
+=======
+	ret = sysfs_create_group(&current_policy->kobj, &stats_attr_group);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_out;
 
@@ -224,7 +325,11 @@ static int cpufreq_stats_create_table(struct cpufreq_policy *policy,
 		count++;
 	}
 
+<<<<<<< HEAD
 	alloc_size = count * sizeof(int) + count * sizeof(cputime64_t);
+=======
+	alloc_size = count * sizeof(int) + count * sizeof(u64);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CPU_FREQ_STAT_DETAILS
 	alloc_size += count * count * sizeof(int);
@@ -253,16 +358,39 @@ static int cpufreq_stats_create_table(struct cpufreq_policy *policy,
 	stat->last_time = get_jiffies_64();
 	stat->last_index = freq_table_get_index(stat, policy->cur);
 	spin_unlock(&cpufreq_stats_lock);
+<<<<<<< HEAD
 	cpufreq_cpu_put(data);
 	return 0;
 error_out:
 	cpufreq_cpu_put(data);
+=======
+	cpufreq_cpu_put(current_policy);
+	return 0;
+error_out:
+	cpufreq_cpu_put(current_policy);
+>>>>>>> refs/remotes/origin/master
 error_get_fail:
 	kfree(stat);
 	per_cpu(cpufreq_stats_table, cpu) = NULL;
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static void cpufreq_stats_update_policy_cpu(struct cpufreq_policy *policy)
+{
+	struct cpufreq_stats *stat = per_cpu(cpufreq_stats_table,
+			policy->last_cpu);
+
+	pr_debug("Updating stats_table for new_cpu %u from last_cpu %u\n",
+			policy->cpu, policy->last_cpu);
+	per_cpu(cpufreq_stats_table, policy->cpu) = per_cpu(cpufreq_stats_table,
+			policy->last_cpu);
+	per_cpu(cpufreq_stats_table, policy->last_cpu) = NULL;
+	stat->cpu = policy->cpu;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int cpufreq_stat_notifier_policy(struct notifier_block *nb,
 		unsigned long val, void *data)
 {
@@ -270,6 +398,15 @@ static int cpufreq_stat_notifier_policy(struct notifier_block *nb,
 	struct cpufreq_policy *policy = data;
 	struct cpufreq_frequency_table *table;
 	unsigned int cpu = policy->cpu;
+<<<<<<< HEAD
+=======
+
+	if (val == CPUFREQ_UPDATE_POLICY_CPU) {
+		cpufreq_stats_update_policy_cpu(policy);
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (val != CPUFREQ_NOTIFY)
 		return 0;
 	table = cpufreq_frequency_get_table(cpu);
@@ -317,6 +454,10 @@ static int cpufreq_stat_notifier_trans(struct notifier_block *nb,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int cpufreq_stats_create_table_cpu(unsigned int cpu)
 {
 	struct cpufreq_policy *policy;
@@ -339,12 +480,16 @@ out:
 }
 
 static int __cpuinit cpufreq_stat_cpu_callback(struct notifier_block *nfb,
+=======
+static int cpufreq_stat_cpu_callback(struct notifier_block *nfb,
+>>>>>>> refs/remotes/origin/master
 					       unsigned long action,
 					       void *hcpu)
 {
 	unsigned int cpu = (unsigned long)hcpu;
 
 	switch (action) {
+<<<<<<< HEAD
 	case CPU_ONLINE:
 	case CPU_ONLINE_FROZEN:
 		cpufreq_update_policy(cpu);
@@ -361,6 +506,17 @@ static int __cpuinit cpufreq_stat_cpu_callback(struct notifier_block *nfb,
 	case CPU_DOWN_FAILED_FROZEN:
 		cpufreq_stats_create_table_cpu(cpu);
 		break;
+<<<<<<< HEAD
+=======
+	case CPU_DOWN_PREPARE:
+		cpufreq_stats_free_sysfs(cpu);
+		break;
+	case CPU_DEAD:
+		cpufreq_stats_free_table(cpu);
+		break;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return NOTIFY_OK;
 }
@@ -390,11 +546,17 @@ static int __init cpufreq_stats_init(void)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
+=======
+	register_hotcpu_notifier(&cpufreq_stat_cpu_notifier);
+
+>>>>>>> refs/remotes/origin/master
 	ret = cpufreq_register_notifier(&notifier_trans_block,
 				CPUFREQ_TRANSITION_NOTIFIER);
 	if (ret) {
 		cpufreq_unregister_notifier(&notifier_policy_block,
 				CPUFREQ_POLICY_NOTIFIER);
+<<<<<<< HEAD
 		return ret;
 	}
 
@@ -402,6 +564,14 @@ static int __init cpufreq_stats_init(void)
 	for_each_online_cpu(cpu) {
 		cpufreq_update_policy(cpu);
 	}
+=======
+		unregister_hotcpu_notifier(&cpufreq_stat_cpu_notifier);
+		for_each_online_cpu(cpu)
+			cpufreq_stats_free_table(cpu);
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 static void __exit cpufreq_stats_exit(void)

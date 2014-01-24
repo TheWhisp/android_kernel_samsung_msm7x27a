@@ -52,6 +52,16 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/miscdevice.h>
 #include <linux/interrupt.h>
 #include <linux/watchdog.h>
@@ -95,8 +105,18 @@ MODULE_PARM_DESC(heartbeat,
 	"Watchdog heartbeat in seconds. (0 < heartbeat, default="
 				__MODULE_STRING(WD_TIMO) ")");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, S_IRUGO);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, S_IRUGO);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, S_IRUGO);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -201,7 +221,15 @@ static void __init octeon_wdt_build_stage1(void)
 	uasm_resolve_relocs(relocs, labels);
 
 	len = (int)(p - nmi_stage1_insns);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("Synthesized NMI stage 1 handler (%d instructions).\n", len);
+=======
+	pr_debug("Synthesized NMI stage 1 handler (%d instructions)\n", len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Synthesized NMI stage 1 handler (%d instructions)\n", len);
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("\t.set push\n");
 	pr_debug("\t.set noreorder\n");
@@ -402,7 +430,15 @@ static void octeon_wdt_setup_interrupt(int cpu)
 	irq = OCTEON_IRQ_WDOG0 + core;
 
 	if (request_irq(irq, octeon_wdt_poke_irq,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED, "octeon_wdt", octeon_wdt_poke_irq))
+=======
+			IRQF_NO_THREAD, "octeon_wdt", octeon_wdt_poke_irq))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_NO_THREAD, "octeon_wdt", octeon_wdt_poke_irq))
+>>>>>>> refs/remotes/origin/master
 		panic("octeon_wdt: Couldn't obtain irq %d", irq);
 
 	cpumask_set_cpu(cpu, &irq_enabled_cpus);
@@ -627,7 +663,15 @@ static int octeon_wdt_release(struct inode *inode, struct file *file)
 		do_coundown = 0;
 		octeon_wdt_ping();
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_crit("octeon_wdt: WDT device closed unexpectedly.  WDT will not stop!\n");
+=======
+		pr_crit("WDT device closed unexpectedly.  WDT will not stop!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("WDT device closed unexpectedly.  WDT will not stop!\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	clear_bit(0, &octeon_wdt_is_open);
 	expect_close = 0;
@@ -684,12 +728,27 @@ static int __init octeon_wdt_init(void)
 
 	octeon_wdt_calc_parameters(heartbeat);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("octeon_wdt: Initial granularity %d Sec.\n", timeout_sec);
 
 	ret = misc_register(&octeon_wdt_miscdev);
 	if (ret) {
 		pr_err("octeon_wdt: cannot register miscdev on minor=%d (err=%d)\n",
 			WATCHDOG_MINOR, ret);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pr_info("Initial granularity %d Sec\n", timeout_sec);
+
+	ret = misc_register(&octeon_wdt_miscdev);
+	if (ret) {
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 

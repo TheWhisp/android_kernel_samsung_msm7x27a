@@ -1,9 +1,16 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/keyboard.c
  *    ebcdic keycode functions for s390 console drivers
  *
  *  S390 version
  *    Copyright (C) 2003 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *    ebcdic keycode functions for s390 console drivers
+ *
+ *  S390 version
+ *    Copyright IBM Corp. 2003
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com),
  */
 
@@ -199,7 +206,11 @@ handle_diacr(struct kbd_data *kbd, unsigned int ch)
 	if (ch == ' ' || ch == d)
 		return d;
 
+<<<<<<< HEAD
 	kbd_put_queue(kbd->tty, d);
+=======
+	kbd_put_queue(kbd->port, d);
+>>>>>>> refs/remotes/origin/master
 	return ch;
 }
 
@@ -221,7 +232,11 @@ k_self(struct kbd_data *kbd, unsigned char value)
 {
 	if (kbd->diacr)
 		value = handle_diacr(kbd, value);
+<<<<<<< HEAD
 	kbd_put_queue(kbd->tty, value);
+=======
+	kbd_put_queue(kbd->port, value);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -239,7 +254,11 @@ static void
 k_fn(struct kbd_data *kbd, unsigned char value)
 {
 	if (kbd->func_table[value])
+<<<<<<< HEAD
 		kbd_puts_queue(kbd->tty, kbd->func_table[value]);
+=======
+		kbd_puts_queue(kbd->port, kbd->func_table[value]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -257,6 +276,7 @@ k_spec(struct kbd_data *kbd, unsigned char value)
  * but we need only 16 bits here
  */
 static void
+<<<<<<< HEAD
 to_utf8(struct tty_struct *tty, ushort c) 
 {
 	if (c < 0x80)
@@ -271,6 +291,22 @@ to_utf8(struct tty_struct *tty, ushort c)
 		kbd_put_queue(tty, 0xe0 | (c >> 12));
 		kbd_put_queue(tty, 0x80 | ((c >> 6) & 0x3f));
 		kbd_put_queue(tty, 0x80 | (c & 0x3f));
+=======
+to_utf8(struct tty_port *port, ushort c)
+{
+	if (c < 0x80)
+		/*  0******* */
+		kbd_put_queue(port, c);
+	else if (c < 0x800) {
+		/* 110***** 10****** */
+		kbd_put_queue(port, 0xc0 | (c >> 6));
+		kbd_put_queue(port, 0x80 | (c & 0x3f));
+	} else {
+		/* 1110**** 10****** 10****** */
+		kbd_put_queue(port, 0xe0 | (c >> 12));
+		kbd_put_queue(port, 0x80 | ((c >> 6) & 0x3f));
+		kbd_put_queue(port, 0x80 | (c & 0x3f));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -283,7 +319,11 @@ kbd_keycode(struct kbd_data *kbd, unsigned int keycode)
 	unsigned short keysym;
 	unsigned char type, value;
 
+<<<<<<< HEAD
 	if (!kbd || !kbd->tty)
+=======
+	if (!kbd)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (keycode >= 384)
@@ -323,7 +363,11 @@ kbd_keycode(struct kbd_data *kbd, unsigned int keycode)
 #endif
 		(*k_handler[type])(kbd, value);
 	} else
+<<<<<<< HEAD
 		to_utf8(kbd->tty, keysym);
+=======
+		to_utf8(kbd->port, keysym);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -457,6 +501,10 @@ do_kdgkb_ioctl(struct kbd_data *kbd, struct kbsentry __user *u_kbs,
 
 int kbd_ioctl(struct kbd_data *kbd, unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
+=======
+	struct tty_struct *tty;
+>>>>>>> refs/remotes/origin/master
 	void __user *argp;
 	unsigned int ct;
 	int perm;
@@ -467,7 +515,14 @@ int kbd_ioctl(struct kbd_data *kbd, unsigned int cmd, unsigned long arg)
 	 * To have permissions to do most of the vt ioctls, we either have
 	 * to be the owner of the tty, or have CAP_SYS_TTY_CONFIG.
 	 */
+<<<<<<< HEAD
 	perm = current->signal->tty == kbd->tty || capable(CAP_SYS_TTY_CONFIG);
+=======
+	tty = tty_port_tty_get(kbd->port);
+	/* FIXME this test is pretty racy */
+	perm = current->signal->tty == tty || capable(CAP_SYS_TTY_CONFIG);
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 	switch (cmd) {
 	case KDGKBTYPE:
 		return put_user(KB_101, (char __user *)argp);

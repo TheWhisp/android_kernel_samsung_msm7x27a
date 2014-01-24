@@ -69,6 +69,14 @@ ENTRY(cpu_mohawk_proc_fin)
  * (same as arm926)
  */
 	.align	5
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_mohawk_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -79,6 +87,16 @@ ENTRY(cpu_mohawk_reset)
 	bic	ip, ip, #0x1100			@ ...i...s........
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_mohawk_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_mohawk_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  * cpu_mohawk_do_idle()
@@ -93,6 +111,26 @@ ENTRY(cpu_mohawk_do_idle)
 	mov	pc, lr
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *	flush_icache_all()
+ *
+ *	Unconditionally clean and invalidate the entire icache.
+ */
+ENTRY(mohawk_flush_icache_all)
+	mov	r0, #0
+	mcr	p15, 0, r0, c7, c5, 0		@ invalidate I cache
+	mov	pc, lr
+ENDPROC(mohawk_flush_icache_all)
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	flush_user_cache_all()
  *
  *	Clean and invalidate all cache entries in a particular
@@ -179,6 +217,10 @@ ENTRY(mohawk_coherent_user_range)
 	cmp	r0, r1
 	blo	1b
 	mcr	p15, 0, r0, c7, c10, 4		@ drain WB
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -288,6 +330,8 @@ ENTRY(mohawk_dma_unmap_area)
 	mov	pc, lr
 ENDPROC(mohawk_dma_unmap_area)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(mohawk_cache_fns)
 	.long	mohawk_flush_kern_cache_all
 	.long	mohawk_flush_user_cache_all
@@ -298,6 +342,17 @@ ENTRY(mohawk_cache_fns)
 	.long	mohawk_dma_map_area
 	.long	mohawk_dma_unmap_area
 	.long	mohawk_dma_flush_range
+=======
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions mohawk
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	mohawk_flush_kern_cache_louis
+	.equ	mohawk_flush_kern_cache_louis, mohawk_flush_kern_cache_all
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions mohawk
+>>>>>>> refs/remotes/origin/master
 
 ENTRY(cpu_mohawk_dcache_clean_area)
 1:	mcr	p15, 0, r0, c7, c10, 1		@ clean D entry
@@ -338,7 +393,44 @@ ENTRY(cpu_mohawk_set_pte_ext)
 	mcr	p15, 0, r0, c7, c10, 4		@ drain WB
 	mov	pc, lr
 
+<<<<<<< HEAD
 	__CPUINIT
+=======
+.globl	cpu_mohawk_suspend_size
+.equ	cpu_mohawk_suspend_size, 4 * 6
+#ifdef CONFIG_ARM_CPU_SUSPEND
+ENTRY(cpu_mohawk_do_suspend)
+	stmfd	sp!, {r4 - r9, lr}
+	mrc	p14, 0, r4, c6, c0, 0	@ clock configuration, for turbo mode
+	mrc	p15, 0, r5, c15, c1, 0	@ CP access reg
+	mrc	p15, 0, r6, c13, c0, 0	@ PID
+	mrc 	p15, 0, r7, c3, c0, 0	@ domain ID
+	mrc	p15, 0, r8, c1, c0, 1	@ auxiliary control reg
+	mrc 	p15, 0, r9, c1, c0, 0	@ control reg
+	bic	r4, r4, #2		@ clear frequency change bit
+	stmia	r0, {r4 - r9}		@ store cp regs
+	ldmia	sp!, {r4 - r9, pc}
+ENDPROC(cpu_mohawk_do_suspend)
+
+ENTRY(cpu_mohawk_do_resume)
+	ldmia	r0, {r4 - r9}		@ load cp regs
+	mov	ip, #0
+	mcr	p15, 0, ip, c7, c7, 0	@ invalidate I & D caches, BTB
+	mcr	p15, 0, ip, c7, c10, 4	@ drain write (&fill) buffer
+	mcr	p15, 0, ip, c7, c5, 4	@ flush prefetch buffer
+	mcr	p15, 0, ip, c8, c7, 0	@ invalidate I & D TLBs
+	mcr	p14, 0, r4, c6, c0, 0	@ clock configuration, turbo mode.
+	mcr	p15, 0, r5, c15, c1, 0	@ CP access reg
+	mcr	p15, 0, r6, c13, c0, 0	@ PID
+	mcr	p15, 0, r7, c3, c0, 0	@ domain ID
+	orr	r1, r1, #0x18		@ cache the page table in L2
+	mcr	p15, 0, r1, c2, c0, 0	@ translation table base addr
+	mcr	p15, 0, r8, c1, c0, 1	@ auxiliary control reg
+	mov	r0, r9			@ control register
+	b	cpu_resume_mmu
+ENDPROC(cpu_mohawk_do_resume)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	.type	__mohawk_setup, #function
 __mohawk_setup:
@@ -373,6 +465,8 @@ mohawk_crval:
 
 	__INITDATA
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
  *	     come through these
@@ -409,6 +503,21 @@ cpu_elf_name:
 cpu_mohawk_name:
 	.asciz	"Marvell 88SV331x"
 	.size	cpu_mohawk_name, . - cpu_mohawk_name
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions mohawk, dabort=v5t_early_abort, pabort=legacy_pabort
+
+	.section ".rodata"
+
+	string	cpu_arch_name, "armv5te"
+	string	cpu_elf_name, "v5"
+	string	cpu_mohawk_name, "Marvell 88SV331x"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align
 

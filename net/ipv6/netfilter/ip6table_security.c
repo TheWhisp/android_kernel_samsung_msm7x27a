@@ -36,14 +36,23 @@ static const struct xt_table security_table = {
 };
 
 static unsigned int
+<<<<<<< HEAD
 ip6table_security_hook(unsigned int hook, struct sk_buff *skb,
+=======
+ip6table_security_hook(const struct nf_hook_ops *ops, struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 		       const struct net_device *in,
 		       const struct net_device *out,
 		       int (*okfn)(struct sk_buff *))
 {
 	const struct net *net = dev_net((in != NULL) ? in : out);
 
+<<<<<<< HEAD
 	return ip6t_do_table(skb, hook, in, out, net->ipv6.ip6table_security);
+=======
+	return ip6t_do_table(skb, ops->hooknum, in, out,
+			     net->ipv6.ip6table_security);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct nf_hook_ops *sectbl_ops __read_mostly;
@@ -58,10 +67,14 @@ static int __net_init ip6table_security_net_init(struct net *net)
 	net->ipv6.ip6table_security =
 		ip6t_register_table(net, &security_table, repl);
 	kfree(repl);
+<<<<<<< HEAD
 	if (IS_ERR(net->ipv6.ip6table_security))
 		return PTR_ERR(net->ipv6.ip6table_security);
 
 	return 0;
+=======
+	return PTR_ERR_OR_ZERO(net->ipv6.ip6table_security);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __net_exit ip6table_security_net_exit(struct net *net)

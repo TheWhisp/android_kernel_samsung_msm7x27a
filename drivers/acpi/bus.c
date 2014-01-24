@@ -39,6 +39,14 @@
 #include <linux/pci.h>
 #include <acpi/acpi_bus.h>
 #include <acpi/acpi_drivers.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <acpi/apei.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <acpi/apei.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dmi.h>
 #include <linux/suspend.h>
 
@@ -88,6 +96,7 @@ static struct dmi_system_id dsdt_dmi_table[] __initdata = {
                                 Device Management
    -------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 int acpi_bus_get_device(acpi_handle handle, struct acpi_device **device)
 {
 	acpi_status status = AE_OK;
@@ -110,6 +119,8 @@ int acpi_bus_get_device(acpi_handle handle, struct acpi_device **device)
 
 EXPORT_SYMBOL(acpi_bus_get_device);
 
+=======
+>>>>>>> refs/remotes/origin/master
 acpi_status acpi_bus_get_status_handle(acpi_handle handle,
 				       unsigned long long *sta)
 {
@@ -161,7 +172,11 @@ EXPORT_SYMBOL(acpi_bus_private_data_handler);
 
 int acpi_bus_get_private_data(acpi_handle handle, void **data)
 {
+<<<<<<< HEAD
 	acpi_status status = AE_OK;
+=======
+	acpi_status status;
+>>>>>>> refs/remotes/origin/master
 
 	if (!*data)
 		return -EINVAL;
@@ -177,6 +192,7 @@ int acpi_bus_get_private_data(acpi_handle handle, void **data)
 }
 EXPORT_SYMBOL(acpi_bus_get_private_data);
 
+<<<<<<< HEAD
 /* --------------------------------------------------------------------------
                                  Power Management
    -------------------------------------------------------------------------- */
@@ -249,6 +265,13 @@ static int __acpi_bus_set_power(struct acpi_device *device, int state)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+=======
+	/* For D3cold we should execute _PS3, not _PS4. */
+	if (state == ACPI_STATE_D3_COLD)
+		object_name[3] = '3';
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Transition Power
 	 * ----------------
@@ -391,6 +414,17 @@ bool acpi_bus_can_wakeup(acpi_handle handle)
 }
 
 EXPORT_SYMBOL(acpi_bus_can_wakeup);
+=======
+void acpi_bus_no_hotplug(acpi_handle handle)
+{
+	struct acpi_device *adev = NULL;
+
+	acpi_bus_get_device(handle, &adev);
+	if (adev)
+		adev->flags.no_hotplug = true;
+}
+EXPORT_SYMBOL_GPL(acpi_bus_no_hotplug);
+>>>>>>> refs/remotes/origin/master
 
 static void acpi_print_osc_error(acpi_handle handle,
 	struct acpi_osc_context *context, char *error)
@@ -410,7 +444,11 @@ static void acpi_print_osc_error(acpi_handle handle,
 	printk("\n");
 }
 
+<<<<<<< HEAD
 static acpi_status acpi_str_to_uuid(char *str, u8 *uuid)
+=======
+acpi_status acpi_str_to_uuid(char *str, u8 *uuid)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	static int opc_map_to_uuid[16] = {6, 4, 2, 0, 11, 9, 16, 14, 19, 21,
@@ -431,6 +469,10 @@ static acpi_status acpi_str_to_uuid(char *str, u8 *uuid)
 	}
 	return AE_OK;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(acpi_str_to_uuid);
+>>>>>>> refs/remotes/origin/master
 
 acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context)
 {
@@ -491,7 +533,11 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context)
 			acpi_print_osc_error(handle, context,
 				"_OSC invalid revision");
 		if (errors & OSC_CAPABILITIES_MASK_ERROR) {
+<<<<<<< HEAD
 			if (((u32 *)context->cap.pointer)[OSC_QUERY_TYPE]
+=======
+			if (((u32 *)context->cap.pointer)[OSC_QUERY_DWORD]
+>>>>>>> refs/remotes/origin/master
 			    & OSC_QUERY_ENABLE)
 				goto out_success;
 			status = AE_SUPPORT;
@@ -502,13 +548,21 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context)
 	}
 out_success:
 	context->ret.length = out_obj->buffer.length;
+<<<<<<< HEAD
 	context->ret.pointer = kmalloc(context->ret.length, GFP_KERNEL);
+=======
+	context->ret.pointer = kmemdup(out_obj->buffer.pointer,
+				       context->ret.length, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!context->ret.pointer) {
 		status =  AE_NO_MEMORY;
 		goto out_kfree;
 	}
+<<<<<<< HEAD
 	memcpy(context->ret.pointer, out_obj->buffer.pointer,
 		context->ret.length);
+=======
+>>>>>>> refs/remotes/origin/master
 	status =  AE_OK;
 
 out_kfree:
@@ -519,6 +573,14 @@ out_kfree:
 }
 EXPORT_SYMBOL(acpi_run_osc);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+bool osc_sb_apei_support_acked;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool osc_sb_apei_support_acked;
+>>>>>>> refs/remotes/origin/master
 static u8 sb_uuid_str[] = "0811B06E-4A27-44F9-8D60-3CBBC22E7B48";
 static void acpi_bus_osc_support(void)
 {
@@ -531,6 +593,7 @@ static void acpi_bus_osc_support(void)
 	};
 	acpi_handle handle;
 
+<<<<<<< HEAD
 	capbuf[OSC_QUERY_TYPE] = OSC_QUERY_ENABLE;
 	capbuf[OSC_SUPPORT_TYPE] = OSC_SB_PR3_SUPPORT; /* _PR3 is in use */
 #if defined(CONFIG_ACPI_PROCESSOR_AGGREGATOR) ||\
@@ -541,11 +604,47 @@ static void acpi_bus_osc_support(void)
 #if defined(CONFIG_ACPI_PROCESSOR) || defined(CONFIG_ACPI_PROCESSOR_MODULE)
 	capbuf[OSC_SUPPORT_TYPE] |= OSC_SB_PPC_OST_SUPPORT;
 #endif
+<<<<<<< HEAD
 	if (ACPI_FAILURE(acpi_get_handle(NULL, "\\_SB", &handle)))
 		return;
 	if (ACPI_SUCCESS(acpi_run_osc(handle, &context)))
 		kfree(context.ret.pointer);
 	/* do we need to check the returned cap? Sounds no */
+=======
+
+	if (!ghes_disable)
+		capbuf[OSC_SUPPORT_TYPE] |= OSC_SB_APEI_SUPPORT;
+=======
+	capbuf[OSC_QUERY_DWORD] = OSC_QUERY_ENABLE;
+	capbuf[OSC_SUPPORT_DWORD] = OSC_SB_PR3_SUPPORT; /* _PR3 is in use */
+#if defined(CONFIG_ACPI_PROCESSOR_AGGREGATOR) ||\
+			defined(CONFIG_ACPI_PROCESSOR_AGGREGATOR_MODULE)
+	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_PAD_SUPPORT;
+#endif
+
+#if defined(CONFIG_ACPI_PROCESSOR) || defined(CONFIG_ACPI_PROCESSOR_MODULE)
+	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_PPC_OST_SUPPORT;
+#endif
+
+#ifdef ACPI_HOTPLUG_OST
+	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_OST_SUPPORT;
+#endif
+
+	if (!ghes_disable)
+		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_APEI_SUPPORT;
+>>>>>>> refs/remotes/origin/master
+	if (ACPI_FAILURE(acpi_get_handle(NULL, "\\_SB", &handle)))
+		return;
+	if (ACPI_SUCCESS(acpi_run_osc(handle, &context))) {
+		u32 *capbuf_ret = context.ret.pointer;
+<<<<<<< HEAD
+		if (context.ret.length > OSC_SUPPORT_TYPE)
+			osc_sb_apei_support_acked =
+				capbuf_ret[OSC_SUPPORT_TYPE] & OSC_SB_APEI_SUPPORT;
+		kfree(context.ret.pointer);
+	}
+	/* do we need to check other returned cap? Sounds no */
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* --------------------------------------------------------------------------
@@ -647,6 +746,17 @@ int acpi_bus_receive_event(struct acpi_bus_event *event)
 #endif	/* CONFIG_ACPI_PROC_EVENT */
 
 /* --------------------------------------------------------------------------
+=======
+		if (context.ret.length > OSC_SUPPORT_DWORD)
+			osc_sb_apei_support_acked =
+				capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_APEI_SUPPORT;
+		kfree(context.ret.pointer);
+	}
+	/* do we need to check other returned cap? Sounds no */
+}
+
+/* --------------------------------------------------------------------------
+>>>>>>> refs/remotes/origin/master
                              Notification Handling
    -------------------------------------------------------------------------- */
 
@@ -702,6 +812,7 @@ static void acpi_bus_check_scope(acpi_handle handle)
 	 */
 }
 
+<<<<<<< HEAD
 static BLOCKING_NOTIFIER_HEAD(acpi_bus_notify_list);
 int register_acpi_bus_notifier(struct notifier_block *nb)
 {
@@ -715,6 +826,8 @@ void unregister_acpi_bus_notifier(struct notifier_block *nb)
 }
 EXPORT_SYMBOL_GPL(unregister_acpi_bus_notifier);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * acpi_bus_notify
  * ---------------
@@ -728,9 +841,12 @@ static void acpi_bus_notify(acpi_handle handle, u32 type, void *data)
 	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Notification %#02x to handle %p\n",
 			  type, handle));
 
+<<<<<<< HEAD
 	blocking_notifier_call_chain(&acpi_bus_notify_list,
 		type, (void *)handle);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (type) {
 
 	case ACPI_NOTIFY_BUS_CHECK:
@@ -795,9 +911,13 @@ static void acpi_bus_notify(acpi_handle handle, u32 type, void *data)
 
 static int __init acpi_bus_init_irq(void)
 {
+<<<<<<< HEAD
 	acpi_status status = AE_OK;
 	union acpi_object arg = { ACPI_TYPE_INTEGER };
 	struct acpi_object_list arg_list = { 1, &arg };
+=======
+	acpi_status status;
+>>>>>>> refs/remotes/origin/master
 	char *message = NULL;
 
 
@@ -826,9 +946,13 @@ static int __init acpi_bus_init_irq(void)
 
 	printk(KERN_INFO PREFIX "Using %s for interrupt routing\n", message);
 
+<<<<<<< HEAD
 	arg.integer.value = acpi_irq_model;
 
 	status = acpi_evaluate_object(NULL, "\\_PIC", &arg_list, NULL);
+=======
+	status = acpi_execute_simple_method(NULL, "\\_PIC", acpi_irq_model);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status) && (status != AE_NOT_FOUND)) {
 		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _PIC"));
 		return -ENODEV;
@@ -842,7 +966,11 @@ u8 acpi_gbl_permanent_mmap;
 
 void __init acpi_early_init(void)
 {
+<<<<<<< HEAD
 	acpi_status status = AE_OK;
+=======
+	acpi_status status;
+>>>>>>> refs/remotes/origin/master
 
 	if (acpi_disabled)
 		return;
@@ -901,10 +1029,18 @@ void __init acpi_early_init(void)
 	}
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	status =
 	    acpi_enable_subsystem(~
 				  (ACPI_NO_HARDWARE_INIT |
 				   ACPI_NO_ACPI_ENABLE));
+=======
+	status = acpi_enable_subsystem(~ACPI_NO_ACPI_ENABLE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = acpi_enable_subsystem(~ACPI_NO_ACPI_ENABLE);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		printk(KERN_ERR PREFIX "Unable to enable ACPI\n");
 		goto error0;
@@ -919,14 +1055,27 @@ void __init acpi_early_init(void)
 
 static int __init acpi_bus_init(void)
 {
+<<<<<<< HEAD
 	int result = 0;
 	acpi_status status = AE_OK;
 	extern acpi_status acpi_os_initialize1(void);
 
 	acpi_os_initialize1();
 
+<<<<<<< HEAD
 	status =
 	    acpi_enable_subsystem(ACPI_NO_HARDWARE_INIT | ACPI_NO_ACPI_ENABLE);
+=======
+	status = acpi_enable_subsystem(ACPI_NO_ACPI_ENABLE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int result;
+	acpi_status status;
+
+	acpi_os_initialize1();
+
+	status = acpi_enable_subsystem(ACPI_NO_ACPI_ENABLE);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		printk(KERN_ERR PREFIX
 		       "Unable to start the ACPI Interpreter\n");
@@ -1008,6 +1157,14 @@ static int __init acpi_bus_init(void)
 }
 
 struct kobject *acpi_kobj;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(acpi_kobj);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(acpi_kobj);
+>>>>>>> refs/remotes/origin/master
 
 static int __init acpi_init(void)
 {

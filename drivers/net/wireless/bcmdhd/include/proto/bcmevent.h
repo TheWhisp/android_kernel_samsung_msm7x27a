@@ -1,9 +1,21 @@
 /*
  * Broadcom Event  protocol definitions
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -23,13 +35,27 @@
  *
  * Dependencies: proto/bcmeth.h
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: bcmevent.h 288077 2011-10-06 00:08:47Z $
+=======
+ * $Id: bcmevent.h 326276 2012-04-06 23:16:42Z $
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: bcmevent.h 326276 2012-04-06 23:16:42Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  */
 
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef _BCMEVENT_H_
 #define _BCMEVENT_H_
 
@@ -138,6 +164,8 @@ typedef BWL_PRE_PACKED_STRUCT struct bcm_event {
 #define WLC_E_PROBREQ_MSG       44      
 #define WLC_E_SCAN_CONFIRM_IND  45
 #define WLC_E_PSK_SUP		46	
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define WLC_E_COUNTRY_CODE_CHANGED 47
 #define	WLC_E_EXCEEDED_MEDIUM_TIME 48	
 #define WLC_E_ICV_ERROR		49	
@@ -149,11 +177,37 @@ typedef BWL_PRE_PACKED_STRUCT struct bcm_event {
 #ifdef WLP2P
 #define WLC_E_P2P_DISC_LISTEN_COMPLETE 	55	
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define WLC_E_COUNTRY_CODE_CHANGED	47
+#define	WLC_E_EXCEEDED_MEDIUM_TIME	48	
+#define WLC_E_ICV_ERROR		49	
+#define WLC_E_UNICAST_DECODE_ERROR	50	
+#define WLC_E_MULTICAST_DECODE_ERROR	51 
+#define WLC_E_TRACE		52
+#ifdef WLBTAMP
+#define WLC_E_BTA_HCI_EVENT	53	
+#endif
+#define WLC_E_IF		54	
+#define WLC_E_P2P_DISC_LISTEN_COMPLETE	55	
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WLC_E_RSSI		56	
 #define WLC_E_PFN_SCAN_COMPLETE	57	
 #define WLC_E_EXTLOG_MSG	58
 #define WLC_E_ACTION_FRAME      59 	
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define WLC_E_ACTION_FRAME_COMPLETE 60	
+=======
+#define WLC_E_ACTION_FRAME_COMPLETE	60	
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WLC_E_ACTION_FRAME_COMPLETE	60	
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WLC_E_PRE_ASSOC_IND	61	
 #define WLC_E_PRE_REASSOC_IND	62	
 #define WLC_E_CHANNEL_ADOPTED	63
@@ -164,6 +218,8 @@ typedef BWL_PRE_PACKED_STRUCT struct bcm_event {
 #define WLC_E_WAI_MSG 		68	
 #define WLC_E_ESCAN_RESULT 	69	
 #define WLC_E_ACTION_FRAME_OFF_CHAN_COMPLETE 	70	
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(WLP2P)
 #define WLC_E_PROBRESP_MSG	71	
 #define WLC_E_P2P_PROBREQ_MSG	72	
@@ -171,12 +227,26 @@ typedef BWL_PRE_PACKED_STRUCT struct bcm_event {
 #define WLC_E_DCS_REQUEST 73
 
 #define WLC_E_FIFO_CREDIT_MAP	74 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define WLC_E_PROBRESP_MSG	71	
+#define WLC_E_P2P_PROBREQ_MSG	72	
+#define WLC_E_DCS_REQUEST	73
+
+#define WLC_E_FIFO_CREDIT_MAP	74	
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define WLC_E_ACTION_FRAME_RX	75	
 #define WLC_E_WAKE_EVENT	76	
 #define WLC_E_RM_COMPLETE	77	
 #define WLC_E_HTSFSYNC		78	
 #define WLC_E_OVERLAY_REQ	79	
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define WLC_E_CSA_COMPLETE_IND  80
 #define WLC_E_EXCESS_PM_WAKE_EVENT	81	
 #define WLC_E_PFN_SCAN_NONE		82	
@@ -185,6 +255,28 @@ typedef BWL_PRE_PACKED_STRUCT struct bcm_event {
 #define WLC_E_ASSOC_REQ_IE 85
 #define WLC_E_ASSOC_RESP_IE 86
 #define WLC_E_LAST	87	
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define WLC_E_CSA_COMPLETE_IND		80	
+#define WLC_E_EXCESS_PM_WAKE_EVENT	81	
+#define WLC_E_PFN_SCAN_NONE		82	
+#define WLC_E_PFN_SCAN_ALLGONE		83	
+#define WLC_E_GTK_PLUMBED 		84
+#define WLC_E_ASSOC_IND_NDIS		85	
+#define WLC_E_REASSOC_IND_NDIS		86	
+#define WLC_E_ASSOC_REQ_IE 		87
+#define WLC_E_ASSOC_RESP_IE 		88
+#define WLC_E_ASSOC_RECREATED	89	
+#define WLC_E_ACTION_FRAME_RX_NDIS	90	
+#define WLC_E_AUTH_REQ		91	
+#define WLC_E_TDLS_PEER_EVENT 	92	
+#define WLC_E_SPEEDY_RECREATE_FAIL	93	
+#define WLC_E_LAST			94	
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 
@@ -229,6 +321,14 @@ extern const int		bcmevent_names_size;
 #define WLC_E_REASON_TSPEC_REJECTED	7	
 #define WLC_E_REASON_BETTER_AP		8	
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define WLC_E_REASON_REQUESTED_ROAM 11	
 
 
@@ -280,7 +380,15 @@ typedef BWL_PRE_PACKED_STRUCT struct wl_event_rx_frame_data {
 
 
 typedef struct wl_event_data_if {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint8 ifidx;
+=======
+	uint8 ifidx;		
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint8 ifidx;		
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint8 opcode;		
 	uint8 reserved;
 	uint8 bssidx;		
@@ -298,8 +406,21 @@ typedef struct wl_event_data_if {
 #define WLC_E_IF_ROLE_WDS		2	
 #define WLC_E_IF_ROLE_P2P_GO		3	
 #define WLC_E_IF_ROLE_P2P_CLIENT	4	
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define WLC_E_IF_ROLE_BTA_CREATOR	5	
 #define WLC_E_IF_ROLE_BTA_ACCEPTOR	6	
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef WLBTAMP
+#define WLC_E_IF_ROLE_BTA_CREATOR	5	
+#define WLC_E_IF_ROLE_BTA_ACCEPTOR	6	
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define WLC_E_LINK_BCN_LOSS	1	
@@ -308,10 +429,28 @@ typedef struct wl_event_data_if {
 #define WLC_E_LINK_BSSCFG_DIS	4	
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define WLC_E_OVL_DOWNLOAD	0	
 #define WLC_E_OVL_UPDATE_IND	1	
 
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define WLC_E_OVL_DOWNLOAD		0	
+#define WLC_E_OVL_UPDATE_IND	1	
+
+
+#define WLC_E_TDLS_PEER_DISCOVERED		0	
+#define WLC_E_TDLS_PEER_CONNECTED		1
+#define WLC_E_TDLS_PEER_DISCONNECTED	2
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <packed_section_end.h>
 
 #endif 

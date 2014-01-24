@@ -1,12 +1,24 @@
 /*
+<<<<<<< HEAD
  *  Copyright (c) 2000-2010 LSI Corporation.
+=======
+ *  Copyright (c) 2000-2013 LSI Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  *
  *           Name:  mpi2_raid.h
  *          Title:  MPI Integrated RAID messages and structures
  *  Creation Date:  April 26, 2007
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  *    mpi2_raid.h Version:  02.00.05
+=======
+ *    mpi2_raid.h Version:  02.00.06
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    mpi2_raid.h Version:  02.00.09
+>>>>>>> refs/remotes/origin/master
  *
  *  Version History
  *  ---------------
@@ -23,6 +35,22 @@
  *  07-30-09  02.00.04  Added proper define for the Use Default Settings bit of
  *                      VolumeCreationFlags and marked the old one as obsolete.
  *  05-12-10  02.00.05  Added MPI2_RAID_VOL_FLAGS_OP_MDC define.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *  08-24-10  02.00.06  Added MPI2_RAID_ACTION_COMPATIBILITY_CHECK along with
+ *                      related structures and defines.
+ *                      Added product-specific range to RAID Action values.
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  08-24-10  02.00.06  Added MPI2_RAID_ACTION_COMPATIBILITY_CHECK along with
+ *                      related structures and defines.
+ *                      Added product-specific range to RAID Action values.
+ *  02-06-12  02.00.08  Added MPI2_RAID_ACTION_PHYSDISK_HIDDEN.
+ *  07-26-12  02.00.09  Added ElapsedSeconds field to MPI2_RAID_VOL_INDICATOR.
+ *                      Added MPI2_RAID_VOL_FLAGS_ELAPSED_SECONDS_VALID define.
+>>>>>>> refs/remotes/origin/master
  *  --------------------------------------------------------------------------
  */
 
@@ -176,7 +204,20 @@ typedef struct _MPI2_RAID_ACTION_REQUEST
 #define MPI2_RAID_ACTION_SYSTEM_SHUTDOWN_INITIATED  (0x20)
 #define MPI2_RAID_ACTION_START_RAID_FUNCTION        (0x21)
 #define MPI2_RAID_ACTION_STOP_RAID_FUNCTION         (0x22)
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#define MPI2_RAID_ACTION_COMPATIBILITY_CHECK        (0x23)
+#define MPI2_RAID_ACTION_MIN_PRODUCT_SPECIFIC       (0x80)
+#define MPI2_RAID_ACTION_MAX_PRODUCT_SPECIFIC       (0xFF)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPI2_RAID_ACTION_COMPATIBILITY_CHECK        (0x23)
+#define MPI2_RAID_ACTION_PHYSDISK_HIDDEN            (0x24)
+#define MPI2_RAID_ACTION_MIN_PRODUCT_SPECIFIC       (0x80)
+#define MPI2_RAID_ACTION_MAX_PRODUCT_SPECIFIC       (0xFF)
+>>>>>>> refs/remotes/origin/master
 
 /* RAID Volume Creation Structure */
 
@@ -244,6 +285,32 @@ typedef struct _MPI2_RAID_ONLINE_CAPACITY_EXPANSION
   Mpi2RaidOnlineCapacityExpansion_t,
   MPI2_POINTER pMpi2RaidOnlineCapacityExpansion_t;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* RAID Compatibility Input Structure */
+
+typedef struct _MPI2_RAID_COMPATIBILITY_INPUT_STRUCT {
+	U16                     SourceDevHandle;               /* 0x00 */
+	U16                     CandidateDevHandle;             /* 0x02 */
+	U32                     Flags;                          /* 0x04 */
+	U32                     Reserved1;                      /* 0x08 */
+	U32                     Reserved2;                      /* 0x0C */
+} MPI2_RAID_COMPATIBILITY_INPUT_STRUCT,
+MPI2_POINTER PTR_MPI2_RAID_COMPATIBILITY_INPUT_STRUCT,
+Mpi2RaidCompatibilityInputStruct_t,
+MPI2_POINTER pMpi2RaidCompatibilityInputStruct_t;
+
+/* defines for RAID Compatibility Structure Flags field */
+#define MPI2_RAID_COMPAT_SOURCE_IS_VOLUME_FLAG      (0x00000002)
+#define MPI2_RAID_COMPAT_REPORT_SOURCE_INFO_FLAG    (0x00000001)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* RAID Volume Indicator Structure */
 
@@ -252,10 +319,19 @@ typedef struct _MPI2_RAID_VOL_INDICATOR
     U64                     TotalBlocks;                    /* 0x00 */
     U64                     BlocksRemaining;                /* 0x08 */
     U32                     Flags;                          /* 0x10 */
+<<<<<<< HEAD
+=======
+	U32                     ElapsedSeconds;                 /* 0x14 */
+>>>>>>> refs/remotes/origin/master
 } MPI2_RAID_VOL_INDICATOR, MPI2_POINTER PTR_MPI2_RAID_VOL_INDICATOR,
   Mpi2RaidVolIndicator_t, MPI2_POINTER pMpi2RaidVolIndicator_t;
 
 /* defines for RAID Volume Indicator Flags field */
+<<<<<<< HEAD
+=======
+#define MPI2_RAID_VOL_FLAGS_ELAPSED_SECONDS_VALID   (0x80000000)
+
+>>>>>>> refs/remotes/origin/master
 #define MPI2_RAID_VOL_FLAGS_OP_MASK                 (0x0000000F)
 #define MPI2_RAID_VOL_FLAGS_OP_BACKGROUND_INIT      (0x00000000)
 #define MPI2_RAID_VOL_FLAGS_OP_ONLINE_CAP_EXPANSION (0x00000001)
@@ -263,15 +339,69 @@ typedef struct _MPI2_RAID_VOL_INDICATOR
 #define MPI2_RAID_VOL_FLAGS_OP_RESYNC               (0x00000003)
 #define MPI2_RAID_VOL_FLAGS_OP_MDC                  (0x00000004)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* RAID Compatibility Result Structure */
+
+typedef struct _MPI2_RAID_COMPATIBILITY_RESULT_STRUCT {
+	U8                      State;                          /* 0x00 */
+	U8                      Reserved1;                      /* 0x01 */
+	U16                     Reserved2;                      /* 0x02 */
+	U32                     GenericAttributes;              /* 0x04 */
+	U32                     OEMSpecificAttributes;          /* 0x08 */
+	U32                     Reserved3;                      /* 0x0C */
+	U32                     Reserved4;                      /* 0x10 */
+} MPI2_RAID_COMPATIBILITY_RESULT_STRUCT,
+MPI2_POINTER PTR_MPI2_RAID_COMPATIBILITY_RESULT_STRUCT,
+Mpi2RaidCompatibilityResultStruct_t,
+MPI2_POINTER pMpi2RaidCompatibilityResultStruct_t;
+
+/* defines for RAID Compatibility Result Structure State field */
+#define MPI2_RAID_COMPAT_STATE_COMPATIBLE           (0x00)
+#define MPI2_RAID_COMPAT_STATE_NOT_COMPATIBLE       (0x01)
+
+/* defines for RAID Compatibility Result Structure GenericAttributes field */
+#define MPI2_RAID_COMPAT_GENATTRIB_4K_SECTOR            (0x00000010)
+
+#define MPI2_RAID_COMPAT_GENATTRIB_MEDIA_MASK           (0x0000000C)
+#define MPI2_RAID_COMPAT_GENATTRIB_SOLID_STATE_DRIVE    (0x00000008)
+#define MPI2_RAID_COMPAT_GENATTRIB_HARD_DISK_DRIVE      (0x00000004)
+
+#define MPI2_RAID_COMPAT_GENATTRIB_PROTOCOL_MASK        (0x00000003)
+#define MPI2_RAID_COMPAT_GENATTRIB_SAS_PROTOCOL         (0x00000002)
+#define MPI2_RAID_COMPAT_GENATTRIB_SATA_PROTOCOL        (0x00000001)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* RAID Action Reply ActionData union */
 typedef union _MPI2_RAID_ACTION_REPLY_DATA
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
     U32                     Word[5];
     MPI2_RAID_VOL_INDICATOR RaidVolumeIndicator;
     U16                     VolDevHandle;
     U8                      VolumeState;
     U8                      PhysDiskNum;
+=======
+	U32                                     Word[5];
+=======
+	U32                                     Word[6];
+>>>>>>> refs/remotes/origin/master
+	MPI2_RAID_VOL_INDICATOR                 RaidVolumeIndicator;
+	U16                                     VolDevHandle;
+	U8                                      VolumeState;
+	U8                                      PhysDiskNum;
+	MPI2_RAID_COMPATIBILITY_RESULT_STRUCT   RaidCompatibilityResult;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } MPI2_RAID_ACTION_REPLY_DATA, MPI2_POINTER PTR_MPI2_RAID_ACTION_REPLY_DATA,
   Mpi2RaidActionReplyData_t, MPI2_POINTER pMpi2RaidActionReplyData_t;
 

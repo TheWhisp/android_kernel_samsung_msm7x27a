@@ -146,7 +146,11 @@ static int cx22702_set_inversion(struct cx22702_state *state, int inversion)
 
 /* Retrieve the demod settings */
 static int cx22702_get_tps(struct cx22702_state *state,
+<<<<<<< HEAD
 	struct dvb_ofdm_parameters *p)
+=======
+			   struct dtv_frontend_properties *p)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u8 val;
 
@@ -157,6 +161,7 @@ static int cx22702_get_tps(struct cx22702_state *state,
 	val = cx22702_readreg(state, 0x01);
 	switch ((val & 0x18) >> 3) {
 	case 0:
+<<<<<<< HEAD
 		p->constellation = QPSK;
 		break;
 	case 1:
@@ -164,10 +169,20 @@ static int cx22702_get_tps(struct cx22702_state *state,
 		break;
 	case 2:
 		p->constellation = QAM_64;
+=======
+		p->modulation = QPSK;
+		break;
+	case 1:
+		p->modulation = QAM_16;
+		break;
+	case 2:
+		p->modulation = QAM_64;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 	switch (val & 0x07) {
 	case 0:
+<<<<<<< HEAD
 		p->hierarchy_information = HIERARCHY_NONE;
 		break;
 	case 1:
@@ -178,6 +193,18 @@ static int cx22702_get_tps(struct cx22702_state *state,
 		break;
 	case 3:
 		p->hierarchy_information = HIERARCHY_4;
+=======
+		p->hierarchy = HIERARCHY_NONE;
+		break;
+	case 1:
+		p->hierarchy = HIERARCHY_1;
+		break;
+	case 2:
+		p->hierarchy = HIERARCHY_2;
+		break;
+	case 3:
+		p->hierarchy = HIERARCHY_4;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 
@@ -260,14 +287,24 @@ static int cx22702_i2c_gate_ctrl(struct dvb_frontend *fe, int enable)
 }
 
 /* Talk to the demod, set the FEC, GUARD, QAM settings etc */
+<<<<<<< HEAD
 static int cx22702_set_tps(struct dvb_frontend *fe,
 	struct dvb_frontend_parameters *p)
 {
+=======
+static int cx22702_set_tps(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 val;
 	struct cx22702_state *state = fe->demodulator_priv;
 
 	if (fe->ops.tuner_ops.set_params) {
+<<<<<<< HEAD
 		fe->ops.tuner_ops.set_params(fe, p);
+=======
+		fe->ops.tuner_ops.set_params(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (fe->ops.i2c_gate_ctrl)
 			fe->ops.i2c_gate_ctrl(fe, 0);
 	}
@@ -277,6 +314,7 @@ static int cx22702_set_tps(struct dvb_frontend *fe,
 
 	/* set bandwidth */
 	val = cx22702_readreg(state, 0x0C) & 0xcf;
+<<<<<<< HEAD
 	switch (p->u.ofdm.bandwidth) {
 	case BANDWIDTH_6_MHZ:
 		val |= 0x20;
@@ -285,6 +323,16 @@ static int cx22702_set_tps(struct dvb_frontend *fe,
 		val |= 0x10;
 		break;
 	case BANDWIDTH_8_MHZ:
+=======
+	switch (p->bandwidth_hz) {
+	case 6000000:
+		val |= 0x20;
+		break;
+	case 7000000:
+		val |= 0x10;
+		break;
+	case 8000000:
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		dprintk("%s: invalid bandwidth\n", __func__);
@@ -292,6 +340,7 @@ static int cx22702_set_tps(struct dvb_frontend *fe,
 	}
 	cx22702_writereg(state, 0x0C, val);
 
+<<<<<<< HEAD
 	p->u.ofdm.code_rate_LP = FEC_AUTO; /* temp hack as manual not working */
 
 	/* use auto configuration? */
@@ -301,6 +350,17 @@ static int cx22702_set_tps(struct dvb_frontend *fe,
 	   (p->u.ofdm.code_rate_LP == FEC_AUTO) ||
 	   (p->u.ofdm.guard_interval == GUARD_INTERVAL_AUTO) ||
 	   (p->u.ofdm.transmission_mode == TRANSMISSION_MODE_AUTO)) {
+=======
+	p->code_rate_LP = FEC_AUTO; /* temp hack as manual not working */
+
+	/* use auto configuration? */
+	if ((p->hierarchy == HIERARCHY_AUTO) ||
+	   (p->modulation == QAM_AUTO) ||
+	   (p->code_rate_HP == FEC_AUTO) ||
+	   (p->code_rate_LP == FEC_AUTO) ||
+	   (p->guard_interval == GUARD_INTERVAL_AUTO) ||
+	   (p->transmission_mode == TRANSMISSION_MODE_AUTO)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* TPS Source - use hardware driven values */
 		cx22702_writereg(state, 0x06, 0x10);
@@ -316,7 +376,11 @@ static int cx22702_set_tps(struct dvb_frontend *fe,
 	}
 
 	/* manually programmed values */
+<<<<<<< HEAD
 	switch (p->u.ofdm.constellation) {		/* mask 0x18 */
+=======
+	switch (p->modulation) {		/* mask 0x18 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case QPSK:
 		val = 0x00;
 		break;
@@ -327,10 +391,17 @@ static int cx22702_set_tps(struct dvb_frontend *fe,
 		val = 0x10;
 		break;
 	default:
+<<<<<<< HEAD
 		dprintk("%s: invalid constellation\n", __func__);
 		return -EINVAL;
 	}
 	switch (p->u.ofdm.hierarchy_information) {	/* mask 0x07 */
+=======
+		dprintk("%s: invalid modulation\n", __func__);
+		return -EINVAL;
+	}
+	switch (p->hierarchy) {	/* mask 0x07 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case HIERARCHY_NONE:
 		break;
 	case HIERARCHY_1:
@@ -348,7 +419,11 @@ static int cx22702_set_tps(struct dvb_frontend *fe,
 	}
 	cx22702_writereg(state, 0x06, val);
 
+<<<<<<< HEAD
 	switch (p->u.ofdm.code_rate_HP) {		/* mask 0x38 */
+=======
+	switch (p->code_rate_HP) {		/* mask 0x38 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case FEC_NONE:
 	case FEC_1_2:
 		val = 0x00;
@@ -369,7 +444,11 @@ static int cx22702_set_tps(struct dvb_frontend *fe,
 		dprintk("%s: invalid code_rate_HP\n", __func__);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	switch (p->u.ofdm.code_rate_LP) {		/* mask 0x07 */
+=======
+	switch (p->code_rate_LP) {		/* mask 0x07 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case FEC_NONE:
 	case FEC_1_2:
 		break;
@@ -391,7 +470,11 @@ static int cx22702_set_tps(struct dvb_frontend *fe,
 	}
 	cx22702_writereg(state, 0x07, val);
 
+<<<<<<< HEAD
 	switch (p->u.ofdm.guard_interval) {		/* mask 0x0c */
+=======
+	switch (p->guard_interval) {		/* mask 0x0c */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case GUARD_INTERVAL_1_32:
 		val = 0x00;
 		break;
@@ -408,7 +491,11 @@ static int cx22702_set_tps(struct dvb_frontend *fe,
 		dprintk("%s: invalid guard_interval\n", __func__);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	switch (p->u.ofdm.transmission_mode) {		/* mask 0x03 */
+=======
+	switch (p->transmission_mode) {		/* mask 0x03 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case TRANSMISSION_MODE_2K:
 		break;
 	case TRANSMISSION_MODE_8K:
@@ -502,10 +589,33 @@ static int cx22702_read_signal_strength(struct dvb_frontend *fe,
 	u16 *signal_strength)
 {
 	struct cx22702_state *state = fe->demodulator_priv;
+<<<<<<< HEAD
 
 	u16 rs_ber;
 	rs_ber = cx22702_readreg(state, 0x23);
 	*signal_strength = (rs_ber << 8) | rs_ber;
+=======
+	u8 reg23;
+
+	/*
+	 * Experience suggests that the strength signal register works as
+	 * follows:
+	 * - In the absence of signal, value is 0xff.
+	 * - In the presence of a weak signal, bit 7 is set, not sure what
+	 *   the lower 7 bits mean.
+	 * - In the presence of a strong signal, the register holds a 7-bit
+	 *   value (bit 7 is cleared), with greater values standing for
+	 *   weaker signals.
+	 */
+	reg23 = cx22702_readreg(state, 0x23);
+	if (reg23 & 0x80) {
+		*signal_strength = 0;
+	} else {
+		reg23 = ~reg23 & 0x7f;
+		/* Scale to 16 bit */
+		*signal_strength = (reg23 << 9) | (reg23 << 2) | (reg23 >> 5);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -546,15 +656,26 @@ static int cx22702_read_ucblocks(struct dvb_frontend *fe, u32 *ucblocks)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cx22702_get_frontend(struct dvb_frontend *fe,
 	struct dvb_frontend_parameters *p)
 {
+=======
+static int cx22702_get_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct cx22702_state *state = fe->demodulator_priv;
 
 	u8 reg0C = cx22702_readreg(state, 0x0C);
 
+<<<<<<< HEAD
 	p->inversion = reg0C & 0x1 ? INVERSION_ON : INVERSION_OFF;
 	return cx22702_get_tps(state, &p->u.ofdm);
+=======
+	c->inversion = reg0C & 0x1 ? INVERSION_ON : INVERSION_OFF;
+	return cx22702_get_tps(state, c);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int cx22702_get_tune_settings(struct dvb_frontend *fe,
@@ -603,10 +724,16 @@ error:
 EXPORT_SYMBOL(cx22702_attach);
 
 static const struct dvb_frontend_ops cx22702_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		.name			= "Conexant CX22702 DVB-T",
 		.type			= FE_OFDM,
+=======
+	.delsys = { SYS_DVBT },
+	.info = {
+		.name			= "Conexant CX22702 DVB-T",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min		= 177000000,
 		.frequency_max		= 858000000,
 		.frequency_stepsize	= 166666,

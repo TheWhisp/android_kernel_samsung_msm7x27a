@@ -11,6 +11,7 @@
  *		2 of the License, or (at your option) any later version.
  *
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_IF_PPPOL2TP_H
 #define __LINUX_IF_PPPOL2TP_H
@@ -39,7 +40,11 @@ struct pppol2tp_addr {
  * bits. So we need a different sockaddr structure.
  */
 struct pppol2tpv3_addr {
+<<<<<<< HEAD
 	pid_t	pid;			/* pid that owns the fd.
+=======
+	__kernel_pid_t	pid;		/* pid that owns the fd.
+>>>>>>> refs/remotes/origin/cm-10.0
 					 * 0 => current */
 	int	fd;			/* FD of UDP or IP socket to use */
 
@@ -78,5 +83,13 @@ enum {
 };
 
 
+=======
+#ifndef __LINUX_IF_PPPOL2TP_H
+#define __LINUX_IF_PPPOL2TP_H
+
+#include <linux/in.h>
+#include <linux/in6.h>
+#include <uapi/linux/if_pppol2tp.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif

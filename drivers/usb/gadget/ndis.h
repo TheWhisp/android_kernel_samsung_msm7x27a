@@ -10,22 +10,31 @@
  *
  * This source code is offered for use in the public domain. You may
  * use, modify or distribute it freely.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This code is distributed in the hope that it will be useful but
  * WITHOUT ANY WARRANTY. ALL WARRANTIES, EXPRESS OR IMPLIED ARE HEREBY
  * DISCLAIMED. This includes but is not limited to warranties of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _LINUX_NDIS_H
 #define _LINUX_NDIS_H
 
+<<<<<<< HEAD
 
 #define NDIS_STATUS_MULTICAST_FULL	  0xC0010009
 #define NDIS_STATUS_MULTICAST_EXISTS      0xC001000A
 #define NDIS_STATUS_MULTICAST_NOT_FOUND   0xC001000B
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum NDIS_DEVICE_POWER_STATE {
 	NdisDeviceStateUnspecified = 0,
 	NdisDeviceStateD0,
@@ -41,11 +50,14 @@ struct NDIS_PM_WAKE_UP_CAPABILITIES {
 	enum NDIS_DEVICE_POWER_STATE  MinLinkChangeWakeUp;
 };
 
+<<<<<<< HEAD
 /* NDIS_PNP_CAPABILITIES.Flags constants */
 #define NDIS_DEVICE_WAKE_UP_ENABLE                0x00000001
 #define NDIS_DEVICE_WAKE_ON_PATTERN_MATCH_ENABLE  0x00000002
 #define NDIS_DEVICE_WAKE_ON_MAGIC_PACKET_ENABLE   0x00000004
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct NDIS_PNP_CAPABILITIES {
 	__le32					Flags;
 	struct NDIS_PM_WAKE_UP_CAPABILITIES	WakeUpCapabilities;
@@ -60,6 +72,7 @@ struct NDIS_PM_PACKET_PATTERN {
 	__le32	PatternFlags;
 };
 
+<<<<<<< HEAD
 
 /* Required Object IDs (OIDs) */
 #define OID_GEN_SUPPORTED_LIST            0x00010101
@@ -214,4 +227,6 @@ struct NDIS_PM_PACKET_PATTERN {
 #define NDIS_MAC_OPTION_8021P_PRIORITY          0x00000040
 #define NDIS_MAC_OPTION_RESERVED                0x80000000
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_NDIS_H */

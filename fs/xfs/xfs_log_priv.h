@@ -19,6 +19,7 @@
 #define __XFS_LOG_PRIV_H__
 
 struct xfs_buf;
+<<<<<<< HEAD
 struct log;
 struct xlog_ticket;
 struct xfs_mount;
@@ -69,6 +70,21 @@ static inline uint xlog_get_cycle(char *ptr)
 #define BLK_AVG(blk1, blk2)	((blk1+blk2) >> 1)
 
 #ifdef __KERNEL__
+=======
+struct xlog;
+struct xlog_ticket;
+struct xfs_mount;
+struct xfs_log_callback;
+
+/*
+ * Flags for log structure
+ */
+#define XLOG_ACTIVE_RECOVERY	0x2	/* in the middle of recovery */
+#define	XLOG_RECOVERY_NEEDED	0x4	/* log was recovered */
+#define XLOG_IO_ERROR		0x8	/* log hit an I/O error, and being
+					   shutdown */
+#define XLOG_TAIL_WARN		0x10	/* log tail verify warning issued */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * get client id from packed copy.
@@ -101,6 +117,7 @@ static inline uint xlog_get_client_id(__be32 i)
 #define XLOG_STATE_IOERROR   0x0080 /* IO error happened in sync'ing log */
 #define XLOG_STATE_ALL	     0x7FFF /* All possible valid flags */
 #define XLOG_STATE_NOTUSED   0x8000 /* This IC log not being used */
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
 /*
@@ -123,6 +140,10 @@ static inline uint xlog_get_client_id(__be32 i)
 
 #ifdef __KERNEL__
 /*
+=======
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Flags to log ticket
  */
 #define XLOG_TIC_INITED		0x1	/* has been initialized */
@@ -132,6 +153,7 @@ static inline uint xlog_get_client_id(__be32 i)
 	{ XLOG_TIC_INITED,	"XLOG_TIC_INITED" }, \
 	{ XLOG_TIC_PERM_RESERV,	"XLOG_TIC_PERM_RESERV" }
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
 #define XLOG_UNMOUNT_TYPE	0x556e	/* Un for Unmount */
@@ -149,6 +171,8 @@ static inline uint xlog_get_client_id(__be32 i)
 typedef __uint32_t xlog_tid_t;
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Below are states for covering allocation transactions.
  * By covering, we mean changing the h_tail_lsn in the last on-disk
@@ -224,7 +248,10 @@ typedef __uint32_t xlog_tid_t;
 
 #define XLOG_COVER_OPS		5
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Ticket reservation region accounting */ 
 #define XLOG_TIC_LEN_MAX	15
 
@@ -239,8 +266,18 @@ typedef struct xlog_res {
 } xlog_res_t;
 
 typedef struct xlog_ticket {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wait_queue_head_t  t_wait;	 /* ticket wait queue */
 	struct list_head   t_queue;	 /* reserve/write queue */
+=======
+	struct list_head   t_queue;	 /* reserve/write queue */
+	struct task_struct *t_task;	 /* task that owns this ticket */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head   t_queue;	 /* reserve/write queue */
+	struct task_struct *t_task;	 /* task that owns this ticket */
+>>>>>>> refs/remotes/origin/master
 	xlog_tid_t	   t_tid;	 /* transaction identifier	 : 4  */
 	atomic_t	   t_ref;	 /* ticket reference count       : 4  */
 	int		   t_curr_res;	 /* current reservation in bytes : 4  */
@@ -259,6 +296,7 @@ typedef struct xlog_ticket {
 	xlog_res_t	   t_res_arr[XLOG_TIC_LEN_MAX];  /* array of res : 8 * 15 */ 
 } xlog_ticket_t;
 
+<<<<<<< HEAD
 #endif
 
 
@@ -317,6 +355,8 @@ typedef union xlog_in_core2 {
 	char			hic_sector[XLOG_HEADER_SIZE];
 } xlog_in_core_2_t;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * - A log record header is 512 bytes.  There is plenty of room to grow the
  *	xlog_rec_header_t into the reserved space.
@@ -352,7 +392,11 @@ typedef struct xlog_in_core {
 	struct xlog_in_core	*ic_next;
 	struct xlog_in_core	*ic_prev;
 	struct xfs_buf		*ic_bp;
+<<<<<<< HEAD
 	struct log		*ic_log;
+=======
+	struct xlog		*ic_log;
+>>>>>>> refs/remotes/origin/master
 	int			ic_size;
 	int			ic_offset;
 	int			ic_bwritecnt;
@@ -361,8 +405,13 @@ typedef struct xlog_in_core {
 
 	/* Callback structures need their own cacheline */
 	spinlock_t		ic_callback_lock ____cacheline_aligned_in_smp;
+<<<<<<< HEAD
 	xfs_log_callback_t	*ic_callback;
 	xfs_log_callback_t	**ic_callback_tail;
+=======
+	struct xfs_log_callback	*ic_callback;
+	struct xfs_log_callback	**ic_callback_tail;
+>>>>>>> refs/remotes/origin/master
 
 	/* reference counts need their own cacheline */
 	atomic_t		ic_refcnt ____cacheline_aligned_in_smp;
@@ -388,7 +437,11 @@ struct xfs_cil_ctx {
 	int			space_used;	/* aggregate size of regions */
 	struct list_head	busy_extents;	/* busy extents in chkpt */
 	struct xfs_log_vec	*lv_chain;	/* logvecs being pushed */
+<<<<<<< HEAD
 	xfs_log_callback_t	log_cb;		/* completion callback hook. */
+=======
+	struct xfs_log_callback	log_cb;		/* completion callback hook. */
+>>>>>>> refs/remotes/origin/master
 	struct list_head	committing;	/* ctx committing list */
 };
 
@@ -409,6 +462,7 @@ struct xfs_cil_ctx {
  * operations almost as efficient as the old logging methods.
  */
 struct xfs_cil {
+<<<<<<< HEAD
 	struct log		*xc_log;
 	struct list_head	xc_cil;
 	spinlock_t		xc_cil_lock;
@@ -418,6 +472,22 @@ struct xfs_cil {
 	wait_queue_head_t	xc_commit_wait;
 	xfs_lsn_t		xc_current_sequence;
 };
+=======
+	struct xlog		*xc_log;
+	struct list_head	xc_cil;
+	spinlock_t		xc_cil_lock;
+
+	struct rw_semaphore	xc_ctx_lock ____cacheline_aligned_in_smp;
+	struct xfs_cil_ctx	*xc_ctx;
+
+	spinlock_t		xc_push_lock ____cacheline_aligned_in_smp;
+	xfs_lsn_t		xc_push_seq;
+	struct list_head	xc_committing;
+	wait_queue_head_t	xc_commit_wait;
+	xfs_lsn_t		xc_current_sequence;
+	struct work_struct	xc_push_work;
+} ____cacheline_aligned_in_smp;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The amount of log space we allow the CIL to aggregate is difficult to size.
@@ -467,15 +537,40 @@ struct xfs_cil {
  * threshold, yet give us plenty of space for aggregation on large logs.
  */
 #define XLOG_CIL_SPACE_LIMIT(log)	(log->l_logsize >> 3)
+<<<<<<< HEAD
 #define XLOG_CIL_HARD_SPACE_LIMIT(log)	(3 * (log->l_logsize >> 4))
 
 /*
+<<<<<<< HEAD
+=======
+=======
+
+/*
+>>>>>>> refs/remotes/origin/master
+ * ticket grant locks, queues and accounting have their own cachlines
+ * as these are quite hot and can be operated on concurrently.
+ */
+struct xlog_grant_head {
+	spinlock_t		lock ____cacheline_aligned_in_smp;
+	struct list_head	waiters;
+	atomic64_t		grant;
+};
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * The reservation head lsn is not made up of a cycle number and block number.
  * Instead, it uses a cycle number and byte number.  Logs don't expect to
  * overflow 31 bits worth of byte offset, so using a byte number will mean
  * that round off problems won't occur when releasing partial reservations.
  */
+<<<<<<< HEAD
 typedef struct log {
+=======
+struct xlog {
+>>>>>>> refs/remotes/origin/master
 	/* The following fields don't need locking */
 	struct xfs_mount	*l_mp;	        /* mount point */
 	struct xfs_ail		*l_ailp;	/* AIL log is working with */
@@ -483,6 +578,10 @@ typedef struct log {
 	struct xfs_buf		*l_xbuf;        /* extra buffer for log
 						 * wrapping */
 	struct xfs_buftarg	*l_targ;        /* buftarg of log */
+<<<<<<< HEAD
+=======
+	struct delayed_work	l_work;		/* background flush work */
+>>>>>>> refs/remotes/origin/master
 	uint			l_flags;
 	uint			l_quotaoffs_flag; /* XFS_DQ_*, for QUOTAOFFs */
 	struct list_head	*l_buf_cancel_table;
@@ -520,6 +619,8 @@ typedef struct log {
 	/* lsn of 1st LR with unflushed * buffers */
 	atomic64_t		l_tail_lsn ____cacheline_aligned_in_smp;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * ticket grant locks, queues and accounting have their own cachlines
 	 * as these are quite hot and can be operated on concurrently.
@@ -531,13 +632,25 @@ typedef struct log {
 	spinlock_t		l_grant_write_lock ____cacheline_aligned_in_smp;
 	struct list_head	l_writeq;
 	atomic64_t		l_grant_write_head;
+=======
+	struct xlog_grant_head	l_reserve_head;
+	struct xlog_grant_head	l_write_head;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct xlog_grant_head	l_reserve_head;
+	struct xlog_grant_head	l_write_head;
+>>>>>>> refs/remotes/origin/master
 
 	/* The following field are used for debugging; need to hold icloglock */
 #ifdef DEBUG
 	char			*l_iclog_bak[XLOG_MAX_ICLOGS];
 #endif
 
+<<<<<<< HEAD
 } xlog_t;
+=======
+};
+>>>>>>> refs/remotes/origin/master
 
 #define XLOG_BUF_CANCEL_BUCKET(log, blkno) \
 	((log)->l_buf_cancel_table + ((__uint64_t)blkno % XLOG_BC_TABLE_SIZE))
@@ -545,15 +658,44 @@ typedef struct log {
 #define XLOG_FORCED_SHUTDOWN(log)	((log)->l_flags & XLOG_IO_ERROR)
 
 /* common routines */
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern xfs_lsn_t xlog_assign_tail_lsn(struct xfs_mount *mp);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int	 xlog_recover(xlog_t *log);
 extern int	 xlog_recover_finish(xlog_t *log);
 extern void	 xlog_pack_data(xlog_t *log, xlog_in_core_t *iclog, int);
 
 extern kmem_zone_t *xfs_log_ticket_zone;
 struct xlog_ticket *xlog_ticket_alloc(struct log *log, int unit_bytes,
+<<<<<<< HEAD
 				int count, char client, uint xflags,
+=======
+				int count, char client, bool permanent,
+>>>>>>> refs/remotes/origin/cm-10.0
 				int alloc_flags);
+=======
+extern int
+xlog_recover(
+	struct xlog		*log);
+extern int
+xlog_recover_finish(
+	struct xlog		*log);
+
+extern __le32	 xlog_cksum(struct xlog *log, struct xlog_rec_header *rhead,
+			    char *dp, int size);
+
+extern kmem_zone_t *xfs_log_ticket_zone;
+struct xlog_ticket *
+xlog_ticket_alloc(
+	struct xlog	*log,
+	int		unit_bytes,
+	int		count,
+	char		client,
+	bool		permanent,
+	xfs_km_flags_t	alloc_flags);
+>>>>>>> refs/remotes/origin/master
 
 
 static inline void
@@ -565,9 +707,20 @@ xlog_write_adv_cnt(void **ptr, int *len, int *off, size_t bytes)
 }
 
 void	xlog_print_tic_res(struct xfs_mount *mp, struct xlog_ticket *ticket);
+<<<<<<< HEAD
 int	xlog_write(struct log *log, struct xfs_log_vec *log_vector,
 				struct xlog_ticket *tic, xfs_lsn_t *start_lsn,
 				xlog_in_core_t **commit_iclog, uint flags);
+=======
+int
+xlog_write(
+	struct xlog		*log,
+	struct xfs_log_vec	*log_vector,
+	struct xlog_ticket	*tic,
+	xfs_lsn_t		*start_lsn,
+	struct xlog_in_core	**commit_iclog,
+	uint			flags);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * When we crack an atomic LSN, we sample it first so that the value will not
@@ -627,17 +780,34 @@ xlog_assign_grant_head(atomic64_t *head, int cycle, int space)
 /*
  * Committed Item List interfaces
  */
+<<<<<<< HEAD
 int	xlog_cil_init(struct log *log);
 void	xlog_cil_init_post_recovery(struct log *log);
 void	xlog_cil_destroy(struct log *log);
+=======
+int	xlog_cil_init(struct xlog *log);
+void	xlog_cil_init_post_recovery(struct xlog *log);
+void	xlog_cil_destroy(struct xlog *log);
+bool	xlog_cil_empty(struct xlog *log);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * CIL force routines
  */
+<<<<<<< HEAD
 xfs_lsn_t xlog_cil_force_lsn(struct log *log, xfs_lsn_t sequence);
 
 static inline void
 xlog_cil_force(struct log *log)
+=======
+xfs_lsn_t
+xlog_cil_force_lsn(
+	struct xlog *log,
+	xfs_lsn_t sequence);
+
+static inline void
+xlog_cil_force(struct xlog *log)
+>>>>>>> refs/remotes/origin/master
 {
 	xlog_cil_force_lsn(log, log->l_cilp->xc_current_sequence);
 }
@@ -663,6 +833,9 @@ static inline void xlog_wait(wait_queue_head_t *wq, spinlock_t *lock)
 	schedule();
 	remove_wait_queue(wq, &wait);
 }
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __XFS_LOG_PRIV_H__ */

@@ -10,6 +10,7 @@ void __init initmem_init(void)
 {
 	x86_numa_init();
 }
+<<<<<<< HEAD
 
 unsigned long __init numa_free_all_bootmem(void)
 {
@@ -19,7 +20,13 @@ unsigned long __init numa_free_all_bootmem(void)
 	for_each_online_node(i)
 		pages += free_all_bootmem_node(NODE_DATA(i));
 
+<<<<<<< HEAD
 	pages += free_all_memory_core_early(MAX_NUMNODES);
+=======
+	pages += free_low_memory_core_early(MAX_NUMNODES);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return pages;
 }
+=======
+>>>>>>> refs/remotes/origin/master

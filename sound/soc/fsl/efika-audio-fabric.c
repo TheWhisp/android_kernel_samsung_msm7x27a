@@ -31,8 +31,14 @@
 
 #define DRV_NAME "efika-audio-fabric"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_card card;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_dai_link efika_fabric_dai[] = {
 {
 	.name = "AC97",
@@ -52,6 +58,22 @@ static struct snd_soc_dai_link efika_fabric_dai[] = {
 },
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct snd_soc_card card = {
+	.name = "Efika",
+	.owner = THIS_MODULE,
+	.dai_link = efika_fabric_dai,
+	.num_links = ARRAY_SIZE(efika_fabric_dai),
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static __init int efika_fabric_init(void)
 {
 	struct platform_device *pdev;
@@ -60,11 +82,17 @@ static __init int efika_fabric_init(void)
 	if (!of_machine_is_compatible("bplan,efika"))
 		return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	card.name = "Efika";
 	card.dai_link = efika_fabric_dai;
 	card.num_links = ARRAY_SIZE(efika_fabric_dai);
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pdev = platform_device_alloc("soc-audio", 1);
 	if (!pdev) {
 		pr_err("efika_fabric_init: platform_device_alloc() failed\n");

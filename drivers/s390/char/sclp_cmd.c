@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright IBM Corp. 2007, 2009
+=======
+ * Copyright IBM Corp. 2007,2012
+>>>>>>> refs/remotes/origin/master
  *
  * Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>,
  *	      Peter Oberparleiter <peter.oberparleiter@de.ibm.com>
@@ -12,15 +16,24 @@
 #include <linux/init.h>
 #include <linux/errno.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/string.h>
 #include <linux/mm.h>
 #include <linux/mmzone.h>
 #include <linux/memory.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <asm/chpid.h>
 #include <asm/sclp.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
+=======
+#include <asm/ctl_reg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "sclp.h"
 
@@ -61,8 +74,13 @@ static int __init sclp_cmd_sync_early(sclp_cmdw_t cmd, void *sccb)
 	rc = sclp_service_call(cmd, sccb);
 	if (rc)
 		goto out;
+<<<<<<< HEAD
 	__load_psw_mask(PSW_BASE_BITS | PSW_MASK_EXT |
 			PSW_MASK_WAIT | PSW_DEFAULT_KEY);
+=======
+	__load_psw_mask(PSW_DEFAULT_KEY | PSW_MASK_BASE | PSW_MASK_EA |
+			PSW_MASK_BA | PSW_MASK_EXT | PSW_MASK_WAIT);
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_disable();
 out:
 	/* Contents of the sccb might have changed. */
@@ -143,6 +161,18 @@ void __init sclp_get_ipl_info(struct sclp_ipl_info *info)
 	memcpy(&info->loadparm, &sccb->loadparm, LOADPARM_LEN);
 }
 
+=======
+#include <linux/module.h>
+#include <linux/platform_device.h>
+#include <asm/ctl_reg.h>
+#include <asm/chpid.h>
+#include <asm/setup.h>
+#include <asm/page.h>
+#include <asm/sclp.h>
+
+#include "sclp.h"
+
+>>>>>>> refs/remotes/origin/master
 static void sclp_sync_callback(struct sclp_req *req, void *data)
 {
 	struct completion *completion = data;
@@ -150,7 +180,11 @@ static void sclp_sync_callback(struct sclp_req *req, void *data)
 	complete(completion);
 }
 
+<<<<<<< HEAD
 static int do_sync_request(sclp_cmdw_t cmd, void *sccb)
+=======
+int sclp_sync_request(sclp_cmdw_t cmd, void *sccb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct completion completion;
 	struct sclp_req *request;
@@ -225,7 +259,11 @@ int sclp_get_cpu_info(struct sclp_cpu_info *info)
 	if (!sccb)
 		return -ENOMEM;
 	sccb->header.length = sizeof(*sccb);
+<<<<<<< HEAD
 	rc = do_sync_request(SCLP_CMDW_READ_CPU_INFO, sccb);
+=======
+	rc = sclp_sync_request(SCLP_CMDW_READ_CPU_INFO, sccb);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto out;
 	if (sccb->header.response_code != 0x0010) {
@@ -259,7 +297,11 @@ static int do_cpu_configure(sclp_cmdw_t cmd)
 	if (!sccb)
 		return -ENOMEM;
 	sccb->header.length = sizeof(*sccb);
+<<<<<<< HEAD
 	rc = do_sync_request(cmd, sccb);
+=======
+	rc = sclp_sync_request(cmd, sccb);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto out;
 	switch (sccb->header.response_code) {
@@ -300,7 +342,10 @@ struct memory_increment {
 	struct list_head list;
 	u16 rn;
 	int standby;
+<<<<<<< HEAD
 	int usecount;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct assign_storage_sccb {
@@ -310,14 +355,24 @@ struct assign_storage_sccb {
 
 int arch_get_memory_phys_device(unsigned long start_pfn)
 {
+<<<<<<< HEAD
 	if (!rzm)
 		return 0;
 	return PFN_PHYS(start_pfn) >> ilog2(rzm);
+=======
+	if (!sclp_rzm)
+		return 0;
+	return PFN_PHYS(start_pfn) >> ilog2(sclp_rzm);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long long rn2addr(u16 rn)
 {
+<<<<<<< HEAD
 	return (unsigned long long) (rn - 1) * rzm;
+=======
+	return (unsigned long long) (rn - 1) * sclp_rzm;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int do_assign_storage(sclp_cmdw_t cmd, u16 rn)
@@ -330,7 +385,11 @@ static int do_assign_storage(sclp_cmdw_t cmd, u16 rn)
 		return -ENOMEM;
 	sccb->header.length = PAGE_SIZE;
 	sccb->rn = rn;
+<<<<<<< HEAD
 	rc = do_sync_request(cmd, sccb);
+=======
+	rc = sclp_sync_request(cmd, sccb);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto out;
 	switch (sccb->header.response_code) {
@@ -351,7 +410,19 @@ out:
 
 static int sclp_assign_storage(u16 rn)
 {
+<<<<<<< HEAD
 	return do_assign_storage(0x000d0001, rn);
+=======
+	unsigned long long start;
+	int rc;
+
+	rc = do_assign_storage(0x000d0001, rn);
+	if (rc)
+		return rc;
+	start = rn2addr(rn);
+	storage_key_init_range(start, start + sclp_rzm);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int sclp_unassign_storage(u16 rn)
@@ -377,14 +448,31 @@ static int sclp_attach_storage(u8 id)
 	if (!sccb)
 		return -ENOMEM;
 	sccb->header.length = PAGE_SIZE;
+<<<<<<< HEAD
 	rc = do_sync_request(0x00080001 | id << 8, sccb);
+=======
+	rc = sclp_sync_request(0x00080001 | id << 8, sccb);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto out;
 	switch (sccb->header.response_code) {
 	case 0x0020:
 		set_bit(id, sclp_storage_ids);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < sccb->assigned; i++)
 			sclp_unassign_storage(sccb->entries[i] >> 16);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		for (i = 0; i < sccb->assigned; i++) {
+			if (sccb->entries[i])
+				sclp_unassign_storage(sccb->entries[i] >> 16);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		rc = -EIO;
@@ -406,6 +494,7 @@ static int sclp_mem_change_state(unsigned long start, unsigned long size,
 		istart = rn2addr(incr->rn);
 		if (start + size - 1 < istart)
 			break;
+<<<<<<< HEAD
 		if (start > istart + rzm - 1)
 			continue;
 		if (online) {
@@ -423,6 +512,14 @@ static int sclp_mem_change_state(unsigned long start, unsigned long size,
 				continue;
 			sclp_unassign_storage(incr->rn);
 		}
+=======
+		if (start > istart + sclp_rzm - 1)
+			continue;
+		if (online)
+			rc |= sclp_assign_storage(incr->rn);
+		else
+			sclp_unassign_storage(incr->rn);
+>>>>>>> refs/remotes/origin/master
 	}
 	return rc ? -EIO : 0;
 }
@@ -439,9 +536,19 @@ static int sclp_mem_notifier(struct notifier_block *nb,
 	start = arg->start_pfn << PAGE_SHIFT;
 	size = arg->nr_pages << PAGE_SHIFT;
 	mutex_lock(&sclp_mem_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (id = 0; id <= sclp_max_storage_id; id++)
 		if (!test_bit(id, sclp_storage_ids))
 			sclp_attach_storage(id);
+=======
+	for_each_clear_bit(id, sclp_storage_ids, sclp_max_storage_id + 1)
+		sclp_attach_storage(id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for_each_clear_bit(id, sclp_storage_ids, sclp_max_storage_id + 1)
+		sclp_attach_storage(id);
+>>>>>>> refs/remotes/origin/master
 	switch (action) {
 	case MEM_ONLINE:
 	case MEM_GOING_OFFLINE:
@@ -482,7 +589,11 @@ static void __init add_memory_merged(u16 rn)
 	if (!first_rn)
 		goto skip_add;
 	start = rn2addr(first_rn);
+<<<<<<< HEAD
 	size = (unsigned long long ) num * rzm;
+=======
+	size = (unsigned long long) num * sclp_rzm;
+>>>>>>> refs/remotes/origin/master
 	if (start >= VMEM_MAX_PHYS)
 		goto skip_add;
 	if (start + size > VMEM_MAX_PHYS)
@@ -507,8 +618,16 @@ static void __init sclp_add_standby_memory(void)
 	add_memory_merged(0);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MEM_SCT_SIZE (1UL << SECTION_SIZE_BITS)
 
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#define MEM_SCT_SIZE (1UL << SECTION_SIZE_BITS)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init insert_increment(u16 rn, int standby, int assigned)
 {
 	struct memory_increment *incr, *new_incr;
@@ -520,8 +639,14 @@ static void __init insert_increment(u16 rn, int standby, int assigned)
 		return;
 	new_incr->rn = rn;
 	new_incr->standby = standby;
+<<<<<<< HEAD
 	if (!standby)
 		new_incr->usecount = rzm > MEM_SCT_SIZE ? rzm/MEM_SCT_SIZE : 1;
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	last_rn = 0;
 	prev = &sclp_mem_list;
 	list_for_each_entry(incr, &sclp_mem_list, list) {
@@ -534,7 +659,11 @@ static void __init insert_increment(u16 rn, int standby, int assigned)
 	}
 	if (!assigned)
 		new_incr->rn = last_rn + 1;
+<<<<<<< HEAD
 	if (new_incr->rn > rnmax) {
+=======
+	if (new_incr->rn > sclp_rnmax) {
+>>>>>>> refs/remotes/origin/master
 		kfree(new_incr);
 		return;
 	}
@@ -575,7 +704,11 @@ static int __init sclp_detect_standby_memory(void)
 	struct read_storage_sccb *sccb;
 	int i, id, assigned, rc;
 
+<<<<<<< HEAD
 	if (!early_read_info_sccb_valid)
+=======
+	if (OLDMEM_BASE) /* No standby memory in kdump mode */
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	if ((sclp_facilities & 0xe00000000000ULL) != 0xe00000000000ULL)
 		return 0;
@@ -587,7 +720,11 @@ static int __init sclp_detect_standby_memory(void)
 	for (id = 0; id <= sclp_max_storage_id; id++) {
 		memset(sccb, 0, PAGE_SIZE);
 		sccb->header.length = PAGE_SIZE;
+<<<<<<< HEAD
 		rc = do_sync_request(0x00040001 | id << 8, sccb);
+=======
+		rc = sclp_sync_request(0x00040001 | id << 8, sccb);
+>>>>>>> refs/remotes/origin/master
 		if (rc)
 			goto out;
 		switch (sccb->header.response_code) {
@@ -619,7 +756,11 @@ static int __init sclp_detect_standby_memory(void)
 	}
 	if (rc || list_empty(&sclp_mem_list))
 		goto out;
+<<<<<<< HEAD
 	for (i = 1; i <= rnmax - assigned; i++)
+=======
+	for (i = 1; i <= sclp_rnmax - assigned; i++)
+>>>>>>> refs/remotes/origin/master
 		insert_increment(0, 1, 0);
 	rc = register_memory_notifier(&sclp_mem_nb);
 	if (rc)
@@ -628,7 +769,11 @@ static int __init sclp_detect_standby_memory(void)
 	if (rc)
 		goto out;
 	sclp_pdev = platform_device_register_simple("sclp_mem", -1, NULL, 0);
+<<<<<<< HEAD
 	rc = IS_ERR(sclp_pdev) ? PTR_ERR(sclp_pdev) : 0;
+=======
+	rc = PTR_RET(sclp_pdev);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto out_driver;
 	sclp_add_standby_memory();
@@ -644,6 +789,70 @@ __initcall(sclp_detect_standby_memory);
 #endif /* CONFIG_MEMORY_HOTPLUG */
 
 /*
+<<<<<<< HEAD
+=======
+ * PCI I/O adapter configuration related functions.
+ */
+#define SCLP_CMDW_CONFIGURE_PCI			0x001a0001
+#define SCLP_CMDW_DECONFIGURE_PCI		0x001b0001
+
+#define SCLP_RECONFIG_PCI_ATPYE			2
+
+struct pci_cfg_sccb {
+	struct sccb_header header;
+	u8 atype;		/* adapter type */
+	u8 reserved1;
+	u16 reserved2;
+	u32 aid;		/* adapter identifier */
+} __packed;
+
+static int do_pci_configure(sclp_cmdw_t cmd, u32 fid)
+{
+	struct pci_cfg_sccb *sccb;
+	int rc;
+
+	if (!SCLP_HAS_PCI_RECONFIG)
+		return -EOPNOTSUPP;
+
+	sccb = (struct pci_cfg_sccb *) get_zeroed_page(GFP_KERNEL | GFP_DMA);
+	if (!sccb)
+		return -ENOMEM;
+
+	sccb->header.length = PAGE_SIZE;
+	sccb->atype = SCLP_RECONFIG_PCI_ATPYE;
+	sccb->aid = fid;
+	rc = sclp_sync_request(cmd, sccb);
+	if (rc)
+		goto out;
+	switch (sccb->header.response_code) {
+	case 0x0020:
+	case 0x0120:
+		break;
+	default:
+		pr_warn("configure PCI I/O adapter failed: cmd=0x%08x  response=0x%04x\n",
+			cmd, sccb->header.response_code);
+		rc = -EIO;
+		break;
+	}
+out:
+	free_page((unsigned long) sccb);
+	return rc;
+}
+
+int sclp_pci_configure(u32 fid)
+{
+	return do_pci_configure(SCLP_CMDW_CONFIGURE_PCI, fid);
+}
+EXPORT_SYMBOL(sclp_pci_configure);
+
+int sclp_pci_deconfigure(u32 fid)
+{
+	return do_pci_configure(SCLP_CMDW_DECONFIGURE_PCI, fid);
+}
+EXPORT_SYMBOL(sclp_pci_deconfigure);
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Channel path configuration related functions.
  */
 
@@ -670,7 +879,11 @@ static int do_chp_configure(sclp_cmdw_t cmd)
 	if (!sccb)
 		return -ENOMEM;
 	sccb->header.length = sizeof(*sccb);
+<<<<<<< HEAD
 	rc = do_sync_request(cmd, sccb);
+=======
+	rc = sclp_sync_request(cmd, sccb);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto out;
 	switch (sccb->header.response_code) {
@@ -745,7 +958,11 @@ int sclp_chp_read_info(struct sclp_chp_info *info)
 	if (!sccb)
 		return -ENOMEM;
 	sccb->header.length = sizeof(*sccb);
+<<<<<<< HEAD
 	rc = do_sync_request(SCLP_CMDW_READ_CHPATH_INFORMATION, sccb);
+=======
+	rc = sclp_sync_request(SCLP_CMDW_READ_CHPATH_INFORMATION, sccb);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto out;
 	if (sccb->header.response_code != 0x0010) {

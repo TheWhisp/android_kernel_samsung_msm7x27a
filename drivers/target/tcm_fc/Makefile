@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXTRA_CFLAGS += -I$(srctree)/drivers/target/ \
 		-I$(srctree)/drivers/scsi/ \
 		-I$(srctree)/include/scsi/ \
@@ -13,3 +15,16 @@ obj-$(CONFIG_TCM_FC)	+= tcm_fc.o
 ifdef CONFIGFS_TCM_FC_DEBUG
 EXTRA_CFLAGS	+= -DTCM_FC_DEBUG
 endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+tcm_fc-y +=		tfc_cmd.o \
+			tfc_conf.o \
+			tfc_io.o \
+			tfc_sess.o
+
+obj-$(CONFIG_TCM_FC)	+= tcm_fc.o
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

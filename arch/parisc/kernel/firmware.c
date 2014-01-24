@@ -67,7 +67,13 @@
 #include <asm/page.h>
 #include <asm/pdc.h>
 #include <asm/pdcpat.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>	/* for boot_cpu_data */
 
 static DEFINE_SPINLOCK(pdc_lock);
@@ -151,7 +157,11 @@ static void convert_to_wide(unsigned long *addr)
 }
 
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
 void __cpuinit set_firmware_width_unlocked(void)
+=======
+void set_firmware_width_unlocked(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -168,7 +178,11 @@ void __cpuinit set_firmware_width_unlocked(void)
  * This function must be called before any pdc_* function that uses the
  * convert_to_wide function.
  */
+<<<<<<< HEAD
 void __cpuinit set_firmware_width(void)
+=======
+void set_firmware_width(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	spin_lock_irqsave(&pdc_lock, flags);
@@ -176,11 +190,21 @@ void __cpuinit set_firmware_width(void)
 	spin_unlock_irqrestore(&pdc_lock, flags);
 }
 #else
+<<<<<<< HEAD
 void __cpuinit set_firmware_width_unlocked(void) {
 	return;
 }
 
 void __cpuinit set_firmware_width(void) {
+=======
+void set_firmware_width_unlocked(void)
+{
+	return;
+}
+
+void set_firmware_width(void)
+{
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 #endif /*CONFIG_64BIT*/
@@ -302,7 +326,11 @@ int pdc_chassis_warn(unsigned long *warn)
 	return retval;
 }
 
+<<<<<<< HEAD
 int __cpuinit pdc_coproc_cfg_unlocked(struct pdc_coproc_cfg *pdc_coproc_info)
+=======
+int pdc_coproc_cfg_unlocked(struct pdc_coproc_cfg *pdc_coproc_info)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -323,7 +351,11 @@ int __cpuinit pdc_coproc_cfg_unlocked(struct pdc_coproc_cfg *pdc_coproc_info)
  * This PDC call returns the presence and status of all the coprocessors
  * attached to the processor.
  */
+<<<<<<< HEAD
 int __cpuinit pdc_coproc_cfg(struct pdc_coproc_cfg *pdc_coproc_info)
+=======
+int pdc_coproc_cfg(struct pdc_coproc_cfg *pdc_coproc_info)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	unsigned long flags;

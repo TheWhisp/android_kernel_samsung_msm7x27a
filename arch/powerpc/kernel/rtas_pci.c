@@ -81,7 +81,11 @@ int rtas_read_config(struct pci_dn *pdn, int where, int size, u32 *val)
 		return PCIBIOS_DEVICE_NOT_FOUND;
 
 	if (returnval == EEH_IO_ERROR_VALUE(size) &&
+<<<<<<< HEAD
 	    eeh_dn_check_failure (pdn->node, NULL))
+=======
+	    eeh_dev_check_failure(of_node_to_eeh_dev(pdn->node)))
+>>>>>>> refs/remotes/origin/master
 		return PCIBIOS_DEVICE_NOT_FOUND;
 
 	return PCIBIOS_SUCCESSFUL;
@@ -201,7 +205,11 @@ static void python_countermeasures(struct device_node *dev)
 	iounmap(chip_regs);
 }
 
+<<<<<<< HEAD
 void __init init_pci_config_tokens (void)
+=======
+void __init init_pci_config_tokens(void)
+>>>>>>> refs/remotes/origin/master
 {
 	read_pci_config = rtas_token("read-pci-config");
 	write_pci_config = rtas_token("write-pci-config");
@@ -209,7 +217,11 @@ void __init init_pci_config_tokens (void)
 	ibm_write_pci_config = rtas_token("ibm,write-pci-config");
 }
 
+<<<<<<< HEAD
 unsigned long __devinit get_phb_buid (struct device_node *phb)
+=======
+unsigned long get_phb_buid(struct device_node *phb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource r;
 
@@ -223,7 +235,11 @@ unsigned long __devinit get_phb_buid (struct device_node *phb)
 static int phb_set_bus_ranges(struct device_node *dev,
 			      struct pci_controller *phb)
 {
+<<<<<<< HEAD
 	const int *bus_range;
+=======
+	const __be32 *bus_range;
+>>>>>>> refs/remotes/origin/master
 	unsigned int len;
 
 	bus_range = of_get_property(dev, "bus-range", &len);
@@ -231,13 +247,22 @@ static int phb_set_bus_ranges(struct device_node *dev,
 		return 1;
  	}
 
+<<<<<<< HEAD
 	phb->first_busno =  bus_range[0];
 	phb->last_busno  =  bus_range[1];
+=======
+	phb->first_busno = be32_to_cpu(bus_range[0]);
+	phb->last_busno  = be32_to_cpu(bus_range[1]);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 int __devinit rtas_setup_phb(struct pci_controller *phb)
+=======
+int rtas_setup_phb(struct pci_controller *phb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dev = phb->dn;
 
@@ -275,8 +300,21 @@ void __init find_and_init_phbs(void)
 	of_node_put(root);
 	pci_devs_phb_init();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * pci_probe_only and pci_assign_all_buses can be set via properties
+=======
+	/* Create EEH devices for all PHBs */
+	eeh_dev_phb_init();
+
+	/*
+	 * PCI_PROBE_ONLY and PCI_REASSIGN_ALL_BUS can be set via properties
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * PCI_PROBE_ONLY and PCI_REASSIGN_ALL_BUS can be set via properties
+>>>>>>> refs/remotes/origin/master
 	 * in chosen.
 	 */
 	if (of_chosen) {
@@ -284,14 +322,37 @@ void __init find_and_init_phbs(void)
 
 		prop = of_get_property(of_chosen,
 				"linux,pci-probe-only", NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (prop)
 			pci_probe_only = *prop;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (prop) {
+			if (*prop)
+				pci_add_flags(PCI_PROBE_ONLY);
+			else
+				pci_clear_flags(PCI_PROBE_ONLY);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PPC32 /* Will be made generic soon */
 		prop = of_get_property(of_chosen,
 				"linux,pci-assign-all-buses", NULL);
 		if (prop && *prop)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ppc_pci_flags |= PPC_PCI_REASSIGN_ALL_BUS;
+=======
+			pci_add_flags(PCI_REASSIGN_ALL_BUS);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pci_add_flags(PCI_REASSIGN_ALL_BUS);
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PPC32 */
 	}
 }

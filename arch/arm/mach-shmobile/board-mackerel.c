@@ -39,28 +39,70 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 #include <linux/mtd/physmap.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_runtime.h>
 #include <linux/smsc911x.h>
 #include <linux/sh_intc.h>
 #include <linux/tca6416_keypad.h>
 #include <linux/usb/r8a66597.h>
 #include <linux/usb/renesas_usbhs.h>
+=======
+#include <linux/mtd/sh_flctl.h>
+#include <linux/pm_clock.h>
+=======
+#include <linux/mtd/sh_flctl.h>
+#include <linux/pinctrl/machine.h>
+#include <linux/platform_data/gpio_backlight.h>
+#include <linux/pm_clock.h>
+#include <linux/regulator/fixed.h>
+#include <linux/regulator/machine.h>
+>>>>>>> refs/remotes/origin/master
+#include <linux/smsc911x.h>
+#include <linux/sh_intc.h>
+#include <linux/tca6416_keypad.h>
+#include <linux/usb/renesas_usbhs.h>
+#include <linux/dma-mapping.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <video/sh_mobile_hdmi.h>
 #include <video/sh_mobile_lcdc.h>
 #include <media/sh_mobile_ceu.h>
 #include <media/soc_camera.h>
 #include <media/soc_camera_platform.h>
 #include <sound/sh_fsi.h>
+<<<<<<< HEAD
 
 #include <mach/common.h>
+<<<<<<< HEAD
 #include <mach/sh7372.h>
 
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 #include <asm/mach/map.h>
+=======
+=======
+#include <sound/simple_card.h>
+
+#include <mach/common.h>
+>>>>>>> refs/remotes/origin/master
+#include <mach/irqs.h>
+#include <mach/sh7372.h>
+
+#include <asm/mach/arch.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 
+=======
+#include <asm/mach-types.h>
+
+#include "sh-gpio.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Address	Interface		BusWidth	note
  * ------------------------------------------------------------------
@@ -144,11 +186,17 @@
  * 1-2 short | VBUS 5V       | Host
  * open      | external VBUS | Function
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * *1
  * CN31 is used as
  * CONFIG_USB_R8A66597_HCD	Host
  * CONFIG_USB_RENESAS_USBHS	Function
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * CAUTION
  *
  * renesas_usbhs driver can use external interrupt mode
@@ -160,6 +208,8 @@
  * mackerel can not use external interrupt (IRQ7-PORT167) mode on "USB0",
  * because Touchscreen is using IRQ7-PORT40.
  * It is impossible to use IRQ7 demux on this board.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * We can use external interrupt mode USB-Function on "USB1".
  * USB1 can become Host by r8a66597, and become Function by renesas_usbhs.
@@ -169,6 +219,10 @@
  *
  * Actually these are old/new version of USB driver.
  * This mean its register will be broken if it supports shared IRQ,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
@@ -207,6 +261,23 @@
  */
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * FSI - AK4642
+ *
+ * it needs amixer settings for playing
+ *
+<<<<<<< HEAD
+ * amixer set "Headphone" on
+ * amixer set "HPOUTL Mixer DACH" on
+ * amixer set "HPOUTR Mixer DACH" on
+ */
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * FIXME !!
  *
  * gpio_no_direction
@@ -231,6 +302,37 @@ static void __init gpio_pull_down(u32 addr)
 
 	__raw_writeb(data, addr);
 }
+=======
+ * amixer set "Headphone Enable" on
+ */
+
+/* Fixed 3.3V and 1.8V regulators to be used by multiple devices */
+static struct regulator_consumer_supply fixed1v8_power_consumers[] =
+{
+	/*
+	 * J22 on mackerel switches mmcif.0 and sdhi.1 between 1.8V and 3.3V
+	 * Since we cannot support both voltages, we support the default 1.8V
+	 */
+	REGULATOR_SUPPLY("vmmc", "sh_mobile_sdhi.1"),
+	REGULATOR_SUPPLY("vqmmc", "sh_mobile_sdhi.1"),
+	REGULATOR_SUPPLY("vmmc", "sh_mmcif.0"),
+	REGULATOR_SUPPLY("vqmmc", "sh_mmcif.0"),
+};
+
+static struct regulator_consumer_supply fixed3v3_power_consumers[] =
+{
+	REGULATOR_SUPPLY("vmmc", "sh_mobile_sdhi.0"),
+	REGULATOR_SUPPLY("vqmmc", "sh_mobile_sdhi.0"),
+	REGULATOR_SUPPLY("vmmc", "sh_mobile_sdhi.2"),
+	REGULATOR_SUPPLY("vqmmc", "sh_mobile_sdhi.2"),
+};
+
+/* Dummy supplies, where voltage doesn't matter */
+static struct regulator_consumer_supply dummy_supplies[] = {
+	REGULATOR_SUPPLY("vddvario", "smsc911x"),
+	REGULATOR_SUPPLY("vdd33a", "smsc911x"),
+};
+>>>>>>> refs/remotes/origin/master
 
 /* MTD */
 static struct mtd_partition nor_flash_partitions[] = {
@@ -272,8 +374,18 @@ static struct physmap_flash_data nor_flash_data = {
 
 static struct resource nor_flash_resources[] = {
 	[0]	= {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= 0x00000000,
 		.end	= 0x08000000 - 1,
+=======
+		.start	= 0x20000000, /* CS0 shadow instead of regular CS0 */
+		.end	= 0x28000000 - 1, /* needed by USB MASK ROM boot */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= 0x20000000, /* CS0 shadow instead of regular CS0 */
+		.end	= 0x28000000 - 1, /* needed by USB MASK ROM boot */
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_MEM,
 	}
 };
@@ -322,8 +434,25 @@ static struct sh_mobile_meram_info mackerel_meram_info = {
 
 static struct resource meram_resources[] = {
 	[0] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name	= "MERAM",
 		.start	= 0xe8000000,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.name	= "regs",
+		.start	= 0xe8000000,
+		.end	= 0xe807ffff,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.name	= "meram",
+		.start	= 0xe8080000,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.end	= 0xe81fffff,
 		.flags	= IORESOURCE_MEM,
 	},
@@ -339,7 +468,11 @@ static struct platform_device meram_device = {
 	},
 };
 
+<<<<<<< HEAD
 /* LCDC */
+=======
+/* LCDC and backlight */
+>>>>>>> refs/remotes/origin/master
 static struct fb_videomode mackerel_lcdc_modes[] = {
 	{
 		.name		= "WVGA Panel",
@@ -355,18 +488,28 @@ static struct fb_videomode mackerel_lcdc_modes[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int mackerel_set_brightness(void *board_data, int brightness)
+=======
+static int mackerel_set_brightness(int brightness)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	gpio_set_value(GPIO_PORT31, brightness);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int mackerel_get_brightness(void *board_data)
+=======
+static int mackerel_get_brightness(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return gpio_get_value(GPIO_PORT31);
 }
 
+<<<<<<< HEAD
 static struct sh_mobile_meram_cfg lcd_meram_cfg = {
 	.icb[0] = {
 		.marker_icb     = 28,
@@ -378,6 +521,18 @@ static struct sh_mobile_meram_cfg lcd_meram_cfg = {
 		.marker_icb     = 29,
 		.cache_icb      = 25,
 		.meram_offset   = 0x40,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct sh_mobile_meram_cfg lcd_meram_cfg = {
+	.icb[0] = {
+		.meram_size     = 0x40,
+	},
+	.icb[1] = {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.meram_size     = 0x40,
 	},
 };
@@ -387,6 +542,8 @@ static struct sh_mobile_lcdc_info lcdc_info = {
 	.clock_source = LCDC_CLK_BUS,
 	.ch[0] = {
 		.chan = LCDC_CHAN_MAINLCD,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.bpp = 16,
 		.lcd_cfg = mackerel_lcdc_modes,
 		.num_cfg = ARRAY_SIZE(mackerel_lcdc_modes),
@@ -398,10 +555,31 @@ static struct sh_mobile_lcdc_info lcdc_info = {
 		.board_cfg = {
 			.set_brightness = mackerel_set_brightness,
 			.get_brightness = mackerel_get_brightness,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.fourcc = V4L2_PIX_FMT_RGB565,
+		.lcd_modes = mackerel_lcdc_modes,
+		.num_modes = ARRAY_SIZE(mackerel_lcdc_modes),
+		.interface_type		= RGB24,
+		.clock_divider		= 3,
+		.flags			= 0,
+		.panel_cfg = {
+			.width		= 152,
+			.height		= 91,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		.bl_info = {
 			.name = "sh_mobile_lcdc_bl",
 			.max_brightness = 1,
+<<<<<<< HEAD
+=======
+			.set_brightness = mackerel_set_brightness,
+			.get_brightness = mackerel_get_brightness,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		},
 		.meram_cfg = &lcd_meram_cfg,
 	}
@@ -426,10 +604,12 @@ static struct platform_device lcdc_device = {
 	.resource	= lcdc_resources,
 	.dev	= {
 		.platform_data	= &lcdc_info,
+<<<<<<< HEAD
 		.coherent_dma_mask = ~0,
 	},
 };
 
+<<<<<<< HEAD
 static struct sh_mobile_meram_cfg hdmi_meram_cfg = {
 	.icb[0] = {
 		.marker_icb     = 30,
@@ -445,16 +625,95 @@ static struct sh_mobile_meram_cfg hdmi_meram_cfg = {
 	},
 };
 /* HDMI */
+=======
+=======
+		.coherent_dma_mask = DMA_BIT_MASK(32),
+	},
+};
+
+static struct gpio_backlight_platform_data gpio_backlight_data = {
+	.fbdev = &lcdc_device.dev,
+	.gpio = 31,
+	.def_value = 1,
+	.name = "backlight",
+};
+
+static struct platform_device gpio_backlight_device = {
+	.name = "gpio-backlight",
+	.dev = {
+		.platform_data = &gpio_backlight_data,
+	},
+};
+
+>>>>>>> refs/remotes/origin/master
+/* HDMI */
+static struct sh_mobile_hdmi_info hdmi_info = {
+	.flags		= HDMI_SND_SRC_SPDIF,
+};
+
+static struct resource hdmi_resources[] = {
+	[0] = {
+		.name	= "HDMI",
+		.start	= 0xe6be0000,
+		.end	= 0xe6be00ff,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		/* There's also an HDMI interrupt on INTCS @ 0x18e0 */
+		.start	= evt2irq(0x17e0),
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct platform_device hdmi_device = {
+	.name		= "sh-mobile-hdmi",
+	.num_resources	= ARRAY_SIZE(hdmi_resources),
+	.resource	= hdmi_resources,
+	.id             = -1,
+	.dev	= {
+		.platform_data	= &hdmi_info,
+	},
+};
+
+static const struct sh_mobile_meram_cfg hdmi_meram_cfg = {
+	.icb[0] = {
+		.meram_size     = 0x100,
+	},
+	.icb[1] = {
+		.meram_size     = 0x100,
+	},
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sh_mobile_lcdc_info hdmi_lcdc_info = {
 	.meram_dev = &mackerel_meram_info,
 	.clock_source = LCDC_CLK_EXTERNAL,
 	.ch[0] = {
 		.chan = LCDC_CHAN_MAINLCD,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.bpp = 16,
+=======
+		.fourcc = V4L2_PIX_FMT_RGB565,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.fourcc = V4L2_PIX_FMT_RGB565,
+>>>>>>> refs/remotes/origin/master
 		.interface_type = RGB24,
 		.clock_divider = 1,
 		.flags = LCDC_FLAGS_DWPOL,
 		.meram_cfg = &hdmi_meram_cfg,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.tx_dev = &hdmi_device,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.tx_dev = &hdmi_device,
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
@@ -478,10 +737,12 @@ static struct platform_device hdmi_lcdc_device = {
 	.id		= 1,
 	.dev	= {
 		.platform_data	= &hdmi_lcdc_info,
+<<<<<<< HEAD
 		.coherent_dma_mask = ~0,
 	},
 };
 
+<<<<<<< HEAD
 static struct sh_mobile_hdmi_info hdmi_info = {
 	.lcd_chan	= &hdmi_lcdc_info.ch[0],
 	.lcd_dev	= &hdmi_lcdc_device.dev,
@@ -512,10 +773,40 @@ static struct platform_device hdmi_device = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device fsi_hdmi_device = {
 	.name		= "sh_fsi2_b_hdmi",
 };
 
+=======
+		.coherent_dma_mask = DMA_BIT_MASK(32),
+	},
+};
+
+static struct asoc_simple_card_info fsi2_hdmi_info = {
+	.name		= "HDMI",
+	.card		= "FSI2B-HDMI",
+	.codec		= "sh-mobile-hdmi",
+	.platform	= "sh_fsi2",
+	.cpu_dai = {
+		.name	= "fsib-dai",
+		.fmt	= SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_IB_NF,
+	},
+	.codec_dai = {
+		.name	= "sh_mobile_hdmi-hifi",
+	},
+};
+
+static struct platform_device fsi_hdmi_device = {
+	.name	= "asoc-simple-card",
+	.id	= 1,
+	.dev	= {
+		.platform_data	= &fsi2_hdmi_info,
+	},
+};
+
+>>>>>>> refs/remotes/origin/master
 static void __init hdmi_init_pm_clock(void)
 {
 	struct clk *hdmi_ick = clk_get(&hdmi_device.dev, "ick");
@@ -571,8 +862,13 @@ out:
 #define USBHS0_POLL_INTERVAL (HZ * 5)
 
 struct usbhs_private {
+<<<<<<< HEAD
 	unsigned int usbphyaddr;
 	unsigned int usbcrcaddr;
+=======
+	void __iomem *usbphyaddr;
+	void __iomem *usbcrcaddr;
+>>>>>>> refs/remotes/origin/master
 	struct renesas_usbhs_platform_info info;
 	struct delayed_work work;
 	struct platform_device *pdev;
@@ -590,12 +886,21 @@ static int usbhs_get_vbus(struct platform_device *pdev)
 	return usbhs_is_connected(usbhs_get_priv(pdev));
 }
 
+<<<<<<< HEAD
 static void usbhs_phy_reset(struct platform_device *pdev)
+=======
+static int usbhs_phy_reset(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usbhs_private *priv = usbhs_get_priv(pdev);
 
 	/* init phy */
 	__raw_writew(0x8a0a, priv->usbcrcaddr);
+<<<<<<< HEAD
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usbhs0_get_id(struct platform_device *pdev)
@@ -622,15 +927,28 @@ static int usbhs0_hardware_init(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void usbhs0_hardware_exit(struct platform_device *pdev)
+=======
+static int usbhs0_hardware_exit(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usbhs_private *priv = usbhs_get_priv(pdev);
 
 	cancel_delayed_work_sync(&priv->work);
+<<<<<<< HEAD
 }
 
 static struct usbhs_private usbhs0_private = {
 	.usbcrcaddr	= 0xe605810c,		/* USBCR2 */
+=======
+
+	return 0;
+}
+
+static struct usbhs_private usbhs0_private = {
+	.usbcrcaddr	= IOMEM(0xe605810c),		/* USBCR2 */
+>>>>>>> refs/remotes/origin/master
 	.info = {
 		.platform_callback = {
 			.hardware_init	= usbhs0_hardware_init,
@@ -641,6 +959,16 @@ static struct usbhs_private usbhs0_private = {
 		},
 		.driver_param = {
 			.buswait_bwait	= 4,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			.d0_tx_id	= SHDMA_SLAVE_USB0_TX,
+			.d1_rx_id	= SHDMA_SLAVE_USB0_RX,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.d0_tx_id	= SHDMA_SLAVE_USB0_TX,
+			.d1_rx_id	= SHDMA_SLAVE_USB0_RX,
+>>>>>>> refs/remotes/origin/master
 		},
 	},
 };
@@ -673,6 +1001,8 @@ static struct platform_device usbhs0_device = {
  * Use J30 to select between Host and Function. This setting
  * can however not be detected by software. Hotplug of USBHS1
  * is provided via IRQ8.
+<<<<<<< HEAD
+<<<<<<< HEAD
  */
 #define IRQ8 evt2irq(0x0300)
 
@@ -718,6 +1048,26 @@ static struct platform_device usb1_host_device = {
 
 /* USBHS1 USB Function support via renesas_usbhs */
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * Current USB1 works as "USB Host".
+ *  - set J30 "short"
+ *
+ * If you want to use it as "USB gadget",
+ *  - J30 "open"
+ *  - modify usbhs1_get_id() USBHS_HOST -> USBHS_GADGET
+ *  - add .get_vbus = usbhs_get_vbus in usbhs1_private
+<<<<<<< HEAD
+ */
+#define IRQ8 evt2irq(0x0300)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  - check usbhs0_device(pio)/usbhs1_device(irq) order in mackerel_devices.
+ */
+#define IRQ8 evt2irq(0x0300)
+>>>>>>> refs/remotes/origin/master
 #define USB_PHY_MODE		(1 << 4)
 #define USB_PHY_INT_EN		((1 << 3) | (1 << 2))
 #define USB_PHY_ON		(1 << 1)
@@ -761,7 +1111,11 @@ static int usbhs1_hardware_init(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void usbhs1_hardware_exit(struct platform_device *pdev)
+=======
+static int usbhs1_hardware_exit(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usbhs_private *priv = usbhs_get_priv(pdev);
 
@@ -769,11 +1123,24 @@ static void usbhs1_hardware_exit(struct platform_device *pdev)
 	__raw_writew(USB_PHY_MODE | USB_PHY_INT_CLR, priv->usbphyaddr);
 
 	free_irq(IRQ8, pdev);
+<<<<<<< HEAD
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usbhs1_get_id(struct platform_device *pdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return USBHS_GADGET;
+=======
+	return USBHS_HOST;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return USBHS_HOST;
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 usbhs1_pipe_cfg[] = {
@@ -796,20 +1163,42 @@ static u32 usbhs1_pipe_cfg[] = {
 };
 
 static struct usbhs_private usbhs1_private = {
+<<<<<<< HEAD
 	.usbphyaddr	= 0xe60581e2,		/* USBPHY1INTAP */
 	.usbcrcaddr	= 0xe6058130,		/* USBCR4 */
+=======
+	.usbphyaddr	= IOMEM(0xe60581e2),	/* USBPHY1INTAP */
+	.usbcrcaddr	= IOMEM(0xe6058130),	/* USBCR4 */
+>>>>>>> refs/remotes/origin/master
 	.info = {
 		.platform_callback = {
 			.hardware_init	= usbhs1_hardware_init,
 			.hardware_exit	= usbhs1_hardware_exit,
 			.get_id		= usbhs1_get_id,
 			.phy_reset	= usbhs_phy_reset,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.get_vbus	= usbhs_get_vbus,
 		},
 		.driver_param = {
 			.buswait_bwait	= 4,
 			.pipe_type	= usbhs1_pipe_cfg,
 			.pipe_size	= ARRAY_SIZE(usbhs1_pipe_cfg),
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		},
+		.driver_param = {
+			.buswait_bwait	= 4,
+			.has_otg	= 1,
+			.pipe_type	= usbhs1_pipe_cfg,
+			.pipe_size	= ARRAY_SIZE(usbhs1_pipe_cfg),
+			.d0_tx_id	= SHDMA_SLAVE_USB1_TX,
+			.d1_rx_id	= SHDMA_SLAVE_USB1_RX,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		},
 	},
 };
@@ -832,6 +1221,11 @@ static struct platform_device usbhs1_device = {
 	.id	= 1,
 	.dev = {
 		.platform_data		= &usbhs1_private.info,
+<<<<<<< HEAD
+=======
+		.dma_mask		= &usbhs1_device.dev.coherent_dma_mask,
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+>>>>>>> refs/remotes/origin/master
 	},
 	.num_resources	= ARRAY_SIZE(usbhs1_resources),
 	.resource	= usbhs1_resources,
@@ -841,22 +1235,38 @@ static struct platform_device usbhs1_device = {
 static struct gpio_led mackerel_leds[] = {
 	{
 		.name		= "led0",
+<<<<<<< HEAD
 		.gpio		= GPIO_PORT0,
+=======
+		.gpio		= 0,
+>>>>>>> refs/remotes/origin/master
 		.default_state	= LEDS_GPIO_DEFSTATE_ON,
 	},
 	{
 		.name		= "led1",
+<<<<<<< HEAD
 		.gpio		= GPIO_PORT1,
+=======
+		.gpio		= 1,
+>>>>>>> refs/remotes/origin/master
 		.default_state	= LEDS_GPIO_DEFSTATE_ON,
 	},
 	{
 		.name		= "led2",
+<<<<<<< HEAD
 		.gpio		= GPIO_PORT2,
+=======
+		.gpio		= 2,
+>>>>>>> refs/remotes/origin/master
 		.default_state	= LEDS_GPIO_DEFSTATE_ON,
 	},
 	{
 		.name		= "led3",
+<<<<<<< HEAD
 		.gpio		= GPIO_PORT159,
+=======
+		.gpio		= 159,
+>>>>>>> refs/remotes/origin/master
 		.default_state	= LEDS_GPIO_DEFSTATE_ON,
 	}
 };
@@ -876,6 +1286,7 @@ static struct platform_device leds_device = {
 
 /* FSI */
 #define IRQ_FSI evt2irq(0x1840)
+<<<<<<< HEAD
 static int __fsi_set_round_rate(struct clk *clk, long rate, int enable)
 {
 	int ret;
@@ -895,7 +1306,11 @@ static int __fsi_set_round_rate(struct clk *clk, long rate, int enable)
 	return clk_enable(clk);
 }
 
+<<<<<<< HEAD
 static int fsi_set_rate(struct device *dev, int is_porta, int rate, int enable)
+=======
+static int fsi_b_set_rate(struct device *dev, int rate, int enable)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct clk *fsib_clk;
 	struct clk *fdiv_clk = &sh7372_fsidivb_clk;
@@ -904,10 +1319,13 @@ static int fsi_set_rate(struct device *dev, int is_porta, int rate, int enable)
 	int ackmd_bpfmd;
 	int ret;
 
+<<<<<<< HEAD
 	/* FSIA is slave mode. nothing to do here */
 	if (is_porta)
 		return 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* clock start */
 	switch (rate) {
 	case 44100:
@@ -951,6 +1369,7 @@ fsi_set_rate_end:
 }
 
 static struct sh_fsi_platform_info fsi_info = {
+<<<<<<< HEAD
 	.porta_flags =	SH_FSI_BRS_INV,
 
 	.portb_flags =	SH_FSI_BRS_INV	|
@@ -959,13 +1378,44 @@ static struct sh_fsi_platform_info fsi_info = {
 			SH_FSI_FMT_SPDIF,
 
 	.set_rate = fsi_set_rate,
+=======
+	.port_a = {
+		.flags = SH_FSI_BRS_INV,
+	},
+	.port_b = {
+		.flags = SH_FSI_BRS_INV	|
+			SH_FSI_BRM_INV	|
+			SH_FSI_LRS_INV	|
+			SH_FSI_FMT_SPDIF,
+		.set_rate = fsi_b_set_rate,
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sh_fsi_platform_info fsi_info = {
+	.port_a = {
+		.tx_id = SHDMA_SLAVE_FSIA_TX,
+		.rx_id = SHDMA_SLAVE_FSIA_RX,
+	},
+	.port_b = {
+		.flags = SH_FSI_CLK_CPG	|
+			 SH_FSI_FMT_SPDIF,
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource fsi_resources[] = {
 	[0] = {
+<<<<<<< HEAD
 		.name	= "FSI",
 		.start	= 0xFE3C0000,
 		.end	= 0xFE3C0400 - 1,
+=======
+		/* we need 0xFE1F0000 to access DMA
+		 * instead of 0xFE3C0000 */
+		.name	= "FSI",
+		.start  = 0xFE1F0000,
+		.end    = 0xFE1F0400 - 1,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
@@ -984,8 +1434,100 @@ static struct platform_device fsi_device = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device fsi_ak4643_device = {
 	.name		= "sh_fsi2_a_ak4643",
+=======
+static struct fsi_ak4642_info fsi2_ak4643_info = {
+	.name		= "AK4643",
+	.card		= "FSI2A-AK4643",
+	.cpu_dai	= "fsia-dai",
+	.codec		= "ak4642-codec.0-0013",
+	.platform	= "sh_fsi2",
+	.id		= FSI_PORT_A,
+};
+
+static struct platform_device fsi_ak4643_device = {
+	.name	= "fsi-ak4642-audio",
+=======
+static struct asoc_simple_card_info fsi2_ak4643_info = {
+	.name		= "AK4643",
+	.card		= "FSI2A-AK4643",
+	.codec		= "ak4642-codec.0-0013",
+	.platform	= "sh_fsi2",
+	.daifmt		= SND_SOC_DAIFMT_LEFT_J,
+	.cpu_dai = {
+		.name	= "fsia-dai",
+		.fmt	= SND_SOC_DAIFMT_CBS_CFS,
+	},
+	.codec_dai = {
+		.name	= "ak4642-hifi",
+		.fmt	= SND_SOC_DAIFMT_CBM_CFM,
+		.sysclk	= 11289600,
+	},
+};
+
+static struct platform_device fsi_ak4643_device = {
+	.name	= "asoc-simple-card",
+>>>>>>> refs/remotes/origin/master
+	.dev	= {
+		.platform_data	= &fsi2_ak4643_info,
+	},
+};
+
+/* FLCTL */
+static struct mtd_partition nand_partition_info[] = {
+	{
+		.name	= "system",
+		.offset	= 0,
+		.size	= 128 * 1024 * 1024,
+	},
+	{
+		.name	= "userdata",
+		.offset	= MTDPART_OFS_APPEND,
+		.size	= 256 * 1024 * 1024,
+	},
+	{
+		.name	= "cache",
+		.offset	= MTDPART_OFS_APPEND,
+		.size	= 128 * 1024 * 1024,
+	},
+};
+
+static struct resource nand_flash_resources[] = {
+	[0] = {
+		.start	= 0xe6a30000,
+		.end	= 0xe6a3009b,
+		.flags	= IORESOURCE_MEM,
+<<<<<<< HEAD
+	}
+=======
+	},
+	[1] = {
+		.start	= evt2irq(0x0d80), /* flstei: status error irq */
+		.flags	= IORESOURCE_IRQ,
+	},
+>>>>>>> refs/remotes/origin/master
+};
+
+static struct sh_flctl_platform_data nand_flash_data = {
+	.parts		= nand_partition_info,
+	.nr_parts	= ARRAY_SIZE(nand_partition_info),
+	.flcmncr_val	= CLK_16B_12L_4H | TYPESEL_SET
+			| SHBUSSEL | SEL_16BIT | SNAND_E,
+	.use_holden	= 1,
+};
+
+static struct platform_device nand_flash_device = {
+	.name		= "sh_flctl",
+	.resource	= nand_flash_resources,
+	.num_resources	= ARRAY_SIZE(nand_flash_resources),
+	.dev		= {
+		.platform_data = &nand_flash_data,
+	},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -998,6 +1540,7 @@ static int slot_cn7_get_cd(struct platform_device *pdev)
 }
 
 /* SDHI0 */
+<<<<<<< HEAD
 static irqreturn_t mackerel_sdhi0_gpio_cd(int irq, void *arg)
 {
 	struct device *dev = arg;
@@ -1013,14 +1556,36 @@ static struct sh_mobile_sdhi_info sdhi0_info = {
 	.dma_slave_tx	= SHDMA_SLAVE_SDHI0_TX,
 	.dma_slave_rx	= SHDMA_SLAVE_SDHI0_RX,
 	.tmio_caps	= MMC_CAP_SD_HIGHSPEED | MMC_CAP_SDIO_IRQ,
+=======
+=======
+};
+
+/* SDHI0 */
+>>>>>>> refs/remotes/origin/master
+static struct sh_mobile_sdhi_info sdhi0_info = {
+	.dma_slave_tx	= SHDMA_SLAVE_SDHI0_TX,
+	.dma_slave_rx	= SHDMA_SLAVE_SDHI0_RX,
+	.tmio_flags	= TMIO_MMC_USE_GPIO_CD,
+	.tmio_caps	= MMC_CAP_SD_HIGHSPEED | MMC_CAP_SDIO_IRQ,
+<<<<<<< HEAD
+	.cd_gpio	= GPIO_PORT172,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct resource sdhi0_resources[] = {
 	[0] = {
+=======
+	.cd_gpio	= 172,
+};
+
+static struct resource sdhi0_resources[] = {
+	{
+>>>>>>> refs/remotes/origin/master
 		.name	= "SDHI0",
 		.start	= 0xe6850000,
 		.end	= 0xe68500ff,
 		.flags	= IORESOURCE_MEM,
+<<<<<<< HEAD
 	},
 	[1] = {
 		.start	= evt2irq(0x0e00) /* SDHI0_SDHI0I0 */,
@@ -1031,6 +1596,14 @@ static struct resource sdhi0_resources[] = {
 		.flags	= IORESOURCE_IRQ,
 	},
 	[3] = {
+=======
+	}, {
+		.name	= SH_MOBILE_SDHI_IRQ_SDCARD,
+		.start	= evt2irq(0x0e20) /* SDHI0_SDHI0I1 */,
+		.flags	= IORESOURCE_IRQ,
+	}, {
+		.name	= SH_MOBILE_SDHI_IRQ_SDIO,
+>>>>>>> refs/remotes/origin/master
 		.start	= evt2irq(0x0e40) /* SDHI0_SDHI0I2 */,
 		.flags	= IORESOURCE_IRQ,
 	},
@@ -1046,6 +1619,7 @@ static struct platform_device sdhi0_device = {
 	},
 };
 
+<<<<<<< HEAD
 #if !defined(CONFIG_MMC_SH_MMCIF) && !defined(CONFIG_MMC_SH_MMCIF_MODULE)
 /* SDHI1 */
 static struct sh_mobile_sdhi_info sdhi1_info = {
@@ -1060,20 +1634,58 @@ static struct sh_mobile_sdhi_info sdhi1_info = {
 
 static struct resource sdhi1_resources[] = {
 	[0] = {
+=======
+#if !IS_ENABLED(CONFIG_MMC_SH_MMCIF)
+/* SDHI1 */
+
+/* GPIO 41 can trigger IRQ8, but it is used by USBHS1, we have to poll */
+static struct sh_mobile_sdhi_info sdhi1_info = {
+	.dma_slave_tx	= SHDMA_SLAVE_SDHI1_TX,
+	.dma_slave_rx	= SHDMA_SLAVE_SDHI1_RX,
+	.tmio_flags	= TMIO_MMC_WRPROTECT_DISABLE | TMIO_MMC_USE_GPIO_CD,
+	.tmio_caps	= MMC_CAP_SD_HIGHSPEED | MMC_CAP_SDIO_IRQ |
+			  MMC_CAP_NEEDS_POLL,
+	.cd_gpio	= 41,
+};
+
+static struct resource sdhi1_resources[] = {
+	{
+>>>>>>> refs/remotes/origin/master
 		.name	= "SDHI1",
 		.start	= 0xe6860000,
 		.end	= 0xe68600ff,
 		.flags	= IORESOURCE_MEM,
+<<<<<<< HEAD
 	},
 	[1] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_CARD_DETECT,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= evt2irq(0x0e80), /* SDHI1_SDHI1I0 */
 		.flags	= IORESOURCE_IRQ,
 	},
 	[2] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_SDCARD,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= evt2irq(0x0ea0), /* SDHI1_SDHI1I1 */
 		.flags	= IORESOURCE_IRQ,
 	},
 	[3] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_SDIO,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}, {
+		.name	= SH_MOBILE_SDHI_IRQ_SDCARD,
+		.start	= evt2irq(0x0ea0), /* SDHI1_SDHI1I1 */
+		.flags	= IORESOURCE_IRQ,
+	}, {
+		.name	= SH_MOBILE_SDHI_IRQ_SDIO,
+>>>>>>> refs/remotes/origin/master
 		.start	= evt2irq(0x0ec0), /* SDHI1_SDHI1I2 */
 		.flags	= IORESOURCE_IRQ,
 	},
@@ -1090,6 +1702,7 @@ static struct platform_device sdhi1_device = {
 };
 #endif
 
+<<<<<<< HEAD
 /*
  * The card detect pin of the top SD/MMC slot (CN23) is active low and is
  * connected to GPIO SCIFB_SCK of SH7372 (GPIO_PORT162).
@@ -1111,20 +1724,60 @@ static struct sh_mobile_sdhi_info sdhi2_info = {
 
 static struct resource sdhi2_resources[] = {
 	[0] = {
+=======
+/* SDHI2 */
+
+/*
+ * The card detect pin of the top SD/MMC slot (CN23) is active low and is
+ * connected to GPIO SCIFB_SCK of SH7372 (GPIO 162).
+ */
+static struct sh_mobile_sdhi_info sdhi2_info = {
+	.dma_slave_tx	= SHDMA_SLAVE_SDHI2_TX,
+	.dma_slave_rx	= SHDMA_SLAVE_SDHI2_RX,
+	.tmio_flags	= TMIO_MMC_WRPROTECT_DISABLE | TMIO_MMC_USE_GPIO_CD,
+	.tmio_caps	= MMC_CAP_SD_HIGHSPEED | MMC_CAP_SDIO_IRQ |
+			  MMC_CAP_NEEDS_POLL,
+	.cd_gpio	= 162,
+};
+
+static struct resource sdhi2_resources[] = {
+	{
+>>>>>>> refs/remotes/origin/master
 		.name	= "SDHI2",
 		.start	= 0xe6870000,
 		.end	= 0xe68700ff,
 		.flags	= IORESOURCE_MEM,
+<<<<<<< HEAD
 	},
 	[1] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_CARD_DETECT,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= evt2irq(0x1200), /* SDHI2_SDHI2I0 */
 		.flags	= IORESOURCE_IRQ,
 	},
 	[2] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_SDCARD,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= evt2irq(0x1220), /* SDHI2_SDHI2I1 */
 		.flags	= IORESOURCE_IRQ,
 	},
 	[3] = {
+<<<<<<< HEAD
+=======
+		.name	= SH_MOBILE_SDHI_IRQ_SDIO,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}, {
+		.name	= SH_MOBILE_SDHI_IRQ_SDCARD,
+		.start	= evt2irq(0x1220), /* SDHI2_SDHI2I1 */
+		.flags	= IORESOURCE_IRQ,
+	}, {
+		.name	= SH_MOBILE_SDHI_IRQ_SDIO,
+>>>>>>> refs/remotes/origin/master
 		.start	= evt2irq(0x1240), /* SDHI2_SDHI2I2 */
 		.flags	= IORESOURCE_IRQ,
 	},
@@ -1141,6 +1794,10 @@ static struct platform_device sdhi2_device = {
 };
 
 /* SH_MMCIF */
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_MMC_SH_MMCIF)
+>>>>>>> refs/remotes/origin/master
 static struct resource sh_mmcif_resources[] = {
 	[0] = {
 		.name	= "MMCIF",
@@ -1160,6 +1817,8 @@ static struct resource sh_mmcif_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct sh_mmcif_dma sh_mmcif_dma = {
 	.chan_priv_rx	= {
 		.slave_id	= SHDMA_SLAVE_MMCIF_RX,
@@ -1169,6 +1828,8 @@ static struct sh_mmcif_dma sh_mmcif_dma = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct sh_mmcif_plat_data sh_mmcif_plat = {
 	.sup_pclk	= 0,
 	.ocr		= MMC_VDD_165_195 | MMC_VDD_32_33 | MMC_VDD_33_34,
@@ -1176,7 +1837,24 @@ static struct sh_mmcif_plat_data sh_mmcif_plat = {
 			  MMC_CAP_8_BIT_DATA |
 			  MMC_CAP_NEEDS_POLL,
 	.get_cd		= slot_cn7_get_cd,
+<<<<<<< HEAD
 	.dma		= &sh_mmcif_dma,
+=======
+	.slave_id_tx	= SHDMA_SLAVE_MMCIF_TX,
+	.slave_id_rx	= SHDMA_SLAVE_MMCIF_RX,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sh_mmcif_plat_data sh_mmcif_plat = {
+	.sup_pclk	= 0,
+	.caps		= MMC_CAP_4_BIT_DATA |
+			  MMC_CAP_8_BIT_DATA |
+			  MMC_CAP_NEEDS_POLL,
+	.use_cd_gpio	= true,
+	/* card detect pin for SD/MMC slot (CN7) */
+	.cd_gpio	= 41,
+	.slave_id_tx	= SHDMA_SLAVE_MMCIF_TX,
+	.slave_id_rx	= SHDMA_SLAVE_MMCIF_RX,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device sh_mmcif_device = {
@@ -1190,10 +1868,22 @@ static struct platform_device sh_mmcif_device = {
 	.num_resources	= ARRAY_SIZE(sh_mmcif_resources),
 	.resource	= sh_mmcif_resources,
 };
+<<<<<<< HEAD
 
 
+<<<<<<< HEAD
 static int mackerel_camera_add(struct soc_camera_link *icl, struct device *dev);
 static void mackerel_camera_del(struct soc_camera_link *icl);
+=======
+static int mackerel_camera_add(struct soc_camera_device *icd);
+static void mackerel_camera_del(struct soc_camera_device *icd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+
+static int mackerel_camera_add(struct soc_camera_device *icd);
+static void mackerel_camera_del(struct soc_camera_device *icd);
+>>>>>>> refs/remotes/origin/master
 
 static int camera_set_capture(struct soc_camera_platform_info *info,
 			      int enable)
@@ -1211,9 +1901,22 @@ static struct soc_camera_platform_info camera_info = {
 		.width = 640,
 		.height = 480,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.bus_param = SOCAM_PCLK_SAMPLE_RISING | SOCAM_HSYNC_ACTIVE_HIGH |
 	SOCAM_VSYNC_ACTIVE_HIGH | SOCAM_MASTER | SOCAM_DATAWIDTH_8 |
 	SOCAM_DATA_ACTIVE_HIGH,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.mbus_param = V4L2_MBUS_PCLK_SAMPLE_RISING | V4L2_MBUS_MASTER |
+	V4L2_MBUS_VSYNC_ACTIVE_HIGH | V4L2_MBUS_HSYNC_ACTIVE_HIGH |
+	V4L2_MBUS_DATA_ACTIVE_HIGH,
+	.mbus_type = V4L2_MBUS_PARALLEL,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_capture = camera_set_capture,
 };
 
@@ -1232,6 +1935,8 @@ static void mackerel_camera_release(struct device *dev)
 	soc_camera_platform_release(&camera_device);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int mackerel_camera_add(struct soc_camera_link *icl,
 			       struct device *dev)
 {
@@ -1242,10 +1947,31 @@ static int mackerel_camera_add(struct soc_camera_link *icl,
 static void mackerel_camera_del(struct soc_camera_link *icl)
 {
 	soc_camera_platform_del(icl, camera_device, &camera_link);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int mackerel_camera_add(struct soc_camera_device *icd)
+{
+	return soc_camera_platform_add(icd, &camera_device, &camera_link,
+				       mackerel_camera_release, 0);
+}
+
+static void mackerel_camera_del(struct soc_camera_device *icd)
+{
+	soc_camera_platform_del(icd, camera_device, &camera_link);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct sh_mobile_ceu_info sh_mobile_ceu_info = {
 	.flags = SH_CEU_FLAG_USE_8BIT_BUS,
+<<<<<<< HEAD
+=======
+	.max_width = 8188,
+	.max_height = 8188,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource ceu_resources[] = {
@@ -1287,13 +2013,27 @@ static struct platform_device *mackerel_devices[] __initdata = {
 	&nor_flash_device,
 	&smc911x_device,
 	&lcdc_device,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	&usb1_host_device,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	&usbhs1_device,
 	&usbhs0_device,
+=======
+	&gpio_backlight_device,
+	&usbhs0_device,
+	&usbhs1_device,
+>>>>>>> refs/remotes/origin/master
 	&leds_device,
 	&fsi_device,
 	&fsi_ak4643_device,
 	&fsi_hdmi_device,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	&nand_flash_device,
+>>>>>>> refs/remotes/origin/cm-10.0
 	&sdhi0_device,
 #if !defined(CONFIG_MMC_SH_MMCIF) && !defined(CONFIG_MMC_SH_MMCIF_MODULE)
 	&sdhi1_device,
@@ -1302,8 +2042,27 @@ static struct platform_device *mackerel_devices[] __initdata = {
 	&sh_mmcif_device,
 	&ceu_device,
 	&mackerel_camera,
+<<<<<<< HEAD
 	&hdmi_lcdc_device,
 	&hdmi_device,
+=======
+	&hdmi_device,
+	&hdmi_lcdc_device,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&nand_flash_device,
+	&sdhi0_device,
+#if !IS_ENABLED(CONFIG_MMC_SH_MMCIF)
+	&sdhi1_device,
+#else
+	&sh_mmcif_device,
+#endif
+	&sdhi2_device,
+	&ceu_device,
+	&mackerel_camera,
+	&hdmi_device,
+	&hdmi_lcdc_device,
+>>>>>>> refs/remotes/origin/master
 	&meram_device,
 };
 
@@ -1363,6 +2122,8 @@ static struct i2c_board_info i2c1_devices[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct map_desc mackerel_io_desc[] __initdata = {
 	/* create a 1:1 entity map for 0xe6xxxxxx
 	 * used by CPGA, INTC and PFC.
@@ -1384,6 +2145,8 @@ static void __init mackerel_map_io(void)
 	shmobile_setup_console();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define GPIO_PORT9CR	0xE6051009
 #define GPIO_PORT10CR	0xE605100A
 #define GPIO_PORT167CR	0xE60520A7
@@ -1394,7 +2157,13 @@ static void __init mackerel_init(void)
 {
 	u32 srcr4;
 	struct clk *clk;
+<<<<<<< HEAD
 	int ret;
+=======
+
+	/* External clock source */
+	clk_set_rate(&sh7372_dv_clki_clk, 27000000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sh7372_pinmux_init();
 
@@ -1449,9 +2218,12 @@ static void __init mackerel_init(void)
 	gpio_pull_down(GPIO_PORT167CR); /* VBUS0_1 pull down */
 	gpio_request(GPIO_FN_IDIN_1_113, NULL);
 
+<<<<<<< HEAD
 	/* USB phy tweak to make the r8a66597_hcd host driver work */
 	__raw_writew(0x8a0a, 0xe6058130);       /* USBCR4 */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* enable FSI2 port A (ak4643) */
 	gpio_request(GPIO_FN_FSIAIBT,	NULL);
 	gpio_request(GPIO_FN_FSIAILR,	NULL);
@@ -1469,6 +2241,160 @@ static void __init mackerel_init(void)
 
 	/* setup FSI2 port B (HDMI) */
 	gpio_request(GPIO_FN_FSIBCK, NULL);
+=======
+static const struct pinctrl_map mackerel_pinctrl_map[] = {
+	/* ADXL34X */
+	PIN_MAP_MUX_GROUP_DEFAULT("1-0053", "pfc-sh7372",
+				  "intc_irq21", "intc"),
+	/* CEU */
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_ceu.0", "pfc-sh7372",
+				  "ceu_data_0_7", "ceu"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_ceu.0", "pfc-sh7372",
+				  "ceu_clk_0", "ceu"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_ceu.0", "pfc-sh7372",
+				  "ceu_sync", "ceu"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_ceu.0", "pfc-sh7372",
+				  "ceu_field", "ceu"),
+	/* FLCTL */
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_flctl.0", "pfc-sh7372",
+				  "flctl_data", "flctl"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_flctl.0", "pfc-sh7372",
+				  "flctl_ce0", "flctl"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_flctl.0", "pfc-sh7372",
+				  "flctl_ctrl", "flctl"),
+	/* FSIA (AK4643) */
+	PIN_MAP_MUX_GROUP_DEFAULT("asoc-simple-card.0", "pfc-sh7372",
+				  "fsia_sclk_in", "fsia"),
+	PIN_MAP_MUX_GROUP_DEFAULT("asoc-simple-card.0", "pfc-sh7372",
+				  "fsia_data_in", "fsia"),
+	PIN_MAP_MUX_GROUP_DEFAULT("asoc-simple-card.0", "pfc-sh7372",
+				  "fsia_data_out", "fsia"),
+	/* FSIB (HDMI) */
+	PIN_MAP_MUX_GROUP_DEFAULT("asoc-simple-card.1", "pfc-sh7372",
+				  "fsib_mclk_in", "fsib"),
+	/* HDMI */
+	PIN_MAP_MUX_GROUP_DEFAULT("sh-mobile-hdmi", "pfc-sh7372",
+				  "hdmi", "hdmi"),
+	/* LCDC */
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_lcdc_fb.0", "pfc-sh7372",
+				  "lcd_data24", "lcd"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_lcdc_fb.0", "pfc-sh7372",
+				  "lcd_sync", "lcd"),
+	/* SCIFA0 */
+	PIN_MAP_MUX_GROUP_DEFAULT("sh-sci.0", "pfc-sh7372",
+				  "scifa0_data", "scifa0"),
+	/* SCIFA2 (GT-720F GPS module) */
+	PIN_MAP_MUX_GROUP_DEFAULT("sh-sci.2", "pfc-sh7372",
+				  "scifa2_data", "scifa2"),
+	/* SDHI0 */
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_sdhi.0", "pfc-sh7372",
+				  "sdhi0_data4", "sdhi0"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_sdhi.0", "pfc-sh7372",
+				  "sdhi0_ctrl", "sdhi0"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_sdhi.0", "pfc-sh7372",
+				  "sdhi0_wp", "sdhi0"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_sdhi.0", "pfc-sh7372",
+				  "intc_irq26_1", "intc"),
+	/* SDHI1 */
+#if !IS_ENABLED(CONFIG_MMC_SH_MMCIF)
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_sdhi.1", "pfc-sh7372",
+				  "sdhi1_data4", "sdhi1"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_sdhi.1", "pfc-sh7372",
+				  "sdhi1_ctrl", "sdhi1"),
+#else
+	/* MMCIF */
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mmcif.0", "pfc-sh7372",
+				  "mmc0_data8_0", "mmc0"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mmcif.0", "pfc-sh7372",
+				  "mmc0_ctrl_0", "mmc0"),
+#endif
+	/* SDHI2 */
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_sdhi.2", "pfc-sh7372",
+				  "sdhi2_data4", "sdhi2"),
+	PIN_MAP_MUX_GROUP_DEFAULT("sh_mobile_sdhi.2", "pfc-sh7372",
+				  "sdhi2_ctrl", "sdhi2"),
+	/* SMSC911X */
+	PIN_MAP_MUX_GROUP_DEFAULT("smsc911x", "pfc-sh7372",
+				  "bsc_cs5a", "bsc"),
+	PIN_MAP_MUX_GROUP_DEFAULT("smsc911x", "pfc-sh7372",
+				  "intc_irq6_0", "intc"),
+	/* ST1232 */
+	PIN_MAP_MUX_GROUP_DEFAULT("0-0055", "pfc-sh7372",
+				  "intc_irq7_0", "intc"),
+	/* TCA6416 */
+	PIN_MAP_MUX_GROUP_DEFAULT("0-0020", "pfc-sh7372",
+				  "intc_irq9_0", "intc"),
+	/* USBHS0 */
+	PIN_MAP_MUX_GROUP_DEFAULT("renesas_usbhs.0", "pfc-sh7372",
+				  "usb0_vbus", "usb0"),
+	/* USBHS1 */
+	PIN_MAP_MUX_GROUP_DEFAULT("renesas_usbhs.1", "pfc-sh7372",
+				  "usb1_vbus", "usb1"),
+	PIN_MAP_MUX_GROUP_DEFAULT("renesas_usbhs.1", "pfc-sh7372",
+				  "usb1_otg_id_0", "usb1"),
+};
+
+#define GPIO_PORT9CR	IOMEM(0xE6051009)
+#define GPIO_PORT10CR	IOMEM(0xE605100A)
+#define GPIO_PORT167CR	IOMEM(0xE60520A7)
+#define GPIO_PORT168CR	IOMEM(0xE60520A8)
+#define SRCR4		IOMEM(0xe61580bc)
+#define USCCR1		IOMEM(0xE6058144)
+static void __init mackerel_init(void)
+{
+	struct pm_domain_device domain_devices[] = {
+		{ "A4LC", &lcdc_device, },
+		{ "A4LC", &hdmi_lcdc_device, },
+		{ "A4LC", &meram_device, },
+		{ "A4MP", &fsi_device, },
+		{ "A3SP", &usbhs0_device, },
+		{ "A3SP", &usbhs1_device, },
+		{ "A3SP", &nand_flash_device, },
+		{ "A3SP", &sdhi0_device, },
+#if !IS_ENABLED(CONFIG_MMC_SH_MMCIF)
+		{ "A3SP", &sdhi1_device, },
+#else
+		{ "A3SP", &sh_mmcif_device, },
+#endif
+		{ "A3SP", &sdhi2_device, },
+		{ "A4R", &ceu_device, },
+	};
+	u32 srcr4;
+	struct clk *clk;
+
+	regulator_register_always_on(0, "fixed-1.8V", fixed1v8_power_consumers,
+				     ARRAY_SIZE(fixed1v8_power_consumers), 1800000);
+	regulator_register_always_on(1, "fixed-3.3V", fixed3v3_power_consumers,
+				     ARRAY_SIZE(fixed3v3_power_consumers), 3300000);
+	regulator_register_fixed(2, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+
+	/* External clock source */
+	clk_set_rate(&sh7372_dv_clki_clk, 27000000);
+
+	pinctrl_register_mappings(mackerel_pinctrl_map,
+				  ARRAY_SIZE(mackerel_pinctrl_map));
+	sh7372_pinmux_init();
+
+	gpio_request_one(151, GPIOF_OUT_INIT_HIGH, NULL); /* LCDDON */
+
+	/* USBHS0 */
+	gpio_request_pulldown(GPIO_PORT168CR); /* VBUS0_0 pull down */
+
+	/* USBHS1 */
+	gpio_request_pulldown(GPIO_PORT167CR); /* VBUS0_1 pull down */
+
+	/* FSI2 port A (ak4643) */
+	gpio_request_one(161, GPIOF_OUT_INIT_LOW, NULL); /* slave */
+
+	gpio_request(9,  NULL);
+	gpio_request(10, NULL);
+	gpio_direction_none(GPIO_PORT9CR);  /* FSIAOBT needs no direction */
+	gpio_direction_none(GPIO_PORT10CR); /* FSIAOLR needs no direction */
+
+	intc_set_priority(IRQ_FSI, 3); /* irq priority FSI(3) > SMSC911X(2) */
+
+	/* FSI2 port B (HDMI) */
+>>>>>>> refs/remotes/origin/master
 	__raw_writew(__raw_readw(USCCR1) & ~(1 << 6), USCCR1); /* use SPDIF */
 
 	/* set SPU2 clock to 119.6 MHz */
@@ -1478,6 +2404,7 @@ static void __init mackerel_init(void)
 		clk_put(clk);
 	}
 
+<<<<<<< HEAD
 	/* enable Keypad */
 	gpio_request(GPIO_FN_IRQ9_42,	NULL);
 	irq_set_irq_type(IRQ9, IRQ_TYPE_LEVEL_HIGH);
@@ -1491,7 +2418,10 @@ static void __init mackerel_init(void)
 	irq_set_irq_type(IRQ21, IRQ_TYPE_LEVEL_HIGH);
 
 	/* enable SDHI0 */
+<<<<<<< HEAD
 	gpio_request(GPIO_FN_SDHICD0, NULL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	gpio_request(GPIO_FN_SDHIWP0, NULL);
 	gpio_request(GPIO_FN_SDHICMD0, NULL);
 	gpio_request(GPIO_FN_SDHICLK0, NULL);
@@ -1500,6 +2430,7 @@ static void __init mackerel_init(void)
 	gpio_request(GPIO_FN_SDHID0_1, NULL);
 	gpio_request(GPIO_FN_SDHID0_0, NULL);
 
+<<<<<<< HEAD
 	ret = request_irq(evt2irq(0x3340), mackerel_sdhi0_gpio_cd,
 			  IRQF_TRIGGER_FALLING, "sdhi0 cd", &sdhi0_device.dev);
 	if (!ret)
@@ -1507,6 +2438,8 @@ static void __init mackerel_init(void)
 	else
 		pr_err("Cannot get IRQ #%d: %d\n", evt2irq(0x3340), ret);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if !defined(CONFIG_MMC_SH_MMCIF) && !defined(CONFIG_MMC_SH_MMCIF_MODULE)
 	/* enable SDHI1 */
 	gpio_request(GPIO_FN_SDHICMD1, NULL);
@@ -1544,6 +2477,33 @@ static void __init mackerel_init(void)
 	gpio_request(GPIO_FN_MMCCMD0, NULL);
 	gpio_request(GPIO_FN_MMCCLK0, NULL);
 
+<<<<<<< HEAD
+=======
+	/* FLCTL */
+	gpio_request(GPIO_FN_D0_NAF0, NULL);
+	gpio_request(GPIO_FN_D1_NAF1, NULL);
+	gpio_request(GPIO_FN_D2_NAF2, NULL);
+	gpio_request(GPIO_FN_D3_NAF3, NULL);
+	gpio_request(GPIO_FN_D4_NAF4, NULL);
+	gpio_request(GPIO_FN_D5_NAF5, NULL);
+	gpio_request(GPIO_FN_D6_NAF6, NULL);
+	gpio_request(GPIO_FN_D7_NAF7, NULL);
+	gpio_request(GPIO_FN_D8_NAF8, NULL);
+	gpio_request(GPIO_FN_D9_NAF9, NULL);
+	gpio_request(GPIO_FN_D10_NAF10, NULL);
+	gpio_request(GPIO_FN_D11_NAF11, NULL);
+	gpio_request(GPIO_FN_D12_NAF12, NULL);
+	gpio_request(GPIO_FN_D13_NAF13, NULL);
+	gpio_request(GPIO_FN_D14_NAF14, NULL);
+	gpio_request(GPIO_FN_D15_NAF15, NULL);
+	gpio_request(GPIO_FN_FCE0, NULL);
+	gpio_request(GPIO_FN_WE0_FWE, NULL);
+	gpio_request(GPIO_FN_FRB, NULL);
+	gpio_request(GPIO_FN_A4_FOE, NULL);
+	gpio_request(GPIO_FN_A5_FCDE, NULL);
+	gpio_request(GPIO_FN_RD_FSC, NULL);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* enable GPS module (GT-720F) */
 	gpio_request(GPIO_FN_SCIFA2_TXD1, NULL);
 	gpio_request(GPIO_FN_SCIFA2_RXD1, NULL);
@@ -1567,6 +2527,17 @@ static void __init mackerel_init(void)
 	gpio_request(GPIO_FN_HDMI_HPD, NULL);
 	gpio_request(GPIO_FN_HDMI_CEC, NULL);
 
+=======
+	/* Keypad */
+	irq_set_irq_type(IRQ9, IRQ_TYPE_LEVEL_HIGH);
+
+	/* Touchscreen */
+	irq_set_irq_type(IRQ7, IRQ_TYPE_LEVEL_LOW);
+
+	/* Accelerometer */
+	irq_set_irq_type(IRQ21, IRQ_TYPE_LEVEL_HIGH);
+
+>>>>>>> refs/remotes/origin/master
 	/* Reset HDMI, must be held at least one EXTALR (32768Hz) period */
 	srcr4 = __raw_readl(SRCR4);
 	__raw_writel(srcr4 | (1 << 13), SRCR4);
@@ -1582,6 +2553,8 @@ static void __init mackerel_init(void)
 
 	platform_add_devices(mackerel_devices, ARRAY_SIZE(mackerel_devices));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hdmi_init_pm_clock();
 	sh7372_pm_init();
 }
@@ -1605,4 +2578,53 @@ MACHINE_START(MACKEREL, "mackerel")
 	.handle_irq	= shmobile_handle_irq_intc,
 	.init_machine	= mackerel_init,
 	.timer		= &mackerel_timer,
+=======
+	sh7372_add_device_to_domain(&sh7372_a4lc, &lcdc_device);
+	sh7372_add_device_to_domain(&sh7372_a4lc, &hdmi_lcdc_device);
+	sh7372_add_device_to_domain(&sh7372_a4lc, &meram_device);
+	sh7372_add_device_to_domain(&sh7372_a4mp, &fsi_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &usbhs0_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &usbhs1_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &nand_flash_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &sh_mmcif_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &sdhi0_device);
+#if !defined(CONFIG_MMC_SH_MMCIF) && !defined(CONFIG_MMC_SH_MMCIF_MODULE)
+	sh7372_add_device_to_domain(&sh7372_a3sp, &sdhi1_device);
+#endif
+	sh7372_add_device_to_domain(&sh7372_a3sp, &sdhi2_device);
+	sh7372_add_device_to_domain(&sh7372_a4r, &ceu_device);
+=======
+	rmobile_add_devices_to_domains(domain_devices,
+				       ARRAY_SIZE(domain_devices));
+>>>>>>> refs/remotes/origin/master
+
+	hdmi_init_pm_clock();
+	sh7372_pm_init();
+	pm_clk_add(&fsi_device.dev, "spu2");
+	pm_clk_add(&hdmi_lcdc_device.dev, "hdmi");
+}
+
+<<<<<<< HEAD
+MACHINE_START(MACKEREL, "mackerel")
+=======
+static const char *mackerel_boards_compat_dt[] __initdata = {
+	"renesas,mackerel",
+	NULL,
+};
+
+DT_MACHINE_START(MACKEREL_DT, "mackerel")
+>>>>>>> refs/remotes/origin/master
+	.map_io		= sh7372_map_io,
+	.init_early	= sh7372_add_early_devices,
+	.init_irq	= sh7372_init_irq,
+	.handle_irq	= shmobile_handle_irq_intc,
+	.init_machine	= mackerel_init,
+<<<<<<< HEAD
+	.timer		= &shmobile_timer,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_late	= sh7372_pm_init_late,
+	.init_time	= sh7372_earlytimer_init,
+	.dt_compat  = mackerel_boards_compat_dt,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

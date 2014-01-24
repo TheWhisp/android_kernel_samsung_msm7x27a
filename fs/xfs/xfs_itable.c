@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
@@ -35,6 +36,25 @@
 #include "xfs_error.h"
 #include "xfs_btree.h"
 #include "xfs_trace.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_inum.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_btree.h"
+#include "xfs_ialloc.h"
+#include "xfs_ialloc_btree.h"
+#include "xfs_itable.h"
+#include "xfs_error.h"
+#include "xfs_trace.h"
+#include "xfs_icache.h"
+#include "xfs_dinode.h"
+>>>>>>> refs/remotes/origin/master
 
 STATIC int
 xfs_internal_inum(
@@ -43,7 +63,11 @@ xfs_internal_inum(
 {
 	return (ino == mp->m_sb.sb_rbmino || ino == mp->m_sb.sb_rsumino ||
 		(xfs_sb_version_hasquota(&mp->m_sb) &&
+<<<<<<< HEAD
 		 (ino == mp->m_sb.sb_uquotino || ino == mp->m_sb.sb_gquotino)));
+=======
+		 xfs_is_quota_inode(&mp->m_sb, ino)));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -62,7 +86,13 @@ xfs_bulkstat_one_int(
 {
 	struct xfs_icdinode	*dic;		/* dinode core info pointer */
 	struct xfs_inode	*ip;		/* incore inode pointer */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct inode		*inode;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct xfs_bstat	*buf;		/* return buffer */
 	int			error = 0;	/* error value */
 
@@ -76,7 +106,17 @@ xfs_bulkstat_one_int(
 		return XFS_ERROR(ENOMEM);
 
 	error = xfs_iget(mp, NULL, ino,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 XFS_IGET_UNTRUSTED, XFS_ILOCK_SHARED, &ip);
+=======
+			 (XFS_IGET_DONTCACHE | XFS_IGET_UNTRUSTED),
+			 XFS_ILOCK_SHARED, &ip);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 (XFS_IGET_DONTCACHE | XFS_IGET_UNTRUSTED),
+			 XFS_ILOCK_SHARED, &ip);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		*stat = BULKSTAT_RV_NOTHING;
 		goto out_free;
@@ -86,7 +126,13 @@ xfs_bulkstat_one_int(
 	ASSERT(ip->i_imap.im_blkno != 0);
 
 	dic = &ip->i_d;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode = VFS_I(ip);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* xfs_iget returns the following without needing
 	 * further change.
@@ -99,6 +145,8 @@ xfs_bulkstat_one_int(
 	buf->bs_uid = dic->di_uid;
 	buf->bs_gid = dic->di_gid;
 	buf->bs_size = dic->di_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/*
 	 * We need to read the timestamps from the Linux inode because
@@ -112,6 +160,19 @@ xfs_bulkstat_one_int(
 	buf->bs_ctime.tv_sec = inode->i_ctime.tv_sec;
 	buf->bs_ctime.tv_nsec = inode->i_ctime.tv_nsec;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	buf->bs_atime.tv_sec = dic->di_atime.t_sec;
+	buf->bs_atime.tv_nsec = dic->di_atime.t_nsec;
+	buf->bs_mtime.tv_sec = dic->di_mtime.t_sec;
+	buf->bs_mtime.tv_nsec = dic->di_mtime.t_nsec;
+	buf->bs_ctime.tv_sec = dic->di_ctime.t_sec;
+	buf->bs_ctime.tv_nsec = dic->di_ctime.t_nsec;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	buf->bs_xflags = xfs_ip2xflags(ip);
 	buf->bs_extsize = dic->di_extsize << mp->m_sb.sb_blocklog;
 	buf->bs_extents = dic->di_nextents;
@@ -229,7 +290,10 @@ xfs_bulkstat(
 	char			__user *ubufp;	/* pointer into user's buffer */
 	int			ubelem;	/* spaces used in user's buffer */
 	int			ubused;	/* bytes used by formatter */
+<<<<<<< HEAD
 	xfs_buf_t		*bp;	/* ptr to on-disk inode cluster buf */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Get the last inode value, see if there's nothing to do.
@@ -271,7 +335,10 @@ xfs_bulkstat(
 	rval = 0;
 	while (XFS_BULKSTAT_UBLEFT(ubleft) && agno < mp->m_sb.sb_agcount) {
 		cond_resched();
+<<<<<<< HEAD
 		bp = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 		error = xfs_ialloc_read_agi(mp, NULL, agno, &agbp);
 		if (error) {
 			/*
@@ -391,11 +458,19 @@ xfs_bulkstat(
 			 * Also start read-ahead now for this chunk.
 			 */
 			if (r.ir_freecount < XFS_INODES_PER_CHUNK) {
+<<<<<<< HEAD
+=======
+				struct blk_plug	plug;
+>>>>>>> refs/remotes/origin/master
 				/*
 				 * Loop over all clusters in the next chunk.
 				 * Do a readahead if there are any allocated
 				 * inodes in that cluster.
 				 */
+<<<<<<< HEAD
+=======
+				blk_start_plug(&plug);
+>>>>>>> refs/remotes/origin/master
 				agbno = XFS_AGINO_TO_AGBNO(mp, r.ir_startino);
 				for (chunkidx = 0;
 				     chunkidx < XFS_INODES_PER_CHUNK;
@@ -404,8 +479,15 @@ xfs_bulkstat(
 					if (xfs_inobt_maskn(chunkidx, nicluster)
 							& ~r.ir_free)
 						xfs_btree_reada_bufs(mp, agno,
+<<<<<<< HEAD
 							agbno, nbcluster);
 				}
+=======
+							agbno, nbcluster,
+							&xfs_inode_buf_ops);
+				}
+				blk_finish_plug(&plug);
+>>>>>>> refs/remotes/origin/master
 				irbp->ir_startino = r.ir_startino;
 				irbp->ir_freecount = r.ir_freecount;
 				irbp->ir_free = r.ir_free;
@@ -440,6 +522,7 @@ xfs_bulkstat(
 				irbp->ir_freecount < XFS_INODES_PER_CHUNK;
 			     chunkidx++, clustidx++, agino++) {
 				ASSERT(chunkidx < XFS_INODES_PER_CHUNK);
+<<<<<<< HEAD
 				/*
 				 * Recompute agbno if this is the
 				 * first inode of the cluster.
@@ -461,6 +544,9 @@ xfs_bulkstat(
 						((chunkidx & nimask) >>
 						 mp->m_sb.sb_inopblog);
 				}
+=======
+
+>>>>>>> refs/remotes/origin/master
 				ino = XFS_AGINO_TO_INO(mp, agno, agino);
 				/*
 				 * Skip if this inode is free.
@@ -506,10 +592,13 @@ xfs_bulkstat(
 
 			cond_resched();
 		}
+<<<<<<< HEAD
 
 		if (bp)
 			xfs_buf_relse(bp);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Set up for the next loop iteration.
 		 */
@@ -525,7 +614,11 @@ xfs_bulkstat(
 	/*
 	 * Done, we're either out of filesystem or space to put the data.
 	 */
+<<<<<<< HEAD
 	kmem_free_large(irbuf);
+=======
+	kmem_free(irbuf);
+>>>>>>> refs/remotes/origin/master
 	*ubcountp = ubelem;
 	/*
 	 * Found some inodes, return them now and return the error next time.
@@ -564,15 +657,25 @@ xfs_bulkstat_single(
 
 	/*
 	 * note that requesting valid inode numbers which are not allocated
+<<<<<<< HEAD
 	 * to inodes will most likely cause xfs_itobp to generate warning
+=======
+	 * to inodes will most likely cause xfs_imap_to_bp to generate warning
+>>>>>>> refs/remotes/origin/master
 	 * messages about bad magic numbers. This is ok. The fact that
 	 * the inode isn't actually an inode is handled by the
 	 * error check below. Done this way to make the usual case faster
 	 * at the expense of the error case.
 	 */
 
+<<<<<<< HEAD
 	ino = (xfs_ino_t)*lastinop;
 	error = xfs_bulkstat_one(mp, ino, buffer, sizeof(xfs_bstat_t), 0, &res);
+=======
+	ino = *lastinop;
+	error = xfs_bulkstat_one(mp, ino, buffer, sizeof(xfs_bstat_t),
+				 NULL, &res);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		/*
 		 * Special case way failed, do it the "long" way

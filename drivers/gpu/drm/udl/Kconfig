@@ -1,0 +1,21 @@
+config DRM_UDL
+	tristate "DisplayLink"
+<<<<<<< HEAD
+	depends on DRM && EXPERIMENTAL
+=======
+	depends on DRM
+	depends on USB_ARCH_HAS_HCD
+>>>>>>> refs/remotes/origin/master
+	select DRM_USB
+	select FB_SYS_FILLRECT
+	select FB_SYS_COPYAREA
+	select FB_SYS_IMAGEBLIT
+	select FB_DEFERRED_IO
+	select DRM_KMS_HELPER
+<<<<<<< HEAD
+=======
+        select DRM_KMS_FB_HELPER
+>>>>>>> refs/remotes/origin/master
+	help
+	  This is a KMS driver for the USB displaylink video adapters.
+          Say M/Y to add support for these devices via drm/kms interfaces.

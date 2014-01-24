@@ -1,7 +1,11 @@
 /*
  *  Collaborative memory management interface.
  *
+<<<<<<< HEAD
  *    Copyright IBM Corp 2003,2010
+=======
+ *    Copyright IBM Corp 2003, 2010
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky <schwidefsky@de.ibm.com>,
  *
  */
@@ -253,12 +257,21 @@ static int cmm_skip_blanks(char *cp, char **endp)
 
 static struct ctl_table cmm_table[];
 
+<<<<<<< HEAD
 static int cmm_pages_handler(ctl_table *ctl, int write, void __user *buffer,
 			     size_t *lenp, loff_t *ppos)
 {
 	char buf[16], *p;
 	long nr;
 	int len;
+=======
+static int cmm_pages_handler(struct ctl_table *ctl, int write,
+			     void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	char buf[16], *p;
+	unsigned int len;
+	long nr;
+>>>>>>> refs/remotes/origin/master
 
 	if (!*lenp || (*ppos && !write)) {
 		*lenp = 0;
@@ -293,12 +306,21 @@ static int cmm_pages_handler(ctl_table *ctl, int write, void __user *buffer,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cmm_timeout_handler(ctl_table *ctl, int write,  void __user *buffer,
 			       size_t *lenp, loff_t *ppos)
 {
 	char buf[64], *p;
 	long nr, seconds;
 	int len;
+=======
+static int cmm_timeout_handler(struct ctl_table *ctl, int write,
+			       void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	char buf[64], *p;
+	long nr, seconds;
+	unsigned int len;
+>>>>>>> refs/remotes/origin/master
 
 	if (!*lenp || (*ppos && !write)) {
 		*lenp = 0;
@@ -458,12 +480,19 @@ static int __init cmm_init(void)
 	if (rc)
 		goto out_pm;
 	cmm_thread_ptr = kthread_run(cmm_thread, NULL, "cmmthread");
+<<<<<<< HEAD
 	rc = IS_ERR(cmm_thread_ptr) ? PTR_ERR(cmm_thread_ptr) : 0;
 	if (rc)
 		goto out_kthread;
 	return 0;
 
 out_kthread:
+=======
+	if (!IS_ERR(cmm_thread_ptr))
+		return 0;
+
+	rc = PTR_ERR(cmm_thread_ptr);
+>>>>>>> refs/remotes/origin/master
 	unregister_pm_notifier(&cmm_power_notifier);
 out_pm:
 	unregister_oom_notifier(&cmm_oom_nb);

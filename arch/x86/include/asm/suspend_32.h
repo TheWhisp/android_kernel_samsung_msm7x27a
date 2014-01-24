@@ -15,7 +15,11 @@ struct saved_context {
 	unsigned long cr0, cr2, cr3, cr4;
 	u64 misc_enable;
 	bool misc_enable_saved;
+<<<<<<< HEAD
 	struct desc_ptr gdt;
+=======
+	struct desc_ptr gdt_desc;
+>>>>>>> refs/remotes/origin/master
 	struct desc_ptr idt;
 	u16 ldt;
 	u16 tss;

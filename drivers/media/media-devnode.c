@@ -30,6 +30,11 @@
  * counting.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -40,7 +45,13 @@
 #include <linux/string.h>
 #include <linux/types.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <media/media-devnode.h>
 
@@ -115,19 +126,55 @@ static unsigned int media_poll(struct file *filp,
 	return mdev->fops->poll(filp, poll);
 }
 
+<<<<<<< HEAD
 static long media_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	struct media_devnode *mdev = media_devnode_data(filp);
 
 	if (!mdev->fops->ioctl)
+=======
+static long
+__media_ioctl(struct file *filp, unsigned int cmd, unsigned long arg,
+	      long (*ioctl_func)(struct file *filp, unsigned int cmd,
+				 unsigned long arg))
+{
+	struct media_devnode *mdev = media_devnode_data(filp);
+
+	if (!ioctl_func)
+>>>>>>> refs/remotes/origin/master
 		return -ENOTTY;
 
 	if (!media_devnode_is_registered(mdev))
 		return -EIO;
 
+<<<<<<< HEAD
 	return mdev->fops->ioctl(filp, cmd, arg);
 }
 
+=======
+	return ioctl_func(filp, cmd, arg);
+}
+
+static long media_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+{
+	struct media_devnode *mdev = media_devnode_data(filp);
+
+	return __media_ioctl(filp, cmd, arg, mdev->fops->ioctl);
+}
+
+#ifdef CONFIG_COMPAT
+
+static long media_compat_ioctl(struct file *filp, unsigned int cmd,
+			       unsigned long arg)
+{
+	struct media_devnode *mdev = media_devnode_data(filp);
+
+	return __media_ioctl(filp, cmd, arg, mdev->fops->compat_ioctl);
+}
+
+#endif /* CONFIG_COMPAT */
+
+>>>>>>> refs/remotes/origin/master
 /* Override for the open function */
 static int media_open(struct inode *inode, struct file *filp)
 {
@@ -187,6 +234,12 @@ static const struct file_operations media_devnode_fops = {
 	.write = media_write,
 	.open = media_open,
 	.unlocked_ioctl = media_ioctl,
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = media_compat_ioctl,
+#endif /* CONFIG_COMPAT */
+>>>>>>> refs/remotes/origin/master
 	.release = media_release,
 	.poll = media_poll,
 	.llseek = no_llseek,
@@ -216,7 +269,11 @@ int __must_check media_devnode_register(struct media_devnode *mdev)
 	minor = find_next_zero_bit(media_devnode_nums, MEDIA_NUM_DEVICES, 0);
 	if (minor == MEDIA_NUM_DEVICES) {
 		mutex_unlock(&media_devnode_lock);
+<<<<<<< HEAD
 		printk(KERN_ERR "could not get a free minor\n");
+=======
+		pr_err("could not get a free minor\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENFILE;
 	}
 
@@ -231,7 +288,11 @@ int __must_check media_devnode_register(struct media_devnode *mdev)
 
 	ret = cdev_add(&mdev->cdev, MKDEV(MAJOR(media_dev_t), mdev->minor), 1);
 	if (ret < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: cdev_add failed\n", __func__);
+=======
+		pr_err("%s: cdev_add failed\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -244,7 +305,11 @@ int __must_check media_devnode_register(struct media_devnode *mdev)
 	dev_set_name(&mdev->dev, "media%d", mdev->minor);
 	ret = device_register(&mdev->dev);
 	if (ret < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: device_register failed\n", __func__);
+=======
+		pr_err("%s: device_register failed\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -288,18 +353,30 @@ static int __init media_devnode_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "Linux media interface: v0.10\n");
 	ret = alloc_chrdev_region(&media_dev_t, 0, MEDIA_NUM_DEVICES,
 				  MEDIA_NAME);
 	if (ret < 0) {
 		printk(KERN_WARNING "media: unable to allocate major\n");
+=======
+	pr_info("Linux media interface: v0.10\n");
+	ret = alloc_chrdev_region(&media_dev_t, 0, MEDIA_NUM_DEVICES,
+				  MEDIA_NAME);
+	if (ret < 0) {
+		pr_warn("unable to allocate major\n");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	ret = bus_register(&media_bus_type);
 	if (ret < 0) {
 		unregister_chrdev_region(media_dev_t, MEDIA_NUM_DEVICES);
+<<<<<<< HEAD
 		printk(KERN_WARNING "media: bus_register failed\n");
+=======
+		pr_warn("bus_register failed\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -312,7 +389,15 @@ static void __exit media_devnode_exit(void)
 	unregister_chrdev_region(media_dev_t, MEDIA_NUM_DEVICES);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_init(media_devnode_init)
+=======
+subsys_initcall(media_devnode_init);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+subsys_initcall(media_devnode_init);
+>>>>>>> refs/remotes/origin/master
 module_exit(media_devnode_exit)
 
 MODULE_AUTHOR("Laurent Pinchart <laurent.pinchart@ideasonboard.com>");

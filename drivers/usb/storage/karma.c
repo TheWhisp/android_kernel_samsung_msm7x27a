@@ -57,9 +57,19 @@ static int rio_karma_init(struct us_data *us);
 		    vendorName, productName, useProtocol, useTransport, \
 		    initFunction, flags) \
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
+<<<<<<< HEAD
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
+<<<<<<< HEAD
 struct usb_device_id karma_usb_ids[] = {
+=======
+static struct usb_device_id karma_usb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  .driver_info = (flags) }
+
+static struct usb_device_id karma_usb_ids[] = {
+>>>>>>> refs/remotes/origin/master
 #	include "unusual_karma.h"
 	{ }		/* Terminating entry */
 };
@@ -106,7 +116,11 @@ static int rio_karma_send_command(char cmd, struct us_data *us)
 	static unsigned char seq = 1;
 	struct karma_data *data = (struct karma_data *) us->extra;
 
+<<<<<<< HEAD
 	US_DEBUGP("karma: sending command %04x\n", cmd);
+=======
+	usb_stor_dbg(us, "sending command %04x\n", cmd);
+>>>>>>> refs/remotes/origin/master
 	memset(us->iobuf, 0, RIO_SEND_LEN);
 	memcpy(us->iobuf, RIO_PREFIX, RIO_PREFIX_LEN);
 	us->iobuf[5] = cmd;
@@ -139,10 +153,17 @@ static int rio_karma_send_command(char cmd, struct us_data *us)
 	if (seq == 0)
 		seq = 1;
 
+<<<<<<< HEAD
 	US_DEBUGP("karma: sent command %04x\n", cmd);
 	return 0;
 err:
 	US_DEBUGP("karma: command %04x failed\n", cmd);
+=======
+	usb_stor_dbg(us, "sent command %04x\n", cmd);
+	return 0;
+err:
+	usb_stor_dbg(us, "command %04x failed\n", cmd);
+>>>>>>> refs/remotes/origin/master
 	return USB_STOR_TRANSPORT_FAILED;
 }
 
@@ -230,6 +251,8 @@ static struct usb_driver karma_driver = {
 	.post_reset =	usb_stor_post_reset,
 	.id_table =	karma_usb_ids,
 	.soft_unbind =	1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static int __init karma_init(void)
@@ -244,3 +267,14 @@ static void __exit karma_exit(void)
 
 module_init(karma_init);
 module_exit(karma_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.no_dynamic_id = 1,
+};
+
+module_usb_driver(karma_driver);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

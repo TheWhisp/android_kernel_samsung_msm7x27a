@@ -21,8 +21,14 @@
 #include <linux/slab.h>
 
 /**
+<<<<<<< HEAD
  * of_get_gpio_flags - Get a GPIO number and flags to use with GPIO API
  * @np:		device node to get GPIO from
+=======
+ * of_get_named_gpio_flags() - Get a GPIO number and flags to use with GPIO API
+ * @np:		device node to get GPIO from
+ * @propname:	property name containing gpio specifier(s)
+>>>>>>> refs/remotes/origin/cm-10.0
  * @index:	index of the GPIO
  * @flags:	a flags pointer to fill in
  *
@@ -30,6 +36,7 @@
  * value on the error condition. If @flags is not NULL the function also fills
  * in flags for the GPIO.
  */
+<<<<<<< HEAD
 int of_get_gpio_flags(struct device_node *np, int index,
 		      enum of_gpio_flags *flags)
 {
@@ -42,24 +49,48 @@ int of_get_gpio_flags(struct device_node *np, int index,
 
 	ret = of_parse_phandles_with_args(np, "gpios", "#gpio-cells", index,
 					  &gpio_np, &gpio_spec);
+=======
+int of_get_named_gpio_flags(struct device_node *np, const char *propname,
+                           int index, enum of_gpio_flags *flags)
+{
+	int ret;
+	struct gpio_chip *gc;
+	struct of_phandle_args gpiospec;
+
+	ret = of_parse_phandle_with_args(np, propname, "#gpio-cells", index,
+					 &gpiospec);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		pr_debug("%s: can't parse gpios property\n", __func__);
 		goto err0;
 	}
 
+<<<<<<< HEAD
 	gc = of_node_to_gpiochip(gpio_np);
 	if (!gc) {
 		pr_debug("%s: gpio controller %s isn't registered\n",
 			 np->full_name, gpio_np->full_name);
+=======
+	gc = of_node_to_gpiochip(gpiospec.np);
+	if (!gc) {
+		pr_debug("%s: gpio controller %s isn't registered\n",
+			 np->full_name, gpiospec.np->full_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ENODEV;
 		goto err1;
 	}
 
+<<<<<<< HEAD
 	gpio_cells = of_get_property(gpio_np, "#gpio-cells", &size);
 	if (!gpio_cells || size != sizeof(*gpio_cells) ||
 			be32_to_cpup(gpio_cells) != gc->of_gpio_n_cells) {
 		pr_debug("%s: wrong #gpio-cells for %s\n",
 			 np->full_name, gpio_np->full_name);
+=======
+	if (gpiospec.args_count != gc->of_gpio_n_cells) {
+		pr_debug("%s: wrong #gpio-cells for %s\n",
+			 np->full_name, gpiospec.np->full_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -EINVAL;
 		goto err1;
 	}
@@ -68,22 +99,39 @@ int of_get_gpio_flags(struct device_node *np, int index,
 	if (flags)
 		*flags = 0;
 
+<<<<<<< HEAD
 	ret = gc->of_xlate(gc, np, gpio_spec, flags);
+=======
+	ret = gc->of_xlate(gc, &gpiospec, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		goto err1;
 
 	ret += gc->base;
 err1:
+<<<<<<< HEAD
 	of_node_put(gpio_np);
+=======
+	of_node_put(gpiospec.np);
+>>>>>>> refs/remotes/origin/cm-10.0
 err0:
 	pr_debug("%s exited with status %d\n", __func__, ret);
 	return ret;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(of_get_gpio_flags);
 
 /**
  * of_gpio_count - Count GPIOs for a device
  * @np:		device node to count GPIOs for
+=======
+EXPORT_SYMBOL(of_get_named_gpio_flags);
+
+/**
+ * of_gpio_named_count - Count GPIOs for a device
+ * @np:		device node to count GPIOs for
+ * @propname:	property name containing gpio specifier(s)
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * The function returns the count of GPIOs specified for a node.
  *
@@ -97,15 +145,24 @@ EXPORT_SYMBOL(of_get_gpio_flags);
  * defines four GPIOs (so this function will return 4), two of which
  * are not specified.
  */
+<<<<<<< HEAD
 unsigned int of_gpio_count(struct device_node *np)
+=======
+unsigned int of_gpio_named_count(struct device_node *np, const char* propname)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned int cnt = 0;
 
 	do {
 		int ret;
 
+<<<<<<< HEAD
 		ret = of_parse_phandles_with_args(np, "gpios", "#gpio-cells",
 						  cnt, NULL, NULL);
+=======
+		ret = of_parse_phandle_with_args(np, propname, "#gpio-cells",
+						 cnt, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* A hole in the gpios = <> counts anyway. */
 		if (ret < 0 && ret != -EEXIST)
 			break;
@@ -113,7 +170,11 @@ unsigned int of_gpio_count(struct device_node *np)
 
 	return cnt;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(of_gpio_count);
+=======
+EXPORT_SYMBOL(of_gpio_named_count);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * of_gpio_simple_xlate - translate gpio_spec to the GPIO number and flags
@@ -126,12 +187,18 @@ EXPORT_SYMBOL(of_gpio_count);
  * gpio chips. This function performs only one sanity check: whether gpio
  * is less than ngpios (that is specified in the gpio_chip).
  */
+<<<<<<< HEAD
 static int of_gpio_simple_xlate(struct gpio_chip *gc, struct device_node *np,
 				const void *gpio_spec, u32 *flags)
 {
 	const __be32 *gpio = gpio_spec;
 	const u32 n = be32_to_cpup(gpio);
 
+=======
+int of_gpio_simple_xlate(struct gpio_chip *gc,
+			 const struct of_phandle_args *gpiospec, u32 *flags)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * We're discouraging gpio_cells < 2, since that way you'll have to
 	 * write your own xlate function (that will have to retrive the GPIO
@@ -143,6 +210,7 @@ static int of_gpio_simple_xlate(struct gpio_chip *gc, struct device_node *np,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (n > gc->ngpio)
 		return -EINVAL;
 
@@ -151,6 +219,20 @@ static int of_gpio_simple_xlate(struct gpio_chip *gc, struct device_node *np,
 
 	return n;
 }
+=======
+	if (WARN_ON(gpiospec->args_count < gc->of_gpio_n_cells))
+		return -EINVAL;
+
+	if (gpiospec->args[0] >= gc->ngpio)
+		return -EINVAL;
+
+	if (flags)
+		*flags = gpiospec->args[1];
+
+	return gpiospec->args[0];
+}
+EXPORT_SYMBOL(of_gpio_simple_xlate);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * of_mm_gpiochip_add - Add memory mapped GPIO chip (bank)
@@ -196,8 +278,11 @@ int of_mm_gpiochip_add(struct device_node *np,
 	if (ret)
 		goto err2;
 
+<<<<<<< HEAD
 	pr_debug("%s: registered as generic GPIO chip, base is %d\n",
 		 np->full_name, gc->base);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 err2:
 	iounmap(mm_gc->regs);
@@ -233,7 +318,11 @@ void of_gpiochip_remove(struct gpio_chip *chip)
 }
 
 /* Private function for resolving node pointer to gpio_chip */
+<<<<<<< HEAD
 static int of_gpiochip_is_match(struct gpio_chip *chip, void *data)
+=======
+static int of_gpiochip_is_match(struct gpio_chip *chip, const void *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return chip->of_node == data;
 }

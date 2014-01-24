@@ -39,7 +39,11 @@ static int pacpi_pre_reset(struct ata_link *link, unsigned long deadline)
 {
 	struct ata_port *ap = link->ap;
 	struct pata_acpi *acpi = ap->private_data;
+<<<<<<< HEAD
 	if (ap->acpi_handle == NULL || ata_acpi_gtm(ap, &acpi->gtm) < 0)
+=======
+	if (ACPI_HANDLE(&ap->tdev) == NULL || ata_acpi_gtm(ap, &acpi->gtm) < 0)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	return ata_sff_prereset(link, deadline);
@@ -195,9 +199,16 @@ static int pacpi_port_start(struct ata_port *ap)
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 	struct pata_acpi *acpi;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ap->acpi_handle == NULL)
+=======
+	if (ACPI_HANDLE(&ap->tdev) == NULL)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	acpi = ap->private_data = devm_kzalloc(&pdev->dev, sizeof(struct pata_acpi), GFP_KERNEL);
@@ -205,11 +216,19 @@ static int pacpi_port_start(struct ata_port *ap)
 		return -ENOMEM;
 	acpi->mask[0] = pacpi_discover_modes(ap, &ap->link.device[0]);
 	acpi->mask[1] = pacpi_discover_modes(ap, &ap->link.device[1]);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = ata_bmdma_port_start(ap);
 	if (ret < 0)
 		return ret;
 
 	return ret;
+=======
+	return ata_bmdma_port_start(ap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ata_bmdma_port_start(ap);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct scsi_host_template pacpi_sht = {
@@ -279,6 +298,7 @@ static struct pci_driver pacpi_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init pacpi_init(void)
 {
 	return pci_register_driver(&pacpi_pci_driver);
@@ -291,10 +311,16 @@ static void __exit pacpi_exit(void)
 
 module_init(pacpi_init);
 module_exit(pacpi_exit);
+=======
+module_pci_driver(pacpi_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("SCSI low-level driver for ATA in ACPI mode");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, pacpi_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

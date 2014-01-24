@@ -1,7 +1,15 @@
 /* $Id: idifunc.c,v 1.14.4.4 2004/08/28 20:03:53 armin Exp $
  *
  * Driver for Eicon DIVA Server ISDN cards.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * User Mode IDI Interface 
+=======
+ * User Mode IDI Interface
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * User Mode IDI Interface
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2000-2003 by Armin Schindler (mac@melware.de)
  * Copyright 2000-2003 Cytronics & Melware (info@melware.de)
@@ -58,7 +66,15 @@ static diva_os_spin_lock_t ll_lock;
 /*
  * find card in list
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static udiva_card *find_card_in_list(DESCRIPTOR * d)
+=======
+static udiva_card *find_card_in_list(DESCRIPTOR *d)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static udiva_card *find_card_in_list(DESCRIPTOR *d)
+>>>>>>> refs/remotes/origin/master
 {
 	udiva_card *card;
 	struct list_head *tmp;
@@ -80,7 +96,15 @@ static udiva_card *find_card_in_list(DESCRIPTOR * d)
 /*
  * new card
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void um_new_card(DESCRIPTOR * d)
+=======
+static void um_new_card(DESCRIPTOR *d)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void um_new_card(DESCRIPTOR *d)
+>>>>>>> refs/remotes/origin/master
 {
 	int adapter_nr = 0;
 	udiva_card *card = NULL;
@@ -94,10 +118,23 @@ static void um_new_card(DESCRIPTOR * d)
 	memcpy(&card->d, d, sizeof(DESCRIPTOR));
 	sync_req.xdi_logical_adapter_number.Req = 0;
 	sync_req.xdi_logical_adapter_number.Rc =
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    IDI_SYNC_REQ_XDI_GET_LOGICAL_ADAPTER_NUMBER;
 	card->d.request((ENTITY *) & sync_req);
 	adapter_nr =
 	    sync_req.xdi_logical_adapter_number.info.logical_adapter_number;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		IDI_SYNC_REQ_XDI_GET_LOGICAL_ADAPTER_NUMBER;
+	card->d.request((ENTITY *)&sync_req);
+	adapter_nr =
+		sync_req.xdi_logical_adapter_number.info.logical_adapter_number;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	card->Id = adapter_nr;
 	if (!(diva_user_mode_idi_create_adapter(d, adapter_nr))) {
 		diva_os_enter_spin_lock(&ll_lock, &old_irql, "add card");
@@ -113,7 +150,15 @@ static void um_new_card(DESCRIPTOR * d)
 /*
  * remove card
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void um_remove_card(DESCRIPTOR * d)
+=======
+static void um_remove_card(DESCRIPTOR *d)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void um_remove_card(DESCRIPTOR *d)
+>>>>>>> refs/remotes/origin/master
 {
 	diva_os_spin_lock_magic_t old_irql;
 	udiva_card *card = NULL;
@@ -133,7 +178,11 @@ static void um_remove_card(DESCRIPTOR * d)
 /*
  * remove all adapter
  */
+<<<<<<< HEAD
 static void DIVA_EXIT_FUNCTION remove_all_idi_proc(void)
+=======
+static void __exit remove_all_idi_proc(void)
+>>>>>>> refs/remotes/origin/master
 {
 	udiva_card *card;
 	diva_os_spin_lock_magic_t old_irql;
@@ -154,7 +203,15 @@ rescan:
 /*
  * DIDD notify callback
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void *didd_callback(void *context, DESCRIPTOR * adapter,
+=======
+static void *didd_callback(void *context, DESCRIPTOR *adapter,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void *didd_callback(void *context, DESCRIPTOR *adapter,
+>>>>>>> refs/remotes/origin/master
 			   int removal)
 {
 	if (adapter->type == IDI_DADAPTER) {
@@ -181,7 +238,11 @@ static void *didd_callback(void *context, DESCRIPTOR * adapter,
 /*
  * connect DIDD
  */
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION connect_didd(void)
+=======
+static int __init connect_didd(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int x = 0;
 	int dadapter = 0;
@@ -196,10 +257,23 @@ static int DIVA_INIT_FUNCTION connect_didd(void)
 			memcpy(&DAdapter, &DIDD_Table[x], sizeof(DAdapter));
 			req.didd_notify.e.Req = 0;
 			req.didd_notify.e.Rc =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    IDI_SYNC_REQ_DIDD_REGISTER_ADAPTER_NOTIFY;
 			req.didd_notify.info.callback = (void *)didd_callback;
 			req.didd_notify.info.context = NULL;
 			DAdapter.request((ENTITY *) & req);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				IDI_SYNC_REQ_DIDD_REGISTER_ADAPTER_NOTIFY;
+			req.didd_notify.info.callback = (void *)didd_callback;
+			req.didd_notify.info.context = NULL;
+			DAdapter.request((ENTITY *)&req);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (req.didd_notify.e.Rc != 0xff) {
 				stop_dbg();
 				return (0);
@@ -225,7 +299,11 @@ static int DIVA_INIT_FUNCTION connect_didd(void)
 /*
  *  Disconnect from DIDD
  */
+<<<<<<< HEAD
 static void DIVA_EXIT_FUNCTION disconnect_didd(void)
+=======
+static void __exit disconnect_didd(void)
+>>>>>>> refs/remotes/origin/master
 {
 	IDI_SYNC_REQ req;
 
@@ -234,13 +312,25 @@ static void DIVA_EXIT_FUNCTION disconnect_didd(void)
 	req.didd_notify.e.Req = 0;
 	req.didd_notify.e.Rc = IDI_SYNC_REQ_DIDD_REMOVE_ADAPTER_NOTIFY;
 	req.didd_notify.info.handle = notify_handle;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DAdapter.request((ENTITY *) & req);
+=======
+	DAdapter.request((ENTITY *)&req);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DAdapter.request((ENTITY *)&req);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * init
  */
+<<<<<<< HEAD
 int DIVA_INIT_FUNCTION idifunc_init(void)
+=======
+int __init idifunc_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	diva_os_initialize_spin_lock(&ll_lock, "idifunc");
 
@@ -260,7 +350,11 @@ int DIVA_INIT_FUNCTION idifunc_init(void)
 /*
  * finit
  */
+<<<<<<< HEAD
 void DIVA_EXIT_FUNCTION idifunc_finit(void)
+=======
+void __exit idifunc_finit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	diva_user_mode_idi_finit();
 	disconnect_didd();

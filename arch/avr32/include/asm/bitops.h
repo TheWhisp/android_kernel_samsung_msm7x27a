@@ -13,7 +13,13 @@
 #endif
 
 #include <asm/byteorder.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * clear_bit() doesn't provide any barrier for the compiler

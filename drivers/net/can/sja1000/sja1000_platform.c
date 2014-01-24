@@ -34,6 +34,10 @@
 
 MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
 MODULE_DESCRIPTION("Socket-CAN driver for SJA1000 on the platform bus");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:" DRV_NAME);
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL v2");
 
 static u8 sp_read_reg8(const struct sja1000_priv *priv, int reg)
@@ -75,7 +79,11 @@ static int sp_probe(struct platform_device *pdev)
 	struct resource *res_mem, *res_irq;
 	struct sja1000_platform_data *pdata;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&pdev->dev, "No platform data provided!\n");
 		err = -ENODEV;
@@ -109,7 +117,13 @@ static int sp_probe(struct platform_device *pdev)
 	priv = netdev_priv(dev);
 
 	dev->irq = res_irq->start;
+<<<<<<< HEAD
 	priv->irq_flags = res_irq->flags & (IRQF_TRIGGER_MASK | IRQF_SHARED);
+=======
+	priv->irq_flags = res_irq->flags & IRQF_TRIGGER_MASK;
+	if (res_irq->flags & IORESOURCE_IRQ_SHAREABLE)
+		priv->irq_flags |= IRQF_SHARED;
+>>>>>>> refs/remotes/origin/master
 	priv->reg_base = addr;
 	/* The CAN clock frequency is half the oscillator clock frequency */
 	priv->can.clock.freq = pdata->osc_freq / 2;
@@ -132,7 +146,11 @@ static int sp_probe(struct platform_device *pdev)
 		break;
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, dev);
+=======
+	platform_set_drvdata(pdev, dev);
+>>>>>>> refs/remotes/origin/master
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
 	err = register_sja1000dev(dev);
@@ -158,12 +176,19 @@ static int sp_probe(struct platform_device *pdev)
 
 static int sp_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct net_device *dev = dev_get_drvdata(&pdev->dev);
+=======
+	struct net_device *dev = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct sja1000_priv *priv = netdev_priv(dev);
 	struct resource *res;
 
 	unregister_sja1000dev(dev);
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (priv->reg_base)
 		iounmap(priv->reg_base);
@@ -185,6 +210,8 @@ static struct platform_driver sp_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sp_init(void)
 {
 	return platform_driver_register(&sp_driver);
@@ -197,3 +224,9 @@ static void __exit sp_exit(void)
 
 module_init(sp_init);
 module_exit(sp_exit);
+=======
+module_platform_driver(sp_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(sp_driver);
+>>>>>>> refs/remotes/origin/master

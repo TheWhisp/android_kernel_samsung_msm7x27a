@@ -6,7 +6,15 @@
  * Portions Copyright (C) 2004-2005 David Brownell
  * Portions Copyright (C) 1999 Roman Weissgaerber
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Author : Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+=======
+ * Author : Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author : Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +35,10 @@
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 #include <linux/delay.h>
 #include <linux/list.h>
@@ -95,9 +106,13 @@ static int r8a66597_clock_enable(struct r8a66597 *r8a66597)
 	int i = 0;
 
 	if (r8a66597->pdata->on_chip) {
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 		clk_enable(r8a66597->clk);
 #endif
+=======
+		clk_enable(r8a66597->clk);
+>>>>>>> refs/remotes/origin/master
 		do {
 			r8a66597_write(r8a66597, SCKE, SYSCFG0);
 			tmp = r8a66597_read(r8a66597, SYSCFG0);
@@ -141,9 +156,13 @@ static void r8a66597_clock_disable(struct r8a66597 *r8a66597)
 	udelay(1);
 
 	if (r8a66597->pdata->on_chip) {
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 		clk_disable(r8a66597->clk);
 #endif
+=======
+		clk_disable(r8a66597->clk);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		r8a66597_bclr(r8a66597, PLLC, SYSCFG0);
 		r8a66597_bclr(r8a66597, XCKE, SYSCFG0);
@@ -401,7 +420,11 @@ static u8 alloc_usb_address(struct r8a66597 *r8a66597, struct urb *urb)
 		if (r8a66597->address_map & (1 << addr))
 			continue;
 
+<<<<<<< HEAD
 		dbg("alloc_address: r8a66597_addr=%d", addr);
+=======
+		dev_dbg(&urb->dev->dev, "alloc_address: r8a66597_addr=%d\n", addr);
+>>>>>>> refs/remotes/origin/master
 		r8a66597->address_map |= 1 << addr;
 
 		if (make_r8a66597_device(r8a66597, urb, addr) < 0)
@@ -426,7 +449,11 @@ static void free_usb_address(struct r8a66597 *r8a66597,
 	if (!dev)
 		return;
 
+<<<<<<< HEAD
 	dbg("free_addr: addr=%d", dev->address);
+=======
+	dev_dbg(&dev->udev->dev, "free_addr: addr=%d\n", dev->address);
+>>>>>>> refs/remotes/origin/master
 
 	dev->state = USB_STATE_DEFAULT;
 	r8a66597->address_map &= ~(1 << dev->address);
@@ -819,7 +846,11 @@ static void enable_r8a66597_pipe(struct r8a66597 *r8a66597, struct urb *urb,
 	struct r8a66597_device *dev = get_urb_to_r8a66597_dev(r8a66597, urb);
 	struct r8a66597_pipe *pipe = hep->hcpriv;
 
+<<<<<<< HEAD
 	dbg("enable_pipe:");
+=======
+	dev_dbg(&dev->udev->dev, "enable_pipe:\n");
+>>>>>>> refs/remotes/origin/master
 
 	pipe->info = *info;
 	set_pipe_reg_addr(pipe, R8A66597_PIPE_NO_DMA);
@@ -898,7 +929,11 @@ static void disable_r8a66597_pipe_all(struct r8a66597 *r8a66597,
 		force_dequeue(r8a66597, pipenum, dev->address);
 	}
 
+<<<<<<< HEAD
 	dbg("disable_pipe");
+=======
+	dev_dbg(&dev->udev->dev, "disable_pipe\n");
+>>>>>>> refs/remotes/origin/master
 
 	r8a66597->dma_map &= ~(dev->dma_map);
 	dev->dma_map = 0;
@@ -959,7 +994,15 @@ static void init_pipe_info(struct r8a66597 *r8a66597, struct urb *urb,
 	info.pipenum = get_empty_pipenum(r8a66597, ep);
 	info.address = get_urb_to_r8a66597_addr(r8a66597, urb);
 	info.epnum = usb_endpoint_num(ep);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info.maxpacket = le16_to_cpu(ep->wMaxPacketSize);
+=======
+	info.maxpacket = usb_endpoint_maxp(ep);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info.maxpacket = usb_endpoint_maxp(ep);
+>>>>>>> refs/remotes/origin/master
 	info.type = get_r8a66597_type(usb_endpoint_type(ep));
 	info.bufnum = get_bufnum(info.pipenum);
 	info.buf_bsize = get_buf_bsize(info.pipenum);
@@ -1438,7 +1481,15 @@ static void packet_write(struct r8a66597 *r8a66597, u16 pipenum)
 	if (pipenum > 0)
 		r8a66597_write(r8a66597, ~(1 << pipenum), BEMPSTS);
 	if (urb->transfer_buffer) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		r8a66597_write_fifo(r8a66597, td->pipe->fifoaddr, buf, size);
+=======
+		r8a66597_write_fifo(r8a66597, td->pipe, buf, size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		r8a66597_write_fifo(r8a66597, td->pipe, buf, size);
+>>>>>>> refs/remotes/origin/master
 		if (!usb_pipebulk(urb->pipe) || td->maxpacket != size)
 			r8a66597_write(r8a66597, BVAL, td->pipe->fifoctr);
 	}
@@ -2033,18 +2084,27 @@ static int r8a66597_get_frame(struct usb_hcd *hcd)
 static void collect_usb_address_map(struct usb_device *udev, unsigned long *map)
 {
 	int chix;
+<<<<<<< HEAD
+=======
+	struct usb_device *childdev;
+>>>>>>> refs/remotes/origin/master
 
 	if (udev->state == USB_STATE_CONFIGURED &&
 	    udev->parent && udev->parent->devnum > 1 &&
 	    udev->parent->descriptor.bDeviceClass == USB_CLASS_HUB)
 		map[udev->devnum/32] |= (1 << (udev->devnum % 32));
 
+<<<<<<< HEAD
 	for (chix = 0; chix < udev->maxchild; chix++) {
 		struct usb_device *childdev = udev->children[chix];
 
 		if (childdev)
 			collect_usb_address_map(childdev, map);
 	}
+=======
+	usb_hub_for_each_child(udev, chix, childdev)
+		collect_usb_address_map(childdev, map);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* this function must be called with interrupt disabled */
@@ -2264,7 +2324,11 @@ static int r8a66597_bus_suspend(struct usb_hcd *hcd)
 	struct r8a66597 *r8a66597 = hcd_to_r8a66597(hcd);
 	int port;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
+=======
+	dev_dbg(&r8a66597->device0.udev->dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	for (port = 0; port < r8a66597->max_root_hub; port++) {
 		struct r8a66597_root_hub *rh = &r8a66597->root_hub[port];
@@ -2273,7 +2337,11 @@ static int r8a66597_bus_suspend(struct usb_hcd *hcd)
 		if (!(rh->port & USB_PORT_STAT_ENABLE))
 			continue;
 
+<<<<<<< HEAD
 		dbg("suspend port = %d", port);
+=======
+		dev_dbg(&rh->dev->udev->dev, "suspend port = %d\n", port);
+>>>>>>> refs/remotes/origin/master
 		r8a66597_bclr(r8a66597, UACT, dvstctr_reg);	/* suspend */
 		rh->port |= USB_PORT_STAT_SUSPEND;
 
@@ -2295,7 +2363,11 @@ static int r8a66597_bus_resume(struct usb_hcd *hcd)
 	struct r8a66597 *r8a66597 = hcd_to_r8a66597(hcd);
 	int port;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
+=======
+	dev_dbg(&r8a66597->device0.udev->dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	for (port = 0; port < r8a66597->max_root_hub; port++) {
 		struct r8a66597_root_hub *rh = &r8a66597->root_hub[port];
@@ -2304,9 +2376,19 @@ static int r8a66597_bus_resume(struct usb_hcd *hcd)
 		if (!(rh->port & USB_PORT_STAT_SUSPEND))
 			continue;
 
+<<<<<<< HEAD
 		dbg("resume port = %d", port);
 		rh->port &= ~USB_PORT_STAT_SUSPEND;
+<<<<<<< HEAD
 		rh->port |= USB_PORT_STAT_C_SUSPEND < 16;
+=======
+		rh->port |= USB_PORT_STAT_C_SUSPEND << 16;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(&rh->dev->udev->dev, "resume port = %d\n", port);
+		rh->port &= ~USB_PORT_STAT_SUSPEND;
+		rh->port |= USB_PORT_STAT_C_SUSPEND << 16;
+>>>>>>> refs/remotes/origin/master
 		r8a66597_mdfy(r8a66597, RESUME, RESUME | UACT, dvstctr_reg);
 		msleep(50);
 		r8a66597_mdfy(r8a66597, UACT, RESUME | UACT, dvstctr_reg);
@@ -2360,7 +2442,11 @@ static int r8a66597_suspend(struct device *dev)
 	struct r8a66597		*r8a66597 = dev_get_drvdata(dev);
 	int port;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
+=======
+	dev_dbg(dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	disable_controller(r8a66597);
 
@@ -2378,7 +2464,11 @@ static int r8a66597_resume(struct device *dev)
 	struct r8a66597		*r8a66597 = dev_get_drvdata(dev);
 	struct usb_hcd		*hcd = r8a66597_to_hcd(r8a66597);
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
+=======
+	dev_dbg(dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	enable_controller(r8a66597);
 	usb_root_hub_lost_power(hcd->self.root_hub);
@@ -2398,27 +2488,44 @@ static const struct dev_pm_ops r8a66597_dev_pm_ops = {
 #define R8A66597_DEV_PM_OPS	NULL
 #endif
 
+<<<<<<< HEAD
 static int __devexit r8a66597_remove(struct platform_device *pdev)
 {
 	struct r8a66597		*r8a66597 = dev_get_drvdata(&pdev->dev);
+=======
+static int r8a66597_remove(struct platform_device *pdev)
+{
+	struct r8a66597		*r8a66597 = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct usb_hcd		*hcd = r8a66597_to_hcd(r8a66597);
 
 	del_timer_sync(&r8a66597->rh_timer);
 	usb_remove_hcd(hcd);
 	iounmap(r8a66597->reg);
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 	if (r8a66597->pdata->on_chip)
 		clk_put(r8a66597->clk);
 #endif
+=======
+	if (r8a66597->pdata->on_chip)
+		clk_put(r8a66597->clk);
+>>>>>>> refs/remotes/origin/master
 	usb_put_hcd(hcd);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit r8a66597_probe(struct platform_device *pdev)
 {
 #ifdef CONFIG_HAVE_CLK
 	char clk_name[8];
 #endif
+=======
+static int r8a66597_probe(struct platform_device *pdev)
+{
+	char clk_name[8];
+>>>>>>> refs/remotes/origin/master
 	struct resource *res = NULL, *ires;
 	int irq = -1;
 	void __iomem *reg = NULL;
@@ -2428,6 +2535,18 @@ static int __devinit r8a66597_probe(struct platform_device *pdev)
 	int i;
 	unsigned long irq_trigger;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (usb_disabled())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (usb_disabled())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	if (pdev->dev.dma_mask) {
 		ret = -EINVAL;
 		dev_err(&pdev->dev, "dma not supported\n");
@@ -2474,12 +2593,20 @@ static int __devinit r8a66597_probe(struct platform_device *pdev)
 	}
 	r8a66597 = hcd_to_r8a66597(hcd);
 	memset(r8a66597, 0, sizeof(struct r8a66597));
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, r8a66597);
 	r8a66597->pdata = pdev->dev.platform_data;
 	r8a66597->irq_sense_low = irq_trigger == IRQF_TRIGGER_LOW;
 
 	if (r8a66597->pdata->on_chip) {
 #ifdef CONFIG_HAVE_CLK
+=======
+	platform_set_drvdata(pdev, r8a66597);
+	r8a66597->pdata = dev_get_platdata(&pdev->dev);
+	r8a66597->irq_sense_low = irq_trigger == IRQF_TRIGGER_LOW;
+
+	if (r8a66597->pdata->on_chip) {
+>>>>>>> refs/remotes/origin/master
 		snprintf(clk_name, sizeof(clk_name), "usb%d", pdev->id);
 		r8a66597->clk = clk_get(&pdev->dev, clk_name);
 		if (IS_ERR(r8a66597->clk)) {
@@ -2488,7 +2615,10 @@ static int __devinit r8a66597_probe(struct platform_device *pdev)
 			ret = PTR_ERR(r8a66597->clk);
 			goto clean_up2;
 		}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		r8a66597->max_root_hub = 1;
 	} else
 		r8a66597->max_root_hub = 2;
@@ -2519,20 +2649,38 @@ static int __devinit r8a66597_probe(struct platform_device *pdev)
 	hcd->rsrc_start = res->start;
 	hcd->has_tt = 1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_add_hcd(hcd, irq, IRQF_DISABLED | irq_trigger);
+=======
+	ret = usb_add_hcd(hcd, irq, irq_trigger);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = usb_add_hcd(hcd, irq, irq_trigger);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(&pdev->dev, "Failed to add hcd\n");
 		goto clean_up3;
 	}
+<<<<<<< HEAD
+=======
+	device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 clean_up3:
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 	if (r8a66597->pdata->on_chip)
 		clk_put(r8a66597->clk);
 clean_up2:
 #endif
+=======
+	if (r8a66597->pdata->on_chip)
+		clk_put(r8a66597->clk);
+clean_up2:
+>>>>>>> refs/remotes/origin/master
 	usb_put_hcd(hcd);
 
 clean_up:
@@ -2544,14 +2692,22 @@ clean_up:
 
 static struct platform_driver r8a66597_driver = {
 	.probe =	r8a66597_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(r8a66597_remove),
 	.driver		= {
 		.name = (char *) hcd_name,
+=======
+	.remove =	r8a66597_remove,
+	.driver		= {
+		.name = hcd_name,
+>>>>>>> refs/remotes/origin/master
 		.owner	= THIS_MODULE,
 		.pm	= R8A66597_DEV_PM_OPS,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init r8a66597_init(void)
 {
 	if (usb_disabled())
@@ -2569,3 +2725,9 @@ static void __exit r8a66597_cleanup(void)
 }
 module_exit(r8a66597_cleanup);
 
+=======
+module_platform_driver(r8a66597_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(r8a66597_driver);
+>>>>>>> refs/remotes/origin/master

@@ -107,6 +107,7 @@ struct ibmvscsi_host_data {
 	dma_addr_t adapter_info_addr;
 };
 
+<<<<<<< HEAD
 /* routines for managing a command/response queue */
 void ibmvscsi_handle_crq(struct viosrp_crq *crq,
 			 struct ibmvscsi_host_data *hostdata);
@@ -127,7 +128,12 @@ struct ibmvscsi_ops {
 	int (*resume) (struct ibmvscsi_host_data *hostdata);
 };
 
+<<<<<<< HEAD
 extern struct ibmvscsi_ops iseriesvscsi_ops;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct ibmvscsi_ops rpavscsi_ops;
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif				/* IBMVSCSI_H */

@@ -6,6 +6,7 @@
 #include <asm/processor-flags.h>
 
 /*G:020
+<<<<<<< HEAD
  * Our story starts with the kernel booting into startup_32 in
  * arch/x86/kernel/head_32.S.  It expects a boot header, which is created by
  * the bootloader (the Launcher in our case).
@@ -18,6 +19,24 @@
  *
  * WARNING: be very careful here!  We're running at addresses equal to physical
  * addesses (around 0), not above PAGE_OFFSET as most code expectes
+=======
+
+ * Our story starts with the bzImage: booting starts at startup_32 in
+ * arch/x86/boot/compressed/head_32.S.  This merely uncompresses the real
+ * kernel in place and then jumps into it: startup_32 in
+ * arch/x86/kernel/head_32.S.  Both routines expects a boot header in the %esi
+ * register, which is created by the bootloader (the Launcher in our case).
+ *
+ * The startup_32 function does very little: it clears the uninitialized global
+ * C variables which we expect to be zero (ie. BSS) and then copies the boot
+ * header and kernel command line somewhere safe, and populates some initial
+ * page tables.  Finally it checks the 'hardware_subarch' field.  This was
+ * introduced in 2.6.24 for lguest and Xen: if it's set to '1' (lguest's
+ * assigned number), then it calls us here.
+ *
+ * WARNING: be very careful here!  We're running at addresses equal to physical
+ * addresses (around 0), not above PAGE_OFFSET as most code expects
+>>>>>>> refs/remotes/origin/cm-10.0
  * (eg. 0xC0000000).  Jumps are relative, so they're OK, but we can't touch any
  * data without remembering to subtract __PAGE_OFFSET!
  *
@@ -27,13 +46,26 @@
 .section .init.text, "ax", @progbits
 ENTRY(lguest_entry)
 	/*
+<<<<<<< HEAD
 	 * We make the "initialization" hypercall now to tell the Host about
 	 * us, and also find out where it put our page tables.
+=======
+	 * We make the "initialization" hypercall now to tell the Host where
+	 * our lguest_data struct is.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	movl $LHCALL_LGUEST_INIT, %eax
 	movl $lguest_data - __PAGE_OFFSET, %ebx
 	int $LGUEST_TRAP_ENTRY
 
+<<<<<<< HEAD
+=======
+	/* Now turn our pagetables on; setup by arch/x86/kernel/head_32.S. */
+	movl $LHCALL_NEW_PGTABLE, %eax
+	movl $(initial_page_table - __PAGE_OFFSET), %ebx
+	int $LGUEST_TRAP_ENTRY
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Set up the initial stack so we can run C code. */
 	movl $(init_thread_union+THREAD_SIZE),%esp
 
@@ -96,12 +128,17 @@ send_interrupts:
 	 */
 	pushl %eax
 	movl $LHCALL_SEND_INTERRUPTS, %eax
+<<<<<<< HEAD
 	/*
 	 * This is a vmcall instruction (same thing that KVM uses).  Older
 	 * assembler versions might not know the "vmcall" instruction, so we
 	 * create one manually here.
 	 */
 	.byte 0x0f,0x01,0xc1 /* KVM_HYPERCALL */
+=======
+	/* This is the actual hypercall trap. */
+	int  $LGUEST_TRAP_ENTRY
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Put eax back the way we found it. */
 	popl %eax
 	ret

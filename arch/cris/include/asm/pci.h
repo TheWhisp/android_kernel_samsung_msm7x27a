@@ -11,7 +11,10 @@
 
 #define pcibios_assign_all_busses(void) 1
 
+<<<<<<< HEAD
 extern unsigned long pci_mem_start;
+=======
+>>>>>>> refs/remotes/origin/master
 #define PCIBIOS_MIN_IO		0x1000
 #define PCIBIOS_MIN_MEM		0x10000000
 
@@ -19,7 +22,10 @@ extern unsigned long pci_mem_start;
 
 void pcibios_config_init(void);
 struct pci_bus * pcibios_scan_root(int bus);
+<<<<<<< HEAD
 int pcibios_assign_resources(void);
+=======
+>>>>>>> refs/remotes/origin/master
 
 void pcibios_set_master(struct pci_dev *dev);
 void pcibios_penalize_isa_irq(int irq);

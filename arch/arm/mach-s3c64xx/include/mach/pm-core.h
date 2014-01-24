@@ -12,6 +12,12 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+=======
+#ifndef __MACH_S3C64XX_PM_CORE_H
+#define __MACH_S3C64XX_PM_CORE_H __FILE__
+
+>>>>>>> refs/remotes/origin/master
 #include <mach/regs-gpio.h>
 
 static inline void s3c_pm_debug_init_uart(void)
@@ -53,7 +59,15 @@ static inline void s3c_pm_arch_show_resume_irqs(void)
  * the IRQ wake controls depending on the CPU we are running on */
 
 #define s3c_irqwake_eintallow	((1 << 28) - 1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define s3c_irqwake_intallow	(0)
+=======
+#define s3c_irqwake_intallow	(~0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define s3c_irqwake_intallow	(~0)
+>>>>>>> refs/remotes/origin/master
 
 static inline void s3c_pm_arch_update_uart(void __iomem *regs,
 					   struct pm_uart_save *save)
@@ -96,3 +110,30 @@ static inline void s3c_pm_arch_update_uart(void __iomem *regs,
 		save->ucon = new_ucon;
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static inline void s3c_pm_restored_gpios(void)
+{
+	/* ensure sleep mode has been cleared from the system */
+
+	__raw_writel(0, S3C64XX_SLPEN);
+}
+
+static inline void samsung_pm_saved_gpios(void)
+{
+	/* turn on the sleep mode and keep it there, as it seems that during
+	 * suspend the xCON registers get re-set and thus you can end up with
+	 * problems between going to sleep and resuming.
+	 */
+
+	__raw_writel(S3C64XX_SLPEN_USE_xSLP, S3C64XX_SLPEN);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* __MACH_S3C64XX_PM_CORE_H */
+>>>>>>> refs/remotes/origin/master

@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,6 +49,15 @@
  * POSSIBILITY OF SUCH DAMAGES.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXPORT_ACPI_INTERFACES
+
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "actables.h"
@@ -48,6 +65,14 @@
 #define _COMPONENT          ACPI_EVENTS
 ACPI_MODULE_NAME("evxfevnt")
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_enable
@@ -59,7 +84,10 @@ ACPI_MODULE_NAME("evxfevnt")
  * DESCRIPTION: Transfers the system into ACPI mode.
  *
  ******************************************************************************/
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 acpi_status acpi_enable(void)
 {
 	acpi_status status;
@@ -73,6 +101,15 @@ acpi_status acpi_enable(void)
 		return_ACPI_STATUS(AE_NO_ACPI_TABLES);
 	}
 
+<<<<<<< HEAD
+=======
+	/* If the Hardware Reduced flag is set, machine is always in acpi mode */
+
+	if (acpi_gbl_reduced_hardware) {
+		return_ACPI_STATUS(AE_OK);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Check current mode */
 
 	if (acpi_hw_get_mode() == ACPI_SYS_MODE_ACPI) {
@@ -125,6 +162,15 @@ acpi_status acpi_disable(void)
 
 	ACPI_FUNCTION_TRACE(acpi_disable);
 
+<<<<<<< HEAD
+=======
+	/* If the Hardware Reduced flag is set, machine is always in acpi mode */
+
+	if (acpi_gbl_reduced_hardware) {
+		return_ACPI_STATUS(AE_OK);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (acpi_hw_get_mode() == ACPI_SYS_MODE_LEGACY) {
 		ACPI_DEBUG_PRINT((ACPI_DB_INIT,
 				  "System is already in legacy (non-ACPI) mode\n"));
@@ -151,8 +197,13 @@ ACPI_EXPORT_SYMBOL(acpi_disable)
  *
  * FUNCTION:    acpi_enable_event
  *
+<<<<<<< HEAD
  * PARAMETERS:  Event           - The fixed eventto be enabled
  *              Flags           - Reserved
+=======
+ * PARAMETERS:  event           - The fixed eventto be enabled
+ *              flags           - Reserved
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -208,8 +259,13 @@ ACPI_EXPORT_SYMBOL(acpi_enable_event)
  *
  * FUNCTION:    acpi_disable_event
  *
+<<<<<<< HEAD
  * PARAMETERS:  Event           - The fixed eventto be enabled
  *              Flags           - Reserved
+=======
+ * PARAMETERS:  event           - The fixed event to be disabled
+ *              flags           - Reserved
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -263,7 +319,11 @@ ACPI_EXPORT_SYMBOL(acpi_disable_event)
  *
  * FUNCTION:    acpi_clear_event
  *
+<<<<<<< HEAD
  * PARAMETERS:  Event           - The fixed event to be cleared
+=======
+ * PARAMETERS:  event           - The fixed event to be cleared
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -299,7 +359,11 @@ ACPI_EXPORT_SYMBOL(acpi_clear_event)
  *
  * FUNCTION:    acpi_get_event_status
  *
+<<<<<<< HEAD
  * PARAMETERS:  Event           - The fixed event
+=======
+ * PARAMETERS:  event           - The fixed event
+>>>>>>> refs/remotes/origin/master
  *              event_status    - Where the current status of the event will
  *                                be returned
  *
@@ -351,3 +415,11 @@ acpi_status acpi_get_event_status(u32 event, acpi_event_status * event_status)
 }
 
 ACPI_EXPORT_SYMBOL(acpi_get_event_status)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master

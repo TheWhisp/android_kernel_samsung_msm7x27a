@@ -33,7 +33,11 @@
  * head debug code as the initial MMU setup only deals in L1 sections.
  */
 #define KS8695_IO_PA		0x03F00000
+<<<<<<< HEAD
 #define KS8695_IO_VA		0xF0000000
+=======
+#define KS8695_IO_VA		IOMEM(0xF0000000)
+>>>>>>> refs/remotes/origin/master
 #define KS8695_IO_SIZE		SZ_1M
 
 #define KS8695_PCIMEM_PA	0x60000000
@@ -42,6 +46,8 @@
 #define KS8695_PCIIO_PA		0x80000000
 #define KS8695_PCIIO_SIZE	SZ_64K
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * PCI support
@@ -51,4 +57,8 @@
 #define PCIBIOS_MIN_IO		0
 #define PCIBIOS_MIN_MEM		0
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

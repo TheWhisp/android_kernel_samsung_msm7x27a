@@ -52,7 +52,11 @@ MODULE_DESCRIPTION("ISP1301 USB OTG Transceiver Driver");
 MODULE_LICENSE("GPL");
 
 struct isp1301 {
+<<<<<<< HEAD
 	struct otg_transceiver	otg;
+=======
+	struct usb_phy		phy;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct i2c_client	*client;
 	void			(*i2c_release)(struct device *dev);
 
@@ -236,7 +240,11 @@ isp1301_clear_bits(struct isp1301 *isp, u8 reg, u8 bits)
 
 static inline const char *state_name(struct isp1301 *isp)
 {
+<<<<<<< HEAD
 	return otg_state_string(isp->otg.state);
+=======
+	return otg_state_string(isp->phy.state);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*-------------------------------------------------------------------------*/
@@ -251,7 +259,11 @@ static inline const char *state_name(struct isp1301 *isp)
 
 static void power_down(struct isp1301 *isp)
 {
+<<<<<<< HEAD
 	isp->otg.state = OTG_STATE_UNDEFINED;
+=======
+	isp->phy.state = OTG_STATE_UNDEFINED;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	// isp1301_set_bits(isp, ISP1301_MODE_CONTROL_2, MC2_GLOBAL_PWR_DN);
 	isp1301_set_bits(isp, ISP1301_MODE_CONTROL_1, MC1_SUSPEND);
@@ -280,13 +292,21 @@ static int host_suspend(struct isp1301 *isp)
 #else
 	struct device	*dev;
 
+<<<<<<< HEAD
 	if (!isp->otg.host)
+=======
+	if (!isp->phy.otg->host)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 
 	/* Currently ASSUMES only the OTG port matters;
 	 * other ports could be active...
 	 */
+<<<<<<< HEAD
 	dev = isp->otg.host->controller;
+=======
+	dev = isp->phy.otg->host->controller;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return dev->driver->suspend(dev, 3, 0);
 #endif
 }
@@ -298,20 +318,34 @@ static int host_resume(struct isp1301 *isp)
 #else
 	struct device	*dev;
 
+<<<<<<< HEAD
 	if (!isp->otg.host)
 		return -ENODEV;
 
 	dev = isp->otg.host->controller;
+=======
+	if (!isp->phy.otg->host)
+		return -ENODEV;
+
+	dev = isp->phy.otg->host->controller;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return dev->driver->resume(dev, 0);
 #endif
 }
 
 static int gadget_suspend(struct isp1301 *isp)
 {
+<<<<<<< HEAD
 	isp->otg.gadget->b_hnp_enable = 0;
 	isp->otg.gadget->a_hnp_support = 0;
 	isp->otg.gadget->a_alt_hnp_support = 0;
 	return usb_gadget_vbus_disconnect(isp->otg.gadget);
+=======
+	isp->phy.otg->gadget->b_hnp_enable = 0;
+	isp->phy.otg->gadget->a_hnp_support = 0;
+	isp->phy.otg->gadget->a_alt_hnp_support = 0;
+	return usb_gadget_vbus_disconnect(isp->phy.otg->gadget);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*-------------------------------------------------------------------------*/
@@ -341,6 +375,7 @@ static void a_idle(struct isp1301 *isp, const char *tag)
 {
 	u32 l;
 
+<<<<<<< HEAD
 	if (isp->otg.state == OTG_STATE_A_IDLE)
 		return;
 
@@ -354,6 +389,21 @@ static void a_idle(struct isp1301 *isp, const char *tag)
 		gadget_suspend(isp);
 	}
 	isp->otg.state = OTG_STATE_A_IDLE;
+=======
+	if (isp->phy.state == OTG_STATE_A_IDLE)
+		return;
+
+	isp->phy.otg->default_a = 1;
+	if (isp->phy.otg->host) {
+		isp->phy.otg->host->is_b_host = 0;
+		host_suspend(isp);
+	}
+	if (isp->phy.otg->gadget) {
+		isp->phy.otg->gadget->is_a_peripheral = 1;
+		gadget_suspend(isp);
+	}
+	isp->phy.state = OTG_STATE_A_IDLE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	l = omap_readl(OTG_CTRL) & OTG_XCEIV_OUTPUTS;
 	omap_writel(l, OTG_CTRL);
 	isp->last_otg_ctrl = l;
@@ -365,6 +415,7 @@ static void b_idle(struct isp1301 *isp, const char *tag)
 {
 	u32 l;
 
+<<<<<<< HEAD
 	if (isp->otg.state == OTG_STATE_B_IDLE)
 		return;
 
@@ -378,6 +429,21 @@ static void b_idle(struct isp1301 *isp, const char *tag)
 		gadget_suspend(isp);
 	}
 	isp->otg.state = OTG_STATE_B_IDLE;
+=======
+	if (isp->phy.state == OTG_STATE_B_IDLE)
+		return;
+
+	isp->phy.otg->default_a = 0;
+	if (isp->phy.otg->host) {
+		isp->phy.otg->host->is_b_host = 1;
+		host_suspend(isp);
+	}
+	if (isp->phy.otg->gadget) {
+		isp->phy.otg->gadget->is_a_peripheral = 0;
+		gadget_suspend(isp);
+	}
+	isp->phy.state = OTG_STATE_B_IDLE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	l = omap_readl(OTG_CTRL) & OTG_XCEIV_OUTPUTS;
 	omap_writel(l, OTG_CTRL);
 	isp->last_otg_ctrl = l;
@@ -478,7 +544,11 @@ static void check_state(struct isp1301 *isp, const char *tag)
 	default:
 		break;
 	}
+<<<<<<< HEAD
 	if (isp->otg.state == state && !extra)
+=======
+	if (isp->phy.state == state && !extra)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	pr_debug("otg: %s FSM %s/%02x, %s, %06x\n", tag,
 		otg_state_string(state), fsm, state_name(isp),
@@ -502,22 +572,37 @@ static void update_otg1(struct isp1301 *isp, u8 int_src)
 
 	if (int_src & INTR_SESS_VLD)
 		otg_ctrl |= OTG_ASESSVLD;
+<<<<<<< HEAD
 	else if (isp->otg.state == OTG_STATE_A_WAIT_VFALL) {
+=======
+	else if (isp->phy.state == OTG_STATE_A_WAIT_VFALL) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		a_idle(isp, "vfall");
 		otg_ctrl &= ~OTG_CTRL_BITS;
 	}
 	if (int_src & INTR_VBUS_VLD)
 		otg_ctrl |= OTG_VBUSVLD;
 	if (int_src & INTR_ID_GND) {		/* default-A */
+<<<<<<< HEAD
 		if (isp->otg.state == OTG_STATE_B_IDLE
 				|| isp->otg.state == OTG_STATE_UNDEFINED) {
+=======
+		if (isp->phy.state == OTG_STATE_B_IDLE
+				|| isp->phy.state
+					== OTG_STATE_UNDEFINED) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			a_idle(isp, "init");
 			return;
 		}
 	} else {				/* default-B */
 		otg_ctrl |= OTG_ID;
+<<<<<<< HEAD
 		if (isp->otg.state == OTG_STATE_A_IDLE
 				|| isp->otg.state == OTG_STATE_UNDEFINED) {
+=======
+		if (isp->phy.state == OTG_STATE_A_IDLE
+			|| isp->phy.state == OTG_STATE_UNDEFINED) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			b_idle(isp, "init");
 			return;
 		}
@@ -551,14 +636,23 @@ static void otg_update_isp(struct isp1301 *isp)
 	isp->last_otg_ctrl = otg_ctrl;
 	otg_ctrl = otg_ctrl & OTG_XCEIV_INPUTS;
 
+<<<<<<< HEAD
 	switch (isp->otg.state) {
+=======
+	switch (isp->phy.state) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case OTG_STATE_B_IDLE:
 	case OTG_STATE_B_PERIPHERAL:
 	case OTG_STATE_B_SRP_INIT:
 		if (!(otg_ctrl & OTG_PULLUP)) {
 			// if (otg_ctrl & OTG_B_HNPEN) {
+<<<<<<< HEAD
 			if (isp->otg.gadget->b_hnp_enable) {
 				isp->otg.state = OTG_STATE_B_WAIT_ACON;
+=======
+			if (isp->phy.otg->gadget->b_hnp_enable) {
+				isp->phy.state = OTG_STATE_B_WAIT_ACON;
+>>>>>>> refs/remotes/origin/cm-10.0
 				pr_debug("  --> b_wait_acon\n");
 			}
 			goto pulldown;
@@ -585,10 +679,17 @@ pulldown:
 		else clr |= ISP; \
 		} while (0)
 
+<<<<<<< HEAD
 	if (!(isp->otg.host))
 		otg_ctrl &= ~OTG_DRV_VBUS;
 
 	switch (isp->otg.state) {
+=======
+	if (!(isp->phy.otg->host))
+		otg_ctrl &= ~OTG_DRV_VBUS;
+
+	switch (isp->phy.state) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case OTG_STATE_A_SUSPEND:
 		if (otg_ctrl & OTG_DRV_VBUS) {
 			set |= OTG1_VBUS_DRV;
@@ -599,7 +700,11 @@ pulldown:
 
 		/* FALLTHROUGH */
 	case OTG_STATE_A_VBUS_ERR:
+<<<<<<< HEAD
 		isp->otg.state = OTG_STATE_A_WAIT_VFALL;
+=======
+		isp->phy.state = OTG_STATE_A_WAIT_VFALL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_debug("  --> a_wait_vfall\n");
 		/* FALLTHROUGH */
 	case OTG_STATE_A_WAIT_VFALL:
@@ -608,7 +713,11 @@ pulldown:
 		break;
 	case OTG_STATE_A_IDLE:
 		if (otg_ctrl & OTG_DRV_VBUS) {
+<<<<<<< HEAD
 			isp->otg.state = OTG_STATE_A_WAIT_VRISE;
+=======
+			isp->phy.state = OTG_STATE_A_WAIT_VRISE;
+>>>>>>> refs/remotes/origin/cm-10.0
 			pr_debug("  --> a_wait_vrise\n");
 		}
 		/* FALLTHROUGH */
@@ -628,17 +737,29 @@ pulldown:
 	if (otg_change & OTG_PULLUP) {
 		u32 l;
 
+<<<<<<< HEAD
 		switch (isp->otg.state) {
 		case OTG_STATE_B_IDLE:
 			if (clr & OTG1_DP_PULLUP)
 				break;
 			isp->otg.state = OTG_STATE_B_PERIPHERAL;
+=======
+		switch (isp->phy.state) {
+		case OTG_STATE_B_IDLE:
+			if (clr & OTG1_DP_PULLUP)
+				break;
+			isp->phy.state = OTG_STATE_B_PERIPHERAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 			pr_debug("  --> b_peripheral\n");
 			break;
 		case OTG_STATE_A_SUSPEND:
 			if (clr & OTG1_DP_PULLUP)
 				break;
+<<<<<<< HEAD
 			isp->otg.state = OTG_STATE_A_PERIPHERAL;
+=======
+			isp->phy.state = OTG_STATE_A_PERIPHERAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 			pr_debug("  --> a_peripheral\n");
 			break;
 		default:
@@ -659,8 +780,14 @@ static irqreturn_t omap_otg_irq(int irq, void *_isp)
 	u32		otg_ctrl;
 	int		ret = IRQ_NONE;
 	struct isp1301	*isp = _isp;
+<<<<<<< HEAD
 
 	/* update ISP1301 transciever from OTG controller */
+=======
+	struct usb_otg	*otg = isp->phy.otg;
+
+	/* update ISP1301 transceiver from OTG controller */
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (otg_irq & OPRT_CHG) {
 		omap_writew(OPRT_CHG, OTG_IRQ_SRC);
 		isp1301_defer_work(isp, WORK_UPDATE_ISP);
@@ -675,7 +802,11 @@ static irqreturn_t omap_otg_irq(int irq, void *_isp)
 		 * remote wakeup (SRP, normal) using their own timer
 		 * to give "check cable and A-device" messages.
 		 */
+<<<<<<< HEAD
 		if (isp->otg.state == OTG_STATE_B_SRP_INIT)
+=======
+		if (isp->phy.state == OTG_STATE_B_SRP_INIT)
+>>>>>>> refs/remotes/origin/cm-10.0
 			b_idle(isp, "srp_timeout");
 
 		omap_writew(B_SRP_TMROUT, OTG_IRQ_SRC);
@@ -693,7 +824,11 @@ static irqreturn_t omap_otg_irq(int irq, void *_isp)
 		omap_writel(otg_ctrl, OTG_CTRL);
 
 		/* subset of b_peripheral()... */
+<<<<<<< HEAD
 		isp->otg.state = OTG_STATE_B_PERIPHERAL;
+=======
+		isp->phy.state = OTG_STATE_B_PERIPHERAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_debug("  --> b_peripheral\n");
 
 		omap_writew(B_HNP_FAIL, OTG_IRQ_SRC);
@@ -705,9 +840,15 @@ static irqreturn_t omap_otg_irq(int irq, void *_isp)
 				state_name(isp), omap_readl(OTG_CTRL));
 
 		isp1301_defer_work(isp, WORK_UPDATE_OTG);
+<<<<<<< HEAD
 		switch (isp->otg.state) {
 		case OTG_STATE_A_IDLE:
 			if (!isp->otg.host)
+=======
+		switch (isp->phy.state) {
+		case OTG_STATE_A_IDLE:
+			if (!otg->host)
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			isp1301_defer_work(isp, WORK_HOST_RESUME);
 			otg_ctrl = omap_readl(OTG_CTRL);
@@ -736,7 +877,11 @@ static irqreturn_t omap_otg_irq(int irq, void *_isp)
 		otg_ctrl |= OTG_BUSDROP;
 		otg_ctrl &= ~OTG_A_BUSREQ & OTG_CTRL_MASK & ~OTG_XCEIV_INPUTS;
 		omap_writel(otg_ctrl, OTG_CTRL);
+<<<<<<< HEAD
 		isp->otg.state = OTG_STATE_A_WAIT_VFALL;
+=======
+		isp->phy.state = OTG_STATE_A_WAIT_VFALL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		omap_writew(A_REQ_TMROUT, OTG_IRQ_SRC);
 		ret = IRQ_HANDLED;
@@ -750,12 +895,20 @@ static irqreturn_t omap_otg_irq(int irq, void *_isp)
 		otg_ctrl |= OTG_BUSDROP;
 		otg_ctrl &= ~OTG_A_BUSREQ & OTG_CTRL_MASK & ~OTG_XCEIV_INPUTS;
 		omap_writel(otg_ctrl, OTG_CTRL);
+<<<<<<< HEAD
 		isp->otg.state = OTG_STATE_A_VBUS_ERR;
+=======
+		isp->phy.state = OTG_STATE_A_VBUS_ERR;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		omap_writew(A_VBUS_ERR, OTG_IRQ_SRC);
 		ret = IRQ_HANDLED;
 
+<<<<<<< HEAD
 	/* switch driver; the transciever code activates it,
+=======
+	/* switch driver; the transceiver code activates it,
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * ungating the udc clock or resuming OHCI.
 	 */
 	} else if (otg_irq & DRIVER_SWITCH) {
@@ -771,7 +924,11 @@ static irqreturn_t omap_otg_irq(int irq, void *_isp)
 
 		/* role is peripheral */
 		if (otg_ctrl & OTG_DRIVER_SEL) {
+<<<<<<< HEAD
 			switch (isp->otg.state) {
+=======
+			switch (isp->phy.state) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			case OTG_STATE_A_IDLE:
 				b_idle(isp, __func__);
 				break;
@@ -787,19 +944,34 @@ static irqreturn_t omap_otg_irq(int irq, void *_isp)
 				omap_writel(otg_ctrl | OTG_A_BUSREQ, OTG_CTRL);
 			}
 
+<<<<<<< HEAD
 			if (isp->otg.host) {
 				switch (isp->otg.state) {
 				case OTG_STATE_B_WAIT_ACON:
 					isp->otg.state = OTG_STATE_B_HOST;
+=======
+			if (otg->host) {
+				switch (isp->phy.state) {
+				case OTG_STATE_B_WAIT_ACON:
+					isp->phy.state = OTG_STATE_B_HOST;
+>>>>>>> refs/remotes/origin/cm-10.0
 					pr_debug("  --> b_host\n");
 					kick = 1;
 					break;
 				case OTG_STATE_A_WAIT_BCON:
+<<<<<<< HEAD
 					isp->otg.state = OTG_STATE_A_HOST;
 					pr_debug("  --> a_host\n");
 					break;
 				case OTG_STATE_A_PERIPHERAL:
 					isp->otg.state = OTG_STATE_A_WAIT_BCON;
+=======
+					isp->phy.state = OTG_STATE_A_HOST;
+					pr_debug("  --> a_host\n");
+					break;
+				case OTG_STATE_A_PERIPHERAL:
+					isp->phy.state = OTG_STATE_A_WAIT_BCON;
+>>>>>>> refs/remotes/origin/cm-10.0
 					pr_debug("  --> a_wait_bcon\n");
 					break;
 				default:
@@ -813,8 +985,12 @@ static irqreturn_t omap_otg_irq(int irq, void *_isp)
 		ret = IRQ_HANDLED;
 
 		if (kick)
+<<<<<<< HEAD
 			usb_bus_start_enum(isp->otg.host,
 						isp->otg.host->otg_port);
+=======
+			usb_bus_start_enum(otg->host, otg->host->otg_port);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	check_state(isp, __func__);
@@ -899,7 +1075,11 @@ static int otg_bind(struct isp1301 *isp)
 
 	if (otg_dev)
 		status = request_irq(otg_dev->resource[1].start, omap_otg_irq,
+<<<<<<< HEAD
 				IRQF_DISABLED, DRIVER_NAME, isp);
+=======
+				0, DRIVER_NAME, isp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		status = -ENODEV;
 
@@ -930,7 +1110,11 @@ static void b_peripheral(struct isp1301 *isp)
 	l = omap_readl(OTG_CTRL) & OTG_XCEIV_OUTPUTS;
 	omap_writel(l, OTG_CTRL);
 
+<<<<<<< HEAD
 	usb_gadget_vbus_connect(isp->otg.gadget);
+=======
+	usb_gadget_vbus_connect(isp->phy.otg->gadget);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef	CONFIG_USB_OTG
 	enable_vbus_draw(isp, 8);
@@ -940,7 +1124,11 @@ static void b_peripheral(struct isp1301 *isp)
 	/* UDC driver just set OTG_BSESSVLD */
 	isp1301_set_bits(isp, ISP1301_OTG_CONTROL_1, OTG1_DP_PULLUP);
 	isp1301_clear_bits(isp, ISP1301_OTG_CONTROL_1, OTG1_DP_PULLDOWN);
+<<<<<<< HEAD
 	isp->otg.state = OTG_STATE_B_PERIPHERAL;
+=======
+	isp->phy.state = OTG_STATE_B_PERIPHERAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	pr_debug("  --> b_peripheral\n");
 	dump_regs(isp, "2periph");
 #endif
@@ -948,8 +1136,14 @@ static void b_peripheral(struct isp1301 *isp)
 
 static void isp_update_otg(struct isp1301 *isp, u8 stat)
 {
+<<<<<<< HEAD
 	u8			isp_stat, isp_bstat;
 	enum usb_otg_state	state = isp->otg.state;
+=======
+	struct usb_otg		*otg = isp->phy.otg;
+	u8			isp_stat, isp_bstat;
+	enum usb_otg_state	state = isp->phy.state;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (stat & INTR_BDIS_ACON)
 		pr_debug("OTG:  BDIS_ACON, %s\n", state_name(isp));
@@ -957,7 +1151,11 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
 	/* start certain state transitions right away */
 	isp_stat = isp1301_get_u8(isp, ISP1301_INTERRUPT_SOURCE);
 	if (isp_stat & INTR_ID_GND) {
+<<<<<<< HEAD
 		if (isp->otg.default_a) {
+=======
+		if (otg->default_a) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			switch (state) {
 			case OTG_STATE_B_IDLE:
 				a_idle(isp, "idle");
@@ -972,7 +1170,11 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
 				 * when HNP is used.
 				 */
 				if (isp_stat & INTR_VBUS_VLD)
+<<<<<<< HEAD
 					isp->otg.state = OTG_STATE_A_HOST;
+=======
+					isp->phy.state = OTG_STATE_A_HOST;
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			case OTG_STATE_A_WAIT_VFALL:
 				if (!(isp_stat & INTR_SESS_VLD))
@@ -980,7 +1182,11 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
 				break;
 			default:
 				if (!(isp_stat & INTR_VBUS_VLD))
+<<<<<<< HEAD
 					isp->otg.state = OTG_STATE_A_VBUS_ERR;
+=======
+					isp->phy.state = OTG_STATE_A_VBUS_ERR;
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 			isp_bstat = isp1301_get_u8(isp, ISP1301_OTG_STATUS);
@@ -989,14 +1195,22 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
 			case OTG_STATE_B_PERIPHERAL:
 			case OTG_STATE_B_HOST:
 			case OTG_STATE_B_WAIT_ACON:
+<<<<<<< HEAD
 				usb_gadget_vbus_disconnect(isp->otg.gadget);
+=======
+				usb_gadget_vbus_disconnect(otg->gadget);
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			default:
 				break;
 			}
 			if (state != OTG_STATE_A_IDLE)
 				a_idle(isp, "id");
+<<<<<<< HEAD
 			if (isp->otg.host && state == OTG_STATE_A_IDLE)
+=======
+			if (otg->host && state == OTG_STATE_A_IDLE)
+>>>>>>> refs/remotes/origin/cm-10.0
 				isp1301_defer_work(isp, WORK_HOST_RESUME);
 			isp_bstat = 0;
 		}
@@ -1006,10 +1220,17 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
 		/* if user unplugged mini-A end of cable,
 		 * don't bypass A_WAIT_VFALL.
 		 */
+<<<<<<< HEAD
 		if (isp->otg.default_a) {
 			switch (state) {
 			default:
 				isp->otg.state = OTG_STATE_A_WAIT_VFALL;
+=======
+		if (otg->default_a) {
+			switch (state) {
+			default:
+				isp->phy.state = OTG_STATE_A_WAIT_VFALL;
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			case OTG_STATE_A_WAIT_VFALL:
 				state = OTG_STATE_A_IDLE;
@@ -1022,7 +1243,11 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
 				host_suspend(isp);
 				isp1301_clear_bits(isp, ISP1301_MODE_CONTROL_1,
 						MC1_BDIS_ACON_EN);
+<<<<<<< HEAD
 				isp->otg.state = OTG_STATE_B_IDLE;
+=======
+				isp->phy.state = OTG_STATE_B_IDLE;
+>>>>>>> refs/remotes/origin/cm-10.0
 				l = omap_readl(OTG_CTRL) & OTG_CTRL_MASK;
 				l &= ~OTG_CTRL_BITS;
 				omap_writel(l, OTG_CTRL);
@@ -1033,7 +1258,11 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
 		}
 		isp_bstat = isp1301_get_u8(isp, ISP1301_OTG_STATUS);
 
+<<<<<<< HEAD
 		switch (isp->otg.state) {
+=======
+		switch (isp->phy.state) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case OTG_STATE_B_PERIPHERAL:
 		case OTG_STATE_B_WAIT_ACON:
 		case OTG_STATE_B_HOST:
@@ -1055,7 +1284,11 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
 			omap_writel(l, OTG_CTRL);
 			/* FALLTHROUGH */
 		case OTG_STATE_B_IDLE:
+<<<<<<< HEAD
 			if (isp->otg.gadget && (isp_bstat & OTG_B_SESS_VLD)) {
+=======
+			if (otg->gadget && (isp_bstat & OTG_B_SESS_VLD)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef	CONFIG_USB_OTG
 				update_otg1(isp, isp_stat);
 				update_otg2(isp, isp_bstat);
@@ -1073,7 +1306,11 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
 		}
 	}
 
+<<<<<<< HEAD
 	if (state != isp->otg.state)
+=======
+	if (state != isp->phy.state)
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_debug("  isp, %s -> %s\n",
 				otg_state_string(state), state_name(isp));
 
@@ -1131,10 +1368,17 @@ isp1301_work(struct work_struct *work)
 			 * skip A_WAIT_VRISE; hc transitions invisibly
 			 * skip A_WAIT_BCON; same.
 			 */
+<<<<<<< HEAD
 			switch (isp->otg.state) {
 			case OTG_STATE_A_WAIT_BCON:
 			case OTG_STATE_A_WAIT_VRISE:
 				isp->otg.state = OTG_STATE_A_HOST;
+=======
+			switch (isp->phy.state) {
+			case OTG_STATE_A_WAIT_BCON:
+			case OTG_STATE_A_WAIT_VRISE:
+				isp->phy.state = OTG_STATE_A_HOST;
+>>>>>>> refs/remotes/origin/cm-10.0
 				pr_debug("  --> a_host\n");
 				otg_ctrl = omap_readl(OTG_CTRL);
 				otg_ctrl |= OTG_A_BUSREQ;
@@ -1143,7 +1387,11 @@ isp1301_work(struct work_struct *work)
 				omap_writel(otg_ctrl, OTG_CTRL);
 				break;
 			case OTG_STATE_B_WAIT_ACON:
+<<<<<<< HEAD
 				isp->otg.state = OTG_STATE_B_HOST;
+=======
+				isp->phy.state = OTG_STATE_B_HOST;
+>>>>>>> refs/remotes/origin/cm-10.0
 				pr_debug("  --> b_host (acon)\n");
 				break;
 			case OTG_STATE_B_HOST:
@@ -1204,6 +1452,10 @@ static void isp1301_release(struct device *dev)
 	/* ugly -- i2c hijacks our memory hook to wait_for_completion() */
 	if (isp->i2c_release)
 		isp->i2c_release(dev);
+<<<<<<< HEAD
+=======
+	kfree(isp->phy.otg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree (isp);
 }
 
@@ -1274,9 +1526,15 @@ static int isp1301_otg_enable(struct isp1301 *isp)
 
 /* add or disable the host device+driver */
 static int
+<<<<<<< HEAD
 isp1301_set_host(struct otg_transceiver *otg, struct usb_bus *host)
 {
 	struct isp1301	*isp = container_of(otg, struct isp1301, otg);
+=======
+isp1301_set_host(struct usb_otg *otg, struct usb_bus *host)
+{
+	struct isp1301	*isp = container_of(otg->phy, struct isp1301, phy);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!otg || isp != the_transceiver)
 		return -ENODEV;
@@ -1284,21 +1542,36 @@ isp1301_set_host(struct otg_transceiver *otg, struct usb_bus *host)
 	if (!host) {
 		omap_writew(0, OTG_IRQ_EN);
 		power_down(isp);
+<<<<<<< HEAD
 		isp->otg.host = NULL;
+=======
+		otg->host = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	}
 
 #ifdef	CONFIG_USB_OTG
+<<<<<<< HEAD
 	isp->otg.host = host;
 	dev_dbg(&isp->client->dev, "registered host\n");
 	host_suspend(isp);
 	if (isp->otg.gadget)
+=======
+	otg->host = host;
+	dev_dbg(&isp->client->dev, "registered host\n");
+	host_suspend(isp);
+	if (otg->gadget)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return isp1301_otg_enable(isp);
 	return 0;
 
 #elif	!defined(CONFIG_USB_GADGET_OMAP)
 	// FIXME update its refcount
+<<<<<<< HEAD
 	isp->otg.host = host;
+=======
+	otg->host = host;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	power_up(isp);
 
@@ -1330,9 +1603,15 @@ isp1301_set_host(struct otg_transceiver *otg, struct usb_bus *host)
 }
 
 static int
+<<<<<<< HEAD
 isp1301_set_peripheral(struct otg_transceiver *otg, struct usb_gadget *gadget)
 {
 	struct isp1301	*isp = container_of(otg, struct isp1301, otg);
+=======
+isp1301_set_peripheral(struct usb_otg *otg, struct usb_gadget *gadget)
+{
+	struct isp1301	*isp = container_of(otg->phy, struct isp1301, phy);
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef	CONFIG_USB_OTG
 	u32 l;
 #endif
@@ -1342,24 +1621,42 @@ isp1301_set_peripheral(struct otg_transceiver *otg, struct usb_gadget *gadget)
 
 	if (!gadget) {
 		omap_writew(0, OTG_IRQ_EN);
+<<<<<<< HEAD
 		if (!isp->otg.default_a)
 			enable_vbus_draw(isp, 0);
 		usb_gadget_vbus_disconnect(isp->otg.gadget);
 		isp->otg.gadget = NULL;
+=======
+		if (!otg->default_a)
+			enable_vbus_draw(isp, 0);
+		usb_gadget_vbus_disconnect(otg->gadget);
+		otg->gadget = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		power_down(isp);
 		return 0;
 	}
 
 #ifdef	CONFIG_USB_OTG
+<<<<<<< HEAD
 	isp->otg.gadget = gadget;
 	dev_dbg(&isp->client->dev, "registered gadget\n");
 	/* gadget driver may be suspended until vbus_connect () */
 	if (isp->otg.host)
+=======
+	otg->gadget = gadget;
+	dev_dbg(&isp->client->dev, "registered gadget\n");
+	/* gadget driver may be suspended until vbus_connect () */
+	if (otg->host)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return isp1301_otg_enable(isp);
 	return 0;
 
 #elif	!defined(CONFIG_USB_OHCI_HCD) && !defined(CONFIG_USB_OHCI_HCD_MODULE)
+<<<<<<< HEAD
 	isp->otg.gadget = gadget;
+=======
+	otg->gadget = gadget;
+>>>>>>> refs/remotes/origin/cm-10.0
 	// FIXME update its refcount
 
 	l = omap_readl(OTG_CTRL) & OTG_CTRL_MASK;
@@ -1368,7 +1665,11 @@ isp1301_set_peripheral(struct otg_transceiver *otg, struct usb_gadget *gadget)
 	omap_writel(l, OTG_CTRL);
 
 	power_up(isp);
+<<<<<<< HEAD
 	isp->otg.state = OTG_STATE_B_IDLE;
+=======
+	isp->phy.state = OTG_STATE_B_IDLE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (machine_is_omap_h2() || machine_is_omap_h3())
 		isp1301_set_bits(isp, ISP1301_MODE_CONTROL_1, MC1_DAT_SE0);
@@ -1399,7 +1700,11 @@ isp1301_set_peripheral(struct otg_transceiver *otg, struct usb_gadget *gadget)
 /*-------------------------------------------------------------------------*/
 
 static int
+<<<<<<< HEAD
 isp1301_set_power(struct otg_transceiver *dev, unsigned mA)
+=======
+isp1301_set_power(struct usb_phy *dev, unsigned mA)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (!the_transceiver)
 		return -ENODEV;
@@ -1409,6 +1714,7 @@ isp1301_set_power(struct otg_transceiver *dev, unsigned mA)
 }
 
 static int
+<<<<<<< HEAD
 isp1301_start_srp(struct otg_transceiver *dev)
 {
 	struct isp1301	*isp = container_of(dev, struct isp1301, otg);
@@ -1416,6 +1722,15 @@ isp1301_start_srp(struct otg_transceiver *dev)
 
 	if (!dev || isp != the_transceiver
 			|| isp->otg.state != OTG_STATE_B_IDLE)
+=======
+isp1301_start_srp(struct usb_otg *otg)
+{
+	struct isp1301	*isp = container_of(otg->phy, struct isp1301, phy);
+	u32		otg_ctrl;
+
+	if (!otg || isp != the_transceiver
+			|| isp->phy.state != OTG_STATE_B_IDLE)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 
 	otg_ctrl = omap_readl(OTG_CTRL);
@@ -1425,7 +1740,11 @@ isp1301_start_srp(struct otg_transceiver *dev)
 	otg_ctrl |= OTG_B_BUSREQ;
 	otg_ctrl &= ~OTG_A_BUSREQ & OTG_CTRL_MASK;
 	omap_writel(otg_ctrl, OTG_CTRL);
+<<<<<<< HEAD
 	isp->otg.state = OTG_STATE_B_SRP_INIT;
+=======
+	isp->phy.state = OTG_STATE_B_SRP_INIT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pr_debug("otg: SRP, %s ... %06x\n", state_name(isp),
 			omap_readl(OTG_CTRL));
@@ -1436,6 +1755,7 @@ isp1301_start_srp(struct otg_transceiver *dev)
 }
 
 static int
+<<<<<<< HEAD
 isp1301_start_hnp(struct otg_transceiver *dev)
 {
 #ifdef	CONFIG_USB_OTG
@@ -1449,14 +1769,34 @@ isp1301_start_hnp(struct otg_transceiver *dev)
 		return -ENOTCONN;
 	if (!isp->otg.default_a && (isp->otg.gadget == NULL
 			|| !isp->otg.gadget->b_hnp_enable))
+=======
+isp1301_start_hnp(struct usb_otg *otg)
+{
+#ifdef	CONFIG_USB_OTG
+	struct isp1301	*isp = container_of(otg->phy, struct isp1301, phy);
+	u32 l;
+
+	if (!otg || isp != the_transceiver)
+		return -ENODEV;
+	if (otg->default_a && (otg->host == NULL || !otg->host->b_hnp_enable))
+		return -ENOTCONN;
+	if (!otg->default_a && (otg->gadget == NULL
+			|| !otg->gadget->b_hnp_enable))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOTCONN;
 
 	/* We want hardware to manage most HNP protocol timings.
 	 * So do this part as early as possible...
 	 */
+<<<<<<< HEAD
 	switch (isp->otg.state) {
 	case OTG_STATE_B_HOST:
 		isp->otg.state = OTG_STATE_B_PERIPHERAL;
+=======
+	switch (isp->phy.state) {
+	case OTG_STATE_B_HOST:
+		isp->phy.state = OTG_STATE_B_PERIPHERAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* caller will suspend next */
 		break;
 	case OTG_STATE_A_HOST:
@@ -1466,7 +1806,11 @@ isp1301_start_hnp(struct otg_transceiver *dev)
 				MC1_BDIS_ACON_EN);
 #endif
 		/* caller must suspend then clear A_BUSREQ */
+<<<<<<< HEAD
 		usb_gadget_vbus_connect(isp->otg.gadget);
+=======
+		usb_gadget_vbus_connect(otg->gadget);
+>>>>>>> refs/remotes/origin/cm-10.0
 		l = omap_readl(OTG_CTRL);
 		l |= OTG_A_SETB_HNPEN;
 		omap_writel(l, OTG_CTRL);
@@ -1503,6 +1847,15 @@ isp1301_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 	if (!isp)
 		return 0;
 
+<<<<<<< HEAD
+=======
+	isp->phy.otg = kzalloc(sizeof *isp->phy.otg, GFP_KERNEL);
+	if (!isp->phy.otg) {
+		kfree(isp);
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	INIT_WORK(&isp->work, isp1301_work);
 	init_timer(&isp->timer);
 	isp->timer.function = isp1301_timer;
@@ -1576,6 +1929,7 @@ isp1301_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		goto fail;
 	}
 
+<<<<<<< HEAD
 	isp->otg.dev = &i2c->dev;
 	isp->otg.label = DRIVER_NAME;
 
@@ -1584,6 +1938,17 @@ isp1301_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 	isp->otg.set_power = isp1301_set_power,
 	isp->otg.start_srp = isp1301_start_srp,
 	isp->otg.start_hnp = isp1301_start_hnp,
+=======
+	isp->phy.dev = &i2c->dev;
+	isp->phy.label = DRIVER_NAME;
+	isp->phy.set_power = isp1301_set_power,
+
+	isp->phy.otg->phy = &isp->phy;
+	isp->phy.otg->set_host = isp1301_set_host,
+	isp->phy.otg->set_peripheral = isp1301_set_peripheral,
+	isp->phy.otg->start_srp = isp1301_start_srp,
+	isp->phy.otg->start_hnp = isp1301_start_hnp,
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	enable_vbus_draw(isp, 0);
 	power_down(isp);
@@ -1601,7 +1966,11 @@ isp1301_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 	dev_dbg(&i2c->dev, "scheduled timer, %d min\n", TIMER_MINUTES);
 #endif
 
+<<<<<<< HEAD
 	status = otg_set_transceiver(&isp->otg);
+=======
+	status = usb_set_transceiver(&isp->phy);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (status < 0)
 		dev_err(&i2c->dev, "can't register transceiver, %d\n",
 			status);
@@ -1609,6 +1978,10 @@ isp1301_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 	return 0;
 
 fail:
+<<<<<<< HEAD
+=======
+	kfree(isp->phy.otg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(isp);
 	return -ENODEV;
 }
@@ -1639,7 +2012,11 @@ subsys_initcall(isp_init);
 static void __exit isp_exit(void)
 {
 	if (the_transceiver)
+<<<<<<< HEAD
 		otg_set_transceiver(NULL);
+=======
+		usb_set_transceiver(NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	i2c_del_driver(&isp1301_driver);
 }
 module_exit(isp_exit);

@@ -15,6 +15,30 @@
 #ifndef _ASM_TILE_FTRACE_H
 #define _ASM_TILE_FTRACE_H
 
+<<<<<<< HEAD
 /* empty */
+=======
+#ifdef CONFIG_FUNCTION_TRACER
+
+#define MCOUNT_ADDR ((unsigned long)(__mcount))
+#define MCOUNT_INSN_SIZE 8		/* sizeof mcount call */
+
+#ifndef __ASSEMBLY__
+extern void __mcount(void);
+
+#ifdef CONFIG_DYNAMIC_FTRACE
+static inline unsigned long ftrace_call_adjust(unsigned long addr)
+{
+	return addr;
+}
+
+struct dyn_arch_ftrace {
+};
+#endif /*  CONFIG_DYNAMIC_FTRACE */
+
+#endif /* __ASSEMBLY__ */
+
+#endif /* CONFIG_FUNCTION_TRACER */
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_TILE_FTRACE_H */

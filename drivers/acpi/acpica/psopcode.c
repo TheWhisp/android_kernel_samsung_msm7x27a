@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,27 +51,40 @@
 
 #include <acpi/acpi.h>
 #include "accommon.h"
+<<<<<<< HEAD
 #include "acparser.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "acopcode.h"
 #include "amlcode.h"
 
 #define _COMPONENT          ACPI_PARSER
 ACPI_MODULE_NAME("psopcode")
 
+<<<<<<< HEAD
 static const u8 acpi_gbl_argument_count[] =
     { 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 6 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * NAME:        acpi_gbl_aml_op_info
  *
  * DESCRIPTION: Opcode table. Each entry contains <opcode, type, name, operands>
  *              The name is a simple ascii string, the operand specifier is an
+<<<<<<< HEAD
  *              ascii string with one letter per operand.  The letter specifies
  *              the operand type.
  *
  ******************************************************************************/
 
+=======
+ *              ascii string with one letter per operand. The letter specifies
+ *              the operand type.
+ *
+ ******************************************************************************/
+>>>>>>> refs/remotes/origin/master
 /*
  * Summary of opcode types/flags
  *
@@ -181,9 +202,14 @@ static const u8 acpi_gbl_argument_count[] =
 	AML_CREATE_QWORD_FIELD_OP
 
  ******************************************************************************/
+<<<<<<< HEAD
 
 /*
  * Master Opcode information table.  A summary of everything we know about each
+=======
+/*
+ * Master Opcode information table. A summary of everything we know about each
+>>>>>>> refs/remotes/origin/master
  * opcode, all in one place.
  */
 const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
@@ -392,10 +418,19 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
 		 AML_FLAGS_EXEC_1A_0T_1R | AML_NO_OPERAND_RESOLVE),
 /* 38 */ ACPI_OP("LAnd", ARGP_LAND_OP, ARGI_LAND_OP, ACPI_TYPE_ANY,
 		 AML_CLASS_EXECUTE, AML_TYPE_EXEC_2A_0T_1R,
+<<<<<<< HEAD
 		 AML_FLAGS_EXEC_2A_0T_1R | AML_LOGICAL_NUMERIC | AML_CONSTANT),
 /* 39 */ ACPI_OP("LOr", ARGP_LOR_OP, ARGI_LOR_OP, ACPI_TYPE_ANY,
 		 AML_CLASS_EXECUTE, AML_TYPE_EXEC_2A_0T_1R,
 		 AML_FLAGS_EXEC_2A_0T_1R | AML_LOGICAL_NUMERIC | AML_CONSTANT),
+=======
+			 AML_FLAGS_EXEC_2A_0T_1R | AML_LOGICAL_NUMERIC |
+			 AML_CONSTANT),
+/* 39 */ ACPI_OP("LOr", ARGP_LOR_OP, ARGI_LOR_OP, ACPI_TYPE_ANY,
+		 AML_CLASS_EXECUTE, AML_TYPE_EXEC_2A_0T_1R,
+		 	 AML_FLAGS_EXEC_2A_0T_1R | AML_LOGICAL_NUMERIC |
+			 AML_CONSTANT),
+>>>>>>> refs/remotes/origin/master
 /* 3A */ ACPI_OP("LNot", ARGP_LNOT_OP, ARGI_LNOT_OP, ACPI_TYPE_ANY,
 		 AML_CLASS_EXECUTE, AML_TYPE_EXEC_1A_0T_1R,
 		 AML_FLAGS_EXEC_1A_0T_1R | AML_CONSTANT),
@@ -495,7 +530,12 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
 		 AML_NSNODE | AML_NAMED | AML_DEFER),
 /* 59 */ ACPI_OP("Field", ARGP_FIELD_OP, ARGI_FIELD_OP, ACPI_TYPE_ANY,
 		 AML_CLASS_NAMED_OBJECT, AML_TYPE_NAMED_FIELD,
+<<<<<<< HEAD
 		 AML_HAS_ARGS | AML_NSOBJECT | AML_NSOPCODE | AML_FIELD),
+=======
+			 AML_HAS_ARGS | AML_NSOBJECT | AML_NSOPCODE |
+			 AML_FIELD),
+>>>>>>> refs/remotes/origin/master
 /* 5A */ ACPI_OP("Device", ARGP_DEVICE_OP, ARGI_DEVICE_OP,
 		 ACPI_TYPE_DEVICE, AML_CLASS_NAMED_OBJECT,
 		 AML_TYPE_NAMED_NO_OBJ,
@@ -519,12 +559,22 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
 /* 5E */ ACPI_OP("IndexField", ARGP_INDEX_FIELD_OP, ARGI_INDEX_FIELD_OP,
 		 ACPI_TYPE_ANY, AML_CLASS_NAMED_OBJECT,
 		 AML_TYPE_NAMED_FIELD,
+<<<<<<< HEAD
 		 AML_HAS_ARGS | AML_NSOBJECT | AML_NSOPCODE | AML_FIELD),
 /* 5F */ ACPI_OP("BankField", ARGP_BANK_FIELD_OP, ARGI_BANK_FIELD_OP,
 		 ACPI_TYPE_LOCAL_BANK_FIELD, AML_CLASS_NAMED_OBJECT,
 		 AML_TYPE_NAMED_FIELD,
 		 AML_HAS_ARGS | AML_NSOBJECT | AML_NSOPCODE | AML_FIELD |
 		 AML_DEFER),
+=======
+		 	 AML_HAS_ARGS | AML_NSOBJECT | AML_NSOPCODE |
+			 AML_FIELD),
+/* 5F */ ACPI_OP("BankField", ARGP_BANK_FIELD_OP, ARGI_BANK_FIELD_OP,
+		 	 ACPI_TYPE_LOCAL_BANK_FIELD,
+			 AML_CLASS_NAMED_OBJECT, AML_TYPE_NAMED_FIELD,
+		 	 AML_HAS_ARGS | AML_NSOBJECT | AML_NSOPCODE |
+			 AML_FIELD | AML_DEFER),
+>>>>>>> refs/remotes/origin/master
 
 /* Internal opcodes that map to invalid AML opcodes */
 
@@ -632,13 +682,35 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
 /* 7D */ ACPI_OP("[EvalSubTree]", ARGP_SCOPE_OP, ARGI_SCOPE_OP,
 		 ACPI_TYPE_ANY, AML_CLASS_NAMED_OBJECT,
 		 AML_TYPE_NAMED_NO_OBJ,
+<<<<<<< HEAD
 		 AML_HAS_ARGS | AML_NSOBJECT | AML_NSOPCODE | AML_NSNODE),
+=======
+		 	 AML_HAS_ARGS | AML_NSOBJECT | AML_NSOPCODE |
+			 AML_NSNODE),
+>>>>>>> refs/remotes/origin/master
 
 /* ACPI 3.0 opcodes */
 
 /* 7E */ ACPI_OP("Timer", ARGP_TIMER_OP, ARGI_TIMER_OP, ACPI_TYPE_ANY,
 		 AML_CLASS_EXECUTE, AML_TYPE_EXEC_0A_0T_1R,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 AML_FLAGS_EXEC_0A_0T_1R)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			 AML_FLAGS_EXEC_0A_0T_1R),
+
+/* ACPI 5.0 opcodes */
+
+/* 7F */ ACPI_OP("-ConnectField-", ARGP_CONNECTFIELD_OP,
+			 ARGI_CONNECTFIELD_OP, ACPI_TYPE_ANY,
+			 AML_CLASS_INTERNAL, AML_TYPE_BOGUS, AML_HAS_ARGS),
+/* 80 */ ACPI_OP("-ExtAccessField-", ARGP_CONNECTFIELD_OP,
+			 ARGI_CONNECTFIELD_OP, ACPI_TYPE_ANY,
+			 AML_CLASS_INTERNAL, AML_TYPE_BOGUS, 0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*! [End] no source code translation !*/
 };
@@ -657,7 +729,11 @@ static const u8 acpi_gbl_short_op_index[256] = {
 /* 0x20 */ _UNK, _UNK, _UNK, _UNK, _UNK, _UNK, _UNK, _UNK,
 /* 0x28 */ _UNK, _UNK, _UNK, _UNK, _UNK, 0x63, _PFX, _PFX,
 /* 0x30 */ 0x67, 0x66, 0x68, 0x65, 0x69, 0x64, 0x6A, 0x7D,
+<<<<<<< HEAD
 /* 0x38 */ _UNK, _UNK, _UNK, _UNK, _UNK, _UNK, _UNK, _UNK,
+=======
+/* 0x38 */ 0x7F, 0x80, _UNK, _UNK, _UNK, _UNK, _UNK, _UNK,
+>>>>>>> refs/remotes/origin/cm-10.0
 /* 0x40 */ _UNK, _ASC, _ASC, _ASC, _ASC, _ASC, _ASC, _ASC,
 /* 0x48 */ _ASC, _ASC, _ASC, _ASC, _ASC, _ASC, _ASC, _ASC,
 /* 0x50 */ _ASC, _ASC, _ASC, _ASC, _ASC, _ASC, _ASC, _ASC,
@@ -808,3 +884,8 @@ u8 acpi_ps_get_argument_count(u32 op_type)
 
 	return (0);
 }
+=======
+
+/*! [End] no source code translation !*/
+};
+>>>>>>> refs/remotes/origin/master

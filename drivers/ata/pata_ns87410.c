@@ -86,7 +86,15 @@ static void ns87410_set_piomode(struct ata_port *ap, struct ata_device *adev)
 		idefr &= ~0x04;
 
 	if (ata_timing_compute(adev, adev->pio_mode, &at, 30303, 1) < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev, "unknown mode %d.\n", adev->pio_mode);
+=======
+		dev_err(&pdev->dev, "unknown mode %d\n", adev->pio_mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "unknown mode %d\n", adev->pio_mode);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -168,6 +176,7 @@ static struct pci_driver ns87410_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init ns87410_init(void)
 {
 	return pci_register_driver(&ns87410_pci_driver);
@@ -177,12 +186,18 @@ static void __exit ns87410_exit(void)
 {
 	pci_unregister_driver(&ns87410_pci_driver);
 }
+=======
+module_pci_driver(ns87410_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for Nat Semi 87410");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, ns87410);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(ns87410_init);
 module_exit(ns87410_exit);
+=======
+>>>>>>> refs/remotes/origin/master

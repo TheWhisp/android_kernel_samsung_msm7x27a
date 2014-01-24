@@ -102,11 +102,15 @@ void rdma_addr_cancel(struct rdma_dev_addr *addr);
 int rdma_copy_addr(struct rdma_dev_addr *dev_addr, struct net_device *dev,
 	      const unsigned char *dst_dev_addr);
 
+<<<<<<< HEAD
 static inline int ip_addr_size(struct sockaddr *addr)
 {
 	return addr->sa_family == AF_INET6 ?
 	       sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in);
 }
+=======
+int rdma_addr_size(struct sockaddr *addr);
+>>>>>>> refs/remotes/origin/master
 
 static inline u16 ib_addr_get_pkey(struct rdma_dev_addr *dev_addr)
 {
@@ -218,8 +222,23 @@ static inline int iboe_get_rate(struct net_device *dev)
 {
 	struct ethtool_cmd cmd;
 	u32 speed;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (dev_ethtool_get_settings(dev, &cmd))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int err;
+
+	rtnl_lock();
+	err = __ethtool_get_settings(dev, &cmd);
+	rtnl_unlock();
+	if (err)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return IB_RATE_PORT_CURRENT;
 
 	speed = ethtool_cmd_speed(&cmd);
@@ -277,7 +296,15 @@ static inline u16 rdma_get_vlan_id(union ib_gid *dgid)
 static inline struct net_device *rdma_vlan_dev_real_dev(const struct net_device *dev)
 {
 	return dev->priv_flags & IFF_802_1Q_VLAN ?
+<<<<<<< HEAD
+<<<<<<< HEAD
 		vlan_dev_real_dev(dev) : 0;
+=======
+		vlan_dev_real_dev(dev) : NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		vlan_dev_real_dev(dev) : NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* IB_ADDR_H */

@@ -12,7 +12,10 @@
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/string.h>
@@ -57,7 +60,11 @@ struct usb_sevsegdev {
  * if str commands are used, we would assume the end of string
  * so mem commands are used.
  */
+<<<<<<< HEAD
 inline size_t my_memlen(const char *buf, size_t count)
+=======
+static inline size_t my_memlen(const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	if (count > 0 && buf[count-1] == '\n')
 		return count - 1;
@@ -437,6 +444,8 @@ static struct usb_driver sevseg_driver = {
 	.supports_autosuspend = 1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usb_sevseg_init(void)
 {
 	int rc = 0;
@@ -454,6 +463,12 @@ static void __exit usb_sevseg_exit(void)
 
 module_init(usb_sevseg_init);
 module_exit(usb_sevseg_exit);
+=======
+module_usb_driver(sevseg_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(sevseg_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

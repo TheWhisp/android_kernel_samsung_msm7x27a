@@ -19,6 +19,10 @@ config PPC_MSI_BITMAP
 	default y if MPIC
 	default y if FSL_PCI
 	default y if PPC4xx_MSI
+<<<<<<< HEAD
+=======
+	default y if POWERNV_MSI
+>>>>>>> refs/remotes/origin/master
 
 source "arch/powerpc/sysdev/xics/Kconfig"
 
@@ -27,5 +31,20 @@ config PPC_SCOM
 
 config SCOM_DEBUGFS
 	bool "Expose SCOM controllers via debugfs"
+<<<<<<< HEAD
 	depends on PPC_SCOM
 	default n
+<<<<<<< HEAD
+=======
+=======
+	depends on PPC_SCOM && DEBUG_FS
+	default n
+>>>>>>> refs/remotes/origin/master
+
+config GE_FPGA
+	bool
+	default n
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

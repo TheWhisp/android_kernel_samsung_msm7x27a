@@ -16,10 +16,15 @@
 #include <linux/notifier.h>
 #include <linux/proc_fs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/prom.h>
 #include <asm/machdep.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/pSeries_reconfig.h>
 #include <asm/mmu.h>
 
@@ -65,6 +70,10 @@ static void remove_node_proc_entries(struct device_node *np)
 }
 #endif /* CONFIG_PROC_DEVICETREE */
 
+=======
+#include <asm/mmu.h>
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	derive_parent - basically like dirname(1)
  *	@path:  the full_name of a node to be added to the tree
@@ -97,7 +106,12 @@ static struct device_node *derive_parent(const char *path)
 	return parent;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 BLOCKING_NOTIFIER_HEAD(pSeries_reconfig_chain);
+=======
+static BLOCKING_NOTIFIER_HEAD(pSeries_reconfig_chain);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int pSeries_reconfig_notifier_register(struct notifier_block *nb)
 {
@@ -109,6 +123,19 @@ void pSeries_reconfig_notifier_unregister(struct notifier_block *nb)
 	blocking_notifier_chain_unregister(&pSeries_reconfig_chain, nb);
 }
 
+<<<<<<< HEAD
+=======
+int pSeries_reconfig_notify(unsigned long action, void *p)
+{
+	int err = blocking_notifier_call_chain(&pSeries_reconfig_chain,
+						action, p);
+
+	return notifier_to_errno(err);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int pSeries_reconfig_add_node(const char *path, struct property *proplist)
 {
 	struct device_node *np;
@@ -132,11 +159,18 @@ static int pSeries_reconfig_add_node(const char *path, struct property *proplist
 		goto out_err;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = blocking_notifier_call_chain(&pSeries_reconfig_chain,
 				  PSERIES_RECONFIG_ADD, np);
 	if (err == NOTIFY_BAD) {
 		printk(KERN_ERR "Failed to add device node %s\n", path);
 		err = -ENOMEM; /* For now, safe to assume kmalloc failure */
+=======
+	err = pSeries_reconfig_notify(PSERIES_RECONFIG_ADD, np);
+	if (err) {
+		printk(KERN_ERR "Failed to add device node %s\n", path);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_err;
 	}
 
@@ -144,6 +178,14 @@ static int pSeries_reconfig_add_node(const char *path, struct property *proplist
 
 	add_node_proc_entries(np);
 
+=======
+	err = of_attach_node(np);
+	if (err) {
+		printk(KERN_ERR "Failed to add device node %s\n", path);
+		goto out_err;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	of_node_put(np->parent);
 
 	return 0;
@@ -171,12 +213,20 @@ static int pSeries_reconfig_remove_node(struct device_node *np)
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 	remove_node_proc_entries(np);
 
+<<<<<<< HEAD
 	blocking_notifier_call_chain(&pSeries_reconfig_chain,
 			    PSERIES_RECONFIG_REMOVE, np);
+=======
+	pSeries_reconfig_notify(PSERIES_RECONFIG_REMOVE, np);
+>>>>>>> refs/remotes/origin/cm-10.0
 	of_detach_node(np);
 
+=======
+	of_detach_node(np);
+>>>>>>> refs/remotes/origin/master
 	of_node_put(parent);
 	of_node_put(np); /* Must decrement the refcount */
 	return 0;
@@ -274,12 +324,19 @@ static struct property *new_property(const char *name, const int length,
 	if (!new)
 		return NULL;
 
+<<<<<<< HEAD
 	if (!(new->name = kmalloc(strlen(name) + 1, GFP_KERNEL)))
+=======
+	if (!(new->name = kstrdup(name, GFP_KERNEL)))
+>>>>>>> refs/remotes/origin/master
 		goto cleanup;
 	if (!(new->value = kmalloc(length + 1, GFP_KERNEL)))
 		goto cleanup;
 
+<<<<<<< HEAD
 	strcpy(new->name, name);
+=======
+>>>>>>> refs/remotes/origin/master
 	memcpy(new->value, value, length);
 	*(((char *)new->value) + length) = 0;
 	new->length = length;
@@ -391,7 +448,11 @@ static int do_add_property(char *buf, size_t bufsize)
 	if (!prop)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	prom_add_property(np, prop);
+=======
+	of_add_property(np, prop);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -415,7 +476,11 @@ static int do_remove_property(char *buf, size_t bufsize)
 
 	prop = of_find_property(np, buf, NULL);
 
+<<<<<<< HEAD
 	return prom_remove_property(np, prop);
+=======
+	return of_remove_property(np, prop);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int do_update_property(char *buf, size_t bufsize)
@@ -423,8 +488,13 @@ static int do_update_property(char *buf, size_t bufsize)
 	struct device_node *np;
 	unsigned char *value;
 	char *name, *end, *next_prop;
+<<<<<<< HEAD
 	int rc, length;
 	struct property *newprop, *oldprop;
+=======
+	int length;
+	struct property *newprop;
+>>>>>>> refs/remotes/origin/master
 	buf = parse_node(buf, bufsize, &np);
 	end = buf + bufsize;
 
@@ -435,6 +505,12 @@ static int do_update_property(char *buf, size_t bufsize)
 	if (!next_prop)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (!strlen(name))
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	newprop = new_property(name, length, value, NULL);
 	if (!newprop)
 		return -ENOMEM;
@@ -442,6 +518,7 @@ static int do_update_property(char *buf, size_t bufsize)
 	if (!strcmp(name, "slb-size") || !strcmp(name, "ibm,slb-size"))
 		slb_set_size(*(int *)value);
 
+<<<<<<< HEAD
 	oldprop = of_find_property(np, name,NULL);
 	if (!oldprop) {
 		if (strlen(name))
@@ -472,15 +549,25 @@ static int do_update_property(char *buf, size_t bufsize)
 		else
 			action = PSERIES_DRCONF_MEM_REMOVE;
 
+<<<<<<< HEAD
 		rc = blocking_notifier_call_chain(&pSeries_reconfig_chain,
 						  action, value);
 		if (rc == NOTIFY_BAD) {
 			rc = prom_update_property(np, oldprop, newprop);
 			return -ENOMEM;
+=======
+		rc = pSeries_reconfig_notify(action, value);
+		if (rc) {
+			prom_update_property(np, oldprop, newprop);
+			return rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
 	return 0;
+=======
+	return of_update_property(np, newprop);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -553,7 +640,11 @@ static int proc_ppc64_create_ofdt(void)
 
 	ent = proc_create("powerpc/ofdt", S_IWUSR, NULL, &ofdt_fops);
 	if (ent)
+<<<<<<< HEAD
 		ent->size = 0;
+=======
+		proc_set_size(ent, 0);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

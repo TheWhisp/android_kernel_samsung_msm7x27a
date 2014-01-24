@@ -16,6 +16,7 @@
 #include <asm/tlbflush.h>
 #include <asm/pgalloc.h>
 
+<<<<<<< HEAD
 static unsigned long page_table_shareable(struct vm_area_struct *svma,
 				struct vm_area_struct *vma,
 				unsigned long addr, pgoff_t idx)
@@ -180,6 +181,8 @@ pte_t *huge_pte_offset(struct mm_struct *mm, unsigned long addr)
 	return (pte_t *) pmd;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if 0	/* This is just for testing */
 struct page *
 follow_huge_addr(struct mm_struct *mm, unsigned long address, int write)
@@ -223,6 +226,13 @@ follow_huge_pmd(struct mm_struct *mm, unsigned long address,
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+int pmd_huge_support(void)
+{
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 #else
 
 struct page *
@@ -241,6 +251,7 @@ int pud_huge(pud_t pud)
 	return !!(pud_val(pud) & _PAGE_PSE);
 }
 
+<<<<<<< HEAD
 struct page *
 follow_huge_pmd(struct mm_struct *mm, unsigned long address,
 		pmd_t *pmd, int write)
@@ -270,11 +281,21 @@ follow_huge_pud(struct mm_struct *mm, unsigned long address,
 /* x86_64 also uses this file */
 
 #ifdef HAVE_ARCH_HUGETLB_UNMAPPED_AREA
+=======
+int pmd_huge_support(void)
+{
+	return 1;
+}
+#endif
+
+#ifdef CONFIG_HUGETLB_PAGE
+>>>>>>> refs/remotes/origin/master
 static unsigned long hugetlb_get_unmapped_area_bottomup(struct file *file,
 		unsigned long addr, unsigned long len,
 		unsigned long pgoff, unsigned long flags)
 {
 	struct hstate *h = hstate_file(file);
+<<<<<<< HEAD
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct *vma;
 	unsigned long start_addr;
@@ -311,6 +332,17 @@ full_search:
 		        mm->cached_hole_size = vma->vm_start - addr;
 		addr = ALIGN(vma->vm_end, huge_page_size(h));
 	}
+=======
+	struct vm_unmapped_area_info info;
+
+	info.flags = 0;
+	info.length = len;
+	info.low_limit = current->mm->mmap_legacy_base;
+	info.high_limit = TASK_SIZE;
+	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
+	info.align_offset = 0;
+	return vm_unmapped_area(&info);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long hugetlb_get_unmapped_area_topdown(struct file *file,
@@ -318,11 +350,20 @@ static unsigned long hugetlb_get_unmapped_area_topdown(struct file *file,
 		unsigned long pgoff, unsigned long flags)
 {
 	struct hstate *h = hstate_file(file);
+<<<<<<< HEAD
 	struct mm_struct *mm = current->mm;
+<<<<<<< HEAD
 	struct vm_area_struct *vma, *prev_vma;
 	unsigned long base = mm->mmap_base, addr = addr0;
 	unsigned long largest_hole = mm->cached_hole_size;
 	int first_time = 1;
+=======
+	struct vm_area_struct *vma;
+	unsigned long base = mm->mmap_base;
+	unsigned long addr = addr0;
+	unsigned long largest_hole = mm->cached_hole_size;
+	unsigned long start_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* don't allow allocations above current base */
 	if (mm->free_area_cache > base)
@@ -333,6 +374,11 @@ static unsigned long hugetlb_get_unmapped_area_topdown(struct file *file,
 		mm->free_area_cache  = base;
 	}
 try_again:
+<<<<<<< HEAD
+=======
+	start_addr = mm->free_area_cache;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* make sure it can fit in the remaining address space */
 	if (mm->free_area_cache < len)
 		goto fail;
@@ -344,6 +390,7 @@ try_again:
 		 * Lookup failure means no vma is above this address,
 		 * i.e. return with success:
 		 */
+<<<<<<< HEAD
 		if (!(vma = find_vma_prev(mm, addr, &prev_vma)))
 			return addr;
 
@@ -362,6 +409,20 @@ try_again:
 				mm->free_area_cache = vma->vm_start;
 				mm->cached_hole_size = largest_hole;
 			}
+=======
+		vma = find_vma(mm, addr);
+		if (!vma)
+			return addr;
+
+		if (addr + len <= vma->vm_start) {
+			/* remember the address as a hint for next time */
+		        mm->cached_hole_size = largest_hole;
+		        return (mm->free_area_cache = addr);
+		} else if (mm->free_area_cache == vma->vm_end) {
+			/* pull free_area_cache down to the first hole */
+			mm->free_area_cache = vma->vm_start;
+			mm->cached_hole_size = largest_hole;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* remember the largest hole we saw so far */
@@ -377,18 +438,38 @@ fail:
 	 * if hint left us with no space for the requested
 	 * mapping then try again:
 	 */
+<<<<<<< HEAD
 	if (first_time) {
 		mm->free_area_cache = base;
 		largest_hole = 0;
 		first_time = 0;
+=======
+	if (start_addr != base) {
+		mm->free_area_cache = base;
+		largest_hole = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto try_again;
 	}
+=======
+	struct vm_unmapped_area_info info;
+	unsigned long addr;
+
+	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
+	info.length = len;
+	info.low_limit = PAGE_SIZE;
+	info.high_limit = current->mm->mmap_base;
+	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
+	info.align_offset = 0;
+	addr = vm_unmapped_area(&info);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * A failed mmap() very likely causes application failure,
 	 * so fall back to the bottom-up function here. This scenario
 	 * can happen with large stack limits and large mmap()
 	 * allocations.
 	 */
+<<<<<<< HEAD
 	mm->free_area_cache = TASK_UNMAPPED_BASE;
 	mm->cached_hole_size = ~0UL;
 	addr = hugetlb_get_unmapped_area_bottomup(file, addr0,
@@ -399,6 +480,15 @@ fail:
 	 */
 	mm->free_area_cache = base;
 	mm->cached_hole_size = ~0UL;
+=======
+	if (addr & ~PAGE_MASK) {
+		VM_BUG_ON(addr != -ENOMEM);
+		info.flags = 0;
+		info.low_limit = TASK_UNMAPPED_BASE;
+		info.high_limit = TASK_SIZE;
+		addr = vm_unmapped_area(&info);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return addr;
 }
@@ -436,8 +526,12 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
 		return hugetlb_get_unmapped_area_topdown(file, addr, len,
 				pgoff, flags);
 }
+<<<<<<< HEAD
 
 #endif /*HAVE_ARCH_HUGETLB_UNMAPPED_AREA*/
+=======
+#endif /* CONFIG_HUGETLB_PAGE */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_64
 static __init int setup_hugepagesz(char *opt)

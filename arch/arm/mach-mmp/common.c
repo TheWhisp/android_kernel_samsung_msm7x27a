@@ -14,6 +14,14 @@
 
 #include <asm/page.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/addr-map.h>
 #include <mach/cputype.h>
 
@@ -27,12 +35,28 @@ EXPORT_SYMBOL(mmp_chip_id);
 static struct map_desc standard_io_desc[] __initdata = {
 	{
 		.pfn		= __phys_to_pfn(APB_PHYS_BASE),
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual	= APB_VIRT_BASE,
+=======
+		.virtual	= (unsigned long)APB_VIRT_BASE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual	= (unsigned long)APB_VIRT_BASE,
+>>>>>>> refs/remotes/origin/master
 		.length		= APB_PHYS_SIZE,
 		.type		= MT_DEVICE,
 	}, {
 		.pfn		= __phys_to_pfn(AXI_PHYS_BASE),
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual	= AXI_VIRT_BASE,
+=======
+		.virtual	= (unsigned long)AXI_VIRT_BASE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual	= (unsigned long)AXI_VIRT_BASE,
+>>>>>>> refs/remotes/origin/master
 		.length		= AXI_PHYS_SIZE,
 		.type		= MT_DEVICE,
 	},
@@ -45,3 +69,19 @@ void __init mmp_map_io(void)
 	/* this is early, initialize mmp_chip_id here */
 	mmp_chip_id = __raw_readl(MMP_CHIPID);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+void mmp_restart(char mode, const char *cmd)
+{
+	soft_restart(0);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+void mmp_restart(enum reboot_mode mode, const char *cmd)
+{
+	soft_restart(0);
+}
+>>>>>>> refs/remotes/origin/master

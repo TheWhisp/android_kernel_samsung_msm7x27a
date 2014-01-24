@@ -69,6 +69,10 @@ atomic_t fscache_n_store_vmscan_not_storing;
 atomic_t fscache_n_store_vmscan_gone;
 atomic_t fscache_n_store_vmscan_busy;
 atomic_t fscache_n_store_vmscan_cancelled;
+<<<<<<< HEAD
+=======
+atomic_t fscache_n_store_vmscan_wait;
+>>>>>>> refs/remotes/origin/master
 
 atomic_t fscache_n_marks;
 atomic_t fscache_n_uncaches;
@@ -80,6 +84,12 @@ atomic_t fscache_n_acquires_ok;
 atomic_t fscache_n_acquires_nobufs;
 atomic_t fscache_n_acquires_oom;
 
+<<<<<<< HEAD
+=======
+atomic_t fscache_n_invalidates;
+atomic_t fscache_n_invalidates_run;
+
+>>>>>>> refs/remotes/origin/master
 atomic_t fscache_n_updates;
 atomic_t fscache_n_updates_null;
 atomic_t fscache_n_updates_run;
@@ -112,6 +122,10 @@ atomic_t fscache_n_cop_alloc_object;
 atomic_t fscache_n_cop_lookup_object;
 atomic_t fscache_n_cop_lookup_complete;
 atomic_t fscache_n_cop_grab_object;
+<<<<<<< HEAD
+=======
+atomic_t fscache_n_cop_invalidate_object;
+>>>>>>> refs/remotes/origin/master
 atomic_t fscache_n_cop_update_object;
 atomic_t fscache_n_cop_drop_object;
 atomic_t fscache_n_cop_put_object;
@@ -168,6 +182,13 @@ static int fscache_stats_show(struct seq_file *m, void *v)
 		   atomic_read(&fscache_n_object_created),
 		   atomic_read(&fscache_n_object_lookups_timed_out));
 
+<<<<<<< HEAD
+=======
+	seq_printf(m, "Invals : n=%u run=%u\n",
+		   atomic_read(&fscache_n_invalidates),
+		   atomic_read(&fscache_n_invalidates_run));
+
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, "Updates: n=%u nul=%u run=%u\n",
 		   atomic_read(&fscache_n_updates),
 		   atomic_read(&fscache_n_updates_null),
@@ -224,11 +245,20 @@ static int fscache_stats_show(struct seq_file *m, void *v)
 		   atomic_read(&fscache_n_store_radix_deletes),
 		   atomic_read(&fscache_n_store_pages_over_limit));
 
+<<<<<<< HEAD
 	seq_printf(m, "VmScan : nos=%u gon=%u bsy=%u can=%u\n",
 		   atomic_read(&fscache_n_store_vmscan_not_storing),
 		   atomic_read(&fscache_n_store_vmscan_gone),
 		   atomic_read(&fscache_n_store_vmscan_busy),
 		   atomic_read(&fscache_n_store_vmscan_cancelled));
+=======
+	seq_printf(m, "VmScan : nos=%u gon=%u bsy=%u can=%u wt=%u\n",
+		   atomic_read(&fscache_n_store_vmscan_not_storing),
+		   atomic_read(&fscache_n_store_vmscan_gone),
+		   atomic_read(&fscache_n_store_vmscan_busy),
+		   atomic_read(&fscache_n_store_vmscan_cancelled),
+		   atomic_read(&fscache_n_store_vmscan_wait));
+>>>>>>> refs/remotes/origin/master
 
 	seq_printf(m, "Ops    : pend=%u run=%u enq=%u can=%u rej=%u\n",
 		   atomic_read(&fscache_n_op_pend),
@@ -246,7 +276,12 @@ static int fscache_stats_show(struct seq_file *m, void *v)
 		   atomic_read(&fscache_n_cop_lookup_object),
 		   atomic_read(&fscache_n_cop_lookup_complete),
 		   atomic_read(&fscache_n_cop_grab_object));
+<<<<<<< HEAD
 	seq_printf(m, "CacheOp: upo=%d dro=%d pto=%d atc=%d syn=%d\n",
+=======
+	seq_printf(m, "CacheOp: inv=%d upo=%d dro=%d pto=%d atc=%d syn=%d\n",
+		   atomic_read(&fscache_n_cop_invalidate_object),
+>>>>>>> refs/remotes/origin/master
 		   atomic_read(&fscache_n_cop_update_object),
 		   atomic_read(&fscache_n_cop_drop_object),
 		   atomic_read(&fscache_n_cop_put_object),

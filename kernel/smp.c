@@ -6,13 +6,22 @@
 #include <linux/rcupdate.h>
 #include <linux/rculist.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/percpu.h>
 #include <linux/init.h>
 #include <linux/gfp.h>
 #include <linux/smp.h>
 #include <linux/cpu.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_USE_GENERIC_SMP_HELPERS
 static struct {
 	struct list_head	queue;
@@ -30,6 +39,17 @@ enum {
 struct call_function_data {
 	struct call_single_data	csd;
 	atomic_t		refs;
+=======
+#include "smpboot.h"
+
+enum {
+	CSD_FLAG_LOCK		= 0x01,
+	CSD_FLAG_WAIT		= 0x02,
+};
+
+struct call_function_data {
+	struct call_single_data	__percpu *csd;
+>>>>>>> refs/remotes/origin/master
 	cpumask_var_t		cpumask;
 	cpumask_var_t		cpumask_ipi;
 };
@@ -56,8 +76,26 @@ hotplug_cfd(struct notifier_block *nfb, unsigned long action, void *hcpu)
 				cpu_to_node(cpu)))
 			return notifier_from_errno(-ENOMEM);
 		if (!zalloc_cpumask_var_node(&cfd->cpumask_ipi, GFP_KERNEL,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				cpu_to_node(cpu)))
 			return notifier_from_errno(-ENOMEM);
+=======
+				cpu_to_node(cpu))) {
+			free_cpumask_var(cfd->cpumask);
+			return notifier_from_errno(-ENOMEM);
+		}
+		cfd->csd = alloc_percpu(struct call_single_data);
+		if (!cfd->csd) {
+			free_cpumask_var(cfd->cpumask_ipi);
+			free_cpumask_var(cfd->cpumask);
+			return notifier_from_errno(-ENOMEM);
+		}
+>>>>>>> refs/remotes/origin/master
+=======
+				cpu_to_node(cpu)))
+			return notifier_from_errno(-ENOMEM);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 #ifdef CONFIG_HOTPLUG_CPU
@@ -68,6 +106,13 @@ hotplug_cfd(struct notifier_block *nfb, unsigned long action, void *hcpu)
 	case CPU_DEAD_FROZEN:
 		free_cpumask_var(cfd->cpumask);
 		free_cpumask_var(cfd->cpumask_ipi);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		free_percpu(cfd->csd);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 #endif
 	};
@@ -75,7 +120,11 @@ hotplug_cfd(struct notifier_block *nfb, unsigned long action, void *hcpu)
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata hotplug_cfd_notifier = {
+=======
+static struct notifier_block hotplug_cfd_notifier = {
+>>>>>>> refs/remotes/origin/master
 	.notifier_call		= hotplug_cfd,
 };
 
@@ -102,6 +151,7 @@ void __init call_function_init(void)
  * previous function call. For multi-cpu calls its even more interesting
  * as we'll have to ensure no other cpu is observing our csd.
  */
+<<<<<<< HEAD
 static void csd_lock_wait(struct call_single_data *data)
 {
 	while (data->flags & CSD_FLAG_LOCK)
@@ -112,6 +162,18 @@ static void csd_lock(struct call_single_data *data)
 {
 	csd_lock_wait(data);
 	data->flags = CSD_FLAG_LOCK;
+=======
+static void csd_lock_wait(struct call_single_data *csd)
+{
+	while (csd->flags & CSD_FLAG_LOCK)
+		cpu_relax();
+}
+
+static void csd_lock(struct call_single_data *csd)
+{
+	csd_lock_wait(csd);
+	csd->flags |= CSD_FLAG_LOCK;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * prevent CPU from reordering the above assignment
@@ -121,16 +183,26 @@ static void csd_lock(struct call_single_data *data)
 	smp_mb();
 }
 
+<<<<<<< HEAD
 static void csd_unlock(struct call_single_data *data)
 {
 	WARN_ON(!(data->flags & CSD_FLAG_LOCK));
+=======
+static void csd_unlock(struct call_single_data *csd)
+{
+	WARN_ON((csd->flags & CSD_FLAG_WAIT) && !(csd->flags & CSD_FLAG_LOCK));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * ensure we're all done before releasing data:
 	 */
 	smp_mb();
 
+<<<<<<< HEAD
 	data->flags &= ~CSD_FLAG_LOCK;
+=======
+	csd->flags &= ~CSD_FLAG_LOCK;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -138,16 +210,29 @@ static void csd_unlock(struct call_single_data *data)
  * for execution on the given CPU. data must already have
  * ->func, ->info, and ->flags set.
  */
+<<<<<<< HEAD
 static
 void generic_exec_single(int cpu, struct call_single_data *data, int wait)
+=======
+static void generic_exec_single(int cpu, struct call_single_data *csd, int wait)
+>>>>>>> refs/remotes/origin/master
 {
 	struct call_single_queue *dst = &per_cpu(call_single_queue, cpu);
 	unsigned long flags;
 	int ipi;
 
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&dst->lock, flags);
 	ipi = list_empty(&dst->list);
 	list_add_tail(&data->list, &dst->list);
+=======
+	if (wait)
+		csd->flags |= CSD_FLAG_WAIT;
+
+	raw_spin_lock_irqsave(&dst->lock, flags);
+	ipi = list_empty(&dst->list);
+	list_add_tail(&csd->list, &dst->list);
+>>>>>>> refs/remotes/origin/master
 	raw_spin_unlock_irqrestore(&dst->lock, flags);
 
 	/*
@@ -165,6 +250,7 @@ void generic_exec_single(int cpu, struct call_single_data *data, int wait)
 		arch_send_call_function_single_ipi(cpu);
 
 	if (wait)
+<<<<<<< HEAD
 		csd_lock_wait(data);
 }
 
@@ -245,6 +331,9 @@ void generic_smp_call_function_interrupt(void)
 		csd_unlock(&data->csd);
 	}
 
+=======
+		csd_lock_wait(csd);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -254,7 +343,10 @@ void generic_smp_call_function_interrupt(void)
 void generic_smp_call_function_single_interrupt(void)
 {
 	struct call_single_queue *q = &__get_cpu_var(call_single_queue);
+<<<<<<< HEAD
 	unsigned int data_flags;
+=======
+>>>>>>> refs/remotes/origin/master
 	LIST_HEAD(list);
 
 	/*
@@ -267,6 +359,7 @@ void generic_smp_call_function_single_interrupt(void)
 	raw_spin_unlock(&q->lock);
 
 	while (!list_empty(&list)) {
+<<<<<<< HEAD
 		struct call_single_data *data;
 
 		data = list_entry(list.next, struct call_single_data, list);
@@ -286,6 +379,16 @@ void generic_smp_call_function_single_interrupt(void)
 		 */
 		if (data_flags & CSD_FLAG_LOCK)
 			csd_unlock(data);
+=======
+		struct call_single_data *csd;
+
+		csd = list_entry(list.next, struct call_single_data, list);
+		list_del(&csd->list);
+
+		csd->func(csd->info);
+
+		csd_unlock(csd);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -330,6 +433,7 @@ int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
 		local_irq_restore(flags);
 	} else {
 		if ((unsigned)cpu < nr_cpu_ids && cpu_online(cpu)) {
+<<<<<<< HEAD
 			struct call_single_data *data = &d;
 
 			if (!wait)
@@ -340,6 +444,18 @@ int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
 			data->func = func;
 			data->info = info;
 			generic_exec_single(cpu, data, wait);
+=======
+			struct call_single_data *csd = &d;
+
+			if (!wait)
+				csd = &__get_cpu_var(csd_data);
+
+			csd_lock(csd);
+
+			csd->func = func;
+			csd->info = info;
+			generic_exec_single(cpu, csd, wait);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			err = -ENXIO;	/* CPU not online */
 		}
@@ -359,8 +475,11 @@ EXPORT_SYMBOL(smp_call_function_single);
  * @wait: If true, wait until function has completed.
  *
  * Returns 0 on success, else a negative status code (if no cpus were online).
+<<<<<<< HEAD
  * Note that @wait will be implicitly turned on in case of allocation failures,
  * since we fall back to on-stack allocation.
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Selection preference:
  *	1) current cpu if in @mask
@@ -406,7 +525,11 @@ EXPORT_SYMBOL_GPL(smp_call_function_any);
  * pre-allocated data structure. Useful for embedding @data inside
  * other structures, for instance.
  */
+<<<<<<< HEAD
 void __smp_call_function_single(int cpu, struct call_single_data *data,
+=======
+void __smp_call_function_single(int cpu, struct call_single_data *csd,
+>>>>>>> refs/remotes/origin/master
 				int wait)
 {
 	unsigned int this_cpu;
@@ -424,6 +547,7 @@ void __smp_call_function_single(int cpu, struct call_single_data *data,
 
 	if (cpu == this_cpu) {
 		local_irq_save(flags);
+<<<<<<< HEAD
 		data->func(data->info);
 		local_irq_restore(flags);
 	} else {
@@ -432,6 +556,17 @@ void __smp_call_function_single(int cpu, struct call_single_data *data,
 	}
 	put_cpu();
 }
+=======
+		csd->func(csd->info);
+		local_irq_restore(flags);
+	} else {
+		csd_lock(csd);
+		generic_exec_single(cpu, csd, wait);
+	}
+	put_cpu();
+}
+EXPORT_SYMBOL_GPL(__smp_call_function_single);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * smp_call_function_many(): Run a function on a set of other CPUs.
@@ -450,9 +585,14 @@ void __smp_call_function_single(int cpu, struct call_single_data *data,
 void smp_call_function_many(const struct cpumask *mask,
 			    smp_call_func_t func, void *info, bool wait)
 {
+<<<<<<< HEAD
 	struct call_function_data *data;
 	unsigned long flags;
 	int refs, cpu, next_cpu, this_cpu = smp_processor_id();
+=======
+	struct call_function_data *cfd;
+	int cpu, next_cpu, this_cpu = smp_processor_id();
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Can deadlock when called with interrupts disabled.
@@ -483,6 +623,7 @@ void smp_call_function_many(const struct cpumask *mask,
 		return;
 	}
 
+<<<<<<< HEAD
 	data = &__get_cpu_var(cfd_data);
 	csd_lock(&data->csd);
 
@@ -563,6 +704,50 @@ void smp_call_function_many(const struct cpumask *mask,
 	/* Optionally wait for the CPUs to complete */
 	if (wait)
 		csd_lock_wait(&data->csd);
+=======
+	cfd = &__get_cpu_var(cfd_data);
+
+	cpumask_and(cfd->cpumask, mask, cpu_online_mask);
+	cpumask_clear_cpu(this_cpu, cfd->cpumask);
+
+	/* Some callers race with other cpus changing the passed mask */
+	if (unlikely(!cpumask_weight(cfd->cpumask)))
+		return;
+
+	/*
+	 * After we put an entry into the list, cfd->cpumask may be cleared
+	 * again when another CPU sends another IPI for a SMP function call, so
+	 * cfd->cpumask will be zero.
+	 */
+	cpumask_copy(cfd->cpumask_ipi, cfd->cpumask);
+
+	for_each_cpu(cpu, cfd->cpumask) {
+		struct call_single_data *csd = per_cpu_ptr(cfd->csd, cpu);
+		struct call_single_queue *dst =
+					&per_cpu(call_single_queue, cpu);
+		unsigned long flags;
+
+		csd_lock(csd);
+		csd->func = func;
+		csd->info = info;
+
+		raw_spin_lock_irqsave(&dst->lock, flags);
+		list_add_tail(&csd->list, &dst->list);
+		raw_spin_unlock_irqrestore(&dst->lock, flags);
+	}
+
+	/* Send a message to all CPUs in the map */
+	arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
+
+	if (wait) {
+		for_each_cpu(cpu, cfd->cpumask) {
+			struct call_single_data *csd;
+
+			csd = per_cpu_ptr(cfd->csd, cpu);
+			csd_lock_wait(csd);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(smp_call_function_many);
 
@@ -591,6 +776,7 @@ int smp_call_function(smp_call_func_t func, void *info, int wait)
 }
 EXPORT_SYMBOL(smp_call_function);
 
+<<<<<<< HEAD
 void ipi_call_lock(void)
 {
 	raw_spin_lock(&call_function.lock);
@@ -612,6 +798,8 @@ void ipi_call_unlock_irq(void)
 }
 #endif /* USE_GENERIC_SMP_HELPERS */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Setup configured maximum number of CPUs to activate */
 unsigned int setup_max_cpus = NR_CPUS;
 EXPORT_SYMBOL(setup_max_cpus);
@@ -675,11 +863,24 @@ void __init setup_nr_cpu_ids(void)
 	nr_cpu_ids = find_last_bit(cpumask_bits(cpu_possible_mask),NR_CPUS) + 1;
 }
 
+<<<<<<< HEAD
+=======
+void __weak smp_announce(void)
+{
+	printk(KERN_INFO "Brought up %d CPUs\n", num_online_cpus());
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Called by boot processor to activate the rest. */
 void __init smp_init(void)
 {
 	unsigned int cpu;
 
+<<<<<<< HEAD
+=======
+	idle_threads_init();
+
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: This should be done in userspace --RR */
 	for_each_present_cpu(cpu) {
 		if (num_online_cpus() >= setup_max_cpus)
@@ -689,7 +890,11 @@ void __init smp_init(void)
 	}
 
 	/* Any cleanup work */
+<<<<<<< HEAD
 	printk(KERN_INFO "Brought up %ld CPUs\n", (long)num_online_cpus());
+=======
+	smp_announce();
+>>>>>>> refs/remotes/origin/master
 	smp_cpus_done(setup_max_cpus);
 }
 
@@ -712,3 +917,139 @@ int on_each_cpu(void (*func) (void *info), void *info, int wait)
 	return ret;
 }
 EXPORT_SYMBOL(on_each_cpu);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/**
+ * on_each_cpu_mask(): Run a function on processors specified by
+ * cpumask, which may include the local processor.
+ * @mask: The set of cpus to run on (only runs on online subset).
+ * @func: The function to run. This must be fast and non-blocking.
+ * @info: An arbitrary pointer to pass to the function.
+ * @wait: If true, wait (atomically) until function has completed
+ *        on other CPUs.
+ *
+ * If @wait is true, then returns once @func has returned.
+ *
+<<<<<<< HEAD
+ * You must not call this function with disabled interrupts or
+ * from a hardware interrupt handler or from a bottom half handler.
+=======
+ * You must not call this function with disabled interrupts or from a
+ * hardware interrupt handler or from a bottom half handler.  The
+ * exception is that it may be used during early boot while
+ * early_boot_irqs_disabled is set.
+>>>>>>> refs/remotes/origin/master
+ */
+void on_each_cpu_mask(const struct cpumask *mask, smp_call_func_t func,
+			void *info, bool wait)
+{
+	int cpu = get_cpu();
+
+	smp_call_function_many(mask, func, info, wait);
+	if (cpumask_test_cpu(cpu, mask)) {
+<<<<<<< HEAD
+		local_irq_disable();
+		func(info);
+		local_irq_enable();
+=======
+		unsigned long flags;
+		local_irq_save(flags);
+		func(info);
+		local_irq_restore(flags);
+>>>>>>> refs/remotes/origin/master
+	}
+	put_cpu();
+}
+EXPORT_SYMBOL(on_each_cpu_mask);
+
+/*
+ * on_each_cpu_cond(): Call a function on each processor for which
+ * the supplied function cond_func returns true, optionally waiting
+ * for all the required CPUs to finish. This may include the local
+ * processor.
+ * @cond_func:	A callback function that is passed a cpu id and
+ *		the the info parameter. The function is called
+ *		with preemption disabled. The function should
+ *		return a blooean value indicating whether to IPI
+ *		the specified CPU.
+ * @func:	The function to run on all applicable CPUs.
+ *		This must be fast and non-blocking.
+ * @info:	An arbitrary pointer to pass to both functions.
+ * @wait:	If true, wait (atomically) until function has
+ *		completed on other CPUs.
+ * @gfp_flags:	GFP flags to use when allocating the cpumask
+ *		used internally by the function.
+ *
+ * The function might sleep if the GFP flags indicates a non
+ * atomic allocation is allowed.
+ *
+ * Preemption is disabled to protect against CPUs going offline but not online.
+ * CPUs going online during the call will not be seen or sent an IPI.
+ *
+ * You must not call this function with disabled interrupts or
+ * from a hardware interrupt handler or from a bottom half handler.
+ */
+void on_each_cpu_cond(bool (*cond_func)(int cpu, void *info),
+			smp_call_func_t func, void *info, bool wait,
+			gfp_t gfp_flags)
+{
+	cpumask_var_t cpus;
+	int cpu, ret;
+
+	might_sleep_if(gfp_flags & __GFP_WAIT);
+
+	if (likely(zalloc_cpumask_var(&cpus, (gfp_flags|__GFP_NOWARN)))) {
+		preempt_disable();
+		for_each_online_cpu(cpu)
+			if (cond_func(cpu, info))
+				cpumask_set_cpu(cpu, cpus);
+		on_each_cpu_mask(cpus, func, info, wait);
+		preempt_enable();
+		free_cpumask_var(cpus);
+	} else {
+		/*
+		 * No free cpumask, bother. No matter, we'll
+		 * just have to IPI them one by one.
+		 */
+		preempt_disable();
+		for_each_online_cpu(cpu)
+			if (cond_func(cpu, info)) {
+				ret = smp_call_function_single(cpu, func,
+								info, wait);
+				WARN_ON_ONCE(!ret);
+			}
+		preempt_enable();
+	}
+}
+EXPORT_SYMBOL(on_each_cpu_cond);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static void do_nothing(void *unused)
+{
+}
+
+/**
+ * kick_all_cpus_sync - Force all cpus out of idle
+ *
+ * Used to synchronize the update of pm_idle function pointer. It's
+ * called after the pointer is updated and returns after the dummy
+ * callback function has been executed on all cpus. The execution of
+ * the function can only happen on the remote cpus after they have
+ * left the idle function which had been called via pm_idle function
+ * pointer. So it's guaranteed that nothing uses the previous pointer
+ * anymore.
+ */
+void kick_all_cpus_sync(void)
+{
+	/* Make sure the change is visible before we kick the cpus */
+	smp_mb();
+	smp_call_function(do_nothing, NULL, 1);
+}
+EXPORT_SYMBOL_GPL(kick_all_cpus_sync);
+>>>>>>> refs/remotes/origin/master

@@ -198,6 +198,22 @@ static void enclosure_remove_links(struct enclosure_component *cdev)
 {
 	char name[ENCLOSURE_NAME_SIZE];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/*
+	 * In odd circumstances, like multipath devices, something else may
+	 * already have removed the links, so check for this condition first.
+	 */
+	if (!cdev->dev->kobj.sd)
+		return;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	enclosure_link_name(cdev, name);
 	sysfs_remove_link(&cdev->dev->kobj, name);
 	sysfs_remove_link(&cdev->cdev.kobj, "device");
@@ -239,7 +255,11 @@ static void enclosure_component_release(struct device *dev)
 	put_device(dev->parent);
 }
 
+<<<<<<< HEAD
 static const struct attribute_group *enclosure_groups[];
+=======
+static const struct attribute_group *enclosure_component_groups[];
+>>>>>>> refs/remotes/origin/master
 
 /**
  * enclosure_component_register - add a particular component to an enclosure
@@ -282,7 +302,11 @@ enclosure_component_register(struct enclosure_device *edev,
 		dev_set_name(cdev, "%u", number);
 
 	cdev->release = enclosure_component_release;
+<<<<<<< HEAD
 	cdev->groups = enclosure_groups;
+=======
+	cdev->groups = enclosure_component_groups;
+>>>>>>> refs/remotes/origin/master
 
 	err = device_register(cdev);
 	if (err) {
@@ -365,25 +389,44 @@ EXPORT_SYMBOL_GPL(enclosure_remove_device);
  * sysfs pieces below
  */
 
+<<<<<<< HEAD
 static ssize_t enclosure_show_components(struct device *cdev,
 					 struct device_attribute *attr,
 					 char *buf)
+=======
+static ssize_t components_show(struct device *cdev,
+			       struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct enclosure_device *edev = to_enclosure_device(cdev);
 
 	return snprintf(buf, 40, "%d\n", edev->components);
 }
+<<<<<<< HEAD
 
 static struct device_attribute enclosure_attrs[] = {
 	__ATTR(components, S_IRUGO, enclosure_show_components, NULL),
 	__ATTR_NULL
 };
+=======
+static DEVICE_ATTR_RO(components);
+
+static struct attribute *enclosure_class_attrs[] = {
+	&dev_attr_components.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(enclosure_class);
+>>>>>>> refs/remotes/origin/master
 
 static struct class enclosure_class = {
 	.name			= "enclosure",
 	.owner			= THIS_MODULE,
 	.dev_release		= enclosure_release,
+<<<<<<< HEAD
 	.dev_attrs		= enclosure_attrs,
+=======
+	.dev_groups		= enclosure_class_groups,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const char *const enclosure_status [] = {
@@ -536,6 +579,7 @@ static struct attribute *enclosure_component_attrs[] = {
 	&dev_attr_type.attr,
 	NULL
 };
+<<<<<<< HEAD
 
 static struct attribute_group enclosure_group = {
 	.attrs = enclosure_component_attrs,
@@ -545,6 +589,9 @@ static const struct attribute_group *enclosure_groups[] = {
 	&enclosure_group,
 	NULL
 };
+=======
+ATTRIBUTE_GROUPS(enclosure_component);
+>>>>>>> refs/remotes/origin/master
 
 static int __init enclosure_init(void)
 {

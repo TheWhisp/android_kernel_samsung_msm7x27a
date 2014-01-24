@@ -20,8 +20,22 @@
 #include <arch/chip.h>
 
 /* PAGE_SHIFT and HPAGE_SHIFT determine the page sizes. */
+<<<<<<< HEAD
 #define PAGE_SHIFT	HV_LOG2_PAGE_SIZE_SMALL
 #define HPAGE_SHIFT	HV_LOG2_PAGE_SIZE_LARGE
+=======
+#if defined(CONFIG_PAGE_SIZE_16KB)
+#define PAGE_SHIFT	14
+#define CTX_PAGE_FLAG	HV_CTX_PG_SM_16K
+#elif defined(CONFIG_PAGE_SIZE_64KB)
+#define PAGE_SHIFT	16
+#define CTX_PAGE_FLAG	HV_CTX_PG_SM_64K
+#else
+#define PAGE_SHIFT	HV_LOG2_DEFAULT_PAGE_SIZE_SMALL
+#define CTX_PAGE_FLAG	0
+#endif
+#define HPAGE_SHIFT	HV_LOG2_DEFAULT_PAGE_SIZE_LARGE
+>>>>>>> refs/remotes/origin/master
 
 #define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
 #define HPAGE_SIZE	(_AC(1, UL) << HPAGE_SHIFT)
@@ -30,6 +44,15 @@
 #define HPAGE_MASK	(~(HPAGE_SIZE - 1))
 
 /*
+<<<<<<< HEAD
+=======
+ * We do define AT_SYSINFO_EHDR to support vDSO,
+ * but don't use the gate mechanism.
+ */
+#define __HAVE_ARCH_GATE_AREA		1
+
+/*
+>>>>>>> refs/remotes/origin/master
  * If the Kconfig doesn't specify, set a maximum zone order that
  * is enough so that we can create huge pages from small pages given
  * the respective sizes of the two page types.  See <linux/mmzone.h>.
@@ -78,8 +101,12 @@ typedef HV_PTE pgprot_t;
 /*
  * User L2 page tables are managed as one L2 page table per page,
  * because we use the page allocator for them.  This keeps the allocation
+<<<<<<< HEAD
  * simple and makes it potentially useful to implement HIGHPTE at some point.
  * However, it's also inefficient, since L2 page tables are much smaller
+=======
+ * simple, but it's also inefficient, since L2 page tables are much smaller
+>>>>>>> refs/remotes/origin/master
  * than pages (currently 2KB vs 64KB).  So we should revisit this.
  */
 typedef struct page *pgtable_t;
@@ -128,14 +155,27 @@ static inline __attribute_const__ int get_order(unsigned long size)
 
 #define HUGETLB_PAGE_ORDER	(HPAGE_SHIFT - PAGE_SHIFT)
 
+<<<<<<< HEAD
 #define HUGE_MAX_HSTATE		2
+=======
+#define HUGE_MAX_HSTATE		6
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HUGETLB_PAGE
 #define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
 #endif
 
+<<<<<<< HEAD
 /* Each memory controller has PAs distinct in their high bits. */
 #define NR_PA_HIGHBIT_SHIFT (CHIP_PA_WIDTH() - CHIP_LOG_NUM_MSHIMS())
+=======
+/* Allow overriding how much VA or PA the kernel will use. */
+#define MAX_PA_WIDTH CHIP_PA_WIDTH()
+#define MAX_VA_WIDTH CHIP_VA_WIDTH()
+
+/* Each memory controller has PAs distinct in their high bits. */
+#define NR_PA_HIGHBIT_SHIFT (MAX_PA_WIDTH - CHIP_LOG_NUM_MSHIMS())
+>>>>>>> refs/remotes/origin/master
 #define NR_PA_HIGHBIT_VALUES (1 << CHIP_LOG_NUM_MSHIMS())
 #define __pa_to_highbits(pa) ((phys_addr_t)(pa) >> NR_PA_HIGHBIT_SHIFT)
 #define __pfn_to_highbits(pfn) ((pfn) >> (NR_PA_HIGHBIT_SHIFT - PAGE_SHIFT))
@@ -146,7 +186,11 @@ static inline __attribute_const__ int get_order(unsigned long size)
  * We reserve the lower half of memory for user-space programs, and the
  * upper half for system code.  We re-map all of physical memory in the
  * upper half, which takes a quarter of our VA space.  Then we have
+<<<<<<< HEAD
  * the vmalloc regions.  The supervisor code lives at 0xfffffff700000000,
+=======
+ * the vmalloc regions.  The supervisor code lives at the highest address,
+>>>>>>> refs/remotes/origin/master
  * with the hypervisor above that.
  *
  * Loadable kernel modules are placed immediately after the static
@@ -158,6 +202,7 @@ static inline __attribute_const__ int get_order(unsigned long size)
  * Similarly, for now we don't play any struct page mapping games.
  */
 
+<<<<<<< HEAD
 #if CHIP_PA_WIDTH() + 2 > CHIP_VA_WIDTH()
 # error Too much PA to map with the VA available!
 #endif
@@ -179,6 +224,20 @@ static inline __attribute_const__ int get_order(unsigned long size)
 
 /* Since we don't currently provide any fixmaps, we use an impossible VA. */
 #define FIXADDR_TOP             MEM_HV_START
+=======
+#if MAX_PA_WIDTH + 2 > MAX_VA_WIDTH
+# error Too much PA to map with the VA available!
+#endif
+
+#define PAGE_OFFSET		(-(_AC(1, UL) << (MAX_VA_WIDTH - 1)))
+#define KERNEL_HIGH_VADDR	_AC(0xfffffff800000000, UL)  /* high 32GB */
+#define FIXADDR_BASE		(KERNEL_HIGH_VADDR - 0x300000000) /* 4 GB */
+#define FIXADDR_TOP		(KERNEL_HIGH_VADDR - 0x200000000) /* 4 GB */
+#define _VMALLOC_START		FIXADDR_TOP
+#define MEM_SV_START		(KERNEL_HIGH_VADDR - 0x100000000) /* 256 MB */
+#define MEM_MODULE_START	(MEM_SV_START + (256*1024*1024)) /* 256 MB */
+#define MEM_MODULE_END		(MEM_MODULE_START + (256*1024*1024))
+>>>>>>> refs/remotes/origin/master
 
 #else /* !__tilegx__ */
 
@@ -200,6 +259,7 @@ static inline __attribute_const__ int get_order(unsigned long size)
  * values, and after that, we show "typical" values, since the actual
  * addresses depend on kernel #defines.
  *
+<<<<<<< HEAD
  * MEM_HV_INTRPT                   0xfe000000
  * MEM_SV_INTRPT (kernel code)     0xfd000000
  * MEM_USER_INTRPT (user vector)   0xfc000000
@@ -207,10 +267,19 @@ static inline __attribute_const__ int get_order(unsigned long size)
  * PKMAP_BASE                      0xf7000000 (via LAST_PKMAP)
  * HUGE_VMAP                       0xf3000000 (via CONFIG_NR_HUGE_VMAPS)
  * VMALLOC_START                   0xf0000000 (via __VMALLOC_RESERVE)
+=======
+ * MEM_HV_START                    0xfe000000
+ * MEM_SV_START  (kernel code)     0xfd000000
+ * MEM_USER_INTRPT (user vector)   0xfc000000
+ * FIX_KMAP_xxx                    0xfa000000 (via NR_CPUS * KM_TYPE_NR)
+ * PKMAP_BASE                      0xf9000000 (via LAST_PKMAP)
+ * VMALLOC_START                   0xf7000000 (via VMALLOC_RESERVE)
+>>>>>>> refs/remotes/origin/master
  * mapped LOWMEM                   0xc0000000
  */
 
 #define MEM_USER_INTRPT		_AC(0xfc000000, UL)
+<<<<<<< HEAD
 #if CONFIG_KERNEL_PL == 1
 #define MEM_SV_INTRPT		_AC(0xfd000000, UL)
 #define MEM_HV_INTRPT		_AC(0xfe000000, UL)
@@ -219,6 +288,10 @@ static inline __attribute_const__ int get_order(unsigned long size)
 #define MEM_SV_INTRPT		_AC(0xfe000000, UL)
 #define MEM_HV_INTRPT		_AC(0xff000000, UL)
 #endif
+=======
+#define MEM_SV_START		_AC(0xfd000000, UL)
+#define MEM_HV_START		_AC(0xfe000000, UL)
+>>>>>>> refs/remotes/origin/master
 
 #define INTRPT_SIZE		0x4000
 
@@ -239,7 +312,11 @@ static inline __attribute_const__ int get_order(unsigned long size)
 
 #endif /* __tilegx__ */
 
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
+=======
+#if !defined(__ASSEMBLY__) && !defined(VDSO_BUILD)
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HIGHMEM
 
@@ -325,6 +402,10 @@ static inline int pfn_valid(unsigned long pfn)
 
 struct mm_struct;
 extern pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr);
+<<<<<<< HEAD
+=======
+extern pte_t *virt_to_kpte(unsigned long kaddr);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* !__ASSEMBLY__ */
 

@@ -1,6 +1,7 @@
 #ifndef __ALPHA_A_OUT_H__
 #define __ALPHA_A_OUT_H__
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 /*
@@ -89,6 +90,10 @@ struct exec
    (sizeof(struct exec) + (x).fh.f_nscns*SCNHSZ + SCNROUND - 1) & ~(SCNROUND - 1))
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/a.out.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* Assume that start addresses below 4G belong to a TASO application.
    Unfortunately, there is no proper bit in the exec header to check.
@@ -98,5 +103,8 @@ struct exec
 	set_personality (((BFPM->taso || EX.ah.entry < 0x100000000L \
 			   ? ADDR_LIMIT_32BIT : 0) | PER_OSF4))
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __A_OUT_GNU_H__ */

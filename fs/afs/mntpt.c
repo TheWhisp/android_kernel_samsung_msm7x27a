@@ -22,7 +22,11 @@
 
 static struct dentry *afs_mntpt_lookup(struct inode *dir,
 				       struct dentry *dentry,
+<<<<<<< HEAD
 				       struct nameidata *nd);
+=======
+				       unsigned int flags);
+>>>>>>> refs/remotes/origin/master
 static int afs_mntpt_open(struct inode *inode, struct file *file);
 static void afs_mntpt_expiry_timed_out(struct work_struct *work);
 
@@ -104,7 +108,11 @@ out:
  */
 static struct dentry *afs_mntpt_lookup(struct inode *dir,
 				       struct dentry *dentry,
+<<<<<<< HEAD
 				       struct nameidata *nd)
+=======
+				       unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	_enter("%p,%p{%p{%s},%s}",
 	       dir,
@@ -200,9 +208,21 @@ static struct vfsmount *afs_mntpt_do_automount(struct dentry *mntpt)
 		if (PageError(page))
 			goto error;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		buf = kmap_atomic(page, KM_USER0);
 		memcpy(devname, buf, size);
 		kunmap_atomic(buf, KM_USER0);
+=======
+		buf = kmap_atomic(page);
+		memcpy(devname, buf, size);
+		kunmap_atomic(buf);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf = kmap_atomic(page);
+		memcpy(devname, buf, size);
+		kunmap_atomic(buf);
+>>>>>>> refs/remotes/origin/master
 		page_cache_release(page);
 		page = NULL;
 	}
@@ -242,7 +262,15 @@ struct vfsmount *afs_d_automount(struct path *path)
 {
 	struct vfsmount *newmnt;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	_enter("{%s,%s}", path->mnt->mnt_devname, path->dentry->d_name.name);
+=======
+	_enter("{%s}", path->dentry->d_name.name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_enter("{%s}", path->dentry->d_name.name);
+>>>>>>> refs/remotes/origin/master
 
 	newmnt = afs_mntpt_do_automount(path->dentry);
 	if (IS_ERR(newmnt))
@@ -252,7 +280,15 @@ struct vfsmount *afs_d_automount(struct path *path)
 	mnt_set_expiry(newmnt, &afs_vfsmounts);
 	queue_delayed_work(afs_wq, &afs_mntpt_expiry_timer,
 			   afs_mntpt_expiry_timeout * HZ);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	_leave(" = %p {%s}", newmnt, newmnt->mnt_devname);
+=======
+	_leave(" = %p", newmnt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_leave(" = %p", newmnt);
+>>>>>>> refs/remotes/origin/master
 	return newmnt;
 }
 

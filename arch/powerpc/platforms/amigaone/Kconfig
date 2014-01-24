@@ -8,7 +8,15 @@ config AMIGAONE
 	select NOT_COHERENT_CACHE
 	select CHECK_CACHE_COHERENCY
 	select DEFAULT_UIMAGE
+<<<<<<< HEAD
+<<<<<<< HEAD
 	select PCSPKR_PLATFORM
+=======
+	select HAVE_PCSPKR_PLATFORM
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select HAVE_PCSPKR_PLATFORM
+>>>>>>> refs/remotes/origin/master
 	help
 	Select AmigaOne for the following machines:
 	- AmigaOne SE/Teron CX (G3 only)

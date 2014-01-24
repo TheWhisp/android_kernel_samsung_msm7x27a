@@ -187,7 +187,11 @@ static void mcs5000_ts_phys_init(struct mcs5000_ts_data *data)
 			OP_MODE_ACTIVE | REPORT_RATE_80);
 }
 
+<<<<<<< HEAD
 static int __devinit mcs5000_ts_probe(struct i2c_client *client,
+=======
+static int mcs5000_ts_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 		const struct i2c_device_id *id)
 {
 	struct mcs5000_ts_data *data;
@@ -249,7 +253,11 @@ err_free_mem:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit mcs5000_ts_remove(struct i2c_client *client)
+=======
+static int mcs5000_ts_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mcs5000_ts_data *data = i2c_get_clientdata(client);
 
@@ -292,7 +300,11 @@ MODULE_DEVICE_TABLE(i2c, mcs5000_ts_id);
 
 static struct i2c_driver mcs5000_ts_driver = {
 	.probe		= mcs5000_ts_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mcs5000_ts_remove),
+=======
+	.remove		= mcs5000_ts_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "mcs5000_ts",
 #ifdef CONFIG_PM
@@ -302,6 +314,8 @@ static struct i2c_driver mcs5000_ts_driver = {
 	.id_table	= mcs5000_ts_id,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init mcs5000_ts_init(void)
 {
 	return i2c_add_driver(&mcs5000_ts_driver);
@@ -314,6 +328,12 @@ static void __exit mcs5000_ts_exit(void)
 
 module_init(mcs5000_ts_init);
 module_exit(mcs5000_ts_exit);
+=======
+module_i2c_driver(mcs5000_ts_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(mcs5000_ts_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Joonyoung Shim <jy0922.shim@samsung.com>");

@@ -13,7 +13,14 @@
 #ifndef _PING_H
 #define _PING_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <net/icmp.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/icmp.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/netns/hash.h>
 
 /* PING_HTABLE_SIZE must be power of 2 */
@@ -29,18 +36,36 @@
  */
 #define GID_T_MAX (((gid_t)~0U) >> 1)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Compatibility glue so we can support IPv6 when it's compiled as a module */
 struct pingv6_ops {
 	int (*ipv6_recv_error)(struct sock *sk, struct msghdr *msg, int len);
 	int (*datagram_recv_ctl)(struct sock *sk, struct msghdr *msg,
 				 struct sk_buff *skb);
+=======
+/* Compatibility glue so we can support IPv6 when it's compiled as a module */
+struct pingv6_ops {
+	int (*ipv6_recv_error)(struct sock *sk, struct msghdr *msg, int len,
+			       int *addr_len);
+	int (*ip6_datagram_recv_ctl)(struct sock *sk, struct msghdr *msg,
+				     struct sk_buff *skb);
+>>>>>>> refs/remotes/origin/master
 	int (*icmpv6_err_convert)(u8 type, u8 code, int *err);
 	void (*ipv6_icmp_error)(struct sock *sk, struct sk_buff *skb, int err,
 				__be16 port, u32 info, u8 *payload);
 	int (*ipv6_chk_addr)(struct net *net, const struct in6_addr *addr,
+<<<<<<< HEAD
 			     struct net_device *dev, int strict);
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     const struct net_device *dev, int strict);
+};
+
+>>>>>>> refs/remotes/origin/master
 struct ping_table {
 	struct hlist_nulls_head	hash[PING_HTABLE_SIZE];
 	rwlock_t		lock;
@@ -49,11 +74,21 @@ struct ping_table {
 struct ping_iter_state {
 	struct seq_net_private  p;
 	int			bucket;
+<<<<<<< HEAD
+};
+
+extern struct proto ping_prot;
+<<<<<<< HEAD
+extern struct ping_table ping_table;
+#if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+	sa_family_t		family;
 };
 
 extern struct proto ping_prot;
 extern struct ping_table ping_table;
-#if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 extern struct pingv6_ops pingv6_ops;
 #endif
 
@@ -72,7 +107,10 @@ int  ping_init_sock(struct sock *sk);
 void ping_close(struct sock *sk, long timeout);
 int  ping_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len);
 void ping_err(struct sk_buff *skb, int offset, u32 info);
+<<<<<<< HEAD
 void ping_v4_err(struct sk_buff *skb, u32 info);
+=======
+>>>>>>> refs/remotes/origin/master
 int  ping_getfrag(void *from, char *to, int offset, int fraglen, int odd,
 		  struct sk_buff *);
 
@@ -86,6 +124,13 @@ int  ping_v6_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 		     size_t len);
 int  ping_queue_rcv_skb(struct sock *sk, struct sk_buff *skb);
 void ping_rcv(struct sk_buff *skb);
+<<<<<<< HEAD
+=======
+
+
+extern void ping_rcv(struct sk_buff *);
+extern void ping_err(struct sk_buff *, u32 info);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_PROC_FS
 extern int __init ping_proc_init(void);
@@ -93,7 +138,37 @@ extern void ping_proc_exit(void);
 #endif
 
 void __init ping_init(void);
+<<<<<<< HEAD
 int  __init pingv6_init(void);
 void pingv6_exit(void);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#ifdef CONFIG_PROC_FS
+struct ping_seq_afinfo {
+	char				*name;
+	sa_family_t			family;
+	const struct file_operations	*seq_fops;
+	const struct seq_operations	seq_ops;
+};
+
+extern const struct file_operations ping_seq_fops;
+
+void *ping_seq_start(struct seq_file *seq, loff_t *pos, sa_family_t family);
+void *ping_seq_next(struct seq_file *seq, void *v, loff_t *pos);
+void ping_seq_stop(struct seq_file *seq, void *v);
+int ping_proc_register(struct net *net, struct ping_seq_afinfo *afinfo);
+void ping_proc_unregister(struct net *net, struct ping_seq_afinfo *afinfo);
+
+int __init ping_proc_init(void);
+void ping_proc_exit(void);
+#endif
+
+void __init ping_init(void);
+int  __init pingv6_init(void);
+void pingv6_exit(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _PING_H */

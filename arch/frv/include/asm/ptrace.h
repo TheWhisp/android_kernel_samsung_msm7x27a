@@ -11,6 +11,7 @@
 #ifndef _ASM_PTRACE_H
 #define _ASM_PTRACE_H
 
+<<<<<<< HEAD
 #include <asm/registers.h>
 #ifdef __KERNEL__
 #include <asm/irq_regs.h>
@@ -63,6 +64,12 @@
 #define PTRACE_GETFDPIC_INTERP	1	/* [addr] request the interpreter loadmap */
 
 #ifdef __KERNEL__
+=======
+#include <asm/irq_regs.h>
+#include <uapi/asm/ptrace.h>
+
+#define in_syscall(regs) (((regs)->tbr & TBR_TT) == TBR_TT_TRAP0)
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 struct task_struct;
@@ -76,9 +83,18 @@ register struct pt_regs *__frame asm("gr28");
 #define user_mode(regs)			(!((regs)->psr & PSR_S))
 #define instruction_pointer(regs)	((regs)->pc)
 #define user_stack_pointer(regs)	((regs)->sp)
+<<<<<<< HEAD
 
 extern unsigned long user_stack(const struct pt_regs *);
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define current_pt_regs()		(__frame)
+
+extern unsigned long user_stack(const struct pt_regs *);
+>>>>>>> refs/remotes/origin/master
 #define profile_pc(regs) ((regs)->pc)
 
 #define task_pt_regs(task) ((task)->thread.frame0)
@@ -86,5 +102,8 @@ extern void show_regs(struct pt_regs *);
 #define arch_has_single_step()	(1)
 
 #endif /* !__ASSEMBLY__ */
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_PTRACE_H */

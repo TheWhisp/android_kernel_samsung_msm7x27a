@@ -21,6 +21,14 @@
 #include <linux/time.h>
 #include <linux/wait.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/firmware.h>
 #include <sound/core.h>
 #include <sound/snd_wavefront.h>
@@ -239,7 +247,11 @@ snd_wavefront_fx_ioctl (struct snd_hwdep *sdev, struct file *file,
    that outputs it.
 */
 
+<<<<<<< HEAD
 int __devinit
+=======
+int
+>>>>>>> refs/remotes/origin/master
 snd_wavefront_fx_start (snd_wavefront_t *dev)
 {
 	unsigned int i;

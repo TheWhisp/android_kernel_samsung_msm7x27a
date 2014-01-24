@@ -45,6 +45,17 @@ static int adfs_readpage(struct file *file, struct page *page)
 	return block_read_full_page(page, adfs_get_block);
 }
 
+<<<<<<< HEAD
+=======
+static void adfs_write_failed(struct address_space *mapping, loff_t to)
+{
+	struct inode *inode = mapping->host;
+
+	if (to > inode->i_size)
+		truncate_pagecache(inode, inode->i_size);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int adfs_write_begin(struct file *file, struct address_space *mapping,
 			loff_t pos, unsigned len, unsigned flags,
 			struct page **pagep, void **fsdata)
@@ -55,11 +66,16 @@ static int adfs_write_begin(struct file *file, struct address_space *mapping,
 	ret = cont_write_begin(file, mapping, pos, len, flags, pagep, fsdata,
 				adfs_get_block,
 				&ADFS_I(mapping->host)->mmu_private);
+<<<<<<< HEAD
 	if (unlikely(ret)) {
 		loff_t isize = mapping->host->i_size;
 		if (pos + len > isize)
 			vmtruncate(mapping->host, isize);
 	}
+=======
+	if (unlikely(ret))
+		adfs_write_failed(mapping, pos + len);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -247,7 +263,15 @@ adfs_iget(struct super_block *sb, struct object_info *obj)
 	inode->i_gid	 = ADFS_SB(sb)->s_gid;
 	inode->i_ino	 = obj->file_id;
 	inode->i_size	 = obj->size;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink	 = 2;
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/master
 	inode->i_blocks	 = (inode->i_size + sb->s_blocksize - 1) >>
 			    sb->s_blocksize_bits;
 
@@ -304,8 +328,13 @@ adfs_notify_change(struct dentry *dentry, struct iattr *attr)
 	 * we can't change the UID or GID of any file -
 	 * we have a global UID/GID in the superblock
 	 */
+<<<<<<< HEAD
 	if ((ia_valid & ATTR_UID && attr->ia_uid != ADFS_SB(sb)->s_uid) ||
 	    (ia_valid & ATTR_GID && attr->ia_gid != ADFS_SB(sb)->s_gid))
+=======
+	if ((ia_valid & ATTR_UID && !uid_eq(attr->ia_uid, ADFS_SB(sb)->s_uid)) ||
+	    (ia_valid & ATTR_GID && !gid_eq(attr->ia_gid, ADFS_SB(sb)->s_gid)))
+>>>>>>> refs/remotes/origin/master
 		error = -EPERM;
 
 	if (error)

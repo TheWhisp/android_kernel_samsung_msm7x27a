@@ -305,7 +305,11 @@ static int aac_sa_ioremap(struct aac_dev * dev, u32 size)
 		iounmap(dev->regs.sa);
 		return 0;
 	}
+<<<<<<< HEAD
 	dev->base = dev->regs.sa = ioremap(dev->scsi_host_ptr->base, size);
+=======
+	dev->base = dev->regs.sa = ioremap(dev->base_start, size);
+>>>>>>> refs/remotes/origin/master
 	return (dev->base == NULL) ? -1 : 0;
 }
 
@@ -385,6 +389,14 @@ int aac_sa_init(struct aac_dev *dev)
 
 	if(aac_init_adapter(dev) == NULL)
 		goto error_irq;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dev->sync_mode = 0;	/* sync. mode not supported */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->sync_mode = 0;	/* sync. mode not supported */
+>>>>>>> refs/remotes/origin/master
 	if (request_irq(dev->pdev->irq, dev->a_ops.adapter_intr,
 			IRQF_SHARED|IRQF_DISABLED,
 			"aacraid", (void *)dev ) < 0) {
@@ -392,7 +404,11 @@ int aac_sa_init(struct aac_dev *dev)
 			name, instance);
 		goto error_iounmap;
 	}
+<<<<<<< HEAD
 	dev->dbg_base = dev->scsi_host_ptr->base;
+=======
+	dev->dbg_base = dev->base_start;
+>>>>>>> refs/remotes/origin/master
 	dev->dbg_base_mapped = dev->base;
 	dev->dbg_size = dev->base_size;
 

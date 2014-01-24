@@ -149,17 +149,29 @@
 #include <linux/interrupt.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/visws/cobalt.h>
 
 #include "sound_config.h"
 
+<<<<<<< HEAD
+=======
+static DEFINE_MUTEX(vwsnd_mutex);
+
+>>>>>>> refs/remotes/origin/master
 /*****************************************************************************/
 /* debug stuff */
 
 #ifdef VWSND_DEBUG
 
+<<<<<<< HEAD
 static DEFINE_MUTEX(vwsnd_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 static int shut_up = 1;
 
 /*
@@ -438,7 +450,11 @@ static __inline__ void li_writeb(lithium_t *lith, int off, unsigned char val)
  *
  * Observe that (mask & -mask) is (1 << low_set_bit_of(mask)).
  * As long as mask is constant, we trust the compiler will change the
+<<<<<<< HEAD
  * multipy and divide into shifts.
+=======
+ * multiply and divide into shifts.
+>>>>>>> refs/remotes/origin/master
  */
 
 #define SHIFT_FIELD(val, mask) (((val) * ((mask) & -(mask))) & (mask))
@@ -2919,6 +2935,10 @@ static int vwsnd_audio_open(struct inode *inode, struct file *file)
 	vwsnd_dev_t *devc;
 	int minor = iminor(inode);
 	int sw_samplefmt;
+<<<<<<< HEAD
+=======
+	DEFINE_WAIT(wait);
+>>>>>>> refs/remotes/origin/master
 
 	DBGE("(inode=0x%p, file=0x%p)\n", inode, file);
 
@@ -2935,6 +2955,7 @@ static int vwsnd_audio_open(struct inode *inode, struct file *file)
 	}
 
 	mutex_lock(&devc->open_mutex);
+<<<<<<< HEAD
 	while (devc->open_mode & file->f_mode) {
 		mutex_unlock(&devc->open_mutex);
 		if (file->f_flags & O_NONBLOCK) {
@@ -2950,6 +2971,28 @@ static int vwsnd_audio_open(struct inode *inode, struct file *file)
 		}
 		mutex_lock(&devc->open_mutex);
 	}
+=======
+	while (1) {
+		prepare_to_wait(&devc->open_wait, &wait, TASK_INTERRUPTIBLE);
+		if (!(devc->open_mode & file->f_mode))
+			break;
+
+		mutex_unlock(&devc->open_mutex);
+		mutex_unlock(&vwsnd_mutex);
+		if (file->f_flags & O_NONBLOCK) {
+			DEC_USE_COUNT;
+			return -EBUSY;
+		}
+		schedule();
+		if (signal_pending(current)) {
+			DEC_USE_COUNT;
+			return -ERESTARTSYS;
+		}
+		mutex_lock(&vwsnd_mutex);
+		mutex_lock(&devc->open_mutex);
+	}
+	finish_wait(&devc->open_wait, &wait);
+>>>>>>> refs/remotes/origin/master
 	devc->open_mode |= file->f_mode & (FMODE_READ | FMODE_WRITE);
 	mutex_unlock(&devc->open_mutex);
 

@@ -18,8 +18,20 @@
 #define SYN_QUE_SERIAL_NUMBER_SUFFIX	0x07
 #define SYN_QUE_RESOLUTION		0x08
 #define SYN_QUE_EXT_CAPAB		0x09
+<<<<<<< HEAD
 #define SYN_QUE_EXT_CAPAB_0C		0x0c
+<<<<<<< HEAD
 #define SYN_QUE_EXT_DIMENSIONS		0x0d
+=======
+#define SYN_QUE_EXT_MAX_COORDS		0x0d
+#define SYN_QUE_EXT_MIN_COORDS		0x0f
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SYN_QUE_FIRMWARE_ID		0x0a
+#define SYN_QUE_EXT_CAPAB_0C		0x0c
+#define SYN_QUE_EXT_MAX_COORDS		0x0d
+#define SYN_QUE_EXT_MIN_COORDS		0x0f
+>>>>>>> refs/remotes/origin/master
 
 /* synatics modes */
 #define SYN_BIT_ABSOLUTE_MODE		(1 << 7)
@@ -66,18 +78,55 @@
  * 1	0x60	multifinger mode	identifies firmware finger counting
  *					(not reporting!) algorithm.
  *					Not particularly meaningful
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 1	0x80    covered pad		W clipped to 14, 15 == pad mostly covered
  * 2	0x01    clickpad bit 1		2-button ClickPad
  * 2	0x02    deluxe LED controls	touchpad support LED commands
+=======
+ * 1	0x80	covered pad		W clipped to 14, 15 == pad mostly covered
+ * 2	0x01	clickpad bit 1		2-button ClickPad
+ * 2	0x02	deluxe LED controls	touchpad support LED commands
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * 1	0x80	covered pad		W clipped to 14, 15 == pad mostly covered
+ * 2	0x01	clickpad bit 1		2-button ClickPad
+ * 2	0x02	deluxe LED controls	touchpad support LED commands
+>>>>>>> refs/remotes/origin/master
  *					ala multimedia control bar
  * 2	0x04	reduced filtering	firmware does less filtering on
  *					position data, driver should watch
  *					for noise.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * 2	0x08	image sensor		image sensor tracks 5 fingers, but only
+ *					reports 2.
+ * 2	0x20	report min		query 0x0f gives min coord reported
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * 2	0x08	image sensor		image sensor tracks 5 fingers, but only
+ *					reports 2.
+ * 2	0x20	report min		query 0x0f gives min coord reported
+>>>>>>> refs/remotes/origin/master
  */
 #define SYN_CAP_CLICKPAD(ex0c)		((ex0c) & 0x100000) /* 1-button ClickPad */
 #define SYN_CAP_CLICKPAD2BTN(ex0c)	((ex0c) & 0x000100) /* 2-button ClickPad */
 #define SYN_CAP_MAX_DIMENSIONS(ex0c)	((ex0c) & 0x020000)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SYN_CAP_ADV_GESTURE(ex0c)	((ex0c) & 0x080000)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define SYN_CAP_MIN_DIMENSIONS(ex0c)	((ex0c) & 0x002000)
+#define SYN_CAP_ADV_GESTURE(ex0c)	((ex0c) & 0x080000)
+#define SYN_CAP_REDUCED_FILTERING(ex0c)	((ex0c) & 0x000400)
+#define SYN_CAP_IMAGE_SENSOR(ex0c)	((ex0c) & 0x000800)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* synaptics modes query bits */
 #define SYN_MODE_ABSOLUTE(m)		((m) & (1 << 7))
@@ -93,6 +142,14 @@
 #define SYN_ID_MINOR(i)			(((i) >> 16) & 0xff)
 #define SYN_ID_FULL(i)			((SYN_ID_MAJOR(i) << 8) | SYN_ID_MINOR(i))
 #define SYN_ID_IS_SYNAPTICS(i)		((((i) >> 8) & 0xff) == 0x47)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define SYN_ID_DISGEST_SUPPORTED(i)	(SYN_ID_MAJOR(i) >= 4)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SYN_ID_DISGEST_SUPPORTED(i)	(SYN_ID_MAJOR(i) >= 4)
+>>>>>>> refs/remotes/origin/master
 
 /* synaptics special commands */
 #define SYN_PS_SET_MODE2		0x14
@@ -104,10 +161,35 @@
 #define SYN_NEWABS_RELAXED		2
 #define SYN_OLDABS			3
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * A structure to describe the state of the touchpad hardware (buttons and pad)
  */
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* amount to fuzz position data when touchpad reports reduced filtering */
+#define SYN_REDUCED_FILTER_FUZZ		8
+
+/*
+ * A structure to describe which internal touchpad finger slots are being
+ * reported in raw packets.
+ */
+struct synaptics_mt_state {
+	int count;			/* num fingers being tracked */
+	int sgm;			/* which slot is reported by sgm pkt */
+	int agm;			/* which slot is reported by agm pkt*/
+};
+
+/*
+ * A structure to describe the state of the touchpad hardware (buttons and pad)
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct synaptics_hw_state {
 	int x;
 	int y;
@@ -120,30 +202,88 @@ struct synaptics_hw_state {
 	unsigned int down:1;
 	unsigned char ext_buttons;
 	signed char scroll;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	/* As reported in last AGM-CONTACT packets */
+	struct synaptics_mt_state mt_state;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* As reported in last AGM-CONTACT packets */
+	struct synaptics_mt_state mt_state;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct synaptics_data {
 	/* Data read from the touchpad */
 	unsigned long int model_id;		/* Model-ID */
+<<<<<<< HEAD
+=======
+	unsigned long int firmware_id;		/* Firmware-ID */
+	unsigned long int board_id;		/* Board-ID */
+>>>>>>> refs/remotes/origin/master
 	unsigned long int capabilities;		/* Capabilities */
 	unsigned long int ext_cap;		/* Extended Capabilities */
 	unsigned long int ext_cap_0c;		/* Ext Caps from 0x0c query */
 	unsigned long int identity;		/* Identification */
 	unsigned int x_res, y_res;		/* X/Y resolution in units/mm */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int x_max, y_max;		/* Max dimensions (from FW) */
+=======
+	unsigned int x_max, y_max;		/* Max coordinates (from FW) */
+	unsigned int x_min, y_min;		/* Min coordinates (from FW) */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int x_max, y_max;		/* Max coordinates (from FW) */
+	unsigned int x_min, y_min;		/* Min coordinates (from FW) */
+>>>>>>> refs/remotes/origin/master
 
 	unsigned char pkt_type;			/* packet type - old, new, etc */
 	unsigned char mode;			/* current mode byte */
 	int scroll;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct serio *pt_port;			/* Pass-through serio port */
 
 	struct synaptics_hw_state mt;		/* current gesture packet */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	bool absolute_mode;			/* run in Absolute mode */
+	bool disable_gesture;			/* disable gestures */
+
+	struct serio *pt_port;			/* Pass-through serio port */
+
+	struct synaptics_mt_state mt_state;	/* Current mt finger state */
+	bool mt_state_lost;			/* mt_state may be incorrect */
+
+	/*
+	 * Last received Advanced Gesture Mode (AGM) packet. An AGM packet
+	 * contains position data for a second contact, at half resolution.
+	 */
+	struct synaptics_hw_state agm;
+	bool agm_pending;			/* new AGM packet received */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 void synaptics_module_init(void);
 int synaptics_detect(struct psmouse *psmouse, bool set_properties);
 int synaptics_init(struct psmouse *psmouse);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int synaptics_init_relative(struct psmouse *psmouse);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int synaptics_init_relative(struct psmouse *psmouse);
+>>>>>>> refs/remotes/origin/master
 void synaptics_reset(struct psmouse *psmouse);
 bool synaptics_supported(void);
 

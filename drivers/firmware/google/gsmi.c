@@ -27,6 +27,15 @@
 #include <linux/kdebug.h>
 #include <linux/reboot.h>
 #include <linux/efi.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/ucs2_string.h>
+>>>>>>> refs/remotes/origin/master
 
 #define GSMI_SHUTDOWN_CLEAN	0	/* Clean Shutdown */
 /* TODO(mikew@google.com): Tie in HARDLOCKUP_DETECTOR with NMIWDT */
@@ -287,6 +296,7 @@ static int gsmi_exec(u8 func, u8 sub)
 	return rc;
 }
 
+<<<<<<< HEAD
 /* Return the number of unicode characters in data */
 static size_t
 utf16_strlen(efi_char16_t *data, unsigned long maxlength)
@@ -298,6 +308,8 @@ utf16_strlen(efi_char16_t *data, unsigned long maxlength)
 	return length;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static efi_status_t gsmi_get_variable(efi_char16_t *name,
 				      efi_guid_t *vendor, u32 *attr,
 				      unsigned long *data_size,
@@ -310,7 +322,11 @@ static efi_status_t gsmi_get_variable(efi_char16_t *name,
 	};
 	efi_status_t ret = EFI_SUCCESS;
 	unsigned long flags;
+<<<<<<< HEAD
 	size_t name_len = utf16_strlen(name, GSMI_BUF_SIZE / 2);
+=======
+	size_t name_len = ucs2_strnlen(name, GSMI_BUF_SIZE / 2);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	if (name_len >= GSMI_BUF_SIZE / 2)
@@ -344,7 +360,17 @@ static efi_status_t gsmi_get_variable(efi_char16_t *name,
 		memcpy(&param, gsmi_dev.param_buf->start, sizeof(param));
 
 		/* The size reported is the min of all of our buffers */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		*data_size = min(*data_size, gsmi_dev.data_buf->length);
+=======
+		*data_size = min_t(unsigned long, *data_size,
+						gsmi_dev.data_buf->length);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*data_size = min_t(unsigned long, *data_size,
+						gsmi_dev.data_buf->length);
+>>>>>>> refs/remotes/origin/master
 		*data_size = min_t(unsigned long, *data_size, param.data_len);
 
 		/* Copy data back to return buffer. */
@@ -378,7 +404,11 @@ static efi_status_t gsmi_get_next_variable(unsigned long *name_size,
 		return EFI_BAD_BUFFER_SIZE;
 
 	/* Let's make sure the thing is at least null-terminated */
+<<<<<<< HEAD
 	if (utf16_strlen(name, GSMI_BUF_SIZE / 2) == GSMI_BUF_SIZE / 2)
+=======
+	if (ucs2_strnlen(name, GSMI_BUF_SIZE / 2) == GSMI_BUF_SIZE / 2)
+>>>>>>> refs/remotes/origin/master
 		return EFI_INVALID_PARAMETER;
 
 	spin_lock_irqsave(&gsmi_dev.lock, flags);
@@ -406,7 +436,11 @@ static efi_status_t gsmi_get_next_variable(unsigned long *name_size,
 
 		/* Copy the name back */
 		memcpy(name, gsmi_dev.name_buf->start, GSMI_BUF_SIZE);
+<<<<<<< HEAD
 		*name_size = utf16_strlen(name, GSMI_BUF_SIZE / 2) * 2;
+=======
+		*name_size = ucs2_strnlen(name, GSMI_BUF_SIZE / 2) * 2;
+>>>>>>> refs/remotes/origin/master
 
 		/* copy guid to return buffer */
 		memcpy(vendor, &param.guid, sizeof(param.guid));
@@ -420,7 +454,15 @@ static efi_status_t gsmi_get_next_variable(unsigned long *name_size,
 
 static efi_status_t gsmi_set_variable(efi_char16_t *name,
 				      efi_guid_t *vendor,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				      unsigned long attr,
+=======
+				      u32 attr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      u32 attr,
+>>>>>>> refs/remotes/origin/master
 				      unsigned long data_size,
 				      void *data)
 {
@@ -432,7 +474,11 @@ static efi_status_t gsmi_set_variable(efi_char16_t *name,
 			      EFI_VARIABLE_BOOTSERVICE_ACCESS |
 			      EFI_VARIABLE_RUNTIME_ACCESS,
 	};
+<<<<<<< HEAD
 	size_t name_len = utf16_strlen(name, GSMI_BUF_SIZE / 2);
+=======
+	size_t name_len = ucs2_strnlen(name, GSMI_BUF_SIZE / 2);
+>>>>>>> refs/remotes/origin/master
 	efi_status_t ret = EFI_SUCCESS;
 	int rc;
 	unsigned long flags;
@@ -533,7 +579,11 @@ static ssize_t gsmi_clear_eventlog_store(struct kobject *kobj,
 		u32 data_type;
 	} param;
 
+<<<<<<< HEAD
 	rc = strict_strtoul(buf, 0, &val);
+=======
+	rc = kstrtoul(buf, 0, &val);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		return rc;
 
@@ -772,6 +822,16 @@ static __init int gsmi_system_valid(void)
 static struct kobject *gsmi_kobj;
 static struct efivars efivars;
 
+<<<<<<< HEAD
+=======
+static const struct platform_device_info gsmi_dev_info = {
+	.name		= "gsmi",
+	.id		= -1,
+	/* SMI callbacks require 32bit addresses */
+	.dma_mask	= DMA_BIT_MASK(32),
+};
+
+>>>>>>> refs/remotes/origin/master
 static __init int gsmi_init(void)
 {
 	unsigned long flags;
@@ -784,7 +844,11 @@ static __init int gsmi_init(void)
 	gsmi_dev.smi_cmd = acpi_gbl_FADT.smi_command;
 
 	/* register device */
+<<<<<<< HEAD
 	gsmi_dev.pdev = platform_device_register_simple("gsmi", -1, NULL, 0);
+=======
+	gsmi_dev.pdev = platform_device_register_full(&gsmi_dev_info);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(gsmi_dev.pdev)) {
 		printk(KERN_ERR "gsmi: unable to register platform device\n");
 		return PTR_ERR(gsmi_dev.pdev);
@@ -793,10 +857,13 @@ static __init int gsmi_init(void)
 	/* SMI access needs to be serialized */
 	spin_lock_init(&gsmi_dev.lock);
 
+<<<<<<< HEAD
 	/* SMI callbacks require 32bit addresses */
 	gsmi_dev.pdev->dev.coherent_dma_mask = DMA_BIT_MASK(32);
 	gsmi_dev.pdev->dev.dma_mask =
 		&gsmi_dev.pdev->dev.coherent_dma_mask;
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = -ENOMEM;
 	gsmi_dev.dma_pool = dma_pool_create("gsmi", &gsmi_dev.pdev->dev,
 					     GSMI_BUF_SIZE, GSMI_BUF_ALIGN, 0);
@@ -869,8 +936,14 @@ static __init int gsmi_init(void)
 		goto out_err;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "gsmi version " DRIVER_VERSION " loaded\n");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Register in the firmware directory */
 	ret = -ENOMEM;
 	gsmi_kobj = kobject_create_and_add("gsmi", firmware_kobj);
@@ -890,12 +963,39 @@ static __init int gsmi_init(void)
 	ret = sysfs_create_files(gsmi_kobj, gsmi_attrs);
 	if (ret) {
 		printk(KERN_INFO "gsmi: Failed to add attrs");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_err;
 	}
 
 	if (register_efivars(&efivars, &efivar_ops, gsmi_kobj)) {
 		printk(KERN_INFO "gsmi: Failed to register efivars\n");
 		goto out_err;
+=======
+		goto out_remove_bin_file;
+	}
+
+	ret = register_efivars(&efivars, &efivar_ops, gsmi_kobj);
+	if (ret) {
+		printk(KERN_INFO "gsmi: Failed to register efivars\n");
+		goto out_remove_sysfs_files;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_remove_bin_file;
+	}
+
+	ret = efivars_register(&efivars, &efivar_ops, gsmi_kobj);
+	if (ret) {
+		printk(KERN_INFO "gsmi: Failed to register efivars\n");
+		goto out_remove_sysfs_files;
+	}
+
+	ret = efivars_sysfs_init();
+	if (ret) {
+		printk(KERN_INFO "gsmi: Failed to create efivars files\n");
+		efivars_unregister(&efivars);
+		goto out_remove_sysfs_files;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	register_reboot_notifier(&gsmi_reboot_notifier);
@@ -903,9 +1003,27 @@ static __init int gsmi_init(void)
 	atomic_notifier_chain_register(&panic_notifier_list,
 				       &gsmi_panic_notifier);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 
  out_err:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	printk(KERN_INFO "gsmi version " DRIVER_VERSION " loaded\n");
+
+	return 0;
+
+out_remove_sysfs_files:
+	sysfs_remove_files(gsmi_kobj, gsmi_attrs);
+out_remove_bin_file:
+	sysfs_remove_bin_file(gsmi_kobj, &eventlog_bin_attr);
+out_err:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kobject_put(gsmi_kobj);
 	gsmi_buf_free(gsmi_dev.param_buf);
 	gsmi_buf_free(gsmi_dev.data_buf);
@@ -923,8 +1041,20 @@ static void __exit gsmi_exit(void)
 	unregister_die_notifier(&gsmi_die_notifier);
 	atomic_notifier_chain_unregister(&panic_notifier_list,
 					 &gsmi_panic_notifier);
+<<<<<<< HEAD
 	unregister_efivars(&efivars);
 
+<<<<<<< HEAD
+=======
+	sysfs_remove_files(gsmi_kobj, gsmi_attrs);
+	sysfs_remove_bin_file(gsmi_kobj, &eventlog_bin_attr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	efivars_unregister(&efivars);
+
+	sysfs_remove_files(gsmi_kobj, gsmi_attrs);
+	sysfs_remove_bin_file(gsmi_kobj, &eventlog_bin_attr);
+>>>>>>> refs/remotes/origin/master
 	kobject_put(gsmi_kobj);
 	gsmi_buf_free(gsmi_dev.param_buf);
 	gsmi_buf_free(gsmi_dev.data_buf);

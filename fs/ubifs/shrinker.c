@@ -277,6 +277,7 @@ static int kick_a_thread(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 int ubifs_shrinker(struct shrinker *shrink, struct shrink_control *sc)
 {
 	int nr = sc->nr_to_scan;
@@ -289,6 +290,27 @@ int ubifs_shrinker(struct shrinker *shrink, struct shrink_control *sc)
 		 * temporarily be negative.
 		 */
 		return clean_zn_cnt >= 0 ? clean_zn_cnt : 1;
+=======
+unsigned long ubifs_shrink_count(struct shrinker *shrink,
+				 struct shrink_control *sc)
+{
+	long clean_zn_cnt = atomic_long_read(&ubifs_clean_zn_cnt);
+
+	/*
+	 * Due to the way UBIFS updates the clean znode counter it may
+	 * temporarily be negative.
+	 */
+	return clean_zn_cnt >= 0 ? clean_zn_cnt : 1;
+}
+
+unsigned long ubifs_shrink_scan(struct shrinker *shrink,
+				struct shrink_control *sc)
+{
+	unsigned long nr = sc->nr_to_scan;
+	int contention = 0;
+	unsigned long freed;
+	long clean_zn_cnt = atomic_long_read(&ubifs_clean_zn_cnt);
+>>>>>>> refs/remotes/origin/master
 
 	if (!clean_zn_cnt) {
 		/*
@@ -316,10 +338,18 @@ int ubifs_shrinker(struct shrinker *shrink, struct shrink_control *sc)
 
 	if (!freed && contention) {
 		dbg_tnc("freed nothing, but contention");
+<<<<<<< HEAD
 		return -1;
 	}
 
 out:
 	dbg_tnc("%d znodes were freed, requested %d", freed, nr);
+=======
+		return SHRINK_STOP;
+	}
+
+out:
+	dbg_tnc("%lu znodes were freed, requested %lu", freed, nr);
+>>>>>>> refs/remotes/origin/master
 	return freed;
 }

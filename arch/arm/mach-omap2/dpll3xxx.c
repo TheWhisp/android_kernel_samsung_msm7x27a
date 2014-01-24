@@ -28,9 +28,14 @@
 #include <linux/bitops.h>
 #include <linux/clkdev.h>
 
+<<<<<<< HEAD
 #include <plat/cpu.h>
 #include <plat/clock.h>
 
+=======
+#include "soc.h"
+#include "clockdomain.h"
+>>>>>>> refs/remotes/origin/master
 #include "clock.h"
 #include "cm2xxx_3xxx.h"
 #include "cm-regbits-34xx.h"
@@ -44,7 +49,11 @@
 /* Private functions */
 
 /* _omap3_dpll_write_clken - write clken_bits arg to a DPLL's enable bits */
+<<<<<<< HEAD
 static void _omap3_dpll_write_clken(struct clk *clk, u8 clken_bits)
+=======
+static void _omap3_dpll_write_clken(struct clk_hw_omap *clk, u8 clken_bits)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct dpll_data *dd;
 	u32 v;
@@ -58,13 +67,24 @@ static void _omap3_dpll_write_clken(struct clk *clk, u8 clken_bits)
 }
 
 /* _omap3_wait_dpll_status: wait for a DPLL to enter a specific state */
+<<<<<<< HEAD
 static int _omap3_wait_dpll_status(struct clk *clk, u8 state)
+=======
+static int _omap3_wait_dpll_status(struct clk_hw_omap *clk, u8 state)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct dpll_data *dd;
 	int i = 0;
 	int ret = -EINVAL;
+<<<<<<< HEAD
 
 	dd = clk->dpll_data;
+=======
+	const char *clk_name;
+
+	dd = clk->dpll_data;
+	clk_name = __clk_get_name(clk->hw.clk);
+>>>>>>> refs/remotes/origin/master
 
 	state <<= __ffs(dd->idlest_mask);
 
@@ -76,10 +96,17 @@ static int _omap3_wait_dpll_status(struct clk *clk, u8 state)
 
 	if (i == MAX_DPLL_WAIT_TRIES) {
 		printk(KERN_ERR "clock: %s failed transition to '%s'\n",
+<<<<<<< HEAD
 		       clk->name, (state) ? "locked" : "bypassed");
 	} else {
 		pr_debug("clock: %s transition to '%s' in %d loops\n",
 			 clk->name, (state) ? "locked" : "bypassed", i);
+=======
+		       clk_name, (state) ? "locked" : "bypassed");
+	} else {
+		pr_debug("clock: %s transition to '%s' in %d loops\n",
+			 clk_name, (state) ? "locked" : "bypassed", i);
+>>>>>>> refs/remotes/origin/master
 
 		ret = 0;
 	}
@@ -88,12 +115,20 @@ static int _omap3_wait_dpll_status(struct clk *clk, u8 state)
 }
 
 /* From 3430 TRM ES2 4.7.6.2 */
+<<<<<<< HEAD
 static u16 _omap3_dpll_compute_freqsel(struct clk *clk, u8 n)
+=======
+static u16 _omap3_dpll_compute_freqsel(struct clk_hw_omap *clk, u8 n)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long fint;
 	u16 f = 0;
 
+<<<<<<< HEAD
 	fint = clk->dpll_data->clk_ref->rate / n;
+=======
+	fint = __clk_get_rate(clk->dpll_data->clk_ref) / n;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("clock: fint is %lu\n", fint);
 
@@ -133,6 +168,7 @@ static u16 _omap3_dpll_compute_freqsel(struct clk *clk, u8 n)
  * locked successfully, return 0; if the DPLL did not lock in the time
  * allotted, or DPLL3 was passed in, return -EINVAL.
  */
+<<<<<<< HEAD
 static int _omap3_noncore_dpll_lock(struct clk *clk)
 {
 	u8 ai;
@@ -143,6 +179,28 @@ static int _omap3_noncore_dpll_lock(struct clk *clk)
 	ai = omap3_dpll_autoidle_read(clk);
 
 	omap3_dpll_deny_idle(clk);
+=======
+static int _omap3_noncore_dpll_lock(struct clk_hw_omap *clk)
+{
+	const struct dpll_data *dd;
+	u8 ai;
+	u8 state = 1;
+	int r = 0;
+
+	pr_debug("clock: locking DPLL %s\n", __clk_get_name(clk->hw.clk));
+
+	dd = clk->dpll_data;
+	state <<= __ffs(dd->idlest_mask);
+
+	/* Check if already locked */
+	if ((__raw_readl(dd->idlest_reg) & dd->idlest_mask) == state)
+		goto done;
+
+	ai = omap3_dpll_autoidle_read(clk);
+
+	if (ai)
+		omap3_dpll_deny_idle(clk);
+>>>>>>> refs/remotes/origin/master
 
 	_omap3_dpll_write_clken(clk, DPLL_LOCKED);
 
@@ -151,6 +209,10 @@ static int _omap3_noncore_dpll_lock(struct clk *clk)
 	if (ai)
 		omap3_dpll_allow_idle(clk);
 
+<<<<<<< HEAD
+=======
+done:
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
@@ -167,7 +229,11 @@ static int _omap3_noncore_dpll_lock(struct clk *clk)
  * DPLL3 was passed in, or the DPLL does not support low-power bypass,
  * return -EINVAL.
  */
+<<<<<<< HEAD
 static int _omap3_noncore_dpll_bypass(struct clk *clk)
+=======
+static int _omap3_noncore_dpll_bypass(struct clk_hw_omap *clk)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 	u8 ai;
@@ -176,7 +242,11 @@ static int _omap3_noncore_dpll_bypass(struct clk *clk)
 		return -EINVAL;
 
 	pr_debug("clock: configuring DPLL %s for low-power bypass\n",
+<<<<<<< HEAD
 		 clk->name);
+=======
+		 __clk_get_name(clk->hw.clk));
+>>>>>>> refs/remotes/origin/master
 
 	ai = omap3_dpll_autoidle_read(clk);
 
@@ -186,8 +256,11 @@ static int _omap3_noncore_dpll_bypass(struct clk *clk)
 
 	if (ai)
 		omap3_dpll_allow_idle(clk);
+<<<<<<< HEAD
 	else
 		omap3_dpll_deny_idle(clk);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return r;
 }
@@ -201,14 +274,22 @@ static int _omap3_noncore_dpll_bypass(struct clk *clk)
  * code.  If DPLL3 was passed in, or the DPLL does not support
  * low-power stop, return -EINVAL; otherwise, return 0.
  */
+<<<<<<< HEAD
 static int _omap3_noncore_dpll_stop(struct clk *clk)
+=======
+static int _omap3_noncore_dpll_stop(struct clk_hw_omap *clk)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 ai;
 
 	if (!(clk->dpll_data->modes & (1 << DPLL_LOW_POWER_STOP)))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	pr_debug("clock: stopping DPLL %s\n", clk->name);
+=======
+	pr_debug("clock: stopping DPLL %s\n", __clk_get_name(clk->hw.clk));
+>>>>>>> refs/remotes/origin/master
 
 	ai = omap3_dpll_autoidle_read(clk);
 
@@ -216,8 +297,11 @@ static int _omap3_noncore_dpll_stop(struct clk *clk)
 
 	if (ai)
 		omap3_dpll_allow_idle(clk);
+<<<<<<< HEAD
 	else
 		omap3_dpll_deny_idle(clk);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -234,11 +318,19 @@ static int _omap3_noncore_dpll_stop(struct clk *clk)
  * XXX This code is not needed for 3430/AM35xx; can it be optimized
  * out in non-multi-OMAP builds for those chips?
  */
+<<<<<<< HEAD
 static void _lookup_dco(struct clk *clk, u8 *dco, u16 m, u8 n)
 {
 	unsigned long fint, clkinp; /* watch out for overflow */
 
 	clkinp = clk->parent->rate;
+=======
+static void _lookup_dco(struct clk_hw_omap *clk, u8 *dco, u16 m, u8 n)
+{
+	unsigned long fint, clkinp; /* watch out for overflow */
+
+	clkinp = __clk_get_rate(__clk_get_parent(clk->hw.clk));
+>>>>>>> refs/remotes/origin/master
 	fint = (clkinp / n) * m;
 
 	if (fint < 1000000000)
@@ -259,12 +351,20 @@ static void _lookup_dco(struct clk *clk, u8 *dco, u16 m, u8 n)
  * XXX This code is not needed for 3430/AM35xx; can it be optimized
  * out in non-multi-OMAP builds for those chips?
  */
+<<<<<<< HEAD
 static void _lookup_sddiv(struct clk *clk, u8 *sd_div, u16 m, u8 n)
+=======
+static void _lookup_sddiv(struct clk_hw_omap *clk, u8 *sd_div, u16 m, u8 n)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long clkinp, sd; /* watch out for overflow */
 	int mod1, mod2;
 
+<<<<<<< HEAD
 	clkinp = clk->parent->rate;
+=======
+	clkinp = __clk_get_rate(__clk_get_parent(clk->hw.clk));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * target sigma-delta to near 250MHz
@@ -283,6 +383,7 @@ static void _lookup_sddiv(struct clk *clk, u8 *sd_div, u16 m, u8 n)
 
 /*
  * _omap3_noncore_dpll_program - set non-core DPLL M,N values directly
+<<<<<<< HEAD
  * @clk: struct clk * of DPLL to set
  * @m: DPLL multiplier to set
  * @n: DPLL divider to set
@@ -292,6 +393,15 @@ static void _lookup_sddiv(struct clk *clk, u8 *sd_div, u16 m, u8 n)
  * lock..  Returns -EINVAL upon error, or 0 upon success.
  */
 static int omap3_noncore_dpll_program(struct clk *clk, u16 m, u8 n, u16 freqsel)
+=======
+ * @clk:	struct clk * of DPLL to set
+ * @freqsel:	FREQSEL value to set
+ *
+ * Program the DPLL with the last M, N values calculated, and wait for
+ * the DPLL to lock. Returns -EINVAL upon error, or 0 upon success.
+ */
+static int omap3_noncore_dpll_program(struct clk_hw_omap *clk, u16 freqsel)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dpll_data *dd = clk->dpll_data;
 	u8 dco, sd_div;
@@ -301,10 +411,17 @@ static int omap3_noncore_dpll_program(struct clk *clk, u16 m, u8 n, u16 freqsel)
 	_omap3_noncore_dpll_bypass(clk);
 
 	/*
+<<<<<<< HEAD
 	 * Set jitter correction. No jitter correction for OMAP4 and 3630
 	 * since freqsel field is no longer present
 	 */
 	if (!cpu_is_omap44xx() && !cpu_is_omap3630()) {
+=======
+	 * Set jitter correction. Jitter correction applicable for OMAP343X
+	 * only since freqsel field is no longer present on other devices.
+	 */
+	if (cpu_is_omap343x()) {
+>>>>>>> refs/remotes/origin/master
 		v = __raw_readl(dd->control_reg);
 		v &= ~dd->freqsel_mask;
 		v |= freqsel << __ffs(dd->freqsel_mask);
@@ -314,23 +431,61 @@ static int omap3_noncore_dpll_program(struct clk *clk, u16 m, u8 n, u16 freqsel)
 	/* Set DPLL multiplier, divider */
 	v = __raw_readl(dd->mult_div1_reg);
 	v &= ~(dd->mult_mask | dd->div1_mask);
+<<<<<<< HEAD
 	v |= m << __ffs(dd->mult_mask);
 	v |= (n - 1) << __ffs(dd->div1_mask);
 
 	/* Configure dco and sd_div for dplls that have these fields */
 	if (dd->dco_mask) {
 		_lookup_dco(clk, &dco, m, n);
+=======
+	v |= dd->last_rounded_m << __ffs(dd->mult_mask);
+	v |= (dd->last_rounded_n - 1) << __ffs(dd->div1_mask);
+
+	/* Configure dco and sd_div for dplls that have these fields */
+	if (dd->dco_mask) {
+		_lookup_dco(clk, &dco, dd->last_rounded_m, dd->last_rounded_n);
+>>>>>>> refs/remotes/origin/master
 		v &= ~(dd->dco_mask);
 		v |= dco << __ffs(dd->dco_mask);
 	}
 	if (dd->sddiv_mask) {
+<<<<<<< HEAD
 		_lookup_sddiv(clk, &sd_div, m, n);
+=======
+		_lookup_sddiv(clk, &sd_div, dd->last_rounded_m,
+			      dd->last_rounded_n);
+>>>>>>> refs/remotes/origin/master
 		v &= ~(dd->sddiv_mask);
 		v |= sd_div << __ffs(dd->sddiv_mask);
 	}
 
 	__raw_writel(v, dd->mult_div1_reg);
 
+<<<<<<< HEAD
+=======
+	/* Set 4X multiplier and low-power mode */
+	if (dd->m4xen_mask || dd->lpmode_mask) {
+		v = __raw_readl(dd->control_reg);
+
+		if (dd->m4xen_mask) {
+			if (dd->last_rounded_m4xen)
+				v |= dd->m4xen_mask;
+			else
+				v &= ~dd->m4xen_mask;
+		}
+
+		if (dd->lpmode_mask) {
+			if (dd->last_rounded_lpmode)
+				v |= dd->lpmode_mask;
+			else
+				v &= ~dd->lpmode_mask;
+		}
+
+		__raw_writel(v, dd->control_reg);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* We let the clock framework set the other output dividers later */
 
 	/* REVISIT: Set ramp-up delay? */
@@ -348,8 +503,15 @@ static int omap3_noncore_dpll_program(struct clk *clk, u16 m, u8 n, u16 freqsel)
  *
  * Recalculate and propagate the DPLL rate.
  */
+<<<<<<< HEAD
 unsigned long omap3_dpll_recalc(struct clk *clk)
 {
+=======
+unsigned long omap3_dpll_recalc(struct clk_hw *hw, unsigned long parent_rate)
+{
+	struct clk_hw_omap *clk = to_clk_hw_omap(hw);
+
+>>>>>>> refs/remotes/origin/master
 	return omap2_get_dpll_rate(clk);
 }
 
@@ -369,15 +531,25 @@ unsigned long omap3_dpll_recalc(struct clk *clk)
  * support low-power stop, or if the DPLL took too long to enter
  * bypass or lock, return -EINVAL; otherwise, return 0.
  */
+<<<<<<< HEAD
 int omap3_noncore_dpll_enable(struct clk *clk)
 {
 	int r;
 	struct dpll_data *dd;
+=======
+int omap3_noncore_dpll_enable(struct clk_hw *hw)
+{
+	struct clk_hw_omap *clk = to_clk_hw_omap(hw);
+	int r;
+	struct dpll_data *dd;
+	struct clk *parent;
+>>>>>>> refs/remotes/origin/master
 
 	dd = clk->dpll_data;
 	if (!dd)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (clk->rate == dd->clk_bypass->rate) {
 		WARN_ON(clk->parent != dd->clk_bypass);
 		r = _omap3_noncore_dpll_bypass(clk);
@@ -390,7 +562,34 @@ int omap3_noncore_dpll_enable(struct clk *clk)
 	 * propagating?
 	 */
 	if (!r)
+<<<<<<< HEAD
 		clk->rate = omap2_get_dpll_rate(clk);
+=======
+		clk->rate = (clk->recalc) ? clk->recalc(clk) :
+			omap2_get_dpll_rate(clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (clk->clkdm) {
+		r = clkdm_clk_enable(clk->clkdm, hw->clk);
+		if (r) {
+			WARN(1,
+			     "%s: could not enable %s's clockdomain %s: %d\n",
+			     __func__, __clk_get_name(hw->clk),
+			     clk->clkdm->name, r);
+			return r;
+		}
+	}
+
+	parent = __clk_get_parent(hw->clk);
+
+	if (__clk_get_rate(hw->clk) == __clk_get_rate(dd->clk_bypass)) {
+		WARN_ON(parent != dd->clk_bypass);
+		r = _omap3_noncore_dpll_bypass(clk);
+	} else {
+		WARN_ON(parent != dd->clk_ref);
+		r = _omap3_noncore_dpll_lock(clk);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return r;
 }
@@ -402,9 +601,19 @@ int omap3_noncore_dpll_enable(struct clk *clk)
  * Instructs a non-CORE DPLL to enter low-power stop.  This function is
  * intended for use in struct clkops.  No return value.
  */
+<<<<<<< HEAD
 void omap3_noncore_dpll_disable(struct clk *clk)
 {
 	_omap3_noncore_dpll_stop(clk);
+=======
+void omap3_noncore_dpll_disable(struct clk_hw *hw)
+{
+	struct clk_hw_omap *clk = to_clk_hw_omap(hw);
+
+	_omap3_noncore_dpll_stop(clk);
+	if (clk->clkdm)
+		clkdm_clk_disable(clk->clkdm, hw->clk);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -421,21 +630,43 @@ void omap3_noncore_dpll_disable(struct clk *clk)
  * target rate if it hasn't been done already, then program and lock
  * the DPLL.  Returns -EINVAL upon error, or 0 upon success.
  */
+<<<<<<< HEAD
 int omap3_noncore_dpll_set_rate(struct clk *clk, unsigned long rate)
 {
 	struct clk *new_parent = NULL;
+<<<<<<< HEAD
+=======
+	unsigned long hw_rate;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int omap3_noncore_dpll_set_rate(struct clk_hw *hw, unsigned long rate,
+					unsigned long parent_rate)
+{
+	struct clk_hw_omap *clk = to_clk_hw_omap(hw);
+	struct clk *new_parent = NULL;
+>>>>>>> refs/remotes/origin/master
 	u16 freqsel = 0;
 	struct dpll_data *dd;
 	int ret;
 
+<<<<<<< HEAD
 	if (!clk || !rate)
+=======
+	if (!hw || !rate)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	dd = clk->dpll_data;
 	if (!dd)
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rate == omap2_get_dpll_rate(clk))
+=======
+	hw_rate = (clk->recalc) ? clk->recalc(clk) : omap2_get_dpll_rate(clk);
+	if (rate == hw_rate)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	/*
@@ -455,11 +686,36 @@ int omap3_noncore_dpll_set_rate(struct clk *clk, unsigned long rate)
 			new_parent = dd->clk_bypass;
 	} else {
 		if (dd->last_rounded_rate != rate)
+<<<<<<< HEAD
 			omap2_dpll_round_rate(clk, rate);
+=======
+			rate = clk->round_rate(clk, rate);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (__clk_get_rate(dd->clk_bypass) == rate &&
+	    (dd->modes & (1 << DPLL_LOW_POWER_BYPASS))) {
+		pr_debug("%s: %s: set rate: entering bypass.\n",
+			 __func__, __clk_get_name(hw->clk));
+
+		__clk_prepare(dd->clk_bypass);
+		clk_enable(dd->clk_bypass);
+		ret = _omap3_noncore_dpll_bypass(clk);
+		if (!ret)
+			new_parent = dd->clk_bypass;
+		clk_disable(dd->clk_bypass);
+		__clk_unprepare(dd->clk_bypass);
+	} else {
+		__clk_prepare(dd->clk_ref);
+		clk_enable(dd->clk_ref);
+
+		if (dd->last_rounded_rate != rate)
+			rate = __clk_round_rate(hw->clk, rate);
+>>>>>>> refs/remotes/origin/master
 
 		if (dd->last_rounded_rate == 0)
 			return -EINVAL;
 
+<<<<<<< HEAD
 		/* No freqsel on OMAP4 and OMAP3630 */
 		if (!cpu_is_omap44xx() && !cpu_is_omap3630()) {
 			freqsel = _omap3_dpll_compute_freqsel(clk,
@@ -492,6 +748,33 @@ int omap3_noncore_dpll_set_rate(struct clk *clk, unsigned long rate)
 	}
 	omap2_clk_disable(dd->clk_ref);
 	omap2_clk_disable(dd->clk_bypass);
+=======
+		/* Freqsel is available only on OMAP343X devices */
+		if (cpu_is_omap343x()) {
+			freqsel = _omap3_dpll_compute_freqsel(clk,
+						dd->last_rounded_n);
+			WARN_ON(!freqsel);
+		}
+
+		pr_debug("%s: %s: set rate: locking rate to %lu.\n",
+			 __func__, __clk_get_name(hw->clk), rate);
+
+		ret = omap3_noncore_dpll_program(clk, freqsel);
+		if (!ret)
+			new_parent = dd->clk_ref;
+		clk_disable(dd->clk_ref);
+		__clk_unprepare(dd->clk_ref);
+	}
+	/*
+	* FIXME - this is all wrong.  common code handles reparenting and
+	* migrating prepare/enable counts.  dplls should be a multiplexer
+	* clock and this should be a set_parent operation so that all of that
+	* stuff is inherited for free
+	*/
+
+	if (!ret)
+		__clk_reparent(hw->clk, new_parent);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -506,7 +789,11 @@ int omap3_noncore_dpll_set_rate(struct clk *clk, unsigned long rate)
  * -EINVAL if passed a null pointer or if the struct clk does not
  * appear to refer to a DPLL.
  */
+<<<<<<< HEAD
 u32 omap3_dpll_autoidle_read(struct clk *clk)
+=======
+u32 omap3_dpll_autoidle_read(struct clk_hw_omap *clk)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct dpll_data *dd;
 	u32 v;
@@ -516,6 +803,12 @@ u32 omap3_dpll_autoidle_read(struct clk *clk)
 
 	dd = clk->dpll_data;
 
+<<<<<<< HEAD
+=======
+	if (!dd->autoidle_reg)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	v = __raw_readl(dd->autoidle_reg);
 	v &= dd->autoidle_mask;
 	v >>= __ffs(dd->autoidle_mask);
@@ -532,7 +825,11 @@ u32 omap3_dpll_autoidle_read(struct clk *clk)
  * OMAP3430.  The DPLL will enter low-power stop when its downstream
  * clocks are gated.  No return value.
  */
+<<<<<<< HEAD
 void omap3_dpll_allow_idle(struct clk *clk)
+=======
+void omap3_dpll_allow_idle(struct clk_hw_omap *clk)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct dpll_data *dd;
 	u32 v;
@@ -542,6 +839,12 @@ void omap3_dpll_allow_idle(struct clk *clk)
 
 	dd = clk->dpll_data;
 
+<<<<<<< HEAD
+=======
+	if (!dd->autoidle_reg)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * REVISIT: CORE DPLL can optionally enter low-power bypass
 	 * by writing 0x5 instead of 0x1.  Add some mechanism to
@@ -551,6 +854,10 @@ void omap3_dpll_allow_idle(struct clk *clk)
 	v &= ~dd->autoidle_mask;
 	v |= DPLL_AUTOIDLE_LOW_POWER_STOP << __ffs(dd->autoidle_mask);
 	__raw_writel(v, dd->autoidle_reg);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -559,7 +866,11 @@ void omap3_dpll_allow_idle(struct clk *clk)
  *
  * Disable DPLL automatic idle control.  No return value.
  */
+<<<<<<< HEAD
 void omap3_dpll_deny_idle(struct clk *clk)
+=======
+void omap3_dpll_deny_idle(struct clk_hw_omap *clk)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct dpll_data *dd;
 	u32 v;
@@ -569,6 +880,12 @@ void omap3_dpll_deny_idle(struct clk *clk)
 
 	dd = clk->dpll_data;
 
+<<<<<<< HEAD
+=======
+	if (!dd->autoidle_reg)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	v = __raw_readl(dd->autoidle_reg);
 	v &= ~dd->autoidle_mask;
 	v |= DPLL_AUTOIDLE_DISABLE << __ffs(dd->autoidle_mask);
@@ -585,11 +902,17 @@ void omap3_dpll_deny_idle(struct clk *clk)
  * Using parent clock DPLL data, look up DPLL state.  If locked, set our
  * rate to the dpll_clk * 2; otherwise, just use dpll_clk.
  */
+<<<<<<< HEAD
 unsigned long omap3_clkoutx2_recalc(struct clk *clk)
+=======
+unsigned long omap3_clkoutx2_recalc(struct clk_hw *hw,
+				    unsigned long parent_rate)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct dpll_data *dd;
 	unsigned long rate;
 	u32 v;
+<<<<<<< HEAD
 	struct clk *pclk;
 
 	/* Walk up the parents of clk, looking for a DPLL */
@@ -599,6 +922,27 @@ unsigned long omap3_clkoutx2_recalc(struct clk *clk)
 
 	/* clk does not have a DPLL as a parent? */
 	WARN_ON(!pclk);
+=======
+	struct clk_hw_omap *pclk = NULL;
+	struct clk *parent;
+
+	/* Walk up the parents of clk, looking for a DPLL */
+	do {
+		do {
+			parent = __clk_get_parent(hw->clk);
+			hw = __clk_get_hw(parent);
+		} while (hw && (__clk_get_flags(hw->clk) & CLK_IS_BASIC));
+		if (!hw)
+			break;
+		pclk = to_clk_hw_omap(hw);
+	} while (pclk && !pclk->dpll_data);
+
+	/* clk does not have a DPLL as a parent?  error in the clock data */
+	if (!pclk) {
+		WARN_ON(1);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	dd = pclk->dpll_data;
 
@@ -607,8 +951,22 @@ unsigned long omap3_clkoutx2_recalc(struct clk *clk)
 	v = __raw_readl(dd->control_reg) & dd->enable_mask;
 	v >>= __ffs(dd->enable_mask);
 	if ((v != OMAP3XXX_EN_DPLL_LOCKED) || (dd->flags & DPLL_J_TYPE))
+<<<<<<< HEAD
 		rate = clk->parent->rate;
 	else
 		rate = clk->parent->rate * 2;
 	return rate;
 }
+=======
+		rate = parent_rate;
+	else
+		rate = parent_rate * 2;
+	return rate;
+}
+
+/* OMAP3/4 non-CORE DPLL clkops */
+const struct clk_hw_omap_ops clkhwops_omap3_dpll = {
+	.allow_idle	= omap3_dpll_allow_idle,
+	.deny_idle	= omap3_dpll_deny_idle,
+};
+>>>>>>> refs/remotes/origin/master

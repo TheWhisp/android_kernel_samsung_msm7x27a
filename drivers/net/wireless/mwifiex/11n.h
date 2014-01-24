@@ -28,16 +28,31 @@ int mwifiex_ret_11n_delba(struct mwifiex_private *priv,
 			  struct host_cmd_ds_command *resp);
 int mwifiex_ret_11n_addba_req(struct mwifiex_private *priv,
 			      struct host_cmd_ds_command *resp);
+<<<<<<< HEAD
 int mwifiex_ret_11n_cfg(struct host_cmd_ds_command *resp,
+<<<<<<< HEAD
 			void *data_buf);
 int mwifiex_cmd_11n_cfg(struct host_cmd_ds_command *cmd,
 			u16 cmd_action, void *data_buf);
+=======
+			struct mwifiex_ds_11n_tx_cfg *tx_cfg);
+int mwifiex_cmd_11n_cfg(struct host_cmd_ds_command *cmd, u16 cmd_action,
+			struct mwifiex_ds_11n_tx_cfg *txcfg);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int mwifiex_cmd_append_11n_tlv(struct mwifiex_private *priv,
 			       struct mwifiex_bssdescriptor *bss_desc,
 			       u8 **buffer);
 void mwifiex_cfg_tx_buf(struct mwifiex_private *priv,
 			struct mwifiex_bssdescriptor *bss_desc);
+=======
+int mwifiex_cmd_11n_cfg(struct mwifiex_private *priv,
+			struct host_cmd_ds_command *cmd, u16 cmd_action,
+			struct mwifiex_ds_11n_tx_cfg *txcfg);
+int mwifiex_cmd_append_11n_tlv(struct mwifiex_private *priv,
+			       struct mwifiex_bssdescriptor *bss_desc,
+			       u8 **buffer);
+>>>>>>> refs/remotes/origin/master
 void mwifiex_fill_cap_info(struct mwifiex_private *, u8 radio_type,
 			   struct mwifiex_ie_types_htcap *);
 int mwifiex_set_get_11n_htcap_cfg(struct mwifiex_private *priv,
@@ -46,6 +61,8 @@ void mwifiex_11n_delete_tx_ba_stream_tbl_entry(struct mwifiex_private *priv,
 					     struct mwifiex_tx_ba_stream_tbl
 					     *tx_tbl);
 void mwifiex_11n_delete_all_tx_ba_stream_tbl(struct mwifiex_private *priv);
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct mwifiex_tx_ba_stream_tbl *mwifiex_11n_get_tx_ba_stream_tbl(struct
 							     mwifiex_private
 							     *priv, int tid,
@@ -53,6 +70,19 @@ struct mwifiex_tx_ba_stream_tbl *mwifiex_11n_get_tx_ba_stream_tbl(struct
 void mwifiex_11n_create_tx_ba_stream_tbl(struct mwifiex_private *priv, u8 *ra,
 				       int tid,
 				       enum mwifiex_ba_status ba_status);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct mwifiex_tx_ba_stream_tbl *mwifiex_get_ba_tbl(struct
+							     mwifiex_private
+							     *priv, int tid,
+							     u8 *ra);
+void mwifiex_create_ba_tbl(struct mwifiex_private *priv, u8 *ra, int tid,
+			   enum mwifiex_ba_status ba_status);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int mwifiex_send_addba(struct mwifiex_private *priv, int tid, u8 *peer_mac);
 int mwifiex_send_delba(struct mwifiex_private *priv, int tid, u8 *peer_mac,
 		       int initiator);
@@ -61,13 +91,31 @@ int mwifiex_get_rx_reorder_tbl(struct mwifiex_private *priv,
 			      struct mwifiex_ds_rx_reorder_tbl *buf);
 int mwifiex_get_tx_ba_stream_tbl(struct mwifiex_private *priv,
 			       struct mwifiex_ds_tx_ba_stream_tbl *buf);
+<<<<<<< HEAD
 int mwifiex_ret_amsdu_aggr_ctrl(struct host_cmd_ds_command *resp,
+<<<<<<< HEAD
 				void *data_buf);
 int mwifiex_cmd_recfg_tx_buf(struct mwifiex_private *priv,
 			     struct host_cmd_ds_command *cmd,
 			     int cmd_action, void *data_buf);
 int mwifiex_cmd_amsdu_aggr_ctrl(struct host_cmd_ds_command *cmd,
 				int cmd_action, void *data_buf);
+=======
+				struct mwifiex_ds_11n_amsdu_aggr_ctrl
+				*amsdu_aggr_ctrl);
+=======
+>>>>>>> refs/remotes/origin/master
+int mwifiex_cmd_recfg_tx_buf(struct mwifiex_private *priv,
+			     struct host_cmd_ds_command *cmd,
+			     int cmd_action, u16 *buf_size);
+int mwifiex_cmd_amsdu_aggr_ctrl(struct host_cmd_ds_command *cmd,
+				int cmd_action,
+				struct mwifiex_ds_11n_amsdu_aggr_ctrl *aa_ctrl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void mwifiex_del_tx_ba_stream_tbl_by_ra(struct mwifiex_private *priv, u8 *ra);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This function checks whether AMPDU is allowed or not for a particular TID.
@@ -85,9 +133,19 @@ mwifiex_is_ampdu_allowed(struct mwifiex_private *priv, int tid)
 static inline u8
 mwifiex_is_amsdu_allowed(struct mwifiex_private *priv, int tid)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return (((priv->aggr_prio_tbl[tid].amsdu != BA_STREAM_NOT_ALLOWED)
 			&& ((priv->is_data_rate_auto)
 			|| !((priv->bitmap_rates[2]) & 0x03)))
+=======
+	return (((priv->aggr_prio_tbl[tid].amsdu != BA_STREAM_NOT_ALLOWED) &&
+		 (priv->is_data_rate_auto || !(priv->bitmap_rates[2] & 0x03)))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (((priv->aggr_prio_tbl[tid].amsdu != BA_STREAM_NOT_ALLOWED) &&
+		 (priv->is_data_rate_auto || !(priv->bitmap_rates[2] & 0x03)))
+>>>>>>> refs/remotes/origin/master
 		? true : false);
 }
 
@@ -105,8 +163,12 @@ static inline u8 mwifiex_space_avail_for_new_ba_stream(
 		priv = adapter->priv[i];
 		if (priv)
 			ba_stream_num += mwifiex_wmm_list_len(
+<<<<<<< HEAD
 						(struct list_head *)
 						&priv->tx_ba_stream_tbl_ptr);
+=======
+				&priv->tx_ba_stream_tbl_ptr);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ((ba_stream_num <
@@ -148,14 +210,45 @@ mwifiex_find_stream_to_delete(struct mwifiex_private *priv, int ptr_tid,
  */
 static inline int
 mwifiex_is_ba_stream_setup(struct mwifiex_private *priv,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  struct mwifiex_ra_list_tbl *ptr, int tid)
 {
 	struct mwifiex_tx_ba_stream_tbl *tx_tbl;
 
 	tx_tbl = mwifiex_11n_get_tx_ba_stream_tbl(priv, tid, ptr->ra);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			   struct mwifiex_ra_list_tbl *ptr, int tid)
+{
+	struct mwifiex_tx_ba_stream_tbl *tx_tbl;
+
+	tx_tbl = mwifiex_get_ba_tbl(priv, tid, ptr->ra);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tx_tbl && IS_BASTREAM_SETUP(tx_tbl))
 		return true;
 
 	return false;
 }
+<<<<<<< HEAD
+=======
+
+/*
+ * This function checks whether associated station is 11n enabled
+ */
+static inline int mwifiex_is_sta_11n_enabled(struct mwifiex_private *priv,
+					     struct mwifiex_sta_node *node)
+{
+
+	if (!node || (priv->bss_role != MWIFIEX_BSS_ROLE_UAP) ||
+	    !priv->ap_11n_enabled)
+		return 0;
+
+	return node->is_11n_enabled;
+}
+>>>>>>> refs/remotes/origin/master
 #endif /* !_MWIFIEX_11N_H_ */

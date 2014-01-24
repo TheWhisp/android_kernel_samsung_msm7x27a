@@ -1,6 +1,7 @@
 #ifndef _ASM_X86_SIGCONTEXT_H
 #define _ASM_X86_SIGCONTEXT_H
 
+<<<<<<< HEAD
 #include <linux/compiler.h>
 #include <linux/types.h>
 
@@ -99,6 +100,11 @@ struct _fpstate {
 #define X86_FXSR_MAGIC		0x0000
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/sigcontext.h>
+
+#ifdef __i386__
+>>>>>>> refs/remotes/origin/master
 struct sigcontext {
 	unsigned short gs, __gsh;
 	unsigned short fs, __fsh;
@@ -131,6 +137,7 @@ struct sigcontext {
 	unsigned long oldmask;
 	unsigned long cr2;
 };
+<<<<<<< HEAD
 #else /* __KERNEL__ */
 /*
  * User-space might still rely on the old definition:
@@ -187,6 +194,9 @@ struct _fpstate {
 };
 
 #ifdef __KERNEL__
+=======
+#else /* __i386__ */
+>>>>>>> refs/remotes/origin/master
 struct sigcontext {
 	unsigned long r8;
 	unsigned long r9;
@@ -225,11 +235,13 @@ struct sigcontext {
 	void __user *fpstate;		/* zero when no FPU/extended context */
 	unsigned long reserved1[8];
 };
+<<<<<<< HEAD
 #else /* __KERNEL__ */
 /*
  * User-space might still rely on the old definition:
  */
 struct sigcontext {
+<<<<<<< HEAD
 	unsigned long r8;
 	unsigned long r9;
 	unsigned long r10;
@@ -258,6 +270,39 @@ struct sigcontext {
 	unsigned long cr2;
 	struct _fpstate __user *fpstate;	/* zero when no FPU context */
 	unsigned long reserved1[8];
+=======
+	__u64 r8;
+	__u64 r9;
+	__u64 r10;
+	__u64 r11;
+	__u64 r12;
+	__u64 r13;
+	__u64 r14;
+	__u64 r15;
+	__u64 rdi;
+	__u64 rsi;
+	__u64 rbp;
+	__u64 rbx;
+	__u64 rdx;
+	__u64 rax;
+	__u64 rcx;
+	__u64 rsp;
+	__u64 rip;
+	__u64 eflags;		/* RFLAGS */
+	__u16 cs;
+	__u16 gs;
+	__u16 fs;
+	__u16 __pad0;
+	__u64 err;
+	__u64 trapno;
+	__u64 oldmask;
+	__u64 cr2;
+	struct _fpstate __user *fpstate;	/* zero when no FPU context */
+#ifdef __ILP32__
+	__u32 __fpstate_pad;
+#endif
+	__u64 reserved1[8];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif /* !__KERNEL__ */
 
@@ -287,4 +332,7 @@ struct _xstate {
 	/* new processor state extensions go here */
 };
 
+=======
+#endif /* !__i386__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_SIGCONTEXT_H */

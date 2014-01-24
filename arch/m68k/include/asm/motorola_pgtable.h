@@ -8,6 +8,14 @@
 #define _PAGE_PRESENT	0x001
 #define _PAGE_SHORT	0x002
 #define _PAGE_RONLY	0x004
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define _PAGE_READWRITE	0x000
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define _PAGE_READWRITE	0x000
+>>>>>>> refs/remotes/origin/master
 #define _PAGE_ACCESSED	0x008
 #define _PAGE_DIRTY	0x010
 #define _PAGE_SUPER	0x080	/* 68040 supervisor only */

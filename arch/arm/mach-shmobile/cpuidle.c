@@ -13,7 +13,12 @@
 #include <linux/suspend.h>
 #include <linux/module.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/cpuidle.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 static void shmobile_enter_wfi(void)
@@ -26,6 +31,7 @@ void (*shmobile_cpuidle_modes[CPUIDLE_STATE_MAX])(void) = {
 };
 
 static int shmobile_cpuidle_enter(struct cpuidle_device *dev,
+<<<<<<< HEAD
 				  struct cpuidle_state *state)
 {
 	ktime_t before, after;
@@ -44,19 +50,49 @@ static int shmobile_cpuidle_enter(struct cpuidle_device *dev,
 
 	after = ktime_get();
 	return ktime_to_ns(ktime_sub(after, before)) >> 10;
+=======
+				  struct cpuidle_driver *drv,
+				  int index)
+{
+	shmobile_cpuidle_modes[index]();
+
+	return index;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct cpuidle_device shmobile_cpuidle_dev;
 static struct cpuidle_driver shmobile_cpuidle_driver = {
+<<<<<<< HEAD
 	.name =		"shmobile_cpuidle",
 	.owner =	THIS_MODULE,
 };
 
 void (*shmobile_cpuidle_setup)(struct cpuidle_device *dev);
+=======
+	.name			= "shmobile_cpuidle",
+	.owner			= THIS_MODULE,
+	.en_core_tk_irqen	= 1,
+=======
+#include <asm/cpuidle.h>
+#include <asm/io.h>
+
+static struct cpuidle_driver shmobile_cpuidle_default_driver = {
+	.name			= "shmobile_cpuidle",
+	.owner			= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
+	.states[0]		= ARM_CPUIDLE_WFI_STATE,
+	.safe_state_index	= 0, /* C1 */
+	.state_count		= 1,
+};
+
+<<<<<<< HEAD
+void (*shmobile_cpuidle_setup)(struct cpuidle_driver *drv);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int shmobile_cpuidle_init(void)
 {
 	struct cpuidle_device *dev = &shmobile_cpuidle_dev;
+<<<<<<< HEAD
 	struct cpuidle_state *state;
 	int i;
 
@@ -85,8 +121,35 @@ static int shmobile_cpuidle_init(void)
 	if (shmobile_cpuidle_setup)
 		shmobile_cpuidle_setup(dev);
 
+=======
+	struct cpuidle_driver *drv = &shmobile_cpuidle_driver;
+	int i;
+
+	for (i = 0; i < CPUIDLE_STATE_MAX; i++)
+		drv->states[i].enter = shmobile_cpuidle_enter;
+
+	if (shmobile_cpuidle_setup)
+		shmobile_cpuidle_setup(drv);
+
+	cpuidle_register_driver(drv);
+
+	dev->state_count = drv->state_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 	cpuidle_register_device(dev);
 
 	return 0;
 }
 late_initcall(shmobile_cpuidle_init);
+=======
+static struct cpuidle_driver *cpuidle_drv = &shmobile_cpuidle_default_driver;
+
+void __init shmobile_cpuidle_set_driver(struct cpuidle_driver *drv)
+{
+	cpuidle_drv = drv;
+}
+
+int __init shmobile_cpuidle_init(void)
+{
+	return cpuidle_register(cpuidle_drv, NULL);
+}
+>>>>>>> refs/remotes/origin/master

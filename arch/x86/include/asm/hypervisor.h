@@ -20,12 +20,20 @@
 #ifndef _ASM_X86_HYPERVISOR_H
 #define _ASM_X86_HYPERVISOR_H
 
+<<<<<<< HEAD
 #include <asm/kvm_para.h>
 #include <asm/xen/hypervisor.h>
 
 extern void init_hypervisor(struct cpuinfo_x86 *c);
 extern void init_hypervisor_platform(void);
 
+=======
+#ifdef CONFIG_HYPERVISOR_GUEST
+
+#include <asm/kvm_para.h>
+#include <asm/xen/hypervisor.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * x86 hypervisor information
  */
@@ -34,13 +42,23 @@ struct hypervisor_x86 {
 	const char	*name;
 
 	/* Detection routine */
+<<<<<<< HEAD
 	bool		(*detect)(void);
+=======
+	uint32_t	(*detect)(void);
+>>>>>>> refs/remotes/origin/master
 
 	/* Adjust CPU feature bits (run once per CPU) */
 	void		(*set_cpu_features)(struct cpuinfo_x86 *);
 
 	/* Platform setup (run once per boot) */
 	void		(*init_platform)(void);
+<<<<<<< HEAD
+=======
+
+	/* X2APIC detection (run once per boot) */
+	bool		(*x2apic_available)(void);
+>>>>>>> refs/remotes/origin/master
 };
 
 extern const struct hypervisor_x86 *x86_hyper;
@@ -49,6 +67,7 @@ extern const struct hypervisor_x86 *x86_hyper;
 extern const struct hypervisor_x86 x86_hyper_vmware;
 extern const struct hypervisor_x86 x86_hyper_ms_hyperv;
 extern const struct hypervisor_x86 x86_hyper_xen_hvm;
+<<<<<<< HEAD
 
 static inline bool hypervisor_x2apic_available(void)
 {
@@ -60,3 +79,16 @@ static inline bool hypervisor_x2apic_available(void)
 }
 
 #endif
+=======
+extern const struct hypervisor_x86 x86_hyper_kvm;
+
+extern void init_hypervisor(struct cpuinfo_x86 *c);
+extern void init_hypervisor_platform(void);
+extern bool hypervisor_x2apic_available(void);
+#else
+static inline void init_hypervisor(struct cpuinfo_x86 *c) { }
+static inline void init_hypervisor_platform(void) { }
+static inline bool hypervisor_x2apic_available(void) { return false; }
+#endif /* CONFIG_HYPERVISOR_GUEST */
+#endif /* _ASM_X86_HYPERVISOR_H */
+>>>>>>> refs/remotes/origin/master

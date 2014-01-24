@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+if TTY
+
+>>>>>>> refs/remotes/origin/master
 config HVC_DRIVER
 	bool
 	help
@@ -19,6 +24,8 @@ config HVC_CONSOLE
 	  console. This driver allows each pSeries partition to have a console
 	  which is accessed via the HMC.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config HVC_ISERIES
 	bool "iSeries Hypervisor Virtual Console support"
 	depends on PPC_ISERIES
@@ -28,6 +35,26 @@ config HVC_ISERIES
 	select VIOPATH
 	help
 	  iSeries machines support a hypervisor virtual console.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config HVC_OLD_HVSI
+	bool "Old driver for pSeries serial port (/dev/hvsi*)"
+	depends on HVC_CONSOLE
+	default n
+
+config HVC_OPAL
+	bool "OPAL Console support"
+	depends on PPC_POWERNV
+	select HVC_DRIVER
+	select HVC_IRQ
+	default y
+	help
+	  PowerNV machines running under OPAL need that driver to get a console
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config HVC_RTAS
 	bool "IBM RTAS Console support"
@@ -62,11 +89,43 @@ config HVC_XEN
 	help
 	  Xen virtual console device driver
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config HVC_XEN_FRONTEND
+	bool "Xen Hypervisor Multiple Consoles support"
+	depends on HVC_XEN
+	select XEN_XENBUS_FRONTEND
+	default y
+	help
+	  Xen driver for secondary virtual consoles
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 config HVC_UDBG
        bool "udbg based fake hypervisor console"
        depends on PPC && EXPERIMENTAL
        select HVC_DRIVER
        default n
+<<<<<<< HEAD
+=======
+=======
+config HVC_UDBG
+       bool "udbg based fake hypervisor console"
+       depends on PPC
+       select HVC_DRIVER
+       default n
+>>>>>>> refs/remotes/origin/master
+       help
+         This is meant to be used during HW bring up or debugging when
+	 no other console mechanism exist but udbg, to get you a quick
+	 console for userspace. Do NOT enable in production kernels. 
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config HVC_DCC
        bool "ARM JTAG DCC console"
@@ -103,3 +162,7 @@ config HVCS
 	  which will also be compiled when this driver is built as a
 	  module.
 
+<<<<<<< HEAD
+=======
+endif # TTY
+>>>>>>> refs/remotes/origin/master

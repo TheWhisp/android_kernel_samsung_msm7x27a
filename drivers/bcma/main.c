@@ -6,35 +6,83 @@
  */
 
 #include "bcma_private.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/bcma/bcma.h>
+=======
+#include <linux/module.h>
+#include <linux/bcma/bcma.h>
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/platform_device.h>
+#include <linux/bcma/bcma.h>
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Broadcom's specific AMBA driver");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int bcma_bus_match(struct device *dev, struct device_driver *drv);
 static int bcma_device_probe(struct device *dev);
 static int bcma_device_remove(struct device *dev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* contains the number the next bus should get. */
+static unsigned int bcma_bus_next_num = 0;
+
+/* bcma_buses_mutex locks the bcma_bus_next_num */
+static DEFINE_MUTEX(bcma_buses_mutex);
+
+static int bcma_bus_match(struct device *dev, struct device_driver *drv);
+static int bcma_device_probe(struct device *dev);
+static int bcma_device_remove(struct device *dev);
+static int bcma_device_uevent(struct device *dev, struct kobj_uevent_env *env);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t manuf_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct bcma_device *core = container_of(dev, struct bcma_device, dev);
 	return sprintf(buf, "0x%03X\n", core->id.manuf);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(manuf);
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t id_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct bcma_device *core = container_of(dev, struct bcma_device, dev);
 	return sprintf(buf, "0x%03X\n", core->id.id);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(id);
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t rev_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct bcma_device *core = container_of(dev, struct bcma_device, dev);
 	return sprintf(buf, "0x%02X\n", core->id.rev);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(rev);
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t class_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct bcma_device *core = container_of(dev, struct bcma_device, dev);
 	return sprintf(buf, "0x%X\n", core->id.class);
 }
+<<<<<<< HEAD
 static struct device_attribute bcma_device_attrs[] = {
 	__ATTR_RO(manuf),
 	__ATTR_RO(id),
@@ -42,16 +90,51 @@ static struct device_attribute bcma_device_attrs[] = {
 	__ATTR_RO(class),
 	__ATTR_NULL,
 };
+=======
+static DEVICE_ATTR_RO(class);
+
+static struct attribute *bcma_device_attrs[] = {
+	&dev_attr_manuf.attr,
+	&dev_attr_id.attr,
+	&dev_attr_rev.attr,
+	&dev_attr_class.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(bcma_device);
+>>>>>>> refs/remotes/origin/master
 
 static struct bus_type bcma_bus_type = {
 	.name		= "bcma",
 	.match		= bcma_bus_match,
 	.probe		= bcma_device_probe,
 	.remove		= bcma_device_remove,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.dev_attrs	= bcma_device_attrs,
 };
 
 static struct bcma_device *bcma_find_core(struct bcma_bus *bus, u16 coreid)
+=======
+	.uevent		= bcma_device_uevent,
+	.dev_attrs	= bcma_device_attrs,
+};
+
+struct bcma_device *bcma_find_core(struct bcma_bus *bus, u16 coreid)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.uevent		= bcma_device_uevent,
+	.dev_groups	= bcma_device_groups,
+};
+
+static u16 bcma_cc_core_id(struct bcma_bus *bus)
+{
+	if (bus->chipinfo.id == BCMA_CHIP_ID_BCM4706)
+		return BCMA_CORE_4706_CHIPCOMMON;
+	return BCMA_CORE_CHIPCOMMON;
+}
+
+struct bcma_device *bcma_find_core(struct bcma_bus *bus, u16 coreid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bcma_device *core;
 
@@ -61,10 +144,62 @@ static struct bcma_device *bcma_find_core(struct bcma_bus *bus, u16 coreid)
 	}
 	return NULL;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(bcma_find_core);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(bcma_find_core);
+
+struct bcma_device *bcma_find_core_unit(struct bcma_bus *bus, u16 coreid,
+					u8 unit)
+{
+	struct bcma_device *core;
+
+	list_for_each_entry(core, &bus->cores, list) {
+		if (core->id.id == coreid && core->core_unit == unit)
+			return core;
+	}
+	return NULL;
+}
+
+bool bcma_wait_value(struct bcma_device *core, u16 reg, u32 mask, u32 value,
+		     int timeout)
+{
+	unsigned long deadline = jiffies + timeout;
+	u32 val;
+
+	do {
+		val = bcma_read32(core, reg);
+		if ((val & mask) == value)
+			return true;
+		cpu_relax();
+		udelay(10);
+	} while (!time_after_eq(jiffies, deadline));
+
+	bcma_warn(core->bus, "Timeout waiting for register 0x%04X!\n", reg);
+
+	return false;
+}
+>>>>>>> refs/remotes/origin/master
 
 static void bcma_release_core_dev(struct device *dev)
 {
 	struct bcma_device *core = container_of(dev, struct bcma_device, dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (core->io_addr)
+		iounmap(core->io_addr);
+	if (core->io_wrap)
+		iounmap(core->io_wrap);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(core);
 }
 
@@ -76,35 +211,123 @@ static int bcma_register_cores(struct bcma_bus *bus)
 	list_for_each_entry(core, &bus->cores, list) {
 		/* We support that cores ourself */
 		switch (core->id.id) {
+<<<<<<< HEAD
 		case BCMA_CORE_CHIPCOMMON:
 		case BCMA_CORE_PCI:
 		case BCMA_CORE_PCIE:
+<<<<<<< HEAD
+=======
+		case BCMA_CORE_MIPS_74K:
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 		}
 
 		core->dev.release = bcma_release_core_dev;
 		core->dev.bus = &bcma_bus_type;
+<<<<<<< HEAD
 		dev_set_name(&core->dev, "bcma%d:%d", 0/*bus->num*/, dev_id);
+=======
+		dev_set_name(&core->dev, "bcma%d:%d", bus->num, dev_id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case BCMA_CORE_4706_CHIPCOMMON:
+		case BCMA_CORE_CHIPCOMMON:
+		case BCMA_CORE_PCI:
+		case BCMA_CORE_PCIE:
+		case BCMA_CORE_MIPS_74K:
+		case BCMA_CORE_4706_MAC_GBIT_COMMON:
+			continue;
+		}
+
+		/* Only first GMAC core on BCM4706 is connected and working */
+		if (core->id.id == BCMA_CORE_4706_MAC_GBIT &&
+		    core->core_unit > 0)
+			continue;
+
+		core->dev.release = bcma_release_core_dev;
+		core->dev.bus = &bcma_bus_type;
+		dev_set_name(&core->dev, "bcma%d:%d", bus->num, dev_id);
+>>>>>>> refs/remotes/origin/master
 
 		switch (bus->hosttype) {
 		case BCMA_HOSTTYPE_PCI:
 			core->dev.parent = &bus->host_pci->dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			break;
 		case BCMA_HOSTTYPE_NONE:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			core->dma_dev = &bus->host_pci->dev;
+			core->irq = bus->host_pci->irq;
+			break;
+		case BCMA_HOSTTYPE_SOC:
+			core->dev.dma_mask = &core->dev.coherent_dma_mask;
+			core->dma_dev = &core->dev;
+			break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case BCMA_HOSTTYPE_SDIO:
 			break;
 		}
 
 		err = device_register(&core->dev);
 		if (err) {
+<<<<<<< HEAD
 			pr_err("Could not register dev for core 0x%03X\n",
 			       core->id.id);
+=======
+			bcma_err(bus,
+				 "Could not register dev for core 0x%03X\n",
+				 core->id.id);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		core->dev_registered = true;
 		dev_id++;
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BCMA_DRIVER_MIPS
+	if (bus->drv_cc.pflash.present) {
+		err = platform_device_register(&bcma_pflash_dev);
+		if (err)
+			bcma_err(bus, "Error registering parallel flash\n");
+	}
+#endif
+
+#ifdef CONFIG_BCMA_SFLASH
+	if (bus->drv_cc.sflash.present) {
+		err = platform_device_register(&bcma_sflash_dev);
+		if (err)
+			bcma_err(bus, "Error registering serial flash\n");
+	}
+#endif
+
+#ifdef CONFIG_BCMA_NFLASH
+	if (bus->drv_cc.nflash.present) {
+		err = platform_device_register(&bcma_nflash_dev);
+		if (err)
+			bcma_err(bus, "Error registering NAND flash\n");
+	}
+#endif
+	err = bcma_gpio_init(&bus->drv_cc);
+	if (err == -ENOTSUPP)
+		bcma_debug(bus, "GPIO driver not activated\n");
+	else if (err)
+		bcma_err(bus, "Error registering GPIO driver: %i\n", err);
+
+	if (bus->hosttype == BCMA_HOSTTYPE_SOC) {
+		err = bcma_chipco_watchdog_register(&bus->drv_cc);
+		if (err)
+			bcma_err(bus, "Error registering watchdog driver\n");
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -117,17 +340,218 @@ static void bcma_unregister_cores(struct bcma_bus *bus)
 		if (core->dev_registered)
 			device_unregister(&core->dev);
 	}
+<<<<<<< HEAD
+}
+
+<<<<<<< HEAD
+int bcma_bus_register(struct bcma_bus *bus)
+=======
+int __devinit bcma_bus_register(struct bcma_bus *bus)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bus->hosttype == BCMA_HOSTTYPE_SOC)
+		platform_device_unregister(bus->drv_cc.watchdog);
 }
 
 int bcma_bus_register(struct bcma_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct bcma_device *core;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mutex_lock(&bcma_buses_mutex);
+	bus->num = bcma_bus_next_num++;
+	mutex_unlock(&bcma_buses_mutex);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Scan for devices (cores) */
 	err = bcma_bus_scan(bus);
 	if (err) {
 		pr_err("Failed to scan: %d\n", err);
+		return -1;
+	}
+
+	/* Init CC core */
+	core = bcma_find_core(bus, BCMA_CORE_CHIPCOMMON);
+=======
+	/* Scan for devices (cores) */
+	err = bcma_bus_scan(bus);
+	if (err) {
+		bcma_err(bus, "Failed to scan: %d\n", err);
+		return err;
+	}
+
+	/* Early init CC core */
+	core = bcma_find_core(bus, bcma_cc_core_id(bus));
+	if (core) {
+		bus->drv_cc.core = core;
+		bcma_core_chipcommon_early_init(&bus->drv_cc);
+	}
+
+	/* Try to get SPROM */
+	err = bcma_sprom_get(bus);
+	if (err == -ENOENT) {
+		bcma_err(bus, "No SPROM available\n");
+	} else if (err)
+		bcma_err(bus, "Failed to get SPROM: %d\n", err);
+
+	/* Init CC core */
+	core = bcma_find_core(bus, bcma_cc_core_id(bus));
+>>>>>>> refs/remotes/origin/master
+	if (core) {
+		bus->drv_cc.core = core;
+		bcma_core_chipcommon_init(&bus->drv_cc);
+	}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Init MIPS core */
+	core = bcma_find_core(bus, BCMA_CORE_MIPS_74K);
+	if (core) {
+		bus->drv_mips.core = core;
+		bcma_core_mips_init(&bus->drv_mips);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+	/* Init PCIE core */
+	core = bcma_find_core(bus, BCMA_CORE_PCIE);
+	if (core) {
+		bus->drv_pci.core = core;
+		bcma_core_pci_init(&bus->drv_pci);
+	}
+
+<<<<<<< HEAD
+=======
+	/* Try to get SPROM */
+	err = bcma_sprom_get(bus);
+	if (err == -ENOENT) {
+		pr_err("No SPROM available\n");
+	} else if (err)
+		pr_err("Failed to get SPROM: %d\n", err);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+	/* Register found cores */
+	bcma_register_cores(bus);
+
+	pr_info("Bus registered\n");
+
+	return 0;
+}
+<<<<<<< HEAD
+EXPORT_SYMBOL_GPL(bcma_bus_register);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+
+void bcma_bus_unregister(struct bcma_bus *bus)
+{
+	bcma_unregister_cores(bus);
+}
+<<<<<<< HEAD
+EXPORT_SYMBOL_GPL(bcma_bus_unregister);
+=======
+=======
+	/* Init PCIE core */
+	core = bcma_find_core_unit(bus, BCMA_CORE_PCIE, 0);
+	if (core) {
+		bus->drv_pci[0].core = core;
+		bcma_core_pci_init(&bus->drv_pci[0]);
+	}
+
+	/* Init PCIE core */
+	core = bcma_find_core_unit(bus, BCMA_CORE_PCIE, 1);
+	if (core) {
+		bus->drv_pci[1].core = core;
+		bcma_core_pci_init(&bus->drv_pci[1]);
+	}
+
+	/* Init GBIT MAC COMMON core */
+	core = bcma_find_core(bus, BCMA_CORE_4706_MAC_GBIT_COMMON);
+	if (core) {
+		bus->drv_gmac_cmn.core = core;
+		bcma_core_gmac_cmn_init(&bus->drv_gmac_cmn);
+	}
+
+	/* Register found cores */
+	bcma_register_cores(bus);
+
+	bcma_info(bus, "Bus registered\n");
+
+	return 0;
+}
+
+void bcma_bus_unregister(struct bcma_bus *bus)
+{
+	struct bcma_device *cores[3];
+	int err;
+
+	err = bcma_gpio_unregister(&bus->drv_cc);
+	if (err == -EBUSY)
+		bcma_err(bus, "Some GPIOs are still in use.\n");
+	else if (err)
+		bcma_err(bus, "Can not unregister GPIO driver: %i\n", err);
+
+	cores[0] = bcma_find_core(bus, BCMA_CORE_MIPS_74K);
+	cores[1] = bcma_find_core(bus, BCMA_CORE_PCIE);
+	cores[2] = bcma_find_core(bus, BCMA_CORE_4706_MAC_GBIT_COMMON);
+
+	bcma_unregister_cores(bus);
+
+	kfree(cores[2]);
+	kfree(cores[1]);
+	kfree(cores[0]);
+}
+>>>>>>> refs/remotes/origin/master
+
+int __init bcma_bus_early_register(struct bcma_bus *bus,
+				   struct bcma_device *core_cc,
+				   struct bcma_device *core_mips)
+{
+	int err;
+	struct bcma_device *core;
+	struct bcma_device_id match;
+
+	bcma_init_bus(bus);
+
+	match.manuf = BCMA_MANUF_BCM;
+<<<<<<< HEAD
+	match.id = BCMA_CORE_CHIPCOMMON;
+=======
+	match.id = bcma_cc_core_id(bus);
+>>>>>>> refs/remotes/origin/master
+	match.class = BCMA_CL_SIM;
+	match.rev = BCMA_ANY_REV;
+
+	/* Scan for chip common core */
+	err = bcma_bus_scan_early(bus, &match, core_cc);
+	if (err) {
+<<<<<<< HEAD
+		pr_err("Failed to scan for common core: %d\n", err);
+=======
+		bcma_err(bus, "Failed to scan for common core: %d\n", err);
+>>>>>>> refs/remotes/origin/master
+		return -1;
+	}
+
+	match.manuf = BCMA_MANUF_MIPS;
+	match.id = BCMA_CORE_MIPS_74K;
+	match.class = BCMA_CL_SIM;
+	match.rev = BCMA_ANY_REV;
+
+	/* Scan for mips core */
+	err = bcma_bus_scan_early(bus, &match, core_mips);
+	if (err) {
+<<<<<<< HEAD
+		pr_err("Failed to scan for mips core: %d\n", err);
 		return -1;
 	}
 
@@ -138,27 +562,86 @@ int bcma_bus_register(struct bcma_bus *bus)
 		bcma_core_chipcommon_init(&bus->drv_cc);
 	}
 
-	/* Init PCIE core */
-	core = bcma_find_core(bus, BCMA_CORE_PCIE);
+	/* Init MIPS core */
+	core = bcma_find_core(bus, BCMA_CORE_MIPS_74K);
 	if (core) {
-		bus->drv_pci.core = core;
-		bcma_core_pci_init(&bus->drv_pci);
+		bus->drv_mips.core = core;
+		bcma_core_mips_init(&bus->drv_mips);
 	}
 
-	/* Register found cores */
-	bcma_register_cores(bus);
+	pr_info("Early bus registered\n");
+=======
+		bcma_err(bus, "Failed to scan for mips core: %d\n", err);
+		return -1;
+	}
 
-	pr_info("Bus registered\n");
+	/* Early init CC core */
+	core = bcma_find_core(bus, bcma_cc_core_id(bus));
+	if (core) {
+		bus->drv_cc.core = core;
+		bcma_core_chipcommon_early_init(&bus->drv_cc);
+	}
+
+	/* Early init MIPS core */
+	core = bcma_find_core(bus, BCMA_CORE_MIPS_74K);
+	if (core) {
+		bus->drv_mips.core = core;
+		bcma_core_mips_early_init(&bus->drv_mips);
+	}
+
+	bcma_info(bus, "Early bus registered\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
-EXPORT_SYMBOL_GPL(bcma_bus_register);
 
-void bcma_bus_unregister(struct bcma_bus *bus)
+#ifdef CONFIG_PM
+int bcma_bus_suspend(struct bcma_bus *bus)
 {
-	bcma_unregister_cores(bus);
+	struct bcma_device *core;
+
+	list_for_each_entry(core, &bus->cores, list) {
+		struct device_driver *drv = core->dev.driver;
+		if (drv) {
+			struct bcma_driver *adrv = container_of(drv, struct bcma_driver, drv);
+			if (adrv->suspend)
+				adrv->suspend(core);
+		}
+	}
+	return 0;
 }
-EXPORT_SYMBOL_GPL(bcma_bus_unregister);
+
+int bcma_bus_resume(struct bcma_bus *bus)
+{
+	struct bcma_device *core;
+
+	/* Init CC core */
+<<<<<<< HEAD
+	core = bcma_find_core(bus, BCMA_CORE_CHIPCOMMON);
+	if (core) {
+=======
+	if (bus->drv_cc.core) {
+>>>>>>> refs/remotes/origin/master
+		bus->drv_cc.setup_done = false;
+		bcma_core_chipcommon_init(&bus->drv_cc);
+	}
+
+	list_for_each_entry(core, &bus->cores, list) {
+		struct device_driver *drv = core->dev.driver;
+		if (drv) {
+			struct bcma_driver *adrv = container_of(drv, struct bcma_driver, drv);
+			if (adrv->resume)
+				adrv->resume(core);
+		}
+	}
+
+	return 0;
+}
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int __bcma_driver_register(struct bcma_driver *drv, struct module *owner)
 {
@@ -218,6 +701,25 @@ static int bcma_device_remove(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int bcma_device_uevent(struct device *dev, struct kobj_uevent_env *env)
+{
+	struct bcma_device *core = container_of(dev, struct bcma_device, dev);
+
+	return add_uevent_var(env,
+			      "MODALIAS=bcma:m%04Xid%04Xrev%02Xcl%02X",
+			      core->id.manuf, core->id.id,
+			      core->id.rev, core->id.class);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init bcma_modinit(void)
 {
 	int err;

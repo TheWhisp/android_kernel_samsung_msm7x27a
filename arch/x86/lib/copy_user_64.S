@@ -16,6 +16,11 @@
 #include <asm/thread_info.h>
 #include <asm/cpufeature.h>
 #include <asm/alternative-asm.h>
+<<<<<<< HEAD
+=======
+#include <asm/asm.h>
+#include <asm/smap.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * By placing feature2 after feature1 in altinstructions section, we logically
@@ -63,11 +68,16 @@
 	jmp copy_user_handle_tail
 	.previous
 
+<<<<<<< HEAD
 	.section __ex_table,"a"
 	.align 8
 	.quad 100b,103b
 	.quad 101b,103b
 	.previous
+=======
+	_ASM_EXTABLE(100b,103b)
+	_ASM_EXTABLE(101b,103b)
+>>>>>>> refs/remotes/origin/master
 #endif
 	.endm
 
@@ -132,6 +142,10 @@ ENDPROC(bad_from_user)
  */
 ENTRY(copy_user_generic_unrolled)
 	CFI_STARTPROC
+<<<<<<< HEAD
+=======
+	ASM_STAC
+>>>>>>> refs/remotes/origin/master
 	cmpl $8,%edx
 	jb 20f		/* less then 8 bytes, go to byte copy loop */
 	ALIGN_DESTINATION
@@ -179,18 +193,27 @@ ENTRY(copy_user_generic_unrolled)
 	decl %ecx
 	jnz 21b
 23:	xor %eax,%eax
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	ret
 
 	.section .fixup,"ax"
 30:	shll $6,%ecx
 	addl %ecx,%edx
 	jmp 60f
+<<<<<<< HEAD
 40:	lea (%rdx,%rcx,8),%rdx
+=======
+40:	leal (%rdx,%rcx,8),%edx
+>>>>>>> refs/remotes/origin/master
 	jmp 60f
 50:	movl %ecx,%edx
 60:	jmp copy_user_handle_tail /* ecx is zerorest also */
 	.previous
 
+<<<<<<< HEAD
 	.section __ex_table,"a"
 	.align 8
 	.quad 1b,30b
@@ -214,6 +237,28 @@ ENTRY(copy_user_generic_unrolled)
 	.quad 21b,50b
 	.quad 22b,50b
 	.previous
+=======
+	_ASM_EXTABLE(1b,30b)
+	_ASM_EXTABLE(2b,30b)
+	_ASM_EXTABLE(3b,30b)
+	_ASM_EXTABLE(4b,30b)
+	_ASM_EXTABLE(5b,30b)
+	_ASM_EXTABLE(6b,30b)
+	_ASM_EXTABLE(7b,30b)
+	_ASM_EXTABLE(8b,30b)
+	_ASM_EXTABLE(9b,30b)
+	_ASM_EXTABLE(10b,30b)
+	_ASM_EXTABLE(11b,30b)
+	_ASM_EXTABLE(12b,30b)
+	_ASM_EXTABLE(13b,30b)
+	_ASM_EXTABLE(14b,30b)
+	_ASM_EXTABLE(15b,30b)
+	_ASM_EXTABLE(16b,30b)
+	_ASM_EXTABLE(18b,40b)
+	_ASM_EXTABLE(19b,40b)
+	_ASM_EXTABLE(21b,50b)
+	_ASM_EXTABLE(22b,50b)
+>>>>>>> refs/remotes/origin/master
 	CFI_ENDPROC
 ENDPROC(copy_user_generic_unrolled)
 
@@ -237,8 +282,12 @@ ENDPROC(copy_user_generic_unrolled)
  */
 ENTRY(copy_user_generic_string)
 	CFI_STARTPROC
+<<<<<<< HEAD
 	andl %edx,%edx
 	jz 4f
+=======
+	ASM_STAC
+>>>>>>> refs/remotes/origin/master
 	cmpl $8,%edx
 	jb 2f		/* less than 8 bytes, go to byte copy loop */
 	ALIGN_DESTINATION
@@ -250,20 +299,34 @@ ENTRY(copy_user_generic_string)
 2:	movl %edx,%ecx
 3:	rep
 	movsb
+<<<<<<< HEAD
 4:	xorl %eax,%eax
 	ret
 
 	.section .fixup,"ax"
 11:	lea (%rdx,%rcx,8),%rcx
+=======
+	xorl %eax,%eax
+	ASM_CLAC
+	ret
+
+	.section .fixup,"ax"
+11:	leal (%rdx,%rcx,8),%ecx
+>>>>>>> refs/remotes/origin/master
 12:	movl %ecx,%edx		/* ecx is zerorest also */
 	jmp copy_user_handle_tail
 	.previous
 
+<<<<<<< HEAD
 	.section __ex_table,"a"
 	.align 8
 	.quad 1b,11b
 	.quad 3b,12b
 	.previous
+=======
+	_ASM_EXTABLE(1b,11b)
+	_ASM_EXTABLE(3b,12b)
+>>>>>>> refs/remotes/origin/master
 	CFI_ENDPROC
 ENDPROC(copy_user_generic_string)
 
@@ -281,12 +344,21 @@ ENDPROC(copy_user_generic_string)
  */
 ENTRY(copy_user_enhanced_fast_string)
 	CFI_STARTPROC
+<<<<<<< HEAD
 	andl %edx,%edx
 	jz 2f
 	movl %edx,%ecx
 1:	rep
 	movsb
 2:	xorl %eax,%eax
+=======
+	ASM_STAC
+	movl %edx,%ecx
+1:	rep
+	movsb
+	xorl %eax,%eax
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	ret
 
 	.section .fixup,"ax"
@@ -294,9 +366,13 @@ ENTRY(copy_user_enhanced_fast_string)
 	jmp copy_user_handle_tail
 	.previous
 
+<<<<<<< HEAD
 	.section __ex_table,"a"
 	.align 8
 	.quad 1b,12b
 	.previous
+=======
+	_ASM_EXTABLE(1b,12b)
+>>>>>>> refs/remotes/origin/master
 	CFI_ENDPROC
 ENDPROC(copy_user_enhanced_fast_string)

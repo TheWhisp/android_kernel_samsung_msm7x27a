@@ -25,9 +25,14 @@
  *
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "i915_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/i915_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "i915_drv.h"
 
 #if WATCH_LISTS
@@ -72,7 +77,15 @@ i915_verify_lists(struct drm_device *dev)
 			break;
 		} else if (!obj->active ||
 			   (obj->base.write_domain & I915_GEM_GPU_DOMAINS) == 0 ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   list_empty(&obj->gpu_write_list)){
+=======
+			   list_empty(&obj->gpu_write_list)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   list_empty(&obj->gpu_write_list)) {
+>>>>>>> refs/remotes/origin/master
 			DRM_ERROR("invalid flushing %p (a %d w %x gwl %d)\n",
 				  obj,
 				  obj->active,
@@ -98,7 +111,11 @@ i915_verify_lists(struct drm_device *dev)
 		}
 	}
 
+<<<<<<< HEAD
 	list_for_each_entry(obj, &dev_priv->mm.inactive_list, list) {
+=======
+	list_for_each_entry(obj, &i915_gtt_vm->inactive_list, list) {
+>>>>>>> refs/remotes/origin/master
 		if (obj->base.dev != dev ||
 		    !atomic_read(&obj->base.refcount.refcount)) {
 			DRM_ERROR("freed inactive %p\n", obj);
@@ -114,6 +131,7 @@ i915_verify_lists(struct drm_device *dev)
 		}
 	}
 
+<<<<<<< HEAD
 	list_for_each_entry(obj, &dev_priv->mm.pinned_list, list) {
 		if (obj->base.dev != dev ||
 		    !atomic_read(&obj->base.refcount.refcount)) {
@@ -157,7 +175,11 @@ i915_gem_object_check_coherency(struct drm_i915_gem_object *obj, int handle)
 	for (page = 0; page < obj->size / PAGE_SIZE; page++) {
 		int i;
 
+<<<<<<< HEAD
 		backing_map = kmap_atomic(obj->pages[page], KM_USER0);
+=======
+		backing_map = kmap_atomic(obj->pages[page]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (backing_map == NULL) {
 			DRM_ERROR("failed to map backing page\n");
@@ -181,13 +203,21 @@ i915_gem_object_check_coherency(struct drm_i915_gem_object *obj, int handle)
 				}
 			}
 		}
+<<<<<<< HEAD
 		kunmap_atomic(backing_map, KM_USER0);
+=======
+		kunmap_atomic(backing_map);
+>>>>>>> refs/remotes/origin/cm-10.0
 		backing_map = NULL;
 	}
 
  out:
 	if (backing_map != NULL)
+<<<<<<< HEAD
 		kunmap_atomic(backing_map, KM_USER0);
+=======
+		kunmap_atomic(backing_map);
+>>>>>>> refs/remotes/origin/cm-10.0
 	iounmap(gtt_mapping);
 
 	/* give syslog time to catch up */
@@ -201,3 +231,8 @@ i915_gem_object_check_coherency(struct drm_i915_gem_object *obj, int handle)
 	i915_gem_clflush_object(obj);
 }
 #endif
+=======
+	return warned = err;
+}
+#endif /* WATCH_LIST */
+>>>>>>> refs/remotes/origin/master

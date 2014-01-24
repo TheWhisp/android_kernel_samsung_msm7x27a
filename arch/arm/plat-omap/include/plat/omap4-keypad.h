@@ -1,6 +1,7 @@
 #ifndef ARCH_ARM_PLAT_OMAP4_KEYPAD_H
 #define ARCH_ARM_PLAT_OMAP4_KEYPAD_H
 
+<<<<<<< HEAD
 #include <linux/input/matrix_keypad.h>
 
 struct omap4_keypad_platform_data {
@@ -11,4 +12,8 @@ struct omap4_keypad_platform_data {
 };
 
 extern int omap4_keyboard_init(struct omap4_keypad_platform_data *);
+=======
+extern int omap4_keyboard_init(struct omap4_keypad_platform_data *,
+				struct omap_board_data *);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

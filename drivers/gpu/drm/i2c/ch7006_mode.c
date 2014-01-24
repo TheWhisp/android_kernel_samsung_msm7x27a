@@ -172,7 +172,11 @@ struct ch7006_mode ch7006_modes[] = {
 };
 
 struct ch7006_mode *ch7006_lookup_mode(struct drm_encoder *encoder,
+<<<<<<< HEAD
 				       struct drm_display_mode *drm_mode)
+=======
+				       const struct drm_display_mode *drm_mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ch7006_priv *priv = to_ch7006_priv(encoder);
 	struct ch7006_mode *mode;

@@ -137,6 +137,7 @@ nv50_cursor_init(struct nouveau_crtc *nv_crtc)
 	nv_crtc->cursor.show = nv50_cursor_show;
 	return 0;
 }
+<<<<<<< HEAD
 
 void
 nv50_cursor_fini(struct nouveau_crtc *nv_crtc)
@@ -155,3 +156,5 @@ nv50_cursor_fini(struct nouveau_crtc *nv_crtc)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

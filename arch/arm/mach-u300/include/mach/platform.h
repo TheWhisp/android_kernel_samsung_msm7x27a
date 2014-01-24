@@ -14,6 +14,10 @@
 void u300_map_io(void);
 void u300_init_irq(void);
 void u300_init_devices(void);
+<<<<<<< HEAD
+=======
+void u300_restart(char, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct sys_timer u300_timer;
 
 #endif

@@ -37,8 +37,14 @@
 #include <asm/uaccess.h>
 #include <asm/mach-au1x00/au1000.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * We need to save/restore a bunch of core registers that are
  * either volatile or reset to some state across a processor sleep.
@@ -49,7 +55,13 @@
  * We only have to save/restore registers that aren't otherwise
  * done as part of a driver pm_* function.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int sleep_usb[2];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int sleep_sys_clocks[5];
 static unsigned int sleep_sys_pinfunc;
 static unsigned int sleep_static_memctlr[4][3];
@@ -57,6 +69,8 @@ static unsigned int sleep_static_memctlr[4][3];
 
 static void save_core_regs(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SOC_AU1200
 	/* Shutdown USB host/device. */
 	sleep_usb[0] = au_readl(USB_HOST_CONFIG);
@@ -82,6 +96,10 @@ static void save_core_regs(void)
 	sleep_usb[1] = au_readl(0xb4020024);	/* OTG_MUX */
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Clocks and PLLs. */
 	sleep_sys_clocks[0] = au_readl(SYS_FREQCTRL0);
 	sleep_sys_clocks[1] = au_readl(SYS_FREQCTRL1);
@@ -125,6 +143,8 @@ static void restore_core_regs(void)
 	au_writel(sleep_sys_pinfunc, SYS_PINFUNC);
 	au_sync();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SOC_AU1200
 	au_writel(sleep_usb[0], USB_HOST_CONFIG);
 	au_writel(sleep_usb[1], USBD_ENABLE);
@@ -141,6 +161,10 @@ static void restore_core_regs(void)
 	au_sync();
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Restore the static memory controller configuration. */
 	au_writel(sleep_static_memctlr[0][0], MEM_STCFG0);
 	au_writel(sleep_static_memctlr[0][1], MEM_STTIME0);
@@ -158,6 +182,8 @@ static void restore_core_regs(void)
 
 void au_sleep(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int cpuid = alchemy_get_cputype();
 	if (cpuid != ALCHEMY_CPU_UNKNOWN) {
 		save_core_regs();
@@ -170,3 +196,29 @@ void au_sleep(void)
 }
 
 #endif	/* CONFIG_PM */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	save_core_regs();
+
+	switch (alchemy_get_cputype()) {
+	case ALCHEMY_CPU_AU1000:
+	case ALCHEMY_CPU_AU1500:
+	case ALCHEMY_CPU_AU1100:
+		alchemy_sleep_au1000();
+		break;
+	case ALCHEMY_CPU_AU1550:
+	case ALCHEMY_CPU_AU1200:
+		alchemy_sleep_au1550();
+		break;
+	case ALCHEMY_CPU_AU1300:
+		alchemy_sleep_au1300();
+		break;
+	}
+
+	restore_core_regs();
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

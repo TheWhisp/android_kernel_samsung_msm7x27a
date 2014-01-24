@@ -23,7 +23,13 @@
 #include "linux/proc_fs.h"
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/io.h>
 #include <mach/board.h>
 
@@ -127,7 +133,13 @@ struct msm_fb_data_type {
 	__u32 channel_irq;
 
 	struct mdp_dma_data *dma;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct device_attribute dev_attr;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	void (*dma_fnc) (struct msm_fb_data_type *mfd);
 	int (*cursor_update) (struct fb_info *info,
 			      struct fb_cursor *cursor);
@@ -135,9 +147,21 @@ struct msm_fb_data_type {
 			      struct fb_cmap *cmap);
 	int (*do_histogram) (struct fb_info *info,
 			      struct mdp_histogram_data *hist);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void (*vsync_ctrl) (int enable);
 	void (*vsync_init) (int cndx);
 	void *vsync_show;
+=======
+	int (*start_histogram) (struct mdp_histogram_start_req *req);
+	int (*stop_histogram) (struct fb_info *info, uint32_t block);
+	void (*vsync_ctrl) (int enable);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*start_histogram) (struct mdp_histogram_start_req *req);
+	int (*stop_histogram) (struct fb_info *info, uint32_t block);
+	void (*vsync_ctrl) (int enable);
+>>>>>>> refs/remotes/origin/cm-11.0
 	void *cursor_buf;
 	void *cursor_buf_phys;
 
@@ -179,7 +203,17 @@ struct msm_fb_data_type {
 	struct list_head writeback_register_queue;
 	wait_queue_head_t wait_q;
 	struct ion_client *iclient;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_mapped_buffer *map_buffer;
+=======
+	unsigned long display_iova;
+	unsigned long rotator_iova;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long display_iova;
+	unsigned long rotator_iova;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct mdp_buf_type *ov0_wb_buf;
 	struct mdp_buf_type *ov1_wb_buf;
 	u32 ov_start;
@@ -188,7 +222,13 @@ struct msm_fb_data_type {
 	u32 writeback_state;
 	bool writeback_active_cnt;
 	int cont_splash_done;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int vsync_sysfs_created;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct dentry *msm_fb_get_debugfs_root(void);

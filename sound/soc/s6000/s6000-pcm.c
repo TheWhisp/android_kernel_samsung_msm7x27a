@@ -33,6 +33,7 @@ static struct snd_pcm_hardware s6000_pcm_hardware = {
 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
 		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_JOINT_DUPLEX),
+<<<<<<< HEAD
 	.formats = (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE),
 	.rates = (SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_5512 | \
 		  SNDRV_PCM_RATE_8000_192000),
@@ -40,6 +41,8 @@ static struct snd_pcm_hardware s6000_pcm_hardware = {
 	.rate_max = 1562500,
 	.channels_min = 2,
 	.channels_max = 8,
+=======
+>>>>>>> refs/remotes/origin/master
 	.buffer_bytes_max = 0x7ffffff0,
 	.period_bytes_min = 16,
 	.period_bytes_max = 0xfffff0,
@@ -90,7 +93,12 @@ static void s6000_pcm_enqueue_dma(struct snd_pcm_substream *substream)
 		return;
 	}
 
+<<<<<<< HEAD
 	BUG_ON(period_size & 15);
+=======
+	if (WARN_ON(period_size & 15))
+		return;
+>>>>>>> refs/remotes/origin/master
 	s6dmac_put_fifo(DMA_MASK_DMAC(channel), DMA_INDEX_CHNL(channel),
 			src, dst, period_size);
 
@@ -128,7 +136,13 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
 		    substream->runtime &&
 		    snd_pcm_running(substream)) {
 			dev_dbg(pcm->dev, "xrun\n");
+<<<<<<< HEAD
 			snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+=======
+			snd_pcm_stream_lock(substream);
+			snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+			snd_pcm_stream_unlock(substream);
+>>>>>>> refs/remotes/origin/master
 			ret = IRQ_HANDLED;
 		}
 
@@ -435,29 +449,60 @@ static void s6000_pcm_free(struct snd_pcm *pcm)
 {
 	struct snd_soc_pcm_runtime *runtime = pcm->private_data;
 	struct s6000_pcm_dma_params *params =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		snd_soc_dai_get_dma_data(runtime->cpu_dai, pcm->streams[0].substream);
+=======
+		snd_soc_dai_get_dma_data(runtime->cpu_dai,
+			pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_dai_get_dma_data(runtime->cpu_dai,
+			pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream);
+>>>>>>> refs/remotes/origin/master
 
 	free_irq(params->irq, pcm);
 	snd_pcm_lib_preallocate_free_for_all(pcm);
 }
 
+<<<<<<< HEAD
 static u64 s6000_pcm_dmamask = DMA_BIT_MASK(32);
 
 static int s6000_pcm_new(struct snd_soc_pcm_runtime *runtime)
 {
 	struct snd_card *card = runtime->card->snd_card;
+<<<<<<< HEAD
 	struct snd_soc_dai *dai = runtime->cpu_dai;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int s6000_pcm_new(struct snd_soc_pcm_runtime *runtime)
+{
+	struct snd_card *card = runtime->card->snd_card;
+>>>>>>> refs/remotes/origin/master
 	struct snd_pcm *pcm = runtime->pcm;
 	struct s6000_pcm_dma_params *params;
 	int res;
 
 	params = snd_soc_dai_get_dma_data(runtime->cpu_dai,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pcm->streams[0].substream);
+=======
+			pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!card->dev->dma_mask)
 		card->dev->dma_mask = &s6000_pcm_dmamask;
 	if (!card->dev->coherent_dma_mask)
 		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
+=======
+			pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream);
+
+	res = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+	if (res)
+		return res;
+>>>>>>> refs/remotes/origin/master
 
 	if (params->dma_in) {
 		s6dmac_disable_chan(DMA_MASK_DMAC(params->dma_in),
@@ -500,12 +545,20 @@ static struct snd_soc_platform_driver s6000_soc_platform = {
 	.pcm_free = 	s6000_pcm_free,
 };
 
+<<<<<<< HEAD
 static int __devinit s6000_soc_platform_probe(struct platform_device *pdev)
+=======
+static int s6000_soc_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_platform(&pdev->dev, &s6000_soc_platform);
 }
 
+<<<<<<< HEAD
 static int __devexit s6000_soc_platform_remove(struct platform_device *pdev)
+=======
+static int s6000_soc_platform_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
@@ -518,9 +571,11 @@ static struct platform_driver s6000_pcm_driver = {
 	},
 
 	.probe = s6000_soc_platform_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(s6000_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init snd_s6000_pcm_init(void)
 {
 	return platform_driver_register(&s6000_pcm_driver);
@@ -532,6 +587,15 @@ static void __exit snd_s6000_pcm_exit(void)
 	platform_driver_unregister(&s6000_pcm_driver);
 }
 module_exit(snd_s6000_pcm_exit);
+=======
+module_platform_driver(s6000_pcm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = s6000_soc_platform_remove,
+};
+
+module_platform_driver(s6000_pcm_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Daniel Gloeckner");
 MODULE_DESCRIPTION("Stretch s6000 family PCM DMA module");

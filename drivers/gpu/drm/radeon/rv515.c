@@ -27,7 +27,11 @@
  */
 #include <linux/seq_file.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 #include "rv515d.h"
 #include "radeon.h"
 #include "radeon_asic.h"
@@ -35,11 +39,25 @@
 #include "rv515_reg_safe.h"
 
 /* This files gather functions specifics to: rv515 */
+<<<<<<< HEAD
 int rv515_debugfs_pipes_info_init(struct radeon_device *rdev);
 int rv515_debugfs_ga_info_init(struct radeon_device *rdev);
 void rv515_gpu_init(struct radeon_device *rdev);
 int rv515_mc_wait_for_idle(struct radeon_device *rdev);
 
+=======
+static int rv515_debugfs_pipes_info_init(struct radeon_device *rdev);
+static int rv515_debugfs_ga_info_init(struct radeon_device *rdev);
+static void rv515_gpu_init(struct radeon_device *rdev);
+int rv515_mc_wait_for_idle(struct radeon_device *rdev);
+
+static const u32 crtc_offsets[2] =
+{
+	0,
+	AVIVO_D2CRTC_H_TOTAL - AVIVO_D1CRTC_H_TOTAL
+};
+
+>>>>>>> refs/remotes/origin/master
 void rv515_debugfs(struct radeon_device *rdev)
 {
 	if (r100_debugfs_rbbm_init(rdev)) {
@@ -53,6 +71,8 @@ void rv515_debugfs(struct radeon_device *rdev)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void rv515_ring_start(struct radeon_device *rdev)
 {
 	int r;
@@ -63,10 +83,29 @@ void rv515_ring_start(struct radeon_device *rdev)
 	}
 	radeon_ring_write(rdev, PACKET0(ISYNC_CNTL, 0));
 	radeon_ring_write(rdev,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void rv515_ring_start(struct radeon_device *rdev, struct radeon_ring *ring)
+{
+	int r;
+
+	r = radeon_ring_lock(rdev, ring, 64);
+	if (r) {
+		return;
+	}
+	radeon_ring_write(ring, PACKET0(ISYNC_CNTL, 0));
+	radeon_ring_write(ring,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			  ISYNC_ANY2D_IDLE3D |
 			  ISYNC_ANY3D_IDLE2D |
 			  ISYNC_WAIT_IDLEGUI |
 			  ISYNC_CPSCRATCH_IDLEGUI);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(WAIT_UNTIL, 0));
 	radeon_ring_write(rdev, WAIT_2D_IDLECLEAN | WAIT_3D_IDLECLEAN);
 	radeon_ring_write(rdev, PACKET0(R300_DST_PIPE_CONFIG, 0));
@@ -93,6 +132,39 @@ void rv515_ring_start(struct radeon_device *rdev)
 	radeon_ring_write(rdev, ZC_FLUSH | ZC_FREE);
 	radeon_ring_write(rdev, PACKET0(GB_MSPOS0, 0));
 	radeon_ring_write(rdev,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	radeon_ring_write(ring, PACKET0(WAIT_UNTIL, 0));
+	radeon_ring_write(ring, WAIT_2D_IDLECLEAN | WAIT_3D_IDLECLEAN);
+	radeon_ring_write(ring, PACKET0(R300_DST_PIPE_CONFIG, 0));
+	radeon_ring_write(ring, R300_PIPE_AUTO_CONFIG);
+	radeon_ring_write(ring, PACKET0(GB_SELECT, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(GB_ENABLE, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(R500_SU_REG_DEST, 0));
+	radeon_ring_write(ring, (1 << rdev->num_gb_pipes) - 1);
+	radeon_ring_write(ring, PACKET0(VAP_INDEX_OFFSET, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(RB3D_DSTCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, RB3D_DC_FLUSH | RB3D_DC_FREE);
+	radeon_ring_write(ring, PACKET0(ZB_ZCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, ZC_FLUSH | ZC_FREE);
+	radeon_ring_write(ring, PACKET0(WAIT_UNTIL, 0));
+	radeon_ring_write(ring, WAIT_2D_IDLECLEAN | WAIT_3D_IDLECLEAN);
+	radeon_ring_write(ring, PACKET0(GB_AA_CONFIG, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(RB3D_DSTCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, RB3D_DC_FLUSH | RB3D_DC_FREE);
+	radeon_ring_write(ring, PACKET0(ZB_ZCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, ZC_FLUSH | ZC_FREE);
+	radeon_ring_write(ring, PACKET0(GB_MSPOS0, 0));
+	radeon_ring_write(ring,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			  ((6 << MS_X0_SHIFT) |
 			   (6 << MS_Y0_SHIFT) |
 			   (6 << MS_X1_SHIFT) |
@@ -101,8 +173,18 @@ void rv515_ring_start(struct radeon_device *rdev)
 			   (6 << MS_Y2_SHIFT) |
 			   (6 << MSBD0_Y_SHIFT) |
 			   (6 << MSBD0_X_SHIFT)));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(GB_MSPOS1, 0));
 	radeon_ring_write(rdev,
+=======
+	radeon_ring_write(ring, PACKET0(GB_MSPOS1, 0));
+	radeon_ring_write(ring,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	radeon_ring_write(ring, PACKET0(GB_MSPOS1, 0));
+	radeon_ring_write(ring,
+>>>>>>> refs/remotes/origin/master
 			  ((6 << MS_X3_SHIFT) |
 			   (6 << MS_Y3_SHIFT) |
 			   (6 << MS_X4_SHIFT) |
@@ -110,6 +192,8 @@ void rv515_ring_start(struct radeon_device *rdev)
 			   (6 << MS_X5_SHIFT) |
 			   (6 << MS_Y5_SHIFT) |
 			   (6 << MSBD1_SHIFT)));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(GA_ENHANCE, 0));
 	radeon_ring_write(rdev, GA_DEADLOCK_CNTL | GA_FASTSYNC_CNTL);
 	radeon_ring_write(rdev, PACKET0(GA_POLY_MODE, 0));
@@ -119,6 +203,22 @@ void rv515_ring_start(struct radeon_device *rdev)
 	radeon_ring_write(rdev, PACKET0(0x20C8, 0));
 	radeon_ring_write(rdev, 0);
 	radeon_ring_unlock_commit(rdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	radeon_ring_write(ring, PACKET0(GA_ENHANCE, 0));
+	radeon_ring_write(ring, GA_DEADLOCK_CNTL | GA_FASTSYNC_CNTL);
+	radeon_ring_write(ring, PACKET0(GA_POLY_MODE, 0));
+	radeon_ring_write(ring, FRONT_PTYPE_TRIANGE | BACK_PTYPE_TRIANGE);
+	radeon_ring_write(ring, PACKET0(GA_ROUND_MODE, 0));
+	radeon_ring_write(ring, GEOMETRY_ROUND_NEAREST | COLOR_ROUND_NEAREST);
+	radeon_ring_write(ring, PACKET0(0x20C8, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_unlock_commit(rdev, ring);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int rv515_mc_wait_for_idle(struct radeon_device *rdev)
@@ -143,13 +243,25 @@ void rv515_vga_render_disable(struct radeon_device *rdev)
 		RREG32(R_000300_VGA_RENDER_CONTROL) & C_000300_VGA_VSTATUS_CNTL);
 }
 
+<<<<<<< HEAD
 void rv515_gpu_init(struct radeon_device *rdev)
+=======
+static void rv515_gpu_init(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned pipe_select_current, gb_pipe_select, tmp;
 
 	if (r100_gui_wait_for_idle(rdev)) {
 		printk(KERN_WARNING "Failed to wait GUI idle while "
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       "reseting GPU. Bad things might happen.\n");
+=======
+		       "resetting GPU. Bad things might happen.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "resetting GPU. Bad things might happen.\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	rv515_vga_render_disable(rdev);
 	r420_pipes_init(rdev);
@@ -161,7 +273,15 @@ void rv515_gpu_init(struct radeon_device *rdev)
 	WREG32_PLL(0x000D, tmp);
 	if (r100_gui_wait_for_idle(rdev)) {
 		printk(KERN_WARNING "Failed to wait GUI idle while "
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       "reseting GPU. Bad things might happen.\n");
+=======
+		       "resetting GPU. Bad things might happen.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "resetting GPU. Bad things might happen.\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	if (rv515_mc_wait_for_idle(rdev)) {
 		printk(KERN_WARNING "Failed to wait MC idle while "
@@ -189,7 +309,11 @@ static void rv515_vram_get_type(struct radeon_device *rdev)
 	}
 }
 
+<<<<<<< HEAD
 void rv515_mc_init(struct radeon_device *rdev)
+=======
+static void rv515_mc_init(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 
 	rv515_vram_get_type(rdev);
@@ -203,19 +327,41 @@ void rv515_mc_init(struct radeon_device *rdev)
 
 uint32_t rv515_mc_rreg(struct radeon_device *rdev, uint32_t reg)
 {
+<<<<<<< HEAD
 	uint32_t r;
 
 	WREG32(MC_IND_INDEX, 0x7f0000 | (reg & 0xffff));
 	r = RREG32(MC_IND_DATA);
 	WREG32(MC_IND_INDEX, 0);
+=======
+	unsigned long flags;
+	uint32_t r;
+
+	spin_lock_irqsave(&rdev->mc_idx_lock, flags);
+	WREG32(MC_IND_INDEX, 0x7f0000 | (reg & 0xffff));
+	r = RREG32(MC_IND_DATA);
+	WREG32(MC_IND_INDEX, 0);
+	spin_unlock_irqrestore(&rdev->mc_idx_lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
 void rv515_mc_wreg(struct radeon_device *rdev, uint32_t reg, uint32_t v)
 {
+<<<<<<< HEAD
 	WREG32(MC_IND_INDEX, 0xff0000 | ((reg) & 0xffff));
 	WREG32(MC_IND_DATA, (v));
 	WREG32(MC_IND_INDEX, 0);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&rdev->mc_idx_lock, flags);
+	WREG32(MC_IND_INDEX, 0xff0000 | ((reg) & 0xffff));
+	WREG32(MC_IND_DATA, (v));
+	WREG32(MC_IND_INDEX, 0);
+	spin_unlock_irqrestore(&rdev->mc_idx_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 #if defined(CONFIG_DEBUG_FS)
@@ -261,7 +407,11 @@ static struct drm_info_list rv515_ga_info_list[] = {
 };
 #endif
 
+<<<<<<< HEAD
 int rv515_debugfs_pipes_info_init(struct radeon_device *rdev)
+=======
+static int rv515_debugfs_pipes_info_init(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 #if defined(CONFIG_DEBUG_FS)
 	return radeon_debugfs_add_files(rdev, rv515_pipes_info_list, 1);
@@ -270,7 +420,11 @@ int rv515_debugfs_pipes_info_init(struct radeon_device *rdev)
 #endif
 }
 
+<<<<<<< HEAD
 int rv515_debugfs_ga_info_init(struct radeon_device *rdev)
+=======
+static int rv515_debugfs_ga_info_init(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 #if defined(CONFIG_DEBUG_FS)
 	return radeon_debugfs_add_files(rdev, rv515_ga_info_list, 1);
@@ -281,6 +435,10 @@ int rv515_debugfs_ga_info_init(struct radeon_device *rdev)
 
 void rv515_mc_stop(struct radeon_device *rdev, struct rv515_mc_save *save)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	save->vga_render_control = RREG32(R_000300_VGA_RENDER_CONTROL);
 	save->vga_hdp_control = RREG32(R_000328_VGA_HDP_CONTROL);
 
@@ -295,22 +453,191 @@ void rv515_mc_stop(struct radeon_device *rdev, struct rv515_mc_save *save)
 	WREG32(R_0068E8_D2CRTC_UPDATE_LOCK, 0);
 	WREG32(R_000330_D1VGA_CONTROL, 0);
 	WREG32(R_000338_D2VGA_CONTROL, 0);
+=======
+	u32 crtc_enabled, tmp, frame_count, blackout;
+	int i, j;
+
+	save->vga_render_control = RREG32(R_000300_VGA_RENDER_CONTROL);
+	save->vga_hdp_control = RREG32(R_000328_VGA_HDP_CONTROL);
+
+	/* disable VGA render */
+	WREG32(R_000300_VGA_RENDER_CONTROL, 0);
+	/* blank the display controllers */
+	for (i = 0; i < rdev->num_crtc; i++) {
+		crtc_enabled = RREG32(AVIVO_D1CRTC_CONTROL + crtc_offsets[i]) & AVIVO_CRTC_EN;
+		if (crtc_enabled) {
+			save->crtc_enabled[i] = true;
+			tmp = RREG32(AVIVO_D1CRTC_CONTROL + crtc_offsets[i]);
+			if (!(tmp & AVIVO_CRTC_DISP_READ_REQUEST_DISABLE)) {
+				radeon_wait_for_vblank(rdev, i);
+				WREG32(AVIVO_D1CRTC_UPDATE_LOCK + crtc_offsets[i], 1);
+				tmp |= AVIVO_CRTC_DISP_READ_REQUEST_DISABLE;
+				WREG32(AVIVO_D1CRTC_CONTROL + crtc_offsets[i], tmp);
+				WREG32(AVIVO_D1CRTC_UPDATE_LOCK + crtc_offsets[i], 0);
+			}
+			/* wait for the next frame */
+			frame_count = radeon_get_vblank_counter(rdev, i);
+			for (j = 0; j < rdev->usec_timeout; j++) {
+				if (radeon_get_vblank_counter(rdev, i) != frame_count)
+					break;
+				udelay(1);
+			}
+
+			/* XXX this is a hack to avoid strange behavior with EFI on certain systems */
+			WREG32(AVIVO_D1CRTC_UPDATE_LOCK + crtc_offsets[i], 1);
+			tmp = RREG32(AVIVO_D1CRTC_CONTROL + crtc_offsets[i]);
+			tmp &= ~AVIVO_CRTC_EN;
+			WREG32(AVIVO_D1CRTC_CONTROL + crtc_offsets[i], tmp);
+			WREG32(AVIVO_D1CRTC_UPDATE_LOCK + crtc_offsets[i], 0);
+			save->crtc_enabled[i] = false;
+			/* ***** */
+		} else {
+			save->crtc_enabled[i] = false;
+		}
+	}
+
+	radeon_mc_wait_for_idle(rdev);
+
+	if (rdev->family >= CHIP_R600) {
+		if (rdev->family >= CHIP_RV770)
+			blackout = RREG32(R700_MC_CITF_CNTL);
+		else
+			blackout = RREG32(R600_CITF_CNTL);
+		if ((blackout & R600_BLACKOUT_MASK) != R600_BLACKOUT_MASK) {
+			/* Block CPU access */
+			WREG32(R600_BIF_FB_EN, 0);
+			/* blackout the MC */
+			blackout |= R600_BLACKOUT_MASK;
+			if (rdev->family >= CHIP_RV770)
+				WREG32(R700_MC_CITF_CNTL, blackout);
+			else
+				WREG32(R600_CITF_CNTL, blackout);
+		}
+	}
+	/* wait for the MC to settle */
+	udelay(100);
+
+	/* lock double buffered regs */
+	for (i = 0; i < rdev->num_crtc; i++) {
+		if (save->crtc_enabled[i]) {
+			tmp = RREG32(AVIVO_D1GRPH_UPDATE + crtc_offsets[i]);
+			if (!(tmp & AVIVO_D1GRPH_UPDATE_LOCK)) {
+				tmp |= AVIVO_D1GRPH_UPDATE_LOCK;
+				WREG32(AVIVO_D1GRPH_UPDATE + crtc_offsets[i], tmp);
+			}
+			tmp = RREG32(AVIVO_D1MODE_MASTER_UPDATE_LOCK + crtc_offsets[i]);
+			if (!(tmp & 1)) {
+				tmp |= 1;
+				WREG32(AVIVO_D1MODE_MASTER_UPDATE_LOCK + crtc_offsets[i], tmp);
+			}
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 void rv515_mc_resume(struct radeon_device *rdev, struct rv515_mc_save *save)
 {
+<<<<<<< HEAD
 	WREG32(R_006110_D1GRPH_PRIMARY_SURFACE_ADDRESS, rdev->mc.vram_start);
 	WREG32(R_006118_D1GRPH_SECONDARY_SURFACE_ADDRESS, rdev->mc.vram_start);
 	WREG32(R_006910_D2GRPH_PRIMARY_SURFACE_ADDRESS, rdev->mc.vram_start);
 	WREG32(R_006918_D2GRPH_SECONDARY_SURFACE_ADDRESS, rdev->mc.vram_start);
 	WREG32(R_000310_VGA_MEMORY_BASE_ADDRESS, rdev->mc.vram_start);
 	/* Unlock host access */
+=======
+	u32 tmp, frame_count;
+	int i, j;
+
+	/* update crtc base addresses */
+	for (i = 0; i < rdev->num_crtc; i++) {
+		if (rdev->family >= CHIP_RV770) {
+			if (i == 0) {
+				WREG32(R700_D1GRPH_PRIMARY_SURFACE_ADDRESS_HIGH,
+				       upper_32_bits(rdev->mc.vram_start));
+				WREG32(R700_D1GRPH_SECONDARY_SURFACE_ADDRESS_HIGH,
+				       upper_32_bits(rdev->mc.vram_start));
+			} else {
+				WREG32(R700_D2GRPH_PRIMARY_SURFACE_ADDRESS_HIGH,
+				       upper_32_bits(rdev->mc.vram_start));
+				WREG32(R700_D2GRPH_SECONDARY_SURFACE_ADDRESS_HIGH,
+				       upper_32_bits(rdev->mc.vram_start));
+			}
+		}
+		WREG32(R_006110_D1GRPH_PRIMARY_SURFACE_ADDRESS + crtc_offsets[i],
+		       (u32)rdev->mc.vram_start);
+		WREG32(R_006118_D1GRPH_SECONDARY_SURFACE_ADDRESS + crtc_offsets[i],
+		       (u32)rdev->mc.vram_start);
+	}
+	WREG32(R_000310_VGA_MEMORY_BASE_ADDRESS, (u32)rdev->mc.vram_start);
+
+	/* unlock regs and wait for update */
+	for (i = 0; i < rdev->num_crtc; i++) {
+		if (save->crtc_enabled[i]) {
+			tmp = RREG32(AVIVO_D1MODE_MASTER_UPDATE_MODE + crtc_offsets[i]);
+			if ((tmp & 0x3) != 0) {
+				tmp &= ~0x3;
+				WREG32(AVIVO_D1MODE_MASTER_UPDATE_MODE + crtc_offsets[i], tmp);
+			}
+			tmp = RREG32(AVIVO_D1GRPH_UPDATE + crtc_offsets[i]);
+			if (tmp & AVIVO_D1GRPH_UPDATE_LOCK) {
+				tmp &= ~AVIVO_D1GRPH_UPDATE_LOCK;
+				WREG32(AVIVO_D1GRPH_UPDATE + crtc_offsets[i], tmp);
+			}
+			tmp = RREG32(AVIVO_D1MODE_MASTER_UPDATE_LOCK + crtc_offsets[i]);
+			if (tmp & 1) {
+				tmp &= ~1;
+				WREG32(AVIVO_D1MODE_MASTER_UPDATE_LOCK + crtc_offsets[i], tmp);
+			}
+			for (j = 0; j < rdev->usec_timeout; j++) {
+				tmp = RREG32(AVIVO_D1GRPH_UPDATE + crtc_offsets[i]);
+				if ((tmp & AVIVO_D1GRPH_SURFACE_UPDATE_PENDING) == 0)
+					break;
+				udelay(1);
+			}
+		}
+	}
+
+	if (rdev->family >= CHIP_R600) {
+		/* unblackout the MC */
+		if (rdev->family >= CHIP_RV770)
+			tmp = RREG32(R700_MC_CITF_CNTL);
+		else
+			tmp = RREG32(R600_CITF_CNTL);
+		tmp &= ~R600_BLACKOUT_MASK;
+		if (rdev->family >= CHIP_RV770)
+			WREG32(R700_MC_CITF_CNTL, tmp);
+		else
+			WREG32(R600_CITF_CNTL, tmp);
+		/* allow CPU access */
+		WREG32(R600_BIF_FB_EN, R600_FB_READ_EN | R600_FB_WRITE_EN);
+	}
+
+	for (i = 0; i < rdev->num_crtc; i++) {
+		if (save->crtc_enabled[i]) {
+			tmp = RREG32(AVIVO_D1CRTC_CONTROL + crtc_offsets[i]);
+			tmp &= ~AVIVO_CRTC_DISP_READ_REQUEST_DISABLE;
+			WREG32(AVIVO_D1CRTC_CONTROL + crtc_offsets[i], tmp);
+			/* wait for the next frame */
+			frame_count = radeon_get_vblank_counter(rdev, i);
+			for (j = 0; j < rdev->usec_timeout; j++) {
+				if (radeon_get_vblank_counter(rdev, i) != frame_count)
+					break;
+				udelay(1);
+			}
+		}
+	}
+	/* Unlock vga access */
+>>>>>>> refs/remotes/origin/master
 	WREG32(R_000328_VGA_HDP_CONTROL, save->vga_hdp_control);
 	mdelay(1);
 	WREG32(R_000300_VGA_RENDER_CONTROL, save->vga_render_control);
 }
 
+<<<<<<< HEAD
 void rv515_mc_program(struct radeon_device *rdev)
+=======
+static void rv515_mc_program(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rv515_mc_save save;
 
@@ -379,7 +706,32 @@ static int rv515_startup(struct radeon_device *rdev)
 	if (r)
 		return r;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Enable IRQ */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	r = radeon_fence_driver_start_ring(rdev, RADEON_RING_TYPE_GFX_INDEX);
+	if (r) {
+		dev_err(rdev->dev, "failed initializing CP fences (%d).\n", r);
+		return r;
+	}
+
+	/* Enable IRQ */
+	if (!rdev->irq.installed) {
+		r = radeon_irq_kms_init(rdev);
+		if (r)
+			return r;
+	}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rs600_irq_set(rdev);
 	rdev->config.r300.hdp_cntl = RREG32(RADEON_HOST_PATH_CNTL);
 	/* 1M ring buffer */
@@ -388,16 +740,48 @@ static int rv515_startup(struct radeon_device *rdev)
 		dev_err(rdev->dev, "failed initializing CP (%d).\n", r);
 		return r;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r = r100_ib_init(rdev);
 	if (r) {
 		dev_err(rdev->dev, "failed initializing IB (%d).\n", r);
+=======
+
+	r = radeon_ib_pool_start(rdev);
+	if (r)
+		return r;
+
+	r = radeon_ib_test(rdev, RADEON_RING_TYPE_GFX_INDEX, &rdev->ring[RADEON_RING_TYPE_GFX_INDEX]);
+	if (r) {
+		dev_err(rdev->dev, "failed testing IB (%d).\n", r);
+		rdev->accel_working = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 		return r;
 	}
+=======
+
+	r = radeon_ib_pool_init(rdev);
+	if (r) {
+		dev_err(rdev->dev, "IB initialization failed (%d).\n", r);
+		return r;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 int rv515_resume(struct radeon_device *rdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int r;
+
+>>>>>>> refs/remotes/origin/master
 	/* Make sur GART are not working */
 	if (rdev->flags & RADEON_IS_PCIE)
 		rv370_pcie_gart_disable(rdev);
@@ -415,7 +799,23 @@ int rv515_resume(struct radeon_device *rdev)
 	rv515_clock_startup(rdev);
 	/* Initialize surface registers */
 	radeon_surface_init(rdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return rv515_startup(rdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	rdev->accel_working = true;
+	r =  rv515_startup(rdev);
+	if (r) {
+		rdev->accel_working = false;
+	}
+	return r;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int rv515_suspend(struct radeon_device *rdev)
@@ -438,7 +838,11 @@ void rv515_fini(struct radeon_device *rdev)
 {
 	r100_cp_fini(rdev);
 	radeon_wb_fini(rdev);
+<<<<<<< HEAD
 	r100_ib_fini(rdev);
+=======
+	radeon_ib_pool_fini(rdev);
+>>>>>>> refs/remotes/origin/master
 	radeon_gem_fini(rdev);
 	rv370_pcie_gart_fini(rdev);
 	radeon_agp_fini(rdev);
@@ -500,9 +904,18 @@ int rv515_init(struct radeon_device *rdev)
 	r = radeon_fence_driver_init(rdev);
 	if (r)
 		return r;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r)
 		return r;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Memory manager */
 	r = radeon_bo_init(rdev);
 	if (r)
@@ -511,14 +924,34 @@ int rv515_init(struct radeon_device *rdev)
 	if (r)
 		return r;
 	rv515_set_safe_registers(rdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rdev->accel_working = true;
+=======
+
+	r = radeon_ib_pool_init(rdev);
+	rdev->accel_working = true;
+	if (r) {
+		dev_err(rdev->dev, "IB initialization failed (%d).\n", r);
+		rdev->accel_working = false;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	rdev->accel_working = true;
+>>>>>>> refs/remotes/origin/master
 	r = rv515_startup(rdev);
 	if (r) {
 		/* Somethings want wront with the accel init stop accel */
 		dev_err(rdev->dev, "Disabling GPU acceleration\n");
 		r100_cp_fini(rdev);
 		radeon_wb_fini(rdev);
+<<<<<<< HEAD
 		r100_ib_fini(rdev);
+=======
+		radeon_ib_pool_fini(rdev);
+>>>>>>> refs/remotes/origin/master
 		radeon_irq_kms_fini(rdev);
 		rv370_pcie_gart_fini(rdev);
 		radeon_agp_fini(rdev);
@@ -770,14 +1203,26 @@ struct rv515_watermark {
 	fixed20_12 sclk;
 };
 
+<<<<<<< HEAD
 void rv515_crtc_bandwidth_compute(struct radeon_device *rdev,
 				  struct radeon_crtc *crtc,
 				  struct rv515_watermark *wm)
+=======
+static void rv515_crtc_bandwidth_compute(struct radeon_device *rdev,
+					 struct radeon_crtc *crtc,
+					 struct rv515_watermark *wm,
+					 bool low)
+>>>>>>> refs/remotes/origin/master
 {
 	struct drm_display_mode *mode = &crtc->base.mode;
 	fixed20_12 a, b, c;
 	fixed20_12 pclk, request_fifo_depth, tolerable_latency, estimated_width;
 	fixed20_12 consumption_time, line_time, chunk_time, read_delay_latency;
+<<<<<<< HEAD
+=======
+	fixed20_12 sclk;
+	u32 selected_sclk;
+>>>>>>> refs/remotes/origin/master
 
 	if (!crtc->base.enabled) {
 		/* FIXME: wouldn't it better to set priority mark to maximum */
@@ -785,6 +1230,21 @@ void rv515_crtc_bandwidth_compute(struct radeon_device *rdev,
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	/* rv6xx, rv7xx */
+	if ((rdev->family >= CHIP_RV610) &&
+	    (rdev->pm.pm_method == PM_METHOD_DPM) && rdev->pm.dpm_enabled)
+		selected_sclk = radeon_dpm_get_sclk(rdev, low);
+	else
+		selected_sclk = rdev->pm.current_sclk;
+
+	/* sclk in Mhz */
+	a.full = dfixed_const(100);
+	sclk.full = dfixed_const(selected_sclk);
+	sclk.full = dfixed_div(sclk, a);
+
+>>>>>>> refs/remotes/origin/master
 	if (crtc->vsc.full > dfixed_const(2))
 		wm->num_line_pair.full = dfixed_const(2);
 	else
@@ -850,7 +1310,11 @@ void rv515_crtc_bandwidth_compute(struct radeon_device *rdev,
 	 * sclk = system clock(Mhz)
 	 */
 	a.full = dfixed_const(600 * 1000);
+<<<<<<< HEAD
 	chunk_time.full = dfixed_div(a, rdev->pm.sclk);
+=======
+	chunk_time.full = dfixed_div(a, sclk);
+>>>>>>> refs/remotes/origin/master
 	read_delay_latency.full = dfixed_const(1000);
 
 	/* Determine the worst case latency
@@ -911,6 +1375,7 @@ void rv515_crtc_bandwidth_compute(struct radeon_device *rdev,
 	}
 }
 
+<<<<<<< HEAD
 void rv515_bandwidth_avivo_update(struct radeon_device *rdev)
 {
 	struct drm_display_mode *mode0 = NULL;
@@ -1057,6 +1522,171 @@ void rv515_bandwidth_avivo_update(struct radeon_device *rdev)
 	WREG32(D1MODE_PRIORITY_B_CNT, d1mode_priority_a_cnt);
 	WREG32(D2MODE_PRIORITY_A_CNT, d2mode_priority_a_cnt);
 	WREG32(D2MODE_PRIORITY_B_CNT, d2mode_priority_a_cnt);
+=======
+static void rv515_compute_mode_priority(struct radeon_device *rdev,
+					struct rv515_watermark *wm0,
+					struct rv515_watermark *wm1,
+					struct drm_display_mode *mode0,
+					struct drm_display_mode *mode1,
+					u32 *d1mode_priority_a_cnt,
+					u32 *d2mode_priority_a_cnt)
+{
+	fixed20_12 priority_mark02, priority_mark12, fill_rate;
+	fixed20_12 a, b;
+
+	*d1mode_priority_a_cnt = MODE_PRIORITY_OFF;
+	*d2mode_priority_a_cnt = MODE_PRIORITY_OFF;
+
+	if (mode0 && mode1) {
+		if (dfixed_trunc(wm0->dbpp) > 64)
+			a.full = dfixed_div(wm0->dbpp, wm0->num_line_pair);
+		else
+			a.full = wm0->num_line_pair.full;
+		if (dfixed_trunc(wm1->dbpp) > 64)
+			b.full = dfixed_div(wm1->dbpp, wm1->num_line_pair);
+		else
+			b.full = wm1->num_line_pair.full;
+		a.full += b.full;
+		fill_rate.full = dfixed_div(wm0->sclk, a);
+		if (wm0->consumption_rate.full > fill_rate.full) {
+			b.full = wm0->consumption_rate.full - fill_rate.full;
+			b.full = dfixed_mul(b, wm0->active_time);
+			a.full = dfixed_const(16);
+			b.full = dfixed_div(b, a);
+			a.full = dfixed_mul(wm0->worst_case_latency,
+						wm0->consumption_rate);
+			priority_mark02.full = a.full + b.full;
+		} else {
+			a.full = dfixed_mul(wm0->worst_case_latency,
+						wm0->consumption_rate);
+			b.full = dfixed_const(16 * 1000);
+			priority_mark02.full = dfixed_div(a, b);
+		}
+		if (wm1->consumption_rate.full > fill_rate.full) {
+			b.full = wm1->consumption_rate.full - fill_rate.full;
+			b.full = dfixed_mul(b, wm1->active_time);
+			a.full = dfixed_const(16);
+			b.full = dfixed_div(b, a);
+			a.full = dfixed_mul(wm1->worst_case_latency,
+						wm1->consumption_rate);
+			priority_mark12.full = a.full + b.full;
+		} else {
+			a.full = dfixed_mul(wm1->worst_case_latency,
+						wm1->consumption_rate);
+			b.full = dfixed_const(16 * 1000);
+			priority_mark12.full = dfixed_div(a, b);
+		}
+		if (wm0->priority_mark.full > priority_mark02.full)
+			priority_mark02.full = wm0->priority_mark.full;
+		if (wm0->priority_mark_max.full > priority_mark02.full)
+			priority_mark02.full = wm0->priority_mark_max.full;
+		if (wm1->priority_mark.full > priority_mark12.full)
+			priority_mark12.full = wm1->priority_mark.full;
+		if (wm1->priority_mark_max.full > priority_mark12.full)
+			priority_mark12.full = wm1->priority_mark_max.full;
+		*d1mode_priority_a_cnt = dfixed_trunc(priority_mark02);
+		*d2mode_priority_a_cnt = dfixed_trunc(priority_mark12);
+		if (rdev->disp_priority == 2) {
+			*d1mode_priority_a_cnt |= MODE_PRIORITY_ALWAYS_ON;
+			*d2mode_priority_a_cnt |= MODE_PRIORITY_ALWAYS_ON;
+		}
+	} else if (mode0) {
+		if (dfixed_trunc(wm0->dbpp) > 64)
+			a.full = dfixed_div(wm0->dbpp, wm0->num_line_pair);
+		else
+			a.full = wm0->num_line_pair.full;
+		fill_rate.full = dfixed_div(wm0->sclk, a);
+		if (wm0->consumption_rate.full > fill_rate.full) {
+			b.full = wm0->consumption_rate.full - fill_rate.full;
+			b.full = dfixed_mul(b, wm0->active_time);
+			a.full = dfixed_const(16);
+			b.full = dfixed_div(b, a);
+			a.full = dfixed_mul(wm0->worst_case_latency,
+						wm0->consumption_rate);
+			priority_mark02.full = a.full + b.full;
+		} else {
+			a.full = dfixed_mul(wm0->worst_case_latency,
+						wm0->consumption_rate);
+			b.full = dfixed_const(16);
+			priority_mark02.full = dfixed_div(a, b);
+		}
+		if (wm0->priority_mark.full > priority_mark02.full)
+			priority_mark02.full = wm0->priority_mark.full;
+		if (wm0->priority_mark_max.full > priority_mark02.full)
+			priority_mark02.full = wm0->priority_mark_max.full;
+		*d1mode_priority_a_cnt = dfixed_trunc(priority_mark02);
+		if (rdev->disp_priority == 2)
+			*d1mode_priority_a_cnt |= MODE_PRIORITY_ALWAYS_ON;
+	} else if (mode1) {
+		if (dfixed_trunc(wm1->dbpp) > 64)
+			a.full = dfixed_div(wm1->dbpp, wm1->num_line_pair);
+		else
+			a.full = wm1->num_line_pair.full;
+		fill_rate.full = dfixed_div(wm1->sclk, a);
+		if (wm1->consumption_rate.full > fill_rate.full) {
+			b.full = wm1->consumption_rate.full - fill_rate.full;
+			b.full = dfixed_mul(b, wm1->active_time);
+			a.full = dfixed_const(16);
+			b.full = dfixed_div(b, a);
+			a.full = dfixed_mul(wm1->worst_case_latency,
+						wm1->consumption_rate);
+			priority_mark12.full = a.full + b.full;
+		} else {
+			a.full = dfixed_mul(wm1->worst_case_latency,
+						wm1->consumption_rate);
+			b.full = dfixed_const(16 * 1000);
+			priority_mark12.full = dfixed_div(a, b);
+		}
+		if (wm1->priority_mark.full > priority_mark12.full)
+			priority_mark12.full = wm1->priority_mark.full;
+		if (wm1->priority_mark_max.full > priority_mark12.full)
+			priority_mark12.full = wm1->priority_mark_max.full;
+		*d2mode_priority_a_cnt = dfixed_trunc(priority_mark12);
+		if (rdev->disp_priority == 2)
+			*d2mode_priority_a_cnt |= MODE_PRIORITY_ALWAYS_ON;
+	}
+}
+
+void rv515_bandwidth_avivo_update(struct radeon_device *rdev)
+{
+	struct drm_display_mode *mode0 = NULL;
+	struct drm_display_mode *mode1 = NULL;
+	struct rv515_watermark wm0_high, wm0_low;
+	struct rv515_watermark wm1_high, wm1_low;
+	u32 tmp;
+	u32 d1mode_priority_a_cnt, d1mode_priority_b_cnt;
+	u32 d2mode_priority_a_cnt, d2mode_priority_b_cnt;
+
+	if (rdev->mode_info.crtcs[0]->base.enabled)
+		mode0 = &rdev->mode_info.crtcs[0]->base.mode;
+	if (rdev->mode_info.crtcs[1]->base.enabled)
+		mode1 = &rdev->mode_info.crtcs[1]->base.mode;
+	rs690_line_buffer_adjust(rdev, mode0, mode1);
+
+	rv515_crtc_bandwidth_compute(rdev, rdev->mode_info.crtcs[0], &wm0_high, false);
+	rv515_crtc_bandwidth_compute(rdev, rdev->mode_info.crtcs[1], &wm1_high, false);
+
+	rv515_crtc_bandwidth_compute(rdev, rdev->mode_info.crtcs[0], &wm0_low, false);
+	rv515_crtc_bandwidth_compute(rdev, rdev->mode_info.crtcs[1], &wm1_low, false);
+
+	tmp = wm0_high.lb_request_fifo_depth;
+	tmp |= wm1_high.lb_request_fifo_depth << 16;
+	WREG32(LB_MAX_REQ_OUTSTANDING, tmp);
+
+	rv515_compute_mode_priority(rdev,
+				    &wm0_high, &wm1_high,
+				    mode0, mode1,
+				    &d1mode_priority_a_cnt, &d2mode_priority_a_cnt);
+	rv515_compute_mode_priority(rdev,
+				    &wm0_low, &wm1_low,
+				    mode0, mode1,
+				    &d1mode_priority_b_cnt, &d2mode_priority_b_cnt);
+
+	WREG32(D1MODE_PRIORITY_A_CNT, d1mode_priority_a_cnt);
+	WREG32(D1MODE_PRIORITY_B_CNT, d1mode_priority_b_cnt);
+	WREG32(D2MODE_PRIORITY_A_CNT, d2mode_priority_a_cnt);
+	WREG32(D2MODE_PRIORITY_B_CNT, d2mode_priority_b_cnt);
+>>>>>>> refs/remotes/origin/master
 }
 
 void rv515_bandwidth_update(struct radeon_device *rdev)

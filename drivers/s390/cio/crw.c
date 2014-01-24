@@ -1,7 +1,11 @@
 /*
  *   Channel report handling code
  *
+<<<<<<< HEAD
  *    Copyright IBM Corp. 2000,2009
+=======
+ *    Copyright IBM Corp. 2000, 2009
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Ingo Adlung <adlung@de.ibm.com>,
  *		 Martin Schwidefsky <schwidefsky@de.ibm.com>,
  *		 Cornelia Huck <cornelia.huck@de.ibm.com>,
@@ -13,6 +17,14 @@
 #include <linux/init.h>
 #include <linux/wait.h>
 #include <asm/crw.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/ctl_reg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/ctl_reg.h>
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_MUTEX(crw_handler_mutex);
 static crw_handler_t crw_handlers[NR_RSCS];

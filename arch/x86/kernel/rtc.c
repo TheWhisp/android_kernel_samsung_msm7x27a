@@ -5,12 +5,29 @@
 #include <linux/mc146818rtc.h>
 #include <linux/acpi.h>
 #include <linux/bcd.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pnp.h>
 #include <linux/of.h>
 
 #include <asm/vsyscall.h>
 #include <asm/x86_init.h>
 #include <asm/time.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/mrst.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/intel-mid.h>
+#include <asm/rtc.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_32
 /*
@@ -34,6 +51,7 @@ EXPORT_SYMBOL(rtc_lock);
  * nowtime is written into the registers of the CMOS clock, it will
  * jump to the next second precisely 500 ms later. Check the Motorola
  * MC146818A or Dallas DS12887 data sheet for details.
+<<<<<<< HEAD
  *
  * BUG: This routine does not handle hour overflow properly; it just
  *      sets the minutes. Usually you'll only notice that after reboot!
@@ -42,8 +60,16 @@ int mach_set_rtc_mmss(unsigned long nowtime)
 {
 	int real_seconds, real_minutes, cmos_minutes;
 	unsigned char save_control, save_freq_select;
+<<<<<<< HEAD
 	int retval = 0;
 
+=======
+	unsigned long flags;
+	int retval = 0;
+
+	spin_lock_irqsave(&rtc_lock, flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	 /* tell the clock it's being set */
 	save_control = CMOS_READ(RTC_CONTROL);
 	CMOS_WRITE((save_control|RTC_SET), RTC_CONTROL);
@@ -93,12 +119,53 @@ int mach_set_rtc_mmss(unsigned long nowtime)
 	CMOS_WRITE(save_control, RTC_CONTROL);
 	CMOS_WRITE(save_freq_select, RTC_FREQ_SELECT);
 
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&rtc_lock, flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
 unsigned long mach_get_cmos_time(void)
 {
 	unsigned int status, year, mon, day, hour, min, sec, century = 0;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&rtc_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+int mach_set_rtc_mmss(const struct timespec *now)
+{
+	unsigned long nowtime = now->tv_sec;
+	struct rtc_time tm;
+	int retval = 0;
+
+	rtc_time_to_tm(nowtime, &tm);
+	if (!rtc_valid_tm(&tm)) {
+		retval = set_rtc_time(&tm);
+		if (retval)
+			printk(KERN_ERR "%s: RTC write failed with error %d\n",
+			       __FUNCTION__, retval);
+	} else {
+		printk(KERN_ERR
+		       "%s: Invalid RTC value: write of %lx to RTC failed\n",
+			__FUNCTION__, nowtime);
+		retval = -EINVAL;
+	}
+	return retval;
+}
+
+void mach_get_cmos_time(struct timespec *now)
+{
+	unsigned int status, year, mon, day, hour, min, sec, century = 0;
+	unsigned long flags;
+
+	spin_lock_irqsave(&rtc_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If UIP is clear, then we have >= 244 microseconds before
@@ -125,6 +192,16 @@ unsigned long mach_get_cmos_time(void)
 	status = CMOS_READ(RTC_CONTROL);
 	WARN_ON_ONCE(RTC_ALWAYS_BCD && (status & RTC_DM_BINARY));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&rtc_lock, flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&rtc_lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 	if (RTC_ALWAYS_BCD || !(status & RTC_DM_BINARY)) {
 		sec = bcd2bin(sec);
 		min = bcd2bin(min);
@@ -137,11 +214,19 @@ unsigned long mach_get_cmos_time(void)
 	if (century) {
 		century = bcd2bin(century);
 		year += century * 100;
+<<<<<<< HEAD
 		printk(KERN_INFO "Extended CMOS year: %d\n", century * 100);
 	} else
 		year += CMOS_YEARS_OFFS;
 
 	return mktime(year, mon, day, hour, min, sec);
+=======
+	} else
+		year += CMOS_YEARS_OFFS;
+
+	now->tv_sec = mktime(year, mon, day, hour, min, sec);
+	now->tv_nsec = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Routines for accessing the CMOS RAM/RTC. */
@@ -169,6 +254,8 @@ EXPORT_SYMBOL(rtc_cmos_write);
 
 int update_persistent_clock(struct timespec now)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 	int retval;
 
@@ -177,16 +264,29 @@ int update_persistent_clock(struct timespec now)
 	spin_unlock_irqrestore(&rtc_lock, flags);
 
 	return retval;
+=======
+	return x86_platform.set_wallclock(now.tv_sec);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return x86_platform.set_wallclock(&now);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* not static: needed by APM */
 void read_persistent_clock(struct timespec *ts)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long retval, flags;
 
 	spin_lock_irqsave(&rtc_lock, flags);
 	retval = x86_platform.get_wallclock();
 	spin_unlock_irqrestore(&rtc_lock, flags);
+=======
+	unsigned long retval;
+
+	retval = x86_platform.get_wallclock();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ts->tv_sec = retval;
 	ts->tv_nsec = 0;
@@ -197,6 +297,10 @@ unsigned long long native_read_tsc(void)
 	return __native_read_tsc();
 }
 EXPORT_SYMBOL(native_read_tsc);
+=======
+	x86_platform.get_wallclock(ts);
+}
+>>>>>>> refs/remotes/origin/master
 
 
 static struct resource rtc_resources[] = {
@@ -222,7 +326,11 @@ static struct platform_device rtc_device = {
 static __init int add_rtc_cmos(void)
 {
 #ifdef CONFIG_PNP
+<<<<<<< HEAD
 	static const char *ids[] __initconst =
+=======
+	static const char * const  const ids[] __initconst =
+>>>>>>> refs/remotes/origin/master
 	    { "PNP0b00", "PNP0b01", "PNP0b02", };
 	struct pnp_dev *dev;
 	struct pnp_id *id;
@@ -240,6 +348,28 @@ static __init int add_rtc_cmos(void)
 	if (of_have_populated_dt())
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* Intel MID platforms don't have ioport rtc */
+	if (mrst_identify_cpu())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Intel MID platforms don't have ioport rtc */
+	if (intel_mid_identify_cpu())
+		return -ENODEV;
+
+#ifdef CONFIG_ACPI
+	if (acpi_gbl_FADT.boot_flags & ACPI_FADT_NO_CMOS_RTC) {
+		/* This warning can likely go away again in a year or two. */
+		pr_info("ACPI: not registering RTC platform device\n");
+		return -ENODEV;
+	}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&rtc_device);
 	dev_info(&rtc_device.dev,
 		 "registered platform RTC device (no PNP device found)\n");

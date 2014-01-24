@@ -128,7 +128,15 @@ extern void iscsi_tcp_conn_teardown(struct iscsi_cls_conn *cls_conn);
 /* misc helpers */
 extern int iscsi_tcp_r2tpool_alloc(struct iscsi_session *session);
 extern void iscsi_tcp_r2tpool_free(struct iscsi_session *session);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+extern int iscsi_tcp_set_max_r2t(struct iscsi_conn *conn, char *buf);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int iscsi_tcp_set_max_r2t(struct iscsi_conn *conn, char *buf);
+>>>>>>> refs/remotes/origin/master
 extern void iscsi_tcp_conn_get_stats(struct iscsi_cls_conn *cls_conn,
 				     struct iscsi_stats *stats);
 #endif /* LIBISCSI_TCP_H */

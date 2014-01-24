@@ -22,20 +22,33 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <plat/cpu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/clock.h>
 
+=======
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 #include "clock.h"
 #include "clock2xxx.h"
 #include "cm.h"
 #include "cm-regbits-24xx.h"
 
+<<<<<<< HEAD
 struct clk *vclk, *sclk, *dclk;
 
+=======
+struct clk_hw *dclk_hw;
+>>>>>>> refs/remotes/origin/master
 /*
  * Omap24xx specific clock functions
  */
 
 /*
+<<<<<<< HEAD
  * Set clocks for bypass mode for reboot to work.
  */
 void omap2xxx_clk_prepare_for_reboot(void)
@@ -50,6 +63,8 @@ void omap2xxx_clk_prepare_for_reboot(void)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Switch the MPU rate if specified on cmdline.  We cannot do this
  * early until cmdline is parsed.  XXX This should be removed from the
  * clock code and handled by the OPP layer code in the near future.
@@ -68,6 +83,10 @@ static int __init omap2xxx_clk_arch_init(void)
 	return ret;
 }
 
+<<<<<<< HEAD
 arch_initcall(omap2xxx_clk_arch_init);
+=======
+omap_arch_initcall(omap2xxx_clk_arch_init);
+>>>>>>> refs/remotes/origin/master
 
 

@@ -4,7 +4,15 @@
  * SDIO over Sonics Silicon Backplane bus glue for b43.
  *
  * Copyright (C) 2009 Albert Herranz
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2009 Michael Buesch <mb@bu3sch.de>
+=======
+ * Copyright (C) 2009 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2009 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +74,15 @@ static void b43_sdio_interrupt_dispatcher(struct sdio_func *func)
 int b43_sdio_request_irq(struct b43_wldev *dev,
 			 void (*handler)(struct b43_wldev *dev))
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ssb_bus *bus = dev->sdev->bus;
+=======
+	struct ssb_bus *bus = dev->dev->sdev->bus;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ssb_bus *bus = dev->dev->sdev->bus;
+>>>>>>> refs/remotes/origin/master
 	struct sdio_func *func = bus->host_sdio;
 	struct b43_sdio *sdio = sdio_get_drvdata(func);
 	int err;
@@ -82,7 +98,15 @@ int b43_sdio_request_irq(struct b43_wldev *dev,
 
 void b43_sdio_free_irq(struct b43_wldev *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ssb_bus *bus = dev->sdev->bus;
+=======
+	struct ssb_bus *bus = dev->dev->sdev->bus;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ssb_bus *bus = dev->dev->sdev->bus;
+>>>>>>> refs/remotes/origin/master
 	struct sdio_func *func = bus->host_sdio;
 	struct b43_sdio *sdio = sdio_get_drvdata(func);
 
@@ -93,8 +117,18 @@ void b43_sdio_free_irq(struct b43_wldev *dev)
 	sdio->irq_handler = NULL;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int b43_sdio_probe(struct sdio_func *func,
 			  const struct sdio_device_id *id)
+=======
+static int __devinit b43_sdio_probe(struct sdio_func *func,
+				    const struct sdio_device_id *id)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int b43_sdio_probe(struct sdio_func *func,
+				    const struct sdio_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct b43_sdio *sdio;
 	struct sdio_func_tuple *tuple;
@@ -171,7 +205,15 @@ out:
 	return error;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void b43_sdio_remove(struct sdio_func *func)
+=======
+static void __devexit b43_sdio_remove(struct sdio_func *func)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void b43_sdio_remove(struct sdio_func *func)
+>>>>>>> refs/remotes/origin/master
 {
 	struct b43_sdio *sdio = sdio_get_drvdata(func);
 

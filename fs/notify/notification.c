@@ -18,7 +18,11 @@
 
 /*
  * Basic idea behind the notification queue: An fsnotify group (like inotify)
+<<<<<<< HEAD
  * sends the userspace notification about events asyncronously some time after
+=======
+ * sends the userspace notification about events asynchronously some time after
+>>>>>>> refs/remotes/origin/master
  * the event happened.  When inotify gets an event it will need to add that
  * event to the group notify queue.  Since a single event might need to be on
  * multiple group's notification queues we can't add the event directly to each
@@ -43,11 +47,20 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/fsnotify_backend.h>
 #include "fsnotify.h"
 
+<<<<<<< HEAD
 static struct kmem_cache *fsnotify_event_cachep;
 static struct kmem_cache *fsnotify_event_holder_cachep;
 /*
@@ -57,6 +70,8 @@ static struct kmem_cache *fsnotify_event_holder_cachep;
  * get set to 0 so it will never get 'freed'
  */
 static struct fsnotify_event *q_overflow_event;
+=======
+>>>>>>> refs/remotes/origin/master
 static atomic_t fsnotify_sync_cookie = ATOMIC_INIT(0);
 
 /**
@@ -76,6 +91,7 @@ bool fsnotify_notify_queue_is_empty(struct fsnotify_group *group)
 	return list_empty(&group->notification_list) ? true : false;
 }
 
+<<<<<<< HEAD
 void fsnotify_get_event(struct fsnotify_event *event)
 {
 	atomic_inc(&event->refcnt);
@@ -130,6 +146,16 @@ struct fsnotify_event_private_data *fsnotify_remove_priv_from_event(struct fsnot
 		}
 	}
 	return priv;
+=======
+void fsnotify_destroy_event(struct fsnotify_group *group,
+			    struct fsnotify_event *event)
+{
+	/* Overflow events are per-group and we don't want to free them */
+	if (!event || event->mask == FS_Q_OVERFLOW)
+		return;
+
+	group->ops->free_event(event);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -137,12 +163,18 @@ struct fsnotify_event_private_data *fsnotify_remove_priv_from_event(struct fsnot
  * event off the queue to deal with.  If the event is successfully added to the
  * group's notification queue, a reference is taken on event.
  */
+<<<<<<< HEAD
 struct fsnotify_event *fsnotify_add_notify_event(struct fsnotify_group *group, struct fsnotify_event *event,
 						 struct fsnotify_event_private_data *priv,
+=======
+struct fsnotify_event *fsnotify_add_notify_event(struct fsnotify_group *group,
+						 struct fsnotify_event *event,
+>>>>>>> refs/remotes/origin/master
 						 struct fsnotify_event *(*merge)(struct list_head *,
 										 struct fsnotify_event *))
 {
 	struct fsnotify_event *return_event = NULL;
+<<<<<<< HEAD
 	struct fsnotify_event_holder *holder = NULL;
 	struct list_head *list = &group->notification_list;
 
@@ -162,10 +194,16 @@ alloc_holder:
 		if (!holder)
 			return ERR_PTR(-ENOMEM);
 	}
+=======
+	struct list_head *list = &group->notification_list;
+
+	pr_debug("%s: group=%p event=%p\n", __func__, group, event);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&group->notification_mutex);
 
 	if (group->q_len >= group->max_events) {
+<<<<<<< HEAD
 		event = q_overflow_event;
 
 		/*
@@ -225,23 +263,54 @@ alloc_holder:
 	mutex_unlock(&group->notification_mutex);
 
 	wake_up(&group->notification_waitq);
+=======
+		/* Queue overflow event only if it isn't already queued */
+		if (list_empty(&group->overflow_event.list))
+			event = &group->overflow_event;
+		return_event = event;
+	}
+
+	if (!list_empty(list) && merge) {
+		return_event = merge(list, event);
+		if (return_event) {
+			mutex_unlock(&group->notification_mutex);
+			return return_event;
+		}
+	}
+
+	group->q_len++;
+	list_add_tail(&event->list, list);
+	mutex_unlock(&group->notification_mutex);
+
+	wake_up(&group->notification_waitq);
+	kill_fasync(&group->fsn_fa, SIGIO, POLL_IN);
+>>>>>>> refs/remotes/origin/master
 	return return_event;
 }
 
 /*
+<<<<<<< HEAD
  * Remove and return the first event from the notification list.  There is a
  * reference held on this event since it was on the list.  It is the responsibility
  * of the caller to drop this reference.
+=======
+ * Remove and return the first event from the notification list.  It is the
+ * responsibility of the caller to destroy the obtained event
+>>>>>>> refs/remotes/origin/master
  */
 struct fsnotify_event *fsnotify_remove_notify_event(struct fsnotify_group *group)
 {
 	struct fsnotify_event *event;
+<<<<<<< HEAD
 	struct fsnotify_event_holder *holder;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!mutex_is_locked(&group->notification_mutex));
 
 	pr_debug("%s: group=%p\n", __func__, group);
 
+<<<<<<< HEAD
 	holder = list_first_entry(&group->notification_list, struct fsnotify_event_holder, event_list);
 
 	event = holder->event;
@@ -255,6 +324,11 @@ struct fsnotify_event *fsnotify_remove_notify_event(struct fsnotify_group *group
 	if (holder != &event->holder)
 		fsnotify_destroy_event_holder(holder);
 
+=======
+	event = list_first_entry(&group->notification_list,
+				 struct fsnotify_event, list);
+	list_del(&event->list);
+>>>>>>> refs/remotes/origin/master
 	group->q_len--;
 
 	return event;
@@ -265,6 +339,7 @@ struct fsnotify_event *fsnotify_remove_notify_event(struct fsnotify_group *group
  */
 struct fsnotify_event *fsnotify_peek_notify_event(struct fsnotify_group *group)
 {
+<<<<<<< HEAD
 	struct fsnotify_event *event;
 	struct fsnotify_event_holder *holder;
 
@@ -274,6 +349,12 @@ struct fsnotify_event *fsnotify_peek_notify_event(struct fsnotify_group *group)
 	event = holder->event;
 
 	return event;
+=======
+	BUG_ON(!mutex_is_locked(&group->notification_mutex));
+
+	return list_first_entry(&group->notification_list,
+				struct fsnotify_event, list);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -283,11 +364,15 @@ struct fsnotify_event *fsnotify_peek_notify_event(struct fsnotify_group *group)
 void fsnotify_flush_notify(struct fsnotify_group *group)
 {
 	struct fsnotify_event *event;
+<<<<<<< HEAD
 	struct fsnotify_event_private_data *priv;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&group->notification_mutex);
 	while (!fsnotify_notify_queue_is_empty(group)) {
 		event = fsnotify_remove_notify_event(group);
+<<<<<<< HEAD
 		/* if they don't implement free_event_priv they better not have attached any */
 		if (group->ops->free_event_priv) {
 			spin_lock(&event->lock);
@@ -297,10 +382,14 @@ void fsnotify_flush_notify(struct fsnotify_group *group)
 				group->ops->free_event_priv(priv);
 		}
 		fsnotify_put_event(event); /* matches fsnotify_add_notify_event */
+=======
+		fsnotify_destroy_event(group, event);
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&group->notification_mutex);
 }
 
+<<<<<<< HEAD
 static void initialize_event(struct fsnotify_event *event)
 {
 	INIT_LIST_HEAD(&event->holder.event_list);
@@ -381,18 +470,25 @@ struct fsnotify_event *fsnotify_clone_event(struct fsnotify_event *old_event)
 	return event;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * fsnotify_create_event - Allocate a new event which will be sent to each
  * group's handle_event function if the group was interested in this
  * particular event.
  *
+<<<<<<< HEAD
  * @to_tell the inode which is supposed to receive the event (sometimes a
+=======
+ * @inode the inode which is supposed to receive the event (sometimes a
+>>>>>>> refs/remotes/origin/master
  *	parent of the inode to which the event happened.
  * @mask what actually happened.
  * @data pointer to the object which was actually affected
  * @data_type flag indication if the data is a file, path, inode, nothing...
  * @name the filename, if available
  */
+<<<<<<< HEAD
 struct fsnotify_event *fsnotify_create_event(struct inode *to_tell, __u32 mask, void *data,
 					     int data_type, const unsigned char *name,
 					     u32 cookie, gfp_t gfp)
@@ -447,7 +543,11 @@ struct fsnotify_event *fsnotify_create_event(struct inode *to_tell, __u32 mask, 
 	return event;
 }
 
+<<<<<<< HEAD
 __init int fsnotify_notification_init(void)
+=======
+static __init int fsnotify_notification_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	fsnotify_event_cachep = KMEM_CACHE(fsnotify_event, SLAB_PANIC);
 	fsnotify_event_holder_cachep = KMEM_CACHE(fsnotify_event_holder, SLAB_PANIC);
@@ -461,4 +561,16 @@ __init int fsnotify_notification_init(void)
 	return 0;
 }
 subsys_initcall(fsnotify_notification_init);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void fsnotify_init_event(struct fsnotify_event *event, struct inode *inode,
+			 u32 mask)
+{
+	INIT_LIST_HEAD(&event->list);
+	event->inode = inode;
+	event->mask = mask;
+}
+>>>>>>> refs/remotes/origin/master

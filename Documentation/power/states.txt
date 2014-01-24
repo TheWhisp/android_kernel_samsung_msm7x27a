@@ -2,12 +2,35 @@
 System Power Management States
 
 
+<<<<<<< HEAD
 The kernel supports three power management states generically, though
 each is dependent on platform support code to implement the low-level
 details for each state. This file describes each state, what they are
 commonly called, what ACPI state they map to, and what string to write
 to /sys/power/state to enter that state
 
+=======
+The kernel supports four power management states generically, though
+one is generic and the other three are dependent on platform support
+code to implement the low-level details for each state.
+This file describes each state, what they are
+commonly called, what ACPI state they map to, and what string to write
+to /sys/power/state to enter that state
+
+state:		Freeze / Low-Power Idle
+ACPI state:	S0
+String:		"freeze"
+
+This state is a generic, pure software, light-weight, low-power state.
+It allows more energy to be saved relative to idle by freezing user
+space and putting all I/O devices into low-power states (possibly
+lower-power than available at run time), such that the processors can
+spend more time in their idle states.
+This state can be used for platforms without Standby/Suspend-to-RAM
+support, or it can be used in addition to Suspend-to-RAM (memory sleep)
+to provide reduced resume latency.
+
+>>>>>>> refs/remotes/origin/master
 
 State:		Standby / Power-On Suspend
 ACPI State:	S1
@@ -22,9 +45,12 @@ We try to put devices in a low-power state equivalent to D1, which
 also offers low power savings, but low resume latency. Not all devices
 support D1, and those that don't are left on. 
 
+<<<<<<< HEAD
 A transition from Standby to the On state should take about 1-2
 seconds. 
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 State:		Suspend-to-RAM
 ACPI State:	S3
@@ -42,9 +68,12 @@ transition back to the On state.
 For at least ACPI, STR requires some minimal boot-strapping code to
 resume the system from STR. This may be true on other platforms. 
 
+<<<<<<< HEAD
 A transition from Suspend-to-RAM to the On state should take about
 3-5 seconds. 
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 State:		Suspend-to-disk
 ACPI State:	S4
@@ -74,7 +103,10 @@ low-power state (like ACPI S4), or it may simply power down. Powering
 down offers greater savings, and allows this mechanism to work on any
 system. However, entering a real low-power state allows the user to
 trigger wake up events (e.g. pressing a key or opening a laptop lid).
+<<<<<<< HEAD
 
 A transition from Suspend-to-Disk to the On state should take about 30
 seconds, though it's typically a bit more with the current
 implementation. 
+=======
+>>>>>>> refs/remotes/origin/master

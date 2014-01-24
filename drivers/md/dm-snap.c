@@ -30,6 +30,8 @@ static const char dm_snapshot_merge_target_name[] = "snapshot-merge";
 	((ti)->type->name == dm_snapshot_merge_target_name)
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * The percentage increment we will wake up users at
  */
 #define WAKE_UP_PERCENT 5
@@ -40,6 +42,10 @@ static const char dm_snapshot_merge_target_name[] = "snapshot-merge";
 #define SNAPSHOT_COPY_PRIORITY 2
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * The size of the mempool used to track chunks in use.
  */
 #define MIN_IOS 256
@@ -76,6 +82,21 @@ struct dm_snapshot {
 
 	atomic_t pending_exceptions_count;
 
+<<<<<<< HEAD
+=======
+	/* Protected by "lock" */
+	sector_t exception_start_sequence;
+
+	/* Protected by kcopyd single-threaded callback */
+	sector_t exception_complete_sequence;
+
+	/*
+	 * A list of pending exceptions that completed out of order.
+	 * Protected by kcopyd single-threaded callback.
+	 */
+	struct list_head out_of_order_list;
+
+>>>>>>> refs/remotes/origin/master
 	mempool_t *pending_pool;
 
 	struct dm_exception_table pending;
@@ -89,7 +110,10 @@ struct dm_snapshot {
 
 	/* Chunks with outstanding reads */
 	spinlock_t tracked_chunk_lock;
+<<<<<<< HEAD
 	mempool_t *tracked_chunk_pool;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct hlist_head tracked_chunk_hash[DM_TRACKED_CHUNK_HASH_SIZE];
 
 	/* The on disk metadata handler */
@@ -135,6 +159,12 @@ struct dm_snapshot {
 #define RUNNING_MERGE          0
 #define SHUTDOWN_MERGE         1
 
+<<<<<<< HEAD
+=======
+DECLARE_DM_KCOPYD_THROTTLE_WITH_MODULE_PARM(snapshot_copy_throttle,
+		"A percentage of time allocated for copy on write");
+
+>>>>>>> refs/remotes/origin/master
 struct dm_dev *dm_snap_origin(struct dm_snapshot *s)
 {
 	return s->origin;
@@ -180,6 +210,30 @@ struct dm_snap_pending_exception {
 	 * kcopyd.
 	 */
 	int started;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+
+	/* There was copying error. */
+	int copy_error;
+
+	/* A sequence number, it is used for in-order completion. */
+	sector_t exception_sequence;
+
+	struct list_head out_of_order_entry;
+>>>>>>> refs/remotes/origin/master
+
+	/*
+	 * For writing a complete chunk, bypassing the copy.
+	 */
+	struct bio *full_bio;
+	bio_end_io_t *full_bio_end_io;
+	void *full_bio_private;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -194,6 +248,7 @@ struct dm_snap_tracked_chunk {
 	chunk_t chunk;
 };
 
+<<<<<<< HEAD
 static struct kmem_cache *tracked_chunk_cache;
 
 static struct dm_snap_tracked_chunk *track_chunk(struct dm_snapshot *s,
@@ -216,24 +271,63 @@ static struct dm_snap_tracked_chunk *track_chunk(struct dm_snapshot *s,
 static void stop_tracking_chunk(struct dm_snapshot *s,
 				struct dm_snap_tracked_chunk *c)
 {
+=======
+static void init_tracked_chunk(struct bio *bio)
+{
+	struct dm_snap_tracked_chunk *c = dm_per_bio_data(bio, sizeof(struct dm_snap_tracked_chunk));
+	INIT_HLIST_NODE(&c->node);
+}
+
+static bool is_bio_tracked(struct bio *bio)
+{
+	struct dm_snap_tracked_chunk *c = dm_per_bio_data(bio, sizeof(struct dm_snap_tracked_chunk));
+	return !hlist_unhashed(&c->node);
+}
+
+static void track_chunk(struct dm_snapshot *s, struct bio *bio, chunk_t chunk)
+{
+	struct dm_snap_tracked_chunk *c = dm_per_bio_data(bio, sizeof(struct dm_snap_tracked_chunk));
+
+	c->chunk = chunk;
+
+	spin_lock_irq(&s->tracked_chunk_lock);
+	hlist_add_head(&c->node,
+		       &s->tracked_chunk_hash[DM_TRACKED_CHUNK_HASH(chunk)]);
+	spin_unlock_irq(&s->tracked_chunk_lock);
+}
+
+static void stop_tracking_chunk(struct dm_snapshot *s, struct bio *bio)
+{
+	struct dm_snap_tracked_chunk *c = dm_per_bio_data(bio, sizeof(struct dm_snap_tracked_chunk));
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&s->tracked_chunk_lock, flags);
 	hlist_del(&c->node);
 	spin_unlock_irqrestore(&s->tracked_chunk_lock, flags);
+<<<<<<< HEAD
 
 	mempool_free(c, s->tracked_chunk_pool);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __chunk_is_tracked(struct dm_snapshot *s, chunk_t chunk)
 {
 	struct dm_snap_tracked_chunk *c;
+<<<<<<< HEAD
 	struct hlist_node *hn;
+=======
+>>>>>>> refs/remotes/origin/master
 	int found = 0;
 
 	spin_lock_irq(&s->tracked_chunk_lock);
 
+<<<<<<< HEAD
 	hlist_for_each_entry(c, hn,
+=======
+	hlist_for_each_entry(c,
+>>>>>>> refs/remotes/origin/master
 	    &s->tracked_chunk_hash[DM_TRACKED_CHUNK_HASH(chunk)], node) {
 		if (c->chunk == chunk) {
 			found = 1;
@@ -694,7 +788,11 @@ static int dm_add_exception(void *context, chunk_t old, chunk_t new)
  * Return a minimum chunk size of all snapshots that have the specified origin.
  * Return zero if the origin has no snapshots.
  */
+<<<<<<< HEAD
 static sector_t __minimum_chunk_size(struct origin *o)
+=======
+static uint32_t __minimum_chunk_size(struct origin *o)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dm_snapshot *snap;
 	unsigned chunk_size = 0;
@@ -704,7 +802,11 @@ static sector_t __minimum_chunk_size(struct origin *o)
 			chunk_size = min_not_zero(chunk_size,
 						  snap->store->chunk_size);
 
+<<<<<<< HEAD
 	return chunk_size;
+=======
+	return (uint32_t) chunk_size;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1038,7 +1140,11 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	int i;
 	int r = -EINVAL;
 	char *origin_path, *cow_path;
+<<<<<<< HEAD
 	unsigned args_used, num_flush_requests = 1;
+=======
+	unsigned args_used, num_flush_bios = 1;
+>>>>>>> refs/remotes/origin/master
 	fmode_t origin_mode = FMODE_READ;
 
 	if (argc != 4) {
@@ -1048,14 +1154,26 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	}
 
 	if (dm_target_is_snapshot_merge(ti)) {
+<<<<<<< HEAD
 		num_flush_requests = 2;
+=======
+		num_flush_bios = 2;
+>>>>>>> refs/remotes/origin/master
 		origin_mode = FMODE_WRITE;
 	}
 
 	s = kmalloc(sizeof(*s), GFP_KERNEL);
 	if (!s) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ti->error = "Cannot allocate snapshot context private "
 		    "structure";
+=======
+		ti->error = "Cannot allocate private snapshot structure";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ti->error = "Cannot allocate private snapshot structure";
+>>>>>>> refs/remotes/origin/master
 		r = -ENOMEM;
 		goto bad;
 	}
@@ -1094,6 +1212,12 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	s->valid = 1;
 	s->active = 0;
 	atomic_set(&s->pending_exceptions_count, 0);
+<<<<<<< HEAD
+=======
+	s->exception_start_sequence = 0;
+	s->exception_complete_sequence = 0;
+	INIT_LIST_HEAD(&s->out_of_order_list);
+>>>>>>> refs/remotes/origin/master
 	init_rwsem(&s->lock);
 	INIT_LIST_HEAD(&s->list);
 	spin_lock_init(&s->pe_lock);
@@ -1110,7 +1234,11 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		goto bad_hash_tables;
 	}
 
+<<<<<<< HEAD
 	s->kcopyd_client = dm_kcopyd_client_create();
+=======
+	s->kcopyd_client = dm_kcopyd_client_create(&dm_kcopyd_throttle);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(s->kcopyd_client)) {
 		r = PTR_ERR(s->kcopyd_client);
 		ti->error = "Could not create kcopyd client";
@@ -1124,6 +1252,7 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		goto bad_pending_pool;
 	}
 
+<<<<<<< HEAD
 	s->tracked_chunk_pool = mempool_create_slab_pool(MIN_IOS,
 							 tracked_chunk_cache);
 	if (!s->tracked_chunk_pool) {
@@ -1132,13 +1261,20 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		goto bad_tracked_chunk_pool;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < DM_TRACKED_CHUNK_HASH_SIZE; i++)
 		INIT_HLIST_HEAD(&s->tracked_chunk_hash[i]);
 
 	spin_lock_init(&s->tracked_chunk_lock);
 
 	ti->private = s;
+<<<<<<< HEAD
 	ti->num_flush_requests = num_flush_requests;
+=======
+	ti->num_flush_bios = num_flush_bios;
+	ti->per_bio_data_size = sizeof(struct dm_snap_tracked_chunk);
+>>>>>>> refs/remotes/origin/master
 
 	/* Add snapshot to the list of snapshots for this origin */
 	/* Exceptions aren't triggered till snapshot_resume() is called */
@@ -1176,7 +1312,14 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		ti->error = "Chunk size not set";
 		goto bad_read_metadata;
 	}
+<<<<<<< HEAD
 	ti->split_io = s->store->chunk_size;
+=======
+
+	r = dm_set_target_max_io_len(ti, s->store->chunk_size);
+	if (r)
+		goto bad_read_metadata;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -1184,9 +1327,12 @@ bad_read_metadata:
 	unregister_snapshot(s);
 
 bad_load_and_register:
+<<<<<<< HEAD
 	mempool_destroy(s->tracked_chunk_pool);
 
 bad_tracked_chunk_pool:
+=======
+>>>>>>> refs/remotes/origin/master
 	mempool_destroy(s->pending_pool);
 
 bad_pending_pool:
@@ -1243,7 +1389,11 @@ static void __handover_exceptions(struct dm_snapshot *snap_src,
 	snap_dest->store->snap = snap_dest;
 	snap_src->store->snap = snap_src;
 
+<<<<<<< HEAD
 	snap_dest->ti->split_io = snap_dest->store->chunk_size;
+=======
+	snap_dest->ti->max_io_len = snap_dest->store->chunk_size;
+>>>>>>> refs/remotes/origin/master
 	snap_dest->valid = snap_src->valid;
 
 	/*
@@ -1291,8 +1441,11 @@ static void snapshot_dtr(struct dm_target *ti)
 		BUG_ON(!hlist_empty(&s->tracked_chunk_hash[i]));
 #endif
 
+<<<<<<< HEAD
 	mempool_destroy(s->tracked_chunk_pool);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	__free_exceptions(s);
 
 	mempool_destroy(s->pending_pool);
@@ -1380,6 +1533,14 @@ static void pending_complete(struct dm_snap_pending_exception *pe, int success)
 	struct dm_snapshot *s = pe->snap;
 	struct bio *origin_bios = NULL;
 	struct bio *snapshot_bios = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct bio *full_bio = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bio *full_bio = NULL;
+>>>>>>> refs/remotes/origin/master
 	int error = 0;
 
 	if (!success) {
@@ -1415,10 +1576,28 @@ static void pending_complete(struct dm_snap_pending_exception *pe, int success)
 	 */
 	dm_insert_exception(&s->complete, e);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
  out:
 	dm_remove_exception(&pe->e);
 	snapshot_bios = bio_list_get(&pe->snapshot_bios);
 	origin_bios = bio_list_get(&pe->origin_bios);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+out:
+	dm_remove_exception(&pe->e);
+	snapshot_bios = bio_list_get(&pe->snapshot_bios);
+	origin_bios = bio_list_get(&pe->origin_bios);
+	full_bio = pe->full_bio;
+	if (full_bio) {
+		full_bio->bi_end_io = pe->full_bio_end_io;
+		full_bio->bi_private = pe->full_bio_private;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	free_pending_exception(pe);
 
 	increment_pending_exceptions_done_count();
@@ -1426,10 +1605,28 @@ static void pending_complete(struct dm_snap_pending_exception *pe, int success)
 	up_write(&s->lock);
 
 	/* Submit any pending write bios */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (error)
 		error_bios(snapshot_bios);
 	else
 		flush_bios(snapshot_bios);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (error) {
+		if (full_bio)
+			bio_io_error(full_bio);
+		error_bios(snapshot_bios);
+	} else {
+		if (full_bio)
+			bio_endio(full_bio, 0);
+		flush_bios(snapshot_bios);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	retry_origin_bios(s, origin_bios);
 }
@@ -1441,6 +1638,22 @@ static void commit_callback(void *context, int success)
 	pending_complete(pe, success);
 }
 
+<<<<<<< HEAD
+=======
+static void complete_exception(struct dm_snap_pending_exception *pe)
+{
+	struct dm_snapshot *s = pe->snap;
+
+	if (unlikely(pe->copy_error))
+		pending_complete(pe, 0);
+
+	else
+		/* Update the metadata if we are persistent */
+		s->store->type->commit_exception(s->store, &pe->e,
+						 commit_callback, pe);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Called when the copy I/O has finished.  kcopyd actually runs
  * this code so don't block.
@@ -1450,6 +1663,7 @@ static void copy_callback(int read_err, unsigned long write_err, void *context)
 	struct dm_snap_pending_exception *pe = context;
 	struct dm_snapshot *s = pe->snap;
 
+<<<<<<< HEAD
 	if (read_err || write_err)
 		pending_complete(pe, 0);
 
@@ -1457,6 +1671,34 @@ static void copy_callback(int read_err, unsigned long write_err, void *context)
 		/* Update the metadata if we are persistent */
 		s->store->type->commit_exception(s->store, &pe->e,
 						 commit_callback, pe);
+=======
+	pe->copy_error = read_err || write_err;
+
+	if (pe->exception_sequence == s->exception_complete_sequence) {
+		s->exception_complete_sequence++;
+		complete_exception(pe);
+
+		while (!list_empty(&s->out_of_order_list)) {
+			pe = list_entry(s->out_of_order_list.next,
+					struct dm_snap_pending_exception, out_of_order_entry);
+			if (pe->exception_sequence != s->exception_complete_sequence)
+				break;
+			s->exception_complete_sequence++;
+			list_del(&pe->out_of_order_entry);
+			complete_exception(pe);
+		}
+	} else {
+		struct list_head *lh;
+		struct dm_snap_pending_exception *pe2;
+
+		list_for_each_prev(lh, &s->out_of_order_list) {
+			pe2 = list_entry(lh, struct dm_snap_pending_exception, out_of_order_entry);
+			if (pe2->exception_sequence < pe->exception_sequence)
+				break;
+		}
+		list_add(&pe->out_of_order_entry, lh);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1480,8 +1722,44 @@ static void start_copy(struct dm_snap_pending_exception *pe)
 	dest.count = src.count;
 
 	/* Hand over to kcopyd */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dm_kcopyd_copy(s->kcopyd_client,
 		    &src, 1, &dest, 0, copy_callback, pe);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	dm_kcopyd_copy(s->kcopyd_client, &src, 1, &dest, 0, copy_callback, pe);
+}
+
+static void full_bio_end_io(struct bio *bio, int error)
+{
+	void *callback_data = bio->bi_private;
+
+	dm_kcopyd_do_callback(callback_data, 0, error ? 1 : 0);
+}
+
+static void start_full_bio(struct dm_snap_pending_exception *pe,
+			   struct bio *bio)
+{
+	struct dm_snapshot *s = pe->snap;
+	void *callback_data;
+
+	pe->full_bio = bio;
+	pe->full_bio_end_io = bio->bi_end_io;
+	pe->full_bio_private = bio->bi_private;
+
+	callback_data = dm_kcopyd_prepare_callback(s->kcopyd_client,
+						   copy_callback, pe);
+
+	bio->bi_end_io = full_bio_end_io;
+	bio->bi_private = callback_data;
+
+	generic_make_request(bio);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct dm_snap_pending_exception *
@@ -1519,12 +1797,25 @@ __find_pending_exception(struct dm_snapshot *s,
 	bio_list_init(&pe->origin_bios);
 	bio_list_init(&pe->snapshot_bios);
 	pe->started = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pe->full_bio = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pe->full_bio = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	if (s->store->type->prepare_exception(s->store, &pe->e)) {
 		free_pending_exception(pe);
 		return NULL;
 	}
 
+<<<<<<< HEAD
+=======
+	pe->exception_sequence = s->exception_start_sequence++;
+
+>>>>>>> refs/remotes/origin/master
 	dm_insert_exception(&s->pending, &pe->e);
 
 	return pe;
@@ -1541,8 +1832,12 @@ static void remap_exception(struct dm_snapshot *s, struct dm_exception *e,
 					  s->store->chunk_mask);
 }
 
+<<<<<<< HEAD
 static int snapshot_map(struct dm_target *ti, struct bio *bio,
 			union map_info *map_context)
+=======
+static int snapshot_map(struct dm_target *ti, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dm_exception *e;
 	struct dm_snapshot *s = ti->private;
@@ -1550,6 +1845,11 @@ static int snapshot_map(struct dm_target *ti, struct bio *bio,
 	chunk_t chunk;
 	struct dm_snap_pending_exception *pe = NULL;
 
+<<<<<<< HEAD
+=======
+	init_tracked_chunk(bio);
+
+>>>>>>> refs/remotes/origin/master
 	if (bio->bi_rw & REQ_FLUSH) {
 		bio->bi_bdev = s->cow->bdev;
 		return DM_MAPIO_REMAPPED;
@@ -1612,10 +1912,32 @@ static int snapshot_map(struct dm_target *ti, struct bio *bio,
 		}
 
 		remap_exception(s, &pe->e, bio, chunk);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		bio_list_add(&pe->snapshot_bios, bio);
 
 		r = DM_MAPIO_SUBMITTED;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+		r = DM_MAPIO_SUBMITTED;
+
+		if (!pe->started &&
+		    bio->bi_size == (s->store->chunk_size << SECTOR_SHIFT)) {
+			pe->started = 1;
+			up_write(&s->lock);
+			start_full_bio(pe, bio);
+			goto out;
+		}
+
+		bio_list_add(&pe->snapshot_bios, bio);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!pe->started) {
 			/* this is protected by snap->lock */
 			pe->started = 1;
@@ -1625,12 +1947,27 @@ static int snapshot_map(struct dm_target *ti, struct bio *bio,
 		}
 	} else {
 		bio->bi_bdev = s->origin->bdev;
+<<<<<<< HEAD
 		map_context->ptr = track_chunk(s, chunk);
 	}
 
+<<<<<<< HEAD
  out_unlock:
 	up_write(&s->lock);
  out:
+=======
+out_unlock:
+	up_write(&s->lock);
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		track_chunk(s, bio, chunk);
+	}
+
+out_unlock:
+	up_write(&s->lock);
+out:
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
@@ -1646,20 +1983,34 @@ static int snapshot_map(struct dm_target *ti, struct bio *bio,
  * If merging is currently taking place on the chunk in question, the
  * I/O is deferred by adding it to s->bios_queued_during_merge.
  */
+<<<<<<< HEAD
 static int snapshot_merge_map(struct dm_target *ti, struct bio *bio,
 			      union map_info *map_context)
+=======
+static int snapshot_merge_map(struct dm_target *ti, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dm_exception *e;
 	struct dm_snapshot *s = ti->private;
 	int r = DM_MAPIO_REMAPPED;
 	chunk_t chunk;
 
+<<<<<<< HEAD
 	if (bio->bi_rw & REQ_FLUSH) {
 		if (!map_context->target_request_nr)
 			bio->bi_bdev = s->origin->bdev;
 		else
 			bio->bi_bdev = s->cow->bdev;
 		map_context->ptr = NULL;
+=======
+	init_tracked_chunk(bio);
+
+	if (bio->bi_rw & REQ_FLUSH) {
+		if (!dm_bio_get_target_bio_nr(bio))
+			bio->bi_bdev = s->origin->bdev;
+		else
+			bio->bi_bdev = s->cow->bdev;
+>>>>>>> refs/remotes/origin/master
 		return DM_MAPIO_REMAPPED;
 	}
 
@@ -1688,7 +2039,11 @@ static int snapshot_merge_map(struct dm_target *ti, struct bio *bio,
 		remap_exception(s, e, bio, chunk);
 
 		if (bio_rw(bio) == WRITE)
+<<<<<<< HEAD
 			map_context->ptr = track_chunk(s, chunk);
+=======
+			track_chunk(s, bio, chunk);
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 	}
 
@@ -1706,6 +2061,7 @@ out_unlock:
 	return r;
 }
 
+<<<<<<< HEAD
 static int snapshot_end_io(struct dm_target *ti, struct bio *bio,
 			   int error, union map_info *map_context)
 {
@@ -1714,6 +2070,14 @@ static int snapshot_end_io(struct dm_target *ti, struct bio *bio,
 
 	if (c)
 		stop_tracking_chunk(s, c);
+=======
+static int snapshot_end_io(struct dm_target *ti, struct bio *bio, int error)
+{
+	struct dm_snapshot *s = ti->private;
+
+	if (is_bio_tracked(bio))
+		stop_tracking_chunk(s, bio);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1775,9 +2139,15 @@ static void snapshot_resume(struct dm_target *ti)
 	up_write(&s->lock);
 }
 
+<<<<<<< HEAD
 static sector_t get_origin_minimum_chunksize(struct block_device *bdev)
 {
 	sector_t min_chunksize;
+=======
+static uint32_t get_origin_minimum_chunksize(struct block_device *bdev)
+{
+	uint32_t min_chunksize;
+>>>>>>> refs/remotes/origin/master
 
 	down_read(&_origins_lock);
 	min_chunksize = __minimum_chunk_size(__lookup_origin(bdev));
@@ -1796,15 +2166,31 @@ static void snapshot_merge_resume(struct dm_target *ti)
 	snapshot_resume(ti);
 
 	/*
+<<<<<<< HEAD
 	 * snapshot-merge acts as an origin, so set ti->split_io
 	 */
 	ti->split_io = get_origin_minimum_chunksize(s->origin->bdev);
+=======
+	 * snapshot-merge acts as an origin, so set ti->max_io_len
+	 */
+	ti->max_io_len = get_origin_minimum_chunksize(s->origin->bdev);
+>>>>>>> refs/remotes/origin/master
 
 	start_merge(s);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int snapshot_status(struct dm_target *ti, status_type_t type,
 			   char *result, unsigned int maxlen)
+=======
+static void snapshot_status(struct dm_target *ti, status_type_t type,
+			    unsigned status_flags, char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/master
+=======
+static void snapshot_status(struct dm_target *ti, status_type_t type,
+			    char *result, unsigned int maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned sz = 0;
 	struct dm_snapshot *snap = ti->private;
@@ -1850,8 +2236,14 @@ static int snapshot_status(struct dm_target *ti, status_type_t type,
 					  maxlen - sz);
 		break;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int snapshot_iterate_devices(struct dm_target *ti,
@@ -1974,7 +2366,15 @@ static int __origin_write(struct list_head *snapshots, sector_t sector,
 			pe_to_start_now = pe;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
  next_snapshot:
+=======
+next_snapshot:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+next_snapshot:
+>>>>>>> refs/remotes/origin/master
 		up_write(&snap->lock);
 
 		if (pe_to_start_now) {
@@ -2031,12 +2431,20 @@ static int origin_write_extent(struct dm_snapshot *merging_snap,
 	struct origin *o;
 
 	/*
+<<<<<<< HEAD
 	 * The origin's __minimum_chunk_size() got stored in split_io
+=======
+	 * The origin's __minimum_chunk_size() got stored in max_io_len
+>>>>>>> refs/remotes/origin/master
 	 * by snapshot_merge_resume().
 	 */
 	down_read(&_origins_lock);
 	o = __lookup_origin(merging_snap->origin->bdev);
+<<<<<<< HEAD
 	for (n = 0; n < size; n += merging_snap->ti->split_io)
+=======
+	for (n = 0; n < size; n += merging_snap->ti->max_io_len)
+>>>>>>> refs/remotes/origin/master
 		if (__origin_write(&o->snapshots, sector + n, NULL) ==
 		    DM_MAPIO_SUBMITTED)
 			must_wait = 1;
@@ -2071,7 +2479,11 @@ static int origin_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	}
 
 	ti->private = dev;
+<<<<<<< HEAD
 	ti->num_flush_requests = 1;
+=======
+	ti->num_flush_bios = 1;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2082,8 +2494,12 @@ static void origin_dtr(struct dm_target *ti)
 	dm_put_device(ti, dev);
 }
 
+<<<<<<< HEAD
 static int origin_map(struct dm_target *ti, struct bio *bio,
 		      union map_info *map_context)
+=======
+static int origin_map(struct dm_target *ti, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dm_dev *dev = ti->private;
 	bio->bi_bdev = dev->bdev;
@@ -2096,18 +2512,35 @@ static int origin_map(struct dm_target *ti, struct bio *bio,
 }
 
 /*
+<<<<<<< HEAD
  * Set the target "split_io" field to the minimum of all the snapshots'
+=======
+ * Set the target "max_io_len" field to the minimum of all the snapshots'
+>>>>>>> refs/remotes/origin/master
  * chunk sizes.
  */
 static void origin_resume(struct dm_target *ti)
 {
 	struct dm_dev *dev = ti->private;
 
+<<<<<<< HEAD
 	ti->split_io = get_origin_minimum_chunksize(dev->bdev);
 }
 
+<<<<<<< HEAD
 static int origin_status(struct dm_target *ti, status_type_t type, char *result,
 			 unsigned int maxlen)
+=======
+	ti->max_io_len = get_origin_minimum_chunksize(dev->bdev);
+}
+
+static void origin_status(struct dm_target *ti, status_type_t type,
+			  unsigned status_flags, char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/master
+=======
+static void origin_status(struct dm_target *ti, status_type_t type, char *result,
+			  unsigned int maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct dm_dev *dev = ti->private;
 
@@ -2120,8 +2553,14 @@ static int origin_status(struct dm_target *ti, status_type_t type, char *result,
 		snprintf(result, maxlen, "%s", dev->name);
 		break;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int origin_merge(struct dm_target *ti, struct bvec_merge_data *bvm,
@@ -2134,7 +2573,10 @@ static int origin_merge(struct dm_target *ti, struct bvec_merge_data *bvm,
 		return max_size;
 
 	bvm->bi_bdev = dev->bdev;
+<<<<<<< HEAD
 	bvm->bi_sector = bvm->bi_sector;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return min(max_size, q->merge_bvec_fn(q, bvm, biovec));
 }
@@ -2149,7 +2591,11 @@ static int origin_iterate_devices(struct dm_target *ti,
 
 static struct target_type origin_target = {
 	.name    = "snapshot-origin",
+<<<<<<< HEAD
 	.version = {1, 7, 1},
+=======
+	.version = {1, 8, 1},
+>>>>>>> refs/remotes/origin/master
 	.module  = THIS_MODULE,
 	.ctr     = origin_ctr,
 	.dtr     = origin_dtr,
@@ -2162,7 +2608,11 @@ static struct target_type origin_target = {
 
 static struct target_type snapshot_target = {
 	.name    = "snapshot",
+<<<<<<< HEAD
 	.version = {1, 10, 0},
+=======
+	.version = {1, 12, 0},
+>>>>>>> refs/remotes/origin/master
 	.module  = THIS_MODULE,
 	.ctr     = snapshot_ctr,
 	.dtr     = snapshot_dtr,
@@ -2176,7 +2626,11 @@ static struct target_type snapshot_target = {
 
 static struct target_type merge_target = {
 	.name    = dm_snapshot_merge_target_name,
+<<<<<<< HEAD
 	.version = {1, 1, 0},
+=======
+	.version = {1, 2, 0},
+>>>>>>> refs/remotes/origin/master
 	.module  = THIS_MODULE,
 	.ctr     = snapshot_ctr,
 	.dtr     = snapshot_dtr,
@@ -2237,6 +2691,7 @@ static int __init dm_snapshot_init(void)
 		goto bad_pending_cache;
 	}
 
+<<<<<<< HEAD
 	tracked_chunk_cache = KMEM_CACHE(dm_snap_tracked_chunk, 0);
 	if (!tracked_chunk_cache) {
 		DMERR("Couldn't create cache to track chunks in use.");
@@ -2248,6 +2703,10 @@ static int __init dm_snapshot_init(void)
 
 bad_tracked_chunk_cache:
 	kmem_cache_destroy(pending_cache);
+=======
+	return 0;
+
+>>>>>>> refs/remotes/origin/master
 bad_pending_cache:
 	kmem_cache_destroy(exception_cache);
 bad_exception_cache:
@@ -2273,7 +2732,10 @@ static void __exit dm_snapshot_exit(void)
 	exit_origin_hash();
 	kmem_cache_destroy(pending_cache);
 	kmem_cache_destroy(exception_cache);
+<<<<<<< HEAD
 	kmem_cache_destroy(tracked_chunk_cache);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dm_exception_store_exit();
 }
@@ -2285,3 +2747,8 @@ module_exit(dm_snapshot_exit);
 MODULE_DESCRIPTION(DM_NAME " snapshot target");
 MODULE_AUTHOR("Joe Thornber");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("dm-snapshot-origin");
+MODULE_ALIAS("dm-snapshot-merge");
+>>>>>>> refs/remotes/origin/master

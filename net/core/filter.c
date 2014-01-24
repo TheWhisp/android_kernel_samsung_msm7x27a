@@ -33,15 +33,39 @@
 #include <net/sock.h>
 #include <linux/errno.h>
 #include <linux/timer.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/unaligned.h>
 #include <linux/filter.h>
 #include <linux/reciprocal_div.h>
 #include <linux/ratelimit.h>
 
+<<<<<<< HEAD
 /* No hurry in this branch */
 static void *__load_pointer(const struct sk_buff *skb, int k, unsigned int size)
+=======
+=======
+#include <asm/uaccess.h>
+#include <asm/unaligned.h>
+#include <linux/filter.h>
+#include <linux/ratelimit.h>
+#include <linux/seccomp.h>
+#include <linux/if_vlan.h>
+
+>>>>>>> refs/remotes/origin/master
+/* No hurry in this branch
+ *
+ * Exported for the bpf jit load helper.
+ */
+void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb, int k, unsigned int size)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u8 *ptr = NULL;
 
@@ -60,7 +84,15 @@ static inline void *load_pointer(const struct sk_buff *skb, int k,
 {
 	if (k >= 0)
 		return skb_header_pointer(skb, k, size, buffer);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return __load_pointer(skb, k, size);
+=======
+	return bpf_internal_load_pointer_neg_helper(skb, k, size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return bpf_internal_load_pointer_neg_helper(skb, k, size);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -80,6 +112,17 @@ int sk_filter(struct sock *sk, struct sk_buff *skb)
 	int err;
 	struct sk_filter *filter;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * If the skb was allocated from pfmemalloc reserves, only
+	 * allow SOCK_MEMALLOC sockets to use it as this socket is
+	 * helping free memory
+	 */
+	if (skb_pfmemalloc(skb) && !sock_flag(sk, SOCK_MEMALLOC))
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	err = security_sock_rcv_skb(sk, skb);
 	if (err)
 		return err;
@@ -154,7 +197,19 @@ unsigned int sk_run_filter(const struct sk_buff *skb,
 			A /= X;
 			continue;
 		case BPF_S_ALU_DIV_K:
+<<<<<<< HEAD
 			A = reciprocal_divide(A, K);
+=======
+			A /= K;
+			continue;
+		case BPF_S_ALU_MOD_X:
+			if (X == 0)
+				return 0;
+			A %= X;
+			continue;
+		case BPF_S_ALU_MOD_K:
+			A %= K;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		case BPF_S_ALU_AND_X:
 			A &= X;
@@ -168,6 +223,16 @@ unsigned int sk_run_filter(const struct sk_buff *skb,
 		case BPF_S_ALU_OR_K:
 			A |= K;
 			continue;
+<<<<<<< HEAD
+=======
+		case BPF_S_ANC_ALU_XOR_X:
+		case BPF_S_ALU_XOR_X:
+			A ^= X;
+			continue;
+		case BPF_S_ALU_XOR_K:
+			A ^= K;
+			continue;
+>>>>>>> refs/remotes/origin/master
 		case BPF_S_ALU_LSH_X:
 			A <<= X;
 			continue;
@@ -315,6 +380,18 @@ load_b:
 		case BPF_S_ANC_CPU:
 			A = raw_smp_processor_id();
 			continue;
+<<<<<<< HEAD
+=======
+		case BPF_S_ANC_VLAN_TAG:
+			A = vlan_tx_tag_get(skb);
+			continue;
+		case BPF_S_ANC_VLAN_TAG_PRESENT:
+			A = !!vlan_tx_tag_present(skb);
+			continue;
+		case BPF_S_ANC_PAY_OFFSET:
+			A = __skb_get_poff(skb);
+			continue;
+>>>>>>> refs/remotes/origin/master
 		case BPF_S_ANC_NLATTR: {
 			struct nlattr *nla;
 
@@ -350,6 +427,14 @@ load_b:
 				A = 0;
 			continue;
 		}
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SECCOMP_FILTER
+		case BPF_S_ANC_SECCOMP_LD_W:
+			A = seccomp_bpf_load(fentry->k);
+			continue;
+#endif
+>>>>>>> refs/remotes/origin/master
 		default:
 			WARN_RATELIMIT(1, "Unknown code:%u jt:%u tf:%u k:%u\n",
 				       fentry->code, fentry->jt,
@@ -436,7 +521,15 @@ error:
  *
  * Returns 0 if the rule set is legal or -EINVAL if not.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int sk_chk_filter(struct sock_filter *filter, int flen)
+=======
+int sk_chk_filter(struct sock_filter *filter, unsigned int flen)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int sk_chk_filter(struct sock_filter *filter, unsigned int flen)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Valid instructions are initialized to non-0.
@@ -450,10 +543,20 @@ int sk_chk_filter(struct sock_filter *filter, int flen)
 		[BPF_ALU|BPF_MUL|BPF_K]  = BPF_S_ALU_MUL_K,
 		[BPF_ALU|BPF_MUL|BPF_X]  = BPF_S_ALU_MUL_X,
 		[BPF_ALU|BPF_DIV|BPF_X]  = BPF_S_ALU_DIV_X,
+<<<<<<< HEAD
+=======
+		[BPF_ALU|BPF_MOD|BPF_K]  = BPF_S_ALU_MOD_K,
+		[BPF_ALU|BPF_MOD|BPF_X]  = BPF_S_ALU_MOD_X,
+>>>>>>> refs/remotes/origin/master
 		[BPF_ALU|BPF_AND|BPF_K]  = BPF_S_ALU_AND_K,
 		[BPF_ALU|BPF_AND|BPF_X]  = BPF_S_ALU_AND_X,
 		[BPF_ALU|BPF_OR|BPF_K]   = BPF_S_ALU_OR_K,
 		[BPF_ALU|BPF_OR|BPF_X]   = BPF_S_ALU_OR_X,
+<<<<<<< HEAD
+=======
+		[BPF_ALU|BPF_XOR|BPF_K]  = BPF_S_ALU_XOR_K,
+		[BPF_ALU|BPF_XOR|BPF_X]  = BPF_S_ALU_XOR_X,
+>>>>>>> refs/remotes/origin/master
 		[BPF_ALU|BPF_LSH|BPF_K]  = BPF_S_ALU_LSH_K,
 		[BPF_ALU|BPF_LSH|BPF_X]  = BPF_S_ALU_LSH_X,
 		[BPF_ALU|BPF_RSH|BPF_K]  = BPF_S_ALU_RSH_K,
@@ -490,6 +593,10 @@ int sk_chk_filter(struct sock_filter *filter, int flen)
 		[BPF_JMP|BPF_JSET|BPF_X] = BPF_S_JMP_JSET_X,
 	};
 	int pc;
+<<<<<<< HEAD
+=======
+	bool anc_found;
+>>>>>>> refs/remotes/origin/master
 
 	if (flen == 0 || flen > BPF_MAXINSNS)
 		return -EINVAL;
@@ -507,10 +614,17 @@ int sk_chk_filter(struct sock_filter *filter, int flen)
 		/* Some instructions need special checks */
 		switch (code) {
 		case BPF_S_ALU_DIV_K:
+<<<<<<< HEAD
 			/* check for division by zero */
 			if (ftest->k == 0)
 				return -EINVAL;
 			ftest->k = reciprocal_value(ftest->k);
+=======
+		case BPF_S_ALU_MOD_K:
+			/* check for division by zero */
+			if (ftest->k == 0)
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case BPF_S_LD_MEM:
 		case BPF_S_LDX_MEM:
@@ -526,7 +640,11 @@ int sk_chk_filter(struct sock_filter *filter, int flen)
 			 * Compare this with conditional jumps below,
 			 * where offsets are limited. --ANK (981016)
 			 */
+<<<<<<< HEAD
 			if (ftest->k >= (unsigned)(flen-pc-1))
+=======
+			if (ftest->k >= (unsigned int)(flen-pc-1))
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			break;
 		case BPF_S_JMP_JEQ_K:
@@ -545,8 +663,15 @@ int sk_chk_filter(struct sock_filter *filter, int flen)
 		case BPF_S_LD_W_ABS:
 		case BPF_S_LD_H_ABS:
 		case BPF_S_LD_B_ABS:
+<<<<<<< HEAD
 #define ANCILLARY(CODE) case SKF_AD_OFF + SKF_AD_##CODE:	\
 				code = BPF_S_ANC_##CODE;	\
+=======
+			anc_found = false;
+#define ANCILLARY(CODE) case SKF_AD_OFF + SKF_AD_##CODE:	\
+				code = BPF_S_ANC_##CODE;	\
+				anc_found = true;		\
+>>>>>>> refs/remotes/origin/master
 				break
 			switch (ftest->k) {
 			ANCILLARY(PROTOCOL);
@@ -559,7 +684,19 @@ int sk_chk_filter(struct sock_filter *filter, int flen)
 			ANCILLARY(HATYPE);
 			ANCILLARY(RXHASH);
 			ANCILLARY(CPU);
+<<<<<<< HEAD
 			}
+=======
+			ANCILLARY(ALU_XOR_X);
+			ANCILLARY(VLAN_TAG);
+			ANCILLARY(VLAN_TAG_PRESENT);
+			ANCILLARY(PAY_OFFSET);
+			}
+
+			/* ancillary operation unknown or unsupported */
+			if (anc_found == false && ftest->k >= SKF_AD_OFF)
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 		ftest->code = code;
 	}
@@ -583,10 +720,77 @@ void sk_filter_release_rcu(struct rcu_head *rcu)
 	struct sk_filter *fp = container_of(rcu, struct sk_filter, rcu);
 
 	bpf_jit_free(fp);
+<<<<<<< HEAD
 	kfree(fp);
 }
 EXPORT_SYMBOL(sk_filter_release_rcu);
 
+=======
+}
+EXPORT_SYMBOL(sk_filter_release_rcu);
+
+static int __sk_prepare_filter(struct sk_filter *fp)
+{
+	int err;
+
+	fp->bpf_func = sk_run_filter;
+
+	err = sk_chk_filter(fp->insns, fp->len);
+	if (err)
+		return err;
+
+	bpf_jit_compile(fp);
+	return 0;
+}
+
+/**
+ *	sk_unattached_filter_create - create an unattached filter
+ *	@fprog: the filter program
+ *	@pfp: the unattached filter that is created
+ *
+ * Create a filter independent of any socket. We first run some
+ * sanity checks on it to make sure it does not explode on us later.
+ * If an error occurs or there is insufficient memory for the filter
+ * a negative errno code is returned. On success the return is zero.
+ */
+int sk_unattached_filter_create(struct sk_filter **pfp,
+				struct sock_fprog *fprog)
+{
+	struct sk_filter *fp;
+	unsigned int fsize = sizeof(struct sock_filter) * fprog->len;
+	int err;
+
+	/* Make sure new filter is there and in the right amounts. */
+	if (fprog->filter == NULL)
+		return -EINVAL;
+
+	fp = kmalloc(sk_filter_size(fprog->len), GFP_KERNEL);
+	if (!fp)
+		return -ENOMEM;
+	memcpy(fp->insns, fprog->filter, fsize);
+
+	atomic_set(&fp->refcnt, 1);
+	fp->len = fprog->len;
+
+	err = __sk_prepare_filter(fp);
+	if (err)
+		goto free_mem;
+
+	*pfp = fp;
+	return 0;
+free_mem:
+	kfree(fp);
+	return err;
+}
+EXPORT_SYMBOL_GPL(sk_unattached_filter_create);
+
+void sk_unattached_filter_destroy(struct sk_filter *fp)
+{
+	sk_filter_release(fp);
+}
+EXPORT_SYMBOL_GPL(sk_unattached_filter_destroy);
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	sk_attach_filter - attach a socket filter
  *	@fprog: the filter program
@@ -601,32 +805,57 @@ int sk_attach_filter(struct sock_fprog *fprog, struct sock *sk)
 {
 	struct sk_filter *fp, *old_fp;
 	unsigned int fsize = sizeof(struct sock_filter) * fprog->len;
+<<<<<<< HEAD
 	int err;
 
+=======
+	unsigned int sk_fsize = sk_filter_size(fprog->len);
+	int err;
+
+	if (sock_flag(sk, SOCK_FILTER_LOCKED))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/master
 	/* Make sure new filter is there and in the right amounts. */
 	if (fprog->filter == NULL)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	fp = sock_kmalloc(sk, fsize+sizeof(*fp), GFP_KERNEL);
 	if (!fp)
 		return -ENOMEM;
 	if (copy_from_user(fp->insns, fprog->filter, fsize)) {
 		sock_kfree_s(sk, fp, fsize+sizeof(*fp));
+=======
+	fp = sock_kmalloc(sk, sk_fsize, GFP_KERNEL);
+	if (!fp)
+		return -ENOMEM;
+	if (copy_from_user(fp->insns, fprog->filter, fsize)) {
+		sock_kfree_s(sk, fp, sk_fsize);
+>>>>>>> refs/remotes/origin/master
 		return -EFAULT;
 	}
 
 	atomic_set(&fp->refcnt, 1);
 	fp->len = fprog->len;
+<<<<<<< HEAD
 	fp->bpf_func = sk_run_filter;
 
 	err = sk_chk_filter(fp->insns, fp->len);
+=======
+
+	err = __sk_prepare_filter(fp);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		sk_filter_uncharge(sk, fp);
 		return err;
 	}
 
+<<<<<<< HEAD
 	bpf_jit_compile(fp);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	old_fp = rcu_dereference_protected(sk->sk_filter,
 					   sock_owned_by_user(sk));
 	rcu_assign_pointer(sk->sk_filter, fp);
@@ -642,13 +871,141 @@ int sk_detach_filter(struct sock *sk)
 	int ret = -ENOENT;
 	struct sk_filter *filter;
 
+<<<<<<< HEAD
 	filter = rcu_dereference_protected(sk->sk_filter,
 					   sock_owned_by_user(sk));
 	if (filter) {
+<<<<<<< HEAD
 		rcu_assign_pointer(sk->sk_filter, NULL);
+=======
+		RCU_INIT_POINTER(sk->sk_filter, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sock_flag(sk, SOCK_FILTER_LOCKED))
+		return -EPERM;
+
+	filter = rcu_dereference_protected(sk->sk_filter,
+					   sock_owned_by_user(sk));
+	if (filter) {
+		RCU_INIT_POINTER(sk->sk_filter, NULL);
+>>>>>>> refs/remotes/origin/master
 		sk_filter_uncharge(sk, filter);
 		ret = 0;
 	}
 	return ret;
 }
 EXPORT_SYMBOL_GPL(sk_detach_filter);
+<<<<<<< HEAD
+=======
+
+void sk_decode_filter(struct sock_filter *filt, struct sock_filter *to)
+{
+	static const u16 decodes[] = {
+		[BPF_S_ALU_ADD_K]	= BPF_ALU|BPF_ADD|BPF_K,
+		[BPF_S_ALU_ADD_X]	= BPF_ALU|BPF_ADD|BPF_X,
+		[BPF_S_ALU_SUB_K]	= BPF_ALU|BPF_SUB|BPF_K,
+		[BPF_S_ALU_SUB_X]	= BPF_ALU|BPF_SUB|BPF_X,
+		[BPF_S_ALU_MUL_K]	= BPF_ALU|BPF_MUL|BPF_K,
+		[BPF_S_ALU_MUL_X]	= BPF_ALU|BPF_MUL|BPF_X,
+		[BPF_S_ALU_DIV_X]	= BPF_ALU|BPF_DIV|BPF_X,
+		[BPF_S_ALU_MOD_K]	= BPF_ALU|BPF_MOD|BPF_K,
+		[BPF_S_ALU_MOD_X]	= BPF_ALU|BPF_MOD|BPF_X,
+		[BPF_S_ALU_AND_K]	= BPF_ALU|BPF_AND|BPF_K,
+		[BPF_S_ALU_AND_X]	= BPF_ALU|BPF_AND|BPF_X,
+		[BPF_S_ALU_OR_K]	= BPF_ALU|BPF_OR|BPF_K,
+		[BPF_S_ALU_OR_X]	= BPF_ALU|BPF_OR|BPF_X,
+		[BPF_S_ALU_XOR_K]	= BPF_ALU|BPF_XOR|BPF_K,
+		[BPF_S_ALU_XOR_X]	= BPF_ALU|BPF_XOR|BPF_X,
+		[BPF_S_ALU_LSH_K]	= BPF_ALU|BPF_LSH|BPF_K,
+		[BPF_S_ALU_LSH_X]	= BPF_ALU|BPF_LSH|BPF_X,
+		[BPF_S_ALU_RSH_K]	= BPF_ALU|BPF_RSH|BPF_K,
+		[BPF_S_ALU_RSH_X]	= BPF_ALU|BPF_RSH|BPF_X,
+		[BPF_S_ALU_NEG]		= BPF_ALU|BPF_NEG,
+		[BPF_S_LD_W_ABS]	= BPF_LD|BPF_W|BPF_ABS,
+		[BPF_S_LD_H_ABS]	= BPF_LD|BPF_H|BPF_ABS,
+		[BPF_S_LD_B_ABS]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_PROTOCOL]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_PKTTYPE]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_IFINDEX]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_NLATTR]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_NLATTR_NEST]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_MARK]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_QUEUE]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_HATYPE]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_RXHASH]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_CPU]		= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_ALU_XOR_X]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_SECCOMP_LD_W] = BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_VLAN_TAG]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_VLAN_TAG_PRESENT] = BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_ANC_PAY_OFFSET]	= BPF_LD|BPF_B|BPF_ABS,
+		[BPF_S_LD_W_LEN]	= BPF_LD|BPF_W|BPF_LEN,
+		[BPF_S_LD_W_IND]	= BPF_LD|BPF_W|BPF_IND,
+		[BPF_S_LD_H_IND]	= BPF_LD|BPF_H|BPF_IND,
+		[BPF_S_LD_B_IND]	= BPF_LD|BPF_B|BPF_IND,
+		[BPF_S_LD_IMM]		= BPF_LD|BPF_IMM,
+		[BPF_S_LDX_W_LEN]	= BPF_LDX|BPF_W|BPF_LEN,
+		[BPF_S_LDX_B_MSH]	= BPF_LDX|BPF_B|BPF_MSH,
+		[BPF_S_LDX_IMM]		= BPF_LDX|BPF_IMM,
+		[BPF_S_MISC_TAX]	= BPF_MISC|BPF_TAX,
+		[BPF_S_MISC_TXA]	= BPF_MISC|BPF_TXA,
+		[BPF_S_RET_K]		= BPF_RET|BPF_K,
+		[BPF_S_RET_A]		= BPF_RET|BPF_A,
+		[BPF_S_ALU_DIV_K]	= BPF_ALU|BPF_DIV|BPF_K,
+		[BPF_S_LD_MEM]		= BPF_LD|BPF_MEM,
+		[BPF_S_LDX_MEM]		= BPF_LDX|BPF_MEM,
+		[BPF_S_ST]		= BPF_ST,
+		[BPF_S_STX]		= BPF_STX,
+		[BPF_S_JMP_JA]		= BPF_JMP|BPF_JA,
+		[BPF_S_JMP_JEQ_K]	= BPF_JMP|BPF_JEQ|BPF_K,
+		[BPF_S_JMP_JEQ_X]	= BPF_JMP|BPF_JEQ|BPF_X,
+		[BPF_S_JMP_JGE_K]	= BPF_JMP|BPF_JGE|BPF_K,
+		[BPF_S_JMP_JGE_X]	= BPF_JMP|BPF_JGE|BPF_X,
+		[BPF_S_JMP_JGT_K]	= BPF_JMP|BPF_JGT|BPF_K,
+		[BPF_S_JMP_JGT_X]	= BPF_JMP|BPF_JGT|BPF_X,
+		[BPF_S_JMP_JSET_K]	= BPF_JMP|BPF_JSET|BPF_K,
+		[BPF_S_JMP_JSET_X]	= BPF_JMP|BPF_JSET|BPF_X,
+	};
+	u16 code;
+
+	code = filt->code;
+
+	to->code = decodes[code];
+	to->jt = filt->jt;
+	to->jf = filt->jf;
+	to->k = filt->k;
+}
+
+int sk_get_filter(struct sock *sk, struct sock_filter __user *ubuf, unsigned int len)
+{
+	struct sk_filter *filter;
+	int i, ret;
+
+	lock_sock(sk);
+	filter = rcu_dereference_protected(sk->sk_filter,
+			sock_owned_by_user(sk));
+	ret = 0;
+	if (!filter)
+		goto out;
+	ret = filter->len;
+	if (!len)
+		goto out;
+	ret = -EINVAL;
+	if (len < filter->len)
+		goto out;
+
+	ret = -EFAULT;
+	for (i = 0; i < filter->len; i++) {
+		struct sock_filter fb;
+
+		sk_decode_filter(&filter->insns[i], &fb);
+		if (copy_to_user(&ubuf[i], &fb, sizeof(fb)))
+			goto out;
+	}
+
+	ret = filter->len;
+out:
+	release_sock(sk);
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master

@@ -393,7 +393,11 @@ static void vmlfb_release_devices(struct vml_par *par)
  * Free up allocated resources for a device.
  */
 
+<<<<<<< HEAD
 static void __devexit vml_pci_remove(struct pci_dev *dev)
+=======
+static void vml_pci_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	struct vml_info *vinfo;
@@ -452,8 +456,12 @@ static void vmlfb_set_pref_pixel_format(struct fb_var_screeninfo *var)
  * struct per pipe. Currently we have only one pipe.
  */
 
+<<<<<<< HEAD
 static int __devinit vml_pci_probe(struct pci_dev *dev,
 				   const struct pci_device_id *id)
+=======
+static int vml_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vml_info *vinfo;
 	struct fb_info *info;
@@ -1004,6 +1012,7 @@ static int vmlfb_setcolreg(u_int regno, u_int red, u_int green, u_int blue,
 static int vmlfb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 {
 	struct vml_info *vinfo = container_of(info, struct vml_info, info);
+<<<<<<< HEAD
 	unsigned long size = vma->vm_end - vma->vm_start;
 	unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
 	int ret;
@@ -1023,6 +1032,20 @@ static int vmlfb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 						size, vma->vm_page_prot))
 		return -EAGAIN;
 	return 0;
+=======
+	unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
+	int ret;
+
+	ret = vmlfb_vram_offset(vinfo, offset);
+	if (ret)
+		return -EINVAL;
+
+	pgprot_val(vma->vm_page_prot) |= _PAGE_PCD;
+	pgprot_val(vma->vm_page_prot) &= ~_PAGE_PWT;
+
+	return vm_iomap_memory(vma, vinfo->vram_start,
+			vinfo->vram_contig_size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vmlfb_sync(struct fb_info *info)
@@ -1061,7 +1084,11 @@ static struct pci_driver vmlfb_pci_driver = {
 	.name = "vmlfb",
 	.id_table = vml_ids,
 	.probe = vml_pci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(vml_pci_remove)
+=======
+	.remove = vml_pci_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __exit vmlfb_cleanup(void)
@@ -1168,8 +1195,12 @@ void vmlfb_unregister_subsys(struct vml_sys *sys)
 	list_for_each_entry_safe(entry, next, &global_has_mode, head) {
 		printk(KERN_DEBUG MODULE_NAME ": subsys disable pipe\n");
 		vmlfb_disable_pipe(entry);
+<<<<<<< HEAD
 		list_del(&entry->head);
 		list_add_tail(&entry->head, &global_no_mode);
+=======
+		list_move_tail(&entry->head, &global_no_mode);
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&vml_mutex);
 }

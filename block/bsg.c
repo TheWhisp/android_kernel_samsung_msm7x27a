@@ -182,7 +182,15 @@ static int blk_fill_sgv4_hdr_rq(struct request_queue *q, struct request *rq,
 			return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (copy_from_user(rq->cmd, (void *)(unsigned long)hdr->request,
+=======
+	if (copy_from_user(rq->cmd, (void __user *)(unsigned long)hdr->request,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (copy_from_user(rq->cmd, (void __user *)(unsigned long)hdr->request,
+>>>>>>> refs/remotes/origin/master
 			   hdr->request_len))
 		return -EFAULT;
 
@@ -249,7 +257,15 @@ bsg_map_hdr(struct bsg_device *bd, struct sg_io_v4 *hdr, fmode_t has_write_perm,
 	struct request *rq, *next_rq = NULL;
 	int ret, rw;
 	unsigned int dxfer_len;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void *dxferp = NULL;
+=======
+	void __user *dxferp = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __user *dxferp = NULL;
+>>>>>>> refs/remotes/origin/master
 	struct bsg_class_device *bcd = &q->bsg_dev;
 
 	/* if the LLD has been removed then the bsg_unregister_queue will
@@ -291,7 +307,15 @@ bsg_map_hdr(struct bsg_device *bd, struct sg_io_v4 *hdr, fmode_t has_write_perm,
 		rq->next_rq = next_rq;
 		next_rq->cmd_type = rq->cmd_type;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dxferp = (void*)(unsigned long)hdr->din_xferp;
+=======
+		dxferp = (void __user *)(unsigned long)hdr->din_xferp;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dxferp = (void __user *)(unsigned long)hdr->din_xferp;
+>>>>>>> refs/remotes/origin/master
 		ret =  blk_rq_map_user(q, next_rq, NULL, dxferp,
 				       hdr->din_xfer_len, GFP_KERNEL);
 		if (ret)
@@ -300,10 +324,23 @@ bsg_map_hdr(struct bsg_device *bd, struct sg_io_v4 *hdr, fmode_t has_write_perm,
 
 	if (hdr->dout_xfer_len) {
 		dxfer_len = hdr->dout_xfer_len;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dxferp = (void*)(unsigned long)hdr->dout_xferp;
 	} else if (hdr->din_xfer_len) {
 		dxfer_len = hdr->din_xfer_len;
 		dxferp = (void*)(unsigned long)hdr->din_xferp;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		dxferp = (void __user *)(unsigned long)hdr->dout_xferp;
+	} else if (hdr->din_xfer_len) {
+		dxfer_len = hdr->din_xfer_len;
+		dxferp = (void __user *)(unsigned long)hdr->din_xferp;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else
 		dxfer_len = 0;
 
@@ -445,7 +482,15 @@ static int blk_complete_sgv4_hdr_rq(struct request *rq, struct sg_io_v4 *hdr,
 		int len = min_t(unsigned int, hdr->max_response_len,
 					rq->sense_len);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = copy_to_user((void*)(unsigned long)hdr->response,
+=======
+		ret = copy_to_user((void __user *)(unsigned long)hdr->response,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = copy_to_user((void __user *)(unsigned long)hdr->response,
+>>>>>>> refs/remotes/origin/master
 				   rq->sense, len);
 		if (!ret)
 			hdr->response_len = len;
@@ -606,7 +651,15 @@ bsg_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 	ret = __bsg_read(buf, count, bd, NULL, &bytes_read);
 	*ppos = bytes_read;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!bytes_read || (bytes_read && err_block_err(ret)))
+=======
+	if (!bytes_read || err_block_err(ret))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!bytes_read || err_block_err(ret))
+>>>>>>> refs/remotes/origin/master
 		bytes_read = ret;
 
 	return bytes_read;
@@ -686,7 +739,15 @@ bsg_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos)
 	/*
 	 * return bytes written on non-fatal errors
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!bytes_written || (bytes_written && err_block_err(ret)))
+=======
+	if (!bytes_written || err_block_err(ret))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!bytes_written || err_block_err(ret))
+>>>>>>> refs/remotes/origin/master
 		bytes_written = ret;
 
 	dprintk("%s: returning %Zd\n", bd->name, bytes_written);
@@ -769,12 +830,25 @@ static struct bsg_device *bsg_add_device(struct inode *inode,
 					 struct file *file)
 {
 	struct bsg_device *bd;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 #ifdef BSG_DEBUG
 	unsigned char buf[32];
 #endif
 	ret = blk_get_queue(rq);
 	if (ret)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef BSG_DEBUG
+	unsigned char buf[32];
+#endif
+	if (!blk_get_queue(rq))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENXIO);
 
 	bd = bsg_alloc_device();
@@ -802,11 +876,18 @@ static struct bsg_device *bsg_add_device(struct inode *inode,
 static struct bsg_device *__bsg_get_device(int minor, struct request_queue *q)
 {
 	struct bsg_device *bd;
+<<<<<<< HEAD
 	struct hlist_node *entry;
 
 	mutex_lock(&bsg_mutex);
 
 	hlist_for_each_entry(bd, entry, bsg_dev_idx_hash(minor), dev_list) {
+=======
+
+	mutex_lock(&bsg_mutex);
+
+	hlist_for_each_entry(bd, bsg_dev_idx_hash(minor), dev_list) {
+>>>>>>> refs/remotes/origin/master
 		if (bd->queue == q) {
 			atomic_inc(&bd->ref_count);
 			goto found;
@@ -878,7 +959,15 @@ static unsigned int bsg_poll(struct file *file, poll_table *wait)
 	spin_lock_irq(&bd->lock);
 	if (!list_empty(&bd->done_list))
 		mask |= POLLIN | POLLRDNORM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (bd->queued_cmds >= bd->max_queue)
+=======
+	if (bd->queued_cmds < bd->max_queue)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bd->queued_cmds < bd->max_queue)
+>>>>>>> refs/remotes/origin/master
 		mask |= POLLOUT;
 	spin_unlock_irq(&bd->lock);
 
@@ -999,7 +1088,11 @@ int bsg_register_queue(struct request_queue *q, struct device *parent,
 {
 	struct bsg_class_device *bcd;
 	dev_t dev;
+<<<<<<< HEAD
 	int ret, minor;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	struct device *class_dev = NULL;
 	const char *devname;
 
@@ -1019,6 +1112,7 @@ int bsg_register_queue(struct request_queue *q, struct device *parent,
 
 	mutex_lock(&bsg_mutex);
 
+<<<<<<< HEAD
 	ret = idr_pre_get(&bsg_minor_idr, GFP_KERNEL);
 	if (!ret) {
 		ret = -ENOMEM;
@@ -1036,6 +1130,18 @@ int bsg_register_queue(struct request_queue *q, struct device *parent,
 	}
 
 	bcd->minor = minor;
+=======
+	ret = idr_alloc(&bsg_minor_idr, bcd, 0, BSG_MAX_DEVS, GFP_KERNEL);
+	if (ret < 0) {
+		if (ret == -ENOSPC) {
+			printk(KERN_ERR "bsg: too many bsg devices\n");
+			ret = -EINVAL;
+		}
+		goto unlock;
+	}
+
+	bcd->minor = ret;
+>>>>>>> refs/remotes/origin/master
 	bcd->queue = q;
 	bcd->parent = get_device(parent);
 	bcd->release = release;
@@ -1061,8 +1167,12 @@ unregister_class_dev:
 	device_unregister(class_dev);
 put_dev:
 	put_device(parent);
+<<<<<<< HEAD
 remove_idr:
 	idr_remove(&bsg_minor_idr, minor);
+=======
+	idr_remove(&bsg_minor_idr, bcd->minor);
+>>>>>>> refs/remotes/origin/master
 unlock:
 	mutex_unlock(&bsg_mutex);
 	return ret;
@@ -1071,7 +1181,15 @@ EXPORT_SYMBOL_GPL(bsg_register_queue);
 
 static struct cdev bsg_cdev;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char *bsg_devnode(struct device *dev, mode_t *mode)
+=======
+static char *bsg_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *bsg_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return kasprintf(GFP_KERNEL, "bsg/%s", dev_name(dev));
 }

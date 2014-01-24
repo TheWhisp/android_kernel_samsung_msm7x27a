@@ -29,20 +29,64 @@
  *    Gareth Hughes <gareth@valinux.com>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 #include "drm.h"
 #include "r128_drm.h"
 #include "r128_drv.h"
 
 #include "drm_pciids.h"
+=======
+#include <linux/module.h>
+
+#include <drm/drmP.h>
+#include <drm/r128_drm.h>
+#include "r128_drv.h"
+
+#include <drm/drm_pciids.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_device_id pciidlist[] = {
 	r128_PCI_IDS
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct file_operations r128_driver_fops = {
+	.owner = THIS_MODULE,
+	.open = drm_open,
+	.release = drm_release,
+	.unlocked_ioctl = drm_ioctl,
+	.mmap = drm_mmap,
+	.poll = drm_poll,
+<<<<<<< HEAD
+	.fasync = drm_fasync,
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = r128_compat_ioctl,
+#endif
+	.llseek = noop_llseek,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct drm_driver driver = {
 	.driver_features =
 	    DRIVER_USE_AGP | DRIVER_USE_MTRR | DRIVER_PCI_DMA | DRIVER_SG |
+=======
+static struct drm_driver driver = {
+	.driver_features =
+	    DRIVER_USE_AGP | DRIVER_PCI_DMA | DRIVER_SG |
+>>>>>>> refs/remotes/origin/master
 	    DRIVER_HAVE_DMA | DRIVER_HAVE_IRQ | DRIVER_IRQ_SHARED,
 	.dev_priv_size = sizeof(drm_r128_buf_priv_t),
 	.load = r128_driver_load,
@@ -55,9 +99,11 @@ static struct drm_driver driver = {
 	.irq_postinstall = r128_driver_irq_postinstall,
 	.irq_uninstall = r128_driver_irq_uninstall,
 	.irq_handler = r128_driver_irq_handler,
+<<<<<<< HEAD
 	.reclaim_buffers = drm_core_reclaim_buffers,
 	.ioctls = r128_ioctls,
 	.dma_ioctl = r128_cce_buffers,
+<<<<<<< HEAD
 	.fops = {
 		.owner = THIS_MODULE,
 		.open = drm_open,
@@ -73,6 +119,14 @@ static struct drm_driver driver = {
 	},
 
 
+=======
+	.fops = &r128_driver_fops,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ioctls = r128_ioctls,
+	.dma_ioctl = r128_cce_buffers,
+	.fops = &r128_driver_fops,
+>>>>>>> refs/remotes/origin/master
 	.name = DRIVER_NAME,
 	.desc = DRIVER_DESC,
 	.date = DRIVER_DATE,
@@ -83,6 +137,14 @@ static struct drm_driver driver = {
 
 int r128_driver_load(struct drm_device *dev, unsigned long flags)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pci_set_master(dev->pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_set_master(dev->pdev);
+>>>>>>> refs/remotes/origin/master
 	return drm_vblank_init(dev, 1);
 }
 

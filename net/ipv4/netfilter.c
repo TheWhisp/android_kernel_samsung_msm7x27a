@@ -1,17 +1,38 @@
+<<<<<<< HEAD
 /* IPv4 specific functions of netfilter core */
+=======
+/*
+ * IPv4 specific functions of netfilter core
+ *
+ * Rusty Russell (C) 2000 -- This code is GPL.
+ * Patrick McHardy (C) 2006-2012
+ */
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/netfilter.h>
 #include <linux/netfilter_ipv4.h>
 #include <linux/ip.h>
 #include <linux/skbuff.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/route.h>
 #include <net/xfrm.h>
 #include <net/ip.h>
 #include <net/netfilter/nf_queue.h>
 
 /* route_me_harder function, used by iptable_nat, iptable_mangle + ip_queue */
+<<<<<<< HEAD
 int ip_route_me_harder(struct sk_buff *skb, unsigned addr_type)
+=======
+int ip_route_me_harder(struct sk_buff *skb, unsigned int addr_type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net *net = dev_net(skb_dst(skb)->dev);
 	const struct iphdr *iph = ip_hdr(skb);
@@ -39,14 +60,22 @@ int ip_route_me_harder(struct sk_buff *skb, unsigned addr_type)
 	fl4.flowi4_flags = flags;
 	rt = ip_route_output_key(net, &fl4);
 	if (IS_ERR(rt))
+<<<<<<< HEAD
 		return -1;
+=======
+		return PTR_ERR(rt);
+>>>>>>> refs/remotes/origin/master
 
 	/* Drop old route. */
 	skb_dst_drop(skb);
 	skb_dst_set(skb, &rt->dst);
 
 	if (skb_dst(skb)->error)
+<<<<<<< HEAD
 		return -1;
+=======
+		return skb_dst(skb)->error;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_XFRM
 	if (!(IPCB(skb)->flags & IPSKB_XFRM_TRANSFORMED) &&
@@ -55,7 +84,11 @@ int ip_route_me_harder(struct sk_buff *skb, unsigned addr_type)
 		skb_dst_set(skb, NULL);
 		dst = xfrm_lookup(net, dst, flowi4_to_flowi(&fl4), skb->sk, 0);
 		if (IS_ERR(dst))
+<<<<<<< HEAD
 			return -1;
+=======
+			return PTR_ERR(dst);;
+>>>>>>> refs/remotes/origin/master
 		skb_dst_set(skb, dst);
 	}
 #endif
@@ -63,13 +96,25 @@ int ip_route_me_harder(struct sk_buff *skb, unsigned addr_type)
 	/* Change in oif may mean change in hh_len. */
 	hh_len = skb_dst(skb)->dev->hard_header_len;
 	if (skb_headroom(skb) < hh_len &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    pskb_expand_head(skb, hh_len - skb_headroom(skb), 0, GFP_ATOMIC))
+=======
+	    pskb_expand_head(skb, HH_DATA_ALIGN(hh_len - skb_headroom(skb)),
+				0, GFP_ATOMIC))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -1;
+=======
+	    pskb_expand_head(skb, HH_DATA_ALIGN(hh_len - skb_headroom(skb)),
+				0, GFP_ATOMIC))
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 EXPORT_SYMBOL(ip_route_me_harder);
 
+<<<<<<< HEAD
 #ifdef CONFIG_XFRM
 int ip_xfrm_me_harder(struct sk_buff *skb)
 {
@@ -107,6 +152,8 @@ EXPORT_SYMBOL(ip_xfrm_me_harder);
 void (*ip_nat_decode_session)(struct sk_buff *, struct flowi *);
 EXPORT_SYMBOL(ip_nat_decode_session);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Extra routing may needed on local out, as the QUEUE target never
  * returns control to the table.
@@ -223,18 +270,27 @@ static const struct nf_afinfo nf_ip_afinfo = {
 	.route_key_size		= sizeof(struct ip_rt_info),
 };
 
+<<<<<<< HEAD
 static int ipv4_netfilter_init(void)
+=======
+static int __init ipv4_netfilter_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return nf_register_afinfo(&nf_ip_afinfo);
 }
 
+<<<<<<< HEAD
 static void ipv4_netfilter_fini(void)
+=======
+static void __exit ipv4_netfilter_fini(void)
+>>>>>>> refs/remotes/origin/master
 {
 	nf_unregister_afinfo(&nf_ip_afinfo);
 }
 
 module_init(ipv4_netfilter_init);
 module_exit(ipv4_netfilter_fini);
+<<<<<<< HEAD
 
 #ifdef CONFIG_SYSCTL
 struct ctl_path nf_net_ipv4_netfilter_sysctl_path[] = {
@@ -245,3 +301,5 @@ struct ctl_path nf_net_ipv4_netfilter_sysctl_path[] = {
 };
 EXPORT_SYMBOL_GPL(nf_net_ipv4_netfilter_sysctl_path);
 #endif /* CONFIG_SYSCTL */
+=======
+>>>>>>> refs/remotes/origin/master

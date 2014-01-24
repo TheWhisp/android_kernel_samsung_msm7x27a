@@ -16,6 +16,7 @@ Configuration options:
   [0] - I/O port base address
 */
 
+<<<<<<< HEAD
 #define DEBUG 0
 
 #include "../comedidev.h"
@@ -74,6 +75,30 @@ static int fl512_ao_insn_readback(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
 				  struct comedi_insn *insn, unsigned int *data);
 
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+#include <linux/delay.h>
+
+#define FL512_SIZE 16		/* the size of the used memory */
+struct fl512_private {
+	unsigned short ao_readback[2];
+};
+
+static const struct comedi_lrange range_fl512 = {
+	4, {
+		BIP_RANGE(0.5),
+		BIP_RANGE(1),
+		BIP_RANGE(5),
+		BIP_RANGE(10),
+		UNI_RANGE(1),
+		UNI_RANGE(5),
+		UNI_RANGE(10)
+	}
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * fl512_ai_insn : this is the analog input function
  */
@@ -107,6 +132,10 @@ static int fl512_ao_insn(struct comedi_device *dev,
 			 struct comedi_subdevice *s, struct comedi_insn *insn,
 			 unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct fl512_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int n;
 	int chan = CR_CHAN(insn->chanspec);	/* get chan to write */
 	unsigned long iobase = dev->iobase;	/* get base address  */
@@ -131,6 +160,10 @@ static int fl512_ao_insn_readback(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
 				  struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct fl512_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int n;
 	int chan = CR_CHAN(insn->chanspec);
 
@@ -140,6 +173,7 @@ static int fl512_ao_insn_readback(struct comedi_device *dev,
 	return n;
 }
 
+<<<<<<< HEAD
 /*
  * start attach
  */
@@ -169,11 +203,35 @@ static int fl512_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	if (alloc_subdevices(dev, 2) < 0)
 		return -ENOMEM;
 
+=======
+static int fl512_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+{
+	struct fl512_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+
+	ret = comedi_request_region(dev, it->options[0], FL512_SIZE);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	ret = comedi_alloc_subdevices(dev, 2);
+	if (ret)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * this if the definitions of the supdevices, 2 have been defined
 	 */
 	/* Analog indput */
+<<<<<<< HEAD
 	s = dev->subdevices + 0;
+=======
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	/* define subdevice as Analog In */
 	s->type = COMEDI_SUBD_AI;
 	/* you can read it from userspace */
@@ -186,10 +244,16 @@ static int fl512_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	s->range_table = &range_fl512;
 	/* function to call when read AD */
 	s->insn_read = fl512_ai_insn;
+<<<<<<< HEAD
 	printk(KERN_INFO "comedi: fl512: subdevice 0 initialized\n");
 
 	/* Analog output */
 	s = dev->subdevices + 1;
+=======
+
+	/* Analog output */
+	s = &dev->subdevices[1];
+>>>>>>> refs/remotes/origin/master
 	/* define subdevice as Analog OUT */
 	s->type = COMEDI_SUBD_AO;
 	/* you can write it from userspace */
@@ -204,11 +268,15 @@ static int fl512_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	s->insn_write = fl512_ao_insn;
 	/* function to call when reading DA */
 	s->insn_read = fl512_ao_insn_readback;
+<<<<<<< HEAD
 	printk(KERN_INFO "comedi: fl512: subdevice 1 initialized\n");
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
 
+<<<<<<< HEAD
 static int fl512_detach(struct comedi_device *dev)
 {
 	if (dev->iobase)
@@ -216,6 +284,15 @@ static int fl512_detach(struct comedi_device *dev)
 	printk(KERN_INFO "comedi%d: fl512: dummy i detach\n", dev->minor);
 	return 0;
 }
+=======
+static struct comedi_driver fl512_driver = {
+	.driver_name	= "fl512",
+	.module		= THIS_MODULE,
+	.attach		= fl512_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(fl512_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

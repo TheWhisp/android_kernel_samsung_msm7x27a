@@ -13,11 +13,23 @@
 
 #include <linux/clk.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/soc.h>
 #include <sound/s3c24xx_uda134x.h>
 
+<<<<<<< HEAD
 #include <plat/regs-iis.h>
+=======
+#include "regs-iis.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "s3c24xx-i2s.h"
 
@@ -66,6 +78,8 @@ static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
 	pr_debug("%s %d\n", __func__, clk_users);
 	if (clk_users == 0) {
 		xtal = clk_get(&s3c24xx_uda134x_snd_device->dev, "xtal");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!xtal) {
 			printk(KERN_ERR "%s cannot get xtal\n", __func__);
 			ret = -EBUSY;
@@ -77,6 +91,24 @@ static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
 				       __func__);
 				clk_put(xtal);
 				ret = -EBUSY;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (IS_ERR(xtal)) {
+			printk(KERN_ERR "%s cannot get xtal\n", __func__);
+			ret = PTR_ERR(xtal);
+		} else {
+			pclk = clk_get(&s3c24xx_uda134x_snd_device->dev,
+				       "pclk");
+			if (IS_ERR(pclk)) {
+				printk(KERN_ERR "%s cannot get pclk\n",
+				       __func__);
+				clk_put(xtal);
+				ret = PTR_ERR(pclk);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		if (!ret) {
@@ -223,11 +255,23 @@ static struct snd_soc_dai_link s3c24xx_uda134x_dai_link = {
 	.codec_dai_name = "uda134x-hifi",
 	.cpu_dai_name = "s3c24xx-iis",
 	.ops = &s3c24xx_uda134x_ops,
+<<<<<<< HEAD
 	.platform_name	= "samsung-audio",
+=======
+	.platform_name	= "s3c24xx-iis",
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct snd_soc_card snd_soc_s3c24xx_uda134x = {
 	.name = "S3C24XX_UDA134X",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = &s3c24xx_uda134x_dai_link,
 	.num_links = 1,
 };
@@ -342,6 +386,8 @@ static struct platform_driver s3c24xx_uda134x_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init s3c24xx_uda134x_init(void)
 {
 	return platform_driver_register(&s3c24xx_uda134x_driver);
@@ -355,6 +401,12 @@ static void __exit s3c24xx_uda134x_exit(void)
 
 module_init(s3c24xx_uda134x_init);
 module_exit(s3c24xx_uda134x_exit);
+=======
+module_platform_driver(s3c24xx_uda134x_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(s3c24xx_uda134x_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Zoltan Devai, Christian Pellegrin <chripell@evolware.org>");
 MODULE_DESCRIPTION("S3C24XX_UDA134X ALSA SoC audio driver");

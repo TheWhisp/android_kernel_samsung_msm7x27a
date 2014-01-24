@@ -3,10 +3,25 @@
 
 #include <linux/compiler.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_BUG
 
 #ifdef CONFIG_GENERIC_BUG
 #ifndef __ASSEMBLY__
+=======
+#ifdef CONFIG_GENERIC_BUG
+#define BUGFLAG_WARNING		(1 << 0)
+#define BUGFLAG_TAINT(taint)	(BUGFLAG_WARNING | ((taint) << 8))
+#define BUG_GET_TAINT(bug)	((bug)->flags >> 8)
+#endif
+
+#ifndef __ASSEMBLY__
+#include <linux/kernel.h>
+
+#ifdef CONFIG_BUG
+
+#ifdef CONFIG_GENERIC_BUG
+>>>>>>> refs/remotes/origin/master
 struct bug_entry {
 #ifndef CONFIG_GENERIC_BUG_RELATIVE_POINTERS
 	unsigned long	bug_addr;
@@ -23,12 +38,15 @@ struct bug_entry {
 #endif
 	unsigned short	flags;
 };
+<<<<<<< HEAD
 #endif		/* __ASSEMBLY__ */
 
 #define BUGFLAG_WARNING		(1 << 0)
 #define BUGFLAG_TAINT(taint)	(BUGFLAG_WARNING | ((taint) << 8))
 #define BUG_GET_TAINT(bug)	((bug)->flags >> 8)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* CONFIG_GENERIC_BUG */
 
 /*
@@ -60,15 +78,32 @@ struct bug_entry {
  * to provide better diagnostics.
  */
 #ifndef __WARN_TAINT
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 extern void warn_slowpath_fmt(const char *file, const int line,
 		const char *fmt, ...) __attribute__((format(printf, 3, 4)));
 extern void warn_slowpath_fmt_taint(const char *file, const int line,
 				    unsigned taint, const char *fmt, ...)
 	__attribute__((format(printf, 4, 5)));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern __printf(3, 4)
+void warn_slowpath_fmt(const char *file, const int line,
+		       const char *fmt, ...);
+extern __printf(4, 5)
+void warn_slowpath_fmt_taint(const char *file, const int line, unsigned taint,
+			     const char *fmt, ...);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void warn_slowpath_null(const char *file, const int line);
 #define WANT_WARN_ON_SLOWPATH
 #endif
+=======
+extern void warn_slowpath_null(const char *file, const int line);
+#define WANT_WARN_ON_SLOWPATH
+>>>>>>> refs/remotes/origin/master
 #define __WARN()		warn_slowpath_null(__FILE__, __LINE__)
 #define __WARN_printf(arg...)	warn_slowpath_fmt(__FILE__, __LINE__, arg)
 #define __WARN_printf_taint(taint, arg...)				\
@@ -133,7 +168,15 @@ extern void warn_slowpath_null(const char *file, const int line);
 #endif
 
 #define WARN_ON_ONCE(condition)	({				\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static bool __warned;					\
+=======
+	static bool __section(.data.unlikely) __warned;		\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static bool __section(.data.unlikely) __warned;		\
+>>>>>>> refs/remotes/origin/master
 	int __ret_warn_once = !!(condition);			\
 								\
 	if (unlikely(__ret_warn_once))				\
@@ -143,7 +186,15 @@ extern void warn_slowpath_null(const char *file, const int line);
 })
 
 #define WARN_ONCE(condition, format...)	({			\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static bool __warned;					\
+=======
+	static bool __section(.data.unlikely) __warned;		\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static bool __section(.data.unlikely) __warned;		\
+>>>>>>> refs/remotes/origin/master
 	int __ret_warn_once = !!(condition);			\
 								\
 	if (unlikely(__ret_warn_once))				\
@@ -153,7 +204,15 @@ extern void warn_slowpath_null(const char *file, const int line);
 })
 
 #define WARN_TAINT_ONCE(condition, taint, format...)	({	\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static bool __warned;					\
+=======
+	static bool __section(.data.unlikely) __warned;		\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static bool __section(.data.unlikely) __warned;		\
+>>>>>>> refs/remotes/origin/master
 	int __ret_warn_once = !!(condition);			\
 								\
 	if (unlikely(__ret_warn_once))				\
@@ -201,4 +260,9 @@ extern void warn_slowpath_null(const char *file, const int line);
 # define WARN_ON_SMP(x)			({0;})
 #endif
 
+<<<<<<< HEAD
+=======
+#endif /* __ASSEMBLY__ */
+
+>>>>>>> refs/remotes/origin/master
 #endif

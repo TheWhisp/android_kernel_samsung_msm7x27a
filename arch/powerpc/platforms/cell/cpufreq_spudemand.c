@@ -22,9 +22,22 @@
 
 #include <linux/cpufreq.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/timer.h>
 #include <linux/workqueue.h>
 #include <asm/atomic.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/module.h>
+#include <linux/timer.h>
+#include <linux/workqueue.h>
+#include <linux/atomic.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/machdep.h>
 #include <asm/spu.h>
 
@@ -75,7 +88,11 @@ static void spu_gov_work(struct work_struct *work)
 static void spu_gov_init_work(struct spu_gov_info_struct *info)
 {
 	int delay = usecs_to_jiffies(info->poll_int);
+<<<<<<< HEAD
 	INIT_DELAYED_WORK_DEFERRABLE(&info->work, spu_gov_work);
+=======
+	INIT_DEFERRABLE_WORK(&info->work, spu_gov_work);
+>>>>>>> refs/remotes/origin/master
 	schedule_delayed_work_on(info->policy->cpu, &info->work, delay);
 }
 

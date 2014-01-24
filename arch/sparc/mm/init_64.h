@@ -1,19 +1,35 @@
 #ifndef _SPARC64_MM_INIT_H
 #define _SPARC64_MM_INIT_H
 
+<<<<<<< HEAD
+=======
+#include <asm/page.h>
+
+>>>>>>> refs/remotes/origin/master
 /* Most of the symbols in this file are defined in init.c and
  * marked non-static so that assembler code can get at them.
  */
 
+<<<<<<< HEAD
 #define MAX_PHYS_ADDRESS	(1UL << 41UL)
 #define KPTE_BITMAP_CHUNK_SZ		(256UL * 1024UL * 1024UL)
 #define KPTE_BITMAP_BYTES	\
 	((MAX_PHYS_ADDRESS / KPTE_BITMAP_CHUNK_SZ) / 8)
+=======
+#define MAX_PHYS_ADDRESS	(1UL << MAX_PHYS_ADDRESS_BITS)
+#define KPTE_BITMAP_CHUNK_SZ		(256UL * 1024UL * 1024UL)
+#define KPTE_BITMAP_BYTES	\
+	((MAX_PHYS_ADDRESS / KPTE_BITMAP_CHUNK_SZ) / 4)
+>>>>>>> refs/remotes/origin/master
 #define VALID_ADDR_BITMAP_CHUNK_SZ	(4UL * 1024UL * 1024UL)
 #define VALID_ADDR_BITMAP_BYTES	\
 	((MAX_PHYS_ADDRESS / VALID_ADDR_BITMAP_CHUNK_SZ) / 8)
 
+<<<<<<< HEAD
 extern unsigned long kern_linear_pte_xor[2];
+=======
+extern unsigned long kern_linear_pte_xor[4];
+>>>>>>> refs/remotes/origin/master
 extern unsigned long kpte_linear_bitmap[KPTE_BITMAP_BYTES / sizeof(unsigned long)];
 extern unsigned int sparc64_highest_unlocked_tlb_ent;
 extern unsigned long sparc64_kern_pri_context;
@@ -36,8 +52,14 @@ extern unsigned long kern_locked_tte_data;
 
 extern void prom_world(int enter);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void free_initmem(void);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SPARSEMEM_VMEMMAP
 #define VMEMMAP_CHUNK_SHIFT	22
 #define VMEMMAP_CHUNK		(1UL << VMEMMAP_CHUNK_SHIFT)

@@ -41,10 +41,18 @@
 
 .text
 ENTRY(csum_partial)
+<<<<<<< HEAD
 	  /*
 	   * Experiments with Ethernet and SLIP connections show that buf
 	   * is aligned on either a 2-byte or 4-byte boundary.
 	   */
+=======
+
+	/*
+	 * Experiments with Ethernet and SLIP connections show that buf
+	 * is aligned on either a 2-byte or 4-byte boundary.
+	 */
+>>>>>>> refs/remotes/origin/master
 	entry	sp, 32
 	extui	a5, a2, 0, 2
 	bnez	a5, 8f		/* branch if 2-byte aligned */
@@ -170,7 +178,11 @@ ENTRY(csum_partial)
 3:
 	j	5b		/* branch to handle the remaining byte */
 
+<<<<<<< HEAD
 
+=======
+ENDPROC(csum_partial)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Copy from ds while checksumming, otherwise like csum_partial
@@ -211,6 +223,10 @@ unsigned int csum_partial_copy_generic (const char *src, char *dst, int len,
  */
 
 ENTRY(csum_partial_copy_generic)
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	entry	sp, 32
 	mov	a12, a3
 	mov	a11, a4
@@ -367,6 +383,11 @@ DST(	s8i	a8, a3, 1	)
 6:
 	j	4b		/* process the possible trailing odd byte */
 
+<<<<<<< HEAD
+=======
+ENDPROC(csum_partial_copy_generic)
+
+>>>>>>> refs/remotes/origin/master
 
 # Exception handler:
 .section .fixup, "ax"
@@ -406,4 +427,7 @@ DST(	s8i	a8, a3, 1	)
 	retw
 
 .previous
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

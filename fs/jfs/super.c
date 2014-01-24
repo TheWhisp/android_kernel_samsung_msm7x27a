@@ -33,6 +33,10 @@
 #include <linux/slab.h>
 #include <asm/uaccess.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/blkdev.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "jfs_incore.h"
 #include "jfs_filsys.h"
@@ -91,6 +95,7 @@ static void jfs_handle_error(struct super_block *sb)
 	/* nothing is done for continue beyond marking the superblock dirty */
 }
 
+<<<<<<< HEAD
 void jfs_error(struct super_block *sb, const char * function, ...)
 {
 	static char error_buf[256];
@@ -101,6 +106,22 @@ void jfs_error(struct super_block *sb, const char * function, ...)
 	va_end(args);
 
 	printk(KERN_ERR "ERROR: (device %s): %s\n", sb->s_id, error_buf);
+=======
+void jfs_error(struct super_block *sb, const char *fmt, ...)
+{
+	struct va_format vaf;
+	va_list args;
+
+	va_start(args, fmt);
+
+	vaf.fmt = fmt;
+	vaf.va = &args;
+
+	pr_err("ERROR: (device %s): %pf: %pV\n",
+	       sb->s_id, __builtin_return_address(0), &vaf);
+
+	va_end(args);
+>>>>>>> refs/remotes/origin/master
 
 	jfs_handle_error(sb);
 }
@@ -119,7 +140,13 @@ static void jfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 	struct jfs_inode_info *ji = JFS_IP(inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(jfs_inode_cachep, ji);
 }
 
@@ -154,7 +181,11 @@ static int jfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	/*
 	 * If we really return the number of allocated & free inodes, some
 	 * applications will fail because they won't see enough free inodes.
+<<<<<<< HEAD
 	 * We'll try to calculate some guess as to how may inodes we can
+=======
+	 * We'll try to calculate some guess as to how many inodes we can
+>>>>>>> refs/remotes/origin/master
 	 * really allocate
 	 *
 	 * buf->f_files = atomic_read(&imap->im_numinos);
@@ -198,7 +229,12 @@ static void jfs_put_super(struct super_block *sb)
 enum {
 	Opt_integrity, Opt_nointegrity, Opt_iocharset, Opt_resize,
 	Opt_resize_nosize, Opt_errors, Opt_ignore, Opt_err, Opt_quota,
+<<<<<<< HEAD
 	Opt_usrquota, Opt_grpquota, Opt_uid, Opt_gid, Opt_umask
+=======
+	Opt_usrquota, Opt_grpquota, Opt_uid, Opt_gid, Opt_umask,
+	Opt_discard, Opt_nodiscard, Opt_discard_minblk
+>>>>>>> refs/remotes/origin/master
 };
 
 static const match_table_t tokens = {
@@ -215,6 +251,12 @@ static const match_table_t tokens = {
 	{Opt_uid, "uid=%u"},
 	{Opt_gid, "gid=%u"},
 	{Opt_umask, "umask=%u"},
+<<<<<<< HEAD
+=======
+	{Opt_discard, "discard"},
+	{Opt_nodiscard, "nodiscard"},
+	{Opt_discard_minblk, "discard=%u"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_err, NULL}
 };
 
@@ -256,8 +298,12 @@ static int parse_options(char *options, struct super_block *sb, s64 *newLVSize,
 			else {
 				nls_map = load_nls(args[0].from);
 				if (!nls_map) {
+<<<<<<< HEAD
 					printk(KERN_ERR
 					       "JFS: charset not found\n");
+=======
+					pr_err("JFS: charset not found\n");
+>>>>>>> refs/remotes/origin/master
 					goto cleanup;
 				}
 			}
@@ -273,8 +319,12 @@ static int parse_options(char *options, struct super_block *sb, s64 *newLVSize,
 			*newLVSize = sb->s_bdev->bd_inode->i_size >>
 				sb->s_blocksize_bits;
 			if (*newLVSize == 0)
+<<<<<<< HEAD
 				printk(KERN_ERR
 				       "JFS: Cannot determine volume size\n");
+=======
+				pr_err("JFS: Cannot determine volume size\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		case Opt_errors:
@@ -295,8 +345,12 @@ static int parse_options(char *options, struct super_block *sb, s64 *newLVSize,
 				*flag &= ~JFS_ERR_REMOUNT_RO;
 				*flag |= JFS_ERR_PANIC;
 			} else {
+<<<<<<< HEAD
 				printk(KERN_ERR
 				       "JFS: %s is an invalid error handler\n",
+=======
+				pr_err("JFS: %s is an invalid error handler\n",
+>>>>>>> refs/remotes/origin/master
 				       errors);
 				goto cleanup;
 			}
@@ -315,13 +369,18 @@ static int parse_options(char *options, struct super_block *sb, s64 *newLVSize,
 		case Opt_usrquota:
 		case Opt_grpquota:
 		case Opt_quota:
+<<<<<<< HEAD
 			printk(KERN_ERR
 			       "JFS: quota operations not supported\n");
+=======
+			pr_err("JFS: quota operations not supported\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 #endif
 		case Opt_uid:
 		{
 			char *uid = args[0].from;
+<<<<<<< HEAD
 			sbi->uid = simple_strtoul(uid, &uid, 0);
 			break;
 		}
@@ -331,17 +390,80 @@ static int parse_options(char *options, struct super_block *sb, s64 *newLVSize,
 			sbi->gid = simple_strtoul(gid, &gid, 0);
 			break;
 		}
+=======
+			uid_t val = simple_strtoul(uid, &uid, 0);
+			sbi->uid = make_kuid(current_user_ns(), val);
+			if (!uid_valid(sbi->uid))
+				goto cleanup;
+			break;
+		}
+
+		case Opt_gid:
+		{
+			char *gid = args[0].from;
+			gid_t val = simple_strtoul(gid, &gid, 0);
+			sbi->gid = make_kgid(current_user_ns(), val);
+			if (!gid_valid(sbi->gid))
+				goto cleanup;
+			break;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		case Opt_umask:
 		{
 			char *umask = args[0].from;
 			sbi->umask = simple_strtoul(umask, &umask, 8);
 			if (sbi->umask & ~0777) {
+<<<<<<< HEAD
 				printk(KERN_ERR
 				       "JFS: Invalid value of umask\n");
+=======
+				pr_err("JFS: Invalid value of umask\n");
+>>>>>>> refs/remotes/origin/master
 				goto cleanup;
 			}
 			break;
 		}
+<<<<<<< HEAD
+=======
+
+		case Opt_discard:
+		{
+			struct request_queue *q = bdev_get_queue(sb->s_bdev);
+			/* if set to 1, even copying files will cause
+			 * trimming :O
+			 * -> user has more control over the online trimming
+			 */
+			sbi->minblks_trim = 64;
+			if (blk_queue_discard(q)) {
+				*flag |= JFS_DISCARD;
+			} else {
+				pr_err("JFS: discard option " \
+					"not supported on device\n");
+			}
+			break;
+		}
+
+		case Opt_nodiscard:
+			*flag &= ~JFS_DISCARD;
+			break;
+
+		case Opt_discard_minblk:
+		{
+			struct request_queue *q = bdev_get_queue(sb->s_bdev);
+			char *minblks_trim = args[0].from;
+			if (blk_queue_discard(q)) {
+				*flag |= JFS_DISCARD;
+				sbi->minblks_trim = simple_strtoull(
+					minblks_trim, &minblks_trim, 0);
+			} else {
+				pr_err("JFS: discard option " \
+					"not supported on device\n");
+			}
+			break;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		default:
 			printk("jfs: Unrecognized mount option \"%s\" "
 					" or missing value\n", p);
@@ -375,8 +497,13 @@ static int jfs_remount(struct super_block *sb, int *flags, char *data)
 
 	if (newLVSize) {
 		if (sb->s_flags & MS_RDONLY) {
+<<<<<<< HEAD
 			printk(KERN_ERR
 		  "JFS: resize requires volume to be mounted read-write\n");
+=======
+			pr_err("JFS: resize requires volume" \
+				" to be mounted read-write\n");
+>>>>>>> refs/remotes/origin/master
 			return -EROFS;
 		}
 		rc = jfs_extendfs(sb, newLVSize, 0);
@@ -442,8 +569,20 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
 		return -ENOMEM;
 
 	sb->s_fs_info = sbi;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	sb->s_max_links = JFS_LINK_MAX;
+>>>>>>> refs/remotes/origin/cm-10.0
 	sbi->sb = sb;
 	sbi->uid = sbi->gid = sbi->umask = -1;
+=======
+	sb->s_max_links = JFS_LINK_MAX;
+	sbi->sb = sb;
+	sbi->uid = INVALID_UID;
+	sbi->gid = INVALID_GID;
+	sbi->umask = -1;
+>>>>>>> refs/remotes/origin/master
 
 	/* initialize the mount flag and determine the default error handler */
 	flag = JFS_ERR_REMOUNT_RO;
@@ -457,7 +596,11 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
 #endif
 
 	if (newLVSize) {
+<<<<<<< HEAD
 		printk(KERN_ERR "resize option for remount only\n");
+=======
+		pr_err("resize option for remount only\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_kfree;
 	}
 
@@ -485,7 +628,13 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
 		goto out_unload;
 	}
 	inode->i_ino = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	inode->i_size = sb->s_bdev->bd_inode->i_size;
 	inode->i_mapping->a_ops = &jfs_metapage_aops;
 	insert_inode_hash(inode);
@@ -523,7 +672,15 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
 		ret = PTR_ERR(inode);
 		goto out_no_rw;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(inode);
+=======
+	sb->s_root = d_make_root(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(inode);
+>>>>>>> refs/remotes/origin/master
 	if (!sb->s_root)
 		goto out_no_root;
 
@@ -541,7 +698,13 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
 
 out_no_root:
 	jfs_err("jfs_read_super: get root dentry failed");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iput(inode);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 out_no_rw:
 	rc = jfs_umount(sb);
@@ -566,11 +729,36 @@ static int jfs_freeze(struct super_block *sb)
 {
 	struct jfs_sb_info *sbi = JFS_SBI(sb);
 	struct jfs_log *log = sbi->log;
+<<<<<<< HEAD
 
 	if (!(sb->s_flags & MS_RDONLY)) {
 		txQuiesce(sb);
 		lmLogShutdown(log);
 		updateSuper(sb, FM_CLEAN);
+=======
+	int rc = 0;
+
+	if (!(sb->s_flags & MS_RDONLY)) {
+		txQuiesce(sb);
+		rc = lmLogShutdown(log);
+		if (rc) {
+			jfs_error(sb, "lmLogShutdown failed\n");
+
+			/* let operations fail rather than hang */
+			txResume(sb);
+
+			return rc;
+		}
+		rc = updateSuper(sb, FM_CLEAN);
+		if (rc) {
+			jfs_err("jfs_freeze: updateSuper failed\n");
+			/*
+			 * Don't fail here. Everything succeeded except
+			 * marking the superblock clean, so there's really
+			 * no harm in leaving it frozen for now.
+			 */
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -582,6 +770,7 @@ static int jfs_unfreeze(struct super_block *sb)
 	int rc = 0;
 
 	if (!(sb->s_flags & MS_RDONLY)) {
+<<<<<<< HEAD
 		updateSuper(sb, FM_MOUNT);
 		if ((rc = lmLogInit(log)))
 			jfs_err("jfs_unlock failed with return code %d", rc);
@@ -589,6 +778,20 @@ static int jfs_unfreeze(struct super_block *sb)
 			txResume(sb);
 	}
 	return 0;
+=======
+		rc = updateSuper(sb, FM_MOUNT);
+		if (rc) {
+			jfs_error(sb, "updateSuper failed\n");
+			goto out;
+		}
+		rc = lmLogInit(log);
+		if (rc)
+			jfs_error(sb, "lmLogInit failed\n");
+out:
+		txResume(sb);
+	}
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct dentry *jfs_do_mount(struct file_system_type *fs_type,
@@ -603,6 +806,14 @@ static int jfs_sync_fs(struct super_block *sb, int wait)
 
 	/* log == NULL indicates read-only mount */
 	if (log) {
+<<<<<<< HEAD
+=======
+		/*
+		 * Write quota structures to quota file, sync_blockdev() will
+		 * write them to disk later
+		 */
+		dquot_writeback_dquots(sb, -1);
+>>>>>>> refs/remotes/origin/master
 		jfs_flush_journal(log, wait);
 		jfs_syncpt(log, 0);
 	}
@@ -610,18 +821,40 @@ static int jfs_sync_fs(struct super_block *sb, int wait)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int jfs_show_options(struct seq_file *seq, struct vfsmount *vfs)
 {
 	struct jfs_sb_info *sbi = JFS_SBI(vfs->mnt_sb);
+=======
+static int jfs_show_options(struct seq_file *seq, struct dentry *root)
+{
+	struct jfs_sb_info *sbi = JFS_SBI(root->d_sb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (sbi->uid != -1)
 		seq_printf(seq, ",uid=%d", sbi->uid);
 	if (sbi->gid != -1)
 		seq_printf(seq, ",gid=%d", sbi->gid);
+=======
+static int jfs_show_options(struct seq_file *seq, struct dentry *root)
+{
+	struct jfs_sb_info *sbi = JFS_SBI(root->d_sb);
+
+	if (uid_valid(sbi->uid))
+		seq_printf(seq, ",uid=%d", from_kuid(&init_user_ns, sbi->uid));
+	if (gid_valid(sbi->gid))
+		seq_printf(seq, ",gid=%d", from_kgid(&init_user_ns, sbi->gid));
+>>>>>>> refs/remotes/origin/master
 	if (sbi->umask != -1)
 		seq_printf(seq, ",umask=%03o", sbi->umask);
 	if (sbi->flag & JFS_NOINTEGRITY)
 		seq_puts(seq, ",nointegrity");
+<<<<<<< HEAD
+=======
+	if (sbi->flag & JFS_DISCARD)
+		seq_printf(seq, ",discard=%u", sbi->minblks_trim);
+>>>>>>> refs/remotes/origin/master
 	if (sbi->nls_tab)
 		seq_printf(seq, ",iocharset=%s", sbi->nls_tab->charset);
 	if (sbi->flag & JFS_ERR_CONTINUE)
@@ -781,6 +1014,10 @@ static struct file_system_type jfs_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("jfs");
+>>>>>>> refs/remotes/origin/master
 
 static void init_once(void *foo)
 {
@@ -862,8 +1099,25 @@ static int __init init_jfs_fs(void)
 	jfs_proc_init();
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return register_filesystem(&jfs_fs_type);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rc = register_filesystem(&jfs_fs_type);
+	if (!rc)
+		return 0;
+
+#ifdef PROC_FS_JFS
+	jfs_proc_clean();
+#endif
+	kthread_stop(jfsSyncThread);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 kill_committask:
 	for (i = 0; i < commit_threads; i++)
 		kthread_stop(jfsCommitThread[i]);
@@ -894,6 +1148,15 @@ static void __exit exit_jfs_fs(void)
 	jfs_proc_clean();
 #endif
 	unregister_filesystem(&jfs_fs_type);
+<<<<<<< HEAD
+=======
+
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(jfs_inode_cachep);
 }
 

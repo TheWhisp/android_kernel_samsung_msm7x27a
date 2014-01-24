@@ -7,7 +7,11 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/cryptohash.h>
 #include <linux/delay.h>
@@ -18,13 +22,22 @@
 #include <asm/cacheflush.h>
 #include <linux/io.h>
 #include <asm/page.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ftrace.h>
 #include <linux/uaccess.h>
 
 extern char *_ebss;
 EXPORT_SYMBOL_GPL(_ebss);
 
+=======
+#include <linux/ftrace.h>
+#include <linux/uaccess.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FUNCTION_TRACER
 extern void _mcount(void);
 EXPORT_SYMBOL(_mcount);

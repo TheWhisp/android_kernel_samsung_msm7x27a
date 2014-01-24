@@ -18,11 +18,25 @@
 
 typedef void (*e_vector)(void);
 extern e_vector vectors[];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern e_vector *_ramvec;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern e_vector *_ramvec;
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage void auto_inthandler(void);
 asmlinkage void user_inthandler(void);
 asmlinkage void bad_inthandler(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void init_vectors(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

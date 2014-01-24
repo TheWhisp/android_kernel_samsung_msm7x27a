@@ -14,6 +14,7 @@
 
 #include <linux/types.h>
 
+<<<<<<< HEAD
 struct pyra_b {
 	uint8_t command; /* PYRA_COMMAND_B */
 	uint8_t size; /* always 3 */
@@ -32,6 +33,17 @@ struct pyra_control {
 
 enum pyra_control_requests {
 	PYRA_CONTROL_REQUEST_STATUS = 0x00,
+=======
+enum {
+	PYRA_SIZE_CONTROL = 0x03,
+	PYRA_SIZE_INFO = 0x06,
+	PYRA_SIZE_PROFILE_SETTINGS = 0x0d,
+	PYRA_SIZE_PROFILE_BUTTONS = 0x13,
+	PYRA_SIZE_SETTINGS = 0x03,
+};
+
+enum pyra_control_requests {
+>>>>>>> refs/remotes/origin/master
 	PYRA_CONTROL_REQUEST_PROFILE_SETTINGS = 0x10,
 	PYRA_CONTROL_REQUEST_PROFILE_BUTTONS = 0x20
 };
@@ -57,6 +69,7 @@ struct pyra_profile_settings {
 	uint16_t checksum; /* byte sum */
 } __attribute__ ((__packed__));
 
+<<<<<<< HEAD
 struct pyra_profile_buttons {
 	uint8_t command; /* PYRA_COMMAND_PROFILE_BUTTONS */
 	uint8_t size; /* always 0x13 */
@@ -65,6 +78,8 @@ struct pyra_profile_buttons {
 	uint16_t checksum; /* byte sum */
 } __attribute__ ((__packed__));
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct pyra_info {
 	uint8_t command; /* PYRA_COMMAND_INFO */
 	uint8_t size; /* always 6 */
@@ -83,6 +98,8 @@ enum pyra_commands {
 	PYRA_COMMAND_B = 0xb
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum pyra_usb_commands {
 	PYRA_USB_COMMAND_CONTROL = 0x304,
 	PYRA_USB_COMMAND_SETTINGS = 0x305,
@@ -92,6 +109,10 @@ enum pyra_usb_commands {
 	PYRA_USB_COMMAND_B = 0x30b /* writes 3 bytes */
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum pyra_mouse_report_numbers {
 	PYRA_MOUSE_REPORT_NUMBER_HID = 1,
 	PYRA_MOUSE_REPORT_NUMBER_AUDIO = 2,
@@ -169,6 +190,7 @@ struct pyra_roccat_report {
 struct pyra_device {
 	int actual_profile;
 	int actual_cpi;
+<<<<<<< HEAD
 	int firmware_version;
 	int roccat_claimed;
 	int chrdev_minor;
@@ -176,6 +198,12 @@ struct pyra_device {
 	struct pyra_settings settings;
 	struct pyra_profile_settings profile_settings[5];
 	struct pyra_profile_buttons profile_buttons[5];
+=======
+	int roccat_claimed;
+	int chrdev_minor;
+	struct mutex pyra_lock;
+	struct pyra_profile_settings profile_settings[5];
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

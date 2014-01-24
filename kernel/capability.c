@@ -10,7 +10,15 @@
 #include <linux/audit.h>
 #include <linux/capability.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/security.h>
 #include <linux/syscalls.h>
 #include <linux/pid_namespace.h>
@@ -287,6 +295,8 @@ error:
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * has_capability - Does a task have a capability in init_user_ns
  * @t: The task in question
  * @cap: The capability to be tested for
@@ -299,11 +309,38 @@ error:
 bool has_capability(struct task_struct *t, int cap)
 {
 	int ret = security_real_capable(t, &init_user_ns, cap);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * has_ns_capability - Does a task have a capability in a specific user ns
+ * @t: The task in question
+ * @ns: target user namespace
+ * @cap: The capability to be tested for
+ *
+ * Return true if the specified task has the given superior capability
+ * currently in effect to the specified user namespace, false if not.
+ *
+ * Note that this does not set PF_SUPERPRIV on the task.
+ */
+bool has_ns_capability(struct task_struct *t,
+		       struct user_namespace *ns, int cap)
+{
+	int ret;
+
+	rcu_read_lock();
+	ret = security_capable(__task_cred(t), ns, cap);
+	rcu_read_unlock();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return (ret == 0);
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * has_capability - Does a task have a capability in a specific user ns
  * @t: The task in question
  * @ns: target user namespace
@@ -336,11 +373,55 @@ bool has_ns_capability(struct task_struct *t,
 bool has_capability_noaudit(struct task_struct *t, int cap)
 {
 	int ret = security_real_capable_noaudit(t, &init_user_ns, cap);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * has_capability - Does a task have a capability in init_user_ns
+ * @t: The task in question
+ * @cap: The capability to be tested for
+ *
+ * Return true if the specified task has the given superior capability
+ * currently in effect to the initial user namespace, false if not.
+ *
+ * Note that this does not set PF_SUPERPRIV on the task.
+ */
+bool has_capability(struct task_struct *t, int cap)
+{
+	return has_ns_capability(t, &init_user_ns, cap);
+}
+
+/**
+ * has_ns_capability_noaudit - Does a task have a capability (unaudited)
+ * in a specific user ns.
+ * @t: The task in question
+ * @ns: target user namespace
+ * @cap: The capability to be tested for
+ *
+ * Return true if the specified task has the given superior capability
+ * currently in effect to the specified user namespace, false if not.
+ * Do not write an audit message for the check.
+ *
+ * Note that this does not set PF_SUPERPRIV on the task.
+ */
+bool has_ns_capability_noaudit(struct task_struct *t,
+			       struct user_namespace *ns, int cap)
+{
+	int ret;
+
+	rcu_read_lock();
+	ret = security_capable_noaudit(__task_cred(t), ns, cap);
+	rcu_read_unlock();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return (ret == 0);
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * capable - Determine if the current task has a superior capability in effect
  * @cap: The capability to be tested for
  *
@@ -355,6 +436,28 @@ bool capable(int cap)
 	return ns_capable(&init_user_ns, cap);
 }
 EXPORT_SYMBOL(capable);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * has_capability_noaudit - Does a task have a capability (unaudited) in the
+ * initial user ns
+ * @t: The task in question
+ * @cap: The capability to be tested for
+ *
+ * Return true if the specified task has the given superior capability
+ * currently in effect to init_user_ns, false if not.  Don't write an
+ * audit message for the check.
+ *
+ * Note that this does not set PF_SUPERPRIV on the task.
+ */
+bool has_capability_noaudit(struct task_struct *t, int cap)
+{
+	return has_ns_capability_noaudit(t, &init_user_ns, cap);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ns_capable - Determine if the current task has a superior capability in effect
@@ -374,7 +477,15 @@ bool ns_capable(struct user_namespace *ns, int cap)
 		BUG();
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (security_capable(ns, current_cred(), cap) == 0) {
+=======
+	if (security_capable(current_cred(), ns, cap) == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (security_capable(current_cred(), ns, cap) == 0) {
+>>>>>>> refs/remotes/origin/master
 		current->flags |= PF_SUPERPRIV;
 		return true;
 	}
@@ -383,6 +494,8 @@ bool ns_capable(struct user_namespace *ns, int cap)
 EXPORT_SYMBOL(ns_capable);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * task_ns_capable - Determine whether current task has a superior
  * capability targeted at a specific task's user namespace.
  * @t: The task whose user namespace is targeted.
@@ -395,6 +508,49 @@ bool task_ns_capable(struct task_struct *t, int cap)
 	return ns_capable(task_cred_xxx(t, user)->user_ns, cap);
 }
 EXPORT_SYMBOL(task_ns_capable);
+=======
+=======
+ * file_ns_capable - Determine if the file's opener had a capability in effect
+ * @file:  The file we want to check
+ * @ns:  The usernamespace we want the capability in
+ * @cap: The capability to be tested for
+ *
+ * Return true if task that opened the file had a capability in effect
+ * when the file was opened.
+ *
+ * This does not set PF_SUPERPRIV because the caller may not
+ * actually be privileged.
+ */
+bool file_ns_capable(const struct file *file, struct user_namespace *ns, int cap)
+{
+	if (WARN_ON_ONCE(!cap_valid(cap)))
+		return false;
+
+	if (security_capable(file->f_cred, ns, cap) == 0)
+		return true;
+
+	return false;
+}
+EXPORT_SYMBOL(file_ns_capable);
+
+/**
+>>>>>>> refs/remotes/origin/master
+ * capable - Determine if the current task has a superior capability in effect
+ * @cap: The capability to be tested for
+ *
+ * Return true if the current task has the given superior capability currently
+ * available for use, false if not.
+ *
+ * This sets PF_SUPERPRIV on the task if the capability is available on the
+ * assumption that it's about to be used.
+ */
+bool capable(int cap)
+{
+	return ns_capable(&init_user_ns, cap);
+}
+EXPORT_SYMBOL(capable);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * nsown_capable - Check superior capability to one's own user_ns
@@ -407,3 +563,27 @@ bool nsown_capable(int cap)
 {
 	return ns_capable(current_user_ns(), cap);
 }
+=======
+
+/**
+ * inode_capable - Check superior capability over inode
+ * @inode: The inode in question
+ * @cap: The capability in question
+ *
+ * Return true if the current task has the given superior capability
+ * targeted at it's own user namespace and that the given inode is owned
+ * by the current user namespace or a child namespace.
+ *
+ * Currently we check to see if an inode is owned by the current
+ * user namespace by seeing if the inode's owner maps into the
+ * current user namespace.
+ *
+ */
+bool inode_capable(const struct inode *inode, int cap)
+{
+	struct user_namespace *ns = current_user_ns();
+
+	return ns_capable(ns, cap) && kuid_has_mapping(ns, inode->i_uid);
+}
+EXPORT_SYMBOL(inode_capable);
+>>>>>>> refs/remotes/origin/master

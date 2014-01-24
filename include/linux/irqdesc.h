@@ -10,11 +10,24 @@
 
 struct irq_affinity_notify;
 struct proc_dir_entry;
+<<<<<<< HEAD
 struct timer_rand_state;
+<<<<<<< HEAD
+=======
+struct module;
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct irq_desc - interrupt descriptor
  * @irq_data:		per irq and chip data passed down to chip functions
  * @timer_rand_state:	pointer to timer rand state struct
+=======
+struct module;
+struct irq_desc;
+
+/**
+ * struct irq_desc - interrupt descriptor
+ * @irq_data:		per irq and chip data passed down to chip functions
+>>>>>>> refs/remotes/origin/master
  * @kstat_irqs:		irq stats per cpu
  * @handle_irq:		highlevel irq-events handler
  * @preflow_handler:	handler called before the flow handler (currently used by sparc)
@@ -66,6 +79,10 @@ struct irq_desc {
 #ifdef CONFIG_PROC_FS
 	struct proc_dir_entry	*dir;
 #endif
+<<<<<<< HEAD
+=======
+	int			parent_irq;
+>>>>>>> refs/remotes/origin/master
 	struct module		*owner;
 	const char		*name;
 } ____cacheline_internodealigned_in_smp;
@@ -74,8 +91,11 @@ struct irq_desc {
 extern struct irq_desc irq_desc[NR_IRQS];
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_GENERIC_HARDIRQS
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct irq_data *irq_desc_get_irq_data(struct irq_desc *desc)
 {
 	return &desc->irq_data;
@@ -152,6 +172,17 @@ static inline int irq_balancing_disabled(unsigned int irq)
 	return desc->status_use_accessors & IRQ_NO_BALANCING_MASK;
 }
 
+<<<<<<< HEAD
+=======
+static inline int irq_is_percpu(unsigned int irq)
+{
+	struct irq_desc *desc;
+
+	desc = irq_to_desc(irq);
+	return desc->status_use_accessors & IRQ_PER_CPU;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void
 irq_set_lockdep_class(unsigned int irq, struct lock_class_key *class)
 {
@@ -171,6 +202,9 @@ __irq_set_preflow_handler(unsigned int irq, irq_preflow_handler_t handler)
 	desc->preflow_handler = handler;
 }
 #endif
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

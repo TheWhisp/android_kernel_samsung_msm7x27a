@@ -1,13 +1,29 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * drivers/base/node.c - basic Node class support
  */
 
 #include <linux/sysdev.h>
+=======
+ * Basic Node interface support
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Basic Node interface support
+ */
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/memory.h>
 #include <linux/vmstat.h>
+<<<<<<< HEAD
+=======
+#include <linux/notifier.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/node.h>
 #include <linux/hugetlb.h>
 #include <linux/compaction.h>
@@ -19,6 +35,8 @@
 #include <linux/swap.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct sysdev_class_attribute *node_state_attrs[];
 
 static struct sysdev_class node_class = {
@@ -31,6 +49,23 @@ static ssize_t node_read_cpumap(struct sys_device *dev, int type, char *buf)
 {
 	struct node *node_dev = to_node(dev);
 	const struct cpumask *mask = cpumask_of_node(node_dev->sysdev.id);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct bus_type node_subsys = {
+	.name = "node",
+	.dev_name = "node",
+};
+
+
+static ssize_t node_read_cpumap(struct device *dev, int type, char *buf)
+{
+	struct node *node_dev = to_node(dev);
+	const struct cpumask *mask = cpumask_of_node(node_dev->dev.id);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int len;
 
 	/* 2008/04/07: buf currently PAGE_SIZE, need 9 chars per 32 bits. */
@@ -44,6 +79,8 @@ static ssize_t node_read_cpumap(struct sys_device *dev, int type, char *buf)
 	return len;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline ssize_t node_read_cpumask(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
 {
@@ -51,16 +88,45 @@ static inline ssize_t node_read_cpumask(struct sys_device *dev,
 }
 static inline ssize_t node_read_cpulist(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline ssize_t node_read_cpumask(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	return node_read_cpumap(dev, 0, buf);
+}
+static inline ssize_t node_read_cpulist(struct device *dev,
+				struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return node_read_cpumap(dev, 1, buf);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(cpumap,  S_IRUGO, node_read_cpumask, NULL);
 static SYSDEV_ATTR(cpulist, S_IRUGO, node_read_cpulist, NULL);
 
 #define K(x) ((x) << (PAGE_SHIFT - 10))
 static ssize_t node_read_meminfo(struct sys_device * dev,
 			struct sysdev_attribute *attr, char * buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(cpumap,  S_IRUGO, node_read_cpumask, NULL);
+static DEVICE_ATTR(cpulist, S_IRUGO, node_read_cpulist, NULL);
+
+#define K(x) ((x) << (PAGE_SHIFT - 10))
+static ssize_t node_read_meminfo(struct device *dev,
+			struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int n;
 	int nid = dev->id;
@@ -127,6 +193,7 @@ static ssize_t node_read_meminfo(struct sys_device * dev,
 		       nid, K(node_page_state(nid, NR_WRITEBACK)),
 		       nid, K(node_page_state(nid, NR_FILE_PAGES)),
 		       nid, K(node_page_state(nid, NR_FILE_MAPPED)),
+<<<<<<< HEAD
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
 		       nid, K(node_page_state(nid, NR_ANON_PAGES)
 			+ node_page_state(nid, NR_ANON_TRANSPARENT_HUGEPAGES) *
@@ -134,6 +201,9 @@ static ssize_t node_read_meminfo(struct sys_device * dev,
 #else
 		       nid, K(node_page_state(nid, NR_ANON_PAGES)),
 #endif
+=======
+		       nid, K(node_page_state(nid, NR_ANON_PAGES)),
+>>>>>>> refs/remotes/origin/master
 		       nid, K(node_page_state(nid, NR_SHMEM)),
 		       nid, node_page_state(nid, NR_KERNEL_STACK) *
 				THREAD_SIZE / 1024,
@@ -157,10 +227,23 @@ static ssize_t node_read_meminfo(struct sys_device * dev,
 }
 
 #undef K
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(meminfo, S_IRUGO, node_read_meminfo, NULL);
 
 static ssize_t node_read_numastat(struct sys_device * dev,
 				struct sysdev_attribute *attr, char * buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(meminfo, S_IRUGO, node_read_meminfo, NULL);
+
+static ssize_t node_read_numastat(struct device *dev,
+				struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return sprintf(buf,
 		       "numa_hit %lu\n"
@@ -176,10 +259,23 @@ static ssize_t node_read_numastat(struct sys_device * dev,
 		       node_page_state(dev->id, NUMA_LOCAL),
 		       node_page_state(dev->id, NUMA_OTHER));
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(numastat, S_IRUGO, node_read_numastat, NULL);
 
 static ssize_t node_read_vmstat(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(numastat, S_IRUGO, node_read_numastat, NULL);
+
+static ssize_t node_read_vmstat(struct device *dev,
+				struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int nid = dev->id;
 	int i;
@@ -191,10 +287,23 @@ static ssize_t node_read_vmstat(struct sys_device *dev,
 
 	return n;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(vmstat, S_IRUGO, node_read_vmstat, NULL);
 
 static ssize_t node_read_distance(struct sys_device * dev,
 			struct sysdev_attribute *attr, char * buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(vmstat, S_IRUGO, node_read_vmstat, NULL);
+
+static ssize_t node_read_distance(struct device *dev,
+			struct device_attribute *attr, char * buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int nid = dev->id;
 	int len = 0;
@@ -212,7 +321,15 @@ static ssize_t node_read_distance(struct sys_device * dev,
 	len += sprintf(buf + len, "\n");
 	return len;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(distance, S_IRUGO, node_read_distance, NULL);
+=======
+static DEVICE_ATTR(distance, S_IRUGO, node_read_distance, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR(distance, S_IRUGO, node_read_distance, NULL);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HUGETLBFS
 /*
@@ -230,7 +347,15 @@ static node_registration_func_t __hugetlb_unregister_node;
 static inline bool hugetlb_register_node(struct node *node)
 {
 	if (__hugetlb_register_node &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 			node_state(node->sysdev.id, N_HIGH_MEMORY)) {
+=======
+			node_state(node->dev.id, N_HIGH_MEMORY)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			node_state(node->dev.id, N_MEMORY)) {
+>>>>>>> refs/remotes/origin/master
 		__hugetlb_register_node(node);
 		return true;
 	}
@@ -255,6 +380,27 @@ static inline void hugetlb_register_node(struct node *node) {}
 static inline void hugetlb_unregister_node(struct node *node) {}
 #endif
 
+<<<<<<< HEAD
+=======
+static void node_device_release(struct device *dev)
+{
+	struct node *node = to_node(dev);
+
+#if defined(CONFIG_MEMORY_HOTPLUG_SPARSE) && defined(CONFIG_HUGETLBFS)
+	/*
+	 * We schedule the work only when a memory section is
+	 * onlined/offlined on this node. When we come here,
+	 * all the memory on this node has been offlined,
+	 * so we won't enqueue new work to this work.
+	 *
+	 * The work is using node->node_work, so we should
+	 * flush work before freeing the memory.
+	 */
+	flush_work(&node->node_work);
+#endif
+	kfree(node);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * register_node - Setup a sysfs device for a node.
@@ -262,10 +408,12 @@ static inline void hugetlb_unregister_node(struct node *node) {}
  *
  * Initialize and register the node device.
  */
+<<<<<<< HEAD
 int register_node(struct node *node, int num, struct node *parent)
 {
 	int error;
 
+<<<<<<< HEAD
 	node->sysdev.id = num;
 	node->sysdev.cls = &node_class;
 	error = sysdev_register(&node->sysdev);
@@ -277,6 +425,31 @@ int register_node(struct node *node, int num, struct node *parent)
 		sysdev_create_file(&node->sysdev, &attr_numastat);
 		sysdev_create_file(&node->sysdev, &attr_distance);
 		sysdev_create_file(&node->sysdev, &attr_vmstat);
+=======
+	node->dev.id = num;
+	node->dev.bus = &node_subsys;
+=======
+static int register_node(struct node *node, int num, struct node *parent)
+{
+	int error;
+
+	node->dev.id = num;
+	node->dev.bus = &node_subsys;
+	node->dev.release = node_device_release;
+>>>>>>> refs/remotes/origin/master
+	error = device_register(&node->dev);
+
+	if (!error){
+		device_create_file(&node->dev, &dev_attr_cpumap);
+		device_create_file(&node->dev, &dev_attr_cpulist);
+		device_create_file(&node->dev, &dev_attr_meminfo);
+		device_create_file(&node->dev, &dev_attr_numastat);
+		device_create_file(&node->dev, &dev_attr_distance);
+		device_create_file(&node->dev, &dev_attr_vmstat);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		scan_unevictable_register_node(node);
 
@@ -296,20 +469,46 @@ int register_node(struct node *node, int num, struct node *parent)
  */
 void unregister_node(struct node *node)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sysdev_remove_file(&node->sysdev, &attr_cpumap);
 	sysdev_remove_file(&node->sysdev, &attr_cpulist);
 	sysdev_remove_file(&node->sysdev, &attr_meminfo);
 	sysdev_remove_file(&node->sysdev, &attr_numastat);
 	sysdev_remove_file(&node->sysdev, &attr_distance);
 	sysdev_remove_file(&node->sysdev, &attr_vmstat);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	device_remove_file(&node->dev, &dev_attr_cpumap);
+	device_remove_file(&node->dev, &dev_attr_cpulist);
+	device_remove_file(&node->dev, &dev_attr_meminfo);
+	device_remove_file(&node->dev, &dev_attr_numastat);
+	device_remove_file(&node->dev, &dev_attr_distance);
+	device_remove_file(&node->dev, &dev_attr_vmstat);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	scan_unevictable_unregister_node(node);
 	hugetlb_unregister_node(node);		/* no-op, if memoryless node */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sysdev_unregister(&node->sysdev);
+=======
+	device_unregister(&node->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct node node_devices[MAX_NUMNODES];
+=======
+	device_unregister(&node->dev);
+}
+
+struct node *node_devices[MAX_NUMNODES];
+>>>>>>> refs/remotes/origin/master
 
 /*
  * register cpu under node
@@ -317,33 +516,76 @@ struct node node_devices[MAX_NUMNODES];
 int register_cpu_under_node(unsigned int cpu, unsigned int nid)
 {
 	int ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sys_device *obj;
+=======
+	struct device *obj;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *obj;
+>>>>>>> refs/remotes/origin/master
 
 	if (!node_online(nid))
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	obj = get_cpu_sysdev(cpu);
 	if (!obj)
 		return 0;
 
 	ret = sysfs_create_link(&node_devices[nid].sysdev.kobj,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	obj = get_cpu_device(cpu);
+	if (!obj)
+		return 0;
+
+<<<<<<< HEAD
+	ret = sysfs_create_link(&node_devices[nid].dev.kobj,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = sysfs_create_link(&node_devices[nid]->dev.kobj,
+>>>>>>> refs/remotes/origin/master
 				&obj->kobj,
 				kobject_name(&obj->kobj));
 	if (ret)
 		return ret;
 
 	return sysfs_create_link(&obj->kobj,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				 &node_devices[nid].sysdev.kobj,
 				 kobject_name(&node_devices[nid].sysdev.kobj));
+=======
+				 &node_devices[nid].dev.kobj,
+				 kobject_name(&node_devices[nid].dev.kobj));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 &node_devices[nid]->dev.kobj,
+				 kobject_name(&node_devices[nid]->dev.kobj));
+>>>>>>> refs/remotes/origin/master
 }
 
 int unregister_cpu_under_node(unsigned int cpu, unsigned int nid)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sys_device *obj;
+=======
+	struct device *obj;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *obj;
+>>>>>>> refs/remotes/origin/master
 
 	if (!node_online(nid))
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	obj = get_cpu_sysdev(cpu);
 	if (!obj)
 		return 0;
@@ -352,6 +594,25 @@ int unregister_cpu_under_node(unsigned int cpu, unsigned int nid)
 			  kobject_name(&obj->kobj));
 	sysfs_remove_link(&obj->kobj,
 			  kobject_name(&node_devices[nid].sysdev.kobj));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	obj = get_cpu_device(cpu);
+	if (!obj)
+		return 0;
+
+<<<<<<< HEAD
+	sysfs_remove_link(&node_devices[nid].dev.kobj,
+			  kobject_name(&obj->kobj));
+	sysfs_remove_link(&obj->kobj,
+			  kobject_name(&node_devices[nid].dev.kobj));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sysfs_remove_link(&node_devices[nid]->dev.kobj,
+			  kobject_name(&obj->kobj));
+	sysfs_remove_link(&obj->kobj,
+			  kobject_name(&node_devices[nid]->dev.kobj));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -393,6 +654,8 @@ int register_mem_sect_under_node(struct memory_block *mem_blk, int nid)
 			continue;
 		if (page_nid != nid)
 			continue;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = sysfs_create_link_nowarn(&node_devices[nid].sysdev.kobj,
 					&mem_blk->sysdev.kobj,
 					kobject_name(&mem_blk->sysdev.kobj));
@@ -402,6 +665,25 @@ int register_mem_sect_under_node(struct memory_block *mem_blk, int nid)
 		return sysfs_create_link_nowarn(&mem_blk->sysdev.kobj,
 				&node_devices[nid].sysdev.kobj,
 				kobject_name(&node_devices[nid].sysdev.kobj));
+=======
+		ret = sysfs_create_link_nowarn(&node_devices[nid].dev.kobj,
+=======
+		ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
+>>>>>>> refs/remotes/origin/master
+					&mem_blk->dev.kobj,
+					kobject_name(&mem_blk->dev.kobj));
+		if (ret)
+			return ret;
+
+		return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
+<<<<<<< HEAD
+				&node_devices[nid].dev.kobj,
+				kobject_name(&node_devices[nid].dev.kobj));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				&node_devices[nid]->dev.kobj,
+				kobject_name(&node_devices[nid]->dev.kobj));
+>>>>>>> refs/remotes/origin/master
 	}
 	/* mem section does not span the specified node */
 	return 0;
@@ -434,10 +716,24 @@ int unregister_mem_sect_under_nodes(struct memory_block *mem_blk,
 			continue;
 		if (node_test_and_set(nid, *unlinked_nodes))
 			continue;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sysfs_remove_link(&node_devices[nid].sysdev.kobj,
 			 kobject_name(&mem_blk->sysdev.kobj));
 		sysfs_remove_link(&mem_blk->sysdev.kobj,
 			 kobject_name(&node_devices[nid].sysdev.kobj));
+=======
+		sysfs_remove_link(&node_devices[nid].dev.kobj,
+			 kobject_name(&mem_blk->dev.kobj));
+		sysfs_remove_link(&mem_blk->dev.kobj,
+			 kobject_name(&node_devices[nid].dev.kobj));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sysfs_remove_link(&node_devices[nid]->dev.kobj,
+			 kobject_name(&mem_blk->dev.kobj));
+		sysfs_remove_link(&mem_blk->dev.kobj,
+			 kobject_name(&node_devices[nid]->dev.kobj));
+>>>>>>> refs/remotes/origin/master
 	}
 	NODEMASK_FREE(unlinked_nodes);
 	return 0;
@@ -459,7 +755,25 @@ static int link_mem_sections(int nid)
 		if (!present_section_nr(section_nr))
 			continue;
 		mem_sect = __nr_to_section(section_nr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mem_blk = find_memory_block_hinted(mem_sect, mem_blk);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+		/* same memblock ? */
+		if (mem_blk)
+			if ((section_nr >= mem_blk->start_section_nr) &&
+			    (section_nr <= mem_blk->end_section_nr))
+				continue;
+
+		mem_blk = find_memory_block_hinted(mem_sect, mem_blk);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = register_mem_sect_under_node(mem_blk, nid);
 		if (!err)
 			err = ret;
@@ -468,7 +782,15 @@ static int link_mem_sections(int nid)
 	}
 
 	if (mem_blk)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kobject_put(&mem_blk->sysdev.kobj);
+=======
+		kobject_put(&mem_blk->dev.kobj);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kobject_put(&mem_blk->dev.kobj);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -495,7 +817,11 @@ static void node_hugetlb_work(struct work_struct *work)
 
 static void init_node_hugetlb_work(int nid)
 {
+<<<<<<< HEAD
 	INIT_WORK(&node_devices[nid].node_work, node_hugetlb_work);
+=======
+	INIT_WORK(&node_devices[nid]->node_work, node_hugetlb_work);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int node_memory_callback(struct notifier_block *self,
@@ -512,7 +838,11 @@ static int node_memory_callback(struct notifier_block *self,
 		 * when transitioning to/from memoryless state.
 		 */
 		if (nid != NUMA_NO_NODE)
+<<<<<<< HEAD
 			schedule_work(&node_devices[nid].node_work);
+=======
+			schedule_work(&node_devices[nid]->node_work);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case MEM_GOING_ONLINE:
@@ -553,9 +883,19 @@ int register_one_node(int nid)
 		struct node *parent = NULL;
 
 		if (p_node != nid)
+<<<<<<< HEAD
 			parent = &node_devices[p_node];
 
 		error = register_node(&node_devices[nid], nid, parent);
+=======
+			parent = node_devices[p_node];
+
+		node_devices[nid] = kzalloc(sizeof(struct node), GFP_KERNEL);
+		if (!node_devices[nid])
+			return -ENOMEM;
+
+		error = register_node(node_devices[nid], nid, parent);
+>>>>>>> refs/remotes/origin/master
 
 		/* link cpu under this node */
 		for_each_present_cpu(cpu) {
@@ -576,7 +916,12 @@ int register_one_node(int nid)
 
 void unregister_one_node(int nid)
 {
+<<<<<<< HEAD
 	unregister_node(&node_devices[nid]);
+=======
+	unregister_node(node_devices[nid]);
+	node_devices[nid] = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -587,28 +932,54 @@ static ssize_t print_nodes_state(enum node_states state, char *buf)
 {
 	int n;
 
+<<<<<<< HEAD
 	n = nodelist_scnprintf(buf, PAGE_SIZE, node_states[state]);
 	if (n > 0 && PAGE_SIZE > n + 1) {
 		*(buf + n++) = '\n';
 		*(buf + n++) = '\0';
 	}
+=======
+	n = nodelist_scnprintf(buf, PAGE_SIZE-2, node_states[state]);
+	buf[n++] = '\n';
+	buf[n] = '\0';
+>>>>>>> refs/remotes/origin/master
 	return n;
 }
 
 struct node_attr {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sysdev_class_attribute attr;
 	enum node_states state;
 };
 
 static ssize_t show_node_state(struct sysdev_class *class,
 			       struct sysdev_class_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct device_attribute attr;
+	enum node_states state;
+};
+
+static ssize_t show_node_state(struct device *dev,
+			       struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct node_attr *na = container_of(attr, struct node_attr, attr);
 	return print_nodes_state(na->state, buf);
 }
 
 #define _NODE_ATTR(name, state) \
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ _SYSDEV_CLASS_ATTR(name, 0444, show_node_state, NULL), state }
+=======
+	{ __ATTR(name, 0444, show_node_state, NULL), state }
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct node_attr node_state_attr[] = {
 	_NODE_ATTR(possible, N_POSSIBLE),
@@ -620,6 +991,7 @@ static struct node_attr node_state_attr[] = {
 #endif
 };
 
+<<<<<<< HEAD
 static struct sysdev_class_attribute *node_state_attrs[] = {
 	&node_state_attr[0].attr,
 	&node_state_attr[1].attr,
@@ -627,10 +999,65 @@ static struct sysdev_class_attribute *node_state_attrs[] = {
 	&node_state_attr[3].attr,
 #ifdef CONFIG_HIGHMEM
 	&node_state_attr[4].attr,
+=======
+static struct attribute *node_state_attrs[] = {
+	&node_state_attr[0].attr.attr,
+	&node_state_attr[1].attr.attr,
+	&node_state_attr[2].attr.attr,
+	&node_state_attr[3].attr.attr,
+#ifdef CONFIG_HIGHMEM
+	&node_state_attr[4].attr.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	NULL
 };
 
+<<<<<<< HEAD
+=======
+=======
+	{ __ATTR(name, 0444, show_node_state, NULL), state }
+
+static struct node_attr node_state_attr[] = {
+	[N_POSSIBLE] = _NODE_ATTR(possible, N_POSSIBLE),
+	[N_ONLINE] = _NODE_ATTR(online, N_ONLINE),
+	[N_NORMAL_MEMORY] = _NODE_ATTR(has_normal_memory, N_NORMAL_MEMORY),
+#ifdef CONFIG_HIGHMEM
+	[N_HIGH_MEMORY] = _NODE_ATTR(has_high_memory, N_HIGH_MEMORY),
+#endif
+#ifdef CONFIG_MOVABLE_NODE
+	[N_MEMORY] = _NODE_ATTR(has_memory, N_MEMORY),
+#endif
+	[N_CPU] = _NODE_ATTR(has_cpu, N_CPU),
+};
+
+static struct attribute *node_state_attrs[] = {
+	&node_state_attr[N_POSSIBLE].attr.attr,
+	&node_state_attr[N_ONLINE].attr.attr,
+	&node_state_attr[N_NORMAL_MEMORY].attr.attr,
+#ifdef CONFIG_HIGHMEM
+	&node_state_attr[N_HIGH_MEMORY].attr.attr,
+#endif
+#ifdef CONFIG_MOVABLE_NODE
+	&node_state_attr[N_MEMORY].attr.attr,
+#endif
+	&node_state_attr[N_CPU].attr.attr,
+	NULL
+};
+
+>>>>>>> refs/remotes/origin/master
+static struct attribute_group memory_root_attr_group = {
+	.attrs = node_state_attrs,
+};
+
+static const struct attribute_group *cpu_root_attr_groups[] = {
+	&memory_root_attr_group,
+	NULL,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define NODE_CALLBACK_PRI	2	/* lower than SLAB */
 static int __init register_node_type(void)
 {
@@ -639,10 +1066,24 @@ static int __init register_node_type(void)
  	BUILD_BUG_ON(ARRAY_SIZE(node_state_attr) != NR_NODE_STATES);
  	BUILD_BUG_ON(ARRAY_SIZE(node_state_attrs)-1 != NR_NODE_STATES);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = sysdev_class_register(&node_class);
+=======
+	ret = subsys_system_register(&node_subsys, cpu_root_attr_groups);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!ret) {
 		hotplug_memory_notifier(node_memory_callback,
 					NODE_CALLBACK_PRI);
+=======
+	ret = subsys_system_register(&node_subsys, cpu_root_attr_groups);
+	if (!ret) {
+		static struct notifier_block node_memory_callback_nb = {
+			.notifier_call = node_memory_callback,
+			.priority = NODE_CALLBACK_PRI,
+		};
+		register_hotmemory_notifier(&node_memory_callback_nb);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*

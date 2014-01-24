@@ -1,6 +1,10 @@
 /*
    This is part of rtl8180 OpenSource driver.
+<<<<<<< HEAD
    Copyright (C) Andrea Merello 2004-2005  <andreamrl@tiscali.it>
+=======
+   Copyright (C) Andrea Merello 2004-2005  <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
    Released under the terms of GPL (General Public Licence)
 
    Parts of this driver are based on the GPL part of the
@@ -11,13 +15,25 @@
 
    Parts of this driver are based on the Intel Pro Wireless 2100 GPL driver
 
+<<<<<<< HEAD
    We want to tanks the Authors of those projects and the Ndiswrapper
+=======
+   We want to thanks the Authors of those projects and the Ndiswrapper
+>>>>>>> refs/remotes/origin/master
    project Authors.
 */
 
 #ifndef R8180H
 #define R8180H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 
 #define RTL8180_MODULE_NAME "r8180"
 #define DMESG(x,a...) printk(KERN_INFO RTL8180_MODULE_NAME ": " x "\n", ## a)
@@ -27,7 +43,10 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 //#include <linux/config.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/sched.h>
 #include <linux/types.h>
@@ -326,12 +345,17 @@ typedef struct r8180_priv
 	int irq;
 	struct ieee80211_device *ieee80211;
 
+<<<<<<< HEAD
 	short phy_ver; /* meaningful for rtl8225 1:A 2:B 3:C */
 	short enable_gpio0;
 	short hw_plcp_len;
 	short plcp_preamble_mode; // 0:auto 1:short 2:long
 
 	spinlock_t irq_lock;
+=======
+	short plcp_preamble_mode; // 0:auto 1:short 2:long
+
+>>>>>>> refs/remotes/origin/master
 	spinlock_t irq_th_lock;
 	spinlock_t tx_lock;
 	spinlock_t ps_lock;
@@ -349,7 +373,10 @@ typedef struct r8180_priv
 	u8 channel_plan;  // it's the channel plan index
 	short up;
 	short crcmon; //if 1 allow bad crc frame reception in monitor mode
+<<<<<<< HEAD
 	short prism_hdr;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct timer_list scan_timer;
 	/*short scanpending;
@@ -358,14 +385,20 @@ typedef struct r8180_priv
 	u8 active_probe;
 	//u8 active_scan_num;
 	struct semaphore wx_sem;
+<<<<<<< HEAD
 	struct semaphore rf_state;
+=======
+>>>>>>> refs/remotes/origin/master
 	short hw_wep;
 
 	short digphy;
 	short antb;
 	short diversity;
+<<<<<<< HEAD
 	u8 cs_treshold;
 	short rcr_csense;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 key0[4];
 	short (*rf_set_sens)(struct net_device *dev,short sens);
 	void (*rf_set_chan)(struct net_device *dev,short ch);
@@ -379,7 +412,10 @@ typedef struct r8180_priv
 	struct Stats stats;
 	struct _link_detect_t link_detect;  //YJ,add,080828
 	struct iw_statistics wstats;
+<<<<<<< HEAD
 	struct proc_dir_entry *dir_dev;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*RX stuff*/
 	u32 *rxring;
@@ -490,7 +526,10 @@ typedef struct r8180_priv
 	RT_RF_POWER_STATE eRFPowerState;
 	u32 RfOffReason;
 	bool RFChangeInProgress;
+<<<<<<< HEAD
 	bool bInHctTest;
+=======
+>>>>>>> refs/remotes/origin/master
 	bool SetRFPowerStateInProgress;
 	u8   RFProgType;
 	bool bLeisurePs;
@@ -513,12 +552,20 @@ typedef struct r8180_priv
 	bool bDefaultAntenna1;
 	u8 SignalStrength;
 	long Stats_SignalStrength;
+<<<<<<< HEAD
 	long LastSignalStrengthInPercent; // In percentange, used for smoothing, e.g. Moving Average.
+=======
+	long LastSignalStrengthInPercent; // In percentage, used for smoothing, e.g. Moving Average.
+>>>>>>> refs/remotes/origin/master
 	u8	 SignalQuality; // in 0-100 index.
 	long Stats_SignalQuality;
 	long RecvSignalPower; // in dBm.
 	long Stats_RecvSignalPower;
+<<<<<<< HEAD
 	u8	 LastRxPktAntenna;	// +by amy 080312 Antenn which received the lasted packet. 0: Aux, 1:Main. Added by Roger, 2008.01.25.
+=======
+	u8	 LastRxPktAntenna;	// +by amy 080312 Antenna which received the lasted packet. 0: Aux, 1:Main. Added by Roger, 2008.01.25.
+>>>>>>> refs/remotes/origin/master
 	u32 AdRxOkCnt;
 	long AdRxSignalStrength;
 	u8 CurrAntennaIndex;			// Index to current Antenna (both Tx and Rx).
@@ -529,7 +576,11 @@ typedef struct r8180_priv
 	long AdRxSsThreshold;			// Signal strength threshold to switch antenna.
 	long AdMaxRxSsThreshold;			// Max value of AdRxSsThreshold.
 	bool bAdSwitchedChecking;		// TRUE if we shall shall check Rx signal strength for last time switching antenna.
+<<<<<<< HEAD
 	long AdRxSsBeforeSwitched;		// Rx signal strength before we swithed antenna.
+=======
+	long AdRxSsBeforeSwitched;		// Rx signal strength before we switched antenna.
+>>>>>>> refs/remotes/origin/master
 	struct timer_list SwAntennaDiversityTimer;
 //by amy for antenna
 //{by amy 080312
@@ -552,7 +603,11 @@ typedef struct r8180_priv
 	bool				bDigMechanism; // TRUE if DIG is enabled, FALSE ow.
 	bool				bRegHighPowerMechanism; // For High Power Mechanism. 061010, by rcnjko.
 	u32					FalseAlarmRegValue;
+<<<<<<< HEAD
 	u8					RegDigOfdmFaUpTh; // Upper threhold of OFDM false alarm, which is used in DIG.
+=======
+	u8					RegDigOfdmFaUpTh; // Upper threshold of OFDM false alarm, which is used in DIG.
+>>>>>>> refs/remotes/origin/master
 	u8					DIG_NumberFallbackVote;
 	u8					DIG_NumberUpgradeVote;
 	// For HW antenna diversity, added by Roger, 2008.01.30.
@@ -617,6 +672,7 @@ typedef struct r8180_priv
 //	struct workqueue_struct *workqueue;
 	struct work_struct reset_wq;
 	struct work_struct watch_dog_wq;
+<<<<<<< HEAD
 	struct work_struct tx_irq_wq;
 	short ack_tx_to_ieee;
 
@@ -628,6 +684,13 @@ typedef struct r8180_priv
 
 	//u8 RegThreeWireMode;
 	u8 MWIEnable;
+=======
+	short ack_tx_to_ieee;
+
+	u8 dma_poll_stop_mask;
+
+	//u8 RegThreeWireMode;
+>>>>>>> refs/remotes/origin/master
 	u16 ShortRetryLimit;
 	u16 LongRetryLimit;
 	u16 EarlyRxThreshold;
@@ -654,6 +717,7 @@ typedef struct r8180_priv
 		((_ac) == WME_AC_BK) ? BK_PRIORITY : \
 		BE_PRIORITY)
 
+<<<<<<< HEAD
 short rtl8180_tx(struct net_device *dev,u8* skbuf, int len,int priority,
 	short morefrag,short fragdesc,int rate);
 
@@ -689,17 +753,50 @@ void rtl8180_commit(struct net_device *dev);
 void rtl8180_set_chan(struct net_device *dev,short ch);
 void rtl8180_set_master_essid(struct net_device *dev,char *essid);
 void rtl8180_update_beacon_security(struct net_device *dev);
+=======
+short rtl8180_tx(struct net_device *dev, u8 *skbuf, int len, int priority,
+		 short morefrag, short fragdesc, int rate);
+
+u8 read_nic_byte(struct net_device *dev, int x);
+u32 read_nic_dword(struct net_device *dev, int x);
+u16 read_nic_word(struct net_device *dev, int x);
+void write_nic_byte(struct net_device *dev, int x, u8 y);
+void write_nic_word(struct net_device *dev, int x, u16 y);
+void write_nic_dword(struct net_device *dev, int x, u32 y);
+void force_pci_posting(struct net_device *dev);
+
+void rtl8180_rtx_disable(struct net_device *);
+void rtl8180_set_anaparam(struct net_device *dev, u32 a);
+void rtl8185_set_anaparam2(struct net_device *dev, u32 a);
+void rtl8180_set_hw_wep(struct net_device *dev);
+void rtl8180_no_hw_wep(struct net_device *dev);
+void rtl8180_update_msr(struct net_device *dev);
+void rtl8180_beacon_tx_disable(struct net_device *dev);
+void rtl8180_beacon_rx_disable(struct net_device *dev);
+int rtl8180_down(struct net_device *dev);
+int rtl8180_up(struct net_device *dev);
+void rtl8180_commit(struct net_device *dev);
+void rtl8180_set_chan(struct net_device *dev, short ch);
+>>>>>>> refs/remotes/origin/master
 void write_phy(struct net_device *dev, u8 adr, u8 data);
 void write_phy_cck(struct net_device *dev, u8 adr, u32 data);
 void write_phy_ofdm(struct net_device *dev, u8 adr, u32 data);
 void rtl8185_tx_antenna(struct net_device *dev, u8 ant);
 void rtl8185_rf_pins_enable(struct net_device *dev);
+<<<<<<< HEAD
 void IBSS_randomize_cell(struct net_device *dev);
+=======
+>>>>>>> refs/remotes/origin/master
 void IPSEnter(struct net_device *dev);
 void IPSLeave(struct net_device *dev);
 int get_curr_tx_free_desc(struct net_device *dev, int priority);
 void UpdateInitialGain(struct net_device *dev);
+<<<<<<< HEAD
 bool SetAntennaConfig87SE(struct net_device *dev, u8  DefaultAnt, bool bAntDiversity);
+=======
+bool SetAntennaConfig87SE(struct net_device *dev, u8 DefaultAnt,
+			  bool bAntDiversity);
+>>>>>>> refs/remotes/origin/master
 
 //#ifdef CONFIG_RTL8185B
 void rtl8185b_adapter_start(struct net_device *dev);
@@ -712,6 +809,23 @@ void fix_tx_fifo(struct net_device *dev);
 void rtl8225z2_SetTXPowerLevel(struct net_device *dev, short ch);
 void rtl8180_rate_adapter(struct work_struct * work);
 //#endif
+<<<<<<< HEAD
 bool MgntActSet_RF_State(struct net_device *dev, RT_RF_POWER_STATE StateToSet, u32 ChangeSource);
 
 #endif
+=======
+bool MgntActSet_RF_State(struct net_device *dev, RT_RF_POWER_STATE StateToSet,
+			 u32 ChangeSource);
+
+#endif
+
+/* fun with the built-in ieee80211 stack... */
+extern int ieee80211_crypto_init(void);
+extern void ieee80211_crypto_deinit(void);
+extern int ieee80211_crypto_tkip_init(void);
+extern void ieee80211_crypto_tkip_exit(void);
+extern int ieee80211_crypto_ccmp_init(void);
+extern void ieee80211_crypto_ccmp_exit(void);
+extern int ieee80211_crypto_wep_init(void);
+extern void ieee80211_crypto_wep_exit(void);
+>>>>>>> refs/remotes/origin/master

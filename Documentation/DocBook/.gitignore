@@ -8,4 +8,17 @@
 *.dvi
 *.log
 *.out
+<<<<<<< HEAD
+<<<<<<< HEAD
 media/
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+*.png
+*.gif
+media-indices.tmpl
+media-entities.tmpl
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

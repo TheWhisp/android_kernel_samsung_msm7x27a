@@ -17,6 +17,10 @@ use lib "$ENV{'PERF_EXEC_PATH'}/scripts/perl/Perf-Trace-Util/lib";
 use lib "./Perf-Trace-Util/lib";
 use Perf::Trace::Core;
 use Perf::Trace::Util;
+<<<<<<< HEAD
+=======
+use POSIX qw/SIGALRM SA_RESTART/;
+>>>>>>> refs/remotes/origin/master
 
 my $default_interval = 3;
 my $nlines = 20;
@@ -90,7 +94,14 @@ sub syscalls::sys_enter_write
 
 sub trace_begin
 {
+<<<<<<< HEAD
     $SIG{ALRM} = \&set_print_pending;
+=======
+    my $sa = POSIX::SigAction->new(\&set_print_pending);
+    $sa->flags(SA_RESTART);
+    $sa->safe(1);
+    POSIX::sigaction(SIGALRM, $sa) or die "Can't set SIGALRM handler: $!\n";
+>>>>>>> refs/remotes/origin/master
     alarm 1;
 }
 

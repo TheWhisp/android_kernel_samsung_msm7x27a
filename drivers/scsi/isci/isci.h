@@ -480,6 +480,14 @@ extern u16 ssp_inactive_to;
 extern u16 stp_inactive_to;
 extern unsigned char phy_gen;
 extern unsigned char max_concurr_spinup;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern uint cable_selection_override;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern uint cable_selection_override;
+>>>>>>> refs/remotes/origin/master
 
 irqreturn_t isci_msix_isr(int vec, void *data);
 irqreturn_t isci_intx_isr(int vec, void *data);

@@ -31,6 +31,10 @@
 #include <linux/personality.h>
 #include <linux/percpu.h>
 #include <linux/linkage.h>
+<<<<<<< HEAD
+=======
+#include <linux/tracehook.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/entry.h>
 #include <asm/ucontext.h>
 #include <linux/uaccess.h>
@@ -40,6 +44,7 @@
 #include <asm/cacheflush.h>
 #include <asm/syscalls.h>
 
+<<<<<<< HEAD
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
 asmlinkage int do_signal(struct pt_regs *regs, sigset_t *oldset, int in_sycall);
@@ -51,6 +56,8 @@ sys_sigaltstack(const stack_t __user *uss, stack_t __user *uoss,
 	return do_sigaltstack(uss, uoss, regs->r1);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Do a signal return; undo the signal stack.
  */
@@ -98,24 +105,38 @@ asmlinkage long sys_rt_sigreturn(struct pt_regs *regs)
 	sigset_t set;
 	int rval;
 
+<<<<<<< HEAD
+=======
+	/* Always make any pending restarted system calls return -EINTR */
+	current_thread_info()->restart_block.fn = do_no_restart_syscall;
+
+>>>>>>> refs/remotes/origin/master
 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
 		goto badframe;
 
 	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	if (restore_sigcontext(regs, &frame->uc.uc_mcontext, &rval))
 		goto badframe;
 
+<<<<<<< HEAD
 	/* It is more difficult to avoid calling this function than to
 	 call it and ignore errors. */
 	if (do_sigaltstack(&frame->uc.uc_stack, NULL, regs->r1))
+=======
+	if (restore_altstack(&frame->uc.uc_stack))
+>>>>>>> refs/remotes/origin/master
 		goto badframe;
 
 	return rval;
@@ -169,7 +190,11 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size)
 	return (void __user *)((sp - frame_size) & -8UL);
 }
 
+<<<<<<< HEAD
 static void setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
+=======
+static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
+>>>>>>> refs/remotes/origin/master
 			sigset_t *set, struct pt_regs *regs)
 {
 	struct rt_sigframe __user *frame;
@@ -198,11 +223,15 @@ static void setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	/* Create the ucontext. */
 	err |= __put_user(0, &frame->uc.uc_flags);
 	err |= __put_user(NULL, &frame->uc.uc_link);
+<<<<<<< HEAD
 	err |= __put_user((void __user *)current->sas_ss_sp,
 			&frame->uc.uc_stack.ss_sp);
 	err |= __put_user(sas_ss_flags(regs->r1),
 			&frame->uc.uc_stack.ss_flags);
 	err |= __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_size);
+=======
+	err |= __save_altstack(&frame->uc.uc_stack, regs->r1);
+>>>>>>> refs/remotes/origin/master
 	err |= setup_sigcontext(&frame->uc.uc_mcontext,
 			regs, set->sig[0]);
 	err |= __copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set));
@@ -258,6 +287,7 @@ static void setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 
 	set_fs(USER_DS);
 
+<<<<<<< HEAD
 	/* the tracer may want to single-step inside the handler */
 	if (test_thread_flag(TIF_SINGLESTEP))
 		ptrace_notify(SIGTRAP);
@@ -273,6 +303,18 @@ give_sigsegv:
 	if (sig == SIGSEGV)
 		ka->sa.sa_handler = SIG_DFL;
 	force_sig(SIGSEGV, current);
+=======
+#ifdef DEBUG_SIG
+	pr_info("SIG deliver (%s:%d): sp=%p pc=%08lx\n",
+		current->comm, current->pid, frame, regs->pc);
+#endif
+
+	return 0;
+
+give_sigsegv:
+	force_sigsegv(sig, current);
+	return -EFAULT;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Handle restarting system calls */
@@ -295,6 +337,7 @@ handle_restart(struct pt_regs *regs, struct k_sigaction *ka, int has_handler)
 	case -ERESTARTNOINTR:
 do_restart:
 		/* offset of 4 bytes to re-execute trap (brki) instruction */
+<<<<<<< HEAD
 #ifndef CONFIG_MMU
 		regs->pc -= 4;
 #else
@@ -304,6 +347,9 @@ do_restart:
 		   instruction. */
 		regs->pc -= 8;
 #endif
+=======
+		regs->pc -= 4;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -312,6 +358,7 @@ do_restart:
  * OK, we're invoking a handler
  */
 
+<<<<<<< HEAD
 static int
 handle_signal(unsigned long sig, struct k_sigaction *ka,
 		siginfo_t *info, sigset_t *oldset, struct pt_regs *regs)
@@ -334,6 +381,26 @@ handle_signal(unsigned long sig, struct k_sigaction *ka,
 		spin_unlock_irq(&current->sighand->siglock);
 	}
 	return 1;
+=======
+static void
+handle_signal(unsigned long sig, struct k_sigaction *ka,
+		siginfo_t *info, struct pt_regs *regs)
+{
+	sigset_t *oldset = sigmask_to_save();
+	int ret;
+
+	/* Set up the stack frame */
+	if (ka->sa.sa_flags & SA_SIGINFO)
+		ret = setup_rt_frame(sig, ka, info, oldset, regs);
+	else
+		ret = setup_rt_frame(sig, ka, NULL, oldset, regs);
+
+	if (ret)
+		return;
+
+	signal_delivered(sig, info, ka, regs,
+			test_thread_flag(TIF_SINGLESTEP));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -345,12 +412,17 @@ handle_signal(unsigned long sig, struct k_sigaction *ka,
  * the kernel can handle, and then we build all the user-level signal handling
  * stack-frames in one go after that.
  */
+<<<<<<< HEAD
 int do_signal(struct pt_regs *regs, sigset_t *oldset, int in_syscall)
+=======
+static void do_signal(struct pt_regs *regs, int in_syscall)
+>>>>>>> refs/remotes/origin/master
 {
 	siginfo_t info;
 	int signr;
 	struct k_sigaction ka;
 #ifdef DEBUG_SIG
+<<<<<<< HEAD
 	printk(KERN_INFO "do signal: %p %p %d\n", regs, oldset, in_syscall);
 	printk(KERN_INFO "do signal2: %lx %lx %ld [%lx]\n", regs->pc, regs->r1,
 			regs->r12, current_thread_info()->flags);
@@ -368,12 +440,19 @@ int do_signal(struct pt_regs *regs, sigset_t *oldset, int in_syscall)
 		oldset = &current->saved_sigmask;
 	else
 		oldset = &current->blocked;
+=======
+	pr_info("do signal: %p %d\n", regs, in_syscall);
+	pr_info("do signal2: %lx %lx %ld [%lx]\n", regs->pc, regs->r1,
+			regs->r12, current_thread_info()->flags);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
 	if (signr > 0) {
 		/* Whee! Actually deliver the signal. */
 		if (in_syscall)
 			handle_restart(regs, &ka, 1);
+<<<<<<< HEAD
 		if (handle_signal(signr, &ka, &info, oldset, regs)) {
 			/*
 			 * A signal was successfully delivered; the saved
@@ -385,6 +464,10 @@ int do_signal(struct pt_regs *regs, sigset_t *oldset, int in_syscall)
 			    ~TS_RESTORE_SIGMASK;
 		}
 		return 1;
+=======
+		handle_signal(signr, &ka, &info, regs);
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (in_syscall)
@@ -394,6 +477,7 @@ int do_signal(struct pt_regs *regs, sigset_t *oldset, int in_syscall)
 	 * If there's no signal to deliver, we just put the saved sigmask
 	 * back.
 	 */
+<<<<<<< HEAD
 	if (current_thread_info()->status & TS_RESTORE_SIGMASK) {
 		current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
@@ -401,4 +485,16 @@ int do_signal(struct pt_regs *regs, sigset_t *oldset, int in_syscall)
 
 	/* Did we come from a system call? */
 	return 0;
+=======
+	restore_saved_sigmask();
+}
+
+asmlinkage void do_notify_resume(struct pt_regs *regs, int in_syscall)
+{
+	if (test_thread_flag(TIF_SIGPENDING))
+		do_signal(regs, in_syscall);
+
+	if (test_and_clear_thread_flag(TIF_NOTIFY_RESUME))
+		tracehook_notify_resume(regs);
+>>>>>>> refs/remotes/origin/master
 }

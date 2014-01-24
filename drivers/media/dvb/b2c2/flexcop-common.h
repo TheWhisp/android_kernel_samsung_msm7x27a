@@ -6,6 +6,10 @@
 #ifndef __FLEXCOP_COMMON_H__
 #define __FLEXCOP_COMMON_H__
 
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/mutex.h>
 

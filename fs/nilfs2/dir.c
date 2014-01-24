@@ -251,20 +251,36 @@ nilfs_type_by_mode[S_IFMT >> S_SHIFT] = {
 
 static void nilfs_set_de_type(struct nilfs_dir_entry *de, struct inode *inode)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode = inode->i_mode;
+=======
+	umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/master
 
 	de->file_type = nilfs_type_by_mode[(mode & S_IFMT)>>S_SHIFT];
 }
 
+<<<<<<< HEAD
 static int nilfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 {
 	loff_t pos = filp->f_pos;
 	struct inode *inode = filp->f_dentry->d_inode;
+=======
+static int nilfs_readdir(struct file *file, struct dir_context *ctx)
+{
+	loff_t pos = ctx->pos;
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct super_block *sb = inode->i_sb;
 	unsigned int offset = pos & ~PAGE_CACHE_MASK;
 	unsigned long n = pos >> PAGE_CACHE_SHIFT;
 	unsigned long npages = dir_pages(inode);
 /*	unsigned chunk_mask = ~(nilfs_chunk_size(inode)-1); */
+<<<<<<< HEAD
 	unsigned char *types = NULL;
 	int ret;
 
@@ -272,6 +288,11 @@ static int nilfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		goto success;
 
 	types = nilfs_filetype_table;
+=======
+
+	if (pos > inode->i_size - NILFS_DIR_REC_LEN(1))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	for ( ; n < npages; n++, offset = 0) {
 		char *kaddr, *limit;
@@ -281,9 +302,14 @@ static int nilfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		if (IS_ERR(page)) {
 			nilfs_error(sb, __func__, "bad page in #%lu",
 				    inode->i_ino);
+<<<<<<< HEAD
 			filp->f_pos += PAGE_CACHE_SIZE - offset;
 			ret = -EIO;
 			goto done;
+=======
+			ctx->pos += PAGE_CACHE_SIZE - offset;
+			return -EIO;
+>>>>>>> refs/remotes/origin/master
 		}
 		kaddr = page_address(page);
 		de = (struct nilfs_dir_entry *)(kaddr + offset);
@@ -293,6 +319,7 @@ static int nilfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 			if (de->rec_len == 0) {
 				nilfs_error(sb, __func__,
 					    "zero-length directory entry");
+<<<<<<< HEAD
 				ret = -EIO;
 				nilfs_put_page(page);
 				goto done;
@@ -322,6 +349,30 @@ success:
 	ret = 0;
 done:
 	return ret;
+=======
+				nilfs_put_page(page);
+				return -EIO;
+			}
+			if (de->inode) {
+				unsigned char t;
+
+				if (de->file_type < NILFS_FT_MAX)
+					t = nilfs_filetype_table[de->file_type];
+				else
+					t = DT_UNKNOWN;
+
+				if (!dir_emit(ctx, de->name, de->name_len,
+						le64_to_cpu(de->inode), t)) {
+					nilfs_put_page(page);
+					return 0;
+				}
+			}
+			ctx->pos += nilfs_rec_len_from_disk(de->rec_len);
+		}
+		nilfs_put_page(page);
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -602,7 +653,15 @@ int nilfs_make_empty(struct inode *inode, struct inode *parent)
 		unlock_page(page);
 		goto fail;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(page, KM_USER0);
+=======
+	kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 	memset(kaddr, 0, chunk_size);
 	de = (struct nilfs_dir_entry *)kaddr;
 	de->name_len = 1;
@@ -617,7 +676,15 @@ int nilfs_make_empty(struct inode *inode, struct inode *parent)
 	de->inode = cpu_to_le64(parent->i_ino);
 	memcpy(de->name, "..\0", 4);
 	nilfs_set_de_type(de, inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	nilfs_commit_chunk(page, mapping, 0, chunk_size);
 fail:
 	page_cache_release(page);
@@ -678,7 +745,11 @@ not_empty:
 const struct file_operations nilfs_dir_operations = {
 	.llseek		= generic_file_llseek,
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= nilfs_readdir,
+=======
+	.iterate	= nilfs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.unlocked_ioctl	= nilfs_ioctl,
 #ifdef CONFIG_COMPAT
 	.compat_ioctl	= nilfs_compat_ioctl,

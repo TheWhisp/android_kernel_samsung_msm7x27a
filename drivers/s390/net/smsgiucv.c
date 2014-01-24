@@ -157,7 +157,11 @@ static int smsg_pm_restore_thaw(struct device *dev)
 #ifdef CONFIG_PM_DEBUG
 	printk(KERN_WARNING "smsg_pm_restore_thaw\n");
 #endif
+<<<<<<< HEAD
 	if (smsg_path && iucv_path_connected) {
+=======
+	if (smsg_path && !iucv_path_connected) {
+>>>>>>> refs/remotes/origin/master
 		memset(smsg_path, 0, sizeof(*smsg_path));
 		smsg_path->msglim = 255;
 		smsg_path->flags = 0;

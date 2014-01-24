@@ -1,9 +1,21 @@
 /*
  * Expose some of the kernel scheduler routines
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,7 +33,15 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: dhd_linux_sched.c,v 1.3 2009-04-10 04:14:49 Exp $
+=======
+ * $Id: dhd_linux_sched.c 291086 2011-10-21 01:17:24Z $
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: dhd_linux_sched.c 291086 2011-10-21 01:17:24Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 #include <linux/kernel.h>
 #include <linux/module.h>

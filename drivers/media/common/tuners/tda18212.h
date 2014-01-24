@@ -29,6 +29,13 @@ struct tda18212_config {
 	u16 if_dvbt_6;
 	u16 if_dvbt_7;
 	u16 if_dvbt_8;
+<<<<<<< HEAD
+=======
+	u16 if_dvbt2_5;
+	u16 if_dvbt2_6;
+	u16 if_dvbt2_7;
+	u16 if_dvbt2_8;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 if_dvbc;
 };
 

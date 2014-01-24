@@ -39,13 +39,29 @@
 #include "link.h"
 #include "port.h"
 #include "bcast.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "name_distr.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "name_distr.h"
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_PKT_DEFAULT_MCAST 1500	/* bcast link max packet size (fixed) */
 
 #define BCLINK_WIN_DEFAULT 20		/* bcast link window size (default) */
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * struct bcbearer_pair - a pair of bearers used by broadcast link
+=======
+ * struct tipc_bcbearer_pair - a pair of bearers used by broadcast link
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * struct tipc_bcbearer_pair - a pair of bearers used by broadcast link
+>>>>>>> refs/remotes/origin/master
  * @primary: pointer to primary bearer
  * @secondary: pointer to secondary bearer
  *
@@ -53,13 +69,29 @@
  * to be paired.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct bcbearer_pair {
+=======
+struct tipc_bcbearer_pair {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct tipc_bcbearer_pair {
+>>>>>>> refs/remotes/origin/master
 	struct tipc_bearer *primary;
 	struct tipc_bearer *secondary;
 };
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * struct bcbearer - bearer used by broadcast link
+=======
+ * struct tipc_bcbearer - bearer used by broadcast link
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * struct tipc_bcbearer - bearer used by broadcast link
+>>>>>>> refs/remotes/origin/master
  * @bearer: (non-standard) broadcast bearer structure
  * @media: (non-standard) broadcast media structure
  * @bpairs: array of bearer pairs
@@ -72,25 +104,54 @@ struct bcbearer_pair {
  * large local variables within multicast routines.  Concurrent access is
  * prevented through use of the spinlock "bc_lock".
  */
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 struct bcbearer {
 	struct tipc_bearer bearer;
 	struct media media;
 	struct bcbearer_pair bpairs[MAX_BEARERS];
 	struct bcbearer_pair bpairs_temp[TIPC_MAX_LINK_PRI + 1];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct tipc_bcbearer {
+	struct tipc_bearer bearer;
+	struct tipc_media media;
+	struct tipc_bcbearer_pair bpairs[MAX_BEARERS];
+	struct tipc_bcbearer_pair bpairs_temp[TIPC_MAX_LINK_PRI + 1];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tipc_node_map remains;
 	struct tipc_node_map remains_new;
 };
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * struct bclink - link used for broadcast messages
  * @link: (non-standard) broadcast link structure
  * @node: (non-standard) node structure representing b'cast link's peer node
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * struct tipc_bclink - link used for broadcast messages
+ * @link: (non-standard) broadcast link structure
+ * @node: (non-standard) node structure representing b'cast link's peer node
+ * @bcast_nodes: map of broadcast-capable nodes
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @retransmit_to: node that most recently requested a retransmit
  *
  * Handles sequence numbering, fragmentation, bundling, etc.
  */
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 struct bclink {
 	struct link link;
 	struct tipc_node node;
@@ -105,6 +166,28 @@ static DEFINE_SPINLOCK(bc_lock);
 
 /* broadcast-capable node map */
 struct tipc_node_map tipc_bcast_nmap;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct tipc_bclink {
+	struct tipc_link link;
+	struct tipc_node node;
+	struct tipc_node_map bcast_nodes;
+	struct tipc_node *retransmit_to;
+};
+
+static struct tipc_bcbearer bcast_bearer;
+static struct tipc_bclink bcast_link;
+
+static struct tipc_bcbearer *bcbearer = &bcast_bearer;
+static struct tipc_bclink *bclink = &bcast_link;
+static struct tipc_link *bcl = &bcast_link.link;
+
+static DEFINE_SPINLOCK(bc_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 const char tipc_bclink_name[] = "broadcast-link";
 
@@ -112,11 +195,17 @@ static void tipc_nmap_diff(struct tipc_node_map *nm_a,
 			   struct tipc_node_map *nm_b,
 			   struct tipc_node_map *nm_diff);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u32 buf_seqno(struct sk_buff *buf)
 {
 	return msg_seqno(buf_msg(buf));
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 bcbuf_acks(struct sk_buff *buf)
 {
 	return (u32)(unsigned long)TIPC_SKB_CB(buf)->handle;
@@ -132,6 +221,28 @@ static void bcbuf_decr_acks(struct sk_buff *buf)
 	bcbuf_set_acks(buf, bcbuf_acks(buf) - 1);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void tipc_bclink_add_node(u32 addr)
+{
+	spin_lock_bh(&bc_lock);
+	tipc_nmap_add(&bclink->bcast_nodes, addr);
+	spin_unlock_bh(&bc_lock);
+}
+
+void tipc_bclink_remove_node(u32 addr)
+{
+	spin_lock_bh(&bc_lock);
+	tipc_nmap_remove(&bclink->bcast_nodes, addr);
+	spin_unlock_bh(&bc_lock);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void bclink_set_last_sent(void)
 {
@@ -146,6 +257,8 @@ u32 tipc_bclink_get_last_sent(void)
 	return bcl->fsm_msg_cnt;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * bclink_set_gap - set gap according to contents of current deferred pkt queue
  *
@@ -179,11 +292,30 @@ static int bclink_ack_allowed(u32 n)
 
 
 /**
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void bclink_update_last_sent(struct tipc_node *node, u32 seqno)
+{
+	node->bclink.last_sent = less_eq(node->bclink.last_sent, seqno) ?
+						seqno : node->bclink.last_sent;
+}
+
+
+<<<<<<< HEAD
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * tipc_bclink_retransmit_to - get most recent node to request retransmission
  *
  * Called with bc_lock locked
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct tipc_node *tipc_bclink_retransmit_to(void)
 {
 	return bclink->retransmit_to;
@@ -196,7 +328,10 @@ struct tipc_node *tipc_bclink_retransmit_to(void)
  *
  * Called with bc_lock locked
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void bclink_retransmit_pkt(u32 after, u32 to)
 {
 	struct sk_buff *buf;
@@ -214,13 +349,18 @@ static void bclink_retransmit_pkt(u32 after, u32 to)
  *
  * Node is locked, bc_lock unlocked.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void tipc_bclink_acknowledge(struct tipc_node *n_ptr, u32 acked)
 {
 	struct sk_buff *crs;
 	struct sk_buff *next;
 	unsigned int released = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (less_eq(acked, n_ptr->bclink.acked))
 		return;
 
@@ -229,6 +369,43 @@ void tipc_bclink_acknowledge(struct tipc_node *n_ptr, u32 acked)
 	/* Skip over packets that node has previously acknowledged */
 
 	crs = bcl->first_out;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_lock_bh(&bc_lock);
+
+	/* Bail out if tx queue is empty (no clean up is required) */
+	crs = bcl->first_out;
+	if (!crs)
+		goto exit;
+
+	/* Determine which messages need to be acknowledged */
+	if (acked == INVALID_LINK_SEQ) {
+		/*
+		 * Contact with specified node has been lost, so need to
+		 * acknowledge sent messages only (if other nodes still exist)
+		 * or both sent and unsent messages (otherwise)
+		 */
+		if (bclink->bcast_nodes.count)
+			acked = bcl->fsm_msg_cnt;
+		else
+			acked = bcl->next_out_no;
+	} else {
+		/*
+		 * Bail out if specified sequence number does not correspond
+		 * to a message that has been sent and not yet acknowledged
+		 */
+		if (less(acked, buf_seqno(crs)) ||
+		    less(bcl->fsm_msg_cnt, acked) ||
+		    less_eq(acked, n_ptr->bclink.acked))
+			goto exit;
+	}
+
+	/* Skip over packets that node has previously acknowledged */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (crs && less_eq(buf_seqno(crs), n_ptr->bclink.acked))
 		crs = crs->next;
 
@@ -236,11 +413,33 @@ void tipc_bclink_acknowledge(struct tipc_node *n_ptr, u32 acked)
 
 	while (crs && less_eq(buf_seqno(crs), acked)) {
 		next = crs->next;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		bcbuf_decr_acks(crs);
 		if (bcbuf_acks(crs) == 0) {
 			bcl->first_out = next;
 			bcl->out_queue_size--;
 			buf_discard(crs);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+		if (crs != bcl->next_out)
+			bcbuf_decr_acks(crs);
+		else {
+			bcbuf_set_acks(crs, 0);
+			bcl->next_out = next;
+			bclink_set_last_sent();
+		}
+
+		if (bcbuf_acks(crs) == 0) {
+			bcl->first_out = next;
+			bcl->out_queue_size--;
+			kfree_skb(crs);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			released = 1;
 		}
 		crs = next;
@@ -255,15 +454,29 @@ void tipc_bclink_acknowledge(struct tipc_node *n_ptr, u32 acked)
 	}
 	if (unlikely(released && !list_empty(&bcl->waiting_ports)))
 		tipc_link_wakeup_ports(bcl, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&bc_lock);
 }
 
 /**
  * bclink_send_ack - unicast an ACK msg
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+exit:
+	spin_unlock_bh(&bc_lock);
+}
+
+<<<<<<< HEAD
+/*
+ * tipc_bclink_update_link_state - update broadcast link state
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * tipc_net_lock and node lock set
  */
 
+<<<<<<< HEAD
 static void bclink_send_ack(struct tipc_node *n_ptr)
 {
 	struct link *l_ptr = n_ptr->active_links[n_ptr->addr & 1];
@@ -337,10 +550,85 @@ void tipc_bclink_check_gap(struct tipc_node *n_ptr, u32 last_sent)
 
 /**
  * tipc_bclink_peek_nack - process a NACK msg meant for another node
+=======
+=======
+/**
+ * tipc_bclink_update_link_state - update broadcast link state
+ *
+ * tipc_net_lock and node lock set
+ */
+>>>>>>> refs/remotes/origin/master
+void tipc_bclink_update_link_state(struct tipc_node *n_ptr, u32 last_sent)
+{
+	struct sk_buff *buf;
+
+	/* Ignore "stale" link state info */
+
+	if (less_eq(last_sent, n_ptr->bclink.last_in))
+		return;
+
+	/* Update link synchronization state; quit if in sync */
+
+	bclink_update_last_sent(n_ptr, last_sent);
+
+	if (n_ptr->bclink.last_sent == n_ptr->bclink.last_in)
+		return;
+
+	/* Update out-of-sync state; quit if loss is still unconfirmed */
+
+	if ((++n_ptr->bclink.oos_state) == 1) {
+		if (n_ptr->bclink.deferred_size < (TIPC_MIN_LINK_WIN / 2))
+			return;
+		n_ptr->bclink.oos_state++;
+	}
+
+	/* Don't NACK if one has been recently sent (or seen) */
+
+	if (n_ptr->bclink.oos_state & 0x1)
+		return;
+
+	/* Send NACK */
+
+	buf = tipc_buf_acquire(INT_H_SIZE);
+	if (buf) {
+		struct tipc_msg *msg = buf_msg(buf);
+
+		tipc_msg_init(msg, BCAST_PROTOCOL, STATE_MSG,
+			      INT_H_SIZE, n_ptr->addr);
+		msg_set_non_seq(msg, 1);
+		msg_set_mc_netid(msg, tipc_net_id);
+		msg_set_bcast_ack(msg, n_ptr->bclink.last_in);
+		msg_set_bcgap_after(msg, n_ptr->bclink.last_in);
+		msg_set_bcgap_to(msg, n_ptr->bclink.deferred_head
+				 ? buf_seqno(n_ptr->bclink.deferred_head) - 1
+				 : n_ptr->bclink.last_sent);
+
+		spin_lock_bh(&bc_lock);
+		tipc_bearer_send(&bcbearer->bearer, buf, NULL);
+		bcl->stats.sent_nacks++;
+		spin_unlock_bh(&bc_lock);
+		kfree_skb(buf);
+
+		n_ptr->bclink.oos_state++;
+	}
+}
+
+<<<<<<< HEAD
+/*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
+ * bclink_peek_nack - monitor retransmission requests sent by other nodes
+ *
+ * Delay any upcoming NACK by this node if another node has already
+ * requested the first message this node is going to ask for.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Only tipc_net_lock set.
  */
 
+<<<<<<< HEAD
 static void tipc_bclink_peek_nack(u32 dest, u32 sender_tag, u32 gap_after, u32 gap_to)
 {
 	struct tipc_node *n_ptr = tipc_node_find(dest);
@@ -397,15 +685,51 @@ static void tipc_bclink_peek_nack(u32 dest, u32 sender_tag, u32 gap_after, u32 g
 }
 
 /**
+=======
+=======
+ *
+ * Only tipc_net_lock set.
+ */
+>>>>>>> refs/remotes/origin/master
+static void bclink_peek_nack(struct tipc_msg *msg)
+{
+	struct tipc_node *n_ptr = tipc_node_find(msg_destnode(msg));
+
+	if (unlikely(!n_ptr))
+		return;
+
+	tipc_node_lock(n_ptr);
+
+<<<<<<< HEAD
+	if (n_ptr->bclink.supported &&
+=======
+	if (n_ptr->bclink.recv_permitted &&
+>>>>>>> refs/remotes/origin/master
+	    (n_ptr->bclink.last_in != n_ptr->bclink.last_sent) &&
+	    (n_ptr->bclink.last_in == msg_bcgap_after(msg)))
+		n_ptr->bclink.oos_state = 2;
+
+	tipc_node_unlock(n_ptr);
+}
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
  * tipc_bclink_send_msg - broadcast a packet to all nodes in cluster
  */
 
+=======
+ * tipc_bclink_send_msg - broadcast a packet to all nodes in cluster
+ */
+>>>>>>> refs/remotes/origin/master
 int tipc_bclink_send_msg(struct sk_buff *buf)
 {
 	int res;
 
 	spin_lock_bh(&bc_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	res = tipc_link_send_buf(bcl, buf);
 	if (likely(res > 0))
 		bclink_set_last_sent();
@@ -413,19 +737,82 @@ int tipc_bclink_send_msg(struct sk_buff *buf)
 	bcl->stats.queue_sz_counts++;
 	bcl->stats.accu_queue_sz += bcl->out_queue_size;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!bclink->bcast_nodes.count) {
+		res = msg_data_sz(buf_msg(buf));
+		kfree_skb(buf);
+		goto exit;
+	}
+
+	res = tipc_link_send_buf(bcl, buf);
+	if (likely(res >= 0)) {
+		bclink_set_last_sent();
+		bcl->stats.queue_sz_counts++;
+		bcl->stats.accu_queue_sz += bcl->out_queue_size;
+	}
+exit:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&bc_lock);
 	return res;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
+=======
+/*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
+ * bclink_accept_pkt - accept an incoming, in-sequence broadcast packet
+ *
+ * Called with both sending node's lock and bc_lock taken.
+ */
+<<<<<<< HEAD
+
+=======
+>>>>>>> refs/remotes/origin/master
+static void bclink_accept_pkt(struct tipc_node *node, u32 seqno)
+{
+	bclink_update_last_sent(node, seqno);
+	node->bclink.last_in = seqno;
+	node->bclink.oos_state = 0;
+	bcl->stats.recv_info++;
+
+	/*
+	 * Unicast an ACK periodically, ensuring that
+	 * all nodes in the cluster don't ACK at the same time
+	 */
+
+	if (((seqno - tipc_own_addr) % TIPC_MIN_LINK_WIN) == 0) {
+		tipc_link_send_proto_msg(
+			node->active_links[node->addr & 1],
+			STATE_MSG, 0, 0, 0, 0, 0);
+		bcl->stats.sent_acks++;
+	}
+}
+
+<<<<<<< HEAD
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * tipc_bclink_recv_pkt - receive a broadcast packet, and deliver upwards
  *
  * tipc_net_lock is read_locked, no other locks set
  */
+<<<<<<< HEAD
 
 void tipc_bclink_recv_pkt(struct sk_buff *buf)
 {
 	struct tipc_msg *msg = buf_msg(buf);
+<<<<<<< HEAD
 	struct tipc_node *node = tipc_node_find(msg_prevnode(msg));
 	u32 next_in;
 	u32 seqno;
@@ -440,6 +827,44 @@ void tipc_bclink_recv_pkt(struct sk_buff *buf)
 	if (unlikely(msg_user(msg) == BCAST_PROTOCOL)) {
 		if (msg_destnode(msg) == tipc_own_addr) {
 			tipc_node_lock(node);
+=======
+=======
+void tipc_bclink_recv_pkt(struct sk_buff *buf)
+{
+	struct tipc_msg *msg = buf_msg(buf);
+>>>>>>> refs/remotes/origin/master
+	struct tipc_node *node;
+	u32 next_in;
+	u32 seqno;
+	int deferred;
+
+	/* Screen out unwanted broadcast messages */
+
+	if (msg_mc_netid(msg) != tipc_net_id)
+		goto exit;
+
+	node = tipc_node_find(msg_prevnode(msg));
+	if (unlikely(!node))
+		goto exit;
+
+	tipc_node_lock(node);
+<<<<<<< HEAD
+	if (unlikely(!node->bclink.supported))
+=======
+	if (unlikely(!node->bclink.recv_permitted))
+>>>>>>> refs/remotes/origin/master
+		goto unlock;
+
+	/* Handle broadcast protocol message */
+
+	if (unlikely(msg_user(msg) == BCAST_PROTOCOL)) {
+		if (msg_type(msg) != STATE_MSG)
+			goto unlock;
+		if (msg_destnode(msg) == tipc_own_addr) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			tipc_bclink_acknowledge(node, msg_bcast_ack(msg));
 			tipc_node_unlock(node);
 			spin_lock_bh(&bc_lock);
@@ -449,6 +874,8 @@ void tipc_bclink_recv_pkt(struct sk_buff *buf)
 					      msg_bcgap_to(msg));
 			spin_unlock_bh(&bc_lock);
 		} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			tipc_bclink_peek_nack(msg_destnode(msg),
 					      msg_bcast_tag(msg),
 					      msg_bcgap_after(msg),
@@ -523,11 +950,155 @@ receive:
 		buf_discard(buf);
 	}
 	tipc_node_unlock(node);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			tipc_node_unlock(node);
+			bclink_peek_nack(msg);
+		}
+		goto exit;
+	}
+
+	/* Handle in-sequence broadcast message */
+
+	seqno = msg_seqno(msg);
+	next_in = mod(node->bclink.last_in + 1);
+
+	if (likely(seqno == next_in)) {
+receive:
+		/* Deliver message to destination */
+
+		if (likely(msg_isdata(msg))) {
+			spin_lock_bh(&bc_lock);
+			bclink_accept_pkt(node, seqno);
+			spin_unlock_bh(&bc_lock);
+			tipc_node_unlock(node);
+			if (likely(msg_mcast(msg)))
+				tipc_port_recv_mcast(buf, NULL);
+			else
+				kfree_skb(buf);
+		} else if (msg_user(msg) == MSG_BUNDLER) {
+			spin_lock_bh(&bc_lock);
+			bclink_accept_pkt(node, seqno);
+			bcl->stats.recv_bundles++;
+			bcl->stats.recv_bundled += msg_msgcnt(msg);
+			spin_unlock_bh(&bc_lock);
+			tipc_node_unlock(node);
+			tipc_link_recv_bundle(buf);
+		} else if (msg_user(msg) == MSG_FRAGMENTER) {
+<<<<<<< HEAD
+			int ret = tipc_link_recv_fragment(&node->bclink.defragm,
+						      &buf, &msg);
+			if (ret < 0)
+=======
+			int ret;
+			ret = tipc_link_recv_fragment(&node->bclink.reasm_head,
+						      &node->bclink.reasm_tail,
+						      &buf);
+			if (ret == LINK_REASM_ERROR)
+>>>>>>> refs/remotes/origin/master
+				goto unlock;
+			spin_lock_bh(&bc_lock);
+			bclink_accept_pkt(node, seqno);
+			bcl->stats.recv_fragments++;
+<<<<<<< HEAD
+			if (ret > 0)
+				bcl->stats.recv_fragmented++;
+			spin_unlock_bh(&bc_lock);
+			tipc_node_unlock(node);
+			tipc_net_route_msg(buf);
+=======
+			if (ret == LINK_REASM_COMPLETE) {
+				bcl->stats.recv_fragmented++;
+				/* Point msg to inner header */
+				msg = buf_msg(buf);
+				spin_unlock_bh(&bc_lock);
+				goto receive;
+			}
+			spin_unlock_bh(&bc_lock);
+			tipc_node_unlock(node);
+>>>>>>> refs/remotes/origin/master
+		} else if (msg_user(msg) == NAME_DISTRIBUTOR) {
+			spin_lock_bh(&bc_lock);
+			bclink_accept_pkt(node, seqno);
+			spin_unlock_bh(&bc_lock);
+			tipc_node_unlock(node);
+			tipc_named_recv(buf);
+		} else {
+			spin_lock_bh(&bc_lock);
+			bclink_accept_pkt(node, seqno);
+			spin_unlock_bh(&bc_lock);
+			tipc_node_unlock(node);
+			kfree_skb(buf);
+		}
+		buf = NULL;
+
+		/* Determine new synchronization state */
+
+		tipc_node_lock(node);
+		if (unlikely(!tipc_node_is_up(node)))
+			goto unlock;
+
+		if (node->bclink.last_in == node->bclink.last_sent)
+			goto unlock;
+
+		if (!node->bclink.deferred_head) {
+			node->bclink.oos_state = 1;
+			goto unlock;
+		}
+
+		msg = buf_msg(node->bclink.deferred_head);
+		seqno = msg_seqno(msg);
+		next_in = mod(next_in + 1);
+		if (seqno != next_in)
+			goto unlock;
+
+		/* Take in-sequence message from deferred queue & deliver it */
+
+		buf = node->bclink.deferred_head;
+		node->bclink.deferred_head = buf->next;
+		node->bclink.deferred_size--;
+		goto receive;
+	}
+
+	/* Handle out-of-sequence broadcast message */
+
+	if (less(next_in, seqno)) {
+		deferred = tipc_link_defer_pkt(&node->bclink.deferred_head,
+					       &node->bclink.deferred_tail,
+					       buf);
+		node->bclink.deferred_size += deferred;
+		bclink_update_last_sent(node, seqno);
+		buf = NULL;
+	} else
+		deferred = 0;
+
+	spin_lock_bh(&bc_lock);
+
+	if (deferred)
+		bcl->stats.deferred_recv++;
+	else
+		bcl->stats.duplicates++;
+
+	spin_unlock_bh(&bc_lock);
+
+unlock:
+	tipc_node_unlock(node);
+exit:
+	kfree_skb(buf);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 u32 tipc_bclink_acks_missing(struct tipc_node *n_ptr)
 {
+<<<<<<< HEAD
 	return (n_ptr->bclink.supported &&
+=======
+	return (n_ptr->bclink.recv_permitted &&
+>>>>>>> refs/remotes/origin/master
 		(tipc_bclink_get_last_sent() != n_ptr->bclink.acked));
 }
 
@@ -535,38 +1106,101 @@ u32 tipc_bclink_acks_missing(struct tipc_node *n_ptr)
 /**
  * tipc_bcbearer_send - send a packet through the broadcast pseudo-bearer
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Send through as many bearers as necessary to reach all nodes
  * that support TIPC multicasting.
  *
  * Returns 0 if packet sent successfully, non-zero if not
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Send packet over as many bearers as necessary to reach all nodes
+ * that have joined the broadcast link.
+ *
+ * Returns 0 (packet sent successfully) under all circumstances,
+ * since the broadcast link's pseudo-bearer never blocks
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 static int tipc_bcbearer_send(struct sk_buff *buf,
 			      struct tipc_bearer *unused1,
+=======
+ */
+static int tipc_bcbearer_send(struct sk_buff *buf, struct tipc_bearer *unused1,
+>>>>>>> refs/remotes/origin/master
 			      struct tipc_media_addr *unused2)
 {
 	int bp_index;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Prepare buffer for broadcasting (if first time trying to send it) */
+=======
+	/*
+	 * Prepare broadcast link message for reliable transmission,
+=======
+	/* Prepare broadcast link message for reliable transmission,
+>>>>>>> refs/remotes/origin/master
+	 * if first time trying to send it;
+	 * preparation is skipped for broadcast link protocol messages
+	 * since they are sent in an unreliable manner and don't need it
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (likely(!msg_non_seq(buf_msg(buf)))) {
 		struct tipc_msg *msg;
 
+<<<<<<< HEAD
 		assert(tipc_bcast_nmap.count != 0);
 		bcbuf_set_acks(buf, tipc_bcast_nmap.count);
+=======
+		bcbuf_set_acks(buf, bclink->bcast_nodes.count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (likely(!msg_non_seq(buf_msg(buf)))) {
+		struct tipc_msg *msg;
+
+		bcbuf_set_acks(buf, bclink->bcast_nodes.count);
+>>>>>>> refs/remotes/origin/master
 		msg = buf_msg(buf);
 		msg_set_non_seq(msg, 1);
 		msg_set_mc_netid(msg, tipc_net_id);
 		bcl->stats.sent_info++;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+		if (WARN_ON(!bclink->bcast_nodes.count)) {
+			dump_stack();
+			return 0;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Send buffer over bearers until all targets reached */
 
+<<<<<<< HEAD
 	bcbearer->remains = tipc_bcast_nmap;
+=======
+	bcbearer->remains = bclink->bcast_nodes;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+	/* Send buffer over bearers until all targets reached */
+	bcbearer->remains = bclink->bcast_nodes;
+>>>>>>> refs/remotes/origin/master
 
 	for (bp_index = 0; bp_index < MAX_BEARERS; bp_index++) {
 		struct tipc_bearer *p = bcbearer->bpairs[bp_index].primary;
 		struct tipc_bearer *s = bcbearer->bpairs[bp_index].secondary;
+<<<<<<< HEAD
 
 		if (!p)
 			break;	/* no more bearers to try */
@@ -586,17 +1220,59 @@ static int tipc_bcbearer_send(struct sk_buff *buf,
 			}
 		}
 
+=======
+		struct tipc_bearer *b = p;
+		struct sk_buff *tbuf;
+
+		if (!p)
+			break; /* No more bearers to try */
+
+		if (tipc_bearer_blocked(p)) {
+			if (!s || tipc_bearer_blocked(s))
+				continue; /* Can't use either bearer */
+			b = s;
+		}
+
+		tipc_nmap_diff(&bcbearer->remains, &b->nodes,
+			       &bcbearer->remains_new);
+		if (bcbearer->remains_new.count == bcbearer->remains.count)
+			continue; /* Nothing added by bearer pair */
+
+		if (bp_index == 0) {
+			/* Use original buffer for first bearer */
+			tipc_bearer_send(b, buf, &b->bcast_addr);
+		} else {
+			/* Avoid concurrent buffer access */
+			tbuf = pskb_copy(buf, GFP_ATOMIC);
+			if (!tbuf)
+				break;
+			tipc_bearer_send(b, tbuf, &b->bcast_addr);
+			kfree_skb(tbuf); /* Bearer keeps a clone */
+		}
+
+		/* Swap bearers for next packet */
+>>>>>>> refs/remotes/origin/master
 		if (s) {
 			bcbearer->bpairs[bp_index].primary = s;
 			bcbearer->bpairs[bp_index].secondary = p;
 		}
 
 		if (bcbearer->remains_new.count == 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return 0;
+=======
+			break;	/* all targets reached */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			break; /* All targets reached */
+>>>>>>> refs/remotes/origin/master
 
 		bcbearer->remains = bcbearer->remains_new;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Unable to reach all targets (indicate success, since currently
 	 * there isn't code in place to properly block & unblock the
@@ -604,23 +1280,44 @@ static int tipc_bcbearer_send(struct sk_buff *buf,
 	 */
 
 	return TIPC_OK;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * tipc_bcbearer_sort - create sets of bearer pairs used by broadcast bearer
  */
+<<<<<<< HEAD
 
 void tipc_bcbearer_sort(void)
 {
+<<<<<<< HEAD
 	struct bcbearer_pair *bp_temp = bcbearer->bpairs_temp;
 	struct bcbearer_pair *bp_curr;
+=======
+	struct tipc_bcbearer_pair *bp_temp = bcbearer->bpairs_temp;
+	struct tipc_bcbearer_pair *bp_curr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_bcbearer_sort(void)
+{
+	struct tipc_bcbearer_pair *bp_temp = bcbearer->bpairs_temp;
+	struct tipc_bcbearer_pair *bp_curr;
+>>>>>>> refs/remotes/origin/master
 	int b_index;
 	int pri;
 
 	spin_lock_bh(&bc_lock);
 
 	/* Group bearers by priority (can assume max of two per priority) */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(bp_temp, 0, sizeof(bcbearer->bpairs_temp));
 
 	for (b_index = 0; b_index < MAX_BEARERS; b_index++) {
@@ -636,7 +1333,10 @@ void tipc_bcbearer_sort(void)
 	}
 
 	/* Create array of bearer pairs for broadcasting */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	bp_curr = bcbearer->bpairs;
 	memset(bcbearer->bpairs, 0, sizeof(bcbearer->bpairs));
 
@@ -663,6 +1363,8 @@ void tipc_bcbearer_sort(void)
 	spin_unlock_bh(&bc_lock);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * tipc_bcbearer_push - resolve bearer congestion
  *
@@ -684,14 +1386,24 @@ void tipc_bcbearer_push(void)
 	spin_unlock_bh(&bc_lock);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int tipc_bclink_stats(char *buf, const u32 buf_size)
 {
 	struct print_buf pb;
+=======
+
+int tipc_bclink_stats(char *buf, const u32 buf_size)
+{
+	int ret;
+	struct tipc_stats *s;
+>>>>>>> refs/remotes/origin/master
 
 	if (!bcl)
 		return 0;
 
+<<<<<<< HEAD
 	tipc_printbuf_init(&pb, buf, buf_size);
 
 	spin_lock_bh(&bc_lock);
@@ -729,6 +1441,39 @@ int tipc_bclink_stats(char *buf, const u32 buf_size)
 
 	spin_unlock_bh(&bc_lock);
 	return tipc_printbuf_validate(&pb);
+=======
+	spin_lock_bh(&bc_lock);
+
+	s = &bcl->stats;
+
+	ret = tipc_snprintf(buf, buf_size, "Link <%s>\n"
+			    "  Window:%u packets\n",
+			    bcl->name, bcl->queue_limit[0]);
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  RX packets:%u fragments:%u/%u bundles:%u/%u\n",
+			     s->recv_info, s->recv_fragments,
+			     s->recv_fragmented, s->recv_bundles,
+			     s->recv_bundled);
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  TX packets:%u fragments:%u/%u bundles:%u/%u\n",
+			     s->sent_info, s->sent_fragments,
+			     s->sent_fragmented, s->sent_bundles,
+			     s->sent_bundled);
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  RX naks:%u defs:%u dups:%u\n",
+			     s->recv_nacks, s->deferred_recv, s->duplicates);
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  TX naks:%u acks:%u dups:%u\n",
+			     s->sent_nacks, s->sent_acks, s->retransmitted);
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  Congestion link:%u  Send queue max:%u avg:%u\n",
+			     s->link_congs, s->max_queue_sz,
+			     s->queue_sz_counts ?
+			     (s->accu_queue_sz / s->queue_sz_counts) : 0);
+
+	spin_unlock_bh(&bc_lock);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 int tipc_bclink_reset_stats(void)
@@ -755,6 +1500,8 @@ int tipc_bclink_set_queue_limits(u32 limit)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int tipc_bclink_init(void)
 {
 	bcbearer = kzalloc(sizeof(*bcbearer), GFP_ATOMIC);
@@ -774,22 +1521,50 @@ int tipc_bclink_init(void)
 	sprintf(bcbearer->media.name, "tipc-multicast");
 
 	bcl = &bclink->link;
+=======
+void tipc_bclink_init(void)
+{
+	INIT_LIST_HEAD(&bcbearer->bearer.cong_links);
+=======
+void tipc_bclink_init(void)
+{
+>>>>>>> refs/remotes/origin/master
+	bcbearer->bearer.media = &bcbearer->media;
+	bcbearer->media.send_msg = tipc_bcbearer_send;
+	sprintf(bcbearer->media.name, "tipc-broadcast");
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&bcl->waiting_ports);
 	bcl->next_out_no = 1;
 	spin_lock_init(&bclink->node.lock);
 	bcl->owner = &bclink->node;
 	bcl->max_pkt = MAX_PKT_DEFAULT_MCAST;
 	tipc_link_set_queue_limits(bcl, BCLINK_WIN_DEFAULT);
+<<<<<<< HEAD
 	bcl->b_ptr = &bcbearer->bearer;
 	bcl->state = WORKING_WORKING;
 	strlcpy(bcl->name, tipc_bclink_name, TIPC_MAX_LINK_NAME);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&bcbearer->bearer.lock);
+	bcl->b_ptr = &bcbearer->bearer;
+	bcl->state = WORKING_WORKING;
+	strlcpy(bcl->name, tipc_bclink_name, TIPC_MAX_LINK_NAME);
+>>>>>>> refs/remotes/origin/master
 }
 
 void tipc_bclink_stop(void)
 {
 	spin_lock_bh(&bc_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (bcbearer) {
 		tipc_link_stop(bcl);
 		bcl = NULL;
@@ -799,13 +1574,28 @@ void tipc_bclink_stop(void)
 		bcbearer = NULL;
 	}
 	spin_unlock_bh(&bc_lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	tipc_link_stop(bcl);
+	spin_unlock_bh(&bc_lock);
+
+	memset(bclink, 0, sizeof(*bclink));
+	memset(bcbearer, 0, sizeof(*bcbearer));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /**
  * tipc_nmap_add - add a node to a node map
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void tipc_nmap_add(struct tipc_node_map *nm_ptr, u32 node)
 {
 	int n = tipc_node(node);
@@ -821,7 +1611,10 @@ void tipc_nmap_add(struct tipc_node_map *nm_ptr, u32 node)
 /**
  * tipc_nmap_remove - remove a node from a node map
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void tipc_nmap_remove(struct tipc_node_map *nm_ptr, u32 node)
 {
 	int n = tipc_node(node);
@@ -840,7 +1633,10 @@ void tipc_nmap_remove(struct tipc_node_map *nm_ptr, u32 node)
  * @nm_b: input node map B
  * @nm_diff: output node map A-B (i.e. nodes of A that are not in B)
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void tipc_nmap_diff(struct tipc_node_map *nm_a,
 			   struct tipc_node_map *nm_b,
 			   struct tipc_node_map *nm_diff)
@@ -866,10 +1662,22 @@ static void tipc_nmap_diff(struct tipc_node_map *nm_a,
 /**
  * tipc_port_list_add - add a port to a port list, ensuring no duplicates
  */
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 void tipc_port_list_add(struct port_list *pl_ptr, u32 port)
 {
 	struct port_list *item = pl_ptr;
+=======
+void tipc_port_list_add(struct tipc_port_list *pl_ptr, u32 port)
+{
+	struct tipc_port_list *item = pl_ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_port_list_add(struct tipc_port_list *pl_ptr, u32 port)
+{
+	struct tipc_port_list *item = pl_ptr;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int item_sz = PLSIZE;
 	int cnt = pl_ptr->count;
@@ -888,7 +1696,11 @@ void tipc_port_list_add(struct port_list *pl_ptr, u32 port)
 		if (!item->next) {
 			item->next = kmalloc(sizeof(*item), GFP_ATOMIC);
 			if (!item->next) {
+<<<<<<< HEAD
 				warn("Incomplete multicast delivery, no memory\n");
+=======
+				pr_warn("Incomplete multicast delivery, no memory\n");
+>>>>>>> refs/remotes/origin/master
 				return;
 			}
 			item->next->next = NULL;
@@ -900,15 +1712,31 @@ void tipc_port_list_add(struct port_list *pl_ptr, u32 port)
  * tipc_port_list_free - free dynamically created entries in port_list chain
  *
  */
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 void tipc_port_list_free(struct port_list *pl_ptr)
 {
 	struct port_list *item;
 	struct port_list *next;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void tipc_port_list_free(struct tipc_port_list *pl_ptr)
+{
+	struct tipc_port_list *item;
+	struct tipc_port_list *next;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (item = pl_ptr->next; item; item = next) {
 		next = item->next;
 		kfree(item);
 	}
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

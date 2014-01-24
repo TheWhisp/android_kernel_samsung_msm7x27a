@@ -34,6 +34,10 @@
 #include <linux/regulator/fixed.h>
 #include <linux/regulator/machine.h>
 #include <linux/mmc/host.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
@@ -42,10 +46,17 @@
 
 #include <plat/board.h>
 #include <plat/usb.h>
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/mcspi.h>
 #include <video/omapdss.h>
 #include <video/omap-panel-generic-dpi.h>
+=======
+#include "common.h"
+#include <plat/mcspi.h>
+#include <video/omapdss.h>
+#include <video/omap-panel-dvi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "mux.h"
 #include "sdram-micron-mt46h32m32lf-6.h"
@@ -113,6 +124,7 @@ static struct omap_smsc911x_platform_data smsc911x_cfg = {
 
 static inline void __init omap3evm_init_smsc911x(void)
 {
+<<<<<<< HEAD
 	struct clk *l3ck;
 	unsigned int rate;
 
@@ -122,6 +134,8 @@ static inline void __init omap3evm_init_smsc911x(void)
 	else
 		rate = clk_get_rate(l3ck);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Configure ethernet controller reset gpio */
 	if (cpu_is_omap3430()) {
 		if (get_omap3_evm_rev() == OMAP3EVM_BOARD_GEN_1)
@@ -247,8 +261,12 @@ static void omap3_evm_disable_dvi(struct omap_dss_device *dssdev)
 	dvi_enabled = 0;
 }
 
+<<<<<<< HEAD
 static struct panel_generic_dpi_data dvi_panel = {
 	.name			= "generic",
+=======
+static struct panel_dvi_platform_data dvi_panel = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.platform_enable	= omap3_evm_enable_dvi,
 	.platform_disable	= omap3_evm_disable_dvi,
 };
@@ -256,7 +274,11 @@ static struct panel_generic_dpi_data dvi_panel = {
 static struct omap_dss_device omap3_evm_dvi_device = {
 	.name			= "dvi",
 	.type			= OMAP_DISPLAY_TYPE_DPI,
+<<<<<<< HEAD
 	.driver_name		= "generic_dpi_panel",
+=======
+	.driver_name		= "dvi",
+>>>>>>> refs/remotes/origin/cm-10.0
 	.data			= &dvi_panel,
 	.phy.dpi.data_lines	= 24,
 };
@@ -273,12 +295,21 @@ static struct omap_dss_board_info omap3_evm_dss_data = {
 	.default_device	= &omap3_evm_lcd_device,
 };
 
+<<<<<<< HEAD
 static struct regulator_consumer_supply omap3evm_vmmc1_supply = {
 	.supply			= "vmmc",
 };
 
 static struct regulator_consumer_supply omap3evm_vsim_supply = {
 	.supply			= "vmmc_aux",
+=======
+static struct regulator_consumer_supply omap3evm_vmmc1_supply[] = {
+	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.0"),
+};
+
+static struct regulator_consumer_supply omap3evm_vsim_supply[] = {
+	REGULATOR_SUPPLY("vmmc_aux", "omap_hsmmc.0"),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* VMMC1 for MMC1 pins CMD, CLK, DAT0..DAT3 (20 mA, plus card == max 220 mA) */
@@ -292,8 +323,13 @@ static struct regulator_init_data omap3evm_vmmc1 = {
 					| REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &omap3evm_vmmc1_supply,
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(omap3evm_vmmc1_supply),
+	.consumer_supplies	= omap3evm_vmmc1_supply,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* VSIM for MMC1 pins DAT4..DAT7 (2 mA, plus card == max 50 mA) */
@@ -307,8 +343,13 @@ static struct regulator_init_data omap3evm_vsim = {
 					| REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &omap3evm_vsim_supply,
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(omap3evm_vsim_supply),
+	.consumer_supplies	= omap3evm_vsim_supply,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct omap2_hsmmc_info mmc[] = {
@@ -317,6 +358,10 @@ static struct omap2_hsmmc_info mmc[] = {
 		.caps		= MMC_CAP_4_BIT_DATA,
 		.gpio_cd	= -EINVAL,
 		.gpio_wp	= 63,
+<<<<<<< HEAD
+=======
+		.deferred	= true,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 #ifdef CONFIG_WL12XX_PLATFORM_DATA
 	{
@@ -361,6 +406,7 @@ static int omap3evm_twl_gpio_setup(struct device *dev,
 	int r, lcd_bl_en;
 
 	/* gpio + 0 is "mmc0_cd" (input/IRQ) */
+<<<<<<< HEAD
 	omap_mux_init_gpio(63, OMAP_PIN_INPUT);
 	mmc[0].gpio_cd = gpio + 0;
 	omap2_hsmmc_init(mmc);
@@ -368,6 +414,10 @@ static int omap3evm_twl_gpio_setup(struct device *dev,
 	/* link regulators to MMC adapters */
 	omap3evm_vmmc1_supply.dev = mmc[0].dev;
 	omap3evm_vsim_supply.dev = mmc[0].dev;
+=======
+	mmc[0].gpio_cd = gpio + 0;
+	omap_hsmmc_late_init(mmc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Most GPIOs are for USB OTG.  Some are mostly sent to
@@ -385,7 +435,11 @@ static int omap3evm_twl_gpio_setup(struct device *dev,
 	gpio_request_one(gpio + 7, GPIOF_OUT_INIT_LOW, "EN_DVI");
 
 	/* TWL4030_GPIO_MAX + 1 == ledB (out, active low LED) */
+<<<<<<< HEAD
 	gpio_leds[2].gpio = gpio + TWL4030_GPIO_MAX + 1;
+=======
+	gpio_leds[0].gpio = gpio + TWL4030_GPIO_MAX + 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	platform_device_register(&leds_gpio);
 
@@ -435,8 +489,14 @@ static struct twl4030_keypad_data omap3evm_kp_data = {
 };
 
 /* ads7846 on SPI */
+<<<<<<< HEAD
 static struct regulator_consumer_supply omap3evm_vio_supply =
 	REGULATOR_SUPPLY("vcc", "spi1.0");
+=======
+static struct regulator_consumer_supply omap3evm_vio_supply[] = {
+	REGULATOR_SUPPLY("vcc", "spi1.0"),
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* VIO for ads7846 */
 static struct regulator_init_data omap3evm_vio = {
@@ -449,8 +509,13 @@ static struct regulator_init_data omap3evm_vio = {
 		.valid_ops_mask		= REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &omap3evm_vio_supply,
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(omap3evm_vio_supply),
+	.consumer_supplies	= omap3evm_vio_supply,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #ifdef CONFIG_WL12XX_PLATFORM_DATA
@@ -458,16 +523,27 @@ static struct regulator_init_data omap3evm_vio = {
 #define OMAP3EVM_WLAN_PMENA_GPIO	(150)
 #define OMAP3EVM_WLAN_IRQ_GPIO		(149)
 
+<<<<<<< HEAD
 static struct regulator_consumer_supply omap3evm_vmmc2_supply =
 	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.1");
+=======
+static struct regulator_consumer_supply omap3evm_vmmc2_supply[] = {
+	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.1"),
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* VMMC2 for driving the WL12xx module */
 static struct regulator_init_data omap3evm_vmmc2 = {
 	.constraints = {
 		.valid_ops_mask	= REGULATOR_CHANGE_STATUS,
 	},
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies = &omap3evm_vmmc2_supply,
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(omap3evm_vmmc2_supply),
+	.consumer_supplies	= omap3evm_vmmc2_supply,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct fixed_voltage_config omap3evm_vwlan = {
@@ -489,7 +565,10 @@ static struct platform_device omap3evm_wlan_regulator = {
 };
 
 struct wl12xx_platform_data omap3evm_wlan_data __initdata = {
+<<<<<<< HEAD
 	.irq = OMAP_GPIO_IRQ(OMAP3EVM_WLAN_IRQ_GPIO),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.board_ref_clock = WL12XX_REFCLOCK_38, /* 38.4 MHz */
 };
 #endif
@@ -509,8 +588,15 @@ static int __init omap3_evm_i2c_init(void)
 			TWL_COMMON_PDATA_USB | TWL_COMMON_PDATA_MADC |
 			TWL_COMMON_PDATA_AUDIO,
 			TWL_COMMON_REGULATOR_VDAC | TWL_COMMON_REGULATOR_VPLL2);
+<<<<<<< HEAD
 	omap3evm_twldata.vdac->constraints.apply_uV = true;
 	omap3evm_twldata.vpll2->constraints.apply_uV = true;
+=======
+
+	omap3evm_twldata.vdac->constraints.apply_uV = true;
+	omap3evm_twldata.vpll2->constraints.apply_uV = true;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap3_pmic_init("twl4030", &omap3evm_twldata);
 	omap_register_i2c_bus(2, 400, NULL, 0);
 	omap_register_i2c_bus(3, 400, NULL, 0);
@@ -520,12 +606,15 @@ static int __init omap3_evm_i2c_init(void)
 static struct omap_board_config_kernel omap3_evm_config[] __initdata = {
 };
 
+<<<<<<< HEAD
 static void __init omap3_evm_init_early(void)
 {
 	omap2_init_common_infrastructure();
 	omap2_init_common_devices(mt46h32m32lf6_sdrc_params, NULL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct usbhs_omap_board_data usbhs_bdata __initdata = {
 
 	.port_mode[0] = OMAP_USBHS_PORT_MODE_UNUSED,
@@ -623,9 +712,37 @@ static struct gpio omap3_evm_ehci_gpios[] __initdata = {
 	{ OMAP3_EVM_EHCI_SELECT, GPIOF_OUT_INIT_LOW,   "select EHCI port" },
 };
 
+<<<<<<< HEAD
 static void __init omap3_evm_init(void)
 {
 	omap3_evm_get_revision();
+=======
+static void __init omap3_evm_wl12xx_init(void)
+{
+#ifdef CONFIG_WL12XX_PLATFORM_DATA
+	int ret;
+
+	/* WL12xx WLAN Init */
+	omap3evm_wlan_data.irq = gpio_to_irq(OMAP3EVM_WLAN_IRQ_GPIO);
+	ret = wl12xx_set_platform_data(&omap3evm_wlan_data);
+	if (ret)
+		pr_err("error setting wl12xx data: %d\n", ret);
+	ret = platform_device_register(&omap3evm_wlan_regulator);
+	if (ret)
+		pr_err("error registering wl12xx device: %d\n", ret);
+#endif
+}
+
+static struct regulator_consumer_supply dummy_supplies[] = {
+	REGULATOR_SUPPLY("vddvario", "smsc911x.0"),
+	REGULATOR_SUPPLY("vdd33a", "smsc911x.0"),
+};
+
+static void __init omap3_evm_init(void)
+{
+	omap3_evm_get_revision();
+	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (cpu_is_omap3630())
 		omap3_mux_init(omap36x_board_mux, OMAP_PACKAGE_CBB);
@@ -635,11 +752,21 @@ static void __init omap3_evm_init(void)
 	omap_board_config = omap3_evm_config;
 	omap_board_config_size = ARRAY_SIZE(omap3_evm_config);
 
+<<<<<<< HEAD
+=======
+	omap_mux_init_gpio(63, OMAP_PIN_INPUT);
+	omap_hsmmc_init(mmc);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap3_evm_i2c_init();
 
 	omap_display_init(&omap3_evm_dss_data);
 
 	omap_serial_init();
+<<<<<<< HEAD
+=======
+	omap_sdrc_init(mt46h32m32lf6_sdrc_params, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* OMAP3EVM uses ISP1504 phy and so register nop transceiver */
 	usb_nop_xceiv_register();
@@ -670,6 +797,7 @@ static void __init omap3_evm_init(void)
 	omap_ads7846_init(1, OMAP3_EVM_TS_GPIO, 310, NULL);
 	omap3evm_init_smsc911x();
 	omap3_evm_display_init();
+<<<<<<< HEAD
 
 #ifdef CONFIG_WL12XX_PLATFORM_DATA
 	/* WL12xx WLAN Init */
@@ -677,10 +805,14 @@ static void __init omap3_evm_init(void)
 		pr_err("error setting wl12xx data\n");
 	platform_device_register(&omap3evm_wlan_regulator);
 #endif
+=======
+	omap3_evm_wl12xx_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 MACHINE_START(OMAP3EVM, "OMAP3 EVM")
 	/* Maintainer: Syed Mohammed Khasim - Texas Instruments */
+<<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.reserve	= omap_reserve,
 	.map_io		= omap3_map_io,
@@ -688,4 +820,15 @@ MACHINE_START(OMAP3EVM, "OMAP3 EVM")
 	.init_irq	= omap_init_irq,
 	.init_machine	= omap3_evm_init,
 	.timer		= &omap_timer,
+=======
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap3_map_io,
+	.init_early	= omap35xx_init_early,
+	.init_irq	= omap3_init_irq,
+	.handle_irq	= omap3_intc_handle_irq,
+	.init_machine	= omap3_evm_init,
+	.timer		= &omap3_timer,
+	.restart	= omap_prcm_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

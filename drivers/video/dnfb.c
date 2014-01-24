@@ -7,7 +7,13 @@
 #include <linux/platform_device.h>
 
 #include <asm/setup.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/amigahw.h>
 #include <asm/amigaints.h>
@@ -116,7 +122,11 @@ static struct fb_ops dn_fb_ops = {
 	.fb_imageblit	= cfb_imageblit,
 };
 
+<<<<<<< HEAD
 struct fb_var_screeninfo dnfb_var __devinitdata = {
+=======
+struct fb_var_screeninfo dnfb_var = {
+>>>>>>> refs/remotes/origin/master
 	.xres		= 1280,
 	.yres		= 1024,
 	.xres_virtual	= 2048,
@@ -127,7 +137,11 @@ struct fb_var_screeninfo dnfb_var __devinitdata = {
 	.vmode		= FB_VMODE_NONINTERLACED,
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo dnfb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo dnfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id		= "Apollo Mono",
 	.smem_start	= (FRAME_BUFFER_START + IO_BASE),
 	.smem_len	= FRAME_BUFFER_LEN,
@@ -225,7 +239,11 @@ void dnfb_copyarea(struct fb_info *info, const struct fb_copyarea *area)
  * Initialization
  */
 
+<<<<<<< HEAD
 static int __devinit dnfb_probe(struct platform_device *dev)
+=======
+static int dnfb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	int err = 0;

@@ -14,11 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: cb_pcimdas
@@ -40,6 +43,7 @@ No interrupts, multi channel or FIFO AI, although the card looks like it could s
 See http://www.mccdaq.com/PDFs/Manuals/pcim-das1602-16.pdf for more details.
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <linux/delay.h>
@@ -62,6 +66,21 @@ See http://www.mccdaq.com/PDFs/Manuals/pcim-das1602-16.pdf for more details.
 #define BADR2_SIZE 6
 #define BADR3_SIZE 16
 #define BADR4_SIZE 4
+=======
+#include <linux/module.h>
+#include <linux/pci.h>
+#include <linux/interrupt.h>
+
+#include "../comedidev.h"
+
+#include "plx9052.h"
+#include "8255.h"
+
+/* Registers for the PCIM-DAS1602/16 */
+
+/* sizes of io regions (bytes) */
+#define BADR3_SIZE 16
+>>>>>>> refs/remotes/origin/master
 
 /* DAC Offsets */
 #define ADC_TRIG 0
@@ -85,6 +104,7 @@ See http://www.mccdaq.com/PDFs/Manuals/pcim-das1602-16.pdf for more details.
 #define RESID_COUNT_H 13
 #define RESID_COUNT_L 14
 
+<<<<<<< HEAD
 /* Board description */
 struct cb_pcimdas_board {
 	const char *name;
@@ -212,8 +232,11 @@ static int cb_pcimdas_attach(struct comedi_device *dev,
 	int index;
 	/* int i; */
 
+<<<<<<< HEAD
 	printk("comedi%d: cb_pcimdas: ", dev->minor);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Allocate the private structure area.
  */
@@ -223,7 +246,10 @@ static int cb_pcimdas_attach(struct comedi_device *dev,
 /*
  * Probe the device to determine what device in the series it is.
  */
+<<<<<<< HEAD
 	printk("\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for_each_pci_dev(pcidev) {
 		/*  is it not a computer boards card? */
@@ -248,26 +274,45 @@ static int cb_pcimdas_attach(struct comedi_device *dev,
 		}
 	}
 
+<<<<<<< HEAD
 	printk("No supported ComputerBoards/MeasurementComputing card found on "
 	       "requested position\n");
+=======
+	dev_err(dev->hw_dev, "No supported ComputerBoards/MeasurementComputing card found on requested position\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -EIO;
 
 found:
 
+<<<<<<< HEAD
 	printk("Found %s on bus %i, slot %i\n", cb_pcimdas_boards[index].name,
 	       pcidev->bus->number, PCI_SLOT(pcidev->devfn));
+=======
+	dev_dbg(dev->hw_dev, "Found %s on bus %i, slot %i\n",
+		cb_pcimdas_boards[index].name, pcidev->bus->number,
+		PCI_SLOT(pcidev->devfn));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*  Warn about non-tested features */
 	switch (thisboard->device_id) {
 	case 0x56:
 		break;
 	default:
+<<<<<<< HEAD
 		printk("THIS CARD IS UNSUPPORTED.\n"
 		       "PLEASE REPORT USAGE TO <mocelet@sucs.org>\n");
 	}
 
 	if (comedi_pci_enable(pcidev, "cb_pcimdas")) {
 		printk(" Failed to enable PCI device and request regions\n");
+=======
+		dev_dbg(dev->hw_dev, "THIS CARD IS UNSUPPORTED.\n"
+			"PLEASE REPORT USAGE TO <mocelet@sucs.org>\n");
+	}
+
+	if (comedi_pci_enable(pcidev, "cb_pcimdas")) {
+		dev_err(dev->hw_dev, "Failed to enable PCI device and request regions\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 	}
 
@@ -277,6 +322,7 @@ found:
 	devpriv->BADR3 = pci_resource_start(devpriv->pci_dev, 3);
 	devpriv->BADR4 = pci_resource_start(devpriv->pci_dev, 4);
 
+<<<<<<< HEAD
 #ifdef CBPCIMDAS_DEBUG
 	printk("devpriv->BADR0 = 0x%lx\n", devpriv->BADR0);
 	printk("devpriv->BADR1 = 0x%lx\n", devpriv->BADR1);
@@ -284,6 +330,13 @@ found:
 	printk("devpriv->BADR3 = 0x%lx\n", devpriv->BADR3);
 	printk("devpriv->BADR4 = 0x%lx\n", devpriv->BADR4);
 #endif
+=======
+	dev_dbg(dev->hw_dev, "devpriv->BADR0 = 0x%lx\n", devpriv->BADR0);
+	dev_dbg(dev->hw_dev, "devpriv->BADR1 = 0x%lx\n", devpriv->BADR1);
+	dev_dbg(dev->hw_dev, "devpriv->BADR2 = 0x%lx\n", devpriv->BADR2);
+	dev_dbg(dev->hw_dev, "devpriv->BADR3 = 0x%lx\n", devpriv->BADR3);
+	dev_dbg(dev->hw_dev, "devpriv->BADR4 = 0x%lx\n", devpriv->BADR4);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Dont support IRQ yet */
 /*  get irq */
@@ -333,8 +386,11 @@ found:
 	else
 		s->type = COMEDI_SUBD_UNUSED;
 
+<<<<<<< HEAD
 	printk("attached\n");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 }
 
@@ -348,6 +404,7 @@ found:
  */
 static int cb_pcimdas_detach(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 #ifdef CBPCIMDAS_DEBUG
 	if (devpriv) {
 		printk("devpriv->BADR0 = 0x%lx\n", devpriv->BADR0);
@@ -358,6 +415,21 @@ static int cb_pcimdas_detach(struct comedi_device *dev)
 	}
 #endif
 	printk("comedi%d: cb_pcimdas: remove\n", dev->minor);
+=======
+	if (devpriv) {
+		dev_dbg(dev->hw_dev, "devpriv->BADR0 = 0x%lx\n",
+			devpriv->BADR0);
+		dev_dbg(dev->hw_dev, "devpriv->BADR1 = 0x%lx\n",
+			devpriv->BADR1);
+		dev_dbg(dev->hw_dev, "devpriv->BADR2 = 0x%lx\n",
+			devpriv->BADR2);
+		dev_dbg(dev->hw_dev, "devpriv->BADR3 = 0x%lx\n",
+			devpriv->BADR3);
+		dev_dbg(dev->hw_dev, "devpriv->BADR4 = 0x%lx\n",
+			devpriv->BADR4);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dev->irq)
 		free_irq(dev->irq, dev);
 	if (devpriv) {
@@ -372,6 +444,23 @@ static int cb_pcimdas_detach(struct comedi_device *dev)
 }
 
 /*
+=======
+/*
+ * this structure is for data unique to this hardware driver.  If
+ * several hardware drivers keep similar information in this structure,
+ * feel free to suggest moving the variable to the struct comedi_device
+ * struct.
+ */
+struct cb_pcimdas_private {
+	/* base addresses */
+	unsigned long BADR3;
+
+	/* Used for AO readback */
+	unsigned int ao_readback[2];
+};
+
+/*
+>>>>>>> refs/remotes/origin/master
  * "instructions" read/write data in "one-shot" or "software-triggered"
  * mode.
  */
@@ -379,6 +468,10 @@ static int cb_pcimdas_ai_rinsn(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct cb_pcimdas_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int n, i;
 	unsigned int d;
 	unsigned int busy;
@@ -390,9 +483,15 @@ static int cb_pcimdas_ai_rinsn(struct comedi_device *dev,
 
 	/* check channel number */
 	if ((inb(devpriv->BADR3 + 2) & 0x20) == 0)	/* differential mode */
+<<<<<<< HEAD
 		maxchans = thisboard->ai_diff_chans;
 	else
 		maxchans = thisboard->ai_se_chans;
+=======
+		maxchans = s->n_chan / 2;
+	else
+		maxchans = s->n_chan;
+>>>>>>> refs/remotes/origin/master
 
 	if (chan > (maxchans - 1))
 		return -ETIMEDOUT;	/* *** Wrong error code. Fixme. */
@@ -406,14 +505,25 @@ static int cb_pcimdas_ai_rinsn(struct comedi_device *dev,
 	outb(0x01, devpriv->BADR3 + 6);	/* set bursting off, conversions on */
 	outb(0x00, devpriv->BADR3 + 7);	/* set range to 10V. UP/BP is controlled by a switch on the board */
 
+<<<<<<< HEAD
 	/*  write channel limits to multiplexer, set Low (bits 0-3) and High (bits 4-7) channels to chan. */
+=======
+	/*
+	 * write channel limits to multiplexer, set Low (bits 0-3) and
+	 * High (bits 4-7) channels to chan.
+	 */
+>>>>>>> refs/remotes/origin/master
 	chanlims = chan | (chan << 4);
 	outb(chanlims, devpriv->BADR3 + 0);
 
 	/* convert n samples */
 	for (n = 0; n < insn->n; n++) {
 		/* trigger conversion */
+<<<<<<< HEAD
 		outw(0, devpriv->BADR2 + 0);
+=======
+		outw(0, dev->iobase + 0);
+>>>>>>> refs/remotes/origin/master
 
 #define TIMEOUT 1000		/* typically takes 5 loops on a lightly loaded Pentium 100MHz, */
 		/* this is likely to be 100 loops on a 2GHz machine, so set 1000 as the limit. */
@@ -424,6 +534,7 @@ static int cb_pcimdas_ai_rinsn(struct comedi_device *dev,
 			if (!busy)
 				break;
 		}
+<<<<<<< HEAD
 		if (i == TIMEOUT) {
 			printk("timeout\n");
 			return -ETIMEDOUT;
@@ -435,6 +546,13 @@ static int cb_pcimdas_ai_rinsn(struct comedi_device *dev,
 		/* d ^= 1<<(thisboard->ai_bits-1); // 16 bit data from ADC, so no mangle needed. */
 
 		data[n] = d;
+=======
+		if (i == TIMEOUT)
+			return -ETIMEDOUT;
+
+		/* read data */
+		data[n] = inw(dev->iobase + 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* return the number of samples read/written */
@@ -445,6 +563,10 @@ static int cb_pcimdas_ao_winsn(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct cb_pcimdas_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int chan = CR_CHAN(insn->chanspec);
 
@@ -453,10 +575,17 @@ static int cb_pcimdas_ao_winsn(struct comedi_device *dev,
 	for (i = 0; i < insn->n; i++) {
 		switch (chan) {
 		case 0:
+<<<<<<< HEAD
 			outw(data[i] & 0x0FFF, devpriv->BADR2 + DAC0_OFFSET);
 			break;
 		case 1:
 			outw(data[i] & 0x0FFF, devpriv->BADR2 + DAC1_OFFSET);
+=======
+			outw(data[i] & 0x0FFF, dev->iobase + DAC0_OFFSET);
+			break;
+		case 1:
+			outw(data[i] & 0x0FFF, dev->iobase + DAC1_OFFSET);
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			return -1;
@@ -474,6 +603,10 @@ static int cb_pcimdas_ao_rinsn(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct cb_pcimdas_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int chan = CR_CHAN(insn->chanspec);
 
@@ -483,6 +616,7 @@ static int cb_pcimdas_ao_rinsn(struct comedi_device *dev,
 	return i;
 }
 
+<<<<<<< HEAD
 /*
  * A convenient macro that defines init_module() and cleanup_module(),
  * as necessary.
@@ -526,6 +660,99 @@ static void __exit driver_cb_pcimdas_cleanup_module(void)
 
 module_init(driver_cb_pcimdas_init_module);
 module_exit(driver_cb_pcimdas_cleanup_module);
+=======
+static int cb_pcimdas_auto_attach(struct comedi_device *dev,
+					    unsigned long context_unused)
+{
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	struct cb_pcimdas_private *devpriv;
+	struct comedi_subdevice *s;
+	unsigned long iobase_8255;
+	int ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	ret = comedi_pci_enable(dev);
+	if (ret)
+		return ret;
+
+	dev->iobase = pci_resource_start(pcidev, 2);
+	devpriv->BADR3 = pci_resource_start(pcidev, 3);
+	iobase_8255 = pci_resource_start(pcidev, 4);
+
+	ret = comedi_alloc_subdevices(dev, 3);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+	/* dev->read_subdev=s; */
+	/*  analog input subdevice */
+	s->type = COMEDI_SUBD_AI;
+	s->subdev_flags = SDF_READABLE | SDF_GROUND;
+	s->n_chan = 16;
+	s->maxdata = 0xffff;
+	s->range_table = &range_unknown;
+	s->len_chanlist = 1;	/*  This is the maximum chanlist length that */
+	/*  the board can handle */
+	s->insn_read = cb_pcimdas_ai_rinsn;
+
+	s = &dev->subdevices[1];
+	/*  analog output subdevice */
+	s->type = COMEDI_SUBD_AO;
+	s->subdev_flags = SDF_WRITABLE;
+	s->n_chan = 2;
+	s->maxdata = 0xfff;
+	/* ranges are hardware settable, but not software readable. */
+	s->range_table = &range_unknown;
+	s->insn_write = &cb_pcimdas_ao_winsn;
+	s->insn_read = &cb_pcimdas_ao_rinsn;
+
+	s = &dev->subdevices[2];
+	/* digital i/o subdevice */
+	subdev_8255_init(dev, s, NULL, iobase_8255);
+
+	dev_info(dev->class_dev, "%s attached\n", dev->board_name);
+
+	return 0;
+}
+
+static void cb_pcimdas_detach(struct comedi_device *dev)
+{
+	if (dev->irq)
+		free_irq(dev->irq, dev);
+	comedi_pci_disable(dev);
+}
+
+static struct comedi_driver cb_pcimdas_driver = {
+	.driver_name	= "cb_pcimdas",
+	.module		= THIS_MODULE,
+	.auto_attach	= cb_pcimdas_auto_attach,
+	.detach		= cb_pcimdas_detach,
+};
+
+static int cb_pcimdas_pci_probe(struct pci_dev *dev,
+				const struct pci_device_id *id)
+{
+	return comedi_pci_auto_config(dev, &cb_pcimdas_driver,
+				      id->driver_data);
+}
+
+static const struct pci_device_id cb_pcimdas_pci_table[] = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_CB, 0x0056) },
+	{ 0 }
+};
+MODULE_DEVICE_TABLE(pci, cb_pcimdas_pci_table);
+
+static struct pci_driver cb_pcimdas_pci_driver = {
+	.name		= "cb_pcimdas",
+	.id_table	= cb_pcimdas_pci_table,
+	.probe		= cb_pcimdas_pci_probe,
+	.remove		= comedi_pci_auto_unconfig,
+};
+module_comedi_pci_driver(cb_pcimdas_driver, cb_pcimdas_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

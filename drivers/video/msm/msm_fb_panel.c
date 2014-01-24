@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -106,6 +114,19 @@ struct platform_device *msm_fb_device_alloc(struct msm_fb_panel_data *pdata,
 		snprintf(dev_name, sizeof(dev_name), "lcdc");
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	case LVDS_PANEL:
+		snprintf(dev_name, sizeof(dev_name), "lvds");
+		break;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case DTV_PANEL:
 		snprintf(dev_name, sizeof(dev_name), "dtv");
 		break;

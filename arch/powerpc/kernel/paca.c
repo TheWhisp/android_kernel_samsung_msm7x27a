@@ -8,16 +8,34 @@
  */
 
 #include <linux/smp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/memblock.h>
 
 #include <asm/firmware.h>
+=======
+#include <linux/export.h>
+#include <linux/memblock.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/memblock.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/lppaca.h>
 #include <asm/paca.h>
 #include <asm/sections.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/iseries/lpar_map.h>
 #include <asm/iseries/hv_types.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/kexec.h>
 
 /* This symbol is provided by the linker - let it fill in the paca
@@ -30,13 +48,24 @@ extern unsigned long __toc_start;
  * The structure which the hypervisor knows about - this structure
  * should not cross a page boundary.  The vpa_init/register_vpa call
  * is now known to fail if the lppaca structure crosses a page
+<<<<<<< HEAD
+<<<<<<< HEAD
  * boundary.  The lppaca is also used on legacy iSeries and POWER5
  * pSeries boxes.  The lppaca is 640 bytes long, and cannot readily
+=======
+ * boundary.  The lppaca is also used on POWER5 pSeries boxes.
+ * The lppaca is 640 bytes long, and cannot readily
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * boundary.  The lppaca is also used on POWER5 pSeries boxes.
+ * The lppaca is 640 bytes long, and cannot readily
+>>>>>>> refs/remotes/origin/master
  * change since the hypervisor knows its layout, so a 1kB alignment
  * will suffice to ensure that it doesn't cross a page boundary.
  */
 struct lppaca lppaca[] = {
 	[0 ... (NR_LPPACAS-1)] = {
+<<<<<<< HEAD
 		.desc = 0xd397d781,	/* "LpPa" */
 		.size = sizeof(struct lppaca),
 		.dyn_proc_status = 2,
@@ -44,6 +73,12 @@ struct lppaca lppaca[] = {
 		.fpregs_in_use = 1,
 		.end_of_quantum = 0xfffffffffffffffful,
 		.slb_count = 64,
+=======
+		.desc = cpu_to_be32(0xd397d781),	/* "LpPa" */
+		.size = cpu_to_be16(sizeof(struct lppaca)),
+		.fpregs_in_use = 1,
+		.slb_count = cpu_to_be16(64),
+>>>>>>> refs/remotes/origin/master
 		.vmxregs_in_use = 0,
 		.page_ins = 0,
 	},
@@ -52,7 +87,11 @@ struct lppaca lppaca[] = {
 static struct lppaca *extra_lppacas;
 static long __initdata lppaca_size;
 
+<<<<<<< HEAD
 static void allocate_lppacas(int nr_cpus, unsigned long limit)
+=======
+static void __init allocate_lppacas(int nr_cpus, unsigned long limit)
+>>>>>>> refs/remotes/origin/master
 {
 	if (nr_cpus <= NR_LPPACAS)
 		return;
@@ -63,7 +102,11 @@ static void allocate_lppacas(int nr_cpus, unsigned long limit)
 						 PAGE_SIZE, limit));
 }
 
+<<<<<<< HEAD
 static struct lppaca *new_lppaca(int cpu)
+=======
+static struct lppaca * __init new_lppaca(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lppaca *lp;
 
@@ -76,7 +119,11 @@ static struct lppaca *new_lppaca(int cpu)
 	return lp;
 }
 
+<<<<<<< HEAD
 static void free_lppacas(void)
+=======
+static void __init free_lppacas(void)
+>>>>>>> refs/remotes/origin/master
 {
 	long new_size = 0, nr;
 
@@ -107,8 +154,13 @@ static inline void free_lppacas(void) { }
  */
 struct slb_shadow slb_shadow[] __cacheline_aligned = {
 	[0 ... (NR_CPUS-1)] = {
+<<<<<<< HEAD
 		.persistent = SLB_NUM_BOLTED,
 		.buffer_length = sizeof(struct slb_shadow),
+=======
+		.persistent = cpu_to_be32(SLB_NUM_BOLTED),
+		.buffer_length = cpu_to_be32(sizeof(struct slb_shadow)),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -126,8 +178,11 @@ struct slb_shadow slb_shadow[] __cacheline_aligned = {
 struct paca_struct *paca;
 EXPORT_SYMBOL(paca);
 
+<<<<<<< HEAD
 struct paca_struct boot_paca;
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __init initialise_paca(struct paca_struct *new_paca, int cpu)
 {
        /* The TOC register (GPR2) points 32kB into the TOC, so that 64kB
@@ -148,6 +203,10 @@ void __init initialise_paca(struct paca_struct *new_paca, int cpu)
 	new_paca->hw_cpu_id = 0xffff;
 	new_paca->kexec_state = KEXEC_STATE_NONE;
 	new_paca->__current = &init_task;
+<<<<<<< HEAD
+=======
+	new_paca->data_offset = 0xfeeeeeeeeeeeeeeeULL;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC_STD_MMU_64
 	new_paca->slb_shadow_ptr = &slb_shadow[cpu];
 #endif /* CONFIG_PPC_STD_MMU_64 */
@@ -167,7 +226,15 @@ void setup_paca(struct paca_struct *new_paca)
 	 * if we do a GET_PACA() before the feature fixups have been
 	 * applied
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_has_feature(CPU_FTR_HVMODE_206))
+=======
+	if (cpu_has_feature(CPU_FTR_HVMODE))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_has_feature(CPU_FTR_HVMODE))
+>>>>>>> refs/remotes/origin/master
 		mtspr(SPRN_SPRG_HPACA, local_paca);
 #endif
 	mtspr(SPRN_SPRG_PACA, local_paca);
@@ -183,12 +250,24 @@ void __init allocate_pacas(void)
 	/*
 	 * We can't take SLB misses on the paca, and we want to access them
 	 * in real mode, so allocate them within the RMA and also within
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * the first segment. On iSeries they must be within the area mapped
 	 * by the HV, which is HvPagesToMap * HVPAGESIZE bytes.
 	 */
 	limit = min(0x10000000ULL, ppc64_rma_size);
 	if (firmware_has_feature(FW_FEATURE_ISERIES))
 		limit = min(limit, HvPagesToMap * HVPAGESIZE);
+=======
+	 * the first segment.
+	 */
+	limit = min(0x10000000ULL, ppc64_rma_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * the first segment.
+	 */
+	limit = min(0x10000000ULL, ppc64_rma_size);
+>>>>>>> refs/remotes/origin/master
 
 	paca_size = PAGE_ALIGN(sizeof(struct paca_struct) * nr_cpu_ids);
 

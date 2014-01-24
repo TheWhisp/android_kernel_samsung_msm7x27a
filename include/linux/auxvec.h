@@ -1,6 +1,7 @@
 #ifndef _LINUX_AUXVEC_H
 #define _LINUX_AUXVEC_H
 
+<<<<<<< HEAD
 #include <asm/auxvec.h>
 
 /* Symbolic values for the entries in the auxiliary table
@@ -36,4 +37,10 @@
   /* number of "#define AT_.*" above, minus {AT_NULL, AT_IGNORE, AT_NOTELF} */
 #endif
 
+=======
+#include <uapi/linux/auxvec.h>
+
+#define AT_VECTOR_SIZE_BASE 20 /* NEW_AUX_ENT entries in auxiliary table */
+  /* number of "#define AT_.*" above, minus {AT_NULL, AT_IGNORE, AT_NOTELF} */
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_AUXVEC_H */

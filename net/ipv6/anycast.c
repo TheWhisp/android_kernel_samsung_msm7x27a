@@ -47,7 +47,11 @@
 static int ipv6_dev_ac_dec(struct net_device *dev, const struct in6_addr *addr);
 
 /* Big ac list lock for all the sockets */
+<<<<<<< HEAD
 static DEFINE_RWLOCK(ipv6_sk_ac_lock);
+=======
+static DEFINE_SPINLOCK(ipv6_sk_ac_lock);
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -64,7 +68,11 @@ int ipv6_sock_ac_join(struct sock *sk, int ifindex, const struct in6_addr *addr)
 	int	ishost = !net->ipv6.devconf_all->forwarding;
 	int	err = 0;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 	if (ipv6_addr_is_multicast(addr))
 		return -EINVAL;
@@ -75,7 +83,15 @@ int ipv6_sock_ac_join(struct sock *sk, int ifindex, const struct in6_addr *addr)
 	if (pac == NULL)
 		return -ENOMEM;
 	pac->acl_next = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&pac->acl_addr, addr);
+=======
+	pac->acl_addr = *addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pac->acl_addr = *addr;
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 	if (ifindex == 0) {
@@ -83,8 +99,17 @@ int ipv6_sock_ac_join(struct sock *sk, int ifindex, const struct in6_addr *addr)
 
 		rt = rt6_lookup(net, addr, NULL, 0, 0);
 		if (rt) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev = rt->rt6i_dev;
+=======
+			dev = rt->dst.dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 			dst_release(&rt->dst);
+=======
+			dev = rt->dst.dev;
+			ip6_rt_put(rt);
+>>>>>>> refs/remotes/origin/master
 		} else if (ishost) {
 			err = -EADDRNOTAVAIL;
 			goto error;
@@ -128,10 +153,17 @@ int ipv6_sock_ac_join(struct sock *sk, int ifindex, const struct in6_addr *addr)
 
 	err = ipv6_dev_ac_inc(dev, addr);
 	if (!err) {
+<<<<<<< HEAD
 		write_lock_bh(&ipv6_sk_ac_lock);
 		pac->acl_next = np->ipv6_ac_list;
 		np->ipv6_ac_list = pac;
 		write_unlock_bh(&ipv6_sk_ac_lock);
+=======
+		spin_lock_bh(&ipv6_sk_ac_lock);
+		pac->acl_next = np->ipv6_ac_list;
+		np->ipv6_ac_list = pac;
+		spin_unlock_bh(&ipv6_sk_ac_lock);
+>>>>>>> refs/remotes/origin/master
 		pac = NULL;
 	}
 
@@ -152,7 +184,11 @@ int ipv6_sock_ac_drop(struct sock *sk, int ifindex, const struct in6_addr *addr)
 	struct ipv6_ac_socklist *pac, *prev_pac;
 	struct net *net = sock_net(sk);
 
+<<<<<<< HEAD
 	write_lock_bh(&ipv6_sk_ac_lock);
+=======
+	spin_lock_bh(&ipv6_sk_ac_lock);
+>>>>>>> refs/remotes/origin/master
 	prev_pac = NULL;
 	for (pac = np->ipv6_ac_list; pac; pac = pac->acl_next) {
 		if ((ifindex == 0 || pac->acl_ifindex == ifindex) &&
@@ -161,7 +197,11 @@ int ipv6_sock_ac_drop(struct sock *sk, int ifindex, const struct in6_addr *addr)
 		prev_pac = pac;
 	}
 	if (!pac) {
+<<<<<<< HEAD
 		write_unlock_bh(&ipv6_sk_ac_lock);
+=======
+		spin_unlock_bh(&ipv6_sk_ac_lock);
+>>>>>>> refs/remotes/origin/master
 		return -ENOENT;
 	}
 	if (prev_pac)
@@ -169,7 +209,11 @@ int ipv6_sock_ac_drop(struct sock *sk, int ifindex, const struct in6_addr *addr)
 	else
 		np->ipv6_ac_list = pac->acl_next;
 
+<<<<<<< HEAD
 	write_unlock_bh(&ipv6_sk_ac_lock);
+=======
+	spin_unlock_bh(&ipv6_sk_ac_lock);
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 	dev = dev_get_by_index_rcu(net, pac->acl_ifindex);
@@ -189,10 +233,20 @@ void ipv6_sock_ac_close(struct sock *sk)
 	struct net *net = sock_net(sk);
 	int	prev_index;
 
+<<<<<<< HEAD
 	write_lock_bh(&ipv6_sk_ac_lock);
 	pac = np->ipv6_ac_list;
 	np->ipv6_ac_list = NULL;
 	write_unlock_bh(&ipv6_sk_ac_lock);
+=======
+	if (!np->ipv6_ac_list)
+		return;
+
+	spin_lock_bh(&ipv6_sk_ac_lock);
+	pac = np->ipv6_ac_list;
+	np->ipv6_ac_list = NULL;
+	spin_unlock_bh(&ipv6_sk_ac_lock);
+>>>>>>> refs/remotes/origin/master
 
 	prev_index = 0;
 	rcu_read_lock();
@@ -211,6 +265,8 @@ void ipv6_sock_ac_close(struct sock *sk)
 	rcu_read_unlock();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if 0
 /* The function is not used, which is funny. Apparently, author
  * supposed to use it to filter out datagrams inside udp/raw but forgot.
@@ -240,6 +296,10 @@ int inet6_ac_check(struct sock *sk, struct in6_addr *addr, int ifindex)
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void aca_put(struct ifacaddr6 *ac)
 {
 	if (atomic_dec_and_test(&ac->aca_refcnt)) {
@@ -289,14 +349,30 @@ int ipv6_dev_ac_inc(struct net_device *dev, const struct in6_addr *addr)
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rt = addrconf_dst_alloc(idev, addr, 1);
+=======
+	rt = addrconf_dst_alloc(idev, addr, true);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rt = addrconf_dst_alloc(idev, addr, true);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rt)) {
 		kfree(aca);
 		err = PTR_ERR(rt);
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&aca->aca_addr, addr);
+=======
+	aca->aca_addr = *addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	aca->aca_addr = *addr;
+>>>>>>> refs/remotes/origin/master
 	aca->aca_idev = idev;
 	aca->aca_rt = rt;
 	aca->aca_users = 1;
@@ -371,7 +447,11 @@ static int ipv6_dev_ac_dec(struct net_device *dev, const struct in6_addr *addr)
  *	check if the interface has this anycast address
  *	called with rcu_read_lock()
  */
+<<<<<<< HEAD
 static int ipv6_chk_acast_dev(struct net_device *dev, const struct in6_addr *addr)
+=======
+static bool ipv6_chk_acast_dev(struct net_device *dev, const struct in6_addr *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inet6_dev *idev;
 	struct ifacaddr6 *aca;
@@ -385,16 +465,27 @@ static int ipv6_chk_acast_dev(struct net_device *dev, const struct in6_addr *add
 		read_unlock_bh(&idev->lock);
 		return aca != NULL;
 	}
+<<<<<<< HEAD
 	return 0;
+=======
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  *	check if given interface (or any, if dev==0) has this anycast address
  */
+<<<<<<< HEAD
 int ipv6_chk_acast_addr(struct net *net, struct net_device *dev,
 			const struct in6_addr *addr)
 {
 	int found = 0;
+=======
+bool ipv6_chk_acast_addr(struct net *net, struct net_device *dev,
+			 const struct in6_addr *addr)
+{
+	bool found = false;
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 	if (dev)
@@ -402,7 +493,11 @@ int ipv6_chk_acast_addr(struct net *net, struct net_device *dev,
 	else
 		for_each_netdev_rcu(net, dev)
 			if (ipv6_chk_acast_dev(dev, addr)) {
+<<<<<<< HEAD
 				found = 1;
+=======
+				found = true;
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 	rcu_read_unlock();
@@ -535,7 +630,11 @@ static const struct file_operations ac6_seq_fops = {
 
 int __net_init ac6_proc_init(struct net *net)
 {
+<<<<<<< HEAD
 	if (!proc_net_fops_create(net, "anycast6", S_IRUGO, &ac6_seq_fops))
+=======
+	if (!proc_create("anycast6", S_IRUGO, net->proc_net, &ac6_seq_fops))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	return 0;
@@ -543,7 +642,11 @@ int __net_init ac6_proc_init(struct net *net)
 
 void ac6_proc_exit(struct net *net)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, "anycast6");
+=======
+	remove_proc_entry("anycast6", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 

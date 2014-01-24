@@ -14,7 +14,11 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/gpio.h>
 
 #include <asm/hardware/vic.h>
@@ -200,7 +204,11 @@ static struct irq_chip s5p_irq_vic_eint = {
 #endif
 };
 
+<<<<<<< HEAD
 int __init s5p_init_irq_eint(void)
+=======
+static int __init s5p_init_irq_eint(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int irq;
 

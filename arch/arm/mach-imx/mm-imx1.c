@@ -18,14 +18,28 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
 #include <asm/mach/map.h>
 
 #include <mach/common.h>
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/irqs.h>
 #include <mach/iomux-v1.h>
+=======
+#include <linux/pinctrl/machine.h>
+
+#include <asm/mach/map.h>
+
+#include "common.h"
+#include "devices/devices-common.h"
+#include "hardware.h"
+#include "iomux-v1.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct map_desc imx_io_desc[] __initdata = {
 	imx_map_entry(MX1, IO, MT_DEVICE),
@@ -39,11 +53,16 @@ void __init mx1_map_io(void)
 void __init imx1_init_early(void)
 {
 	mxc_set_cpu_type(MXC_CPU_MX1);
+<<<<<<< HEAD
 	mxc_arch_reset_init(MX1_IO_ADDRESS(MX1_WDT_BASE_ADDR));
+=======
+>>>>>>> refs/remotes/origin/master
 	imx_iomuxv1_init(MX1_IO_ADDRESS(MX1_GPIO_BASE_ADDR),
 			MX1_NUM_GPIO_PORT);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct mxc_gpio_port imx1_gpio_ports[] = {
 	DEFINE_IMX_GPIO_PORT_IRQ(MX1, 0, 1, MX1_GPIO_INT_PORTA),
 	DEFINE_IMX_GPIO_PORT_IRQ(MX1, 1, 2, MX1_GPIO_INT_PORTB),
@@ -55,4 +74,35 @@ void __init mx1_init_irq(void)
 {
 	mxc_init_irq(MX1_IO_ADDRESS(MX1_AVIC_BASE_ADDR));
 	mxc_gpio_init(imx1_gpio_ports,	ARRAY_SIZE(imx1_gpio_ports));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void __init mx1_init_irq(void)
+{
+	mxc_init_irq(MX1_IO_ADDRESS(MX1_AVIC_BASE_ADDR));
+}
+
+void __init imx1_soc_init(void)
+{
+<<<<<<< HEAD
+=======
+	mxc_arch_reset_init(MX1_IO_ADDRESS(MX1_WDT_BASE_ADDR));
+	mxc_device_init();
+
+>>>>>>> refs/remotes/origin/master
+	mxc_register_gpio("imx1-gpio", 0, MX1_GPIO1_BASE_ADDR, SZ_256,
+						MX1_GPIO_INT_PORTA, 0);
+	mxc_register_gpio("imx1-gpio", 1, MX1_GPIO2_BASE_ADDR, SZ_256,
+						MX1_GPIO_INT_PORTB, 0);
+	mxc_register_gpio("imx1-gpio", 2, MX1_GPIO3_BASE_ADDR, SZ_256,
+						MX1_GPIO_INT_PORTC, 0);
+	mxc_register_gpio("imx1-gpio", 3, MX1_GPIO4_BASE_ADDR, SZ_256,
+						MX1_GPIO_INT_PORTD, 0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx_add_imx_dma("imx1-dma", MX1_DMA_BASE_ADDR,
+			MX1_DMA_INT, MX1_DMA_ERR);
+	pinctrl_provide_dummies();
+>>>>>>> refs/remotes/origin/master
 }

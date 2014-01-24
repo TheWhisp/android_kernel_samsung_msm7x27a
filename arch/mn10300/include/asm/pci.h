@@ -44,7 +44,10 @@ extern void unit_pci_init(void);
 #define pcibios_assign_all_busses()	0
 #endif
 
+<<<<<<< HEAD
 extern unsigned long pci_mem_start;
+=======
+>>>>>>> refs/remotes/origin/master
 #define PCIBIOS_MIN_IO		0xBE000004
 #define PCIBIOS_MIN_MEM		0xB8000000
 
@@ -85,6 +88,8 @@ extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
 /* implement the pci_ DMA API in terms of the generic device dma_ one */
 #include <asm-generic/pci-dma-compat.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * pcibios_resource_to_bus - convert resource to PCI bus address
  * @dev: device which owns this resource
@@ -101,6 +106,10 @@ extern void pcibios_bus_to_resource(struct pci_dev *dev,
 				    struct resource *res,
 				    struct pci_bus_region *region);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct resource *
 pcibios_select_root(struct pci_dev *pdev, struct resource *res)
 {
@@ -119,4 +128,9 @@ static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
 	return channel ? 15 : 14;
 }
 
+<<<<<<< HEAD
+=======
+#include <asm-generic/pci_iomap.h>
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_PCI_H */

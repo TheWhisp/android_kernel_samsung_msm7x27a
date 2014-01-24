@@ -31,7 +31,15 @@
 
 #include <asm/hwrpb.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 #include <asm/irq.h>
@@ -68,7 +76,11 @@ enum ipi_message_type {
 };
 
 /* Set to a secondary's cpuid when it comes online.  */
+<<<<<<< HEAD
 static int smp_secondary_alive __devinitdata = 0;
+=======
+static int smp_secondary_alive = 0;
+>>>>>>> refs/remotes/origin/master
 
 int smp_num_probed;		/* Internal processor count */
 int smp_num_cpus = 1;		/* Number that came online.  */
@@ -116,7 +128,11 @@ wait_boot_cpu_to_stop(int cpuid)
 /*
  * Where secondaries begin a life of C.
  */
+<<<<<<< HEAD
 void __cpuinit
+=======
+void
+>>>>>>> refs/remotes/origin/master
 smp_callin(void)
 {
 	int cpuid = hard_smp_processor_id();
@@ -138,9 +154,17 @@ smp_callin(void)
 
 	/* Get our local ticker going. */
 	smp_setup_percpu_timer(cpuid);
+<<<<<<< HEAD
 
 	/* Call platform-specific callin, if specified */
 	if (alpha_mv.smp_callin) alpha_mv.smp_callin();
+=======
+	init_clockevent();
+
+	/* Call platform-specific callin, if specified */
+	if (alpha_mv.smp_callin)
+		alpha_mv.smp_callin();
+>>>>>>> refs/remotes/origin/master
 
 	/* All kernel threads share the same mm context.  */
 	atomic_inc(&init_mm.mm_count);
@@ -166,12 +190,21 @@ smp_callin(void)
 	DBGS(("smp_callin: commencing CPU %d current %p active_mm %p\n",
 	      cpuid, current, current->active_mm));
 
+<<<<<<< HEAD
 	/* Do nothing.  */
 	cpu_idle();
 }
 
 /* Wait until hwrpb->txrdy is clear for cpu.  Return -1 on timeout.  */
 static int __devinit
+=======
+	preempt_disable();
+	cpu_startup_entry(CPUHP_ONLINE);
+}
+
+/* Wait until hwrpb->txrdy is clear for cpu.  Return -1 on timeout.  */
+static int
+>>>>>>> refs/remotes/origin/master
 wait_for_txrdy (unsigned long cpumask)
 {
 	unsigned long timeout;
@@ -194,7 +227,11 @@ wait_for_txrdy (unsigned long cpumask)
  * Send a message to a secondary's console.  "START" is one such
  * interesting message.  ;-)
  */
+<<<<<<< HEAD
 static void __cpuinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 send_secondary_console_msg(char *str, int cpuid)
 {
 	struct percpu_struct *cpu;
@@ -264,9 +301,16 @@ recv_secondary_console_msg(void)
 		if (cnt <= 0 || cnt >= 80)
 			strcpy(buf, "<<< BOGUS MSG >>>");
 		else {
+<<<<<<< HEAD
 			cp1 = (char *) &cpu->ipc_buffer[11];
 			cp2 = buf;
 			strcpy(cp2, cp1);
+=======
+			cp1 = (char *) &cpu->ipc_buffer[1];
+			cp2 = buf;
+			memcpy(cp2, cp1, cnt);
+			cp2[cnt] = '\0';
+>>>>>>> refs/remotes/origin/master
 			
 			while ((cp2 = strchr(cp2, '\r')) != 0) {
 				*cp2 = ' ';
@@ -285,7 +329,11 @@ recv_secondary_console_msg(void)
 /*
  * Convince the console to have a secondary cpu begin execution.
  */
+<<<<<<< HEAD
 static int __cpuinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 secondary_cpu_start(int cpuid, struct task_struct *idle)
 {
 	struct percpu_struct *cpu;
@@ -356,6 +404,7 @@ secondary_cpu_start(int cpuid, struct task_struct *idle)
 /*
  * Bring one cpu online.
  */
+<<<<<<< HEAD
 static int __cpuinit
 smp_boot_one_cpu(int cpuid)
 {
@@ -375,6 +424,13 @@ smp_boot_one_cpu(int cpuid)
 	DBGS(("smp_boot_one_cpu: CPU %d state 0x%lx flags 0x%lx\n",
 	      cpuid, idle->state, idle->flags));
 
+=======
+static int
+smp_boot_one_cpu(int cpuid, struct task_struct *idle)
+{
+	unsigned long timeout;
+
+>>>>>>> refs/remotes/origin/master
 	/* Signal the secondary to wait a moment.  */
 	smp_secondary_alive = -1;
 
@@ -450,7 +506,15 @@ setup_smp(void)
 		smp_num_probed = 1;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "SMP: %d CPUs probed -- cpu_present_map = %lx\n",
+=======
+	printk(KERN_INFO "SMP: %d CPUs probed -- cpu_present_mask = %lx\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_INFO "SMP: %d CPUs probed -- cpu_present_mask = %lx\n",
+>>>>>>> refs/remotes/origin/master
 	       smp_num_probed, cpumask_bits(cpu_present_mask)[0]);
 }
 
@@ -481,15 +545,26 @@ smp_prepare_cpus(unsigned int max_cpus)
 	smp_num_cpus = smp_num_probed;
 }
 
+<<<<<<< HEAD
 void __devinit
+=======
+void
+>>>>>>> refs/remotes/origin/master
 smp_prepare_boot_cpu(void)
 {
 }
 
+<<<<<<< HEAD
 int __cpuinit
 __cpu_up(unsigned int cpu)
 {
 	smp_boot_one_cpu(cpu);
+=======
+int
+__cpu_up(unsigned int cpu, struct task_struct *tidle)
+{
+	smp_boot_one_cpu(cpu, tidle);
+>>>>>>> refs/remotes/origin/master
 
 	return cpu_online(cpu) ? 0 : -ENOSYS;
 }
@@ -511,6 +586,7 @@ smp_cpus_done(unsigned int max_cpus)
 	       ((bogosum + 2500) / (5000/HZ)) % 100);
 }
 
+<<<<<<< HEAD
 
 void
 smp_percpu_timer_interrupt(struct pt_regs *regs)
@@ -540,6 +616,8 @@ smp_percpu_timer_interrupt(struct pt_regs *regs)
 	set_irq_regs(old_regs);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int
 setup_profiling_timer(unsigned int multiplier)
 {

@@ -342,7 +342,11 @@ static int at76_dfu_get_status(struct usb_device *udev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static u8 at76_dfu_get_state(struct usb_device *udev, u8 *state)
+=======
+static int at76_dfu_get_state(struct usb_device *udev, u8 *state)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -379,7 +383,11 @@ static int at76_usbdfu_download(struct usb_device *udev, u8 *buf, u32 size,
 		 manifest_sync_timeout);
 
 	if (!size) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &udev->dev, "FW buffer length invalid!\n");
+=======
+		dev_err(&udev->dev, "FW buffer length invalid!\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -391,8 +399,13 @@ static int at76_usbdfu_download(struct usb_device *udev, u8 *buf, u32 size,
 		if (need_dfu_state) {
 			ret = at76_dfu_get_state(udev, &dfu_state);
 			if (ret < 0) {
+<<<<<<< HEAD
 				dev_printk(KERN_ERR, &udev->dev,
 					   "cannot get DFU state: %d\n", ret);
+=======
+				dev_err(&udev->dev,
+					"cannot get DFU state: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 				goto exit;
 			}
 			need_dfu_state = 0;
@@ -407,9 +420,15 @@ static int at76_usbdfu_download(struct usb_device *udev, u8 *buf, u32 size,
 				dfu_timeout = at76_get_timeout(&dfu_stat_buf);
 				need_dfu_state = 0;
 			} else
+<<<<<<< HEAD
 				dev_printk(KERN_ERR, &udev->dev,
 					   "at76_dfu_get_status returned %d\n",
 					   ret);
+=======
+				dev_err(&udev->dev,
+					"at76_dfu_get_status returned %d\n",
+					ret);
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case STATE_DFU_DOWNLOAD_BUSY:
@@ -438,9 +457,15 @@ static int at76_usbdfu_download(struct usb_device *udev, u8 *buf, u32 size,
 			blockno++;
 
 			if (ret != bsize)
+<<<<<<< HEAD
 				dev_printk(KERN_ERR, &udev->dev,
 					   "at76_load_int_fw_block "
 					   "returned %d\n", ret);
+=======
+				dev_err(&udev->dev,
+					"at76_load_int_fw_block returned %d\n",
+					ret);
+>>>>>>> refs/remotes/origin/master
 			need_dfu_state = 1;
 			break;
 
@@ -498,12 +523,19 @@ exit:
 	return ret;
 }
 
+<<<<<<< HEAD
 #define HEX2STR_BUFFERS 4
 #define HEX2STR_MAX_LEN 64
+<<<<<<< HEAD
 #define BIN2HEX(x) ((x) < 10 ? '0' + (x) : (x) + 'A' - 10)
 
 /* Convert binary data into hex string */
 static char *hex2str(void *buf, int len)
+=======
+
+/* Convert binary data into hex string */
+static char *hex2str(void *buf, size_t len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static atomic_t a = ATOMIC_INIT(0);
 	static char bufs[HEX2STR_BUFFERS][3 * HEX2STR_MAX_LEN + 1];
@@ -514,6 +546,7 @@ static char *hex2str(void *buf, int len)
 	if (len > HEX2STR_MAX_LEN)
 		len = HEX2STR_MAX_LEN;
 
+<<<<<<< HEAD
 	if (len <= 0) {
 		ret[0] = '\0';
 		return ret;
@@ -526,10 +559,25 @@ static char *hex2str(void *buf, int len)
 		ibuf++;
 	}
 	*(--obuf) = '\0';
+=======
+	if (len == 0)
+		goto exit;
+
+	while (len--) {
+		obuf = hex_byte_pack(obuf, *ibuf++);
+		*obuf++ = '-';
+	}
+	obuf--;
+
+exit:
+	*obuf = '\0';
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* LED trigger */
 static int tx_activity;
 static void at76_ledtrig_tx_timerfunc(unsigned long data);
@@ -1006,9 +1054,15 @@ static void at76_dump_mib_mac_wep(struct at76_priv *priv)
 	    WEP_SMALL_KEY_LEN : WEP_LARGE_KEY_LEN;
 
 	for (i = 0; i < WEP_KEYS; i++)
+<<<<<<< HEAD
 		at76_dbg(DBG_MIB, "%s: MIB MAC_WEP: key %d: %s",
 			 wiphy_name(priv->hw->wiphy), i,
 			 hex2str(m->wep_default_keyvalue[i], key_len));
+=======
+		at76_dbg(DBG_MIB, "%s: MIB MAC_WEP: key %d: %*phD",
+			 wiphy_name(priv->hw->wiphy), i,
+			 key_len, m->wep_default_keyvalue[i]);
+>>>>>>> refs/remotes/origin/master
 exit:
 	kfree(m);
 }
@@ -1033,7 +1087,11 @@ static void at76_dump_mib_mac_mgmt(struct at76_priv *priv)
 	at76_dbg(DBG_MIB, "%s: MIB MAC_MGMT: beacon_period %d CFP_max_duration "
 		 "%d medium_occupancy_limit %d station_id 0x%x ATIM_window %d "
 		 "CFP_mode %d privacy_opt_impl %d DTIM_period %d CFP_period %d "
+<<<<<<< HEAD
 		 "current_bssid %pM current_essid %s current_bss_type %d "
+=======
+		 "current_bssid %pM current_essid %*phD current_bss_type %d "
+>>>>>>> refs/remotes/origin/master
 		 "pm_mode %d ibss_change %d res %d "
 		 "multi_domain_capability_implemented %d "
 		 "international_roaming %d country_string %.3s",
@@ -1043,7 +1101,11 @@ static void at76_dump_mib_mac_mgmt(struct at76_priv *priv)
 		 le16_to_cpu(m->station_id), le16_to_cpu(m->ATIM_window),
 		 m->CFP_mode, m->privacy_option_implemented, m->DTIM_period,
 		 m->CFP_period, m->current_bssid,
+<<<<<<< HEAD
 		 hex2str(m->current_essid, IW_ESSID_MAX_SIZE),
+=======
+		 IW_ESSID_MAX_SIZE, m->current_essid,
+>>>>>>> refs/remotes/origin/master
 		 m->current_bss_type, m->power_mgmt_mode, m->ibss_change,
 		 m->res, m->multi_domain_capability_implemented,
 		 m->multi_domain_capability_enabled, m->country_string);
@@ -1071,7 +1133,11 @@ static void at76_dump_mib_mac(struct at76_priv *priv)
 		 "cwmin %d cwmax %d short_retry_time %d long_retry_time %d "
 		 "scan_type %d scan_channel %d probe_delay %u "
 		 "min_channel_time %d max_channel_time %d listen_int %d "
+<<<<<<< HEAD
 		 "desired_ssid %s desired_bssid %pM desired_bsstype %d",
+=======
+		 "desired_ssid %*phD desired_bssid %pM desired_bsstype %d",
+>>>>>>> refs/remotes/origin/master
 		 wiphy_name(priv->hw->wiphy),
 		 le32_to_cpu(m->max_tx_msdu_lifetime),
 		 le32_to_cpu(m->max_rx_lifetime),
@@ -1082,7 +1148,11 @@ static void at76_dump_mib_mac(struct at76_priv *priv)
 		 le16_to_cpu(m->min_channel_time),
 		 le16_to_cpu(m->max_channel_time),
 		 le16_to_cpu(m->listen_interval),
+<<<<<<< HEAD
 		 hex2str(m->desired_ssid, IW_ESSID_MAX_SIZE),
+=======
+		 IW_ESSID_MAX_SIZE, m->desired_ssid,
+>>>>>>> refs/remotes/origin/master
 		 m->desired_bssid, m->desired_bsstype);
 exit:
 	kfree(m);
@@ -1124,12 +1194,20 @@ exit:
 static void at76_dump_mib_local(struct at76_priv *priv)
 {
 	int ret;
+<<<<<<< HEAD
 	struct mib_local *m = kmalloc(sizeof(struct mib_phy), GFP_KERNEL);
+=======
+	struct mib_local *m = kmalloc(sizeof(*m), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 
 	if (!m)
 		return;
 
+<<<<<<< HEAD
 	ret = at76_get_mib(priv->udev, MIB_LOCAL, m, sizeof(struct mib_local));
+=======
+	ret = at76_get_mib(priv->udev, MIB_LOCAL, m, sizeof(*m));
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		wiphy_err(priv->hw->wiphy,
 			  "at76_get_mib (LOCAL) failed: %d\n", ret);
@@ -1162,6 +1240,7 @@ static void at76_dump_mib_mdomain(struct at76_priv *priv)
 		goto exit;
 	}
 
+<<<<<<< HEAD
 	at76_dbg(DBG_MIB, "%s: MIB MDOMAIN: channel_list %s",
 		 wiphy_name(priv->hw->wiphy),
 		 hex2str(m->channel_list, sizeof(m->channel_list)));
@@ -1169,6 +1248,15 @@ static void at76_dump_mib_mdomain(struct at76_priv *priv)
 	at76_dbg(DBG_MIB, "%s: MIB MDOMAIN: tx_powerlevel %s",
 		 wiphy_name(priv->hw->wiphy),
 		 hex2str(m->tx_powerlevel, sizeof(m->tx_powerlevel)));
+=======
+	at76_dbg(DBG_MIB, "%s: MIB MDOMAIN: channel_list %*phD",
+		 wiphy_name(priv->hw->wiphy),
+		 (int)sizeof(m->channel_list), m->channel_list);
+
+	at76_dbg(DBG_MIB, "%s: MIB MDOMAIN: tx_powerlevel %*phD",
+		 wiphy_name(priv->hw->wiphy),
+		 (int)sizeof(m->tx_powerlevel), m->tx_powerlevel);
+>>>>>>> refs/remotes/origin/master
 exit:
 	kfree(m);
 }
@@ -1287,8 +1375,12 @@ static int at76_load_external_fw(struct usb_device *udev, struct fwentry *fwe)
 	at76_dbg(DBG_DEVSTART, "opmode %d", op_mode);
 
 	if (op_mode != OPMODE_NORMAL_NIC_WITHOUT_FLASH) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &udev->dev, "unexpected opmode %d\n",
 			   op_mode);
+=======
+		dev_err(&udev->dev, "unexpected opmode %d\n", op_mode);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -1307,9 +1399,15 @@ static int at76_load_external_fw(struct usb_device *udev, struct fwentry *fwe)
 			 size, bsize, blockno);
 		ret = at76_load_ext_fw_block(udev, blockno, block, bsize);
 		if (ret != bsize) {
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &udev->dev,
 				   "loading %dth firmware block failed: %d\n",
 				   blockno, ret);
+=======
+			dev_err(&udev->dev,
+				"loading %dth firmware block failed: %d\n",
+				blockno, ret);
+>>>>>>> refs/remotes/origin/master
 			goto exit;
 		}
 		buf += bsize;
@@ -1325,8 +1423,13 @@ static int at76_load_external_fw(struct usb_device *udev, struct fwentry *fwe)
 exit:
 	kfree(block);
 	if (ret < 0)
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &udev->dev,
 			   "downloading external firmware failed: %d\n", ret);
+=======
+		dev_err(&udev->dev,
+			"downloading external firmware failed: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1340,8 +1443,13 @@ static int at76_load_internal_fw(struct usb_device *udev, struct fwentry *fwe)
 				   need_remap ? 0 : 2 * HZ);
 
 	if (ret < 0) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &udev->dev,
 			   "downloading internal fw failed with %d\n", ret);
+=======
+		dev_err(&udev->dev,
+			"downloading internal fw failed with %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -1351,8 +1459,13 @@ static int at76_load_internal_fw(struct usb_device *udev, struct fwentry *fwe)
 	if (need_remap) {
 		ret = at76_remap(udev);
 		if (ret < 0) {
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &udev->dev,
 				   "sending REMAP failed with %d\n", ret);
+=======
+			dev_err(&udev->dev,
+				"sending REMAP failed with %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 			goto exit;
 		}
 	}
@@ -1371,9 +1484,15 @@ static int at76_startup_device(struct at76_priv *priv)
 	int ret;
 
 	at76_dbg(DBG_PARAMS,
+<<<<<<< HEAD
 		 "%s param: ssid %.*s (%s) mode %s ch %d wep %s key %d "
 		 "keylen %d", wiphy_name(priv->hw->wiphy), priv->essid_size,
 		 priv->essid, hex2str(priv->essid, IW_ESSID_MAX_SIZE),
+=======
+		 "%s param: ssid %.*s (%*phD) mode %s ch %d wep %s key %d "
+		 "keylen %d", wiphy_name(priv->hw->wiphy), priv->essid_size,
+		 priv->essid, IW_ESSID_MAX_SIZE, priv->essid,
+>>>>>>> refs/remotes/origin/master
 		 priv->iw_mode == IW_MODE_ADHOC ? "adhoc" : "infra",
 		 priv->channel, priv->wep_enabled ? "enabled" : "disabled",
 		 priv->wep_key_id, priv->wep_keys_len[priv->wep_key_id]);
@@ -1587,11 +1706,18 @@ static struct fwentry *at76_load_firmware(struct usb_device *udev,
 	at76_dbg(DBG_FW, "downloading firmware %s", fwe->fwname);
 	ret = request_firmware(&fwe->fw, fwe->fwname, &udev->dev);
 	if (ret < 0) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &udev->dev, "firmware %s not found!\n",
 			   fwe->fwname);
 		dev_printk(KERN_ERR, &udev->dev,
 			   "you may need to download the firmware from "
 			   "http://developer.berlios.de/projects/at76c503a/\n");
+=======
+		dev_err(&udev->dev, "firmware %s not found!\n",
+			fwe->fwname);
+		dev_err(&udev->dev,
+			"you may need to download the firmware from http://developer.berlios.de/projects/at76c503a/\n");
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -1599,17 +1725,28 @@ static struct fwentry *at76_load_firmware(struct usb_device *udev,
 	fwh = (struct at76_fw_header *)(fwe->fw->data);
 
 	if (fwe->fw->size <= sizeof(*fwh)) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &udev->dev,
 			   "firmware is too short (0x%zx)\n", fwe->fw->size);
+=======
+		dev_err(&udev->dev,
+			"firmware is too short (0x%zx)\n", fwe->fw->size);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
 	/* CRC currently not checked */
 	fwe->board_type = le32_to_cpu(fwh->board_type);
 	if (fwe->board_type != board_type) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &udev->dev,
 			   "board type mismatch, requested %u, got %u\n",
 			   board_type, fwe->board_type);
+=======
+		dev_err(&udev->dev,
+			"board type mismatch, requested %u, got %u\n",
+			board_type, fwe->board_type);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -1728,7 +1865,13 @@ static void at76_mac80211_tx_callback(struct urb *urb)
 	ieee80211_wake_queues(priv->hw);
 }
 
+<<<<<<< HEAD
 static void at76_mac80211_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
+=======
+static void at76_mac80211_tx(struct ieee80211_hw *hw,
+			     struct ieee80211_tx_control *control,
+			     struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct at76_priv *priv = hw->priv;
 	struct at76_tx_buffer *tx_buffer = priv->bulk_out_buffer;
@@ -1753,7 +1896,11 @@ static void at76_mac80211_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 	 * following workaround is necessary. If the TX frame is an
 	 * authentication frame extract the bssid and send the CMD_JOIN. */
 	if (mgmt->frame_control & cpu_to_le16(IEEE80211_STYPE_AUTH)) {
+<<<<<<< HEAD
 		if (compare_ether_addr(priv->bssid, mgmt->bssid)) {
+=======
+		if (!ether_addr_equal(priv->bssid, mgmt->bssid)) {
+>>>>>>> refs/remotes/origin/master
 			memcpy(priv->bssid, mgmt->bssid, ETH_ALEN);
 			ieee80211_queue_work(hw, &priv->work_join_bssid);
 			dev_kfree_skb_any(skb);
@@ -1957,7 +2104,11 @@ static int at76_hw_scan(struct ieee80211_hw *hw,
 	ret = at76_set_card_command(priv->udev, CMD_SCAN, &scan, sizeof(scan));
 
 	if (ret < 0) {
+<<<<<<< HEAD
 		err("CMD_SCAN failed: %d", ret);
+=======
+		wiphy_err(priv->hw->wiphy, "CMD_SCAN failed: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -1975,12 +2126,20 @@ static int at76_config(struct ieee80211_hw *hw, u32 changed)
 	struct at76_priv *priv = hw->priv;
 
 	at76_dbg(DBG_MAC80211, "%s(): channel %d",
+<<<<<<< HEAD
 		 __func__, hw->conf.channel->hw_value);
+=======
+		 __func__, hw->conf.chandef.chan->hw_value);
+>>>>>>> refs/remotes/origin/master
 	at76_dbg_dump(DBG_MAC80211, priv->bssid, ETH_ALEN, "bssid:");
 
 	mutex_lock(&priv->mtx);
 
+<<<<<<< HEAD
 	priv->channel = hw->conf.channel->hw_value;
+=======
+	priv->channel = hw->conf.chandef.chan->hw_value;
+>>>>>>> refs/remotes/origin/master
 
 	if (is_valid_ether_addr(priv->bssid))
 		at76_join(priv);
@@ -2180,8 +2339,12 @@ static int at76_alloc_urbs(struct at76_priv *priv,
 	}
 
 	if (!ep_in || !ep_out) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &interface->dev,
 			   "bulk endpoints missing\n");
+=======
+		dev_err(&interface->dev, "bulk endpoints missing\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENXIO;
 	}
 
@@ -2191,17 +2354,26 @@ static int at76_alloc_urbs(struct at76_priv *priv,
 	priv->rx_urb = usb_alloc_urb(0, GFP_KERNEL);
 	priv->tx_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!priv->rx_urb || !priv->tx_urb) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &interface->dev, "cannot allocate URB\n");
+=======
+		dev_err(&interface->dev, "cannot allocate URB\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
 	buffer_size = sizeof(struct at76_tx_buffer) + MAX_PADDING_SIZE;
 	priv->bulk_out_buffer = kmalloc(buffer_size, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!priv->bulk_out_buffer) {
 		dev_printk(KERN_ERR, &interface->dev,
 			   "cannot allocate output buffer\n");
 		return -ENOMEM;
 	}
+=======
+	if (!priv->bulk_out_buffer)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	at76_dbg(DBG_PROC_ENTRY, "%s: EXIT", __func__);
 
@@ -2260,8 +2432,12 @@ static int at76_init_new_device(struct at76_priv *priv,
 	/* MAC address */
 	ret = at76_get_hw_config(priv);
 	if (ret < 0) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &interface->dev,
 			   "cannot get MAC address\n");
+=======
+		dev_err(&interface->dev, "cannot get MAC address\n");
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -2388,8 +2564,13 @@ static int at76_probe(struct usb_interface *interface,
 	   we get 204 with 2.4.23, Fiberline FL-WL240u (505A+RFMD2958) ??? */
 
 	if (op_mode == OPMODE_HW_CONFIG_MODE) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &interface->dev,
 			   "cannot handle a device in HW_CONFIG_MODE\n");
+=======
+		dev_err(&interface->dev,
+			"cannot handle a device in HW_CONFIG_MODE\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EBUSY;
 		goto error;
 	}
@@ -2401,9 +2582,15 @@ static int at76_probe(struct usb_interface *interface,
 			   "downloading internal firmware\n");
 		ret = at76_load_internal_fw(udev, fwe);
 		if (ret < 0) {
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &interface->dev,
 				   "error %d downloading internal firmware\n",
 				   ret);
+=======
+			dev_err(&interface->dev,
+				"error %d downloading internal firmware\n",
+				ret);
+>>>>>>> refs/remotes/origin/master
 			goto error;
 		}
 		usb_put_dev(udev);
@@ -2438,8 +2625,13 @@ static int at76_probe(struct usb_interface *interface,
 		/* Re-check firmware version */
 		ret = at76_get_mib(udev, MIB_FW_VERSION, &fwv, sizeof(fwv));
 		if (ret < 0) {
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &interface->dev,
 				   "error %d getting firmware version\n", ret);
+=======
+			dev_err(&interface->dev,
+				"error %d getting firmware version\n", ret);
+>>>>>>> refs/remotes/origin/master
 			goto error;
 		}
 	}
@@ -2479,7 +2671,11 @@ static void at76_disconnect(struct usb_interface *interface)
 
 	wiphy_info(priv->hw->wiphy, "disconnecting\n");
 	at76_delete_device(priv);
+<<<<<<< HEAD
 	dev_printk(KERN_INFO, &interface->dev, "disconnected\n");
+=======
+	dev_info(&interface->dev, "disconnected\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Structure for registering this driver with the USB subsystem */
@@ -2488,6 +2684,10 @@ static struct usb_driver at76_driver = {
 	.probe = at76_probe,
 	.disconnect = at76_disconnect,
 	.id_table = dev_table,
+<<<<<<< HEAD
+=======
+	.disable_hub_initiated_lpm = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init at76_mod_init(void)
@@ -2514,10 +2714,15 @@ static void __exit at76_mod_exit(void)
 
 	printk(KERN_INFO DRIVER_DESC " " DRIVER_VERSION " unloading\n");
 	usb_deregister(&at76_driver);
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(firmwares); i++) {
 		if (firmwares[i].fw)
 			release_firmware(firmwares[i].fw);
 	}
+=======
+	for (i = 0; i < ARRAY_SIZE(firmwares); i++)
+		release_firmware(firmwares[i].fw);
+>>>>>>> refs/remotes/origin/master
 	led_trigger_unregister_simple(ledtrig_tx);
 }
 

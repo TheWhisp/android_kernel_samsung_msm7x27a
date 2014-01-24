@@ -52,10 +52,16 @@
  */
 
 struct p9_rdir {
+<<<<<<< HEAD
 	struct mutex mutex;
 	int head;
 	int tail;
 	uint8_t *buf;
+=======
+	int head;
+	int tail;
+	uint8_t buf[];
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -93,6 +99,7 @@ static void p9stat_init(struct p9_wstat *stbuf)
  *
  */
 
+<<<<<<< HEAD
 static int v9fs_alloc_rdir_buf(struct file *filp, int buflen)
 {
 	struct p9_rdir *rdir;
@@ -133,6 +140,26 @@ exit:
 static int v9fs_dir_readdir(struct file *filp, void *dirent, filldir_t filldir)
 {
 	int over;
+=======
+static struct p9_rdir *v9fs_alloc_rdir_buf(struct file *filp, int buflen)
+{
+	struct p9_fid *fid = filp->private_data;
+	if (!fid->rdir)
+		fid->rdir = kzalloc(sizeof(struct p9_rdir) + buflen, GFP_KERNEL);
+	return fid->rdir;
+}
+
+/**
+ * v9fs_dir_readdir - iterate through a directory
+ * @file: opened file structure
+ * @ctx: actor we feed the entries to
+ *
+ */
+
+static int v9fs_dir_readdir(struct file *file, struct dir_context *ctx)
+{
+	bool over;
+>>>>>>> refs/remotes/origin/master
 	struct p9_wstat st;
 	int err = 0;
 	struct p9_fid *fid;
@@ -140,7 +167,12 @@ static int v9fs_dir_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	int reclen = 0;
 	struct p9_rdir *rdir;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "name %s\n", filp->f_path.dentry->d_name.name);
+=======
+	p9_debug(P9_DEBUG_VFS, "name %s\n", filp->f_path.dentry->d_name.name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fid = filp->private_data;
 
 	buflen = fid->clnt->msize - P9_IOHDRSZ;
@@ -159,17 +191,45 @@ static int v9fs_dir_readdir(struct file *filp, void *dirent, filldir_t filldir)
 							buflen, filp->f_pos);
 			if (err <= 0)
 				goto unlock_and_exit;
+=======
+	p9_debug(P9_DEBUG_VFS, "name %s\n", file->f_path.dentry->d_name.name);
+	fid = file->private_data;
+
+	buflen = fid->clnt->msize - P9_IOHDRSZ;
+
+	rdir = v9fs_alloc_rdir_buf(file, buflen);
+	if (!rdir)
+		return -ENOMEM;
+
+	while (1) {
+		if (rdir->tail == rdir->head) {
+			err = v9fs_file_readn(file, rdir->buf, NULL,
+							buflen, ctx->pos);
+			if (err <= 0)
+				return err;
+>>>>>>> refs/remotes/origin/master
 
 			rdir->head = 0;
 			rdir->tail = err;
 		}
 		while (rdir->head < rdir->tail) {
 			p9stat_init(&st);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			err = p9stat_read(rdir->buf + rdir->head,
 						rdir->tail - rdir->head, &st,
 						fid->clnt->proto_version);
 			if (err) {
 				P9_DPRINTK(P9_DEBUG_VFS, "returned %d\n", err);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			err = p9stat_read(fid->clnt, rdir->buf + rdir->head,
+					  rdir->tail - rdir->head, &st);
+			if (err) {
+				p9_debug(P9_DEBUG_VFS, "returned %d\n", err);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 				err = -EIO;
 				p9stat_free(&st);
 				goto unlock_and_exit;
@@ -207,14 +267,46 @@ static int v9fs_dir_readdir_dotl(struct file *filp, void *dirent,
 						filldir_t filldir)
 {
 	int over;
+=======
+				p9stat_free(&st);
+				return -EIO;
+			}
+			reclen = st.size+2;
+
+			over = !dir_emit(ctx, st.name, strlen(st.name),
+					 v9fs_qid2ino(&st.qid), dt_type(&st));
+			p9stat_free(&st);
+			if (over)
+				return 0;
+
+			rdir->head += reclen;
+			ctx->pos += reclen;
+		}
+	}
+}
+
+/**
+ * v9fs_dir_readdir_dotl - iterate through a directory
+ * @file: opened file structure
+ * @ctx: actor we feed the entries to
+ *
+ */
+static int v9fs_dir_readdir_dotl(struct file *file, struct dir_context *ctx)
+{
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	struct p9_fid *fid;
 	int buflen;
 	struct p9_rdir *rdir;
 	struct p9_dirent curdirent;
+<<<<<<< HEAD
 	u64 oldoffset = 0;
 
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "name %s\n", filp->f_path.dentry->d_name.name);
+=======
+	p9_debug(P9_DEBUG_VFS, "name %s\n", filp->f_path.dentry->d_name.name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fid = filp->private_data;
 
 	buflen = fid->clnt->msize - P9_READDIRHDRSZ;
@@ -231,9 +323,31 @@ static int v9fs_dir_readdir_dotl(struct file *filp, void *dirent,
 	while (err == 0) {
 		if (rdir->tail == rdir->head) {
 			err = p9_client_readdir(fid, rdir->buf, buflen,
+<<<<<<< HEAD
 								filp->f_pos);
+=======
+						filp->f_pos);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (err <= 0)
 				goto unlock_and_exit;
+=======
+
+	p9_debug(P9_DEBUG_VFS, "name %s\n", file->f_path.dentry->d_name.name);
+	fid = file->private_data;
+
+	buflen = fid->clnt->msize - P9_READDIRHDRSZ;
+
+	rdir = v9fs_alloc_rdir_buf(file, buflen);
+	if (!rdir)
+		return -ENOMEM;
+
+	while (1) {
+		if (rdir->tail == rdir->head) {
+			err = p9_client_readdir(fid, rdir->buf, buflen,
+						ctx->pos);
+			if (err <= 0)
+				return err;
+>>>>>>> refs/remotes/origin/master
 
 			rdir->head = 0;
 			rdir->tail = err;
@@ -241,12 +355,24 @@ static int v9fs_dir_readdir_dotl(struct file *filp, void *dirent,
 
 		while (rdir->head < rdir->tail) {
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			err = p9dirent_read(rdir->buf + rdir->head,
 						rdir->tail - rdir->head,
 						&curdirent,
 						fid->clnt->proto_version);
 			if (err < 0) {
 				P9_DPRINTK(P9_DEBUG_VFS, "returned %d\n", err);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			err = p9dirent_read(fid->clnt, rdir->buf + rdir->head,
+					    rdir->tail - rdir->head,
+					    &curdirent);
+			if (err < 0) {
+				p9_debug(P9_DEBUG_VFS, "returned %d\n", err);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 				err = -EIO;
 				goto unlock_and_exit;
 			}
@@ -277,6 +403,21 @@ unlock_and_exit:
 	mutex_unlock(&rdir->mutex);
 exit:
 	return err;
+=======
+				return -EIO;
+			}
+
+			if (!dir_emit(ctx, curdirent.d_name,
+				      strlen(curdirent.d_name),
+				      v9fs_qid2ino(&curdirent.qid),
+				      curdirent.d_type))
+				return 0;
+
+			ctx->pos = curdirent.d_off;
+			rdir->head += err;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -292,9 +433,19 @@ int v9fs_dir_release(struct inode *inode, struct file *filp)
 	struct p9_fid *fid;
 
 	fid = filp->private_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS,
 			"v9fs_dir_release: inode: %p filp: %p fid: %d\n",
 			inode, filp, fid ? fid->fid : -1);
+=======
+	p9_debug(P9_DEBUG_VFS, "inode: %p filp: %p fid: %d\n",
+		 inode, filp, fid ? fid->fid : -1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "inode: %p filp: %p fid: %d\n",
+		 inode, filp, fid ? fid->fid : -1);
+>>>>>>> refs/remotes/origin/master
 	if (fid)
 		p9_client_clunk(fid);
 	return 0;
@@ -303,7 +454,11 @@ int v9fs_dir_release(struct inode *inode, struct file *filp)
 const struct file_operations v9fs_dir_operations = {
 	.read = generic_read_dir,
 	.llseek = generic_file_llseek,
+<<<<<<< HEAD
 	.readdir = v9fs_dir_readdir,
+=======
+	.iterate = v9fs_dir_readdir,
+>>>>>>> refs/remotes/origin/master
 	.open = v9fs_file_open,
 	.release = v9fs_dir_release,
 };
@@ -311,7 +466,11 @@ const struct file_operations v9fs_dir_operations = {
 const struct file_operations v9fs_dir_operations_dotl = {
 	.read = generic_read_dir,
 	.llseek = generic_file_llseek,
+<<<<<<< HEAD
 	.readdir = v9fs_dir_readdir_dotl,
+=======
+	.iterate = v9fs_dir_readdir_dotl,
+>>>>>>> refs/remotes/origin/master
 	.open = v9fs_file_open,
 	.release = v9fs_dir_release,
         .fsync = v9fs_file_fsync_dotl,

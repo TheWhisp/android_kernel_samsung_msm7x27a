@@ -41,6 +41,11 @@ void __init spear6xx_init(void);
 void __init spear600_init(void);
 void __init spear6xx_clk_init(void);
 
+<<<<<<< HEAD
+=======
+void spear_restart(char, const char *);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Add spear600 machine device structure declarations here */
 
 #endif /* __MACH_GENERIC_H */

@@ -9,21 +9,50 @@
 #include <linux/ctype.h>
 
 #include <linux/sunrpc/svcsock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/nfsd/syscall.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/lockd/lockd.h>
 #include <linux/sunrpc/clnt.h>
 #include <linux/sunrpc/gss_api.h>
 #include <linux/sunrpc/gss_krb5_enctypes.h>
+<<<<<<< HEAD
+=======
+#include <linux/sunrpc/rpc_pipe_fs.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/lockd/lockd.h>
+#include <linux/sunrpc/addr.h>
+#include <linux/sunrpc/gss_api.h>
+#include <linux/sunrpc/gss_krb5_enctypes.h>
+#include <linux/sunrpc/rpc_pipe_fs.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "idmap.h"
 #include "nfsd.h"
 #include "cache.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "fault_inject.h"
+#include "netns.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "state.h"
+#include "netns.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	We have a single directory with several nodes in it.
  */
 enum {
 	NFSD_Root = 1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 	NFSD_Svc,
 	NFSD_Add,
@@ -33,6 +62,10 @@ enum {
 	NFSD_Getfd,
 	NFSD_Getfs,
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	NFSD_List,
 	NFSD_Export_features,
 	NFSD_Fh,
@@ -41,6 +74,10 @@ enum {
 	NFSD_Threads,
 	NFSD_Pool_Threads,
 	NFSD_Pool_Stats,
+<<<<<<< HEAD
+=======
+	NFSD_Reply_Cache_Stats,
+>>>>>>> refs/remotes/origin/master
 	NFSD_Versions,
 	NFSD_Ports,
 	NFSD_MaxBlkSize,
@@ -59,6 +96,8 @@ enum {
 /*
  * write() for these nodes.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 static ssize_t write_svc(struct file *file, char *buf, size_t size);
 static ssize_t write_add(struct file *file, char *buf, size_t size);
@@ -68,6 +107,10 @@ static ssize_t write_unexport(struct file *file, char *buf, size_t size);
 static ssize_t write_getfd(struct file *file, char *buf, size_t size);
 static ssize_t write_getfs(struct file *file, char *buf, size_t size);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t write_filehandle(struct file *file, char *buf, size_t size);
 static ssize_t write_unlock_ip(struct file *file, char *buf, size_t size);
 static ssize_t write_unlock_fs(struct file *file, char *buf, size_t size);
@@ -83,6 +126,8 @@ static ssize_t write_recoverydir(struct file *file, char *buf, size_t size);
 #endif
 
 static ssize_t (*write_op[])(struct file *, char *, size_t) = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 	[NFSD_Svc] = write_svc,
 	[NFSD_Add] = write_add,
@@ -92,6 +137,10 @@ static ssize_t (*write_op[])(struct file *, char *, size_t) = {
 	[NFSD_Getfd] = write_getfd,
 	[NFSD_Getfs] = write_getfs,
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	[NFSD_Fh] = write_filehandle,
 	[NFSD_FO_UnlockIP] = write_unlock_ip,
 	[NFSD_FO_UnlockFS] = write_unlock_fs,
@@ -109,7 +158,11 @@ static ssize_t (*write_op[])(struct file *, char *, size_t) = {
 
 static ssize_t nfsctl_transaction_write(struct file *file, const char __user *buf, size_t size, loff_t *pos)
 {
+<<<<<<< HEAD
 	ino_t ino =  file->f_path.dentry->d_inode->i_ino;
+=======
+	ino_t ino =  file_inode(file)->i_ino;
+>>>>>>> refs/remotes/origin/master
 	char *data;
 	ssize_t rv;
 
@@ -130,6 +183,8 @@ static ssize_t nfsctl_transaction_write(struct file *file, const char __user *bu
 
 static ssize_t nfsctl_transaction_read(struct file *file, char __user *buf, size_t size, loff_t *pos)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 	static int warned;
 	if (file->f_dentry->d_name.name[0] == '.' && !warned) {
@@ -140,6 +195,10 @@ static ssize_t nfsctl_transaction_read(struct file *file, char __user *buf, size
 		warned = 1;
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (! file->private_data) {
 		/* An attempt to read a transaction file without writing
 		 * causes a 0-byte write so that the file can return
@@ -159,6 +218,7 @@ static const struct file_operations transaction_ops = {
 	.llseek		= default_llseek,
 };
 
+<<<<<<< HEAD
 static int exports_open(struct inode *inode, struct file *file)
 {
 	return seq_open(file, &nfs_exports_op);
@@ -166,6 +226,43 @@ static int exports_open(struct inode *inode, struct file *file)
 
 static const struct file_operations exports_operations = {
 	.open		= exports_open,
+=======
+static int exports_net_open(struct net *net, struct file *file)
+{
+	int err;
+	struct seq_file *seq;
+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+
+	err = seq_open(file, &nfs_exports_op);
+	if (err)
+		return err;
+
+	seq = file->private_data;
+	seq->private = nn->svc_export_cache;
+	return 0;
+}
+
+static int exports_proc_open(struct inode *inode, struct file *file)
+{
+	return exports_net_open(current->nsproxy->net_ns, file);
+}
+
+static const struct file_operations exports_proc_operations = {
+	.open		= exports_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= seq_release,
+	.owner		= THIS_MODULE,
+};
+
+static int exports_nfsd_open(struct inode *inode, struct file *file)
+{
+	return exports_net_open(inode->i_sb->s_fs_info, file);
+}
+
+static const struct file_operations exports_nfsd_operations = {
+	.open		= exports_nfsd_open,
+>>>>>>> refs/remotes/origin/master
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= seq_release,
@@ -183,7 +280,11 @@ static int export_features_open(struct inode *inode, struct file *file)
 	return single_open(file, export_features_show, NULL);
 }
 
+<<<<<<< HEAD
 static struct file_operations export_features_operations = {
+=======
+static const struct file_operations export_features_operations = {
+>>>>>>> refs/remotes/origin/master
 	.open		= export_features_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
@@ -202,7 +303,11 @@ static int supported_enctypes_open(struct inode *inode, struct file *file)
 	return single_open(file, supported_enctypes_show, NULL);
 }
 
+<<<<<<< HEAD
 static struct file_operations supported_enctypes_ops = {
+=======
+static const struct file_operations supported_enctypes_ops = {
+>>>>>>> refs/remotes/origin/master
 	.open		= supported_enctypes_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
@@ -210,9 +315,12 @@ static struct file_operations supported_enctypes_ops = {
 };
 #endif /* CONFIG_SUNRPC_GSS or CONFIG_SUNRPC_GSS_MODULE */
 
+<<<<<<< HEAD
 extern int nfsd_pool_stats_open(struct inode *inode, struct file *file);
 extern int nfsd_pool_stats_release(struct inode *inode, struct file *file);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations pool_stats_operations = {
 	.open		= nfsd_pool_stats_open,
 	.read		= seq_read,
@@ -221,11 +329,23 @@ static const struct file_operations pool_stats_operations = {
 	.owner		= THIS_MODULE,
 };
 
+<<<<<<< HEAD
+=======
+static struct file_operations reply_cache_stats_operations = {
+	.open		= nfsd_reply_cache_stats_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*----------------------------------------------------------------------------*/
 /*
  * payload - write methods
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 /**
  * write_svc - Start kernel's NFSD server
@@ -523,6 +643,10 @@ static ssize_t write_getfd(struct file *file, char *buf, size_t size)
 	return err;
 }
 #endif /* CONFIG_NFSD_DEPRECATED */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * write_unlock_ip - Release all locks used by a client
@@ -544,6 +668,10 @@ static ssize_t write_unlock_ip(struct file *file, char *buf, size_t size)
 	struct sockaddr *sap = (struct sockaddr *)&address;
 	size_t salen = sizeof(address);
 	char *fo_path;
+<<<<<<< HEAD
+=======
+	struct net *net = file->f_dentry->d_sb->s_fs_info;
+>>>>>>> refs/remotes/origin/master
 
 	/* sanity check */
 	if (size == 0)
@@ -556,7 +684,15 @@ static ssize_t write_unlock_ip(struct file *file, char *buf, size_t size)
 	if (qword_get(&buf, fo_path, size) < 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rpc_pton(fo_path, size, sap, salen) == 0)
+=======
+	if (rpc_pton(&init_net, fo_path, size, sap, salen) == 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rpc_pton(net, fo_path, size, sap, salen) == 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	return nlmsvc_unlock_all_by_ip(sap);
@@ -606,7 +742,15 @@ static ssize_t write_unlock_fs(struct file *file, char *buf, size_t size)
 	 * 2.  Is that directory a mount point, or
 	 * 3.  Is that directory the root of an exported file system?
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	error = nlmsvc_unlock_all_by_sb(path.mnt->mnt_sb);
+=======
+	error = nlmsvc_unlock_all_by_sb(path.dentry->d_sb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = nlmsvc_unlock_all_by_sb(path.dentry->d_sb);
+>>>>>>> refs/remotes/origin/master
 
 	path_put(&path);
 	return error;
@@ -641,6 +785,10 @@ static ssize_t write_filehandle(struct file *file, char *buf, size_t size)
 	int len;
 	struct auth_domain *dom;
 	struct knfsd_fh fh;
+<<<<<<< HEAD
+=======
+	struct net *net = file->f_dentry->d_sb->s_fs_info;
+>>>>>>> refs/remotes/origin/master
 
 	if (size == 0)
 		return -EINVAL;
@@ -676,7 +824,11 @@ static ssize_t write_filehandle(struct file *file, char *buf, size_t size)
 	if (!dom)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	len = exp_rootfh(dom, path, &fh,  maxsize);
+=======
+	len = exp_rootfh(net, dom, path, &fh,  maxsize);
+>>>>>>> refs/remotes/origin/master
 	auth_domain_put(dom);
 	if (len)
 		return len;
@@ -720,6 +872,11 @@ static ssize_t write_threads(struct file *file, char *buf, size_t size)
 {
 	char *mesg = buf;
 	int rv;
+<<<<<<< HEAD
+=======
+	struct net *net = file->f_dentry->d_sb->s_fs_info;
+
+>>>>>>> refs/remotes/origin/master
 	if (size > 0) {
 		int newthreads;
 		rv = get_int(&mesg, &newthreads);
@@ -727,11 +884,19 @@ static ssize_t write_threads(struct file *file, char *buf, size_t size)
 			return rv;
 		if (newthreads < 0)
 			return -EINVAL;
+<<<<<<< HEAD
 		rv = nfsd_svc(NFS_PORT, newthreads);
 		if (rv < 0)
 			return rv;
 	} else
 		rv = nfsd_nrthreads();
+=======
+		rv = nfsd_svc(newthreads, net);
+		if (rv < 0)
+			return rv;
+	} else
+		rv = nfsd_nrthreads(net);
+>>>>>>> refs/remotes/origin/master
 
 	return scnprintf(buf, SIMPLE_TRANSACTION_LIMIT, "%d\n", rv);
 }
@@ -769,9 +934,16 @@ static ssize_t write_pool_threads(struct file *file, char *buf, size_t size)
 	int len;
 	int npools;
 	int *nthreads;
+<<<<<<< HEAD
 
 	mutex_lock(&nfsd_mutex);
 	npools = nfsd_nrpools();
+=======
+	struct net *net = file->f_dentry->d_sb->s_fs_info;
+
+	mutex_lock(&nfsd_mutex);
+	npools = nfsd_nrpools(net);
+>>>>>>> refs/remotes/origin/master
 	if (npools == 0) {
 		/*
 		 * NFS is shut down.  The admin can start it by
@@ -799,12 +971,20 @@ static ssize_t write_pool_threads(struct file *file, char *buf, size_t size)
 			if (nthreads[i] < 0)
 				goto out_free;
 		}
+<<<<<<< HEAD
 		rv = nfsd_set_nrthreads(i, nthreads);
+=======
+		rv = nfsd_set_nrthreads(i, nthreads, net);
+>>>>>>> refs/remotes/origin/master
 		if (rv)
 			goto out_free;
 	}
 
+<<<<<<< HEAD
 	rv = nfsd_get_nrthreads(npools, nthreads);
+=======
+	rv = nfsd_get_nrthreads(npools, nthreads, net);
+>>>>>>> refs/remotes/origin/master
 	if (rv)
 		goto out_free;
 
@@ -831,11 +1011,21 @@ static ssize_t __write_versions(struct file *file, char *buf, size_t size)
 	unsigned minor;
 	ssize_t tlen = 0;
 	char *sep;
+<<<<<<< HEAD
 
 	if (size>0) {
 		if (nfsd_serv)
 			/* Cannot change versions without updating
 			 * nfsd_serv->sv_xdrsize, and reallocing
+=======
+	struct net *net = file->f_dentry->d_sb->s_fs_info;
+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+
+	if (size>0) {
+		if (nn->nfsd_serv)
+			/* Cannot change versions without updating
+			 * nn->nfsd_serv->sv_xdrsize, and reallocing
+>>>>>>> refs/remotes/origin/master
 			 * rq_argp and rq_resp
 			 */
 			return -EBUSY;
@@ -853,7 +1043,11 @@ static ssize_t __write_versions(struct file *file, char *buf, size_t size)
 			else
 				num = simple_strtol(vers, &minorp, 0);
 			if (*minorp == '.') {
+<<<<<<< HEAD
 				if (num < 4)
+=======
+				if (num != 4)
+>>>>>>> refs/remotes/origin/master
 					return -EINVAL;
 				minor = simple_strtoul(minorp+1, NULL, 0);
 				if (minor == 0)
@@ -966,11 +1160,21 @@ static ssize_t write_versions(struct file *file, char *buf, size_t size)
  * Zero-length write.  Return a list of NFSD's current listener
  * transports.
  */
+<<<<<<< HEAD
 static ssize_t __write_ports_names(char *buf)
 {
 	if (nfsd_serv == NULL)
 		return 0;
 	return svc_xprt_names(nfsd_serv, buf, SIMPLE_TRANSACTION_LIMIT);
+=======
+static ssize_t __write_ports_names(char *buf, struct net *net)
+{
+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+
+	if (nn->nfsd_serv == NULL)
+		return 0;
+	return svc_xprt_names(nn->nfsd_serv, buf, SIMPLE_TRANSACTION_LIMIT);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -978,31 +1182,70 @@ static ssize_t __write_ports_names(char *buf)
  * a socket of a supported family/protocol, and we use it as an
  * nfsd listener.
  */
+<<<<<<< HEAD
 static ssize_t __write_ports_addfd(char *buf)
 {
 	char *mesg = buf;
 	int fd, err;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t __write_ports_addfd(char *buf, struct net *net)
+{
+	char *mesg = buf;
+	int fd, err;
+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+>>>>>>> refs/remotes/origin/master
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = get_int(&mesg, &fd);
 	if (err != 0 || fd < 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	err = nfsd_create_serv();
 	if (err != 0)
 		return err;
 
 	err = svc_addsock(nfsd_serv, fd, buf, SIMPLE_TRANSACTION_LIMIT);
 	if (err < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		svc_destroy(nfsd_serv);
+=======
+		nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = nfsd_create_serv(net);
+	if (err != 0)
+		return err;
+
+	err = svc_addsock(nn->nfsd_serv, fd, buf, SIMPLE_TRANSACTION_LIMIT);
+	if (err < 0) {
+		nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/master
+=======
+		nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return err;
 	}
 
 	/* Decrease the count, but don't shut down the service */
+<<<<<<< HEAD
 	nfsd_serv->sv_nrthreads--;
+=======
+	nn->nfsd_serv->sv_nrthreads--;
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 /*
+<<<<<<< HEAD
  * A '-' followed by the 'name' of a socket means we close the socket.
  */
 static ssize_t __write_ports_delfd(char *buf)
@@ -1026,42 +1269,114 @@ static ssize_t __write_ports_delfd(char *buf)
  * a port number.
  */
 static ssize_t __write_ports_addxprt(char *buf)
+=======
+ * A transport listener is added by writing it's transport name and
+ * a port number.
+ */
+static ssize_t __write_ports_addxprt(char *buf, struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 	char transport[16];
 	struct svc_xprt *xprt;
 	int port, err;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (sscanf(buf, "%15s %4u", transport, &port) != 2)
+=======
+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+
+	if (sscanf(buf, "%15s %5u", transport, &port) != 2)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (port < 1 || port > USHRT_MAX)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	err = nfsd_create_serv();
 	if (err != 0)
 		return err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = svc_create_xprt(nfsd_serv, transport, &init_net,
+=======
+	err = svc_create_xprt(nfsd_serv, transport, net,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = nfsd_create_serv(net);
+	if (err != 0)
+		return err;
+
+	err = svc_create_xprt(nn->nfsd_serv, transport, net,
+>>>>>>> refs/remotes/origin/master
+=======
+	err = svc_create_xprt(nfsd_serv, transport, net,
+>>>>>>> refs/remotes/origin/cm-11.0
 				PF_INET, port, SVC_SOCK_ANONYMOUS);
 	if (err < 0)
 		goto out_err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = svc_create_xprt(nfsd_serv, transport, &init_net,
+=======
+	err = svc_create_xprt(nfsd_serv, transport, net,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = svc_create_xprt(nn->nfsd_serv, transport, net,
+>>>>>>> refs/remotes/origin/master
+=======
+	err = svc_create_xprt(nfsd_serv, transport, net,
+>>>>>>> refs/remotes/origin/cm-11.0
 				PF_INET6, port, SVC_SOCK_ANONYMOUS);
 	if (err < 0 && err != -EAFNOSUPPORT)
 		goto out_close;
 
 	/* Decrease the count, but don't shut down the service */
+<<<<<<< HEAD
 	nfsd_serv->sv_nrthreads--;
 	return 0;
 out_close:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	xprt = svc_find_xprt(nfsd_serv, transport, PF_INET, port);
+=======
+	xprt = svc_find_xprt(nfsd_serv, transport, net, PF_INET, port);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nn->nfsd_serv->sv_nrthreads--;
+	return 0;
+out_close:
+	xprt = svc_find_xprt(nn->nfsd_serv, transport, net, PF_INET, port);
+>>>>>>> refs/remotes/origin/master
+=======
+	xprt = svc_find_xprt(nfsd_serv, transport, net, PF_INET, port);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (xprt != NULL) {
 		svc_close_xprt(xprt);
 		svc_xprt_put(xprt);
 	}
 out_err:
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	svc_destroy(nfsd_serv);
+=======
+	nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return err;
 }
 
@@ -1081,7 +1396,11 @@ static ssize_t __write_ports_delxprt(char *buf)
 	if (port < 1 || port > USHRT_MAX || nfsd_serv == NULL)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	xprt = svc_find_xprt(nfsd_serv, transport, AF_UNSPEC, port);
+=======
+	xprt = svc_find_xprt(nfsd_serv, transport, &init_net, AF_UNSPEC, port);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (xprt == NULL)
 		return -ENOTCONN;
 
@@ -1106,6 +1425,23 @@ static ssize_t __write_ports(struct file *file, char *buf, size_t size)
 
 	if (buf[0] == '-' && isalpha(buf[1]))
 		return __write_ports_delxprt(buf);
+=======
+	nfsd_destroy(net);
+	return err;
+}
+
+static ssize_t __write_ports(struct file *file, char *buf, size_t size,
+			     struct net *net)
+{
+	if (size == 0)
+		return __write_ports_names(buf, net);
+
+	if (isdigit(buf[0]))
+		return __write_ports_addfd(buf, net);
+
+	if (isalpha(buf[0]))
+		return __write_ports_addxprt(buf, net);
+>>>>>>> refs/remotes/origin/master
 
 	return -EINVAL;
 }
@@ -1144,6 +1480,7 @@ static ssize_t __write_ports(struct file *file, char *buf, size_t size)
  * OR
  *
  * Input:
+<<<<<<< HEAD
  *			buf:		C string containing a "-" followed
  *					by an integer value representing a
  *					previously passed in socket file
@@ -1159,6 +1496,8 @@ static ssize_t __write_ports(struct file *file, char *buf, size_t size)
  * OR
  *
  * Input:
+=======
+>>>>>>> refs/remotes/origin/master
  *			buf:		C string containing a transport
  *					name and an unsigned integer value
  *					representing the port to listen on,
@@ -1167,6 +1506,7 @@ static ssize_t __write_ports(struct file *file, char *buf, size_t size)
  * Output:
  *	On success:	returns zero; NFS service is started
  *	On error:	return code is a negative errno value
+<<<<<<< HEAD
  *
  * OR
  *
@@ -1180,13 +1520,22 @@ static ssize_t __write_ports(struct file *file, char *buf, size_t size)
  *	On success:	returns zero; NFS service no longer listens
  *			on that transport
  *	On error:	return code is a negative errno value
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static ssize_t write_ports(struct file *file, char *buf, size_t size)
 {
 	ssize_t rv;
+<<<<<<< HEAD
 
 	mutex_lock(&nfsd_mutex);
 	rv = __write_ports(file, buf, size);
+=======
+	struct net *net = file->f_dentry->d_sb->s_fs_info;
+
+	mutex_lock(&nfsd_mutex);
+	rv = __write_ports(file, buf, size, net);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&nfsd_mutex);
 	return rv;
 }
@@ -1218,6 +1567,12 @@ int nfsd_max_blksize;
 static ssize_t write_maxblksize(struct file *file, char *buf, size_t size)
 {
 	char *mesg = buf;
+<<<<<<< HEAD
+=======
+	struct net *net = file->f_dentry->d_sb->s_fs_info;
+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+
+>>>>>>> refs/remotes/origin/master
 	if (size > 0) {
 		int bsize;
 		int rv = get_int(&mesg, &bsize);
@@ -1232,7 +1587,11 @@ static ssize_t write_maxblksize(struct file *file, char *buf, size_t size)
 			bsize = NFSSVC_MAXBLKSIZE;
 		bsize &= ~(1024-1);
 		mutex_lock(&nfsd_mutex);
+<<<<<<< HEAD
 		if (nfsd_serv) {
+=======
+		if (nn->nfsd_serv) {
+>>>>>>> refs/remotes/origin/master
 			mutex_unlock(&nfsd_mutex);
 			return -EBUSY;
 		}
@@ -1245,13 +1604,22 @@ static ssize_t write_maxblksize(struct file *file, char *buf, size_t size)
 }
 
 #ifdef CONFIG_NFSD_V4
+<<<<<<< HEAD
 static ssize_t __nfsd4_write_time(struct file *file, char *buf, size_t size, time_t *time)
+=======
+static ssize_t __nfsd4_write_time(struct file *file, char *buf, size_t size,
+				  time_t *time, struct nfsd_net *nn)
+>>>>>>> refs/remotes/origin/master
 {
 	char *mesg = buf;
 	int rv, i;
 
 	if (size > 0) {
+<<<<<<< HEAD
 		if (nfsd_serv)
+=======
+		if (nn->nfsd_serv)
+>>>>>>> refs/remotes/origin/master
 			return -EBUSY;
 		rv = get_int(&mesg, &i);
 		if (rv)
@@ -1276,12 +1644,21 @@ static ssize_t __nfsd4_write_time(struct file *file, char *buf, size_t size, tim
 	return scnprintf(buf, SIMPLE_TRANSACTION_LIMIT, "%ld\n", *time);
 }
 
+<<<<<<< HEAD
 static ssize_t nfsd4_write_time(struct file *file, char *buf, size_t size, time_t *time)
+=======
+static ssize_t nfsd4_write_time(struct file *file, char *buf, size_t size,
+				time_t *time, struct nfsd_net *nn)
+>>>>>>> refs/remotes/origin/master
 {
 	ssize_t rv;
 
 	mutex_lock(&nfsd_mutex);
+<<<<<<< HEAD
 	rv = __nfsd4_write_time(file, buf, size, time);
+=======
+	rv = __nfsd4_write_time(file, buf, size, time, nn);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&nfsd_mutex);
 	return rv;
 }
@@ -1309,7 +1686,13 @@ static ssize_t nfsd4_write_time(struct file *file, char *buf, size_t size, time_
  */
 static ssize_t write_leasetime(struct file *file, char *buf, size_t size)
 {
+<<<<<<< HEAD
 	return nfsd4_write_time(file, buf, size, &nfsd4_lease);
+=======
+	struct net *net = file->f_dentry->d_sb->s_fs_info;
+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+	return nfsd4_write_time(file, buf, size, &nn->nfsd4_lease, nn);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1324,19 +1707,33 @@ static ssize_t write_leasetime(struct file *file, char *buf, size_t size)
  */
 static ssize_t write_gracetime(struct file *file, char *buf, size_t size)
 {
+<<<<<<< HEAD
 	return nfsd4_write_time(file, buf, size, &nfsd4_grace);
 }
 
 extern char *nfs4_recoverydir(void);
 
 static ssize_t __write_recoverydir(struct file *file, char *buf, size_t size)
+=======
+	struct net *net = file->f_dentry->d_sb->s_fs_info;
+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+	return nfsd4_write_time(file, buf, size, &nn->nfsd4_grace, nn);
+}
+
+static ssize_t __write_recoverydir(struct file *file, char *buf, size_t size,
+				   struct nfsd_net *nn)
+>>>>>>> refs/remotes/origin/master
 {
 	char *mesg = buf;
 	char *recdir;
 	int len, status;
 
 	if (size > 0) {
+<<<<<<< HEAD
 		if (nfsd_serv)
+=======
+		if (nn->nfsd_serv)
+>>>>>>> refs/remotes/origin/master
 			return -EBUSY;
 		if (size > PATH_MAX || buf[size-1] != '\n')
 			return -EINVAL;
@@ -1380,9 +1777,17 @@ static ssize_t __write_recoverydir(struct file *file, char *buf, size_t size)
 static ssize_t write_recoverydir(struct file *file, char *buf, size_t size)
 {
 	ssize_t rv;
+<<<<<<< HEAD
 
 	mutex_lock(&nfsd_mutex);
 	rv = __write_recoverydir(file, buf, size);
+=======
+	struct net *net = file->f_dentry->d_sb->s_fs_info;
+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+
+	mutex_lock(&nfsd_mutex);
+	rv = __write_recoverydir(file, buf, size, nn);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&nfsd_mutex);
 	return rv;
 }
@@ -1397,6 +1802,8 @@ static ssize_t write_recoverydir(struct file *file, char *buf, size_t size)
 static int nfsd_fill_super(struct super_block * sb, void * data, int silent)
 {
 	static struct tree_descr nfsd_files[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 		[NFSD_Svc] = {".svc", &transaction_ops, S_IWUSR},
 		[NFSD_Add] = {".add", &transaction_ops, S_IWUSR},
@@ -1406,7 +1813,12 @@ static int nfsd_fill_super(struct super_block * sb, void * data, int silent)
 		[NFSD_Getfd] = {".getfd", &transaction_ops, S_IWUSR|S_IRUSR},
 		[NFSD_Getfs] = {".getfs", &transaction_ops, S_IWUSR|S_IRUSR},
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		[NFSD_List] = {"exports", &exports_operations, S_IRUGO},
+=======
+		[NFSD_List] = {"exports", &exports_nfsd_operations, S_IRUGO},
+>>>>>>> refs/remotes/origin/master
 		[NFSD_Export_features] = {"export_features",
 					&export_features_operations, S_IRUGO},
 		[NFSD_FO_UnlockIP] = {"unlock_ip",
@@ -1417,6 +1829,10 @@ static int nfsd_fill_super(struct super_block * sb, void * data, int silent)
 		[NFSD_Threads] = {"threads", &transaction_ops, S_IWUSR|S_IRUSR},
 		[NFSD_Pool_Threads] = {"pool_threads", &transaction_ops, S_IWUSR|S_IRUSR},
 		[NFSD_Pool_Stats] = {"pool_stats", &pool_stats_operations, S_IRUGO},
+<<<<<<< HEAD
+=======
+		[NFSD_Reply_Cache_Stats] = {"reply_cache_stats", &reply_cache_stats_operations, S_IRUGO},
+>>>>>>> refs/remotes/origin/master
 		[NFSD_Versions] = {"versions", &transaction_ops, S_IWUSR|S_IRUSR},
 		[NFSD_Ports] = {"portlist", &transaction_ops, S_IWUSR|S_IRUGO},
 		[NFSD_MaxBlkSize] = {"max_block_size", &transaction_ops, S_IWUSR|S_IRUGO},
@@ -1430,21 +1846,50 @@ static int nfsd_fill_super(struct super_block * sb, void * data, int silent)
 #endif
 		/* last one */ {""}
 	};
+<<<<<<< HEAD
 	return simple_fill_super(sb, 0x6e667364, nfsd_files);
+=======
+	struct net *net = data;
+	int ret;
+
+	ret = simple_fill_super(sb, 0x6e667364, nfsd_files);
+	if (ret)
+		return ret;
+	sb->s_fs_info = get_net(net);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct dentry *nfsd_mount(struct file_system_type *fs_type,
 	int flags, const char *dev_name, void *data)
 {
+<<<<<<< HEAD
 	return mount_single(fs_type, flags, data, nfsd_fill_super);
+=======
+	return mount_ns(fs_type, flags, current->nsproxy->net_ns, nfsd_fill_super);
+}
+
+static void nfsd_umount(struct super_block *sb)
+{
+	struct net *net = sb->s_fs_info;
+
+	kill_litter_super(sb);
+	put_net(net);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct file_system_type nfsd_fs_type = {
 	.owner		= THIS_MODULE,
 	.name		= "nfsd",
 	.mount		= nfsd_mount,
+<<<<<<< HEAD
 	.kill_sb	= kill_litter_super,
 };
+=======
+	.kill_sb	= nfsd_umount,
+};
+MODULE_ALIAS_FS("nfsd");
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PROC_FS
 static int create_proc_exports_entry(void)
@@ -1454,9 +1899,18 @@ static int create_proc_exports_entry(void)
 	entry = proc_mkdir("fs/nfs", NULL);
 	if (!entry)
 		return -ENOMEM;
+<<<<<<< HEAD
 	entry = proc_create("exports", 0, entry, &exports_operations);
 	if (!entry)
 		return -ENOMEM;
+=======
+	entry = proc_create("exports", 0, entry,
+				 &exports_proc_operations);
+	if (!entry) {
+		remove_proc_entry("fs/nfs", NULL);
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #else /* CONFIG_PROC_FS */
@@ -1466,18 +1920,88 @@ static int create_proc_exports_entry(void)
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int nfsd_net_id;
+static struct pernet_operations nfsd_net_ops = {
+=======
+int nfsd_net_id;
+
+static __net_init int nfsd_init_net(struct net *net)
+{
+	int retval;
+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+
+	retval = nfsd_export_init(net);
+	if (retval)
+		goto out_export_error;
+	retval = nfsd_idmap_init(net);
+	if (retval)
+		goto out_idmap_error;
+	nn->nfsd4_lease = 90;	/* default lease time */
+	nn->nfsd4_grace = 90;
+	return 0;
+
+out_idmap_error:
+	nfsd_export_shutdown(net);
+out_export_error:
+	return retval;
+}
+
+static __net_exit void nfsd_exit_net(struct net *net)
+{
+	nfsd_idmap_shutdown(net);
+	nfsd_export_shutdown(net);
+}
+
+static struct pernet_operations nfsd_net_ops = {
+	.init = nfsd_init_net,
+	.exit = nfsd_exit_net,
+>>>>>>> refs/remotes/origin/master
+	.id   = &nfsd_net_id,
+	.size = sizeof(struct nfsd_net),
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init init_nfsd(void)
 {
 	int retval;
 	printk(KERN_INFO "Installing knfsd (copyright (C) 1996 okir@monad.swb.de).\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = nfs4_state_init(); /* nfs4 locking state */
 	if (retval)
 		return retval;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	retval = register_cld_notifier();
+	if (retval)
+		return retval;
+	retval = register_pernet_subsys(&nfsd_net_ops);
+	if (retval < 0)
+		goto out_unregister_notifier;
+	retval = nfsd4_init_slabs();
+	if (retval)
+		goto out_unregister_pernet;
+	nfs4_state_init();
+	retval = nfsd_fault_inject_init(); /* nfsd fault injection controls */
+	if (retval)
+		goto out_free_slabs;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	nfsd_stat_init();	/* Statistics */
 	retval = nfsd_reply_cache_init();
 	if (retval)
 		goto out_free_stat;
+<<<<<<< HEAD
 	retval = nfsd_export_init();
 	if (retval)
 		goto out_free_cache;
@@ -1488,6 +2012,12 @@ static int __init init_nfsd(void)
 	retval = create_proc_exports_entry();
 	if (retval)
 		goto out_free_idmap;
+=======
+	nfsd_lockd_init();	/* lockd->nfsd callbacks */
+	retval = create_proc_exports_entry();
+	if (retval)
+		goto out_free_lockd;
+>>>>>>> refs/remotes/origin/master
 	retval = register_filesystem(&nfsd_fs_type);
 	if (retval)
 		goto out_free_all;
@@ -1495,6 +2025,7 @@ static int __init init_nfsd(void)
 out_free_all:
 	remove_proc_entry("fs/nfs/exports", NULL);
 	remove_proc_entry("fs/nfs", NULL);
+<<<<<<< HEAD
 out_free_idmap:
 	nfsd_idmap_shutdown();
 out_free_lockd:
@@ -1504,21 +2035,58 @@ out_free_cache:
 	nfsd_reply_cache_shutdown();
 out_free_stat:
 	nfsd_stat_shutdown();
+<<<<<<< HEAD
 	nfsd4_free_slabs();
+=======
+=======
+out_free_lockd:
+	nfsd_lockd_shutdown();
+	nfsd_reply_cache_shutdown();
+out_free_stat:
+	nfsd_stat_shutdown();
+>>>>>>> refs/remotes/origin/master
+	nfsd_fault_inject_cleanup();
+out_free_slabs:
+	nfsd4_free_slabs();
+out_unregister_pernet:
+	unregister_pernet_subsys(&nfsd_net_ops);
+out_unregister_notifier:
+	unregister_cld_notifier();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
 static void __exit exit_nfsd(void)
 {
+<<<<<<< HEAD
 	nfsd_export_shutdown();
+=======
+>>>>>>> refs/remotes/origin/master
 	nfsd_reply_cache_shutdown();
 	remove_proc_entry("fs/nfs/exports", NULL);
 	remove_proc_entry("fs/nfs", NULL);
 	nfsd_stat_shutdown();
 	nfsd_lockd_shutdown();
+<<<<<<< HEAD
 	nfsd_idmap_shutdown();
 	nfsd4_free_slabs();
+<<<<<<< HEAD
 	unregister_filesystem(&nfsd_fs_type);
+=======
+=======
+	nfsd4_free_slabs();
+>>>>>>> refs/remotes/origin/master
+	nfsd_fault_inject_cleanup();
+	unregister_filesystem(&nfsd_fs_type);
+	unregister_pernet_subsys(&nfsd_net_ops);
+	unregister_cld_notifier();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 MODULE_AUTHOR("Olaf Kirch <okir@monad.swb.de>");

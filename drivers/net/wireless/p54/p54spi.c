@@ -41,10 +41,18 @@
 #endif /* CONFIG_P54_SPI_DEFAULT_EEPROM */
 
 MODULE_FIRMWARE("3826.arm");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("stlc45xx");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * gpios should be handled in board files and provided via platform data,
+=======
+
+/* gpios should be handled in board files and provided via platform data,
+>>>>>>> refs/remotes/origin/master
  * but because it's currently impossible for p54spi to have a header file
  * in include/linux, let's use module paramaters for now
  */
@@ -192,8 +200,12 @@ static int p54spi_request_eeprom(struct ieee80211_hw *dev)
 	const struct firmware *eeprom;
 	int ret;
 
+<<<<<<< HEAD
 	/*
 	 * allow users to customize their eeprom.
+=======
+	/* allow users to customize their eeprom.
+>>>>>>> refs/remotes/origin/master
 	 */
 
 	ret = request_firmware(&eeprom, "3826.eeprom", &priv->spi->dev);
@@ -286,8 +298,12 @@ static void p54spi_power_on(struct p54s_priv *priv)
 	gpio_set_value(p54spi_gpio_power, 1);
 	enable_irq(gpio_to_irq(p54spi_gpio_irq));
 
+<<<<<<< HEAD
 	/*
 	 * need to wait a while before device can be accessed, the length
+=======
+	/* need to wait a while before device can be accessed, the length
+>>>>>>> refs/remotes/origin/master
 	 * is just a guess
 	 */
 	msleep(10);
@@ -366,7 +382,12 @@ static int p54spi_rx(struct p54s_priv *priv)
 	/* Firmware may insert up to 4 padding bytes after the lmac header,
 	 * but it does not amend the size of SPI data transfer.
 	 * Such packets has correct data size in header, thus referencing
+<<<<<<< HEAD
 	 * past the end of allocated skb. Reserve extra 4 bytes for this case */
+=======
+	 * past the end of allocated skb. Reserve extra 4 bytes for this case
+	 */
+>>>>>>> refs/remotes/origin/master
 	skb = dev_alloc_skb(len + 4);
 	if (!skb) {
 		p54spi_sleep(priv);
@@ -384,7 +405,12 @@ static int p54spi_rx(struct p54s_priv *priv)
 	}
 	p54spi_sleep(priv);
 	/* Put additional bytes to compensate for the possible
+<<<<<<< HEAD
 	 * alignment-caused truncation */
+=======
+	 * alignment-caused truncation
+	 */
+>>>>>>> refs/remotes/origin/master
 	skb_put(skb, 4);
 
 	if (p54_rx(priv->hw, skb) == 0)
@@ -397,7 +423,11 @@ static int p54spi_rx(struct p54s_priv *priv)
 static irqreturn_t p54spi_interrupt(int irq, void *config)
 {
 	struct spi_device *spi = config;
+<<<<<<< HEAD
 	struct p54s_priv *priv = dev_get_drvdata(&spi->dev);
+=======
+	struct p54s_priv *priv = spi_get_drvdata(spi);
+>>>>>>> refs/remotes/origin/master
 
 	ieee80211_queue_work(priv->hw, &priv->work);
 
@@ -582,11 +612,19 @@ static void p54spi_op_stop(struct ieee80211_hw *dev)
 	struct p54s_priv *priv = dev->priv;
 	unsigned long flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (mutex_lock_interruptible(&priv->mutex)) {
 		/* FIXME: how to handle this error? */
 		return;
 	}
 
+=======
+	mutex_lock(&priv->mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&priv->mutex);
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(priv->fw_state != FW_STATE_READY);
 
 	p54spi_power_off(priv);
@@ -600,7 +638,11 @@ static void p54spi_op_stop(struct ieee80211_hw *dev)
 	cancel_work_sync(&priv->work);
 }
 
+<<<<<<< HEAD
 static int __devinit p54spi_probe(struct spi_device *spi)
+=======
+static int p54spi_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct p54s_priv *priv = NULL;
 	struct ieee80211_hw *hw;
@@ -614,7 +656,11 @@ static int __devinit p54spi_probe(struct spi_device *spi)
 
 	priv = hw->priv;
 	priv->hw = hw;
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, priv);
+=======
+	spi_set_drvdata(spi, priv);
+>>>>>>> refs/remotes/origin/master
 	priv->spi = spi;
 
 	spi->bits_per_word = 16;
@@ -642,7 +688,11 @@ static int __devinit p54spi_probe(struct spi_device *spi)
 	gpio_direction_input(p54spi_gpio_irq);
 
 	ret = request_irq(gpio_to_irq(p54spi_gpio_irq),
+<<<<<<< HEAD
 			  p54spi_interrupt, IRQF_DISABLED, "p54spi",
+=======
+			  p54spi_interrupt, 0, "p54spi",
+>>>>>>> refs/remotes/origin/master
 			  priv->spi);
 	if (ret < 0) {
 		dev_err(&priv->spi->dev, "request_irq() failed");
@@ -688,9 +738,15 @@ err_free:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit p54spi_remove(struct spi_device *spi)
 {
 	struct p54s_priv *priv = dev_get_drvdata(&spi->dev);
+=======
+static int p54spi_remove(struct spi_device *spi)
+{
+	struct p54s_priv *priv = spi_get_drvdata(spi);
+>>>>>>> refs/remotes/origin/master
 
 	p54_unregister_common(priv->hw);
 
@@ -711,11 +767,18 @@ static int __devexit p54spi_remove(struct spi_device *spi)
 static struct spi_driver p54spi_driver = {
 	.driver = {
 		.name		= "p54spi",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.bus		= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.owner		= THIS_MODULE,
 	},
 
 	.probe		= p54spi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(p54spi_remove),
 };
 
@@ -740,8 +803,22 @@ static void __exit p54spi_exit(void)
 
 module_init(p54spi_init);
 module_exit(p54spi_exit);
+=======
+	.remove		= p54spi_remove,
+};
+
+module_spi_driver(p54spi_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Christian Lamparter <chunkeey@web.de>");
 MODULE_ALIAS("spi:cx3110x");
 MODULE_ALIAS("spi:p54spi");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("spi:stlc45xx");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("spi:stlc45xx");
+>>>>>>> refs/remotes/origin/master

@@ -17,6 +17,14 @@
 
 #include <asm/pgtable.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/master
 
 extern void arch_enable_nmi(void);
 extern void stop_watchdog(void);
@@ -146,6 +154,7 @@ show_stack(void)
 #endif
 
 void
+<<<<<<< HEAD
 dump_stack(void)
 {
 	show_stack(NULL, NULL);
@@ -153,6 +162,8 @@ dump_stack(void)
 EXPORT_SYMBOL(dump_stack);
 
 void
+=======
+>>>>>>> refs/remotes/origin/master
 set_nmi_handler(void (*handler)(struct pt_regs *))
 {
 	nmi_handler = handler;

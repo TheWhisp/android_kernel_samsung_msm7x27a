@@ -656,6 +656,7 @@ static struct i2c_driver saa7191_driver = {
 	.id_table	= saa7191_id,
 };
 
+<<<<<<< HEAD
 static __init int init_saa7191(void)
 {
 	return i2c_add_driver(&saa7191_driver);
@@ -668,3 +669,6 @@ static __exit void exit_saa7191(void)
 
 module_init(init_saa7191);
 module_exit(exit_saa7191);
+=======
+module_i2c_driver(saa7191_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

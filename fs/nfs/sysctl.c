@@ -9,6 +9,7 @@
 #include <linux/fs.h>
 #include <linux/sysctl.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/nfs4.h>
 #include <linux/nfs_idmap.h>
 #include <linux/nfs_fs.h>
@@ -32,7 +33,10 @@ static ctl_table nfs_cb_sysctls[] = {
 		.extra1 = (int *)&nfs_set_port_min,
 		.extra2 = (int *)&nfs_set_port_max,
 	},
+<<<<<<< HEAD
 #ifndef CONFIG_NFS_USE_NEW_IDMAPPER
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.procname = "idmap_cache_timeout",
 		.data = &nfs_idmap_cache_timeout,
@@ -40,8 +44,18 @@ static ctl_table nfs_cb_sysctls[] = {
 		.mode = 0644,
 		.proc_handler = proc_dointvec_jiffies,
 	},
+<<<<<<< HEAD
 #endif /* CONFIG_NFS_USE_NEW_IDMAPPER */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+#include <linux/nfs_fs.h>
+
+static struct ctl_table_header *nfs_callback_sysctl_table;
+
+static ctl_table nfs_cb_sysctls[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "nfs_mountpoint_timeout",
 		.data		= &nfs_mountpoint_expiry_timeout,

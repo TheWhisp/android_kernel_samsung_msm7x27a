@@ -6,12 +6,26 @@ config PPC_MPC512x
 	select PPC_CLOCK
 	select PPC_PCI_CHOICE
 	select FSL_PCI if PCI
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select ARCH_WANT_OPTIONAL_GPIOLIB
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_WANT_OPTIONAL_GPIOLIB
+	select USB_EHCI_BIG_ENDIAN_MMIO
+	select USB_EHCI_BIG_ENDIAN_DESC
+>>>>>>> refs/remotes/origin/master
 
 config MPC5121_ADS
 	bool "Freescale MPC5121E ADS"
 	depends on PPC_MPC512x
 	select DEFAULT_UIMAGE
+<<<<<<< HEAD
+<<<<<<< HEAD
 	select MPC5121_ADS_CPLD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables support for the MPC5121E ADS board.
 
@@ -25,6 +39,21 @@ config MPC5121_GENERIC
 
 	  Compatible boards include:  Protonic LVT base boards (ZANMCU
 	  and VICVT2).
+=======
+	help
+	  This option enables support for the MPC5121E ADS board.
+
+config MPC512x_GENERIC
+	bool "Generic support for simple MPC512x based boards"
+	depends on PPC_MPC512x
+	select DEFAULT_UIMAGE
+	help
+	  This option enables support for simple MPC512x based boards
+	  which do not need custom platform specific setup.
+
+	  Compatible boards include:  Protonic LVT base boards (ZANMCU
+	  and VICVT2), Freescale MPC5125 Tower system.
+>>>>>>> refs/remotes/origin/master
 
 config PDM360NG
 	bool "ifm PDM360NG board"

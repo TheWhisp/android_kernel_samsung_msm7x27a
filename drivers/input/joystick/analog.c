@@ -136,10 +136,23 @@ struct analog_port {
 
 #ifdef __i386__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/i8253.h>
 
 #define GET_TIME(x)	do { if (cpu_has_tsc) rdtscl(x); else x = get_time_pit(); } while (0)
 #define DELTA(x,y)	(cpu_has_tsc ? ((y) - (x)) : ((x) - (y) + ((x) < (y) ? CLOCK_TICK_RATE / HZ : 0)))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/i8253.h>
+
+#define GET_TIME(x)	do { if (cpu_has_tsc) rdtscl(x); else x = get_time_pit(); } while (0)
+#define DELTA(x,y)	(cpu_has_tsc ? ((y) - (x)) : ((x) - (y) + ((x) < (y) ? PIT_TICK_RATE / HZ : 0)))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIME_NAME	(cpu_has_tsc?"TSC":"PIT")
 static unsigned int get_time_pit(void)
 {
@@ -158,6 +171,7 @@ static unsigned int get_time_pit(void)
 #define GET_TIME(x)	rdtscl(x)
 #define DELTA(x,y)	((y)-(x))
 #define TIME_NAME	"TSC"
+<<<<<<< HEAD
 #elif defined(__alpha__)
 #define GET_TIME(x)	do { x = get_cycles(); } while (0)
 #define DELTA(x,y)	((y)-(x))
@@ -166,6 +180,12 @@ static unsigned int get_time_pit(void)
 #define GET_TIME(x)	do { x = get_cycles(); } while (0)
 #define DELTA(x, y)	((x) - (y))
 #define TIME_NAME	"TSC"
+=======
+#elif defined(__alpha__) || defined(CONFIG_MN10300) || defined(CONFIG_ARM) || defined(CONFIG_TILE)
+#define GET_TIME(x)	do { x = get_cycles(); } while (0)
+#define DELTA(x,y)	((y)-(x))
+#define TIME_NAME	"get_cycles"
+>>>>>>> refs/remotes/origin/master
 #else
 #define FAKE_TIME
 static unsigned long analog_faketime = 0;

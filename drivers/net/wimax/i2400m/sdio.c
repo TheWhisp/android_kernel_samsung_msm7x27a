@@ -55,6 +55,10 @@
 #include <linux/mmc/sdio_func.h>
 #include "i2400m-sdio.h"
 #include <linux/wimax/i2400m.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define D_SUBMODULE main
 #include "sdio-debug-levels.h"

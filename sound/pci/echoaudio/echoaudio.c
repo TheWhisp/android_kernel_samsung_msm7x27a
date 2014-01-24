@@ -16,6 +16,16 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Giuliano Pochini <pochini@shiny.it>");
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("Echoaudio " ECHOCARD_NAME " soundcards driver");
@@ -24,7 +34,15 @@ MODULE_DEVICE_TABLE(pci, snd_echo_ids);
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for " ECHOCARD_NAME " soundcard.");
@@ -44,7 +62,11 @@ static int get_firmware(const struct firmware **fw_entry,
 	int err;
 	char name[30];
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	if (chip->fw_cache[fw_index]) {
 		DE_ACT(("firmware requested: %s is cached\n", card_fw[fw_index].data));
 		*fw_entry = chip->fw_cache[fw_index];
@@ -57,7 +79,11 @@ static int get_firmware(const struct firmware **fw_entry,
 	err = request_firmware(fw_entry, name, pci_device(chip));
 	if (err < 0)
 		snd_printk(KERN_ERR "get_firmware(): Firmware not available (%d)\n", err);
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	else
 		chip->fw_cache[fw_index] = *fw_entry;
 #endif
@@ -68,7 +94,11 @@ static int get_firmware(const struct firmware **fw_entry,
 
 static void free_firmware(const struct firmware *fw_entry)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	DE_ACT(("firmware not released (kept in cache)\n"));
 #else
 	release_firmware(fw_entry);
@@ -80,7 +110,11 @@ static void free_firmware(const struct firmware *fw_entry)
 
 static void free_firmware_cache(struct echoaudio *chip)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = 0; i < 8 ; i++)
@@ -905,7 +939,11 @@ static int snd_echo_preallocate_pages(struct snd_pcm *pcm, struct device *dev)
 
 
 /*<--snd_echo_probe() */
+<<<<<<< HEAD
 static int __devinit snd_echo_new_pcm(struct echoaudio *chip)
+=======
+static int snd_echo_new_pcm(struct echoaudio *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -1048,7 +1086,11 @@ static int snd_echo_output_gain_put(struct snd_kcontrol *kcontrol,
 
 #ifdef ECHOCARD_HAS_LINE_OUT_GAIN
 /* On the Mia this one controls the line-out volume */
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_line_output_gain __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_line_output_gain = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Line Playback Volume",
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
@@ -1059,7 +1101,11 @@ static struct snd_kcontrol_new snd_echo_line_output_gain __devinitdata = {
 	.tlv = {.p = db_scale_output_gain},
 };
 #else
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_pcm_output_gain __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_pcm_output_gain = {
+>>>>>>> refs/remotes/origin/master
 	.name = "PCM Playback Volume",
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ,
@@ -1129,7 +1175,11 @@ static int snd_echo_input_gain_put(struct snd_kcontrol *kcontrol,
 
 static const DECLARE_TLV_DB_SCALE(db_scale_input_gain, -2500, 50, 0);
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_line_input_gain __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_line_input_gain = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Line Capture Volume",
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ,
@@ -1193,7 +1243,11 @@ static int snd_echo_output_nominal_put(struct snd_kcontrol *kcontrol,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_output_nominal_level __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_output_nominal_level = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Line Playback Switch (-10dBV)",
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.info = snd_echo_output_nominal_info,
@@ -1259,7 +1313,11 @@ static int snd_echo_input_nominal_put(struct snd_kcontrol *kcontrol,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_intput_nominal_level __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_intput_nominal_level = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Line Capture Switch (-10dBV)",
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.info = snd_echo_input_nominal_info,
@@ -1325,7 +1383,11 @@ static int snd_echo_mixer_put(struct snd_kcontrol *kcontrol,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_monitor_mixer __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_monitor_mixer = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Monitor Mixer Volume",
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ,
@@ -1393,7 +1455,11 @@ static int snd_echo_vmixer_put(struct snd_kcontrol *kcontrol,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_vmixer __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_vmixer = {
+>>>>>>> refs/remotes/origin/master
 	.name = "VMixer Volume",
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ,
@@ -1488,7 +1554,11 @@ static int snd_echo_digital_mode_put(struct snd_kcontrol *kcontrol,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_digital_mode_switch __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_digital_mode_switch = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Digital mode Switch",
 	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
 	.info = snd_echo_digital_mode_info,
@@ -1545,7 +1615,11 @@ static int snd_echo_spdif_mode_put(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_spdif_mode_switch __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_spdif_mode_switch = {
+>>>>>>> refs/remotes/origin/master
 	.name = "S/PDIF mode Switch",
 	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
 	.info = snd_echo_spdif_mode_info,
@@ -1624,7 +1698,11 @@ static int snd_echo_clock_source_put(struct snd_kcontrol *kcontrol,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_clock_source_switch __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_clock_source_switch = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Sample Clock Source",
 	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
 	.info = snd_echo_clock_source_info,
@@ -1667,7 +1745,11 @@ static int snd_echo_phantom_power_put(struct snd_kcontrol *kcontrol,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_phantom_power_switch __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_phantom_power_switch = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Phantom power Switch",
 	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
 	.info = snd_echo_phantom_power_info,
@@ -1710,7 +1792,11 @@ static int snd_echo_automute_put(struct snd_kcontrol *kcontrol,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_automute_switch __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_automute_switch = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Digital Capture Switch (automute)",
 	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
 	.info = snd_echo_automute_info,
@@ -1737,7 +1823,11 @@ static int snd_echo_vumeters_switch_put(struct snd_kcontrol *kcontrol,
 	return 1;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_vumeters_switch __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_vumeters_switch = {
+>>>>>>> refs/remotes/origin/master
 	.name = "VU-meters Switch",
 	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
 	.access = SNDRV_CTL_ELEM_ACCESS_WRITE,
@@ -1778,7 +1868,11 @@ static int snd_echo_vumeters_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_vumeters __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_vumeters = {
+>>>>>>> refs/remotes/origin/master
 	.name = "VU-meters",
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.access = SNDRV_CTL_ELEM_ACCESS_READ |
@@ -1834,7 +1928,11 @@ static int snd_echo_channels_info_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_echo_channels_info __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_echo_channels_info = {
+>>>>>>> refs/remotes/origin/master
 	.name = "Channels info",
 	.iface = SNDRV_CTL_ELEM_IFACE_HWDEP,
 	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
@@ -1938,9 +2036,15 @@ static int snd_echo_dev_free(struct snd_device *device)
 
 
 /* <--snd_echo_probe() */
+<<<<<<< HEAD
 static __devinit int snd_echo_create(struct snd_card *card,
 				     struct pci_dev *pci,
 				     struct echoaudio **rchip)
+=======
+static int snd_echo_create(struct snd_card *card,
+			   struct pci_dev *pci,
+			   struct echoaudio **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct echoaudio *chip;
 	int err;
@@ -1995,7 +2099,15 @@ static __devinit int snd_echo_create(struct snd_card *card,
 		ioremap_nocache(chip->dsp_registers_phys, sz);
 
 	if (request_irq(pci->irq, snd_echo_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ECHOCARD_NAME, chip)) {
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
 		snd_echo_free(chip);
 		snd_printk(KERN_ERR "cannot grab irq\n");
 		return -EBUSY;
@@ -2038,8 +2150,13 @@ static __devinit int snd_echo_create(struct snd_card *card,
 
 
 /* constructor */
+<<<<<<< HEAD
 static int __devinit snd_echo_probe(struct pci_dev *pci,
 				    const struct pci_device_id *pci_id)
+=======
+static int snd_echo_probe(struct pci_dev *pci,
+			  const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -2201,11 +2318,20 @@ ctl_error:
 
 
 
+<<<<<<< HEAD
 #if defined(CONFIG_PM)
 
 static int snd_echo_suspend(struct pci_dev *pci, pm_message_t state)
 {
 	struct echoaudio *chip = pci_get_drvdata(pci);
+=======
+#if defined(CONFIG_PM_SLEEP)
+
+static int snd_echo_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct echoaudio *chip = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	DE_INIT(("suspend start\n"));
 	snd_pcm_suspend_all(chip->analog_pcm);
@@ -2240,9 +2366,16 @@ static int snd_echo_suspend(struct pci_dev *pci, pm_message_t state)
 
 
 
+<<<<<<< HEAD
 static int snd_echo_resume(struct pci_dev *pci)
 {
 	struct echoaudio *chip = pci_get_drvdata(pci);
+=======
+static int snd_echo_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct echoaudio *chip = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct comm_page *commpage, *commpage_bak;
 	u32 pipe_alloc_mask;
 	int err;
@@ -2286,7 +2419,15 @@ static int snd_echo_resume(struct pci_dev *pci)
 	kfree(commpage_bak);
 
 	if (request_irq(pci->irq, snd_echo_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ECHOCARD_NAME, chip)) {
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
 		snd_echo_free(chip);
 		snd_printk(KERN_ERR "cannot grab irq\n");
 		return -EBUSY;
@@ -2305,18 +2446,32 @@ static int snd_echo_resume(struct pci_dev *pci)
 	return 0;
 }
 
+<<<<<<< HEAD
 #endif /* CONFIG_PM */
 
 
 
 static void __devexit snd_echo_remove(struct pci_dev *pci)
+=======
+static SIMPLE_DEV_PM_OPS(snd_echo_pm, snd_echo_suspend, snd_echo_resume);
+#define SND_ECHO_PM_OPS	&snd_echo_pm
+#else
+#define SND_ECHO_PM_OPS	NULL
+#endif /* CONFIG_PM_SLEEP */
+
+
+static void snd_echo_remove(struct pci_dev *pci)
+>>>>>>> refs/remotes/origin/master
 {
 	struct echoaudio *chip;
 
 	chip = pci_get_drvdata(pci);
 	if (chip)
 		snd_card_free(chip->card);
+<<<<<<< HEAD
 	pci_set_drvdata(pci, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2326,8 +2481,13 @@ static void __devexit snd_echo_remove(struct pci_dev *pci)
 ******************************************************************************/
 
 /* pci_driver definition */
+<<<<<<< HEAD
 static struct pci_driver driver = {
+<<<<<<< HEAD
 	.name = "Echoaudio " ECHOCARD_NAME,
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = snd_echo_ids,
 	.probe = snd_echo_probe,
 	.remove = __devexit_p(snd_echo_remove),
@@ -2356,3 +2516,16 @@ static void __exit alsa_card_echo_exit(void)
 
 module_init(alsa_card_echo_init)
 module_exit(alsa_card_echo_exit)
+=======
+static struct pci_driver echo_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_echo_ids,
+	.probe = snd_echo_probe,
+	.remove = snd_echo_remove,
+	.driver = {
+		.pm = SND_ECHO_PM_OPS,
+	},
+};
+
+module_pci_driver(echo_driver);
+>>>>>>> refs/remotes/origin/master

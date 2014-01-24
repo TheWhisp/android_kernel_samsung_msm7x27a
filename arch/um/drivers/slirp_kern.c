@@ -4,11 +4,19 @@
  */
 
 #include <linux/if_arp.h>
+<<<<<<< HEAD
 #include "linux/init.h"
 #include <linux/netdevice.h>
 #include <linux/string.h>
 #include "net_kern.h"
 #include "net_user.h"
+=======
+#include <linux/init.h>
+#include <linux/netdevice.h>
+#include <linux/string.h>
+#include <net_kern.h>
+#include <net_user.h>
+>>>>>>> refs/remotes/origin/master
 #include "slirp.h"
 
 struct slirp_init {

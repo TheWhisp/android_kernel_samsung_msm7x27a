@@ -8,6 +8,7 @@
  */
 
 typedef unsigned int	__kernel_ino_t;
+<<<<<<< HEAD
 typedef unsigned int	__kernel_mode_t;
 typedef unsigned int	__kernel_nlink_t;
 typedef long		__kernel_off_t;
@@ -119,5 +120,15 @@ static __inline__ void __FD_ZERO(__kernel_fd_set *p)
 #endif /* __GNUC__ */
 
 #endif /* __KERNEL__ */
+=======
+#define __kernel_ino_t __kernel_ino_t
+
+typedef unsigned int	__kernel_nlink_t;
+#define __kernel_nlink_t __kernel_nlink_t
+
+typedef unsigned long	__kernel_sigset_t;	/* at least 32 bits */
+
+#include <asm-generic/posix_types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _ALPHA_POSIX_TYPES_H */

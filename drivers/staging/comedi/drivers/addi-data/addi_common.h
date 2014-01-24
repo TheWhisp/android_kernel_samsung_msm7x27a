@@ -15,6 +15,7 @@
  * any later version.
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/sched.h>
@@ -42,6 +43,13 @@
 #define LOWORD(W)	(unsigned short)((W) & 0xFFFF)
 #define HIWORD(W)	(unsigned short)(((W) >> 16) & 0xFFFF)
 #define MAKEDWORD(H, L)	(unsigned int)((L) | ((H) << 16))
+=======
+#include <linux/sched.h>
+#include <linux/interrupt.h>
+
+#define LOWORD(W)	(unsigned short)((W) & 0xFFFF)
+#define HIWORD(W)	(unsigned short)(((W) >> 16) & 0xFFFF)
+>>>>>>> refs/remotes/origin/master
 
 #define ADDI_ENABLE		1
 #define ADDI_DISABLE		0
@@ -51,8 +59,11 @@
 #define ADDIDATA_NO_EEPROM	0
 #define ADDIDATA_93C76		"93C76"
 #define ADDIDATA_S5920		"S5920"
+<<<<<<< HEAD
 #define ADDIDATA_S5933		"S5933"
 #define ADDIDATA_9054		"9054"
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* ADDIDATA Enable Disable */
 #define ADDIDATA_ENABLE		1
@@ -63,12 +74,16 @@
 /* structure for the boardtype */
 struct addi_board {
 	const char *pc_DriverName;	/*  driver name */
+<<<<<<< HEAD
 	int i_VendorId;		/* PCI vendor a device ID of card */
 	int i_DeviceId;
 	int i_IorangeBase0;
 	int i_IorangeBase1;
 	int i_IorangeBase2;	/*   base 2 range */
 	int i_IorangeBase3;	/*   base 3 range */
+=======
+	int i_IorangeBase1;
+>>>>>>> refs/remotes/origin/master
 	int i_PCIEeprom;	/*  eeprom present or not */
 	char *pc_EepromChip;	/*  type of chip */
 	int i_NbrAiChannel;	/*  num of A/D chans */
@@ -78,28 +93,41 @@ struct addi_board {
 	int i_AiMaxdata;	/*  resolution of A/D */
 	int i_AoMaxdata;	/*  resolution of D/A */
 	const struct comedi_lrange *pr_AiRangelist;	/* rangelist for A/D */
+<<<<<<< HEAD
 	const struct comedi_lrange *pr_AoRangelist;	/* rangelist for D/A */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	int i_NbrDiChannel;	/*  Number of DI channels */
 	int i_NbrDoChannel;	/*  Number of DO channels */
 	int i_DoMaxdata;	/*  data to set all channels high */
 
+<<<<<<< HEAD
 	int i_NbrTTLChannel;	/*  Number of TTL channels */
 	const struct comedi_lrange *pr_TTLRangelist;	/* rangelist for TTL */
 
 	int i_Dma;		/*  dma present or not */
 	int i_Timer;		/*    timer subdevice present or not */
 	unsigned char b_AvailableConvertUnit;
+=======
+	int i_Timer;		/*    timer subdevice present or not */
+>>>>>>> refs/remotes/origin/master
 	unsigned int ui_MinAcquisitiontimeNs;	/*  Minimum Acquisition in Nano secs */
 	unsigned int ui_MinDelaytimeNs;	/*  Minimum Delay in Nano secs */
 
 	/* interrupt and reset */
+<<<<<<< HEAD
 	void (*v_hwdrv_Interrupt)(int irq, void *d);
 	int (*i_hwdrv_Reset)(struct comedi_device *dev);
+=======
+	void (*interrupt)(int irq, void *d);
+	int (*reset)(struct comedi_device *);
+>>>>>>> refs/remotes/origin/master
 
 	/* Subdevice functions */
 
 	/* ANALOG INPUT */
+<<<<<<< HEAD
 	int (*i_hwdrv_InsnConfigAnalogInput)(struct comedi_device *dev,
 					     struct comedi_subdevice *s,
 					     struct comedi_insn *insn,
@@ -347,10 +375,62 @@ union str_ModuleInfo {
 /* Private structure for the addi_apci3120 driver */
 struct addi_private {
 
+=======
+	int (*ai_config)(struct comedi_device *, struct comedi_subdevice *,
+			 struct comedi_insn *, unsigned int *);
+	int (*ai_read)(struct comedi_device *, struct comedi_subdevice *,
+		       struct comedi_insn *, unsigned int *);
+	int (*ai_write)(struct comedi_device *, struct comedi_subdevice *,
+			struct comedi_insn *, unsigned int *);
+	int (*ai_bits)(struct comedi_device *, struct comedi_subdevice *,
+		       struct comedi_insn *, unsigned int *);
+	int (*ai_cmdtest)(struct comedi_device *, struct comedi_subdevice *,
+			  struct comedi_cmd *);
+	int (*ai_cmd)(struct comedi_device *, struct comedi_subdevice *);
+	int (*ai_cancel)(struct comedi_device *, struct comedi_subdevice *);
+
+	/* Analog Output */
+	int (*ao_write)(struct comedi_device *, struct comedi_subdevice *,
+			struct comedi_insn *, unsigned int *);
+
+	/* Digital Input */
+	int (*di_config)(struct comedi_device *, struct comedi_subdevice *,
+			 struct comedi_insn *, unsigned int *);
+	int (*di_read)(struct comedi_device *, struct comedi_subdevice *,
+		       struct comedi_insn *, unsigned int *);
+	int (*di_write)(struct comedi_device *, struct comedi_subdevice *,
+			struct comedi_insn *, unsigned int *);
+	int (*di_bits)(struct comedi_device *, struct comedi_subdevice *,
+		       struct comedi_insn *, unsigned int *);
+
+	/* Digital Output */
+	int (*do_config)(struct comedi_device *, struct comedi_subdevice *,
+			 struct comedi_insn *, unsigned int *);
+	int (*do_write)(struct comedi_device *, struct comedi_subdevice *,
+			struct comedi_insn *, unsigned int *);
+	int (*do_bits)(struct comedi_device *, struct comedi_subdevice *,
+		       struct comedi_insn *, unsigned int *);
+	int (*do_read)(struct comedi_device *, struct comedi_subdevice *,
+		       struct comedi_insn *, unsigned int *);
+
+	/* TIMER */
+	int (*timer_config)(struct comedi_device *, struct comedi_subdevice *,
+			    struct comedi_insn *, unsigned int *);
+	int (*timer_write)(struct comedi_device *, struct comedi_subdevice *,
+			   struct comedi_insn *, unsigned int *);
+	int (*timer_read)(struct comedi_device *, struct comedi_subdevice *,
+			  struct comedi_insn *, unsigned int *);
+	int (*timer_bits)(struct comedi_device *, struct comedi_subdevice *,
+			  struct comedi_insn *, unsigned int *);
+};
+
+struct addi_private {
+>>>>>>> refs/remotes/origin/master
 	int iobase;
 	int i_IobaseAmcc;	/*  base+size for AMCC chip */
 	int i_IobaseAddon;	/* addon base address */
 	int i_IobaseReserved;
+<<<<<<< HEAD
 	void __iomem *dw_AiBase;
 	struct pcilst_struct *amcc;	/*  ptr too AMCC data */
 	unsigned char allocated;		/*  we have blocked card */
@@ -367,15 +447,28 @@ struct addi_private {
 	unsigned char b_AiChannelConfiguration[32];	/*  actual chanlist */
 	unsigned int ui_AiReadData[32];
 	unsigned int dw_AiInitialised;
+=======
+	unsigned char b_AiContinuous;	/*  we do unlimited AI */
+	unsigned int ui_AiActualScan;	/* how many scans we finished */
+	unsigned int ui_AiNbrofChannels;	/*  how many channels is measured */
+	unsigned int ui_AiScanLength;	/*  Length of actual scanlist */
+	unsigned int *pui_AiChannelList;	/*  actual chanlist */
+	unsigned int ui_AiChannelList[32];	/*  actual chanlist */
+	unsigned int ui_AiReadData[32];
+>>>>>>> refs/remotes/origin/master
 	unsigned int ui_AiTimer0;	/* Timer Constant for Timer0 */
 	unsigned int ui_AiTimer1;	/* Timer constant for Timer1 */
 	unsigned int ui_AiFlags;
 	unsigned int ui_AiDataLength;
+<<<<<<< HEAD
 	short *AiData;	/*  Pointer to sample data */
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int ui_AiNbrofScans;	/*  number of scans to do */
 	unsigned short us_UseDma;	/*  To use Dma or not */
 	unsigned char b_DmaDoubleBuffer;	/*  we can use double buffering */
 	unsigned int ui_DmaActualBuffer;	/*  which buffer is used now */
+<<<<<<< HEAD
 	/* UPDATE-0.7.57->0.7.68 */
 	/* unsigned int               ul_DmaBufferVirtual[2]; pointers to begin of DMA buffer */
 	short *ul_DmaBufferVirtual[2];	/*  pointers to begin of DMA buffer */
@@ -394,19 +487,35 @@ struct addi_private {
 	unsigned char b_InterruptState;
 	unsigned char b_TimerInit;	/*  Specify if InitTimerWatchdog was load */
 	unsigned char b_TimerStarted;	/*  Specify if timer 2 is running or not */
+=======
+	unsigned short *ul_DmaBufferVirtual[2];	/*  pointers to DMA buffer */
+	unsigned int ul_DmaBufferHw[2];	/*  hw address of DMA buff */
+	unsigned int ui_DmaBufferSize[2];	/*  size of dma buffer in bytes */
+	unsigned int ui_DmaBufferUsesize[2];	/*  which size we may now used for transfer */
+	unsigned int ui_DmaBufferPages[2];	/*  number of pages in buffer */
+	unsigned char b_DigitalOutputRegister;	/*  Digital Output Register */
+	unsigned char b_OutputMemoryStatus;
+	unsigned char b_TimerSelectMode;	/*  Contain data written at iobase + 0C */
+	unsigned char b_ModeSelectRegister;	/*  Contain data written at iobase + 0E */
+	unsigned short us_OutputRegister;	/*  Contain data written at iobase + 0 */
+>>>>>>> refs/remotes/origin/master
 	unsigned char b_Timer2Mode;	/*  Specify the timer 2 mode */
 	unsigned char b_Timer2Interrupt;	/* Timer2  interrupt enable or disable */
 	unsigned char b_AiCyclicAcquisition;	/*  indicate cyclic acquisition */
 	unsigned char b_InterruptMode;	/*  eoc eos or dma */
 	unsigned char b_EocEosInterrupt;	/*  Enable disable eoc eos interrupt */
 	unsigned int ui_EocEosConversionTime;
+<<<<<<< HEAD
 	unsigned char b_EocEosConversionTimeBase;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char b_SingelDiff;
 	unsigned char b_ExttrigEnable;	/* To enable or disable external trigger */
 
 	/* Pointer to the current process */
 	struct task_struct *tsk_Current;
 
+<<<<<<< HEAD
 	/* Hardware board infos for 1710 */
 	struct {
 		unsigned int ui_Address;	/* Board address */
@@ -433,6 +542,8 @@ struct addi_private {
 	union str_ModuleInfo s_ModuleInfo[4];
 	unsigned int ul_TTLPortConfiguration[10];
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Parameters read from EEPROM overriding static board info */
 	struct {
 		int i_NbrAiChannel;	/*  num of A/D chans */
@@ -442,7 +553,10 @@ struct addi_private {
 		int i_NbrDiChannel;	/*  Number of DI channels */
 		int i_NbrDoChannel;	/*  Number of DO channels */
 		int i_DoMaxdata;	/*  data to set all channels high */
+<<<<<<< HEAD
 		int i_Dma;		/*  dma present or not */
+=======
+>>>>>>> refs/remotes/origin/master
 		int i_Timer;		/*  timer subdevice present or not */
 		unsigned int ui_MinAcquisitiontimeNs;
 					/*  Minimum Acquisition in Nano secs */
@@ -450,6 +564,7 @@ struct addi_private {
 					/*  Minimum Delay in Nano secs */
 	} s_EeParameters;
 };
+<<<<<<< HEAD
 
 static unsigned short pci_list_builded;	/* set to 1 when list of card is known */
 
@@ -461,3 +576,5 @@ static int i_ADDI_Reset(struct comedi_device *dev);
 static irqreturn_t v_ADDI_Interrupt(int irq, void *d);
 static int i_ADDIDATA_InsnReadEeprom(struct comedi_device *dev, struct comedi_subdevice *s,
 				     struct comedi_insn *insn, unsigned int *data);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * arch/arm/plat-spear/include/plat/gpio.h
  *
@@ -22,3 +23,6 @@
 #define gpio_to_irq	__gpio_to_irq
 
 #endif /* __PLAT_GPIO_H */
+=======
+/* empty */
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -21,7 +21,13 @@
 #define __MTD_MTD_H__
 
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/uio.h>
 #include <linux/notifier.h>
 #include <linux/device.h>
@@ -30,9 +36,11 @@
 
 #include <asm/div64.h>
 
+<<<<<<< HEAD
 #define MTD_CHAR_MAJOR 90
 #define MTD_BLOCK_MAJOR 31
 
+<<<<<<< HEAD
 #define MTD_ERASE_PENDING      	0x01
 #define MTD_ERASING		0x02
 #define MTD_ERASE_SUSPEND	0x04
@@ -44,6 +52,26 @@
 /* If the erase fails, fail_addr might indicate exactly which block failed.  If
    fail_addr = MTD_FAIL_ADDR_UNKNOWN, the failure was not at the device level or was not
    specific to any particular block. */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define MTD_ERASE_PENDING	0x01
+#define MTD_ERASING		0x02
+#define MTD_ERASE_SUSPEND	0x04
+#define MTD_ERASE_DONE		0x08
+#define MTD_ERASE_FAILED	0x10
+
+#define MTD_FAIL_ADDR_UNKNOWN -1LL
+
+/*
+ * If the erase fails, fail_addr might indicate exactly which block failed. If
+ * fail_addr = MTD_FAIL_ADDR_UNKNOWN, the failure was not at the device level
+ * or was not specific to any particular block.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct erase_info {
 	struct mtd_info *mtd;
 	uint64_t addr;
@@ -60,12 +88,22 @@ struct erase_info {
 };
 
 struct mtd_erase_region_info {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint64_t offset;			/* At which this region starts, from the beginning of the MTD */
+=======
+	uint64_t offset;		/* At which this region starts, from the beginning of the MTD */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint64_t offset;		/* At which this region starts, from the beginning of the MTD */
+>>>>>>> refs/remotes/origin/master
 	uint32_t erasesize;		/* For this region */
 	uint32_t numblocks;		/* Number of blocks of erasesize in this region */
 	unsigned long *lockmap;		/* If keeping bitmap of locks */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * oob operation modes
  *
@@ -80,6 +118,10 @@ typedef enum {
 	MTD_OOB_RAW,
 } mtd_oob_mode_t;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct mtd_oob_ops - oob operation operands
  * @mode:	operation mode
@@ -91,7 +133,15 @@ typedef enum {
  * @ooblen:	number of oob bytes to write/read
  * @oobretlen:	number of oob bytes written/read
  * @ooboffs:	offset of oob data in the oob area (only relevant when
+<<<<<<< HEAD
+<<<<<<< HEAD
  *		mode = MTD_OOB_PLACE)
+=======
+ *		mode = MTD_OPS_PLACE_OOB or MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *		mode = MTD_OPS_PLACE_OOB or MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/master
  * @datbuf:	data buffer - if NULL only oob data are read/written
  * @oobbuf:	oob data buffer
  *
@@ -100,7 +150,15 @@ typedef enum {
  * OOB area.
  */
 struct mtd_oob_ops {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mtd_oob_mode_t	mode;
+=======
+	unsigned int	mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int	mode;
+>>>>>>> refs/remotes/origin/master
 	size_t		len;
 	size_t		retlen;
 	size_t		ooblen;
@@ -111,7 +169,11 @@ struct mtd_oob_ops {
 };
 
 #define MTD_MAX_OOBFREE_ENTRIES_LARGE	32
+<<<<<<< HEAD
 #define MTD_MAX_ECCPOS_ENTRIES_LARGE	448
+=======
+#define MTD_MAX_ECCPOS_ENTRIES_LARGE	640
+>>>>>>> refs/remotes/origin/master
 /*
  * Internal ECC layout control structure. For historical reasons, there is a
  * similar, smaller struct nand_ecclayout_user (in mtd-abi.h) that is retained
@@ -125,6 +187,16 @@ struct nand_ecclayout {
 	struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES_LARGE];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct module;	/* only needed for owner field in mtd_info */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct module;	/* only needed for owner field in mtd_info */
+
+>>>>>>> refs/remotes/origin/master
 struct mtd_info {
 	u_char type;
 	uint32_t flags;
@@ -168,13 +240,46 @@ struct mtd_info {
 	unsigned int erasesize_mask;
 	unsigned int writesize_mask;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * read ops return -EUCLEAN if max number of bitflips corrected on any
+	 * one region comprising an ecc step equals or exceeds this value.
+	 * Settable by driver, else defaults to ecc_strength.  User can override
+	 * in sysfs.  N.B. The meaning of the -EUCLEAN return code has changed;
+	 * see Documentation/ABI/testing/sysfs-class-mtd for more detail.
+	 */
+	unsigned int bitflip_threshold;
+
+>>>>>>> refs/remotes/origin/master
 	// Kernel-only stuff starts here.
 	const char *name;
 	int index;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* ecc layout structure pointer - read only ! */
 	struct nand_ecclayout *ecclayout;
 
+=======
+	/* ECC layout structure pointer - read only! */
+	struct nand_ecclayout *ecclayout;
+
+	/* max number of correctible bit errors per writesize */
+	unsigned int ecc_strength;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* ECC layout structure pointer - read only! */
+	struct nand_ecclayout *ecclayout;
+
+	/* the ecc step size. */
+	unsigned int ecc_step_size;
+
+	/* max number of correctible bit errors per ecc step */
+	unsigned int ecc_strength;
+
+>>>>>>> refs/remotes/origin/master
 	/* Data for variable erase regions. If numeraseregions is zero,
 	 * it means that the whole device has erasesize as given above.
 	 */
@@ -182,6 +287,8 @@ struct mtd_info {
 	struct mtd_erase_region_info *eraseregions;
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * Erase is an asynchronous operation.  Device drivers are supposed
 	 * to call instr->callback() whenever the operation completes, even
 	 * if it completes with a failure.
@@ -206,12 +313,70 @@ struct mtd_info {
 					    unsigned long len,
 					    unsigned long offset,
 					    unsigned long flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * Do not call via these pointers, use corresponding mtd_*()
+	 * wrappers instead.
+	 */
+	int (*_erase) (struct mtd_info *mtd, struct erase_info *instr);
+	int (*_point) (struct mtd_info *mtd, loff_t from, size_t len,
+		       size_t *retlen, void **virt, resource_size_t *phys);
+	int (*_unpoint) (struct mtd_info *mtd, loff_t from, size_t len);
+	unsigned long (*_get_unmapped_area) (struct mtd_info *mtd,
+					     unsigned long len,
+					     unsigned long offset,
+					     unsigned long flags);
+	int (*_read) (struct mtd_info *mtd, loff_t from, size_t len,
+		      size_t *retlen, u_char *buf);
+	int (*_write) (struct mtd_info *mtd, loff_t to, size_t len,
+		       size_t *retlen, const u_char *buf);
+	int (*_panic_write) (struct mtd_info *mtd, loff_t to, size_t len,
+			     size_t *retlen, const u_char *buf);
+	int (*_read_oob) (struct mtd_info *mtd, loff_t from,
+			  struct mtd_oob_ops *ops);
+	int (*_write_oob) (struct mtd_info *mtd, loff_t to,
+			   struct mtd_oob_ops *ops);
+	int (*_get_fact_prot_info) (struct mtd_info *mtd, struct otp_info *buf,
+				    size_t len);
+	int (*_read_fact_prot_reg) (struct mtd_info *mtd, loff_t from,
+				    size_t len, size_t *retlen, u_char *buf);
+	int (*_get_user_prot_info) (struct mtd_info *mtd, struct otp_info *buf,
+				    size_t len);
+	int (*_read_user_prot_reg) (struct mtd_info *mtd, loff_t from,
+				    size_t len, size_t *retlen, u_char *buf);
+	int (*_write_user_prot_reg) (struct mtd_info *mtd, loff_t to,
+				     size_t len, size_t *retlen, u_char *buf);
+	int (*_lock_user_prot_reg) (struct mtd_info *mtd, loff_t from,
+				    size_t len);
+	int (*_writev) (struct mtd_info *mtd, const struct kvec *vecs,
+			unsigned long count, loff_t to, size_t *retlen);
+	void (*_sync) (struct mtd_info *mtd);
+	int (*_lock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
+	int (*_unlock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
+	int (*_is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
+	int (*_block_isbad) (struct mtd_info *mtd, loff_t ofs);
+	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
+	int (*_suspend) (struct mtd_info *mtd);
+	void (*_resume) (struct mtd_info *mtd);
+	/*
+	 * If the driver is something smart, like UBI, it may need to maintain
+	 * its own reference counting. The below functions are only for driver.
+	 */
+	int (*_get_device) (struct mtd_info *mtd);
+	void (*_put_device) (struct mtd_info *mtd);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Backing device capabilities for this device
 	 * - provides mmap capabilities
 	 */
 	struct backing_dev_info *backing_dev_info;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	int (*read) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
 	int (*write) (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf);
@@ -264,6 +429,10 @@ struct mtd_info {
 	int (*block_isbad) (struct mtd_info *mtd, loff_t ofs);
 	int (*block_markbad) (struct mtd_info *mtd, loff_t ofs);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct notifier_block reboot_notifier;  /* default mode before reboot */
 
 	/* ECC status information */
@@ -276,6 +445,8 @@ struct mtd_info {
 	struct module *owner;
 	struct device dev;
 	int usecount;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* If the driver is something smart, like UBI, it may need to maintain
 	 * its own reference counting. The below functions are only for driver.
@@ -288,6 +459,88 @@ struct mtd_info {
 static inline struct mtd_info *dev_to_mtd(struct device *dev)
 {
 	return dev ? dev_get_drvdata(dev) : NULL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+};
+
+int mtd_erase(struct mtd_info *mtd, struct erase_info *instr);
+int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+	      void **virt, resource_size_t *phys);
+int mtd_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
+unsigned long mtd_get_unmapped_area(struct mtd_info *mtd, unsigned long len,
+				    unsigned long offset, unsigned long flags);
+int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+	     u_char *buf);
+int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+	      const u_char *buf);
+int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+		    const u_char *buf);
+
+<<<<<<< HEAD
+static inline int mtd_read_oob(struct mtd_info *mtd, loff_t from,
+			       struct mtd_oob_ops *ops)
+{
+	ops->retlen = ops->oobretlen = 0;
+	if (!mtd->_read_oob)
+		return -EOPNOTSUPP;
+	return mtd->_read_oob(mtd, from, ops);
+}
+=======
+int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops);
+>>>>>>> refs/remotes/origin/master
+
+static inline int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+				struct mtd_oob_ops *ops)
+{
+	ops->retlen = ops->oobretlen = 0;
+	if (!mtd->_write_oob)
+		return -EOPNOTSUPP;
+	if (!(mtd->flags & MTD_WRITEABLE))
+		return -EROFS;
+	return mtd->_write_oob(mtd, to, ops);
+}
+
+int mtd_get_fact_prot_info(struct mtd_info *mtd, struct otp_info *buf,
+			   size_t len);
+int mtd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
+			   size_t *retlen, u_char *buf);
+int mtd_get_user_prot_info(struct mtd_info *mtd, struct otp_info *buf,
+			   size_t len);
+int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
+			   size_t *retlen, u_char *buf);
+int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
+			    size_t *retlen, u_char *buf);
+int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
+
+int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+	       unsigned long count, loff_t to, size_t *retlen);
+
+static inline void mtd_sync(struct mtd_info *mtd)
+{
+	if (mtd->_sync)
+		mtd->_sync(mtd);
+}
+
+int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs);
+int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs);
+
+static inline int mtd_suspend(struct mtd_info *mtd)
+{
+	return mtd->_suspend ? mtd->_suspend(mtd) : 0;
+}
+
+static inline void mtd_resume(struct mtd_info *mtd)
+{
+	if (mtd->_resume)
+		mtd->_resume(mtd);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline uint32_t mtd_div_by_eb(uint64_t sz, struct mtd_info *mtd)
@@ -320,6 +573,8 @@ static inline uint32_t mtd_mod_by_ws(uint64_t sz, struct mtd_info *mtd)
 	return do_div(sz, mtd->writesize);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Kernel-side ioctl definitions */
 
 struct mtd_partition;
@@ -327,6 +582,49 @@ struct mtd_partition;
 extern int mtd_device_register(struct mtd_info *master,
 			       const struct mtd_partition *parts,
 			       int nr_parts);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline int mtd_has_oob(const struct mtd_info *mtd)
+{
+	return mtd->_read_oob && mtd->_write_oob;
+}
+
+<<<<<<< HEAD
+=======
+static inline int mtd_type_is_nand(const struct mtd_info *mtd)
+{
+	return mtd->type == MTD_NANDFLASH || mtd->type == MTD_MLCNANDFLASH;
+}
+
+>>>>>>> refs/remotes/origin/master
+static inline int mtd_can_have_bb(const struct mtd_info *mtd)
+{
+	return !!mtd->_block_isbad;
+}
+
+	/* Kernel-side ioctl definitions */
+
+struct mtd_partition;
+struct mtd_part_parser_data;
+
+extern int mtd_device_parse_register(struct mtd_info *mtd,
+<<<<<<< HEAD
+			      const char **part_probe_types,
+			      struct mtd_part_parser_data *parser_data,
+			      const struct mtd_partition *defparts,
+			      int defnr_parts);
+#define mtd_device_register(master, parts, nr_parts)	\
+	mtd_device_parse_register(master, NULL, NULL, parts, nr_parts)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     const char * const *part_probe_types,
+				     struct mtd_part_parser_data *parser_data,
+				     const struct mtd_partition *defparts,
+				     int defnr_parts);
+#define mtd_device_register(master, parts, nr_parts)	\
+	mtd_device_parse_register(master, NULL, NULL, parts, nr_parts)
+>>>>>>> refs/remotes/origin/master
 extern int mtd_device_unregister(struct mtd_info *master);
 extern struct mtd_info *get_mtd_device(struct mtd_info *mtd, int num);
 extern int __get_mtd_device(struct mtd_info *mtd);
@@ -344,6 +642,8 @@ struct mtd_notifier {
 
 extern void register_mtd_user (struct mtd_notifier *new);
 extern int unregister_mtd_user (struct mtd_notifier *old);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 int default_mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
 		       unsigned long count, loff_t to, size_t *retlen);
@@ -351,10 +651,16 @@ int default_mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
 int default_mtd_readv(struct mtd_info *mtd, struct kvec *vecs,
 		      unsigned long count, loff_t from, size_t *retlen);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void *mtd_kmalloc_up_to(const struct mtd_info *mtd, size_t *size);
 
 void mtd_erase_callback(struct erase_info *instr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Debugging macro and defines
  */
@@ -377,5 +683,23 @@ void mtd_erase_callback(struct erase_info *instr);
 	} while(0)
 
 #endif /* CONFIG_MTD_DEBUG */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline int mtd_is_bitflip(int err) {
+	return err == -EUCLEAN;
+}
+
+static inline int mtd_is_eccerr(int err) {
+	return err == -EBADMSG;
+}
+
+static inline int mtd_is_bitflip_or_eccerr(int err) {
+	return mtd_is_bitflip(err) || mtd_is_eccerr(err);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __MTD_MTD_H__ */

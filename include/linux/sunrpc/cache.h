@@ -15,7 +15,15 @@
 
 #include <linux/kref.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/proc_fs.h>
 
 /*
@@ -57,6 +65,10 @@ struct cache_head {
 #define	CACHE_VALID	0	/* Entry contains valid data */
 #define	CACHE_NEGATIVE	1	/* Negative entry - there is no match for the key */
 #define	CACHE_PENDING	2	/* An upcall has been sent but no reply received yet*/
+<<<<<<< HEAD
+=======
+#define	CACHE_CLEANED	3	/* Entry has been cleaned from cache */
+>>>>>>> refs/remotes/origin/master
 
 #define	CACHE_NEW_EXPIRY 120	/* keep new things pending confirmation for 120 seconds */
 
@@ -83,6 +95,13 @@ struct cache_detail {
 	int			(*cache_upcall)(struct cache_detail *,
 						struct cache_head *);
 
+<<<<<<< HEAD
+=======
+	void			(*cache_request)(struct cache_detail *cd,
+						 struct cache_head *ch,
+						 char **bpp, int *blen);
+
+>>>>>>> refs/remotes/origin/master
 	int			(*cache_parse)(struct cache_detail *,
 					       char *buf, int len);
 
@@ -117,6 +136,14 @@ struct cache_detail {
 		struct cache_detail_procfs procfs;
 		struct cache_detail_pipefs pipefs;
 	} u;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct net		*net;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net		*net;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -143,6 +170,27 @@ struct cache_deferred_req {
 					   int too_many);
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * timestamps kept in the cache are expressed in seconds
+ * since boot.  This is the best for measuring differences in
+ * real time.
+ */
+static inline time_t seconds_since_boot(void)
+{
+	struct timespec boot;
+	getboottime(&boot);
+	return get_seconds() - boot.tv_sec;
+}
+
+static inline time_t convert_to_wallclock(time_t sinceboot)
+{
+	struct timespec boot;
+	getboottime(&boot);
+	return boot.tv_sec + sinceboot;
+}
+>>>>>>> refs/remotes/origin/master
 
 extern const struct file_operations cache_file_operations_pipefs;
 extern const struct file_operations content_file_operations_pipefs;
@@ -156,11 +204,15 @@ sunrpc_cache_update(struct cache_detail *detail,
 		    struct cache_head *new, struct cache_head *old, int hash);
 
 extern int
+<<<<<<< HEAD
 sunrpc_cache_pipe_upcall(struct cache_detail *detail, struct cache_head *h,
 		void (*cache_request)(struct cache_detail *,
 				      struct cache_head *,
 				      char **,
 				      int *));
+=======
+sunrpc_cache_pipe_upcall(struct cache_detail *detail, struct cache_head *h);
+>>>>>>> refs/remotes/origin/master
 
 
 extern void cache_clean_deferred(void *owner);
@@ -180,6 +232,7 @@ static inline void cache_put(struct cache_head *h, struct cache_detail *cd)
 	kref_put(&h->ref, cd->cache_put);
 }
 
+<<<<<<< HEAD
 static inline int cache_valid(struct cache_head *h)
 {
 	/* If an item has been unhashed pending removal when
@@ -189,6 +242,12 @@ static inline int cache_valid(struct cache_head *h)
 	 * set.
 	 */
 	return (h->expiry_time != 0 && test_bit(CACHE_VALID, &h->flags));
+=======
+static inline int cache_is_expired(struct cache_detail *detail, struct cache_head *h)
+{
+	return  (h->expiry_time < seconds_since_boot()) ||
+		(detail->flush_time > h->last_refresh);
+>>>>>>> refs/remotes/origin/master
 }
 
 extern int cache_check(struct cache_detail *detail,
@@ -197,6 +256,8 @@ extern void cache_flush(void);
 extern void cache_purge(struct cache_detail *detail);
 #define NEVER (0x7FFFFFFF)
 extern void __init cache_initialize(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int cache_register(struct cache_detail *cd);
 extern int cache_register_net(struct cache_detail *cd, struct net *net);
 extern void cache_unregister(struct cache_detail *cd);
@@ -204,6 +265,23 @@ extern void cache_unregister_net(struct cache_detail *cd, struct net *net);
 
 extern int sunrpc_cache_register_pipefs(struct dentry *parent, const char *,
 					mode_t, struct cache_detail *);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern int cache_register_net(struct cache_detail *cd, struct net *net);
+extern void cache_unregister_net(struct cache_detail *cd, struct net *net);
+
+extern struct cache_detail *cache_create_net(struct cache_detail *tmpl, struct net *net);
+extern void cache_destroy_net(struct cache_detail *cd, struct net *net);
+
+extern void sunrpc_init_cache_detail(struct cache_detail *cd);
+extern void sunrpc_destroy_cache_detail(struct cache_detail *cd);
+extern int sunrpc_cache_register_pipefs(struct dentry *parent, const char *,
+					umode_t, struct cache_detail *);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void sunrpc_cache_unregister_pipefs(struct cache_detail *);
 
 extern void qword_add(char **bpp, int *lp, char *str);
@@ -215,11 +293,25 @@ static inline int get_int(char **bpp, int *anint)
 	char buf[50];
 	char *ep;
 	int rv;
+<<<<<<< HEAD
 	int len = qword_get(bpp, buf, 50);
 	if (len < 0) return -EINVAL;
 	if (len ==0) return -ENOENT;
 	rv = simple_strtol(buf, &ep, 0);
 	if (*ep) return -EINVAL;
+=======
+	int len = qword_get(bpp, buf, sizeof(buf));
+
+	if (len < 0)
+		return -EINVAL;
+	if (len == 0)
+		return -ENOENT;
+
+	rv = simple_strtol(buf, &ep, 0);
+	if (*ep)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	*anint = rv;
 	return 0;
 }
@@ -240,6 +332,10 @@ static inline int get_uint(char **bpp, unsigned int *anint)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * timestamps kept in the cache are expressed in seconds
  * since boot.  This is the best for measuring differences in
@@ -257,14 +353,39 @@ static inline time_t convert_to_wallclock(time_t sinceboot)
 	struct timespec boot;
 	getboottime(&boot);
 	return boot.tv_sec + sinceboot;
+=======
+static inline int get_time(char **bpp, time_t *time)
+{
+	char buf[50];
+	long long ll;
+	int len = qword_get(bpp, buf, sizeof(buf));
+
+	if (len < 0)
+		return -EINVAL;
+	if (len == 0)
+		return -ENOENT;
+
+	if (kstrtoll(buf, 0, &ll))
+		return -EINVAL;
+
+	*time = (time_t)ll;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline time_t get_expiry(char **bpp)
 {
+<<<<<<< HEAD
 	int rv;
 	struct timespec boot;
 
 	if (get_int(bpp, &rv))
+=======
+	time_t rv;
+	struct timespec boot;
+
+	if (get_time(bpp, &rv))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	if (rv < 0)
 		return 0;
@@ -272,6 +393,8 @@ static inline time_t get_expiry(char **bpp)
 	return rv - boot.tv_sec;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 static inline void sunrpc_invalidate(struct cache_head *h,
 				     struct cache_detail *detail)
@@ -281,4 +404,8 @@ static inline void sunrpc_invalidate(struct cache_head *h,
 }
 #endif /* CONFIG_NFSD_DEPRECATED */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /*  _LINUX_SUNRPC_CACHE_H_ */

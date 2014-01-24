@@ -26,7 +26,10 @@
 
 #include <asm/bootinfo.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cacheflush.h>
 #include <asm/traps.h>
 

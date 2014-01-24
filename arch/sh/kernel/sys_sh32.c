@@ -60,6 +60,7 @@ asmlinkage int sys_fadvise64_64_wrapper(int fd, u32 offset0, u32 offset1,
 				(u64)len0 << 32 | len1,	advice);
 #endif
 }
+<<<<<<< HEAD
 
 #if defined(CONFIG_CPU_SH2) || defined(CONFIG_CPU_SH2A)
 #define SYSCALL_ARG3	"trapa #0x23"
@@ -84,3 +85,5 @@ int kernel_execve(const char *filename,
 			: "memory");
 	return __sc0;
 }
+=======
+>>>>>>> refs/remotes/origin/master

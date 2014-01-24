@@ -284,6 +284,7 @@ static struct i2c_driver pca954x_driver = {
 	.id_table	= pca954x_id,
 };
 
+<<<<<<< HEAD
 static int __init pca954x_init(void)
 {
 	return i2c_add_driver(&pca954x_driver);
@@ -296,6 +297,9 @@ static void __exit pca954x_exit(void)
 
 module_init(pca954x_init);
 module_exit(pca954x_exit);
+=======
+module_i2c_driver(pca954x_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Rodolfo Giometti <giometti@linux.it>");
 MODULE_DESCRIPTION("PCA954x I2C mux/switch driver");

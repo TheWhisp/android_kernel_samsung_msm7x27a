@@ -1,7 +1,11 @@
 menuconfig IP_SET
 	tristate "IP set support"
 	depends on INET && NETFILTER
+<<<<<<< HEAD
 	depends on NETFILTER_NETLINK
+=======
+	select NETFILTER_NETLINK
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option adds IP set support to the kernel.
 	  In order to define and use the sets, you need the userspace utility
@@ -90,6 +94,18 @@ config IP_SET_HASH_IPPORTNET
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
+=======
+config IP_SET_HASH_NETPORTNET
+	tristate "hash:net,port,net set support"
+	depends on IP_SET
+	help
+	  This option adds the hash:net,port,net set type support, by which
+	  one can store two IPv4/IPv6 subnets, and a protocol/port in a set.
+
+	  To compile it as a module, choose M here.  If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config IP_SET_HASH_NET
 	tristate "hash:net set support"
 	depends on IP_SET
@@ -99,6 +115,18 @@ config IP_SET_HASH_NET
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
+=======
+config IP_SET_HASH_NETNET
+	tristate "hash:net,net set support"
+	depends on IP_SET
+	help
+	  This option adds the hash:net,net  set type support, by which
+	  one can store IPv4/IPv6 network address/prefix pairs in a set.
+
+	  To compile it as a module, choose M here.  If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config IP_SET_HASH_NETPORT
 	tristate "hash:net,port set support"
 	depends on IP_SET
@@ -109,6 +137,25 @@ config IP_SET_HASH_NETPORT
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config IP_SET_HASH_NETIFACE
+	tristate "hash:net,iface set support"
+	depends on IP_SET
+	help
+	  This option adds the hash:net,iface set type support, by which
+	  one can store IPv4/IPv6 network address/prefix and
+	  interface name pairs as elements in a set.
+
+	  To compile it as a module, choose M here.  If unsure, say N.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config IP_SET_LIST_SET
 	tristate "list:set set support"
 	depends on IP_SET

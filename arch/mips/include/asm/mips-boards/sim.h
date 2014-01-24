@@ -19,18 +19,32 @@
 #ifndef _ASM_MIPS_BOARDS_SIM_H
 #define _ASM_MIPS_BOARDS_SIM_H
 
+<<<<<<< HEAD
 #define STATS_ON        1
 #define STATS_OFF       2
 #define STATS_CLEAR     3
 #define STATS_DUMP      4
 #define TRACE_ON		5
 #define TRACE_OFF       6
+=======
+#define STATS_ON	1
+#define STATS_OFF	2
+#define STATS_CLEAR	3
+#define STATS_DUMP	4
+#define TRACE_ON		5
+#define TRACE_OFF	6
+>>>>>>> refs/remotes/origin/master
 
 
 #define simcfg(code)						\
 ({					   \
+<<<<<<< HEAD
 	__asm__  __volatile__( \
         "sltiu $0,$0, %0" \
+=======
+	__asm__	 __volatile__( \
+	"sltiu $0,$0, %0" \
+>>>>>>> refs/remotes/origin/master
 		::"i"(code)					\
 		); \
 })

@@ -19,7 +19,15 @@
 	Copyright 2000,2001 Philipp Rumpf <prumpf@mandrakesoft.com>
 
 	Added generic RNG API
+<<<<<<< HEAD
+<<<<<<< HEAD
 	Copyright 2006 Michael Buesch <mbuesch@freenet.de>
+=======
+	Copyright 2006 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Copyright 2006 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
 	Copyright 2005 (c) MontaVista Software, Inc.
 
 	Please read Documentation/hw_random.txt for details on use.
@@ -380,6 +388,18 @@ void hwrng_unregister(struct hwrng *rng)
 }
 EXPORT_SYMBOL_GPL(hwrng_unregister);
 
+<<<<<<< HEAD
+=======
+static void __exit hwrng_exit(void)
+{
+	mutex_lock(&rng_mutex);
+	BUG_ON(current_rng);
+	kfree(rng_buffer);
+	mutex_unlock(&rng_mutex);
+}
+
+module_exit(hwrng_exit);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("H/W Random Number Generator (RNG) driver");
 MODULE_LICENSE("GPL");

@@ -1,6 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009, 2011 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2009, 2011 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -23,15 +31,38 @@
 #include <linux/io.h>
 
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/io.h>
 #include <asm/exception.h>
+<<<<<<< HEAD
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#include <asm/io.h>
+#include <asm/exception.h>
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/hardware.h>
 
 #include <mach/msm_iomap.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/fiq.h>
 
 #include "fiq.h"
+=======
+
+>>>>>>> refs/remotes/origin/master
+=======
+#include <mach/fiq.h>
+
+#include "fiq.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "smd_private.h"
 
 enum {
@@ -75,7 +106,15 @@ module_param_named(debug_mask, msm_irq_debug_mask, int,
 #define VIC_INT_POLARITY3   VIC_REG(0x005C)  /* 1: NEG, 0: POS */
 #define VIC_NO_PEND_VAL     VIC_REG(0x0060)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
+=======
+#if defined(CONFIG_ARCH_MSM_SCORPION)
+>>>>>>> refs/remotes/origin/master
+=======
+#if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VIC_NO_PEND_VAL_FIQ VIC_REG(0x0064)
 #define VIC_INT_MASTEREN    VIC_REG(0x0068)  /* 1: IRQ, 2: FIQ     */
 #define VIC_CONFIG          VIC_REG(0x006C)  /* 1: USE SC VIC */
@@ -109,7 +148,15 @@ module_param_named(debug_mask, msm_irq_debug_mask, int,
 #define VIC_IRQ_VEC_PEND_RD VIC_REG(0x00D4)  /* pending vector addr */
 #define VIC_IRQ_VEC_WR      VIC_REG(0x00D8)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
+=======
+#if defined(CONFIG_ARCH_MSM_SCORPION)
+>>>>>>> refs/remotes/origin/master
+=======
+#if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VIC_FIQ_VEC_RD      VIC_REG(0x00DC)
 #define VIC_FIQ_VEC_PEND_RD VIC_REG(0x00E0)
 #define VIC_FIQ_VEC_WR      VIC_REG(0x00E4)
@@ -128,7 +175,15 @@ module_param_named(debug_mask, msm_irq_debug_mask, int,
 #define VIC_VECTPRIORITY(n) VIC_REG(0x0200+((n) * 4))
 #define VIC_VECTADDR(n)     VIC_REG(0x0400+((n) * 4))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSM7X30) || defined(CONFIG_ARCH_FSM9XXX)
+=======
+#if defined(CONFIG_ARCH_MSM7X30)
+>>>>>>> refs/remotes/origin/master
+=======
+#if defined(CONFIG_ARCH_MSM7X30) || defined(CONFIG_ARCH_FSM9XXX)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VIC_NUM_REGS	    4
 #else
 #define VIC_NUM_REGS	    2
@@ -164,6 +219,10 @@ static struct {
 static uint32_t msm_irq_idle_disable[VIC_NUM_REGS];
 
 #define SMSM_FAKE_IRQ (0xff)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if !defined(CONFIG_ARCH_FSM9XXX)
 static uint8_t msm_irq_to_smsm[NR_IRQS] = {
 #if !defined(CONFIG_ARCH_MSM7X27A)
@@ -171,6 +230,15 @@ static uint8_t msm_irq_to_smsm[NR_IRQS] = {
 	[INT_MDDI_PRI] = 2,
 	[INT_MDDI_CLIENT] = 3,
 #endif
+<<<<<<< HEAD
+=======
+static uint8_t msm_irq_to_smsm[NR_IRQS] = {
+	[INT_MDDI_EXT] = 1,
+	[INT_MDDI_PRI] = 2,
+	[INT_MDDI_CLIENT] = 3,
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	[INT_USB_OTG] = 4,
 
 	[INT_PWB_I2C] = 5,
@@ -215,7 +283,23 @@ static uint8_t msm_irq_to_smsm[NR_IRQS] = {
 	[INT_GPIO_GROUP2] = SMSM_FAKE_IRQ,
 	[INT_A9_M2A_0] = SMSM_FAKE_IRQ,
 	[INT_A9_M2A_1] = SMSM_FAKE_IRQ,
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	[INT_A9_M2A_5] = SMSM_FAKE_IRQ,
+=======
+	[INT_A9_M2A_2] = SMSM_FAKE_IRQ,
+	[INT_A9_M2A_5] = SMSM_FAKE_IRQ,
+	[INT_PBUS_ARM11] = SMSM_FAKE_IRQ,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[INT_A9_M2A_5] = SMSM_FAKE_IRQ,
+>>>>>>> refs/remotes/origin/master
+=======
+	[INT_A9_M2A_2] = SMSM_FAKE_IRQ,
+	[INT_A9_M2A_5] = SMSM_FAKE_IRQ,
+	[INT_PBUS_ARM11] = SMSM_FAKE_IRQ,
+>>>>>>> refs/remotes/origin/cm-11.0
 	[INT_GP_TIMER_EXP] = SMSM_FAKE_IRQ,
 	[INT_DEBUG_TIMER_EXP] = SMSM_FAKE_IRQ,
 	[INT_ADSP_A11] = SMSM_FAKE_IRQ,
@@ -224,6 +308,10 @@ static uint8_t msm_irq_to_smsm[NR_IRQS] = {
 	[INT_SIRC_1] = SMSM_FAKE_IRQ,
 #endif
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 # else /* CONFIG_ARCH_FSM9XXX */
 static uint8_t msm_irq_to_smsm[NR_IRQS] = {
 	[INT_UART1] = 11,
@@ -236,6 +324,11 @@ static uint8_t msm_irq_to_smsm[NR_IRQS] = {
 	[INT_ADSP_A11] = SMSM_FAKE_IRQ,
 };
 #endif /* CONFIG_ARCH_FSM9XXX */
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline void msm_irq_write_all_regs(void __iomem *base, unsigned int val)
 {
@@ -247,6 +340,8 @@ static inline void msm_irq_write_all_regs(void __iomem *base, unsigned int val)
 
 static void msm_irq_ack(struct irq_data *d)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t mask;
 
 	void __iomem *reg = VIC_INT_TO_REG_ADDR(VIC_INT_CLEAR0, d->irq);
@@ -273,6 +368,38 @@ static void msm_irq_disable(struct irq_data *d)
 			msm_irq_smsm_wake_enable[0] &= ~mask;
 		}
 	}
+=======
+	void __iomem *reg = VIC_INT_TO_REG_ADDR(VIC_INT_CLEAR0, d->irq);
+	writel(1 << (d->irq & 31), reg);
+>>>>>>> refs/remotes/origin/master
+=======
+	uint32_t mask;
+
+	void __iomem *reg = VIC_INT_TO_REG_ADDR(VIC_INT_CLEAR0, d->irq);
+	mask = 1 << (d->irq & 31);
+	writel(mask, reg);
+	mb();
+}
+
+static void msm_irq_disable(struct irq_data *d)
+{
+	void __iomem *reg = VIC_INT_TO_REG_ADDR(VIC_INT_ENCLEAR0, d->irq);
+	unsigned index = VIC_INT_TO_REG_INDEX(d->irq);
+	uint32_t mask = 1UL << (d->irq & 31);
+	int smsm_irq = msm_irq_to_smsm[d->irq];
+
+	if (!(msm_irq_shadow_reg[index].int_en[1] & mask)) {
+		msm_irq_shadow_reg[index].int_en[0] &= ~mask;
+		writel(mask, reg);
+		mb();
+		if (smsm_irq == 0)
+			msm_irq_idle_disable[index] &= ~mask;
+		else {
+			mask = 1UL << (smsm_irq - 1);
+			msm_irq_smsm_wake_enable[0] &= ~mask;
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void msm_irq_mask(struct irq_data *d)
@@ -284,7 +411,14 @@ static void msm_irq_mask(struct irq_data *d)
 
 	msm_irq_shadow_reg[index].int_en[0] &= ~mask;
 	writel(mask, reg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mb();
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	mb();
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (smsm_irq == 0)
 		msm_irq_idle_disable[index] &= ~mask;
 	else {
@@ -302,7 +436,14 @@ static void msm_irq_unmask(struct irq_data *d)
 
 	msm_irq_shadow_reg[index].int_en[0] |= mask;
 	writel(mask, reg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mb();
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	mb();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (smsm_irq == 0)
 		msm_irq_idle_disable[index] |= mask;
@@ -340,7 +481,15 @@ static int msm_irq_set_wake(struct irq_data *d, unsigned int on)
 
 static int msm_irq_set_type(struct irq_data *d, unsigned int flow_type)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         void __iomem *treg = VIC_INT_TO_REG_ADDR(VIC_INT_TYPE0, d->irq);
+=======
+	void __iomem *treg = VIC_INT_TO_REG_ADDR(VIC_INT_TYPE0, d->irq);
+>>>>>>> refs/remotes/origin/master
+=======
+        void __iomem *treg = VIC_INT_TO_REG_ADDR(VIC_INT_TYPE0, d->irq);
+>>>>>>> refs/remotes/origin/cm-11.0
 	void __iomem *preg = VIC_INT_TO_REG_ADDR(VIC_INT_POLARITY0, d->irq);
 	unsigned index = VIC_INT_TO_REG_INDEX(d->irq);
 	int b = 1 << (d->irq & 31);
@@ -365,11 +514,22 @@ static int msm_irq_set_type(struct irq_data *d, unsigned int flow_type)
 		__irq_set_handler_locked(d->irq, handle_level_irq);
 	}
 	writel(type, treg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mb();
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	mb();
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_irq_shadow_reg[index].int_type = type;
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 unsigned int msm_irq_pending(void)
 {
 	unsigned int i, pending = 0;
@@ -571,6 +731,7 @@ void msm_irq_exit_sleep3(uint32_t irq_mask, uint32_t wakeup_reason,
 			smsm_get_state(SMSM_MODEM_STATE));
 }
 
+<<<<<<< HEAD
 static struct irq_chip msm_irq_chip = {
 	.name		= "msm",
 	.irq_disable	= msm_irq_disable,
@@ -579,6 +740,26 @@ static struct irq_chip msm_irq_chip = {
 	.irq_unmask	= msm_irq_unmask,
 	.irq_set_wake	= msm_irq_set_wake,
 	.irq_set_type	= msm_irq_set_type,
+=======
+static struct irq_chip msm_irq_chip = {
+	.name          = "msm",
+	.irq_disable   = msm_irq_mask,
+	.irq_ack       = msm_irq_ack,
+	.irq_mask      = msm_irq_mask,
+	.irq_unmask    = msm_irq_unmask,
+	.irq_set_wake  = msm_irq_set_wake,
+	.irq_set_type  = msm_irq_set_type,
+>>>>>>> refs/remotes/origin/master
+=======
+static struct irq_chip msm_irq_chip = {
+	.name		= "msm",
+	.irq_disable	= msm_irq_disable,
+	.irq_ack	= msm_irq_ack,
+	.irq_mask	= msm_irq_mask,
+	.irq_unmask	= msm_irq_unmask,
+	.irq_set_wake	= msm_irq_set_wake,
+	.irq_set_type	= msm_irq_set_type,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void __init msm_init_irq(void)
@@ -600,15 +781,28 @@ void __init msm_init_irq(void)
 	/* don't use vic */
 	writel(0, VIC_CONFIG);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* enable interrupt controller */
+	writel(3, VIC_INT_MASTEREN);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (n = 0; n < NR_MSM_IRQS; n++) {
 		irq_set_chip_and_handler(n, &msm_irq_chip, handle_level_irq);
 		set_irq_flags(n, IRQF_VALID);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* enable interrupt controller */
 	writel(3, VIC_INT_MASTEREN);
 	mb();
+<<<<<<< HEAD
 }
 
 static inline void msm_vic_handle_irq(void __iomem *base_addr, struct pt_regs
@@ -720,3 +914,119 @@ int msm_fiq_set_handler(void (*func)(void *data, void *regs), void *data)
 	return ret;
 }
 #endif
+=======
+}
+>>>>>>> refs/remotes/origin/master
+=======
+}
+
+static inline void msm_vic_handle_irq(void __iomem *base_addr, struct pt_regs
+		*regs)
+{
+	u32 irqnr;
+
+	do {
+		/* 0xD0 has irq# or old irq# if the irq has been handled
+		 * 0xD4 has irq# or -1 if none pending *but* if you just
+		 * read 0xD4 you never get the first irq for some reason
+		 */
+		irqnr = readl_relaxed(base_addr + 0xD0);
+		irqnr = readl_relaxed(base_addr + 0xD4);
+		if (irqnr == -1)
+			break;
+		handle_IRQ(irqnr, regs);
+	} while (1);
+}
+
+/* enable imprecise aborts */
+#define local_cpsie_enable()  __asm__ __volatile__("cpsie a    @ enable")
+
+asmlinkage void __exception_irq_entry vic_handle_irq(struct pt_regs *regs)
+{
+	local_cpsie_enable();
+	msm_vic_handle_irq((void __iomem *)MSM_VIC_BASE, regs);
+}
+
+#if defined(CONFIG_MSM_FIQ_SUPPORT)
+void msm_trigger_irq(int irq)
+{
+	void __iomem *reg = VIC_INT_TO_REG_ADDR(VIC_SOFTINT0, irq);
+	uint32_t mask = 1UL << (irq & 31);
+	writel(mask, reg);
+	mb();
+}
+
+void msm_fiq_enable(int irq)
+{
+	struct irq_data d = { .irq = irq };
+	unsigned long flags;
+	local_irq_save(flags);
+	msm_irq_unmask(&d);
+	local_irq_restore(flags);
+}
+
+void msm_fiq_disable(int irq)
+{
+	struct irq_data d = { .irq = irq };
+	unsigned long flags;
+	local_irq_save(flags);
+	msm_irq_mask(&d);
+	local_irq_restore(flags);
+}
+
+void msm_fiq_select(int irq)
+{
+	void __iomem *reg = VIC_INT_TO_REG_ADDR(VIC_INT_SELECT0, irq);
+	unsigned index = VIC_INT_TO_REG_INDEX(irq);
+	uint32_t mask = 1UL << (irq & 31);
+	unsigned long flags;
+
+	local_irq_save(flags);
+	msm_irq_shadow_reg[index].int_select |= mask;
+	writel(msm_irq_shadow_reg[index].int_select, reg);
+	mb();
+	local_irq_restore(flags);
+}
+
+void msm_fiq_unselect(int irq)
+{
+	void __iomem *reg = VIC_INT_TO_REG_ADDR(VIC_INT_SELECT0, irq);
+	unsigned index = VIC_INT_TO_REG_INDEX(irq);
+	uint32_t mask = 1UL << (irq & 31);
+	unsigned long flags;
+
+	local_irq_save(flags);
+	msm_irq_shadow_reg[index].int_select &= (!mask);
+	writel(msm_irq_shadow_reg[index].int_select, reg);
+	mb();
+	local_irq_restore(flags);
+}
+/* set_fiq_handler originally from arch/arm/kernel/fiq.c */
+static void set_fiq_handler(void *start, unsigned int length)
+{
+	memcpy((void *)0xffff001c, start, length);
+	flush_icache_range(0xffff001c, 0xffff001c + length);
+	if (!vectors_high())
+		flush_icache_range(0x1c, 0x1c + length);
+}
+
+static void (*fiq_func)(void *data, void *regs);
+static unsigned long long fiq_stack[256];
+
+int msm_fiq_set_handler(void (*func)(void *data, void *regs), void *data)
+{
+	unsigned long flags;
+	int ret = -ENOMEM;
+
+	local_irq_save(flags);
+	if (fiq_func == 0) {
+		fiq_func = func;
+		fiq_glue_setup(func, data, fiq_stack + 255);
+		set_fiq_handler(&fiq_glue, (&fiq_glue_end - &fiq_glue));
+		ret = 0;
+	}
+	local_irq_restore(flags);
+	return ret;
+}
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0

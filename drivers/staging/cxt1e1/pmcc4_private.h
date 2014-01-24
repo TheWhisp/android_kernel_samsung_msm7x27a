@@ -133,7 +133,11 @@ struct c4_port_info
     void       *regram_saved;   /* Original malloc value may have non-2KB
                                  * boundary.  Need to save for use when
                                  * freeing. */
+<<<<<<< HEAD
     comet_t    *cometbase;
+=======
+    struct s_comet_reg    *cometbase;
+>>>>>>> refs/remotes/origin/master
     struct sbe_card_info *up;
 
     /*

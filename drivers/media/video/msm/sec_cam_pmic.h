@@ -32,4 +32,10 @@ void s5k6aafx_ldo_power_on(void);
 
 
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

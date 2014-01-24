@@ -10,20 +10,36 @@
  */
 #include <linux/eisa.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/console.h>
 #include <linux/fb.h>
 #include <linux/screen_info.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARC
+=======
+#ifdef CONFIG_FW_ARC
+>>>>>>> refs/remotes/origin/master
 #include <asm/fw/arc/types.h>
 #include <asm/sgialib.h>
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_SNIPROM
+=======
+#ifdef CONFIG_FW_SNIPROM
+>>>>>>> refs/remotes/origin/master
 #include <asm/mipsprom.h>
 #endif
 
 #include <asm/bootinfo.h>
+<<<<<<< HEAD
+=======
+#include <asm/cpu.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/reboot.h>
 #include <asm/sni.h>
@@ -36,7 +52,11 @@ extern void sni_machine_power_off(void);
 
 static void __init sni_display_setup(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_VT) && defined(CONFIG_VGA_CONSOLE) && defined(CONFIG_ARC)
+=======
+#if defined(CONFIG_VT) && defined(CONFIG_VGA_CONSOLE) && defined(CONFIG_FW_ARC)
+>>>>>>> refs/remotes/origin/master
 	struct screen_info *si = &screen_info;
 	DISPLAY_STATUS *di;
 
@@ -55,7 +75,11 @@ static void __init sni_display_setup(void)
 
 static void __init sni_console_setup(void)
 {
+<<<<<<< HEAD
 #ifndef CONFIG_ARC
+=======
+#ifndef CONFIG_FW_ARC
+>>>>>>> refs/remotes/origin/master
 	char *ctype;
 	char *cdev;
 	char *baud;
@@ -172,7 +196,11 @@ void __init plat_mem_setup(void)
 		system_type = "RM300-Cxx";
 		break;
 	case SNI_BRD_PCI_DESKTOP:
+<<<<<<< HEAD
 		switch (read_c0_prid() & 0xff00) {
+=======
+		switch (read_c0_prid() & PRID_IMP_MASK) {
+>>>>>>> refs/remotes/origin/master
 		case PRID_IMP_R4600:
 		case PRID_IMP_R4700:
 			system_type = "RM200-C20";
@@ -203,6 +231,7 @@ void __init plat_mem_setup(void)
 	case SNI_BRD_10NEW:
 	case SNI_BRD_TOWER_OASIC:
 	case SNI_BRD_MINITOWER:
+<<<<<<< HEAD
 	        sni_a20r_init();
 	        break;
 
@@ -214,12 +243,30 @@ void __init plat_mem_setup(void)
 	case SNI_BRD_RM200:
 	        sni_rm200_init();
 	        break;
+=======
+		sni_a20r_init();
+		break;
+
+	case SNI_BRD_PCI_TOWER:
+	case SNI_BRD_PCI_TOWER_CPLUS:
+		sni_pcit_init();
+		break;
+
+	case SNI_BRD_RM200:
+		sni_rm200_init();
+		break;
+>>>>>>> refs/remotes/origin/master
 
 	case SNI_BRD_PCI_MTOWER:
 	case SNI_BRD_PCI_DESKTOP:
 	case SNI_BRD_PCI_MTOWER_CPLUS:
+<<<<<<< HEAD
 	        sni_pcimt_init();
 	        break;
+=======
+		sni_pcimt_init();
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	_machine_restart = sni_machine_restart;
@@ -235,7 +282,11 @@ void __init plat_mem_setup(void)
 #include <video/vga.h>
 #include <video/cirrus.h>
 
+<<<<<<< HEAD
 static void __devinit quirk_cirrus_ram_size(struct pci_dev *dev)
+=======
+static void quirk_cirrus_ram_size(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 cmd;
 
@@ -246,16 +297,29 @@ static void __devinit quirk_cirrus_ram_size(struct pci_dev *dev)
 	 */
 	pci_read_config_word(dev, PCI_COMMAND, &cmd);
 	if ((cmd & (PCI_COMMAND_IO|PCI_COMMAND_MEMORY))
+<<<<<<< HEAD
 	        == (PCI_COMMAND_IO|PCI_COMMAND_MEMORY)) {
 		vga_wseq(NULL, CL_SEQR6, 0x12);	/* unlock all extension registers */
+=======
+		== (PCI_COMMAND_IO|PCI_COMMAND_MEMORY)) {
+		vga_wseq(NULL, CL_SEQR6, 0x12); /* unlock all extension registers */
+>>>>>>> refs/remotes/origin/master
 		vga_wseq(NULL, CL_SEQRF, 0x18);
 	}
 }
 
 DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_CIRRUS, PCI_DEVICE_ID_CIRRUS_5434_8,
+<<<<<<< HEAD
                         quirk_cirrus_ram_size);
 DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_CIRRUS, PCI_DEVICE_ID_CIRRUS_5436,
                         quirk_cirrus_ram_size);
 DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_CIRRUS, PCI_DEVICE_ID_CIRRUS_5446,
                         quirk_cirrus_ram_size);
+=======
+			quirk_cirrus_ram_size);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_CIRRUS, PCI_DEVICE_ID_CIRRUS_5436,
+			quirk_cirrus_ram_size);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_CIRRUS, PCI_DEVICE_ID_CIRRUS_5446,
+			quirk_cirrus_ram_size);
+>>>>>>> refs/remotes/origin/master
 #endif

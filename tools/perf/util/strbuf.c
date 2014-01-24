@@ -1,4 +1,12 @@
 #include "cache.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 
 int prefixcmp(const char *str, const char *prefix)
 {
@@ -27,7 +35,11 @@ void strbuf_init(struct strbuf *sb, ssize_t hint)
 void strbuf_release(struct strbuf *sb)
 {
 	if (sb->alloc) {
+<<<<<<< HEAD
 		free(sb->buf);
+=======
+		zfree(&sb->buf);
+>>>>>>> refs/remotes/origin/master
 		strbuf_init(sb, 0);
 	}
 }
@@ -89,6 +101,10 @@ void strbuf_addf(struct strbuf *sb, const char *fmt, ...)
 	if (!strbuf_avail(sb))
 		strbuf_grow(sb, 64);
 	va_start(ap, fmt);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	len = vsnprintf(sb->buf + sb->len, sb->alloc - sb->len, fmt, ap);
 	va_end(ap);
 	if (len < 0)
@@ -97,9 +113,25 @@ void strbuf_addf(struct strbuf *sb, const char *fmt, ...)
 		strbuf_grow(sb, len);
 		va_start(ap, fmt);
 		len = vsnprintf(sb->buf + sb->len, sb->alloc - sb->len, fmt, ap);
+<<<<<<< HEAD
+=======
+	len = vscnprintf(sb->buf + sb->len, sb->alloc - sb->len, fmt, ap);
+	va_end(ap);
+	if (len < 0)
+		die("your vscnprintf is broken");
+	if (len > strbuf_avail(sb)) {
+		strbuf_grow(sb, len);
+		va_start(ap, fmt);
+		len = vscnprintf(sb->buf + sb->len, sb->alloc - sb->len, fmt, ap);
+>>>>>>> refs/remotes/origin/cm-10.0
 		va_end(ap);
 		if (len > strbuf_avail(sb)) {
 			die("this should not happen, your snprintf is broken");
+=======
+		va_end(ap);
+		if (len > strbuf_avail(sb)) {
+			die("this should not happen, your vsnprintf is broken");
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	strbuf_setlen(sb, sb->len + len);

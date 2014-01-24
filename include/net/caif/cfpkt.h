@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -188,11 +192,25 @@ struct cfpkt *cfpkt_fromnative(enum caif_direction dir, void *nativepkt);
  */
 void *cfpkt_tonative(struct cfpkt *pkt);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Returns packet information for a packet.
  * pkt Packet to get info from;
  * @return Packet information
  */
 struct caif_payload_info *cfpkt_info(struct cfpkt *pkt);
+<<<<<<< HEAD
+=======
+
+/** cfpkt_set_prio - set priority for a CAIF packet.
+ *
+ * @pkt: The CAIF packet to be adjusted.
+ * @prio: one of TC_PRIO_ constants.
+ */
+void cfpkt_set_prio(struct cfpkt *pkt, int prio);
+
+>>>>>>> refs/remotes/origin/master
 #endif				/* CFPKT_H_ */

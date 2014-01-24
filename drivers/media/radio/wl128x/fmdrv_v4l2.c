@@ -28,6 +28,16 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "fmdrv.h"
 #include "fmdrv_v4l2.h"
 #include "fmdrv_common.h"
@@ -54,23 +64,45 @@ static ssize_t fm_v4l2_fops_read(struct file *file, char __user * buf,
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	/* Turn on RDS mode , if it is disabled */
 	ret = fm_rx_get_rds_mode(fmdev, &rds_mode);
 	if (ret < 0) {
 		fmerr("Unable to read current rds mode\n");
 		return ret;
+=======
+	if (mutex_lock_interruptible(&fmdev->mutex))
+		return -ERESTARTSYS;
+
+	/* Turn on RDS mode if it is disabled */
+	ret = fm_rx_get_rds_mode(fmdev, &rds_mode);
+	if (ret < 0) {
+		fmerr("Unable to read current rds mode\n");
+		goto read_unlock;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (rds_mode == FM_RDS_DISABLE) {
 		ret = fmc_set_rds_mode(fmdev, FM_RDS_ENABLE);
 		if (ret < 0) {
 			fmerr("Failed to enable rds mode\n");
+<<<<<<< HEAD
 			return ret;
+=======
+			goto read_unlock;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	/* Copy RDS data from internal buffer to user buffer */
+<<<<<<< HEAD
 	return fmc_transfer_rds_from_internal_buff(fmdev, file, buf, count);
+=======
+	ret = fmc_transfer_rds_from_internal_buff(fmdev, file, buf, count);
+read_unlock:
+	mutex_unlock(&fmdev->mutex);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Write TX RDS data */
@@ -82,14 +114,41 @@ static ssize_t fm_v4l2_fops_write(struct file *file, const char __user * buf,
 	struct fmdev *fmdev;
 
 	ret = copy_from_user(&rds, buf, sizeof(rds));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fmdbg("(%d)type: %d, text %s, af %d\n",
 		   ret, rds.text_type, rds.text, rds.af_freq);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rds.text[sizeof(rds.text) - 1] = '\0';
+	fmdbg("(%d)type: %d, text %s, af %d\n",
+		   ret, rds.text_type, rds.text, rds.af_freq);
+	if (ret)
+		return -EFAULT;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fmdev = video_drvdata(file);
 	fm_tx_set_radio_text(fmdev, rds.text, rds.text_type);
 	fm_tx_set_af(fmdev, rds.af_freq);
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return sizeof(rds);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	fmdev = video_drvdata(file);
+	if (mutex_lock_interruptible(&fmdev->mutex))
+		return -ERESTARTSYS;
+	fm_tx_set_radio_text(fmdev, rds.text, rds.text_type);
+	fm_tx_set_af(fmdev, rds.af_freq);
+	mutex_unlock(&fmdev->mutex);
+
+	return sizeof(rds);
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 fm_v4l2_fops_poll(struct file *file, struct poll_table_struct *pts)
@@ -98,7 +157,13 @@ static u32 fm_v4l2_fops_poll(struct file *file, struct poll_table_struct *pts)
 	struct fmdev *fmdev;
 
 	fmdev = video_drvdata(file);
+<<<<<<< HEAD
 	ret = fmc_is_rds_data_available(fmdev, file, pts);
+=======
+	mutex_lock(&fmdev->mutex);
+	ret = fmc_is_rds_data_available(fmdev, file, pts);
+	mutex_unlock(&fmdev->mutex);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return POLLIN | POLLRDNORM;
 
@@ -122,10 +187,19 @@ static int fm_v4l2_fops_open(struct file *file)
 
 	fmdev = video_drvdata(file);
 
+<<<<<<< HEAD
 	ret = fmc_prepare(fmdev);
 	if (ret < 0) {
 		fmerr("Unable to prepare FM CORE\n");
 		return ret;
+=======
+	if (mutex_lock_interruptible(&fmdev->mutex))
+		return -ERESTARTSYS;
+	ret = fmc_prepare(fmdev);
+	if (ret < 0) {
+		fmerr("Unable to prepare FM CORE\n");
+		goto open_unlock;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	fmdbg("Load FM RX firmware..\n");
@@ -133,10 +207,19 @@ static int fm_v4l2_fops_open(struct file *file)
 	ret = fmc_set_mode(fmdev, FM_MODE_RX);
 	if (ret < 0) {
 		fmerr("Unable to load FM RX firmware\n");
+<<<<<<< HEAD
 		return ret;
 	}
 	radio_disconnected = 1;
 
+=======
+		goto open_unlock;
+	}
+	radio_disconnected = 1;
+
+open_unlock:
+	mutex_unlock(&fmdev->mutex);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -151,19 +234,36 @@ static int fm_v4l2_fops_release(struct file *file)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	ret = fmc_set_mode(fmdev, FM_MODE_OFF);
 	if (ret < 0) {
 		fmerr("Unable to turn off the chip\n");
 		return ret;
+=======
+	mutex_lock(&fmdev->mutex);
+	ret = fmc_set_mode(fmdev, FM_MODE_OFF);
+	if (ret < 0) {
+		fmerr("Unable to turn off the chip\n");
+		goto release_unlock;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = fmc_release(fmdev);
 	if (ret < 0) {
 		fmerr("FM CORE release failed\n");
+<<<<<<< HEAD
 		return ret;
 	}
 	radio_disconnected = 0;
 
+=======
+		goto release_unlock;
+	}
+	radio_disconnected = 0;
+
+release_unlock:
+	mutex_unlock(&fmdev->mutex);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -175,7 +275,13 @@ static int fm_v4l2_vidioc_querycap(struct file *file, void *priv,
 	strlcpy(capability->card, FM_DRV_CARD_SHORT_NAME,
 			sizeof(capability->card));
 	sprintf(capability->bus_info, "UART");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	capability->version = FM_DRV_RADIO_VERSION;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	capability->capabilities = V4L2_CAP_HW_FREQ_SEEK | V4L2_CAP_TUNER |
 		V4L2_CAP_RADIO | V4L2_CAP_MODULATOR |
 		V4L2_CAP_AUDIO | V4L2_CAP_READWRITE |
@@ -191,7 +297,15 @@ static int fm_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
 
 	switch (ctrl->id) {
 	case  V4L2_CID_TUNE_ANTENNA_CAPACITOR:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ctrl->cur.val = fm_tx_get_tune_cap_val(fmdev);
+=======
+		ctrl->val = fm_tx_get_tune_cap_val(fmdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ctrl->val = fm_tx_get_tune_cap_val(fmdev);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		fmwarn("%s: Unknown IOCTL: %d\n", __func__, ctrl->id);
@@ -236,7 +350,11 @@ static int fm_v4l2_vidioc_g_audio(struct file *file, void *priv,
 }
 
 static int fm_v4l2_vidioc_s_audio(struct file *file, void *priv,
+<<<<<<< HEAD
 		struct v4l2_audio *audio)
+=======
+		const struct v4l2_audio *audio)
+>>>>>>> refs/remotes/origin/master
 {
 	if (audio->index != 0)
 		return -EINVAL;
@@ -281,7 +399,13 @@ static int fm_v4l2_vidioc_g_tuner(struct file *file, void *priv,
 	tuner->rxsubchans = V4L2_TUNER_SUB_MONO | V4L2_TUNER_SUB_STEREO |
 	((fmdev->rx.rds.flag == FM_RDS_ENABLE) ? V4L2_TUNER_SUB_RDS : 0);
 	tuner->capability = V4L2_TUNER_CAP_STEREO | V4L2_TUNER_CAP_RDS |
+<<<<<<< HEAD
 			    V4L2_TUNER_CAP_LOW;
+=======
+			    V4L2_TUNER_CAP_LOW |
+			    V4L2_TUNER_CAP_HWSEEK_BOUNDED |
+			    V4L2_TUNER_CAP_HWSEEK_WRAP;
+>>>>>>> refs/remotes/origin/master
 	tuner->audmode = (stereo_mono_mode ?
 			  V4L2_TUNER_MODE_MONO : V4L2_TUNER_MODE_STEREO);
 
@@ -307,7 +431,11 @@ static int fm_v4l2_vidioc_g_tuner(struct file *file, void *priv,
  * Should we set other tuner attributes, too?
  */
 static int fm_v4l2_vidioc_s_tuner(struct file *file, void *priv,
+<<<<<<< HEAD
 		struct v4l2_tuner *tuner)
+=======
+		const struct v4l2_tuner *tuner)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fmdev *fmdev = video_drvdata(file);
 	u16 aud_mode;
@@ -364,7 +492,11 @@ static int fm_v4l2_vidioc_g_freq(struct file *file, void *priv,
 
 /* Set tuner or modulator radio frequency */
 static int fm_v4l2_vidioc_s_freq(struct file *file, void *priv,
+<<<<<<< HEAD
 		struct v4l2_frequency *freq)
+=======
+		const struct v4l2_frequency *freq)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fmdev *fmdev = video_drvdata(file);
 
@@ -372,18 +504,32 @@ static int fm_v4l2_vidioc_s_freq(struct file *file, void *priv,
 	 * As V4L2_TUNER_CAP_LOW is set 1 user sends the frequency
 	 * in units of 62.5 Hz.
 	 */
+<<<<<<< HEAD
 	freq->frequency = (u32)(freq->frequency / 16);
 
 	return fmc_set_freq(fmdev, freq->frequency);
+=======
+	return fmc_set_freq(fmdev, freq->frequency / 16);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Set hardware frequency seek. If current mode is NOT RX, set it RX. */
 static int fm_v4l2_vidioc_s_hw_freq_seek(struct file *file, void *priv,
+<<<<<<< HEAD
 		struct v4l2_hw_freq_seek *seek)
+=======
+		const struct v4l2_hw_freq_seek *seek)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fmdev *fmdev = video_drvdata(file);
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (file->f_flags & O_NONBLOCK)
+		return -EWOULDBLOCK;
+
+>>>>>>> refs/remotes/origin/master
 	if (fmdev->curr_fmmode != FM_MODE_RX) {
 		ret = fmc_set_mode(fmdev, FM_MODE_RX);
 		if (ret != 0) {
@@ -403,7 +549,15 @@ static int fm_v4l2_vidioc_s_hw_freq_seek(struct file *file, void *priv,
 static int fm_v4l2_vidioc_g_modulator(struct file *file, void *priv,
 		struct v4l2_modulator *mod)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct fmdev *fmdev = video_drvdata(file);;
+=======
+	struct fmdev *fmdev = video_drvdata(file);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fmdev *fmdev = video_drvdata(file);
+>>>>>>> refs/remotes/origin/master
 
 	if (mod->index != 0)
 		return -EINVAL;
@@ -424,7 +578,11 @@ static int fm_v4l2_vidioc_g_modulator(struct file *file, void *priv,
 
 /* Set modulator attributes. If mode is not TX, set to TX. */
 static int fm_v4l2_vidioc_s_modulator(struct file *file, void *priv,
+<<<<<<< HEAD
 		struct v4l2_modulator *mod)
+=======
+		const struct v4l2_modulator *mod)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fmdev *fmdev = video_drvdata(file);
 	u8 rds_mode;
@@ -491,6 +649,19 @@ static struct video_device fm_viddev_template = {
 	.ioctl_ops = &fm_drv_ioctl_ops,
 	.name = FM_DRV_NAME,
 	.release = video_device_release,
+<<<<<<< HEAD
+=======
+	/*
+	 * To ensure both the tuner and modulator ioctls are accessible we
+	 * set the vfl_dir to M2M to indicate this.
+	 *
+	 * It is not really a mem2mem device of course, but it can both receive
+	 * and transmit using the same radio device. It's the only radio driver
+	 * that does this and it should really be split in two radio devices,
+	 * but that would affect applications using this driver.
+	 */
+	.vfl_dir = VFL_DIR_M2M,
+>>>>>>> refs/remotes/origin/master
 };
 
 int fm_v4l2_init_video_device(struct fmdev *fmdev, int radio_nr)
@@ -498,6 +669,14 @@ int fm_v4l2_init_video_device(struct fmdev *fmdev, int radio_nr)
 	struct v4l2_ctrl *ctrl;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	strlcpy(fmdev->v4l2_dev.name, FM_DRV_NAME, sizeof(fmdev->v4l2_dev.name));
+	ret = v4l2_device_register(NULL, &fmdev->v4l2_dev);
+	if (ret < 0)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	/* Init mutex for core locking */
 	mutex_init(&fmdev->mutex);
 
@@ -514,6 +693,10 @@ int fm_v4l2_init_video_device(struct fmdev *fmdev, int radio_nr)
 	video_set_drvdata(gradio_dev, fmdev);
 
 	gradio_dev->lock = &fmdev->mutex;
+<<<<<<< HEAD
+=======
+	gradio_dev->v4l2_dev = &fmdev->v4l2_dev;
+>>>>>>> refs/remotes/origin/master
 
 	/* Register with V4L2 subsystem as RADIO device */
 	if (video_register_device(gradio_dev, VFL_TYPE_RADIO, radio_nr)) {
@@ -558,7 +741,15 @@ int fm_v4l2_init_video_device(struct fmdev *fmdev, int radio_nr)
 			255, 1, 255);
 
 	if (ctrl)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ctrl->is_volatile = 1;
+=======
+		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -576,5 +767,10 @@ void *fm_v4l2_deinit_video_device(void)
 	/* Unregister RADIO device from V4L2 subsystem */
 	video_unregister_device(gradio_dev);
 
+<<<<<<< HEAD
+=======
+	v4l2_device_unregister(&fmdev->v4l2_dev);
+
+>>>>>>> refs/remotes/origin/master
 	return fmdev;
 }

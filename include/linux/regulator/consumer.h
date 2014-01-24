@@ -35,7 +35,24 @@
 #ifndef __LINUX_REGULATOR_CONSUMER_H_
 #define __LINUX_REGULATOR_CONSUMER_H_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+#include <linux/compiler.h>
+
+struct device;
+struct notifier_block;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+=======
+#include <linux/compiler.h>
+
+>>>>>>> refs/remotes/origin/cm-11.0
+struct device;
+struct notifier_block;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Regulator operating modes.
@@ -114,10 +131,19 @@ struct regulator;
  *            using the bulk regulator APIs.
  * @consumer: The regulator consumer for the supply.  This will be managed
  *            by the bulk API.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * @min_uV:   The minimum requested voltage for the regulator (in microvolts),
  *            or 0 to not set a voltage.
  * @max_uV:   The maximum requested voltage for the regulator (in microvolts),
  *            or 0 to use @min_uV.
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * The regulator APIs provide a series of regulator_bulk_() API calls as
  * a convenience to consumers which require multiple supplies.  This
@@ -126,8 +152,25 @@ struct regulator;
 struct regulator_bulk_data {
 	const char *supply;
 	struct regulator *consumer;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int min_uV;
 	int max_uV;
+<<<<<<< HEAD
+=======
+=======
+	int min_uV;
+	int max_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	/* private: Internal use */
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* private: Internal use */
+	int ret;
+>>>>>>> refs/remotes/origin/master
 };
 
 #if defined(CONFIG_REGULATOR)
@@ -135,31 +178,120 @@ struct regulator_bulk_data {
 /* regulator get and put */
 struct regulator *__must_check regulator_get(struct device *dev,
 					     const char *id);
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct regulator *__must_check regulator_get_exclusive(struct device *dev,
 						       const char *id);
 void regulator_put(struct regulator *regulator);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct regulator *__must_check devm_regulator_get(struct device *dev,
+					     const char *id);
+struct regulator *__must_check regulator_get_exclusive(struct device *dev,
+						       const char *id);
+<<<<<<< HEAD
+void regulator_put(struct regulator *regulator);
+void devm_regulator_put(struct regulator *regulator);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* regulator output control and status */
 int regulator_enable(struct regulator *regulator);
 int regulator_disable(struct regulator *regulator);
 int regulator_force_disable(struct regulator *regulator);
 int regulator_is_enabled(struct regulator *regulator);
+<<<<<<< HEAD
 
 int regulator_bulk_get(struct device *dev, int num_consumers,
 		       struct regulator_bulk_data *consumers);
+=======
+int regulator_disable_deferred(struct regulator *regulator, int ms);
+
+int regulator_bulk_get(struct device *dev, int num_consumers,
+		       struct regulator_bulk_data *consumers);
+int devm_regulator_bulk_get(struct device *dev, int num_consumers,
+			    struct regulator_bulk_data *consumers);
+>>>>>>> refs/remotes/origin/cm-10.0
 int regulator_bulk_enable(int num_consumers,
 			  struct regulator_bulk_data *consumers);
 int regulator_bulk_set_voltage(int num_consumers,
 			  struct regulator_bulk_data *consumers);
 int regulator_bulk_disable(int num_consumers,
 			   struct regulator_bulk_data *consumers);
+<<<<<<< HEAD
+=======
+int regulator_bulk_force_disable(int num_consumers,
+			   struct regulator_bulk_data *consumers);
+>>>>>>> refs/remotes/origin/cm-10.0
 void regulator_bulk_free(int num_consumers,
 			 struct regulator_bulk_data *consumers);
 
+=======
+struct regulator *__must_check devm_regulator_get_exclusive(struct device *dev,
+							const char *id);
+struct regulator *__must_check regulator_get_optional(struct device *dev,
+						      const char *id);
+struct regulator *__must_check devm_regulator_get_optional(struct device *dev,
+							   const char *id);
+void regulator_put(struct regulator *regulator);
+void devm_regulator_put(struct regulator *regulator);
+
+int regulator_register_supply_alias(struct device *dev, const char *id,
+				    struct device *alias_dev,
+				    const char *alias_id);
+void regulator_unregister_supply_alias(struct device *dev, const char *id);
+
+int regulator_bulk_register_supply_alias(struct device *dev, const char **id,
+					 struct device *alias_dev,
+					 const char **alias_id, int num_id);
+void regulator_bulk_unregister_supply_alias(struct device *dev,
+					    const char **id, int num_id);
+
+int devm_regulator_register_supply_alias(struct device *dev, const char *id,
+					 struct device *alias_dev,
+					 const char *alias_id);
+void devm_regulator_unregister_supply_alias(struct device *dev,
+					    const char *id);
+
+int devm_regulator_bulk_register_supply_alias(struct device *dev,
+					      const char **id,
+					      struct device *alias_dev,
+					      const char **alias_id,
+					      int num_id);
+void devm_regulator_bulk_unregister_supply_alias(struct device *dev,
+						 const char **id,
+						 int num_id);
+
+/* regulator output control and status */
+int __must_check regulator_enable(struct regulator *regulator);
+int regulator_disable(struct regulator *regulator);
+int regulator_force_disable(struct regulator *regulator);
+int regulator_is_enabled(struct regulator *regulator);
+int regulator_disable_deferred(struct regulator *regulator, int ms);
+
+int __must_check regulator_bulk_get(struct device *dev, int num_consumers,
+				    struct regulator_bulk_data *consumers);
+int __must_check devm_regulator_bulk_get(struct device *dev, int num_consumers,
+					 struct regulator_bulk_data *consumers);
+int __must_check regulator_bulk_enable(int num_consumers,
+				       struct regulator_bulk_data *consumers);
+int regulator_bulk_disable(int num_consumers,
+			   struct regulator_bulk_data *consumers);
+int regulator_bulk_force_disable(int num_consumers,
+			   struct regulator_bulk_data *consumers);
+void regulator_bulk_free(int num_consumers,
+			 struct regulator_bulk_data *consumers);
+
+int regulator_can_change_voltage(struct regulator *regulator);
+>>>>>>> refs/remotes/origin/master
 int regulator_count_voltages(struct regulator *regulator);
 int regulator_list_voltage(struct regulator *regulator, unsigned selector);
 int regulator_is_supported_voltage(struct regulator *regulator,
 				   int min_uV, int max_uV);
+<<<<<<< HEAD
+=======
+unsigned int regulator_get_linear_step(struct regulator *regulator);
+>>>>>>> refs/remotes/origin/master
 int regulator_set_voltage(struct regulator *regulator, int min_uV, int max_uV);
 int regulator_set_voltage_time(struct regulator *regulator,
 			       int old_uV, int new_uV);
@@ -173,6 +305,11 @@ int regulator_set_mode(struct regulator *regulator, unsigned int mode);
 unsigned int regulator_get_mode(struct regulator *regulator);
 int regulator_set_optimum_mode(struct regulator *regulator, int load_uA);
 
+<<<<<<< HEAD
+=======
+int regulator_allow_bypass(struct regulator *regulator, bool allow);
+
+>>>>>>> refs/remotes/origin/master
 /* regulator notifier block */
 int regulator_register_notifier(struct regulator *regulator,
 			      struct notifier_block *nb);
@@ -202,10 +339,111 @@ static inline struct regulator *__must_check regulator_get(struct device *dev,
 	 */
 	return NULL;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static inline struct regulator *__must_check
+devm_regulator_get(struct device *dev, const char *id)
+{
+	return NULL;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct regulator *__must_check
+regulator_get_exclusive(struct device *dev, const char *id)
+{
+	return NULL;
+}
+
+static inline struct regulator *__must_check
+regulator_get_optional(struct device *dev, const char *id)
+{
+	return NULL;
+}
+
+
+static inline struct regulator *__must_check
+devm_regulator_get_optional(struct device *dev, const char *id)
+{
+	return NULL;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void regulator_put(struct regulator *regulator)
 {
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void devm_regulator_put(struct regulator *regulator)
+{
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int regulator_register_supply_alias(struct device *dev,
+						  const char *id,
+						  struct device *alias_dev,
+						  const char *alias_id)
+{
+	return 0;
+}
+
+static inline void regulator_unregister_supply_alias(struct device *dev,
+						    const char *id)
+{
+}
+
+static inline int regulator_bulk_register_supply_alias(struct device *dev,
+						       const char **id,
+						       struct device *alias_dev,
+						       const char **alias_id,
+						       int num_id)
+{
+	return 0;
+}
+
+static inline void regulator_bulk_unregister_supply_alias(struct device *dev,
+							  const char **id,
+							  int num_id)
+{
+}
+
+static inline int devm_regulator_register_supply_alias(struct device *dev,
+						       const char *id,
+						       struct device *alias_dev,
+						       const char *alias_id)
+{
+	return 0;
+}
+
+static inline void devm_regulator_unregister_supply_alias(struct device *dev,
+							  const char *id)
+{
+}
+
+static inline int devm_regulator_bulk_register_supply_alias(
+		struct device *dev, const char **id, struct device *alias_dev,
+		const char **alias_id, int num_id)
+{
+	return 0;
+}
+
+static inline void devm_regulator_bulk_unregister_supply_alias(
+		struct device *dev, const char **id, int num_id)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int regulator_enable(struct regulator *regulator)
 {
 	return 0;
@@ -216,6 +454,26 @@ static inline int regulator_disable(struct regulator *regulator)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline int regulator_force_disable(struct regulator *regulator)
+{
+	return 0;
+}
+
+static inline int regulator_disable_deferred(struct regulator *regulator,
+					     int ms)
+{
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int regulator_is_enabled(struct regulator *regulator)
 {
 	return 1;
@@ -228,6 +486,21 @@ static inline int regulator_bulk_get(struct device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline int devm_regulator_bulk_get(struct device *dev, int num_consumers,
+					  struct regulator_bulk_data *consumers)
+{
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int regulator_bulk_enable(int num_consumers,
 					struct regulator_bulk_data *consumers)
 {
@@ -240,16 +513,40 @@ static inline int regulator_bulk_disable(int num_consumers,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline int regulator_bulk_force_disable(int num_consumers,
+					struct regulator_bulk_data *consumers)
+{
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void regulator_bulk_free(int num_consumers,
 				       struct regulator_bulk_data *consumers)
 {
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int regulator_count_voltages(struct regulator *regulator)
 {
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int regulator_set_voltage(struct regulator *regulator,
 					int min_uV, int max_uV)
 {
@@ -258,6 +555,15 @@ static inline int regulator_set_voltage(struct regulator *regulator,
 
 static inline int regulator_get_voltage(struct regulator *regulator)
 {
+<<<<<<< HEAD
+=======
+	return -EINVAL;
+}
+
+static inline int regulator_is_supported_voltage(struct regulator *regulator,
+				   int min_uV, int max_uV)
+{
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -289,6 +595,15 @@ static inline int regulator_set_optimum_mode(struct regulator *regulator,
 	return REGULATOR_MODE_NORMAL;
 }
 
+<<<<<<< HEAD
+=======
+static inline int regulator_allow_bypass(struct regulator *regulator,
+					 bool allow)
+{
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int regulator_register_notifier(struct regulator *regulator,
 			      struct notifier_block *nb)
 {
@@ -311,6 +626,33 @@ static inline void regulator_set_drvdata(struct regulator *regulator,
 {
 }
 
+<<<<<<< HEAD
 #endif
 
+=======
+static inline int regulator_count_voltages(struct regulator *regulator)
+{
+	return 0;
+}
+#endif
+
+static inline int regulator_set_voltage_tol(struct regulator *regulator,
+					    int new_uV, int tol_uV)
+{
+	if (regulator_set_voltage(regulator, new_uV, new_uV + tol_uV) == 0)
+		return 0;
+	else
+		return regulator_set_voltage(regulator,
+					     new_uV - tol_uV, new_uV + tol_uV);
+}
+
+static inline int regulator_is_supported_voltage_tol(struct regulator *regulator,
+						     int target_uV, int tol_uV)
+{
+	return regulator_is_supported_voltage(regulator,
+					      target_uV - tol_uV,
+					      target_uV + tol_uV);
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif

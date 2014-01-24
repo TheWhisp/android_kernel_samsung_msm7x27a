@@ -20,6 +20,10 @@
 #include <linux/tsacct_kern.h>
 #include <linux/file.h>
 #include <linux/fdtable.h>
+<<<<<<< HEAD
+=======
+#include <linux/freezer.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/binfmts.h>
 #include <linux/nsproxy.h>
 #include <linux/pid_namespace.h>
@@ -31,7 +35,10 @@
 #include <linux/mempolicy.h>
 #include <linux/taskstats_kern.h>
 #include <linux/delayacct.h>
+<<<<<<< HEAD
 #include <linux/freezer.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/cgroup.h>
 #include <linux/syscalls.h>
 #include <linux/signal.h>
@@ -51,6 +58,16 @@
 #include <trace/events/sched.h>
 #include <linux/hw_breakpoint.h>
 #include <linux/oom.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/writeback.h>
+#include <linux/shm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/writeback.h>
+#include <linux/shm.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 #include <asm/unistd.h>
@@ -72,6 +89,10 @@ static void __unhash_process(struct task_struct *p, bool group_dead)
 		__this_cpu_dec(process_counts);
 	}
 	list_del_rcu(&p->thread_group);
+<<<<<<< HEAD
+=======
+	list_del_rcu(&p->thread_node);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -83,9 +104,18 @@ static void __exit_signal(struct task_struct *tsk)
 	bool group_dead = thread_group_leader(tsk);
 	struct sighand_struct *sighand;
 	struct tty_struct *uninitialized_var(tty);
+<<<<<<< HEAD
 
 	sighand = rcu_dereference_check(tsk->sighand,
+<<<<<<< HEAD
 					rcu_read_lock_held() ||
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cputime_t utime, stime;
+
+	sighand = rcu_dereference_check(tsk->sighand,
+>>>>>>> refs/remotes/origin/master
 					lockdep_tasklist_lock_is_held());
 	spin_lock(&sighand->siglock);
 
@@ -122,9 +152,22 @@ static void __exit_signal(struct task_struct *tsk)
 		 * We won't ever get here for the group leader, since it
 		 * will have been the last reference on the signal_struct.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sig->utime = cputime_add(sig->utime, tsk->utime);
 		sig->stime = cputime_add(sig->stime, tsk->stime);
 		sig->gtime = cputime_add(sig->gtime, tsk->gtime);
+=======
+		sig->utime += tsk->utime;
+		sig->stime += tsk->stime;
+		sig->gtime += tsk->gtime;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		task_cputime(tsk, &utime, &stime);
+		sig->utime += utime;
+		sig->stime += stime;
+		sig->gtime += task_gtime(tsk);
+>>>>>>> refs/remotes/origin/master
 		sig->min_flt += tsk->min_flt;
 		sig->maj_flt += tsk->maj_flt;
 		sig->nvcsw += tsk->nvcsw;
@@ -169,7 +212,13 @@ void release_task(struct task_struct * p)
 	struct task_struct *leader;
 	int zap_leader;
 repeat:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tracehook_prepare_release_task(p);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* don't need to get the RCU readlock here - the process is dead and
 	 * can't be modifying its own credentials. But shut RCU-lockdep up */
 	rcu_read_lock();
@@ -179,7 +228,15 @@ repeat:
 	proc_flush_task(p);
 
 	write_lock_irq(&tasklist_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tracehook_finish_release_task(p);
+=======
+	ptrace_release_task(p);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ptrace_release_task(p);
+>>>>>>> refs/remotes/origin/master
 	__exit_signal(p);
 
 	/*
@@ -190,12 +247,20 @@ repeat:
 	zap_leader = 0;
 	leader = p->group_leader;
 	if (leader != p && thread_group_empty(leader) && leader->exit_state == EXIT_ZOMBIE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		BUG_ON(task_detached(leader));
 		do_notify_parent(leader, leader->exit_signal);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * If we were the last child thread and the leader has
 		 * exited already, and the leader's parent ignores SIGCHLD,
 		 * then we are the one who should release the leader.
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 *
 		 * do_notify_parent() will have marked it self-reaping in
 		 * that case.
@@ -206,6 +271,14 @@ repeat:
 		 * This maintains the invariant that release_task()
 		 * only runs on a task in EXIT_DEAD, just for sanity.
 		 */
+=======
+		 */
+		zap_leader = do_notify_parent(leader, leader->exit_signal);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 */
+		zap_leader = do_notify_parent(leader, leader->exit_signal);
+>>>>>>> refs/remotes/origin/master
 		if (zap_leader)
 			leader->exit_state = EXIT_DEAD;
 	}
@@ -277,6 +350,8 @@ int is_current_pgrp_orphaned(void)
 	return retval;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int has_stopped_jobs(struct pid *pgrp)
 {
 	int retval = 0;
@@ -289,6 +364,23 @@ static int has_stopped_jobs(struct pid *pgrp)
 		break;
 	} while_each_pid_task(pgrp, PIDTYPE_PGID, p);
 	return retval;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static bool has_stopped_jobs(struct pid *pgrp)
+{
+	struct task_struct *p;
+
+	do_each_pid_task(pgrp, PIDTYPE_PGID, p) {
+		if (p->signal->flags & SIGNAL_STOP_STOPPED)
+			return true;
+	} while_each_pid_task(pgrp, PIDTYPE_PGID, p);
+
+	return false;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -322,6 +414,7 @@ kill_orphaned_pgrp(struct task_struct *tsk, struct task_struct *parent)
 	}
 }
 
+<<<<<<< HEAD
 /**
  * reparent_to_kthreadd - Reparent the calling kernel thread to kthreadd
  *
@@ -377,6 +470,8 @@ static void set_special_pids(struct pid *pid)
 	write_unlock_irq(&tasklist_lock);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Let kernel threads use this to say that they allow a certain signal.
  * Must not be used if kthread was cloned with CLONE_SIGHAND.
@@ -416,6 +511,7 @@ int disallow_signal(int sig)
 
 EXPORT_SYMBOL(disallow_signal);
 
+<<<<<<< HEAD
 /*
  *	Put all the gunge required to become a kernel thread without
  *	attached user resources in one place where it belongs.
@@ -437,7 +533,11 @@ void daemonize(const char *name, ...)
 	 */
 	exit_mm(current);
 	/*
+<<<<<<< HEAD
 	 * We don't want to have TIF_FREEZE set if the system-wide hibernation
+=======
+	 * We don't want to get frozen, in case system-wide hibernation
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * or suspend transition begins right now.
 	 */
 	current->flags |= (PF_NOFREEZE | PF_KTHREAD);
@@ -483,10 +583,21 @@ static void close_files(struct files_struct * files)
 	rcu_read_unlock();
 	for (;;) {
 		unsigned long set;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		i = j * __NFDBITS;
+=======
+		i = j * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (i >= fdt->max_fds)
 			break;
 		set = fdt->open_fds->fds_bits[j++];
+=======
+		i = j * BITS_PER_LONG;
+		if (i >= fdt->max_fds)
+			break;
+		set = fdt->open_fds[j++];
+>>>>>>> refs/remotes/origin/cm-10.0
 		while (set) {
 			if (set & 1) {
 				struct file * file = xchg(&fdt->fd[i], NULL);
@@ -559,6 +670,8 @@ void exit_files(struct task_struct *tsk)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MM_OWNER
 /*
  * A task is exiting.   If it owned this mm, find a new owner for the mm.
@@ -655,6 +768,18 @@ static void exit_mm(struct task_struct * tsk)
 	mm_release(tsk, mm);
 	if (!mm)
 		return;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	sync_mm_rss(mm);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sync_mm_rss(mm);
+>>>>>>> refs/remotes/origin/master
+=======
+	sync_mm_rss(mm);
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Serialize with any possible pending coredump.
 	 * We must hold mmap_sem around checking core_state
@@ -681,7 +806,11 @@ static void exit_mm(struct task_struct * tsk)
 			set_task_state(tsk, TASK_UNINTERRUPTIBLE);
 			if (!self.task) /* see coredump_finish() */
 				break;
+<<<<<<< HEAD
 			schedule();
+=======
+			freezable_schedule();
+>>>>>>> refs/remotes/origin/master
 		}
 		__set_task_state(tsk, TASK_RUNNING);
 		down_read(&mm->mmap_sem);
@@ -693,21 +822,41 @@ static void exit_mm(struct task_struct * tsk)
 	tsk->mm = NULL;
 	up_read(&mm->mmap_sem);
 	enter_lazy_tlb(mm, current);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* We don't want this task to be frozen prematurely */
 	clear_freeze_flag(tsk);
 	if (tsk->signal->oom_score_adj == OOM_SCORE_ADJ_MIN)
 		atomic_dec(&mm->oom_disable_count);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	task_unlock(tsk);
 	mm_update_next_owner(mm);
 	mmput(mm);
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * When we die, we re-parent all our children.
  * Try to give them to another thread in our thread
  * group, and if no such member exists, give it to
  * the child reaper process (ie "init") in our pid
  * space.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * When we die, we re-parent all our children, and try to:
+ * 1. give them to another thread in our thread group, if such a member exists
+ * 2. give it to the first ancestor process which prctl'd itself as a
+ *    child_subreaper for its children (like a service manager)
+ * 3. give it to the init process (PID 1) in our pid namespace
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static struct task_struct *find_new_reaper(struct task_struct *father)
 	__releases(&tasklist_lock)
@@ -727,8 +876,20 @@ static struct task_struct *find_new_reaper(struct task_struct *father)
 
 	if (unlikely(pid_ns->child_reaper == father)) {
 		write_unlock_irq(&tasklist_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (unlikely(pid_ns == &init_pid_ns))
 			panic("Attempted to kill init!");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (unlikely(pid_ns == &init_pid_ns)) {
+			panic("Attempted to kill init! exitcode=0x%08x\n",
+				father->signal->group_exit_code ?:
+					father->exit_code);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		zap_pid_ns_processes(pid_ns);
 		write_lock_irq(&tasklist_lock);
@@ -738,6 +899,40 @@ static struct task_struct *find_new_reaper(struct task_struct *father)
 		 * forget_original_parent() must move them somewhere.
 		 */
 		pid_ns->child_reaper = init_pid_ns.child_reaper;
+<<<<<<< HEAD
+=======
+=======
+
+		zap_pid_ns_processes(pid_ns);
+		write_lock_irq(&tasklist_lock);
+>>>>>>> refs/remotes/origin/master
+	} else if (father->signal->has_child_subreaper) {
+		struct task_struct *reaper;
+
+		/*
+		 * Find the first ancestor marked as child_subreaper.
+		 * Note that the code below checks same_thread_group(reaper,
+		 * pid_ns->child_reaper).  This is what we need to DTRT in a
+		 * PID namespace. However we still need the check above, see
+		 * http://marc.info/?l=linux-kernel&m=131385460420380
+		 */
+		for (reaper = father->real_parent;
+		     reaper != &init_task;
+		     reaper = reaper->real_parent) {
+			if (same_thread_group(reaper, pid_ns->child_reaper))
+				break;
+			if (!reaper->signal->is_child_subreaper)
+				continue;
+			thread = reaper;
+			do {
+				if (!(thread->flags & PF_EXITING))
+					return reaper;
+			} while_each_thread(reaper, thread);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return pid_ns->child_reaper;
@@ -751,7 +946,15 @@ static void reparent_leader(struct task_struct *father, struct task_struct *p,
 {
 	list_move_tail(&p->sibling, &p->real_parent->children);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (task_detached(p))
+=======
+	if (p->exit_state == EXIT_DEAD)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (p->exit_state == EXIT_DEAD)
+>>>>>>> refs/remotes/origin/master
 		return;
 	/*
 	 * If this is a threaded reparent there is no need to
@@ -764,10 +967,22 @@ static void reparent_leader(struct task_struct *father, struct task_struct *p,
 	p->exit_signal = SIGCHLD;
 
 	/* If it has exited notify the new parent about this child's death. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!task_ptrace(p) &&
 	    p->exit_state == EXIT_ZOMBIE && thread_group_empty(p)) {
 		do_notify_parent(p, p->exit_signal);
 		if (task_detached(p)) {
+=======
+	if (!p->ptrace &&
+	    p->exit_state == EXIT_ZOMBIE && thread_group_empty(p)) {
+		if (do_notify_parent(p, p->exit_signal)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!p->ptrace &&
+	    p->exit_state == EXIT_ZOMBIE && thread_group_empty(p)) {
+		if (do_notify_parent(p, p->exit_signal)) {
+>>>>>>> refs/remotes/origin/master
 			p->exit_state = EXIT_DEAD;
 			list_move_tail(&p->sibling, dead);
 		}
@@ -794,7 +1009,15 @@ static void forget_original_parent(struct task_struct *father)
 		do {
 			t->real_parent = reaper;
 			if (t->parent == father) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				BUG_ON(task_ptrace(t));
+=======
+				BUG_ON(t->ptrace);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				BUG_ON(t->ptrace);
+>>>>>>> refs/remotes/origin/master
 				t->parent = t->real_parent;
 			}
 			if (t->pdeath_signal)
@@ -819,8 +1042,16 @@ static void forget_original_parent(struct task_struct *father)
  */
 static void exit_notify(struct task_struct *tsk, int group_dead)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int signal;
 	void *cookie;
+=======
+	bool autoreap;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool autoreap;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * This does two things:
@@ -831,12 +1062,17 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
 	 *	jobs, send them a SIGHUP and then a SIGCONT.  (POSIX 3.2.2.2)
 	 */
 	forget_original_parent(tsk);
+<<<<<<< HEAD
 	exit_task_namespaces(tsk);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	write_lock_irq(&tasklist_lock);
 	if (group_dead)
 		kill_orphaned_pgrp(tsk->group_leader, NULL);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Let father know we died
 	 *
 	 * Thread signals are configurable, but you aren't going to use
@@ -861,16 +1097,47 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
 		signal = do_notify_parent(tsk, signal);
 
 	tsk->exit_state = signal == DEATH_REAP ? EXIT_DEAD : EXIT_ZOMBIE;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (unlikely(tsk->ptrace)) {
+		int sig = thread_group_leader(tsk) &&
+				thread_group_empty(tsk) &&
+				!ptrace_reparented(tsk) ?
+			tsk->exit_signal : SIGCHLD;
+		autoreap = do_notify_parent(tsk, sig);
+	} else if (thread_group_leader(tsk)) {
+		autoreap = thread_group_empty(tsk) &&
+			do_notify_parent(tsk, tsk->exit_signal);
+	} else {
+		autoreap = true;
+	}
+
+	tsk->exit_state = autoreap ? EXIT_DEAD : EXIT_ZOMBIE;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* mt-exec, de_thread() is waiting for group leader */
 	if (unlikely(tsk->signal->notify_count < 0))
 		wake_up_process(tsk->signal->group_exit_task);
 	write_unlock_irq(&tasklist_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tracehook_report_death(tsk, signal, cookie, group_dead);
 
 	/* If the process is dead, release it - nobody will wait for it */
 	if (signal == DEATH_REAP)
+=======
+	/* If the process is dead, release it - nobody will wait for it */
+	if (autoreap)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* If the process is dead, release it - nobody will wait for it */
+	if (autoreap)
+>>>>>>> refs/remotes/origin/master
 		release_task(tsk);
 }
 
@@ -888,9 +1155,15 @@ static void check_stack_usage(void)
 
 	spin_lock(&low_water_lock);
 	if (free < lowest_to_date) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s used greatest stack depth: %lu bytes "
 				"left\n",
 				current->comm, free);
+=======
+		printk(KERN_WARNING "%s (%d) used greatest stack depth: "
+				"%lu bytes left\n",
+				current->comm, task_pid_nr(current), free);
+>>>>>>> refs/remotes/origin/master
 		lowest_to_date = free;
 	}
 	spin_unlock(&low_water_lock);
@@ -899,14 +1172,28 @@ static void check_stack_usage(void)
 static inline void check_stack_usage(void) {}
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 NORET_TYPE void do_exit(long code)
+=======
+void do_exit(long code)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void do_exit(long code)
+>>>>>>> refs/remotes/origin/master
 {
 	struct task_struct *tsk = current;
 	int group_dead;
 
 	profile_task_exit(tsk);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON(atomic_read(&tsk->fs_excl));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(blk_needs_flush_plug(tsk));
 
 	if (unlikely(in_interrupt()))
@@ -923,7 +1210,15 @@ NORET_TYPE void do_exit(long code)
 	 */
 	set_fs(USER_DS);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tracehook_report_exit(&code);
+=======
+	ptrace_event(PTRACE_EVENT_EXIT, code);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ptrace_event(PTRACE_EVENT_EXIT, code);
+>>>>>>> refs/remotes/origin/master
 
 	validate_creds_for_do_exit(tsk);
 
@@ -948,8 +1243,14 @@ NORET_TYPE void do_exit(long code)
 		schedule();
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	exit_irq_thread();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	exit_signals(tsk);  /* sets PF_EXITING */
 	/*
 	 * tsk->flags are checked in the futex code to protect against
@@ -958,6 +1259,14 @@ NORET_TYPE void do_exit(long code)
 	smp_mb();
 	raw_spin_unlock_wait(&tsk->pi_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	exit_irq_thread();
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(in_atomic()))
 		printk(KERN_INFO "note: %s[%d] exited with preempt_count %d\n",
 				current->comm, task_pid_nr(current),
@@ -966,7 +1275,15 @@ NORET_TYPE void do_exit(long code)
 	acct_update_integrals(tsk);
 	/* sync mm's RSS info before statistics gathering */
 	if (tsk->mm)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sync_mm_rss(tsk, tsk->mm);
+=======
+		sync_mm_rss(tsk->mm);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sync_mm_rss(tsk->mm);
+>>>>>>> refs/remotes/origin/master
 	group_dead = atomic_dec_and_test(&tsk->signal->live);
 	if (group_dead) {
 		hrtimer_cancel(&tsk->signal->real_timer);
@@ -977,8 +1294,16 @@ NORET_TYPE void do_exit(long code)
 	acct_collect(code, group_dead);
 	if (group_dead)
 		tty_audit_exit();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(tsk->audit_context))
 		audit_free(tsk);
+=======
+	audit_free(tsk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audit_free(tsk);
+>>>>>>> refs/remotes/origin/master
 
 	tsk->exit_code = code;
 	taskstats_exit(tsk, group_dead);
@@ -990,8 +1315,20 @@ NORET_TYPE void do_exit(long code)
 	trace_sched_process_exit(tsk);
 
 	exit_sem(tsk);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	exit_shm(tsk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	exit_files(tsk);
 	exit_fs(tsk);
+=======
+	exit_shm(tsk);
+	exit_files(tsk);
+	exit_fs(tsk);
+	exit_task_namespaces(tsk);
+	exit_task_work(tsk);
+>>>>>>> refs/remotes/origin/master
 	check_stack_usage();
 	exit_thread();
 
@@ -1015,7 +1352,11 @@ NORET_TYPE void do_exit(long code)
 	/*
 	 * FIXME: do that only when needed, using sched_exit tracepoint
 	 */
+<<<<<<< HEAD
 	ptrace_put_breakpoints(tsk);
+=======
+	flush_ptrace_hw_breakpoint(tsk);
+>>>>>>> refs/remotes/origin/master
 
 	exit_notify(tsk, group_dead);
 #ifdef CONFIG_NUMA
@@ -1031,7 +1372,11 @@ NORET_TYPE void do_exit(long code)
 	/*
 	 * Make sure we are holding no locks:
 	 */
+<<<<<<< HEAD
 	debug_check_no_locks_held(tsk);
+=======
+	debug_check_no_locks_held();
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We can do this unlocked here. The futex code uses this flag
 	 * just to verify whether the pi state cleanup has been done
@@ -1043,11 +1388,28 @@ NORET_TYPE void do_exit(long code)
 		exit_io_context(tsk);
 
 	if (tsk->splice_pipe)
+<<<<<<< HEAD
 		__free_pipe_info(tsk->splice_pipe);
+=======
+		free_pipe_info(tsk->splice_pipe);
+
+	if (tsk->task_frag.page)
+		put_page(tsk->task_frag.page);
+>>>>>>> refs/remotes/origin/master
 
 	validate_creds_for_do_exit(tsk);
 
 	preempt_disable();
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (tsk->nr_dirtied)
+		__this_cpu_add(dirty_throttle_leaks, tsk->nr_dirtied);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tsk->nr_dirtied)
+		__this_cpu_add(dirty_throttle_leaks, tsk->nr_dirtied);
+>>>>>>> refs/remotes/origin/master
 	exit_rcu();
 
 	/*
@@ -1067,6 +1429,14 @@ NORET_TYPE void do_exit(long code)
 
 	/* causes final put_task_struct in finish_task_switch(). */
 	tsk->state = TASK_DEAD;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	tsk->flags |= PF_NOFREEZE;	/* tell freezer to ignore us */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tsk->flags |= PF_NOFREEZE;	/* tell freezer to ignore us */
+>>>>>>> refs/remotes/origin/master
 	schedule();
 	BUG();
 	/* Avoid "noreturn function does return".  */
@@ -1076,7 +1446,15 @@ NORET_TYPE void do_exit(long code)
 
 EXPORT_SYMBOL_GPL(do_exit);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 NORET_TYPE void complete_and_exit(struct completion *comp, long code)
+=======
+void complete_and_exit(struct completion *comp, long code)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void complete_and_exit(struct completion *comp, long code)
+>>>>>>> refs/remotes/origin/master
 {
 	if (comp)
 		complete(comp);
@@ -1095,7 +1473,15 @@ SYSCALL_DEFINE1(exit, int, error_code)
  * Take down every thread in the group.  This is called by fatal signals
  * as well as by sys_exit_group (below).
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 NORET_TYPE void
+=======
+void
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void
+>>>>>>> refs/remotes/origin/master
 do_group_exit(int exit_code)
 {
 	struct signal_struct *sig = current->signal;
@@ -1216,7 +1602,11 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
 	unsigned long state;
 	int retval, status, traced;
 	pid_t pid = task_pid_vnr(p);
+<<<<<<< HEAD
 	uid_t uid = __task_cred(p)->uid;
+=======
+	uid_t uid = from_kuid_munged(current_user_ns(), task_uid(p));
+>>>>>>> refs/remotes/origin/master
 	struct siginfo __user *infop;
 
 	if (!likely(wo->wo_flags & WEXITED))
@@ -1251,9 +1641,21 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
 	traced = ptrace_reparented(p);
 	/*
 	 * It can be ptraced but not reparented, check
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * !task_detached() to filter out sub-threads.
 	 */
 	if (likely(!traced) && likely(!task_detached(p))) {
+=======
+	 * thread_group_leader() to filter out sub-threads.
+	 */
+	if (likely(!traced) && thread_group_leader(p)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * thread_group_leader() to filter out sub-threads.
+	 */
+	if (likely(!traced) && thread_group_leader(p)) {
+>>>>>>> refs/remotes/origin/master
 		struct signal_struct *psig;
 		struct signal_struct *sig;
 		unsigned long maxrss;
@@ -1274,6 +1676,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
 		 * as other threads in the parent group can be right
 		 * here reaping other children at the same time.
 		 *
+<<<<<<< HEAD
 		 * We use thread_group_times() to get times for the thread
 		 * group, which consolidates times for all threads in the
 		 * group including the group leader.
@@ -1282,6 +1685,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
 		spin_lock_irq(&p->real_parent->sighand->siglock);
 		psig = p->real_parent->signal;
 		sig = p->signal;
+<<<<<<< HEAD
 		psig->cutime =
 			cputime_add(psig->cutime,
 			cputime_add(tgutime,
@@ -1295,6 +1699,24 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
 			cputime_add(p->gtime,
 			cputime_add(sig->gtime,
 				    sig->cgtime)));
+=======
+		psig->cutime += tgutime + sig->cutime;
+		psig->cstime += tgstime + sig->cstime;
+		psig->cgtime += p->gtime + sig->gtime + sig->cgtime;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * We use thread_group_cputime_adjusted() to get times for the thread
+		 * group, which consolidates times for all threads in the
+		 * group including the group leader.
+		 */
+		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+		spin_lock_irq(&p->real_parent->sighand->siglock);
+		psig = p->real_parent->signal;
+		sig = p->signal;
+		psig->cutime += tgutime + sig->cutime;
+		psig->cstime += tgstime + sig->cstime;
+		psig->cgtime += task_gtime(p) + sig->gtime + sig->cgtime;
+>>>>>>> refs/remotes/origin/master
 		psig->cmin_flt +=
 			p->min_flt + sig->min_flt + sig->cmin_flt;
 		psig->cmaj_flt +=
@@ -1361,6 +1783,8 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
 		/* We dropped tasklist, ptracer could die and untrace */
 		ptrace_unlink(p);
 		/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * If this is not a detached task, notify the parent.
 		 * If it's still not detached after that, don't release
 		 * it now.
@@ -1371,6 +1795,20 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
 				p->exit_state = EXIT_ZOMBIE;
 				p = NULL;
 			}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		 * If this is not a sub-thread, notify the parent.
+		 * If parent wants a zombie, don't release it now.
+		 */
+		if (thread_group_leader(p) &&
+		    !do_notify_parent(p, p->exit_signal)) {
+			p->exit_state = EXIT_ZOMBIE;
+			p = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		write_unlock_irq(&tasklist_lock);
 	}
@@ -1383,7 +1821,17 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
 static int *task_stopped_code(struct task_struct *p, bool ptrace)
 {
 	if (ptrace) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (task_is_stopped_or_traced(p))
+=======
+		if (task_is_stopped_or_traced(p) &&
+		    !(p->jobctl & JOBCTL_LISTENING))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (task_is_stopped_or_traced(p) &&
+		    !(p->jobctl & JOBCTL_LISTENING))
+>>>>>>> refs/remotes/origin/master
 			return &p->exit_code;
 	} else {
 		if (p->signal->flags & SIGNAL_STOP_STOPPED)
@@ -1441,7 +1889,11 @@ static int wait_task_stopped(struct wait_opts *wo,
 	if (!unlikely(wo->wo_flags & WNOWAIT))
 		*p_code = 0;
 
+<<<<<<< HEAD
 	uid = task_uid(p);
+=======
+	uid = from_kuid_munged(current_user_ns(), task_uid(p));
+>>>>>>> refs/remotes/origin/master
 unlock_sig:
 	spin_unlock_irq(&p->sighand->siglock);
 	if (!exit_code)
@@ -1514,7 +1966,11 @@ static int wait_task_continued(struct wait_opts *wo, struct task_struct *p)
 	}
 	if (!unlikely(wo->wo_flags & WNOWAIT))
 		p->signal->flags &= ~SIGNAL_STOP_CONTINUED;
+<<<<<<< HEAD
 	uid = task_uid(p);
+=======
+	uid = from_kuid_munged(current_user_ns(), task_uid(p));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&p->sighand->siglock);
 
 	pid = task_pid_vnr(p);
@@ -1586,7 +2042,15 @@ static int wait_consider_task(struct wait_opts *wo, int ptrace,
 		 * Notification and reaping will be cascaded to the real
 		 * parent when the ptracer detaches.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (likely(!ptrace) && unlikely(task_ptrace(p))) {
+=======
+		if (likely(!ptrace) && unlikely(p->ptrace)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (likely(!ptrace) && unlikely(p->ptrace)) {
+>>>>>>> refs/remotes/origin/master
 			/* it will become visible, clear notask_error */
 			wo->notask_error = 0;
 			return 0;
@@ -1629,8 +2093,16 @@ static int wait_consider_task(struct wait_opts *wo, int ptrace,
 		 * own children, it should create a separate process which
 		 * takes the role of real parent.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (likely(!ptrace) && task_ptrace(p) &&
 		    same_thread_group(p->parent, p->real_parent))
+=======
+		if (likely(!ptrace) && p->ptrace && !ptrace_reparented(p))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (likely(!ptrace) && p->ptrace && !ptrace_reparented(p))
+>>>>>>> refs/remotes/origin/master
 			return 0;
 
 		/*
@@ -1832,9 +2304,12 @@ SYSCALL_DEFINE5(waitid, int, which, pid_t, upid, struct siginfo __user *,
 	}
 
 	put_pid(pid);
+<<<<<<< HEAD
 
 	/* avoid REGPARM breakage on x86: */
 	asmlinkage_protect(5, ret, which, upid, infop, options, ru);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1872,8 +2347,11 @@ SYSCALL_DEFINE4(wait4, pid_t, upid, int __user *, stat_addr,
 	ret = do_wait(&wo);
 	put_pid(pid);
 
+<<<<<<< HEAD
 	/* avoid REGPARM breakage on x86: */
 	asmlinkage_protect(4, ret, upid, stat_addr, options, ru);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 

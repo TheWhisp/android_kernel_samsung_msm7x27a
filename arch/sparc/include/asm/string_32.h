@@ -61,6 +61,7 @@ extern int memcmp(const void *,const void *,__kernel_size_t);
 extern __kernel_size_t strlen(const char *);
 
 #define __HAVE_ARCH_STRNCMP
+<<<<<<< HEAD
 
 extern int __strncmp(const char *, const char *, __kernel_size_t);
 
@@ -123,6 +124,9 @@ static inline int __constant_strncmp(const char *src, const char *dest, __kernel
 (__builtin_constant_p(__arg2) ?	\
  __constant_strncmp(__arg0, __arg1, __arg2) : \
  __strncmp(__arg0, __arg1, __arg2))
+=======
+extern int strncmp(const char *, const char *, __kernel_size_t);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* !EXPORT_SYMTAB_STROPS */
 

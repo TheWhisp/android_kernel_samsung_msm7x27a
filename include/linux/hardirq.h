@@ -1,6 +1,7 @@
 #ifndef LINUX_HARDIRQ_H
 #define LINUX_HARDIRQ_H
 
+<<<<<<< HEAD
 #include <linux/preempt.h>
 #include <linux/lockdep.h>
 #include <linux/ftrace_irq.h>
@@ -93,7 +94,11 @@
  */
 #define in_nmi()	(preempt_count() & NMI_MASK)
 
+<<<<<<< HEAD
 #if defined(CONFIG_PREEMPT)
+=======
+#if defined(CONFIG_PREEMPT_COUNT)
+>>>>>>> refs/remotes/origin/cm-10.0
 # define PREEMPT_CHECK_OFFSET 1
 #else
 # define PREEMPT_CHECK_OFFSET 0
@@ -115,7 +120,11 @@
 #define in_atomic_preempt_off() \
 		((preempt_count() & ~PREEMPT_ACTIVE) != PREEMPT_CHECK_OFFSET)
 
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
+=======
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/cm-10.0
 # define preemptible()	(preempt_count() == 0 && !irqs_disabled())
 # define IRQ_EXIT_OFFSET (HARDIRQ_OFFSET-1)
 #else
@@ -139,6 +148,7 @@ static inline void account_system_vtime(struct task_struct *tsk)
 extern void account_system_vtime(struct task_struct *tsk);
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_NO_HZ)
 #if defined(CONFIG_TINY_RCU) || defined(CONFIG_TINY_PREEMPT_RCU)
 extern void rcu_enter_nohz(void);
@@ -153,6 +163,21 @@ static inline void rcu_irq_exit(void)
 {
 	rcu_enter_nohz();
 }
+=======
+#if defined(CONFIG_TINY_RCU) || defined(CONFIG_TINY_PREEMPT_RCU)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/preempt_mask.h>
+#include <linux/lockdep.h>
+#include <linux/ftrace_irq.h>
+#include <linux/vtime.h>
+#include <asm/hardirq.h>
+
+
+extern void synchronize_irq(unsigned int irq);
+
+#if defined(CONFIG_TINY_RCU)
+>>>>>>> refs/remotes/origin/master
 
 static inline void rcu_nmi_enter(void)
 {
@@ -163,6 +188,8 @@ static inline void rcu_nmi_exit(void)
 }
 
 #else
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void rcu_irq_enter(void);
 extern void rcu_irq_exit(void);
 extern void rcu_nmi_enter(void);
@@ -174,6 +201,16 @@ extern void rcu_nmi_exit(void);
 # define rcu_nmi_enter() do { } while (0)
 # define rcu_nmi_exit() do { } while (0)
 #endif /* #if defined(CONFIG_NO_HZ) */
+=======
+extern void rcu_nmi_enter(void);
+extern void rcu_nmi_exit(void);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void rcu_nmi_enter(void);
+extern void rcu_nmi_exit(void);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * It is safe to do non-atomic ops on ->hardirq_context,
@@ -183,8 +220,13 @@ extern void rcu_nmi_exit(void);
  */
 #define __irq_enter()					\
 	do {						\
+<<<<<<< HEAD
 		account_system_vtime(current);		\
 		add_preempt_count(HARDIRQ_OFFSET);	\
+=======
+		account_irq_enter_time(current);	\
+		preempt_count_add(HARDIRQ_OFFSET);	\
+>>>>>>> refs/remotes/origin/master
 		trace_hardirq_enter();			\
 	} while (0)
 
@@ -199,8 +241,13 @@ extern void irq_enter(void);
 #define __irq_exit()					\
 	do {						\
 		trace_hardirq_exit();			\
+<<<<<<< HEAD
 		account_system_vtime(current);		\
 		sub_preempt_count(HARDIRQ_OFFSET);	\
+=======
+		account_irq_exit_time(current);		\
+		preempt_count_sub(HARDIRQ_OFFSET);	\
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 
 /*
@@ -210,10 +257,17 @@ extern void irq_exit(void);
 
 #define nmi_enter()						\
 	do {							\
+<<<<<<< HEAD
 		ftrace_nmi_enter();				\
 		BUG_ON(in_nmi());				\
 		add_preempt_count(NMI_OFFSET + HARDIRQ_OFFSET);	\
 		lockdep_off();					\
+=======
+		lockdep_off();					\
+		ftrace_nmi_enter();				\
+		BUG_ON(in_nmi());				\
+		preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);	\
+>>>>>>> refs/remotes/origin/master
 		rcu_nmi_enter();				\
 		trace_hardirq_enter();				\
 	} while (0)
@@ -222,10 +276,17 @@ extern void irq_exit(void);
 	do {							\
 		trace_hardirq_exit();				\
 		rcu_nmi_exit();					\
+<<<<<<< HEAD
 		lockdep_on();					\
 		BUG_ON(!in_nmi());				\
 		sub_preempt_count(NMI_OFFSET + HARDIRQ_OFFSET);	\
 		ftrace_nmi_exit();				\
+=======
+		BUG_ON(!in_nmi());				\
+		preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
+		ftrace_nmi_exit();				\
+		lockdep_on();					\
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 
 #endif /* LINUX_HARDIRQ_H */

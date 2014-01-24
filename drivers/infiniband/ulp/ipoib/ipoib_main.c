@@ -46,11 +46,24 @@
 #include <linux/ip.h>
 #include <linux/in.h>
 
+<<<<<<< HEAD
 #include <net/dst.h>
+=======
+#include <linux/jhash.h>
+#include <net/arp.h>
+
+#define DRV_VERSION "1.0.0"
+
+const char ipoib_driver_version[] = DRV_VERSION;
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Roland Dreier");
 MODULE_DESCRIPTION("IP-over-InfiniBand net driver");
 MODULE_LICENSE("Dual BSD/GPL");
+<<<<<<< HEAD
+=======
+MODULE_VERSION(DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 int ipoib_sendq_size __read_mostly = IPOIB_TX_RING_SIZE;
 int ipoib_recvq_size __read_mostly = IPOIB_RX_RING_SIZE;
@@ -84,6 +97,10 @@ struct ib_sa_client ipoib_sa_client;
 
 static void ipoib_add_one(struct ib_device *device);
 static void ipoib_remove_one(struct ib_device *device);
+<<<<<<< HEAD
+=======
+static void ipoib_neigh_reclaim(struct rcu_head *rp);
+>>>>>>> refs/remotes/origin/master
 
 static struct ib_client ipoib_client = {
 	.name   = "ipoib",
@@ -112,7 +129,11 @@ int ipoib_open(struct net_device *dev)
 		struct ipoib_dev_priv *cpriv;
 
 		/* Bring up any child interfaces too */
+<<<<<<< HEAD
 		mutex_lock(&priv->vlan_mutex);
+=======
+		down_read(&priv->vlan_rwsem);
+>>>>>>> refs/remotes/origin/master
 		list_for_each_entry(cpriv, &priv->child_intfs, list) {
 			int flags;
 
@@ -122,7 +143,11 @@ int ipoib_open(struct net_device *dev)
 
 			dev_change_flags(cpriv->dev, flags | IFF_UP);
 		}
+<<<<<<< HEAD
 		mutex_unlock(&priv->vlan_mutex);
+=======
+		up_read(&priv->vlan_rwsem);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	netif_start_queue(dev);
@@ -155,7 +180,11 @@ static int ipoib_stop(struct net_device *dev)
 		struct ipoib_dev_priv *cpriv;
 
 		/* Bring down any child interfaces too */
+<<<<<<< HEAD
 		mutex_lock(&priv->vlan_mutex);
+=======
+		down_read(&priv->vlan_rwsem);
+>>>>>>> refs/remotes/origin/master
 		list_for_each_entry(cpriv, &priv->child_intfs, list) {
 			int flags;
 
@@ -165,13 +194,30 @@ static int ipoib_stop(struct net_device *dev)
 
 			dev_change_flags(cpriv->dev, flags & ~IFF_UP);
 		}
+<<<<<<< HEAD
 		mutex_unlock(&priv->vlan_mutex);
+=======
+		up_read(&priv->vlan_rwsem);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u32 ipoib_fix_features(struct net_device *dev, u32 features)
+=======
+static netdev_features_t ipoib_fix_features(struct net_device *dev, netdev_features_t features)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ipoib_uninit(struct net_device *dev)
+{
+	ipoib_dev_cleanup(dev);
+}
+
+static netdev_features_t ipoib_fix_features(struct net_device *dev, netdev_features_t features)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 
@@ -208,6 +254,40 @@ static int ipoib_change_mtu(struct net_device *dev, int new_mtu)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+int ipoib_set_mode(struct net_device *dev, const char *buf)
+{
+	struct ipoib_dev_priv *priv = netdev_priv(dev);
+
+	/* flush paths if we switch modes so that connections are restarted */
+	if (IPOIB_CM_SUPPORTED(dev->dev_addr) && !strcmp(buf, "connected\n")) {
+		set_bit(IPOIB_FLAG_ADMIN_CM, &priv->flags);
+		ipoib_warn(priv, "enabling connected mode "
+			   "will cause multicast packet drops\n");
+		netdev_update_features(dev);
+		rtnl_unlock();
+		priv->tx_wr.send_flags &= ~IB_SEND_IP_CSUM;
+
+		ipoib_flush_paths(dev);
+		rtnl_lock();
+		return 0;
+	}
+
+	if (!strcmp(buf, "datagram\n")) {
+		clear_bit(IPOIB_FLAG_ADMIN_CM, &priv->flags);
+		netdev_update_features(dev);
+		dev_set_mtu(dev, min(priv->mcast_mtu, dev->mtu));
+		rtnl_unlock();
+		ipoib_flush_paths(dev);
+		rtnl_lock();
+		return 0;
+	}
+
+	return -EINVAL;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct ipoib_path *__path_find(struct net_device *dev, void *gid)
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
@@ -264,14 +344,19 @@ static int __path_add(struct net_device *dev, struct ipoib_path *path)
 
 static void path_free(struct net_device *dev, struct ipoib_path *path)
 {
+<<<<<<< HEAD
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 	struct ipoib_neigh *neigh, *tn;
 	struct sk_buff *skb;
 	unsigned long flags;
+=======
+	struct sk_buff *skb;
+>>>>>>> refs/remotes/origin/master
 
 	while ((skb = __skb_dequeue(&path->queue)))
 		dev_kfree_skb_irq(skb);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&priv->lock, flags);
 
 	list_for_each_entry_safe(neigh, tn, &path->neigh_list, list) {
@@ -288,6 +373,12 @@ static void path_free(struct net_device *dev, struct ipoib_path *path)
 	}
 
 	spin_unlock_irqrestore(&priv->lock, flags);
+=======
+	ipoib_dbg(netdev_priv(dev), "path_free\n");
+
+	/* remove all neigh connected to this path */
+	ipoib_del_neighs_by_gid(dev, path->pathrec.dgid.raw);
+>>>>>>> refs/remotes/origin/master
 
 	if (path->ah)
 		ipoib_put_ah(path->ah);
@@ -432,7 +523,15 @@ static void path_rec_completion(int status,
 
 	spin_lock_irqsave(&priv->lock, flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ah) {
+=======
+	if (!IS_ERR_OR_NULL(ah)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(ah)) {
+>>>>>>> refs/remotes/origin/master
 		path->pathrec = *pathrec;
 
 		old_ah   = path->ah;
@@ -458,19 +557,28 @@ static void path_rec_completion(int status,
 			}
 			kref_get(&path->ah->ref);
 			neigh->ah = path->ah;
+<<<<<<< HEAD
 			memcpy(&neigh->dgid.raw, &path->pathrec.dgid.raw,
 			       sizeof(union ib_gid));
 
 			if (ipoib_cm_enabled(dev, neigh->neighbour)) {
+=======
+
+			if (ipoib_cm_enabled(dev, neigh->daddr)) {
+>>>>>>> refs/remotes/origin/master
 				if (!ipoib_cm_get(neigh))
 					ipoib_cm_set(neigh, ipoib_cm_create_tx(dev,
 									       path,
 									       neigh));
 				if (!ipoib_cm_get(neigh)) {
+<<<<<<< HEAD
 					list_del(&neigh->list);
 					if (neigh->ah)
 						ipoib_put_ah(neigh->ah);
 					ipoib_neigh_free(dev, neigh);
+=======
+					ipoib_neigh_free(neigh);
+>>>>>>> refs/remotes/origin/master
 					continue;
 				}
 			}
@@ -486,6 +594,12 @@ static void path_rec_completion(int status,
 
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
+=======
+	if (IS_ERR_OR_NULL(ah))
+		ipoib_del_neighs_by_gid(dev, path->pathrec.dgid.raw);
+
+>>>>>>> refs/remotes/origin/master
 	if (old_ah)
 		ipoib_put_ah(old_ah);
 
@@ -555,28 +669,57 @@ static int path_rec_start(struct net_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 /* called with rcu_read_lock */
+<<<<<<< HEAD
 static void neigh_add_path(struct sk_buff *skb, struct net_device *dev)
+=======
+static void neigh_add_path(struct sk_buff *skb, struct neighbour *n, struct net_device *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void neigh_add_path(struct sk_buff *skb, u8 *daddr,
+			   struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 	struct ipoib_path *path;
 	struct ipoib_neigh *neigh;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct neighbour *n;
 	unsigned long flags;
 
 	n = dst_get_neighbour(skb_dst(skb));
+=======
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	neigh = ipoib_neigh_alloc(n, skb->dev);
 	if (!neigh) {
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&priv->lock, flags);
+	neigh = ipoib_neigh_alloc(daddr, dev);
+	if (!neigh) {
+		spin_unlock_irqrestore(&priv->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		++dev->stats.tx_dropped;
 		dev_kfree_skb_any(skb);
 		return;
 	}
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&priv->lock, flags);
 
 	path = __path_find(dev, n->ha + 4);
 	if (!path) {
 		path = path_rec_create(dev, n->ha + 4);
+=======
+	path = __path_find(dev, daddr + 4);
+	if (!path) {
+		path = path_rec_create(dev, daddr + 4);
+>>>>>>> refs/remotes/origin/master
 		if (!path)
 			goto err_path;
 
@@ -588,6 +731,7 @@ static void neigh_add_path(struct sk_buff *skb, struct net_device *dev)
 	if (path->ah) {
 		kref_get(&path->ah->ref);
 		neigh->ah = path->ah;
+<<<<<<< HEAD
 		memcpy(&neigh->dgid.raw, &path->pathrec.dgid.raw,
 		       sizeof(union ib_gid));
 
@@ -599,6 +743,14 @@ static void neigh_add_path(struct sk_buff *skb, struct net_device *dev)
 				if (neigh->ah)
 					ipoib_put_ah(neigh->ah);
 				ipoib_neigh_free(dev, neigh);
+=======
+
+		if (ipoib_cm_enabled(dev, neigh->daddr)) {
+			if (!ipoib_cm_get(neigh))
+				ipoib_cm_set(neigh, ipoib_cm_create_tx(dev, path, neigh));
+			if (!ipoib_cm_get(neigh)) {
+				ipoib_neigh_free(neigh);
+>>>>>>> refs/remotes/origin/master
 				goto err_drop;
 			}
 			if (skb_queue_len(&neigh->queue) < IPOIB_MAX_PATH_REC_QUEUE)
@@ -610,19 +762,29 @@ static void neigh_add_path(struct sk_buff *skb, struct net_device *dev)
 			}
 		} else {
 			spin_unlock_irqrestore(&priv->lock, flags);
+<<<<<<< HEAD
 			ipoib_send(dev, skb, path->ah, IPOIB_QPN(n->ha));
+=======
+			ipoib_send(dev, skb, path->ah, IPOIB_QPN(daddr));
+			ipoib_neigh_put(neigh);
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 	} else {
 		neigh->ah  = NULL;
 
 		if (!path->query && path_rec_start(dev, path))
+<<<<<<< HEAD
 			goto err_list;
+=======
+			goto err_path;
+>>>>>>> refs/remotes/origin/master
 
 		__skb_queue_tail(&neigh->queue, skb);
 	}
 
 	spin_unlock_irqrestore(&priv->lock, flags);
+<<<<<<< HEAD
 	return;
 
 err_list:
@@ -630,14 +792,23 @@ err_list:
 
 err_path:
 	ipoib_neigh_free(dev, neigh);
+=======
+	ipoib_neigh_put(neigh);
+	return;
+
+err_path:
+	ipoib_neigh_free(neigh);
+>>>>>>> refs/remotes/origin/master
 err_drop:
 	++dev->stats.tx_dropped;
 	dev_kfree_skb_any(skb);
 
 	spin_unlock_irqrestore(&priv->lock, flags);
+<<<<<<< HEAD
 }
 
 /* called with rcu_read_lock */
+<<<<<<< HEAD
 static void ipoib_path_lookup(struct sk_buff *skb, struct net_device *dev)
 {
 	struct ipoib_dev_priv *priv = netdev_priv(skb->dev);
@@ -648,6 +819,15 @@ static void ipoib_path_lookup(struct sk_buff *skb, struct net_device *dev)
 	n = dst_get_neighbour(dst);
 	if (n->ha[4] != 0xff) {
 		neigh_add_path(skb, dev);
+=======
+static void ipoib_path_lookup(struct sk_buff *skb, struct neighbour *n, struct net_device *dev)
+{
+	struct ipoib_dev_priv *priv = netdev_priv(skb->dev);
+
+	/* Look up path record for unicasts */
+	if (n->ha[4] != 0xff) {
+		neigh_add_path(skb, n, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -655,6 +835,9 @@ static void ipoib_path_lookup(struct sk_buff *skb, struct net_device *dev)
 	n->ha[8] = (priv->pkey >> 8) & 0xff;
 	n->ha[9] = priv->pkey & 0xff;
 	ipoib_mcast_send(dev, n->ha + 4, skb);
+=======
+	ipoib_neigh_put(neigh);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void unicast_arp_send(struct sk_buff *skb, struct net_device *dev,
@@ -715,16 +898,31 @@ static int ipoib_start_xmit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 	struct ipoib_neigh *neigh;
+<<<<<<< HEAD
 	struct neighbour *n = NULL;
 	unsigned long flags;
 
 	rcu_read_lock();
+<<<<<<< HEAD
 	if (likely(skb_dst(skb)))
 		n = dst_get_neighbour(skb_dst(skb));
 
 	if (likely(n)) {
 		if (unlikely(!*to_ipoib_neigh(n))) {
 			ipoib_path_lookup(skb, dev);
+=======
+	if (likely(skb_dst(skb))) {
+		n = dst_get_neighbour_noref(skb_dst(skb));
+		if (!n) {
+			++dev->stats.tx_dropped;
+			dev_kfree_skb_any(skb);
+			goto unlock;
+		}
+	}
+	if (likely(n)) {
+		if (unlikely(!*to_ipoib_neigh(n))) {
+			ipoib_path_lookup(skb, n, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto unlock;
 		}
 
@@ -747,7 +945,11 @@ static int ipoib_start_xmit(struct sk_buff *skb, struct net_device *dev)
 			list_del(&neigh->list);
 			ipoib_neigh_free(dev, neigh);
 			spin_unlock_irqrestore(&priv->lock, flags);
+<<<<<<< HEAD
 			ipoib_path_lookup(skb, dev);
+=======
+			ipoib_path_lookup(skb, n, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto unlock;
 		}
 
@@ -798,6 +1000,84 @@ static int ipoib_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 unlock:
 	rcu_read_unlock();
+=======
+	struct ipoib_cb *cb = (struct ipoib_cb *) skb->cb;
+	struct ipoib_header *header;
+	unsigned long flags;
+
+	header = (struct ipoib_header *) skb->data;
+
+	if (unlikely(cb->hwaddr[4] == 0xff)) {
+		/* multicast, arrange "if" according to probability */
+		if ((header->proto != htons(ETH_P_IP)) &&
+		    (header->proto != htons(ETH_P_IPV6)) &&
+		    (header->proto != htons(ETH_P_ARP)) &&
+		    (header->proto != htons(ETH_P_RARP)) &&
+		    (header->proto != htons(ETH_P_TIPC))) {
+			/* ethertype not supported by IPoIB */
+			++dev->stats.tx_dropped;
+			dev_kfree_skb_any(skb);
+			return NETDEV_TX_OK;
+		}
+		/* Add in the P_Key for multicast*/
+		cb->hwaddr[8] = (priv->pkey >> 8) & 0xff;
+		cb->hwaddr[9] = priv->pkey & 0xff;
+
+		neigh = ipoib_neigh_get(dev, cb->hwaddr);
+		if (likely(neigh))
+			goto send_using_neigh;
+		ipoib_mcast_send(dev, cb->hwaddr, skb);
+		return NETDEV_TX_OK;
+	}
+
+	/* unicast, arrange "switch" according to probability */
+	switch (header->proto) {
+	case htons(ETH_P_IP):
+	case htons(ETH_P_IPV6):
+	case htons(ETH_P_TIPC):
+		neigh = ipoib_neigh_get(dev, cb->hwaddr);
+		if (unlikely(!neigh)) {
+			neigh_add_path(skb, cb->hwaddr, dev);
+			return NETDEV_TX_OK;
+		}
+		break;
+	case htons(ETH_P_ARP):
+	case htons(ETH_P_RARP):
+		/* for unicast ARP and RARP should always perform path find */
+		unicast_arp_send(skb, dev, cb);
+		return NETDEV_TX_OK;
+	default:
+		/* ethertype not supported by IPoIB */
+		++dev->stats.tx_dropped;
+		dev_kfree_skb_any(skb);
+		return NETDEV_TX_OK;
+	}
+
+send_using_neigh:
+	/* note we now hold a ref to neigh */
+	if (ipoib_cm_get(neigh)) {
+		if (ipoib_cm_up(neigh)) {
+			ipoib_cm_send(dev, skb, ipoib_cm_get(neigh));
+			goto unref;
+		}
+	} else if (neigh->ah) {
+		ipoib_send(dev, skb, neigh->ah, IPOIB_QPN(cb->hwaddr));
+		goto unref;
+	}
+
+	if (skb_queue_len(&neigh->queue) < IPOIB_MAX_PATH_REC_QUEUE) {
+		spin_lock_irqsave(&priv->lock, flags);
+		__skb_queue_tail(&neigh->queue, skb);
+		spin_unlock_irqrestore(&priv->lock, flags);
+	} else {
+		++dev->stats.tx_dropped;
+		dev_kfree_skb_any(skb);
+	}
+
+unref:
+	ipoib_neigh_put(neigh);
+
+>>>>>>> refs/remotes/origin/master
 	return NETDEV_TX_OK;
 }
 
@@ -819,6 +1099,10 @@ static int ipoib_hard_header(struct sk_buff *skb,
 			     const void *daddr, const void *saddr, unsigned len)
 {
 	struct ipoib_header *header;
+<<<<<<< HEAD
+=======
+	struct ipoib_cb *cb = (struct ipoib_cb *) skb->cb;
+>>>>>>> refs/remotes/origin/master
 
 	header = (struct ipoib_header *) skb_push(skb, sizeof *header);
 
@@ -826,6 +1110,7 @@ static int ipoib_hard_header(struct sk_buff *skb,
 	header->reserved = 0;
 
 	/*
+<<<<<<< HEAD
 	 * If we don't have a dst_entry structure, stuff the
 	 * destination address into skb->cb so we can figure out where
 	 * to send the packet later.
@@ -836,6 +1121,15 @@ static int ipoib_hard_header(struct sk_buff *skb,
 	}
 
 	return 0;
+=======
+	 * we don't rely on dst_entry structure,  always stuff the
+	 * destination address into skb->cb so we can figure out where
+	 * to send the packet later.
+	 */
+	memcpy(cb->hwaddr, daddr, INFINIBAND_ALEN);
+
+	return sizeof *header;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ipoib_set_mcast_list(struct net_device *dev)
@@ -850,6 +1144,7 @@ static void ipoib_set_mcast_list(struct net_device *dev)
 	queue_work(ipoib_workqueue, &priv->restart_task);
 }
 
+<<<<<<< HEAD
 static void ipoib_neigh_cleanup(struct neighbour *n)
 {
 	struct ipoib_neigh *neigh;
@@ -881,10 +1176,131 @@ static void ipoib_neigh_cleanup(struct neighbour *n)
 }
 
 struct ipoib_neigh *ipoib_neigh_alloc(struct neighbour *neighbour,
+=======
+static u32 ipoib_addr_hash(struct ipoib_neigh_hash *htbl, u8 *daddr)
+{
+	/*
+	 * Use only the address parts that contributes to spreading
+	 * The subnet prefix is not used as one can not connect to
+	 * same remote port (GUID) using the same remote QPN via two
+	 * different subnets.
+	 */
+	 /* qpn octets[1:4) & port GUID octets[12:20) */
+	u32 *d32 = (u32 *) daddr;
+	u32 hv;
+
+	hv = jhash_3words(d32[3], d32[4], IPOIB_QPN_MASK & d32[0], 0);
+	return hv & htbl->mask;
+}
+
+struct ipoib_neigh *ipoib_neigh_get(struct net_device *dev, u8 *daddr)
+{
+	struct ipoib_dev_priv *priv = netdev_priv(dev);
+	struct ipoib_neigh_table *ntbl = &priv->ntbl;
+	struct ipoib_neigh_hash *htbl;
+	struct ipoib_neigh *neigh = NULL;
+	u32 hash_val;
+
+	rcu_read_lock_bh();
+
+	htbl = rcu_dereference_bh(ntbl->htbl);
+
+	if (!htbl)
+		goto out_unlock;
+
+	hash_val = ipoib_addr_hash(htbl, daddr);
+	for (neigh = rcu_dereference_bh(htbl->buckets[hash_val]);
+	     neigh != NULL;
+	     neigh = rcu_dereference_bh(neigh->hnext)) {
+		if (memcmp(daddr, neigh->daddr, INFINIBAND_ALEN) == 0) {
+			/* found, take one ref on behalf of the caller */
+			if (!atomic_inc_not_zero(&neigh->refcnt)) {
+				/* deleted */
+				neigh = NULL;
+				goto out_unlock;
+			}
+			neigh->alive = jiffies;
+			goto out_unlock;
+		}
+	}
+
+out_unlock:
+	rcu_read_unlock_bh();
+	return neigh;
+}
+
+static void __ipoib_reap_neigh(struct ipoib_dev_priv *priv)
+{
+	struct ipoib_neigh_table *ntbl = &priv->ntbl;
+	struct ipoib_neigh_hash *htbl;
+	unsigned long neigh_obsolete;
+	unsigned long dt;
+	unsigned long flags;
+	int i;
+
+	if (test_bit(IPOIB_STOP_NEIGH_GC, &priv->flags))
+		return;
+
+	spin_lock_irqsave(&priv->lock, flags);
+
+	htbl = rcu_dereference_protected(ntbl->htbl,
+					 lockdep_is_held(&priv->lock));
+
+	if (!htbl)
+		goto out_unlock;
+
+	/* neigh is obsolete if it was idle for two GC periods */
+	dt = 2 * arp_tbl.gc_interval;
+	neigh_obsolete = jiffies - dt;
+	/* handle possible race condition */
+	if (test_bit(IPOIB_STOP_NEIGH_GC, &priv->flags))
+		goto out_unlock;
+
+	for (i = 0; i < htbl->size; i++) {
+		struct ipoib_neigh *neigh;
+		struct ipoib_neigh __rcu **np = &htbl->buckets[i];
+
+		while ((neigh = rcu_dereference_protected(*np,
+							  lockdep_is_held(&priv->lock))) != NULL) {
+			/* was the neigh idle for two GC periods */
+			if (time_after(neigh_obsolete, neigh->alive)) {
+				rcu_assign_pointer(*np,
+						   rcu_dereference_protected(neigh->hnext,
+									     lockdep_is_held(&priv->lock)));
+				/* remove from path/mc list */
+				list_del(&neigh->list);
+				call_rcu(&neigh->rcu, ipoib_neigh_reclaim);
+			} else {
+				np = &neigh->hnext;
+			}
+
+		}
+	}
+
+out_unlock:
+	spin_unlock_irqrestore(&priv->lock, flags);
+}
+
+static void ipoib_reap_neigh(struct work_struct *work)
+{
+	struct ipoib_dev_priv *priv =
+		container_of(work, struct ipoib_dev_priv, neigh_reap_task.work);
+
+	__ipoib_reap_neigh(priv);
+
+	if (!test_bit(IPOIB_STOP_NEIGH_GC, &priv->flags))
+		queue_delayed_work(ipoib_workqueue, &priv->neigh_reap_task,
+				   arp_tbl.gc_interval);
+}
+
+
+static struct ipoib_neigh *ipoib_neigh_ctor(u8 *daddr,
+>>>>>>> refs/remotes/origin/master
 				      struct net_device *dev)
 {
 	struct ipoib_neigh *neigh;
 
+<<<<<<< HEAD
 	neigh = kmalloc(sizeof *neigh, GFP_ATOMIC);
 	if (!neigh)
 		return NULL;
@@ -895,41 +1311,341 @@ struct ipoib_neigh *ipoib_neigh_alloc(struct neighbour *neighbour,
 	*to_ipoib_neigh(neighbour) = neigh;
 	skb_queue_head_init(&neigh->queue);
 	ipoib_cm_set(neigh, NULL);
+=======
+	neigh = kzalloc(sizeof *neigh, GFP_ATOMIC);
+	if (!neigh)
+		return NULL;
+
+	neigh->dev = dev;
+	memcpy(&neigh->daddr, daddr, sizeof(neigh->daddr));
+	skb_queue_head_init(&neigh->queue);
+	INIT_LIST_HEAD(&neigh->list);
+	ipoib_cm_set(neigh, NULL);
+	/* one ref on behalf of the caller */
+	atomic_set(&neigh->refcnt, 1);
+>>>>>>> refs/remotes/origin/master
 
 	return neigh;
 }
 
+<<<<<<< HEAD
 void ipoib_neigh_free(struct net_device *dev, struct ipoib_neigh *neigh)
 {
 	struct sk_buff *skb;
 	*to_ipoib_neigh(neigh->neighbour) = NULL;
+=======
+struct ipoib_neigh *ipoib_neigh_alloc(u8 *daddr,
+				      struct net_device *dev)
+{
+	struct ipoib_dev_priv *priv = netdev_priv(dev);
+	struct ipoib_neigh_table *ntbl = &priv->ntbl;
+	struct ipoib_neigh_hash *htbl;
+	struct ipoib_neigh *neigh;
+	u32 hash_val;
+
+	htbl = rcu_dereference_protected(ntbl->htbl,
+					 lockdep_is_held(&priv->lock));
+	if (!htbl) {
+		neigh = NULL;
+		goto out_unlock;
+	}
+
+	/* need to add a new neigh, but maybe some other thread succeeded?
+	 * recalc hash, maybe hash resize took place so we do a search
+	 */
+	hash_val = ipoib_addr_hash(htbl, daddr);
+	for (neigh = rcu_dereference_protected(htbl->buckets[hash_val],
+					       lockdep_is_held(&priv->lock));
+	     neigh != NULL;
+	     neigh = rcu_dereference_protected(neigh->hnext,
+					       lockdep_is_held(&priv->lock))) {
+		if (memcmp(daddr, neigh->daddr, INFINIBAND_ALEN) == 0) {
+			/* found, take one ref on behalf of the caller */
+			if (!atomic_inc_not_zero(&neigh->refcnt)) {
+				/* deleted */
+				neigh = NULL;
+				break;
+			}
+			neigh->alive = jiffies;
+			goto out_unlock;
+		}
+	}
+
+	neigh = ipoib_neigh_ctor(daddr, dev);
+	if (!neigh)
+		goto out_unlock;
+
+	/* one ref on behalf of the hash table */
+	atomic_inc(&neigh->refcnt);
+	neigh->alive = jiffies;
+	/* put in hash */
+	rcu_assign_pointer(neigh->hnext,
+			   rcu_dereference_protected(htbl->buckets[hash_val],
+						     lockdep_is_held(&priv->lock)));
+	rcu_assign_pointer(htbl->buckets[hash_val], neigh);
+	atomic_inc(&ntbl->entries);
+
+out_unlock:
+
+	return neigh;
+}
+
+void ipoib_neigh_dtor(struct ipoib_neigh *neigh)
+{
+	/* neigh reference count was dropprd to zero */
+	struct net_device *dev = neigh->dev;
+	struct ipoib_dev_priv *priv = netdev_priv(dev);
+	struct sk_buff *skb;
+	if (neigh->ah)
+		ipoib_put_ah(neigh->ah);
+>>>>>>> refs/remotes/origin/master
 	while ((skb = __skb_dequeue(&neigh->queue))) {
 		++dev->stats.tx_dropped;
 		dev_kfree_skb_any(skb);
 	}
 	if (ipoib_cm_get(neigh))
 		ipoib_cm_destroy_tx(ipoib_cm_get(neigh));
+<<<<<<< HEAD
 	kfree(neigh);
 }
 
 static int ipoib_neigh_setup_dev(struct net_device *dev, struct neigh_parms *parms)
 {
 	parms->neigh_cleanup = ipoib_neigh_cleanup;
+=======
+	ipoib_dbg(netdev_priv(dev),
+		  "neigh free for %06x %pI6\n",
+		  IPOIB_QPN(neigh->daddr),
+		  neigh->daddr + 4);
+	kfree(neigh);
+	if (atomic_dec_and_test(&priv->ntbl.entries)) {
+		if (test_bit(IPOIB_NEIGH_TBL_FLUSH, &priv->flags))
+			complete(&priv->ntbl.flushed);
+	}
+}
+
+static void ipoib_neigh_reclaim(struct rcu_head *rp)
+{
+	/* Called as a result of removal from hash table */
+	struct ipoib_neigh *neigh = container_of(rp, struct ipoib_neigh, rcu);
+	/* note TX context may hold another ref */
+	ipoib_neigh_put(neigh);
+}
+
+void ipoib_neigh_free(struct ipoib_neigh *neigh)
+{
+	struct net_device *dev = neigh->dev;
+	struct ipoib_dev_priv *priv = netdev_priv(dev);
+	struct ipoib_neigh_table *ntbl = &priv->ntbl;
+	struct ipoib_neigh_hash *htbl;
+	struct ipoib_neigh __rcu **np;
+	struct ipoib_neigh *n;
+	u32 hash_val;
+
+	htbl = rcu_dereference_protected(ntbl->htbl,
+					lockdep_is_held(&priv->lock));
+	if (!htbl)
+		return;
+
+	hash_val = ipoib_addr_hash(htbl, neigh->daddr);
+	np = &htbl->buckets[hash_val];
+	for (n = rcu_dereference_protected(*np,
+					    lockdep_is_held(&priv->lock));
+	     n != NULL;
+	     n = rcu_dereference_protected(*np,
+					lockdep_is_held(&priv->lock))) {
+		if (n == neigh) {
+			/* found */
+			rcu_assign_pointer(*np,
+					   rcu_dereference_protected(neigh->hnext,
+								     lockdep_is_held(&priv->lock)));
+			/* remove from parent list */
+			list_del(&neigh->list);
+			call_rcu(&neigh->rcu, ipoib_neigh_reclaim);
+			return;
+		} else {
+			np = &n->hnext;
+		}
+	}
+}
+
+static int ipoib_neigh_hash_init(struct ipoib_dev_priv *priv)
+{
+	struct ipoib_neigh_table *ntbl = &priv->ntbl;
+	struct ipoib_neigh_hash *htbl;
+	struct ipoib_neigh **buckets;
+	u32 size;
+
+	clear_bit(IPOIB_NEIGH_TBL_FLUSH, &priv->flags);
+	ntbl->htbl = NULL;
+	htbl = kzalloc(sizeof(*htbl), GFP_KERNEL);
+	if (!htbl)
+		return -ENOMEM;
+	set_bit(IPOIB_STOP_NEIGH_GC, &priv->flags);
+	size = roundup_pow_of_two(arp_tbl.gc_thresh3);
+	buckets = kzalloc(size * sizeof(*buckets), GFP_KERNEL);
+	if (!buckets) {
+		kfree(htbl);
+		return -ENOMEM;
+	}
+	htbl->size = size;
+	htbl->mask = (size - 1);
+	htbl->buckets = buckets;
+	ntbl->htbl = htbl;
+	htbl->ntbl = ntbl;
+	atomic_set(&ntbl->entries, 0);
+
+	/* start garbage collection */
+	clear_bit(IPOIB_STOP_NEIGH_GC, &priv->flags);
+	queue_delayed_work(ipoib_workqueue, &priv->neigh_reap_task,
+			   arp_tbl.gc_interval);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void neigh_hash_free_rcu(struct rcu_head *head)
+{
+	struct ipoib_neigh_hash *htbl = container_of(head,
+						    struct ipoib_neigh_hash,
+						    rcu);
+	struct ipoib_neigh __rcu **buckets = htbl->buckets;
+	struct ipoib_neigh_table *ntbl = htbl->ntbl;
+
+	kfree(buckets);
+	kfree(htbl);
+	complete(&ntbl->deleted);
+}
+
+void ipoib_del_neighs_by_gid(struct net_device *dev, u8 *gid)
+{
+	struct ipoib_dev_priv *priv = netdev_priv(dev);
+	struct ipoib_neigh_table *ntbl = &priv->ntbl;
+	struct ipoib_neigh_hash *htbl;
+	unsigned long flags;
+	int i;
+
+	/* remove all neigh connected to a given path or mcast */
+	spin_lock_irqsave(&priv->lock, flags);
+
+	htbl = rcu_dereference_protected(ntbl->htbl,
+					 lockdep_is_held(&priv->lock));
+
+	if (!htbl)
+		goto out_unlock;
+
+	for (i = 0; i < htbl->size; i++) {
+		struct ipoib_neigh *neigh;
+		struct ipoib_neigh __rcu **np = &htbl->buckets[i];
+
+		while ((neigh = rcu_dereference_protected(*np,
+							  lockdep_is_held(&priv->lock))) != NULL) {
+			/* delete neighs belong to this parent */
+			if (!memcmp(gid, neigh->daddr + 4, sizeof (union ib_gid))) {
+				rcu_assign_pointer(*np,
+						   rcu_dereference_protected(neigh->hnext,
+									     lockdep_is_held(&priv->lock)));
+				/* remove from parent list */
+				list_del(&neigh->list);
+				call_rcu(&neigh->rcu, ipoib_neigh_reclaim);
+			} else {
+				np = &neigh->hnext;
+			}
+
+		}
+	}
+out_unlock:
+	spin_unlock_irqrestore(&priv->lock, flags);
+}
+
+static void ipoib_flush_neighs(struct ipoib_dev_priv *priv)
+{
+	struct ipoib_neigh_table *ntbl = &priv->ntbl;
+	struct ipoib_neigh_hash *htbl;
+	unsigned long flags;
+	int i, wait_flushed = 0;
+
+	init_completion(&priv->ntbl.flushed);
+
+	spin_lock_irqsave(&priv->lock, flags);
+
+	htbl = rcu_dereference_protected(ntbl->htbl,
+					lockdep_is_held(&priv->lock));
+	if (!htbl)
+		goto out_unlock;
+
+	wait_flushed = atomic_read(&priv->ntbl.entries);
+	if (!wait_flushed)
+		goto free_htbl;
+
+	for (i = 0; i < htbl->size; i++) {
+		struct ipoib_neigh *neigh;
+		struct ipoib_neigh __rcu **np = &htbl->buckets[i];
+
+		while ((neigh = rcu_dereference_protected(*np,
+				       lockdep_is_held(&priv->lock))) != NULL) {
+			rcu_assign_pointer(*np,
+					   rcu_dereference_protected(neigh->hnext,
+								     lockdep_is_held(&priv->lock)));
+			/* remove from path/mc list */
+			list_del(&neigh->list);
+			call_rcu(&neigh->rcu, ipoib_neigh_reclaim);
+		}
+	}
+
+free_htbl:
+	rcu_assign_pointer(ntbl->htbl, NULL);
+	call_rcu(&htbl->rcu, neigh_hash_free_rcu);
+
+out_unlock:
+	spin_unlock_irqrestore(&priv->lock, flags);
+	if (wait_flushed)
+		wait_for_completion(&priv->ntbl.flushed);
+}
+
+static void ipoib_neigh_hash_uninit(struct net_device *dev)
+{
+	struct ipoib_dev_priv *priv = netdev_priv(dev);
+	int stopped;
+
+	ipoib_dbg(priv, "ipoib_neigh_hash_uninit\n");
+	init_completion(&priv->ntbl.deleted);
+	set_bit(IPOIB_NEIGH_TBL_FLUSH, &priv->flags);
+
+	/* Stop GC if called at init fail need to cancel work */
+	stopped = test_and_set_bit(IPOIB_STOP_NEIGH_GC, &priv->flags);
+	if (!stopped)
+		cancel_delayed_work(&priv->neigh_reap_task);
+
+	ipoib_flush_neighs(priv);
+
+	wait_for_completion(&priv->ntbl.deleted);
+}
+
+
+>>>>>>> refs/remotes/origin/master
 int ipoib_dev_init(struct net_device *dev, struct ib_device *ca, int port)
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 
+<<<<<<< HEAD
+=======
+	if (ipoib_neigh_hash_init(priv) < 0)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	/* Allocate RX/TX "rings" to hold queued skbs */
 	priv->rx_ring =	kzalloc(ipoib_recvq_size * sizeof *priv->rx_ring,
 				GFP_KERNEL);
 	if (!priv->rx_ring) {
 		printk(KERN_WARNING "%s: failed to allocate RX ring (%d entries)\n",
 		       ca->name, ipoib_recvq_size);
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out_neigh_hash_cleanup;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	priv->tx_ring = vzalloc(ipoib_sendq_size * sizeof *priv->tx_ring);
@@ -952,6 +1668,11 @@ out_tx_ring_cleanup:
 out_rx_ring_cleanup:
 	kfree(priv->rx_ring);
 
+<<<<<<< HEAD
+=======
+out_neigh_hash_cleanup:
+	ipoib_neigh_hash_uninit(dev);
+>>>>>>> refs/remotes/origin/master
 out:
 	return -ENOMEM;
 }
@@ -959,15 +1680,30 @@ out:
 void ipoib_dev_cleanup(struct net_device *dev)
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev), *cpriv, *tcpriv;
+<<<<<<< HEAD
+=======
+	LIST_HEAD(head);
+
+	ASSERT_RTNL();
+>>>>>>> refs/remotes/origin/master
 
 	ipoib_delete_debug_files(dev);
 
 	/* Delete any child interfaces first */
 	list_for_each_entry_safe(cpriv, tcpriv, &priv->child_intfs, list) {
+<<<<<<< HEAD
 		unregister_netdev(cpriv->dev);
 		ipoib_dev_cleanup(cpriv->dev);
 		free_netdev(cpriv->dev);
 	}
+=======
+		/* Stop GC on child */
+		set_bit(IPOIB_STOP_NEIGH_GC, &cpriv->flags);
+		cancel_delayed_work(&cpriv->neigh_reap_task);
+		unregister_netdevice_queue(cpriv->dev, &head);
+	}
+	unregister_netdevice_many(&head);
+>>>>>>> refs/remotes/origin/master
 
 	ipoib_ib_dev_cleanup(dev);
 
@@ -976,6 +1712,11 @@ void ipoib_dev_cleanup(struct net_device *dev)
 
 	priv->rx_ring = NULL;
 	priv->tx_ring = NULL;
+<<<<<<< HEAD
+=======
+
+	ipoib_neigh_hash_uninit(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct header_ops ipoib_header_ops = {
@@ -983,17 +1724,32 @@ static const struct header_ops ipoib_header_ops = {
 };
 
 static const struct net_device_ops ipoib_netdev_ops = {
+<<<<<<< HEAD
+=======
+	.ndo_uninit		 = ipoib_uninit,
+>>>>>>> refs/remotes/origin/master
 	.ndo_open		 = ipoib_open,
 	.ndo_stop		 = ipoib_stop,
 	.ndo_change_mtu		 = ipoib_change_mtu,
 	.ndo_fix_features	 = ipoib_fix_features,
 	.ndo_start_xmit	 	 = ipoib_start_xmit,
 	.ndo_tx_timeout		 = ipoib_timeout,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	 = ipoib_set_mcast_list,
+=======
+	.ndo_set_rx_mode	 = ipoib_set_mcast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_neigh_setup	 = ipoib_neigh_setup_dev,
 };
 
 static void ipoib_setup(struct net_device *dev)
+=======
+	.ndo_set_rx_mode	 = ipoib_set_mcast_list,
+};
+
+void ipoib_setup(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 
@@ -1002,7 +1758,11 @@ static void ipoib_setup(struct net_device *dev)
 
 	ipoib_set_ethtool_ops(dev);
 
+<<<<<<< HEAD
 	netif_napi_add(dev, &priv->napi, ipoib_poll, 100);
+=======
+	netif_napi_add(dev, &priv->napi, ipoib_poll, NAPI_POLL_WEIGHT);
+>>>>>>> refs/remotes/origin/master
 
 	dev->watchdog_timeo	 = HZ;
 
@@ -1024,7 +1784,11 @@ static void ipoib_setup(struct net_device *dev)
 
 	spin_lock_init(&priv->lock);
 
+<<<<<<< HEAD
 	mutex_init(&priv->vlan_mutex);
+=======
+	init_rwsem(&priv->vlan_rwsem);
+>>>>>>> refs/remotes/origin/master
 
 	INIT_LIST_HEAD(&priv->path_list);
 	INIT_LIST_HEAD(&priv->child_intfs);
@@ -1039,6 +1803,10 @@ static void ipoib_setup(struct net_device *dev)
 	INIT_WORK(&priv->flush_heavy,   ipoib_ib_dev_flush_heavy);
 	INIT_WORK(&priv->restart_task, ipoib_mcast_restart_task);
 	INIT_DELAYED_WORK(&priv->ah_reap_task, ipoib_reap_ah);
+<<<<<<< HEAD
+=======
+	INIT_DELAYED_WORK(&priv->neigh_reap_task, ipoib_reap_neigh);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct ipoib_dev_priv *ipoib_intf_alloc(const char *name)
@@ -1070,12 +1838,18 @@ static ssize_t show_umcast(struct device *dev,
 	return sprintf(buf, "%d\n", test_bit(IPOIB_FLAG_UMCAST, &priv->flags));
 }
 
+<<<<<<< HEAD
 static ssize_t set_umcast(struct device *dev,
 			  struct device_attribute *attr,
 			  const char *buf, size_t count)
 {
 	struct ipoib_dev_priv *priv = netdev_priv(to_net_dev(dev));
 	unsigned long umcast_val = simple_strtoul(buf, NULL, 0);
+=======
+void ipoib_set_umcast(struct net_device *ndev, int umcast_val)
+{
+	struct ipoib_dev_priv *priv = netdev_priv(ndev);
+>>>>>>> refs/remotes/origin/master
 
 	if (umcast_val > 0) {
 		set_bit(IPOIB_FLAG_UMCAST, &priv->flags);
@@ -1083,6 +1857,18 @@ static ssize_t set_umcast(struct device *dev,
 				"by userspace\n");
 	} else
 		clear_bit(IPOIB_FLAG_UMCAST, &priv->flags);
+<<<<<<< HEAD
+=======
+}
+
+static ssize_t set_umcast(struct device *dev,
+			  struct device_attribute *attr,
+			  const char *buf, size_t count)
+{
+	unsigned long umcast_val = simple_strtoul(buf, NULL, 0);
+
+	ipoib_set_umcast(to_net_dev(dev), umcast_val);
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 }
@@ -1103,7 +1889,11 @@ static ssize_t create_child(struct device *dev,
 	if (sscanf(buf, "%i", &pkey) != 1)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (pkey < 0 || pkey > 0xffff)
+=======
+	if (pkey <= 0 || pkey > 0xffff || pkey == 0x8000)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	/*
@@ -1205,6 +1995,16 @@ static struct net_device *ipoib_add_port(const char *format,
 	priv->dev->mtu  = IPOIB_UD_MTU(priv->max_ib_mtu);
 	priv->mcast_mtu  = priv->admin_mtu = priv->dev->mtu;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	priv->dev->neigh_priv_len = sizeof(struct ipoib_neigh);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->dev->neigh_priv_len = sizeof(struct ipoib_neigh);
+
+>>>>>>> refs/remotes/origin/master
 	result = ib_query_pkey(hca, port, 0, &priv->pkey);
 	if (result) {
 		printk(KERN_WARNING "%s: ib_query_pkey port %d failed (ret = %d)\n",
@@ -1277,6 +2077,12 @@ sysfs_failed:
 
 register_failed:
 	ib_unregister_event_handler(&priv->event_handler);
+<<<<<<< HEAD
+=======
+	/* Stop GC if started before flush */
+	set_bit(IPOIB_STOP_NEIGH_GC, &priv->flags);
+	cancel_delayed_work(&priv->neigh_reap_task);
+>>>>>>> refs/remotes/origin/master
 	flush_workqueue(ipoib_workqueue);
 
 event_failed:
@@ -1335,6 +2141,11 @@ static void ipoib_remove_one(struct ib_device *device)
 		return;
 
 	dev_list = ib_get_client_data(device, &ipoib_client);
+<<<<<<< HEAD
+=======
+	if (!dev_list)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry_safe(priv, tmp, dev_list, list) {
 		ib_unregister_event_handler(&priv->event_handler);
@@ -1343,10 +2154,19 @@ static void ipoib_remove_one(struct ib_device *device)
 		dev_change_flags(priv->dev, priv->dev->flags & ~IFF_UP);
 		rtnl_unlock();
 
+<<<<<<< HEAD
 		flush_workqueue(ipoib_workqueue);
 
 		unregister_netdev(priv->dev);
 		ipoib_dev_cleanup(priv->dev);
+=======
+		/* Stop GC */
+		set_bit(IPOIB_STOP_NEIGH_GC, &priv->flags);
+		cancel_delayed_work(&priv->neigh_reap_task);
+		flush_workqueue(ipoib_workqueue);
+
+		unregister_netdev(priv->dev);
+>>>>>>> refs/remotes/origin/master
 		free_netdev(priv->dev);
 	}
 
@@ -1398,8 +2218,20 @@ static int __init ipoib_init_module(void)
 	if (ret)
 		goto err_sa;
 
+<<<<<<< HEAD
 	return 0;
 
+=======
+	ret = ipoib_netlink_init();
+	if (ret)
+		goto err_client;
+
+	return 0;
+
+err_client:
+	ib_unregister_client(&ipoib_client);
+
+>>>>>>> refs/remotes/origin/master
 err_sa:
 	ib_sa_unregister_client(&ipoib_sa_client);
 	destroy_workqueue(ipoib_workqueue);
@@ -1412,6 +2244,10 @@ err_fs:
 
 static void __exit ipoib_cleanup_module(void)
 {
+<<<<<<< HEAD
+=======
+	ipoib_netlink_fini();
+>>>>>>> refs/remotes/origin/master
 	ib_unregister_client(&ipoib_client);
 	ib_sa_unregister_client(&ipoib_sa_client);
 	ipoib_unregister_debugfs();

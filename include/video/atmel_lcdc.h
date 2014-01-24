@@ -30,6 +30,7 @@
  */
 #define ATMEL_LCDC_WIRING_BGR	0
 #define ATMEL_LCDC_WIRING_RGB	1
+<<<<<<< HEAD
 #define ATMEL_LCDC_WIRING_RGB555	2
 
 
@@ -55,13 +56,37 @@ struct atmel_lcdfb_info {
 	bool			lcdcon_pol_negative;
 	u8			saved_lcdcon;
 
+=======
+
+
+ /* LCD Controller info data structure, stored in device platform_data */
+struct atmel_lcdfb_pdata {
+	unsigned int		guard_time;
+	bool			lcdcon_is_backlight;
+	bool			lcdcon_pol_negative;
+>>>>>>> refs/remotes/origin/master
 	u8			default_bpp;
 	u8			lcd_wiring_mode;
 	unsigned int		default_lcdcon2;
 	unsigned int		default_dmacon;
+<<<<<<< HEAD
 	void (*atmel_lcdfb_power_control)(int on);
 	struct fb_monspecs	*default_monspecs;
 	u32			pseudo_palette[16];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool			have_intensity_bit;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void (*atmel_lcdfb_power_control)(struct atmel_lcdfb_pdata *pdata, int on);
+	struct fb_monspecs	*default_monspecs;
+
+	struct list_head	pwr_gpios;
+>>>>>>> refs/remotes/origin/master
+=======
+	bool			have_intensity_bit;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define ATMEL_LCDC_DMABADDR1	0x00

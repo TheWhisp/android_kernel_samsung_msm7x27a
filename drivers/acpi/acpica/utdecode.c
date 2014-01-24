@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,6 +49,13 @@
  * POSSIBILITY OF SUCH DAMAGES.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "acnamesp.h"
@@ -48,6 +63,7 @@
 #define _COMPONENT          ACPI_UTILITIES
 ACPI_MODULE_NAME("utdecode")
 
+<<<<<<< HEAD
 /*******************************************************************************
  *
  * FUNCTION:    acpi_format_exception
@@ -83,6 +99,8 @@ const char *acpi_format_exception(acpi_status status)
 
 ACPI_EXPORT_SYMBOL(acpi_format_exception)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Properties of the ACPI Object Types, both internal and external.
  * The table is indexed by values of acpi_object_type
@@ -125,8 +143,13 @@ const u8 acpi_gbl_ns_properties[ACPI_NUM_NS_TYPES] = {
  *
  * FUNCTION:    acpi_ut_hex_to_ascii_char
  *
+<<<<<<< HEAD
  * PARAMETERS:  Integer             - Contains the hex digit
  *              Position            - bit position of the digit within the
+=======
+ * PARAMETERS:  integer             - Contains the hex digit
+ *              position            - bit position of the digit within the
+>>>>>>> refs/remotes/origin/master
  *                                    integer (multiple of 4)
  *
  * RETURN:      The converted Ascii character
@@ -163,6 +186,7 @@ char acpi_ut_hex_to_ascii_char(u64 integer, u32 position)
 /* Region type decoding */
 
 const char *acpi_gbl_region_types[ACPI_NUM_PREDEFINED_REGIONS] = {
+<<<<<<< HEAD
 	"SystemMemory",
 	"SystemIO",
 	"PCI_Config",
@@ -170,7 +194,26 @@ const char *acpi_gbl_region_types[ACPI_NUM_PREDEFINED_REGIONS] = {
 	"SMBus",
 	"SystemCMOS",
 	"PCIBARTarget",
+<<<<<<< HEAD
 	"IPMI"
+=======
+	"IPMI",
+	"GeneralPurposeIo",
+	"GenericSerialBus"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"SystemMemory",		/* 0x00 */
+	"SystemIO",		/* 0x01 */
+	"PCI_Config",		/* 0x02 */
+	"EmbeddedControl",	/* 0x03 */
+	"SMBus",		/* 0x04 */
+	"SystemCMOS",		/* 0x05 */
+	"PCIBARTarget",		/* 0x06 */
+	"IPMI",			/* 0x07 */
+	"GeneralPurposeIo",	/* 0x08 */
+	"GenericSerialBus",	/* 0x09 */
+	"PCC"			/* 0x0A */
+>>>>>>> refs/remotes/origin/master
 };
 
 char *acpi_ut_get_region_name(u8 space_id)
@@ -225,7 +268,11 @@ char *acpi_ut_get_event_name(u32 event_id)
  *
  * FUNCTION:    acpi_ut_get_type_name
  *
+<<<<<<< HEAD
  * PARAMETERS:  Type                - An ACPI object type
+=======
+ * PARAMETERS:  type                - An ACPI object type
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Decoded ACPI object type name
  *
@@ -303,7 +350,11 @@ char *acpi_ut_get_object_type_name(union acpi_operand_object *obj_desc)
  *
  * FUNCTION:    acpi_ut_get_node_name
  *
+<<<<<<< HEAD
  * PARAMETERS:  Object               - A namespace node
+=======
+ * PARAMETERS:  object               - A namespace node
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      ASCII name of the node
  *
@@ -348,7 +399,11 @@ char *acpi_ut_get_node_name(void *object)
  *
  * FUNCTION:    acpi_ut_get_descriptor_name
  *
+<<<<<<< HEAD
  * PARAMETERS:  Object               - An ACPI object
+=======
+ * PARAMETERS:  object               - An ACPI object
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Decoded name of the descriptor type
  *
@@ -398,7 +453,11 @@ char *acpi_ut_get_descriptor_name(void *object)
  *
  * FUNCTION:    acpi_ut_get_reference_name
  *
+<<<<<<< HEAD
  * PARAMETERS:  Object               - An ACPI reference object
+=======
+ * PARAMETERS:  object               - An ACPI reference object
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Decoded name of the type of reference
  *
@@ -494,6 +553,8 @@ char *acpi_ut_get_mutex_name(u32 mutex_id)
 
 /* Names for Notify() values, used for debug output */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const char *acpi_gbl_notify_value_names[] = {
 	"Bus Check",
 	"Device Check",
@@ -507,6 +568,27 @@ static const char *acpi_gbl_notify_value_names[] = {
 	"Device PLD Check",
 	"Reserved",
 	"System Locality Update"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const char *acpi_gbl_notify_value_names[ACPI_NOTIFY_MAX + 1] = {
+	/* 00 */ "Bus Check",
+	/* 01 */ "Device Check",
+	/* 02 */ "Device Wake",
+	/* 03 */ "Eject Request",
+	/* 04 */ "Device Check Light",
+	/* 05 */ "Frequency Mismatch",
+	/* 06 */ "Bus Mode Mismatch",
+	/* 07 */ "Power Fault",
+	/* 08 */ "Capabilities Check",
+	/* 09 */ "Device PLD Check",
+	/* 10 */ "Reserved",
+	/* 11 */ "System Locality Update",
+	/* 12 */ "Shutdown Request"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 const char *acpi_ut_get_notify_name(u32 notify_value)
@@ -516,9 +598,22 @@ const char *acpi_ut_get_notify_name(u32 notify_value)
 		return (acpi_gbl_notify_value_names[notify_value]);
 	} else if (notify_value <= ACPI_MAX_SYS_NOTIFY) {
 		return ("Reserved");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else {		/* Greater or equal to 0x80 */
 
 		return ("**Device Specific**");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	} else if (notify_value <= ACPI_MAX_DEVICE_SPECIFIC_NOTIFY) {
+		return ("Device Specific");
+	} else {
+		return ("Hardware Specific");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 #endif
@@ -527,7 +622,11 @@ const char *acpi_ut_get_notify_name(u32 notify_value)
  *
  * FUNCTION:    acpi_ut_valid_object_type
  *
+<<<<<<< HEAD
  * PARAMETERS:  Type            - Object type to be validated
+=======
+ * PARAMETERS:  type            - Object type to be validated
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      TRUE if valid object type, FALSE otherwise
  *

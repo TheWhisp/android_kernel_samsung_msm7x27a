@@ -357,7 +357,11 @@ static int mthca_eq_int(struct mthca_dev *dev, struct mthca_eq *eq)
 			mthca_warn(dev, "Unhandled event %02x(%02x) on EQ %d\n",
 				   eqe->type, eqe->subtype, eq->eqn);
 			break;
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 
 		set_eqe_hw(eqe);
 		++eq->cons_index;
@@ -474,7 +478,13 @@ static int mthca_create_eq(struct mthca_dev *dev,
 	struct mthca_eq_context *eq_context;
 	int err = -ENOMEM;
 	int i;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	eq->dev  = dev;
 	eq->nent = roundup_pow_of_two(max(nent, 2));
@@ -543,6 +553,8 @@ static int mthca_create_eq(struct mthca_dev *dev,
 	eq_context->intr            = intr;
 	eq_context->lkey            = cpu_to_be32(eq->mr.ibmr.lkey);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = mthca_SW2HW_EQ(dev, mailbox, eq->eqn, &status);
 	if (err) {
 		mthca_warn(dev, "SW2HW_EQ failed (%d)\n", err);
@@ -552,6 +564,16 @@ static int mthca_create_eq(struct mthca_dev *dev,
 		mthca_warn(dev, "SW2HW_EQ returned status 0x%02x\n",
 			   status);
 		err = -EINVAL;
+=======
+	err = mthca_SW2HW_EQ(dev, mailbox, eq->eqn);
+	if (err) {
+		mthca_warn(dev, "SW2HW_EQ returned %d\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_SW2HW_EQ(dev, mailbox, eq->eqn);
+	if (err) {
+		mthca_warn(dev, "SW2HW_EQ returned %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_free_mr;
 	}
 
@@ -597,7 +619,13 @@ static void mthca_free_eq(struct mthca_dev *dev,
 {
 	struct mthca_mailbox *mailbox;
 	int err;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int npages = (eq->nent * MTHCA_EQ_ENTRY_SIZE + PAGE_SIZE - 1) /
 		PAGE_SIZE;
 	int i;
@@ -606,11 +634,23 @@ static void mthca_free_eq(struct mthca_dev *dev,
 	if (IS_ERR(mailbox))
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = mthca_HW2SW_EQ(dev, mailbox, eq->eqn, &status);
 	if (err)
 		mthca_warn(dev, "HW2SW_EQ failed (%d)\n", err);
 	if (status)
 		mthca_warn(dev, "HW2SW_EQ returned status 0x%02x\n", status);
+=======
+	err = mthca_HW2SW_EQ(dev, mailbox, eq->eqn);
+	if (err)
+		mthca_warn(dev, "HW2SW_EQ returned %d\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_HW2SW_EQ(dev, mailbox, eq->eqn);
+	if (err)
+		mthca_warn(dev, "HW2SW_EQ returned %d\n", err);
+>>>>>>> refs/remotes/origin/master
 
 	dev->eq_table.arm_mask &= ~eq->eqn_mask;
 
@@ -738,7 +778,13 @@ static void mthca_unmap_eq_regs(struct mthca_dev *dev)
 int mthca_map_eq_icm(struct mthca_dev *dev, u64 icm_virt)
 {
 	int ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We assume that mapping one page is enough for the whole EQ
@@ -757,9 +803,17 @@ int mthca_map_eq_icm(struct mthca_dev *dev, u64 icm_virt)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mthca_MAP_ICM_page(dev, dev->eq_table.icm_dma, icm_virt, &status);
 	if (!ret && status)
 		ret = -EINVAL;
+=======
+	ret = mthca_MAP_ICM_page(dev, dev->eq_table.icm_dma, icm_virt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mthca_MAP_ICM_page(dev, dev->eq_table.icm_dma, icm_virt);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		pci_unmap_page(dev->pdev, dev->eq_table.icm_dma, PAGE_SIZE,
 			       PCI_DMA_BIDIRECTIONAL);
@@ -771,9 +825,17 @@ int mthca_map_eq_icm(struct mthca_dev *dev, u64 icm_virt)
 
 void mthca_unmap_eq_icm(struct mthca_dev *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
 
 	mthca_UNMAP_ICM(dev, dev->eq_table.icm_virt, 1, &status);
+=======
+	mthca_UNMAP_ICM(dev, dev->eq_table.icm_virt, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mthca_UNMAP_ICM(dev, dev->eq_table.icm_virt, 1);
+>>>>>>> refs/remotes/origin/master
 	pci_unmap_page(dev->pdev, dev->eq_table.icm_dma, PAGE_SIZE,
 		       PCI_DMA_BIDIRECTIONAL);
 	__free_page(dev->eq_table.icm_page);
@@ -782,7 +844,13 @@ void mthca_unmap_eq_icm(struct mthca_dev *dev)
 int mthca_init_eq_table(struct mthca_dev *dev)
 {
 	int err;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 intr;
 	int i;
 
@@ -864,6 +932,8 @@ int mthca_init_eq_table(struct mthca_dev *dev)
 	}
 
 	err = mthca_MAP_EQ(dev, async_mask(dev),
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   0, dev->eq_table.eq[MTHCA_EQ_ASYNC].eqn, &status);
 	if (err)
 		mthca_warn(dev, "MAP_EQ for async EQ %d failed (%d)\n",
@@ -880,6 +950,23 @@ int mthca_init_eq_table(struct mthca_dev *dev)
 	if (status)
 		mthca_warn(dev, "MAP_EQ for cmd EQ %d returned status 0x%02x\n",
 			   dev->eq_table.eq[MTHCA_EQ_CMD].eqn, status);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			   0, dev->eq_table.eq[MTHCA_EQ_ASYNC].eqn);
+	if (err)
+		mthca_warn(dev, "MAP_EQ for async EQ %d failed (%d)\n",
+			   dev->eq_table.eq[MTHCA_EQ_ASYNC].eqn, err);
+
+	err = mthca_MAP_EQ(dev, MTHCA_CMD_EVENT_MASK,
+			   0, dev->eq_table.eq[MTHCA_EQ_CMD].eqn);
+	if (err)
+		mthca_warn(dev, "MAP_EQ for cmd EQ %d failed (%d)\n",
+			   dev->eq_table.eq[MTHCA_EQ_CMD].eqn, err);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < MTHCA_NUM_EQ; ++i)
 		if (mthca_is_memfree(dev))
@@ -909,15 +996,33 @@ err_out_free:
 
 void mthca_cleanup_eq_table(struct mthca_dev *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	mthca_free_irqs(dev);
 
 	mthca_MAP_EQ(dev, async_mask(dev),
+<<<<<<< HEAD
+<<<<<<< HEAD
 		     1, dev->eq_table.eq[MTHCA_EQ_ASYNC].eqn, &status);
 	mthca_MAP_EQ(dev, MTHCA_CMD_EVENT_MASK,
 		     1, dev->eq_table.eq[MTHCA_EQ_CMD].eqn, &status);
+=======
+		     1, dev->eq_table.eq[MTHCA_EQ_ASYNC].eqn);
+	mthca_MAP_EQ(dev, MTHCA_CMD_EVENT_MASK,
+		     1, dev->eq_table.eq[MTHCA_EQ_CMD].eqn);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     1, dev->eq_table.eq[MTHCA_EQ_ASYNC].eqn);
+	mthca_MAP_EQ(dev, MTHCA_CMD_EVENT_MASK,
+		     1, dev->eq_table.eq[MTHCA_EQ_CMD].eqn);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < MTHCA_NUM_EQ; ++i)
 		mthca_free_eq(dev, &dev->eq_table.eq[i]);

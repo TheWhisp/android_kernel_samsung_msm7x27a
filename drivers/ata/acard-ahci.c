@@ -2,7 +2,11 @@
 /*
  *  acard-ahci.c - ACard AHCI SATA support
  *
+<<<<<<< HEAD
  *  Maintained by:  Jeff Garzik <jgarzik@pobox.com>
+=======
+ *  Maintained by:  Tejun Heo <tj@kernel.org>
+>>>>>>> refs/remotes/origin/master
  *		    Please ALWAYS copy linux-ide@vger.kernel.org
  *		    on emails.
  *
@@ -128,15 +132,29 @@ static struct pci_driver acard_ahci_pci_driver = {
 #ifdef CONFIG_PM
 static int acard_ahci_pci_device_suspend(struct pci_dev *pdev, pm_message_t mesg)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct ahci_host_priv *hpriv = host->private_data;
 	void __iomem *mmio = hpriv->mmio;
 	u32 ctl;
 
 	if (mesg.event & PM_EVENT_SUSPEND &&
 	    hpriv->flags & AHCI_HFLAG_NO_SUSPEND) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "BIOS update required for suspend/resume\n");
+=======
+		dev_err(&pdev->dev,
+			"BIOS update required for suspend/resume\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev,
+			"BIOS update required for suspend/resume\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -156,7 +174,11 @@ static int acard_ahci_pci_device_suspend(struct pci_dev *pdev, pm_message_t mesg
 
 static int acard_ahci_pci_device_resume(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
@@ -187,7 +209,15 @@ static int acard_ahci_configure_dma_masks(struct pci_dev *pdev, int using_dac)
 		if (rc) {
 			rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 			if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				dev_printk(KERN_ERR, &pdev->dev,
+=======
+				dev_err(&pdev->dev,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dev_err(&pdev->dev,
+>>>>>>> refs/remotes/origin/master
 					   "64-bit DMA enable failed\n");
 				return rc;
 			}
@@ -195,14 +225,32 @@ static int acard_ahci_configure_dma_masks(struct pci_dev *pdev, int using_dac)
 	} else {
 		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &pdev->dev,
 				   "32-bit DMA enable failed\n");
+=======
+			dev_err(&pdev->dev, "32-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pdev->dev, "32-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &pdev->dev,
 				   "32-bit consistent DMA enable failed\n");
+=======
+			dev_err(&pdev->dev,
+				"32-bit consistent DMA enable failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pdev->dev,
+				"32-bit consistent DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 	}
@@ -343,6 +391,8 @@ static int acard_ahci_port_start(struct ata_port *ap)
 		if (cmd & PORT_CMD_FBSCP)
 			pp->fbs_supported = true;
 		else if (hpriv->flags & AHCI_HFLAG_YES_FBS) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_printk(KERN_INFO, dev,
 				   "port %d can do FBS, forcing FBSCP\n",
 				   ap->port_no);
@@ -351,6 +401,19 @@ static int acard_ahci_port_start(struct ata_port *ap)
 			dev_printk(KERN_WARNING, dev,
 				   "port %d is not capable of FBS\n",
 				   ap->port_no);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			dev_info(dev, "port %d can do FBS, forcing FBSCP\n",
+				 ap->port_no);
+			pp->fbs_supported = true;
+		} else
+			dev_warn(dev, "port %d is not capable of FBS\n",
+				 ap->port_no);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (pp->fbs_supported) {
@@ -406,7 +469,13 @@ static int acard_ahci_port_start(struct ata_port *ap)
 
 static int acard_ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int board_id = ent->driver_data;
 	struct ata_port_info pi = acard_ahci_port_info[board_id];
 	const struct ata_port_info *ppi[] = { &pi, NULL };
@@ -419,8 +488,16 @@ static int acard_ahci_init_one(struct pci_dev *pdev, const struct pci_device_id 
 
 	WARN_ON((int)ATA_MAX_QUEUE > AHCI_MAX_CMDS);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/* acquire resources */
 	rc = pcim_enable_device(pdev);
@@ -508,6 +585,7 @@ static int acard_ahci_init_one(struct pci_dev *pdev, const struct pci_device_id 
 				 &acard_ahci_sht);
 }
 
+<<<<<<< HEAD
 static int __init acard_ahci_init(void)
 {
 	return pci_register_driver(&acard_ahci_pci_driver);
@@ -517,12 +595,18 @@ static void __exit acard_ahci_exit(void)
 {
 	pci_unregister_driver(&acard_ahci_pci_driver);
 }
+=======
+module_pci_driver(acard_ahci_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jeff Garzik");
 MODULE_DESCRIPTION("ACard AHCI SATA low-level driver");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, acard_ahci_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(acard_ahci_init);
 module_exit(acard_ahci_exit);
+=======
+>>>>>>> refs/remotes/origin/master

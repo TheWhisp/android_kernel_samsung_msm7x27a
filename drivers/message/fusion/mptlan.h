@@ -69,7 +69,10 @@
 #include <linux/spinlock.h>
 #include <linux/workqueue.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 // #include <linux/trdevice.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 #include <asm/io.h>

@@ -24,26 +24,56 @@
 #include <linux/jiffies.h>
 #include <linux/bitops.h>
 #include <linux/fs.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/uaccess.h>
 #include <linux/mfd/core.h>
+<<<<<<< HEAD
 #include <linux/mfd/db8500-prcmu.h>
 #include <linux/regulator/db8500-prcmu.h>
 #include <linux/regulator/machine.h>
+=======
+#include <linux/mfd/dbx500-prcmu.h>
+#include <linux/regulator/db8500-prcmu.h>
+#include <linux/regulator/machine.h>
+#include <asm/hardware/gic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 #include <mach/irqs.h>
 #include <mach/db8500-regs.h>
 #include <mach/id.h>
+<<<<<<< HEAD
 #include "db8500-prcmu-regs.h"
+=======
+#include "dbx500-prcmu-regs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Offset for the firmware version within the TCPM */
 #define PRCMU_FW_VERSION_OFFSET 0xA4
 
+<<<<<<< HEAD
 /* PRCMU project numbers, defined by PRCMU FW */
 #define PRCMU_PROJECT_ID_8500V1_0 1
 #define PRCMU_PROJECT_ID_8500V2_0 2
 #define PRCMU_PROJECT_ID_8400V2_0 3
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/platform_device.h>
+#include <linux/uaccess.h>
+#include <linux/mfd/core.h>
+#include <linux/mfd/dbx500-prcmu.h>
+#include <linux/mfd/abx500/ab8500.h>
+#include <linux/regulator/db8500-prcmu.h>
+#include <linux/regulator/machine.h>
+#include <linux/cpufreq.h>
+#include <linux/platform_data/ux500_wdt.h>
+#include <linux/platform_data/db8500_thermal.h>
+#include "dbx500-prcmu-regs.h"
+
+>>>>>>> refs/remotes/origin/master
 /* Index of different voltages to be used when accessing AVSData */
 #define PRCM_AVS_BASE		0x2FC
 #define PRCM_AVS_VBB_RET	(PRCM_AVS_BASE + 0x0)
@@ -131,12 +161,34 @@
 #define MB1H_REQUEST_APE_OPP_100_VOLT 0x3
 #define MB1H_RELEASE_APE_OPP_100_VOLT 0x4
 #define MB1H_RELEASE_USB_WAKEUP 0x5
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define MB1H_PLL_ON_OFF 0x6
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MB1H_PLL_ON_OFF 0x6
+>>>>>>> refs/remotes/origin/master
 
 /* Mailbox 1 Requests */
 #define PRCM_REQ_MB1_ARM_OPP			(PRCM_REQ_MB1 + 0x0)
 #define PRCM_REQ_MB1_APE_OPP			(PRCM_REQ_MB1 + 0x1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PRCM_REQ_MB1_APE_OPP_100_RESTORE	(PRCM_REQ_MB1 + 0x4)
 #define PRCM_REQ_MB1_ARM_OPP_100_RESTORE	(PRCM_REQ_MB1 + 0x8)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define PRCM_REQ_MB1_PLL_ON_OFF			(PRCM_REQ_MB1 + 0x4)
+#define PLL_SOC0_OFF	0x1
+#define PLL_SOC0_ON	0x2
+#define PLL_SOC1_OFF	0x4
+#define PLL_SOC1_ON	0x8
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Mailbox 1 ACKs */
 #define PRCM_ACK_MB1_CURRENT_ARM_OPP	(PRCM_ACK_MB1 + 0x0)
@@ -184,6 +236,20 @@
 #define MB4H_HOTDOG	0x12
 #define MB4H_HOTMON	0x13
 #define MB4H_HOT_PERIOD	0x14
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define MB4H_A9WDOG_CONF 0x16
+#define MB4H_A9WDOG_EN   0x17
+#define MB4H_A9WDOG_DIS  0x18
+#define MB4H_A9WDOG_LOAD 0x19
+#define MB4H_A9WDOG_KICK 0x20
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Mailbox 4 Requests */
 #define PRCM_REQ_MB4_DDR_ST_AP_SLEEP_IDLE	(PRCM_REQ_MB4 + 0x0)
@@ -196,16 +262,37 @@
 #define PRCM_REQ_MB4_HOT_PERIOD			(PRCM_REQ_MB4 + 0x0)
 #define HOTMON_CONFIG_LOW			BIT(0)
 #define HOTMON_CONFIG_HIGH			BIT(1)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define PRCM_REQ_MB4_A9WDOG_0			(PRCM_REQ_MB4 + 0x0)
+#define PRCM_REQ_MB4_A9WDOG_1			(PRCM_REQ_MB4 + 0x1)
+#define PRCM_REQ_MB4_A9WDOG_2			(PRCM_REQ_MB4 + 0x2)
+#define PRCM_REQ_MB4_A9WDOG_3			(PRCM_REQ_MB4 + 0x3)
+#define A9WDOG_AUTO_OFF_EN			BIT(7)
+#define A9WDOG_AUTO_OFF_DIS			0
+#define A9WDOG_ID_MASK				0xf
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Mailbox 5 Requests */
 #define PRCM_REQ_MB5_I2C_SLAVE_OP	(PRCM_REQ_MB5 + 0x0)
 #define PRCM_REQ_MB5_I2C_HW_BITS	(PRCM_REQ_MB5 + 0x1)
 #define PRCM_REQ_MB5_I2C_REG		(PRCM_REQ_MB5 + 0x2)
 #define PRCM_REQ_MB5_I2C_VAL		(PRCM_REQ_MB5 + 0x3)
+<<<<<<< HEAD
 #define PRCMU_I2C_WRITE(slave) \
 	(((slave) << 1) | (cpu_is_u8500v2() ? BIT(6) : 0))
 #define PRCMU_I2C_READ(slave) \
 	(((slave) << 1) | BIT(0) | (cpu_is_u8500v2() ? BIT(6) : 0))
+=======
+#define PRCMU_I2C_WRITE(slave) (((slave) << 1) | BIT(6))
+#define PRCMU_I2C_READ(slave) (((slave) << 1) | BIT(0) | BIT(6))
+>>>>>>> refs/remotes/origin/master
 #define PRCMU_I2C_STOP_EN		BIT(3)
 
 /* Mailbox 5 ACKs */
@@ -252,6 +339,22 @@
 #define WAKEUP_BIT_GPIO7 BIT(30)
 #define WAKEUP_BIT_GPIO8 BIT(31)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct {
+	bool valid;
+	struct prcmu_fw_version version;
+} fw_info;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct irq_domain *db8500_irq_domain;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This vector maps irq numbers to the bits in the bit field used in
  * communication with the PRCMU firmware.
@@ -260,8 +363,39 @@
  * the bits in the bit field are not. (The bits also have a tendency to move
  * around, to further complicate matters.)
  */
+<<<<<<< HEAD
 #define IRQ_INDEX(_name) ((IRQ_PRCMU_##_name) - IRQ_PRCMU_BASE)
 #define IRQ_ENTRY(_name)[IRQ_INDEX(_name)] = (WAKEUP_BIT_##_name)
+=======
+#define IRQ_INDEX(_name) ((IRQ_PRCMU_##_name))
+#define IRQ_ENTRY(_name)[IRQ_INDEX(_name)] = (WAKEUP_BIT_##_name)
+
+#define IRQ_PRCMU_RTC 0
+#define IRQ_PRCMU_RTT0 1
+#define IRQ_PRCMU_RTT1 2
+#define IRQ_PRCMU_HSI0 3
+#define IRQ_PRCMU_HSI1 4
+#define IRQ_PRCMU_CA_WAKE 5
+#define IRQ_PRCMU_USB 6
+#define IRQ_PRCMU_ABB 7
+#define IRQ_PRCMU_ABB_FIFO 8
+#define IRQ_PRCMU_ARM 9
+#define IRQ_PRCMU_MODEM_SW_RESET_REQ 10
+#define IRQ_PRCMU_GPIO0 11
+#define IRQ_PRCMU_GPIO1 12
+#define IRQ_PRCMU_GPIO2 13
+#define IRQ_PRCMU_GPIO3 14
+#define IRQ_PRCMU_GPIO4 15
+#define IRQ_PRCMU_GPIO5 16
+#define IRQ_PRCMU_GPIO6 17
+#define IRQ_PRCMU_GPIO7 18
+#define IRQ_PRCMU_GPIO8 19
+#define IRQ_PRCMU_CA_SLEEP 20
+#define IRQ_PRCMU_HOTMON_LOW 21
+#define IRQ_PRCMU_HOTMON_HIGH 22
+#define NUM_PRCMU_WAKEUPS 23
+
+>>>>>>> refs/remotes/origin/master
 static u32 prcmu_irq_bit[NUM_PRCMU_WAKEUPS] = {
 	IRQ_ENTRY(RTC),
 	IRQ_ENTRY(RTT0),
@@ -327,11 +461,27 @@ static struct {
  * mb1_transfer - state needed for mailbox 1 communication.
  * @lock:	The transaction lock.
  * @work:	The transaction completion structure.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @ape_opp:	The current APE OPP.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @ape_opp:	The current APE OPP.
+>>>>>>> refs/remotes/origin/master
  * @ack:	Reply ("acknowledge") data.
  */
 static struct {
 	struct mutex lock;
 	struct completion work;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8 ape_opp;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 ape_opp;
+>>>>>>> refs/remotes/origin/master
 	struct {
 		u8 header;
 		u8 arm_opp;
@@ -399,19 +549,54 @@ static struct {
 static atomic_t ac_wake_req_state = ATOMIC_INIT(0);
 
 /* Spinlocks */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(clkout_lock);
 static DEFINE_SPINLOCK(gpiocr_lock);
+=======
+static DEFINE_SPINLOCK(prcmu_lock);
+static DEFINE_SPINLOCK(clkout_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Global var to runtime determine TCDM base for v2 or v1 */
 static __iomem void *tcdm_base;
 
 struct clk_mgt {
+<<<<<<< HEAD
 	unsigned int offset;
 	u32 pllsw;
+=======
+	void __iomem *reg;
+=======
+static DEFINE_SPINLOCK(prcmu_lock);
+static DEFINE_SPINLOCK(clkout_lock);
+
+/* Global var to runtime determine TCDM base for v2 or v1 */
+static __iomem void *tcdm_base;
+static __iomem void *prcmu_base;
+
+struct clk_mgt {
+	u32 offset;
+>>>>>>> refs/remotes/origin/master
+	u32 pllsw;
+	int branch;
+	bool clk38div;
+};
+
+enum {
+	PLL_RAW,
+	PLL_FIX,
+	PLL_DIV
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static DEFINE_SPINLOCK(clk_mgt_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define CLK_MGT_ENTRY(_name)[PRCMU_##_name] = { (PRCM_##_name##_MGT), 0 }
 struct clk_mgt clk_mgt[PRCMU_NUM_REG_CLOCKS] = {
 	CLK_MGT_ENTRY(SGACLK),
@@ -443,8 +628,96 @@ struct clk_mgt clk_mgt[PRCMU_NUM_REG_CLOCKS] = {
 	CLK_MGT_ENTRY(SSPCLK),
 	CLK_MGT_ENTRY(RNGCLK),
 	CLK_MGT_ENTRY(UICCCLK),
+=======
+#define CLK_MGT_ENTRY(_name, _branch, _clk38div)[PRCMU_##_name] = \
+	{ (PRCM_##_name##_MGT), 0 , _branch, _clk38div}
+struct clk_mgt clk_mgt[PRCMU_NUM_REG_CLOCKS] = {
+=======
+#define CLK_MGT_ENTRY(_name, _branch, _clk38div)[PRCMU_##_name] = \
+	{ (PRCM_##_name##_MGT), 0 , _branch, _clk38div}
+static struct clk_mgt clk_mgt[PRCMU_NUM_REG_CLOCKS] = {
+>>>>>>> refs/remotes/origin/master
+	CLK_MGT_ENTRY(SGACLK, PLL_DIV, false),
+	CLK_MGT_ENTRY(UARTCLK, PLL_FIX, true),
+	CLK_MGT_ENTRY(MSP02CLK, PLL_FIX, true),
+	CLK_MGT_ENTRY(MSP1CLK, PLL_FIX, true),
+	CLK_MGT_ENTRY(I2CCLK, PLL_FIX, true),
+	CLK_MGT_ENTRY(SDMMCCLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(SLIMCLK, PLL_FIX, true),
+	CLK_MGT_ENTRY(PER1CLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(PER2CLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(PER3CLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(PER5CLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(PER6CLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(PER7CLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(LCDCLK, PLL_FIX, true),
+	CLK_MGT_ENTRY(BMLCLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(HSITXCLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(HSIRXCLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(HDMICLK, PLL_FIX, false),
+	CLK_MGT_ENTRY(APEATCLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(APETRACECLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(MCDECLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(IPI2CCLK, PLL_FIX, true),
+	CLK_MGT_ENTRY(DSIALTCLK, PLL_FIX, false),
+	CLK_MGT_ENTRY(DMACLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(B2R2CLK, PLL_DIV, true),
+	CLK_MGT_ENTRY(TVCLK, PLL_FIX, true),
+	CLK_MGT_ENTRY(SSPCLK, PLL_FIX, true),
+	CLK_MGT_ENTRY(RNGCLK, PLL_FIX, true),
+	CLK_MGT_ENTRY(UICCCLK, PLL_FIX, false),
 };
 
+struct dsiclk {
+	u32 divsel_mask;
+	u32 divsel_shift;
+	u32 divsel;
+};
+
+static struct dsiclk dsiclk[2] = {
+	{
+		.divsel_mask = PRCM_DSI_PLLOUT_SEL_DSI0_PLLOUT_DIVSEL_MASK,
+		.divsel_shift = PRCM_DSI_PLLOUT_SEL_DSI0_PLLOUT_DIVSEL_SHIFT,
+		.divsel = PRCM_DSI_PLLOUT_SEL_PHI,
+	},
+	{
+		.divsel_mask = PRCM_DSI_PLLOUT_SEL_DSI1_PLLOUT_DIVSEL_MASK,
+		.divsel_shift = PRCM_DSI_PLLOUT_SEL_DSI1_PLLOUT_DIVSEL_SHIFT,
+		.divsel = PRCM_DSI_PLLOUT_SEL_PHI,
+	}
+};
+
+struct dsiescclk {
+	u32 en;
+	u32 div_mask;
+	u32 div_shift;
+};
+
+static struct dsiescclk dsiescclk[3] = {
+	{
+		.en = PRCM_DSITVCLK_DIV_DSI0_ESC_CLK_EN,
+		.div_mask = PRCM_DSITVCLK_DIV_DSI0_ESC_CLK_DIV_MASK,
+		.div_shift = PRCM_DSITVCLK_DIV_DSI0_ESC_CLK_DIV_SHIFT,
+	},
+	{
+		.en = PRCM_DSITVCLK_DIV_DSI1_ESC_CLK_EN,
+		.div_mask = PRCM_DSITVCLK_DIV_DSI1_ESC_CLK_DIV_MASK,
+		.div_shift = PRCM_DSITVCLK_DIV_DSI1_ESC_CLK_DIV_SHIFT,
+	},
+	{
+		.en = PRCM_DSITVCLK_DIV_DSI2_ESC_CLK_EN,
+		.div_mask = PRCM_DSITVCLK_DIV_DSI2_ESC_CLK_DIV_MASK,
+		.div_shift = PRCM_DSITVCLK_DIV_DSI2_ESC_CLK_DIV_SHIFT,
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+};
+
+=======
+};
+
+
+>>>>>>> refs/remotes/origin/master
 /*
 * Used by MCDE to setup all necessary PRCMU registers
 */
@@ -460,9 +733,15 @@ struct clk_mgt clk_mgt[PRCMU_NUM_REG_CLOCKS] = {
 /* PLLDIV=12, PLLSW=4 (PLLDDR) */
 #define PRCMU_DSI_CLOCK_SETTING		0x0000008C
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* PLLDIV=8, PLLSW=4 (PLLDDR) */
 #define PRCMU_DSI_CLOCK_SETTING_U8400	0x00000088
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* DPI 50000000 Hz */
 #define PRCMU_DPI_CLOCK_SETTING		((1 << PRCMU_CLK_PLL_SW_SHIFT) | \
 					  (16 << PRCMU_CLK_PLL_DIV_SHIFT))
@@ -471,9 +750,15 @@ struct clk_mgt clk_mgt[PRCMU_NUM_REG_CLOCKS] = {
 /* D=101, N=1, R=4, SELDIV2=0 */
 #define PRCMU_PLLDSI_FREQ_SETTING	0x00040165
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* D=70, N=1, R=3, SELDIV2=0 */
 #define PRCMU_PLLDSI_FREQ_SETTING_U8400	0x00030146
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PRCMU_ENABLE_PLLDSI		0x00000001
 #define PRCMU_DISABLE_PLLDSI		0x00000000
 #define PRCMU_RELEASE_RESET_DSS		0x0000400C
@@ -485,6 +770,8 @@ struct clk_mgt clk_mgt[PRCMU_NUM_REG_CLOCKS] = {
 
 #define PRCMU_PLLDSI_LOCKP_LOCKED	0x3
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct {
 	u8 project_number;
 	u8 api_version;
@@ -522,11 +809,41 @@ int prcmu_enable_dsipll(void)
 	for (i = 0; i < 10; i++) {
 		if ((readl(_PRCMU_BASE + PRCM_PLLDSI_LOCKP) &
 			PRCMU_PLLDSI_LOCKP_LOCKED)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int db8500_prcmu_enable_dsipll(void)
+{
+	int i;
+
+	/* Clear DSIPLL_RESETN */
+	writel(PRCMU_RESET_DSIPLL, PRCM_APE_RESETN_CLR);
+	/* Unclamp DSIPLL in/out */
+	writel(PRCMU_UNCLAMP_DSIPLL, PRCM_MMIP_LS_CLAMP_CLR);
+
+	/* Set DSI PLL FREQ */
+	writel(PRCMU_PLLDSI_FREQ_SETTING, PRCM_PLLDSI_FREQ);
+	writel(PRCMU_DSI_PLLOUT_SEL_SETTING, PRCM_DSI_PLLOUT_SEL);
+	/* Enable Escape clocks */
+	writel(PRCMU_ENABLE_ESCAPE_CLOCK_DIV, PRCM_DSITVCLK_DIV);
+
+	/* Start DSI PLL */
+	writel(PRCMU_ENABLE_PLLDSI, PRCM_PLLDSI_ENABLE);
+	/* Reset DSI PLL */
+	writel(PRCMU_DSI_RESET_SW, PRCM_DSI_SW_RESET);
+	for (i = 0; i < 10; i++) {
+		if ((readl(PRCM_PLLDSI_LOCKP) & PRCMU_PLLDSI_LOCKP_LOCKED)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					== PRCMU_PLLDSI_LOCKP_LOCKED)
 			break;
 		udelay(100);
 	}
 	/* Set DSIPLL_RESETN */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(PRCMU_RESET_DSIPLL, (_PRCMU_BASE + PRCM_APE_RESETN_SET));
 	return 0;
 }
@@ -550,10 +867,35 @@ int prcmu_set_display_clocks(void)
 		dsiclk = PRCMU_DSI_CLOCK_SETTING_U8400;
 	else
 		dsiclk = PRCMU_DSI_CLOCK_SETTING;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	writel(PRCMU_RESET_DSIPLL, PRCM_APE_RESETN_SET);
+	return 0;
+}
+
+int db8500_prcmu_disable_dsipll(void)
+{
+	/* Disable dsi pll */
+	writel(PRCMU_DISABLE_PLLDSI, PRCM_PLLDSI_ENABLE);
+	/* Disable  escapeclock */
+	writel(PRCMU_DISABLE_ESCAPE_CLOCK_DIV, PRCM_DSITVCLK_DIV);
+	return 0;
+}
+
+int db8500_prcmu_set_display_clocks(void)
+{
+	unsigned long flags;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&clk_mgt_lock, flags);
 
 	/* Grab the HW semaphore. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while ((readl(_PRCMU_BASE + PRCM_SEM) & PRCM_SEM_PRCM_SEM) != 0)
 		cpu_relax();
 
@@ -563,12 +905,36 @@ int prcmu_set_display_clocks(void)
 
 	/* Release the HW semaphore. */
 	writel(0, (_PRCMU_BASE + PRCM_SEM));
+=======
+	while ((readl(PRCM_SEM) & PRCM_SEM_PRCM_SEM) != 0)
+		cpu_relax();
+
+	writel(PRCMU_DSI_CLOCK_SETTING, PRCM_HDMICLK_MGT);
+	writel(PRCMU_DSI_LP_CLOCK_SETTING, PRCM_TVCLK_MGT);
+	writel(PRCMU_DPI_CLOCK_SETTING, PRCM_LCDCLK_MGT);
+
+	/* Release the HW semaphore. */
+	writel(0, PRCM_SEM);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while ((readl(PRCM_SEM) & PRCM_SEM_PRCM_SEM) != 0)
+		cpu_relax();
+
+	writel(PRCMU_DSI_CLOCK_SETTING, prcmu_base + PRCM_HDMICLK_MGT);
+	writel(PRCMU_DSI_LP_CLOCK_SETTING, prcmu_base + PRCM_TVCLK_MGT);
+	writel(PRCMU_DPI_CLOCK_SETTING, prcmu_base + PRCM_LCDCLK_MGT);
+
+	/* Release the HW semaphore. */
+	writel(0, PRCM_SEM);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&clk_mgt_lock, flags);
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * prcmu_enable_spi2 - Enables pin muxing for SPI2 on OtherAlternateC1.
  */
@@ -606,6 +972,61 @@ bool prcmu_has_arm_maxopp(void)
 bool prcmu_is_u8400(void)
 {
 	return prcmu_version.project_number == PRCMU_PROJECT_ID_8400V2_0;
+=======
+u32 db8500_prcmu_read(unsigned int reg)
+{
+	return readl(_PRCMU_BASE + reg);
+=======
+u32 db8500_prcmu_read(unsigned int reg)
+{
+	return readl(prcmu_base + reg);
+>>>>>>> refs/remotes/origin/master
+}
+
+void db8500_prcmu_write(unsigned int reg, u32 value)
+{
+	unsigned long flags;
+
+	spin_lock_irqsave(&prcmu_lock, flags);
+<<<<<<< HEAD
+	writel(value, (_PRCMU_BASE + reg));
+=======
+	writel(value, (prcmu_base + reg));
+>>>>>>> refs/remotes/origin/master
+	spin_unlock_irqrestore(&prcmu_lock, flags);
+}
+
+void db8500_prcmu_write_masked(unsigned int reg, u32 mask, u32 value)
+{
+	u32 val;
+	unsigned long flags;
+
+	spin_lock_irqsave(&prcmu_lock, flags);
+<<<<<<< HEAD
+	val = readl(_PRCMU_BASE + reg);
+	val = ((val & ~mask) | (value & mask));
+	writel(val, (_PRCMU_BASE + reg));
+=======
+	val = readl(prcmu_base + reg);
+	val = ((val & ~mask) | (value & mask));
+	writel(val, (prcmu_base + reg));
+>>>>>>> refs/remotes/origin/master
+	spin_unlock_irqrestore(&prcmu_lock, flags);
+}
+
+struct prcmu_fw_version *prcmu_get_fw_version(void)
+{
+	return fw_info.valid ? &fw_info.version : NULL;
+}
+
+bool prcmu_has_arm_maxopp(void)
+{
+	return (readb(tcdm_base + PRCM_AVS_VARM_MAX_OPP) &
+		PRCM_AVS_ISMODEENABLE_MASK) == PRCM_AVS_ISMODEENABLE_MASK;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -701,7 +1122,15 @@ int prcmu_config_clkout(u8 clkout, u8 source, u8 div)
 
 	spin_lock_irqsave(&clkout_lock, flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	val = readl(_PRCMU_BASE + PRCM_CLKOCR);
+=======
+	val = readl(PRCM_CLKOCR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	val = readl(PRCM_CLKOCR);
+>>>>>>> refs/remotes/origin/master
 	if (val & div_mask) {
 		if (div) {
 			if ((val & mask) != bits) {
@@ -715,7 +1144,15 @@ int prcmu_config_clkout(u8 clkout, u8 source, u8 div)
 			}
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel((bits | (val & ~mask)), (_PRCMU_BASE + PRCM_CLKOCR));
+=======
+	writel((bits | (val & ~mask)), PRCM_CLKOCR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel((bits | (val & ~mask)), PRCM_CLKOCR);
+>>>>>>> refs/remotes/origin/master
 	requests[clkout] += (div ? 1 : -1);
 
 unlock_and_return:
@@ -724,7 +1161,15 @@ unlock_and_return:
 	return r;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int prcmu_set_power_state(u8 state, bool keep_ulp_clk, bool keep_ap_pll)
+=======
+int db8500_prcmu_set_power_state(u8 state, bool keep_ulp_clk, bool keep_ap_pll)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int db8500_prcmu_set_power_state(u8 state, bool keep_ulp_clk, bool keep_ap_pll)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -732,7 +1177,15 @@ int prcmu_set_power_state(u8 state, bool keep_ulp_clk, bool keep_ap_pll)
 
 	spin_lock_irqsave(&mb0_transfer.lock, flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(0))
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(0))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(0))
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	writeb(MB0H_POWER_STATE_TRANS, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB0));
@@ -741,13 +1194,148 @@ int prcmu_set_power_state(u8 state, bool keep_ulp_clk, bool keep_ap_pll)
 	writeb((keep_ulp_clk ? 1 : 0),
 		(tcdm_base + PRCM_REQ_MB0_ULP_CLOCK_STATE));
 	writeb(0, (tcdm_base + PRCM_REQ_MB0_DO_NOT_WFI));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(0), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(0), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(0), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&mb0_transfer.lock, flags);
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+u8 db8500_prcmu_get_power_state_result(void)
+{
+	return readb(tcdm_base + PRCM_ACK_MB0_AP_PWRSTTR_STATUS);
+}
+
+<<<<<<< HEAD
+/* This function decouple the gic from the prcmu */
+int db8500_prcmu_gic_decouple(void)
+{
+	u32 val = readl(PRCM_A9_MASK_REQ);
+
+	/* Set bit 0 register value to 1 */
+	writel(val | PRCM_A9_MASK_REQ_PRCM_A9_MASK_REQ,
+	       PRCM_A9_MASK_REQ);
+
+	/* Make sure the register is updated */
+	readl(PRCM_A9_MASK_REQ);
+
+	/* Wait a few cycles for the gic mask completion */
+	udelay(1);
+
+	return 0;
+}
+
+/* This function recouple the gic with the prcmu */
+int db8500_prcmu_gic_recouple(void)
+{
+	u32 val = readl(PRCM_A9_MASK_REQ);
+
+	/* Set bit 0 register value to 0 */
+	writel(val & ~PRCM_A9_MASK_REQ_PRCM_A9_MASK_REQ, PRCM_A9_MASK_REQ);
+
+	return 0;
+}
+
+#define PRCMU_GIC_NUMBER_REGS 5
+
+/*
+ * This function checks if there are pending irq on the gic. It only
+ * makes sense if the gic has been decoupled before with the
+ * db8500_prcmu_gic_decouple function. Disabling an interrupt only
+ * disables the forwarding of the interrupt to any CPU interface. It
+ * does not prevent the interrupt from changing state, for example
+ * becoming pending, or active and pending if it is already
+ * active. Hence, we have to check the interrupt is pending *and* is
+ * active.
+ */
+bool db8500_prcmu_gic_pending_irq(void)
+{
+	u32 pr; /* Pending register */
+	u32 er; /* Enable register */
+	void __iomem *dist_base = __io_address(U8500_GIC_DIST_BASE);
+	int i;
+
+        /* 5 registers. STI & PPI not skipped */
+	for (i = 0; i < PRCMU_GIC_NUMBER_REGS; i++) {
+
+		pr = readl_relaxed(dist_base + GIC_DIST_PENDING_SET + i * 4);
+		er = readl_relaxed(dist_base + GIC_DIST_ENABLE_SET + i * 4);
+
+		if (pr & er)
+			return true; /* There is a pending interrupt */
+	}
+
+	return false;
+}
+
+/*
+ * This function checks if there are pending interrupt on the
+ * prcmu which has been delegated to monitor the irqs with the
+ * db8500_prcmu_copy_gic_settings function.
+ */
+bool db8500_prcmu_pending_irq(void)
+{
+	u32 it, im;
+	int i;
+
+	for (i = 0; i < PRCMU_GIC_NUMBER_REGS - 1; i++) {
+		it = readl(PRCM_ARMITVAL31TO0 + i * 4);
+		im = readl(PRCM_ARMITMSK31TO0 + i * 4);
+		if (it & im)
+			return true; /* There is a pending interrupt */
+	}
+
+	return false;
+}
+
+/*
+ * This function checks if the specified cpu is in in WFI. It's usage
+ * makes sense only if the gic is decoupled with the db8500_prcmu_gic_decouple
+ * function. Of course passing smp_processor_id() to this function will
+ * always return false...
+ */
+bool db8500_prcmu_is_cpu_in_wfi(int cpu)
+{
+	return readl(PRCM_ARM_WFI_STANDBY) & cpu ? PRCM_ARM_WFI_STANDBY_WFI1 :
+		     PRCM_ARM_WFI_STANDBY_WFI0;
+}
+
+/*
+ * This function copies the gic SPI settings to the prcmu in order to
+ * monitor them and abort/finish the retention/off sequence or state.
+ */
+int db8500_prcmu_copy_gic_settings(void)
+{
+	u32 er; /* Enable register */
+	void __iomem *dist_base = __io_address(U8500_GIC_DIST_BASE);
+	int i;
+
+        /* We skip the STI and PPI */
+	for (i = 0; i < PRCMU_GIC_NUMBER_REGS - 1; i++) {
+		er = readl_relaxed(dist_base +
+				   GIC_DIST_ENABLE_SET + (i + 1) * 4);
+		writel(er, PRCM_ARMITMSK31TO0 + i * 4);
+	}
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* This function should only be called while mb0_transfer.lock is held. */
 static void config_wakeups(void)
 {
@@ -770,18 +1358,42 @@ static void config_wakeups(void)
 		return;
 
 	for (i = 0; i < 2; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(0))
+=======
+		while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(0))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(0))
+>>>>>>> refs/remotes/origin/master
 			cpu_relax();
 		writel(dbb_events, (tcdm_base + PRCM_REQ_MB0_WAKEUP_8500));
 		writel(abb_events, (tcdm_base + PRCM_REQ_MB0_WAKEUP_4500));
 		writeb(header[i], (tcdm_base + PRCM_MBOX_HEADER_REQ_MB0));
+<<<<<<< HEAD
+<<<<<<< HEAD
 		writel(MBOX_BIT(0), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+		writel(MBOX_BIT(0), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		writel(MBOX_BIT(0), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 	}
 	last_dbb_events = dbb_events;
 	last_abb_events = abb_events;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void prcmu_enable_wakeups(u32 wakeups)
+=======
+void db8500_prcmu_enable_wakeups(u32 wakeups)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void db8500_prcmu_enable_wakeups(u32 wakeups)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	u32 bits;
@@ -802,7 +1414,15 @@ void prcmu_enable_wakeups(u32 wakeups)
 	spin_unlock_irqrestore(&mb0_transfer.lock, flags);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void prcmu_config_abb_event_readout(u32 abb_events)
+=======
+void db8500_prcmu_config_abb_event_readout(u32 abb_events)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void db8500_prcmu_config_abb_event_readout(u32 abb_events)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -814,7 +1434,15 @@ void prcmu_config_abb_event_readout(u32 abb_events)
 	spin_unlock_irqrestore(&mb0_transfer.lock, flags);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void prcmu_get_abb_event_buffer(void __iomem **buf)
+=======
+void db8500_prcmu_get_abb_event_buffer(void __iomem **buf)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void db8500_prcmu_get_abb_event_buffer(void __iomem **buf)
+>>>>>>> refs/remotes/origin/master
 {
 	if (readb(tcdm_base + PRCM_ACK_MB0_READ_POINTER) & 1)
 		*buf = (tcdm_base + PRCM_ACK_MB0_WAKEUP_1_4500);
@@ -823,13 +1451,29 @@ void prcmu_get_abb_event_buffer(void __iomem **buf)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * prcmu_set_arm_opp - set the appropriate ARM OPP
+=======
+ * db8500_prcmu_set_arm_opp - set the appropriate ARM OPP
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * db8500_prcmu_set_arm_opp - set the appropriate ARM OPP
+>>>>>>> refs/remotes/origin/master
  * @opp: The new ARM operating point to which transition is to be made
  * Returns: 0 on success, non-zero on failure
  *
  * This function sets the the operating point of the ARM.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int prcmu_set_arm_opp(u8 opp)
+=======
+int db8500_prcmu_set_arm_opp(u8 opp)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int db8500_prcmu_set_arm_opp(u8 opp)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 
@@ -840,14 +1484,30 @@ int prcmu_set_arm_opp(u8 opp)
 
 	mutex_lock(&mb1_transfer.lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	writeb(MB1H_ARM_APE_OPP, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB1));
 	writeb(opp, (tcdm_base + PRCM_REQ_MB1_ARM_OPP));
 	writeb(APE_NO_CHANGE, (tcdm_base + PRCM_REQ_MB1_APE_OPP));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(1), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(1), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(1), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 	wait_for_completion(&mb1_transfer.work);
 
 	if ((mb1_transfer.ack.header != MB1H_ARM_APE_OPP) ||
@@ -860,16 +1520,32 @@ int prcmu_set_arm_opp(u8 opp)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * prcmu_get_arm_opp - get the current ARM OPP
  *
  * Returns: the current ARM OPP
  */
 int prcmu_get_arm_opp(void)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * db8500_prcmu_get_arm_opp - get the current ARM OPP
+ *
+ * Returns: the current ARM OPP
+ */
+int db8500_prcmu_get_arm_opp(void)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return readb(tcdm_base + PRCM_ACK_MB1_CURRENT_ARM_OPP);
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * prcmu_get_ddr_opp - get the current DDR OPP
  *
  * Returns: the current DDR OPP
@@ -881,28 +1557,132 @@ int prcmu_get_ddr_opp(void)
 
 /**
  * set_ddr_opp - set the appropriate DDR OPP
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * db8500_prcmu_get_ddr_opp - get the current DDR OPP
+ *
+ * Returns: the current DDR OPP
+ */
+int db8500_prcmu_get_ddr_opp(void)
+{
+	return readb(PRCM_DDR_SUBSYS_APE_MINBW);
+}
+
+/**
+ * db8500_set_ddr_opp - set the appropriate DDR OPP
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @opp: The new DDR operating point to which transition is to be made
  * Returns: 0 on success, non-zero on failure
  *
  * This function sets the operating point of the DDR.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int prcmu_set_ddr_opp(u8 opp)
+=======
+int db8500_prcmu_set_ddr_opp(u8 opp)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable_set_ddr_opp;
+int db8500_prcmu_set_ddr_opp(u8 opp)
+>>>>>>> refs/remotes/origin/master
 {
 	if (opp < DDR_100_OPP || opp > DDR_25_OPP)
 		return -EINVAL;
 	/* Changing the DDR OPP can hang the hardware pre-v21 */
+<<<<<<< HEAD
 	if (cpu_is_u8500v20_or_later() && !cpu_is_u8500v20())
+<<<<<<< HEAD
 		writeb(opp, (_PRCMU_BASE + PRCM_DDR_SUBSYS_APE_MINBW));
 
 	return 0;
 }
 /**
  * set_ape_opp - set the appropriate APE OPP
+=======
+=======
+	if (enable_set_ddr_opp)
+>>>>>>> refs/remotes/origin/master
+		writeb(opp, PRCM_DDR_SUBSYS_APE_MINBW);
+
+	return 0;
+}
+
+/* Divide the frequency of certain clocks by 2 for APE_50_PARTLY_25_OPP. */
+static void request_even_slower_clocks(bool enable)
+{
+<<<<<<< HEAD
+	void __iomem *clock_reg[] = {
+=======
+	u32 clock_reg[] = {
+>>>>>>> refs/remotes/origin/master
+		PRCM_ACLK_MGT,
+		PRCM_DMACLK_MGT
+	};
+	unsigned long flags;
+	unsigned int i;
+
+	spin_lock_irqsave(&clk_mgt_lock, flags);
+
+	/* Grab the HW semaphore. */
+	while ((readl(PRCM_SEM) & PRCM_SEM_PRCM_SEM) != 0)
+		cpu_relax();
+
+	for (i = 0; i < ARRAY_SIZE(clock_reg); i++) {
+		u32 val;
+		u32 div;
+
+<<<<<<< HEAD
+		val = readl(clock_reg[i]);
+=======
+		val = readl(prcmu_base + clock_reg[i]);
+>>>>>>> refs/remotes/origin/master
+		div = (val & PRCM_CLK_MGT_CLKPLLDIV_MASK);
+		if (enable) {
+			if ((div <= 1) || (div > 15)) {
+				pr_err("prcmu: Bad clock divider %d in %s\n",
+					div, __func__);
+				goto unlock_and_return;
+			}
+			div <<= 1;
+		} else {
+			if (div <= 2)
+				goto unlock_and_return;
+			div >>= 1;
+		}
+		val = ((val & ~PRCM_CLK_MGT_CLKPLLDIV_MASK) |
+			(div & PRCM_CLK_MGT_CLKPLLDIV_MASK));
+<<<<<<< HEAD
+		writel(val, clock_reg[i]);
+=======
+		writel(val, prcmu_base + clock_reg[i]);
+>>>>>>> refs/remotes/origin/master
+	}
+
+unlock_and_return:
+	/* Release the HW semaphore. */
+	writel(0, PRCM_SEM);
+
+	spin_unlock_irqrestore(&clk_mgt_lock, flags);
+}
+
+/**
+ * db8500_set_ape_opp - set the appropriate APE OPP
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @opp: The new APE operating point to which transition is to be made
  * Returns: 0 on success, non-zero on failure
  *
  * This function sets the operating point of the APE.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int prcmu_set_ape_opp(u8 opp)
 {
 	int r = 0;
@@ -910,41 +1690,115 @@ int prcmu_set_ape_opp(u8 opp)
 	mutex_lock(&mb1_transfer.lock);
 
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int db8500_prcmu_set_ape_opp(u8 opp)
+{
+	int r = 0;
+
+	if (opp == mb1_transfer.ape_opp)
+		return 0;
+
+	mutex_lock(&mb1_transfer.lock);
+
+	if (mb1_transfer.ape_opp == APE_50_PARTLY_25_OPP)
+		request_even_slower_clocks(false);
+
+	if ((opp != APE_100_OPP) && (mb1_transfer.ape_opp != APE_100_OPP))
+		goto skip_message;
+
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	writeb(MB1H_ARM_APE_OPP, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB1));
 	writeb(ARM_NO_CHANGE, (tcdm_base + PRCM_REQ_MB1_ARM_OPP));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writeb(opp, (tcdm_base + PRCM_REQ_MB1_APE_OPP));
 
 	writel(MBOX_BIT(1), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	writeb(((opp == APE_50_PARTLY_25_OPP) ? APE_50_OPP : opp),
+		(tcdm_base + PRCM_REQ_MB1_APE_OPP));
+
+	writel(MBOX_BIT(1), PRCM_MBOX_CPU_SET);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wait_for_completion(&mb1_transfer.work);
 
 	if ((mb1_transfer.ack.header != MB1H_ARM_APE_OPP) ||
 		(mb1_transfer.ack.ape_opp != opp))
 		r = -EIO;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+skip_message:
+	if ((!r && (opp == APE_50_PARTLY_25_OPP)) ||
+		(r && (mb1_transfer.ape_opp == APE_50_PARTLY_25_OPP)))
+		request_even_slower_clocks(true);
+	if (!r)
+		mb1_transfer.ape_opp = opp;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&mb1_transfer.lock);
 
 	return r;
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * prcmu_get_ape_opp - get the current APE OPP
  *
  * Returns: the current APE OPP
  */
 int prcmu_get_ape_opp(void)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * db8500_prcmu_get_ape_opp - get the current APE OPP
+ *
+ * Returns: the current APE OPP
+ */
+int db8500_prcmu_get_ape_opp(void)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return readb(tcdm_base + PRCM_ACK_MB1_CURRENT_APE_OPP);
 }
 
 /**
+<<<<<<< HEAD
  * prcmu_request_ape_opp_100_voltage - Request APE OPP 100% voltage
+=======
+ * db8500_prcmu_request_ape_opp_100_voltage - Request APE OPP 100% voltage
+>>>>>>> refs/remotes/origin/master
  * @enable: true to request the higher voltage, false to drop a request.
  *
  * Calls to this function to enable and disable requests must be balanced.
  */
+<<<<<<< HEAD
 int prcmu_request_ape_opp_100_voltage(bool enable)
+=======
+int db8500_prcmu_request_ape_opp_100_voltage(bool enable)
+>>>>>>> refs/remotes/origin/master
 {
 	int r = 0;
 	u8 header;
@@ -966,12 +1820,28 @@ int prcmu_request_ape_opp_100_voltage(bool enable)
 		header = MB1H_RELEASE_APE_OPP_100_VOLT;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	writeb(header, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB1));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(1), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(1), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(1), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 	wait_for_completion(&mb1_transfer.work);
 
 	if ((mb1_transfer.ack.header != header) ||
@@ -995,13 +1865,29 @@ int prcmu_release_usb_wakeup_state(void)
 
 	mutex_lock(&mb1_transfer.lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	writeb(MB1H_RELEASE_USB_WAKEUP,
 		(tcdm_base + PRCM_MBOX_HEADER_REQ_MB1));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(1), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(1), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(1), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 	wait_for_completion(&mb1_transfer.work);
 
 	if ((mb1_transfer.ack.header != MB1H_RELEASE_USB_WAKEUP) ||
@@ -1013,15 +1899,64 @@ int prcmu_release_usb_wakeup_state(void)
 	return r;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * prcmu_set_epod - set the state of a EPOD (power domain)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int request_pll(u8 clock, bool enable)
+{
+	int r = 0;
+
+	if (clock == PRCMU_PLLSOC0)
+		clock = (enable ? PLL_SOC0_ON : PLL_SOC0_OFF);
+	else if (clock == PRCMU_PLLSOC1)
+		clock = (enable ? PLL_SOC1_ON : PLL_SOC1_OFF);
+	else
+		return -EINVAL;
+
+	mutex_lock(&mb1_transfer.lock);
+
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+		cpu_relax();
+
+	writeb(MB1H_PLL_ON_OFF, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB1));
+	writeb(clock, (tcdm_base + PRCM_REQ_MB1_PLL_ON_OFF));
+
+	writel(MBOX_BIT(1), PRCM_MBOX_CPU_SET);
+	wait_for_completion(&mb1_transfer.work);
+
+	if (mb1_transfer.ack.header != MB1H_PLL_ON_OFF)
+		r = -EIO;
+
+	mutex_unlock(&mb1_transfer.lock);
+
+	return r;
+}
+
+/**
+ * db8500_prcmu_set_epod - set the state of a EPOD (power domain)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @epod_id: The EPOD to set
  * @epod_state: The new EPOD state
  *
  * This function sets the state of a EPOD (power domain). It may not be called
  * from interrupt context.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int prcmu_set_epod(u16 epod_id, u8 epod_state)
+=======
+int db8500_prcmu_set_epod(u16 epod_id, u8 epod_state)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int db8500_prcmu_set_epod(u16 epod_id, u8 epod_state)
+>>>>>>> refs/remotes/origin/master
 {
 	int r = 0;
 	bool ram_retention = false;
@@ -1048,7 +1983,15 @@ int prcmu_set_epod(u16 epod_id, u8 epod_state)
 	mutex_lock(&mb2_transfer.lock);
 
 	/* wait for mailbox */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(2))
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(2))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(2))
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	/* fill in mailbox */
@@ -1058,7 +2001,15 @@ int prcmu_set_epod(u16 epod_id, u8 epod_state)
 
 	writeb(MB2H_DPS, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB2));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(2), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(2), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(2), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The current firmware version does not handle errors correctly,
@@ -1145,13 +2096,29 @@ static int request_sysclk(bool enable)
 
 	spin_lock_irqsave(&mb3_transfer.lock, flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(3))
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(3))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(3))
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	writeb((enable ? ON : OFF), (tcdm_base + PRCM_REQ_MB3_SYSCLK_MGT));
 
 	writeb(MB3H_SYSCLK, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB3));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(3), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(3), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(3), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&mb3_transfer.lock, flags);
 
@@ -1177,12 +2144,28 @@ static int request_timclk(bool enable)
 
 	if (!enable)
 		val |= PRCM_TCR_STOP_TIMERS;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(val, (_PRCMU_BASE + PRCM_TCR));
+=======
+	writel(val, PRCM_TCR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(val, PRCM_TCR);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int request_reg_clock(u8 clock, bool enable)
+=======
+static int request_clock(u8 clock, bool enable)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int request_clock(u8 clock, bool enable)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 val;
 	unsigned long flags;
@@ -1190,34 +2173,167 @@ static int request_reg_clock(u8 clock, bool enable)
 	spin_lock_irqsave(&clk_mgt_lock, flags);
 
 	/* Grab the HW semaphore. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while ((readl(_PRCMU_BASE + PRCM_SEM) & PRCM_SEM_PRCM_SEM) != 0)
 		cpu_relax();
 
 	val = readl(_PRCMU_BASE + clk_mgt[clock].offset);
+=======
+	while ((readl(PRCM_SEM) & PRCM_SEM_PRCM_SEM) != 0)
+		cpu_relax();
+
+	val = readl(clk_mgt[clock].reg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while ((readl(PRCM_SEM) & PRCM_SEM_PRCM_SEM) != 0)
+		cpu_relax();
+
+	val = readl(prcmu_base + clk_mgt[clock].offset);
+>>>>>>> refs/remotes/origin/master
 	if (enable) {
 		val |= (PRCM_CLK_MGT_CLKEN | clk_mgt[clock].pllsw);
 	} else {
 		clk_mgt[clock].pllsw = (val & PRCM_CLK_MGT_CLKPLLSW_MASK);
 		val &= ~(PRCM_CLK_MGT_CLKEN | PRCM_CLK_MGT_CLKPLLSW_MASK);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(val, (_PRCMU_BASE + clk_mgt[clock].offset));
 
 	/* Release the HW semaphore. */
 	writel(0, (_PRCMU_BASE + PRCM_SEM));
+=======
+	writel(val, clk_mgt[clock].reg);
+
+	/* Release the HW semaphore. */
+	writel(0, PRCM_SEM);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(val, prcmu_base + clk_mgt[clock].offset);
+
+	/* Release the HW semaphore. */
+	writel(0, PRCM_SEM);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&clk_mgt_lock, flags);
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * prcmu_request_clock() - Request for a clock to be enabled or disabled.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int request_sga_clock(u8 clock, bool enable)
+{
+	u32 val;
+	int ret;
+
+	if (enable) {
+		val = readl(PRCM_CGATING_BYPASS);
+		writel(val | PRCM_CGATING_BYPASS_ICN2, PRCM_CGATING_BYPASS);
+	}
+
+	ret = request_clock(clock, enable);
+
+	if (!ret && !enable) {
+		val = readl(PRCM_CGATING_BYPASS);
+		writel(val & ~PRCM_CGATING_BYPASS_ICN2, PRCM_CGATING_BYPASS);
+	}
+
+	return ret;
+}
+
+static inline bool plldsi_locked(void)
+{
+	return (readl(PRCM_PLLDSI_LOCKP) &
+		(PRCM_PLLDSI_LOCKP_PRCM_PLLDSI_LOCKP10 |
+		 PRCM_PLLDSI_LOCKP_PRCM_PLLDSI_LOCKP3)) ==
+		(PRCM_PLLDSI_LOCKP_PRCM_PLLDSI_LOCKP10 |
+		 PRCM_PLLDSI_LOCKP_PRCM_PLLDSI_LOCKP3);
+}
+
+static int request_plldsi(bool enable)
+{
+	int r = 0;
+	u32 val;
+
+	writel((PRCM_MMIP_LS_CLAMP_DSIPLL_CLAMP |
+		PRCM_MMIP_LS_CLAMP_DSIPLL_CLAMPI), (enable ?
+		PRCM_MMIP_LS_CLAMP_CLR : PRCM_MMIP_LS_CLAMP_SET));
+
+	val = readl(PRCM_PLLDSI_ENABLE);
+	if (enable)
+		val |= PRCM_PLLDSI_ENABLE_PRCM_PLLDSI_ENABLE;
+	else
+		val &= ~PRCM_PLLDSI_ENABLE_PRCM_PLLDSI_ENABLE;
+	writel(val, PRCM_PLLDSI_ENABLE);
+
+	if (enable) {
+		unsigned int i;
+		bool locked = plldsi_locked();
+
+		for (i = 10; !locked && (i > 0); --i) {
+			udelay(100);
+			locked = plldsi_locked();
+		}
+		if (locked) {
+			writel(PRCM_APE_RESETN_DSIPLL_RESETN,
+				PRCM_APE_RESETN_SET);
+		} else {
+			writel((PRCM_MMIP_LS_CLAMP_DSIPLL_CLAMP |
+				PRCM_MMIP_LS_CLAMP_DSIPLL_CLAMPI),
+				PRCM_MMIP_LS_CLAMP_SET);
+			val &= ~PRCM_PLLDSI_ENABLE_PRCM_PLLDSI_ENABLE;
+			writel(val, PRCM_PLLDSI_ENABLE);
+			r = -EAGAIN;
+		}
+	} else {
+		writel(PRCM_APE_RESETN_DSIPLL_RESETN, PRCM_APE_RESETN_CLR);
+	}
+	return r;
+}
+
+static int request_dsiclk(u8 n, bool enable)
+{
+	u32 val;
+
+	val = readl(PRCM_DSI_PLLOUT_SEL);
+	val &= ~dsiclk[n].divsel_mask;
+	val |= ((enable ? dsiclk[n].divsel : PRCM_DSI_PLLOUT_SEL_OFF) <<
+		dsiclk[n].divsel_shift);
+	writel(val, PRCM_DSI_PLLOUT_SEL);
+	return 0;
+}
+
+static int request_dsiescclk(u8 n, bool enable)
+{
+	u32 val;
+
+	val = readl(PRCM_DSITVCLK_DIV);
+	enable ? (val |= dsiescclk[n].en) : (val &= ~dsiescclk[n].en);
+	writel(val, PRCM_DSITVCLK_DIV);
+	return 0;
+}
+
+/**
+ * db8500_prcmu_request_clock() - Request for a clock to be enabled or disabled.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @clock:      The clock for which the request is made.
  * @enable:     Whether the clock should be enabled (true) or disabled (false).
  *
  * This function should only be used by the clock implementation.
  * Do not use it from any other place!
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int prcmu_request_clock(u8 clock, bool enable)
 {
 	if (clock < PRCMU_NUM_REG_CLOCKS)
@@ -1231,6 +2347,574 @@ int prcmu_request_clock(u8 clock, bool enable)
 }
 
 int prcmu_config_esram0_deep_sleep(u8 state)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int db8500_prcmu_request_clock(u8 clock, bool enable)
+{
+	if (clock == PRCMU_SGACLK)
+		return request_sga_clock(clock, enable);
+	else if (clock < PRCMU_NUM_REG_CLOCKS)
+		return request_clock(clock, enable);
+	else if (clock == PRCMU_TIMCLK)
+		return request_timclk(enable);
+	else if ((clock == PRCMU_DSI0CLK) || (clock == PRCMU_DSI1CLK))
+		return request_dsiclk((clock - PRCMU_DSI0CLK), enable);
+	else if ((PRCMU_DSI0ESCCLK <= clock) && (clock <= PRCMU_DSI2ESCCLK))
+		return request_dsiescclk((clock - PRCMU_DSI0ESCCLK), enable);
+	else if (clock == PRCMU_PLLDSI)
+		return request_plldsi(enable);
+	else if (clock == PRCMU_SYSCLK)
+		return request_sysclk(enable);
+	else if ((clock == PRCMU_PLLSOC0) || (clock == PRCMU_PLLSOC1))
+		return request_pll(clock, enable);
+	else
+		return -EINVAL;
+}
+
+static unsigned long pll_rate(void __iomem *reg, unsigned long src_rate,
+	int branch)
+{
+	u64 rate;
+	u32 val;
+	u32 d;
+	u32 div = 1;
+
+	val = readl(reg);
+
+	rate = src_rate;
+	rate *= ((val & PRCM_PLL_FREQ_D_MASK) >> PRCM_PLL_FREQ_D_SHIFT);
+
+	d = ((val & PRCM_PLL_FREQ_N_MASK) >> PRCM_PLL_FREQ_N_SHIFT);
+	if (d > 1)
+		div *= d;
+
+	d = ((val & PRCM_PLL_FREQ_R_MASK) >> PRCM_PLL_FREQ_R_SHIFT);
+	if (d > 1)
+		div *= d;
+
+	if (val & PRCM_PLL_FREQ_SELDIV2)
+		div *= 2;
+
+	if ((branch == PLL_FIX) || ((branch == PLL_DIV) &&
+		(val & PRCM_PLL_FREQ_DIV2EN) &&
+		((reg == PRCM_PLLSOC0_FREQ) ||
+<<<<<<< HEAD
+=======
+		 (reg == PRCM_PLLARM_FREQ) ||
+>>>>>>> refs/remotes/origin/master
+		 (reg == PRCM_PLLDDR_FREQ))))
+		div *= 2;
+
+	(void)do_div(rate, div);
+
+	return (unsigned long)rate;
+}
+
+#define ROOT_CLOCK_RATE 38400000
+
+static unsigned long clock_rate(u8 clock)
+{
+	u32 val;
+	u32 pllsw;
+	unsigned long rate = ROOT_CLOCK_RATE;
+
+<<<<<<< HEAD
+	val = readl(clk_mgt[clock].reg);
+=======
+	val = readl(prcmu_base + clk_mgt[clock].offset);
+>>>>>>> refs/remotes/origin/master
+
+	if (val & PRCM_CLK_MGT_CLK38) {
+		if (clk_mgt[clock].clk38div && (val & PRCM_CLK_MGT_CLK38DIV))
+			rate /= 2;
+		return rate;
+	}
+
+	val |= clk_mgt[clock].pllsw;
+	pllsw = (val & PRCM_CLK_MGT_CLKPLLSW_MASK);
+
+	if (pllsw == PRCM_CLK_MGT_CLKPLLSW_SOC0)
+		rate = pll_rate(PRCM_PLLSOC0_FREQ, rate, clk_mgt[clock].branch);
+	else if (pllsw == PRCM_CLK_MGT_CLKPLLSW_SOC1)
+		rate = pll_rate(PRCM_PLLSOC1_FREQ, rate, clk_mgt[clock].branch);
+	else if (pllsw == PRCM_CLK_MGT_CLKPLLSW_DDR)
+		rate = pll_rate(PRCM_PLLDDR_FREQ, rate, clk_mgt[clock].branch);
+	else
+		return 0;
+
+	if ((clock == PRCMU_SGACLK) &&
+		(val & PRCM_SGACLK_MGT_SGACLKDIV_BY_2_5_EN)) {
+		u64 r = (rate * 10);
+
+		(void)do_div(r, 25);
+		return (unsigned long)r;
+	}
+	val &= PRCM_CLK_MGT_CLKPLLDIV_MASK;
+	if (val)
+		return rate / val;
+	else
+		return 0;
+}
+
+<<<<<<< HEAD
+=======
+static unsigned long armss_rate(void)
+{
+	u32 r;
+	unsigned long rate;
+
+	r = readl(PRCM_ARM_CHGCLKREQ);
+
+	if (r & PRCM_ARM_CHGCLKREQ_PRCM_ARM_CHGCLKREQ) {
+		/* External ARMCLKFIX clock */
+
+		rate = pll_rate(PRCM_PLLDDR_FREQ, ROOT_CLOCK_RATE, PLL_FIX);
+
+		/* Check PRCM_ARM_CHGCLKREQ divider */
+		if (!(r & PRCM_ARM_CHGCLKREQ_PRCM_ARM_DIVSEL))
+			rate /= 2;
+
+		/* Check PRCM_ARMCLKFIX_MGT divider */
+		r = readl(PRCM_ARMCLKFIX_MGT);
+		r &= PRCM_CLK_MGT_CLKPLLDIV_MASK;
+		rate /= r;
+
+	} else {/* ARM PLL */
+		rate = pll_rate(PRCM_PLLARM_FREQ, ROOT_CLOCK_RATE, PLL_DIV);
+	}
+
+	return rate;
+}
+
+>>>>>>> refs/remotes/origin/master
+static unsigned long dsiclk_rate(u8 n)
+{
+	u32 divsel;
+	u32 div = 1;
+
+	divsel = readl(PRCM_DSI_PLLOUT_SEL);
+	divsel = ((divsel & dsiclk[n].divsel_mask) >> dsiclk[n].divsel_shift);
+
+	if (divsel == PRCM_DSI_PLLOUT_SEL_OFF)
+		divsel = dsiclk[n].divsel;
+<<<<<<< HEAD
+=======
+	else
+		dsiclk[n].divsel = divsel;
+>>>>>>> refs/remotes/origin/master
+
+	switch (divsel) {
+	case PRCM_DSI_PLLOUT_SEL_PHI_4:
+		div *= 2;
+	case PRCM_DSI_PLLOUT_SEL_PHI_2:
+		div *= 2;
+	case PRCM_DSI_PLLOUT_SEL_PHI:
+		return pll_rate(PRCM_PLLDSI_FREQ, clock_rate(PRCMU_HDMICLK),
+			PLL_RAW) / div;
+	default:
+		return 0;
+	}
+}
+
+static unsigned long dsiescclk_rate(u8 n)
+{
+	u32 div;
+
+	div = readl(PRCM_DSITVCLK_DIV);
+	div = ((div & dsiescclk[n].div_mask) >> (dsiescclk[n].div_shift));
+	return clock_rate(PRCMU_TVCLK) / max((u32)1, div);
+}
+
+unsigned long prcmu_clock_rate(u8 clock)
+{
+	if (clock < PRCMU_NUM_REG_CLOCKS)
+		return clock_rate(clock);
+	else if (clock == PRCMU_TIMCLK)
+		return ROOT_CLOCK_RATE / 16;
+	else if (clock == PRCMU_SYSCLK)
+		return ROOT_CLOCK_RATE;
+	else if (clock == PRCMU_PLLSOC0)
+		return pll_rate(PRCM_PLLSOC0_FREQ, ROOT_CLOCK_RATE, PLL_RAW);
+	else if (clock == PRCMU_PLLSOC1)
+		return pll_rate(PRCM_PLLSOC1_FREQ, ROOT_CLOCK_RATE, PLL_RAW);
+<<<<<<< HEAD
+=======
+	else if (clock == PRCMU_ARMSS)
+		return armss_rate();
+>>>>>>> refs/remotes/origin/master
+	else if (clock == PRCMU_PLLDDR)
+		return pll_rate(PRCM_PLLDDR_FREQ, ROOT_CLOCK_RATE, PLL_RAW);
+	else if (clock == PRCMU_PLLDSI)
+		return pll_rate(PRCM_PLLDSI_FREQ, clock_rate(PRCMU_HDMICLK),
+			PLL_RAW);
+	else if ((clock == PRCMU_DSI0CLK) || (clock == PRCMU_DSI1CLK))
+		return dsiclk_rate(clock - PRCMU_DSI0CLK);
+	else if ((PRCMU_DSI0ESCCLK <= clock) && (clock <= PRCMU_DSI2ESCCLK))
+		return dsiescclk_rate(clock - PRCMU_DSI0ESCCLK);
+	else
+		return 0;
+}
+
+static unsigned long clock_source_rate(u32 clk_mgt_val, int branch)
+{
+	if (clk_mgt_val & PRCM_CLK_MGT_CLK38)
+		return ROOT_CLOCK_RATE;
+	clk_mgt_val &= PRCM_CLK_MGT_CLKPLLSW_MASK;
+	if (clk_mgt_val == PRCM_CLK_MGT_CLKPLLSW_SOC0)
+		return pll_rate(PRCM_PLLSOC0_FREQ, ROOT_CLOCK_RATE, branch);
+	else if (clk_mgt_val == PRCM_CLK_MGT_CLKPLLSW_SOC1)
+		return pll_rate(PRCM_PLLSOC1_FREQ, ROOT_CLOCK_RATE, branch);
+	else if (clk_mgt_val == PRCM_CLK_MGT_CLKPLLSW_DDR)
+		return pll_rate(PRCM_PLLDDR_FREQ, ROOT_CLOCK_RATE, branch);
+	else
+		return 0;
+}
+
+static u32 clock_divider(unsigned long src_rate, unsigned long rate)
+{
+	u32 div;
+
+	div = (src_rate / rate);
+	if (div == 0)
+		return 1;
+	if (rate < (src_rate / div))
+		div++;
+	return div;
+}
+
+static long round_clock_rate(u8 clock, unsigned long rate)
+{
+	u32 val;
+	u32 div;
+	unsigned long src_rate;
+	long rounded_rate;
+
+<<<<<<< HEAD
+	val = readl(clk_mgt[clock].reg);
+=======
+	val = readl(prcmu_base + clk_mgt[clock].offset);
+>>>>>>> refs/remotes/origin/master
+	src_rate = clock_source_rate((val | clk_mgt[clock].pllsw),
+		clk_mgt[clock].branch);
+	div = clock_divider(src_rate, rate);
+	if (val & PRCM_CLK_MGT_CLK38) {
+		if (clk_mgt[clock].clk38div) {
+			if (div > 2)
+				div = 2;
+		} else {
+			div = 1;
+		}
+	} else if ((clock == PRCMU_SGACLK) && (div == 3)) {
+		u64 r = (src_rate * 10);
+
+		(void)do_div(r, 25);
+		if (r <= rate)
+			return (unsigned long)r;
+	}
+	rounded_rate = (src_rate / min(div, (u32)31));
+
+	return rounded_rate;
+}
+
+<<<<<<< HEAD
+=======
+/* CPU FREQ table, may be changed due to if MAX_OPP is supported. */
+static struct cpufreq_frequency_table db8500_cpufreq_table[] = {
+	{ .frequency = 200000, .driver_data = ARM_EXTCLK,},
+	{ .frequency = 400000, .driver_data = ARM_50_OPP,},
+	{ .frequency = 800000, .driver_data = ARM_100_OPP,},
+	{ .frequency = CPUFREQ_TABLE_END,}, /* To be used for MAX_OPP. */
+	{ .frequency = CPUFREQ_TABLE_END,},
+};
+
+static long round_armss_rate(unsigned long rate)
+{
+	long freq = 0;
+	int i = 0;
+
+	/* cpufreq table frequencies is in KHz. */
+	rate = rate / 1000;
+
+	/* Find the corresponding arm opp from the cpufreq table. */
+	while (db8500_cpufreq_table[i].frequency != CPUFREQ_TABLE_END) {
+		freq = db8500_cpufreq_table[i].frequency;
+		if (freq == rate)
+			break;
+		i++;
+	}
+
+	/* Return the last valid value, even if a match was not found. */
+	return freq * 1000;
+}
+
+>>>>>>> refs/remotes/origin/master
+#define MIN_PLL_VCO_RATE 600000000ULL
+#define MAX_PLL_VCO_RATE 1680640000ULL
+
+static long round_plldsi_rate(unsigned long rate)
+{
+	long rounded_rate = 0;
+	unsigned long src_rate;
+	unsigned long rem;
+	u32 r;
+
+	src_rate = clock_rate(PRCMU_HDMICLK);
+	rem = rate;
+
+	for (r = 7; (rem > 0) && (r > 0); r--) {
+		u64 d;
+
+		d = (r * rate);
+		(void)do_div(d, src_rate);
+		if (d < 6)
+			d = 6;
+		else if (d > 255)
+			d = 255;
+		d *= src_rate;
+		if (((2 * d) < (r * MIN_PLL_VCO_RATE)) ||
+			((r * MAX_PLL_VCO_RATE) < (2 * d)))
+			continue;
+		(void)do_div(d, r);
+		if (rate < d) {
+			if (rounded_rate == 0)
+				rounded_rate = (long)d;
+			break;
+		}
+		if ((rate - d) < rem) {
+			rem = (rate - d);
+			rounded_rate = (long)d;
+		}
+	}
+	return rounded_rate;
+}
+
+static long round_dsiclk_rate(unsigned long rate)
+{
+	u32 div;
+	unsigned long src_rate;
+	long rounded_rate;
+
+	src_rate = pll_rate(PRCM_PLLDSI_FREQ, clock_rate(PRCMU_HDMICLK),
+		PLL_RAW);
+	div = clock_divider(src_rate, rate);
+	rounded_rate = (src_rate / ((div > 2) ? 4 : div));
+
+	return rounded_rate;
+}
+
+static long round_dsiescclk_rate(unsigned long rate)
+{
+	u32 div;
+	unsigned long src_rate;
+	long rounded_rate;
+
+	src_rate = clock_rate(PRCMU_TVCLK);
+	div = clock_divider(src_rate, rate);
+	rounded_rate = (src_rate / min(div, (u32)255));
+
+	return rounded_rate;
+}
+
+long prcmu_round_clock_rate(u8 clock, unsigned long rate)
+{
+	if (clock < PRCMU_NUM_REG_CLOCKS)
+		return round_clock_rate(clock, rate);
+<<<<<<< HEAD
+=======
+	else if (clock == PRCMU_ARMSS)
+		return round_armss_rate(rate);
+>>>>>>> refs/remotes/origin/master
+	else if (clock == PRCMU_PLLDSI)
+		return round_plldsi_rate(rate);
+	else if ((clock == PRCMU_DSI0CLK) || (clock == PRCMU_DSI1CLK))
+		return round_dsiclk_rate(rate);
+	else if ((PRCMU_DSI0ESCCLK <= clock) && (clock <= PRCMU_DSI2ESCCLK))
+		return round_dsiescclk_rate(rate);
+	else
+		return (long)prcmu_clock_rate(clock);
+}
+
+static void set_clock_rate(u8 clock, unsigned long rate)
+{
+	u32 val;
+	u32 div;
+	unsigned long src_rate;
+	unsigned long flags;
+
+	spin_lock_irqsave(&clk_mgt_lock, flags);
+
+	/* Grab the HW semaphore. */
+	while ((readl(PRCM_SEM) & PRCM_SEM_PRCM_SEM) != 0)
+		cpu_relax();
+
+<<<<<<< HEAD
+	val = readl(clk_mgt[clock].reg);
+=======
+	val = readl(prcmu_base + clk_mgt[clock].offset);
+>>>>>>> refs/remotes/origin/master
+	src_rate = clock_source_rate((val | clk_mgt[clock].pllsw),
+		clk_mgt[clock].branch);
+	div = clock_divider(src_rate, rate);
+	if (val & PRCM_CLK_MGT_CLK38) {
+		if (clk_mgt[clock].clk38div) {
+			if (div > 1)
+				val |= PRCM_CLK_MGT_CLK38DIV;
+			else
+				val &= ~PRCM_CLK_MGT_CLK38DIV;
+		}
+	} else if (clock == PRCMU_SGACLK) {
+		val &= ~(PRCM_CLK_MGT_CLKPLLDIV_MASK |
+			PRCM_SGACLK_MGT_SGACLKDIV_BY_2_5_EN);
+		if (div == 3) {
+			u64 r = (src_rate * 10);
+
+			(void)do_div(r, 25);
+			if (r <= rate) {
+				val |= PRCM_SGACLK_MGT_SGACLKDIV_BY_2_5_EN;
+				div = 0;
+			}
+		}
+		val |= min(div, (u32)31);
+	} else {
+		val &= ~PRCM_CLK_MGT_CLKPLLDIV_MASK;
+		val |= min(div, (u32)31);
+	}
+<<<<<<< HEAD
+	writel(val, clk_mgt[clock].reg);
+=======
+	writel(val, prcmu_base + clk_mgt[clock].offset);
+>>>>>>> refs/remotes/origin/master
+
+	/* Release the HW semaphore. */
+	writel(0, PRCM_SEM);
+
+	spin_unlock_irqrestore(&clk_mgt_lock, flags);
+}
+
+<<<<<<< HEAD
+=======
+static int set_armss_rate(unsigned long rate)
+{
+	int i = 0;
+
+	/* cpufreq table frequencies is in KHz. */
+	rate = rate / 1000;
+
+	/* Find the corresponding arm opp from the cpufreq table. */
+	while (db8500_cpufreq_table[i].frequency != CPUFREQ_TABLE_END) {
+		if (db8500_cpufreq_table[i].frequency == rate)
+			break;
+		i++;
+	}
+
+	if (db8500_cpufreq_table[i].frequency != rate)
+		return -EINVAL;
+
+	/* Set the new arm opp. */
+	return db8500_prcmu_set_arm_opp(db8500_cpufreq_table[i].driver_data);
+}
+
+>>>>>>> refs/remotes/origin/master
+static int set_plldsi_rate(unsigned long rate)
+{
+	unsigned long src_rate;
+	unsigned long rem;
+	u32 pll_freq = 0;
+	u32 r;
+
+	src_rate = clock_rate(PRCMU_HDMICLK);
+	rem = rate;
+
+	for (r = 7; (rem > 0) && (r > 0); r--) {
+		u64 d;
+		u64 hwrate;
+
+		d = (r * rate);
+		(void)do_div(d, src_rate);
+		if (d < 6)
+			d = 6;
+		else if (d > 255)
+			d = 255;
+		hwrate = (d * src_rate);
+		if (((2 * hwrate) < (r * MIN_PLL_VCO_RATE)) ||
+			((r * MAX_PLL_VCO_RATE) < (2 * hwrate)))
+			continue;
+		(void)do_div(hwrate, r);
+		if (rate < hwrate) {
+			if (pll_freq == 0)
+				pll_freq = (((u32)d << PRCM_PLL_FREQ_D_SHIFT) |
+					(r << PRCM_PLL_FREQ_R_SHIFT));
+			break;
+		}
+		if ((rate - hwrate) < rem) {
+			rem = (rate - hwrate);
+			pll_freq = (((u32)d << PRCM_PLL_FREQ_D_SHIFT) |
+				(r << PRCM_PLL_FREQ_R_SHIFT));
+		}
+	}
+	if (pll_freq == 0)
+		return -EINVAL;
+
+	pll_freq |= (1 << PRCM_PLL_FREQ_N_SHIFT);
+	writel(pll_freq, PRCM_PLLDSI_FREQ);
+
+	return 0;
+}
+
+static void set_dsiclk_rate(u8 n, unsigned long rate)
+{
+	u32 val;
+	u32 div;
+
+	div = clock_divider(pll_rate(PRCM_PLLDSI_FREQ,
+			clock_rate(PRCMU_HDMICLK), PLL_RAW), rate);
+
+	dsiclk[n].divsel = (div == 1) ? PRCM_DSI_PLLOUT_SEL_PHI :
+			   (div == 2) ? PRCM_DSI_PLLOUT_SEL_PHI_2 :
+			   /* else */	PRCM_DSI_PLLOUT_SEL_PHI_4;
+
+	val = readl(PRCM_DSI_PLLOUT_SEL);
+	val &= ~dsiclk[n].divsel_mask;
+	val |= (dsiclk[n].divsel << dsiclk[n].divsel_shift);
+	writel(val, PRCM_DSI_PLLOUT_SEL);
+}
+
+static void set_dsiescclk_rate(u8 n, unsigned long rate)
+{
+	u32 val;
+	u32 div;
+
+	div = clock_divider(clock_rate(PRCMU_TVCLK), rate);
+	val = readl(PRCM_DSITVCLK_DIV);
+	val &= ~dsiescclk[n].div_mask;
+	val |= (min(div, (u32)255) << dsiescclk[n].div_shift);
+	writel(val, PRCM_DSITVCLK_DIV);
+}
+
+int prcmu_set_clock_rate(u8 clock, unsigned long rate)
+{
+	if (clock < PRCMU_NUM_REG_CLOCKS)
+		set_clock_rate(clock, rate);
+<<<<<<< HEAD
+=======
+	else if (clock == PRCMU_ARMSS)
+		return set_armss_rate(rate);
+>>>>>>> refs/remotes/origin/master
+	else if (clock == PRCMU_PLLDSI)
+		return set_plldsi_rate(rate);
+	else if ((clock == PRCMU_DSI0CLK) || (clock == PRCMU_DSI1CLK))
+		set_dsiclk_rate((clock - PRCMU_DSI0CLK), rate);
+	else if ((PRCMU_DSI0ESCCLK <= clock) && (clock <= PRCMU_DSI2ESCCLK))
+		set_dsiescclk_rate((clock - PRCMU_DSI0ESCCLK), rate);
+	return 0;
+}
+
+int db8500_prcmu_config_esram0_deep_sleep(u8 state)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if ((state > ESRAM0_DEEP_SLEEP_STATE_RET) ||
 	    (state < ESRAM0_DEEP_SLEEP_STATE_OFF))
@@ -1238,7 +2922,15 @@ int prcmu_config_esram0_deep_sleep(u8 state)
 
 	mutex_lock(&mb4_transfer.lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	writeb(MB4H_MEM_ST, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB4));
@@ -1248,7 +2940,15 @@ int prcmu_config_esram0_deep_sleep(u8 state)
 	       (tcdm_base + PRCM_REQ_MB4_DDR_ST_AP_DEEP_IDLE));
 	writeb(state, (tcdm_base + PRCM_REQ_MB4_ESRAM0_ST));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(4), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(4), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(4), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 	wait_for_completion(&mb4_transfer.work);
 
 	mutex_unlock(&mb4_transfer.lock);
@@ -1256,17 +2956,39 @@ int prcmu_config_esram0_deep_sleep(u8 state)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int prcmu_config_hotdog(u8 threshold)
 {
 	mutex_lock(&mb4_transfer.lock);
 
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int db8500_prcmu_config_hotdog(u8 threshold)
+{
+	mutex_lock(&mb4_transfer.lock);
+
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	writeb(threshold, (tcdm_base + PRCM_REQ_MB4_HOTDOG_THRESHOLD));
 	writeb(MB4H_HOTDOG, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB4));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(4), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(4), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(4), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 	wait_for_completion(&mb4_transfer.work);
 
 	mutex_unlock(&mb4_transfer.lock);
@@ -1274,11 +2996,25 @@ int prcmu_config_hotdog(u8 threshold)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int prcmu_config_hotmon(u8 low, u8 high)
 {
 	mutex_lock(&mb4_transfer.lock);
 
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int db8500_prcmu_config_hotmon(u8 low, u8 high)
+{
+	mutex_lock(&mb4_transfer.lock);
+
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	writeb(low, (tcdm_base + PRCM_REQ_MB4_HOTMON_LOW));
@@ -1287,7 +3023,15 @@ int prcmu_config_hotmon(u8 low, u8 high)
 		(tcdm_base + PRCM_REQ_MB4_HOTMON_CONFIG));
 	writeb(MB4H_HOTMON, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB4));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(4), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(4), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(4), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 	wait_for_completion(&mb4_transfer.work);
 
 	mutex_unlock(&mb4_transfer.lock);
@@ -1299,13 +3043,29 @@ static int config_hot_period(u16 val)
 {
 	mutex_lock(&mb4_transfer.lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	writew(val, (tcdm_base + PRCM_REQ_MB4_HOT_PERIOD));
 	writeb(MB4H_HOT_PERIOD, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB4));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(4), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(4), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(4), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 	wait_for_completion(&mb4_transfer.work);
 
 	mutex_unlock(&mb4_transfer.lock);
@@ -1313,7 +3073,15 @@ static int config_hot_period(u16 val)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int prcmu_start_temp_sense(u16 cycles32k)
+=======
+int db8500_prcmu_start_temp_sense(u16 cycles32k)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int db8500_prcmu_start_temp_sense(u16 cycles32k)
+>>>>>>> refs/remotes/origin/master
 {
 	if (cycles32k == 0xFFFF)
 		return -EINVAL;
@@ -1321,11 +3089,21 @@ int prcmu_start_temp_sense(u16 cycles32k)
 	return config_hot_period(cycles32k);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int prcmu_stop_temp_sense(void)
+=======
+int db8500_prcmu_stop_temp_sense(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int db8500_prcmu_stop_temp_sense(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return config_hot_period(0xFFFF);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * prcmu_set_clock_divider() - Configure the clock divider.
  * @clock:	The clock for which the request is made.
@@ -1359,7 +3137,94 @@ int prcmu_set_clock_divider(u8 clock, u8 divider)
 	spin_unlock_irqrestore(&clk_mgt_lock, flags);
 
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int prcmu_a9wdog(u8 cmd, u8 d0, u8 d1, u8 d2, u8 d3)
+{
+
+	mutex_lock(&mb4_transfer.lock);
+
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(4))
+		cpu_relax();
+
+	writeb(d0, (tcdm_base + PRCM_REQ_MB4_A9WDOG_0));
+	writeb(d1, (tcdm_base + PRCM_REQ_MB4_A9WDOG_1));
+	writeb(d2, (tcdm_base + PRCM_REQ_MB4_A9WDOG_2));
+	writeb(d3, (tcdm_base + PRCM_REQ_MB4_A9WDOG_3));
+
+	writeb(cmd, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB4));
+
+	writel(MBOX_BIT(4), PRCM_MBOX_CPU_SET);
+	wait_for_completion(&mb4_transfer.work);
+
+	mutex_unlock(&mb4_transfer.lock);
+
+	return 0;
+
 }
+
+int db8500_prcmu_config_a9wdog(u8 num, bool sleep_auto_off)
+{
+	BUG_ON(num == 0 || num > 0xf);
+	return prcmu_a9wdog(MB4H_A9WDOG_CONF, num, 0, 0,
+			    sleep_auto_off ? A9WDOG_AUTO_OFF_EN :
+			    A9WDOG_AUTO_OFF_DIS);
+}
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(db8500_prcmu_config_a9wdog);
+>>>>>>> refs/remotes/origin/master
+
+int db8500_prcmu_enable_a9wdog(u8 id)
+{
+	return prcmu_a9wdog(MB4H_A9WDOG_EN, id, 0, 0, 0);
+}
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(db8500_prcmu_enable_a9wdog);
+>>>>>>> refs/remotes/origin/master
+
+int db8500_prcmu_disable_a9wdog(u8 id)
+{
+	return prcmu_a9wdog(MB4H_A9WDOG_DIS, id, 0, 0, 0);
+}
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(db8500_prcmu_disable_a9wdog);
+>>>>>>> refs/remotes/origin/master
+
+int db8500_prcmu_kick_a9wdog(u8 id)
+{
+	return prcmu_a9wdog(MB4H_A9WDOG_KICK, id, 0, 0, 0);
+}
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(db8500_prcmu_kick_a9wdog);
+>>>>>>> refs/remotes/origin/master
+
+/*
+ * timeout is 28 bit, in ms.
+ */
+int db8500_prcmu_load_a9wdog(u8 id, u32 timeout)
+{
+	return prcmu_a9wdog(MB4H_A9WDOG_LOAD,
+			    (id & A9WDOG_ID_MASK) |
+			    /*
+			     * Put the lowest 28 bits of timeout at
+			     * offset 4. Four first bits are used for id.
+			     */
+			    (u8)((timeout << 4) & 0xf0),
+			    (u8)((timeout >> 4) & 0xff),
+			    (u8)((timeout >> 12) & 0xff),
+			    (u8)((timeout >> 20) & 0xff));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+}
+=======
+}
+EXPORT_SYMBOL(db8500_prcmu_load_a9wdog);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * prcmu_abb_read() - Read register value(s) from the ABB.
@@ -1380,15 +3245,36 @@ int prcmu_abb_read(u8 slave, u8 reg, u8 *value, u8 size)
 
 	mutex_lock(&mb5_transfer.lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(5))
 		cpu_relax();
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(5))
+		cpu_relax();
+
+	writeb(0, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB5));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	writeb(PRCMU_I2C_READ(slave), (tcdm_base + PRCM_REQ_MB5_I2C_SLAVE_OP));
 	writeb(PRCMU_I2C_STOP_EN, (tcdm_base + PRCM_REQ_MB5_I2C_HW_BITS));
 	writeb(reg, (tcdm_base + PRCM_REQ_MB5_I2C_REG));
 	writeb(0, (tcdm_base + PRCM_REQ_MB5_I2C_VAL));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(5), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(5), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(5), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 
 	if (!wait_for_completion_timeout(&mb5_transfer.work,
 				msecs_to_jiffies(20000))) {
@@ -1408,6 +3294,8 @@ int prcmu_abb_read(u8 slave, u8 reg, u8 *value, u8 size)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * prcmu_abb_write() - Write register value(s) to the ABB.
  * @slave:	The I2C slave address.
  * @reg:	The (start) register address.
@@ -1418,6 +3306,26 @@ int prcmu_abb_read(u8 slave, u8 reg, u8 *value, u8 size)
  * @size has to be 1 for the current firmware version.
  */
 int prcmu_abb_write(u8 slave, u8 reg, u8 *value, u8 size)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * prcmu_abb_write_masked() - Write masked register value(s) to the ABB.
+ * @slave:	The I2C slave address.
+ * @reg:	The (start) register address.
+ * @value:	The value(s) to write.
+ * @mask:	The mask(s) to use.
+ * @size:	The number of registers to write.
+ *
+ * Writes masked register value(s) to the ABB.
+ * For each @value, only the bits set to 1 in the corresponding @mask
+ * will be written. The other bits are not changed.
+ * @size has to be 1 for the current firmware version.
+ */
+int prcmu_abb_write_masked(u8 slave, u8 reg, u8 *value, u8 *mask, u8 size)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 
@@ -1426,15 +3334,36 @@ int prcmu_abb_write(u8 slave, u8 reg, u8 *value, u8 size)
 
 	mutex_lock(&mb5_transfer.lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(5))
 		cpu_relax();
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(5))
+		cpu_relax();
+
+	writeb(~*mask, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB5));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	writeb(PRCMU_I2C_WRITE(slave), (tcdm_base + PRCM_REQ_MB5_I2C_SLAVE_OP));
 	writeb(PRCMU_I2C_STOP_EN, (tcdm_base + PRCM_REQ_MB5_I2C_HW_BITS));
 	writeb(reg, (tcdm_base + PRCM_REQ_MB5_I2C_REG));
 	writeb(*value, (tcdm_base + PRCM_REQ_MB5_I2C_VAL));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(5), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+	writel(MBOX_BIT(5), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(5), PRCM_MBOX_CPU_SET);
+>>>>>>> refs/remotes/origin/master
 
 	if (!wait_for_completion_timeout(&mb5_transfer.work,
 				msecs_to_jiffies(20000))) {
@@ -1451,52 +3380,180 @@ int prcmu_abb_write(u8 slave, u8 reg, u8 *value, u8 size)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * prcmu_abb_write() - Write register value(s) to the ABB.
+ * @slave:	The I2C slave address.
+ * @reg:	The (start) register address.
+ * @value:	The value(s) to write.
+ * @size:	The number of registers to write.
+ *
+ * Writes register value(s) to the ABB.
+ * @size has to be 1 for the current firmware version.
+ */
+int prcmu_abb_write(u8 slave, u8 reg, u8 *value, u8 size)
+{
+	u8 mask = ~0;
+
+	return prcmu_abb_write_masked(slave, reg, value, &mask, size);
+}
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
  * prcmu_ac_wake_req - should be called whenever ARM wants to wakeup Modem
  */
 void prcmu_ac_wake_req(void)
 {
 	u32 val;
+<<<<<<< HEAD
 
 	mutex_lock(&mb0_transfer.ac_wake_lock);
 
 	val = readl(_PRCMU_BASE + PRCM_HOSTACCESS_REQ);
+=======
+	u32 status;
+=======
+ * prcmu_ac_wake_req - should be called whenever ARM wants to wakeup Modem
+ */
+int prcmu_ac_wake_req(void)
+{
+	u32 val;
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
+
+	mutex_lock(&mb0_transfer.ac_wake_lock);
+
+	val = readl(PRCM_HOSTACCESS_REQ);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (val & PRCM_HOSTACCESS_REQ_HOSTACCESS_REQ)
 		goto unlock_and_return;
 
 	atomic_set(&ac_wake_req_state, 1);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel((val | PRCM_HOSTACCESS_REQ_HOSTACCESS_REQ),
 		(_PRCMU_BASE + PRCM_HOSTACCESS_REQ));
 
 	if (!wait_for_completion_timeout(&mb0_transfer.ac_wake_work,
 			msecs_to_jiffies(20000))) {
 		pr_err("prcmu: %s timed out (20 s) waiting for a reply.\n",
+=======
+retry:
+	writel((val | PRCM_HOSTACCESS_REQ_HOSTACCESS_REQ), PRCM_HOSTACCESS_REQ);
+
+	if (!wait_for_completion_timeout(&mb0_transfer.ac_wake_work,
+			msecs_to_jiffies(5000))) {
+		pr_crit("prcmu: %s timed out (5 s) waiting for a reply.\n",
 			__func__);
+		goto unlock_and_return;
+	}
+
+	/*
+	 * The modem can generate an AC_WAKE_ACK, and then still go to sleep.
+	 * As a workaround, we wait, and then check that the modem is indeed
+	 * awake (in terms of the value of the PRCM_MOD_AWAKE_STATUS
+	 * register, which may not be the whole truth).
+	 */
+	udelay(400);
+	status = (readl(PRCM_MOD_AWAKE_STATUS) & BITS(0, 2));
+	if (status != (PRCM_MOD_AWAKE_STATUS_PRCM_MOD_AAPD_AWAKE |
+			PRCM_MOD_AWAKE_STATUS_PRCM_MOD_COREPD_AWAKE)) {
+		pr_err("prcmu: %s received ack, but modem not awake (0x%X).\n",
+			__func__, status);
+		udelay(1200);
+		writel(val, PRCM_HOSTACCESS_REQ);
+		if (wait_for_completion_timeout(&mb0_transfer.ac_wake_work,
+				msecs_to_jiffies(5000)))
+			goto retry;
+		pr_crit("prcmu: %s timed out (5 s) waiting for AC_SLEEP_ACK.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+			__func__);
+=======
+	/*
+	 * Force Modem Wake-up before hostaccess_req ping-pong.
+	 * It prevents Modem to enter in Sleep while acking the hostaccess
+	 * request. The 31us delay has been calculated by HWI.
+	 */
+	val |= PRCM_HOSTACCESS_REQ_WAKE_REQ;
+	writel(val, PRCM_HOSTACCESS_REQ);
+
+	udelay(31);
+
+	val |= PRCM_HOSTACCESS_REQ_HOSTACCESS_REQ;
+	writel(val, PRCM_HOSTACCESS_REQ);
+
+	if (!wait_for_completion_timeout(&mb0_transfer.ac_wake_work,
+			msecs_to_jiffies(5000))) {
+#if defined(CONFIG_DBX500_PRCMU_DEBUG)
+		db8500_prcmu_debug_dump(__func__, true, true);
+#endif
+		pr_crit("prcmu: %s timed out (5 s) waiting for a reply.\n",
+			__func__);
+		ret = -EFAULT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 unlock_and_return:
 	mutex_unlock(&mb0_transfer.ac_wake_lock);
+<<<<<<< HEAD
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * prcmu_ac_sleep_req - called when ARM no longer needs to talk to modem
  */
+<<<<<<< HEAD
 void prcmu_ac_sleep_req()
+=======
+void prcmu_ac_sleep_req(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 val;
 
 	mutex_lock(&mb0_transfer.ac_wake_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	val = readl(_PRCMU_BASE + PRCM_HOSTACCESS_REQ);
+=======
+	val = readl(PRCM_HOSTACCESS_REQ);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	val = readl(PRCM_HOSTACCESS_REQ);
+>>>>>>> refs/remotes/origin/master
 	if (!(val & PRCM_HOSTACCESS_REQ_HOSTACCESS_REQ))
 		goto unlock_and_return;
 
 	writel((val & ~PRCM_HOSTACCESS_REQ_HOSTACCESS_REQ),
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(_PRCMU_BASE + PRCM_HOSTACCESS_REQ));
 
 	if (!wait_for_completion_timeout(&mb0_transfer.ac_wake_work,
 			msecs_to_jiffies(20000))) {
 		pr_err("prcmu: %s timed out (20 s) waiting for a reply.\n",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		PRCM_HOSTACCESS_REQ);
+
+	if (!wait_for_completion_timeout(&mb0_transfer.ac_wake_work,
+			msecs_to_jiffies(5000))) {
+		pr_crit("prcmu: %s timed out (5 s) waiting for a reply.\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			__func__);
 	}
 
@@ -1506,12 +3563,22 @@ unlock_and_return:
 	mutex_unlock(&mb0_transfer.ac_wake_lock);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 bool prcmu_is_ac_wake_requested(void)
+=======
+bool db8500_prcmu_is_ac_wake_requested(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool db8500_prcmu_is_ac_wake_requested(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return (atomic_read(&ac_wake_req_state) != 0);
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * prcmu_system_reset - System reset
  *
  * Saves the reset reason code and then sets the APE_SOFRST register which
@@ -1535,6 +3602,47 @@ void prcmu_modem_reset(void)
 
 	writeb(MB1H_RESET_MODEM, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB1));
 	writel(MBOX_BIT(1), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * db8500_prcmu_system_reset - System reset
+ *
+ * Saves the reset reason code and then sets the APE_SOFTRST register which
+ * fires interrupt to fw
+ */
+void db8500_prcmu_system_reset(u16 reset_code)
+{
+	writew(reset_code, (tcdm_base + PRCM_SW_RST_REASON));
+	writel(1, PRCM_APE_SOFTRST);
+}
+
+/**
+ * db8500_prcmu_get_reset_code - Retrieve SW reset reason code
+ *
+ * Retrieves the reset reason code stored by prcmu_system_reset() before
+ * last restart.
+ */
+u16 db8500_prcmu_get_reset_code(void)
+{
+	return readw(tcdm_base + PRCM_SW_RST_REASON);
+}
+
+/**
+ * db8500_prcmu_reset_modem - ask the PRCMU to reset modem
+ */
+void db8500_prcmu_modem_reset(void)
+{
+	mutex_lock(&mb1_transfer.lock);
+
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(1))
+		cpu_relax();
+
+	writeb(MB1H_RESET_MODEM, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB1));
+	writel(MBOX_BIT(1), PRCM_MBOX_CPU_SET);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wait_for_completion(&mb1_transfer.work);
 
 	/*
@@ -1551,11 +3659,25 @@ static void ack_dbb_wakeup(void)
 
 	spin_lock_irqsave(&mb0_transfer.lock, flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (readl(_PRCMU_BASE + PRCM_MBOX_CPU_VAL) & MBOX_BIT(0))
 		cpu_relax();
 
 	writeb(MB0H_READ_WAKEUP_ACK, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB0));
 	writel(MBOX_BIT(0), (_PRCMU_BASE + PRCM_MBOX_CPU_SET));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	while (readl(PRCM_MBOX_CPU_VAL) & MBOX_BIT(0))
+		cpu_relax();
+
+	writeb(MB0H_READ_WAKEUP_ACK, (tcdm_base + PRCM_MBOX_HEADER_REQ_MB0));
+	writel(MBOX_BIT(0), PRCM_MBOX_CPU_SET);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&mb0_transfer.lock, flags);
 }
@@ -1591,7 +3713,11 @@ static bool read_mailbox_0(void)
 
 		for (n = 0; n < NUM_PRCMU_WAKEUPS; n++) {
 			if (ev & prcmu_irq_bit[n])
+<<<<<<< HEAD
 				generic_handle_irq(IRQ_PRCMU_BASE + n);
+=======
+				generic_handle_irq(irq_find_mapping(db8500_irq_domain, n));
+>>>>>>> refs/remotes/origin/master
 		}
 		r = true;
 		break;
@@ -1600,7 +3726,15 @@ static bool read_mailbox_0(void)
 		r = false;
 		break;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(0), (_PRCMU_BASE + PRCM_ARM_IT1_CLR));
+=======
+	writel(MBOX_BIT(0), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(0), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
@@ -1613,7 +3747,15 @@ static bool read_mailbox_1(void)
 		PRCM_ACK_MB1_CURRENT_APE_OPP);
 	mb1_transfer.ack.ape_voltage_status = readb(tcdm_base +
 		PRCM_ACK_MB1_APE_VOLTAGE_STATUS);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(1), (_PRCMU_BASE + PRCM_ARM_IT1_CLR));
+=======
+	writel(MBOX_BIT(1), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(1), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/master
 	complete(&mb1_transfer.work);
 	return false;
 }
@@ -1621,14 +3763,30 @@ static bool read_mailbox_1(void)
 static bool read_mailbox_2(void)
 {
 	mb2_transfer.ack.status = readb(tcdm_base + PRCM_ACK_MB2_DPS_STATUS);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(2), (_PRCMU_BASE + PRCM_ARM_IT1_CLR));
+=======
+	writel(MBOX_BIT(2), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(2), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/master
 	complete(&mb2_transfer.work);
 	return false;
 }
 
 static bool read_mailbox_3(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(3), (_PRCMU_BASE + PRCM_ARM_IT1_CLR));
+=======
+	writel(MBOX_BIT(3), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(3), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/master
 	return false;
 }
 
@@ -1643,6 +3801,20 @@ static bool read_mailbox_4(void)
 	case MB4H_HOTDOG:
 	case MB4H_HOTMON:
 	case MB4H_HOT_PERIOD:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case MB4H_A9WDOG_CONF:
+	case MB4H_A9WDOG_EN:
+	case MB4H_A9WDOG_DIS:
+	case MB4H_A9WDOG_LOAD:
+	case MB4H_A9WDOG_KICK:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		print_unknown_header_warning(4, header);
@@ -1650,7 +3822,15 @@ static bool read_mailbox_4(void)
 		break;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(4), (_PRCMU_BASE + PRCM_ARM_IT1_CLR));
+=======
+	writel(MBOX_BIT(4), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(4), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/master
 
 	if (do_complete)
 		complete(&mb4_transfer.work);
@@ -1662,20 +3842,44 @@ static bool read_mailbox_5(void)
 {
 	mb5_transfer.ack.status = readb(tcdm_base + PRCM_ACK_MB5_I2C_STATUS);
 	mb5_transfer.ack.value = readb(tcdm_base + PRCM_ACK_MB5_I2C_VAL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(5), (_PRCMU_BASE + PRCM_ARM_IT1_CLR));
+=======
+	writel(MBOX_BIT(5), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(5), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/master
 	complete(&mb5_transfer.work);
 	return false;
 }
 
 static bool read_mailbox_6(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(6), (_PRCMU_BASE + PRCM_ARM_IT1_CLR));
+=======
+	writel(MBOX_BIT(6), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(6), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/master
 	return false;
 }
 
 static bool read_mailbox_7(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writel(MBOX_BIT(7), (_PRCMU_BASE + PRCM_ARM_IT1_CLR));
+=======
+	writel(MBOX_BIT(7), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(MBOX_BIT(7), PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/master
 	return false;
 }
 
@@ -1696,7 +3900,15 @@ static irqreturn_t prcmu_irq_handler(int irq, void *data)
 	u8 n;
 	irqreturn_t r;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bits = (readl(_PRCMU_BASE + PRCM_ARM_IT1_VAL) & ALL_MBOX_BITS);
+=======
+	bits = (readl(PRCM_ARM_IT1_VAL) & ALL_MBOX_BITS);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bits = (readl(PRCM_ARM_IT1_VAL) & ALL_MBOX_BITS);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(!bits))
 		return IRQ_NONE;
 
@@ -1734,7 +3946,11 @@ static void prcmu_irq_mask(struct irq_data *d)
 
 	spin_lock_irqsave(&mb0_transfer.dbb_irqs_lock, flags);
 
+<<<<<<< HEAD
 	mb0_transfer.req.dbb_irqs &= ~prcmu_irq_bit[d->irq - IRQ_PRCMU_BASE];
+=======
+	mb0_transfer.req.dbb_irqs &= ~prcmu_irq_bit[d->hwirq];
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&mb0_transfer.dbb_irqs_lock, flags);
 
@@ -1748,7 +3964,11 @@ static void prcmu_irq_unmask(struct irq_data *d)
 
 	spin_lock_irqsave(&mb0_transfer.dbb_irqs_lock, flags);
 
+<<<<<<< HEAD
 	mb0_transfer.req.dbb_irqs |= prcmu_irq_bit[d->irq - IRQ_PRCMU_BASE];
+=======
+	mb0_transfer.req.dbb_irqs |= prcmu_irq_bit[d->hwirq];
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&mb0_transfer.dbb_irqs_lock, flags);
 
@@ -1768,6 +3988,8 @@ static struct irq_chip prcmu_irq_chip = {
 	.irq_unmask	= prcmu_irq_unmask,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __init prcmu_early_init(void)
 {
 	unsigned int i;
@@ -1785,6 +4007,83 @@ void __init prcmu_early_init(void)
 			prcmu_version.func_version = (version >> 16) & 0xFF;
 			prcmu_version.errata = (version >> 24) & 0xFF;
 			pr_info("PRCMU firmware version %d.%d.%d\n",
+=======
+static char *fw_project_name(u8 project)
+=======
+static __init char *fw_project_name(u32 project)
+>>>>>>> refs/remotes/origin/master
+{
+	switch (project) {
+	case PRCMU_FW_PROJECT_U8500:
+		return "U8500";
+<<<<<<< HEAD
+	case PRCMU_FW_PROJECT_U8500_C2:
+		return "U8500 C2";
+	case PRCMU_FW_PROJECT_U9500:
+		return "U9500";
+	case PRCMU_FW_PROJECT_U9500_C2:
+		return "U9500 C2";
+	case PRCMU_FW_PROJECT_U8520:
+		return "U8520";
+	case PRCMU_FW_PROJECT_U8420:
+		return "U8420";
+=======
+	case PRCMU_FW_PROJECT_U8400:
+		return "U8400";
+	case PRCMU_FW_PROJECT_U9500:
+		return "U9500";
+	case PRCMU_FW_PROJECT_U8500_MBB:
+		return "U8500 MBB";
+	case PRCMU_FW_PROJECT_U8500_C1:
+		return "U8500 C1";
+	case PRCMU_FW_PROJECT_U8500_C2:
+		return "U8500 C2";
+	case PRCMU_FW_PROJECT_U8500_C3:
+		return "U8500 C3";
+	case PRCMU_FW_PROJECT_U8500_C4:
+		return "U8500 C4";
+	case PRCMU_FW_PROJECT_U9500_MBL:
+		return "U9500 MBL";
+	case PRCMU_FW_PROJECT_U8500_MBL:
+		return "U8500 MBL";
+	case PRCMU_FW_PROJECT_U8500_MBL2:
+		return "U8500 MBL2";
+	case PRCMU_FW_PROJECT_U8520:
+		return "U8520 MBL";
+	case PRCMU_FW_PROJECT_U8420:
+		return "U8420";
+	case PRCMU_FW_PROJECT_U9540:
+		return "U9540";
+	case PRCMU_FW_PROJECT_A9420:
+		return "A9420";
+	case PRCMU_FW_PROJECT_L8540:
+		return "L8540";
+	case PRCMU_FW_PROJECT_L8580:
+		return "L8580";
+>>>>>>> refs/remotes/origin/master
+	default:
+		return "Unknown";
+	}
+}
+
+<<<<<<< HEAD
+void __init db8500_prcmu_early_init(void)
+{
+	unsigned int i;
+	if (cpu_is_u8500v2()) {
+		void *tcpm_base = ioremap_nocache(U8500_PRCMU_TCPM_BASE, SZ_4K);
+
+		if (tcpm_base != NULL) {
+			u32 version;
+			version = readl(tcpm_base + PRCMU_FW_VERSION_OFFSET);
+			fw_info.version.project = version & 0xFF;
+			fw_info.version.api_version = (version >> 8) & 0xFF;
+			fw_info.version.func_version = (version >> 16) & 0xFF;
+			fw_info.version.errata = (version >> 24) & 0xFF;
+			fw_info.valid = true;
+			pr_info("PRCMU firmware: %s, version %d.%d.%d\n",
+				fw_project_name(fw_info.version.project),
+>>>>>>> refs/remotes/origin/cm-10.0
 				(version >> 8) & 0xFF, (version >> 16) & 0xFF,
 				(version >> 24) & 0xFF);
 			iounmap(tcpm_base);
@@ -1796,12 +4095,112 @@ void __init prcmu_early_init(void)
 		BUG();
 	}
 
+=======
+static int db8500_irq_map(struct irq_domain *d, unsigned int virq,
+				irq_hw_number_t hwirq)
+{
+	irq_set_chip_and_handler(virq, &prcmu_irq_chip,
+				handle_simple_irq);
+	set_irq_flags(virq, IRQF_VALID);
+
+	return 0;
+}
+
+static struct irq_domain_ops db8500_irq_ops = {
+	.map    = db8500_irq_map,
+	.xlate  = irq_domain_xlate_twocell,
+};
+
+static int db8500_irq_init(struct device_node *np, int irq_base)
+{
+	int i;
+
+	/* In the device tree case, just take some IRQs */
+	if (np)
+		irq_base = 0;
+
+	db8500_irq_domain = irq_domain_add_simple(
+		np, NUM_PRCMU_WAKEUPS, irq_base,
+		&db8500_irq_ops, NULL);
+
+	if (!db8500_irq_domain) {
+		pr_err("Failed to create irqdomain\n");
+		return -ENOSYS;
+	}
+
+	/* All wakeups will be used, so create mappings for all */
+	for (i = 0; i < NUM_PRCMU_WAKEUPS; i++)
+		irq_create_mapping(db8500_irq_domain, i);
+
+	return 0;
+}
+
+static void dbx500_fw_version_init(struct platform_device *pdev,
+			    u32 version_offset)
+{
+	struct resource *res;
+	void __iomem *tcpm_base;
+	u32 version;
+
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+					   "prcmu-tcpm");
+	if (!res) {
+		dev_err(&pdev->dev,
+			"Error: no prcmu tcpm memory region provided\n");
+		return;
+	}
+	tcpm_base = ioremap(res->start, resource_size(res));
+	if (!tcpm_base) {
+		dev_err(&pdev->dev, "no prcmu tcpm mem region provided\n");
+		return;
+	}
+
+	version = readl(tcpm_base + version_offset);
+	fw_info.version.project = (version & 0xFF);
+	fw_info.version.api_version = (version >> 8) & 0xFF;
+	fw_info.version.func_version = (version >> 16) & 0xFF;
+	fw_info.version.errata = (version >> 24) & 0xFF;
+	strncpy(fw_info.version.project_name,
+		fw_project_name(fw_info.version.project),
+		PRCMU_FW_PROJECT_NAME_LEN);
+	fw_info.valid = true;
+	pr_info("PRCMU firmware: %s(%d), version %d.%d.%d\n",
+		fw_info.version.project_name,
+		fw_info.version.project,
+		fw_info.version.api_version,
+		fw_info.version.func_version,
+		fw_info.version.errata);
+	iounmap(tcpm_base);
+}
+
+void __init db8500_prcmu_early_init(u32 phy_base, u32 size)
+{
+	/*
+	 * This is a temporary remap to bring up the clocks. It is
+	 * subsequently replaces with a real remap. After the merge of
+	 * the mailbox subsystem all of this early code goes away, and the
+	 * clock driver can probe independently. An early initcall will
+	 * still be needed, but it can be diverted into drivers/clk/ux500.
+	 */
+	prcmu_base = ioremap(phy_base, size);
+	if (!prcmu_base)
+		pr_err("%s: ioremap() of prcmu registers failed!\n", __func__);
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&mb0_transfer.lock);
 	spin_lock_init(&mb0_transfer.dbb_irqs_lock);
 	mutex_init(&mb0_transfer.ac_wake_lock);
 	init_completion(&mb0_transfer.ac_wake_work);
 	mutex_init(&mb1_transfer.lock);
 	init_completion(&mb1_transfer.work);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mb1_transfer.ape_opp = APE_NO_CHANGE;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mb1_transfer.ape_opp = APE_NO_CHANGE;
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&mb2_transfer.lock);
 	init_completion(&mb2_transfer.work);
 	spin_lock_init(&mb2_transfer.auto_pm_lock);
@@ -1814,6 +4213,7 @@ void __init prcmu_early_init(void)
 	init_completion(&mb5_transfer.work);
 
 	INIT_WORK(&mb0_transfer.mask_work, prcmu_mask_work);
+<<<<<<< HEAD
 
 	/* Initalize irqs. */
 	for (i = 0; i < NUM_PRCMU_WAKEUPS; i++) {
@@ -1826,6 +4226,26 @@ void __init prcmu_early_init(void)
 	}
 }
 
+<<<<<<< HEAD
+=======
+=======
+}
+
+>>>>>>> refs/remotes/origin/master
+static void __init init_prcm_registers(void)
+{
+	u32 val;
+
+	val = readl(PRCM_A9PL_FORCE_CLKEN);
+	val &= ~(PRCM_A9PL_FORCE_CLKEN_PRCM_A9PL_FORCE_CLKEN |
+		PRCM_A9PL_FORCE_CLKEN_PRCM_A9AXI_FORCE_CLKEN);
+	writel(val, (PRCM_A9PL_FORCE_CLKEN));
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Power domain switches (ePODs) modeled as regulators for the DB8500 SoC
  */
@@ -1835,6 +4255,10 @@ static struct regulator_consumer_supply db8500_vape_consumers[] = {
 	REGULATOR_SUPPLY("v-i2c", "nmk-i2c.1"),
 	REGULATOR_SUPPLY("v-i2c", "nmk-i2c.2"),
 	REGULATOR_SUPPLY("v-i2c", "nmk-i2c.3"),
+<<<<<<< HEAD
+=======
+	REGULATOR_SUPPLY("v-i2c", "nmk-i2c.4"),
+>>>>>>> refs/remotes/origin/master
 	/* "v-mmc" changed to "vcore" in the mainline kernel */
 	REGULATOR_SUPPLY("vcore", "sdi0"),
 	REGULATOR_SUPPLY("vcore", "sdi1"),
@@ -1848,20 +4272,82 @@ static struct regulator_consumer_supply db8500_vape_consumers[] = {
 	REGULATOR_SUPPLY("vcore", "uart1"),
 	REGULATOR_SUPPLY("vcore", "uart2"),
 	REGULATOR_SUPPLY("v-ape", "nmk-ske-keypad.0"),
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static struct regulator_consumer_supply db8500_vsmps2_consumers[] = {
 	/* CG2900 and CW1200 power to off-chip peripherals */
 	REGULATOR_SUPPLY("gbf_1v8", "cg2900-uart.0"),
 	REGULATOR_SUPPLY("wlan_1v8", "cw1200.0"),
+=======
+	REGULATOR_SUPPLY("v-hsi", "ste_hsi.0"),
+};
+
+static struct regulator_consumer_supply db8500_vsmps2_consumers[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("v-hsi", "ste_hsi.0"),
+	REGULATOR_SUPPLY("vddvario", "smsc911x.0"),
+};
+
+static struct regulator_consumer_supply db8500_vsmps2_consumers[] = {
+>>>>>>> refs/remotes/origin/master
 	REGULATOR_SUPPLY("musb_1v8", "ab8500-usb.0"),
 	/* AV8100 regulator */
 	REGULATOR_SUPPLY("hdmi_1v8", "0-0070"),
 };
 
 static struct regulator_consumer_supply db8500_b2r2_mcde_consumers[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("vsupply", "b2r2.0"),
 	REGULATOR_SUPPLY("vsupply", "mcde.0"),
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	REGULATOR_SUPPLY("vsupply", "b2r2_bus"),
+	REGULATOR_SUPPLY("vsupply", "mcde"),
+};
+
+/* SVA MMDSP regulator switch */
+static struct regulator_consumer_supply db8500_svammdsp_consumers[] = {
+	REGULATOR_SUPPLY("sva-mmdsp", "cm_control"),
+};
+
+/* SVA pipe regulator switch */
+static struct regulator_consumer_supply db8500_svapipe_consumers[] = {
+	REGULATOR_SUPPLY("sva-pipe", "cm_control"),
+};
+
+/* SIA MMDSP regulator switch */
+static struct regulator_consumer_supply db8500_siammdsp_consumers[] = {
+	REGULATOR_SUPPLY("sia-mmdsp", "cm_control"),
+};
+
+/* SIA pipe regulator switch */
+static struct regulator_consumer_supply db8500_siapipe_consumers[] = {
+	REGULATOR_SUPPLY("sia-pipe", "cm_control"),
+};
+
+static struct regulator_consumer_supply db8500_sga_consumers[] = {
+	REGULATOR_SUPPLY("v-mali", NULL),
+};
+
+/* ESRAM1 and 2 regulator switch */
+static struct regulator_consumer_supply db8500_esram12_consumers[] = {
+	REGULATOR_SUPPLY("esram12", "cm_control"),
+};
+
+/* ESRAM3 and 4 regulator switch */
+static struct regulator_consumer_supply db8500_esram34_consumers[] = {
+	REGULATOR_SUPPLY("v-esram34", "mcde"),
+	REGULATOR_SUPPLY("esram34", "cm_control"),
+	REGULATOR_SUPPLY("lcla_esram", "dma40.0"),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data db8500_regulators[DB8500_NUM_REGULATORS] = {
@@ -1869,6 +4355,14 @@ static struct regulator_init_data db8500_regulators[DB8500_NUM_REGULATORS] = {
 		.constraints = {
 			.name = "db8500-vape",
 			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			.always_on = true,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.always_on = true,
+>>>>>>> refs/remotes/origin/master
 		},
 		.consumer_supplies = db8500_vape_consumers,
 		.num_consumer_supplies = ARRAY_SIZE(db8500_vape_consumers),
@@ -1918,11 +4412,29 @@ static struct regulator_init_data db8500_regulators[DB8500_NUM_REGULATORS] = {
 		},
 	},
 	[DB8500_REGULATOR_SWITCH_SVAMMDSP] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.supply_regulator = "db8500-vape",
+=======
+		/* dependency to u8500-vape is handled outside regulator framework */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* dependency to u8500-vape is handled outside regulator framework */
+>>>>>>> refs/remotes/origin/master
 		.constraints = {
 			.name = "db8500-sva-mmdsp",
 			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.consumer_supplies = db8500_svammdsp_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_svammdsp_consumers),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.consumer_supplies = db8500_svammdsp_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_svammdsp_consumers),
+>>>>>>> refs/remotes/origin/master
 	},
 	[DB8500_REGULATOR_SWITCH_SVAMMDSPRET] = {
 		.constraints = {
@@ -1932,18 +4444,50 @@ static struct regulator_init_data db8500_regulators[DB8500_NUM_REGULATORS] = {
 		},
 	},
 	[DB8500_REGULATOR_SWITCH_SVAPIPE] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.supply_regulator = "db8500-vape",
+=======
+		/* dependency to u8500-vape is handled outside regulator framework */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* dependency to u8500-vape is handled outside regulator framework */
+>>>>>>> refs/remotes/origin/master
 		.constraints = {
 			.name = "db8500-sva-pipe",
 			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	},
 	[DB8500_REGULATOR_SWITCH_SIAMMDSP] = {
 		.supply_regulator = "db8500-vape",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.consumer_supplies = db8500_svapipe_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_svapipe_consumers),
+	},
+	[DB8500_REGULATOR_SWITCH_SIAMMDSP] = {
+		/* dependency to u8500-vape is handled outside regulator framework */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.constraints = {
 			.name = "db8500-sia-mmdsp",
 			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.consumer_supplies = db8500_siammdsp_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_siammdsp_consumers),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.consumer_supplies = db8500_siammdsp_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_siammdsp_consumers),
+>>>>>>> refs/remotes/origin/master
 	},
 	[DB8500_REGULATOR_SWITCH_SIAMMDSPRET] = {
 		.constraints = {
@@ -1952,11 +4496,29 @@ static struct regulator_init_data db8500_regulators[DB8500_NUM_REGULATORS] = {
 		},
 	},
 	[DB8500_REGULATOR_SWITCH_SIAPIPE] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.supply_regulator = "db8500-vape",
+=======
+		/* dependency to u8500-vape is handled outside regulator framework */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* dependency to u8500-vape is handled outside regulator framework */
+>>>>>>> refs/remotes/origin/master
 		.constraints = {
 			.name = "db8500-sia-pipe",
 			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.consumer_supplies = db8500_siapipe_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_siapipe_consumers),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.consumer_supplies = db8500_siapipe_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_siapipe_consumers),
+>>>>>>> refs/remotes/origin/master
 	},
 	[DB8500_REGULATOR_SWITCH_SGA] = {
 		.supply_regulator = "db8500-vape",
@@ -1964,6 +4526,18 @@ static struct regulator_init_data db8500_regulators[DB8500_NUM_REGULATORS] = {
 			.name = "db8500-sga",
 			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.consumer_supplies = db8500_sga_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_sga_consumers),
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.consumer_supplies = db8500_sga_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_sga_consumers),
+
+>>>>>>> refs/remotes/origin/master
 	},
 	[DB8500_REGULATOR_SWITCH_B2R2_MCDE] = {
 		.supply_regulator = "db8500-vape",
@@ -1975,11 +4549,34 @@ static struct regulator_init_data db8500_regulators[DB8500_NUM_REGULATORS] = {
 		.num_consumer_supplies = ARRAY_SIZE(db8500_b2r2_mcde_consumers),
 	},
 	[DB8500_REGULATOR_SWITCH_ESRAM12] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.supply_regulator = "db8500-vape",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * esram12 is set in retention and supplied by Vsafe when Vape is off,
+		 * no need to hold Vape
+		 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.constraints = {
 			.name = "db8500-esram12",
 			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.consumer_supplies = db8500_esram12_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_esram12_consumers),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.consumer_supplies = db8500_esram12_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_esram12_consumers),
+>>>>>>> refs/remotes/origin/master
 	},
 	[DB8500_REGULATOR_SWITCH_ESRAM12RET] = {
 		.constraints = {
@@ -1988,11 +4585,34 @@ static struct regulator_init_data db8500_regulators[DB8500_NUM_REGULATORS] = {
 		},
 	},
 	[DB8500_REGULATOR_SWITCH_ESRAM34] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.supply_regulator = "db8500-vape",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * esram34 is set in retention and supplied by Vsafe when Vape is off,
+		 * no need to hold Vape
+		 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.constraints = {
 			.name = "db8500-esram34",
 			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.consumer_supplies = db8500_esram34_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_esram34_consumers),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.consumer_supplies = db8500_esram34_consumers,
+		.num_consumer_supplies = ARRAY_SIZE(db8500_esram34_consumers),
+>>>>>>> refs/remotes/origin/master
 	},
 	[DB8500_REGULATOR_SWITCH_ESRAM34RET] = {
 		.constraints = {
@@ -2002,21 +4622,137 @@ static struct regulator_init_data db8500_regulators[DB8500_NUM_REGULATORS] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell db8500_prcmu_devs[] = {
 	{
 		.name = "db8500-prcmu-regulators",
+=======
+static struct ux500_wdt_data db8500_wdt_pdata = {
+	.timeout = 600, /* 10 minutes */
+	.has_28_bits_resolution = true,
+};
+/*
+ * Thermal Sensor
+ */
+
+static struct resource db8500_thsens_resources[] = {
+	{
+		.name = "IRQ_HOTMON_LOW",
+		.start  = IRQ_PRCMU_HOTMON_LOW,
+		.end    = IRQ_PRCMU_HOTMON_LOW,
+		.flags  = IORESOURCE_IRQ,
+	},
+	{
+		.name = "IRQ_HOTMON_HIGH",
+		.start  = IRQ_PRCMU_HOTMON_HIGH,
+		.end    = IRQ_PRCMU_HOTMON_HIGH,
+		.flags  = IORESOURCE_IRQ,
+	},
+};
+
+static struct db8500_thsens_platform_data db8500_thsens_data = {
+	.trip_points[0] = {
+		.temp = 70000,
+		.type = THERMAL_TRIP_ACTIVE,
+		.cdev_name = {
+			[0] = "thermal-cpufreq-0",
+		},
+	},
+	.trip_points[1] = {
+		.temp = 75000,
+		.type = THERMAL_TRIP_ACTIVE,
+		.cdev_name = {
+			[0] = "thermal-cpufreq-0",
+		},
+	},
+	.trip_points[2] = {
+		.temp = 80000,
+		.type = THERMAL_TRIP_ACTIVE,
+		.cdev_name = {
+			[0] = "thermal-cpufreq-0",
+		},
+	},
+	.trip_points[3] = {
+		.temp = 85000,
+		.type = THERMAL_TRIP_CRITICAL,
+	},
+	.num_trips = 4,
+};
+
+static const struct mfd_cell common_prcmu_devs[] = {
+	{
+		.name = "ux500_wdt",
+		.platform_data = &db8500_wdt_pdata,
+		.pdata_size = sizeof(db8500_wdt_pdata),
+		.id = -1,
+	},
+};
+
+static const struct mfd_cell db8500_prcmu_devs[] = {
+	{
+		.name = "db8500-prcmu-regulators",
+		.of_compatible = "stericsson,db8500-prcmu-regulator",
+>>>>>>> refs/remotes/origin/master
 		.platform_data = &db8500_regulators,
 		.pdata_size = sizeof(db8500_regulators),
 	},
 	{
+<<<<<<< HEAD
 		.name = "cpufreq-u8500",
 	},
 };
 
+=======
+		.name = "cpufreq-ux500",
+		.of_compatible = "stericsson,cpufreq-ux500",
+		.platform_data = &db8500_cpufreq_table,
+		.pdata_size = sizeof(db8500_cpufreq_table),
+	},
+	{
+		.name = "cpuidle-dbx500",
+		.of_compatible = "stericsson,cpuidle-dbx500",
+	},
+	{
+		.name = "db8500-thermal",
+		.num_resources = ARRAY_SIZE(db8500_thsens_resources),
+		.resources = db8500_thsens_resources,
+		.platform_data = &db8500_thsens_data,
+		.pdata_size = sizeof(db8500_thsens_data),
+	},
+};
+
+static void db8500_prcmu_update_cpufreq(void)
+{
+	if (prcmu_has_arm_maxopp()) {
+		db8500_cpufreq_table[3].frequency = 1000000;
+		db8500_cpufreq_table[3].driver_data = ARM_MAX_OPP;
+	}
+}
+
+static int db8500_prcmu_register_ab8500(struct device *parent,
+					struct ab8500_platform_data *pdata,
+					int irq)
+{
+	struct resource ab8500_resource = DEFINE_RES_IRQ(irq);
+	struct mfd_cell ab8500_cell = {
+		.name = "ab8500-core",
+		.of_compatible = "stericsson,ab8500",
+		.id = AB8500_VERSION_AB8500,
+		.platform_data = pdata,
+		.pdata_size = sizeof(struct ab8500_platform_data),
+		.resources = &ab8500_resource,
+		.num_resources = 1,
+	};
+
+	return mfd_add_devices(parent, 0, &ab8500_cell, 1, NULL, 0, NULL);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * prcmu_fw_init - arch init call for the Linux PRCMU fw init logic
  *
  */
+<<<<<<< HEAD
 static int __init db8500_prcmu_probe(struct platform_device *pdev)
 {
 	int err = 0;
@@ -2024,17 +4760,66 @@ static int __init db8500_prcmu_probe(struct platform_device *pdev)
 	if (ux500_is_svp())
 		return -ENODEV;
 
+<<<<<<< HEAD
 	/* Clean up the mailbox interrupts after pre-kernel code. */
 	writel(ALL_MBOX_BITS, (_PRCMU_BASE + PRCM_ARM_IT1_CLR));
+=======
+	init_prcm_registers();
+
+	/* Clean up the mailbox interrupts after pre-kernel code. */
+	writel(ALL_MBOX_BITS, PRCM_ARM_IT1_CLR);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = request_threaded_irq(IRQ_DB8500_PRCMU1, prcmu_irq_handler,
 		prcmu_irq_thread_fn, IRQF_NO_SUSPEND, "prcmu", NULL);
+=======
+static int db8500_prcmu_probe(struct platform_device *pdev)
+{
+	struct device_node *np = pdev->dev.of_node;
+	struct prcmu_pdata *pdata = dev_get_platdata(&pdev->dev);
+	int irq = 0, err = 0;
+	struct resource *res;
+
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "prcmu");
+	if (!res) {
+		dev_err(&pdev->dev, "no prcmu memory region provided\n");
+		return -ENOENT;
+	}
+	prcmu_base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+	if (!prcmu_base) {
+		dev_err(&pdev->dev,
+			"failed to ioremap prcmu register memory\n");
+		return -ENOENT;
+	}
+	init_prcm_registers();
+	dbx500_fw_version_init(pdev, pdata->version_offset);
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "prcmu-tcdm");
+	if (!res) {
+		dev_err(&pdev->dev, "no prcmu tcdm region provided\n");
+		return -ENOENT;
+	}
+	tcdm_base = devm_ioremap(&pdev->dev, res->start,
+			resource_size(res));
+
+	/* Clean up the mailbox interrupts after pre-kernel code. */
+	writel(ALL_MBOX_BITS, PRCM_ARM_IT1_CLR);
+
+	irq = platform_get_irq(pdev, 0);
+	if (irq <= 0) {
+		dev_err(&pdev->dev, "no prcmu irq provided\n");
+		return -ENOENT;
+	}
+
+	err = request_threaded_irq(irq, prcmu_irq_handler,
+	        prcmu_irq_thread_fn, IRQF_NO_SUSPEND, "prcmu", NULL);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		pr_err("prcmu: Failed to allocate IRQ_DB8500_PRCMU1.\n");
 		err = -EBUSY;
 		goto no_irq_return;
 	}
 
+<<<<<<< HEAD
 	if (cpu_is_u8500v20_or_later())
 		prcmu_config_esram0_deep_sleep(ESRAM0_DEEP_SLEEP_STATE_RET);
 
@@ -2046,24 +4831,80 @@ static int __init db8500_prcmu_probe(struct platform_device *pdev)
 		pr_err("prcmu: Failed to add subdevices\n");
 	else
 		pr_info("DB8500 PRCMU initialized\n");
+=======
+	db8500_irq_init(np, pdata->irq_base);
+
+	prcmu_config_esram0_deep_sleep(ESRAM0_DEEP_SLEEP_STATE_RET);
+
+	db8500_prcmu_update_cpufreq();
+
+	err = mfd_add_devices(&pdev->dev, 0, common_prcmu_devs,
+			      ARRAY_SIZE(common_prcmu_devs), NULL, 0, db8500_irq_domain);
+	if (err) {
+		pr_err("prcmu: Failed to add subdevices\n");
+		return err;
+	}
+
+	/* TODO: Remove restriction when clk definitions are available. */
+	if (!of_machine_is_compatible("st-ericsson,u8540")) {
+		err = mfd_add_devices(&pdev->dev, 0, db8500_prcmu_devs,
+				      ARRAY_SIZE(db8500_prcmu_devs), NULL, 0,
+				      db8500_irq_domain);
+		if (err) {
+			mfd_remove_devices(&pdev->dev);
+			pr_err("prcmu: Failed to add subdevices\n");
+			goto no_irq_return;
+		}
+	}
+
+	err = db8500_prcmu_register_ab8500(&pdev->dev, pdata->ab_platdata,
+					   pdata->ab_irq);
+	if (err) {
+		mfd_remove_devices(&pdev->dev);
+		pr_err("prcmu: Failed to add ab8500 subdevice\n");
+		goto no_irq_return;
+	}
+
+	pr_info("DB8500 PRCMU initialized\n");
+>>>>>>> refs/remotes/origin/master
 
 no_irq_return:
 	return err;
 }
+<<<<<<< HEAD
+=======
+static const struct of_device_id db8500_prcmu_match[] = {
+	{ .compatible = "stericsson,db8500-prcmu"},
+	{ },
+};
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_driver db8500_prcmu_driver = {
 	.driver = {
 		.name = "db8500-prcmu",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 	},
+=======
+		.of_match_table = db8500_prcmu_match,
+	},
+	.probe = db8500_prcmu_probe,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init db8500_prcmu_init(void)
 {
+<<<<<<< HEAD
 	return platform_driver_probe(&db8500_prcmu_driver, db8500_prcmu_probe);
 }
 
 arch_initcall(db8500_prcmu_init);
+=======
+	return platform_driver_register(&db8500_prcmu_driver);
+}
+
+core_initcall(db8500_prcmu_init);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mattias Nilsson <mattias.i.nilsson@stericsson.com>");
 MODULE_DESCRIPTION("DB8500 PRCM Unit driver");

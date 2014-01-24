@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -25,12 +33,28 @@ struct sirc_regs_t {
 struct sirc_cascade_regs {
 	void    *int_status;
 	unsigned int    cascade_irq;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int    cascade_fiq;
 };
 
 void msm_init_sirc(void);
 
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
+=======
+=======
+	unsigned int    cascade_fiq;
+>>>>>>> refs/remotes/origin/cm-11.0
+};
+
+void msm_init_sirc(void);
+
+<<<<<<< HEAD
+#if defined(CONFIG_ARCH_MSM_SCORPION)
+>>>>>>> refs/remotes/origin/master
+=======
+#if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/msm_iomap.h>
 
@@ -40,10 +64,19 @@ void msm_init_sirc(void);
 
 #define FIRST_SIRC_IRQ (NR_MSM_IRQS + NR_GPIO_IRQS)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_ARCH_FSM9XXX)
 #include <mach/sirc-fsm9xxx.h>
 #else /* CONFIG_ARCH_FSM9XXX */
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define INT_UART1                     (FIRST_SIRC_IRQ + 0)
 #define INT_UART2                     (FIRST_SIRC_IRQ + 1)
 #define INT_UART3                     (FIRST_SIRC_IRQ + 2)
@@ -81,6 +114,14 @@ void msm_init_sirc(void);
 #define SIRC_MASK                     0x007FFFFF
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define LAST_SIRC_IRQ                 (FIRST_SIRC_IRQ + NR_SIRC_IRQS - 1)
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SPSS_SIRC_INT_SELECT          (MSM_SIRC_BASE + 0x00)
 #define SPSS_SIRC_INT_ENABLE          (MSM_SIRC_BASE + 0x04)
 #define SPSS_SIRC_INT_ENABLE_CLEAR    (MSM_SIRC_BASE + 0x08)
@@ -94,10 +135,20 @@ void msm_init_sirc(void);
 #define SPSS_SIRC_INT_CLEAR           (MSM_SIRC_BASE + 0x28)
 #define SPSS_SIRC_SOFT_INT            (MSM_SIRC_BASE + 0x2C)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* CONFIG_ARCH_FSM9XXX */
 
 #define LAST_SIRC_IRQ                 (FIRST_SIRC_IRQ + NR_SIRC_IRQS - 1)
 
 #endif /* CONFIG_ARCH_MSM_SCORPION */
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif

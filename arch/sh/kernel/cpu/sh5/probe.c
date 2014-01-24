@@ -17,7 +17,11 @@
 #include <asm/cache.h>
 #include <asm/tlb.h>
 
+<<<<<<< HEAD
 void __cpuinit cpu_probe(void)
+=======
+void cpu_probe(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long long cir;
 

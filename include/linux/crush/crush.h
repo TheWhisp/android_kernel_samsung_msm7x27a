@@ -151,6 +151,7 @@ struct crush_map {
 	struct crush_bucket **buckets;
 	struct crush_rule **rules;
 
+<<<<<<< HEAD
 	/*
 	 * Parent pointers to identify the parent bucket a device or
 	 * bucket in the hierarchy.  If an item appears more than
@@ -164,12 +165,39 @@ struct crush_map {
 	__s32 max_buckets;
 	__u32 max_rules;
 	__s32 max_devices;
+=======
+	__s32 max_buckets;
+	__u32 max_rules;
+	__s32 max_devices;
+
+	/* choose local retries before re-descent */
+	__u32 choose_local_tries;
+	/* choose local attempts using a fallback permutation before
+	 * re-descent */
+	__u32 choose_local_fallback_tries;
+	/* choose attempts before giving up */ 
+	__u32 choose_total_tries;
+	/* attempt chooseleaf inner descent once; on failure retry outer descent */
+	__u32 chooseleaf_descend_once;
+>>>>>>> refs/remotes/origin/master
 };
 
 
 /* crush.c */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int crush_get_bucket_item_weight(struct crush_bucket *b, int pos);
+=======
+extern int crush_get_bucket_item_weight(const struct crush_bucket *b, int pos);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int crush_get_bucket_item_weight(const struct crush_bucket *b, int pos);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern void crush_calc_parents(struct crush_map *map);
+=======
+extern int crush_get_bucket_item_weight(const struct crush_bucket *b, int pos);
+>>>>>>> refs/remotes/origin/master
 extern void crush_destroy_bucket_uniform(struct crush_bucket_uniform *b);
 extern void crush_destroy_bucket_list(struct crush_bucket_list *b);
 extern void crush_destroy_bucket_tree(struct crush_bucket_tree *b);
@@ -177,4 +205,24 @@ extern void crush_destroy_bucket_straw(struct crush_bucket_straw *b);
 extern void crush_destroy_bucket(struct crush_bucket *b);
 extern void crush_destroy(struct crush_map *map);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static inline int crush_calc_tree_node(int i)
+{
+	return ((i+1) << 1)-1;
+}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

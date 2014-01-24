@@ -14,12 +14,27 @@
 #include <linux/time.h>
 #include <linux/bitops.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 #include <linux/reiserfs_acl.h>
 #include <linux/reiserfs_xattr.h>
 #include <linux/quotaops.h>
 
 #define INC_DIR_INODE_NLINK(i) if (i->i_nlink != 1) { inc_nlink(i); if (i->i_nlink >= REISERFS_LINK_MAX) i->i_nlink=1; }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include "reiserfs.h"
+#include "acl.h"
+#include "xattr.h"
+#include <linux/quotaops.h>
+
+#define INC_DIR_INODE_NLINK(i) if (i->i_nlink != 1) { inc_nlink(i); if (i->i_nlink >= REISERFS_LINK_MAX) set_nlink(i, 1); }
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DEC_DIR_INODE_NLINK(i) if (i->i_nlink != 1) drop_nlink(i);
 
 // directory item contains array of entry headers. This performs
@@ -322,10 +337,16 @@ static int reiserfs_find_entry(struct inode *dir, const char *name, int namelen,
 }
 
 static struct dentry *reiserfs_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				      struct nameidata *nd)
 {
 	int retval;
 	int lock_depth;
+=======
+				      unsigned int flags)
+{
+	int retval;
+>>>>>>> refs/remotes/origin/master
 	struct inode *inode = NULL;
 	struct reiserfs_dir_entry de;
 	INITIALIZE_PATH(path_to_entry);
@@ -333,12 +354,16 @@ static struct dentry *reiserfs_lookup(struct inode *dir, struct dentry *dentry,
 	if (REISERFS_MAX_NAME(dir->i_sb->s_blocksize) < dentry->d_name.len)
 		return ERR_PTR(-ENAMETOOLONG);
 
+<<<<<<< HEAD
 	/*
 	 * Might be called with or without the write lock, must be careful
 	 * to not recursively hold it in case we want to release the lock
 	 * before rescheduling.
 	 */
 	lock_depth = reiserfs_write_lock_once(dir->i_sb);
+=======
+	reiserfs_write_lock(dir->i_sb);
+>>>>>>> refs/remotes/origin/master
 
 	de.de_gen_number_bit_string = NULL;
 	retval =
@@ -349,7 +374,11 @@ static struct dentry *reiserfs_lookup(struct inode *dir, struct dentry *dentry,
 		inode = reiserfs_iget(dir->i_sb,
 				      (struct cpu_key *)&(de.de_dir_id));
 		if (!inode || IS_ERR(inode)) {
+<<<<<<< HEAD
 			reiserfs_write_unlock_once(dir->i_sb, lock_depth);
+=======
+			reiserfs_write_unlock(dir->i_sb);
+>>>>>>> refs/remotes/origin/master
 			return ERR_PTR(-EACCES);
 		}
 
@@ -358,7 +387,11 @@ static struct dentry *reiserfs_lookup(struct inode *dir, struct dentry *dentry,
 		if (IS_PRIVATE(dir))
 			inode->i_flags |= S_PRIVATE;
 	}
+<<<<<<< HEAD
 	reiserfs_write_unlock_once(dir->i_sb, lock_depth);
+=======
+	reiserfs_write_unlock(dir->i_sb);
+>>>>>>> refs/remotes/origin/master
 	if (retval == IO_ERROR) {
 		return ERR_PTR(-EIO);
 	}
@@ -559,7 +592,15 @@ static int drop_new_inode(struct inode *inode)
 ** outside of a transaction, so we had to pull some bits of
 ** reiserfs_new_inode out into this func.
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int new_inode_init(struct inode *inode, struct inode *dir, int mode)
+=======
+static int new_inode_init(struct inode *inode, struct inode *dir, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int new_inode_init(struct inode *inode, struct inode *dir, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Make inode invalid - just in case we are going to drop it before
 	 * the initialization happens */
@@ -572,8 +613,17 @@ static int new_inode_init(struct inode *inode, struct inode *dir, int mode)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int reiserfs_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int reiserfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   struct nameidata *nd)
+=======
+static int reiserfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+			   bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 	struct inode *inode;
@@ -622,7 +672,15 @@ static int reiserfs_create(struct inode *dir, struct dentry *dentry, int mode,
 			       dentry->d_name.len, inode, 1 /*visible */ );
 	if (retval) {
 		int err;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink--;
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		reiserfs_update_sd(&th, inode);
 		err = journal_end(&th, dir->i_sb, jbegin_count);
 		if (err)
@@ -634,8 +692,13 @@ static int reiserfs_create(struct inode *dir, struct dentry *dentry, int mode,
 	reiserfs_update_inode_transaction(inode);
 	reiserfs_update_inode_transaction(dir);
 
+<<<<<<< HEAD
 	d_instantiate(dentry, inode);
 	unlock_new_inode(inode);
+=======
+	unlock_new_inode(inode);
+	d_instantiate(dentry, inode);
+>>>>>>> refs/remotes/origin/master
 	retval = journal_end(&th, dir->i_sb, jbegin_count);
 
       out_failed:
@@ -643,7 +706,15 @@ static int reiserfs_create(struct inode *dir, struct dentry *dentry, int mode,
 	return retval;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int reiserfs_mknod(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int reiserfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int reiserfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 			  dev_t rdev)
 {
 	int retval;
@@ -702,7 +773,15 @@ static int reiserfs_mknod(struct inode *dir, struct dentry *dentry, int mode,
 			       dentry->d_name.len, inode, 1 /*visible */ );
 	if (retval) {
 		int err;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink--;
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		reiserfs_update_sd(&th, inode);
 		err = journal_end(&th, dir->i_sb, jbegin_count);
 		if (err)
@@ -712,8 +791,13 @@ static int reiserfs_mknod(struct inode *dir, struct dentry *dentry, int mode,
 		goto out_failed;
 	}
 
+<<<<<<< HEAD
 	d_instantiate(dentry, inode);
 	unlock_new_inode(inode);
+=======
+	unlock_new_inode(inode);
+	d_instantiate(dentry, inode);
+>>>>>>> refs/remotes/origin/master
 	retval = journal_end(&th, dir->i_sb, jbegin_count);
 
       out_failed:
@@ -721,13 +805,24 @@ static int reiserfs_mknod(struct inode *dir, struct dentry *dentry, int mode,
 	return retval;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int reiserfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int reiserfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int reiserfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 	struct inode *inode;
 	struct reiserfs_transaction_handle th;
 	struct reiserfs_security_handle security;
+<<<<<<< HEAD
 	int lock_depth;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* We need blocks for transaction + (user+group)*(quotas for new inode + update of quota for directory owner) */
 	int jbegin_count =
 	    JOURNAL_PER_BALANCE_CNT * 3 +
@@ -753,7 +848,11 @@ static int reiserfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 		return retval;
 	}
 	jbegin_count += retval;
+<<<<<<< HEAD
 	lock_depth = reiserfs_write_lock_once(dir->i_sb);
+=======
+	reiserfs_write_lock(dir->i_sb);
+>>>>>>> refs/remotes/origin/master
 
 	retval = journal_begin(&th, dir->i_sb, jbegin_count);
 	if (retval) {
@@ -787,7 +886,15 @@ static int reiserfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 			       dentry->d_name.len, inode, 1 /*visible */ );
 	if (retval) {
 		int err;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 0;
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		DEC_DIR_INODE_NLINK(dir);
 		reiserfs_update_sd(&th, inode);
 		err = journal_end(&th, dir->i_sb, jbegin_count);
@@ -800,11 +907,19 @@ static int reiserfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 	// the above add_entry did not update dir's stat data
 	reiserfs_update_sd(&th, dir);
 
+<<<<<<< HEAD
 	d_instantiate(dentry, inode);
 	unlock_new_inode(inode);
 	retval = journal_end(&th, dir->i_sb, jbegin_count);
 out_failed:
 	reiserfs_write_unlock_once(dir->i_sb, lock_depth);
+=======
+	unlock_new_inode(inode);
+	d_instantiate(dentry, inode);
+	retval = journal_end(&th, dir->i_sb, jbegin_count);
+out_failed:
+	reiserfs_write_unlock(dir->i_sb);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -920,7 +1035,10 @@ static int reiserfs_unlink(struct inode *dir, struct dentry *dentry)
 	struct reiserfs_transaction_handle th;
 	int jbegin_count;
 	unsigned long savelink;
+<<<<<<< HEAD
 	int depth;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dquot_initialize(dir);
 
@@ -934,7 +1052,11 @@ static int reiserfs_unlink(struct inode *dir, struct dentry *dentry)
 	    JOURNAL_PER_BALANCE_CNT * 2 + 2 +
 	    4 * REISERFS_QUOTA_TRANS_BLOCKS(dir->i_sb);
 
+<<<<<<< HEAD
 	depth = reiserfs_write_lock_once(dir->i_sb);
+=======
+	reiserfs_write_lock(dir->i_sb);
+>>>>>>> refs/remotes/origin/master
 	retval = journal_begin(&th, dir->i_sb, jbegin_count);
 	if (retval)
 		goto out_unlink;
@@ -964,7 +1086,15 @@ static int reiserfs_unlink(struct inode *dir, struct dentry *dentry)
 		reiserfs_warning(inode->i_sb, "reiserfs-7042",
 				 "deleting nonexistent file (%lu), %d",
 				 inode->i_ino, inode->i_nlink);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 1;
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	drop_nlink(inode);
@@ -995,7 +1125,11 @@ static int reiserfs_unlink(struct inode *dir, struct dentry *dentry)
 
 	retval = journal_end(&th, dir->i_sb, jbegin_count);
 	reiserfs_check_path(&path);
+<<<<<<< HEAD
 	reiserfs_write_unlock_once(dir->i_sb, depth);
+=======
+	reiserfs_write_unlock(dir->i_sb);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 
       end_unlink:
@@ -1005,7 +1139,11 @@ static int reiserfs_unlink(struct inode *dir, struct dentry *dentry)
 	if (err)
 		retval = err;
       out_unlink:
+<<<<<<< HEAD
 	reiserfs_write_unlock_once(dir->i_sb, depth);
+=======
+	reiserfs_write_unlock(dir->i_sb);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -1086,7 +1224,15 @@ static int reiserfs_symlink(struct inode *parent_dir,
 				    dentry->d_name.len, inode, 1 /*visible */ );
 	if (retval) {
 		int err;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink--;
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		reiserfs_update_sd(&th, inode);
 		err = journal_end(&th, parent_dir->i_sb, jbegin_count);
 		if (err)
@@ -1096,8 +1242,13 @@ static int reiserfs_symlink(struct inode *parent_dir,
 		goto out_failed;
 	}
 
+<<<<<<< HEAD
 	d_instantiate(dentry, inode);
 	unlock_new_inode(inode);
+=======
+	unlock_new_inode(inode);
+	d_instantiate(dentry, inode);
+>>>>>>> refs/remotes/origin/master
 	retval = journal_end(&th, parent_dir->i_sb, jbegin_count);
       out_failed:
 	reiserfs_write_unlock(parent_dir->i_sb);
@@ -1129,7 +1280,15 @@ static int reiserfs_link(struct dentry *old_dentry, struct inode *dir,
 
 	retval = journal_begin(&th, dir->i_sb, jbegin_count);
 	if (retval) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink--;
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		reiserfs_write_unlock(dir->i_sb);
 		return retval;
 	}
@@ -1144,7 +1303,15 @@ static int reiserfs_link(struct dentry *old_dentry, struct inode *dir,
 
 	if (retval) {
 		int err;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink--;
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		err = journal_end(&th, dir->i_sb, jbegin_count);
 		reiserfs_write_unlock(dir->i_sb);
 		return err ? err : retval;
@@ -1529,6 +1696,14 @@ const struct inode_operations reiserfs_dir_inode_operations = {
 	.listxattr = reiserfs_listxattr,
 	.removexattr = reiserfs_removexattr,
 	.permission = reiserfs_permission,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1545,6 +1720,14 @@ const struct inode_operations reiserfs_symlink_inode_operations = {
 	.listxattr = reiserfs_listxattr,
 	.removexattr = reiserfs_removexattr,
 	.permission = reiserfs_permission,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/master
 
 };
 
@@ -1558,5 +1741,13 @@ const struct inode_operations reiserfs_special_inode_operations = {
 	.listxattr = reiserfs_listxattr,
 	.removexattr = reiserfs_removexattr,
 	.permission = reiserfs_permission,
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/master
 };

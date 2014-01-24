@@ -32,6 +32,14 @@
 
 
 #include <linux/cpufreq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
@@ -45,10 +53,24 @@
 #include <linux/timer.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #include "soc_common.h"
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#include "soc_common.h"
+
+static irqreturn_t soc_common_pcmcia_interrupt(int irq, void *dev);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PCMCIA_DEBUG
 
 static int pc_debug;
@@ -104,6 +126,102 @@ void soc_common_pcmcia_get_timing(struct soc_pcmcia_socket *skt,
 }
 EXPORT_SYMBOL(soc_common_pcmcia_get_timing);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void __soc_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt,
+	unsigned int nr)
+{
+	unsigned int i;
+
+	for (i = 0; i < nr; i++) {
+		if (skt->stat[i].irq)
+			free_irq(skt->stat[i].irq, skt);
+		if (gpio_is_valid(skt->stat[i].gpio))
+			gpio_free(skt->stat[i].gpio);
+	}
+
+	if (skt->ops->hw_shutdown)
+		skt->ops->hw_shutdown(skt);
+}
+
+static void soc_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
+{
+	__soc_pcmcia_hw_shutdown(skt, ARRAY_SIZE(skt->stat));
+}
+
+static int soc_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
+{
+	int ret = 0, i;
+
+	if (skt->ops->hw_init) {
+		ret = skt->ops->hw_init(skt);
+		if (ret)
+			return ret;
+	}
+
+	for (i = 0; i < ARRAY_SIZE(skt->stat); i++) {
+		if (gpio_is_valid(skt->stat[i].gpio)) {
+			int irq;
+
+			ret = gpio_request_one(skt->stat[i].gpio, GPIOF_IN,
+					       skt->stat[i].name);
+			if (ret) {
+				__soc_pcmcia_hw_shutdown(skt, i);
+				return ret;
+			}
+
+			irq = gpio_to_irq(skt->stat[i].gpio);
+
+			if (i == SOC_STAT_RDY)
+				skt->socket.pci_irq = irq;
+			else
+				skt->stat[i].irq = irq;
+		}
+
+		if (skt->stat[i].irq) {
+			ret = request_irq(skt->stat[i].irq,
+					  soc_common_pcmcia_interrupt,
+					  IRQF_TRIGGER_NONE,
+					  skt->stat[i].name, skt);
+			if (ret) {
+				if (gpio_is_valid(skt->stat[i].gpio))
+					gpio_free(skt->stat[i].gpio);
+				__soc_pcmcia_hw_shutdown(skt, i);
+				return ret;
+			}
+		}
+	}
+
+	return ret;
+}
+
+static void soc_pcmcia_hw_enable(struct soc_pcmcia_socket *skt)
+{
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(skt->stat); i++)
+		if (skt->stat[i].irq) {
+			irq_set_irq_type(skt->stat[i].irq, IRQ_TYPE_EDGE_RISING);
+			irq_set_irq_type(skt->stat[i].irq, IRQ_TYPE_EDGE_BOTH);
+		}
+}
+
+static void soc_pcmcia_hw_disable(struct soc_pcmcia_socket *skt)
+{
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(skt->stat); i++)
+		if (skt->stat[i].irq)
+			irq_set_irq_type(skt->stat[i].irq, IRQ_TYPE_NONE);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int soc_common_pcmcia_skt_state(struct soc_pcmcia_socket *skt)
 {
 	struct pcmcia_state state;
@@ -111,6 +229,31 @@ static unsigned int soc_common_pcmcia_skt_state(struct soc_pcmcia_socket *skt)
 
 	memset(&state, 0, sizeof(struct pcmcia_state));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Make battery voltage state report 'good' */
+	state.bvd1 = 1;
+	state.bvd2 = 1;
+
+	/* CD is active low by default */
+	if (gpio_is_valid(skt->stat[SOC_STAT_CD].gpio))
+		state.detect = !gpio_get_value(skt->stat[SOC_STAT_CD].gpio);
+
+	/* RDY and BVD are active high by default */
+	if (gpio_is_valid(skt->stat[SOC_STAT_RDY].gpio))
+		state.ready = !!gpio_get_value(skt->stat[SOC_STAT_RDY].gpio);
+	if (gpio_is_valid(skt->stat[SOC_STAT_BVD1].gpio))
+		state.bvd1 = !!gpio_get_value(skt->stat[SOC_STAT_BVD1].gpio);
+	if (gpio_is_valid(skt->stat[SOC_STAT_BVD2].gpio))
+		state.bvd2 = !!gpio_get_value(skt->stat[SOC_STAT_BVD2].gpio);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	skt->ops->socket_state(skt, &state);
 
 	stat = state.detect  ? SS_DETECT : 0;
@@ -186,8 +329,20 @@ static int soc_common_pcmcia_sock_init(struct pcmcia_socket *sock)
 	struct soc_pcmcia_socket *skt = to_soc_pcmcia_socket(sock);
 
 	debug(skt, 2, "initializing socket\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	skt->ops->socket_init(skt);
+=======
+	if (skt->ops->socket_init)
+		skt->ops->socket_init(skt);
+	soc_pcmcia_hw_enable(skt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (skt->ops->socket_init)
+		skt->ops->socket_init(skt);
+	soc_pcmcia_hw_enable(skt);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -207,7 +362,19 @@ static int soc_common_pcmcia_suspend(struct pcmcia_socket *sock)
 
 	debug(skt, 2, "suspending socket\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	skt->ops->socket_suspend(skt);
+=======
+	soc_pcmcia_hw_disable(skt);
+	if (skt->ops->socket_suspend)
+		skt->ops->socket_suspend(skt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	soc_pcmcia_hw_disable(skt);
+	if (skt->ops->socket_suspend)
+		skt->ops->socket_suspend(skt);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -525,6 +692,8 @@ static struct pccard_operations soc_common_pcmcia_operations = {
 };
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int soc_pcmcia_request_irqs(struct soc_pcmcia_socket *skt,
 			    struct pcmcia_irqs *irqs, int nr)
 {
@@ -588,6 +757,10 @@ void soc_pcmcia_enable_irqs(struct soc_pcmcia_socket *skt,
 EXPORT_SYMBOL(soc_pcmcia_enable_irqs);
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static LIST_HEAD(soc_pcmcia_sockets);
 static DEFINE_MUTEX(soc_pcmcia_sockets_lock);
 
@@ -634,6 +807,30 @@ module_exit(soc_pcmcia_cpufreq_unregister);
 
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void soc_pcmcia_init_one(struct soc_pcmcia_socket *skt,
+	struct pcmcia_low_level *ops, struct device *dev)
+{
+	int i;
+
+	skt->ops = ops;
+	skt->socket.owner = ops->owner;
+	skt->socket.dev.parent = dev;
+	skt->socket.pci_irq = NO_IRQ;
+
+	for (i = 0; i < ARRAY_SIZE(skt->stat); i++)
+		skt->stat[i].gpio = -EINVAL;
+}
+EXPORT_SYMBOL(soc_pcmcia_init_one);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void soc_pcmcia_remove_one(struct soc_pcmcia_socket *skt)
 {
 	mutex_lock(&soc_pcmcia_sockets_lock);
@@ -641,8 +838,20 @@ void soc_pcmcia_remove_one(struct soc_pcmcia_socket *skt)
 
 	pcmcia_unregister_socket(&skt->socket);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	skt->ops->hw_shutdown(skt);
 
+=======
+	soc_pcmcia_hw_shutdown(skt);
+
+	/* should not be required; violates some lowlevel drivers */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	soc_pcmcia_hw_shutdown(skt);
+
+	/* should not be required; violates some lowlevel drivers */
+>>>>>>> refs/remotes/origin/master
 	soc_common_pcmcia_config_skt(skt, &dead_socket);
 
 	list_del(&skt->node);
@@ -699,7 +908,15 @@ int soc_pcmcia_add_one(struct soc_pcmcia_socket *skt)
 	 */
 	skt->ops->set_timing(skt);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = skt->ops->hw_init(skt);
+=======
+	ret = soc_pcmcia_hw_init(skt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = soc_pcmcia_hw_init(skt);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto out_err_6;
 
@@ -732,7 +949,15 @@ int soc_pcmcia_add_one(struct soc_pcmcia_socket *skt)
 	pcmcia_unregister_socket(&skt->socket);
 
  out_err_7:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	skt->ops->hw_shutdown(skt);
+=======
+	soc_pcmcia_hw_shutdown(skt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	soc_pcmcia_hw_shutdown(skt);
+>>>>>>> refs/remotes/origin/master
  out_err_6:
 	list_del(&skt->node);
 	mutex_unlock(&soc_pcmcia_sockets_lock);

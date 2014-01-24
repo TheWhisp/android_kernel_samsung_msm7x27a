@@ -1,6 +1,10 @@
 config MKISS
 	tristate "Serial port KISS driver"
+<<<<<<< HEAD
 	depends on AX25
+=======
+	depends on AX25 && TTY
+>>>>>>> refs/remotes/origin/master
 	select CRC16
 	---help---
 	  KISS is a protocol used for the exchange of data between a computer
@@ -18,7 +22,11 @@ config MKISS
 
 config 6PACK
 	tristate "Serial port 6PACK driver"
+<<<<<<< HEAD
 	depends on AX25
+=======
+	depends on AX25 && TTY
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  6pack is a transmission protocol for the data exchange between your
 	  PC and your TNC (the Terminal Node Controller acts as a kind of

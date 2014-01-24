@@ -268,10 +268,22 @@ enum {
 };
 
 enum {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	HWBLK_UNKNOWN = 0,
 	HWBLK_TLB, HWBLK_IC, HWBLK_OC, HWBLK_RSMEM, HWBLK_ILMEM, HWBLK_L2C,
 	HWBLK_FPU, HWBLK_INTC, HWBLK_DMAC0, HWBLK_SHYWAY,
 	HWBLK_HUDI, HWBLK_DBG, HWBLK_UBC,
+=======
+	HWBLK_TLB, HWBLK_IC, HWBLK_OC, HWBLK_RSMEM, HWBLK_ILMEM, HWBLK_L2C,
+	HWBLK_FPU, HWBLK_INTC, HWBLK_DMAC0, HWBLK_SHYWAY,
+	HWBLK_HUDI, HWBLK_UBC,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HWBLK_TLB, HWBLK_IC, HWBLK_OC, HWBLK_RSMEM, HWBLK_ILMEM, HWBLK_L2C,
+	HWBLK_FPU, HWBLK_INTC, HWBLK_DMAC0, HWBLK_SHYWAY,
+	HWBLK_HUDI, HWBLK_UBC,
+>>>>>>> refs/remotes/origin/master
 	HWBLK_TMU0, HWBLK_CMT, HWBLK_RWDT, HWBLK_DMAC1, HWBLK_TMU1,
 	HWBLK_SCIF0, HWBLK_SCIF1, HWBLK_SCIF2, HWBLK_SCIF3,
 	HWBLK_SCIF4, HWBLK_SCIF5, HWBLK_MSIOF0, HWBLK_MSIOF1,
@@ -314,5 +326,13 @@ enum {
 
 extern struct clk sh7724_fsimcka_clk;
 extern struct clk sh7724_fsimckb_clk;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern struct clk sh7724_dv_clki;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct clk sh7724_dv_clki;
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_SH7724_H__ */

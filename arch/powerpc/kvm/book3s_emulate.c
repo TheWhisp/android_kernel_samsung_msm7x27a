@@ -21,6 +21,15 @@
 #include <asm/disassemble.h>
 #include <asm/kvm_book3s.h>
 #include <asm/reg.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/switch_to.h>
+#include <asm/time.h>
+>>>>>>> refs/remotes/origin/master
 
 #define OP_19_XOP_RFID		18
 #define OP_19_XOP_RFI		50
@@ -32,6 +41,11 @@
 #define OP_31_XOP_MTSRIN	242
 #define OP_31_XOP_TLBIEL	274
 #define OP_31_XOP_TLBIE		306
+<<<<<<< HEAD
+=======
+/* Opcode is officially reserved, reuse it as sc 1 when sc 1 doesn't trap */
+#define OP_31_XOP_FAKE_SC1	308
+>>>>>>> refs/remotes/origin/master
 #define OP_31_XOP_SLBMTE	402
 #define OP_31_XOP_SLBIE		434
 #define OP_31_XOP_SLBIA		498
@@ -63,10 +77,46 @@
  * function pointers, so let's just disable the define. */
 #undef mfsrin
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum priv_level {
+	PRIV_PROBLEM = 0,
+	PRIV_SUPER = 1,
+	PRIV_HYPER = 2,
+};
+
+static bool spr_allowed(struct kvm_vcpu *vcpu, enum priv_level level)
+{
+	/* PAPR VMs only access supervisor SPRs */
+	if (vcpu->arch.papr_enabled && (level > PRIV_SUPER))
+		return false;
+
+	/* Limit user space to its own small SPR set */
+	if ((vcpu->arch.shared->msr & MSR_PR) && level > PRIV_PROBLEM)
+		return false;
+
+	return true;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
                            unsigned int inst, int *advance)
 {
 	int emulated = EMULATE_DONE;
+=======
+int kvmppc_core_emulate_op_pr(struct kvm_run *run, struct kvm_vcpu *vcpu,
+			      unsigned int inst, int *advance)
+{
+	int emulated = EMULATE_DONE;
+	int rt = get_rt(inst);
+	int rs = get_rs(inst);
+	int ra = get_ra(inst);
+	int rb = get_rb(inst);
+>>>>>>> refs/remotes/origin/master
 
 	switch (get_op(inst)) {
 	case 19:
@@ -86,6 +136,7 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 	case 31:
 		switch (get_xop(inst)) {
 		case OP_31_XOP_MFMSR:
+<<<<<<< HEAD
 			kvmppc_set_gpr(vcpu, get_rt(inst),
 				       vcpu->arch.shared->msr);
 			break;
@@ -101,6 +152,24 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 		}
 		case OP_31_XOP_MTMSR:
 			kvmppc_set_msr(vcpu, kvmppc_get_gpr(vcpu, get_rs(inst)));
+=======
+			kvmppc_set_gpr(vcpu, rt, vcpu->arch.shared->msr);
+			break;
+		case OP_31_XOP_MTMSRD:
+		{
+			ulong rs_val = kvmppc_get_gpr(vcpu, rs);
+			if (inst & 0x10000) {
+				ulong new_msr = vcpu->arch.shared->msr;
+				new_msr &= ~(MSR_RI | MSR_EE);
+				new_msr |= rs_val & (MSR_RI | MSR_EE);
+				vcpu->arch.shared->msr = new_msr;
+			} else
+				kvmppc_set_msr(vcpu, rs_val);
+			break;
+		}
+		case OP_31_XOP_MTMSR:
+			kvmppc_set_msr(vcpu, kvmppc_get_gpr(vcpu, rs));
+>>>>>>> refs/remotes/origin/master
 			break;
 		case OP_31_XOP_MFSR:
 		{
@@ -110,7 +179,11 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 			if (vcpu->arch.mmu.mfsrin) {
 				u32 sr;
 				sr = vcpu->arch.mmu.mfsrin(vcpu, srnum);
+<<<<<<< HEAD
 				kvmppc_set_gpr(vcpu, get_rt(inst), sr);
+=======
+				kvmppc_set_gpr(vcpu, rt, sr);
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		}
@@ -118,32 +191,84 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 		{
 			int srnum;
 
+<<<<<<< HEAD
 			srnum = (kvmppc_get_gpr(vcpu, get_rb(inst)) >> 28) & 0xf;
 			if (vcpu->arch.mmu.mfsrin) {
 				u32 sr;
 				sr = vcpu->arch.mmu.mfsrin(vcpu, srnum);
 				kvmppc_set_gpr(vcpu, get_rt(inst), sr);
+=======
+			srnum = (kvmppc_get_gpr(vcpu, rb) >> 28) & 0xf;
+			if (vcpu->arch.mmu.mfsrin) {
+				u32 sr;
+				sr = vcpu->arch.mmu.mfsrin(vcpu, srnum);
+				kvmppc_set_gpr(vcpu, rt, sr);
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		}
 		case OP_31_XOP_MTSR:
 			vcpu->arch.mmu.mtsrin(vcpu,
 				(inst >> 16) & 0xf,
+<<<<<<< HEAD
 				kvmppc_get_gpr(vcpu, get_rs(inst)));
 			break;
 		case OP_31_XOP_MTSRIN:
 			vcpu->arch.mmu.mtsrin(vcpu,
 				(kvmppc_get_gpr(vcpu, get_rb(inst)) >> 28) & 0xf,
 				kvmppc_get_gpr(vcpu, get_rs(inst)));
+=======
+				kvmppc_get_gpr(vcpu, rs));
+			break;
+		case OP_31_XOP_MTSRIN:
+			vcpu->arch.mmu.mtsrin(vcpu,
+				(kvmppc_get_gpr(vcpu, rb) >> 28) & 0xf,
+				kvmppc_get_gpr(vcpu, rs));
+>>>>>>> refs/remotes/origin/master
 			break;
 		case OP_31_XOP_TLBIE:
 		case OP_31_XOP_TLBIEL:
 		{
 			bool large = (inst & 0x00200000) ? true : false;
+<<<<<<< HEAD
 			ulong addr = kvmppc_get_gpr(vcpu, get_rb(inst));
 			vcpu->arch.mmu.tlbie(vcpu, addr, large);
 			break;
 		}
+=======
+			ulong addr = kvmppc_get_gpr(vcpu, rb);
+			vcpu->arch.mmu.tlbie(vcpu, addr, large);
+			break;
+		}
+#ifdef CONFIG_PPC_BOOK3S_64
+		case OP_31_XOP_FAKE_SC1:
+		{
+			/* SC 1 papr hypercalls */
+			ulong cmd = kvmppc_get_gpr(vcpu, 3);
+			int i;
+
+		        if ((vcpu->arch.shared->msr & MSR_PR) ||
+			    !vcpu->arch.papr_enabled) {
+				emulated = EMULATE_FAIL;
+				break;
+			}
+
+			if (kvmppc_h_pr(vcpu, cmd) == EMULATE_DONE)
+				break;
+
+			run->papr_hcall.nr = cmd;
+			for (i = 0; i < 9; ++i) {
+				ulong gpr = kvmppc_get_gpr(vcpu, 4 + i);
+				run->papr_hcall.args[i] = gpr;
+			}
+
+			run->exit_reason = KVM_EXIT_PAPR_HCALL;
+			vcpu->arch.hcall_needed = 1;
+			emulated = EMULATE_EXIT_USER;
+			break;
+		}
+#endif
+>>>>>>> refs/remotes/origin/master
 		case OP_31_XOP_EIOIO:
 			break;
 		case OP_31_XOP_SLBMTE:
@@ -151,15 +276,24 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 				return EMULATE_FAIL;
 
 			vcpu->arch.mmu.slbmte(vcpu,
+<<<<<<< HEAD
 					kvmppc_get_gpr(vcpu, get_rs(inst)),
 					kvmppc_get_gpr(vcpu, get_rb(inst)));
+=======
+					kvmppc_get_gpr(vcpu, rs),
+					kvmppc_get_gpr(vcpu, rb));
+>>>>>>> refs/remotes/origin/master
 			break;
 		case OP_31_XOP_SLBIE:
 			if (!vcpu->arch.mmu.slbie)
 				return EMULATE_FAIL;
 
 			vcpu->arch.mmu.slbie(vcpu,
+<<<<<<< HEAD
 					kvmppc_get_gpr(vcpu, get_rb(inst)));
+=======
+					kvmppc_get_gpr(vcpu, rb));
+>>>>>>> refs/remotes/origin/master
 			break;
 		case OP_31_XOP_SLBIA:
 			if (!vcpu->arch.mmu.slbia)
@@ -171,22 +305,38 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 			if (!vcpu->arch.mmu.slbmfee) {
 				emulated = EMULATE_FAIL;
 			} else {
+<<<<<<< HEAD
 				ulong t, rb;
 
 				rb = kvmppc_get_gpr(vcpu, get_rb(inst));
 				t = vcpu->arch.mmu.slbmfee(vcpu, rb);
 				kvmppc_set_gpr(vcpu, get_rt(inst), t);
+=======
+				ulong t, rb_val;
+
+				rb_val = kvmppc_get_gpr(vcpu, rb);
+				t = vcpu->arch.mmu.slbmfee(vcpu, rb_val);
+				kvmppc_set_gpr(vcpu, rt, t);
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case OP_31_XOP_SLBMFEV:
 			if (!vcpu->arch.mmu.slbmfev) {
 				emulated = EMULATE_FAIL;
 			} else {
+<<<<<<< HEAD
 				ulong t, rb;
 
 				rb = kvmppc_get_gpr(vcpu, get_rb(inst));
 				t = vcpu->arch.mmu.slbmfev(vcpu, rb);
 				kvmppc_set_gpr(vcpu, get_rt(inst), t);
+=======
+				ulong t, rb_val;
+
+				rb_val = kvmppc_get_gpr(vcpu, rb);
+				t = vcpu->arch.mmu.slbmfev(vcpu, rb_val);
+				kvmppc_set_gpr(vcpu, rt, t);
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case OP_31_XOP_DCBA:
@@ -194,26 +344,53 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 			break;
 		case OP_31_XOP_DCBZ:
 		{
+<<<<<<< HEAD
 			ulong rb = kvmppc_get_gpr(vcpu, get_rb(inst));
 			ulong ra = 0;
+=======
+			ulong rb_val = kvmppc_get_gpr(vcpu, rb);
+			ulong ra_val = 0;
+>>>>>>> refs/remotes/origin/master
 			ulong addr, vaddr;
 			u32 zeros[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 			u32 dsisr;
 			int r;
 
+<<<<<<< HEAD
 			if (get_ra(inst))
 				ra = kvmppc_get_gpr(vcpu, get_ra(inst));
 
 			addr = (ra + rb) & ~31ULL;
+=======
+			if (ra)
+				ra_val = kvmppc_get_gpr(vcpu, ra);
+
+			addr = (ra_val + rb_val) & ~31ULL;
+>>>>>>> refs/remotes/origin/master
 			if (!(vcpu->arch.shared->msr & MSR_SF))
 				addr &= 0xffffffff;
 			vaddr = addr;
 
 			r = kvmppc_st(vcpu, &addr, 32, zeros, true);
 			if ((r == -ENOENT) || (r == -EPERM)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				*advance = 0;
 				vcpu->arch.shared->dar = vaddr;
 				to_svcpu(vcpu)->fault_dar = vaddr;
+=======
+				struct kvmppc_book3s_shadow_vcpu *svcpu;
+
+				svcpu = svcpu_get(vcpu);
+				*advance = 0;
+				vcpu->arch.shared->dar = vaddr;
+				svcpu->fault_dar = vaddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				*advance = 0;
+				vcpu->arch.shared->dar = vaddr;
+				vcpu->arch.fault_dar = vaddr;
+>>>>>>> refs/remotes/origin/master
 
 				dsisr = DSISR_ISSTORE;
 				if (r == -ENOENT)
@@ -222,7 +399,16 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 					dsisr |= DSISR_PROTFAULT;
 
 				vcpu->arch.shared->dsisr = dsisr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				to_svcpu(vcpu)->fault_dsisr = dsisr;
+=======
+				svcpu->fault_dsisr = dsisr;
+				svcpu_put(svcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				vcpu->arch.fault_dsisr = dsisr;
+>>>>>>> refs/remotes/origin/master
 
 				kvmppc_book3s_queue_irqprio(vcpu,
 					BOOK3S_INTERRUPT_DATA_STORAGE);
@@ -289,6 +475,7 @@ static struct kvmppc_bat *kvmppc_find_bat(struct kvm_vcpu *vcpu, int sprn)
 	return bat;
 }
 
+<<<<<<< HEAD
 int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 {
 	int emulated = EMULATE_DONE;
@@ -296,6 +483,21 @@ int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 
 	switch (sprn) {
 	case SPRN_SDR1:
+<<<<<<< HEAD
+=======
+		if (!spr_allowed(vcpu, PRIV_HYPER))
+			goto unprivileged;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int kvmppc_core_emulate_mtspr_pr(struct kvm_vcpu *vcpu, int sprn, ulong spr_val)
+{
+	int emulated = EMULATE_DONE;
+
+	switch (sprn) {
+	case SPRN_SDR1:
+		if (!spr_allowed(vcpu, PRIV_HYPER))
+			goto unprivileged;
+>>>>>>> refs/remotes/origin/master
 		to_book3s(vcpu)->sdr1 = spr_val;
 		break;
 	case SPRN_DSISR:
@@ -365,6 +567,15 @@ int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 		    (mfmsr() & MSR_HV))
 			vcpu->arch.hflags |= BOOK3S_HFLAG_DCBZ32;
 		break;
+<<<<<<< HEAD
+=======
+	case SPRN_PURR:
+		to_book3s(vcpu)->purr_offset = spr_val - get_tb();
+		break;
+	case SPRN_SPURR:
+		to_book3s(vcpu)->spurr_offset = spr_val - get_tb();
+		break;
+>>>>>>> refs/remotes/origin/master
 	case SPRN_GQR0:
 	case SPRN_GQR1:
 	case SPRN_GQR2:
@@ -382,6 +593,10 @@ int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 	case SPRN_CTRLF:
 	case SPRN_CTRLT:
 	case SPRN_L2CR:
+<<<<<<< HEAD
+=======
+	case SPRN_DSCR:
+>>>>>>> refs/remotes/origin/master
 	case SPRN_MMCR0_GEKKO:
 	case SPRN_MMCR1_GEKKO:
 	case SPRN_PMC1_GEKKO:
@@ -389,7 +604,18 @@ int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 	case SPRN_PMC3_GEKKO:
 	case SPRN_PMC4_GEKKO:
 	case SPRN_WPAR_GEKKO:
+<<<<<<< HEAD
 		break;
+<<<<<<< HEAD
+=======
+unprivileged:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SPRN_MSSSR0:
+	case SPRN_DABR:
+		break;
+unprivileged:
+>>>>>>> refs/remotes/origin/master
 	default:
 		printk(KERN_INFO "KVM: invalid SPR write: %d\n", sprn);
 #ifndef DEBUG_SPR
@@ -401,7 +627,11 @@ int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 	return emulated;
 }
 
+<<<<<<< HEAD
 int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
+=======
+int kvmppc_core_emulate_mfspr_pr(struct kvm_vcpu *vcpu, int sprn, ulong *spr_val)
+>>>>>>> refs/remotes/origin/master
 {
 	int emulated = EMULATE_DONE;
 
@@ -414,13 +644,25 @@ int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
 		struct kvmppc_bat *bat = kvmppc_find_bat(vcpu, sprn);
 
 		if (sprn % 2)
+<<<<<<< HEAD
 			kvmppc_set_gpr(vcpu, rt, bat->raw >> 32);
 		else
 			kvmppc_set_gpr(vcpu, rt, bat->raw);
+=======
+			*spr_val = bat->raw >> 32;
+		else
+			*spr_val = bat->raw;
+>>>>>>> refs/remotes/origin/master
 
 		break;
 	}
 	case SPRN_SDR1:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (!spr_allowed(vcpu, PRIV_HYPER))
+			goto unprivileged;
+>>>>>>> refs/remotes/origin/cm-10.0
 		kvmppc_set_gpr(vcpu, rt, to_book3s(vcpu)->sdr1);
 		break;
 	case SPRN_DSISR:
@@ -449,6 +691,55 @@ int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
 	case SPRN_HID5:
 		kvmppc_set_gpr(vcpu, rt, to_book3s(vcpu)->hid[5]);
 		break;
+<<<<<<< HEAD
+=======
+	case SPRN_CFAR:
+	case SPRN_PURR:
+		kvmppc_set_gpr(vcpu, rt, 0);
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!spr_allowed(vcpu, PRIV_HYPER))
+			goto unprivileged;
+		*spr_val = to_book3s(vcpu)->sdr1;
+		break;
+	case SPRN_DSISR:
+		*spr_val = vcpu->arch.shared->dsisr;
+		break;
+	case SPRN_DAR:
+		*spr_val = vcpu->arch.shared->dar;
+		break;
+	case SPRN_HIOR:
+		*spr_val = to_book3s(vcpu)->hior;
+		break;
+	case SPRN_HID0:
+		*spr_val = to_book3s(vcpu)->hid[0];
+		break;
+	case SPRN_HID1:
+		*spr_val = to_book3s(vcpu)->hid[1];
+		break;
+	case SPRN_HID2:
+	case SPRN_HID2_GEKKO:
+		*spr_val = to_book3s(vcpu)->hid[2];
+		break;
+	case SPRN_HID4:
+	case SPRN_HID4_GEKKO:
+		*spr_val = to_book3s(vcpu)->hid[4];
+		break;
+	case SPRN_HID5:
+		*spr_val = to_book3s(vcpu)->hid[5];
+		break;
+	case SPRN_CFAR:
+	case SPRN_DSCR:
+		*spr_val = 0;
+		break;
+	case SPRN_PURR:
+		*spr_val = get_tb() + to_book3s(vcpu)->purr_offset;
+		break;
+	case SPRN_SPURR:
+		*spr_val = get_tb() + to_book3s(vcpu)->purr_offset;
+		break;
+>>>>>>> refs/remotes/origin/master
 	case SPRN_GQR0:
 	case SPRN_GQR1:
 	case SPRN_GQR2:
@@ -457,8 +748,12 @@ int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
 	case SPRN_GQR5:
 	case SPRN_GQR6:
 	case SPRN_GQR7:
+<<<<<<< HEAD
 		kvmppc_set_gpr(vcpu, rt,
 			       to_book3s(vcpu)->gqr[sprn - SPRN_GQR0]);
+=======
+		*spr_val = to_book3s(vcpu)->gqr[sprn - SPRN_GQR0];
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SPRN_THRM1:
 	case SPRN_THRM2:
@@ -473,9 +768,22 @@ int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
 	case SPRN_PMC3_GEKKO:
 	case SPRN_PMC4_GEKKO:
 	case SPRN_WPAR_GEKKO:
+<<<<<<< HEAD
 		kvmppc_set_gpr(vcpu, rt, 0);
 		break;
 	default:
+<<<<<<< HEAD
+=======
+unprivileged:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SPRN_MSSSR0:
+	case SPRN_DABR:
+		*spr_val = 0;
+		break;
+	default:
+unprivileged:
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_INFO "KVM: invalid SPR read: %d\n", sprn);
 #ifndef DEBUG_SPR
 		emulated = EMULATE_FAIL;
@@ -531,23 +839,37 @@ u32 kvmppc_alignment_dsisr(struct kvm_vcpu *vcpu, unsigned int inst)
 ulong kvmppc_alignment_dar(struct kvm_vcpu *vcpu, unsigned int inst)
 {
 	ulong dar = 0;
+<<<<<<< HEAD
 	ulong ra;
+=======
+	ulong ra = get_ra(inst);
+	ulong rb = get_rb(inst);
+>>>>>>> refs/remotes/origin/master
 
 	switch (get_op(inst)) {
 	case OP_LFS:
 	case OP_LFD:
 	case OP_STFD:
 	case OP_STFS:
+<<<<<<< HEAD
 		ra = get_ra(inst);
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ra)
 			dar = kvmppc_get_gpr(vcpu, ra);
 		dar += (s32)((s16)inst);
 		break;
 	case 31:
+<<<<<<< HEAD
 		ra = get_ra(inst);
 		if (ra)
 			dar = kvmppc_get_gpr(vcpu, ra);
 		dar += kvmppc_get_gpr(vcpu, get_rb(inst));
+=======
+		if (ra)
+			dar = kvmppc_get_gpr(vcpu, ra);
+		dar += kvmppc_get_gpr(vcpu, rb);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		printk(KERN_INFO "KVM: Unaligned instruction 0x%x\n", inst);

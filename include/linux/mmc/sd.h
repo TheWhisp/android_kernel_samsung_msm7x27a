@@ -9,8 +9,18 @@
  * your option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef MMC_SD_H
 #define MMC_SD_H
+=======
+#ifndef LINUX_MMC_SD_H
+#define LINUX_MMC_SD_H
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef LINUX_MMC_SD_H
+#define LINUX_MMC_SD_H
+>>>>>>> refs/remotes/origin/master
 
 /* SD commands                           type  argument     response */
   /* class 0 */
@@ -91,5 +101,13 @@
 #define SD_SWITCH_ACCESS_DEF	0
 #define SD_SWITCH_ACCESS_HS	1
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
+=======
+#endif /* LINUX_MMC_SD_H */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* LINUX_MMC_SD_H */
+>>>>>>> refs/remotes/origin/master

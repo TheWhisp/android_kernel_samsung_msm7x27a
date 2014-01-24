@@ -12,6 +12,8 @@
 
 #define IRQ_STATUS	0x14
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.macro  disable_fiq
 	.endm
 
@@ -21,6 +23,16 @@
 	.macro  arch_ret_to_user, tmp1, tmp2
 	.endm
 
+=======
+	.macro  get_irqnr_preamble, base, tmp
+	.endm
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.macro  get_irqnr_preamble, base, tmp
+	.endm
+
+>>>>>>> refs/remotes/origin/master
 	.macro  get_irqnr_and_base, irqnr, irqstat, base, tmp
 	ldr     \irqstat, =IO_ADDRESS(GEMINI_INTERRUPT_BASE + IRQ_STATUS)
 	ldr     \irqnr, [\irqstat]

@@ -15,7 +15,10 @@
 
 #include <linux/module.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/sched.h>
 #include <linux/mutex.h>
@@ -62,7 +65,15 @@ MODULE_LICENSE("GPL");
 
 /* Module parameters */
 static DEFINE_MUTEX(iowarrior_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug = 0;
+=======
+static bool debug = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool debug = 0;
+>>>>>>> refs/remotes/origin/master
 module_param(debug, bool, 0644);
 MODULE_PARM_DESC(debug, "debug=1 enables debugging messages");
 
@@ -300,7 +311,11 @@ static ssize_t iowarrior_read(struct file *file, char __user *buffer,
 	do {
 		atomic_set(&dev->overflow_flag, 0);
 		if ((read_idx = read_index(dev)) == -1) {
+<<<<<<< HEAD
 			/* queue emty */
+=======
+			/* queue empty */
+>>>>>>> refs/remotes/origin/master
 			if (file->f_flags & O_NONBLOCK)
 				return -EAGAIN;
 			else {
@@ -610,8 +625,13 @@ static int iowarrior_open(struct inode *inode, struct file *file)
 	interface = usb_find_interface(&iowarrior_driver, subminor);
 	if (!interface) {
 		mutex_unlock(&iowarrior_mutex);
+<<<<<<< HEAD
 		err("%s - error, can't find device for minor %d", __func__,
 		    subminor);
+=======
+		printk(KERN_ERR "%s - error, can't find device for minor %d\n",
+		       __func__, subminor);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -672,7 +692,11 @@ static int iowarrior_release(struct inode *inode, struct file *file)
 		retval = -ENODEV;	/* close called more than once */
 		mutex_unlock(&dev->mutex);
 	} else {
+<<<<<<< HEAD
 		dev->opened = 0;	/* we're closeing now */
+=======
+		dev->opened = 0;	/* we're closing now */
+>>>>>>> refs/remotes/origin/master
 		retval = 0;
 		if (dev->present) {
 			/*
@@ -734,7 +758,15 @@ static const struct file_operations iowarrior_fops = {
 	.llseek = noop_llseek,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char *iowarrior_devnode(struct device *dev, mode_t *mode)
+=======
+static char *iowarrior_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *iowarrior_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return kasprintf(GFP_KERNEL, "usb/%s", dev_name(dev));
 }
@@ -802,8 +834,17 @@ static int iowarrior_probe(struct usb_interface *interface,
 			/* this one will match for the IOWarrior56 only */
 			dev->int_out_endpoint = endpoint;
 	}
+<<<<<<< HEAD
 	/* we have to check the report_size often, so remember it in the endianess suitable for our machine */
+<<<<<<< HEAD
 	dev->report_size = le16_to_cpu(dev->int_in_endpoint->wMaxPacketSize);
+=======
+	dev->report_size = usb_endpoint_maxp(dev->int_in_endpoint);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* we have to check the report_size often, so remember it in the endianness suitable for our machine */
+	dev->report_size = usb_endpoint_maxp(dev->int_in_endpoint);
+>>>>>>> refs/remotes/origin/master
 	if ((dev->interface->cur_altsetting->desc.bInterfaceNumber == 0) &&
 	    (dev->product_id == USB_DEVICE_ID_CODEMERCS_IOW56))
 		/* IOWarrior56 has wMaxPacketSize different from report size */
@@ -927,6 +968,8 @@ static struct usb_driver iowarrior_driver = {
 	.id_table = iowarrior_ids,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init iowarrior_init(void)
 {
 	return usb_register(&iowarrior_driver);
@@ -939,3 +982,9 @@ static void __exit iowarrior_exit(void)
 
 module_init(iowarrior_init);
 module_exit(iowarrior_exit);
+=======
+module_usb_driver(iowarrior_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(iowarrior_driver);
+>>>>>>> refs/remotes/origin/master

@@ -2579,6 +2579,11 @@ DEFINE_OCFS2_INT_INT_EVENT(ocfs2_extend_trans);
 
 DEFINE_OCFS2_INT_EVENT(ocfs2_extend_trans_restart);
 
+<<<<<<< HEAD
+=======
+DEFINE_OCFS2_INT_INT_EVENT(ocfs2_allocate_extend_trans);
+
+>>>>>>> refs/remotes/origin/master
 DEFINE_OCFS2_ULL_ULL_UINT_UINT_EVENT(ocfs2_journal_access);
 
 DEFINE_OCFS2_ULL_EVENT(ocfs2_journal_dirty);

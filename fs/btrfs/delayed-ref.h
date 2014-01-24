@@ -18,7 +18,11 @@
 #ifndef __DELAYED_REF__
 #define __DELAYED_REF__
 
+<<<<<<< HEAD
 /* these are the possible values of struct btrfs_delayed_ref->action */
+=======
+/* these are the possible values of struct btrfs_delayed_ref_node->action */
+>>>>>>> refs/remotes/origin/master
 #define BTRFS_ADD_DELAYED_REF    1 /* add one backref to the tree */
 #define BTRFS_DROP_DELAYED_REF   2 /* delete one backref from the tree */
 #define BTRFS_ADD_DELAYED_EXTENT 3 /* record a full extent allocation */
@@ -33,6 +37,18 @@ struct btrfs_delayed_ref_node {
 	/* the size of the extent */
 	u64 num_bytes;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* seq number to keep track of insertion order */
+	u64 seq;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* seq number to keep track of insertion order */
+	u64 seq;
+
+>>>>>>> refs/remotes/origin/master
 	/* ref count on this data structure */
 	atomic_t refs;
 
@@ -57,6 +73,10 @@ struct btrfs_delayed_ref_node {
 struct btrfs_delayed_extent_op {
 	struct btrfs_disk_key key;
 	u64 flags_to_set;
+<<<<<<< HEAD
+=======
+	int level;
+>>>>>>> refs/remotes/origin/master
 	unsigned int update_key:1;
 	unsigned int update_flags:1;
 	unsigned int is_data:1;
@@ -98,19 +118,39 @@ struct btrfs_delayed_ref_head {
 
 struct btrfs_delayed_tree_ref {
 	struct btrfs_delayed_ref_node node;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	union {
 		u64 root;
 		u64 parent;
 	};
+=======
+	u64 root;
+	u64 parent;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 root;
+	u64 parent;
+>>>>>>> refs/remotes/origin/master
 	int level;
 };
 
 struct btrfs_delayed_data_ref {
 	struct btrfs_delayed_ref_node node;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	union {
 		u64 root;
 		u64 parent;
 	};
+=======
+	u64 root;
+	u64 parent;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 root;
+	u64 parent;
+>>>>>>> refs/remotes/origin/master
 	u64 objectid;
 	u64 offset;
 };
@@ -133,6 +173,18 @@ struct btrfs_delayed_ref_root {
 	unsigned long num_heads_ready;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * bumped when someone is making progress on the delayed
+	 * refs, so that other procs know they are just adding to
+	 * contention intead of helping
+	 */
+	atomic_t procs_running_refs;
+	atomic_t ref_seq;
+	wait_queue_head_t wait;
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * set when the tree is flushing before a transaction commit,
 	 * used by the throttling code to decide if new updates need
 	 * to be run right away
@@ -140,17 +192,67 @@ struct btrfs_delayed_ref_root {
 	int flushing;
 
 	u64 run_delayed_start;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	/*
+	 * seq number of delayed refs. We need to know if a backref was being
+	 * added before the currently processed ref or afterwards.
+	 */
+	u64 seq;
+
+	/*
+	 * seq_list holds a list of all seq numbers that are currently being
+	 * added to the list. While walking backrefs (btrfs_find_all_roots,
+	 * qgroups), which might take some time, no newer ref must be processed,
+	 * as it might influence the outcome of the walk.
+	 */
+	struct list_head seq_head;
+
+	/*
+	 * when the only refs we have in the list must not be processed, we want
+	 * to wait for more refs to show up or for the end of backref walking.
+	 */
+	wait_queue_head_t seq_wait;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
+=======
+};
+
+extern struct kmem_cache *btrfs_delayed_ref_head_cachep;
+extern struct kmem_cache *btrfs_delayed_tree_ref_cachep;
+extern struct kmem_cache *btrfs_delayed_data_ref_cachep;
+extern struct kmem_cache *btrfs_delayed_extent_op_cachep;
+
+int btrfs_delayed_ref_init(void);
+void btrfs_delayed_ref_exit(void);
+
+static inline struct btrfs_delayed_extent_op *
+btrfs_alloc_delayed_extent_op(void)
+{
+	return kmem_cache_alloc(btrfs_delayed_extent_op_cachep, GFP_NOFS);
+}
+
+static inline void
+btrfs_free_delayed_extent_op(struct btrfs_delayed_extent_op *op)
+{
+	if (op)
+		kmem_cache_free(btrfs_delayed_extent_op_cachep, op);
+}
+>>>>>>> refs/remotes/origin/master
 
 static inline void btrfs_put_delayed_ref(struct btrfs_delayed_ref_node *ref)
 {
 	WARN_ON(atomic_read(&ref->refs) == 0);
 	if (atomic_dec_and_test(&ref->refs)) {
 		WARN_ON(ref->in_tree);
+<<<<<<< HEAD
 		kfree(ref);
 	}
 }
 
+<<<<<<< HEAD
 int btrfs_add_delayed_tree_ref(struct btrfs_trans_handle *trans,
 			       u64 bytenr, u64 num_bytes, u64 parent,
 			       u64 ref_root, int level, int action,
@@ -161,15 +263,135 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
 			       u64 owner, u64 offset, int action,
 			       struct btrfs_delayed_extent_op *extent_op);
 int btrfs_add_delayed_extent_op(struct btrfs_trans_handle *trans,
+=======
+=======
+		switch (ref->type) {
+		case BTRFS_TREE_BLOCK_REF_KEY:
+		case BTRFS_SHARED_BLOCK_REF_KEY:
+			kmem_cache_free(btrfs_delayed_tree_ref_cachep, ref);
+			break;
+		case BTRFS_EXTENT_DATA_REF_KEY:
+		case BTRFS_SHARED_DATA_REF_KEY:
+			kmem_cache_free(btrfs_delayed_data_ref_cachep, ref);
+			break;
+		case 0:
+			kmem_cache_free(btrfs_delayed_ref_head_cachep, ref);
+			break;
+		default:
+			BUG();
+		}
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
+int btrfs_add_delayed_tree_ref(struct btrfs_fs_info *fs_info,
+			       struct btrfs_trans_handle *trans,
+			       u64 bytenr, u64 num_bytes, u64 parent,
+			       u64 ref_root, int level, int action,
+			       struct btrfs_delayed_extent_op *extent_op,
+			       int for_cow);
+int btrfs_add_delayed_data_ref(struct btrfs_fs_info *fs_info,
+			       struct btrfs_trans_handle *trans,
+			       u64 bytenr, u64 num_bytes,
+			       u64 parent, u64 ref_root,
+			       u64 owner, u64 offset, int action,
+			       struct btrfs_delayed_extent_op *extent_op,
+			       int for_cow);
+int btrfs_add_delayed_extent_op(struct btrfs_fs_info *fs_info,
+				struct btrfs_trans_handle *trans,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 				u64 bytenr, u64 num_bytes,
 				struct btrfs_delayed_extent_op *extent_op);
+=======
+				u64 bytenr, u64 num_bytes,
+				struct btrfs_delayed_extent_op *extent_op);
+void btrfs_merge_delayed_refs(struct btrfs_trans_handle *trans,
+			      struct btrfs_fs_info *fs_info,
+			      struct btrfs_delayed_ref_root *delayed_refs,
+			      struct btrfs_delayed_ref_head *head);
+>>>>>>> refs/remotes/origin/master
 
 struct btrfs_delayed_ref_head *
 btrfs_find_delayed_ref_head(struct btrfs_trans_handle *trans, u64 bytenr);
 int btrfs_delayed_ref_lock(struct btrfs_trans_handle *trans,
 			   struct btrfs_delayed_ref_head *head);
+<<<<<<< HEAD
 int btrfs_find_ref_cluster(struct btrfs_trans_handle *trans,
 			   struct list_head *cluster, u64 search_start);
+<<<<<<< HEAD
+=======
+
+struct seq_list {
+	struct list_head list;
+	u64 seq;
+};
+
+static inline u64 inc_delayed_seq(struct btrfs_delayed_ref_root *delayed_refs)
+{
+	assert_spin_locked(&delayed_refs->lock);
+	++delayed_refs->seq;
+	return delayed_refs->seq;
+}
+
+static inline void
+btrfs_get_delayed_seq(struct btrfs_delayed_ref_root *delayed_refs,
+		      struct seq_list *elem)
+{
+	assert_spin_locked(&delayed_refs->lock);
+	elem->seq = delayed_refs->seq;
+	list_add_tail(&elem->list, &delayed_refs->seq_head);
+}
+
+static inline void
+btrfs_put_delayed_seq(struct btrfs_delayed_ref_root *delayed_refs,
+		      struct seq_list *elem)
+{
+	spin_lock(&delayed_refs->lock);
+	list_del(&elem->list);
+	wake_up(&delayed_refs->seq_wait);
+	spin_unlock(&delayed_refs->lock);
+}
+
+int btrfs_check_delayed_seq(struct btrfs_delayed_ref_root *delayed_refs,
+=======
+static inline void btrfs_delayed_ref_unlock(struct btrfs_delayed_ref_head *head)
+{
+	mutex_unlock(&head->mutex);
+}
+
+int btrfs_find_ref_cluster(struct btrfs_trans_handle *trans,
+			   struct list_head *cluster, u64 search_start);
+void btrfs_release_ref_cluster(struct list_head *cluster);
+
+int btrfs_check_delayed_seq(struct btrfs_fs_info *fs_info,
+			    struct btrfs_delayed_ref_root *delayed_refs,
+>>>>>>> refs/remotes/origin/master
+			    u64 seq);
+
+/*
+ * delayed refs with a ref_seq > 0 must be held back during backref walking.
+ * this only applies to items in one of the fs-trees. for_cow items never need
+ * to be held back, so they won't get a ref_seq number.
+ */
+static inline int need_ref_seq(int for_cow, u64 rootid)
+{
+	if (for_cow)
+		return 0;
+
+	if (rootid == BTRFS_FS_TREE_OBJECTID)
+		return 1;
+
+	if ((s64)rootid >= (s64)BTRFS_FIRST_FREE_OBJECTID)
+		return 1;
+
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * a node might live in a head or a regular ref, this lets you
  * test for the proper type to use.

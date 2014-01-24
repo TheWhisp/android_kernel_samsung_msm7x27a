@@ -34,7 +34,13 @@
 #include <linux/if_arp.h>
 #include <linux/skbuff.h>
 #include <net/sock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <linux/fcntl.h>
 #include <linux/termios.h>
@@ -166,10 +172,16 @@ static void rose_remove_socket(struct sock *sk)
 void rose_kill_by_neigh(struct rose_neigh *neigh)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&rose_list_lock);
 	sk_for_each(s, node, &rose_list) {
+=======
+
+	spin_lock_bh(&rose_list_lock);
+	sk_for_each(s, &rose_list) {
+>>>>>>> refs/remotes/origin/master
 		struct rose_sock *rose = rose_sk(s);
 
 		if (rose->neighbour == neigh) {
@@ -187,10 +199,16 @@ void rose_kill_by_neigh(struct rose_neigh *neigh)
 static void rose_kill_by_device(struct net_device *dev)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&rose_list_lock);
 	sk_for_each(s, node, &rose_list) {
+=======
+
+	spin_lock_bh(&rose_list_lock);
+	sk_for_each(s, &rose_list) {
+>>>>>>> refs/remotes/origin/master
 		struct rose_sock *rose = rose_sk(s);
 
 		if (rose->device == dev) {
@@ -205,10 +223,17 @@ static void rose_kill_by_device(struct net_device *dev)
 /*
  *	Handle device status changes.
  */
+<<<<<<< HEAD
 static int rose_device_event(struct notifier_block *this, unsigned long event,
 	void *ptr)
 {
 	struct net_device *dev = (struct net_device *)ptr;
+=======
+static int rose_device_event(struct notifier_block *this,
+			     unsigned long event, void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	if (!net_eq(dev_net(dev), &init_net))
 		return NOTIFY_DONE;
@@ -247,10 +272,16 @@ static void rose_insert_socket(struct sock *sk)
 static struct sock *rose_find_listener(rose_address *addr, ax25_address *call)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&rose_list_lock);
 	sk_for_each(s, node, &rose_list) {
+=======
+
+	spin_lock_bh(&rose_list_lock);
+	sk_for_each(s, &rose_list) {
+>>>>>>> refs/remotes/origin/master
 		struct rose_sock *rose = rose_sk(s);
 
 		if (!rosecmp(&rose->source_addr, addr) &&
@@ -259,7 +290,11 @@ static struct sock *rose_find_listener(rose_address *addr, ax25_address *call)
 			goto found;
 	}
 
+<<<<<<< HEAD
 	sk_for_each(s, node, &rose_list) {
+=======
+	sk_for_each(s, &rose_list) {
+>>>>>>> refs/remotes/origin/master
 		struct rose_sock *rose = rose_sk(s);
 
 		if (!rosecmp(&rose->source_addr, addr) &&
@@ -279,10 +314,16 @@ found:
 struct sock *rose_find_socket(unsigned int lci, struct rose_neigh *neigh)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&rose_list_lock);
 	sk_for_each(s, node, &rose_list) {
+=======
+
+	spin_lock_bh(&rose_list_lock);
+	sk_for_each(s, &rose_list) {
+>>>>>>> refs/remotes/origin/master
 		struct rose_sock *rose = rose_sk(s);
 
 		if (rose->lci == lci && rose->neighbour == neigh)
@@ -1221,7 +1262,13 @@ static int rose_recvmsg(struct kiocb *iocb, struct socket *sock,
 {
 	struct sock *sk = sock->sk;
 	struct rose_sock *rose = rose_sk(sk);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sockaddr_rose *srose = (struct sockaddr_rose *)msg->msg_name;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	size_t copied;
 	unsigned char *asmptr;
 	struct sk_buff *skb;
@@ -1257,12 +1304,30 @@ static int rose_recvmsg(struct kiocb *iocb, struct socket *sock,
 
 	skb_copy_datagram_iovec(skb, 0, msg->msg_iov, copied);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (srose != NULL) {
 		memset(srose, 0, msg->msg_namelen);
+=======
+	if (msg->msg_name) {
+		struct sockaddr_rose *srose;
+		struct full_sockaddr_rose *full_srose = msg->msg_name;
+
+		memset(msg->msg_name, 0, sizeof(struct full_sockaddr_rose));
+		srose = msg->msg_name;
+>>>>>>> refs/remotes/origin/master
+=======
+	if (msg->msg_name) {
+		struct sockaddr_rose *srose;
+
+		memset(msg->msg_name, 0, sizeof(struct full_sockaddr_rose));
+		srose = msg->msg_name;
+>>>>>>> refs/remotes/origin/cm-11.0
 		srose->srose_family = AF_ROSE;
 		srose->srose_addr   = rose->dest_addr;
 		srose->srose_call   = rose->dest_call;
 		srose->srose_ndigis = rose->dest_ndigis;
+<<<<<<< HEAD
 		if (msg->msg_namelen >= sizeof(struct full_sockaddr_rose)) {
 			struct full_sockaddr_rose *full_srose = (struct full_sockaddr_rose *)msg->msg_name;
 			for (n = 0 ; n < rose->dest_ndigis ; n++)
@@ -1275,6 +1340,11 @@ static int rose_recvmsg(struct kiocb *iocb, struct socket *sock,
 			}
 			msg->msg_namelen = sizeof(struct sockaddr_rose);
 		}
+=======
+		for (n = 0 ; n < rose->dest_ndigis ; n++)
+			full_srose->srose_digis[n] = rose->dest_digis[n];
+		msg->msg_namelen = sizeof(struct full_sockaddr_rose);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	skb_free_datagram(sk, skb);
@@ -1577,10 +1647,20 @@ static int __init rose_proto_init(void)
 
 	rose_add_loopback_neigh();
 
+<<<<<<< HEAD
 	proc_net_fops_create(&init_net, "rose", S_IRUGO, &rose_info_fops);
 	proc_net_fops_create(&init_net, "rose_neigh", S_IRUGO, &rose_neigh_fops);
 	proc_net_fops_create(&init_net, "rose_nodes", S_IRUGO, &rose_nodes_fops);
 	proc_net_fops_create(&init_net, "rose_routes", S_IRUGO, &rose_routes_fops);
+=======
+	proc_create("rose", S_IRUGO, init_net.proc_net, &rose_info_fops);
+	proc_create("rose_neigh", S_IRUGO, init_net.proc_net,
+		    &rose_neigh_fops);
+	proc_create("rose_nodes", S_IRUGO, init_net.proc_net,
+		    &rose_nodes_fops);
+	proc_create("rose_routes", S_IRUGO, init_net.proc_net,
+		    &rose_routes_fops);
+>>>>>>> refs/remotes/origin/master
 out:
 	return rc;
 fail:
@@ -1607,10 +1687,17 @@ static void __exit rose_exit(void)
 {
 	int i;
 
+<<<<<<< HEAD
 	proc_net_remove(&init_net, "rose");
 	proc_net_remove(&init_net, "rose_neigh");
 	proc_net_remove(&init_net, "rose_nodes");
 	proc_net_remove(&init_net, "rose_routes");
+=======
+	remove_proc_entry("rose", init_net.proc_net);
+	remove_proc_entry("rose_neigh", init_net.proc_net);
+	remove_proc_entry("rose_nodes", init_net.proc_net);
+	remove_proc_entry("rose_routes", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 	rose_loopback_clear();
 
 	rose_rt_free();

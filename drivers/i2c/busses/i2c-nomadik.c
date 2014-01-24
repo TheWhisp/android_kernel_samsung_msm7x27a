@@ -14,17 +14,27 @@
  */
 #include <linux/init.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+#include <linux/amba/bus.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/interrupt.h>
 #include <linux/i2c.h>
 #include <linux/err.h>
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/regulator/consumer.h>
 #include <linux/pm_runtime.h>
 
 #include <plat/i2c.h>
+=======
+#include <linux/pm_runtime.h>
+#include <linux/of.h>
+#include <linux/pinctrl/consumer.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_NAME "nmk-i2c"
 
@@ -63,11 +73,25 @@
 /* Master controller (MCR) register */
 #define I2C_MCR_OP		(0x1 << 0)	/* Operation */
 #define I2C_MCR_A7		(0x7f << 1)	/* 7-bit address */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define I2C_MCR_EA10		(0x7 << 8) 	/* 10-bit Extended address */
 #define I2C_MCR_SB		(0x1 << 11)	/* Extended address */
 #define I2C_MCR_AM		(0x3 << 12)	/* Address type */
 #define I2C_MCR_STOP		(0x1 << 14) 	/* Stop condition */
 #define I2C_MCR_LENGTH		(0x7ff << 15) 	/* Transaction length */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define I2C_MCR_EA10		(0x7 << 8)	/* 10-bit Extended address */
+#define I2C_MCR_SB		(0x1 << 11)	/* Extended address */
+#define I2C_MCR_AM		(0x3 << 12)	/* Address type */
+#define I2C_MCR_STOP		(0x1 << 14)	/* Stop condition */
+#define I2C_MCR_LENGTH		(0x7ff << 15)	/* Transaction length */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Status register (SR) */
 #define I2C_SR_OP		(0x3 << 0)	/* Operation */
@@ -77,7 +101,15 @@
 #define I2C_SR_LENGTH		(0x7ff << 9)	/* Transfer length */
 
 /* Interrupt mask set/clear (IMSCR) bits */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define I2C_IT_TXFE 		(0x1 << 0)
+=======
+#define I2C_IT_TXFE		(0x1 << 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define I2C_IT_TXFE		(0x1 << 0)
+>>>>>>> refs/remotes/origin/master
 #define I2C_IT_TXFNE		(0x1 << 1)
 #define I2C_IT_TXFF		(0x1 << 2)
 #define I2C_IT_TXFOVR		(0x1 << 3)
@@ -104,6 +136,42 @@
 /* maximum threshold value */
 #define MAX_I2C_FIFO_THRESHOLD	15
 
+<<<<<<< HEAD
+=======
+enum i2c_freq_mode {
+	I2C_FREQ_MODE_STANDARD,		/* up to 100 Kb/s */
+	I2C_FREQ_MODE_FAST,		/* up to 400 Kb/s */
+	I2C_FREQ_MODE_HIGH_SPEED,	/* up to 3.4 Mb/s */
+	I2C_FREQ_MODE_FAST_PLUS,	/* up to 1 Mb/s */
+};
+
+/**
+ * struct nmk_i2c_controller - client specific controller configuration
+ * @clk_freq:	clock frequency for the operation mode
+ * @tft:	Tx FIFO Threshold in bytes
+ * @rft:	Rx FIFO Threshold in bytes
+ * @timeout	Slave response timeout(ms)
+ * @sm:		speed mode
+ */
+struct nmk_i2c_controller {
+	u32             clk_freq;
+	unsigned char	tft;
+	unsigned char	rft;
+	int timeout;
+	enum i2c_freq_mode	sm;
+};
+
+/**
+ * struct i2c_vendor_data - per-vendor variations
+ * @has_mtdws: variant has the MTDWS bit
+ * @fifodepth: variant FIFO depth
+ */
+struct i2c_vendor_data {
+	bool has_mtdws;
+	u32 fifodepth;
+};
+
+>>>>>>> refs/remotes/origin/master
 enum i2c_status {
 	I2C_NOP,
 	I2C_ON_GOING,
@@ -135,6 +203,8 @@ struct i2c_nmk_client {
 };
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * struct nmk_i2c_dev - private data structure of the controller
  * @pdev: parent platform device
  * @adap: corresponding I2C adapter
@@ -152,14 +222,61 @@ struct nmk_i2c_dev {
 	struct platform_device		*pdev;
 	struct i2c_adapter 		adap;
 	int 				irq;
+=======
+ * struct nmk_i2c_dev - private data structure of the controller.
+ * @pdev: parent platform device.
+=======
+ * struct nmk_i2c_dev - private data structure of the controller.
+ * @vendor: vendor data for this variant.
+ * @adev: parent amba device.
+>>>>>>> refs/remotes/origin/master
+ * @adap: corresponding I2C adapter.
+ * @irq: interrupt line for the controller.
+ * @virtbase: virtual io memory area.
+ * @clk: hardware i2c block clock.
+ * @cfg: machine provided controller configuration.
+ * @cli: holder of client specific data.
+ * @stop: stop condition.
+ * @xfer_complete: acknowledge completion for a I2C message.
+ * @result: controller propogated result.
+<<<<<<< HEAD
+ * @regulator: pointer to i2c regulator.
+ * @busy: Busy doing transfer.
+ */
+struct nmk_i2c_dev {
+	struct platform_device		*pdev;
+	struct i2c_adapter		adap;
+	int				irq;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @busy: Busy doing transfer.
+ */
+struct nmk_i2c_dev {
+	struct i2c_vendor_data		*vendor;
+	struct amba_device		*adev;
+	struct i2c_adapter		adap;
+	int				irq;
+>>>>>>> refs/remotes/origin/master
 	void __iomem			*virtbase;
 	struct clk			*clk;
 	struct nmk_i2c_controller	cfg;
 	struct i2c_nmk_client		cli;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int 				stop;
 	struct completion		xfer_complete;
 	int 				result;
+=======
+	int				stop;
+	struct completion		xfer_complete;
+	int				result;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct regulator		*regulator;
+=======
+	int				stop;
+	struct completion		xfer_complete;
+	int				result;
+>>>>>>> refs/remotes/origin/master
 	bool				busy;
 };
 
@@ -216,8 +333,20 @@ static int flush_i2c_fifo(struct nmk_i2c_dev *dev)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_err(&dev->pdev->dev, "flushing operation timed out "
 		"giving up after %d attempts", LOOP_ATTEMPTS);
+=======
+	dev_err(&dev->pdev->dev,
+		"flushing operation timed out giving up after %d attempts",
+		LOOP_ATTEMPTS);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_err(&dev->adev->dev,
+		"flushing operation timed out giving up after %d attempts",
+		LOOP_ATTEMPTS);
+>>>>>>> refs/remotes/origin/master
 
 	return -ETIMEDOUT;
 }
@@ -269,11 +398,20 @@ exit:
 }
 
 /* enable peripheral, master mode operation */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DEFAULT_I2C_REG_CR 	((1 << 1) | I2C_CR_PE)
+=======
+#define DEFAULT_I2C_REG_CR	((1 << 1) | I2C_CR_PE)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DEFAULT_I2C_REG_CR	((1 << 1) | I2C_CR_PE)
+>>>>>>> refs/remotes/origin/master
 
 /**
  * load_i2c_mcr_reg() - load the MCR register
  * @dev: private data of controller
+<<<<<<< HEAD
  */
 static u32 load_i2c_mcr_reg(struct nmk_i2c_dev *dev)
 {
@@ -283,6 +421,34 @@ static u32 load_i2c_mcr_reg(struct nmk_i2c_dev *dev)
 	mcr |= GEN_MASK(1, I2C_MCR_AM, 12);
 	mcr |= GEN_MASK(dev->cli.slave_adr, I2C_MCR_A7, 1);
 
+=======
+ * @flags: message flags
+ */
+static u32 load_i2c_mcr_reg(struct nmk_i2c_dev *dev, u16 flags)
+{
+	u32 mcr = 0;
+	unsigned short slave_adr_3msb_bits;
+
+	mcr |= GEN_MASK(dev->cli.slave_adr, I2C_MCR_A7, 1);
+
+	if (unlikely(flags & I2C_M_TEN)) {
+		/* 10-bit address transaction */
+		mcr |= GEN_MASK(2, I2C_MCR_AM, 12);
+		/*
+		 * Get the top 3 bits.
+		 * EA10 represents extended address in MCR. This includes
+		 * the extension (MSB bits) of the 7 bit address loaded
+		 * in A7
+		 */
+		slave_adr_3msb_bits = (dev->cli.slave_adr >> 7) & 0x7;
+
+		mcr |= GEN_MASK(slave_adr_3msb_bits, I2C_MCR_EA10, 8);
+	} else {
+		/* 7-bit address transaction */
+		mcr |= GEN_MASK(1, I2C_MCR_AM, 12);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* start byte procedure not applied */
 	mcr |= GEN_MASK(0, I2C_MCR_SB, 11);
 
@@ -311,6 +477,11 @@ static void setup_i2c_controller(struct nmk_i2c_dev *dev)
 {
 	u32 brcr1, brcr2;
 	u32 i2c_clk, div;
+<<<<<<< HEAD
+=======
+	u32 ns;
+	u16 slsu;
+>>>>>>> refs/remotes/origin/master
 
 	writel(0x0, dev->virtbase + I2C_CR);
 	writel(0x0, dev->virtbase + I2C_HSMCR);
@@ -318,10 +489,16 @@ static void setup_i2c_controller(struct nmk_i2c_dev *dev)
 	writel(0x0, dev->virtbase + I2C_RFTR);
 	writel(0x0, dev->virtbase + I2C_DMAR);
 
+<<<<<<< HEAD
+=======
+	i2c_clk = clk_get_rate(dev->clk);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * set the slsu:
 	 *
 	 * slsu defines the data setup time after SCL clock
+<<<<<<< HEAD
 	 * stretching in terms of i2c clk cycles. The
 	 * needed setup time for the three modes are 250ns,
 	 * 100ns, 10ns respectively thus leading to the values
@@ -334,6 +511,34 @@ static void setup_i2c_controller(struct nmk_i2c_dev *dev)
 	/* fallback to std. mode if machine has not provided it */
 	if (dev->cfg.clk_freq == 0)
 		dev->cfg.clk_freq = 100000;
+=======
+	 * stretching in terms of i2c clk cycles + 1 (zero means
+	 * "wait one cycle"), the needed setup time for the three
+	 * modes are 250ns, 100ns, 10ns respectively.
+	 *
+	 * As the time for one cycle T in nanoseconds is
+	 * T = (1/f) * 1000000000 =>
+	 * slsu = cycles / (1000000000 / f) + 1
+	 */
+	ns = DIV_ROUND_UP_ULL(1000000000ULL, i2c_clk);
+	switch (dev->cfg.sm) {
+	case I2C_FREQ_MODE_FAST:
+	case I2C_FREQ_MODE_FAST_PLUS:
+		slsu = DIV_ROUND_UP(100, ns); /* Fast */
+		break;
+	case I2C_FREQ_MODE_HIGH_SPEED:
+		slsu = DIV_ROUND_UP(10, ns); /* High */
+		break;
+	case I2C_FREQ_MODE_STANDARD:
+	default:
+		slsu = DIV_ROUND_UP(250, ns); /* Standard */
+		break;
+	}
+	slsu += 1;
+
+	dev_dbg(&dev->adev->dev, "calculated SLSU = %04x\n", slsu);
+	writel(slsu << 16, dev->virtbase + I2C_SCR);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The spec says, in case of std. mode the divider is
@@ -362,8 +567,18 @@ static void setup_i2c_controller(struct nmk_i2c_dev *dev)
 	 * and high speed (up to 3.4 Mb/s)
 	 */
 	if (dev->cfg.sm > I2C_FREQ_MODE_FAST) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&dev->pdev->dev, "do not support this mode "
 			"defaulting to std. mode\n");
+=======
+		dev_err(&dev->pdev->dev,
+			"do not support this mode defaulting to std. mode\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&dev->adev->dev,
+			"do not support this mode defaulting to std. mode\n");
+>>>>>>> refs/remotes/origin/master
 		brcr2 = i2c_clk/(100000 * 2) & 0xffff;
 		writel((brcr1 | brcr2), dev->virtbase + I2C_BRCR);
 		writel(I2C_FREQ_MODE_STANDARD << 4,
@@ -379,11 +594,16 @@ static void setup_i2c_controller(struct nmk_i2c_dev *dev)
 /**
  * read_i2c() - Read from I2C client device
  * @dev: private data of I2C Driver
+<<<<<<< HEAD
+=======
+ * @flags: message flags
+>>>>>>> refs/remotes/origin/master
  *
  * This function reads from i2c client device when controller is in
  * master mode. There is a completion timeout. If there is no transfer
  * before timeout error is returned.
  */
+<<<<<<< HEAD
 static int read_i2c(struct nmk_i2c_dev *dev)
 {
 	u32 status = 0;
@@ -392,6 +612,15 @@ static int read_i2c(struct nmk_i2c_dev *dev)
 	int timeout;
 
 	mcr = load_i2c_mcr_reg(dev);
+=======
+static int read_i2c(struct nmk_i2c_dev *dev, u16 flags)
+{
+	u32 status = 0;
+	u32 mcr, irq_mask;
+	int timeout;
+
+	mcr = load_i2c_mcr_reg(dev, flags);
+>>>>>>> refs/remotes/origin/master
 	writel(mcr, dev->virtbase + I2C_MCR);
 
 	/* load the current CR value */
@@ -407,7 +636,11 @@ static int read_i2c(struct nmk_i2c_dev *dev)
 	irq_mask = (I2C_IT_RXFNF | I2C_IT_RXFF |
 			I2C_IT_MAL | I2C_IT_BERR);
 
+<<<<<<< HEAD
 	if (dev->stop)
+=======
+	if (dev->stop || !dev->vendor->has_mtdws)
+>>>>>>> refs/remotes/origin/master
 		irq_mask |= I2C_IT_MTD;
 	else
 		irq_mask |= I2C_IT_MTDWS;
@@ -417,12 +650,21 @@ static int read_i2c(struct nmk_i2c_dev *dev)
 	writel(readl(dev->virtbase + I2C_IMSCR) | irq_mask,
 			dev->virtbase + I2C_IMSCR);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	timeout = wait_for_completion_interruptible_timeout(
+=======
+	timeout = wait_for_completion_timeout(
+>>>>>>> refs/remotes/origin/cm-10.0
 		&dev->xfer_complete, dev->adap.timeout);
 
 	if (timeout < 0) {
 		dev_err(&dev->pdev->dev,
+<<<<<<< HEAD
 			"wait_for_completion_interruptible_timeout"
+=======
+			"wait_for_completion_timeout "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"returned %d waiting for event\n", timeout);
 		status = timeout;
 	}
@@ -430,6 +672,14 @@ static int read_i2c(struct nmk_i2c_dev *dev)
 	if (timeout == 0) {
 		/* Controller timed out */
 		dev_err(&dev->pdev->dev, "read from slave 0x%x timed out\n",
+=======
+	timeout = wait_for_completion_timeout(
+		&dev->xfer_complete, dev->adap.timeout);
+
+	if (timeout == 0) {
+		/* Controller timed out */
+		dev_err(&dev->adev->dev, "read from slave 0x%x timed out\n",
+>>>>>>> refs/remotes/origin/master
 				dev->cli.slave_adr);
 		status = -ETIMEDOUT;
 	}
@@ -457,6 +707,7 @@ static void fill_tx_fifo(struct nmk_i2c_dev *dev, int no_bytes)
 /**
  * write_i2c() - Write data to I2C client.
  * @dev: private data of I2C Driver
+<<<<<<< HEAD
  *
  * This function writes data to I2C client
  */
@@ -468,6 +719,19 @@ static int write_i2c(struct nmk_i2c_dev *dev)
 	int timeout;
 
 	mcr = load_i2c_mcr_reg(dev);
+=======
+ * @flags: message flags
+ *
+ * This function writes data to I2C client
+ */
+static int write_i2c(struct nmk_i2c_dev *dev, u16 flags)
+{
+	u32 status = 0;
+	u32 mcr, irq_mask;
+	int timeout;
+
+	mcr = load_i2c_mcr_reg(dev, flags);
+>>>>>>> refs/remotes/origin/master
 
 	writel(mcr, dev->virtbase + I2C_MCR);
 
@@ -494,7 +758,11 @@ static int write_i2c(struct nmk_i2c_dev *dev)
 	 * set the MTDWS bit (Master Transaction Done Without Stop)
 	 * to start repeated start operation
 	 */
+<<<<<<< HEAD
 	if (dev->stop)
+=======
+	if (dev->stop || !dev->vendor->has_mtdws)
+>>>>>>> refs/remotes/origin/master
 		irq_mask |= I2C_IT_MTD;
 	else
 		irq_mask |= I2C_IT_MTDWS;
@@ -504,12 +772,21 @@ static int write_i2c(struct nmk_i2c_dev *dev)
 	writel(readl(dev->virtbase + I2C_IMSCR) | irq_mask,
 			dev->virtbase + I2C_IMSCR);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	timeout = wait_for_completion_interruptible_timeout(
+=======
+	timeout = wait_for_completion_timeout(
+>>>>>>> refs/remotes/origin/cm-10.0
 		&dev->xfer_complete, dev->adap.timeout);
 
 	if (timeout < 0) {
 		dev_err(&dev->pdev->dev,
+<<<<<<< HEAD
 			"wait_for_completion_interruptible_timeout"
+=======
+			"wait_for_completion_timeout "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"returned %d waiting for event\n", timeout);
 		status = timeout;
 	}
@@ -517,6 +794,14 @@ static int write_i2c(struct nmk_i2c_dev *dev)
 	if (timeout == 0) {
 		/* Controller timed out */
 		dev_err(&dev->pdev->dev, "write to slave 0x%x timed out\n",
+=======
+	timeout = wait_for_completion_timeout(
+		&dev->xfer_complete, dev->adap.timeout);
+
+	if (timeout == 0) {
+		/* Controller timed out */
+		dev_err(&dev->adev->dev, "write to slave 0x%x timed out\n",
+>>>>>>> refs/remotes/origin/master
 				dev->cli.slave_adr);
 		status = -ETIMEDOUT;
 	}
@@ -536,11 +821,19 @@ static int nmk_i2c_xfer_one(struct nmk_i2c_dev *dev, u16 flags)
 	if (flags & I2C_M_RD) {
 		/* read operation */
 		dev->cli.operation = I2C_READ;
+<<<<<<< HEAD
 		status = read_i2c(dev);
 	} else {
 		/* write operation */
 		dev->cli.operation = I2C_WRITE;
 		status = write_i2c(dev);
+=======
+		status = read_i2c(dev, flags);
+	} else {
+		/* write operation */
+		dev->cli.operation = I2C_WRITE;
+		status = write_i2c(dev, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (status || (dev->result)) {
@@ -555,8 +848,18 @@ static int nmk_i2c_xfer_one(struct nmk_i2c_dev *dev, u16 flags)
 		if (((i2c_sr >> 2) & 0x3) == 0x3) {
 			/* get the abort cause */
 			cause =	(i2c_sr >> 4) & 0x7;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(&dev->pdev->dev, "%s\n", cause
 				>= ARRAY_SIZE(abort_causes) ?
+=======
+			dev_err(&dev->pdev->dev, "%s\n",
+				cause >= ARRAY_SIZE(abort_causes) ?
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&dev->adev->dev, "%s\n",
+				cause >= ARRAY_SIZE(abort_causes) ?
+>>>>>>> refs/remotes/origin/master
 				"unknown reason" :
 				abort_causes[cause]);
 		}
@@ -581,6 +884,8 @@ static int nmk_i2c_xfer_one(struct nmk_i2c_dev *dev, u16 flags)
  *
  * NOTE:
  * READ TRANSFER : We impose a restriction of the first message to be the
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 		index message for any read transaction.
  * 		- a no index is coded as '0',
  * 		- 2byte big endian index is coded as '3'
@@ -588,6 +893,20 @@ static int nmk_i2c_xfer_one(struct nmk_i2c_dev *dev, u16 flags)
  * 		This is compatible with generic messages of smbus emulator
  * 		that send a one byte index.
  * 		eg. a I2C transation to read 2 bytes from index 0
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *		index message for any read transaction.
+ *		- a no index is coded as '0',
+ *		- 2byte big endian index is coded as '3'
+ *		!!! msg[0].buf holds the actual index.
+ *		This is compatible with generic messages of smbus emulator
+ *		that send a one byte index.
+ *		eg. a I2C transation to read 2 bytes from index 0
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *			idx = 0;
  *			msg[0].addr = client->addr;
  *			msg[0].flags = 0x0;
@@ -626,11 +945,24 @@ static int nmk_i2c_xfer(struct i2c_adapter *i2c_adap,
 
 	dev->busy = true;
 
+<<<<<<< HEAD
 	if (dev->regulator)
 		regulator_enable(dev->regulator);
 	pm_runtime_get_sync(&dev->pdev->dev);
 
 	clk_enable(dev->clk);
+=======
+	pm_runtime_get_sync(&dev->adev->dev);
+
+	status = clk_prepare_enable(dev->clk);
+	if (status) {
+		dev_err(&dev->adev->dev, "can't prepare_enable clock\n");
+		goto out_clk;
+	}
+
+	/* Optionaly enable pins to be muxed in and configured */
+	pinctrl_pm_select_default_state(&dev->adev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	status = init_hw(dev);
 	if (status)
@@ -642,13 +974,21 @@ static int nmk_i2c_xfer(struct i2c_adapter *i2c_adap,
 		setup_i2c_controller(dev);
 
 		for (i = 0; i < num_msgs; i++) {
+<<<<<<< HEAD
 			if (unlikely(msgs[i].flags & I2C_M_TEN)) {
+<<<<<<< HEAD
 				dev_err(&dev->pdev->dev, "10 bit addressing"
 						"not supported\n");
+=======
+				dev_err(&dev->pdev->dev,
+					"10 bit addressing not supported\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 				status = -EINVAL;
 				goto out;
 			}
+=======
+>>>>>>> refs/remotes/origin/master
 			dev->cli.slave_adr	= msgs[i].addr;
 			dev->cli.buffer		= msgs[i].buf;
 			dev->cli.count		= msgs[i].len;
@@ -664,10 +1004,19 @@ static int nmk_i2c_xfer(struct i2c_adapter *i2c_adap,
 	}
 
 out:
+<<<<<<< HEAD
 	clk_disable(dev->clk);
 	pm_runtime_put_sync(&dev->pdev->dev);
 	if (dev->regulator)
 		regulator_disable(dev->regulator);
+=======
+	clk_disable_unprepare(dev->clk);
+out_clk:
+	/* Optionally let pins go into idle state */
+	pinctrl_pm_select_idle_state(&dev->adev->dev);
+
+	pm_runtime_put_sync(&dev->adev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	dev->busy = false;
 
@@ -707,8 +1056,12 @@ static irqreturn_t i2c_irq_handler(int irq, void *arg)
 	struct nmk_i2c_dev *dev = arg;
 	u32 tft, rft;
 	u32 count;
+<<<<<<< HEAD
 	u32 misr;
 	u32 src = 0;
+=======
+	u32 misr, src;
+>>>>>>> refs/remotes/origin/master
 
 	/* load Tx FIFO and Rx FIFO threshold values */
 	tft = readl(dev->virtbase + I2C_TFTR);
@@ -788,8 +1141,20 @@ static irqreturn_t i2c_irq_handler(int irq, void *arg)
 
 		if (dev->cli.count) {
 			dev->result = -EIO;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(&dev->pdev->dev, "%lu bytes still remain to be"
 					"xfered\n", dev->cli.count);
+=======
+			dev_err(&dev->pdev->dev,
+				"%lu bytes still remain to be xfered\n",
+				dev->cli.count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&dev->adev->dev,
+				"%lu bytes still remain to be xfered\n",
+				dev->cli.count);
+>>>>>>> refs/remotes/origin/master
 			(void) init_hw(dev);
 		}
 		complete(&dev->xfer_complete);
@@ -831,7 +1196,11 @@ static irqreturn_t i2c_irq_handler(int irq, void *arg)
 		dev->result = -EIO;
 		(void) init_hw(dev);
 
+<<<<<<< HEAD
 		dev_err(&dev->pdev->dev, "Tx Fifo Over run\n");
+=======
+		dev_err(&dev->adev->dev, "Tx Fifo Over run\n");
+>>>>>>> refs/remotes/origin/master
 		complete(&dev->xfer_complete);
 
 		break;
@@ -844,10 +1213,17 @@ static irqreturn_t i2c_irq_handler(int irq, void *arg)
 	case I2C_IT_RFSE:
 	case I2C_IT_WTSR:
 	case I2C_IT_STD:
+<<<<<<< HEAD
 		dev_err(&dev->pdev->dev, "unhandled Interrupt\n");
 		break;
 	default:
 		dev_err(&dev->pdev->dev, "spurious Interrupt..\n");
+=======
+		dev_err(&dev->adev->dev, "unhandled Interrupt\n");
+		break;
+	default:
+		dev_err(&dev->adev->dev, "spurious Interrupt..\n");
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -858,17 +1234,35 @@ static irqreturn_t i2c_irq_handler(int irq, void *arg)
 #ifdef CONFIG_PM
 static int nmk_i2c_suspend(struct device *dev)
 {
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(dev);
 	struct nmk_i2c_dev *nmk_i2c = platform_get_drvdata(pdev);
+=======
+	struct amba_device *adev = to_amba_device(dev);
+	struct nmk_i2c_dev *nmk_i2c = amba_get_drvdata(adev);
+>>>>>>> refs/remotes/origin/master
 
 	if (nmk_i2c->busy)
 		return -EBUSY;
 
+<<<<<<< HEAD
+=======
+	pinctrl_pm_select_sleep_state(dev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int nmk_i2c_resume(struct device *dev)
 {
+<<<<<<< HEAD
+=======
+	/* First go to the default state */
+	pinctrl_pm_select_default_state(dev);
+	/* Then let's idle the pins until the next transfer happens */
+	pinctrl_pm_select_idle_state(dev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #else
@@ -888,7 +1282,11 @@ static const struct dev_pm_ops nmk_i2c_pm = {
 
 static unsigned int nmk_i2c_functionality(struct i2c_adapter *adap)
 {
+<<<<<<< HEAD
 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
+=======
+	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL | I2C_FUNC_10BIT_ADDR;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct i2c_algorithm nmk_i2c_algo = {
@@ -896,6 +1294,7 @@ static const struct i2c_algorithm nmk_i2c_algo = {
 	.functionality	= nmk_i2c_functionality
 };
 
+<<<<<<< HEAD
 static int __devinit nmk_i2c_probe(struct platform_device *pdev)
 {
 	int ret = 0;
@@ -922,19 +1321,104 @@ static int __devinit nmk_i2c_probe(struct platform_device *pdev)
 	}
 
 	if (request_mem_region(res->start, resource_size(res),
+<<<<<<< HEAD
 		DRIVER_NAME "I/O region") == 	NULL)	{
+=======
+		DRIVER_NAME "I/O region") == NULL) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -EBUSY;
 		goto err_no_region;
 	}
 
 	dev->virtbase = ioremap(res->start, resource_size(res));
+=======
+static struct nmk_i2c_controller u8500_i2c = {
+	.tft            = 1,      /* Tx FIFO threshold */
+	.rft            = 8,      /* Rx FIFO threshold */
+	.clk_freq       = 400000, /* fast mode operation */
+	.timeout        = 200,    /* Slave response timeout(ms) */
+	.sm             = I2C_FREQ_MODE_FAST,
+};
+
+static void nmk_i2c_of_probe(struct device_node *np,
+			struct nmk_i2c_controller *pdata)
+{
+	of_property_read_u32(np, "clock-frequency", &pdata->clk_freq);
+
+	/* This driver only supports 'standard' and 'fast' modes of operation. */
+	if (pdata->clk_freq <= 100000)
+		pdata->sm = I2C_FREQ_MODE_STANDARD;
+	else
+		pdata->sm = I2C_FREQ_MODE_FAST;
+}
+
+static int nmk_i2c_probe(struct amba_device *adev, const struct amba_id *id)
+{
+	int ret = 0;
+	struct nmk_i2c_controller *pdata = dev_get_platdata(&adev->dev);
+	struct device_node *np = adev->dev.of_node;
+	struct nmk_i2c_dev	*dev;
+	struct i2c_adapter *adap;
+	struct i2c_vendor_data *vendor = id->data;
+	u32 max_fifo_threshold = (vendor->fifodepth / 2) - 1;
+
+	if (!pdata) {
+		if (np) {
+			pdata = devm_kzalloc(&adev->dev, sizeof(*pdata), GFP_KERNEL);
+			if (!pdata) {
+				ret = -ENOMEM;
+				goto err_no_mem;
+			}
+			/* Provide the default configuration as a base. */
+			memcpy(pdata, &u8500_i2c, sizeof(struct nmk_i2c_controller));
+			nmk_i2c_of_probe(np, pdata);
+		} else
+			/* No i2c configuration found, using the default. */
+			pdata = &u8500_i2c;
+	}
+
+	if (pdata->tft > max_fifo_threshold) {
+		dev_warn(&adev->dev, "requested TX FIFO threshold %u, adjusted down to %u\n",
+			pdata->tft, max_fifo_threshold);
+		pdata->tft = max_fifo_threshold;
+	}
+
+	if (pdata->rft > max_fifo_threshold) {
+		dev_warn(&adev->dev, "requested RX FIFO threshold %u, adjusted down to %u\n",
+			pdata->rft, max_fifo_threshold);
+		pdata->rft = max_fifo_threshold;
+	}
+
+	dev = kzalloc(sizeof(struct nmk_i2c_dev), GFP_KERNEL);
+	if (!dev) {
+		dev_err(&adev->dev, "cannot allocate memory\n");
+		ret = -ENOMEM;
+		goto err_no_mem;
+	}
+	dev->vendor = vendor;
+	dev->busy = false;
+	dev->adev = adev;
+	amba_set_drvdata(adev, dev);
+
+	/* Select default pin state */
+	pinctrl_pm_select_default_state(&adev->dev);
+	/* If possible, let's go to idle until the first transfer */
+	pinctrl_pm_select_idle_state(&adev->dev);
+
+	dev->virtbase = ioremap(adev->res.start, resource_size(&adev->res));
+>>>>>>> refs/remotes/origin/master
 	if (!dev->virtbase) {
 		ret = -ENOMEM;
 		goto err_no_ioremap;
 	}
 
+<<<<<<< HEAD
 	dev->irq = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
 	ret = request_irq(dev->irq, i2c_irq_handler, IRQF_DISABLED,
+=======
+	ret = request_irq(dev->irq, i2c_irq_handler, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 				DRIVER_NAME, dev);
 	if (ret) {
 		dev_err(&pdev->dev, "cannot claim the irq %d\n", dev->irq);
@@ -953,11 +1437,27 @@ static int __devinit nmk_i2c_probe(struct platform_device *pdev)
 	dev->clk = clk_get(&pdev->dev, NULL);
 	if (IS_ERR(dev->clk)) {
 		dev_err(&pdev->dev, "could not get i2c clock\n");
+=======
+	dev->irq = adev->irq[0];
+	ret = request_irq(dev->irq, i2c_irq_handler, 0,
+				DRIVER_NAME, dev);
+	if (ret) {
+		dev_err(&adev->dev, "cannot claim the irq %d\n", dev->irq);
+		goto err_irq;
+	}
+
+	pm_suspend_ignore_children(&adev->dev, true);
+
+	dev->clk = clk_get(&adev->dev, NULL);
+	if (IS_ERR(dev->clk)) {
+		dev_err(&adev->dev, "could not get i2c clock\n");
+>>>>>>> refs/remotes/origin/master
 		ret = PTR_ERR(dev->clk);
 		goto err_no_clk;
 	}
 
 	adap = &dev->adap;
+<<<<<<< HEAD
 	adap->dev.parent = &pdev->dev;
 	adap->owner	= THIS_MODULE;
 	adap->class	= I2C_CLASS_HWMON | I2C_CLASS_SPD;
@@ -973,14 +1473,34 @@ static int __devinit nmk_i2c_probe(struct platform_device *pdev)
 	/* fetch the controller configuration from machine */
 	dev->cfg.clk_freq = pdata->clk_freq;
 	dev->cfg.slsu	= pdata->slsu;
+=======
+	adap->dev.of_node = np;
+	adap->dev.parent = &adev->dev;
+	adap->owner	= THIS_MODULE;
+	adap->class	= I2C_CLASS_HWMON | I2C_CLASS_SPD;
+	adap->algo	= &nmk_i2c_algo;
+	adap->timeout	= msecs_to_jiffies(pdata->timeout);
+	snprintf(adap->name, sizeof(adap->name),
+		 "Nomadik I2C at %pR", &adev->res);
+
+	/* fetch the controller configuration from machine */
+	dev->cfg.clk_freq = pdata->clk_freq;
+>>>>>>> refs/remotes/origin/master
 	dev->cfg.tft	= pdata->tft;
 	dev->cfg.rft	= pdata->rft;
 	dev->cfg.sm	= pdata->sm;
 
 	i2c_set_adapdata(adap, dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_info(&pdev->dev, "initialize %s on virtual "
 		"base %p\n", adap->name, dev->virtbase);
+=======
+	dev_info(&pdev->dev,
+		 "initialize %s on virtual base %p\n",
+		 adap->name, dev->virtbase);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = i2c_add_numbered_adapter(adap);
 	if (ret) {
@@ -988,32 +1508,59 @@ static int __devinit nmk_i2c_probe(struct platform_device *pdev)
 		goto err_add_adap;
 	}
 
+=======
+	dev_info(&adev->dev,
+		 "initialize %s on virtual base %p\n",
+		 adap->name, dev->virtbase);
+
+	ret = i2c_add_adapter(adap);
+	if (ret) {
+		dev_err(&adev->dev, "failed to add adapter\n");
+		goto err_add_adap;
+	}
+
+	pm_runtime_put(&adev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  err_add_adap:
 	clk_put(dev->clk);
  err_no_clk:
+<<<<<<< HEAD
 	if (dev->regulator)
 		regulator_put(dev->regulator);
 	pm_runtime_disable(&pdev->dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_irq(dev->irq, dev);
  err_irq:
 	iounmap(dev->virtbase);
  err_no_ioremap:
+<<<<<<< HEAD
 	release_mem_region(res->start, resource_size(res));
  err_no_region:
 	platform_set_drvdata(pdev, NULL);
  err_no_resource:
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(dev);
  err_no_mem:
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit nmk_i2c_remove(struct platform_device *pdev)
 {
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	struct nmk_i2c_dev *dev = platform_get_drvdata(pdev);
+=======
+static int nmk_i2c_remove(struct amba_device *adev)
+{
+	struct resource *res = &adev->res;
+	struct nmk_i2c_dev *dev = amba_get_drvdata(adev);
+>>>>>>> refs/remotes/origin/master
 
 	i2c_del_adapter(&dev->adap);
 	flush_i2c_fifo(dev);
@@ -1026,33 +1573,82 @@ static int __devexit nmk_i2c_remove(struct platform_device *pdev)
 	if (res)
 		release_mem_region(res->start, resource_size(res));
 	clk_put(dev->clk);
+<<<<<<< HEAD
 	if (dev->regulator)
 		regulator_put(dev->regulator);
 	pm_runtime_disable(&pdev->dev);
 	platform_set_drvdata(pdev, NULL);
+=======
+	pm_runtime_disable(&adev->dev);
+>>>>>>> refs/remotes/origin/master
 	kfree(dev);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver nmk_i2c_driver = {
 	.driver = {
+=======
+static struct i2c_vendor_data vendor_stn8815 = {
+	.has_mtdws = false,
+	.fifodepth = 16, /* Guessed from TFTR/RFTR = 7 */
+};
+
+static struct i2c_vendor_data vendor_db8500 = {
+	.has_mtdws = true,
+	.fifodepth = 32, /* Guessed from TFTR/RFTR = 15 */
+};
+
+static struct amba_id nmk_i2c_ids[] = {
+	{
+		.id	= 0x00180024,
+		.mask	= 0x00ffffff,
+		.data	= &vendor_stn8815,
+	},
+	{
+		.id	= 0x00380024,
+		.mask	= 0x00ffffff,
+		.data	= &vendor_db8500,
+	},
+	{},
+};
+
+MODULE_DEVICE_TABLE(amba, nmk_i2c_ids);
+
+static struct amba_driver nmk_i2c_driver = {
+	.drv = {
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 		.name = DRIVER_NAME,
 		.pm = &nmk_i2c_pm,
 	},
+<<<<<<< HEAD
 	.probe = nmk_i2c_probe,
 	.remove = __devexit_p(nmk_i2c_remove),
+=======
+	.id_table = nmk_i2c_ids,
+	.probe = nmk_i2c_probe,
+	.remove = nmk_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init nmk_i2c_init(void)
 {
+<<<<<<< HEAD
 	return platform_driver_register(&nmk_i2c_driver);
+=======
+	return amba_driver_register(&nmk_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit nmk_i2c_exit(void)
 {
+<<<<<<< HEAD
 	platform_driver_unregister(&nmk_i2c_driver);
+=======
+	amba_driver_unregister(&nmk_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 subsys_initcall(nmk_i2c_init);
@@ -1061,4 +1657,7 @@ module_exit(nmk_i2c_exit);
 MODULE_AUTHOR("Sachin Verma, Srinidhi KASAGAR");
 MODULE_DESCRIPTION("Nomadik/Ux500 I2C driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS("platform:" DRIVER_NAME);
+=======
+>>>>>>> refs/remotes/origin/master

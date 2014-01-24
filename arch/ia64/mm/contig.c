@@ -16,6 +16,14 @@
  */
 #include <linux/bootmem.h>
 #include <linux/efi.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/memblock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/memblock.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/nmi.h>
 #include <linux/swap.h>
@@ -30,6 +38,7 @@
 static unsigned long max_gap;
 #endif
 
+<<<<<<< HEAD
 /**
  * show_mem - give short summary of memory stats
  *
@@ -46,6 +55,16 @@ void show_mem(unsigned int filter)
 	printk(KERN_INFO "Mem-info:\n");
 	show_free_areas(filter);
 	printk(KERN_INFO "Node memory in pages:\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	for_each_online_pgdat(pgdat) {
 		unsigned long present;
 		unsigned long flags;
@@ -96,6 +115,8 @@ void show_mem(unsigned int filter)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* physical address where the bootmem map is located */
 unsigned long bootmap_start;
 
@@ -153,8 +174,12 @@ static void *cpu_data;
  *
  * Allocate and setup per-cpu data areas.
  */
+<<<<<<< HEAD
 void * __cpuinit
 per_cpu_init (void)
+=======
+void *per_cpu_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	static bool first_time = true;
 	void *cpu0_data = __cpu0_per_cpu;
@@ -292,6 +317,7 @@ find_memory (void)
 	alloc_per_cpu_data();
 }
 
+<<<<<<< HEAD
 static int count_pages(u64 start, u64 end, void *arg)
 {
 	unsigned long *count = arg;
@@ -300,6 +326,8 @@ static int count_pages(u64 start, u64 end, void *arg)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Set up the page tables.
  */
@@ -310,9 +338,12 @@ paging_init (void)
 	unsigned long max_dma;
 	unsigned long max_zone_pfns[MAX_NR_ZONES];
 
+<<<<<<< HEAD
 	num_physpages = 0;
 	efi_memmap_walk(count_pages, &num_physpages);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(max_zone_pfns, 0, sizeof(max_zone_pfns));
 #ifdef CONFIG_ZONE_DMA
 	max_dma = virt_to_phys((void *) MAX_DMA_ADDRESS) >> PAGE_SHIFT;
@@ -348,7 +379,15 @@ paging_init (void)
 		printk("Virtual mem_map starts at 0x%p\n", mem_map);
 	}
 #else /* !CONFIG_VIRTUAL_MEM_MAP */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	add_active_range(0, 0, max_low_pfn);
+=======
+	memblock_add_node(0, PFN_PHYS(max_low_pfn), 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_add_node(0, PFN_PHYS(max_low_pfn), 0);
+>>>>>>> refs/remotes/origin/master
 	free_area_init_nodes(max_zone_pfns);
 #endif /* !CONFIG_VIRTUAL_MEM_MAP */
 	zero_page_memmap_ptr = virt_to_page(ia64_imva(empty_zero_page));

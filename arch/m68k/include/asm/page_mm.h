@@ -162,7 +162,15 @@ static inline __attribute_const__ int __virt_to_node_shift(void)
 	pgdat->node_mem_map + (__pfn - pgdat->node_start_pfn);		\
 })
 #define page_to_pfn(_page) ({						\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *__p = (_page);					\
+=======
+	const struct page *__p = (_page);				\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct page *__p = (_page);				\
+>>>>>>> refs/remotes/origin/master
 	struct pglist_data *pgdat;					\
 	pgdat = &pg_data_map[page_to_nid(__p)];				\
 	((__p) - pgdat->node_mem_map) + pgdat->node_start_pfn;		\
@@ -173,7 +181,10 @@ static inline __attribute_const__ int __virt_to_node_shift(void)
 
 #endif /* __ASSEMBLY__ */
 
+<<<<<<< HEAD
 #define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
 				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _M68K_PAGE_MM_H */

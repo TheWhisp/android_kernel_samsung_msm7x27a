@@ -13,6 +13,7 @@
  * option) any later version.
  *
  * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+<<<<<<< HEAD
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY 
  * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
  * THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
@@ -21,6 +22,16 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+=======
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+ * THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+>>>>>>> refs/remotes/origin/master
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * You should have received a copy of the GNU General Public License along
@@ -53,16 +64,30 @@
 
 #define dbg(format, arg...)					\
 	do {							\
+<<<<<<< HEAD
 		if(debug)					\
 			printk (KERN_DEBUG "%s: " format "\n",	\
 				MY_NAME , ## arg); 		\
+=======
+		if (debug)					\
+			printk (KERN_DEBUG "%s: " format "\n",	\
+				MY_NAME , ## arg);		\
+>>>>>>> refs/remotes/origin/master
 	} while(0)
 #define err(format, arg...) printk(KERN_ERR "%s: " format "\n", MY_NAME , ## arg)
 #define info(format, arg...) printk(KERN_INFO "%s: " format "\n", MY_NAME , ## arg)
 #define warn(format, arg...) printk(KERN_WARNING "%s: " format "\n", MY_NAME , ## arg)
 
 /* local variables */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/master
 static char *bridge;
 static u8 bridge_busnr;
 static u8 bridge_slot;
@@ -154,12 +179,17 @@ static int __init cpcihp_generic_init(void)
 	if(!r)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	bus = pci_find_bus(0, bridge_busnr);
 	if (!bus) {
 		err("Invalid bus number %d", bridge_busnr);
 		return -EINVAL;
 	}
 	dev = pci_get_slot(bus, PCI_DEVFN(bridge_slot, 0));
+=======
+	dev = pci_get_domain_bus_and_slot(0, bridge_busnr,
+					  PCI_DEVFN(bridge_slot, 0));
+>>>>>>> refs/remotes/origin/master
 	if(!dev || dev->hdr_type != PCI_HEADER_TYPE_BRIDGE) {
 		err("Invalid bridge device %s", bridge);
 		pci_dev_put(dev);

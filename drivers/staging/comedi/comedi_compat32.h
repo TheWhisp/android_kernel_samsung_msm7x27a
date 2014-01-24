@@ -17,27 +17,40 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 
 #ifndef _COMEDI_COMPAT32_H
 #define _COMEDI_COMPAT32_H
 
+<<<<<<< HEAD
 #include <linux/compat.h>
 #include <linux/fs.h>
 
 #ifdef CONFIG_COMPAT
 
+=======
+#ifdef CONFIG_COMPAT
+
+struct file;
+>>>>>>> refs/remotes/origin/master
 extern long comedi_compat_ioctl(struct file *file, unsigned int cmd,
 				unsigned long arg);
 
 #else /* CONFIG_COMPAT */
 
+<<<<<<< HEAD
 #define comedi_compat_ioctl 0	/* NULL */
+=======
+#define comedi_compat_ioctl	NULL
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CONFIG_COMPAT */
 

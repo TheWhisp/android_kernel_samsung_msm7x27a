@@ -21,8 +21,22 @@
 
 #include <linux/init.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/time.h>
 #include <linux/mutex.h>
+=======
+#include <linux/module.h>
+#include <linux/time.h>
+#include <linux/mutex.h>
+<<<<<<< HEAD
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/core.h>
 #include <sound/minors.h>
 #include <sound/pcm.h>
@@ -40,6 +54,17 @@ static DEFINE_MUTEX(register_mutex);
 static int snd_pcm_free(struct snd_pcm *pcm);
 static int snd_pcm_dev_free(struct snd_device *device);
 static int snd_pcm_dev_register(struct snd_device *device);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int snd_pcm_dev_register_soc_be(struct snd_device *device);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+static int snd_pcm_dev_register_soc_be(struct snd_device *device);
+>>>>>>> refs/remotes/origin/cm-11.0
 static int snd_pcm_dev_disconnect(struct snd_device *device);
 
 static struct snd_pcm *snd_pcm_get(struct snd_card *card, int device)
@@ -47,6 +72,11 @@ static struct snd_pcm *snd_pcm_get(struct snd_card *card, int device)
 	struct snd_pcm *pcm;
 
 	list_for_each_entry(pcm, &snd_pcm_devices, list) {
+<<<<<<< HEAD
+=======
+		if (pcm->internal)
+			continue;
+>>>>>>> refs/remotes/origin/master
 		if (pcm->card == card && pcm->device == device)
 			return pcm;
 	}
@@ -58,6 +88,11 @@ static int snd_pcm_next(struct snd_card *card, int device)
 	struct snd_pcm *pcm;
 
 	list_for_each_entry(pcm, &snd_pcm_devices, list) {
+<<<<<<< HEAD
+=======
+		if (pcm->internal)
+			continue;
+>>>>>>> refs/remotes/origin/master
 		if (pcm->card == card && pcm->device > device)
 			return pcm->device;
 		else if (pcm->card->number > card->number)
@@ -207,6 +242,11 @@ static char *snd_pcm_format_names[] = {
 	FORMAT(G723_24_1B),
 	FORMAT(G723_40),
 	FORMAT(G723_40_1B),
+<<<<<<< HEAD
+=======
+	FORMAT(DSD_U8),
+	FORMAT(DSD_U16_LE),
+>>>>>>> refs/remotes/origin/master
 };
 
 const char *snd_pcm_format_name(snd_pcm_format_t format)
@@ -635,7 +675,11 @@ static inline int snd_pcm_substream_proc_done(struct snd_pcm_substream *substrea
  * calling this, i.e. zero must be given to the argument of
  * snd_pcm_new().
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure.
+=======
+ * Return: Zero if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
 {
@@ -649,7 +693,15 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
 	pstr->stream = stream;
 	pstr->pcm = pcm;
 	pstr->substream_count = substream_count;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (substream_count > 0) {
+=======
+	if (substream_count > 0 && !pcm->internal) {
+>>>>>>> refs/remotes/origin/master
+=======
+	if (substream_count > 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = snd_pcm_stream_proc_init(pstr);
 		if (err < 0) {
 			snd_printk(KERN_ERR "Error in snd_pcm_stream_proc_init\n");
@@ -673,6 +725,10 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
 			pstr->substream = substream;
 		else
 			prev->next = substream;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = snd_pcm_substream_proc_init(substream);
 		if (err < 0) {
 			snd_printk(KERN_ERR "Error in snd_pcm_stream_proc_init\n");
@@ -682,6 +738,23 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
 				prev->next = NULL;
 			kfree(substream);
 			return err;
+<<<<<<< HEAD
+=======
+
+		if (!pcm->internal) {
+			err = snd_pcm_substream_proc_init(substream);
+			if (err < 0) {
+				snd_printk(KERN_ERR "Error in snd_pcm_stream_proc_init\n");
+				if (prev == NULL)
+					pstr->substream = NULL;
+				else
+					prev->next = NULL;
+				kfree(substream);
+				return err;
+			}
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		substream->group = &substream->self_group;
 		spin_lock_init(&substream->self_group.lock);
@@ -695,6 +768,10 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
 
 EXPORT_SYMBOL(snd_pcm_new_stream);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * snd_pcm_new - create a new PCM instance
  * @card: the card instance
@@ -714,6 +791,14 @@ EXPORT_SYMBOL(snd_pcm_new_stream);
 int snd_pcm_new(struct snd_card *card, const char *id, int device,
 		int playback_count, int capture_count,
 	        struct snd_pcm ** rpcm)
+<<<<<<< HEAD
+=======
+static int _snd_pcm_new(struct snd_card *card, const char *id, int device,
+		int playback_count, int capture_count, bool internal,
+		struct snd_pcm **rpcm)
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -734,6 +819,18 @@ int snd_pcm_new(struct snd_card *card, const char *id, int device,
 	}
 	pcm->card = card;
 	pcm->device = device;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcm->internal = internal;
+>>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (id)
 		strlcpy(pcm->id, id, sizeof(pcm->id));
 	if ((err = snd_pcm_new_stream(pcm, SNDRV_PCM_STREAM_PLAYBACK, playback_count)) < 0) {
@@ -755,8 +852,255 @@ int snd_pcm_new(struct snd_card *card, const char *id, int device,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(snd_pcm_new);
 
+<<<<<<< HEAD
+=======
+static int snd_pcm_new_stream_soc_be(struct snd_pcm *pcm, int stream,
+	int substream_count)
+{
+	int idx;
+	struct snd_pcm_str *pstr = &pcm->streams[stream];
+	struct snd_pcm_substream *substream, *prev;
+
+	pstr->stream = stream;
+	pstr->pcm = pcm;
+	pstr->substream_count = substream_count;
+
+	prev = NULL;
+	for (idx = 0, prev = NULL; idx < substream_count; idx++) {
+		substream = kzalloc(sizeof(*substream), GFP_KERNEL);
+		if (substream == NULL) {
+			snd_printk(KERN_ERR "Cannot allocate BE PCM substream\n");
+			return -ENOMEM;
+		}
+		substream->pcm = pcm;
+		substream->pstr = pstr;
+		substream->number = idx;
+		substream->stream = stream;
+		sprintf(substream->name, "subdevice #%i", idx);
+		substream->buffer_bytes_max = UINT_MAX;
+		if (prev == NULL)
+			pstr->substream = substream;
+		else
+			prev->next = substream;
+
+		substream->group = &substream->self_group;
+		spin_lock_init(&substream->self_group.lock);
+		INIT_LIST_HEAD(&substream->self_group.substreams);
+		list_add_tail(&substream->link_list, &substream->self_group.substreams);
+		atomic_set(&substream->mmap_count, 0);
+		prev = substream;
+	}
+	return 0;
+}
+
+/**
+ * snd_pcm_new_soc_be - create a new PCM instance for ASoC BE DAI link
+=======
+/**
+ * snd_pcm_new - create a new PCM instance
+ * @card: the card instance
+ * @id: the id string
+ * @device: the device index (zero based)
+ * @playback_count: the number of substreams for playback
+ * @capture_count: the number of substreams for capture
+ * @rpcm: the pointer to store the new pcm instance
+ *
+ * Creates a new PCM instance.
+ *
+ * The pcm operators have to be set afterwards to the new instance
+ * via snd_pcm_set_ops().
+ *
+ * Return: Zero if successful, or a negative error code on failure.
+ */
+int snd_pcm_new(struct snd_card *card, const char *id, int device,
+		int playback_count, int capture_count, struct snd_pcm **rpcm)
+=======
+EXPORT_SYMBOL(snd_pcm_new);
+
+static int snd_pcm_new_stream_soc_be(struct snd_pcm *pcm, int stream,
+	int substream_count)
+>>>>>>> refs/remotes/origin/cm-11.0
+{
+	int idx;
+	struct snd_pcm_str *pstr = &pcm->streams[stream];
+	struct snd_pcm_substream *substream, *prev;
+
+	pstr->stream = stream;
+	pstr->pcm = pcm;
+	pstr->substream_count = substream_count;
+
+	prev = NULL;
+	for (idx = 0, prev = NULL; idx < substream_count; idx++) {
+		substream = kzalloc(sizeof(*substream), GFP_KERNEL);
+		if (substream == NULL) {
+			snd_printk(KERN_ERR "Cannot allocate BE PCM substream\n");
+			return -ENOMEM;
+		}
+		substream->pcm = pcm;
+		substream->pstr = pstr;
+		substream->number = idx;
+		substream->stream = stream;
+		sprintf(substream->name, "subdevice #%i", idx);
+		substream->buffer_bytes_max = UINT_MAX;
+		if (prev == NULL)
+			pstr->substream = substream;
+		else
+			prev->next = substream;
+
+		substream->group = &substream->self_group;
+		spin_lock_init(&substream->self_group.lock);
+		INIT_LIST_HEAD(&substream->self_group.substreams);
+		list_add_tail(&substream->link_list, &substream->self_group.substreams);
+		atomic_set(&substream->mmap_count, 0);
+		prev = substream;
+	}
+	return 0;
+}
+
+/**
+<<<<<<< HEAD
+ * snd_pcm_new_internal - create a new internal PCM instance
+>>>>>>> refs/remotes/origin/master
+=======
+ * snd_pcm_new_soc_be - create a new PCM instance for ASoC BE DAI link
+>>>>>>> refs/remotes/origin/cm-11.0
+ * @card: the card instance
+ * @id: the id string
+ * @device: the device index (zero based - shared with normal PCMs)
+ * @playback_count: the number of substreams for playback
+ * @capture_count: the number of substreams for capture
+ * @rpcm: the pointer to store the new pcm instance
+ *
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ * Creates a new PCM instance with no userspace device or procfs entries.
+ * This is used by ASoC Back End PCMs in order to create a PCM that will only
+ * be used internally by kernel drivers. i.e. it cannot be opened by userspace.
+ * It also provides existing ASoC components drivers with a substream and
+ * access to any private data.
+<<<<<<< HEAD
+=======
+ * Creates a new internal PCM instance with no userspace device or procfs
+ * entries. This is used by ASoC Back End PCMs in order to create a PCM that
+ * will only be used internally by kernel drivers. i.e. it cannot be opened
+ * by userspace. It provides existing ASoC components drivers with a substream
+ * and access to any private data.
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ *
+ * The pcm operators have to be set afterwards to the new instance
+ * via snd_pcm_set_ops().
+ *
+<<<<<<< HEAD
+ * Returns zero if successful, or a negative error code on failure.
+ */
+int snd_pcm_new_soc_be(struct snd_card *card, const char *id, int device,
+<<<<<<< HEAD
+	int playback_count, int capture_count,
+	struct snd_pcm ** rpcm)
+{
+	struct snd_pcm *pcm;
+	int err;
+	static struct snd_device_ops ops = {
+		.dev_free = snd_pcm_dev_free,
+		.dev_register =	snd_pcm_dev_register_soc_be,
+		.dev_disconnect = snd_pcm_dev_disconnect,
+	};
+
+	if (snd_BUG_ON(!card))
+		return -ENXIO;
+	if (rpcm)
+		*rpcm = NULL;
+	pcm = kzalloc(sizeof(*pcm), GFP_KERNEL);
+	if (pcm == NULL) {
+		snd_printk(KERN_ERR "Cannot allocate virtual PCM\n");
+		return -ENOMEM;
+	}
+	pcm->card = card;
+	pcm->device = device;
+
+	if (id)
+		strlcpy(pcm->id, id, sizeof(pcm->id));
+	if ((err = snd_pcm_new_stream_soc_be(pcm, SNDRV_PCM_STREAM_PLAYBACK, playback_count)) < 0) {
+		snd_pcm_free(pcm);
+		return err;
+	}
+	if ((err = snd_pcm_new_stream_soc_be(pcm, SNDRV_PCM_STREAM_CAPTURE, capture_count)) < 0) {
+		snd_pcm_free(pcm);
+		return err;
+	}
+
+	if ((err = snd_device_new(card, SNDRV_DEV_PCM, pcm, &ops)) < 0) {
+		snd_pcm_free(pcm);
+		return err;
+	}
+	if (rpcm)
+		*rpcm = pcm;
+	return 0;
+}
+
+EXPORT_SYMBOL(snd_pcm_new_soc_be);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Return: Zero if successful, or a negative error code on failure.
+ */
+int snd_pcm_new_internal(struct snd_card *card, const char *id, int device,
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int playback_count, int capture_count,
+	struct snd_pcm ** rpcm)
+{
+	struct snd_pcm *pcm;
+	int err;
+	static struct snd_device_ops ops = {
+		.dev_free = snd_pcm_dev_free,
+		.dev_register =	snd_pcm_dev_register_soc_be,
+		.dev_disconnect = snd_pcm_dev_disconnect,
+	};
+
+	if (snd_BUG_ON(!card))
+		return -ENXIO;
+	if (rpcm)
+		*rpcm = NULL;
+	pcm = kzalloc(sizeof(*pcm), GFP_KERNEL);
+	if (pcm == NULL) {
+		snd_printk(KERN_ERR "Cannot allocate virtual PCM\n");
+		return -ENOMEM;
+	}
+	pcm->card = card;
+	pcm->device = device;
+
+	if (id)
+		strlcpy(pcm->id, id, sizeof(pcm->id));
+	if ((err = snd_pcm_new_stream_soc_be(pcm, SNDRV_PCM_STREAM_PLAYBACK, playback_count)) < 0) {
+		snd_pcm_free(pcm);
+		return err;
+	}
+	if ((err = snd_pcm_new_stream_soc_be(pcm, SNDRV_PCM_STREAM_CAPTURE, capture_count)) < 0) {
+		snd_pcm_free(pcm);
+		return err;
+	}
+
+	if ((err = snd_device_new(card, SNDRV_DEV_PCM, pcm, &ops)) < 0) {
+		snd_pcm_free(pcm);
+		return err;
+	}
+	if (rpcm)
+		*rpcm = pcm;
+	return 0;
+}
+
+EXPORT_SYMBOL(snd_pcm_new_soc_be);
+
+>>>>>>> refs/remotes/origin/master
 static void snd_pcm_free_stream(struct snd_pcm_str * pstr)
 {
 	struct snd_pcm_substream *substream, *substream_next;
@@ -940,8 +1284,12 @@ void snd_pcm_detach_substream(struct snd_pcm_substream *substream)
 		       PAGE_ALIGN(sizeof(struct snd_pcm_mmap_control)));
 	kfree(runtime->hw_constraints.rules);
 #ifdef CONFIG_SND_PCM_XRUN_DEBUG
+<<<<<<< HEAD
 	if (runtime->hwptr_log)
 		kfree(runtime->hwptr_log);
+=======
+	kfree(runtime->hwptr_log);
+>>>>>>> refs/remotes/origin/master
 #endif
 	kfree(runtime);
 	substream->runtime = NULL;
@@ -993,7 +1341,15 @@ static int snd_pcm_dev_register(struct snd_device *device)
 	}
 	for (cidx = 0; cidx < 2; cidx++) {
 		int devtype = -1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (pcm->streams[cidx].substream == NULL)
+=======
+		if (pcm->streams[cidx].substream == NULL || pcm->internal)
+>>>>>>> refs/remotes/origin/master
+=======
+		if (pcm->streams[cidx].substream == NULL)
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		switch (cidx) {
 		case SNDRV_PCM_STREAM_PLAYBACK:
@@ -1034,6 +1390,41 @@ static int snd_pcm_dev_register(struct snd_device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int snd_pcm_dev_register_soc_be(struct snd_device *device)
+{
+	int err;
+	struct snd_pcm_notify *notify;
+	struct snd_pcm *pcm;
+
+	if (snd_BUG_ON(!device || !device->device_data))
+		return -ENXIO;
+	pcm = device->device_data;
+	mutex_lock(&register_mutex);
+	err = snd_pcm_add(pcm);
+	if (err) {
+		mutex_unlock(&register_mutex);
+		return err;
+	}
+
+	list_for_each_entry(notify, &snd_pcm_notify_list, list)
+		notify->n_register(pcm);
+
+	mutex_unlock(&register_mutex);
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int snd_pcm_dev_disconnect(struct snd_device *device)
 {
 	struct snd_pcm *pcm = device->device_data;
@@ -1072,6 +1463,13 @@ static int snd_pcm_dev_disconnect(struct snd_device *device)
 			break;
 		}
 		snd_unregister_device(devtype, pcm->card, pcm->device);
+<<<<<<< HEAD
+=======
+		if (pcm->streams[cidx].chmap_kctl) {
+			snd_ctl_remove(pcm->card, pcm->streams[cidx].chmap_kctl);
+			pcm->streams[cidx].chmap_kctl = NULL;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&pcm->open_mutex);
  unlock:

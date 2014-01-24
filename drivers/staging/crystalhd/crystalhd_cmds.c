@@ -24,8 +24,16 @@
  * along with this driver.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "crystalhd_cmds.h"
 #include "crystalhd_hw.h"
+=======
+#include "crystalhd.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "crystalhd.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct crystalhd_user *bc_cproc_get_uid(struct crystalhd_cmd *ctx)
 {
@@ -95,8 +103,12 @@ static enum BC_STATUS bc_cproc_notify_mode(struct crystalhd_cmd *ctx,
 	for (i = 0; i < BC_LINK_MAX_OPENS; i++) {
 		if (ctx->user[i].mode == DTS_DIAG_MODE ||
 		    ctx->user[i].mode == DTS_PLAYBACK_MODE) {
+<<<<<<< HEAD
 			BCMLOG_ERR("multiple playback sessions are not "
 				   "supported..\n");
+=======
+			BCMLOG_ERR("multiple playback sessions are not supported..\n");
+>>>>>>> refs/remotes/origin/master
 			return BC_STS_ERR_USAGE;
 		}
 	}
@@ -309,9 +321,15 @@ static enum BC_STATUS bc_cproc_download_fw(struct crystalhd_cmd *ctx,
 	sts = crystalhd_download_fw(ctx->adp, (uint8_t *)idata->add_cdata,
 				  idata->add_cdata_sz);
 
+<<<<<<< HEAD
 	if (sts != BC_STS_SUCCESS) {
 		BCMLOG_ERR("Firmware Download Failure!! - %d\n", sts);
 	} else
+=======
+	if (sts != BC_STS_SUCCESS)
+		BCMLOG_ERR("Firmware Download Failure!! - %d\n", sts);
+	else
+>>>>>>> refs/remotes/origin/master
 		ctx->state |= BC_LINK_INIT;
 
 	return sts;
@@ -473,8 +491,13 @@ static enum BC_STATUS bc_cproc_hw_txdma(struct crystalhd_cmd *ctx,
 }
 
 /* Helper function to check on user buffers */
+<<<<<<< HEAD
 static enum BC_STATUS bc_cproc_check_inbuffs(bool pin, void *ubuff, uint32_t ub_sz,
 					uint32_t uv_off, bool en_422)
+=======
+static enum BC_STATUS bc_cproc_check_inbuffs(bool pin, void *ubuff,
+				 uint32_t ub_sz, uint32_t uv_off, bool en_422)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!ubuff || !ub_sz) {
 		BCMLOG_ERR("%s->Invalid Arg %p %x\n",
@@ -484,8 +507,14 @@ static enum BC_STATUS bc_cproc_check_inbuffs(bool pin, void *ubuff, uint32_t ub_
 
 	/* Check for alignment */
 	if (((uintptr_t)ubuff) & 0x03) {
+<<<<<<< HEAD
 		BCMLOG_ERR("%s-->Un-aligned address not implemented yet.. %p\n",
 				((pin) ? "TX" : "RX"), ubuff);
+=======
+		BCMLOG_ERR(
+			"%s-->Un-aligned address not implemented yet.. %p\n",
+			 ((pin) ? "TX" : "RX"), ubuff);
+>>>>>>> refs/remotes/origin/master
 		return BC_STS_NOT_IMPL;
 	}
 	if (pin)
@@ -573,7 +602,12 @@ static enum BC_STATUS bc_cproc_add_cap_buff(struct crystalhd_cmd *ctx,
 	if (!dio_hnd)
 		return BC_STS_ERROR;
 
+<<<<<<< HEAD
 	sts = crystalhd_hw_add_cap_buffer(&ctx->hw_ctx, dio_hnd, (ctx->state == BC_LINK_READY));
+=======
+	sts = crystalhd_hw_add_cap_buffer(&ctx->hw_ctx, dio_hnd,
+					 (ctx->state == BC_LINK_READY));
+>>>>>>> refs/remotes/origin/master
 	if ((sts != BC_STS_SUCCESS) && (sts != BC_STS_BUSY)) {
 		crystalhd_unmap_dio(ctx->adp, dio_hnd);
 		return sts;
@@ -619,7 +653,12 @@ static enum BC_STATUS bc_cproc_fetch_frame(struct crystalhd_cmd *ctx,
 
 	sts = crystalhd_hw_get_cap_buffer(&ctx->hw_ctx, &frame->PibInfo, &dio);
 	if (sts != BC_STS_SUCCESS)
+<<<<<<< HEAD
 		return (ctx->state & BC_LINK_SUSPEND) ? BC_STS_IO_USER_ABORT : sts;
+=======
+		return (ctx->state & BC_LINK_SUSPEND) ?
+					 BC_STS_IO_USER_ABORT : sts;
+>>>>>>> refs/remotes/origin/master
 
 	frame->Flags = dio->uinfo.comp_flags;
 
@@ -674,7 +713,12 @@ static enum BC_STATUS bc_cproc_flush_cap_buffs(struct crystalhd_cmd *ctx,
 	frame = &idata->udata.u.DecOutData;
 	for (count = 0; count < BC_RX_LIST_CNT; count++) {
 
+<<<<<<< HEAD
 		sts = crystalhd_hw_get_cap_buffer(&ctx->hw_ctx, &frame->PibInfo, &dio);
+=======
+		sts = crystalhd_hw_get_cap_buffer(&ctx->hw_ctx,
+					 &frame->PibInfo, &dio);
+>>>>>>> refs/remotes/origin/master
 		if (sts != BC_STS_SUCCESS)
 			break;
 
@@ -796,7 +840,11 @@ static const struct crystalhd_cmd_tbl	g_crystalhd_cproc_tbl[] = {
  *
  * Current gstreamer frame work does not provide any power management
  * related notification to user mode decoder plug-in. As a work-around
+<<<<<<< HEAD
  * we pass on the power mangement notification to our plug-in by completing
+=======
+ * we pass on the power management notification to our plug-in by completing
+>>>>>>> refs/remotes/origin/master
  * all outstanding requests with BC_STS_IO_USER_ABORT return code.
  */
 enum BC_STATUS crystalhd_suspend(struct crystalhd_cmd *ctx,
@@ -917,7 +965,12 @@ enum BC_STATUS crystalhd_user_open(struct crystalhd_cmd *ctx,
  * Closer application handle and release app specific
  * resources.
  */
+<<<<<<< HEAD
 enum BC_STATUS crystalhd_user_close(struct crystalhd_cmd *ctx, struct crystalhd_user *uc)
+=======
+enum BC_STATUS crystalhd_user_close(struct crystalhd_cmd *ctx,
+					 struct crystalhd_user *uc)
+>>>>>>> refs/remotes/origin/master
 {
 	uint32_t mode = uc->mode;
 
@@ -952,7 +1005,11 @@ enum BC_STATUS crystalhd_user_close(struct crystalhd_cmd *ctx, struct crystalhd_
  *
  * Called at the time of driver load.
  */
+<<<<<<< HEAD
 enum BC_STATUS __devinit crystalhd_setup_cmd_context(struct crystalhd_cmd *ctx,
+=======
+enum BC_STATUS crystalhd_setup_cmd_context(struct crystalhd_cmd *ctx,
+>>>>>>> refs/remotes/origin/master
 				    struct crystalhd_adp *adp)
 {
 	int i = 0;
@@ -987,7 +1044,11 @@ enum BC_STATUS __devinit crystalhd_setup_cmd_context(struct crystalhd_cmd *ctx,
  *
  * Called at the time of driver un-load.
  */
+<<<<<<< HEAD
 enum BC_STATUS __devexit crystalhd_delete_cmd_context(struct crystalhd_cmd *ctx)
+=======
+enum BC_STATUS crystalhd_delete_cmd_context(struct crystalhd_cmd *ctx)
+>>>>>>> refs/remotes/origin/master
 {
 	BCMLOG(BCMLOG_DBG, "Deleting Command context..\n");
 
@@ -1009,8 +1070,13 @@ enum BC_STATUS __devexit crystalhd_delete_cmd_context(struct crystalhd_cmd *ctx)
  * mode of operation and returns the function pointer
  * from the cproc table.
  */
+<<<<<<< HEAD
 crystalhd_cmd_proc crystalhd_get_cmd_proc(struct crystalhd_cmd *ctx, uint32_t cmd,
 				      struct crystalhd_user *uc)
+=======
+crystalhd_cmd_proc crystalhd_get_cmd_proc(struct crystalhd_cmd *ctx,
+				 uint32_t cmd, struct crystalhd_user *uc)
+>>>>>>> refs/remotes/origin/master
 {
 	crystalhd_cmd_proc cproc = NULL;
 	unsigned int i, tbl_sz;
@@ -1025,7 +1091,12 @@ crystalhd_cmd_proc crystalhd_get_cmd_proc(struct crystalhd_cmd *ctx, uint32_t cm
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	tbl_sz = sizeof(g_crystalhd_cproc_tbl) / sizeof(struct crystalhd_cmd_tbl);
+=======
+	tbl_sz = sizeof(g_crystalhd_cproc_tbl) /
+				 sizeof(struct crystalhd_cmd_tbl);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < tbl_sz; i++) {
 		if (g_crystalhd_cproc_tbl[i].cmd_id == cmd) {
 			if ((uc->mode == DTS_MONITOR_MODE) &&
@@ -1055,7 +1126,11 @@ bool crystalhd_cmd_interrupt(struct crystalhd_cmd *ctx)
 {
 	if (!ctx) {
 		BCMLOG_ERR("Invalid arg..\n");
+<<<<<<< HEAD
 		return 0;
+=======
+		return false;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return crystalhd_hw_interrupt(ctx->adp, &ctx->hw_ctx);

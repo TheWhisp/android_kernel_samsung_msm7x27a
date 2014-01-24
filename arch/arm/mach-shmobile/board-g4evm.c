@@ -33,12 +33,20 @@
 #include <linux/mmc/host.h>
 #include <linux/mmc/sh_mobile_sdhi.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/dma-mapping.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/sh7377.h>
 #include <mach/common.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
+<<<<<<< HEAD
 #include <asm/mach/map.h>
 #include <asm/mach/time.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * SDHI
@@ -259,6 +267,7 @@ static struct platform_device *g4evm_devices[] __initdata = {
 	&sdhi1_device,
 };
 
+<<<<<<< HEAD
 static struct map_desc g4evm_io_desc[] __initdata = {
 	/* create a 1:1 entity map for 0xe6xxxxxx
 	 * used by CPGA, INTC and PFC.
@@ -280,6 +289,8 @@ static void __init g4evm_map_io(void)
 	shmobile_setup_console();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define GPIO_SDHID0_D0	0xe60520fc
 #define GPIO_SDHID0_D1	0xe60520fd
 #define GPIO_SDHID0_D2	0xe60520fe
@@ -396,6 +407,7 @@ static void __init g4evm_init(void)
 	platform_add_devices(g4evm_devices, ARRAY_SIZE(g4evm_devices));
 }
 
+<<<<<<< HEAD
 static void __init g4evm_timer_init(void)
 {
 	sh7377_clock_init();
@@ -412,4 +424,13 @@ MACHINE_START(G4EVM, "g4evm")
 	.handle_irq	= shmobile_handle_irq_intc,
 	.init_machine	= g4evm_init,
 	.timer		= &g4evm_timer,
+=======
+MACHINE_START(G4EVM, "g4evm")
+	.map_io		= sh7377_map_io,
+	.init_early	= sh7377_add_early_devices,
+	.init_irq	= sh7377_init_irq,
+	.handle_irq	= shmobile_handle_irq_intc,
+	.init_machine	= g4evm_init,
+	.timer		= &shmobile_timer,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

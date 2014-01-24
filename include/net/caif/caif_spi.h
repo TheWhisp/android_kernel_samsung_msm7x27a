@@ -55,8 +55,18 @@
 struct cfspi_xfer {
 	u16 tx_dma_len;
 	u16 rx_dma_len;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void *va_tx;
 	dma_addr_t pa_tx;
+=======
+	void *va_tx[2];
+	dma_addr_t pa_tx[2];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *va_tx[2];
+	dma_addr_t pa_tx[2];
+>>>>>>> refs/remotes/origin/master
 	void *va_rx;
 	dma_addr_t pa_rx;
 };

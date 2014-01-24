@@ -17,6 +17,10 @@
 #include <asm/asmmacro.h>
 #include <asm/mipsregs.h>
 #include <asm/asm-offsets.h>
+<<<<<<< HEAD
+=======
+#include <asm/thread_info.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * For SMTC kernel, global IE should be left set, and interrupts
@@ -70,6 +74,17 @@
 #ifndef CONFIG_CPU_HAS_SMARTMIPS
 		LONG_S	v1, PT_LO(sp)
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CPU_CAVIUM_OCTEON
+		/*
+		 * The Octeon multiplier state is affected by general
+		 * multiply instructions. It must be saved before and
+		 * kernel code might corrupt it
+		 */
+		jal     octeon_mult_save
+#endif
+>>>>>>> refs/remotes/origin/master
 		.endm
 
 		.macro	SAVE_STATIC
@@ -85,6 +100,7 @@
 		.endm
 
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 #ifdef CONFIG_MIPS_MT_SMTC
 #define PTEBASE_SHIFT	19	/* TCBIND */
 #define CPU_ID_REG CP0_TCBIND
@@ -100,6 +116,10 @@
 #endif
 		.macro	get_saved_sp	/* SMP variation */
 		CPU_ID_MFC0	k0, CPU_ID_REG
+=======
+		.macro	get_saved_sp	/* SMP variation */
+		ASM_CPUID_MFC0	k0, ASM_SMP_CPUID_REG
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_32BIT) || defined(KBUILD_64BIT_SYM32)
 		lui	k1, %hi(kernelsp)
 #else
@@ -109,17 +129,29 @@
 		daddiu	k1, %hi(kernelsp)
 		dsll	k1, 16
 #endif
+<<<<<<< HEAD
 		LONG_SRL	k0, PTEBASE_SHIFT
+=======
+		LONG_SRL	k0, SMP_CPUID_PTRSHIFT
+>>>>>>> refs/remotes/origin/master
 		LONG_ADDU	k1, k0
 		LONG_L	k1, %lo(kernelsp)(k1)
 		.endm
 
 		.macro	set_saved_sp stackp temp temp2
+<<<<<<< HEAD
 		CPU_ID_MFC0	\temp, CPU_ID_REG
 		LONG_SRL	\temp, PTEBASE_SHIFT
 		LONG_S	\stackp, kernelsp(\temp)
 		.endm
 #else
+=======
+		ASM_CPUID_MFC0	\temp, ASM_SMP_CPUID_REG
+		LONG_SRL	\temp, SMP_CPUID_PTRSHIFT
+		LONG_S	\stackp, kernelsp(\temp)
+		.endm
+#else /* !CONFIG_SMP */
+>>>>>>> refs/remotes/origin/master
 		.macro	get_saved_sp	/* Uniprocessor variation */
 #ifdef CONFIG_CPU_JUMP_WORKAROUNDS
 		/*
@@ -139,7 +171,11 @@
 1:		move	ra, k0
 		li	k0, 3
 		mtc0	k0, $22
+<<<<<<< HEAD
 #endif /* CONFIG_CPU_LOONGSON2F */
+=======
+#endif /* CONFIG_CPU_JUMP_WORKAROUNDS */
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_32BIT) || defined(KBUILD_64BIT_SYM32)
 		lui	k1, %hi(kernelsp)
 #else
@@ -189,15 +225,26 @@
 		LONG_S	$0, PT_R0(sp)
 		mfc0	v1, CP0_STATUS
 		LONG_S	$2, PT_R2(sp)
+<<<<<<< HEAD
+=======
+		LONG_S	v1, PT_STATUS(sp)
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MIPS_MT_SMTC
 		/*
 		 * Ideally, these instructions would be shuffled in
 		 * to cover the pipeline delay.
 		 */
 		.set	mips32
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mfc0	v1, CP0_TCSTATUS
 		.set	mips0
 		LONG_S	v1, PT_TCSTATUS(sp)
+=======
+		mfc0	k0, CP0_TCSTATUS
+		.set	mips0
+		LONG_S	k0, PT_TCSTATUS(sp)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_MIPS_MT_SMTC */
 		LONG_S	$4, PT_R4(sp)
 		LONG_S	$5, PT_R5(sp)
@@ -207,19 +254,40 @@
 		LONG_S	$7, PT_R7(sp)
 		LONG_S	v1, PT_CAUSE(sp)
 		MFC0	v1, CP0_EPC
+=======
+		mfc0	k0, CP0_TCSTATUS
+		.set	mips0
+		LONG_S	k0, PT_TCSTATUS(sp)
+#endif /* CONFIG_MIPS_MT_SMTC */
+		LONG_S	$4, PT_R4(sp)
+		mfc0	v1, CP0_CAUSE
+		LONG_S	$5, PT_R5(sp)
+		LONG_S	v1, PT_CAUSE(sp)
+		LONG_S	$6, PT_R6(sp)
+		MFC0	v1, CP0_EPC
+		LONG_S	$7, PT_R7(sp)
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_64BIT
 		LONG_S	$8, PT_R8(sp)
 		LONG_S	$9, PT_R9(sp)
 #endif
+<<<<<<< HEAD
 		LONG_S	$25, PT_R25(sp)
 		LONG_S	$28, PT_R28(sp)
 		LONG_S	$31, PT_R31(sp)
 		LONG_S	v1, PT_EPC(sp)
+=======
+		LONG_S	v1, PT_EPC(sp)
+		LONG_S	$25, PT_R25(sp)
+		LONG_S	$28, PT_R28(sp)
+		LONG_S	$31, PT_R31(sp)
+>>>>>>> refs/remotes/origin/master
 		ori	$28, sp, _THREAD_MASK
 		xori	$28, _THREAD_MASK
 #ifdef CONFIG_CPU_CAVIUM_OCTEON
 		.set    mips64
 		pref    0, 0($28)       /* Prefetch the current pointer */
+<<<<<<< HEAD
 		pref    0, PT_R31(sp)   /* Prefetch the $31(ra) */
 		/* The Octeon multiplier state is affected by general multiply
 		    instructions. It must be saved before and kernel code might
@@ -229,6 +297,8 @@
 			 /* Restore $31(ra) that was changed by the jal */
 		LONG_L  ra, PT_R31(sp)
 		pref    0, 0(v1)    /* Prefetch the current thread */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 		.set	pop
 		.endm
@@ -248,6 +318,13 @@
 		.endm
 
 		.macro	RESTORE_TEMP
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CPU_CAVIUM_OCTEON
+		/* Restore the Octeon multiplier state */
+		jal	octeon_mult_restore
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CPU_HAS_SMARTMIPS
 		LONG_L	$24, PT_ACX(sp)
 		mtlhx	$24
@@ -360,10 +437,13 @@
 		DVPE	5				# dvpe a1
 		jal	mips_ihb
 #endif /* CONFIG_MIPS_MT_SMTC */
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_CAVIUM_OCTEON
 		/* Restore the Octeon multiplier state */
 		jal	octeon_mult_restore
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		mfc0	a0, CP0_STATUS
 		ori	a0, STATMASK
 		xori	a0, STATMASK

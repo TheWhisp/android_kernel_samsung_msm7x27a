@@ -110,19 +110,50 @@ static int udf_adinicb_write_end(struct file *file,
 	char *kaddr;
 	struct udf_inode_info *iinfo = UDF_I(inode);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(page, KM_USER0);
 	memcpy(iinfo->i_ext.i_data + iinfo->i_lenEAttr + offset,
 		kaddr + offset, copied);
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	kaddr = kmap_atomic(page);
+	memcpy(iinfo->i_ext.i_data + iinfo->i_lenEAttr + offset,
+		kaddr + offset, copied);
+	kunmap_atomic(kaddr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return simple_write_end(file, mapping, pos, len, copied, page, fsdata);
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t udf_adinicb_direct_IO(int rw, struct kiocb *iocb,
+				     const struct iovec *iov,
+				     loff_t offset, unsigned long nr_segs)
+{
+	/* Fallback to buffered I/O. */
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 const struct address_space_operations udf_adinicb_aops = {
 	.readpage	= udf_adinicb_readpage,
 	.writepage	= udf_adinicb_writepage,
 	.write_begin	= udf_adinicb_write_begin,
 	.write_end	= udf_adinicb_write_end,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.direct_IO	= udf_adinicb_direct_IO,
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static ssize_t udf_file_aio_write(struct kiocb *iocb, const struct iovec *iov,
@@ -130,9 +161,15 @@ static ssize_t udf_file_aio_write(struct kiocb *iocb, const struct iovec *iov,
 {
 	ssize_t retval;
 	struct file *file = iocb->ki_filp;
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
 	int err, pos;
 	size_t count = iocb->ki_left;
+=======
+	struct inode *inode = file_inode(file);
+	int err, pos;
+	size_t count = iocb->ki_nbytes;
+>>>>>>> refs/remotes/origin/master
 	struct udf_inode_info *iinfo = UDF_I(inode);
 
 	down_write(&iinfo->i_data_sem);
@@ -169,11 +206,23 @@ static ssize_t udf_file_aio_write(struct kiocb *iocb, const struct iovec *iov,
 
 long udf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_dentry->d_inode;
 	long old_block, new_block;
 	int result = -EINVAL;
 
+<<<<<<< HEAD
 	if (file_permission(filp, MAY_READ) != 0) {
+=======
+	if (inode_permission(inode, MAY_READ) != 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *inode = file_inode(filp);
+	long old_block, new_block;
+	int result = -EINVAL;
+
+	if (inode_permission(inode, MAY_READ) != 0) {
+>>>>>>> refs/remotes/origin/master
 		udf_debug("no permission to access inode %lu\n", inode->i_ino);
 		result = -EPERM;
 		goto out;
@@ -195,7 +244,11 @@ long udf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		goto out;
 	case UDF_RELOCATE_BLOCKS:
 		if (!capable(CAP_SYS_ADMIN)) {
+<<<<<<< HEAD
 			result = -EACCES;
+=======
+			result = -EPERM;
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 		if (get_user(old_block, (long __user *)arg)) {

@@ -24,7 +24,10 @@ struct ad7476_chip_info {
 };
 
 struct ad7476_state {
+<<<<<<< HEAD
 	struct iio_dev			*indio_dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct spi_device		*spi;
 	const struct ad7476_chip_info	*chip_info;
 	struct regulator		*reg;
@@ -50,6 +53,7 @@ enum ad7476_supported_device_ids {
 	ID_AD7495
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_IIO_RING_BUFFER
 int ad7476_scan_from_ring(struct ad7476_state *st);
 int ad7476_register_ring_funcs_and_init(struct iio_dev *indio_dev);
@@ -59,6 +63,12 @@ static inline int ad7476_scan_from_ring(struct ad7476_state *st)
 {
 	return 0;
 }
+=======
+#ifdef CONFIG_IIO_BUFFER
+int ad7476_register_ring_funcs_and_init(struct iio_dev *indio_dev);
+void ad7476_ring_cleanup(struct iio_dev *indio_dev);
+#else /* CONFIG_IIO_BUFFER */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int
 ad7476_register_ring_funcs_and_init(struct iio_dev *indio_dev)
@@ -69,5 +79,9 @@ ad7476_register_ring_funcs_and_init(struct iio_dev *indio_dev)
 static inline void ad7476_ring_cleanup(struct iio_dev *indio_dev)
 {
 }
+<<<<<<< HEAD
 #endif /* CONFIG_IIO_RING_BUFFER */
+=======
+#endif /* CONFIG_IIO_BUFFER */
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* IIO_ADC_AD7476_H_ */

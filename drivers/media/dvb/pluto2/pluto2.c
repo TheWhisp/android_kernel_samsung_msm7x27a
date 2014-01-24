@@ -26,6 +26,10 @@
 #include <linux/i2c.h>
 #include <linux/i2c-algo-bit.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/pci.h>
@@ -444,9 +448,15 @@ static inline u32 divide(u32 numerator, u32 denominator)
 }
 
 /* LG Innotek TDTE-E001P (Infineon TUA6034) */
+<<<<<<< HEAD
 static int lg_tdtpe001p_tuner_set_params(struct dvb_frontend *fe,
 					 struct dvb_frontend_parameters *p)
 {
+=======
+static int lg_tdtpe001p_tuner_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pluto *pluto = frontend_to_pluto(fe);
 	struct i2c_msg msg;
 	int ret;
@@ -477,7 +487,11 @@ static int lg_tdtpe001p_tuner_set_params(struct dvb_frontend *fe,
 	else
 		buf[3] = 0x04;
 
+<<<<<<< HEAD
 	if (p->u.ofdm.bandwidth == BANDWIDTH_8_MHZ)
+=======
+	if (p->bandwidth_hz == 8000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		buf[3] |= 0x08;
 
 	if (sizeof(buf) == 6) {

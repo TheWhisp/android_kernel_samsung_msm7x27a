@@ -3,13 +3,42 @@
 
 #ifdef CONFIG_CRASH_DUMP
 #include <linux/kexec.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/proc_fs.h>
+=======
+#include <linux/proc_fs.h>
+#include <linux/elf.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/proc_fs.h>
+#include <linux/elf.h>
+
+#include <asm/pgtable.h> /* for pgprot_t */
+>>>>>>> refs/remotes/origin/master
 
 #define ELFCORE_ADDR_MAX	(-1ULL)
 #define ELFCORE_ADDR_ERR	(-2ULL)
 
 extern unsigned long long elfcorehdr_addr;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern unsigned long long elfcorehdr_size;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern unsigned long long elfcorehdr_size;
+
+extern int __weak elfcorehdr_alloc(unsigned long long *addr,
+				   unsigned long long *size);
+extern void __weak elfcorehdr_free(unsigned long long addr);
+extern ssize_t __weak elfcorehdr_read(char *buf, size_t count, u64 *ppos);
+extern ssize_t __weak elfcorehdr_read_notes(char *buf, size_t count, u64 *ppos);
+extern int __weak remap_oldmem_pfn_range(struct vm_area_struct *vma,
+					 unsigned long from, unsigned long pfn,
+					 unsigned long size, pgprot_t prot);
+>>>>>>> refs/remotes/origin/master
 
 extern ssize_t copy_oldmem_page(unsigned long, char *, size_t,
 						unsigned long, int);

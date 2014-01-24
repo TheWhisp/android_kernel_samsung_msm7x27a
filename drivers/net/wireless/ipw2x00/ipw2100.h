@@ -135,6 +135,7 @@ enum {
 	IPW_HW_STATE_ENABLED = 0
 };
 
+<<<<<<< HEAD
 struct ssid_context {
 	char ssid[IW_ESSID_MAX_SIZE + 1];
 	int ssid_len;
@@ -144,6 +145,8 @@ struct ssid_context {
 
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern const char *port_type_str[];
 extern const char *band_str[];
 
@@ -488,6 +491,10 @@ enum {
 #define CAP_PRIVACY_ON          (1<<1)	/* Off = No privacy */
 
 struct ipw2100_priv {
+<<<<<<< HEAD
+=======
+	void __iomem *ioaddr;
+>>>>>>> refs/remotes/origin/master
 
 	int stop_hang_check;	/* Set 1 when shutting down to kill hang_check */
 	int stop_rf_kill;	/* Set 1 when shutting down to kill rf_kill */
@@ -585,8 +592,12 @@ struct ipw2100_priv {
 	struct delayed_work wx_event_work;
 	struct delayed_work hang_check;
 	struct delayed_work rf_kill;
+<<<<<<< HEAD
 	struct work_struct scan_event_now;
 	struct delayed_work scan_event_later;
+=======
+	struct delayed_work scan_event;
+>>>>>>> refs/remotes/origin/master
 
 	int user_requested_scan;
 
@@ -1053,7 +1064,11 @@ typedef enum _ORDINAL_TABLE_1 {	// NS - means Not Supported by FW
 	IPW_ORD_POWER_MGMT_MODE,	// Power mode - 0=CAM, 1=PSP
 	IPW_ORD_POWER_MGMT_INDEX,	//NS //
 	IPW_ORD_COUNTRY_CODE,	// IEEE country code as recv'd from beacon
+<<<<<<< HEAD
 	IPW_ORD_COUNTRY_CHANNELS,	// channels suported by country
+=======
+	IPW_ORD_COUNTRY_CHANNELS,	// channels supported by country
+>>>>>>> refs/remotes/origin/master
 // IPW_ORD_COUNTRY_CHANNELS:
 // For 11b the lower 2-byte are used for channels from 1-14
 //   and the higher 2-byte are not used.

@@ -1,6 +1,11 @@
 config LOGFS
+<<<<<<< HEAD
 	tristate "LogFS file system (EXPERIMENTAL)"
 	depends on (MTD || BLOCK) && EXPERIMENTAL
+=======
+	tristate "LogFS file system"
+	depends on (MTD || BLOCK)
+>>>>>>> refs/remotes/origin/master
 	select ZLIB_INFLATE
 	select ZLIB_DEFLATE
 	select CRC32

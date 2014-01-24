@@ -61,10 +61,17 @@ asmlinkage void do_page_fault(unsigned long ecr, struct pt_regs *regs)
 	const struct exception_table_entry *fixup;
 	unsigned long address;
 	unsigned long page;
+<<<<<<< HEAD
 	int writeaccess;
 	long signr;
 	int code;
 	int fault;
+=======
+	long signr;
+	int code;
+	int fault;
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+>>>>>>> refs/remotes/origin/master
 
 	if (notify_page_fault(regs, ecr))
 		return;
@@ -86,6 +93,12 @@ asmlinkage void do_page_fault(unsigned long ecr, struct pt_regs *regs)
 
 	local_irq_enable();
 
+<<<<<<< HEAD
+=======
+	if (user_mode(regs))
+		flags |= FAULT_FLAG_USER;
+retry:
+>>>>>>> refs/remotes/origin/master
 	down_read(&mm->mmap_sem);
 
 	vma = find_vma(mm, address);
@@ -104,7 +117,10 @@ asmlinkage void do_page_fault(unsigned long ecr, struct pt_regs *regs)
 	 */
 good_area:
 	code = SEGV_ACCERR;
+<<<<<<< HEAD
 	writeaccess = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (ecr) {
 	case ECR_PROTECTION_X:
@@ -121,7 +137,11 @@ good_area:
 	case ECR_TLB_MISS_W:
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
 		writeaccess = 1;
+=======
+		flags |= FAULT_FLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		panic("Unhandled case %lu in do_page_fault!", ecr);
@@ -132,7 +152,15 @@ good_area:
 	 * sure we exit gracefully rather than endlessly redo the
 	 * fault.
 	 */
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, writeaccess ? FAULT_FLAG_WRITE : 0);
+=======
+	fault = handle_mm_fault(mm, vma, address, flags);
+
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
@@ -140,10 +168,31 @@ good_area:
 			goto do_sigbus;
 		BUG();
 	}
+<<<<<<< HEAD
 	if (fault & VM_FAULT_MAJOR)
 		tsk->maj_flt++;
 	else
 		tsk->min_flt++;
+=======
+
+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+		if (fault & VM_FAULT_MAJOR)
+			tsk->maj_flt++;
+		else
+			tsk->min_flt++;
+		if (fault & VM_FAULT_RETRY) {
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+			flags |= FAULT_FLAG_TRIED;
+
+			/*
+			 * No need to up_read(&mm->mmap_sem) as we would have
+			 * already released it in __lock_page_or_retry() in
+			 * mm/filemap.c.
+			 */
+			goto retry;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	up_read(&mm->mmap_sem);
 	return;
@@ -210,9 +259,15 @@ no_context:
 	 */
 out_of_memory:
 	up_read(&mm->mmap_sem);
+<<<<<<< HEAD
 	pagefault_out_of_memory();
 	if (!user_mode(regs))
 		goto no_context;
+=======
+	if (!user_mode(regs))
+		goto no_context;
+	pagefault_out_of_memory();
+>>>>>>> refs/remotes/origin/master
 	return;
 
 do_sigbus:

@@ -30,26 +30,44 @@
 
 #ifndef CONFIG_HOTPLUG_PCI_COMPAQ_NVRAM
 
+<<<<<<< HEAD
 static inline void compaq_nvram_init (void __iomem *rom_start)
+=======
+static inline void compaq_nvram_init(void __iomem *rom_start)
+>>>>>>> refs/remotes/origin/master
 {
 	return;
 }
 
+<<<<<<< HEAD
 static inline int compaq_nvram_load (void __iomem *rom_start, struct controller *ctrl)
+=======
+static inline int compaq_nvram_load(void __iomem *rom_start, struct controller *ctrl)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int compaq_nvram_store (void __iomem *rom_start)
+=======
+static inline int compaq_nvram_store(void __iomem *rom_start)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
 #else
 
+<<<<<<< HEAD
 extern void compaq_nvram_init	(void __iomem *rom_start);
 extern int compaq_nvram_load	(void __iomem *rom_start, struct controller *ctrl);
 extern int compaq_nvram_store	(void __iomem *rom_start);
+=======
+void compaq_nvram_init(void __iomem *rom_start);
+int compaq_nvram_load(void __iomem *rom_start, struct controller *ctrl);
+int compaq_nvram_store(void __iomem *rom_start);
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

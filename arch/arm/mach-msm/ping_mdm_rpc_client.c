@@ -15,6 +15,14 @@
  * SMD RPC PING MODEM Driver
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/err.h>
@@ -23,6 +31,14 @@
 #include <linux/debugfs.h>
 #include <linux/uaccess.h>
 #include <linux/kfifo.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_rpcrouter.h>
 
 #define PING_TEST_BASE 0x31

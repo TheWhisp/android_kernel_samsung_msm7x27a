@@ -26,8 +26,24 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/dmi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dmi.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "xhci.h"
+=======
+#include <linux/dmi.h>
+#include <linux/dma-mapping.h>
+
+#include "xhci.h"
+#include "xhci-trace.h"
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_AUTHOR "Sarah Sharp"
 #define DRIVER_DESC "'eXtensible' Host Controller (xHC) Driver"
@@ -37,9 +53,19 @@ static int link_quirk;
 module_param(link_quirk, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(link_quirk, "Don't clear the chain bit on a link TRB");
 
+<<<<<<< HEAD
 /* TODO: copied from ehci-hcd.c - can this be refactored? */
 /*
  * handshake - spin reading hc until handshake completes or fails
+=======
+static unsigned int quirks;
+module_param(quirks, uint, S_IRUGO);
+MODULE_PARM_DESC(quirks, "Bit flags for quirks to be enabled as default");
+
+/* TODO: copied from ehci-hcd.c - can this be refactored? */
+/*
+ * xhci_handshake - spin reading hc until handshake completes or fails
+>>>>>>> refs/remotes/origin/master
  * @ptr: address of hc register to be read
  * @mask: bits to look at in result of read
  * @done: value of those bits when handshake succeeds
@@ -51,13 +77,25 @@ MODULE_PARM_DESC(link_quirk, "Don't clear the chain bit on a link TRB");
  * handshake done).  There are two failure modes:  "usec" have passed (major
  * hardware flakeout), or the register reads as all-ones (hardware removed).
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int handshake(struct xhci_hcd *xhci, void __iomem *ptr,
+=======
+int xhci_handshake(struct xhci_hcd *xhci, void __iomem *ptr,
+>>>>>>> refs/remotes/origin/master
+=======
+int handshake(struct xhci_hcd *xhci, void __iomem *ptr,
+>>>>>>> refs/remotes/origin/cm-11.0
 		      u32 mask, u32 done, int usec)
 {
 	u32	result;
 
 	do {
+<<<<<<< HEAD
 		result = xhci_readl(xhci, ptr);
+=======
+		result = readl(ptr);
+>>>>>>> refs/remotes/origin/master
 		if (result == ~(u32)0)		/* card removed */
 			return -ENODEV;
 		result &= mask;
@@ -79,6 +117,7 @@ void xhci_quiesce(struct xhci_hcd *xhci)
 	u32 mask;
 
 	mask = ~(XHCI_IRQS);
+<<<<<<< HEAD
 	halted = xhci_readl(xhci, &xhci->op_regs->status) & STS_HALT;
 	if (!halted)
 		mask &= ~CMD_RUN;
@@ -86,6 +125,15 @@ void xhci_quiesce(struct xhci_hcd *xhci)
 	cmd = xhci_readl(xhci, &xhci->op_regs->command);
 	cmd &= mask;
 	xhci_writel(xhci, cmd, &xhci->op_regs->command);
+=======
+	halted = readl(&xhci->op_regs->status) & STS_HALT;
+	if (!halted)
+		mask &= ~CMD_RUN;
+
+	cmd = readl(&xhci->op_regs->command);
+	cmd &= mask;
+	writel(cmd, &xhci->op_regs->command);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -99,15 +147,37 @@ void xhci_quiesce(struct xhci_hcd *xhci)
 int xhci_halt(struct xhci_hcd *xhci)
 {
 	int ret;
+<<<<<<< HEAD
 	xhci_dbg(xhci, "// Halt the HC\n");
 	xhci_quiesce(xhci);
 
 	ret = handshake(xhci, &xhci->op_regs->status,
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "// Halt the HC");
+	xhci_quiesce(xhci);
+
+	ret = xhci_handshake(xhci, &xhci->op_regs->status,
+>>>>>>> refs/remotes/origin/master
 			STS_HALT, STS_HALT, XHCI_MAX_HALT_USEC);
 	if (!ret) {
 		xhci->xhc_state |= XHCI_STATE_HALTED;
 		xhci->cmd_ring_state = CMD_RING_STATE_STOPPED;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
+=======
+	} else
+		xhci_warn(xhci, "Host not halted after %u microseconds.\n",
+				XHCI_MAX_HALT_USEC);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	} else
+		xhci_warn(xhci, "Host not halted after %u microseconds.\n",
+				XHCI_MAX_HALT_USEC);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -119,17 +189,29 @@ static int xhci_start(struct xhci_hcd *xhci)
 	u32 temp;
 	int ret;
 
+<<<<<<< HEAD
 	temp = xhci_readl(xhci, &xhci->op_regs->command);
 	temp |= (CMD_RUN);
 	xhci_dbg(xhci, "// Turn on HC, cmd = 0x%x.\n",
 			temp);
 	xhci_writel(xhci, temp, &xhci->op_regs->command);
+=======
+	temp = readl(&xhci->op_regs->command);
+	temp |= (CMD_RUN);
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "// Turn on HC, cmd = 0x%x.",
+			temp);
+	writel(temp, &xhci->op_regs->command);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Wait for the HCHalted Status bit to be 0 to indicate the host is
 	 * running.
 	 */
+<<<<<<< HEAD
 	ret = handshake(xhci, &xhci->op_regs->status,
+=======
+	ret = xhci_handshake(xhci, &xhci->op_regs->status,
+>>>>>>> refs/remotes/origin/master
 			STS_HALT, 0, XHCI_MAX_HALT_USEC);
 	if (ret == -ETIMEDOUT)
 		xhci_err(xhci, "Host took too long to start, "
@@ -151,29 +233,55 @@ int xhci_reset(struct xhci_hcd *xhci)
 {
 	u32 command;
 	u32 state;
+<<<<<<< HEAD
 	int ret;
 
 	state = xhci_readl(xhci, &xhci->op_regs->status);
+=======
+	int ret, i;
+
+	state = readl(&xhci->op_regs->status);
+>>>>>>> refs/remotes/origin/master
 	if ((state & STS_HALT) == 0) {
 		xhci_warn(xhci, "Host controller not halted, aborting reset.\n");
 		return 0;
 	}
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "// Reset the HC\n");
 	command = xhci_readl(xhci, &xhci->op_regs->command);
 	command |= CMD_RESET;
 	xhci_writel(xhci, command, &xhci->op_regs->command);
 
 	ret = handshake(xhci, &xhci->op_regs->command,
+<<<<<<< HEAD
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "// Reset the HC");
+	command = readl(&xhci->op_regs->command);
+	command |= CMD_RESET;
+	writel(command, &xhci->op_regs->command);
+
+	ret = xhci_handshake(xhci, &xhci->op_regs->command,
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			CMD_RESET, 0, 10 * 1000 * 1000);
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "Wait for controller to be ready for doorbell rings\n");
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			 "Wait for controller to be ready for doorbell rings");
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * xHCI cannot write to any doorbells or operational registers other
 	 * than status until the "Controller Not Ready" flag is cleared.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return handshake(xhci, &xhci->op_regs->status,
 			 STS_CNR, 0, 10 * 1000 * 1000);
 }
@@ -200,6 +308,42 @@ static void xhci_free_irq(struct xhci_hcd *xhci)
 		free_irq(pdev->irq, xhci_to_hcd(xhci));
 
 	return;
+=======
+	ret = handshake(xhci, &xhci->op_regs->status,
+=======
+	ret = xhci_handshake(xhci, &xhci->op_regs->status,
+>>>>>>> refs/remotes/origin/master
+=======
+	ret = handshake(xhci, &xhci->op_regs->status,
+>>>>>>> refs/remotes/origin/cm-11.0
+			STS_CNR, 0, 10 * 1000 * 1000);
+
+	for (i = 0; i < 2; ++i) {
+		xhci->bus_state[i].port_c_suspend = 0;
+		xhci->bus_state[i].suspended_ports = 0;
+		xhci->bus_state[i].resuming_ports = 0;
+	}
+
+	return ret;
+}
+
+#ifdef CONFIG_PCI
+static int xhci_free_msi(struct xhci_hcd *xhci)
+{
+	int i;
+
+	if (!xhci->msix_entries)
+		return -EINVAL;
+
+	for (i = 0; i < xhci->msix_count; i++)
+		if (xhci->msix_entries[i].vector)
+			free_irq(xhci->msix_entries[i].vector,
+					xhci_to_hcd(xhci));
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -212,14 +356,35 @@ static int xhci_setup_msi(struct xhci_hcd *xhci)
 
 	ret = pci_enable_msi(pdev);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		xhci_err(xhci, "failed to allocate MSI entry\n");
+=======
+		xhci_dbg(xhci, "failed to allocate MSI entry\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret;
 	}
 
 	ret = request_irq(pdev->irq, (irq_handler_t)xhci_msi_irq,
 				0, "xhci_hcd", xhci_to_hcd(xhci));
 	if (ret) {
+<<<<<<< HEAD
 		xhci_err(xhci, "disable MSI interrupt\n");
+=======
+		xhci_dbg(xhci, "disable MSI interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+				"failed to allocate MSI entry");
+		return ret;
+	}
+
+	ret = request_irq(pdev->irq, xhci_msi_irq,
+				0, "xhci_hcd", xhci_to_hcd(xhci));
+	if (ret) {
+		xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+				"disable MSI interrupt");
+>>>>>>> refs/remotes/origin/master
 		pci_disable_msi(pdev);
 	}
 
@@ -227,6 +392,37 @@ static int xhci_setup_msi(struct xhci_hcd *xhci)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Free IRQs
+ * free all IRQs request
+ */
+static void xhci_free_irq(struct xhci_hcd *xhci)
+{
+	struct pci_dev *pdev = to_pci_dev(xhci_to_hcd(xhci)->self.controller);
+	int ret;
+
+	/* return if using legacy interrupt */
+	if (xhci_to_hcd(xhci)->irq > 0)
+		return;
+
+	ret = xhci_free_msi(xhci);
+	if (!ret)
+		return;
+	if (pdev->irq > 0)
+		free_irq(pdev->irq, xhci_to_hcd(xhci));
+
+	return;
+}
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Set up MSI-X
  */
 static int xhci_setup_msix(struct xhci_hcd *xhci)
@@ -260,13 +456,26 @@ static int xhci_setup_msix(struct xhci_hcd *xhci)
 
 	ret = pci_enable_msix(pdev, xhci->msix_entries, xhci->msix_count);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		xhci_err(xhci, "Failed to enable MSI-X\n");
+=======
+		xhci_dbg(xhci, "Failed to enable MSI-X\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+				"Failed to enable MSI-X");
+>>>>>>> refs/remotes/origin/master
 		goto free_entries;
 	}
 
 	for (i = 0; i < xhci->msix_count; i++) {
 		ret = request_irq(xhci->msix_entries[i].vector,
+<<<<<<< HEAD
 				(irq_handler_t)xhci_msi_irq,
+=======
+				xhci_msi_irq,
+>>>>>>> refs/remotes/origin/master
 				0, "xhci_hcd", xhci_to_hcd(xhci));
 		if (ret)
 			goto disable_msix;
@@ -276,7 +485,15 @@ static int xhci_setup_msix(struct xhci_hcd *xhci)
 	return ret;
 
 disable_msix:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	xhci_err(xhci, "disable MSI-X interrupt\n");
+=======
+	xhci_dbg(xhci, "disable MSI-X interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "disable MSI-X interrupt");
+>>>>>>> refs/remotes/origin/master
 	xhci_free_irq(xhci);
 	pci_disable_msix(pdev);
 free_entries:
@@ -291,6 +508,12 @@ static void xhci_cleanup_msix(struct xhci_hcd *xhci)
 	struct usb_hcd *hcd = xhci_to_hcd(xhci);
 	struct pci_dev *pdev = to_pci_dev(hcd->self.controller);
 
+<<<<<<< HEAD
+=======
+	if (xhci->quirks & XHCI_PLAT)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	xhci_free_irq(xhci);
 
 	if (xhci->msix_entries) {
@@ -305,6 +528,308 @@ static void xhci_cleanup_msix(struct xhci_hcd *xhci)
 	return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+static void __maybe_unused xhci_msix_sync_irqs(struct xhci_hcd *xhci)
+{
+	int i;
+
+	if (xhci->msix_entries) {
+		for (i = 0; i < xhci->msix_count; i++)
+			synchronize_irq(xhci->msix_entries[i].vector);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int xhci_try_enable_msi(struct usb_hcd *hcd)
+{
+	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+	struct pci_dev  *pdev;
+	int ret;
+
+	/* The xhci platform device has set up IRQs through usb_add_hcd. */
+	if (xhci->quirks & XHCI_PLAT)
+		return 0;
+
+	pdev = to_pci_dev(xhci_to_hcd(xhci)->self.controller);
+	/*
+	 * Some Fresco Logic host controllers advertise MSI, but fail to
+	 * generate interrupts.  Don't even try to enable MSI.
+	 */
+	if (xhci->quirks & XHCI_BROKEN_MSI)
+		goto legacy_irq;
+
+	/* unregister the legacy interrupt */
+	if (hcd->irq)
+		free_irq(hcd->irq, hcd);
+	hcd->irq = 0;
+
+	ret = xhci_setup_msix(xhci);
+	if (ret)
+		/* fall back to msi*/
+		ret = xhci_setup_msi(xhci);
+
+	if (!ret)
+		/* hcd->irq is 0, we have MSI */
+		return 0;
+
+	if (!pdev->irq) {
+		xhci_err(xhci, "No msi-x/msi found and no IRQ in BIOS\n");
+		return -EINVAL;
+	}
+
+ legacy_irq:
+	/* fall back to legacy interrupt*/
+	ret = request_irq(pdev->irq, &usb_hcd_irq, IRQF_SHARED,
+			hcd->irq_descr, hcd);
+	if (ret) {
+		xhci_err(xhci, "request interrupt %d failed\n",
+				pdev->irq);
+		return ret;
+	}
+	hcd->irq = pdev->irq;
+	return 0;
+}
+
+#else
+
+static int xhci_try_enable_msi(struct usb_hcd *hcd)
+{
+	return 0;
+}
+
+static void xhci_cleanup_msix(struct xhci_hcd *xhci)
+{
+}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+#endif /* CONFIG_PCI */
+=======
+static void xhci_msix_sync_irqs(struct xhci_hcd *xhci)
+=======
+#endif /* CONFIG_PCI */
+
+static void compliance_mode_recovery(unsigned long arg)
+{
+	struct xhci_hcd *xhci;
+	struct usb_hcd *hcd;
+	u32 temp;
+	int i;
+
+	xhci = (struct xhci_hcd *)arg;
+
+	for (i = 0; i < xhci->num_usb3_ports; i++) {
+		temp = xhci_readl(xhci, xhci->usb3_ports[i]);
+		if ((temp & PORT_PLS_MASK) == USB_SS_PORT_LS_COMP_MOD) {
+			/*
+			 * Compliance Mode Detected. Letting USB Core
+			 * handle the Warm Reset
+			 */
+			xhci_dbg(xhci, "Compliance Mode Detected->Port %d!\n",
+					i + 1);
+			xhci_dbg(xhci, "Attempting Recovery routine!\n");
+			hcd = xhci->shared_hcd;
+
+			if (hcd->state == HC_STATE_SUSPENDED)
+				usb_hcd_resume_root_hub(hcd);
+
+			usb_hcd_poll_rh_status(hcd);
+		}
+	}
+
+	if (xhci->port_status_u0 != ((1 << xhci->num_usb3_ports)-1))
+		mod_timer(&xhci->comp_mode_recovery_timer,
+			jiffies + msecs_to_jiffies(COMP_MODE_RCVRY_MSECS));
+}
+
+/*
+ * Quirk to work around issue generated by the SN65LVPE502CP USB3.0 re-driver
+ * that causes ports behind that hardware to enter compliance mode sometimes.
+ * The quirk creates a timer that polls every 2 seconds the link state of
+ * each host controller's port and recovers it by issuing a Warm reset
+ * if Compliance mode is detected, otherwise the port will become "dead" (no
+ * device connections or disconnections will be detected anymore). Becasue no
+ * status event is generated when entering compliance mode (per xhci spec),
+ * this quirk is needed on systems that have the failing hardware installed.
+ */
+static void compliance_mode_recovery_timer_init(struct xhci_hcd *xhci)
+>>>>>>> refs/remotes/origin/cm-11.0
+{
+	xhci->port_status_u0 = 0;
+	init_timer(&xhci->comp_mode_recovery_timer);
+
+	xhci->comp_mode_recovery_timer.data = (unsigned long) xhci;
+	xhci->comp_mode_recovery_timer.function = compliance_mode_recovery;
+	xhci->comp_mode_recovery_timer.expires = jiffies +
+			msecs_to_jiffies(COMP_MODE_RCVRY_MSECS);
+
+	set_timer_slack(&xhci->comp_mode_recovery_timer,
+			msecs_to_jiffies(COMP_MODE_RCVRY_MSECS));
+	add_timer(&xhci->comp_mode_recovery_timer);
+	xhci_dbg(xhci, "Compliance Mode Recovery Timer Initialized.\n");
+}
+
+/*
+ * This function identifies the systems that have installed the SN65LVPE502CP
+ * USB3.0 re-driver and that need the Compliance Mode Quirk.
+ * Systems:
+ * Vendor: Hewlett-Packard -> System Models: Z420, Z620 and Z820
+ */
+static bool compliance_mode_recovery_timer_quirk_check(void)
+{
+	const char *dmi_product_name, *dmi_sys_vendor;
+
+	dmi_product_name = dmi_get_system_info(DMI_PRODUCT_NAME);
+	dmi_sys_vendor = dmi_get_system_info(DMI_SYS_VENDOR);
+	if (!dmi_product_name || !dmi_sys_vendor)
+		return false;
+
+	if (!(strstr(dmi_sys_vendor, "Hewlett-Packard")))
+		return false;
+
+	if (strstr(dmi_product_name, "Z420") ||
+			strstr(dmi_product_name, "Z620") ||
+			strstr(dmi_product_name, "Z820") ||
+			strstr(dmi_product_name, "Z1 Workstation"))
+		return true;
+
+	return false;
+}
+
+static int xhci_all_ports_seen_u0(struct xhci_hcd *xhci)
+{
+	return (xhci->port_status_u0 == ((1 << xhci->num_usb3_ports)-1));
+}
+
+<<<<<<< HEAD
+#endif
+>>>>>>> refs/remotes/origin/master
+
+static void compliance_mode_recovery(unsigned long arg)
+{
+	struct xhci_hcd *xhci;
+	struct usb_hcd *hcd;
+	u32 temp;
+	int i;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	xhci = (struct xhci_hcd *)arg;
+
+	for (i = 0; i < xhci->num_usb3_ports; i++) {
+<<<<<<< HEAD
+		temp = xhci_readl(xhci, xhci->usb3_ports[i]);
+=======
+		temp = readl(xhci->usb3_ports[i]);
+>>>>>>> refs/remotes/origin/master
+		if ((temp & PORT_PLS_MASK) == USB_SS_PORT_LS_COMP_MOD) {
+			/*
+			 * Compliance Mode Detected. Letting USB Core
+			 * handle the Warm Reset
+			 */
+<<<<<<< HEAD
+			xhci_dbg(xhci, "Compliance Mode Detected->Port %d!\n",
+					i + 1);
+			xhci_dbg(xhci, "Attempting Recovery routine!\n");
+=======
+			xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+					"Compliance mode detected->port %d",
+					i + 1);
+			xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+					"Attempting compliance mode recovery");
+>>>>>>> refs/remotes/origin/master
+			hcd = xhci->shared_hcd;
+
+			if (hcd->state == HC_STATE_SUSPENDED)
+				usb_hcd_resume_root_hub(hcd);
+
+			usb_hcd_poll_rh_status(hcd);
+		}
+	}
+
+	if (xhci->port_status_u0 != ((1 << xhci->num_usb3_ports)-1))
+		mod_timer(&xhci->comp_mode_recovery_timer,
+			jiffies + msecs_to_jiffies(COMP_MODE_RCVRY_MSECS));
+}
+
+/*
+ * Quirk to work around issue generated by the SN65LVPE502CP USB3.0 re-driver
+ * that causes ports behind that hardware to enter compliance mode sometimes.
+ * The quirk creates a timer that polls every 2 seconds the link state of
+ * each host controller's port and recovers it by issuing a Warm reset
+ * if Compliance mode is detected, otherwise the port will become "dead" (no
+ * device connections or disconnections will be detected anymore). Becasue no
+ * status event is generated when entering compliance mode (per xhci spec),
+ * this quirk is needed on systems that have the failing hardware installed.
+ */
+static void compliance_mode_recovery_timer_init(struct xhci_hcd *xhci)
+{
+	xhci->port_status_u0 = 0;
+	init_timer(&xhci->comp_mode_recovery_timer);
+
+	xhci->comp_mode_recovery_timer.data = (unsigned long) xhci;
+	xhci->comp_mode_recovery_timer.function = compliance_mode_recovery;
+	xhci->comp_mode_recovery_timer.expires = jiffies +
+			msecs_to_jiffies(COMP_MODE_RCVRY_MSECS);
+
+	set_timer_slack(&xhci->comp_mode_recovery_timer,
+			msecs_to_jiffies(COMP_MODE_RCVRY_MSECS));
+	add_timer(&xhci->comp_mode_recovery_timer);
+<<<<<<< HEAD
+	xhci_dbg(xhci, "Compliance Mode Recovery Timer Initialized.\n");
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+			"Compliance mode recovery timer initialized");
+>>>>>>> refs/remotes/origin/master
+}
+
+/*
+ * This function identifies the systems that have installed the SN65LVPE502CP
+ * USB3.0 re-driver and that need the Compliance Mode Quirk.
+ * Systems:
+ * Vendor: Hewlett-Packard -> System Models: Z420, Z620 and Z820
+ */
+<<<<<<< HEAD
+static bool compliance_mode_recovery_timer_quirk_check(void)
+=======
+bool xhci_compliance_mode_recovery_timer_quirk_check(void)
+>>>>>>> refs/remotes/origin/master
+{
+	const char *dmi_product_name, *dmi_sys_vendor;
+
+	dmi_product_name = dmi_get_system_info(DMI_PRODUCT_NAME);
+	dmi_sys_vendor = dmi_get_system_info(DMI_SYS_VENDOR);
+	if (!dmi_product_name || !dmi_sys_vendor)
+		return false;
+
+	if (!(strstr(dmi_sys_vendor, "Hewlett-Packard")))
+		return false;
+
+	if (strstr(dmi_product_name, "Z420") ||
+			strstr(dmi_product_name, "Z620") ||
+			strstr(dmi_product_name, "Z820") ||
+			strstr(dmi_product_name, "Z1 Workstation"))
+		return true;
+
+	return false;
+}
+
+static int xhci_all_ports_seen_u0(struct xhci_hcd *xhci)
+{
+	return (xhci->port_status_u0 == ((1 << xhci->num_usb3_ports)-1));
+}
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialize memory for HCD and xHC (one-time init).
  *
@@ -317,9 +842,14 @@ int xhci_init(struct usb_hcd *hcd)
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
 	int retval = 0;
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "xhci_init\n");
 	spin_lock_init(&xhci->lock);
+<<<<<<< HEAD
 	if (link_quirk) {
+=======
+	if (xhci->hci_version == 0x95 && link_quirk) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		xhci_dbg(xhci, "QUIRK: Not clearing Link TRB chain bits.\n");
 		xhci->quirks |= XHCI_LINK_TRB_QUIRK;
 	} else {
@@ -328,12 +858,50 @@ int xhci_init(struct usb_hcd *hcd)
 	retval = xhci_mem_init(xhci, GFP_KERNEL);
 	xhci_dbg(xhci, "Finished xhci_init\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* Initializing Compliance Mode Recovery Data If Needed */
+	if (compliance_mode_recovery_timer_quirk_check()) {
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "xhci_init");
+	spin_lock_init(&xhci->lock);
+	if (xhci->hci_version == 0x95 && link_quirk) {
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"QUIRK: Not clearing Link TRB chain bits.");
+		xhci->quirks |= XHCI_LINK_TRB_QUIRK;
+	} else {
+		xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+				"xHCI doesn't need link TRB QUIRK");
+	}
+	retval = xhci_mem_init(xhci, GFP_KERNEL);
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Finished xhci_init");
+
+	/* Initializing Compliance Mode Recovery Data If Needed */
+	if (xhci_compliance_mode_recovery_timer_quirk_check()) {
+>>>>>>> refs/remotes/origin/master
+=======
+	/* Initializing Compliance Mode Recovery Data If Needed */
+	if (compliance_mode_recovery_timer_quirk_check()) {
+>>>>>>> refs/remotes/origin/cm-11.0
+		xhci->quirks |= XHCI_COMP_MODE_QUIRK;
+		compliance_mode_recovery_timer_init(xhci);
+	}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return retval;
 }
 
 /*-------------------------------------------------------------------------*/
 
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_XHCI_HCD_DEBUGGING
 static void xhci_event_ring_work(unsigned long arg)
 {
@@ -385,6 +953,8 @@ static void xhci_event_ring_work(unsigned long arg)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int xhci_run_finished(struct xhci_hcd *xhci)
 {
 	if (xhci_start(xhci)) {
@@ -397,7 +967,12 @@ static int xhci_run_finished(struct xhci_hcd *xhci)
 	if (xhci->quirks & XHCI_NEC_HOST)
 		xhci_ring_cmd_db(xhci);
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "Finished xhci_run for USB3 roothub\n");
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			"Finished xhci_run for USB3 roothub");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -417,9 +992,19 @@ int xhci_run(struct usb_hcd *hcd)
 {
 	u32 temp;
 	u64 temp_64;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 ret;
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
 	struct pci_dev  *pdev = to_pci_dev(xhci_to_hcd(xhci)->self.controller);
+=======
+	int ret;
+	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+>>>>>>> refs/remotes/origin/master
 
 	/* Start the xHCI host controller running only after the USB 2.0 roothub
 	 * is setup.
@@ -429,7 +1014,9 @@ int xhci_run(struct usb_hcd *hcd)
 	if (!usb_hcd_is_primary_hcd(hcd))
 		return xhci_run_finished(xhci);
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "xhci_run\n");
+<<<<<<< HEAD
 	/* unregister the legacy interrupt */
 	if (hcd->irq)
 		free_irq(hcd->irq, hcd);
@@ -463,6 +1050,30 @@ legacy_irq:
 		}
 		hcd->irq = pdev->irq;
 	}
+=======
+
+	xhci_dbg(xhci, "Calling HCD init\n");
+	/* Initialize HCD and host controller data structures. */
+	ret = xhci_init(hcd);
+	if (ret)
+		return ret;
+	xhci_dbg(xhci, "Called HCD init\n");
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "xhci_run");
+>>>>>>> refs/remotes/origin/master
+
+	xhci_dbg(xhci, "Calling HCD init\n");
+	/* Initialize HCD and host controller data structures. */
+	ret = xhci_init(hcd);
+	if (ret)
+		return ret;
+	xhci_dbg(xhci, "Called HCD init\n");
+
+	ret = xhci_try_enable_msi(hcd);
+	if (ret)
+		return ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_USB_XHCI_HCD_DEBUGGING
 	init_timer(&xhci->event_ring_timer);
@@ -474,6 +1085,8 @@ legacy_irq:
 	xhci_dbg(xhci, "Setting event ring polling timer\n");
 	add_timer(&xhci->event_ring_timer);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	xhci_dbg(xhci, "Command ring memory map follows:\n");
 	xhci_debug_ring(xhci, xhci->cmd_ring);
@@ -485,6 +1098,7 @@ legacy_irq:
 	xhci_dbg(xhci, "Event ring:\n");
 	xhci_debug_ring(xhci, xhci->event_ring);
 	xhci_dbg_ring_ptrs(xhci, xhci->event_ring);
+<<<<<<< HEAD
 	temp_64 = xhci_read_64(xhci, &xhci->ir_set->erst_dequeue);
 	temp_64 &= ~ERST_PTR_MASK;
 	xhci_dbg(xhci, "ERST deq = 64'h%0lx\n", (long unsigned int) temp_64);
@@ -507,13 +1121,44 @@ legacy_irq:
 			xhci->ir_set, (unsigned int) ER_IRQ_ENABLE(temp));
 	xhci_writel(xhci, ER_IRQ_ENABLE(temp),
 			&xhci->ir_set->irq_pending);
+=======
+	temp_64 = readq(&xhci->ir_set->erst_dequeue);
+	temp_64 &= ~ERST_PTR_MASK;
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			"ERST deq = 64'h%0lx", (long unsigned int) temp_64);
+
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			"// Set the interrupt modulation register");
+	temp = readl(&xhci->ir_set->irq_control);
+	temp &= ~ER_IRQ_INTERVAL_MASK;
+	temp |= (u32) 160;
+	writel(temp, &xhci->ir_set->irq_control);
+
+	/* Set the HCD state before we enable the irqs */
+	temp = readl(&xhci->op_regs->command);
+	temp |= (CMD_EIE);
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			"// Enable interrupts, cmd = 0x%x.", temp);
+	writel(temp, &xhci->op_regs->command);
+
+	temp = readl(&xhci->ir_set->irq_pending);
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			"// Enabling event ring interrupter %p by writing 0x%x to irq_pending",
+			xhci->ir_set, (unsigned int) ER_IRQ_ENABLE(temp));
+	writel(ER_IRQ_ENABLE(temp), &xhci->ir_set->irq_pending);
+>>>>>>> refs/remotes/origin/master
 	xhci_print_ir_set(xhci, 0);
 
 	if (xhci->quirks & XHCI_NEC_HOST)
 		xhci_queue_vendor_command(xhci, 0, 0, 0,
 				TRB_TYPE(TRB_NEC_GET_FW));
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "Finished xhci_run for USB2 roothub\n");
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			"Finished xhci_run for USB2 roothub");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -561,12 +1206,27 @@ void xhci_stop(struct usb_hcd *hcd)
 
 	xhci_cleanup_msix(xhci);
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_XHCI_HCD_DEBUGGING
 	/* Tell the event ring poll function not to reschedule */
 	xhci->zombie = 1;
 	del_timer_sync(&xhci->event_ring_timer);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* Deleting Compliance Mode Recovery Timer */
+	if ((xhci->quirks & XHCI_COMP_MODE_QUIRK) &&
+			(!(xhci_all_ports_seen_u0(xhci))))
+		del_timer_sync(&xhci->comp_mode_recovery_timer);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (xhci->quirks & XHCI_AMD_PLL_FIX)
 		usb_amd_dev_put();
 
@@ -582,6 +1242,33 @@ void xhci_stop(struct usb_hcd *hcd)
 	xhci_mem_cleanup(xhci);
 	xhci_dbg(xhci, "xhci_stop completed - status = %x\n",
 		    xhci_readl(xhci, &xhci->op_regs->status));
+=======
+	/* Deleting Compliance Mode Recovery Timer */
+	if ((xhci->quirks & XHCI_COMP_MODE_QUIRK) &&
+			(!(xhci_all_ports_seen_u0(xhci)))) {
+		del_timer_sync(&xhci->comp_mode_recovery_timer);
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"%s: compliance mode recovery timer deleted",
+				__func__);
+	}
+
+	if (xhci->quirks & XHCI_AMD_PLL_FIX)
+		usb_amd_dev_put();
+
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			"// Disabling event ring interrupts");
+	temp = readl(&xhci->op_regs->status);
+	writel(temp & ~STS_EINT, &xhci->op_regs->status);
+	temp = readl(&xhci->ir_set->irq_pending);
+	writel(ER_IRQ_DISABLE(temp), &xhci->ir_set->irq_pending);
+	xhci_print_ir_set(xhci, 0);
+
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "cleaning up memory");
+	xhci_mem_cleanup(xhci);
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			"xhci_stop completed - status = %x",
+			readl(&xhci->op_regs->status));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -602,15 +1289,48 @@ void xhci_shutdown(struct usb_hcd *hcd)
 
 	spin_lock_irq(&xhci->lock);
 	xhci_halt(xhci);
+<<<<<<< HEAD
+=======
+	/* Workaround for spurious wakeups at shutdown with HSW */
+	if (xhci->quirks & XHCI_SPURIOUS_WAKEUP)
+		xhci_reset(xhci);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&xhci->lock);
 
 	xhci_cleanup_msix(xhci);
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "xhci_shutdown completed - status = %x\n",
 		    xhci_readl(xhci, &xhci->op_regs->status));
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+#ifdef CONFIG_PCI
+static void xhci_msix_sync_irqs(struct xhci_hcd *xhci)
+{
+	int i;
+
+	if (xhci->msix_entries) {
+		for (i = 0; i < xhci->msix_count; i++)
+			synchronize_irq(xhci->msix_entries[i].vector);
+	}
+}
+#else
+static void xhci_msix_sync_irqs(struct xhci_hcd *xhci)
+{
+}
+#endif /* CONFIG_PCI */
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void xhci_save_registers(struct xhci_hcd *xhci)
 {
 	xhci->s3.command = xhci_readl(xhci, &xhci->op_regs->command);
@@ -622,10 +1342,34 @@ static void xhci_save_registers(struct xhci_hcd *xhci)
 	xhci->s3.erst_dequeue = xhci_read_64(xhci, &xhci->ir_set->erst_dequeue);
 	xhci->s3.irq_pending = xhci_readl(xhci, &xhci->ir_set->irq_pending);
 	xhci->s3.irq_control = xhci_readl(xhci, &xhci->ir_set->irq_control);
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			"xhci_shutdown completed - status = %x",
+			readl(&xhci->op_regs->status));
+
+	/* Yet another workaround for spurious wakeups at shutdown with HSW */
+	if (xhci->quirks & XHCI_SPURIOUS_WAKEUP)
+		pci_set_power_state(to_pci_dev(hcd->self.controller), PCI_D3hot);
+}
+
+#ifdef CONFIG_PM
+static void xhci_save_registers(struct xhci_hcd *xhci)
+{
+	xhci->s3.command = readl(&xhci->op_regs->command);
+	xhci->s3.dev_nt = readl(&xhci->op_regs->dev_notification);
+	xhci->s3.dcbaa_ptr = readq(&xhci->op_regs->dcbaa_ptr);
+	xhci->s3.config_reg = readl(&xhci->op_regs->config_reg);
+	xhci->s3.erst_size = readl(&xhci->ir_set->erst_size);
+	xhci->s3.erst_base = readq(&xhci->ir_set->erst_base);
+	xhci->s3.erst_dequeue = readq(&xhci->ir_set->erst_dequeue);
+	xhci->s3.irq_pending = readl(&xhci->ir_set->irq_pending);
+	xhci->s3.irq_control = readl(&xhci->ir_set->irq_control);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void xhci_restore_registers(struct xhci_hcd *xhci)
 {
+<<<<<<< HEAD
 	xhci_writel(xhci, xhci->s3.command, &xhci->op_regs->command);
 	xhci_writel(xhci, xhci->s3.dev_nt, &xhci->op_regs->dev_notification);
 	xhci_write_64(xhci, xhci->s3.dcbaa_ptr, &xhci->op_regs->dcbaa_ptr);
@@ -635,6 +1379,17 @@ static void xhci_restore_registers(struct xhci_hcd *xhci)
 	xhci_write_64(xhci, xhci->s3.erst_dequeue, &xhci->ir_set->erst_dequeue);
 	xhci_writel(xhci, xhci->s3.irq_pending, &xhci->ir_set->irq_pending);
 	xhci_writel(xhci, xhci->s3.irq_control, &xhci->ir_set->irq_control);
+=======
+	writel(xhci->s3.command, &xhci->op_regs->command);
+	writel(xhci->s3.dev_nt, &xhci->op_regs->dev_notification);
+	writeq(xhci->s3.dcbaa_ptr, &xhci->op_regs->dcbaa_ptr);
+	writel(xhci->s3.config_reg, &xhci->op_regs->config_reg);
+	writel(xhci->s3.erst_size, &xhci->ir_set->erst_size);
+	writeq(xhci->s3.erst_base, &xhci->ir_set->erst_base);
+	writeq(xhci->s3.erst_dequeue, &xhci->ir_set->erst_dequeue);
+	writel(xhci->s3.irq_pending, &xhci->ir_set->irq_pending);
+	writel(xhci->s3.irq_control, &xhci->ir_set->irq_control);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void xhci_set_cmd_ring_deq(struct xhci_hcd *xhci)
@@ -642,15 +1397,26 @@ static void xhci_set_cmd_ring_deq(struct xhci_hcd *xhci)
 	u64	val_64;
 
 	/* step 2: initialize command ring buffer */
+<<<<<<< HEAD
 	val_64 = xhci_read_64(xhci, &xhci->op_regs->cmd_ring);
+=======
+	val_64 = readq(&xhci->op_regs->cmd_ring);
+>>>>>>> refs/remotes/origin/master
 	val_64 = (val_64 & (u64) CMD_RING_RSVD_BITS) |
 		(xhci_trb_virt_to_dma(xhci->cmd_ring->deq_seg,
 				      xhci->cmd_ring->dequeue) &
 		 (u64) ~CMD_RING_RSVD_BITS) |
 		xhci->cmd_ring->cycle_state;
+<<<<<<< HEAD
 	xhci_dbg(xhci, "// Setting command ring address to 0x%llx\n",
 			(long unsigned long) val_64);
 	xhci_write_64(xhci, val_64, &xhci->op_regs->cmd_ring);
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+			"// Setting command ring address to 0x%llx",
+			(long unsigned long) val_64);
+	writeq(val_64, &xhci->op_regs->cmd_ring);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -683,6 +1449,14 @@ static void xhci_clear_command_ring(struct xhci_hcd *xhci)
 	ring->enq_seg = ring->deq_seg;
 	ring->enqueue = ring->dequeue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ring->num_trbs_free = ring->num_segs * (TRBS_PER_SEGMENT - 1) - 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ring->num_trbs_free = ring->num_segs * (TRBS_PER_SEGMENT - 1) - 1;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Ring is now zeroed, so the HW should look for change of ownership
 	 * when the cycle bit is set to 1.
@@ -708,9 +1482,36 @@ static void xhci_clear_command_ring(struct xhci_hcd *xhci)
 int xhci_suspend(struct xhci_hcd *xhci)
 {
 	int			rc = 0;
+<<<<<<< HEAD
 	struct usb_hcd		*hcd = xhci_to_hcd(xhci);
 	u32			command;
+<<<<<<< HEAD
 	int			i;
+=======
+=======
+	unsigned int		delay = XHCI_MAX_HALT_USEC;
+	struct usb_hcd		*hcd = xhci_to_hcd(xhci);
+	u32			command;
+
+<<<<<<< HEAD
+	if (hcd->state != HC_STATE_SUSPENDED ||
+			xhci->shared_hcd->state != HC_STATE_SUSPENDED)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
+
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* Don't poll the roothubs on bus suspend. */
+	xhci_dbg(xhci, "%s: stopping port polling.\n", __func__);
+	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
+	del_timer_sync(&hcd->rh_timer);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_lock_irq(&xhci->lock);
 	clear_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
@@ -719,11 +1520,26 @@ int xhci_suspend(struct xhci_hcd *xhci)
 	/* skipped assuming that port suspend has done */
 
 	/* step 2: clear Run/Stop bit */
+<<<<<<< HEAD
 	command = xhci_readl(xhci, &xhci->op_regs->command);
 	command &= ~CMD_RUN;
 	xhci_writel(xhci, command, &xhci->op_regs->command);
 	if (handshake(xhci, &xhci->op_regs->status,
 		      STS_HALT, STS_HALT, XHCI_MAX_HALT_USEC)) {
+<<<<<<< HEAD
+=======
+	command = readl(&xhci->op_regs->command);
+	command &= ~CMD_RUN;
+	writel(command, &xhci->op_regs->command);
+
+	/* Some chips from Fresco Logic need an extraordinary delay */
+	delay *= (xhci->quirks & XHCI_SLOW_SUSPEND) ? 10 : 1;
+
+	if (xhci_handshake(xhci, &xhci->op_regs->status,
+		      STS_HALT, STS_HALT, delay)) {
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		xhci_warn(xhci, "WARN: xHC CMD_RUN timeout\n");
 		spin_unlock_irq(&xhci->lock);
 		return -ETIMEDOUT;
@@ -734,22 +1550,68 @@ int xhci_suspend(struct xhci_hcd *xhci)
 	xhci_save_registers(xhci);
 
 	/* step 4: set CSS flag */
+<<<<<<< HEAD
 	command = xhci_readl(xhci, &xhci->op_regs->command);
 	command |= CMD_CSS;
 	xhci_writel(xhci, command, &xhci->op_regs->command);
 	if (handshake(xhci, &xhci->op_regs->status, STS_SAVE, 0, 10 * 1000)) {
+<<<<<<< HEAD
+=======
+	command = readl(&xhci->op_regs->command);
+	command |= CMD_CSS;
+	writel(command, &xhci->op_regs->command);
+	if (xhci_handshake(xhci, &xhci->op_regs->status,
+				STS_SAVE, 0, 10 * 1000)) {
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		xhci_warn(xhci, "WARN: xHC save state timeout\n");
 		spin_unlock_irq(&xhci->lock);
 		return -ETIMEDOUT;
 	}
 	spin_unlock_irq(&xhci->lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* step 5: remove core well power */
 	/* synchronize irq when using MSI-X */
 	if (xhci->msix_entries) {
 		for (i = 0; i < xhci->msix_count; i++)
 			synchronize_irq(xhci->msix_entries[i].vector);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/*
+	 * Deleting Compliance Mode Recovery Timer because the xHCI Host
+	 * is about to be suspended.
+	 */
+	if ((xhci->quirks & XHCI_COMP_MODE_QUIRK) &&
+			(!(xhci_all_ports_seen_u0(xhci)))) {
+		del_timer_sync(&xhci->comp_mode_recovery_timer);
+<<<<<<< HEAD
+<<<<<<< HEAD
+		xhci_dbg(xhci, "Compliance Mode Recovery Timer Deleted!\n");
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"%s: compliance mode recovery timer deleted",
+				__func__);
+>>>>>>> refs/remotes/origin/master
+=======
+		xhci_dbg(xhci, "Compliance Mode Recovery Timer Deleted!\n");
+>>>>>>> refs/remotes/origin/cm-11.0
+	}
+
+	/* step 5: remove core well power */
+	/* synchronize irq when using MSI-X */
+	xhci_msix_sync_irqs(xhci);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -766,6 +1628,18 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 	struct usb_hcd		*hcd = xhci_to_hcd(xhci);
 	struct usb_hcd		*secondary_hcd;
 	int			retval = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool			comp_timer_running = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool			comp_timer_running = false;
+>>>>>>> refs/remotes/origin/master
+=======
+	bool			comp_timer_running = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Wait a bit if either of the roothubs need to settle from the
 	 * transition into bus suspend.
@@ -789,20 +1663,63 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 		xhci_set_cmd_ring_deq(xhci);
 		/* step 3: restore state and start state*/
 		/* step 3: set CRS flag */
+<<<<<<< HEAD
 		command = xhci_readl(xhci, &xhci->op_regs->command);
 		command |= CMD_CRS;
 		xhci_writel(xhci, command, &xhci->op_regs->command);
 		if (handshake(xhci, &xhci->op_regs->status,
+<<<<<<< HEAD
+=======
+		command = readl(&xhci->op_regs->command);
+		command |= CMD_CRS;
+		writel(command, &xhci->op_regs->command);
+		if (xhci_handshake(xhci, &xhci->op_regs->status,
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			      STS_RESTORE, 0, 10 * 1000)) {
 			xhci_warn(xhci, "WARN: xHC restore state timeout\n");
 			spin_unlock_irq(&xhci->lock);
 			return -ETIMEDOUT;
 		}
+<<<<<<< HEAD
 		temp = xhci_readl(xhci, &xhci->op_regs->status);
+=======
+		temp = readl(&xhci->op_regs->status);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* If restore operation fails, re-initialize the HC during resume */
 	if ((temp & STS_SRE) || hibernated) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+		if ((xhci->quirks & XHCI_COMP_MODE_QUIRK) &&
+				!(xhci_all_ports_seen_u0(xhci))) {
+			del_timer_sync(&xhci->comp_mode_recovery_timer);
+<<<<<<< HEAD
+<<<<<<< HEAD
+			xhci_dbg(xhci, "Compliance Mode Recovery Timer deleted!\n");
+		}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"Compliance Mode Recovery Timer deleted!");
+		}
+
+>>>>>>> refs/remotes/origin/master
+=======
+			xhci_dbg(xhci, "Compliance Mode Recovery Timer deleted!\n");
+		}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Let the USB core know _both_ roothubs lost power. */
 		usb_root_hub_lost_power(xhci->main_hcd->self.root_hub);
 		usb_root_hub_lost_power(xhci->shared_hcd->self.root_hub);
@@ -813,6 +1730,7 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 		spin_unlock_irq(&xhci->lock);
 		xhci_cleanup_msix(xhci);
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_XHCI_HCD_DEBUGGING
 		/* Tell the event ring poll function not to reschedule */
 		xhci->zombie = 1;
@@ -825,12 +1743,23 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 		temp = xhci_readl(xhci, &xhci->ir_set->irq_pending);
 		xhci_writel(xhci, ER_IRQ_DISABLE(temp),
 				&xhci->ir_set->irq_pending);
+=======
+		xhci_dbg(xhci, "// Disabling event ring interrupts\n");
+		temp = readl(&xhci->op_regs->status);
+		writel(temp & ~STS_EINT, &xhci->op_regs->status);
+		temp = readl(&xhci->ir_set->irq_pending);
+		writel(ER_IRQ_DISABLE(temp), &xhci->ir_set->irq_pending);
+>>>>>>> refs/remotes/origin/master
 		xhci_print_ir_set(xhci, 0);
 
 		xhci_dbg(xhci, "cleaning up memory\n");
 		xhci_mem_cleanup(xhci);
 		xhci_dbg(xhci, "xhci_stop completed - status = %x\n",
+<<<<<<< HEAD
 			    xhci_readl(xhci, &xhci->op_regs->status));
+=======
+			    readl(&xhci->op_regs->status));
+>>>>>>> refs/remotes/origin/master
 
 		/* USB core calls the PCI reinit and start functions twice:
 		 * first with the primary HCD, and then with the secondary HCD.
@@ -845,6 +1774,21 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 		retval = xhci_init(hcd->primary_hcd);
 		if (retval)
 			return retval;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		comp_timer_running = true;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		comp_timer_running = true;
+
+>>>>>>> refs/remotes/origin/master
+=======
+		comp_timer_running = true;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		xhci_dbg(xhci, "Start the primary HCD\n");
 		retval = xhci_run(hcd->primary_hcd);
 		if (!retval) {
@@ -857,10 +1801,17 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 	}
 
 	/* step 4: set Run/Stop bit */
+<<<<<<< HEAD
 	command = xhci_readl(xhci, &xhci->op_regs->command);
 	command |= CMD_RUN;
 	xhci_writel(xhci, command, &xhci->op_regs->command);
 	handshake(xhci, &xhci->op_regs->status, STS_HALT,
+=======
+	command = readl(&xhci->op_regs->command);
+	command |= CMD_RUN;
+	writel(command, &xhci->op_regs->command);
+	xhci_handshake(xhci, &xhci->op_regs->status, STS_HALT,
+>>>>>>> refs/remotes/origin/master
 		  0, 250 * 1000);
 
 	/* step 5: walk topology and initialize portsc,
@@ -879,6 +1830,36 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 		usb_hcd_resume_root_hub(hcd);
 		usb_hcd_resume_root_hub(xhci->shared_hcd);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	/*
+	 * If system is subject to the Quirk, Compliance Mode Timer needs to
+	 * be re-initialized Always after a system resume. Ports are subject
+	 * to suffer the Compliance Mode issue again. It doesn't matter if
+	 * ports have entered previously to U0 before system's suspension.
+	 */
+	if ((xhci->quirks & XHCI_COMP_MODE_QUIRK) && !comp_timer_running)
+		compliance_mode_recovery_timer_init(xhci);
+
+	/* Re-enable port polling. */
+	xhci_dbg(xhci, "%s: starting port polling.\n", __func__);
+	set_bit(HCD_FLAG_POLL_RH, &hcd->flags);
+	usb_hcd_poll_rh_status(hcd);
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return retval;
 }
 #endif	/* CONFIG_PM */
@@ -906,6 +1887,19 @@ unsigned int xhci_get_endpoint_index(struct usb_endpoint_descriptor *desc)
 	return index;
 }
 
+<<<<<<< HEAD
+=======
+/* The reverse operation to xhci_get_endpoint_index. Calculate the USB endpoint
+ * address from the XHCI endpoint index.
+ */
+unsigned int xhci_get_endpoint_address(unsigned int ep_index)
+{
+	unsigned int number = DIV_ROUND_UP(ep_index, 2);
+	unsigned int direction = ep_index % 2 ? USB_DIR_OUT : USB_DIR_IN;
+	return direction | number;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Find the flag for this endpoint (for use in the control context).  Use the
  * endpoint index to create a bitmask.  The slot context is bit 0, endpoint 0 is
  * bit 1, etc.
@@ -945,6 +1939,7 @@ static int xhci_check_args(struct usb_hcd *hcd, struct usb_device *udev,
 	struct xhci_virt_device	*virt_dev;
 
 	if (!hcd || (check_ep && !ep) || !udev) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG "xHCI %s called with invalid args\n",
 				func);
 		return -EINVAL;
@@ -952,21 +1947,42 @@ static int xhci_check_args(struct usb_hcd *hcd, struct usb_device *udev,
 	if (!udev->parent) {
 		printk(KERN_DEBUG "xHCI %s called for root hub\n",
 				func);
+=======
+		pr_debug("xHCI %s called with invalid args\n", func);
+		return -EINVAL;
+	}
+	if (!udev->parent) {
+		pr_debug("xHCI %s called for root hub\n", func);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	xhci = hcd_to_xhci(hcd);
 	if (check_virt_dev) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!udev->slot_id || !xhci->devs
 			|| !xhci->devs[udev->slot_id]) {
+=======
+		if (!udev->slot_id || !xhci->devs[udev->slot_id]) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			printk(KERN_DEBUG "xHCI %s called with unaddressed "
 						"device\n", func);
+=======
+		if (!udev->slot_id || !xhci->devs[udev->slot_id]) {
+			xhci_dbg(xhci, "xHCI %s called with unaddressed device\n",
+					func);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 
 		virt_dev = xhci->devs[udev->slot_id];
 		if (virt_dev->udev != udev) {
+<<<<<<< HEAD
 			printk(KERN_DEBUG "xHCI %s called with udev and "
+=======
+			xhci_dbg(xhci, "xHCI %s called with udev and "
+>>>>>>> refs/remotes/origin/master
 					  "virt_dev does not match\n", func);
 			return -EINVAL;
 		}
@@ -1002,7 +2018,12 @@ static int xhci_check_maxpacket(struct xhci_hcd *xhci, unsigned int slot_id,
 	out_ctx = xhci->devs[slot_id]->out_ctx;
 	ep_ctx = xhci_get_ep_ctx(xhci, out_ctx, ep_index);
 	hw_max_packet_size = MAX_PACKET_DECODED(le32_to_cpu(ep_ctx->ep_info2));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	max_packet_size = le16_to_cpu(urb->dev->ep0.desc.wMaxPacketSize);
+=======
+	max_packet_size = usb_endpoint_maxp(&urb->dev->ep0.desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (hw_max_packet_size != max_packet_size) {
 		xhci_dbg(xhci, "Max Packet Size for ep 0 changed.\n");
 		xhci_dbg(xhci, "Max packet size in usb_device = %d\n",
@@ -1015,15 +2036,48 @@ static int xhci_check_maxpacket(struct xhci_hcd *xhci, unsigned int slot_id,
 		xhci_endpoint_copy(xhci, xhci->devs[slot_id]->in_ctx,
 				xhci->devs[slot_id]->out_ctx, ep_index);
 		in_ctx = xhci->devs[slot_id]->in_ctx;
-		ep_ctx = xhci_get_ep_ctx(xhci, in_ctx, ep_index);
-		ep_ctx->ep_info2 &= cpu_to_le32(~MAX_PACKET_MASK);
-		ep_ctx->ep_info2 |= cpu_to_le32(MAX_PACKET(max_packet_size));
+=======
+	max_packet_size = usb_endpoint_maxp(&urb->dev->ep0.desc);
+	if (hw_max_packet_size != max_packet_size) {
+		xhci_dbg_trace(xhci,  trace_xhci_dbg_context_change,
+				"Max Packet Size for ep 0 changed.");
+		xhci_dbg_trace(xhci,  trace_xhci_dbg_context_change,
+				"Max packet size in usb_device = %d",
+				max_packet_size);
+		xhci_dbg_trace(xhci,  trace_xhci_dbg_context_change,
+				"Max packet size in xHCI HW = %d",
+				hw_max_packet_size);
+		xhci_dbg_trace(xhci,  trace_xhci_dbg_context_change,
+				"Issuing evaluate context command.");
 
 		/* Set up the input context flags for the command */
 		/* FIXME: This won't work if a non-default control endpoint
 		 * changes max packet sizes.
 		 */
+		in_ctx = xhci->devs[slot_id]->in_ctx;
 		ctrl_ctx = xhci_get_input_control_ctx(xhci, in_ctx);
+		if (!ctrl_ctx) {
+			xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+					__func__);
+			return -ENOMEM;
+		}
+		/* Set up the modified control endpoint 0 */
+		xhci_endpoint_copy(xhci, xhci->devs[slot_id]->in_ctx,
+				xhci->devs[slot_id]->out_ctx, ep_index);
+
+>>>>>>> refs/remotes/origin/master
+		ep_ctx = xhci_get_ep_ctx(xhci, in_ctx, ep_index);
+		ep_ctx->ep_info2 &= cpu_to_le32(~MAX_PACKET_MASK);
+		ep_ctx->ep_info2 |= cpu_to_le32(MAX_PACKET(max_packet_size));
+
+<<<<<<< HEAD
+		/* Set up the input context flags for the command */
+		/* FIXME: This won't work if a non-default control endpoint
+		 * changes max packet sizes.
+		 */
+		ctrl_ctx = xhci_get_input_control_ctx(xhci, in_ctx);
+=======
+>>>>>>> refs/remotes/origin/master
 		ctrl_ctx->add_flags = cpu_to_le32(EP0_FLAG);
 		ctrl_ctx->drop_flags = 0;
 
@@ -1050,6 +2104,14 @@ static int xhci_check_maxpacket(struct xhci_hcd *xhci, unsigned int slot_id,
 int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flags)
 {
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct xhci_td *buffer;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct xhci_td *buffer;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int ret = 0;
 	unsigned int slot_id, ep_index;
@@ -1080,6 +2142,8 @@ int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flags)
 	if (!urb_priv)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < size; i++) {
 		urb_priv->td[i] = kzalloc(sizeof(struct xhci_td), mem_flags);
 		if (!urb_priv->td[i]) {
@@ -1087,6 +2151,22 @@ int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flags)
 			xhci_urb_free_priv(xhci, urb_priv);
 			return -ENOMEM;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	buffer = kzalloc(size * sizeof(struct xhci_td), mem_flags);
+	if (!buffer) {
+		kfree(urb_priv);
+		return -ENOMEM;
+	}
+
+	for (i = 0; i < size; i++) {
+		urb_priv->td[i] = buffer;
+		buffer++;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	urb_priv->length = size;
@@ -1263,9 +2343,16 @@ int xhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 	ret = usb_hcd_check_unlink_urb(hcd, urb, status);
 	if (ret || !urb->hcpriv)
 		goto done;
+<<<<<<< HEAD
 	temp = xhci_readl(xhci, &xhci->op_regs->status);
 	if (temp == 0xffffffff || (xhci->xhc_state & XHCI_STATE_HALTED)) {
 		xhci_dbg(xhci, "HW died, freeing TD.\n");
+=======
+	temp = readl(&xhci->op_regs->status);
+	if (temp == 0xffffffff || (xhci->xhc_state & XHCI_STATE_HALTED)) {
+		xhci_dbg_trace(xhci, trace_xhci_dbg_cancel_urb,
+				"HW died, freeing TD.");
+>>>>>>> refs/remotes/origin/master
 		urb_priv = urb->hcpriv;
 		for (i = urb_priv->td_cnt; i < urb_priv->length; i++) {
 			td = urb_priv->td[i];
@@ -1283,8 +2370,14 @@ int xhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 	}
 	if ((xhci->xhc_state & XHCI_STATE_DYING) ||
 			(xhci->xhc_state & XHCI_STATE_HALTED)) {
+<<<<<<< HEAD
 		xhci_dbg(xhci, "Ep 0x%x: URB %p to be canceled on "
 				"non-responsive xHCI host.\n",
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_cancel_urb,
+				"Ep 0x%x: URB %p to be canceled on "
+				"non-responsive xHCI host.",
+>>>>>>> refs/remotes/origin/master
 				urb->ep->desc.bEndpointAddress, urb);
 		/* Let the stop endpoint command watchdog timer (which set this
 		 * state) finish cleaning up the endpoint TD lists.  We must
@@ -1294,9 +2387,15 @@ int xhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 		goto done;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	xhci_dbg(xhci, "Cancel URB %p\n", urb);
 	xhci_dbg(xhci, "Event ring:\n");
 	xhci_debug_ring(xhci, xhci->event_ring);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ep_index = xhci_get_endpoint_index(&urb->ep->desc);
 	ep = &xhci->devs[urb->dev->slot_id]->eps[ep_index];
 	ep_ring = xhci_urb_to_transfer_ring(xhci, urb);
@@ -1305,12 +2404,39 @@ int xhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 		goto done;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	xhci_dbg(xhci, "Endpoint ring:\n");
 	xhci_debug_ring(xhci, ep_ring);
 
 	urb_priv = urb->hcpriv;
 
 	for (i = urb_priv->td_cnt; i < urb_priv->length; i++) {
+=======
+	urb_priv = urb->hcpriv;
+	i = urb_priv->td_cnt;
+	if (i < urb_priv->length)
+		xhci_dbg(xhci, "Cancel URB %p, dev %s, ep 0x%x, "
+				"starting at offset 0x%llx\n",
+=======
+	urb_priv = urb->hcpriv;
+	i = urb_priv->td_cnt;
+	if (i < urb_priv->length)
+		xhci_dbg_trace(xhci, trace_xhci_dbg_cancel_urb,
+				"Cancel URB %p, dev %s, ep 0x%x, "
+				"starting at offset 0x%llx",
+>>>>>>> refs/remotes/origin/master
+				urb, urb->dev->devpath,
+				urb->ep->desc.bEndpointAddress,
+				(unsigned long long) xhci_trb_virt_to_dma(
+					urb_priv->td[i]->start_seg,
+					urb_priv->td[i]->first_trb));
+
+	for (; i < urb_priv->length; i++) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		td = urb_priv->td[i];
 		list_add_tail(&td->cancelled_td_list, &ep->cancelled_td_list);
 	}
@@ -1377,13 +2503,32 @@ int xhci_drop_endpoint(struct usb_hcd *hcd, struct usb_device *udev,
 	in_ctx = xhci->devs[udev->slot_id]->in_ctx;
 	out_ctx = xhci->devs[udev->slot_id]->out_ctx;
 	ctrl_ctx = xhci_get_input_control_ctx(xhci, in_ctx);
+<<<<<<< HEAD
+=======
+	if (!ctrl_ctx) {
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ep_index = xhci_get_endpoint_index(&ep->desc);
 	ep_ctx = xhci_get_ep_ctx(xhci, out_ctx, ep_index);
 	/* If the HC already knows the endpoint is disabled,
 	 * or the HCD has noted it is disabled, ignore this request
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((le32_to_cpu(ep_ctx->ep_info) & EP_STATE_MASK) ==
 	    EP_STATE_DISABLED ||
+=======
+	if (((ep_ctx->ep_info & cpu_to_le32(EP_STATE_MASK)) ==
+	     cpu_to_le32(EP_STATE_DISABLED)) ||
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (((ep_ctx->ep_info & cpu_to_le32(EP_STATE_MASK)) ==
+	     cpu_to_le32(EP_STATE_DISABLED)) ||
+>>>>>>> refs/remotes/origin/master
 	    le32_to_cpu(ctrl_ctx->drop_flags) &
 	    xhci_get_endpoint_flag(&ep->desc)) {
 		xhci_warn(xhci, "xHCI %s called with disabled ep %p\n",
@@ -1437,7 +2582,10 @@ int xhci_add_endpoint(struct usb_hcd *hcd, struct usb_device *udev,
 	struct xhci_hcd *xhci;
 	struct xhci_container_ctx *in_ctx, *out_ctx;
 	unsigned int ep_index;
+<<<<<<< HEAD
 	struct xhci_ep_ctx *ep_ctx;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct xhci_slot_ctx *slot_ctx;
 	struct xhci_input_control_ctx *ctrl_ctx;
 	u32 added_ctxs;
@@ -1472,9 +2620,19 @@ int xhci_add_endpoint(struct usb_hcd *hcd, struct usb_device *udev,
 	in_ctx = virt_dev->in_ctx;
 	out_ctx = virt_dev->out_ctx;
 	ctrl_ctx = xhci_get_input_control_ctx(xhci, in_ctx);
+<<<<<<< HEAD
 	ep_index = xhci_get_endpoint_index(&ep->desc);
 	ep_ctx = xhci_get_ep_ctx(xhci, out_ctx, ep_index);
 
+=======
+	if (!ctrl_ctx) {
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		return 0;
+	}
+
+	ep_index = xhci_get_endpoint_index(&ep->desc);
+>>>>>>> refs/remotes/origin/master
 	/* If this endpoint is already in use, and the upper layers are trying
 	 * to add it again without dropping it, reject the addition.
 	 */
@@ -1547,12 +2705,25 @@ static void xhci_zero_in_ctx(struct xhci_hcd *xhci, struct xhci_virt_device *vir
 	struct xhci_slot_ctx *slot_ctx;
 	int i;
 
+<<<<<<< HEAD
+=======
+	ctrl_ctx = xhci_get_input_control_ctx(xhci, virt_dev->in_ctx);
+	if (!ctrl_ctx) {
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* When a device's add flag and drop flag are zero, any subsequent
 	 * configure endpoint command will leave that endpoint's state
 	 * untouched.  Make sure we don't leave any old state in the input
 	 * endpoint contexts.
 	 */
+<<<<<<< HEAD
 	ctrl_ctx = xhci_get_input_control_ctx(xhci, virt_dev->in_ctx);
+=======
+>>>>>>> refs/remotes/origin/master
 	ctrl_ctx->drop_flags = 0;
 	ctrl_ctx->add_flags = 0;
 	slot_ctx = xhci_get_slot_ctx(xhci, virt_dev->in_ctx);
@@ -1600,7 +2771,12 @@ static int xhci_configure_endpoint_result(struct xhci_hcd *xhci,
 		ret = -ENODEV;
 		break;
 	case COMP_SUCCESS:
+<<<<<<< HEAD
 		dev_dbg(&udev->dev, "Successful Endpoint Configure command\n");
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_context_change,
+				"Successful Endpoint Configure command");
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		break;
 	default:
@@ -1627,6 +2803,11 @@ static int xhci_evaluate_context_result(struct xhci_hcd *xhci,
 	case COMP_EBADSLT:
 		dev_warn(&udev->dev, "WARN: slot not enabled for"
 				"evaluate context command.\n");
+<<<<<<< HEAD
+=======
+		ret = -EINVAL;
+		break;
+>>>>>>> refs/remotes/origin/master
 	case COMP_CTX_STATE:
 		dev_warn(&udev->dev, "WARN: invalid context state for "
 				"evaluate context command.\n");
@@ -1644,7 +2825,12 @@ static int xhci_evaluate_context_result(struct xhci_hcd *xhci,
 		ret = -EINVAL;
 		break;
 	case COMP_SUCCESS:
+<<<<<<< HEAD
 		dev_dbg(&udev->dev, "Successful evaluate context command\n");
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_context_change,
+				"Successful evaluate context command");
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		break;
 	default:
@@ -1657,6 +2843,7 @@ static int xhci_evaluate_context_result(struct xhci_hcd *xhci,
 }
 
 static u32 xhci_count_num_new_endpoints(struct xhci_hcd *xhci,
+<<<<<<< HEAD
 		struct xhci_container_ctx *in_ctx)
 {
 	struct xhci_input_control_ctx *ctrl_ctx;
@@ -1664,12 +2851,24 @@ static u32 xhci_count_num_new_endpoints(struct xhci_hcd *xhci,
 	u32 valid_drop_flags;
 
 	ctrl_ctx = xhci_get_input_control_ctx(xhci, in_ctx);
+=======
+		struct xhci_input_control_ctx *ctrl_ctx)
+{
+	u32 valid_add_flags;
+	u32 valid_drop_flags;
+
+>>>>>>> refs/remotes/origin/master
 	/* Ignore the slot flag (bit 0), and the default control endpoint flag
 	 * (bit 1).  The default control endpoint is added during the Address
 	 * Device command and is never removed until the slot is disabled.
 	 */
+<<<<<<< HEAD
 	valid_add_flags = ctrl_ctx->add_flags >> 2;
 	valid_drop_flags = ctrl_ctx->drop_flags >> 2;
+=======
+	valid_add_flags = le32_to_cpu(ctrl_ctx->add_flags) >> 2;
+	valid_drop_flags = le32_to_cpu(ctrl_ctx->drop_flags) >> 2;
+>>>>>>> refs/remotes/origin/master
 
 	/* Use hweight32 to count the number of ones in the add flags, or
 	 * number of endpoints added.  Don't count endpoints that are changed
@@ -1680,6 +2879,7 @@ static u32 xhci_count_num_new_endpoints(struct xhci_hcd *xhci,
 }
 
 static unsigned int xhci_count_num_dropped_endpoints(struct xhci_hcd *xhci,
+<<<<<<< HEAD
 		struct xhci_container_ctx *in_ctx)
 {
 	struct xhci_input_control_ctx *ctrl_ctx;
@@ -1689,6 +2889,15 @@ static unsigned int xhci_count_num_dropped_endpoints(struct xhci_hcd *xhci,
 	ctrl_ctx = xhci_get_input_control_ctx(xhci, in_ctx);
 	valid_add_flags = ctrl_ctx->add_flags >> 2;
 	valid_drop_flags = ctrl_ctx->drop_flags >> 2;
+=======
+		struct xhci_input_control_ctx *ctrl_ctx)
+{
+	u32 valid_add_flags;
+	u32 valid_drop_flags;
+
+	valid_add_flags = le32_to_cpu(ctrl_ctx->add_flags) >> 2;
+	valid_drop_flags = le32_to_cpu(ctrl_ctx->drop_flags) >> 2;
+>>>>>>> refs/remotes/origin/master
 
 	return hweight32(valid_drop_flags) -
 		hweight32(valid_add_flags & valid_drop_flags);
@@ -1708,6 +2917,7 @@ static unsigned int xhci_count_num_dropped_endpoints(struct xhci_hcd *xhci,
  * Must be called with xhci->lock held.
  */
 static int xhci_reserve_host_resources(struct xhci_hcd *xhci,
+<<<<<<< HEAD
 		struct xhci_container_ctx *in_ctx)
 {
 	u32 added_eps;
@@ -1716,12 +2926,28 @@ static int xhci_reserve_host_resources(struct xhci_hcd *xhci,
 	if (xhci->num_active_eps + added_eps > xhci->limit_active_eps) {
 		xhci_dbg(xhci, "Not enough ep ctxs: "
 				"%u active, need to add %u, limit is %u.\n",
+=======
+		struct xhci_input_control_ctx *ctrl_ctx)
+{
+	u32 added_eps;
+
+	added_eps = xhci_count_num_new_endpoints(xhci, ctrl_ctx);
+	if (xhci->num_active_eps + added_eps > xhci->limit_active_eps) {
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"Not enough ep ctxs: "
+				"%u active, need to add %u, limit is %u.",
+>>>>>>> refs/remotes/origin/master
 				xhci->num_active_eps, added_eps,
 				xhci->limit_active_eps);
 		return -ENOMEM;
 	}
 	xhci->num_active_eps += added_eps;
+<<<<<<< HEAD
 	xhci_dbg(xhci, "Adding %u ep ctxs, %u now active.\n", added_eps,
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+			"Adding %u ep ctxs, %u now active.", added_eps,
+>>>>>>> refs/remotes/origin/master
 			xhci->num_active_eps);
 	return 0;
 }
@@ -1733,6 +2959,7 @@ static int xhci_reserve_host_resources(struct xhci_hcd *xhci,
  * Must be called with xhci->lock held.
  */
 static void xhci_free_host_resources(struct xhci_hcd *xhci,
+<<<<<<< HEAD
 		struct xhci_container_ctx *in_ctx)
 {
 	u32 num_failed_eps;
@@ -1740,6 +2967,16 @@ static void xhci_free_host_resources(struct xhci_hcd *xhci,
 	num_failed_eps = xhci_count_num_new_endpoints(xhci, in_ctx);
 	xhci->num_active_eps -= num_failed_eps;
 	xhci_dbg(xhci, "Removing %u failed ep ctxs, %u now active.\n",
+=======
+		struct xhci_input_control_ctx *ctrl_ctx)
+{
+	u32 num_failed_eps;
+
+	num_failed_eps = xhci_count_num_new_endpoints(xhci, ctrl_ctx);
+	xhci->num_active_eps -= num_failed_eps;
+	xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+			"Removing %u failed ep ctxs, %u now active.",
+>>>>>>> refs/remotes/origin/master
 			num_failed_eps,
 			xhci->num_active_eps);
 }
@@ -1751,6 +2988,7 @@ static void xhci_free_host_resources(struct xhci_hcd *xhci,
  * Must be called with xhci->lock held.
  */
 static void xhci_finish_resource_reservation(struct xhci_hcd *xhci,
+<<<<<<< HEAD
 		struct xhci_container_ctx *in_ctx)
 {
 	u32 num_dropped_eps;
@@ -1759,10 +2997,23 @@ static void xhci_finish_resource_reservation(struct xhci_hcd *xhci,
 	xhci->num_active_eps -= num_dropped_eps;
 	if (num_dropped_eps)
 		xhci_dbg(xhci, "Removing %u dropped ep ctxs, %u now active.\n",
+=======
+		struct xhci_input_control_ctx *ctrl_ctx)
+{
+	u32 num_dropped_eps;
+
+	num_dropped_eps = xhci_count_num_dropped_endpoints(xhci, ctrl_ctx);
+	xhci->num_active_eps -= num_dropped_eps;
+	if (num_dropped_eps)
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"Removing %u dropped ep ctxs, %u now active.",
+>>>>>>> refs/remotes/origin/master
 				num_dropped_eps,
 				xhci->num_active_eps);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Issue a configure endpoint command or evaluate context command
  * and wait for it to finish.
  */
@@ -1823,18 +3074,705 @@ static int xhci_configure_endpoint(struct xhci_hcd *xhci,
 
 	cmd_trb = xhci->cmd_ring->dequeue;
 	if (!ctx_change)
+=======
+unsigned int xhci_get_block_size(struct usb_device *udev)
+=======
+static unsigned int xhci_get_block_size(struct usb_device *udev)
+>>>>>>> refs/remotes/origin/master
+{
+	switch (udev->speed) {
+	case USB_SPEED_LOW:
+	case USB_SPEED_FULL:
+		return FS_BLOCK;
+	case USB_SPEED_HIGH:
+		return HS_BLOCK;
+	case USB_SPEED_SUPER:
+		return SS_BLOCK;
+	case USB_SPEED_UNKNOWN:
+	case USB_SPEED_WIRELESS:
+	default:
+		/* Should never happen */
+		return 1;
+	}
+}
+
+<<<<<<< HEAD
+unsigned int xhci_get_largest_overhead(struct xhci_interval_bw *interval_bw)
+=======
+static unsigned int
+xhci_get_largest_overhead(struct xhci_interval_bw *interval_bw)
+>>>>>>> refs/remotes/origin/master
+{
+	if (interval_bw->overhead[LS_OVERHEAD_TYPE])
+		return LS_OVERHEAD;
+	if (interval_bw->overhead[FS_OVERHEAD_TYPE])
+		return FS_OVERHEAD;
+	return HS_OVERHEAD;
+}
+
+/* If we are changing a LS/FS device under a HS hub,
+ * make sure (if we are activating a new TT) that the HS bus has enough
+ * bandwidth for this new TT.
+ */
+static int xhci_check_tt_bw_table(struct xhci_hcd *xhci,
+		struct xhci_virt_device *virt_dev,
+		int old_active_eps)
+{
+	struct xhci_interval_bw_table *bw_table;
+	struct xhci_tt_bw_info *tt_info;
+
+	/* Find the bandwidth table for the root port this TT is attached to. */
+	bw_table = &xhci->rh_bw[virt_dev->real_port - 1].bw_table;
+	tt_info = virt_dev->tt_info;
+	/* If this TT already had active endpoints, the bandwidth for this TT
+	 * has already been added.  Removing all periodic endpoints (and thus
+	 * making the TT enactive) will only decrease the bandwidth used.
+	 */
+	if (old_active_eps)
+		return 0;
+	if (old_active_eps == 0 && tt_info->active_eps != 0) {
+		if (bw_table->bw_used + TT_HS_OVERHEAD > HS_BW_LIMIT)
+			return -ENOMEM;
+		return 0;
+	}
+	/* Not sure why we would have no new active endpoints...
+	 *
+	 * Maybe because of an Evaluate Context change for a hub update or a
+	 * control endpoint 0 max packet size change?
+	 * FIXME: skip the bandwidth calculation in that case.
+	 */
+	return 0;
+}
+
+static int xhci_check_ss_bw(struct xhci_hcd *xhci,
+		struct xhci_virt_device *virt_dev)
+{
+	unsigned int bw_reserved;
+
+	bw_reserved = DIV_ROUND_UP(SS_BW_RESERVED*SS_BW_LIMIT_IN, 100);
+	if (virt_dev->bw_table->ss_bw_in > (SS_BW_LIMIT_IN - bw_reserved))
+		return -ENOMEM;
+
+	bw_reserved = DIV_ROUND_UP(SS_BW_RESERVED*SS_BW_LIMIT_OUT, 100);
+	if (virt_dev->bw_table->ss_bw_out > (SS_BW_LIMIT_OUT - bw_reserved))
+		return -ENOMEM;
+
+	return 0;
+}
+
+/*
+ * This algorithm is a very conservative estimate of the worst-case scheduling
+ * scenario for any one interval.  The hardware dynamically schedules the
+ * packets, so we can't tell which microframe could be the limiting factor in
+ * the bandwidth scheduling.  This only takes into account periodic endpoints.
+ *
+ * Obviously, we can't solve an NP complete problem to find the minimum worst
+ * case scenario.  Instead, we come up with an estimate that is no less than
+ * the worst case bandwidth used for any one microframe, but may be an
+ * over-estimate.
+ *
+ * We walk the requirements for each endpoint by interval, starting with the
+ * smallest interval, and place packets in the schedule where there is only one
+ * possible way to schedule packets for that interval.  In order to simplify
+ * this algorithm, we record the largest max packet size for each interval, and
+ * assume all packets will be that size.
+ *
+ * For interval 0, we obviously must schedule all packets for each interval.
+ * The bandwidth for interval 0 is just the amount of data to be transmitted
+ * (the sum of all max ESIT payload sizes, plus any overhead per packet times
+ * the number of packets).
+ *
+ * For interval 1, we have two possible microframes to schedule those packets
+ * in.  For this algorithm, if we can schedule the same number of packets for
+ * each possible scheduling opportunity (each microframe), we will do so.  The
+ * remaining number of packets will be saved to be transmitted in the gaps in
+ * the next interval's scheduling sequence.
+ *
+ * As we move those remaining packets to be scheduled with interval 2 packets,
+ * we have to double the number of remaining packets to transmit.  This is
+ * because the intervals are actually powers of 2, and we would be transmitting
+ * the previous interval's packets twice in this interval.  We also have to be
+ * sure that when we look at the largest max packet size for this interval, we
+ * also look at the largest max packet size for the remaining packets and take
+ * the greater of the two.
+ *
+ * The algorithm continues to evenly distribute packets in each scheduling
+ * opportunity, and push the remaining packets out, until we get to the last
+ * interval.  Then those packets and their associated overhead are just added
+ * to the bandwidth used.
+ */
+static int xhci_check_bw_table(struct xhci_hcd *xhci,
+		struct xhci_virt_device *virt_dev,
+		int old_active_eps)
+{
+	unsigned int bw_reserved;
+	unsigned int max_bandwidth;
+	unsigned int bw_used;
+	unsigned int block_size;
+	struct xhci_interval_bw_table *bw_table;
+	unsigned int packet_size = 0;
+	unsigned int overhead = 0;
+	unsigned int packets_transmitted = 0;
+	unsigned int packets_remaining = 0;
+	unsigned int i;
+
+	if (virt_dev->udev->speed == USB_SPEED_SUPER)
+		return xhci_check_ss_bw(xhci, virt_dev);
+
+	if (virt_dev->udev->speed == USB_SPEED_HIGH) {
+		max_bandwidth = HS_BW_LIMIT;
+		/* Convert percent of bus BW reserved to blocks reserved */
+		bw_reserved = DIV_ROUND_UP(HS_BW_RESERVED * max_bandwidth, 100);
+	} else {
+		max_bandwidth = FS_BW_LIMIT;
+		bw_reserved = DIV_ROUND_UP(FS_BW_RESERVED * max_bandwidth, 100);
+	}
+
+	bw_table = virt_dev->bw_table;
+	/* We need to translate the max packet size and max ESIT payloads into
+	 * the units the hardware uses.
+	 */
+	block_size = xhci_get_block_size(virt_dev->udev);
+
+	/* If we are manipulating a LS/FS device under a HS hub, double check
+	 * that the HS bus has enough bandwidth if we are activing a new TT.
+	 */
+	if (virt_dev->tt_info) {
+<<<<<<< HEAD
+		xhci_dbg(xhci, "Recalculating BW for rootport %u\n",
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"Recalculating BW for rootport %u",
+>>>>>>> refs/remotes/origin/master
+				virt_dev->real_port);
+		if (xhci_check_tt_bw_table(xhci, virt_dev, old_active_eps)) {
+			xhci_warn(xhci, "Not enough bandwidth on HS bus for "
+					"newly activated TT.\n");
+			return -ENOMEM;
+		}
+<<<<<<< HEAD
+		xhci_dbg(xhci, "Recalculating BW for TT slot %u port %u\n",
+				virt_dev->tt_info->slot_id,
+				virt_dev->tt_info->ttport);
+	} else {
+		xhci_dbg(xhci, "Recalculating BW for rootport %u\n",
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"Recalculating BW for TT slot %u port %u",
+				virt_dev->tt_info->slot_id,
+				virt_dev->tt_info->ttport);
+	} else {
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"Recalculating BW for rootport %u",
+>>>>>>> refs/remotes/origin/master
+				virt_dev->real_port);
+	}
+
+	/* Add in how much bandwidth will be used for interval zero, or the
+	 * rounded max ESIT payload + number of packets * largest overhead.
+	 */
+	bw_used = DIV_ROUND_UP(bw_table->interval0_esit_payload, block_size) +
+		bw_table->interval_bw[0].num_packets *
+		xhci_get_largest_overhead(&bw_table->interval_bw[0]);
+
+	for (i = 1; i < XHCI_MAX_INTERVAL; i++) {
+		unsigned int bw_added;
+		unsigned int largest_mps;
+		unsigned int interval_overhead;
+
+		/*
+		 * How many packets could we transmit in this interval?
+		 * If packets didn't fit in the previous interval, we will need
+		 * to transmit that many packets twice within this interval.
+		 */
+		packets_remaining = 2 * packets_remaining +
+			bw_table->interval_bw[i].num_packets;
+
+		/* Find the largest max packet size of this or the previous
+		 * interval.
+		 */
+		if (list_empty(&bw_table->interval_bw[i].endpoints))
+			largest_mps = 0;
+		else {
+			struct xhci_virt_ep *virt_ep;
+			struct list_head *ep_entry;
+
+			ep_entry = bw_table->interval_bw[i].endpoints.next;
+			virt_ep = list_entry(ep_entry,
+					struct xhci_virt_ep, bw_endpoint_list);
+			/* Convert to blocks, rounding up */
+			largest_mps = DIV_ROUND_UP(
+					virt_ep->bw_info.max_packet_size,
+					block_size);
+		}
+		if (largest_mps > packet_size)
+			packet_size = largest_mps;
+
+		/* Use the larger overhead of this or the previous interval. */
+		interval_overhead = xhci_get_largest_overhead(
+				&bw_table->interval_bw[i]);
+		if (interval_overhead > overhead)
+			overhead = interval_overhead;
+
+		/* How many packets can we evenly distribute across
+		 * (1 << (i + 1)) possible scheduling opportunities?
+		 */
+		packets_transmitted = packets_remaining >> (i + 1);
+
+		/* Add in the bandwidth used for those scheduled packets */
+		bw_added = packets_transmitted * (overhead + packet_size);
+
+		/* How many packets do we have remaining to transmit? */
+		packets_remaining = packets_remaining % (1 << (i + 1));
+
+		/* What largest max packet size should those packets have? */
+		/* If we've transmitted all packets, don't carry over the
+		 * largest packet size.
+		 */
+		if (packets_remaining == 0) {
+			packet_size = 0;
+			overhead = 0;
+		} else if (packets_transmitted > 0) {
+			/* Otherwise if we do have remaining packets, and we've
+			 * scheduled some packets in this interval, take the
+			 * largest max packet size from endpoints with this
+			 * interval.
+			 */
+			packet_size = largest_mps;
+			overhead = interval_overhead;
+		}
+		/* Otherwise carry over packet_size and overhead from the last
+		 * time we had a remainder.
+		 */
+		bw_used += bw_added;
+		if (bw_used > max_bandwidth) {
+			xhci_warn(xhci, "Not enough bandwidth. "
+					"Proposed: %u, Max: %u\n",
+				bw_used, max_bandwidth);
+			return -ENOMEM;
+		}
+	}
+	/*
+	 * Ok, we know we have some packets left over after even-handedly
+	 * scheduling interval 15.  We don't know which microframes they will
+	 * fit into, so we over-schedule and say they will be scheduled every
+	 * microframe.
+	 */
+	if (packets_remaining > 0)
+		bw_used += overhead + packet_size;
+
+	if (!virt_dev->tt_info && virt_dev->udev->speed == USB_SPEED_HIGH) {
+		unsigned int port_index = virt_dev->real_port - 1;
+
+		/* OK, we're manipulating a HS device attached to a
+		 * root port bandwidth domain.  Include the number of active TTs
+		 * in the bandwidth used.
+		 */
+		bw_used += TT_HS_OVERHEAD *
+			xhci->rh_bw[port_index].num_active_tts;
+	}
+
+<<<<<<< HEAD
+	xhci_dbg(xhci, "Final bandwidth: %u, Limit: %u, Reserved: %u, "
+		"Available: %u " "percent\n",
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+		"Final bandwidth: %u, Limit: %u, Reserved: %u, "
+		"Available: %u " "percent",
+>>>>>>> refs/remotes/origin/master
+		bw_used, max_bandwidth, bw_reserved,
+		(max_bandwidth - bw_used - bw_reserved) * 100 /
+		max_bandwidth);
+
+	bw_used += bw_reserved;
+	if (bw_used > max_bandwidth) {
+		xhci_warn(xhci, "Not enough bandwidth. Proposed: %u, Max: %u\n",
+				bw_used, max_bandwidth);
+		return -ENOMEM;
+	}
+
+	bw_table->bw_used = bw_used;
+	return 0;
+}
+
+static bool xhci_is_async_ep(unsigned int ep_type)
+{
+	return (ep_type != ISOC_OUT_EP && ep_type != INT_OUT_EP &&
+					ep_type != ISOC_IN_EP &&
+					ep_type != INT_IN_EP);
+}
+
+static bool xhci_is_sync_in_ep(unsigned int ep_type)
+{
+	return (ep_type == ISOC_IN_EP || ep_type == INT_IN_EP);
+}
+
+static unsigned int xhci_get_ss_bw_consumed(struct xhci_bw_info *ep_bw)
+{
+	unsigned int mps = DIV_ROUND_UP(ep_bw->max_packet_size, SS_BLOCK);
+
+	if (ep_bw->ep_interval == 0)
+		return SS_OVERHEAD_BURST +
+			(ep_bw->mult * ep_bw->num_packets *
+					(SS_OVERHEAD + mps));
+	return DIV_ROUND_UP(ep_bw->mult * ep_bw->num_packets *
+				(SS_OVERHEAD + mps + SS_OVERHEAD_BURST),
+				1 << ep_bw->ep_interval);
+
+}
+
+void xhci_drop_ep_from_interval_table(struct xhci_hcd *xhci,
+		struct xhci_bw_info *ep_bw,
+		struct xhci_interval_bw_table *bw_table,
+		struct usb_device *udev,
+		struct xhci_virt_ep *virt_ep,
+		struct xhci_tt_bw_info *tt_info)
+{
+	struct xhci_interval_bw	*interval_bw;
+	int normalized_interval;
+
+	if (xhci_is_async_ep(ep_bw->type))
+		return;
+
+	if (udev->speed == USB_SPEED_SUPER) {
+		if (xhci_is_sync_in_ep(ep_bw->type))
+			xhci->devs[udev->slot_id]->bw_table->ss_bw_in -=
+				xhci_get_ss_bw_consumed(ep_bw);
+		else
+			xhci->devs[udev->slot_id]->bw_table->ss_bw_out -=
+				xhci_get_ss_bw_consumed(ep_bw);
+		return;
+	}
+
+	/* SuperSpeed endpoints never get added to intervals in the table, so
+	 * this check is only valid for HS/FS/LS devices.
+	 */
+	if (list_empty(&virt_ep->bw_endpoint_list))
+		return;
+	/* For LS/FS devices, we need to translate the interval expressed in
+	 * microframes to frames.
+	 */
+	if (udev->speed == USB_SPEED_HIGH)
+		normalized_interval = ep_bw->ep_interval;
+	else
+		normalized_interval = ep_bw->ep_interval - 3;
+
+	if (normalized_interval == 0)
+		bw_table->interval0_esit_payload -= ep_bw->max_esit_payload;
+	interval_bw = &bw_table->interval_bw[normalized_interval];
+	interval_bw->num_packets -= ep_bw->num_packets;
+	switch (udev->speed) {
+	case USB_SPEED_LOW:
+		interval_bw->overhead[LS_OVERHEAD_TYPE] -= 1;
+		break;
+	case USB_SPEED_FULL:
+		interval_bw->overhead[FS_OVERHEAD_TYPE] -= 1;
+		break;
+	case USB_SPEED_HIGH:
+		interval_bw->overhead[HS_OVERHEAD_TYPE] -= 1;
+		break;
+	case USB_SPEED_SUPER:
+	case USB_SPEED_UNKNOWN:
+	case USB_SPEED_WIRELESS:
+		/* Should never happen because only LS/FS/HS endpoints will get
+		 * added to the endpoint list.
+		 */
+		return;
+	}
+	if (tt_info)
+		tt_info->active_eps -= 1;
+	list_del_init(&virt_ep->bw_endpoint_list);
+}
+
+static void xhci_add_ep_to_interval_table(struct xhci_hcd *xhci,
+		struct xhci_bw_info *ep_bw,
+		struct xhci_interval_bw_table *bw_table,
+		struct usb_device *udev,
+		struct xhci_virt_ep *virt_ep,
+		struct xhci_tt_bw_info *tt_info)
+{
+	struct xhci_interval_bw	*interval_bw;
+	struct xhci_virt_ep *smaller_ep;
+	int normalized_interval;
+
+	if (xhci_is_async_ep(ep_bw->type))
+		return;
+
+	if (udev->speed == USB_SPEED_SUPER) {
+		if (xhci_is_sync_in_ep(ep_bw->type))
+			xhci->devs[udev->slot_id]->bw_table->ss_bw_in +=
+				xhci_get_ss_bw_consumed(ep_bw);
+		else
+			xhci->devs[udev->slot_id]->bw_table->ss_bw_out +=
+				xhci_get_ss_bw_consumed(ep_bw);
+		return;
+	}
+
+	/* For LS/FS devices, we need to translate the interval expressed in
+	 * microframes to frames.
+	 */
+	if (udev->speed == USB_SPEED_HIGH)
+		normalized_interval = ep_bw->ep_interval;
+	else
+		normalized_interval = ep_bw->ep_interval - 3;
+
+	if (normalized_interval == 0)
+		bw_table->interval0_esit_payload += ep_bw->max_esit_payload;
+	interval_bw = &bw_table->interval_bw[normalized_interval];
+	interval_bw->num_packets += ep_bw->num_packets;
+	switch (udev->speed) {
+	case USB_SPEED_LOW:
+		interval_bw->overhead[LS_OVERHEAD_TYPE] += 1;
+		break;
+	case USB_SPEED_FULL:
+		interval_bw->overhead[FS_OVERHEAD_TYPE] += 1;
+		break;
+	case USB_SPEED_HIGH:
+		interval_bw->overhead[HS_OVERHEAD_TYPE] += 1;
+		break;
+	case USB_SPEED_SUPER:
+	case USB_SPEED_UNKNOWN:
+	case USB_SPEED_WIRELESS:
+		/* Should never happen because only LS/FS/HS endpoints will get
+		 * added to the endpoint list.
+		 */
+		return;
+	}
+
+	if (tt_info)
+		tt_info->active_eps += 1;
+	/* Insert the endpoint into the list, largest max packet size first. */
+	list_for_each_entry(smaller_ep, &interval_bw->endpoints,
+			bw_endpoint_list) {
+		if (ep_bw->max_packet_size >=
+				smaller_ep->bw_info.max_packet_size) {
+			/* Add the new ep before the smaller endpoint */
+			list_add_tail(&virt_ep->bw_endpoint_list,
+					&smaller_ep->bw_endpoint_list);
+			return;
+		}
+	}
+	/* Add the new endpoint at the end of the list. */
+	list_add_tail(&virt_ep->bw_endpoint_list,
+			&interval_bw->endpoints);
+}
+
+void xhci_update_tt_active_eps(struct xhci_hcd *xhci,
+		struct xhci_virt_device *virt_dev,
+		int old_active_eps)
+{
+	struct xhci_root_port_bw_info *rh_bw_info;
+	if (!virt_dev->tt_info)
+		return;
+
+	rh_bw_info = &xhci->rh_bw[virt_dev->real_port - 1];
+	if (old_active_eps == 0 &&
+				virt_dev->tt_info->active_eps != 0) {
+		rh_bw_info->num_active_tts += 1;
+		rh_bw_info->bw_table.bw_used += TT_HS_OVERHEAD;
+	} else if (old_active_eps != 0 &&
+				virt_dev->tt_info->active_eps == 0) {
+		rh_bw_info->num_active_tts -= 1;
+		rh_bw_info->bw_table.bw_used -= TT_HS_OVERHEAD;
+	}
+}
+
+static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+		struct xhci_virt_device *virt_dev,
+		struct xhci_container_ctx *in_ctx)
+{
+	struct xhci_bw_info ep_bw_info[31];
+	int i;
+	struct xhci_input_control_ctx *ctrl_ctx;
+	int old_active_eps = 0;
+
+	if (virt_dev->tt_info)
+		old_active_eps = virt_dev->tt_info->active_eps;
+
+	ctrl_ctx = xhci_get_input_control_ctx(xhci, in_ctx);
+<<<<<<< HEAD
+=======
+	if (!ctrl_ctx) {
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
+
+	for (i = 0; i < 31; i++) {
+		if (!EP_IS_ADDED(ctrl_ctx, i) && !EP_IS_DROPPED(ctrl_ctx, i))
+			continue;
+
+		/* Make a copy of the BW info in case we need to revert this */
+		memcpy(&ep_bw_info[i], &virt_dev->eps[i].bw_info,
+				sizeof(ep_bw_info[i]));
+		/* Drop the endpoint from the interval table if the endpoint is
+		 * being dropped or changed.
+		 */
+		if (EP_IS_DROPPED(ctrl_ctx, i))
+			xhci_drop_ep_from_interval_table(xhci,
+					&virt_dev->eps[i].bw_info,
+					virt_dev->bw_table,
+					virt_dev->udev,
+					&virt_dev->eps[i],
+					virt_dev->tt_info);
+	}
+	/* Overwrite the information stored in the endpoints' bw_info */
+	xhci_update_bw_info(xhci, virt_dev->in_ctx, ctrl_ctx, virt_dev);
+	for (i = 0; i < 31; i++) {
+		/* Add any changed or added endpoints to the interval table */
+		if (EP_IS_ADDED(ctrl_ctx, i))
+			xhci_add_ep_to_interval_table(xhci,
+					&virt_dev->eps[i].bw_info,
+					virt_dev->bw_table,
+					virt_dev->udev,
+					&virt_dev->eps[i],
+					virt_dev->tt_info);
+	}
+
+	if (!xhci_check_bw_table(xhci, virt_dev, old_active_eps)) {
+		/* Ok, this fits in the bandwidth we have.
+		 * Update the number of active TTs.
+		 */
+		xhci_update_tt_active_eps(xhci, virt_dev, old_active_eps);
+		return 0;
+	}
+
+	/* We don't have enough bandwidth for this, revert the stored info. */
+	for (i = 0; i < 31; i++) {
+		if (!EP_IS_ADDED(ctrl_ctx, i) && !EP_IS_DROPPED(ctrl_ctx, i))
+			continue;
+
+		/* Drop the new copies of any added or changed endpoints from
+		 * the interval table.
+		 */
+		if (EP_IS_ADDED(ctrl_ctx, i)) {
+			xhci_drop_ep_from_interval_table(xhci,
+					&virt_dev->eps[i].bw_info,
+					virt_dev->bw_table,
+					virt_dev->udev,
+					&virt_dev->eps[i],
+					virt_dev->tt_info);
+		}
+		/* Revert the endpoint back to its old information */
+		memcpy(&virt_dev->eps[i].bw_info, &ep_bw_info[i],
+				sizeof(ep_bw_info[i]));
+		/* Add any changed or dropped endpoints back into the table */
+		if (EP_IS_DROPPED(ctrl_ctx, i))
+			xhci_add_ep_to_interval_table(xhci,
+					&virt_dev->eps[i].bw_info,
+					virt_dev->bw_table,
+					virt_dev->udev,
+					&virt_dev->eps[i],
+					virt_dev->tt_info);
+	}
+	return -ENOMEM;
+}
+
+
+/* Issue a configure endpoint command or evaluate context command
+ * and wait for it to finish.
+ */
+static int xhci_configure_endpoint(struct xhci_hcd *xhci,
+		struct usb_device *udev,
+		struct xhci_command *command,
+		bool ctx_change, bool must_succeed)
+{
+	int ret;
+	int timeleft;
+	unsigned long flags;
+	struct xhci_container_ctx *in_ctx;
+<<<<<<< HEAD
+=======
+	struct xhci_input_control_ctx *ctrl_ctx;
+>>>>>>> refs/remotes/origin/master
+	struct completion *cmd_completion;
+	u32 *cmd_status;
+	struct xhci_virt_device *virt_dev;
+	union xhci_trb *cmd_trb;
+
+	spin_lock_irqsave(&xhci->lock, flags);
+	virt_dev = xhci->devs[udev->slot_id];
+
+	if (command)
+		in_ctx = command->in_ctx;
+	else
+		in_ctx = virt_dev->in_ctx;
+<<<<<<< HEAD
+
+	if ((xhci->quirks & XHCI_EP_LIMIT_QUIRK) &&
+			xhci_reserve_host_resources(xhci, in_ctx)) {
+=======
+	ctrl_ctx = xhci_get_input_control_ctx(xhci, in_ctx);
+	if (!ctrl_ctx) {
+		spin_unlock_irqrestore(&xhci->lock, flags);
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		return -ENOMEM;
+	}
+
+	if ((xhci->quirks & XHCI_EP_LIMIT_QUIRK) &&
+			xhci_reserve_host_resources(xhci, ctrl_ctx)) {
+>>>>>>> refs/remotes/origin/master
+		spin_unlock_irqrestore(&xhci->lock, flags);
+		xhci_warn(xhci, "Not enough host resources, "
+				"active endpoint contexts = %u\n",
+				xhci->num_active_eps);
+		return -ENOMEM;
+	}
+	if ((xhci->quirks & XHCI_SW_BW_CHECKING) &&
+			xhci_reserve_bandwidth(xhci, virt_dev, in_ctx)) {
+		if ((xhci->quirks & XHCI_EP_LIMIT_QUIRK))
+<<<<<<< HEAD
+			xhci_free_host_resources(xhci, in_ctx);
+=======
+			xhci_free_host_resources(xhci, ctrl_ctx);
+>>>>>>> refs/remotes/origin/master
+		spin_unlock_irqrestore(&xhci->lock, flags);
+		xhci_warn(xhci, "Not enough bandwidth\n");
+		return -ENOMEM;
+	}
+
+	if (command) {
+		cmd_completion = command->completion;
+		cmd_status = &command->status;
+		command->command_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+		list_add_tail(&command->cmd_list, &virt_dev->cmd_list);
+	} else {
+		cmd_completion = &virt_dev->cmd_completion;
+		cmd_status = &virt_dev->cmd_status;
+	}
+	init_completion(cmd_completion);
+
+	cmd_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+	if (!ctx_change)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = xhci_queue_configure_endpoint(xhci, in_ctx->dma,
 				udev->slot_id, must_succeed);
 	else
 		ret = xhci_queue_evaluate_context(xhci, in_ctx->dma,
+<<<<<<< HEAD
 				udev->slot_id);
+=======
+				udev->slot_id, must_succeed);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		if (command)
 			list_del(&command->cmd_list);
 		if ((xhci->quirks & XHCI_EP_LIMIT_QUIRK))
+<<<<<<< HEAD
 			xhci_free_host_resources(xhci, in_ctx);
 		spin_unlock_irqrestore(&xhci->lock, flags);
 		xhci_dbg(xhci, "FIXME allocate a new ring segment\n");
+=======
+			xhci_free_host_resources(xhci, ctrl_ctx);
+		spin_unlock_irqrestore(&xhci->lock, flags);
+		xhci_dbg_trace(xhci,  trace_xhci_dbg_context_change,
+				"FIXME allocate a new ring segment");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	xhci_ring_cmd_db(xhci);
@@ -1868,9 +3806,15 @@ static int xhci_configure_endpoint(struct xhci_hcd *xhci,
 		 * Otherwise, clean up the estimate to include dropped eps.
 		 */
 		if (ret)
+<<<<<<< HEAD
 			xhci_free_host_resources(xhci, in_ctx);
 		else
 			xhci_finish_resource_reservation(xhci, in_ctx);
+=======
+			xhci_free_host_resources(xhci, ctrl_ctx);
+		else
+			xhci_finish_resource_reservation(xhci, ctrl_ctx);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&xhci->lock, flags);
 	}
 	return ret;
@@ -1907,6 +3851,14 @@ int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
 
 	/* See section 4.6.6 - A0 = 1; A1 = D0 = D1 = 0 */
 	ctrl_ctx = xhci_get_input_control_ctx(xhci, virt_dev->in_ctx);
+<<<<<<< HEAD
+=======
+	if (!ctrl_ctx) {
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 	ctrl_ctx->add_flags |= cpu_to_le32(SLOT_FLAG);
 	ctrl_ctx->add_flags &= cpu_to_le32(~EP0_FLAG);
 	ctrl_ctx->drop_flags &= cpu_to_le32(~(SLOT_FLAG | EP0_FLAG));
@@ -1985,10 +3937,16 @@ void xhci_reset_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
 static void xhci_setup_input_ctx_for_config_ep(struct xhci_hcd *xhci,
 		struct xhci_container_ctx *in_ctx,
 		struct xhci_container_ctx *out_ctx,
+<<<<<<< HEAD
 		u32 add_flags, u32 drop_flags)
 {
 	struct xhci_input_control_ctx *ctrl_ctx;
 	ctrl_ctx = xhci_get_input_control_ctx(xhci, in_ctx);
+=======
+		struct xhci_input_control_ctx *ctrl_ctx,
+		u32 add_flags, u32 drop_flags)
+{
+>>>>>>> refs/remotes/origin/master
 	ctrl_ctx->add_flags = cpu_to_le32(add_flags);
 	ctrl_ctx->drop_flags = cpu_to_le32(drop_flags);
 	xhci_slot_copy(xhci, in_ctx, out_ctx);
@@ -2002,14 +3960,31 @@ static void xhci_setup_input_ctx_for_quirk(struct xhci_hcd *xhci,
 		unsigned int slot_id, unsigned int ep_index,
 		struct xhci_dequeue_state *deq_state)
 {
+<<<<<<< HEAD
+=======
+	struct xhci_input_control_ctx *ctrl_ctx;
+>>>>>>> refs/remotes/origin/master
 	struct xhci_container_ctx *in_ctx;
 	struct xhci_ep_ctx *ep_ctx;
 	u32 added_ctxs;
 	dma_addr_t addr;
 
+<<<<<<< HEAD
 	xhci_endpoint_copy(xhci, xhci->devs[slot_id]->in_ctx,
 			xhci->devs[slot_id]->out_ctx, ep_index);
 	in_ctx = xhci->devs[slot_id]->in_ctx;
+=======
+	in_ctx = xhci->devs[slot_id]->in_ctx;
+	ctrl_ctx = xhci_get_input_control_ctx(xhci, in_ctx);
+	if (!ctrl_ctx) {
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		return;
+	}
+
+	xhci_endpoint_copy(xhci, xhci->devs[slot_id]->in_ctx,
+			xhci->devs[slot_id]->out_ctx, ep_index);
+>>>>>>> refs/remotes/origin/master
 	ep_ctx = xhci_get_ep_ctx(xhci, in_ctx, ep_index);
 	addr = xhci_trb_virt_to_dma(deq_state->new_deq_seg,
 			deq_state->new_deq_ptr);
@@ -2025,7 +4000,12 @@ static void xhci_setup_input_ctx_for_quirk(struct xhci_hcd *xhci,
 
 	added_ctxs = xhci_get_endpoint_flag_from_index(ep_index);
 	xhci_setup_input_ctx_for_config_ep(xhci, xhci->devs[slot_id]->in_ctx,
+<<<<<<< HEAD
 			xhci->devs[slot_id]->out_ctx, added_ctxs, added_ctxs);
+=======
+			xhci->devs[slot_id]->out_ctx, ctrl_ctx,
+			added_ctxs, added_ctxs);
+>>>>>>> refs/remotes/origin/master
 }
 
 void xhci_cleanup_stalled_ring(struct xhci_hcd *xhci,
@@ -2034,7 +4014,12 @@ void xhci_cleanup_stalled_ring(struct xhci_hcd *xhci,
 	struct xhci_dequeue_state deq_state;
 	struct xhci_virt_ep *ep;
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "Cleaning up stalled endpoint ring\n");
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_reset_ep,
+			"Cleaning up stalled endpoint ring");
+>>>>>>> refs/remotes/origin/master
 	ep = &xhci->devs[udev->slot_id]->eps[ep_index];
 	/* We need to move the HW's dequeue pointer past this TD,
 	 * or it will attempt to resend it on the next doorbell ring.
@@ -2047,7 +4032,12 @@ void xhci_cleanup_stalled_ring(struct xhci_hcd *xhci,
 	 * issue a configure endpoint command later.
 	 */
 	if (!(xhci->quirks & XHCI_RESET_EP_QUIRK)) {
+<<<<<<< HEAD
 		xhci_dbg(xhci, "Queueing new dequeue state\n");
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_reset_ep,
+				"Queueing new dequeue state");
+>>>>>>> refs/remotes/origin/master
 		xhci_queue_new_dequeue_state(xhci, udev->slot_id,
 				ep_index, ep->stopped_stream, &deq_state);
 	} else {
@@ -2056,8 +4046,14 @@ void xhci_cleanup_stalled_ring(struct xhci_hcd *xhci,
 		 * XXX: No idea how this hardware will react when stream rings
 		 * are enabled.
 		 */
+<<<<<<< HEAD
 		xhci_dbg(xhci, "Setting up input context for "
 				"configure endpoint command\n");
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"Setting up input context for "
+				"configure endpoint command");
+>>>>>>> refs/remotes/origin/master
 		xhci_setup_input_ctx_for_quirk(xhci, udev->slot_id,
 				ep_index, &deq_state);
 	}
@@ -2089,6 +4085,7 @@ void xhci_endpoint_reset(struct usb_hcd *hcd,
 	ep_index = xhci_get_endpoint_index(&ep->desc);
 	virt_ep = &xhci->devs[udev->slot_id]->eps[ep_index];
 	if (!virt_ep->stopped_td) {
+<<<<<<< HEAD
 		xhci_dbg(xhci, "Endpoint 0x%x not halted, refusing to reset.\n",
 				ep->desc.bEndpointAddress);
 		return;
@@ -2099,6 +4096,21 @@ void xhci_endpoint_reset(struct usb_hcd *hcd,
 	}
 
 	xhci_dbg(xhci, "Queueing reset endpoint command\n");
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_reset_ep,
+			"Endpoint 0x%x not halted, refusing to reset.",
+			ep->desc.bEndpointAddress);
+		return;
+	}
+	if (usb_endpoint_xfer_control(&ep->desc)) {
+		xhci_dbg_trace(xhci, trace_xhci_dbg_reset_ep,
+				"Control endpoint stall already handled.");
+		return;
+	}
+
+	xhci_dbg_trace(xhci, trace_xhci_dbg_reset_ep,
+			"Queueing reset endpoint command");
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&xhci->lock, flags);
 	ret = xhci_queue_reset_ep(xhci, udev->slot_id, ep_index);
 	/*
@@ -2238,8 +4250,13 @@ static u32 xhci_calculate_no_streams_bitmask(struct xhci_hcd *xhci,
 		/* Are streams already being freed for the endpoint? */
 		if (ep_state & EP_GETTING_NO_STREAMS) {
 			xhci_warn(xhci, "WARN Can't disable streams for "
+<<<<<<< HEAD
 					"endpoint 0x%x\n, "
 					"streams are being disabled already.",
+=======
+					"endpoint 0x%x, "
+					"streams are being disabled already\n",
+>>>>>>> refs/remotes/origin/master
 					eps[i]->desc.bEndpointAddress);
 			return 0;
 		}
@@ -2247,8 +4264,13 @@ static u32 xhci_calculate_no_streams_bitmask(struct xhci_hcd *xhci,
 		if (!(ep_state & EP_HAS_STREAMS) &&
 				!(ep_state & EP_GETTING_STREAMS)) {
 			xhci_warn(xhci, "WARN Can't disable streams for "
+<<<<<<< HEAD
 					"endpoint 0x%x\n, "
 					"streams are already disabled!",
+=======
+					"endpoint 0x%x, "
+					"streams are already disabled!\n",
+>>>>>>> refs/remotes/origin/master
 					eps[i]->desc.bEndpointAddress);
 			xhci_warn(xhci, "WARN xhci_free_streams() called "
 					"with non-streams endpoint\n");
@@ -2283,6 +4305,10 @@ int xhci_alloc_streams(struct usb_hcd *hcd, struct usb_device *udev,
 	struct xhci_hcd *xhci;
 	struct xhci_virt_device *vdev;
 	struct xhci_command *config_cmd;
+<<<<<<< HEAD
+=======
+	struct xhci_input_control_ctx *ctrl_ctx;
+>>>>>>> refs/remotes/origin/master
 	unsigned int ep_index;
 	unsigned int num_stream_ctxs;
 	unsigned long flags;
@@ -2304,6 +4330,16 @@ int xhci_alloc_streams(struct usb_hcd *hcd, struct usb_device *udev,
 		xhci_dbg(xhci, "Could not allocate xHCI command structure.\n");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
+=======
+	ctrl_ctx = xhci_get_input_control_ctx(xhci, config_cmd->in_ctx);
+	if (!ctrl_ctx) {
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		xhci_free_command(xhci, config_cmd);
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Check to make sure all endpoints are not already configured for
 	 * streams.  While we're at it, find the maximum number of streams that
@@ -2370,7 +4406,12 @@ int xhci_alloc_streams(struct usb_hcd *hcd, struct usb_device *udev,
 	 * and add the updated copy from the input context.
 	 */
 	xhci_setup_input_ctx_for_config_ep(xhci, config_cmd->in_ctx,
+<<<<<<< HEAD
 			vdev->out_ctx, changed_ep_bitmask, changed_ep_bitmask);
+=======
+			vdev->out_ctx, ctrl_ctx,
+			changed_ep_bitmask, changed_ep_bitmask);
+>>>>>>> refs/remotes/origin/master
 
 	/* Issue and wait for the configure endpoint command */
 	ret = xhci_configure_endpoint(xhci, udev, config_cmd,
@@ -2428,6 +4469,10 @@ int xhci_free_streams(struct usb_hcd *hcd, struct usb_device *udev,
 	struct xhci_hcd *xhci;
 	struct xhci_virt_device *vdev;
 	struct xhci_command *command;
+<<<<<<< HEAD
+=======
+	struct xhci_input_control_ctx *ctrl_ctx;
+>>>>>>> refs/remotes/origin/master
 	unsigned int ep_index;
 	unsigned long flags;
 	u32 changed_ep_bitmask;
@@ -2450,6 +4495,17 @@ int xhci_free_streams(struct usb_hcd *hcd, struct usb_device *udev,
 	 */
 	ep_index = xhci_get_endpoint_index(&eps[0]->desc);
 	command = vdev->eps[ep_index].stream_info->free_streams_command;
+<<<<<<< HEAD
+=======
+	ctrl_ctx = xhci_get_input_control_ctx(xhci, command->in_ctx);
+	if (!ctrl_ctx) {
+		spin_unlock_irqrestore(&xhci->lock, flags);
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < num_eps; i++) {
 		struct xhci_ep_ctx *ep_ctx;
 
@@ -2464,7 +4520,12 @@ int xhci_free_streams(struct usb_hcd *hcd, struct usb_device *udev,
 				&vdev->eps[ep_index]);
 	}
 	xhci_setup_input_ctx_for_config_ep(xhci, command->in_ctx,
+<<<<<<< HEAD
 			vdev->out_ctx, changed_ep_bitmask, changed_ep_bitmask);
+=======
+			vdev->out_ctx, ctrl_ctx,
+			changed_ep_bitmask, changed_ep_bitmask);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&xhci->lock, flags);
 
 	/* Issue and wait for the configure endpoint command,
@@ -2517,8 +4578,14 @@ void xhci_free_device_endpoint_resources(struct xhci_hcd *xhci,
 	}
 	xhci->num_active_eps -= num_dropped_eps;
 	if (num_dropped_eps)
+<<<<<<< HEAD
 		xhci_dbg(xhci, "Dropped %u ep ctxs, flags = 0x%x, "
 				"%u now active.\n",
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"Dropped %u ep ctxs, flags = 0x%x, "
+				"%u now active.",
+>>>>>>> refs/remotes/origin/master
 				num_dropped_eps, drop_flags,
 				xhci->num_active_eps);
 }
@@ -2552,6 +4619,14 @@ int xhci_discover_or_reset_device(struct usb_hcd *hcd, struct usb_device *udev)
 	int timeleft;
 	int last_freed_endpoint;
 	struct xhci_slot_ctx *slot_ctx;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int old_active_eps = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int old_active_eps = 0;
+>>>>>>> refs/remotes/origin/master
 
 	ret = xhci_check_args(hcd, udev, NULL, 0, false, __func__);
 	if (ret <= 0)
@@ -2605,6 +4680,9 @@ int xhci_discover_or_reset_device(struct usb_hcd *hcd, struct usb_device *udev)
 
 	/* Attempt to submit the Reset Device command to the command ring */
 	spin_lock_irqsave(&xhci->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reset_device_cmd->command_trb = xhci->cmd_ring->enqueue;
 
 	/* Enqueue pointer can be left pointing to the link TRB,
@@ -2614,6 +4692,15 @@ int xhci_discover_or_reset_device(struct usb_hcd *hcd, struct usb_device *udev)
 	     & TRB_TYPE_BITMASK) == TRB_TYPE(TRB_LINK))
 		reset_device_cmd->command_trb =
 			xhci->cmd_ring->enq_seg->next->trbs;
+=======
+	reset_device_cmd->command_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reset_device_cmd->command_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+>>>>>>> refs/remotes/origin/master
+=======
+	reset_device_cmd->command_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	list_add_tail(&reset_device_cmd->cmd_list, &virt_dev->cmd_list);
 	ret = xhci_queue_reset_device(xhci, slot_id);
@@ -2629,7 +4716,11 @@ int xhci_discover_or_reset_device(struct usb_hcd *hcd, struct usb_device *udev)
 	/* Wait for the Reset Device command to finish */
 	timeleft = wait_for_completion_interruptible_timeout(
 			reset_device_cmd->completion,
+<<<<<<< HEAD
 			USB_CTRL_SET_TIMEOUT);
+=======
+			XHCI_CMD_DEFAULT_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 	if (timeleft <= 0) {
 		xhci_warn(xhci, "%s while waiting for reset device command\n",
 				timeleft == 0 ? "Timeout" : "Signal");
@@ -2652,10 +4743,17 @@ int xhci_discover_or_reset_device(struct usb_hcd *hcd, struct usb_device *udev)
 	switch (ret) {
 	case COMP_EBADSLT: /* 0.95 completion code for bad slot ID */
 	case COMP_CTX_STATE: /* 0.96 completion code for same thing */
+<<<<<<< HEAD
 		xhci_info(xhci, "Can't reset device (slot ID %u) in %s state\n",
 				slot_id,
 				xhci_get_slot_state(xhci, virt_dev->out_ctx));
 		xhci_info(xhci, "Not freeing device rings.\n");
+=======
+		xhci_dbg(xhci, "Can't reset device (slot ID %u) in %s state\n",
+				slot_id,
+				xhci_get_slot_state(xhci, virt_dev->out_ctx));
+		xhci_dbg(xhci, "Not freeing device rings.\n");
+>>>>>>> refs/remotes/origin/master
 		/* Don't treat this as an error.  May change my mind later. */
 		ret = 0;
 		goto command_cleanup;
@@ -2694,7 +4792,28 @@ int xhci_discover_or_reset_device(struct usb_hcd *hcd, struct usb_device *udev)
 			xhci_free_or_cache_endpoint_ring(xhci, virt_dev, i);
 			last_freed_endpoint = i;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (!list_empty(&virt_dev->eps[i].bw_endpoint_list))
+			xhci_drop_ep_from_interval_table(xhci,
+					&virt_dev->eps[i].bw_info,
+					virt_dev->bw_table,
+					udev,
+					&virt_dev->eps[i],
+					virt_dev->tt_info);
+		xhci_clear_endpoint_bw_info(&virt_dev->eps[i].bw_info);
+	}
+	/* If necessary, update the number of active TTs on this root port */
+	xhci_update_tt_active_eps(xhci, virt_dev, old_active_eps);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	xhci_dbg(xhci, "Output context after successful reset device cmd:\n");
 	xhci_dbg_ctx(xhci, virt_dev->out_ctx, last_freed_endpoint);
 	ret = 0;
@@ -2713,7 +4832,14 @@ void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev)
 {
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
 	struct xhci_virt_device *virt_dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct device *dev = hcd->self.controller;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	struct device *dev = hcd->self.controller;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long flags;
 	u32 state;
 	int i, ret;
@@ -2725,7 +4851,15 @@ void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev)
 	 * if no devices remain.
 	 */
 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pm_runtime_put_noidle(dev);
+=======
+		pm_runtime_put_noidle(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
+=======
+		pm_runtime_put_noidle(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	ret = xhci_check_args(hcd, udev, NULL, 0, true, __func__);
@@ -2743,9 +4877,23 @@ void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev)
 		del_timer_sync(&virt_dev->eps[i].stop_cmd_timer);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (udev->usb2_hw_lpm_enabled) {
+		xhci_set_usb2_hardware_lpm(hcd, udev, 0);
+		udev->usb2_hw_lpm_enabled = 0;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&xhci->lock, flags);
 	/* Don't disable the slot if the host controller is dead. */
 	state = xhci_readl(xhci, &xhci->op_regs->status);
+=======
+	spin_lock_irqsave(&xhci->lock, flags);
+	/* Don't disable the slot if the host controller is dead. */
+	state = readl(&xhci->op_regs->status);
+>>>>>>> refs/remotes/origin/master
 	if (state == 0xffffffff || (xhci->xhc_state & XHCI_STATE_DYING) ||
 			(xhci->xhc_state & XHCI_STATE_HALTED)) {
 		xhci_free_virt_device(xhci, udev->slot_id);
@@ -2775,13 +4923,24 @@ void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev)
 static int xhci_reserve_host_control_ep_resources(struct xhci_hcd *xhci)
 {
 	if (xhci->num_active_eps + 1 > xhci->limit_active_eps) {
+<<<<<<< HEAD
 		xhci_dbg(xhci, "Not enough ep ctxs: "
 				"%u active, need to add 1, limit is %u.\n",
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+				"Not enough ep ctxs: "
+				"%u active, need to add 1, limit is %u.",
+>>>>>>> refs/remotes/origin/master
 				xhci->num_active_eps, xhci->limit_active_eps);
 		return -ENOMEM;
 	}
 	xhci->num_active_eps += 1;
+<<<<<<< HEAD
 	xhci_dbg(xhci, "Adding 1 ep ctx, %u now active.\n",
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+			"Adding 1 ep ctx, %u now active.",
+>>>>>>> refs/remotes/origin/master
 			xhci->num_active_eps);
 	return 0;
 }
@@ -2794,14 +4953,33 @@ static int xhci_reserve_host_control_ep_resources(struct xhci_hcd *xhci)
 int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
 {
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct device *dev = hcd->self.controller;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	struct device *dev = hcd->self.controller;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long flags;
 	int timeleft;
 	int ret;
 	union xhci_trb *cmd_trb;
 
 	spin_lock_irqsave(&xhci->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmd_trb = xhci->cmd_ring->dequeue;
+=======
+	cmd_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmd_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+>>>>>>> refs/remotes/origin/master
+=======
+	cmd_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = xhci_queue_slot_control(xhci, TRB_ENABLE_SLOT, 0);
 	if (ret) {
 		spin_unlock_irqrestore(&xhci->lock, flags);
@@ -2854,7 +5032,15 @@ int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
 	 * suspend if there is a device attached.
 	 */
 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pm_runtime_get_noresume(dev);
+=======
+		pm_runtime_get_noresume(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
+=======
+		pm_runtime_get_noresume(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	/* Is this a LS or FS device under a HS hub? */
@@ -2871,6 +5057,7 @@ disable_slot:
 }
 
 /*
+<<<<<<< HEAD
  * Issue an Address Device command (which will issue a SetAddress request to
  * the device).
  * We should be protected by the usb_address0_mutex in khubd's hub_port_init, so
@@ -2881,6 +5068,17 @@ disable_slot:
  */
 int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
 {
+=======
+ * Issue an Address Device command and optionally send a corresponding
+ * SetAddress request to the device.
+ * We should be protected by the usb_address0_mutex in khubd's hub_port_init, so
+ * we should only issue and wait on one address command at the same time.
+ */
+static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
+			     enum xhci_setup_dev setup)
+{
+	const char *act = setup == SETUP_CONTEXT_ONLY ? "context" : "address";
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int timeleft;
 	struct xhci_virt_device *virt_dev;
@@ -2892,7 +5090,12 @@ int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
 	union xhci_trb *cmd_trb;
 
 	if (!udev->slot_id) {
+<<<<<<< HEAD
 		xhci_dbg(xhci, "Bad Slot ID %d\n", udev->slot_id);
+=======
+		xhci_dbg_trace(xhci, trace_xhci_dbg_address,
+				"Bad Slot ID %d", udev->slot_id);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -2910,6 +5113,15 @@ int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
 	}
 
 	slot_ctx = xhci_get_slot_ctx(xhci, virt_dev->in_ctx);
+<<<<<<< HEAD
+=======
+	ctrl_ctx = xhci_get_input_control_ctx(xhci, virt_dev->in_ctx);
+	if (!ctrl_ctx) {
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If this is the first Set Address since device plug-in or
 	 * virt_device realloaction after a resume with an xHCI power loss,
@@ -2920,20 +5132,45 @@ int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
 	/* Otherwise, update the control endpoint ring enqueue pointer. */
 	else
 		xhci_copy_ep0_dequeue_into_input_ctx(xhci, udev);
+<<<<<<< HEAD
 	ctrl_ctx = xhci_get_input_control_ctx(xhci, virt_dev->in_ctx);
+=======
+>>>>>>> refs/remotes/origin/master
 	ctrl_ctx->add_flags = cpu_to_le32(SLOT_FLAG | EP0_FLAG);
 	ctrl_ctx->drop_flags = 0;
 
 	xhci_dbg(xhci, "Slot ID %d Input Context:\n", udev->slot_id);
 	xhci_dbg_ctx(xhci, virt_dev->in_ctx, 2);
+<<<<<<< HEAD
 
 	spin_lock_irqsave(&xhci->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmd_trb = xhci->cmd_ring->dequeue;
+=======
+	cmd_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmd_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = xhci_queue_address_device(xhci, virt_dev->in_ctx->dma,
 					udev->slot_id);
 	if (ret) {
 		spin_unlock_irqrestore(&xhci->lock, flags);
 		xhci_dbg(xhci, "FIXME: allocate a command ring segment\n");
+=======
+	trace_xhci_address_ctx(xhci, virt_dev->in_ctx,
+				le32_to_cpu(slot_ctx->dev_info) >> 27);
+
+	spin_lock_irqsave(&xhci->lock, flags);
+	cmd_trb = xhci_find_next_enqueue(xhci->cmd_ring);
+	ret = xhci_queue_address_device(xhci, virt_dev->in_ctx->dma,
+					udev->slot_id, setup);
+	if (ret) {
+		spin_unlock_irqrestore(&xhci->lock, flags);
+		xhci_dbg_trace(xhci, trace_xhci_dbg_address,
+				"FIXME: allocate a command ring segment");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 	xhci_ring_cmd_db(xhci);
@@ -2947,8 +5184,20 @@ int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
 	 * command on a timeout.
 	 */
 	if (timeleft <= 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		xhci_warn(xhci, "%s while waiting for a slot\n",
+=======
+		xhci_warn(xhci, "%s while waiting for address device command\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				timeleft == 0 ? "Timeout" : "Signal");
+<<<<<<< HEAD
+=======
+		xhci_warn(xhci, "%s while waiting for setup %s command\n",
+			  timeleft == 0 ? "Timeout" : "Signal", act);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* cancel the address device command */
 		ret = xhci_cancel_cmd(xhci, NULL, cmd_trb);
 		if (ret < 0)
@@ -2959,6 +5208,7 @@ int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
 	switch (virt_dev->cmd_status) {
 	case COMP_CTX_STATE:
 	case COMP_EBADSLT:
+<<<<<<< HEAD
 		xhci_err(xhci, "Setup ERROR: address device command for slot %d.\n",
 				udev->slot_id);
 		ret = -EINVAL;
@@ -2980,12 +5230,39 @@ int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
 				"code 0x%x.\n", virt_dev->cmd_status);
 		xhci_dbg(xhci, "Slot ID %d Output Context:\n", udev->slot_id);
 		xhci_dbg_ctx(xhci, virt_dev->out_ctx, 2);
+=======
+		xhci_err(xhci, "Setup ERROR: setup %s command for slot %d.\n",
+			 act, udev->slot_id);
+		ret = -EINVAL;
+		break;
+	case COMP_TX_ERR:
+		dev_warn(&udev->dev, "Device not responding to setup %s.\n", act);
+		ret = -EPROTO;
+		break;
+	case COMP_DEV_ERR:
+		dev_warn(&udev->dev,
+			 "ERROR: Incompatible device for setup %s command\n", act);
+		ret = -ENODEV;
+		break;
+	case COMP_SUCCESS:
+		xhci_dbg_trace(xhci, trace_xhci_dbg_address,
+			       "Successful setup %s command", act);
+		break;
+	default:
+		xhci_err(xhci,
+			 "ERROR: unexpected setup %s command completion code 0x%x.\n",
+			 act, virt_dev->cmd_status);
+		xhci_dbg(xhci, "Slot ID %d Output Context:\n", udev->slot_id);
+		xhci_dbg_ctx(xhci, virt_dev->out_ctx, 2);
+		trace_xhci_address_ctx(xhci, virt_dev->out_ctx, 1);
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		break;
 	}
 	if (ret) {
 		return ret;
 	}
+<<<<<<< HEAD
 	temp_64 = xhci_read_64(xhci, &xhci->op_regs->dcbaa_ptr);
 	xhci_dbg(xhci, "Op regs DCBAA ptr = %#016llx\n", temp_64);
 	xhci_dbg(xhci, "Slot ID %d dcbaa entry @%p = %#016llx\n",
@@ -2997,6 +5274,24 @@ int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
 			(unsigned long long)virt_dev->out_ctx->dma);
 	xhci_dbg(xhci, "Slot ID %d Input Context:\n", udev->slot_id);
 	xhci_dbg_ctx(xhci, virt_dev->in_ctx, 2);
+=======
+	temp_64 = readq(&xhci->op_regs->dcbaa_ptr);
+	xhci_dbg_trace(xhci, trace_xhci_dbg_address,
+			"Op regs DCBAA ptr = %#016llx", temp_64);
+	xhci_dbg_trace(xhci, trace_xhci_dbg_address,
+		"Slot ID %d dcbaa entry @%p = %#016llx",
+		udev->slot_id,
+		&xhci->dcbaa->dev_context_ptrs[udev->slot_id],
+		(unsigned long long)
+		le64_to_cpu(xhci->dcbaa->dev_context_ptrs[udev->slot_id]));
+	xhci_dbg_trace(xhci, trace_xhci_dbg_address,
+			"Output Context DMA address = %#08llx",
+			(unsigned long long)virt_dev->out_ctx->dma);
+	xhci_dbg(xhci, "Slot ID %d Input Context:\n", udev->slot_id);
+	xhci_dbg_ctx(xhci, virt_dev->in_ctx, 2);
+	trace_xhci_address_ctx(xhci, virt_dev->in_ctx,
+				le32_to_cpu(slot_ctx->dev_info) >> 27);
+>>>>>>> refs/remotes/origin/master
 	xhci_dbg(xhci, "Slot ID %d Output Context:\n", udev->slot_id);
 	xhci_dbg_ctx(xhci, virt_dev->out_ctx, 2);
 	/*
@@ -3004,19 +5299,1000 @@ int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
 	 * address given back to us by the HC.
 	 */
 	slot_ctx = xhci_get_slot_ctx(xhci, virt_dev->out_ctx);
+<<<<<<< HEAD
 	/* Use kernel assigned address for devices; store xHC assigned
 	 * address locally. */
 	virt_dev->address = (le32_to_cpu(slot_ctx->dev_state) & DEV_ADDR_MASK)
 		+ 1;
+=======
+	trace_xhci_address_ctx(xhci, virt_dev->out_ctx,
+				le32_to_cpu(slot_ctx->dev_info) >> 27);
+>>>>>>> refs/remotes/origin/master
 	/* Zero the input context control for later use */
 	ctrl_ctx->add_flags = 0;
 	ctrl_ctx->drop_flags = 0;
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "Internal device address = %d\n", virt_dev->address);
+=======
+	xhci_dbg_trace(xhci, trace_xhci_dbg_address,
+		       "Internal device address = %d",
+		       le32_to_cpu(slot_ctx->dev_state) & DEV_ADDR_MASK);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_SUSPEND
+=======
+int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
+{
+	return xhci_setup_device(hcd, udev, SETUP_CONTEXT_ADDRESS);
+}
+
+int xhci_enable_device(struct usb_hcd *hcd, struct usb_device *udev)
+{
+	return xhci_setup_device(hcd, udev, SETUP_CONTEXT_ONLY);
+}
+
+/*
+ * Transfer the port index into real index in the HW port status
+ * registers. Caculate offset between the port's PORTSC register
+ * and port status base. Divide the number of per port register
+ * to get the real index. The raw port number bases 1.
+ */
+int xhci_find_raw_port_number(struct usb_hcd *hcd, int port1)
+{
+	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+	__le32 __iomem *base_addr = &xhci->op_regs->port_status_base;
+	__le32 __iomem *addr;
+	int raw_port;
+
+	if (hcd->speed != HCD_USB3)
+		addr = xhci->usb2_ports[port1 - 1];
+	else
+		addr = xhci->usb3_ports[port1 - 1];
+
+	raw_port = (addr - base_addr)/NUM_PORT_REGS + 1;
+	return raw_port;
+}
+
+/*
+ * Issue an Evaluate Context command to change the Maximum Exit Latency in the
+ * slot context.  If that succeeds, store the new MEL in the xhci_virt_device.
+ */
+static int __maybe_unused xhci_change_max_exit_latency(struct xhci_hcd *xhci,
+			struct usb_device *udev, u16 max_exit_latency)
+{
+	struct xhci_virt_device *virt_dev;
+	struct xhci_command *command;
+	struct xhci_input_control_ctx *ctrl_ctx;
+	struct xhci_slot_ctx *slot_ctx;
+	unsigned long flags;
+	int ret;
+
+	spin_lock_irqsave(&xhci->lock, flags);
+	if (max_exit_latency == xhci->devs[udev->slot_id]->current_mel) {
+		spin_unlock_irqrestore(&xhci->lock, flags);
+		return 0;
+	}
+
+	/* Attempt to issue an Evaluate Context command to change the MEL. */
+	virt_dev = xhci->devs[udev->slot_id];
+	command = xhci->lpm_command;
+	ctrl_ctx = xhci_get_input_control_ctx(xhci, command->in_ctx);
+	if (!ctrl_ctx) {
+		spin_unlock_irqrestore(&xhci->lock, flags);
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		return -ENOMEM;
+	}
+
+	xhci_slot_copy(xhci, command->in_ctx, virt_dev->out_ctx);
+	spin_unlock_irqrestore(&xhci->lock, flags);
+
+	ctrl_ctx->add_flags |= cpu_to_le32(SLOT_FLAG);
+	slot_ctx = xhci_get_slot_ctx(xhci, command->in_ctx);
+	slot_ctx->dev_info2 &= cpu_to_le32(~((u32) MAX_EXIT));
+	slot_ctx->dev_info2 |= cpu_to_le32(max_exit_latency);
+
+	xhci_dbg_trace(xhci, trace_xhci_dbg_context_change,
+			"Set up evaluate context for LPM MEL change.");
+	xhci_dbg(xhci, "Slot %u Input Context:\n", udev->slot_id);
+	xhci_dbg_ctx(xhci, command->in_ctx, 0);
+
+	/* Issue and wait for the evaluate context command. */
+	ret = xhci_configure_endpoint(xhci, udev, command,
+			true, true);
+	xhci_dbg(xhci, "Slot %u Output Context:\n", udev->slot_id);
+	xhci_dbg_ctx(xhci, virt_dev->out_ctx, 0);
+
+	if (!ret) {
+		spin_lock_irqsave(&xhci->lock, flags);
+		virt_dev->current_mel = max_exit_latency;
+		spin_unlock_irqrestore(&xhci->lock, flags);
+	}
+	return ret;
+}
+
+#ifdef CONFIG_PM_RUNTIME
+>>>>>>> refs/remotes/origin/master
+
+/* BESL to HIRD Encoding array for USB2 LPM */
+static int xhci_besl_encoding[16] = {125, 150, 200, 300, 400, 500, 1000, 2000,
+	3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000};
+
+/* Calculate HIRD/BESL for USB2 PORTPMSC*/
+static int xhci_calculate_hird_besl(struct xhci_hcd *xhci,
+					struct usb_device *udev)
+{
+	int u2del, besl, besl_host;
+	int besl_device = 0;
+	u32 field;
+
+	u2del = HCS_U2_LATENCY(xhci->hcs_params3);
+	field = le32_to_cpu(udev->bos->ext_cap->bmAttributes);
+
+	if (field & USB_BESL_SUPPORT) {
+		for (besl_host = 0; besl_host < 16; besl_host++) {
+			if (xhci_besl_encoding[besl_host] >= u2del)
+				break;
+		}
+		/* Use baseline BESL value as default */
+		if (field & USB_BESL_BASELINE_VALID)
+			besl_device = USB_GET_BESL_BASELINE(field);
+		else if (field & USB_BESL_DEEP_VALID)
+			besl_device = USB_GET_BESL_DEEP(field);
+	} else {
+		if (u2del <= 50)
+			besl_host = 0;
+		else
+			besl_host = (u2del - 51) / 75 + 1;
+	}
+
+	besl = besl_host + besl_device;
+	if (besl > 15)
+		besl = 15;
+
+	return besl;
+}
+
+<<<<<<< HEAD
+static int xhci_usb2_software_lpm_test(struct usb_hcd *hcd,
+					struct usb_device *udev)
+{
+	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+	struct dev_info	*dev_info;
+	__le32 __iomem	**port_array;
+	__le32 __iomem	*addr, *pm_addr;
+	u32		temp, dev_id;
+	unsigned int	port_num;
+	unsigned long	flags;
+	int		hird;
+	int		ret;
+
+	if (hcd->speed == HCD_USB3 || !xhci->sw_lpm_support ||
+			!udev->lpm_capable)
+		return -EINVAL;
+
+	/* we only support lpm for non-hub device connected to root hub yet */
+	if (!udev->parent || udev->parent->parent ||
+			udev->descriptor.bDeviceClass == USB_CLASS_HUB)
+		return -EINVAL;
+
+	spin_lock_irqsave(&xhci->lock, flags);
+
+	/* Look for devices in lpm_failed_devs list */
+	dev_id = le16_to_cpu(udev->descriptor.idVendor) << 16 |
+			le16_to_cpu(udev->descriptor.idProduct);
+	list_for_each_entry(dev_info, &xhci->lpm_failed_devs, list) {
+		if (dev_info->dev_id == dev_id) {
+			ret = -EINVAL;
+			goto finish;
+		}
+	}
+
+	port_array = xhci->usb2_ports;
+	port_num = udev->portnum - 1;
+
+	if (port_num > HCS_MAX_PORTS(xhci->hcs_params1)) {
+		xhci_dbg(xhci, "invalid port number %d\n", udev->portnum);
+		ret = -EINVAL;
+		goto finish;
+	}
+
+	/*
+	 * Test USB 2.0 software LPM.
+	 * FIXME: some xHCI 1.0 hosts may implement a new register to set up
+	 * hardware-controlled USB 2.0 LPM. See section 5.4.11 and 4.23.5.1.1.1
+	 * in the June 2011 errata release.
+	 */
+	xhci_dbg(xhci, "test port %d software LPM\n", port_num);
+	/*
+	 * Set L1 Device Slot and HIRD/BESL.
+	 * Check device's USB 2.0 extension descriptor to determine whether
+	 * HIRD or BESL shoule be used. See USB2.0 LPM errata.
+	 */
+	pm_addr = port_array[port_num] + 1;
+	hird = xhci_calculate_hird_besl(xhci, udev);
+	temp = PORT_L1DS(udev->slot_id) | PORT_HIRD(hird);
+	xhci_writel(xhci, temp, pm_addr);
+	if (xhci->quirks & XHCI_PORTSC_DELAY)
+		ndelay(100);
+
+	/* Set port link state to U2(L1) */
+	addr = port_array[port_num];
+	xhci_set_link_state(xhci, port_array, port_num, XDEV_U2);
+
+	/* wait for ACK */
+	spin_unlock_irqrestore(&xhci->lock, flags);
+	msleep(10);
+	spin_lock_irqsave(&xhci->lock, flags);
+
+	/* Check L1 Status */
+	ret = handshake(xhci, pm_addr, PORT_L1S_MASK, PORT_L1S_SUCCESS, 125);
+	if (ret != -ETIMEDOUT) {
+		/* enter L1 successfully */
+		temp = xhci_readl(xhci, addr);
+		xhci_dbg(xhci, "port %d entered L1 state, port status 0x%x\n",
+				port_num, temp);
+		ret = 0;
+	} else {
+		temp = xhci_readl(xhci, pm_addr);
+		xhci_dbg(xhci, "port %d software lpm failed, L1 status %d\n",
+				port_num, temp & PORT_L1S_MASK);
+		ret = -EINVAL;
+	}
+
+	/* Resume the port */
+	xhci_set_link_state(xhci, port_array, port_num, XDEV_U0);
+
+	spin_unlock_irqrestore(&xhci->lock, flags);
+	msleep(10);
+	spin_lock_irqsave(&xhci->lock, flags);
+
+	/* Clear PLC */
+	xhci_test_and_clear_bit(xhci, port_array, port_num, PORT_PLC);
+
+	/* Check PORTSC to make sure the device is in the right state */
+	if (!ret) {
+		temp = xhci_readl(xhci, addr);
+		xhci_dbg(xhci, "resumed port %d status 0x%x\n",	port_num, temp);
+		if (!(temp & PORT_CONNECT) || !(temp & PORT_PE) ||
+				(temp & PORT_PLS_MASK) != XDEV_U0) {
+			xhci_dbg(xhci, "port L1 resume fail\n");
+			ret = -EINVAL;
+		}
+	}
+
+	if (ret) {
+		/* Insert dev to lpm_failed_devs list */
+		xhci_warn(xhci, "device LPM test failed, may disconnect and "
+				"re-enumerate\n");
+		dev_info = kzalloc(sizeof(struct dev_info), GFP_ATOMIC);
+		if (!dev_info) {
+			ret = -ENOMEM;
+			goto finish;
+		}
+		dev_info->dev_id = dev_id;
+		INIT_LIST_HEAD(&dev_info->list);
+		list_add(&dev_info->list, &xhci->lpm_failed_devs);
+	} else {
+		xhci_ring_device(xhci, udev->slot_id);
+	}
+
+finish:
+	spin_unlock_irqrestore(&xhci->lock, flags);
+	return ret;
+}
+
+int xhci_set_usb2_hardware_lpm(struct usb_hcd *hcd,
+			struct usb_device *udev, int enable)
+{
+	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+	__le32 __iomem	**port_array;
+	__le32 __iomem	*pm_addr;
+	u32		temp;
+	unsigned int	port_num;
+	unsigned long	flags;
+	int		hird;
+	bool		delay;
+
+	if (hcd->speed == HCD_USB3 || !xhci->hw_lpm_support ||
+			!udev->lpm_capable)
+		return -EPERM;
+
+	if (!udev->parent || udev->parent->parent ||
+			udev->descriptor.bDeviceClass == USB_CLASS_HUB)
+		return -EPERM;
+
+	if (udev->usb2_hw_lpm_capable != 1)
+		return -EPERM;
+
+	if (xhci->quirks & XHCI_PORTSC_DELAY)
+		delay = true;
+
+	spin_lock_irqsave(&xhci->lock, flags);
+
+	port_array = xhci->usb2_ports;
+	port_num = udev->portnum - 1;
+	pm_addr = port_array[port_num] + 1;
+	temp = xhci_readl(xhci, pm_addr);
+
+	xhci_dbg(xhci, "%s port %d USB2 hardware LPM\n",
+			enable ? "enable" : "disable", port_num);
+
+	hird = xhci_calculate_hird_besl(xhci, udev);
+
+	if (enable) {
+		temp &= ~PORT_HIRD_MASK;
+		temp |= PORT_HIRD(hird) | PORT_RWE;
+		xhci_writel(xhci, temp, pm_addr);
+		if (delay)
+			ndelay(100);
+		temp = xhci_readl(xhci, pm_addr);
+		temp |= PORT_HLE;
+		xhci_writel(xhci, temp, pm_addr);
+		if (delay)
+			ndelay(100);
+	} else {
+		temp &= ~(PORT_HLE | PORT_RWE | PORT_HIRD_MASK);
+		xhci_writel(xhci, temp, pm_addr);
+		if (delay)
+			ndelay(100);
+	}
+
+	spin_unlock_irqrestore(&xhci->lock, flags);
+	return 0;
+}
+
+int xhci_update_device(struct usb_hcd *hcd, struct usb_device *udev)
+{
+	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+	int		ret;
+
+	ret = xhci_usb2_software_lpm_test(hcd, udev);
+	if (!ret) {
+		xhci_dbg(xhci, "software LPM test succeed\n");
+		if (xhci->hw_lpm_support == 1) {
+			udev->usb2_hw_lpm_capable = 1;
+			ret = xhci_set_usb2_hardware_lpm(hcd, udev, 1);
+			if (!ret)
+				udev->usb2_hw_lpm_enabled = 1;
+		}
+	}
+
+	return 0;
+}
+
+#else
+
+int xhci_set_usb2_hardware_lpm(struct usb_hcd *hcd,
+				struct usb_device *udev, int enable)
+{
+	return 0;
+}
+
+int xhci_update_device(struct usb_hcd *hcd, struct usb_device *udev)
+{
+	return 0;
+}
+
+#endif /* CONFIG_USB_SUSPEND */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Calculate BESLD, L1 timeout and HIRDM for USB2 PORTHLPMC */
+static int xhci_calculate_usb2_hw_lpm_params(struct usb_device *udev)
+{
+	u32 field;
+	int l1;
+	int besld = 0;
+	int hirdm = 0;
+
+	field = le32_to_cpu(udev->bos->ext_cap->bmAttributes);
+
+	/* xHCI l1 is set in steps of 256us, xHCI 1.0 section 5.4.11.2 */
+	l1 = udev->l1_params.timeout / 256;
+
+	/* device has preferred BESLD */
+	if (field & USB_BESL_DEEP_VALID) {
+		besld = USB_GET_BESL_DEEP(field);
+		hirdm = 1;
+	}
+
+	return PORT_BESLD(besld) | PORT_L1_TIMEOUT(l1) | PORT_HIRDM(hirdm);
+}
+
+int xhci_set_usb2_hardware_lpm(struct usb_hcd *hcd,
+			struct usb_device *udev, int enable)
+{
+	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+	__le32 __iomem	**port_array;
+	__le32 __iomem	*pm_addr, *hlpm_addr;
+	u32		pm_val, hlpm_val, field;
+	unsigned int	port_num;
+	unsigned long	flags;
+	int		hird, exit_latency;
+	int		ret;
+
+	if (hcd->speed == HCD_USB3 || !xhci->hw_lpm_support ||
+			!udev->lpm_capable)
+		return -EPERM;
+
+	if (!udev->parent || udev->parent->parent ||
+			udev->descriptor.bDeviceClass == USB_CLASS_HUB)
+		return -EPERM;
+
+	if (udev->usb2_hw_lpm_capable != 1)
+		return -EPERM;
+
+	spin_lock_irqsave(&xhci->lock, flags);
+
+	port_array = xhci->usb2_ports;
+	port_num = udev->portnum - 1;
+	pm_addr = port_array[port_num] + PORTPMSC;
+	pm_val = readl(pm_addr);
+	hlpm_addr = port_array[port_num] + PORTHLPMC;
+	field = le32_to_cpu(udev->bos->ext_cap->bmAttributes);
+
+	xhci_dbg(xhci, "%s port %d USB2 hardware LPM\n",
+			enable ? "enable" : "disable", port_num);
+
+	if (enable) {
+		/* Host supports BESL timeout instead of HIRD */
+		if (udev->usb2_hw_lpm_besl_capable) {
+			/* if device doesn't have a preferred BESL value use a
+			 * default one which works with mixed HIRD and BESL
+			 * systems. See XHCI_DEFAULT_BESL definition in xhci.h
+			 */
+			if ((field & USB_BESL_SUPPORT) &&
+			    (field & USB_BESL_BASELINE_VALID))
+				hird = USB_GET_BESL_BASELINE(field);
+			else
+				hird = udev->l1_params.besl;
+
+			exit_latency = xhci_besl_encoding[hird];
+			spin_unlock_irqrestore(&xhci->lock, flags);
+
+			/* USB 3.0 code dedicate one xhci->lpm_command->in_ctx
+			 * input context for link powermanagement evaluate
+			 * context commands. It is protected by hcd->bandwidth
+			 * mutex and is shared by all devices. We need to set
+			 * the max ext latency in USB 2 BESL LPM as well, so
+			 * use the same mutex and xhci_change_max_exit_latency()
+			 */
+			mutex_lock(hcd->bandwidth_mutex);
+			ret = xhci_change_max_exit_latency(xhci, udev,
+							   exit_latency);
+			mutex_unlock(hcd->bandwidth_mutex);
+
+			if (ret < 0)
+				return ret;
+			spin_lock_irqsave(&xhci->lock, flags);
+
+			hlpm_val = xhci_calculate_usb2_hw_lpm_params(udev);
+			writel(hlpm_val, hlpm_addr);
+			/* flush write */
+			readl(hlpm_addr);
+		} else {
+			hird = xhci_calculate_hird_besl(xhci, udev);
+		}
+
+		pm_val &= ~PORT_HIRD_MASK;
+		pm_val |= PORT_HIRD(hird) | PORT_RWE | PORT_L1DS(udev->slot_id);
+		writel(pm_val, pm_addr);
+		pm_val = readl(pm_addr);
+		pm_val |= PORT_HLE;
+		writel(pm_val, pm_addr);
+		/* flush write */
+		readl(pm_addr);
+	} else {
+		pm_val &= ~(PORT_HLE | PORT_RWE | PORT_HIRD_MASK | PORT_L1DS_MASK);
+		writel(pm_val, pm_addr);
+		/* flush write */
+		readl(pm_addr);
+		if (udev->usb2_hw_lpm_besl_capable) {
+			spin_unlock_irqrestore(&xhci->lock, flags);
+			mutex_lock(hcd->bandwidth_mutex);
+			xhci_change_max_exit_latency(xhci, udev, 0);
+			mutex_unlock(hcd->bandwidth_mutex);
+			return 0;
+		}
+	}
+
+	spin_unlock_irqrestore(&xhci->lock, flags);
+	return 0;
+}
+
+/* check if a usb2 port supports a given extened capability protocol
+ * only USB2 ports extended protocol capability values are cached.
+ * Return 1 if capability is supported
+ */
+static int xhci_check_usb2_port_capability(struct xhci_hcd *xhci, int port,
+					   unsigned capability)
+{
+	u32 port_offset, port_count;
+	int i;
+
+	for (i = 0; i < xhci->num_ext_caps; i++) {
+		if (xhci->ext_caps[i] & capability) {
+			/* port offsets starts at 1 */
+			port_offset = XHCI_EXT_PORT_OFF(xhci->ext_caps[i]) - 1;
+			port_count = XHCI_EXT_PORT_COUNT(xhci->ext_caps[i]);
+			if (port >= port_offset &&
+			    port < port_offset + port_count)
+				return 1;
+		}
+	}
+	return 0;
+}
+
+int xhci_update_device(struct usb_hcd *hcd, struct usb_device *udev)
+{
+	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+	int		portnum = udev->portnum - 1;
+
+	if (hcd->speed == HCD_USB3 || !xhci->sw_lpm_support ||
+			!udev->lpm_capable)
+		return 0;
+
+	/* we only support lpm for non-hub device connected to root hub yet */
+	if (!udev->parent || udev->parent->parent ||
+			udev->descriptor.bDeviceClass == USB_CLASS_HUB)
+		return 0;
+
+	if (xhci->hw_lpm_support == 1 &&
+			xhci_check_usb2_port_capability(
+				xhci, portnum, XHCI_HLC)) {
+		udev->usb2_hw_lpm_capable = 1;
+		udev->l1_params.timeout = XHCI_L1_TIMEOUT;
+		udev->l1_params.besl = XHCI_DEFAULT_BESL;
+		if (xhci_check_usb2_port_capability(xhci, portnum,
+					XHCI_BLC))
+			udev->usb2_hw_lpm_besl_capable = 1;
+	}
+
+	return 0;
+}
+
+#else
+
+int xhci_set_usb2_hardware_lpm(struct usb_hcd *hcd,
+				struct usb_device *udev, int enable)
+{
+	return 0;
+}
+
+int xhci_update_device(struct usb_hcd *hcd, struct usb_device *udev)
+{
+	return 0;
+}
+
+#endif /* CONFIG_PM_RUNTIME */
+
+/*---------------------- USB 3.0 Link PM functions ------------------------*/
+
+#ifdef CONFIG_PM
+/* Service interval in nanoseconds = 2^(bInterval - 1) * 125us * 1000ns / 1us */
+static unsigned long long xhci_service_interval_to_ns(
+		struct usb_endpoint_descriptor *desc)
+{
+	return (1ULL << (desc->bInterval - 1)) * 125 * 1000;
+}
+
+static u16 xhci_get_timeout_no_hub_lpm(struct usb_device *udev,
+		enum usb3_link_state state)
+{
+	unsigned long long sel;
+	unsigned long long pel;
+	unsigned int max_sel_pel;
+	char *state_name;
+
+	switch (state) {
+	case USB3_LPM_U1:
+		/* Convert SEL and PEL stored in nanoseconds to microseconds */
+		sel = DIV_ROUND_UP(udev->u1_params.sel, 1000);
+		pel = DIV_ROUND_UP(udev->u1_params.pel, 1000);
+		max_sel_pel = USB3_LPM_MAX_U1_SEL_PEL;
+		state_name = "U1";
+		break;
+	case USB3_LPM_U2:
+		sel = DIV_ROUND_UP(udev->u2_params.sel, 1000);
+		pel = DIV_ROUND_UP(udev->u2_params.pel, 1000);
+		max_sel_pel = USB3_LPM_MAX_U2_SEL_PEL;
+		state_name = "U2";
+		break;
+	default:
+		dev_warn(&udev->dev, "%s: Can't get timeout for non-U1 or U2 state.\n",
+				__func__);
+		return USB3_LPM_DISABLED;
+	}
+
+	if (sel <= max_sel_pel && pel <= max_sel_pel)
+		return USB3_LPM_DEVICE_INITIATED;
+
+	if (sel > max_sel_pel)
+		dev_dbg(&udev->dev, "Device-initiated %s disabled "
+				"due to long SEL %llu ms\n",
+				state_name, sel);
+	else
+		dev_dbg(&udev->dev, "Device-initiated %s disabled "
+				"due to long PEL %llu ms\n",
+				state_name, pel);
+	return USB3_LPM_DISABLED;
+}
+
+/* Returns the hub-encoded U1 timeout value.
+ * The U1 timeout should be the maximum of the following values:
+ *  - For control endpoints, U1 system exit latency (SEL) * 3
+ *  - For bulk endpoints, U1 SEL * 5
+ *  - For interrupt endpoints:
+ *    - Notification EPs, U1 SEL * 3
+ *    - Periodic EPs, max(105% of bInterval, U1 SEL * 2)
+ *  - For isochronous endpoints, max(105% of bInterval, U1 SEL * 2)
+ */
+static u16 xhci_calculate_intel_u1_timeout(struct usb_device *udev,
+		struct usb_endpoint_descriptor *desc)
+{
+	unsigned long long timeout_ns;
+	int ep_type;
+	int intr_type;
+
+	ep_type = usb_endpoint_type(desc);
+	switch (ep_type) {
+	case USB_ENDPOINT_XFER_CONTROL:
+		timeout_ns = udev->u1_params.sel * 3;
+		break;
+	case USB_ENDPOINT_XFER_BULK:
+		timeout_ns = udev->u1_params.sel * 5;
+		break;
+	case USB_ENDPOINT_XFER_INT:
+		intr_type = usb_endpoint_interrupt_type(desc);
+		if (intr_type == USB_ENDPOINT_INTR_NOTIFICATION) {
+			timeout_ns = udev->u1_params.sel * 3;
+			break;
+		}
+		/* Otherwise the calculation is the same as isoc eps */
+	case USB_ENDPOINT_XFER_ISOC:
+		timeout_ns = xhci_service_interval_to_ns(desc);
+		timeout_ns = DIV_ROUND_UP_ULL(timeout_ns * 105, 100);
+		if (timeout_ns < udev->u1_params.sel * 2)
+			timeout_ns = udev->u1_params.sel * 2;
+		break;
+	default:
+		return 0;
+	}
+
+	/* The U1 timeout is encoded in 1us intervals. */
+	timeout_ns = DIV_ROUND_UP_ULL(timeout_ns, 1000);
+	/* Don't return a timeout of zero, because that's USB3_LPM_DISABLED. */
+	if (timeout_ns == USB3_LPM_DISABLED)
+		timeout_ns++;
+
+	/* If the necessary timeout value is bigger than what we can set in the
+	 * USB 3.0 hub, we have to disable hub-initiated U1.
+	 */
+	if (timeout_ns <= USB3_LPM_U1_MAX_TIMEOUT)
+		return timeout_ns;
+	dev_dbg(&udev->dev, "Hub-initiated U1 disabled "
+			"due to long timeout %llu ms\n", timeout_ns);
+	return xhci_get_timeout_no_hub_lpm(udev, USB3_LPM_U1);
+}
+
+/* Returns the hub-encoded U2 timeout value.
+ * The U2 timeout should be the maximum of:
+ *  - 10 ms (to avoid the bandwidth impact on the scheduler)
+ *  - largest bInterval of any active periodic endpoint (to avoid going
+ *    into lower power link states between intervals).
+ *  - the U2 Exit Latency of the device
+ */
+static u16 xhci_calculate_intel_u2_timeout(struct usb_device *udev,
+		struct usb_endpoint_descriptor *desc)
+{
+	unsigned long long timeout_ns;
+	unsigned long long u2_del_ns;
+
+	timeout_ns = 10 * 1000 * 1000;
+
+	if ((usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) &&
+			(xhci_service_interval_to_ns(desc) > timeout_ns))
+		timeout_ns = xhci_service_interval_to_ns(desc);
+
+	u2_del_ns = le16_to_cpu(udev->bos->ss_cap->bU2DevExitLat) * 1000ULL;
+	if (u2_del_ns > timeout_ns)
+		timeout_ns = u2_del_ns;
+
+	/* The U2 timeout is encoded in 256us intervals */
+	timeout_ns = DIV_ROUND_UP_ULL(timeout_ns, 256 * 1000);
+	/* If the necessary timeout value is bigger than what we can set in the
+	 * USB 3.0 hub, we have to disable hub-initiated U2.
+	 */
+	if (timeout_ns <= USB3_LPM_U2_MAX_TIMEOUT)
+		return timeout_ns;
+	dev_dbg(&udev->dev, "Hub-initiated U2 disabled "
+			"due to long timeout %llu ms\n", timeout_ns);
+	return xhci_get_timeout_no_hub_lpm(udev, USB3_LPM_U2);
+}
+
+static u16 xhci_call_host_update_timeout_for_endpoint(struct xhci_hcd *xhci,
+		struct usb_device *udev,
+		struct usb_endpoint_descriptor *desc,
+		enum usb3_link_state state,
+		u16 *timeout)
+{
+	if (state == USB3_LPM_U1) {
+		if (xhci->quirks & XHCI_INTEL_HOST)
+			return xhci_calculate_intel_u1_timeout(udev, desc);
+	} else {
+		if (xhci->quirks & XHCI_INTEL_HOST)
+			return xhci_calculate_intel_u2_timeout(udev, desc);
+	}
+
+	return USB3_LPM_DISABLED;
+}
+
+static int xhci_update_timeout_for_endpoint(struct xhci_hcd *xhci,
+		struct usb_device *udev,
+		struct usb_endpoint_descriptor *desc,
+		enum usb3_link_state state,
+		u16 *timeout)
+{
+	u16 alt_timeout;
+
+	alt_timeout = xhci_call_host_update_timeout_for_endpoint(xhci, udev,
+		desc, state, timeout);
+
+	/* If we found we can't enable hub-initiated LPM, or
+	 * the U1 or U2 exit latency was too high to allow
+	 * device-initiated LPM as well, just stop searching.
+	 */
+	if (alt_timeout == USB3_LPM_DISABLED ||
+			alt_timeout == USB3_LPM_DEVICE_INITIATED) {
+		*timeout = alt_timeout;
+		return -E2BIG;
+	}
+	if (alt_timeout > *timeout)
+		*timeout = alt_timeout;
+	return 0;
+}
+
+static int xhci_update_timeout_for_interface(struct xhci_hcd *xhci,
+		struct usb_device *udev,
+		struct usb_host_interface *alt,
+		enum usb3_link_state state,
+		u16 *timeout)
+{
+	int j;
+
+	for (j = 0; j < alt->desc.bNumEndpoints; j++) {
+		if (xhci_update_timeout_for_endpoint(xhci, udev,
+					&alt->endpoint[j].desc, state, timeout))
+			return -E2BIG;
+		continue;
+	}
+	return 0;
+}
+
+static int xhci_check_intel_tier_policy(struct usb_device *udev,
+		enum usb3_link_state state)
+{
+	struct usb_device *parent;
+	unsigned int num_hubs;
+
+	if (state == USB3_LPM_U2)
+		return 0;
+
+	/* Don't enable U1 if the device is on a 2nd tier hub or lower. */
+	for (parent = udev->parent, num_hubs = 0; parent->parent;
+			parent = parent->parent)
+		num_hubs++;
+
+	if (num_hubs < 2)
+		return 0;
+
+	dev_dbg(&udev->dev, "Disabling U1 link state for device"
+			" below second-tier hub.\n");
+	dev_dbg(&udev->dev, "Plug device into first-tier hub "
+			"to decrease power consumption.\n");
+	return -E2BIG;
+}
+
+static int xhci_check_tier_policy(struct xhci_hcd *xhci,
+		struct usb_device *udev,
+		enum usb3_link_state state)
+{
+	if (xhci->quirks & XHCI_INTEL_HOST)
+		return xhci_check_intel_tier_policy(udev, state);
+	return -EINVAL;
+}
+
+/* Returns the U1 or U2 timeout that should be enabled.
+ * If the tier check or timeout setting functions return with a non-zero exit
+ * code, that means the timeout value has been finalized and we shouldn't look
+ * at any more endpoints.
+ */
+static u16 xhci_calculate_lpm_timeout(struct usb_hcd *hcd,
+			struct usb_device *udev, enum usb3_link_state state)
+{
+	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+	struct usb_host_config *config;
+	char *state_name;
+	int i;
+	u16 timeout = USB3_LPM_DISABLED;
+
+	if (state == USB3_LPM_U1)
+		state_name = "U1";
+	else if (state == USB3_LPM_U2)
+		state_name = "U2";
+	else {
+		dev_warn(&udev->dev, "Can't enable unknown link state %i\n",
+				state);
+		return timeout;
+	}
+
+	if (xhci_check_tier_policy(xhci, udev, state) < 0)
+		return timeout;
+
+	/* Gather some information about the currently installed configuration
+	 * and alternate interface settings.
+	 */
+	if (xhci_update_timeout_for_endpoint(xhci, udev, &udev->ep0.desc,
+			state, &timeout))
+		return timeout;
+
+	config = udev->actconfig;
+	if (!config)
+		return timeout;
+
+	for (i = 0; i < config->desc.bNumInterfaces; i++) {
+		struct usb_driver *driver;
+		struct usb_interface *intf = config->interface[i];
+
+		if (!intf)
+			continue;
+
+		/* Check if any currently bound drivers want hub-initiated LPM
+		 * disabled.
+		 */
+		if (intf->dev.driver) {
+			driver = to_usb_driver(intf->dev.driver);
+			if (driver && driver->disable_hub_initiated_lpm) {
+				dev_dbg(&udev->dev, "Hub-initiated %s disabled "
+						"at request of driver %s\n",
+						state_name, driver->name);
+				return xhci_get_timeout_no_hub_lpm(udev, state);
+			}
+		}
+
+		/* Not sure how this could happen... */
+		if (!intf->cur_altsetting)
+			continue;
+
+		if (xhci_update_timeout_for_interface(xhci, udev,
+					intf->cur_altsetting,
+					state, &timeout))
+			return timeout;
+	}
+	return timeout;
+}
+
+static int calculate_max_exit_latency(struct usb_device *udev,
+		enum usb3_link_state state_changed,
+		u16 hub_encoded_timeout)
+{
+	unsigned long long u1_mel_us = 0;
+	unsigned long long u2_mel_us = 0;
+	unsigned long long mel_us = 0;
+	bool disabling_u1;
+	bool disabling_u2;
+	bool enabling_u1;
+	bool enabling_u2;
+
+	disabling_u1 = (state_changed == USB3_LPM_U1 &&
+			hub_encoded_timeout == USB3_LPM_DISABLED);
+	disabling_u2 = (state_changed == USB3_LPM_U2 &&
+			hub_encoded_timeout == USB3_LPM_DISABLED);
+
+	enabling_u1 = (state_changed == USB3_LPM_U1 &&
+			hub_encoded_timeout != USB3_LPM_DISABLED);
+	enabling_u2 = (state_changed == USB3_LPM_U2 &&
+			hub_encoded_timeout != USB3_LPM_DISABLED);
+
+	/* If U1 was already enabled and we're not disabling it,
+	 * or we're going to enable U1, account for the U1 max exit latency.
+	 */
+	if ((udev->u1_params.timeout != USB3_LPM_DISABLED && !disabling_u1) ||
+			enabling_u1)
+		u1_mel_us = DIV_ROUND_UP(udev->u1_params.mel, 1000);
+	if ((udev->u2_params.timeout != USB3_LPM_DISABLED && !disabling_u2) ||
+			enabling_u2)
+		u2_mel_us = DIV_ROUND_UP(udev->u2_params.mel, 1000);
+
+	if (u1_mel_us > u2_mel_us)
+		mel_us = u1_mel_us;
+	else
+		mel_us = u2_mel_us;
+	/* xHCI host controller max exit latency field is only 16 bits wide. */
+	if (mel_us > MAX_EXIT) {
+		dev_warn(&udev->dev, "Link PM max exit latency of %lluus "
+				"is too big.\n", mel_us);
+		return -E2BIG;
+	}
+	return mel_us;
+}
+
+/* Returns the USB3 hub-encoded value for the U1/U2 timeout. */
+int xhci_enable_usb3_lpm_timeout(struct usb_hcd *hcd,
+			struct usb_device *udev, enum usb3_link_state state)
+{
+	struct xhci_hcd	*xhci;
+	u16 hub_encoded_timeout;
+	int mel;
+	int ret;
+
+	xhci = hcd_to_xhci(hcd);
+	/* The LPM timeout values are pretty host-controller specific, so don't
+	 * enable hub-initiated timeouts unless the vendor has provided
+	 * information about their timeout algorithm.
+	 */
+	if (!xhci || !(xhci->quirks & XHCI_LPM_SUPPORT) ||
+			!xhci->devs[udev->slot_id])
+		return USB3_LPM_DISABLED;
+
+	hub_encoded_timeout = xhci_calculate_lpm_timeout(hcd, udev, state);
+	mel = calculate_max_exit_latency(udev, state, hub_encoded_timeout);
+	if (mel < 0) {
+		/* Max Exit Latency is too big, disable LPM. */
+		hub_encoded_timeout = USB3_LPM_DISABLED;
+		mel = 0;
+	}
+
+	ret = xhci_change_max_exit_latency(xhci, udev, mel);
+	if (ret)
+		return ret;
+	return hub_encoded_timeout;
+}
+
+int xhci_disable_usb3_lpm_timeout(struct usb_hcd *hcd,
+			struct usb_device *udev, enum usb3_link_state state)
+{
+	struct xhci_hcd	*xhci;
+	u16 mel;
+	int ret;
+
+	xhci = hcd_to_xhci(hcd);
+	if (!xhci || !(xhci->quirks & XHCI_LPM_SUPPORT) ||
+			!xhci->devs[udev->slot_id])
+		return 0;
+
+	mel = calculate_max_exit_latency(udev, state, USB3_LPM_DISABLED);
+	ret = xhci_change_max_exit_latency(xhci, udev, mel);
+	if (ret)
+		return ret;
+	return 0;
+}
+#else /* CONFIG_PM */
+
+int xhci_enable_usb3_lpm_timeout(struct usb_hcd *hcd,
+			struct usb_device *udev, enum usb3_link_state state)
+{
+	return USB3_LPM_DISABLED;
+}
+
+int xhci_disable_usb3_lpm_timeout(struct usb_hcd *hcd,
+			struct usb_device *udev, enum usb3_link_state state)
+{
+	return 0;
+}
+#endif	/* CONFIG_PM */
+
+/*-------------------------------------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 /* Once a hub descriptor is fetched for a device, we need to update the xHC's
  * internal data structures for the device.
  */
@@ -3046,10 +6322,37 @@ int xhci_update_hub_device(struct usb_hcd *hcd, struct usb_device *hdev,
 		xhci_dbg(xhci, "Could not allocate xHCI command structure.\n");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 
 	spin_lock_irqsave(&xhci->lock, flags);
+<<<<<<< HEAD
+=======
+=======
+	ctrl_ctx = xhci_get_input_control_ctx(xhci, config_cmd->in_ctx);
+	if (!ctrl_ctx) {
+		xhci_warn(xhci, "%s: Could not get input context, bad type.\n",
+				__func__);
+		xhci_free_command(xhci, config_cmd);
+		return -ENOMEM;
+	}
+
+	spin_lock_irqsave(&xhci->lock, flags);
+>>>>>>> refs/remotes/origin/master
+	if (hdev->speed == USB_SPEED_HIGH &&
+			xhci_alloc_tt_info(xhci, vdev, hdev, tt, GFP_ATOMIC)) {
+		xhci_dbg(xhci, "Could not allocate xHCI TT structure.\n");
+		xhci_free_command(xhci, config_cmd);
+		spin_unlock_irqrestore(&xhci->lock, flags);
+		return -ENOMEM;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	xhci_slot_copy(xhci, config_cmd->in_ctx, vdev->out_ctx);
 	ctrl_ctx = xhci_get_input_control_ctx(xhci, config_cmd->in_ctx);
+=======
+	xhci_slot_copy(xhci, config_cmd->in_ctx, vdev->out_ctx);
+>>>>>>> refs/remotes/origin/master
 	ctrl_ctx->add_flags |= cpu_to_le32(SLOT_FLAG);
 	slot_ctx = xhci_get_slot_ctx(xhci, config_cmd->in_ctx);
 	slot_ctx->dev_info |= cpu_to_le32(DEV_HUB);
@@ -3108,25 +6411,209 @@ int xhci_get_frame(struct usb_hcd *hcd)
 {
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
 	/* EHCI mods by the periodic size.  Why? */
+<<<<<<< HEAD
 	return xhci_readl(xhci, &xhci->run_regs->microframe_index) >> 3;
 }
 
+<<<<<<< HEAD
+=======
+=======
+	return readl(&xhci->run_regs->microframe_index) >> 3;
+}
+
+>>>>>>> refs/remotes/origin/master
+int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
+{
+	struct xhci_hcd		*xhci;
+	struct device		*dev = hcd->self.controller;
+	int			retval;
+<<<<<<< HEAD
+	u32			temp;
+
+	/* Accept arbitrarily long scatter-gather lists */
+	hcd->self.sg_tablesize = ~0;
+=======
+
+	/* Limit the block layer scatter-gather lists to half a segment. */
+	hcd->self.sg_tablesize = TRBS_PER_SEGMENT / 2;
+
+	/* support to build packet from discontinuous buffers */
+	hcd->self.no_sg_constraint = 1;
+
+	/* XHCI controllers don't stop the ep queue on short packets :| */
+	hcd->self.no_stop_on_short = 1;
+>>>>>>> refs/remotes/origin/master
+
+	if (usb_hcd_is_primary_hcd(hcd)) {
+		xhci = kzalloc(sizeof(struct xhci_hcd), GFP_KERNEL);
+		if (!xhci)
+			return -ENOMEM;
+		*((struct xhci_hcd **) hcd->hcd_priv) = xhci;
+		xhci->main_hcd = hcd;
+		/* Mark the first roothub as being USB 2.0.
+		 * The xHCI driver will register the USB 3.0 roothub.
+		 */
+		hcd->speed = HCD_USB2;
+		hcd->self.root_hub->speed = USB_SPEED_HIGH;
+		/*
+		 * USB 2.0 roothub under xHCI has an integrated TT,
+		 * (rate matching hub) as opposed to having an OHCI/UHCI
+		 * companion controller.
+		 */
+		hcd->has_tt = 1;
+	} else {
+		/* xHCI private pointer was set in xhci_pci_probe for the second
+		 * registered roothub.
+		 */
+<<<<<<< HEAD
+		xhci = hcd_to_xhci(hcd);
+		temp = xhci_readl(xhci, &xhci->cap_regs->hcc_params);
+		if (HCC_64BIT_ADDR(temp)) {
+			xhci_dbg(xhci, "Enabling 64-bit DMA addresses.\n");
+			dma_set_mask(hcd->self.controller, DMA_BIT_MASK(64));
+		} else {
+			dma_set_mask(hcd->self.controller, DMA_BIT_MASK(32));
+		}
+=======
+>>>>>>> refs/remotes/origin/master
+		return 0;
+	}
+
+	xhci->cap_regs = hcd->regs;
+	xhci->op_regs = hcd->regs +
+<<<<<<< HEAD
+		HC_LENGTH(xhci_readl(xhci, &xhci->cap_regs->hc_capbase));
+	xhci->run_regs = hcd->regs +
+		(xhci_readl(xhci, &xhci->cap_regs->run_regs_off) & RTSOFF_MASK);
+	/* Cache read-only capability registers */
+	xhci->hcs_params1 = xhci_readl(xhci, &xhci->cap_regs->hcs_params1);
+	xhci->hcs_params2 = xhci_readl(xhci, &xhci->cap_regs->hcs_params2);
+	xhci->hcs_params3 = xhci_readl(xhci, &xhci->cap_regs->hcs_params3);
+	xhci->hcc_params = xhci_readl(xhci, &xhci->cap_regs->hc_capbase);
+	xhci->hci_version = HC_VERSION(xhci->hcc_params);
+	xhci->hcc_params = xhci_readl(xhci, &xhci->cap_regs->hcc_params);
+	xhci_print_registers(xhci);
+
+=======
+		HC_LENGTH(readl(&xhci->cap_regs->hc_capbase));
+	xhci->run_regs = hcd->regs +
+		(readl(&xhci->cap_regs->run_regs_off) & RTSOFF_MASK);
+	/* Cache read-only capability registers */
+	xhci->hcs_params1 = readl(&xhci->cap_regs->hcs_params1);
+	xhci->hcs_params2 = readl(&xhci->cap_regs->hcs_params2);
+	xhci->hcs_params3 = readl(&xhci->cap_regs->hcs_params3);
+	xhci->hcc_params = readl(&xhci->cap_regs->hc_capbase);
+	xhci->hci_version = HC_VERSION(xhci->hcc_params);
+	xhci->hcc_params = readl(&xhci->cap_regs->hcc_params);
+	xhci_print_registers(xhci);
+
+	xhci->quirks = quirks;
+
+>>>>>>> refs/remotes/origin/master
+	get_quirks(dev, xhci);
+
+	/* In xhci controllers which follow xhci 1.0 spec gives a spurious
+	 * success event after a short transfer. This quirk will ignore such
+	 * spurious event.
+	 */
+	if (xhci->hci_version > 0x96)
+		xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
+
+	/* Make sure the HC is halted. */
+	retval = xhci_halt(xhci);
+	if (retval)
+		goto error;
+
+	xhci_dbg(xhci, "Resetting HCD\n");
+	/* Reset the internal HC memory state and registers. */
+	retval = xhci_reset(xhci);
+	if (retval)
+		goto error;
+	xhci_dbg(xhci, "Reset complete\n");
+
+<<<<<<< HEAD
+	temp = xhci_readl(xhci, &xhci->cap_regs->hcc_params);
+	if (HCC_64BIT_ADDR(temp)) {
+		xhci_dbg(xhci, "Enabling 64-bit DMA addresses.\n");
+		dma_set_mask(hcd->self.controller, DMA_BIT_MASK(64));
+	} else {
+		dma_set_mask(hcd->self.controller, DMA_BIT_MASK(32));
+	}
+
+<<<<<<< HEAD
+=======
+	/* Set dma_mask and coherent_dma_mask to 64-bits,
+	 * if xHC supports 64-bit addressing */
+	if (HCC_64BIT_ADDR(xhci->hcc_params) &&
+			!dma_set_mask(dev, DMA_BIT_MASK(64))) {
+		xhci_dbg(xhci, "Enabling 64-bit DMA addresses.\n");
+		dma_set_coherent_mask(dev, DMA_BIT_MASK(64));
+	}
+
+	xhci_dbg(xhci, "Calling HCD init\n");
+	/* Initialize HCD and host controller data structures. */
+	retval = xhci_init(hcd);
+	if (retval)
+		goto error;
+	xhci_dbg(xhci, "Called HCD init\n");
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	return 0;
+error:
+	kfree(xhci);
+	return retval;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_LICENSE("GPL");
 
 static int __init xhci_hcd_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	int retval = 0;
 
 	retval = xhci_register_pci();
 
+=======
+	int retval;
+
+	retval = xhci_register_pci();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval < 0) {
 		printk(KERN_DEBUG "Problem registering PCI driver.");
 		return retval;
 	}
+<<<<<<< HEAD
 #endif
+=======
+	retval = xhci_register_plat();
+	if (retval < 0) {
+		printk(KERN_DEBUG "Problem registering platform driver.");
+		goto unreg_pci;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retval;
+
+	retval = xhci_register_pci();
+	if (retval < 0) {
+		pr_debug("Problem registering PCI driver.\n");
+		return retval;
+	}
+	retval = xhci_register_plat();
+	if (retval < 0) {
+		pr_debug("Problem registering platform driver.\n");
+		goto unreg_pci;
+	}
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Check the compiler generated sizes of structures that must be laid
 	 * out in specific ways for hardware access.
@@ -3144,15 +6631,38 @@ static int __init xhci_hcd_init(void)
 	BUILD_BUG_ON(sizeof(struct xhci_intr_reg) != 8*32/8);
 	/* xhci_run_regs has eight fields and embeds 128 xhci_intr_regs */
 	BUILD_BUG_ON(sizeof(struct xhci_run_regs) != (8+8*128)*32/8);
+<<<<<<< HEAD
 	BUILD_BUG_ON(sizeof(struct xhci_doorbell_array) != 256*32/8);
 	return 0;
+<<<<<<< HEAD
+=======
+unreg_pci:
+	xhci_unregister_pci();
+	return retval;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+unreg_pci:
+	xhci_unregister_pci();
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 module_init(xhci_hcd_init);
 
 static void __exit xhci_hcd_cleanup(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	xhci_unregister_pci();
 #endif
+=======
+	xhci_unregister_pci();
+	xhci_unregister_plat();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xhci_unregister_pci();
+	xhci_unregister_plat();
+>>>>>>> refs/remotes/origin/master
 }
 module_exit(xhci_hcd_cleanup);

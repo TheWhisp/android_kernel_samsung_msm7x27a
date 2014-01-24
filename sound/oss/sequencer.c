@@ -19,6 +19,10 @@
 #include "sound_config.h"
 
 #include "midi_ctrl.h"
+<<<<<<< HEAD
+=======
+#include "sleep.h"
+>>>>>>> refs/remotes/origin/master
 
 static int      sequencer_ok;
 static struct sound_timer_operations *tmr;
@@ -100,8 +104,12 @@ int sequencer_read(int dev, struct file *file, char __user *buf, int count)
   			return -EAGAIN;
   		}
 
+<<<<<<< HEAD
  		interruptible_sleep_on_timeout(&midi_sleeper,
 					       pre_event_timeout);
+=======
+		oss_broken_sleep_on(&midi_sleeper, pre_event_timeout);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&lock,flags);
 		if (!iqlen)
 		{
@@ -343,7 +351,11 @@ static int seq_queue(unsigned char *note, char nonblock)
 		/*
 		 * Sleep until there is enough space on the queue
 		 */
+<<<<<<< HEAD
 		interruptible_sleep_on(&seq_sleeper);
+=======
+		oss_broken_sleep_on(&seq_sleeper, MAX_SCHEDULE_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (qlen >= SEQ_MAX_QUEUE)
 	{
@@ -545,6 +557,12 @@ static void seq_chn_common_event(unsigned char *event_rec)
 		case MIDI_PGM_CHANGE:
 			if (seq_mode == SEQ_2)
 			{
+<<<<<<< HEAD
+=======
+				if (chn > 15)
+					break;
+
+>>>>>>> refs/remotes/origin/master
 				synth_devs[dev]->chn_info[chn].pgm_num = p1;
 				if ((int) dev >= num_synths)
 					synth_devs[dev]->set_instr(dev, chn, p1);
@@ -596,6 +614,12 @@ static void seq_chn_common_event(unsigned char *event_rec)
 		case MIDI_PITCH_BEND:
 			if (seq_mode == SEQ_2)
 			{
+<<<<<<< HEAD
+=======
+				if (chn > 15)
+					break;
+
+>>>>>>> refs/remotes/origin/master
 				synth_devs[dev]->chn_info[chn].bender_value = w14;
 
 				if ((int) dev < num_synths)
@@ -1116,8 +1140,12 @@ static void seq_drain_midi_queues(void)
 		 */
 
  		if (n)
+<<<<<<< HEAD
  			interruptible_sleep_on_timeout(&seq_sleeper,
 						       HZ/10);
+=======
+			oss_broken_sleep_on(&seq_sleeper, HZ/10);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1139,8 +1167,12 @@ void sequencer_release(int dev, struct file *file)
 		while (!signal_pending(current) && qlen > 0)
 		{
   			seq_sync();
+<<<<<<< HEAD
  			interruptible_sleep_on_timeout(&seq_sleeper,
 						       3*HZ);
+=======
+			oss_broken_sleep_on(&seq_sleeper, 3*HZ);
+>>>>>>> refs/remotes/origin/master
  			/* Extra delay */
 		}
 	}
@@ -1195,7 +1227,11 @@ static int seq_sync(void)
 		seq_startplay();
 
  	if (qlen > 0)
+<<<<<<< HEAD
  		interruptible_sleep_on_timeout(&seq_sleeper, HZ);
+=======
+		oss_broken_sleep_on(&seq_sleeper, HZ);
+>>>>>>> refs/remotes/origin/master
 	return qlen;
 }
 
@@ -1218,7 +1254,11 @@ static void midi_outc(int dev, unsigned char data)
 
 	spin_lock_irqsave(&lock,flags);
  	while (n && !midi_devs[dev]->outputc(dev, data)) {
+<<<<<<< HEAD
  		interruptible_sleep_on_timeout(&seq_sleeper, HZ/25);
+=======
+		oss_broken_sleep_on(&seq_sleeper, HZ/25);
+>>>>>>> refs/remotes/origin/master
   		n--;
   	}
 	spin_unlock_irqrestore(&lock,flags);

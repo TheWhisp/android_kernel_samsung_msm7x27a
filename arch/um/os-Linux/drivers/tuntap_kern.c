@@ -7,7 +7,11 @@
 #include <linux/init.h>
 #include <linux/skbuff.h>
 #include <asm/errno.h>
+<<<<<<< HEAD
 #include "net_kern.h"
+=======
+#include <net_kern.h>
+>>>>>>> refs/remotes/origin/master
 #include "tuntap.h"
 
 struct tuntap_init {

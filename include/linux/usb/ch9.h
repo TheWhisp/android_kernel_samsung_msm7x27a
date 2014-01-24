@@ -29,11 +29,16 @@
  *     someone that the two other points are non-issues for that
  *     particular descriptor type.
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_USB_CH9_H
 #define __LINUX_USB_CH9_H
 
 #include <linux/types.h>	/* __u8 etc */
+<<<<<<< HEAD
+=======
+#include <asm/byteorder.h>	/* le16_to_cpu */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*-------------------------------------------------------------------------*/
 
@@ -133,6 +138,21 @@
 #define	TEST_PACKET	4
 #define	TEST_FORCE_EN	5
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* OTG test mode feature bits
+ * See ECN OTG2.0 spec Table 6-8
+ */
+#define TEST_OTG_SRP_REQD	6
+#define TEST_OTG_HNP_REQD	7
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * New Feature Selectors as added by USB 3.0
  * See USB 3.0 spec Table 9-6
@@ -143,12 +163,38 @@
 #define USB_INTRF_FUNC_SUSPEND	0	/* function suspend */
 
 #define USB_INTR_FUNC_SUSPEND_OPT_MASK	0xFF00
+<<<<<<< HEAD
 
 #define USB_ENDPOINT_HALT		0	/* IN/OUT will STALL */
 
 #define OTG_STATUS_SELECTOR	0xF000
 #define THOST_REQ_POLL		2000    /* msec */
 #define HOST_REQUEST_FLAG	0
+=======
+/*
+ * Suspend Options, Table 9-7 USB 3.0 spec
+ */
+#define USB_INTRF_FUNC_SUSPEND_LP	(1 << (8 + 0))
+#define USB_INTRF_FUNC_SUSPEND_RW	(1 << (8 + 1))
+
+/*
+ * Interface status, Figure 9-5 USB 3.0 spec
+ */
+#define USB_INTRF_STAT_FUNC_RW_CAP     1
+#define USB_INTRF_STAT_FUNC_RW         2
+
+#define USB_ENDPOINT_HALT		0	/* IN/OUT will STALL */
+
+#define OTG_STATUS_SELECTOR		0xF000
+#define HOST_REQUEST_FLAG		0
+#define THOST_REQ_POLL			1500    /* msec (1000 - 2000) */
+#define OTG_TTST_SUSP			70	/* msec (0 - 100) */
+
+#define OTG_TTST_VBUS_OFF               1
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Bit array elements as returned by the USB_REQ_GET_STATUS request. */
 #define USB_DEV_STAT_U1_ENABLED		2	/* transition into U1 state */
@@ -381,12 +427,15 @@ struct usb_endpoint_descriptor {
 #define USB_ENDPOINT_NUMBER_MASK	0x0f	/* in bEndpointAddress */
 #define USB_ENDPOINT_DIR_MASK		0x80
 
+<<<<<<< HEAD
 #define USB_ENDPOINT_SYNCTYPE		0x0c
 #define USB_ENDPOINT_SYNC_NONE		(0 << 2)
 #define USB_ENDPOINT_SYNC_ASYNC		(1 << 2)
 #define USB_ENDPOINT_SYNC_ADAPTIVE	(2 << 2)
 #define USB_ENDPOINT_SYNC_SYNC		(3 << 2)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define USB_ENDPOINT_XFERTYPE_MASK	0x03	/* in bmAttributes */
 #define USB_ENDPOINT_XFER_CONTROL	0
 #define USB_ENDPOINT_XFER_ISOC		1
@@ -394,6 +443,20 @@ struct usb_endpoint_descriptor {
 #define USB_ENDPOINT_XFER_INT		3
 #define USB_ENDPOINT_MAX_ADJUSTABLE	0x80
 
+<<<<<<< HEAD
+=======
+#define USB_ENDPOINT_SYNCTYPE		0x0c
+#define USB_ENDPOINT_SYNC_NONE		(0 << 2)
+#define USB_ENDPOINT_SYNC_ASYNC		(1 << 2)
+#define USB_ENDPOINT_SYNC_ADAPTIVE	(2 << 2)
+#define USB_ENDPOINT_SYNC_SYNC		(3 << 2)
+
+#define USB_ENDPOINT_USAGE_MASK		0x30
+#define USB_ENDPOINT_USAGE_DATA		0x00
+#define USB_ENDPOINT_USAGE_FEEDBACK	0x10
+#define USB_ENDPOINT_USAGE_IMPLICIT_FB	0x20	/* Implicit feedback Data endpoint */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*-------------------------------------------------------------------------*/
 
 /**
@@ -574,6 +637,20 @@ static inline int usb_endpoint_is_isoc_out(
 	return usb_endpoint_xfer_isoc(epd) && usb_endpoint_dir_out(epd);
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * usb_endpoint_maxp - get endpoint's max packet size
+ * @epd: endpoint to be checked
+ *
+ * Returns @epd's max packet
+ */
+static inline int usb_endpoint_maxp(const struct usb_endpoint_descriptor *epd)
+{
+	return __le16_to_cpu(epd->wMaxPacketSize);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*-------------------------------------------------------------------------*/
 
 /* USB_DT_SS_ENDPOINT_COMP: SuperSpeed Endpoint Companion descriptor */
@@ -635,8 +712,22 @@ struct usb_otg_descriptor {
 	__u8  bDescriptorType;
 
 	__u8  bmAttributes;	/* support for HNP, SRP, etc */
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 
+=======
+	__le16 bcdOTG;
+} __attribute__ ((packed));
+
+#define USB_DT_OTG_SIZE		5
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__le16 bcdOTG;
+} __attribute__ ((packed));
+
+#define USB_DT_OTG_SIZE		5
+>>>>>>> refs/remotes/origin/cm-11.0
 /* from usb_otg_descriptor.bmAttributes */
 #define USB_OTG_SRP		(1 << 0)
 #define USB_OTG_HNP		(1 << 1)	/* swap host/device roles */
@@ -771,6 +862,14 @@ struct usb_ext_cap_descriptor {		/* Link Power Management */
 	__u8  bDevCapabilityType;
 	__le32 bmAttributes;
 #define USB_LPM_SUPPORT			(1 << 1)	/* supports LPM */
+<<<<<<< HEAD
+=======
+#define USB_BESL_SUPPORT		(1 << 2)	/* supports BESL */
+#define USB_BESL_BASELINE_VALID		(1 << 3)	/* Baseline BESL valid*/
+#define USB_BESL_DEEP_VALID		(1 << 4)	/* Deep BESL valid */
+#define USB_GET_BESL_BASELINE(p)	(((p) & (0xf << 8)) >> 8)
+#define USB_GET_BESL_DEEP(p)		(((p) & (0xf << 12)) >> 12)
+>>>>>>> refs/remotes/origin/cm-10.0
 } __attribute__((packed));
 
 #define USB_DT_USB_EXT_CAP_SIZE	7
@@ -873,6 +972,29 @@ enum usb_device_speed {
 	USB_SPEED_SUPER,			/* usb 3.0 */
 };
 
+<<<<<<< HEAD
+=======
+#ifdef __KERNEL__
+=======
+#ifndef __LINUX_USB_CH9_H
+#define __LINUX_USB_CH9_H
+
+#include <uapi/linux/usb/ch9.h>
+
+>>>>>>> refs/remotes/origin/master
+
+/**
+ * usb_speed_string() - Returns human readable-name of the speed.
+ * @speed: The speed to return human-readable name for.  If it's not
+ *   any of the speeds defined in usb_device_speed enum, string for
+ *   USB_SPEED_UNKNOWN will be returned.
+ */
+extern const char *usb_speed_string(enum usb_device_speed speed);
+
+<<<<<<< HEAD
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 enum usb_device_state {
 	/* NOTATTACHED isn't in the USB spec, and this state acts
 	 * the same as ATTACHED ... but it's clearer this way.
@@ -907,5 +1029,15 @@ enum usb_device_state {
  * http://compliance.usb.org/index.asp?UpdateFile=Electrical&Format=Standard#34
  */
 #define USB_SELF_POWER_VBUS_MAX_DRAW		100
+=======
+
+/**
+ * usb_state_string - Returns human readable name for the state.
+ * @state: The state to return a human-readable name for. If it's not
+ *	any of the states devices in usb_device_state_string enum,
+ *	the string UNKNOWN will be returned.
+ */
+extern const char *usb_state_string(enum usb_device_state state);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __LINUX_USB_CH9_H */

@@ -58,7 +58,11 @@ static int x25_receive_data(struct sk_buff *skb, struct x25_neigh *nb)
 		if (!sock_owned_by_user(sk)) {
 			queued = x25_process_rx_frame(sk, skb);
 		} else {
+<<<<<<< HEAD
 			queued = !sk_add_backlog(sk, skb);
+=======
+			queued = !sk_add_backlog(sk, skb, sk->sk_rcvbuf);
+>>>>>>> refs/remotes/origin/master
 		}
 		bh_unlock_sock(sk);
 		sock_put(sk);
@@ -152,6 +156,8 @@ void x25_establish_link(struct x25_neigh *nb)
 	unsigned char *ptr;
 
 	switch (nb->dev->type) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case ARPHRD_X25:
 			if ((skb = alloc_skb(1, GFP_ATOMIC)) == NULL) {
 				printk(KERN_ERR "x25_dev: out of memory\n");
@@ -167,6 +173,28 @@ void x25_establish_link(struct x25_neigh *nb)
 #endif
 		default:
 			return;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case ARPHRD_X25:
+		if ((skb = alloc_skb(1, GFP_ATOMIC)) == NULL) {
+			printk(KERN_ERR "x25_dev: out of memory\n");
+			return;
+		}
+		ptr  = skb_put(skb, 1);
+		*ptr = X25_IFACE_CONNECT;
+		break;
+
+#if IS_ENABLED(CONFIG_LLC)
+	case ARPHRD_ETHER:
+		return;
+#endif
+	default:
+		return;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	skb->protocol = htons(ETH_P_X25);
@@ -180,7 +208,15 @@ void x25_terminate_link(struct x25_neigh *nb)
 	struct sk_buff *skb;
 	unsigned char *ptr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_LLC) || defined(CONFIG_LLC_MODULE)
+=======
+#if IS_ENABLED(CONFIG_LLC)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_LLC)
+>>>>>>> refs/remotes/origin/master
 	if (nb->dev->type == ARPHRD_ETHER)
 		return;
 #endif
@@ -208,6 +244,8 @@ void x25_send_frame(struct sk_buff *skb, struct x25_neigh *nb)
 	skb_reset_network_header(skb);
 
 	switch (nb->dev->type) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case ARPHRD_X25:
 			dptr  = skb_push(skb, 1);
 			*dptr = X25_IFACE_DATA;
@@ -221,6 +259,26 @@ void x25_send_frame(struct sk_buff *skb, struct x25_neigh *nb)
 		default:
 			kfree_skb(skb);
 			return;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case ARPHRD_X25:
+		dptr  = skb_push(skb, 1);
+		*dptr = X25_IFACE_DATA;
+		break;
+
+#if IS_ENABLED(CONFIG_LLC)
+	case ARPHRD_ETHER:
+		kfree_skb(skb);
+		return;
+#endif
+	default:
+		kfree_skb(skb);
+		return;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	skb->protocol = htons(ETH_P_X25);

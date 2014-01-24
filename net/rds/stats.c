@@ -33,6 +33,14 @@
 #include <linux/percpu.h>
 #include <linux/seq_file.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "rds.h"
 
@@ -86,6 +94,10 @@ void rds_stats_info_copy(struct rds_info_iterator *iter,
 	for (i = 0; i < nr; i++) {
 		BUG_ON(strlen(names[i]) >= sizeof(ctr.name));
 		strncpy(ctr.name, names[i], sizeof(ctr.name) - 1);
+<<<<<<< HEAD
+=======
+		ctr.name[sizeof(ctr.name) - 1] = '\0';
+>>>>>>> refs/remotes/origin/master
 		ctr.value = values[i];
 
 		rds_info_copy(iter, &ctr, sizeof(ctr));

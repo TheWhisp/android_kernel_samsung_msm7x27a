@@ -2,17 +2,24 @@
 #define _LINUX_NAMEI_H
 
 #include <linux/dcache.h>
+<<<<<<< HEAD
+=======
+#include <linux/errno.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/linkage.h>
 #include <linux/path.h>
 
 struct vfsmount;
 
+<<<<<<< HEAD
 struct open_intent {
 	int	flags;
 	int	create_mode;
 	struct file *file;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum { MAX_NESTED_LINKS = 8 };
 
 struct nameidata {
@@ -21,6 +28,7 @@ struct nameidata {
 	struct path	root;
 	struct inode	*inode; /* path.dentry.d_inode */
 	unsigned int	flags;
+<<<<<<< HEAD
 	unsigned	seq;
 	int		last_type;
 	unsigned	depth;
@@ -30,6 +38,12 @@ struct nameidata {
 	union {
 		struct open_intent open;
 	} intent;
+=======
+	unsigned	seq, m_seq;
+	int		last_type;
+	unsigned	depth;
+	char *saved_names[MAX_NESTED_LINKS + 1];
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -48,13 +62,29 @@ enum {LAST_NORM, LAST_ROOT, LAST_DOT, LAST_DOTDOT, LAST_BIND};
  */
 #define LOOKUP_FOLLOW		0x0001
 #define LOOKUP_DIRECTORY	0x0002
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define LOOKUP_CONTINUE		0x0004
 #define LOOKUP_AUTOMOUNT	0x0008
+=======
+#define LOOKUP_AUTOMOUNT	0x0004
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LOOKUP_AUTOMOUNT	0x0004
+>>>>>>> refs/remotes/origin/master
 
 #define LOOKUP_PARENT		0x0010
 #define LOOKUP_REVAL		0x0020
 #define LOOKUP_RCU		0x0040
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define LOOKUP_NO_AUTOMOUNT	0x0080
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Intent data
  */
@@ -77,12 +107,28 @@ extern int user_path_at_empty(int, const char __user *, unsigned, struct path *,
 
 extern int kern_path(const char *, unsigned, struct path *);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int kern_path_parent(const char *, struct nameidata *);
 extern int vfs_path_lookup(struct dentry *, struct vfsmount *,
 			   const char *, unsigned int, struct nameidata *);
+=======
+extern struct dentry *kern_path_create(int, const char *, struct path *, int);
+extern struct dentry *user_path_create(int, const char __user *, struct path *, int);
+extern int kern_path_parent(const char *, struct nameidata *);
+extern int vfs_path_lookup(struct dentry *, struct vfsmount *,
+			   const char *, unsigned int, struct path *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern struct file *lookup_instantiate_filp(struct nameidata *nd, struct dentry *dentry,
 		int (*open)(struct inode *, struct file *));
+=======
+extern struct dentry *kern_path_create(int, const char *, struct path *, unsigned int);
+extern struct dentry *user_path_create(int, const char __user *, struct path *, unsigned int);
+extern void done_path_create(struct path *, struct dentry *);
+extern struct dentry *kern_path_locked(const char *, struct path *);
+extern int kern_path_mountpoint(int, const char *, struct path *, unsigned int);
+>>>>>>> refs/remotes/origin/master
 
 extern struct dentry *lookup_one_len(const char *, struct dentry *, int);
 
@@ -93,6 +139,11 @@ extern int follow_up(struct path *);
 extern struct dentry *lock_rename(struct dentry *, struct dentry *);
 extern void unlock_rename(struct dentry *, struct dentry *);
 
+<<<<<<< HEAD
+=======
+extern void nd_jump_link(struct nameidata *nd, struct path *path);
+
+>>>>>>> refs/remotes/origin/master
 static inline void nd_set_link(struct nameidata *nd, char *path)
 {
 	nd->saved_names[nd->depth] = path;
@@ -108,4 +159,23 @@ static inline void nd_terminate_link(void *name, size_t len, size_t maxlen)
 	((char *) name)[min(len, maxlen)] = '\0';
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * retry_estale - determine whether the caller should retry an operation
+ * @error: the error that would currently be returned
+ * @flags: flags being used for next lookup attempt
+ *
+ * Check to see if the error code was -ESTALE, and then determine whether
+ * to retry the call based on whether "flags" already has LOOKUP_REVAL set.
+ *
+ * Returns true if the caller should try the operation again.
+ */
+static inline bool
+retry_estale(const long error, const unsigned int flags)
+{
+	return error == -ESTALE && !(flags & LOOKUP_REVAL);
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_NAMEI_H */

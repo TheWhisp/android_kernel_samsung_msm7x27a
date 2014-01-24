@@ -28,10 +28,17 @@
  * Authors: Thomas Hellstrom <thellstrom-at-vmware-dot-com>
  */
 
+<<<<<<< HEAD
 #include "ttm/ttm_module.h"
 #include "ttm/ttm_bo_driver.h"
 #include "ttm/ttm_placement.h"
 #include "drm_mm.h"
+=======
+#include <drm/ttm/ttm_module.h>
+#include <drm/ttm/ttm_bo_driver.h>
+#include <drm/ttm/ttm_placement.h>
+#include <drm/drm_mm.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/module.h>
@@ -61,6 +68,7 @@ static int ttm_bo_man_get_node(struct ttm_mem_type_manager *man,
 	lpfn = placement->lpfn;
 	if (!lpfn)
 		lpfn = man->size;
+<<<<<<< HEAD
 	do {
 		ret = drm_mm_pre_get(mm);
 		if (unlikely(ret))
@@ -83,6 +91,27 @@ static int ttm_bo_man_get_node(struct ttm_mem_type_manager *man,
 
 	mem->mm_node = node;
 	mem->start = node->start;
+=======
+
+	node = kzalloc(sizeof(*node), GFP_KERNEL);
+	if (!node)
+		return -ENOMEM;
+
+	spin_lock(&rman->lock);
+	ret = drm_mm_insert_node_in_range(mm, node, mem->num_pages,
+					  mem->page_alignment,
+					  placement->fpfn, lpfn,
+					  DRM_MM_SEARCH_BEST);
+	spin_unlock(&rman->lock);
+
+	if (unlikely(ret)) {
+		kfree(node);
+	} else {
+		mem->mm_node = node;
+		mem->start = node->start;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -93,8 +122,15 @@ static void ttm_bo_man_put_node(struct ttm_mem_type_manager *man,
 
 	if (mem->mm_node) {
 		spin_lock(&rman->lock);
+<<<<<<< HEAD
 		drm_mm_put_block(mem->mm_node);
 		spin_unlock(&rman->lock);
+=======
+		drm_mm_remove_node(mem->mm_node);
+		spin_unlock(&rman->lock);
+
+		kfree(mem->mm_node);
+>>>>>>> refs/remotes/origin/master
 		mem->mm_node = NULL;
 	}
 }
@@ -103,18 +139,25 @@ static int ttm_bo_man_init(struct ttm_mem_type_manager *man,
 			   unsigned long p_size)
 {
 	struct ttm_range_manager *rman;
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rman = kzalloc(sizeof(*rman), GFP_KERNEL);
 	if (!rman)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	ret = drm_mm_init(&rman->mm, 0, p_size);
 	if (ret) {
 		kfree(rman);
 		return ret;
 	}
 
+=======
+	drm_mm_init(&rman->mm, 0, p_size);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&rman->lock);
 	man->priv = rman;
 	return 0;

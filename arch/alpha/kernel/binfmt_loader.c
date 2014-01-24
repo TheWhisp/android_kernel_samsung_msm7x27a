@@ -5,7 +5,11 @@
 #include <linux/binfmts.h>
 #include <linux/a.out.h>
 
+<<<<<<< HEAD
 static int load_binary(struct linux_binprm *bprm, struct pt_regs *regs)
+=======
+static int load_binary(struct linux_binprm *bprm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct exec *eh = (struct exec *)bprm->buf;
 	unsigned long loader;
@@ -37,7 +41,11 @@ static int load_binary(struct linux_binprm *bprm, struct pt_regs *regs)
 	retval = prepare_binprm(bprm);
 	if (retval < 0)
 		return retval;
+<<<<<<< HEAD
 	return search_binary_handler(bprm,regs);
+=======
+	return search_binary_handler(bprm);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct linux_binfmt loader_format = {
@@ -46,6 +54,16 @@ static struct linux_binfmt loader_format = {
 
 static int __init init_loader_binfmt(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return insert_binfmt(&loader_format);
+=======
+	insert_binfmt(&loader_format);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	insert_binfmt(&loader_format);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 arch_initcall(init_loader_binfmt);

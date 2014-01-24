@@ -1,6 +1,7 @@
 #ifndef __LINUX_FUNCTIONFS_H__
 #define __LINUX_FUNCTIONFS_H__ 1
 
+<<<<<<< HEAD
 
 #include <linux/types.h>
 #include <linux/ioctl.h>
@@ -195,5 +196,8 @@ static int functionfs_check_dev_callback(const char *dev_name)
 
 
 #endif
+=======
+#include <uapi/linux/usb/functionfs.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif

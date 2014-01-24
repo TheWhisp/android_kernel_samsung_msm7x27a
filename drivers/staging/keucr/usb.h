@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Driver for USB Mass Storage compliant devices
+=======
+/* Driver for USB Mass Storage compliant devices */
+>>>>>>> refs/remotes/origin/master
 
 #ifndef _USB_H_
 #define _USB_H_
@@ -10,7 +14,13 @@
 #include <linux/mutex.h>
 #include <scsi/scsi_host.h>
 #include "common.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "ms.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct us_data;
 struct scsi_cmnd;
@@ -20,26 +30,44 @@ struct scsi_cmnd;
  */
 
 struct us_unusual_dev {
+<<<<<<< HEAD
 	const char* vendorName;
 	const char* productName;
+=======
+	const char *vendorName;
+	const char *productName;
+>>>>>>> refs/remotes/origin/master
 	__u8  useProtocol;
 	__u8  useTransport;
 	int (*initFunction)(struct us_data *);
 };
 
+<<<<<<< HEAD
 //EnE HW Register
 #define REG_CARD_STATUS     0xFF83
 #define REG_HW_TRAP1        0xFF89
 
 // SRB Status. Refers /usr/include/wine/wine/wnaspi32.h & SCSI sense key
 #define SS_SUCCESS                  0x00      // No Sense
+=======
+/* EnE HW Register */
+#define REG_CARD_STATUS     0xFF83
+#define REG_HW_TRAP1        0xFF89
+
+/* SRB Status. Refers /usr/include/wine/wine/wnaspi32.h & SCSI sense key */
+#define SS_SUCCESS                  0x00      /* No Sense */
+>>>>>>> refs/remotes/origin/master
 #define SS_NOT_READY                0x02
 #define SS_MEDIUM_ERR               0x03
 #define SS_HW_ERR                   0x04
 #define SS_ILLEGAL_REQUEST          0x05
 #define SS_UNIT_ATTENTION           0x06
 
+<<<<<<< HEAD
 //ENE Load FW Pattern
+=======
+/* ENE Load FW Pattern */
+>>>>>>> refs/remotes/origin/master
 #define SD_INIT1_PATTERN   1
 #define SD_INIT2_PATTERN   2
 #define SD_RW_PATTERN      3
@@ -52,6 +80,7 @@ struct us_unusual_dev {
 #define FDIR_WRITE        0
 #define FDIR_READ         1
 
+<<<<<<< HEAD
 typedef struct _SD_STATUS {
     BYTE    Insert:1;
     BYTE    Ready:1;
@@ -85,6 +114,42 @@ typedef struct _SM_STATUS {
 
 // SD Block Length
 #define SD_BLOCK_LEN                            9       // 2^9 = 512 Bytes, The HW maximum read/write data length
+=======
+struct keucr_sd_status {
+	BYTE    Insert:1;
+	BYTE    Ready:1;
+	BYTE    MediaChange:1;
+	BYTE    IsMMC:1;
+	BYTE    HiCapacity:1;
+	BYTE    HiSpeed:1;
+	BYTE    WtP:1;
+	BYTE    Reserved:1;
+};
+
+struct keucr_ms_status {
+	BYTE    Insert:1;
+	BYTE    Ready:1;
+	BYTE    MediaChange:1;
+	BYTE    IsMSPro:1;
+	BYTE    IsMSPHG:1;
+	BYTE    Reserved1:1;
+	BYTE    WtP:1;
+	BYTE    Reserved2:1;
+};
+
+struct keucr_sm_status {
+	BYTE    Insert:1;
+	BYTE    Ready:1;
+	BYTE    MediaChange:1;
+	BYTE    Reserved:3;
+	BYTE    WtP:1;
+	BYTE    IsMS:1;
+};
+
+/* SD Block Length */
+#define SD_BLOCK_LEN		9	/* 2^9 = 512 Bytes,
+				The HW maximum read/write data length */
+>>>>>>> refs/remotes/origin/master
 
 /* Dynamic bitflag definitions (us->dflags): used in set_bit() etc. */
 #define US_FLIDX_URB_ACTIVE	0	/* current_urb is in use    */
@@ -108,9 +173,15 @@ typedef struct _SM_STATUS {
 #define US_IOBUF_SIZE		64	/* Size of the DMA-mapped I/O buffer */
 #define US_SENSE_SIZE		18	/* Size of the autosense data buffer */
 
+<<<<<<< HEAD
 typedef int (*trans_cmnd)(struct scsi_cmnd *, struct us_data*);
 typedef int (*trans_reset)(struct us_data*);
 typedef void (*proto_cmnd)(struct scsi_cmnd*, struct us_data*);
+=======
+typedef int (*trans_cmnd)(struct scsi_cmnd *, struct us_data *);
+typedef int (*trans_reset)(struct us_data *);
+typedef void (*proto_cmnd)(struct scsi_cmnd *, struct us_data *);
+>>>>>>> refs/remotes/origin/master
 typedef void (*extra_data_destructor)(void *);	/* extra data destructor */
 typedef void (*pm_hook)(struct us_data *, int);	/* power management hook */
 
@@ -177,6 +248,7 @@ struct us_data {
 #ifdef CONFIG_PM
 	pm_hook			suspend_resume_hook;
 #endif
+<<<<<<< HEAD
 	// for 6250 code
 	SD_STATUS   SD_Status;
 	MS_STATUS   MS_Status;
@@ -184,12 +256,25 @@ struct us_data {
 
 	//----- SD Control Data ----------------
 	//SD_REGISTER SD_Regs;
+=======
+	/* for 6250 code */
+	struct keucr_sd_status   SD_Status;
+	struct keucr_ms_status   MS_Status;
+	struct keucr_sm_status   SM_Status;
+
+	/* ----- SD Control Data ---------------- */
+	/* SD_REGISTER SD_Regs; */
+>>>>>>> refs/remotes/origin/master
 	WORD        SD_Block_Mult;
 	BYTE        SD_READ_BL_LEN;
 	WORD        SD_C_SIZE;
 	BYTE        SD_C_SIZE_MULT;
 
+<<<<<<< HEAD
 	// SD/MMC New spec.
+=======
+	/* SD/MMC New spec. */
+>>>>>>> refs/remotes/origin/master
 	BYTE        SD_SPEC_VER;
 	BYTE        SD_CSD_VER;
 	BYTE        SD20_HIGH_CAPACITY;
@@ -197,15 +282,31 @@ struct us_data {
 	BYTE        MMC_SPEC_VER;
 	BYTE        MMC_BusWidth;
 	BYTE        MMC_HIGH_CAPACITY;
+<<<<<<< HEAD
 	
 	//----- MS Control Data ----------------
 	BOOLEAN             MS_SWWP;
 	DWORD               MSP_TotalBlock;
+<<<<<<< HEAD
 	MS_LibControl       MS_Lib;
+=======
+	/* MS_LibControl       MS_Lib; */
+>>>>>>> refs/remotes/origin/cm-10.0
 	BOOLEAN             MS_IsRWPage;
 	WORD                MS_Model;
 
 	//----- SM Control Data ----------------
+=======
+
+	/* ----- MS Control Data ---------------- */
+	BOOLEAN             MS_SWWP;
+	DWORD               MSP_TotalBlock;
+	/* MS_LibControl       MS_Lib; */
+	BOOLEAN             MS_IsRWPage;
+	WORD                MS_Model;
+
+	/* ----- SM Control Data ---------------- */
+>>>>>>> refs/remotes/origin/master
 	BYTE		SM_DeviceID;
 	BYTE		SM_CardID;
 
@@ -213,6 +314,7 @@ struct us_data {
 	BYTE		BIN_FLAG;
 	DWORD		bl_num;
 	int		SrbStatus;
+<<<<<<< HEAD
 	
 	//------Power Managerment ---------------
 	BOOLEAN         Power_IsResum;	
@@ -223,6 +325,20 @@ static inline struct Scsi_Host *us_to_host(struct us_data *us) {
 	return container_of((void *) us, struct Scsi_Host, hostdata);
 }
 static inline struct us_data *host_to_us(struct Scsi_Host *host) {
+=======
+
+	/* ------Power Managerment --------------- */
+	BOOLEAN         Power_IsResum;
+};
+
+/* Convert between us_data and the corresponding Scsi_Host */
+static inline struct Scsi_Host *us_to_host(struct us_data *us)
+{
+	return container_of((void *) us, struct Scsi_Host, hostdata);
+}
+static inline struct us_data *host_to_us(struct Scsi_Host *host)
+{
+>>>>>>> refs/remotes/origin/master
 	return (struct us_data *) host->hostdata;
 }
 

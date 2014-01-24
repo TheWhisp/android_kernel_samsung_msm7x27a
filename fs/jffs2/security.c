@@ -22,6 +22,8 @@
 #include <linux/security.h>
 #include "nodelist.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* ---- Initial Security Label Attachment -------------- */
 int jffs2_init_security(struct inode *inode, struct inode *dir,
 			const struct qstr *qstr)
@@ -42,6 +44,36 @@ int jffs2_init_security(struct inode *inode, struct inode *dir,
 	kfree(name);
 	kfree(value);
 	return rc;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* ---- Initial Security Label(s) Attachment callback --- */
+static int jffs2_initxattrs(struct inode *inode,
+			    const struct xattr *xattr_array, void *fs_info)
+{
+	const struct xattr *xattr;
+	int err = 0;
+
+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
+		err = do_jffs2_setxattr(inode, JFFS2_XPREFIX_SECURITY,
+					xattr->name, xattr->value,
+					xattr->value_len, 0);
+		if (err < 0)
+			break;
+	}
+	return err;
+}
+
+/* ---- Initial Security Label(s) Attachment ----------- */
+int jffs2_init_security(struct inode *inode, struct inode *dir,
+			const struct qstr *qstr)
+{
+	return security_inode_init_security(inode, dir, qstr,
+					    &jffs2_initxattrs, NULL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ---- XATTR Handler for "security.*" ----------------- */

@@ -401,6 +401,28 @@ module_param_named(
 #define NCP_SET_POINTS			((NCP_UV_MAX - NCP_UV_MIN) \
 						/ NCP_UV_STEP + 1)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* Boost masks and values */
+#define BOOST_ENABLE_MASK		0x80
+#define BOOST_DISABLE			0x00
+#define BOOST_ENABLE			0x80
+#define BOOST_VPROG_MASK		0x1F
+
+#define BOOST_UV_MIN			4000000
+#define BOOST_UV_MAX			5550000
+#define BOOST_UV_STEP			50000
+
+#define BOOST_SET_POINTS		((BOOST_UV_MAX - BOOST_UV_MIN) \
+						/ BOOST_UV_STEP + 1)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define vreg_err(vreg, fmt, ...) \
 	pr_err("%s: " fmt, vreg->rdesc.name, ##__VA_ARGS__)
 
@@ -582,6 +604,38 @@ static int pm8xxx_vreg_is_enabled(struct regulator_dev *rdev)
 	return enabled;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/*
+ * Adds delay when increasing in voltage to account for the slew rate of
+ * the regulator.
+ */
+static void pm8xxx_vreg_delay_for_slew(struct pm8xxx_vreg *vreg, int prev_uV,
+					int new_uV)
+{
+	int delay;
+
+	if (vreg->pdata.slew_rate == 0 || new_uV <= prev_uV ||
+	    !_pm8xxx_vreg_is_enabled(vreg))
+		return;
+
+	delay = DIV_ROUND_UP(new_uV - prev_uV, vreg->pdata.slew_rate);
+
+	if (delay >= 1000) {
+		mdelay(delay / 1000);
+		udelay(delay % 1000);
+	} else {
+		udelay(delay);
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pm8xxx_pldo_get_voltage(struct regulator_dev *rdev)
 {
 	struct pm8xxx_vreg *vreg = rdev_get_drvdata(rdev);
@@ -642,7 +696,15 @@ static int pm8xxx_pldo_set_voltage(struct regulator_dev *rdev, int min_uV,
 {
 	struct pm8xxx_vreg *vreg = rdev_get_drvdata(rdev);
 	int rc = 0, uV = min_uV;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int vmin;
+=======
+	int vmin, prev_uV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int vmin, prev_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned vprog, fine_step;
 	u8 range_ext, range_sel, fine_step_reg, prev_reg;
 	bool reg_changed = false;
@@ -686,6 +748,16 @@ static int pm8xxx_pldo_set_voltage(struct regulator_dev *rdev, int min_uV,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	prev_uV = pm8xxx_pldo_get_voltage(rdev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	prev_uV = pm8xxx_pldo_get_voltage(rdev);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&vreg->pc_lock);
 
 	/* Write fine step, range select and program voltage update. */
@@ -733,8 +805,21 @@ bail:
 
 	if (rc)
 		vreg_err(vreg, "pm8xxx_vreg_masked_write failed, rc=%d\n", rc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_VOLTAGE);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	else {
+		pm8xxx_vreg_delay_for_slew(vreg, prev_uV, uV);
+		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_VOLTAGE);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -770,7 +855,15 @@ static int pm8xxx_nldo_set_voltage(struct regulator_dev *rdev, int min_uV,
 {
 	struct pm8xxx_vreg *vreg = rdev_get_drvdata(rdev);
 	unsigned vprog, fine_step_reg, prev_reg;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int rc;
+=======
+	int rc, prev_uV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc, prev_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int uV = min_uV;
 
 	if (uV < NLDO_UV_MIN && max_uV >= NLDO_UV_MIN)
@@ -795,6 +888,16 @@ static int pm8xxx_nldo_set_voltage(struct regulator_dev *rdev, int min_uV,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	prev_uV = pm8xxx_nldo_get_voltage(rdev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	prev_uV = pm8xxx_nldo_get_voltage(rdev);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&vreg->pc_lock);
 
 	/* Write fine step. */
@@ -827,8 +930,21 @@ bail:
 
 	if (rc)
 		vreg_err(vreg, "pm8xxx_vreg_masked_write failed, rc=%d\n", rc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_VOLTAGE);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	else {
+		pm8xxx_vreg_delay_for_slew(vreg, prev_uV, uV);
+		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_VOLTAGE);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -884,7 +1000,15 @@ static int _pm8xxx_nldo1200_set_voltage(struct pm8xxx_vreg *vreg, int min_uV,
 		int max_uV)
 {
 	u8 vprog, range;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int rc;
+=======
+	int rc, prev_uV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc, prev_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int uV = min_uV;
 
 	if (uV < NLDO1200_LOW_UV_MIN && max_uV >= NLDO1200_LOW_UV_MIN)
@@ -918,6 +1042,16 @@ static int _pm8xxx_nldo1200_set_voltage(struct pm8xxx_vreg *vreg, int min_uV,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	prev_uV = _pm8xxx_nldo1200_get_voltage(vreg);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	prev_uV = _pm8xxx_nldo1200_get_voltage(vreg);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Set to advanced mode */
 	rc = pm8xxx_vreg_masked_write(vreg, vreg->test_addr,
 		NLDO1200_ADVANCED_MODE | REGULATOR_BANK_SEL(2)
@@ -935,6 +1069,14 @@ static int _pm8xxx_nldo1200_set_voltage(struct pm8xxx_vreg *vreg, int min_uV,
 
 	vreg->save_uV = uV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pm8xxx_vreg_delay_for_slew(vreg, prev_uV, uV);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm8xxx_vreg_delay_for_slew(vreg, prev_uV, uV);
+>>>>>>> refs/remotes/origin/cm-11.0
 bail:
 	if (rc)
 		vreg_err(vreg, "pm8xxx_vreg_masked_write failed, rc=%d\n", rc);
@@ -1195,6 +1337,18 @@ static int pm8xxx_smps_set_voltage(struct regulator_dev *rdev, int min_uV,
 {
 	struct pm8xxx_vreg *vreg = rdev_get_drvdata(rdev);
 	int rc = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int prev_uV, new_uV;
+
+	prev_uV = pm8xxx_smps_get_voltage(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int prev_uV, new_uV;
+
+	prev_uV = pm8xxx_smps_get_voltage(rdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&vreg->pc_lock);
 
@@ -1205,8 +1359,23 @@ static int pm8xxx_smps_set_voltage(struct regulator_dev *rdev, int min_uV,
 
 	mutex_unlock(&vreg->pc_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!rc)
 		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_VOLTAGE);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	new_uV = pm8xxx_smps_get_voltage(rdev);
+
+	if (!rc) {
+		pm8xxx_vreg_delay_for_slew(vreg, prev_uV, new_uV);
+		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_VOLTAGE);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -1278,6 +1447,14 @@ static int _pm8xxx_ftsmps_set_voltage(struct pm8xxx_vreg *vreg, int min_uV,
 	int rc = 0;
 	u8 vprog, band;
 	int uV = min_uV;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int prev_uV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int prev_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (uV < FTSMPS_BAND1_UV_MIN && max_uV >= FTSMPS_BAND1_UV_MIN)
 		uV = FTSMPS_BAND1_UV_MIN;
@@ -1323,6 +1500,16 @@ static int _pm8xxx_ftsmps_set_voltage(struct pm8xxx_vreg *vreg, int min_uV,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	prev_uV = _pm8xxx_ftsmps_get_voltage(vreg);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	prev_uV = _pm8xxx_ftsmps_get_voltage(vreg);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Do not set voltage if regulator is currently disabled because doing
 	 * so will enable it.
@@ -1345,6 +1532,16 @@ static int _pm8xxx_ftsmps_set_voltage(struct pm8xxx_vreg *vreg, int min_uV,
 
 	vreg->save_uV = uV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pm8xxx_vreg_delay_for_slew(vreg, prev_uV, uV);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm8xxx_vreg_delay_for_slew(vreg, prev_uV, uV);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 bail:
 	if (rc)
 		vreg_err(vreg, "pm8xxx_vreg_masked_write failed, rc=%d\n", rc);
@@ -1389,7 +1586,15 @@ static int pm8xxx_ncp_set_voltage(struct regulator_dev *rdev, int min_uV,
 				  int max_uV, unsigned *selector)
 {
 	struct pm8xxx_vreg *vreg = rdev_get_drvdata(rdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int rc;
+=======
+	int rc, prev_uV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc, prev_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int uV = min_uV;
 	u8 val;
 
@@ -1413,13 +1618,98 @@ static int pm8xxx_ncp_set_voltage(struct regulator_dev *rdev, int min_uV,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	prev_uV = pm8xxx_ncp_get_voltage(rdev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	prev_uV = pm8xxx_ncp_get_voltage(rdev);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* voltage setting */
 	rc = pm8xxx_vreg_masked_write(vreg, vreg->ctrl_addr, val,
 			NCP_VPROG_MASK, &vreg->ctrl_reg);
 	if (rc)
 		vreg_err(vreg, "pm8xxx_vreg_masked_write failed, rc=%d\n", rc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_VOLTAGE);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	else {
+		pm8xxx_vreg_delay_for_slew(vreg, prev_uV, uV);
+		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_VOLTAGE);
+	}
+
+	return rc;
+}
+
+static int pm8xxx_boost_get_voltage(struct regulator_dev *rdev)
+{
+	struct pm8xxx_vreg *vreg = rdev_get_drvdata(rdev);
+	u8 vprog;
+
+	vprog = vreg->ctrl_reg & BOOST_VPROG_MASK;
+
+	return BOOST_UV_STEP * vprog + BOOST_UV_MIN;
+}
+
+static int pm8xxx_boost_list_voltage(struct regulator_dev *rdev,
+				    unsigned selector)
+{
+	if (selector >= BOOST_SET_POINTS)
+		return 0;
+
+	return selector * BOOST_UV_STEP + BOOST_UV_MIN;
+}
+
+static int pm8xxx_boost_set_voltage(struct regulator_dev *rdev, int min_uV,
+				   int max_uV, unsigned *selector)
+{
+	struct pm8xxx_vreg *vreg = rdev_get_drvdata(rdev);
+	int rc, prev_uV;
+	int uV = min_uV;
+	u8 val;
+
+	if (uV < BOOST_UV_MIN && max_uV >= BOOST_UV_MIN)
+		uV = BOOST_UV_MIN;
+
+	if (uV < BOOST_UV_MIN || uV > BOOST_UV_MAX) {
+		vreg_err(vreg,
+			"request v=[%d, %d] is outside possible v=[%d, %d]\n",
+			 min_uV, max_uV, BOOST_UV_MIN, BOOST_UV_MAX);
+		return -EINVAL;
+	}
+
+	val = (uV - BOOST_UV_MIN + BOOST_UV_STEP - 1) / BOOST_UV_STEP;
+	uV = val * BOOST_UV_STEP + BOOST_UV_MIN;
+
+	if (uV > max_uV) {
+		vreg_err(vreg,
+			"request v=[%d, %d] cannot be met by any set point\n",
+			min_uV, max_uV);
+		return -EINVAL;
+	}
+
+	prev_uV = pm8xxx_boost_get_voltage(rdev);
+
+	/* voltage setting */
+	rc = pm8xxx_vreg_masked_write(vreg, vreg->ctrl_addr, val,
+			BOOST_VPROG_MASK, &vreg->ctrl_reg);
+	if (rc)
+		vreg_err(vreg, "pm8xxx_vreg_masked_write failed, rc=%d\n", rc);
+	else {
+		pm8xxx_vreg_delay_for_slew(vreg, prev_uV, uV);
+		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_VOLTAGE);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -2066,6 +2356,47 @@ static int pm8xxx_ncp_disable(struct regulator_dev *rdev)
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int pm8xxx_boost_enable(struct regulator_dev *rdev)
+{
+	struct pm8xxx_vreg *vreg = rdev_get_drvdata(rdev);
+	int rc;
+
+	rc = pm8xxx_vreg_masked_write(vreg, vreg->ctrl_addr, BOOST_ENABLE,
+		BOOST_ENABLE_MASK, &vreg->ctrl_reg);
+
+	if (rc)
+		vreg_err(vreg, "pm8xxx_vreg_masked_write failed, rc=%d\n", rc);
+	else
+		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_ENABLE);
+
+	return rc;
+}
+
+static int pm8xxx_boost_disable(struct regulator_dev *rdev)
+{
+	struct pm8xxx_vreg *vreg = rdev_get_drvdata(rdev);
+	int rc;
+
+	rc = pm8xxx_vreg_masked_write(vreg, vreg->ctrl_addr, BOOST_DISABLE,
+		BOOST_ENABLE_MASK, &vreg->ctrl_reg);
+
+	if (rc)
+		vreg_err(vreg, "pm8xxx_vreg_masked_write failed, rc=%d\n", rc);
+	else
+		pm8xxx_vreg_show_state(rdev, PM8XXX_REGULATOR_ACTION_DISABLE);
+
+	return rc;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pm8xxx_ldo_pin_control_enable(struct regulator_dev *rdev)
 {
 	struct pm8xxx_vreg *vreg = rdev_get_drvdata(rdev);
@@ -2506,6 +2837,20 @@ static void pm8xxx_vreg_show_state(struct regulator_dev *rdev,
 		pr_info("%s %-9s: %s, v=%7d uV\n",
 			action_label, vreg->rdesc.name, enable_label, uV);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	case PM8XXX_REGULATOR_TYPE_BOOST:
+		uV = pm8xxx_boost_get_voltage(rdev);
+		pr_info("%s %-9s: %s, v=%7d uV\n",
+			action_label, vreg->rdesc.name, enable_label, uV);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		break;
 	}
@@ -2601,6 +2946,25 @@ static struct regulator_ops pm8xxx_ncp_ops = {
 	.enable_time		= pm8xxx_enable_time,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct regulator_ops pm8xxx_boost_ops = {
+	.enable			= pm8xxx_boost_enable,
+	.disable		= pm8xxx_boost_disable,
+	.is_enabled		= pm8xxx_vreg_is_enabled,
+	.set_voltage		= pm8xxx_boost_set_voltage,
+	.get_voltage		= pm8xxx_boost_get_voltage,
+	.list_voltage		= pm8xxx_boost_list_voltage,
+	.enable_time		= pm8xxx_enable_time,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Pin control regulator operations. */
 static struct regulator_ops pm8xxx_ldo_pc_ops = {
 	.enable			= pm8xxx_ldo_pin_control_enable,
@@ -2629,6 +2993,14 @@ static struct regulator_ops *pm8xxx_reg_ops[PM8XXX_REGULATOR_TYPE_MAX] = {
 	[PM8XXX_REGULATOR_TYPE_VS]		= &pm8xxx_vs_ops,
 	[PM8XXX_REGULATOR_TYPE_VS300]		= &pm8xxx_vs300_ops,
 	[PM8XXX_REGULATOR_TYPE_NCP]		= &pm8xxx_ncp_ops,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	[PM8XXX_REGULATOR_TYPE_BOOST]		= &pm8xxx_boost_ops,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[PM8XXX_REGULATOR_TYPE_BOOST]		= &pm8xxx_boost_ops,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct regulator_ops *pm8xxx_reg_pc_ops[PM8XXX_REGULATOR_TYPE_MAX] = {
@@ -2647,6 +3019,14 @@ static unsigned pm8xxx_n_voltages[PM8XXX_REGULATOR_TYPE_MAX] = {
 	[PM8XXX_REGULATOR_TYPE_VS]		= 0,
 	[PM8XXX_REGULATOR_TYPE_VS300]		= 0,
 	[PM8XXX_REGULATOR_TYPE_NCP]		= NCP_SET_POINTS,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	[PM8XXX_REGULATOR_TYPE_BOOST]		= BOOST_SET_POINTS,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[PM8XXX_REGULATOR_TYPE_BOOST]		= BOOST_SET_POINTS,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int pm8xxx_init_ldo(struct pm8xxx_vreg *vreg, bool is_real)
@@ -2937,6 +3317,29 @@ static int pm8xxx_init_ncp(struct pm8xxx_vreg *vreg)
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int pm8xxx_init_boost(struct pm8xxx_vreg *vreg)
+{
+	int rc;
+
+	/* Save the current control register state. */
+	rc = pm8xxx_readb(vreg->dev->parent, vreg->ctrl_addr, &vreg->ctrl_reg);
+	if (rc) {
+		vreg_err(vreg, "pm8xxx_readb failed, rc=%d\n", rc);
+		return rc;
+	}
+
+	return rc;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit pm8xxx_vreg_probe(struct platform_device *pdev)
 {
 	struct pm8xxx_regulator_core_platform_data *core_data;
@@ -3017,6 +3420,25 @@ static int __devinit pm8xxx_vreg_probe(struct platform_device *pdev)
 			sizeof(struct pm8xxx_regulator_platform_data));
 		vreg->pdata.pin_ctrl = pin_ctrl;
 		vreg->pdata.pin_fn = pin_fn;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		/*
+		 * If slew_rate isn't specified but enable_time is, then set
+		 * slew_rate = max_uV / enable_time.
+		 */
+		if (vreg->pdata.enable_time > 0
+		    && vreg->pdata.init_data.constraints.max_uV > 0
+		    && vreg->pdata.slew_rate <= 0)
+			vreg->pdata.slew_rate =
+			  DIV_ROUND_UP(vreg->pdata.init_data.constraints.max_uV,
+					vreg->pdata.enable_time);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vreg->dev = &pdev->dev;
 	} else {
 		/* Pin control regulator */
@@ -3058,6 +3480,18 @@ static int __devinit pm8xxx_vreg_probe(struct platform_device *pdev)
 	case PM8XXX_REGULATOR_TYPE_NCP:
 		rc = pm8xxx_init_ncp(vreg);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case PM8XXX_REGULATOR_TYPE_BOOST:
+		rc = pm8xxx_init_boost(vreg);
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case PM8XXX_REGULATOR_TYPE_BOOST:
+		rc = pm8xxx_init_boost(vreg);
+		break;
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		break;
 	}
@@ -3069,7 +3503,15 @@ static int __devinit pm8xxx_vreg_probe(struct platform_device *pdev)
 
 	if (!core_data->is_pin_controlled) {
 		vreg->rdev = regulator_register(rdesc, &pdev->dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				&(pdata->init_data), vreg);
+=======
+				&(pdata->init_data), vreg, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				&(pdata->init_data), vreg, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (IS_ERR(vreg->rdev)) {
 			rc = PTR_ERR(vreg->rdev);
 			vreg->rdev = NULL;
@@ -3078,7 +3520,15 @@ static int __devinit pm8xxx_vreg_probe(struct platform_device *pdev)
 		}
 	} else {
 		vreg->rdev_pc = regulator_register(rdesc, &pdev->dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				&(pdata->init_data), vreg);
+=======
+				&(pdata->init_data), vreg, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				&(pdata->init_data), vreg, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (IS_ERR(vreg->rdev_pc)) {
 			rc = PTR_ERR(vreg->rdev_pc);
 			vreg->rdev_pc = NULL;

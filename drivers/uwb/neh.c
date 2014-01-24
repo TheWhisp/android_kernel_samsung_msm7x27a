@@ -85,6 +85,14 @@
 #include <linux/timer.h>
 #include <linux/slab.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "uwb-internal.h"
 

@@ -18,9 +18,19 @@
 #include <linux/mm.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/irq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/traps.h>
 #include <asm/bootinfo.h>
+=======
+#include <linux/irq.h>
+
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/macintosh.h>
 #include <asm/macints.h>
 #include <asm/mac_psc.h>
@@ -30,8 +40,14 @@
 int psc_present;
 volatile __u8 *psc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 irqreturn_t psc_irq(int, void *);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Debugging dump, used in various places to see what's going on.
  */
@@ -55,7 +71,11 @@ static void psc_debug_dump(void)
  * expanded to cover what I think are the other 7 channels.
  */
 
+<<<<<<< HEAD
 static void psc_dma_die_die_die(void)
+=======
+static __init void psc_dma_die_die_die(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -112,6 +132,8 @@ void __init psc_init(void)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Register the PSC interrupt dispatchers for autovector interrupts 3-6.
  */
 
@@ -135,29 +157,93 @@ irqreturn_t psc_irq(int irq, void *dev_id)
 {
 	int pIFR	= pIFRbase + ((int) dev_id);
 	int pIER	= pIERbase + ((int) dev_id);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * PSC interrupt handler. It's a lot like the VIA interrupt handler.
+ */
+
+static void psc_irq(unsigned int irq, struct irq_desc *desc)
+{
+	unsigned int offset = (unsigned int)irq_desc_get_handler_data(desc);
+	int pIFR	= pIFRbase + offset;
+	int pIER	= pIERbase + offset;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int irq_num;
 	unsigned char irq_bit, events;
 
 #ifdef DEBUG_IRQS
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk("psc_irq: irq %d pIFR = 0x%02X pIER = 0x%02X\n",
+=======
+	printk("psc_irq: irq %u pIFR = 0x%02X pIER = 0x%02X\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk("psc_irq: irq %u pIFR = 0x%02X pIER = 0x%02X\n",
+>>>>>>> refs/remotes/origin/master
 		irq, (int) psc_read_byte(pIFR), (int) psc_read_byte(pIER));
 #endif
 
 	events = psc_read_byte(pIFR) & psc_read_byte(pIER) & 0xF;
 	if (!events)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return IRQ_NONE;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	irq_num = irq << 3;
 	irq_bit = 1;
 	do {
 		if (events & irq_bit) {
 			psc_write_byte(pIFR, irq_bit);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			m68k_handle_int(irq_num);
+=======
+			generic_handle_irq(irq_num);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			generic_handle_irq(irq_num);
+>>>>>>> refs/remotes/origin/master
 		}
 		irq_num++;
 		irq_bit <<= 1;
 	} while (events >= irq_bit);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return IRQ_HANDLED;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+}
+
+/*
+ * Register the PSC interrupt dispatchers for autovector interrupts 3-6.
+ */
+
+void __init psc_register_interrupts(void)
+{
+	irq_set_chained_handler(IRQ_AUTO_3, psc_irq);
+	irq_set_handler_data(IRQ_AUTO_3, (void *)0x30);
+	irq_set_chained_handler(IRQ_AUTO_4, psc_irq);
+	irq_set_handler_data(IRQ_AUTO_4, (void *)0x40);
+	irq_set_chained_handler(IRQ_AUTO_5, psc_irq);
+	irq_set_handler_data(IRQ_AUTO_5, (void *)0x50);
+	irq_set_chained_handler(IRQ_AUTO_6, psc_irq);
+	irq_set_handler_data(IRQ_AUTO_6, (void *)0x60);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void psc_irq_enable(int irq) {
@@ -181,6 +267,8 @@ void psc_irq_disable(int irq) {
 #endif
 	psc_write_byte(pIER, 1 << irq_idx);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 void psc_irq_clear(int irq) {
 	int irq_src	= IRQ_SRC(irq);
@@ -198,3 +286,7 @@ int psc_irq_pending(int irq)
 
 	return psc_read_byte(pIFR) & (1 << irq_idx);
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

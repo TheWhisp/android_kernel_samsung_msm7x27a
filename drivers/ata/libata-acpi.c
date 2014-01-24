@@ -16,6 +16,10 @@
 #include <linux/libata.h>
 #include <linux/pci.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi_device.h>
 #include "libata.h"
 
@@ -33,6 +37,7 @@ struct ata_acpi_gtf {
 	u8	tf[REGS_PER_GTF];	/* regs. 0x1f1 - 0x1f7 */
 } __packed;
 
+<<<<<<< HEAD
 /*
  *	Helper - belongs in the PCI layer somewhere eventually
  */
@@ -41,6 +46,8 @@ static int is_pci_dev(struct device *dev)
 	return (dev->bus == &pci_bus_type);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void ata_acpi_clear_gtf(struct ata_device *dev)
 {
 	kfree(dev->gtf_cache);
@@ -48,6 +55,7 @@ static void ata_acpi_clear_gtf(struct ata_device *dev)
 }
 
 /**
+<<<<<<< HEAD
  * ata_acpi_associate_sata_port - associate SATA port with ACPI objects
  * @ap: target SATA port
  *
@@ -103,6 +111,19 @@ static void ata_acpi_associate_ide_port(struct ata_port *ap)
 
 	if (ata_acpi_gtm(ap, &ap->__acpi_init_gtm) == 0)
 		ap->pflags |= ATA_PFLAG_INIT_GTM_VALID;
+=======
+ * ata_dev_acpi_handle - provide the acpi_handle for an ata_device
+ * @dev: the acpi_handle returned will correspond to this device
+ *
+ * Returns the acpi_handle for the ACPI namespace object corresponding to
+ * the ata_device passed into the function, or NULL if no such object exists
+ * or ACPI is disabled for this device due to consecutive errors.
+ */
+acpi_handle ata_dev_acpi_handle(struct ata_device *dev)
+{
+	return dev->flags & ATA_DFLAG_ACPI_DISABLED ?
+			NULL : ACPI_HANDLE(&dev->tdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* @ap and @dev are the same as ata_acpi_handle_hotplug() */
@@ -218,16 +239,33 @@ static void ata_acpi_dev_uevent(acpi_handle handle, u32 event, void *data)
 	ata_acpi_uevent(dev->link->ap, dev, event);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct acpi_dock_ops ata_acpi_dev_dock_ops = {
+=======
+static const struct acpi_dock_ops ata_acpi_dev_dock_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct acpi_dock_ops ata_acpi_dev_dock_ops = {
+>>>>>>> refs/remotes/origin/master
 	.handler = ata_acpi_dev_notify_dock,
 	.uevent = ata_acpi_dev_uevent,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct acpi_dock_ops ata_acpi_ap_dock_ops = {
+=======
+static const struct acpi_dock_ops ata_acpi_ap_dock_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct acpi_dock_ops ata_acpi_ap_dock_ops = {
+>>>>>>> refs/remotes/origin/master
 	.handler = ata_acpi_ap_notify_dock,
 	.uevent = ata_acpi_ap_uevent,
 };
 
+<<<<<<< HEAD
 /**
  * ata_acpi_associate - associate ATA host with ACPI objects
  * @host: target ATA host
@@ -276,6 +314,57 @@ void ata_acpi_associate(struct ata_host *host)
 			}
 		}
 	}
+=======
+/* bind acpi handle to pata port */
+void ata_acpi_bind_port(struct ata_port *ap)
+{
+	acpi_handle host_handle = ACPI_HANDLE(ap->host->dev);
+
+	if (libata_noacpi || ap->flags & ATA_FLAG_ACPI_SATA || !host_handle)
+		return;
+
+	acpi_preset_companion(&ap->tdev, host_handle, ap->port_no);
+
+	if (ata_acpi_gtm(ap, &ap->__acpi_init_gtm) == 0)
+		ap->pflags |= ATA_PFLAG_INIT_GTM_VALID;
+
+	/* we might be on a docking station */
+	register_hotplug_dock_device(ACPI_HANDLE(&ap->tdev),
+				     &ata_acpi_ap_dock_ops, ap, NULL, NULL);
+}
+
+void ata_acpi_bind_dev(struct ata_device *dev)
+{
+	struct ata_port *ap = dev->link->ap;
+	acpi_handle port_handle = ACPI_HANDLE(&ap->tdev);
+	acpi_handle host_handle = ACPI_HANDLE(ap->host->dev);
+	acpi_handle parent_handle;
+	u64 adr;
+
+	/*
+	 * For both sata/pata devices, host handle is required.
+	 * For pata device, port handle is also required.
+	 */
+	if (libata_noacpi || !host_handle ||
+			(!(ap->flags & ATA_FLAG_ACPI_SATA) && !port_handle))
+		return;
+
+	if (ap->flags & ATA_FLAG_ACPI_SATA) {
+		if (!sata_pmp_attached(ap))
+			adr = SATA_ADR(ap->port_no, NO_PORT_MULT);
+		else
+			adr = SATA_ADR(ap->port_no, dev->link->pmp);
+		parent_handle = host_handle;
+	} else {
+		adr = dev->devno;
+		parent_handle = port_handle;
+	}
+
+	acpi_preset_companion(&dev->tdev, parent_handle, adr);
+
+	register_hotplug_dock_device(ata_dev_acpi_handle(dev),
+				     &ata_acpi_dev_dock_ops, dev, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -299,7 +388,11 @@ void ata_acpi_dissociate(struct ata_host *host)
 		struct ata_port *ap = host->ports[i];
 		const struct ata_acpi_gtm *gtm = ata_acpi_init_gtm(ap);
 
+<<<<<<< HEAD
 		if (ap->acpi_handle && gtm)
+=======
+		if (ACPI_HANDLE(&ap->tdev) && gtm)
+>>>>>>> refs/remotes/origin/master
 			ata_acpi_stm(ap, gtm);
 	}
 }
@@ -323,8 +416,17 @@ int ata_acpi_gtm(struct ata_port *ap, struct ata_acpi_gtm *gtm)
 	union acpi_object *out_obj;
 	acpi_status status;
 	int rc = 0;
+<<<<<<< HEAD
 
 	status = acpi_evaluate_object(ap->acpi_handle, "_GTM", NULL, &output);
+=======
+	acpi_handle handle = ACPI_HANDLE(&ap->tdev);
+
+	if (!handle)
+		return -EINVAL;
+
+	status = acpi_evaluate_object(handle, "_GTM", NULL, &output);
+>>>>>>> refs/remotes/origin/master
 
 	rc = -ENOENT;
 	if (status == AE_NOT_FOUND)
@@ -332,25 +434,55 @@ int ata_acpi_gtm(struct ata_port *ap, struct ata_acpi_gtm *gtm)
 
 	rc = -EINVAL;
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_ERR,
 				"ACPI get timing mode failed (AE 0x%x)\n",
 				status);
+=======
+		ata_port_err(ap, "ACPI get timing mode failed (AE 0x%x)\n",
+			     status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_err(ap, "ACPI get timing mode failed (AE 0x%x)\n",
+			     status);
+>>>>>>> refs/remotes/origin/master
 		goto out_free;
 	}
 
 	out_obj = output.pointer;
 	if (out_obj->type != ACPI_TYPE_BUFFER) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_WARNING,
 				"_GTM returned unexpected object type 0x%x\n",
 				out_obj->type);
+=======
+		ata_port_warn(ap, "_GTM returned unexpected object type 0x%x\n",
+			      out_obj->type);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_warn(ap, "_GTM returned unexpected object type 0x%x\n",
+			      out_obj->type);
+>>>>>>> refs/remotes/origin/master
 
 		goto out_free;
 	}
 
 	if (out_obj->buffer.length != sizeof(struct ata_acpi_gtm)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_ERR,
 				"_GTM returned invalid length %d\n",
 				out_obj->buffer.length);
+=======
+		ata_port_err(ap, "_GTM returned invalid length %d\n",
+			     out_obj->buffer.length);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_err(ap, "_GTM returned invalid length %d\n",
+			     out_obj->buffer.length);
+>>>>>>> refs/remotes/origin/master
 		goto out_free;
 	}
 
@@ -397,13 +529,28 @@ int ata_acpi_stm(struct ata_port *ap, const struct ata_acpi_gtm *stm)
 	input.count = 3;
 	input.pointer = in_params;
 
+<<<<<<< HEAD
 	status = acpi_evaluate_object(ap->acpi_handle, "_STM", &input, NULL);
+=======
+	status = acpi_evaluate_object(ACPI_HANDLE(&ap->tdev), "_STM",
+				      &input, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (status == AE_NOT_FOUND)
 		return -ENOENT;
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_ERR,
 			"ACPI set timing mode failed (status=0x%x)\n", status);
+=======
+		ata_port_err(ap, "ACPI set timing mode failed (status=0x%x)\n",
+			     status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_err(ap, "ACPI set timing mode failed (status=0x%x)\n",
+			     status);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	return 0;
@@ -450,18 +597,42 @@ static int ata_dev_get_GTF(struct ata_device *dev, struct ata_acpi_gtf **gtf)
 	output.pointer = NULL;	/* ACPI-CA sets this; save/free it later */
 
 	if (ata_msg_probe(ap))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_DEBUG, "%s: ENTER: port#: %d\n",
 			       __func__, ap->port_no);
+=======
+		ata_dev_dbg(dev, "%s: ENTER: port#: %d\n",
+			    __func__, ap->port_no);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* _GTF has no input parameters */
 	status = acpi_evaluate_object(dev->acpi_handle, "_GTF", NULL, &output);
+=======
+		ata_dev_dbg(dev, "%s: ENTER: port#: %d\n",
+			    __func__, ap->port_no);
+
+	/* _GTF has no input parameters */
+	status = acpi_evaluate_object(ata_dev_acpi_handle(dev), "_GTF", NULL,
+				      &output);
+>>>>>>> refs/remotes/origin/master
 	out_obj = dev->gtf_cache = output.pointer;
 
 	if (ACPI_FAILURE(status)) {
 		if (status != AE_NOT_FOUND) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_WARNING,
 				       "_GTF evaluation failed (AE 0x%x)\n",
 				       status);
+=======
+			ata_dev_warn(dev, "_GTF evaluation failed (AE 0x%x)\n",
+				     status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_warn(dev, "_GTF evaluation failed (AE 0x%x)\n",
+				     status);
+>>>>>>> refs/remotes/origin/master
 			rc = -EINVAL;
 		}
 		goto out_free;
@@ -469,27 +640,60 @@ static int ata_dev_get_GTF(struct ata_device *dev, struct ata_acpi_gtf **gtf)
 
 	if (!output.length || !output.pointer) {
 		if (ata_msg_probe(ap))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_DEBUG, "%s: Run _GTF: "
 				"length or ptr is NULL (0x%llx, 0x%p)\n",
 				__func__,
 				(unsigned long long)output.length,
 				output.pointer);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			ata_dev_dbg(dev, "%s: Run _GTF: length or ptr is NULL (0x%llx, 0x%p)\n",
+				    __func__,
+				    (unsigned long long)output.length,
+				    output.pointer);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = -EINVAL;
 		goto out_free;
 	}
 
 	if (out_obj->type != ACPI_TYPE_BUFFER) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING,
 			       "_GTF unexpected object type 0x%x\n",
 			       out_obj->type);
+=======
+		ata_dev_warn(dev, "_GTF unexpected object type 0x%x\n",
+			     out_obj->type);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev, "_GTF unexpected object type 0x%x\n",
+			     out_obj->type);
+>>>>>>> refs/remotes/origin/master
 		rc = -EINVAL;
 		goto out_free;
 	}
 
 	if (out_obj->buffer.length % REGS_PER_GTF) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING,
 			       "unexpected _GTF length (%d)\n",
 			       out_obj->buffer.length);
+=======
+		ata_dev_warn(dev, "unexpected _GTF length (%d)\n",
+			     out_obj->buffer.length);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev, "unexpected _GTF length (%d)\n",
+			     out_obj->buffer.length);
+>>>>>>> refs/remotes/origin/master
 		rc = -EINVAL;
 		goto out_free;
 	}
@@ -499,9 +703,19 @@ static int ata_dev_get_GTF(struct ata_device *dev, struct ata_acpi_gtf **gtf)
 	if (gtf) {
 		*gtf = (void *)out_obj->buffer.pointer;
 		if (ata_msg_probe(ap))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_DEBUG,
 				       "%s: returning gtf=%p, gtf_count=%d\n",
 				       __func__, *gtf, rc);
+=======
+			ata_dev_dbg(dev, "%s: returning gtf=%p, gtf_count=%d\n",
+				    __func__, *gtf, rc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_dbg(dev, "%s: returning gtf=%p, gtf_count=%d\n",
+				    __func__, *gtf, rc);
+>>>>>>> refs/remotes/origin/master
 	}
 	return rc;
 
@@ -811,8 +1025,18 @@ static int ata_acpi_push_id(struct ata_device *dev)
 	union acpi_object in_params[1];
 
 	if (ata_msg_probe(ap))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_DEBUG, "%s: ix = %d, port#: %d\n",
 			       __func__, dev->devno, ap->port_no);
+=======
+		ata_dev_dbg(dev, "%s: ix = %d, port#: %d\n",
+			    __func__, dev->devno, ap->port_no);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_dbg(dev, "%s: ix = %d, port#: %d\n",
+			    __func__, dev->devno, ap->port_no);
+>>>>>>> refs/remotes/origin/master
 
 	/* Give the drive Identify data to the drive via the _SDD method */
 	/* _SDD: set up input parameters */
@@ -825,15 +1049,28 @@ static int ata_acpi_push_id(struct ata_device *dev)
 
 	/* It's OK for _SDD to be missing too. */
 	swap_buf_le16(dev->id, ATA_ID_WORDS);
+<<<<<<< HEAD
 	status = acpi_evaluate_object(dev->acpi_handle, "_SDD", &input, NULL);
+=======
+	status = acpi_evaluate_object(ata_dev_acpi_handle(dev), "_SDD", &input,
+				      NULL);
+>>>>>>> refs/remotes/origin/master
 	swap_buf_le16(dev->id, ATA_ID_WORDS);
 
 	if (status == AE_NOT_FOUND)
 		return -ENOENT;
 
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING,
 			       "ACPI _SDD failed (AE 0x%x)\n", status);
+=======
+		ata_dev_warn(dev, "ACPI _SDD failed (AE 0x%x)\n", status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev, "ACPI _SDD failed (AE 0x%x)\n", status);
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -876,7 +1113,11 @@ void ata_acpi_on_resume(struct ata_port *ap)
 	const struct ata_acpi_gtm *gtm = ata_acpi_init_gtm(ap);
 	struct ata_device *dev;
 
+<<<<<<< HEAD
 	if (ap->acpi_handle && gtm) {
+=======
+	if (ACPI_HANDLE(&ap->tdev) && gtm) {
+>>>>>>> refs/remotes/origin/master
 		/* _GTM valid */
 
 		/* restore timing parameters */
@@ -905,6 +1146,7 @@ void ata_acpi_on_resume(struct ata_port *ap)
 	}
 }
 
+<<<<<<< HEAD
 /**
  * ata_acpi_set_state - set the port power state
  * @ap: target ATA port
@@ -918,10 +1160,67 @@ void ata_acpi_set_state(struct ata_port *ap, pm_message_t state)
 	struct ata_device *dev;
 
 	if (!ap->acpi_handle || (ap->flags & ATA_FLAG_ACPI_SATA))
+=======
+static int ata_acpi_choose_suspend_state(struct ata_device *dev, bool runtime)
+{
+	int d_max_in = ACPI_STATE_D3_COLD;
+	if (!runtime)
+		goto out;
+
+	/*
+	 * For ATAPI, runtime D3 cold is only allowed
+	 * for ZPODD in zero power ready state
+	 */
+	if (dev->class == ATA_DEV_ATAPI &&
+	    !(zpodd_dev_enabled(dev) && zpodd_zpready(dev)))
+		d_max_in = ACPI_STATE_D3_HOT;
+
+out:
+	return acpi_pm_device_sleep_state(&dev->tdev, NULL, d_max_in);
+}
+
+static void sata_acpi_set_state(struct ata_port *ap, pm_message_t state)
+{
+	bool runtime = PMSG_IS_AUTO(state);
+	struct ata_device *dev;
+	acpi_handle handle;
+	int acpi_state;
+
+	ata_for_each_dev(dev, &ap->link, ENABLED) {
+		handle = ata_dev_acpi_handle(dev);
+		if (!handle)
+			continue;
+
+		if (!(state.event & PM_EVENT_RESUME)) {
+			acpi_state = ata_acpi_choose_suspend_state(dev, runtime);
+			if (acpi_state == ACPI_STATE_D0)
+				continue;
+			if (runtime && zpodd_dev_enabled(dev) &&
+			    acpi_state == ACPI_STATE_D3_COLD)
+				zpodd_enable_run_wake(dev);
+			acpi_bus_set_power(handle, acpi_state);
+		} else {
+			if (runtime && zpodd_dev_enabled(dev))
+				zpodd_disable_run_wake(dev);
+			acpi_bus_set_power(handle, ACPI_STATE_D0);
+		}
+	}
+}
+
+/* ACPI spec requires _PS0 when IDE power on and _PS3 when power off */
+static void pata_acpi_set_state(struct ata_port *ap, pm_message_t state)
+{
+	struct ata_device *dev;
+	acpi_handle port_handle;
+
+	port_handle = ACPI_HANDLE(&ap->tdev);
+	if (!port_handle)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/* channel first and then drives for power on and vica versa
 	   for power off */
+<<<<<<< HEAD
 	if (state.event == PM_EVENT_ON)
 		acpi_bus_set_power(ap->acpi_handle, ACPI_STATE_D0);
 
@@ -933,6 +1232,38 @@ void ata_acpi_set_state(struct ata_port *ap, pm_message_t state)
 	}
 	if (state.event != PM_EVENT_ON)
 		acpi_bus_set_power(ap->acpi_handle, ACPI_STATE_D3);
+=======
+	if (state.event & PM_EVENT_RESUME)
+		acpi_bus_set_power(port_handle, ACPI_STATE_D0);
+
+	ata_for_each_dev(dev, &ap->link, ENABLED) {
+		acpi_handle dev_handle = ata_dev_acpi_handle(dev);
+		if (!dev_handle)
+			continue;
+
+		acpi_bus_set_power(dev_handle, state.event & PM_EVENT_RESUME ?
+					ACPI_STATE_D0 : ACPI_STATE_D3_COLD);
+	}
+
+	if (!(state.event & PM_EVENT_RESUME))
+		acpi_bus_set_power(port_handle, ACPI_STATE_D3_COLD);
+}
+
+/**
+ * ata_acpi_set_state - set the port power state
+ * @ap: target ATA port
+ * @state: state, on/off
+ *
+ * This function sets a proper ACPI D state for the device on
+ * system and runtime PM operations.
+ */
+void ata_acpi_set_state(struct ata_port *ap, pm_message_t state)
+{
+	if (ap->flags & ATA_FLAG_ACPI_SATA)
+		sata_acpi_set_state(ap, state);
+	else
+		pata_acpi_set_state(ap, state);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -957,7 +1288,11 @@ int ata_acpi_on_devcfg(struct ata_device *dev)
 	int nr_executed = 0;
 	int rc;
 
+<<<<<<< HEAD
 	if (!dev->acpi_handle)
+=======
+	if (!ata_dev_acpi_handle(dev))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/* do we need to do _GTF? */
@@ -983,8 +1318,18 @@ int ata_acpi_on_devcfg(struct ata_device *dev)
 	if (nr_executed) {
 		rc = ata_dev_reread_id(dev, 0);
 		if (rc < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_ERR, "failed to IDENTIFY "
 				       "after ACPI commands\n");
+=======
+			ata_dev_err(dev,
+				    "failed to IDENTIFY after ACPI commands\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_err(dev,
+				    "failed to IDENTIFY after ACPI commands\n");
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 	}
@@ -1002,9 +1347,18 @@ int ata_acpi_on_devcfg(struct ata_device *dev)
 		return rc;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ata_dev_printk(dev, KERN_WARNING,
 		       "ACPI: failed the second time, disabled\n");
+=======
+	ata_dev_warn(dev, "ACPI: failed the second time, disabled\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->acpi_handle = NULL;
+=======
+	dev->flags |= ATA_DFLAG_ACPI_DISABLED;
+	ata_dev_warn(dev, "ACPI: failed the second time, disabled\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* We can safely continue if no _GTF command has been executed
 	 * and port is not frozen.

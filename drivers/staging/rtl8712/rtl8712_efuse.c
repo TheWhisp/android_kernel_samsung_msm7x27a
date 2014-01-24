@@ -231,7 +231,11 @@ u16 r8712_efuse_get_current_size(struct _adapter *padapter)
 			/* read next header */
 			efuse_addr = efuse_addr + (word_cnts * 2) + 1;
 		} else
+<<<<<<< HEAD
 			bContinual = false ;
+=======
+			bContinual = false;
+>>>>>>> refs/remotes/origin/master
 	}
 	return efuse_addr;
 }
@@ -307,6 +311,8 @@ static u8 fix_header(struct _adapter *padapter, u8 header, u16 header_addr)
 			continue;
 		}
 		for (i = 0; i < PGPKG_MAX_WORDS; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (BIT(i) & word_en)
 				continue;
 			if (!(BIT(i) & pkt.word_en)) {
@@ -322,6 +328,32 @@ static u8 fix_header(struct _adapter *padapter, u8 header, u16 header_addr)
 					return false;
 			}
 			addr += 2;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			if (BIT(i) & word_en) {
+				if (BIT(i) & pkt.word_en) {
+					if (efuse_one_byte_read(
+							padapter, addr,
+							&value) == true)
+						pkt.data[i*2] = value;
+					else
+						return false;
+					if (efuse_one_byte_read(
+							padapter,
+							addr + 1,
+							&value) == true)
+						pkt.data[i*2 + 1] =
+							value;
+					else
+						return false;
+				}
+				addr += 2;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (addr != header_addr)
@@ -329,6 +361,8 @@ static u8 fix_header(struct _adapter *padapter, u8 header, u16 header_addr)
 	addr++;
 	/* fill original data */
 	for (i = 0; i < PGPKG_MAX_WORDS; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (BIT(i) & pkt.word_en)
 			continue;
 		efuse_one_byte_write(padapter, addr, pkt.data[i*2]);
@@ -349,6 +383,36 @@ static u8 fix_header(struct _adapter *padapter, u8 header, u16 header_addr)
 			if (0xFF == value) /* write again */
 				efuse_one_byte_write(padapter, addr+1,
 						     pkt.data[i*2 + 1]);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (BIT(i) & pkt.word_en) {
+			efuse_one_byte_write(padapter, addr, pkt.data[i*2]);
+			efuse_one_byte_write(padapter, addr+1,
+					pkt.data[i*2 + 1]);
+			/* additional check */
+			if (efuse_one_byte_read(padapter, addr, &value)
+				== false)
+				ret = false;
+			else if (pkt.data[i*2] != value) {
+				ret = false;
+				if (0xFF == value) /* write again */
+					efuse_one_byte_write(padapter, addr,
+							pkt.data[i * 2]);
+			}
+			if (efuse_one_byte_read(padapter, addr+1, &value) ==
+				false)
+				ret = false;
+			else if (pkt.data[i*2 + 1] != value) {
+				ret = false;
+				if (0xFF == value) /* write again */
+					efuse_one_byte_write(padapter, addr+1,
+							pkt.data[i*2 + 1]);
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		addr += 2;
 	}
@@ -410,7 +474,11 @@ u8 r8712_efuse_pg_packet_write(struct _adapter *padapter, const u8 offset,
 		} else { /* write header fail */
 			bResult = false;
 			if (0xFF == efuse_data)
+<<<<<<< HEAD
 				return bResult; /* not thing damaged. */
+=======
+				return bResult; /* nothing damaged. */
+>>>>>>> refs/remotes/origin/master
 			/* call rescue procedure */
 			if (fix_header(padapter, efuse_data, efuse_addr) ==
 			    false)

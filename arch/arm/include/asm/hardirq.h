@@ -5,7 +5,15 @@
 #include <linux/threads.h>
 #include <asm/irq.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define NR_IPI	7
+=======
+#define NR_IPI	8
+>>>>>>> refs/remotes/origin/master
+=======
+#define NR_IPI	7
+>>>>>>> refs/remotes/origin/cm-11.0
 
 typedef struct {
 	unsigned int __softirq_pending;
@@ -27,6 +35,8 @@ u64 smp_irq_stat_cpu(unsigned int cpu);
 
 #define arch_irq_stat_cpu	smp_irq_stat_cpu
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if NR_IRQS > 512
 #define HARDIRQ_BITS	10
 #elif NR_IRQS > 256
@@ -35,6 +45,10 @@ u64 smp_irq_stat_cpu(unsigned int cpu);
 #define HARDIRQ_BITS	8
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
 
 #endif /* __ASM_HARDIRQ_H */

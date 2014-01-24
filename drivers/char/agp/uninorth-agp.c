@@ -557,7 +557,11 @@ const struct agp_bridge_driver u3_agp_driver = {
 	.needs_scratch_page	= true,
 };
 
+<<<<<<< HEAD
 static struct agp_device_ids uninorth_agp_device_ids[] __devinitdata = {
+=======
+static struct agp_device_ids uninorth_agp_device_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.device_id	= PCI_DEVICE_ID_APPLE_UNI_N_AGP,
 		.chipset_name	= "UniNorth",
@@ -592,8 +596,13 @@ static struct agp_device_ids uninorth_agp_device_ids[] __devinitdata = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit agp_uninorth_probe(struct pci_dev *pdev,
 					const struct pci_device_id *ent)
+=======
+static int agp_uninorth_probe(struct pci_dev *pdev,
+			      const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct agp_device_ids *devs = uninorth_agp_device_ids;
 	struct agp_bridge_data *bridge;
@@ -663,7 +672,11 @@ static int __devinit agp_uninorth_probe(struct pci_dev *pdev,
 	return agp_add_bridge(bridge);
 }
 
+<<<<<<< HEAD
 static void __devexit agp_uninorth_remove(struct pci_dev *pdev)
+=======
+static void agp_uninorth_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct agp_bridge_data *bridge = pci_get_drvdata(pdev);
 

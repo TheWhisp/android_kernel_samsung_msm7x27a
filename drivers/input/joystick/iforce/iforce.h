@@ -115,6 +115,10 @@ struct iforce {
 #endif
 #ifdef CONFIG_JOYSTICK_IFORCE_USB
 	struct usb_device *usbdev;	/* USB transfer */
+<<<<<<< HEAD
+=======
+	struct usb_interface *intf;
+>>>>>>> refs/remotes/origin/master
 	struct urb *irq, *out, *ctrl;
 	struct usb_ctrlrequest cr;
 #endif

@@ -31,14 +31,23 @@ extern unsigned int pci_probe;
 
 /* pci-asb2305.c */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned int pcibios_max_latency;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void pcibios_resource_survey(void);
 
 /* pci.c */
 
+<<<<<<< HEAD
 extern int pcibios_last_bus;
 extern struct pci_bus *pci_root_bus;
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct pci_ops *pci_root_ops;
 
 extern struct irq_routing_table *pcibios_get_irq_routing_table(void);

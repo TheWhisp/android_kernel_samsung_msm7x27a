@@ -2,13 +2,23 @@
  * linux/drivers/usb/gadget/s3c2410_udc.h
  * Samsung on-chip full speed USB device controllers
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2004-2007 Herbert P�tzl - Arnaud Patard
+=======
+ * Copyright (C) 2004-2007 Herbert Pötzl - Arnaud Patard
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2004-2007 Herbert Pötzl - Arnaud Patard
+>>>>>>> refs/remotes/origin/master
  *	Additional cleanups by Ben Dooks <ben-linux@fluff.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,6 +29,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _S3C2410_UDC_H
@@ -29,7 +43,10 @@ struct s3c2410_ep {
 	unsigned long			last_io;	/* jiffies timestamp */
 	struct usb_gadget		*gadget;
 	struct s3c2410_udc		*dev;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor *desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usb_ep			ep;
 	u8				num;
 
@@ -106,5 +123,9 @@ struct s3c2410_udc {
 	u8				vbus;
 	struct dentry			*regs_info;
 };
+<<<<<<< HEAD
+=======
+#define to_s3c2410(g)	(container_of((g), struct s3c2410_udc, gadget))
+>>>>>>> refs/remotes/origin/master
 
 #endif

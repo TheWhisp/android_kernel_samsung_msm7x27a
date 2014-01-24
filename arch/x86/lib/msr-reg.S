@@ -6,13 +6,21 @@
 
 #ifdef CONFIG_X86_64
 /*
+<<<<<<< HEAD
  * int native_{rdmsr,wrmsr}_safe_regs(u32 gprs[8]);
+=======
+ * int {rdmsr,wrmsr}_safe_regs(u32 gprs[8]);
+>>>>>>> refs/remotes/origin/master
  *
  * reg layout: u32 gprs[eax, ecx, edx, ebx, esp, ebp, esi, edi]
  *
  */
 .macro op_safe_regs op
+<<<<<<< HEAD
 ENTRY(native_\op\()_safe_regs)
+=======
+ENTRY(\op\()_safe_regs)
+>>>>>>> refs/remotes/origin/master
 	CFI_STARTPROC
 	pushq_cfi %rbx
 	pushq_cfi %rbp
@@ -45,13 +53,21 @@ ENTRY(native_\op\()_safe_regs)
 
 	_ASM_EXTABLE(1b, 3b)
 	CFI_ENDPROC
+<<<<<<< HEAD
 ENDPROC(native_\op\()_safe_regs)
+=======
+ENDPROC(\op\()_safe_regs)
+>>>>>>> refs/remotes/origin/master
 .endm
 
 #else /* X86_32 */
 
 .macro op_safe_regs op
+<<<<<<< HEAD
 ENTRY(native_\op\()_safe_regs)
+=======
+ENTRY(\op\()_safe_regs)
+>>>>>>> refs/remotes/origin/master
 	CFI_STARTPROC
 	pushl_cfi %ebx
 	pushl_cfi %ebp
@@ -92,7 +108,11 @@ ENTRY(native_\op\()_safe_regs)
 
 	_ASM_EXTABLE(1b, 3b)
 	CFI_ENDPROC
+<<<<<<< HEAD
 ENDPROC(native_\op\()_safe_regs)
+=======
+ENDPROC(\op\()_safe_regs)
+>>>>>>> refs/remotes/origin/master
 .endm
 
 #endif

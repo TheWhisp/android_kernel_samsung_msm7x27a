@@ -21,17 +21,28 @@ extern int (*udbg_getc_poll)(void);
 
 extern void udbg_puts(const char *s);
 extern int udbg_write(const char *s, int n);
+<<<<<<< HEAD
 extern int udbg_read(char *buf, int buflen);
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern void register_early_udbg_console(void);
 extern void udbg_printf(const char *fmt, ...)
 	__attribute__ ((format (printf, 1, 2)));
 extern void udbg_progress(char *s, unsigned short hex);
 
+<<<<<<< HEAD
 extern void udbg_init_uart(void __iomem *comport, unsigned int speed,
 			   unsigned int clock);
 extern unsigned int udbg_probe_uart_speed(void __iomem *comport,
 					  unsigned int clock);
+=======
+extern void udbg_uart_init_mmio(void __iomem *addr, unsigned int stride);
+extern void udbg_uart_init_pio(unsigned long port, unsigned int stride);
+
+extern void udbg_uart_setup(unsigned int speed, unsigned int clock);
+extern unsigned int udbg_probe_uart_speed(unsigned int clock);
+>>>>>>> refs/remotes/origin/master
 
 struct device_node;
 extern void udbg_scc_init(int force_scc);
@@ -40,10 +51,23 @@ extern void udbg_adb_init_early(void);
 
 extern void __init udbg_early_init(void);
 extern void __init udbg_init_debug_lpar(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void __init udbg_init_pmac_realmode(void);
 extern void __init udbg_init_maple_realmode(void);
 extern void __init udbg_init_pas_realmode(void);
 extern void __init udbg_init_iseries(void);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern void __init udbg_init_debug_lpar_hvsi(void);
+extern void __init udbg_init_pmac_realmode(void);
+extern void __init udbg_init_maple_realmode(void);
+extern void __init udbg_init_pas_realmode(void);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void __init udbg_init_rtas_panel(void);
 extern void __init udbg_init_rtas_console(void);
 extern void __init udbg_init_debug_beat(void);
@@ -53,6 +77,20 @@ extern void __init udbg_init_40x_realmode(void);
 extern void __init udbg_init_cpm(void);
 extern void __init udbg_init_usbgecko(void);
 extern void __init udbg_init_wsp(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+extern void __init udbg_init_memcons(void);
+>>>>>>> refs/remotes/origin/master
+extern void __init udbg_init_ehv_bc(void);
+extern void __init udbg_init_ps3gelic(void);
+extern void __init udbg_init_debug_opal_raw(void);
+extern void __init udbg_init_debug_opal_hvsi(void);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __KERNEL__ */
 #endif /* _ASM_POWERPC_UDBG_H */

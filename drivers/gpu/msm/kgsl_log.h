@@ -48,6 +48,25 @@ extern unsigned int kgsl_cff_dump_enable;
 
 #define KGSL_LOG_DUMP(_dev, fmt, args...)	dev_err(_dev->dev, fmt, ##args)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define KGSL_DEV_ERR_ONCE(_dev, fmt, args...) \
+({ \
+	static bool kgsl_dev_err_once; \
+							\
+	if (!kgsl_dev_err_once) { \
+		kgsl_dev_err_once = true; \
+		dev_crit(_dev->dev, "|%s| " fmt, __func__, ##args); \
+	} \
+})
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define KGSL_DRV_INFO(_dev, fmt, args...) \
 KGSL_LOG_INFO(_dev->dev, _dev->drv_log, fmt, ##args)
 #define KGSL_DRV_WARN(_dev, fmt, args...) \

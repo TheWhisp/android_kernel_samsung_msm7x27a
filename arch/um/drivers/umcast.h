@@ -6,7 +6,11 @@
 #ifndef __DRIVERS_UMCAST_H
 #define __DRIVERS_UMCAST_H
 
+<<<<<<< HEAD
 #include "net_user.h"
+=======
+#include <net_user.h>
+>>>>>>> refs/remotes/origin/master
 
 struct umcast_data {
 	char *addr;

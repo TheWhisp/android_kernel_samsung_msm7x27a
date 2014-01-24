@@ -3,20 +3,29 @@
 #
 
 menuconfig HOTPLUG_PCI
+<<<<<<< HEAD
 	tristate "Support for PCI Hotplug"
 	depends on PCI && HOTPLUG && SYSFS
+=======
+	bool "Support for PCI Hotplug"
+	depends on PCI && SYSFS
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Say Y here if you have a motherboard with a PCI Hotplug controller.
 	  This allows you to add and remove PCI cards while the machine is
 	  powered up and running.
 
+<<<<<<< HEAD
 	  To compile this driver as a module, choose M here: the
 	  module will be called pci_hotplug.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	  When in doubt, say N.
 
 if HOTPLUG_PCI
 
+<<<<<<< HEAD
 config HOTPLUG_PCI_FAKE
 	tristate "Fake PCI Hotplug driver"
 	help
@@ -39,6 +48,8 @@ config HOTPLUG_PCI_FAKE
 
 	  When in doubt, say N.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config HOTPLUG_PCI_COMPAQ
 	tristate "Compaq PCI Hotplug driver"
 	depends on X86 && PCI_BIOS
@@ -74,15 +85,23 @@ config HOTPLUG_PCI_IBM
 	  When in doubt, say N.
 
 config HOTPLUG_PCI_ACPI
+<<<<<<< HEAD
 	tristate "ACPI PCI Hotplug driver"
 	depends on (!ACPI_DOCK && ACPI) || (ACPI_DOCK)
+=======
+	bool "ACPI PCI Hotplug driver"
+	depends on HOTPLUG_PCI=y && ((!ACPI_DOCK && ACPI) || (ACPI_DOCK))
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you have a system that supports PCI Hotplug using
 	  ACPI.
 
+<<<<<<< HEAD
 	  To compile this driver as a module, choose M here: the
 	  module will be called acpiphp.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	  When in doubt, say N.
 
 config HOTPLUG_PCI_ACPI_IBM
@@ -143,7 +162,11 @@ config HOTPLUG_PCI_SHPC
 
 config HOTPLUG_PCI_RPA
 	tristate "RPA PCI Hotplug driver"
+<<<<<<< HEAD
 	depends on PPC_PSERIES && EEH && !HOTPLUG_PCI_FAKE
+=======
+	depends on PPC_PSERIES && EEH
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you have a RPA system that supports PCI Hotplug.
 
@@ -161,8 +184,13 @@ config HOTPLUG_PCI_RPA_DLPAR
 
 	  To compile this driver as a module, choose M here: the
 	  module will be called rpadlpar_io.
+<<<<<<< HEAD
  
  	  When in doubt, say N.
+=======
+
+	  When in doubt, say N.
+>>>>>>> refs/remotes/origin/master
 
 config HOTPLUG_PCI_SGI
 	tristate "SGI PCI Hotplug Support"
@@ -173,4 +201,18 @@ config HOTPLUG_PCI_SGI
 
 	  When in doubt, say N.
 
+<<<<<<< HEAD
+=======
+config HOTPLUG_PCI_S390
+	bool "System z PCI Hotplug Support"
+	depends on S390 && 64BIT
+	help
+	  Say Y here if you want to use the System z PCI Hotplug
+	  driver for PCI devices. Without this driver it is not
+	  possible to access stand-by PCI functions nor to deconfigure
+	  PCI functions.
+
+	  When in doubt, say Y.
+
+>>>>>>> refs/remotes/origin/master
 endif # HOTPLUG_PCI

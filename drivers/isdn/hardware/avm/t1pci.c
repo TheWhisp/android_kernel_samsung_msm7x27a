@@ -1,9 +1,23 @@
 /* $Id: t1pci.c,v 1.1.2.2 2004/01/16 21:09:27 keil Exp $
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Module for AVM T1 PCI-card.
  * 
  * Copyright 1999 by Carsten Paeth <calle@calle.de>
  * 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * Module for AVM T1 PCI-card.
+ *
+ * Copyright 1999 by Carsten Paeth <calle@calle.de>
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -59,7 +73,15 @@ static int t1pci_add_card(struct capicardparams *p, struct pci_dev *pdev)
 		goto err;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
         card->dma = avmcard_dma_alloc("t1pci", pdev, 2048+128, 2048+128);
+=======
+	card->dma = avmcard_dma_alloc("t1pci", pdev, 2048 + 128, 2048 + 128);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->dma = avmcard_dma_alloc("t1pci", pdev, 2048 + 128, 2048 + 128);
+>>>>>>> refs/remotes/origin/master
 	if (!card->dma) {
 		printk(KERN_WARNING "t1pci: no memory.\n");
 		retval = -ENOMEM;
@@ -136,6 +158,8 @@ static int t1pci_add_card(struct capicardparams *p, struct pci_dev *pdev)
 	pci_set_drvdata(pdev, card);
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
  err_free_irq:
 	free_irq(card->irq, card);
  err_unmap:
@@ -147,6 +171,24 @@ static int t1pci_add_card(struct capicardparams *p, struct pci_dev *pdev)
  err_free:
 	b1_free_card(card);
  err:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+err_free_irq:
+	free_irq(card->irq, card);
+err_unmap:
+	iounmap(card->mbase);
+err_release_region:
+	release_region(card->port, AVMB1_PORTLEN);
+err_free_dma:
+	avmcard_dma_free(card->dma);
+err_free:
+	b1_free_card(card);
+err:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -157,7 +199,15 @@ static void t1pci_remove(struct pci_dev *pdev)
 	avmcard *card = pci_get_drvdata(pdev);
 	avmctrl_info *cinfo = card->ctrlinfo;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
  	b1dma_reset(card);
+=======
+	b1dma_reset(card);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	b1dma_reset(card);
+>>>>>>> refs/remotes/origin/master
 
 	detach_capi_ctr(&cinfo->capi_ctrl);
 	free_irq(card->irq, card);
@@ -187,8 +237,12 @@ static char *t1pci_procinfo(struct capi_ctr *ctrl)
 
 /* ------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int __devinit t1pci_probe(struct pci_dev *dev,
 				 const struct pci_device_id *ent)
+=======
+static int t1pci_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct capicardparams param;
 	int retval;
@@ -217,10 +271,23 @@ static int __devinit t1pci_probe(struct pci_dev *dev,
 }
 
 static struct pci_driver t1pci_pci_driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
        .name           = "t1pci",
        .id_table       = t1pci_pci_tbl,
        .probe          = t1pci_probe,
        .remove         = t1pci_remove,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.name           = "t1pci",
+	.id_table       = t1pci_pci_tbl,
+	.probe          = t1pci_probe,
+	.remove         = t1pci_remove,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct capi_driver capi_driver_t1pci = {
@@ -237,7 +304,15 @@ static int __init t1pci_init(void)
 	if ((p = strchr(revision, ':')) != NULL && p[1]) {
 		strlcpy(rev, p + 2, 32);
 		if ((p = strchr(rev, '$')) != NULL && p > rev)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		   *(p-1) = 0;
+=======
+			*(p - 1) = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*(p - 1) = 0;
+>>>>>>> refs/remotes/origin/master
 	} else
 		strcpy(rev, "1.0");
 

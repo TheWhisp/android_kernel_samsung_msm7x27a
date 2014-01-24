@@ -28,6 +28,16 @@
  *     http://repository.maemo.org/pool/diablo/free/k/kernel-source-diablo/
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <plat/hardware.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kernel.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "opp2xxx.h"
 #include "sdrc.h"
 #include "clock.h"

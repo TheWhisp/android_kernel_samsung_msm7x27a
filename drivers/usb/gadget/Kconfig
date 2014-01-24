@@ -15,6 +15,14 @@
 
 menuconfig USB_GADGET
 	tristate "USB Gadget Support"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select NLS
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select NLS
+>>>>>>> refs/remotes/origin/master
 	help
 	   USB is a master/slave protocol, organized with one master
 	   host (such as a PC) controlling up to 127 peripheral devices.
@@ -57,6 +65,23 @@ config USB_GADGET_DEBUG
 	   trying to track down.  Never enable these messages for a
 	   production build.
 
+<<<<<<< HEAD
+=======
+config USB_GADGET_VERBOSE
+	bool "Verbose debugging Messages (DEVELOPMENT)"
+	depends on USB_GADGET_DEBUG
+	help
+	   Many controller and gadget drivers will print verbose debugging
+	   messages if you use this option to ask for those messages.
+
+	   Avoid enabling these messages, even if you're actively
+	   debugging such a driver.  Many drivers will emit so many
+	   messages that the driver timings are affected, which will
+	   either create new failure modes or remove the one you're
+	   trying to track down.  Never enable these messages for a
+	   production build.
+
+>>>>>>> refs/remotes/origin/master
 config USB_GADGET_DEBUG_FILES
 	boolean "Debugging information files (DEVELOPMENT)"
 	depends on PROC_FS
@@ -82,7 +107,19 @@ config USB_GADGET_DEBUG_FS
 config USB_GADGET_VBUS_DRAW
 	int "Maximum VBUS Power usage (2-500 mA)"
 	range 2 500
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	default 2
+=======
+	default 500
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default 2
+>>>>>>> refs/remotes/origin/master
+=======
+	default 500
+>>>>>>> refs/remotes/origin/cm-11.0
 	help
 	   Some devices need to draw power from USB when they are
 	   configured, perhaps to operate circuitry or to recharge
@@ -96,8 +133,32 @@ config USB_GADGET_VBUS_DRAW
 	   This value will be used except for system-specific gadget
 	   drivers that have more specific information.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config	USB_GADGET_SELECTED
 	boolean
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config USB_GADGET_STORAGE_NUM_BUFFERS
+	int "Number of storage pipeline buffers"
+	range 2 4
+	default 2
+	help
+	   Usually 2 buffers are enough to establish a good buffering
+	   pipeline. The number may be increased in order to compensate
+	   for a bursty VFS behaviour. For instance there may be CPU wake up
+	   latencies that makes the VFS to appear bursty in a system with
+	   an CPU on-demand governor. Especially if DMA is doing IO to
+	   offload the CPU. In this case the CPU will go into power
+	   save often and spin up occasionally to move data within VFS.
+	   If selecting USB_GADGET_DEBUG_FILES this value may be set by
+	   a module parameter as well.
+	   If unsure, say 2.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #
 # USB Peripheral Controller Support
@@ -109,6 +170,9 @@ config	USB_GADGET_SELECTED
 #   - discrete ones (including all PCI-only controllers)
 #   - debug/dummy gadget+hcd is last.
 #
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 choice
 	prompt "USB Peripheral Controller"
 	depends on USB_GADGET
@@ -117,15 +181,36 @@ choice
 	   Systems should have only one such upstream link.
 	   Many controller drivers are platform-specific; these
 	   often need board-specific hooks.
+=======
+menu "USB Peripheral Controller"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+menu "USB Peripheral Controller"
+>>>>>>> refs/remotes/origin/master
+=======
+menu "USB Peripheral Controller"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #
 # Integrated controllers
 #
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_GADGET_AT91
 	boolean "Atmel AT91 USB Device Port"
 	depends on ARCH_AT91 && !ARCH_AT91SAM9RL && !ARCH_AT91CAP9 && !ARCH_AT91SAM9G45
 	select USB_GADGET_SELECTED
+=======
+config USB_AT91
+	tristate "Atmel AT91 USB Device Port"
+	depends on ARCH_AT91
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config USB_AT91
+	tristate "Atmel AT91 USB Device Port"
+	depends on ARCH_AT91
+>>>>>>> refs/remotes/origin/master
 	help
 	   Many Atmel AT91 processors (such as the AT91RM2000) have a
 	   full speed USB Device Port with support for five configurable
@@ -135,6 +220,8 @@ config USB_GADGET_AT91
 	   dynamically linked module called "at91_udc" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_AT91
 	tristate
 	depends on USB_GADGET_AT91
@@ -144,10 +231,34 @@ config USB_GADGET_ATMEL_USBA
 	boolean "Atmel USBA"
 	select USB_GADGET_DUALSPEED
 	depends on AVR32 || ARCH_AT91CAP9 || ARCH_AT91SAM9RL || ARCH_AT91SAM9G45
+=======
+config USB_ATMEL_USBA
+	tristate "Atmel USBA"
+	select USB_GADGET_DUALSPEED
+	depends on AVR32 || ARCH_AT91SAM9RL || ARCH_AT91SAM9G45
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config USB_LPC32XX
+	tristate "LPC32XX USB Peripheral Controller"
+	depends on ARCH_LPC32XX
+	select USB_ISP1301
+	help
+	   This option selects the USB device controller in the LPC32xx SoC.
+
+	   Say "y" to link the driver statically, or "m" to build a
+	   dynamically linked module called "lpc32xx_udc" and force all
+	   gadget drivers to also be dynamically linked.
+
+config USB_ATMEL_USBA
+	tristate "Atmel USBA"
+	depends on AVR32 || ARCH_AT91
+>>>>>>> refs/remotes/origin/master
 	help
 	  USBA is the integrated high-speed USB Device controller on
 	  the AT32AP700x, some AT91SAM9 and AT91CAP9 processors from Atmel.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_ATMEL_USBA
 	tristate
 	depends on USB_GADGET_ATMEL_USBA
@@ -156,11 +267,34 @@ config USB_ATMEL_USBA
 
 config USB_GADGET_FSL_USB2
 	boolean "Freescale Highspeed USB DR Peripheral Controller"
+=======
+config USB_FSL_USB2
+	tristate "Freescale Highspeed USB DR Peripheral Controller"
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on FSL_SOC || ARCH_MXC
 	select USB_GADGET_DUALSPEED
 	select USB_FSL_MPH_DR_OF if OF
 	help
 	   Some of Freescale PowerPC processors have a High Speed
+=======
+config USB_BCM63XX_UDC
+	tristate "Broadcom BCM63xx Peripheral Controller"
+	depends on BCM63XX
+	help
+	   Many Broadcom BCM63xx chipsets (such as the BCM6328) have a
+	   high speed USB Device Port with support for four fixed endpoints
+	   (plus endpoint zero).
+
+	   Say "y" to link the driver statically, or "m" to build a
+	   dynamically linked module called "bcm63xx_udc".
+
+config USB_FSL_USB2
+	tristate "Freescale Highspeed USB DR Peripheral Controller"
+	depends on FSL_SOC || ARCH_MXC
+	select USB_FSL_MPH_DR_OF if OF
+	help
+	   Some of Freescale PowerPC and i.MX processors have a High Speed
+>>>>>>> refs/remotes/origin/master
 	   Dual-Role(DR) USB controller, which supports device mode.
 
 	   The number of programmable endpoints is different through
@@ -170,6 +304,8 @@ config USB_GADGET_FSL_USB2
 	   dynamically linked module called "fsl_usb2_udc" and force
 	   all gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_FSL_USB2
 	tristate
 	depends on USB_GADGET_FSL_USB2
@@ -178,10 +314,16 @@ config USB_FSL_USB2
 
 config USB_GADGET_FUSB300
 	boolean "Faraday FUSB300 USB Peripheral Controller"
+=======
+config USB_FUSB300
+	tristate "Faraday FUSB300 USB Peripheral Controller"
+	depends on !PHYS_ADDR_T_64BIT
+>>>>>>> refs/remotes/origin/cm-10.0
 	select USB_GADGET_DUALSPEED
 	help
 	   Faraday usb device controller FUSB300 driver
 
+<<<<<<< HEAD
 config USB_FUSB300
 	tristate
 	depends on USB_GADGET_FUSB300
@@ -190,9 +332,43 @@ config USB_FUSB300
 
 config USB_GADGET_OMAP
 	boolean "OMAP USB Device Controller"
+=======
+config USB_OMAP
+	tristate "OMAP USB Device Controller"
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on ARCH_OMAP
 	select ISP1301_OMAP if MACH_OMAP_H2 || MACH_OMAP_H3 || MACH_OMAP_H4_OTG
 	select USB_OTG_UTILS if ARCH_OMAP
+=======
+config USB_FUSB300
+	tristate "Faraday FUSB300 USB Peripheral Controller"
+	depends on !PHYS_ADDR_T_64BIT && HAS_DMA
+	help
+	   Faraday usb device controller FUSB300 driver
+
+config USB_FOTG210_UDC
+	depends on HAS_DMA
+	tristate "Faraday FOTG210 USB Peripheral Controller"
+	help
+	   Faraday USB2.0 OTG controller which can be configured as
+	   high speed or full speed USB device. This driver supppors
+	   Bulk Transfer so far.
+
+	   Say "y" to link the driver statically, or "m" to build a
+	   dynamically linked module called "fotg210_udc".
+
+config USB_GR_UDC
+       tristate "Aeroflex Gaisler GRUSBDC USB Peripheral Controller Driver"
+       depends on HAS_DMA
+       help
+          Select this to support Aeroflex Gaisler GRUSBDC cores from the GRLIB
+	  VHDL IP core library.
+
+config USB_OMAP
+	tristate "OMAP USB Device Controller"
+	depends on ARCH_OMAP1
+	select ISP1301_OMAP if MACH_OMAP_H2 || MACH_OMAP_H3 || MACH_OMAP_H4_OTG
+>>>>>>> refs/remotes/origin/master
 	help
 	   Many Texas Instruments OMAP processors have flexible full
 	   speed USB device controllers, with support for up to 30
@@ -204,6 +380,8 @@ config USB_GADGET_OMAP
 	   dynamically linked module called "omap_udc" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_OMAP
 	tristate
 	depends on USB_GADGET_OMAP
@@ -212,8 +390,17 @@ config USB_OMAP
 
 config USB_GADGET_PXA25X
 	boolean "PXA 25x or IXP 4xx"
+=======
+config USB_PXA25X
+	tristate "PXA 25x or IXP 4xx"
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on (ARCH_PXA && PXA25x) || ARCH_IXP4XX
 	select USB_OTG_UTILS
+=======
+config USB_PXA25X
+	tristate "PXA 25x or IXP 4xx"
+	depends on (ARCH_PXA && PXA25x) || ARCH_IXP4XX
+>>>>>>> refs/remotes/origin/master
 	help
 	   Intel's PXA 25x series XScale ARM-5TE processors include
 	   an integrated full speed USB 1.1 device controller.  The
@@ -226,6 +413,8 @@ config USB_GADGET_PXA25X
 	   dynamically linked module called "pxa25x_udc" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_PXA25X
 	tristate
 	depends on USB_GADGET_PXA25X
@@ -236,15 +425,37 @@ config USB_PXA25X
 # don't waste memory for the other endpoints
 config USB_PXA25X_SMALL
 	depends on USB_GADGET_PXA25X
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+# if there's only one gadget driver, using only two bulk endpoints,
+# don't waste memory for the other endpoints
+config USB_PXA25X_SMALL
+	depends on USB_PXA25X
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bool
 	default n if USB_ETH_RNDIS
 	default y if USB_ZERO
 	default y if USB_ETH
 	default y if USB_G_SERIAL
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_GADGET_R8A66597
 	boolean "Renesas R8A66597 USB Peripheral Controller"
+=======
+config USB_R8A66597
+	tristate "Renesas R8A66597 USB Peripheral Controller"
+>>>>>>> refs/remotes/origin/cm-10.0
 	select USB_GADGET_DUALSPEED
+=======
+config USB_R8A66597
+	tristate "Renesas R8A66597 USB Peripheral Controller"
+	depends on HAS_DMA
+>>>>>>> refs/remotes/origin/master
 	help
 	   R8A66597 is a discrete USB host and peripheral controller chip that
 	   supports both full and high speed USB 2.0 data transfers.
@@ -254,6 +465,8 @@ config USB_GADGET_R8A66597
 	   dynamically linked module called "r8a66597_udc" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_R8A66597
 	tristate
 	depends on USB_GADGET_R8A66597
@@ -280,8 +493,33 @@ config USB_RENESAS_USBHS_UDC
 
 config USB_GADGET_PXA27X
 	boolean "PXA 27x"
+=======
+config USB_RENESAS_USBHS_UDC
+	tristate 'Renesas USBHS controller'
+	depends on USB_RENESAS_USBHS
+	select USB_GADGET_DUALSPEED
+=======
+config USB_RENESAS_USBHS_UDC
+	tristate 'Renesas USBHS controller'
+	depends on USB_RENESAS_USBHS
+>>>>>>> refs/remotes/origin/master
+	help
+	   Renesas USBHS is a discrete USB host and peripheral controller chip
+	   that supports both full and high speed USB 2.0 data transfers.
+	   It has nine or more configurable endpoints, and endpoint zero.
+
+	   Say "y" to link the driver statically, or "m" to build a
+	   dynamically linked module called "renesas_usbhs" and force all
+	   gadget drivers to also be dynamically linked.
+
+config USB_PXA27X
+	tristate "PXA 27x"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on ARCH_PXA && (PXA27x || PXA3xx)
 	select USB_OTG_UTILS
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	   Intel's PXA 27x series XScale ARM v5TE processors include
 	   an integrated full speed USB 1.1 device controller.
@@ -293,6 +531,8 @@ config USB_GADGET_PXA27X
 	   dynamically linked module called "pxa27x_udc" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_PXA27X
 	tristate
 	depends on USB_GADGET_PXA27X
@@ -303,11 +543,17 @@ config USB_GADGET_S3C_HSOTG
 	boolean "S3C HS/OtG USB Device controller"
 	depends on S3C_DEV_USB_HSOTG
 	select USB_GADGET_S3C_HSOTG_PIO
+=======
+config USB_S3C_HSOTG
+	tristate "S3C HS/OtG USB Device controller"
+	depends on S3C_DEV_USB_HSOTG
+>>>>>>> refs/remotes/origin/cm-10.0
 	select USB_GADGET_DUALSPEED
 	help
 	  The Samsung S3C64XX USB2.0 high-speed gadget controller
 	  integrated into the S3C64XX series SoC.
 
+<<<<<<< HEAD
 config USB_S3C_HSOTG
 	tristate
 	depends on USB_GADGET_S3C_HSOTG
@@ -321,6 +567,14 @@ config USB_GADGET_IMX
 	   Freescale's IMX series include an integrated full speed
 	   USB 1.1 device controller.  The controller in the IMX series
 	   is register-compatible.
+=======
+config USB_IMX
+	tristate "Freescale i.MX1 USB Peripheral Controller"
+	depends on ARCH_MXC
+	help
+	   Freescale's i.MX1 includes an integrated full speed
+	   USB 1.1 device controller.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	   It has Six fixed-function endpoints, as well as endpoint
 	   zero (for control transfers).
@@ -329,6 +583,7 @@ config USB_GADGET_IMX
 	   dynamically linked module called "imx_udc" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
 config USB_IMX
 	tristate
 	depends on USB_GADGET_IMX
@@ -338,6 +593,23 @@ config USB_IMX
 config USB_GADGET_S3C2410
 	boolean "S3C2410 USB Device Controller"
 	depends on ARCH_S3C2410
+=======
+config USB_S3C2410
+	tristate "S3C2410 USB Device Controller"
+	depends on ARCH_S3C24XX
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config USB_S3C_HSOTG
+	depends on ARM
+	tristate "Designware/S3C HS/OtG USB Device controller"
+	help
+	  The Designware USB2.0 high-speed gadget controller
+	  integrated into many SoCs.
+
+config USB_S3C2410
+	tristate "S3C2410 USB Device Controller"
+	depends on ARCH_S3C24XX
+>>>>>>> refs/remotes/origin/master
 	help
 	  Samsung's S3C2410 is an ARM-4 processor with an integrated
 	  full speed USB 1.1 device controller.  It has 4 configurable
@@ -346,6 +618,8 @@ config USB_GADGET_S3C2410
 	  This driver has been tested on the S3C2410, S3C2412, and
 	  S3C2440 processors.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_S3C2410
 	tristate
 	depends on USB_GADGET_S3C2410
@@ -359,7 +633,21 @@ config USB_S3C2410_DEBUG
 config USB_GADGET_S3C_HSUDC
 	boolean "S3C2416, S3C2443 and S3C2450 USB Device Controller"
 	depends on ARCH_S3C2410
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config USB_S3C2410_DEBUG
+	boolean "S3C2410 udc debug messages"
+	depends on USB_S3C2410
+
+config USB_S3C_HSUDC
+	tristate "S3C2416, S3C2443 and S3C2450 USB Device Controller"
+	depends on ARCH_S3C24XX
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	select USB_GADGET_DUALSPEED
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Samsung's S3C2416, S3C2443 and S3C2450 is an ARM9 based SoC
 	  integrated with dual speed USB 2.0 device controller. It has
@@ -367,6 +655,8 @@ config USB_GADGET_S3C_HSUDC
 
 	  This driver has been tested on S3C2416 and S3C2450 processors.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_S3C_HSUDC
 	tristate
 	depends on USB_GADGET_S3C_HSUDC
@@ -385,24 +675,64 @@ config USB_PXA_U2O
 	depends on USB_GADGET_PXA_U2O
 	default USB_GADGET
 	select USB_GADGET_SELECTED
+=======
+config USB_MV_UDC
+	tristate "Marvell USB2.0 Device Controller"
+	select USB_GADGET_DUALSPEED
+=======
+config USB_MV_UDC
+	tristate "Marvell USB2.0 Device Controller"
+	depends on HAS_DMA
+>>>>>>> refs/remotes/origin/master
+	help
+	  Marvell Socs (including PXA and MMP series) include a high speed
+	  USB2.0 OTG controller, which can be configured as high speed or
+	  full speed USB peripheral.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+config USB_MV_U3D
+	depends on HAS_DMA
+	tristate "MARVELL PXA2128 USB 3.0 controller"
+	help
+	  MARVELL PXA2128 Processor series include a super speed USB3.0 device
+	  controller, which support super speed USB peripheral.
+>>>>>>> refs/remotes/origin/master
 
 #
 # Controllers available in both integrated and discrete versions
 #
 
+<<<<<<< HEAD
 # musb builds in ../musb along with host support
 config USB_GADGET_MUSB_HDRC
+<<<<<<< HEAD
 	boolean "Inventra HDRC USB Peripheral (TI, ADI, ...)"
 	depends on USB_MUSB_HDRC && (USB_MUSB_PERIPHERAL || USB_MUSB_OTG)
 	select USB_GADGET_DUALSPEED
 	select USB_GADGET_SELECTED
+=======
+	tristate "Inventra HDRC USB Peripheral (TI, ADI, ...)"
+	depends on USB_MUSB_HDRC
+	select USB_GADGET_DUALSPEED
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This OTG-capable silicon IP is used in dual designs including
 	  the TI DaVinci, OMAP 243x, OMAP 343x, TUSB 6010, and ADI Blackfin
 
+<<<<<<< HEAD
 config USB_GADGET_M66592
 	boolean "Renesas M66592 USB Peripheral Controller"
+=======
+config USB_M66592
+	tristate "Renesas M66592 USB Peripheral Controller"
+>>>>>>> refs/remotes/origin/cm-10.0
 	select USB_GADGET_DUALSPEED
+=======
+config USB_M66592
+	tristate "Renesas M66592 USB Peripheral Controller"
+>>>>>>> refs/remotes/origin/master
 	help
 	   M66592 is a discrete USB peripheral controller chip that
 	   supports both full and high speed USB 2.0 data transfers.
@@ -412,20 +742,37 @@ config USB_GADGET_M66592
 	   dynamically linked module called "m66592_udc" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_M66592
 	tristate
 	depends on USB_GADGET_M66592
 	default USB_GADGET
 	select USB_GADGET_SELECTED
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #
 # Controllers available only in discrete form (and all PCI controllers)
 #
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_GADGET_AMD5536UDC
 	boolean "AMD5536 UDC"
+=======
+config USB_AMD5536UDC
+	tristate "AMD5536 UDC"
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on PCI
 	select USB_GADGET_DUALSPEED
+=======
+config USB_AMD5536UDC
+	tristate "AMD5536 UDC"
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	help
 	   The AMD5536 UDC is part of the AMD Geode CS5536, an x86 southbridge.
 	   It is a USB Highspeed DMA capable USB device controller. Beside ep0
@@ -437,6 +784,8 @@ config USB_GADGET_AMD5536UDC
 	   dynamically linked module called "amd5536udc" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_AMD5536UDC
 	tristate
 	depends on USB_GADGET_AMD5536UDC
@@ -445,6 +794,14 @@ config USB_AMD5536UDC
 
 config USB_GADGET_FSL_QE
 	boolean "Freescale QE/CPM USB Device Controller"
+=======
+config USB_FSL_QE
+	tristate "Freescale QE/CPM USB Device Controller"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config USB_FSL_QE
+	tristate "Freescale QE/CPM USB Device Controller"
+>>>>>>> refs/remotes/origin/master
 	depends on FSL_SOC && (QUICC_ENGINE || CPM)
 	help
 	   Some of Freescale PowerPC processors have a Full Speed
@@ -456,6 +813,8 @@ config USB_GADGET_FSL_QE
 	   Set CONFIG_USB_GADGET to "m" to build this driver as a
 	   dynamically linked module called "fsl_qe_udc".
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_FSL_QE
 	tristate
 	depends on USB_GADGET_FSL_QE
@@ -464,6 +823,10 @@ config USB_FSL_QE
 
 config USB_GADGET_CI13XXX_PCI
 	boolean "MIPS USB CI13xxx PCI UDC"
+=======
+config USB_CI13XXX_PCI
+	tristate "MIPS USB CI13xxx PCI UDC"
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on PCI
 	select USB_GADGET_DUALSPEED
 	help
@@ -474,6 +837,7 @@ config USB_GADGET_CI13XXX_PCI
 	  dynamically linked module called "ci13xxx_udc" and force all
 	  gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
 config USB_CI13XXX_PCI
 	tristate
 	depends on USB_GADGET_CI13XXX_PCI
@@ -482,8 +846,47 @@ config USB_CI13XXX_PCI
 
 config USB_GADGET_NET2280
 	boolean "NetChip 228x"
+=======
+config USB_NET2272
+	tristate "PLX NET2272"
+	select USB_GADGET_DUALSPEED
+=======
+config USB_NET2272
+	tristate "PLX NET2272"
+>>>>>>> refs/remotes/origin/master
+	help
+	  PLX NET2272 is a USB peripheral controller which supports
+	  both full and high speed USB 2.0 data transfers.
+
+	  It has three configurable endpoints, as well as endpoint zero
+	  (for control transfer).
+	  Say "y" to link the driver statically, or "m" to build a
+	  dynamically linked module called "net2272" and force all
+	  gadget drivers to also be dynamically linked.
+
+config USB_NET2272_DMA
+	boolean "Support external DMA controller"
+<<<<<<< HEAD
+	depends on USB_NET2272
+=======
+	depends on USB_NET2272 && HAS_DMA
+>>>>>>> refs/remotes/origin/master
+	help
+	  The NET2272 part can optionally support an external DMA
+	  controller, but your board has to have support in the
+	  driver itself.
+
+	  If unsure, say "N" here.  The driver works fine in PIO mode.
+
+config USB_NET2280
+	tristate "NetChip 228x"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on PCI
 	select USB_GADGET_DUALSPEED
+=======
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	help
 	   NetChip 2280 / 2282 is a PCI based USB peripheral controller which
 	   supports both full and high speed USB 2.0 data transfers.
@@ -496,6 +899,8 @@ config USB_GADGET_NET2280
 	   dynamically linked module called "net2280" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_NET2280
 	tristate
 	depends on USB_GADGET_NET2280
@@ -504,6 +909,14 @@ config USB_NET2280
 
 config USB_GADGET_GOKU
 	boolean "Toshiba TC86C001 'Goku-S'"
+=======
+config USB_GOKU
+	tristate "Toshiba TC86C001 'Goku-S'"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config USB_GOKU
+	tristate "Toshiba TC86C001 'Goku-S'"
+>>>>>>> refs/remotes/origin/master
 	depends on PCI
 	help
 	   The Toshiba TC86C001 is a PCI device which includes controllers
@@ -516,6 +929,8 @@ config USB_GADGET_GOKU
 	   dynamically linked module called "goku_udc" and to force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_GOKU
 	tristate
 	depends on USB_GADGET_GOKU
@@ -525,6 +940,12 @@ config USB_GOKU
 config USB_GADGET_LANGWELL
 	boolean "Intel Langwell USB Device Controller"
 	depends on PCI
+=======
+config USB_LANGWELL
+	tristate "Intel Langwell USB Device Controller"
+	depends on PCI
+	depends on !PHYS_ADDR_T_64BIT
+>>>>>>> refs/remotes/origin/cm-10.0
 	select USB_GADGET_DUALSPEED
 	help
 	   Intel Langwell USB Device Controller is a High-Speed USB
@@ -537,6 +958,7 @@ config USB_GADGET_LANGWELL
 	   dynamically linked module called "langwell_udc" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
 config USB_LANGWELL
 	tristate
 	depends on USB_GADGET_LANGWELL
@@ -545,8 +967,17 @@ config USB_LANGWELL
 
 config USB_GADGET_EG20T
 	tristate "Intel EG20T PCH/OKI SEMICONDUCTOR IOH(ML7213/ML7831) UDC"
+=======
+config USB_EG20T
+	tristate "Intel EG20T PCH/LAPIS Semiconductor IOH(ML7213/ML7831) UDC"
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on PCI
 	select USB_GADGET_DUALSPEED
+=======
+config USB_EG20T
+	tristate "Intel EG20T PCH/LAPIS Semiconductor IOH(ML7213/ML7831) UDC"
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is a USB device driver for EG20T PCH.
 	  EG20T PCH is the platform controller hub that is used in Intel's
@@ -560,12 +991,22 @@ config USB_GADGET_EG20T
 	  This driver dose not support interrupt transfer or isochronous
 	  transfer modes.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  This driver also can be used for OKI SEMICONDUCTOR's ML7213 which is
+=======
+	  This driver also can be used for LAPIS Semiconductor's ML7213 which is
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  This driver also can be used for LAPIS Semiconductor's ML7213 which is
+>>>>>>> refs/remotes/origin/master
 	  for IVI(In-Vehicle Infotainment) use.
 	  ML7831 is for general purpose use.
 	  ML7213/ML7831 is companion chip for Intel Atom E6xx series.
 	  ML7213/ML7831 is completely compatible for Intel EG20T PCH.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_EG20T
 	tristate
 	depends on USB_GADGET_EG20T
@@ -574,6 +1015,10 @@ config USB_EG20T
 
 config USB_GADGET_CI13XXX_MSM
 	boolean "MIPS USB CI13xxx for MSM"
+=======
+config USB_CI13XXX_MSM
+	tristate "MIPS USB CI13xxx for MSM"
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on ARCH_MSM
 	select USB_GADGET_DUALSPEED
 	select USB_MSM_OTG
@@ -589,20 +1034,82 @@ config USB_GADGET_CI13XXX_MSM
 	  dynamically linked module called "ci13xxx_msm" and force all
 	  gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_CI13XXX_MSM
 	tristate
 	depends on USB_GADGET_CI13XXX_MSM
 	default USB_GADGET
 	select USB_GADGET_SELECTED
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+config USB_CI13XXX_MSM_HSIC
+	tristate "MIPS HSIC CI13xxx for MSM"
+	depends on ARCH_MSM
+	select USB_GADGET_DUALSPEED
+	help
+	  MSM SoC has chipidea USB controller.  This driver uses
+	  ci13xxx_udc core. Support USB-HSIC core.
 
+	  Say "y" to link the driver statically, or "m" to build a
+	  dynamically linked module called "ci13xxx_msm_hsic" and force all
+	  gadget drivers to also be dynamically linked.
+
+config USB_DWC3_MSM
+	tristate "DesignWare USB3.0 (DRD) Controller for MSM"
+	depends on ARCH_MSM
+	select USB_DWC3
+	select USB_GADGET_DUALSPEED
+	select USB_GADGET_SELECTED
+	help
+	  The DesignWare USB3.0 controller is a SuperSpeed USB3.0 Controller
+	  integrated into the Qualcomm MSM chipset series, supporting host,
+	  device and otg modes of operation. For more information please
+	  refer to http://www.qualcomm.com/chipsets.
+
+config USB_DWC3_OMAP
+	tristate "DesignWare USB3.0 (DRD) Controller for OMAP"
+	depends on ARCH_OMAP
+	select USB_DWC3
+	select USB_GADGET_DUALSPEED
+	select USB_GADGET_SUPERSPEED
+	select USB_GADGET_SELECTED
+	help
+	  DesignWare USB3.0 controller is a SuperSpeed USB3.0 Controller
+	  which can be configured for peripheral-only, host-only, hub-only
+	  and Dual-Role operation. This Controller was first integrated into
+	  the OMAP5 series of processors. More information about the OMAP5
+	  version of this controller, refer to http://www.ti.com/omap5.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #
 # LAST -- dummy/emulated controller
 #
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_GADGET_MSM_72K
 	boolean "MSM 72K Device Controller"
 	depends on ARCH_MSM
 	select USB_GADGET_SELECTED
+=======
+config USB_MSM_72K
+	tristate "MSM 72K Device Controller"
+	depends on ARCH_MSM
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config USB_MSM_72K
+	tristate "MSM 72K Device Controller"
+	depends on ARCH_MSM
+>>>>>>> refs/remotes/origin/cm-11.0
 	select USB_GADGET_DUALSPEED
 	help
 	   USB gadget driver for Qualcomm MSM 72K architecture.
@@ -611,6 +1118,8 @@ config USB_GADGET_MSM_72K
 	   dynamically linked module called "msm72k" and force all
 	   gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_MSM_72K
 	tristate
 	depends on USB_GADGET_MSM_72K
@@ -621,17 +1130,45 @@ config USB_GADGET_DUMMY_HCD
 	boolean "Dummy HCD (DEVELOPMENT)"
 	depends on USB=y || (USB=m && USB_GADGET=m)
 	select USB_GADGET_DUALSPEED
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+config USB_DUMMY_HCD
+	tristate "Dummy HCD (DEVELOPMENT)"
+	depends on USB=y || (USB=m && USB_GADGET=m)
+	select USB_GADGET_DUALSPEED
+	select USB_GADGET_SUPERSPEED
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config USB_DUMMY_HCD
+	tristate "Dummy HCD (DEVELOPMENT)"
+	depends on USB=y || (USB=m && USB_GADGET=m)
+>>>>>>> refs/remotes/origin/master
 	help
 	  This host controller driver emulates USB, looping all data transfer
 	  requests back to a USB "gadget driver" in the same host.  The host
 	  side is the master; the gadget side is the slave.  Gadget drivers
 	  can be high, full, or low speed; and they have access to endpoints
 	  like those from NET2280, PXA2xx, or SA1100 hardware.
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  
 	  This may help in some stages of creating a driver to embed in a
 	  Linux device, since it lets you debug several parts of the gadget
 	  driver without its hardware or drivers being involved.
 	  
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	  This may help in some stages of creating a driver to embed in a
+	  Linux device, since it lets you debug several parts of the gadget
+	  driver without its hardware or drivers being involved.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  Since such a gadget side driver needs to interoperate with a host
 	  side Linux-USB device driver, this may help to debug both sides
 	  of a USB protocol stack.
@@ -640,6 +1177,8 @@ config USB_GADGET_DUMMY_HCD
 	  dynamically linked module called "dummy_hcd" and force all
 	  gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_DUMMY_HCD
 	tristate
 	depends on USB_GADGET_DUMMY_HCD
@@ -649,19 +1188,109 @@ config USB_DUMMY_HCD
 # NOTE:  Please keep dummy_hcd LAST so that "real hardware" appears
 # first and will be selected by default.
 
+<<<<<<< HEAD
 endchoice
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+# NOTE:  Please keep dummy_hcd LAST so that "real hardware" appears
+# first and will be selected by default.
+
+endmenu
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+endmenu
+>>>>>>> refs/remotes/origin/cm-11.0
 
 # Selected by UDC drivers that support high-speed operation.
 config USB_GADGET_DUALSPEED
 	bool
+<<<<<<< HEAD
 	depends on USB_GADGET
+=======
+
+# Selected by UDC drivers that support super-speed opperation
+config USB_GADGET_SUPERSPEED
+	bool "Operate as superspeed"
+	depends on USB_GADGET
+	depends on USB_GADGET_DUALSPEED
+	default n
+	help
+	 When a superspeed peripheral controller is selected
+	 (for example DesignWare USB3.0 controller), use this flag to
+	 indicate if the device should operate in superspeed(=y)
+	 or not.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #
 # USB Gadget Drivers
 #
+<<<<<<< HEAD
 choice
 	tristate "USB Gadget Drivers"
+<<<<<<< HEAD
 	depends on USB_GADGET && USB_GADGET_SELECTED
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+# composite based drivers
+config USB_LIBCOMPOSITE
+	tristate
+	select CONFIGFS_FS
+	depends on USB_GADGET
+
+config USB_F_ACM
+	tristate
+
+config USB_F_SS_LB
+	tristate
+
+config USB_U_SERIAL
+	tristate
+
+config USB_U_ETHER
+	tristate
+
+config USB_F_SERIAL
+	tristate
+
+config USB_F_OBEX
+	tristate
+
+config USB_F_NCM
+	tristate
+
+config USB_F_ECM
+	tristate
+
+config USB_F_PHONET
+	tristate
+
+config USB_F_EEM
+	tristate
+
+config USB_F_SUBSET
+	tristate
+
+config USB_F_RNDIS
+	tristate
+
+config USB_F_MASS_STORAGE
+	tristate
+
+config USB_F_FS
+	tristate
+
+choice
+	tristate "USB Gadget Drivers"
+>>>>>>> refs/remotes/origin/master
 	default USB_ETH
 	help
 	  A Linux "Gadget Driver" talks to the USB Peripheral Controller
@@ -681,8 +1310,166 @@ choice
 
 # this first set of drivers all depend on bulk-capable hardware.
 
+<<<<<<< HEAD
 config USB_ZERO
 	tristate "Gadget Zero (DEVELOPMENT)"
+=======
+config USB_CONFIGFS
+	tristate "USB functions configurable through configfs"
+	select USB_LIBCOMPOSITE
+	help
+	  A Linux USB "gadget" can be set up through configfs.
+	  If this is the case, the USB functions (which from the host's
+	  perspective are seen as interfaces) and configurations are
+	  specified simply by creating appropriate directories in configfs.
+	  Associating functions with configurations is done by creating
+	  appropriate symbolic links.
+	  For more information see Documentation/usb/gadget_configfs.txt.
+
+config USB_CONFIGFS_SERIAL
+	boolean "Generic serial bulk in/out"
+	depends on USB_CONFIGFS
+	depends on TTY
+	select USB_U_SERIAL
+	select USB_F_SERIAL
+	help
+	  The function talks to the Linux-USB generic serial driver.
+
+config USB_CONFIGFS_ACM
+	boolean "Abstract Control Model (CDC ACM)"
+	depends on USB_CONFIGFS
+	depends on TTY
+	select USB_U_SERIAL
+	select USB_F_ACM
+	help
+	  ACM serial link.  This function can be used to interoperate with
+	  MS-Windows hosts or with the Linux-USB "cdc-acm" driver.
+
+config USB_CONFIGFS_OBEX
+	boolean "Object Exchange Model (CDC OBEX)"
+	depends on USB_CONFIGFS
+	depends on TTY
+	select USB_U_SERIAL
+	select USB_F_OBEX
+	help
+	  You will need a user space OBEX server talking to /dev/ttyGS*,
+	  since the kernel itself doesn't implement the OBEX protocol.
+
+config USB_CONFIGFS_NCM
+	boolean "Network Control Model (CDC NCM)"
+	depends on USB_CONFIGFS
+	depends on NET
+	select USB_U_ETHER
+	select USB_F_NCM
+	help
+	  NCM is an advanced protocol for Ethernet encapsulation, allows
+	  grouping of several ethernet frames into one USB transfer and
+	  different alignment possibilities.
+
+config USB_CONFIGFS_ECM
+	boolean "Ethernet Control Model (CDC ECM)"
+	depends on USB_CONFIGFS
+	depends on NET
+	select USB_U_ETHER
+	select USB_F_ECM
+	help
+	  The "Communication Device Class" (CDC) Ethernet Control Model.
+	  That protocol is often avoided with pure Ethernet adapters, in
+	  favor of simpler vendor-specific hardware, but is widely
+	  supported by firmware for smart network devices.
+
+config USB_CONFIGFS_ECM_SUBSET
+	boolean "Ethernet Control Model (CDC ECM) subset"
+	depends on USB_CONFIGFS
+	depends on NET
+	select USB_U_ETHER
+	select USB_F_SUBSET
+	help
+	  On hardware that can't implement the full protocol,
+	  a simple CDC subset is used, placing fewer demands on USB.
+
+config USB_CONFIGFS_RNDIS
+	bool "RNDIS"
+	depends on USB_CONFIGFS
+	depends on NET
+	select USB_U_ETHER
+	select USB_F_RNDIS
+	help
+	   Microsoft Windows XP bundles the "Remote NDIS" (RNDIS) protocol,
+	   and Microsoft provides redistributable binary RNDIS drivers for
+	   older versions of Windows.
+
+	   To make MS-Windows work with this, use Documentation/usb/linux.inf
+	   as the "driver info file".  For versions of MS-Windows older than
+	   XP, you'll need to download drivers from Microsoft's website; a URL
+	   is given in comments found in that info file.
+
+config USB_CONFIGFS_EEM
+	bool "Ethernet Emulation Model (EEM)"
+	depends on USB_CONFIGFS
+	depends on NET
+	select USB_U_ETHER
+	select USB_F_EEM
+	help
+	  CDC EEM is a newer USB standard that is somewhat simpler than CDC ECM
+	  and therefore can be supported by more hardware.  Technically ECM and
+	  EEM are designed for different applications.  The ECM model extends
+	  the network interface to the target (e.g. a USB cable modem), and the
+	  EEM model is for mobile devices to communicate with hosts using
+	  ethernet over USB.  For Linux gadgets, however, the interface with
+	  the host is the same (a usbX device), so the differences are minimal.
+
+config USB_CONFIGFS_PHONET
+	boolean "Phonet protocol"
+	depends on USB_CONFIGFS
+	depends on NET
+	depends on PHONET
+	select USB_U_ETHER
+	select USB_F_PHONET
+	help
+	  The Phonet protocol implementation for USB device.
+
+config USB_CONFIGFS_MASS_STORAGE
+	boolean "Mass storage"
+	depends on USB_CONFIGFS
+	depends on BLOCK
+	select USB_F_MASS_STORAGE
+	help
+	  The Mass Storage Gadget acts as a USB Mass Storage disk drive.
+	  As its storage repository it can use a regular file or a block
+	  device (in much the same way as the "loop" device driver),
+	  specified as a module parameter or sysfs option.
+
+config USB_CONFIGFS_F_LB_SS
+	boolean "Loopback and sourcesink function (for testing)"
+	depends on USB_CONFIGFS
+	select USB_F_SS_LB
+	help
+	  Loopback function loops back a configurable number of transfers.
+	  Sourcesink function either sinks and sources bulk data.
+	  It also implements control requests, for "chapter 9" conformance.
+	  Make this be the first driver you try using on top of any new
+	  USB peripheral controller driver.  Then you can use host-side
+	  test software, like the "usbtest" driver, to put your hardware
+	  and its driver through a basic set of functional tests.
+
+config USB_CONFIGFS_F_FS
+	boolean "Function filesystem (FunctionFS)"
+	depends on USB_CONFIGFS
+	select USB_F_FS
+	help
+	  The Function Filesystem (FunctionFS) lets one create USB
+	  composite functions in user space in the same way GadgetFS
+	  lets one create USB gadgets in user space.  This allows creation
+	  of composite gadgets such that some of the functions are
+	  implemented in kernel space (for instance Ethernet, serial or
+	  mass storage) and other are implemented in user space.
+
+config USB_ZERO
+	tristate "Gadget Zero (DEVELOPMENT)"
+	select USB_LIBCOMPOSITE
+	select USB_F_SS_LB
+>>>>>>> refs/remotes/origin/master
 	help
 	  Gadget Zero is a two-configuration device.  It either sinks and
 	  sources bulk data; or it loops back a configurable number of
@@ -716,23 +1503,72 @@ config USB_ZERO_HNPTEST
 	  one serve as the USB host instead (in the "B-Host" role).
 
 config USB_AUDIO
+<<<<<<< HEAD
 	tristate "Audio Gadget (EXPERIMENTAL)"
 	depends on SND
 	select SND_PCM
 	help
+<<<<<<< HEAD
 	  Gadget Audio is compatible with USB Audio Class specification 1.0.
 	  It will include at least one AudioControl interface, zero or more
 	  AudioStream interface and zero or more MIDIStream interface.
 
 	  Gadget Audio will use on-board ALSA (CONFIG_SND) audio card to
 	  playback or capture audio stream.
+=======
+=======
+	tristate "Audio Gadget"
+	depends on SND
+	select USB_LIBCOMPOSITE
+	select SND_PCM
+	help
+>>>>>>> refs/remotes/origin/master
+	  This Gadget Audio driver is compatible with USB Audio Class
+	  specification 2.0. It implements 1 AudioControl interface,
+	  1 AudioStreaming Interface each for USB-OUT and USB-IN.
+	  Number of channels, sample rate and sample size can be
+	  specified as module parameters.
+	  This driver doesn't expect any real Audio codec to be present
+	  on the device - the audio streams are simply sinked to and
+	  sourced from a virtual ALSA sound card created. The user-space
+	  application may choose to do whatever it wants with the data
+	  received from the USB Host and choose to provide whatever it
+	  wants as audio data to the USB Host.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  Say "y" to link the driver statically, or "m" to build a
 	  dynamically linked module called "g_audio".
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config GADGET_UAC1
+	bool "UAC 1.0 (Legacy)"
+	depends on USB_AUDIO
+	help
+	  If you instead want older UAC Spec-1.0 driver that also has audio
+	  paths hardwired to the Audio codec chip on-board and doesn't work
+	  without one.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 config USB_ETH
 	tristate "Ethernet Gadget (with CDC Ethernet support)"
 	depends on NET
+=======
+config USB_ETH
+	tristate "Ethernet Gadget (with CDC Ethernet support)"
+	depends on NET
+	select USB_LIBCOMPOSITE
+	select USB_U_ETHER
+	select USB_F_ECM
+	select USB_F_SUBSET
+>>>>>>> refs/remotes/origin/master
 	select CRC32
 	help
 	  This driver implements Ethernet style communication, in one of
@@ -768,6 +1604,11 @@ config USB_ETH
 config USB_ETH_RNDIS
 	bool "RNDIS support"
 	depends on USB_ETH
+<<<<<<< HEAD
+=======
+	select USB_LIBCOMPOSITE
+	select USB_F_RNDIS
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 	   Microsoft Windows XP bundles the "Remote NDIS" (RNDIS) protocol,
@@ -786,6 +1627,11 @@ config USB_ETH_RNDIS
 config USB_ETH_EEM
        bool "Ethernet Emulation Model (EEM) support"
        depends on USB_ETH
+<<<<<<< HEAD
+=======
+	select USB_LIBCOMPOSITE
+	select USB_F_EEM
+>>>>>>> refs/remotes/origin/master
        default n
        help
          CDC EEM is a newer USB standard that is somewhat simpler than CDC ECM
@@ -802,19 +1648,37 @@ config USB_ETH_EEM
 config USB_G_NCM
 	tristate "Network Control Model (NCM) support"
 	depends on NET
+<<<<<<< HEAD
+=======
+	select USB_LIBCOMPOSITE
+	select USB_U_ETHER
+	select USB_F_NCM
+>>>>>>> refs/remotes/origin/master
 	select CRC32
 	help
 	  This driver implements USB CDC NCM subclass standard. NCM is
 	  an advanced protocol for Ethernet encapsulation, allows grouping
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  of several ethernet frames into one USB transfer and diffferent
+=======
+	  of several ethernet frames into one USB transfer and different
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  of several ethernet frames into one USB transfer and different
+>>>>>>> refs/remotes/origin/master
 	  alignment possibilities.
 
 	  Say "y" to link the driver statically, or "m" to build a
 	  dynamically linked module called "g_ncm".
 
 config USB_GADGETFS
+<<<<<<< HEAD
 	tristate "Gadget Filesystem (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+	tristate "Gadget Filesystem"
+>>>>>>> refs/remotes/origin/master
 	help
 	  This driver provides a filesystem based API that lets user mode
 	  programs implement a single-configuration USB device, including
@@ -822,15 +1686,24 @@ config USB_GADGETFS
 	  All endpoints, transfer speeds, and transfer types supported by
 	  the hardware are available, through read() and write() calls.
 
+<<<<<<< HEAD
 	  Currently, this option is still labelled as EXPERIMENTAL because
 	  of existing race conditions in the underlying in-kernel AIO core.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	  Say "y" to link the driver statically, or "m" to build a
 	  dynamically linked module called "gadgetfs".
 
 config USB_FUNCTIONFS
+<<<<<<< HEAD
 	tristate "Function Filesystem (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+	tristate "Function Filesystem"
+	select USB_LIBCOMPOSITE
+	select USB_F_FS
+>>>>>>> refs/remotes/origin/master
 	select USB_FUNCTIONFS_GENERIC if !(USB_FUNCTIONFS_ETH || USB_FUNCTIONFS_RNDIS)
 	help
 	  The Function Filesystem (FunctionFS) lets one create USB
@@ -849,6 +1722,12 @@ config USB_FUNCTIONFS
 config USB_FUNCTIONFS_ETH
 	bool "Include configuration with CDC ECM (Ethernet)"
 	depends on USB_FUNCTIONFS && NET
+<<<<<<< HEAD
+=======
+	select USB_U_ETHER
+	select USB_F_ECM
+	select USB_F_SUBSET
+>>>>>>> refs/remotes/origin/master
 	help
 	  Include a configuration with CDC ECM function (Ethernet) and the
 	  Function Filesystem.
@@ -856,6 +1735,11 @@ config USB_FUNCTIONFS_ETH
 config USB_FUNCTIONFS_RNDIS
 	bool "Include configuration with RNDIS (Ethernet)"
 	depends on USB_FUNCTIONFS && NET
+<<<<<<< HEAD
+=======
+	select USB_U_ETHER
+	select USB_F_RNDIS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Include a configuration with RNDIS function (Ethernet) and the Filesystem.
 
@@ -866,8 +1750,13 @@ config USB_FUNCTIONFS_GENERIC
 	  Include a configuration with the Function Filesystem alone with
 	  no Ethernet interface.
 
+<<<<<<< HEAD
 config USB_FILE_STORAGE
+<<<<<<< HEAD
 	tristate "File-backed Storage Gadget"
+=======
+	tristate "File-backed Storage Gadget (DEPRECATED)"
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on BLOCK
 	help
 	  The File-backed Storage Gadget acts as a USB Mass Storage
@@ -878,6 +1767,12 @@ config USB_FILE_STORAGE
 	  Say "y" to link the driver statically, or "m" to build a
 	  dynamically linked module called "g_file_storage".
 
+<<<<<<< HEAD
+=======
+	  NOTE: This driver is deprecated.  Its replacement is the
+	  Mass Storage Gadget.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config USB_FILE_STORAGE_TEST
 	bool "File-backed Storage Gadget testing version"
 	depends on USB_FILE_STORAGE
@@ -891,12 +1786,21 @@ config USB_FILE_STORAGE_TEST
 config USB_MASS_STORAGE
 	tristate "Mass Storage Gadget"
 	depends on BLOCK
+=======
+config USB_MASS_STORAGE
+	tristate "Mass Storage Gadget"
+	depends on BLOCK
+	select USB_LIBCOMPOSITE
+	select USB_F_MASS_STORAGE
+>>>>>>> refs/remotes/origin/master
 	help
 	  The Mass Storage Gadget acts as a USB Mass Storage disk drive.
 	  As its storage repository it can use a regular file or a block
 	  device (in much the same way as the "loop" device driver),
 	  specified as a module parameter or sysfs option.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  This is heavily based on File-backed Storage Gadget and in most
 	  cases you will want to use FSG instead.  This gadget is mostly
 	  here to test the functionality of the Mass Storage Function
@@ -905,9 +1809,52 @@ config USB_MASS_STORAGE
 	  Say "y" to link the driver statically, or "m" to build
 	  a dynamically linked module called "g_mass_storage".  If unsure,
 	  consider File-backed Storage Gadget.
+=======
+	  This driver is an updated replacement for the deprecated
+	  File-backed Storage Gadget (g_file_storage).
+=======
+	  This driver is a replacement for now removed File-backed
+	  Storage Gadget (g_file_storage).
+>>>>>>> refs/remotes/origin/master
+
+	  Say "y" to link the driver statically, or "m" to build
+	  a dynamically linked module called "g_mass_storage".
+
+config USB_GADGET_TARGET
+	tristate "USB Gadget Target Fabric Module"
+	depends on TARGET_CORE
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select USB_LIBCOMPOSITE
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	help
+	  This fabric is an USB gadget. Two USB protocols are supported that is
+	  BBB or BOT (Bulk Only Transport) and UAS (USB Attached SCSI). BOT is
+	  advertised on alternative interface 0 (primary) and UAS is on
+	  alternative interface 1. Both protocols can work on USB2.0 and USB3.0.
+	  UAS utilizes the USB 3.0 feature called streams support.
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config USB_G_SERIAL
 	tristate "Serial Gadget (with CDC ACM and CDC OBEX support)"
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+config USB_G_SERIAL
+	tristate "Serial Gadget (with CDC ACM and CDC OBEX support)"
+	depends on TTY
+	select USB_U_SERIAL
+	select USB_F_ACM
+	select USB_F_SERIAL
+	select USB_F_OBEX
+	select USB_LIBCOMPOSITE
+>>>>>>> refs/remotes/origin/master
 	help
 	  The Serial Gadget talks to the Linux-USB generic serial driver.
 	  This driver supports a CDC-ACM module option, which can be used
@@ -926,8 +1873,14 @@ config USB_G_SERIAL
 	  make MS-Windows work with CDC ACM.
 
 config USB_MIDI_GADGET
+<<<<<<< HEAD
 	tristate "MIDI Gadget (EXPERIMENTAL)"
 	depends on SND && EXPERIMENTAL
+=======
+	tristate "MIDI Gadget"
+	depends on SND
+	select USB_LIBCOMPOSITE
+>>>>>>> refs/remotes/origin/master
 	select SND_RAWMIDI
 	help
 	  The MIDI Gadget acts as a USB Audio device, with one MIDI
@@ -941,6 +1894,10 @@ config USB_MIDI_GADGET
 
 config USB_G_PRINTER
 	tristate "Printer Gadget"
+<<<<<<< HEAD
+=======
+	select USB_LIBCOMPOSITE
+>>>>>>> refs/remotes/origin/master
 	help
 	  The Printer Gadget channels data between the USB host and a
 	  userspace program driving the print engine. The user space
@@ -954,17 +1911,46 @@ config USB_G_PRINTER
 	  For more information, see Documentation/usb/gadget_printer.txt
 	  which includes sample code for accessing the device file.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config USB_G_ANDROID
+<<<<<<< HEAD
 	boolean "Android Gadget"
 	depends on SWITCH
 	help
 	  The Android gadget driver supports multiple USB functions.
 	  The functions can be configured via a board file and may be
 	  enabled and disabled dynamically.
+=======
+=======
+config USB_G_ANDROID
+>>>>>>> refs/remotes/origin/cm-11.0
+	boolean "Android Composite Gadget"
+	help
+	  The Android Composite Gadget supports multiple USB
+	  functions: adb, acm, mass storage, mtp, accessory
+	  and rndis.
+	  Each function can be configured and enabled/disabled
+	  dynamically from userspace through a sysfs interface.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+if TTY
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config USB_CDC_COMPOSITE
 	tristate "CDC Composite Device (Ethernet and ACM)"
 	depends on NET
+<<<<<<< HEAD
+=======
+	select USB_LIBCOMPOSITE
+	select USB_U_SERIAL
+	select USB_U_ETHER
+	select USB_F_ACM
+	select USB_F_ECM
+>>>>>>> refs/remotes/origin/master
 	help
 	  This driver provides two functions in one configuration:
 	  a CDC Ethernet (ECM) link, and a CDC ACM (serial port) link.
@@ -979,6 +1965,16 @@ config USB_CDC_COMPOSITE
 config USB_G_NOKIA
 	tristate "Nokia composite gadget"
 	depends on PHONET
+<<<<<<< HEAD
+=======
+	select USB_LIBCOMPOSITE
+	select USB_U_SERIAL
+	select USB_U_ETHER
+	select USB_F_ACM
+	select USB_F_OBEX
+	select USB_F_PHONET
+	select USB_F_ECM
+>>>>>>> refs/remotes/origin/master
 	help
 	  The Nokia composite gadget provides support for acm, obex
 	  and phonet in only one composite gadget driver.
@@ -986,10 +1982,45 @@ config USB_G_NOKIA
 	  It's only really useful for N900 hardware. If you're building
 	  a kernel for N900, say Y or M here. If unsure, say N.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+config USB_G_ACM_MS
+	tristate "CDC Composite Device (ACM and mass storage)"
+	depends on BLOCK
+=======
+config USB_G_ACM_MS
+	tristate "CDC Composite Device (ACM and mass storage)"
+	depends on BLOCK
+	select USB_LIBCOMPOSITE
+	select USB_U_SERIAL
+	select USB_F_ACM
+	select USB_F_MASS_STORAGE
+>>>>>>> refs/remotes/origin/master
+	help
+	  This driver provides two functions in one configuration:
+	  a mass storage, and a CDC ACM (serial port) link.
+
+	  Say "y" to link the driver statically, or "m" to build a
+	  dynamically linked module called "g_acm_ms".
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 config USB_G_MULTI
 	tristate "Multifunction Composite Gadget (EXPERIMENTAL)"
 	depends on BLOCK && NET
 	select USB_G_MULTI_CDC if !USB_G_MULTI_RNDIS
+=======
+config USB_G_MULTI
+	tristate "Multifunction Composite Gadget"
+	depends on BLOCK && NET
+	select USB_G_MULTI_CDC if !USB_G_MULTI_RNDIS
+	select USB_LIBCOMPOSITE
+	select USB_U_SERIAL
+	select USB_U_ETHER
+	select USB_F_ACM
+	select USB_F_MASS_STORAGE
+>>>>>>> refs/remotes/origin/master
 	help
 	  The Multifunction Composite Gadget provides Ethernet (RNDIS
 	  and/or CDC Ethernet), mass storage and ACM serial link
@@ -1008,6 +2039,10 @@ config USB_G_MULTI
 config USB_G_MULTI_RNDIS
 	bool "RNDIS + CDC Serial + Storage configuration"
 	depends on USB_G_MULTI
+<<<<<<< HEAD
+=======
+	select USB_F_RNDIS
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 	  This option enables a configuration with RNDIS, CDC Serial and
@@ -1021,6 +2056,10 @@ config USB_G_MULTI_CDC
 	bool "CDC Ethernet + CDC Serial + Storage configuration"
 	depends on USB_G_MULTI
 	default n
+<<<<<<< HEAD
+=======
+	select USB_F_ECM
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option enables a configuration with CDC Ethernet (ECM), CDC
 	  Serial and Mass Storage functions available in the Multifunction
@@ -1028,8 +2067,16 @@ config USB_G_MULTI_CDC
 
 	  If unsure, say "y".
 
+<<<<<<< HEAD
 config USB_G_HID
 	tristate "HID Gadget"
+=======
+endif # TTY
+
+config USB_G_HID
+	tristate "HID Gadget"
+	select USB_LIBCOMPOSITE
+>>>>>>> refs/remotes/origin/master
 	help
 	  The HID gadget driver provides generic emulation of USB
 	  Human Interface Devices (HID).
@@ -1040,8 +2087,16 @@ config USB_G_HID
 	  Say "y" to link the driver statically, or "m" to build a
 	  dynamically linked module called "g_hid".
 
+<<<<<<< HEAD
 config USB_G_DBGP
 	tristate "EHCI Debug Device Gadget"
+=======
+# Standalone / single function gadgets
+config USB_G_DBGP
+	tristate "EHCI Debug Device Gadget"
+	depends on TTY
+	select USB_LIBCOMPOSITE
+>>>>>>> refs/remotes/origin/master
 	help
 	  This gadget emulates an EHCI Debug device. This is useful when you want
 	  to interact with an EHCI Debug Port.
@@ -1062,6 +2117,10 @@ config USB_G_DBGP_PRINTK
 
 config USB_G_DBGP_SERIAL
 	depends on USB_G_DBGP
+<<<<<<< HEAD
+=======
+	select USB_U_SERIAL
+>>>>>>> refs/remotes/origin/master
 	bool "serial"
 	help
 	  Userland can interact using /dev/ttyGSxxx.
@@ -1073,6 +2132,11 @@ endif
 config USB_G_WEBCAM
 	tristate "USB Webcam Gadget"
 	depends on VIDEO_DEV
+<<<<<<< HEAD
+=======
+	select USB_LIBCOMPOSITE
+	select VIDEOBUF2_VMALLOC
+>>>>>>> refs/remotes/origin/master
 	help
 	  The Webcam Gadget acts as a composite USB Audio and Video Class
 	  device. It provides a userspace API to process UVC control requests
@@ -1083,6 +2147,10 @@ config USB_G_WEBCAM
 
 endchoice
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config USB_CSW_HACK
 	boolean "USB Mass storage csw hack Feature"
 	default y
@@ -1169,4 +2237,9 @@ config USB_ANDROID_RMNET_CTRL_SMD
 	 transfers. This option enables only control interface.
 	 Data interface used is BAM.
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endif # USB_GADGET

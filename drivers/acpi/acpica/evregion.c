@@ -1,11 +1,23 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Module Name: evregion - ACPI address_space (op_region) handler dispatch
+=======
+ * Module Name: evregion - Operation Region support
+>>>>>>> refs/remotes/origin/master
  *
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,17 +62,27 @@
 #define _COMPONENT          ACPI_EVENTS
 ACPI_MODULE_NAME("evregion")
 
+<<<<<<< HEAD
 /* Local prototypes */
 static u8
 acpi_ev_has_default_handler(struct acpi_namespace_node *node,
 			    acpi_adr_space_type space_id);
 
 static void acpi_ev_orphan_ec_reg_method(void);
+=======
+extern u8 acpi_gbl_default_address_spaces[];
+
+/* Local prototypes */
+
+static void
+acpi_ev_orphan_ec_reg_method(struct acpi_namespace_node *ec_device_node);
+>>>>>>> refs/remotes/origin/master
 
 static acpi_status
 acpi_ev_reg_run(acpi_handle obj_handle,
 		u32 level, void *context, void **return_value);
 
+<<<<<<< HEAD
 static acpi_status
 acpi_ev_install_handler(acpi_handle obj_handle,
 			u32 level, void *context, void **return_value);
@@ -190,6 +212,8 @@ acpi_ev_has_default_handler(struct acpi_namespace_node *node,
 	return (FALSE);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_ev_initialize_op_regions
@@ -241,6 +265,7 @@ acpi_status acpi_ev_initialize_op_regions(void)
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_ev_execute_reg_method
  *
  * PARAMETERS:  region_obj          - Region object
@@ -329,10 +354,24 @@ acpi_ev_execute_reg_method(union acpi_operand_object *region_obj, u32 function)
  * FUNCTION:    acpi_ev_address_space_dispatch
  *
  * PARAMETERS:  region_obj          - Internal region object
+<<<<<<< HEAD
+=======
+ *              field_obj           - Corresponding field. Can be NULL.
+>>>>>>> refs/remotes/origin/cm-10.0
  *              Function            - Read or Write operation
  *              region_offset       - Where in the region to read or write
  *              bit_width           - Field width in bits (8, 16, 32, or 64)
  *              Value               - Pointer to in or out value, must be
+=======
+ * FUNCTION:    acpi_ev_address_space_dispatch
+ *
+ * PARAMETERS:  region_obj          - Internal region object
+ *              field_obj           - Corresponding field. Can be NULL.
+ *              function            - Read or Write operation
+ *              region_offset       - Where in the region to read or write
+ *              bit_width           - Field width in bits (8, 16, 32, or 64)
+ *              value               - Pointer to in or out value, must be
+>>>>>>> refs/remotes/origin/master
  *                                    a full 64-bit integer
  *
  * RETURN:      Status
@@ -344,6 +383,14 @@ acpi_ev_execute_reg_method(union acpi_operand_object *region_obj, u32 function)
 
 acpi_status
 acpi_ev_address_space_dispatch(union acpi_operand_object *region_obj,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			       union acpi_operand_object *field_obj,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       union acpi_operand_object *field_obj,
+>>>>>>> refs/remotes/origin/master
 			       u32 function,
 			       u32 region_offset, u32 bit_width, u64 *value)
 {
@@ -353,6 +400,14 @@ acpi_ev_address_space_dispatch(union acpi_operand_object *region_obj,
 	union acpi_operand_object *handler_desc;
 	union acpi_operand_object *region_obj2;
 	void *region_context = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct acpi_connection_info *context;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct acpi_connection_info *context;
+>>>>>>> refs/remotes/origin/master
 
 	ACPI_FUNCTION_TRACE(ev_address_space_dispatch);
 
@@ -375,6 +430,16 @@ acpi_ev_address_space_dispatch(union acpi_operand_object *region_obj,
 		return_ACPI_STATUS(AE_NOT_EXIST);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	context = handler_desc->address_space.context;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	context = handler_desc->address_space.context;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * It may be the case that the region has never been initialized.
 	 * Some types of regions require special init code
@@ -404,8 +469,16 @@ acpi_ev_address_space_dispatch(union acpi_operand_object *region_obj,
 		acpi_ex_exit_interpreter();
 
 		status = region_setup(region_obj, ACPI_REGION_ACTIVATE,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				      handler_desc->address_space.context,
 				      &region_context);
+=======
+				      context, &region_context);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      context, &region_context);
+>>>>>>> refs/remotes/origin/master
 
 		/* Re-enter the interpreter */
 
@@ -427,6 +500,7 @@ acpi_ev_address_space_dispatch(union acpi_operand_object *region_obj,
 		if (!(region_obj->region.flags & AOPOBJ_SETUP_COMPLETE)) {
 			region_obj->region.flags |= AOPOBJ_SETUP_COMPLETE;
 
+<<<<<<< HEAD
 			if (region_obj2->extra.region_context) {
 
 				/* The handler for this region was already installed */
@@ -437,6 +511,13 @@ acpi_ev_address_space_dispatch(union acpi_operand_object *region_obj,
 				 * Save the returned context for use in all accesses to
 				 * this particular region
 				 */
+=======
+			/*
+			 * Save the returned context for use in all accesses to
+			 * the handler for this particular region
+			 */
+			if (!(region_obj2->extra.region_context)) {
+>>>>>>> refs/remotes/origin/master
 				region_obj2->extra.region_context =
 				    region_context;
 			}
@@ -455,6 +536,34 @@ acpi_ev_address_space_dispatch(union acpi_operand_object *region_obj,
 			  acpi_ut_get_region_name(region_obj->region.
 						  space_id)));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Special handling for generic_serial_bus and general_purpose_io:
+	 * There are three extra parameters that must be passed to the
+	 * handler via the context:
+	 *   1) Connection buffer, a resource template from Connection() op.
+	 *   2) Length of the above buffer.
+	 *   3) Actual access length from the access_as() op.
+	 */
+	if (((region_obj->region.space_id == ACPI_ADR_SPACE_GSBUS) ||
+	     (region_obj->region.space_id == ACPI_ADR_SPACE_GPIO)) &&
+	    context && field_obj) {
+
+		/* Get the Connection (resource_template) buffer */
+
+		context->connection = field_obj->field.resource_buffer;
+		context->length = field_obj->field.resource_length;
+		context->access_length = field_obj->field.access_length;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!(handler_desc->address_space.handler_flags &
 	      ACPI_ADDR_HANDLER_DEFAULT_INSTALLED)) {
 		/*
@@ -469,7 +578,15 @@ acpi_ev_address_space_dispatch(union acpi_operand_object *region_obj,
 
 	status = handler(function,
 			 (region_obj->region.address + region_offset),
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 bit_width, value, handler_desc->address_space.context,
+=======
+			 bit_width, value, context,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 bit_width, value, context,
+>>>>>>> refs/remotes/origin/master
 			 region_obj2->extra.region_context);
 
 	if (ACPI_FAILURE(status)) {
@@ -593,6 +710,17 @@ acpi_ev_detach_region(union acpi_operand_object *region_obj,
 						 handler_obj->address_space.
 						 context, region_context);
 
+<<<<<<< HEAD
+=======
+				/*
+				 * region_context should have been released by the deactivate
+				 * operation. We don't need access to it anymore here.
+				 */
+				if (region_context) {
+					*region_context = NULL;
+				}
+
+>>>>>>> refs/remotes/origin/master
 				/* Init routine may fail, Just ignore errors */
 
 				if (ACPI_FAILURE(status)) {
@@ -686,6 +814,7 @@ acpi_ev_attach_region(union acpi_operand_object *handler_obj,
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_ev_install_handler
  *
  * PARAMETERS:  walk_namespace callback
@@ -827,10 +956,21 @@ acpi_ev_install_handler(acpi_handle obj_handle,
  *
  * DESCRIPTION: Install a handler for all op_regions of a given space_id.
  *              Assumes namespace is locked
+=======
+ * FUNCTION:    acpi_ev_execute_reg_method
+ *
+ * PARAMETERS:  region_obj          - Region object
+ *              function            - Passed to _REG: On (1) or Off (0)
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Execute _REG method for a region
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
 acpi_status
+<<<<<<< HEAD
 acpi_ev_install_space_handler(struct acpi_namespace_node * node,
 			      acpi_adr_space_type space_id,
 			      acpi_adr_space_handler handler,
@@ -1031,6 +1171,76 @@ acpi_ev_install_space_handler(struct acpi_namespace_node * node,
 					handler_obj, NULL);
 
       unlock_and_exit:
+=======
+acpi_ev_execute_reg_method(union acpi_operand_object *region_obj, u32 function)
+{
+	struct acpi_evaluate_info *info;
+	union acpi_operand_object *args[3];
+	union acpi_operand_object *region_obj2;
+	acpi_status status;
+
+	ACPI_FUNCTION_TRACE(ev_execute_reg_method);
+
+	region_obj2 = acpi_ns_get_secondary_object(region_obj);
+	if (!region_obj2) {
+		return_ACPI_STATUS(AE_NOT_EXIST);
+	}
+
+	if (region_obj2->extra.method_REG == NULL) {
+		return_ACPI_STATUS(AE_OK);
+	}
+
+	/* Allocate and initialize the evaluation information block */
+
+	info = ACPI_ALLOCATE_ZEROED(sizeof(struct acpi_evaluate_info));
+	if (!info) {
+		return_ACPI_STATUS(AE_NO_MEMORY);
+	}
+
+	info->prefix_node = region_obj2->extra.method_REG;
+	info->relative_pathname = NULL;
+	info->parameters = args;
+	info->flags = ACPI_IGNORE_RETURN_VALUE;
+
+	/*
+	 * The _REG method has two arguments:
+	 *
+	 * arg0 - Integer:
+	 *  Operation region space ID Same value as region_obj->Region.space_id
+	 *
+	 * arg1 - Integer:
+	 *  connection status 1 for connecting the handler, 0 for disconnecting
+	 *  the handler (Passed as a parameter)
+	 */
+	args[0] =
+	    acpi_ut_create_integer_object((u64)region_obj->region.space_id);
+	if (!args[0]) {
+		status = AE_NO_MEMORY;
+		goto cleanup1;
+	}
+
+	args[1] = acpi_ut_create_integer_object((u64)function);
+	if (!args[1]) {
+		status = AE_NO_MEMORY;
+		goto cleanup2;
+	}
+
+	args[2] = NULL;		/* Terminate list */
+
+	/* Execute the method, no return value */
+
+	ACPI_DEBUG_EXEC(acpi_ut_display_init_pathname
+			(ACPI_TYPE_METHOD, info->prefix_node, NULL));
+
+	status = acpi_ns_evaluate(info);
+	acpi_ut_remove_reference(args[1]);
+
+cleanup2:
+	acpi_ut_remove_reference(args[0]);
+
+cleanup1:
+	ACPI_FREE(info);
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 
@@ -1038,7 +1248,11 @@ acpi_ev_install_space_handler(struct acpi_namespace_node * node,
  *
  * FUNCTION:    acpi_ev_execute_reg_methods
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node            - Namespace node for the device
+=======
+ * PARAMETERS:  node            - Namespace node for the device
+>>>>>>> refs/remotes/origin/master
  *              space_id        - The address space ID
  *
  * RETURN:      Status
@@ -1069,7 +1283,11 @@ acpi_ev_execute_reg_methods(struct acpi_namespace_node *node,
 	/* Special case for EC: handle "orphan" _REG methods with no region */
 
 	if (space_id == ACPI_ADR_SPACE_EC) {
+<<<<<<< HEAD
 		acpi_ev_orphan_ec_reg_method();
+=======
+		acpi_ev_orphan_ec_reg_method(node);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return_ACPI_STATUS(status);
@@ -1081,7 +1299,11 @@ acpi_ev_execute_reg_methods(struct acpi_namespace_node *node,
  *
  * PARAMETERS:  walk_namespace callback
  *
+<<<<<<< HEAD
  * DESCRIPTION: Run _REG method for region objects of the requested space_iD
+=======
+ * DESCRIPTION: Run _REG method for region objects of the requested spaceID
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
@@ -1138,7 +1360,11 @@ acpi_ev_reg_run(acpi_handle obj_handle,
  *
  * FUNCTION:    acpi_ev_orphan_ec_reg_method
  *
+<<<<<<< HEAD
  * PARAMETERS:  None
+=======
+ * PARAMETERS:  ec_device_node      - Namespace node for an EC device
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -1150,6 +1376,7 @@ acpi_ev_reg_run(acpi_handle obj_handle,
  *              detected by providing a _REG method object underneath the
  *              Embedded Controller device."
  *
+<<<<<<< HEAD
  *              To quickly access the EC device, we use the EC_ID that appears
  *              within the ECDT. Otherwise, we would need to perform a time-
  *              consuming namespace walk, executing _HID methods to find the
@@ -1181,6 +1408,29 @@ static void acpi_ev_orphan_ec_reg_method(void)
 	/* We need a valid EC_ID string */
 
 	if (!(*table->id)) {
+=======
+ *              To quickly access the EC device, we use the ec_device_node used
+ *              during EC handler installation. Otherwise, we would need to
+ *              perform a time consuming namespace walk, executing _HID
+ *              methods to find the EC device.
+ *
+ *  MUTEX:      Assumes the namespace is locked
+ *
+ ******************************************************************************/
+
+static void
+acpi_ev_orphan_ec_reg_method(struct acpi_namespace_node *ec_device_node)
+{
+	acpi_handle reg_method;
+	struct acpi_namespace_node *next_node;
+	acpi_status status;
+	struct acpi_object_list args;
+	union acpi_object objects[2];
+
+	ACPI_FUNCTION_TRACE(ev_orphan_ec_reg_method);
+
+	if (!ec_device_node) {
+>>>>>>> refs/remotes/origin/master
 		return_VOID;
 	}
 
@@ -1188,6 +1438,7 @@ static void acpi_ev_orphan_ec_reg_method(void)
 
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 
+<<<<<<< HEAD
 	/* Get a handle to the EC device referenced in the ECDT */
 
 	status = acpi_get_handle(NULL,
@@ -1204,6 +1455,13 @@ static void acpi_ev_orphan_ec_reg_method(void)
 								 &reg_method));
 	if (ACPI_FAILURE(status)) {
 		goto exit;
+=======
+	/* Get a handle to a _REG method immediately under the EC device */
+
+	status = acpi_get_handle(ec_device_node, METHOD_NAME__REG, &reg_method);
+	if (ACPI_FAILURE(status)) {
+		goto exit;	/* There is no _REG method present */
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1211,19 +1469,33 @@ static void acpi_ev_orphan_ec_reg_method(void)
 	 * this scope with the Embedded Controller space ID. Otherwise, it
 	 * will already have been executed. Note, this allows for Regions
 	 * with other space IDs to be present; but the code below will then
+<<<<<<< HEAD
 	 * execute the _REG method with the EC space ID argument.
+=======
+	 * execute the _REG method with the embedded_control space_ID argument.
+>>>>>>> refs/remotes/origin/master
 	 */
 	next_node = acpi_ns_get_next_node(ec_device_node, NULL);
 	while (next_node) {
 		if ((next_node->type == ACPI_TYPE_REGION) &&
 		    (next_node->object) &&
 		    (next_node->object->region.space_id == ACPI_ADR_SPACE_EC)) {
+<<<<<<< HEAD
 			goto exit;	/* Do not execute _REG */
 		}
 		next_node = acpi_ns_get_next_node(ec_device_node, next_node);
 	}
 
 	/* Evaluate the _REG(EC,Connect) method */
+=======
+			goto exit;	/* Do not execute the _REG */
+		}
+
+		next_node = acpi_ns_get_next_node(ec_device_node, next_node);
+	}
+
+	/* Evaluate the _REG(embedded_control,Connect) method */
+>>>>>>> refs/remotes/origin/master
 
 	args.count = 2;
 	args.pointer = objects;
@@ -1234,7 +1506,11 @@ static void acpi_ev_orphan_ec_reg_method(void)
 
 	status = acpi_evaluate_object(reg_method, NULL, &args, NULL);
 
+<<<<<<< HEAD
       exit:
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	/* We ignore all errors from above, don't care */
 
 	status = acpi_ut_acquire_mutex(ACPI_MTX_NAMESPACE);

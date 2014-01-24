@@ -27,14 +27,66 @@
 
 #include <linux/slab.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
+<<<<<<< HEAD
 #include "../../../drivers/staging/intel_sst/intel_sst_ioctl.h"
 #include "../../../drivers/staging/intel_sst/intel_sst.h"
 #include "sst_platform.h"
 
+=======
+#include "sst_platform.h"
+
+static struct sst_device *sst;
+static DEFINE_MUTEX(sst_lock);
+
+int sst_register_dsp(struct sst_device *dev)
+{
+	BUG_ON(!dev);
+	if (!try_module_get(dev->dev->driver->owner))
+		return -ENODEV;
+	mutex_lock(&sst_lock);
+	if (sst) {
+		pr_err("we already have a device %s\n", sst->name);
+		module_put(dev->dev->driver->owner);
+		mutex_unlock(&sst_lock);
+		return -EEXIST;
+	}
+	pr_debug("registering device %s\n", dev->name);
+	sst = dev;
+	mutex_unlock(&sst_lock);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(sst_register_dsp);
+
+int sst_unregister_dsp(struct sst_device *dev)
+{
+	BUG_ON(!dev);
+	if (dev != sst)
+		return -EINVAL;
+
+	mutex_lock(&sst_lock);
+
+	if (!sst) {
+		mutex_unlock(&sst_lock);
+		return -EIO;
+	}
+
+	module_put(sst->dev->driver->owner);
+	pr_debug("unreg %s\n", sst->name);
+	sst = NULL;
+	mutex_unlock(&sst_lock);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(sst_unregister_dsp);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct snd_pcm_hardware sst_platform_pcm_hw = {
 	.info =	(SNDRV_PCM_INFO_INTERLEAVED |
 			SNDRV_PCM_INFO_DOUBLE |
@@ -63,7 +115,11 @@ static struct snd_pcm_hardware sst_platform_pcm_hw = {
 };
 
 /* MFLD - MSIC */
+<<<<<<< HEAD
 struct snd_soc_dai_driver sst_platform_dai[] = {
+=======
+static struct snd_soc_dai_driver sst_platform_dai[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	.name = "Headset-cpu-dai",
 	.id = 0,
@@ -134,6 +190,7 @@ static inline int sst_get_stream_status(struct sst_runtime_stream *stream)
 }
 
 static void sst_fill_pcm_params(struct snd_pcm_substream *substream,
+<<<<<<< HEAD
 				struct snd_sst_stream_params *param)
 {
 
@@ -150,21 +207,45 @@ static void sst_fill_pcm_params(struct snd_pcm_substream *substream,
 	pr_debug("period_cnt = %d\n", param->uc.pcm_params.period_count);
 	pr_debug("sfreq= %d, wd_sz = %d\n",
 		 param->uc.pcm_params.sfreq, param->uc.pcm_params.pcm_wd_sz);
+=======
+				struct sst_pcm_params *param)
+{
+
+	param->codec = SST_CODEC_TYPE_PCM;
+	param->num_chan = (u8) substream->runtime->channels;
+	param->pcm_wd_sz = substream->runtime->sample_bits;
+	param->reserved = 0;
+	param->sfreq = substream->runtime->rate;
+	param->ring_buffer_size = snd_pcm_lib_buffer_bytes(substream);
+	param->period_count = substream->runtime->period_size;
+	param->ring_buffer_addr = virt_to_phys(substream->dma_buffer.area);
+	pr_debug("period_cnt = %d\n", param->period_count);
+	pr_debug("sfreq= %d, wd_sz = %d\n", param->sfreq, param->pcm_wd_sz);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int sst_platform_alloc_stream(struct snd_pcm_substream *substream)
 {
 	struct sst_runtime_stream *stream =
 			substream->runtime->private_data;
+<<<<<<< HEAD
 	struct snd_sst_stream_params param = {{{0,},},};
 	struct snd_sst_params str_params = {0};
+=======
+	struct sst_pcm_params param = {0};
+	struct sst_stream_params str_params = {0};
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret_val;
 
 	/* set codec params and inform SST driver the same */
 	sst_fill_pcm_params(substream, &param);
 	substream->runtime->dma_area = substream->dma_buffer.area;
 	str_params.sparams = param;
+<<<<<<< HEAD
 	str_params.codec =  param.uc.pcm_params.codec;
+=======
+	str_params.codec =  param.codec;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		str_params.ops = STREAM_OPS_PLAYBACK;
 		str_params.device_type = substream->pcm->device + 1;
@@ -176,7 +257,11 @@ static int sst_platform_alloc_stream(struct snd_pcm_substream *substream)
 		pr_debug("Capture stream,Device %d\n",
 					substream->pcm->device);
 	}
+<<<<<<< HEAD
 	ret_val = stream->sstdrv_ops->pcm_control->open(&str_params);
+=======
+	ret_val = stream->ops->open(&str_params);
+>>>>>>> refs/remotes/origin/cm-10.0
 	pr_debug("SST_SND_PLAY/CAPTURE ret_val = %x\n", ret_val);
 	if (ret_val < 0)
 		return ret_val;
@@ -215,7 +300,11 @@ static int sst_platform_init_stream(struct snd_pcm_substream *substream)
 	stream->stream_info.mad_substream = substream;
 	stream->stream_info.buffer_ptr = 0;
 	stream->stream_info.sfreq = substream->runtime->rate;
+<<<<<<< HEAD
 	ret_val = stream->sstdrv_ops->pcm_control->device_control(
+=======
+	ret_val = stream->ops->device_control(
+>>>>>>> refs/remotes/origin/cm-10.0
 			SST_SND_STREAM_INIT, &stream->stream_info);
 	if (ret_val)
 		pr_err("control_set ret error %d\n", ret_val);
@@ -226,6 +315,7 @@ static int sst_platform_init_stream(struct snd_pcm_substream *substream)
 
 static int sst_platform_open(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
 	struct snd_pcm_runtime *runtime;
 	struct sst_runtime_stream *stream;
 	int ret_val = 0;
@@ -233,10 +323,25 @@ static int sst_platform_open(struct snd_pcm_substream *substream)
 	pr_debug("sst_platform_open called\n");
 	runtime = substream->runtime;
 	runtime->hw = sst_platform_pcm_hw;
+=======
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	struct sst_runtime_stream *stream;
+	int ret_val;
+
+	pr_debug("sst_platform_open called\n");
+
+	snd_soc_set_runtime_hwparams(substream, &sst_platform_pcm_hw);
+	ret_val = snd_pcm_hw_constraint_integer(runtime,
+						SNDRV_PCM_HW_PARAM_PERIODS);
+	if (ret_val < 0)
+		return ret_val;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
 	if (!stream)
 		return -ENOMEM;
 	spin_lock_init(&stream->status_lock);
+<<<<<<< HEAD
 	stream->stream_info.str_id = 0;
 	sst_set_stream_status(stream, SST_PLATFORM_INIT);
 	stream->stream_info.mad_substream = substream;
@@ -261,6 +366,32 @@ static int sst_platform_open(struct snd_pcm_substream *substream)
 	runtime->private_data = stream;
 	return snd_pcm_hw_constraint_integer(runtime,
 			 SNDRV_PCM_HW_PARAM_PERIODS);
+=======
+
+	/* get the sst ops */
+	mutex_lock(&sst_lock);
+	if (!sst) {
+		pr_err("no device available to run\n");
+		mutex_unlock(&sst_lock);
+		kfree(stream);
+		return -ENODEV;
+	}
+	if (!try_module_get(sst->dev->driver->owner)) {
+		mutex_unlock(&sst_lock);
+		kfree(stream);
+		return -ENODEV;
+	}
+	stream->ops = sst->ops;
+	mutex_unlock(&sst_lock);
+
+	stream->stream_info.str_id = 0;
+	sst_set_stream_status(stream, SST_PLATFORM_INIT);
+	stream->stream_info.mad_substream = substream;
+	/* allocate memory for SST API set */
+	runtime->private_data = stream;
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int sst_platform_close(struct snd_pcm_substream *substream)
@@ -272,9 +403,14 @@ static int sst_platform_close(struct snd_pcm_substream *substream)
 	stream = substream->runtime->private_data;
 	str_id = stream->stream_info.str_id;
 	if (str_id)
+<<<<<<< HEAD
 		ret_val = stream->sstdrv_ops->pcm_control->close(str_id);
 	unregister_sst_card(stream->sstdrv_ops);
 	kfree(stream->sstdrv_ops);
+=======
+		ret_val = stream->ops->close(str_id);
+	module_put(sst->dev->driver->owner);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(stream);
 	return ret_val;
 }
@@ -288,8 +424,13 @@ static int sst_platform_pcm_prepare(struct snd_pcm_substream *substream)
 	stream = substream->runtime->private_data;
 	str_id = stream->stream_info.str_id;
 	if (stream->stream_info.str_id) {
+<<<<<<< HEAD
 		ret_val = stream->sstdrv_ops->pcm_control->device_control(
 					SST_SND_DROP, &str_id);
+=======
+		ret_val = stream->ops->device_control(
+				SST_SND_DROP, &str_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret_val;
 	}
 
@@ -341,8 +482,12 @@ static int sst_platform_pcm_trigger(struct snd_pcm_substream *substream,
 	default:
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	ret_val = stream->sstdrv_ops->pcm_control->device_control(str_cmd,
 								&str_id);
+=======
+	ret_val = stream->ops->device_control(str_cmd, &str_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!ret_val)
 		sst_set_stream_status(stream, status);
 
@@ -362,7 +507,11 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
 	if (status == SST_PLATFORM_INIT)
 		return 0;
 	str_info = &stream->stream_info;
+<<<<<<< HEAD
 	ret_val = stream->sstdrv_ops->pcm_control->device_control(
+=======
+	ret_val = stream->ops->device_control(
+>>>>>>> refs/remotes/origin/cm-10.0
 				SST_SND_BUFFER_POINTER, str_info);
 	if (ret_val) {
 		pr_err("sst: error code = %d\n", ret_val);
@@ -402,6 +551,7 @@ static void sst_pcm_free(struct snd_pcm *pcm)
 	snd_pcm_lib_preallocate_free_for_all(pcm);
 }
 
+<<<<<<< HEAD
 int sst_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
 			struct snd_pcm *pcm)
 {
@@ -410,6 +560,16 @@ int sst_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
 	pr_debug("sst_pcm_new called\n");
 	if (dai->driver->playback.channels_min ||
 			dai->driver->capture.channels_min) {
+=======
+static int sst_pcm_new(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_pcm *pcm = rtd->pcm;
+	int retval = 0;
+
+	pr_debug("sst_pcm_new called\n");
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
+			pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval =  snd_pcm_lib_preallocate_pages_for_all(pcm,
 			SNDRV_DMA_TYPE_CONTINUOUS,
 			snd_dma_continuous_data(GFP_KERNEL),
@@ -421,7 +581,11 @@ int sst_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
 	}
 	return retval;
 }
+<<<<<<< HEAD
 struct snd_soc_platform_driver sst_soc_platform_drv = {
+=======
+static struct snd_soc_platform_driver sst_soc_platform_drv = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ops		= &sst_platform_ops,
 	.pcm_new	= sst_pcm_new,
 	.pcm_free	= sst_pcm_free,
@@ -432,6 +596,10 @@ static int sst_platform_probe(struct platform_device *pdev)
 	int ret;
 
 	pr_debug("sst_platform_probe called\n");
+<<<<<<< HEAD
+=======
+	sst = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = snd_soc_register_platform(&pdev->dev, &sst_soc_platform_drv);
 	if (ret) {
 		pr_err("registering soc platform failed\n");
@@ -465,6 +633,7 @@ static struct platform_driver sst_platform_driver = {
 	.remove		= sst_platform_remove,
 };
 
+<<<<<<< HEAD
 static int __init sst_soc_platform_init(void)
 {
 	pr_debug("sst_soc_platform_init called\n");
@@ -478,6 +647,9 @@ static void __exit sst_soc_platform_exit(void)
 	pr_debug("sst_soc_platform_exit success\n");
 }
 module_exit(sst_soc_platform_exit);
+=======
+module_platform_driver(sst_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("ASoC Intel(R) MID Platform driver");
 MODULE_AUTHOR("Vinod Koul <vinod.koul@intel.com>");

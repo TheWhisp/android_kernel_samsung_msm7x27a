@@ -692,7 +692,11 @@ ahc_find_pci_device(ahc_dev_softc_t pci)
 	 * ID as valid.
 	 */
 	if (ahc_get_pci_function(pci) > 0
+<<<<<<< HEAD
 	 && ahc_9005_subdevinfo_valid(vendor, device, subvendor, subdevice)
+=======
+	 && ahc_9005_subdevinfo_valid(device, vendor, subdevice, subvendor)
+>>>>>>> refs/remotes/origin/master
 	 && SUBID_9005_MFUNCENB(subdevice) == 0)
 		return (NULL);
 

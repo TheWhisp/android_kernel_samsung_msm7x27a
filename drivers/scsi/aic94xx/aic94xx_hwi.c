@@ -74,7 +74,11 @@ static void asd_init_phy_identify(struct asd_phy *phy)
 
 	memset(phy->identify_frame, 0, sizeof(*phy->identify_frame));
 
+<<<<<<< HEAD
 	phy->identify_frame->dev_type = SAS_END_DEV;
+=======
+	phy->identify_frame->dev_type = SAS_END_DEVICE;
+>>>>>>> refs/remotes/origin/master
 	if (phy->sas_phy.role & PHY_ROLE_INITIATOR)
 		phy->identify_frame->initiator_bits = phy->sas_phy.iproto;
 	if (phy->sas_phy.role & PHY_ROLE_TARGET)

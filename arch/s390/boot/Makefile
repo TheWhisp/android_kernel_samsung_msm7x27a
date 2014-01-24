@@ -21,6 +21,16 @@ $(obj)/bzImage: $(obj)/compressed/vmlinux FORCE
 $(obj)/compressed/vmlinux: FORCE
 	$(Q)$(MAKE) $(build)=$(obj)/compressed $@
 
+<<<<<<< HEAD
 install: $(CONFIGURE) $(obj)/image
 	sh -x  $(srctree)/$(obj)/install.sh $(KERNELRELEASE) $(obj)/image \
+<<<<<<< HEAD
 	      System.map Kerntypes "$(INSTALL_PATH)"
+=======
+	      System.map "$(INSTALL_PATH)"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+install: $(CONFIGURE) $(obj)/bzImage
+	sh -x  $(srctree)/$(obj)/install.sh $(KERNELRELEASE) $(obj)/bzImage \
+	      System.map "$(INSTALL_PATH)"
+>>>>>>> refs/remotes/origin/master

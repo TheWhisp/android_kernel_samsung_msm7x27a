@@ -3,7 +3,15 @@
  *
  * Copyright (C) 2008 Nokia Corporation
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Contact: Jarkko Nikula <jhnikula@gmail.com>
+=======
+ * Contact: Jarkko Nikula <jarkko.nikula@bitmer.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Contact: Jarkko Nikula <jarkko.nikula@bitmer.com>
+>>>>>>> refs/remotes/origin/master
  *          Peter Ujfalusi <peter.ujfalusi@ti.com>
  *
  * This program is free software; you can redistribute it and/or
@@ -24,6 +32,11 @@
 
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -31,6 +44,21 @@
 
 #include <plat/dma.h>
 #include "omap-pcm.h"
+=======
+#include <linux/module.h>
+#include <linux/omap-dma.h>
+#include <sound/core.h>
+#include <sound/pcm.h>
+#include <sound/pcm_params.h>
+#include <sound/dmaengine_pcm.h>
+#include <sound/soc.h>
+
+#ifdef CONFIG_ARCH_OMAP1
+#define pcm_omap1510()	cpu_is_omap1510()
+#else
+#define pcm_omap1510()	0
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static const struct snd_pcm_hardware omap_pcm_hardware = {
 	.info			= SNDRV_PCM_INFO_MMAP |
@@ -39,8 +67,11 @@ static const struct snd_pcm_hardware omap_pcm_hardware = {
 				  SNDRV_PCM_INFO_PAUSE |
 				  SNDRV_PCM_INFO_RESUME |
 				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+<<<<<<< HEAD
 	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
 				  SNDRV_PCM_FMTBIT_S32_LE,
+=======
+>>>>>>> refs/remotes/origin/master
 	.period_bytes_min	= 32,
 	.period_bytes_max	= 64 * 1024,
 	.periods_min		= 2,
@@ -48,6 +79,7 @@ static const struct snd_pcm_hardware omap_pcm_hardware = {
 	.buffer_bytes_max	= 128 * 1024,
 };
 
+<<<<<<< HEAD
 struct omap_runtime_data {
 	spinlock_t			lock;
 	struct omap_pcm_dma_data	*dma_data;
@@ -94,15 +126,23 @@ static void omap_pcm_dma_irq(int ch, u16 stat, void *data)
 	snd_pcm_period_elapsed(substream);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* this may get called several times by oss emulation */
 static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
 			      struct snd_pcm_hw_params *params)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+<<<<<<< HEAD
 	struct omap_runtime_data *prtd = runtime->private_data;
 	struct omap_pcm_dma_data *dma_data;
 
+=======
+	struct omap_pcm_dma_data *dma_data;
+	struct dma_slave_config config;
+	struct dma_chan *chan;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
@@ -115,6 +155,7 @@ static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
 	runtime->dma_bytes = params_buffer_bytes(params);
 
+<<<<<<< HEAD
 	if (prtd->dma_data)
 		return 0;
 	prtd->dma_data = dma_data;
@@ -198,6 +239,17 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
 			      OMAP_DMA_LAST_IRQ | OMAP_DMA_BLOCK_IRQ);
 	else if (!substream->runtime->no_period_wakeup)
 		omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ);
+<<<<<<< HEAD
+=======
+	else {
+		/*
+		 * No period wakeup:
+		 * we need to disable BLOCK_IRQ, which is enabled by the omap
+		 * dma core at request dma time.
+		 */
+		omap_disable_dma_irq(prtd->dma_ch, OMAP_DMA_BLOCK_IRQ);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!(cpu_class_is_omap1())) {
 		omap_set_dma_src_burst_mode(prtd->dma_ch,
@@ -235,11 +287,14 @@ static int omap_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
 		prtd->period_index = -1;
 		omap_stop_dma(prtd->dma_ch);
+<<<<<<< HEAD
 		/* Since we are using self linking, there is a
 		   chance that the DMA as re-enabled the channel
 		   just after disabling it */
 		while (omap_get_dma_active_status(prtd->dma_ch))
 			omap_stop_dma(prtd->dma_ch);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		ret = -EINVAL;
@@ -268,23 +323,62 @@ static snd_pcm_uframes_t omap_pcm_pointer(struct snd_pcm_substream *substream)
 
 	if (offset >= runtime->buffer_size)
 		offset = 0;
+=======
+	chan = snd_dmaengine_pcm_get_chan(substream);
+	if (!chan)
+		return -EINVAL;
+
+	/* fills in addr_width and direction */
+	err = snd_hwparams_to_dma_slave_config(substream, params, &config);
+	if (err)
+		return err;
+
+	snd_dmaengine_pcm_set_config_from_dai_data(substream,
+			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream),
+			&config);
+
+	return dmaengine_slave_config(chan, &config);
+}
+
+static int omap_pcm_hw_free(struct snd_pcm_substream *substream)
+{
+	snd_pcm_set_runtime_buffer(substream, NULL);
+	return 0;
+}
+
+static snd_pcm_uframes_t omap_pcm_pointer(struct snd_pcm_substream *substream)
+{
+	snd_pcm_uframes_t offset;
+
+	if (pcm_omap1510())
+		offset = snd_dmaengine_pcm_pointer_no_residue(substream);
+	else
+		offset = snd_dmaengine_pcm_pointer(substream);
+>>>>>>> refs/remotes/origin/master
 
 	return offset;
 }
 
 static int omap_pcm_open(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct omap_runtime_data *prtd;
+=======
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct snd_dmaengine_dai_dma_data *dma_data;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	snd_soc_set_runtime_hwparams(substream, &omap_pcm_hardware);
 
+<<<<<<< HEAD
 	/* Ensure that buffer size is a multiple of period size */
 	ret = snd_pcm_hw_constraint_integer(runtime,
 					    SNDRV_PCM_HW_PARAM_PERIODS);
 	if (ret < 0)
 		goto out;
+<<<<<<< HEAD
 	if (cpu_is_omap44xx()) {
 		/* ABE needs a step of 24 * 4 data bits, and HDMI 32 * 4
 		 * Ensure buffer size satisfies both constraints.
@@ -294,6 +388,8 @@ static int omap_pcm_open(struct snd_pcm_substream *substream)
 		if (ret < 0)
 			goto out;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
 	if (prtd == NULL) {
@@ -315,6 +411,25 @@ static int omap_pcm_close(struct snd_pcm_substream *substream)
 	return 0;
 }
 
+=======
+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+
+	/* DT boot: filter_data is the DMA name */
+	if (rtd->cpu_dai->dev->of_node) {
+		struct dma_chan *chan;
+
+		chan = dma_request_slave_channel(rtd->cpu_dai->dev,
+						 dma_data->filter_data);
+		ret = snd_dmaengine_pcm_open(substream, chan);
+	} else {
+		ret = snd_dmaengine_pcm_open_request_chan(substream,
+							  omap_dma_filter_fn,
+							  dma_data->filter_data);
+	}
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int omap_pcm_mmap(struct snd_pcm_substream *substream,
 	struct vm_area_struct *vma)
 {
@@ -328,18 +443,29 @@ static int omap_pcm_mmap(struct snd_pcm_substream *substream,
 
 static struct snd_pcm_ops omap_pcm_ops = {
 	.open		= omap_pcm_open,
+<<<<<<< HEAD
 	.close		= omap_pcm_close,
 	.ioctl		= snd_pcm_lib_ioctl,
 	.hw_params	= omap_pcm_hw_params,
 	.hw_free	= omap_pcm_hw_free,
 	.prepare	= omap_pcm_prepare,
 	.trigger	= omap_pcm_trigger,
+=======
+	.close		= snd_dmaengine_pcm_close_release_chan,
+	.ioctl		= snd_pcm_lib_ioctl,
+	.hw_params	= omap_pcm_hw_params,
+	.hw_free	= omap_pcm_hw_free,
+	.trigger	= snd_dmaengine_pcm_trigger,
+>>>>>>> refs/remotes/origin/master
 	.pointer	= omap_pcm_pointer,
 	.mmap		= omap_pcm_mmap,
 };
 
+<<<<<<< HEAD
 static u64 omap_pcm_dmamask = DMA_BIT_MASK(64);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int omap_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
 	int stream)
 {
@@ -383,7 +509,11 @@ static void omap_pcm_free_dma_buffers(struct snd_pcm *pcm)
 static int omap_pcm_new(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_card *card = rtd->card->snd_card;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_dai *dai = rtd->cpu_dai;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_pcm *pcm = rtd->pcm;
 	int ret = 0;
 
@@ -392,14 +522,36 @@ static int omap_pcm_new(struct snd_soc_pcm_runtime *rtd)
 	if (!card->dev->coherent_dma_mask)
 		card->dev->coherent_dma_mask = DMA_BIT_MASK(64);
 
+<<<<<<< HEAD
 	if (dai->driver->playback.channels_min) {
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_pcm *pcm = rtd->pcm;
+	int ret;
+
+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(64));
+	if (ret)
+		return ret;
+
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/master
 		ret = omap_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_PLAYBACK);
 		if (ret)
 			goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dai->driver->capture.channels_min) {
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/master
 		ret = omap_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_CAPTURE);
 		if (ret)
@@ -407,6 +559,19 @@ static int omap_pcm_new(struct snd_soc_pcm_runtime *rtd)
 	}
 
 out:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* free preallocated buffers in case of error */
+	if (ret)
+		omap_pcm_free_dma_buffers(pcm);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -416,13 +581,21 @@ static struct snd_soc_platform_driver omap_soc_platform = {
 	.pcm_free	= omap_pcm_free_dma_buffers,
 };
 
+<<<<<<< HEAD
 static __devinit int omap_pcm_probe(struct platform_device *pdev)
+=======
+static int omap_pcm_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_platform(&pdev->dev,
 			&omap_soc_platform);
 }
 
+<<<<<<< HEAD
 static int __devexit omap_pcm_remove(struct platform_device *pdev)
+=======
+static int omap_pcm_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
@@ -435,9 +608,11 @@ static struct platform_driver omap_pcm_driver = {
 	},
 
 	.probe = omap_pcm_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(omap_pcm_remove),
 };
 
+<<<<<<< HEAD
 static int __init snd_omap_pcm_init(void)
 {
 	return platform_driver_register(&omap_pcm_driver);
@@ -451,5 +626,21 @@ static void __exit snd_omap_pcm_exit(void)
 module_exit(snd_omap_pcm_exit);
 
 MODULE_AUTHOR("Jarkko Nikula <jhnikula@gmail.com>");
+=======
+module_platform_driver(omap_pcm_driver);
+
+MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@bitmer.com>");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("OMAP PCM DMA module");
 MODULE_LICENSE("GPL");
+=======
+	.remove = omap_pcm_remove,
+};
+
+module_platform_driver(omap_pcm_driver);
+
+MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@bitmer.com>");
+MODULE_DESCRIPTION("OMAP PCM DMA module");
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:omap-pcm-audio");
+>>>>>>> refs/remotes/origin/master

@@ -2,12 +2,35 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/stackprotector.h>
+#include <asm/fpu.h>
+>>>>>>> refs/remotes/origin/master
 
 struct kmem_cache *task_xstate_cachep = NULL;
 unsigned int xstate_size;
 
+<<<<<<< HEAD
 int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
 {
+=======
+#ifdef CONFIG_CC_STACKPROTECTOR
+unsigned long __stack_chk_guard __read_mostly;
+EXPORT_SYMBOL(__stack_chk_guard);
+#endif
+
+/*
+ * this gets called so that we can store lazy state into memory and copy the
+ * current task into the new thread.
+ */
+int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
+{
+#ifdef CONFIG_SUPERH32
+	unlazy_fpu(src, task_pt_regs(src));
+#endif
+>>>>>>> refs/remotes/origin/master
 	*dst = *src;
 
 	if (src->thread.xstate) {
@@ -29,6 +52,7 @@ void free_thread_xstate(struct task_struct *tsk)
 	}
 }
 
+<<<<<<< HEAD
 #if THREAD_SHIFT < PAGE_SHIFT
 static struct kmem_cache *thread_info_cache;
 
@@ -75,6 +99,12 @@ void free_thread_info(struct thread_info *ti)
 	free_pages((unsigned long)ti, THREAD_SIZE_ORDER);
 }
 #endif /* THREAD_SHIFT < PAGE_SHIFT */
+=======
+void arch_release_task_struct(struct task_struct *tsk)
+{
+	free_thread_xstate(tsk);
+}
+>>>>>>> refs/remotes/origin/master
 
 void arch_task_cache_init(void)
 {
@@ -92,7 +122,11 @@ void arch_task_cache_init(void)
 # define HAVE_SOFTFP	0
 #endif
 
+<<<<<<< HEAD
 void __cpuinit init_thread_xstate(void)
+=======
+void init_thread_xstate(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (boot_cpu_data.flags & CPU_HAS_FPU)
 		xstate_size = sizeof(struct sh_fpu_hard_struct);

@@ -289,6 +289,10 @@ static void nv04_dfp_mode_set(struct drm_encoder *encoder,
 	struct nouveau_connector *nv_connector = nouveau_crtc_connector_get(nv_crtc);
 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
 	struct drm_display_mode *output_mode = &nv_encoder->mode;
+<<<<<<< HEAD
+=======
+	struct drm_connector *connector = &nv_connector->base;
+>>>>>>> refs/remotes/origin/cm-10.0
 	uint32_t mode_ratio, panel_ratio;
 
 	NV_DEBUG_KMS(dev, "Output mode on CRTC %d:\n", nv_crtc->index);
@@ -340,10 +344,22 @@ static void nv04_dfp_mode_set(struct drm_encoder *encoder,
 	    output_mode->clock > 165000)
 		regp->fp_control |= (2 << 24);
 	if (nv_encoder->dcb->type == OUTPUT_LVDS) {
+<<<<<<< HEAD
 		bool duallink, dummy;
 
 		nouveau_bios_parse_lvds_table(dev, output_mode->clock,
 					      &duallink, &dummy);
+=======
+		bool duallink = false, dummy;
+		if (nv_connector->edid &&
+		    nv_connector->type == DCB_CONNECTOR_LVDS_SPWG) {
+			duallink = (((u8 *)nv_connector->edid)[121] == 2);
+		} else {
+			nouveau_bios_parse_lvds_table(dev, output_mode->clock,
+						      &duallink, &dummy);
+		}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (duallink)
 			regp->fp_control |= (8 << 28);
 	} else
@@ -407,7 +423,13 @@ static void nv04_dfp_mode_set(struct drm_encoder *encoder,
 	}
 
 	/* Output property. */
+<<<<<<< HEAD
 	if (nv_connector->use_dithering) {
+=======
+	if ((nv_connector->dithering_mode == DITHERING_MODE_ON) ||
+	    (nv_connector->dithering_mode == DITHERING_MODE_AUTO &&
+	     encoder->crtc->fb->depth > connector->display_info.bpc * 3)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (dev_priv->chipset == 0x11)
 			regp->dither = savep->dither | 0x00010000;
 		else {
@@ -496,7 +518,15 @@ static void nv04_dfp_update_backlight(struct drm_encoder *encoder, int mode)
 
 static inline bool is_powersaving_dpms(int mode)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return (mode != DRM_MODE_DPMS_ON);
+=======
+	return mode != DRM_MODE_DPMS_ON && mode != NV_DPMS_CLEARED;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return mode != DRM_MODE_DPMS_ON && mode != NV_DPMS_CLEARED;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void nv04_lvds_dpms(struct drm_encoder *encoder, int mode)

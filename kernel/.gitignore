@@ -4,3 +4,8 @@
 config_data.h
 config_data.gz
 timeconst.h
+<<<<<<< HEAD
+=======
+hz.bc
+x509_certificate_list
+>>>>>>> refs/remotes/origin/master

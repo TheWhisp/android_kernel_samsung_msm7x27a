@@ -55,6 +55,9 @@ static inline void flush(void)
 
 /* NULL functions; we don't presently need them */
 #define arch_decomp_setup()
+<<<<<<< HEAD
 #define arch_decomp_wdog()
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

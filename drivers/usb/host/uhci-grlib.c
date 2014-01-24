@@ -85,7 +85,11 @@ static const struct hc_driver uhci_grlib_hc_driver = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit uhci_hcd_grlib_probe(struct platform_device *op)
+=======
+static int uhci_hcd_grlib_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dn = op->dev.of_node;
 	struct usb_hcd *hcd;
@@ -111,7 +115,15 @@ static int __devinit uhci_hcd_grlib_probe(struct platform_device *op)
 		return -ENOMEM;
 
 	hcd->rsrc_start = res.start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hcd->rsrc_len = res.end - res.start + 1;
+=======
+	hcd->rsrc_len = resource_size(&res);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hcd->rsrc_len = resource_size(&res);
+>>>>>>> refs/remotes/origin/master
 
 	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len, hcd_name)) {
 		printk(KERN_ERR "%s: request_mem_region failed\n", __FILE__);
@@ -141,6 +153,10 @@ static int __devinit uhci_hcd_grlib_probe(struct platform_device *op)
 	if (rv)
 		goto err_uhci;
 
+<<<<<<< HEAD
+=======
+	device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_uhci:
@@ -157,9 +173,13 @@ err_rmr:
 
 static int uhci_hcd_grlib_remove(struct platform_device *op)
 {
+<<<<<<< HEAD
 	struct usb_hcd *hcd = dev_get_drvdata(&op->dev);
 
 	dev_set_drvdata(&op->dev, NULL);
+=======
+	struct usb_hcd *hcd = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&op->dev, "stopping GRLIB GRUSBHC UHCI USB Controller\n");
 
@@ -183,7 +203,11 @@ static int uhci_hcd_grlib_remove(struct platform_device *op)
  */
 static void uhci_hcd_grlib_shutdown(struct platform_device *op)
 {
+<<<<<<< HEAD
 	struct usb_hcd *hcd = dev_get_drvdata(&op->dev);
+=======
+	struct usb_hcd *hcd = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 
 	uhci_hc_died(hcd_to_uhci(hcd));
 }

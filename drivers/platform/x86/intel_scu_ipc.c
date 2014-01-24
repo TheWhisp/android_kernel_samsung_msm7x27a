@@ -19,12 +19,29 @@
 #include <linux/delay.h>
 #include <linux/errno.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pm.h>
 #include <linux/pci.h>
 #include <linux/interrupt.h>
 #include <linux/sfi.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mrst.h>
+=======
+#include <linux/module.h>
+#include <asm/intel-mid.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/intel_scu_ipc.h>
 
 /* IPC defines the following message types */
@@ -57,12 +74,65 @@
  *    message handler is called within firmware.
  */
 
+<<<<<<< HEAD
 #define IPC_BASE_ADDR     0xFF11C000	/* IPC1 base register address */
 #define IPC_MAX_ADDR      0x100		/* Maximum IPC regisers */
 #define IPC_WWBUF_SIZE    20		/* IPC Write buffer Size */
 #define IPC_RWBUF_SIZE    20		/* IPC Read buffer Size */
 #define IPC_I2C_BASE      0xFF12B000	/* I2C control register base address */
 #define IPC_I2C_MAX_ADDR  0x10		/* Maximum I2C regisers */
+=======
+#define IPC_WWBUF_SIZE    20		/* IPC Write buffer Size */
+#define IPC_RWBUF_SIZE    20		/* IPC Read buffer Size */
+#define IPC_IOC	          0x100		/* IPC command register IOC bit */
+
+enum {
+	SCU_IPC_LINCROFT,
+	SCU_IPC_PENWELL,
+	SCU_IPC_CLOVERVIEW,
+	SCU_IPC_TANGIER,
+};
+
+/* intel scu ipc driver data*/
+struct intel_scu_ipc_pdata_t {
+	u32 ipc_base;
+	u32 i2c_base;
+	u32 ipc_len;
+	u32 i2c_len;
+	u8 irq_mode;
+};
+
+static struct intel_scu_ipc_pdata_t intel_scu_ipc_pdata[] = {
+	[SCU_IPC_LINCROFT] = {
+		.ipc_base = 0xff11c000,
+		.i2c_base = 0xff12b000,
+		.ipc_len = 0x100,
+		.i2c_len = 0x10,
+		.irq_mode = 0,
+	},
+	[SCU_IPC_PENWELL] = {
+		.ipc_base = 0xff11c000,
+		.i2c_base = 0xff12b000,
+		.ipc_len = 0x100,
+		.i2c_len = 0x10,
+		.irq_mode = 1,
+	},
+	[SCU_IPC_CLOVERVIEW] = {
+		.ipc_base = 0xff11c000,
+		.i2c_base = 0xff12b000,
+		.ipc_len = 0x100,
+		.i2c_len = 0x10,
+		.irq_mode = 1,
+	},
+	[SCU_IPC_TANGIER] = {
+		.ipc_base = 0xff009000,
+		.i2c_base  = 0xff00d000,
+		.ipc_len  = 0x100,
+		.i2c_len = 0x10,
+		.irq_mode = 0,
+	},
+};
+>>>>>>> refs/remotes/origin/master
 
 static int ipc_probe(struct pci_dev *dev, const struct pci_device_id *id);
 static void ipc_remove(struct pci_dev *pdev);
@@ -71,6 +141,11 @@ struct intel_scu_ipc_dev {
 	struct pci_dev *pdev;
 	void __iomem *ipc_base;
 	void __iomem *i2c_base;
+<<<<<<< HEAD
+=======
+	struct completion cmd_complete;
+	u8 irq_mode;
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct intel_scu_ipc_dev  ipcdev; /* Only one for now */
@@ -97,6 +172,13 @@ static DEFINE_MUTEX(ipclock); /* lock used to prevent multiple call to SCU */
  */
 static inline void ipc_command(u32 cmd) /* Send ipc command */
 {
+<<<<<<< HEAD
+=======
+	if (ipcdev.irq_mode) {
+		reinit_completion(&ipcdev.cmd_complete);
+		writel(cmd | IPC_IOC, ipcdev.ipc_base);
+	}
+>>>>>>> refs/remotes/origin/master
 	writel(cmd, ipcdev.ipc_base);
 }
 
@@ -155,10 +237,45 @@ static inline int busy_loop(void) /* Wait till scu status is busy */
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Read/Write power control(PMIC in Langwell, MSIC in PenWell) registers */
 static int pwr_reg_rdwr(u16 *addr, u8 *data, u32 count, u32 op, u32 id)
 {
+<<<<<<< HEAD
 	int i, nc, bytes, d;
+=======
+	int nc;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Wait till ipc ioc interrupt is received or timeout in 3 HZ */
+static inline int ipc_wait_for_interrupt(void)
+{
+	int status;
+
+	if (!wait_for_completion_timeout(&ipcdev.cmd_complete, 3 * HZ)) {
+		struct device *dev = &ipcdev.pdev->dev;
+		dev_err(dev, "IPC timed out\n");
+		return -ETIMEDOUT;
+	}
+
+	status = ipc_read_status();
+
+	if ((status >> 1) & 1)
+		return -EIO;
+
+	return 0;
+}
+
+int intel_scu_ipc_check_status(void)
+{
+	return ipcdev.irq_mode ? ipc_wait_for_interrupt() : busy_loop();
+}
+
+/* Read/Write power control(PMIC in Langwell, MSIC in PenWell) registers */
+static int pwr_reg_rdwr(u16 *addr, u8 *data, u32 count, u32 op, u32 id)
+{
+	int nc;
+>>>>>>> refs/remotes/origin/master
 	u32 offset = 0;
 	int err;
 	u8 cbuf[IPC_WWBUF_SIZE] = { };
@@ -173,6 +290,8 @@ static int pwr_reg_rdwr(u16 *addr, u8 *data, u32 count, u32 op, u32 id)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (platform != MRST_CPU_CHIP_PENWELL) {
 		bytes = 0;
 		d = 0;
@@ -209,12 +328,38 @@ static int pwr_reg_rdwr(u16 *addr, u8 *data, u32 count, u32 op, u32 id)
 			ipc_data_writel(wbuf[0], 0); /* Write wbuff */
 			ipc_command(4 << 16 |  id << 12 | 0 << 8 | op);
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	for (nc = 0; nc < count; nc++, offset += 2) {
+		cbuf[offset] = addr[nc];
+		cbuf[offset + 1] = addr[nc] >> 8;
+	}
+
+	if (id == IPC_CMD_PCNTRL_R) {
+		for (nc = 0, offset = 0; nc < count; nc++, offset += 4)
+			ipc_data_writel(wbuf[nc], offset);
+		ipc_command((count*2) << 16 |  id << 12 | 0 << 8 | op);
+	} else if (id == IPC_CMD_PCNTRL_W) {
+		for (nc = 0; nc < count; nc++, offset += 1)
+			cbuf[offset] = data[nc];
+		for (nc = 0, offset = 0; nc < count; nc++, offset += 4)
+			ipc_data_writel(wbuf[nc], offset);
+		ipc_command((count*3) << 16 |  id << 12 | 0 << 8 | op);
+	} else if (id == IPC_CMD_PCNTRL_M) {
+		cbuf[offset] = data[0];
+		cbuf[offset + 1] = data[1];
+		ipc_data_writel(wbuf[0], 0); /* Write wbuff */
+		ipc_command(4 << 16 |  id << 12 | 0 << 8 | op);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	err = busy_loop();
 	if (id == IPC_CMD_PCNTRL_R) { /* Read rbuf */
 		/* Workaround: values are read as 0 without memcpy_fromio */
 		memcpy_fromio(cbuf, ipcdev.ipc_base + 0x90, 16);
+<<<<<<< HEAD
 		if (platform != MRST_CPU_CHIP_PENWELL) {
 			for (nc = 0, offset = 2; nc < count; nc++, offset += 3)
 				data[nc] = ipc_data_readb(offset);
@@ -222,6 +367,20 @@ static int pwr_reg_rdwr(u16 *addr, u8 *data, u32 count, u32 op, u32 id)
 			for (nc = 0; nc < count; nc++)
 				data[nc] = ipc_data_readb(nc);
 		}
+=======
+		for (nc = 0; nc < count; nc++)
+			data[nc] = ipc_data_readb(nc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+	err = intel_scu_ipc_check_status();
+	if (!err && id == IPC_CMD_PCNTRL_R) { /* Read rbuf */
+		/* Workaround: values are read as 0 without memcpy_fromio */
+		memcpy_fromio(cbuf, ipcdev.ipc_base + 0x90, 16);
+		for (nc = 0; nc < count; nc++)
+			data[nc] = ipc_data_readb(nc);
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&ipclock);
 	return err;
@@ -411,7 +570,11 @@ int intel_scu_ipc_simple_command(int cmd, int sub)
 		return -ENODEV;
 	}
 	ipc_command(sub << 12 | cmd);
+<<<<<<< HEAD
 	err = busy_loop();
+=======
+	err = intel_scu_ipc_check_status();
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&ipclock);
 	return err;
 }
@@ -445,10 +608,19 @@ int intel_scu_ipc_command(int cmd, int sub, u32 *in, int inlen,
 		ipc_data_writel(*in++, 4 * i);
 
 	ipc_command((inlen << 16) | (sub << 12) | cmd);
+<<<<<<< HEAD
 	err = busy_loop();
 
 	for (i = 0; i < outlen; i++)
 		*out++ = ipc_data_readl(4 * i);
+=======
+	err = intel_scu_ipc_check_status();
+
+	if (!err) {
+		for (i = 0; i < outlen; i++)
+			*out++ = ipc_data_readl(4 * i);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&ipclock);
 	return err;
@@ -502,6 +674,8 @@ int intel_scu_ipc_i2c_cntrl(u32 addr, u32 *data)
 }
 EXPORT_SYMBOL(intel_scu_ipc_i2c_cntrl);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IPC_FW_LOAD_ADDR 0xFFFC0000 /* Storage location for FW image */
 #define IPC_FW_UPDATE_MBOX_ADDR 0xFFFFDFF4 /* Mailbox between ipc and scu */
 #define IPC_MAX_FW_SIZE 262144 /* 256K storage size for loading the FW image */
@@ -644,6 +818,10 @@ update_end:
 }
 EXPORT_SYMBOL(intel_scu_ipc_fw_update);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Interrupt handler gets called when ioc bit of IPC_COMMAND_REG set to 1
  * When ioc bit is set to 1, caller api must wait for interrupt handler called
@@ -653,6 +831,12 @@ EXPORT_SYMBOL(intel_scu_ipc_fw_update);
  */
 static irqreturn_t ioc(int irq, void *dev_id)
 {
+<<<<<<< HEAD
+=======
+	if (ipcdev.irq_mode)
+		complete(&ipcdev.cmd_complete);
+
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -666,13 +850,26 @@ static irqreturn_t ioc(int irq, void *dev_id)
  */
 static int ipc_probe(struct pci_dev *dev, const struct pci_device_id *id)
 {
+<<<<<<< HEAD
 	int err;
+=======
+	int err, pid;
+	struct intel_scu_ipc_pdata_t *pdata;
+>>>>>>> refs/remotes/origin/master
 	resource_size_t pci_resource;
 
 	if (ipcdev.pdev)		/* We support only one SCU */
 		return -EBUSY;
 
+<<<<<<< HEAD
 	ipcdev.pdev = pci_dev_get(dev);
+=======
+	pid = id->driver_data;
+	pdata = &intel_scu_ipc_pdata[pid];
+
+	ipcdev.pdev = pci_dev_get(dev);
+	ipcdev.irq_mode = pdata->irq_mode;
+>>>>>>> refs/remotes/origin/master
 
 	err = pci_enable_device(dev);
 	if (err)
@@ -686,6 +883,7 @@ static int ipc_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	if (!pci_resource)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	if (request_irq(dev->irq, ioc, 0, "intel_scu_ipc", &ipcdev))
 		return -EBUSY;
 
@@ -694,6 +892,18 @@ static int ipc_probe(struct pci_dev *dev, const struct pci_device_id *id)
 		return -ENOMEM;
 
 	ipcdev.i2c_base = ioremap_nocache(IPC_I2C_BASE, IPC_I2C_MAX_ADDR);
+=======
+	init_completion(&ipcdev.cmd_complete);
+
+	if (request_irq(dev->irq, ioc, 0, "intel_scu_ipc", &ipcdev))
+		return -EBUSY;
+
+	ipcdev.ipc_base = ioremap_nocache(pdata->ipc_base, pdata->ipc_len);
+	if (!ipcdev.ipc_base)
+		return -ENOMEM;
+
+	ipcdev.i2c_base = ioremap_nocache(pdata->i2c_base, pdata->i2c_len);
+>>>>>>> refs/remotes/origin/master
 	if (!ipcdev.i2c_base) {
 		iounmap(ipcdev.ipc_base);
 		return -ENOMEM;
@@ -725,9 +935,21 @@ static void ipc_remove(struct pci_dev *pdev)
 	intel_scu_devices_destroy();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id pci_ids[] = {
 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x080e)},
+=======
+static DEFINE_PCI_DEVICE_TABLE(pci_ids) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x082a)},
+=======
+static DEFINE_PCI_DEVICE_TABLE(pci_ids) = {
+	{PCI_VDEVICE(INTEL, 0x082a), SCU_IPC_LINCROFT},
+	{PCI_VDEVICE(INTEL, 0x080e), SCU_IPC_PENWELL},
+	{PCI_VDEVICE(INTEL, 0x08ea), SCU_IPC_CLOVERVIEW},
+	{PCI_VDEVICE(INTEL, 0x11a0), SCU_IPC_TANGIER},
+>>>>>>> refs/remotes/origin/master
 	{ 0,}
 };
 MODULE_DEVICE_TABLE(pci, pci_ids);
@@ -742,7 +964,11 @@ static struct pci_driver ipc_driver = {
 
 static int __init intel_scu_ipc_init(void)
 {
+<<<<<<< HEAD
 	platform = mrst_identify_cpu();
+=======
+	platform = intel_mid_identify_cpu();
+>>>>>>> refs/remotes/origin/master
 	if (platform == 0)
 		return -ENODEV;
 	return  pci_register_driver(&ipc_driver);

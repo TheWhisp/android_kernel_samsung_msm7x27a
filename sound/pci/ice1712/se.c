@@ -22,7 +22,10 @@
  *
  */      
 
+<<<<<<< HEAD
 #include <asm/io.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
@@ -114,7 +117,11 @@ struct se_spec {
 /*  WM8740 interface                                                        */
 /****************************************************************************/
 
+<<<<<<< HEAD
 static void __devinit se200pci_WM8740_init(struct snd_ice1712 *ice)
+=======
+static void se200pci_WM8740_init(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	/* nothing to do */
 }
@@ -196,7 +203,11 @@ static void se200pci_WM8766_set_volume(struct snd_ice1712 *ice, int ch,
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit se200pci_WM8766_init(struct snd_ice1712 *ice)
+=======
+static void se200pci_WM8766_init(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	se200pci_WM8766_write(ice, 0x1f, 0x000); /* RESET ALL */
 	udelay(10);
@@ -253,7 +264,11 @@ static void se200pci_WM8776_set_input_volume(struct snd_ice1712 *ice,
 	se200pci_WM8776_write(ice, 0x0f, vol2 | 0x100);
 }
 
+<<<<<<< HEAD
 static const char *se200pci_sel[] = {
+=======
+static const char * const se200pci_sel[] = {
+>>>>>>> refs/remotes/origin/master
 	"LINE-IN", "CD-IN", "MIC-IN", "ALL-MIX", NULL
 };
 
@@ -278,7 +293,11 @@ static void se200pci_WM8776_set_afl(struct snd_ice1712 *ice, unsigned int afl)
 		se200pci_WM8776_write(ice, 0x16, 0x001);
 }
 
+<<<<<<< HEAD
 static const char *se200pci_agc[] = {
+=======
+static const char * const se200pci_agc[] = {
+>>>>>>> refs/remotes/origin/master
 	"Off", "LimiterMode", "ALCMode", NULL
 };
 
@@ -300,10 +319,17 @@ static void se200pci_WM8776_set_agc(struct snd_ice1712 *ice, unsigned int agc)
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit se200pci_WM8776_init(struct snd_ice1712 *ice)
 {
 	int i;
 	static unsigned short __devinitdata default_values[] = {
+=======
+static void se200pci_WM8776_init(struct snd_ice1712 *ice)
+{
+	int i;
+	static unsigned short default_values[] = {
+>>>>>>> refs/remotes/origin/master
 		0x100, 0x100, 0x100,
 		0x100, 0x100, 0x100,
 		0x000, 0x090, 0x000, 0x000,
@@ -352,7 +378,11 @@ static void se200pci_set_pro_rate(struct snd_ice1712 *ice, unsigned int rate)
 }
 
 struct se200pci_control {
+<<<<<<< HEAD
 	char *name;
+=======
+	const char *name;
+>>>>>>> refs/remotes/origin/master
 	enum {
 		WM8766,
 		WM8776in,
@@ -363,7 +393,11 @@ struct se200pci_control {
 	} target;
 	enum { VOLUME1, VOLUME2, BOOLEAN, ENUM } type;
 	int ch;
+<<<<<<< HEAD
 	const char **member;
+=======
+	const char * const *member;
+>>>>>>> refs/remotes/origin/master
 	const char *comment;
 };
 
@@ -421,7 +455,11 @@ static const struct se200pci_control se200pci_cont[] = {
 
 static int se200pci_get_enum_count(int n)
 {
+<<<<<<< HEAD
 	const char **member;
+=======
+	const char * const *member;
+>>>>>>> refs/remotes/origin/master
 	int c;
 
 	member = se200pci_cont[n].member;
@@ -600,7 +638,11 @@ static int se200pci_cont_enum_put(struct snd_kcontrol *kc,
 static const DECLARE_TLV_DB_SCALE(db_scale_gain1, -12750, 50, 1);
 static const DECLARE_TLV_DB_SCALE(db_scale_gain2, -10350, 50, 1);
 
+<<<<<<< HEAD
 static int __devinit se200pci_add_controls(struct snd_ice1712 *ice)
+=======
+static int se200pci_add_controls(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct snd_kcontrol_new cont;
@@ -678,7 +720,11 @@ static int __devinit se200pci_add_controls(struct snd_ice1712 *ice)
 /*  probe/initialize/setup                                                  */
 /****************************************************************************/
 
+<<<<<<< HEAD
 static int __devinit se_init(struct snd_ice1712 *ice)
+=======
+static int se_init(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	struct se_spec *spec;
 
@@ -706,7 +752,11 @@ static int __devinit se_init(struct snd_ice1712 *ice)
 	return -ENOENT;
 }
 
+<<<<<<< HEAD
 static int __devinit se_add_controls(struct snd_ice1712 *ice)
+=======
+static int se_add_controls(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -723,7 +773,11 @@ static int __devinit se_add_controls(struct snd_ice1712 *ice)
 /*  entry point                                                             */
 /****************************************************************************/
 
+<<<<<<< HEAD
 static unsigned char se200pci_eeprom[] __devinitdata = {
+=======
+static unsigned char se200pci_eeprom[] = {
+>>>>>>> refs/remotes/origin/master
 	[ICE_EEP2_SYSCONF]	= 0x4b,	/* 49.152Hz, spdif-in/ADC, 4DACs */
 	[ICE_EEP2_ACLINK]	= 0x80,	/* I2S */
 	[ICE_EEP2_I2S]		= 0x78,	/* 96k-ok, 24bit, 192k-ok */
@@ -742,7 +796,11 @@ static unsigned char se200pci_eeprom[] __devinitdata = {
 	[ICE_EEP2_GPIO_STATE2]	= 0x07, /* WM8766 ML/MC/MD */
 };
 
+<<<<<<< HEAD
 static unsigned char se90pci_eeprom[] __devinitdata = {
+=======
+static unsigned char se90pci_eeprom[] = {
+>>>>>>> refs/remotes/origin/master
 	[ICE_EEP2_SYSCONF]	= 0x4b,	/* 49.152Hz, spdif-in/ADC, 4DACs */
 	[ICE_EEP2_ACLINK]	= 0x80,	/* I2S */
 	[ICE_EEP2_I2S]		= 0x78,	/* 96k-ok, 24bit, 192k-ok */
@@ -751,7 +809,11 @@ static unsigned char se90pci_eeprom[] __devinitdata = {
 	/* ALL GPIO bits are in input mode */
 };
 
+<<<<<<< HEAD
 struct snd_ice1712_card_info snd_vt1724_se_cards[] __devinitdata = {
+=======
+struct snd_ice1712_card_info snd_vt1724_se_cards[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.subvendor = VT1724_SUBDEVICE_SE200PCI,
 		.name = "ONKYO SE200PCI",

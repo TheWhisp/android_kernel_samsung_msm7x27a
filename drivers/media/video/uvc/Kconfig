@@ -1,5 +1,9 @@
 config USB_VIDEO_CLASS
 	tristate "USB Video Class (UVC)"
+<<<<<<< HEAD
+=======
+	select VIDEOBUF2_VMALLOC
+>>>>>>> refs/remotes/origin/cm-10.0
 	---help---
 	  Support for the USB Video Class (UVC).  Currently only video
 	  input devices, such as webcams, are supported.

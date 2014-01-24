@@ -47,6 +47,12 @@ int usb_choose_configuration(struct usb_device *udev)
 	int insufficient_power = 0;
 	struct usb_host_config *c, *best;
 
+<<<<<<< HEAD
+=======
+	if (usb_device_is_owned(udev))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	best = NULL;
 	c = udev->config;
 	num_configs = udev->descriptor.bNumConfigurations;
@@ -97,7 +103,11 @@ int usb_choose_configuration(struct usb_device *udev)
 		 */
 
 		/* Rule out configs that draw too much bus current */
+<<<<<<< HEAD
 		if (c->desc.bMaxPower * 2 > udev->bus_mA) {
+=======
+		if (usb_get_max_power(udev, c) > udev->bus_mA) {
+>>>>>>> refs/remotes/origin/master
 			insufficient_power++;
 			continue;
 		}
@@ -160,15 +170,23 @@ static int generic_probe(struct usb_device *udev)
 	/* Choose and set the configuration.  This registers the interfaces
 	 * with the driver core and lets interface drivers bind to them.
 	 */
+<<<<<<< HEAD
 	if (usb_device_is_owned(udev))
 		;		/* Don't configure if the device is owned */
 	else if (udev->authorized == 0)
+=======
+	if (udev->authorized == 0)
+>>>>>>> refs/remotes/origin/master
 		dev_err(&udev->dev, "Device is not authorized for usage\n");
 	else {
 		c = usb_choose_configuration(udev);
 		if (c >= 0) {
 			err = usb_set_configuration(udev, c);
+<<<<<<< HEAD
 			if (err) {
+=======
+			if (err && err != -ENODEV) {
+>>>>>>> refs/remotes/origin/master
 				dev_err(&udev->dev, "can't set config #%d, error %d\n",
 					c, err);
 				/* This need not be fatal.  The user can try to

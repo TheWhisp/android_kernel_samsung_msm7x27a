@@ -100,7 +100,11 @@ struct c67x00_urb_priv {
 #define TD_PIDEP_OFFSET		0x04
 #define TD_PIDEPMASK_PID	0xF0
 #define TD_PIDEPMASK_EP		0x0F
+<<<<<<< HEAD
 #define TD_PORTLENMASK_DL	0x02FF
+=======
+#define TD_PORTLENMASK_DL	0x03FF
+>>>>>>> refs/remotes/origin/master
 #define TD_PORTLENMASK_PN	0xC000
 
 #define TD_STATUS_OFFSET	0x07
@@ -144,8 +148,11 @@ struct c67x00_urb_priv {
 
 /* -------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 #ifdef DEBUG
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * dbg_td - Dump the contents of the TD
  */
@@ -166,6 +173,7 @@ static void dbg_td(struct c67x00_hcd *c67x00, struct c67x00_td *td, char *msg)
 	dev_dbg(dev, "retry_cnt:      0x%02x\n", td->retry_cnt);
 	dev_dbg(dev, "residue:        0x%02x\n", td->residue);
 	dev_dbg(dev, "next_td_addr: 0x%04x\n", td_next_td_addr(td));
+<<<<<<< HEAD
 	dev_dbg(dev, "data:");
 	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 16, 1,
 		       td->data, td_length(td), 1);
@@ -176,6 +184,10 @@ static inline void
 dbg_td(struct c67x00_hcd *c67x00, struct c67x00_td *td, char *msg) { }
 
 #endif				/* DEBUG */
+=======
+	dev_dbg(dev, "data: %*ph\n", td_length(td), td->data);
+}
+>>>>>>> refs/remotes/origin/master
 
 /* -------------------------------------------------------------------------- */
 /* Helper functions */
@@ -344,7 +356,11 @@ void c67x00_endpoint_disable(struct usb_hcd *hcd, struct usb_host_endpoint *ep)
 		/* it could happen that we reinitialize this completion, while
 		 * somebody was waiting for that completion.  The timeout and
 		 * while loop handle such cases, but this might be improved */
+<<<<<<< HEAD
 		INIT_COMPLETION(c67x00->endpoint_disable);
+=======
+		reinit_completion(&c67x00->endpoint_disable);
+>>>>>>> refs/remotes/origin/master
 		c67x00_sched_kick(c67x00);
 		wait_for_completion_timeout(&c67x00->endpoint_disable, 1 * HZ);
 
@@ -372,6 +388,16 @@ int c67x00_urb_enqueue(struct usb_hcd *hcd,
 	struct c67x00_hcd *c67x00 = hcd_to_c67x00_hcd(hcd);
 	int port = get_root_port(urb->dev)-1;
 
+<<<<<<< HEAD
+=======
+	/* Allocate and initialize urb private data */
+	urbp = kzalloc(sizeof(*urbp), mem_flags);
+	if (!urbp) {
+		ret = -ENOMEM;
+		goto err_urbp;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&c67x00->lock, flags);
 
 	/* Make sure host controller is running */
@@ -384,6 +410,7 @@ int c67x00_urb_enqueue(struct usb_hcd *hcd,
 	if (ret)
 		goto err_not_linked;
 
+<<<<<<< HEAD
 	/* Allocate and initialize urb private data */
 	urbp = kzalloc(sizeof(*urbp), mem_flags);
 	if (!urbp) {
@@ -391,6 +418,8 @@ int c67x00_urb_enqueue(struct usb_hcd *hcd,
 		goto err_urbp;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&urbp->hep_node);
 	urbp->urb = urb;
 	urbp->port = port;
@@ -453,11 +482,19 @@ int c67x00_urb_enqueue(struct usb_hcd *hcd,
 	return 0;
 
 err_epdata:
+<<<<<<< HEAD
 	kfree(urbp);
 err_urbp:
 	usb_hcd_unlink_urb_from_ep(hcd, urb);
 err_not_linked:
 	spin_unlock_irqrestore(&c67x00->lock, flags);
+=======
+	usb_hcd_unlink_urb_from_ep(hcd, urb);
+err_not_linked:
+	spin_unlock_irqrestore(&c67x00->lock, flags);
+	kfree(urbp);
+err_urbp:
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -590,7 +627,11 @@ static int c67x00_create_td(struct c67x00_hcd *c67x00, struct urb *urb,
 {
 	struct c67x00_td *td;
 	struct c67x00_urb_priv *urbp = urb->hcpriv;
+<<<<<<< HEAD
 	const __u8 active_flag = 1, retry_cnt = 1;
+=======
+	const __u8 active_flag = 1, retry_cnt = 3;
+>>>>>>> refs/remotes/origin/master
 	__u8 cmd = 0;
 	int tt = 0;
 
@@ -780,7 +821,12 @@ static int c67x00_add_iso_urb(struct c67x00_hcd *c67x00, struct urb *urb)
 		ret = c67x00_create_td(c67x00, urb, td_buf, len, pid, 0,
 				       urbp->cnt);
 		if (ret) {
+<<<<<<< HEAD
 			printk(KERN_DEBUG "create failed: %d\n", ret);
+=======
+			dev_dbg(c67x00_hcd_dev(c67x00), "create failed: %d\n",
+				ret);
+>>>>>>> refs/remotes/origin/master
 			urb->iso_frame_desc[urbp->cnt].actual_length = 0;
 			urb->iso_frame_desc[urbp->cnt].status = ret;
 			if (urbp->cnt + 1 == urb->number_of_packets)

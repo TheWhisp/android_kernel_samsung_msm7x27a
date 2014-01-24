@@ -23,12 +23,19 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/hardware.h>
 #include <mach/iomux-mx1.h>
 #include <mach/irqs.h>
 
 #include "devices-imx1.h"
+=======
+#include "common.h"
+#include "devices-imx1.h"
+#include "hardware.h"
+#include "iomux-mx1.h"
+>>>>>>> refs/remotes/origin/master
 
 static const int mx1ads_pins[] __initconst = {
 	/* UART1 */
@@ -68,16 +75,32 @@ static const struct imxuart_platform_data uart1_pdata __initconst = {
  * Physmap flash
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct physmap_flash_data mx1ads_flash_data = {
 	.width		= 4,		/* bankwidth in bytes */
 };
 
 static struct resource flash_resource = {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct physmap_flash_data mx1ads_flash_data __initconst = {
+	.width		= 4,		/* bankwidth in bytes */
+};
+
+static const struct resource flash_resource __initconst = {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.start	= MX1_CS0_PHYS,
 	.end	= MX1_CS0_PHYS + SZ_32M - 1,
 	.flags	= IORESOURCE_MEM,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device flash_device = {
 	.name	= "physmap-flash",
 	.id	= 0,
@@ -85,6 +108,10 @@ static struct platform_device flash_device = {
 	.num_resources = 1,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * I2C
  */
@@ -115,6 +142,16 @@ static struct i2c_board_info mx1ads_i2c_devices[] = {
  */
 static void __init mx1ads_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	imx1_soc_init();
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx1_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	mxc_gpio_setup_multiple_pins(mx1ads_pins,
 		ARRAY_SIZE(mx1ads_pins), "mx1ads");
 
@@ -123,7 +160,19 @@ static void __init mx1ads_init(void)
 	imx1_add_imx_uart1(&uart1_pdata);
 
 	/* Physmap flash */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mxc_register_device(&flash_device, &mx1ads_flash_data);
+=======
+	platform_device_register_resndata(NULL, "physmap-flash", 0,
+			&flash_resource, 1,
+			&mx1ads_flash_data, sizeof(mx1ads_flash_data));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_device_register_resndata(NULL, "physmap-flash", 0,
+			&flash_resource, 1,
+			&mx1ads_flash_data, sizeof(mx1ads_flash_data));
+>>>>>>> refs/remotes/origin/master
 
 	/* I2C */
 	i2c_register_board_info(0, mx1ads_i2c_devices,
@@ -137,12 +186,14 @@ static void __init mx1ads_timer_init(void)
 	mx1_clocks_init(32000);
 }
 
+<<<<<<< HEAD
 struct sys_timer mx1ads_timer = {
 	.init	= mx1ads_timer_init,
 };
 
 MACHINE_START(MX1ADS, "Freescale MX1ADS")
 	/* Maintainer: Sascha Hauer, Pengutronix */
+<<<<<<< HEAD
 	.boot_params = MX1_PHYS_OFFSET + 0x100,
 	.map_io = mx1_map_io,
 	.init_early = imx1_init_early,
@@ -158,4 +209,39 @@ MACHINE_START(MXLADS, "Freescale MXLADS")
 	.init_irq = mx1_init_irq,
 	.timer = &mx1ads_timer,
 	.init_machine = mx1ads_init,
+=======
+=======
+MACHINE_START(MX1ADS, "Freescale MX1ADS")
+	/* Maintainer: Sascha Hauer, Pengutronix */
+>>>>>>> refs/remotes/origin/master
+	.atag_offset = 0x100,
+	.map_io = mx1_map_io,
+	.init_early = imx1_init_early,
+	.init_irq = mx1_init_irq,
+	.handle_irq = imx1_handle_irq,
+<<<<<<< HEAD
+	.timer = &mx1ads_timer,
+=======
+	.init_time	= mx1ads_timer_init,
+>>>>>>> refs/remotes/origin/master
+	.init_machine = mx1ads_init,
+	.restart	= mxc_restart,
+MACHINE_END
+
+MACHINE_START(MXLADS, "Freescale MXLADS")
+	.atag_offset = 0x100,
+	.map_io = mx1_map_io,
+	.init_early = imx1_init_early,
+	.init_irq = mx1_init_irq,
+	.handle_irq = imx1_handle_irq,
+<<<<<<< HEAD
+	.timer = &mx1ads_timer,
+	.init_machine = mx1ads_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= mx1ads_timer_init,
+	.init_machine = mx1ads_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

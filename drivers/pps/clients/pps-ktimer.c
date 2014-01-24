@@ -52,6 +52,8 @@ static void pps_ktimer_event(unsigned long ptr)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * The echo function
  */
 
@@ -63,6 +65,10 @@ static void pps_ktimer_echo(struct pps_device *pps, int event, void *data)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * The PPS info struct
  */
 
@@ -72,7 +78,13 @@ static struct pps_source_info pps_ktimer_info = {
 	.mode		= PPS_CAPTUREASSERT | PPS_OFFSETASSERT |
 			  PPS_ECHOASSERT |
 			  PPS_CANWAIT | PPS_TSFMT_TSPEC,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.echo		= pps_ktimer_echo,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.owner		= THIS_MODULE,
 };
 

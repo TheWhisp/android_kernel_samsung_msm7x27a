@@ -630,10 +630,16 @@ struct amb_dev {
   u32              iobase;
   u32 *            membase;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef FILL_RX_POOLS_IN_BH
   struct work_struct bh;
 #endif
   
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   amb_cq           cq;
   amb_txq          txq;
   amb_rxq          rxq[NUM_RX_POOLS];

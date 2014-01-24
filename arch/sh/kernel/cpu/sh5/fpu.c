@@ -107,8 +107,11 @@ asmlinkage void do_fpu_error(unsigned long ex, struct pt_regs *regs)
 
 	regs->pc += 4;
 
+<<<<<<< HEAD
 	tsk->thread.trap_no = 11;
 	tsk->thread.error_code = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	force_sig(SIGFPE, tsk);
 }

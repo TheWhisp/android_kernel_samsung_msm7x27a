@@ -42,6 +42,9 @@ DECLARE_PER_CPU(irq_cpustat_t, irq_stat);
 
 #include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
 
+<<<<<<< HEAD
 #define HARDIRQ_BITS	8
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_TILE_HARDIRQ_H */

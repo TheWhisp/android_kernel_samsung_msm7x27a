@@ -16,6 +16,11 @@ struct clk;
 extern const u32 *mxs_get_ocotp(void);
 extern int mxs_reset_block(void __iomem *);
 extern void mxs_timer_init(struct clk *, int);
+<<<<<<< HEAD
+=======
+extern void mxs_restart(char, const char *);
+extern int mxs_saif_clkmux_select(unsigned int clkmux);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern int mx23_register_gpios(void);
 extern int mx23_clocks_init(void);
@@ -29,4 +34,9 @@ extern void mx28_init_irq(void);
 
 extern void icoll_init_irq(void);
 
+<<<<<<< HEAD
+=======
+extern int mxs_clkctrl_timeout(unsigned int reg_offset, unsigned int mask);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __MACH_MXS_COMMON_H__ */

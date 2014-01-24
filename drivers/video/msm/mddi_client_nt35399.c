@@ -21,7 +21,15 @@
 #include <linux/interrupt.h>
 #include <linux/sched.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_fb.h>
+=======
+#include <linux/slab.h>
+#include <linux/platform_data/video-msm_fb.h>
+>>>>>>> refs/remotes/origin/master
 
 static DECLARE_WAIT_QUEUE_HEAD(nt35399_vsync_wait);
 
@@ -154,6 +162,8 @@ static int setup_vsync(struct panel_info *panel, int init)
 		ret = 0;
 		goto uninit;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = gpio_request(gpio, "vsync");
 	if (ret)
 		goto err_request_gpio_failed;
@@ -162,6 +172,17 @@ static int setup_vsync(struct panel_info *panel, int init)
 	if (ret)
 		goto err_gpio_direction_input_failed;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = gpio_request_one(gpio, GPIOF_IN, "vsync");
+	if (ret)
+		goto err_request_gpio_failed;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = irq = gpio_to_irq(gpio);
 	if (ret < 0)
 		goto err_get_irq_num_failed;
@@ -179,7 +200,13 @@ uninit:
 	free_irq(gpio_to_irq(gpio), panel->client_data);
 err_request_irq_failed:
 err_get_irq_num_failed:
+<<<<<<< HEAD
+<<<<<<< HEAD
 err_gpio_direction_input_failed:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	gpio_free(gpio);
 err_request_gpio_failed:
 	return ret;
@@ -193,8 +220,14 @@ static int mddi_nt35399_probe(struct platform_device *pdev)
 
 	int ret;
 
+<<<<<<< HEAD
 	struct panel_info *panel = kzalloc(sizeof(struct panel_info),
 					   GFP_KERNEL);
+=======
+	struct panel_info *panel = devm_kzalloc(&pdev->dev,
+						sizeof(struct panel_info),
+						GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_DEBUG "%s: enter.\n", __func__);
 
@@ -237,7 +270,10 @@ static int mddi_nt35399_remove(struct platform_device *pdev)
 	struct panel_info *panel = platform_get_drvdata(pdev);
 
 	setup_vsync(panel, 0);
+<<<<<<< HEAD
 	kfree(panel);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

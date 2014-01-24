@@ -5,9 +5,24 @@
  *
  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
  * Created:	Jan 01, 2011
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Version:	0.3.0
  * Copyright:	(C) Torsten Schenk
  *
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Copyright:	(C) Torsten Schenk
+ *
+ * Thanks to:
+ * - Holger Ruckdeschel: he found out how to control individual channel
+ *   volumes and introduced mute switch
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -16,6 +31,14 @@
 
 #include <linux/interrupt.h>
 #include <sound/control.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <sound/tlv.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <sound/tlv.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "control.h"
 #include "comm.h"
@@ -25,6 +48,8 @@ static char *opt_coax_texts[2] = { "Optical", "Coax" };
 static char *line_phono_texts[2] = { "Line", "Phono" };
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * calculated with $value\[i\] = 128 \cdot sqrt[3]{\frac{i}{128}}$
  * this is done because the linear values cause rapid degredation
  * of volume in the uppermost region.
@@ -45,6 +70,10 @@ static const u8 log_volume_table[128] = {
 	0x7d, 0x7d, 0x7d, 0x7e, 0x7e, 0x7e, 0x7f, 0x7f };
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * data that needs to be sent to device. sets up card internal stuff.
  * values dumped from windows driver and filtered by trial'n'error.
  */
@@ -59,7 +88,15 @@ init_data[] = {
 	{ 0x22, 0x03, 0x00 }, { 0x20, 0x03, 0x08 }, { 0x22, 0x04, 0x00 },
 	{ 0x20, 0x04, 0x08 }, { 0x22, 0x05, 0x01 }, { 0x20, 0x05, 0x08 },
 	{ 0x22, 0x04, 0x01 }, { 0x12, 0x04, 0x00 }, { 0x12, 0x05, 0x00 },
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ 0x12, 0x0d, 0x78 }, { 0x12, 0x21, 0x82 }, { 0x12, 0x22, 0x80 },
+=======
+	{ 0x12, 0x0d, 0x38 }, { 0x12, 0x21, 0x82 }, { 0x12, 0x22, 0x80 },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ 0x12, 0x0d, 0x38 }, { 0x12, 0x21, 0x82 }, { 0x12, 0x22, 0x80 },
+>>>>>>> refs/remotes/origin/master
 	{ 0x12, 0x23, 0x00 }, { 0x12, 0x06, 0x02 }, { 0x12, 0x03, 0x00 },
 	{ 0x12, 0x02, 0x00 }, { 0x22, 0x03, 0x01 },
 	{ 0 } /* TERMINATING ENTRY */
@@ -70,10 +107,24 @@ static const int rates_altsetting[] = { 1, 1, 2, 2, 3, 3 };
 static const u16 rates_6fire_vl[] = {0x00, 0x01, 0x00, 0x01, 0x00, 0x01};
 static const u16 rates_6fire_vh[] = {0x11, 0x11, 0x10, 0x10, 0x00, 0x00};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static DECLARE_TLV_DB_MINMAX(tlv_output, -9000, 0);
+static DECLARE_TLV_DB_MINMAX(tlv_input, -1500, 1500);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DECLARE_TLV_DB_MINMAX(tlv_output, -9000, 0);
+static DECLARE_TLV_DB_MINMAX(tlv_input, -1500, 1500);
+
+>>>>>>> refs/remotes/origin/master
 enum {
 	DIGITAL_THRU_ONLY_SAMPLERATE = 3
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void usb6fire_control_master_vol_update(struct control_runtime *rt)
 {
 	struct comm_runtime *comm_rt = rt->chip->comm;
@@ -84,6 +135,47 @@ static void usb6fire_control_master_vol_update(struct control_runtime *rt)
 		 /* unmute */
 		comm_rt->write8(comm_rt, 0x12, 0x0e, 0x00);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void usb6fire_control_output_vol_update(struct control_runtime *rt)
+{
+	struct comm_runtime *comm_rt = rt->chip->comm;
+	int i;
+
+	if (comm_rt)
+		for (i = 0; i < 6; i++)
+			if (!(rt->ovol_updated & (1 << i))) {
+				comm_rt->write8(comm_rt, 0x12, 0x0f + i,
+					180 - rt->output_vol[i]);
+				rt->ovol_updated |= 1 << i;
+			}
+}
+
+static void usb6fire_control_output_mute_update(struct control_runtime *rt)
+{
+	struct comm_runtime *comm_rt = rt->chip->comm;
+
+	if (comm_rt)
+		comm_rt->write8(comm_rt, 0x12, 0x0e, ~rt->output_mute);
+}
+
+static void usb6fire_control_input_vol_update(struct control_runtime *rt)
+{
+	struct comm_runtime *comm_rt = rt->chip->comm;
+	int i;
+
+	if (comm_rt)
+		for (i = 0; i < 2; i++)
+			if (!(rt->ivol_updated & (1 << i))) {
+				comm_rt->write8(comm_rt, 0x12, 0x1c + i,
+					rt->input_vol[i] & 0x3f);
+				rt->ivol_updated |= 1 << i;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void usb6fire_control_line_phono_update(struct control_runtime *rt)
@@ -165,6 +257,8 @@ static int usb6fire_control_streaming_update(struct control_runtime *rt)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int usb6fire_control_master_vol_info(struct snd_kcontrol *kcontrol,
 		struct snd_ctl_elem_info *uinfo)
 {
@@ -193,6 +287,154 @@ static int usb6fire_control_master_vol_get(struct snd_kcontrol *kcontrol,
 {
 	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
 	ucontrol->value.integer.value[0] = rt->master_vol;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int usb6fire_control_output_vol_info(struct snd_kcontrol *kcontrol,
+		struct snd_ctl_elem_info *uinfo)
+{
+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+	uinfo->count = 2;
+	uinfo->value.integer.min = 0;
+	uinfo->value.integer.max = 180;
+	return 0;
+}
+
+static int usb6fire_control_output_vol_put(struct snd_kcontrol *kcontrol,
+		struct snd_ctl_elem_value *ucontrol)
+{
+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
+	unsigned int ch = kcontrol->private_value;
+	int changed = 0;
+
+	if (ch > 4) {
+		snd_printk(KERN_ERR PREFIX "Invalid channel in volume control.");
+		return -EINVAL;
+	}
+
+	if (rt->output_vol[ch] != ucontrol->value.integer.value[0]) {
+		rt->output_vol[ch] = ucontrol->value.integer.value[0];
+		rt->ovol_updated &= ~(1 << ch);
+		changed = 1;
+	}
+	if (rt->output_vol[ch + 1] != ucontrol->value.integer.value[1]) {
+		rt->output_vol[ch + 1] = ucontrol->value.integer.value[1];
+		rt->ovol_updated &= ~(2 << ch);
+		changed = 1;
+	}
+
+	if (changed)
+		usb6fire_control_output_vol_update(rt);
+
+	return changed;
+}
+
+static int usb6fire_control_output_vol_get(struct snd_kcontrol *kcontrol,
+		struct snd_ctl_elem_value *ucontrol)
+{
+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
+	unsigned int ch = kcontrol->private_value;
+
+	if (ch > 4) {
+		snd_printk(KERN_ERR PREFIX "Invalid channel in volume control.");
+		return -EINVAL;
+	}
+
+	ucontrol->value.integer.value[0] = rt->output_vol[ch];
+	ucontrol->value.integer.value[1] = rt->output_vol[ch + 1];
+	return 0;
+}
+
+static int usb6fire_control_output_mute_put(struct snd_kcontrol *kcontrol,
+	struct snd_ctl_elem_value *ucontrol)
+{
+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
+	unsigned int ch = kcontrol->private_value;
+	u8 old = rt->output_mute;
+	u8 value = 0;
+
+	if (ch > 4) {
+		snd_printk(KERN_ERR PREFIX "Invalid channel in volume control.");
+		return -EINVAL;
+	}
+
+	rt->output_mute &= ~(3 << ch);
+	if (ucontrol->value.integer.value[0])
+		value |= 1;
+	if (ucontrol->value.integer.value[1])
+		value |= 2;
+	rt->output_mute |= value << ch;
+
+	if (rt->output_mute != old)
+		usb6fire_control_output_mute_update(rt);
+
+	return rt->output_mute != old;
+}
+
+static int usb6fire_control_output_mute_get(struct snd_kcontrol *kcontrol,
+	struct snd_ctl_elem_value *ucontrol)
+{
+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
+	unsigned int ch = kcontrol->private_value;
+	u8 value = rt->output_mute >> ch;
+
+	if (ch > 4) {
+		snd_printk(KERN_ERR PREFIX "Invalid channel in volume control.");
+		return -EINVAL;
+	}
+
+	ucontrol->value.integer.value[0] = 1 & value;
+	value >>= 1;
+	ucontrol->value.integer.value[1] = 1 & value;
+
+	return 0;
+}
+
+static int usb6fire_control_input_vol_info(struct snd_kcontrol *kcontrol,
+		struct snd_ctl_elem_info *uinfo)
+{
+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+	uinfo->count = 2;
+	uinfo->value.integer.min = 0;
+	uinfo->value.integer.max = 30;
+	return 0;
+}
+
+static int usb6fire_control_input_vol_put(struct snd_kcontrol *kcontrol,
+		struct snd_ctl_elem_value *ucontrol)
+{
+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
+	int changed = 0;
+
+	if (rt->input_vol[0] != ucontrol->value.integer.value[0]) {
+		rt->input_vol[0] = ucontrol->value.integer.value[0] - 15;
+		rt->ivol_updated &= ~(1 << 0);
+		changed = 1;
+	}
+	if (rt->input_vol[1] != ucontrol->value.integer.value[1]) {
+		rt->input_vol[1] = ucontrol->value.integer.value[1] - 15;
+		rt->ivol_updated &= ~(1 << 1);
+		changed = 1;
+	}
+
+	if (changed)
+		usb6fire_control_input_vol_update(rt);
+
+	return changed;
+}
+
+static int usb6fire_control_input_vol_get(struct snd_kcontrol *kcontrol,
+		struct snd_ctl_elem_value *ucontrol)
+{
+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
+
+	ucontrol->value.integer.value[0] = rt->input_vol[0] + 15;
+	ucontrol->value.integer.value[1] = rt->input_vol[1] + 15;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -287,6 +529,8 @@ static int usb6fire_control_digital_thru_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct __devinitdata snd_kcontrol_new elements[] = {
 	{
 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
@@ -299,6 +543,98 @@ static struct __devinitdata snd_kcontrol_new elements[] = {
 	},
 	{
 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+=======
+static struct __devinitdata snd_kcontrol_new vol_elements[] = {
+=======
+static struct snd_kcontrol_new vol_elements[] = {
+>>>>>>> refs/remotes/origin/master
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Analog Playback Volume",
+		.index = 0,
+		.private_value = 0,
+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
+			SNDRV_CTL_ELEM_ACCESS_TLV_READ,
+		.info = usb6fire_control_output_vol_info,
+		.get = usb6fire_control_output_vol_get,
+		.put = usb6fire_control_output_vol_put,
+		.tlv = { .p = tlv_output }
+	},
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Analog Playback Volume",
+		.index = 1,
+		.private_value = 2,
+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
+			SNDRV_CTL_ELEM_ACCESS_TLV_READ,
+		.info = usb6fire_control_output_vol_info,
+		.get = usb6fire_control_output_vol_get,
+		.put = usb6fire_control_output_vol_put,
+		.tlv = { .p = tlv_output }
+	},
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Analog Playback Volume",
+		.index = 2,
+		.private_value = 4,
+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
+			SNDRV_CTL_ELEM_ACCESS_TLV_READ,
+		.info = usb6fire_control_output_vol_info,
+		.get = usb6fire_control_output_vol_get,
+		.put = usb6fire_control_output_vol_put,
+		.tlv = { .p = tlv_output }
+	},
+	{}
+};
+
+<<<<<<< HEAD
+static struct __devinitdata snd_kcontrol_new mute_elements[] = {
+=======
+static struct snd_kcontrol_new mute_elements[] = {
+>>>>>>> refs/remotes/origin/master
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Analog Playback Switch",
+		.index = 0,
+		.private_value = 0,
+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
+		.info = snd_ctl_boolean_stereo_info,
+		.get = usb6fire_control_output_mute_get,
+		.put = usb6fire_control_output_mute_put,
+	},
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Analog Playback Switch",
+		.index = 1,
+		.private_value = 2,
+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
+		.info = snd_ctl_boolean_stereo_info,
+		.get = usb6fire_control_output_mute_get,
+		.put = usb6fire_control_output_mute_put,
+	},
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Analog Playback Switch",
+		.index = 2,
+		.private_value = 4,
+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
+		.info = snd_ctl_boolean_stereo_info,
+		.get = usb6fire_control_output_mute_get,
+		.put = usb6fire_control_output_mute_put,
+	},
+	{}
+};
+
+<<<<<<< HEAD
+static struct __devinitdata snd_kcontrol_new elements[] = {
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_kcontrol_new elements[] = {
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+>>>>>>> refs/remotes/origin/master
 		.name = "Line/Phono Capture Route",
 		.index = 0,
 		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
@@ -324,10 +660,68 @@ static struct __devinitdata snd_kcontrol_new elements[] = {
 		.get = usb6fire_control_digital_thru_get,
 		.put = usb6fire_control_digital_thru_put
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{}
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Analog Capture Volume",
+		.index = 0,
+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
+			SNDRV_CTL_ELEM_ACCESS_TLV_READ,
+		.info = usb6fire_control_input_vol_info,
+		.get = usb6fire_control_input_vol_get,
+		.put = usb6fire_control_input_vol_put,
+		.tlv = { .p = tlv_input }
+	},
+	{}
+};
+
+static int usb6fire_control_add_virtual(
+	struct control_runtime *rt,
+	struct snd_card *card,
+	char *name,
+	struct snd_kcontrol_new *elems)
+{
+	int ret;
+	int i;
+	struct snd_kcontrol *vmaster =
+		snd_ctl_make_virtual_master(name, tlv_output);
+	struct snd_kcontrol *control;
+
+	if (!vmaster)
+		return -ENOMEM;
+	ret = snd_ctl_add(card, vmaster);
+	if (ret < 0)
+		return ret;
+
+	i = 0;
+	while (elems[i].name) {
+		control = snd_ctl_new1(&elems[i], rt);
+		if (!control)
+			return -ENOMEM;
+		ret = snd_ctl_add(card, control);
+		if (ret < 0)
+			return ret;
+		ret = snd_ctl_add_slave(vmaster, control);
+		if (ret < 0)
+			return ret;
+		i++;
+	}
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 int __devinit usb6fire_control_init(struct sfire_chip *chip)
+=======
+int usb6fire_control_init(struct sfire_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int ret;
@@ -352,9 +746,38 @@ int __devinit usb6fire_control_init(struct sfire_chip *chip)
 
 	usb6fire_control_opt_coax_update(rt);
 	usb6fire_control_line_phono_update(rt);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	usb6fire_control_master_vol_update(rt);
 	usb6fire_control_streaming_update(rt);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	usb6fire_control_output_vol_update(rt);
+	usb6fire_control_output_mute_update(rt);
+	usb6fire_control_input_vol_update(rt);
+	usb6fire_control_streaming_update(rt);
+
+	ret = usb6fire_control_add_virtual(rt, chip->card,
+		"Master Playback Volume", vol_elements);
+	if (ret) {
+		snd_printk(KERN_ERR PREFIX "cannot add control.\n");
+		kfree(rt);
+		return ret;
+	}
+	ret = usb6fire_control_add_virtual(rt, chip->card,
+		"Master Playback Switch", mute_elements);
+	if (ret) {
+		snd_printk(KERN_ERR PREFIX "cannot add control.\n");
+		kfree(rt);
+		return ret;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	i = 0;
 	while (elements[i].name) {
 		ret = snd_ctl_add(chip->card, snd_ctl_new1(&elements[i], rt));

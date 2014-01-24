@@ -1,4 +1,8 @@
 elfconfig.h
 mk_elfconfig
 modpost
+<<<<<<< HEAD
+=======
+devicetable-offsets.h
+>>>>>>> refs/remotes/origin/master
 

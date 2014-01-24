@@ -1,6 +1,7 @@
 #ifndef _ASM_GENERIC_IOCTL_H
 #define _ASM_GENERIC_IOCTL_H
 
+<<<<<<< HEAD
 /* ioctl command encoding: 32 bits total, command in lower 16 bits,
  * size of the parameter structure in the lower 14 bits of the
  * upper 16 bits.
@@ -69,12 +70,17 @@
 	 ((size) << _IOC_SIZESHIFT))
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm-generic/ioctl.h>
+
+>>>>>>> refs/remotes/origin/master
 /* provoke compile error for invalid uses of size argument */
 extern unsigned int __invalid_size_argument_for_IOC;
 #define _IOC_TYPECHECK(t) \
 	((sizeof(t) == sizeof(t[1]) && \
 	  sizeof(t) < (1 << _IOC_SIZEBITS)) ? \
 	  sizeof(t) : __invalid_size_argument_for_IOC)
+<<<<<<< HEAD
 #else
 #define _IOC_TYPECHECK(t) (sizeof(t))
 #endif
@@ -102,4 +108,6 @@ extern unsigned int __invalid_size_argument_for_IOC;
 #define IOCSIZE_MASK	(_IOC_SIZEMASK << _IOC_SIZESHIFT)
 #define IOCSIZE_SHIFT	(_IOC_SIZESHIFT)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_GENERIC_IOCTL_H */

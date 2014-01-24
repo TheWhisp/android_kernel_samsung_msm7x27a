@@ -57,6 +57,14 @@
 
 		ranges = <
 			0x0 0x0 0x40000000 0x800000
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			0x3 0x0 0xc0000000 0x200
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			0x3 0x0 0xc0000000 0x200
+>>>>>>> refs/remotes/origin/master
 		>;
 
 		flash@0,0 {
@@ -67,6 +75,39 @@
 			bank-width = <4>;
 			device-width = <2>;
 		};
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+		/* Note: CAN support needs be enabled in U-Boot */
+		can@3,0 {
+			compatible = "intc,82527";
+			reg = <3 0x0 0x80>;
+			interrupts = <8 1>;
+			interrupt-parent = <&PIC>;
+			bosch,external-clock-frequency = <16000000>;
+			bosch,disconnect-rx1-input;
+			bosch,disconnect-tx1-output;
+			bosch,iso-low-speed-mux;
+			bosch,clock-out-frequency = <16000000>;
+		};
+
+		can@3,100 {
+			compatible = "intc,82527";
+			reg = <3 0x100 0x80>;
+			interrupts = <8 1>;
+			interrupt-parent = <&PIC>;
+			bosch,external-clock-frequency = <16000000>;
+			bosch,disconnect-rx1-input;
+			bosch,disconnect-tx1-output;
+			bosch,iso-low-speed-mux;
+		};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	};
 
 	soc@fff00000 {

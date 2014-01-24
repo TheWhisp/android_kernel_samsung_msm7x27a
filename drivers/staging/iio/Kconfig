@@ -1,4 +1,5 @@
 #
+<<<<<<< HEAD
 # Industrial I/O subsytem configuration
 #
 
@@ -11,14 +12,30 @@ menuconfig IIO
 	  number of different physical interfaces (i2c, spi, etc). See
 	  drivers/staging/iio/Documentation for more information.
 if IIO
+<<<<<<< HEAD
 
 config IIO_RING_BUFFER
+=======
+config IIO_ST_HWMON
+	tristate "Hwmon driver that uses channels specified via iio maps"
+	depends on HWMON
+	help
+	  This is a platform driver that in combination with a suitable
+	  map allows IIO devices to provide  basic hwmon functionality
+	  for those channels specified in the map.
+
+config IIO_BUFFER
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool "Enable buffer support within IIO"
 	help
 	  Provide core support for various buffer based data
 	  acquisition methods.
 
+<<<<<<< HEAD
 if IIO_RING_BUFFER
+=======
+if IIO_BUFFER
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config IIO_SW_RING
        select IIO_TRIGGER
@@ -38,7 +55,11 @@ config IIO_KFIFO_BUF
 	  no buffer events so it is up to userspace to work out how
 	  often to read from the buffer.
 
+<<<<<<< HEAD
 endif # IIO_RINGBUFFER
+=======
+endif # IIO_BUFFER
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config IIO_TRIGGER
 	boolean "Enable triggered sampling support"
@@ -55,18 +76,79 @@ config IIO_CONSUMERS_PER_TRIGGER
        help
 	This value controls the maximum number of consumers that a
 	given trigger may handle. Default is 2.
+=======
+# Industrial I/O subsystem configuration
+#
+menu "IIO staging drivers"
+	depends on IIO
+>>>>>>> refs/remotes/origin/master
 
 source "drivers/staging/iio/accel/Kconfig"
 source "drivers/staging/iio/adc/Kconfig"
 source "drivers/staging/iio/addac/Kconfig"
+<<<<<<< HEAD
+<<<<<<< HEAD
 source "drivers/staging/iio/dac/Kconfig"
 source "drivers/staging/iio/dds/Kconfig"
 source "drivers/staging/iio/gyro/Kconfig"
+=======
+source "drivers/staging/iio/cdc/Kconfig"
+source "drivers/staging/iio/dac/Kconfig"
+source "drivers/staging/iio/dds/Kconfig"
+source "drivers/staging/iio/gyro/Kconfig"
+source "drivers/staging/iio/impedance-analyzer/Kconfig"
+>>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/staging/iio/imu/Kconfig"
+=======
+source "drivers/staging/iio/cdc/Kconfig"
+source "drivers/staging/iio/frequency/Kconfig"
+source "drivers/staging/iio/gyro/Kconfig"
+source "drivers/staging/iio/impedance-analyzer/Kconfig"
+>>>>>>> refs/remotes/origin/master
 source "drivers/staging/iio/light/Kconfig"
 source "drivers/staging/iio/magnetometer/Kconfig"
 source "drivers/staging/iio/meter/Kconfig"
 source "drivers/staging/iio/resolver/Kconfig"
 source "drivers/staging/iio/trigger/Kconfig"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config IIO_DUMMY_EVGEN
+       tristate
+
+config IIO_SIMPLE_DUMMY
+       tristate "An example driver with no hardware requirements"
+       help
+	 Driver intended mainly as documentation for how to write
+	 a driver. May also be useful for testing userspace code
+	 without hardware.
+
+if IIO_SIMPLE_DUMMY
+
+config IIO_SIMPLE_DUMMY_EVENTS
+       boolean "Event generation support"
+       select IIO_DUMMY_EVGEN
+       help
+         Add some dummy events to the simple dummy driver.
+
+config IIO_SIMPLE_DUMMY_BUFFER
+       boolean "Buffered capture support"
+<<<<<<< HEAD
+       depends on IIO_KFIFO_BUF
+=======
+       select IIO_KFIFO_BUF
+>>>>>>> refs/remotes/origin/master
+       help
+         Add buffered data capture to the simple dummy driver.
+
+endif # IIO_SIMPLE_DUMMY
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 endif # IIO
+=======
+endmenu
+>>>>>>> refs/remotes/origin/master

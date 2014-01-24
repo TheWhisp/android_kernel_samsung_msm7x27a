@@ -6,7 +6,15 @@
 #ifndef __START_H__
 #define __START_H__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
+=======
+#include <generated/asm-offsets.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <generated/asm-offsets.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Stolen from linux/const.h, which can't be directly included since
@@ -35,7 +43,11 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 #include "sysdep/ptrace.h"
+=======
+#include <sysdep/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 struct cpu_task {
 	int pid;
@@ -44,7 +56,10 @@ struct cpu_task {
 
 extern struct cpu_task cpu_tasks[];
 
+<<<<<<< HEAD
 extern unsigned long low_physmem;
+=======
+>>>>>>> refs/remotes/origin/master
 extern unsigned long high_physmem;
 extern unsigned long uml_physmem;
 extern unsigned long uml_reserved;
@@ -52,15 +67,23 @@ extern unsigned long end_vm;
 extern unsigned long start_vm;
 extern unsigned long long highmem;
 
+<<<<<<< HEAD
 extern unsigned long _stext, _etext, _sdata, _edata, __bss_start, _end;
 extern unsigned long _unprotected_end;
+=======
+>>>>>>> refs/remotes/origin/master
 extern unsigned long brk_start;
 
 extern unsigned long host_task_size;
 
 extern int linux_main(int argc, char **argv);
 
+<<<<<<< HEAD
 extern void (*sig_info[])(int, struct uml_pt_regs *);
+=======
+struct siginfo;
+extern void (*sig_info[])(int, struct siginfo *si, struct uml_pt_regs *);
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

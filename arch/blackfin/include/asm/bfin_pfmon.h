@@ -3,7 +3,11 @@
  *
  * Copyright 2005-2011 Analog Devices Inc.
  *
+<<<<<<< HEAD
  * Licensed under the ADI BSD license or GPL-2 (or later).
+=======
+ * Licensed under the Clear BSD license or GPL-2 (or later).
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __ASM_BFIN_PFMON_H__

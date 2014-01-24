@@ -10,8 +10,18 @@
  * architectures, so that you can override them.
  */
 
+<<<<<<< HEAD
 #ifndef __kernel_ino_t
 typedef unsigned long	__kernel_ino_t;
+=======
+#ifndef __kernel_long_t
+typedef long		__kernel_long_t;
+typedef unsigned long	__kernel_ulong_t;
+#endif
+
+#ifndef __kernel_ino_t
+typedef __kernel_ulong_t __kernel_ino_t;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifndef __kernel_mode_t
@@ -19,7 +29,11 @@ typedef unsigned int	__kernel_mode_t;
 #endif
 
 #ifndef __kernel_nlink_t
+<<<<<<< HEAD
 typedef unsigned long	__kernel_nlink_t;
+=======
+typedef __kernel_ulong_t __kernel_nlink_t;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifndef __kernel_pid_t
@@ -36,7 +50,11 @@ typedef unsigned int	__kernel_gid_t;
 #endif
 
 #ifndef __kernel_suseconds_t
+<<<<<<< HEAD
 typedef long		__kernel_suseconds_t;
+=======
+typedef __kernel_long_t		__kernel_suseconds_t;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifndef __kernel_daddr_t
@@ -44,8 +62,13 @@ typedef int		__kernel_daddr_t;
 #endif
 
 #ifndef __kernel_uid32_t
+<<<<<<< HEAD
 typedef __kernel_uid_t	__kernel_uid32_t;
 typedef __kernel_gid_t	__kernel_gid32_t;
+=======
+typedef unsigned int	__kernel_uid32_t;
+typedef unsigned int	__kernel_gid32_t;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifndef __kernel_old_uid_t
@@ -67,6 +90,7 @@ typedef unsigned int	__kernel_size_t;
 typedef int		__kernel_ssize_t;
 typedef int		__kernel_ptrdiff_t;
 #else
+<<<<<<< HEAD
 typedef unsigned long	__kernel_size_t;
 typedef long		__kernel_ssize_t;
 typedef long		__kernel_ptrdiff_t;
@@ -80,12 +104,34 @@ typedef long		__kernel_off_t;
 typedef long long	__kernel_loff_t;
 typedef long		__kernel_time_t;
 typedef long		__kernel_clock_t;
+=======
+typedef __kernel_ulong_t __kernel_size_t;
+typedef __kernel_long_t	__kernel_ssize_t;
+typedef __kernel_long_t	__kernel_ptrdiff_t;
+#endif
+#endif
+
+#ifndef __kernel_fsid_t
+typedef struct {
+	int	val[2];
+} __kernel_fsid_t;
+#endif
+
+/*
+ * anything below here should be completely generic
+ */
+typedef __kernel_long_t	__kernel_off_t;
+typedef long long	__kernel_loff_t;
+typedef __kernel_long_t	__kernel_time_t;
+typedef __kernel_long_t	__kernel_clock_t;
+>>>>>>> refs/remotes/origin/cm-10.0
 typedef int		__kernel_timer_t;
 typedef int		__kernel_clockid_t;
 typedef char *		__kernel_caddr_t;
 typedef unsigned short	__kernel_uid16_t;
 typedef unsigned short	__kernel_gid16_t;
 
+<<<<<<< HEAD
 typedef struct {
 	int	val[2];
 } __kernel_fsid_t;
@@ -162,4 +208,6 @@ static inline void __FD_ZERO(__kernel_fd_set *__p)
 
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASM_GENERIC_POSIX_TYPES_H */

@@ -2,7 +2,14 @@
  *  arch/arm/include/asm/domain.h
  *
  *  Copyright (C) 1999 Russell King.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright (c) 2009, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+ *  Copyright (c) 2009, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -11,6 +18,19 @@
 #ifndef __ASM_PROC_DOMAIN_H
 #define __ASM_PROC_DOMAIN_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifndef __ASSEMBLY__
+#include <asm/barrier.h>
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Domain numbers
  *
@@ -28,13 +48,26 @@
  *
  * 36-bit addressing and supersections are only available on
  * CPUs based on ARMv6+ or the Intel XSC3 core.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * We cannot use domain 0 for the kernel on QSD8x50 since the kernel domain
  * is set to manager mode when set_fs(KERNEL_DS) is called. Setting domain 0
  * to manager mode will disable the workaround for a cpu bug that can cause an
  * invalid fault status and/or tlb corruption (CONFIG_VERIFY_PERMISSION_FAULT).
+<<<<<<< HEAD
  */
 #if !defined(CONFIG_IO_36) && !defined(CONFIG_VERIFY_PERMISSION_FAULT)
+=======
+ */
+#ifndef CONFIG_IO_36
+>>>>>>> refs/remotes/origin/master
+=======
+ */
+#if !defined(CONFIG_IO_36) && !defined(CONFIG_VERIFY_PERMISSION_FAULT)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DOMAIN_KERNEL	0
 #define DOMAIN_TABLE	0
 #define DOMAIN_USER	1
@@ -62,6 +95,10 @@
 #ifndef __ASSEMBLY__
 
 #ifdef CONFIG_CPU_USE_DOMAINS
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_EMULATE_DOMAIN_MANAGER_V7
 void emulate_domain_manager_set(u32 domain);
 int emulate_domain_manager_data_abort(u32 dfsr, u32 dfar);
@@ -81,6 +118,18 @@ void emulate_domain_manager_switch_mm(
 	isb();						\
 	} while (0)
 #endif
+<<<<<<< HEAD
+=======
+static inline void set_domain(unsigned val)
+{
+	asm volatile(
+	"mcr	p15, 0, %0, c3, c0	@ set domain"
+	  : : "r" (val));
+	isb();
+}
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define modify_domain(dom,type)					\
 	do {							\
@@ -92,8 +141,13 @@ void emulate_domain_manager_switch_mm(
 	} while (0)
 
 #else
+<<<<<<< HEAD
 #define set_domain(x)		do { } while (0)
 #define modify_domain(dom,type)	do { } while (0)
+=======
+static inline void set_domain(unsigned val) { }
+static inline void modify_domain(unsigned dom, unsigned type)	{ }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -101,9 +155,21 @@ void emulate_domain_manager_switch_mm(
  * instructions (inline assembly)
  */
 #ifdef CONFIG_CPU_USE_DOMAINS
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define T(instr)	#instr "t"
 #else
 #define T(instr)	#instr
+=======
+#define TUSER(instr)	#instr "t"
+#else
+#define TUSER(instr)	#instr
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TUSER(instr)	#instr "t"
+#else
+#define TUSER(instr)	#instr
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #else /* __ASSEMBLY__ */
@@ -113,9 +179,21 @@ void emulate_domain_manager_switch_mm(
  * instructions
  */
 #ifdef CONFIG_CPU_USE_DOMAINS
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define T(instr)	instr ## t
 #else
 #define T(instr)	instr
+=======
+#define TUSER(instr)	instr ## t
+#else
+#define TUSER(instr)	instr
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TUSER(instr)	instr ## t
+#else
+#define TUSER(instr)	instr
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* __ASSEMBLY__ */

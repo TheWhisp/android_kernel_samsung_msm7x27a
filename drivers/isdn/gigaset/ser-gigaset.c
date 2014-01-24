@@ -246,7 +246,15 @@ static int gigaset_write_cmd(struct cardstate *cs, struct cmdbuf_t *cb)
 	unsigned long flags;
 
 	gigaset_dbg_buffer(cs->mstate != MS_LOCKED ?
+<<<<<<< HEAD
+<<<<<<< HEAD
 				DEBUG_TRANSCMD : DEBUG_LOCKCMD,
+=======
+			   DEBUG_TRANSCMD : DEBUG_LOCKCMD,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   DEBUG_TRANSCMD : DEBUG_LOCKCMD,
+>>>>>>> refs/remotes/origin/master
 			   "CMD Transmit", cb->len, cb->buf);
 
 	spin_lock_irqsave(&cs->cmdlock, flags);
@@ -340,17 +348,27 @@ static int gigaset_initbcshw(struct bc_state *bcs)
 {
 	/* unused */
 	bcs->hw.ser = NULL;
+<<<<<<< HEAD
 	return 1;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Free B channel structure
  * Called by "gigaset_freebcs" in common.c
  */
+<<<<<<< HEAD
 static int gigaset_freebcshw(struct bc_state *bcs)
 {
 	/* unused */
 	return 1;
+=======
+static void gigaset_freebcshw(struct bc_state *bcs)
+{
+	/* unused */
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -398,7 +416,11 @@ static int gigaset_initcshw(struct cardstate *cs)
 	scs = kzalloc(sizeof(struct ser_cardstate), GFP_KERNEL);
 	if (!scs) {
 		pr_err("out of memory\n");
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 	cs->hw.ser = scs;
 
@@ -410,13 +432,21 @@ static int gigaset_initcshw(struct cardstate *cs)
 		pr_err("error %d registering platform device\n", rc);
 		kfree(cs->hw.ser);
 		cs->hw.ser = NULL;
+<<<<<<< HEAD
 		return 0;
+=======
+		return rc;
+>>>>>>> refs/remotes/origin/master
 	}
 	dev_set_drvdata(&cs->hw.ser->dev.dev, cs);
 
 	tasklet_init(&cs->write_tasklet,
 		     gigaset_modem_fill, (unsigned long) cs);
+<<<<<<< HEAD
 	return 1;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -503,6 +533,10 @@ static int
 gigaset_tty_open(struct tty_struct *tty)
 {
 	struct cardstate *cs;
+<<<<<<< HEAD
+=======
+	int rc;
+>>>>>>> refs/remotes/origin/master
 
 	gig_dbg(DEBUG_INIT, "Starting HLL for Gigaset M101");
 
@@ -515,8 +549,15 @@ gigaset_tty_open(struct tty_struct *tty)
 
 	/* allocate memory for our device state and initialize it */
 	cs = gigaset_initcs(driver, 1, 1, 0, cidmode, GIGASET_MODULENAME);
+<<<<<<< HEAD
 	if (!cs)
 		goto error;
+=======
+	if (!cs) {
+		rc = -ENODEV;
+		goto error;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	cs->dev = &cs->hw.ser->dev.dev;
 	cs->hw.ser->tty = tty;
@@ -530,7 +571,12 @@ gigaset_tty_open(struct tty_struct *tty)
 	 */
 	if (startmode == SM_LOCKED)
 		cs->mstate = MS_LOCKED;
+<<<<<<< HEAD
 	if (!gigaset_start(cs)) {
+=======
+	rc = gigaset_start(cs);
+	if (rc < 0) {
+>>>>>>> refs/remotes/origin/master
 		tasklet_kill(&cs->write_tasklet);
 		goto error;
 	}
@@ -542,7 +588,11 @@ error:
 	gig_dbg(DEBUG_INIT, "Startup of HLL failed");
 	tty->disc_data = NULL;
 	gigaset_freecs(cs);
+<<<<<<< HEAD
 	return -ENODEV;
+=======
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -773,8 +823,18 @@ static int __init ser_gigaset_init(void)
 
 	/* allocate memory for our driver state and initialize it */
 	driver = gigaset_initdriver(GIGASET_MINOR, GIGASET_MINORS,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					  GIGASET_MODULENAME, GIGASET_DEVNAME,
 					  &ops, THIS_MODULE);
+=======
+				    GIGASET_MODULENAME, GIGASET_DEVNAME,
+				    &ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    GIGASET_MODULENAME, GIGASET_DEVNAME,
+				    &ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (!driver)
 		goto error;
 

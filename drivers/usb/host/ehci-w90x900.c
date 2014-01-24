@@ -11,14 +11,39 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 
 /*ebable phy0 and phy1 for w90p910*/
+=======
+#include <linux/dma-mapping.h>
+#include <linux/io.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/of.h>
+#include <linux/platform_device.h>
+#include <linux/usb.h>
+#include <linux/usb/hcd.h>
+
+#include "ehci.h"
+
+/* enable phy0 and phy1 for w90p910 */
+>>>>>>> refs/remotes/origin/master
 #define	ENPHY		(0x01<<8)
 #define PHY0_CTR	(0xA4)
 #define PHY1_CTR	(0xA8)
 
+<<<<<<< HEAD
 static int __devinit usb_w90x900_probe(const struct hc_driver *driver,
+=======
+#define DRIVER_DESC "EHCI w90x900 driver"
+
+static const char hcd_name[] = "ehci-w90x900 ";
+
+static struct hc_driver __read_mostly ehci_w90x900_hc_driver;
+
+static int usb_w90x900_probe(const struct hc_driver *driver,
+>>>>>>> refs/remotes/origin/master
 		      struct platform_device *pdev)
 {
 	struct usb_hcd *hcd;
@@ -41,7 +66,12 @@ static int __devinit usb_w90x900_probe(const struct hc_driver *driver,
 	}
 
 	hcd->rsrc_start = res->start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hcd->rsrc_len = res->end - res->start + 1;
+=======
+	hcd->rsrc_len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len, hcd_name)) {
 		retval = -EBUSY;
@@ -54,6 +84,16 @@ static int __devinit usb_w90x900_probe(const struct hc_driver *driver,
 		goto err3;
 	}
 
+=======
+	hcd->rsrc_len = resource_size(res);
+
+	hcd->regs = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(hcd->regs)) {
+		retval = PTR_ERR(hcd->regs);
+		goto err2;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ehci = hcd_to_ehci(hcd);
 	ehci->caps = hcd->regs;
 	ehci->regs = hcd->regs +
@@ -71,6 +111,7 @@ static int __devinit usb_w90x900_probe(const struct hc_driver *driver,
 	val |= ENPHY;
 	__raw_writel(val, ehci->regs+PHY1_CTR);
 
+<<<<<<< HEAD
 	ehci->hcs_params = ehci_readl(ehci, &ehci->caps->hcs_params);
 	ehci->sbrn = 0x20;
 
@@ -78,6 +119,11 @@ static int __devinit usb_w90x900_probe(const struct hc_driver *driver,
 	if (irq < 0)
 		goto err4;
 
+<<<<<<< HEAD
+=======
+	ehci_reset(ehci);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = usb_add_hcd(hcd, irq, IRQF_SHARED);
 	if (retval != 0)
 		goto err4;
@@ -89,12 +135,25 @@ err4:
 	iounmap(hcd->regs);
 err3:
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
+=======
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0)
+		goto err2;
+
+	retval = usb_add_hcd(hcd, irq, IRQF_SHARED);
+	if (retval != 0)
+		goto err2;
+
+	device_wakeup_enable(hcd->self.controller);
+	return retval;
+>>>>>>> refs/remotes/origin/master
 err2:
 	usb_put_hcd(hcd);
 err1:
 	return retval;
 }
 
+<<<<<<< HEAD
 static
 void usb_w90x900_remove(struct usb_hcd *hcd, struct platform_device *pdev)
 {
@@ -153,6 +212,16 @@ static const struct hc_driver ehci_w90x900_hc_driver = {
 };
 
 static int __devinit ehci_w90x900_probe(struct platform_device *pdev)
+=======
+static void usb_w90x900_remove(struct usb_hcd *hcd,
+			struct platform_device *pdev)
+{
+	usb_remove_hcd(hcd);
+	usb_put_hcd(hcd);
+}
+
+static int ehci_w90x900_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (usb_disabled())
 		return -ENODEV;
@@ -160,7 +229,11 @@ static int __devinit ehci_w90x900_probe(struct platform_device *pdev)
 	return usb_w90x900_probe(&ehci_w90x900_hc_driver, pdev);
 }
 
+<<<<<<< HEAD
 static int __devexit ehci_w90x900_remove(struct platform_device *pdev)
+=======
+static int ehci_w90x900_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
 
@@ -171,14 +244,43 @@ static int __devexit ehci_w90x900_remove(struct platform_device *pdev)
 
 static struct platform_driver ehci_hcd_w90x900_driver = {
 	.probe  = ehci_w90x900_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ehci_w90x900_remove),
+=======
+	.remove = ehci_w90x900_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "w90x900-ehci",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
 MODULE_DESCRIPTION("w90p910 usb ehci driver!");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:w90p910-ehci");
+=======
+static int __init ehci_w90X900_init(void)
+{
+	if (usb_disabled())
+		return -ENODEV;
+
+	pr_info("%s: " DRIVER_DESC "\n", hcd_name);
+
+	ehci_init_driver(&ehci_w90x900_hc_driver, NULL);
+	return platform_driver_register(&ehci_hcd_w90x900_driver);
+}
+module_init(ehci_w90X900_init);
+
+static void __exit ehci_w90X900_cleanup(void)
+{
+	platform_driver_unregister(&ehci_hcd_w90x900_driver);
+}
+module_exit(ehci_w90X900_cleanup);
+
+MODULE_DESCRIPTION(DRIVER_DESC);
+MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
+MODULE_ALIAS("platform:w90p910-ehci");
+MODULE_LICENSE("GPL v2");
+>>>>>>> refs/remotes/origin/master

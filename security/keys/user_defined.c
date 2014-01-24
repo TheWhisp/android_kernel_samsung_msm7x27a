@@ -18,11 +18,22 @@
 #include <asm/uaccess.h>
 #include "internal.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int logon_vet_description(const char *desc);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int logon_vet_description(const char *desc);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * user defined keys take an arbitrary string as the description and an
  * arbitrary blob of data as the payload
  */
 struct key_type key_type_user = {
+<<<<<<< HEAD
 	.name		= "user",
 	.instantiate	= user_instantiate,
 	.update		= user_update,
@@ -31,11 +42,51 @@ struct key_type key_type_user = {
 	.destroy	= user_destroy,
 	.describe	= user_describe,
 	.read		= user_read,
+=======
+	.name			= "user",
+	.def_lookup_type	= KEYRING_SEARCH_LOOKUP_DIRECT,
+	.instantiate		= user_instantiate,
+	.update			= user_update,
+	.match			= user_match,
+	.revoke			= user_revoke,
+	.destroy		= user_destroy,
+	.describe		= user_describe,
+	.read			= user_read,
+>>>>>>> refs/remotes/origin/master
 };
 
 EXPORT_SYMBOL_GPL(key_type_user);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * This key type is essentially the same as key_type_user, but it does
+ * not define a .read op. This is suitable for storing username and
+ * password pairs in the keyring that you do not want to be readable
+ * from userspace.
+ */
+struct key_type key_type_logon = {
+	.name			= "logon",
+<<<<<<< HEAD
+=======
+	.def_lookup_type	= KEYRING_SEARCH_LOOKUP_DIRECT,
+>>>>>>> refs/remotes/origin/master
+	.instantiate		= user_instantiate,
+	.update			= user_update,
+	.match			= user_match,
+	.revoke			= user_revoke,
+	.destroy		= user_destroy,
+	.describe		= user_describe,
+	.vet_description	= logon_vet_description,
+};
+EXPORT_SYMBOL_GPL(key_type_logon);
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
  * instantiate a user defined key
  */
 int user_instantiate(struct key *key, const void *data, size_t datalen)
@@ -45,6 +96,18 @@ int user_instantiate(struct key *key, const void *data, size_t datalen)
 
 	ret = -EINVAL;
 	if (datalen <= 0 || datalen > 32767 || !data)
+=======
+ * instantiate a user defined key
+ */
+int user_instantiate(struct key *key, struct key_preparsed_payload *prep)
+{
+	struct user_key_payload *upayload;
+	size_t datalen = prep->datalen;
+	int ret;
+
+	ret = -EINVAL;
+	if (datalen <= 0 || datalen > 32767 || !prep->data)
+>>>>>>> refs/remotes/origin/master
 		goto error;
 
 	ret = key_payload_reserve(key, datalen);
@@ -58,8 +121,17 @@ int user_instantiate(struct key *key, const void *data, size_t datalen)
 
 	/* attach the data */
 	upayload->datalen = datalen;
+<<<<<<< HEAD
 	memcpy(upayload->data, data, datalen);
+<<<<<<< HEAD
 	rcu_assign_pointer(key->payload.data, upayload);
+=======
+	rcu_assign_keypointer(key, upayload);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(upayload->data, prep->data, datalen);
+	rcu_assign_keypointer(key, upayload);
+>>>>>>> refs/remotes/origin/master
 	ret = 0;
 
 error:
@@ -72,6 +144,7 @@ EXPORT_SYMBOL_GPL(user_instantiate);
  * update a user defined key
  * - the key's semaphore is write-locked
  */
+<<<<<<< HEAD
 int user_update(struct key *key, const void *data, size_t datalen)
 {
 	struct user_key_payload *upayload, *zap;
@@ -79,6 +152,16 @@ int user_update(struct key *key, const void *data, size_t datalen)
 
 	ret = -EINVAL;
 	if (datalen <= 0 || datalen > 32767 || !data)
+=======
+int user_update(struct key *key, struct key_preparsed_payload *prep)
+{
+	struct user_key_payload *upayload, *zap;
+	size_t datalen = prep->datalen;
+	int ret;
+
+	ret = -EINVAL;
+	if (datalen <= 0 || datalen > 32767 || !prep->data)
+>>>>>>> refs/remotes/origin/master
 		goto error;
 
 	/* construct a replacement payload */
@@ -88,7 +171,11 @@ int user_update(struct key *key, const void *data, size_t datalen)
 		goto error;
 
 	upayload->datalen = datalen;
+<<<<<<< HEAD
 	memcpy(upayload->data, data, datalen);
+=======
+	memcpy(upayload->data, prep->data, datalen);
+>>>>>>> refs/remotes/origin/master
 
 	/* check the quota and attach the new data */
 	zap = upayload;
@@ -98,7 +185,15 @@ int user_update(struct key *key, const void *data, size_t datalen)
 	if (ret == 0) {
 		/* attach the new data, displacing the old */
 		zap = key->payload.data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rcu_assign_pointer(key->payload.data, upayload);
+=======
+		rcu_assign_keypointer(key, upayload);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rcu_assign_keypointer(key, upayload);
+>>>>>>> refs/remotes/origin/master
 		key->expiry = 0;
 	}
 
@@ -133,7 +228,15 @@ void user_revoke(struct key *key)
 	key_payload_reserve(key, 0);
 
 	if (upayload) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rcu_assign_pointer(key->payload.data, NULL);
+=======
+		rcu_assign_keypointer(key, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rcu_assign_keypointer(key, NULL);
+>>>>>>> refs/remotes/origin/master
 		kfree_rcu(upayload, rcu);
 	}
 }
@@ -189,3 +292,29 @@ long user_read(const struct key *key, char __user *buffer, size_t buflen)
 }
 
 EXPORT_SYMBOL_GPL(user_read);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/* Vet the description for a "logon" key */
+static int logon_vet_description(const char *desc)
+{
+	char *p;
+
+	/* require a "qualified" description string */
+	p = strchr(desc, ':');
+	if (!p)
+		return -EINVAL;
+
+	/* also reject description with ':' as first char */
+	if (p == desc)
+		return -EINVAL;
+
+	return 0;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

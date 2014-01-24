@@ -161,7 +161,11 @@ struct __large_struct { unsigned long buf[100]; };
 
 #define __get_user_check(x, ptr, size)					\
 ({									\
+<<<<<<< HEAD
 	const __typeof__(ptr) __guc_ptr = (ptr);			\
+=======
+	const __typeof__(*(ptr))* __guc_ptr = (ptr);			\
+>>>>>>> refs/remotes/origin/master
 	int _e;								\
 	if (likely(__access_ok((unsigned long) __guc_ptr, (size))))	\
 		_e = __get_user_nocheck((x), __guc_ptr, (size));	\
@@ -471,13 +475,21 @@ extern unsigned long __generic_copy_from_user(void *, const void __user *,
 
 #define __copy_to_user(to, from, n)			\
 ({							\
+<<<<<<< HEAD
 	might_sleep();					\
+=======
+	might_fault();					\
+>>>>>>> refs/remotes/origin/master
 	__copy_to_user_inatomic((to), (from), (n));	\
 })
 
 #define __copy_from_user(to, from, n)			\
 ({							\
+<<<<<<< HEAD
 	might_sleep();					\
+=======
+	might_fault();					\
+>>>>>>> refs/remotes/origin/master
 	__copy_from_user_inatomic((to), (from), (n));	\
 })
 

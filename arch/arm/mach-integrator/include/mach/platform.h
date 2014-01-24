@@ -13,9 +13,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* DO NOT EDIT!! - this file automatically generated
  *                 from .s file by awk -f s2h.awk
  */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**************************************************************************
  * * Copyright © ARM Limited 1998.  All rights reserved.
  * ***********************************************************************/
@@ -193,7 +199,10 @@
 #define INTEGRATOR_SC_CTRLC_OFFSET      0x0C
 #define INTEGRATOR_SC_DEC_OFFSET        0x10
 #define INTEGRATOR_SC_ARB_OFFSET        0x14
+<<<<<<< HEAD
 #define INTEGRATOR_SC_PCIENABLE_OFFSET  0x18
+=======
+>>>>>>> refs/remotes/origin/master
 #define INTEGRATOR_SC_LOCK_OFFSET       0x1C
 
 #define INTEGRATOR_SC_BASE              0x11000000
@@ -309,6 +318,7 @@
 /* KMI definitions are now in include/asm-arm/hardware/amba_kmi.h -- rmk */
 
 /* ------------------------------------------------------------------------
+<<<<<<< HEAD
  *  Where in the memory map does PCI live?
  * ------------------------------------------------------------------------
  *  This represents a fairly liberal usage of address space.  Even though
@@ -328,6 +338,8 @@
 #define PHYS_PCI_V3_BASE                0x62000000
 
 /* ------------------------------------------------------------------------
+=======
+>>>>>>> refs/remotes/origin/master
  *  Integrator Interrupt Controllers
  * ------------------------------------------------------------------------
  *
@@ -399,6 +411,8 @@
 #define INTEGRATOR_TIMER1_BASE          (INTEGRATOR_CT_BASE + 0x100)
 #define INTEGRATOR_TIMER2_BASE          (INTEGRATOR_CT_BASE + 0x200)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define TICKS_PER_uSEC                  24
 
 /*
@@ -408,6 +422,10 @@
 #define mSEC_1                          1000
 #define mSEC_10                         (mSEC_1 * 10)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define INTEGRATOR_CSR_BASE             0x10000000
 #define INTEGRATOR_CSR_SIZE             0x10000000
 

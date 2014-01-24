@@ -7,6 +7,7 @@
  * Copyright (C) 1995 David S. Miller (davem@caip.rutgers.edu)
  */
 
+<<<<<<< HEAD
 /* 3=sun3
    4=sun4 (as in sun4 sysmaint student book)
    c=sun4c (according to davem) */
@@ -29,6 +30,8 @@
 #define AC_VME_VECTOR 0xE0000000    /* 4  For non-Autovector VME, byte       */
 #define AC_BOOT_SCC   0xF0000000    /* 34  bypass to access Zilog 8530. byte.*/
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* s=Swift, h=Ross_HyperSPARC, v=TI_Viking, t=Tsunami, r=Ross_Cypress        */
 #define AC_M_PCR      0x0000        /* shv Processor Control Reg             */
 #define AC_M_CTPR     0x0100        /* shv Context Table Pointer Reg         */

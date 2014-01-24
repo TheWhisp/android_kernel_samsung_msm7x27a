@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* elf-fdpic.h: FDPIC ELF load map
+=======
+/* FDPIC ELF load map
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2003 Red Hat, Inc. All Rights Reserved.
  * Written by David Howells (dhowells@redhat.com)
@@ -12,6 +16,7 @@
 #ifndef _LINUX_ELF_FDPIC_H
 #define _LINUX_ELF_FDPIC_H
 
+<<<<<<< HEAD
 #include <linux/elf.h>
 
 #define PT_GNU_STACK    (PT_LOOS + 0x474e551)
@@ -30,6 +35,9 @@ struct elf32_fdpic_loadmap {
 };
 
 #define ELF32_FDPIC_LOADMAP_VERSION	0x0000
+=======
+#include <uapi/linux/elf-fdpic.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * binfmt binary parameters structure
@@ -58,13 +66,19 @@ struct elf_fdpic_params {
 #define ELF_FDPIC_FLAG_PRESENT		0x80000000	/* T if this object is present */
 };
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 extern void elf_fdpic_arch_lay_out_mm(struct elf_fdpic_params *exec_params,
 				      struct elf_fdpic_params *interp_params,
 				      unsigned long *start_stack,
 				      unsigned long *start_brk);
 #endif
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_ELF_FDPIC_H */

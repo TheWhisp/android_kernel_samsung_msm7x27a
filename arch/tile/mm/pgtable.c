@@ -27,7 +27,13 @@
 #include <linux/vmalloc.h>
 #include <linux/smp.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
 #include <asm/fixmap.h>
@@ -62,7 +68,11 @@ void show_mem(unsigned int filter)
 	       global_page_state(NR_PAGETABLE),
 	       global_page_state(NR_BOUNCE),
 	       global_page_state(NR_FILE_PAGES),
+<<<<<<< HEAD
 	       nr_swap_pages);
+=======
+	       get_nr_swap_pages());
+>>>>>>> refs/remotes/origin/master
 
 	for_each_zone(zone) {
 		unsigned long flags, order, total = 0, largest_order = -1;
@@ -84,6 +94,7 @@ void show_mem(unsigned int filter)
 	}
 }
 
+<<<<<<< HEAD
 /*
  * Associate a virtual page frame with a given physical page frame
  * and protection flags for that frame.
@@ -142,6 +153,8 @@ pte_t *_pte_offset_map(pmd_t *dir, unsigned long address)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * shatter_huge_page() - ensure a given address is mapped by a small page.
  *
@@ -178,6 +191,8 @@ void shatter_huge_page(unsigned long addr)
 	if (!pmd_huge_page(*pmd))
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Grab the pgd_lock, since we may need it to walk the pgd_list,
 	 * and since we need some kind of lock here to avoid races.
@@ -186,15 +201,38 @@ void shatter_huge_page(unsigned long addr)
 	if (!pmd_huge_page(*pmd)) {
 		/* Lost the race to convert the huge page. */
 		spin_unlock_irqrestore(&pgd_lock, flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_lock_irqsave(&init_mm.page_table_lock, flags);
+	if (!pmd_huge_page(*pmd)) {
+		/* Lost the race to convert the huge page. */
+		spin_unlock_irqrestore(&init_mm.page_table_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	/* Shatter the huge page into the preallocated L2 page table. */
+<<<<<<< HEAD
 	pmd_populate_kernel(&init_mm, pmd,
 			    get_prealloc_pte(pte_pfn(*(pte_t *)pmd)));
 
 #ifdef __PAGETABLE_PMD_FOLDED
 	/* Walk every pgd on the system and update the pmd there. */
+<<<<<<< HEAD
+=======
+	spin_lock(&pgd_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pmd_populate_kernel(&init_mm, pmd, get_prealloc_pte(pmd_pfn(*pmd)));
+
+#ifdef __PAGETABLE_PMD_FOLDED
+	/* Walk every pgd on the system and update the pmd there. */
+	spin_lock(&pgd_lock);
+>>>>>>> refs/remotes/origin/master
 	list_for_each(pos, &pgd_list) {
 		pmd_t *copy_pmd;
 		pgd = list_to_pgd(pos) + pgd_index(addr);
@@ -202,6 +240,14 @@ void shatter_huge_page(unsigned long addr)
 		copy_pmd = pmd_offset(pud, addr);
 		__set_pmd(copy_pmd, *pmd);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	spin_unlock(&pgd_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&pgd_lock);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* Tell every cpu to notice the change. */
@@ -209,7 +255,15 @@ void shatter_huge_page(unsigned long addr)
 		     cpu_possible_mask, NULL, 0);
 
 	/* Hold the lock until the TLB flush is finished to avoid races. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&pgd_lock, flags);
+=======
+	spin_unlock_irqrestore(&init_mm.page_table_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&init_mm.page_table_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -218,9 +272,25 @@ void shatter_huge_page(unsigned long addr)
  * against pageattr.c; it is the unique case in which a valid change
  * of kernel pagetables can't be lazily synchronized by vmalloc faults.
  * vmalloc faults work because attached pagetables are never freed.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * The locking scheme was chosen on the basis of manfred's
  * recommendations and having no core impact whatsoever.
  * -- wli
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * The lock is always taken with interrupts disabled, unlike on x86
+ * and other platforms, because we need to take the lock in
+ * shatter_huge_page(), which may be called from an interrupt context.
+ * We are not at risk from the tlbflush IPI deadlock that was seen on
+ * x86, since we use the flush_remote() API to have the hypervisor do
+ * the TLB flushes regardless of irq disabling.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 DEFINE_SPINLOCK(pgd_lock);
 LIST_HEAD(pgd_list);
@@ -288,6 +358,7 @@ void pgd_free(struct mm_struct *mm, pgd_t *pgd)
 
 #define L2_USER_PGTABLE_PAGES (1 << L2_USER_PGTABLE_ORDER)
 
+<<<<<<< HEAD
 struct page *pte_alloc_one(struct mm_struct *mm, unsigned long address)
 {
 	gfp_t flags = GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO;
@@ -299,17 +370,34 @@ struct page *pte_alloc_one(struct mm_struct *mm, unsigned long address)
 #ifdef CONFIG_HIGHPTE
 	flags |= __GFP_HIGHMEM;
 #endif
+=======
+struct page *pgtable_alloc_one(struct mm_struct *mm, unsigned long address,
+			       int order)
+{
+	gfp_t flags = GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO;
+	struct page *p;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	p = alloc_pages(flags, L2_USER_PGTABLE_ORDER);
 	if (p == NULL)
 		return NULL;
 
+<<<<<<< HEAD
 #if L2_USER_PGTABLE_ORDER > 0
+=======
+	if (!pgtable_page_ctor(p)) {
+		__free_pages(p, L2_USER_PGTABLE_ORDER);
+		return NULL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Make every page have a page_count() of one, not just the first.
 	 * We don't use __GFP_COMP since it doesn't look like it works
 	 * correctly with tlb_remove_page().
 	 */
+<<<<<<< HEAD
 	for (i = 1; i < L2_USER_PGTABLE_PAGES; ++i) {
 		init_page_count(p+i);
 		inc_zone_page_state(p+i, NR_PAGETABLE);
@@ -317,6 +405,13 @@ struct page *pte_alloc_one(struct mm_struct *mm, unsigned long address)
 #endif
 
 	pgtable_page_ctor(p);
+=======
+	for (i = 1; i < order; ++i) {
+		init_page_count(p+i);
+		inc_zone_page_state(p+i, NR_PAGETABLE);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return p;
 }
 
@@ -325,28 +420,45 @@ struct page *pte_alloc_one(struct mm_struct *mm, unsigned long address)
  * process).  We have to correct whatever pte_alloc_one() did before
  * returning the pages to the allocator.
  */
+<<<<<<< HEAD
 void pte_free(struct mm_struct *mm, struct page *p)
+=======
+void pgtable_free(struct mm_struct *mm, struct page *p, int order)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
 	pgtable_page_dtor(p);
 	__free_page(p);
 
+<<<<<<< HEAD
 	for (i = 1; i < L2_USER_PGTABLE_PAGES; ++i) {
+=======
+	for (i = 1; i < order; ++i) {
+>>>>>>> refs/remotes/origin/master
 		__free_page(p+i);
 		dec_zone_page_state(p+i, NR_PAGETABLE);
 	}
 }
 
+<<<<<<< HEAD
 void __pte_free_tlb(struct mmu_gather *tlb, struct page *pte,
 		    unsigned long address)
+=======
+void __pgtable_free_tlb(struct mmu_gather *tlb, struct page *pte,
+			unsigned long address, int order)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
 	pgtable_page_dtor(pte);
 	tlb_remove_page(tlb, pte);
 
+<<<<<<< HEAD
 	for (i = 1; i < L2_USER_PGTABLE_PAGES; ++i) {
+=======
+	for (i = 1; i < order; ++i) {
+>>>>>>> refs/remotes/origin/master
 		tlb_remove_page(tlb, pte + i);
 		dec_zone_page_state(pte + i, NR_PAGETABLE);
 	}
@@ -389,6 +501,20 @@ void ptep_set_wrprotect(struct mm_struct *mm,
 
 #endif
 
+<<<<<<< HEAD
+=======
+/*
+ * Return a pointer to the PTE that corresponds to the given
+ * address in the given page table.  A NULL page table just uses
+ * the standard kernel page table; the preferred API in this case
+ * is virt_to_kpte().
+ *
+ * The returned pointer can point to a huge page in other levels
+ * of the page table than the bottom, if the huge page is present
+ * in the page table.  For bottom-level PTEs, the returned pointer
+ * can point to a PTE that is either present or not.
+ */
+>>>>>>> refs/remotes/origin/master
 pte_t *virt_to_pte(struct mm_struct* mm, unsigned long addr)
 {
 	pgd_t *pgd;
@@ -402,6 +528,7 @@ pte_t *virt_to_pte(struct mm_struct* mm, unsigned long addr)
 	pud = pud_offset(pgd, addr);
 	if (!pud_present(*pud))
 		return NULL;
+<<<<<<< HEAD
 	pmd = pmd_offset(pud, addr);
 	if (pmd_huge_page(*pmd))
 		return (pte_t *)pmd;
@@ -409,6 +536,25 @@ pte_t *virt_to_pte(struct mm_struct* mm, unsigned long addr)
 		return NULL;
 	return pte_offset_kernel(pmd, addr);
 }
+=======
+	if (pud_huge_page(*pud))
+		return (pte_t *)pud;
+	pmd = pmd_offset(pud, addr);
+	if (!pmd_present(*pmd))
+		return NULL;
+	if (pmd_huge_page(*pmd))
+		return (pte_t *)pmd;
+	return pte_offset_kernel(pmd, addr);
+}
+EXPORT_SYMBOL(virt_to_pte);
+
+pte_t *virt_to_kpte(unsigned long kaddr)
+{
+	BUG_ON(kaddr < PAGE_OFFSET);
+	return virt_to_pte(NULL, kaddr);
+}
+EXPORT_SYMBOL(virt_to_kpte);
+>>>>>>> refs/remotes/origin/master
 
 pgprot_t set_remote_cache_cpu(pgprot_t prot, int cpu)
 {
@@ -470,10 +616,31 @@ void __set_pte(pte_t *ptep, pte_t pte)
 
 void set_pte(pte_t *ptep, pte_t pte)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *page = pfn_to_page(pte_pfn(pte));
 
 	/* Update the home of a PTE if necessary */
 	pte = pte_set_home(pte, page_home(page));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (pte_present(pte) &&
+	    (!CHIP_HAS_MMIO() || hv_pte_get_mode(pte) != HV_PTE_MODE_MMIO)) {
+		/* The PTE actually references physical memory. */
+		unsigned long pfn = pte_pfn(pte);
+		if (pfn_valid(pfn)) {
+			/* Update the home of the PTE from the struct page. */
+			pte = pte_set_home(pte, page_home(pfn_to_page(pfn)));
+		} else if (hv_pte_get_mode(pte) == 0) {
+			/* remap_pfn_range(), etc, must supply PTE mode. */
+			panic("set_pte(): out-of-range PFN and mode 0\n");
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	__set_pte(ptep, pte);
 }
@@ -481,7 +648,11 @@ void set_pte(pte_t *ptep, pte_t pte)
 /* Can this mm load a PTE with cached_priority set? */
 static inline int mm_is_priority_cached(struct mm_struct *mm)
 {
+<<<<<<< HEAD
 	return mm->context.priority_cached;
+=======
+	return mm->context.priority_cached != 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -491,8 +662,13 @@ static inline int mm_is_priority_cached(struct mm_struct *mm)
 void start_mm_caching(struct mm_struct *mm)
 {
 	if (!mm_is_priority_cached(mm)) {
+<<<<<<< HEAD
 		mm->context.priority_cached = -1U;
 		hv_set_caching(-1U);
+=======
+		mm->context.priority_cached = -1UL;
+		hv_set_caching(-1UL);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -507,7 +683,11 @@ void start_mm_caching(struct mm_struct *mm)
  * Presumably we'll come back later and have more luck and clear
  * the value then; for now we'll just keep the cache marked for priority.
  */
+<<<<<<< HEAD
 static unsigned int update_priority_cached(struct mm_struct *mm)
+=======
+static unsigned long update_priority_cached(struct mm_struct *mm)
+>>>>>>> refs/remotes/origin/master
 {
 	if (mm->context.priority_cached && down_write_trylock(&mm->mmap_sem)) {
 		struct vm_area_struct *vm;
@@ -575,13 +755,18 @@ void __iomem *ioremap_prot(resource_size_t phys_addr, unsigned long size,
 	addr = area->addr;
 	if (ioremap_page_range((unsigned long)addr, (unsigned long)addr + size,
 			       phys_addr, pgprot)) {
+<<<<<<< HEAD
 		remove_vm_area((void *)(PAGE_MASK & (unsigned long) addr));
+=======
+		free_vm_area(area);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 	return (__force void __iomem *) (offset + (char *)addr);
 }
 EXPORT_SYMBOL(ioremap_prot);
 
+<<<<<<< HEAD
 /* Map a PCI MMIO bus address into VA space. */
 void __iomem *ioremap(resource_size_t phys_addr, unsigned long size)
 {
@@ -589,6 +774,8 @@ void __iomem *ioremap(resource_size_t phys_addr, unsigned long size)
 }
 EXPORT_SYMBOL(ioremap);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Unmap an MMIO VA mapping. */
 void iounmap(volatile void __iomem *addr_in)
 {
@@ -606,12 +793,16 @@ void iounmap(volatile void __iomem *addr_in)
 	   in parallel. Reuse of the virtual address is prevented by
 	   leaving it in the global lists until we're done with it.
 	   cpa takes care of the direct mappings. */
+<<<<<<< HEAD
 	read_lock(&vmlist_lock);
 	for (p = vmlist; p; p = p->next) {
 		if (p->addr == addr)
 			break;
 	}
 	read_unlock(&vmlist_lock);
+=======
+	p = find_vm_area((void *)addr);
+>>>>>>> refs/remotes/origin/master
 
 	if (!p) {
 		pr_err("iounmap: bad address %p\n", addr);

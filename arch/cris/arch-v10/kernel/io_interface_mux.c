@@ -14,6 +14,14 @@
 #include <arch/svinto.h>
 #include <asm/io.h>
 #include <arch/io_interface_mux.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/master
 
 
 #define DBG(s)

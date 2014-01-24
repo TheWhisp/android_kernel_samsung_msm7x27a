@@ -11,10 +11,15 @@
 #include "event.h"
 #include "debug.h"
 #include "util.h"
+<<<<<<< HEAD
+=======
+#include "target.h"
+>>>>>>> refs/remotes/origin/master
 
 int verbose;
 bool dump_trace = false, quiet = false;
 
+<<<<<<< HEAD
 int eprintf(int level, const char *fmt, ...)
 {
 	va_list args;
@@ -27,9 +32,94 @@ int eprintf(int level, const char *fmt, ...)
 		else
 			ret = vfprintf(stderr, fmt, args);
 		va_end(args);
+=======
+static int _eprintf(int level, const char *fmt, va_list args)
+{
+	int ret = 0;
+
+	if (verbose >= level) {
+		if (use_browser >= 1)
+			ui_helpline__vshow(fmt, args);
+		else
+			ret = vfprintf(stderr, fmt, args);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
+}
+
+<<<<<<< HEAD
+int dump_printf(const char *fmt, ...)
+{
+	va_list args;
+	int ret = 0;
+
+	if (dump_trace) {
+		va_start(args, fmt);
+		ret = vprintf(fmt, args);
+		va_end(args);
+	}
+=======
+int eprintf(int level, const char *fmt, ...)
+{
+	va_list args;
+	int ret;
+
+	va_start(args, fmt);
+	ret = _eprintf(level, fmt, args);
+	va_end(args);
+>>>>>>> refs/remotes/origin/master
+
+	return ret;
+}
+
+<<<<<<< HEAD
+#ifdef NO_NEWT_SUPPORT
+<<<<<<< HEAD
+void ui__warning(const char *format, ...)
+=======
+int ui__warning(const char *format, ...)
+>>>>>>> refs/remotes/origin/cm-10.0
+{
+	va_list args;
+
+	va_start(args, format);
+	vfprintf(stderr, format, args);
+	va_end(args);
+<<<<<<< HEAD
+}
+#endif
+
+void ui__warning_paranoid(void)
+{
+	ui__warning("Permission error - are you root?\n"
+=======
+	return 0;
+}
+#endif
+
+int ui__error_paranoid(void)
+{
+	return ui__error("Permission error - are you root?\n"
+>>>>>>> refs/remotes/origin/cm-10.0
+		    "Consider tweaking /proc/sys/kernel/perf_event_paranoid:\n"
+		    " -1 - Not paranoid at all\n"
+		    "  0 - Disallow raw tracepoint access for unpriv\n"
+		    "  1 - Disallow cpu events for unpriv\n"
+		    "  2 - Disallow kernel profiling for unpriv\n");
+=======
+/*
+ * Overloading libtraceevent standard info print
+ * function, display with -v in perf.
+ */
+void pr_stat(const char *fmt, ...)
+{
+	va_list args;
+
+	va_start(args, fmt);
+	_eprintf(1, fmt, args);
+	va_end(args);
+	eprintf(1, "\n");
 }
 
 int dump_printf(const char *fmt, ...)
@@ -44,27 +134,7 @@ int dump_printf(const char *fmt, ...)
 	}
 
 	return ret;
-}
-
-#ifdef NO_NEWT_SUPPORT
-void ui__warning(const char *format, ...)
-{
-	va_list args;
-
-	va_start(args, format);
-	vfprintf(stderr, format, args);
-	va_end(args);
-}
-#endif
-
-void ui__warning_paranoid(void)
-{
-	ui__warning("Permission error - are you root?\n"
-		    "Consider tweaking /proc/sys/kernel/perf_event_paranoid:\n"
-		    " -1 - Not paranoid at all\n"
-		    "  0 - Disallow raw tracepoint access for unpriv\n"
-		    "  1 - Disallow cpu events for unpriv\n"
-		    "  2 - Disallow kernel profiling for unpriv\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 void trace_event(union perf_event *event)

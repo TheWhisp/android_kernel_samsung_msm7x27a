@@ -43,6 +43,16 @@
 #define CIFS_MOUNT_STRICT_IO	0x40000 /* strict cache mode */
 #define CIFS_MOUNT_RWPIDFORWARD	0x80000 /* use pid forwarding for rw */
 #define CIFS_MOUNT_POSIXACL	0x100000 /* mirror of MS_POSIXACL in mnt_cifs_flags */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define CIFS_MOUNT_CIFS_BACKUPUID 0x200000 /* backup intent bit for a user */
+#define CIFS_MOUNT_CIFS_BACKUPGID 0x400000 /* backup intent bit for a group */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CIFS_MOUNT_CIFS_BACKUPUID 0x200000 /* backup intent bit for a user */
+#define CIFS_MOUNT_CIFS_BACKUPGID 0x400000 /* backup intent bit for a group */
+>>>>>>> refs/remotes/origin/master
 
 struct cifs_sb_info {
 	struct rb_root tlink_tree;
@@ -53,13 +63,33 @@ struct cifs_sb_info {
 	unsigned int wsize;
 	unsigned long actimeo; /* attribute cache timeout (jiffies) */
 	atomic_t active;
+<<<<<<< HEAD
 	uid_t	mnt_uid;
 	gid_t	mnt_gid;
+<<<<<<< HEAD
 	mode_t	mnt_file_mode;
 	mode_t	mnt_dir_mode;
+=======
+	uid_t	mnt_backupuid;
+	gid_t	mnt_backupgid;
+	umode_t	mnt_file_mode;
+	umode_t	mnt_dir_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kuid_t	mnt_uid;
+	kgid_t	mnt_gid;
+	kuid_t	mnt_backupuid;
+	kgid_t	mnt_backupgid;
+	umode_t	mnt_file_mode;
+	umode_t	mnt_dir_mode;
+>>>>>>> refs/remotes/origin/master
 	unsigned int mnt_cifs_flags;
 	char   *mountdata; /* options received at mount time or via DFS refs */
 	struct backing_dev_info bdi;
 	struct delayed_work prune_tlinks;
+<<<<<<< HEAD
+=======
+	struct rcu_head rcu;
+>>>>>>> refs/remotes/origin/master
 };
 #endif				/* _CIFS_FS_SB_H */

@@ -15,9 +15,21 @@
 #include <linux/serial_sci.h>
 #include <linux/io.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sh_timer.h>
 #include <linux/sh_dma.h>
 
+=======
+#include <linux/dma-mapping.h>
+#include <linux/sh_timer.h>
+#include <linux/sh_dma.h>
+#include <linux/sh_intc.h>
+#include <linux/usb/ohci_pdriver.h>
+>>>>>>> refs/remotes/origin/master
 #include <cpu/dma-register.h>
 #include <cpu/sh7757.h>
 
@@ -27,7 +39,11 @@ static struct plat_sci_port scif2_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 40, 40, 40, 40 },
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0x700)),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif2_device = {
@@ -44,7 +60,11 @@ static struct plat_sci_port scif3_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 76, 76, 76, 76 },
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0xb80)),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif3_device = {
@@ -61,7 +81,11 @@ static struct plat_sci_port scif4_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 104, 104, 104, 104 },
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0xF00)),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif4_device = {
@@ -85,7 +109,11 @@ static struct resource tmu0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 28,
+=======
+		.start	= evt2irq(0x580),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -113,7 +141,11 @@ static struct resource tmu1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 29,
+=======
+		.start	= evt2irq(0x5a0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -132,10 +164,21 @@ static struct resource spi0_resources[] = {
 	[0] = {
 		.start	= 0xfe002000,
 		.end	= 0xfe0020ff,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.flags	= IORESOURCE_MEM,
+=======
+		.flags	= IORESOURCE_MEM | IORESOURCE_MEM_32BIT,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	[1] = {
 		.start	= 86,
+=======
+		.flags	= IORESOURCE_MEM | IORESOURCE_MEM_32BIT,
+	},
+	[1] = {
+		.start	= evt2irq(0xcc0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -215,6 +258,23 @@ static const struct sh_dmae_slave_config sh7757_dmae1_slaves[] = {
 				  TS_INDEX2VAL(XMIT_SZ_8BIT),
 		.mid_rid	= 0x42,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.slave_id	= SHDMA_SLAVE_RSPI_TX,
+		.addr		= 0xfe480004,
+		.chcr		= SM_INC | 0x800 | 0x40000000 |
+				  TS_INDEX2VAL(XMIT_SZ_16BIT),
+		.mid_rid	= 0xc1,
+	},
+	{
+		.slave_id	= SHDMA_SLAVE_RSPI_RX,
+		.addr		= 0xfe480004,
+		.chcr		= DM_INC | 0x800 | 0x40000000 |
+				  TS_INDEX2VAL(XMIT_SZ_16BIT),
+		.mid_rid	= 0xc2,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct sh_dmae_slave_config sh7757_dmae2_slaves[] = {
@@ -464,8 +524,18 @@ static struct resource sh7757_dmae0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= 34,
 		.end	= 34,
+=======
+		.name	= "error_irq",
+		.start	= evt2irq(0x640),
+		.end	= evt2irq(0x640),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 };
@@ -485,57 +555,107 @@ static struct resource sh7757_dmae1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* DMA error */
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= 34,
 		.end	= 34,
+=======
+		.name	= "error_irq",
+		.start	= evt2irq(0x640),
+		.end	= evt2irq(0x640),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 	{
 		/* IRQ for channels 4 */
+<<<<<<< HEAD
 		.start	= 46,
 		.end	= 46,
+=======
+		.start	= evt2irq(0x7c0),
+		.end	= evt2irq(0x7c0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 	{
 		/* IRQ for channels 5 */
+<<<<<<< HEAD
 		.start	= 46,
 		.end	= 46,
+=======
+		.start	= evt2irq(0x7c0),
+		.end	= evt2irq(0x7c0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 	{
 		/* IRQ for channels 6 */
+<<<<<<< HEAD
 		.start	= 88,
 		.end	= 88,
+=======
+		.start	= evt2irq(0xd00),
+		.end	= evt2irq(0xd00),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 	{
 		/* IRQ for channels 7 */
+<<<<<<< HEAD
 		.start	= 88,
 		.end	= 88,
+=======
+		.start	= evt2irq(0xd00),
+		.end	= evt2irq(0xd00),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 	{
 		/* IRQ for channels 8 */
+<<<<<<< HEAD
 		.start	= 88,
 		.end	= 88,
+=======
+		.start	= evt2irq(0xd00),
+		.end	= evt2irq(0xd00),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 	{
 		/* IRQ for channels 9 */
+<<<<<<< HEAD
 		.start	= 88,
 		.end	= 88,
+=======
+		.start	= evt2irq(0xd00),
+		.end	= evt2irq(0xd00),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 	{
 		/* IRQ for channels 10 */
+<<<<<<< HEAD
 		.start	= 88,
 		.end	= 88,
+=======
+		.start	= evt2irq(0xd00),
+		.end	= evt2irq(0xd00),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 	{
 		/* IRQ for channels 11 */
+<<<<<<< HEAD
 		.start	= 88,
 		.end	= 88,
+=======
+		.start	= evt2irq(0xd00),
+		.end	= evt2irq(0xd00),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 };
@@ -555,21 +675,41 @@ static struct resource sh7757_dmae2_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* DMA error */
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= 323,
 		.end	= 323,
+=======
+		.name	= "error_irq",
+		.start	= evt2irq(0x2a60),
+		.end	= evt2irq(0x2a60),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 	{
 		/* IRQ for channels 12 to 16 */
+<<<<<<< HEAD
 		.start	= 272,
 		.end	= 276,
+=======
+		.start	= evt2irq(0x2400),
+		.end	= evt2irq(0x2480),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 	{
 		/* IRQ for channel 17 */
+<<<<<<< HEAD
 		.start	= 279,
 		.end	= 279,
+=======
+		.start	= evt2irq(0x24e0),
+		.end	= evt2irq(0x24e0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -589,21 +729,41 @@ static struct resource sh7757_dmae3_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* DMA error */
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= 324,
 		.end	= 324,
+=======
+		.name	= "error_irq",
+		.start	= evt2irq(0x2a80),
+		.end	= evt2irq(0x2a80),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 	{
 		/* IRQ for channels 18 to 22 */
+<<<<<<< HEAD
 		.start	= 280,
 		.end	= 284,
+=======
+		.start	= evt2irq(0x2500),
+		.end	= evt2irq(0x2580),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 	{
 		/* IRQ for channel 23 */
+<<<<<<< HEAD
 		.start	= 288,
 		.end	= 288,
+=======
+		.start	= evt2irq(0x2600),
+		.end	= evt2irq(0x2600),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -659,6 +819,61 @@ static struct platform_device spi0_device = {
 	.resource	= spi0_resources,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct resource spi1_resources[] = {
+	{
+		.start	= 0xffd8ee70,
+		.end	= 0xffd8eeff,
+		.flags	= IORESOURCE_MEM | IORESOURCE_MEM_8BIT,
+	},
+	{
+<<<<<<< HEAD
+		.start	= 54,
+=======
+		.start	= evt2irq(0x8c0),
+>>>>>>> refs/remotes/origin/master
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct platform_device spi1_device = {
+	.name	= "sh_spi",
+	.id	= 1,
+	.num_resources	= ARRAY_SIZE(spi1_resources),
+	.resource	= spi1_resources,
+};
+
+static struct resource rspi_resources[] = {
+	{
+		.start	= 0xfe480000,
+		.end	= 0xfe4800ff,
+		.flags	= IORESOURCE_MEM,
+	},
+	{
+<<<<<<< HEAD
+		.start	= 220,
+=======
+		.start	= evt2irq(0x1d80),
+>>>>>>> refs/remotes/origin/master
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct platform_device rspi_device = {
+	.name	= "rspi",
+	.id	= 2,
+	.num_resources	= ARRAY_SIZE(rspi_resources),
+	.resource	= rspi_resources,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource usb_ehci_resources[] = {
 	[0] = {
 		.start	= 0xfe4f1000,
@@ -666,8 +881,13 @@ static struct resource usb_ehci_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 57,
 		.end	= 57,
+=======
+		.start	= evt2irq(0x920),
+		.end	= evt2irq(0x920),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -690,18 +910,34 @@ static struct resource usb_ohci_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 57,
 		.end	= 57,
+=======
+		.start	= evt2irq(0x920),
+		.end	= evt2irq(0x920),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
+<<<<<<< HEAD
 static struct platform_device usb_ohci_device = {
 	.name		= "sh_ohci",
+=======
+static struct usb_ohci_pdata usb_ohci_pdata;
+
+static struct platform_device usb_ohci_device = {
+	.name		= "ohci-platform",
+>>>>>>> refs/remotes/origin/master
 	.id		= -1,
 	.dev = {
 		.dma_mask = &usb_ohci_device.dev.coherent_dma_mask,
 		.coherent_dma_mask = DMA_BIT_MASK(32),
+<<<<<<< HEAD
+=======
+		.platform_data	= &usb_ohci_pdata,
+>>>>>>> refs/remotes/origin/master
 	},
 	.num_resources	= ARRAY_SIZE(usb_ohci_resources),
 	.resource	= usb_ohci_resources,
@@ -718,6 +954,16 @@ static struct platform_device *sh7757_devices[] __initdata = {
 	&dma2_device,
 	&dma3_device,
 	&spi0_device,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	&spi1_device,
+	&rspi_device,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&spi1_device,
+	&rspi_device,
+>>>>>>> refs/remotes/origin/master
 	&usb_ehci_device,
 	&usb_ohci_device,
 };

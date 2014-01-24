@@ -6,7 +6,15 @@
 #include <linux/mm.h>
 #include <linux/mmzone.h>
 #include <linux/vm_event_item.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 extern int sysctl_stat_interval;
 
@@ -48,6 +56,7 @@ static inline void count_vm_events(enum vm_event_item item, long delta)
 }
 
 extern void all_vm_events(unsigned long *);
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
 extern void vm_events_fold_cpu(int cpu);
 #else
@@ -55,6 +64,10 @@ static inline void vm_events_fold_cpu(int cpu)
 {
 }
 #endif
+=======
+
+extern void vm_events_fold_cpu(int cpu);
+>>>>>>> refs/remotes/origin/master
 
 #else
 
@@ -80,6 +93,17 @@ static inline void vm_events_fold_cpu(int cpu)
 
 #endif /* CONFIG_VM_EVENT_COUNTERS */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NUMA_BALANCING
+#define count_vm_numa_event(x)     count_vm_event(x)
+#define count_vm_numa_events(x, y) count_vm_events(x, y)
+#else
+#define count_vm_numa_event(x) do {} while (0)
+#define count_vm_numa_events(x, y) do { (void)(y); } while (0)
+#endif /* CONFIG_NUMA_BALANCING */
+
+>>>>>>> refs/remotes/origin/master
 #define __count_zone_vm_events(item, zone, delta) \
 		__count_vm_events(item##_NORMAL - ZONE_NORMAL + \
 		zone_idx(zone), delta)
@@ -140,7 +164,10 @@ static inline unsigned long zone_page_state_snapshot(struct zone *zone,
 }
 
 extern unsigned long global_reclaimable_pages(void);
+<<<<<<< HEAD
 extern unsigned long zone_reclaimable_pages(struct zone *zone);
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_NUMA
 /*
@@ -179,11 +206,14 @@ extern void zone_statistics(struct zone *, struct zone *, gfp_t gfp);
 #define add_zone_page_state(__z, __i, __d) mod_zone_page_state(__z, __i, __d)
 #define sub_zone_page_state(__z, __i, __d) mod_zone_page_state(__z, __i, -(__d))
 
+<<<<<<< HEAD
 static inline void zap_zone_vm_stats(struct zone *zone)
 {
 	memset(zone->vm_stat, 0, sizeof(zone->vm_stat));
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern void inc_zone_state(struct zone *, enum zone_stat_item);
 
 #ifdef CONFIG_SMP
@@ -200,9 +230,17 @@ extern void __inc_zone_state(struct zone *, enum zone_stat_item);
 extern void dec_zone_state(struct zone *, enum zone_stat_item);
 extern void __dec_zone_state(struct zone *, enum zone_stat_item);
 
+<<<<<<< HEAD
 void refresh_cpu_vm_stats(int);
 void refresh_zone_stat_thresholds(void);
 
+=======
+void cpu_vm_stats_fold(int cpu);
+void refresh_zone_stat_thresholds(void);
+
+void drain_zonestat(struct zone *zone, struct per_cpu_pageset *);
+
+>>>>>>> refs/remotes/origin/master
 int calculate_pressure_threshold(struct zone *zone);
 int calculate_normal_threshold(struct zone *zone);
 void set_pgdat_percpu_threshold(pg_data_t *pgdat,
@@ -255,9 +293,26 @@ static inline void __dec_zone_page_state(struct page *page,
 
 static inline void refresh_cpu_vm_stats(int cpu) { }
 static inline void refresh_zone_stat_thresholds(void) { }
+<<<<<<< HEAD
 
 #endif		/* CONFIG_SMP */
 
+=======
+static inline void cpu_vm_stats_fold(int cpu) { }
+
+static inline void drain_zonestat(struct zone *zone,
+			struct per_cpu_pageset *pset) { }
+#endif		/* CONFIG_SMP */
+
+static inline void __mod_zone_freepage_state(struct zone *zone, int nr_pages,
+					     int migratetype)
+{
+	__mod_zone_page_state(zone, NR_FREE_PAGES, nr_pages);
+	if (is_migrate_cma(migratetype))
+		__mod_zone_page_state(zone, NR_FREE_CMA_PAGES, nr_pages);
+}
+
+>>>>>>> refs/remotes/origin/master
 extern const char * const vmstat_text[];
 
 #endif /* _LINUX_VMSTAT_H */

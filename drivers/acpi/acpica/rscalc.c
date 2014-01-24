@@ -5,7 +5,15 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -84,7 +92,11 @@ static u8 acpi_rs_count_set_bits(u16 bit_field)
 		bit_field &= (u16) (bit_field - 1);
 	}
 
+<<<<<<< HEAD
 	return bits_set;
+=======
+	return (bits_set);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
@@ -173,7 +185,12 @@ acpi_rs_stream_option_length(u32 resource_length,
  *
  * FUNCTION:    acpi_rs_get_aml_length
  *
+<<<<<<< HEAD
  * PARAMETERS:  Resource            - Pointer to the resource linked list
+=======
+ * PARAMETERS:  resource            - Pointer to the resource linked list
+ *              resource_list_size  - Size of the resource linked list
+>>>>>>> refs/remotes/origin/master
  *              size_needed         - Where the required size is returned
  *
  * RETURN:      Status
@@ -185,16 +202,30 @@ acpi_rs_stream_option_length(u32 resource_length,
  ******************************************************************************/
 
 acpi_status
+<<<<<<< HEAD
 acpi_rs_get_aml_length(struct acpi_resource * resource, acpi_size * size_needed)
 {
 	acpi_size aml_size_needed = 0;
+=======
+acpi_rs_get_aml_length(struct acpi_resource *resource,
+		       acpi_size resource_list_size, acpi_size * size_needed)
+{
+	acpi_size aml_size_needed = 0;
+	struct acpi_resource *resource_end;
+>>>>>>> refs/remotes/origin/master
 	acpi_rs_length total_size;
 
 	ACPI_FUNCTION_TRACE(rs_get_aml_length);
 
 	/* Traverse entire list of internal resource descriptors */
 
+<<<<<<< HEAD
 	while (resource) {
+=======
+	resource_end =
+	    ACPI_ADD_PTR(struct acpi_resource, resource, resource_list_size);
+	while (resource < resource_end) {
+>>>>>>> refs/remotes/origin/master
 
 		/* Validate the descriptor type */
 
@@ -202,6 +233,15 @@ acpi_rs_get_aml_length(struct acpi_resource * resource, acpi_size * size_needed)
 			return_ACPI_STATUS(AE_AML_INVALID_RESOURCE_TYPE);
 		}
 
+<<<<<<< HEAD
+=======
+		/* Sanity check the length. It must not be zero, or we loop forever */
+
+		if (!resource->length) {
+			return_ACPI_STATUS(AE_AML_BAD_RESOURCE_LENGTH);
+		}
+
+>>>>>>> refs/remotes/origin/master
 		/* Get the base size of the (external stream) resource descriptor */
 
 		total_size = acpi_gbl_aml_resource_sizes[resource->type];
@@ -313,7 +353,50 @@ acpi_rs_get_aml_length(struct acpi_resource * resource, acpi_size * size_needed)
 							  resource_source));
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		case ACPI_RESOURCE_TYPE_GPIO:
+
+			total_size =
+			    (acpi_rs_length) (total_size +
+					      (resource->data.gpio.
+					       pin_table_length * 2) +
+					      resource->data.gpio.
+					      resource_source.string_length +
+					      resource->data.gpio.
+					      vendor_length);
+
+			break;
+
+		case ACPI_RESOURCE_TYPE_SERIAL_BUS:
+
+			total_size =
+			    acpi_gbl_aml_resource_serial_bus_sizes[resource->
+								   data.
+								   common_serial_bus.
+								   type];
+
+			total_size = (acpi_rs_length) (total_size +
+						       resource->data.
+						       i2c_serial_bus.
+						       resource_source.
+						       string_length +
+						       resource->data.
+						       i2c_serial_bus.
+						       vendor_length);
+
+			break;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		default:
+=======
+		default:
+
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -362,10 +445,24 @@ acpi_rs_get_list_length(u8 * aml_buffer,
 	u32 extra_struct_bytes;
 	u8 resource_index;
 	u8 minimum_aml_resource_length;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	ACPI_FUNCTION_TRACE(rs_get_list_length);
 
 	*size_needed = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	union aml_resource *aml_resource;
+
+	ACPI_FUNCTION_TRACE(rs_get_list_length);
+
+	*size_needed = ACPI_RS_SIZE_MIN;	/* Minimum size is one end_tag */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	end_aml = aml_buffer + aml_buffer_length;
 
 	/* Walk the list of AML resource descriptors */
@@ -374,11 +471,33 @@ acpi_rs_get_list_length(u8 * aml_buffer,
 
 		/* Validate the Resource Type and Resource Length */
 
+<<<<<<< HEAD
 		status = acpi_ut_validate_resource(aml_buffer, &resource_index);
 		if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 			return_ACPI_STATUS(status);
 		}
 
+=======
+=======
+		status =
+		    acpi_ut_validate_resource(NULL, aml_buffer,
+					      &resource_index);
+		if (ACPI_FAILURE(status)) {
+>>>>>>> refs/remotes/origin/master
+			/*
+			 * Exit on failure. Cannot continue because the descriptor length
+			 * may be bogus also.
+			 */
+			return_ACPI_STATUS(status);
+		}
+
+		aml_resource = (void *)aml_buffer;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Get the resource length and base (minimum) AML size */
 
 		resource_length = acpi_ut_get_resource_length(aml_buffer);
@@ -418,14 +537,36 @@ acpi_rs_get_list_length(u8 * aml_buffer,
 			 * Get the number of vendor data bytes
 			 */
 			extra_struct_bytes = resource_length;
+<<<<<<< HEAD
+=======
+
+			/*
+			 * There is already one byte included in the minimum
+			 * descriptor size. If there are extra struct bytes,
+			 * subtract one from the count.
+			 */
+			if (extra_struct_bytes) {
+				extra_struct_bytes--;
+			}
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case ACPI_RESOURCE_NAME_END_TAG:
 			/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 * End Tag:
 			 * This is the normal exit, add size of end_tag
 			 */
 			*size_needed += ACPI_RS_SIZE_MIN;
+=======
+			 * End Tag: This is the normal exit
+			 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 * End Tag: This is the normal exit
+			 */
+>>>>>>> refs/remotes/origin/master
 			return_ACPI_STATUS(AE_OK);
 
 		case ACPI_RESOURCE_NAME_ADDRESS32:
@@ -457,7 +598,45 @@ acpi_rs_get_list_length(u8 * aml_buffer,
 							 minimum_aml_resource_length);
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		case ACPI_RESOURCE_NAME_GPIO:
+
+			/* Vendor data is optional */
+
+			if (aml_resource->gpio.vendor_length) {
+				extra_struct_bytes +=
+				    aml_resource->gpio.vendor_offset -
+				    aml_resource->gpio.pin_table_offset +
+				    aml_resource->gpio.vendor_length;
+			} else {
+				extra_struct_bytes +=
+				    aml_resource->large_header.resource_length +
+				    sizeof(struct aml_resource_large_header) -
+				    aml_resource->gpio.pin_table_offset;
+			}
+			break;
+
+		case ACPI_RESOURCE_NAME_SERIAL_BUS:
+
+			minimum_aml_resource_length =
+			    acpi_gbl_resource_aml_serial_bus_sizes
+			    [aml_resource->common_serial_bus.type];
+			extra_struct_bytes +=
+			    aml_resource->common_serial_bus.resource_length -
+			    minimum_aml_resource_length;
+			break;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		default:
+=======
+		default:
+
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -467,9 +646,30 @@ acpi_rs_get_list_length(u8 * aml_buffer,
 		 * Important: Round the size up for the appropriate alignment. This
 		 * is a requirement on IA64.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		buffer_size = acpi_gbl_resource_struct_sizes[resource_index] +
 		    extra_struct_bytes;
 		buffer_size = (u32) ACPI_ROUND_UP_TO_NATIVE_WORD(buffer_size);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (acpi_ut_get_resource_type(aml_buffer) ==
+		    ACPI_RESOURCE_NAME_SERIAL_BUS) {
+			buffer_size =
+			    acpi_gbl_resource_struct_serial_bus_sizes
+			    [aml_resource->common_serial_bus.type] +
+			    extra_struct_bytes;
+		} else {
+			buffer_size =
+			    acpi_gbl_resource_struct_sizes[resource_index] +
+			    extra_struct_bytes;
+		}
+		buffer_size = (u32)ACPI_ROUND_UP_TO_NATIVE_WORD(buffer_size);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		*size_needed += buffer_size;
 
@@ -528,7 +728,11 @@ acpi_rs_get_pci_routing_table_length(union acpi_operand_object *package_object,
 	/*
 	 * Calculate the size of the return buffer.
 	 * The base size is the number of elements * the sizes of the
+<<<<<<< HEAD
 	 * structures.  Additional space for the strings is added below.
+=======
+	 * structures. Additional space for the strings is added below.
+>>>>>>> refs/remotes/origin/master
 	 * The minus one is to subtract the size of the u8 Source[1]
 	 * member because it is added below.
 	 *
@@ -560,8 +764,14 @@ acpi_rs_get_pci_routing_table_length(union acpi_operand_object *package_object,
 
 		name_found = FALSE;
 
+<<<<<<< HEAD
 		for (table_index = 0; table_index < 4 && !name_found;
 		     table_index++) {
+=======
+		for (table_index = 0;
+		     table_index < package_element->package.count
+		     && !name_found; table_index++) {
+>>>>>>> refs/remotes/origin/master
 			if (*sub_object_list &&	/* Null object allowed */
 			    ((ACPI_TYPE_STRING ==
 			      (*sub_object_list)->common.type) ||
@@ -591,8 +801,12 @@ acpi_rs_get_pci_routing_table_length(union acpi_operand_object *package_object,
 						     (*sub_object_list)->string.
 						     length + 1);
 			} else {
+<<<<<<< HEAD
 				temp_size_needed +=
 				    acpi_ns_get_pathname_length((*sub_object_list)->reference.node);
+=======
+				temp_size_needed += acpi_ns_get_pathname_length((*sub_object_list)->reference.node);
+>>>>>>> refs/remotes/origin/master
 			}
 		} else {
 			/*

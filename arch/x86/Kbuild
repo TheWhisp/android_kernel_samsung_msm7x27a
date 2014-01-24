@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_KVM) += kvm/
 
 # Xen paravirtualization support
@@ -7,6 +10,10 @@ obj-$(CONFIG_XEN) += xen/
 # lguest paravirtualization support
 obj-$(CONFIG_LGUEST_GUEST) += lguest/
 
+<<<<<<< HEAD
+=======
+obj-y += realmode/
+>>>>>>> refs/remotes/origin/master
 obj-y += kernel/
 obj-y += mm/
 

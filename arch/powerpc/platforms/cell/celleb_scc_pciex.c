@@ -486,7 +486,10 @@ static __init int celleb_setup_pciex(struct device_node *node,
 				     struct pci_controller *phb)
 {
 	struct resource	r;
+<<<<<<< HEAD
 	struct of_irq oirq;
+=======
+>>>>>>> refs/remotes/origin/master
 	int virq;
 
 	/* SMMIO registers; used inside this file */
@@ -494,7 +497,15 @@ static __init int celleb_setup_pciex(struct device_node *node,
 		pr_err("PCIEXC:Failed to get config resource.\n");
 		return 1;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	phb->cfg_addr = ioremap(r.start, r.end - r.start + 1);
+=======
+	phb->cfg_addr = ioremap(r.start, resource_size(&r));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phb->cfg_addr = ioremap(r.start, resource_size(&r));
+>>>>>>> refs/remotes/origin/master
 	if (!phb->cfg_addr) {
 		pr_err("PCIEXC:Failed to remap SMMIO region.\n");
 		return 1;
@@ -507,6 +518,7 @@ static __init int celleb_setup_pciex(struct device_node *node,
 	phb->ops = &scc_pciex_pci_ops;
 
 	/* internal interrupt handler */
+<<<<<<< HEAD
 	if (of_irq_map_one(node, 1, &oirq)) {
 		pr_err("PCIEXC:Failed to map irq\n");
 		goto error;
@@ -514,7 +526,20 @@ static __init int celleb_setup_pciex(struct device_node *node,
 	virq = irq_create_of_mapping(oirq.controller, oirq.specifier,
 				     oirq.size);
 	if (request_irq(virq, pciex_handle_internal_irq,
+<<<<<<< HEAD
 			IRQF_DISABLED, "pciex", (void *)phb)) {
+=======
+			0, "pciex", (void *)phb)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	virq = irq_of_parse_and_map(node, 1);
+	if (!virq) {
+		pr_err("PCIEXC:Failed to map irq\n");
+		goto error;
+	}
+	if (request_irq(virq, pciex_handle_internal_irq,
+			0, "pciex", (void *)phb)) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("PCIEXC:Failed to request irq\n");
 		goto error;
 	}

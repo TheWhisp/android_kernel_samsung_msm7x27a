@@ -11,12 +11,15 @@ config UBIFS_FS
 	help
 	  UBIFS is a file system for flash devices which works on top of UBI.
 
+<<<<<<< HEAD
 config UBIFS_FS_XATTR
 	bool "Extended attributes support"
 	depends on UBIFS_FS
 	help
 	  This option enables support of extended attributes.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config UBIFS_FS_ADVANCED_COMPR
 	bool "Advanced compression options"
 	depends on UBIFS_FS
@@ -41,6 +44,7 @@ config UBIFS_FS_ZLIB
 	default y
 	help
 	  Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
+<<<<<<< HEAD
 
 # Debugging-related stuff
 config UBIFS_FS_DEBUG
@@ -58,3 +62,5 @@ config UBIFS_FS_DEBUG
 	  down UBIFS. You can then further enable / disable individual  debugging
 	  features using UBIFS module parameters and the corresponding sysfs
 	  interfaces.
+=======
+>>>>>>> refs/remotes/origin/master

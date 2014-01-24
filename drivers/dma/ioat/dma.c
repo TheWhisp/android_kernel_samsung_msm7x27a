@@ -40,6 +40,16 @@
 #include "registers.h"
 #include "hw.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "../dmaengine.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "../dmaengine.h"
+
+>>>>>>> refs/remotes/origin/master
 int ioat_pending_level = 4;
 module_param(ioat_pending_level, int, 0644);
 MODULE_PARM_DESC(ioat_pending_level,
@@ -107,6 +117,14 @@ void ioat_init_channel(struct ioatdma_device *device, struct ioat_chan_common *c
 	chan->reg_base = device->reg_base + (0x80 * (idx + 1));
 	spin_lock_init(&chan->cleanup_lock);
 	chan->common.device = dma;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dma_cookie_init(&chan->common);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_cookie_init(&chan->common);
+>>>>>>> refs/remotes/origin/master
 	list_add_tail(&chan->common.device_node, &dma->channels);
 	device->idx[idx] = chan;
 	init_timer(&chan->timer);
@@ -235,12 +253,20 @@ static dma_cookie_t ioat1_tx_submit(struct dma_async_tx_descriptor *tx)
 
 	spin_lock_bh(&ioat->desc_lock);
 	/* cookie incr and addition to used_list must be atomic */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cookie = c->cookie;
 	cookie++;
 	if (cookie < 0)
 		cookie = 1;
 	c->cookie = cookie;
 	tx->cookie = cookie;
+=======
+	cookie = dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cookie = dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(to_dev(&ioat->base), "%s: cookie: %d\n", __func__, cookie);
 
 	/* write address into NextDescriptor field of last desc in chain */
@@ -533,6 +559,7 @@ static void ioat1_cleanup_event(unsigned long data)
 	writew(IOAT_CHANCTRL_RUN, ioat->base.reg_base + IOAT_CHANCTRL_OFFSET);
 }
 
+<<<<<<< HEAD
 void ioat_dma_unmap(struct ioat_chan_common *chan, enum dma_ctrl_flags flags,
 		    size_t len, struct ioat_dma_descriptor *hw)
 {
@@ -548,9 +575,20 @@ void ioat_dma_unmap(struct ioat_chan_common *chan, enum dma_ctrl_flags flags,
 			   PCI_DMA_TODEVICE, flags, 0);
 }
 
+<<<<<<< HEAD
 unsigned long ioat_get_current_completion(struct ioat_chan_common *chan)
 {
 	unsigned long phys_complete;
+=======
+dma_addr_t ioat_get_current_completion(struct ioat_chan_common *chan)
+{
+	dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+dma_addr_t ioat_get_current_completion(struct ioat_chan_common *chan)
+{
+	dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/master
 	u64 completion;
 
 	completion = *chan->completion;
@@ -571,7 +609,15 @@ unsigned long ioat_get_current_completion(struct ioat_chan_common *chan)
 }
 
 bool ioat_cleanup_preamble(struct ioat_chan_common *chan,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   unsigned long *phys_complete)
+=======
+			   dma_addr_t *phys_complete)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   dma_addr_t *phys_complete)
+>>>>>>> refs/remotes/origin/master
 {
 	*phys_complete = ioat_get_current_completion(chan);
 	if (*phys_complete == chan->last_completion)
@@ -582,14 +628,32 @@ bool ioat_cleanup_preamble(struct ioat_chan_common *chan,
 	return true;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __cleanup(struct ioat_dma_chan *ioat, unsigned long phys_complete)
+=======
+static void __cleanup(struct ioat_dma_chan *ioat, dma_addr_t phys_complete)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __cleanup(struct ioat_dma_chan *ioat, dma_addr_t phys_complete)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ioat_chan_common *chan = &ioat->base;
 	struct list_head *_desc, *n;
 	struct dma_async_tx_descriptor *tx;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(to_dev(chan), "%s: phys_complete: %lx\n",
 		 __func__, phys_complete);
+=======
+	dev_dbg(to_dev(chan), "%s: phys_complete: %llx\n",
+		 __func__, (unsigned long long) phys_complete);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(to_dev(chan), "%s: phys_complete: %llx\n",
+		 __func__, (unsigned long long) phys_complete);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_safe(_desc, n, &ioat->used_desc) {
 		struct ioat_desc_sw *desc;
 
@@ -603,9 +667,18 @@ static void __cleanup(struct ioat_dma_chan *ioat, unsigned long phys_complete)
 		 */
 		dump_desc_dbg(ioat, desc);
 		if (tx->cookie) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			chan->completed_cookie = tx->cookie;
 			tx->cookie = 0;
+=======
+			dma_cookie_complete(tx);
+>>>>>>> refs/remotes/origin/cm-10.0
 			ioat_dma_unmap(chan, tx->flags, desc->len, desc->hw);
+=======
+			dma_cookie_complete(tx);
+			dma_descriptor_unmap(tx);
+>>>>>>> refs/remotes/origin/master
 			ioat->active -= desc->hw->tx_cnt;
 			if (tx->callback) {
 				tx->callback(tx->callback_param);
@@ -655,7 +728,15 @@ static void __cleanup(struct ioat_dma_chan *ioat, unsigned long phys_complete)
 static void ioat1_cleanup(struct ioat_dma_chan *ioat)
 {
 	struct ioat_chan_common *chan = &ioat->base;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long phys_complete;
+=======
+	dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/master
 
 	prefetch(chan->completion);
 
@@ -701,7 +782,15 @@ static void ioat1_timer_event(unsigned long data)
 		mod_timer(&chan->timer, jiffies + COMPLETION_TIMEOUT);
 		spin_unlock_bh(&ioat->desc_lock);
 	} else if (test_bit(IOAT_COMPLETION_PENDING, &chan->state)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned long phys_complete;
+=======
+		dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/master
 
 		spin_lock_bh(&ioat->desc_lock);
 		/* if we haven't made progress and we have already
@@ -733,6 +822,8 @@ ioat_dma_tx_status(struct dma_chan *c, dma_cookie_t cookie,
 {
 	struct ioat_chan_common *chan = to_chan_common(c);
 	struct ioatdma_device *device = chan->device;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (ioat_tx_status(c, cookie, txstate) == DMA_SUCCESS)
 		return DMA_SUCCESS;
@@ -740,6 +831,26 @@ ioat_dma_tx_status(struct dma_chan *c, dma_cookie_t cookie,
 	device->cleanup_fn((unsigned long) c);
 
 	return ioat_tx_status(c, cookie, txstate);
+=======
+	enum dma_status ret;
+
+	ret = dma_cookie_status(c, cookie, txstate);
+	if (ret == DMA_SUCCESS)
+=======
+	enum dma_status ret;
+
+	ret = dma_cookie_status(c, cookie, txstate);
+	if (ret == DMA_COMPLETE)
+>>>>>>> refs/remotes/origin/master
+		return ret;
+
+	device->cleanup_fn((unsigned long) c);
+
+	return dma_cookie_status(c, cookie, txstate);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ioat1_dma_start_null_desc(struct ioat_dma_chan *ioat)
@@ -783,7 +894,11 @@ static void ioat1_dma_start_null_desc(struct ioat_dma_chan *ioat)
  */
 #define IOAT_TEST_SIZE 2000
 
+<<<<<<< HEAD
 static void __devinit ioat_dma_test_callback(void *dma_async_param)
+=======
+static void ioat_dma_test_callback(void *dma_async_param)
+>>>>>>> refs/remotes/origin/master
 {
 	struct completion *cmp = dma_async_param;
 
@@ -794,7 +909,11 @@ static void __devinit ioat_dma_test_callback(void *dma_async_param)
  * ioat_dma_self_test - Perform a IOAT transaction to verify the HW works.
  * @device: device to be tested
  */
+<<<<<<< HEAD
 int __devinit ioat_dma_self_test(struct ioatdma_device *device)
+=======
+int ioat_dma_self_test(struct ioatdma_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	u8 *src;
@@ -833,15 +952,32 @@ int __devinit ioat_dma_self_test(struct ioatdma_device *device)
 	}
 
 	dma_src = dma_map_single(dev, src, IOAT_TEST_SIZE, DMA_TO_DEVICE);
+<<<<<<< HEAD
 	dma_dest = dma_map_single(dev, dest, IOAT_TEST_SIZE, DMA_FROM_DEVICE);
 	flags = DMA_COMPL_SRC_UNMAP_SINGLE | DMA_COMPL_DEST_UNMAP_SINGLE |
 		DMA_PREP_INTERRUPT;
+=======
+	if (dma_mapping_error(dev, dma_src)) {
+		dev_err(dev, "mapping src buffer failed\n");
+		goto free_resources;
+	}
+	dma_dest = dma_map_single(dev, dest, IOAT_TEST_SIZE, DMA_FROM_DEVICE);
+	if (dma_mapping_error(dev, dma_dest)) {
+		dev_err(dev, "mapping dest buffer failed\n");
+		goto unmap_src;
+	}
+	flags = DMA_PREP_INTERRUPT;
+>>>>>>> refs/remotes/origin/master
 	tx = device->common.device_prep_dma_memcpy(dma_chan, dma_dest, dma_src,
 						   IOAT_TEST_SIZE, flags);
 	if (!tx) {
 		dev_err(dev, "Self-test prep failed, disabling\n");
 		err = -ENODEV;
+<<<<<<< HEAD
 		goto free_resources;
+=======
+		goto unmap_dma;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	async_tx_ack(tx);
@@ -852,7 +988,11 @@ int __devinit ioat_dma_self_test(struct ioatdma_device *device)
 	if (cookie < 0) {
 		dev_err(dev, "Self-test setup failed, disabling\n");
 		err = -ENODEV;
+<<<<<<< HEAD
 		goto free_resources;
+=======
+		goto unmap_dma;
+>>>>>>> refs/remotes/origin/master
 	}
 	dma->device_issue_pending(dma_chan);
 
@@ -860,10 +1000,17 @@ int __devinit ioat_dma_self_test(struct ioatdma_device *device)
 
 	if (tmo == 0 ||
 	    dma->device_tx_status(dma_chan, cookie, NULL)
+<<<<<<< HEAD
 					!= DMA_SUCCESS) {
 		dev_err(dev, "Self-test copy timed out, disabling\n");
 		err = -ENODEV;
 		goto free_resources;
+=======
+					!= DMA_COMPLETE) {
+		dev_err(dev, "Self-test copy timed out, disabling\n");
+		err = -ENODEV;
+		goto unmap_dma;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (memcmp(src, dest, IOAT_TEST_SIZE)) {
 		dev_err(dev, "Self-test copy failed compare, disabling\n");
@@ -871,6 +1018,13 @@ int __devinit ioat_dma_self_test(struct ioatdma_device *device)
 		goto free_resources;
 	}
 
+<<<<<<< HEAD
+=======
+unmap_dma:
+	dma_unmap_single(dev, dma_dest, IOAT_TEST_SIZE, DMA_FROM_DEVICE);
+unmap_src:
+	dma_unmap_single(dev, dma_src, IOAT_TEST_SIZE, DMA_TO_DEVICE);
+>>>>>>> refs/remotes/origin/master
 free_resources:
 	dma->device_free_chan_resources(dma_chan);
 out:
@@ -883,14 +1037,22 @@ static char ioat_interrupt_style[32] = "msix";
 module_param_string(ioat_interrupt_style, ioat_interrupt_style,
 		    sizeof(ioat_interrupt_style), 0644);
 MODULE_PARM_DESC(ioat_interrupt_style,
+<<<<<<< HEAD
 		 "set ioat interrupt style: msix (default), "
 		 "msix-single-vector, msi, intx)");
+=======
+		 "set ioat interrupt style: msix (default), msi, intx");
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ioat_dma_setup_interrupts - setup interrupt handler
  * @device: ioat device
  */
+<<<<<<< HEAD
 static int ioat_dma_setup_interrupts(struct ioatdma_device *device)
+=======
+int ioat_dma_setup_interrupts(struct ioatdma_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ioat_chan_common *chan;
 	struct pci_dev *pdev = device->pdev;
@@ -902,8 +1064,11 @@ static int ioat_dma_setup_interrupts(struct ioatdma_device *device)
 
 	if (!strcmp(ioat_interrupt_style, "msix"))
 		goto msix;
+<<<<<<< HEAD
 	if (!strcmp(ioat_interrupt_style, "msix-single-vector"))
 		goto msix_single_vector;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!strcmp(ioat_interrupt_style, "msi"))
 		goto msi;
 	if (!strcmp(ioat_interrupt_style, "intx"))
@@ -918,10 +1083,15 @@ msix:
 		device->msix_entries[i].entry = i;
 
 	err = pci_enable_msix(pdev, device->msix_entries, msixcnt);
+<<<<<<< HEAD
 	if (err < 0)
 		goto msi;
 	if (err > 0)
 		goto msix_single_vector;
+=======
+	if (err)
+		goto msi;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < msixcnt; i++) {
 		msix = &device->msix_entries[i];
@@ -935,6 +1105,7 @@ msix:
 				chan = ioat_chan_by_index(device, j);
 				devm_free_irq(dev, msix->vector, chan);
 			}
+<<<<<<< HEAD
 			goto msix_single_vector;
 		}
 	}
@@ -954,6 +1125,13 @@ msix_single_vector:
 		pci_disable_msix(pdev);
 		goto msi;
 	}
+=======
+			goto msi;
+		}
+	}
+	intrctrl |= IOAT_INTRCTRL_MSIX_VECTOR_CONTROL;
+	device->irq_mode = IOAT_MSIX;
+>>>>>>> refs/remotes/origin/master
 	goto done;
 
 msi:
@@ -967,6 +1145,10 @@ msi:
 		pci_disable_msi(pdev);
 		goto intx;
 	}
+<<<<<<< HEAD
+=======
+	device->irq_mode = IOAT_MSI;
+>>>>>>> refs/remotes/origin/master
 	goto done;
 
 intx:
@@ -975,6 +1157,10 @@ intx:
 	if (err)
 		goto err_no_irq;
 
+<<<<<<< HEAD
+=======
+	device->irq_mode = IOAT_INTX;
+>>>>>>> refs/remotes/origin/master
 done:
 	if (device->intr_quirk)
 		device->intr_quirk(device);
@@ -985,9 +1171,17 @@ done:
 err_no_irq:
 	/* Disable all interrupt generation */
 	writeb(0, device->reg_base + IOAT_INTRCTRL_OFFSET);
+<<<<<<< HEAD
 	dev_err(dev, "no usable interrupts\n");
 	return err;
 }
+=======
+	device->irq_mode = IOAT_NOIRQ;
+	dev_err(dev, "no usable interrupts\n");
+	return err;
+}
+EXPORT_SYMBOL(ioat_dma_setup_interrupts);
+>>>>>>> refs/remotes/origin/master
 
 static void ioat_disable_interrupts(struct ioatdma_device *device)
 {
@@ -995,7 +1189,11 @@ static void ioat_disable_interrupts(struct ioatdma_device *device)
 	writeb(0, device->reg_base + IOAT_INTRCTRL_OFFSET);
 }
 
+<<<<<<< HEAD
 int __devinit ioat_probe(struct ioatdma_device *device)
+=======
+int ioat_probe(struct ioatdma_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -ENODEV;
 	struct dma_device *dma = &device->common;
@@ -1050,7 +1248,11 @@ err_dma_pool:
 	return err;
 }
 
+<<<<<<< HEAD
 int __devinit ioat_register(struct ioatdma_device *device)
+=======
+int ioat_register(struct ioatdma_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = dma_async_device_register(&device->common);
 
@@ -1097,12 +1299,19 @@ static ssize_t cap_show(struct dma_chan *c, char *page)
 {
 	struct dma_device *dma = c->device;
 
+<<<<<<< HEAD
 	return sprintf(page, "copy%s%s%s%s%s%s\n",
+=======
+	return sprintf(page, "copy%s%s%s%s%s\n",
+>>>>>>> refs/remotes/origin/master
 		       dma_has_cap(DMA_PQ, dma->cap_mask) ? " pq" : "",
 		       dma_has_cap(DMA_PQ_VAL, dma->cap_mask) ? " pq_val" : "",
 		       dma_has_cap(DMA_XOR, dma->cap_mask) ? " xor" : "",
 		       dma_has_cap(DMA_XOR_VAL, dma->cap_mask) ? " xor_val" : "",
+<<<<<<< HEAD
 		       dma_has_cap(DMA_MEMSET, dma->cap_mask)  ? " fill" : "",
+=======
+>>>>>>> refs/remotes/origin/master
 		       dma_has_cap(DMA_INTERRUPT, dma->cap_mask) ? " intr" : "");
 
 }
@@ -1184,7 +1393,11 @@ void ioat_kobject_del(struct ioatdma_device *device)
 	}
 }
 
+<<<<<<< HEAD
 int __devinit ioat1_dma_probe(struct ioatdma_device *device, int dca)
+=======
+int ioat1_dma_probe(struct ioatdma_device *device, int dca)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pdev = device->pdev;
 	struct dma_device *dma;
@@ -1217,7 +1430,11 @@ int __devinit ioat1_dma_probe(struct ioatdma_device *device, int dca)
 	return err;
 }
 
+<<<<<<< HEAD
 void __devexit ioat_dma_remove(struct ioatdma_device *device)
+=======
+void ioat_dma_remove(struct ioatdma_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dma_device *dma = &device->common;
 

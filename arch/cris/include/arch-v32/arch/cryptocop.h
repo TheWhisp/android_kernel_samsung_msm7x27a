@@ -2,6 +2,7 @@
  * The device /dev/cryptocop is accessible using this driver using
  * CRYPTOCOP_MAJOR (254) and minor number 0.
  */
+<<<<<<< HEAD
 
 #ifndef CRYPTOCOP_H
 #define CRYPTOCOP_H
@@ -120,6 +121,14 @@ struct strcop_crypto_op{
 
 #ifdef __KERNEL__
 
+=======
+#ifndef CRYPTOCOP_H
+#define CRYPTOCOP_H
+
+#include <uapi/arch-v32/arch/cryptocop.h>
+
+
+>>>>>>> refs/remotes/origin/master
 /********** The API to use from inside the kernel. ************/
 
 #include <arch/hwregs/dma.h>
@@ -267,6 +276,9 @@ int cryptocop_job_queue_insert_crypto(struct cryptocop_operation *operation);
 
 int cryptocop_job_queue_insert_user_job(struct cryptocop_operation *operation);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CRYPTOCOP_H */

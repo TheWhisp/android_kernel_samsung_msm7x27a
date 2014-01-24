@@ -17,6 +17,14 @@
 #include <linux/cpu.h>
 #include <linux/of.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/prom.h>
 #include <asm/io.h>
@@ -24,6 +32,14 @@
 #include <asm/irq.h>
 #include <asm/errno.h>
 #include <asm/xics.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/kvm_ppc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/kvm_ppc.h>
+>>>>>>> refs/remotes/origin/master
 
 struct icp_ipl {
 	union {
@@ -49,6 +65,15 @@ static struct icp_ipl __iomem *icp_native_regs[NR_CPUS];
 static inline unsigned int icp_native_get_xirr(void)
 {
 	int cpu = smp_processor_id();
+<<<<<<< HEAD
+=======
+	unsigned int xirr;
+
+	/* Handled an interrupt latched by KVM */
+	xirr = kvmppc_get_xics_latch();
+	if (xirr)
+		return xirr;
+>>>>>>> refs/remotes/origin/master
 
 	return in_be32(&icp_native_regs[cpu]->xirr.word);
 }
@@ -79,7 +104,11 @@ static void icp_native_set_cpu_priority(unsigned char cppr)
 	iosync();
 }
 
+<<<<<<< HEAD
 static void icp_native_eoi(struct irq_data *d)
+=======
+void icp_native_eoi(struct irq_data *d)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int hw_irq = (unsigned int)irqd_to_hwirq(d);
 
@@ -117,7 +146,11 @@ static unsigned int icp_native_get_irq(void)
 	if (vec == XICS_IRQ_SPURIOUS)
 		return NO_IRQ;
 
+<<<<<<< HEAD
 	irq = irq_radix_revmap_lookup(xics_host, vec);
+=======
+	irq = irq_find_mapping(xics_host, vec);
+>>>>>>> refs/remotes/origin/master
 	if (likely(irq != NO_IRQ)) {
 		xics_push_cppr(vec);
 		return irq;
@@ -136,13 +169,36 @@ static unsigned int icp_native_get_irq(void)
 
 static void icp_native_cause_ipi(int cpu, unsigned long data)
 {
+<<<<<<< HEAD
 	icp_native_set_qirr(cpu, IPI_PRIORITY);
 }
 
+<<<<<<< HEAD
+=======
+=======
+	kvmppc_set_host_ipi(cpu, 1);
+	icp_native_set_qirr(cpu, IPI_PRIORITY);
+}
+
+>>>>>>> refs/remotes/origin/master
+void xics_wake_cpu(int cpu)
+{
+	icp_native_set_qirr(cpu, IPI_PRIORITY);
+}
+EXPORT_SYMBOL_GPL(xics_wake_cpu);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t icp_native_ipi_action(int irq, void *dev_id)
 {
 	int cpu = smp_processor_id();
 
+<<<<<<< HEAD
+=======
+	kvmppc_set_host_ipi(cpu, 0);
+>>>>>>> refs/remotes/origin/master
 	icp_native_set_qirr(cpu, 0xff);
 
 	return smp_ipi_demux();
@@ -185,6 +241,14 @@ static int __init icp_native_map_one_cpu(int hw_id, unsigned long addr,
 	}
 
 	icp_native_regs[cpu] = ioremap(addr, size);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	kvmppc_set_xics_phys(cpu, addr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kvmppc_set_xics_phys(cpu, addr);
+>>>>>>> refs/remotes/origin/master
 	if (!icp_native_regs[cpu]) {
 		pr_warning("icp_native: Failed ioremap for CPU %d, "
 			   "interrupt server #0x%x, addr %#lx\n",
@@ -199,7 +263,11 @@ static int __init icp_native_init_one_node(struct device_node *np,
 					   unsigned int *indx)
 {
 	unsigned int ilen;
+<<<<<<< HEAD
 	const u32 *ireg;
+=======
+	const __be32 *ireg;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int reg_tuple_size;
 	int num_servers = 0;
@@ -247,7 +315,15 @@ static int __init icp_native_init_one_node(struct device_node *np,
 			return -1;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (icp_native_map_one_cpu(*indx, r.start, r.end - r.start))
+=======
+		if (icp_native_map_one_cpu(*indx, r.start, resource_size(&r)))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (icp_native_map_one_cpu(*indx, r.start, resource_size(&r)))
+>>>>>>> refs/remotes/origin/master
 			return -1;
 
 		(*indx)++;
@@ -267,7 +343,15 @@ static const struct icp_ops icp_native_ops = {
 #endif
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int icp_native_init(void)
+=======
+int __init icp_native_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init icp_native_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np;
 	u32 indx = 0;

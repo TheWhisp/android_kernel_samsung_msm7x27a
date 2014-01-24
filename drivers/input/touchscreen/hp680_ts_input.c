@@ -93,7 +93,15 @@ static int __init hp680_ts_init(void)
 	hp680_ts_dev->phys = "hp680_ts/input0";
 
 	if (request_irq(HP680_TS_IRQ, hp680_ts_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED, MODNAME, 0) < 0) {
+=======
+			0, MODNAME, NULL) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			0, MODNAME, NULL) < 0) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "hp680_touchscreen.c: Can't allocate irq %d\n",
 		       HP680_TS_IRQ);
 		err = -EBUSY;

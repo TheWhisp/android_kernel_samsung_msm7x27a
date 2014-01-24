@@ -5,8 +5,13 @@
  * Copyright (C) 2009 Lemote, Inc.
  * Author: Wu Zhangjin <wuzhangjin@gmail.com>
  *
+<<<<<<< HEAD
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
+=======
+ * This program is free software; you can redistribute	it and/or modify it
+ * under  the terms of	the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  * Free Software Foundation;  either version 2 of the  License, or (at your
  * option) any later version.
  */
@@ -43,7 +48,12 @@ void error(char *x)
 /* activate the code for pre-boot environment */
 #define STATIC static
 
+<<<<<<< HEAD
 #ifdef CONFIG_KERNEL_GZIP
+=======
+#if defined(CONFIG_KERNEL_GZIP) || defined(CONFIG_KERNEL_XZ) || \
+	defined(CONFIG_KERNEL_LZ4)
+>>>>>>> refs/remotes/origin/master
 void *memcpy(void *dest, const void *src, size_t n)
 {
 	int i;
@@ -54,6 +64,11 @@ void *memcpy(void *dest, const void *src, size_t n)
 		d[i] = s[i];
 	return dest;
 }
+<<<<<<< HEAD
+=======
+#endif
+#ifdef CONFIG_KERNEL_GZIP
+>>>>>>> refs/remotes/origin/master
 #include "../../../../lib/decompress_inflate.c"
 #endif
 
@@ -70,6 +85,13 @@ void *memset(void *s, int c, size_t n)
 #include "../../../../lib/decompress_bunzip2.c"
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KERNEL_LZ4
+#include "../../../../lib/decompress_unlz4.c"
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_KERNEL_LZMA
 #include "../../../../lib/decompress_unlzma.c"
 #endif
@@ -78,6 +100,13 @@ void *memset(void *s, int c, size_t n)
 #include "../../../../lib/decompress_unlzo.c"
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KERNEL_XZ
+#include "../../../../lib/decompress_unxz.c"
+#endif
+
+>>>>>>> refs/remotes/origin/master
 void decompress_kernel(unsigned long boot_heap_start)
 {
 	unsigned long zimage_start, zimage_size;

@@ -1,6 +1,7 @@
 /*
  * Copyright 1996, 1997, 1998 Hans Reiser, see reiserfs/README for licensing and copyright details
  */
+<<<<<<< HEAD
 
 				/* this file has an amazingly stupid
 				   name, yura please fix it to be
@@ -8,12 +9,15 @@
 				   of our .h files that are in this
 				   directory into it.  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _LINUX_REISER_FS_H
 #define _LINUX_REISER_FS_H
 
 #include <linux/types.h>
 #include <linux/magic.h>
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 #include <linux/slab.h>
 #include <linux/interrupt.h>
@@ -27,6 +31,8 @@
 #include <linux/reiserfs_fs_sb.h>
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *  include/linux/reiser_fs.h
  *
@@ -43,6 +49,7 @@
 #define REISERFS_IOC_GETVERSION		FS_IOC_GETVERSION
 #define REISERFS_IOC_SETVERSION		FS_IOC_SETVERSION
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 /* the 32 bit compat definitions with int argument */
 #define REISERFS_IOC32_UNPACK		_IOW(0xCD, 1, int)
@@ -2354,4 +2361,6 @@ int reiserfs_unpack(struct inode *inode, struct file *filp);
 
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif				/* _LINUX_REISER_FS_H */

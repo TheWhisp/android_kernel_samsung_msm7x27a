@@ -12,7 +12,21 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/mbus.h>
+<<<<<<< HEAD
 #include <plat/ehci-orion.h>
+=======
+#include <linux/clk.h>
+#include <linux/platform_data/usb-ehci-orion.h>
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/of_irq.h>
+#include <linux/usb.h>
+#include <linux/usb/hcd.h>
+#include <linux/io.h>
+#include <linux/dma-mapping.h>
+
+#include "ehci.h"
+>>>>>>> refs/remotes/origin/master
 
 #define rdl(off)	__raw_readl(hcd->regs + (off))
 #define wrl(off, val)	__raw_writel((val), hcd->regs + (off))
@@ -30,6 +44,15 @@
 #define USB_PHY_IVREF_CTRL	0x440
 #define USB_PHY_TST_GRP_CTRL	0x450
 
+<<<<<<< HEAD
+=======
+#define DRIVER_DESC "EHCI orion driver"
+
+static const char hcd_name[] = "ehci-orion";
+
+static struct hc_driver __read_mostly ehci_orion_hc_driver;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Implement Orion USB controller specification guidelines
  */
@@ -100,6 +123,7 @@ static void orion_usb_phy_v1_setup(struct usb_hcd *hcd)
 	wrl(USB_MODE, 0x13);
 }
 
+<<<<<<< HEAD
 static int ehci_orion_setup(struct usb_hcd *hcd)
 {
 	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
@@ -172,7 +196,16 @@ static const struct hc_driver ehci_orion_hc_driver = {
 
 static void __init
 ehci_orion_conf_mbus_windows(struct usb_hcd *hcd,
+<<<<<<< HEAD
 				struct mbus_dram_target_info *dram)
+=======
+			     const struct mbus_dram_target_info *dram)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+ehci_orion_conf_mbus_windows(struct usb_hcd *hcd,
+			     const struct mbus_dram_target_info *dram)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -182,7 +215,15 @@ ehci_orion_conf_mbus_windows(struct usb_hcd *hcd,
 	}
 
 	for (i = 0; i < dram->num_cs; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct mbus_dram_window *cs = dram->cs + i;
+=======
+		const struct mbus_dram_window *cs = dram->cs + i;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const struct mbus_dram_window *cs = dram->cs + i;
+>>>>>>> refs/remotes/origin/master
 
 		wrl(USB_WINDOW_CTRL(i), ((cs->size - 1) & 0xffff0000) |
 					(cs->mbus_attr << 8) |
@@ -191,21 +232,46 @@ ehci_orion_conf_mbus_windows(struct usb_hcd *hcd,
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit ehci_orion_drv_probe(struct platform_device *pdev)
 {
 	struct orion_ehci_data *pd = pdev->dev.platform_data;
+<<<<<<< HEAD
+=======
+	const struct mbus_dram_target_info *dram;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct resource *res;
 	struct usb_hcd *hcd;
 	struct ehci_hcd *ehci;
 	void __iomem *regs;
 	int irq, err;
+=======
+static int ehci_orion_drv_probe(struct platform_device *pdev)
+{
+	struct orion_ehci_data *pd = dev_get_platdata(&pdev->dev);
+	const struct mbus_dram_target_info *dram;
+	struct resource *res;
+	struct usb_hcd *hcd;
+	struct ehci_hcd *ehci;
+	struct clk *clk;
+	void __iomem *regs;
+	int irq, err;
+	enum orion_ehci_phy_ver phy_version;
+>>>>>>> refs/remotes/origin/master
 
 	if (usb_disabled())
 		return -ENODEV;
 
 	pr_debug("Initializing Orion-SoC USB Host Controller\n");
 
+<<<<<<< HEAD
 	irq = platform_get_irq(pdev, 0);
+=======
+	if (pdev->dev.of_node)
+		irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
+	else
+		irq = platform_get_irq(pdev, 0);
+>>>>>>> refs/remotes/origin/master
 	if (irq <= 0) {
 		dev_err(&pdev->dev,
 			"Found HC with no IRQ. Check %s setup!\n",
@@ -223,6 +289,7 @@ static int __devinit ehci_orion_drv_probe(struct platform_device *pdev)
 		goto err1;
 	}
 
+<<<<<<< HEAD
 	if (!request_mem_region(res->start, resource_size(res),
 				ehci_orion_hc_driver.description)) {
 		dev_dbg(&pdev->dev, "controller already in use\n");
@@ -237,11 +304,38 @@ static int __devinit ehci_orion_drv_probe(struct platform_device *pdev)
 		goto err2;
 	}
 
+=======
+	/*
+	 * Right now device-tree probed devices don't get dma_mask
+	 * set. Since shared usb code relies on it, set it here for
+	 * now. Once we have dma capability bindings this can go away.
+	 */
+	err = dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+	if (err)
+		goto err1;
+
+	regs = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(regs)) {
+		err = PTR_ERR(regs);
+		goto err1;
+	}
+
+	/* Not all platforms can gate the clock, so it is not
+	   an error if the clock does not exists. */
+	clk = devm_clk_get(&pdev->dev, NULL);
+	if (!IS_ERR(clk))
+		clk_prepare_enable(clk);
+
+>>>>>>> refs/remotes/origin/master
 	hcd = usb_create_hcd(&ehci_orion_hc_driver,
 			&pdev->dev, dev_name(&pdev->dev));
 	if (!hcd) {
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto err3;
+=======
+		goto err2;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	hcd->rsrc_start = res->start;
@@ -250,22 +344,47 @@ static int __devinit ehci_orion_drv_probe(struct platform_device *pdev)
 
 	ehci = hcd_to_ehci(hcd);
 	ehci->caps = hcd->regs + 0x100;
+<<<<<<< HEAD
 	ehci->regs = hcd->regs + 0x100 +
 		HC_LENGTH(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
 	ehci->hcs_params = ehci_readl(ehci, &ehci->caps->hcs_params);
 	hcd->has_tt = 1;
 	ehci->sbrn = 0x20;
+=======
+	hcd->has_tt = 1;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * (Re-)program MBUS remapping windows if we are asked to.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (pd != NULL && pd->dram != NULL)
 		ehci_orion_conf_mbus_windows(hcd, pd->dram);
+=======
+	dram = mv_mbus_dram_info();
+	if (dram)
+		ehci_orion_conf_mbus_windows(hcd, dram);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dram = mv_mbus_dram_info();
+	if (dram)
+		ehci_orion_conf_mbus_windows(hcd, dram);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * setup Orion USB controller.
 	 */
+<<<<<<< HEAD
 	switch (pd->phy_version) {
+=======
+	if (pdev->dev.of_node)
+		phy_version = EHCI_PHY_NA;
+	else
+		phy_version = pd->phy_version;
+
+	switch (phy_version) {
+>>>>>>> refs/remotes/origin/master
 	case EHCI_PHY_NA:	/* dont change USB phy settings */
 		break;
 	case EHCI_PHY_ORION:
@@ -274,10 +393,15 @@ static int __devinit ehci_orion_drv_probe(struct platform_device *pdev)
 	case EHCI_PHY_DD:
 	case EHCI_PHY_KW:
 	default:
+<<<<<<< HEAD
 		printk(KERN_WARNING "Orion ehci -USB phy version isn't supported.\n");
 	}
 
+<<<<<<< HEAD
 	err = usb_add_hcd(hcd, irq, IRQF_SHARED | IRQF_DISABLED);
+=======
+	err = usb_add_hcd(hcd, irq, IRQF_SHARED);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		goto err4;
 
@@ -289,6 +413,23 @@ err3:
 	iounmap(regs);
 err2:
 	release_mem_region(res->start, resource_size(res));
+=======
+		dev_warn(&pdev->dev, "USB phy version isn't supported.\n");
+	}
+
+	err = usb_add_hcd(hcd, irq, IRQF_SHARED);
+	if (err)
+		goto err3;
+
+	device_wakeup_enable(hcd->self.controller);
+	return 0;
+
+err3:
+	usb_put_hcd(hcd);
+err2:
+	if (!IS_ERR(clk))
+		clk_disable_unprepare(clk);
+>>>>>>> refs/remotes/origin/master
 err1:
 	dev_err(&pdev->dev, "init %s fail, %d\n",
 		dev_name(&pdev->dev), err);
@@ -296,6 +437,7 @@ err1:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __exit ehci_orion_drv_remove(struct platform_device *pdev)
 {
 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
@@ -316,3 +458,58 @@ static struct platform_driver ehci_orion_driver = {
 	.shutdown	= usb_hcd_platform_shutdown,
 	.driver.name	= "orion-ehci",
 };
+=======
+static int ehci_orion_drv_remove(struct platform_device *pdev)
+{
+	struct usb_hcd *hcd = platform_get_drvdata(pdev);
+	struct clk *clk;
+
+	usb_remove_hcd(hcd);
+	usb_put_hcd(hcd);
+
+	clk = devm_clk_get(&pdev->dev, NULL);
+	if (!IS_ERR(clk))
+		clk_disable_unprepare(clk);
+	return 0;
+}
+
+static const struct of_device_id ehci_orion_dt_ids[] = {
+	{ .compatible = "marvell,orion-ehci", },
+	{},
+};
+MODULE_DEVICE_TABLE(of, ehci_orion_dt_ids);
+
+static struct platform_driver ehci_orion_driver = {
+	.probe		= ehci_orion_drv_probe,
+	.remove		= ehci_orion_drv_remove,
+	.shutdown	= usb_hcd_platform_shutdown,
+	.driver = {
+		.name	= "orion-ehci",
+		.owner  = THIS_MODULE,
+		.of_match_table = ehci_orion_dt_ids,
+	},
+};
+
+static int __init ehci_orion_init(void)
+{
+	if (usb_disabled())
+		return -ENODEV;
+
+	pr_info("%s: " DRIVER_DESC "\n", hcd_name);
+
+	ehci_init_driver(&ehci_orion_hc_driver, NULL);
+	return platform_driver_register(&ehci_orion_driver);
+}
+module_init(ehci_orion_init);
+
+static void __exit ehci_orion_cleanup(void)
+{
+	platform_driver_unregister(&ehci_orion_driver);
+}
+module_exit(ehci_orion_cleanup);
+
+MODULE_DESCRIPTION(DRIVER_DESC);
+MODULE_ALIAS("platform:orion-ehci");
+MODULE_AUTHOR("Tzachi Perelstein");
+MODULE_LICENSE("GPL v2");
+>>>>>>> refs/remotes/origin/master

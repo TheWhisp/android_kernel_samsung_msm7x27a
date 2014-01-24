@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 /*
+<<<<<<< HEAD
  * Copyright (C) 2006-2011 B.A.T.M.A.N. contributors:
+=======
+ * Copyright (C) 2006-2012 B.A.T.M.A.N. contributors:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (C) 2006-2013 B.A.T.M.A.N. contributors:
+>>>>>>> refs/remotes/origin/master
  *
  * Simon Wunderlich, Marek Lindner
  *
@@ -16,7 +24,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA
+<<<<<<< HEAD
  *
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include "main.h"
@@ -24,10 +35,16 @@
 
 #include <linux/bitops.h>
 
+<<<<<<< HEAD
 /* returns true if the corresponding bit in the given seq_bits indicates true
  * and curr_seqno is within range of last_seqno */
+<<<<<<< HEAD
 uint8_t get_bit_status(unsigned long *seq_bits, uint32_t last_seqno,
 		       uint32_t curr_seqno)
+=======
+int get_bit_status(const unsigned long *seq_bits, uint32_t last_seqno,
+		   uint32_t curr_seqno)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int32_t diff, word_offset, word_num;
 
@@ -97,12 +114,21 @@ static void bit_shift(unsigned long *seq_bits, int32_t n)
 			(seq_bits[i - word_num - 1] >>
 			 (WORD_BIT_SIZE-word_offset));
 		/* and the upper part of the right half and shift it left to
+<<<<<<< HEAD
 		 * it's position */
 		/* for our example that would be: word[0] = 9800 + 0076 =
 		 * 9876 */
 	}
 	/* now for our last word, i==word_num, we only have the it's "left"
 	 * half. that's the 1000 word in our example.*/
+=======
+		 * its position */
+		/* for our example that would be: word[0] = 9800 + 0076 =
+		 * 9876 */
+	}
+	/* now for our last word, i==word_num, we only have its "left" half.
+	 * that's the 1000 word in our example.*/
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	seq_bits[i] = (seq_bits[i - word_num] << word_offset);
 
@@ -118,6 +144,15 @@ static void bit_reset_window(unsigned long *seq_bits)
 	int i;
 	for (i = 0; i < NUM_WORDS; i++)
 		seq_bits[i] = 0;
+=======
+/* shift the packet array by n places. */
+static void batadv_bitmap_shift_left(unsigned long *seq_bits, int32_t n)
+{
+	if (n <= 0 || n >= BATADV_TQ_LOCAL_WINDOW_SIZE)
+		return;
+
+	bitmap_shift_left(seq_bits, seq_bits, n, BATADV_TQ_LOCAL_WINDOW_SIZE);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -127,10 +162,18 @@ static void bit_reset_window(unsigned long *seq_bits)
  *  1 if the window was moved (either new or very old)
  *  0 if the window was not moved/shifted.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 char bit_get_packet(void *priv, unsigned long *seq_bits,
 		    int32_t seq_num_diff, int8_t set_mark)
 {
 	struct bat_priv *bat_priv = (struct bat_priv *)priv;
+=======
+int bit_get_packet(void *priv, unsigned long *seq_bits,
+		    int32_t seq_num_diff, int set_mark)
+{
+	struct bat_priv *bat_priv = priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* sequence number is slightly older. We already got a sequence number
 	 * higher than this one, so we just mark it. */
@@ -138,10 +181,24 @@ char bit_get_packet(void *priv, unsigned long *seq_bits,
 	if ((seq_num_diff <= 0) && (seq_num_diff > -TQ_LOCAL_WINDOW_SIZE)) {
 		if (set_mark)
 			bit_mark(seq_bits, -seq_num_diff);
+=======
+int batadv_bit_get_packet(void *priv, unsigned long *seq_bits,
+			  int32_t seq_num_diff, int set_mark)
+{
+	struct batadv_priv *bat_priv = priv;
+
+	/* sequence number is slightly older. We already got a sequence number
+	 * higher than this one, so we just mark it.
+	 */
+	if (seq_num_diff <= 0 && seq_num_diff > -BATADV_TQ_LOCAL_WINDOW_SIZE) {
+		if (set_mark)
+			batadv_set_bit(seq_bits, -seq_num_diff);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	/* sequence number is slightly newer, so we shift the window and
+<<<<<<< HEAD
 	 * set the mark if required */
 
 	if ((seq_num_diff > 0) && (seq_num_diff < TQ_LOCAL_WINDOW_SIZE)) {
@@ -149,29 +206,60 @@ char bit_get_packet(void *priv, unsigned long *seq_bits,
 
 		if (set_mark)
 			bit_mark(seq_bits, 0);
+=======
+	 * set the mark if required
+	 */
+	if (seq_num_diff > 0 && seq_num_diff < BATADV_TQ_LOCAL_WINDOW_SIZE) {
+		batadv_bitmap_shift_left(seq_bits, seq_num_diff);
+
+		if (set_mark)
+			batadv_set_bit(seq_bits, 0);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	/* sequence number is much newer, probably missed a lot of packets */
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 	if ((seq_num_diff >= TQ_LOCAL_WINDOW_SIZE)
 		|| (seq_num_diff < EXPECTED_SEQNO_RANGE)) {
+=======
+	if ((seq_num_diff >= TQ_LOCAL_WINDOW_SIZE) &&
+	    (seq_num_diff < EXPECTED_SEQNO_RANGE)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		bat_dbg(DBG_BATMAN, bat_priv,
 			"We missed a lot of packets (%i) !\n",
 			seq_num_diff - 1);
 		bit_reset_window(seq_bits);
 		if (set_mark)
 			bit_mark(seq_bits, 0);
+=======
+	if (seq_num_diff >= BATADV_TQ_LOCAL_WINDOW_SIZE &&
+	    seq_num_diff < BATADV_EXPECTED_SEQNO_RANGE) {
+		batadv_dbg(BATADV_DBG_BATMAN, bat_priv,
+			   "We missed a lot of packets (%i) !\n",
+			   seq_num_diff - 1);
+		bitmap_zero(seq_bits, BATADV_TQ_LOCAL_WINDOW_SIZE);
+		if (set_mark)
+			batadv_set_bit(seq_bits, 0);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	/* received a much older packet. The other host either restarted
 	 * or the old packet got delayed somewhere in the network. The
 	 * packet should be dropped without calling this function if the
+<<<<<<< HEAD
 	 * seqno window is protected. */
 
+<<<<<<< HEAD
 	if ((seq_num_diff <= -TQ_LOCAL_WINDOW_SIZE)
 		|| (seq_num_diff >= EXPECTED_SEQNO_RANGE)) {
+=======
+	if ((seq_num_diff <= -TQ_LOCAL_WINDOW_SIZE) ||
+	    (seq_num_diff >= EXPECTED_SEQNO_RANGE)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		bat_dbg(DBG_BATMAN, bat_priv,
 			"Other host probably restarted!\n");
@@ -190,7 +278,11 @@ char bit_get_packet(void *priv, unsigned long *seq_bits,
 /* count the hamming weight, how many good packets did we receive? just count
  * the 1's.
  */
+<<<<<<< HEAD
 int bit_packet_count(unsigned long *seq_bits)
+=======
+int bit_packet_count(const unsigned long *seq_bits)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i, hamming = 0;
 
@@ -198,4 +290,20 @@ int bit_packet_count(unsigned long *seq_bits)
 		hamming += hweight_long(seq_bits[i]);
 
 	return hamming;
+=======
+	 * seqno window is protected.
+	 *
+	 * seq_num_diff <= -BATADV_TQ_LOCAL_WINDOW_SIZE
+	 * or
+	 * seq_num_diff >= BATADV_EXPECTED_SEQNO_RANGE
+	 */
+	batadv_dbg(BATADV_DBG_BATMAN, bat_priv,
+		   "Other host probably restarted!\n");
+
+	bitmap_zero(seq_bits, BATADV_TQ_LOCAL_WINDOW_SIZE);
+	if (set_mark)
+		batadv_set_bit(seq_bits, 0);
+
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }

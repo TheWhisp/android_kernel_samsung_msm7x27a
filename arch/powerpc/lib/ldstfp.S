@@ -330,6 +330,7 @@ _GLOBAL(do_lxvd2x)
 	MTMSRD(r7)
 	isync
 	beq	cr7,1f
+<<<<<<< HEAD
 	STXVD2X(0,r1,r8)
 1:	li	r9,-EFAULT
 2:	LXVD2X(0,0,r4)
@@ -337,6 +338,15 @@ _GLOBAL(do_lxvd2x)
 3:	beq	cr7,4f
 	bl	put_vsr
 	LXVD2X(0,r1,r8)
+=======
+	STXVD2X(0,R1,R8)
+1:	li	r9,-EFAULT
+2:	LXVD2X(0,R0,R4)
+	li	r9,0
+3:	beq	cr7,4f
+	bl	put_vsr
+	LXVD2X(0,R1,R8)
+>>>>>>> refs/remotes/origin/master
 4:	PPC_LL	r0,STKFRM+PPC_LR_STKOFF(r1)
 	mtlr	r0
 	MTMSRD(r6)
@@ -358,6 +368,7 @@ _GLOBAL(do_stxvd2x)
 	MTMSRD(r7)
 	isync
 	beq	cr7,1f
+<<<<<<< HEAD
 	STXVD2X(0,r1,r8)
 	bl	get_vsr
 1:	li	r9,-EFAULT
@@ -365,6 +376,15 @@ _GLOBAL(do_stxvd2x)
 	li	r9,0
 3:	beq	cr7,4f
 	LXVD2X(0,r1,r8)
+=======
+	STXVD2X(0,R1,R8)
+	bl	get_vsr
+1:	li	r9,-EFAULT
+2:	STXVD2X(0,R0,R4)
+	li	r9,0
+3:	beq	cr7,4f
+	LXVD2X(0,R1,R8)
+>>>>>>> refs/remotes/origin/master
 4:	PPC_LL	r0,STKFRM+PPC_LR_STKOFF(r1)
 	mtlr	r0
 	MTMSRD(r6)

@@ -26,7 +26,13 @@
 #include <linux/syscore_ops.h>
 #include <linux/gpio.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 
 #include "setup.h"

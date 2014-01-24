@@ -18,6 +18,10 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/file.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/kthread.h>
 #include <linux/module.h>
@@ -92,6 +96,8 @@ static const char * const bit_desc[] = {
 	"R31",			/*31*/
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void dump_port_status(u32 status)
 {
 	int i = 0;
@@ -100,17 +106,52 @@ static void dump_port_status(u32 status)
 	for (i = 0; i < 32; i++) {
 		if (status & (1 << i))
 			pr_debug(" %s", bit_desc[i]);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void dump_port_status_diff(u32 prev_status, u32 new_status)
+{
+	int i = 0;
+	u32 bit = 1;
+
+	pr_debug("status prev -> new: %08x -> %08x\n", prev_status, new_status);
+	while (bit) {
+		u32 prev = prev_status & bit;
+		u32 new = new_status & bit;
+		char change;
+
+		if (!prev && new)
+			change = '+';
+		else if (prev && !new)
+			change = '-';
+		else
+			change = ' ';
+
+		if (prev || new)
+			pr_debug(" %c%s\n", change, bit_desc[i]);
+		bit <<= 1;
+		i++;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	pr_debug("\n");
 }
 
 void rh_port_connect(int rhport, enum usb_device_speed speed)
 {
+<<<<<<< HEAD
 	unsigned long	flags;
 
 	usbip_dbg_vhci_rh("rh_port_connect %d\n", rhport);
 
 	spin_lock_irqsave(&the_controller->lock, flags);
+=======
+	usbip_dbg_vhci_rh("rh_port_connect %d\n", rhport);
+
+	spin_lock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 
 	the_controller->port_status[rhport] |= USB_PORT_STAT_CONNECTION
 		| (1 << USB_PORT_FEAT_C_CONNECTION);
@@ -126,15 +167,20 @@ void rh_port_connect(int rhport, enum usb_device_speed speed)
 		break;
 	}
 
+<<<<<<< HEAD
 	/* spin_lock(&the_controller->vdev[rhport].ud.lock);
 	 * the_controller->vdev[rhport].ud.status = VDEV_CONNECT;
 	 * spin_unlock(&the_controller->vdev[rhport].ud.lock); */
 
 	spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+	spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 
 	usb_hcd_poll_rh_status(vhci_to_hcd(the_controller));
 }
 
+<<<<<<< HEAD
 void rh_port_disconnect(int rhport)
 {
 	unsigned long flags;
@@ -143,16 +189,28 @@ void rh_port_disconnect(int rhport)
 
 	spin_lock_irqsave(&the_controller->lock, flags);
 	/* stop_activity(dum, driver); */
+=======
+static void rh_port_disconnect(int rhport)
+{
+	usbip_dbg_vhci_rh("rh_port_disconnect %d\n", rhport);
+
+	spin_lock(&the_controller->lock);
+
+>>>>>>> refs/remotes/origin/master
 	the_controller->port_status[rhport] &= ~USB_PORT_STAT_CONNECTION;
 	the_controller->port_status[rhport] |=
 					(1 << USB_PORT_FEAT_C_CONNECTION);
 
+<<<<<<< HEAD
 	/* not yet complete the disconnection
 	 * spin_lock(&vdev->ud.lock);
 	 * vdev->ud.status = VHC_ST_DISCONNECT;
 	 * spin_unlock(&vdev->ud.lock); */
 
 	spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+	spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 	usb_hcd_poll_rh_status(vhci_to_hcd(the_controller));
 }
 
@@ -164,6 +222,7 @@ void rh_port_disconnect(int rhport)
 	  | USB_PORT_STAT_C_RESET) << 16)
 
 /*
+<<<<<<< HEAD
  * This function is almostly the same as dummy_hcd.c:dummy_hub_status() without
  * suspend/resume support. But, it is modified to provide multiple ports.
  *
@@ -183,10 +242,22 @@ void rh_port_disconnect(int rhport)
  * been changed, return 0. In the case that the number of ports is less than or
  * equal to 6 (VHCI_NPORTS==7), return 1.
  *
+=======
+ * Returns 0 if the status hasn't changed, or the number of bytes in buf.
+ * Ports are 0-indexed from the HCD point of view,
+ * and 1-indexed from the USB core pointer of view.
+ *
+ * @buf: a bitmap to show which port status has been changed.
+ *  bit  0: reserved
+ *  bit  1: the status of port 0 has been changed.
+ *  bit  2: the status of port 1 has been changed.
+ *  ...
+>>>>>>> refs/remotes/origin/master
  */
 static int vhci_hub_status(struct usb_hcd *hcd, char *buf)
 {
 	struct vhci_hcd	*vhci;
+<<<<<<< HEAD
 	unsigned long	flags;
 	int		retval = 0;
 
@@ -202,6 +273,20 @@ static int vhci_hub_status(struct usb_hcd *hcd, char *buf)
 	spin_lock_irqsave(&vhci->lock, flags);
 	if (!HCD_HW_ACCESSIBLE(hcd)) {
 		usbip_dbg_vhci_rh("hw accessible flag in on?\n");
+=======
+	int		retval;
+	int		rhport;
+	int		changed = 0;
+
+	retval = DIV_ROUND_UP(VHCI_NPORTS + 1, 8);
+	memset(buf, 0, retval);
+
+	vhci = hcd_to_vhci(hcd);
+
+	spin_lock(&vhci->lock);
+	if (!HCD_HW_ACCESSIBLE(hcd)) {
+		usbip_dbg_vhci_rh("hw accessible flag not on?\n");
+>>>>>>> refs/remotes/origin/master
 		goto done;
 	}
 
@@ -209,15 +294,22 @@ static int vhci_hub_status(struct usb_hcd *hcd, char *buf)
 	for (rhport = 0; rhport < VHCI_NPORTS; rhport++) {
 		if ((vhci->port_status[rhport] & PORT_C_MASK)) {
 			/* The status of a port has been changed, */
+<<<<<<< HEAD
 			usbip_dbg_vhci_rh("port %d is changed\n", rhport);
 
 			*event_bits |= 1 << (rhport + 1);
+=======
+			usbip_dbg_vhci_rh("port %d status changed\n", rhport);
+
+			buf[(rhport + 1) / 8] |= 1 << (rhport + 1) % 8;
+>>>>>>> refs/remotes/origin/master
 			changed = 1;
 		}
 	}
 
 	pr_info("changed %d\n", changed);
 
+<<<<<<< HEAD
 	if (hcd->state == HC_STATE_SUSPENDED)
 		usb_hcd_resume_root_hub(hcd);
 
@@ -232,13 +324,27 @@ done:
 }
 
 /* See hub_configure in hub.c */
+=======
+	if ((hcd->state == HC_STATE_SUSPENDED) && (changed == 1))
+		usb_hcd_resume_root_hub(hcd);
+
+done:
+	spin_unlock(&vhci->lock);
+	return changed ? retval : 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void hub_descriptor(struct usb_hub_descriptor *desc)
 {
 	memset(desc, 0, sizeof(*desc));
 	desc->bDescriptorType = 0x29;
 	desc->bDescLength = 9;
+<<<<<<< HEAD
 	desc->wHubCharacteristics = (__force __u16)
 		(__constant_cpu_to_le16(0x0001));
+=======
+	desc->wHubCharacteristics = (__constant_cpu_to_le16(0x0001));
+>>>>>>> refs/remotes/origin/master
 	desc->bNbrPorts = VHCI_NPORTS;
 	desc->u.hs.DeviceRemovable[0] = 0xff;
 	desc->u.hs.DeviceRemovable[1] = 0xff;
@@ -249,7 +355,10 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 {
 	struct vhci_hcd	*dum;
 	int             retval = 0;
+<<<<<<< HEAD
 	unsigned long   flags;
+=======
+>>>>>>> refs/remotes/origin/master
 	int		rhport;
 
 	u32 prev_port_status[VHCI_NPORTS];
@@ -269,13 +378,27 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 
 	dum = hcd_to_vhci(hcd);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&dum->lock, flags);
 
 	/* store old status and compare now and old later */
 	if (usbip_dbg_flag_vhci_rh) {
+<<<<<<< HEAD
 		int i = 0;
 		for (i = 0; i < VHCI_NPORTS; i++)
 			prev_port_status[i] = dum->port_status[i];
+=======
+		memcpy(prev_port_status, dum->port_status,
+			sizeof(prev_port_status));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&dum->lock);
+
+	/* store old status and compare now and old later */
+	if (usbip_dbg_flag_vhci_rh) {
+		memcpy(prev_port_status, dum->port_status,
+			sizeof(prev_port_status));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (typeReq) {
@@ -296,8 +419,11 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			usbip_dbg_vhci_rh(" ClearPortFeature: "
 					  "USB_PORT_FEAT_POWER\n");
 			dum->port_status[rhport] = 0;
+<<<<<<< HEAD
 			/* dum->address = 0; */
 			/* dum->hdev = 0; */
+=======
+>>>>>>> refs/remotes/origin/master
 			dum->resuming = 0;
 			break;
 		case USB_PORT_FEAT_C_RESET:
@@ -337,6 +463,7 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			retval = -EPIPE;
 		}
 
+<<<<<<< HEAD
 		/* we do no care of resume. */
 
 		/* whoever resets or resumes must GetPortStatus to
@@ -344,9 +471,15 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 		 *                                   */
 		if (dum->resuming && time_after(jiffies, dum->re_timeout)) {
 			dum->port_status[rhport] |=
+<<<<<<< HEAD
 					(1 << USB_PORT_FEAT_C_SUSPEND);
 			dum->port_status[rhport] &=
 					~(1 << USB_PORT_FEAT_SUSPEND);
+=======
+				(1 << USB_PORT_FEAT_C_SUSPEND);
+			dum->port_status[rhport] &=
+				~(1 << USB_PORT_FEAT_SUSPEND);
+>>>>>>> refs/remotes/origin/cm-10.0
 			dum->resuming = 0;
 			dum->re_timeout = 0;
 			/* if (dum->driver && dum->driver->resume) {
@@ -354,6 +487,20 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			 *	dum->driver->resume (&dum->gadget);
 			 *	spin_lock (&dum->lock);
 			 * } */
+=======
+		/* we do not care about resume. */
+
+		/* whoever resets or resumes must GetPortStatus to
+		 * complete it!!
+		 */
+		if (dum->resuming && time_after(jiffies, dum->re_timeout)) {
+			dum->port_status[rhport] |=
+				(1 << USB_PORT_FEAT_C_SUSPEND);
+			dum->port_status[rhport] &=
+				~(1 << USB_PORT_FEAT_SUSPEND);
+			dum->resuming = 0;
+			dum->re_timeout = 0;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if ((dum->port_status[rhport] & (1 << USB_PORT_FEAT_RESET)) !=
@@ -373,6 +520,8 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 				dum->port_status[rhport] |=
 					USB_PORT_STAT_ENABLE;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if 0
 			if (dum->driver) {
 				dum->port_status[rhport] |=
@@ -396,9 +545,16 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 				}
 			}
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		((u16 *) buf)[0] = cpu_to_le16(dum->port_status[rhport]);
 		((u16 *) buf)[1] = cpu_to_le16(dum->port_status[rhport] >> 16);
+=======
+		}
+		((__le16 *) buf)[0] = cpu_to_le16(dum->port_status[rhport]);
+		((__le16 *) buf)[1] = cpu_to_le16(dum->port_status[rhport] >> 16);
+>>>>>>> refs/remotes/origin/master
 
 		usbip_dbg_vhci_rh(" GetPortStatus bye %x %x\n", ((u16 *)buf)[0],
 				  ((u16 *)buf)[1]);
@@ -412,6 +568,8 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 		case USB_PORT_FEAT_SUSPEND:
 			usbip_dbg_vhci_rh(" SetPortFeature: "
 					  "USB_PORT_FEAT_SUSPEND\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if 0
 			dum->port_status[rhport] |=
 				(1 << USB_PORT_FEAT_SUSPEND);
@@ -421,6 +579,10 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 				spin_lock(&dum->lock);
 			}
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case USB_PORT_FEAT_RESET:
 			usbip_dbg_vhci_rh(" SetPortFeature: "
@@ -431,6 +593,8 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 					~(USB_PORT_STAT_ENABLE |
 					  USB_PORT_STAT_LOW_SPEED |
 					  USB_PORT_STAT_HIGH_SPEED);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if 0
 				if (dum->driver) {
 					dev_dbg(hardware, "disconnect\n");
@@ -438,6 +602,10 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 				}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				/* FIXME test that code path! */
 			}
 			/* 50msec reset signaling */
@@ -454,9 +622,12 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 
 	default:
 		pr_err("default: no such request\n");
+<<<<<<< HEAD
 		/* dev_dbg (hardware,
 		 *		"hub control req%04x v%04x i%04x l%d\n",
 		 *		typeReq, wValue, wIndex, wLength); */
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* "protocol stall" on error */
 		retval = -EPIPE;
@@ -464,12 +635,30 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 
 	if (usbip_dbg_flag_vhci_rh) {
 		pr_debug("port %d\n", rhport);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dump_port_status(prev_port_status[rhport]);
 		dump_port_status(dum->port_status[rhport]);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/* Only dump valid port status */
+		if (rhport >= 0) {
+			dump_port_status_diff(prev_port_status[rhport],
+					      dum->port_status[rhport]);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	usbip_dbg_vhci_rh(" bye\n");
 
 	spin_unlock_irqrestore(&dum->lock, flags);
+=======
+	}
+	usbip_dbg_vhci_rh(" bye\n");
+
+	spin_unlock(&dum->lock);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -492,25 +681,40 @@ static void vhci_tx_urb(struct urb *urb)
 {
 	struct vhci_device *vdev = get_vdev(urb->dev);
 	struct vhci_priv *priv;
+<<<<<<< HEAD
 	unsigned long flag;
 
 	if (!vdev) {
 		pr_err("could not get virtual device");
 		/* BUG(); */
+=======
+
+	if (!vdev) {
+		pr_err("could not get virtual device");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	priv = kzalloc(sizeof(struct vhci_priv), GFP_ATOMIC);
+<<<<<<< HEAD
 
 	spin_lock_irqsave(&vdev->priv_lock, flag);
 
 	if (!priv) {
 		dev_err(&urb->dev->dev, "malloc vhci_priv\n");
 		spin_unlock_irqrestore(&vdev->priv_lock, flag);
+=======
+	if (!priv) {
+>>>>>>> refs/remotes/origin/master
 		usbip_event_add(&vdev->ud, VDEV_EVENT_ERROR_MALLOC);
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	spin_lock(&vdev->priv_lock);
+
+>>>>>>> refs/remotes/origin/master
 	priv->seqnum = atomic_inc_return(&the_controller->seqnum);
 	if (priv->seqnum == 0xffff)
 		dev_info(&urb->dev->dev, "seqnum max\n");
@@ -523,7 +727,11 @@ static void vhci_tx_urb(struct urb *urb)
 	list_add_tail(&priv->list, &vdev->priv_tx);
 
 	wake_up(&vdev->waitq_tx);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&vdev->priv_lock, flag);
+=======
+	spin_unlock(&vdev->priv_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
@@ -531,7 +739,10 @@ static int vhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 {
 	struct device *dev = &urb->dev->dev;
 	int ret = 0;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct vhci_device *vdev;
 
 	usbip_dbg_vhci_hc("enter, usb_hcd %p urb %p mem_flags %d\n",
@@ -540,11 +751,19 @@ static int vhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 	/* patch to usb_sg_init() is in 2.5.60 */
 	BUG_ON(!urb->transfer_buffer && urb->transfer_buffer_length);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&the_controller->lock, flags);
 
 	if (urb->status != -EINPROGRESS) {
 		dev_err(dev, "URB already unlinked!, status %d\n", urb->status);
 		spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+	spin_lock(&the_controller->lock);
+
+	if (urb->status != -EINPROGRESS) {
+		dev_err(dev, "URB already unlinked!, status %d\n", urb->status);
+		spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 		return urb->status;
 	}
 
@@ -556,7 +775,11 @@ static int vhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 	    vdev->ud.status == VDEV_ST_ERROR) {
 		dev_err(dev, "enqueue for inactive port %d\n", vdev->rhport);
 		spin_unlock(&vdev->ud.lock);
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+		spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 	spin_unlock(&vdev->ud.lock);
@@ -608,7 +831,11 @@ static int vhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 			goto no_need_xmit;
 
 		case USB_REQ_GET_DESCRIPTOR:
+<<<<<<< HEAD
 			if (ctrlreq->wValue == (USB_DT_DEVICE << 8))
+=======
+			if (ctrlreq->wValue == cpu_to_le16(USB_DT_DEVICE << 8))
+>>>>>>> refs/remotes/origin/master
 				usbip_dbg_vhci_hc("Not yet?: "
 						  "Get_Descriptor to device 0 "
 						  "(get max pipe size)\n");
@@ -631,17 +858,30 @@ static int vhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 
 out:
 	vhci_tx_urb(urb);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+	spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 no_need_xmit:
 	usb_hcd_unlink_urb_from_ep(hcd, urb);
 no_need_unlink:
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&the_controller->lock, flags);
+<<<<<<< HEAD
 
 	usb_hcd_giveback_urb(vhci_to_hcd(the_controller), urb, urb->status);
 
+=======
+	usb_hcd_giveback_urb(vhci_to_hcd(the_controller), urb, urb->status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&the_controller->lock);
+	usb_hcd_giveback_urb(vhci_to_hcd(the_controller), urb, urb->status);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -693,19 +933,30 @@ no_need_unlink:
  */
 static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 {
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct vhci_priv *priv;
 	struct vhci_device *vdev;
 
 	pr_info("dequeue a urb %p\n", urb);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&the_controller->lock, flags);
+=======
+	spin_lock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 
 	priv = urb->hcpriv;
 	if (!priv) {
 		/* URB was never linked! or will be soon given back by
 		 * vhci_rx. */
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+		spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -713,7 +964,11 @@ static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 		int ret = 0;
 		ret = usb_hcd_check_unlink_urb(hcd, urb, status);
 		if (ret) {
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+			spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 			return ret;
 		}
 	}
@@ -723,16 +978,24 @@ static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 
 	if (!vdev->ud.tcp_socket) {
 		/* tcp connection is closed */
+<<<<<<< HEAD
 		unsigned long flags2;
 
 		spin_lock_irqsave(&vdev->priv_lock, flags2);
+=======
+		spin_lock(&vdev->priv_lock);
+>>>>>>> refs/remotes/origin/master
 
 		pr_info("device %p seems to be disconnected\n", vdev);
 		list_del(&priv->list);
 		kfree(priv);
 		urb->hcpriv = NULL;
 
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&vdev->priv_lock, flags2);
+=======
+		spin_unlock(&vdev->priv_lock);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * If tcp connection is alive, we have sent CMD_UNLINK.
@@ -743,6 +1006,7 @@ static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 
 		usb_hcd_unlink_urb_from_ep(hcd, urb);
 
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&the_controller->lock, flags);
 		usb_hcd_giveback_urb(vhci_to_hcd(the_controller), urb,
 				     urb->status);
@@ -754,13 +1018,30 @@ static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 		struct vhci_unlink *unlink;
 
 		spin_lock_irqsave(&vdev->priv_lock, flags2);
+=======
+		spin_unlock(&the_controller->lock);
+		usb_hcd_giveback_urb(vhci_to_hcd(the_controller), urb,
+				     urb->status);
+		spin_lock(&the_controller->lock);
+
+	} else {
+		/* tcp connection is alive */
+		struct vhci_unlink *unlink;
+
+		spin_lock(&vdev->priv_lock);
+>>>>>>> refs/remotes/origin/master
 
 		/* setup CMD_UNLINK pdu */
 		unlink = kzalloc(sizeof(struct vhci_unlink), GFP_ATOMIC);
 		if (!unlink) {
+<<<<<<< HEAD
 			pr_err("malloc vhci_unlink\n");
 			spin_unlock_irqrestore(&vdev->priv_lock, flags2);
 			spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+			spin_unlock(&vdev->priv_lock);
+			spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 			usbip_event_add(&vdev->ud, VDEV_EVENT_ERROR_MALLOC);
 			return -ENOMEM;
 		}
@@ -778,10 +1059,17 @@ static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 		list_add_tail(&unlink->list, &vdev->unlink_tx);
 		wake_up(&vdev->waitq_tx);
 
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&vdev->priv_lock, flags2);
 	}
 
 	spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+		spin_unlock(&vdev->priv_lock);
+	}
+
+	spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 
 	usbip_dbg_vhci_hc("leave\n");
 	return 0;
@@ -791,6 +1079,10 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
 {
 	struct vhci_unlink *unlink, *tmp;
 
+<<<<<<< HEAD
+=======
+	spin_lock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&vdev->priv_lock);
 
 	list_for_each_entry_safe(unlink, tmp, &vdev->unlink_tx, list) {
@@ -799,9 +1091,18 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
 		kfree(unlink);
 	}
 
+<<<<<<< HEAD
 	list_for_each_entry_safe(unlink, tmp, &vdev->unlink_rx, list) {
 		struct urb *urb;
 
+=======
+	while (!list_empty(&vdev->unlink_rx)) {
+		struct urb *urb;
+
+		unlink = list_first_entry(&vdev->unlink_rx, struct vhci_unlink,
+			list);
+
+>>>>>>> refs/remotes/origin/master
 		/* give back URB of unanswered unlink request */
 		pr_info("unlink cleanup rx %lu\n", unlink->unlink_seqnum);
 
@@ -816,18 +1117,36 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
 
 		urb->status = -ENODEV;
 
+<<<<<<< HEAD
 		spin_lock(&the_controller->lock);
 		usb_hcd_unlink_urb_from_ep(vhci_to_hcd(the_controller), urb);
+=======
+		usb_hcd_unlink_urb_from_ep(vhci_to_hcd(the_controller), urb);
+
+		list_del(&unlink->list);
+
+		spin_unlock(&vdev->priv_lock);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&the_controller->lock);
 
 		usb_hcd_giveback_urb(vhci_to_hcd(the_controller), urb,
 				     urb->status);
 
+<<<<<<< HEAD
 		list_del(&unlink->list);
+=======
+		spin_lock(&the_controller->lock);
+		spin_lock(&vdev->priv_lock);
+
+>>>>>>> refs/remotes/origin/master
 		kfree(unlink);
 	}
 
 	spin_unlock(&vdev->priv_lock);
+<<<<<<< HEAD
+=======
+	spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -845,6 +1164,7 @@ static void vhci_shutdown_connection(struct usbip_device *ud)
 		kernel_sock_shutdown(ud->tcp_socket, SHUT_RDWR);
 	}
 
+<<<<<<< HEAD
 	/* kill threads related to this sdev, if v.c. exists */
 	if (vdev->ud.tcp_rx && !task_is_dead(vdev->ud.tcp_rx))
 		kthread_stop(vdev->ud.tcp_rx);
@@ -856,6 +1176,22 @@ static void vhci_shutdown_connection(struct usbip_device *ud)
 	/* active connection is closed */
 	if (vdev->ud.tcp_socket != NULL) {
 		sock_release(vdev->ud.tcp_socket);
+=======
+	/* kill threads related to this sdev */
+	if (vdev->ud.tcp_rx) {
+		kthread_stop_put(vdev->ud.tcp_rx);
+		vdev->ud.tcp_rx = NULL;
+	}
+	if (vdev->ud.tcp_tx) {
+		kthread_stop_put(vdev->ud.tcp_tx);
+		vdev->ud.tcp_tx = NULL;
+	}
+	pr_info("stop threads\n");
+
+	/* active connection is closed */
+	if (vdev->ud.tcp_socket) {
+		fput(vdev->ud.tcp_socket->file);
+>>>>>>> refs/remotes/origin/master
 		vdev->ud.tcp_socket = NULL;
 	}
 	pr_info("release socket\n");
@@ -870,11 +1206,19 @@ static void vhci_shutdown_connection(struct usbip_device *ud)
 	 *	disable endpoints. pending urbs are unlinked(dequeued).
 	 *
 	 * NOTE: After calling rh_port_disconnect(), the USB device drivers of a
+<<<<<<< HEAD
 	 * deteched device should release used urbs in a cleanup function(i.e.
 	 * xxx_disconnect()). Therefore, vhci_hcd does not need to release
 	 * pushed urbs and their private data in this function.
 	 *
 	 * NOTE: vhci_dequeue() must be considered carefully. When shutdowning
+=======
+	 * detached device should release used urbs in a cleanup function (i.e.
+	 * xxx_disconnect()). Therefore, vhci_hcd does not need to release
+	 * pushed urbs and their private data in this function.
+	 *
+	 * NOTE: vhci_dequeue() must be considered carefully. When shutting down
+>>>>>>> refs/remotes/origin/master
 	 * a connection, vhci_shutdown_connection() expects vhci_dequeue()
 	 * gives back pushed urbs and frees their private data by request of
 	 * the cleanup function of a USB driver. When unlinking a urb with an
@@ -901,7 +1245,14 @@ static void vhci_device_reset(struct usbip_device *ud)
 		usb_put_dev(vdev->udev);
 	vdev->udev = NULL;
 
+<<<<<<< HEAD
 	ud->tcp_socket = NULL;
+=======
+	if (ud->tcp_socket) {
+		fput(ud->tcp_socket->file);
+		ud->tcp_socket = NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 	ud->status = VDEV_ST_NULL;
 
 	spin_unlock(&ud->lock);
@@ -920,14 +1271,26 @@ static void vhci_device_init(struct vhci_device *vdev)
 
 	vdev->ud.side   = USBIP_VHCI;
 	vdev->ud.status = VDEV_ST_NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* vdev->ud.lock   = SPIN_LOCK_UNLOCKED; */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&vdev->ud.lock);
 
 	INIT_LIST_HEAD(&vdev->priv_rx);
 	INIT_LIST_HEAD(&vdev->priv_tx);
 	INIT_LIST_HEAD(&vdev->unlink_tx);
 	INIT_LIST_HEAD(&vdev->unlink_rx);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* vdev->priv_lock = SPIN_LOCK_UNLOCKED; */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&vdev->priv_lock);
 
 	init_waitqueue_head(&vdev->waitq_tx);
@@ -959,7 +1322,10 @@ static int vhci_start(struct usb_hcd *hcd)
 	spin_lock_init(&vhci->lock);
 
 	hcd->power_budget = 0; /* no limit */
+<<<<<<< HEAD
 	hcd->state  = HC_STATE_RUNNING;
+=======
+>>>>>>> refs/remotes/origin/master
 	hcd->uses_new_polling = 1;
 
 	/* vhci_hcd is now ready to be controlled through sysfs */
@@ -983,7 +1349,11 @@ static void vhci_stop(struct usb_hcd *hcd)
 	sysfs_remove_group(&vhci_dev(vhci)->kobj, &dev_attr_group);
 
 	/* 2. shutdown all the ports of vhci_hcd */
+<<<<<<< HEAD
 	for (rhport = 0 ; rhport < VHCI_NPORTS; rhport++) {
+=======
+	for (rhport = 0; rhport < VHCI_NPORTS; rhport++) {
+>>>>>>> refs/remotes/origin/master
 		struct vhci_device *vdev = &vhci->vdev[rhport];
 
 		usbip_event_add(&vdev->ud, VDEV_EVENT_REMOVED);
@@ -1006,11 +1376,17 @@ static int vhci_bus_suspend(struct usb_hcd *hcd)
 
 	dev_dbg(&hcd->self.root_hub->dev, "%s\n", __func__);
 
+<<<<<<< HEAD
 	spin_lock_irq(&vhci->lock);
 	/* vhci->rh_state = DUMMY_RH_SUSPENDED;
 	 * set_link_state(vhci); */
 	hcd->state = HC_STATE_SUSPENDED;
 	spin_unlock_irq(&vhci->lock);
+=======
+	spin_lock(&vhci->lock);
+	hcd->state = HC_STATE_SUSPENDED;
+	spin_unlock(&vhci->lock);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1022,6 +1398,7 @@ static int vhci_bus_resume(struct usb_hcd *hcd)
 
 	dev_dbg(&hcd->self.root_hub->dev, "%s\n", __func__);
 
+<<<<<<< HEAD
 	spin_lock_irq(&vhci->lock);
 	if (!HCD_HW_ACCESSIBLE(hcd)) {
 		rc = -ESHUTDOWN;
@@ -1033,9 +1410,24 @@ static int vhci_bus_resume(struct usb_hcd *hcd)
 		hcd->state = HC_STATE_RUNNING;
 	}
 	spin_unlock_irq(&vhci->lock);
+<<<<<<< HEAD
 	return rc;
 
 	return 0;
+=======
+
+	return rc;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&vhci->lock);
+	if (!HCD_HW_ACCESSIBLE(hcd))
+		rc = -ESHUTDOWN;
+	else
+		hcd->state = HC_STATE_RUNNING;
+	spin_unlock(&vhci->lock);
+
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 #else
@@ -1072,12 +1464,15 @@ static int vhci_hcd_probe(struct platform_device *pdev)
 
 	usbip_dbg_vhci_hc("name %s id %d\n", pdev->name, pdev->id);
 
+<<<<<<< HEAD
 	/* will be removed */
 	if (pdev->dev.dma_mask) {
 		dev_info(&pdev->dev, "vhci_hcd DMA not supported\n");
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Allocate and initialize hcd.
 	 * Our private data is also allocated automatically.
@@ -1183,11 +1578,19 @@ static int vhci_hcd_resume(struct platform_device *pdev)
 
 static struct platform_driver vhci_driver = {
 	.probe	= vhci_hcd_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(vhci_hcd_remove),
 	.suspend = vhci_hcd_suspend,
 	.resume	= vhci_hcd_resume,
 	.driver	= {
 		.name = (char *) driver_name,
+=======
+	.remove	= vhci_hcd_remove,
+	.suspend = vhci_hcd_suspend,
+	.resume	= vhci_hcd_resume,
+	.driver	= {
+		.name = driver_name,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 };
@@ -1204,15 +1607,29 @@ static void the_pdev_release(struct device *dev)
 
 static struct platform_device the_pdev = {
 	/* should be the same name as driver_name */
+<<<<<<< HEAD
 	.name = (char *) driver_name,
 	.id = -1,
 	.dev = {
 		/* .driver = &vhci_driver, */
+=======
+	.name = driver_name,
+	.id = -1,
+	.dev = {
+>>>>>>> refs/remotes/origin/master
 		.release = the_pdev_release,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init vhci_init(void)
+=======
+static int __init vhci_hcd_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init vhci_hcd_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -1220,11 +1637,19 @@ static int __init vhci_init(void)
 		return -ENODEV;
 
 	ret = platform_driver_register(&vhci_driver);
+<<<<<<< HEAD
 	if (ret < 0)
 		goto err_driver_register;
 
 	ret = platform_device_register(&the_pdev);
 	if (ret < 0)
+=======
+	if (ret)
+		goto err_driver_register;
+
+	ret = platform_device_register(&the_pdev);
+	if (ret)
+>>>>>>> refs/remotes/origin/master
 		goto err_platform_device_register;
 
 	pr_info(DRIVER_DESC " v" USBIP_VERSION "\n");
@@ -1236,14 +1661,32 @@ err_driver_register:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __exit vhci_cleanup(void)
+=======
+static void __exit vhci_hcd_exit(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __exit vhci_hcd_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	platform_device_unregister(&the_pdev);
 	platform_driver_unregister(&vhci_driver);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_init(vhci_init);
 module_exit(vhci_cleanup);
+=======
+module_init(vhci_hcd_init);
+module_exit(vhci_hcd_exit);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_init(vhci_hcd_init);
+module_exit(vhci_hcd_exit);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

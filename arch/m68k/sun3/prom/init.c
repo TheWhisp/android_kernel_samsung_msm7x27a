@@ -22,6 +22,7 @@ int prom_root_node;
 struct linux_nodeops *prom_nodeops;
 
 /* You must call prom_init() before you attempt to use any of the
+<<<<<<< HEAD
  * routines in the prom library.  It returns 0 on success, 1 on
  * failure.  It gets passed the pointer to the PROM vector.
  */
@@ -73,6 +74,15 @@ void __init prom_init(struct linux_romvec *rp)
 #endif
 //	printk("PROMLIB: Sun Boot Prom Version %d Revision %d\n",
 //	       romvec->pv_romvers, prom_rev);
+=======
+ * routines in the prom library.
+ * It gets passed the pointer to the PROM vector.
+ */
+
+void __init prom_init(struct linux_romvec *rp)
+{
+	romvec = rp;
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialization successful. */
 	return;

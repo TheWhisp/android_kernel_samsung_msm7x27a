@@ -1,7 +1,15 @@
 /* $Id: divasi.c,v 1.25.6.2 2005/01/31 12:22:20 armin Exp $
  *
  * Driver for Eicon DIVA Server ISDN cards.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * User Mode IDI Interface 
+=======
+ * User Mode IDI Interface
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * User Mode IDI Interface
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2000-2003 by Armin Schindler (mac@melware.de)
  * Copyright 2000-2003 Cytronics & Melware (info@melware.de)
@@ -71,10 +79,23 @@ static char *getrev(const char *revision)
  *  LOCALS
  */
 static ssize_t um_idi_read(struct file *file, char __user *buf, size_t count,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   loff_t * offset);
 static ssize_t um_idi_write(struct file *file, const char __user *buf,
 			    size_t count, loff_t * offset);
 static unsigned int um_idi_poll(struct file *file, poll_table * wait);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			   loff_t *offset);
+static ssize_t um_idi_write(struct file *file, const char __user *buf,
+			    size_t count, loff_t *offset);
+static unsigned int um_idi_poll(struct file *file, poll_table *wait);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int um_idi_open(struct inode *inode, struct file *file);
 static int um_idi_release(struct inode *inode, struct file *file);
 static int remove_entity(void *entity);
@@ -114,7 +135,11 @@ static const struct file_operations um_idi_proc_fops = {
 	.release	= single_release,
 };
 
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION create_um_idi_proc(void)
+=======
+static int __init create_um_idi_proc(void)
+>>>>>>> refs/remotes/origin/master
 {
 	um_idi_proc_entry = proc_create(DRIVERLNAME, S_IRUGO, proc_net_eicon,
 					&um_idi_proc_fops);
@@ -146,7 +171,11 @@ static void divas_idi_unregister_chrdev(void)
 	unregister_chrdev(major, DEVNAME);
 }
 
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION divas_idi_register_chrdev(void)
+=======
+static int __init divas_idi_register_chrdev(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if ((major = register_chrdev(0, DEVNAME, &divas_idi_fops)) < 0)
 	{
@@ -161,7 +190,11 @@ static int DIVA_INIT_FUNCTION divas_idi_register_chrdev(void)
 /*
 ** Driver Load
 */
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION divasi_init(void)
+=======
+static int __init divasi_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	char tmprev[50];
 	int ret = 0;
@@ -194,7 +227,15 @@ static int DIVA_INIT_FUNCTION divasi_init(void)
 	}
 	printk(KERN_INFO "%s: started with major %d\n", DRIVERLNAME, major);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
       out:
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	return (ret);
 }
 
@@ -202,7 +243,11 @@ static int DIVA_INIT_FUNCTION divasi_init(void)
 /*
 ** Driver Unload
 */
+<<<<<<< HEAD
 static void DIVA_EXIT_FUNCTION divasi_exit(void)
+=======
+static void __exit divasi_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	idifunc_finit();
 	remove_um_idi_proc();
@@ -228,7 +273,15 @@ divas_um_idi_copy_to_user(void *os_handle, void *dst, const void *src,
 }
 
 static ssize_t
+<<<<<<< HEAD
+<<<<<<< HEAD
 um_idi_read(struct file *file, char __user *buf, size_t count, loff_t * offset)
+=======
+um_idi_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+um_idi_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
+>>>>>>> refs/remotes/origin/master
 {
 	diva_um_idi_os_context_t *p_os;
 	int ret = -EINVAL;
@@ -292,7 +345,15 @@ static int um_idi_open_adapter(struct file *file, int adapter_nr)
 {
 	diva_um_idi_os_context_t *p_os;
 	void *e =
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    divas_um_idi_create_entity((dword) adapter_nr, (void *) file);
+=======
+		divas_um_idi_create_entity((dword) adapter_nr, (void *) file);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		divas_um_idi_create_entity((dword) adapter_nr, (void *) file);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(file->private_data = e)) {
 		return (0);
@@ -310,7 +371,15 @@ static int um_idi_open_adapter(struct file *file, int adapter_nr)
 
 static ssize_t
 um_idi_write(struct file *file, const char __user *buf, size_t count,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	     loff_t * offset)
+=======
+	     loff_t *offset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	     loff_t *offset)
+>>>>>>> refs/remotes/origin/master
 {
 	diva_um_idi_os_context_t *p_os;
 	int ret = -EINVAL;
@@ -331,8 +400,18 @@ um_idi_write(struct file *file, const char __user *buf, size_t count,
 	}
 
 	if (!(p_os =
+<<<<<<< HEAD
+<<<<<<< HEAD
 	     (diva_um_idi_os_context_t *) diva_um_id_get_os_context(file->
 								    private_data)))
+=======
+	      (diva_um_idi_os_context_t *) diva_um_id_get_os_context(file->
+								     private_data)))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	      (diva_um_idi_os_context_t *) diva_um_id_get_os_context(file->
+								     private_data)))
+>>>>>>> refs/remotes/origin/master
 	{
 		return (-ENODEV);
 	}
@@ -367,7 +446,15 @@ um_idi_write(struct file *file, const char __user *buf, size_t count,
 	return (ret);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int um_idi_poll(struct file *file, poll_table * wait)
+=======
+static unsigned int um_idi_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int um_idi_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/master
 {
 	diva_um_idi_os_context_t *p_os;
 
@@ -417,7 +504,15 @@ static int um_idi_release(struct inode *inode, struct file *file)
 	}
 
 	if (!(p_os =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(diva_um_idi_os_context_t *) diva_um_id_get_os_context(file->private_data))) {
+=======
+	      (diva_um_idi_os_context_t *) diva_um_id_get_os_context(file->private_data))) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	      (diva_um_idi_os_context_t *) diva_um_id_get_os_context(file->private_data))) {
+>>>>>>> refs/remotes/origin/master
 		ret = -ENODEV;
 		goto out;
 	}
@@ -434,7 +529,15 @@ static int um_idi_release(struct inode *inode, struct file *file)
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
       out:
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	return (ret);
 }
 
@@ -446,14 +549,30 @@ int diva_os_get_context_size(void)
 void diva_os_wakeup_read(void *os_context)
 {
 	diva_um_idi_os_context_t *p_os =
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    (diva_um_idi_os_context_t *) os_context;
+=======
+		(diva_um_idi_os_context_t *) os_context;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(diva_um_idi_os_context_t *) os_context;
+>>>>>>> refs/remotes/origin/master
 	wake_up_interruptible(&p_os->read_wait);
 }
 
 void diva_os_wakeup_close(void *os_context)
 {
 	diva_um_idi_os_context_t *p_os =
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    (diva_um_idi_os_context_t *) os_context;
+=======
+		(diva_um_idi_os_context_t *) os_context;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(diva_um_idi_os_context_t *) os_context;
+>>>>>>> refs/remotes/origin/master
 	wake_up_interruptible(&p_os->close_wait);
 }
 
@@ -466,7 +585,15 @@ void diva_um_timer_function(unsigned long data)
 	wake_up_interruptible(&p_os->read_wait);
 	wake_up_interruptible(&p_os->close_wait);
 	DBG_ERR(("entity removal watchdog"))
+<<<<<<< HEAD
+<<<<<<< HEAD
 }
+=======
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 
 /*
 **  If application exits without entity removal this function will remove
@@ -481,6 +608,8 @@ static int remove_entity(void *entity)
 
 	if (!entity) {
 		DBG_FTL(("Zero entity on remove"))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return (0);
 	}
 
@@ -489,22 +618,61 @@ static int remove_entity(void *entity)
 	     diva_um_id_get_os_context(entity))) {
 		DBG_FTL(("Zero entity os context on remove"))
 		return (0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			return (0);
+	}
+
+	if (!(p_os =
+	      (diva_um_idi_os_context_t *)
+	      diva_um_id_get_os_context(entity))) {
+		DBG_FTL(("Zero entity os context on remove"))
+			return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!divas_um_idi_entity_assigned(entity) || p_os->aborted) {
 		/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 		   Entity is not assigned, also can be removed
 		 */
+=======
+		  Entity is not assigned, also can be removed
+		*/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  Entity is not assigned, also can be removed
+		*/
+>>>>>>> refs/remotes/origin/master
 		return (0);
 	}
 
 	DBG_TRC(("E(%08x) check remove", entity))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	   If adapter not answers on remove request inside of
 	   10 Sec, then adapter is dead
 	 */
 	diva_um_idi_start_wdog(entity);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		  If adapter not answers on remove request inside of
+		  10 Sec, then adapter is dead
+		*/
+		diva_um_idi_start_wdog(entity);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	{
 		DECLARE_WAITQUEUE(wait, curtask);
@@ -542,7 +710,15 @@ static int remove_entity(void *entity)
 	DBG_TRC(("E(%08x) remove complete, aborted:%d", entity,
 		 p_os->aborted))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	diva_um_idi_stop_wdog(entity);
+=======
+		diva_um_idi_stop_wdog(entity);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		diva_um_idi_stop_wdog(entity);
+>>>>>>> refs/remotes/origin/master
 
 	p_os->aborted = 0;
 

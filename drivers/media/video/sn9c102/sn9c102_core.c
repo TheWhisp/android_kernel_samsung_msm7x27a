@@ -33,6 +33,10 @@
 #include <linux/stat.h>
 #include <linux/mm.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/version.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/page-flags.h>
 #include <asm/byteorder.h>
 #include <asm/page.h>
@@ -47,8 +51,12 @@
 #define SN9C102_MODULE_AUTHOR   "(C) 2004-2007 Luca Risolia"
 #define SN9C102_AUTHOR_EMAIL    "<luca.risolia@studio.unibo.it>"
 #define SN9C102_MODULE_LICENSE  "GPL"
+<<<<<<< HEAD
 #define SN9C102_MODULE_VERSION  "1:1.47pre49"
 #define SN9C102_MODULE_VERSION_CODE  KERNEL_VERSION(1, 1, 47)
+=======
+#define SN9C102_MODULE_VERSION  "1:1.48"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*****************************************************************************/
 
@@ -75,8 +83,13 @@ MODULE_PARM_DESC(video_nr,
 		 "\none and for every other camera."
 		 "\n");
 
+<<<<<<< HEAD
 static short force_munmap[] = {[0 ... SN9C102_MAX_DEVICES-1] =
 			       SN9C102_FORCE_MUNMAP};
+=======
+static bool force_munmap[] = {[0 ... SN9C102_MAX_DEVICES-1] =
+			      SN9C102_FORCE_MUNMAP};
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_array(force_munmap, bool, NULL, 0444);
 MODULE_PARM_DESC(force_munmap,
 		 " <0|1[,...]>"
@@ -2158,7 +2171,11 @@ sn9c102_vidioc_querycap(struct sn9c102_device* cam, void __user * arg)
 {
 	struct v4l2_capability cap = {
 		.driver = "sn9c102",
+<<<<<<< HEAD
 		.version = SN9C102_MODULE_VERSION_CODE,
+=======
+		.version = LINUX_VERSION_CODE,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE |
 				V4L2_CAP_STREAMING,
 	};
@@ -3187,6 +3204,7 @@ static long sn9c102_ioctl_v4l2(struct file *filp,
 	case VIDIOC_S_AUDIO:
 		return sn9c102_vidioc_s_audio(cam, arg);
 
+<<<<<<< HEAD
 	case VIDIOC_G_STD:
 	case VIDIOC_S_STD:
 	case VIDIOC_QUERYSTD:
@@ -3197,6 +3215,10 @@ static long sn9c102_ioctl_v4l2(struct file *filp,
 
 	default:
 		return -EINVAL;
+=======
+	default:
+		return -ENOTTY;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	}
 }
@@ -3428,6 +3450,7 @@ static struct usb_driver sn9c102_usb_driver = {
 	.disconnect = sn9c102_usb_disconnect,
 };
 
+<<<<<<< HEAD
 /*****************************************************************************/
 
 static int __init sn9c102_module_init(void)
@@ -3452,3 +3475,6 @@ static void __exit sn9c102_module_exit(void)
 
 module_init(sn9c102_module_init);
 module_exit(sn9c102_module_exit);
+=======
+module_usb_driver(sn9c102_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

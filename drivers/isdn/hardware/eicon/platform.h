@@ -1,10 +1,23 @@
 /* $Id: platform.h,v 1.37.4.6 2005/01/31 12:22:20 armin Exp $
  *
  * platform.h
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
  *
  * Copyright 2000-2003  by Armin Schindler (mac@melware.de)
  * Copyright 2000  Eicon Networks 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ *
+ * Copyright 2000-2003  by Armin Schindler (mac@melware.de)
+ * Copyright 2000  Eicon Networks
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
@@ -38,9 +51,12 @@
 #define DIVA_NO_DEBUGLIB
 #endif
 
+<<<<<<< HEAD
 #define DIVA_INIT_FUNCTION  __init
 #define DIVA_EXIT_FUNCTION  __exit
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define DIVA_USER_MODE_CARD_CONFIG 1
 #define	USE_EXTENDED_DEBUGS 1
 
@@ -112,6 +128,8 @@
 #define DIVA_OS_MEM_ATTACH_CONFIG(a)	((a)->Config)
 #define DIVA_OS_MEM_ATTACH_CONTROL(a)	((a)->Control)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DIVA_OS_MEM_DETACH_RAM(a, x)	do { } while(0)
 #define DIVA_OS_MEM_DETACH_PORT(a, x)	do { } while(0)
 #define DIVA_OS_MEM_DETACH_PROM(a, x)	do { } while(0)
@@ -146,6 +164,47 @@ typedef struct e_info_s E_INFO ;
 
 typedef char diva_os_dependent_devica_name_t[64];
 typedef void* PDEVICE_OBJECT;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define DIVA_OS_MEM_DETACH_RAM(a, x)	do { } while (0)
+#define DIVA_OS_MEM_DETACH_PORT(a, x)	do { } while (0)
+#define DIVA_OS_MEM_DETACH_PROM(a, x)	do { } while (0)
+#define DIVA_OS_MEM_DETACH_CTLREG(a, x)	do { } while (0)
+#define DIVA_OS_MEM_DETACH_RESET(a, x)	do { } while (0)
+#define DIVA_OS_MEM_DETACH_CFG(a, x)	do { } while (0)
+#define DIVA_OS_MEM_DETACH_ADDRESS(a, x)	do { } while (0)
+#define DIVA_OS_MEM_DETACH_CONFIG(a, x)	do { } while (0)
+#define DIVA_OS_MEM_DETACH_CONTROL(a, x)	do { } while (0)
+
+#define DIVA_INVALID_FILE_HANDLE  ((dword)(-1))
+
+#define DIVAS_CONTAINING_RECORD(address, type, field)			\
+	((type *)((char *)(address) - (char *)(&((type *)0)->field)))
+
+extern int sprintf(char *, const char *, ...);
+
+typedef void *LIST_ENTRY;
+
+typedef char DEVICE_NAME[64];
+typedef struct _ISDN_ADAPTER ISDN_ADAPTER;
+typedef struct _ISDN_ADAPTER *PISDN_ADAPTER;
+
+typedef void (*DIVA_DI_PRINTF)(unsigned char *, ...);
+#include "debuglib.h"
+
+#define dtrc(p) DBG_PRV0(p)
+#define dbug(a, p) DBG_PRV1(p)
+
+
+typedef struct e_info_s E_INFO;
+
+typedef char diva_os_dependent_devica_name_t[64];
+typedef void *PDEVICE_OBJECT;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct _diva_os_soft_isr;
 struct _diva_os_timer;
@@ -156,13 +215,31 @@ void diva_log_info(unsigned char *, ...);
 /*
 **  XDI DIDD Interface
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void diva_xdi_didd_register_adapter (int card);
 void diva_xdi_didd_remove_adapter (int card);
+=======
+void diva_xdi_didd_register_adapter(int card);
+void diva_xdi_didd_remove_adapter(int card);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void diva_xdi_didd_register_adapter(int card);
+void diva_xdi_didd_remove_adapter(int card);
+>>>>>>> refs/remotes/origin/master
 
 /*
 ** memory allocation
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static __inline__ void* diva_os_malloc (unsigned long flags, unsigned long size)
+=======
+static __inline__ void *diva_os_malloc(unsigned long flags, unsigned long size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __inline__ void *diva_os_malloc(unsigned long flags, unsigned long size)
+>>>>>>> refs/remotes/origin/master
 {
 	void *ret = NULL;
 
@@ -171,7 +248,15 @@ static __inline__ void* diva_os_malloc (unsigned long flags, unsigned long size)
 	}
 	return (ret);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 static __inline__ void  diva_os_free   (unsigned long flags, void* ptr)
+=======
+static __inline__ void diva_os_free(unsigned long flags, void *ptr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __inline__ void diva_os_free(unsigned long flags, void *ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	vfree(ptr);
 }
@@ -200,12 +285,24 @@ static __inline__ void diva_os_wait(dword mSec)
 /*
 **  PCI Configuration space access
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void PCIwrite (byte bus, byte func, int offset, void* data, int length, void* pci_dev_handle);
 void PCIread (byte bus, byte func, int offset, void* data, int length, void* pci_dev_handle);
+=======
+void PCIwrite(byte bus, byte func, int offset, void *data, int length, void *pci_dev_handle);
+void PCIread(byte bus, byte func, int offset, void *data, int length, void *pci_dev_handle);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void PCIwrite(byte bus, byte func, int offset, void *data, int length, void *pci_dev_handle);
+void PCIread(byte bus, byte func, int offset, void *data, int length, void *pci_dev_handle);
+>>>>>>> refs/remotes/origin/master
 
 /*
 **  I/O Port utilities
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int diva_os_register_io_port (void *adapter, int register, unsigned long port,
 				unsigned long length, const char* name, int id);
 /*
@@ -228,6 +325,35 @@ typedef struct _diva_os_adapter_irq_info {
 } diva_os_adapter_irq_info_t;
 int diva_os_register_irq (void* context, byte irq, const char* name);
 void diva_os_remove_irq (void* context, byte irq);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int diva_os_register_io_port(void *adapter, int register, unsigned long port,
+			     unsigned long length, const char *name, int id);
+/*
+**  I/O port access abstraction
+*/
+byte inpp(void __iomem *);
+word inppw(void __iomem *);
+void inppw_buffer(void __iomem *, void *, int);
+void outppw(void __iomem *, word);
+void outppw_buffer(void __iomem * , void*, int);
+void outpp(void __iomem *, word);
+
+/*
+**  IRQ
+*/
+typedef struct _diva_os_adapter_irq_info {
+	byte irq_nr;
+	int  registered;
+	char irq_name[24];
+} diva_os_adapter_irq_info_t;
+int diva_os_register_irq(void *context, byte irq, const char *name);
+void diva_os_remove_irq(void *context, byte irq);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define diva_os_in_irq() in_irq()
 
@@ -236,6 +362,8 @@ void diva_os_remove_irq (void* context, byte irq);
 */
 typedef long diva_os_spin_lock_magic_t;
 typedef spinlock_t diva_os_spin_lock_t;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static __inline__ int diva_os_initialize_spin_lock (spinlock_t *lock, void * unused) { \
   spin_lock_init (lock); return(0); }
 static __inline__ void diva_os_enter_spin_lock (diva_os_spin_lock_t* a, \
@@ -246,10 +374,29 @@ static __inline__ void diva_os_leave_spin_lock (diva_os_spin_lock_t* a, \
                               void* dbg) { spin_unlock_bh(a); }
 
 #define diva_os_destroy_spin_lock(a,b) do { } while(0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static __inline__ int diva_os_initialize_spin_lock(spinlock_t *lock, void *unused) { \
+	spin_lock_init(lock); return (0); }
+static __inline__ void diva_os_enter_spin_lock(diva_os_spin_lock_t *a, \
+					       diva_os_spin_lock_magic_t *old_irql, \
+					       void *dbg) { spin_lock_bh(a); }
+static __inline__ void diva_os_leave_spin_lock(diva_os_spin_lock_t *a, \
+					       diva_os_spin_lock_magic_t *old_irql, \
+					       void *dbg) { spin_unlock_bh(a); }
+
+#define diva_os_destroy_spin_lock(a, b) do { } while (0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
 **  Deffered processing framework
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 typedef int (*diva_os_isr_callback_t)(struct _ISDN_ADAPTER*);
 typedef void (*diva_os_soft_isr_callback_t)(struct _diva_os_soft_isr* psoft_isr, void* context);
 
@@ -269,12 +416,40 @@ void diva_os_remove_soft_isr (diva_os_soft_isr_t* psoft_isr);
   Get time service
   */
 void diva_os_get_time (dword* sec, dword* usec);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+typedef int (*diva_os_isr_callback_t)(struct _ISDN_ADAPTER *);
+typedef void (*diva_os_soft_isr_callback_t)(struct _diva_os_soft_isr *psoft_isr, void *context);
+
+typedef struct _diva_os_soft_isr {
+	void *object;
+	diva_os_soft_isr_callback_t callback;
+	void *callback_context;
+	char dpc_thread_name[24];
+} diva_os_soft_isr_t;
+
+int diva_os_initialize_soft_isr(diva_os_soft_isr_t *psoft_isr, diva_os_soft_isr_callback_t callback, void *callback_context);
+int diva_os_schedule_soft_isr(diva_os_soft_isr_t *psoft_isr);
+int diva_os_cancel_soft_isr(diva_os_soft_isr_t *psoft_isr);
+void diva_os_remove_soft_isr(diva_os_soft_isr_t *psoft_isr);
+
+/*
+  Get time service
+*/
+void diva_os_get_time(dword *sec, dword *usec);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
 **  atomic operation, fake because we use threads
 */
 typedef int diva_os_atomic_t;
 static diva_os_atomic_t __inline__
+<<<<<<< HEAD
+<<<<<<< HEAD
 diva_os_atomic_increment(diva_os_atomic_t* pv)
 {
   *pv += 1;
@@ -288,6 +463,26 @@ diva_os_atomic_decrement(diva_os_atomic_t* pv)
 }
 
 /* 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+diva_os_atomic_increment(diva_os_atomic_t *pv)
+{
+	*pv += 1;
+	return (*pv);
+}
+static diva_os_atomic_t __inline__
+diva_os_atomic_decrement(diva_os_atomic_t *pv)
+{
+	*pv -= 1;
+	return (*pv);
+}
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 **  CAPI SECTION
 */
 #define NO_CORNETN
@@ -319,9 +514,21 @@ diva_os_atomic_decrement(diva_os_atomic_t* pv)
 #define READ_WORD(addr)   readw(addr)
 #define READ_DWORD(addr)  readl(addr)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define WRITE_BYTE(addr,v)  writeb(v,addr)
 #define WRITE_WORD(addr,v)  writew(v,addr)
 #define WRITE_DWORD(addr,v) writel(v,addr)
+=======
+#define WRITE_BYTE(addr, v)  writeb(v, addr)
+#define WRITE_WORD(addr, v)  writew(v, addr)
+#define WRITE_DWORD(addr, v) writel(v, addr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WRITE_BYTE(addr, v)  writeb(v, addr)
+#define WRITE_WORD(addr, v)  writew(v, addr)
+#define WRITE_DWORD(addr, v) writel(v, addr)
+>>>>>>> refs/remotes/origin/master
 
 static inline __u16 GET_WORD(void *addr)
 {
@@ -344,10 +551,23 @@ static inline void PUT_DWORD(void *addr, __u32 v)
 ** 32/64 bit macors
 */
 #ifdef BITS_PER_LONG
+<<<<<<< HEAD
+<<<<<<< HEAD
  #if BITS_PER_LONG > 32 
   #define PLATFORM_GT_32BIT
   #define ULongToPtr(x) (void *)(unsigned long)(x)
  #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if BITS_PER_LONG > 32
+#define PLATFORM_GT_32BIT
+#define ULongToPtr(x) (void *)(unsigned long)(x)
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -362,7 +582,15 @@ static inline void PUT_DWORD(void *addr, __u32 v)
 */
 #define diva_os_dump_file_t char
 #define diva_os_board_trace_t char
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define diva_os_dump_file(__x__) do { } while(0)
+=======
+#define diva_os_dump_file(__x__) do { } while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define diva_os_dump_file(__x__) do { } while (0)
+>>>>>>> refs/remotes/origin/master
 
 /*
 ** size of internal arrays

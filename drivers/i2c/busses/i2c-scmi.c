@@ -223,7 +223,11 @@ acpi_smbus_cmi_access(struct i2c_adapter *adap, u16 addr, unsigned short flags,
 		goto out;
 
 	obj = pkg->package.elements + 1;
+<<<<<<< HEAD
 	if (obj == NULL || obj->type != ACPI_TYPE_INTEGER) {
+=======
+	if (obj->type != ACPI_TYPE_INTEGER) {
+>>>>>>> refs/remotes/origin/master
 		ACPI_ERROR((AE_INFO, "Invalid argument type"));
 		result = -EIO;
 		goto out;
@@ -235,7 +239,11 @@ acpi_smbus_cmi_access(struct i2c_adapter *adap, u16 addr, unsigned short flags,
 	case I2C_SMBUS_BYTE:
 	case I2C_SMBUS_BYTE_DATA:
 	case I2C_SMBUS_WORD_DATA:
+<<<<<<< HEAD
 		if (obj == NULL || obj->type != ACPI_TYPE_INTEGER) {
+=======
+		if (obj->type != ACPI_TYPE_INTEGER) {
+>>>>>>> refs/remotes/origin/master
 			ACPI_ERROR((AE_INFO, "Invalid argument type"));
 			result = -EIO;
 			goto out;
@@ -246,7 +254,11 @@ acpi_smbus_cmi_access(struct i2c_adapter *adap, u16 addr, unsigned short flags,
 			data->byte = obj->integer.value;
 		break;
 	case I2C_SMBUS_BLOCK_DATA:
+<<<<<<< HEAD
 		if (obj == NULL || obj->type != ACPI_TYPE_BUFFER) {
+=======
+		if (obj->type != ACPI_TYPE_BUFFER) {
+>>>>>>> refs/remotes/origin/master
 			ACPI_ERROR((AE_INFO, "Invalid argument type"));
 			result = -EIO;
 			goto out;
@@ -406,7 +418,11 @@ err:
 	return -EIO;
 }
 
+<<<<<<< HEAD
 static int acpi_smbus_cmi_remove(struct acpi_device *device, int type)
+=======
+static int acpi_smbus_cmi_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_smbus_cmi *smbus_cmi = acpi_driver_data(device);
 
@@ -426,6 +442,7 @@ static struct acpi_driver acpi_smbus_cmi_driver = {
 		.remove = acpi_smbus_cmi_remove,
 	},
 };
+<<<<<<< HEAD
 
 static int __init acpi_smbus_cmi_init(void)
 {
@@ -439,6 +456,9 @@ static void __exit acpi_smbus_cmi_exit(void)
 
 module_init(acpi_smbus_cmi_init);
 module_exit(acpi_smbus_cmi_exit);
+=======
+module_acpi_driver(acpi_smbus_cmi_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Crane Cai <crane.cai@amd.com>");

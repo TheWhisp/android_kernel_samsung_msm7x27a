@@ -61,7 +61,13 @@ locate_and_init_vga(void *(*sel_func)(void *, void *))
 
 	/* Set the VGA hose and init the new console. */
 	pci_vga_hose = hose;
+<<<<<<< HEAD
 	take_over_console(&vga_con, 0, MAX_NR_CONSOLES-1, 1);
+=======
+	console_lock();
+	do_take_over_console(&vga_con, 0, MAX_NR_CONSOLES-1, 1);
+	console_unlock();
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init

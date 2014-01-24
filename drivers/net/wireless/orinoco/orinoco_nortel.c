@@ -234,7 +234,10 @@ static int orinoco_nortel_init_one(struct pci_dev *pdev,
 	free_irq(pdev->irq, priv);
 
  fail_irq:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_orinocodev(priv);
 
  fail_alloc:
@@ -255,7 +258,11 @@ static int orinoco_nortel_init_one(struct pci_dev *pdev,
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit orinoco_nortel_remove_one(struct pci_dev *pdev)
+=======
+static void orinoco_nortel_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct orinoco_private *priv = pci_get_drvdata(pdev);
 	struct orinoco_pci_card *card = priv->card;
@@ -265,7 +272,10 @@ static void __devexit orinoco_nortel_remove_one(struct pci_dev *pdev)
 
 	orinoco_if_del(priv);
 	free_irq(pdev->irq, priv);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_orinocodev(priv);
 	pci_iounmap(pdev, priv->hw.iobase);
 	pci_iounmap(pdev, card->attr_io);
@@ -288,7 +298,11 @@ static struct pci_driver orinoco_nortel_driver = {
 	.name		= DRIVER_NAME,
 	.id_table	= orinoco_nortel_id_table,
 	.probe		= orinoco_nortel_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(orinoco_nortel_remove_one),
+=======
+	.remove		= orinoco_nortel_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= orinoco_pci_suspend,
 	.resume		= orinoco_pci_resume,
 };
@@ -296,8 +310,16 @@ static struct pci_driver orinoco_nortel_driver = {
 static char version[] __initdata = DRIVER_NAME " " DRIVER_VERSION
 	" (Tobias Hoffmann & Christoph Jungegger <disdos@traum404.de>)";
 MODULE_AUTHOR("Christoph Jungegger <disdos@traum404.de>");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_DESCRIPTION
     ("Driver for wireless LAN cards using the Nortel PCI bridge");
+=======
+MODULE_DESCRIPTION("Driver for wireless LAN cards using the Nortel PCI bridge");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DESCRIPTION("Driver for wireless LAN cards using the Nortel PCI bridge");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("Dual MPL/GPL");
 
 static int __init orinoco_nortel_init(void)

@@ -30,6 +30,10 @@ void __init generate_cplb_tables_cpu(unsigned int cpu)
 {
 	int i_d, i_i;
 	unsigned long addr;
+<<<<<<< HEAD
+=======
+	unsigned long cplb_pageflags, cplb_pagesize;
+>>>>>>> refs/remotes/origin/master
 
 	struct cplb_entry *d_tbl = dcplb_tbl[cpu];
 	struct cplb_entry *i_tbl = icplb_tbl[cpu];
@@ -49,21 +53,52 @@ void __init generate_cplb_tables_cpu(unsigned int cpu)
 	/* Cover kernel memory with 4M pages.  */
 	addr = 0;
 
+<<<<<<< HEAD
 	for (; addr < memory_start; addr += 4 * 1024 * 1024) {
 		d_tbl[i_d].addr = addr;
 		d_tbl[i_d++].data = SDRAM_DGENERIC | PAGE_SIZE_4MB;
 		i_tbl[i_i].addr = addr;
 		i_tbl[i_i++].data = SDRAM_IGENERIC | PAGE_SIZE_4MB;
+=======
+#ifdef PAGE_SIZE_16MB
+	cplb_pageflags = PAGE_SIZE_16MB;
+	cplb_pagesize = SIZE_16M;
+#else
+	cplb_pageflags = PAGE_SIZE_4MB;
+	cplb_pagesize = SIZE_4M;
+#endif
+
+
+	for (; addr < memory_start; addr += cplb_pagesize) {
+		d_tbl[i_d].addr = addr;
+		d_tbl[i_d++].data = SDRAM_DGENERIC | cplb_pageflags;
+		i_tbl[i_i].addr = addr;
+		i_tbl[i_i++].data = SDRAM_IGENERIC | cplb_pageflags;
+>>>>>>> refs/remotes/origin/master
 	}
 
 #ifdef CONFIG_ROMKERNEL
 	/* Cover kernel XIP flash area */
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BF60x
+	addr = CONFIG_ROM_BASE & ~(16 * 1024 * 1024 - 1);
+	d_tbl[i_d].addr = addr;
+	d_tbl[i_d++].data = SDRAM_DGENERIC | PAGE_SIZE_16MB;
+	i_tbl[i_i].addr = addr;
+	i_tbl[i_i++].data = SDRAM_IGENERIC | PAGE_SIZE_16MB;
+#else
+>>>>>>> refs/remotes/origin/master
 	addr = CONFIG_ROM_BASE & ~(4 * 1024 * 1024 - 1);
 	d_tbl[i_d].addr = addr;
 	d_tbl[i_d++].data = SDRAM_DGENERIC | PAGE_SIZE_4MB;
 	i_tbl[i_i].addr = addr;
 	i_tbl[i_i++].data = SDRAM_IGENERIC | PAGE_SIZE_4MB;
 #endif
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* Cover L1 memory.  One 4M area for code and data each is enough.  */
 	if (cpu == 0) {
@@ -139,7 +174,11 @@ void __init generate_cplb_tables_all(void)
 	dcplb_bounds[i_d].eaddr = BOOT_ROM_START;
 	dcplb_bounds[i_d++].data = 0;
 	/* BootROM -- largest one should be less than 1 meg.  */
+<<<<<<< HEAD
 	dcplb_bounds[i_d].eaddr = BOOT_ROM_START + (1 * 1024 * 1024);
+=======
+	dcplb_bounds[i_d].eaddr = BOOT_ROM_START + BOOT_ROM_LENGTH;
+>>>>>>> refs/remotes/origin/master
 	dcplb_bounds[i_d++].data = SDRAM_DGENERIC;
 	if (L2_LENGTH) {
 		/* Addressing hole up to L2 SRAM.  */
@@ -178,7 +217,11 @@ void __init generate_cplb_tables_all(void)
 	icplb_bounds[i_i].eaddr = BOOT_ROM_START;
 	icplb_bounds[i_i++].data = 0;
 	/* BootROM -- largest one should be less than 1 meg.  */
+<<<<<<< HEAD
 	icplb_bounds[i_i].eaddr = BOOT_ROM_START + (1 * 1024 * 1024);
+=======
+	icplb_bounds[i_i].eaddr = BOOT_ROM_START + BOOT_ROM_LENGTH;
+>>>>>>> refs/remotes/origin/master
 	icplb_bounds[i_i++].data = SDRAM_IGENERIC;
 
 	if (L2_LENGTH) {

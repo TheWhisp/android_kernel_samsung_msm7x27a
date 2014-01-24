@@ -132,8 +132,13 @@ void fhci_flush_all_transmissions(struct fhci_usb *usb)
 	u8 mode;
 	struct td *td;
 
+<<<<<<< HEAD
 	mode = in_8(&usb->fhci->regs->usb_mod);
 	clrbits8(&usb->fhci->regs->usb_mod, USB_MODE_EN);
+=======
+	mode = in_8(&usb->fhci->regs->usb_usmod);
+	clrbits8(&usb->fhci->regs->usb_usmod, USB_MODE_EN);
+>>>>>>> refs/remotes/origin/master
 
 	fhci_flush_bds(usb);
 
@@ -147,9 +152,15 @@ void fhci_flush_all_transmissions(struct fhci_usb *usb)
 	usb->actual_frame->frame_status = FRAME_END_TRANSMISSION;
 
 	/* reset the event register */
+<<<<<<< HEAD
 	out_be16(&usb->fhci->regs->usb_event, 0xffff);
 	/* enable the USB controller */
 	out_8(&usb->fhci->regs->usb_mod, mode | USB_MODE_EN);
+=======
+	out_be16(&usb->fhci->regs->usb_usber, 0xffff);
+	/* enable the USB controller */
+	out_8(&usb->fhci->regs->usb_usmod, mode | USB_MODE_EN);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -261,8 +272,12 @@ static void move_head_to_tail(struct list_head *list)
 	struct list_head *node = list->next;
 
 	if (!list_empty(list)) {
+<<<<<<< HEAD
 		list_del(node);
 		list_add_tail(node, list);
+=======
+		list_move_tail(node, list);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -414,7 +429,11 @@ static void sof_interrupt(struct fhci_hcd *fhci)
 			usb->port_status = FHCI_PORT_FULL;
 		/* Disable IDLE */
 		usb->saved_msk &= ~USB_E_IDLE_MASK;
+<<<<<<< HEAD
 		out_be16(&usb->fhci->regs->usb_mask, usb->saved_msk);
+=======
+		out_be16(&usb->fhci->regs->usb_usbmr, usb->saved_msk);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	gtm_set_exact_timer16(fhci->timer, usb->max_frame_usage, false);
@@ -433,14 +452,22 @@ void fhci_device_disconnected_interrupt(struct fhci_hcd *fhci)
 	fhci_dbg(fhci, "-> %s\n", __func__);
 
 	fhci_usb_disable_interrupt(usb);
+<<<<<<< HEAD
 	clrbits8(&usb->fhci->regs->usb_mod, USB_MODE_LSS);
+=======
+	clrbits8(&usb->fhci->regs->usb_usmod, USB_MODE_LSS);
+>>>>>>> refs/remotes/origin/master
 	usb->port_status = FHCI_PORT_DISABLED;
 
 	fhci_stop_sof_timer(fhci);
 
 	/* Enable IDLE since we want to know if something comes along */
 	usb->saved_msk |= USB_E_IDLE_MASK;
+<<<<<<< HEAD
 	out_be16(&usb->fhci->regs->usb_mask, usb->saved_msk);
+=======
+	out_be16(&usb->fhci->regs->usb_usbmr, usb->saved_msk);
+>>>>>>> refs/remotes/origin/master
 
 	usb->vroot_hub->port.wPortStatus &= ~USB_PORT_STAT_CONNECTION;
 	usb->vroot_hub->port.wPortChange |= USB_PORT_STAT_C_CONNECTION;
@@ -473,7 +500,11 @@ void fhci_device_connected_interrupt(struct fhci_hcd *fhci)
 		}
 
 		usb->port_status = FHCI_PORT_LOW;
+<<<<<<< HEAD
 		setbits8(&usb->fhci->regs->usb_mod, USB_MODE_LSS);
+=======
+		setbits8(&usb->fhci->regs->usb_usmod, USB_MODE_LSS);
+>>>>>>> refs/remotes/origin/master
 		usb->vroot_hub->port.wPortStatus |=
 		    (USB_PORT_STAT_LOW_SPEED |
 		     USB_PORT_STAT_CONNECTION);
@@ -491,7 +522,11 @@ void fhci_device_connected_interrupt(struct fhci_hcd *fhci)
 		}
 
 		usb->port_status = FHCI_PORT_FULL;
+<<<<<<< HEAD
 		clrbits8(&usb->fhci->regs->usb_mod, USB_MODE_LSS);
+=======
+		clrbits8(&usb->fhci->regs->usb_usmod, USB_MODE_LSS);
+>>>>>>> refs/remotes/origin/master
 		usb->vroot_hub->port.wPortStatus &=
 		    ~USB_PORT_STAT_LOW_SPEED;
 		usb->vroot_hub->port.wPortStatus |=
@@ -535,7 +570,11 @@ static void abort_transmission(struct fhci_usb *usb)
 	/* issue stop Tx command */
 	qe_issue_cmd(QE_USB_STOP_TX, QE_CR_SUBBLOCK_USB, EP_ZERO, 0);
 	/* flush Tx FIFOs */
+<<<<<<< HEAD
 	out_8(&usb->fhci->regs->usb_comm, USB_CMD_FLUSH_FIFO | EP_ZERO);
+=======
+	out_8(&usb->fhci->regs->usb_uscom, USB_CMD_FLUSH_FIFO | EP_ZERO);
+>>>>>>> refs/remotes/origin/master
 	udelay(1000);
 	/* reset Tx BDs */
 	fhci_flush_bds(usb);
@@ -555,11 +594,19 @@ irqreturn_t fhci_irq(struct usb_hcd *hcd)
 
 	usb = fhci->usb_lld;
 
+<<<<<<< HEAD
 	usb_er |= in_be16(&usb->fhci->regs->usb_event) &
 		  in_be16(&usb->fhci->regs->usb_mask);
 
 	/* clear event bits for next time */
 	out_be16(&usb->fhci->regs->usb_event, usb_er);
+=======
+	usb_er |= in_be16(&usb->fhci->regs->usb_usber) &
+		  in_be16(&usb->fhci->regs->usb_usbmr);
+
+	/* clear event bits for next time */
+	out_be16(&usb->fhci->regs->usb_usber, usb_er);
+>>>>>>> refs/remotes/origin/master
 
 	fhci_dbg_isr(fhci, usb_er);
 
@@ -573,7 +620,11 @@ irqreturn_t fhci_irq(struct usb_hcd *hcd)
 
 			/* Turn on IDLE since we want to disconnect */
 			usb->saved_msk |= USB_E_IDLE_MASK;
+<<<<<<< HEAD
 			out_be16(&usb->fhci->regs->usb_event,
+=======
+			out_be16(&usb->fhci->regs->usb_usber,
+>>>>>>> refs/remotes/origin/master
 				 usb->saved_msk);
 		} else if (usb->port_status == FHCI_PORT_DISABLED) {
 			if (fhci_ioports_check_bus_state(fhci) == 1)
@@ -611,7 +662,11 @@ irqreturn_t fhci_irq(struct usb_hcd *hcd)
 			/* XXX usb->port_status = FHCI_PORT_WAITING; */
 			/* Disable IDLE */
 			usb->saved_msk &= ~USB_E_IDLE_MASK;
+<<<<<<< HEAD
 			out_be16(&usb->fhci->regs->usb_mask,
+=======
+			out_be16(&usb->fhci->regs->usb_usbmr,
+>>>>>>> refs/remotes/origin/master
 				 usb->saved_msk);
 		} else {
 			fhci_dbg_isr(fhci, -1);
@@ -740,9 +795,19 @@ void fhci_queue_urb(struct fhci_hcd *fhci, struct urb *urb)
 	}
 
 	/* for ISO transfer calculate start frame index */
+<<<<<<< HEAD
 	if (ed->mode == FHCI_TF_ISO && urb->transfer_flags & URB_ISO_ASAP)
 		urb->start_frame = ed->td_head ? ed->last_iso + 1 :
 						 get_frame_num(fhci);
+=======
+	if (ed->mode == FHCI_TF_ISO) {
+		/* Ignore the possibility of underruns */
+		urb->start_frame = ed->td_head ? ed->next_iso :
+						 get_frame_num(fhci);
+		ed->next_iso = (urb->start_frame + urb->interval *
+				urb->number_of_packets) & 0x07ff;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * OHCI handles the DATA toggle itself,we just use the USB

@@ -67,9 +67,19 @@ static int afs_inode_map_status(struct afs_vnode *vnode, struct key *key)
 		fscache_attr_changed(vnode->cache);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink		= vnode->status.nlink;
+=======
+	set_nlink(inode, vnode->status.nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_uid		= vnode->status.owner;
 	inode->i_gid		= 0;
+=======
+	set_nlink(inode, vnode->status.nlink);
+	inode->i_uid		= vnode->status.owner;
+	inode->i_gid		= GLOBAL_ROOT_GID;
+>>>>>>> refs/remotes/origin/master
 	inode->i_size		= vnode->status.size;
 	inode->i_ctime.tv_sec	= vnode->status.mtime_server;
 	inode->i_ctime.tv_nsec	= 0;
@@ -174,9 +184,19 @@ struct inode *afs_iget_autocell(struct inode *dir, const char *dev_name,
 	inode->i_size		= 0;
 	inode->i_mode		= S_IFDIR | S_IRUGO | S_IXUGO;
 	inode->i_op		= &afs_autocell_inode_operations;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink		= 2;
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_uid		= 0;
 	inode->i_gid		= 0;
+=======
+	set_nlink(inode, 2);
+	inode->i_uid		= GLOBAL_ROOT_UID;
+	inode->i_gid		= GLOBAL_ROOT_GID;
+>>>>>>> refs/remotes/origin/master
 	inode->i_ctime.tv_sec	= get_seconds();
 	inode->i_ctime.tv_nsec	= 0;
 	inode->i_atime		= inode->i_mtime = inode->i_ctime;
@@ -259,7 +279,11 @@ struct inode *afs_iget(struct super_block *sb, struct key *key,
 #ifdef CONFIG_AFS_FSCACHE
 	vnode->cache = fscache_acquire_cookie(vnode->volume->cache,
 					      &afs_vnode_cache_index_def,
+<<<<<<< HEAD
 					      vnode);
+=======
+					      vnode, true);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	ret = afs_inode_map_status(vnode, key);
@@ -423,7 +447,11 @@ void afs_evict_inode(struct inode *inode)
 	ASSERTCMP(inode->i_ino, ==, vnode->fid.vnode);
 
 	truncate_inode_pages(&inode->i_data, 0);
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 
 	afs_give_up_callback(vnode);
 

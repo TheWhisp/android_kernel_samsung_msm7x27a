@@ -19,6 +19,8 @@
 #include <linux/types.h>
 #include <linux/magic.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * The second extended filesystem constants/structures
  */
@@ -77,12 +79,20 @@ static inline struct ext2_sb_info *EXT2_SB(struct super_block *sb)
  * macros from user land. */
 #define EXT2_SB(sb)	(sb)
 #endif
+=======
+#define EXT2_NAME_LEN 255
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXT2_NAME_LEN 255
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Maximal count of links to a file
  */
 #define EXT2_LINK_MAX		32000
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Macro-instructions used to manage several block sizes
  */
@@ -587,4 +597,24 @@ enum {
 					 ~EXT2_DIR_ROUND)
 #define EXT2_MAX_REC_LEN		((1<<16)-1)
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define EXT2_SB_MAGIC_OFFSET	0x38
+#define EXT2_SB_BLOCKS_OFFSET	0x04
+#define EXT2_SB_BSIZE_OFFSET	0x18
+
+static inline u64 ext2_image_size(void *ext2_sb)
+{
+	__u8 *p = ext2_sb;
+	if (*(__le16 *)(p + EXT2_SB_MAGIC_OFFSET) != cpu_to_le16(EXT2_SUPER_MAGIC))
+		return 0;
+	return (u64)le32_to_cpup((__le32 *)(p + EXT2_SB_BLOCKS_OFFSET)) <<
+		le32_to_cpup((__le32 *)(p + EXT2_SB_BSIZE_OFFSET));
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_EXT2_FS_H */

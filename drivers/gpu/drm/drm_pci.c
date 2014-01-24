@@ -39,7 +39,16 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
+=======
+#include <linux/export.h>
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 
 /**********************************************************************/
 /** \name PCI memory */
@@ -51,10 +60,15 @@
 drm_dma_handle_t *drm_pci_alloc(struct drm_device * dev, size_t size, size_t align)
 {
 	drm_dma_handle_t *dmah;
+<<<<<<< HEAD
 #if 1
 	unsigned long addr;
 	size_t sz;
 #endif
+=======
+	unsigned long addr;
+	size_t sz;
+>>>>>>> refs/remotes/origin/master
 
 	/* pci_alloc_consistent only guarantees alignment to the smallest
 	 * PAGE_SIZE order which is greater than or equal to the requested size.
@@ -81,7 +95,11 @@ drm_dma_handle_t *drm_pci_alloc(struct drm_device * dev, size_t size, size_t ali
 	/* Reserve */
 	for (addr = (unsigned long)dmah->vaddr, sz = size;
 	     sz > 0; addr += PAGE_SIZE, sz -= PAGE_SIZE) {
+<<<<<<< HEAD
 		SetPageReserved(virt_to_page(addr));
+=======
+		SetPageReserved(virt_to_page((void *)addr));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return dmah;
@@ -96,17 +114,26 @@ EXPORT_SYMBOL(drm_pci_alloc);
  */
 void __drm_pci_free(struct drm_device * dev, drm_dma_handle_t * dmah)
 {
+<<<<<<< HEAD
 #if 1
 	unsigned long addr;
 	size_t sz;
 #endif
+=======
+	unsigned long addr;
+	size_t sz;
+>>>>>>> refs/remotes/origin/master
 
 	if (dmah->vaddr) {
 		/* XXX - Is virt_to_page() legal for consistent mem? */
 		/* Unreserve */
 		for (addr = (unsigned long)dmah->vaddr, sz = dmah->size;
 		     sz > 0; addr += PAGE_SIZE, sz -= PAGE_SIZE) {
+<<<<<<< HEAD
 			ClearPageReserved(virt_to_page(addr));
+=======
+			ClearPageReserved(virt_to_page((void *)addr));
+>>>>>>> refs/remotes/origin/master
 		}
 		dma_free_coherent(&dev->pdev->dev, dmah->size, dmah->vaddr,
 				  dmah->busaddr);
@@ -151,7 +178,11 @@ static const char *drm_pci_get_name(struct drm_device *dev)
 	return pdriver->name;
 }
 
+<<<<<<< HEAD
 int drm_pci_set_busid(struct drm_device *dev, struct drm_master *master)
+=======
+static int drm_pci_set_busid(struct drm_device *dev, struct drm_master *master)
+>>>>>>> refs/remotes/origin/master
 {
 	int len, ret;
 	struct pci_driver *pdriver = dev->driver->kdriver.pci;
@@ -193,9 +224,15 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 int drm_pci_set_unique(struct drm_device *dev,
 		       struct drm_master *master,
 		       struct drm_unique *u)
+=======
+static int drm_pci_set_unique(struct drm_device *dev,
+			      struct drm_master *master,
+			      struct drm_unique *u)
+>>>>>>> refs/remotes/origin/master
 {
 	int domain, bus, slot, func, ret;
 	const char *bus_name;
@@ -265,7 +302,11 @@ static int drm_pci_irq_by_busid(struct drm_device *dev, struct drm_irq_busid *p)
 	return 0;
 }
 
+<<<<<<< HEAD
 int drm_pci_agp_init(struct drm_device *dev)
+=======
+static int drm_pci_agp_init(struct drm_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (drm_core_has_AGP(dev)) {
 		if (drm_pci_device_is_agp(dev))
@@ -275,17 +316,38 @@ int drm_pci_agp_init(struct drm_device *dev)
 			DRM_ERROR("Cannot initialize the agpgart module.\n");
 			return -EINVAL;
 		}
+<<<<<<< HEAD
 		if (drm_core_has_MTRR(dev)) {
 			if (dev->agp)
 				dev->agp->agp_mtrr =
 					mtrr_add(dev->agp->agp_info.aper_base,
 						 dev->agp->agp_info.aper_size *
 						 1024 * 1024, MTRR_TYPE_WRCOMB, 1);
+=======
+		if (dev->agp) {
+			dev->agp->agp_mtrr = arch_phys_wc_add(
+				dev->agp->agp_info.aper_base,
+				dev->agp->agp_info.aper_size *
+				1024 * 1024);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void drm_pci_agp_destroy(struct drm_device *dev)
+{
+	if (drm_core_has_AGP(dev) && dev->agp) {
+		arch_phys_wc_del(dev->agp->agp_mtrr);
+		drm_agp_clear(dev);
+		drm_agp_destroy(dev->agp);
+		dev->agp = NULL;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct drm_bus drm_pci_bus = {
 	.bus_type = DRIVER_BUS_PCI,
 	.get_irq = drm_pci_get_irq,
@@ -294,6 +356,10 @@ static struct drm_bus drm_pci_bus = {
 	.set_unique = drm_pci_set_unique,
 	.irq_by_busid = drm_pci_irq_by_busid,
 	.agp_init = drm_pci_agp_init,
+<<<<<<< HEAD
+=======
+	.agp_destroy = drm_pci_agp_destroy,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -315,26 +381,40 @@ int drm_get_pci_dev(struct pci_dev *pdev, const struct pci_device_id *ent,
 
 	DRM_DEBUG("\n");
 
+<<<<<<< HEAD
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+=======
+	dev = drm_dev_alloc(driver, &pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!dev)
 		return -ENOMEM;
 
 	ret = pci_enable_device(pdev);
 	if (ret)
+<<<<<<< HEAD
 		goto err_g1;
 
+<<<<<<< HEAD
 	pci_set_master(pdev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->pdev = pdev;
 	dev->dev = &pdev->dev;
 
 	dev->pci_device = pdev->device;
 	dev->pci_vendor = pdev->vendor;
 
+=======
+		goto err_free;
+
+	dev->pdev = pdev;
+>>>>>>> refs/remotes/origin/master
 #ifdef __alpha__
 	dev->hose = pdev->sysdata;
 #endif
 
+<<<<<<< HEAD
 	mutex_lock(&drm_global_mutex);
 
 	if ((ret = drm_fill_in_dev(dev, ent, driver))) {
@@ -367,11 +447,20 @@ int drm_get_pci_dev(struct pci_dev *pdev, const struct pci_device_id *ent,
 	}
 
 	list_add_tail(&dev->driver_item, &driver->device_list);
+=======
+	if (drm_core_check_feature(dev, DRIVER_MODESET))
+		pci_set_drvdata(pdev, dev);
+
+	ret = drm_dev_register(dev, ent->driver_data);
+	if (ret)
+		goto err_pci;
+>>>>>>> refs/remotes/origin/master
 
 	DRM_INFO("Initialized %s %d.%d.%d %s for %s on minor %d\n",
 		 driver->name, driver->major, driver->minor, driver->patchlevel,
 		 driver->date, pci_name(pdev), dev->primary->index);
 
+<<<<<<< HEAD
 	mutex_unlock(&drm_global_mutex);
 	return 0;
 
@@ -385,6 +474,14 @@ err_g2:
 err_g1:
 	kfree(dev);
 	mutex_unlock(&drm_global_mutex);
+=======
+	return 0;
+
+err_pci:
+	pci_disable_device(pdev);
+err_free:
+	drm_dev_free(dev);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(drm_get_pci_dev);
@@ -440,6 +537,47 @@ int drm_pci_init(struct drm_driver *driver, struct pci_driver *pdriver)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+int drm_pcie_get_speed_cap_mask(struct drm_device *dev, u32 *mask)
+{
+	struct pci_dev *root;
+	u32 lnkcap, lnkcap2;
+
+	*mask = 0;
+	if (!dev->pdev)
+		return -EINVAL;
+
+	root = dev->pdev->bus->self;
+
+	/* we've been informed via and serverworks don't make the cut */
+	if (root->vendor == PCI_VENDOR_ID_VIA ||
+	    root->vendor == PCI_VENDOR_ID_SERVERWORKS)
+		return -EINVAL;
+
+	pcie_capability_read_dword(root, PCI_EXP_LNKCAP, &lnkcap);
+	pcie_capability_read_dword(root, PCI_EXP_LNKCAP2, &lnkcap2);
+
+	if (lnkcap2) {	/* PCIe r3.0-compliant */
+		if (lnkcap2 & PCI_EXP_LNKCAP2_SLS_2_5GB)
+			*mask |= DRM_PCIE_SPEED_25;
+		if (lnkcap2 & PCI_EXP_LNKCAP2_SLS_5_0GB)
+			*mask |= DRM_PCIE_SPEED_50;
+		if (lnkcap2 & PCI_EXP_LNKCAP2_SLS_8_0GB)
+			*mask |= DRM_PCIE_SPEED_80;
+	} else {	/* pre-r3.0 */
+		if (lnkcap & PCI_EXP_LNKCAP_SLS_2_5GB)
+			*mask |= DRM_PCIE_SPEED_25;
+		if (lnkcap & PCI_EXP_LNKCAP_SLS_5_0GB)
+			*mask |= (DRM_PCIE_SPEED_25 | DRM_PCIE_SPEED_50);
+	}
+
+	DRM_INFO("probing gen 2 caps for device %x:%x = %x/%x\n", root->vendor, root->device, lnkcap, lnkcap2);
+	return 0;
+}
+EXPORT_SYMBOL(drm_pcie_get_speed_cap_mask);
+
+>>>>>>> refs/remotes/origin/master
 #else
 
 int drm_pci_init(struct drm_driver *driver, struct pci_driver *pdriver)

@@ -1,5 +1,9 @@
 #ifndef DECTYPES
+<<<<<<< HEAD
 #define	DECTYPES
+=======
+#define DECTYPES
+>>>>>>> refs/remotes/origin/master
 
 #define DS2100_3100	1	/* DS2100/3100	Pmax		*/
 #define DS5000_200	2	/* DS5000/200	3max		*/

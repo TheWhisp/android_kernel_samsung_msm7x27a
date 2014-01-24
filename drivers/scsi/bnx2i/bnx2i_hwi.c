@@ -1,6 +1,14 @@
 /* bnx2i_hwi.c: Broadcom NetXtreme II iSCSI driver.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2010 Broadcom Corporation
+=======
+ * Copyright (c) 2006 - 2011 Broadcom Corporation
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006 - 2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2007, 2008 Red Hat, Inc.  All rights reserved.
  * Copyright (c) 2007, 2008 Mike Christie
  *
@@ -17,6 +25,16 @@
 #include <scsi/libiscsi.h>
 #include "bnx2i.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+DECLARE_PER_CPU(struct bnx2i_percpu_s, bnx2i_percpu);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+DECLARE_PER_CPU(struct bnx2i_percpu_s, bnx2i_percpu);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * bnx2i_get_cid_num - get cid from ep
  * @ep: 	endpoint pointer
@@ -124,23 +142,49 @@ static void bnx2i_iscsi_license_error(struct bnx2i_hba *hba, u32 error_code)
 
 /**
  * bnx2i_arm_cq_event_coalescing - arms CQ to enable EQ notification
+<<<<<<< HEAD
  * @ep:		endpoint (transport indentifier) structure
+=======
+ * @ep:		endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  * @action:	action, ARM or DISARM. For now only ARM_CQE is used
  *
  * Arm'ing CQ will enable chip to generate global EQ events inorder to interrupt
  *	the driver. EQ event is generated CQ index is hit or at least 1 CQ is
  *	outstanding and on chip timer expires
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void bnx2i_arm_cq_event_coalescing(struct bnx2i_endpoint *ep, u8 action)
 {
 	struct bnx2i_5771x_cq_db *cq_db;
 	u16 cq_index;
 	u16 next_index;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int bnx2i_arm_cq_event_coalescing(struct bnx2i_endpoint *ep, u8 action)
+{
+	struct bnx2i_5771x_cq_db *cq_db;
+	u16 cq_index;
+	u16 next_index = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 num_active_cmds;
 
 	/* Coalesce CQ entries only on 10G devices */
 	if (!test_bit(BNX2I_NX2_DEV_57710, &ep->hba->cnic_dev_type))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* Do not update CQ DB multiple times before firmware writes
 	 * '0xFFFF' to CQDB->SQN field. Deviation may cause spurious
@@ -150,6 +194,8 @@ void bnx2i_arm_cq_event_coalescing(struct bnx2i_endpoint *ep, u8 action)
 
 	if (action != CNIC_ARM_CQE_FP)
 		if (cq_db->sqn[0] && cq_db->sqn[0] != 0xFFFF)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return;
 
 	if (action == CNIC_ARM_CQE || action == CNIC_ARM_CQE_FP) {
@@ -160,6 +206,24 @@ void bnx2i_arm_cq_event_coalescing(struct bnx2i_endpoint *ep, u8 action)
 			next_index = event_coal_min +
 				     ((num_active_cmds - event_coal_min) >>
 				     ep->ec_shift);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			return 0;
+
+	if (action == CNIC_ARM_CQE || action == CNIC_ARM_CQE_FP) {
+		num_active_cmds = atomic_read(&ep->num_active_cmds);
+		if (num_active_cmds <= event_coal_min)
+			next_index = 1;
+		else {
+			next_index = num_active_cmds >> ep->ec_shift;
+			if (next_index > num_active_cmds - event_coal_min)
+				next_index = num_active_cmds - event_coal_min;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!next_index)
 			next_index = 1;
 		cq_index = ep->qp.cqe_exp_seq_sn + next_index - 1;
@@ -170,6 +234,14 @@ void bnx2i_arm_cq_event_coalescing(struct bnx2i_endpoint *ep, u8 action)
 
 		cq_db->sqn[0] = cq_index;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	return next_index;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return next_index;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -265,7 +337,15 @@ static void bnx2i_ring_sq_dbell(struct bnx2i_conn *bnx2i_conn, int count)
 	struct bnx2i_5771x_sq_rq_db *sq_db;
 	struct bnx2i_endpoint *ep = bnx2i_conn->ep;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ep->num_active_cmds++;
+=======
+	atomic_inc(&ep->num_active_cmds);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_inc(&ep->num_active_cmds);
+>>>>>>> refs/remotes/origin/master
 	wmb();	/* flush SQ WQE memory before the doorbell is rung */
 	if (test_bit(BNX2I_NX2_DEV_57710, &ep->hba->cnic_dev_type)) {
 		sq_db = (struct bnx2i_5771x_sq_rq_db *) ep->qp.sq_pgtbl_virt;
@@ -328,11 +408,25 @@ int bnx2i_send_iscsi_login(struct bnx2i_conn *bnx2i_conn,
 {
 	struct bnx2i_cmd *bnx2i_cmd;
 	struct bnx2i_login_request *login_wqe;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct iscsi_login *login_hdr;
 	u32 dword;
 
 	bnx2i_cmd = (struct bnx2i_cmd *)task->dd_data;
 	login_hdr = (struct iscsi_login *)task->hdr;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct iscsi_login_req *login_hdr;
+	u32 dword;
+
+	bnx2i_cmd = (struct bnx2i_cmd *)task->dd_data;
+	login_hdr = (struct iscsi_login_req *)task->hdr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	login_wqe = (struct bnx2i_login_request *)
 						bnx2i_conn->ep->qp.sq_prod_qe;
 
@@ -430,7 +524,15 @@ int bnx2i_send_iscsi_tmf(struct bnx2i_conn *bnx2i_conn,
 	default:
 		tmfabort_wqe->ref_itt = RESERVED_ITT;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(scsi_lun, tmfabort_hdr->lun, sizeof(struct scsi_lun));
+=======
+	memcpy(scsi_lun, &tmfabort_hdr->lun, sizeof(struct scsi_lun));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(scsi_lun, &tmfabort_hdr->lun, sizeof(struct scsi_lun));
+>>>>>>> refs/remotes/origin/master
 	tmfabort_wqe->lun[0] = be32_to_cpu(scsi_lun[0]);
 	tmfabort_wqe->lun[1] = be32_to_cpu(scsi_lun[1]);
 
@@ -547,7 +649,15 @@ int bnx2i_send_iscsi_nopout(struct bnx2i_conn *bnx2i_conn,
 
 	nopout_wqe->op_code = nopout_hdr->opcode;
 	nopout_wqe->op_attr = ISCSI_FLAG_CMD_FINAL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(nopout_wqe->lun, nopout_hdr->lun, 8);
+=======
+	memcpy(nopout_wqe->lun, &nopout_hdr->lun, 8);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(nopout_wqe->lun, &nopout_hdr->lun, 8);
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(BNX2I_NX2_DEV_57710, &ep->hba->cnic_dev_type)) {
 		u32 tmp = nopout_wqe->lun[0];
@@ -559,7 +669,15 @@ int bnx2i_send_iscsi_nopout(struct bnx2i_conn *bnx2i_conn,
 	nopout_wqe->itt = ((u16)task->itt |
 			   (ISCSI_TASK_TYPE_MPATH <<
 			    ISCSI_TMF_REQUEST_TYPE_SHIFT));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nopout_wqe->ttt = nopout_hdr->ttt;
+=======
+	nopout_wqe->ttt = be32_to_cpu(nopout_hdr->ttt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nopout_wqe->ttt = be32_to_cpu(nopout_hdr->ttt);
+>>>>>>> refs/remotes/origin/master
 	nopout_wqe->flags = 0;
 	if (!unsol)
 		nopout_wqe->flags = ISCSI_NOP_OUT_REQUEST_LOCAL_COMPLETION;
@@ -752,7 +870,11 @@ void bnx2i_send_cmd_cleanup_req(struct bnx2i_hba *hba, struct bnx2i_cmd *cmd)
 /**
  * bnx2i_send_conn_destroy - initiates iscsi connection teardown process
  * @hba:	adapter structure pointer
+<<<<<<< HEAD
  * @ep:		endpoint (transport indentifier) structure
+=======
+ * @ep:		endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * this routine prepares and posts CONN_OFLD_REQ1/2 KWQE to initiate
  * 	iscsi connection context clean-up process
@@ -787,7 +909,11 @@ int bnx2i_send_conn_destroy(struct bnx2i_hba *hba, struct bnx2i_endpoint *ep)
 /**
  * bnx2i_570x_send_conn_ofld_req - initiates iscsi conn context setup process
  * @hba: 		adapter structure pointer
+<<<<<<< HEAD
  * @ep: 		endpoint (transport indentifier) structure
+=======
+ * @ep: 		endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * 5706/5708/5709 specific - prepares and posts CONN_OFLD_REQ1/2 KWQE
  */
@@ -847,7 +973,11 @@ static int bnx2i_570x_send_conn_ofld_req(struct bnx2i_hba *hba,
 /**
  * bnx2i_5771x_send_conn_ofld_req - initiates iscsi connection context creation
  * @hba: 		adapter structure pointer
+<<<<<<< HEAD
  * @ep: 		endpoint (transport indentifier) structure
+=======
+ * @ep: 		endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * 57710 specific - prepares and posts CONN_OFLD_REQ1/2 KWQE
  */
@@ -916,7 +1046,11 @@ static int bnx2i_5771x_send_conn_ofld_req(struct bnx2i_hba *hba,
  * bnx2i_send_conn_ofld_req - initiates iscsi connection context setup process
  *
  * @hba: 		adapter structure pointer
+<<<<<<< HEAD
  * @ep: 		endpoint (transport indentifier) structure
+=======
+ * @ep: 		endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * this routine prepares and posts CONN_OFLD_REQ1/2 KWQE
  */
@@ -935,7 +1069,11 @@ int bnx2i_send_conn_ofld_req(struct bnx2i_hba *hba, struct bnx2i_endpoint *ep)
 
 /**
  * setup_qp_page_tables - iscsi QP page table setup function
+<<<<<<< HEAD
  * @ep:		endpoint (transport indentifier) structure
+=======
+ * @ep:		endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * Sets up page tables for SQ/RQ/CQ, 1G/sec (5706/5708/5709) devices requires
  * 	64-bit address in big endian format. Whereas 10G/sec (57710) requires
@@ -1042,7 +1180,11 @@ static void setup_qp_page_tables(struct bnx2i_endpoint *ep)
 /**
  * bnx2i_alloc_qp_resc - allocates required resources for QP.
  * @hba:	adapter structure pointer
+<<<<<<< HEAD
  * @ep:		endpoint (transport indentifier) structure
+=======
+ * @ep:		endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * Allocate QP (transport layer for iSCSI connection) resources, DMA'able
  *	memory for SQ/RQ/CQ and page tables. EP structure elements such
@@ -1187,7 +1329,11 @@ mem_alloc_err:
 /**
  * bnx2i_free_qp_resc - free memory resources held by QP
  * @hba:	adapter structure pointer
+<<<<<<< HEAD
  * @ep:	endpoint (transport indentifier) structure
+=======
+ * @ep:	endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * Free QP resources - SQ/RQ/CQ memory and page tables.
  */
@@ -1311,6 +1457,8 @@ int bnx2i_send_fw_iscsi_init_msg(struct bnx2i_hba *hba)
 		  ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_EXP_DATASN) |
 		/* EMC */
 		(1ULL << ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_LUN));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (error_mask1)
 		iscsi_init2.error_bit_map[0] = error_mask1;
 	else
@@ -1319,6 +1467,28 @@ int bnx2i_send_fw_iscsi_init_msg(struct bnx2i_hba *hba)
 	if (error_mask2)
 		iscsi_init2.error_bit_map[1] = error_mask2;
 	else
+=======
+	if (error_mask1) {
+		iscsi_init2.error_bit_map[0] = error_mask1;
+		mask64 &= (u32)(~mask64);
+=======
+	if (error_mask1) {
+		iscsi_init2.error_bit_map[0] = error_mask1;
+		mask64 ^= (u32)(mask64);
+>>>>>>> refs/remotes/origin/master
+		mask64 |= error_mask1;
+	} else
+		iscsi_init2.error_bit_map[0] = (u32) mask64;
+
+	if (error_mask2) {
+		iscsi_init2.error_bit_map[1] = error_mask2;
+		mask64 &= 0xffffffff;
+		mask64 |= ((u64)error_mask2 << 32);
+	} else
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		iscsi_init2.error_bit_map[1] = (u32) (mask64 >> 32);
 
 	iscsi_error_mask = mask64;
@@ -1334,24 +1504,63 @@ int bnx2i_send_fw_iscsi_init_msg(struct bnx2i_hba *hba)
 
 /**
  * bnx2i_process_scsi_cmd_resp - this function handles scsi cmd completion.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @conn:	iscsi connection
+=======
+ * @session:	iscsi session
+ * @bnx2i_conn:	bnx2i connection
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @session:	iscsi session
+ * @bnx2i_conn:	bnx2i connection
+>>>>>>> refs/remotes/origin/master
  * @cqe:	pointer to newly DMA'ed CQE entry for processing
  *
  * process SCSI CMD Response CQE & complete the request to SCSI-ML
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int bnx2i_process_scsi_cmd_resp(struct iscsi_session *session,
 				       struct bnx2i_conn *bnx2i_conn,
 				       struct cqe *cqe)
+=======
+int bnx2i_process_scsi_cmd_resp(struct iscsi_session *session,
+				struct bnx2i_conn *bnx2i_conn,
+				struct cqe *cqe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct iscsi_conn *conn = bnx2i_conn->cls_conn->dd_data;
 	struct bnx2i_cmd_response *resp_cqe;
 	struct bnx2i_cmd *bnx2i_cmd;
 	struct iscsi_task *task;
+<<<<<<< HEAD
 	struct iscsi_cmd_rsp *hdr;
 	u32 datalen = 0;
 
 	resp_cqe = (struct bnx2i_cmd_response *)cqe;
 	spin_lock(&session->lock);
+=======
+=======
+int bnx2i_process_scsi_cmd_resp(struct iscsi_session *session,
+				struct bnx2i_conn *bnx2i_conn,
+				struct cqe *cqe)
+{
+	struct iscsi_conn *conn = bnx2i_conn->cls_conn->dd_data;
+	struct bnx2i_hba *hba = bnx2i_conn->hba;
+	struct bnx2i_cmd_response *resp_cqe;
+	struct bnx2i_cmd *bnx2i_cmd;
+	struct iscsi_task *task;
+>>>>>>> refs/remotes/origin/master
+	struct iscsi_scsi_rsp *hdr;
+	u32 datalen = 0;
+
+	resp_cqe = (struct bnx2i_cmd_response *)cqe;
+	spin_lock_bh(&session->lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	task = iscsi_itt_to_task(conn,
 				 resp_cqe->itt & ISCSI_CMD_RESPONSE_INDEX);
 	if (!task)
@@ -1361,6 +1570,7 @@ static int bnx2i_process_scsi_cmd_resp(struct iscsi_session *session,
 
 	if (bnx2i_cmd->req.op_attr & ISCSI_CMD_REQUEST_READ) {
 		conn->datain_pdus_cnt +=
+<<<<<<< HEAD
 			resp_cqe->task_stat.read_stat.num_data_outs;
 		conn->rxdata_octets +=
 			bnx2i_cmd->req.total_data_transfer_length;
@@ -1374,7 +1584,37 @@ static int bnx2i_process_scsi_cmd_resp(struct iscsi_session *session,
 	}
 	bnx2i_iscsi_unmap_sg_list(bnx2i_cmd);
 
+<<<<<<< HEAD
 	hdr = (struct iscsi_cmd_rsp *)task->hdr;
+=======
+	hdr = (struct iscsi_scsi_rsp *)task->hdr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			resp_cqe->task_stat.read_stat.num_data_ins;
+		conn->rxdata_octets +=
+			bnx2i_cmd->req.total_data_transfer_length;
+		ADD_STATS_64(hba, rx_pdus,
+			     resp_cqe->task_stat.read_stat.num_data_ins);
+		ADD_STATS_64(hba, rx_bytes,
+			     bnx2i_cmd->req.total_data_transfer_length);
+	} else {
+		conn->dataout_pdus_cnt +=
+			resp_cqe->task_stat.write_stat.num_data_outs;
+		conn->r2t_pdus_cnt +=
+			resp_cqe->task_stat.write_stat.num_r2ts;
+		conn->txdata_octets +=
+			bnx2i_cmd->req.total_data_transfer_length;
+		ADD_STATS_64(hba, tx_pdus,
+			     resp_cqe->task_stat.write_stat.num_data_outs);
+		ADD_STATS_64(hba, tx_bytes,
+			     bnx2i_cmd->req.total_data_transfer_length);
+		ADD_STATS_64(hba, rx_pdus,
+			     resp_cqe->task_stat.write_stat.num_r2ts);
+	}
+	bnx2i_iscsi_unmap_sg_list(bnx2i_cmd);
+
+	hdr = (struct iscsi_scsi_rsp *)task->hdr;
+>>>>>>> refs/remotes/origin/master
 	resp_cqe = (struct bnx2i_cmd_response *)cqe;
 	hdr->opcode = resp_cqe->op_code;
 	hdr->max_cmdsn = cpu_to_be32(resp_cqe->max_cmd_sn);
@@ -1412,7 +1652,15 @@ done:
 	__iscsi_complete_pdu(conn, (struct iscsi_hdr *)hdr,
 			     conn->data, datalen);
 fail:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&session->lock);
+=======
+	spin_unlock_bh(&session->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_bh(&session->lock);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1714,7 +1962,15 @@ static int bnx2i_process_nopin_mesg(struct iscsi_session *session,
 		hdr->flags = ISCSI_FLAG_CMD_FINAL;
 		hdr->itt = task->hdr->itt;
 		hdr->ttt = cpu_to_be32(nop_in->ttt);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		memcpy(hdr->lun, nop_in->lun, 8);
+=======
+		memcpy(&hdr->lun, nop_in->lun, 8);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memcpy(&hdr->lun, nop_in->lun, 8);
+>>>>>>> refs/remotes/origin/master
 	}
 done:
 	__iscsi_complete_pdu(conn, (struct iscsi_hdr *)hdr, NULL, 0);
@@ -1757,7 +2013,15 @@ static void bnx2i_process_async_mesg(struct iscsi_session *session,
 	resp_hdr->opcode = async_cqe->op_code;
 	resp_hdr->flags = 0x80;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(resp_hdr->lun, async_cqe->lun, 8);
+=======
+	memcpy(&resp_hdr->lun, async_cqe->lun, 8);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(&resp_hdr->lun, async_cqe->lun, 8);
+>>>>>>> refs/remotes/origin/master
 	resp_hdr->exp_cmdsn = cpu_to_be32(async_cqe->exp_cmd_sn);
 	resp_hdr->max_cmdsn = cpu_to_be32(async_cqe->max_cmd_sn);
 
@@ -1839,6 +2103,8 @@ static void bnx2i_process_cmd_cleanup_resp(struct iscsi_session *session,
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /**
  * bnx2i_process_new_cqes - process newly DMA'ed CQE's
@@ -1854,6 +2120,151 @@ static void bnx2i_process_new_cqes(struct bnx2i_conn *bnx2i_conn)
 	struct bnx2i_nop_in_msg *nopin;
 	int tgt_async_msg;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * bnx2i_percpu_io_thread - thread per cpu for ios
+ *
+ * @arg:	ptr to bnx2i_percpu_info structure
+ */
+int bnx2i_percpu_io_thread(void *arg)
+{
+	struct bnx2i_percpu_s *p = arg;
+	struct bnx2i_work *work, *tmp;
+	LIST_HEAD(work_list);
+
+	set_user_nice(current, -20);
+
+	while (!kthread_should_stop()) {
+		spin_lock_bh(&p->p_work_lock);
+		while (!list_empty(&p->work_list)) {
+			list_splice_init(&p->work_list, &work_list);
+			spin_unlock_bh(&p->p_work_lock);
+
+			list_for_each_entry_safe(work, tmp, &work_list, list) {
+				list_del_init(&work->list);
+				/* work allocated in the bh, freed here */
+				bnx2i_process_scsi_cmd_resp(work->session,
+							    work->bnx2i_conn,
+							    &work->cqe);
+				atomic_dec(&work->bnx2i_conn->work_cnt);
+				kfree(work);
+			}
+			spin_lock_bh(&p->p_work_lock);
+		}
+		set_current_state(TASK_INTERRUPTIBLE);
+		spin_unlock_bh(&p->p_work_lock);
+		schedule();
+	}
+	__set_current_state(TASK_RUNNING);
+
+	return 0;
+}
+
+
+/**
+ * bnx2i_queue_scsi_cmd_resp - queue cmd completion to the percpu thread
+ * @bnx2i_conn:		bnx2i connection
+ *
+ * this function is called by generic KCQ handler to queue all pending cmd
+ * completion CQEs
+ *
+ * The implementation is to queue the cmd response based on the
+ * last recorded command for the given connection.  The
+ * cpu_id gets recorded upon task_xmit.  No out-of-order completion!
+ */
+static int bnx2i_queue_scsi_cmd_resp(struct iscsi_session *session,
+				     struct bnx2i_conn *bnx2i_conn,
+				     struct bnx2i_nop_in_msg *cqe)
+{
+	struct bnx2i_work *bnx2i_work = NULL;
+	struct bnx2i_percpu_s *p = NULL;
+	struct iscsi_task *task;
+	struct scsi_cmnd *sc;
+	int rc = 0;
+	int cpu;
+
+	spin_lock(&session->lock);
+	task = iscsi_itt_to_task(bnx2i_conn->cls_conn->dd_data,
+				 cqe->itt & ISCSI_CMD_RESPONSE_INDEX);
+	if (!task || !task->sc) {
+		spin_unlock(&session->lock);
+		return -EINVAL;
+	}
+	sc = task->sc;
+
+	if (!blk_rq_cpu_valid(sc->request))
+		cpu = smp_processor_id();
+	else
+		cpu = sc->request->cpu;
+
+	spin_unlock(&session->lock);
+
+	p = &per_cpu(bnx2i_percpu, cpu);
+	spin_lock(&p->p_work_lock);
+	if (unlikely(!p->iothread)) {
+		rc = -EINVAL;
+		goto err;
+	}
+	/* Alloc and copy to the cqe */
+	bnx2i_work = kzalloc(sizeof(struct bnx2i_work), GFP_ATOMIC);
+	if (bnx2i_work) {
+		INIT_LIST_HEAD(&bnx2i_work->list);
+		bnx2i_work->session = session;
+		bnx2i_work->bnx2i_conn = bnx2i_conn;
+		memcpy(&bnx2i_work->cqe, cqe, sizeof(struct cqe));
+		list_add_tail(&bnx2i_work->list, &p->work_list);
+		atomic_inc(&bnx2i_conn->work_cnt);
+		wake_up_process(p->iothread);
+		spin_unlock(&p->p_work_lock);
+		goto done;
+	} else
+		rc = -ENOMEM;
+err:
+	spin_unlock(&p->p_work_lock);
+	bnx2i_process_scsi_cmd_resp(session, bnx2i_conn, (struct cqe *)cqe);
+done:
+	return rc;
+}
+
+
+/**
+ * bnx2i_process_new_cqes - process newly DMA'ed CQE's
+ * @bnx2i_conn:		bnx2i connection
+ *
+ * this function is called by generic KCQ handler to process all pending CQE's
+ */
+static int bnx2i_process_new_cqes(struct bnx2i_conn *bnx2i_conn)
+{
+	struct iscsi_conn *conn = bnx2i_conn->cls_conn->dd_data;
+	struct iscsi_session *session = conn->session;
+<<<<<<< HEAD
+=======
+	struct bnx2i_hba *hba = bnx2i_conn->hba;
+>>>>>>> refs/remotes/origin/master
+	struct qp_info *qp;
+	struct bnx2i_nop_in_msg *nopin;
+	int tgt_async_msg;
+	int cqe_cnt = 0;
+
+	if (bnx2i_conn->ep == NULL)
+		return 0;
+
+	qp = &bnx2i_conn->ep->qp;
+
+	if (!qp->cq_virt) {
+		printk(KERN_ALERT "bnx2i (%s): cq resr freed in bh execution!",
+<<<<<<< HEAD
+			bnx2i_conn->hba->netdev->name);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       hba->netdev->name);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		nopin = (struct bnx2i_nop_in_msg *) qp->cq_cons_qe;
 		if (nopin->cq_req_sn != qp->cqe_exp_seq_sn)
@@ -1863,9 +2274,15 @@ static void bnx2i_process_new_cqes(struct bnx2i_conn *bnx2i_conn)
 			if (nopin->op_code == ISCSI_OP_NOOP_IN &&
 			    nopin->itt == (u16) RESERVED_ITT) {
 				printk(KERN_ALERT "bnx2i: Unsolicited "
+<<<<<<< HEAD
 					"NOP-In detected for suspended "
 					"connection dev=%s!\n",
 					bnx2i_conn->hba->netdev->name);
+=======
+				       "NOP-In detected for suspended "
+				       "connection dev=%s!\n",
+				       hba->netdev->name);
+>>>>>>> refs/remotes/origin/master
 				bnx2i_unsol_pdu_adjust_rq(bnx2i_conn);
 				goto cqe_out;
 			}
@@ -1876,9 +2293,22 @@ static void bnx2i_process_new_cqes(struct bnx2i_conn *bnx2i_conn)
 		switch (nopin->op_code) {
 		case ISCSI_OP_SCSI_CMD_RSP:
 		case ISCSI_OP_SCSI_DATA_IN:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			bnx2i_process_scsi_cmd_resp(session, bnx2i_conn,
 						    qp->cq_cons_qe);
+=======
+			/* Run the kthread engine only for data cmds
+			   All other cmds will be completed in this bh! */
+			bnx2i_queue_scsi_cmd_resp(session, bnx2i_conn, nopin);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
+=======
+			/* Run the kthread engine only for data cmds
+			   All other cmds will be completed in this bh! */
+			bnx2i_queue_scsi_cmd_resp(session, bnx2i_conn, nopin);
+			goto done;
+>>>>>>> refs/remotes/origin/master
 		case ISCSI_OP_LOGIN_RSP:
 			bnx2i_process_login_resp(session, bnx2i_conn,
 						 qp->cq_cons_qe);
@@ -1921,13 +2351,47 @@ static void bnx2i_process_new_cqes(struct bnx2i_conn *bnx2i_conn)
 			printk(KERN_ALERT "bnx2i: unknown opcode 0x%x\n",
 					  nopin->op_code);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!tgt_async_msg)
 			bnx2i_conn->ep->num_active_cmds--;
+=======
+=======
+
+		ADD_STATS_64(hba, rx_pdus, 1);
+		ADD_STATS_64(hba, rx_bytes, nopin->data_length);
+done:
+>>>>>>> refs/remotes/origin/master
+		if (!tgt_async_msg) {
+			if (!atomic_read(&bnx2i_conn->ep->num_active_cmds))
+				printk(KERN_ALERT "bnx2i (%s): no active cmd! "
+				       "op 0x%x\n",
+<<<<<<< HEAD
+				       bnx2i_conn->hba->netdev->name,
+=======
+				       hba->netdev->name,
+>>>>>>> refs/remotes/origin/master
+				       nopin->op_code);
+			else
+				atomic_dec(&bnx2i_conn->ep->num_active_cmds);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 cqe_out:
 		/* clear out in production version only, till beta keep opcode
 		 * field intact, will be helpful in debugging (context dump)
 		 * nopin->op_code = 0;
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		cqe_cnt++;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cqe_cnt++;
+>>>>>>> refs/remotes/origin/master
 		qp->cqe_exp_seq_sn++;
 		if (qp->cqe_exp_seq_sn == (qp->cqe_size * 2 + 1))
 			qp->cqe_exp_seq_sn = ISCSI_INITIAL_SN;
@@ -1940,6 +2404,16 @@ cqe_out:
 			qp->cq_cons_idx++;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+out:
+	return cqe_cnt;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+	return cqe_cnt;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1955,6 +2429,14 @@ static void bnx2i_fastpath_notification(struct bnx2i_hba *hba,
 {
 	struct bnx2i_conn *bnx2i_conn;
 	u32 iscsi_cid;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int nxt_idx;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int nxt_idx;
+>>>>>>> refs/remotes/origin/master
 
 	iscsi_cid = new_cqe_kcqe->iscsi_conn_id;
 	bnx2i_conn = bnx2i_get_conn_from_id(hba, iscsi_cid);
@@ -1967,9 +2449,24 @@ static void bnx2i_fastpath_notification(struct bnx2i_hba *hba,
 		printk(KERN_ALERT "cid #%x - ep not bound\n", iscsi_cid);
 		return;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bnx2i_process_new_cqes(bnx2i_conn);
 	bnx2i_arm_cq_event_coalescing(bnx2i_conn->ep, CNIC_ARM_CQE_FP);
 	bnx2i_process_new_cqes(bnx2i_conn);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	bnx2i_process_new_cqes(bnx2i_conn);
+	nxt_idx = bnx2i_arm_cq_event_coalescing(bnx2i_conn->ep,
+						CNIC_ARM_CQE_FP);
+	if (nxt_idx && nxt_idx == bnx2i_process_new_cqes(bnx2i_conn))
+		bnx2i_arm_cq_event_coalescing(bnx2i_conn->ep, CNIC_ARM_CQE_FP);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2315,7 +2812,15 @@ static void bnx2i_process_ofld_cmpl(struct bnx2i_hba *hba,
 			printk(KERN_ALERT "bnx2i (%s): ofld1 cmpl - invalid "
 				"opcode\n", hba->netdev->name);
 		else if (ofld_kcqe->completion_status ==
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ISCSI_KCQE_COMPLETION_STATUS_CID_BUSY)
+=======
+			 ISCSI_KCQE_COMPLETION_STATUS_CID_BUSY)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 ISCSI_KCQE_COMPLETION_STATUS_CID_BUSY)
+>>>>>>> refs/remotes/origin/master
 			/* error status code valid only for 5771x chipset */
 			ep->state = EP_STATE_OFLD_FAILED_CID_BUSY;
 		else
@@ -2389,14 +2894,40 @@ static void bnx2i_indicate_kcqe(void *context, struct kcqe *kcqe[],
  * bnx2i_indicate_netevent - Generic netdev event handler
  * @context:	adapter structure pointer
  * @event:	event type
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @vlan_id:	vlans id - associated vlan id with this event
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @vlan_id:	vlans id - associated vlan id with this event
+>>>>>>> refs/remotes/origin/master
  *
  * Handles four netdev events, NETDEV_UP, NETDEV_DOWN,
  *	NETDEV_GOING_DOWN and NETDEV_CHANGE
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void bnx2i_indicate_netevent(void *context, unsigned long event)
 {
 	struct bnx2i_hba *hba = context;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void bnx2i_indicate_netevent(void *context, unsigned long event,
+				    u16 vlan_id)
+{
+	struct bnx2i_hba *hba = context;
+
+	/* Ignore all netevent coming from vlans */
+	if (vlan_id != 0)
+		return;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (event) {
 	case NETDEV_UP:
 		if (!test_bit(ADAPTER_STATE_UP, &hba->adapter_state))
@@ -2514,7 +3045,15 @@ static void bnx2i_cm_remote_abort(struct cnic_sock *cm_sk)
 
 
 static int bnx2i_send_nl_mesg(void *context, u32 msg_type,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			       char *buf, u16 buflen)
+=======
+			      char *buf, u16 buflen)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      char *buf, u16 buflen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bnx2i_hba *hba = context;
 	int rc;
@@ -2549,6 +3088,10 @@ struct cnic_ulp_ops bnx2i_cnic_cb = {
 	.cm_remote_close = bnx2i_cm_remote_close,
 	.cm_remote_abort = bnx2i_cm_remote_abort,
 	.iscsi_nl_send_msg = bnx2i_send_nl_mesg,
+<<<<<<< HEAD
+=======
+	.cnic_get_stats = bnx2i_get_stats,
+>>>>>>> refs/remotes/origin/master
 	.owner = THIS_MODULE
 };
 
@@ -2575,13 +3118,20 @@ int bnx2i_map_ep_dbell_regs(struct bnx2i_endpoint *ep)
 	if (test_bit(BNX2I_NX2_DEV_57710, &ep->hba->cnic_dev_type)) {
 		reg_base = pci_resource_start(ep->hba->pcidev,
 					      BNX2X_DOORBELL_PCI_BAR);
+<<<<<<< HEAD
 		reg_off = BNX2I_5771X_DBELL_PAGE_SIZE * (cid_num & 0x1FFFF) +
 			  DPM_TRIGER_TYPE;
+=======
+		reg_off = (1 << BNX2X_DB_SHIFT) * (cid_num & 0x1FFFF);
+>>>>>>> refs/remotes/origin/master
 		ep->qp.ctx_base = ioremap_nocache(reg_base + reg_off, 4);
 		goto arm_cq;
 	}
 
+<<<<<<< HEAD
 	reg_base = ep->hba->netdev->base_addr;
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((test_bit(BNX2I_NX2_DEV_5709, &ep->hba->cnic_dev_type)) &&
 	    (ep->hba->mail_queue_access == BNX2I_MQ_BIN_MODE)) {
 		config2 = REG_RD(ep->hba, BNX2_MQ_CONFIG2);
@@ -2597,7 +3147,11 @@ int bnx2i_map_ep_dbell_regs(struct bnx2i_endpoint *ep)
 		/* 5709 device in normal node and 5706/5708 devices */
 		reg_off = CTX_OFFSET + (MB_KERNEL_CTX_SIZE * cid_num);
 
+<<<<<<< HEAD
 	ep->qp.ctx_base = ioremap_nocache(reg_base + reg_off,
+=======
+	ep->qp.ctx_base = ioremap_nocache(ep->hba->reg_base + reg_off,
+>>>>>>> refs/remotes/origin/master
 					  MB_KERNEL_CTX_SIZE);
 	if (!ep->qp.ctx_base)
 		return -ENOMEM;

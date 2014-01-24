@@ -3,6 +3,7 @@
  * The Linux soundcard driver for 1200 baud and 9600 baud packet radio
  * (C) 1996-1998 by Thomas Sailer, HB9JNX/AE4WA
  */
+<<<<<<< HEAD
 
 #ifndef _HDLCDRV_H
 #define _HDLCDRV_H
@@ -103,10 +104,19 @@ struct hdlcdrv_ioctl {
 /* -------------------------------------------------------------------- */
 
 #ifdef __KERNEL__
+=======
+#ifndef _HDLCDRV_H
+#define _HDLCDRV_H
+
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/netdevice.h>
 #include <linux/if.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <uapi/linux/hdlcdrv.h>
+>>>>>>> refs/remotes/origin/master
 
 #define HDLCDRV_MAGIC      0x5ac6e778
 #define HDLCDRV_HDLCBUFFER  32 /* should be a power of 2 for speed reasons */
@@ -368,6 +378,7 @@ void hdlcdrv_unregister(struct net_device *dev);
 
 
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /* -------------------------------------------------------------------- */
@@ -375,3 +386,6 @@ void hdlcdrv_unregister(struct net_device *dev);
 #endif /* _HDLCDRV_H */
 
 /* -------------------------------------------------------------------- */
+=======
+#endif /* _HDLCDRV_H */
+>>>>>>> refs/remotes/origin/master

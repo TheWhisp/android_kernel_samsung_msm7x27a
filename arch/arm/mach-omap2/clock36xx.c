@@ -20,6 +20,7 @@
 
 #include <linux/kernel.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <linux/io.h>
 
 #include <plat/clock.h>
@@ -27,6 +28,14 @@
 #include "clock.h"
 #include "clock36xx.h"
 
+=======
+#include <linux/clk-provider.h>
+#include <linux/io.h>
+
+#include "clock.h"
+#include "clock36xx.h"
+#define to_clk_divider(_hw) container_of(_hw, struct clk_divider, hw)
+>>>>>>> refs/remotes/origin/master
 
 /**
  * omap36xx_pwrdn_clk_enable_with_hsdiv_restore - enable clocks suffering
@@ -39,14 +48,23 @@
  * (Any other value different from the Read value) to the
  * corresponding CM_CLKSEL register will refresh the dividers.
  */
+<<<<<<< HEAD
 static int omap36xx_pwrdn_clk_enable_with_hsdiv_restore(struct clk *clk)
 {
 	u32 dummy_v, orig_v, clksel_shift;
+=======
+int omap36xx_pwrdn_clk_enable_with_hsdiv_restore(struct clk_hw *clk)
+{
+	struct clk_divider *parent;
+	struct clk_hw *parent_hw;
+	u32 dummy_v, orig_v;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* Clear PWRDN bit of HSDIVIDER */
 	ret = omap2_dflt_clk_enable(clk);
 
+<<<<<<< HEAD
 	/* Restore the dividers */
 	if (!ret) {
 		clksel_shift = __ffs(clk->parent->clksel_mask);
@@ -59,10 +77,27 @@ static int omap36xx_pwrdn_clk_enable_with_hsdiv_restore(struct clk *clk)
 
 		/* Write the original divider */
 		__raw_writel(orig_v, clk->parent->clksel_reg);
+=======
+	parent_hw = __clk_get_hw(__clk_get_parent(clk->clk));
+	parent = to_clk_divider(parent_hw);
+
+	/* Restore the dividers */
+	if (!ret) {
+		orig_v = __raw_readl(parent->reg);
+		dummy_v = orig_v;
+
+		/* Write any other value different from the Read value */
+		dummy_v ^= (1 << parent->shift);
+		__raw_writel(dummy_v, parent->reg);
+
+		/* Write the original divider */
+		__raw_writel(orig_v, parent->reg);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
 }
+<<<<<<< HEAD
 
 const struct clkops clkops_omap36xx_pwrdn_with_hsdiv_wait_restore = {
 	.enable		= omap36xx_pwrdn_clk_enable_with_hsdiv_restore,
@@ -70,3 +105,5 @@ const struct clkops clkops_omap36xx_pwrdn_with_hsdiv_wait_restore = {
 	.find_companion	= omap2_clk_dflt_find_companion,
 	.find_idlest	= omap2_clk_dflt_find_idlest,
 };
+=======
+>>>>>>> refs/remotes/origin/master

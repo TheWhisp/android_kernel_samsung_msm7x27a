@@ -6,6 +6,10 @@
  * Copyright (C) 2003, 04, 05 Ralf Baechle (ralf@linux-mips.org)
  * Copyright (C) 2007  Maciej W. Rozycki
  * Copyright (C) 2008  Thiemo Seufer
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2012  MIPS Technologies, Inc.
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/init.h>
 #include <linux/kernel.h>
@@ -17,12 +21,22 @@
 
 #include <asm/bugs.h>
 #include <asm/cacheops.h>
+<<<<<<< HEAD
+=======
+#include <asm/cpu-type.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/inst.h>
 #include <asm/io.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/prefetch.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/bootinfo.h>
 #include <asm/mipsregs.h>
 #include <asm/mmu_context.h>
@@ -66,12 +80,18 @@ UASM_L_LA(_copy_pref_both)
 UASM_L_LA(_copy_pref_store)
 
 /* We need one branch and therefore one relocation per target label. */
+<<<<<<< HEAD
 static struct uasm_label __cpuinitdata labels[5];
 static struct uasm_reloc __cpuinitdata relocs[5];
+=======
+static struct uasm_label labels[5];
+static struct uasm_reloc relocs[5];
+>>>>>>> refs/remotes/origin/master
 
 #define cpu_is_r4600_v1_x()	((read_c0_prid() & 0xfffffff0) == 0x00002010)
 #define cpu_is_r4600_v2_x()	((read_c0_prid() & 0xfffffff0) == 0x00002020)
 
+<<<<<<< HEAD
 /*
  * Maximum sizes:
  *
@@ -128,6 +148,25 @@ static int cache_line_size __cpuinitdata;
 #define cache_line_mask() (cache_line_size - 1)
 
 static inline void __cpuinit
+=======
+static int pref_bias_clear_store;
+static int pref_bias_copy_load;
+static int pref_bias_copy_store;
+
+static u32 pref_src_mode;
+static u32 pref_dst_mode;
+
+static int clear_word_size;
+static int copy_word_size;
+
+static int half_clear_loop_size;
+static int half_copy_loop_size;
+
+static int cache_line_size;
+#define cache_line_mask() (cache_line_size - 1)
+
+static inline void
+>>>>>>> refs/remotes/origin/master
 pg_addiu(u32 **buf, unsigned int reg1, unsigned int reg2, unsigned int off)
 {
 	if (cpu_has_64bit_gp_regs && DADDI_WAR && r4k_daddiu_bug()) {
@@ -147,7 +186,11 @@ pg_addiu(u32 **buf, unsigned int reg1, unsigned int reg2, unsigned int off)
 	}
 }
 
+<<<<<<< HEAD
 static void __cpuinit set_prefetch_parameters(void)
+=======
+static void set_prefetch_parameters(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (cpu_has_64bit_gp_regs || cpu_has_64bit_zero_reg)
 		clear_word_size = 8;
@@ -179,6 +222,7 @@ static void __cpuinit set_prefetch_parameters(void)
 			pref_bias_copy_load = 256;
 			break;
 
+<<<<<<< HEAD
 		case CPU_RM9000:
 			/*
 			 * As a workaround for erratum G105 which make the
@@ -188,6 +232,8 @@ static void __cpuinit set_prefetch_parameters(void)
 			 * alize this.
 			 */
 
+=======
+>>>>>>> refs/remotes/origin/master
 		case CPU_R10000:
 		case CPU_R12000:
 		case CPU_R14000:
@@ -247,7 +293,11 @@ static void __cpuinit set_prefetch_parameters(void)
 				      4 * copy_word_size));
 }
 
+<<<<<<< HEAD
 static void __cpuinit build_clear_store(u32 **buf, int off)
+=======
+static void build_clear_store(u32 **buf, int off)
+>>>>>>> refs/remotes/origin/master
 {
 	if (cpu_has_64bit_gp_regs || cpu_has_64bit_zero_reg) {
 		uasm_i_sd(buf, ZERO, off, A0);
@@ -256,7 +306,11 @@ static void __cpuinit build_clear_store(u32 **buf, int off)
 	}
 }
 
+<<<<<<< HEAD
 static inline void __cpuinit build_clear_pref(u32 **buf, int off)
+=======
+static inline void build_clear_pref(u32 **buf, int off)
+>>>>>>> refs/remotes/origin/master
 {
 	if (off & cache_line_mask())
 		return;
@@ -280,6 +334,7 @@ static inline void __cpuinit build_clear_pref(u32 **buf, int off)
 
 			uasm_i_cache(buf, Create_Dirty_Excl_D, off, A0);
 		}
+<<<<<<< HEAD
 		}
 }
 
@@ -290,6 +345,28 @@ void __cpuinit build_clear_page(void)
 	struct uasm_label *l = labels;
 	struct uasm_reloc *r = relocs;
 	int i;
+=======
+	}
+}
+
+extern u32 __clear_page_start;
+extern u32 __clear_page_end;
+extern u32 __copy_page_start;
+extern u32 __copy_page_end;
+
+void build_clear_page(void)
+{
+	int off;
+	u32 *buf = &__clear_page_start;
+	struct uasm_label *l = labels;
+	struct uasm_reloc *r = relocs;
+	int i;
+	static atomic_t run_once = ATOMIC_INIT(0);
+
+	if (atomic_xchg(&run_once, 1)) {
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	memset(labels, 0, sizeof(labels));
 	memset(relocs, 0, sizeof(relocs));
@@ -314,7 +391,11 @@ void __cpuinit build_clear_page(void)
 		uasm_i_lui(&buf, AT, 0xa000);
 
 	off = cache_line_size ? min(8, pref_bias_clear_store / cache_line_size)
+<<<<<<< HEAD
 	                        * cache_line_size : 0;
+=======
+				* cache_line_size : 0;
+>>>>>>> refs/remotes/origin/master
 	while (off) {
 		build_clear_pref(&buf, -off);
 		off -= cache_line_size;
@@ -357,11 +438,16 @@ void __cpuinit build_clear_page(void)
 	uasm_i_jr(&buf, RA);
 	uasm_i_nop(&buf);
 
+<<<<<<< HEAD
 	BUG_ON(buf > clear_page_array + ARRAY_SIZE(clear_page_array));
+=======
+	BUG_ON(buf > &__clear_page_end);
+>>>>>>> refs/remotes/origin/master
 
 	uasm_resolve_relocs(relocs, labels);
 
 	pr_debug("Synthesized clear page handler (%u instructions).\n",
+<<<<<<< HEAD
 		 (u32)(buf - clear_page_array));
 
 	pr_debug("\t.set push\n");
@@ -372,6 +458,18 @@ void __cpuinit build_clear_page(void)
 }
 
 static void __cpuinit build_copy_load(u32 **buf, int reg, int off)
+=======
+		 (u32)(buf - &__clear_page_start));
+
+	pr_debug("\t.set push\n");
+	pr_debug("\t.set noreorder\n");
+	for (i = 0; i < (buf - &__clear_page_start); i++)
+		pr_debug("\t.word 0x%08x\n", (&__clear_page_start)[i]);
+	pr_debug("\t.set pop\n");
+}
+
+static void build_copy_load(u32 **buf, int reg, int off)
+>>>>>>> refs/remotes/origin/master
 {
 	if (cpu_has_64bit_gp_regs) {
 		uasm_i_ld(buf, reg, off, A1);
@@ -380,7 +478,11 @@ static void __cpuinit build_copy_load(u32 **buf, int reg, int off)
 	}
 }
 
+<<<<<<< HEAD
 static void __cpuinit build_copy_store(u32 **buf, int reg, int off)
+=======
+static void build_copy_store(u32 **buf, int reg, int off)
+>>>>>>> refs/remotes/origin/master
 {
 	if (cpu_has_64bit_gp_regs) {
 		uasm_i_sd(buf, reg, off, A0);
@@ -425,6 +527,7 @@ static inline void build_copy_store_pref(u32 **buf, int off)
 	}
 }
 
+<<<<<<< HEAD
 void __cpuinit build_copy_page(void)
 {
 	int off;
@@ -432,6 +535,20 @@ void __cpuinit build_copy_page(void)
 	struct uasm_label *l = labels;
 	struct uasm_reloc *r = relocs;
 	int i;
+=======
+void build_copy_page(void)
+{
+	int off;
+	u32 *buf = &__copy_page_start;
+	struct uasm_label *l = labels;
+	struct uasm_reloc *r = relocs;
+	int i;
+	static atomic_t run_once = ATOMIC_INIT(0);
+
+	if (atomic_xchg(&run_once, 1)) {
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	memset(labels, 0, sizeof(labels));
 	memset(relocs, 0, sizeof(relocs));
@@ -460,13 +577,21 @@ void __cpuinit build_copy_page(void)
 		uasm_i_lui(&buf, AT, 0xa000);
 
 	off = cache_line_size ? min(8, pref_bias_copy_load / cache_line_size) *
+<<<<<<< HEAD
 	                        cache_line_size : 0;
+=======
+				cache_line_size : 0;
+>>>>>>> refs/remotes/origin/master
 	while (off) {
 		build_copy_load_pref(&buf, -off);
 		off -= cache_line_size;
 	}
 	off = cache_line_size ? min(8, pref_bias_copy_store / cache_line_size) *
+<<<<<<< HEAD
 	                        cache_line_size : 0;
+=======
+				cache_line_size : 0;
+>>>>>>> refs/remotes/origin/master
 	while (off) {
 		build_copy_store_pref(&buf, -off);
 		off -= cache_line_size;
@@ -596,21 +721,39 @@ void __cpuinit build_copy_page(void)
 	uasm_i_jr(&buf, RA);
 	uasm_i_nop(&buf);
 
+<<<<<<< HEAD
 	BUG_ON(buf > copy_page_array + ARRAY_SIZE(copy_page_array));
+=======
+	BUG_ON(buf > &__copy_page_end);
+>>>>>>> refs/remotes/origin/master
 
 	uasm_resolve_relocs(relocs, labels);
 
 	pr_debug("Synthesized copy page handler (%u instructions).\n",
+<<<<<<< HEAD
 		 (u32)(buf - copy_page_array));
 
 	pr_debug("\t.set push\n");
 	pr_debug("\t.set noreorder\n");
 	for (i = 0; i < (buf - copy_page_array); i++)
 		pr_debug("\t.word 0x%08x\n", copy_page_array[i]);
+=======
+		 (u32)(buf - &__copy_page_start));
+
+	pr_debug("\t.set push\n");
+	pr_debug("\t.set noreorder\n");
+	for (i = 0; i < (buf - &__copy_page_start); i++)
+		pr_debug("\t.word 0x%08x\n", (&__copy_page_start)[i]);
+>>>>>>> refs/remotes/origin/master
 	pr_debug("\t.set pop\n");
 }
 
 #ifdef CONFIG_SIBYTE_DMA_PAGEOPS
+<<<<<<< HEAD
+=======
+extern void clear_page_cpu(void *page);
+extern void copy_page_cpu(void *to, void *from);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Pad descriptors to cacheline, since each is exclusively owned by a

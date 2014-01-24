@@ -24,6 +24,7 @@
 #ifndef __ASM_ARCH_OMAP_MCBSP_H
 #define __ASM_ARCH_OMAP_MCBSP_H
 
+<<<<<<< HEAD
 #include <linux/completion.h>
 #include <linux/spinlock.h>
 
@@ -36,11 +37,16 @@ static struct platform_device omap_mcbsp##port_nr = {	\
 	.name	= "omap-mcbsp-dai",			\
 	.id	= OMAP_MCBSP##port_nr,			\
 }
+=======
+#include <linux/spinlock.h>
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MCBSP_CONFIG_TYPE2	0x2
 #define MCBSP_CONFIG_TYPE3	0x3
 #define MCBSP_CONFIG_TYPE4	0x4
 
+<<<<<<< HEAD
 #define OMAP7XX_MCBSP1_BASE	0xfffb1000
 #define OMAP7XX_MCBSP2_BASE	0xfffb1800
 
@@ -385,10 +391,13 @@ struct omap_mcbsp_spi_cfg {
 	omap_mcbsp_word_length		word_length;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Platform specific configuration */
 struct omap_mcbsp_ops {
 	void (*request)(unsigned int);
 	void (*free)(unsigned int);
+<<<<<<< HEAD
 	int (*set_clks_src)(u8, u8);
 };
 
@@ -454,6 +463,22 @@ struct omap_mcbsp {
 #endif
 	void *reg_cache;
 	unsigned int mcbsp_config_type;
+=======
+};
+
+struct omap_mcbsp_platform_data {
+	struct omap_mcbsp_ops *ops;
+	u16 buffer_size;
+	u8 reg_size;
+	u8 reg_step;
+
+	/* McBSP platform and instance specific features */
+	bool has_wakeup; /* Wakeup capability */
+	bool has_ccr; /* Transceiver has configuration control registers */
+	int (*enable_st_clock)(unsigned int, bool);
+	int (*set_clk_src)(struct device *dev, struct clk *clk, const char *src);
+	int (*mux_signal)(struct device *dev, const char *signal, const char *src);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -464,6 +489,7 @@ struct omap_mcbsp_dev_attr {
 	const char *sidetone;
 };
 
+<<<<<<< HEAD
 extern struct omap_mcbsp **mcbsp_ptr;
 extern int omap_mcbsp_count, omap_mcbsp_cache_size;
 
@@ -542,4 +568,6 @@ static inline int omap_st_disable(unsigned int id) { return 0; }
 static inline int omap_st_is_enabled(unsigned int id) {  return 0; }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

@@ -65,7 +65,15 @@ static void orinoco_cs_release(struct pcmcia_device *link);
 static void orinoco_cs_detach(struct pcmcia_device *p_dev);
 
 /********************************************************************/
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Device methods     						    */
+=======
+/* Device methods						    */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Device methods						    */
+>>>>>>> refs/remotes/origin/master
 /********************************************************************/
 
 static int
@@ -89,7 +97,15 @@ orinoco_cs_hard_reset(struct orinoco_private *priv)
 }
 
 /********************************************************************/
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* PCMCIA stuff     						    */
+=======
+/* PCMCIA stuff							    */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* PCMCIA stuff							    */
+>>>>>>> refs/remotes/origin/master
 /********************************************************************/
 
 static int
@@ -134,7 +150,15 @@ static int
 orinoco_cs_config(struct pcmcia_device *link)
 {
 	struct orinoco_private *priv = link->priv;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	void __iomem *mem;
 
@@ -239,7 +263,13 @@ static int orinoco_cs_resume(struct pcmcia_device *link)
 
 static const struct pcmcia_device_id orinoco_cs_ids[] = {
 	PCMCIA_DEVICE_MANF_CARD(0x0101, 0x0777), /* 3Com AirConnect PCI 777A */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	PCMCIA_DEVICE_MANF_CARD(0x0156, 0x0002), /* Lucent Orinoco and old Intersil */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	PCMCIA_DEVICE_MANF_CARD(0x016b, 0x0001), /* Ericsson WLAN Card C11 */
 	PCMCIA_DEVICE_MANF_CARD(0x01eb, 0x080a), /* Nortel Networks eMobility 802.11 Wireless Adapter */
 	PCMCIA_DEVICE_MANF_CARD(0x0261, 0x0002), /* AirWay 802.11 Adapter (PCMCIA) */
@@ -272,6 +302,14 @@ static const struct pcmcia_device_id orinoco_cs_ids[] = {
 	PCMCIA_DEVICE_PROD_ID12("PROXIM", "LAN PCI CARD HARMONY 80211B", 0xc6536a5e, 0x9f494e26),
 	PCMCIA_DEVICE_PROD_ID12("SAMSUNG", "11Mbps WLAN Card", 0x43d74cb4, 0x579bd91b),
 	PCMCIA_DEVICE_PROD_ID12("Symbol Technologies", "LA4111 Spectrum24 Wireless LAN PC Card", 0x3f02b4d6, 0x3663cb0e),
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	PCMCIA_DEVICE_MANF_CARD_PROD_ID3(0x0156, 0x0002, "Version 01.01", 0xd27deb1a), /* Lucent Orinoco */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PCMCIA_DEVICE_MANF_CARD_PROD_ID3(0x0156, 0x0002, "Version 01.01", 0xd27deb1a), /* Lucent Orinoco */
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HERMES_PRISM
 	/* Only entries that certainly identify Prism chipset */
 	PCMCIA_DEVICE_MANF_CARD(0x000b, 0x7100), /* SonicWALL Long Range Wireless Card */
@@ -321,6 +359,18 @@ static const struct pcmcia_device_id orinoco_cs_ids[] = {
 	PCMCIA_DEVICE_PROD_ID3("ISL37100P", 0x630d52b2),
 	PCMCIA_DEVICE_PROD_ID3("ISL37101P-10", 0xdd97a26b),
 	PCMCIA_DEVICE_PROD_ID3("ISL37300P", 0xc9049a39),
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	/* This may be Agere or Intersil Firmware */
+	PCMCIA_DEVICE_MANF_CARD(0x0156, 0x0002),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* This may be Agere or Intersil Firmware */
+	PCMCIA_DEVICE_MANF_CARD(0x0156, 0x0002),
+>>>>>>> refs/remotes/origin/master
 #endif
 	PCMCIA_DEVICE_NULL,
 };
@@ -335,6 +385,7 @@ static struct pcmcia_driver orinoco_driver = {
 	.suspend	= orinoco_cs_suspend,
 	.resume		= orinoco_cs_resume,
 };
+<<<<<<< HEAD
 
 static int __init
 init_orinoco_cs(void)
@@ -350,3 +401,6 @@ exit_orinoco_cs(void)
 
 module_init(init_orinoco_cs);
 module_exit(exit_orinoco_cs);
+=======
+module_pcmcia_driver(orinoco_driver);
+>>>>>>> refs/remotes/origin/master

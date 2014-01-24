@@ -296,6 +296,7 @@ static struct serio_driver spaceball_drv = {
 	.disconnect	= spaceball_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -312,3 +313,6 @@ static void __exit spaceball_exit(void)
 
 module_init(spaceball_init);
 module_exit(spaceball_exit);
+=======
+module_serio_driver(spaceball_drv);
+>>>>>>> refs/remotes/origin/master

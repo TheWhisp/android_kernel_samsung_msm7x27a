@@ -26,6 +26,7 @@
 
 #include "wl12xx.h"
 
+<<<<<<< HEAD
 int wl1271_scan(struct wl1271 *wl, const u8 *ssid, size_t ssid_len,
 		struct cfg80211_scan_request *req);
 int wl1271_scan_build_probe_req(struct wl1271 *wl,
@@ -37,6 +38,22 @@ int wl1271_scan_sched_scan_config(struct wl1271 *wl,
 				     struct cfg80211_sched_scan_request *req,
 				     struct ieee80211_sched_scan_ies *ies);
 int wl1271_scan_sched_scan_start(struct wl1271 *wl);
+=======
+int wl1271_scan(struct wl1271 *wl, struct ieee80211_vif *vif,
+		const u8 *ssid, size_t ssid_len,
+		struct cfg80211_scan_request *req);
+int wl1271_scan_stop(struct wl1271 *wl);
+int wl1271_scan_build_probe_req(struct wl1271 *wl,
+				const u8 *ssid, size_t ssid_len,
+				const u8 *ie, size_t ie_len, u8 band);
+void wl1271_scan_stm(struct wl1271 *wl, struct ieee80211_vif *vif);
+void wl1271_scan_complete_work(struct work_struct *work);
+int wl1271_scan_sched_scan_config(struct wl1271 *wl,
+				     struct wl12xx_vif *wlvif,
+				     struct cfg80211_sched_scan_request *req,
+				     struct ieee80211_sched_scan_ies *ies);
+int wl1271_scan_sched_scan_start(struct wl1271 *wl, struct wl12xx_vif *wlvif);
+>>>>>>> refs/remotes/origin/cm-10.0
 void wl1271_scan_sched_scan_stop(struct wl1271 *wl);
 void wl1271_scan_sched_scan_results(struct wl1271 *wl);
 
@@ -45,7 +62,14 @@ void wl1271_scan_sched_scan_results(struct wl1271 *wl);
 #define WL1271_SCAN_CURRENT_TX_PWR     0
 #define WL1271_SCAN_OPT_ACTIVE         0
 #define WL1271_SCAN_OPT_PASSIVE	       1
+<<<<<<< HEAD
 #define WL1271_SCAN_OPT_PRIORITY_HIGH  4
+=======
+#define WL1271_SCAN_OPT_SPLIT_SCAN     2
+#define WL1271_SCAN_OPT_PRIORITY_HIGH  4
+/* scan even if we fail to enter psm */
+#define WL1271_SCAN_OPT_FORCE          8
+>>>>>>> refs/remotes/origin/cm-10.0
 #define WL1271_SCAN_BAND_2_4_GHZ 0
 #define WL1271_SCAN_BAND_5_GHZ 1
 
@@ -61,15 +85,22 @@ enum {
 };
 
 struct basic_scan_params {
+<<<<<<< HEAD
 	__le32 rx_config_options;
 	__le32 rx_filter_options;
 	/* Scan option flags (WL1271_SCAN_OPT_*) */
 	__le16 scan_options;
+=======
+	/* Scan option flags (WL1271_SCAN_OPT_*) */
+	__le16 scan_options;
+	u8 role_id;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Number of scan channels in the list (maximum 30) */
 	u8 n_ch;
 	/* This field indicates the number of probe requests to send
 	   per channel for an active scan */
 	u8 n_probe_reqs;
+<<<<<<< HEAD
 	/* Rate bit field for sending the probes */
 	__le32 tx_rate;
 	u8 tid_trigger;
@@ -82,6 +113,21 @@ struct basic_scan_params {
 	u8 use_ssid_list;
 	u8 scan_tag;
 	u8 padding2;
+=======
+	u8 tid_trigger;
+	u8 ssid_len;
+	u8 use_ssid_list;
+
+	/* Rate bit field for sending the probes */
+	__le32 tx_rate;
+
+	u8 ssid[IEEE80211_MAX_SSID_LEN];
+	/* Band to scan */
+	u8 band;
+
+	u8 scan_tag;
+	u8 padding2[2];
+>>>>>>> refs/remotes/origin/cm-10.0
 } __packed;
 
 struct basic_scan_channel_params {
@@ -104,6 +150,13 @@ struct wl1271_cmd_scan {
 
 	struct basic_scan_params params;
 	struct basic_scan_channel_params channels[WL1271_SCAN_MAX_CHANNELS];
+<<<<<<< HEAD
+=======
+
+	/* src mac address */
+	u8 addr[ETH_ALEN];
+	u8 padding[2];
+>>>>>>> refs/remotes/origin/cm-10.0
 } __packed;
 
 struct wl1271_cmd_trigger_scan_to {
@@ -112,11 +165,19 @@ struct wl1271_cmd_trigger_scan_to {
 	__le32 timeout;
 } __packed;
 
+<<<<<<< HEAD
 #define MAX_CHANNELS_ALL_BANDS 41
+=======
+#define MAX_CHANNELS_2GHZ	14
+#define MAX_CHANNELS_5GHZ	23
+#define MAX_CHANNELS_4GHZ	4
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SCAN_MAX_CYCLE_INTERVALS 16
 #define SCAN_MAX_BANDS 3
 
 enum {
+<<<<<<< HEAD
 	SCAN_CHANNEL_TYPE_2GHZ_PASSIVE,
 	SCAN_CHANNEL_TYPE_2GHZ_ACTIVE,
 	SCAN_CHANNEL_TYPE_5GHZ_PASSIVE,
@@ -125,6 +186,8 @@ enum {
 };
 
 enum {
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	SCAN_SSID_FILTER_ANY      = 0,
 	SCAN_SSID_FILTER_SPECIFIC = 1,
 	SCAN_SSID_FILTER_LIST     = 2,
@@ -171,7 +234,11 @@ struct wl1271_cmd_sched_scan_config {
 	u8 filter_type;
 
 	u8 ssid_len;     /* For SCAN_SSID_FILTER_SPECIFIC */
+<<<<<<< HEAD
 	u8 ssid[IW_ESSID_MAX_SIZE];
+=======
+	u8 ssid[IEEE80211_MAX_SSID_LEN];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	u8 n_probe_reqs; /* Number of probes requests per channel */
 
@@ -182,11 +249,21 @@ struct wl1271_cmd_sched_scan_config {
 
 	u8 padding[3];
 
+<<<<<<< HEAD
 	struct conn_scan_ch_params channels[MAX_CHANNELS_ALL_BANDS];
 } __packed;
 
 
 #define SCHED_SCAN_MAX_SSIDS 8
+=======
+	struct conn_scan_ch_params channels_2[MAX_CHANNELS_2GHZ];
+	struct conn_scan_ch_params channels_5[MAX_CHANNELS_5GHZ];
+	struct conn_scan_ch_params channels_4[MAX_CHANNELS_4GHZ];
+} __packed;
+
+
+#define SCHED_SCAN_MAX_SSIDS 16
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum {
 	SCAN_SSID_TYPE_PUBLIC = 0,
@@ -196,7 +273,11 @@ enum {
 struct wl1271_ssid {
 	u8 type;
 	u8 len;
+<<<<<<< HEAD
 	u8 ssid[IW_ESSID_MAX_SIZE];
+=======
+	u8 ssid[IEEE80211_MAX_SSID_LEN];
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* u8 padding[2]; */
 } __packed;
 

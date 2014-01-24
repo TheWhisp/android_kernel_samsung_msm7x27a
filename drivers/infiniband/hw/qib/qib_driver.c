@@ -1,4 +1,8 @@
 /*
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2006, 2007, 2008, 2009 QLogic Corporation. All rights reserved.
  * Copyright (c) 2003, 2004, 2005, 2006 PathScale, Inc. All rights reserved.
  *
@@ -37,6 +41,15 @@
 #include <linux/delay.h>
 #include <linux/netdevice.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/prefetch.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "qib.h"
 
@@ -44,7 +57,11 @@
  * The size has to be longer than this string, so we can append
  * board/chip information to it in the init code.
  */
+<<<<<<< HEAD
 const char ib_qib_version[] = QIB_IDSTR "\n";
+=======
+const char ib_qib_version[] = QIB_DRIVER_VERSION "\n";
+>>>>>>> refs/remotes/origin/master
 
 DEFINE_SPINLOCK(qib_devs_lock);
 LIST_HEAD(qib_dev_list);
@@ -61,8 +78,14 @@ MODULE_PARM_DESC(compat_ddr_negotiate,
 		 "Attempt pre-IBTA 1.2 DDR speed negotiation");
 
 MODULE_LICENSE("Dual BSD/GPL");
+<<<<<<< HEAD
 MODULE_AUTHOR("QLogic <support@qlogic.com>");
 MODULE_DESCRIPTION("QLogic IB driver");
+=======
+MODULE_AUTHOR("Intel <ibsupport@intel.com>");
+MODULE_DESCRIPTION("Intel IB driver");
+MODULE_VERSION(QIB_DRIVER_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * QIB_PIO_MAXIBHDR is the max IB header size allowed for in our
@@ -279,10 +302,23 @@ bail:
  */
 static inline void *qib_get_egrbuf(const struct qib_ctxtdata *rcd, u32 etail)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const u32 chunk = etail / rcd->rcvegrbufs_perchunk;
 	const u32 idx =  etail % rcd->rcvegrbufs_perchunk;
 
 	return rcd->rcvegrbuf[chunk] + idx * rcd->dd->rcvegrbufsize;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	const u32 chunk = etail >> rcd->rcvegrbufs_perchunk_shift;
+	const u32 idx =  etail & ((u32)rcd->rcvegrbufs_perchunk - 1);
+
+	return rcd->rcvegrbuf[chunk] + (idx << rcd->dd->rcvegrbufsize_shift);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -310,7 +346,13 @@ static u32 qib_rcv_hdrerr(struct qib_ctxtdata *rcd, struct qib_pportdata *ppd,
 		u32 opcode;
 		u32 psn;
 		int diff;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Sanity check packet */
 		if (tlen < 24)
@@ -365,19 +407,35 @@ static u32 qib_rcv_hdrerr(struct qib_ctxtdata *rcd, struct qib_pportdata *ppd,
 
 			switch (qp->ibqp.qp_type) {
 			case IB_QPT_RC:
+<<<<<<< HEAD
+<<<<<<< HEAD
 				spin_lock_irqsave(&qp->s_lock, flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				ruc_res =
 					qib_ruc_check_hdr(
 						ibp, hdr,
 						lnh == QIB_LRH_GRH,
 						qp,
 						be32_to_cpu(ohdr->bth[0]));
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (ruc_res) {
 					spin_unlock_irqrestore(&qp->s_lock,
 							       flags);
 					goto unlock;
 				}
 				spin_unlock_irqrestore(&qp->s_lock, flags);
+=======
+				if (ruc_res)
+					goto unlock;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (ruc_res)
+					goto unlock;
+>>>>>>> refs/remotes/origin/master
 
 				/* Only deal with RDMA Writes for now */
 				if (opcode <
@@ -486,8 +544,15 @@ u32 qib_kreceive(struct qib_ctxtdata *rcd, u32 *llic, u32 *npkts)
 			etail = qib_hdrget_index(rhf_addr);
 			updegr = 1;
 			if (tlen > sizeof(*hdr) ||
+<<<<<<< HEAD
 			    etype >= RCVHQ_RCV_TYPE_NON_KD)
 				ebuf = qib_get_egrbuf(rcd, etail);
+=======
+			    etype >= RCVHQ_RCV_TYPE_NON_KD) {
+				ebuf = qib_get_egrbuf(rcd, etail);
+				prefetch_range(ebuf, tlen - sizeof(*hdr));
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 		if (!eflags) {
 			u16 lrh_len = be16_to_cpu(hdr->lrh[2]) << 2;
@@ -547,9 +612,29 @@ move_along:
 			updegr = 0;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Notify qib_destroy_qp() if it is waiting
+	 * for lookaside_qp to finish.
+	 */
+	if (rcd->lookaside_qp) {
+		if (atomic_dec_and_test(&rcd->lookaside_qp->refcount))
+			wake_up(&rcd->lookaside_qp->wait);
+		rcd->lookaside_qp = NULL;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rcd->head = l;
 	rcd->pkt_count += i;
+=======
+
+	rcd->head = l;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Iterate over all QPs waiting to respond.
@@ -757,8 +842,14 @@ int qib_reset_device(int unit)
 	qib_devinfo(dd->pcidev, "Reset on unit %u requested\n", unit);
 
 	if (!dd->kregbase || !(dd->flags & QIB_PRESENT)) {
+<<<<<<< HEAD
 		qib_devinfo(dd->pcidev, "Invalid unit number %u or "
 			    "not initialized or not present\n", unit);
+=======
+		qib_devinfo(dd->pcidev,
+			"Invalid unit number %u or not initialized or not present\n",
+			unit);
+>>>>>>> refs/remotes/origin/master
 		ret = -ENXIO;
 		goto bail;
 	}
@@ -795,11 +886,21 @@ int qib_reset_device(int unit)
 	else
 		ret = -EAGAIN;
 	if (ret)
+<<<<<<< HEAD
 		qib_dev_err(dd, "Reinitialize unit %u after "
 			    "reset failed with %d\n", unit, ret);
 	else
 		qib_devinfo(dd->pcidev, "Reinitialized unit %u after "
 			    "resetting\n", unit);
+=======
+		qib_dev_err(dd,
+			"Reinitialize unit %u after reset failed with %d\n",
+			unit, ret);
+	else
+		qib_devinfo(dd->pcidev,
+			"Reinitialized unit %u after resetting\n",
+			unit);
+>>>>>>> refs/remotes/origin/master
 
 bail:
 	return ret;

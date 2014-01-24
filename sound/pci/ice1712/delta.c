@@ -22,7 +22,10 @@
  *
  */      
 
+<<<<<<< HEAD
 #include <asm/io.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
@@ -432,7 +435,11 @@ static int snd_ice1712_delta1010lt_wordclock_status_get(struct snd_kcontrol *kco
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_ice1712_delta1010lt_wordclock_status __devinitdata =
+=======
+static struct snd_kcontrol_new snd_ice1712_delta1010lt_wordclock_status =
+>>>>>>> refs/remotes/origin/master
 {
 	.access =	(SNDRV_CTL_ELEM_ACCESS_READ),
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
@@ -445,7 +452,11 @@ static struct snd_kcontrol_new snd_ice1712_delta1010lt_wordclock_status __devini
  * initialize the chips on M-Audio cards
  */
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_audiophile __devinitdata = {
+=======
+static struct snd_akm4xxx akm_audiophile = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK4528,
 	.num_adcs = 2,
 	.num_dacs = 2,
@@ -454,7 +465,11 @@ static struct snd_akm4xxx akm_audiophile __devinitdata = {
 	}
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_audiophile_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_audiophile_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 2,
 	.cif = 0,
 	.data_mask = ICE1712_DELTA_AP_DOUT,
@@ -466,7 +481,11 @@ static struct snd_ak4xxx_private akm_audiophile_priv __devinitdata = {
 	.mask_flags = 0,
 };
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_delta410 __devinitdata = {
+=======
+static struct snd_akm4xxx akm_delta410 = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK4529,
 	.num_adcs = 2,
 	.num_dacs = 8,
@@ -475,7 +494,11 @@ static struct snd_akm4xxx akm_delta410 __devinitdata = {
 	}
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_delta410_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_delta410_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 0,
 	.cif = 0,
 	.data_mask = ICE1712_DELTA_AP_DOUT,
@@ -487,7 +510,11 @@ static struct snd_ak4xxx_private akm_delta410_priv __devinitdata = {
 	.mask_flags = 0,
 };
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_delta1010lt __devinitdata = {
+=======
+static struct snd_akm4xxx akm_delta1010lt = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK4524,
 	.num_adcs = 8,
 	.num_dacs = 8,
@@ -497,7 +524,11 @@ static struct snd_akm4xxx akm_delta1010lt __devinitdata = {
 	}
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_delta1010lt_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_delta1010lt_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 2,
 	.cif = 0, /* the default level of the CIF pin from AK4524 */
 	.data_mask = ICE1712_DELTA_1010LT_DOUT,
@@ -509,7 +540,11 @@ static struct snd_ak4xxx_private akm_delta1010lt_priv __devinitdata = {
 	.mask_flags = 0,
 };
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_delta66e __devinitdata = {
+=======
+static struct snd_akm4xxx akm_delta66e = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK4524,
 	.num_adcs = 4,
 	.num_dacs = 4,
@@ -519,7 +554,11 @@ static struct snd_akm4xxx akm_delta66e __devinitdata = {
 	}
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_delta66e_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_delta66e_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 2,
 	.cif = 0, /* the default level of the CIF pin from AK4524 */
 	.data_mask = ICE1712_DELTA_66E_DOUT,
@@ -532,7 +571,11 @@ static struct snd_ak4xxx_private akm_delta66e_priv __devinitdata = {
 };
 
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_delta44 __devinitdata = {
+=======
+static struct snd_akm4xxx akm_delta44 = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK4524,
 	.num_adcs = 4,
 	.num_dacs = 4,
@@ -542,7 +585,11 @@ static struct snd_akm4xxx akm_delta44 __devinitdata = {
 	}
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_delta44_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_delta44_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 2,
 	.cif = 0, /* the default level of the CIF pin from AK4524 */
 	.data_mask = ICE1712_DELTA_CODEC_SERIAL_DATA,
@@ -554,7 +601,11 @@ static struct snd_ak4xxx_private akm_delta44_priv __devinitdata = {
 	.mask_flags = 0,
 };
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_vx442 __devinitdata = {
+=======
+static struct snd_akm4xxx akm_vx442 = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK4524,
 	.num_adcs = 4,
 	.num_dacs = 4,
@@ -564,7 +615,11 @@ static struct snd_akm4xxx akm_vx442 __devinitdata = {
 	}
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_vx442_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_vx442_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 2,
 	.cif = 0,
 	.data_mask = ICE1712_VX442_DOUT,
@@ -576,7 +631,11 @@ static struct snd_ak4xxx_private akm_vx442_priv __devinitdata = {
 	.mask_flags = 0,
 };
 
+<<<<<<< HEAD
 static int __devinit snd_ice1712_delta_init(struct snd_ice1712 *ice)
+=======
+static int snd_ice1712_delta_init(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct snd_akm4xxx *ak;
@@ -617,7 +676,11 @@ static int __devinit snd_ice1712_delta_init(struct snd_ice1712 *ice)
 		ice->num_total_dacs = 4;	/* two AK4324 codecs */
 		break;
 	case ICE1712_SUBDEVICE_VX442:
+<<<<<<< HEAD
 	case ICE1712_SUBDEVICE_DELTA66E:	/* omni not suported yet */
+=======
+	case ICE1712_SUBDEVICE_DELTA66E:	/* omni not supported yet */
+>>>>>>> refs/remotes/origin/master
 		ice->num_total_dacs = 4;
 		ice->num_total_adcs = 4;
 		break;
@@ -714,6 +777,7 @@ static int __devinit snd_ice1712_delta_init(struct snd_ice1712 *ice)
  * additional controls for M-Audio cards
  */
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_ice1712_delta1010_wordclock_select __devinitdata =
 ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Word Clock Sync", 0, ICE1712_DELTA_WORD_CLOCK_SELECT, 1, 0);
 static struct snd_kcontrol_new snd_ice1712_delta1010lt_wordclock_select __devinitdata =
@@ -727,6 +791,21 @@ ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Delta IEC958 Input Status", 0, ICE1712
 
 
 static int __devinit snd_ice1712_delta_add_controls(struct snd_ice1712 *ice)
+=======
+static struct snd_kcontrol_new snd_ice1712_delta1010_wordclock_select =
+ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Word Clock Sync", 0, ICE1712_DELTA_WORD_CLOCK_SELECT, 1, 0);
+static struct snd_kcontrol_new snd_ice1712_delta1010lt_wordclock_select =
+ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Word Clock Sync", 0, ICE1712_DELTA_1010LT_WORDCLOCK, 0, 0);
+static struct snd_kcontrol_new snd_ice1712_delta1010_wordclock_status =
+ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Word Clock Status", 0, ICE1712_DELTA_WORD_CLOCK_STATUS, 1, SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE);
+static struct snd_kcontrol_new snd_ice1712_deltadio2496_spdif_in_select =
+ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "IEC958 Input Optical", 0, ICE1712_DELTA_SPDIF_INPUT_SELECT, 0, 0);
+static struct snd_kcontrol_new snd_ice1712_delta_spdif_in_status =
+ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Delta IEC958 Input Status", 0, ICE1712_DELTA_SPDIF_IN_STAT, 1, SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE);
+
+
+static int snd_ice1712_delta_add_controls(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -802,7 +881,11 @@ static int __devinit snd_ice1712_delta_add_controls(struct snd_ice1712 *ice)
 
 
 /* entry point */
+<<<<<<< HEAD
 struct snd_ice1712_card_info snd_ice1712_delta_cards[] __devinitdata = {
+=======
+struct snd_ice1712_card_info snd_ice1712_delta_cards[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.subvendor = ICE1712_SUBDEVICE_DELTA1010,
 		.name = "M Audio Delta 1010",

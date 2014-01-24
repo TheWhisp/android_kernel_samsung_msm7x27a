@@ -10,6 +10,14 @@
 
 struct Scsi_Host;
 struct scsi_device;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct scsi_driver;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct scsi_driver;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * MAX_COMMAND_SIZE is:
@@ -131,6 +139,35 @@ struct scsi_cmnd {
 	unsigned char tag;	/* SCSI-II queued command tag */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static inline struct scsi_driver *scsi_cmd_to_driver(struct scsi_cmnd *cmd)
+{
+	struct scsi_driver **sdp;
+
+	if (!cmd->request->rq_disk)
+		return NULL;
+
+	sdp = (struct scsi_driver **)cmd->request->rq_disk->private_data;
+	if (!sdp)
+		return NULL;
+
+	return *sdp;
+<<<<<<< HEAD
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* make sure not to use it with REQ_TYPE_BLOCK_PC commands */
+static inline struct scsi_driver *scsi_cmd_to_driver(struct scsi_cmnd *cmd)
+{
+	return *(struct scsi_driver **)cmd->request->rq_disk->private_data;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+}
+
+>>>>>>> refs/remotes/origin/master
 extern struct scsi_cmnd *scsi_get_command(struct scsi_device *, gfp_t);
 extern struct scsi_cmnd *__scsi_get_command(struct Scsi_Host *, gfp_t);
 extern void scsi_put_command(struct scsi_cmnd *);
@@ -289,17 +326,41 @@ static inline struct scsi_data_buffer *scsi_prot(struct scsi_cmnd *cmd)
 
 static inline void set_msg_byte(struct scsi_cmnd *cmd, char status)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmd->result |= status << 8;
+=======
+	cmd->result = (cmd->result & 0xffff00ff) | (status << 8);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmd->result = (cmd->result & 0xffff00ff) | (status << 8);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void set_host_byte(struct scsi_cmnd *cmd, char status)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmd->result |= status << 16;
+=======
+	cmd->result = (cmd->result & 0xff00ffff) | (status << 16);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmd->result = (cmd->result & 0xff00ffff) | (status << 16);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void set_driver_byte(struct scsi_cmnd *cmd, char status)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmd->result |= status << 24;
+=======
+	cmd->result = (cmd->result & 0x00ffffff) | (status << 24);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmd->result = (cmd->result & 0x00ffffff) | (status << 24);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* _SCSI_SCSI_CMND_H */

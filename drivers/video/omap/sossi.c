@@ -2,7 +2,15 @@
  * OMAP1 Special OptimiSed Screen Interface support
  *
  * Copyright (C) 2004-2005 Nokia Corporation
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Juha Yrj�l� <juha.yrjola@nokia.com>
+=======
+ * Author: Juha Yrjölä <juha.yrjola@nokia.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Juha Yrjölä <juha.yrjola@nokia.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -25,7 +33,11 @@
 #include <linux/io.h>
 #include <linux/interrupt.h>
 
+<<<<<<< HEAD
 #include <plat/dma.h>
+=======
+#include <linux/omap-dma.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "omapfb.h"
 #include "lcdc.h"

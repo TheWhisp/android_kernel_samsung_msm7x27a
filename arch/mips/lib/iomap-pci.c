@@ -10,8 +10,18 @@
 #include <linux/module.h>
 #include <asm/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __iomem *ioport_map_pci(struct pci_dev *dev,
                                      unsigned long port, unsigned int nr)
+=======
+void __iomem *__pci_ioport_map(struct pci_dev *dev,
+			       unsigned long port, unsigned int nr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __iomem *__pci_ioport_map(struct pci_dev *dev,
+			       unsigned long port, unsigned int nr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_controller *ctrl = dev->bus->sysdata;
 	unsigned long base = ctrl->io_map_base;
@@ -40,6 +50,8 @@ static void __iomem *ioport_map_pci(struct pci_dev *dev,
 	return (void __iomem *) (ctrl->io_map_base + port);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Create a virtual mapping cookie for a PCI BAR (memory or IO)
  */
@@ -66,6 +78,10 @@ void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
 
 EXPORT_SYMBOL(pci_iomap);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
 {
 	iounmap(addr);

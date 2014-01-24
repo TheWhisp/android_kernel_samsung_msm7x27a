@@ -21,9 +21,16 @@
 #include "wbhal.h"
 #include "wb35reg_f.h"
 #include "core.h"
+<<<<<<< HEAD
 
 /* Declare SQ3 to rate and fragmentation threshold table */
 /* Declare fragmentation thresholds table */
+=======
+#include "mto.h"
+
+/* Declare SQ3 to rate and fragmentation threshold table */
+/* Declare fragmentation threshold table */
+>>>>>>> refs/remotes/origin/master
 #define MTO_MAX_FRAG_TH_LEVELS		5
 #define MTO_MAX_DATA_RATE_LEVELS	12
 
@@ -33,7 +40,11 @@ u16 MTO_Frag_Th_Tbl[MTO_MAX_FRAG_TH_LEVELS] = {
 
 /*
  * Declare data rate table:
+<<<<<<< HEAD
  * The following table will be changed at anytime if the opration rate
+=======
+ * The following table will be changed at anytime if the operation rate
+>>>>>>> refs/remotes/origin/master
  * supported by AP don't match the table
  */
 static u8 MTO_Data_Rate_Tbl[MTO_MAX_DATA_RATE_LEVELS] = {
@@ -45,12 +56,15 @@ static int retryrate_rec[MTO_MAX_DATA_RATE_LEVELS];
 
 static u8 boSparseTxTraffic;
 
+<<<<<<< HEAD
 void MTO_Init(struct wbsoft_priv *adapter);
 void TxRateReductionCtrl(struct wbsoft_priv *adapter);
 void MTO_SetTxCount(struct wbsoft_priv *adapter, u8 t0, u8 index);
 void MTO_TxFailed(struct wbsoft_priv *adapter);
 void hal_get_dto_para(struct wbsoft_priv *adapter, char *buffer);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ===========================================================================
  * MTO_Init --

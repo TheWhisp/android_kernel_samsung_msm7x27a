@@ -18,7 +18,13 @@
 #include "ctatc.h"
 #include "ctpcm.h"
 #include "ctmixer.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "cthardware.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "ctsrc.h"
 #include "ctamixer.h"
 #include "ctdaio.h"
@@ -30,7 +36,13 @@
 #include <sound/asoundef.h>
 
 #define MONO_SUM_SCALE	0x19a8	/* 2^(-0.5) in 14-bit floating format */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DAIONUM		7
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MAX_MULTI_CHN	8
 
 #define IEC958_DEFAULT_CON ((IEC958_AES0_NONAUDIO \
@@ -40,7 +52,11 @@
 			    | (0x10 << 16) \
 			    | ((IEC958_AES3_CON_FS_48000) << 24))
 
+<<<<<<< HEAD
 static struct snd_pci_quirk __devinitdata subsys_20k1_list[] = {
+=======
+static struct snd_pci_quirk subsys_20k1_list[] = {
+>>>>>>> refs/remotes/origin/master
 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, 0x0022, "SB055x", CTSB055X),
 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, 0x002f, "SB055x", CTSB055X),
 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, 0x0029, "SB073x", CTSB073X),
@@ -50,9 +66,22 @@ static struct snd_pci_quirk __devinitdata subsys_20k1_list[] = {
 	{ } /* terminator */
 };
 
+<<<<<<< HEAD
 static struct snd_pci_quirk __devinitdata subsys_20k2_list[] = {
 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, PCI_SUBDEVICE_ID_CREATIVE_SB0760,
 		      "SB0760", CTSB0760),
+<<<<<<< HEAD
+=======
+	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, PCI_SUBDEVICE_ID_CREATIVE_SB1270,
+		      "SB1270", CTSB1270),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_pci_quirk subsys_20k2_list[] = {
+	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, PCI_SUBDEVICE_ID_CREATIVE_SB0760,
+		      "SB0760", CTSB0760),
+	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, PCI_SUBDEVICE_ID_CREATIVE_SB1270,
+		      "SB1270", CTSB1270),
+>>>>>>> refs/remotes/origin/master
 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, PCI_SUBDEVICE_ID_CREATIVE_SB08801,
 		      "SB0880", CTSB0880),
 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, PCI_SUBDEVICE_ID_CREATIVE_SB08802,
@@ -75,6 +104,14 @@ static const char *ct_subsys_name[NUM_CTCARDS] = {
 	[CTSB0760]	= "SB076x",
 	[CTHENDRIX]	= "Hendrix",
 	[CTSB0880]	= "SB0880",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	[CTSB1270]      = "SB1270",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[CTSB1270]      = "SB1270",
+>>>>>>> refs/remotes/origin/master
 	[CT20K2_UNKNOWN] = "Unknown",
 };
 
@@ -434,6 +471,14 @@ atc_pcm_playback_position(struct ct_atc *atc, struct ct_atc_pcm *apcm)
 		return 0;
 	position = src->ops->get_ca(src);
 
+<<<<<<< HEAD
+=======
+	if (position < apcm->vm_block->addr) {
+		snd_printdd("ctxfi: bad ca - ca=0x%08x, vba=0x%08x, vbs=0x%08x\n", position, apcm->vm_block->addr, apcm->vm_block->size);
+		position = apcm->vm_block->addr;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	size = apcm->vm_block->size;
 	max_cisz = src->multi * src->rsc.msr;
 	max_cisz = 128 * (max_cisz < 8 ? max_cisz : 8);
@@ -459,12 +504,28 @@ static void setup_src_node_conf(struct ct_atc *atc, struct ct_atc_pcm *apcm,
 				apcm->substream->runtime->rate);
 	*n_srcc = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (1 == atc->msr) {
+=======
+	if (1 == atc->msr) { /* FIXME: do we really need SRC here if pitch==1 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (1 == atc->msr) { /* FIXME: do we really need SRC here if pitch==1 */
+>>>>>>> refs/remotes/origin/master
 		*n_srcc = apcm->substream->runtime->channels;
 		conf[0].pitch = pitch;
 		conf[0].mix_msr = conf[0].imp_msr = conf[0].msr = 1;
 		conf[0].vo = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (2 == atc->msr) {
+=======
+	} else if (2 <= atc->msr) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (2 <= atc->msr) {
+>>>>>>> refs/remotes/origin/master
 		if (0x8000000 < pitch) {
 			/* Need two-stage SRCs, SRCIMPs and
 			 * AMIXERs for converting format */
@@ -970,11 +1031,53 @@ static int atc_select_mic_in(struct ct_atc *atc)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int atc_have_digit_io_switch(struct ct_atc *atc)
 {
 	struct hw *hw = atc->hw;
 
 	return hw->have_digit_io_switch(hw);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct capabilities atc_capabilities(struct ct_atc *atc)
+{
+	struct hw *hw = atc->hw;
+
+	return hw->capabilities(hw);
+}
+
+static int atc_output_switch_get(struct ct_atc *atc)
+{
+	struct hw *hw = atc->hw;
+
+	return hw->output_switch_get(hw);
+}
+
+static int atc_output_switch_put(struct ct_atc *atc, int position)
+{
+	struct hw *hw = atc->hw;
+
+	return hw->output_switch_put(hw, position);
+}
+
+static int atc_mic_source_switch_get(struct ct_atc *atc)
+{
+	struct hw *hw = atc->hw;
+
+	return hw->mic_source_switch_get(hw);
+}
+
+static int atc_mic_source_switch_put(struct ct_atc *atc, int position)
+{
+	struct hw *hw = atc->hw;
+
+	return hw->mic_source_switch_put(hw, position);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int atc_select_digit_io(struct ct_atc *atc)
@@ -1045,6 +1148,20 @@ static int atc_line_in_unmute(struct ct_atc *atc, unsigned char state)
 	return atc_daio_unmute(atc, state, LINEIM);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int atc_mic_unmute(struct ct_atc *atc, unsigned char state)
+{
+	return atc_daio_unmute(atc, state, MIC);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int atc_spdif_out_unmute(struct ct_atc *atc, unsigned char state)
 {
 	return atc_daio_unmute(atc, state, SPDIFOO);
@@ -1215,7 +1332,11 @@ static int atc_dev_free(struct snd_device *dev)
 	return ct_atc_destroy(atc);
 }
 
+<<<<<<< HEAD
 static int __devinit atc_identify_card(struct ct_atc *atc, unsigned int ssid)
+=======
+static int atc_identify_card(struct ct_atc *atc, unsigned int ssid)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct snd_pci_quirk *p;
 	const struct snd_pci_quirk *list;
@@ -1262,7 +1383,11 @@ static int __devinit atc_identify_card(struct ct_atc *atc, unsigned int ssid)
 	return 0;
 }
 
+<<<<<<< HEAD
 int __devinit ct_atc_create_alsa_devs(struct ct_atc *atc)
+=======
+int ct_atc_create_alsa_devs(struct ct_atc *atc)
+>>>>>>> refs/remotes/origin/master
 {
 	enum CTALSADEVS i;
 	int err;
@@ -1285,7 +1410,11 @@ int __devinit ct_atc_create_alsa_devs(struct ct_atc *atc)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit atc_create_hw_devs(struct ct_atc *atc)
+=======
+static int atc_create_hw_devs(struct ct_atc *atc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hw *hw;
 	struct card_conf info = {0};
@@ -1331,6 +1460,8 @@ static int atc_get_resources(struct ct_atc *atc)
 	struct srcimp_mgr *srcimp_mgr;
 	struct sum_desc sum_dsc = {0};
 	struct sum_mgr *sum_mgr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int err, i;
 
 	atc->daios = kzalloc(sizeof(void *)*(DAIONUM), GFP_KERNEL);
@@ -1342,6 +1473,27 @@ static int atc_get_resources(struct ct_atc *atc)
 		return -ENOMEM;
 
 	atc->srcimps = kzalloc(sizeof(void *)*(2*2), GFP_KERNEL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int err, i, num_srcs, num_daios;
+
+	num_daios = ((atc->model == CTSB1270) ? 8 : 7);
+	num_srcs = ((atc->model == CTSB1270) ? 6 : 4);
+
+	atc->daios = kzalloc(sizeof(void *)*num_daios, GFP_KERNEL);
+	if (!atc->daios)
+		return -ENOMEM;
+
+	atc->srcs = kzalloc(sizeof(void *)*num_srcs, GFP_KERNEL);
+	if (!atc->srcs)
+		return -ENOMEM;
+
+	atc->srcimps = kzalloc(sizeof(void *)*num_srcs, GFP_KERNEL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!atc->srcimps)
 		return -ENOMEM;
 
@@ -1351,8 +1503,20 @@ static int atc_get_resources(struct ct_atc *atc)
 
 	daio_mgr = (struct daio_mgr *)atc->rsc_mgrs[DAIO];
 	da_desc.msr = atc->msr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0, atc->n_daio = 0; i < DAIONUM-1; i++) {
 		da_desc.type = i;
+=======
+	for (i = 0, atc->n_daio = 0; i < num_daios; i++) {
+		da_desc.type = (atc->model != CTSB073X) ? i :
+			     ((i == SPDIFIO) ? SPDIFI1 : i);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0, atc->n_daio = 0; i < num_daios; i++) {
+		da_desc.type = (atc->model != CTSB073X) ? i :
+			     ((i == SPDIFIO) ? SPDIFI1 : i);
+>>>>>>> refs/remotes/origin/master
 		err = daio_mgr->get_daio(daio_mgr, &da_desc,
 					(struct daio **)&atc->daios[i]);
 		if (err) {
@@ -1362,6 +1526,8 @@ static int atc_get_resources(struct ct_atc *atc)
 		}
 		atc->n_daio++;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (atc->model == CTSB073X)
 		da_desc.type = SPDIFI1;
 	else
@@ -1373,12 +1539,24 @@ static int atc_get_resources(struct ct_atc *atc)
 		return err;
 	}
 	atc->n_daio++;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	src_mgr = atc->rsc_mgrs[SRC];
 	src_dsc.multi = 1;
 	src_dsc.msr = atc->msr;
 	src_dsc.mode = ARCRW;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0, atc->n_src = 0; i < (2*2); i++) {
+=======
+	for (i = 0, atc->n_src = 0; i < num_srcs; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0, atc->n_src = 0; i < num_srcs; i++) {
+>>>>>>> refs/remotes/origin/master
 		err = src_mgr->get_src(src_mgr, &src_dsc,
 					(struct src **)&atc->srcs[i]);
 		if (err)
@@ -1388,8 +1566,18 @@ static int atc_get_resources(struct ct_atc *atc)
 	}
 
 	srcimp_mgr = atc->rsc_mgrs[SRCIMP];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	srcimp_dsc.msr = 8; /* SRCIMPs for S/PDIFIn SRT */
 	for (i = 0, atc->n_srcimp = 0; i < (2*1); i++) {
+=======
+	srcimp_dsc.msr = 8;
+	for (i = 0, atc->n_srcimp = 0; i < num_srcs; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	srcimp_dsc.msr = 8;
+	for (i = 0, atc->n_srcimp = 0; i < num_srcs; i++) {
+>>>>>>> refs/remotes/origin/master
 		err = srcimp_mgr->get_srcimp(srcimp_mgr, &srcimp_dsc,
 					(struct srcimp **)&atc->srcimps[i]);
 		if (err)
@@ -1397,6 +1585,8 @@ static int atc_get_resources(struct ct_atc *atc)
 
 		atc->n_srcimp++;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	srcimp_dsc.msr = 8; /* SRCIMPs for LINE/MICIn SRT */
 	for (i = 0; i < (2*1); i++) {
 		err = srcimp_mgr->get_srcimp(srcimp_mgr, &srcimp_dsc,
@@ -1406,6 +1596,10 @@ static int atc_get_resources(struct ct_atc *atc)
 
 		atc->n_srcimp++;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sum_mgr = atc->rsc_mgrs[SUM];
 	sum_dsc.msr = atc->msr;
@@ -1488,6 +1682,27 @@ static void atc_connect_resources(struct ct_atc *atc)
 	src = atc->srcs[3];
 	mixer->set_input_right(mixer, MIX_LINE_IN, &src->rsc);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (atc->model == CTSB1270) {
+		/* Titanium HD has a dedicated ADC for the Mic. */
+		dai = container_of(atc->daios[MIC], struct dai, daio);
+		atc_connect_dai(atc->rsc_mgrs[SRC], dai,
+			(struct src **)&atc->srcs[4],
+			(struct srcimp **)&atc->srcimps[4]);
+		src = atc->srcs[4];
+		mixer->set_input_left(mixer, MIX_MIC_IN, &src->rsc);
+		src = atc->srcs[5];
+		mixer->set_input_right(mixer, MIX_MIC_IN, &src->rsc);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dai = container_of(atc->daios[SPDIFIO], struct dai, daio);
 	atc_connect_dai(atc->rsc_mgrs[SRC], dai,
 			(struct src **)&atc->srcs[0],
@@ -1506,8 +1721,13 @@ static void atc_connect_resources(struct ct_atc *atc)
 	}
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int atc_suspend(struct ct_atc *atc, pm_message_t state)
+=======
+#ifdef CONFIG_PM_SLEEP
+static int atc_suspend(struct ct_atc *atc)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct hw *hw = atc->hw;
@@ -1523,7 +1743,11 @@ static int atc_suspend(struct ct_atc *atc, pm_message_t state)
 
 	atc_release_resources(atc);
 
+<<<<<<< HEAD
 	hw->suspend(hw, state);
+=======
+	hw->suspend(hw);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1584,7 +1808,11 @@ static int atc_resume(struct ct_atc *atc)
 }
 #endif
 
+<<<<<<< HEAD
 static struct ct_atc atc_preset __devinitdata = {
+=======
+static struct ct_atc atc_preset = {
+>>>>>>> refs/remotes/origin/master
 	.map_audio_buffer = ct_map_audio_buffer,
 	.unmap_audio_buffer = ct_unmap_audio_buffer,
 	.pcm_playback_prepare = atc_pcm_playback_prepare,
@@ -1606,13 +1834,36 @@ static struct ct_atc atc_preset __devinitdata = {
 	.line_clfe_unmute = atc_line_clfe_unmute,
 	.line_rear_unmute = atc_line_rear_unmute,
 	.line_in_unmute = atc_line_in_unmute,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.mic_unmute = atc_mic_unmute,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mic_unmute = atc_mic_unmute,
+>>>>>>> refs/remotes/origin/master
 	.spdif_out_unmute = atc_spdif_out_unmute,
 	.spdif_in_unmute = atc_spdif_in_unmute,
 	.spdif_out_get_status = atc_spdif_out_get_status,
 	.spdif_out_set_status = atc_spdif_out_set_status,
 	.spdif_out_passthru = atc_spdif_out_passthru,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.have_digit_io_switch = atc_have_digit_io_switch,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.capabilities = atc_capabilities,
+	.output_switch_get = atc_output_switch_get,
+	.output_switch_put = atc_output_switch_put,
+	.mic_source_switch_get = atc_mic_source_switch_get,
+	.mic_source_switch_put = atc_mic_source_switch_put,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	.suspend = atc_suspend,
 	.resume = atc_resume,
 #endif
@@ -1630,10 +1881,17 @@ static struct ct_atc atc_preset __devinitdata = {
  *  Returns 0 if succeeds, or negative error code if fails.
  */
 
+<<<<<<< HEAD
 int __devinit ct_atc_create(struct snd_card *card, struct pci_dev *pci,
 			    unsigned int rsr, unsigned int msr,
 			    int chip_type, unsigned int ssid,
 			    struct ct_atc **ratc)
+=======
+int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+		  unsigned int rsr, unsigned int msr,
+		  int chip_type, unsigned int ssid,
+		  struct ct_atc **ratc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ct_atc *atc;
 	static struct snd_device_ops ops = {
@@ -1690,8 +1948,15 @@ int __devinit ct_atc_create(struct snd_card *card, struct pci_dev *pci,
 	atc_connect_resources(atc);
 
 	atc->timer = ct_timer_new(atc);
+<<<<<<< HEAD
 	if (!atc->timer)
 		goto error1;
+=======
+	if (!atc->timer) {
+		err = -ENOMEM;
+		goto error1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, atc, &ops);
 	if (err < 0)

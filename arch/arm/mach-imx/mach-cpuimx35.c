@@ -37,12 +37,20 @@
 #include <asm/mach/time.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <mach/eukrea-baseboards.h>
 #include <mach/hardware.h>
 #include <mach/common.h>
 #include <mach/iomux-mx35.h>
 
 #include "devices-imx35.h"
+=======
+#include "common.h"
+#include "devices-imx35.h"
+#include "eukrea-baseboards.h"
+#include "hardware.h"
+#include "iomux-mx35.h"
+>>>>>>> refs/remotes/origin/master
 
 static const struct imxuart_platform_data uart_pdata __initconst = {
 	.flags = IMXUART_HAVE_RTSCTS,
@@ -53,20 +61,50 @@ static const struct imxi2c_platform_data
 	.bitrate =		100000,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct tsc2007_platform_data tsc2007_info = {
 	.model			= 2007,
 	.x_plate_ohms		= 180,
 };
 
 #define TSC2007_IRQGPIO		IMX_GPIO_NR(3, 2)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define TSC2007_IRQGPIO		IMX_GPIO_NR(3, 2)
+static int tsc2007_get_pendown_state(void)
+{
+	return !gpio_get_value(TSC2007_IRQGPIO);
+}
+
+static struct tsc2007_platform_data tsc2007_info = {
+	.model			= 2007,
+	.x_plate_ohms		= 180,
+	.get_pendown_state = tsc2007_get_pendown_state,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct i2c_board_info eukrea_cpuimx35_i2c_devices[] = {
 	{
 		I2C_BOARD_INFO("pcf8563", 0x51),
 	}, {
 		I2C_BOARD_INFO("tsc2007", 0x48),
+<<<<<<< HEAD
 		.type		= "tsc2007",
 		.platform_data	= &tsc2007_info,
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(TSC2007_IRQGPIO),
+=======
+		.irq		= IMX_GPIO_TO_IRQ(TSC2007_IRQGPIO),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.platform_data	= &tsc2007_info,
+		/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -136,11 +174,16 @@ static const struct fsl_usb2_platform_data otg_device_pdata __initconst = {
 	.workaround	= FLS_USB2_WORKAROUND_ENGCM09152,
 };
 
+<<<<<<< HEAD
 static int otg_mode_host;
+=======
+static bool otg_mode_host __initdata;
+>>>>>>> refs/remotes/origin/master
 
 static int __init eukrea_cpuimx35_otg_mode(char *options)
 {
 	if (!strcmp(options, "host"))
+<<<<<<< HEAD
 		otg_mode_host = 1;
 	else if (!strcmp(options, "device"))
 		otg_mode_host = 0;
@@ -148,6 +191,15 @@ static int __init eukrea_cpuimx35_otg_mode(char *options)
 		pr_info("otg_mode neither \"host\" nor \"device\". "
 			"Defaulting to device\n");
 	return 0;
+=======
+		otg_mode_host = true;
+	else if (!strcmp(options, "device"))
+		otg_mode_host = false;
+	else
+		pr_info("otg_mode neither \"host\" nor \"device\". "
+			"Defaulting to device\n");
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 __setup("otg_mode=", eukrea_cpuimx35_otg_mode);
 
@@ -156,15 +208,33 @@ __setup("otg_mode=", eukrea_cpuimx35_otg_mode);
  */
 static void __init eukrea_cpuimx35_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	imx35_soc_init();
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx35_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	mxc_iomux_v3_setup_multiple_pads(eukrea_cpuimx35_pads,
 			ARRAY_SIZE(eukrea_cpuimx35_pads));
 
 	imx35_add_fec(NULL);
+<<<<<<< HEAD
 	imx35_add_imx2_wdt(NULL);
+=======
+	imx35_add_imx2_wdt();
+>>>>>>> refs/remotes/origin/master
 
 	imx35_add_imx_uart0(&uart_pdata);
 	imx35_add_mxc_nand(&eukrea_cpuimx35_nand_board_info);
 
+<<<<<<< HEAD
+=======
+	eukrea_cpuimx35_i2c_devices[1].irq = gpio_to_irq(TSC2007_IRQGPIO);
+>>>>>>> refs/remotes/origin/master
 	i2c_register_board_info(0, eukrea_cpuimx35_i2c_devices,
 			ARRAY_SIZE(eukrea_cpuimx35_i2c_devices));
 	imx35_add_imx_i2c0(&eukrea_cpuimx35_i2c0_data);
@@ -186,10 +256,12 @@ static void __init eukrea_cpuimx35_timer_init(void)
 	mx35_clocks_init();
 }
 
+<<<<<<< HEAD
 struct sys_timer eukrea_cpuimx35_timer = {
 	.init	= eukrea_cpuimx35_timer_init,
 };
 
+<<<<<<< HEAD
 MACHINE_START(EUKREA_CPUIMX35, "Eukrea CPUIMX35")
 	/* Maintainer: Eukrea Electromatique */
 	.boot_params = MX3x_PHYS_OFFSET + 0x100,
@@ -198,4 +270,24 @@ MACHINE_START(EUKREA_CPUIMX35, "Eukrea CPUIMX35")
 	.init_irq = mx35_init_irq,
 	.timer = &eukrea_cpuimx35_timer,
 	.init_machine = eukrea_cpuimx35_init,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+MACHINE_START(EUKREA_CPUIMX35SD, "Eukrea CPUIMX35")
+	/* Maintainer: Eukrea Electromatique */
+	.atag_offset = 0x100,
+	.map_io = mx35_map_io,
+	.init_early = imx35_init_early,
+	.init_irq = mx35_init_irq,
+	.handle_irq = imx35_handle_irq,
+<<<<<<< HEAD
+	.timer = &eukrea_cpuimx35_timer,
+	.init_machine = eukrea_cpuimx35_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= eukrea_cpuimx35_timer_init,
+	.init_machine = eukrea_cpuimx35_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

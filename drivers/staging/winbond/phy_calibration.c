@@ -24,13 +24,29 @@
 
 #define AG_CONST        0.6072529350
 #define FIXED(X)        ((s32)((X) * 32768.0))
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DEG2RAD(X)      0.017453 * (X)
+=======
+#define DEG2RAD(X)      (0.017453 * (X))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const s32 Angles[] = {
 	FIXED(DEG2RAD(45.0)),     FIXED(DEG2RAD(26.565)),   FIXED(DEG2RAD(14.0362)),
 	FIXED(DEG2RAD(7.12502)),  FIXED(DEG2RAD(3.57633)),  FIXED(DEG2RAD(1.78991)),
 	FIXED(DEG2RAD(0.895174)), FIXED(DEG2RAD(0.447614)), FIXED(DEG2RAD(0.223811)),
 	FIXED(DEG2RAD(0.111906)), FIXED(DEG2RAD(0.055953)), FIXED(DEG2RAD(0.027977))
+=======
+#define DEG2RAD(X)      (0.017453 * (X))
+
+static const s32 Angles[] = {
+	FIXED(DEG2RAD(45.0)),     FIXED(DEG2RAD(26.565)),
+	FIXED(DEG2RAD(14.0362)),  FIXED(DEG2RAD(7.12502)),
+	FIXED(DEG2RAD(3.57633)),  FIXED(DEG2RAD(1.78991)),
+	FIXED(DEG2RAD(0.895174)), FIXED(DEG2RAD(0.447614)),
+	FIXED(DEG2RAD(0.223811)), FIXED(DEG2RAD(0.111906)),
+	FIXED(DEG2RAD(0.055953)), FIXED(DEG2RAD(0.027977))
+>>>>>>> refs/remotes/origin/master
 };
 
 /****************** LOCAL FUNCTION DECLARATION SECTION **********************/
@@ -42,8 +58,10 @@ static const s32 Angles[] = {
 
 /****************** FUNCTION DEFINITION SECTION *****************************/
 
+<<<<<<< HEAD
 s32 _s13_to_s32(u32 data)
 {
+<<<<<<< HEAD
     u32     val;
 
     val = (data & 0x0FFF);
@@ -52,10 +70,26 @@ s32 _s13_to_s32(u32 data)
         val |= 0xFFFFF000;
 
     return ((s32) val);
+=======
+=======
+static s32 _s13_to_s32(u32 data)
+{
+>>>>>>> refs/remotes/origin/master
+	u32     val;
+
+	val = (data & 0x0FFF);
+
+	if ((data & BIT(12)) != 0)
+		val |= 0xFFFFF000;
+
+	return (s32) val;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 u32 _s32_to_s13(s32 data)
 {
+<<<<<<< HEAD
     u32     val;
 
     if (data > 4095)
@@ -66,11 +100,24 @@ u32 _s32_to_s13(s32 data)
     val = data & 0x1FFF;
 
     return val;
+=======
+	u32     val;
+
+	if (data > 4095)
+		data = 4095;
+	else if (data < -4096)
+		data = -4096;
+
+	val = data & 0x1FFF;
+
+	return val;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /****************************************************************************/
 s32 _s4_to_s32(u32 data)
 {
+<<<<<<< HEAD
     s32     val;
 
     val = (data & 0x0007);
@@ -79,10 +126,29 @@ s32 _s4_to_s32(u32 data)
         val |= 0xFFFFFFF8;
 
     return val;
+=======
+=======
+}
+
+/****************************************************************************/
+static s32 _s4_to_s32(u32 data)
+{
+>>>>>>> refs/remotes/origin/master
+	s32     val;
+
+	val = (data & 0x0007);
+
+	if ((data & BIT(3)) != 0)
+		val |= 0xFFFFFFF8;
+
+	return val;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 u32 _s32_to_s4(s32 data)
 {
+<<<<<<< HEAD
     u32     val;
 
     if (data > 7)
@@ -93,11 +159,31 @@ u32 _s32_to_s4(s32 data)
     val = data & 0x000F;
 
     return val;
+=======
+=======
+}
+
+static u32 _s32_to_s4(s32 data)
+{
+>>>>>>> refs/remotes/origin/master
+	u32     val;
+
+	if (data > 7)
+		data = 7;
+	else if (data < -8)
+		data = -8;
+
+	val = data & 0x000F;
+
+	return val;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /****************************************************************************/
 s32 _s5_to_s32(u32 data)
 {
+<<<<<<< HEAD
     s32     val;
 
     val = (data & 0x000F);
@@ -106,10 +192,29 @@ s32 _s5_to_s32(u32 data)
         val |= 0xFFFFFFF0;
 
     return val;
+=======
+=======
+}
+
+/****************************************************************************/
+static s32 _s5_to_s32(u32 data)
+{
+>>>>>>> refs/remotes/origin/master
+	s32     val;
+
+	val = (data & 0x000F);
+
+	if ((data & BIT(4)) != 0)
+		val |= 0xFFFFFFF0;
+
+	return val;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 u32 _s32_to_s5(s32 data)
 {
+<<<<<<< HEAD
     u32     val;
 
     if (data > 15)
@@ -120,11 +225,31 @@ u32 _s32_to_s5(s32 data)
     val = data & 0x001F;
 
     return val;
+=======
+=======
+}
+
+static u32 _s32_to_s5(s32 data)
+{
+>>>>>>> refs/remotes/origin/master
+	u32     val;
+
+	if (data > 15)
+		data = 15;
+	else if (data < -16)
+		data = -16;
+
+	val = data & 0x001F;
+
+	return val;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /****************************************************************************/
 s32 _s6_to_s32(u32 data)
 {
+<<<<<<< HEAD
     s32     val;
 
     val = (data & 0x001F);
@@ -133,10 +258,29 @@ s32 _s6_to_s32(u32 data)
         val |= 0xFFFFFFE0;
 
     return val;
+=======
+=======
+}
+
+/****************************************************************************/
+static s32 _s6_to_s32(u32 data)
+{
+>>>>>>> refs/remotes/origin/master
+	s32     val;
+
+	val = (data & 0x001F);
+
+	if ((data & BIT(5)) != 0)
+		val |= 0xFFFFFFE0;
+
+	return val;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 u32 _s32_to_s6(s32 data)
 {
+<<<<<<< HEAD
     u32     val;
 
     if (data > 31)
@@ -147,11 +291,31 @@ u32 _s32_to_s6(s32 data)
     val = data & 0x003F;
 
     return val;
+=======
+=======
+}
+
+static u32 _s32_to_s6(s32 data)
+{
+>>>>>>> refs/remotes/origin/master
+	u32     val;
+
+	if (data > 31)
+		data = 31;
+	else if (data < -32)
+		data = -32;
+
+	val = data & 0x003F;
+
+	return val;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /****************************************************************************/
 s32 _s9_to_s32(u32 data)
 {
+<<<<<<< HEAD
     s32     val;
 
     val = data & 0x00FF;
@@ -160,10 +324,21 @@ s32 _s9_to_s32(u32 data)
         val |= 0xFFFFFF00;
 
     return val;
+=======
+	s32     val;
+
+	val = data & 0x00FF;
+
+	if ((data & BIT(8)) != 0)
+		val |= 0xFFFFFF00;
+
+	return val;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 u32 _s32_to_s9(s32 data)
 {
+<<<<<<< HEAD
     u32     val;
 
     if (data > 255)
@@ -174,17 +349,48 @@ u32 _s32_to_s9(s32 data)
     val = data & 0x01FF;
 
     return val;
+=======
+	u32     val;
+
+	if (data > 255)
+		data = 255;
+	else if (data < -256)
+		data = -256;
+
+	val = data & 0x01FF;
+
+	return val;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /****************************************************************************/
 s32 _floor(s32 n)
 {
+<<<<<<< HEAD
     if (n > 0)
 	n += 5;
     else
         n -= 5;
 
     return (n/10);
+=======
+=======
+}
+
+/****************************************************************************/
+static s32 _floor(s32 n)
+{
+>>>>>>> refs/remotes/origin/master
+	if (n > 0)
+		n += 5;
+	else
+		n -= 5;
+
+	return n/10;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /****************************************************************************/
@@ -193,8 +399,10 @@ s32 _floor(s32 n)
  * sqsum is the input and the output is sq_rt;
  * The maximum of sqsum = 2^27 -1;
  */
+<<<<<<< HEAD
 u32 _sqrt(u32 sqsum)
 {
+<<<<<<< HEAD
     u32     sq_rt;
 
     int     g0, g1, g2, g3, g4;
@@ -258,11 +466,82 @@ u32 _sqrt(u32 sqsum)
     sq_rt = sq_rt + step;
 
     return sq_rt;
+=======
+=======
+static u32 _sqrt(u32 sqsum)
+{
+>>>>>>> refs/remotes/origin/master
+	u32     sq_rt;
+
+	int     g0, g1, g2, g3, g4;
+	int     seed;
+	int     next;
+	int     step;
+
+	g4 =  sqsum / 100000000;
+	g3 = (sqsum - g4*100000000) / 1000000;
+	g2 = (sqsum - g4*100000000 - g3*1000000) / 10000;
+	g1 = (sqsum - g4*100000000 - g3*1000000 - g2*10000) / 100;
+	g0 = (sqsum - g4*100000000 - g3*1000000 - g2*10000 - g1*100);
+
+	next = g4;
+	step = 0;
+	seed = 0;
+	while (((seed+1)*(step+1)) <= next) {
+		step++;
+		seed++;
+	}
+
+	sq_rt = seed * 10000;
+	next = (next-(seed*step))*100 + g3;
+
+	step = 0;
+	seed = 2 * seed * 10;
+	while (((seed+1)*(step+1)) <= next) {
+		step++;
+		seed++;
+	}
+
+	sq_rt = sq_rt + step * 1000;
+	next = (next - seed * step) * 100 + g2;
+	seed = (seed + step) * 10;
+	step = 0;
+	while (((seed+1)*(step+1)) <= next) {
+		step++;
+		seed++;
+	}
+
+	sq_rt = sq_rt + step * 100;
+	next = (next - seed * step) * 100 + g1;
+	seed = (seed + step) * 10;
+	step = 0;
+
+	while (((seed+1)*(step+1)) <= next) {
+		step++;
+		seed++;
+	}
+
+	sq_rt = sq_rt + step * 10;
+	next = (next - seed * step) * 100 + g0;
+	seed = (seed + step) * 10;
+	step = 0;
+
+	while (((seed+1)*(step+1)) <= next) {
+		step++;
+		seed++;
+	}
+
+	sq_rt = sq_rt + step;
+
+	return sq_rt;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /****************************************************************************/
 void _sin_cos(s32 angle, s32 *sin, s32 *cos)
 {
+<<<<<<< HEAD
     s32 X, Y, TargetAngle, CurrAngle;
     unsigned    Step;
 
@@ -294,9 +573,56 @@ void _sin_cos(s32 angle, s32 *sin, s32 *cos)
         *cos = X;
         *sin = -Y;
     }
+=======
+=======
+}
+
+/****************************************************************************/
+static void _sin_cos(s32 angle, s32 *sin, s32 *cos)
+{
+>>>>>>> refs/remotes/origin/master
+	s32 X, Y, TargetAngle, CurrAngle;
+	unsigned    Step;
+
+	X = FIXED(AG_CONST);      /* AG_CONST * cos(0) */
+	Y = 0;                    /* AG_CONST * sin(0) */
+	TargetAngle = abs(angle);
+	CurrAngle = 0;
+
+	for (Step = 0; Step < 12; Step++) {
+		s32 NewX;
+
+		if (TargetAngle > CurrAngle) {
+			NewX = X - (Y >> Step);
+			Y = (X >> Step) + Y;
+			X = NewX;
+			CurrAngle += Angles[Step];
+		} else {
+			NewX = X + (Y >> Step);
+			Y = -(X >> Step) + Y;
+			X = NewX;
+			CurrAngle -= Angles[Step];
+		}
+	}
+
+	if (angle > 0) {
+		*cos = X;
+		*sin = Y;
+	} else {
+		*cos = X;
+		*sin = -Y;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static unsigned char hal_get_dxx_reg(struct hw_data *pHwData, u16 number, u32 * pValue)
+=======
+}
+
+static unsigned char hal_get_dxx_reg(struct hw_data *pHwData, u16 number,
+				     u32 *pValue)
+>>>>>>> refs/remotes/origin/master
 {
 	if (number < 0x1000)
 		number += 0x1000;
@@ -304,7 +630,12 @@ static unsigned char hal_get_dxx_reg(struct hw_data *pHwData, u16 number, u32 * 
 }
 #define hw_get_dxx_reg(_A, _B, _C) hal_get_dxx_reg(_A, _B, (u32 *)_C)
 
+<<<<<<< HEAD
 static unsigned char hal_set_dxx_reg(struct hw_data *pHwData, u16 number, u32 value)
+=======
+static unsigned char hal_set_dxx_reg(struct hw_data *pHwData, u16 number,
+				     u32 value)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char ret;
 
@@ -316,7 +647,11 @@ static unsigned char hal_set_dxx_reg(struct hw_data *pHwData, u16 number, u32 va
 #define hw_set_dxx_reg(_A, _B, _C) hal_set_dxx_reg(_A, _B, (u32)_C)
 
 
+<<<<<<< HEAD
 void _reset_rx_cal(struct hw_data *phw_data)
+=======
+static void _reset_rx_cal(struct hw_data *phw_data)
+>>>>>>> refs/remotes/origin/master
 {
 	u32     val;
 
@@ -336,8 +671,10 @@ void _reset_rx_cal(struct hw_data *phw_data)
 
 
 /**********************************************/
+<<<<<<< HEAD
 void _rxadc_dc_offset_cancellation_winbond(struct hw_data *phw_data, u32 frequency)
 {
+<<<<<<< HEAD
     u32     reg_agc_ctrl3;
     u32     reg_a_acq_ctrl;
     u32     reg_b_acq_ctrl;
@@ -356,6 +693,33 @@ void _rxadc_dc_offset_cancellation_winbond(struct hw_data *phw_data, u32 frequen
 
         }
     } else {
+=======
+=======
+static void _rxadc_dc_offset_cancellation_winbond(struct hw_data *phw_data, u32 frequency)
+{
+>>>>>>> refs/remotes/origin/master
+	u32     reg_agc_ctrl3;
+	u32     reg_a_acq_ctrl;
+	u32     reg_b_acq_ctrl;
+	u32     val;
+
+	PHY_DEBUG(("[CAL] -> [1]_rxadc_dc_offset_cancellation()\n"));
+	phy_init_rf(phw_data);
+
+	/* set calibration channel */
+	if ((RF_WB_242 == phw_data->phy_type) ||
+		(RF_WB_242_1 == phw_data->phy_type)) /* 20060619.5 Add */{
+		if ((frequency >= 2412) && (frequency <= 2484)) {
+			/* w89rf242 change frequency to 2390Mhz */
+			PHY_DEBUG(("[CAL] W89RF242/11G/Channel=2390Mhz\n"));
+			phy_set_rf_data(phw_data, 3, (3<<24)|0x025586);
+
+		}
+	} else {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	}
 
@@ -399,7 +763,11 @@ void _rxadc_dc_offset_cancellation_winbond(struct hw_data *phw_data, u32 frequen
 	val |= MASK_ADC_DC_CAL_STR;
 	hw_set_dxx_reg(phw_data, REG_MODE_CTRL, val);
 
+<<<<<<< HEAD
 	/* e. The result are shown in "adc_dc_cal_i[8:0] and adc_dc_cal_q[8:0]" */
+=======
+	/* e. The results are shown in "adc_dc_cal_i[8:0] and adc_dc_cal_q[8:0]" */
+>>>>>>> refs/remotes/origin/master
 #ifdef _DEBUG
 	hw_get_dxx_reg(phw_data, REG_OFFSET_READ, &val);
 	PHY_DEBUG(("[CAL]    REG_OFFSET_READ = 0x%08X\n", val));
@@ -407,7 +775,12 @@ void _rxadc_dc_offset_cancellation_winbond(struct hw_data *phw_data, u32 frequen
 	PHY_DEBUG(("[CAL]    ** adc_dc_cal_i = %d (0x%04X)\n",
 			   _s9_to_s32(val&0x000001FF), val&0x000001FF));
 	PHY_DEBUG(("[CAL]    ** adc_dc_cal_q = %d (0x%04X)\n",
+<<<<<<< HEAD
 			   _s9_to_s32((val&0x0003FE00)>>9), (val&0x0003FE00)>>9));
+=======
+			   _s9_to_s32((val&0x0003FE00)>>9),
+			   (val&0x0003FE00)>>9));
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	hw_get_dxx_reg(phw_data, REG_MODE_CTRL, &val);
@@ -430,6 +803,7 @@ void _rxadc_dc_offset_cancellation_winbond(struct hw_data *phw_data, u32 frequen
 	hw_set_dxx_reg(phw_data, REG_AGC_CTRL3, reg_agc_ctrl3);
 }
 
+<<<<<<< HEAD
 /****************************************************************/
 void _txidac_dc_offset_cancellation_winbond(struct hw_data *phw_data)
 {
@@ -455,7 +829,11 @@ void _txidac_dc_offset_cancellation_winbond(struct hw_data *phw_data)
 	phy_set_rf_data(phw_data, 11, (11<<24)|0x1901D6);
 	/* 0x05 0x24C60A  ; 09318  ; Calibration (6c). setting TX-VGA gain: TXGCH=2 & GPK=110 --> to be optimized */
 	phy_set_rf_data(phw_data, 5, (5<<24)|0x24C48A);
+<<<<<<< HEAD
         /* 0x06 0x06880C  ; 01A20  ; Calibration (6d). RXGCH=00; RXGCL=100 000 (RXVGA=32) --> to be optimized */
+=======
+	/* 0x06 0x06880C  ; 01A20  ; Calibration (6d). RXGCH=00; RXGCL=100 000 (RXVGA=32) --> to be optimized */
+>>>>>>> refs/remotes/origin/cm-10.0
 	phy_set_rf_data(phw_data, 6, (6<<24)|0x06890C);
 	/* 0x00 0xFDF1C0  ; 3F7C7  ; Calibration (6e). turn on IQ imbalance/Test mode */
 	phy_set_rf_data(phw_data, 0, (0<<24)|0xFDF1C0);
@@ -542,7 +920,11 @@ void _txidac_dc_offset_cancellation_winbond(struct hw_data *phw_data)
 	}
 
 	if (loop >= 19)
+<<<<<<< HEAD
 	   fix_cancel_dc_i = 0;
+=======
+		fix_cancel_dc_i = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	reg_dc_cancel &= ~(0x03FF);
 	reg_dc_cancel |= (_s32_to_s5(fix_cancel_dc_i) << CANCEL_DC_I_SHIFT);
@@ -577,7 +959,11 @@ void _txqdac_dc_offset_cacellation_winbond(struct hw_data *phw_data)
 	phy_set_rf_data(phw_data, 11, (11<<24)|0x1901D6);
 	/* 0x05 0x24C60A  ; 09318  ; Calibration (6c). setting TX-VGA gain: TXGCH=2 & GPK=110 --> to be optimized */
 	phy_set_rf_data(phw_data, 5, (5<<24)|0x24C48A);
+<<<<<<< HEAD
         /* 0x06 0x06880C  ; 01A20  ; Calibration (6d). RXGCH=00; RXGCL=100 000 (RXVGA=32) --> to be optimized */
+=======
+	/* 0x06 0x06880C  ; 01A20  ; Calibration (6d). RXGCH=00; RXGCL=100 000 (RXVGA=32) --> to be optimized */
+>>>>>>> refs/remotes/origin/cm-10.0
 	phy_set_rf_data(phw_data, 6, (6<<24)|0x06890C);
 	/* 0x00 0xFDF1C0  ; 3F7C7  ; Calibration (6e). turn on IQ imbalance/Test mode */
 	phy_set_rf_data(phw_data, 0, (0<<24)|0xFDF1C0);
@@ -657,7 +1043,11 @@ void _txqdac_dc_offset_cacellation_winbond(struct hw_data *phw_data)
 	}
 
 	if (loop >= 19)
+<<<<<<< HEAD
 	   fix_cancel_dc_q = 0;
+=======
+		fix_cancel_dc_q = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	reg_dc_cancel &= ~(0x001F);
 	reg_dc_cancel |= (_s32_to_s5(fix_cancel_dc_q) << CANCEL_DC_Q_SHIFT);
@@ -673,6 +1063,10 @@ void _txqdac_dc_offset_cacellation_winbond(struct hw_data *phw_data)
 
 /* 20060612.1.a 20060718.1 Modify */
 u8 _tx_iq_calibration_loop_winbond(struct hw_data *phw_data,
+=======
+/* 20060612.1.a 20060718.1 Modify */
+static u8 _tx_iq_calibration_loop_winbond(struct hw_data *phw_data,
+>>>>>>> refs/remotes/origin/master
 						   s32 a_2_threshold,
 						   s32 b_2_threshold)
 {
@@ -711,7 +1105,12 @@ u8 _tx_iq_calibration_loop_winbond(struct hw_data *phw_data,
 	loop = LOOP_TIMES;
 
 	while (loop > 0) {
+<<<<<<< HEAD
 		PHY_DEBUG(("[CAL] [%d.] <_tx_iq_calibration_loop>\n", (LOOP_TIMES-loop+1)));
+=======
+		PHY_DEBUG(("[CAL] [%d.] <_tx_iq_calibration_loop>\n",
+				   (LOOP_TIMES-loop+1)));
+>>>>>>> refs/remotes/origin/master
 
 		iqcal_tone_i_avg = 0;
 		iqcal_tone_q_avg = 0;
@@ -719,8 +1118,13 @@ u8 _tx_iq_calibration_loop_winbond(struct hw_data *phw_data,
 			return 0;
 		for (capture_time = 0; capture_time < 10; capture_time++) {
 			/*
+<<<<<<< HEAD
 			 * a. Set iqcal_mode[1:0] to 0x2 and set "calib_start" to 0x1 to
 			 *    enable "IQ alibration Mode II"
+=======
+			 * a. Set iqcal_mode[1:0] to 0x2 and set "calib_start"
+			 *    to 0x1 to enable "IQ calibration Mode II"
+>>>>>>> refs/remotes/origin/master
 			 */
 			reg_mode_ctrl &= ~(MASK_IQCAL_TONE_SEL|MASK_IQCAL_MODE);
 			reg_mode_ctrl &= ~MASK_IQCAL_MODE;
@@ -749,8 +1153,13 @@ u8 _tx_iq_calibration_loop_winbond(struct hw_data *phw_data,
 			PHY_DEBUG(("[CAL]    MODE_CTRL (write) = 0x%08X\n", reg_mode_ctrl));
 
 			/*
+<<<<<<< HEAD
 			 * d. Set iqcal_mode[1:0] to 0x3 and set "calib_start" to 0x1 to
 			 *    enable "IQ alibration Mode II"
+=======
+			 * d. Set iqcal_mode[1:0] to 0x3 and set "calib_start"
+			 *    to 0x1 to enable "IQ calibration Mode II"
+>>>>>>> refs/remotes/origin/master
 			 */
 			/* hw_get_dxx_reg(phw_data, REG_MODE_CTRL, &val); */
 			hw_get_dxx_reg(phw_data, REG_MODE_CTRL, &reg_mode_ctrl);
@@ -766,7 +1175,11 @@ u8 _tx_iq_calibration_loop_winbond(struct hw_data *phw_data,
 			iqcal_tone_i = _s13_to_s32(val & 0x00001FFF);
 			iqcal_tone_q = _s13_to_s32((val & 0x03FFE000) >> 13);
 			PHY_DEBUG(("[CAL]    ** iqcal_tone_i = %d, iqcal_tone_q = %d\n",
+<<<<<<< HEAD
 			iqcal_tone_i, iqcal_tone_q));
+=======
+					   iqcal_tone_i, iqcal_tone_q));
+>>>>>>> refs/remotes/origin/master
 			if (capture_time == 0)
 				continue;
 			else {
@@ -955,7 +1368,11 @@ u8 _tx_iq_calibration_loop_winbond(struct hw_data *phw_data,
 	return 1;
 }
 
+<<<<<<< HEAD
 void _tx_iq_calibration_winbond(struct hw_data *phw_data)
+=======
+static void _tx_iq_calibration_winbond(struct hw_data *phw_data)
+>>>>>>> refs/remotes/origin/master
 {
 	u32     reg_agc_ctrl3;
 #ifdef _DEBUG
@@ -974,13 +1391,25 @@ void _tx_iq_calibration_winbond(struct hw_data *phw_data)
 	phy_set_rf_data(phw_data, 11, (11<<24)|0x19BDD6); /* 20060612.1.a 0x1905D6); */
 	/* 0x05 0x24C60A  ; 09318  ; Calibration (6c). setting TX-VGA gain: TXGCH=2 & GPK=110 --> to be optimized */
 	phy_set_rf_data(phw_data, 5, (5<<24)|0x24C60A); /* 0x24C60A (high temperature) */
+<<<<<<< HEAD
+<<<<<<< HEAD
         /* 0x06 0x06880C  ; 01A20  ; Calibration (6d). RXGCH=00; RXGCL=100 000 (RXVGA=32) --> to be optimized */
+=======
+	/* 0x06 0x06880C  ; 01A20  ; Calibration (6d). RXGCH=00; RXGCL=100 000 (RXVGA=32) --> to be optimized */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 0x06 0x06880C  ; 01A20  ; Calibration (6d). RXGCH=00; RXGCL=100 000 (RXVGA=32) --> to be optimized */
+>>>>>>> refs/remotes/origin/master
 	phy_set_rf_data(phw_data, 6, (6<<24)|0x34880C); /* 20060612.1.a 0x06890C); */
 	/* 0x00 0xFDF1C0  ; 3F7C7  ; Calibration (6e). turn on IQ imbalance/Test mode */
 	phy_set_rf_data(phw_data, 0, (0<<24)|0xFDF1C0);
 	/* ; [BB-chip]: Calibration (6f).Send test pattern */
 	/* ; [BB-chip]: Calibration (6g). Search RXGCL optimal value */
+<<<<<<< HEAD
 	/* ; [BB-chip]: Calibration (6h). Caculate TX-path IQ imbalance and setting TX path IQ compensation table */
+=======
+	/* ; [BB-chip]: Calibration (6h). Calculate TX-path IQ imbalance and setting TX path IQ compensation table */
+>>>>>>> refs/remotes/origin/master
 	/* phy_set_rf_data(phw_data, 3, (3<<24)|0x025586); */
 
 	msleep(30); /* 20060612.1.a 30ms delay. Add the follow 2 lines */
@@ -1101,7 +1530,11 @@ void _tx_iq_calibration_winbond(struct hw_data *phw_data)
 }
 
 /*****************************************************/
+<<<<<<< HEAD
 u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 frequency)
+=======
+static u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 frequency)
+>>>>>>> refs/remotes/origin/master
 {
 	u32     reg_mode_ctrl;
 	s32     iqcal_tone_i;
@@ -1146,7 +1579,12 @@ u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 fre
 	/* for (loop = 0; loop < LOOP_TIMES; loop++) */
 	loop = LOOP_TIMES;
 	while (loop > 0) {
+<<<<<<< HEAD
 		PHY_DEBUG(("[CAL] [%d.] <_rx_iq_calibration_loop>\n", (LOOP_TIMES-loop+1)));
+=======
+		PHY_DEBUG(("[CAL] [%d.] <_rx_iq_calibration_loop>\n",
+				   (LOOP_TIMES-loop+1)));
+>>>>>>> refs/remotes/origin/master
 		iqcal_tone_i_avg = 0;
 		iqcal_tone_q_avg = 0;
 		iqcal_image_i_avg = 0;
@@ -1154,6 +1592,8 @@ u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 fre
 		capture_time = 0;
 
 		for (capture_time = 0; capture_time < 10; capture_time++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* i. Set "calib_start" to 0x0 */
 		reg_mode_ctrl &= ~MASK_CALIB_START;
 		if (!hw_set_dxx_reg(phw_data, REG_MODE_CTRL, reg_mode_ctrl))/*20060718.1 modify */
@@ -1181,6 +1621,40 @@ u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 fre
 		iqcal_image_q = _s13_to_s32((val & 0x03FFE000) >> 13);
 		PHY_DEBUG(("[CAL]    ** iqcal_image_i = %d, iqcal_image_q = %d\n",
 				   iqcal_image_i, iqcal_image_q));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			/* i. Set "calib_start" to 0x0 */
+			reg_mode_ctrl &= ~MASK_CALIB_START;
+			if (!hw_set_dxx_reg(phw_data, REG_MODE_CTRL, reg_mode_ctrl))/*20060718.1 modify */
+				return 0;
+			PHY_DEBUG(("[CAL]    MODE_CTRL (write) = 0x%08X\n", reg_mode_ctrl));
+
+			reg_mode_ctrl &= ~MASK_IQCAL_MODE;
+			reg_mode_ctrl |= (MASK_CALIB_START|0x1);
+			hw_set_dxx_reg(phw_data, REG_MODE_CTRL, reg_mode_ctrl);
+			PHY_DEBUG(("[CAL]    MODE_CTRL (write) = 0x%08X\n", reg_mode_ctrl));
+
+			/* c. */
+			hw_get_dxx_reg(phw_data, REG_CALIB_READ1, &val);
+			PHY_DEBUG(("[CAL]    CALIB_READ1 = 0x%08X\n", val));
+
+			iqcal_tone_i = _s13_to_s32(val & 0x00001FFF);
+			iqcal_tone_q = _s13_to_s32((val & 0x03FFE000) >> 13);
+			PHY_DEBUG(("[CAL]    ** iqcal_tone_i = %d, iqcal_tone_q = %d\n",
+				iqcal_tone_i, iqcal_tone_q));
+
+			hw_get_dxx_reg(phw_data, REG_CALIB_READ2, &val);
+			PHY_DEBUG(("[CAL]    CALIB_READ2 = 0x%08X\n", val));
+
+			iqcal_image_i = _s13_to_s32(val & 0x00001FFF);
+			iqcal_image_q = _s13_to_s32((val & 0x03FFE000) >> 13);
+			PHY_DEBUG(("[CAL]    ** iqcal_image_i = %d, iqcal_image_q = %d\n",
+				iqcal_image_i, iqcal_image_q));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (capture_time == 0)
 				continue;
 			else {
@@ -1199,6 +1673,7 @@ u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 fre
 
 		/* d. */
 		rot_tone_i_b = (iqcal_tone_i * iqcal_tone_i +
+<<<<<<< HEAD
 						iqcal_tone_q * iqcal_tone_q) / 1024;
 		rot_tone_q_b = (iqcal_tone_i * iqcal_tone_q * (-1) +
 						iqcal_tone_q * iqcal_tone_i) / 1024;
@@ -1206,6 +1681,15 @@ u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 fre
 						 iqcal_image_q * iqcal_tone_q) / 1024;
 		rot_image_q_b = (iqcal_image_i * iqcal_tone_q +
 						 iqcal_image_q * iqcal_tone_i) / 1024;
+=======
+					iqcal_tone_q * iqcal_tone_q) / 1024;
+		rot_tone_q_b = (iqcal_tone_i * iqcal_tone_q * (-1) +
+					iqcal_tone_q * iqcal_tone_i) / 1024;
+		rot_image_i_b = (iqcal_image_i * iqcal_tone_i -
+					iqcal_image_q * iqcal_tone_q) / 1024;
+		rot_image_q_b = (iqcal_image_i * iqcal_tone_q +
+					iqcal_image_q * iqcal_tone_i) / 1024;
+>>>>>>> refs/remotes/origin/master
 
 		PHY_DEBUG(("[CAL]    ** rot_tone_i_b  = %d\n", rot_tone_i_b));
 		PHY_DEBUG(("[CAL]    ** rot_tone_q_b  = %d\n", rot_tone_q_b));
@@ -1225,8 +1709,15 @@ u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 fre
 		b_2 = (rot_image_q_b * 32768) / rot_tone_i_b -
 			phw_data->iq_rsdl_phase_tx_d2;
 
+<<<<<<< HEAD
 		PHY_DEBUG(("[CAL]    ** iq_rsdl_gain_tx_d2 = %d\n", phw_data->iq_rsdl_gain_tx_d2));
 		PHY_DEBUG(("[CAL]    ** iq_rsdl_phase_tx_d2= %d\n", phw_data->iq_rsdl_phase_tx_d2));
+=======
+		PHY_DEBUG(("[CAL]    ** iq_rsdl_gain_tx_d2 = %d\n",
+			   phw_data->iq_rsdl_gain_tx_d2));
+		PHY_DEBUG(("[CAL]    ** iq_rsdl_phase_tx_d2= %d\n",
+			   phw_data->iq_rsdl_phase_tx_d2));
+>>>>>>> refs/remotes/origin/master
 		PHY_DEBUG(("[CAL]    ***** EPSILON/2 = %d\n", a_2));
 		PHY_DEBUG(("[CAL]    ***** THETA/2   = %d\n", b_2));
 
@@ -1272,7 +1763,12 @@ u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 fre
 
 		/* e. */
 		pwr_tone = (iqcal_tone_i*iqcal_tone_i + iqcal_tone_q*iqcal_tone_q);
+<<<<<<< HEAD
 		pwr_image = (iqcal_image_i*iqcal_image_i + iqcal_image_q*iqcal_image_q)*factor;
+=======
+		pwr_image = (iqcal_image_i*iqcal_image_i +
+			     iqcal_image_q*iqcal_image_q)*factor;
+>>>>>>> refs/remotes/origin/master
 
 		PHY_DEBUG(("[CAL]    ** pwr_tone  = %d\n", pwr_tone));
 		PHY_DEBUG(("[CAL]    ** pwr_image  = %d\n", pwr_image));
@@ -1358,7 +1854,15 @@ u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 fre
 			hw_set_dxx_reg(phw_data, 0x54, val);
 
 			if (loop == 3)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return 0;
+=======
+				return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				return 0;
+>>>>>>> refs/remotes/origin/master
 		}
 		PHY_DEBUG(("[CAL]    ** CALIB_DATA = 0x%08X\n", val));
 
@@ -1371,9 +1875,15 @@ u8 _rx_iq_calibration_loop_winbond(struct hw_data *phw_data, u16 factor, u32 fre
 /*************************************************/
 
 /***************************************************************/
+<<<<<<< HEAD
 void _rx_iq_calibration_winbond(struct hw_data *phw_data, u32 frequency)
 {
 /* figo 20050523 marked this flag for can't compile for relesase */
+=======
+static void _rx_iq_calibration_winbond(struct hw_data *phw_data, u32 frequency)
+{
+/* figo 20050523 marked this flag for can't compile for release */
+>>>>>>> refs/remotes/origin/master
 #ifdef _DEBUG
 	s32     rx_cal_reg[4];
 	u32     val;
@@ -1397,7 +1907,11 @@ void _rx_iq_calibration_winbond(struct hw_data *phw_data, u32 frequency)
 
 	/*  ; [BB-chip]: Calibration (7f). Send test pattern */
 	/*	; [BB-chip]: Calibration (7g). Search RXGCL optimal value */
+<<<<<<< HEAD
 	/*	; [BB-chip]: Calibration (7h). Caculate RX-path IQ imbalance and setting RX path IQ compensation table */
+=======
+	/*	; [BB-chip]: Calibration (7h). Calculate RX-path IQ imbalance and setting RX path IQ compensation table */
+>>>>>>> refs/remotes/origin/master
 
 	result = _rx_iq_calibration_loop_winbond(phw_data, 12589, frequency);
 
@@ -1454,7 +1968,11 @@ void phy_calibration_winbond(struct hw_data *phw_data, u32 frequency)
 
 	_rxadc_dc_offset_cancellation_winbond(phw_data, frequency);
 	/* _txidac_dc_offset_cancellation_winbond(phw_data); */
+<<<<<<< HEAD
 	/* _txqdac_dc_offset_cacellation_winbond(phw_data); */
+=======
+	/* _txqdac_dc_offset_cancellation_winbond(phw_data); */
+>>>>>>> refs/remotes/origin/master
 
 	_tx_iq_calibration_winbond(phw_data);
 	_rx_iq_calibration_winbond(phw_data, frequency);
@@ -1476,6 +1994,8 @@ void phy_calibration_winbond(struct hw_data *phw_data, u32 frequency)
 /******************/
 void phy_set_rf_data(struct hw_data *pHwData, u32 index, u32 value)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
    u32 ltmp = 0;
 
     switch (pHwData->phy_type) {
@@ -1510,6 +2030,47 @@ void phy_set_rf_data(struct hw_data *pHwData, u32 index, u32 value)
 	    ltmp = (1 << 31) | (0 << 30) | (24 << 24) | BitReverse(value, 24);
 	    break;
     }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u32 ltmp = 0;
+
+	switch (pHwData->phy_type) {
+	case RF_MAXIM_2825:
+	case RF_MAXIM_V1: /* 11g Winbond 2nd BB(with Phy board (v1) + Maxim 331) */
+		ltmp = (1 << 31) | (0 << 30) | (18 << 24) | BitReverse(value, 18);
+		break;
+
+	case RF_MAXIM_2827:
+		ltmp = (1 << 31) | (0 << 30) | (18 << 24) | BitReverse(value, 18);
+		break;
+
+	case RF_MAXIM_2828:
+		ltmp = (1 << 31) | (0 << 30) | (18 << 24) | BitReverse(value, 18);
+		break;
+
+	case RF_MAXIM_2829:
+		ltmp = (1 << 31) | (0 << 30) | (18 << 24) | BitReverse(value, 18);
+		break;
+
+	case RF_AIROHA_2230:
+	case RF_AIROHA_2230S: /* 20060420 Add this */
+		ltmp = (1 << 31) | (0 << 30) | (20 << 24) | BitReverse(value, 20);
+		break;
+
+	case RF_AIROHA_7230:
+		ltmp = (1 << 31) | (0 << 30) | (24 << 24) | (value&0xffffff);
+		break;
+
+	case RF_WB_242:
+	case RF_WB_242_1:/* 20060619.5 Add */
+		ltmp = (1 << 31) | (0 << 30) | (24 << 24) | BitReverse(value, 24);
+		break;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	Wb35Reg_WriteSync(pHwData, 0x0864, ltmp);
 }
@@ -1569,7 +2130,12 @@ unsigned char adjust_TXVGA_for_iq_mag(struct hw_data *phw_data)
 
 		sqsum = iqcal_tone_i0*iqcal_tone_i0 + iqcal_tone_q0*iqcal_tone_q0;
 		iq_mag_0_tx = (s32) _sqrt(sqsum);
+<<<<<<< HEAD
 		PHY_DEBUG(("[CAL]    ** auto_adjust_txvga_for_iq_mag_0_tx=%d\n", iq_mag_0_tx));
+=======
+		PHY_DEBUG(("[CAL]    ** auto_adjust_txvga_for_iq_mag_0_tx=%d\n",
+			   iq_mag_0_tx));
+>>>>>>> refs/remotes/origin/master
 
 		if (iq_mag_0_tx >= 700 && iq_mag_0_tx <= 1750)
 			break;

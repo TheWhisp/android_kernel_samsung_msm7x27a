@@ -23,7 +23,15 @@
  * software indicates your acceptance of these terms and conditions.  If you do
  * not agree with these terms and conditions, do not use the software.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright � 2003 Agere Systems Inc.
+=======
+ * Copyright © 2003 Agere Systems Inc.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright © 2003 Agere Systems Inc.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source or binary forms, with or without
@@ -44,7 +52,15 @@
  *
  * Disclaimer
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * THIS SOFTWARE IS PROVIDED �AS IS� AND ANY EXPRESS OR IMPLIED WARRANTIES,
+=======
+ * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+>>>>>>> refs/remotes/origin/master
  * INCLUDING, BUT NOT LIMITED TO, INFRINGEMENT AND THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  ANY
  * USE, MODIFICATION OR DISTRIBUTION OF THIS SOFTWARE IS SOLELY AT THE USERS OWN
@@ -101,16 +117,22 @@
 #include <wl_profile.h>
 
 
+<<<<<<< HEAD
 /*******************************************************************************
  * global variables
  ******************************************************************************/
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Definition needed to prevent unresolved external in unistd.h */
 static int errno;
 
 #if DBG
 extern p_u32    DebugFlag;
+<<<<<<< HEAD
 extern dbg_info_t *DbgInfo;
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 int parse_yes_no(char *value);
@@ -163,10 +185,13 @@ void parse_config(struct net_device *dev)
 	mm_segment_t	    fs;
 	struct wl_private   *wvlan_config = NULL;
 	ENCSTRCT            sEncryption;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 	DBG_FUNC("parse_config");
 	DBG_ENTER(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Get the wavelan specific info for this device */
 	wvlan_config = dev->priv;
@@ -272,7 +297,10 @@ void parse_config(struct net_device *dev)
 		set_fs(fs);			/* Return to the original context */
 #endif /* BIN_DL */
 
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 } /* parse_config */
 
@@ -354,8 +382,11 @@ void translate_option(char *buffer, struct wl_private *lp)
 	u_char mac_value[ETH_ALEN];
 	/*------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 	DBG_FUNC("translate_option");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (buffer == NULL || lp == NULL) {
 		DBG_ERROR(DbgInfo, "Config file buffer and/or wavelan buffer ptr NULL\n");
 		return;
@@ -401,7 +432,11 @@ void translate_option(char *buffer, struct wl_private *lp)
 		if ((value_convert >= PARM_MIN_BRSC) || (value_convert <= PARM_MAX_BRSC))
 			lp->brsc[0] = value_convert;
 		else
+<<<<<<< HEAD
 			DBG_WARNING(DbgInfo, "%s invaid; will be ignored\n", PARM_NAME_BRSC_2GHZ);
+=======
+			DBG_WARNING(DbgInfo, "%s invalid; will be ignored\n", PARM_NAME_BRSC_2GHZ);
+>>>>>>> refs/remotes/origin/master
 	} else if (strcmp(key, PARM_NAME_BRSC_5GHZ) == 0) {
 		DBG_TRACE(DbgInfo, "%s, value: %s\n", PARM_NAME_BRSC_5GHZ, value);
 
@@ -409,7 +444,11 @@ void translate_option(char *buffer, struct wl_private *lp)
 		if ((value_convert >= PARM_MIN_BRSC) || (value_convert <= PARM_MAX_BRSC))
 			lp->brsc[1] = value_convert;
 		else
+<<<<<<< HEAD
 			DBG_WARNING(DbgInfo, "%s invaid; will be ignored\n", PARM_NAME_BRSC_5GHZ);
+=======
+			DBG_WARNING(DbgInfo, "%s invalid; will be ignored\n", PARM_NAME_BRSC_5GHZ);
+>>>>>>> refs/remotes/origin/master
 	} else if ((strcmp(key, PARM_NAME_DESIRED_SSID) == 0) || (strcmp(key, PARM_NAME_OWN_SSID) == 0)) {
 		DBG_TRACE(DbgInfo, "SSID, value: %s\n", value);
 
@@ -556,7 +595,11 @@ void translate_option(char *buffer, struct wl_private *lp)
 		if ((value_convert >= PARM_MIN_SRSC) || (value_convert <= PARM_MAX_SRSC))
 			lp->srsc[0] = value_convert;
 		else
+<<<<<<< HEAD
 			DBG_WARNING(DbgInfo, "%s invaid; will be ignored\n", PARM_NAME_SRSC_2GHZ);
+=======
+			DBG_WARNING(DbgInfo, "%s invalid; will be ignored\n", PARM_NAME_SRSC_2GHZ);
+>>>>>>> refs/remotes/origin/master
 	} else if (strcmp(key, PARM_NAME_SRSC_5GHZ) == 0) {
 		DBG_TRACE(DbgInfo, "%s, value: %s\n", PARM_NAME_SRSC_5GHZ, value);
 
@@ -564,7 +607,11 @@ void translate_option(char *buffer, struct wl_private *lp)
 		if ((value_convert >= PARM_MIN_SRSC) || (value_convert <= PARM_MAX_SRSC))
 			lp->srsc[1] = value_convert;
 		else
+<<<<<<< HEAD
 			DBG_WARNING(DbgInfo, "%s invaid; will be ignored\n", PARM_NAME_SRSC_5GHZ);
+=======
+			DBG_WARNING(DbgInfo, "%s invalid; will be ignored\n", PARM_NAME_SRSC_5GHZ);
+>>>>>>> refs/remotes/origin/master
 	} else if (strcmp(key, PARM_NAME_SYSTEM_SCALE) == 0) {
 		DBG_TRACE(DbgInfo, "%s, value: %s\n", PARM_NAME_SYSTEM_SCALE, value);
 
@@ -910,7 +957,11 @@ int parse_mac_address(char *value, u_char *byte_array)
 	memset(byte_field, '\0', 3);
 
 	while (value[value_offset] != '\0') {
+<<<<<<< HEAD
 		/* Skip over the colon chars seperating the bytes, if they exist */
+=======
+		/* Skip over the colon chars separating the bytes, if they exist */
+>>>>>>> refs/remotes/origin/master
 		if (value[value_offset] == ':') {
 			value_offset++;
 			continue;
@@ -959,10 +1010,13 @@ void ParseConfigLine(char *pszLine, char **ppszLVal, char **ppszRVal)
 {
 	int i;
 	int size;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 	DBG_FUNC("ParseConfigLine");
 	DBG_ENTER(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* get a snapshot of our string size */
 	size      = strlen(pszLine);
@@ -1005,7 +1059,10 @@ void ParseConfigLine(char *pszLine, char **ppszLVal, char **ppszRVal)
 				pszLine[i] = '\0';
 		}
 	}
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 } /* ParseConfigLine */
 /*============================================================================*/
 

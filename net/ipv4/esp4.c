@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "IPsec: " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "IPsec: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <crypto/aead.h>
 #include <crypto/authenc.h>
 #include <linux/err.h>
@@ -119,7 +129,10 @@ static int esp_output(struct xfrm_state *x, struct sk_buff *skb)
 	struct aead_givcrypt_request *req;
 	struct scatterlist *sg;
 	struct scatterlist *asg;
+<<<<<<< HEAD
 	struct esp_data *esp;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *trailer;
 	void *tmp;
 	u8 *iv;
@@ -137,8 +150,15 @@ static int esp_output(struct xfrm_state *x, struct sk_buff *skb)
 
 	/* skb is pure payload to encrypt */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	esp = x->data;
 	aead = esp->aead;
+=======
+	aead = x->data;
+>>>>>>> refs/remotes/origin/master
 	alen = crypto_aead_authsize(aead);
 
 	tfclen = 0;
@@ -152,8 +172,11 @@ static int esp_output(struct xfrm_state *x, struct sk_buff *skb)
 	}
 	blksize = ALIGN(crypto_aead_blocksize(aead), 4);
 	clen = ALIGN(skb->len + 2 + tfclen, blksize);
+<<<<<<< HEAD
 	if (esp->padlen)
 		clen = ALIGN(clen, esp->padlen);
+=======
+>>>>>>> refs/remotes/origin/master
 	plen = clen - skb->len - tfclen;
 
 	err = skb_cow_data(skb, tfclen + plen + alen, &trailer);
@@ -278,8 +301,12 @@ static int esp_input_done2(struct sk_buff *skb, int err)
 {
 	const struct iphdr *iph;
 	struct xfrm_state *x = xfrm_input_state(skb);
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
 	struct crypto_aead *aead = esp->aead;
+=======
+	struct crypto_aead *aead = x->data;
+>>>>>>> refs/remotes/origin/master
 	int alen = crypto_aead_authsize(aead);
 	int hlen = sizeof(struct ip_esp_hdr) + crypto_aead_ivsize(aead);
 	int elen = skb->len - hlen;
@@ -344,7 +371,14 @@ static int esp_input_done2(struct sk_buff *skb, int err)
 
 	pskb_trim(skb, skb->len - alen - padlen - 2);
 	__skb_pull(skb, hlen);
+<<<<<<< HEAD
 	skb_set_transport_header(skb, -ihl);
+=======
+	if (x->props.mode == XFRM_MODE_TUNNEL)
+		skb_reset_transport_header(skb);
+	else
+		skb_set_transport_header(skb, -ihl);
+>>>>>>> refs/remotes/origin/master
 
 	err = nexthdr[1];
 
@@ -371,8 +405,12 @@ static void esp_input_done(struct crypto_async_request *base, int err)
 static int esp_input(struct xfrm_state *x, struct sk_buff *skb)
 {
 	struct ip_esp_hdr *esph;
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
 	struct crypto_aead *aead = esp->aead;
+=======
+	struct crypto_aead *aead = x->data;
+>>>>>>> refs/remotes/origin/master
 	struct aead_request *req;
 	struct sk_buff *trailer;
 	int elen = skb->len - sizeof(*esph) - crypto_aead_ivsize(aead);
@@ -454,25 +492,50 @@ out:
 
 static u32 esp4_get_mtu(struct xfrm_state *x, int mtu)
 {
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
 	u32 blksize = ALIGN(crypto_aead_blocksize(esp->aead), 4);
 	u32 align = max_t(u32, blksize, esp->padlen);
+<<<<<<< HEAD
+=======
+	struct crypto_aead *aead = x->data;
+	u32 blksize = ALIGN(crypto_aead_blocksize(aead), 4);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int net_adj;
 
 	switch (x->props.mode) {
 	case XFRM_MODE_TRANSPORT:
 	case XFRM_MODE_BEET:
 		net_adj = sizeof(struct iphdr);
+<<<<<<< HEAD
 		break;
 	case XFRM_MODE_TUNNEL:
 		net_adj = 0;
 		break;
+=======
+		break;
+	case XFRM_MODE_TUNNEL:
+		net_adj = 0;
+		break;
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		BUG();
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return ((mtu - x->props.header_len - crypto_aead_authsize(esp->aead) -
 		 net_adj) & ~(align - 1)) + (net_adj - 2);
+=======
+	return ((mtu - x->props.header_len - crypto_aead_authsize(aead) -
+		 net_adj) & ~(blksize - 1)) + net_adj - 2;
+>>>>>>> refs/remotes/origin/master
+=======
+	return ((mtu - x->props.header_len - crypto_aead_authsize(esp->aead) -
+		 net_adj) & ~(align - 1)) + (net_adj - 2);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void esp4_err(struct sk_buff *skb, u32 info)
@@ -482,21 +545,42 @@ static void esp4_err(struct sk_buff *skb, u32 info)
 	struct ip_esp_hdr *esph = (struct ip_esp_hdr *)(skb->data+(iph->ihl<<2));
 	struct xfrm_state *x;
 
+<<<<<<< HEAD
 	if (icmp_hdr(skb)->type != ICMP_DEST_UNREACH ||
 	    icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
 		return;
+=======
+	switch (icmp_hdr(skb)->type) {
+	case ICMP_DEST_UNREACH:
+		if (icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
+			return;
+	case ICMP_REDIRECT:
+		break;
+	default:
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	x = xfrm_state_lookup(net, skb->mark, (const xfrm_address_t *)&iph->daddr,
 			      esph->spi, IPPROTO_ESP, AF_INET);
 	if (!x)
 		return;
+<<<<<<< HEAD
 	NETDEBUG(KERN_DEBUG "pmtu discovery on SA ESP/%08x/%08x\n",
 		 ntohl(esph->spi), ntohl(iph->daddr));
+=======
+
+	if (icmp_hdr(skb)->type == ICMP_DEST_UNREACH)
+		ipv4_update_pmtu(skb, net, info, 0, 0, IPPROTO_ESP, 0);
+	else
+		ipv4_redirect(skb, net, 0, 0, IPPROTO_ESP, 0);
+>>>>>>> refs/remotes/origin/master
 	xfrm_state_put(x);
 }
 
 static void esp_destroy(struct xfrm_state *x)
 {
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
 
 	if (!esp)
@@ -504,11 +588,22 @@ static void esp_destroy(struct xfrm_state *x)
 
 	crypto_free_aead(esp->aead);
 	kfree(esp);
+=======
+	struct crypto_aead *aead = x->data;
+
+	if (!aead)
+		return;
+
+	crypto_free_aead(aead);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int esp_init_aead(struct xfrm_state *x)
 {
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct crypto_aead *aead;
 	int err;
 
@@ -517,7 +612,11 @@ static int esp_init_aead(struct xfrm_state *x)
 	if (IS_ERR(aead))
 		goto error;
 
+<<<<<<< HEAD
 	esp->aead = aead;
+=======
+	x->data = aead;
+>>>>>>> refs/remotes/origin/master
 
 	err = crypto_aead_setkey(aead, x->aead->alg_key,
 				 (x->aead->alg_key_len + 7) / 8);
@@ -534,7 +633,10 @@ error:
 
 static int esp_init_authenc(struct xfrm_state *x)
 {
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct crypto_aead *aead;
 	struct crypto_authenc_key_param *param;
 	struct rtattr *rta;
@@ -569,7 +671,11 @@ static int esp_init_authenc(struct xfrm_state *x)
 	if (IS_ERR(aead))
 		goto error;
 
+<<<<<<< HEAD
 	esp->aead = aead;
+=======
+	x->data = aead;
+>>>>>>> refs/remotes/origin/master
 
 	keylen = (x->aalg ? (x->aalg->alg_key_len + 7) / 8 : 0) +
 		 (x->ealg->alg_key_len + 7) / 8 + RTA_SPACE(sizeof(*param));
@@ -624,16 +730,23 @@ error:
 
 static int esp_init_state(struct xfrm_state *x)
 {
+<<<<<<< HEAD
 	struct esp_data *esp;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct crypto_aead *aead;
 	u32 align;
 	int err;
 
+<<<<<<< HEAD
 	esp = kzalloc(sizeof(*esp), GFP_KERNEL);
 	if (esp == NULL)
 		return -ENOMEM;
 
 	x->data = esp;
+=======
+	x->data = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	if (x->aead)
 		err = esp_init_aead(x);
@@ -643,9 +756,13 @@ static int esp_init_state(struct xfrm_state *x)
 	if (err)
 		goto error;
 
+<<<<<<< HEAD
 	aead = esp->aead;
 
 	esp->padlen = 0;
+=======
+	aead = x->data;
+>>>>>>> refs/remotes/origin/master
 
 	x->props.header_len = sizeof(struct ip_esp_hdr) +
 			      crypto_aead_ivsize(aead);
@@ -669,9 +786,13 @@ static int esp_init_state(struct xfrm_state *x)
 	}
 
 	align = ALIGN(crypto_aead_blocksize(aead), 4);
+<<<<<<< HEAD
 	if (esp->padlen)
 		align = max_t(u32, align, esp->padlen);
 	x->props.trailer_len = align + 1 + crypto_aead_authsize(esp->aead);
+=======
+	x->props.trailer_len = align + 1 + crypto_aead_authsize(aead);
+>>>>>>> refs/remotes/origin/master
 
 error:
 	return err;
@@ -700,11 +821,25 @@ static const struct net_protocol esp4_protocol = {
 static int __init esp4_init(void)
 {
 	if (xfrm_register_type(&esp_type, AF_INET) < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "ip esp init: can't add xfrm type\n");
 		return -EAGAIN;
 	}
 	if (inet_add_protocol(&esp4_protocol, IPPROTO_ESP) < 0) {
 		printk(KERN_INFO "ip esp init: can't add protocol\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_info("%s: can't add xfrm type\n", __func__);
+		return -EAGAIN;
+	}
+	if (inet_add_protocol(&esp4_protocol, IPPROTO_ESP) < 0) {
+		pr_info("%s: can't add protocol\n", __func__);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		xfrm_unregister_type(&esp_type, AF_INET);
 		return -EAGAIN;
 	}
@@ -714,9 +849,21 @@ static int __init esp4_init(void)
 static void __exit esp4_fini(void)
 {
 	if (inet_del_protocol(&esp4_protocol, IPPROTO_ESP) < 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "ip esp close: can't remove protocol\n");
 	if (xfrm_unregister_type(&esp_type, AF_INET) < 0)
 		printk(KERN_INFO "ip esp close: can't remove xfrm type\n");
+=======
+		pr_info("%s: can't remove protocol\n", __func__);
+	if (xfrm_unregister_type(&esp_type, AF_INET) < 0)
+		pr_info("%s: can't remove xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("%s: can't remove protocol\n", __func__);
+	if (xfrm_unregister_type(&esp_type, AF_INET) < 0)
+		pr_info("%s: can't remove xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(esp4_init);

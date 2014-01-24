@@ -107,6 +107,20 @@ struct ib_srq *ipath_create_srq(struct ib_pd *ibpd,
 	u32 sz;
 	struct ib_srq *ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (srq_init_attr->srq_type != IB_SRQT_BASIC) {
+		ret = ERR_PTR(-ENOSYS);
+		goto done;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (srq_init_attr->attr.max_wr == 0) {
 		ret = ERR_PTR(-EINVAL);
 		goto done;

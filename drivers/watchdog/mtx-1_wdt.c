@@ -204,12 +204,20 @@ static struct miscdevice mtx1_wdt_misc = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit mtx1_wdt_probe(struct platform_device *pdev)
+=======
+static int mtx1_wdt_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
 	mtx1_wdt_device.gpio = pdev->resource[0].start;
+<<<<<<< HEAD
 	ret = gpio_request_one(mtx1_wdt_device.gpio,
+=======
+	ret = devm_gpio_request_one(&pdev->dev, mtx1_wdt_device.gpio,
+>>>>>>> refs/remotes/origin/master
 				GPIOF_OUT_INIT_HIGH, "mtx1-wdt");
 	if (ret < 0) {
 		dev_err(&pdev->dev, "failed to request gpio");
@@ -225,15 +233,33 @@ static int __devinit mtx1_wdt_probe(struct platform_device *pdev)
 
 	ret = misc_register(&mtx1_wdt_misc);
 	if (ret < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR " mtx-1_wdt : failed to register\n");
 		return ret;
 	}
 	mtx1_wdt_start();
 	printk(KERN_INFO "MTX-1 Watchdog driver\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		dev_err(&pdev->dev, "failed to register\n");
+		return ret;
+	}
+	mtx1_wdt_start();
+	dev_info(&pdev->dev, "MTX-1 Watchdog driver\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int __devexit mtx1_wdt_remove(struct platform_device *pdev)
+=======
+	return 0;
+}
+
+static int mtx1_wdt_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* FIXME: do we need to lock this test ? */
 	if (mtx1_wdt_device.queue) {
@@ -241,18 +267,27 @@ static int __devexit mtx1_wdt_remove(struct platform_device *pdev)
 		wait_for_completion(&mtx1_wdt_device.stop);
 	}
 
+<<<<<<< HEAD
 	gpio_free(mtx1_wdt_device.gpio);
+=======
+>>>>>>> refs/remotes/origin/master
 	misc_deregister(&mtx1_wdt_misc);
 	return 0;
 }
 
 static struct platform_driver mtx1_wdt_driver = {
 	.probe = mtx1_wdt_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(mtx1_wdt_remove),
+=======
+	.remove = mtx1_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver.name = "mtx1-wdt",
 	.driver.owner = THIS_MODULE,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init mtx1_wdt_init(void)
 {
 	return platform_driver_register(&mtx1_wdt_driver);
@@ -265,9 +300,18 @@ static void __exit mtx1_wdt_exit(void)
 
 module_init(mtx1_wdt_init);
 module_exit(mtx1_wdt_exit);
+=======
+module_platform_driver(mtx1_wdt_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(mtx1_wdt_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Stickel, Florian Fainelli");
 MODULE_DESCRIPTION("Driver for the MTX-1 watchdog");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:mtx1-wdt");

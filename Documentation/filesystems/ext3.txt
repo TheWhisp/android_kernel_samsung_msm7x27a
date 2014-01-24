@@ -26,11 +26,20 @@ journal=inum		When a journal already exists, this option is ignored.
 			Otherwise, it specifies the number of the inode which
 			will represent the ext3 file system's journal file.
 
+<<<<<<< HEAD
 journal_dev=devnum	When the external journal device's major/minor numbers
 			have changed, this option allows the user to specify
 			the new journal location.  The journal device is
 			identified through its new major/minor numbers encoded
 			in devnum.
+=======
+journal_path=path
+journal_dev=devnum	When the external journal device's major/minor numbers
+			have changed, these options allow the user to specify
+			the new journal location.  The journal device is
+			identified through either its new major/minor numbers
+			encoded in devnum, or via a path to the device.
+>>>>>>> refs/remotes/origin/master
 
 norecovery		Don't load the journal on mounting. Note that this forces
 noload			mount of inconsistent filesystem, which can lead to
@@ -59,9 +68,15 @@ commit=nrsec	(*)	Ext3 can be told to sync all its data and metadata
 			Setting it to very large values will improve
 			performance.
 
+<<<<<<< HEAD
 barrier=<0(*)|1>	This enables/disables the use of write barriers in
 barrier			the jbd code.  barrier=0 disables, barrier=1 enables.
 nobarrier	(*)	This also requires an IO stack which can support
+=======
+barrier=<0|1(*)>	This enables/disables the use of write barriers in
+barrier	(*)		the jbd code.  barrier=0 disables, barrier=1 enables.
+nobarrier		This also requires an IO stack which can support
+>>>>>>> refs/remotes/origin/master
 			barriers, and if jbd gets an error on a barrier
 			write, it will disable again with a warning.
 			Write barriers enforce proper on-disk ordering
@@ -73,6 +88,8 @@ nobarrier	(*)	This also requires an IO stack which can support
 			also be used to enable or disable barriers, for
 			consistency with other ext3 mount options.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 orlov		(*)	This enables the new Orlov block allocator. It is
 			enabled by default.
 
@@ -81,6 +98,10 @@ oldalloc		This disables the Orlov block allocator and enables
 			performance - we'd like to get some feedback if it's
 			the contrary for you.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 user_xattr		Enables Extended User Attributes.  Additionally, you
 			need to have extended attribute support enabled in the
 			kernel configuration (CONFIG_EXT3_FS_XATTR).  See the
@@ -147,6 +168,8 @@ grpjquota=<file>	during journal replay. They replace the above
 			package for more details
 			(http://sourceforge.net/projects/linuxquota).
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 bh		(*)	ext3 associates buffer heads to data pages to
 nobh			(a) cache disk block mapping information
 			(b) link pages into transaction to provide
@@ -156,6 +179,10 @@ nobh			(a) cache disk block mapping information
 			heads (supported only for "writeback" mode).
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Specification
 =============
 Ext3 shares all disk implementation with the ext2 filesystem, and adds
@@ -227,5 +254,15 @@ kernel source:	<file:fs/ext3/>
 programs: 	http://e2fsprogs.sourceforge.net/
 		http://ext2resize.sourceforge.net
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 useful links:	http://www.ibm.com/developerworks/library/l-fs7.html
 		http://www.ibm.com/developerworks/library/l-fs8.html
+=======
+useful links:	http://www.ibm.com/developerworks/library/l-fs7/index.html
+        http://www.ibm.com/developerworks/library/l-fs8/index.html
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+useful links:	http://www.ibm.com/developerworks/library/l-fs7/index.html
+        http://www.ibm.com/developerworks/library/l-fs8/index.html
+>>>>>>> refs/remotes/origin/master

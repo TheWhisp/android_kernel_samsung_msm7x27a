@@ -14,7 +14,15 @@
 #include <asm/io.h>
 #include "pcsp.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nforce_wa;
+=======
+static bool nforce_wa;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nforce_wa;
+>>>>>>> refs/remotes/origin/master
 module_param(nforce_wa, bool, 0444);
 MODULE_PARM_DESC(nforce_wa, "Apply NForce chipset workaround "
 		"(expect bad sound)");
@@ -334,7 +342,11 @@ static struct snd_pcm_ops snd_pcsp_playback_ops = {
 	.pointer = snd_pcsp_playback_pointer,
 };
 
+<<<<<<< HEAD
 int __devinit snd_pcsp_new_pcm(struct snd_pcsp *chip)
+=======
+int snd_pcsp_new_pcm(struct snd_pcsp *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 

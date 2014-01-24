@@ -15,6 +15,14 @@
  * (at your option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/pci.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pci.h>
+>>>>>>> refs/remotes/origin/master
 
 struct m32r_sio_probe {
 	struct module	*owner;

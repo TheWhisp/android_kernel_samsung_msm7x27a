@@ -13,6 +13,14 @@
 
 #include <linux/kernel.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/netpoll.h>
 #include <linux/ethtool.h>
 #include <linux/if_arp.h>
@@ -22,6 +30,10 @@
 #include <linux/if_ether.h>
 #include <linux/slab.h>
 #include <net/sock.h>
+<<<<<<< HEAD
+=======
+#include <linux/if_vlan.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "br_private.h"
 
@@ -33,6 +45,8 @@
  */
 static int port_cost(struct net_device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev->ethtool_ops && dev->ethtool_ops->get_settings) {
 		struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
 
@@ -47,6 +61,25 @@ static int port_cost(struct net_device *dev)
 			case SPEED_10:
 				return 100;
 			}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct ethtool_cmd ecmd;
+
+	if (!__ethtool_get_settings(dev, &ecmd)) {
+		switch (ethtool_cmd_speed(&ecmd)) {
+		case SPEED_10000:
+			return 2;
+		case SPEED_1000:
+			return 4;
+		case SPEED_100:
+			return 19;
+		case SPEED_10:
+			return 100;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -67,14 +100,23 @@ void br_port_carrier_check(struct net_bridge_port *p)
 	struct net_device *dev = p->dev;
 	struct net_bridge *br = p->br;
 
+<<<<<<< HEAD
 	if (netif_running(dev) && netif_carrier_ok(dev))
+=======
+	if (!(p->flags & BR_ADMIN_COST) &&
+	    netif_running(dev) && netif_oper_up(dev))
+>>>>>>> refs/remotes/origin/master
 		p->path_cost = port_cost(dev);
 
 	if (!netif_running(br->dev))
 		return;
 
 	spin_lock_bh(&br->lock);
+<<<<<<< HEAD
 	if (netif_running(dev) && netif_carrier_ok(dev)) {
+=======
+	if (netif_running(dev) && netif_oper_up(dev)) {
+>>>>>>> refs/remotes/origin/master
 		if (p->state == BR_STATE_DISABLED)
 			br_stp_enable_port(p);
 	} else {
@@ -140,6 +182,10 @@ static void del_nbp(struct net_bridge_port *p)
 
 	br_ifinfo_notify(RTM_DELLINK, p);
 
+<<<<<<< HEAD
+=======
+	nbp_vlan_flush(p);
+>>>>>>> refs/remotes/origin/master
 	br_fdb_delete_by_port(br, p, 1);
 
 	list_del_rcu(&p->list);
@@ -147,9 +193,14 @@ static void del_nbp(struct net_bridge_port *p)
 	dev->priv_flags &= ~IFF_BRIDGE_PORT;
 
 	netdev_rx_handler_unregister(dev);
+<<<<<<< HEAD
 	synchronize_net();
 
 	netdev_set_master(dev, NULL);
+=======
+
+	netdev_upper_dev_unlink(dev, br->dev);
+>>>>>>> refs/remotes/origin/master
 
 	br_multicast_del_port(p);
 
@@ -171,6 +222,17 @@ void br_dev_delete(struct net_device *dev, struct list_head *head)
 		del_nbp(p);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	br_fdb_delete_by_port(br, NULL, 1);
+
+	br_vlan_flush(br);
+>>>>>>> refs/remotes/origin/master
+=======
+	br_fdb_delete_by_port(br, NULL, 1);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	del_timer_sync(&br->gc_timer);
 
 	br_sysfs_delbr(br->dev);
@@ -220,7 +282,11 @@ static struct net_bridge_port *new_nbp(struct net_bridge *br,
 	p->path_cost = port_cost(dev);
 	p->priority = 0x8000 >> BR_PORT_BITS;
 	p->port_no = index;
+<<<<<<< HEAD
 	p->flags = 0;
+=======
+	p->flags = BR_LEARNING | BR_FLOOD;
+>>>>>>> refs/remotes/origin/master
 	br_init_port(p);
 	p->state = BR_STATE_DISABLED;
 	br_stp_port_timer_init(p);
@@ -298,10 +364,24 @@ int br_min_mtu(const struct net_bridge *br)
 /*
  * Recomputes features using slave's features
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 br_features_recompute(struct net_bridge *br, u32 features)
 {
 	struct net_bridge_port *p;
 	u32 mask;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+netdev_features_t br_features_recompute(struct net_bridge *br,
+	netdev_features_t features)
+{
+	struct net_bridge_port *p;
+	netdev_features_t mask;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (list_empty(&br->port_list))
 		return features;
@@ -326,7 +406,17 @@ int br_add_if(struct net_bridge *br, struct net_device *dev)
 
 	/* Don't allow bridging non-ethernet like devices */
 	if ((dev->flags & IFF_LOOPBACK) ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    dev->type != ARPHRD_ETHER || dev->addr_len != ETH_ALEN)
+=======
+	    dev->type != ARPHRD_ETHER || dev->addr_len != ETH_ALEN ||
+	    !is_valid_ether_addr(dev->dev_addr))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    dev->type != ARPHRD_ETHER || dev->addr_len != ETH_ALEN ||
+	    !is_valid_ether_addr(dev->dev_addr))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	/* No bridging of bridges */
@@ -354,16 +444,23 @@ int br_add_if(struct net_bridge *br, struct net_device *dev)
 	err = kobject_init_and_add(&p->kobj, &brport_ktype, &(dev->dev.kobj),
 				   SYSFS_BRIDGE_PORT_ATTR);
 	if (err)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto err0;
 
 	err = br_fdb_insert(br, p, dev->dev_addr);
 	if (err)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto err1;
 
 	err = br_sysfs_addif(p);
 	if (err)
 		goto err2;
 
+<<<<<<< HEAD
 	if (br_netpoll_info(br) && ((err = br_netpoll_enable(p))))
 		goto err3;
 
@@ -374,6 +471,19 @@ int br_add_if(struct net_bridge *br, struct net_device *dev)
 	err = netdev_rx_handler_register(dev, br_handle_frame, p);
 	if (err)
 		goto err4;
+=======
+	err = br_netpoll_enable(p, GFP_KERNEL);
+	if (err)
+		goto err3;
+
+	err = netdev_master_upper_dev_link(dev, br->dev);
+	if (err)
+		goto err4;
+
+	err = netdev_rx_handler_register(dev, br_handle_frame, p);
+	if (err)
+		goto err5;
+>>>>>>> refs/remotes/origin/master
 
 	dev->priv_flags |= IFF_BRIDGE_PORT;
 
@@ -383,10 +493,20 @@ int br_add_if(struct net_bridge *br, struct net_device *dev)
 
 	netdev_update_features(br->dev);
 
+<<<<<<< HEAD
 	spin_lock_bh(&br->lock);
 	changed_addr = br_stp_recalculate_bridge_id(br);
 
 	if ((dev->flags & IFF_UP) && netif_carrier_ok(dev) &&
+=======
+	if (br->dev->needed_headroom < dev->needed_headroom)
+		br->dev->needed_headroom = dev->needed_headroom;
+
+	spin_lock_bh(&br->lock);
+	changed_addr = br_stp_recalculate_bridge_id(br);
+
+	if (netif_running(dev) && netif_oper_up(dev) &&
+>>>>>>> refs/remotes/origin/master
 	    (br->dev->flags & IFF_UP))
 		br_stp_enable_port(p);
 	spin_unlock_bh(&br->lock);
@@ -394,24 +514,62 @@ int br_add_if(struct net_bridge *br, struct net_device *dev)
 	br_ifinfo_notify(RTM_NEWLINK, p);
 
 	if (changed_addr)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		call_netdevice_notifiers(NETDEV_CHANGEADDR, dev);
 
 	dev_set_mtu(br->dev, br_min_mtu(br));
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		call_netdevice_notifiers(NETDEV_CHANGEADDR, br->dev);
+
+	dev_set_mtu(br->dev, br_min_mtu(br));
+
+<<<<<<< HEAD
+	if (br_fdb_insert(br, p, dev->dev_addr))
+		netdev_err(dev, "failed insert local address bridge forwarding table\n");
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (br_fdb_insert(br, p, dev->dev_addr, 0))
+		netdev_err(dev, "failed insert local address bridge forwarding table\n");
+
+>>>>>>> refs/remotes/origin/master
 	kobject_uevent(&p->kobj, KOBJ_ADD);
 
 	return 0;
 
+<<<<<<< HEAD
 err4:
 	netdev_set_master(dev, NULL);
 err3:
 	sysfs_remove_link(br->ifobj, p->dev->name);
 err2:
+<<<<<<< HEAD
 	br_fdb_delete_by_port(br, p, 1);
 err1:
 	kobject_put(&p->kobj);
 	p = NULL; /* kobject_put frees */
 err0:
+=======
+	kobject_put(&p->kobj);
+	p = NULL; /* kobject_put frees */
+err1:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+err5:
+	netdev_upper_dev_unlink(dev, br->dev);
+err4:
+	br_netpoll_disable(p);
+err3:
+	sysfs_remove_link(br->ifobj, p->dev->name);
+err2:
+	kobject_put(&p->kobj);
+	p = NULL; /* kobject_put frees */
+err1:
+>>>>>>> refs/remotes/origin/master
 	dev_set_promiscuity(dev, -1);
 put_back:
 	dev_put(dev);
@@ -423,17 +581,47 @@ put_back:
 int br_del_if(struct net_bridge *br, struct net_device *dev)
 {
 	struct net_bridge_port *p;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool changed_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool changed_addr;
+>>>>>>> refs/remotes/origin/master
 
 	p = br_port_get_rtnl(dev);
 	if (!p || p->br != br)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	del_nbp(p);
 
 	spin_lock_bh(&br->lock);
+<<<<<<< HEAD
 	br_stp_recalculate_bridge_id(br);
 	spin_unlock_bh(&br->lock);
 
+=======
+=======
+	/* Since more than one interface can be attached to a bridge,
+	 * there still maybe an alternate path for netconsole to use;
+	 * therefore there is no reason for a NETDEV_RELEASE event.
+	 */
+	del_nbp(p);
+
+	spin_lock_bh(&br->lock);
+>>>>>>> refs/remotes/origin/master
+	changed_addr = br_stp_recalculate_bridge_id(br);
+	spin_unlock_bh(&br->lock);
+
+	if (changed_addr)
+		call_netdevice_notifiers(NETDEV_CHANGEADDR, br->dev);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	netdev_update_features(br->dev);
 
 	return 0;

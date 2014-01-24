@@ -457,6 +457,7 @@ static struct pci_driver prism2_pci_driver = {
 #endif /* CONFIG_PM */
 };
 
+<<<<<<< HEAD
 
 static int __init init_prism2_pci(void)
 {
@@ -472,3 +473,6 @@ static void __exit exit_prism2_pci(void)
 
 module_init(init_prism2_pci);
 module_exit(exit_prism2_pci);
+=======
+module_pci_driver(prism2_pci_driver);
+>>>>>>> refs/remotes/origin/master

@@ -8,6 +8,8 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,6 +19,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef AMD5536UDC_H
@@ -481,7 +487,10 @@ struct udc_request {
 
 	/* flags */
 	unsigned			dma_going : 1,
+<<<<<<< HEAD
 					dma_mapping : 1,
+=======
+>>>>>>> refs/remotes/origin/master
 					dma_done : 1;
 	/* phys. address */
 	dma_addr_t			td_phys;
@@ -521,7 +530,10 @@ struct udc_ep {
 
 	/* queue for requests */
 	struct list_head		queue;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned			halted;
 	unsigned			cancel_transfer;
 	unsigned			num : 5,
@@ -573,6 +585,11 @@ struct udc {
 	u16				cur_alt;
 };
 
+<<<<<<< HEAD
+=======
+#define to_amd5536_udc(g)	(container_of((g), struct udc, gadget))
+
+>>>>>>> refs/remotes/origin/master
 /* setup request data */
 union udc_setup_data {
 	u32			data[2];

@@ -12,6 +12,8 @@
  *
  * See Documentation/usb/usb-serial.txt for more information on using this
  * driver
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * (09/07/2001) gkh
  *	cleaned up the Xircom support.  Added ids for Entregra device which is
@@ -65,12 +67,19 @@
  * (03/26/2000) gkh
  *	Split driver up into device specific pieces.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -78,13 +87,24 @@
 #include <linux/module.h>
 #include <linux/spinlock.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 #include <linux/firmware.h>
 #include <linux/ihex.h>
 #include <linux/uaccess.h>
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/uaccess.h>
+#include <linux/usb.h>
+#include <linux/usb/serial.h>
+#include <linux/usb/ezusb.h>
+>>>>>>> refs/remotes/origin/master
 
 /* make a simple define to handle if we are compiling keyspan_pda or xircom support */
 #if defined(CONFIG_USB_SERIAL_KEYSPAN_PDA) || defined(CONFIG_USB_SERIAL_KEYSPAN_PDA_MODULE)
@@ -98,10 +118,13 @@ static int debug;
 	#undef XIRCOM
 #endif
 
+<<<<<<< HEAD
 /*
  * Version Information
  */
 #define DRIVER_VERSION "v1.1"
+=======
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_AUTHOR "Brian Warner <warner@lothar.com>"
 #define DRIVER_DESC "USB Keyspan PDA Converter driver"
 
@@ -139,14 +162,20 @@ static const struct usb_device_id id_table_combined[] = {
 
 MODULE_DEVICE_TABLE(usb, id_table_combined);
 
+<<<<<<< HEAD
 static struct usb_driver keyspan_pda_driver = {
 	.name =		"keyspan_pda",
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct usb_device_id id_table_std[] = {
 	{ USB_DEVICE(KEYSPAN_VENDOR_ID, KEYSPAN_PDA_ID) },
 	{ }						/* Terminating entry */
@@ -172,10 +201,15 @@ static void keyspan_pda_wakeup_write(struct work_struct *work)
 	struct keyspan_pda_private *priv =
 		container_of(work, struct keyspan_pda_private, wakeup_work);
 	struct usb_serial_port *port = priv->port;
+<<<<<<< HEAD
 	struct tty_struct *tty = tty_port_tty_get(&port->port);
 	if (tty)
 		tty_wakeup(tty);
 	tty_kref_put(tty);
+=======
+
+	tty_port_tty_wakeup(&port->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void keyspan_pda_request_unthrottle(struct work_struct *work)
@@ -185,7 +219,10 @@ static void keyspan_pda_request_unthrottle(struct work_struct *work)
 	struct usb_serial *serial = priv->serial;
 	int result;
 
+<<<<<<< HEAD
 	dbg(" request_unthrottle");
+=======
+>>>>>>> refs/remotes/origin/master
 	/* ask the device to tell us when the tx buffer becomes
 	   sufficiently empty */
 	result = usb_control_msg(serial->dev,
@@ -199,15 +236,23 @@ static void keyspan_pda_request_unthrottle(struct work_struct *work)
 				 0,
 				 2000);
 	if (result < 0)
+<<<<<<< HEAD
 		dbg("%s - error %d from usb_control_msg",
 		    __func__, result);
+=======
+		dev_dbg(&serial->dev->dev, "%s - error %d from usb_control_msg\n",
+			__func__, result);
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static void keyspan_pda_rx_interrupt(struct urb *urb)
 {
 	struct usb_serial_port *port = urb->context;
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char *data = urb->transfer_buffer;
 	int retval;
 	int status = urb->status;
@@ -222,18 +267,26 @@ static void keyspan_pda_rx_interrupt(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d",
 		    __func__, status);
 		return;
 	default:
 		dbg("%s - nonzero urb status received: %d",
 		    __func__, status);
+=======
+		dev_dbg(&urb->dev->dev, "%s - urb shutting down with status: %d\n", __func__, status);
+		return;
+	default:
+		dev_dbg(&urb->dev->dev, "%s - nonzero urb status received: %d\n", __func__, status);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
 	/* see if the message is data or a status interrupt */
 	switch (data[0]) {
 	case 0:
+<<<<<<< HEAD
 		tty = tty_port_tty_get(&port->port);
 		 /* rest of message is rx data */
 		if (tty && urb->actual_length) {
@@ -246,6 +299,18 @@ static void keyspan_pda_rx_interrupt(struct urb *urb)
 	case 1:
 		/* status interrupt */
 		dbg(" rx int, d1=%d, d2=%d", data[1], data[2]);
+=======
+		 /* rest of message is rx data */
+		if (urb->actual_length) {
+			tty_insert_flip_string(&port->port, data + 1,
+						urb->actual_length - 1);
+			tty_flip_buffer_push(&port->port);
+		}
+		break;
+	case 1:
+		/* status interrupt */
+		dev_dbg(&port->dev, "rx int, d1=%d, d2=%d\n", data[1], data[2]);
+>>>>>>> refs/remotes/origin/master
 		switch (data[1]) {
 		case 1: /* modemline change */
 			break;
@@ -280,7 +345,11 @@ static void keyspan_pda_rx_throttle(struct tty_struct *tty)
 	   send an XOFF, although it might make sense to foist that off
 	   upon the device too. */
 	struct usb_serial_port *port = tty->driver_data;
+<<<<<<< HEAD
 	dbg("keyspan_pda_rx_throttle port %d", port->number);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	usb_kill_urb(port->interrupt_in_urb);
 }
 
@@ -289,10 +358,19 @@ static void keyspan_pda_rx_unthrottle(struct tty_struct *tty)
 {
 	struct usb_serial_port *port = tty->driver_data;
 	/* just restart the receive interrupt URB */
+<<<<<<< HEAD
 	dbg("keyspan_pda_rx_unthrottle port %d", port->number);
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL))
 		dbg(" usb_submit_urb(read urb) failed");
+=======
+
+	if (usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL))
+		dev_dbg(&port->dev, "usb_submit_urb(read urb) failed\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -371,8 +449,13 @@ static void keyspan_pda_break_ctl(struct tty_struct *tty, int break_state)
 			USB_TYPE_VENDOR | USB_RECIP_INTERFACE | USB_DIR_OUT,
 			value, 0, NULL, 0, 2000);
 	if (result < 0)
+<<<<<<< HEAD
 		dbg("%s - error %d from usb_control_msg",
 		    __func__, result);
+=======
+		dev_dbg(&port->dev, "%s - error %d from usb_control_msg\n",
+			__func__, result);
+>>>>>>> refs/remotes/origin/master
 	/* there is something funky about this.. the TCSBRK that 'cu' performs
 	   ought to translate into a break_ctl(-1),break_ctl(0) pair HZ/4
 	   seconds apart, but it feels like the break sent isn't as long as it
@@ -401,7 +484,11 @@ static void keyspan_pda_set_termios(struct tty_struct *tty,
 	   7[EOMS]1: 10 bit, b0/b7 is parity
 	   7[EOMS]2: 11 bit, b0/b7 is parity, extra bit always (mark?)
 
+<<<<<<< HEAD
 	   HW flow control is dictated by the tty->termios->c_cflags & CRTSCTS
+=======
+	   HW flow control is dictated by the tty->termios.c_cflags & CRTSCTS
+>>>>>>> refs/remotes/origin/master
 	   bit.
 
 	   For now, just do baud. */
@@ -410,13 +497,21 @@ static void keyspan_pda_set_termios(struct tty_struct *tty,
 	speed = keyspan_pda_setbaud(serial, speed);
 
 	if (speed == 0) {
+<<<<<<< HEAD
 		dbg("can't handle requested baud rate");
+=======
+		dev_dbg(&port->dev, "can't handle requested baud rate\n");
+>>>>>>> refs/remotes/origin/master
 		/* It hasn't changed so.. */
 		speed = tty_termios_baud_rate(old_termios);
 	}
 	/* Only speed can change so copy the old h/w parameters
 	   then encode the new speed */
+<<<<<<< HEAD
 	tty_termios_copy_hw(tty->termios, old_termios);
+=======
+	tty_termios_copy_hw(&tty->termios, old_termios);
+>>>>>>> refs/remotes/origin/master
 	tty_encode_baud_rate(tty, speed, speed);
 }
 
@@ -521,9 +616,14 @@ static int keyspan_pda_write(struct tty_struct *tty,
 	   select() or poll() too) until we receive that unthrottle interrupt.
 	   Block if we can't write anything at all, otherwise write as much as
 	   we can. */
+<<<<<<< HEAD
 	dbg("keyspan_pda_write(%d)", count);
 	if (count == 0) {
 		dbg(" write request of 0 bytes");
+=======
+	if (count == 0) {
+		dev_dbg(&port->dev, "write request of 0 bytes\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -532,11 +632,25 @@ static int keyspan_pda_write(struct tty_struct *tty,
 	   the device is full (wait until it says there is room)
 	*/
 	spin_lock_bh(&port->lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (port->write_urb_busy || priv->tx_throttled) {
 		spin_unlock_bh(&port->lock);
 		return 0;
 	}
 	port->write_urb_busy = 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled) {
+		spin_unlock_bh(&port->lock);
+		return 0;
+	}
+	clear_bit(0, &port->write_urbs_free);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&port->lock);
 
 	/* At this point the URB is in our control, nobody else can submit it
@@ -569,16 +683,28 @@ static int keyspan_pda_write(struct tty_struct *tty,
 				     1,
 				     2000);
 		if (rc > 0) {
+<<<<<<< HEAD
 			dbg(" roomquery says %d", *room);
+=======
+			dev_dbg(&port->dev, "roomquery says %d\n", *room);
+>>>>>>> refs/remotes/origin/master
 			priv->tx_room = *room;
 		}
 		kfree(room);
 		if (rc < 0) {
+<<<<<<< HEAD
 			dbg(" roomquery failed");
 			goto exit;
 		}
 		if (rc == 0) {
 			dbg(" roomquery returned 0 bytes");
+=======
+			dev_dbg(&port->dev, "roomquery failed\n");
+			goto exit;
+		}
+		if (rc == 0) {
+			dev_dbg(&port->dev, "roomquery returned 0 bytes\n");
+>>>>>>> refs/remotes/origin/master
 			rc = -EIO; /* device didn't return any data */
 			goto exit;
 		}
@@ -598,10 +724,19 @@ static int keyspan_pda_write(struct tty_struct *tty,
 
 		priv->tx_room -= count;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		port->write_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = usb_submit_urb(port->write_urb, GFP_ATOMIC);
 		if (rc) {
 			dbg(" usb_submit_urb(write bulk) failed");
+=======
+		rc = usb_submit_urb(port->write_urb, GFP_ATOMIC);
+		if (rc) {
+			dev_dbg(&port->dev, "usb_submit_urb(write bulk) failed\n");
+>>>>>>> refs/remotes/origin/master
 			goto exit;
 		}
 	} else {
@@ -618,7 +753,15 @@ static int keyspan_pda_write(struct tty_struct *tty,
 	rc = count;
 exit:
 	if (rc < 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		port->write_urb_busy = 0;
+=======
+		set_bit(0, &port->write_urbs_free);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_bit(0, &port->write_urbs_free);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -628,7 +771,15 @@ static void keyspan_pda_write_bulk_callback(struct urb *urb)
 	struct usb_serial_port *port = urb->context;
 	struct keyspan_pda_private *priv;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	port->write_urb_busy = 0;
+=======
+	set_bit(0, &port->write_urbs_free);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_bit(0, &port->write_urbs_free);
+>>>>>>> refs/remotes/origin/master
 	priv = usb_get_serial_port_data(port);
 
 	/* queue up a wakeup at scheduler time */
@@ -661,7 +812,15 @@ static int keyspan_pda_chars_in_buffer(struct tty_struct *tty)
 	   n_tty.c:normal_poll() ) that we're not writeable. */
 
 	spin_lock_irqsave(&port->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (port->write_urb_busy || priv->tx_throttled)
+=======
+	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled)
+>>>>>>> refs/remotes/origin/master
 		ret = 256;
 	spin_unlock_irqrestore(&port->lock, flags);
 	return ret;
@@ -672,12 +831,19 @@ static void keyspan_pda_dtr_rts(struct usb_serial_port *port, int on)
 {
 	struct usb_serial *serial = port->serial;
 
+<<<<<<< HEAD
 	if (serial->dev) {
 		if (on)
 			keyspan_pda_set_modem_info(serial, (1<<7) | (1<< 2));
 		else
 			keyspan_pda_set_modem_info(serial, 0);
 	}
+=======
+	if (on)
+		keyspan_pda_set_modem_info(serial, (1 << 7) | (1 << 2));
+	else
+		keyspan_pda_set_modem_info(serial, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -704,11 +870,19 @@ static int keyspan_pda_open(struct tty_struct *tty,
 			     1,
 			     2000);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dbg("%s - roomquery failed", __func__);
 		goto error;
 	}
 	if (rc == 0) {
 		dbg("%s - roomquery returned 0 bytes", __func__);
+=======
+		dev_dbg(&port->dev, "%s - roomquery failed\n", __func__);
+		goto error;
+	}
+	if (rc == 0) {
+		dev_dbg(&port->dev, "%s - roomquery returned 0 bytes\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		rc = -EIO;
 		goto error;
 	}
@@ -717,10 +891,19 @@ static int keyspan_pda_open(struct tty_struct *tty,
 	priv->tx_throttled = *room ? 0 : 1;
 
 	/*Start reading from the device*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	rc = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
 	if (rc) {
 		dbg("%s - usb_submit_urb(read int) failed", __func__);
+=======
+	rc = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
+	if (rc) {
+		dev_dbg(&port->dev, "%s - usb_submit_urb(read int) failed\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 error:
@@ -729,6 +912,7 @@ error:
 }
 static void keyspan_pda_close(struct usb_serial_port *port)
 {
+<<<<<<< HEAD
 	struct usb_serial *serial = port->serial;
 
 	if (serial->dev) {
@@ -736,6 +920,10 @@ static void keyspan_pda_close(struct usb_serial_port *port)
 		usb_kill_urb(port->write_urb);
 		usb_kill_urb(port->interrupt_in_urb);
 	}
+=======
+	usb_kill_urb(port->write_urb);
+	usb_kill_urb(port->interrupt_in_urb);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -744,11 +932,17 @@ static int keyspan_pda_fake_startup(struct usb_serial *serial)
 {
 	int response;
 	const char *fw_name;
+<<<<<<< HEAD
 	const struct ihex_binrec *record;
 	const struct firmware *fw;
 
 	/* download the firmware here ... */
 	response = ezusb_set_reset(serial, 1);
+=======
+
+	/* download the firmware here ... */
+	response = ezusb_fx1_set_reset(serial->dev, 1);
+>>>>>>> refs/remotes/origin/master
 
 	if (0) { ; }
 #ifdef KEYSPAN
@@ -765,11 +959,17 @@ static int keyspan_pda_fake_startup(struct usb_serial *serial)
 			__func__);
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 	if (request_ihex_firmware(&fw, fw_name, &serial->dev->dev)) {
+=======
+
+	if (ezusb_fx1_ihex_firmware_download(serial->dev, fw_name) < 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&serial->dev->dev, "failed to load firmware \"%s\"\n",
 			fw_name);
 		return -ENOENT;
 	}
+<<<<<<< HEAD
 	record = (const struct ihex_binrec *)fw->data;
 
 	while (record) {
@@ -789,6 +989,11 @@ static int keyspan_pda_fake_startup(struct usb_serial *serial)
 	/* bring device out of reset. Renumeration will occur in a moment
 	   and the new device will bind to the real driver */
 	response = ezusb_set_reset(serial, 0);
+=======
+
+	/* after downloading firmware Renumeration will occur in a
+	  moment and the new device will bind to the real driver */
+>>>>>>> refs/remotes/origin/master
 
 	/* we want this device to fail to have a driver assigned to it. */
 	return 1;
@@ -801,11 +1006,16 @@ MODULE_FIRMWARE("keyspan_pda/keyspan_pda.fw");
 MODULE_FIRMWARE("keyspan_pda/xircom_pgs.fw");
 #endif
 
+<<<<<<< HEAD
 static int keyspan_pda_startup(struct usb_serial *serial)
+=======
+static int keyspan_pda_port_probe(struct usb_serial_port *port)
+>>>>>>> refs/remotes/origin/master
 {
 
 	struct keyspan_pda_private *priv;
 
+<<<<<<< HEAD
 	/* allocate the private data structures for all ports. Well, for all
 	   one ports. */
 
@@ -826,6 +1036,30 @@ static void keyspan_pda_release(struct usb_serial *serial)
 	dbg("%s", __func__);
 
 	kfree(usb_get_serial_port_data(serial->port[0]));
+=======
+	priv = kmalloc(sizeof(struct keyspan_pda_private), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	INIT_WORK(&priv->wakeup_work, keyspan_pda_wakeup_write);
+	INIT_WORK(&priv->unthrottle_work, keyspan_pda_request_unthrottle);
+	priv->serial = port->serial;
+	priv->port = port;
+
+	usb_set_serial_port_data(port, priv);
+
+	return 0;
+}
+
+static int keyspan_pda_port_remove(struct usb_serial_port *port)
+{
+	struct keyspan_pda_private *priv;
+
+	priv = usb_get_serial_port_data(port);
+	kfree(priv);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef KEYSPAN
@@ -835,7 +1069,13 @@ static struct usb_serial_driver keyspan_pda_fake_device = {
 		.name =		"keyspan_pda_pre",
 	},
 	.description =		"Keyspan PDA - (prerenumeration)",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver = 		&keyspan_pda_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table =		id_table_fake,
 	.num_ports =		1,
 	.attach =		keyspan_pda_fake_startup,
@@ -849,7 +1089,13 @@ static struct usb_serial_driver xircom_pgs_fake_device = {
 		.name =		"xircom_no_firm",
 	},
 	.description =		"Xircom / Entregra PGS - (prerenumeration)",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver = 		&keyspan_pda_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table =		id_table_fake_xircom,
 	.num_ports =		1,
 	.attach =		keyspan_pda_fake_startup,
@@ -862,7 +1108,13 @@ static struct usb_serial_driver keyspan_pda_device = {
 		.name =		"keyspan_pda",
 	},
 	.description =		"Keyspan PDA",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver = 		&keyspan_pda_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table =		id_table_std,
 	.num_ports =		1,
 	.dtr_rts =		keyspan_pda_dtr_rts,
@@ -879,10 +1131,12 @@ static struct usb_serial_driver keyspan_pda_device = {
 	.break_ctl =		keyspan_pda_break_ctl,
 	.tiocmget =		keyspan_pda_tiocmget,
 	.tiocmset =		keyspan_pda_tiocmset,
+<<<<<<< HEAD
 	.attach =		keyspan_pda_startup,
 	.release =		keyspan_pda_release,
 };
 
+<<<<<<< HEAD
 
 static int __init keyspan_pda_init(void)
 {
@@ -938,11 +1192,41 @@ static void __exit keyspan_pda_exit(void)
 
 module_init(keyspan_pda_init);
 module_exit(keyspan_pda_exit);
+=======
+=======
+	.port_probe =		keyspan_pda_port_probe,
+	.port_remove =		keyspan_pda_port_remove,
+};
+
+>>>>>>> refs/remotes/origin/master
+static struct usb_serial_driver * const serial_drivers[] = {
+	&keyspan_pda_device,
+#ifdef KEYSPAN
+	&keyspan_pda_fake_device,
+#endif
+#ifdef XIRCOM
+	&xircom_pgs_fake_device,
+#endif
+	NULL
+};
+
+<<<<<<< HEAD
+module_usb_serial_driver(keyspan_pda_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_serial_driver(serial_drivers, id_table_combined);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

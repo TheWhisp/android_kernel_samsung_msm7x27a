@@ -31,12 +31,17 @@ EXPORT_SYMBOL_GPL(noop_backing_dev_info);
 static struct class *bdi_class;
 
 /*
+<<<<<<< HEAD
  * bdi_lock protects updates to bdi_list and bdi_pending_list, as well as
  * reader side protection for bdi_pending_list. bdi_list has RCU reader side
+=======
+ * bdi_lock protects updates to bdi_list. bdi_list has RCU reader side
+>>>>>>> refs/remotes/origin/master
  * locking.
  */
 DEFINE_SPINLOCK(bdi_lock);
 LIST_HEAD(bdi_list);
+<<<<<<< HEAD
 LIST_HEAD(bdi_pending_list);
 
 static struct task_struct *sync_supers_tsk;
@@ -45,6 +50,29 @@ static struct timer_list sync_supers_timer;
 static int bdi_sync_supers(void *);
 static void sync_supers_timer_fn(unsigned long);
 
+<<<<<<< HEAD
+=======
+=======
+
+/* bdi_wq serves all asynchronous writeback tasks */
+struct workqueue_struct *bdi_wq;
+
+>>>>>>> refs/remotes/origin/master
+void bdi_lock_two(struct bdi_writeback *wb1, struct bdi_writeback *wb2)
+{
+	if (wb1 < wb2) {
+		spin_lock(&wb1->list_lock);
+		spin_lock_nested(&wb2->list_lock, 1);
+	} else {
+		spin_lock(&wb2->list_lock);
+		spin_lock_nested(&wb1->list_lock, 1);
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DEBUG_FS
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
@@ -67,20 +95,38 @@ static int bdi_debug_stats_show(struct seq_file *m, void *v)
 	struct inode *inode;
 
 	nr_dirty = nr_io = nr_more_io = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode_wb_list_lock);
+=======
+	spin_lock(&wb->list_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&wb->list_lock);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(inode, &wb->b_dirty, i_wb_list)
 		nr_dirty++;
 	list_for_each_entry(inode, &wb->b_io, i_wb_list)
 		nr_io++;
 	list_for_each_entry(inode, &wb->b_more_io, i_wb_list)
 		nr_more_io++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode_wb_list_lock);
+=======
+	spin_unlock(&wb->list_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&wb->list_lock);
+>>>>>>> refs/remotes/origin/master
 
 	global_dirty_limits(&background_thresh, &dirty_thresh);
 	bdi_thresh = bdi_dirty_limit(bdi, dirty_thresh);
 
 #define K(x) ((x) << (PAGE_SHIFT - 10))
 	seq_printf(m,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		   "BdiWriteback:     %8lu kB\n"
 		   "BdiReclaimable:   %8lu kB\n"
 		   "BdiDirtyThresh:   %8lu kB\n"
@@ -95,6 +141,37 @@ static int bdi_debug_stats_show(struct seq_file *m, void *v)
 		   (unsigned long) K(bdi_stat(bdi, BDI_RECLAIMABLE)),
 		   K(bdi_thresh), K(dirty_thresh),
 		   K(background_thresh), nr_dirty, nr_io, nr_more_io,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		   "BdiWriteback:       %10lu kB\n"
+		   "BdiReclaimable:     %10lu kB\n"
+		   "BdiDirtyThresh:     %10lu kB\n"
+		   "DirtyThresh:        %10lu kB\n"
+		   "BackgroundThresh:   %10lu kB\n"
+		   "BdiDirtied:         %10lu kB\n"
+		   "BdiWritten:         %10lu kB\n"
+		   "BdiWriteBandwidth:  %10lu kBps\n"
+		   "b_dirty:            %10lu\n"
+		   "b_io:               %10lu\n"
+		   "b_more_io:          %10lu\n"
+		   "bdi_list:           %10u\n"
+		   "state:              %10lx\n",
+		   (unsigned long) K(bdi_stat(bdi, BDI_WRITEBACK)),
+		   (unsigned long) K(bdi_stat(bdi, BDI_RECLAIMABLE)),
+		   K(bdi_thresh),
+		   K(dirty_thresh),
+		   K(background_thresh),
+		   (unsigned long) K(bdi_stat(bdi, BDI_DIRTIED)),
+		   (unsigned long) K(bdi_stat(bdi, BDI_WRITTEN)),
+		   (unsigned long) K(bdi->write_bandwidth),
+		   nr_dirty,
+		   nr_io,
+		   nr_more_io,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		   !list_empty(&bdi->bdi_list), bdi->state);
 #undef K
 
@@ -143,6 +220,7 @@ static ssize_t read_ahead_kb_store(struct device *dev,
 				  const char *buf, size_t count)
 {
 	struct backing_dev_info *bdi = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	char *end;
 	unsigned long read_ahead_kb;
 	ssize_t ret = -EINVAL;
@@ -153,6 +231,18 @@ static ssize_t read_ahead_kb_store(struct device *dev,
 		ret = count;
 	}
 	return ret;
+=======
+	unsigned long read_ahead_kb;
+	ssize_t ret;
+
+	ret = kstrtoul(buf, 10, &read_ahead_kb);
+	if (ret < 0)
+		return ret;
+
+	bdi->ra_pages = read_ahead_kb >> (PAGE_SHIFT - 10);
+
+	return count;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define K(pages) ((pages) << (PAGE_SHIFT - 10))
@@ -164,7 +254,12 @@ static ssize_t name##_show(struct device *dev,				\
 	struct backing_dev_info *bdi = dev_get_drvdata(dev);		\
 									\
 	return snprintf(page, PAGE_SIZE-1, "%lld\n", (long long)expr);	\
+<<<<<<< HEAD
 }
+=======
+}									\
+static DEVICE_ATTR_RW(name);
+>>>>>>> refs/remotes/origin/master
 
 BDI_SHOW(read_ahead_kb, K(bdi->ra_pages))
 
@@ -172,6 +267,7 @@ static ssize_t min_ratio_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct backing_dev_info *bdi = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	char *end;
 	unsigned int ratio;
 	ssize_t ret = -EINVAL;
@@ -182,6 +278,19 @@ static ssize_t min_ratio_store(struct device *dev,
 		if (!ret)
 			ret = count;
 	}
+=======
+	unsigned int ratio;
+	ssize_t ret;
+
+	ret = kstrtouint(buf, 10, &ratio);
+	if (ret < 0)
+		return ret;
+
+	ret = bdi_set_min_ratio(bdi, ratio);
+	if (!ret)
+		ret = count;
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 BDI_SHOW(min_ratio, bdi->min_ratio)
@@ -190,6 +299,7 @@ static ssize_t max_ratio_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct backing_dev_info *bdi = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	char *end;
 	unsigned int ratio;
 	ssize_t ret = -EINVAL;
@@ -200,10 +310,24 @@ static ssize_t max_ratio_store(struct device *dev,
 		if (!ret)
 			ret = count;
 	}
+=======
+	unsigned int ratio;
+	ssize_t ret;
+
+	ret = kstrtouint(buf, 10, &ratio);
+	if (ret < 0)
+		return ret;
+
+	ret = bdi_set_max_ratio(bdi, ratio);
+	if (!ret)
+		ret = count;
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 BDI_SHOW(max_ratio, bdi->max_ratio)
 
+<<<<<<< HEAD
 #define __ATTR_RW(attr) __ATTR(attr, 0644, attr##_show, attr##_store)
 
 static struct device_attribute bdi_dev_attrs[] = {
@@ -212,6 +336,27 @@ static struct device_attribute bdi_dev_attrs[] = {
 	__ATTR_RW(max_ratio),
 	__ATTR_NULL,
 };
+=======
+static ssize_t stable_pages_required_show(struct device *dev,
+					  struct device_attribute *attr,
+					  char *page)
+{
+	struct backing_dev_info *bdi = dev_get_drvdata(dev);
+
+	return snprintf(page, PAGE_SIZE-1, "%d\n",
+			bdi_cap_stable_pages_required(bdi) ? 1 : 0);
+}
+static DEVICE_ATTR_RO(stable_pages_required);
+
+static struct attribute *bdi_dev_attrs[] = {
+	&dev_attr_read_ahead_kb.attr,
+	&dev_attr_min_ratio.attr,
+	&dev_attr_max_ratio.attr,
+	&dev_attr_stable_pages_required.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(bdi_dev);
+>>>>>>> refs/remotes/origin/master
 
 static __init int bdi_class_init(void)
 {
@@ -219,7 +364,11 @@ static __init int bdi_class_init(void)
 	if (IS_ERR(bdi_class))
 		return PTR_ERR(bdi_class);
 
+<<<<<<< HEAD
 	bdi_class->dev_attrs = bdi_dev_attrs;
+=======
+	bdi_class->dev_groups = bdi_dev_groups;
+>>>>>>> refs/remotes/origin/master
 	bdi_debug_init();
 	return 0;
 }
@@ -229,11 +378,30 @@ static int __init default_bdi_init(void)
 {
 	int err;
 
+<<<<<<< HEAD
 	sync_supers_tsk = kthread_run(bdi_sync_supers, NULL, "sync_supers");
 	BUG_ON(IS_ERR(sync_supers_tsk));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	setup_timer(&sync_supers_timer, sync_supers_timer_fn, 0);
+=======
+	init_timer_deferrable(&sync_supers_timer);
+	sync_supers_timer.function = sync_supers_timer_fn;
+	sync_supers_timer.data = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_timer_deferrable(&sync_supers_timer);
+	sync_supers_timer.function = sync_supers_timer_fn;
+	sync_supers_timer.data = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	bdi_arm_supers_timer();
+=======
+	bdi_wq = alloc_workqueue("writeback", WQ_MEM_RECLAIM | WQ_FREEZABLE |
+					      WQ_UNBOUND | WQ_SYSFS, 0);
+	if (!bdi_wq)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	err = bdi_init(&default_backing_dev_info);
 	if (!err)
@@ -249,6 +417,8 @@ int bdi_has_dirty_io(struct backing_dev_info *bdi)
 	return wb_has_dirty_io(&bdi->wb);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void bdi_flush_io(struct backing_dev_info *bdi)
 {
 	struct writeback_control wbc = {
@@ -261,6 +431,8 @@ static void bdi_flush_io(struct backing_dev_info *bdi)
 	writeback_inodes_wb(&bdi->wb, &wbc);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * kupdated() used to do this. We cannot do it from the bdi_forker_thread()
  * or we risk deadlocking on ->s_umount. The longer term solution would be
@@ -309,7 +481,11 @@ static void wakeup_timer_fn(unsigned long data)
 	if (bdi->wb.task) {
 		trace_writeback_wake_thread(bdi);
 		wake_up_process(bdi->wb.task);
+<<<<<<< HEAD
 	} else {
+=======
+	} else if (bdi->dev) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * When bdi tasks are inactive for long time, they are killed.
 		 * In this case we have to wake-up the forker thread which
@@ -321,6 +497,8 @@ static void wakeup_timer_fn(unsigned long data)
 	spin_unlock_bh(&bdi->wb_lock);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This function is used when the first inode for this bdi is marked dirty. It
  * wakes-up the corresponding bdi thread which should then take care of the
@@ -337,6 +515,7 @@ void bdi_wakeup_thread_delayed(struct backing_dev_info *bdi)
 	unsigned long timeout;
 
 	timeout = msecs_to_jiffies(dirty_writeback_interval * 10);
+<<<<<<< HEAD
 	mod_timer(&bdi->wb.wakeup_timer, jiffies + timeout);
 }
 
@@ -352,6 +531,20 @@ static unsigned long bdi_longest_inactive(void)
 	return max(5UL * 60 * HZ, interval);
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * Clear pending bit and wakeup anybody waiting for flusher thread creation or
+ * shutdown
+ */
+static void bdi_clear_pending(struct backing_dev_info *bdi)
+{
+	clear_bit(BDI_pending, &bdi->state);
+	smp_mb__after_clear_bit();
+	wake_up_bit(&bdi->state, BDI_pending);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int bdi_forker_thread(void *ptr)
 {
 	struct bdi_writeback *me = ptr;
@@ -383,6 +576,15 @@ static int bdi_forker_thread(void *ptr)
 		}
 
 		spin_lock_bh(&bdi_lock);
+<<<<<<< HEAD
+=======
+		/*
+		 * In the following loop we are going to check whether we have
+		 * some work to do without any synchronization with tasks
+		 * waking us up to do work for them. Set the task state here
+		 * so that we don't miss wakeups after verifying conditions.
+		 */
+>>>>>>> refs/remotes/origin/cm-10.0
 		set_current_state(TASK_INTERRUPTIBLE);
 
 		list_for_each_entry(bdi, &bdi_list, bdi_list) {
@@ -446,9 +648,17 @@ static int bdi_forker_thread(void *ptr)
 			if (IS_ERR(task)) {
 				/*
 				 * If thread creation fails, force writeout of
+<<<<<<< HEAD
 				 * the bdi from the thread.
 				 */
 				bdi_flush_io(bdi);
+=======
+				 * the bdi from the thread. Hopefully 1024 is
+				 * large enough for efficient IO.
+				 */
+				writeback_inodes_wb(&bdi->wb, 1024,
+						    WB_REASON_FORKER_THREAD);
+>>>>>>> refs/remotes/origin/cm-10.0
 			} else {
 				/*
 				 * The spinlock makes sure we do not lose
@@ -461,11 +671,19 @@ static int bdi_forker_thread(void *ptr)
 				spin_unlock_bh(&bdi->wb_lock);
 				wake_up_process(task);
 			}
+<<<<<<< HEAD
+=======
+			bdi_clear_pending(bdi);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 
 		case KILL_THREAD:
 			__set_current_state(TASK_RUNNING);
 			kthread_stop(task);
+<<<<<<< HEAD
+=======
+			bdi_clear_pending(bdi);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 
 		case NO_ACTION:
@@ -481,6 +699,7 @@ static int bdi_forker_thread(void *ptr)
 			else
 				schedule_timeout(msecs_to_jiffies(dirty_writeback_interval * 10));
 			try_to_freeze();
+<<<<<<< HEAD
 			/* Back to the main loop */
 			continue;
 		}
@@ -491,9 +710,16 @@ static int bdi_forker_thread(void *ptr)
 		clear_bit(BDI_pending, &bdi->state);
 		smp_mb__after_clear_bit();
 		wake_up_bit(&bdi->state, BDI_pending);
+=======
+			break;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
+=======
+	mod_delayed_work(bdi_wq, &bdi->wb.dwork, timeout);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -505,7 +731,18 @@ static void bdi_remove_from_list(struct backing_dev_info *bdi)
 	list_del_rcu(&bdi->bdi_list);
 	spin_unlock_bh(&bdi_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	synchronize_rcu();
+=======
+	synchronize_rcu_expedited();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	synchronize_rcu_expedited();
+
+	/* bdi_list is now unused, clear it to mark @bdi dying */
+	INIT_LIST_HEAD(&bdi->bdi_list);
+>>>>>>> refs/remotes/origin/master
 }
 
 int bdi_register(struct backing_dev_info *bdi, struct device *parent,
@@ -525,6 +762,7 @@ int bdi_register(struct backing_dev_info *bdi, struct device *parent,
 
 	bdi->dev = dev;
 
+<<<<<<< HEAD
 	/*
 	 * Just start the forker thread for our default backing_dev_info,
 	 * and add other bdi's to the list. They will get a thread created
@@ -539,6 +777,8 @@ int bdi_register(struct backing_dev_info *bdi, struct device *parent,
 			return PTR_ERR(wb->task);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	bdi_debug_register(bdi, dev_name(dev));
 	set_bit(BDI_registered, &bdi->state);
 
@@ -562,6 +802,14 @@ EXPORT_SYMBOL(bdi_register_dev);
  */
 static void bdi_wb_shutdown(struct backing_dev_info *bdi)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct task_struct *task;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!bdi_cap_writeback_dirty(bdi))
 		return;
 
@@ -571,6 +819,7 @@ static void bdi_wb_shutdown(struct backing_dev_info *bdi)
 	bdi_remove_from_list(bdi);
 
 	/*
+<<<<<<< HEAD
 	 * If setup is pending, wait for that to complete first
 	 */
 	wait_on_bit(&bdi->state, BDI_pending, bdi_sched_wait,
@@ -578,6 +827,7 @@ static void bdi_wb_shutdown(struct backing_dev_info *bdi)
 
 	/*
 	 * Finally, kill the kernel thread. We don't need to be RCU
+<<<<<<< HEAD
 	 * safe anymore, since the bdi is gone from visibility. Force
 	 * unfreeze of the thread before calling kthread_stop(), otherwise
 	 * it would never exet if it is currently stuck in the refrigerator.
@@ -586,6 +836,33 @@ static void bdi_wb_shutdown(struct backing_dev_info *bdi)
 		thaw_process(bdi->wb.task);
 		kthread_stop(bdi->wb.task);
 	}
+=======
+	 * safe anymore, since the bdi is gone from visibility.
+	 */
+	spin_lock_bh(&bdi->wb_lock);
+	task = bdi->wb.task;
+	bdi->wb.task = NULL;
+	spin_unlock_bh(&bdi->wb_lock);
+
+	if (task)
+		kthread_stop(task);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Drain work list and shutdown the delayed_work.  At this point,
+	 * @bdi->bdi_list is empty telling bdi_Writeback_workfn() that @bdi
+	 * is dying and its work_list needs to be drained no matter what.
+	 */
+	mod_delayed_work(bdi_wq, &bdi->wb.dwork, 0);
+	flush_delayed_work(&bdi->wb.dwork);
+	WARN_ON(!list_empty(&bdi->work_list));
+
+	/*
+	 * This shouldn't be necessary unless @bdi for some reason has
+	 * unflushed dirty IO after work_list is drained.  Do it anyway
+	 * just in case.
+	 */
+	cancel_delayed_work_sync(&bdi->wb.dwork);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -605,7 +882,14 @@ static void bdi_prune_sb(struct backing_dev_info *bdi)
 
 void bdi_unregister(struct backing_dev_info *bdi)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (bdi->dev) {
+=======
+	struct device *dev = bdi->dev;
+
+	if (dev) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		bdi_set_min_ratio(bdi, 0);
 		trace_writeback_bdi_unregister(bdi);
 		bdi_prune_sb(bdi);
@@ -614,8 +898,31 @@ void bdi_unregister(struct backing_dev_info *bdi)
 		if (!bdi_cap_flush_forker(bdi))
 			bdi_wb_shutdown(bdi);
 		bdi_debug_unregister(bdi);
+<<<<<<< HEAD
 		device_unregister(bdi->dev);
 		bdi->dev = NULL;
+=======
+=======
+	struct device *dev = bdi->dev;
+
+	if (dev) {
+		bdi_set_min_ratio(bdi, 0);
+		trace_writeback_bdi_unregister(bdi);
+		bdi_prune_sb(bdi);
+
+		bdi_wb_shutdown(bdi);
+		bdi_debug_unregister(bdi);
+>>>>>>> refs/remotes/origin/master
+
+		spin_lock_bh(&bdi->wb_lock);
+		bdi->dev = NULL;
+		spin_unlock_bh(&bdi->wb_lock);
+
+		device_unregister(dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(bdi_unregister);
@@ -629,9 +936,29 @@ static void bdi_wb_init(struct bdi_writeback *wb, struct backing_dev_info *bdi)
 	INIT_LIST_HEAD(&wb->b_dirty);
 	INIT_LIST_HEAD(&wb->b_io);
 	INIT_LIST_HEAD(&wb->b_more_io);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	setup_timer(&wb->wakeup_timer, wakeup_timer_fn, (unsigned long)bdi);
 }
 
+=======
+	spin_lock_init(&wb->list_lock);
+	setup_timer(&wb->wakeup_timer, wakeup_timer_fn, (unsigned long)bdi);
+=======
+	spin_lock_init(&wb->list_lock);
+	INIT_DELAYED_WORK(&wb->dwork, bdi_writeback_workfn);
+>>>>>>> refs/remotes/origin/master
+}
+
+/*
+ * Initial write bandwidth: 100 MB/s
+ */
+#define INIT_BW		(100 << (20 - PAGE_SHIFT))
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int bdi_init(struct backing_dev_info *bdi)
 {
 	int i, err;
@@ -640,7 +967,11 @@ int bdi_init(struct backing_dev_info *bdi)
 
 	bdi->min_ratio = 0;
 	bdi->max_ratio = 100;
+<<<<<<< HEAD
 	bdi->max_prop_frac = PROP_FRAC_BASE;
+=======
+	bdi->max_prop_frac = FPROP_FRAC_BASE;
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&bdi->wb_lock);
 	INIT_LIST_HEAD(&bdi->bdi_list);
 	INIT_LIST_HEAD(&bdi->work_list);
@@ -654,7 +985,26 @@ int bdi_init(struct backing_dev_info *bdi)
 	}
 
 	bdi->dirty_exceeded = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	bdi->bw_time_stamp = jiffies;
+	bdi->written_stamp = 0;
+
+	bdi->balanced_dirty_ratelimit = INIT_BW;
+	bdi->dirty_ratelimit = INIT_BW;
+	bdi->write_bandwidth = INIT_BW;
+	bdi->avg_write_bandwidth = INIT_BW;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = prop_local_init_percpu(&bdi->completions);
+=======
+	err = fprop_local_init_percpu(&bdi->completions);
+>>>>>>> refs/remotes/origin/master
 
 	if (err) {
 err:
@@ -677,27 +1027,54 @@ void bdi_destroy(struct backing_dev_info *bdi)
 	if (bdi_has_dirty_io(bdi)) {
 		struct bdi_writeback *dst = &default_backing_dev_info.wb;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&inode_wb_list_lock);
 		list_splice(&bdi->wb.b_dirty, &dst->b_dirty);
 		list_splice(&bdi->wb.b_io, &dst->b_io);
 		list_splice(&bdi->wb.b_more_io, &dst->b_more_io);
 		spin_unlock(&inode_wb_list_lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		bdi_lock_two(&bdi->wb, dst);
+		list_splice(&bdi->wb.b_dirty, &dst->b_dirty);
+		list_splice(&bdi->wb.b_io, &dst->b_io);
+		list_splice(&bdi->wb.b_more_io, &dst->b_more_io);
+		spin_unlock(&bdi->wb.list_lock);
+		spin_unlock(&dst->list_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	bdi_unregister(bdi);
 
 	/*
+<<<<<<< HEAD
 	 * If bdi_unregister() had already been called earlier, the
 	 * wakeup_timer could still be armed because bdi_prune_sb()
 	 * can race with the bdi_wakeup_thread_delayed() calls from
 	 * __mark_inode_dirty().
 	 */
 	del_timer_sync(&bdi->wb.wakeup_timer);
+=======
+	 * If bdi_unregister() had already been called earlier, the dwork
+	 * could still be pending because bdi_prune_sb() can race with the
+	 * bdi_wakeup_thread_delayed() calls from __mark_inode_dirty().
+	 */
+	cancel_delayed_work_sync(&bdi->wb.dwork);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < NR_BDI_STAT_ITEMS; i++)
 		percpu_counter_destroy(&bdi->bdi_stat[i]);
 
+<<<<<<< HEAD
 	prop_local_destroy_percpu(&bdi->completions);
+=======
+	fprop_local_destroy_percpu(&bdi->completions);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(bdi_destroy);
 
@@ -708,7 +1085,10 @@ EXPORT_SYMBOL(bdi_destroy);
 int bdi_setup_and_register(struct backing_dev_info *bdi, char *name,
 			   unsigned int cap)
 {
+<<<<<<< HEAD
 	char tmp[32];
+=======
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	bdi->name = name;
@@ -717,8 +1097,13 @@ int bdi_setup_and_register(struct backing_dev_info *bdi, char *name,
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	sprintf(tmp, "%.28s%s", name, "-%d");
 	err = bdi_register(bdi, NULL, tmp, atomic_long_inc_return(&bdi_seq));
+=======
+	err = bdi_register(bdi, NULL, "%.28s-%ld", name,
+			   atomic_long_inc_return(&bdi_seq));
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		bdi_destroy(bdi);
 		return err;
@@ -839,3 +1224,26 @@ out:
 	return ret;
 }
 EXPORT_SYMBOL(wait_iff_congested);
+<<<<<<< HEAD
+=======
+
+int pdflush_proc_obsolete(struct ctl_table *table, int write,
+			void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	char kbuf[] = "0\n";
+
+	if (*ppos || *lenp < sizeof(kbuf)) {
+		*lenp = 0;
+		return 0;
+	}
+
+	if (copy_to_user(buffer, kbuf, sizeof(kbuf)))
+		return -EFAULT;
+	printk_once(KERN_WARNING "%s exported in /proc is scheduled for removal\n",
+			table->procname);
+
+	*lenp = 2;
+	*ppos += *lenp;
+	return 2;
+}
+>>>>>>> refs/remotes/origin/master

@@ -14,7 +14,15 @@
 #ifndef __ARCH_ARM_MACH_PMIC_H
 #define __ARCH_ARM_MACH_PMIC_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 enum spkr_left_right {
 	LEFT_SPKR,

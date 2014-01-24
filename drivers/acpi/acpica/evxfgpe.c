@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,6 +49,15 @@
  * POSSIBILITY OF SUCH DAMAGES.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXPORT_ACPI_INTERFACES
+
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "acevents.h"
@@ -49,7 +66,16 @@
 #define _COMPONENT          ACPI_EVENTS
 ACPI_MODULE_NAME("evxfgpe")
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/cm-10.0
 /******************************************************************************
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+/*******************************************************************************
+>>>>>>> refs/remotes/origin/master
  *
  * FUNCTION:    acpi_update_all_gpes
  *
@@ -170,6 +196,10 @@ acpi_status acpi_disable_gpe(acpi_handle gpe_device, u32 gpe_number)
 	acpi_os_release_lock(acpi_gbl_gpe_lock, flags);
 	return_ACPI_STATUS(status);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 ACPI_EXPORT_SYMBOL(acpi_disable_gpe)
 
 
@@ -195,12 +225,21 @@ acpi_status
 acpi_setup_gpe_for_wake(acpi_handle wake_device,
 			acpi_handle gpe_device, u32 gpe_number)
 {
+<<<<<<< HEAD
 	acpi_status status = AE_BAD_PARAMETER;
 	struct acpi_gpe_event_info *gpe_event_info;
 	struct acpi_namespace_node *device_node;
 	struct acpi_gpe_notify_object *notify_object;
 	acpi_cpu_flags flags;
 	u8 gpe_dispatch_mask;
+=======
+	acpi_status status;
+	struct acpi_gpe_event_info *gpe_event_info;
+	struct acpi_namespace_node *device_node;
+	struct acpi_gpe_notify_info *notify;
+	struct acpi_gpe_notify_info *new_notify;
+	acpi_cpu_flags flags;
+>>>>>>> refs/remotes/origin/master
 
 	ACPI_FUNCTION_TRACE(acpi_setup_gpe_for_wake);
 
@@ -214,12 +253,41 @@ acpi_setup_gpe_for_wake(acpi_handle wake_device,
 		return_ACPI_STATUS(AE_BAD_PARAMETER);
 	}
 
+<<<<<<< HEAD
+=======
+	/* Handle root object case */
+
+	if (wake_device == ACPI_ROOT_OBJECT) {
+		device_node = acpi_gbl_root_node;
+	} else {
+		device_node =
+		    ACPI_CAST_PTR(struct acpi_namespace_node, wake_device);
+	}
+
+	/* Validate wake_device is of type Device */
+
+	if (device_node->type != ACPI_TYPE_DEVICE) {
+		return_ACPI_STATUS (AE_BAD_PARAMETER);
+	}
+
+	/*
+	 * Allocate a new notify object up front, in case it is needed.
+	 * Memory allocation while holding a spinlock is a big no-no
+	 * on some hosts.
+	 */
+	new_notify = ACPI_ALLOCATE_ZEROED(sizeof(struct acpi_gpe_notify_info));
+	if (!new_notify) {
+		return_ACPI_STATUS(AE_NO_MEMORY);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	flags = acpi_os_acquire_lock(acpi_gbl_gpe_lock);
 
 	/* Ensure that we have a valid GPE number */
 
 	gpe_event_info = acpi_ev_get_gpe_event_info(gpe_device, gpe_number);
 	if (!gpe_event_info) {
+<<<<<<< HEAD
 		goto unlock_and_exit;
 	}
 
@@ -271,6 +339,67 @@ acpi_setup_gpe_for_wake(acpi_handle wake_device,
 
  unlock_and_exit:
 	acpi_os_release_lock(acpi_gbl_gpe_lock, flags);
+=======
+		status = AE_BAD_PARAMETER;
+		goto unlock_and_exit;
+	}
+
+	/*
+	 * If there is no method or handler for this GPE, then the
+	 * wake_device will be notified whenever this GPE fires. This is
+	 * known as an "implicit notify". Note: The GPE is assumed to be
+	 * level-triggered (for windows compatibility).
+	 */
+	if ((gpe_event_info->flags & ACPI_GPE_DISPATCH_MASK) ==
+	    ACPI_GPE_DISPATCH_NONE) {
+		/*
+		 * This is the first device for implicit notify on this GPE.
+		 * Just set the flags here, and enter the NOTIFY block below.
+		 */
+		gpe_event_info->flags =
+		    (ACPI_GPE_DISPATCH_NOTIFY | ACPI_GPE_LEVEL_TRIGGERED);
+	}
+
+	/*
+	 * If we already have an implicit notify on this GPE, add
+	 * this device to the notify list.
+	 */
+	if ((gpe_event_info->flags & ACPI_GPE_DISPATCH_MASK) ==
+	    ACPI_GPE_DISPATCH_NOTIFY) {
+
+		/* Ensure that the device is not already in the list */
+
+		notify = gpe_event_info->dispatch.notify_list;
+		while (notify) {
+			if (notify->device_node == device_node) {
+				status = AE_ALREADY_EXISTS;
+				goto unlock_and_exit;
+			}
+			notify = notify->next;
+		}
+
+		/* Add this device to the notify list for this GPE */
+
+		new_notify->device_node = device_node;
+		new_notify->next = gpe_event_info->dispatch.notify_list;
+		gpe_event_info->dispatch.notify_list = new_notify;
+		new_notify = NULL;
+	}
+
+	/* Mark the GPE as a possible wake event */
+
+	gpe_event_info->flags |= ACPI_GPE_CAN_WAKE;
+	status = AE_OK;
+
+unlock_and_exit:
+	acpi_os_release_lock(acpi_gbl_gpe_lock, flags);
+
+	/* Delete the notify object if it was not used above */
+
+	if (new_notify) {
+		ACPI_FREE(new_notify);
+	}
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 ACPI_EXPORT_SYMBOL(acpi_setup_gpe_for_wake)
@@ -281,7 +410,11 @@ ACPI_EXPORT_SYMBOL(acpi_setup_gpe_for_wake)
  *
  * PARAMETERS:  gpe_device      - Parent GPE Device. NULL for GPE0/GPE1
  *              gpe_number      - GPE level within the GPE block
+<<<<<<< HEAD
  *              Action          - Enable or Disable
+=======
+ *              action              - Enable or Disable
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -290,7 +423,12 @@ ACPI_EXPORT_SYMBOL(acpi_setup_gpe_for_wake)
  *
  ******************************************************************************/
 
+<<<<<<< HEAD
 acpi_status acpi_set_gpe_wake_mask(acpi_handle gpe_device, u32 gpe_number, u8 action)
+=======
+acpi_status
+acpi_set_gpe_wake_mask(acpi_handle gpe_device, u32 gpe_number, u8 action)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status = AE_OK;
 	struct acpi_gpe_event_info *gpe_event_info;
@@ -323,23 +461,39 @@ acpi_status acpi_set_gpe_wake_mask(acpi_handle gpe_device, u32 gpe_number, u8 ac
 		goto unlock_and_exit;
 	}
 
+<<<<<<< HEAD
 	register_bit =
 	    acpi_hw_get_gpe_register_bit(gpe_event_info, gpe_register_info);
+=======
+	register_bit = acpi_hw_get_gpe_register_bit(gpe_event_info);
+>>>>>>> refs/remotes/origin/master
 
 	/* Perform the action */
 
 	switch (action) {
 	case ACPI_GPE_ENABLE:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		ACPI_SET_BIT(gpe_register_info->enable_for_wake,
 			     (u8)register_bit);
 		break;
 
 	case ACPI_GPE_DISABLE:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		ACPI_CLEAR_BIT(gpe_register_info->enable_for_wake,
 			       (u8)register_bit);
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		ACPI_ERROR((AE_INFO, "%u, Invalid action", action));
 		status = AE_BAD_PARAMETER;
 		break;
@@ -397,8 +551,13 @@ ACPI_EXPORT_SYMBOL(acpi_clear_gpe)
  *
  * PARAMETERS:  gpe_device      - Parent GPE Device. NULL for GPE0/GPE1
  *              gpe_number      - GPE level within the GPE block
+<<<<<<< HEAD
  *              event_status    - Where the current status of the event will
  *                                be returned
+=======
+ *              event_status        - Where the current status of the event
+ *                                    will be returned
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -432,7 +591,11 @@ acpi_get_gpe_status(acpi_handle gpe_device,
 	if (gpe_event_info->flags & ACPI_GPE_DISPATCH_MASK)
 		*event_status |= ACPI_EVENT_FLAG_HANDLE;
 
+<<<<<<< HEAD
       unlock_and_exit:
+=======
+unlock_and_exit:
+>>>>>>> refs/remotes/origin/master
 	acpi_os_release_lock(acpi_gbl_gpe_lock, flags);
 	return_ACPI_STATUS(status);
 }
@@ -506,7 +669,11 @@ ACPI_EXPORT_SYMBOL(acpi_enable_all_runtime_gpes)
  * FUNCTION:    acpi_install_gpe_block
  *
  * PARAMETERS:  gpe_device          - Handle to the parent GPE Block Device
+<<<<<<< HEAD
  *              gpe_block_address   - Address and space_iD
+=======
+ *              gpe_block_address   - Address and space_ID
+>>>>>>> refs/remotes/origin/master
  *              register_count      - Number of GPE register pairs in the block
  *              interrupt_number    - H/W interrupt for the block
  *
@@ -534,7 +701,11 @@ acpi_install_gpe_block(acpi_handle gpe_device,
 
 	status = acpi_ut_acquire_mutex(ACPI_MTX_NAMESPACE);
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 		return (status);
+=======
+		return_ACPI_STATUS(status);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	node = acpi_ns_validate_handle(gpe_device);
@@ -585,7 +756,11 @@ acpi_install_gpe_block(acpi_handle gpe_device,
 
 	obj_desc->device.gpe_block = gpe_block;
 
+<<<<<<< HEAD
       unlock_and_exit:
+=======
+unlock_and_exit:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 	return_ACPI_STATUS(status);
 }
@@ -617,7 +792,11 @@ acpi_status acpi_remove_gpe_block(acpi_handle gpe_device)
 
 	status = acpi_ut_acquire_mutex(ACPI_MTX_NAMESPACE);
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 		return (status);
+=======
+		return_ACPI_STATUS(status);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	node = acpi_ns_validate_handle(gpe_device);
@@ -640,7 +819,11 @@ acpi_status acpi_remove_gpe_block(acpi_handle gpe_device)
 		obj_desc->device.gpe_block = NULL;
 	}
 
+<<<<<<< HEAD
       unlock_and_exit:
+=======
+unlock_and_exit:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 	return_ACPI_STATUS(status);
 }
@@ -651,7 +834,11 @@ ACPI_EXPORT_SYMBOL(acpi_remove_gpe_block)
  *
  * FUNCTION:    acpi_get_gpe_device
  *
+<<<<<<< HEAD
  * PARAMETERS:  Index               - System GPE index (0-current_gpe_count)
+=======
+ * PARAMETERS:  index               - System GPE index (0-current_gpe_count)
+>>>>>>> refs/remotes/origin/master
  *              gpe_device          - Where the parent GPE Device is returned
  *
  * RETURN:      Status
@@ -661,8 +848,12 @@ ACPI_EXPORT_SYMBOL(acpi_remove_gpe_block)
  *              the FADT-defined gpe blocks. Otherwise, the GPE block device.
  *
  ******************************************************************************/
+<<<<<<< HEAD
 acpi_status
 acpi_get_gpe_device(u32 index, acpi_handle *gpe_device)
+=======
+acpi_status acpi_get_gpe_device(u32 index, acpi_handle * gpe_device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_gpe_device_info info;
 	acpi_status status;
@@ -694,3 +885,11 @@ acpi_get_gpe_device(u32 index, acpi_handle *gpe_device)
 }
 
 ACPI_EXPORT_SYMBOL(acpi_get_gpe_device)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master

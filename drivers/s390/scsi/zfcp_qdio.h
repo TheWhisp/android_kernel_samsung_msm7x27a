@@ -3,7 +3,11 @@
  *
  * Header file for zfcp qdio interface
  *
+<<<<<<< HEAD
  * Copyright IBM Corporation 2010
+=======
+ * Copyright IBM Corp. 2010
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef ZFCP_QDIO_H
@@ -13,6 +17,8 @@
 
 #define ZFCP_QDIO_SBALE_LEN	PAGE_SIZE
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* DMQ bug workaround: don't use last SBALE */
 #define ZFCP_QDIO_MAX_SBALES_PER_SBAL	(QDIO_MAX_ELEMENTS_PER_BUFFER - 1)
 
@@ -27,6 +33,16 @@
 #define ZFCP_QDIO_MAX_SBALES_PER_REQ     \
 	(ZFCP_QDIO_MAX_SBALS_PER_REQ * ZFCP_QDIO_MAX_SBALES_PER_SBAL - 2)
 
+=======
+/* Max SBALS for chaining */
+#define ZFCP_QDIO_MAX_SBALS_PER_REQ	36
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Max SBALS for chaining */
+#define ZFCP_QDIO_MAX_SBALS_PER_REQ	36
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct zfcp_qdio - basic qdio data structure
  * @res_q: response queue
@@ -53,6 +69,16 @@ struct zfcp_qdio {
 	atomic_t		req_q_full;
 	wait_queue_head_t	req_q_wq;
 	struct zfcp_adapter	*adapter;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u16			max_sbale_per_sbal;
+	u16			max_sbale_per_req;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16			max_sbale_per_sbal;
+	u16			max_sbale_per_req;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -155,7 +181,15 @@ void zfcp_qdio_fill_next(struct zfcp_qdio *qdio, struct zfcp_qdio_req *q_req,
 {
 	struct qdio_buffer_element *sbale;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(q_req->sbale_curr == ZFCP_QDIO_LAST_SBALE_PER_SBAL);
+=======
+	BUG_ON(q_req->sbale_curr == qdio->max_sbale_per_sbal - 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(q_req->sbale_curr == qdio->max_sbale_per_sbal - 1);
+>>>>>>> refs/remotes/origin/master
 	q_req->sbale_curr++;
 	sbale = zfcp_qdio_sbale_curr(qdio, q_req);
 	sbale->addr = data;
@@ -195,9 +229,22 @@ int zfcp_qdio_sg_one_sbale(struct scatterlist *sg)
  * @q_req: The current zfcp_qdio_req
  */
 static inline
+<<<<<<< HEAD
+<<<<<<< HEAD
 void zfcp_qdio_skip_to_last_sbale(struct zfcp_qdio_req *q_req)
 {
 	q_req->sbale_curr = ZFCP_QDIO_LAST_SBALE_PER_SBAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void zfcp_qdio_skip_to_last_sbale(struct zfcp_qdio *qdio,
+				  struct zfcp_qdio_req *q_req)
+{
+	q_req->sbale_curr = qdio->max_sbale_per_sbal - 1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -228,8 +275,65 @@ void zfcp_qdio_set_data_div(struct zfcp_qdio *qdio,
 {
 	struct qdio_buffer_element *sbale;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sbale = &qdio->req_q[q_req->sbal_first]->element[0];
 	sbale->length = count;
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	sbale = qdio->req_q[q_req->sbal_first]->element;
+	sbale->length = count;
+}
+
+/**
+ * zfcp_qdio_sbale_count - count sbale used
+ * @sg: pointer to struct scatterlist
+ */
+static inline
+unsigned int zfcp_qdio_sbale_count(struct scatterlist *sg)
+{
+	unsigned int count = 0;
+
+	for (; sg; sg = sg_next(sg))
+		count++;
+
+	return count;
+}
+
+/**
+ * zfcp_qdio_real_bytes - count bytes used
+ * @sg: pointer to struct scatterlist
+ */
+static inline
+unsigned int zfcp_qdio_real_bytes(struct scatterlist *sg)
+{
+	unsigned int real_bytes = 0;
+
+	for (; sg; sg = sg_next(sg))
+		real_bytes += sg->length;
+
+	return real_bytes;
+}
+
+/**
+ * zfcp_qdio_set_scount - set SBAL count value
+ * @qdio: pointer to struct zfcp_qdio
+ * @q_req: The current zfcp_qdio_req
+ */
+static inline
+void zfcp_qdio_set_scount(struct zfcp_qdio *qdio, struct zfcp_qdio_req *q_req)
+{
+	struct qdio_buffer_element *sbale;
+
+	sbale = qdio->req_q[q_req->sbal_first]->element;
+	sbale->scount = q_req->sbal_number - 1;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* ZFCP_QDIO_H */

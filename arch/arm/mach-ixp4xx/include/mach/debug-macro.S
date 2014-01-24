@@ -10,7 +10,11 @@
  * published by the Free Software Foundation.
 */
 
+<<<<<<< HEAD
                 .macro  addruart, rp, rv
+=======
+                .macro  addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef __ARMEB__
                 mov     \rp, #3         @ Uart regs are at off set of 3 if
 					@ byte writes used - Big Endian.

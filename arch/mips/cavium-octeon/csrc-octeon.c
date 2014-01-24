@@ -4,19 +4,64 @@
  * for more details.
  *
  * Copyright (C) 2007 by Ralf Baechle
+<<<<<<< HEAD
  * Copyright (C) 2009, 2010 Cavium Networks, Inc.
  */
 #include <linux/clocksource.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2009, 2012 Cavium, Inc.
+ */
+#include <linux/clocksource.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/smp.h>
 
 #include <asm/cpu-info.h>
+<<<<<<< HEAD
+=======
+#include <asm/cpu-type.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 
 #include <asm/octeon/octeon.h>
 #include <asm/octeon/cvmx-ipd-defs.h>
 #include <asm/octeon/cvmx-mio-defs.h>
 
+<<<<<<< HEAD
+=======
+
+static u64 f;
+static u64 rdiv;
+static u64 sdiv;
+static u64 octeon_udelay_factor;
+static u64 octeon_ndelay_factor;
+
+void __init octeon_setup_delays(void)
+{
+	octeon_udelay_factor = octeon_get_clock_rate() / 1000000;
+	/*
+	 * For __ndelay we divide by 2^16, so the factor is multiplied
+	 * by the same amount.
+	 */
+	octeon_ndelay_factor = (octeon_udelay_factor * 0x10000ull) / 1000ull;
+
+	preset_lpj = octeon_get_clock_rate() / HZ;
+
+	if (current_cpu_type() == CPU_CAVIUM_OCTEON2) {
+		union cvmx_mio_rst_boot rst_boot;
+		rst_boot.u64 = cvmx_read_csr(CVMX_MIO_RST_BOOT);
+		rdiv = rst_boot.s.c_mul;	/* CPU clock */
+		sdiv = rst_boot.s.pnr_mul;	/* I/O clock */
+		f = (0x8000000000000000ull / sdiv) * 2;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Set the current core's cvmcount counter to the value of the
  * IPD_CLK_COUNT.  We do this on all cores as they are brought
@@ -29,6 +74,7 @@ void octeon_init_cvmcount(void)
 {
 	unsigned long flags;
 	unsigned loops = 2;
+<<<<<<< HEAD
 	u64 f = 0;
 	u64 rdiv = 0;
 	u64 sdiv = 0;
@@ -40,6 +86,8 @@ void octeon_init_cvmcount(void)
 		f = (0x8000000000000000ull / sdiv) * 2;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Clobber loops so GCC will not unroll the following while loop. */
 	asm("" : "+r" (loops));
@@ -56,9 +104,15 @@ void octeon_init_cvmcount(void)
 			if (f != 0) {
 				asm("dmultu\t%[cnt],%[f]\n\t"
 				    "mfhi\t%[cnt]"
+<<<<<<< HEAD
 				    : [cnt] "+r" (ipd_clk_count),
 				      [f] "=r" (f)
 				    : : "hi", "lo");
+=======
+				    : [cnt] "+r" (ipd_clk_count)
+				    : [f] "r" (f)
+				    : "hi", "lo");
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		write_c0_cvmcount(ipd_clk_count);
@@ -108,6 +162,7 @@ void __init plat_time_init(void)
 	clocksource_register_hz(&clocksource_mips, octeon_get_clock_rate());
 }
 
+<<<<<<< HEAD
 static u64 octeon_udelay_factor;
 static u64 octeon_ndelay_factor;
 
@@ -123,6 +178,8 @@ void __init octeon_setup_delays(void)
 	preset_lpj = octeon_get_clock_rate() / HZ;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __udelay(unsigned long us)
 {
 	u64 cur, end, inc;
@@ -162,3 +219,38 @@ void __delay(unsigned long loops)
 		cur = read_c0_cvmcount();
 }
 EXPORT_SYMBOL(__delay);
+<<<<<<< HEAD
+=======
+
+
+/**
+ * octeon_io_clk_delay - wait for a given number of io clock cycles to pass.
+ *
+ * We scale the wait by the clock ratio, and then wait for the
+ * corresponding number of core clocks.
+ *
+ * @count: The number of clocks to wait.
+ */
+void octeon_io_clk_delay(unsigned long count)
+{
+	u64 cur, end;
+
+	cur = read_c0_cvmcount();
+	if (rdiv != 0) {
+		end = count * rdiv;
+		if (f != 0) {
+			asm("dmultu\t%[cnt],%[f]\n\t"
+				"mfhi\t%[cnt]"
+				: [cnt] "+r" (end)
+				: [f] "r" (f)
+				: "hi", "lo");
+		}
+		end = cur + end;
+	} else {
+		end = cur + count;
+	}
+	while (end > cur)
+		cur = read_c0_cvmcount();
+}
+EXPORT_SYMBOL(octeon_io_clk_delay);
+>>>>>>> refs/remotes/origin/master

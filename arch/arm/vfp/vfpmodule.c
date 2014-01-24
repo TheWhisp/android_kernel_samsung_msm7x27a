@@ -8,17 +8,53 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/cpu.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/types.h>
+#include <linux/cpu.h>
+#include <linux/cpu_pm.h>
+#include <linux/hardirq.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/notifier.h>
 #include <linux/signal.h>
 #include <linux/sched.h>
 #include <linux/smp.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/cputype.h>
+=======
+#include <linux/uaccess.h>
+#include <linux/user.h>
+#include <linux/proc_fs.h>
+=======
+#include <linux/uaccess.h>
+#include <linux/user.h>
+<<<<<<< HEAD
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/proc_fs.h>
+>>>>>>> refs/remotes/origin/cm-11.0
+
+#include <asm/cp15.h>
+#include <asm/cputype.h>
+#include <asm/system_info.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/thread_notify.h>
 #include <asm/vfp.h>
 
@@ -35,13 +71,14 @@ void vfp_null_entry(void);
 void (*vfp_vector)(void) = vfp_null_entry;
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * The pointer to the vfpstate structure of the thread which currently
  * owns the context held in the VFP hardware, or NULL if the hardware
  * context is invalid.
- */
-union vfp_state *vfp_current_hw_state[NR_CPUS];
-
-/*
+=======
+=======
+>>>>>>> refs/remotes/origin/master
  * Dual-use variable.
  * Used in startup: set to non-zero if VFP checks fail
  * After startup, holds VFP architecture
@@ -49,6 +86,77 @@ union vfp_state *vfp_current_hw_state[NR_CPUS];
 unsigned int VFP_arch;
 
 /*
+ * The pointer to the vfpstate structure of the thread which currently
+ * owns the context held in the VFP hardware, or NULL if the hardware
+ * context is invalid.
+ *
+ * For UP, this is sufficient to tell which thread owns the VFP context.
+ * However, for SMP, we also need to check the CPU number stored in the
+ * saved state too to catch migrations.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+ */
+union vfp_state *vfp_current_hw_state[NR_CPUS];
+
+/*
+<<<<<<< HEAD
+<<<<<<< HEAD
+ * Dual-use variable.
+ * Used in startup: set to non-zero if VFP checks fail
+ * After startup, holds VFP architecture
+ */
+unsigned int VFP_arch;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Is 'thread's most up to date state stored in this CPUs hardware?
+ * Must be called from non-preemptible context.
+ */
+static bool vfp_state_in_hw(unsigned int cpu, struct thread_info *thread)
+{
+#ifdef CONFIG_SMP
+	if (thread->vfpstate.hard.cpu != cpu)
+		return false;
+#endif
+	return vfp_current_hw_state[cpu] == &thread->vfpstate;
+}
+
+/*
+ * Force a reload of the VFP context from the thread structure.  We do
+ * this by ensuring that access to the VFP hardware is disabled, and
+ * clear vfp_current_hw_state.  Must be called from non-preemptible context.
+ */
+static void vfp_force_reload(unsigned int cpu, struct thread_info *thread)
+{
+	if (vfp_state_in_hw(cpu, thread)) {
+		fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
+		vfp_current_hw_state[cpu] = NULL;
+	}
+#ifdef CONFIG_SMP
+	thread->vfpstate.hard.cpu = NR_CPUS;
+#endif
+}
+
+/*
+<<<<<<< HEAD
+<<<<<<< HEAD
+ * Used for reporting emulation statistics via /proc
+ */
+static atomic64_t vfp_bounce_count = ATOMIC64_INIT(0);
+>>>>>>> refs/remotes/origin/cm-10.0
+
+/*
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+ * Used for reporting emulation statistics via /proc
+ */
+static atomic64_t vfp_bounce_count = ATOMIC64_INIT(0);
+
+/*
+>>>>>>> refs/remotes/origin/cm-11.0
  * Per-thread VFP initialization.
  */
 static void vfp_thread_flush(struct thread_info *thread)
@@ -56,6 +164,8 @@ static void vfp_thread_flush(struct thread_info *thread)
 	union vfp_state *vfp = &thread->vfpstate;
 	unsigned int cpu;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(vfp, 0, sizeof(union vfp_state));
 
 	vfp->hard.fpexc = FPEXC_EN;
@@ -65,12 +175,43 @@ static void vfp_thread_flush(struct thread_info *thread)
 	 * Disable VFP to ensure we initialize it first.  We must ensure
 	 * that the modification of vfp_current_hw_state[] and hardware disable
 	 * are done for the same CPU and without preemption.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Disable VFP to ensure we initialize it first.  We must ensure
+	 * that the modification of vfp_current_hw_state[] and hardware
+	 * disable are done for the same CPU and without preemption.
+	 *
+	 * Do this first to ensure that preemption won't overwrite our
+	 * state saving should access to the VFP be enabled at this point.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 */
 	cpu = get_cpu();
 	if (vfp_current_hw_state[cpu] == vfp)
 		vfp_current_hw_state[cpu] = NULL;
 	fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
 	put_cpu();
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	memset(vfp, 0, sizeof(union vfp_state));
+
+	vfp->hard.fpexc = FPEXC_EN;
+	vfp->hard.fpscr = FPSCR_ROUND_NEAREST;
+#ifdef CONFIG_SMP
+	vfp->hard.cpu = NR_CPUS;
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void vfp_thread_exit(struct thread_info *thread)
@@ -90,6 +231,18 @@ static void vfp_thread_copy(struct thread_info *thread)
 
 	vfp_sync_hwstate(parent);
 	thread->vfpstate = parent->vfpstate;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SMP
+	thread->vfpstate.hard.cpu = NR_CPUS;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_SMP
+	thread->vfpstate.hard.cpu = NR_CPUS;
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -135,6 +288,8 @@ static int vfp_notifier(struct notifier_block *self, unsigned long cmd, void *v)
 		 * case the thread migrates to a different CPU. The
 		 * restoring is done lazily.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((fpexc & FPEXC_EN) && vfp_current_hw_state[cpu]) {
 			vfp_save_state(vfp_current_hw_state[cpu], fpexc);
 			vfp_current_hw_state[cpu]->hard.cpu = cpu;
@@ -146,6 +301,14 @@ static int vfp_notifier(struct notifier_block *self, unsigned long cmd, void *v)
 		 */
 		if (thread->vfpstate.hard.cpu != cpu)
 			vfp_current_hw_state[cpu] = NULL;
+=======
+		if ((fpexc & FPEXC_EN) && vfp_current_hw_state[cpu])
+			vfp_save_state(vfp_current_hw_state[cpu], fpexc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((fpexc & FPEXC_EN) && vfp_current_hw_state[cpu])
+			vfp_save_state(vfp_current_hw_state[cpu], fpexc);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 		/*
@@ -203,11 +366,19 @@ static void vfp_panic(char *reason, u32 inst)
 {
 	int i;
 
+<<<<<<< HEAD
 	printk(KERN_ERR "VFP: Error: %s\n", reason);
 	printk(KERN_ERR "VFP: EXC 0x%08x SCR 0x%08x INST 0x%08x\n",
 		fmrx(FPEXC), fmrx(FPSCR), inst);
 	for (i = 0; i < 32; i += 2)
 		printk(KERN_ERR "VFP: s%2u: 0x%08x s%2u: 0x%08x\n",
+=======
+	pr_err("VFP: Error: %s\n", reason);
+	pr_err("VFP: EXC 0x%08x SCR 0x%08x INST 0x%08x\n",
+		fmrx(FPEXC), fmrx(FPSCR), inst);
+	for (i = 0; i < 32; i += 2)
+		pr_err("VFP: s%2u: 0x%08x s%2u: 0x%08x\n",
+>>>>>>> refs/remotes/origin/master
 		       i, vfp_get_float(i), i+1, vfp_get_float(i+1));
 }
 
@@ -299,6 +470,17 @@ void VFP_bounce(u32 trigger, u32 fpexc, struct pt_regs *regs)
 	u32 fpscr, orig_fpscr, fpsid, exceptions;
 
 	pr_debug("VFP: bounce: trigger %08x fpexc %08x\n", trigger, fpexc);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	atomic64_inc(&vfp_bounce_count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	atomic64_inc(&vfp_bounce_count);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * At this point, FPEXC can have the following configuration:
@@ -395,7 +577,20 @@ void VFP_bounce(u32 trigger, u32 fpexc, struct pt_regs *regs)
 
 static void vfp_enable(void *unused)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 access = get_copro_access();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u32 access;
+
+	BUG_ON(preemptible());
+	access = get_copro_access();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Enable full access to VFP (cp10 and cp11)
@@ -403,6 +598,8 @@ static void vfp_enable(void *unused)
 	set_copro_access(access | CPACC_FULL(10) | CPACC_FULL(11));
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int vfp_flush_context(void)
 {
 	unsigned long flags;
@@ -433,6 +630,39 @@ int vfp_flush_context(void)
 		/* disable, just in case */
 		fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
 		saved = 1;
+=======
+#ifdef CONFIG_CPU_PM
+int vfp_pm_suspend(void)
+=======
+#ifdef CONFIG_CPU_PM
+<<<<<<< HEAD
+static int vfp_pm_suspend(void)
+>>>>>>> refs/remotes/origin/master
+=======
+int vfp_pm_suspend(void)
+>>>>>>> refs/remotes/origin/cm-11.0
+{
+	struct thread_info *ti = current_thread_info();
+	u32 fpexc = fmrx(FPEXC);
+
+	/* if vfp is on, then save state for resumption */
+	if (fpexc & FPEXC_EN) {
+<<<<<<< HEAD
+		printk(KERN_DEBUG "%s: saving vfp state\n", __func__);
+=======
+		pr_debug("%s: saving vfp state\n", __func__);
+>>>>>>> refs/remotes/origin/master
+		vfp_save_state(&ti->vfpstate, fpexc);
+
+		/* disable, just in case */
+		fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (vfp_current_hw_state[ti->cpu]) {
 #ifndef CONFIG_SMP
 		fmxr(FPEXC, fpexc | FPEXC_EN);
@@ -440,17 +670,44 @@ int vfp_flush_context(void)
 		fmxr(FPEXC, fpexc);
 #endif
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vfp_current_hw_state[cpu] = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* clear any information we had about last context state */
 	vfp_current_hw_state[ti->cpu] = NULL;
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_restore(flags);
 
 	return saved;
 }
 
 void vfp_reinit(void)
+=======
+	return 0;
+}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+void vfp_pm_resume(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+<<<<<<< HEAD
+static void vfp_pm_resume(void)
+>>>>>>> refs/remotes/origin/master
+=======
+void vfp_pm_resume(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/* ensure we have access to the vfp */
 	vfp_enable(NULL);
@@ -459,6 +716,8 @@ void vfp_reinit(void)
 	fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 #include <linux/syscore_ops.h>
 
@@ -477,26 +736,81 @@ static void vfp_pm_resume(void)
 static struct syscore_ops vfp_pm_syscore_ops = {
 	.suspend	= vfp_pm_suspend,
 	.resume		= vfp_pm_resume,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int vfp_cpu_pm_notifier(struct notifier_block *self, unsigned long cmd,
+	void *v)
+{
+	switch (cmd) {
+	case CPU_PM_ENTER:
+		vfp_pm_suspend();
+		break;
+	case CPU_PM_ENTER_FAILED:
+	case CPU_PM_EXIT:
+		vfp_pm_resume();
+		break;
+	}
+	return NOTIFY_OK;
+}
+
+static struct notifier_block vfp_cpu_pm_notifier_block = {
+	.notifier_call = vfp_cpu_pm_notifier,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void vfp_pm_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	register_syscore_ops(&vfp_pm_syscore_ops);
+=======
+	cpu_pm_register_notifier(&vfp_cpu_pm_notifier_block);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpu_pm_register_notifier(&vfp_cpu_pm_notifier_block);
+>>>>>>> refs/remotes/origin/master
 }
 
 #else
 static inline void vfp_pm_init(void) { }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_PM */
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#endif /* CONFIG_CPU_PM */
+
+/*
+ * Ensure that the VFP state stored in 'thread->vfpstate' is up to date
+ * with the hardware state.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void vfp_sync_hwstate(struct thread_info *thread)
 {
 	unsigned int cpu = get_cpu();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * If the thread we're interested in is the current owner of the
 	 * hardware VFP state, then we need to save its state.
 	 */
 	if (vfp_current_hw_state[cpu] == &thread->vfpstate) {
+=======
+	if (vfp_state_in_hw(cpu, thread)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (vfp_state_in_hw(cpu, thread)) {
+>>>>>>> refs/remotes/origin/master
 		u32 fpexc = fmrx(FPEXC);
 
 		/*
@@ -510,10 +824,20 @@ void vfp_sync_hwstate(struct thread_info *thread)
 	put_cpu();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* Ensure that the thread reloads the hardware VFP state on the next use. */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Ensure that the thread reloads the hardware VFP state on the next use. */
+>>>>>>> refs/remotes/origin/master
 void vfp_flush_hwstate(struct thread_info *thread)
 {
 	unsigned int cpu = get_cpu();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * If the thread we're interested in is the current owner of the
 	 * hardware VFP state, then we need to save its state.
@@ -541,6 +865,103 @@ void vfp_flush_hwstate(struct thread_info *thread)
 	thread->vfpstate.hard.cpu = NR_CPUS;
 #endif
 	put_cpu();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	vfp_force_reload(cpu, thread);
+
+	put_cpu();
+}
+
+/*
+ * Save the current VFP state into the provided structures and prepare
+ * for entry into a new function (signal handler).
+ */
+int vfp_preserve_user_clear_hwstate(struct user_vfp __user *ufp,
+				    struct user_vfp_exc __user *ufp_exc)
+{
+	struct thread_info *thread = current_thread_info();
+	struct vfp_hard_struct *hwstate = &thread->vfpstate.hard;
+	int err = 0;
+
+	/* Ensure that the saved hwstate is up-to-date. */
+	vfp_sync_hwstate(thread);
+
+	/*
+	 * Copy the floating point registers. There can be unused
+	 * registers see asm/hwcap.h for details.
+	 */
+	err |= __copy_to_user(&ufp->fpregs, &hwstate->fpregs,
+			      sizeof(hwstate->fpregs));
+	/*
+	 * Copy the status and control register.
+	 */
+	__put_user_error(hwstate->fpscr, &ufp->fpscr, err);
+
+	/*
+	 * Copy the exception registers.
+	 */
+	__put_user_error(hwstate->fpexc, &ufp_exc->fpexc, err);
+	__put_user_error(hwstate->fpinst, &ufp_exc->fpinst, err);
+	__put_user_error(hwstate->fpinst2, &ufp_exc->fpinst2, err);
+
+	if (err)
+		return -EFAULT;
+
+	/* Ensure that VFP is disabled. */
+	vfp_flush_hwstate(thread);
+
+	/*
+	 * As per the PCS, clear the length and stride bits for function
+	 * entry.
+	 */
+	hwstate->fpscr &= ~(FPSCR_LENGTH_MASK | FPSCR_STRIDE_MASK);
+	return 0;
+}
+
+/* Sanitise and restore the current VFP state from the provided structures. */
+int vfp_restore_user_hwstate(struct user_vfp __user *ufp,
+			     struct user_vfp_exc __user *ufp_exc)
+{
+	struct thread_info *thread = current_thread_info();
+	struct vfp_hard_struct *hwstate = &thread->vfpstate.hard;
+	unsigned long fpexc;
+	int err = 0;
+
+	/* Disable VFP to avoid corrupting the new thread state. */
+	vfp_flush_hwstate(thread);
+
+	/*
+	 * Copy the floating point registers. There can be unused
+	 * registers see asm/hwcap.h for details.
+	 */
+	err |= __copy_from_user(&hwstate->fpregs, &ufp->fpregs,
+				sizeof(hwstate->fpregs));
+	/*
+	 * Copy the status and control register.
+	 */
+	__get_user_error(hwstate->fpscr, &ufp->fpscr, err);
+
+	/*
+	 * Sanitise and restore the exception registers.
+	 */
+	__get_user_error(fpexc, &ufp_exc->fpexc, err);
+
+	/* Ensure the VFP is enabled. */
+	fpexc |= FPEXC_EN;
+
+	/* Ensure FPINST2 is invalid and the exception flag is cleared. */
+	fpexc &= ~(FPEXC_EX | FPEXC_FP2V);
+	hwstate->fpexc = fpexc;
+
+	__get_user_error(hwstate->fpinst, &ufp_exc->fpinst, err);
+	__get_user_error(hwstate->fpinst2, &ufp_exc->fpinst2, err);
+
+	return err ? -EFAULT : 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -557,14 +978,122 @@ void vfp_flush_hwstate(struct thread_info *thread)
 static int vfp_hotplug(struct notifier_block *b, unsigned long action,
 	void *hcpu)
 {
+<<<<<<< HEAD
 	if (action == CPU_DYING || action == CPU_DYING_FROZEN) {
+<<<<<<< HEAD
 		unsigned int cpu = (long)hcpu;
 		vfp_current_hw_state[cpu] = NULL;
+=======
+		vfp_force_reload((long)hcpu, current_thread_info());
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else if (action == CPU_STARTING || action == CPU_STARTING_FROZEN)
+=======
+	if (action == CPU_DYING || action == CPU_DYING_FROZEN)
+		vfp_current_hw_state[(long)hcpu] = NULL;
+	else if (action == CPU_STARTING || action == CPU_STARTING_FROZEN)
+>>>>>>> refs/remotes/origin/master
 		vfp_enable(NULL);
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef CONFIG_PROC_FS
+static int proc_read_status(char *page, char **start, off_t off, int count,
+			    int *eof, void *data)
+{
+	char *p = page;
+	int len;
+
+	p += snprintf(p, PAGE_SIZE, "%llu\n", atomic64_read(&vfp_bounce_count));
+
+	len = (p - page) - off;
+	if (len < 0)
+		len = 0;
+
+	*eof = (len <= count) ? 1 : 0;
+	*start = page + off;
+
+	return len;
+}
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void vfp_kmode_exception(void)
+{
+	/*
+	 * If we reach this point, a floating point exception has been raised
+	 * while running in kernel mode. If the NEON/VFP unit was enabled at the
+	 * time, it means a VFP instruction has been issued that requires
+	 * software assistance to complete, something which is not currently
+	 * supported in kernel mode.
+	 * If the NEON/VFP unit was disabled, and the location pointed to below
+	 * is properly preceded by a call to kernel_neon_begin(), something has
+	 * caused the task to be scheduled out and back in again. In this case,
+	 * rebuilding and running with CONFIG_DEBUG_ATOMIC_SLEEP enabled should
+	 * be helpful in localizing the problem.
+	 */
+	if (fmrx(FPEXC) & FPEXC_EN)
+		pr_crit("BUG: unsupported FP instruction in kernel mode\n");
+	else
+		pr_crit("BUG: FP instruction issued in kernel mode with FP unit disabled\n");
+}
+
+#ifdef CONFIG_KERNEL_MODE_NEON
+
+/*
+ * Kernel-side NEON support functions
+ */
+void kernel_neon_begin(void)
+{
+	struct thread_info *thread = current_thread_info();
+	unsigned int cpu;
+	u32 fpexc;
+
+	/*
+	 * Kernel mode NEON is only allowed outside of interrupt context
+	 * with preemption disabled. This will make sure that the kernel
+	 * mode NEON register contents never need to be preserved.
+	 */
+	BUG_ON(in_interrupt());
+	cpu = get_cpu();
+
+	fpexc = fmrx(FPEXC) | FPEXC_EN;
+	fmxr(FPEXC, fpexc);
+
+	/*
+	 * Save the userland NEON/VFP state. Under UP,
+	 * the owner could be a task other than 'current'
+	 */
+	if (vfp_state_in_hw(cpu, thread))
+		vfp_save_state(&thread->vfpstate, fpexc);
+#ifndef CONFIG_SMP
+	else if (vfp_current_hw_state[cpu] != NULL)
+		vfp_save_state(vfp_current_hw_state[cpu], fpexc);
+#endif
+	vfp_current_hw_state[cpu] = NULL;
+}
+EXPORT_SYMBOL(kernel_neon_begin);
+
+void kernel_neon_end(void)
+{
+	/* Disable the NEON/VFP unit. */
+	fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
+	put_cpu();
+}
+EXPORT_SYMBOL(kernel_neon_end);
+
+#endif /* CONFIG_KERNEL_MODE_NEON */
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * VFP support code initialisation.
  */
@@ -572,9 +1101,29 @@ static int __init vfp_init(void)
 {
 	unsigned int vfpsid;
 	unsigned int cpu_arch = cpu_architecture();
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (cpu_arch >= CPU_ARCH_ARMv6)
 		vfp_enable(NULL);
+=======
+#ifdef CONFIG_PROC_FS
+	static struct proc_dir_entry *procfs_entry;
+#endif
+	if (cpu_arch >= CPU_ARCH_ARMv6)
+		on_each_cpu(vfp_enable, NULL, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+=======
+#ifdef CONFIG_PROC_FS
+	static struct proc_dir_entry *procfs_entry;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (cpu_arch >= CPU_ARCH_ARMv6)
+		on_each_cpu(vfp_enable, NULL, 1);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * First check that there is a VFP that we can use.
@@ -587,6 +1136,7 @@ static int __init vfp_init(void)
 	barrier();
 	vfp_vector = vfp_null_entry;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "VFP support v0.3: ");
 	if (VFP_arch)
 		printk("not present\n");
@@ -595,10 +1145,25 @@ static int __init vfp_init(void)
 	} else {
 		hotcpu_notifier(vfp_hotplug, 0);
 
+<<<<<<< HEAD
 		smp_call_function(vfp_enable, NULL, 1);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		VFP_arch = (vfpsid & FPSID_ARCH_MASK) >> FPSID_ARCH_BIT;  /* Extract the architecture version */
 		printk("implementor %02x architecture %d part %02x variant %x rev %x\n",
+=======
+	pr_info("VFP support v0.3: ");
+	if (VFP_arch)
+		pr_cont("not present\n");
+	else if (vfpsid & FPSID_NODOUBLE) {
+		pr_cont("no double precision support\n");
+	} else {
+		hotcpu_notifier(vfp_hotplug, 0);
+
+		VFP_arch = (vfpsid & FPSID_ARCH_MASK) >> FPSID_ARCH_BIT;  /* Extract the architecture version */
+		pr_cont("implementor %02x architecture %d part %02x variant %x rev %x\n",
+>>>>>>> refs/remotes/origin/master
 			(vfpsid & FPSID_IMPLEMENTER_MASK) >> FPSID_IMPLEMENTER_BIT,
 			(vfpsid & FPSID_ARCH_MASK) >> FPSID_ARCH_BIT,
 			(vfpsid & FPSID_PART_MASK) >> FPSID_PART_BIT,
@@ -620,11 +1185,39 @@ static int __init vfp_init(void)
 			elf_hwcap |= HWCAP_VFPv3;
 
 			/*
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 * Check for VFPv3 D16. CPUs in this configuration
 			 * only have 16 x 64bit registers.
 			 */
 			if (((fmrx(MVFR0) & MVFR0_A_SIMD_MASK)) == 1)
 				elf_hwcap |= HWCAP_VFPv3D16;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			 * Check for VFPv3 D16 and VFPv4 D16.  CPUs in
+			 * this configuration only have 16 x 64bit
+			 * registers.
+			 */
+			if (((fmrx(MVFR0) & MVFR0_A_SIMD_MASK)) == 1)
+				elf_hwcap |= HWCAP_VFPv3D16; /* also v4-D16 */
+			else
+				elf_hwcap |= HWCAP_VFPD32;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+			 * Check for VFPv3 D16 and VFPv4 D16.  CPUs in
+			 * this configuration only have 16 x 64bit
+			 * registers.
+			 */
+			if (((fmrx(MVFR0) & MVFR0_A_SIMD_MASK)) == 1)
+				elf_hwcap |= HWCAP_VFPv3D16; /* also v4-D16 */
+			else
+				elf_hwcap |= HWCAP_VFPD32;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 #endif
 		/*
@@ -638,13 +1231,51 @@ static int __init vfp_init(void)
 			if ((fmrx(MVFR1) & 0x000fff00) == 0x00011100)
 				elf_hwcap |= HWCAP_NEON;
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 			if ((fmrx(MVFR1) & 0xf0000000) == 0x10000000 ||
 			    (read_cpuid_id() & 0xff00fc00) == 0x51000400)
 				elf_hwcap |= HWCAP_VFPv4;
 		}
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef CONFIG_VFPv3
+			if ((fmrx(MVFR1) & 0xf0000000) == 0x10000000)
+				elf_hwcap |= HWCAP_VFPv4;
+#endif
+		}
+	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+#ifdef CONFIG_PROC_FS
+	procfs_entry = create_proc_entry("cpu/vfp_bounce", S_IRUGO, NULL);
+
+	if (procfs_entry)
+		procfs_entry->read_proc = proc_read_status;
+	else
+		pr_err("Failed to create procfs node for VFP bounce reporting\n");
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 late_initcall(vfp_init);
+=======
+	return 0;
+}
+
+core_initcall(vfp_init);
+>>>>>>> refs/remotes/origin/master

@@ -29,7 +29,11 @@ static void __init sni_pcimt_sc_init(void)
 
 	scsiz = cacheconf & 7;
 	if (scsiz == 0) {
+<<<<<<< HEAD
 		printk("Second level cache is deactived.\n");
+=======
+		printk("Second level cache is deactivated.\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	if (scsiz >= 6) {
@@ -60,7 +64,11 @@ static inline void sni_pcimt_detect(void)
 	p += sprintf(p, "%s PCI", (csmsr & 0x80) ? "RM200" : "RM300");
 	if ((csmsr & 0x80) == 0)
 		p += sprintf(p, ", board revision %s",
+<<<<<<< HEAD
 		             (csmsr & 0x20) ? "D" : "C");
+=======
+			     (csmsr & 0x20) ? "D" : "C");
+>>>>>>> refs/remotes/origin/master
 	asic = csmsr & 0x80;
 	asic = (csmsr & 0x08) ? asic : !asic;
 	p += sprintf(p, ", ASIC PCI Rev %s", asic ? "1.0" : "1.1");
@@ -91,6 +99,7 @@ static struct platform_device pcimt_serial8250_device = {
 };
 
 static struct resource pcimt_cmos_rsrc[] = {
+<<<<<<< HEAD
         {
                 .start = 0x70,
                 .end   = 0x71,
@@ -107,6 +116,24 @@ static struct platform_device pcimt_cmos_device = {
         .name           = "rtc_cmos",
         .num_resources  = ARRAY_SIZE(pcimt_cmos_rsrc),
         .resource       = pcimt_cmos_rsrc
+=======
+	{
+		.start = 0x70,
+		.end   = 0x71,
+		.flags = IORESOURCE_IO
+	},
+	{
+		.start = 8,
+		.end   = 8,
+		.flags = IORESOURCE_IRQ
+	}
+};
+
+static struct platform_device pcimt_cmos_device = {
+	.name		= "rtc_cmos",
+	.num_resources	= ARRAY_SIZE(pcimt_cmos_rsrc),
+	.resource	= pcimt_cmos_rsrc
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -185,14 +212,24 @@ static void __init sni_pcimt_resource_init(void)
 
 extern struct pci_ops sni_pcimt_ops;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PCI
+>>>>>>> refs/remotes/origin/master
 static struct pci_controller sni_controller = {
 	.pci_ops	= &sni_pcimt_ops,
 	.mem_resource	= &sni_mem_resource,
 	.mem_offset	= 0x00000000UL,
 	.io_resource	= &sni_io_resource,
 	.io_offset	= 0x00000000UL,
+<<<<<<< HEAD
 	.io_map_base    = SNI_PORT_BASE
 };
+=======
+	.io_map_base	= SNI_PORT_BASE
+};
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static void enable_pcimt_irq(struct irq_data *d)
 {
@@ -319,9 +356,15 @@ static int __init snirm_pcimt_setup_devinit(void)
 	case SNI_BRD_PCI_MTOWER:
 	case SNI_BRD_PCI_DESKTOP:
 	case SNI_BRD_PCI_MTOWER_CPLUS:
+<<<<<<< HEAD
 	        platform_device_register(&pcimt_serial8250_device);
 	        platform_device_register(&pcimt_cmos_device);
 	        break;
+=======
+		platform_device_register(&pcimt_serial8250_device);
+		platform_device_register(&pcimt_cmos_device);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;

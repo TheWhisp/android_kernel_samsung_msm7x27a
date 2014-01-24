@@ -34,9 +34,24 @@ static void __init nuc960evb_init(void)
 
 MACHINE_START(W90N960EVB, "W90N960EVB")
 	/* Maintainer: Wan ZongShun */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= nuc960evb_map_io,
 	.init_irq	= nuc900_init_irq,
 	.init_machine	= nuc960evb_init,
 	.timer		= &nuc900_timer,
+<<<<<<< HEAD
+=======
+	.restart	= nuc9xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.map_io		= nuc960evb_map_io,
+	.init_irq	= nuc900_init_irq,
+	.init_machine	= nuc960evb_init,
+	.init_time	= nuc900_timer_init,
+	.restart	= nuc9xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

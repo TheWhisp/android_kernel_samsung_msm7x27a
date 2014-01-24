@@ -36,7 +36,13 @@
 #include <linux/io.h>
 
 #include <asm/current.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/div64.h>
 
@@ -368,12 +374,41 @@ static unsigned int hpet_poll(struct file *file, poll_table * wait)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int hpet_mmap(struct file *file, struct vm_area_struct *vma)
 {
 #ifdef	CONFIG_HPET_MMAP
 	struct hpet_dev *devp;
 	unsigned long addr;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HPET_MMAP
+#ifdef CONFIG_HPET_MMAP_DEFAULT
+static int hpet_mmap_enabled = 1;
+#else
+static int hpet_mmap_enabled = 0;
+#endif
+
+static __init int hpet_mmap_enable(char *str)
+{
+	get_option(&str, &hpet_mmap_enabled);
+	pr_info("HPET mmap %s\n", hpet_mmap_enabled ? "enabled" : "disabled");
+	return 1;
+}
+__setup("hpet_mmap", hpet_mmap_enable);
+
+static int hpet_mmap(struct file *file, struct vm_area_struct *vma)
+{
+	struct hpet_dev *devp;
+	unsigned long addr;
+
+	if (!hpet_mmap_enabled)
+		return -EACCES;
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	devp = file->private_data;
 	addr = devp->hd_hpets->hp_hpet_phys;
 
@@ -382,10 +417,23 @@ static int hpet_mmap(struct file *file, struct vm_area_struct *vma)
 
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 	return vm_iomap_memory(vma, addr, PAGE_SIZE);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 	return -ENOSYS;
 #endif
 }
+=======
+}
+#else
+static int hpet_mmap(struct file *file, struct vm_area_struct *vma)
+{
+	return -ENOSYS;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static int hpet_fasync(int fd, struct file *file, int on)
 {
@@ -487,8 +535,12 @@ static int hpet_ioctl_ieon(struct hpet_dev *devp)
 		}
 
 		sprintf(devp->hd_name, "hpet%d", (int)(devp - hpetp->hp_dev));
+<<<<<<< HEAD
 		irq_flags = devp->hd_flags & HPET_SHARED_IRQ
 						? IRQF_SHARED : IRQF_DISABLED;
+=======
+		irq_flags = devp->hd_flags & HPET_SHARED_IRQ ? IRQF_SHARED : 0;
+>>>>>>> refs/remotes/origin/master
 		if (request_irq(irq, hpet_interrupt, irq_flags,
 				devp->hd_name, (void *)devp)) {
 			printk(KERN_ERR "hpet: IRQ %d is not free\n", irq);
@@ -726,7 +778,11 @@ static int hpet_is_known(struct hpet_data *hdp)
 	return 0;
 }
 
+<<<<<<< HEAD
 static ctl_table hpet_table[] = {
+=======
+static struct ctl_table hpet_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 	 .procname = "max-user-freq",
 	 .data = &hpet_max_freq,
@@ -737,7 +793,11 @@ static ctl_table hpet_table[] = {
 	{}
 };
 
+<<<<<<< HEAD
 static ctl_table hpet_root[] = {
+=======
+static struct ctl_table hpet_root[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 	 .procname = "hpet",
 	 .maxlen = 0,
@@ -747,7 +807,11 @@ static ctl_table hpet_root[] = {
 	{}
 };
 
+<<<<<<< HEAD
 static ctl_table dev_root[] = {
+=======
+static struct ctl_table dev_root[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 	 .procname = "dev",
 	 .maxlen = 0,
@@ -805,7 +869,11 @@ static unsigned long __hpet_calibrate(struct hpets *hpetp)
 
 static unsigned long hpet_calibrate(struct hpets *hpetp)
 {
+<<<<<<< HEAD
 	unsigned long ret = -1;
+=======
+	unsigned long ret = ~0UL;
+>>>>>>> refs/remotes/origin/master
 	unsigned long tmp;
 
 	/*
@@ -895,8 +963,18 @@ int hpet_alloc(struct hpet_data *hdp)
 		hpetp->hp_which, hdp->hd_phys_address,
 		hpetp->hp_ntimer > 1 ? "s" : "");
 	for (i = 0; i < hpetp->hp_ntimer; i++)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk("%s %d", i > 0 ? "," : "", hdp->hd_irq[i]);
 	printk("\n");
+=======
+		printk(KERN_CONT "%s %d", i > 0 ? "," : "", hdp->hd_irq[i]);
+	printk(KERN_CONT "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_CONT "%s %d", i > 0 ? "," : "", hdp->hd_irq[i]);
+	printk(KERN_CONT "\n");
+>>>>>>> refs/remotes/origin/master
 
 	temp = hpetp->hp_tick_freq;
 	remainder = do_div(temp, 1000000);
@@ -940,7 +1018,15 @@ int hpet_alloc(struct hpet_data *hdp)
 #ifdef CONFIG_IA64
 	if (!hpet_clocksource) {
 		hpet_mctr = (void __iomem *)&hpetp->hp_hpet->hpet_mc;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		CLKSRC_FSYS_MMIO_SET(clocksource_hpet.fsys_mmio, hpet_mctr);
+=======
+		clocksource_hpet.archdata.fsys_mmio = hpet_mctr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clocksource_hpet.archdata.fsys_mmio = hpet_mctr;
+>>>>>>> refs/remotes/origin/master
 		clocksource_register_hz(&clocksource_hpet, hpetp->hp_tick_freq);
 		hpetp->hp_clocksource = &clocksource_hpet;
 		hpet_clocksource = &clocksource_hpet;
@@ -972,8 +1058,11 @@ static acpi_status hpet_resources(struct acpi_resource *res, void *data)
 		struct acpi_resource_fixed_memory32 *fixmem32;
 
 		fixmem32 = &res->data.fixed_memory32;
+<<<<<<< HEAD
 		if (!fixmem32)
 			return AE_NO_MEMORY;
+=======
+>>>>>>> refs/remotes/origin/master
 
 		hdp->hd_phys_address = fixmem32->address;
 		hdp->hd_address = ioremap(fixmem32->address,
@@ -990,6 +1079,12 @@ static acpi_status hpet_resources(struct acpi_resource *res, void *data)
 		irqp = &res->data.extended_irq;
 
 		for (i = 0; i < irqp->interrupt_count; i++) {
+<<<<<<< HEAD
+=======
+			if (hdp->hd_nirqs >= HPET_MAX_TIMERS)
+				break;
+
+>>>>>>> refs/remotes/origin/master
 			irq = acpi_register_gsi(NULL, irqp->interrupts[i],
 				      irqp->triggering, irqp->polarity);
 			if (irq < 0)
@@ -1027,7 +1122,11 @@ static int hpet_acpi_add(struct acpi_device *device)
 	return hpet_alloc(&data);
 }
 
+<<<<<<< HEAD
 static int hpet_acpi_remove(struct acpi_device *device, int type)
+=======
+static int hpet_acpi_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	/* XXX need to unregister clocksource, dealloc mem, etc */
 	return -EINVAL;

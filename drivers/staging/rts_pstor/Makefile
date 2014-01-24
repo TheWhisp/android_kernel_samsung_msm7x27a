@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 EXTRA_CFLAGS	:= -Idrivers/scsi
+=======
+ccflags := -Idrivers/scsi
+>>>>>>> refs/remotes/origin/cm-10.0
 
 obj-$(CONFIG_RTS_PSTOR)	:= rts_pstor.o
 

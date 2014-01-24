@@ -166,6 +166,12 @@ int cx231xx_send_usb_command(struct cx231xx_i2c *i2c_bus,
 	u8 _i2c_nostop = 0;
 	u8 _i2c_reserve = 0;
 
+<<<<<<< HEAD
+=======
+	if (dev->state & DEV_DISCONNECTED)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Get the I2C period, nostop and reserve parameters */
 	_i2c_period = i2c_bus->i2c_period;
 	_i2c_nostop = i2c_bus->i2c_nostop;
@@ -742,6 +748,11 @@ int cx231xx_set_mode(struct cx231xx *dev, enum cx231xx_mode set_mode)
 		case CX231XX_BOARD_CNXT_RDU_253S:
 		case CX231XX_BOARD_HAUPPAUGE_EXETER:
 		case CX231XX_BOARD_PV_PLAYTV_USB_HYBRID:
+<<<<<<< HEAD
+=======
+		case CX231XX_BOARD_HAUPPAUGE_USB2_FM_PAL:
+		case CX231XX_BOARD_HAUPPAUGE_USB2_FM_NTSC:
+>>>>>>> refs/remotes/origin/cm-10.0
 		errCode = cx231xx_set_agc_analog_digital_mux_select(dev, 0);
 			break;
 		default:
@@ -1069,7 +1080,11 @@ int cx231xx_init_isoc(struct cx231xx *dev, int max_packets,
 				 sb_size, cx231xx_isoc_irq_callback, dma_q, 1);
 
 		urb->number_of_packets = max_packets;
+<<<<<<< HEAD
 		urb->transfer_flags = URB_ISO_ASAP;
+=======
+		urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		k = 0;
 		for (j = 0; j < max_packets; j++) {
@@ -1180,7 +1195,11 @@ int cx231xx_init_bulk(struct cx231xx *dev, int max_packets,
 			return -ENOMEM;
 		}
 		dev->video_mode.bulk_ctl.urb[i] = urb;
+<<<<<<< HEAD
 		urb->transfer_flags = 0;
+=======
+		urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		dev->video_mode.bulk_ctl.transfer_buffer[i] =
 		    usb_alloc_coherent(dev->udev, sb_size, GFP_KERNEL,
@@ -1381,6 +1400,11 @@ int cx231xx_dev_init(struct cx231xx *dev)
 	case CX231XX_BOARD_CNXT_RDU_253S:
 	case CX231XX_BOARD_HAUPPAUGE_EXETER:
 	case CX231XX_BOARD_PV_PLAYTV_USB_HYBRID:
+<<<<<<< HEAD
+=======
+	case CX231XX_BOARD_HAUPPAUGE_USB2_FM_PAL:
+	case CX231XX_BOARD_HAUPPAUGE_USB2_FM_NTSC:
+>>>>>>> refs/remotes/origin/cm-10.0
 	errCode = cx231xx_set_agc_analog_digital_mux_select(dev, 0);
 		break;
 	default:

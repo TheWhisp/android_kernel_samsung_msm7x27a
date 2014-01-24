@@ -7,7 +7,15 @@
  * Based on asm-parisc/atomic.h Copyright (C) 2000 Philipp Rumpf
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/module.h>
 
@@ -55,7 +63,15 @@ int atomic_cmpxchg(atomic_t *v, int old, int new)
 }
 EXPORT_SYMBOL(atomic_cmpxchg);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int atomic_add_unless(atomic_t *v, int a, int u)
+=======
+int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	unsigned long flags;
@@ -65,9 +81,21 @@ int atomic_add_unless(atomic_t *v, int a, int u)
 	if (ret != u)
 		v->counter += a;
 	spin_unlock_irqrestore(ATOMIC_HASH(v), flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return ret != u;
 }
 EXPORT_SYMBOL(atomic_add_unless);
+=======
+	return ret;
+}
+EXPORT_SYMBOL(__atomic_add_unless);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+EXPORT_SYMBOL(__atomic_add_unless);
+>>>>>>> refs/remotes/origin/master
 
 /* Atomic operations are already serializing */
 void atomic_set(atomic_t *v, int i)

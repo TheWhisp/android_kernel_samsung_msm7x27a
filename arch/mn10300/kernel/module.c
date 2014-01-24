@@ -32,6 +32,8 @@
 #define DEBUGP(fmt, ...)
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * allocate storage for a module
  */
@@ -62,6 +64,10 @@ int module_frob_arch_sections(Elf_Ehdr *hdr,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void reloc_put16(uint8_t *p, uint32_t val)
 {
 	p[0] = val & 0xff;
@@ -81,6 +87,8 @@ static void reloc_put32(uint8_t *p, uint32_t val)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * apply a REL relocation
  */
 int apply_relocate(Elf32_Shdr *sechdrs,
@@ -95,6 +103,10 @@ int apply_relocate(Elf32_Shdr *sechdrs,
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * apply a RELA relocation
  */
 int apply_relocate_add(Elf32_Shdr *sechdrs,
@@ -198,6 +210,8 @@ int apply_relocate_add(Elf32_Shdr *sechdrs,
 	}
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * finish loading the module
@@ -215,3 +229,7 @@ int module_finalize(const Elf_Ehdr *hdr,
 void module_arch_cleanup(struct module *mod)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

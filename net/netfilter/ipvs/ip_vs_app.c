@@ -31,7 +31,13 @@
 #include <net/net_namespace.h>
 #include <net/protocol.h>
 #include <net/tcp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/stat.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
@@ -59,6 +65,21 @@ static inline void ip_vs_app_put(struct ip_vs_app *app)
 	module_put(app->module);
 }
 
+<<<<<<< HEAD
+=======
+static void ip_vs_app_inc_destroy(struct ip_vs_app *inc)
+{
+	kfree(inc->timeout_table);
+	kfree(inc);
+}
+
+static void ip_vs_app_inc_rcu_free(struct rcu_head *head)
+{
+	struct ip_vs_app *inc = container_of(head, struct ip_vs_app, rcu_head);
+
+	ip_vs_app_inc_destroy(inc);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Allocate/initialize app incarnation and register it in proto apps.
@@ -107,8 +128,12 @@ ip_vs_app_inc_new(struct net *net, struct ip_vs_app *app, __u16 proto,
 	return 0;
 
   out:
+<<<<<<< HEAD
 	kfree(inc->timeout_table);
 	kfree(inc);
+=======
+	ip_vs_app_inc_destroy(inc);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -132,8 +157,12 @@ ip_vs_app_inc_release(struct net *net, struct ip_vs_app *inc)
 
 	list_del(&inc->a_list);
 
+<<<<<<< HEAD
 	kfree(inc->timeout_table);
 	kfree(inc);
+=======
+	call_rcu(&inc->rcu_head, ip_vs_app_inc_rcu_free);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -145,9 +174,15 @@ int ip_vs_app_inc_get(struct ip_vs_app *inc)
 {
 	int result;
 
+<<<<<<< HEAD
 	atomic_inc(&inc->usecnt);
 	if (unlikely((result = ip_vs_app_get(inc->app)) != 1))
 		atomic_dec(&inc->usecnt);
+=======
+	result = ip_vs_app_get(inc->app);
+	if (result)
+		atomic_inc(&inc->usecnt);
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
@@ -157,8 +192,13 @@ int ip_vs_app_inc_get(struct ip_vs_app *inc)
  */
 void ip_vs_app_inc_put(struct ip_vs_app *inc)
 {
+<<<<<<< HEAD
 	ip_vs_app_put(inc->app);
 	atomic_dec(&inc->usecnt);
+=======
+	atomic_dec(&inc->usecnt);
+	ip_vs_app_put(inc->app);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -181,6 +221,7 @@ register_ip_vs_app_inc(struct net *net, struct ip_vs_app *app, __u16 proto,
 }
 
 
+<<<<<<< HEAD
 /*
  *	ip_vs_app registration routine
  */
@@ -197,12 +238,47 @@ int register_ip_vs_app(struct net *net, struct ip_vs_app *app)
 	mutex_unlock(&__ip_vs_app_mutex);
 
 	return 0;
+=======
+/* Register application for netns */
+struct ip_vs_app *register_ip_vs_app(struct net *net, struct ip_vs_app *app)
+{
+	struct netns_ipvs *ipvs = net_ipvs(net);
+	struct ip_vs_app *a;
+	int err = 0;
+
+	if (!ipvs)
+		return ERR_PTR(-ENOENT);
+
+	mutex_lock(&__ip_vs_app_mutex);
+
+	list_for_each_entry(a, &ipvs->app_list, a_list) {
+		if (!strcmp(app->name, a->name)) {
+			err = -EEXIST;
+			goto out_unlock;
+		}
+	}
+	a = kmemdup(app, sizeof(*app), GFP_KERNEL);
+	if (!a) {
+		err = -ENOMEM;
+		goto out_unlock;
+	}
+	INIT_LIST_HEAD(&a->incs_list);
+	list_add(&a->a_list, &ipvs->app_list);
+	/* increase the module use count */
+	ip_vs_use_count_inc();
+
+out_unlock:
+	mutex_unlock(&__ip_vs_app_mutex);
+
+	return err ? ERR_PTR(err) : a;
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /*
  *	ip_vs_app unregistration routine
  *	We are sure there are no app incarnations attached to services
+<<<<<<< HEAD
  */
 void unregister_ip_vs_app(struct net *net, struct ip_vs_app *app)
 {
@@ -220,6 +296,35 @@ void unregister_ip_vs_app(struct net *net, struct ip_vs_app *app)
 
 	/* decrease the module use count */
 	ip_vs_use_count_dec();
+=======
+ *	Caller should use synchronize_rcu() or rcu_barrier()
+ */
+void unregister_ip_vs_app(struct net *net, struct ip_vs_app *app)
+{
+	struct netns_ipvs *ipvs = net_ipvs(net);
+	struct ip_vs_app *a, *anxt, *inc, *nxt;
+
+	if (!ipvs)
+		return;
+
+	mutex_lock(&__ip_vs_app_mutex);
+
+	list_for_each_entry_safe(a, anxt, &ipvs->app_list, a_list) {
+		if (app && strcmp(app->name, a->name))
+			continue;
+		list_for_each_entry_safe(inc, nxt, &a->incs_list, a_list) {
+			ip_vs_app_inc_release(net, inc);
+		}
+
+		list_del(&a->a_list);
+		kfree(a);
+
+		/* decrease the module use count */
+		ip_vs_use_count_dec();
+	}
+
+	mutex_unlock(&__ip_vs_app_mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -314,17 +419,28 @@ vs_fix_ack_seq(const struct ip_vs_seq *vseq, struct tcphdr *th)
  *	Assumes already checked proto==IPPROTO_TCP and diff!=0.
  */
 static inline void vs_seq_update(struct ip_vs_conn *cp, struct ip_vs_seq *vseq,
+<<<<<<< HEAD
 				 unsigned flag, __u32 seq, int diff)
 {
 	/* spinlock is to keep updating cp->flags atomic */
 	spin_lock(&cp->lock);
+=======
+				 unsigned int flag, __u32 seq, int diff)
+{
+	/* spinlock is to keep updating cp->flags atomic */
+	spin_lock_bh(&cp->lock);
+>>>>>>> refs/remotes/origin/master
 	if (!(cp->flags & flag) || after(seq, vseq->init_seq)) {
 		vseq->previous_delta = vseq->delta;
 		vseq->delta += diff;
 		vseq->init_seq = seq;
 		cp->flags |= flag;
 	}
+<<<<<<< HEAD
 	spin_unlock(&cp->lock);
+=======
+	spin_unlock_bh(&cp->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int app_tcp_pkt_out(struct ip_vs_conn *cp, struct sk_buff *skb,
@@ -576,15 +692,25 @@ static const struct file_operations ip_vs_app_fops = {
 };
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __net_init __ip_vs_app_init(struct net *net)
+=======
+int __net_init ip_vs_app_net_init(struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __net_init ip_vs_app_net_init(struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
 	INIT_LIST_HEAD(&ipvs->app_list);
+<<<<<<< HEAD
 	proc_net_fops_create(net, "ip_vs_app", 0, &ip_vs_app_fops);
 	return 0;
 }
 
+<<<<<<< HEAD
 void __net_exit __ip_vs_app_cleanup(struct net *net)
 {
 	proc_net_remove(net, "ip_vs_app");
@@ -599,3 +725,20 @@ int __init ip_vs_app_init(void)
 void ip_vs_app_cleanup(void)
 {
 }
+=======
+void __net_exit ip_vs_app_net_cleanup(struct net *net)
+{
+	proc_net_remove(net, "ip_vs_app");
+}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	proc_create("ip_vs_app", 0, net->proc_net, &ip_vs_app_fops);
+	return 0;
+}
+
+void __net_exit ip_vs_app_net_cleanup(struct net *net)
+{
+	unregister_ip_vs_app(net, NULL /* all */);
+	remove_proc_entry("ip_vs_app", net->proc_net);
+}
+>>>>>>> refs/remotes/origin/master

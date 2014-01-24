@@ -13,17 +13,27 @@
 #include <linux/kernel.h>
 #include <linux/kref.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
 #include <linux/proc_fs.h>
 #include <linux/spinlock.h>
 #include <linux/cpu.h>
 #include <linux/slab.h>
+=======
+#include <linux/spinlock.h>
+#include <linux/cpu.h>
+#include <linux/slab.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include "offline_states.h"
 
 #include <asm/prom.h>
 #include <asm/machdep.h>
 #include <asm/uaccess.h>
 #include <asm/rtas.h>
+<<<<<<< HEAD
 #include <asm/pSeries_reconfig.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct cc_workarea {
 	u32	drc_index;
@@ -64,26 +74,51 @@ static struct property *dlpar_parse_cc_property(struct cc_workarea *ccwa)
 	return prop;
 }
 
+<<<<<<< HEAD
 static struct device_node *dlpar_parse_cc_node(struct cc_workarea *ccwa)
+=======
+static struct device_node *dlpar_parse_cc_node(struct cc_workarea *ccwa,
+					       const char *path)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dn;
 	char *name;
 
+<<<<<<< HEAD
+=======
+	/* If parent node path is "/" advance path to NULL terminator to
+	 * prevent double leading slashs in full_name.
+	 */
+	if (!path[1])
+		path++;
+
+>>>>>>> refs/remotes/origin/master
 	dn = kzalloc(sizeof(*dn), GFP_KERNEL);
 	if (!dn)
 		return NULL;
 
+<<<<<<< HEAD
 	/* The configure connector reported name does not contain a
 	 * preceding '/', so we allocate a buffer large enough to
 	 * prepend this to the full_name.
 	 */
 	name = (char *)ccwa + ccwa->name_offset;
 	dn->full_name = kasprintf(GFP_KERNEL, "/%s", name);
+=======
+	name = (char *)ccwa + ccwa->name_offset;
+	dn->full_name = kasprintf(GFP_KERNEL, "%s/%s", path, name);
+>>>>>>> refs/remotes/origin/master
 	if (!dn->full_name) {
 		kfree(dn);
 		return NULL;
 	}
 
+<<<<<<< HEAD
+=======
+	of_node_set_flag(dn, OF_DYNAMIC);
+	kref_init(&dn->kref);
+
+>>>>>>> refs/remotes/origin/master
 	return dn;
 }
 
@@ -121,7 +156,12 @@ void dlpar_free_cc_nodes(struct device_node *dn)
 #define CALL_AGAIN	-2
 #define ERR_CFG_USE     -9003
 
+<<<<<<< HEAD
 struct device_node *dlpar_configure_connector(u32 drc_index)
+=======
+struct device_node *dlpar_configure_connector(u32 drc_index,
+					      struct device_node *parent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dn;
 	struct device_node *first_dn = NULL;
@@ -130,6 +170,10 @@ struct device_node *dlpar_configure_connector(u32 drc_index)
 	struct property *last_property = NULL;
 	struct cc_workarea *ccwa;
 	char *data_buf;
+<<<<<<< HEAD
+=======
+	const char *parent_path = parent->full_name;
+>>>>>>> refs/remotes/origin/master
 	int cc_token;
 	int rc = -1;
 
@@ -163,7 +207,11 @@ struct device_node *dlpar_configure_connector(u32 drc_index)
 			break;
 
 		case NEXT_SIBLING:
+<<<<<<< HEAD
 			dn = dlpar_parse_cc_node(ccwa);
+=======
+			dn = dlpar_parse_cc_node(ccwa, parent_path);
+>>>>>>> refs/remotes/origin/master
 			if (!dn)
 				goto cc_error;
 
@@ -173,6 +221,7 @@ struct device_node *dlpar_configure_connector(u32 drc_index)
 			break;
 
 		case NEXT_CHILD:
+<<<<<<< HEAD
 			dn = dlpar_parse_cc_node(ccwa);
 			if (!dn)
 				goto cc_error;
@@ -180,6 +229,19 @@ struct device_node *dlpar_configure_connector(u32 drc_index)
 			if (!first_dn)
 				first_dn = dn;
 			else {
+=======
+			if (first_dn)
+				parent_path = last_dn->full_name;
+
+			dn = dlpar_parse_cc_node(ccwa, parent_path);
+			if (!dn)
+				goto cc_error;
+
+			if (!first_dn) {
+				dn->parent = parent;
+				first_dn = dn;
+			} else {
+>>>>>>> refs/remotes/origin/master
 				dn->parent = last_dn;
 				if (last_dn)
 					last_dn->child = dn;
@@ -203,6 +265,10 @@ struct device_node *dlpar_configure_connector(u32 drc_index)
 
 		case PREV_PARENT:
 			last_dn = last_dn->parent;
+<<<<<<< HEAD
+=======
+			parent_path = last_dn->parent->full_name;
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case CALL_AGAIN:
@@ -255,6 +321,7 @@ static struct device_node *derive_parent(const char *path)
 
 int dlpar_attach_node(struct device_node *dn)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PROC_DEVICETREE
 	struct proc_dir_entry *ent;
 #endif
@@ -262,16 +329,33 @@ int dlpar_attach_node(struct device_node *dn)
 
 	of_node_set_flag(dn, OF_DYNAMIC);
 	kref_init(&dn->kref);
+=======
+	int rc;
+
+>>>>>>> refs/remotes/origin/master
 	dn->parent = derive_parent(dn->full_name);
 	if (!dn->parent)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = blocking_notifier_call_chain(&pSeries_reconfig_chain,
 					  PSERIES_RECONFIG_ADD, dn);
 	if (rc == NOTIFY_BAD) {
 		printk(KERN_ERR "Failed to add device node %s\n",
 		       dn->full_name);
 		return -ENOMEM; /* For now, safe to assume kmalloc failure */
+=======
+	rc = pSeries_reconfig_notify(PSERIES_RECONFIG_ADD, dn);
+=======
+	rc = of_attach_node(dn);
+>>>>>>> refs/remotes/origin/master
+	if (rc) {
+		printk(KERN_ERR "Failed to add device node %s\n",
+		       dn->full_name);
+		return rc;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	of_attach_node(dn);
@@ -282,12 +366,17 @@ int dlpar_attach_node(struct device_node *dn)
 		proc_device_tree_add_node(dn, ent);
 #endif
 
+=======
+	}
+
+>>>>>>> refs/remotes/origin/master
 	of_node_put(dn->parent);
 	return 0;
 }
 
 int dlpar_detach_node(struct device_node *dn)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PROC_DEVICETREE
 	struct device_node *parent = dn->parent;
 	struct property *prop = dn->properties;
@@ -301,11 +390,31 @@ int dlpar_detach_node(struct device_node *dn)
 		remove_proc_entry(dn->pde->name, parent->pde);
 #endif
 
+<<<<<<< HEAD
 	blocking_notifier_call_chain(&pSeries_reconfig_chain,
 			    PSERIES_RECONFIG_REMOVE, dn);
+=======
+	pSeries_reconfig_notify(PSERIES_RECONFIG_REMOVE, dn);
+>>>>>>> refs/remotes/origin/cm-10.0
 	of_detach_node(dn);
 	of_node_put(dn); /* Must decrement the refcount */
 
+=======
+	struct device_node *child;
+	int rc;
+
+	child = of_get_next_child(dn, NULL);
+	while (child) {
+		dlpar_detach_node(child);
+		child = of_get_next_child(dn, child);
+	}
+
+	rc = of_detach_node(dn);
+	if (rc)
+		return rc;
+
+	of_node_put(dn); /* Must decrement the refcount */
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -406,6 +515,7 @@ out:
 
 static ssize_t dlpar_cpu_probe(const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	struct device_node *dn;
 	unsigned long drc_index;
 	char *cpu_name;
@@ -437,18 +547,42 @@ static ssize_t dlpar_cpu_probe(const char *buf, size_t count)
 
 	kfree(dn->full_name);
 	dn->full_name = cpu_name;
+=======
+	struct device_node *dn, *parent;
+	unsigned long drc_index;
+	int rc;
+
+	rc = strict_strtoul(buf, 0, &drc_index);
+	if (rc)
+		return -EINVAL;
+
+	parent = of_find_node_by_path("/cpus");
+	if (!parent)
+		return -ENODEV;
+
+	dn = dlpar_configure_connector(drc_index, parent);
+	if (!dn)
+		return -EINVAL;
+
+	of_node_put(parent);
+>>>>>>> refs/remotes/origin/master
 
 	rc = dlpar_acquire_drc(drc_index);
 	if (rc) {
 		dlpar_free_cc_nodes(dn);
+<<<<<<< HEAD
 		rc = -EINVAL;
 		goto out;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = dlpar_attach_node(dn);
 	if (rc) {
 		dlpar_release_drc(drc_index);
 		dlpar_free_cc_nodes(dn);
+<<<<<<< HEAD
 		goto out;
 	}
 
@@ -457,6 +591,16 @@ out:
 	cpu_hotplug_driver_unlock();
 
 	return rc ? rc : count;
+=======
+		return rc;
+	}
+
+	rc = dlpar_online_cpu(dn);
+	if (rc)
+		return rc;
+
+	return count;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int dlpar_offline_cpu(struct device_node *dn)
@@ -529,23 +673,35 @@ static ssize_t dlpar_cpu_release(const char *buf, size_t count)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	cpu_hotplug_driver_lock();
 	rc = dlpar_offline_cpu(dn);
 	if (rc) {
 		of_node_put(dn);
 		rc = -EINVAL;
 		goto out;
+=======
+	rc = dlpar_offline_cpu(dn);
+	if (rc) {
+		of_node_put(dn);
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = dlpar_release_drc(*drc_index);
 	if (rc) {
 		of_node_put(dn);
+<<<<<<< HEAD
 		goto out;
+=======
+		return rc;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = dlpar_detach_node(dn);
 	if (rc) {
 		dlpar_acquire_drc(*drc_index);
+<<<<<<< HEAD
 		goto out;
 	}
 
@@ -553,6 +709,14 @@ static ssize_t dlpar_cpu_release(const char *buf, size_t count)
 out:
 	cpu_hotplug_driver_unlock();
 	return rc ? rc : count;
+=======
+		return rc;
+	}
+
+	of_node_put(dn);
+
+	return count;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init pseries_dlpar_init(void)

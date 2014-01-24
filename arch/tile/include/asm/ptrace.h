@@ -11,6 +11,7 @@
  *   NON INFRINGEMENT.  See the GNU General Public License for
  *   more details.
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_TILE_PTRACE_H
 #define _ASM_TILE_PTRACE_H
@@ -92,6 +93,22 @@ struct pt_regs {
 #endif
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_TILE_PTRACE_H
+#define _ASM_TILE_PTRACE_H
+
+#include <linux/compiler.h>
+
+#ifndef __ASSEMBLY__
+/* Benefit from consistent use of "long" on all chips. */
+typedef unsigned long pt_reg_t;
+#endif
+
+#include <uapi/asm/ptrace.h>
+
+#define PTRACE_O_MASK_TILE	(PTRACE_O_TRACEMIGRATE)
+#define PT_TRACE_MIGRATE	PT_EVENT_FLAG(PTRACE_EVENT_MIGRATE)
+>>>>>>> refs/remotes/origin/master
 
 /* Flag bits in pt_regs.flags */
 #define PT_FLAGS_DISABLE_IRQ    1  /* on return to kernel, disable irqs */
@@ -100,20 +117,39 @@ struct pt_regs {
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 #define instruction_pointer(regs) ((regs)->pc)
 #define profile_pc(regs) instruction_pointer(regs)
 
 /* Does the process account for user or for system time? */
 #define user_mode(regs) (EX1_PL((regs)->ex1) == USER_PL)
+=======
+#define regs_return_value(regs) ((regs)->regs[0])
+#define instruction_pointer(regs) ((regs)->pc)
+#define profile_pc(regs) instruction_pointer(regs)
+#define user_stack_pointer(regs) ((regs)->sp)
+
+/* Does the process account for user or for system time? */
+#define user_mode(regs) (EX1_PL((regs)->ex1) < KERNEL_PL)
+>>>>>>> refs/remotes/origin/master
 
 /* Fill in a struct pt_regs with the current kernel registers. */
 struct pt_regs *get_pt_regs(struct pt_regs *);
 
 /* Trace the current syscall. */
+<<<<<<< HEAD
 extern void do_syscall_trace(void);
 
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int do_syscall_trace_enter(struct pt_regs *regs);
+extern void do_syscall_trace_exit(struct pt_regs *regs);
+
+>>>>>>> refs/remotes/origin/master
 #define arch_has_single_step()	(1)
 
 /*
@@ -146,8 +182,12 @@ extern void single_step_execve(void);
 
 struct task_struct;
 
+<<<<<<< HEAD
 extern void send_sigtrap(struct task_struct *tsk, struct pt_regs *regs,
 			 int error_code);
+=======
+extern void send_sigtrap(struct task_struct *tsk, struct pt_regs *regs);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __tilegx__
 /* We need this since sigval_t has a user pointer in it, for GETSIGINFO etc. */
@@ -161,6 +201,9 @@ extern void send_sigtrap(struct task_struct *tsk, struct pt_regs *regs,
 #define SINGLESTEP_STATE_TARGET_LB              2
 #define SINGLESTEP_STATE_TARGET_UB              7
 
+<<<<<<< HEAD
 #endif /* !__KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_TILE_PTRACE_H */

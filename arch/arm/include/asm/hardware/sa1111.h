@@ -132,6 +132,8 @@
 #define SKPCR_DCLKEN	(1<<7)
 #define SKPCR_PWMCLKEN	(1<<8)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * USB Host controller
  */
@@ -160,6 +162,17 @@
 #define USB_STATUS_USBPWRSENSE    (1 << 11)
 
 /*
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* USB Host controller */
+#define SA1111_USB		0x0400
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Serial Audio Controller
  *
  * Registers
@@ -327,6 +340,8 @@
  *    PC_SSR		GPIO Block C Sleep State
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define _PA_DDR		_SA1111( 0x1000 )
 #define _PA_DRR		_SA1111( 0x1004 )
 #define _PA_DWR		_SA1111( 0x1004 )
@@ -343,6 +358,10 @@
 #define _PC_SDR		_SA1111( 0x1028 )
 #define _PC_SSR		_SA1111( 0x102c )
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SA1111_GPIO	0x1000
 
 #define SA1111_GPIO_PADDR	(0x000)
@@ -425,6 +444,8 @@
 #define SA1111_WAKEPOL0		0x0034
 #define SA1111_WAKEPOL1		0x0038
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * PS/2 Trackpad and Mouse Interfaces
  *
@@ -510,12 +531,28 @@
 
 #define PCSSR_S0_SLEEP	(1<<0)
 #define PCSSR_S1_SLEEP	(1<<1)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* PS/2 Trackpad and Mouse Interfaces */
+#define SA1111_KBD		0x0a00
+#define SA1111_MSE		0x0c00
+
+/* PCMCIA Interface */
+#define SA1111_PCMCIA		0x1600
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 
 
 extern struct bus_type sa1111_bus_type;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SA1111_DEVID_SBI	0
 #define SA1111_DEVID_SK		1
 #define SA1111_DEVID_USB	2
@@ -525,6 +562,24 @@ extern struct bus_type sa1111_bus_type;
 #define SA1111_DEVID_GPIO	6
 #define SA1111_DEVID_INT	7
 #define SA1111_DEVID_PCMCIA	8
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define SA1111_DEVID_SBI	(1 << 0)
+#define SA1111_DEVID_SK		(1 << 1)
+#define SA1111_DEVID_USB	(1 << 2)
+#define SA1111_DEVID_SAC	(1 << 3)
+#define SA1111_DEVID_SSP	(1 << 4)
+#define SA1111_DEVID_PS2	(3 << 5)
+#define SA1111_DEVID_PS2_KBD	(1 << 5)
+#define SA1111_DEVID_PS2_MSE	(1 << 6)
+#define SA1111_DEVID_GPIO	(1 << 7)
+#define SA1111_DEVID_INT	(1 << 8)
+#define SA1111_DEVID_PCMCIA	(1 << 9)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct sa1111_dev {
 	struct device	dev;
@@ -548,6 +603,14 @@ struct sa1111_driver {
 	int (*remove)(struct sa1111_dev *);
 	int (*suspend)(struct sa1111_dev *, pm_message_t);
 	int (*resume)(struct sa1111_dev *);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	void (*shutdown)(struct sa1111_dev *);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void (*shutdown)(struct sa1111_dev *);
+>>>>>>> refs/remotes/origin/master
 };
 
 #define SA1111_DRV(_d)	container_of((_d), struct sa1111_driver, drv)
@@ -555,9 +618,22 @@ struct sa1111_driver {
 #define SA1111_DRIVER_NAME(_sadev) ((_sadev)->dev.driver->name)
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * These frob the SKPCR register.
  */
 void sa1111_enable_device(struct sa1111_dev *);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * These frob the SKPCR register, and call platform specific
+ * enable/disable functions.
+ */
+int sa1111_enable_device(struct sa1111_dev *);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void sa1111_disable_device(struct sa1111_dev *);
 
 unsigned int sa1111_pll_clock(struct sa1111_dev *);
@@ -580,6 +656,19 @@ void sa1111_set_sleep_io(struct sa1111_dev *sadev, unsigned int bits, unsigned i
 
 struct sa1111_platform_data {
 	int	irq_base;	/* base for cascaded on-chip IRQs */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned disable_devs;
+	void	*data;
+	int	(*enable)(void *, unsigned);
+	void	(*disable)(void *, unsigned);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif  /* _ASM_ARCH_SA1111 */

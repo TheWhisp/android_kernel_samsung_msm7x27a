@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -46,6 +54,16 @@ struct rmnet_ctrl_dev {
 
 	unsigned		is_opened;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool			is_connected;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool			is_connected;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*input control lines (DSR, CTS, CD, RI)*/
 	unsigned int		cbits_tolocal;
 
@@ -66,11 +84,27 @@ struct rmnet_ctrl_dev {
 	unsigned int		resp_avail_cnt;
 	unsigned int		set_ctrl_line_state_cnt;
 	unsigned int		tx_ctrl_err_cnt;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned int		zlp_cnt;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int		zlp_cnt;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 extern struct rmnet_ctrl_dev *ctrl_dev[];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int rmnet_usb_ctrl_start(struct rmnet_ctrl_dev *);
+=======
+extern int rmnet_usb_ctrl_start_rx(struct rmnet_ctrl_dev *);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int rmnet_usb_ctrl_start_rx(struct rmnet_ctrl_dev *);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int rmnet_usb_ctrl_stop_rx(struct rmnet_ctrl_dev *);
 extern int rmnet_usb_ctrl_init(void);
 extern void rmnet_usb_ctrl_exit(void);

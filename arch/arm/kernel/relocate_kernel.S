@@ -2,10 +2,19 @@
  * relocate_kernel.S - put the kernel image in place to boot
  */
 
+<<<<<<< HEAD
 #include <asm/kexec.h>
 
 	.globl relocate_new_kernel
 relocate_new_kernel:
+=======
+#include <linux/linkage.h>
+#include <asm/kexec.h>
+
+	.align	3	/* not needed for this code, but keeps fncpy() happy */
+
+ENTRY(relocate_new_kernel)
+>>>>>>> refs/remotes/origin/master
 
 	ldr	r0,kexec_indirection_page
 	ldr	r1,kexec_start_address
@@ -57,7 +66,17 @@ relocate_new_kernel:
 	mov r0,#0
 	ldr r1,kexec_mach_type
 	ldr r2,kexec_boot_atags
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mov pc,lr
+=======
+ ARM(	mov pc, lr	)
+ THUMB(	bx lr		)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ ARM(	mov pc, lr	)
+ THUMB(	bx lr		)
+>>>>>>> refs/remotes/origin/master
 
 	.align
 
@@ -78,6 +97,11 @@ kexec_mach_type:
 kexec_boot_atags:
 	.long	0x0
 
+<<<<<<< HEAD
+=======
+ENDPROC(relocate_new_kernel)
+
+>>>>>>> refs/remotes/origin/master
 relocate_new_kernel_end:
 
 	.globl relocate_new_kernel_size

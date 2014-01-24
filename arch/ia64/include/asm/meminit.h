@@ -18,7 +18,10 @@
  * 	- crash dumping code reserved region
  * 	- Kernel memory map built from EFI memory map
  * 	- ELF core header
+<<<<<<< HEAD
  *	- xen start info if CONFIG_XEN
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * More could be added if necessary
  */

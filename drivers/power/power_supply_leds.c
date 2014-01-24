@@ -11,6 +11,14 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/power_supply.h>
 #include <linux/slab.h>
 

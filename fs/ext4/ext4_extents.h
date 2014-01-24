@@ -43,16 +43,25 @@
 #define CHECK_BINSEARCH__
 
 /*
+<<<<<<< HEAD
  * Turn on EXT_DEBUG to get lots of info about extents operations.
  */
 #define EXT_DEBUG__
 #ifdef EXT_DEBUG
+<<<<<<< HEAD
 #define ext_debug(a...)		printk(a)
 #else
 #define ext_debug(a...)
+=======
+#define ext_debug(fmt, ...)	printk(fmt, ##__VA_ARGS__)
+#else
+#define ext_debug(fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * If EXT_STATS is defined then stats numbers are collected.
  * These number will be displayed at umount time.
  */
@@ -63,9 +72,28 @@
  * ext4_inode has i_block array (60 bytes total).
  * The first 12 bytes store ext4_extent_header;
  * the remainder stores an array of ext4_extent.
+<<<<<<< HEAD
  */
 
 /*
+=======
+ * For non-inode extent blocks, ext4_extent_tail
+ * follows the array.
+ */
+
+/*
+ * This is the extent tail on-disk structure.
+ * All other extent structures are 12 bytes long.  It turns out that
+ * block_size % 12 >= 4 for at least all powers of 2 greater than 512, which
+ * covers all valid ext4 block sizes.  Therefore, this tail structure can be
+ * crammed into the end of the block without having to rebalance the tree.
+ */
+struct ext4_extent_tail {
+	__le32	et_checksum;	/* crc32c(uuid+inum+extent_block) */
+};
+
+/*
+>>>>>>> refs/remotes/origin/master
  * This is the extent on-disk structure.
  * It's used at the bottom of the tree.
  */
@@ -101,6 +129,20 @@ struct ext4_extent_header {
 
 #define EXT4_EXT_MAGIC		cpu_to_le16(0xf30a)
 
+<<<<<<< HEAD
+=======
+#define EXT4_EXTENT_TAIL_OFFSET(hdr) \
+	(sizeof(struct ext4_extent_header) + \
+	 (sizeof(struct ext4_extent) * le16_to_cpu((hdr)->eh_max)))
+
+static inline struct ext4_extent_tail *
+find_ext4_extent_tail(struct ext4_extent_header *eh)
+{
+	return (struct ext4_extent_tail *)(((void *)eh) +
+					   EXT4_EXTENT_TAIL_OFFSET(eh));
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Array of ext4_ext_path contains path to some extent.
  * Creation/lookup routines use it for traversal/splitting/etc.
@@ -120,6 +162,7 @@ struct ext4_ext_path {
  */
 
 /*
+<<<<<<< HEAD
  * to be called by ext4_ext_walk_space()
  * negative retcode - error
  * positive retcode - signal for ext4_ext_walk_space(), see below
@@ -140,6 +183,8 @@ typedef int (*ext_prepare_callback)(struct inode *, ext4_lblk_t,
 #define EXT_MAX_BLOCKS	0xffffffff
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * EXT_INIT_MAX_LEN is the maximum number of blocks we can have in an
  * initialized extent. This is 2^15 and not (2^16 - 1), since we use the
  * MSB of ee_len field in the extent datastructure to signify if this
@@ -193,12 +238,15 @@ static inline unsigned short ext_depth(struct inode *inode)
 	return le16_to_cpu(ext_inode_hdr(inode)->eh_depth);
 }
 
+<<<<<<< HEAD
 static inline void
 ext4_ext_invalidate_cache(struct inode *inode)
 {
 	EXT4_I(inode)->i_cached_extent.ec_len = 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void ext4_ext_mark_uninitialized(struct ext4_extent *ext)
 {
 	/* We can not have an uninitialized extent of zero length! */
@@ -276,6 +324,7 @@ static inline void ext4_idx_store_pblock(struct ext4_extent_idx *ix,
 				     0xffff);
 }
 
+<<<<<<< HEAD
 extern int ext4_ext_calc_metadata_amount(struct inode *inode,
 					 ext4_lblk_t lblocks);
 extern int ext4_extent_tree_init(handle_t *, struct inode *);
@@ -290,5 +339,17 @@ extern struct ext4_ext_path *ext4_ext_find_extent(struct inode *, ext4_lblk_t,
 							struct ext4_ext_path *);
 extern void ext4_ext_drop_refs(struct ext4_ext_path *);
 extern int ext4_ext_check_inode(struct inode *inode);
+<<<<<<< HEAD
+=======
+extern int ext4_find_delalloc_cluster(struct inode *inode, ext4_lblk_t lblk,
+				      int search_hint_reverse);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ext4_ext_dirty(handle, inode, path) \
+		__ext4_ext_dirty(__func__, __LINE__, (handle), (inode), (path))
+int __ext4_ext_dirty(const char *where, unsigned int line, handle_t *handle,
+		     struct inode *inode, struct ext4_ext_path *path);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _EXT4_EXTENTS */
 

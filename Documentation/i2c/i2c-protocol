@@ -49,7 +49,13 @@ a byte read, followed by a byte write:
 Modified transactions
 =====================
 
+<<<<<<< HEAD
 We have found some I2C devices that needs the following modifications:
+=======
+The following modifications to the I2C protocol can also be generated,
+with the exception of I2C_M_NOSTART these are usually only needed to
+work around device issues:
+>>>>>>> refs/remotes/origin/master
 
   Flag I2C_M_NOSTART: 
     In a combined transaction, no 'S Addr Wr/Rd [A]' is generated at some
@@ -60,6 +66,14 @@ We have found some I2C devices that needs the following modifications:
     we do not generate Addr, but we do generate the startbit S. This will
     probably confuse all other clients on your bus, so don't try this.
 
+<<<<<<< HEAD
+=======
+    This is often used to gather transmits from multiple data buffers in
+    system memory into something that appears as a single transfer to the
+    I2C device but may also be used between direction changes by some
+    rare devices.
+
+>>>>>>> refs/remotes/origin/master
   Flags I2C_M_REV_DIR_ADDR
     This toggles the Rd/Wr flag. That is, if you want to do a write, but
     need to emit an Rd instead of a Wr, or vice versa, you set this

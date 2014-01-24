@@ -25,6 +25,14 @@
 #include <linux/slab.h>
 #include <linux/ioport.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/if.h>
 #include <linux/hdlc.h>
 #include <asm/io.h>
@@ -596,7 +604,11 @@ fst_q_work_item(u64 * queue, int card_index)
 	 * bottom half for the card.  Note the limitation of 64 cards.
 	 * That ought to be enough
 	 */
+<<<<<<< HEAD
 	mask = 1 << card_index;
+=======
+	mask = (u64)1 << card_index;
+>>>>>>> refs/remotes/origin/master
 	*queue |= mask;
 	spin_unlock_irqrestore(&fst_work_q_lock, flags);
 }
@@ -1664,10 +1676,22 @@ check_started_ok(struct fst_card_info *card)
 	 * existing firmware etc so we just report it for the moment.
 	 */
 	if (FST_RDL(card, numberOfPorts) != card->nports) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_warning("Port count mismatch on card %d. "
 			   "Firmware thinks %d we say %d\n",
 			   card->card_no,
 			   FST_RDL(card, numberOfPorts), card->nports);
+=======
+		pr_warn("Port count mismatch on card %d.  Firmware thinks %d we say %d\n",
+			card->card_no,
+			FST_RDL(card, numberOfPorts), card->nports);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("Port count mismatch on card %d.  Firmware thinks %d we say %d\n",
+			card->card_no,
+			FST_RDL(card, numberOfPorts), card->nports);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1972,6 +1996,18 @@ fst_get_iface(struct fst_card_info *card, struct fst_port_info *port,
 	}
 
 	i = port->index;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	memset(&sync, 0, sizeof(sync));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(&sync, 0, sizeof(sync));
+>>>>>>> refs/remotes/origin/master
+=======
+	memset(&sync, 0, sizeof(sync));
+>>>>>>> refs/remotes/origin/cm-11.0
 	sync.clock_rate = FST_RDL(card, portConfig[i].lineSpeed);
 	/* Lucky card and linux use same encoding here */
 	sync.clock_type = FST_RDB(card, portConfig[i].internalClock) ==
@@ -2361,7 +2397,11 @@ fst_start_xmit(struct sk_buff *skb, struct net_device *dev)
  *      via a printk and leave the corresponding interface and all that follow
  *      disabled.
  */
+<<<<<<< HEAD
 static char *type_strings[] __devinitdata = {
+=======
+static char *type_strings[] = {
+>>>>>>> refs/remotes/origin/master
 	"no hardware",		/* Should never be seen */
 	"FarSync T2P",
 	"FarSync T4P",
@@ -2371,7 +2411,11 @@ static char *type_strings[] __devinitdata = {
 	"FarSync TE1"
 };
 
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 fst_init_card(struct fst_card_info *card)
 {
 	int i;
@@ -2415,7 +2459,11 @@ static const struct net_device_ops fst_ops = {
  *      Initialise card when detected.
  *      Returns 0 to indicate success, or errno otherwise.
  */
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 fst_add_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	static int no_of_cards_added = 0;
@@ -2448,11 +2496,17 @@ fst_add_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 
 	/* Allocate driver private data */
+<<<<<<< HEAD
 	card = kzalloc(sizeof (struct fst_card_info), GFP_KERNEL);
 	if (card == NULL) {
 		pr_err("FarSync card found but insufficient memory for driver storage\n");
 		return -ENOMEM;
 	}
+=======
+	card = kzalloc(sizeof(struct fst_card_info), GFP_KERNEL);
+	if (card == NULL)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* Try to enable the device */
 	if ((err = pci_enable_device(pdev)) != 0) {
@@ -2483,6 +2537,14 @@ fst_add_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		pr_err("Control memory remap failed\n");
 		pci_release_regions(pdev);
 		pci_disable_device(pdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		iounmap(card->mem);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iounmap(card->mem);
+>>>>>>> refs/remotes/origin/master
 		kfree(card);
 		return -ENODEV;
 	}
@@ -2614,7 +2676,11 @@ fst_add_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 /*
  *      Cleanup and close down a card
  */
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 fst_remove_one(struct pci_dev *pdev)
 {
 	struct fst_card_info *card;
@@ -2651,7 +2717,11 @@ static struct pci_driver fst_driver = {
         .name		= FST_NAME,
         .id_table	= fst_pci_dev_id,
         .probe		= fst_add_one,
+<<<<<<< HEAD
         .remove	= __devexit_p(fst_remove_one),
+=======
+        .remove	= fst_remove_one,
+>>>>>>> refs/remotes/origin/master
         .suspend	= NULL,
         .resume	= NULL,
 };

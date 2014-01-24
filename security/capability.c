@@ -12,6 +12,26 @@
 
 #include <linux/security.h>
 
+static int cap_binder_set_context_mgr(struct task_struct *mgr)
+{
+	return 0;
+}
+
+static int cap_binder_transaction(struct task_struct *from, struct task_struct *to)
+{
+	return 0;
+}
+
+static int cap_binder_transfer_binder(struct task_struct *from, struct task_struct *to)
+{
+	return 0;
+}
+
+static int cap_binder_transfer_file(struct task_struct *from, struct task_struct *to, struct file *file)
+{
+	return 0;
+}
+
 static int cap_syslog(int type)
 {
 	return 0;
@@ -74,8 +94,13 @@ static int cap_sb_statfs(struct dentry *dentry)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cap_sb_mount(char *dev_name, struct path *path, char *type,
 			unsigned long flags, void *data)
+=======
+static int cap_sb_mount(const char *dev_name, struct path *path,
+			const char *type, unsigned long flags, void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -91,16 +116,30 @@ static int cap_sb_pivotroot(struct path *old_path, struct path *new_path)
 }
 
 static int cap_sb_set_mnt_opts(struct super_block *sb,
+<<<<<<< HEAD
 			       struct security_mnt_opts *opts)
+=======
+			       struct security_mnt_opts *opts,
+			       unsigned long kern_flags,
+			       unsigned long *set_kern_flags)
+
+>>>>>>> refs/remotes/origin/master
 {
 	if (unlikely(opts->num_mnt_opts))
 		return -EOPNOTSUPP;
 	return 0;
 }
 
+<<<<<<< HEAD
 static void cap_sb_clone_mnt_opts(const struct super_block *oldsb,
 				  struct super_block *newsb)
 {
+=======
+static int cap_sb_clone_mnt_opts(const struct super_block *oldsb,
+				  struct super_block *newsb)
+{
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int cap_sb_parse_opts_str(char *options, struct security_mnt_opts *opts)
@@ -108,6 +147,16 @@ static int cap_sb_parse_opts_str(char *options, struct security_mnt_opts *opts)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int cap_dentry_init_security(struct dentry *dentry, int mode,
+					struct qstr *name, void **ctx,
+					u32 *ctxlen)
+{
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int cap_inode_alloc_security(struct inode *inode)
 {
 	return 0;
@@ -118,14 +167,26 @@ static void cap_inode_free_security(struct inode *inode)
 }
 
 static int cap_inode_init_security(struct inode *inode, struct inode *dir,
+<<<<<<< HEAD
 				   const struct qstr *qstr, char **name,
+=======
+				   const struct qstr *qstr, const char **name,
+>>>>>>> refs/remotes/origin/master
 				   void **value, size_t *len)
 {
 	return -EOPNOTSUPP;
 }
 
 static int cap_inode_create(struct inode *inode, struct dentry *dentry,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    int mask)
+=======
+			    umode_t mask)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    umode_t mask)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -148,7 +209,15 @@ static int cap_inode_symlink(struct inode *inode, struct dentry *dentry,
 }
 
 static int cap_inode_mkdir(struct inode *inode, struct dentry *dentry,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   int mask)
+=======
+			   umode_t mask)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   umode_t mask)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -159,7 +228,15 @@ static int cap_inode_rmdir(struct inode *inode, struct dentry *dentry)
 }
 
 static int cap_inode_mknod(struct inode *inode, struct dentry *dentry,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   int mode, dev_t dev)
+=======
+			   umode_t mode, dev_t dev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   umode_t mode, dev_t dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -181,7 +258,15 @@ static int cap_inode_follow_link(struct dentry *dentry,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int cap_inode_permission(struct inode *inode, int mask, unsigned flags)
+=======
+static int cap_inode_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cap_inode_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -235,13 +320,29 @@ static void cap_inode_getsecid(const struct inode *inode, u32 *secid)
 }
 
 #ifdef CONFIG_SECURITY_PATH
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int cap_path_mknod(struct path *dir, struct dentry *dentry, int mode,
+=======
+static int cap_path_mknod(struct path *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cap_path_mknod(struct path *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 			  unsigned int dev)
 {
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int cap_path_mkdir(struct path *dir, struct dentry *dentry, int mode)
+=======
+static int cap_path_mkdir(struct path *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cap_path_mkdir(struct path *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -279,13 +380,25 @@ static int cap_path_truncate(struct path *path)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int cap_path_chmod(struct dentry *dentry, struct vfsmount *mnt,
 			  mode_t mode)
+=======
+static int cap_path_chmod(struct path *path, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cap_path_chmod(struct path *path, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cap_path_chown(struct path *path, uid_t uid, gid_t gid)
+=======
+static int cap_path_chown(struct path *path, kuid_t uid, kgid_t gid)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -349,7 +462,11 @@ static int cap_file_receive(struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cap_dentry_open(struct file *file, const struct cred *cred)
+=======
+static int cap_file_open(struct file *file, const struct cred *cred)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -359,6 +476,19 @@ static int cap_task_create(unsigned long clone_flags)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void cap_task_free(struct task_struct *task)
+{
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int cap_cred_alloc_blank(struct cred *cred, gfp_t gfp)
 {
 	return 0;
@@ -392,6 +522,14 @@ static int cap_kernel_module_request(char *kmod_name)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int cap_kernel_module_from_file(struct file *file)
+{
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int cap_task_setpgid(struct task_struct *p, pid_t pgid)
 {
 	return 0;
@@ -701,11 +839,24 @@ static void cap_req_classify_flow(const struct request_sock *req,
 {
 }
 
+<<<<<<< HEAD
+=======
+static int cap_tun_dev_alloc_security(void **security)
+{
+	return 0;
+}
+
+static void cap_tun_dev_free_security(void *security)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 static int cap_tun_dev_create(void)
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static void cap_tun_dev_post_create(struct sock *sk)
 {
 }
@@ -714,6 +865,27 @@ static int cap_tun_dev_attach(struct sock *sk)
 {
 	return 0;
 }
+=======
+static int cap_tun_dev_attach_queue(void *security)
+{
+	return 0;
+}
+
+static int cap_tun_dev_attach(struct sock *sk, void *security)
+{
+	return 0;
+}
+
+static int cap_tun_dev_open(void *security)
+{
+	return 0;
+}
+
+static void cap_skb_owned_by(struct sk_buff *skb, struct sock *sk)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* CONFIG_SECURITY_NETWORK */
 
 #ifdef CONFIG_SECURITY_NETWORK_XFRM
@@ -738,9 +910,21 @@ static int cap_xfrm_policy_delete_security(struct xfrm_sec_ctx *ctx)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cap_xfrm_state_alloc_security(struct xfrm_state *x,
 					 struct xfrm_user_sec_ctx *sec_ctx,
 					 u32 secid)
+=======
+static int cap_xfrm_state_alloc(struct xfrm_state *x,
+				struct xfrm_user_sec_ctx *sec_ctx)
+{
+	return 0;
+}
+
+static int cap_xfrm_state_alloc_acquire(struct xfrm_state *x,
+					struct xfrm_sec_ctx *polsec,
+					u32 secid)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -787,6 +971,14 @@ static int cap_setprocattr(struct task_struct *p, char *name, void *value,
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
+=======
+static int cap_ismaclabel(const char *name)
+{
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int cap_secid_to_secctx(u32 secid, char **secdata, u32 *seclen)
 {
 	return -EOPNOTSUPP;
@@ -814,7 +1006,11 @@ static int cap_inode_setsecctx(struct dentry *dentry, void *ctx, u32 ctxlen)
 
 static int cap_inode_getsecctx(struct inode *inode, void **ctx, u32 *ctxlen)
 {
+<<<<<<< HEAD
 	return 0;
+=======
+	return -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 }
 #ifdef CONFIG_KEYS
 static int cap_key_alloc(struct key *key, const struct cred *cred,
@@ -874,6 +1070,10 @@ static void cap_audit_rule_free(void *lsmrule)
 
 void __init security_fixup_ops(struct security_operations *ops)
 {
+	set_to_cap_if_null(ops, binder_set_context_mgr);
+	set_to_cap_if_null(ops, binder_transaction);
+	set_to_cap_if_null(ops, binder_transfer_binder);
+	set_to_cap_if_null(ops, binder_transfer_file);
 	set_to_cap_if_null(ops, ptrace_access_check);
 	set_to_cap_if_null(ops, ptrace_traceme);
 	set_to_cap_if_null(ops, capget);
@@ -902,6 +1102,10 @@ void __init security_fixup_ops(struct security_operations *ops)
 	set_to_cap_if_null(ops, sb_set_mnt_opts);
 	set_to_cap_if_null(ops, sb_clone_mnt_opts);
 	set_to_cap_if_null(ops, sb_parse_opts_str);
+<<<<<<< HEAD
+=======
+	set_to_cap_if_null(ops, dentry_init_security);
+>>>>>>> refs/remotes/origin/master
 	set_to_cap_if_null(ops, inode_alloc_security);
 	set_to_cap_if_null(ops, inode_free_security);
 	set_to_cap_if_null(ops, inode_init_security);
@@ -946,15 +1150,30 @@ void __init security_fixup_ops(struct security_operations *ops)
 	set_to_cap_if_null(ops, file_alloc_security);
 	set_to_cap_if_null(ops, file_free_security);
 	set_to_cap_if_null(ops, file_ioctl);
+<<<<<<< HEAD
 	set_to_cap_if_null(ops, file_mmap);
+=======
+	set_to_cap_if_null(ops, mmap_addr);
+	set_to_cap_if_null(ops, mmap_file);
+>>>>>>> refs/remotes/origin/master
 	set_to_cap_if_null(ops, file_mprotect);
 	set_to_cap_if_null(ops, file_lock);
 	set_to_cap_if_null(ops, file_fcntl);
 	set_to_cap_if_null(ops, file_set_fowner);
 	set_to_cap_if_null(ops, file_send_sigiotask);
 	set_to_cap_if_null(ops, file_receive);
+<<<<<<< HEAD
 	set_to_cap_if_null(ops, dentry_open);
 	set_to_cap_if_null(ops, task_create);
+<<<<<<< HEAD
+=======
+	set_to_cap_if_null(ops, task_free);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_to_cap_if_null(ops, file_open);
+	set_to_cap_if_null(ops, task_create);
+	set_to_cap_if_null(ops, task_free);
+>>>>>>> refs/remotes/origin/master
 	set_to_cap_if_null(ops, cred_alloc_blank);
 	set_to_cap_if_null(ops, cred_free);
 	set_to_cap_if_null(ops, cred_prepare);
@@ -962,6 +1181,10 @@ void __init security_fixup_ops(struct security_operations *ops)
 	set_to_cap_if_null(ops, kernel_act_as);
 	set_to_cap_if_null(ops, kernel_create_files_as);
 	set_to_cap_if_null(ops, kernel_module_request);
+<<<<<<< HEAD
+=======
+	set_to_cap_if_null(ops, kernel_module_from_file);
+>>>>>>> refs/remotes/origin/master
 	set_to_cap_if_null(ops, task_fix_setuid);
 	set_to_cap_if_null(ops, task_setpgid);
 	set_to_cap_if_null(ops, task_getpgid);
@@ -999,10 +1222,20 @@ void __init security_fixup_ops(struct security_operations *ops)
 	set_to_cap_if_null(ops, sem_semctl);
 	set_to_cap_if_null(ops, sem_semop);
 	set_to_cap_if_null(ops, netlink_send);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set_to_cap_if_null(ops, netlink_recv);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	set_to_cap_if_null(ops, d_instantiate);
 	set_to_cap_if_null(ops, getprocattr);
 	set_to_cap_if_null(ops, setprocattr);
+=======
+	set_to_cap_if_null(ops, d_instantiate);
+	set_to_cap_if_null(ops, getprocattr);
+	set_to_cap_if_null(ops, setprocattr);
+	set_to_cap_if_null(ops, ismaclabel);
+>>>>>>> refs/remotes/origin/master
 	set_to_cap_if_null(ops, secid_to_secctx);
 	set_to_cap_if_null(ops, secctx_to_secid);
 	set_to_cap_if_null(ops, release_secctx);
@@ -1040,16 +1273,31 @@ void __init security_fixup_ops(struct security_operations *ops)
 	set_to_cap_if_null(ops, secmark_refcount_inc);
 	set_to_cap_if_null(ops, secmark_refcount_dec);
 	set_to_cap_if_null(ops, req_classify_flow);
+<<<<<<< HEAD
 	set_to_cap_if_null(ops, tun_dev_create);
 	set_to_cap_if_null(ops, tun_dev_post_create);
 	set_to_cap_if_null(ops, tun_dev_attach);
+=======
+	set_to_cap_if_null(ops, tun_dev_alloc_security);
+	set_to_cap_if_null(ops, tun_dev_free_security);
+	set_to_cap_if_null(ops, tun_dev_create);
+	set_to_cap_if_null(ops, tun_dev_open);
+	set_to_cap_if_null(ops, tun_dev_attach_queue);
+	set_to_cap_if_null(ops, tun_dev_attach);
+	set_to_cap_if_null(ops, skb_owned_by);
+>>>>>>> refs/remotes/origin/master
 #endif	/* CONFIG_SECURITY_NETWORK */
 #ifdef CONFIG_SECURITY_NETWORK_XFRM
 	set_to_cap_if_null(ops, xfrm_policy_alloc_security);
 	set_to_cap_if_null(ops, xfrm_policy_clone_security);
 	set_to_cap_if_null(ops, xfrm_policy_free_security);
 	set_to_cap_if_null(ops, xfrm_policy_delete_security);
+<<<<<<< HEAD
 	set_to_cap_if_null(ops, xfrm_state_alloc_security);
+=======
+	set_to_cap_if_null(ops, xfrm_state_alloc);
+	set_to_cap_if_null(ops, xfrm_state_alloc_acquire);
+>>>>>>> refs/remotes/origin/master
 	set_to_cap_if_null(ops, xfrm_state_free_security);
 	set_to_cap_if_null(ops, xfrm_state_delete_security);
 	set_to_cap_if_null(ops, xfrm_policy_lookup);

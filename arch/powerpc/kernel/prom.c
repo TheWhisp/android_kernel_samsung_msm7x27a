@@ -27,11 +27,23 @@
 #include <linux/delay.h>
 #include <linux/initrd.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kexec.h>
 #include <linux/debugfs.h>
 #include <linux/irq.h>
 #include <linux/memblock.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/prom.h>
 #include <asm/rtas.h>
@@ -41,7 +53,13 @@
 #include <asm/io.h>
 #include <asm/kdump.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu.h>
 #include <asm/paca.h>
 #include <asm/pgtable.h>
@@ -50,10 +68,26 @@
 #include <asm/btext.h>
 #include <asm/sections.h>
 #include <asm/machdep.h>
+<<<<<<< HEAD
 #include <asm/pSeries_reconfig.h>
 #include <asm/pci-bridge.h>
+<<<<<<< HEAD
 #include <asm/phyp_dump.h>
 #include <asm/kexec.h>
+=======
+#include <asm/kexec.h>
+#include <asm/opal.h>
+#include <asm/fadump.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/pci-bridge.h>
+#include <asm/kexec.h>
+#include <asm/opal.h>
+#include <asm/fadump.h>
+#include <asm/debug.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <mm/mmu_decl.h>
 
 #ifdef DEBUG
@@ -69,6 +103,14 @@ unsigned long tce_alloc_start, tce_alloc_end;
 u64 ppc64_rma_size;
 #endif
 static phys_addr_t first_memblock_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int __initdata boot_cpu_count;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __initdata boot_cpu_count;
+>>>>>>> refs/remotes/origin/master
 
 static int __init early_parse_mem(char *p)
 {
@@ -76,7 +118,11 @@ static int __init early_parse_mem(char *p)
 		return 1;
 
 	memory_limit = PAGE_ALIGN(memparse(p, &p));
+<<<<<<< HEAD
 	DBG("memory limit = 0x%llx\n", (unsigned long long)memory_limit);
+=======
+	DBG("memory limit = 0x%llx\n", memory_limit);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -212,16 +258,28 @@ static void __init check_cpu_pa_features(unsigned long node)
 #ifdef CONFIG_PPC_STD_MMU_64
 static void __init check_cpu_slb_size(unsigned long node)
 {
+<<<<<<< HEAD
 	u32 *slb_size_ptr;
 
 	slb_size_ptr = of_get_flat_dt_prop(node, "slb-size", NULL);
 	if (slb_size_ptr != NULL) {
 		mmu_slb_size = *slb_size_ptr;
+=======
+	__be32 *slb_size_ptr;
+
+	slb_size_ptr = of_get_flat_dt_prop(node, "slb-size", NULL);
+	if (slb_size_ptr != NULL) {
+		mmu_slb_size = be32_to_cpup(slb_size_ptr);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	slb_size_ptr = of_get_flat_dt_prop(node, "ibm,slb-size", NULL);
 	if (slb_size_ptr != NULL) {
+<<<<<<< HEAD
 		mmu_slb_size = *slb_size_ptr;
+=======
+		mmu_slb_size = be32_to_cpup(slb_size_ptr);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 #else
@@ -276,11 +334,19 @@ static void __init check_cpu_feature_properties(unsigned long node)
 {
 	unsigned long i;
 	struct feature_property *fp = feature_properties;
+<<<<<<< HEAD
 	const u32 *prop;
 
 	for (i = 0; i < ARRAY_SIZE(feature_properties); ++i, ++fp) {
 		prop = of_get_flat_dt_prop(node, fp->name, NULL);
 		if (prop && *prop >= fp->min_value) {
+=======
+	const __be32 *prop;
+
+	for (i = 0; i < ARRAY_SIZE(feature_properties); ++i, ++fp) {
+		prop = of_get_flat_dt_prop(node, fp->name, NULL);
+		if (prop && be32_to_cpup(prop) >= fp->min_value) {
+>>>>>>> refs/remotes/origin/master
 			cur_cpu_spec->cpu_features |= fp->cpu_feature;
 			cur_cpu_spec->cpu_user_features |= fp->cpu_user_ftr;
 		}
@@ -292,8 +358,13 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
 					  void *data)
 {
 	char *type = of_get_flat_dt_prop(node, "device_type", NULL);
+<<<<<<< HEAD
 	const u32 *prop;
 	const u32 *intserv;
+=======
+	const __be32 *prop;
+	const __be32 *intserv;
+>>>>>>> refs/remotes/origin/master
 	int i, nthreads;
 	unsigned long len;
 	int found = -1;
@@ -321,8 +392,14 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
 		 * version 2 of the kexec param format adds the phys cpuid of
 		 * booted proc.
 		 */
+<<<<<<< HEAD
 		if (initial_boot_params->version >= 2) {
 			if (intserv[i] == initial_boot_params->boot_cpuid_phys) {
+=======
+		if (be32_to_cpu(initial_boot_params->version) >= 2) {
+			if (be32_to_cpu(intserv[i]) ==
+			    be32_to_cpu(initial_boot_params->boot_cpuid_phys)) {
+>>>>>>> refs/remotes/origin/master
 				found = boot_cpu_count;
 				found_thread = i;
 			}
@@ -344,9 +421,16 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
 
 	if (found >= 0) {
 		DBG("boot cpu: logical %d physical %d\n", found,
+<<<<<<< HEAD
 			intserv[found_thread]);
 		boot_cpuid = found;
 		set_hard_smp_processor_id(found, intserv[found_thread]);
+=======
+			be32_to_cpu(intserv[found_thread]));
+		boot_cpuid = found;
+		set_hard_smp_processor_id(found,
+			be32_to_cpu(intserv[found_thread]));
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * PAPR defines "logical" PVR values for cpus that
@@ -363,8 +447,13 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
 		 * it uses 0x0f000001.
 		 */
 		prop = of_get_flat_dt_prop(node, "cpu-version", NULL);
+<<<<<<< HEAD
 		if (prop && (*prop & 0xff000000) == 0x0f000000)
 			identify_cpu(0, *prop);
+=======
+		if (prop && (be32_to_cpup(prop) & 0xff000000) == 0x0f000000)
+			identify_cpu(0, be32_to_cpup(prop));
+>>>>>>> refs/remotes/origin/master
 
 		identical_pvr_fixup(node);
 	}
@@ -386,7 +475,11 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
 int __init early_init_dt_scan_chosen_ppc(unsigned long node, const char *uname,
 					 int depth, void *data)
 {
+<<<<<<< HEAD
 	unsigned long *lprop;
+=======
+	unsigned long *lprop; /* All these set by kernel, so no need to convert endian */
+>>>>>>> refs/remotes/origin/master
 
 	/* Use common scan routine to determine if this is the chosen node */
 	if (early_init_dt_scan_chosen(node, uname, depth, data) == 0)
@@ -451,7 +544,11 @@ static int __init early_init_dt_scan_drconf_memory(unsigned long node)
 	if (dm == NULL || l < sizeof(__be32))
 		return 0;
 
+<<<<<<< HEAD
 	n = *dm++;	/* number of entries */
+=======
+	n = of_read_number(dm++, 1);	/* number of entries */
+>>>>>>> refs/remotes/origin/master
 	if (l < (n * (dt_root_addr_cells + 4) + 1) * sizeof(__be32))
 		return 0;
 
@@ -463,7 +560,11 @@ static int __init early_init_dt_scan_drconf_memory(unsigned long node)
 
 	for (; n != 0; --n) {
 		base = dt_mem_next_cell(dt_root_addr_cells, &dm);
+<<<<<<< HEAD
 		flags = dm[3];
+=======
+		flags = of_read_number(&dm[3], 1);
+>>>>>>> refs/remotes/origin/master
 		/* skip DRC index, pad, assoc. list index, flags */
 		dm += 4;
 		/* skip this block if the reserved bit is set in flags (0x80)
@@ -541,6 +642,7 @@ void __init early_init_dt_add_memory_arch(u64 base, u64 size)
 	memblock_add(base, size);
 }
 
+<<<<<<< HEAD
 void * __init early_init_dt_alloc_memory_arch(u64 size, u64 align)
 {
 	return __va(memblock_alloc(size, align));
@@ -555,10 +657,41 @@ void __init early_init_dt_setup_initrd_arch(unsigned long start,
 	initrd_below_start_ok = 1;
 }
 #endif
+=======
+static void __init early_reserve_mem_dt(void)
+{
+	unsigned long i, len, dt_root;
+	const __be32 *prop;
+
+	dt_root = of_get_flat_dt_root();
+
+	prop = of_get_flat_dt_prop(dt_root, "reserved-ranges", &len);
+
+	if (!prop)
+		return;
+
+	DBG("Found new-style reserved-ranges\n");
+
+	/* Each reserved range is an (address,size) pair, 2 cells each,
+	 * totalling 4 cells per range. */
+	for (i = 0; i < len / (sizeof(*prop) * 4); i++) {
+		u64 base, size;
+
+		base = of_read_number(prop + (i * 4) + 0, 2);
+		size = of_read_number(prop + (i * 4) + 2, 2);
+
+		if (size) {
+			DBG("reserving: %llx -> %llx\n", base, size);
+			memblock_reserve(base, size);
+		}
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 static void __init early_reserve_mem(void)
 {
 	u64 base, size;
+<<<<<<< HEAD
 	u64 *reserve_map;
 	unsigned long self_base;
 	unsigned long self_size;
@@ -577,6 +710,30 @@ static void __init early_reserve_mem(void)
 		memblock_reserve(_ALIGN_DOWN(__pa(initrd_start), PAGE_SIZE),
 			_ALIGN_UP(initrd_end, PAGE_SIZE) -
 			_ALIGN_DOWN(initrd_start, PAGE_SIZE));
+=======
+	__be64 *reserve_map;
+	unsigned long self_base;
+	unsigned long self_size;
+
+	reserve_map = (__be64 *)(((unsigned long)initial_boot_params) +
+			be32_to_cpu(initial_boot_params->off_mem_rsvmap));
+
+	/* before we do anything, lets reserve the dt blob */
+	self_base = __pa((unsigned long)initial_boot_params);
+	self_size = be32_to_cpu(initial_boot_params->totalsize);
+	memblock_reserve(self_base, self_size);
+
+	/* Look for the new "reserved-regions" property in the DT */
+	early_reserve_mem_dt();
+
+#ifdef CONFIG_BLK_DEV_INITRD
+	/* Then reserve the initrd, if any */
+	if (initrd_start && (initrd_end > initrd_start)) {
+		memblock_reserve(_ALIGN_DOWN(__pa(initrd_start), PAGE_SIZE),
+			_ALIGN_UP(initrd_end, PAGE_SIZE) -
+			_ALIGN_DOWN(initrd_start, PAGE_SIZE));
+	}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_BLK_DEV_INITRD */
 
 #ifdef CONFIG_PPC32
@@ -584,6 +741,7 @@ static void __init early_reserve_mem(void)
 	 * Handle the case where we might be booting from an old kexec
 	 * image that setup the mem_rsvmap as pairs of 32-bit values
 	 */
+<<<<<<< HEAD
 	if (*reserve_map > 0xffffffffull) {
 		u32 base_32, size_32;
 		u32 *reserve_map_32 = (u32 *)reserve_map;
@@ -591,6 +749,17 @@ static void __init early_reserve_mem(void)
 		while (1) {
 			base_32 = *(reserve_map_32++);
 			size_32 = *(reserve_map_32++);
+=======
+	if (be64_to_cpup(reserve_map) > 0xffffffffull) {
+		u32 base_32, size_32;
+		__be32 *reserve_map_32 = (__be32 *)reserve_map;
+
+		DBG("Found old 32-bit reserve map\n");
+
+		while (1) {
+			base_32 = be32_to_cpup(reserve_map_32++);
+			size_32 = be32_to_cpup(reserve_map_32++);
+>>>>>>> refs/remotes/origin/master
 			if (size_32 == 0)
 				break;
 			/* skip if the reservation is for the blob */
@@ -602,9 +771,18 @@ static void __init early_reserve_mem(void)
 		return;
 	}
 #endif
+<<<<<<< HEAD
 	while (1) {
 		base = *(reserve_map++);
 		size = *(reserve_map++);
+=======
+	DBG("Processing reserve map\n");
+
+	/* Handle the reserve map in the fdt blob if it exists */
+	while (1) {
+		base = be64_to_cpup(reserve_map++);
+		size = be64_to_cpup(reserve_map++);
+>>>>>>> refs/remotes/origin/master
 		if (size == 0)
 			break;
 		DBG("reserving: %llx -> %llx\n", base, size);
@@ -612,6 +790,8 @@ static void __init early_reserve_mem(void)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PHYP_DUMP
 /**
  * phyp_dump_calculate_reserve_size() - reserve variable boot area 5% or arg
@@ -692,6 +872,10 @@ static void __init phyp_dump_reserve_mem(void)
 static inline void __init phyp_dump_reserve_mem(void) {}
 #endif /* CONFIG_PHYP_DUMP  && CONFIG_PPC_RTAS */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void __init early_init_devtree(void *params)
 {
 	phys_addr_t limit;
@@ -706,11 +890,37 @@ void __init early_init_devtree(void *params)
 	of_scan_flat_dt(early_init_dt_scan_rtas, NULL);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PHYP_DUMP
 	/* scan tree to see if dump occurred during last boot */
 	of_scan_flat_dt(early_init_dt_scan_phyp_dump, NULL);
 #endif
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_PPC_POWERNV
+	/* Some machines might need OPAL info for debugging, grab it now. */
+	of_scan_flat_dt(early_init_dt_scan_opal, NULL);
+#endif
+
+#ifdef CONFIG_FA_DUMP
+	/* scan tree to see if dump is active during last boot */
+	of_scan_flat_dt(early_init_dt_scan_fw_dump, NULL);
+#endif
+
+	/* Pre-initialize the cmd_line with the content of boot_commmand_line,
+	 * which will be empty except when the content of the variable has
+	 * been overriden by a bootloading mechanism. This happens typically
+	 * with HAL takeover
+	 */
+	strlcpy(cmd_line, boot_command_line, COMMAND_LINE_SIZE);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Retrieve various informations from the /chosen node of the
 	 * device-tree, including the platform type, initrd location and
 	 * size, TCE reserve, and more ...
@@ -718,22 +928,48 @@ void __init early_init_devtree(void *params)
 	of_scan_flat_dt(early_init_dt_scan_chosen_ppc, cmd_line);
 
 	/* Scan memory nodes and rebuild MEMBLOCKs */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_init();
 
 	of_scan_flat_dt(early_init_dt_scan_root, NULL);
 	of_scan_flat_dt(early_init_dt_scan_memory_ppc, NULL);
 	setup_initial_memory_limit(memstart_addr, first_memblock_size);
+=======
+	of_scan_flat_dt(early_init_dt_scan_root, NULL);
+	of_scan_flat_dt(early_init_dt_scan_memory_ppc, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	of_scan_flat_dt(early_init_dt_scan_root, NULL);
+	of_scan_flat_dt(early_init_dt_scan_memory_ppc, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/* Save command line for /proc/cmdline and then parse parameters */
 	strlcpy(boot_command_line, cmd_line, COMMAND_LINE_SIZE);
 	parse_early_param();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* make sure we've parsed cmdline for mem= before this */
+	if (memory_limit)
+		first_memblock_size = min(first_memblock_size, memory_limit);
+	setup_initial_memory_limit(memstart_addr, first_memblock_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* make sure we've parsed cmdline for mem= before this */
+	if (memory_limit)
+		first_memblock_size = min_t(u64, first_memblock_size, memory_limit);
+	setup_initial_memory_limit(memstart_addr, first_memblock_size);
+>>>>>>> refs/remotes/origin/master
 	/* Reserve MEMBLOCK regions used by kernel, initrd, dt, etc... */
 	memblock_reserve(PHYSICAL_START, __pa(klimit) - PHYSICAL_START);
 	/* If relocatable, reserve first 32k for interrupt vectors etc. */
 	if (PHYSICAL_START > MEMORY_START)
 		memblock_reserve(MEMORY_START, 0x8000);
 	reserve_kdump_trampoline();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reserve_crashkernel();
 	early_reserve_mem();
 	phyp_dump_reserve_mem();
@@ -752,6 +988,31 @@ void __init early_init_devtree(void *params)
 	memblock_enforce_memory_limit(limit);
 
 	memblock_analyze();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_FA_DUMP
+	/*
+	 * If we fail to reserve memory for firmware-assisted dump then
+	 * fallback to kexec based kdump.
+	 */
+	if (fadump_reserve_mem() == 0)
+#endif
+		reserve_crashkernel();
+	early_reserve_mem();
+
+	/*
+	 * Ensure that total memory size is page-aligned, because otherwise
+	 * mark_bootmem() gets upset.
+	 */
+	limit = ALIGN(memory_limit ?: memblock_phys_mem_size(), PAGE_SIZE);
+	memblock_enforce_memory_limit(limit);
+
+	memblock_allow_resize();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memblock_dump_all();
 
 	DBG("Phys. mem: %llx\n", memblock_phys_mem_size());
@@ -769,6 +1030,22 @@ void __init early_init_devtree(void *params)
 	 */
 	of_scan_flat_dt(early_init_dt_scan_cpus, NULL);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if defined(CONFIG_SMP) && defined(CONFIG_PPC64)
+	/* We'll later wait for secondaries to check in; there are
+	 * NCPUS-1 non-boot CPUs  :-)
+	 */
+	spinning_secondaries = boot_cpu_count - 1;
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	DBG(" <- early_init_devtree()\n");
 }
 
@@ -784,6 +1061,7 @@ void __init early_init_devtree(void *params)
  *******/
 
 /**
+<<<<<<< HEAD
  *	of_find_next_cache_node - Find a node's subsidiary cache
  *	@np:	node of type "cpu" or "cache"
  *
@@ -813,6 +1091,52 @@ struct device_node *of_find_next_cache_node(struct device_node *np)
 
 	return NULL;
 }
+=======
+ * of_get_ibm_chip_id - Returns the IBM "chip-id" of a device
+ * @np: device node of the device
+ *
+ * This looks for a property "ibm,chip-id" in the node or any
+ * of its parents and returns its content, or -1 if it cannot
+ * be found.
+ */
+int of_get_ibm_chip_id(struct device_node *np)
+{
+	of_node_get(np);
+	while(np) {
+		struct device_node *old = np;
+		const __be32 *prop;
+
+		prop = of_get_property(np, "ibm,chip-id", NULL);
+		if (prop) {
+			of_node_put(np);
+			return be32_to_cpup(prop);
+		}
+		np = of_get_parent(np);
+		of_node_put(old);
+	}
+	return -1;
+}
+
+/**
+ * cpu_to_chip_id - Return the cpus chip-id
+ * @cpu: The logical cpu number.
+ *
+ * Return the value of the ibm,chip-id property corresponding to the given
+ * logical cpu number. If the chip-id can not be found, returns -1.
+ */
+int cpu_to_chip_id(int cpu)
+{
+	struct device_node *np;
+
+	np = of_get_cpu_node(cpu, NULL);
+	if (!np)
+		return -1;
+
+	of_node_put(np);
+	return of_get_ibm_chip_id(np);
+}
+EXPORT_SYMBOL(cpu_to_chip_id);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PPC_PSERIES
 /*
@@ -860,8 +1184,10 @@ static int prom_reconfig_notifier(struct notifier_block *nb,
 	int err;
 
 	switch (action) {
+<<<<<<< HEAD
 	case PSERIES_RECONFIG_ADD:
 		err = of_finish_dynamic_node(node);
+<<<<<<< HEAD
 		if (err < 0) {
 			printk(KERN_ERR "finish_node returned %d\n", err);
 			err = NOTIFY_BAD;
@@ -872,6 +1198,23 @@ static int prom_reconfig_notifier(struct notifier_block *nb,
 		break;
 	}
 	return err;
+=======
+=======
+	case OF_RECONFIG_ATTACH_NODE:
+		err = of_finish_dynamic_node(node);
+>>>>>>> refs/remotes/origin/master
+		if (err < 0)
+			printk(KERN_ERR "finish_node returned %d\n", err);
+		break;
+	default:
+		err = 0;
+		break;
+	}
+	return notifier_from_errno(err);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct notifier_block prom_reconfig_nb = {
@@ -881,11 +1224,16 @@ static struct notifier_block prom_reconfig_nb = {
 
 static int __init prom_reconfig_setup(void)
 {
+<<<<<<< HEAD
 	return pSeries_reconfig_notifier_register(&prom_reconfig_nb);
+=======
+	return of_reconfig_notifier_register(&prom_reconfig_nb);
+>>>>>>> refs/remotes/origin/master
 }
 __initcall(prom_reconfig_setup);
 #endif
 
+<<<<<<< HEAD
 /* Find the device node for a given logical cpu number, also returns the cpu
  * local thread number (index in ibm,interrupt-server#s) if relevant and
  * asked for (non NULL)
@@ -929,6 +1277,12 @@ struct device_node *of_get_cpu_node(int cpu, unsigned int *thread)
 	return NULL;
 }
 EXPORT_SYMBOL(of_get_cpu_node);
+=======
+bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
+{
+	return (int)phys_id == get_hard_smp_processor_id(cpu);
+}
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_DEBUG_FS) && defined(DEBUG)
 static struct debugfs_blob_wrapper flat_dt_blob;
@@ -938,7 +1292,11 @@ static int __init export_flat_device_tree(void)
 	struct dentry *d;
 
 	flat_dt_blob.data = initial_boot_params;
+<<<<<<< HEAD
 	flat_dt_blob.size = initial_boot_params->totalsize;
+=======
+	flat_dt_blob.size = be32_to_cpu(initial_boot_params->totalsize);
+>>>>>>> refs/remotes/origin/master
 
 	d = debugfs_create_blob("flat-device-tree", S_IFREG | S_IRUSR,
 				powerpc_debugfs_root, &flat_dt_blob);

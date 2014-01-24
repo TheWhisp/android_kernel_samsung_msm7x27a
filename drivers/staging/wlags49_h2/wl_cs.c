@@ -74,7 +74,13 @@
 #include <linux/in.h>
 #include <linux/delay.h>
 #include <asm/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/bitops.h>
 
 #include <linux/netdevice.h>
@@ -82,6 +88,14 @@
 #include <linux/skbuff.h>
 #include <linux/if_arp.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <pcmcia/cistpl.h>
 #include <pcmcia/cisreg.h>
@@ -99,6 +113,7 @@
 #include <wl_main.h>
 #include <wl_netdev.h>
 #include <wl_cs.h>
+<<<<<<< HEAD
 #include <wl_sysfs.h>
 
 
@@ -109,6 +124,8 @@
 extern dbg_info_t *DbgInfo;
 #endif  /* DBG */
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*******************************************************************************
  *	wl_adapter_attach()
@@ -133,10 +150,14 @@ static int wl_adapter_attach(struct pcmcia_device *link)
 {
 	struct net_device   *dev;
 	struct wl_private   *lp;
+<<<<<<< HEAD
 	/*--------------------------------------------------------------------*/
 
 	DBG_FUNC("wl_adapter_attach");
 	DBG_ENTER(DbgInfo);
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	dev = wl_device_alloc();
 	if (dev == NULL) {
@@ -154,10 +175,18 @@ static int wl_adapter_attach(struct pcmcia_device *link)
 	lp = wl_priv(dev);
 	lp->link = link;
 
+<<<<<<< HEAD
 	wl_adapter_insert(link);
 
 	DBG_LEAVE(DbgInfo);
 	return 0;
+=======
+	ret = wl_adapter_insert(link);
+	if (ret != 0)
+		wl_device_dealloc(dev);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 } /* wl_adapter_attach */
 /*============================================================================*/
 
@@ -166,15 +195,20 @@ static int wl_adapter_attach(struct pcmcia_device *link)
 static void wl_adapter_detach(struct pcmcia_device *link)
 {
 	struct net_device   *dev = link->priv;
+<<<<<<< HEAD
 	/*--------------------------------------------------------------------*/
 
 	DBG_FUNC("wl_adapter_detach");
 	DBG_ENTER(DbgInfo);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	DBG_PARAM(DbgInfo, "link", "0x%p", link);
 
 	wl_adapter_release(link);
 
 	if (dev) {
+<<<<<<< HEAD
 		unregister_wlags_sysfs(dev);
 		unregister_netdev(dev);
 	}
@@ -182,22 +216,33 @@ static void wl_adapter_detach(struct pcmcia_device *link)
 	wl_device_dealloc(dev);
 
 	DBG_LEAVE(DbgInfo);
+=======
+		unregister_netdev(dev);
+		wl_device_dealloc(dev);
+	}
+>>>>>>> refs/remotes/origin/master
 } /* wl_adapter_detach */
 /*============================================================================*/
 
 
 void wl_adapter_release(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 	DBG_FUNC("wl_adapter_release");
 	DBG_ENTER(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 	DBG_PARAM(DbgInfo, "link", "0x%p", link);
 
 	/* Stop hardware */
 	wl_remove(link->priv);
 
 	pcmcia_disable_device(link);
+<<<<<<< HEAD
 
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 } /* wl_adapter_release */
 /*============================================================================*/
 
@@ -225,15 +270,26 @@ static int wl_adapter_resume(struct pcmcia_device *link)
 	return 0;
 } /* wl_adapter_resume */
 
+<<<<<<< HEAD
 void wl_adapter_insert(struct pcmcia_device *link)
 {
 	struct net_device *dev;
+<<<<<<< HEAD
 	int i;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 	/*--------------------------------------------------------------------*/
 
 	DBG_FUNC("wl_adapter_insert");
 	DBG_ENTER(DbgInfo);
+=======
+int wl_adapter_insert(struct pcmcia_device *link)
+{
+	struct net_device *dev;
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	DBG_PARAM(DbgInfo, "link", "0x%p", link);
 
 	dev     = link->priv;
@@ -258,6 +314,7 @@ void wl_adapter_insert(struct pcmcia_device *link)
 	dev->base_addr  = link->resource[0]->start;
 
 	SET_NETDEV_DEV(dev, &link->dev);
+<<<<<<< HEAD
 	if (register_netdev(dev) != 0) {
 		printk("%s: register_netdev() failed\n", MODULE_NAME);
 		goto failed;
@@ -265,10 +322,15 @@ void wl_adapter_insert(struct pcmcia_device *link)
 
 	register_wlags_sysfs(dev);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: Wireless, io_addr %#03lx, irq %d, ""mac_address ",
 		dev->name, dev->base_addr, dev->irq);
 	for (i = 0; i < ETH_ALEN; i++)
 		printk("%02X%c", dev->dev_addr[i], ((i < (ETH_ALEN-1)) ? ':' : '\n'));
+=======
+	printk(KERN_INFO "%s: Wireless, io_addr %#03lx, irq %d, mac_address"
+		" %pM\n", dev->name, dev->base_addr, dev->irq, dev->dev_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	DBG_LEAVE(DbgInfo);
 	return;
@@ -278,6 +340,22 @@ failed:
 
 	DBG_LEAVE(DbgInfo);
 	return;
+=======
+	ret = register_netdev(dev);
+	if (ret != 0) {
+		printk("%s: register_netdev() failed\n", KBUILD_MODNAME);
+		goto failed;
+	}
+
+	printk(KERN_INFO "%s: Wireless, io_addr %#03lx, irq %d, mac_address"
+		" %pM\n", dev->name, dev->base_addr, dev->irq, dev->dev_addr);
+
+	return 0;
+
+failed:
+	wl_adapter_release(link);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 } /* wl_adapter_insert */
 /*============================================================================*/
 
@@ -307,6 +385,7 @@ int wl_adapter_open(struct net_device *dev)
 	struct pcmcia_device *link = lp->link;
 	int result = 0;
 	int hcf_status = HCF_SUCCESS;
+<<<<<<< HEAD
 	/*--------------------------------------------------------------------*/
 
 	DBG_FUNC("wl_adapter_open");
@@ -318,6 +397,14 @@ int wl_adapter_open(struct net_device *dev)
 		DBG_LEAVE(DbgInfo);
 		return -ENODEV;
 	}
+=======
+
+	DBG_PRINT("%s\n", VERSION_INFO);
+	DBG_PARAM(DbgInfo, "dev", "%s (0x%p)", dev->name, dev);
+
+	if (!pcmcia_dev_present(link))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	link->open++;
 
@@ -328,7 +415,10 @@ int wl_adapter_open(struct net_device *dev)
 		result = -ENODEV;
 	}
 
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 	return result;
 } /* wl_adapter_open */
 /*============================================================================*/
@@ -357,6 +447,7 @@ int wl_adapter_close(struct net_device *dev)
 {
 	struct wl_private *lp = wl_priv(dev);
 	struct pcmcia_device *link = lp->link;
+<<<<<<< HEAD
 	/*--------------------------------------------------------------------*/
 
 	DBG_FUNC("wl_adapter_close");
@@ -367,13 +458,23 @@ int wl_adapter_close(struct net_device *dev)
 		DBG_LEAVE(DbgInfo);
 		return -ENODEV;
 	}
+=======
+
+	DBG_PARAM(DbgInfo, "dev", "%s (0x%p)", dev->name, dev);
+
+	if (link == NULL)
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	DBG_TRACE(DbgInfo, "%s: Shutting down adapter.\n", dev->name);
 	wl_close(dev);
 
 	link->open--;
 
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 } /* wl_adapter_close */
 /*============================================================================*/
@@ -424,6 +525,7 @@ static struct pcmcia_driver wlags49_driver = {
  ******************************************************************************/
 int wl_adapter_init_module(void)
 {
+<<<<<<< HEAD
 	int ret;
 	/*--------------------------------------------------------------------*/
 
@@ -435,6 +537,9 @@ int wl_adapter_init_module(void)
 
 	DBG_LEAVE(DbgInfo);
 	return ret;
+=======
+	return pcmcia_register_driver(&wlags49_driver);
+>>>>>>> refs/remotes/origin/master
 } /* wl_adapter_init_module */
 /*============================================================================*/
 
@@ -458,6 +563,7 @@ int wl_adapter_init_module(void)
  ******************************************************************************/
 void wl_adapter_cleanup_module(void)
 {
+<<<<<<< HEAD
 	DBG_FUNC("wl_adapter_cleanup_module");
 	DBG_ENTER(DbgInfo);
 	DBG_TRACE(DbgInfo, "wl_adapter_cleanup_module() -- PCMCIA\n");
@@ -467,6 +573,9 @@ void wl_adapter_cleanup_module(void)
 
 	DBG_LEAVE(DbgInfo);
 	return;
+=======
+	pcmcia_unregister_driver(&wlags49_driver);
+>>>>>>> refs/remotes/origin/master
 } /* wl_adapter_cleanup_module */
 /*============================================================================*/
 
@@ -501,6 +610,8 @@ int wl_adapter_is_open(struct net_device *dev)
 	return link->open;
 } /* wl_adapter_is_open */
 /*============================================================================*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
 #if DBG
@@ -615,3 +726,7 @@ const char *DbgEvent(int mask)
 /*============================================================================*/
 
 #endif  /* DBG */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

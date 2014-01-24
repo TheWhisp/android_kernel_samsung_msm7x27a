@@ -1,11 +1,18 @@
 #include <linux/kernel.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <asm/msr.h>
 #include "cpu.h"
 
+<<<<<<< HEAD
 static void __cpuinit early_init_transmeta(struct cpuinfo_x86 *c)
+=======
+static void early_init_transmeta(struct cpuinfo_x86 *c)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 xlvl;
 
@@ -17,7 +24,11 @@ static void __cpuinit early_init_transmeta(struct cpuinfo_x86 *c)
 	}
 }
 
+<<<<<<< HEAD
 static void __cpuinit init_transmeta(struct cpuinfo_x86 *c)
+=======
+static void init_transmeta(struct cpuinfo_x86 *c)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cap_mask, uk, max, dummy;
 	unsigned int cms_rev1, cms_rev2;
@@ -98,7 +109,11 @@ static void __cpuinit init_transmeta(struct cpuinfo_x86 *c)
 #endif
 }
 
+<<<<<<< HEAD
 static const struct cpu_dev __cpuinitconst transmeta_cpu_dev = {
+=======
+static const struct cpu_dev transmeta_cpu_dev = {
+>>>>>>> refs/remotes/origin/master
 	.c_vendor	= "Transmeta",
 	.c_ident	= { "GenuineTMx86", "TransmetaCPU" },
 	.c_early_init	= early_init_transmeta,

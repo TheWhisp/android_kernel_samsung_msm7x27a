@@ -1,6 +1,27 @@
+<<<<<<< HEAD
 config VT
 	bool "Virtual terminal" if EXPERT
+<<<<<<< HEAD
 	depends on !S390
+=======
+	depends on !S390 && !UML
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config TTY
+	bool "Enable TTY" if EXPERT
+	default y
+	---help---
+	  Allows you to remove TTY support which can save space, and
+	  blocks features that require TTY from inclusion in the kernel.
+	  TTY is required for any text terminals or serial port
+	  communication. Most users should leave this enabled.
+
+if TTY
+
+config VT
+	bool "Virtual terminal" if EXPERT
+	depends on !S390 && !UML
+>>>>>>> refs/remotes/origin/master
 	select INPUT
 	default y
 	---help---
@@ -60,9 +81,25 @@ config VT_CONSOLE
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config HW_CONSOLE
 	bool
 	depends on VT && !S390 && !UML
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config VT_CONSOLE_SLEEP
+	def_bool y
+	depends on VT_CONSOLE && PM_SLEEP
+
+config HW_CONSOLE
+	bool
+	depends on VT && !UML
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default y
 
 config VT_HW_CONSOLE_BINDING
@@ -210,8 +247,13 @@ config CYCLADES
 	  If you haven't heard about it, it's safe to say N.
 
 config CYZ_INTR
+<<<<<<< HEAD
 	bool "Cyclades-Z interrupt mode operation (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && CYCLADES
+=======
+	bool "Cyclades-Z interrupt mode operation"
+	depends on CYCLADES
+>>>>>>> refs/remotes/origin/master
 	help
 	  The Cyclades-Z family of multiport cards allows 2 (two) driver op
 	  modes: polling and interrupt. In polling mode, the driver will check
@@ -281,7 +323,11 @@ config SYNCLINK_GT
 
 config NOZOMI
 	tristate "HSDPA Broadband Wireless Data Card - Globe Trotter"
+<<<<<<< HEAD
 	depends on PCI && EXPERIMENTAL
+=======
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you have a HSDPA driver Broadband Wireless Data Card -
 	  Globe Trotter PCMCIA card, say Y here.
@@ -290,7 +336,11 @@ config NOZOMI
 	  will be called nozomi.
 
 config ISI
+<<<<<<< HEAD
 	tristate "Multi-Tech multiport card support (EXPERIMENTAL)"
+=======
+	tristate "Multi-Tech multiport card support"
+>>>>>>> refs/remotes/origin/master
 	depends on SERIAL_NONSTANDARD && PCI
 	select FW_LOADER
 	help
@@ -313,12 +363,46 @@ config N_HDLC
 
 config N_GSM
 	tristate "GSM MUX line discipline support (EXPERIMENTAL)"
+<<<<<<< HEAD
 	depends on EXPERIMENTAL
+=======
+>>>>>>> refs/remotes/origin/master
 	depends on NET
 	help
 	  This line discipline provides support for the GSM MUX protocol and
 	  presents the mux as a set of 61 individual tty devices.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+config N_SMUX
+	tristate "SMUX line discipline support"
+	depends on NET && SERIAL_MSM_HS
+	help
+	  This line discipline provides support for the Serial MUX protocol
+	  and provides a TTY and kernel API for multiple logical channels.
+
+config N_SMUX_LOOPBACK
+	tristate "SMUX line discipline loopback support"
+	depends on N_SMUX
+	help
+	  Provides loopback and unit testing support for the Serial MUX Protocol.
+
+config SMUX_CTL
+	tristate "SMUX control driver"
+	depends on N_SMUX
+	help
+	  Support for SMUX control driver on top of serial MUX.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config TRACE_ROUTER
 	tristate "Trace data router for MIPI P1149.7 cJTAG standard"
 	depends on TRACE_SINK
@@ -350,3 +434,71 @@ config TRACE_SINK
 
 	  If you select this option, you need to select
 	  "Trace data router for MIPI P1149.7 cJTAG standard".
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+config PPC_EPAPR_HV_BYTECHAN
+	tristate "ePAPR hypervisor byte channel driver"
+	depends on PPC
+<<<<<<< HEAD
+=======
+	select EPAPR_PARAVIRT
+>>>>>>> refs/remotes/origin/master
+	help
+	  This driver creates /dev entries for each ePAPR hypervisor byte
+	  channel, thereby allowing applications to communicate with byte
+	  channels as if they were serial ports.
+
+config PPC_EARLY_DEBUG_EHV_BC
+	bool "Early console (udbg) support for ePAPR hypervisors"
+	depends on PPC_EPAPR_HV_BYTECHAN=y
+	help
+	  Select this option to enable early console (a.k.a. "udbg") support
+	  via an ePAPR byte channel.  You also need to choose the byte channel
+	  handle below.
+
+config PPC_EARLY_DEBUG_EHV_BC_HANDLE
+	int "Byte channel handle for early console (udbg)"
+	depends on PPC_EARLY_DEBUG_EHV_BC
+	default 0
+	help
+	  If you want early console (udbg) output through a byte channel,
+	  specify the handle of the byte channel to use.
+
+	  For this to work, the byte channel driver must be compiled
+	  in-kernel, not as a module.
+
+	  Note that only one early console driver can be enabled, so don't
+	  enable any others if you enable this one.
+
+	  If the number you specify is not a valid byte channel handle, then
+	  there simply will be no early console output.  This is true also
+	  if you don't boot under a hypervisor at all.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+config GOLDFISH_TTY
+	tristate "Goldfish TTY Driver"
+	depends on GOLDFISH
+	help
+	  Console and system TTY driver for the Goldfish virtual platform.
+
+config DA_TTY
+	bool "DA TTY"
+	depends on METAG_DA
+	select SERIAL_NONSTANDARD
+	help
+	  This enables a TTY on a Dash channel.
+
+config DA_CONSOLE
+	bool "DA Console"
+	depends on DA_TTY
+	help
+	  This enables a console on a Dash channel.
+
+endif # TTY
+>>>>>>> refs/remotes/origin/master

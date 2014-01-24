@@ -1,6 +1,7 @@
 #ifndef _SPARC_TERMIOS_H
 #define _SPARC_TERMIOS_H
 
+<<<<<<< HEAD
 #include <asm/ioctls.h>
 #include <asm/termbits.h>
 
@@ -40,7 +41,14 @@ struct winsize {
 };
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <uapi/asm/termios.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * c_cc characters in the termio structure.  Oh, how I love being
@@ -181,6 +189,9 @@ struct winsize {
 	err; \
 })
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _SPARC_TERMIOS_H */

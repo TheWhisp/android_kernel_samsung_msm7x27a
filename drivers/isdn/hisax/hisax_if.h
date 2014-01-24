@@ -1,10 +1,26 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Interface between low level (hardware) drivers and 
+=======
+ * Interface between low level (hardware) drivers and
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Interface between low level (hardware) drivers and
+>>>>>>> refs/remotes/origin/master
  * HiSax protocol stack
  *
  * Author       Kai Germaschewski
  * Copyright    2001 by Kai Germaschewski  <kai.germaschewski@gmx.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *

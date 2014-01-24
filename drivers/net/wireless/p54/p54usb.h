@@ -143,6 +143,12 @@ struct p54u_priv {
 	struct sk_buff_head rx_queue;
 	struct usb_anchor submitted;
 	const struct firmware *fw;
+<<<<<<< HEAD
+=======
+
+	/* asynchronous firmware callback */
+	struct completion fw_wait_load;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* P54USB_H */

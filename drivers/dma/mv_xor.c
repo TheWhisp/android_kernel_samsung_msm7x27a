@@ -25,20 +25,45 @@
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
 #include <linux/memory.h>
+<<<<<<< HEAD
 #include <plat/mv_xor.h>
+<<<<<<< HEAD
+=======
+
+#include "dmaengine.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/clk.h>
+#include <linux/of.h>
+#include <linux/of_irq.h>
+#include <linux/irqdomain.h>
+#include <linux/platform_data/dma-mv_xor.h>
+
+#include "dmaengine.h"
+>>>>>>> refs/remotes/origin/master
 #include "mv_xor.h"
 
 static void mv_xor_issue_pending(struct dma_chan *chan);
 
 #define to_mv_xor_chan(chan)		\
+<<<<<<< HEAD
 	container_of(chan, struct mv_xor_chan, common)
 
 #define to_mv_xor_device(dev)		\
 	container_of(dev, struct mv_xor_device, common)
+=======
+	container_of(chan, struct mv_xor_chan, dmachan)
+>>>>>>> refs/remotes/origin/master
 
 #define to_mv_xor_slot(tx)		\
 	container_of(tx, struct mv_xor_desc_slot, async_tx)
 
+<<<<<<< HEAD
+=======
+#define mv_chan_to_devp(chan)           \
+	((chan)->dmadev.dev)
+
+>>>>>>> refs/remotes/origin/master
 static void mv_desc_init(struct mv_xor_desc_slot *desc, unsigned long flags)
 {
 	struct mv_xor_desc *hw_desc = desc->hw_desc;
@@ -48,6 +73,7 @@ static void mv_desc_init(struct mv_xor_desc_slot *desc, unsigned long flags)
 	hw_desc->desc_command = (1 << 31);
 }
 
+<<<<<<< HEAD
 static u32 mv_desc_get_dest_addr(struct mv_xor_desc_slot *desc)
 {
 	struct mv_xor_desc *hw_desc = desc->hw_desc;
@@ -62,6 +88,8 @@ static u32 mv_desc_get_src_addr(struct mv_xor_desc_slot *desc,
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void mv_desc_set_byte_count(struct mv_xor_desc_slot *desc,
 				   u32 byte_count)
 {
@@ -83,11 +111,14 @@ static void mv_desc_clear_next_desc(struct mv_xor_desc_slot *desc)
 	hw_desc->phy_next_desc = 0;
 }
 
+<<<<<<< HEAD
 static void mv_desc_set_block_fill_val(struct mv_xor_desc_slot *desc, u32 val)
 {
 	desc->value = val;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void mv_desc_set_dest_addr(struct mv_xor_desc_slot *desc,
 				  dma_addr_t addr)
 {
@@ -106,19 +137,28 @@ static void mv_desc_set_src_addr(struct mv_xor_desc_slot *desc,
 				 int index, dma_addr_t addr)
 {
 	struct mv_xor_desc *hw_desc = desc->hw_desc;
+<<<<<<< HEAD
 	hw_desc->phy_src_addr[index] = addr;
+=======
+	hw_desc->phy_src_addr[mv_phy_src_idx(index)] = addr;
+>>>>>>> refs/remotes/origin/master
 	if (desc->type == DMA_XOR)
 		hw_desc->desc_command |= (1 << index);
 }
 
 static u32 mv_chan_get_current_desc(struct mv_xor_chan *chan)
 {
+<<<<<<< HEAD
 	return __raw_readl(XOR_CURR_DESC(chan));
+=======
+	return readl_relaxed(XOR_CURR_DESC(chan));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mv_chan_set_next_descriptor(struct mv_xor_chan *chan,
 					u32 next_desc_addr)
 {
+<<<<<<< HEAD
 	__raw_writel(next_desc_addr, XOR_NEXT_DESC(chan));
 }
 
@@ -136,18 +176,31 @@ static void mv_chan_set_value(struct mv_xor_chan *chan, u32 value)
 {
 	__raw_writel(value, XOR_INIT_VALUE_LOW(chan));
 	__raw_writel(value, XOR_INIT_VALUE_HIGH(chan));
+=======
+	writel_relaxed(next_desc_addr, XOR_NEXT_DESC(chan));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mv_chan_unmask_interrupts(struct mv_xor_chan *chan)
 {
+<<<<<<< HEAD
 	u32 val = __raw_readl(XOR_INTR_MASK(chan));
 	val |= XOR_INTR_MASK_VALUE << (chan->idx * 16);
 	__raw_writel(val, XOR_INTR_MASK(chan));
+=======
+	u32 val = readl_relaxed(XOR_INTR_MASK(chan));
+	val |= XOR_INTR_MASK_VALUE << (chan->idx * 16);
+	writel_relaxed(val, XOR_INTR_MASK(chan));
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 mv_chan_get_intr_cause(struct mv_xor_chan *chan)
 {
+<<<<<<< HEAD
 	u32 intr_cause = __raw_readl(XOR_INTR_CAUSE(chan));
+=======
+	u32 intr_cause = readl_relaxed(XOR_INTR_CAUSE(chan));
+>>>>>>> refs/remotes/origin/master
 	intr_cause = (intr_cause >> (chan->idx * 16)) & 0xFFFF;
 	return intr_cause;
 }
@@ -163,14 +216,23 @@ static int mv_is_err_intr(u32 intr_cause)
 static void mv_xor_device_clear_eoc_cause(struct mv_xor_chan *chan)
 {
 	u32 val = ~(1 << (chan->idx * 16));
+<<<<<<< HEAD
 	dev_dbg(chan->device->common.dev, "%s, val 0x%08x\n", __func__, val);
 	__raw_writel(val, XOR_INTR_CAUSE(chan));
+=======
+	dev_dbg(mv_chan_to_devp(chan), "%s, val 0x%08x\n", __func__, val);
+	writel_relaxed(val, XOR_INTR_CAUSE(chan));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mv_xor_device_clear_err_status(struct mv_xor_chan *chan)
 {
 	u32 val = 0xFFFF0000 >> (chan->idx * 16);
+<<<<<<< HEAD
 	__raw_writel(val, XOR_INTR_CAUSE(chan));
+=======
+	writel_relaxed(val, XOR_INTR_CAUSE(chan));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mv_can_chain(struct mv_xor_desc_slot *desc)
@@ -180,8 +242,11 @@ static int mv_can_chain(struct mv_xor_desc_slot *desc)
 
 	if (chain_old_tail->type != desc->type)
 		return 0;
+<<<<<<< HEAD
 	if (desc->type == DMA_MEMSET)
 		return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -190,7 +255,11 @@ static void mv_set_mode(struct mv_xor_chan *chan,
 			       enum dma_transaction_type type)
 {
 	u32 op_mode;
+<<<<<<< HEAD
 	u32 config = __raw_readl(XOR_CONFIG(chan));
+=======
+	u32 config = readl_relaxed(XOR_CONFIG(chan));
+>>>>>>> refs/remotes/origin/master
 
 	switch (type) {
 	case DMA_XOR:
@@ -199,6 +268,7 @@ static void mv_set_mode(struct mv_xor_chan *chan,
 	case DMA_MEMCPY:
 		op_mode = XOR_OPERATION_MODE_MEMCPY;
 		break;
+<<<<<<< HEAD
 	case DMA_MEMSET:
 		op_mode = XOR_OPERATION_MODE_MEMSET;
 		break;
@@ -206,13 +276,30 @@ static void mv_set_mode(struct mv_xor_chan *chan,
 		dev_printk(KERN_ERR, chan->device->common.dev,
 			   "error: unsupported operation %d.\n",
 			   type);
+=======
+	default:
+		dev_err(mv_chan_to_devp(chan),
+			"error: unsupported operation %d\n",
+			type);
+>>>>>>> refs/remotes/origin/master
 		BUG();
 		return;
 	}
 
 	config &= ~0x7;
 	config |= op_mode;
+<<<<<<< HEAD
 	__raw_writel(config, XOR_CONFIG(chan));
+=======
+
+#if defined(__BIG_ENDIAN)
+	config |= XOR_DESCRIPTOR_SWAP;
+#else
+	config &= ~XOR_DESCRIPTOR_SWAP;
+#endif
+
+	writel_relaxed(config, XOR_CONFIG(chan));
+>>>>>>> refs/remotes/origin/master
 	chan->current_type = type;
 }
 
@@ -220,15 +307,26 @@ static void mv_chan_activate(struct mv_xor_chan *chan)
 {
 	u32 activation;
 
+<<<<<<< HEAD
 	dev_dbg(chan->device->common.dev, " activate chan.\n");
 	activation = __raw_readl(XOR_ACTIVATION(chan));
 	activation |= 0x1;
 	__raw_writel(activation, XOR_ACTIVATION(chan));
+=======
+	dev_dbg(mv_chan_to_devp(chan), " activate chan.\n");
+	activation = readl_relaxed(XOR_ACTIVATION(chan));
+	activation |= 0x1;
+	writel_relaxed(activation, XOR_ACTIVATION(chan));
+>>>>>>> refs/remotes/origin/master
 }
 
 static char mv_chan_is_busy(struct mv_xor_chan *chan)
 {
+<<<<<<< HEAD
 	u32 state = __raw_readl(XOR_ACTIVATION(chan));
+=======
+	u32 state = readl_relaxed(XOR_ACTIVATION(chan));
+>>>>>>> refs/remotes/origin/master
 
 	state = (state >> 4) & 0x3;
 
@@ -248,7 +346,11 @@ static int mv_chan_xor_slot_count(size_t len, int src_cnt)
 static void mv_xor_free_slots(struct mv_xor_chan *mv_chan,
 			      struct mv_xor_desc_slot *slot)
 {
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev, "%s %d slot %p\n",
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan), "%s %d slot %p\n",
+>>>>>>> refs/remotes/origin/master
 		__func__, __LINE__, slot);
 
 	slot->slots_per_op = 0;
@@ -263,11 +365,16 @@ static void mv_xor_free_slots(struct mv_xor_chan *mv_chan,
 static void mv_xor_start_new_chain(struct mv_xor_chan *mv_chan,
 				   struct mv_xor_desc_slot *sw_desc)
 {
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev, "%s %d: sw_desc %p\n",
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan), "%s %d: sw_desc %p\n",
+>>>>>>> refs/remotes/origin/master
 		__func__, __LINE__, sw_desc);
 	if (sw_desc->type != mv_chan->current_type)
 		mv_set_mode(mv_chan, sw_desc->type);
 
+<<<<<<< HEAD
 	if (sw_desc->type == DMA_MEMSET) {
 		/* for memset requests we need to program the engine, no
 		 * descriptors used.
@@ -282,6 +389,13 @@ static void mv_xor_start_new_chain(struct mv_xor_chan *mv_chan,
 	}
 	mv_chan->pending += sw_desc->slot_cnt;
 	mv_xor_issue_pending(&mv_chan->common);
+=======
+	/* set the hardware chain */
+	mv_chan_set_next_descriptor(mv_chan, sw_desc->async_tx.phys);
+
+	mv_chan->pending += sw_desc->slot_cnt;
+	mv_xor_issue_pending(&mv_chan->dmachan);
+>>>>>>> refs/remotes/origin/master
 }
 
 static dma_cookie_t
@@ -300,6 +414,7 @@ mv_xor_run_tx_complete_actions(struct mv_xor_desc_slot *desc,
 			desc->async_tx.callback(
 				desc->async_tx.callback_param);
 
+<<<<<<< HEAD
 		/* unmap dma addresses
 		 * (unmap_single vs unmap_page?)
 		 */
@@ -337,6 +452,11 @@ mv_xor_run_tx_complete_actions(struct mv_xor_desc_slot *desc,
 			}
 			desc->group_head = NULL;
 		}
+=======
+		dma_descriptor_unmap(&desc->async_tx);
+		if (desc->group_head)
+			desc->group_head = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* run dependent operations */
@@ -350,7 +470,11 @@ mv_xor_clean_completed_slots(struct mv_xor_chan *mv_chan)
 {
 	struct mv_xor_desc_slot *iter, *_iter;
 
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev, "%s %d\n", __func__, __LINE__);
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan), "%s %d\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(iter, _iter, &mv_chan->completed_slots,
 				 completed_node) {
 
@@ -366,7 +490,11 @@ static int
 mv_xor_clean_slot(struct mv_xor_desc_slot *desc,
 	struct mv_xor_chan *mv_chan)
 {
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev, "%s %d: desc %p flags %d\n",
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan), "%s %d: desc %p flags %d\n",
+>>>>>>> refs/remotes/origin/master
 		__func__, __LINE__, desc, desc->async_tx.flags);
 	list_del(&desc->chain_node);
 	/* the client is allowed to attach dependent operations
@@ -390,8 +518,13 @@ static void __mv_xor_slot_cleanup(struct mv_xor_chan *mv_chan)
 	u32 current_desc = mv_chan_get_current_desc(mv_chan);
 	int seen_current = 0;
 
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev, "%s %d\n", __func__, __LINE__);
 	dev_dbg(mv_chan->device->common.dev, "current_desc %x\n", current_desc);
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan), "%s %d\n", __func__, __LINE__);
+	dev_dbg(mv_chan_to_devp(mv_chan), "current_desc %x\n", current_desc);
+>>>>>>> refs/remotes/origin/master
 	mv_xor_clean_completed_slots(mv_chan);
 
 	/* free completed slots from the chain starting with
@@ -435,7 +568,15 @@ static void __mv_xor_slot_cleanup(struct mv_xor_chan *mv_chan)
 	}
 
 	if (cookie > 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mv_chan->completed_cookie = cookie;
+=======
+		mv_chan->common.completed_cookie = cookie;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mv_chan->dmachan.completed_cookie = cookie;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -534,6 +675,8 @@ retry:
 	return NULL;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static dma_cookie_t
 mv_desc_assign_cookie(struct mv_xor_chan *mv_chan,
 		      struct mv_xor_desc_slot *desc)
@@ -546,6 +689,10 @@ mv_desc_assign_cookie(struct mv_xor_chan *mv_chan,
 	return cookie;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /************************ DMA engine API functions ****************************/
 static dma_cookie_t
 mv_xor_tx_submit(struct dma_async_tx_descriptor *tx)
@@ -556,14 +703,26 @@ mv_xor_tx_submit(struct dma_async_tx_descriptor *tx)
 	dma_cookie_t cookie;
 	int new_hw_chain = 1;
 
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev,
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan),
+>>>>>>> refs/remotes/origin/master
 		"%s sw_desc %p: async_tx %p\n",
 		__func__, sw_desc, &sw_desc->async_tx);
 
 	grp_start = sw_desc->group_head;
 
 	spin_lock_bh(&mv_chan->lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cookie = mv_desc_assign_cookie(mv_chan, sw_desc);
+=======
+	cookie = dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cookie = dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/master
 
 	if (list_empty(&mv_chan->chain))
 		list_splice_init(&sw_desc->tx_list, &mv_chan->chain);
@@ -579,7 +738,11 @@ mv_xor_tx_submit(struct dma_async_tx_descriptor *tx)
 		if (!mv_can_chain(grp_start))
 			goto submit_done;
 
+<<<<<<< HEAD
 		dev_dbg(mv_chan->device->common.dev, "Append to last desc %x\n",
+=======
+		dev_dbg(mv_chan_to_devp(mv_chan), "Append to last desc %x\n",
+>>>>>>> refs/remotes/origin/master
 			old_chain_tail->async_tx.phys);
 
 		/* fix up the hardware chain */
@@ -613,9 +776,13 @@ static int mv_xor_alloc_chan_resources(struct dma_chan *chan)
 	int idx;
 	struct mv_xor_chan *mv_chan = to_mv_xor_chan(chan);
 	struct mv_xor_desc_slot *slot = NULL;
+<<<<<<< HEAD
 	struct mv_xor_platform_data *plat_data =
 		mv_chan->device->pdev->dev.platform_data;
 	int num_descs_in_pool = plat_data->pool_size/MV_XOR_SLOT_SIZE;
+=======
+	int num_descs_in_pool = MV_XOR_POOL_SIZE/MV_XOR_SLOT_SIZE;
+>>>>>>> refs/remotes/origin/master
 
 	/* Allocate descriptor slots */
 	idx = mv_chan->slots_allocated;
@@ -626,7 +793,11 @@ static int mv_xor_alloc_chan_resources(struct dma_chan *chan)
 				" %d descriptor slots", idx);
 			break;
 		}
+<<<<<<< HEAD
 		hw_desc = (char *) mv_chan->device->dma_desc_pool_virt;
+=======
+		hw_desc = (char *) mv_chan->dma_desc_pool_virt;
+>>>>>>> refs/remotes/origin/master
 		slot->hw_desc = (void *) &hw_desc[idx * MV_XOR_SLOT_SIZE];
 
 		dma_async_tx_descriptor_init(&slot->async_tx, chan);
@@ -634,7 +805,11 @@ static int mv_xor_alloc_chan_resources(struct dma_chan *chan)
 		INIT_LIST_HEAD(&slot->chain_node);
 		INIT_LIST_HEAD(&slot->slot_node);
 		INIT_LIST_HEAD(&slot->tx_list);
+<<<<<<< HEAD
 		hw_desc = (char *) mv_chan->device->dma_desc_pool;
+=======
+		hw_desc = (char *) mv_chan->dma_desc_pool;
+>>>>>>> refs/remotes/origin/master
 		slot->async_tx.phys =
 			(dma_addr_t) &hw_desc[idx * MV_XOR_SLOT_SIZE];
 		slot->idx = idx++;
@@ -650,7 +825,11 @@ static int mv_xor_alloc_chan_resources(struct dma_chan *chan)
 					struct mv_xor_desc_slot,
 					slot_node);
 
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev,
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan),
+>>>>>>> refs/remotes/origin/master
 		"allocated %d descriptor slots last_used: %p\n",
 		mv_chan->slots_allocated, mv_chan->last_used);
 
@@ -665,7 +844,11 @@ mv_xor_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dest, dma_addr_t src,
 	struct mv_xor_desc_slot *sw_desc, *grp_start;
 	int slot_cnt;
 
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev,
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan),
+>>>>>>> refs/remotes/origin/master
 		"%s dest: %x src %x len: %u flags: %ld\n",
 		__func__, dest, src, len, flags);
 	if (unlikely(len < MV_XOR_MIN_BYTE_COUNT))
@@ -689,14 +872,21 @@ mv_xor_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dest, dma_addr_t src,
 	}
 	spin_unlock_bh(&mv_chan->lock);
 
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev,
 		"%s sw_desc %p async_tx %p\n",
 		__func__, sw_desc, sw_desc ? &sw_desc->async_tx : 0);
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan),
+		"%s sw_desc %p async_tx %p\n",
+		__func__, sw_desc, sw_desc ? &sw_desc->async_tx : NULL);
+>>>>>>> refs/remotes/origin/master
 
 	return sw_desc ? &sw_desc->async_tx : NULL;
 }
 
 static struct dma_async_tx_descriptor *
+<<<<<<< HEAD
 mv_xor_prep_dma_memset(struct dma_chan *chan, dma_addr_t dest, int value,
 		       size_t len, unsigned long flags)
 {
@@ -734,6 +924,8 @@ mv_xor_prep_dma_memset(struct dma_chan *chan, dma_addr_t dest, int value,
 }
 
 static struct dma_async_tx_descriptor *
+=======
+>>>>>>> refs/remotes/origin/master
 mv_xor_prep_dma_xor(struct dma_chan *chan, dma_addr_t dest, dma_addr_t *src,
 		    unsigned int src_cnt, size_t len, unsigned long flags)
 {
@@ -746,7 +938,11 @@ mv_xor_prep_dma_xor(struct dma_chan *chan, dma_addr_t dest, dma_addr_t *src,
 
 	BUG_ON(len > MV_XOR_MAX_BYTE_COUNT);
 
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev,
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan),
+>>>>>>> refs/remotes/origin/master
 		"%s src_cnt: %d len: dest %x %u flags: %ld\n",
 		__func__, src_cnt, len, dest, flags);
 
@@ -767,7 +963,11 @@ mv_xor_prep_dma_xor(struct dma_chan *chan, dma_addr_t dest, dma_addr_t *src,
 			mv_desc_set_src_addr(grp_start, src_cnt, src[src_cnt]);
 	}
 	spin_unlock_bh(&mv_chan->lock);
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev,
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan),
+>>>>>>> refs/remotes/origin/master
 		"%s sw_desc %p async_tx %p \n",
 		__func__, sw_desc, &sw_desc->async_tx);
 	return sw_desc ? &sw_desc->async_tx : NULL;
@@ -800,12 +1000,20 @@ static void mv_xor_free_chan_resources(struct dma_chan *chan)
 	}
 	mv_chan->last_used = NULL;
 
+<<<<<<< HEAD
 	dev_dbg(mv_chan->device->common.dev, "%s slots_allocated %d\n",
+=======
+	dev_dbg(mv_chan_to_devp(mv_chan), "%s slots_allocated %d\n",
+>>>>>>> refs/remotes/origin/master
 		__func__, mv_chan->slots_allocated);
 	spin_unlock_bh(&mv_chan->lock);
 
 	if (in_use_descs)
+<<<<<<< HEAD
 		dev_err(mv_chan->device->common.dev,
+=======
+		dev_err(mv_chan_to_devp(mv_chan),
+>>>>>>> refs/remotes/origin/master
 			"freeing %d in use descriptors!\n", in_use_descs);
 }
 
@@ -820,6 +1028,8 @@ static enum dma_status mv_xor_status(struct dma_chan *chan,
 					  struct dma_tx_state *txstate)
 {
 	struct mv_xor_chan *mv_chan = to_mv_xor_chan(chan);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dma_cookie_t last_used;
 	dma_cookie_t last_complete;
 	enum dma_status ret;
@@ -830,23 +1040,43 @@ static enum dma_status mv_xor_status(struct dma_chan *chan,
 	dma_set_tx_state(txstate, last_complete, last_used, 0);
 
 	ret = dma_async_is_complete(cookie, last_complete, last_used);
+=======
+	enum dma_status ret;
+
+	ret = dma_cookie_status(chan, cookie, txstate);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret == DMA_SUCCESS) {
+=======
+	enum dma_status ret;
+
+	ret = dma_cookie_status(chan, cookie, txstate);
+	if (ret == DMA_COMPLETE) {
+>>>>>>> refs/remotes/origin/master
 		mv_xor_clean_completed_slots(mv_chan);
 		return ret;
 	}
 	mv_xor_slot_cleanup(mv_chan);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	last_used = chan->cookie;
 	last_complete = mv_chan->completed_cookie;
 
 	dma_set_tx_state(txstate, last_complete, last_used, 0);
 	return dma_async_is_complete(cookie, last_complete, last_used);
+=======
+	return dma_cookie_status(chan, cookie, txstate);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return dma_cookie_status(chan, cookie, txstate);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mv_dump_xor_regs(struct mv_xor_chan *chan)
 {
 	u32 val;
 
+<<<<<<< HEAD
 	val = __raw_readl(XOR_CONFIG(chan));
 	dev_printk(KERN_ERR, chan->device->common.dev,
 		   "config       0x%08x.\n", val);
@@ -870,20 +1100,49 @@ static void mv_dump_xor_regs(struct mv_xor_chan *chan)
 	val = __raw_readl(XOR_ERROR_ADDR(chan));
 	dev_printk(KERN_ERR, chan->device->common.dev,
 		   "error addr   0x%08x.\n", val);
+=======
+	val = readl_relaxed(XOR_CONFIG(chan));
+	dev_err(mv_chan_to_devp(chan), "config       0x%08x\n", val);
+
+	val = readl_relaxed(XOR_ACTIVATION(chan));
+	dev_err(mv_chan_to_devp(chan), "activation   0x%08x\n", val);
+
+	val = readl_relaxed(XOR_INTR_CAUSE(chan));
+	dev_err(mv_chan_to_devp(chan), "intr cause   0x%08x\n", val);
+
+	val = readl_relaxed(XOR_INTR_MASK(chan));
+	dev_err(mv_chan_to_devp(chan), "intr mask    0x%08x\n", val);
+
+	val = readl_relaxed(XOR_ERROR_CAUSE(chan));
+	dev_err(mv_chan_to_devp(chan), "error cause  0x%08x\n", val);
+
+	val = readl_relaxed(XOR_ERROR_ADDR(chan));
+	dev_err(mv_chan_to_devp(chan), "error addr   0x%08x\n", val);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mv_xor_err_interrupt_handler(struct mv_xor_chan *chan,
 					 u32 intr_cause)
 {
 	if (intr_cause & (1 << 4)) {
+<<<<<<< HEAD
 	     dev_dbg(chan->device->common.dev,
+=======
+	     dev_dbg(mv_chan_to_devp(chan),
+>>>>>>> refs/remotes/origin/master
 		     "ignore this error\n");
 	     return;
 	}
 
+<<<<<<< HEAD
 	dev_printk(KERN_ERR, chan->device->common.dev,
 		   "error on chan %d. intr cause 0x%08x.\n",
 		   chan->idx, intr_cause);
+=======
+	dev_err(mv_chan_to_devp(chan),
+		"error on chan %d. intr cause 0x%08x\n",
+		chan->idx, intr_cause);
+>>>>>>> refs/remotes/origin/master
 
 	mv_dump_xor_regs(chan);
 	BUG();
@@ -894,7 +1153,11 @@ static irqreturn_t mv_xor_interrupt_handler(int irq, void *data)
 	struct mv_xor_chan *chan = data;
 	u32 intr_cause = mv_chan_get_intr_cause(chan);
 
+<<<<<<< HEAD
 	dev_dbg(chan->device->common.dev, "intr cause %x\n", intr_cause);
+=======
+	dev_dbg(mv_chan_to_devp(chan), "intr cause %x\n", intr_cause);
+>>>>>>> refs/remotes/origin/master
 
 	if (mv_is_err_intr(intr_cause))
 		mv_xor_err_interrupt_handler(chan, intr_cause);
@@ -919,9 +1182,14 @@ static void mv_xor_issue_pending(struct dma_chan *chan)
 /*
  * Perform a transaction to verify the HW works.
  */
+<<<<<<< HEAD
 #define MV_XOR_TEST_SIZE 2000
 
 static int __devinit mv_xor_memcpy_self_test(struct mv_xor_device *device)
+=======
+
+static int mv_xor_memcpy_self_test(struct mv_xor_chan *mv_chan)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	void *src, *dest;
@@ -929,6 +1197,7 @@ static int __devinit mv_xor_memcpy_self_test(struct mv_xor_device *device)
 	struct dma_chan *dma_chan;
 	dma_cookie_t cookie;
 	struct dma_async_tx_descriptor *tx;
+<<<<<<< HEAD
 	int err = 0;
 	struct mv_xor_chan *mv_chan;
 
@@ -937,12 +1206,23 @@ static int __devinit mv_xor_memcpy_self_test(struct mv_xor_device *device)
 		return -ENOMEM;
 
 	dest = kzalloc(sizeof(u8) * MV_XOR_TEST_SIZE, GFP_KERNEL);
+=======
+	struct dmaengine_unmap_data *unmap;
+	int err = 0;
+
+	src = kmalloc(sizeof(u8) * PAGE_SIZE, GFP_KERNEL);
+	if (!src)
+		return -ENOMEM;
+
+	dest = kzalloc(sizeof(u8) * PAGE_SIZE, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!dest) {
 		kfree(src);
 		return -ENOMEM;
 	}
 
 	/* Fill in src buffer */
+<<<<<<< HEAD
 	for (i = 0; i < MV_XOR_TEST_SIZE; i++)
 		((u8 *) src)[i] = (u8)i;
 
@@ -950,11 +1230,18 @@ static int __devinit mv_xor_memcpy_self_test(struct mv_xor_device *device)
 	dma_chan = container_of(device->common.channels.next,
 				struct dma_chan,
 				device_node);
+=======
+	for (i = 0; i < PAGE_SIZE; i++)
+		((u8 *) src)[i] = (u8)i;
+
+	dma_chan = &mv_chan->dmachan;
+>>>>>>> refs/remotes/origin/master
 	if (mv_xor_alloc_chan_resources(dma_chan) < 1) {
 		err = -ENODEV;
 		goto out;
 	}
 
+<<<<<<< HEAD
 	dest_dma = dma_map_single(dma_chan->device->dev, dest,
 				  MV_XOR_TEST_SIZE, DMA_FROM_DEVICE);
 
@@ -963,30 +1250,70 @@ static int __devinit mv_xor_memcpy_self_test(struct mv_xor_device *device)
 
 	tx = mv_xor_prep_dma_memcpy(dma_chan, dest_dma, src_dma,
 				    MV_XOR_TEST_SIZE, 0);
+=======
+	unmap = dmaengine_get_unmap_data(dma_chan->device->dev, 2, GFP_KERNEL);
+	if (!unmap) {
+		err = -ENOMEM;
+		goto free_resources;
+	}
+
+	src_dma = dma_map_page(dma_chan->device->dev, virt_to_page(src), 0,
+				 PAGE_SIZE, DMA_TO_DEVICE);
+	unmap->to_cnt = 1;
+	unmap->addr[0] = src_dma;
+
+	dest_dma = dma_map_page(dma_chan->device->dev, virt_to_page(dest), 0,
+				  PAGE_SIZE, DMA_FROM_DEVICE);
+	unmap->from_cnt = 1;
+	unmap->addr[1] = dest_dma;
+
+	unmap->len = PAGE_SIZE;
+
+	tx = mv_xor_prep_dma_memcpy(dma_chan, dest_dma, src_dma,
+				    PAGE_SIZE, 0);
+>>>>>>> refs/remotes/origin/master
 	cookie = mv_xor_tx_submit(tx);
 	mv_xor_issue_pending(dma_chan);
 	async_tx_ack(tx);
 	msleep(1);
 
 	if (mv_xor_status(dma_chan, cookie, NULL) !=
+<<<<<<< HEAD
 	    DMA_SUCCESS) {
 		dev_printk(KERN_ERR, dma_chan->device->dev,
 			   "Self-test copy timed out, disabling\n");
+=======
+	    DMA_COMPLETE) {
+		dev_err(dma_chan->device->dev,
+			"Self-test copy timed out, disabling\n");
+>>>>>>> refs/remotes/origin/master
 		err = -ENODEV;
 		goto free_resources;
 	}
 
+<<<<<<< HEAD
 	mv_chan = to_mv_xor_chan(dma_chan);
 	dma_sync_single_for_cpu(&mv_chan->device->pdev->dev, dest_dma,
 				MV_XOR_TEST_SIZE, DMA_FROM_DEVICE);
 	if (memcmp(src, dest, MV_XOR_TEST_SIZE)) {
 		dev_printk(KERN_ERR, dma_chan->device->dev,
 			   "Self-test copy failed compare, disabling\n");
+=======
+	dma_sync_single_for_cpu(dma_chan->device->dev, dest_dma,
+				PAGE_SIZE, DMA_FROM_DEVICE);
+	if (memcmp(src, dest, PAGE_SIZE)) {
+		dev_err(dma_chan->device->dev,
+			"Self-test copy failed compare, disabling\n");
+>>>>>>> refs/remotes/origin/master
 		err = -ENODEV;
 		goto free_resources;
 	}
 
 free_resources:
+<<<<<<< HEAD
+=======
+	dmaengine_unmap_put(unmap);
+>>>>>>> refs/remotes/origin/master
 	mv_xor_free_chan_resources(dma_chan);
 out:
 	kfree(src);
@@ -995,8 +1322,13 @@ out:
 }
 
 #define MV_XOR_NUM_SRC_TEST 4 /* must be <= 15 */
+<<<<<<< HEAD
 static int __devinit
 mv_xor_xor_self_test(struct mv_xor_device *device)
+=======
+static int
+mv_xor_xor_self_test(struct mv_xor_chan *mv_chan)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, src_idx;
 	struct page *dest;
@@ -1004,14 +1336,24 @@ mv_xor_xor_self_test(struct mv_xor_device *device)
 	dma_addr_t dma_srcs[MV_XOR_NUM_SRC_TEST];
 	dma_addr_t dest_dma;
 	struct dma_async_tx_descriptor *tx;
+<<<<<<< HEAD
+=======
+	struct dmaengine_unmap_data *unmap;
+>>>>>>> refs/remotes/origin/master
 	struct dma_chan *dma_chan;
 	dma_cookie_t cookie;
 	u8 cmp_byte = 0;
 	u32 cmp_word;
 	int err = 0;
+<<<<<<< HEAD
 	struct mv_xor_chan *mv_chan;
 
 	for (src_idx = 0; src_idx < MV_XOR_NUM_SRC_TEST; src_idx++) {
+=======
+	int src_count = MV_XOR_NUM_SRC_TEST;
+
+	for (src_idx = 0; src_idx < src_count; src_idx++) {
+>>>>>>> refs/remotes/origin/master
 		xor_srcs[src_idx] = alloc_page(GFP_KERNEL);
 		if (!xor_srcs[src_idx]) {
 			while (src_idx--)
@@ -1028,13 +1370,21 @@ mv_xor_xor_self_test(struct mv_xor_device *device)
 	}
 
 	/* Fill in src buffers */
+<<<<<<< HEAD
 	for (src_idx = 0; src_idx < MV_XOR_NUM_SRC_TEST; src_idx++) {
+=======
+	for (src_idx = 0; src_idx < src_count; src_idx++) {
+>>>>>>> refs/remotes/origin/master
 		u8 *ptr = page_address(xor_srcs[src_idx]);
 		for (i = 0; i < PAGE_SIZE; i++)
 			ptr[i] = (1 << src_idx);
 	}
 
+<<<<<<< HEAD
 	for (src_idx = 0; src_idx < MV_XOR_NUM_SRC_TEST; src_idx++)
+=======
+	for (src_idx = 0; src_idx < src_count; src_idx++)
+>>>>>>> refs/remotes/origin/master
 		cmp_byte ^= (u8) (1 << src_idx);
 
 	cmp_word = (cmp_byte << 24) | (cmp_byte << 16) |
@@ -1042,14 +1392,19 @@ mv_xor_xor_self_test(struct mv_xor_device *device)
 
 	memset(page_address(dest), 0, PAGE_SIZE);
 
+<<<<<<< HEAD
 	dma_chan = container_of(device->common.channels.next,
 				struct dma_chan,
 				device_node);
+=======
+	dma_chan = &mv_chan->dmachan;
+>>>>>>> refs/remotes/origin/master
 	if (mv_xor_alloc_chan_resources(dma_chan) < 1) {
 		err = -ENODEV;
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/* test xor */
 	dest_dma = dma_map_page(dma_chan->device->dev, dest, 0, PAGE_SIZE,
 				DMA_FROM_DEVICE);
@@ -1060,6 +1415,31 @@ mv_xor_xor_self_test(struct mv_xor_device *device)
 
 	tx = mv_xor_prep_dma_xor(dma_chan, dest_dma, dma_srcs,
 				 MV_XOR_NUM_SRC_TEST, PAGE_SIZE, 0);
+=======
+	unmap = dmaengine_get_unmap_data(dma_chan->device->dev, src_count + 1,
+					 GFP_KERNEL);
+	if (!unmap) {
+		err = -ENOMEM;
+		goto free_resources;
+	}
+
+	/* test xor */
+	for (i = 0; i < src_count; i++) {
+		unmap->addr[i] = dma_map_page(dma_chan->device->dev, xor_srcs[i],
+					      0, PAGE_SIZE, DMA_TO_DEVICE);
+		dma_srcs[i] = unmap->addr[i];
+		unmap->to_cnt++;
+	}
+
+	unmap->addr[src_count] = dma_map_page(dma_chan->device->dev, dest, 0, PAGE_SIZE,
+				      DMA_FROM_DEVICE);
+	dest_dma = unmap->addr[src_count];
+	unmap->from_cnt = 1;
+	unmap->len = PAGE_SIZE;
+
+	tx = mv_xor_prep_dma_xor(dma_chan, dest_dma, dma_srcs,
+				 src_count, PAGE_SIZE, 0);
+>>>>>>> refs/remotes/origin/master
 
 	cookie = mv_xor_tx_submit(tx);
 	mv_xor_issue_pending(dma_chan);
@@ -1067,38 +1447,62 @@ mv_xor_xor_self_test(struct mv_xor_device *device)
 	msleep(8);
 
 	if (mv_xor_status(dma_chan, cookie, NULL) !=
+<<<<<<< HEAD
 	    DMA_SUCCESS) {
 		dev_printk(KERN_ERR, dma_chan->device->dev,
 			   "Self-test xor timed out, disabling\n");
+=======
+	    DMA_COMPLETE) {
+		dev_err(dma_chan->device->dev,
+			"Self-test xor timed out, disabling\n");
+>>>>>>> refs/remotes/origin/master
 		err = -ENODEV;
 		goto free_resources;
 	}
 
+<<<<<<< HEAD
 	mv_chan = to_mv_xor_chan(dma_chan);
 	dma_sync_single_for_cpu(&mv_chan->device->pdev->dev, dest_dma,
+=======
+	dma_sync_single_for_cpu(dma_chan->device->dev, dest_dma,
+>>>>>>> refs/remotes/origin/master
 				PAGE_SIZE, DMA_FROM_DEVICE);
 	for (i = 0; i < (PAGE_SIZE / sizeof(u32)); i++) {
 		u32 *ptr = page_address(dest);
 		if (ptr[i] != cmp_word) {
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, dma_chan->device->dev,
 				   "Self-test xor failed compare, disabling."
 				   " index %d, data %x, expected %x\n", i,
 				   ptr[i], cmp_word);
+=======
+			dev_err(dma_chan->device->dev,
+				"Self-test xor failed compare, disabling. index %d, data %x, expected %x\n",
+				i, ptr[i], cmp_word);
+>>>>>>> refs/remotes/origin/master
 			err = -ENODEV;
 			goto free_resources;
 		}
 	}
 
 free_resources:
+<<<<<<< HEAD
 	mv_xor_free_chan_resources(dma_chan);
 out:
 	src_idx = MV_XOR_NUM_SRC_TEST;
+=======
+	dmaengine_unmap_put(unmap);
+	mv_xor_free_chan_resources(dma_chan);
+out:
+	src_idx = src_count;
+>>>>>>> refs/remotes/origin/master
 	while (src_idx--)
 		__free_page(xor_srcs[src_idx]);
 	__free_page(dest);
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit mv_xor_remove(struct platform_device *dev)
 {
 	struct mv_xor_device *device = platform_get_drvdata(dev);
@@ -1135,11 +1539,59 @@ static int __devinit mv_xor_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 	dma_dev = &adev->common;
+=======
+/* This driver does not implement any of the optional DMA operations. */
+static int
+mv_xor_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
+	       unsigned long arg)
+{
+	return -ENOSYS;
+}
+
+static int mv_xor_channel_remove(struct mv_xor_chan *mv_chan)
+{
+	struct dma_chan *chan, *_chan;
+	struct device *dev = mv_chan->dmadev.dev;
+
+	dma_async_device_unregister(&mv_chan->dmadev);
+
+	dma_free_coherent(dev, MV_XOR_POOL_SIZE,
+			  mv_chan->dma_desc_pool_virt, mv_chan->dma_desc_pool);
+
+	list_for_each_entry_safe(chan, _chan, &mv_chan->dmadev.channels,
+				 device_node) {
+		list_del(&chan->device_node);
+	}
+
+	free_irq(mv_chan->irq, mv_chan);
+
+	return 0;
+}
+
+static struct mv_xor_chan *
+mv_xor_channel_add(struct mv_xor_device *xordev,
+		   struct platform_device *pdev,
+		   int idx, dma_cap_mask_t cap_mask, int irq)
+{
+	int ret = 0;
+	struct mv_xor_chan *mv_chan;
+	struct dma_device *dma_dev;
+
+	mv_chan = devm_kzalloc(&pdev->dev, sizeof(*mv_chan), GFP_KERNEL);
+	if (!mv_chan)
+		return ERR_PTR(-ENOMEM);
+
+	mv_chan->idx = idx;
+	mv_chan->irq = irq;
+
+	dma_dev = &mv_chan->dmadev;
+>>>>>>> refs/remotes/origin/master
 
 	/* allocate coherent memory for hardware descriptors
 	 * note: writecombine gives slightly better performance, but
 	 * requires that we explicitly flush the writes
 	 */
+<<<<<<< HEAD
 	adev->dma_desc_pool_virt = dma_alloc_writecombine(&pdev->dev,
 							  plat_data->pool_size,
 							  &adev->dma_desc_pool,
@@ -1155,6 +1607,16 @@ static int __devinit mv_xor_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, adev);
 
 	adev->shared = platform_get_drvdata(plat_data->shared);
+=======
+	mv_chan->dma_desc_pool_virt =
+	  dma_alloc_writecombine(&pdev->dev, MV_XOR_POOL_SIZE,
+				 &mv_chan->dma_desc_pool, GFP_KERNEL);
+	if (!mv_chan->dma_desc_pool_virt)
+		return ERR_PTR(-ENOMEM);
+
+	/* discover transaction capabilites from the platform data */
+	dma_dev->cap_mask = cap_mask;
+>>>>>>> refs/remotes/origin/master
 
 	INIT_LIST_HEAD(&dma_dev->channels);
 
@@ -1163,18 +1625,26 @@ static int __devinit mv_xor_probe(struct platform_device *pdev)
 	dma_dev->device_free_chan_resources = mv_xor_free_chan_resources;
 	dma_dev->device_tx_status = mv_xor_status;
 	dma_dev->device_issue_pending = mv_xor_issue_pending;
+<<<<<<< HEAD
+=======
+	dma_dev->device_control = mv_xor_control;
+>>>>>>> refs/remotes/origin/master
 	dma_dev->dev = &pdev->dev;
 
 	/* set prep routines based on capability */
 	if (dma_has_cap(DMA_MEMCPY, dma_dev->cap_mask))
 		dma_dev->device_prep_dma_memcpy = mv_xor_prep_dma_memcpy;
+<<<<<<< HEAD
 	if (dma_has_cap(DMA_MEMSET, dma_dev->cap_mask))
 		dma_dev->device_prep_dma_memset = mv_xor_prep_dma_memset;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dma_has_cap(DMA_XOR, dma_dev->cap_mask)) {
 		dma_dev->max_xor = 8;
 		dma_dev->device_prep_dma_xor = mv_xor_prep_dma_xor;
 	}
 
+<<<<<<< HEAD
 	mv_chan = devm_kzalloc(&pdev->dev, sizeof(*mv_chan), GFP_KERNEL);
 	if (!mv_chan) {
 		ret = -ENOMEM;
@@ -1188,12 +1658,17 @@ static int __devinit mv_xor_probe(struct platform_device *pdev)
 		ret = -ENOMEM;
 		goto err_free_dma;
 	}
+=======
+	mv_chan->mmr_base = xordev->xor_base;
+	mv_chan->mmr_high_base = xordev->xor_high_base;
+>>>>>>> refs/remotes/origin/master
 	tasklet_init(&mv_chan->irq_tasklet, mv_xor_tasklet, (unsigned long)
 		     mv_chan);
 
 	/* clear errors before enabling interrupts */
 	mv_xor_device_clear_err_status(mv_chan);
 
+<<<<<<< HEAD
 	irq = platform_get_irq(pdev, 0);
 	if (irq < 0) {
 		ret = irq;
@@ -1202,6 +1677,10 @@ static int __devinit mv_xor_probe(struct platform_device *pdev)
 	ret = devm_request_irq(&pdev->dev, irq,
 			       mv_xor_interrupt_handler,
 			       0, dev_name(&pdev->dev), mv_chan);
+=======
+	ret = request_irq(mv_chan->irq, mv_xor_interrupt_handler,
+			  0, dev_name(&pdev->dev), mv_chan);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_free_dma;
 
@@ -1213,7 +1692,12 @@ static int __devinit mv_xor_probe(struct platform_device *pdev)
 	INIT_LIST_HEAD(&mv_chan->chain);
 	INIT_LIST_HEAD(&mv_chan->completed_slots);
 	INIT_LIST_HEAD(&mv_chan->all_slots);
+<<<<<<< HEAD
 	mv_chan->common.device = dma_dev;
+<<<<<<< HEAD
+=======
+	dma_cookie_init(&mv_chan->common);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	list_add_tail(&mv_chan->common.device_node, &dma_dev->channels);
 
@@ -1250,9 +1734,55 @@ static int __devinit mv_xor_probe(struct platform_device *pdev)
 
 static void
 mv_xor_conf_mbus_windows(struct mv_xor_shared_private *msp,
+<<<<<<< HEAD
 			 struct mbus_dram_target_info *dram)
+=======
+			 const struct mbus_dram_target_info *dram)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void __iomem *base = msp->xor_base;
+=======
+	mv_chan->dmachan.device = dma_dev;
+	dma_cookie_init(&mv_chan->dmachan);
+
+	list_add_tail(&mv_chan->dmachan.device_node, &dma_dev->channels);
+
+	if (dma_has_cap(DMA_MEMCPY, dma_dev->cap_mask)) {
+		ret = mv_xor_memcpy_self_test(mv_chan);
+		dev_dbg(&pdev->dev, "memcpy self test returned %d\n", ret);
+		if (ret)
+			goto err_free_irq;
+	}
+
+	if (dma_has_cap(DMA_XOR, dma_dev->cap_mask)) {
+		ret = mv_xor_xor_self_test(mv_chan);
+		dev_dbg(&pdev->dev, "xor self test returned %d\n", ret);
+		if (ret)
+			goto err_free_irq;
+	}
+
+	dev_info(&pdev->dev, "Marvell XOR: ( %s%s%s)\n",
+		 dma_has_cap(DMA_XOR, dma_dev->cap_mask) ? "xor " : "",
+		 dma_has_cap(DMA_MEMCPY, dma_dev->cap_mask) ? "cpy " : "",
+		 dma_has_cap(DMA_INTERRUPT, dma_dev->cap_mask) ? "intr " : "");
+
+	dma_async_device_register(dma_dev);
+	return mv_chan;
+
+err_free_irq:
+	free_irq(mv_chan->irq, mv_chan);
+ err_free_dma:
+	dma_free_coherent(&pdev->dev, MV_XOR_POOL_SIZE,
+			  mv_chan->dma_desc_pool_virt, mv_chan->dma_desc_pool);
+	return ERR_PTR(ret);
+}
+
+static void
+mv_xor_conf_mbus_windows(struct mv_xor_device *xordev,
+			 const struct mbus_dram_target_info *dram)
+{
+	void __iomem *base = xordev->xor_high_base;
+>>>>>>> refs/remotes/origin/master
 	u32 win_enable = 0;
 	int i;
 
@@ -1264,7 +1794,15 @@ mv_xor_conf_mbus_windows(struct mv_xor_shared_private *msp,
 	}
 
 	for (i = 0; i < dram->num_cs; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct mbus_dram_window *cs = dram->cs + i;
+=======
+		const struct mbus_dram_window *cs = dram->cs + i;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const struct mbus_dram_window *cs = dram->cs + i;
+>>>>>>> refs/remotes/origin/master
 
 		writel((cs->base & 0xffff0000) |
 		       (cs->mbus_attr << 8) |
@@ -1277,6 +1815,7 @@ mv_xor_conf_mbus_windows(struct mv_xor_shared_private *msp,
 
 	writel(win_enable, base + WINDOW_BAR_ENABLE(0));
 	writel(win_enable, base + WINDOW_BAR_ENABLE(1));
+<<<<<<< HEAD
 }
 
 static struct platform_driver mv_xor_driver = {
@@ -1290,7 +1829,11 @@ static struct platform_driver mv_xor_driver = {
 
 static int mv_xor_shared_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct mv_xor_platform_shared_data *msd = pdev->dev.platform_data;
+=======
+	const struct mbus_dram_target_info *dram;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mv_xor_shared_private *msp;
 	struct resource *res;
 
@@ -1298,33 +1841,81 @@ static int mv_xor_shared_probe(struct platform_device *pdev)
 
 	msp = devm_kzalloc(&pdev->dev, sizeof(*msp), GFP_KERNEL);
 	if (!msp)
+=======
+	writel(0, base + WINDOW_OVERRIDE_CTRL(0));
+	writel(0, base + WINDOW_OVERRIDE_CTRL(1));
+}
+
+static int mv_xor_probe(struct platform_device *pdev)
+{
+	const struct mbus_dram_target_info *dram;
+	struct mv_xor_device *xordev;
+	struct mv_xor_platform_data *pdata = dev_get_platdata(&pdev->dev);
+	struct resource *res;
+	int i, ret;
+
+	dev_notice(&pdev->dev, "Marvell shared XOR driver\n");
+
+	xordev = devm_kzalloc(&pdev->dev, sizeof(*xordev), GFP_KERNEL);
+	if (!xordev)
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	msp->xor_base = devm_ioremap(&pdev->dev, res->start,
+<<<<<<< HEAD
 				     res->end - res->start + 1);
+=======
+				     resource_size(res));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!msp->xor_base)
+=======
+	xordev->xor_base = devm_ioremap(&pdev->dev, res->start,
+					resource_size(res));
+	if (!xordev->xor_base)
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 	if (!res)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	msp->xor_high_base = devm_ioremap(&pdev->dev, res->start,
+<<<<<<< HEAD
 					  res->end - res->start + 1);
+=======
+					  resource_size(res));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!msp->xor_high_base)
 		return -EBUSY;
 
 	platform_set_drvdata(pdev, msp);
+=======
+	xordev->xor_high_base = devm_ioremap(&pdev->dev, res->start,
+					     resource_size(res));
+	if (!xordev->xor_high_base)
+		return -EBUSY;
+
+	platform_set_drvdata(pdev, xordev);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * (Re-)program MBUS remapping windows if we are asked to.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (msd != NULL && msd->dram != NULL)
 		mv_xor_conf_mbus_windows(msp, msd->dram);
+=======
+	dram = mv_mbus_dram_info();
+	if (dram)
+		mv_xor_conf_mbus_windows(msp, dram);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -1340,12 +1931,140 @@ static struct platform_driver mv_xor_shared_driver = {
 	.driver		= {
 		.owner	= THIS_MODULE,
 		.name	= MV_XOR_SHARED_NAME,
+=======
+	dram = mv_mbus_dram_info();
+	if (dram)
+		mv_xor_conf_mbus_windows(xordev, dram);
+
+	/* Not all platforms can gate the clock, so it is not
+	 * an error if the clock does not exists.
+	 */
+	xordev->clk = clk_get(&pdev->dev, NULL);
+	if (!IS_ERR(xordev->clk))
+		clk_prepare_enable(xordev->clk);
+
+	if (pdev->dev.of_node) {
+		struct device_node *np;
+		int i = 0;
+
+		for_each_child_of_node(pdev->dev.of_node, np) {
+			struct mv_xor_chan *chan;
+			dma_cap_mask_t cap_mask;
+			int irq;
+
+			dma_cap_zero(cap_mask);
+			if (of_property_read_bool(np, "dmacap,memcpy"))
+				dma_cap_set(DMA_MEMCPY, cap_mask);
+			if (of_property_read_bool(np, "dmacap,xor"))
+				dma_cap_set(DMA_XOR, cap_mask);
+			if (of_property_read_bool(np, "dmacap,interrupt"))
+				dma_cap_set(DMA_INTERRUPT, cap_mask);
+
+			irq = irq_of_parse_and_map(np, 0);
+			if (!irq) {
+				ret = -ENODEV;
+				goto err_channel_add;
+			}
+
+			chan = mv_xor_channel_add(xordev, pdev, i,
+						  cap_mask, irq);
+			if (IS_ERR(chan)) {
+				ret = PTR_ERR(chan);
+				irq_dispose_mapping(irq);
+				goto err_channel_add;
+			}
+
+			xordev->channels[i] = chan;
+			i++;
+		}
+	} else if (pdata && pdata->channels) {
+		for (i = 0; i < MV_XOR_MAX_CHANNELS; i++) {
+			struct mv_xor_channel_data *cd;
+			struct mv_xor_chan *chan;
+			int irq;
+
+			cd = &pdata->channels[i];
+			if (!cd) {
+				ret = -ENODEV;
+				goto err_channel_add;
+			}
+
+			irq = platform_get_irq(pdev, i);
+			if (irq < 0) {
+				ret = irq;
+				goto err_channel_add;
+			}
+
+			chan = mv_xor_channel_add(xordev, pdev, i,
+						  cd->cap_mask, irq);
+			if (IS_ERR(chan)) {
+				ret = PTR_ERR(chan);
+				goto err_channel_add;
+			}
+
+			xordev->channels[i] = chan;
+		}
+	}
+
+	return 0;
+
+err_channel_add:
+	for (i = 0; i < MV_XOR_MAX_CHANNELS; i++)
+		if (xordev->channels[i]) {
+			mv_xor_channel_remove(xordev->channels[i]);
+			if (pdev->dev.of_node)
+				irq_dispose_mapping(xordev->channels[i]->irq);
+		}
+
+	if (!IS_ERR(xordev->clk)) {
+		clk_disable_unprepare(xordev->clk);
+		clk_put(xordev->clk);
+	}
+
+	return ret;
+}
+
+static int mv_xor_remove(struct platform_device *pdev)
+{
+	struct mv_xor_device *xordev = platform_get_drvdata(pdev);
+	int i;
+
+	for (i = 0; i < MV_XOR_MAX_CHANNELS; i++) {
+		if (xordev->channels[i])
+			mv_xor_channel_remove(xordev->channels[i]);
+	}
+
+	if (!IS_ERR(xordev->clk)) {
+		clk_disable_unprepare(xordev->clk);
+		clk_put(xordev->clk);
+	}
+
+	return 0;
+}
+
+#ifdef CONFIG_OF
+static struct of_device_id mv_xor_dt_ids[] = {
+       { .compatible = "marvell,orion-xor", },
+       {},
+};
+MODULE_DEVICE_TABLE(of, mv_xor_dt_ids);
+#endif
+
+static struct platform_driver mv_xor_driver = {
+	.probe		= mv_xor_probe,
+	.remove		= mv_xor_remove,
+	.driver		= {
+		.owner	        = THIS_MODULE,
+		.name	        = MV_XOR_NAME,
+		.of_match_table = of_match_ptr(mv_xor_dt_ids),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
 
 static int __init mv_xor_init(void)
 {
+<<<<<<< HEAD
 	int rc;
 
 	rc = platform_driver_register(&mv_xor_shared_driver);
@@ -1355,6 +2074,9 @@ static int __init mv_xor_init(void)
 			platform_driver_unregister(&mv_xor_shared_driver);
 	}
 	return rc;
+=======
+	return platform_driver_register(&mv_xor_driver);
+>>>>>>> refs/remotes/origin/master
 }
 module_init(mv_xor_init);
 
@@ -1363,7 +2085,10 @@ module_init(mv_xor_init);
 static void __exit mv_xor_exit(void)
 {
 	platform_driver_unregister(&mv_xor_driver);
+<<<<<<< HEAD
 	platform_driver_unregister(&mv_xor_shared_driver);
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 

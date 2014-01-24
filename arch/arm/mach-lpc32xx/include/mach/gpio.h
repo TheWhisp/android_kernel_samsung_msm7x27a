@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * arch/arm/mach-lpc32xx/include/mach/gpio.h
  *
@@ -72,3 +73,6 @@ static inline int gpio_to_irq(unsigned gpio)
 }
 
 #endif
+=======
+/* empty */
+>>>>>>> refs/remotes/origin/cm-10.0

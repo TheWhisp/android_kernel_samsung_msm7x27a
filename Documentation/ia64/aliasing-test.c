@@ -132,6 +132,10 @@ static int read_rom(char *path)
 
 	rc = write(fd, "1", 2);
 	if (rc <= 0) {
+<<<<<<< HEAD
+=======
+		close(fd);
+>>>>>>> refs/remotes/origin/master
 		perror("write");
 		return -1;
 	}

@@ -1,9 +1,15 @@
 /*
+<<<<<<< HEAD
  *  linux/drivers/s390/crypto/zcrypt_cex2a.h
  *
  *  zcrypt 2.1.0
  *
  *  Copyright (C)  2001, 2006 IBM Corporation
+=======
+ *  zcrypt 2.1.0
+ *
+ *  Copyright IBM Corp. 2001, 2006
+>>>>>>> refs/remotes/origin/master
  *  Author(s): Robert Burroughs
  *	       Eric Rossman (edrossma@us.ibm.com)
  *

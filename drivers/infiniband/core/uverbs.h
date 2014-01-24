@@ -47,6 +47,25 @@
 #include <rdma/ib_umem.h>
 #include <rdma/ib_user_verbs.h>
 
+<<<<<<< HEAD
+=======
+#define INIT_UDATA(udata, ibuf, obuf, ilen, olen)			\
+	do {								\
+		(udata)->inbuf  = (const void __user *) (ibuf);		\
+		(udata)->outbuf = (void __user *) (obuf);		\
+		(udata)->inlen  = (ilen);				\
+		(udata)->outlen = (olen);				\
+	} while (0)
+
+#define INIT_UDATA_BUF_OR_NULL(udata, ibuf, obuf, ilen, olen)			\
+	do {									\
+		(udata)->inbuf  = (ilen) ? (const void __user *) (ibuf) : NULL;	\
+		(udata)->outbuf = (olen) ? (void __user *) (obuf) : NULL;	\
+		(udata)->inlen  = (ilen);					\
+		(udata)->outlen = (olen);					\
+	} while (0)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Our lifetime rules for these structs are the following:
  *
@@ -76,6 +95,16 @@ struct ib_uverbs_device {
 	struct ib_device		       *ib_dev;
 	int					devnum;
 	struct cdev			        cdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct rb_root				xrcd_tree;
+	struct mutex				xrcd_tree_mutex;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rb_root				xrcd_tree;
+	struct mutex				xrcd_tree_mutex;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ib_uverbs_event_file {
@@ -120,9 +149,32 @@ struct ib_uevent_object {
 	u32			events_reported;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct ib_uxrcd_object {
+	struct ib_uobject	uobject;
+	atomic_t		refcnt;
+};
+
+struct ib_usrq_object {
+	struct ib_uevent_object	uevent;
+	struct ib_uxrcd_object *uxrcd;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ib_uqp_object {
 	struct ib_uevent_object	uevent;
 	struct list_head 	mcast_list;
+=======
+struct ib_uqp_object {
+	struct ib_uevent_object	uevent;
+	struct list_head 	mcast_list;
+	struct ib_uxrcd_object *uxrcd;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ib_ucq_object {
@@ -142,6 +194,15 @@ extern struct idr ib_uverbs_ah_idr;
 extern struct idr ib_uverbs_cq_idr;
 extern struct idr ib_uverbs_qp_idr;
 extern struct idr ib_uverbs_srq_idr;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern struct idr ib_uverbs_xrcd_idr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct idr ib_uverbs_xrcd_idr;
+extern struct idr ib_uverbs_rule_idr;
+>>>>>>> refs/remotes/origin/master
 
 void idr_remove_uobj(struct idr *idp, struct ib_uobject *uobj);
 
@@ -161,6 +222,30 @@ void ib_uverbs_qp_event_handler(struct ib_event *event, void *context_ptr);
 void ib_uverbs_srq_event_handler(struct ib_event *event, void *context_ptr);
 void ib_uverbs_event_handler(struct ib_event_handler *handler,
 			     struct ib_event *event);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void ib_uverbs_dealloc_xrcd(struct ib_uverbs_device *dev, struct ib_xrcd *xrcd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ib_uverbs_dealloc_xrcd(struct ib_uverbs_device *dev, struct ib_xrcd *xrcd);
+
+struct ib_uverbs_flow_spec {
+	union {
+		union {
+			struct ib_uverbs_flow_spec_hdr hdr;
+			struct {
+				__u32 type;
+				__u16 size;
+				__u16 reserved;
+			};
+		};
+		struct ib_uverbs_flow_spec_eth     eth;
+		struct ib_uverbs_flow_spec_ipv4    ipv4;
+		struct ib_uverbs_flow_spec_tcp_udp tcp_udp;
+	};
+};
+>>>>>>> refs/remotes/origin/master
 
 #define IB_UVERBS_DECLARE_CMD(name)					\
 	ssize_t ib_uverbs_##name(struct ib_uverbs_file *file,		\
@@ -174,6 +259,11 @@ IB_UVERBS_DECLARE_CMD(alloc_pd);
 IB_UVERBS_DECLARE_CMD(dealloc_pd);
 IB_UVERBS_DECLARE_CMD(reg_mr);
 IB_UVERBS_DECLARE_CMD(dereg_mr);
+<<<<<<< HEAD
+=======
+IB_UVERBS_DECLARE_CMD(alloc_mw);
+IB_UVERBS_DECLARE_CMD(dealloc_mw);
+>>>>>>> refs/remotes/origin/master
 IB_UVERBS_DECLARE_CMD(create_comp_channel);
 IB_UVERBS_DECLARE_CMD(create_cq);
 IB_UVERBS_DECLARE_CMD(resize_cq);
@@ -181,6 +271,14 @@ IB_UVERBS_DECLARE_CMD(poll_cq);
 IB_UVERBS_DECLARE_CMD(req_notify_cq);
 IB_UVERBS_DECLARE_CMD(destroy_cq);
 IB_UVERBS_DECLARE_CMD(create_qp);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+IB_UVERBS_DECLARE_CMD(open_qp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+IB_UVERBS_DECLARE_CMD(open_qp);
+>>>>>>> refs/remotes/origin/master
 IB_UVERBS_DECLARE_CMD(query_qp);
 IB_UVERBS_DECLARE_CMD(modify_qp);
 IB_UVERBS_DECLARE_CMD(destroy_qp);
@@ -195,5 +293,25 @@ IB_UVERBS_DECLARE_CMD(create_srq);
 IB_UVERBS_DECLARE_CMD(modify_srq);
 IB_UVERBS_DECLARE_CMD(query_srq);
 IB_UVERBS_DECLARE_CMD(destroy_srq);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+IB_UVERBS_DECLARE_CMD(create_xsrq);
+IB_UVERBS_DECLARE_CMD(open_xrcd);
+IB_UVERBS_DECLARE_CMD(close_xrcd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+IB_UVERBS_DECLARE_CMD(create_xsrq);
+IB_UVERBS_DECLARE_CMD(open_xrcd);
+IB_UVERBS_DECLARE_CMD(close_xrcd);
+
+#define IB_UVERBS_DECLARE_EX_CMD(name)				\
+	int ib_uverbs_ex_##name(struct ib_uverbs_file *file,	\
+				struct ib_udata *ucore,		\
+				struct ib_udata *uhw)
+
+IB_UVERBS_DECLARE_EX_CMD(create_flow);
+IB_UVERBS_DECLARE_EX_CMD(destroy_flow);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* UVERBS_H */

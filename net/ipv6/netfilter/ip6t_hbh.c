@@ -50,7 +50,11 @@ hbh_mt6(const struct sk_buff *skb, struct xt_action_param *par)
 	const struct ipv6_opt_hdr *oh;
 	const struct ip6t_opts *optinfo = par->matchinfo;
 	unsigned int temp;
+<<<<<<< HEAD
 	unsigned int ptr;
+=======
+	unsigned int ptr = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned int hdrlen = 0;
 	bool ret = false;
 	u8 _opttype;
@@ -62,7 +66,11 @@ hbh_mt6(const struct sk_buff *skb, struct xt_action_param *par)
 
 	err = ipv6_find_hdr(skb, &ptr,
 			    (par->match == &hbh_mt6_reg[0]) ?
+<<<<<<< HEAD
 			    NEXTHDR_HOP : NEXTHDR_DEST, NULL);
+=======
+			    NEXTHDR_HOP : NEXTHDR_DEST, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		if (err != -ENOENT)
 			par->hotdrop = true;

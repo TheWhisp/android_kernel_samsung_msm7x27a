@@ -5,7 +5,11 @@
 #include <asm/pgtable.h>
 #include <asm/proto.h>
 
+<<<<<<< HEAD
 static int disable_nx __cpuinitdata;
+=======
+static int disable_nx;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * noexec = on|off
@@ -29,7 +33,11 @@ static int __init noexec_setup(char *str)
 }
 early_param("noexec", noexec_setup);
 
+<<<<<<< HEAD
 void __cpuinit x86_configure_nx(void)
+=======
+void x86_configure_nx(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (cpu_has_nx && !disable_nx)
 		__supported_pte_mask |= _PAGE_NX;

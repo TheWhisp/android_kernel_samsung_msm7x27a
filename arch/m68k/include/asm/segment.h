@@ -22,6 +22,8 @@ typedef struct {
 } mm_segment_t;
 
 #define MAKE_MM_SEG(s)	((mm_segment_t) { (s) })
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define USER_DS		MAKE_MM_SEG(__USER_DS)
 #define KERNEL_DS	MAKE_MM_SEG(__KERNEL_DS)
 
@@ -39,6 +41,33 @@ static inline mm_segment_t get_fs(void)
 #else
 	return USER_DS;
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#ifdef CONFIG_CPU_HAS_ADDRESS_SPACES
+/*
+ * Get/set the SFC/DFC registers for MOVES instructions
+ */
+#define USER_DS		MAKE_MM_SEG(__USER_DS)
+#define KERNEL_DS	MAKE_MM_SEG(__KERNEL_DS)
+
+static inline mm_segment_t get_fs(void)
+{
+	mm_segment_t _v;
+	__asm__ ("movec %/dfc,%0":"=r" (_v.seg):);
+	return _v;
+}
+
+static inline void set_fs(mm_segment_t val)
+{
+	__asm__ __volatile__ ("movec %0,%/sfc\n\t"
+			      "movec %0,%/dfc\n\t"
+			      : /* no outputs */ : "r" (val.seg) : "memory");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline mm_segment_t get_ds(void)
@@ -47,6 +76,8 @@ static inline mm_segment_t get_ds(void)
     return KERNEL_DS;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void set_fs(mm_segment_t val)
 {
 #ifdef CONFIG_MMU
@@ -55,6 +86,20 @@ static inline void set_fs(mm_segment_t val)
 			      : /* no outputs */ : "r" (val.seg) : "memory");
 #endif
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#else
+#define USER_DS		MAKE_MM_SEG(TASK_SIZE)
+#define KERNEL_DS	MAKE_MM_SEG(0xFFFFFFFF)
+#define get_ds()	(KERNEL_DS)
+#define get_fs()	(current_thread_info()->addr_limit)
+#define set_fs(x)	(current_thread_info()->addr_limit = (x))
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define segment_eq(a,b)	((a).seg == (b).seg)
 

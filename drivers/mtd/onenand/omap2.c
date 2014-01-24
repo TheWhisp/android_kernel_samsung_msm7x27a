@@ -38,9 +38,14 @@
 #include <linux/regulator/consumer.h>
 
 #include <asm/mach/flash.h>
+<<<<<<< HEAD
 #include <plat/gpmc.h>
 #include <plat/onenand.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/dma.h>
 
@@ -49,15 +54,33 @@
 #define DRIVER_NAME "omap2-onenand"
 
 #define ONENAND_IO_SIZE		SZ_128K
+=======
+#include <linux/platform_data/mtd-onenand-omap2.h>
+#include <asm/gpio.h>
+
+#include <linux/omap-dma.h>
+
+#define DRIVER_NAME "omap2-onenand"
+
+>>>>>>> refs/remotes/origin/master
 #define ONENAND_BUFRAM_SIZE	(1024 * 5)
 
 struct omap2_onenand {
 	struct platform_device *pdev;
 	int gpmc_cs;
 	unsigned long phys_base;
+<<<<<<< HEAD
 	int gpio_irq;
 	struct mtd_info mtd;
+<<<<<<< HEAD
 	struct mtd_partition *parts;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int mem_size;
+	int gpio_irq;
+	struct mtd_info mtd;
+>>>>>>> refs/remotes/origin/master
 	struct onenand_chip onenand;
 	struct completion irq_done;
 	struct completion dma_done;
@@ -65,10 +88,19 @@ struct omap2_onenand {
 	int freq;
 	int (*setup)(void __iomem *base, int *freq_ptr);
 	struct regulator *regulator;
+<<<<<<< HEAD
 };
 
+<<<<<<< HEAD
 static const char *part_probes[] = { "cmdlinepart", NULL,  };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 flags;
+};
+
+>>>>>>> refs/remotes/origin/master
 static void omap2_onenand_dma_cb(int lch, u16 ch_status, void *data)
 {
 	struct omap2_onenand *c = data;
@@ -159,12 +191,20 @@ static int omap2_onenand_wait(struct mtd_info *mtd, int state)
 		if (!(syscfg & ONENAND_SYS_CFG1_IOBE)) {
 			syscfg |= ONENAND_SYS_CFG1_IOBE;
 			write_reg(c, syscfg, ONENAND_REG_SYS_CFG1);
+<<<<<<< HEAD
 			if (cpu_is_omap34xx())
+=======
+			if (c->flags & ONENAND_IN_OMAP34XX)
+>>>>>>> refs/remotes/origin/master
 				/* Add a delay to let GPIO settle */
 				syscfg = read_reg(c, ONENAND_REG_SYS_CFG1);
 		}
 
+<<<<<<< HEAD
 		INIT_COMPLETION(c->irq_done);
+=======
+		reinit_completion(&c->irq_done);
+>>>>>>> refs/remotes/origin/master
 		if (c->gpio_irq) {
 			result = gpio_get_value(c->gpio_irq);
 			if (result == -1) {
@@ -354,7 +394,11 @@ static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
 	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
 				 dma_dst, 0, 0);
 
+<<<<<<< HEAD
 	INIT_COMPLETION(c->dma_done);
+=======
+	reinit_completion(&c->dma_done);
+>>>>>>> refs/remotes/origin/master
 	omap_start_dma(c->dma_channel);
 
 	timeout = jiffies + msecs_to_jiffies(20);
@@ -425,7 +469,11 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
 	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
 				 dma_dst, 0, 0);
 
+<<<<<<< HEAD
 	INIT_COMPLETION(c->dma_done);
+=======
+	reinit_completion(&c->dma_done);
+>>>>>>> refs/remotes/origin/master
 	omap_start_dma(c->dma_channel);
 
 	timeout = jiffies + msecs_to_jiffies(20);
@@ -450,6 +498,7 @@ out_copy:
 
 #else
 
+<<<<<<< HEAD
 int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
 				 unsigned char *buffer, int offset,
 				 size_t count);
@@ -457,6 +506,21 @@ int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
 int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
 				  const unsigned char *buffer,
 				  int offset, size_t count);
+=======
+static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
+					unsigned char *buffer, int offset,
+					size_t count)
+{
+	return -ENOSYS;
+}
+
+static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
+					 const unsigned char *buffer,
+					 int offset, size_t count)
+{
+	return -ENOSYS;
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif
 
@@ -498,7 +562,11 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
 	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
 				 dma_dst, 0, 0);
 
+<<<<<<< HEAD
 	INIT_COMPLETION(c->dma_done);
+=======
+	reinit_completion(&c->dma_done);
+>>>>>>> refs/remotes/origin/master
 	omap_start_dma(c->dma_channel);
 	wait_for_completion(&c->dma_done);
 
@@ -543,7 +611,11 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
 	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
 				 dma_dst, 0, 0);
 
+<<<<<<< HEAD
 	INIT_COMPLETION(c->dma_done);
+=======
+	reinit_completion(&c->dma_done);
+>>>>>>> refs/remotes/origin/master
 	omap_start_dma(c->dma_channel);
 	wait_for_completion(&c->dma_done);
 
@@ -554,6 +626,7 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
 
 #else
 
+<<<<<<< HEAD
 int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
 				 unsigned char *buffer, int offset,
 				 size_t count);
@@ -588,6 +661,26 @@ int omap2_onenand_rephase(void)
 				      NULL, __adjust_timing);
 }
 
+=======
+static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
+					unsigned char *buffer, int offset,
+					size_t count)
+{
+	return -ENOSYS;
+}
+
+static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
+					 const unsigned char *buffer,
+					 int offset, size_t count)
+{
+	return -ENOSYS;
+}
+
+#endif
+
+static struct platform_driver omap2_onenand_driver;
+
+>>>>>>> refs/remotes/origin/master
 static void omap2_onenand_shutdown(struct platform_device *pdev)
 {
 	struct omap2_onenand *c = dev_get_drvdata(&pdev->dev);
@@ -623,14 +716,25 @@ static int omap2_onenand_disable(struct mtd_info *mtd)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit omap2_onenand_probe(struct platform_device *pdev)
+=======
+static int omap2_onenand_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct omap_onenand_platform_data *pdata;
 	struct omap2_onenand *c;
 	struct onenand_chip *this;
 	int r;
+<<<<<<< HEAD
 
 	pdata = pdev->dev.platform_data;
+=======
+	struct resource *res;
+	struct mtd_part_parser_data ppdata = {};
+
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (pdata == NULL) {
 		dev_err(&pdev->dev, "platform data missing\n");
 		return -ENODEV;
@@ -642,6 +746,10 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
 
 	init_completion(&c->irq_done);
 	init_completion(&c->dma_done);
+<<<<<<< HEAD
+=======
+	c->flags = pdata->flags;
+>>>>>>> refs/remotes/origin/master
 	c->gpmc_cs = pdata->cs;
 	c->gpio_irq = pdata->gpio_irq;
 	c->dma_channel = pdata->dma_channel;
@@ -650,6 +758,7 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
 		c->gpio_irq = 0;
 	}
 
+<<<<<<< HEAD
 	r = gpmc_cs_request(c->gpmc_cs, ONENAND_IO_SIZE, &c->phys_base);
 	if (r < 0) {
 		dev_err(&pdev->dev, "Cannot request GPMC CS\n");
@@ -664,6 +773,26 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
 		goto err_free_cs;
 	}
 	c->onenand.base = ioremap(c->phys_base, ONENAND_IO_SIZE);
+=======
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (res == NULL) {
+		r = -EINVAL;
+		dev_err(&pdev->dev, "error getting memory resource\n");
+		goto err_kfree;
+	}
+
+	c->phys_base = res->start;
+	c->mem_size = resource_size(res);
+
+	if (request_mem_region(c->phys_base, c->mem_size,
+			       pdev->dev.driver->name) == NULL) {
+		dev_err(&pdev->dev, "Cannot reserve memory region at 0x%08lx, size: 0x%x\n",
+						c->phys_base, c->mem_size);
+		r = -EBUSY;
+		goto err_kfree;
+	}
+	c->onenand.base = ioremap(c->phys_base, c->mem_size);
+>>>>>>> refs/remotes/origin/master
 	if (c->onenand.base == NULL) {
 		r = -ENOMEM;
 		goto err_release_mem_region;
@@ -728,7 +857,11 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
 	this = &c->onenand;
 	if (c->dma_channel >= 0) {
 		this->wait = omap2_onenand_wait;
+<<<<<<< HEAD
 		if (cpu_is_omap34xx()) {
+=======
+		if (c->flags & ONENAND_IN_OMAP34XX) {
+>>>>>>> refs/remotes/origin/master
 			this->read_bufferram = omap3_onenand_read_bufferram;
 			this->write_bufferram = omap3_onenand_write_bufferram;
 		} else {
@@ -741,6 +874,14 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
 		c->regulator = regulator_get(&pdev->dev, "vonenand");
 		if (IS_ERR(c->regulator)) {
 			dev_err(&pdev->dev,  "Failed to get regulator\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			r = PTR_ERR(c->regulator);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			r = PTR_ERR(c->regulator);
+>>>>>>> refs/remotes/origin/master
 			goto err_release_dma;
 		}
 		c->onenand.enable = omap2_onenand_enable;
@@ -753,6 +894,8 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
 	if ((r = onenand_scan(&c->mtd, 1)) < 0)
 		goto err_release_regulator;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r = parse_mtd_partitions(&c->mtd, part_probes, &c->parts, 0);
 	if (r > 0)
 		r = mtd_device_register(&c->mtd, c->parts, r);
@@ -760,6 +903,17 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
 		r = mtd_device_register(&c->mtd, pdata->parts, pdata->nr_parts);
 	else
 		r = mtd_device_register(&c->mtd, NULL, 0);
+=======
+	r = mtd_device_parse_register(&c->mtd, NULL, NULL,
+				      pdata ? pdata->parts : NULL,
+				      pdata ? pdata->nr_parts : 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ppdata.of_node = pdata->of_node;
+	r = mtd_device_parse_register(&c->mtd, NULL, &ppdata,
+				      pdata ? pdata->parts : NULL,
+				      pdata ? pdata->nr_parts : 0);
+>>>>>>> refs/remotes/origin/master
 	if (r)
 		goto err_release_onenand;
 
@@ -782,17 +936,29 @@ err_release_gpio:
 err_iounmap:
 	iounmap(c->onenand.base);
 err_release_mem_region:
+<<<<<<< HEAD
 	release_mem_region(c->phys_base, ONENAND_IO_SIZE);
 err_free_cs:
 	gpmc_cs_free(c->gpmc_cs);
 err_kfree:
+<<<<<<< HEAD
 	kfree(c->parts);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_mem_region(c->phys_base, c->mem_size);
+err_kfree:
+>>>>>>> refs/remotes/origin/master
 	kfree(c);
 
 	return r;
 }
 
+<<<<<<< HEAD
 static int __devexit omap2_onenand_remove(struct platform_device *pdev)
+=======
+static int omap2_onenand_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct omap2_onenand *c = dev_get_drvdata(&pdev->dev);
 
@@ -801,15 +967,25 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
 	if (c->dma_channel != -1)
 		omap_free_dma(c->dma_channel);
 	omap2_onenand_shutdown(pdev);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (c->gpio_irq) {
 		free_irq(gpio_to_irq(c->gpio_irq), c);
 		gpio_free(c->gpio_irq);
 	}
 	iounmap(c->onenand.base);
+<<<<<<< HEAD
 	release_mem_region(c->phys_base, ONENAND_IO_SIZE);
 	gpmc_cs_free(c->gpmc_cs);
+<<<<<<< HEAD
 	kfree(c->parts);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_mem_region(c->phys_base, c->mem_size);
+>>>>>>> refs/remotes/origin/master
 	kfree(c);
 
 	return 0;
@@ -817,7 +993,11 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
 
 static struct platform_driver omap2_onenand_driver = {
 	.probe		= omap2_onenand_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(omap2_onenand_remove),
+=======
+	.remove		= omap2_onenand_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= omap2_onenand_shutdown,
 	.driver		= {
 		.name	= DRIVER_NAME,
@@ -825,6 +1005,7 @@ static struct platform_driver omap2_onenand_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init omap2_onenand_init(void)
 {
 	printk(KERN_INFO "OneNAND driver initializing\n");
@@ -838,6 +1019,9 @@ static void __exit omap2_onenand_exit(void)
 
 module_init(omap2_onenand_init);
 module_exit(omap2_onenand_exit);
+=======
+module_platform_driver(omap2_onenand_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("platform:" DRIVER_NAME);
 MODULE_LICENSE("GPL");

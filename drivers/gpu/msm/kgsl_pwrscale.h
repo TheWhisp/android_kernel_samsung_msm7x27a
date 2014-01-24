@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -37,6 +45,14 @@ struct kgsl_pwrscale {
 	struct kobject kobj;
 	void *priv;
 	int gpu_busy;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int enabled;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int enabled;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct kgsl_pwrscale_policy_attribute {
@@ -54,6 +70,14 @@ struct kgsl_pwrscale_policy_attribute {
 
 extern struct kgsl_pwrscale_policy kgsl_pwrscale_policy_tz;
 extern struct kgsl_pwrscale_policy kgsl_pwrscale_policy_idlestats;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern struct kgsl_pwrscale_policy kgsl_pwrscale_policy_msm;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct kgsl_pwrscale_policy kgsl_pwrscale_policy_msm;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int kgsl_pwrscale_init(struct kgsl_device *device);
 void kgsl_pwrscale_close(struct kgsl_device *device);
@@ -67,6 +91,18 @@ void kgsl_pwrscale_busy(struct kgsl_device *device);
 void kgsl_pwrscale_sleep(struct kgsl_device *device);
 void kgsl_pwrscale_wake(struct kgsl_device *device);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void kgsl_pwrscale_enable(struct kgsl_device *device);
+void kgsl_pwrscale_disable(struct kgsl_device *device);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void kgsl_pwrscale_enable(struct kgsl_device *device);
+void kgsl_pwrscale_disable(struct kgsl_device *device);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 int kgsl_pwrscale_policy_add_files(struct kgsl_device *device,
 				   struct kgsl_pwrscale *pwrscale,
 				   struct attribute_group *attr_group);

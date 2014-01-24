@@ -13,12 +13,28 @@
 #include <getopt.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <errno.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "lkc.h"
 
 static void conf(struct menu *menu);
 static void check_conf(struct menu *menu);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static void xfgets(char *str, int size, FILE *in);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void xfgets(char *str, int size, FILE *in);
+>>>>>>> refs/remotes/origin/master
 
 enum input_mode {
 	oldaskconfig,
@@ -32,12 +48,23 @@ enum input_mode {
 	defconfig,
 	savedefconfig,
 	listnewconfig,
+<<<<<<< HEAD
 	oldnoconfig,
 } input_mode = oldaskconfig;
 
+<<<<<<< HEAD
 char *defconfig_file;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int indent = 1;
+=======
+	olddefconfig,
+} input_mode = oldaskconfig;
+
+static int indent = 1;
+static int tty_stdio;
+>>>>>>> refs/remotes/origin/master
 static int valid_stdin = 1;
 static int sync_kconfig;
 static int conf_cnt;
@@ -106,9 +133,22 @@ static int conf_askvalue(struct symbol *sym, const char *def)
 			return 0;
 		}
 		check_stdin();
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		/* fall through */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case oldaskconfig:
 		fflush(stdout);
 		xfgets(line, 128, stdin);
+=======
+		/* fall through */
+	case oldaskconfig:
+		fflush(stdout);
+		xfgets(line, 128, stdin);
+		if (!tty_stdio)
+			printf("\n");
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	default:
 		break;
@@ -150,6 +190,14 @@ static int conf_string(struct menu *menu)
 				def = NULL;
 				break;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			/* fall through */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* fall through */
+>>>>>>> refs/remotes/origin/master
 		default:
 			line[strlen(line)-1] = 0;
 			def = line;
@@ -304,6 +352,14 @@ static int conf_choice(struct menu *menu)
 				break;
 			}
 			check_stdin();
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			/* fall through */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* fall through */
+>>>>>>> refs/remotes/origin/master
 		case oldaskconfig:
 			fflush(stdout);
 			xfgets(line, 128, stdin);
@@ -364,11 +420,23 @@ static void conf(struct menu *menu)
 		case P_MENU:
 			if ((input_mode == silentoldconfig ||
 			     input_mode == listnewconfig ||
+<<<<<<< HEAD
 			     input_mode == oldnoconfig) &&
+=======
+			     input_mode == olddefconfig) &&
+>>>>>>> refs/remotes/origin/master
 			    rootEntry != menu) {
 				check_conf(menu);
 				return;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			/* fall through */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* fall through */
+>>>>>>> refs/remotes/origin/master
 		case P_COMMENT:
 			prompt = menu_get_prompt(menu);
 			if (prompt)
@@ -427,7 +495,11 @@ static void check_conf(struct menu *menu)
 				if (sym->name && !sym_is_choice_value(sym)) {
 					printf("%s%s\n", CONFIG_, sym->name);
 				}
+<<<<<<< HEAD
 			} else if (input_mode != oldnoconfig) {
+=======
+			} else if (input_mode != olddefconfig) {
+>>>>>>> refs/remotes/origin/master
 				if (!conf_cnt++)
 					printf(_("*\n* Restart config...\n*\n"));
 				rootEntry = menu_get_parent_menu(menu);
@@ -452,20 +524,73 @@ static struct option long_opts[] = {
 	{"alldefconfig",    no_argument,       NULL, alldefconfig},
 	{"randconfig",      no_argument,       NULL, randconfig},
 	{"listnewconfig",   no_argument,       NULL, listnewconfig},
+<<<<<<< HEAD
 	{"oldnoconfig",     no_argument,       NULL, oldnoconfig},
 	{NULL, 0, NULL, 0}
 };
 
+<<<<<<< HEAD
 int main(int ac, char **av)
 {
 	int opt;
 	const char *name;
+=======
+=======
+	{"olddefconfig",    no_argument,       NULL, olddefconfig},
+	/*
+	 * oldnoconfig is an alias of olddefconfig, because people already
+	 * are dependent on its behavior(sets new symbols to their default
+	 * value but not 'n') with the counter-intuitive name.
+	 */
+	{"oldnoconfig",     no_argument,       NULL, olddefconfig},
+	{NULL, 0, NULL, 0}
+};
+
+>>>>>>> refs/remotes/origin/master
+static void conf_usage(const char *progname)
+{
+
+	printf("Usage: %s [option] <kconfig-file>\n", progname);
+	printf("[option] is _one_ of the following:\n");
+	printf("  --listnewconfig         List new options\n");
+	printf("  --oldaskconfig          Start a new configuration using a line-oriented program\n");
+	printf("  --oldconfig             Update a configuration using a provided .config as base\n");
+	printf("  --silentoldconfig       Same as oldconfig, but quietly, additionally update deps\n");
+<<<<<<< HEAD
+	printf("  --oldnoconfig           Same as silentoldconfig but set new symbols to no\n");
+=======
+	printf("  --olddefconfig          Same as silentoldconfig but sets new symbols to their default value\n");
+	printf("  --oldnoconfig           An alias of olddefconfig\n");
+>>>>>>> refs/remotes/origin/master
+	printf("  --defconfig <file>      New config with default defined in <file>\n");
+	printf("  --savedefconfig <file>  Save the minimal current configuration to <file>\n");
+	printf("  --allnoconfig           New config where all options are answered with no\n");
+	printf("  --allyesconfig          New config where all options are answered with yes\n");
+	printf("  --allmodconfig          New config where all options are answered with mod\n");
+	printf("  --alldefconfig          New config with all symbols set to default\n");
+	printf("  --randconfig            New config with random answer to all options\n");
+}
+
+int main(int ac, char **av)
+{
+	const char *progname = av[0];
+	int opt;
+	const char *name, *defconfig_file = NULL /* gcc uninit */;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct stat tmpstat;
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
 
+<<<<<<< HEAD
+=======
+	tty_stdio = isatty(0) && isatty(1) && isatty(2);
+
+>>>>>>> refs/remotes/origin/master
 	while ((opt = getopt_long(ac, av, "", long_opts, NULL)) != -1) {
 		input_mode = (enum input_mode)opt;
 		switch (opt) {
@@ -480,25 +605,75 @@ int main(int ac, char **av)
 		{
 			struct timeval now;
 			unsigned int seed;
+<<<<<<< HEAD
+=======
+			char *seed_env;
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * Use microseconds derived seed,
 			 * compensate for systems where it may be zero
 			 */
 			gettimeofday(&now, NULL);
+<<<<<<< HEAD
 
 			seed = (unsigned int)((now.tv_sec + 1) * (now.tv_usec + 1));
 			srand(seed);
 			break;
 		}
+<<<<<<< HEAD
 		case '?':
 			fprintf(stderr, _("See README for usage info\n"));
+=======
+=======
+			seed = (unsigned int)((now.tv_sec + 1) * (now.tv_usec + 1));
+
+			seed_env = getenv("KCONFIG_SEED");
+			if( seed_env && *seed_env ) {
+				char *endp;
+				int tmp = (int)strtol(seed_env, &endp, 0);
+				if (*endp == '\0') {
+					seed = tmp;
+				}
+			}
+			fprintf( stderr, "KCONFIG_SEED=0x%X\n", seed );
+			srand(seed);
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
+		case oldaskconfig:
+		case oldconfig:
+		case allnoconfig:
+		case allyesconfig:
+		case allmodconfig:
+		case alldefconfig:
+		case listnewconfig:
+<<<<<<< HEAD
+		case oldnoconfig:
+			break;
+		case '?':
+			conf_usage(progname);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case olddefconfig:
+			break;
+		case '?':
+			conf_usage(progname);
+>>>>>>> refs/remotes/origin/master
 			exit(1);
 			break;
 		}
 	}
 	if (ac == optind) {
 		printf(_("%s: Kconfig file missing\n"), av[0]);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		conf_usage(progname);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		conf_usage(progname);
+>>>>>>> refs/remotes/origin/master
 		exit(1);
 	}
 	name = av[optind];
@@ -533,7 +708,11 @@ int main(int ac, char **av)
 	case oldaskconfig:
 	case oldconfig:
 	case listnewconfig:
+<<<<<<< HEAD
 	case oldnoconfig:
+=======
+	case olddefconfig:
+>>>>>>> refs/remotes/origin/master
 		conf_read(NULL);
 		break;
 	case allnoconfig:
@@ -542,8 +721,20 @@ int main(int ac, char **av)
 	case alldefconfig:
 	case randconfig:
 		name = getenv("KCONFIG_ALLCONFIG");
+<<<<<<< HEAD
 		if (name && !stat(name, &tmpstat)) {
 			conf_read_simple(name, S_DEF_USER);
+=======
+		if (!name)
+			break;
+		if ((strcmp(name, "") != 0) && (strcmp(name, "1") != 0)) {
+			if (conf_read_simple(name, S_DEF_USER)) {
+				fprintf(stderr,
+					_("*** Can't read seed configuration \"%s\"!\n"),
+					name);
+				exit(1);
+			}
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		switch (input_mode) {
@@ -554,10 +745,20 @@ int main(int ac, char **av)
 		case randconfig:	name = "allrandom.config"; break;
 		default: break;
 		}
+<<<<<<< HEAD
 		if (!stat(name, &tmpstat))
 			conf_read_simple(name, S_DEF_USER);
 		else if (!stat("all.config", &tmpstat))
 			conf_read_simple("all.config", S_DEF_USER);
+=======
+		if (conf_read_simple(name, S_DEF_USER) &&
+		    conf_read_simple("all.config", S_DEF_USER)) {
+			fprintf(stderr,
+				_("*** KCONFIG_ALLCONFIG set, but no \"%s\" or \"all.config\" file found\n"),
+				name);
+			exit(1);
+		}
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
@@ -572,7 +773,11 @@ int main(int ac, char **av)
 				return 1;
 			}
 		}
+<<<<<<< HEAD
 		valid_stdin = isatty(0) && isatty(1) && isatty(2);
+=======
+		valid_stdin = tty_stdio;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (input_mode) {
@@ -589,7 +794,12 @@ int main(int ac, char **av)
 		conf_set_all_new_symbols(def_default);
 		break;
 	case randconfig:
+<<<<<<< HEAD
 		conf_set_all_new_symbols(def_random);
+=======
+		/* Really nothing to do in this loop */
+		while (conf_set_all_new_symbols(def_random)) ;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case defconfig:
 		conf_set_all_new_symbols(def_default);
@@ -603,7 +813,11 @@ int main(int ac, char **av)
 		/* fall through */
 	case oldconfig:
 	case listnewconfig:
+<<<<<<< HEAD
 	case oldnoconfig:
+=======
+	case olddefconfig:
+>>>>>>> refs/remotes/origin/master
 	case silentoldconfig:
 		/* Update until a loop caused no more changes */
 		do {
@@ -611,7 +825,11 @@ int main(int ac, char **av)
 			check_conf(&rootmenu);
 		} while (conf_cnt &&
 			 (input_mode != listnewconfig &&
+<<<<<<< HEAD
 			  input_mode != oldnoconfig));
+=======
+			  input_mode != olddefconfig));
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -641,6 +859,8 @@ int main(int ac, char **av)
 	}
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Helper function to facilitate fgets() by Jean Sacren.
  */
@@ -648,6 +868,18 @@ void xfgets(str, size, in)
 	char *str;
 	int size;
 	FILE *in;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/*
+ * Helper function to facilitate fgets() by Jean Sacren.
+ */
+void xfgets(char *str, int size, FILE *in)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (fgets(str, size, in) == NULL)
 		fprintf(stderr, "\nError in reading or end of file.\n");

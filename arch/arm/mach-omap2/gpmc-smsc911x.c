@@ -20,12 +20,21 @@
 #include <linux/io.h>
 #include <linux/smsc911x.h>
 
+<<<<<<< HEAD
 #include <plat/board.h>
 #include <plat/gpmc.h>
 #include <plat/gpmc-smsc911x.h>
 
+<<<<<<< HEAD
 static struct omap_smsc911x_platform_data *gpmc_cfg;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "gpmc.h"
+#include "gpmc-smsc911x.h"
+
+>>>>>>> refs/remotes/origin/master
 static struct resource gpmc_smsc911x_resources[] = {
 	[0] = {
 		.flags		= IORESOURCE_MEM,
@@ -39,7 +48,13 @@ static struct smsc911x_platform_config gpmc_smsc911x_config = {
 	.phy_interface	= PHY_INTERFACE_MODE_MII,
 	.irq_polarity	= SMSC911X_IRQ_POLARITY_ACTIVE_LOW,
 	.irq_type	= SMSC911X_IRQ_TYPE_OPEN_DRAIN,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= SMSC911X_USE_16BIT,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -47,14 +62,28 @@ static struct smsc911x_platform_config gpmc_smsc911x_config = {
  * assume that pin multiplexing is done in the board-*.c file,
  * or in the bootloader.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __init gpmc_smsc911x_init(struct omap_smsc911x_platform_data *board_data)
+=======
+void __init gpmc_smsc911x_init(struct omap_smsc911x_platform_data *gpmc_cfg)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init gpmc_smsc911x_init(struct omap_smsc911x_platform_data *gpmc_cfg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_device *pdev;
 	unsigned long cs_mem_base;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	gpmc_cfg = board_data;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (gpmc_cs_request(gpmc_cfg->cs, SZ_16M, &cs_mem_base) < 0) {
 		pr_err("Failed to request GPMC mem region\n");
 		return;
@@ -84,13 +113,25 @@ void __init gpmc_smsc911x_init(struct omap_smsc911x_platform_data *board_data)
 		gpio_set_value(gpmc_cfg->gpio_reset, 1);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (gpmc_cfg->flags)
 		gpmc_smsc911x_config.flags = gpmc_cfg->flags;
+=======
+	gpmc_smsc911x_config.flags = gpmc_cfg->flags ? : SMSC911X_USE_16BIT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpmc_smsc911x_config.flags = gpmc_cfg->flags ? : SMSC911X_USE_16BIT;
+>>>>>>> refs/remotes/origin/master
 
 	pdev = platform_device_register_resndata(NULL, "smsc911x", gpmc_cfg->id,
 		 gpmc_smsc911x_resources, ARRAY_SIZE(gpmc_smsc911x_resources),
 		 &gpmc_smsc911x_config, sizeof(gpmc_smsc911x_config));
+<<<<<<< HEAD
 	if (!pdev) {
+=======
+	if (IS_ERR(pdev)) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("Unable to register platform device\n");
 		gpio_free(gpmc_cfg->gpio_reset);
 		goto free2;

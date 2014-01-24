@@ -18,7 +18,13 @@
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/isadep.h>
 #include <asm/io.h>
 #include <asm/bootinfo.h>
@@ -27,7 +33,11 @@
 static unsigned long icache_size, dcache_size;		/* Size in bytes */
 static unsigned long icache_lsize, dcache_lsize;	/* Size in bytes */
 
+<<<<<<< HEAD
 unsigned long __cpuinit r3k_cache_size(unsigned long ca_flags)
+=======
+unsigned long r3k_cache_size(unsigned long ca_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags, status, dummy, size;
 	volatile unsigned long *p;
@@ -62,7 +72,11 @@ unsigned long __cpuinit r3k_cache_size(unsigned long ca_flags)
 	return size * sizeof(*p);
 }
 
+<<<<<<< HEAD
 unsigned long __cpuinit r3k_cache_lsize(unsigned long ca_flags)
+=======
+unsigned long r3k_cache_lsize(unsigned long ca_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags, status, lsize, i;
 	volatile unsigned long *p;
@@ -91,7 +105,11 @@ unsigned long __cpuinit r3k_cache_lsize(unsigned long ca_flags)
 	return lsize * sizeof(*p);
 }
 
+<<<<<<< HEAD
 static void __cpuinit r3k_probe_cache(void)
+=======
+static void r3k_probe_cache(void)
+>>>>>>> refs/remotes/origin/master
 {
 	dcache_size = r3k_cache_size(ST0_ISC);
 	if (dcache_size)
@@ -120,7 +138,11 @@ static void r3k_flush_icache_range(unsigned long start, unsigned long end)
 	write_c0_status((ST0_ISC|ST0_SWC|flags)&~ST0_IEC);
 
 	for (i = 0; i < size; i += 0x080) {
+<<<<<<< HEAD
 		asm( 	"sb\t$0, 0x000(%0)\n\t"
+=======
+		asm(	"sb\t$0, 0x000(%0)\n\t"
+>>>>>>> refs/remotes/origin/master
 			"sb\t$0, 0x004(%0)\n\t"
 			"sb\t$0, 0x008(%0)\n\t"
 			"sb\t$0, 0x00c(%0)\n\t"
@@ -177,7 +199,11 @@ static void r3k_flush_dcache_range(unsigned long start, unsigned long end)
 	write_c0_status((ST0_ISC|flags)&~ST0_IEC);
 
 	for (i = 0; i < size; i += 0x080) {
+<<<<<<< HEAD
 		asm( 	"sb\t$0, 0x000(%0)\n\t"
+=======
+		asm(	"sb\t$0, 0x000(%0)\n\t"
+>>>>>>> refs/remotes/origin/master
 			"sb\t$0, 0x004(%0)\n\t"
 			"sb\t$0, 0x008(%0)\n\t"
 			"sb\t$0, 0x00c(%0)\n\t"
@@ -286,19 +312,41 @@ static void r3k_flush_cache_sigtramp(unsigned long addr)
 	write_c0_status(flags&~ST0_IEC);
 
 	/* Fill the TLB to avoid an exception with caches isolated. */
+<<<<<<< HEAD
 	asm( 	"lw\t$0, 0x000(%0)\n\t"
+=======
+	asm(	"lw\t$0, 0x000(%0)\n\t"
+>>>>>>> refs/remotes/origin/master
 		"lw\t$0, 0x004(%0)\n\t"
 		: : "r" (addr) );
 
 	write_c0_status((ST0_ISC|ST0_SWC|flags)&~ST0_IEC);
 
+<<<<<<< HEAD
 	asm( 	"sb\t$0, 0x000(%0)\n\t"
+=======
+	asm(	"sb\t$0, 0x000(%0)\n\t"
+>>>>>>> refs/remotes/origin/master
 		"sb\t$0, 0x004(%0)\n\t"
 		: : "r" (addr) );
 
 	write_c0_status(flags);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void r3k_flush_kernel_vmap_range(unsigned long vaddr, int size)
+{
+	BUG();
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void r3k_dma_cache_wback_inv(unsigned long start, unsigned long size)
 {
 	/* Catch bad driver code */
@@ -308,7 +356,11 @@ static void r3k_dma_cache_wback_inv(unsigned long start, unsigned long size)
 	r3k_flush_dcache_range(start, start + size);
 }
 
+<<<<<<< HEAD
 void __cpuinit r3k_cache_init(void)
+=======
+void r3k_cache_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	extern void build_clear_page(void);
 	extern void build_copy_page(void);
@@ -323,6 +375,16 @@ void __cpuinit r3k_cache_init(void)
 	flush_icache_range = r3k_flush_icache_range;
 	local_flush_icache_range = r3k_flush_icache_range;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	__flush_kernel_vmap_range = r3k_flush_kernel_vmap_range;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__flush_kernel_vmap_range = r3k_flush_kernel_vmap_range;
+
+>>>>>>> refs/remotes/origin/master
 	flush_cache_sigtramp = r3k_flush_cache_sigtramp;
 	local_flush_data_cache_page = local_r3k_flush_data_cache_page;
 	flush_data_cache_page = r3k_flush_data_cache_page;

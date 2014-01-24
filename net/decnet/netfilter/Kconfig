@@ -3,7 +3,11 @@
 #
 
 menu "DECnet: Netfilter Configuration"
+<<<<<<< HEAD
 	depends on DECNET && NETFILTER && EXPERIMENTAL
+=======
+	depends on DECNET && NETFILTER
+>>>>>>> refs/remotes/origin/master
 	depends on NETFILTER_ADVANCED
 
 config DECNET_NF_GRABULATOR

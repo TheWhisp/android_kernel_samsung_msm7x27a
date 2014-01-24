@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 #ifndef __LINUX_LLC_H
 #define __LINUX_LLC_H
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * IEEE 802.2 User Interface SAPs for Linux, data structures and indicators.
  *
@@ -12,16 +15,32 @@
  *
  * See the GNU General Public License for more details.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define __LLC_SOCK_SIZE__ 16	/* sizeof(sockaddr_llc), word align. */
 struct sockaddr_llc {
 	sa_family_t     sllc_family;	/* AF_LLC */
 	sa_family_t	sllc_arphrd;	/* ARPHRD_ETHER */
+=======
+
+#include <linux/socket.h>
+
+#define __LLC_SOCK_SIZE__ 16	/* sizeof(sockaddr_llc), word align. */
+struct sockaddr_llc {
+	__kernel_sa_family_t sllc_family; /* AF_LLC */
+	__kernel_sa_family_t sllc_arphrd; /* ARPHRD_ETHER */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned char   sllc_test;
 	unsigned char   sllc_xid;
 	unsigned char	sllc_ua;	/* UA data, only for SOCK_STREAM. */
 	unsigned char   sllc_sap;
 	unsigned char   sllc_mac[IFHWADDRLEN];
+<<<<<<< HEAD
 	unsigned char   __pad[__LLC_SOCK_SIZE__ - sizeof(sa_family_t) * 2 -
+=======
+	unsigned char   __pad[__LLC_SOCK_SIZE__ -
+			      sizeof(__kernel_sa_family_t) * 2 -
+>>>>>>> refs/remotes/origin/cm-10.0
 			      sizeof(unsigned char) * 4 - IFHWADDRLEN];
 };
 
@@ -78,10 +97,20 @@ struct llc_pktinfo {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef __LINUX_LLC_H
+#define __LINUX_LLC_H
+
+#include <uapi/linux/llc.h>
+
+>>>>>>> refs/remotes/origin/master
 #define LLC_SAP_DYN_START	0xC0
 #define LLC_SAP_DYN_STOP	0xDE
 #define LLC_SAP_DYN_TRIES	4
 
 #define llc_ui_skb_cb(__skb) ((struct sockaddr_llc *)&((__skb)->cb[0]))
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_LLC_H */

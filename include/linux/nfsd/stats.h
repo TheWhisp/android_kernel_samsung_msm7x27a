@@ -5,6 +5,7 @@
  *
  * Copyright (C) 1995, 1996 Olaf Kirch <okir@monad.swb.de>
  */
+<<<<<<< HEAD
 
 #ifndef LINUX_NFSD_STATS_H
 #define LINUX_NFSD_STATS_H
@@ -15,6 +16,13 @@
 #define	NFSD_USAGE_WRAP	(HZ*1000000)
 
 #ifdef __KERNEL__
+=======
+#ifndef LINUX_NFSD_STATS_H
+#define LINUX_NFSD_STATS_H
+
+#include <uapi/linux/nfsd/stats.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct nfsd_stats {
 	unsigned int	rchits;		/* repcache hits */
@@ -47,5 +55,8 @@ extern struct svc_stat		nfsd_svcstats;
 void	nfsd_stat_init(void);
 void	nfsd_stat_shutdown(void);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* LINUX_NFSD_STATS_H */

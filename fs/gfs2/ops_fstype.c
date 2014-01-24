@@ -14,10 +14,23 @@
 #include <linux/buffer_head.h>
 #include <linux/blkdev.h>
 #include <linux/kthread.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/namei.h>
 #include <linux/mount.h>
 #include <linux/gfs2_ondisk.h>
 #include <linux/quotaops.h>
+<<<<<<< HEAD
+=======
+#include <linux/lockdep.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "gfs2.h"
 #include "incore.h"
@@ -33,6 +46,10 @@
 #include "log.h"
 #include "quota.h"
 #include "dir.h"
+<<<<<<< HEAD
+=======
+#include "meta_io.h"
+>>>>>>> refs/remotes/origin/master
 #include "trace_gfs2.h"
 
 #define DO 0
@@ -48,7 +65,10 @@ static void gfs2_tune_init(struct gfs2_tune *gt)
 {
 	spin_lock_init(&gt->gt_spin);
 
+<<<<<<< HEAD
 	gt->gt_quota_simul_sync = 64;
+=======
+>>>>>>> refs/remotes/origin/master
 	gt->gt_quota_warn_period = 10;
 	gt->gt_quota_scale_num = 1;
 	gt->gt_quota_scale_den = 1;
@@ -60,6 +80,10 @@ static void gfs2_tune_init(struct gfs2_tune *gt)
 static struct gfs2_sbd *init_sbd(struct super_block *sb)
 {
 	struct gfs2_sbd *sdp;
+<<<<<<< HEAD
+=======
+	struct address_space *mapping;
+>>>>>>> refs/remotes/origin/master
 
 	sdp = kzalloc(sizeof(struct gfs2_sbd), GFP_KERNEL);
 	if (!sdp)
@@ -67,18 +91,45 @@ static struct gfs2_sbd *init_sbd(struct super_block *sb)
 
 	sb->s_fs_info = sdp;
 	sdp->sd_vfs = sb;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	sdp->sd_lkstats = alloc_percpu(struct gfs2_pcpu_lkstats);
+	if (!sdp->sd_lkstats) {
+		kfree(sdp);
+		return NULL;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	set_bit(SDF_NOJOURNALID, &sdp->sd_flags);
 	gfs2_tune_init(&sdp->sd_tune);
 
 	init_waitqueue_head(&sdp->sd_glock_wait);
 	atomic_set(&sdp->sd_glock_disposal, 0);
 	init_completion(&sdp->sd_locking_init);
+<<<<<<< HEAD
 	spin_lock_init(&sdp->sd_statfs_spin);
 
 	spin_lock_init(&sdp->sd_rindex_spin);
+<<<<<<< HEAD
 	mutex_init(&sdp->sd_rindex_mutex);
 	INIT_LIST_HEAD(&sdp->sd_rindex_list);
 	INIT_LIST_HEAD(&sdp->sd_rindex_mru_list);
+=======
+	sdp->sd_rindex_tree.rb_node = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_completion(&sdp->sd_wdack);
+	spin_lock_init(&sdp->sd_statfs_spin);
+
+	spin_lock_init(&sdp->sd_rindex_spin);
+	sdp->sd_rindex_tree.rb_node = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	INIT_LIST_HEAD(&sdp->sd_jindex_list);
 	spin_lock_init(&sdp->sd_jindex_spin);
@@ -86,17 +137,42 @@ static struct gfs2_sbd *init_sbd(struct super_block *sb)
 
 	INIT_LIST_HEAD(&sdp->sd_quota_list);
 	mutex_init(&sdp->sd_quota_mutex);
+<<<<<<< HEAD
 	init_waitqueue_head(&sdp->sd_quota_wait);
 	INIT_LIST_HEAD(&sdp->sd_trunc_list);
 	spin_lock_init(&sdp->sd_trunc_lock);
+=======
+	mutex_init(&sdp->sd_quota_sync_mutex);
+	init_waitqueue_head(&sdp->sd_quota_wait);
+	INIT_LIST_HEAD(&sdp->sd_trunc_list);
+	spin_lock_init(&sdp->sd_trunc_lock);
+	spin_lock_init(&sdp->sd_bitmap_lock);
+
+	mapping = &sdp->sd_aspace;
+
+	address_space_init_once(mapping);
+	mapping->a_ops = &gfs2_meta_aops;
+	mapping->host = sb->s_bdev->bd_inode;
+	mapping->flags = 0;
+	mapping_set_gfp_mask(mapping, GFP_NOFS);
+	mapping->private_data = NULL;
+	mapping->backing_dev_info = sb->s_bdi;
+	mapping->writeback_index = 0;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&sdp->sd_log_lock);
 	atomic_set(&sdp->sd_log_pinned, 0);
 	INIT_LIST_HEAD(&sdp->sd_log_le_buf);
 	INIT_LIST_HEAD(&sdp->sd_log_le_revoke);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&sdp->sd_log_le_rg);
 	INIT_LIST_HEAD(&sdp->sd_log_le_databuf);
 	INIT_LIST_HEAD(&sdp->sd_log_le_ordered);
+=======
+	INIT_LIST_HEAD(&sdp->sd_log_le_databuf);
+	INIT_LIST_HEAD(&sdp->sd_log_le_ordered);
+	spin_lock_init(&sdp->sd_ordered_lock);
+>>>>>>> refs/remotes/origin/master
 
 	init_waitqueue_head(&sdp->sd_log_waitq);
 	init_waitqueue_head(&sdp->sd_logd_waitq);
@@ -110,8 +186,11 @@ static struct gfs2_sbd *init_sbd(struct super_block *sb)
 
 	INIT_LIST_HEAD(&sdp->sd_revoke_list);
 
+<<<<<<< HEAD
 	mutex_init(&sdp->sd_freeze_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return sdp;
 }
 
@@ -211,7 +290,11 @@ static int gfs2_read_super(struct gfs2_sbd *sdp, sector_t sector, int silent)
 
 	page = alloc_page(GFP_NOFS);
 	if (unlikely(!page))
+<<<<<<< HEAD
 		return -ENOBUFS;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	ClearPageUptodate(page);
 	ClearPageDirty(page);
@@ -273,6 +356,12 @@ static int gfs2_read_sb(struct gfs2_sbd *sdp, int silent)
 	sdp->sd_qc_per_block = (sdp->sd_sb.sb_bsize -
 				sizeof(struct gfs2_meta_header)) /
 			        sizeof(struct gfs2_quota_change);
+<<<<<<< HEAD
+=======
+	sdp->sd_blocks_per_bitmap = (sdp->sd_sb.sb_bsize -
+				     sizeof(struct gfs2_meta_header))
+		* GFS2_NBBY; /* not the rgrp bitmap, subsequent bitmaps only */
+>>>>>>> refs/remotes/origin/master
 
 	/* Compute maximum reservation required to add a entry to a directory */
 
@@ -431,10 +520,22 @@ static int gfs2_lookup_root(struct super_block *sb, struct dentry **dptr,
 		fs_err(sdp, "can't read in %s inode: %ld\n", name, PTR_ERR(inode));
 		return PTR_ERR(inode);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dentry = d_alloc_root(inode);
 	if (!dentry) {
 		fs_err(sdp, "can't alloc %s dentry\n", name);
 		iput(inode);
+=======
+	dentry = d_make_root(inode);
+	if (!dentry) {
+		fs_err(sdp, "can't alloc %s dentry\n", name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dentry = d_make_root(inode);
+	if (!dentry) {
+		fs_err(sdp, "can't alloc %s dentry\n", name);
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	*dptr = dentry;
@@ -562,8 +663,23 @@ static void gfs2_others_may_mount(struct gfs2_sbd *sdp)
 {
 	char *message = "FIRSTMOUNT=Done";
 	char *envp[] = { message, NULL };
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
 	ls->ls_first_done = 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	fs_info(sdp, "first mount done, others may mount\n");
+
+	if (sdp->sd_lockstruct.ls_ops->lm_first_done)
+		sdp->sd_lockstruct.ls_ops->lm_first_done(sdp);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kobject_uevent_env(&sdp->sd_kobj, KOBJ_CHANGE, envp);
 }
 
@@ -634,6 +750,51 @@ static int gfs2_jindex_hold(struct gfs2_sbd *sdp, struct gfs2_holder *ji_gh)
 	return error;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * check_journal_clean - Make sure a journal is clean for a spectator mount
+ * @sdp: The GFS2 superblock
+ * @jd: The journal descriptor
+ *
+ * Returns: 0 if the journal is clean or locked, else an error
+ */
+static int check_journal_clean(struct gfs2_sbd *sdp, struct gfs2_jdesc *jd)
+{
+	int error;
+	struct gfs2_holder j_gh;
+	struct gfs2_log_header_host head;
+	struct gfs2_inode *ip;
+
+	ip = GFS2_I(jd->jd_inode);
+	error = gfs2_glock_nq_init(ip->i_gl, LM_ST_SHARED, LM_FLAG_NOEXP |
+				   GL_EXACT | GL_NOCACHE, &j_gh);
+	if (error) {
+		fs_err(sdp, "Error locking journal for spectator mount.\n");
+		return -EPERM;
+	}
+	error = gfs2_jdesc_check(jd);
+	if (error) {
+		fs_err(sdp, "Error checking journal for spectator mount.\n");
+		goto out_unlock;
+	}
+	error = gfs2_find_jhead(jd, &head);
+	if (error) {
+		fs_err(sdp, "Error parsing journal for spectator mount.\n");
+		goto out_unlock;
+	}
+	if (!(head.lh_flags & GFS2_LOG_HEAD_UNMOUNT)) {
+		error = -EPERM;
+		fs_err(sdp, "jid=%u: Journal is dirty, so the first mounter "
+		       "must not be a spectator.\n", jd->jd_jid);
+	}
+
+out_unlock:
+	gfs2_glock_dq_uninit(&j_gh);
+	return error;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int init_journal(struct gfs2_sbd *sdp, int undo)
 {
 	struct inode *master = sdp->sd_master_dir->d_inode;
@@ -652,7 +813,13 @@ static int init_journal(struct gfs2_sbd *sdp, int undo)
 		fs_err(sdp, "can't lookup journal index: %d\n", error);
 		return PTR_ERR(sdp->sd_jindex);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ip = GFS2_I(sdp->sd_jindex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Load in the journal index special file */
 
@@ -721,8 +888,20 @@ static int init_journal(struct gfs2_sbd *sdp, int undo)
 	if (sdp->sd_lockstruct.ls_first) {
 		unsigned int x;
 		for (x = 0; x < sdp->sd_journals; x++) {
+<<<<<<< HEAD
 			error = gfs2_recover_journal(gfs2_jdesc_find(sdp, x),
 						     true);
+=======
+			struct gfs2_jdesc *jd = gfs2_jdesc_find(sdp, x);
+
+			if (sdp->sd_args.ar_spectator) {
+				error = check_journal_clean(sdp, jd);
+				if (error)
+					goto fail_jinode_gh;
+				continue;
+			}
+			error = gfs2_recover_journal(jd, true);
+>>>>>>> refs/remotes/origin/master
 			if (error) {
 				fs_err(sdp, "error recovering journal %u: %d\n",
 				       x, error);
@@ -760,11 +939,21 @@ fail:
 	return error;
 }
 
+<<<<<<< HEAD
+=======
+static struct lock_class_key gfs2_quota_imutex_key;
+>>>>>>> refs/remotes/origin/master
 
 static int init_inodes(struct gfs2_sbd *sdp, int undo)
 {
 	int error = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct gfs2_inode *ip;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct inode *master = sdp->sd_master_dir->d_inode;
 
 	if (undo)
@@ -789,7 +978,13 @@ static int init_inodes(struct gfs2_sbd *sdp, int undo)
 		fs_err(sdp, "can't get resource index inode: %d\n", error);
 		goto fail_statfs;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ip = GFS2_I(sdp->sd_rindex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sdp->sd_rindex_uptodate = 0;
 
 	/* Read in the quota inode */
@@ -799,6 +994,26 @@ static int init_inodes(struct gfs2_sbd *sdp, int undo)
 		fs_err(sdp, "can't get quota file inode: %d\n", error);
 		goto fail_rindex;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+	/*
+	 * i_mutex on quota files is special. Since this inode is hidden system
+	 * file, we are safe to define locking ourselves.
+	 */
+	lockdep_set_class(&sdp->sd_quota_inode->i_mutex,
+			  &gfs2_quota_imutex_key);
+>>>>>>> refs/remotes/origin/master
+
+	error = gfs2_rindex_update(sdp);
+	if (error)
+		goto fail_qinode;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 fail_qinode:
@@ -886,6 +1101,7 @@ fail:
 	return error;
 }
 
+<<<<<<< HEAD
 static int init_threads(struct gfs2_sbd *sdp, int undo)
 {
 	struct task_struct *p;
@@ -920,6 +1136,8 @@ fail:
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const match_table_t nolock_tokens = {
 	{ Opt_jid, "jid=%d\n", },
 	{ Opt_err, NULL },
@@ -947,7 +1165,13 @@ static int gfs2_lm_mount(struct gfs2_sbd *sdp, int silent)
 	struct gfs2_args *args = &sdp->sd_args;
 	const char *proto = sdp->sd_proto_name;
 	const char *table = sdp->sd_table_name;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const char *fsname;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	char *o, *options;
 	int ret;
 
@@ -985,6 +1209,10 @@ static int gfs2_lm_mount(struct gfs2_sbd *sdp, int silent)
 				ls->ls_jid = option;
 			break;
 		case Opt_id:
+<<<<<<< HEAD
+=======
+		case Opt_nodir:
+>>>>>>> refs/remotes/origin/master
 			/* Obsolete, but left for backward compat purposes */
 			break;
 		case Opt_first:
@@ -993,12 +1221,15 @@ static int gfs2_lm_mount(struct gfs2_sbd *sdp, int silent)
 				goto hostdata_error;
 			ls->ls_first = option;
 			break;
+<<<<<<< HEAD
 		case Opt_nodir:
 			ret = match_int(&tmp[0], &option);
 			if (ret || (option != 0 && option != 1))
 				goto hostdata_error;
 			ls->ls_nodir = option;
 			break;
+=======
+>>>>>>> refs/remotes/origin/master
 		case Opt_err:
 		default:
 hostdata_error:
@@ -1007,6 +1238,8 @@ hostdata_error:
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (sdp->sd_args.ar_spectator)
 		snprintf(sdp->sd_fsname, GFS2_FSNAME_LEN, "%s.s", table);
 	else
@@ -1016,12 +1249,24 @@ hostdata_error:
 	fsname = strchr(table, ':');
 	if (fsname)
 		fsname++;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (lm->lm_mount == NULL) {
 		fs_info(sdp, "Now mounting FS...\n");
 		complete_all(&sdp->sd_locking_init);
 		return 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = lm->lm_mount(sdp, fsname);
+=======
+	ret = lm->lm_mount(sdp, table);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = lm->lm_mount(sdp, table);
+>>>>>>> refs/remotes/origin/master
 	if (ret == 0)
 		fs_info(sdp, "Joined cluster. Now mounting FS...\n");
 	complete_all(&sdp->sd_locking_init);
@@ -1087,13 +1332,29 @@ static int fill_super(struct super_block *sb, struct gfs2_args *args, int silent
 
 	if (sdp->sd_args.ar_spectator) {
                 sb->s_flags |= MS_RDONLY;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		set_bit(SDF_NORECOVERY, &sdp->sd_flags);
+=======
+		set_bit(SDF_RORECOVERY, &sdp->sd_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_bit(SDF_RORECOVERY, &sdp->sd_flags);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (sdp->sd_args.ar_posix_acl)
 		sb->s_flags |= MS_POSIXACL;
 	if (sdp->sd_args.ar_nobarrier)
 		set_bit(SDF_NOBARRIERS, &sdp->sd_flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	sb->s_flags |= MS_NOSEC;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_flags |= MS_NOSEC;
+>>>>>>> refs/remotes/origin/master
 	sb->s_magic = GFS2_MAGIC;
 	sb->s_op = &gfs2_super_ops;
 	sb->s_d_op = &gfs2_dops;
@@ -1123,9 +1384,15 @@ static int fill_super(struct super_block *sb, struct gfs2_args *args, int silent
 	}
 
 	error = init_names(sdp, silent);
+<<<<<<< HEAD
 	if (error)
 		goto fail;
 
+<<<<<<< HEAD
+=======
+	snprintf(sdp->sd_fsname, GFS2_FSNAME_LEN, "%s", sdp->sd_table_name);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	gfs2_create_debugfs_file(sdp);
 
 	error = gfs2_sys_fs_add(sdp);
@@ -1135,6 +1402,35 @@ static int fill_super(struct super_block *sb, struct gfs2_args *args, int silent
 	error = gfs2_lm_mount(sdp, silent);
 	if (error)
 		goto fail_sys;
+=======
+	if (error) {
+		/* In this case, we haven't initialized sysfs, so we have to
+		   manually free the sdp. */
+		free_percpu(sdp->sd_lkstats);
+		kfree(sdp);
+		sb->s_fs_info = NULL;
+		return error;
+	}
+
+	snprintf(sdp->sd_fsname, GFS2_FSNAME_LEN, "%s", sdp->sd_table_name);
+
+	error = gfs2_sys_fs_add(sdp);
+	/*
+	 * If we hit an error here, gfs2_sys_fs_add will have called function
+	 * kobject_put which causes the sysfs usage count to go to zero, which
+	 * causes sysfs to call function gfs2_sbd_release, which frees sdp.
+	 * Subsequent error paths here will call gfs2_sys_fs_del, which also
+	 * kobject_put to free sdp.
+	 */
+	if (error)
+		return error;
+
+	gfs2_create_debugfs_file(sdp);
+
+	error = gfs2_lm_mount(sdp, silent);
+	if (error)
+		goto fail_debug;
+>>>>>>> refs/remotes/origin/master
 
 	error = init_locking(sdp, &mount_gh, DO);
 	if (error)
@@ -1162,6 +1458,22 @@ static int fill_super(struct super_block *sb, struct gfs2_args *args, int silent
 		goto fail_sb;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (sdp->sd_args.ar_spectator)
+		snprintf(sdp->sd_fsname, GFS2_FSNAME_LEN, "%s.s",
+			 sdp->sd_table_name);
+	else
+		snprintf(sdp->sd_fsname, GFS2_FSNAME_LEN, "%s.%u",
+			 sdp->sd_table_name, sdp->sd_lockstruct.ls_jid);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	error = init_inodes(sdp, DO);
 	if (error)
 		goto fail_sb;
@@ -1176,15 +1488,22 @@ static int fill_super(struct super_block *sb, struct gfs2_args *args, int silent
 		goto fail_per_node;
 	}
 
+<<<<<<< HEAD
 	error = init_threads(sdp, DO);
 	if (error)
 		goto fail_per_node;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!(sb->s_flags & MS_RDONLY)) {
 		error = gfs2_make_fs_rw(sdp);
 		if (error) {
 			fs_err(sdp, "can't make FS RW: %d\n", error);
+<<<<<<< HEAD
 			goto fail_threads;
+=======
+			goto fail_per_node;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1192,8 +1511,11 @@ static int fill_super(struct super_block *sb, struct gfs2_args *args, int silent
 	gfs2_online_uevent(sdp);
 	return 0;
 
+<<<<<<< HEAD
 fail_threads:
 	init_threads(sdp, UNDO);
+=======
+>>>>>>> refs/remotes/origin/master
 fail_per_node:
 	init_per_node(sdp, UNDO);
 fail_inodes:
@@ -1211,11 +1533,24 @@ fail_locking:
 fail_lm:
 	gfs2_gl_hash_clear(sdp);
 	gfs2_lm_unmount(sdp);
+<<<<<<< HEAD
 fail_sys:
 	gfs2_sys_fs_del(sdp);
 fail:
 	gfs2_delete_debugfs_file(sdp);
+<<<<<<< HEAD
+=======
+	free_percpu(sdp->sd_lkstats);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(sdp);
+=======
+fail_debug:
+	gfs2_delete_debugfs_file(sdp);
+	free_percpu(sdp->sd_lkstats);
+	/* gfs2_sys_fs_del must be the last thing we do, since it causes
+	 * sysfs to call function gfs2_sbd_release, which frees sdp. */
+	gfs2_sys_fs_del(sdp);
+>>>>>>> refs/remotes/origin/master
 	sb->s_fs_info = NULL;
 	return error;
 }
@@ -1281,14 +1616,48 @@ static struct dentry *gfs2_mount(struct file_system_type *fs_type, int flags,
 		error = -EBUSY;
 		goto error_bdev;
 	}
+<<<<<<< HEAD
 	s = sget(fs_type, test_gfs2_super, set_gfs2_super, bdev);
+=======
+	s = sget(fs_type, test_gfs2_super, set_gfs2_super, flags, bdev);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&bdev->bd_fsfreeze_mutex);
 	error = PTR_ERR(s);
 	if (IS_ERR(s))
 		goto error_bdev;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (s->s_root) {
+		/*
+		 * s_umount nests inside bd_mutex during
+		 * __invalidate_device().  blkdev_put() acquires
+		 * bd_mutex and can't be called under s_umount.  Drop
+		 * s_umount temporarily.  This is safe as we're
+		 * holding an active reference.
+		 */
+		up_write(&s->s_umount);
+<<<<<<< HEAD
+		blkdev_put(bdev, mode);
+		down_write(&s->s_umount);
+	}
+<<<<<<< HEAD
+=======
 	if (s->s_root)
 		blkdev_put(bdev, mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+		blkdev_put(bdev, mode);
+		down_write(&s->s_umount);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	memset(&args, 0, sizeof(args));
 	args.ar_quota = GFS2_QUOTA_DEFAULT;
@@ -1311,7 +1680,10 @@ static struct dentry *gfs2_mount(struct file_system_type *fs_type, int flags,
 	} else {
 		char b[BDEVNAME_SIZE];
 
+<<<<<<< HEAD
 		s->s_flags = flags;
+=======
+>>>>>>> refs/remotes/origin/master
 		s->s_mode = mode;
 		strlcpy(s->s_id, bdevname(bdev, b), sizeof(s->s_id));
 		sb_set_blocksize(s, block_size(bdev));
@@ -1355,7 +1727,11 @@ static struct dentry *gfs2_mount_meta(struct file_system_type *fs_type,
 		       dev_name, error);
 		return ERR_PTR(error);
 	}
+<<<<<<< HEAD
 	s = sget(&gfs2_fs_type, test_gfs2_super, set_meta_super,
+=======
+	s = sget(&gfs2_fs_type, test_gfs2_super, set_meta_super, flags,
+>>>>>>> refs/remotes/origin/master
 		 path.dentry->d_inode->i_sb->s_bdev);
 	path_put(&path);
 	if (IS_ERR(s)) {
@@ -1385,9 +1761,19 @@ static void gfs2_kill_sb(struct super_block *sb)
 	sdp->sd_root_dir = NULL;
 	sdp->sd_master_dir = NULL;
 	shrink_dcache_sb(sb);
+<<<<<<< HEAD
 	kill_block_super(sb);
 	gfs2_delete_debugfs_file(sdp);
+<<<<<<< HEAD
+=======
+	free_percpu(sdp->sd_lkstats);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(sdp);
+=======
+	gfs2_delete_debugfs_file(sdp);
+	free_percpu(sdp->sd_lkstats);
+	kill_block_super(sb);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct file_system_type gfs2_fs_type = {
@@ -1397,6 +1783,10 @@ struct file_system_type gfs2_fs_type = {
 	.kill_sb = gfs2_kill_sb,
 	.owner = THIS_MODULE,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("gfs2");
+>>>>>>> refs/remotes/origin/master
 
 struct file_system_type gfs2meta_fs_type = {
 	.name = "gfs2meta",
@@ -1404,4 +1794,8 @@ struct file_system_type gfs2meta_fs_type = {
 	.mount = gfs2_mount_meta,
 	.owner = THIS_MODULE,
 };
+<<<<<<< HEAD
 
+=======
+MODULE_ALIAS_FS("gfs2meta");
+>>>>>>> refs/remotes/origin/master

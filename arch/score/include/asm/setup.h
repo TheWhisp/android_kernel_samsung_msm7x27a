@@ -1,11 +1,16 @@
 #ifndef _ASM_SCORE_SETUP_H
 #define _ASM_SCORE_SETUP_H
 
+<<<<<<< HEAD
 #define COMMAND_LINE_SIZE	256
 #define MEMORY_START		0
 #define MEMORY_SIZE		0x2000000
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/setup.h>
+
+>>>>>>> refs/remotes/origin/master
 
 extern void pagetable_init(void);
 extern void pgd_init(unsigned long page);
@@ -36,6 +41,9 @@ extern void debug_exception_vector(void);
 extern void general_exception_vector(void);
 extern void interrupt_exception_vector(void);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_SCORE_SETUP_H */

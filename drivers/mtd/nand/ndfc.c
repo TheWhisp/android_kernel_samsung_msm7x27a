@@ -30,6 +30,10 @@
 #include <linux/mtd/ndfc.h>
 #include <linux/slab.h>
 #include <linux/mtd/mtd.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <asm/io.h>
 
@@ -42,7 +46,13 @@ struct ndfc_controller {
 	struct nand_chip chip;
 	int chip_select;
 	struct nand_hw_control ndfc_control;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct mtd_partition *parts;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct ndfc_controller ndfc_ctrl[NDFC_MAX_CS];
@@ -141,6 +151,7 @@ static void ndfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
 		out_be32(ndfc->ndfcbase + NDFC_DATA, *p++);
 }
 
+<<<<<<< HEAD
 static int ndfc_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
 {
 	struct nand_chip *chip = mtd->priv;
@@ -153,12 +164,16 @@ static int ndfc_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialize chip structure
  */
 static int ndfc_chip_init(struct ndfc_controller *ndfc,
 			  struct device_node *node)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MTD_CMDLINE_PARTS
 	static const char *part_types[] = { "cmdlinepart", NULL };
 #else
@@ -166,6 +181,16 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
 #endif
 	struct device_node *flash_np;
 	struct nand_chip *chip = &ndfc->chip;
+=======
+	struct device_node *flash_np;
+	struct nand_chip *chip = &ndfc->chip;
+	struct mtd_part_parser_data ppdata;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device_node *flash_np;
+	struct nand_chip *chip = &ndfc->chip;
+	struct mtd_part_parser_data ppdata;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	chip->IO_ADDR_R = ndfc->ndfcbase + NDFC_DATA;
@@ -177,13 +202,24 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
 	chip->controller = &ndfc->ndfc_control;
 	chip->read_buf = ndfc_read_buf;
 	chip->write_buf = ndfc_write_buf;
+<<<<<<< HEAD
 	chip->verify_buf = ndfc_verify_buf;
+=======
+>>>>>>> refs/remotes/origin/master
 	chip->ecc.correct = nand_correct_data;
 	chip->ecc.hwctl = ndfc_enable_hwecc;
 	chip->ecc.calculate = ndfc_calculate_ecc;
 	chip->ecc.mode = NAND_ECC_HW;
 	chip->ecc.size = 256;
 	chip->ecc.bytes = 3;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	chip->ecc.strength = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	chip->ecc.strength = 1;
+>>>>>>> refs/remotes/origin/master
 	chip->priv = ndfc;
 
 	ndfc->mtd.priv = chip;
@@ -193,6 +229,14 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
 	if (!flash_np)
 		return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ppdata.of_node = flash_np;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ppdata.of_node = flash_np;
+>>>>>>> refs/remotes/origin/master
 	ndfc->mtd.name = kasprintf(GFP_KERNEL, "%s.%s",
 			dev_name(&ndfc->ofdev->dev), flash_np->name);
 	if (!ndfc->mtd.name) {
@@ -204,6 +248,8 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
 	if (ret)
 		goto err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = parse_mtd_partitions(&ndfc->mtd, part_types, &ndfc->parts, 0);
 	if (ret < 0)
 		goto err;
@@ -216,6 +262,12 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
 	}
 
 	ret = mtd_device_register(&ndfc->mtd, ndfc->parts, ret);
+=======
+	ret = mtd_device_parse_register(&ndfc->mtd, NULL, &ppdata, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mtd_device_parse_register(&ndfc->mtd, NULL, &ppdata, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 
 err:
 	of_node_put(flash_np);
@@ -224,7 +276,11 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit ndfc_probe(struct platform_device *ofdev)
+=======
+static int ndfc_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ndfc_controller *ndfc;
 	const __be32 *reg;
@@ -283,11 +339,23 @@ static int __devinit ndfc_probe(struct platform_device *ofdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit ndfc_remove(struct platform_device *ofdev)
+=======
+static int ndfc_remove(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ndfc_controller *ndfc = dev_get_drvdata(&ofdev->dev);
 
 	nand_release(&ndfc->mtd);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	kfree(ndfc->mtd.name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(ndfc->mtd.name);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -305,9 +373,11 @@ static struct platform_driver ndfc_driver = {
 		.of_match_table = ndfc_match,
 	},
 	.probe = ndfc_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ndfc_remove),
 };
 
+<<<<<<< HEAD
 static int __init ndfc_nand_init(void)
 {
 	return platform_driver_register(&ndfc_driver);
@@ -320,6 +390,15 @@ static void __exit ndfc_nand_exit(void)
 
 module_init(ndfc_nand_init);
 module_exit(ndfc_nand_exit);
+=======
+module_platform_driver(ndfc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = ndfc_remove,
+};
+
+module_platform_driver(ndfc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Thomas Gleixner <tglx@linutronix.de>");

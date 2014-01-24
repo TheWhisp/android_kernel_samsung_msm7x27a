@@ -1,9 +1,21 @@
 /*
  * BT-AMP support routines
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,8 +33,22 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: dhd_bta.c,v 1.10.4.2 2010-12-22 23:47:23 Exp $
  */
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ * $Id: dhd_bta.c 303834 2011-12-20 06:17:39Z $
+ */
+#ifndef WLBTAMP
+#error "WLBTAMP is not defined"
+#endif	/* WLBTAMP */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <typedefs.h>
 #include <osl.h>
@@ -99,7 +125,15 @@ dhd_bta_flush_hcidata(dhd_pub_t *pub, uint16 llh)
 			int ifidx;
 
 			PKTPULL(pub->osh, pkt, dhd_bus_hdrlen(pub->bus));
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dhd_prot_hdrpull(pub, &ifidx, pkt);
+=======
+			dhd_prot_hdrpull(pub, &ifidx, pkt, NULL, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dhd_prot_hdrpull(pub, &ifidx, pkt, NULL, NULL);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			if (PKTLEN(pub->osh, pkt) >= RFC1042_HDR_LEN) {
 				struct ether_header *eh =

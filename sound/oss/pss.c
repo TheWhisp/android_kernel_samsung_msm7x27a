@@ -117,9 +117,21 @@
 
 /* If compiled into kernel, it enable or disable pss mixer */
 #ifdef CONFIG_PSS_MIXER
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int pss_mixer = 1;
 #else
 static int pss_mixer;
+=======
+static bool pss_mixer = 1;
+#else
+static bool pss_mixer;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool pss_mixer = 1;
+#else
+static bool pss_mixer;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -147,7 +159,15 @@ static DEFINE_SPINLOCK(lock);
 static int      pss_initialized;
 static int      nonstandard_microcode;
 static int	pss_cdrom_port = -1;	/* Parameter for the PSS cdrom port */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int	pss_enable_joystick;    /* Parameter for enabling the joystick */
+=======
+static bool	pss_enable_joystick;    /* Parameter for enabling the joystick */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool	pss_enable_joystick;    /* Parameter for enabling the joystick */
+>>>>>>> refs/remotes/origin/master
 static coproc_operations pss_coproc_operations;
 
 static void pss_write(pss_confdata *devc, int data)
@@ -359,7 +379,11 @@ static int pss_download_boot(pss_confdata * devc, unsigned char *block, int size
 		{
 			/*_____ Send the next byte */
 			outw (*block++, REG (PSS_DATA));
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 		count++;
 	}
 
@@ -673,7 +697,17 @@ static void configure_nonsound_components(void)
 
 	if (pss_cdrom_port == -1) {	/* If cdrom port enablation wasn't requested */
 		printk(KERN_INFO "PSS: CDROM port not enabled.\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (check_region(pss_cdrom_port, 2)) {
+=======
+	} else if (!request_region(pss_cdrom_port, 2, "PSS CDROM")) {
+		pss_cdrom_port = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (!request_region(pss_cdrom_port, 2, "PSS CDROM")) {
+		pss_cdrom_port = -1;
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "PSS: CDROM I/O port conflict.\n");
 	} else {
 		set_io_base(devc, CONF_CDROM, pss_cdrom_port);
@@ -1132,8 +1166,18 @@ static int mss_irq __initdata	= -1;
 static int mss_dma __initdata	= -1;
 static int mpu_io __initdata	= -1;
 static int mpu_irq __initdata	= -1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int pss_no_sound = 0;	/* Just configure non-sound components */
 static int pss_keep_settings  = 1;	/* Keep hardware settings at module exit */
+=======
+static bool pss_no_sound = 0;	/* Just configure non-sound components */
+static bool pss_keep_settings  = 1;	/* Keep hardware settings at module exit */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool pss_no_sound = 0;	/* Just configure non-sound components */
+static bool pss_keep_settings  = 1;	/* Keep hardware settings at module exit */
+>>>>>>> refs/remotes/origin/master
 static char *pss_firmware = "/etc/sound/pss_synth";
 
 module_param(pss_io, int, 0);
@@ -1232,7 +1276,17 @@ static void __exit cleanup_pss(void)
 		if(pssmpu)
 			unload_pss_mpu(&cfg_mpu);
 		unload_pss(&cfg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
+=======
+	} else if (pss_cdrom_port != -1)
+		release_region(pss_cdrom_port, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (pss_cdrom_port != -1)
+		release_region(pss_cdrom_port, 2);
+>>>>>>> refs/remotes/origin/master
 
 	if(!pss_keep_settings)	/* Keep hardware settings if asked */
 	{

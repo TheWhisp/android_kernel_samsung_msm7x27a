@@ -15,6 +15,16 @@
 #ifndef _ASM_IA64_MCA_ASM_H
 #define _ASM_IA64_MCA_ASM_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/percpu.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/percpu.h>
+
+>>>>>>> refs/remotes/origin/master
 #define PSR_IC		13
 #define PSR_I		14
 #define	PSR_DT		17

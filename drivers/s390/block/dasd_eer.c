@@ -1,7 +1,11 @@
 /*
  *  Character device driver for extended error reporting.
  *
+<<<<<<< HEAD
  *  Copyright (C) 2005 IBM Corporation
+=======
+ *  Copyright IBM Corp. 2005
+>>>>>>> refs/remotes/origin/master
  *  extended error reporting for DASD ECKD devices
  *  Author(s): Stefan Weinhuber <wein@de.ibm.com>
  */
@@ -21,7 +25,15 @@
 #include <linux/slab.h>
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/ebcdic.h>
 
 #include "dasd_int.h"
@@ -481,7 +493,11 @@ int dasd_eer_enable(struct dasd_device *device)
 	ccw->flags = 0;
 	ccw->cda = (__u32)(addr_t) cqr->data;
 
+<<<<<<< HEAD
 	cqr->buildclk = get_clock();
+=======
+	cqr->buildclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 	cqr->status = DASD_CQR_FILLED;
 	cqr->callback = dasd_eer_snss_cb;
 

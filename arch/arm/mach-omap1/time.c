@@ -37,24 +37,52 @@
 #include <linux/init.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sched.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/clocksource.h>
 #include <linux/clockchips.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/leds.h>
 #include <asm/irq.h>
 #include <asm/sched_clock.h>
 
+<<<<<<< HEAD
 #include <asm/mach/irq.h>
 #include <asm/mach/time.h>
 
 #include <plat/common.h>
+=======
+=======
+#include <linux/sched_clock.h>
+
+#include <asm/irq.h>
+
+>>>>>>> refs/remotes/origin/master
+#include <mach/hardware.h>
+#include <asm/mach/irq.h>
+#include <asm/mach/time.h>
+
+#include "iomap.h"
+#include "common.h"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_OMAP_MPU_TIMER
 
@@ -147,7 +175,10 @@ static void omap_mpu_set_mode(enum clock_event_mode mode,
 static struct clock_event_device clockevent_mpu_timer1 = {
 	.name		= "mpu_timer1",
 	.features       = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
+<<<<<<< HEAD
 	.shift		= 32,
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_next_event	= omap_mpu_set_next_event,
 	.set_mode	= omap_mpu_set_mode,
 };
@@ -163,7 +194,11 @@ static irqreturn_t omap_mpu_timer1_interrupt(int irq, void *dev_id)
 
 static struct irqaction omap_mpu_timer1_irq = {
 	.name		= "mpu_timer1",
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL,
+=======
+	.flags		= IRQF_TIMER | IRQF_IRQPOLL,
+>>>>>>> refs/remotes/origin/master
 	.handler	= omap_mpu_timer1_interrupt,
 };
 
@@ -172,6 +207,7 @@ static __init void omap_init_mpu_timer(unsigned long rate)
 	setup_irq(INT_TIMER1, &omap_mpu_timer1_irq);
 	omap_mpu_timer_start(0, (rate / HZ) - 1, 1);
 
+<<<<<<< HEAD
 	clockevent_mpu_timer1.mult = div_sc(rate, NSEC_PER_SEC,
 					    clockevent_mpu_timer1.shift);
 	clockevent_mpu_timer1.max_delta_ns =
@@ -181,6 +217,11 @@ static __init void omap_init_mpu_timer(unsigned long rate)
 
 	clockevent_mpu_timer1.cpumask = cpumask_of(0);
 	clockevents_register_device(&clockevent_mpu_timer1);
+=======
+	clockevent_mpu_timer1.cpumask = cpumask_of(0);
+	clockevents_config_and_register(&clockevent_mpu_timer1, rate,
+					1, -1);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -190,6 +231,8 @@ static __init void omap_init_mpu_timer(unsigned long rate)
  * ---------------------------------------------------------------------------
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 
 static inline unsigned long long notrace _omap_mpu_sched_clock(void)
@@ -214,6 +257,16 @@ static void notrace mpu_update_sched_clock(void)
 {
 	u32 cyc = ~omap_mpu_timer_read(1);
 	update_sched_clock(&cd, cyc, (u32)~0);
+=======
+static u32 notrace omap_mpu_read_sched_clock(void)
+{
+	return ~omap_mpu_timer_read(1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 notrace omap_mpu_read_sched_clock(void)
+{
+	return ~omap_mpu_timer_read(1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init omap_init_clocksource(unsigned long rate)
@@ -223,7 +276,15 @@ static void __init omap_init_clocksource(unsigned long rate)
 			"%s: can't register clocksource!\n";
 
 	omap_mpu_timer_start(1, ~0, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	init_sched_clock(&cd, mpu_update_sched_clock, 32, rate);
+=======
+	setup_sched_clock(omap_mpu_read_sched_clock, 32, rate);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_sched_clock(omap_mpu_read_sched_clock, 32, rate);
+>>>>>>> refs/remotes/origin/master
 
 	if (clocksource_mmio_init(&timer->read_tim, "mpu_timer2", rate,
 			300, 32, clocksource_mmio_readl_down))
@@ -254,6 +315,8 @@ static inline void omap_mpu_timer_init(void)
 }
 #endif	/* CONFIG_OMAP_MPU_TIMER */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_OMAP_MPU_TIMER) && defined(CONFIG_OMAP_32K_TIMER)
 static unsigned long long (*preferred_sched_clock)(void);
 
@@ -278,6 +341,8 @@ static inline void preferred_sched_clock_init(bool use_32k_sched_clcok)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int omap_32k_timer_usable(void)
 {
 	int res = false;
@@ -292,11 +357,15 @@ static inline int omap_32k_timer_usable(void)
 	return res;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ---------------------------------------------------------------------------
  * Timer initialization
  * ---------------------------------------------------------------------------
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __init omap_timer_init(void)
 {
 	if (omap_32k_timer_usable()) {
@@ -309,4 +378,21 @@ static void __init omap_timer_init(void)
 
 struct sys_timer omap_timer = {
 	.init		= omap_timer_init,
+=======
+static void __init omap1_timer_init(void)
+{
+	if (!omap_32k_timer_usable())
+		omap_mpu_timer_init();
+}
+
+struct sys_timer omap1_timer = {
+	.init		= omap1_timer_init,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
+=======
+void __init omap1_timer_init(void)
+{
+	if (omap_32k_timer_init() != 0)
+		omap_mpu_timer_init();
+}
+>>>>>>> refs/remotes/origin/master

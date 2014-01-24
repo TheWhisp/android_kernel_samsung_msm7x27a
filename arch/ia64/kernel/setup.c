@@ -59,7 +59,13 @@
 #include <asm/sections.h>
 #include <asm/setup.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/tlbflush.h>
 #include <asm/unistd.h>
 #include <asm/hpsim.h>
@@ -220,6 +226,32 @@ sort_regions (struct rsvd_region *rsvd_region, int max)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* merge overlaps */
+static int __init
+merge_regions (struct rsvd_region *rsvd_region, int max)
+{
+	int i;
+	for (i = 1; i < max; ++i) {
+		if (rsvd_region[i].start >= rsvd_region[i-1].end)
+			continue;
+		if (rsvd_region[i].end > rsvd_region[i-1].end)
+			rsvd_region[i-1].end = rsvd_region[i].end;
+		--max;
+		memmove(&rsvd_region[i], &rsvd_region[i+1],
+			(max - i) * sizeof(struct rsvd_region));
+	}
+	return max;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Request address space for all standard resources
  */
@@ -270,6 +302,14 @@ static void __init setup_crashkernel(unsigned long total, int *n)
 	if (ret == 0 && size > 0) {
 		if (!base) {
 			sort_regions(rsvd_region, *n);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			*n = merge_regions(rsvd_region, *n);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*n = merge_regions(rsvd_region, *n);
+>>>>>>> refs/remotes/origin/master
 			base = kdump_find_rsvd_region(size,
 					rsvd_region, *n);
 		}
@@ -373,6 +413,14 @@ reserve_memory (void)
 	BUG_ON(IA64_MAX_RSVD_REGIONS + 1 < n);
 
 	sort_regions(rsvd_region, num_rsvd_regions);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	num_rsvd_regions = merge_regions(rsvd_region, num_rsvd_regions);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	num_rsvd_regions = merge_regions(rsvd_region, num_rsvd_regions);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -467,7 +515,15 @@ mark_bsp_online (void)
 {
 #ifdef CONFIG_SMP
 	/* If we register an early console, allow CPU 0 to printk */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_set(smp_processor_id(), cpu_online_map);
+=======
+	set_cpu_online(smp_processor_id(), true);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_cpu_online(smp_processor_id(), true);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -730,7 +786,11 @@ const struct seq_operations cpuinfo_op = {
 #define MAX_BRANDS	8
 static char brandname[MAX_BRANDS][128];
 
+<<<<<<< HEAD
 static char * __cpuinit
+=======
+static char *
+>>>>>>> refs/remotes/origin/master
 get_model_name(__u8 family, __u8 model)
 {
 	static int overflow;
@@ -760,7 +820,11 @@ get_model_name(__u8 family, __u8 model)
 	return "Unknown";
 }
 
+<<<<<<< HEAD
 static void __cpuinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 identify_cpu (struct cpuinfo_ia64 *c)
 {
 	union {
@@ -832,7 +896,11 @@ identify_cpu (struct cpuinfo_ia64 *c)
  * 2. the minimum of the i-cache stride sizes for "flush_icache_range()".
  * 3. the minimum of the cache stride sizes for "clflush_cache_range()".
  */
+<<<<<<< HEAD
 static void __cpuinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 get_cache_info(void)
 {
 	unsigned long line_size, max = 1;
@@ -897,10 +965,17 @@ get_cache_info(void)
  * cpu_init() initializes state that is per-CPU.  This function acts
  * as a 'CPU state barrier', nothing should get across.
  */
+<<<<<<< HEAD
 void __cpuinit
 cpu_init (void)
 {
 	extern void __cpuinit ia64_mmu_init (void *);
+=======
+void
+cpu_init (void)
+{
+	extern void ia64_mmu_init(void *);
+>>>>>>> refs/remotes/origin/master
 	static unsigned long max_num_phys_stacked = IA64_NUM_PHYS_STACK_REG;
 	unsigned long num_phys_stacked;
 	pal_vm_info_2_u_t vmi;
@@ -1033,7 +1108,10 @@ cpu_init (void)
 		max_num_phys_stacked = num_phys_stacked;
 	}
 	platform_cpu_init();
+<<<<<<< HEAD
 	pm_idle = default_idle;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init
@@ -1046,6 +1124,11 @@ check_bugs (void)
 static int __init run_dmi_scan(void)
 {
 	dmi_scan_machine();
+<<<<<<< HEAD
+=======
+	dmi_memdev_walk();
+	dmi_set_dump_stack_arch_desc();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 core_initcall(run_dmi_scan);

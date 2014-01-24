@@ -250,7 +250,11 @@ static int ide_gd_unlocked_open(struct block_device *bdev, fmode_t mode)
 }
 
 
+<<<<<<< HEAD
 static int ide_gd_release(struct gendisk *disk, fmode_t mode)
+=======
+static void ide_gd_release(struct gendisk *disk, fmode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ide_disk_obj *idkp = ide_drv_g(disk, ide_disk_obj);
 	ide_drive_t *drive = idkp->drive;
@@ -270,8 +274,11 @@ static int ide_gd_release(struct gendisk *disk, fmode_t mode)
 
 	ide_disk_put(idkp);
 	mutex_unlock(&ide_gd_mutex);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ide_gd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
@@ -394,7 +401,11 @@ static int ide_gd_probe(ide_drive_t *drive)
 
 	idkp->dev.parent = &drive->gendev;
 	idkp->dev.release = ide_disk_release;
+<<<<<<< HEAD
 	dev_set_name(&idkp->dev, dev_name(&drive->gendev));
+=======
+	dev_set_name(&idkp->dev, "%s", dev_name(&drive->gendev));
+>>>>>>> refs/remotes/origin/master
 
 	if (device_register(&idkp->dev))
 		goto out_free_disk;

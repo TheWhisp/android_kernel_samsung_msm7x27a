@@ -7,6 +7,14 @@
 
 #include <linux/kobject.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/err.h>
 #include "pci.h"
@@ -52,7 +60,11 @@ static ssize_t address_read_file(struct pci_slot *slot, char *buf)
 static const char *pci_bus_speed_strings[] = {
 	"33 MHz PCI",		/* 0x00 */
 	"66 MHz PCI",		/* 0x01 */
+<<<<<<< HEAD
 	"66 MHz PCI-X", 	/* 0x02 */
+=======
+	"66 MHz PCI-X",		/* 0x02 */
+>>>>>>> refs/remotes/origin/master
 	"100 MHz PCI-X",	/* 0x03 */
 	"133 MHz PCI-X",	/* 0x04 */
 	NULL,			/* 0x05 */
@@ -376,14 +388,25 @@ void pci_hp_create_module_link(struct pci_slot *pci_slot)
 {
 	struct hotplug_slot *slot = pci_slot->hotplug;
 	struct kobject *kobj = NULL;
+<<<<<<< HEAD
 	int no_warn;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!slot || !slot->ops)
 		return;
 	kobj = kset_find_obj(module_kset, slot->ops->mod_name);
 	if (!kobj)
 		return;
+<<<<<<< HEAD
 	no_warn = sysfs_create_link(&pci_slot->kobj, kobj, "module");
+=======
+	ret = sysfs_create_link(&pci_slot->kobj, kobj, "module");
+	if (ret)
+		dev_err(&pci_slot->bus->dev, "Error creating sysfs link (%d)\n",
+			ret);
+>>>>>>> refs/remotes/origin/master
 	kobject_put(kobj);
 }
 EXPORT_SYMBOL_GPL(pci_hp_create_module_link);

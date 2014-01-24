@@ -36,7 +36,17 @@ static struct tcf_hashinfo simp_hash_info = {
 };
 
 #define SIMP_MAX_DATA	32
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int tcf_simp(struct sk_buff *skb, struct tc_action *a, struct tcf_result *res)
+=======
+static int tcf_simp(struct sk_buff *skb, const struct tc_action *a,
+		    struct tcf_result *res)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tcf_simp(struct sk_buff *skb, const struct tc_action *a,
+		    struct tcf_result *res)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcf_defact *d = a->priv;
 
@@ -94,8 +104,14 @@ static const struct nla_policy simple_policy[TCA_DEF_MAX + 1] = {
 	[TCA_DEF_DATA]	= { .type = NLA_STRING, .len = SIMP_MAX_DATA },
 };
 
+<<<<<<< HEAD
 static int tcf_simp_init(struct nlattr *nla, struct nlattr *est,
 			 struct tc_action *a, int ovr, int bind)
+=======
+static int tcf_simp_init(struct net *net, struct nlattr *nla,
+			 struct nlattr *est, struct tc_action *a,
+			 int ovr, int bind)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nlattr *tb[TCA_DEF_MAX + 1];
 	struct tc_defact *parm;
@@ -130,17 +146,34 @@ static int tcf_simp_init(struct nlattr *nla, struct nlattr *est,
 		d = to_defact(pc);
 		ret = alloc_defdata(d, defdata);
 		if (ret < 0) {
+<<<<<<< HEAD
 			kfree(pc);
+=======
+			if (est)
+				gen_kill_estimator(&pc->tcfc_bstats,
+						   &pc->tcfc_rate_est);
+			kfree_rcu(pc, tcfc_rcu);
+>>>>>>> refs/remotes/origin/master
 			return ret;
 		}
 		d->tcf_action = parm->action;
 		ret = ACT_P_CREATED;
 	} else {
 		d = to_defact(pc);
+<<<<<<< HEAD
 		if (!ovr) {
 			tcf_simp_release(d, bind);
 			return -EEXIST;
 		}
+=======
+
+		if (bind)
+			return 0;
+		tcf_simp_release(d, bind);
+		if (!ovr)
+			return -EEXIST;
+
+>>>>>>> refs/remotes/origin/master
 		reset_policy(d, defdata, parm);
 	}
 
@@ -171,12 +204,23 @@ static int tcf_simp_dump(struct sk_buff *skb, struct tc_action *a,
 	};
 	struct tcf_t t;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_DEF_PARMS, sizeof(opt), &opt);
 	NLA_PUT_STRING(skb, TCA_DEF_DATA, d->tcfd_defdata);
 	t.install = jiffies_to_clock_t(jiffies - d->tcf_tm.install);
 	t.lastuse = jiffies_to_clock_t(jiffies - d->tcf_tm.lastuse);
 	t.expires = jiffies_to_clock_t(d->tcf_tm.expires);
 	NLA_PUT(skb, TCA_DEF_TM, sizeof(t), &t);
+=======
+	if (nla_put(skb, TCA_DEF_PARMS, sizeof(opt), &opt) ||
+	    nla_put_string(skb, TCA_DEF_DATA, d->tcfd_defdata))
+		goto nla_put_failure;
+	t.install = jiffies_to_clock_t(jiffies - d->tcf_tm.install);
+	t.lastuse = jiffies_to_clock_t(jiffies - d->tcf_tm.lastuse);
+	t.expires = jiffies_to_clock_t(d->tcf_tm.expires);
+	if (nla_put(skb, TCA_DEF_TM, sizeof(t), &t))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return skb->len;
 
 nla_put_failure:
@@ -194,7 +238,10 @@ static struct tc_action_ops act_simp_ops = {
 	.dump		=	tcf_simp_dump,
 	.cleanup	=	tcf_simp_cleanup,
 	.init		=	tcf_simp_init,
+<<<<<<< HEAD
 	.walk		=	tcf_generic_walker,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 MODULE_AUTHOR("Jamal Hadi Salim(2005)");

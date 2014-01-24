@@ -27,7 +27,13 @@
 #define __BFAD_DRV_H__
 
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/dma-mapping.h>
 #include <linux/idr.h>
@@ -38,11 +44,25 @@
 #include <linux/vmalloc.h>
 #include <linux/workqueue.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
+=======
+#include <linux/aer.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi.h>
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_tcq.h>
 #include <scsi/scsi_transport_fc.h>
 #include <scsi/scsi_transport.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <scsi/scsi_bsg_fc.h>
+#include <scsi/scsi_devinfo.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <scsi/scsi_bsg_fc.h>
+#include <scsi/scsi_devinfo.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "bfa_modules.h"
 #include "bfa_fcs.h"
@@ -55,7 +75,15 @@
 #ifdef BFA_DRIVER_VERSION
 #define BFAD_DRIVER_VERSION    BFA_DRIVER_VERSION
 #else
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define BFAD_DRIVER_VERSION    "2.3.2.3"
+=======
+#define BFAD_DRIVER_VERSION    "3.0.23.0"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BFAD_DRIVER_VERSION    "3.2.21.1"
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define BFAD_PROTO_NAME FCPI_NAME
@@ -79,7 +107,17 @@
 #define BFAD_HAL_INIT_FAIL			0x00000100
 #define BFAD_FC4_PROBE_DONE			0x00000200
 #define BFAD_PORT_DELETE			0x00000001
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#define BFAD_INTX_ON				0x00000400
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BFAD_INTX_ON				0x00000400
+#define BFAD_EEH_BUSY				0x00000800
+#define BFAD_EEH_PCI_CHANNEL_IO_PERM_FAILURE	0x00001000
+>>>>>>> refs/remotes/origin/master
 /*
  * BFAD related definition
  */
@@ -92,6 +130,16 @@
  */
 #define BFAD_LUN_QUEUE_DEPTH	32
 #define BFAD_IO_MAX_SGE		SG_ALL
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define BFAD_MIN_SECTORS	128 /* 64k   */
+#define BFAD_MAX_SECTORS	0xFFFF  /* 32 MB */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BFAD_MIN_SECTORS	128 /* 64k   */
+#define BFAD_MAX_SECTORS	0xFFFF  /* 32 MB */
+>>>>>>> refs/remotes/origin/master
 
 #define bfad_isr_t irq_handler_t
 
@@ -110,6 +158,14 @@ struct bfad_msix_s {
 enum {
 	BFA_TRC_LDRV_BFAD		= 1,
 	BFA_TRC_LDRV_IM			= 2,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	BFA_TRC_LDRV_BSG		= 3,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFA_TRC_LDRV_BSG		= 3,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum bfad_port_pvb_type {
@@ -189,8 +245,21 @@ struct bfad_s {
 	struct bfa_pcidev_s hal_pcidev;
 	struct bfa_ioc_pci_attr_s pci_attr;
 	void __iomem   *pci_bar0_kva;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct completion comp;
 	struct completion suspend;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	void __iomem   *pci_bar2_kva;
+	struct completion comp;
+	struct completion suspend;
+	struct completion enable_comp;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct completion disable_comp;
 	bfa_boolean_t   disable_active;
 	struct bfad_port_s     pport;	/* physical port of the BFAD */
@@ -218,6 +287,20 @@ struct bfad_s {
 	char *regdata;
 	u32 reglen;
 	struct dentry *bfad_dentry_files[5];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct list_head	free_aen_q;
+	struct list_head	active_aen_q;
+	struct bfa_aen_entry_s	aen_list[BFA_AEN_MAX_ENTRY];
+	spinlock_t		bfad_aen_spinlock;
+	struct list_head	vport_list;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* BFAD state machine events */
@@ -273,6 +356,8 @@ struct bfad_hal_comp {
 	struct completion comp;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Macro to obtain the immediate lower power
  * of two for the integer.
@@ -288,6 +373,10 @@ do {                                            \
 } while (0)
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define BFA_LOG(level, bfad, mask, fmt, arg...)				\
 do {									\
 	if (((mask) == 4) || (level[1] <= '4'))				\
@@ -354,6 +443,14 @@ extern int      msix_disable_ct;
 extern int      fdmi_enable;
 extern int      supported_fc4s;
 extern int	pcie_max_read_reqsz;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern int	max_xfer_size;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int	max_xfer_size;
+>>>>>>> refs/remotes/origin/master
 extern int bfa_debugfs_enable;
 extern struct mutex bfad_mutex;
 

@@ -15,15 +15,43 @@
 #ifndef __MFD_WM8994_CORE_H__
 #define __MFD_WM8994_CORE_H__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/mutex.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
+=======
+#include <linux/mutex.h>
+#include <linux/interrupt.h>
+#include <linux/regmap.h>
+
+#include <linux/mfd/wm8994/pdata.h>
+>>>>>>> refs/remotes/origin/master
 
 enum wm8994_type {
 	WM8994 = 0,
 	WM8958 = 1,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	WM1811 = 2,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WM1811 = 2,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct regulator_dev;
 struct regulator_bulk_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct regmap;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct irq_domain;
+>>>>>>> refs/remotes/origin/master
 
 #define WM8994_NUM_GPIO_REGS 11
 #define WM8994_NUM_LDO_REGS   2
@@ -50,6 +78,8 @@ struct regulator_bulk_data;
 #define WM8994_IRQ_GPIO(x) (x + WM8994_IRQ_TEMP_WARN)
 
 struct wm8994 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct mutex io_lock;
 	struct mutex irq_lock;
 
@@ -62,11 +92,34 @@ struct wm8994 {
 			 int bytes, const void *src);
 
 	void *control_data;
+=======
+	struct mutex irq_lock;
+
+	enum wm8994_type type;
+	int revision;
+=======
+	struct wm8994_pdata pdata;
+
+	enum wm8994_type type;
+	int revision;
+	int cust_id;
+>>>>>>> refs/remotes/origin/master
+
+	struct device *dev;
+	struct regmap *regmap;
+
+	bool ldo_ena_always_driven;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	int gpio_base;
 	int irq_base;
 
 	int irq;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 irq_masks_cur[WM8994_NUM_IRQ_REGS];
 	u16 irq_masks_cache[WM8994_NUM_IRQ_REGS];
 
@@ -74,6 +127,19 @@ struct wm8994 {
 	bool suspended;
 	u16 ldo_regs[WM8994_NUM_LDO_REGS];
 	u16 gpio_regs[WM8994_NUM_GPIO_REGS];
+=======
+	struct regmap_irq_chip_data *irq_data;
+
+	/* Used over suspend/resume */
+	bool suspended;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct regmap_irq_chip_data *irq_data;
+	struct irq_domain *edge_irq;
+
+	/* Used over suspend/resume */
+	bool suspended;
+>>>>>>> refs/remotes/origin/master
 
 	struct regulator_dev *dbvdd;
 	int num_supplies;
@@ -81,6 +147,7 @@ struct wm8994 {
 };
 
 /* Device I/O API */
+<<<<<<< HEAD
 int wm8994_reg_read(struct wm8994 *wm8994, unsigned short reg);
 int wm8994_reg_write(struct wm8994 *wm8994, unsigned short reg,
 		 unsigned short val);
@@ -91,23 +158,75 @@ int wm8994_bulk_read(struct wm8994 *wm8994, unsigned short reg,
 int wm8994_bulk_write(struct wm8994 *wm8994, unsigned short reg,
 		     int count, const u16 *buf);
 
+=======
+
+static inline int wm8994_reg_read(struct wm8994 *wm8994, unsigned short reg)
+{
+	unsigned int val;
+	int ret;
+
+	ret = regmap_read(wm8994->regmap, reg, &val);
+
+	if (ret < 0)
+		return ret;
+	else
+		return val;
+}
+
+static inline int wm8994_reg_write(struct wm8994 *wm8994, unsigned short reg,
+				   unsigned short val)
+{
+	return regmap_write(wm8994->regmap, reg, val);
+}
+
+static inline int wm8994_bulk_read(struct wm8994 *wm8994, unsigned short reg,
+				   int count, u16 *buf)
+{
+	return regmap_bulk_read(wm8994->regmap, reg, buf, count);
+}
+
+static inline int wm8994_bulk_write(struct wm8994 *wm8994, unsigned short reg,
+				    int count, const u16 *buf)
+{
+	return regmap_raw_write(wm8994->regmap, reg, buf, count * sizeof(u16));
+}
+
+static inline int wm8994_set_bits(struct wm8994 *wm8994, unsigned short reg,
+		    unsigned short mask, unsigned short val)
+{
+	return regmap_update_bits(wm8994->regmap, reg, mask, val);
+}
+>>>>>>> refs/remotes/origin/master
 
 /* Helper to save on boilerplate */
 static inline int wm8994_request_irq(struct wm8994 *wm8994, int irq,
 				     irq_handler_t handler, const char *name,
 				     void *data)
 {
+<<<<<<< HEAD
 	if (!wm8994->irq_base)
 		return -EINVAL;
 	return request_threaded_irq(wm8994->irq_base + irq, NULL, handler,
 				    IRQF_TRIGGER_RISING, name,
+=======
+	if (!wm8994->irq_data)
+		return -EINVAL;
+	return request_threaded_irq(regmap_irq_get_virq(wm8994->irq_data, irq),
+				    NULL, handler, IRQF_TRIGGER_RISING, name,
+>>>>>>> refs/remotes/origin/master
 				    data);
 }
 static inline void wm8994_free_irq(struct wm8994 *wm8994, int irq, void *data)
 {
+<<<<<<< HEAD
 	if (!wm8994->irq_base)
 		return;
 	free_irq(wm8994->irq_base + irq, data);
+=======
+	if (!wm8994->irq_data)
+		return;
+	free_irq(regmap_irq_get_virq(wm8994->irq_data, irq), data);
+>>>>>>> refs/remotes/origin/master
 }
 
 int wm8994_irq_init(struct wm8994 *wm8994);

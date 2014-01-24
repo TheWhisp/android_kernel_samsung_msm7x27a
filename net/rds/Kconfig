@@ -1,7 +1,12 @@
 
 config RDS
+<<<<<<< HEAD
 	tristate "The RDS Protocol (EXPERIMENTAL)"
 	depends on INET && EXPERIMENTAL
+=======
+	tristate "The RDS Protocol"
+	depends on INET
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  The RDS (Reliable Datagram Sockets) protocol provides reliable,
 	  sequenced delivery of datagrams over Infiniband, iWARP,

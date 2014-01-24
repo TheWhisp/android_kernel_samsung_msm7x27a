@@ -24,9 +24,15 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/ntfy.h>
 
@@ -165,7 +171,11 @@ static u8 size_cmd[] = {
 	ARRAY_SIZE(cmm_cmd),
 };
 
+<<<<<<< HEAD
 static inline void _cp_fm_usr(void *to, const void __user * from,
+=======
+static inline void _cp_fm_usr(void *to, const void __user *from,
+>>>>>>> refs/remotes/origin/master
 			      int *err, unsigned long bytes)
 {
 	if (*err)
@@ -266,6 +276,8 @@ err:
  */
 void api_exit(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(api_c_refs > 0);
 	api_c_refs--;
 
@@ -285,6 +297,17 @@ void api_exit(void)
 		drv_exit();
 	}
 	DBC_ENSURE(api_c_refs >= 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	api_c_refs--;
+
+	if (api_c_refs == 0)
+		mgr_exit();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -295,6 +318,8 @@ void api_exit(void)
 bool api_init(void)
 {
 	bool ret = true;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bool fdrv, fdev, fcod, fchnl, fmsg, fio;
 	bool fmgr, fproc, fnode, fdisp, fstrm, frmm;
 
@@ -353,6 +378,17 @@ bool api_init(void)
 
 		}
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (api_c_refs == 0)
+		ret = mgr_init();
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		api_c_refs++;
 
@@ -382,8 +418,14 @@ int api_init_complete2(void)
 	struct drv_data *drv_datap;
 	u8 dev_type;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(api_c_refs > 0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*  Walk the list of DevObjects, get each devnode, and attempting to
 	 *  autostart the board. Note that this requires COF loading, which
 	 *  requires KFILE. */
@@ -488,10 +530,20 @@ u32 mgrwrap_register_object(union trapped_args *args, void *pr_ctxt)
 	CP_FM_USR(&uuid_obj, args->args_mgr_registerobject.uuid_obj, status, 1);
 	if (status)
 		goto func_end;
+<<<<<<< HEAD
 	/* path_size is increased by 1 to accommodate NULL */
 	path_size = strlen_user((char *)
 				args->args_mgr_registerobject.sz_path_name) +
 	    1;
+=======
+	path_size = strlen_user((char *)
+				args->args_mgr_registerobject.sz_path_name);
+	if (!path_size) {
+		status = -EINVAL;
+		goto func_end;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	psz_path_name = kmalloc(path_size, GFP_KERNEL);
 	if (!psz_path_name) {
 		status = -ENOMEM;
@@ -578,7 +630,11 @@ u32 mgrwrap_wait_for_bridge_events(union trapped_args *args, void *pr_ctxt)
 /*
  * ======== MGRWRAP_GetProcessResourceInfo ========
  */
+<<<<<<< HEAD
 u32 __deprecated mgrwrap_get_process_resources_info(union trapped_args * args,
+=======
+u32 __deprecated mgrwrap_get_process_resources_info(union trapped_args *args,
+>>>>>>> refs/remotes/origin/master
 						    void *pr_ctxt)
 {
 	pr_err("%s: deprecated dspbridge ioctl\n", __func__);
@@ -652,7 +708,11 @@ func_end:
 /*
  * ======== procwrap_detach ========
  */
+<<<<<<< HEAD
 u32 __deprecated procwrap_detach(union trapped_args * args, void *pr_ctxt)
+=======
+u32 __deprecated procwrap_detach(union trapped_args *args, void *pr_ctxt)
+>>>>>>> refs/remotes/origin/master
 {
 	/* proc_detach called at bridge_release only */
 	pr_err("%s: deprecated dspbridge ioctl\n", __func__);
@@ -1614,7 +1674,11 @@ u32 strmwrap_free_buffer(union trapped_args *args, void *pr_ctxt)
 	if (num_bufs > MAX_BUFS)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	ap_buffer = kmalloc((num_bufs * sizeof(u8 *)), GFP_KERNEL);
+=======
+	ap_buffer = kmalloc_array(num_bufs, sizeof(u8 *), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (ap_buffer == NULL)
 		return -ENOMEM;
 
@@ -1635,7 +1699,11 @@ u32 strmwrap_free_buffer(union trapped_args *args, void *pr_ctxt)
 /*
  * ======== strmwrap_get_event_handle ========
  */
+<<<<<<< HEAD
 u32 __deprecated strmwrap_get_event_handle(union trapped_args * args,
+=======
+u32 __deprecated strmwrap_get_event_handle(union trapped_args *args,
+>>>>>>> refs/remotes/origin/master
 					   void *pr_ctxt)
 {
 	pr_err("%s: deprecated dspbridge ioctl\n", __func__);
@@ -1864,7 +1932,11 @@ u32 strmwrap_select(union trapped_args *args, void *pr_ctxt)
 /*
  * ======== cmmwrap_calloc_buf ========
  */
+<<<<<<< HEAD
 u32 __deprecated cmmwrap_calloc_buf(union trapped_args * args, void *pr_ctxt)
+=======
+u32 __deprecated cmmwrap_calloc_buf(union trapped_args *args, void *pr_ctxt)
+>>>>>>> refs/remotes/origin/master
 {
 	/* This operation is done in kernel */
 	pr_err("%s: deprecated dspbridge ioctl\n", __func__);
@@ -1874,7 +1946,11 @@ u32 __deprecated cmmwrap_calloc_buf(union trapped_args * args, void *pr_ctxt)
 /*
  * ======== cmmwrap_free_buf ========
  */
+<<<<<<< HEAD
 u32 __deprecated cmmwrap_free_buf(union trapped_args * args, void *pr_ctxt)
+=======
+u32 __deprecated cmmwrap_free_buf(union trapped_args *args, void *pr_ctxt)
+>>>>>>> refs/remotes/origin/master
 {
 	/* This operation is done in kernel */
 	pr_err("%s: deprecated dspbridge ioctl\n", __func__);

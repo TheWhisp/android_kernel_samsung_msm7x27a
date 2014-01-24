@@ -33,6 +33,8 @@
 #ifndef _AU1000_PSC_H_
 #define _AU1000_PSC_H_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* The PSC base addresses.  */
 #ifdef CONFIG_SOC_AU1550
 #define PSC0_BASE_ADDR		0xb1a00000
@@ -46,6 +48,10 @@
 #define PSC1_BASE_ADDR		0xb1b00000
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The PSC select and control registers are common to all protocols.
  */
@@ -66,7 +72,11 @@
 
 #define PSC_CTRL_DISABLE	0
 #define PSC_CTRL_SUSPEND	2
+<<<<<<< HEAD
 #define PSC_CTRL_ENABLE 	3
+=======
+#define PSC_CTRL_ENABLE		3
+>>>>>>> refs/remotes/origin/master
 
 /* AC97 Registers. */
 #define PSC_AC97CFG_OFFSET	0x00000008
@@ -80,6 +90,8 @@
 #define PSC_AC97GPO_OFFSET	0x00000028
 #define PSC_AC97GPI_OFFSET	0x0000002c
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AC97_PSC_SEL		(AC97_PSC_BASE + PSC_SEL_OFFSET)
 #define AC97_PSC_CTRL		(AC97_PSC_BASE + PSC_CTRL_OFFSET)
 #define PSC_AC97CFG		(AC97_PSC_BASE + PSC_AC97CFG_OFFSET)
@@ -93,6 +105,10 @@
 #define PSC_AC97GPO		(AC97_PSC_BASE + PSC_AC97GPO_OFFSET)
 #define PSC_AC97GPI		(AC97_PSC_BASE + PSC_AC97GPI_OFFSET)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* AC97 Config Register. */
 #define PSC_AC97CFG_RT_MASK	(3 << 30)
 #define PSC_AC97CFG_RT_FIFO1	(0 << 30)
@@ -111,8 +127,13 @@
 #define PSC_AC97CFG_SE_ENABLE	(1 << 25)
 
 #define PSC_AC97CFG_LEN_MASK	(0xf << 21)
+<<<<<<< HEAD
 #define PSC_AC97CFG_TXSLOT_MASK	(0x3ff << 11)
 #define PSC_AC97CFG_RXSLOT_MASK	(0x3ff << 1)
+=======
+#define PSC_AC97CFG_TXSLOT_MASK (0x3ff << 11)
+#define PSC_AC97CFG_RXSLOT_MASK (0x3ff << 1)
+>>>>>>> refs/remotes/origin/master
 #define PSC_AC97CFG_GE_ENABLE	(1)
 
 /* Enable slots 3-12. */
@@ -121,7 +142,11 @@
 
 /*
  * The word length equation is ((x) * 2) + 2, so choose 'x' appropriately.
+<<<<<<< HEAD
  * The only sensible numbers are 7, 9, or possibly 11.  Nah, just do the
+=======
+ * The only sensible numbers are 7, 9, or possibly 11.	Nah, just do the
+>>>>>>> refs/remotes/origin/master
  * arithmetic in the macro.
  */
 #define PSC_AC97CFG_SET_LEN(x)	(((((x) - 2) / 2) & 0xf) << 21)
@@ -394,6 +419,8 @@ typedef struct	psc_spi {
 #define PSC_SPITXRX_LC		(1 << 29)
 #define PSC_SPITXRX_SR		(1 << 28)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* PSC in SMBus (I2C) Mode. */
 typedef struct	psc_smb {
 	u32	psc_sel;
@@ -407,6 +434,10 @@ typedef struct	psc_smb {
 	u32	psc_smbtmr;
 } psc_smb_t;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* SMBus Config Register. */
 #define PSC_SMBCFG_RT_MASK	(3 << 30)
 #define PSC_SMBCFG_RT_FIFO1	(0 << 30)

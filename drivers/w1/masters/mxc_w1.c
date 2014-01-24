@@ -46,7 +46,10 @@
 
 struct mxc_w1_device {
 	void __iomem *regs;
+<<<<<<< HEAD
 	unsigned int clkdiv;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct clk *clk;
 	struct w1_bus_master bus_master;
 };
@@ -103,6 +106,7 @@ static u8 mxc_w1_ds2_touch_bit(void *data, u8 bit)
 	return ((__raw_readb(ctrl_addr)) >> 3) & 0x1;
 }
 
+<<<<<<< HEAD
 static int __devinit mxc_w1_probe(struct platform_device *pdev)
 {
 	struct mxc_w1_device *mdev;
@@ -140,11 +144,52 @@ static int __devinit mxc_w1_probe(struct platform_device *pdev)
 
 	clk_enable(mdev->clk);
 	__raw_writeb(mdev->clkdiv, mdev->regs + MXC_W1_TIME_DIVIDER);
+=======
+static int mxc_w1_probe(struct platform_device *pdev)
+{
+	struct mxc_w1_device *mdev;
+	unsigned long clkrate;
+	struct resource *res;
+	unsigned int clkdiv;
+	int err;
+
+	mdev = devm_kzalloc(&pdev->dev, sizeof(struct mxc_w1_device),
+			    GFP_KERNEL);
+	if (!mdev)
+		return -ENOMEM;
+
+	mdev->clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(mdev->clk))
+		return PTR_ERR(mdev->clk);
+
+	clkrate = clk_get_rate(mdev->clk);
+	if (clkrate < 10000000)
+		dev_warn(&pdev->dev,
+			 "Low clock frequency causes improper function\n");
+
+	clkdiv = DIV_ROUND_CLOSEST(clkrate, 1000000);
+	clkrate /= clkdiv;
+	if ((clkrate < 980000) || (clkrate > 1020000))
+		dev_warn(&pdev->dev,
+			 "Incorrect time base frequency %lu Hz\n", clkrate);
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	mdev->regs = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(mdev->regs))
+		return PTR_ERR(mdev->regs);
+
+	err = clk_prepare_enable(mdev->clk);
+	if (err)
+		return err;
+
+	__raw_writeb(clkdiv - 1, mdev->regs + MXC_W1_TIME_DIVIDER);
+>>>>>>> refs/remotes/origin/master
 
 	mdev->bus_master.data = mdev;
 	mdev->bus_master.reset_bus = mxc_w1_ds2_reset_bus;
 	mdev->bus_master.touch_bit = mxc_w1_ds2_touch_bit;
 
+<<<<<<< HEAD
 	err = w1_add_master_device(&mdev->bus_master);
 
 	if (err)
@@ -161,12 +206,21 @@ failed_req:
 	clk_put(mdev->clk);
 failed_clk:
 	kfree(mdev);
+=======
+	platform_set_drvdata(pdev, mdev);
+
+	err = w1_add_master_device(&mdev->bus_master);
+	if (err)
+		clk_disable_unprepare(mdev->clk);
+
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 /*
  * disassociate the w1 device from the driver
  */
+<<<<<<< HEAD
 static int __devexit mxc_w1_remove(struct platform_device *pdev)
 {
 	struct mxc_w1_device *mdev = platform_get_drvdata(pdev);
@@ -182,17 +236,40 @@ static int __devexit mxc_w1_remove(struct platform_device *pdev)
 	clk_put(mdev->clk);
 
 	platform_set_drvdata(pdev, NULL);
+=======
+static int mxc_w1_remove(struct platform_device *pdev)
+{
+	struct mxc_w1_device *mdev = platform_get_drvdata(pdev);
+
+	w1_remove_master_device(&mdev->bus_master);
+
+	clk_disable_unprepare(mdev->clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver mxc_w1_driver = {
 	.driver = {
 		   .name = "mxc_w1",
+=======
+static struct of_device_id mxc_w1_dt_ids[] = {
+	{ .compatible = "fsl,imx21-owire" },
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(of, mxc_w1_dt_ids);
+
+static struct platform_driver mxc_w1_driver = {
+	.driver = {
+		.name = "mxc_w1",
+		.of_match_table = mxc_w1_dt_ids,
+>>>>>>> refs/remotes/origin/master
 	},
 	.probe = mxc_w1_probe,
 	.remove = mxc_w1_remove,
 };
+<<<<<<< HEAD
 
 static int __init mxc_w1_init(void)
 {
@@ -206,6 +283,9 @@ static void mxc_w1_exit(void)
 
 module_init(mxc_w1_init);
 module_exit(mxc_w1_exit);
+=======
+module_platform_driver(mxc_w1_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Freescale Semiconductors Inc");

@@ -21,7 +21,13 @@
 #include <linux/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/orion5x.h>
 #include "common.h"
 #include "mpp.h"
@@ -186,7 +192,15 @@ static struct mv_sata_platform_data lsmini_sata_data = {
 
 static void lsmini_power_off(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	arm_machine_restart('h', NULL);
+=======
+	orion5x_restart('h', NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	orion5x_restart(REBOOT_HARD, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -245,8 +259,15 @@ static void __init lsmini_init(void)
 	orion5x_uart0_init();
 	orion5x_xor_init();
 
+<<<<<<< HEAD
 	orion5x_setup_dev_boot_win(LSMINI_NOR_BOOT_BASE,
 				   LSMINI_NOR_BOOT_SIZE);
+=======
+	mvebu_mbus_add_window_by_id(ORION_MBUS_DEVBUS_BOOT_TARGET,
+				    ORION_MBUS_DEVBUS_BOOT_ATTR,
+				    LSMINI_NOR_BOOT_BASE,
+				    LSMINI_NOR_BOOT_SIZE);
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&lsmini_nor_flash);
 
 	platform_device_register(&lsmini_button_device);
@@ -267,12 +288,30 @@ static void __init lsmini_init(void)
 #ifdef CONFIG_MACH_LINKSTATION_MINI
 MACHINE_START(LINKSTATION_MINI, "Buffalo Linkstation Mini")
 	/* Maintainer: Alexey Kopytko <alexey@kopytko.ru> */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= lsmini_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
+<<<<<<< HEAD
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
+<<<<<<< HEAD
+=======
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= orion5x_timer_init,
+	.fixup		= tag_fixup_mem32,
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif

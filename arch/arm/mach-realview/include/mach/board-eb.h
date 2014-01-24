@@ -47,6 +47,9 @@
 #define REALVIEW_EB_USB_BASE		0x4F000000	/* USB */
 
 #ifdef CONFIG_REALVIEW_EB_ARM11MP_REVB
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define REALVIEW_EB11MP_SCU_BASE	0x10100000	/* SCU registers */
 #define REALVIEW_EB11MP_GIC_CPU_BASE	0x10100100	/* Generic interrupt controller CPU interface */
 #define REALVIEW_EB11MP_TWD_BASE	0x10100600
@@ -58,10 +61,41 @@
 #define REALVIEW_EB11MP_GIC_CPU_BASE	0x1F000100	/* Generic interrupt controller CPU interface */
 #define REALVIEW_EB11MP_TWD_BASE	0x1F000600
 #define REALVIEW_EB11MP_GIC_DIST_BASE	0x1F001000	/* Generic interrupt controller distributor */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define REALVIEW_EB11MP_PRIV_MEM_BASE	0x10100000
+#define REALVIEW_EB11MP_L220_BASE	0x10102000	/* L220 registers */
+#define REALVIEW_EB11MP_SYS_PLD_CTRL1	0xD8		/* Register offset for MPCore sysctl */
+#else
+#define REALVIEW_EB11MP_PRIV_MEM_BASE	0x1F000000
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define REALVIEW_EB11MP_L220_BASE	0x1F002000	/* L220 registers */
 #define REALVIEW_EB11MP_SYS_PLD_CTRL1	0x74		/* Register offset for MPCore sysctl */
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define REALVIEW_EB11MP_PRIV_MEM_SIZE	SZ_8K
+#define REALVIEW_EB11MP_PRIV_MEM_OFF(x)	(REALVIEW_EB11MP_PRIV_MEM_BASE + (x))
+
+#define REALVIEW_EB11MP_SCU_BASE	REALVIEW_EB11MP_PRIV_MEM_OFF(0)		/* SCU registers */
+#define REALVIEW_EB11MP_GIC_CPU_BASE	REALVIEW_EB11MP_PRIV_MEM_OFF(0x0100)	/* Generic interrupt controller CPU interface */
+#define REALVIEW_EB11MP_TWD_BASE	REALVIEW_EB11MP_PRIV_MEM_OFF(0x0600)
+#define REALVIEW_EB11MP_GIC_DIST_BASE	REALVIEW_EB11MP_PRIV_MEM_OFF(0x1000)	/* Generic interrupt controller distributor */
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Core tile identification (REALVIEW_SYS_PROCID)
  */

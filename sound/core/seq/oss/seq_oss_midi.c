@@ -72,7 +72,11 @@ static int send_midi_event(struct seq_oss_devinfo *dp, struct snd_seq_event *ev,
  * look up the existing ports
  * this looks a very exhausting job.
  */
+<<<<<<< HEAD
 int __init
+=======
+int
+>>>>>>> refs/remotes/origin/master
 snd_seq_oss_midi_lookup_ports(int client)
 {
 	struct snd_seq_client_info *clinfo;

@@ -1,6 +1,7 @@
 #ifndef _LINUX_BINFMTS_H
 #define _LINUX_BINFMTS_H
 
+<<<<<<< HEAD
 #include <linux/capability.h>
 
 struct pt_regs;
@@ -18,7 +19,17 @@ struct pt_regs;
 #define BINPRM_BUF_SIZE 128
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
 #include <linux/list.h>
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>
+#include <linux/unistd.h>
+#include <asm/exec.h>
+#include <uapi/linux/binfmts.h>
+>>>>>>> refs/remotes/origin/master
 
 #define CORENAME_MAX_SIZE 128
 
@@ -45,7 +56,11 @@ struct linux_binprm {
 #ifdef __alpha__
 	unsigned int taso:1;
 #endif
+<<<<<<< HEAD
 	unsigned int recursion_depth;
+=======
+	unsigned int recursion_depth; /* only for search_binary_handler() */
+>>>>>>> refs/remotes/origin/master
 	struct file * file;
 	struct cred *cred;	/* new credentials */
 	int unsafe;		/* how unsafe this exec is (mask of LSM_UNSAFE_*) */
@@ -58,6 +73,14 @@ struct linux_binprm {
 	unsigned interp_flags;
 	unsigned interp_data;
 	unsigned long loader, exec;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	char tcomm[TASK_COMM_LEN];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char tcomm[TASK_COMM_LEN];
+>>>>>>> refs/remotes/origin/master
 };
 
 #define BINPRM_FLAGS_ENFORCE_NONDUMP_BIT 0
@@ -69,11 +92,19 @@ struct linux_binprm {
 
 /* Function parameter for binfmt->coredump */
 struct coredump_params {
+<<<<<<< HEAD
 	long signr;
+=======
+	const siginfo_t *siginfo;
+>>>>>>> refs/remotes/origin/master
 	struct pt_regs *regs;
 	struct file *file;
 	unsigned long limit;
 	unsigned long mm_flags;
+<<<<<<< HEAD
+=======
+	loff_t written;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -83,12 +114,18 @@ struct coredump_params {
 struct linux_binfmt {
 	struct list_head lh;
 	struct module *module;
+<<<<<<< HEAD
 	int (*load_binary)(struct linux_binprm *, struct  pt_regs * regs);
+=======
+	int (*load_binary)(struct linux_binprm *);
+>>>>>>> refs/remotes/origin/master
 	int (*load_shlib)(struct file *);
 	int (*core_dump)(struct coredump_params *cprm);
 	unsigned long min_coredump;	/* minimal dump size */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int __register_binfmt(struct linux_binfmt *fmt, int insert);
 
 /* Registration of default binfmt handlers */
@@ -100,20 +137,54 @@ static inline int register_binfmt(struct linux_binfmt *fmt)
 static inline int insert_binfmt(struct linux_binfmt *fmt)
 {
 	return __register_binfmt(fmt, 1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern void __register_binfmt(struct linux_binfmt *fmt, int insert);
+
+/* Registration of default binfmt handlers */
+static inline void register_binfmt(struct linux_binfmt *fmt)
+{
+	__register_binfmt(fmt, 0);
+}
+/* Same as above, but adds a new binfmt at the top of the list */
+static inline void insert_binfmt(struct linux_binfmt *fmt)
+{
+	__register_binfmt(fmt, 1);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 extern void unregister_binfmt(struct linux_binfmt *);
 
 extern int prepare_binprm(struct linux_binprm *);
 extern int __must_check remove_arg_zero(struct linux_binprm *);
+<<<<<<< HEAD
 extern int search_binary_handler(struct linux_binprm *, struct pt_regs *);
 extern int flush_old_exec(struct linux_binprm * bprm);
 extern void setup_new_exec(struct linux_binprm * bprm);
+<<<<<<< HEAD
+=======
+extern void would_dump(struct linux_binprm *, struct file *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern int suid_dumpable;
+<<<<<<< HEAD
 #define SUID_DUMP_DISABLE	0	/* No setuid dumping */
 #define SUID_DUMP_USER		1	/* Dump as user of process */
 #define SUID_DUMP_ROOT		2	/* Dump as root */
+=======
+extern int search_binary_handler(struct linux_binprm *);
+extern int flush_old_exec(struct linux_binprm * bprm);
+extern void setup_new_exec(struct linux_binprm * bprm);
+extern void would_dump(struct linux_binprm *, struct file *);
+
+extern int suid_dumpable;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Stack area protections */
 #define EXSTACK_DEFAULT   0	/* Whatever the arch defaults to */
@@ -123,15 +194,28 @@ extern int suid_dumpable;
 extern int setup_arg_pages(struct linux_binprm * bprm,
 			   unsigned long stack_top,
 			   int executable_stack);
+<<<<<<< HEAD
 extern int bprm_mm_init(struct linux_binprm *bprm);
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int bprm_change_interp(char *interp, struct linux_binprm *bprm);
 extern int copy_strings_kernel(int argc, const char *const *argv,
 			       struct linux_binprm *bprm);
 extern int prepare_bprm_creds(struct linux_binprm *bprm);
 extern void install_exec_creds(struct linux_binprm *bprm);
+<<<<<<< HEAD
 extern void do_coredump(long signr, int exit_code, struct pt_regs *regs);
 extern void set_binfmt(struct linux_binfmt *new);
 extern void free_bprm(struct linux_binprm *);
 
 #endif /* __KERNEL__ */
+=======
+extern void set_binfmt(struct linux_binfmt *new);
+extern void free_bprm(struct linux_binprm *);
+extern ssize_t read_code(struct file *, unsigned long, loff_t, size_t);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_BINFMTS_H */

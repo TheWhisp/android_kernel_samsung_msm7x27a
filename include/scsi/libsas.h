@@ -79,14 +79,33 @@ enum phy_event {
 	PHYE_OOB_DONE         = 1,
 	PHYE_OOB_ERROR        = 2,
 	PHYE_SPINUP_HOLD      = 3, /* hot plug SATA, no COMWAKE sent */
+<<<<<<< HEAD
 	PHY_NUM_EVENTS        = 4,
+=======
+	PHYE_RESUME_TIMEOUT   = 4,
+	PHY_NUM_EVENTS        = 5,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum discover_event {
 	DISCE_DISCOVER_DOMAIN   = 0U,
 	DISCE_REVALIDATE_DOMAIN = 1,
 	DISCE_PORT_GONE         = 2,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DISC_NUM_EVENTS 	= 3,
+=======
+	DISCE_PROBE		= 3,
+	DISCE_DESTRUCT		= 4,
+	DISC_NUM_EVENTS		= 5,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DISCE_PROBE		= 3,
+	DISCE_SUSPEND		= 4,
+	DISCE_RESUME		= 5,
+	DISCE_DESTRUCT		= 6,
+	DISC_NUM_EVENTS		= 7,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ---------- Expander Devices ---------- */
@@ -113,7 +132,11 @@ struct ex_phy {
 
 	enum ex_phy_state phy_state;
 
+<<<<<<< HEAD
 	enum sas_dev_type attached_dev_type;
+=======
+	enum sas_device_type attached_dev_type;
+>>>>>>> refs/remotes/origin/master
 	enum sas_linkrate linkrate;
 
 	u8   attached_sata_host:1;
@@ -126,7 +149,11 @@ struct ex_phy {
 	u8   attached_sas_addr[SAS_ADDR_SIZE];
 	u8   attached_phy_id;
 
+<<<<<<< HEAD
 	u8   phy_change_count;
+=======
+	int phy_change_count;
+>>>>>>> refs/remotes/origin/master
 	enum routing_attribute routing_attr;
 	u8   virtual:1;
 
@@ -139,15 +166,42 @@ struct ex_phy {
 struct expander_device {
 	struct list_head children;
 
+<<<<<<< HEAD
 	u16    ex_change_count;
 	u16    max_route_indexes;
 	u8     num_phys;
+<<<<<<< HEAD
 	u8     configuring:1;
 	u8     conf_route_table:1;
+=======
+=======
+	int    ex_change_count;
+	u16    max_route_indexes;
+	u8     num_phys;
+>>>>>>> refs/remotes/origin/master
+
+	u8     t2t_supp:1;
+	u8     configuring:1;
+	u8     conf_route_table:1;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8     enclosure_logical_id[8];
 
 	struct ex_phy *ex_phy;
 	struct sas_port *parent_port;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	struct mutex cmd_mutex;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	struct mutex cmd_mutex;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ---------- SATA device ---------- */
@@ -156,17 +210,34 @@ enum ata_command_set {
         ATAPI_COMMAND_SET = 1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct sata_device {
         enum   ata_command_set command_set;
         struct smp_resp        rps_resp; /* report_phy_sata_resp */
         __le16 *identify_device;
         __le16 *identify_packet_device;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define ATA_RESP_FIS_SIZE 24
+
+struct sata_device {
+        enum   ata_command_set command_set;
+        struct smp_resp        rps_resp; /* report_phy_sata_resp */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
         u8     port_no;        /* port number, if this is a PM (Port) */
         struct list_head children; /* PM Ports if this is a PM */
 
 	struct ata_port *ap;
 	struct ata_host ata_host;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ata_taskfile tf;
 	u32 sstatus;
 	u32 serror;
@@ -175,7 +246,47 @@ struct sata_device {
 
 /* ---------- Domain device ---------- */
 struct domain_device {
+=======
+	u8     fis[ATA_RESP_FIS_SIZE];
+=======
+        u8     port_no;        /* port number, if this is a PM (Port) */
+	int    pm_result;
+
+	struct ata_port *ap;
+	struct ata_host ata_host;
+	u8     fis[ATA_RESP_FIS_SIZE];
+};
+
+struct ssp_device {
+	struct list_head eh_list_node; /* pending a user requested eh action */
+	struct scsi_lun reset_lun;
+>>>>>>> refs/remotes/origin/master
+=======
+	u8     fis[ATA_RESP_FIS_SIZE];
+>>>>>>> refs/remotes/origin/cm-11.0
+};
+
+enum {
+	SAS_DEV_GONE,
+<<<<<<< HEAD
+	SAS_DEV_DESTROY,
+=======
+	SAS_DEV_FOUND, /* device notified to lldd */
+	SAS_DEV_DESTROY,
+	SAS_DEV_EH_PENDING,
+	SAS_DEV_LU_RESET,
+	SAS_DEV_RESET,
+>>>>>>> refs/remotes/origin/master
+};
+
+struct domain_device {
+	spinlock_t done_lock;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
         enum sas_dev_type dev_type;
+=======
+	enum sas_device_type dev_type;
+>>>>>>> refs/remotes/origin/master
 
         enum sas_linkrate linkrate;
         enum sas_linkrate min_linkrate;
@@ -186,8 +297,21 @@ struct domain_device {
         struct domain_device *parent;
         struct list_head siblings; /* devices on the same level */
         struct asd_sas_port *port;        /* shortcut to root of the tree */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
         struct list_head dev_list_node;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sas_phy *phy;
+
+        struct list_head dev_list_node;
+	struct list_head disco_list_node; /* awaiting probe or destruct */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
         enum sas_protocol    iproto;
         enum sas_protocol    tproto;
@@ -202,9 +326,11 @@ struct domain_device {
         union {
                 struct expander_device ex_dev;
                 struct sata_device     sata_dev; /* STP & directly attached */
+<<<<<<< HEAD
         };
 
         void *lldd_dev;
+<<<<<<< HEAD
 	int gone;
 };
 
@@ -215,6 +341,45 @@ struct sas_discovery_event {
 
 struct sas_discovery {
 	spinlock_t disc_event_lock;
+=======
+=======
+		struct ssp_device      ssp_dev;
+        };
+
+        void *lldd_dev;
+>>>>>>> refs/remotes/origin/master
+	unsigned long state;
+	struct kref kref;
+};
+
+struct sas_work {
+	struct list_head drain_node;
+	struct work_struct work;
+};
+
+static inline void INIT_SAS_WORK(struct sas_work *sw, void (*fn)(struct work_struct *))
+{
+	INIT_WORK(&sw->work, fn);
+	INIT_LIST_HEAD(&sw->drain_node);
+}
+
+struct sas_discovery_event {
+	struct sas_work work;
+	struct asd_sas_port *port;
+};
+
+static inline struct sas_discovery_event *to_sas_discovery_event(struct work_struct *work)
+{
+	struct sas_discovery_event *ev = container_of(work, typeof(*ev), work.work);
+
+	return ev;
+}
+
+struct sas_discovery {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sas_discovery_event disc_work[DISC_NUM_EVENTS];
 	unsigned long    pending;
 	u8     fanout_sas_addr[8];
@@ -223,7 +388,13 @@ struct sas_discovery {
 	int    max_level;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* The port struct is Class:RW, driver:RO */
 struct asd_sas_port {
 /* private: */
@@ -233,10 +404,25 @@ struct asd_sas_port {
 	struct domain_device *port_dev;
 	spinlock_t dev_list_lock;
 	struct list_head dev_list;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	enum   sas_linkrate linkrate;
 
 	struct sas_phy *phy;
 	struct work_struct work;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct list_head disco_list;
+	struct list_head destroy_list;
+	enum   sas_linkrate linkrate;
+
+	struct sas_work work;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int suspended;
+>>>>>>> refs/remotes/origin/master
 
 /* public: */
 	int id;
@@ -262,16 +448,42 @@ struct asd_sas_port {
 };
 
 struct asd_sas_event {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct work_struct work;
 	struct asd_sas_phy *phy;
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sas_work work;
+	struct asd_sas_phy *phy;
+};
+
+static inline struct asd_sas_event *to_asd_sas_event(struct work_struct *work)
+{
+	struct asd_sas_event *ev = container_of(work, typeof(*ev), work.work);
+
+	return ev;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* The phy pretty much is controlled by the LLDD.
  * The class only reads those fields.
  */
 struct asd_sas_phy {
 /* private: */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* protected by ha->event_lock */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct asd_sas_event   port_events[PORT_NUM_EVENTS];
 	struct asd_sas_event   phy_events[PHY_NUM_EVENTS];
 
@@ -279,6 +491,10 @@ struct asd_sas_phy {
 	unsigned long phy_events_pending;
 
 	int error;
+<<<<<<< HEAD
+=======
+	int suspended;
+>>>>>>> refs/remotes/origin/master
 
 	struct sas_phy *phy;
 
@@ -317,6 +533,14 @@ struct asd_sas_phy {
 struct scsi_core {
 	struct Scsi_Host *shost;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct mutex	  task_queue_flush;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mutex	  task_queue_flush;
+>>>>>>> refs/remotes/origin/master
 	spinlock_t        task_queue_lock;
 	struct list_head  task_queue;
 	int               task_queue_size;
@@ -325,6 +549,8 @@ struct scsi_core {
 };
 
 struct sas_ha_event {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct work_struct work;
 	struct sas_ha_struct *ha;
 };
@@ -332,10 +558,35 @@ struct sas_ha_event {
 enum sas_ha_state {
 	SAS_HA_REGISTERED,
 	SAS_HA_UNREGISTERED
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sas_work work;
+	struct sas_ha_struct *ha;
+};
+
+static inline struct sas_ha_event *to_sas_ha_event(struct work_struct *work)
+{
+	struct sas_ha_event *ev = container_of(work, typeof(*ev), work.work);
+
+	return ev;
+}
+
+enum sas_ha_state {
+	SAS_HA_REGISTERED,
+	SAS_HA_DRAINING,
+	SAS_HA_ATA_EH_ACTIVE,
+	SAS_HA_FROZEN,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sas_ha_struct {
 /* private: */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t       event_lock;
 	struct sas_ha_event ha_events[HA_NUM_EVENTS];
 	unsigned long	 pending;
@@ -343,6 +594,30 @@ struct sas_ha_struct {
 	enum sas_ha_state state;
 	spinlock_t 	  state_lock;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sas_ha_event ha_events[HA_NUM_EVENTS];
+	unsigned long	 pending;
+
+	struct list_head  defer_q; /* work queued while draining */
+	struct mutex	  drain_mutex;
+	unsigned long	  state;
+<<<<<<< HEAD
+	spinlock_t 	  state_lock;
+
+	struct mutex disco_mutex;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t	  lock;
+	int		  eh_active;
+	wait_queue_head_t eh_wait_q;
+	struct list_head  eh_dev_q;
+
+	struct mutex disco_mutex;
+
+>>>>>>> refs/remotes/origin/master
 	struct scsi_core core;
 
 /* public: */
@@ -371,7 +646,17 @@ struct sas_ha_struct {
 
 	void *lldd_ha;		  /* not touched by sas class code */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head eh_done_q;
+=======
+	struct list_head eh_done_q;  /* complete via scsi_eh_flush_done_q */
+	struct list_head eh_ata_q; /* scmds to promote from sas to ata eh */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head eh_done_q;  /* complete via scsi_eh_flush_done_q */
+	struct list_head eh_ata_q; /* scmds to promote from sas to ata eh */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define SHOST_TO_SAS_HA(_shost) (*(struct sas_ha_struct **)(_shost)->hostdata)
@@ -386,6 +671,20 @@ sdev_to_domain_dev(struct scsi_device *sdev) {
 	return starget_to_domain_dev(sdev->sdev_target);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline struct ata_device *sas_to_ata_dev(struct domain_device *dev)
+{
+	return &dev->sata_dev.ap->link.device[0];
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct domain_device *
 cmd_to_domain_dev(struct scsi_cmnd *cmd)
 {
@@ -405,6 +704,34 @@ static inline void sas_phy_disconnected(struct asd_sas_phy *phy)
 	phy->linkrate = SAS_LINK_RATE_UNKNOWN;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline unsigned int to_sas_gpio_od(int device, int bit)
+{
+	return 3 * device + bit;
+}
+
+static inline void sas_put_local_phy(struct sas_phy *phy)
+{
+	put_device(&phy->dev);
+}
+
+#ifdef CONFIG_SCSI_SAS_HOST_SMP
+int try_test_sas_gpio_gp_bit(unsigned int od, u8 *data, u8 index, u8 count);
+#else
+static inline int try_test_sas_gpio_gp_bit(unsigned int od, u8 *data, u8 index, u8 count)
+{
+	return -1;
+}
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* ---------- Tasks ---------- */
 /*
       service_response |  SAS_TASK_COMPLETE  |  SAS_TASK_UNDELIVERED |
@@ -425,7 +752,20 @@ enum service_response {
 };
 
 enum exec_status {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* The SAM_STAT_.. codes fit in the lower 6 bits */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* The SAM_STAT_.. codes fit in the lower 6 bits, alias some of
+	 * them here to silence 'case value not in enumerated type' warnings
+	 */
+	__SAM_STAT_CHECK_CONDITION = SAM_STAT_CHECK_CONDITION,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	SAS_DEV_NO_RESPONSE = 0x80,
 	SAS_DATA_UNDERRUN,
@@ -464,11 +804,23 @@ enum exec_status {
  */
 struct ata_task_resp {
 	u16  frame_len;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8   ending_fis[24];	  /* dev to host or data-in */
 	u32  sstatus;
 	u32  serror;
 	u32  scontrol;
 	u32  sactive;
+=======
+	u8   ending_fis[ATA_RESP_FIS_SIZE];	  /* dev to host or data-in */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8   ending_fis[ATA_RESP_FIS_SIZE];	  /* dev to host or data-in */
+>>>>>>> refs/remotes/origin/master
+=======
+	u8   ending_fis[ATA_RESP_FIS_SIZE];	  /* dev to host or data-in */
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #define SAS_STATUS_BUF_SIZE 96
@@ -519,7 +871,11 @@ struct sas_ssp_task {
 	u8     enable_first_burst:1;
 	enum   task_attribute task_attr;
 	u8     task_prio;
+<<<<<<< HEAD
 	u8     cdb[16];
+=======
+	struct scsi_cmnd *cmd;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sas_task {
@@ -531,10 +887,13 @@ struct sas_task {
 
 	enum   sas_protocol      task_proto;
 
+<<<<<<< HEAD
 	/* Used by the discovery code. */
 	struct timer_list     timer;
 	struct completion     completion;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	union {
 		struct sas_ata_task ata_task;
 		struct sas_smp_task smp_task;
@@ -551,18 +910,37 @@ struct sas_task {
 
 	void   *lldd_task;	  /* for use by LLDDs */
 	void   *uldd_task;
+<<<<<<< HEAD
 
 	struct work_struct abort_work;
 };
 
+<<<<<<< HEAD
 extern struct kmem_cache *sas_task_cache;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sas_task_slow *slow_task;
+};
+
+struct sas_task_slow {
+	/* standard/extra infrastructure for slow path commands (SMP and
+	 * internal lldd commands
+	 */
+	struct timer_list     timer;
+	struct completion     completion;
+};
+
+>>>>>>> refs/remotes/origin/master
 #define SAS_TASK_STATE_PENDING      1
 #define SAS_TASK_STATE_DONE         2
 #define SAS_TASK_STATE_ABORTED      4
 #define SAS_TASK_NEED_DEV_RESET     8
 #define SAS_TASK_AT_INITIATOR       16
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct sas_task *sas_alloc_task(gfp_t flags)
 {
 	struct sas_task *task = kmem_cache_zalloc(sas_task_cache, flags);
@@ -585,6 +963,15 @@ static inline void sas_free_task(struct sas_task *task)
 		kmem_cache_free(sas_task_cache, task);
 	}
 }
+=======
+extern struct sas_task *sas_alloc_task(gfp_t flags);
+extern void sas_free_task(struct sas_task *task);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct sas_task *sas_alloc_task(gfp_t flags);
+extern struct sas_task *sas_alloc_slow_task(gfp_t flags);
+extern void sas_free_task(struct sas_task *task);
+>>>>>>> refs/remotes/origin/master
 
 struct sas_domain_function_template {
 	/* The class calls these to notify the LLDD of an event. */
@@ -604,7 +991,17 @@ struct sas_domain_function_template {
 	int (*lldd_clear_aca)(struct domain_device *, u8 *lun);
 	int (*lldd_clear_task_set)(struct domain_device *, u8 *lun);
 	int (*lldd_I_T_nexus_reset)(struct domain_device *);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int (*lldd_ata_soft_reset)(struct domain_device *);
+=======
+	int (*lldd_ata_check_ready)(struct domain_device *);
+	void (*lldd_ata_set_dmamode)(struct domain_device *);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*lldd_ata_check_ready)(struct domain_device *);
+	void (*lldd_ata_set_dmamode)(struct domain_device *);
+>>>>>>> refs/remotes/origin/master
 	int (*lldd_lu_reset)(struct domain_device *, u8 *lun);
 	int (*lldd_query_task)(struct sas_task *);
 
@@ -614,21 +1011,54 @@ struct sas_domain_function_template {
 
 	/* Phy management */
 	int (*lldd_control_phy)(struct asd_sas_phy *, enum phy_func, void *);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/* GPIO support */
+	int (*lldd_write_gpio)(struct sas_ha_struct *, u8 reg_type,
+			       u8 reg_index, u8 reg_count, u8 *write_data);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 extern int sas_register_ha(struct sas_ha_struct *);
 extern int sas_unregister_ha(struct sas_ha_struct *);
+<<<<<<< HEAD
 
 int sas_set_phy_speed(struct sas_phy *phy,
 		      struct sas_phy_linkrates *rates);
+<<<<<<< HEAD
 int sas_phy_enable(struct sas_phy *phy, int enabled);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void sas_prep_resume_ha(struct sas_ha_struct *sas_ha);
+extern void sas_resume_ha(struct sas_ha_struct *sas_ha);
+extern void sas_suspend_ha(struct sas_ha_struct *sas_ha);
+
+int sas_set_phy_speed(struct sas_phy *phy,
+		      struct sas_phy_linkrates *rates);
+>>>>>>> refs/remotes/origin/master
 int sas_phy_reset(struct sas_phy *phy, int hard_reset);
 int sas_queue_up(struct sas_task *task);
 extern int sas_queuecommand(struct Scsi_Host * ,struct scsi_cmnd *);
 extern int sas_target_alloc(struct scsi_target *);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int sas_slave_alloc(struct scsi_device *);
 extern int sas_slave_configure(struct scsi_device *);
 extern void sas_slave_destroy(struct scsi_device *);
+=======
+extern int sas_slave_configure(struct scsi_device *);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int sas_slave_configure(struct scsi_device *);
+>>>>>>> refs/remotes/origin/master
 extern int sas_change_queue_depth(struct scsi_device *, int new_depth,
 				  int reason);
 extern int sas_change_queue_type(struct scsi_device *, int qt);
@@ -645,32 +1075,71 @@ void sas_init_ex_attr(void);
 
 int  sas_ex_revalidate_domain(struct domain_device *);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void sas_unregister_domain_devices(struct asd_sas_port *port);
+=======
+void sas_unregister_domain_devices(struct asd_sas_port *port, int gone);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sas_unregister_domain_devices(struct asd_sas_port *port, int gone);
+>>>>>>> refs/remotes/origin/master
 void sas_init_disc(struct sas_discovery *disc, struct asd_sas_port *);
 int  sas_discover_event(struct asd_sas_port *, enum discover_event ev);
 
 int  sas_discover_sata(struct domain_device *);
 int  sas_discover_end_dev(struct domain_device *);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void sas_unregister_dev(struct domain_device *);
+=======
+void sas_unregister_dev(struct asd_sas_port *port, struct domain_device *);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sas_unregister_dev(struct asd_sas_port *port, struct domain_device *);
+>>>>>>> refs/remotes/origin/master
 
 void sas_init_dev(struct domain_device *);
 
 void sas_task_abort(struct sas_task *);
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __sas_task_abort(struct sas_task *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int sas_eh_abort_handler(struct scsi_cmnd *cmd);
+>>>>>>> refs/remotes/origin/master
 int sas_eh_device_reset_handler(struct scsi_cmnd *cmd);
 int sas_eh_bus_reset_handler(struct scsi_cmnd *cmd);
 
 extern void sas_target_destroy(struct scsi_target *);
 extern int sas_slave_alloc(struct scsi_device *);
 extern int sas_ioctl(struct scsi_device *sdev, int cmd, void __user *arg);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern int sas_drain_work(struct sas_ha_struct *ha);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int sas_drain_work(struct sas_ha_struct *ha);
+>>>>>>> refs/remotes/origin/master
 
 extern int sas_smp_handler(struct Scsi_Host *shost, struct sas_rphy *rphy,
 			   struct request *req);
 
 extern void sas_ssp_task_response(struct device *dev, struct sas_task *task,
 				  struct ssp_response_iu *iu);
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct sas_phy *sas_find_local_phy(struct domain_device *dev);
+=======
+struct sas_phy *sas_get_local_phy(struct domain_device *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sas_phy *sas_get_local_phy(struct domain_device *dev);
+>>>>>>> refs/remotes/origin/master
 
 int sas_request_addr(struct Scsi_Host *shost, u8 *addr);
 

@@ -17,6 +17,14 @@
 #include <linux/interrupt.h>
 
 #include <linux/i2c/dm355evm_msp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -172,7 +180,11 @@ static irqreturn_t dm355evm_keys_irq(int irq, void *_keys)
 
 /*----------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit dm355evm_keys_probe(struct platform_device *pdev)
+=======
+static int dm355evm_keys_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dm355evm_keys	*keys;
 	struct input_dev	*input;
@@ -212,7 +224,12 @@ static int __devinit dm355evm_keys_probe(struct platform_device *pdev)
 	/* REVISIT:  flush the event queue? */
 
 	status = request_threaded_irq(keys->irq, NULL, dm355evm_keys_irq,
+<<<<<<< HEAD
 			IRQF_TRIGGER_FALLING, dev_name(&pdev->dev), keys);
+=======
+				      IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+				      dev_name(&pdev->dev), keys);
+>>>>>>> refs/remotes/origin/master
 	if (status < 0)
 		goto fail2;
 
@@ -237,7 +254,11 @@ fail1:
 	return status;
 }
 
+<<<<<<< HEAD
 static int __devexit dm355evm_keys_remove(struct platform_device *pdev)
+=======
+static int dm355evm_keys_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dm355evm_keys	*keys = platform_get_drvdata(pdev);
 
@@ -260,12 +281,18 @@ static int __devexit dm355evm_keys_remove(struct platform_device *pdev)
  */
 static struct platform_driver dm355evm_keys_driver = {
 	.probe		= dm355evm_keys_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(dm355evm_keys_remove),
+=======
+	.remove		= dm355evm_keys_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.owner	= THIS_MODULE,
 		.name	= "dm355evm_keys",
 	},
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init dm355evm_keys_init(void)
 {
@@ -278,5 +305,11 @@ static void __exit dm355evm_keys_exit(void)
 	platform_driver_unregister(&dm355evm_keys_driver);
 }
 module_exit(dm355evm_keys_exit);
+=======
+module_platform_driver(dm355evm_keys_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(dm355evm_keys_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

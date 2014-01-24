@@ -11,27 +11,63 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/input.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 
 #include <linux/delay.h>
 
 #include <asm/gpio.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/device.h>
+
+#include <linux/delay.h>
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach/flash.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <mach/system.h>
 #include <mach/vreg.h>
 #include <mach/board.h>
+<<<<<<< HEAD
+=======
+#include <mach/system.h>
+#include <mach/vreg.h>
+#include <mach/board.h>
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/vreg.h>
+>>>>>>> refs/remotes/origin/master
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/io.h>
 #include <asm/delay.h>
@@ -42,8 +78,20 @@
 
 #include "gpio_chip.h"
 #include "board-sapphire.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+#include "proc_comm.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include "devices.h"
+=======
 #include "proc_comm.h"
 #include "devices.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 void msm_init_irq(void);
 void msm_init_gpio(void);
@@ -56,7 +104,11 @@ static struct platform_device *devices[] __initdata = {
 	&msm_device_uart3,
 };
 
+<<<<<<< HEAD
 extern struct sys_timer msm_timer;
+=======
+void msm_timer_init(void);
+>>>>>>> refs/remotes/origin/master
 
 static void __init sapphire_init_irq(void)
 {
@@ -77,8 +129,18 @@ static struct map_desc sapphire_io_desc[] __initdata = {
 	}
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __init sapphire_fixup(struct machine_desc *desc, struct tag *tags,
 				  char **cmdline, struct meminfo *mi)
+=======
+static void __init sapphire_fixup(struct tag *tags, char **cmdline,
+				  struct meminfo *mi)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init sapphire_fixup(struct tag *tags, char **cmdline,
+				  struct meminfo *mi)
+>>>>>>> refs/remotes/origin/master
 {
 	int smi_sz = parse_tag_smi((const struct tag *)tags);
 
@@ -103,12 +165,32 @@ static void __init sapphire_map_io(void)
 	msm_clock_init();
 }
 
+<<<<<<< HEAD
 MACHINE_START(SAPPHIRE, "sapphire")
 /* Maintainer: Brian Swetland <swetland@google.com> */
+<<<<<<< HEAD
 	.boot_params    = PLAT_PHYS_OFFSET + 0x100,
+=======
+	.atag_offset    = 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init sapphire_init_late(void)
+{
+	smd_debugfs_init();
+}
+
+MACHINE_START(SAPPHIRE, "sapphire")
+/* Maintainer: Brian Swetland <swetland@google.com> */
+	.atag_offset    = 0x100,
+>>>>>>> refs/remotes/origin/master
 	.fixup          = sapphire_fixup,
 	.map_io         = sapphire_map_io,
 	.init_irq       = sapphire_init_irq,
 	.init_machine   = sapphire_init,
+<<<<<<< HEAD
 	.timer          = &msm_timer,
+=======
+	.init_late      = sapphire_init_late,
+	.init_time	= msm_timer_init,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

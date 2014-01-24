@@ -7,7 +7,11 @@
 #define dma_h
 
 /* registers */ /* Really needed, since both are listed in sw.list? */
+<<<<<<< HEAD
 #include "dma_defs.h"
+=======
+#include <arch/hwregs/dma_defs.h>
+>>>>>>> refs/remotes/origin/master
 
 
 /* descriptors */

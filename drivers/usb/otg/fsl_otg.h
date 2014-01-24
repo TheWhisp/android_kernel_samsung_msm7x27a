@@ -369,7 +369,11 @@ inline struct fsl_otg_timer *otg_timer_initializer
 }
 
 struct fsl_otg {
+<<<<<<< HEAD
 	struct otg_transceiver otg;
+=======
+	struct usb_phy phy;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct otg_fsm fsm;
 	struct usb_dr_mmap *dr_mem_map;
 	struct delayed_work otg_event;

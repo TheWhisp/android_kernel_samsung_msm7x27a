@@ -1,11 +1,23 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Module Name: tbutils   - table utilities
+=======
+ * Module Name: tbutils - ACPI Table utilities
+>>>>>>> refs/remotes/origin/master
  *
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,12 +61,15 @@
 ACPI_MODULE_NAME("tbutils")
 
 /* Local prototypes */
+<<<<<<< HEAD
 static void acpi_tb_fix_string(char *string, acpi_size length);
 
 static void
 acpi_tb_cleanup_table_header(struct acpi_table_header *out_header,
 			     struct acpi_table_header *header);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static acpi_physical_address
 acpi_tb_get_root_table_entry(u8 *table_entry, u32 table_entry_size);
 
@@ -118,6 +133,14 @@ acpi_tb_check_xsdt(acpi_physical_address address)
 		return AE_OK;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_tb_initialize_facs
@@ -135,12 +158,38 @@ acpi_status acpi_tb_initialize_facs(void)
 {
 	acpi_status status;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* If Hardware Reduced flag is set, there is no FACS */
+
+	if (acpi_gbl_reduced_hardware) {
+		acpi_gbl_FACS = NULL;
+		return (AE_OK);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	status = acpi_get_table_by_index(ACPI_TABLE_INDEX_FACS,
 					 ACPI_CAST_INDIRECT_PTR(struct
 								acpi_table_header,
 								&acpi_gbl_FACS));
+<<<<<<< HEAD
 	return status;
 }
+<<<<<<< HEAD
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (status);
+}
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master
 
 /*******************************************************************************
  *
@@ -167,6 +216,7 @@ u8 acpi_tb_tables_loaded(void)
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_tb_fix_string
  *
  * PARAMETERS:  String              - String to be repaired
@@ -349,6 +399,8 @@ u8 acpi_tb_checksum(u8 *buffer, u32 length)
 
 /*******************************************************************************
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * FUNCTION:    acpi_tb_check_dsdt_header
  *
  * PARAMETERS:  None
@@ -368,8 +420,14 @@ void acpi_tb_check_dsdt_header(void)
 
 	if (acpi_gbl_original_dsdt_header.length != acpi_gbl_DSDT->length ||
 	    acpi_gbl_original_dsdt_header.checksum != acpi_gbl_DSDT->checksum) {
+<<<<<<< HEAD
 		ACPI_ERROR((AE_INFO,
 			    "The DSDT has been corrupted or replaced - old, new headers below"));
+=======
+		ACPI_BIOS_ERROR((AE_INFO,
+				 "The DSDT has been corrupted or replaced - "
+				 "old, new headers below"));
+>>>>>>> refs/remotes/origin/master
 		acpi_tb_print_table_header(0, &acpi_gbl_original_dsdt_header);
 		acpi_tb_print_table_header(0, acpi_gbl_DSDT);
 
@@ -429,15 +487,28 @@ struct acpi_table_header *acpi_tb_copy_dsdt(u32 table_index)
  *
  * FUNCTION:    acpi_tb_install_table
  *
+<<<<<<< HEAD
  * PARAMETERS:  Address                 - Physical address of DSDT or FACS
  *              Signature               - Table signature, NULL if no need to
+=======
+ * PARAMETERS:  address                 - Physical address of DSDT or FACS
+ *              signature               - Table signature, NULL if no need to
+>>>>>>> refs/remotes/origin/master
  *                                        match
  *              table_index             - Index into root table array
  *
  * RETURN:      None
  *
  * DESCRIPTION: Install an ACPI table into the global data structure. The
+<<<<<<< HEAD
+<<<<<<< HEAD
  *              table override mechanism is implemented here to allow the host
+=======
+ *              table override mechanism is called to allow the host
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *              table override mechanism is called to allow the host
+>>>>>>> refs/remotes/origin/master
  *              OS to replace any table before it is installed in the root
  *              table array.
  *
@@ -447,11 +518,23 @@ void
 acpi_tb_install_table(acpi_physical_address address,
 		      char *signature, u32 table_index)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 flags;
 	acpi_status status;
 	struct acpi_table_header *table_to_install;
 	struct acpi_table_header *mapped_table;
 	struct acpi_table_header *override_table = NULL;
+=======
+	struct acpi_table_header *table;
+	struct acpi_table_header *final_table;
+	struct acpi_table_desc *table_desc;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct acpi_table_header *table;
+	struct acpi_table_header *final_table;
+	struct acpi_table_desc *table_desc;
+>>>>>>> refs/remotes/origin/master
 
 	if (!address) {
 		ACPI_ERROR((AE_INFO,
@@ -462,28 +545,80 @@ acpi_tb_install_table(acpi_physical_address address,
 
 	/* Map just the table header */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mapped_table =
 	    acpi_os_map_memory(address, sizeof(struct acpi_table_header));
 	if (!mapped_table) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	table = acpi_os_map_memory(address, sizeof(struct acpi_table_header));
+	if (!table) {
+		ACPI_ERROR((AE_INFO,
+			    "Could not map memory for table [%s] at %p",
+			    signature, ACPI_CAST_PTR(void, address)));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	/* If a particular signature is expected (DSDT/FACS), it must match */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (signature && !ACPI_COMPARE_NAME(mapped_table->signature, signature)) {
 		ACPI_ERROR((AE_INFO,
 			    "Invalid signature 0x%X for ACPI table, expected [%s]",
 			    *ACPI_CAST_PTR(u32, mapped_table->signature),
 			    signature));
+=======
+	if (signature && !ACPI_COMPARE_NAME(table->signature, signature)) {
+		ACPI_ERROR((AE_INFO,
+			    "Invalid signature 0x%X for ACPI table, expected [%s]",
+			    *ACPI_CAST_PTR(u32, table->signature), signature));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (signature && !ACPI_COMPARE_NAME(table->signature, signature)) {
+		ACPI_BIOS_ERROR((AE_INFO,
+				 "Invalid signature 0x%X for ACPI table, expected [%s]",
+				 *ACPI_CAST_PTR(u32, table->signature),
+				 signature));
+>>>>>>> refs/remotes/origin/master
 		goto unmap_and_exit;
 	}
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * Initialize the table entry. Set the pointer to NULL, since the
+	 * table is not fully mapped at this time.
+	 */
+	table_desc = &acpi_gbl_root_table_list.tables[table_index];
+
+	table_desc->address = address;
+	table_desc->pointer = NULL;
+	table_desc->length = table->length;
+	table_desc->flags = ACPI_TABLE_ORIGIN_MAPPED;
+	ACPI_MOVE_32_TO_32(table_desc->signature.ascii, table->signature);
+
+	/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * ACPI Table Override:
 	 *
 	 * Before we install the table, let the host OS override it with a new
 	 * one if desired. Any table within the RSDT/XSDT can be replaced,
 	 * including the DSDT which is pointed to by the FADT.
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 */
 	status = acpi_os_table_override(mapped_table, &override_table);
 	if (ACPI_SUCCESS(status) && override_table) {
@@ -525,6 +660,54 @@ acpi_tb_install_table(acpi_physical_address address,
 
       unmap_and_exit:
 	acpi_os_unmap_memory(mapped_table, sizeof(struct acpi_table_header));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 *
+	 * NOTE: If the table is overridden, then final_table will contain a
+	 * mapped pointer to the full new table. If the table is not overridden,
+	 * or if there has been a physical override, then the table will be
+	 * fully mapped later (in verify table). In any case, we must
+	 * unmap the header that was mapped above.
+	 */
+	final_table = acpi_tb_table_override(table, table_desc);
+	if (!final_table) {
+		final_table = table;	/* There was no override */
+	}
+
+	acpi_tb_print_table_header(table_desc->address, final_table);
+
+	/* Set the global integer width (based upon revision of the DSDT) */
+
+	if (table_index == ACPI_TABLE_INDEX_DSDT) {
+		acpi_ut_set_integer_width(final_table->revision);
+	}
+
+	/*
+	 * If we have a physical override during this early loading of the ACPI
+	 * tables, unmap the table for now. It will be mapped again later when
+	 * it is actually used. This supports very early loading of ACPI tables,
+	 * before virtual memory is fully initialized and running within the
+	 * host OS. Note: A logical override has the ACPI_TABLE_ORIGIN_OVERRIDE
+	 * flag set and will not be deleted below.
+	 */
+	if (final_table != table) {
+		acpi_tb_delete_table(table_desc);
+	}
+
+<<<<<<< HEAD
+      unmap_and_exit:
+=======
+unmap_and_exit:
+>>>>>>> refs/remotes/origin/master
+
+	/* Always unmap the table header that we mapped above */
+
+	acpi_os_unmap_memory(table, sizeof(struct acpi_table_header));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
@@ -573,10 +756,17 @@ acpi_tb_get_root_table_entry(u8 *table_entry, u32 table_entry_size)
 
 			/* Will truncate 64-bit address to 32 bits, issue warning */
 
+<<<<<<< HEAD
 			ACPI_WARNING((AE_INFO,
 				      "64-bit Physical Address in XSDT is too large (0x%8.8X%8.8X),"
 				      " truncating",
 				      ACPI_FORMAT_UINT64(address64)));
+=======
+			ACPI_BIOS_WARNING((AE_INFO,
+					   "64-bit Physical Address in XSDT is too large (0x%8.8X%8.8X),"
+					   " truncating",
+					   ACPI_FORMAT_UINT64(address64)));
+>>>>>>> refs/remotes/origin/master
 		}
 #endif
 		return ((acpi_physical_address) (address64));
@@ -587,7 +777,11 @@ acpi_tb_get_root_table_entry(u8 *table_entry, u32 table_entry_size)
  *
  * FUNCTION:    acpi_tb_parse_root_table
  *
+<<<<<<< HEAD
  * PARAMETERS:  Rsdp                    - Pointer to the RSDP
+=======
+ * PARAMETERS:  rsdp                    - Pointer to the RSDP
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -600,8 +794,12 @@ acpi_tb_get_root_table_entry(u8 *table_entry, u32 table_entry_size)
  *
  ******************************************************************************/
 
+<<<<<<< HEAD
 acpi_status __init
 acpi_tb_parse_root_table(acpi_physical_address rsdp_address)
+=======
+acpi_status __init acpi_tb_parse_root_table(acpi_physical_address rsdp_address)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_table_rsdp *rsdp;
 	u32 table_entry_size;
@@ -678,8 +876,14 @@ acpi_tb_parse_root_table(acpi_physical_address rsdp_address)
 	acpi_os_unmap_memory(table, sizeof(struct acpi_table_header));
 
 	if (length < sizeof(struct acpi_table_header)) {
+<<<<<<< HEAD
 		ACPI_ERROR((AE_INFO, "Invalid length 0x%X in RSDT/XSDT",
 			    length));
+=======
+		ACPI_BIOS_ERROR((AE_INFO,
+				 "Invalid table length 0x%X in RSDT/XSDT",
+				 length));
+>>>>>>> refs/remotes/origin/master
 		return_ACPI_STATUS(AE_INVALID_TABLE_LENGTH);
 	}
 

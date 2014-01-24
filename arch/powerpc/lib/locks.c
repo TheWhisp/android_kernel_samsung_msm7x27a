@@ -14,16 +14,36 @@
 
 #include <linux/kernel.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/stringify.h>
 #include <linux/smp.h>
 
 /* waiting for a spinlock... */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_PPC_SPLPAR) || defined(CONFIG_PPC_ISERIES)
 #include <asm/hvcall.h>
 #include <asm/iseries/hv_call.h>
 #include <asm/smp.h>
 #include <asm/firmware.h>
+=======
+#if defined(CONFIG_PPC_SPLPAR)
+#include <asm/hvcall.h>
+#include <asm/smp.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_PPC_SPLPAR)
+#include <asm/hvcall.h>
+#include <asm/smp.h>
+>>>>>>> refs/remotes/origin/master
 
 void __spin_yield(arch_spinlock_t *lock)
 {
@@ -34,12 +54,18 @@ void __spin_yield(arch_spinlock_t *lock)
 		return;
 	holder_cpu = lock_value & 0xffff;
 	BUG_ON(holder_cpu >= NR_CPUS);
+<<<<<<< HEAD
 	yield_count = lppaca_of(holder_cpu).yield_count;
+=======
+	yield_count = be32_to_cpu(lppaca_of(holder_cpu).yield_count);
+>>>>>>> refs/remotes/origin/master
 	if ((yield_count & 1) == 0)
 		return;		/* virtual cpu is currently running */
 	rmb();
 	if (lock->slock != lock_value)
 		return;		/* something has changed */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (firmware_has_feature(FW_FEATURE_ISERIES))
 		HvCall2(HvCallBaseYieldProcessor, HvCall_YieldToProc,
 			((u64)holder_cpu << 32) | yield_count);
@@ -48,6 +74,14 @@ void __spin_yield(arch_spinlock_t *lock)
 		plpar_hcall_norets(H_CONFER,
 			get_hard_smp_processor_id(holder_cpu), yield_count);
 #endif
+=======
+	plpar_hcall_norets(H_CONFER,
+		get_hard_smp_processor_id(holder_cpu), yield_count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	plpar_hcall_norets(H_CONFER,
+		get_hard_smp_processor_id(holder_cpu), yield_count);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -65,12 +99,18 @@ void __rw_yield(arch_rwlock_t *rw)
 		return;		/* no write lock at present */
 	holder_cpu = lock_value & 0xffff;
 	BUG_ON(holder_cpu >= NR_CPUS);
+<<<<<<< HEAD
 	yield_count = lppaca_of(holder_cpu).yield_count;
+=======
+	yield_count = be32_to_cpu(lppaca_of(holder_cpu).yield_count);
+>>>>>>> refs/remotes/origin/master
 	if ((yield_count & 1) == 0)
 		return;		/* virtual cpu is currently running */
 	rmb();
 	if (rw->lock != lock_value)
 		return;		/* something has changed */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (firmware_has_feature(FW_FEATURE_ISERIES))
 		HvCall2(HvCallBaseYieldProcessor, HvCall_YieldToProc,
 			((u64)holder_cpu << 32) | yield_count);
@@ -79,6 +119,14 @@ void __rw_yield(arch_rwlock_t *rw)
 		plpar_hcall_norets(H_CONFER,
 			get_hard_smp_processor_id(holder_cpu), yield_count);
 #endif
+=======
+	plpar_hcall_norets(H_CONFER,
+		get_hard_smp_processor_id(holder_cpu), yield_count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	plpar_hcall_norets(H_CONFER,
+		get_hard_smp_processor_id(holder_cpu), yield_count);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 

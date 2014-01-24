@@ -63,11 +63,17 @@ ftrace_modify_code(unsigned long ip, unsigned int old, unsigned int new)
 		return -EINVAL;
 
 	/* replace the text with the new text */
+<<<<<<< HEAD
 	if (probe_kernel_write((void *)ip, &new, MCOUNT_INSN_SIZE))
 		return -EPERM;
 
 	flush_icache_range(ip, ip + 8);
 
+=======
+	if (patch_instruction((unsigned int *)ip, new))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -176,7 +182,15 @@ __ftrace_make_nop(struct module *mod,
 
 	pr_devel(" %08x %08x\n", jmp[0], jmp[1]);
 
+<<<<<<< HEAD
 	ptr = ((unsigned long)jmp[0] << 32) + jmp[1];
+=======
+#ifdef __LITTLE_ENDIAN__
+	ptr = ((unsigned long)jmp[1] << 32) + jmp[0];
+#else
+	ptr = ((unsigned long)jmp[0] << 32) + jmp[1];
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* This should match what was called */
 	if (ptr != ppc_function_entry((void *)addr)) {
@@ -212,12 +226,18 @@ __ftrace_make_nop(struct module *mod,
 	 */
 	op = 0x48000008;	/* b +8 */
 
+<<<<<<< HEAD
 	if (probe_kernel_write((void *)ip, &op, MCOUNT_INSN_SIZE))
 		return -EPERM;
 
 
 	flush_icache_range(ip, ip + 8);
 
+=======
+	if (patch_instruction((unsigned int *)ip, op))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -286,11 +306,17 @@ __ftrace_make_nop(struct module *mod,
 
 	op = PPC_INST_NOP;
 
+<<<<<<< HEAD
 	if (probe_kernel_write((void *)ip, &op, MCOUNT_INSN_SIZE))
 		return -EPERM;
 
 	flush_icache_range(ip, ip + 8);
 
+=======
+	if (patch_instruction((unsigned int *)ip, op))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #endif /* PPC64 */
@@ -426,11 +452,17 @@ __ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
 
 	pr_devel("write to %lx\n", rec->ip);
 
+<<<<<<< HEAD
 	if (probe_kernel_write((void *)ip, &op, MCOUNT_INSN_SIZE))
 		return -EPERM;
 
 	flush_icache_range(ip, ip + 8);
 
+=======
+	if (patch_instruction((unsigned int *)ip, op))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #endif /* CONFIG_PPC64 */
@@ -484,6 +516,61 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int __ftrace_replace_code(struct dyn_ftrace *rec, int enable)
+{
+	unsigned long ftrace_addr = (unsigned long)FTRACE_ADDR;
+	int ret;
+
+	ret = ftrace_update_record(rec, enable);
+
+	switch (ret) {
+	case FTRACE_UPDATE_IGNORE:
+		return 0;
+	case FTRACE_UPDATE_MAKE_CALL:
+		return ftrace_make_call(rec, ftrace_addr);
+	case FTRACE_UPDATE_MAKE_NOP:
+		return ftrace_make_nop(NULL, rec, ftrace_addr);
+	}
+
+	return 0;
+}
+
+void ftrace_replace_code(int enable)
+{
+	struct ftrace_rec_iter *iter;
+	struct dyn_ftrace *rec;
+	int ret;
+
+	for (iter = ftrace_rec_iter_start(); iter;
+	     iter = ftrace_rec_iter_next(iter)) {
+		rec = ftrace_rec_iter_record(iter);
+		ret = __ftrace_replace_code(rec, enable);
+		if (ret) {
+			ftrace_bug(ret, rec->ip);
+			return;
+		}
+	}
+}
+
+void arch_ftrace_update_code(int command)
+{
+	if (command & FTRACE_UPDATE_CALLS)
+		ftrace_replace_code(1);
+	else if (command & FTRACE_DISABLE_CALLS)
+		ftrace_replace_code(0);
+
+	if (command & FTRACE_UPDATE_TRACE_FUNC)
+		ftrace_update_ftrace_func(ftrace_trace_function);
+
+	if (command & FTRACE_START_FUNC_RET)
+		ftrace_enable_ftrace_graph_caller();
+	else if (command & FTRACE_STOP_FUNC_RET)
+		ftrace_disable_ftrace_graph_caller();
+}
+
+>>>>>>> refs/remotes/origin/master
 int __init ftrace_dyn_arch_init(void *data)
 {
 	/* caller expects data to be zero */
@@ -587,6 +674,7 @@ void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (ftrace_push_return_trace(old, self_addr, &trace.depth, 0) == -EBUSY) {
 		*parent = old;
 		return;
@@ -599,6 +687,19 @@ void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr)
 		current->curr_ret_stack--;
 		*parent = old;
 	}
+=======
+	trace.func = self_addr;
+	trace.depth = current->curr_ret_stack + 1;
+
+	/* Only trace if the calling function expects to */
+	if (!ftrace_graph_entry(&trace)) {
+		*parent = old;
+		return;
+	}
+
+	if (ftrace_push_return_trace(old, self_addr, &trace.depth, 0) == -EBUSY)
+		*parent = old;
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
 

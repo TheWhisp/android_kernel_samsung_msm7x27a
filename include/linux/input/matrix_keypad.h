@@ -3,6 +3,11 @@
 
 #include <linux/types.h>
 #include <linux/input.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MATRIX_MAX_ROWS		18
 #define MATRIX_MAX_COLS		18
@@ -10,6 +15,22 @@
 #define KEY(row, col, val)	((((row) % (MATRIX_MAX_ROWS)) << 24) |\
 				 (((col) % (MATRIX_MAX_COLS)) << 16) |\
 				 (val & 0xffff))
+=======
+#include <linux/of.h>
+
+#define MATRIX_MAX_ROWS		18
+#define MATRIX_MAX_COLS		18
+
+<<<<<<< HEAD
+#define KEY(row, col, val)	((((row) & (MATRIX_MAX_ROWS - 1)) << 24) |\
+				 (((col) & (MATRIX_MAX_COLS - 1)) << 16) |\
+				 ((val) & 0xffff))
+>>>>>>> refs/remotes/origin/master
+=======
+#define KEY(row, col, val)	((((row) % (MATRIX_MAX_ROWS)) << 24) |\
+				 (((col) % (MATRIX_MAX_COLS)) << 16) |\
+				 (val & 0xffff))
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define KEY_ROW(k)		(((k) >> 24) & 0xff)
 #define KEY_COL(k)		(((k) >> 16) & 0xff)
@@ -74,6 +95,7 @@ struct matrix_keypad_platform_data {
 	bool		no_autorepeat;
 };
 
+<<<<<<< HEAD
 /**
  * matrix_keypad_build_keymap - convert platform keymap into matrix keymap
  * @keymap_data: keymap supplied by the platform code
@@ -106,4 +128,52 @@ matrix_keypad_build_keymap(const struct matrix_keymap_data *keymap_data,
 	__clear_bit(KEY_RESERVED, keybit);
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_INPUT_OF_MATRIX_KEYMAP
+struct matrix_keymap_data *
+matrix_keyboard_of_fill_keymap(struct device_node *np, const char *propname);
+
+void matrix_keyboard_of_free_keymap(const struct matrix_keymap_data *kd);
+#else
+static inline struct matrix_keymap_data *
+matrix_keyboard_of_fill_keymap(struct device_node *np, const char *propname)
+{
+	return NULL;
+}
+
+static inline void
+matrix_keyboard_of_free_keymap(const struct matrix_keymap_data *kd)
+{
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int matrix_keypad_build_keymap(const struct matrix_keymap_data *keymap_data,
+			       const char *keymap_name,
+			       unsigned int rows, unsigned int cols,
+			       unsigned short *keymap,
+			       struct input_dev *input_dev);
+
+#ifdef CONFIG_OF
+/**
+ * matrix_keypad_parse_of_params() - Read parameters from matrix-keypad node
+ *
+ * @dev: Device containing of_node
+ * @rows: Returns number of matrix rows
+ * @cols: Returns number of matrix columns
+ * @return 0 if OK, <0 on error
+ */
+int matrix_keypad_parse_of_params(struct device *dev,
+				  unsigned int *rows, unsigned int *cols);
+#else
+static inline int matrix_keypad_parse_of_params(struct device *dev,
+				  unsigned int *rows, unsigned int *cols)
+{
+	return -ENOSYS;
+}
+#endif /* CONFIG_OF */
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _MATRIX_KEYPAD_H */

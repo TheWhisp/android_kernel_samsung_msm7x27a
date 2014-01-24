@@ -225,7 +225,15 @@ void __init tx3927_setup_pcierr_irq(void)
 {
 	if (request_irq(TXX9_IRQ_BASE + TX3927_IR_PCI,
 			tx3927_pcierr_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED, "PCI error",
+=======
+			0, "PCI error",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			0, "PCI error",
+>>>>>>> refs/remotes/origin/master
 			(void *)TX3927_PCIC_REG))
 		printk(KERN_WARNING "Failed to request irq for PCIERR\n");
 }

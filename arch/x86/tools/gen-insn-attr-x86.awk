@@ -47,7 +47,15 @@ BEGIN {
 	sep_expr = "^\\|$"
 	group_expr = "^Grp[0-9A-Za-z]+"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	imm_expr = "^[IJAO][a-z]"
+=======
+	imm_expr = "^[IJAOL][a-z]"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imm_expr = "^[IJAOL][a-z]"
+>>>>>>> refs/remotes/origin/master
 	imm_flag["Ib"] = "INAT_MAKE_IMM(INAT_IMM_BYTE)"
 	imm_flag["Jb"] = "INAT_MAKE_IMM(INAT_IMM_BYTE)"
 	imm_flag["Iw"] = "INAT_MAKE_IMM(INAT_IMM_WORD)"
@@ -59,24 +67,58 @@ BEGIN {
 	imm_flag["Iv"] = "INAT_MAKE_IMM(INAT_IMM_VWORD)"
 	imm_flag["Ob"] = "INAT_MOFFSET"
 	imm_flag["Ov"] = "INAT_MOFFSET"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	imm_flag["Lx"] = "INAT_MAKE_IMM(INAT_IMM_BYTE)"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imm_flag["Lx"] = "INAT_MAKE_IMM(INAT_IMM_BYTE)"
+>>>>>>> refs/remotes/origin/master
 
 	modrm_expr = "^([CDEGMNPQRSUVW/][a-z]+|NTA|T[012])"
 	force64_expr = "\\([df]64\\)"
 	rex_expr = "^REX(\\.[XRWB]+)*"
 	fpu_expr = "^ESC" # TODO
 
+<<<<<<< HEAD
 	lprefix1_expr = "\\(66\\)"
 	lprefix2_expr = "\\(F3\\)"
 	lprefix3_expr = "\\(F2\\)"
 	max_lprefix = 4
 
+<<<<<<< HEAD
 	vexok_expr = "\\(VEX\\)"
 	vexonly_expr = "\\(oVEX\\)"
+=======
+=======
+	lprefix1_expr = "\\((66|!F3)\\)"
+	lprefix2_expr = "\\(F3\\)"
+	lprefix3_expr = "\\((F2|!F3|66\\&F2)\\)"
+	lprefix_expr = "\\((66|F2|F3)\\)"
+	max_lprefix = 4
+
+>>>>>>> refs/remotes/origin/master
+	# All opcodes starting with lower-case 'v' or with (v1) superscript
+	# accepts VEX prefix
+	vexok_opcode_expr = "^v.*"
+	vexok_expr = "\\(v1\\)"
+	# All opcodes with (v) superscript supports *only* VEX prefix
+	vexonly_expr = "\\(v\\)"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	prefix_expr = "\\(Prefix\\)"
 	prefix_num["Operand-Size"] = "INAT_PFX_OPNDSZ"
 	prefix_num["REPNE"] = "INAT_PFX_REPNE"
 	prefix_num["REP/REPE"] = "INAT_PFX_REPE"
+<<<<<<< HEAD
+=======
+	prefix_num["XACQUIRE"] = "INAT_PFX_REPNE"
+	prefix_num["XRELEASE"] = "INAT_PFX_REPE"
+>>>>>>> refs/remotes/origin/master
 	prefix_num["LOCK"] = "INAT_PFX_LOCK"
 	prefix_num["SEG=CS"] = "INAT_PFX_CS"
 	prefix_num["SEG=DS"] = "INAT_PFX_DS"
@@ -85,8 +127,18 @@ BEGIN {
 	prefix_num["SEG=GS"] = "INAT_PFX_GS"
 	prefix_num["SEG=SS"] = "INAT_PFX_SS"
 	prefix_num["Address-Size"] = "INAT_PFX_ADDRSZ"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	prefix_num["2bytes-VEX"] = "INAT_PFX_VEX2"
 	prefix_num["3bytes-VEX"] = "INAT_PFX_VEX3"
+=======
+	prefix_num["VEX+1byte"] = "INAT_PFX_VEX2"
+	prefix_num["VEX+2byte"] = "INAT_PFX_VEX3"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	prefix_num["VEX+1byte"] = "INAT_PFX_VEX2"
+	prefix_num["VEX+2byte"] = "INAT_PFX_VEX3"
+>>>>>>> refs/remotes/origin/master
 
 	clear_vars()
 }
@@ -310,12 +362,25 @@ function convert_operands(count,opnd,       i,j,imm,mod)
 		if (match(opcode, fpu_expr))
 			flags = add_flags(flags, "INAT_MODRM")
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		# check VEX only code
 		if (match(ext, vexonly_expr))
 			flags = add_flags(flags, "INAT_VEXOK | INAT_VEXONLY")
 
 		# check VEX only code
 		if (match(ext, vexok_expr))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		# check VEX codes
+		if (match(ext, vexonly_expr))
+			flags = add_flags(flags, "INAT_VEXOK | INAT_VEXONLY")
+		else if (match(ext, vexok_expr) || match(opcode, vexok_opcode_expr))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			flags = add_flags(flags, "INAT_VEXOK")
 
 		# check prefixes
@@ -330,6 +395,7 @@ function convert_operands(count,opnd,       i,j,imm,mod)
 		if (match(ext, lprefix1_expr)) {
 			lptable1[idx] = add_flags(lptable1[idx],flags)
 			variant = "INAT_VARIANT"
+<<<<<<< HEAD
 		} else if (match(ext, lprefix2_expr)) {
 			lptable2[idx] = add_flags(lptable2[idx],flags)
 			variant = "INAT_VARIANT"
@@ -337,6 +403,18 @@ function convert_operands(count,opnd,       i,j,imm,mod)
 			lptable3[idx] = add_flags(lptable3[idx],flags)
 			variant = "INAT_VARIANT"
 		} else {
+=======
+		}
+		if (match(ext, lprefix2_expr)) {
+			lptable2[idx] = add_flags(lptable2[idx],flags)
+			variant = "INAT_VARIANT"
+		}
+		if (match(ext, lprefix3_expr)) {
+			lptable3[idx] = add_flags(lptable3[idx],flags)
+			variant = "INAT_VARIANT"
+		}
+		if (!match(ext, lprefix_expr)){
+>>>>>>> refs/remotes/origin/master
 			table[idx] = add_flags(table[idx],flags)
 		}
 	}
@@ -349,7 +427,11 @@ END {
 		exit 1
 	# print escape opcode map's array
 	print "/* Escape opcode map array */"
+<<<<<<< HEAD
 	print "const insn_attr_t const *inat_escape_tables[INAT_ESC_MAX + 1]" \
+=======
+	print "const insn_attr_t * const inat_escape_tables[INAT_ESC_MAX + 1]" \
+>>>>>>> refs/remotes/origin/master
 	      "[INAT_LSTPFX_MAX + 1] = {"
 	for (i = 0; i < geid; i++)
 		for (j = 0; j < max_lprefix; j++)
@@ -358,7 +440,11 @@ END {
 	print "};\n"
 	# print group opcode map's array
 	print "/* Group opcode map array */"
+<<<<<<< HEAD
 	print "const insn_attr_t const *inat_group_tables[INAT_GRP_MAX + 1]"\
+=======
+	print "const insn_attr_t * const inat_group_tables[INAT_GRP_MAX + 1]"\
+>>>>>>> refs/remotes/origin/master
 	      "[INAT_LSTPFX_MAX + 1] = {"
 	for (i = 0; i < ggid; i++)
 		for (j = 0; j < max_lprefix; j++)
@@ -367,7 +453,11 @@ END {
 	print "};\n"
 	# print AVX opcode map's array
 	print "/* AVX opcode map array */"
+<<<<<<< HEAD
 	print "const insn_attr_t const *inat_avx_tables[X86_VEX_M_MAX + 1]"\
+=======
+	print "const insn_attr_t * const inat_avx_tables[X86_VEX_M_MAX + 1]"\
+>>>>>>> refs/remotes/origin/master
 	      "[INAT_LSTPFX_MAX + 1] = {"
 	for (i = 0; i < gaid; i++)
 		for (j = 0; j < max_lprefix; j++)

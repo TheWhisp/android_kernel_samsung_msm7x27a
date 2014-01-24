@@ -5,7 +5,10 @@
 #include "btrfs_inode.h"
 #include "print-tree.h"
 #include "export.h"
+<<<<<<< HEAD
 #include "compat.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define BTRFS_FID_SIZE_NON_CONNECTABLE (offsetof(struct btrfs_fid, \
 						 parent_objectid) / 4)
@@ -13,6 +16,7 @@
 					     parent_root_objectid) / 4)
 #define BTRFS_FID_SIZE_CONNECTABLE_ROOT (sizeof(struct btrfs_fid) / 4)
 
+<<<<<<< HEAD
 static int btrfs_encode_fh(struct dentry *dentry, u32 *fh, int *max_len,
 			   int connectable)
 {
@@ -27,6 +31,21 @@ static int btrfs_encode_fh(struct dentry *dentry, u32 *fh, int *max_len,
 	} else if (len < BTRFS_FID_SIZE_NON_CONNECTABLE) {
 		*max_len = BTRFS_FID_SIZE_NON_CONNECTABLE;
 		return 255;
+=======
+static int btrfs_encode_fh(struct inode *inode, u32 *fh, int *max_len,
+			   struct inode *parent)
+{
+	struct btrfs_fid *fid = (struct btrfs_fid *)fh;
+	int len = *max_len;
+	int type;
+
+	if (parent && (len < BTRFS_FID_SIZE_CONNECTABLE)) {
+		*max_len = BTRFS_FID_SIZE_CONNECTABLE;
+		return FILEID_INVALID;
+	} else if (len < BTRFS_FID_SIZE_NON_CONNECTABLE) {
+		*max_len = BTRFS_FID_SIZE_NON_CONNECTABLE;
+		return FILEID_INVALID;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	len  = BTRFS_FID_SIZE_NON_CONNECTABLE;
@@ -36,6 +55,7 @@ static int btrfs_encode_fh(struct dentry *dentry, u32 *fh, int *max_len,
 	fid->root_objectid = BTRFS_I(inode)->root->objectid;
 	fid->gen = inode->i_generation;
 
+<<<<<<< HEAD
 	if (connectable && !S_ISDIR(inode->i_mode)) {
 		struct inode *parent;
 		u64 parent_root_id;
@@ -43,12 +63,20 @@ static int btrfs_encode_fh(struct dentry *dentry, u32 *fh, int *max_len,
 		spin_lock(&dentry->d_lock);
 
 		parent = dentry->d_parent->d_inode;
+=======
+	if (parent) {
+		u64 parent_root_id;
+
+>>>>>>> refs/remotes/origin/master
 		fid->parent_objectid = BTRFS_I(parent)->location.objectid;
 		fid->parent_gen = parent->i_generation;
 		parent_root_id = BTRFS_I(parent)->root->objectid;
 
+<<<<<<< HEAD
 		spin_unlock(&dentry->d_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (parent_root_id != fid->root_objectid) {
 			fid->parent_root_objectid = parent_root_id;
 			len = BTRFS_FID_SIZE_CONNECTABLE_ROOT;
@@ -67,7 +95,15 @@ static struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
 				       u64 root_objectid, u32 generation,
 				       int check_generation)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct btrfs_fs_info *fs_info = btrfs_sb(sb)->fs_info;
+=======
+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+>>>>>>> refs/remotes/origin/master
 	struct btrfs_root *root;
 	struct inode *inode;
 	struct btrfs_key key;
@@ -89,11 +125,14 @@ static struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
 		goto fail;
 	}
 
+<<<<<<< HEAD
 	if (btrfs_root_refs(&root->root_item) == 0) {
 		err = -ENOENT;
 		goto fail;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	key.objectid = objectid;
 	btrfs_set_key_type(&key, BTRFS_INODE_ITEM_KEY);
 	key.offset = 0;
@@ -193,7 +232,15 @@ static struct dentry *btrfs_get_parent(struct dentry *child)
 	if (ret < 0)
 		goto fail;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(ret == 0);
+=======
+	BUG_ON(ret == 0); /* Key with offset of -1 found */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(ret == 0); /* Key with offset of -1 found */
+>>>>>>> refs/remotes/origin/master
 	if (path->slots[0] == 0) {
 		ret = -ENOENT;
 		goto fail;

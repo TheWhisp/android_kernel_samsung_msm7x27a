@@ -11,10 +11,17 @@
  * Licensed under the GPL.
  */
 
+<<<<<<< HEAD
 #include "linux/init.h"
 #include <linux/netdevice.h>
 #include "umcast.h"
 #include "net_kern.h"
+=======
+#include <linux/init.h>
+#include <linux/netdevice.h>
+#include "umcast.h"
+#include <net_kern.h>
+>>>>>>> refs/remotes/origin/master
 
 struct umcast_init {
 	char *addr;

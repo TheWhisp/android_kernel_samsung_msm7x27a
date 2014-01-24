@@ -38,6 +38,18 @@
 #include <linux/debugfs.h>
 #include <linux/ratelimit.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define CREATE_TRACE_POINTS
+#include <trace/events/jbd.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CREATE_TRACE_POINTS
+#include <trace/events/jbd.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/page.h>
 
@@ -87,6 +99,27 @@ static int journal_convert_superblock_v1(journal_t *, journal_superblock_t *);
 static void __journal_abort_soft (journal_t *journal, int errno);
 static const char *journal_dev_name(journal_t *journal, char *buffer);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_JBD_DEBUG
+void __jbd_debug(int level, const char *file, const char *func,
+		 unsigned int line, const char *fmt, ...)
+{
+	struct va_format vaf;
+	va_list args;
+
+	if (level > journal_enable_debug)
+		return;
+	va_start(args, fmt);
+	vaf.fmt = fmt;
+	vaf.va = &args;
+	printk(KERN_DEBUG "%s: (%s, %u): %pV\n", file, func, line, &vaf);
+	va_end(args);
+}
+EXPORT_SYMBOL(__jbd_debug);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Helper function used to manage commit timeouts
  */
@@ -126,6 +159,16 @@ static int kjournald(void *arg)
 	setup_timer(&journal->j_commit_timer, commit_timeout,
 			(unsigned long)current);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	set_freezable();
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_freezable();
+
+>>>>>>> refs/remotes/origin/master
 	/* Record that the journal thread is running */
 	journal->j_task = current;
 	wake_up(&journal->j_wait_done_commit);
@@ -163,7 +206,15 @@ loop:
 		 */
 		jbd_debug(1, "Now suspending kjournald\n");
 		spin_unlock(&journal->j_state_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		refrigerator();
+=======
+		try_to_freeze();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		try_to_freeze();
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&journal->j_state_lock);
 	} else {
 		/*
@@ -305,8 +356,11 @@ int journal_write_metadata_buffer(transaction_t *transaction,
 
 	new_bh = alloc_buffer_head(GFP_NOFS|__GFP_NOFAIL);
 	/* keep subsequent assertions sane */
+<<<<<<< HEAD
 	new_bh->b_state = 0;
 	init_buffer(new_bh, NULL, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&new_bh->b_count, 1);
 	new_jh = journal_add_journal_head(new_bh);	/* This sleeps */
 
@@ -325,7 +379,15 @@ repeat:
 		new_offset = offset_in_page(jh2bh(jh_in)->b_data);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mapped_data = kmap_atomic(new_page, KM_USER0);
+=======
+	mapped_data = kmap_atomic(new_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mapped_data = kmap_atomic(new_page);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Check for escaping
 	 */
@@ -334,7 +396,15 @@ repeat:
 		need_copy_out = 1;
 		do_escape = 1;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(mapped_data, KM_USER0);
+=======
+	kunmap_atomic(mapped_data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(mapped_data);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Do we need to do a data copy?
@@ -351,9 +421,21 @@ repeat:
 		}
 
 		jh_in->b_frozen_data = tmp;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mapped_data = kmap_atomic(new_page, KM_USER0);
 		memcpy(tmp, mapped_data + new_offset, jh2bh(jh_in)->b_size);
 		kunmap_atomic(mapped_data, KM_USER0);
+=======
+		mapped_data = kmap_atomic(new_page);
+		memcpy(tmp, mapped_data + new_offset, jh2bh(jh_in)->b_size);
+		kunmap_atomic(mapped_data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mapped_data = kmap_atomic(new_page);
+		memcpy(tmp, mapped_data + new_offset, jh2bh(jh_in)->b_size);
+		kunmap_atomic(mapped_data);
+>>>>>>> refs/remotes/origin/master
 
 		new_page = virt_to_page(tmp);
 		new_offset = offset_in_page(tmp);
@@ -365,9 +447,21 @@ repeat:
 	 * copying, we can finally do so.
 	 */
 	if (do_escape) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mapped_data = kmap_atomic(new_page, KM_USER0);
 		*((unsigned int *)(mapped_data + new_offset)) = 0;
 		kunmap_atomic(mapped_data, KM_USER0);
+=======
+		mapped_data = kmap_atomic(new_page);
+		*((unsigned int *)(mapped_data + new_offset)) = 0;
+		kunmap_atomic(mapped_data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mapped_data = kmap_atomic(new_page);
+		*((unsigned int *)(mapped_data + new_offset)) = 0;
+		kunmap_atomic(mapped_data);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	set_bh_page(new_bh, new_page, new_offset);
@@ -441,7 +535,12 @@ int __log_start_commit(journal_t *journal, tid_t target)
 	 * currently running transaction (if it exists).  Otherwise,
 	 * the target tid must be an old one.
 	 */
+<<<<<<< HEAD
 	if (journal->j_running_transaction &&
+=======
+	if (journal->j_commit_request != target &&
+	    journal->j_running_transaction &&
+>>>>>>> refs/remotes/origin/master
 	    journal->j_running_transaction->t_tid == target) {
 		/*
 		 * We want a new commit: OK, mark the request and wakeup the
@@ -529,8 +628,13 @@ int journal_start_commit(journal_t *journal, tid_t *ptid)
 		ret = 1;
 	} else if (journal->j_committing_transaction) {
 		/*
+<<<<<<< HEAD
 		 * If ext3_write_super() recently started a commit, then we
 		 * have to wait for completion of that transaction
+=======
+		 * If commit has been started, then we have to wait for
+		 * completion of that transaction.
+>>>>>>> refs/remotes/origin/master
 		 */
 		if (ptid)
 			*ptid = journal->j_committing_transaction->t_tid;
@@ -558,6 +662,21 @@ int log_wait_commit(journal_t *journal, tid_t tid)
 	spin_unlock(&journal->j_state_lock);
 #endif
 	spin_lock(&journal->j_state_lock);
+<<<<<<< HEAD
+=======
+	/*
+	 * Not running or committing trans? Must be already committed. This
+	 * saves us from waiting for a *long* time when tid overflows.
+	 */
+	if (!((journal->j_running_transaction &&
+	       journal->j_running_transaction->t_tid == tid) ||
+	      (journal->j_committing_transaction &&
+	       journal->j_committing_transaction->t_tid == tid)))
+		goto out_unlock;
+
+	if (!tid_geq(journal->j_commit_waited, tid))
+		journal->j_commit_waited = tid;
+>>>>>>> refs/remotes/origin/master
 	while (tid_gt(tid, journal->j_commit_sequence)) {
 		jbd_debug(1, "JBD: want %d, j_commit_sequence=%d\n",
 				  tid, journal->j_commit_sequence);
@@ -567,6 +686,10 @@ int log_wait_commit(journal_t *journal, tid_t tid)
 				!tid_gt(tid, journal->j_commit_sequence));
 		spin_lock(&journal->j_state_lock);
 	}
+<<<<<<< HEAD
+=======
+out_unlock:
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&journal->j_state_lock);
 
 	if (unlikely(is_journal_aborted(journal))) {
@@ -718,7 +841,13 @@ static journal_t * journal_init_common (void)
 	init_waitqueue_head(&journal->j_wait_checkpoint);
 	init_waitqueue_head(&journal->j_wait_commit);
 	init_waitqueue_head(&journal->j_wait_updates);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&journal->j_barrier);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&journal->j_checkpoint_mutex);
 	spin_lock_init(&journal->j_revoke_lock);
 	spin_lock_init(&journal->j_list_lock);
@@ -917,8 +1046,38 @@ static int journal_reset(journal_t *journal)
 
 	journal->j_max_transaction_buffers = journal->j_maxlen / 4;
 
+<<<<<<< HEAD
 	/* Add the dynamic fields and write it to disk. */
 	journal_update_superblock(journal, 1);
+=======
+	/*
+	 * As a special case, if the on-disk copy is already marked as needing
+	 * no recovery (s_start == 0), then we can safely defer the superblock
+	 * update until the next commit by setting JFS_FLUSHED.  This avoids
+	 * attempting a write to a potential-readonly device.
+	 */
+	if (sb->s_start == 0) {
+		jbd_debug(1,"JBD: Skipping superblock update on recovered sb "
+			"(start %u, seq %d, errno %d)\n",
+			journal->j_tail, journal->j_tail_sequence,
+			journal->j_errno);
+		journal->j_flags |= JFS_FLUSHED;
+	} else {
+		/* Lock here to make assertions happy... */
+		mutex_lock(&journal->j_checkpoint_mutex);
+		/*
+		 * Update log tail information. We use WRITE_FUA since new
+		 * transaction will start reusing journal space and so we
+		 * must make sure information about current log tail is on
+		 * disk before that.
+		 */
+		journal_update_sb_log_tail(journal,
+					   journal->j_tail_sequence,
+					   journal->j_tail,
+					   WRITE_FUA);
+		mutex_unlock(&journal->j_checkpoint_mutex);
+	}
+>>>>>>> refs/remotes/origin/master
 	return journal_start_thread(journal);
 }
 
@@ -995,6 +1154,7 @@ int journal_create(journal_t *journal)
 	return journal_reset(journal);
 }
 
+<<<<<<< HEAD
 /**
  * void journal_update_superblock() - Update journal sb on disk.
  * @journal: The journal to update.
@@ -1024,6 +1184,17 @@ void journal_update_superblock(journal_t *journal, int wait)
 		goto out;
 	}
 
+=======
+static void journal_write_superblock(journal_t *journal, int write_op)
+{
+	struct buffer_head *bh = journal->j_sb_buffer;
+	int ret;
+
+	trace_journal_write_superblock(journal, write_op);
+	if (!(journal->j_flags & JFS_BARRIER))
+		write_op &= ~(REQ_FUA | REQ_FLUSH);
+	lock_buffer(bh);
+>>>>>>> refs/remotes/origin/master
 	if (buffer_write_io_error(bh)) {
 		char b[BDEVNAME_SIZE];
 		/*
@@ -1041,6 +1212,7 @@ void journal_update_superblock(journal_t *journal, int wait)
 		set_buffer_uptodate(bh);
 	}
 
+<<<<<<< HEAD
 	spin_lock(&journal->j_state_lock);
 	jbd_debug(1,"JBD: updating superblock (start %u, seq %d, errno %d)\n",
 		  journal->j_tail, journal->j_tail_sequence, journal->j_errno);
@@ -1065,6 +1237,10 @@ void journal_update_superblock(journal_t *journal, int wait)
 	} else
 		write_dirty_buffer(bh, WRITE);
 
+<<<<<<< HEAD
+=======
+	trace_jbd_update_superblock_end(journal, wait);
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	/* If we have just flushed the log (by marking s_start==0), then
 	 * any future commit will have to be careful to update the
@@ -1076,6 +1252,107 @@ out:
 	else
 		journal->j_flags |= JFS_FLUSHED;
 	spin_unlock(&journal->j_state_lock);
+=======
+	get_bh(bh);
+	bh->b_end_io = end_buffer_write_sync;
+	ret = submit_bh(write_op, bh);
+	wait_on_buffer(bh);
+	if (buffer_write_io_error(bh)) {
+		clear_buffer_write_io_error(bh);
+		set_buffer_uptodate(bh);
+		ret = -EIO;
+	}
+	if (ret) {
+		char b[BDEVNAME_SIZE];
+		printk(KERN_ERR "JBD: Error %d detected "
+		       "when updating journal superblock for %s.\n",
+		       ret, journal_dev_name(journal, b));
+	}
+}
+
+/**
+ * journal_update_sb_log_tail() - Update log tail in journal sb on disk.
+ * @journal: The journal to update.
+ * @tail_tid: TID of the new transaction at the tail of the log
+ * @tail_block: The first block of the transaction at the tail of the log
+ * @write_op: With which operation should we write the journal sb
+ *
+ * Update a journal's superblock information about log tail and write it to
+ * disk, waiting for the IO to complete.
+ */
+void journal_update_sb_log_tail(journal_t *journal, tid_t tail_tid,
+				unsigned int tail_block, int write_op)
+{
+	journal_superblock_t *sb = journal->j_superblock;
+
+	BUG_ON(!mutex_is_locked(&journal->j_checkpoint_mutex));
+	jbd_debug(1,"JBD: updating superblock (start %u, seq %u)\n",
+		  tail_block, tail_tid);
+
+	sb->s_sequence = cpu_to_be32(tail_tid);
+	sb->s_start    = cpu_to_be32(tail_block);
+
+	journal_write_superblock(journal, write_op);
+
+	/* Log is no longer empty */
+	spin_lock(&journal->j_state_lock);
+	WARN_ON(!sb->s_sequence);
+	journal->j_flags &= ~JFS_FLUSHED;
+	spin_unlock(&journal->j_state_lock);
+}
+
+/**
+ * mark_journal_empty() - Mark on disk journal as empty.
+ * @journal: The journal to update.
+ *
+ * Update a journal's dynamic superblock fields to show that journal is empty.
+ * Write updated superblock to disk waiting for IO to complete.
+ */
+static void mark_journal_empty(journal_t *journal)
+{
+	journal_superblock_t *sb = journal->j_superblock;
+
+	BUG_ON(!mutex_is_locked(&journal->j_checkpoint_mutex));
+	spin_lock(&journal->j_state_lock);
+	/* Is it already empty? */
+	if (sb->s_start == 0) {
+		spin_unlock(&journal->j_state_lock);
+		return;
+	}
+	jbd_debug(1, "JBD: Marking journal as empty (seq %d)\n",
+        	  journal->j_tail_sequence);
+
+	sb->s_sequence = cpu_to_be32(journal->j_tail_sequence);
+	sb->s_start    = cpu_to_be32(0);
+	spin_unlock(&journal->j_state_lock);
+
+	journal_write_superblock(journal, WRITE_FUA);
+
+	spin_lock(&journal->j_state_lock);
+	/* Log is empty */
+	journal->j_flags |= JFS_FLUSHED;
+	spin_unlock(&journal->j_state_lock);
+}
+
+/**
+ * journal_update_sb_errno() - Update error in the journal.
+ * @journal: The journal to update.
+ *
+ * Update a journal's errno.  Write updated superblock to disk waiting for IO
+ * to complete.
+ */
+static void journal_update_sb_errno(journal_t *journal)
+{
+	journal_superblock_t *sb = journal->j_superblock;
+
+	spin_lock(&journal->j_state_lock);
+	jbd_debug(1, "JBD: updating superblock error (errno %d)\n",
+        	  journal->j_errno);
+	sb->s_errno = cpu_to_be32(journal->j_errno);
+	spin_unlock(&journal->j_state_lock);
+
+	journal_write_superblock(journal, WRITE_SYNC);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1246,6 +1523,11 @@ int journal_destroy(journal_t *journal)
 
 	/* Force any old transactions to disk */
 
+<<<<<<< HEAD
+=======
+	/* We cannot race with anybody but must keep assertions happy */
+	mutex_lock(&journal->j_checkpoint_mutex);
+>>>>>>> refs/remotes/origin/master
 	/* Totally anal locking here... */
 	spin_lock(&journal->j_list_lock);
 	while (journal->j_checkpoint_transactions != NULL) {
@@ -1261,6 +1543,7 @@ int journal_destroy(journal_t *journal)
 
 	if (journal->j_sb_buffer) {
 		if (!is_journal_aborted(journal)) {
+<<<<<<< HEAD
 			/* We can now mark the journal as empty. */
 			journal->j_tail = 0;
 			journal->j_tail_sequence =
@@ -1271,6 +1554,16 @@ int journal_destroy(journal_t *journal)
 		}
 		brelse(journal->j_sb_buffer);
 	}
+=======
+			journal->j_tail_sequence =
+				++journal->j_transaction_sequence;
+			mark_journal_empty(journal);
+		} else
+			err = -EIO;
+		brelse(journal->j_sb_buffer);
+	}
+	mutex_unlock(&journal->j_checkpoint_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	if (journal->j_inode)
 		iput(journal->j_inode);
@@ -1450,7 +1743,10 @@ int journal_flush(journal_t *journal)
 {
 	int err = 0;
 	transaction_t *transaction = NULL;
+<<<<<<< HEAD
 	unsigned int old_tail;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&journal->j_state_lock);
 
@@ -1485,6 +1781,10 @@ int journal_flush(journal_t *journal)
 	if (is_journal_aborted(journal))
 		return -EIO;
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&journal->j_checkpoint_mutex);
+>>>>>>> refs/remotes/origin/master
 	cleanup_journal_tail(journal);
 
 	/* Finally, mark the journal as really needing no recovery.
@@ -1492,6 +1792,7 @@ int journal_flush(journal_t *journal)
 	 * the magic code for a fully-recovered superblock.  Any future
 	 * commits of data to the journal will restore the current
 	 * s_start value. */
+<<<<<<< HEAD
 	spin_lock(&journal->j_state_lock);
 	old_tail = journal->j_tail;
 	journal->j_tail = 0;
@@ -1500,6 +1801,11 @@ int journal_flush(journal_t *journal)
 	spin_lock(&journal->j_state_lock);
 	journal->j_tail = old_tail;
 
+=======
+	mark_journal_empty(journal);
+	mutex_unlock(&journal->j_checkpoint_mutex);
+	spin_lock(&journal->j_state_lock);
+>>>>>>> refs/remotes/origin/master
 	J_ASSERT(!journal->j_running_transaction);
 	J_ASSERT(!journal->j_committing_transaction);
 	J_ASSERT(!journal->j_checkpoint_transactions);
@@ -1539,8 +1845,17 @@ int journal_wipe(journal_t *journal, int write)
 		write ? "Clearing" : "Ignoring");
 
 	err = journal_skip_recovery(journal);
+<<<<<<< HEAD
 	if (write)
 		journal_update_superblock(journal, 1);
+=======
+	if (write) {
+		/* Lock to make assertions happy... */
+		mutex_lock(&journal->j_checkpoint_mutex);
+		mark_journal_empty(journal);
+		mutex_unlock(&journal->j_checkpoint_mutex);
+	}
+>>>>>>> refs/remotes/origin/master
 
  no_recovery:
 	return err;
@@ -1608,7 +1923,11 @@ static void __journal_abort_soft (journal_t *journal, int errno)
 	__journal_abort_hard(journal);
 
 	if (errno)
+<<<<<<< HEAD
 		journal_update_superblock(journal, 1);
+=======
+		journal_update_sb_errno(journal);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1770,7 +2089,11 @@ static struct journal_head *journal_alloc_journal_head(void)
 #ifdef CONFIG_JBD_DEBUG
 	atomic_inc(&nr_journal_heads);
 #endif
+<<<<<<< HEAD
 	ret = kmem_cache_alloc(journal_head_cache, GFP_NOFS);
+=======
+	ret = kmem_cache_zalloc(journal_head_cache, GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 	if (ret == NULL) {
 		jbd_debug(1, "out of memory for journal_head\n");
 		printk_ratelimited(KERN_NOTICE "ENOMEM in %s, retrying.\n",
@@ -1778,7 +2101,11 @@ static struct journal_head *journal_alloc_journal_head(void)
 
 		while (ret == NULL) {
 			yield();
+<<<<<<< HEAD
 			ret = kmem_cache_alloc(journal_head_cache, GFP_NOFS);
+=======
+			ret = kmem_cache_zalloc(journal_head_cache, GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return ret;
@@ -1807,10 +2134,22 @@ static void journal_free_journal_head(struct journal_head *jh)
  * When a buffer has its BH_JBD bit set it is immune from being released by
  * core kernel code, mainly via ->b_count.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * A journal_head may be detached from its buffer_head when the journal_head's
  * b_transaction, b_cp_transaction and b_next_transaction pointers are NULL.
  * Various places in JBD call journal_remove_journal_head() to indicate that the
  * journal_head can be dropped if needed.
+=======
+ * A journal_head is detached from its buffer_head when the journal_head's
+ * b_jcount reaches zero. Running transaction (b_transaction) and checkpoint
+ * transaction (b_cp_transaction) hold their references to b_jcount.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * A journal_head is detached from its buffer_head when the journal_head's
+ * b_jcount reaches zero. Running transaction (b_transaction) and checkpoint
+ * transaction (b_cp_transaction) hold their references to b_jcount.
+>>>>>>> refs/remotes/origin/master
  *
  * Various places in the kernel want to attach a journal_head to a buffer_head
  * _before_ attaching the journal_head to a transaction.  To protect the
@@ -1823,17 +2162,37 @@ static void journal_free_journal_head(struct journal_head *jh)
  *	(Attach a journal_head if needed.  Increments b_jcount)
  *	struct journal_head *jh = journal_add_journal_head(bh);
  *	...
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	jh->b_transaction = xxx;
  *	journal_put_journal_head(jh);
  *
  * Now, the journal_head's b_jcount is zero, but it is safe from being released
  * because it has a non-zero b_transaction.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *      (Get another reference for transaction)
+ *      journal_grab_journal_head(bh);
+ *      jh->b_transaction = xxx;
+ *      (Put original reference)
+ *      journal_put_journal_head(jh);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
  * Give a buffer_head a journal_head.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Doesn't need the journal lock.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * May sleep.
  */
 struct journal_head *journal_add_journal_head(struct buffer_head *bh)
@@ -1842,10 +2201,15 @@ struct journal_head *journal_add_journal_head(struct buffer_head *bh)
 	struct journal_head *new_jh = NULL;
 
 repeat:
+<<<<<<< HEAD
 	if (!buffer_jbd(bh)) {
 		new_jh = journal_alloc_journal_head();
 		memset(new_jh, 0, sizeof(*new_jh));
 	}
+=======
+	if (!buffer_jbd(bh))
+		new_jh = journal_alloc_journal_head();
+>>>>>>> refs/remotes/origin/master
 
 	jbd_lock_bh_journal_head(bh);
 	if (buffer_jbd(bh)) {
@@ -1897,6 +2261,8 @@ static void __journal_remove_journal_head(struct buffer_head *bh)
 	struct journal_head *jh = bh2jh(bh);
 
 	J_ASSERT_JH(jh, jh->b_jcount >= 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	get_bh(bh);
 	if (jh->b_jcount == 0) {
@@ -1952,6 +2318,36 @@ void journal_remove_journal_head(struct buffer_head *bh)
 
 /*
  * Drop a reference on the passed journal_head.  If it fell to zero then try to
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	J_ASSERT_JH(jh, jh->b_transaction == NULL);
+	J_ASSERT_JH(jh, jh->b_next_transaction == NULL);
+	J_ASSERT_JH(jh, jh->b_cp_transaction == NULL);
+	J_ASSERT_JH(jh, jh->b_jlist == BJ_None);
+	J_ASSERT_BH(bh, buffer_jbd(bh));
+	J_ASSERT_BH(bh, jh2bh(jh) == bh);
+	BUFFER_TRACE(bh, "remove journal_head");
+	if (jh->b_frozen_data) {
+		printk(KERN_WARNING "%s: freeing b_frozen_data\n", __func__);
+		jbd_free(jh->b_frozen_data, bh->b_size);
+	}
+	if (jh->b_committed_data) {
+		printk(KERN_WARNING "%s: freeing b_committed_data\n", __func__);
+		jbd_free(jh->b_committed_data, bh->b_size);
+	}
+	bh->b_private = NULL;
+	jh->b_bh = NULL;	/* debug, really */
+	clear_buffer_jbd(bh);
+	journal_free_journal_head(jh);
+}
+
+/*
+ * Drop a reference on the passed journal_head.  If it fell to zero then
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * release the journal_head from the buffer_head.
  */
 void journal_put_journal_head(struct journal_head *jh)
@@ -1961,11 +2357,26 @@ void journal_put_journal_head(struct journal_head *jh)
 	jbd_lock_bh_journal_head(bh);
 	J_ASSERT_JH(jh, jh->b_jcount > 0);
 	--jh->b_jcount;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!jh->b_jcount && !jh->b_transaction) {
 		__journal_remove_journal_head(bh);
 		__brelse(bh);
 	}
 	jbd_unlock_bh_journal_head(bh);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!jh->b_jcount) {
+		__journal_remove_journal_head(bh);
+		jbd_unlock_bh_journal_head(bh);
+		__brelse(bh);
+	} else
+		jbd_unlock_bh_journal_head(bh);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

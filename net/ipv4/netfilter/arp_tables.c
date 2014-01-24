@@ -6,6 +6,10 @@
  * Some ARP specific bits are:
  *
  * Copyright (C) 2002 David S. Miller (davem@redhat.com)
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2006-2009 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  *
  */
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
@@ -221,9 +225,14 @@ static inline int arp_checkentry(const struct arpt_arp *arp)
 static unsigned int
 arpt_error(struct sk_buff *skb, const struct xt_action_param *par)
 {
+<<<<<<< HEAD
 	if (net_ratelimit())
 		pr_err("arp_tables: error: '%s'\n",
 		       (const char *)par->targinfo);
+=======
+	net_err_ratelimited("arp_tables: error: '%s'\n",
+			    (const char *)par->targinfo);
+>>>>>>> refs/remotes/origin/master
 
 	return NF_DROP;
 }
@@ -271,6 +280,14 @@ unsigned int arpt_do_table(struct sk_buff *skb,
 	local_bh_disable();
 	addend = xt_write_recseq_begin();
 	private = table->private;
+<<<<<<< HEAD
+=======
+	/*
+	 * Ensure we load private-> members after we've fetched the base
+	 * pointer.
+	 */
+	smp_read_barrier_depends();
+>>>>>>> refs/remotes/origin/master
 	table_base = private->entries[smp_processor_id()];
 
 	e = get_entry(table_base, private->hook_entry[hook]);
@@ -303,7 +320,11 @@ unsigned int arpt_do_table(struct sk_buff *skb,
 			if (v < 0) {
 				/* Pop from stack? */
 				if (v != XT_RETURN) {
+<<<<<<< HEAD
 					verdict = (unsigned)(-v) - 1;
+=======
+					verdict = (unsigned int)(-v) - 1;
+>>>>>>> refs/remotes/origin/master
 					break;
 				}
 				e = back;
@@ -902,7 +923,11 @@ static int get_info(struct net *net, void __user *user,
 #endif
 	t = try_then_request_module(xt_find_table_lock(net, NFPROTO_ARP, name),
 				    "arptable_%s", name);
+<<<<<<< HEAD
 	if (t && !IS_ERR(t)) {
+=======
+	if (!IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		struct arpt_getinfo info;
 		const struct xt_table_info *private = t->private;
 #ifdef CONFIG_COMPAT
@@ -959,7 +984,11 @@ static int get_entries(struct net *net, struct arpt_get_entries __user *uptr,
 	}
 
 	t = xt_find_table_lock(net, NFPROTO_ARP, get.name);
+<<<<<<< HEAD
 	if (t && !IS_ERR(t)) {
+=======
+	if (!IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		const struct xt_table_info *private = t->private;
 
 		duprintf("t->private->number = %u\n",
@@ -1002,7 +1031,11 @@ static int __do_replace(struct net *net, const char *name,
 
 	t = try_then_request_module(xt_find_table_lock(net, NFPROTO_ARP, name),
 				    "arptable_%s", name);
+<<<<<<< HEAD
 	if (!t || IS_ERR(t)) {
+=======
+	if (IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		ret = t ? PTR_ERR(t) : -ENOENT;
 		goto free_newinfo_counters_untrans;
 	}
@@ -1159,7 +1192,11 @@ static int do_add_counters(struct net *net, const void __user *user,
 	}
 
 	t = xt_find_table_lock(net, NFPROTO_ARP, name);
+<<<<<<< HEAD
 	if (!t || IS_ERR(t)) {
+=======
+	if (IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		ret = t ? PTR_ERR(t) : -ENOENT;
 		goto free;
 	}
@@ -1534,7 +1571,11 @@ static int compat_do_arpt_set_ctl(struct sock *sk, int cmd, void __user *user,
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {
@@ -1647,7 +1688,11 @@ static int compat_get_entries(struct net *net,
 
 	xt_compat_lock(NFPROTO_ARP);
 	t = xt_find_table_lock(net, NFPROTO_ARP, get.name);
+<<<<<<< HEAD
 	if (t && !IS_ERR(t)) {
+=======
+	if (!IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		const struct xt_table_info *private = t->private;
 		struct xt_table_info info;
 
@@ -1678,7 +1723,11 @@ static int compat_do_arpt_get_ctl(struct sock *sk, int cmd, void __user *user,
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {
@@ -1699,7 +1748,11 @@ static int do_arpt_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {
@@ -1723,7 +1776,11 @@ static int do_arpt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {

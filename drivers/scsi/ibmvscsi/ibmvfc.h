@@ -29,8 +29,13 @@
 #include "viosrp.h"
 
 #define IBMVFC_NAME	"ibmvfc"
+<<<<<<< HEAD
 #define IBMVFC_DRIVER_VERSION		"1.0.9"
 #define IBMVFC_DRIVER_DATE		"(August 5, 2010)"
+=======
+#define IBMVFC_DRIVER_VERSION		"1.0.11"
+#define IBMVFC_DRIVER_DATE		"(April 12, 2013)"
+>>>>>>> refs/remotes/origin/master
 
 #define IBMVFC_DEFAULT_TIMEOUT	60
 #define IBMVFC_ADISC_CANCEL_TIMEOUT	45
@@ -208,10 +213,17 @@ struct ibmvfc_npiv_login_resp {
 	u16 error;
 	u32 flags;
 #define IBMVFC_NATIVE_FC		0x01
+<<<<<<< HEAD
 #define IBMVFC_CAN_FLUSH_ON_HALT	0x08
 	u32 reserved;
 	u64 capabilities;
 #define IBMVFC_CAN_FLUSH_ON_HALT	0x08
+=======
+	u32 reserved;
+	u64 capabilities;
+#define IBMVFC_CAN_FLUSH_ON_HALT	0x08
+#define IBMVFC_CAN_SUPPRESS_ABTS	0x10
+>>>>>>> refs/remotes/origin/master
 	u32 max_cmds;
 	u32 scsi_id_sz;
 	u64 max_dma_len;
@@ -351,6 +363,10 @@ struct ibmvfc_tmf {
 #define IBMVFC_TMF_LUN_RESET		0x10
 #define IBMVFC_TMF_TGT_RESET		0x20
 #define IBMVFC_TMF_LUA_VALID		0x40
+<<<<<<< HEAD
+=======
+#define IBMVFC_TMF_SUPPRESS_ABTS	0x80
+>>>>>>> refs/remotes/origin/master
 	u32 cancel_key;
 	u32 my_cancel_key;
 	u32 pad;

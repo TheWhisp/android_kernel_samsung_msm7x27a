@@ -6,7 +6,11 @@
  *
  * Copyright 2004-2009 Analog Devices Inc.
  *
+<<<<<<< HEAD
  * Licensed under the ADI BSD license or the GPL-2 (or later)
+=======
+ * Licensed under the Clear BSD license or the GPL-2 (or later)
+>>>>>>> refs/remotes/origin/master
  */
 
 .global ___modsi3;

@@ -10,6 +10,14 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
@@ -27,10 +35,23 @@
 
 #define MWL8K_DESC	"Marvell TOPDOG(R) 802.11 Wireless Network Driver"
 #define MWL8K_NAME	KBUILD_MODNAME
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MWL8K_VERSION	"0.12"
 
 /* Module parameters */
 static unsigned ap_mode_default;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define MWL8K_VERSION	"0.13"
+
+/* Module parameters */
+static bool ap_mode_default;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(ap_mode_default, bool, 0);
 MODULE_PARM_DESC(ap_mode_default,
 		 "Set to 1 to make ap mode the default instead of sta mode");
@@ -100,6 +121,21 @@ MODULE_PARM_DESC(ap_mode_default,
 #define MWL8K_MAX_TX_QUEUES	(MWL8K_TX_WMM_QUEUES + MWL8K_MAX_AMPDU_QUEUES)
 #define mwl8k_tx_queues(priv)	(MWL8K_TX_WMM_QUEUES + (priv)->num_ampdu_queues)
 
+<<<<<<< HEAD
+=======
+/* txpriorities are mapped with hw queues.
+ * Each hw queue has a txpriority.
+ */
+#define TOTAL_HW_TX_QUEUES	8
+
+/* Each HW queue can have one AMPDU stream.
+ * But, because one of the hw queue is reserved,
+ * maximum AMPDU queues that can be created are
+ * one short of total tx queues.
+ */
+#define MWL8K_NUM_AMPDU_STREAMS	(TOTAL_HW_TX_QUEUES - 1)
+
+>>>>>>> refs/remotes/origin/master
 struct rxd_ops {
 	int rxd_size;
 	void (*rxd_init)(void *rxd, dma_addr_t next_dma_addr);
@@ -159,7 +195,10 @@ struct mwl8k_ampdu_stream {
 	u8 tid;
 	u8 state;
 	u8 idx;
+<<<<<<< HEAD
 	u8 txq_idx; /* index of this stream in priv->txq */
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mwl8k_priv {
@@ -181,10 +220,17 @@ struct mwl8k_priv {
 	struct rxd_ops *rxd_ops;
 	struct ieee80211_supported_band band_24;
 	struct ieee80211_channel channels_24[14];
+<<<<<<< HEAD
 	struct ieee80211_rate rates_24[14];
 	struct ieee80211_supported_band band_50;
 	struct ieee80211_channel channels_50[4];
 	struct ieee80211_rate rates_50[9];
+=======
+	struct ieee80211_rate rates_24[13];
+	struct ieee80211_supported_band band_50;
+	struct ieee80211_channel channels_50[4];
+	struct ieee80211_rate rates_50[8];
+>>>>>>> refs/remotes/origin/master
 	u32 ap_macids_supported;
 	u32 sta_macids_supported;
 
@@ -197,9 +243,22 @@ struct mwl8k_priv {
 	/* firmware access */
 	struct mutex fw_mutex;
 	struct task_struct *fw_mutex_owner;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct task_struct *hw_restart_owner;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int fw_mutex_depth;
 	struct completion *hostcmd_wait;
 
+=======
+	struct task_struct *hw_restart_owner;
+	int fw_mutex_depth;
+	struct completion *hostcmd_wait;
+
+	atomic_t watchdog_event_pending;
+
+>>>>>>> refs/remotes/origin/master
 	/* lock held over TX and TX reap */
 	spinlock_t tx_lock;
 
@@ -217,6 +276,10 @@ struct mwl8k_priv {
 	u16 num_mcaddrs;
 	u8 hw_rev;
 	u32 fw_rev;
+<<<<<<< HEAD
+=======
+	u32 caps;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Running count of TX packets in flight, to avoid
@@ -261,11 +324,32 @@ struct mwl8k_priv {
 	 */
 	struct ieee80211_tx_queue_params wmm_params[MWL8K_TX_WMM_QUEUES];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* To perform the task of reloading the firmware */
+	struct work_struct fw_reload;
+	bool hw_restart_in_progress;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* async firmware loading state */
 	unsigned fw_state;
 	char *fw_pref;
 	char *fw_alt;
+<<<<<<< HEAD
 	struct completion firmware_loading_complete;
+=======
+	bool is_8764;
+	struct completion firmware_loading_complete;
+
+	/* bitmap of running BSSes */
+	u32 running_bsses;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define MAX_WEP_KEY_LEN         13
@@ -312,6 +396,7 @@ struct mwl8k_sta {
 #define MWL8K_STA(_sta) ((struct mwl8k_sta *)&((_sta)->drv_priv))
 
 static const struct ieee80211_channel mwl8k_channels_24[] = {
+<<<<<<< HEAD
 	{ .center_freq = 2412, .hw_value = 1, },
 	{ .center_freq = 2417, .hw_value = 2, },
 	{ .center_freq = 2422, .hw_value = 3, },
@@ -326,6 +411,22 @@ static const struct ieee80211_channel mwl8k_channels_24[] = {
 	{ .center_freq = 2467, .hw_value = 12, },
 	{ .center_freq = 2472, .hw_value = 13, },
 	{ .center_freq = 2484, .hw_value = 14, },
+=======
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2412, .hw_value = 1, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2417, .hw_value = 2, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2422, .hw_value = 3, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2427, .hw_value = 4, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2432, .hw_value = 5, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2437, .hw_value = 6, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2442, .hw_value = 7, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2447, .hw_value = 8, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2452, .hw_value = 9, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2457, .hw_value = 10, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2462, .hw_value = 11, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2467, .hw_value = 12, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2472, .hw_value = 13, },
+	{ .band = IEEE80211_BAND_2GHZ, .center_freq = 2484, .hw_value = 14, },
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct ieee80211_rate mwl8k_rates_24[] = {
@@ -342,6 +443,7 @@ static const struct ieee80211_rate mwl8k_rates_24[] = {
 	{ .bitrate = 360, .hw_value = 72, },
 	{ .bitrate = 480, .hw_value = 96, },
 	{ .bitrate = 540, .hw_value = 108, },
+<<<<<<< HEAD
 	{ .bitrate = 720, .hw_value = 144, },
 };
 
@@ -350,6 +452,15 @@ static const struct ieee80211_channel mwl8k_channels_50[] = {
 	{ .center_freq = 5200, .hw_value = 40, },
 	{ .center_freq = 5220, .hw_value = 44, },
 	{ .center_freq = 5240, .hw_value = 48, },
+=======
+};
+
+static const struct ieee80211_channel mwl8k_channels_50[] = {
+	{ .band = IEEE80211_BAND_5GHZ, .center_freq = 5180, .hw_value = 36, },
+	{ .band = IEEE80211_BAND_5GHZ, .center_freq = 5200, .hw_value = 40, },
+	{ .band = IEEE80211_BAND_5GHZ, .center_freq = 5220, .hw_value = 44, },
+	{ .band = IEEE80211_BAND_5GHZ, .center_freq = 5240, .hw_value = 48, },
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct ieee80211_rate mwl8k_rates_50[] = {
@@ -361,7 +472,10 @@ static const struct ieee80211_rate mwl8k_rates_50[] = {
 	{ .bitrate = 360, .hw_value = 72, },
 	{ .bitrate = 480, .hw_value = 96, },
 	{ .bitrate = 540, .hw_value = 108, },
+<<<<<<< HEAD
 	{ .bitrate = 720, .hw_value = 144, },
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Set or get info from Firmware */
@@ -396,6 +510,14 @@ static const struct ieee80211_rate mwl8k_rates_50[] = {
 #define MWL8K_CMD_SET_MAC_ADDR		0x0202		/* per-vif */
 #define MWL8K_CMD_SET_RATEADAPT_MODE	0x0203
 #define MWL8K_CMD_GET_WATCHDOG_BITMAP	0x0205
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define MWL8K_CMD_DEL_MAC_ADDR		0x0206		/* per-vif */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MWL8K_CMD_DEL_MAC_ADDR		0x0206		/* per-vif */
+>>>>>>> refs/remotes/origin/master
 #define MWL8K_CMD_BSS_START		0x1100		/* per-vif */
 #define MWL8K_CMD_SET_NEW_STN		0x1111		/* per-vif */
 #define MWL8K_CMD_UPDATE_ENCRYPTION	0x1122		/* per-vif */
@@ -577,6 +699,7 @@ mwl8k_send_fw_load_cmd(struct mwl8k_priv *priv, void *data, int length)
 	loops = 1000;
 	do {
 		u32 int_code;
+<<<<<<< HEAD
 
 		int_code = ioread32(regs + MWL8K_HIU_INT_CODE);
 		if (int_code == MWL8K_INT_CODE_CMD_FINISHED) {
@@ -584,6 +707,20 @@ mwl8k_send_fw_load_cmd(struct mwl8k_priv *priv, void *data, int length)
 			break;
 		}
 
+=======
+		if (priv->is_8764) {
+			int_code = ioread32(regs +
+					    MWL8K_HIU_H2A_INTERRUPT_STATUS);
+			if (int_code == 0)
+				break;
+		} else {
+			int_code = ioread32(regs + MWL8K_HIU_INT_CODE);
+			if (int_code == MWL8K_INT_CODE_CMD_FINISHED) {
+				iowrite32(0, regs + MWL8K_HIU_INT_CODE);
+				break;
+			}
+		}
+>>>>>>> refs/remotes/origin/master
 		cond_resched();
 		udelay(1);
 	} while (--loops);
@@ -701,7 +838,11 @@ static int mwl8k_load_firmware(struct ieee80211_hw *hw)
 	int rc;
 	int loops;
 
+<<<<<<< HEAD
 	if (!memcmp(fw->data, "\x01\x00\x00\x00", 4)) {
+=======
+	if (!memcmp(fw->data, "\x01\x00\x00\x00", 4) && !priv->is_8764) {
+>>>>>>> refs/remotes/origin/master
 		const struct firmware *helper = priv->fw_helper;
 
 		if (helper == NULL) {
@@ -720,7 +861,14 @@ static int mwl8k_load_firmware(struct ieee80211_hw *hw)
 
 		rc = mwl8k_feed_fw_image(priv, fw->data, fw->size);
 	} else {
+<<<<<<< HEAD
 		rc = mwl8k_load_fw_image(priv, fw->data, fw->size);
+=======
+		if (priv->is_8764)
+			rc = mwl8k_feed_fw_image(priv, fw->data, fw->size);
+		else
+			rc = mwl8k_load_fw_image(priv, fw->data, fw->size);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (rc) {
@@ -737,10 +885,23 @@ static int mwl8k_load_firmware(struct ieee80211_hw *hw)
 
 		ready_code = ioread32(priv->regs + MWL8K_HIU_INT_CODE);
 		if (ready_code == MWL8K_FWAP_READY) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			priv->ap_fw = 1;
 			break;
 		} else if (ready_code == MWL8K_FWSTA_READY) {
 			priv->ap_fw = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			priv->ap_fw = true;
+			break;
+		} else if (ready_code == MWL8K_FWSTA_READY) {
+			priv->ap_fw = false;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -885,9 +1046,15 @@ static void mwl8k_encapsulate_tx_frame(struct mwl8k_priv *priv,
 }
 
 /*
+<<<<<<< HEAD
  * Packet reception for 88w8366 AP firmware.
  */
 struct mwl8k_rxd_8366_ap {
+=======
+ * Packet reception for 88w8366/88w8764 AP firmware.
+ */
+struct mwl8k_rxd_ap {
+>>>>>>> refs/remotes/origin/master
 	__le16 pkt_len;
 	__u8 sq2;
 	__u8 rate;
@@ -905,6 +1072,7 @@ struct mwl8k_rxd_8366_ap {
 	__u8 rx_ctrl;
 } __packed;
 
+<<<<<<< HEAD
 #define MWL8K_8366_AP_RATE_INFO_MCS_FORMAT	0x80
 #define MWL8K_8366_AP_RATE_INFO_40MHZ		0x40
 #define MWL8K_8366_AP_RATE_INFO_RATEID(x)	((x) & 0x3f)
@@ -929,6 +1097,32 @@ static void mwl8k_rxd_8366_ap_init(void *_rxd, dma_addr_t next_dma_addr)
 static void mwl8k_rxd_8366_ap_refill(void *_rxd, dma_addr_t addr, int len)
 {
 	struct mwl8k_rxd_8366_ap *rxd = _rxd;
+=======
+#define MWL8K_AP_RATE_INFO_MCS_FORMAT		0x80
+#define MWL8K_AP_RATE_INFO_40MHZ		0x40
+#define MWL8K_AP_RATE_INFO_RATEID(x)		((x) & 0x3f)
+
+#define MWL8K_AP_RX_CTRL_OWNED_BY_HOST		0x80
+
+/* 8366/8764 AP rx_status bits */
+#define MWL8K_AP_RXSTAT_DECRYPT_ERR_MASK		0x80
+#define MWL8K_AP_RXSTAT_GENERAL_DECRYPT_ERR		0xFF
+#define MWL8K_AP_RXSTAT_TKIP_DECRYPT_MIC_ERR		0x02
+#define MWL8K_AP_RXSTAT_WEP_DECRYPT_ICV_ERR		0x04
+#define MWL8K_AP_RXSTAT_TKIP_DECRYPT_ICV_ERR		0x08
+
+static void mwl8k_rxd_ap_init(void *_rxd, dma_addr_t next_dma_addr)
+{
+	struct mwl8k_rxd_ap *rxd = _rxd;
+
+	rxd->next_rxd_phys_addr = cpu_to_le32(next_dma_addr);
+	rxd->rx_ctrl = MWL8K_AP_RX_CTRL_OWNED_BY_HOST;
+}
+
+static void mwl8k_rxd_ap_refill(void *_rxd, dma_addr_t addr, int len)
+{
+	struct mwl8k_rxd_ap *rxd = _rxd;
+>>>>>>> refs/remotes/origin/master
 
 	rxd->pkt_len = cpu_to_le16(len);
 	rxd->pkt_phys_addr = cpu_to_le32(addr);
@@ -937,12 +1131,21 @@ static void mwl8k_rxd_8366_ap_refill(void *_rxd, dma_addr_t addr, int len)
 }
 
 static int
+<<<<<<< HEAD
 mwl8k_rxd_8366_ap_process(void *_rxd, struct ieee80211_rx_status *status,
 			  __le16 *qos, s8 *noise)
 {
 	struct mwl8k_rxd_8366_ap *rxd = _rxd;
 
 	if (!(rxd->rx_ctrl & MWL8K_8366_AP_RX_CTRL_OWNED_BY_HOST))
+=======
+mwl8k_rxd_ap_process(void *_rxd, struct ieee80211_rx_status *status,
+		     __le16 *qos, s8 *noise)
+{
+	struct mwl8k_rxd_ap *rxd = _rxd;
+
+	if (!(rxd->rx_ctrl & MWL8K_AP_RX_CTRL_OWNED_BY_HOST))
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	rmb();
 
@@ -951,11 +1154,19 @@ mwl8k_rxd_8366_ap_process(void *_rxd, struct ieee80211_rx_status *status,
 	status->signal = -rxd->rssi;
 	*noise = -rxd->noise_floor;
 
+<<<<<<< HEAD
 	if (rxd->rate & MWL8K_8366_AP_RATE_INFO_MCS_FORMAT) {
 		status->flag |= RX_FLAG_HT;
 		if (rxd->rate & MWL8K_8366_AP_RATE_INFO_40MHZ)
 			status->flag |= RX_FLAG_40MHZ;
 		status->rate_idx = MWL8K_8366_AP_RATE_INFO_RATEID(rxd->rate);
+=======
+	if (rxd->rate & MWL8K_AP_RATE_INFO_MCS_FORMAT) {
+		status->flag |= RX_FLAG_HT;
+		if (rxd->rate & MWL8K_AP_RATE_INFO_40MHZ)
+			status->flag |= RX_FLAG_40MHZ;
+		status->rate_idx = MWL8K_AP_RATE_INFO_RATEID(rxd->rate);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		int i;
 
@@ -979,19 +1190,33 @@ mwl8k_rxd_8366_ap_process(void *_rxd, struct ieee80211_rx_status *status,
 
 	*qos = rxd->qos_control;
 
+<<<<<<< HEAD
 	if ((rxd->rx_status != MWL8K_8366_AP_RXSTAT_GENERAL_DECRYPT_ERR) &&
 	    (rxd->rx_status & MWL8K_8366_AP_RXSTAT_DECRYPT_ERR_MASK) &&
 	    (rxd->rx_status & MWL8K_8366_AP_RXSTAT_TKIP_DECRYPT_MIC_ERR))
+=======
+	if ((rxd->rx_status != MWL8K_AP_RXSTAT_GENERAL_DECRYPT_ERR) &&
+	    (rxd->rx_status & MWL8K_AP_RXSTAT_DECRYPT_ERR_MASK) &&
+	    (rxd->rx_status & MWL8K_AP_RXSTAT_TKIP_DECRYPT_MIC_ERR))
+>>>>>>> refs/remotes/origin/master
 		status->flag |= RX_FLAG_MMIC_ERROR;
 
 	return le16_to_cpu(rxd->pkt_len);
 }
 
+<<<<<<< HEAD
 static struct rxd_ops rxd_8366_ap_ops = {
 	.rxd_size	= sizeof(struct mwl8k_rxd_8366_ap),
 	.rxd_init	= mwl8k_rxd_8366_ap_init,
 	.rxd_refill	= mwl8k_rxd_8366_ap_refill,
 	.rxd_process	= mwl8k_rxd_8366_ap_process,
+=======
+static struct rxd_ops rxd_ap_ops = {
+	.rxd_size	= sizeof(struct mwl8k_rxd_ap),
+	.rxd_init	= mwl8k_rxd_ap_init,
+	.rxd_refill	= mwl8k_rxd_ap_refill,
+	.rxd_process	= mwl8k_rxd_ap_process,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1126,7 +1351,10 @@ static int mwl8k_rxq_init(struct ieee80211_hw *hw, int index)
 
 	rxq->buf = kcalloc(MWL8K_RX_DESCS, sizeof(*rxq->buf), GFP_KERNEL);
 	if (rxq->buf == NULL) {
+<<<<<<< HEAD
 		wiphy_err(hw->wiphy, "failed to alloc RX skbuff list\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		pci_free_consistent(priv->pdev, size, rxq->rxd, rxq->rxd_dma);
 		return -ENOMEM;
 	}
@@ -1228,7 +1456,11 @@ mwl8k_capture_bssid(struct mwl8k_priv *priv, struct ieee80211_hdr *wh)
 {
 	return priv->capture_beacon &&
 		ieee80211_is_beacon(wh->frame_control) &&
+<<<<<<< HEAD
 		!compare_ether_addr(wh->addr3, priv->capture_bssid);
+=======
+		ether_addr_equal(wh->addr3, priv->capture_bssid);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void mwl8k_save_beacon(struct ieee80211_hw *hw,
@@ -1324,7 +1556,15 @@ static int rxq_process(struct ieee80211_hw *hw, int index, int limit)
 								wh->addr1);
 
 			if (mwl8k_vif != NULL &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    mwl8k_vif->is_hw_crypto_enabled == true) {
+=======
+			    mwl8k_vif->is_hw_crypto_enabled) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    mwl8k_vif->is_hw_crypto_enabled) {
+>>>>>>> refs/remotes/origin/master
 				/*
 				 * When MMIC ERROR is encountered
 				 * by the firmware, payload is
@@ -1419,7 +1659,10 @@ static int mwl8k_txq_init(struct ieee80211_hw *hw, int index)
 
 	txq->skb = kcalloc(MWL8K_TX_DESCS, sizeof(*txq->skb), GFP_KERNEL);
 	if (txq->skb == NULL) {
+<<<<<<< HEAD
 		wiphy_err(hw->wiphy, "failed to alloc TX skbuff list\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		pci_free_consistent(priv->pdev, size, txq->txd, txq->txd_dma);
 		return -ENOMEM;
 	}
@@ -1497,6 +1740,30 @@ static int mwl8k_tx_wait_empty(struct ieee80211_hw *hw)
 
 	might_sleep();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Since fw restart is in progress, allow only the firmware
+	 * commands from the restart code and block the other
+	 * commands since they are going to fail in any case since
+	 * the firmware has crashed
+	 */
+	if (priv->hw_restart_in_progress) {
+		if (priv->hw_restart_owner == current)
+			return 0;
+		else
+			return -EBUSY;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (atomic_read(&priv->watchdog_event_pending))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The TX queues are stopped at this point, so this test
 	 * doesn't need to take ->tx_lock.
@@ -1504,7 +1771,11 @@ static int mwl8k_tx_wait_empty(struct ieee80211_hw *hw)
 	if (!priv->pending_tx_pkts)
 		return 0;
 
+<<<<<<< HEAD
 	retry = 0;
+=======
+	retry = 1;
+>>>>>>> refs/remotes/origin/master
 	rc = 0;
 
 	spin_lock_bh(&priv->tx_lock);
@@ -1518,15 +1789,38 @@ static int mwl8k_tx_wait_empty(struct ieee80211_hw *hw)
 		spin_unlock_bh(&priv->tx_lock);
 		timeout = wait_for_completion_timeout(&tx_wait,
 			    msecs_to_jiffies(MWL8K_TX_WAIT_TIMEOUT_MS));
+<<<<<<< HEAD
 		spin_lock_bh(&priv->tx_lock);
 
 		if (timeout) {
+=======
+
+		if (atomic_read(&priv->watchdog_event_pending)) {
+			spin_lock_bh(&priv->tx_lock);
+			priv->tx_wait = NULL;
+			spin_unlock_bh(&priv->tx_lock);
+			return 0;
+		}
+
+		spin_lock_bh(&priv->tx_lock);
+
+		if (timeout || !priv->pending_tx_pkts) {
+>>>>>>> refs/remotes/origin/master
 			WARN_ON(priv->pending_tx_pkts);
 			if (retry)
 				wiphy_notice(hw->wiphy, "tx rings drained\n");
 			break;
 		}
 
+<<<<<<< HEAD
+=======
+		if (retry) {
+			mwl8k_tx_start(priv);
+			retry = 0;
+			continue;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if (priv->pending_tx_pkts < oldcount) {
 			wiphy_notice(hw->wiphy,
 				     "waiting for tx rings to drain (%d -> %d pkts)\n",
@@ -1540,9 +1834,23 @@ static int mwl8k_tx_wait_empty(struct ieee80211_hw *hw)
 		wiphy_err(hw->wiphy, "tx rings stuck for %d ms\n",
 			  MWL8K_TX_WAIT_TIMEOUT_MS);
 		mwl8k_dump_tx_rings(hw);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		priv->hw_restart_in_progress = true;
+		ieee80211_queue_work(hw, &priv->fw_reload);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		rc = -ETIMEDOUT;
 	}
+=======
+		priv->hw_restart_in_progress = true;
+		ieee80211_queue_work(hw, &priv->fw_reload);
+
+		rc = -ETIMEDOUT;
+	}
+	priv->tx_wait = NULL;
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&priv->tx_lock);
 
 	return rc;
@@ -1644,7 +1952,13 @@ mwl8k_txq_reclaim(struct ieee80211_hw *hw, int index, int limit, int force)
 
 		info = IEEE80211_SKB_CB(skb);
 		if (ieee80211_is_data(wh->frame_control)) {
+<<<<<<< HEAD
 			sta = info->control.sta;
+=======
+			rcu_read_lock();
+			sta = ieee80211_find_sta_by_ifaddr(hw, wh->addr1,
+							   wh->addr2);
+>>>>>>> refs/remotes/origin/master
 			if (sta) {
 				sta_info = MWL8K_STA(sta);
 				BUG_ON(sta_info == NULL);
@@ -1661,6 +1975,10 @@ mwl8k_txq_reclaim(struct ieee80211_hw *hw, int index, int limit, int force)
 					sta_info->is_ampdu_allowed = true;
 				}
 			}
+<<<<<<< HEAD
+=======
+			rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 		}
 
 		ieee80211_tx_info_clear_status(info);
@@ -1710,14 +2028,21 @@ mwl8k_add_stream(struct ieee80211_hw *hw, struct ieee80211_sta *sta, u8 tid)
 	struct mwl8k_priv *priv = hw->priv;
 	int i;
 
+<<<<<<< HEAD
 	for (i = 0; i < priv->num_ampdu_queues; i++) {
+=======
+	for (i = 0; i < MWL8K_NUM_AMPDU_STREAMS; i++) {
+>>>>>>> refs/remotes/origin/master
 		stream = &priv->ampdu[i];
 		if (stream->state == AMPDU_NO_STREAM) {
 			stream->sta = sta;
 			stream->state = AMPDU_STREAM_NEW;
 			stream->tid = tid;
 			stream->idx = i;
+<<<<<<< HEAD
 			stream->txq_idx = MWL8K_TX_WMM_QUEUES + i;
+=======
+>>>>>>> refs/remotes/origin/master
 			wiphy_debug(hw->wiphy, "Added a new stream for %pM %d",
 				    sta->addr, tid);
 			return stream;
@@ -1758,7 +2083,11 @@ mwl8k_lookup_stream(struct ieee80211_hw *hw, u8 *addr, u8 tid)
 	struct mwl8k_priv *priv = hw->priv;
 	int i;
 
+<<<<<<< HEAD
 	for (i = 0 ; i < priv->num_ampdu_queues; i++) {
+=======
+	for (i = 0; i < MWL8K_NUM_AMPDU_STREAMS; i++) {
+>>>>>>> refs/remotes/origin/master
 		struct mwl8k_ampdu_stream *stream;
 		stream = &priv->ampdu[i];
 		if (stream->state == AMPDU_NO_STREAM)
@@ -1805,13 +2134,31 @@ static inline void mwl8k_tx_count_packet(struct ieee80211_sta *sta, u8 tid)
 		tx_stats->pkts++;
 }
 
+<<<<<<< HEAD
 static void
 mwl8k_txq_xmit(struct ieee80211_hw *hw, int index, struct sk_buff *skb)
+=======
+/* The hardware ampdu queues start from 5.
+ * txpriorities for ampdu queues are
+ * 5 6 7 0 1 2 3 4 ie., queue 5 is highest
+ * and queue 3 is lowest (queue 4 is reserved)
+ */
+#define BA_QUEUE		5
+
+static void
+mwl8k_txq_xmit(struct ieee80211_hw *hw,
+	       int index,
+	       struct ieee80211_sta *sta,
+	       struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mwl8k_priv *priv = hw->priv;
 	struct ieee80211_tx_info *tx_info;
 	struct mwl8k_vif *mwl8k_vif;
+<<<<<<< HEAD
 	struct ieee80211_sta *sta;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ieee80211_hdr *wh;
 	struct mwl8k_tx_queue *txq;
 	struct mwl8k_tx_desc *tx;
@@ -1825,6 +2172,10 @@ mwl8k_txq_xmit(struct ieee80211_hw *hw, int index, struct sk_buff *skb)
 	bool start_ba_session = false;
 	bool mgmtframe = false;
 	struct ieee80211_mgmt *mgmt = (struct ieee80211_mgmt *)skb->data;
+<<<<<<< HEAD
+=======
+	bool eapol_frame = false;
+>>>>>>> refs/remotes/origin/master
 
 	wh = (struct ieee80211_hdr *)skb->data;
 	if (ieee80211_is_data_qos(wh->frame_control))
@@ -1832,6 +2183,12 @@ mwl8k_txq_xmit(struct ieee80211_hw *hw, int index, struct sk_buff *skb)
 	else
 		qos = 0;
 
+<<<<<<< HEAD
+=======
+	if (skb->protocol == cpu_to_be16(ETH_P_PAE))
+		eapol_frame = true;
+
+>>>>>>> refs/remotes/origin/master
 	if (ieee80211_is_mgmt(wh->frame_control))
 		mgmtframe = true;
 
@@ -1843,7 +2200,10 @@ mwl8k_txq_xmit(struct ieee80211_hw *hw, int index, struct sk_buff *skb)
 	wh = &((struct mwl8k_dma_data *)skb->data)->wh;
 
 	tx_info = IEEE80211_SKB_CB(skb);
+<<<<<<< HEAD
 	sta = tx_info->control.sta;
+=======
+>>>>>>> refs/remotes/origin/master
 	mwl8k_vif = MWL8K_VIF(tx_info->control.vif);
 
 	if (tx_info->flags & IEEE80211_TX_CTL_ASSIGN_SEQ) {
@@ -1891,17 +2251,38 @@ mwl8k_txq_xmit(struct ieee80211_hw *hw, int index, struct sk_buff *skb)
 
 	txpriority = index;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ieee80211_is_data_qos(wh->frame_control) &&
 	    skb->protocol != cpu_to_be16(ETH_P_PAE) &&
 	    sta->ht_cap.ht_supported && priv->ap_fw) {
+=======
+	if (priv->ap_fw && sta && sta->ht_cap.ht_supported
+			&& skb->protocol != cpu_to_be16(ETH_P_PAE)
+			&& ieee80211_is_data_qos(wh->frame_control)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (priv->ap_fw && sta && sta->ht_cap.ht_supported && !eapol_frame &&
+	    ieee80211_is_data_qos(wh->frame_control)) {
+>>>>>>> refs/remotes/origin/master
 		tid = qos & 0xf;
 		mwl8k_tx_count_packet(sta, tid);
 		spin_lock(&priv->stream_lock);
 		stream = mwl8k_lookup_stream(hw, sta->addr, tid);
 		if (stream != NULL) {
 			if (stream->state == AMPDU_STREAM_ACTIVE) {
+<<<<<<< HEAD
 				txpriority = stream->txq_idx;
 				index = stream->txq_idx;
+=======
+				WARN_ON(!(qos & MWL8K_QOS_ACK_POLICY_BLOCKACK));
+				txpriority = (BA_QUEUE + stream->idx) %
+					     TOTAL_HW_TX_QUEUES;
+				if (stream->idx <= 1)
+					index = stream->idx +
+						MWL8K_TX_WMM_QUEUES;
+
+>>>>>>> refs/remotes/origin/master
 			} else if (stream->state == AMPDU_STREAM_NEW) {
 				/* We get here if the driver sends us packets
 				 * after we've initiated a stream, but before
@@ -1943,6 +2324,12 @@ mwl8k_txq_xmit(struct ieee80211_hw *hw, int index, struct sk_buff *skb)
 			}
 		}
 		spin_unlock(&priv->stream_lock);
+<<<<<<< HEAD
+=======
+	} else {
+		qos &= ~MWL8K_QOS_ACK_POLICY_MASK;
+		qos |= MWL8K_QOS_ACK_POLICY_NORMAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dma = pci_map_single(priv->pdev, skb->data,
@@ -1973,14 +2360,29 @@ mwl8k_txq_xmit(struct ieee80211_hw *hw, int index, struct sk_buff *skb)
 	 */
 
 	if (txq->len >= MWL8K_TX_DESCS - 2) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (mgmtframe == false ||
 			txq->len == MWL8K_TX_DESCS) {
+=======
+		if (!mgmtframe || txq->len == MWL8K_TX_DESCS) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!mgmtframe || txq->len == MWL8K_TX_DESCS) {
+>>>>>>> refs/remotes/origin/master
 			if (start_ba_session) {
 				spin_lock(&priv->stream_lock);
 				mwl8k_remove_stream(hw, stream);
 				spin_unlock(&priv->stream_lock);
 			}
+<<<<<<< HEAD
 			spin_unlock_bh(&priv->tx_lock);
+=======
+			mwl8k_tx_start(priv);
+			spin_unlock_bh(&priv->tx_lock);
+			pci_unmap_single(priv->pdev, dma, skb->len,
+					 PCI_DMA_TODEVICE);
+>>>>>>> refs/remotes/origin/master
 			dev_kfree_skb(skb);
 			return;
 		}
@@ -1996,6 +2398,7 @@ mwl8k_txq_xmit(struct ieee80211_hw *hw, int index, struct sk_buff *skb)
 	tx->pkt_phys_addr = cpu_to_le32(dma);
 	tx->pkt_len = cpu_to_le16(skb->len);
 	tx->rate_info = 0;
+<<<<<<< HEAD
 	if (!priv->ap_fw && tx_info->control.sta != NULL)
 		tx->peer_id = MWL8K_STA(tx_info->control.sta)->peer_id;
 	else
@@ -2004,6 +2407,18 @@ mwl8k_txq_xmit(struct ieee80211_hw *hw, int index, struct sk_buff *skb)
 	if (priv->ap_fw)
 		tx->timestamp = cpu_to_le32(ioread32(priv->regs +
 						MWL8K_HW_TIMER_REGISTER));
+=======
+	if (!priv->ap_fw && sta != NULL)
+		tx->peer_id = MWL8K_STA(sta)->peer_id;
+	else
+		tx->peer_id = 0;
+
+	if (priv->ap_fw && ieee80211_is_data(wh->frame_control) && !eapol_frame)
+		tx->timestamp = cpu_to_le32(ioread32(priv->regs +
+						MWL8K_HW_TIMER_REGISTER));
+	else
+		tx->timestamp = 0;
+>>>>>>> refs/remotes/origin/master
 
 	wmb();
 	tx->status = cpu_to_le32(MWL8K_TXD_STATUS_FW_OWNED | txstatus);
@@ -2057,7 +2472,19 @@ static int mwl8k_fw_lock(struct ieee80211_hw *hw)
 
 		rc = mwl8k_tx_wait_empty(hw);
 		if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ieee80211_wake_queues(hw);
+=======
+			if (!priv->hw_restart_in_progress)
+				ieee80211_wake_queues(hw);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!priv->hw_restart_in_progress)
+				ieee80211_wake_queues(hw);
+
+>>>>>>> refs/remotes/origin/master
 			mutex_unlock(&priv->fw_mutex);
 
 			return rc;
@@ -2076,12 +2503,29 @@ static void mwl8k_fw_unlock(struct ieee80211_hw *hw)
 	struct mwl8k_priv *priv = hw->priv;
 
 	if (!--priv->fw_mutex_depth) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ieee80211_wake_queues(hw);
+=======
+		if (!priv->hw_restart_in_progress)
+			ieee80211_wake_queues(hw);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!priv->hw_restart_in_progress)
+			ieee80211_wake_queues(hw);
+
+>>>>>>> refs/remotes/origin/master
 		priv->fw_mutex_owner = NULL;
 		mutex_unlock(&priv->fw_mutex);
 	}
 }
 
+<<<<<<< HEAD
+=======
+static void mwl8k_enable_bsses(struct ieee80211_hw *hw, bool enable,
+			       u32 bitmap);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Command processing.
@@ -2100,6 +2544,37 @@ static int mwl8k_post_cmd(struct ieee80211_hw *hw, struct mwl8k_cmd_pkt *cmd)
 	int rc;
 	unsigned long timeout = 0;
 	u8 buf[32];
+<<<<<<< HEAD
+=======
+	u32 bitmap = 0;
+
+	wiphy_dbg(hw->wiphy, "Posting %s [%d]\n",
+		  mwl8k_cmd_name(cmd->code, buf, sizeof(buf)), cmd->macid);
+
+	/* Before posting firmware commands that could change the hardware
+	 * characteristics, make sure that all BSSes are stopped temporary.
+	 * Enable these stopped BSSes after completion of the commands
+	 */
+
+	rc = mwl8k_fw_lock(hw);
+	if (rc)
+		return rc;
+
+	if (priv->ap_fw && priv->running_bsses) {
+		switch (le16_to_cpu(cmd->code)) {
+		case MWL8K_CMD_SET_RF_CHANNEL:
+		case MWL8K_CMD_RADIO_CONTROL:
+		case MWL8K_CMD_RF_TX_POWER:
+		case MWL8K_CMD_TX_POWER:
+		case MWL8K_CMD_RF_ANTENNA:
+		case MWL8K_CMD_RTS_THRESHOLD:
+		case MWL8K_CMD_MIMO_CONFIG:
+			bitmap = priv->running_bsses;
+			mwl8k_enable_bsses(hw, false, bitmap);
+			break;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	cmd->result = (__force __le16) 0xffff;
 	dma_size = le16_to_cpu(cmd->length);
@@ -2108,6 +2583,7 @@ static int mwl8k_post_cmd(struct ieee80211_hw *hw, struct mwl8k_cmd_pkt *cmd)
 	if (pci_dma_mapping_error(priv->pdev, dma_addr))
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	rc = mwl8k_fw_lock(hw);
 	if (rc) {
 		pci_unmap_single(priv->pdev, dma_addr, dma_size,
@@ -2115,6 +2591,8 @@ static int mwl8k_post_cmd(struct ieee80211_hw *hw, struct mwl8k_cmd_pkt *cmd)
 		return rc;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->hostcmd_wait = &cmd_wait;
 	iowrite32(dma_addr, regs + MWL8K_HIU_GEN_PTR);
 	iowrite32(MWL8K_H2A_INT_DOORBELL,
@@ -2127,7 +2605,10 @@ static int mwl8k_post_cmd(struct ieee80211_hw *hw, struct mwl8k_cmd_pkt *cmd)
 
 	priv->hostcmd_wait = NULL;
 
+<<<<<<< HEAD
 	mwl8k_fw_unlock(hw);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pci_unmap_single(priv->pdev, dma_addr, dma_size,
 					PCI_DMA_BIDIRECTIONAL);
@@ -2154,6 +2635,14 @@ static int mwl8k_post_cmd(struct ieee80211_hw *hw, struct mwl8k_cmd_pkt *cmd)
 				     ms);
 	}
 
+<<<<<<< HEAD
+=======
+	if (bitmap)
+		mwl8k_enable_bsses(hw, true, bitmap);
+
+	mwl8k_fw_unlock(hw);
+
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -2299,6 +2788,12 @@ mwl8k_set_caps(struct ieee80211_hw *hw, u32 caps)
 {
 	struct mwl8k_priv *priv = hw->priv;
 
+<<<<<<< HEAD
+=======
+	if (priv->caps)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if ((caps & MWL8K_CAP_2GHZ4) || !(caps & MWL8K_CAP_BAND_MASK)) {
 		mwl8k_setup_2ghz_band(hw);
 		if (caps & MWL8K_CAP_MIMO)
@@ -2310,6 +2805,11 @@ mwl8k_set_caps(struct ieee80211_hw *hw, u32 caps)
 		if (caps & MWL8K_CAP_MIMO)
 			mwl8k_set_ht_caps(hw, &priv->band_50, caps);
 	}
+<<<<<<< HEAD
+=======
+
+	priv->caps = caps;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mwl8k_cmd_get_hw_spec_sta(struct ieee80211_hw *hw)
@@ -2415,7 +2915,11 @@ static int mwl8k_cmd_get_hw_spec_ap(struct ieee80211_hw *hw)
 		priv->hw_rev = cmd->hw_rev;
 		mwl8k_set_caps(hw, le32_to_cpu(cmd->caps));
 		priv->ap_macids_supported = 0x000000ff;
+<<<<<<< HEAD
 		priv->sta_macids_supported = 0x00000000;
+=======
+		priv->sta_macids_supported = 0x00000100;
+>>>>>>> refs/remotes/origin/master
 		priv->num_ampdu_queues = le32_to_cpu(cmd->num_of_ampdu_queues);
 		if (priv->num_ampdu_queues > MWL8K_MAX_AMPDU_QUEUES) {
 			wiphy_warn(hw->wiphy, "fw reported %d ampdu queues"
@@ -2735,7 +3239,13 @@ static int mwl8k_cmd_tx_power(struct ieee80211_hw *hw,
 				     struct ieee80211_conf *conf,
 				     unsigned short pwr)
 {
+<<<<<<< HEAD
 	struct ieee80211_channel *channel = conf->channel;
+=======
+	struct ieee80211_channel *channel = conf->chandef.chan;
+	enum nl80211_channel_type channel_type =
+		cfg80211_get_chandef_type(&conf->chandef);
+>>>>>>> refs/remotes/origin/master
 	struct mwl8k_cmd_tx_power *cmd;
 	int rc;
 	int i;
@@ -2753,7 +3263,12 @@ static int mwl8k_cmd_tx_power(struct ieee80211_hw *hw,
 	else if (channel->band == IEEE80211_BAND_5GHZ)
 		cmd->band = cpu_to_le16(0x4);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmd->channel = channel->hw_value;
+=======
+	cmd->channel = cpu_to_le16(channel->hw_value);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (conf->channel_type == NL80211_CHAN_NO_HT ||
 	    conf->channel_type == NL80211_CHAN_HT20) {
@@ -2763,6 +3278,18 @@ static int mwl8k_cmd_tx_power(struct ieee80211_hw *hw,
 		if (conf->channel_type == NL80211_CHAN_HT40MINUS)
 			cmd->sub_ch = cpu_to_le16(0x3);
 		else if (conf->channel_type == NL80211_CHAN_HT40PLUS)
+=======
+	cmd->channel = cpu_to_le16(channel->hw_value);
+
+	if (channel_type == NL80211_CHAN_NO_HT ||
+	    channel_type == NL80211_CHAN_HT20) {
+		cmd->bw = cpu_to_le16(0x2);
+	} else {
+		cmd->bw = cpu_to_le16(0x4);
+		if (channel_type == NL80211_CHAN_HT40MINUS)
+			cmd->sub_ch = cpu_to_le16(0x3);
+		else if (channel_type == NL80211_CHAN_HT40PLUS)
+>>>>>>> refs/remotes/origin/master
 			cmd->sub_ch = cpu_to_le16(0x1);
 	}
 
@@ -2906,7 +3433,13 @@ struct mwl8k_cmd_set_rf_channel {
 static int mwl8k_cmd_set_rf_channel(struct ieee80211_hw *hw,
 				    struct ieee80211_conf *conf)
 {
+<<<<<<< HEAD
 	struct ieee80211_channel *channel = conf->channel;
+=======
+	struct ieee80211_channel *channel = conf->chandef.chan;
+	enum nl80211_channel_type channel_type =
+		cfg80211_get_chandef_type(&conf->chandef);
+>>>>>>> refs/remotes/origin/master
 	struct mwl8k_cmd_set_rf_channel *cmd;
 	int rc;
 
@@ -2924,12 +3457,21 @@ static int mwl8k_cmd_set_rf_channel(struct ieee80211_hw *hw,
 	else if (channel->band == IEEE80211_BAND_5GHZ)
 		cmd->channel_flags |= cpu_to_le32(0x00000004);
 
+<<<<<<< HEAD
 	if (conf->channel_type == NL80211_CHAN_NO_HT ||
 	    conf->channel_type == NL80211_CHAN_HT20)
 		cmd->channel_flags |= cpu_to_le32(0x00000080);
 	else if (conf->channel_type == NL80211_CHAN_HT40MINUS)
 		cmd->channel_flags |= cpu_to_le32(0x000001900);
 	else if (conf->channel_type == NL80211_CHAN_HT40PLUS)
+=======
+	if (channel_type == NL80211_CHAN_NO_HT ||
+	    channel_type == NL80211_CHAN_HT20)
+		cmd->channel_flags |= cpu_to_le32(0x00000080);
+	else if (channel_type == NL80211_CHAN_HT40MINUS)
+		cmd->channel_flags |= cpu_to_le32(0x000001900);
+	else if (channel_type == NL80211_CHAN_HT40PLUS)
+>>>>>>> refs/remotes/origin/master
 		cmd->channel_flags |= cpu_to_le32(0x000000900);
 
 	rc = mwl8k_post_cmd(hw, &cmd->header);
@@ -2962,11 +3504,19 @@ static void legacy_rate_mask_to_array(u8 *rates, u32 mask)
 	int j;
 
 	/*
+<<<<<<< HEAD
 	 * Clear nonstandard rates 4 and 13.
 	 */
 	mask &= 0x1fef;
 
 	for (i = 0, j = 0; i < 14; i++) {
+=======
+	 * Clear nonstandard rate 4.
+	 */
+	mask &= 0x1fef;
+
+	for (i = 0, j = 0; i < 13; i++) {
+>>>>>>> refs/remotes/origin/master
 		if (mask & (1 << i))
 			rates[j++] = mwl8k_rates_24[i].hw_value;
 	}
@@ -3406,10 +3956,18 @@ static int mwl8k_cmd_enable_sniffer(struct ieee80211_hw *hw, bool enable)
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * CMD_SET_MAC_ADDR.
  */
 struct mwl8k_cmd_set_mac_addr {
+=======
+struct mwl8k_cmd_update_mac_addr {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct mwl8k_cmd_update_mac_addr {
+>>>>>>> refs/remotes/origin/master
 	struct mwl8k_cmd_pkt header;
 	union {
 		struct {
@@ -3425,19 +3983,41 @@ struct mwl8k_cmd_set_mac_addr {
 #define MWL8K_MAC_TYPE_PRIMARY_AP		2
 #define MWL8K_MAC_TYPE_SECONDARY_AP		3
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int mwl8k_cmd_set_mac_addr(struct ieee80211_hw *hw,
 				  struct ieee80211_vif *vif, u8 *mac)
 {
 	struct mwl8k_priv *priv = hw->priv;
 	struct mwl8k_vif *mwl8k_vif = MWL8K_VIF(vif);
 	struct mwl8k_cmd_set_mac_addr *cmd;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int mwl8k_cmd_update_mac_addr(struct ieee80211_hw *hw,
+				  struct ieee80211_vif *vif, u8 *mac, bool set)
+{
+	struct mwl8k_priv *priv = hw->priv;
+	struct mwl8k_vif *mwl8k_vif = MWL8K_VIF(vif);
+	struct mwl8k_cmd_update_mac_addr *cmd;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int mac_type;
 	int rc;
 
 	mac_type = MWL8K_MAC_TYPE_PRIMARY_AP;
 	if (vif != NULL && vif->type == NL80211_IFTYPE_STATION) {
 		if (mwl8k_vif->macid + 1 == ffs(priv->sta_macids_supported))
+<<<<<<< HEAD
 			mac_type = MWL8K_MAC_TYPE_PRIMARY_CLIENT;
+=======
+			if (priv->ap_fw)
+				mac_type = MWL8K_MAC_TYPE_SECONDARY_CLIENT;
+			else
+				mac_type = MWL8K_MAC_TYPE_PRIMARY_CLIENT;
+>>>>>>> refs/remotes/origin/master
 		else
 			mac_type = MWL8K_MAC_TYPE_SECONDARY_CLIENT;
 	} else if (vif != NULL && vif->type == NL80211_IFTYPE_AP) {
@@ -3451,7 +4031,21 @@ static int mwl8k_cmd_set_mac_addr(struct ieee80211_hw *hw,
 	if (cmd == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmd->header.code = cpu_to_le16(MWL8K_CMD_SET_MAC_ADDR);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (set)
+		cmd->header.code = cpu_to_le16(MWL8K_CMD_SET_MAC_ADDR);
+	else
+		cmd->header.code = cpu_to_le16(MWL8K_CMD_DEL_MAC_ADDR);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cmd->header.length = cpu_to_le16(sizeof(*cmd));
 	if (priv->ap_fw) {
 		cmd->mbss.mac_type = cpu_to_le16(mac_type);
@@ -3467,6 +4061,33 @@ static int mwl8k_cmd_set_mac_addr(struct ieee80211_hw *hw,
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * MWL8K_CMD_SET_MAC_ADDR.
+ */
+static inline int mwl8k_cmd_set_mac_addr(struct ieee80211_hw *hw,
+				  struct ieee80211_vif *vif, u8 *mac)
+{
+	return mwl8k_cmd_update_mac_addr(hw, vif, mac, true);
+}
+
+/*
+ * MWL8K_CMD_DEL_MAC_ADDR.
+ */
+static inline int mwl8k_cmd_del_mac_addr(struct ieee80211_hw *hw,
+				  struct ieee80211_vif *vif, u8 *mac)
+{
+	return mwl8k_cmd_update_mac_addr(hw, vif, mac, false);
+}
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * CMD_SET_RATEADAPT_MODE.
  */
 struct mwl8k_cmd_set_rate_adapt_mode {
@@ -3524,7 +4145,15 @@ static int mwl8k_cmd_get_watchdog_bitmap(struct ieee80211_hw *hw, u8 *bitmap)
 	return rc;
 }
 
+<<<<<<< HEAD
 #define INVALID_BA	0xAA
+=======
+#define MWL8K_WMM_QUEUE_NUMBER	3
+
+static void mwl8k_destroy_ba(struct ieee80211_hw *hw,
+			     u8 idx);
+
+>>>>>>> refs/remotes/origin/master
 static void mwl8k_watchdog_ba_events(struct work_struct *work)
 {
 	int rc;
@@ -3532,6 +4161,7 @@ static void mwl8k_watchdog_ba_events(struct work_struct *work)
 	struct mwl8k_ampdu_stream *streams;
 	struct mwl8k_priv *priv =
 		container_of(work, struct mwl8k_priv, watchdog_ba_handle);
+<<<<<<< HEAD
 
 	rc = mwl8k_cmd_get_watchdog_bitmap(priv->hw, &bitmap);
 	if (rc)
@@ -3550,6 +4180,43 @@ static void mwl8k_watchdog_ba_events(struct work_struct *work)
 	if (streams->state == AMPDU_STREAM_ACTIVE)
 		ieee80211_stop_tx_ba_session(streams->sta, streams->tid);
 
+=======
+	struct ieee80211_hw *hw = priv->hw;
+	int i;
+	u32 status = 0;
+
+	mwl8k_fw_lock(hw);
+
+	rc = mwl8k_cmd_get_watchdog_bitmap(priv->hw, &bitmap);
+	if (rc)
+		goto done;
+
+	spin_lock(&priv->stream_lock);
+
+	/* the bitmap is the hw queue number.  Map it to the ampdu queue. */
+	for (i = 0; i < TOTAL_HW_TX_QUEUES; i++) {
+		if (bitmap & (1 << i)) {
+			stream_index = (i + MWL8K_WMM_QUEUE_NUMBER) %
+				       TOTAL_HW_TX_QUEUES;
+			streams = &priv->ampdu[stream_index];
+			if (streams->state == AMPDU_STREAM_ACTIVE) {
+				ieee80211_stop_tx_ba_session(streams->sta,
+							     streams->tid);
+				spin_unlock(&priv->stream_lock);
+				mwl8k_destroy_ba(hw, stream_index);
+				spin_lock(&priv->stream_lock);
+			}
+		}
+	}
+
+	spin_unlock(&priv->stream_lock);
+done:
+	atomic_dec(&priv->watchdog_event_pending);
+	status = ioread32(priv->regs + MWL8K_HIU_A2H_INTERRUPT_STATUS_MASK);
+	iowrite32((status | MWL8K_A2H_INT_BA_WATCHDOG),
+		  priv->regs + MWL8K_HIU_A2H_INTERRUPT_STATUS_MASK);
+	mwl8k_fw_unlock(hw);
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
@@ -3566,8 +4233,21 @@ static int mwl8k_cmd_bss_start(struct ieee80211_hw *hw,
 			       struct ieee80211_vif *vif, int enable)
 {
 	struct mwl8k_cmd_bss_start *cmd;
+<<<<<<< HEAD
 	int rc;
 
+=======
+	struct mwl8k_vif *mwl8k_vif = MWL8K_VIF(vif);
+	struct mwl8k_priv *priv = hw->priv;
+	int rc;
+
+	if (enable && (priv->running_bsses & (1 << mwl8k_vif->macid)))
+		return 0;
+
+	if (!enable && !(priv->running_bsses & (1 << mwl8k_vif->macid)))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
 	if (cmd == NULL)
 		return -ENOMEM;
@@ -3579,9 +4259,37 @@ static int mwl8k_cmd_bss_start(struct ieee80211_hw *hw,
 	rc = mwl8k_post_pervif_cmd(hw, vif, &cmd->header);
 	kfree(cmd);
 
+<<<<<<< HEAD
 	return rc;
 }
 
+=======
+	if (!rc) {
+		if (enable)
+			priv->running_bsses |= (1 << mwl8k_vif->macid);
+		else
+			priv->running_bsses &= ~(1 << mwl8k_vif->macid);
+	}
+	return rc;
+}
+
+static void mwl8k_enable_bsses(struct ieee80211_hw *hw, bool enable, u32 bitmap)
+{
+	struct mwl8k_priv *priv = hw->priv;
+	struct mwl8k_vif *mwl8k_vif, *tmp_vif;
+	struct ieee80211_vif *vif;
+
+	list_for_each_entry_safe(mwl8k_vif, tmp_vif, &priv->vif_list, list) {
+		vif = mwl8k_vif->vif;
+
+		if (!(bitmap & (1 << mwl8k_vif->macid)))
+			continue;
+
+		if (vif->type == NL80211_IFTYPE_AP)
+			mwl8k_cmd_bss_start(hw, vif, enable);
+	}
+}
+>>>>>>> refs/remotes/origin/master
 /*
  * CMD_BASTREAM.
  */
@@ -3632,7 +4340,12 @@ struct mwl8k_cmd_bastream {
 } __packed;
 
 static int
+<<<<<<< HEAD
 mwl8k_check_ba(struct ieee80211_hw *hw, struct mwl8k_ampdu_stream *stream)
+=======
+mwl8k_check_ba(struct ieee80211_hw *hw, struct mwl8k_ampdu_stream *stream,
+	       struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mwl8k_cmd_bastream *cmd;
 	int rc;
@@ -3655,7 +4368,11 @@ mwl8k_check_ba(struct ieee80211_hw *hw, struct mwl8k_ampdu_stream *stream)
 		cpu_to_le32(BASTREAM_FLAG_IMMEDIATE_TYPE) |
 		cpu_to_le32(BASTREAM_FLAG_DIRECTION_UPSTREAM);
 
+<<<<<<< HEAD
 	rc = mwl8k_post_cmd(hw, &cmd->header);
+=======
+	rc = mwl8k_post_pervif_cmd(hw, vif, &cmd->header);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(cmd);
 
@@ -3664,7 +4381,11 @@ mwl8k_check_ba(struct ieee80211_hw *hw, struct mwl8k_ampdu_stream *stream)
 
 static int
 mwl8k_create_ba(struct ieee80211_hw *hw, struct mwl8k_ampdu_stream *stream,
+<<<<<<< HEAD
 		u8 buf_size)
+=======
+		u8 buf_size, struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mwl8k_cmd_bastream *cmd;
 	int rc;
@@ -3698,7 +4419,11 @@ mwl8k_create_ba(struct ieee80211_hw *hw, struct mwl8k_ampdu_stream *stream,
 		cpu_to_le32(BASTREAM_FLAG_IMMEDIATE_TYPE |
 					BASTREAM_FLAG_DIRECTION_UPSTREAM);
 
+<<<<<<< HEAD
 	rc = mwl8k_post_cmd(hw, &cmd->header);
+=======
+	rc = mwl8k_post_pervif_cmd(hw, vif, &cmd->header);
+>>>>>>> refs/remotes/origin/master
 
 	wiphy_debug(hw->wiphy, "Created a BA stream for %pM : tid %d\n",
 		stream->sta->addr, stream->tid);
@@ -3708,7 +4433,11 @@ mwl8k_create_ba(struct ieee80211_hw *hw, struct mwl8k_ampdu_stream *stream,
 }
 
 static void mwl8k_destroy_ba(struct ieee80211_hw *hw,
+<<<<<<< HEAD
 			     struct mwl8k_ampdu_stream *stream)
+=======
+			     u8 idx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mwl8k_cmd_bastream *cmd;
 
@@ -3720,10 +4449,17 @@ static void mwl8k_destroy_ba(struct ieee80211_hw *hw,
 	cmd->header.length = cpu_to_le16(sizeof(*cmd));
 	cmd->action = cpu_to_le32(MWL8K_BA_DESTROY);
 
+<<<<<<< HEAD
 	cmd->destroy_params.ba_context = cpu_to_le32(stream->idx);
 	mwl8k_post_cmd(hw, &cmd->header);
 
 	wiphy_debug(hw->wiphy, "Deleted BA stream index %d\n", stream->idx);
+=======
+	cmd->destroy_params.ba_context = cpu_to_le32(idx);
+	mwl8k_post_cmd(hw, &cmd->header);
+
+	wiphy_debug(hw->wiphy, "Deleted BA stream index %d\n", idx);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(cmd);
 }
@@ -3774,7 +4510,11 @@ static int mwl8k_cmd_set_new_stn_add(struct ieee80211_hw *hw,
 	memcpy(cmd->mac_addr, sta->addr, ETH_ALEN);
 	cmd->stn_id = cpu_to_le16(sta->aid);
 	cmd->action = cpu_to_le16(MWL8K_STA_ACTION_ADD);
+<<<<<<< HEAD
 	if (hw->conf.channel->band == IEEE80211_BAND_2GHZ)
+=======
+	if (hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ)
+>>>>>>> refs/remotes/origin/master
 		rates = sta->supp_rates[IEEE80211_BAND_2GHZ];
 	else
 		rates = sta->supp_rates[IEEE80211_BAND_5GHZ] << 5;
@@ -3820,7 +4560,34 @@ static int mwl8k_cmd_set_new_stn_del(struct ieee80211_hw *hw,
 				     struct ieee80211_vif *vif, u8 *addr)
 {
 	struct mwl8k_cmd_set_new_stn *cmd;
+<<<<<<< HEAD
 	int rc;
+=======
+	struct mwl8k_priv *priv = hw->priv;
+	int rc, i;
+	u8 idx;
+
+	spin_lock(&priv->stream_lock);
+	/* Destroy any active ampdu streams for this sta */
+	for (i = 0; i < MWL8K_NUM_AMPDU_STREAMS; i++) {
+		struct mwl8k_ampdu_stream *s;
+		s = &priv->ampdu[i];
+		if (s->state != AMPDU_NO_STREAM) {
+			if (memcmp(s->sta->addr, addr, ETH_ALEN) == 0) {
+				if (s->state == AMPDU_STREAM_ACTIVE) {
+					idx = s->idx;
+					spin_unlock(&priv->stream_lock);
+					mwl8k_destroy_ba(hw, idx);
+					spin_lock(&priv->stream_lock);
+				} else if (s->state == AMPDU_STREAM_NEW) {
+					mwl8k_remove_stream(hw, s);
+				}
+			}
+		}
+	}
+
+	spin_unlock(&priv->stream_lock);
+>>>>>>> refs/remotes/origin/master
 
 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
 	if (cmd == NULL)
@@ -4042,7 +4809,15 @@ static int mwl8k_cmd_encryption_remove_key(struct ieee80211_hw *hw,
 		goto done;
 
 	if (key->cipher == WLAN_CIPHER_SUITE_WEP40 ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 			WLAN_CIPHER_SUITE_WEP104)
+=======
+			key->cipher == WLAN_CIPHER_SUITE_WEP104)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			key->cipher == WLAN_CIPHER_SUITE_WEP104)
+>>>>>>> refs/remotes/origin/master
 		mwl8k_vif->wep_key_conf[key->keyidx].enabled = 0;
 
 	cmd->action = cpu_to_le32(MWL8K_ENCR_REMOVE_KEY);
@@ -4064,12 +4839,26 @@ static int mwl8k_set_key(struct ieee80211_hw *hw,
 	u8 encr_type;
 	u8 *addr;
 	struct mwl8k_vif *mwl8k_vif = MWL8K_VIF(vif);
+<<<<<<< HEAD
 
 	if (vif->type == NL80211_IFTYPE_STATION)
 		return -EOPNOTSUPP;
 
 	if (sta == NULL)
+<<<<<<< HEAD
 		addr = hw->wiphy->perm_addr;
+=======
+		addr = vif->addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mwl8k_priv *priv = hw->priv;
+
+	if (vif->type == NL80211_IFTYPE_STATION && !priv->ap_fw)
+		return -EOPNOTSUPP;
+
+	if (sta == NULL)
+		addr = vif->addr;
+>>>>>>> refs/remotes/origin/master
 	else
 		addr = sta->addr;
 
@@ -4096,9 +4885,15 @@ static int mwl8k_set_key(struct ieee80211_hw *hw,
 
 		if (rc)
 			goto out;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		mwl8k_vif->is_hw_crypto_enabled = false;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 out:
 	return rc;
@@ -4188,7 +4983,11 @@ static int mwl8k_cmd_update_stadb_add(struct ieee80211_hw *hw,
 	p->ht_caps = cpu_to_le16(sta->ht_cap.cap);
 	p->extended_ht_caps = (sta->ht_cap.ampdu_factor & 3) |
 		((sta->ht_cap.ampdu_density & 7) << 2);
+<<<<<<< HEAD
 	if (hw->conf.channel->band == IEEE80211_BAND_2GHZ)
+=======
+	if (hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ)
+>>>>>>> refs/remotes/origin/master
 		rates = sta->supp_rates[IEEE80211_BAND_2GHZ];
 	else
 		rates = sta->supp_rates[IEEE80211_BAND_5GHZ] << 5;
@@ -4198,9 +4997,17 @@ static int mwl8k_cmd_update_stadb_add(struct ieee80211_hw *hw,
 	p->amsdu_enabled = 0;
 
 	rc = mwl8k_post_cmd(hw, &cmd->header);
+<<<<<<< HEAD
 	kfree(cmd);
 
 	return rc ? rc : p->station_id;
+=======
+	if (!rc)
+		rc = p->station_id;
+	kfree(cmd);
+
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mwl8k_cmd_update_stadb_del(struct ieee80211_hw *hw,
@@ -4249,6 +5056,13 @@ static irqreturn_t mwl8k_interrupt(int irq, void *dev_id)
 	}
 
 	if (status & MWL8K_A2H_INT_BA_WATCHDOG) {
+<<<<<<< HEAD
+=======
+		iowrite32(~MWL8K_A2H_INT_BA_WATCHDOG,
+			  priv->regs + MWL8K_HIU_A2H_INTERRUPT_STATUS_MASK);
+
+		atomic_inc(&priv->watchdog_event_pending);
+>>>>>>> refs/remotes/origin/master
 		status &= ~MWL8K_A2H_INT_BA_WATCHDOG;
 		ieee80211_queue_work(hw, &priv->watchdog_ba_handle);
 	}
@@ -4321,7 +5135,13 @@ static void mwl8k_rx_poll(unsigned long data)
 /*
  * Core driver operations.
  */
+<<<<<<< HEAD
 static void mwl8k_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
+=======
+static void mwl8k_tx(struct ieee80211_hw *hw,
+		     struct ieee80211_tx_control *control,
+		     struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mwl8k_priv *priv = hw->priv;
 	int index = skb_get_queue_mapping(skb);
@@ -4333,7 +5153,11 @@ static void mwl8k_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 		return;
 	}
 
+<<<<<<< HEAD
 	mwl8k_txq_xmit(hw, index, skb);
+=======
+	mwl8k_txq_xmit(hw, index, control->sta, skb);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mwl8k_start(struct ieee80211_hw *hw)
@@ -4390,6 +5214,11 @@ static int mwl8k_start(struct ieee80211_hw *hw)
 		priv->irq = -1;
 		tasklet_disable(&priv->poll_tx_task);
 		tasklet_disable(&priv->poll_rx_task);
+<<<<<<< HEAD
+=======
+	} else {
+		ieee80211_wake_queues(hw);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return rc;
@@ -4400,7 +5229,17 @@ static void mwl8k_stop(struct ieee80211_hw *hw)
 	struct mwl8k_priv *priv = hw->priv;
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mwl8k_cmd_radio_disable(hw);
+=======
+	if (!priv->hw_restart_in_progress)
+		mwl8k_cmd_radio_disable(hw);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!priv->hw_restart_in_progress)
+		mwl8k_cmd_radio_disable(hw);
+>>>>>>> refs/remotes/origin/master
 
 	ieee80211_stop_queues(hw);
 
@@ -4463,12 +5302,27 @@ static int mwl8k_add_interface(struct ieee80211_hw *hw,
 		break;
 	case NL80211_IFTYPE_STATION:
 		if (priv->ap_fw && di->fw_image_sta) {
+<<<<<<< HEAD
 			/* we must load the sta fw to meet this request */
 			if (!list_empty(&priv->vif_list))
 				return -EBUSY;
 			rc = mwl8k_reload_firmware(hw, di->fw_image_sta);
 			if (rc)
 				return rc;
+=======
+			if (!list_empty(&priv->vif_list)) {
+				wiphy_warn(hw->wiphy, "AP interface is running.\n"
+					   "Adding STA interface for WDS");
+			} else {
+				/* we must load the sta fw to
+				 * meet this request.
+				 */
+				rc = mwl8k_reload_firmware(hw,
+							   di->fw_image_sta);
+				if (rc)
+					return rc;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 		macids_supported = priv->sta_macids_supported;
 		break;
@@ -4492,7 +5346,11 @@ static int mwl8k_add_interface(struct ieee80211_hw *hw,
 	/* Set the mac address.  */
 	mwl8k_cmd_set_mac_addr(hw, vif, vif->addr);
 
+<<<<<<< HEAD
 	if (priv->ap_fw)
+=======
+	if (vif->type == NL80211_IFTYPE_AP)
+>>>>>>> refs/remotes/origin/master
 		mwl8k_cmd_set_new_stn_add_self(hw, vif);
 
 	priv->macids_used |= 1 << mwl8k_vif->macid;
@@ -4501,19 +5359,100 @@ static int mwl8k_add_interface(struct ieee80211_hw *hw,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void mwl8k_remove_vif(struct mwl8k_priv *priv, struct mwl8k_vif *vif)
+{
+	/* Has ieee80211_restart_hw re-added the removed interfaces? */
+	if (!priv->macids_used)
+		return;
+
+	priv->macids_used &= ~(1 << vif->macid);
+	list_del(&vif->list);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void mwl8k_remove_interface(struct ieee80211_hw *hw,
 				   struct ieee80211_vif *vif)
 {
 	struct mwl8k_priv *priv = hw->priv;
 	struct mwl8k_vif *mwl8k_vif = MWL8K_VIF(vif);
 
+<<<<<<< HEAD
 	if (priv->ap_fw)
 		mwl8k_cmd_set_new_stn_del(hw, vif, vif->addr);
 
+<<<<<<< HEAD
 	mwl8k_cmd_set_mac_addr(hw, vif, "\x00\x00\x00\x00\x00\x00");
 
 	priv->macids_used &= ~(1 << mwl8k_vif->macid);
 	list_del(&mwl8k_vif->list);
+=======
+=======
+	if (vif->type == NL80211_IFTYPE_AP)
+		mwl8k_cmd_set_new_stn_del(hw, vif, vif->addr);
+
+>>>>>>> refs/remotes/origin/master
+	mwl8k_cmd_del_mac_addr(hw, vif, vif->addr);
+
+	mwl8k_remove_vif(priv, mwl8k_vif);
+}
+
+static void mwl8k_hw_restart_work(struct work_struct *work)
+{
+	struct mwl8k_priv *priv =
+		container_of(work, struct mwl8k_priv, fw_reload);
+	struct ieee80211_hw *hw = priv->hw;
+	struct mwl8k_device_info *di;
+	int rc;
+
+	/* If some command is waiting for a response, clear it */
+	if (priv->hostcmd_wait != NULL) {
+		complete(priv->hostcmd_wait);
+		priv->hostcmd_wait = NULL;
+	}
+
+	priv->hw_restart_owner = current;
+	di = priv->device_info;
+	mwl8k_fw_lock(hw);
+
+	if (priv->ap_fw)
+		rc = mwl8k_reload_firmware(hw, di->fw_image_ap);
+	else
+		rc = mwl8k_reload_firmware(hw, di->fw_image_sta);
+
+	if (rc)
+		goto fail;
+
+	priv->hw_restart_owner = NULL;
+	priv->hw_restart_in_progress = false;
+
+	/*
+	 * This unlock will wake up the queues and
+	 * also opens the command path for other
+	 * commands
+	 */
+	mwl8k_fw_unlock(hw);
+
+	ieee80211_restart_hw(hw);
+
+	wiphy_err(hw->wiphy, "Firmware restarted successfully\n");
+
+	return;
+fail:
+	mwl8k_fw_unlock(hw);
+
+	wiphy_err(hw->wiphy, "Firmware restart failed\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mwl8k_config(struct ieee80211_hw *hw, u32 changed)
@@ -4522,15 +5461,19 @@ static int mwl8k_config(struct ieee80211_hw *hw, u32 changed)
 	struct mwl8k_priv *priv = hw->priv;
 	int rc;
 
+<<<<<<< HEAD
 	if (conf->flags & IEEE80211_CONF_IDLE) {
 		mwl8k_cmd_radio_disable(hw);
 		return 0;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = mwl8k_fw_lock(hw);
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 	rc = mwl8k_cmd_radio_enable(hw);
 	if (rc)
 		goto out;
@@ -4538,6 +5481,20 @@ static int mwl8k_config(struct ieee80211_hw *hw, u32 changed)
 	rc = mwl8k_cmd_set_rf_channel(hw, conf);
 	if (rc)
 		goto out;
+=======
+	if (conf->flags & IEEE80211_CONF_IDLE)
+		rc = mwl8k_cmd_radio_disable(hw);
+	else
+		rc = mwl8k_cmd_radio_enable(hw);
+	if (rc)
+		goto out;
+
+	if (changed & IEEE80211_CONF_CHANGE_CHANNEL) {
+		rc = mwl8k_cmd_set_rf_channel(hw, conf);
+		if (rc)
+			goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (conf->power_level > 18)
 		conf->power_level = 18;
@@ -4550,12 +5507,15 @@ static int mwl8k_config(struct ieee80211_hw *hw, u32 changed)
 				goto out;
 		}
 
+<<<<<<< HEAD
 		rc = mwl8k_cmd_rf_antenna(hw, MWL8K_RF_ANTENNA_RX, 0x3);
 		if (rc)
 			wiphy_warn(hw->wiphy, "failed to set # of RX antennas");
 		rc = mwl8k_cmd_rf_antenna(hw, MWL8K_RF_ANTENNA_TX, 0x7);
 		if (rc)
 			wiphy_warn(hw->wiphy, "failed to set # of TX antennas");
+=======
+>>>>>>> refs/remotes/origin/master
 
 	} else {
 		rc = mwl8k_cmd_rf_tx_power(hw, conf->power_level);
@@ -4602,7 +5562,11 @@ mwl8k_bss_info_changed_sta(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			goto out;
 		}
 
+<<<<<<< HEAD
 		if (hw->conf.channel->band == IEEE80211_BAND_2GHZ) {
+=======
+		if (hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ) {
+>>>>>>> refs/remotes/origin/master
 			ap_legacy_rates = ap->supp_rates[IEEE80211_BAND_2GHZ];
 		} else {
 			ap_legacy_rates =
@@ -4613,7 +5577,12 @@ mwl8k_bss_info_changed_sta(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		rcu_read_unlock();
 	}
 
+<<<<<<< HEAD
 	if ((changed & BSS_CHANGED_ASSOC) && vif->bss_conf.assoc) {
+=======
+	if ((changed & BSS_CHANGED_ASSOC) && vif->bss_conf.assoc &&
+	    !priv->ap_fw) {
+>>>>>>> refs/remotes/origin/master
 		rc = mwl8k_cmd_set_rate(hw, vif, ap_legacy_rates, ap_mcs_rates);
 		if (rc)
 			goto out;
@@ -4621,6 +5590,28 @@ mwl8k_bss_info_changed_sta(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		rc = mwl8k_cmd_use_fixed_rate_sta(hw);
 		if (rc)
 			goto out;
+<<<<<<< HEAD
+=======
+	} else {
+		if ((changed & BSS_CHANGED_ASSOC) && vif->bss_conf.assoc &&
+		    priv->ap_fw) {
+			int idx;
+			int rate;
+
+			/* Use AP firmware specific rate command.
+			 */
+			idx = ffs(vif->bss_conf.basic_rates);
+			if (idx)
+				idx--;
+
+			if (hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ)
+				rate = mwl8k_rates_24[idx].hw_value;
+			else
+				rate = mwl8k_rates_50[idx].hw_value;
+
+			mwl8k_cmd_use_fixed_rate_ap(hw, rate, rate);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (changed & BSS_CHANGED_ERP_PREAMBLE) {
@@ -4630,13 +5621,21 @@ mwl8k_bss_info_changed_sta(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			goto out;
 	}
 
+<<<<<<< HEAD
 	if (changed & BSS_CHANGED_ERP_SLOT) {
+=======
+	if ((changed & BSS_CHANGED_ERP_SLOT) && !priv->ap_fw)  {
+>>>>>>> refs/remotes/origin/master
 		rc = mwl8k_cmd_set_slot(hw, vif->bss_conf.use_short_slot);
 		if (rc)
 			goto out;
 	}
 
+<<<<<<< HEAD
 	if (vif->bss_conf.assoc &&
+=======
+	if (vif->bss_conf.assoc && !priv->ap_fw &&
+>>>>>>> refs/remotes/origin/master
 	    (changed & (BSS_CHANGED_ASSOC | BSS_CHANGED_ERP_CTS_PROT |
 			BSS_CHANGED_HT))) {
 		rc = mwl8k_cmd_set_aid(hw, vif, ap_legacy_rates);
@@ -4687,7 +5686,11 @@ mwl8k_bss_info_changed_ap(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		if (idx)
 			idx--;
 
+<<<<<<< HEAD
 		if (hw->conf.channel->band == IEEE80211_BAND_2GHZ)
+=======
+		if (hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ)
+>>>>>>> refs/remotes/origin/master
 			rate = mwl8k_rates_24[idx].hw_value;
 		else
 			rate = mwl8k_rates_50[idx].hw_value;
@@ -4716,11 +5719,17 @@ static void
 mwl8k_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		       struct ieee80211_bss_conf *info, u32 changed)
 {
+<<<<<<< HEAD
 	struct mwl8k_priv *priv = hw->priv;
 
 	if (!priv->ap_fw)
 		mwl8k_bss_info_changed_sta(hw, vif, info, changed);
 	else
+=======
+	if (vif->type == NL80211_IFTYPE_STATION)
+		mwl8k_bss_info_changed_sta(hw, vif, info, changed);
+	if (vif->type == NL80211_IFTYPE_AP)
+>>>>>>> refs/remotes/origin/master
 		mwl8k_bss_info_changed_ap(hw, vif, info, changed);
 }
 
@@ -4917,7 +5926,17 @@ static int mwl8k_sta_add(struct ieee80211_hw *hw,
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int mwl8k_conf_tx(struct ieee80211_hw *hw, u16 queue,
+=======
+static int mwl8k_conf_tx(struct ieee80211_hw *hw,
+			 struct ieee80211_vif *vif, u16 queue,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mwl8k_conf_tx(struct ieee80211_hw *hw,
+			 struct ieee80211_vif *vif, u16 queue,
+>>>>>>> refs/remotes/origin/master
 			 const struct ieee80211_tx_queue_params *params)
 {
 	struct mwl8k_priv *priv = hw->priv;
@@ -4961,7 +5980,11 @@ static int mwl8k_get_survey(struct ieee80211_hw *hw, int idx,
 	if (idx != 0)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	survey->channel = conf->channel;
+=======
+	survey->channel = conf->chandef.chan;
+>>>>>>> refs/remotes/origin/master
 	survey->filled = SURVEY_INFO_NOISE_DBM;
 	survey->noise = priv->noise;
 
@@ -4980,7 +6003,12 @@ mwl8k_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	int i, rc = 0;
 	struct mwl8k_priv *priv = hw->priv;
 	struct mwl8k_ampdu_stream *stream;
+<<<<<<< HEAD
 	u8 *addr = sta->addr;
+=======
+	u8 *addr = sta->addr, idx;
+	struct mwl8k_sta *sta_info = MWL8K_STA(sta);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(hw->flags & IEEE80211_HW_AMPDU_AGGREGATION))
 		return -ENOTSUPP;
@@ -5023,9 +6051,34 @@ mwl8k_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		/* Release the lock before we do the time consuming stuff */
 		spin_unlock(&priv->stream_lock);
 		for (i = 0; i < MAX_AMPDU_ATTEMPTS; i++) {
+<<<<<<< HEAD
 			rc = mwl8k_check_ba(hw, stream);
 
+<<<<<<< HEAD
 			if (!rc)
+=======
+=======
+
+			/* Check if link is still valid */
+			if (!sta_info->is_ampdu_allowed) {
+				spin_lock(&priv->stream_lock);
+				mwl8k_remove_stream(hw, stream);
+				spin_unlock(&priv->stream_lock);
+				return -EBUSY;
+			}
+
+			rc = mwl8k_check_ba(hw, stream, vif);
+
+>>>>>>> refs/remotes/origin/master
+			/* If HW restart is in progress mwl8k_post_cmd will
+			 * return -EBUSY. Avoid retrying mwl8k_check_ba in
+			 * such cases
+			 */
+			if (!rc || rc == -EBUSY)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				break;
 			/*
 			 * HW queues take time to be flushed, give them
@@ -5044,7 +6097,9 @@ mwl8k_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		}
 		ieee80211_start_tx_ba_cb_irqsafe(vif, addr, tid);
 		break;
+<<<<<<< HEAD
 	case IEEE80211_AMPDU_TX_STOP:
+<<<<<<< HEAD
 		if (stream == NULL)
 			break;
 		if (stream->state == AMPDU_STREAM_ACTIVE) {
@@ -5053,19 +6108,52 @@ mwl8k_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			spin_lock(&priv->stream_lock);
 		}
 		mwl8k_remove_stream(hw, stream);
+=======
+		if (stream) {
+			if (stream->state == AMPDU_STREAM_ACTIVE) {
+				spin_unlock(&priv->stream_lock);
+				mwl8k_destroy_ba(hw, stream);
+=======
+	case IEEE80211_AMPDU_TX_STOP_CONT:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
+		if (stream) {
+			if (stream->state == AMPDU_STREAM_ACTIVE) {
+				idx = stream->idx;
+				spin_unlock(&priv->stream_lock);
+				mwl8k_destroy_ba(hw, idx);
+>>>>>>> refs/remotes/origin/master
+				spin_lock(&priv->stream_lock);
+			}
+			mwl8k_remove_stream(hw, stream);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ieee80211_stop_tx_ba_cb_irqsafe(vif, addr, tid);
 		break;
 	case IEEE80211_AMPDU_TX_OPERATIONAL:
 		BUG_ON(stream == NULL);
 		BUG_ON(stream->state != AMPDU_STREAM_IN_PROGRESS);
 		spin_unlock(&priv->stream_lock);
+<<<<<<< HEAD
 		rc = mwl8k_create_ba(hw, stream, buf_size);
+=======
+		rc = mwl8k_create_ba(hw, stream, buf_size, vif);
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&priv->stream_lock);
 		if (!rc)
 			stream->state = AMPDU_STREAM_ACTIVE;
 		else {
+<<<<<<< HEAD
 			spin_unlock(&priv->stream_lock);
 			mwl8k_destroy_ba(hw, stream);
+=======
+			idx = stream->idx;
+			spin_unlock(&priv->stream_lock);
+			mwl8k_destroy_ba(hw, idx);
+>>>>>>> refs/remotes/origin/master
 			spin_lock(&priv->stream_lock);
 			wiphy_debug(hw->wiphy,
 				"Failed adding stream for sta %pM tid %d\n",
@@ -5126,6 +6214,7 @@ enum {
 	MWL8363 = 0,
 	MWL8687,
 	MWL8366,
+<<<<<<< HEAD
 };
 
 #define MWL8K_8366_AP_FW_API 2
@@ -5133,6 +6222,20 @@ enum {
 #define MWL8K_8366_AP_FW(api) _MWL8K_8366_AP_FW(api)
 
 static struct mwl8k_device_info mwl8k_info_tbl[] __devinitdata = {
+=======
+	MWL8764,
+};
+
+#define MWL8K_8366_AP_FW_API 3
+#define _MWL8K_8366_AP_FW(api) "mwl8k/fmimage_8366_ap-" #api ".fw"
+#define MWL8K_8366_AP_FW(api) _MWL8K_8366_AP_FW(api)
+
+#define MWL8K_8764_AP_FW_API 1
+#define _MWL8K_8764_AP_FW(api) "mwl8k/fmimage_8764_ap-" #api ".fw"
+#define MWL8K_8764_AP_FW(api) _MWL8K_8764_AP_FW(api)
+
+static struct mwl8k_device_info mwl8k_info_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	[MWL8363] = {
 		.part_name	= "88w8363",
 		.helper_image	= "mwl8k/helper_8363.fw",
@@ -5149,7 +6252,17 @@ static struct mwl8k_device_info mwl8k_info_tbl[] __devinitdata = {
 		.fw_image_sta	= "mwl8k/fmimage_8366.fw",
 		.fw_image_ap	= MWL8K_8366_AP_FW(MWL8K_8366_AP_FW_API),
 		.fw_api_ap	= MWL8K_8366_AP_FW_API,
+<<<<<<< HEAD
 		.ap_rxd_ops	= &rxd_8366_ap_ops,
+=======
+		.ap_rxd_ops	= &rxd_ap_ops,
+	},
+	[MWL8764] = {
+		.part_name	= "88w8764",
+		.fw_image_ap	= MWL8K_8764_AP_FW(MWL8K_8764_AP_FW_API),
+		.fw_api_ap	= MWL8K_8764_AP_FW_API,
+		.ap_rxd_ops	= &rxd_ap_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -5168,7 +6281,14 @@ static DEFINE_PCI_DEVICE_TABLE(mwl8k_pci_id_table) = {
 	{ PCI_VDEVICE(MARVELL, 0x2a2b), .driver_data = MWL8687, },
 	{ PCI_VDEVICE(MARVELL, 0x2a30), .driver_data = MWL8687, },
 	{ PCI_VDEVICE(MARVELL, 0x2a40), .driver_data = MWL8366, },
+<<<<<<< HEAD
 	{ PCI_VDEVICE(MARVELL, 0x2a43), .driver_data = MWL8366, },
+=======
+	{ PCI_VDEVICE(MARVELL, 0x2a41), .driver_data = MWL8366, },
+	{ PCI_VDEVICE(MARVELL, 0x2a42), .driver_data = MWL8366, },
+	{ PCI_VDEVICE(MARVELL, 0x2a43), .driver_data = MWL8366, },
+	{ PCI_VDEVICE(MARVELL, 0x2b36), .driver_data = MWL8764, },
+>>>>>>> refs/remotes/origin/master
 	{ },
 };
 MODULE_DEVICE_TABLE(pci, mwl8k_pci_id_table);
@@ -5264,12 +6384,32 @@ fail:
 	mwl8k_release_firmware(priv);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define MAX_RESTART_ATTEMPTS 1
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_RESTART_ATTEMPTS 1
+>>>>>>> refs/remotes/origin/master
 static int mwl8k_init_firmware(struct ieee80211_hw *hw, char *fw_image,
 			       bool nowait)
 {
 	struct mwl8k_priv *priv = hw->priv;
 	int rc;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	int count = MAX_RESTART_ATTEMPTS;
+
+retry:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int count = MAX_RESTART_ATTEMPTS;
+
+retry:
+>>>>>>> refs/remotes/origin/master
 	/* Reset firmware and hardware */
 	mwl8k_hw_reset(priv);
 
@@ -5291,6 +6431,25 @@ static int mwl8k_init_firmware(struct ieee80211_hw *hw, char *fw_image,
 	/* Reclaim memory once firmware is successfully loaded */
 	mwl8k_release_firmware(priv);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (rc && count) {
+		/* FW did not start successfully;
+		 * lets try one more time
+		 */
+		count--;
+		wiphy_err(hw->wiphy, "Trying to reload the firmware again\n");
+		msleep(20);
+		goto retry;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -5323,6 +6482,10 @@ static int mwl8k_probe_hw(struct ieee80211_hw *hw)
 		if (priv->rxd_ops == NULL) {
 			wiphy_err(hw->wiphy,
 				  "Driver does not have AP firmware image support for this hardware\n");
+<<<<<<< HEAD
+=======
+			rc = -ENOENT;
+>>>>>>> refs/remotes/origin/master
 			goto err_stop_firmware;
 		}
 	} else {
@@ -5332,6 +6495,10 @@ static int mwl8k_probe_hw(struct ieee80211_hw *hw)
 	priv->sniffer_enabled = false;
 	priv->wmm_enabled = false;
 	priv->pending_tx_pkts = 0;
+<<<<<<< HEAD
+=======
+	atomic_set(&priv->watchdog_event_pending, 0);
+>>>>>>> refs/remotes/origin/master
 
 	rc = mwl8k_rxq_init(hw, 0);
 	if (rc)
@@ -5366,7 +6533,24 @@ static int mwl8k_probe_hw(struct ieee80211_hw *hw)
 		goto err_free_queues;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(priv->ampdu, 0, sizeof(priv->ampdu));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * When hw restart is requested,
+	 * mac80211 will take care of clearing
+	 * the ampdu streams, so do not clear
+	 * the ampdu state here
+	 */
+	if (!priv->hw_restart_in_progress)
+		memset(priv->ampdu, 0, sizeof(priv->ampdu));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Temporarily enable interrupts.  Initial firmware host
@@ -5404,6 +6588,18 @@ static int mwl8k_probe_hw(struct ieee80211_hw *hw)
 		goto err_free_irq;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Configure Antennas */
+	rc = mwl8k_cmd_rf_antenna(hw, MWL8K_RF_ANTENNA_RX, 0x3);
+	if (rc)
+		wiphy_warn(hw->wiphy, "failed to set # of RX antennas");
+	rc = mwl8k_cmd_rf_antenna(hw, MWL8K_RF_ANTENNA_TX, 0x7);
+	if (rc)
+		wiphy_warn(hw->wiphy, "failed to set # of TX antennas");
+
+
+>>>>>>> refs/remotes/origin/master
 	/* Disable interrupts */
 	iowrite32(0, priv->regs + MWL8K_HIU_A2H_INTERRUPT_MASK);
 	free_irq(priv->pdev->irq, hw);
@@ -5440,10 +6636,36 @@ static int mwl8k_reload_firmware(struct ieee80211_hw *hw, char *fw_image)
 {
 	int i, rc = 0;
 	struct mwl8k_priv *priv = hw->priv;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct mwl8k_vif *vif, *tmp_vif;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mwl8k_vif *vif, *tmp_vif;
+>>>>>>> refs/remotes/origin/master
 
 	mwl8k_stop(hw);
 	mwl8k_rxq_deinit(hw, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * All the existing interfaces are re-added by the ieee80211_reconfig;
+	 * which means driver should remove existing interfaces before calling
+	 * ieee80211_restart_hw
+	 */
+	if (priv->hw_restart_in_progress)
+		list_for_each_entry_safe(vif, tmp_vif, &priv->vif_list, list)
+			mwl8k_remove_vif(priv, vif);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < mwl8k_tx_queues(priv); i++)
 		mwl8k_txq_deinit(hw, i);
 
@@ -5455,6 +6677,18 @@ static int mwl8k_reload_firmware(struct ieee80211_hw *hw, char *fw_image)
 	if (rc)
 		goto fail;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (priv->hw_restart_in_progress)
+		return rc;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (priv->hw_restart_in_progress)
+		return rc;
+
+>>>>>>> refs/remotes/origin/master
 	rc = mwl8k_start(hw);
 	if (rc)
 		goto fail;
@@ -5464,7 +6698,15 @@ static int mwl8k_reload_firmware(struct ieee80211_hw *hw, char *fw_image)
 		goto fail;
 
 	for (i = 0; i < MWL8K_TX_WMM_QUEUES; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rc = mwl8k_conf_tx(hw, i, &priv->wmm_params[i]);
+=======
+		rc = mwl8k_conf_tx(hw, NULL, i, &priv->wmm_params[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = mwl8k_conf_tx(hw, NULL, i, &priv->wmm_params[i]);
+>>>>>>> refs/remotes/origin/master
 		if (rc)
 			goto fail;
 	}
@@ -5476,6 +6718,22 @@ fail:
 	return rc;
 }
 
+<<<<<<< HEAD
+=======
+static const struct ieee80211_iface_limit ap_if_limits[] = {
+	{ .max = 8,	.types = BIT(NL80211_IFTYPE_AP) },
+	{ .max = 1,	.types = BIT(NL80211_IFTYPE_STATION) },
+};
+
+static const struct ieee80211_iface_combination ap_if_comb = {
+	.limits = ap_if_limits,
+	.n_limits = ARRAY_SIZE(ap_if_limits),
+	.max_interfaces = 8,
+	.num_different_channels = 1,
+};
+
+
+>>>>>>> refs/remotes/origin/master
 static int mwl8k_firmware_load_success(struct mwl8k_priv *priv)
 {
 	struct ieee80211_hw *hw = priv->hw;
@@ -5503,6 +6761,23 @@ static int mwl8k_firmware_load_success(struct mwl8k_priv *priv)
 
 	/* Set rssi values to dBm */
 	hw->flags |= IEEE80211_HW_SIGNAL_DBM | IEEE80211_HW_HAS_RATE_CONTROL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/*
+	 * Ask mac80211 to not to trigger PS mode
+	 * based on PM bit of incoming frames.
+	 */
+	if (priv->ap_fw)
+		hw->flags |= IEEE80211_HW_AP_LINK_PS;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hw->vif_data_size = sizeof(struct mwl8k_vif);
 	hw->sta_data_size = sizeof(struct mwl8k_sta);
 
@@ -5510,13 +6785,33 @@ static int mwl8k_firmware_load_success(struct mwl8k_priv *priv)
 	INIT_LIST_HEAD(&priv->vif_list);
 
 	/* Set default radio state and preamble */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	priv->radio_on = 0;
 	priv->radio_short_preamble = 0;
+=======
+	priv->radio_on = false;
+	priv->radio_short_preamble = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->radio_on = false;
+	priv->radio_short_preamble = false;
+>>>>>>> refs/remotes/origin/master
 
 	/* Finalize join worker */
 	INIT_WORK(&priv->finalize_join_worker, mwl8k_finalize_join_worker);
 	/* Handle watchdog ba events */
 	INIT_WORK(&priv->watchdog_ba_handle, mwl8k_watchdog_ba_events);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* To reload the firmware if it crashes */
+	INIT_WORK(&priv->fw_reload, mwl8k_hw_restart_work);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* To reload the firmware if it crashes */
+	INIT_WORK(&priv->fw_reload, mwl8k_hw_restart_work);
+>>>>>>> refs/remotes/origin/master
 
 	/* TX reclaim and RX tasklets.  */
 	tasklet_init(&priv->poll_tx_task, mwl8k_tx_poll, (unsigned long)hw);
@@ -5545,8 +6840,19 @@ static int mwl8k_firmware_load_success(struct mwl8k_priv *priv)
 		goto err_free_cookie;
 
 	hw->wiphy->interface_modes = 0;
+<<<<<<< HEAD
 	if (priv->ap_macids_supported || priv->device_info->fw_image_ap)
 		hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_AP);
+=======
+
+	if (priv->ap_macids_supported || priv->device_info->fw_image_ap) {
+		hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_AP);
+		hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_STATION);
+		hw->wiphy->iface_combinations = &ap_if_comb;
+		hw->wiphy->n_iface_combinations = 1;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (priv->sta_macids_supported || priv->device_info->fw_image_sta)
 		hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_STATION);
 
@@ -5570,7 +6876,11 @@ err_free_cookie:
 
 	return rc;
 }
+<<<<<<< HEAD
 static int __devinit mwl8k_probe(struct pci_dev *pdev,
+=======
+static int mwl8k_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				 const struct pci_device_id *id)
 {
 	static int printed_version;
@@ -5617,10 +6927,19 @@ static int __devinit mwl8k_probe(struct pci_dev *pdev,
 	priv->pdev = pdev;
 	priv->device_info = &mwl8k_info_tbl[id->driver_data];
 
+<<<<<<< HEAD
+=======
+	if (id->driver_data == MWL8764)
+		priv->is_8764 = true;
+>>>>>>> refs/remotes/origin/master
 
 	priv->sram = pci_iomap(pdev, 0, 0x10000);
 	if (priv->sram == NULL) {
 		wiphy_err(hw->wiphy, "Cannot map device SRAM\n");
+<<<<<<< HEAD
+=======
+		rc = -EIO;
+>>>>>>> refs/remotes/origin/master
 		goto err_iounmap;
 	}
 
@@ -5633,6 +6952,10 @@ static int __devinit mwl8k_probe(struct pci_dev *pdev,
 		priv->regs = pci_iomap(pdev, 2, 0x10000);
 		if (priv->regs == NULL) {
 			wiphy_err(hw->wiphy, "Cannot map device registers\n");
+<<<<<<< HEAD
+=======
+			rc = -EIO;
+>>>>>>> refs/remotes/origin/master
 			goto err_iounmap;
 		}
 	}
@@ -5660,6 +6983,20 @@ static int __devinit mwl8k_probe(struct pci_dev *pdev,
 	rc = mwl8k_init_firmware(hw, priv->fw_pref, true);
 	if (rc)
 		goto err_stop_firmware;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	priv->hw_restart_in_progress = false;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	priv->hw_restart_in_progress = false;
+
+	priv->running_bsses = 0;
+
+>>>>>>> refs/remotes/origin/master
 	return rc;
 
 err_stop_firmware:
@@ -5672,7 +7009,10 @@ err_iounmap:
 	if (priv->sram != NULL)
 		pci_iounmap(pdev, priv->sram);
 
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	ieee80211_free_hw(hw);
 
 err_free_reg:
@@ -5684,12 +7024,16 @@ err_disable_device:
 	return rc;
 }
 
+<<<<<<< HEAD
 static void __devexit mwl8k_shutdown(struct pci_dev *pdev)
 {
 	printk(KERN_ERR "===>%s(%u)\n", __func__, __LINE__);
 }
 
 static void __devexit mwl8k_remove(struct pci_dev *pdev)
+=======
+static void mwl8k_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
 	struct mwl8k_priv *priv;
@@ -5731,7 +7075,10 @@ static void __devexit mwl8k_remove(struct pci_dev *pdev)
 unmap:
 	pci_iounmap(pdev, priv->regs);
 	pci_iounmap(pdev, priv->sram);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	ieee80211_free_hw(hw);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
@@ -5741,6 +7088,7 @@ static struct pci_driver mwl8k_driver = {
 	.name		= MWL8K_NAME,
 	.id_table	= mwl8k_pci_id_table,
 	.probe		= mwl8k_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mwl8k_remove),
 	.shutdown	= __devexit_p(mwl8k_shutdown),
 };
@@ -5757,6 +7105,12 @@ static void __exit mwl8k_exit(void)
 
 module_init(mwl8k_init);
 module_exit(mwl8k_exit);
+=======
+	.remove		= mwl8k_remove,
+};
+
+module_pci_driver(mwl8k_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION(MWL8K_DESC);
 MODULE_VERSION(MWL8K_VERSION);

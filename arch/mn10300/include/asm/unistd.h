@@ -11,6 +11,7 @@
 #ifndef _ASM_UNISTD_H
 #define _ASM_UNISTD_H
 
+<<<<<<< HEAD
 #define __NR_restart_syscall      0
 #define __NR_exit		  1
 #define __NR_fork		  2
@@ -352,13 +353,20 @@
 #define __NR_setns		339
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/unistd.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define NR_syscalls 340
 
 /*
  * specify the deprecated syscalls we want to support on this arch
  */
+<<<<<<< HEAD
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_OLD_READDIR
 #define __ARCH_WANT_OLD_STAT
 #define __ARCH_WANT_STAT64
@@ -381,6 +389,7 @@
 #define __ARCH_WANT_SYS_OLDUMOUNT
 #define __ARCH_WANT_SYS_SIGPENDING
 #define __ARCH_WANT_SYS_SIGPROCMASK
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 
@@ -395,4 +404,10 @@
 #endif
 
 #endif /* __KERNEL__ */
+=======
+#define __ARCH_WANT_SYS_FORK
+#define __ARCH_WANT_SYS_VFORK
+#define __ARCH_WANT_SYS_CLONE
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_UNISTD_H */

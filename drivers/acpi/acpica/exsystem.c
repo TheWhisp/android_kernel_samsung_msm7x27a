@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: exsystem - Interface to OS services
@@ -6,7 +9,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,13 +64,22 @@ ACPI_MODULE_NAME("exsystem")
  *
  * FUNCTION:    acpi_ex_system_wait_semaphore
  *
+<<<<<<< HEAD
  * PARAMETERS:  Semaphore       - Semaphore to wait on
  *              Timeout         - Max time to wait
+=======
+ * PARAMETERS:  semaphore       - Semaphore to wait on
+ *              timeout         - Max time to wait
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
  * DESCRIPTION: Implements a semaphore wait with a check to see if the
+<<<<<<< HEAD
  *              semaphore is available immediately.  If it is not, the
+=======
+ *              semaphore is available immediately. If it is not, the
+>>>>>>> refs/remotes/origin/master
  *              interpreter is released before waiting.
  *
  ******************************************************************************/
@@ -98,13 +118,22 @@ acpi_status acpi_ex_system_wait_semaphore(acpi_semaphore semaphore, u16 timeout)
  *
  * FUNCTION:    acpi_ex_system_wait_mutex
  *
+<<<<<<< HEAD
  * PARAMETERS:  Mutex           - Mutex to wait on
  *              Timeout         - Max time to wait
+=======
+ * PARAMETERS:  mutex           - Mutex to wait on
+ *              timeout         - Max time to wait
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
  * DESCRIPTION: Implements a mutex wait with a check to see if the
+<<<<<<< HEAD
  *              mutex is available immediately.  If it is not, the
+=======
+ *              mutex is available immediately. If it is not, the
+>>>>>>> refs/remotes/origin/master
  *              interpreter is released before waiting.
  *
  ******************************************************************************/
@@ -152,7 +181,11 @@ acpi_status acpi_ex_system_wait_mutex(acpi_mutex mutex, u16 timeout)
  * DESCRIPTION: Suspend running thread for specified amount of time.
  *              Note: ACPI specification requires that Stall() does not
  *              relinquish the processor, and delays longer than 100 usec
+<<<<<<< HEAD
  *              should use Sleep() instead.  We allow stalls up to 255 usec
+=======
+ *              should use Sleep() instead. We allow stalls up to 255 usec
+>>>>>>> refs/remotes/origin/master
  *              for compatibility with other interpreters and existing BIOSs.
  *
  ******************************************************************************/
@@ -254,7 +287,11 @@ acpi_status acpi_ex_system_signal_event(union acpi_operand_object * obj_desc)
  * RETURN:      Status
  *
  * DESCRIPTION: Provides an access point to perform synchronization operations
+<<<<<<< HEAD
  *              within the AML.  This operation is a request to wait for an
+=======
+ *              within the AML. This operation is a request to wait for an
+>>>>>>> refs/remotes/origin/master
  *              event.
  *
  ******************************************************************************/

@@ -23,10 +23,28 @@
 #include <linux/pci.h>
 #include <linux/interrupt.h>
 #include <linux/serial_core.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/tty.h>
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tty.h>
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/ioport.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "timbuart.h"
 
@@ -88,16 +106,28 @@ static void timbuart_flush_buffer(struct uart_port *port)
 
 static void timbuart_rx_chars(struct uart_port *port)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty = port->state->port.tty;
+=======
+	struct tty_port *tport = &port->state->port;
+>>>>>>> refs/remotes/origin/master
 
 	while (ioread32(port->membase + TIMBUART_ISR) & RXDP) {
 		u8 ch = ioread8(port->membase + TIMBUART_RXFIFO);
 		port->icount.rx++;
+<<<<<<< HEAD
 		tty_insert_flip_char(tty, ch, TTY_NORMAL);
 	}
 
 	spin_unlock(&port->lock);
 	tty_flip_buffer_push(port->state->port.tty);
+=======
+		tty_insert_flip_char(tport, ch, TTY_NORMAL);
+	}
+
+	spin_unlock(&port->lock);
+	tty_flip_buffer_push(tport);
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&port->lock);
 
 	dev_dbg(port->dev, "%s - total read %d bytes\n",
@@ -159,7 +189,11 @@ static void timbuart_handle_tx_port(struct uart_port *port, u32 isr, u32 *ier)
 	dev_dbg(port->dev, "%s - leaving\n", __func__);
 }
 
+<<<<<<< HEAD
 void timbuart_handle_rx_port(struct uart_port *port, u32 isr, u32 *ier)
+=======
+static void timbuart_handle_rx_port(struct uart_port *port, u32 isr, u32 *ier)
+>>>>>>> refs/remotes/origin/master
 {
 	if (isr & RXFLAGS) {
 		/* Some RX status is set */
@@ -181,7 +215,11 @@ void timbuart_handle_rx_port(struct uart_port *port, u32 isr, u32 *ier)
 	dev_dbg(port->dev, "%s - leaving\n", __func__);
 }
 
+<<<<<<< HEAD
 void timbuart_tasklet(unsigned long arg)
+=======
+static void timbuart_tasklet(unsigned long arg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct timbuart_port *uart = (struct timbuart_port *)arg;
 	u32 isr, ier = 0;
@@ -423,7 +461,11 @@ static struct uart_driver timbuart_driver = {
 	.nr = 1
 };
 
+<<<<<<< HEAD
 static int __devinit timbuart_probe(struct platform_device *dev)
+=======
+static int timbuart_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, irq;
 	struct timbuart_port *uart;
@@ -489,7 +531,11 @@ err_mem:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit timbuart_remove(struct platform_device *dev)
+=======
+static int timbuart_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct timbuart_port *uart = platform_get_drvdata(dev);
 
@@ -507,9 +553,11 @@ static struct platform_driver timbuart_platform_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= timbuart_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(timbuart_remove),
 };
 
+<<<<<<< HEAD
 /*--------------------------------------------------------------------------*/
 
 static int __init timbuart_init(void)
@@ -524,6 +572,15 @@ static void __exit timbuart_exit(void)
 
 module_init(timbuart_init);
 module_exit(timbuart_exit);
+=======
+module_platform_driver(timbuart_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= timbuart_remove,
+};
+
+module_platform_driver(timbuart_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Timberdale UART driver");
 MODULE_LICENSE("GPL v2");

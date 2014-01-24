@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -74,7 +82,15 @@ u32 sps_mem_alloc_io(u32 bytes)
 		return SPS_ADDR_INVALID;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SPS_DBG("sps:sps_mem_alloc_io.phys=0x%x.virt=0x%x.size=0x%x.",
+=======
+	SPS_DBG2("sps:sps_mem_alloc_io.phys=0x%x.virt=0x%x.size=0x%x.",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:sps_mem_alloc_io.phys=0x%x.virt=0x%x.size=0x%x.",
+>>>>>>> refs/remotes/origin/cm-11.0
 		phys_addr, virt_addr, bytes);
 
 	return phys_addr;
@@ -91,7 +107,15 @@ void sps_mem_free_io(u32 phys_addr, u32 bytes)
 	iomem_offset = phys_addr - iomem_phys;
 	virt_addr = (u32) iomem_virt + iomem_offset;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SPS_DBG("sps:sps_mem_free_io.phys=0x%x.virt=0x%x.size=0x%x.",
+=======
+	SPS_DBG2("sps:sps_mem_free_io.phys=0x%x.virt=0x%x.size=0x%x.",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SPS_DBG2("sps:sps_mem_free_io.phys=0x%x.virt=0x%x.size=0x%x.",
+>>>>>>> refs/remotes/origin/cm-11.0
 		phys_addr, virt_addr, bytes);
 
 	gen_pool_free(pool, virt_addr, bytes);
@@ -104,6 +128,8 @@ void sps_mem_free_io(u32 phys_addr, u32 bytes)
  */
 int sps_mem_init(u32 pipemem_phys_base, u32 pipemem_size)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SPS_SUPPORT_NDP_BAM
 	int res;
 #endif
@@ -129,6 +155,37 @@ int sps_mem_init(u32 pipemem_phys_base, u32 pipemem_size)
 	SPS_DBG("sps:sps_mem_init.iomem_phys=0x%x,iomem_virt=0x%x.",
 		iomem_phys, (u32) iomem_virt);
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int res;
+
+	/* 2^8=128. The desc-fifo and data-fifo minimal allocation. */
+	int min_alloc_order = 8;
+
+	if ((d_type == 0) || (d_type == 2)) {
+		iomem_phys = pipemem_phys_base;
+		iomem_size = pipemem_size;
+
+		if (iomem_phys == 0) {
+			SPS_ERR("sps:Invalid Pipe-Mem address");
+			return SPS_ERROR;
+		} else {
+			iomem_virt = ioremap(iomem_phys, iomem_size);
+			if (!iomem_virt) {
+				SPS_ERR("sps:Failed to IO map pipe memory.\n");
+				return -ENOMEM;
+			}
+		}
+
+		iomem_offset = 0;
+		SPS_DBG("sps:sps_mem_init.iomem_phys=0x%x,iomem_virt=0x%x.",
+			iomem_phys, (u32) iomem_virt);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pool = gen_pool_create(min_alloc_order, nid);
 
@@ -137,11 +194,25 @@ int sps_mem_init(u32 pipemem_phys_base, u32 pipemem_size)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SPS_SUPPORT_NDP_BAM
 	res = gen_pool_add(pool, (u32) iomem_virt, iomem_size, nid);
 	if (res)
 		return res;
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if ((d_type == 0) || (d_type == 2)) {
+		res = gen_pool_add(pool, (u32) iomem_virt, iomem_size, nid);
+		if (res)
+			return res;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }

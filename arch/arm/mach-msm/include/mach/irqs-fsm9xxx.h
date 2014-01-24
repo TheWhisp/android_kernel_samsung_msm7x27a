@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -86,6 +94,14 @@
 #define INT_ADSP_A11		INT_Q6_SW_IRQ_0
 #define INT_ADSP_A11_SMSM	INT_ADSP_A11
 #define INT_SIRC_0		INT_PERPH_SUPSS_IRQ
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define WDT0_ACCSCSSNBARK_INT	INT_WDT0_ACCSCSSBARK
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WDT0_ACCSCSSNBARK_INT	INT_WDT0_ACCSCSSBARK
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define NR_MSM_IRQS		128
 #define NR_GPIO_IRQS		0

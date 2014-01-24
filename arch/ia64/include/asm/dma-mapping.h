@@ -23,23 +23,63 @@ extern void machvec_dma_sync_single(struct device *, dma_addr_t, size_t,
 extern void machvec_dma_sync_sg(struct device *, struct scatterlist *, int,
 				enum dma_data_direction);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void *dma_alloc_coherent(struct device *dev, size_t size,
 				       dma_addr_t *daddr, gfp_t gfp)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define dma_alloc_coherent(d,s,h,f)	dma_alloc_attrs(d,s,h,f,NULL)
+
+static inline void *dma_alloc_attrs(struct device *dev, size_t size,
+				    dma_addr_t *daddr, gfp_t gfp,
+				    struct dma_attrs *attrs)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct dma_map_ops *ops = platform_dma_get_ops(dev);
 	void *caddr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	caddr = ops->alloc_coherent(dev, size, daddr, gfp);
+=======
+	caddr = ops->alloc(dev, size, daddr, gfp, attrs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	caddr = ops->alloc(dev, size, daddr, gfp, attrs);
+>>>>>>> refs/remotes/origin/master
 	debug_dma_alloc_coherent(dev, size, *daddr, caddr);
 	return caddr;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void dma_free_coherent(struct device *dev, size_t size,
 				     void *caddr, dma_addr_t daddr)
 {
 	struct dma_map_ops *ops = platform_dma_get_ops(dev);
 	debug_dma_free_coherent(dev, size, caddr, daddr);
 	ops->free_coherent(dev, size, caddr, daddr);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define dma_free_coherent(d,s,c,h) dma_free_attrs(d,s,c,h,NULL)
+
+static inline void dma_free_attrs(struct device *dev, size_t size,
+				  void *caddr, dma_addr_t daddr,
+				  struct dma_attrs *attrs)
+{
+	struct dma_map_ops *ops = platform_dma_get_ops(dev);
+	debug_dma_free_coherent(dev, size, caddr, daddr);
+	ops->free(dev, size, caddr, daddr, attrs);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #define dma_alloc_noncoherent(d, s, h, f) dma_alloc_coherent(d, s, h, f)
@@ -52,6 +92,10 @@ static inline void dma_free_coherent(struct device *dev, size_t size,
 static inline int dma_mapping_error(struct device *dev, dma_addr_t daddr)
 {
 	struct dma_map_ops *ops = platform_dma_get_ops(dev);
+<<<<<<< HEAD
+=======
+	debug_dma_mapping_error(dev, daddr);
+>>>>>>> refs/remotes/origin/master
 	return ops->mapping_error(dev, daddr);
 }
 

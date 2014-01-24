@@ -4,7 +4,14 @@
  *
  * Copyright (C) 1996 Paul Mackerras.
  */
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+#ifndef _LINUX_CUDA_H
+#define _LINUX_CUDA_H
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* CUDA commands (2nd byte) */
 #define CUDA_WARM_START		0
 #define CUDA_AUTOPOLL		1
@@ -27,10 +34,26 @@
 #define CUDA_GET_SET_IIC	0x22
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_CUDA_H
+#define _LINUX_CUDA_H
+
+#include <uapi/linux/cuda.h>
+
+>>>>>>> refs/remotes/origin/master
 
 extern int find_via_cuda(void);
 extern int cuda_request(struct adb_request *req,
 			void (*done)(struct adb_request *), int nbytes, ...);
 extern void cuda_poll(void);
 
+<<<<<<< HEAD
 #endif	/* __KERNEL */
+<<<<<<< HEAD
+=======
+
+#endif /* _LINUX_CUDA_H */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* _LINUX_CUDA_H */
+>>>>>>> refs/remotes/origin/master

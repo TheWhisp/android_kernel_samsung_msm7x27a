@@ -3,6 +3,8 @@
  *
  * started by Don Zickus, Copyright (C) 2010 Red Hat, Inc.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * this code detects hard lockups: incidents in where on a CPU
  * the kernel does not respond to anything except NMI.
  *
@@ -12,6 +14,21 @@
  * to those contributors as well.
  */
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Note: Most of this code is borrowed heavily from the original softlockup
+ * detector, so thanks to Ingo for the initial implementation.
+ * Some chunks also taken from the old x86-specific nmi watchdog code, thanks
+ * to those contributors as well.
+ */
+
+#define pr_fmt(fmt) "NMI watchdog: " fmt
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/cpu.h>
 #include <linux/nmi.h>
@@ -23,22 +40,44 @@
 #include <linux/notifier.h>
 #include <linux/module.h>
 #include <linux/sysctl.h>
+<<<<<<< HEAD
 
 #include <asm/irq_regs.h>
 #include <linux/perf_event.h>
 
 int watchdog_enabled = 1;
 int __read_mostly watchdog_thresh = 10;
+=======
+#include <linux/smpboot.h>
+#include <linux/sched/rt.h>
+
+#include <asm/irq_regs.h>
+#include <linux/kvm_para.h>
+#include <linux/perf_event.h>
+
+int watchdog_user_enabled = 1;
+int __read_mostly watchdog_thresh = 10;
+static int __read_mostly watchdog_running;
+static u64 __read_mostly sample_period;
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_PER_CPU(unsigned long, watchdog_touch_ts);
 static DEFINE_PER_CPU(struct task_struct *, softlockup_watchdog);
 static DEFINE_PER_CPU(struct hrtimer, watchdog_hrtimer);
 static DEFINE_PER_CPU(bool, softlockup_touch_sync);
 static DEFINE_PER_CPU(bool, soft_watchdog_warn);
+<<<<<<< HEAD
 #ifdef CONFIG_HARDLOCKUP_DETECTOR
 static DEFINE_PER_CPU(bool, hard_watchdog_warn);
 static DEFINE_PER_CPU(bool, watchdog_nmi_touch);
 static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts);
+=======
+static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts);
+static DEFINE_PER_CPU(unsigned long, soft_lockup_hrtimer_cnt);
+#ifdef CONFIG_HARDLOCKUP_DETECTOR
+static DEFINE_PER_CPU(bool, hard_watchdog_warn);
+static DEFINE_PER_CPU(bool, watchdog_nmi_touch);
+>>>>>>> refs/remotes/origin/master
 static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts_saved);
 static DEFINE_PER_CPU(struct perf_event *, watchdog_ev);
 #endif
@@ -58,7 +97,11 @@ static int __init hardlockup_panic_setup(char *str)
 	else if (!strncmp(str, "nopanic", 7))
 		hardlockup_panic = 0;
 	else if (!strncmp(str, "0", 1))
+<<<<<<< HEAD
 		watchdog_enabled = 0;
+=======
+		watchdog_user_enabled = 0;
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 __setup("nmi_watchdog=", hardlockup_panic_setup);
@@ -77,7 +120,11 @@ __setup("softlockup_panic=", softlockup_panic_setup);
 
 static int __init nowatchdog_setup(char *str)
 {
+<<<<<<< HEAD
 	watchdog_enabled = 0;
+=======
+	watchdog_user_enabled = 0;
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 __setup("nowatchdog", nowatchdog_setup);
@@ -85,7 +132,11 @@ __setup("nowatchdog", nowatchdog_setup);
 /* deprecated */
 static int __init nosoftlockup_setup(char *str)
 {
+<<<<<<< HEAD
 	watchdog_enabled = 0;
+=======
+	watchdog_user_enabled = 0;
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 __setup("nosoftlockup", nosoftlockup_setup);
@@ -108,28 +159,63 @@ static int get_softlockup_thresh(void)
  * resolution, and we don't need to waste time with a big divide when
  * 2^30ns == 1.074s.
  */
+<<<<<<< HEAD
 static unsigned long get_timestamp(int this_cpu)
 {
 	return cpu_clock(this_cpu) >> 30LL;  /* 2^30 ~= 10^9 */
 }
 
 static u64 get_sample_period(void)
+<<<<<<< HEAD
 {
 	/*
 	 * convert watchdog_thresh from seconds to ns
+<<<<<<< HEAD
 	 * the divide by 5 is to give hrtimer 5 chances to
 	 * increment before the hardlockup detector generates
 	 * a warning
+=======
+=======
+static unsigned long get_timestamp(void)
+{
+	return local_clock() >> 30LL;  /* 2^30 ~= 10^9 */
+}
+
+static void set_sample_period(void)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+{
+	/*
+	 * convert watchdog_thresh from seconds to ns
+>>>>>>> refs/remotes/origin/master
+	 * the divide by 5 is to give hrtimer several chances (two
+	 * or three with the current relation between the soft
+	 * and hard thresholds) to increment before the
+	 * hardlockup detector generates a warning
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	return get_softlockup_thresh() * ((u64)NSEC_PER_SEC / 5);
+=======
+	 */
+<<<<<<< HEAD
+	sample_period = get_softlockup_thresh() * ((u64)NSEC_PER_SEC / 5);
+>>>>>>> refs/remotes/origin/master
+=======
+	return get_softlockup_thresh() * ((u64)NSEC_PER_SEC / 5);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* Commands for resetting the watchdog */
 static void __touch_watchdog(void)
 {
+<<<<<<< HEAD
 	int this_cpu = smp_processor_id();
 
 	__this_cpu_write(watchdog_touch_ts, get_timestamp(this_cpu));
+=======
+	__this_cpu_write(watchdog_touch_ts, get_timestamp());
+>>>>>>> refs/remotes/origin/master
 }
 
 void touch_softlockup_watchdog(void)
@@ -154,7 +240,11 @@ void touch_all_softlockup_watchdogs(void)
 #ifdef CONFIG_HARDLOCKUP_DETECTOR
 void touch_nmi_watchdog(void)
 {
+<<<<<<< HEAD
 	if (watchdog_enabled) {
+=======
+	if (watchdog_user_enabled) {
+>>>>>>> refs/remotes/origin/master
 		unsigned cpu;
 
 		for_each_present_cpu(cpu) {
@@ -190,7 +280,11 @@ static int is_hardlockup(void)
 
 static int is_softlockup(unsigned long touch_ts)
 {
+<<<<<<< HEAD
 	unsigned long now = get_timestamp(smp_processor_id());
+=======
+	unsigned long now = get_timestamp();
+>>>>>>> refs/remotes/origin/master
 
 	/* Warn about unreasonable delays: */
 	if (time_after(now, touch_ts + get_softlockup_thresh()))
@@ -200,6 +294,14 @@ static int is_softlockup(unsigned long touch_ts)
 }
 
 #ifdef CONFIG_HARDLOCKUP_DETECTOR
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 static struct perf_event_attr wd_hw_attr = {
 	.type		= PERF_TYPE_HARDWARE,
 	.config		= PERF_COUNT_HW_CPU_CYCLES,
@@ -209,7 +311,15 @@ static struct perf_event_attr wd_hw_attr = {
 };
 
 /* Callback function for perf event subsystem */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void watchdog_overflow_callback(struct perf_event *event, int nmi,
+=======
+static void watchdog_overflow_callback(struct perf_event *event,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void watchdog_overflow_callback(struct perf_event *event,
+>>>>>>> refs/remotes/origin/master
 		 struct perf_sample_data *data,
 		 struct pt_regs *regs)
 {
@@ -246,13 +356,24 @@ static void watchdog_overflow_callback(struct perf_event *event, int nmi,
 	__this_cpu_write(hard_watchdog_warn, false);
 	return;
 }
+<<<<<<< HEAD
+=======
+#endif /* CONFIG_HARDLOCKUP_DETECTOR */
+
+>>>>>>> refs/remotes/origin/master
 static void watchdog_interrupt_count(void)
 {
 	__this_cpu_inc(hrtimer_interrupts);
 }
+<<<<<<< HEAD
 #else
 static inline void watchdog_interrupt_count(void) { return; }
 #endif /* CONFIG_HARDLOCKUP_DETECTOR */
+=======
+
+static int watchdog_nmi_enable(unsigned int cpu);
+static void watchdog_nmi_disable(unsigned int cpu);
+>>>>>>> refs/remotes/origin/master
 
 /* watchdog kicker functions */
 static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
@@ -268,7 +389,11 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
 	wake_up_process(__this_cpu_read(softlockup_watchdog));
 
 	/* .. and repeat */
+<<<<<<< HEAD
 	hrtimer_forward_now(hrtimer, ns_to_ktime(get_sample_period()));
+=======
+	hrtimer_forward_now(hrtimer, ns_to_ktime(sample_period));
+>>>>>>> refs/remotes/origin/master
 
 	if (touch_ts == 0) {
 		if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
@@ -279,6 +404,12 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
 			__this_cpu_write(softlockup_touch_sync, false);
 			sched_clock_tick();
 		}
+<<<<<<< HEAD
+=======
+
+		/* Clear the guest paused flag on watchdog reset */
+		kvm_check_and_clear_guest_paused();
+>>>>>>> refs/remotes/origin/master
 		__touch_watchdog();
 		return HRTIMER_RESTART;
 	}
@@ -291,11 +422,30 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
 	 */
 	duration = is_softlockup(touch_ts);
 	if (unlikely(duration)) {
+<<<<<<< HEAD
+=======
+		/*
+		 * If a virtual machine is stopped by the host it can look to
+		 * the watchdog like a soft lockup, check to see if the host
+		 * stopped the vm before we issue the warning
+		 */
+		if (kvm_check_and_clear_guest_paused())
+			return HRTIMER_RESTART;
+
+>>>>>>> refs/remotes/origin/master
 		/* only warn once */
 		if (__this_cpu_read(soft_watchdog_warn) == true)
 			return HRTIMER_RESTART;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
+=======
+		printk(KERN_EMERG "BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_EMERG "BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
+>>>>>>> refs/remotes/origin/master
 			smp_processor_id(), duration,
 			current->comm, task_pid_nr(current));
 		print_modules();
@@ -314,17 +464,24 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
 	return HRTIMER_RESTART;
 }
 
+<<<<<<< HEAD
 
 /*
  * The watchdog thread - touches the timestamp.
  */
 static int watchdog(void *unused)
 {
+<<<<<<< HEAD
 	static struct sched_param param = { .sched_priority = MAX_RT_PRIO-1 };
 	struct hrtimer *hrtimer = &__raw_get_cpu_var(watchdog_hrtimer);
 
 	sched_setscheduler(current, SCHED_FIFO, &param);
 
+=======
+	struct sched_param param = { .sched_priority = 0 };
+	struct hrtimer *hrtimer = &__raw_get_cpu_var(watchdog_hrtimer);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* initialize timestamp */
 	__touch_watchdog();
 
@@ -335,9 +492,17 @@ static int watchdog(void *unused)
 
 	set_current_state(TASK_INTERRUPTIBLE);
 	/*
+<<<<<<< HEAD
 	 * Run briefly once per second to reset the softlockup timestamp.
 	 * If this gets delayed for more than 60 seconds then the
 	 * debug-printout triggers in watchdog_timer_fn().
+=======
+	 * Run briefly (kicked by the hrtimer callback function) once every
+	 * get_sample_period() seconds (4 seconds by default) to reset the
+	 * softlockup timestamp. If this gets delayed for more than
+	 * 2*watchdog_thresh seconds then the debug-printout triggers in
+	 * watchdog_timer_fn().
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	while (!kthread_should_stop()) {
 		__touch_watchdog();
@@ -348,14 +513,97 @@ static int watchdog(void *unused)
 
 		set_current_state(TASK_INTERRUPTIBLE);
 	}
+<<<<<<< HEAD
 	__set_current_state(TASK_RUNNING);
 
+=======
+	/*
+	 * Drop the policy/priority elevation during thread exit to avoid a
+	 * scheduling latency spike.
+	 */
+	__set_current_state(TASK_RUNNING);
+	sched_setscheduler(current, SCHED_NORMAL, &param);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 
 #ifdef CONFIG_HARDLOCKUP_DETECTOR
 static int watchdog_nmi_enable(int cpu)
+=======
+static void watchdog_set_prio(unsigned int policy, unsigned int prio)
+{
+	struct sched_param param = { .sched_priority = prio };
+
+	sched_setscheduler(current, policy, &param);
+}
+
+static void watchdog_enable(unsigned int cpu)
+{
+	struct hrtimer *hrtimer = &__raw_get_cpu_var(watchdog_hrtimer);
+
+	/* kick off the timer for the hardlockup detector */
+	hrtimer_init(hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+	hrtimer->function = watchdog_timer_fn;
+
+	/* Enable the perf event */
+	watchdog_nmi_enable(cpu);
+
+	/* done here because hrtimer_start can only pin to smp_processor_id() */
+	hrtimer_start(hrtimer, ns_to_ktime(sample_period),
+		      HRTIMER_MODE_REL_PINNED);
+
+	/* initialize timestamp */
+	watchdog_set_prio(SCHED_FIFO, MAX_RT_PRIO - 1);
+	__touch_watchdog();
+}
+
+static void watchdog_disable(unsigned int cpu)
+{
+	struct hrtimer *hrtimer = &__raw_get_cpu_var(watchdog_hrtimer);
+
+	watchdog_set_prio(SCHED_NORMAL, 0);
+	hrtimer_cancel(hrtimer);
+	/* disable the perf event */
+	watchdog_nmi_disable(cpu);
+}
+
+static void watchdog_cleanup(unsigned int cpu, bool online)
+{
+	watchdog_disable(cpu);
+}
+
+static int watchdog_should_run(unsigned int cpu)
+{
+	return __this_cpu_read(hrtimer_interrupts) !=
+		__this_cpu_read(soft_lockup_hrtimer_cnt);
+}
+
+/*
+ * The watchdog thread function - touches the timestamp.
+ *
+ * It only runs once every sample_period seconds (4 seconds by
+ * default) to reset the softlockup timestamp. If this gets delayed
+ * for more than 2*watchdog_thresh seconds then the debug-printout
+ * triggers in watchdog_timer_fn().
+ */
+static void watchdog(unsigned int cpu)
+{
+	__this_cpu_write(soft_lockup_hrtimer_cnt,
+			 __this_cpu_read(hrtimer_interrupts));
+	__touch_watchdog();
+}
+
+#ifdef CONFIG_HARDLOCKUP_DETECTOR
+/*
+ * People like the simple clean cpu node info on boot.
+ * Reduce the watchdog noise by only printing messages
+ * that are different from what cpu0 displayed.
+ */
+static unsigned long cpu0_err;
+
+static int watchdog_nmi_enable(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct perf_event_attr *wd_attr;
 	struct perf_event *event = per_cpu(watchdog_ev, cpu);
@@ -368,23 +616,70 @@ static int watchdog_nmi_enable(int cpu)
 	if (event != NULL)
 		goto out_enable;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Try to register using hardware perf events */
 	wd_attr = &wd_hw_attr;
 	wd_attr->sample_period = hw_nmi_get_sample_period(watchdog_thresh);
 	event = perf_event_create_kernel_counter(wd_attr, cpu, NULL, watchdog_overflow_callback);
 	if (!IS_ERR(event)) {
 		printk(KERN_INFO "NMI watchdog enabled, takes one hw-pmu counter.\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	wd_attr = &wd_hw_attr;
+	wd_attr->sample_period = hw_nmi_get_sample_period(watchdog_thresh);
+
+	/* Try to register using hardware perf events */
+	event = perf_event_create_kernel_counter(wd_attr, cpu, NULL, watchdog_overflow_callback, NULL);
+<<<<<<< HEAD
+	if (!IS_ERR(event)) {
+		pr_info("enabled, takes one hw-pmu counter.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_save;
 	}
 
 
 	/* vary the KERN level based on the returned errno */
 	if (PTR_ERR(event) == -EOPNOTSUPP)
+<<<<<<< HEAD
 		printk(KERN_INFO "NMI watchdog disabled (cpu%i): not supported (no LAPIC?)\n", cpu);
 	else if (PTR_ERR(event) == -ENOENT)
 		printk(KERN_WARNING "NMI watchdog disabled (cpu%i): hardware events not enabled\n", cpu);
 	else
 		printk(KERN_ERR "NMI watchdog disabled (cpu%i): unable to create perf event: %ld\n", cpu, PTR_ERR(event));
+=======
+=======
+
+	/* save cpu0 error for future comparision */
+	if (cpu == 0 && IS_ERR(event))
+		cpu0_err = PTR_ERR(event);
+
+	if (!IS_ERR(event)) {
+		/* only print for cpu0 or different than cpu0 */
+		if (cpu == 0 || cpu0_err)
+			pr_info("enabled on all CPUs, permanently consumes one hw-PMU counter.\n");
+		goto out_save;
+	}
+
+	/* skip displaying the same error again */
+	if (cpu > 0 && (PTR_ERR(event) == cpu0_err))
+		return PTR_ERR(event);
+
+	/* vary the KERN level based on the returned errno */
+	if (PTR_ERR(event) == -EOPNOTSUPP)
+>>>>>>> refs/remotes/origin/master
+		pr_info("disabled (cpu%i): not supported (no LAPIC?)\n", cpu);
+	else if (PTR_ERR(event) == -ENOENT)
+		pr_warning("disabled (cpu%i): hardware events not enabled\n",
+			 cpu);
+	else
+		pr_err("disabled (cpu%i): unable to create perf event: %ld\n",
+			cpu, PTR_ERR(event));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return PTR_ERR(event);
 
 	/* success path */
@@ -396,7 +691,11 @@ out:
 	return 0;
 }
 
+<<<<<<< HEAD
 static void watchdog_nmi_disable(int cpu)
+=======
+static void watchdog_nmi_disable(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct perf_event *event = per_cpu(watchdog_ev, cpu);
 
@@ -410,6 +709,7 @@ static void watchdog_nmi_disable(int cpu)
 	return;
 }
 #else
+<<<<<<< HEAD
 static int watchdog_nmi_enable(int cpu) { return 0; }
 static void watchdog_nmi_disable(int cpu) { return; }
 #endif /* CONFIG_HARDLOCKUP_DETECTOR */
@@ -436,9 +736,16 @@ static int watchdog_enable(int cpu)
 
 	/* create the watchdog thread */
 	if (!p) {
+<<<<<<< HEAD
 		p = kthread_create(watchdog, (void *)(unsigned long)cpu, "watchdog/%d", cpu);
 		if (IS_ERR(p)) {
 			printk(KERN_ERR "softlockup watchdog for %i failed\n", cpu);
+=======
+		struct sched_param param = { .sched_priority = MAX_RT_PRIO-1 };
+		p = kthread_create_on_node(watchdog, NULL, cpu_to_node(cpu), "watchdog/%d", cpu);
+		if (IS_ERR(p)) {
+			pr_err("softlockup watchdog for %i failed\n", cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (!err) {
 				/* if hardlockup hasn't already set this */
 				err = PTR_ERR(p);
@@ -447,6 +754,10 @@ static int watchdog_enable(int cpu)
 			}
 			goto out;
 		}
+<<<<<<< HEAD
+=======
+		sched_setscheduler(p, SCHED_FIFO, &param);
+>>>>>>> refs/remotes/origin/cm-10.0
 		kthread_bind(p, cpu);
 		per_cpu(watchdog_touch_ts, cpu) = 0;
 		per_cpu(softlockup_watchdog, cpu) = p;
@@ -478,6 +789,11 @@ static void watchdog_disable(int cpu)
 	}
 }
 
+<<<<<<< HEAD
+=======
+/* sysctl functions */
+#ifdef CONFIG_SYSCTL
+>>>>>>> refs/remotes/origin/cm-10.0
 static void watchdog_enable_all_cpus(void)
 {
 	int cpu;
@@ -491,7 +807,11 @@ static void watchdog_enable_all_cpus(void)
 			watchdog_enabled = 1;
 
 	if (!watchdog_enabled)
+<<<<<<< HEAD
 		printk(KERN_ERR "watchdog: failed to be enabled on some cpus\n");
+=======
+		pr_err("failed to be enabled on some cpus\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 }
 
@@ -507,8 +827,101 @@ static void watchdog_disable_all_cpus(void)
 }
 
 
+<<<<<<< HEAD
 /* sysctl functions */
 #ifdef CONFIG_SYSCTL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int watchdog_nmi_enable(unsigned int cpu) { return 0; }
+static void watchdog_nmi_disable(unsigned int cpu) { return; }
+#endif /* CONFIG_HARDLOCKUP_DETECTOR */
+
+static struct smp_hotplug_thread watchdog_threads = {
+	.store			= &softlockup_watchdog,
+	.thread_should_run	= watchdog_should_run,
+	.thread_fn		= watchdog,
+	.thread_comm		= "watchdog/%u",
+	.setup			= watchdog_enable,
+	.cleanup		= watchdog_cleanup,
+	.park			= watchdog_disable,
+	.unpark			= watchdog_enable,
+};
+
+static void restart_watchdog_hrtimer(void *info)
+{
+	struct hrtimer *hrtimer = &__raw_get_cpu_var(watchdog_hrtimer);
+	int ret;
+
+	/*
+	 * No need to cancel and restart hrtimer if it is currently executing
+	 * because it will reprogram itself with the new period now.
+	 * We should never see it unqueued here because we are running per-cpu
+	 * with interrupts disabled.
+	 */
+	ret = hrtimer_try_to_cancel(hrtimer);
+	if (ret == 1)
+		hrtimer_start(hrtimer, ns_to_ktime(sample_period),
+				HRTIMER_MODE_REL_PINNED);
+}
+
+static void update_timers(int cpu)
+{
+	struct call_single_data data = {.func = restart_watchdog_hrtimer};
+	/*
+	 * Make sure that perf event counter will adopt to a new
+	 * sampling period. Updating the sampling period directly would
+	 * be much nicer but we do not have an API for that now so
+	 * let's use a big hammer.
+	 * Hrtimer will adopt the new period on the next tick but this
+	 * might be late already so we have to restart the timer as well.
+	 */
+	watchdog_nmi_disable(cpu);
+	__smp_call_function_single(cpu, &data, 1);
+	watchdog_nmi_enable(cpu);
+}
+
+static void update_timers_all_cpus(void)
+{
+	int cpu;
+
+	get_online_cpus();
+	preempt_disable();
+	for_each_online_cpu(cpu)
+		update_timers(cpu);
+	preempt_enable();
+	put_online_cpus();
+}
+
+static int watchdog_enable_all_cpus(bool sample_period_changed)
+{
+	int err = 0;
+
+	if (!watchdog_running) {
+		err = smpboot_register_percpu_thread(&watchdog_threads);
+		if (err)
+			pr_err("Failed to create watchdog threads, disabled\n");
+		else
+			watchdog_running = 1;
+	} else if (sample_period_changed) {
+		update_timers_all_cpus();
+	}
+
+	return err;
+}
+
+/* prepare/enable/disable routines */
+/* sysctl functions */
+#ifdef CONFIG_SYSCTL
+static void watchdog_disable_all_cpus(void)
+{
+	if (watchdog_running) {
+		watchdog_running = 0;
+		smpboot_unregister_percpu_thread(&watchdog_threads);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * proc handler for /proc/sys/kernel/nmi_watchdog,watchdog_thresh
  */
@@ -516,6 +929,7 @@ static void watchdog_disable_all_cpus(void)
 int proc_dowatchdog(struct ctl_table *table, int write,
 		    void __user *buffer, size_t *lenp, loff_t *ppos)
 {
+<<<<<<< HEAD
 	int ret;
 
 	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
@@ -587,4 +1001,45 @@ void __init lockup_detector_init(void)
 	register_cpu_notifier(&cpu_nfb);
 
 	return;
+=======
+	int err, old_thresh, old_enabled;
+	static DEFINE_MUTEX(watchdog_proc_mutex);
+
+	mutex_lock(&watchdog_proc_mutex);
+	old_thresh = ACCESS_ONCE(watchdog_thresh);
+	old_enabled = ACCESS_ONCE(watchdog_user_enabled);
+
+	err = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+	if (err || !write)
+		goto out;
+
+	set_sample_period();
+	/*
+	 * Watchdog threads shouldn't be enabled if they are
+	 * disabled. The 'watchdog_running' variable check in
+	 * watchdog_*_all_cpus() function takes care of this.
+	 */
+	if (watchdog_user_enabled && watchdog_thresh)
+		err = watchdog_enable_all_cpus(old_thresh != watchdog_thresh);
+	else
+		watchdog_disable_all_cpus();
+
+	/* Restore old values on failure */
+	if (err) {
+		watchdog_thresh = old_thresh;
+		watchdog_user_enabled = old_enabled;
+	}
+out:
+	mutex_unlock(&watchdog_proc_mutex);
+	return err;
+}
+#endif /* CONFIG_SYSCTL */
+
+void __init lockup_detector_init(void)
+{
+	set_sample_period();
+
+	if (watchdog_user_enabled)
+		watchdog_enable_all_cpus(false);
+>>>>>>> refs/remotes/origin/master
 }

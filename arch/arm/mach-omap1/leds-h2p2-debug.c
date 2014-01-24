@@ -9,6 +9,10 @@
  * The "surfer" expansion board and H2 sample board also have two-color
  * green+red LEDs (in parallel), used here for timer and idle indicators.
  */
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/kernel_stat.h>
 #include <linux/sched.h>
@@ -16,11 +20,17 @@
 
 #include <mach/hardware.h>
 #include <asm/leds.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/mach-types.h>
 
 #include <plat/fpga.h>
 #include <mach/gpio.h>
+=======
+#include <asm/mach-types.h>
+
+#include <plat/fpga.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "leds.h"
 

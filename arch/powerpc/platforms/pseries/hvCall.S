@@ -13,8 +13,11 @@
 #include <asm/asm-offsets.h>
 #include <asm/ptrace.h>
 	
+<<<<<<< HEAD
 #define STK_PARM(i)     (48 + ((i)-3)*8)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TRACEPOINTS
 
 	.section	".toc","aw"
@@ -26,7 +29,11 @@ hcall_tracepoint_refcount:
 	.section	".text"
 
 /*
+<<<<<<< HEAD
  * precall must preserve all registers.  use unused STK_PARM()
+=======
+ * precall must preserve all registers.  use unused STK_PARAM()
+>>>>>>> refs/remotes/origin/master
  * areas to save snapshots and opcode. We branch around this
  * in early init (eg when populating the MMU hashtable) by using an
  * unconditional cpu feature.
@@ -36,6 +43,11 @@ BEGIN_FTR_SECTION;						\
 	b	1f;						\
 END_FTR_SECTION(0, 1);						\
 	ld      r12,hcall_tracepoint_refcount@toc(r2);		\
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	std	r12,32(r1);					\
+>>>>>>> refs/remotes/origin/cm-10.0
 	cmpdi	r12,0;						\
 	beq+	1f;						\
 	mflr	r0;						\
@@ -49,10 +61,27 @@ END_FTR_SECTION(0, 1);						\
 	std	r10,STK_PARM(r10)(r1);				\
 	std	r0,16(r1);					\
 	addi	r4,r1,STK_PARM(FIRST_REG);			\
+=======
+	std	r12,32(r1);					\
+	cmpdi	r12,0;						\
+	beq+	1f;						\
+	mflr	r0;						\
+	std	r3,STK_PARAM(R3)(r1);				\
+	std	r4,STK_PARAM(R4)(r1);				\
+	std	r5,STK_PARAM(R5)(r1);				\
+	std	r6,STK_PARAM(R6)(r1);				\
+	std	r7,STK_PARAM(R7)(r1);				\
+	std	r8,STK_PARAM(R8)(r1);				\
+	std	r9,STK_PARAM(R9)(r1);				\
+	std	r10,STK_PARAM(R10)(r1);				\
+	std	r0,16(r1);					\
+	addi	r4,r1,STK_PARAM(FIRST_REG);			\
+>>>>>>> refs/remotes/origin/master
 	stdu	r1,-STACK_FRAME_OVERHEAD(r1);			\
 	bl	.__trace_hcall_entry;				\
 	addi	r1,r1,STACK_FRAME_OVERHEAD;			\
 	ld	r0,16(r1);					\
+<<<<<<< HEAD
 	ld	r3,STK_PARM(r3)(r1);				\
 	ld	r4,STK_PARM(r4)(r1);				\
 	ld	r5,STK_PARM(r5)(r1);				\
@@ -61,6 +90,16 @@ END_FTR_SECTION(0, 1);						\
 	ld	r8,STK_PARM(r8)(r1);				\
 	ld	r9,STK_PARM(r9)(r1);				\
 	ld	r10,STK_PARM(r10)(r1);				\
+=======
+	ld	r3,STK_PARAM(R3)(r1);				\
+	ld	r4,STK_PARAM(R4)(r1);				\
+	ld	r5,STK_PARAM(R5)(r1);				\
+	ld	r6,STK_PARAM(R6)(r1);				\
+	ld	r7,STK_PARAM(R7)(r1);				\
+	ld	r8,STK_PARAM(R8)(r1);				\
+	ld	r9,STK_PARAM(R9)(r1);				\
+	ld	r10,STK_PARAM(R10)(r1);				\
+>>>>>>> refs/remotes/origin/master
 	mtlr	r0;						\
 1:
 
@@ -74,12 +113,25 @@ END_FTR_SECTION(0, 1);						\
 BEGIN_FTR_SECTION;						\
 	b	1f;						\
 END_FTR_SECTION(0, 1);						\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ld      r12,hcall_tracepoint_refcount@toc(r2);		\
+=======
+	ld      r12,32(r1);					\
+>>>>>>> refs/remotes/origin/cm-10.0
 	cmpdi	r12,0;						\
 	beq+	1f;						\
 	mflr	r0;						\
 	ld	r6,STK_PARM(r3)(r1);				\
 	std	r3,STK_PARM(r3)(r1);				\
+=======
+	ld      r12,32(r1);					\
+	cmpdi	r12,0;						\
+	beq+	1f;						\
+	mflr	r0;						\
+	ld	r6,STK_PARAM(R3)(r1);				\
+	std	r3,STK_PARAM(R3)(r1);				\
+>>>>>>> refs/remotes/origin/master
 	mr	r4,r3;						\
 	mr	r3,r6;						\
 	std	r0,16(r1);					\
@@ -87,7 +139,11 @@ END_FTR_SECTION(0, 1);						\
 	bl	.__trace_hcall_exit;				\
 	addi	r1,r1,STACK_FRAME_OVERHEAD;			\
 	ld	r0,16(r1);					\
+<<<<<<< HEAD
 	ld	r3,STK_PARM(r3)(r1);				\
+=======
+	ld	r3,STK_PARAM(R3)(r1);				\
+>>>>>>> refs/remotes/origin/master
 	mtlr	r0;						\
 1:
 
@@ -113,7 +169,11 @@ _GLOBAL(plpar_hcall_norets)
 	mfcr	r0
 	stw	r0,8(r1)
 
+<<<<<<< HEAD
 	HCALL_INST_PRECALL(r4)
+=======
+	HCALL_INST_PRECALL(R4)
+>>>>>>> refs/remotes/origin/master
 
 	HVSC				/* invoke the hypervisor */
 
@@ -129,9 +189,15 @@ _GLOBAL(plpar_hcall)
 	mfcr	r0
 	stw	r0,8(r1)
 
+<<<<<<< HEAD
 	HCALL_INST_PRECALL(r5)
 
 	std     r4,STK_PARM(r4)(r1)     /* Save ret buffer */
+=======
+	HCALL_INST_PRECALL(R5)
+
+	std     r4,STK_PARAM(R4)(r1)     /* Save ret buffer */
+>>>>>>> refs/remotes/origin/master
 
 	mr	r4,r5
 	mr	r5,r6
@@ -142,7 +208,11 @@ _GLOBAL(plpar_hcall)
 
 	HVSC				/* invoke the hypervisor */
 
+<<<<<<< HEAD
 	ld	r12,STK_PARM(r4)(r1)
+=======
+	ld	r12,STK_PARAM(R4)(r1)
+>>>>>>> refs/remotes/origin/master
 	std	r4,  0(r12)
 	std	r5,  8(r12)
 	std	r6, 16(r12)
@@ -167,7 +237,11 @@ _GLOBAL(plpar_hcall_raw)
 	mfcr	r0
 	stw	r0,8(r1)
 
+<<<<<<< HEAD
 	std     r4,STK_PARM(r4)(r1)     /* Save ret buffer */
+=======
+	std     r4,STK_PARAM(R4)(r1)     /* Save ret buffer */
+>>>>>>> refs/remotes/origin/master
 
 	mr	r4,r5
 	mr	r5,r6
@@ -178,7 +252,11 @@ _GLOBAL(plpar_hcall_raw)
 
 	HVSC				/* invoke the hypervisor */
 
+<<<<<<< HEAD
 	ld	r12,STK_PARM(r4)(r1)
+=======
+	ld	r12,STK_PARAM(R4)(r1)
+>>>>>>> refs/remotes/origin/master
 	std	r4,  0(r12)
 	std	r5,  8(r12)
 	std	r6, 16(r12)
@@ -195,9 +273,15 @@ _GLOBAL(plpar_hcall9)
 	mfcr	r0
 	stw	r0,8(r1)
 
+<<<<<<< HEAD
 	HCALL_INST_PRECALL(r5)
 
 	std     r4,STK_PARM(r4)(r1)     /* Save ret buffer */
+=======
+	HCALL_INST_PRECALL(R5)
+
+	std     r4,STK_PARAM(R4)(r1)     /* Save ret buffer */
+>>>>>>> refs/remotes/origin/master
 
 	mr	r4,r5
 	mr	r5,r6
@@ -205,14 +289,24 @@ _GLOBAL(plpar_hcall9)
 	mr	r7,r8
 	mr	r8,r9
 	mr	r9,r10
+<<<<<<< HEAD
 	ld	r10,STK_PARM(r11)(r1)	 /* put arg7 in R10 */
 	ld	r11,STK_PARM(r12)(r1)	 /* put arg8 in R11 */
 	ld	r12,STK_PARM(r13)(r1)    /* put arg9 in R12 */
+=======
+	ld	r10,STK_PARAM(R11)(r1)	 /* put arg7 in R10 */
+	ld	r11,STK_PARAM(R12)(r1)	 /* put arg8 in R11 */
+	ld	r12,STK_PARAM(R13)(r1)    /* put arg9 in R12 */
+>>>>>>> refs/remotes/origin/master
 
 	HVSC				/* invoke the hypervisor */
 
 	mr	r0,r12
+<<<<<<< HEAD
 	ld	r12,STK_PARM(r4)(r1)
+=======
+	ld	r12,STK_PARAM(R4)(r1)
+>>>>>>> refs/remotes/origin/master
 	std	r4,  0(r12)
 	std	r5,  8(r12)
 	std	r6, 16(r12)
@@ -237,7 +331,11 @@ _GLOBAL(plpar_hcall9_raw)
 	mfcr	r0
 	stw	r0,8(r1)
 
+<<<<<<< HEAD
 	std     r4,STK_PARM(r4)(r1)     /* Save ret buffer */
+=======
+	std     r4,STK_PARAM(R4)(r1)     /* Save ret buffer */
+>>>>>>> refs/remotes/origin/master
 
 	mr	r4,r5
 	mr	r5,r6
@@ -245,14 +343,24 @@ _GLOBAL(plpar_hcall9_raw)
 	mr	r7,r8
 	mr	r8,r9
 	mr	r9,r10
+<<<<<<< HEAD
 	ld	r10,STK_PARM(r11)(r1)	 /* put arg7 in R10 */
 	ld	r11,STK_PARM(r12)(r1)	 /* put arg8 in R11 */
 	ld	r12,STK_PARM(r13)(r1)    /* put arg9 in R12 */
+=======
+	ld	r10,STK_PARAM(R11)(r1)	 /* put arg7 in R10 */
+	ld	r11,STK_PARAM(R12)(r1)	 /* put arg8 in R11 */
+	ld	r12,STK_PARAM(R13)(r1)    /* put arg9 in R12 */
+>>>>>>> refs/remotes/origin/master
 
 	HVSC				/* invoke the hypervisor */
 
 	mr	r0,r12
+<<<<<<< HEAD
 	ld	r12,STK_PARM(r4)(r1)
+=======
+	ld	r12,STK_PARAM(R4)(r1)
+>>>>>>> refs/remotes/origin/master
 	std	r4,  0(r12)
 	std	r5,  8(r12)
 	std	r6, 16(r12)

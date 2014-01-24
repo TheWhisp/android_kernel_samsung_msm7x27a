@@ -8,7 +8,11 @@
 
 struct pt_regs;
 
+<<<<<<< HEAD
 TRACE_EVENT(irq_entry,
+=======
+DECLARE_EVENT_CLASS(ppc64_interrupt_class,
+>>>>>>> refs/remotes/origin/master
 
 	TP_PROTO(struct pt_regs *regs),
 
@@ -25,6 +29,7 @@ TRACE_EVENT(irq_entry,
 	TP_printk("pt_regs=%p", __entry->regs)
 );
 
+<<<<<<< HEAD
 TRACE_EVENT(irq_exit,
 
 	TP_PROTO(struct pt_regs *regs),
@@ -74,6 +79,34 @@ TRACE_EVENT(timer_interrupt_exit,
 	),
 
 	TP_printk("pt_regs=%p", __entry->regs)
+=======
+DEFINE_EVENT(ppc64_interrupt_class, irq_entry,
+
+	TP_PROTO(struct pt_regs *regs),
+
+	TP_ARGS(regs)
+);
+
+DEFINE_EVENT(ppc64_interrupt_class, irq_exit,
+
+	TP_PROTO(struct pt_regs *regs),
+
+	TP_ARGS(regs)
+);
+
+DEFINE_EVENT(ppc64_interrupt_class, timer_interrupt_entry,
+
+	TP_PROTO(struct pt_regs *regs),
+
+	TP_ARGS(regs)
+);
+
+DEFINE_EVENT(ppc64_interrupt_class, timer_interrupt_exit,
+
+	TP_PROTO(struct pt_regs *regs),
+
+	TP_ARGS(regs)
+>>>>>>> refs/remotes/origin/master
 );
 
 #ifdef CONFIG_PPC_PSERIES

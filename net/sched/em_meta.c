@@ -264,7 +264,11 @@ META_COLLECTOR(int_rtiif)
 	if (unlikely(skb_rtable(skb) == NULL))
 		*err = -1;
 	else
+<<<<<<< HEAD
 		dst->value = skb_rtable(skb)->rt_iif;
+=======
+		dst->value = inet_iif(skb);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**************************************************************************
@@ -404,12 +408,18 @@ META_COLLECTOR(int_sk_alloc)
 	dst->value = (__force int) skb->sk->sk_allocation;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 META_COLLECTOR(int_sk_route_caps)
 {
 	SKIP_NONLOCAL(skb);
 	dst->value = skb->sk->sk_route_caps;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 META_COLLECTOR(int_sk_hash)
 {
 	SKIP_NONLOCAL(skb);
@@ -467,7 +477,11 @@ META_COLLECTOR(int_sk_sndtimeo)
 META_COLLECTOR(int_sk_sendmsg_off)
 {
 	SKIP_NONLOCAL(skb);
+<<<<<<< HEAD
 	dst->value = skb->sk->sk_sndmsg_off;
+=======
+	dst->value = skb->sk->sk_frag.offset;
+>>>>>>> refs/remotes/origin/master
 }
 
 META_COLLECTOR(int_sk_write_pend)
@@ -530,7 +544,13 @@ static struct meta_ops __meta_ops[TCF_META_TYPE_MAX + 1][TCF_META_ID_MAX + 1] = 
 		[META_ID(SK_ERR_QLEN)]		= META_FUNC(int_sk_err_qlen),
 		[META_ID(SK_FORWARD_ALLOCS)]	= META_FUNC(int_sk_fwd_alloc),
 		[META_ID(SK_ALLOCS)]		= META_FUNC(int_sk_alloc),
+<<<<<<< HEAD
+<<<<<<< HEAD
 		[META_ID(SK_ROUTE_CAPS)]	= META_FUNC(int_sk_route_caps),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		[META_ID(SK_HASH)]		= META_FUNC(int_sk_hash),
 		[META_ID(SK_LINGERTIME)]	= META_FUNC(int_sk_lingertime),
 		[META_ID(SK_ACK_BACKLOG)]	= META_FUNC(int_sk_ack_bl),
@@ -592,8 +612,14 @@ static void meta_var_apply_extras(struct meta_value *v,
 
 static int meta_var_dump(struct sk_buff *skb, struct meta_value *v, int tlv)
 {
+<<<<<<< HEAD
 	if (v->val && v->len)
 		NLA_PUT(skb, tlv, v->len, (void *) v->val);
+=======
+	if (v->val && v->len &&
+	    nla_put(skb, tlv, v->len, (void *) v->val))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -643,10 +669,20 @@ static void meta_int_apply_extras(struct meta_value *v,
 
 static int meta_int_dump(struct sk_buff *skb, struct meta_value *v, int tlv)
 {
+<<<<<<< HEAD
 	if (v->len == sizeof(unsigned long))
 		NLA_PUT(skb, tlv, sizeof(unsigned long), &v->val);
 	else if (v->len == sizeof(u32))
 		NLA_PUT_U32(skb, tlv, v->val);
+=======
+	if (v->len == sizeof(unsigned long)) {
+		if (nla_put(skb, tlv, sizeof(unsigned long), &v->val))
+			goto nla_put_failure;
+	} else if (v->len == sizeof(u32)) {
+		if (nla_put_u32(skb, tlv, v->val))
+			goto nla_put_failure;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -796,8 +832,15 @@ static int em_meta_change(struct tcf_proto *tp, void *data, int len,
 		goto errout;
 
 	meta = kzalloc(sizeof(*meta), GFP_KERNEL);
+<<<<<<< HEAD
 	if (meta == NULL)
 		goto errout;
+=======
+	if (meta == NULL) {
+		err = -ENOMEM;
+		goto errout;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(&meta->lvalue.hdr, &hdr->left, sizeof(hdr->left));
 	memcpy(&meta->rvalue.hdr, &hdr->right, sizeof(hdr->right));
@@ -838,7 +881,12 @@ static int em_meta_dump(struct sk_buff *skb, struct tcf_ematch *em)
 	memcpy(&hdr.left, &meta->lvalue.hdr, sizeof(hdr.left));
 	memcpy(&hdr.right, &meta->rvalue.hdr, sizeof(hdr.right));
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_EM_META_HDR, sizeof(hdr), &hdr);
+=======
+	if (nla_put(skb, TCA_EM_META_HDR, sizeof(hdr), &hdr))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	ops = meta_type_ops(&meta->lvalue);
 	if (ops->dump(skb, &meta->lvalue, TCA_EM_META_LVALUE) < 0 ||

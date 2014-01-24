@@ -11,7 +11,10 @@
 #include <linux/mm.h>
 #include <linux/init.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/mmu_context.h>

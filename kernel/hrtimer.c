@@ -32,7 +32,15 @@
  */
 
 #include <linux/cpu.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/percpu.h>
 #include <linux/hrtimer.h>
 #include <linux/notifier.h>
@@ -44,7 +52,15 @@
 #include <linux/err.h>
 #include <linux/debugobjects.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/timer.h>
+=======
+#include <linux/sched/sysctl.h>
+#include <linux/sched/rt.h>
+#include <linux/sched/deadline.h>
+#include <linux/timer.h>
+#include <linux/freezer.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 
@@ -82,6 +98,15 @@ DEFINE_PER_CPU(struct hrtimer_cpu_base, hrtimer_bases) =
 			.get_time = &ktime_get_boottime,
 			.resolution = KTIME_LOW_RES,
 		},
+<<<<<<< HEAD
+=======
+		{
+			.index = HRTIMER_BASE_TAI,
+			.clockid = CLOCK_TAI,
+			.get_time = &ktime_get_clocktai,
+			.resolution = KTIME_LOW_RES,
+		},
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
@@ -89,6 +114,10 @@ static const int hrtimer_clock_to_base_table[MAX_CLOCKS] = {
 	[CLOCK_REALTIME]	= HRTIMER_BASE_REALTIME,
 	[CLOCK_MONOTONIC]	= HRTIMER_BASE_MONOTONIC,
 	[CLOCK_BOOTTIME]	= HRTIMER_BASE_BOOTTIME,
+<<<<<<< HEAD
+=======
+	[CLOCK_TAI]		= HRTIMER_BASE_TAI,
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline int hrtimer_clockid_to_base(clockid_t clock_id)
@@ -105,8 +134,15 @@ static void hrtimer_get_softirq_time(struct hrtimer_cpu_base *base)
 {
 	ktime_t xtim, mono, boot;
 	struct timespec xts, tom, slp;
+<<<<<<< HEAD
 
 	get_xtime_and_monotonic_and_sleep_offset(&xts, &tom, &slp);
+=======
+	s32 tai_offset;
+
+	get_xtime_and_monotonic_and_sleep_offset(&xts, &tom, &slp);
+	tai_offset = timekeeping_get_tai_offset();
+>>>>>>> refs/remotes/origin/master
 
 	xtim = timespec_to_ktime(xts);
 	mono = ktime_add(xtim, timespec_to_ktime(tom));
@@ -114,6 +150,11 @@ static void hrtimer_get_softirq_time(struct hrtimer_cpu_base *base)
 	base->clock_base[HRTIMER_BASE_REALTIME].softirq_time = xtim;
 	base->clock_base[HRTIMER_BASE_MONOTONIC].softirq_time = mono;
 	base->clock_base[HRTIMER_BASE_BOOTTIME].softirq_time = boot;
+<<<<<<< HEAD
+=======
+	base->clock_base[HRTIMER_BASE_TAI].softirq_time =
+				ktime_add(xtim,	ktime_set(tai_offset, 0));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -159,7 +200,11 @@ struct hrtimer_clock_base *lock_hrtimer_base(const struct hrtimer *timer,
  */
 static int hrtimer_get_target(int this_cpu, int pinned)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_NO_HZ
+=======
+#ifdef CONFIG_NO_HZ_COMMON
+>>>>>>> refs/remotes/origin/master
 	if (!pinned && get_sysctl_timer_migration() && idle_cpu(this_cpu))
 		return get_nohz_timer_target();
 #endif
@@ -274,6 +319,13 @@ ktime_t ktime_add_ns(const ktime_t kt, u64 nsec)
 	} else {
 		unsigned long rem = do_div(nsec, NSEC_PER_SEC);
 
+<<<<<<< HEAD
+=======
+		/* Make sure nsec fits into long */
+		if (unlikely(nsec > KTIME_SEC_MAX))
+			return (ktime_t){ .tv64 = KTIME_MAX };
+
+>>>>>>> refs/remotes/origin/master
 		tmp = ktime_set((long)nsec, rem);
 	}
 
@@ -298,10 +350,19 @@ ktime_t ktime_sub_ns(const ktime_t kt, u64 nsec)
 	} else {
 		unsigned long rem = do_div(nsec, NSEC_PER_SEC);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Make sure nsec fits into long */
 		if (unlikely(nsec > KTIME_SEC_MAX))
 			return (ktime_t){ .tv64 = KTIME_MAX };
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		tmp = ktime_set((long)nsec, rem);
 	}
 
@@ -654,8 +715,19 @@ static inline ktime_t hrtimer_update_base(struct hrtimer_cpu_base *base)
 {
 	ktime_t *offs_real = &base->clock_base[HRTIMER_BASE_REALTIME].offset;
 	ktime_t *offs_boot = &base->clock_base[HRTIMER_BASE_BOOTTIME].offset;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	return ktime_get_update_offsets(offs_real, offs_boot);
+=======
+	ktime_t *offs_tai = &base->clock_base[HRTIMER_BASE_TAI].offset;
+
+	return ktime_get_update_offsets(offs_real, offs_boot, offs_tai);
+>>>>>>> refs/remotes/origin/master
+=======
+
+	return ktime_get_update_offsets(offs_real, offs_boot);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -762,7 +834,13 @@ void clock_was_set(void)
 
 /*
  * During resume we might have to reprogram the high resolution timer
+<<<<<<< HEAD
  * interrupt (on the local CPU):
+=======
+ * interrupt on all online CPUs.  However, all other CPUs will be
+ * stopped with IRQs interrupts disabled so the clock_was_set() call
+ * must be deferred.
+>>>>>>> refs/remotes/origin/master
  */
 void hrtimers_resume(void)
 {
@@ -1018,7 +1096,12 @@ int __hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
  * @timer:	the timer to be added
  * @tim:	expiry time
  * @delta_ns:	"slack" range for the timer
+<<<<<<< HEAD
  * @mode:	expiry mode: absolute (HRTIMER_ABS) or relative (HRTIMER_REL)
+=======
+ * @mode:	expiry mode: absolute (HRTIMER_MODE_ABS) or
+ *		relative (HRTIMER_MODE_REL)
+>>>>>>> refs/remotes/origin/master
  *
  * Returns:
  *  0 on success
@@ -1035,7 +1118,12 @@ EXPORT_SYMBOL_GPL(hrtimer_start_range_ns);
  * hrtimer_start - (re)start an hrtimer on the current CPU
  * @timer:	the timer to be added
  * @tim:	expiry time
+<<<<<<< HEAD
  * @mode:	expiry mode: absolute (HRTIMER_ABS) or relative (HRTIMER_REL)
+=======
+ * @mode:	expiry mode: absolute (HRTIMER_MODE_ABS) or
+ *		relative (HRTIMER_MODE_REL)
+>>>>>>> refs/remotes/origin/master
  *
  * Returns:
  *  0 on success
@@ -1114,7 +1202,11 @@ ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
 }
 EXPORT_SYMBOL_GPL(hrtimer_get_remaining);
 
+<<<<<<< HEAD
 #ifdef CONFIG_NO_HZ
+=======
+#ifdef CONFIG_NO_HZ_COMMON
+>>>>>>> refs/remotes/origin/master
 /**
  * hrtimer_get_next_event - get the time until next expiry event
  *
@@ -1527,7 +1619,11 @@ static int __sched do_nanosleep(struct hrtimer_sleeper *t, enum hrtimer_mode mod
 			t->task = NULL;
 
 		if (likely(t->task))
+<<<<<<< HEAD
 			schedule();
+=======
+			freezable_schedule();
+>>>>>>> refs/remotes/origin/master
 
 		hrtimer_cancel(&t->timer);
 		mode = HRTIMER_MODE_ABS;
@@ -1591,7 +1687,11 @@ long hrtimer_nanosleep(struct timespec *rqtp, struct timespec __user *rmtp,
 	unsigned long slack;
 
 	slack = current->timer_slack_ns;
+<<<<<<< HEAD
 	if (rt_task(current))
+=======
+	if (dl_task(current) || rt_task(current))
+>>>>>>> refs/remotes/origin/master
 		slack = 0;
 
 	hrtimer_init_on_stack(&t.timer, clockid, mode);
@@ -1640,7 +1740,11 @@ SYSCALL_DEFINE2(nanosleep, struct timespec __user *, rqtp,
 /*
  * Functions related to boot-time initialization:
  */
+<<<<<<< HEAD
 static void __cpuinit init_hrtimers_cpu(int cpu)
+=======
+static void init_hrtimers_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hrtimer_cpu_base *cpu_base = &per_cpu(hrtimer_bases, cpu);
 	int i;
@@ -1721,7 +1825,11 @@ static void migrate_hrtimers(int scpu)
 
 #endif /* CONFIG_HOTPLUG_CPU */
 
+<<<<<<< HEAD
 static int __cpuinit hrtimer_cpu_notify(struct notifier_block *self,
+=======
+static int hrtimer_cpu_notify(struct notifier_block *self,
+>>>>>>> refs/remotes/origin/master
 					unsigned long action, void *hcpu)
 {
 	int scpu = (long)hcpu;
@@ -1754,7 +1862,11 @@ static int __cpuinit hrtimer_cpu_notify(struct notifier_block *self,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata hrtimers_nb = {
+=======
+static struct notifier_block hrtimers_nb = {
+>>>>>>> refs/remotes/origin/master
 	.notifier_call = hrtimer_cpu_notify,
 };
 

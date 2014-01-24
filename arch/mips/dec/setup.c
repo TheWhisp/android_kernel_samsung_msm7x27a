@@ -65,7 +65,11 @@ EXPORT_SYMBOL(ioasic_base);
 /*
  * IRQ routing and priority tables.  Priorites are set as follows:
  *
+<<<<<<< HEAD
  * 		KN01	KN230	KN02	KN02-BA	KN02-CA	KN03
+=======
+ *		KN01	KN230	KN02	KN02-BA	KN02-CA	KN03
+>>>>>>> refs/remotes/origin/master
  *
  * MEMORY	CPU	CPU	CPU	ASIC	CPU	CPU
  * RTC		CPU	CPU	CPU	ASIC	CPU	CPU
@@ -101,20 +105,51 @@ int cpu_fpu_mask = DEC_CPU_IRQ_MASK(DEC_CPU_INR_FPU);
 static struct irqaction ioirq = {
 	.handler = no_action,
 	.name = "cascade",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/master
 };
 static struct irqaction fpuirq = {
 	.handler = no_action,
 	.name = "fpu",
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static struct irqaction busirq = {
 	.flags = IRQF_DISABLED,
 	.name = "bus error",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.flags = IRQF_NO_THREAD,
+};
+
+static struct irqaction busirq = {
+	.name = "bus error",
+	.flags = IRQF_NO_THREAD,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct irqaction haltirq = {
 	.handler = dec_intr_halt,
 	.name = "halt",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/master
 };
 
 

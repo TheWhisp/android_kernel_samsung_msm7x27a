@@ -3,7 +3,11 @@
  *
  * Error Recovery Procedures (ERP).
  *
+<<<<<<< HEAD
  * Copyright IBM Corporation 2002, 2010
+=======
+ * Copyright IBM Corp. 2002, 2010
+>>>>>>> refs/remotes/origin/master
  */
 
 #define KMSG_COMPONENT "zfcp"
@@ -955,8 +959,12 @@ static void zfcp_erp_lun_strategy_clearstati(struct scsi_device *sdev)
 {
 	struct zfcp_scsi_dev *zfcp_sdev = sdev_to_zfcp(sdev);
 
+<<<<<<< HEAD
 	atomic_clear_mask(ZFCP_STATUS_COMMON_ACCESS_DENIED |
 			  ZFCP_STATUS_LUN_SHARED | ZFCP_STATUS_LUN_READONLY,
+=======
+	atomic_clear_mask(ZFCP_STATUS_COMMON_ACCESS_DENIED,
+>>>>>>> refs/remotes/origin/master
 			  &zfcp_sdev->status);
 }
 
@@ -1235,7 +1243,11 @@ static void zfcp_erp_action_cleanup(struct zfcp_erp_action *act, int result)
 	case ZFCP_ERP_ACTION_REOPEN_ADAPTER:
 		if (result == ZFCP_ERP_SUCCEEDED) {
 			register_service_level(&adapter->service_level);
+<<<<<<< HEAD
 			queue_work(adapter->work_queue, &adapter->scan_work);
+=======
+			zfcp_fc_conditional_port_scan(adapter);
+>>>>>>> refs/remotes/origin/master
 			queue_work(adapter->work_queue, &adapter->ns_up_work);
 		} else
 			unregister_service_level(&adapter->service_level);

@@ -31,6 +31,8 @@ char kdb_prompt_str[CMD_BUFLEN];
 
 int kdb_trap_printk;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void kgdb_transition_check(char *buffer)
 {
 	int slen = strlen(buffer);
@@ -40,6 +42,28 @@ static void kgdb_transition_check(char *buffer)
 		KDB_STATE_SET(KGDB_TRANS);
 		kdb_printf("%s", buffer);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int kgdb_transition_check(char *buffer)
+{
+	if (buffer[0] != '+' && buffer[0] != '$') {
+		KDB_STATE_SET(KGDB_TRANS);
+		kdb_printf("%s", buffer);
+	} else {
+		int slen = strlen(buffer);
+		if (slen > 3 && buffer[slen - 3] == '#') {
+			kdb_gdb_state_pass(buffer);
+			strcpy(buffer, "kgdb");
+			KDB_STATE_SET(DOING_KGDB);
+			return 1;
+		}
+	}
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int kdb_read_get_key(char *buffer, size_t bufsize)
@@ -210,7 +234,19 @@ static char *kdb_read(char *buffer, size_t bufsize)
 	int i;
 	int diag, dtab_count;
 	int key;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	static int last_crlf;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
+=======
+	static int last_crlf;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	diag = kdbgetintenv("DTABCOUNT", &dtab_count);
 	if (diag)
@@ -231,6 +267,21 @@ poll_again:
 		return buffer;
 	if (key != 9)
 		tab = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (key != 10 && key != 13)
+		last_crlf = 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	if (key != 10 && key != 13)
+		last_crlf = 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (key) {
 	case 8: /* backspace */
 		if (cp > buffer) {
@@ -248,9 +299,39 @@ poll_again:
 			*cp = tmp;
 		}
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case 13: /* enter */
 		*lastchar++ = '\n';
 		*lastchar++ = '\0';
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	case 10: /* new line */
+	case 13: /* carriage return */
+		/* handle \n after \r */
+		if (last_crlf && last_crlf != key)
+			break;
+		last_crlf = key;
+<<<<<<< HEAD
+		*lastchar++ = '\n';
+		*lastchar++ = '\0';
+=======
+	case 13: /* enter */
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		*lastchar++ = '\n';
+		*lastchar++ = '\0';
+>>>>>>> refs/remotes/origin/master
+		if (!KDB_STATE(KGDB_TRANS)) {
+			KDB_STATE_SET(KGDB_TRANS);
+			kdb_printf("%s", buffer);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kdb_printf("\n");
 		return buffer;
 	case 4: /* Del */
@@ -382,22 +463,59 @@ poll_again:
 				 * printed characters if we think that
 				 * kgdb is connecting, until the check
 				 * fails */
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (!KDB_STATE(KGDB_TRANS))
 					kgdb_transition_check(buffer);
 				else
 					kdb_printf("%c", key);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				if (!KDB_STATE(KGDB_TRANS)) {
+					if (kgdb_transition_check(buffer))
+						return buffer;
+				} else {
+					kdb_printf("%c", key);
+				}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			/* Special escape to kgdb */
 			if (lastchar - buffer >= 5 &&
 			    strcmp(lastchar - 5, "$?#3f") == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				kdb_gdb_state_pass(lastchar - 5);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				kdb_gdb_state_pass(lastchar - 5);
+>>>>>>> refs/remotes/origin/master
 				strcpy(buffer, "kgdb");
 				KDB_STATE_SET(DOING_KGDB);
 				return buffer;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (lastchar - buffer >= 14 &&
 			    strcmp(lastchar - 14, "$qSupported#37") == 0) {
 				strcpy(buffer, "kgdb");
 				KDB_STATE_SET(DOING_KGDB2);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			if (lastchar - buffer >= 11 &&
+			    strcmp(lastchar - 11, "$qSupported") == 0) {
+				kdb_gdb_state_pass(lastchar - 11);
+				strcpy(buffer, "kgdb");
+				KDB_STATE_SET(DOING_KGDB);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				return buffer;
 			}
 		}
@@ -538,6 +656,18 @@ int vkdb_printf(const char *fmt, va_list ap)
 {
 	int diag;
 	int linecount;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int colcount;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int colcount;
+>>>>>>> refs/remotes/origin/master
+=======
+	int colcount;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int logging, saved_loglevel = 0;
 	int saved_trap_printk;
 	int got_printf_lock = 0;
@@ -570,6 +700,25 @@ int vkdb_printf(const char *fmt, va_list ap)
 	if (diag || linecount <= 1)
 		linecount = 24;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	diag = kdbgetintenv("COLUMNS", &colcount);
+	if (diag || colcount <= 1)
+		colcount = 80;
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	diag = kdbgetintenv("LOGGING", &logging);
 	if (diag)
 		logging = 0;
@@ -675,8 +824,23 @@ kdb_printit:
 	if (!dbg_kdb_mode && kgdb_connected) {
 		gdbstub_msg_write(kdb_buffer, retlen);
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!dbg_io_ops->is_console) {
 			len = strlen(kdb_buffer);
+=======
+		if (dbg_io_ops && !dbg_io_ops->is_console) {
+			len = retlen;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (dbg_io_ops && !dbg_io_ops->is_console) {
+			len = retlen;
+>>>>>>> refs/remotes/origin/master
+=======
+		if (dbg_io_ops && !dbg_io_ops->is_console) {
+			len = retlen;
+>>>>>>> refs/remotes/origin/cm-11.0
 			cp = kdb_buffer;
 			while (len--) {
 				dbg_io_ops->write_char(*cp);
@@ -695,15 +859,74 @@ kdb_printit:
 		printk(KERN_INFO "%s", kdb_buffer);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (KDB_STATE(PAGER) && strchr(kdb_buffer, '\n'))
 		kdb_nextline++;
 
 	/* check for having reached the LINES number of printed lines */
 	if (kdb_nextline == linecount) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (KDB_STATE(PAGER)) {
+		/*
+		 * Check printed string to decide how to bump the
+		 * kdb_nextline to control when the more prompt should
+		 * show up.
+		 */
+		int got = 0;
+		len = retlen;
+		while (len--) {
+			if (kdb_buffer[len] == '\n') {
+				kdb_nextline++;
+				got = 0;
+			} else if (kdb_buffer[len] == '\r') {
+				got = 0;
+			} else {
+				got++;
+			}
+		}
+		kdb_nextline += got / (colcount + 1);
+	}
+
+	/* check for having reached the LINES number of printed lines */
+	if (kdb_nextline >= linecount) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (KDB_STATE(PAGER)) {
+		/*
+		 * Check printed string to decide how to bump the
+		 * kdb_nextline to control when the more prompt should
+		 * show up.
+		 */
+		int got = 0;
+		len = retlen;
+		while (len--) {
+			if (kdb_buffer[len] == '\n') {
+				kdb_nextline++;
+				got = 0;
+			} else if (kdb_buffer[len] == '\r') {
+				got = 0;
+			} else {
+				got++;
+			}
+		}
+		kdb_nextline += got / (colcount + 1);
+	}
+
+	/* check for having reached the LINES number of printed lines */
+	if (kdb_nextline >= linecount) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		char buf1[16] = "";
 #if defined(CONFIG_SMP)
 		char buf2[32];
 #endif
+=======
+		char buf1[16] = "";
+>>>>>>> refs/remotes/origin/master
 
 		/* Watch out for recursion here.  Any routine that calls
 		 * kdb_printf will come back through here.  And kdb_read
@@ -718,6 +941,7 @@ kdb_printit:
 		if (moreprompt == NULL)
 			moreprompt = "more> ";
 
+<<<<<<< HEAD
 #if defined(CONFIG_SMP)
 		if (strchr(moreprompt, '%')) {
 			sprintf(buf2, moreprompt, get_cpu());
@@ -729,7 +953,17 @@ kdb_printit:
 		kdb_input_flush();
 		c = console_drivers;
 
+<<<<<<< HEAD
 		if (!dbg_io_ops->is_console) {
+=======
+		if (dbg_io_ops && !dbg_io_ops->is_console) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kdb_input_flush();
+		c = console_drivers;
+
+		if (dbg_io_ops && !dbg_io_ops->is_console) {
+>>>>>>> refs/remotes/origin/master
 			len = strlen(moreprompt);
 			cp = moreprompt;
 			while (len--) {
@@ -762,7 +996,19 @@ kdb_printit:
 			kdb_grepping_flag = 0;
 			kdb_printf("\n");
 		} else if (buf1[0] == ' ') {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			kdb_printf("\n");
+=======
+			kdb_printf("\r");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kdb_printf("\r");
+>>>>>>> refs/remotes/origin/master
+=======
+			kdb_printf("\r");
+>>>>>>> refs/remotes/origin/cm-11.0
 			suspend_grep = 1; /* for this recursion */
 		} else if (buf1[0] == '\n') {
 			kdb_nextline = linecount - 1;

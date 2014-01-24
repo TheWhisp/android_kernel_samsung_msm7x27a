@@ -9,14 +9,18 @@
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 #ifdef DEBUG
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define edstring(ed_type) ({ char *temp; \
 	switch (ed_type) { \
 	case PIPE_CONTROL:	temp = "ctrl"; break; \
 	case PIPE_BULK:		temp = "bulk"; break; \
 	case PIPE_INTERRUPT:	temp = "intr"; break; \
 	default:		temp = "isoc"; break; \
+<<<<<<< HEAD
 	}; temp;})
 #define pipestring(pipe) edstring(usb_pipetype(pipe))
 
@@ -71,6 +75,11 @@ urb_print(struct urb * urb, char * str, int small, int status)
 	}
 #endif
 }
+=======
+	} temp;})
+#define pipestring(pipe) edstring(usb_pipetype(pipe))
+
+>>>>>>> refs/remotes/origin/master
 
 #define ohci_dbg_sw(ohci, next, size, format, arg...) \
 	do { \
@@ -82,6 +91,23 @@ urb_print(struct urb * urb, char * str, int small, int status)
 		ohci_dbg(ohci,format, ## arg ); \
 	} while (0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* Version for use where "next" is the address of a local variable */
+#define ohci_dbg_nosw(ohci, next, size, format, arg...) \
+	do { \
+		unsigned s_len; \
+		s_len = scnprintf(*next, *size, format, ## arg); \
+		*size -= s_len; *next += s_len; \
+	} while (0);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void ohci_dump_intr_mask (
 	struct ohci_hcd *ohci,
@@ -127,6 +153,28 @@ static char *hcfs2string (int state)
 	return "?";
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const char *rh_state_string(struct ohci_hcd *ohci)
+{
+	switch (ohci->rh_state) {
+	case OHCI_RH_HALTED:
+		return "halted";
+	case OHCI_RH_SUSPENDED:
+		return "suspended";
+	case OHCI_RH_RUNNING:
+		return "running";
+	}
+	return "?";
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 // dump control and status registers
 static void
 ohci_dump_status (struct ohci_hcd *controller, char **next, unsigned *size)
@@ -136,9 +184,22 @@ ohci_dump_status (struct ohci_hcd *controller, char **next, unsigned *size)
 
 	temp = ohci_readl (controller, &regs->revision) & 0xff;
 	ohci_dbg_sw (controller, next, size,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		"OHCI %d.%d, %s legacy support registers\n",
 		0x03 & (temp >> 4), (temp & 0x0f),
 		(temp & 0x0100) ? "with" : "NO");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		"OHCI %d.%d, %s legacy support registers, rh state %s\n",
+		0x03 & (temp >> 4), (temp & 0x0f),
+		(temp & 0x0100) ? "with" : "NO",
+		rh_state_string(controller));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	temp = ohci_readl (controller, &regs->control);
 	ohci_dbg_sw (controller, next, size,
@@ -385,6 +446,7 @@ ohci_dump_ed (const struct ohci_hcd *ohci, const char *label,
 	}
 }
 
+<<<<<<< HEAD
 #else
 static inline void ohci_dump (struct ohci_hcd *controller, int verbose) {}
 
@@ -401,6 +463,10 @@ static inline void remove_debug_files (struct ohci_hcd *bus) { }
 
 #else
 
+=======
+/*-------------------------------------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 static int debug_async_open(struct inode *, struct file *);
 static int debug_periodic_open(struct inode *, struct file *);
 static int debug_registers_open(struct inode *, struct file *);
@@ -639,7 +705,15 @@ static ssize_t fill_registers_buffer(struct debug_buffer *buf)
 
 	/* dump driver info, then registers in spec order */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ohci_dbg_sw (ohci, &next, &size,
+=======
+	ohci_dbg_nosw(ohci, &next, &size,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ohci_dbg_nosw(ohci, &next, &size,
+>>>>>>> refs/remotes/origin/master
 		"bus %s, device %s\n"
 		"%s\n"
 		"%s\n",
@@ -658,7 +732,15 @@ static ssize_t fill_registers_buffer(struct debug_buffer *buf)
 
 	/* hcca */
 	if (ohci->hcca)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ohci_dbg_sw (ohci, &next, &size,
+=======
+		ohci_dbg_nosw(ohci, &next, &size,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ohci_dbg_nosw(ohci, &next, &size,
+>>>>>>> refs/remotes/origin/master
 			"hcca frame 0x%04x\n", ohci_frame_no(ohci));
 
 	/* other registers mostly affect frame timings */
@@ -849,7 +931,10 @@ static inline void remove_debug_files (struct ohci_hcd *ohci)
 	debugfs_remove(ohci->debug_dir);
 }
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 

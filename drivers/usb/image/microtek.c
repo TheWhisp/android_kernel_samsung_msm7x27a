@@ -125,13 +125,24 @@
 #include <linux/errno.h>
 #include <linux/random.h>
 #include <linux/poll.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/usb.h>
 #include <linux/proc_fs.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/blkdev.h>
 #include "../../scsi/scsi.h"
 #include <scsi/scsi_host.h>
@@ -809,6 +820,8 @@ static void mts_usb_disconnect (struct usb_interface *intf)
 	kfree(desc);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init microtek_drv_init(void)
 {
@@ -822,6 +835,12 @@ static void __exit microtek_drv_exit(void)
 
 module_init(microtek_drv_init);
 module_exit(microtek_drv_exit);
+=======
+module_usb_driver(mts_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(mts_usb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR( DRIVER_AUTHOR );
 MODULE_DESCRIPTION( DRIVER_DESC );

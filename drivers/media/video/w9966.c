@@ -57,7 +57,10 @@
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/videodev2.h>
 #include <linux/slab.h>
 #include <media/v4l2-common.h>
@@ -127,12 +130,21 @@ struct w9966 {
 MODULE_AUTHOR("Jakob Kemi <jakob.kemi@post.utfors.se>");
 MODULE_DESCRIPTION("Winbond w9966cf WebCam driver (0.32)");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 
 #ifdef MODULE
 static const char *pardev[] = {[0 ... W9966_MAXCAMS] = ""};
 #else
 static const char *pardev[] = {[0 ... W9966_MAXCAMS] = "aggressive"};
+=======
+MODULE_VERSION("0.33.1");
+
+#ifdef MODULE
+static char *pardev[] = {[0 ... W9966_MAXCAMS] = ""};
+#else
+static char *pardev[] = {[0 ... W9966_MAXCAMS] = "aggressive"};
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 module_param_array(pardev, charp, NULL, 0);
 MODULE_PARM_DESC(pardev, "pardev: where to search for\n"
@@ -568,7 +580,10 @@ static int cam_querycap(struct file *file, void  *priv,
 	strlcpy(vcap->driver, cam->v4l2_dev.name, sizeof(vcap->driver));
 	strlcpy(vcap->card, W9966_DRIVERNAME, sizeof(vcap->card));
 	strlcpy(vcap->bus_info, "parport", sizeof(vcap->bus_info));
+<<<<<<< HEAD
 	vcap->version = KERNEL_VERSION(0, 33, 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	vcap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE;
 	return 0;
 }

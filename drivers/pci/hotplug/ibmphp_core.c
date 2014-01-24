@@ -49,7 +49,15 @@
 
 int ibmphp_debug;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/master
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC (debug, "Debugging mode enabled or not");
 MODULE_LICENSE ("GPL");
@@ -58,7 +66,11 @@ MODULE_DESCRIPTION (DRIVER_DESC);
 struct pci_bus *ibmphp_pci_bus;
 static int max_slots;
 
+<<<<<<< HEAD
 static int irqs[16];    /* PIC mode IRQ's we're using so far (in case MPS
+=======
+static int irqs[16];    /* PIC mode IRQs we're using so far (in case MPS
+>>>>>>> refs/remotes/origin/master
 			 * tables don't provide default info for empty slots */
 
 static int init_flag;
@@ -71,12 +83,17 @@ static inline int get_max_adapter_speed (struct hotplug_slot *hs, u8 *value)
 	return get_max_adapter_speed_1 (hs, value, 1);
 }
 */
+<<<<<<< HEAD
 static inline int get_cur_bus_info(struct slot **sl) 
+=======
+static inline int get_cur_bus_info(struct slot **sl)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc = 1;
 	struct slot * slot_cur = *sl;
 
 	debug("options = %x\n", slot_cur->ctrl->options);
+<<<<<<< HEAD
 	debug("revision = %x\n", slot_cur->ctrl->revision);	
 
 	if (READ_BUS_STATUS(slot_cur->ctrl)) 
@@ -85,6 +102,16 @@ static inline int get_cur_bus_info(struct slot **sl)
 	if (rc) 
 		return rc;
 	  
+=======
+	debug("revision = %x\n", slot_cur->ctrl->revision);
+
+	if (READ_BUS_STATUS(slot_cur->ctrl))
+		rc = ibmphp_hpc_readslot(slot_cur, READ_BUSSTATUS, NULL);
+
+	if (rc)
+		return rc;
+
+>>>>>>> refs/remotes/origin/master
 	slot_cur->bus_on->current_speed = CURRENT_BUS_SPEED(slot_cur->busstatus);
 	if (READ_BUS_MODE(slot_cur->ctrl))
 		slot_cur->bus_on->current_bus_mode =
@@ -96,7 +123,11 @@ static inline int get_cur_bus_info(struct slot **sl)
 			slot_cur->busstatus,
 			slot_cur->bus_on->current_speed,
 			slot_cur->bus_on->current_bus_mode);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	*sl = slot_cur;
 	return 0;
 }
@@ -104,8 +135,13 @@ static inline int get_cur_bus_info(struct slot **sl)
 static inline int slot_update(struct slot **sl)
 {
 	int rc;
+<<<<<<< HEAD
  	rc = ibmphp_hpc_readslot(*sl, READ_ALLSTAT, NULL);
 	if (rc) 
+=======
+	rc = ibmphp_hpc_readslot(*sl, READ_ALLSTAT, NULL);
+	if (rc)
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	if (!init_flag)
 		rc = get_cur_bus_info(sl);
@@ -172,7 +208,11 @@ int ibmphp_init_devno(struct slot **cur_slot)
 			debug("(*cur_slot)->irq[3] = %x\n",
 					(*cur_slot)->irq[3]);
 
+<<<<<<< HEAD
 			debug("rtable->exlusive_irqs = %x\n",
+=======
+			debug("rtable->exclusive_irqs = %x\n",
+>>>>>>> refs/remotes/origin/master
 					rtable->exclusive_irqs);
 			debug("rtable->slots[loop].irq[0].bitmap = %x\n",
 					rtable->slots[loop].irq[0].bitmap);
@@ -271,7 +311,11 @@ static int set_attention_status(struct hotplug_slot *hotplug_slot, u8 value)
 			else
 				rc = -ENODEV;
 		}
+<<<<<<< HEAD
 	} else	
+=======
+	} else
+>>>>>>> refs/remotes/origin/master
 		rc = -ENODEV;
 
 	ibmphp_unlock_operations();
@@ -288,7 +332,11 @@ static int get_attention_status(struct hotplug_slot *hotplug_slot, u8 * value)
 
 	debug("get_attention_status - Entry hotplug_slot[%lx] pvalue[%lx]\n",
 					(ulong) hotplug_slot, (ulong) value);
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> refs/remotes/origin/master
 	ibmphp_lock_operations();
 	if (hotplug_slot) {
 		pslot = hotplug_slot->private;
@@ -406,14 +454,22 @@ static int get_max_bus_speed(struct slot *slot)
 
 	ibmphp_lock_operations();
 	mode = slot->supported_bus_mode;
+<<<<<<< HEAD
 	speed = slot->supported_speed; 
+=======
+	speed = slot->supported_speed;
+>>>>>>> refs/remotes/origin/master
 	ibmphp_unlock_operations();
 
 	switch (speed) {
 	case BUS_SPEED_33:
 		break;
 	case BUS_SPEED_66:
+<<<<<<< HEAD
 		if (mode == BUS_MODE_PCIX) 
+=======
+		if (mode == BUS_MODE_PCIX)
+>>>>>>> refs/remotes/origin/master
 			speed += 0x01;
 		break;
 	case BUS_SPEED_100:
@@ -515,13 +571,22 @@ static int __init init_ops(void)
 
 		debug("BEFORE GETTING SLOT STATUS, slot # %x\n",
 							slot_cur->number);
+<<<<<<< HEAD
 		if (slot_cur->ctrl->revision == 0xFF) 
+=======
+		if (slot_cur->ctrl->revision == 0xFF)
+>>>>>>> refs/remotes/origin/master
 			if (get_ctrl_revision(slot_cur,
 						&slot_cur->ctrl->revision))
 				return -1;
 
+<<<<<<< HEAD
 		if (slot_cur->bus_on->current_speed == 0xFF) 
 			if (get_cur_bus_info(&slot_cur)) 
+=======
+		if (slot_cur->bus_on->current_speed == 0xFF)
+			if (get_cur_bus_info(&slot_cur))
+>>>>>>> refs/remotes/origin/master
 				return -1;
 		get_max_bus_speed(slot_cur);
 
@@ -539,8 +604,13 @@ static int __init init_ops(void)
 		debug("SLOT_PRESENT = %x\n", SLOT_PRESENT(slot_cur->status));
 		debug("SLOT_LATCH = %x\n", SLOT_LATCH(slot_cur->status));
 
+<<<<<<< HEAD
 		if ((SLOT_PWRGD(slot_cur->status)) && 
 		    !(SLOT_PRESENT(slot_cur->status)) && 
+=======
+		if ((SLOT_PWRGD(slot_cur->status)) &&
+		    !(SLOT_PRESENT(slot_cur->status)) &&
+>>>>>>> refs/remotes/origin/master
 		    !(SLOT_LATCH(slot_cur->status))) {
 			debug("BEFORE POWER OFF COMMAND\n");
 				rc = power_off(slot_cur);
@@ -581,13 +651,22 @@ static int validate(struct slot *slot_cur, int opn)
 
 	switch (opn) {
 		case ENABLE:
+<<<<<<< HEAD
 			if (!(SLOT_PWRGD(slot_cur->status)) && 
 			     (SLOT_PRESENT(slot_cur->status)) && 
+=======
+			if (!(SLOT_PWRGD(slot_cur->status)) &&
+			     (SLOT_PRESENT(slot_cur->status)) &&
+>>>>>>> refs/remotes/origin/master
 			     !(SLOT_LATCH(slot_cur->status)))
 				return 0;
 			break;
 		case DISABLE:
+<<<<<<< HEAD
 			if ((SLOT_PWRGD(slot_cur->status)) && 
+=======
+			if ((SLOT_PWRGD(slot_cur->status)) &&
+>>>>>>> refs/remotes/origin/master
 			    (SLOT_PRESENT(slot_cur->status)) &&
 			    !(SLOT_LATCH(slot_cur->status)))
 				return 0;
@@ -617,7 +696,11 @@ int ibmphp_update_slot_info(struct slot *slot_cur)
 		err("out of system memory\n");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> refs/remotes/origin/master
 	info->power_status = SLOT_PWRGD(slot_cur->status);
 	info->attention_status = SLOT_ATTN(slot_cur->status,
 						slot_cur->ext_status);
@@ -638,7 +721,11 @@ int ibmphp_update_slot_info(struct slot *slot_cur)
 		case BUS_SPEED_33:
 			break;
 		case BUS_SPEED_66:
+<<<<<<< HEAD
 			if (mode == BUS_MODE_PCIX) 
+=======
+			if (mode == BUS_MODE_PCIX)
+>>>>>>> refs/remotes/origin/master
 				bus_speed += 0x01;
 			else if (mode == BUS_MODE_PCI)
 				;
@@ -654,8 +741,13 @@ int ibmphp_update_slot_info(struct slot *slot_cur)
 	}
 
 	bus->cur_bus_speed = bus_speed;
+<<<<<<< HEAD
 	// To do: bus_names 
 	
+=======
+	// To do: bus_names
+
+>>>>>>> refs/remotes/origin/master
 	rc = pci_hp_change_slot_info(slot_cur->hotplug_slot, info);
 	kfree(info);
 	return rc;
@@ -721,7 +813,15 @@ static void ibm_unconfigure_device(struct pci_func *func)
 	for (j = 0; j < 0x08; j++) {
 		temp = pci_get_bus_and_slot(func->busno, (func->device << 3) | j);
 		if (temp) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pci_remove_bus_device(temp);
+=======
+			pci_stop_and_remove_bus_device(temp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pci_stop_and_remove_bus_device(temp);
+>>>>>>> refs/remotes/origin/master
 			pci_dev_put(temp);
 		}
 	}
@@ -729,8 +829,13 @@ static void ibm_unconfigure_device(struct pci_func *func)
 }
 
 /*
+<<<<<<< HEAD
  * The following function is to fix kernel bug regarding 
  * getting bus entries, here we manually add those primary 
+=======
+ * The following function is to fix kernel bug regarding
+ * getting bus entries, here we manually add those primary
+>>>>>>> refs/remotes/origin/master
  * bus entries to kernel bus structure whenever apply
  */
 static u8 bus_structure_fixup(u8 busno)
@@ -760,7 +865,11 @@ static u8 bus_structure_fixup(u8 busno)
 	for (dev->devfn = 0; dev->devfn < 256; dev->devfn += 8) {
 		if (!pci_read_config_word(dev, PCI_VENDOR_ID, &l) &&
 					(l != 0x0000) && (l != 0xffff)) {
+<<<<<<< HEAD
 			debug("%s - Inside bus_struture_fixup()\n",
+=======
+			debug("%s - Inside bus_structure_fixup()\n",
+>>>>>>> refs/remotes/origin/master
 							__func__);
 			pci_scan_bus(busno, ibmphp_pci_bus->ops, NULL);
 			break;
@@ -775,7 +884,10 @@ static u8 bus_structure_fixup(u8 busno)
 
 static int ibm_configure_device(struct pci_func *func)
 {
+<<<<<<< HEAD
 	unsigned char bus;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_bus *child;
 	int num;
 	int flag = 0;	/* this is to make sure we don't double scan the bus,
@@ -805,16 +917,27 @@ static int ibm_configure_device(struct pci_func *func)
 		}
 	}
 	if (!(flag) && (func->dev->hdr_type == PCI_HEADER_TYPE_BRIDGE)) {
+<<<<<<< HEAD
 		pci_read_config_byte(func->dev, PCI_SECONDARY_BUS, &bus);
 		child = pci_add_new_bus(func->dev->bus, func->dev, bus);
 		pci_do_scan_bus(child);
+=======
+		pci_hp_add_bridge(func->dev);
+		child = func->dev->subordinate;
+		if (child)
+			pci_bus_add_devices(child);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
 
 /*******************************************************
+<<<<<<< HEAD
  * Returns whether the bus is empty or not 
+=======
+ * Returns whether the bus is empty or not
+>>>>>>> refs/remotes/origin/master
  *******************************************************/
 static int is_bus_empty(struct slot * slot_cur)
 {
@@ -842,7 +965,11 @@ static int is_bus_empty(struct slot * slot_cur)
 }
 
 /***********************************************************
+<<<<<<< HEAD
  * If the HPC permits and the bus currently empty, tries to set the 
+=======
+ * If the HPC permits and the bus currently empty, tries to set the
+>>>>>>> refs/remotes/origin/master
  * bus speed and mode at the maximum card and bus capability
  * Parameters: slot
  * Returns: bus is set (0) or error code
@@ -856,7 +983,11 @@ static int set_bus(struct slot * slot_cur)
 	static struct pci_device_id ciobx[] = {
 		{ PCI_DEVICE(PCI_VENDOR_ID_SERVERWORKS, 0x0101) },
 	        { },
+<<<<<<< HEAD
 	};	
+=======
+	};
+>>>>>>> refs/remotes/origin/master
 
 	debug("%s - entry slot # %d\n", __func__, slot_cur->number);
 	if (SET_BUS_STATUS(slot_cur->ctrl) && is_bus_empty(slot_cur)) {
@@ -877,7 +1008,11 @@ static int set_bus(struct slot * slot_cur)
 				else if (!SLOT_BUS_MODE(slot_cur->ext_status))
 					/* if max slot/bus capability is 66 pci
 					and there's no bus mode mismatch, then
+<<<<<<< HEAD
 					the adapter supports 66 pci */ 
+=======
+					the adapter supports 66 pci */
+>>>>>>> refs/remotes/origin/master
 					cmd = HPC_BUS_66CONVMODE;
 				else
 					cmd = HPC_BUS_33CONVMODE;
@@ -930,7 +1065,11 @@ static int set_bus(struct slot * slot_cur)
 			return -EIO;
 		}
 	}
+<<<<<<< HEAD
 	/* This is for x440, once Brandon fixes the firmware, 
+=======
+	/* This is for x440, once Brandon fixes the firmware,
+>>>>>>> refs/remotes/origin/master
 	will not need this delay */
 	msleep(1000);
 	debug("%s -Exit\n", __func__);
@@ -938,9 +1077,15 @@ static int set_bus(struct slot * slot_cur)
 }
 
 /* This routine checks the bus limitations that the slot is on from the BIOS.
+<<<<<<< HEAD
  * This is used in deciding whether or not to power up the slot.  
  * (electrical/spec limitations. For example, >1 133 MHz or >2 66 PCI cards on
  * same bus) 
+=======
+ * This is used in deciding whether or not to power up the slot.
+ * (electrical/spec limitations. For example, >1 133 MHz or >2 66 PCI cards on
+ * same bus)
+>>>>>>> refs/remotes/origin/master
  * Parameters: slot
  * Returns: 0 = no limitations, -EINVAL = exceeded limitations on the bus
  */
@@ -986,7 +1131,11 @@ static int check_limitations(struct slot *slot_cur)
 static inline void print_card_capability(struct slot *slot_cur)
 {
 	info("capability of the card is ");
+<<<<<<< HEAD
 	if ((slot_cur->ext_status & CARD_INFO) == PCIX133) 
+=======
+	if ((slot_cur->ext_status & CARD_INFO) == PCIX133)
+>>>>>>> refs/remotes/origin/master
 		info("   133 MHz PCI-X\n");
 	else if ((slot_cur->ext_status & CARD_INFO) == PCIX66)
 		info("    66 MHz PCI-X\n");
@@ -1020,7 +1169,11 @@ static int enable_slot(struct hotplug_slot *hs)
 	}
 
 	attn_LED_blink(slot_cur);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	rc = set_bus(slot_cur);
 	if (rc) {
 		err("was not able to set the bus\n");
@@ -1082,7 +1235,11 @@ static int enable_slot(struct hotplug_slot *hs)
 	rc = slot_update(&slot_cur);
 	if (rc)
 		goto error_power;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	rc = -EINVAL;
 	if (SLOT_POWER(slot_cur->status) && !(SLOT_PWRGD(slot_cur->status))) {
 		err("power fault occurred trying to power up...\n");
@@ -1093,7 +1250,11 @@ static int enable_slot(struct hotplug_slot *hs)
 					"speed and card capability\n");
 		print_card_capability(slot_cur);
 		goto error_power;
+<<<<<<< HEAD
 	} 
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	/* Don't think this case will happen after above checks...
 	 * but just in case, for paranoia sake */
 	if (!(SLOT_POWER(slot_cur->status))) {
@@ -1144,7 +1305,11 @@ static int enable_slot(struct hotplug_slot *hs)
 	ibmphp_print_test();
 	rc = ibmphp_update_slot_info(slot_cur);
 exit:
+<<<<<<< HEAD
 	ibmphp_unlock_operations(); 
+=======
+	ibmphp_unlock_operations();
+>>>>>>> refs/remotes/origin/master
 	return rc;
 
 error_nopower:
@@ -1180,7 +1345,11 @@ static int ibmphp_disable_slot(struct hotplug_slot *hotplug_slot)
 {
 	struct slot *slot = hotplug_slot->private;
 	int rc;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	ibmphp_lock_operations();
 	rc = ibmphp_do_disable_slot(slot);
 	ibmphp_unlock_operations();
@@ -1192,12 +1361,21 @@ int ibmphp_do_disable_slot(struct slot *slot_cur)
 	int rc;
 	u8 flag;
 
+<<<<<<< HEAD
 	debug("DISABLING SLOT...\n"); 
 		
 	if ((slot_cur == NULL) || (slot_cur->ctrl == NULL)) {
 		return -ENODEV;
 	}
 	
+=======
+	debug("DISABLING SLOT...\n");
+
+	if ((slot_cur == NULL) || (slot_cur->ctrl == NULL)) {
+		return -ENODEV;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	flag = slot_cur->flag;
 	slot_cur->flag = 1;
 
@@ -1210,7 +1388,11 @@ int ibmphp_do_disable_slot(struct slot *slot_cur)
 	attn_LED_blink(slot_cur);
 
 	if (slot_cur->func == NULL) {
+<<<<<<< HEAD
 		/* We need this for fncs's that were there on bootup */
+=======
+		/* We need this for functions that were there on bootup */
+>>>>>>> refs/remotes/origin/master
 		slot_cur->func = kzalloc(sizeof(struct pci_func), GFP_KERNEL);
 		if (!slot_cur->func) {
 			err("out of system memory\n");
@@ -1222,12 +1404,22 @@ int ibmphp_do_disable_slot(struct slot *slot_cur)
 	}
 
 	ibm_unconfigure_device(slot_cur->func);
+<<<<<<< HEAD
         
 	/* If we got here from latch suddenly opening on operating card or 
 	a power fault, there's no power to the card, so cannot
 	read from it to determine what resources it occupied.  This operation
 	is forbidden anyhow.  The best we can do is remove it from kernel
 	lists at least */
+=======
+
+	/*
+	 * If we got here from latch suddenly opening on operating card or
+	 * a power fault, there's no power to the card, so cannot
+	 * read from it to determine what resources it occupied.  This operation
+	 * is forbidden anyhow.  The best we can do is remove it from kernel
+	 * lists at least */
+>>>>>>> refs/remotes/origin/master
 
 	if (!flag) {
 		attn_off(slot_cur);
@@ -1264,7 +1456,11 @@ error:
 		rc = -EFAULT;
 		goto exit;
 	}
+<<<<<<< HEAD
 	if (flag)		
+=======
+	if (flag)
+>>>>>>> refs/remotes/origin/master
 		ibmphp_update_slot_info(slot_cur);
 	goto exit;
 }
@@ -1339,7 +1535,11 @@ static int __init ibmphp_init(void)
 	debug("AFTER Resource & EBDA INITIALIZATIONS\n");
 
 	max_slots = get_max_slots();
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if ((rc = ibmphp_register_pci()))
 		goto error;
 

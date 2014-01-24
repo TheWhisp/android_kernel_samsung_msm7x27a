@@ -2,6 +2,14 @@
 #define __ASM_ALPHA_ELF_H
 
 #include <asm/auxvec.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/special_insns.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/special_insns.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Special values for the st_other field in the symbol table.  */
 

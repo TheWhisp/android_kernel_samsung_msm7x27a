@@ -52,6 +52,14 @@
 #include <linux/ioport.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/rtnetlink.h>
 #include <linux/dma-mapping.h>
 #include <linux/pnp.h>
@@ -429,23 +437,38 @@ static int __init nsc_ircc_open(chipio_t *info)
 
 	/* Allocate memory if needed */
 	self->rx_buff.head =
+<<<<<<< HEAD
 		dma_alloc_coherent(NULL, self->rx_buff.truesize,
 				   &self->rx_buff_dma, GFP_KERNEL);
+=======
+		dma_zalloc_coherent(NULL, self->rx_buff.truesize,
+				    &self->rx_buff_dma, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (self->rx_buff.head == NULL) {
 		err = -ENOMEM;
 		goto out2;
 
 	}
+<<<<<<< HEAD
 	memset(self->rx_buff.head, 0, self->rx_buff.truesize);
 	
 	self->tx_buff.head =
 		dma_alloc_coherent(NULL, self->tx_buff.truesize,
 				   &self->tx_buff_dma, GFP_KERNEL);
+=======
+	
+	self->tx_buff.head =
+		dma_zalloc_coherent(NULL, self->tx_buff.truesize,
+				    &self->tx_buff_dma, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (self->tx_buff.head == NULL) {
 		err = -ENOMEM;
 		goto out3;
 	}
+<<<<<<< HEAD
 	memset(self->tx_buff.head, 0, self->tx_buff.truesize);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	self->rx_buff.in_frame = FALSE;
 	self->rx_buff.state = OUTSIDE_FRAME;
@@ -1036,7 +1059,11 @@ static int nsc_ircc_setup(chipio_t *info)
 /*
  * Function nsc_ircc_read_dongle_id (void)
  *
+<<<<<<< HEAD
  * Try to read dongle indentification. This procedure needs to be executed
+=======
+ * Try to read dongle identification. This procedure needs to be executed
+>>>>>>> refs/remotes/origin/master
  * once after power-on/reset. It also needs to be used whenever you suspect
  * that the user may have plugged/unplugged the IrDA Dongle.
  */
@@ -1663,7 +1690,15 @@ static int nsc_ircc_dma_xmit_complete(struct nsc_ircc_cb *self)
 	switch_bank(iobase, BANK0);
         outb(inb(iobase+MCR) & ~MCR_DMA_EN, iobase+MCR);
 	
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check for underrrun! */
+=======
+	/* Check for underrun! */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Check for underrun! */
+>>>>>>> refs/remotes/origin/master
 	if (inb(iobase+ASCR) & ASCR_TXUR) {
 		self->netdev->stats.tx_errors++;
 		self->netdev->stats.tx_fifo_errors++;

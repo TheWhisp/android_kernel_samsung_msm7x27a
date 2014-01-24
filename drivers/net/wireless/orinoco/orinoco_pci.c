@@ -6,7 +6,15 @@
  * hermes registers, as well as the COR register.
  *
  * Current maintainers are:
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 	Pavel Roskin <proski AT gnu.org>
+=======
+ *	Pavel Roskin <proski AT gnu.org>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Pavel Roskin <proski AT gnu.org>
+>>>>>>> refs/remotes/origin/master
  * and	David Gibson <hermes AT gibson.dropbear.id.au>
  *
  * Some of this code is borrowed from orinoco_plx.c
@@ -81,7 +89,15 @@
  */
 static int orinoco_pci_cor_reset(struct orinoco_private *priv)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	unsigned long timeout;
 	u16 reg;
 
@@ -184,7 +200,10 @@ static int orinoco_pci_init_one(struct pci_dev *pdev,
 	free_irq(pdev->irq, priv);
 
  fail_irq:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_orinocodev(priv);
 
  fail_alloc:
@@ -199,13 +218,20 @@ static int orinoco_pci_init_one(struct pci_dev *pdev,
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit orinoco_pci_remove_one(struct pci_dev *pdev)
+=======
+static void orinoco_pci_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct orinoco_private *priv = pci_get_drvdata(pdev);
 
 	orinoco_if_del(priv);
 	free_irq(pdev->irq, priv);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_orinocodev(priv);
 	pci_iounmap(pdev, priv->hw.iobase);
 	pci_release_regions(pdev);
@@ -228,7 +254,11 @@ static struct pci_driver orinoco_pci_driver = {
 	.name		= DRIVER_NAME,
 	.id_table	= orinoco_pci_id_table,
 	.probe		= orinoco_pci_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(orinoco_pci_remove_one),
+=======
+	.remove		= orinoco_pci_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= orinoco_pci_suspend,
 	.resume		= orinoco_pci_resume,
 };

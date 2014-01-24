@@ -136,7 +136,11 @@ struct visor_connection_info {
  *	connections.end_point_info is non-zero.  If value is 0, then
  *	connections.port contains the endpoint number, which is the same for in
  *	and out.
+<<<<<<< HEAD
  * @port_function_id: contains the creator id of the applicaton that opened
+=======
+ * @port_function_id: contains the creator id of the application that opened
+>>>>>>> refs/remotes/origin/master
  *	this connection.
  * @port: contains the in/out endpoint number.  Is 0 if in and out endpoint
  *	numbers are different.

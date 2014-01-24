@@ -49,7 +49,11 @@
 #include "nfs4_fs.h"
 #include "delegation.h"
 
+<<<<<<< HEAD
 #define NFSDBG_FACILITY	NFSDBG_PROC
+=======
+#define NFSDBG_FACILITY		NFSDBG_STATE
+>>>>>>> refs/remotes/origin/master
 
 void
 nfs4_renew_state(struct work_struct *work)
@@ -60,6 +64,14 @@ nfs4_renew_state(struct work_struct *work)
 	struct rpc_cred *cred;
 	long lease;
 	unsigned long last, now;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned renew_flags = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned renew_flags = 0;
+>>>>>>> refs/remotes/origin/master
 
 	ops = clp->cl_mvops->state_renewal_ops;
 	dprintk("%s: start\n", __func__);
@@ -72,18 +84,45 @@ nfs4_renew_state(struct work_struct *work)
 	last = clp->cl_last_renewal;
 	now = jiffies;
 	/* Are we close to a lease timeout? */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (time_after(now, last + lease/3)) {
 		cred = ops->get_state_renewal_cred_locked(clp);
 		spin_unlock(&clp->cl_lock);
 		if (cred == NULL) {
 			if (!nfs_delegations_present(clp)) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (time_after(now, last + lease/3))
+		renew_flags |= NFS4_RENEW_TIMEOUT;
+	if (nfs_delegations_present(clp))
+		renew_flags |= NFS4_RENEW_DELEGATION_CB;
+
+	if (renew_flags != 0) {
+		cred = ops->get_state_renewal_cred_locked(clp);
+		spin_unlock(&clp->cl_lock);
+		if (cred == NULL) {
+			if (!(renew_flags & NFS4_RENEW_DELEGATION_CB)) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				set_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state);
 				goto out;
 			}
 			nfs_expire_all_delegations(clp);
 		} else {
 			/* Queue an asynchronous RENEW. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ops->sched_state_renewal(clp, cred);
+=======
+			ops->sched_state_renewal(clp, cred, renew_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ops->sched_state_renewal(clp, cred, renew_flags);
+>>>>>>> refs/remotes/origin/master
 			put_rpccred(cred);
 			goto out_exp;
 		}
@@ -111,8 +150,12 @@ nfs4_schedule_state_renewal(struct nfs_client *clp)
 		timeout = 5 * HZ;
 	dprintk("%s: requeueing work. Lease period = %ld\n",
 			__func__, (timeout + HZ - 1) / HZ);
+<<<<<<< HEAD
 	cancel_delayed_work(&clp->cl_renewd);
 	schedule_delayed_work(&clp->cl_renewd, timeout);
+=======
+	mod_delayed_work(system_wq, &clp->cl_renewd, timeout);
+>>>>>>> refs/remotes/origin/master
 	set_bit(NFS_CS_RENEWD, &clp->cl_res_state);
 	spin_unlock(&clp->cl_lock);
 }

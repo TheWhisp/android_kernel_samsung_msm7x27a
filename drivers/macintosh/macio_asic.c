@@ -24,6 +24,11 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/machdep.h>
 #include <asm/macio.h>
@@ -137,7 +142,15 @@ extern struct device_attribute macio_dev_attrs[];
 struct bus_type macio_bus_type = {
        .name	= "macio",
        .match	= macio_bus_match,
+<<<<<<< HEAD
+<<<<<<< HEAD
        .uevent = of_device_uevent,
+=======
+       .uevent = of_device_uevent_modalias,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+       .uevent = of_device_uevent_modalias,
+>>>>>>> refs/remotes/origin/master
        .probe	= macio_device_probe,
        .remove	= macio_device_remove,
        .shutdown = macio_device_shutdown,
@@ -679,7 +692,11 @@ void macio_release_resources(struct macio_dev *dev)
 
 #ifdef CONFIG_PCI
 
+<<<<<<< HEAD
 static int __devinit macio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+=======
+static int macio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node* np;
 	struct macio_chip* chip;
@@ -739,7 +756,11 @@ static int __devinit macio_pci_probe(struct pci_dev *pdev, const struct pci_devi
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit macio_pci_remove(struct pci_dev* pdev)
+=======
+static void macio_pci_remove(struct pci_dev* pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	panic("removing of macio-asic not supported !\n");
 }
@@ -748,7 +769,11 @@ static void __devexit macio_pci_remove(struct pci_dev* pdev)
  * MacIO is matched against any Apple ID, it's probe() function
  * will then decide wether it applies or not
  */
+<<<<<<< HEAD
 static const struct pci_device_id __devinitdata pci_ids [] = { {
+=======
+static const struct pci_device_id pci_ids[] = { {
+>>>>>>> refs/remotes/origin/master
 	.vendor		= PCI_VENDOR_ID_APPLE,
 	.device		= PCI_ANY_ID,
 	.subvendor	= PCI_ANY_ID,

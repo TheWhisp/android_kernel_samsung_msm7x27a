@@ -22,6 +22,11 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <linux/sh_intc.h>
+<<<<<<< HEAD
+=======
+#include <mach/intc.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
@@ -31,10 +36,13 @@ enum {
 	DISABLED,
 
 	/* interrupt sources INTCA */
+<<<<<<< HEAD
 	IRQ0A, IRQ1A, IRQ2A, IRQ3A, IRQ4A, IRQ5A, IRQ6A, IRQ7A,
 	IRQ8A, IRQ9A, IRQ10A, IRQ11A, IRQ12A, IRQ13A, IRQ14A, IRQ15A,
 	IRQ16A, IRQ17A, IRQ18A, IRQ19A, IRQ20A, IRQ21A, IRQ22A, IRQ23A,
 	IRQ24A, IRQ25A, IRQ26A, IRQ27A, IRQ28A, IRQ29A, IRQ30A, IRQ31A,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	DIRC,
 	_2DG,
 	CRYPT_STD,
@@ -91,6 +99,7 @@ enum {
 };
 
 static struct intc_vect intca_vectors[] __initdata = {
+<<<<<<< HEAD
 	INTC_VECT(IRQ0A, 0x0200), INTC_VECT(IRQ1A, 0x0220),
 	INTC_VECT(IRQ2A, 0x0240), INTC_VECT(IRQ3A, 0x0260),
 	INTC_VECT(IRQ4A, 0x0280), INTC_VECT(IRQ5A, 0x02a0),
@@ -107,6 +116,8 @@ static struct intc_vect intca_vectors[] __initdata = {
 	INTC_VECT(IRQ26A, 0x3340), INTC_VECT(IRQ27A, 0x3360),
 	INTC_VECT(IRQ28A, 0x3380), INTC_VECT(IRQ29A, 0x33a0),
 	INTC_VECT(IRQ30A, 0x33c0), INTC_VECT(IRQ31A, 0x33e0),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	INTC_VECT(DIRC, 0x0560),
 	INTC_VECT(_2DG, 0x05e0),
 	INTC_VECT(CRYPT_STD, 0x0700),
@@ -203,6 +214,7 @@ static struct intc_group intca_groups[] __initdata = {
 };
 
 static struct intc_mask_reg intca_mask_registers[] __initdata = {
+<<<<<<< HEAD
 	{ 0xe6900040, 0xe6900060, 8, /* INTMSK00A / INTMSKCLR00A */
 	  { IRQ0A, IRQ1A, IRQ2A, IRQ3A, IRQ4A, IRQ5A, IRQ6A, IRQ7A } },
 	{ 0xe6900044, 0xe6900064, 8, /* INTMSK10A / INTMSKCLR10A */
@@ -212,6 +224,8 @@ static struct intc_mask_reg intca_mask_registers[] __initdata = {
 	{ 0xe690004c, 0xe690006c, 8, /* INTMSK30A / INTMSKCLR30A */
 	  { IRQ24A, IRQ25A, IRQ26A, IRQ27A, IRQ28A, IRQ29A, IRQ30A, IRQ31A } },
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ 0xe6940080, 0xe69400c0, 8, /* IMR0A / IMCR0A */
 	  { DMAC2_1_DEI3, DMAC2_1_DEI2, DMAC2_1_DEI1, DMAC2_1_DEI0,
 	    AP_ARM_IRQPMU, 0, AP_ARM_COMMTX, AP_ARM_COMMRX } },
@@ -273,6 +287,7 @@ static struct intc_mask_reg intca_mask_registers[] __initdata = {
 };
 
 static struct intc_prio_reg intca_prio_registers[] __initdata = {
+<<<<<<< HEAD
 	{ 0xe6900010, 0, 32, 4, /* INTPRI00A */
 	  { IRQ0A, IRQ1A, IRQ2A, IRQ3A, IRQ4A, IRQ5A, IRQ6A, IRQ7A } },
 	{ 0xe6900014, 0, 32, 4, /* INTPRI10A */
@@ -282,6 +297,8 @@ static struct intc_prio_reg intca_prio_registers[] __initdata = {
 	{ 0xe690001c, 0, 32, 4, /* INTPRI30A */
 	  { IRQ24A, IRQ25A, IRQ26A, IRQ27A, IRQ28A, IRQ29A, IRQ30A, IRQ31A } },
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ 0xe6940000, 0, 16, 4, /* IPRAA */ { DMAC3_1, DMAC3_2, CMT2, LCRC } },
 	{ 0xe6940004, 0, 16, 4, /* IPRBA */ { IRDA, 0, BBIF1, BBIF2 } },
 	{ 0xe6940008, 0, 16, 4, /* IPRCA */ { _2DG, CRYPT_STD,
@@ -315,6 +332,7 @@ static struct intc_prio_reg intca_prio_registers[] __initdata = {
 	{ 0xe694003c, 0, 16, 4, /* IPRPA3 */ { SCIFA6, 0, 0, 0 } },
 };
 
+<<<<<<< HEAD
 static struct intc_sense_reg intca_sense_registers[] __initdata = {
 	{ 0xe6900000, 16, 2, /* ICR1A */
 	  { IRQ0A, IRQ1A, IRQ2A, IRQ3A, IRQ4A, IRQ5A, IRQ6A, IRQ7A } },
@@ -337,15 +355,26 @@ static struct intc_mask_reg intca_ack_registers[] __initdata = {
 	  { IRQ24A, IRQ25A, IRQ26A, IRQ27A, IRQ28A, IRQ29A, IRQ30A, IRQ31A } },
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct intc_desc intca_desc __initdata = {
 	.name = "sh7377-intca",
 	.force_enable = ENABLED,
 	.force_disable = DISABLED,
 	.hw = INTC_HW_DESC(intca_vectors, intca_groups,
 			   intca_mask_registers, intca_prio_registers,
+<<<<<<< HEAD
 			   intca_sense_registers, intca_ack_registers),
 };
 
+=======
+			   NULL, NULL),
+};
+
+INTC_IRQ_PINS_32(intca_irq_pins, 0xe6900000,
+		 INTC_VECT, "sh7377-intca-irq-pins");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* this macro ignore entry which is also in INTCA */
 #define __IGNORE(a...)
 #define __IGNORE0(a...) 0
@@ -638,6 +667,10 @@ void __init sh7377_init_irq(void)
 	void __iomem *intevtsa = ioremap_nocache(INTEVTSA, PAGE_SIZE);
 
 	register_intc_controller(&intca_desc);
+<<<<<<< HEAD
+=======
+	register_intc_controller(&intca_irq_pins_desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	register_intc_controller(&intcs_desc);
 
 	/* demux using INTEVTSA */

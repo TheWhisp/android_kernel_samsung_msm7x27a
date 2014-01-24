@@ -47,6 +47,19 @@
  *   overwriting the new data.  We don't even need to clear the revoke
  *   bit here.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * We cache revoke status of a buffer in the current transaction in b_states
+ * bits.  As the name says, revokevalid flag indicates that the cached revoke
+ * status of a buffer is valid and we can rely on the cached status.
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Revoke information on buffers is a tri-state value:
  *
  * RevokeValid clear:	no cached revoke status, need to look it up
@@ -118,9 +131,16 @@ struct jbd2_revoke_table_s
 
 #ifdef __KERNEL__
 static void write_one_revoke_record(journal_t *, transaction_t *,
+<<<<<<< HEAD
 				    struct journal_head **, int *,
 				    struct jbd2_revoke_record_s *, int);
 static void flush_descriptor(journal_t *, struct journal_head *, int, int);
+=======
+				    struct list_head *,
+				    struct buffer_head **, int *,
+				    struct jbd2_revoke_record_s *, int);
+static void flush_descriptor(journal_t *, struct buffer_head *, int, int);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* Utility functions to maintain the revoke table */
@@ -204,6 +224,8 @@ int __init jbd2_journal_init_revoke_caches(void)
 	J_ASSERT(!jbd2_revoke_record_cache);
 	J_ASSERT(!jbd2_revoke_table_cache);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	jbd2_revoke_record_cache = kmem_cache_create("jbd2_revoke_record",
 					   sizeof(struct jbd2_revoke_record_s),
 					   0,
@@ -215,6 +237,20 @@ int __init jbd2_journal_init_revoke_caches(void)
 	jbd2_revoke_table_cache = kmem_cache_create("jbd2_revoke_table",
 					   sizeof(struct jbd2_revoke_table_s),
 					   0, SLAB_TEMPORARY, NULL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	jbd2_revoke_record_cache = KMEM_CACHE(jbd2_revoke_record_s,
+					SLAB_HWCACHE_ALIGN|SLAB_TEMPORARY);
+	if (!jbd2_revoke_record_cache)
+		goto record_cache_failure;
+
+	jbd2_revoke_table_cache = KMEM_CACHE(jbd2_revoke_table_s,
+					     SLAB_TEMPORARY);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!jbd2_revoke_table_cache)
 		goto table_cache_failure;
 	return 0;
@@ -478,6 +514,45 @@ int jbd2_journal_cancel_revoke(handle_t *handle, struct journal_head *jh)
 	return did_revoke;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * journal_clear_revoked_flag clears revoked flag of buffers in
+ * revoke table to reflect there is no revoked buffers in the next
+ * transaction which is going to be started.
+ */
+void jbd2_clear_buffer_revoked_flags(journal_t *journal)
+{
+	struct jbd2_revoke_table_s *revoke = journal->j_revoke;
+	int i = 0;
+
+	for (i = 0; i < revoke->hash_size; i++) {
+		struct list_head *hash_list;
+		struct list_head *list_entry;
+		hash_list = &revoke->hash_table[i];
+
+		list_for_each(list_entry, hash_list) {
+			struct jbd2_revoke_record_s *record;
+			struct buffer_head *bh;
+			record = (struct jbd2_revoke_record_s *)list_entry;
+			bh = __find_get_block(journal->j_fs_dev,
+					      record->blocknr,
+					      journal->j_blocksize);
+			if (bh) {
+				clear_buffer_revoked(bh);
+				__brelse(bh);
+			}
+		}
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* journal_switch_revoke table select j_revoke for next transaction
  * we do not want to suspend any processing until all revokes are
  * written -bzzz
@@ -501,9 +576,16 @@ void jbd2_journal_switch_revoke_table(journal_t *journal)
  */
 void jbd2_journal_write_revoke_records(journal_t *journal,
 				       transaction_t *transaction,
+<<<<<<< HEAD
 				       int write_op)
 {
 	struct journal_head *descriptor;
+=======
+				       struct list_head *log_bufs,
+				       int write_op)
+{
+	struct buffer_head *descriptor;
+>>>>>>> refs/remotes/origin/master
 	struct jbd2_revoke_record_s *record;
 	struct jbd2_revoke_table_s *revoke;
 	struct list_head *hash_list;
@@ -523,7 +605,11 @@ void jbd2_journal_write_revoke_records(journal_t *journal,
 		while (!list_empty(hash_list)) {
 			record = (struct jbd2_revoke_record_s *)
 				hash_list->next;
+<<<<<<< HEAD
 			write_one_revoke_record(journal, transaction,
+=======
+			write_one_revoke_record(journal, transaction, log_bufs,
+>>>>>>> refs/remotes/origin/master
 						&descriptor, &offset,
 						record, write_op);
 			count++;
@@ -543,12 +629,22 @@ void jbd2_journal_write_revoke_records(journal_t *journal,
 
 static void write_one_revoke_record(journal_t *journal,
 				    transaction_t *transaction,
+<<<<<<< HEAD
 				    struct journal_head **descriptorp,
+=======
+				    struct list_head *log_bufs,
+				    struct buffer_head **descriptorp,
+>>>>>>> refs/remotes/origin/master
 				    int *offsetp,
 				    struct jbd2_revoke_record_s *record,
 				    int write_op)
 {
+<<<<<<< HEAD
 	struct journal_head *descriptor;
+=======
+	int csum_size = 0;
+	struct buffer_head *descriptor;
+>>>>>>> refs/remotes/origin/master
 	int offset;
 	journal_header_t *header;
 
@@ -562,9 +658,19 @@ static void write_one_revoke_record(journal_t *journal,
 	descriptor = *descriptorp;
 	offset = *offsetp;
 
+<<<<<<< HEAD
 	/* Make sure we have a descriptor with space left for the record */
 	if (descriptor) {
 		if (offset == journal->j_blocksize) {
+=======
+	/* Do we need to leave space at the end for a checksum? */
+	if (JBD2_HAS_INCOMPAT_FEATURE(journal, JBD2_FEATURE_INCOMPAT_CSUM_V2))
+		csum_size = sizeof(struct jbd2_journal_revoke_tail);
+
+	/* Make sure we have a descriptor with space left for the record */
+	if (descriptor) {
+		if (offset >= journal->j_blocksize - csum_size) {
+>>>>>>> refs/remotes/origin/master
 			flush_descriptor(journal, descriptor, offset, write_op);
 			descriptor = NULL;
 		}
@@ -574,26 +680,43 @@ static void write_one_revoke_record(journal_t *journal,
 		descriptor = jbd2_journal_get_descriptor_buffer(journal);
 		if (!descriptor)
 			return;
+<<<<<<< HEAD
 		header = (journal_header_t *) &jh2bh(descriptor)->b_data[0];
+=======
+		header = (journal_header_t *)descriptor->b_data;
+>>>>>>> refs/remotes/origin/master
 		header->h_magic     = cpu_to_be32(JBD2_MAGIC_NUMBER);
 		header->h_blocktype = cpu_to_be32(JBD2_REVOKE_BLOCK);
 		header->h_sequence  = cpu_to_be32(transaction->t_tid);
 
 		/* Record it so that we can wait for IO completion later */
+<<<<<<< HEAD
 		JBUFFER_TRACE(descriptor, "file as BJ_LogCtl");
 		jbd2_journal_file_buffer(descriptor, transaction, BJ_LogCtl);
+=======
+		BUFFER_TRACE(descriptor, "file in log_bufs");
+		jbd2_file_log_bh(log_bufs, descriptor);
+>>>>>>> refs/remotes/origin/master
 
 		offset = sizeof(jbd2_journal_revoke_header_t);
 		*descriptorp = descriptor;
 	}
 
 	if (JBD2_HAS_INCOMPAT_FEATURE(journal, JBD2_FEATURE_INCOMPAT_64BIT)) {
+<<<<<<< HEAD
 		* ((__be64 *)(&jh2bh(descriptor)->b_data[offset])) =
+=======
+		* ((__be64 *)(&descriptor->b_data[offset])) =
+>>>>>>> refs/remotes/origin/master
 			cpu_to_be64(record->blocknr);
 		offset += 8;
 
 	} else {
+<<<<<<< HEAD
 		* ((__be32 *)(&jh2bh(descriptor)->b_data[offset])) =
+=======
+		* ((__be32 *)(&descriptor->b_data[offset])) =
+>>>>>>> refs/remotes/origin/master
 			cpu_to_be32(record->blocknr);
 		offset += 4;
 	}
@@ -601,6 +724,24 @@ static void write_one_revoke_record(journal_t *journal,
 	*offsetp = offset;
 }
 
+<<<<<<< HEAD
+=======
+static void jbd2_revoke_csum_set(journal_t *j, struct buffer_head *bh)
+{
+	struct jbd2_journal_revoke_tail *tail;
+	__u32 csum;
+
+	if (!JBD2_HAS_INCOMPAT_FEATURE(j, JBD2_FEATURE_INCOMPAT_CSUM_V2))
+		return;
+
+	tail = (struct jbd2_journal_revoke_tail *)(bh->b_data + j->j_blocksize -
+			sizeof(struct jbd2_journal_revoke_tail));
+	tail->r_checksum = 0;
+	csum = jbd2_chksum(j, j->j_csum_seed, bh->b_data, j->j_blocksize);
+	tail->r_checksum = cpu_to_be32(csum);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Flush a revoke descriptor out to the journal.  If we are aborting,
  * this is a noop; otherwise we are generating a buffer which needs to
@@ -609,6 +750,7 @@ static void write_one_revoke_record(journal_t *journal,
  */
 
 static void flush_descriptor(journal_t *journal,
+<<<<<<< HEAD
 			     struct journal_head *descriptor,
 			     int offset, int write_op)
 {
@@ -626,6 +768,26 @@ static void flush_descriptor(journal_t *journal,
 	BUFFER_TRACE(bh, "write");
 	set_buffer_dirty(bh);
 	write_dirty_buffer(bh, write_op);
+=======
+			     struct buffer_head *descriptor,
+			     int offset, int write_op)
+{
+	jbd2_journal_revoke_header_t *header;
+
+	if (is_journal_aborted(journal)) {
+		put_bh(descriptor);
+		return;
+	}
+
+	header = (jbd2_journal_revoke_header_t *)descriptor->b_data;
+	header->r_count = cpu_to_be32(offset);
+	jbd2_revoke_csum_set(journal, descriptor);
+
+	set_buffer_jwrite(descriptor);
+	BUFFER_TRACE(descriptor, "write");
+	set_buffer_dirty(descriptor);
+	write_dirty_buffer(descriptor, write_op);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 

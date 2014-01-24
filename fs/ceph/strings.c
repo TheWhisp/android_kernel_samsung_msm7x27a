@@ -15,6 +15,10 @@ const char *ceph_mds_state_name(int s)
 	case CEPH_MDS_STATE_BOOT:       return "up:boot";
 	case CEPH_MDS_STATE_STANDBY:    return "up:standby";
 	case CEPH_MDS_STATE_STANDBY_REPLAY:    return "up:standby-replay";
+<<<<<<< HEAD
+=======
+	case CEPH_MDS_STATE_REPLAYONCE: return "up:oneshot-replay";
+>>>>>>> refs/remotes/origin/master
 	case CEPH_MDS_STATE_CREATING:   return "up:creating";
 	case CEPH_MDS_STATE_STARTING:   return "up:starting";
 		/* up and in */
@@ -50,10 +54,19 @@ const char *ceph_mds_op_name(int op)
 	case CEPH_MDS_OP_LOOKUP:  return "lookup";
 	case CEPH_MDS_OP_LOOKUPHASH:  return "lookuphash";
 	case CEPH_MDS_OP_LOOKUPPARENT:  return "lookupparent";
+<<<<<<< HEAD
+=======
+	case CEPH_MDS_OP_LOOKUPINO:  return "lookupino";
+>>>>>>> refs/remotes/origin/master
 	case CEPH_MDS_OP_GETATTR:  return "getattr";
 	case CEPH_MDS_OP_SETXATTR: return "setxattr";
 	case CEPH_MDS_OP_SETATTR: return "setattr";
 	case CEPH_MDS_OP_RMXATTR: return "rmxattr";
+<<<<<<< HEAD
+=======
+	case CEPH_MDS_OP_SETLAYOUT: return "setlayou";
+	case CEPH_MDS_OP_SETDIRLAYOUT: return "setdirlayout";
+>>>>>>> refs/remotes/origin/master
 	case CEPH_MDS_OP_READDIR: return "readdir";
 	case CEPH_MDS_OP_MKNOD: return "mknod";
 	case CEPH_MDS_OP_LINK: return "link";

@@ -1,3 +1,37 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/******************************************************************************
+ *
+ * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of version 2 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ * Modifications for inclusion into the Linux staging tree are
+ * Copyright(c) 2010 Larry Finger. All rights reserved.
+ *
+ * Contact information:
+ * WLAN FAE <wlanfae@realtek.com>
+ * Larry Finger <Larry.Finger@lwfinger.net>
+ *
+ ******************************************************************************/
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*---------------------------------------------------------------------
 
 	For type defines and data structure defines
@@ -12,6 +46,16 @@ struct _adapter;
 #include "wlan_bssdef.h"
 #include "rtl8712_spec.h"
 #include "rtl8712_hal.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/mutex.h>
+#include <linux/completion.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mutex.h>
+#include <linux/completion.h>
+>>>>>>> refs/remotes/origin/master
 
 enum _NIC_VERSION {
 	RTL8711_NIC,
@@ -29,7 +73,13 @@ struct	qos_priv	{
 
 #include "rtl871x_ht.h"
 #include "rtl871x_cmd.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "wlan_bssdef.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "rtl871x_xmit.h"
 #include "rtl871x_recv.h"
 #include "rtl871x_security.h"
@@ -44,9 +94,13 @@ struct	qos_priv	{
 #include "rtl871x_event.h"
 #include "rtl871x_led.h"
 
+<<<<<<< HEAD
 #define SPEC_DEV_ID_NONE BIT(0)
 #define SPEC_DEV_ID_DISABLE_HT BIT(1)
 #define SPEC_DEV_ID_ENABLE_PS BIT(2)
+=======
+#define SPEC_DEV_ID_DISABLE_HT BIT(1)
+>>>>>>> refs/remotes/origin/master
 
 struct specific_device_id {
 	u32		flags;
@@ -101,6 +155,7 @@ struct registry_priv {
 	u8 wifi_test;
 };
 
+<<<<<<< HEAD
 /* For registry parameters */
 #define RGTRY_OFT(field) ((addr_t)FIELD_OFFSET(struct registry_priv, field))
 #define RGTRY_SZ(field)   sizeof(((struct registry_priv *)0)->field)
@@ -108,16 +163,37 @@ struct registry_priv {
 			 field))
 #define BSSID_SZ(field)   sizeof(((struct ndis_wlan_bssid_ex *)0)->field)
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct dvobj_priv {
 	struct _adapter *padapter;
 	u32 nr_endpoint;
 	u8   ishighspeed;
 	uint(*inirp_init)(struct _adapter *adapter);
 	uint(*inirp_deinit)(struct _adapter *adapter);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct semaphore usb_suspend_sema;
 	struct usb_device *pusbdev;
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct usb_device *pusbdev;
+};
+
+/**
+ * struct _adapter - the main adapter structure for this device.
+ *
+<<<<<<< HEAD
+ * bup: True indicates that the interface is Up.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * bup: True indicates that the interface is up.
+ */
+>>>>>>> refs/remotes/origin/master
 struct _adapter {
 	struct	dvobj_priv dvobjpriv;
 	struct	mlme_priv mlmepriv;
@@ -139,6 +215,14 @@ struct _adapter {
 	s32	bSurpriseRemoved;
 	u32	IsrContent;
 	u32	ImrContent;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool	fw_found;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool	fw_found;
+>>>>>>> refs/remotes/origin/master
 	u8	EepromAddressSize;
 	u8	hw_init_completed;
 	struct task_struct *cmdThread;
@@ -152,6 +236,22 @@ struct _adapter {
 	struct net_device_stats stats;
 	struct iw_statistics iwstats;
 	int pid; /*process id from UI*/
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	_workitem wkFilterRxFF0;
+	u8 blnEnableRxFF0Filter;
+	spinlock_t lockRxFF0Filter;
+	const struct firmware *fw;
+	struct usb_interface *pusb_intf;
+	struct mutex mutex_start;
+	struct completion rtl8712_fw_ready;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline u8 *myid(struct eeprom_priv *peepriv)

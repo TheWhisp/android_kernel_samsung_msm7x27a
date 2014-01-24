@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Name: hwtimer.c - ACPI Power Management Timer Interface
@@ -6,7 +9,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,17 +53,38 @@
  * POSSIBILITY OF SUCH DAMAGES.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXPORT_ACPI_INTERFACES
+
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi.h>
 #include "accommon.h"
 
 #define _COMPONENT          ACPI_HARDWARE
 ACPI_MODULE_NAME("hwtimer")
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * FUNCTION:    acpi_get_timer_resolution
  *
+<<<<<<< HEAD
  * PARAMETERS:  Resolution          - Where the resolution is returned
+=======
+ * PARAMETERS:  resolution          - Where the resolution is returned
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status and timer resolution
  *
@@ -82,7 +114,11 @@ ACPI_EXPORT_SYMBOL(acpi_get_timer_resolution)
  *
  * FUNCTION:    acpi_get_timer
  *
+<<<<<<< HEAD
  * PARAMETERS:  Ticks               - Where the timer value is returned
+=======
+ * PARAMETERS:  ticks               - Where the timer value is returned
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status and current timer value (ticks)
  *
@@ -99,9 +135,19 @@ acpi_status acpi_get_timer(u32 * ticks)
 		return_ACPI_STATUS(AE_BAD_PARAMETER);
 	}
 
+<<<<<<< HEAD
 	status =
 	    acpi_hw_read(ticks, &acpi_gbl_FADT.xpm_timer_block);
 
+=======
+	/* ACPI 5.0A: PM Timer is optional */
+
+	if (!acpi_gbl_FADT.xpm_timer_block.address) {
+		return_ACPI_STATUS(AE_SUPPORT);
+	}
+
+	status = acpi_hw_read(ticks, &acpi_gbl_FADT.xpm_timer_block);
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 
@@ -127,7 +173,11 @@ ACPI_EXPORT_SYMBOL(acpi_get_timer)
  *              a versatile and accurate timer.
  *
  *              Note that this function accommodates only a single timer
+<<<<<<< HEAD
  *              rollover.  Thus for 24-bit timers, this function should only
+=======
+ *              rollover. Thus for 24-bit timers, this function should only
+>>>>>>> refs/remotes/origin/master
  *              be used for calculating durations less than ~4.6 seconds
  *              (~20 minutes for 32-bit timers) -- calculations below:
  *
@@ -148,6 +198,15 @@ acpi_get_timer_duration(u32 start_ticks, u32 end_ticks, u32 * time_elapsed)
 		return_ACPI_STATUS(AE_BAD_PARAMETER);
 	}
 
+<<<<<<< HEAD
+=======
+	/* ACPI 5.0A: PM Timer is optional */
+
+	if (!acpi_gbl_FADT.xpm_timer_block.address) {
+		return_ACPI_STATUS(AE_SUPPORT);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Compute Tick Delta:
 	 * Handle (max one) timer rollovers on 24-bit versus 32-bit timers.
@@ -176,13 +235,29 @@ acpi_get_timer_duration(u32 start_ticks, u32 end_ticks, u32 * time_elapsed)
 	/*
 	 * Compute Duration (Requires a 64-bit multiply and divide):
 	 *
+<<<<<<< HEAD
 	 * time_elapsed = (delta_ticks * 1000000) / PM_TIMER_FREQUENCY;
 	 */
 	status = acpi_ut_short_divide(((u64) delta_ticks) * 1000000,
 				      PM_TIMER_FREQUENCY, &quotient, NULL);
+=======
+	 * time_elapsed (microseconds) =
+	 *  (delta_ticks * ACPI_USEC_PER_SEC) / ACPI_PM_TIMER_FREQUENCY;
+	 */
+	status = acpi_ut_short_divide(((u64)delta_ticks) * ACPI_USEC_PER_SEC,
+				      ACPI_PM_TIMER_FREQUENCY, &quotient, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	*time_elapsed = (u32) quotient;
 	return_ACPI_STATUS(status);
 }
 
 ACPI_EXPORT_SYMBOL(acpi_get_timer_duration)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master

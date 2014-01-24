@@ -11,6 +11,14 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/types.h>
 #include <linux/list.h>
 #include <linux/ioctl.h>
@@ -22,6 +30,14 @@
 #include <linux/sched.h>
 #include <linux/kthread.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <mach/board.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/board.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <media/v4l2-dev.h>
 #include <media/v4l2-ioctl.h>
@@ -50,9 +66,22 @@ struct wfd_device {
 	struct v4l2_subdev mdp_sdev;
 	struct v4l2_subdev enc_sdev;
 	struct v4l2_subdev vsg_sdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bool secure_device;
 	bool in_use;
 	struct ion_client *ion_client;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct ion_client *ion_client;
+	bool secure_device;
+	bool in_use;
+	bool mdp_iommu_split_domain;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct mem_info {
@@ -88,6 +117,14 @@ struct wfd_inst {
 	u32 input_buf_size;
 	u32 out_buf_size;
 	struct list_head input_mem_list;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct wfd_stats stats;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wfd_stats stats;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct wfd_vid_buffer {
@@ -95,8 +132,21 @@ struct wfd_vid_buffer {
 };
 
 static int wfd_vidbuf_queue_setup(struct vb2_queue *q,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned int *num_buffers, unsigned int *num_planes,
 		unsigned long sizes[], void *alloc_ctxs[])
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+				   const struct v4l2_format *fmt,
+				   unsigned int *num_buffers,
+				   unsigned int *num_planes,
+				   unsigned int sizes[], void *alloc_ctxs[])
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct file *priv_data = (struct file *)(q->drv_priv);
 	struct wfd_inst *inst = (struct wfd_inst *)priv_data->private_data;
@@ -147,7 +197,15 @@ static int wfd_allocate_ion_buffer(struct ion_client *client,
 		bool secure, struct mem_region *mregion)
 {
 	struct ion_handle *handle;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void *kvaddr = NULL, *phys_addr = NULL;
+=======
+	void *kvaddr, *phys_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *kvaddr, *phys_addr;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long size;
 	unsigned int alloc_regions = 0;
 	int rc;
@@ -164,7 +222,15 @@ static int wfd_allocate_ion_buffer(struct ion_client *client,
 		goto alloc_fail;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kvaddr = ion_map_kernel(client,	handle,	secure ? UNCACHED : CACHED);
+=======
+	kvaddr = ion_map_kernel(client, handle, secure ? UNCACHED : CACHED);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kvaddr = ion_map_kernel(client, handle, secure ? UNCACHED : CACHED);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (IS_ERR_OR_NULL(kvaddr)) {
 		WFD_MSG_ERR("Failed to get virtual addr\n");
@@ -172,6 +238,8 @@ static int wfd_allocate_ion_buffer(struct ion_client *client,
 		goto alloc_fail;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = ion_map_iommu(client, handle,
 			VIDEO_DOMAIN, VIDEO_MAIN_POOL, SZ_4K,
 			0, (unsigned long *)&phys_addr,
@@ -179,6 +247,30 @@ static int wfd_allocate_ion_buffer(struct ion_client *client,
 
 	if (rc) {
 		WFD_MSG_ERR("Failed to get physical addr\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (secure) {
+		WFD_MSG_INFO("%s: calling ion_phys", __func__);
+		rc = ion_phys(client,
+			handle,
+			(unsigned long *)&phys_addr, (size_t *)&size);
+	} else {
+		WFD_MSG_INFO("%s: calling ion_map_iommu", __func__);
+		rc = ion_map_iommu(client, handle,
+				VIDEO_DOMAIN, VIDEO_MAIN_POOL, SZ_4K,
+				0, (unsigned long *)&phys_addr,
+				&size, 0, 0);
+	}
+
+	if (rc || !phys_addr) {
+		WFD_MSG_ERR(
+			"Failed to get physical addr, rc = %d, phys_addr = 0x%p\n",
+			rc, phys_addr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto alloc_fail;
 	} else if (size < mregion->size) {
 		WFD_MSG_ERR("Failed to map enough memory\n");
@@ -193,9 +285,17 @@ static int wfd_allocate_ion_buffer(struct ion_client *client,
 	return rc;
 alloc_fail:
 	if (!IS_ERR_OR_NULL(handle)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!IS_ERR_OR_NULL(kvaddr))
 			ion_unmap_kernel(client, handle);
 
+=======
+		ion_unmap_kernel(client, handle);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ion_unmap_kernel(client, handle);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ion_free(client, handle);
 
 		mregion->kvaddr = NULL;
@@ -285,12 +385,47 @@ int wfd_allocate_input_buffers(struct wfd_device *wfd_dev,
 		mdp_mregion->cookie = 0;
 		mdp_mregion->ion_handle = enc_mregion->ion_handle;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rc = ion_map_iommu(wfd_dev->ion_client, mdp_mregion->ion_handle,
 				DISPLAY_DOMAIN, GEN_POOL, SZ_4K,
 				0, (unsigned long *)&mdp_mregion->paddr,
 				(unsigned long *)&mdp_mregion->size, 0, 0);
 		if (rc) {
 			WFD_MSG_ERR("Failed to map to mdp\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (wfd_dev->mdp_iommu_split_domain) {
+			if (wfd_dev->secure_device) {
+				rc = ion_phys(wfd_dev->ion_client,
+					mdp_mregion->ion_handle,
+					(unsigned long *)&mdp_mregion->paddr,
+					(size_t *)&mdp_mregion->size);
+			} else {
+				rc = ion_map_iommu(wfd_dev->ion_client,
+					mdp_mregion->ion_handle,
+					DISPLAY_WRITE_DOMAIN, GEN_POOL, SZ_4K,
+					0, (unsigned long *)&mdp_mregion->paddr,
+					(unsigned long *)&mdp_mregion->size,
+					0, 0);
+			}
+		} else {
+			rc = ion_map_iommu(wfd_dev->ion_client,
+				mdp_mregion->ion_handle,
+				DISPLAY_READ_DOMAIN, GEN_POOL, SZ_4K,
+				0, (unsigned long *)&mdp_mregion->paddr,
+				(unsigned long *)&mdp_mregion->size, 0, 0);
+		}
+
+		if (rc || !mdp_mregion->paddr) {
+			WFD_MSG_ERR(
+				"Failed to map to mdp, rc = %d, paddr = 0x%p\n",
+				rc, mdp_mregion->paddr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mdp_mregion->kvaddr = NULL;
 			mdp_mregion->paddr = NULL;
 			mdp_mregion->ion_handle = NULL;
@@ -302,8 +437,20 @@ int wfd_allocate_input_buffers(struct wfd_device *wfd_dev,
 		mdp_buf.kvaddr = (u32) mdp_mregion->kvaddr;
 		mdp_buf.paddr = (u32) mdp_mregion->paddr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		WFD_MSG_DBG("NOTE: mdp paddr = %p, kvaddr = %p\n",
 				mdp_mregion->paddr,
+=======
+		WFD_MSG_DBG("NOTE: mdp paddr = [%p->%p], kvaddr = %p\n",
+				mdp_mregion->paddr, (void *)
+				((int)mdp_mregion->paddr + mdp_mregion->size),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		WFD_MSG_DBG("NOTE: mdp paddr = [%p->%p], kvaddr = %p\n",
+				mdp_mregion->paddr, (void *)
+				((int)mdp_mregion->paddr + mdp_mregion->size),
+>>>>>>> refs/remotes/origin/cm-11.0
 				mdp_mregion->kvaddr);
 
 		INIT_LIST_HEAD(&mpair->list);
@@ -317,6 +464,18 @@ int wfd_allocate_input_buffers(struct wfd_device *wfd_dev,
 			WFD_MSG_ERR("Unable to queue the"
 					" buffer to mdp\n");
 			break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		} else {
+			wfd_stats_update(&inst->stats,
+					WFD_STAT_EVENT_MDP_QUEUE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			wfd_stats_update(&inst->stats,
+					WFD_STAT_EVENT_MDP_QUEUE);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 	rc = v4l2_subdev_call(&wfd_dev->enc_sdev, core, ioctl,
@@ -325,7 +484,22 @@ int wfd_allocate_input_buffers(struct wfd_device *wfd_dev,
 		WFD_MSG_ERR("Failed to allocate recon buffers\n");
 		goto alloc_fail;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 alloc_fail:
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	return rc;
+
+alloc_fail:
+	kfree(mpair);
+	kfree(enc_mregion);
+	kfree(mdp_mregion);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 void wfd_free_input_buffers(struct wfd_device *wfd_dev,
@@ -355,12 +529,37 @@ void wfd_free_input_buffers(struct wfd_device *wfd_dev,
 				WFD_MSG_ERR("Failed to free buffers "
 						"from encoder\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (mpair->mdp->paddr)
 				ion_unmap_iommu(wfd_dev->ion_client,
 						mpair->mdp->ion_handle,
 						DISPLAY_DOMAIN, GEN_POOL);
 
 			if (mpair->enc->paddr)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			if (mpair->mdp->paddr) {
+				if (wfd_dev->mdp_iommu_split_domain) {
+					if (!wfd_dev->secure_device)
+						ion_unmap_iommu(wfd_dev->
+							ion_client,
+							mpair->mdp->ion_handle,
+							DISPLAY_WRITE_DOMAIN,
+							GEN_POOL);
+				} else {
+					ion_unmap_iommu(wfd_dev->ion_client,
+						mpair->mdp->ion_handle,
+						DISPLAY_READ_DOMAIN, GEN_POOL);
+				}
+			}
+
+			if (mpair->enc->paddr && !wfd_dev->secure_device)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				ion_unmap_iommu(wfd_dev->ion_client,
 						mpair->enc->ion_handle,
 						VIDEO_DOMAIN, VIDEO_MAIN_POOL);
@@ -519,6 +718,18 @@ static int mdp_output_thread(void *data)
 
 			WFD_MSG_ERR("Streamoff called\n");
 			break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		} else {
+			wfd_stats_update(&inst->stats,
+				WFD_STAT_EVENT_MDP_DEQUEUE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			wfd_stats_update(&inst->stats,
+				WFD_STAT_EVENT_MDP_DEQUEUE);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		mregion = obuf_mdp.cookie;
@@ -539,15 +750,37 @@ static int mdp_output_thread(void *data)
 			core, ioctl, VSG_Q_BUFFER, (void *)&ibuf_vsg);
 
 		if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			WFD_MSG_ERR("Failed to encode frame\n");
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			WFD_MSG_ERR("Failed to queue frame to vsg\n");
+			break;
+		} else {
+			wfd_stats_update(&inst->stats,
+				WFD_STAT_EVENT_VSG_QUEUE);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 	WFD_MSG_DBG("Exiting the thread\n");
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int wfd_vidbuf_start_streaming(struct vb2_queue *q)
+=======
+int wfd_vidbuf_start_streaming(struct vb2_queue *q, unsigned int count)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int wfd_vidbuf_start_streaming(struct vb2_queue *q, unsigned int count)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct file *priv_data = (struct file *)(q->drv_priv);
 	struct wfd_device *wfd_dev =
@@ -842,9 +1075,25 @@ static int wfdioc_qbuf(struct file *filp, void *fh,
 		WFD_MSG_ERR("Failed to register buffer\n");
 		return rc;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = vb2_qbuf(&inst->vid_bufq, b);
 	if (rc)
 		WFD_MSG_ERR("Failed to queue buffer\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	rc = vb2_qbuf(&inst->vid_bufq, b);
+	if (rc)
+		WFD_MSG_ERR("Failed to queue buffer\n");
+	else
+		wfd_stats_update(&inst->stats, WFD_STAT_EVENT_CLIENT_QUEUE);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -903,8 +1152,28 @@ static int wfdioc_dqbuf(struct file *filp, void *fh,
 		struct v4l2_buffer *b)
 {
 	struct wfd_inst *inst = filp->private_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	WFD_MSG_INFO("Waiting to dequeue buffer\n");
 	return vb2_dqbuf(&inst->vid_bufq, b, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int rc;
+
+	WFD_MSG_INFO("Waiting to dequeue buffer\n");
+	rc = vb2_dqbuf(&inst->vid_bufq, b, 0);
+
+	if (rc)
+		WFD_MSG_ERR("Failed to dequeue buffer\n");
+	else
+		wfd_stats_update(&inst->stats, WFD_STAT_EVENT_CLIENT_DEQUEUE);
+
+	return rc;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 static int wfdioc_g_ctrl(struct file *filp, void *fh,
 					struct v4l2_control *a)
@@ -1088,6 +1357,14 @@ static int wfd_set_default_properties(struct file *filp)
 {
 	unsigned long flags;
 	struct v4l2_format fmt;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct v4l2_control ctrl;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct v4l2_control ctrl;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct wfd_inst *inst = filp->private_data;
 	if (!inst) {
 		WFD_MSG_ERR("Invalid argument\n");
@@ -1101,6 +1378,19 @@ static int wfd_set_default_properties(struct file *filp)
 			= V4L2_PIX_FMT_H264;
 	spin_unlock_irqrestore(&inst->inst_lock, flags);
 	wfdioc_s_fmt(filp, filp->private_data, &fmt);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	ctrl.id = V4L2_CID_MPEG_VIDEO_HEADER_MODE;
+	ctrl.value = V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_I_FRAME;
+	wfdioc_s_ctrl(filp, filp->private_data, &ctrl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 static void venc_op_buffer_done(void *cookie, u32 status,
@@ -1133,11 +1423,31 @@ static void venc_ip_buffer_done(void *cookie, u32 status,
 			ioctl, VSG_RETURN_IP_BUFFER, (void *)&buf);
 	if (rc)
 		WFD_MSG_ERR("Failed to return buffer to vsg\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	else
+		wfd_stats_update(&inst->stats, WFD_STAT_EVENT_ENC_DEQUEUE);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else
+		wfd_stats_update(&inst->stats, WFD_STAT_EVENT_ENC_DEQUEUE);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int vsg_release_input_frame(void *cookie, struct vsg_buf_info *buf)
 {
 	struct file *filp = cookie;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct wfd_inst *inst = filp->private_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wfd_inst *inst = filp->private_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct wfd_device *wfd_dev =
 		(struct wfd_device *)video_drvdata(filp);
 	int rc = 0;
@@ -1146,6 +1456,19 @@ static int vsg_release_input_frame(void *cookie, struct vsg_buf_info *buf)
 			ioctl, MDP_Q_BUFFER, buf);
 	if (rc)
 		WFD_MSG_ERR("Failed to Q buffer to mdp\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	else {
+		wfd_stats_update(&inst->stats, WFD_STAT_EVENT_MDP_QUEUE);
+		wfd_stats_update(&inst->stats, WFD_STAT_EVENT_VSG_DEQUEUE);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return rc;
 }
@@ -1153,10 +1476,24 @@ static int vsg_release_input_frame(void *cookie, struct vsg_buf_info *buf)
 static int vsg_encode_frame(void *cookie, struct vsg_buf_info *buf)
 {
 	struct file *filp = cookie;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct wfd_device *wfd_dev =
 		(struct wfd_device *)video_drvdata(filp);
 	struct venc_buf_info venc_buf;
 	int rc;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct wfd_inst *inst = filp->private_data;
+	struct wfd_device *wfd_dev =
+		(struct wfd_device *)video_drvdata(filp);
+	struct venc_buf_info venc_buf;
+	int rc = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!buf)
 		return -EINVAL;
@@ -1167,8 +1504,26 @@ static int vsg_encode_frame(void *cookie, struct vsg_buf_info *buf)
 	};
 
 	wfd_flush_ion_buffer(wfd_dev->ion_client, venc_buf.mregion);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = v4l2_subdev_call(&wfd_dev->enc_sdev, core, ioctl,
 			ENCODE_FRAME, &venc_buf);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	rc = v4l2_subdev_call(&wfd_dev->enc_sdev, core, ioctl,
+			ENCODE_FRAME, &venc_buf);
+
+	if (rc)
+		WFD_MSG_ERR("Encode failed\n");
+	else
+		wfd_stats_update(&inst->stats, WFD_STAT_EVENT_ENC_QUEUE);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -1241,6 +1596,18 @@ static int wfd_open(struct file *filp)
 	spin_lock_init(&inst->inst_lock);
 	INIT_LIST_HEAD(&inst->input_mem_list);
 	INIT_LIST_HEAD(&inst->minfo_list);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	wfd_stats_init(&inst->stats, MINOR(filp->f_dentry->d_inode->i_rdev));
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	wfd_stats_init(&inst->stats, MINOR(filp->f_dentry->d_inode->i_rdev));
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	rc = v4l2_subdev_call(&wfd_dev->mdp_sdev, core, ioctl, MDP_OPEN,
 				(void *)&inst->mdp_inst);
 	if (rc) {
@@ -1323,6 +1690,14 @@ static int wfd_close(struct file *filp)
 		if (rc)
 			WFD_MSG_ERR("Failed to CLOSE vsg subdev: %d\n", rc);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		wfd_stats_deinit(&inst->stats);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wfd_stats_deinit(&inst->stats);
+>>>>>>> refs/remotes/origin/cm-11.0
 		kfree(inst);
 	}
 
@@ -1424,6 +1799,14 @@ static int __devinit __wfd_probe(struct platform_device *pdev)
 	int rc = 0, c = 0;
 	struct wfd_device *wfd_dev; /* Should be taken as an array*/
 	struct ion_client *ion_client = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct msm_wfd_platform_data *wfd_priv;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_wfd_platform_data *wfd_priv;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	WFD_MSG_DBG("__wfd_probe: E\n");
 	wfd_dev = kzalloc(sizeof(*wfd_dev)*WFD_NUM_DEVICES, GFP_KERNEL);
@@ -1433,9 +1816,36 @@ static int __devinit __wfd_probe(struct platform_device *pdev)
 		rc = -ENOMEM;
 		goto err_v4l2_probe;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pdev->dev.platform_data = (void *) wfd_dev;
 
 	ion_client = msm_ion_client_create(-1, "wfd");
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	wfd_priv = pdev->dev.platform_data;
+	if (wfd_priv && wfd_priv->wfd_check_mdp_iommu_split) {
+		wfd_dev->mdp_iommu_split_domain =
+			wfd_priv->wfd_check_mdp_iommu_split();
+	}
+
+	pdev->dev.platform_data = (void *) wfd_dev;
+
+	ion_client = msm_ion_client_create(-1, "wfd");
+
+	rc = wfd_stats_setup();
+	if (rc) {
+		WFD_MSG_ERR("No debugfs support: %d\n", rc);
+		/* Don't treat this as a fatal err */
+		rc = 0;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!ion_client) {
 		WFD_MSG_ERR("Failed to create ion client\n");
 		rc = -ENODEV;
@@ -1465,9 +1875,19 @@ static int __devinit __wfd_probe(struct platform_device *pdev)
 
 		/* Other device specific stuff */
 		mutex_init(&wfd_dev[c].dev_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		wfd_dev[c].in_use = false;
 		wfd_dev[c].ion_client = ion_client;
 
+=======
+		wfd_dev[c].ion_client = ion_client;
+		wfd_dev[c].in_use = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wfd_dev[c].ion_client = ion_client;
+		wfd_dev[c].in_use = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 		switch (WFD_DEVICE_NUMBER_BASE + c) {
 		case WFD_DEVICE_SECURE:
 			wfd_dev[c].secure_device = true;
@@ -1497,6 +1917,14 @@ static int __devexit __wfd_remove(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	wfd_stats_teardown();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wfd_stats_teardown();
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (c = 0; c < WFD_NUM_DEVICES; ++c) {
 		v4l2_device_unregister_subdev(&wfd_dev[c].vsg_sdev);
 		v4l2_device_unregister_subdev(&wfd_dev[c].enc_sdev);

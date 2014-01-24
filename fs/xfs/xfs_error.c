@@ -16,6 +16,7 @@
  * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 #include "xfs.h"
+<<<<<<< HEAD
 #include "xfs_fs.h"
 #include "xfs_types.h"
 #include "xfs_log.h"
@@ -28,6 +29,15 @@
 #include "xfs_dinode.h"
 #include "xfs_inode.h"
 #include "xfs_utils.h"
+=======
+#include "xfs_format.h"
+#include "xfs_fs.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_error.h"
 
 #ifdef DEBUG
@@ -67,7 +77,11 @@ xfs_error_test(int error_tag, int *fsidp, char *expression,
 	int i;
 	int64_t fsid;
 
+<<<<<<< HEAD
 	if (random32() % randfactor)
+=======
+	if (prandom_u32() % randfactor)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	memcpy(&fsid, fsidp, sizeof(xfs_fsid_t));
@@ -161,7 +175,11 @@ xfs_error_report(
 {
 	if (level <= xfs_error_level) {
 		xfs_alert_tag(mp, XFS_PTAG_ERROR_REPORT,
+<<<<<<< HEAD
 		"Internal error %s at line %d of file %s.  Caller 0x%p\n",
+=======
+		"Internal error %s at line %d of file %s.  Caller 0x%p",
+>>>>>>> refs/remotes/origin/master
 			    tag, linenum, filename, ra);
 
 		xfs_stack_trace();
@@ -179,7 +197,11 @@ xfs_corruption_error(
 	inst_t			*ra)
 {
 	if (level <= xfs_error_level)
+<<<<<<< HEAD
 		xfs_hex_dump(p, 16);
+=======
+		xfs_hex_dump(p, 64);
+>>>>>>> refs/remotes/origin/master
 	xfs_error_report(tag, level, mp, filename, linenum, ra);
 	xfs_alert(mp, "Corruption detected. Unmount and run xfs_repair");
 }

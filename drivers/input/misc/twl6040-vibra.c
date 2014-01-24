@@ -27,8 +27,18 @@
  */
 #include <linux/module.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 #include <linux/i2c/twl.h>
+=======
+#include <linux/input.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/workqueue.h>
+#include <linux/input.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mfd/twl6040.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
@@ -47,6 +57,14 @@ struct vibra_info {
 	struct workqueue_struct *workqueue;
 	struct work_struct play_work;
 	struct mutex mutex;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int irq;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int irq;
+>>>>>>> refs/remotes/origin/master
 
 	bool enabled;
 	int weak_speed;
@@ -73,12 +91,28 @@ static irqreturn_t twl6040_vib_irq_handler(int irq, void *data)
 	if (status & TWL6040_VIBLOCDET) {
 		dev_warn(info->dev, "Left Vibrator overcurrent detected\n");
 		twl6040_clear_bits(twl6040, TWL6040_REG_VIBCTLL,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				   TWL6040_VIBENAL);
+=======
+				   TWL6040_VIBENA);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   TWL6040_VIBENA);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (status & TWL6040_VIBROCDET) {
 		dev_warn(info->dev, "Right Vibrator overcurrent detected\n");
 		twl6040_clear_bits(twl6040, TWL6040_REG_VIBCTLR,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				   TWL6040_VIBENAR);
+=======
+				   TWL6040_VIBENA);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   TWL6040_VIBENA);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return IRQ_HANDLED;
@@ -96,23 +130,55 @@ static void twl6040_vibra_enable(struct vibra_info *info)
 	}
 
 	twl6040_power(info->twl6040, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (twl6040_get_rev(twl6040) <= TWL6040_REV_ES1_1) {
+=======
+	if (twl6040_get_revid(twl6040) <= TWL6040_REV_ES1_1) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (twl6040_get_revid(twl6040) <= TWL6040_REV_ES1_1) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * ERRATA: Disable overcurrent protection for at least
 		 * 3ms when enabling vibrator drivers to avoid false
 		 * overcurrent detection
 		 */
 		twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLL,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				  TWL6040_VIBENAL | TWL6040_VIBCTRLL);
 		twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLR,
 				  TWL6040_VIBENAR | TWL6040_VIBCTRLR);
+=======
+				  TWL6040_VIBENA | TWL6040_VIBCTRL);
+		twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLR,
+				  TWL6040_VIBENA | TWL6040_VIBCTRL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  TWL6040_VIBENA | TWL6040_VIBCTRL);
+		twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLR,
+				  TWL6040_VIBENA | TWL6040_VIBCTRL);
+>>>>>>> refs/remotes/origin/master
 		usleep_range(3000, 3500);
 	}
 
 	twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLL,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  TWL6040_VIBENAL);
 	twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLR,
 			  TWL6040_VIBENAR);
+=======
+			  TWL6040_VIBENA);
+	twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLR,
+			  TWL6040_VIBENA);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  TWL6040_VIBENA);
+	twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLR,
+			  TWL6040_VIBENA);
+>>>>>>> refs/remotes/origin/master
 
 	info->enabled = true;
 }
@@ -200,6 +266,22 @@ static int vibra_play(struct input_dev *input, void *data,
 	struct vibra_info *info = input_get_drvdata(input);
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Do not allow effect, while the routing is set to use audio */
+	ret = twl6040_get_vibralr_status(info->twl6040);
+	if (ret & TWL6040_VIBSEL) {
+		dev_info(&input->dev, "Vibra is configured for audio\n");
+		return -EBUSY;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	info->weak_speed = effect->u.rumble.weak_magnitude;
 	info->strong_speed = effect->u.rumble.strong_magnitude;
 	info->direction = effect->direction < EFFECT_DIR_180_DEG ? 1 : -1;
@@ -227,7 +309,15 @@ static void twl6040_vibra_close(struct input_dev *input)
 	mutex_unlock(&info->mutex);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if CONFIG_PM_SLEEP
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int twl6040_vibra_suspend(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
@@ -242,14 +332,22 @@ static int twl6040_vibra_suspend(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static SIMPLE_DEV_PM_OPS(twl6040_vibra_pm_ops, twl6040_vibra_suspend, NULL);
 
+<<<<<<< HEAD
 static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct twl4030_vibra_data *pdata = pdev->dev.platform_data;
+=======
+	struct twl6040_vibra_data *pdata = pdev->dev.platform_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct vibra_info *info;
 	int ret;
 
@@ -259,12 +357,35 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
 	}
 
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+=======
+static int twl6040_vibra_probe(struct platform_device *pdev)
+{
+	struct device *twl6040_core_dev = pdev->dev.parent;
+	struct device_node *twl6040_core_node = NULL;
+	struct vibra_info *info;
+	int vddvibl_uV = 0;
+	int vddvibr_uV = 0;
+	int ret;
+
+#ifdef CONFIG_OF
+	twl6040_core_node = of_find_node_by_name(twl6040_core_dev->of_node,
+						 "vibra");
+#endif
+
+	if (!twl6040_core_node) {
+		dev_err(&pdev->dev, "parent of node is missing?\n");
+		return -EINVAL;
+	}
+
+	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!info) {
 		dev_err(&pdev->dev, "couldn't allocate memory\n");
 		return -ENOMEM;
 	}
 
 	info->dev = &pdev->dev;
+<<<<<<< HEAD
 	info->twl6040 = dev_get_drvdata(pdev->dev.parent);
 	info->vibldrv_res = pdata->vibldrv_res;
 	info->vibrdrv_res = pdata->vibrdrv_res;
@@ -277,6 +398,16 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
 		goto err_kzalloc;
 	}
 
+<<<<<<< HEAD
+=======
+	info->irq = platform_get_irq(pdev, 0);
+	if (info->irq < 0) {
+		dev_err(info->dev, "invalid irq\n");
+		ret = -EINVAL;
+		goto err_kzalloc;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_init(&info->mutex);
 
 	info->input_dev = input_allocate_device();
@@ -308,16 +439,58 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, info);
 
+<<<<<<< HEAD
 	ret = twl6040_request_irq(info->twl6040, TWL6040_IRQ_VIB,
 				  twl6040_vib_irq_handler, 0,
 				  "twl6040_irq_vib", info);
+=======
+	ret = request_threaded_irq(info->irq, NULL, twl6040_vib_irq_handler, 0,
+				   "twl6040_irq_vib", info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(info->dev, "VIB IRQ request failed: %d\n", ret);
 		goto err_irq;
+=======
+
+	info->twl6040 = dev_get_drvdata(pdev->dev.parent);
+
+	of_property_read_u32(twl6040_core_node, "ti,vibldrv-res",
+			     &info->vibldrv_res);
+	of_property_read_u32(twl6040_core_node, "ti,vibrdrv-res",
+			     &info->vibrdrv_res);
+	of_property_read_u32(twl6040_core_node, "ti,viblmotor-res",
+			     &info->viblmotor_res);
+	of_property_read_u32(twl6040_core_node, "ti,vibrmotor-res",
+			     &info->vibrmotor_res);
+	of_property_read_u32(twl6040_core_node, "ti,vddvibl-uV", &vddvibl_uV);
+	of_property_read_u32(twl6040_core_node, "ti,vddvibr-uV", &vddvibr_uV);
+
+	if ((!info->vibldrv_res && !info->viblmotor_res) ||
+	    (!info->vibrdrv_res && !info->vibrmotor_res)) {
+		dev_err(info->dev, "invalid vibra driver/motor resistance\n");
+		return -EINVAL;
+	}
+
+	info->irq = platform_get_irq(pdev, 0);
+	if (info->irq < 0) {
+		dev_err(info->dev, "invalid irq\n");
+		return -EINVAL;
+	}
+
+	mutex_init(&info->mutex);
+
+	ret = devm_request_threaded_irq(&pdev->dev, info->irq, NULL,
+					twl6040_vib_irq_handler, 0,
+					"twl6040_irq_vib", info);
+	if (ret) {
+		dev_err(info->dev, "VIB IRQ request failed: %d\n", ret);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	info->supplies[0].supply = "vddvibl";
 	info->supplies[1].supply = "vddvibr";
+<<<<<<< HEAD
 	ret = regulator_bulk_get(info->dev, ARRAY_SIZE(info->supplies),
 				 info->supplies);
 	if (ret) {
@@ -360,7 +533,11 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
 err_voltage:
 	regulator_bulk_free(ARRAY_SIZE(info->supplies), info->supplies);
 err_regulator:
+<<<<<<< HEAD
 	twl6040_free_irq(info->twl6040, TWL6040_IRQ_VIB, info);
+=======
+	free_irq(info->irq, info);
+>>>>>>> refs/remotes/origin/cm-10.0
 err_irq:
 	input_unregister_device(info->input_dev);
 	info->input_dev = NULL;
@@ -375,27 +552,117 @@ err_kzalloc:
 }
 
 static int __devexit twl6040_vibra_remove(struct platform_device *pdev)
+=======
+	/*
+	 * When booted with Device tree the regulators are attached to the
+	 * parent device (twl6040 MFD core)
+	 */
+	ret = regulator_bulk_get(twl6040_core_dev, ARRAY_SIZE(info->supplies),
+				 info->supplies);
+	if (ret) {
+		dev_err(info->dev, "couldn't get regulators %d\n", ret);
+		return ret;
+	}
+
+	if (vddvibl_uV) {
+		ret = regulator_set_voltage(info->supplies[0].consumer,
+					    vddvibl_uV, vddvibl_uV);
+		if (ret) {
+			dev_err(info->dev, "failed to set VDDVIBL volt %d\n",
+				ret);
+			goto err_regulator;
+		}
+	}
+
+	if (vddvibr_uV) {
+		ret = regulator_set_voltage(info->supplies[1].consumer,
+					    vddvibr_uV, vddvibr_uV);
+		if (ret) {
+			dev_err(info->dev, "failed to set VDDVIBR volt %d\n",
+				ret);
+			goto err_regulator;
+		}
+	}
+
+	INIT_WORK(&info->play_work, vibra_play_work);
+
+	info->input_dev = input_allocate_device();
+	if (info->input_dev == NULL) {
+		dev_err(info->dev, "couldn't allocate input device\n");
+		ret = -ENOMEM;
+		goto err_regulator;
+	}
+
+	input_set_drvdata(info->input_dev, info);
+
+	info->input_dev->name = "twl6040:vibrator";
+	info->input_dev->id.version = 1;
+	info->input_dev->dev.parent = pdev->dev.parent;
+	info->input_dev->close = twl6040_vibra_close;
+	__set_bit(FF_RUMBLE, info->input_dev->ffbit);
+
+	ret = input_ff_create_memless(info->input_dev, NULL, vibra_play);
+	if (ret < 0) {
+		dev_err(info->dev, "couldn't register vibrator to FF\n");
+		goto err_ialloc;
+	}
+
+	ret = input_register_device(info->input_dev);
+	if (ret < 0) {
+		dev_err(info->dev, "couldn't register input device\n");
+		goto err_iff;
+	}
+
+	platform_set_drvdata(pdev, info);
+
+	return 0;
+
+err_iff:
+	input_ff_destroy(info->input_dev);
+err_ialloc:
+	input_free_device(info->input_dev);
+err_regulator:
+	regulator_bulk_free(ARRAY_SIZE(info->supplies), info->supplies);
+	return ret;
+}
+
+static int twl6040_vibra_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vibra_info *info = platform_get_drvdata(pdev);
 
 	input_unregister_device(info->input_dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	twl6040_free_irq(info->twl6040, TWL6040_IRQ_VIB, info);
+=======
+	free_irq(info->irq, info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	regulator_bulk_free(ARRAY_SIZE(info->supplies), info->supplies);
 	destroy_workqueue(info->workqueue);
 	kfree(info);
+=======
+	regulator_bulk_free(ARRAY_SIZE(info->supplies), info->supplies);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver twl6040_vibra_driver = {
 	.probe		= twl6040_vibra_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(twl6040_vibra_remove),
+=======
+	.remove		= twl6040_vibra_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "twl6040-vibra",
 		.owner	= THIS_MODULE,
 		.pm	= &twl6040_vibra_pm_ops,
 	},
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init twl6040_vibra_init(void)
 {
@@ -408,6 +675,12 @@ static void __exit twl6040_vibra_exit(void)
 	platform_driver_unregister(&twl6040_vibra_driver);
 }
 module_exit(twl6040_vibra_exit);
+=======
+module_platform_driver(twl6040_vibra_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(twl6040_vibra_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("platform:twl6040-vibra");
 MODULE_DESCRIPTION("TWL6040 Vibra driver");

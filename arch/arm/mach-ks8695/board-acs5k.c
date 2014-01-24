@@ -10,7 +10,15 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/interrupt.h>
@@ -20,7 +28,11 @@
 #include <linux/i2c.h>
 #include <linux/i2c-algo-bit.h>
 #include <linux/i2c-gpio.h>
+<<<<<<< HEAD
 #include <linux/i2c/pca953x.h>
+=======
+#include <linux/platform_data/pca953x.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/map.h>
@@ -34,7 +46,15 @@
 #include <asm/mach/irq.h>
 
 #include <mach/devices.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <mach/gpio-ks8695.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/gpio-ks8695.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 
@@ -92,7 +112,11 @@ static struct i2c_board_info acs5k_i2c_devs[] __initdata = {
 	},
 };
 
+<<<<<<< HEAD
 static void __devinit acs5k_i2c_init(void)
+=======
+static void acs5k_i2c_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* The gpio interface */
 	platform_device_register(&acs5k_i2c_device);
@@ -223,9 +247,26 @@ static void __init acs5k_init(void)
 
 MACHINE_START(ACS5K, "Brivo Systems LLC ACS-5000 Master board")
 	/* Maintainer: Simtec Electronics. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= KS8695_SDRAM_PA + 0x100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= ks8695_map_io,
 	.init_irq	= ks8695_init_irq,
 	.init_machine	= acs5k_init,
 	.timer		= &ks8695_timer,
+<<<<<<< HEAD
+=======
+	.restart	= ks8695_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ks8695_map_io,
+	.init_irq	= ks8695_init_irq,
+	.init_machine	= acs5k_init,
+	.init_time	= ks8695_timer_init,
+	.restart	= ks8695_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

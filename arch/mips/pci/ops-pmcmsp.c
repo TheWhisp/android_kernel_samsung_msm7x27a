@@ -9,8 +9,13 @@
  * Much of the code is derived from the original DDB5074 port by
  * Geert Uytterhoeven <geert@sonycom.com>
  *
+<<<<<<< HEAD
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
+=======
+ * This program is free software; you can redistribute	it and/or modify it
+ * under  the terms of	the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  * Free Software Foundation;  either version 2 of the  License, or (at your
  * option) any later version.
  *
@@ -53,6 +58,7 @@ static void pci_proc_init(void);
 
 /*****************************************************************************
  *
+<<<<<<< HEAD
  *  FUNCTION: read_msp_pci_counts
  *  _________________________________________________________________________
  *
@@ -76,16 +82,39 @@ static int read_msp_pci_counts(char *page, char **start, off_t off,
 {
 	int i;
 	int len = 0;
+=======
+ *  FUNCTION: show_msp_pci_counts
+ *  _________________________________________________________________________
+ *
+ *  DESCRIPTION: Prints the count of how many times each PCI
+ *		 interrupt has asserted. Can be invoked by the
+ *		 /proc filesystem.
+ *
+ *  INPUTS:	 m	 - synthetic file construction data
+ *		 v	 - iterator
+ *
+ *  RETURNS:	 0 or error
+ *
+ ****************************************************************************/
+static int show_msp_pci_counts(struct seq_file *m, void *v)
+{
+	int i;
+>>>>>>> refs/remotes/origin/master
 	unsigned int intcount, total = 0;
 
 	for (i = 0; i < 32; ++i) {
 		intcount = pci_int_count[i];
 		if (intcount != 0) {
+<<<<<<< HEAD
 			len += sprintf(page + len, "[%d] = %u\n", i, intcount);
+=======
+			seq_printf(m, "[%d] = %u\n", i, intcount);
+>>>>>>> refs/remotes/origin/master
 			total += intcount;
 		}
 	}
 
+<<<<<<< HEAD
 	len += sprintf(page + len, "total = %u\n", total);
 	if (len <= off+count)
 		*eof = 1;
@@ -125,24 +154,72 @@ static int read_msp_pci_counts(char *page, char **start, off_t off,
  ****************************************************************************/
 static int gen_pci_cfg_wr(char *page, char **start, off_t off,
 				int count, int *eof, void *data)
+=======
+	seq_printf(m, "total = %u\n", total);
+	return 0;
+}
+
+static int msp_pci_rd_cnt_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, show_msp_pci_counts, NULL);
+}
+
+static const struct file_operations msp_pci_rd_cnt_fops = {
+	.open		= msp_pci_rd_cnt_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+/*****************************************************************************
+ *
+ *  FUNCTION: gen_pci_cfg_wr_show
+ *  _________________________________________________________________________
+ *
+ *  DESCRIPTION: Generates a configuration write cycle for debug purposes.
+ *		 The IDSEL line asserted and location and data written are
+ *		 immaterial. Just want to be able to prove that a
+ *		 configuration write can be correctly generated on the
+ *		 PCI bus.  Intent is that this function by invocable from
+ *		 the /proc filesystem.
+ *
+ *  INPUTS:	 m	 - synthetic file construction data
+ *		 v	 - iterator
+ *
+ *  RETURNS:	 0 or error
+ *
+ ****************************************************************************/
+static int gen_pci_cfg_wr_show(struct seq_file *m, void *v)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char where = 0; /* Write to static Device/Vendor ID */
 	unsigned char bus_num = 0; /* Bus 0 */
 	unsigned char dev_fn = 0xF; /* Arbitrary device number */
 	u32 wr_data = 0xFF00AA00; /* Arbitrary data */
 	struct msp_pci_regs *preg = (void *)PCI_BASE_REG;
+<<<<<<< HEAD
 	int len = 0;
 	unsigned long value;
 	int intr;
 
 	len += sprintf(page + len, "PMC MSP PCI: Beginning\n");
+=======
+	unsigned long value;
+	int intr;
+
+	seq_puts(m, "PMC MSP PCI: Beginning\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (proc_init == 0) {
 		pci_proc_init();
 		proc_init = ~0;
 	}
 
+<<<<<<< HEAD
 	len += sprintf(page + len, "PMC MSP PCI: Before Cfg Wr\n");
+=======
+	seq_puts(m, "PMC MSP PCI: Before Cfg Wr\n");
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Generate PCI Configuration Write Cycle
@@ -168,6 +245,7 @@ static int gen_pci_cfg_wr(char *page, char **start, off_t off,
 	 */
 	intr = preg->if_status;
 
+<<<<<<< HEAD
 	len += sprintf(page + len, "PMC MSP PCI: After Cfg Wr\n");
 
 	/* Handle STDOUT calculations */
@@ -183,6 +261,24 @@ static int gen_pci_cfg_wr(char *page, char **start, off_t off,
 	return len;
 }
 
+=======
+	seq_puts(m, "PMC MSP PCI: After Cfg Wr\n");
+	return 0;
+}
+
+static int gen_pci_cfg_wr_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, gen_pci_cfg_wr_show, NULL);
+}
+
+static const struct file_operations gen_pci_cfg_wr_fops = {
+	.open		= gen_pci_cfg_wr_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*****************************************************************************
  *
  *  FUNCTION: pci_proc_init
@@ -190,19 +286,32 @@ static int gen_pci_cfg_wr(char *page, char **start, off_t off,
  *
  *  DESCRIPTION: Create entries in the /proc filesystem for debug access.
  *
+<<<<<<< HEAD
  *  INPUTS:      none
  *
  *  OUTPUTS:     none
  *
  *  RETURNS:     none
+=======
+ *  INPUTS:	 none
+ *
+ *  OUTPUTS:	 none
+ *
+ *  RETURNS:	 none
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static void pci_proc_init(void)
 {
+<<<<<<< HEAD
 	create_proc_read_entry("pmc_msp_pci_rd_cnt", 0, NULL,
 				read_msp_pci_counts, NULL);
 	create_proc_read_entry("pmc_msp_pci_cfg_wr", 0, NULL,
 				gen_pci_cfg_wr, NULL);
+=======
+	proc_create("pmc_msp_pci_rd_cnt", 0, NULL, &msp_pci_rd_cnt_fops);
+	proc_create("pmc_msp_pci_cfg_wr", 0, NULL, &gen_pci_cfg_wr_fops);
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_PROC_FS && PCI_COUNTERS */
 
@@ -214,6 +323,7 @@ static DEFINE_SPINLOCK(bpci_lock);
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Defines the address range that pciauto() will use to
+<<<<<<< HEAD
  *               assign to the I/O BARs of PCI devices.
  *
  *               Use the start and end addresses of the MSP7120 PCI Host
@@ -245,13 +355,50 @@ static DEFINE_SPINLOCK(bpci_lock);
  *
  *    flags      - Attributes indicating the type of resource. In this case,
  *                 indicate I/O space.
+=======
+ *		 assign to the I/O BARs of PCI devices.
+ *
+ *		 Use the start and end addresses of the MSP7120 PCI Host
+ *		 Controller I/O space, in the form that they appear on the
+ *		 PCI bus AFTER MSP7120 has performed address translation.
+ *
+ *		 For I/O accesses, MSP7120 ignores OATRAN and maps I/O
+ *		 accesses into the bottom 0xFFF region of address space,
+ *		 so that is the range to put into the pci_io_resource
+ *		 struct.
+ *
+ *		 In MSP4200, the start address was 0x04 instead of the
+ *		 expected 0x00. Will just assume there was a good reason
+ *		 for this!
+ *
+ *  NOTES:	 Linux, by default, will assign I/O space to the lowest
+ *		 region of address space. Since MSP7120 and Linux,
+ *		 by default, have no offset in between how they map, the
+ *		 io_offset element of pci_controller struct should be set
+ *		 to zero.
+ *  ELEMENTS:
+ *    name	 - String used for a meaningful name.
+ *
+ *    start	 - Start address of MSP7120's I/O space, as MSP7120 presents
+ *		   the address on the PCI bus.
+ *
+ *    end	 - End address of MSP7120's I/O space, as MSP7120 presents
+ *		   the address on the PCI bus.
+ *
+ *    flags	 - Attributes indicating the type of resource. In this case,
+ *		   indicate I/O space.
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static struct resource pci_io_resource = {
 	.name	= "pci IO space",
 	.start	= 0x04,
 	.end	= 0x0FFF,
+<<<<<<< HEAD
 	.flags	= IORESOURCE_IO	/* I/O space */
+=======
+	.flags	= IORESOURCE_IO /* I/O space */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*****************************************************************************
@@ -260,6 +407,7 @@ static struct resource pci_io_resource = {
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Defines the address range that pciauto() will use to
+<<<<<<< HEAD
  *               assign to the memory BARs of PCI devices.
  *
  *               The .start and .end values are dependent upon how address
@@ -280,6 +428,28 @@ static struct resource pci_io_resource = {
  *
  *    flags      - Attributes indicating the type of resource. In this case,
  *                 indicate memory space.
+=======
+ *		 assign to the memory BARs of PCI devices.
+ *
+ *		 The .start and .end values are dependent upon how address
+ *		 translation is performed by the OATRAN regiser.
+ *
+ *		 The values to use for .start and .end are the values
+ *		 in the form they appear on the PCI bus AFTER MSP7120 has
+ *		 performed OATRAN address translation.
+ *
+ *  ELEMENTS:
+ *    name	 - String used for a meaningful name.
+ *
+ *    start	 - Start address of MSP7120's memory space, as MSP7120 presents
+ *		   the address on the PCI bus.
+ *
+ *    end	 - End address of MSP7120's memory space, as MSP7120 presents
+ *		   the address on the PCI bus.
+ *
+ *    flags	 - Attributes indicating the type of resource. In this case,
+ *		   indicate memory space.
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static struct resource pci_mem_resource = {
@@ -295,6 +465,7 @@ static struct resource pci_mem_resource = {
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: PCI status interrupt handler. Updates the count of how
+<<<<<<< HEAD
  *               many times each status bit has been set, then clears
  *               the status bits. If the appropriate macros are defined,
  *               these counts can be viewed via the /proc filesystem.
@@ -306,6 +477,19 @@ static struct resource pci_mem_resource = {
  *  OUTPUTS:     none
  *
  *  RETURNS:     PCIBIOS_SUCCESSFUL  - success
+=======
+ *		 many times each status bit has been set, then clears
+ *		 the status bits. If the appropriate macros are defined,
+ *		 these counts can be viewed via the /proc filesystem.
+ *
+ *  INPUTS:	 irq	 - unused
+ *		 dev_id	 - unused
+ *		 pt_regs - unused
+ *
+ *  OUTPUTS:	 none
+ *
+ *  RETURNS:	 PCIBIOS_SUCCESSFUL  - success
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static irqreturn_t bpci_interrupt(int irq, void *dev_id)
@@ -335,6 +519,7 @@ static irqreturn_t bpci_interrupt(int irq, void *dev_id)
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Performs a PCI configuration access (rd or wr), then
+<<<<<<< HEAD
  *               checks that the access succeeded by querying MSP7120's
  *               PCI status bits.
  *
@@ -370,6 +555,43 @@ static irqreturn_t bpci_interrupt(int irq, void *dev_id)
  *
  *  RETURNS:     PCIBIOS_SUCCESSFUL  - success
  *               -1                  - access failure
+=======
+ *		 checks that the access succeeded by querying MSP7120's
+ *		 PCI status bits.
+ *
+ *  INPUTS:
+ *		 access_type  - kind of PCI configuration cycle to perform
+ *				(read or write). Legal values are
+ *				PCI_ACCESS_WRITE and PCI_ACCESS_READ.
+ *
+ *		 bus	      - pointer to the bus number of the device to
+ *				be targeted for the configuration cycle.
+ *				The only element of the pci_bus structure
+ *				used is bus->number. This argument determines
+ *				if the configuration access will be Type 0 or
+ *				Type 1. Since MSP7120 assumes itself to be the
+ *				PCI Host, any non-zero bus->number generates
+ *				a Type 1 access.
+ *
+ *		 devfn	      - this is an 8-bit field. The lower three bits
+ *				specify the function number of the device to
+ *				be targeted for the configuration cycle, with
+ *				all three-bit combinations being legal. The
+ *				upper five bits specify the device number,
+ *				with legal values being 10 to 31.
+ *
+ *		 where	      - address within the Configuration Header
+ *				space to access.
+ *
+ *		 data	      - for write accesses, contains the data to
+ *				write.
+ *
+ *  OUTPUTS:
+ *		 data	      - for read accesses, contains the value read.
+ *
+ *  RETURNS:	 PCIBIOS_SUCCESSFUL  - success
+ *		 -1		     - access failure
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 int msp_pcibios_config_access(unsigned char access_type,
@@ -405,7 +627,15 @@ int msp_pcibios_config_access(unsigned char access_type,
 	if (pciirqflag == 0) {
 		ret = request_irq(MSP_INT_PCI,/* Hardcoded internal MSP7120 wiring */
 				bpci_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				IRQF_SHARED | IRQF_DISABLED,
+=======
+				IRQF_SHARED,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 				"PMC MSP PCI Host",
 				preg);
 		if (ret != 0)
@@ -429,7 +659,11 @@ int msp_pcibios_config_access(unsigned char access_type,
 	 * for this Block Copy, called Block Copy 0 Fault (BC0F) and
 	 * Block Copy 1 Fault (BC1F). MSP4200 and MSP7120 don't have this
 	 * dedicated Block Copy block, so these two interrupts are now
+<<<<<<< HEAD
 	 * marked reserved. In case the  Block Copy is resurrected in a
+=======
+	 * marked reserved. In case the	 Block Copy is resurrected in a
+>>>>>>> refs/remotes/origin/master
 	 * future design, maintain the code that treats these two interrupts
 	 * specially.
 	 *
@@ -439,7 +673,11 @@ int msp_pcibios_config_access(unsigned char access_type,
 	preg->if_status = ~(BPCI_IFSTATUS_BC0F | BPCI_IFSTATUS_BC1F);
 
 	/* Setup address that is to appear on PCI bus */
+<<<<<<< HEAD
 	preg->config_addr = BPCI_CFGADDR_ENABLE	|
+=======
+	preg->config_addr = BPCI_CFGADDR_ENABLE |
+>>>>>>> refs/remotes/origin/master
 		(bus_num << BPCI_CFGADDR_BUSNUM_SHF) |
 		(dev_fn << BPCI_CFGADDR_FUNCTNUM_SHF) |
 		(where & 0xFC);
@@ -494,6 +732,7 @@ int msp_pcibios_config_access(unsigned char access_type,
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Read a byte from PCI configuration address spac
+<<<<<<< HEAD
  *               Since the hardware can't address 8 bit chunks
  *               directly, read a 32-bit chunk, then mask off extraneous
  *               bits.
@@ -509,6 +748,23 @@ int msp_pcibios_config_access(unsigned char access_type,
  *
  *  RETURNS:     PCIBIOS_SUCCESSFUL  - success
  *               -1                  - read access failure
+=======
+ *		 Since the hardware can't address 8 bit chunks
+ *		 directly, read a 32-bit chunk, then mask off extraneous
+ *		 bits.
+ *
+ *  INPUTS	 bus	- structure containing attributes for the PCI bus
+ *			  that the read is destined for.
+ *		 devfn	- device/function combination that the read is
+ *			  destined for.
+ *		 where	- register within the Configuration Header space
+ *			  to access.
+ *
+ *  OUTPUTS	 val	- read data
+ *
+ *  RETURNS:	 PCIBIOS_SUCCESSFUL  - success
+ *		 -1		     - read access failure
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static int
@@ -541,6 +797,7 @@ msp_pcibios_read_config_byte(struct pci_bus *bus,
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Read a word (16 bits) from PCI configuration address space.
+<<<<<<< HEAD
  *               Since the hardware can't address 16 bit chunks
  *               directly, read a 32-bit chunk, then mask off extraneous
  *               bits.
@@ -557,6 +814,24 @@ msp_pcibios_read_config_byte(struct pci_bus *bus,
  *  RETURNS:     PCIBIOS_SUCCESSFUL           - success
  *               PCIBIOS_BAD_REGISTER_NUMBER  - bad register address
  *               -1                           - read access failure
+=======
+ *		 Since the hardware can't address 16 bit chunks
+ *		 directly, read a 32-bit chunk, then mask off extraneous
+ *		 bits.
+ *
+ *  INPUTS	 bus	- structure containing attributes for the PCI bus
+ *			  that the read is destined for.
+ *		 devfn	- device/function combination that the read is
+ *			  destined for.
+ *		 where	- register within the Configuration Header space
+ *			  to access.
+ *
+ *  OUTPUTS	 val	- read data
+ *
+ *  RETURNS:	 PCIBIOS_SUCCESSFUL	      - success
+ *		 PCIBIOS_BAD_REGISTER_NUMBER  - bad register address
+ *		 -1			      - read access failure
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static int
@@ -600,6 +875,7 @@ msp_pcibios_read_config_word(struct pci_bus *bus,
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Read a double word (32 bits) from PCI configuration
+<<<<<<< HEAD
  *               address space.
  *
  *  INPUTS       bus    - structure containing attributes for the PCI bus
@@ -614,6 +890,22 @@ msp_pcibios_read_config_word(struct pci_bus *bus,
  *  RETURNS:     PCIBIOS_SUCCESSFUL           - success
  *               PCIBIOS_BAD_REGISTER_NUMBER  - bad register address
  *               -1                           - read access failure
+=======
+ *		 address space.
+ *
+ *  INPUTS	 bus	- structure containing attributes for the PCI bus
+ *			  that the read is destined for.
+ *		 devfn	- device/function combination that the read is
+ *			  destined for.
+ *		 where	- register within the Configuration Header space
+ *			  to access.
+ *
+ *  OUTPUTS	 val	- read data
+ *
+ *  RETURNS:	 PCIBIOS_SUCCESSFUL	      - success
+ *		 PCIBIOS_BAD_REGISTER_NUMBER  - bad register address
+ *		 -1			      - read access failure
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static int
@@ -652,6 +944,7 @@ msp_pcibios_read_config_dword(struct pci_bus *bus,
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Write a byte to PCI configuration address space.
+<<<<<<< HEAD
  *               Since the hardware can't address 8 bit chunks
  *               directly, a read-modify-write is performed.
  *
@@ -667,6 +960,23 @@ msp_pcibios_read_config_dword(struct pci_bus *bus,
  *
  *  RETURNS:     PCIBIOS_SUCCESSFUL  - success
  *               -1                  - write access failure
+=======
+ *		 Since the hardware can't address 8 bit chunks
+ *		 directly, a read-modify-write is performed.
+ *
+ *  INPUTS	 bus	- structure containing attributes for the PCI bus
+ *			  that the write is destined for.
+ *		 devfn	- device/function combination that the write is
+ *			  destined for.
+ *		 where	- register within the Configuration Header space
+ *			  to access.
+ *		 val	- value to write
+ *
+ *  OUTPUTS	 none
+ *
+ *  RETURNS:	 PCIBIOS_SUCCESSFUL  - success
+ *		 -1		     - write access failure
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static int
@@ -700,6 +1010,7 @@ msp_pcibios_write_config_byte(struct pci_bus *bus,
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Write a word (16-bits) to PCI configuration address space.
+<<<<<<< HEAD
  *               Since the hardware can't address 16 bit chunks
  *               directly, a read-modify-write is performed.
  *
@@ -716,6 +1027,24 @@ msp_pcibios_write_config_byte(struct pci_bus *bus,
  *  RETURNS:     PCIBIOS_SUCCESSFUL           - success
  *               PCIBIOS_BAD_REGISTER_NUMBER  - bad register address
  *               -1                           - write access failure
+=======
+ *		 Since the hardware can't address 16 bit chunks
+ *		 directly, a read-modify-write is performed.
+ *
+ *  INPUTS	 bus	- structure containing attributes for the PCI bus
+ *			  that the write is destined for.
+ *		 devfn	- device/function combination that the write is
+ *			  destined for.
+ *		 where	- register within the Configuration Header space
+ *			  to access.
+ *		 val	- value to write
+ *
+ *  OUTPUTS	 none
+ *
+ *  RETURNS:	 PCIBIOS_SUCCESSFUL	      - success
+ *		 PCIBIOS_BAD_REGISTER_NUMBER  - bad register address
+ *		 -1			      - write access failure
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static int
@@ -753,6 +1082,7 @@ msp_pcibios_write_config_word(struct pci_bus *bus,
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Write a double word (32-bits) to PCI configuration address
+<<<<<<< HEAD
  *               space.
  *
  *  INPUTS       bus    - structure containing attributes for the PCI bus
@@ -768,6 +1098,23 @@ msp_pcibios_write_config_word(struct pci_bus *bus,
  *  RETURNS:     PCIBIOS_SUCCESSFUL           - success
  *               PCIBIOS_BAD_REGISTER_NUMBER  - bad register address
  *               -1                           - write access failure
+=======
+ *		 space.
+ *
+ *  INPUTS	 bus	- structure containing attributes for the PCI bus
+ *			  that the write is destined for.
+ *		 devfn	- device/function combination that the write is
+ *			  destined for.
+ *		 where	- register within the Configuration Header space
+ *			  to access.
+ *		 val	- value to write
+ *
+ *  OUTPUTS	 none
+ *
+ *  RETURNS:	 PCIBIOS_SUCCESSFUL	      - success
+ *		 PCIBIOS_BAD_REGISTER_NUMBER  - bad register address
+ *		 -1			      - write access failure
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static int
@@ -794,6 +1141,7 @@ msp_pcibios_write_config_dword(struct pci_bus *bus,
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Interface the PCI configuration read request with
+<<<<<<< HEAD
  *               the appropriate function, based on how many bytes
  *               the read request is.
  *
@@ -810,6 +1158,24 @@ msp_pcibios_write_config_dword(struct pci_bus *bus,
  *
  *  RETURNS:     PCIBIOS_SUCCESSFUL   - success
  *               -1                   - failure
+=======
+ *		 the appropriate function, based on how many bytes
+ *		 the read request is.
+ *
+ *  INPUTS	 bus	- structure containing attributes for the PCI bus
+ *			  that the write is destined for.
+ *		 devfn	- device/function combination that the write is
+ *			  destined for.
+ *		 where	- register within the Configuration Header space
+ *			  to access.
+ *		 size	- in units of bytes, should be 1, 2, or 4.
+ *
+ *  OUTPUTS	 val	- value read, with any extraneous bytes masked
+ *			  to zero.
+ *
+ *  RETURNS:	 PCIBIOS_SUCCESSFUL   - success
+ *		 -1		      - failure
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 int
@@ -845,6 +1211,7 @@ msp_pcibios_read_config(struct pci_bus *bus,
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Interface the PCI configuration write request with
+<<<<<<< HEAD
  *               the appropriate function, based on how many bytes
  *               the read request is.
  *
@@ -861,6 +1228,24 @@ msp_pcibios_read_config(struct pci_bus *bus,
  *
  *  RETURNS:     PCIBIOS_SUCCESSFUL   - success
  *               -1                   - failure
+=======
+ *		 the appropriate function, based on how many bytes
+ *		 the read request is.
+ *
+ *  INPUTS	 bus	- structure containing attributes for the PCI bus
+ *			  that the write is destined for.
+ *		 devfn	- device/function combination that the write is
+ *			  destined for.
+ *		 where	- register within the Configuration Header space
+ *			  to access.
+ *		 size	- in units of bytes, should be 1, 2, or 4.
+ *		 val	- value to write
+ *
+ *  OUTPUTS:	 none
+ *
+ *  RETURNS:	 PCIBIOS_SUCCESSFUL   - success
+ *		 -1		      - failure
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 int
@@ -897,11 +1282,19 @@ msp_pcibios_write_config(struct pci_bus *bus,
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: structure to abstract the hardware specific PCI
+<<<<<<< HEAD
  *               configuration accesses.
  *
  *  ELEMENTS:
  *    read      - function for Linux to generate PCI Configuration reads.
  *    write     - function for Linux to generate PCI Configuration writes.
+=======
+ *		 configuration accesses.
+ *
+ *  ELEMENTS:
+ *    read	- function for Linux to generate PCI Configuration reads.
+ *    write	- function for Linux to generate PCI Configuration writes.
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 struct pci_ops msp_pci_ops = {
@@ -917,6 +1310,7 @@ struct pci_ops msp_pci_ops = {
  *  Describes the attributes of the MSP7120 PCI Host Controller
  *
  *  ELEMENTS:
+<<<<<<< HEAD
  *    pci_ops      - abstracts the hardware specific PCI configuration
  *                   accesses.
  *
@@ -938,6 +1332,29 @@ struct pci_ops msp_pci_ops = {
  *                   bottom 4K of PCI address space (and ignores OATRAN).
  *                   Since the Linux default is to configure I/O BARs to the
  *                   bottom 4K, no special offset is needed. Just set to zero.
+=======
+ *    pci_ops	   - abstracts the hardware specific PCI configuration
+ *		     accesses.
+ *
+ *    mem_resource - address range pciauto() uses to assign to PCI device
+ *		     memory BARs.
+ *
+ *    mem_offset   - offset between how MSP7120 outbound PCI memory
+ *		     transaction addresses appear on the PCI bus and how Linux
+ *		     wants to configure memory BARs of the PCI devices.
+ *		     MSP7120 does nothing funky, so just set to zero.
+ *
+ *    io_resource  - address range pciauto() uses to assign to PCI device
+ *		     I/O BARs.
+ *
+ *    io_offset	   - offset between how MSP7120 outbound PCI I/O
+ *		     transaction addresses appear on the PCI bus and how
+ *		     Linux defaults to configure I/O BARs of the PCI devices.
+ *		     MSP7120 maps outbound I/O accesses into the bottom
+ *		     bottom 4K of PCI address space (and ignores OATRAN).
+ *		     Since the Linux default is to configure I/O BARs to the
+ *		     bottom 4K, no special offset is needed. Just set to zero.
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 static struct pci_controller msp_pci_controller = {
@@ -955,7 +1372,11 @@ static struct pci_controller msp_pci_controller = {
  *  _________________________________________________________________________
  *
  *  DESCRIPTION: Initialize the PCI Host Controller and register it with
+<<<<<<< HEAD
  *               Linux so Linux can seize control of the PCI bus.
+=======
+ *		 Linux so Linux can seize control of the PCI bus.
+>>>>>>> refs/remotes/origin/master
  *
  ****************************************************************************/
 void __init msp_pci_init(void)
@@ -979,7 +1400,11 @@ void __init msp_pci_init(void)
 	*(unsigned long *)QFLUSH_REG_1 = 3;
 
 	/* Configure PCI Host Controller. */
+<<<<<<< HEAD
 	preg->if_status	= ~0;		/* Clear cause register bits */
+=======
+	preg->if_status = ~0;		/* Clear cause register bits */
+>>>>>>> refs/remotes/origin/master
 	preg->config_addr = 0;		/* Clear config access */
 	preg->oatran	= MSP_PCI_OATRAN; /* PCI outbound addr translation */
 	preg->if_mask	= 0xF8BF87C0;	/* Enable all PCI status interrupts */

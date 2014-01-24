@@ -106,8 +106,18 @@ static int raw_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 		       size_t size)
 {
 	struct net_device *dev;
+<<<<<<< HEAD
 	unsigned mtu;
 	struct sk_buff *skb;
+<<<<<<< HEAD
+=======
+	int hlen, tlen;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int mtu;
+	struct sk_buff *skb;
+	int hlen, tlen;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (msg->msg_flags & MSG_OOB) {
@@ -137,12 +147,32 @@ static int raw_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 		goto out_dev;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	skb = sock_alloc_send_skb(sk, LL_ALLOCATED_SPACE(dev) + size,
+=======
+	hlen = LL_RESERVED_SPACE(dev);
+	tlen = dev->needed_tailroom;
+	skb = sock_alloc_send_skb(sk, hlen + tlen + size,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hlen = LL_RESERVED_SPACE(dev);
+	tlen = dev->needed_tailroom;
+	skb = sock_alloc_send_skb(sk, hlen + tlen + size,
+>>>>>>> refs/remotes/origin/master
 			msg->msg_flags & MSG_DONTWAIT, &err);
 	if (!skb)
 		goto out_dev;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	skb_reserve(skb, LL_RESERVED_SPACE(dev));
+=======
+	skb_reserve(skb, hlen);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb_reserve(skb, hlen);
+>>>>>>> refs/remotes/origin/master
 
 	skb_reset_mac_header(skb);
 	skb_reset_network_header(skb);
@@ -218,10 +248,16 @@ static int raw_rcv_skb(struct sock *sk, struct sk_buff *skb)
 void ieee802154_raw_deliver(struct net_device *dev, struct sk_buff *skb)
 {
 	struct sock *sk;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	read_lock(&raw_lock);
 	sk_for_each(sk, node, &raw_head) {
+=======
+
+	read_lock(&raw_lock);
+	sk_for_each(sk, &raw_head) {
+>>>>>>> refs/remotes/origin/master
 		bh_lock_sock(sk);
 		if (!sk->sk_bound_dev_if ||
 		    sk->sk_bound_dev_if == dev->ifindex) {

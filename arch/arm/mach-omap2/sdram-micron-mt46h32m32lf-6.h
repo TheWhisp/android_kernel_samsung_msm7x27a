@@ -14,7 +14,11 @@
 #ifndef ARCH_ARM_MACH_OMAP2_SDRAM_MICRON_MT46H32M32LF
 #define ARCH_ARM_MACH_OMAP2_SDRAM_MICRON_MT46H32M32LF
 
+<<<<<<< HEAD
 #include <plat/sdrc.h>
+=======
+#include "sdrc.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Micron MT46H32M32LF-6 */
 /* XXX Using ARE = 0x1 (no autorefresh burst) -- can this be changed? */

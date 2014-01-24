@@ -18,13 +18,75 @@
 #include <linux/delay.h>
 #include <linux/backlight.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/board.h>
 #include <mach/cpu.h>
 #include <mach/gpio.h>
+=======
+#include <linux/module.h>
+
+#include <mach/board.h>
+#include <mach/cpu.h>
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <video/atmel_lcdc.h>
 
+=======
+#include <linux/module.h>
+#include <linux/platform_data/atmel.h>
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/of_gpio.h>
+#include <video/of_display_timing.h>
+#include <video/videomode.h>
+
+#include <mach/cpu.h>
+#include <asm/gpio.h>
+
+#include <video/atmel_lcdc.h>
+
+struct atmel_lcdfb_config {
+	bool have_alt_pixclock;
+	bool have_hozval;
+	bool have_intensity_bit;
+};
+
+ /* LCD Controller info data structure, stored in device platform_data */
+struct atmel_lcdfb_info {
+	spinlock_t		lock;
+	struct fb_info		*info;
+	void __iomem		*mmio;
+	int			irq_base;
+	struct work_struct	task;
+
+	unsigned int		smem_len;
+	struct platform_device	*pdev;
+	struct clk		*bus_clk;
+	struct clk		*lcdc_clk;
+
+	struct backlight_device	*backlight;
+	u8			bl_power;
+	u8			saved_lcdcon;
+
+	u32			pseudo_palette[16];
+	bool			have_intensity_bit;
+
+	struct atmel_lcdfb_pdata pdata;
+
+	struct atmel_lcdfb_config *config;
+};
+
+struct atmel_lcdfb_power_ctrl_gpio {
+	int gpio;
+	int active_low;
+
+	struct list_head list;
+};
+
+>>>>>>> refs/remotes/origin/master
 #define lcdc_readl(sinfo, reg)		__raw_readl((sinfo)->mmio+(reg))
 #define lcdc_writel(sinfo, reg, val)	__raw_writel((val), (sinfo)->mmio+(reg))
 
@@ -33,13 +95,92 @@
 #define ATMEL_LCDC_DMA_BURST_LEN	8	/* words */
 #define ATMEL_LCDC_FIFO_SIZE		512	/* words */
 
+<<<<<<< HEAD
+=======
+static struct atmel_lcdfb_config at91sam9261_config = {
+	.have_hozval		= true,
+	.have_intensity_bit	= true,
+};
+
+static struct atmel_lcdfb_config at91sam9263_config = {
+	.have_intensity_bit	= true,
+};
+
+static struct atmel_lcdfb_config at91sam9g10_config = {
+	.have_hozval		= true,
+};
+
+static struct atmel_lcdfb_config at91sam9g45_config = {
+	.have_alt_pixclock	= true,
+};
+
+static struct atmel_lcdfb_config at91sam9g45es_config = {
+};
+
+static struct atmel_lcdfb_config at91sam9rl_config = {
+	.have_intensity_bit	= true,
+};
+
+static struct atmel_lcdfb_config at32ap_config = {
+	.have_hozval		= true,
+};
+
+static const struct platform_device_id atmel_lcdfb_devtypes[] = {
+	{
+		.name = "at91sam9261-lcdfb",
+		.driver_data = (unsigned long)&at91sam9261_config,
+	}, {
+		.name = "at91sam9263-lcdfb",
+		.driver_data = (unsigned long)&at91sam9263_config,
+	}, {
+		.name = "at91sam9g10-lcdfb",
+		.driver_data = (unsigned long)&at91sam9g10_config,
+	}, {
+		.name = "at91sam9g45-lcdfb",
+		.driver_data = (unsigned long)&at91sam9g45_config,
+	}, {
+		.name = "at91sam9g45es-lcdfb",
+		.driver_data = (unsigned long)&at91sam9g45es_config,
+	}, {
+		.name = "at91sam9rl-lcdfb",
+		.driver_data = (unsigned long)&at91sam9rl_config,
+	}, {
+		.name = "at32ap-lcdfb",
+		.driver_data = (unsigned long)&at32ap_config,
+	}, {
+		/* terminator */
+	}
+};
+MODULE_DEVICE_TABLE(platform, atmel_lcdfb_devtypes);
+
+static struct atmel_lcdfb_config *
+atmel_lcdfb_get_config(struct platform_device *pdev)
+{
+	unsigned long data;
+
+	data = platform_get_device_id(pdev)->driver_data;
+
+	return (struct atmel_lcdfb_config *)data;
+}
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_ARCH_AT91)
 #define	ATMEL_LCDFB_FBINFO_DEFAULT	(FBINFO_DEFAULT \
 					 | FBINFO_PARTIAL_PAN_OK \
 					 | FBINFO_HWACCEL_YPAN)
 
 static inline void atmel_lcdfb_update_dma2d(struct atmel_lcdfb_info *sinfo,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					struct fb_var_screeninfo *var)
+=======
+					struct fb_var_screeninfo *var,
+					struct fb_info *info)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					struct fb_var_screeninfo *var,
+					struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 
 }
@@ -50,14 +191,37 @@ static inline void atmel_lcdfb_update_dma2d(struct atmel_lcdfb_info *sinfo,
 					| FBINFO_HWACCEL_YPAN)
 
 static void atmel_lcdfb_update_dma2d(struct atmel_lcdfb_info *sinfo,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				     struct fb_var_screeninfo *var)
+=======
+				     struct fb_var_screeninfo *var,
+				     struct fb_info *info)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     struct fb_var_screeninfo *var,
+				     struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 dma2dcfg;
 	u32 pixeloff;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pixeloff = (var->xoffset * var->bits_per_pixel) & 0x1f;
 
 	dma2dcfg = ((var->xres_virtual - var->xres) * var->bits_per_pixel) / 8;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pixeloff = (var->xoffset * info->var.bits_per_pixel) & 0x1f;
+
+	dma2dcfg = (info->var.xres_virtual - info->var.xres)
+		 * info->var.bits_per_pixel / 8;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dma2dcfg |= pixeloff << ATMEL_LCDC_PIXELOFF_OFFSET;
 	lcdc_writel(sinfo, ATMEL_LCDC_DMA2DCFG, dma2dcfg);
 
@@ -96,8 +260,22 @@ static int atmel_bl_update_status(struct backlight_device *bl)
 		brightness = 0;
 
 	lcdc_writel(sinfo, ATMEL_LCDC_CONTRAST_VAL, brightness);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lcdc_writel(sinfo, ATMEL_LCDC_CONTRAST_CTR,
 			brightness ? contrast_ctr : 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (contrast_ctr & ATMEL_LCDC_POL_POSITIVE)
+		lcdc_writel(sinfo, ATMEL_LCDC_CONTRAST_CTR,
+			brightness ? contrast_ctr : 0);
+	else
+		lcdc_writel(sinfo, ATMEL_LCDC_CONTRAST_CTR, contrast_ctr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	bl->props.fb_blank = bl->props.power = sinfo->bl_power = power;
 
@@ -145,8 +323,19 @@ static void init_backlight(struct atmel_lcdfb_info *sinfo)
 
 static void exit_backlight(struct atmel_lcdfb_info *sinfo)
 {
+<<<<<<< HEAD
 	if (sinfo->backlight)
 		backlight_device_unregister(sinfo->backlight);
+=======
+	if (!sinfo->backlight)
+		return;
+
+	if (sinfo->backlight->ops) {
+		sinfo->backlight->props.power = FB_BLANK_POWERDOWN;
+		sinfo->backlight->ops->update_status(sinfo->backlight);
+	}
+	backlight_device_unregister(sinfo->backlight);
+>>>>>>> refs/remotes/origin/master
 }
 
 #else
@@ -164,18 +353,39 @@ static void exit_backlight(struct atmel_lcdfb_info *sinfo)
 
 static void init_contrast(struct atmel_lcdfb_info *sinfo)
 {
+<<<<<<< HEAD
 	/* contrast pwm can be 'inverted' */
 	if (sinfo->lcdcon_pol_negative)
+=======
+	struct atmel_lcdfb_pdata *pdata = &sinfo->pdata;
+
+	/* contrast pwm can be 'inverted' */
+	if (pdata->lcdcon_pol_negative)
+>>>>>>> refs/remotes/origin/master
 			contrast_ctr &= ~(ATMEL_LCDC_POL_POSITIVE);
 
 	/* have some default contrast/backlight settings */
 	lcdc_writel(sinfo, ATMEL_LCDC_CONTRAST_CTR, contrast_ctr);
 	lcdc_writel(sinfo, ATMEL_LCDC_CONTRAST_VAL, ATMEL_LCDC_CVAL_DEFAULT);
 
+<<<<<<< HEAD
 	if (sinfo->lcdcon_is_backlight)
 		init_backlight(sinfo);
 }
 
+=======
+	if (pdata->lcdcon_is_backlight)
+		init_backlight(sinfo);
+}
+
+static inline void atmel_lcdfb_power_control(struct atmel_lcdfb_info *sinfo, int on)
+{
+	struct atmel_lcdfb_pdata *pdata = &sinfo->pdata;
+
+	if (pdata->atmel_lcdfb_power_control)
+		pdata->atmel_lcdfb_power_control(pdata, on);
+}
+>>>>>>> refs/remotes/origin/master
 
 static struct fb_fix_screeninfo atmel_lcdfb_fix __initdata = {
 	.type		= FB_TYPE_PACKED_PIXELS,
@@ -186,6 +396,7 @@ static struct fb_fix_screeninfo atmel_lcdfb_fix __initdata = {
 	.accel		= FB_ACCEL_NONE,
 };
 
+<<<<<<< HEAD
 static unsigned long compute_hozval(unsigned long xres, unsigned long lcdcon2)
 {
 	unsigned long value;
@@ -194,6 +405,18 @@ static unsigned long compute_hozval(unsigned long xres, unsigned long lcdcon2)
 		|| cpu_is_at32ap7000()))
 		return xres;
 
+=======
+static unsigned long compute_hozval(struct atmel_lcdfb_info *sinfo,
+							unsigned long xres)
+{
+	unsigned long lcdcon2;
+	unsigned long value;
+
+	if (!sinfo->config->have_hozval)
+		return xres;
+
+	lcdcon2 = lcdc_readl(sinfo, ATMEL_LCDC_LCDCON2);
+>>>>>>> refs/remotes/origin/master
 	value = xres;
 	if ((lcdcon2 & ATMEL_LCDC_DISTYPE) != ATMEL_LCDC_DISTYPE_TFT) {
 		/* STN display */
@@ -213,9 +436,17 @@ static unsigned long compute_hozval(unsigned long xres, unsigned long lcdcon2)
 
 static void atmel_lcdfb_stop_nowait(struct atmel_lcdfb_info *sinfo)
 {
+<<<<<<< HEAD
 	/* Turn off the LCD controller and the DMA controller */
 	lcdc_writel(sinfo, ATMEL_LCDC_PWRCON,
 			sinfo->guard_time << ATMEL_LCDC_GUARDT_OFFSET);
+=======
+	struct atmel_lcdfb_pdata *pdata = &sinfo->pdata;
+
+	/* Turn off the LCD controller and the DMA controller */
+	lcdc_writel(sinfo, ATMEL_LCDC_PWRCON,
+			pdata->guard_time << ATMEL_LCDC_GUARDT_OFFSET);
+>>>>>>> refs/remotes/origin/master
 
 	/* Wait for the LCDC core to become idle */
 	while (lcdc_readl(sinfo, ATMEL_LCDC_PWRCON) & ATMEL_LCDC_BUSY)
@@ -235,9 +466,17 @@ static void atmel_lcdfb_stop(struct atmel_lcdfb_info *sinfo)
 
 static void atmel_lcdfb_start(struct atmel_lcdfb_info *sinfo)
 {
+<<<<<<< HEAD
 	lcdc_writel(sinfo, ATMEL_LCDC_DMACON, sinfo->default_dmacon);
 	lcdc_writel(sinfo, ATMEL_LCDC_PWRCON,
 		(sinfo->guard_time << ATMEL_LCDC_GUARDT_OFFSET)
+=======
+	struct atmel_lcdfb_pdata *pdata = &sinfo->pdata;
+
+	lcdc_writel(sinfo, ATMEL_LCDC_DMACON, pdata->default_dmacon);
+	lcdc_writel(sinfo, ATMEL_LCDC_PWRCON,
+		(pdata->guard_time << ATMEL_LCDC_GUARDT_OFFSET)
+>>>>>>> refs/remotes/origin/master
 		| ATMEL_LCDC_PWR);
 }
 
@@ -249,14 +488,30 @@ static void atmel_lcdfb_update_dma(struct fb_info *info,
 	unsigned long dma_addr;
 
 	dma_addr = (fix->smem_start + var->yoffset * fix->line_length
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    + var->xoffset * var->bits_per_pixel / 8);
+=======
+		    + var->xoffset * info->var.bits_per_pixel / 8);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    + var->xoffset * info->var.bits_per_pixel / 8);
+>>>>>>> refs/remotes/origin/master
 
 	dma_addr &= ~3UL;
 
 	/* Set framebuffer DMA base address and pixel offset */
 	lcdc_writel(sinfo, ATMEL_LCDC_DMABADDR1, dma_addr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	atmel_lcdfb_update_dma2d(sinfo, var);
+=======
+	atmel_lcdfb_update_dma2d(sinfo, var, info);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atmel_lcdfb_update_dma2d(sinfo, var, info);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void atmel_lcdfb_free_video_memory(struct atmel_lcdfb_info *sinfo)
@@ -338,6 +593,10 @@ static int atmel_lcdfb_check_var(struct fb_var_screeninfo *var,
 {
 	struct device *dev = info->device;
 	struct atmel_lcdfb_info *sinfo = info->par;
+<<<<<<< HEAD
+=======
+	struct atmel_lcdfb_pdata *pdata = &sinfo->pdata;
+>>>>>>> refs/remotes/origin/master
 	unsigned long clk_value_khz;
 
 	clk_value_khz = clk_get_rate(sinfo->lcdc_clk) / 1000;
@@ -381,8 +640,16 @@ static int atmel_lcdfb_check_var(struct fb_var_screeninfo *var,
 	if (info->fix.smem_len) {
 		unsigned int smem_len = (var->xres_virtual * var->yres_virtual
 					 * ((var->bits_per_pixel + 7) / 8));
+<<<<<<< HEAD
 		if (smem_len > info->fix.smem_len)
 			return -EINVAL;
+=======
+		if (smem_len > info->fix.smem_len) {
+			dev_err(dev, "Frame buffer is too small (%u) for screen size (need at least %u)\n",
+				info->fix.smem_len, smem_len);
+			return -EINVAL;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Saturate vertical and horizontal timings at maximum values */
@@ -414,11 +681,19 @@ static int atmel_lcdfb_check_var(struct fb_var_screeninfo *var,
 		var->red.length = var->green.length = var->blue.length
 			= var->bits_per_pixel;
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case 15:
 	case 16:
+		/* Older SOCs use IBGR:555 rather than BGR:565. */
+		if (sinfo->have_intensity_bit)
+			var->green.length = 5;
+		else
+			var->green.length = 6;
+
 		if (sinfo->lcd_wiring_mode == ATMEL_LCDC_WIRING_RGB) {
-			/* RGB:565 mode */
-			var->red.offset = 11;
+			/* RGB:5X5 mode */
+			var->red.offset = var->green.length + 5;
 			var->blue.offset = 0;
 			var->green.length = 6;
 		} else if (sinfo->lcd_wiring_mode == ATMEL_LCDC_WIRING_RGB555) {
@@ -426,10 +701,45 @@ static int atmel_lcdfb_check_var(struct fb_var_screeninfo *var,
 			var->blue.offset = 0;
 			var->green.length = 5;
 		} else {
+<<<<<<< HEAD
 			/* BGR:555 mode */
 			var->red.offset = 0;
 			var->blue.offset = 10;
 			var->green.length = 5;
+=======
+	case 16:
+		/* Older SOCs use IBGR:555 rather than BGR:565. */
+		if (sinfo->have_intensity_bit)
+=======
+	case 16:
+		/* Older SOCs use IBGR:555 rather than BGR:565. */
+		if (sinfo->config->have_intensity_bit)
+>>>>>>> refs/remotes/origin/master
+			var->green.length = 5;
+		else
+			var->green.length = 6;
+
+<<<<<<< HEAD
+		if (sinfo->lcd_wiring_mode == ATMEL_LCDC_WIRING_RGB) {
+=======
+		if (pdata->lcd_wiring_mode == ATMEL_LCDC_WIRING_RGB) {
+>>>>>>> refs/remotes/origin/master
+			/* RGB:5X5 mode */
+			var->red.offset = var->green.length + 5;
+			var->blue.offset = 0;
+		} else {
+			/* BGR:5X5 mode */
+			var->red.offset = 0;
+			var->blue.offset = var->green.length + 5;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+			/* BGR:5X5 mode */
+			var->red.offset = 0;
+			var->blue.offset = var->green.length + 5;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		var->green.offset = 5;
 		var->red.length = var->blue.length = 5;
@@ -439,7 +749,11 @@ static int atmel_lcdfb_check_var(struct fb_var_screeninfo *var,
 		var->transp.length = 8;
 		/* fall through */
 	case 24:
+<<<<<<< HEAD
 		if (sinfo->lcd_wiring_mode == ATMEL_LCDC_WIRING_RGB) {
+=======
+		if (pdata->lcd_wiring_mode == ATMEL_LCDC_WIRING_RGB) {
+>>>>>>> refs/remotes/origin/master
 			/* RGB:888 mode */
 			var->red.offset = 16;
 			var->blue.offset = 0;
@@ -488,6 +802,10 @@ static void atmel_lcdfb_reset(struct atmel_lcdfb_info *sinfo)
 static int atmel_lcdfb_set_par(struct fb_info *info)
 {
 	struct atmel_lcdfb_info *sinfo = info->par;
+<<<<<<< HEAD
+=======
+	struct atmel_lcdfb_pdata *pdata = &sinfo->pdata;
+>>>>>>> refs/remotes/origin/master
 	unsigned long hozval_linesz;
 	unsigned long value;
 	unsigned long clk_value_khz;
@@ -525,7 +843,11 @@ static int atmel_lcdfb_set_par(struct fb_info *info)
 	/* Now, the LCDC core... */
 
 	/* Set pixel clock */
+<<<<<<< HEAD
 	if (cpu_is_at91sam9g45() && !cpu_is_at91sam9g45es())
+=======
+	if (sinfo->config->have_alt_pixclock)
+>>>>>>> refs/remotes/origin/master
 		pix_factor = 1;
 
 	clk_value_khz = clk_get_rate(sinfo->lcdc_clk) / 1000;
@@ -549,7 +871,11 @@ static int atmel_lcdfb_set_par(struct fb_info *info)
 
 
 	/* Initialize control register 2 */
+<<<<<<< HEAD
 	value = sinfo->default_lcdcon2;
+=======
+	value = pdata->default_lcdcon2;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(info->var.sync & FB_SYNC_HOR_HIGH_ACT))
 		value |= ATMEL_LCDC_INVLINE_INVERTED;
@@ -585,8 +911,12 @@ static int atmel_lcdfb_set_par(struct fb_info *info)
 	lcdc_writel(sinfo, ATMEL_LCDC_TIM2, value);
 
 	/* Horizontal value (aka line size) */
+<<<<<<< HEAD
 	hozval_linesz = compute_hozval(info->var.xres,
 					lcdc_readl(sinfo, ATMEL_LCDC_LCDCON2));
+=======
+	hozval_linesz = compute_hozval(sinfo, info->var.xres);
+>>>>>>> refs/remotes/origin/master
 
 	/* Display size */
 	value = (hozval_linesz - 1) << ATMEL_LCDC_HOZVAL_OFFSET;
@@ -654,6 +984,10 @@ static int atmel_lcdfb_setcolreg(unsigned int regno, unsigned int red,
 			     unsigned int transp, struct fb_info *info)
 {
 	struct atmel_lcdfb_info *sinfo = info->par;
+<<<<<<< HEAD
+=======
+	struct atmel_lcdfb_pdata *pdata = &sinfo->pdata;
+>>>>>>> refs/remotes/origin/master
 	unsigned int val;
 	u32 *pal;
 	int ret = 1;
@@ -678,6 +1012,9 @@ static int atmel_lcdfb_setcolreg(unsigned int regno, unsigned int red,
 
 	case FB_VISUAL_PSEUDOCOLOR:
 		if (regno < 256) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			val  = ((red   >> 11) & 0x001f);
 			val |= ((green >>  6) & 0x03e0);
 			val |= ((blue  >>  1) & 0x7c00);
@@ -686,6 +1023,44 @@ static int atmel_lcdfb_setcolreg(unsigned int regno, unsigned int red,
 			 * TODO: intensity bit. Maybe something like
 			 *   ~(red[10] ^ green[10] ^ blue[10]) & 1
 			 */
+=======
+			if (sinfo->have_intensity_bit) {
+=======
+			if (sinfo->config->have_intensity_bit) {
+>>>>>>> refs/remotes/origin/master
+=======
+			if (sinfo->have_intensity_bit) {
+>>>>>>> refs/remotes/origin/cm-11.0
+				/* old style I+BGR:555 */
+				val  = ((red   >> 11) & 0x001f);
+				val |= ((green >>  6) & 0x03e0);
+				val |= ((blue  >>  1) & 0x7c00);
+
+				/*
+				 * TODO: intensity bit. Maybe something like
+				 *   ~(red[10] ^ green[10] ^ blue[10]) & 1
+				 */
+			} else {
+				/* new style BGR:565 / RGB:565 */
+<<<<<<< HEAD
+				if (sinfo->lcd_wiring_mode ==
+				    ATMEL_LCDC_WIRING_RGB) {
+=======
+				if (pdata->lcd_wiring_mode == ATMEL_LCDC_WIRING_RGB) {
+>>>>>>> refs/remotes/origin/master
+					val  = ((blue >> 11) & 0x001f);
+					val |= ((red  >>  0) & 0xf800);
+				} else {
+					val  = ((red  >> 11) & 0x001f);
+					val |= ((blue >>  0) & 0xf800);
+				}
+
+				val |= ((green >>  5) & 0x07e0);
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			lcdc_writel(sinfo, ATMEL_LCDC_LUT(regno), val);
 			ret = 0;
@@ -800,28 +1175,218 @@ static int __init atmel_lcdfb_init_fbinfo(struct atmel_lcdfb_info *sinfo)
 
 static void atmel_lcdfb_start_clock(struct atmel_lcdfb_info *sinfo)
 {
+<<<<<<< HEAD
 	if (sinfo->bus_clk)
 		clk_enable(sinfo->bus_clk);
 	clk_enable(sinfo->lcdc_clk);
+=======
+	clk_prepare_enable(sinfo->bus_clk);
+	clk_prepare_enable(sinfo->lcdc_clk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void atmel_lcdfb_stop_clock(struct atmel_lcdfb_info *sinfo)
 {
+<<<<<<< HEAD
 	if (sinfo->bus_clk)
 		clk_disable(sinfo->bus_clk);
 	clk_disable(sinfo->lcdc_clk);
 }
 
+=======
+	clk_disable_unprepare(sinfo->bus_clk);
+	clk_disable_unprepare(sinfo->lcdc_clk);
+}
+
+#ifdef CONFIG_OF
+static const struct of_device_id atmel_lcdfb_dt_ids[] = {
+	{ .compatible = "atmel,at91sam9261-lcdc" , .data = &at91sam9261_config, },
+	{ .compatible = "atmel,at91sam9263-lcdc" , .data = &at91sam9263_config, },
+	{ .compatible = "atmel,at91sam9g10-lcdc" , .data = &at91sam9g10_config, },
+	{ .compatible = "atmel,at91sam9g45-lcdc" , .data = &at91sam9g45_config, },
+	{ .compatible = "atmel,at91sam9g45es-lcdc" , .data = &at91sam9g45es_config, },
+	{ .compatible = "atmel,at91sam9rl-lcdc" , .data = &at91sam9rl_config, },
+	{ .compatible = "atmel,at32ap-lcdc" , .data = &at32ap_config, },
+	{ /* sentinel */ }
+};
+
+MODULE_DEVICE_TABLE(of, atmel_lcdfb_dt_ids);
+
+static const char *atmel_lcdfb_wiring_modes[] = {
+	[ATMEL_LCDC_WIRING_BGR]	= "BRG",
+	[ATMEL_LCDC_WIRING_RGB]	= "RGB",
+};
+
+const int atmel_lcdfb_get_of_wiring_modes(struct device_node *np)
+{
+	const char *mode;
+	int err, i;
+
+	err = of_property_read_string(np, "atmel,lcd-wiring-mode", &mode);
+	if (err < 0)
+		return ATMEL_LCDC_WIRING_BGR;
+
+	for (i = 0; i < ARRAY_SIZE(atmel_lcdfb_wiring_modes); i++)
+		if (!strcasecmp(mode, atmel_lcdfb_wiring_modes[i]))
+			return i;
+
+	return -ENODEV;
+}
+
+static void atmel_lcdfb_power_control_gpio(struct atmel_lcdfb_pdata *pdata, int on)
+{
+	struct atmel_lcdfb_power_ctrl_gpio *og;
+
+	list_for_each_entry(og, &pdata->pwr_gpios, list)
+		gpio_set_value(og->gpio, on);
+}
+
+static int atmel_lcdfb_of_init(struct atmel_lcdfb_info *sinfo)
+{
+	struct fb_info *info = sinfo->info;
+	struct atmel_lcdfb_pdata *pdata = &sinfo->pdata;
+	struct fb_var_screeninfo *var = &info->var;
+	struct device *dev = &sinfo->pdev->dev;
+	struct device_node *np =dev->of_node;
+	struct device_node *display_np;
+	struct device_node *timings_np;
+	struct display_timings *timings;
+	enum of_gpio_flags flags;
+	struct atmel_lcdfb_power_ctrl_gpio *og;
+	bool is_gpio_power = false;
+	int ret = -ENOENT;
+	int i, gpio;
+
+	sinfo->config = (struct atmel_lcdfb_config*)
+		of_match_device(atmel_lcdfb_dt_ids, dev)->data;
+
+	display_np = of_parse_phandle(np, "display", 0);
+	if (!display_np) {
+		dev_err(dev, "failed to find display phandle\n");
+		return -ENOENT;
+	}
+
+	ret = of_property_read_u32(display_np, "bits-per-pixel", &var->bits_per_pixel);
+	if (ret < 0) {
+		dev_err(dev, "failed to get property bits-per-pixel\n");
+		goto put_display_node;
+	}
+
+	ret = of_property_read_u32(display_np, "atmel,guard-time", &pdata->guard_time);
+	if (ret < 0) {
+		dev_err(dev, "failed to get property atmel,guard-time\n");
+		goto put_display_node;
+	}
+
+	ret = of_property_read_u32(display_np, "atmel,lcdcon2", &pdata->default_lcdcon2);
+	if (ret < 0) {
+		dev_err(dev, "failed to get property atmel,lcdcon2\n");
+		goto put_display_node;
+	}
+
+	ret = of_property_read_u32(display_np, "atmel,dmacon", &pdata->default_dmacon);
+	if (ret < 0) {
+		dev_err(dev, "failed to get property bits-per-pixel\n");
+		goto put_display_node;
+	}
+
+	ret = -ENOMEM;
+	for (i = 0; i < of_gpio_named_count(display_np, "atmel,power-control-gpio"); i++) {
+		gpio = of_get_named_gpio_flags(display_np, "atmel,power-control-gpio",
+					       i, &flags);
+		if (gpio < 0)
+			continue;
+
+		og = devm_kzalloc(dev, sizeof(*og), GFP_KERNEL);
+		if (!og)
+			goto put_display_node;
+
+		og->gpio = gpio;
+		og->active_low = flags & OF_GPIO_ACTIVE_LOW;
+		is_gpio_power = true;
+		ret = devm_gpio_request(dev, gpio, "lcd-power-control-gpio");
+		if (ret) {
+			dev_err(dev, "request gpio %d failed\n", gpio);
+			goto put_display_node;
+		}
+
+		ret = gpio_direction_output(gpio, og->active_low);
+		if (ret) {
+			dev_err(dev, "set direction output gpio %d failed\n", gpio);
+			goto put_display_node;
+		}
+	}
+
+	if (is_gpio_power)
+		pdata->atmel_lcdfb_power_control = atmel_lcdfb_power_control_gpio;
+
+	ret = atmel_lcdfb_get_of_wiring_modes(display_np);
+	if (ret < 0) {
+		dev_err(dev, "invalid atmel,lcd-wiring-mode\n");
+		goto put_display_node;
+	}
+	pdata->lcd_wiring_mode = ret;
+
+	pdata->lcdcon_is_backlight = of_property_read_bool(display_np, "atmel,lcdcon-backlight");
+
+	timings = of_get_display_timings(display_np);
+	if (!timings) {
+		dev_err(dev, "failed to get display timings\n");
+		goto put_display_node;
+	}
+
+	timings_np = of_find_node_by_name(display_np, "display-timings");
+	if (!timings_np) {
+		dev_err(dev, "failed to find display-timings node\n");
+		goto put_display_node;
+	}
+
+	for (i = 0; i < of_get_child_count(timings_np); i++) {
+		struct videomode vm;
+		struct fb_videomode fb_vm;
+
+		ret = videomode_from_timings(timings, &vm, i);
+		if (ret < 0)
+			goto put_timings_node;
+		ret = fb_videomode_from_videomode(&vm, &fb_vm);
+		if (ret < 0)
+			goto put_timings_node;
+
+		fb_add_videomode(&fb_vm, &info->modelist);
+	}
+
+	return 0;
+
+put_timings_node:
+	of_node_put(timings_np);
+put_display_node:
+	of_node_put(display_np);
+	return ret;
+}
+#else
+static int atmel_lcdfb_of_init(struct atmel_lcdfb_info *sinfo)
+{
+	return 0;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct fb_info *info;
 	struct atmel_lcdfb_info *sinfo;
+<<<<<<< HEAD
 	struct atmel_lcdfb_info *pdata_sinfo;
 	struct fb_videomode fbmode;
 	struct resource *regs = NULL;
 	struct resource *map = NULL;
+=======
+	struct atmel_lcdfb_pdata *pdata = NULL;
+	struct resource *regs = NULL;
+	struct resource *map = NULL;
+	struct fb_modelist *modelist;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	dev_dbg(dev, "%s BEGIN\n", __func__);
@@ -834,6 +1399,7 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 	}
 
 	sinfo = info->par;
+<<<<<<< HEAD
 
 	if (dev->platform_data) {
 		pdata_sinfo = (struct atmel_lcdfb_info *)dev->platform_data;
@@ -847,18 +1413,64 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 		sinfo->lcdcon_is_backlight = pdata_sinfo->lcdcon_is_backlight;
 		sinfo->lcdcon_pol_negative = pdata_sinfo->lcdcon_pol_negative;
 		sinfo->lcd_wiring_mode = pdata_sinfo->lcd_wiring_mode;
+=======
+	sinfo->pdev = pdev;
+	sinfo->info = info;
+
+	INIT_LIST_HEAD(&info->modelist);
+
+	if (pdev->dev.of_node) {
+		ret = atmel_lcdfb_of_init(sinfo);
+		if (ret)
+			goto free_info;
+	} else if (dev_get_platdata(dev)) {
+		struct fb_monspecs *monspecs;
+		int i;
+
+		pdata = dev_get_platdata(dev);
+		monspecs = pdata->default_monspecs;
+		sinfo->pdata = *pdata;
+
+		for (i = 0; i < monspecs->modedb_len; i++)
+			fb_add_videomode(&monspecs->modedb[i], &info->modelist);
+
+		sinfo->config = atmel_lcdfb_get_config(pdev);
+
+		info->var.bits_per_pixel = pdata->default_bpp ? pdata->default_bpp : 16;
+		memcpy(&info->monspecs, pdata->default_monspecs, sizeof(info->monspecs));
+>>>>>>> refs/remotes/origin/master
 	} else {
 		dev_err(dev, "cannot get default configuration\n");
 		goto free_info;
 	}
+<<<<<<< HEAD
 	sinfo->info = info;
 	sinfo->pdev = pdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (cpu_is_at91sam9261() || cpu_is_at91sam9263() ||
+							cpu_is_at91sam9rl()) {
+		sinfo->have_intensity_bit = true;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (!sinfo->config)
+		goto free_info;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	strcpy(info->fix.id, sinfo->pdev->name);
 	info->flags = ATMEL_LCDFB_FBINFO_DEFAULT;
 	info->pseudo_palette = sinfo->pseudo_palette;
 	info->fbops = &atmel_lcdfb_ops;
 
+<<<<<<< HEAD
 	memcpy(&info->monspecs, sinfo->default_monspecs, sizeof(info->monspecs));
 	info->fix = atmel_lcdfb_fix;
 
@@ -870,6 +1482,15 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 			ret = PTR_ERR(sinfo->bus_clk);
 			goto free_info;
 		}
+=======
+	info->fix = atmel_lcdfb_fix;
+
+	/* Enable LCDC Clocks */
+	sinfo->bus_clk = clk_get(dev, "hclk");
+	if (IS_ERR(sinfo->bus_clk)) {
+		ret = PTR_ERR(sinfo->bus_clk);
+		goto free_info;
+>>>>>>> refs/remotes/origin/master
 	}
 	sinfo->lcdc_clk = clk_get(dev, "lcdc_clk");
 	if (IS_ERR(sinfo->lcdc_clk)) {
@@ -878,6 +1499,7 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 	}
 	atmel_lcdfb_start_clock(sinfo);
 
+<<<<<<< HEAD
 	ret = fb_find_mode(&info->var, info, NULL, info->monspecs.modedb,
 			info->monspecs.modedb_len, info->monspecs.modedb,
 			sinfo->default_bpp);
@@ -886,6 +1508,13 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 		goto stop_clk;
 	}
 
+=======
+	modelist = list_first_entry(&info->modelist,
+			struct fb_modelist, list);
+	fb_videomode_to_var(&info->var, &modelist->mode);
+
+	atmel_lcdfb_check_var(&info->var, info);
+>>>>>>> refs/remotes/origin/master
 
 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!regs) {
@@ -906,7 +1535,15 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 	if (map) {
 		/* use a pre-allocated memory buffer */
 		info->fix.smem_start = map->start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		info->fix.smem_len = map->end - map->start + 1;
+=======
+		info->fix.smem_len = resource_size(map);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		info->fix.smem_len = resource_size(map);
+>>>>>>> refs/remotes/origin/master
 		if (!request_mem_region(info->fix.smem_start,
 					info->fix.smem_len, pdev->name)) {
 			ret = -EBUSY;
@@ -914,15 +1551,26 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 		}
 
 		info->screen_base = ioremap(info->fix.smem_start, info->fix.smem_len);
+<<<<<<< HEAD
 		if (!info->screen_base)
 			goto release_intmem;
+=======
+		if (!info->screen_base) {
+			ret = -ENOMEM;
+			goto release_intmem;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Don't clear the framebuffer -- someone may have set
 		 * up a splash image.
 		 */
 	} else {
+<<<<<<< HEAD
 		/* alocate memory buffer */
+=======
+		/* allocate memory buffer */
+>>>>>>> refs/remotes/origin/master
 		ret = atmel_lcdfb_alloc_video_memory(sinfo);
 		if (ret < 0) {
 			dev_err(dev, "cannot allocate framebuffer: %d\n", ret);
@@ -932,7 +1580,15 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 
 	/* LCDC registers */
 	info->fix.mmio_start = regs->start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info->fix.mmio_len = regs->end - regs->start + 1;
+=======
+	info->fix.mmio_len = resource_size(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->fix.mmio_len = resource_size(regs);
+>>>>>>> refs/remotes/origin/master
 
 	if (!request_mem_region(info->fix.mmio_start,
 				info->fix.mmio_len, pdev->name)) {
@@ -943,6 +1599,10 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 	sinfo->mmio = ioremap(info->fix.mmio_start, info->fix.mmio_len);
 	if (!sinfo->mmio) {
 		dev_err(dev, "cannot map LCDC registers\n");
+<<<<<<< HEAD
+=======
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto release_mem;
 	}
 
@@ -966,6 +1626,7 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 		goto unregister_irqs;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * This makes sure that our colour bitfield
 	 * descriptors are correctly initialised.
@@ -978,6 +1639,8 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 		goto free_cmap;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(dev, info);
 
 	/*
@@ -989,6 +1652,7 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 		goto reset_drvdata;
 	}
 
+<<<<<<< HEAD
 	/* add selected videomode to modelist */
 	fb_var_to_videomode(&fbmode, &info->var);
 	fb_add_videomode(&fbmode, &info->modelist);
@@ -996,6 +1660,10 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 	/* Power up the LCDC screen */
 	if (sinfo->atmel_lcdfb_power_control)
 		sinfo->atmel_lcdfb_power_control(1);
+=======
+	/* Power up the LCDC screen */
+	atmel_lcdfb_power_control(sinfo, 1);
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(dev, "fb%d: Atmel LCDC at 0x%08lx (mapped at %p), irq %d\n",
 		       info->node, info->fix.mmio_start, sinfo->mmio, sinfo->irq_base);
@@ -1004,7 +1672,10 @@ static int __init atmel_lcdfb_probe(struct platform_device *pdev)
 
 reset_drvdata:
 	dev_set_drvdata(dev, NULL);
+<<<<<<< HEAD
 free_cmap:
+=======
+>>>>>>> refs/remotes/origin/master
 	fb_dealloc_cmap(&info->cmap);
 unregister_irqs:
 	cancel_work_sync(&sinfo->task);
@@ -1027,8 +1698,12 @@ stop_clk:
 	atmel_lcdfb_stop_clock(sinfo);
 	clk_put(sinfo->lcdc_clk);
 put_bus_clk:
+<<<<<<< HEAD
 	if (sinfo->bus_clk)
 		clk_put(sinfo->bus_clk);
+=======
+	clk_put(sinfo->bus_clk);
+>>>>>>> refs/remotes/origin/master
 free_info:
 	framebuffer_release(info);
 out:
@@ -1041,10 +1716,15 @@ static int __exit atmel_lcdfb_remove(struct platform_device *pdev)
 	struct device *dev = &pdev->dev;
 	struct fb_info *info = dev_get_drvdata(dev);
 	struct atmel_lcdfb_info *sinfo;
+<<<<<<< HEAD
+=======
+	struct atmel_lcdfb_pdata *pdata;
+>>>>>>> refs/remotes/origin/master
 
 	if (!info || !info->par)
 		return 0;
 	sinfo = info->par;
+<<<<<<< HEAD
 
 	cancel_work_sync(&sinfo->task);
 	exit_backlight(sinfo);
@@ -1055,6 +1735,17 @@ static int __exit atmel_lcdfb_remove(struct platform_device *pdev)
 	clk_put(sinfo->lcdc_clk);
 	if (sinfo->bus_clk)
 		clk_put(sinfo->bus_clk);
+=======
+	pdata = &sinfo->pdata;
+
+	cancel_work_sync(&sinfo->task);
+	exit_backlight(sinfo);
+	atmel_lcdfb_power_control(sinfo, 0);
+	unregister_framebuffer(info);
+	atmel_lcdfb_stop_clock(sinfo);
+	clk_put(sinfo->lcdc_clk);
+	clk_put(sinfo->bus_clk);
+>>>>>>> refs/remotes/origin/master
 	fb_dealloc_cmap(&info->cmap);
 	free_irq(sinfo->irq_base, info);
 	iounmap(sinfo->mmio);
@@ -1066,7 +1757,10 @@ static int __exit atmel_lcdfb_remove(struct platform_device *pdev)
 		atmel_lcdfb_free_video_memory(sinfo);
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(info);
 
 	return 0;
@@ -1087,9 +1781,13 @@ static int atmel_lcdfb_suspend(struct platform_device *pdev, pm_message_t mesg)
 
 	sinfo->saved_lcdcon = lcdc_readl(sinfo, ATMEL_LCDC_CONTRAST_CTR);
 	lcdc_writel(sinfo, ATMEL_LCDC_CONTRAST_CTR, 0);
+<<<<<<< HEAD
 	if (sinfo->atmel_lcdfb_power_control)
 		sinfo->atmel_lcdfb_power_control(0);
 
+=======
+	atmel_lcdfb_power_control(sinfo, 0);
+>>>>>>> refs/remotes/origin/master
 	atmel_lcdfb_stop(sinfo);
 	atmel_lcdfb_stop_clock(sinfo);
 
@@ -1103,8 +1801,12 @@ static int atmel_lcdfb_resume(struct platform_device *pdev)
 
 	atmel_lcdfb_start_clock(sinfo);
 	atmel_lcdfb_start(sinfo);
+<<<<<<< HEAD
 	if (sinfo->atmel_lcdfb_power_control)
 		sinfo->atmel_lcdfb_power_control(1);
+=======
+	atmel_lcdfb_power_control(sinfo, 1);
+>>>>>>> refs/remotes/origin/master
 	lcdc_writel(sinfo, ATMEL_LCDC_CONTRAST_CTR, sinfo->saved_lcdcon);
 
 	/* Enable FIFO & DMA errors */
@@ -1123,6 +1825,7 @@ static struct platform_driver atmel_lcdfb_driver = {
 	.remove		= __exit_p(atmel_lcdfb_remove),
 	.suspend	= atmel_lcdfb_suspend,
 	.resume		= atmel_lcdfb_resume,
+<<<<<<< HEAD
 
 	.driver		= {
 		.name	= "atmel_lcdfb",
@@ -1142,6 +1845,17 @@ static void __exit atmel_lcdfb_exit(void)
 
 module_init(atmel_lcdfb_init);
 module_exit(atmel_lcdfb_exit);
+=======
+	.id_table	= atmel_lcdfb_devtypes,
+	.driver		= {
+		.name	= "atmel_lcdfb",
+		.owner	= THIS_MODULE,
+		.of_match_table	= of_match_ptr(atmel_lcdfb_dt_ids),
+	},
+};
+
+module_platform_driver_probe(atmel_lcdfb_driver, atmel_lcdfb_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("AT91/AT32 LCD Controller framebuffer driver");
 MODULE_AUTHOR("Nicolas Ferre <nicolas.ferre@atmel.com>");

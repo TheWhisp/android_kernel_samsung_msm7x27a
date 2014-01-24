@@ -19,8 +19,11 @@
 #  define DEBUGP(fmt, args...)
 #endif
 
+<<<<<<< HEAD
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Determine which stack to use..
  */

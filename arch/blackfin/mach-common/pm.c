@@ -19,6 +19,7 @@
 #include <asm/gpio.h>
 #include <asm/dma.h>
 #include <asm/dpmc.h>
+<<<<<<< HEAD
 
 
 void bfin_pm_suspend_standby_enter(void)
@@ -33,6 +34,35 @@ void bfin_pm_suspend_standby_enter(void)
 
 	bfin_pm_standby_restore();
 
+=======
+#include <asm/pm.h>
+
+#ifdef CONFIG_BF60x
+struct bfin_cpu_pm_fns *bfin_cpu_pm;
+#endif
+
+void bfin_pm_suspend_standby_enter(void)
+{
+#if !BFIN_GPIO_PINT
+	bfin_pm_standby_setup();
+#endif
+
+#ifdef CONFIG_BF60x
+	bfin_cpu_pm->enter(PM_SUSPEND_STANDBY);
+#else
+# ifdef CONFIG_PM_BFIN_SLEEP_DEEPER
+	sleep_deeper(bfin_sic_iwr[0], bfin_sic_iwr[1], bfin_sic_iwr[2]);
+# else
+	sleep_mode(bfin_sic_iwr[0], bfin_sic_iwr[1], bfin_sic_iwr[2]);
+# endif
+#endif
+
+#if !BFIN_GPIO_PINT
+	bfin_pm_standby_restore();
+#endif
+
+#ifndef CONFIG_BF60x
+>>>>>>> refs/remotes/origin/master
 #ifdef SIC_IWR0
 	bfin_write_SIC_IWR0(IWR_DISABLE_ALL);
 # ifdef SIC_IWR1
@@ -52,6 +82,11 @@ void bfin_pm_suspend_standby_enter(void)
 #else
 	bfin_write_SIC_IWR(IWR_DISABLE_ALL);
 #endif
+<<<<<<< HEAD
+=======
+
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 int bf53x_suspend_l1_mem(unsigned char *memptr)
@@ -83,10 +118,20 @@ int bf53x_resume_l1_mem(unsigned char *memptr)
 }
 
 #if defined(CONFIG_BFIN_EXTMEM_WRITEBACK) || defined(CONFIG_BFIN_L2_WRITEBACK)
+<<<<<<< HEAD
 static void flushinv_all_dcache(void)
 {
 	u32 way, bank, subbank, set;
 	u32 status, addr;
+=======
+# ifdef CONFIG_BF60x
+__attribute__((l1_text))
+# endif
+static void flushinv_all_dcache(void)
+{
+	register u32 way, bank, subbank, set;
+	register u32 status, addr;
+>>>>>>> refs/remotes/origin/master
 	u32 dmem_ctl = bfin_read_DMEM_CONTROL();
 
 	for (bank = 0; bank < 2; ++bank) {
@@ -110,6 +155,10 @@ static void flushinv_all_dcache(void)
 					if ((status & 0x3) != 0x3)
 						continue;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 					/* construct the address using the tag */
 					addr = (status & 0xFFFFC800) | (subbank << 12) | (set << 5);
 
@@ -122,17 +171,32 @@ static void flushinv_all_dcache(void)
 
 int bfin_pm_suspend_mem_enter(void)
 {
+<<<<<<< HEAD
 	int wakeup, ret;
 
 	unsigned char *memptr = kmalloc(L1_CODE_LENGTH + L1_DATA_A_LENGTH
 					 + L1_DATA_B_LENGTH + L1_SCRATCH_LENGTH,
 					  GFP_KERNEL);
+=======
+	int ret;
+#ifndef CONFIG_BF60x
+	int wakeup;
+#endif
+
+	unsigned char *memptr = kmalloc(L1_CODE_LENGTH + L1_DATA_A_LENGTH
+					 + L1_DATA_B_LENGTH + L1_SCRATCH_LENGTH,
+					  GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 
 	if (memptr == NULL) {
 		panic("bf53x_suspend_l1_mem malloc failed");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_BF60x
+>>>>>>> refs/remotes/origin/master
 	wakeup = bfin_read_VR_CTL() & ~FREQ;
 	wakeup |= SCKELOW;
 
@@ -142,6 +206,10 @@ int bfin_pm_suspend_mem_enter(void)
 #ifdef CONFIG_PM_BFIN_WAKE_GP
 	wakeup |= GPWE;
 #endif
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	ret = blackfin_dma_suspend();
 
@@ -150,7 +218,13 @@ int bfin_pm_suspend_mem_enter(void)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	bfin_gpio_pm_hibernate_suspend();
+=======
+#ifdef CONFIG_GPIO_ADI
+	bfin_gpio_pm_hibernate_suspend();
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_BFIN_EXTMEM_WRITEBACK) || defined(CONFIG_BFIN_L2_WRITEBACK)
 	flushinv_all_dcache();
@@ -159,14 +233,28 @@ int bfin_pm_suspend_mem_enter(void)
 	_disable_icplb();
 	bf53x_suspend_l1_mem(memptr);
 
+<<<<<<< HEAD
 	do_hibernate(wakeup | vr_wakeup);	/* See you later! */
+=======
+#ifndef CONFIG_BF60x
+	do_hibernate(wakeup | vr_wakeup);	/* See you later! */
+#else
+	bfin_cpu_pm->enter(PM_SUSPEND_MEM);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	bf53x_resume_l1_mem(memptr);
 
 	_enable_icplb();
 	_enable_dcplb();
 
+<<<<<<< HEAD
 	bfin_gpio_pm_hibernate_restore();
+=======
+#ifdef CONFIG_GPIO_ADI
+	bfin_gpio_pm_hibernate_restore();
+#endif
+>>>>>>> refs/remotes/origin/master
 	blackfin_dma_resume();
 
 	kfree(memptr);
@@ -223,9 +311,45 @@ static int bfin_pm_enter(suspend_state_t state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct platform_suspend_ops bfin_pm_ops = {
 	.enter = bfin_pm_enter,
 	.valid	= bfin_pm_valid,
+=======
+#ifdef CONFIG_BFIN_PM_WAKEUP_TIME_BENCH
+void bfin_pm_end(void)
+{
+	u32 cycle, cycle2;
+	u64 usec64;
+	u32 usec;
+
+	__asm__ __volatile__ (
+		"1: %0 = CYCLES2\n"
+		"%1 = CYCLES\n"
+		"%2 = CYCLES2\n"
+		"CC = %2 == %0\n"
+		"if ! CC jump 1b\n"
+		: "=d,a" (cycle2), "=d,a" (cycle), "=d,a" (usec) : : "CC"
+	);
+
+	usec64 = ((u64)cycle2 << 32) + cycle;
+	do_div(usec64, get_cclk() / USEC_PER_SEC);
+	usec = usec64;
+	if (usec == 0)
+		usec = 1;
+
+	pr_info("PM: resume of kernel completes after  %ld msec %03ld usec\n",
+		usec / USEC_PER_MSEC, usec % USEC_PER_MSEC);
+}
+#endif
+
+static const struct platform_suspend_ops bfin_pm_ops = {
+	.enter = bfin_pm_enter,
+	.valid	= bfin_pm_valid,
+#ifdef CONFIG_BFIN_PM_WAKEUP_TIME_BENCH
+	.end = bfin_pm_end,
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init bfin_pm_init(void)

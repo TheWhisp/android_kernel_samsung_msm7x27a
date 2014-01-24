@@ -1,9 +1,51 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/******************************************************************************
+ *
+ * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of version 2 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ * Modifications for inclusion into the Linux staging tree are
+ * Copyright(c) 2010 Larry Finger. All rights reserved.
+ *
+ * Contact information:
+ * WLAN FAE <wlanfae@realtek.com>
+ * Larry Finger <Larry.Finger@lwfinger.net>
+ *
+ ******************************************************************************/
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __IEEE80211_H
 #define __IEEE80211_H
 
 #include "osdep_service.h"
 #include "drv_types.h"
 #include "wifi.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/compiler.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/compiler.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/wireless.h>
 
 #define MGMT_QUEUE_NUM 5
@@ -111,7 +153,15 @@ struct ieee_ibss_seq {
 	u8 mac[ETH_ALEN];
 	u16 seq_num;
 	u16 frag_num;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int packet_time;
+=======
+	unsigned long packet_time;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long packet_time;
+>>>>>>> refs/remotes/origin/master
 	struct list_head list;
 };
 
@@ -123,7 +173,15 @@ struct ieee80211_hdr {
 	u8 addr3[ETH_ALEN];
 	u16 seq_ctl;
 	u8 addr4[ETH_ALEN];
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 struct ieee80211_hdr_3addr {
 	u16 frame_ctl;
@@ -132,7 +190,15 @@ struct ieee80211_hdr_3addr {
 	u8 addr2[ETH_ALEN];
 	u8 addr3[ETH_ALEN];
 	u16 seq_ctl;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 
 struct	ieee80211_hdr_qos {
@@ -144,7 +210,15 @@ struct	ieee80211_hdr_qos {
 	u16 seq_ctl;
 	u8 addr4[ETH_ALEN];
 	u16	qc;
+<<<<<<< HEAD
+<<<<<<< HEAD
 }  __attribute__ ((packed));
+=======
+}  __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+}  __packed;
+>>>>>>> refs/remotes/origin/master
 
 struct  ieee80211_hdr_3addr_qos {
 	u16 frame_ctl;
@@ -154,7 +228,15 @@ struct  ieee80211_hdr_3addr_qos {
 	u8  addr3[ETH_ALEN];
 	u16 seq_ctl;
 	u16 qc;
+<<<<<<< HEAD
+<<<<<<< HEAD
 }  __attribute__ ((packed));
+=======
+}  __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+}  __packed;
+>>>>>>> refs/remotes/origin/master
 
 struct eapol {
 	u8 snap[6];
@@ -162,7 +244,15 @@ struct eapol {
 	u8 version;
 	u8 type;
 	u16 length;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 
 enum eap_type {
@@ -260,7 +350,15 @@ struct ieee80211_snap_hdr {
 	u8    ssap;   /* always 0xAA */
 	u8    ctrl;   /* always 0x03 */
 	u8    oui[P80211_OUI_LEN];    /* organizational universal id */
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 #define SNAP_SIZE sizeof(struct ieee80211_snap_hdr)
 
@@ -510,7 +608,15 @@ struct ieee80211_security {
 	u8 keys[WEP_KEYS][WEP_KEY_LEN];
 	u8 level;
 	u16 flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /*
 
@@ -555,13 +661,29 @@ struct ieee80211_header_data {
 struct ieee80211_info_element_hdr {
 	u8 id;
 	u8 len;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 struct ieee80211_info_element {
 	u8 id;
 	u8 len;
 	u8 data[0];
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are the data types that can make up management packets
@@ -574,7 +696,15 @@ struct ieee80211_info_element {
 	u16 listen_interval;
 	struct {
 		u16 association_id:14, reserved:2;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} __attribute__ ((packed));
+=======
+	} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} __packed;
+>>>>>>> refs/remotes/origin/master
 	u32 time_stamp[2];
 	u16 reason;
 	u16 status;
@@ -588,7 +718,15 @@ struct ieee80211_authentication {
 	u16 algorithm;
 	u16 transaction;
 	u16 status;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 struct ieee80211_probe_response {
 	struct ieee80211_header_data header;
@@ -596,25 +734,55 @@ struct ieee80211_probe_response {
 	u16 beacon_interval;
 	u16 capability;
 	struct ieee80211_info_element info_element;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 
 struct ieee80211_probe_request {
 	struct ieee80211_header_data header;
 } __attribute__ ((packed));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+} __packed;
+
+struct ieee80211_probe_request {
+	struct ieee80211_header_data header;
+} __packed;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct ieee80211_assoc_request_frame {
 	struct ieee80211_hdr_3addr header;
 	u16 capability;
 	u16 listen_interval;
 	struct ieee80211_info_element_hdr info_element;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 struct ieee80211_assoc_response_frame {
 	struct ieee80211_hdr_3addr header;
 	u16 capability;
 	u16 status;
 	u16 aid;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 struct ieee80211_txb {
 	u8 nr_frags;
@@ -643,7 +811,13 @@ struct ieee80211_txb {
 #define CRC_LENGTH                 4U
 
 #define MAX_WPA_IE_LEN 128
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_WPS_IE_LEN 512
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define NETWORK_EMPTY_ESSID (1<<0)
 #define NETWORK_HAS_OFDM    (1<<1)
@@ -680,7 +854,11 @@ enum ieee80211_state {
 	IEEE80211_ASSOCIATING_RETRY,
 	/* the association procedure is sending AUTH request*/
 	IEEE80211_ASSOCIATING_AUTHENTICATING,
+<<<<<<< HEAD
 	/* the association procedure has successfully authentcated
+=======
+	/* the association procedure has successfully authenticated
+>>>>>>> refs/remotes/origin/master
 	 * and is sending association request
 	 */
 	IEEE80211_ASSOCIATING_AUTHENTICATED,
@@ -752,7 +930,11 @@ extern inline int ieee80211_get_hdrlen(u16 fc)
 struct registry_priv;
 
 u8 *r8712_set_ie(u8 *pbuf, sint index, uint len, u8 *source, uint *frlen);
+<<<<<<< HEAD
 u8 *r8712_get_ie(u8*pbuf, sint index, sint *len, sint limit);
+=======
+u8 *r8712_get_ie(u8 *pbuf, sint index, sint *len, sint limit);
+>>>>>>> refs/remotes/origin/master
 unsigned char *r8712_get_wpa_ie(unsigned char *pie, int *rsn_ie_len, int limit);
 unsigned char *r8712_get_wpa2_ie(unsigned char *pie, int *rsn_ie_len,
 				 int limit);
@@ -763,8 +945,16 @@ int r8712_parse_wpa2_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher,
 int r8712_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len,
 		     u8 *wpa_ie, u16 *wpa_len);
 int r8712_get_wps_ie(u8 *in_ie, uint in_len, u8 *wps_ie, uint *wps_ielen);
+<<<<<<< HEAD
+<<<<<<< HEAD
 int r8712_generate_ie(struct registry_priv *pregistrypriv,
 		      struct _adapter *padapter);
+=======
+int r8712_generate_ie(struct registry_priv *pregistrypriv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int r8712_generate_ie(struct registry_priv *pregistrypriv);
+>>>>>>> refs/remotes/origin/master
 uint r8712_is_cckrates_included(u8 *rate);
 uint r8712_is_cckratesonly_included(u8 *rate);
 

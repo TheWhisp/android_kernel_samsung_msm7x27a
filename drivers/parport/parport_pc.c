@@ -197,6 +197,7 @@ static int change_mode(struct parport *p, int m)
 	ECR_WRITE(p, oecr);
 	return 0;
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_PARPORT_1284
 /* Find FIFO lossage; FIFO is reset */
@@ -245,6 +246,8 @@ static int get_fifo_residue(struct parport *p)
 }
 #endif  /*  0 */
 #endif /* IEEE 1284 support */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* FIFO support */
 
 /*
@@ -940,6 +943,7 @@ static size_t parport_pc_ecp_write_block_pio(struct parport *port,
 
 	return written;
 }
+<<<<<<< HEAD
 
 #if 0
 static size_t parport_pc_ecp_read_block_pio(struct parport *port,
@@ -1168,6 +1172,8 @@ out_no_data:
 	return length - left;
 }
 #endif  /*  0  */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* IEEE 1284 support */
 #endif /* Allowed to use FIFO/DMA */
 
@@ -1229,7 +1235,11 @@ static struct superio_struct *find_free_superio(void)
 
 
 /* Super-IO chipset detection, Winbond, SMSC */
+<<<<<<< HEAD
 static void __devinit show_parconfig_smsc37c669(int io, int key)
+=======
+static void show_parconfig_smsc37c669(int io, int key)
+>>>>>>> refs/remotes/origin/master
 {
 	int cr1, cr4, cra, cr23, cr26, cr27;
 	struct superio_struct *s;
@@ -1314,7 +1324,11 @@ static void __devinit show_parconfig_smsc37c669(int io, int key)
 }
 
 
+<<<<<<< HEAD
 static void __devinit show_parconfig_winbond(int io, int key)
+=======
+static void show_parconfig_winbond(int io, int key)
+>>>>>>> refs/remotes/origin/master
 {
 	int cr30, cr60, cr61, cr70, cr74, crf0;
 	struct superio_struct *s;
@@ -1382,8 +1396,12 @@ static void __devinit show_parconfig_winbond(int io, int key)
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit decode_winbond(int efer, int key, int devid,
 							int devrev, int oldid)
+=======
+static void decode_winbond(int efer, int key, int devid, int devrev, int oldid)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *type = "unknown";
 	int id, progif = 2;
@@ -1435,7 +1453,11 @@ static void __devinit decode_winbond(int efer, int key, int devid,
 		show_parconfig_winbond(efer, key);
 }
 
+<<<<<<< HEAD
 static void __devinit decode_smsc(int efer, int key, int devid, int devrev)
+=======
+static void decode_smsc(int efer, int key, int devid, int devrev)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *type = "unknown";
 	void (*func)(int io, int key);
@@ -1469,7 +1491,11 @@ static void __devinit decode_smsc(int efer, int key, int devid, int devrev)
 }
 
 
+<<<<<<< HEAD
 static void __devinit winbond_check(int io, int key)
+=======
+static void winbond_check(int io, int key)
+>>>>>>> refs/remotes/origin/master
 {
 	int origval, devid, devrev, oldid, x_devid, x_devrev, x_oldid;
 
@@ -1507,7 +1533,11 @@ out:
 	release_region(io, 3);
 }
 
+<<<<<<< HEAD
 static void __devinit winbond_check2(int io, int key)
+=======
+static void winbond_check2(int io, int key)
+>>>>>>> refs/remotes/origin/master
 {
 	int origval[3], devid, devrev, oldid, x_devid, x_devrev, x_oldid;
 
@@ -1548,7 +1578,11 @@ out:
 	release_region(io, 3);
 }
 
+<<<<<<< HEAD
 static void __devinit smsc_check(int io, int key)
+=======
+static void smsc_check(int io, int key)
+>>>>>>> refs/remotes/origin/master
 {
 	int origval, id, rev, oldid, oldrev, x_id, x_rev, x_oldid, x_oldrev;
 
@@ -1592,7 +1626,11 @@ out:
 }
 
 
+<<<<<<< HEAD
 static void __devinit detect_and_report_winbond(void)
+=======
+static void detect_and_report_winbond(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (verbose_probing)
 		printk(KERN_DEBUG "Winbond Super-IO detection, now testing ports 3F0,370,250,4E,2E ...\n");
@@ -1605,7 +1643,11 @@ static void __devinit detect_and_report_winbond(void)
 	winbond_check2(0x250, 0x89);
 }
 
+<<<<<<< HEAD
 static void __devinit detect_and_report_smsc(void)
+=======
+static void detect_and_report_smsc(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (verbose_probing)
 		printk(KERN_DEBUG "SMSC Super-IO detection, now testing Ports 2F0, 370 ...\n");
@@ -1615,7 +1657,11 @@ static void __devinit detect_and_report_smsc(void)
 	smsc_check(0x370, 0x44);
 }
 
+<<<<<<< HEAD
 static void __devinit detect_and_report_it87(void)
+=======
+static void detect_and_report_it87(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 dev;
 	u8 origval, r;
@@ -2072,24 +2118,40 @@ static int parport_ECPEPP_supported(struct parport *pb)
 #else /* No IEEE 1284 support */
 
 /* Don't bother probing for modes we know we won't use. */
+<<<<<<< HEAD
 static int __devinit parport_PS2_supported(struct parport *pb) { return 0; }
+=======
+static int parport_PS2_supported(struct parport *pb) { return 0; }
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PARPORT_PC_FIFO
 static int parport_ECP_supported(struct parport *pb)
 {
 	return 0;
 }
 #endif
+<<<<<<< HEAD
 static int __devinit parport_EPP_supported(struct parport *pb)
+=======
+static int parport_EPP_supported(struct parport *pb)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit parport_ECPEPP_supported(struct parport *pb)
+=======
+static int parport_ECPEPP_supported(struct parport *pb)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit parport_ECPPS2_supported(struct parport *pb)
+=======
+static int parport_ECPPS2_supported(struct parport *pb)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -2281,6 +2343,10 @@ struct parport *parport_pc_probe_port(unsigned long int base,
 	struct resource	*ECR_res = NULL;
 	struct resource	*EPP_res = NULL;
 	struct platform_device *pdev = NULL;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev) {
 		/* We need a physical device to attach to, but none was
@@ -2291,8 +2357,16 @@ struct parport *parport_pc_probe_port(unsigned long int base,
 			return NULL;
 		dev = &pdev->dev;
 
+<<<<<<< HEAD
 		dev->coherent_dma_mask = DMA_BIT_MASK(24);
 		dev->dma_mask = &dev->coherent_dma_mask;
+=======
+		ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(24));
+		if (ret) {
+			dev_err(dev, "Unable to set coherent dma mask: disabling DMA\n");
+			dma = PARPORT_DMA_NONE;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ops = kmalloc(sizeof(struct parport_operations), GFP_KERNEL);
@@ -2351,7 +2425,11 @@ struct parport *parport_pc_probe_port(unsigned long int base,
 
 	printk(KERN_INFO "%s: PC-style at 0x%lx", p->name, p->base);
 	if (p->base_hi && priv->ecr)
+<<<<<<< HEAD
 		printk(" (0x%lx)", p->base_hi);
+=======
+		printk(KERN_CONT " (0x%lx)", p->base_hi);
+>>>>>>> refs/remotes/origin/master
 	if (p->irq == PARPORT_IRQ_AUTO) {
 		p->irq = PARPORT_IRQ_NONE;
 		parport_irq_probe(p);
@@ -2362,7 +2440,11 @@ struct parport *parport_pc_probe_port(unsigned long int base,
 		p->irq = PARPORT_IRQ_NONE;
 	}
 	if (p->irq != PARPORT_IRQ_NONE) {
+<<<<<<< HEAD
 		printk(", irq %d", p->irq);
+=======
+		printk(KERN_CONT ", irq %d", p->irq);
+>>>>>>> refs/remotes/origin/master
 		priv->ctr_writable |= 0x10;
 
 		if (p->dma == PARPORT_DMA_AUTO) {
@@ -2386,21 +2468,36 @@ struct parport *parport_pc_probe_port(unsigned long int base,
 		/* p->ops->ecp_read_data = parport_pc_ecp_read_block_pio; */
 #endif /* IEEE 1284 support */
 		if (p->dma != PARPORT_DMA_NONE) {
+<<<<<<< HEAD
 			printk(", dma %d", p->dma);
 			p->modes |= PARPORT_MODE_DMA;
 		} else
 			printk(", using FIFO");
+=======
+			printk(KERN_CONT ", dma %d", p->dma);
+			p->modes |= PARPORT_MODE_DMA;
+		} else
+			printk(KERN_CONT ", using FIFO");
+>>>>>>> refs/remotes/origin/master
 	} else
 		/* We can't use the DMA channel after all. */
 		p->dma = PARPORT_DMA_NONE;
 #endif /* Allowed to use FIFO/DMA */
 
+<<<<<<< HEAD
 	printk(" [");
+=======
+	printk(KERN_CONT " [");
+>>>>>>> refs/remotes/origin/master
 
 #define printmode(x) \
 	{\
 		if (p->modes & PARPORT_MODE_##x) {\
+<<<<<<< HEAD
 			printk("%s%s", f ? "," : "", #x);\
+=======
+			printk(KERN_CONT "%s%s", f ? "," : "", #x);\
+>>>>>>> refs/remotes/origin/master
 			f++;\
 		} \
 	}
@@ -2416,9 +2513,15 @@ struct parport *parport_pc_probe_port(unsigned long int base,
 	}
 #undef printmode
 #ifndef CONFIG_PARPORT_1284
+<<<<<<< HEAD
 	printk("(,...)");
 #endif /* CONFIG_PARPORT_1284 */
 	printk("]\n");
+=======
+	printk(KERN_CONT "(,...)");
+#endif /* CONFIG_PARPORT_1284 */
+	printk(KERN_CONT "]\n");
+>>>>>>> refs/remotes/origin/master
 	if (probedirq != PARPORT_IRQ_NONE)
 		printk(KERN_INFO "%s: irq %d detected\n", p->name, probedirq);
 
@@ -2545,9 +2648,14 @@ EXPORT_SYMBOL(parport_pc_unregister_port);
 #ifdef CONFIG_PCI
 
 /* ITE support maintained by Rich Liu <richliu@poorman.org> */
+<<<<<<< HEAD
 static int __devinit sio_ite_8872_probe(struct pci_dev *pdev, int autoirq,
 					 int autodma,
 					 const struct parport_pc_via_data *via)
+=======
+static int sio_ite_8872_probe(struct pci_dev *pdev, int autoirq, int autodma,
+			      const struct parport_pc_via_data *via)
+>>>>>>> refs/remotes/origin/master
 {
 	short inta_addr[6] = { 0x2A0, 0x2C0, 0x220, 0x240, 0x1E0 };
 	u32 ite8872set;
@@ -2595,14 +2703,36 @@ static int __devinit sio_ite_8872_probe(struct pci_dev *pdev, int autoirq,
 		break;
 	case 0x6:
 		printk(KERN_INFO "parport_pc: ITE8873 found (1S)\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 	case 0x8:
 		printk(KERN_INFO "parport_pc: ITE8874 found (2S)\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		release_region(inta_addr[i], 32);
+		return 0;
+	case 0x8:
+		printk(KERN_INFO "parport_pc: ITE8874 found (2S)\n");
+		release_region(inta_addr[i], 32);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	default:
 		printk(KERN_INFO "parport_pc: unknown ITE887x\n");
 		printk(KERN_INFO "parport_pc: please mail 'lspci -nvv' "
 			"output to Rich.Liu@ite.com.tw\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		release_region(inta_addr[i], 32);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		release_region(inta_addr[i], 32);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -2650,10 +2780,17 @@ static int __devinit sio_ite_8872_probe(struct pci_dev *pdev, int autoirq,
 
 /* VIA 8231 support by Pavel Fedin <sonic_amiga@rambler.ru>
    based on VIA 686a support code by Jeff Garzik <jgarzik@pobox.com> */
+<<<<<<< HEAD
 static int __devinitdata parport_init_mode;
 
 /* Data for two known VIA chips */
 static struct parport_pc_via_data via_686a_data __devinitdata = {
+=======
+static int parport_init_mode;
+
+/* Data for two known VIA chips */
+static struct parport_pc_via_data via_686a_data = {
+>>>>>>> refs/remotes/origin/master
 	0x51,
 	0x50,
 	0x85,
@@ -2662,7 +2799,11 @@ static struct parport_pc_via_data via_686a_data __devinitdata = {
 	0xF0,
 	0xE6
 };
+<<<<<<< HEAD
 static struct parport_pc_via_data via_8231_data __devinitdata = {
+=======
+static struct parport_pc_via_data via_8231_data = {
+>>>>>>> refs/remotes/origin/master
 	0x45,
 	0x44,
 	0x50,
@@ -2672,9 +2813,14 @@ static struct parport_pc_via_data via_8231_data __devinitdata = {
 	0xF6
 };
 
+<<<<<<< HEAD
 static int __devinit sio_via_probe(struct pci_dev *pdev, int autoirq,
 				    int autodma,
 				    const struct parport_pc_via_data *via)
+=======
+static int sio_via_probe(struct pci_dev *pdev, int autoirq, int autodma,
+			 const struct parport_pc_via_data *via)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 tmp, tmp2, siofunc;
 	u8 ppcontrol = 0;
@@ -2848,7 +2994,11 @@ static struct parport_pc_superio {
 	int (*probe) (struct pci_dev *pdev, int autoirq, int autodma,
 		      const struct parport_pc_via_data *via);
 	const struct parport_pc_via_data *via;
+<<<<<<< HEAD
 } parport_pc_superio_info[] __devinitdata = {
+=======
+} parport_pc_superio_info[] = {
+>>>>>>> refs/remotes/origin/master
 	{ sio_via_probe, &via_686a_data, },
 	{ sio_via_probe, &via_8231_data, },
 	{ sio_ite_8872_probe, NULL, },
@@ -2864,6 +3014,8 @@ enum parport_pc_pci_cards {
 	lava_parallel_dual_b,
 	boca_ioppar,
 	plx_9050,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	timedia_4078a,
 	timedia_4079h,
 	timedia_4085h,
@@ -2882,6 +3034,10 @@ enum parport_pc_pci_cards {
 	timedia_9079a,
 	timedia_9079b,
 	timedia_9079c,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	timedia_4006a,
 	timedia_4014,
 	timedia_4008a,
@@ -2890,8 +3046,11 @@ enum parport_pc_pci_cards {
 	syba_2p_epp,
 	syba_1p_ecp,
 	titan_010l,
+<<<<<<< HEAD
 	titan_1284p1,
 	titan_1284p2,
+=======
+>>>>>>> refs/remotes/origin/master
 	avlab_1p,
 	avlab_2p,
 	oxsemi_952,
@@ -2940,6 +3099,8 @@ static struct parport_pc_pci {
 	/* lava_parallel_dual_b */	{ 1, { { 0, -1 }, } },
 	/* boca_ioppar */		{ 1, { { 0, -1 }, } },
 	/* plx_9050 */			{ 2, { { 4, -1 }, { 5, -1 }, } },
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* timedia_4078a */		{ 1, { { 2, -1 }, } },
 	/* timedia_4079h */             { 1, { { 2, 3 }, } },
 	/* timedia_4085h */             { 2, { { 2, -1 }, { 4, -1 }, } },
@@ -2958,6 +3119,10 @@ static struct parport_pc_pci {
 	/* timedia_9079a */             { 1, { { 2, 3 }, } },
 	/* timedia_9079b */             { 1, { { 2, 3 }, } },
 	/* timedia_9079c */             { 1, { { 2, 3 }, } },
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* timedia_4006a */             { 1, { { 0, -1 }, } },
 	/* timedia_4014  */             { 2, { { 0, -1 }, { 2, -1 }, } },
 	/* timedia_4008a */             { 1, { { 0, 1 }, } },
@@ -2968,8 +3133,11 @@ static struct parport_pc_pci {
 	/* syba_2p_epp AP138B */	{ 2, { { 0, 0x078 }, { 0, 0x178 }, } },
 	/* syba_1p_ecp W83787 */	{ 1, { { 0, 0x078 }, } },
 	/* titan_010l */		{ 1, { { 3, -1 }, } },
+<<<<<<< HEAD
 	/* titan_1284p1 */              { 1, { { 0, 1 }, } },
 	/* titan_1284p2 */		{ 2, { { 0, 1 }, { 2, 3 }, } },
+=======
+>>>>>>> refs/remotes/origin/master
 	/* avlab_1p		*/	{ 1, { { 0, 1}, } },
 	/* avlab_2p		*/	{ 2, { { 0, 1}, { 2, 3 },} },
 	/* The Oxford Semi cards are unusual: 954 doesn't support ECP,
@@ -2985,8 +3153,13 @@ static struct parport_pc_pci {
 	/* netmos_9705 */               { 1, { { 0, -1 }, } },
 	/* netmos_9715 */               { 2, { { 0, 1 }, { 2, 3 },} },
 	/* netmos_9755 */               { 2, { { 0, 1 }, { 2, 3 },} },
+<<<<<<< HEAD
 	/* netmos_9805 */               { 1, { { 0, -1 }, } },
 	/* netmos_9815 */               { 2, { { 0, -1 }, { 2, -1 }, } },
+=======
+	/* netmos_9805 */		{ 1, { { 0, 1 }, } },
+	/* netmos_9815 */		{ 2, { { 0, 1 }, { 2, 3 }, } },
+>>>>>>> refs/remotes/origin/master
 	/* netmos_9901 */               { 1, { { 0, -1 }, } },
 	/* netmos_9865 */               { 1, { { 0, -1 }, } },
 	/* quatech_sppxp100 */		{ 1, { { 0, 1 }, } },
@@ -3019,6 +3192,8 @@ static const struct pci_device_id parport_pc_pci_tbl[] = {
 	{ PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9050,
 	  PCI_SUBVENDOR_ID_EXSYS, PCI_SUBDEVICE_ID_EXSYS_4014, 0, 0, plx_9050 },
 	/* PCI_VENDOR_ID_TIMEDIA/SUNIX has many differing cards ...*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ 0x1409, 0x7168, 0x1409, 0x4078, 0, 0, timedia_4078a },
 	{ 0x1409, 0x7168, 0x1409, 0x4079, 0, 0, timedia_4079h },
 	{ 0x1409, 0x7168, 0x1409, 0x4085, 0, 0, timedia_4085h },
@@ -3037,6 +3212,10 @@ static const struct pci_device_id parport_pc_pci_tbl[] = {
 	{ 0x1409, 0x7168, 0x1409, 0xb079, 0, 0, timedia_9079a },
 	{ 0x1409, 0x7168, 0x1409, 0xc079, 0, 0, timedia_9079b },
 	{ 0x1409, 0x7168, 0x1409, 0xd079, 0, 0, timedia_9079c },
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 0x1409, 0x7268, 0x1409, 0x0101, 0, 0, timedia_4006a },
 	{ 0x1409, 0x7268, 0x1409, 0x0102, 0, 0, timedia_4014 },
 	{ 0x1409, 0x7268, 0x1409, 0x0103, 0, 0, timedia_4008a },
@@ -3048,8 +3227,11 @@ static const struct pci_device_id parport_pc_pci_tbl[] = {
 	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, syba_1p_ecp },
 	{ PCI_VENDOR_ID_TITAN, PCI_DEVICE_ID_TITAN_010L,
 	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, titan_010l },
+<<<<<<< HEAD
 	{ 0x9710, 0x9805, 0x1000, 0x0010, 0, 0, titan_1284p1 },
 	{ 0x9710, 0x9815, 0x1000, 0x0020, 0, 0, titan_1284p2 },
+=======
+>>>>>>> refs/remotes/origin/master
 	/* PCI_VENDOR_ID_AVLAB/Intek21 has another bunch of cards ...*/
 	/* AFAVLAB_TK9902 */
 	{ 0x14db, 0x2120, PCI_ANY_ID, PCI_ANY_ID, 0, 0, avlab_1p},
@@ -3153,16 +3335,24 @@ static int parport_pc_pci_probe(struct pci_dev *dev,
 		if (irq == IRQ_NONE) {
 			printk(KERN_DEBUG
 	"PCI parallel port detected: %04x:%04x, I/O at %#lx(%#lx)\n",
+<<<<<<< HEAD
 				parport_pc_pci_tbl[i + last_sio].vendor,
 				parport_pc_pci_tbl[i + last_sio].device,
 				io_lo, io_hi);
+=======
+				id->vendor, id->device, io_lo, io_hi);
+>>>>>>> refs/remotes/origin/master
 			irq = PARPORT_IRQ_NONE;
 		} else {
 			printk(KERN_DEBUG
 	"PCI parallel port detected: %04x:%04x, I/O at %#lx(%#lx), IRQ %d\n",
+<<<<<<< HEAD
 				parport_pc_pci_tbl[i + last_sio].vendor,
 				parport_pc_pci_tbl[i + last_sio].device,
 				io_lo, io_hi, irq);
+=======
+				id->vendor, id->device, io_lo, io_hi, irq);
+>>>>>>> refs/remotes/origin/master
 		}
 		data->ports[count] =
 			parport_pc_probe_port(io_lo, io_hi, irq,
@@ -3187,13 +3377,20 @@ static int parport_pc_pci_probe(struct pci_dev *dev,
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static void __devexit parport_pc_pci_remove(struct pci_dev *dev)
+=======
+static void parport_pc_pci_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_parport_data *data = pci_get_drvdata(dev);
 	int i;
 
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (data) {
 		for (i = data->num - 1; i >= 0; i--)
 			parport_pc_unregister_port(data->ports[i]);
@@ -3206,7 +3403,11 @@ static struct pci_driver parport_pc_pci_driver = {
 	.name		= "parport_pc",
 	.id_table	= parport_pc_pci_tbl,
 	.probe		= parport_pc_pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(parport_pc_pci_remove),
+=======
+	.remove		= parport_pc_pci_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init parport_pc_init_superio(int autoirq, int autodma)
@@ -3310,7 +3511,11 @@ static struct pnp_driver parport_pc_pnp_driver = {
 static struct pnp_driver parport_pc_pnp_driver;
 #endif /* CONFIG_PNP */
 
+<<<<<<< HEAD
 static int __devinit parport_pc_platform_probe(struct platform_device *pdev)
+=======
+static int parport_pc_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Always succeed, the actual probing is done in
 	 * parport_pc_probe_port(). */
@@ -3326,7 +3531,11 @@ static struct platform_driver parport_pc_platform_driver = {
 };
 
 /* This is called by parport_pc_find_nonpci_ports (in asm/parport.h) */
+<<<<<<< HEAD
 static int __devinit __attribute__((unused))
+=======
+static int __attribute__((unused))
+>>>>>>> refs/remotes/origin/master
 parport_pc_find_isa_ports(int autoirq, int autodma)
 {
 	int count = 0;
@@ -3455,8 +3664,18 @@ static int __init parport_init_mode_setup(char *str)
 #endif
 
 #ifdef MODULE
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const char *irq[PARPORT_PC_MAX_PORTS];
 static const char *dma[PARPORT_PC_MAX_PORTS];
+=======
+static char *irq[PARPORT_PC_MAX_PORTS];
+static char *dma[PARPORT_PC_MAX_PORTS];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *irq[PARPORT_PC_MAX_PORTS];
+static char *dma[PARPORT_PC_MAX_PORTS];
+>>>>>>> refs/remotes/origin/master
 
 MODULE_PARM_DESC(io, "Base I/O address (SPP regs)");
 module_param_array(io, int, NULL, 0);

@@ -1,9 +1,15 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/lib/div64.c
  *
  *  __div64_32 implementation for 31 bit.
  *
  *    Copyright (C) IBM Corp. 2006
+=======
+ *  __div64_32 implementation for 31 bit.
+ *
+ *    Copyright IBM Corp. 2006
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com),
  */
 

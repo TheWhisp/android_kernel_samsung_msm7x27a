@@ -62,7 +62,11 @@
 	or:
 
 		(b)	0x80 bit set
+<<<<<<< HEAD
 			indiates that the bytes following alternate data and
+=======
+			indicates that the bytes following alternate data and
+>>>>>>> refs/remotes/origin/master
 			status bytes:
 
 				STAT DATA STAT DATA STAT DATA STAT DATA ...

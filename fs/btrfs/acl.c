@@ -28,9 +28,17 @@
 #include "btrfs_inode.h"
 #include "xattr.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_BTRFS_FS_POSIX_ACL
 
 static struct posix_acl *btrfs_get_acl(struct inode *inode, int type)
+=======
+struct posix_acl *btrfs_get_acl(struct inode *inode, int type)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct posix_acl *btrfs_get_acl(struct inode *inode, int type)
+>>>>>>> refs/remotes/origin/master
 {
 	int size;
 	const char *name;
@@ -61,6 +69,8 @@ static struct posix_acl *btrfs_get_acl(struct inode *inode, int type)
 		if (!value)
 			return ERR_PTR(-ENOMEM);
 		size = __btrfs_getxattr(inode, name, value, size);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (size > 0) {
 			acl = posix_acl_from_xattr(value, size);
 			if (IS_ERR(acl)) {
@@ -77,6 +87,29 @@ static struct posix_acl *btrfs_get_acl(struct inode *inode, int type)
 	} else {
 		acl = ERR_PTR(-EIO);
 	}
+=======
+	}
+	if (size > 0) {
+		acl = posix_acl_from_xattr(value, size);
+=======
+	}
+	if (size > 0) {
+		acl = posix_acl_from_xattr(&init_user_ns, value, size);
+>>>>>>> refs/remotes/origin/master
+	} else if (size == -ENOENT || size == -ENODATA || size == 0) {
+		/* FIXME, who returns -ENOENT?  I think nobody */
+		acl = NULL;
+	} else {
+		acl = ERR_PTR(-EIO);
+	}
+	kfree(value);
+
+	if (!IS_ERR(acl))
+		set_cached_acl(inode, type, acl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return acl;
 }
@@ -96,7 +129,11 @@ static int btrfs_xattr_acl_get(struct dentry *dentry, const char *name,
 		return PTR_ERR(acl);
 	if (acl == NULL)
 		return -ENODATA;
+<<<<<<< HEAD
 	ret = posix_acl_to_xattr(acl, value, size);
+=======
+	ret = posix_acl_to_xattr(&init_user_ns, acl, value, size);
+>>>>>>> refs/remotes/origin/master
 	posix_acl_release(acl);
 
 	return ret;
@@ -111,7 +148,13 @@ static int btrfs_set_acl(struct btrfs_trans_handle *trans,
 	int ret, size = 0;
 	const char *name;
 	char *value = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (acl) {
 		ret = posix_acl_valid(acl);
@@ -122,6 +165,8 @@ static int btrfs_set_acl(struct btrfs_trans_handle *trans,
 
 	switch (type) {
 	case ACL_TYPE_ACCESS:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mode = inode->i_mode;
 		name = POSIX_ACL_XATTR_ACCESS;
 		if (acl) {
@@ -129,6 +174,20 @@ static int btrfs_set_acl(struct btrfs_trans_handle *trans,
 			if (ret < 0)
 				return ret;
 			inode->i_mode = mode;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		name = POSIX_ACL_XATTR_ACCESS;
+		if (acl) {
+			ret = posix_acl_equiv_mode(acl, &inode->i_mode);
+			if (ret < 0)
+				return ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ret == 0)
+				acl = NULL;
+>>>>>>> refs/remotes/origin/master
 		}
 		ret = 0;
 		break;
@@ -149,7 +208,11 @@ static int btrfs_set_acl(struct btrfs_trans_handle *trans,
 			goto out;
 		}
 
+<<<<<<< HEAD
 		ret = posix_acl_to_xattr(acl, value, size);
+=======
+		ret = posix_acl_to_xattr(&init_user_ns, acl, value, size);
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			goto out;
 	}
@@ -177,7 +240,11 @@ static int btrfs_xattr_acl_set(struct dentry *dentry, const char *name,
 		return -EOPNOTSUPP;
 
 	if (value) {
+<<<<<<< HEAD
 		acl = posix_acl_from_xattr(value, size);
+=======
+		acl = posix_acl_from_xattr(&init_user_ns, value, size);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(acl))
 			return PTR_ERR(acl);
 
@@ -195,6 +262,8 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int btrfs_check_acl(struct inode *inode, int mask, unsigned int flags)
 {
 	int error = -EAGAIN;
@@ -217,6 +286,10 @@ int btrfs_check_acl(struct inode *inode, int mask, unsigned int flags)
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * btrfs_init_acl is already generally called under fs_mutex, so the locking
  * stuff has been fixed to work with that.  If the locking stuff changes, we
@@ -244,15 +317,23 @@ int btrfs_init_acl(struct btrfs_trans_handle *trans,
 	}
 
 	if (IS_POSIXACL(dir) && acl) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct posix_acl *clone;
 		mode_t mode;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (S_ISDIR(inode->i_mode)) {
 			ret = btrfs_set_acl(trans, inode, acl,
 					    ACL_TYPE_DEFAULT);
 			if (ret)
 				goto failed;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		clone = posix_acl_clone(acl, GFP_NOFS);
 		ret = -ENOMEM;
 		if (!clone)
@@ -269,6 +350,26 @@ int btrfs_init_acl(struct btrfs_trans_handle *trans,
 			}
 		}
 		posix_acl_release(clone);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ret = posix_acl_create(&acl, GFP_NOFS, &inode->i_mode);
+		if (ret < 0)
+			return ret;
+
+		if (ret > 0) {
+			/* we need an acl */
+			ret = btrfs_set_acl(trans, inode, acl, ACL_TYPE_ACCESS);
+<<<<<<< HEAD
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (ret < 0) {
+			cache_no_acl(inode);
+		}
+	} else {
+		cache_no_acl(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 failed:
 	posix_acl_release(acl);
@@ -278,7 +379,15 @@ failed:
 
 int btrfs_acl_chmod(struct inode *inode)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
+=======
+	struct posix_acl *acl;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct posix_acl *acl;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (S_ISLNK(inode->i_mode))
@@ -291,6 +400,8 @@ int btrfs_acl_chmod(struct inode *inode)
 	if (IS_ERR_OR_NULL(acl))
 		return PTR_ERR(acl);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clone = posix_acl_clone(acl, GFP_KERNEL);
 	posix_acl_release(acl);
 	if (!clone)
@@ -302,6 +413,18 @@ int btrfs_acl_chmod(struct inode *inode)
 
 	posix_acl_release(clone);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+	if (ret)
+		return ret;
+	ret = btrfs_set_acl(NULL, inode, acl, ACL_TYPE_ACCESS);
+	posix_acl_release(acl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -318,6 +441,8 @@ const struct xattr_handler btrfs_xattr_acl_access_handler = {
 	.get	= btrfs_xattr_acl_get,
 	.set	= btrfs_xattr_acl_set,
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #else /* CONFIG_BTRFS_FS_POSIX_ACL */
 
@@ -333,3 +458,7 @@ int btrfs_init_acl(struct btrfs_trans_handle *trans,
 }
 
 #endif /* CONFIG_BTRFS_FS_POSIX_ACL */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -14,6 +14,14 @@
 #include <linux/rtc.h>
 #include <linux/bcd.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_VERSION "0.6"
 
@@ -67,6 +75,10 @@
 enum rtc_type {
 	rtc_undef = 0,
 	rtc_r2025sd,
+<<<<<<< HEAD
+=======
+	rtc_r2221tl,
+>>>>>>> refs/remotes/origin/master
 	rtc_rs5c372a,
 	rtc_rs5c372b,
 	rtc_rv5c386,
@@ -75,6 +87,10 @@ enum rtc_type {
 
 static const struct i2c_device_id rs5c372_id[] = {
 	{ "r2025sd", rtc_r2025sd },
+<<<<<<< HEAD
+=======
+	{ "r2221tl", rtc_r2221tl },
+>>>>>>> refs/remotes/origin/master
 	{ "rs5c372a", rtc_rs5c372a },
 	{ "rs5c372b", rtc_rs5c372b },
 	{ "rv5c386", rtc_rv5c386 },
@@ -103,7 +119,16 @@ static int rs5c_get_regs(struct rs5c372 *rs5c)
 {
 	struct i2c_client	*client = rs5c->client;
 	struct i2c_msg		msgs[] = {
+<<<<<<< HEAD
 		{ client->addr, I2C_M_RD, sizeof rs5c->buf, rs5c->buf },
+=======
+		{
+			.addr = client->addr,
+			.flags = I2C_M_RD,
+			.len = sizeof(rs5c->buf),
+			.buf = rs5c->buf
+		},
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* This implements the third reading method from the datasheet, using
@@ -305,8 +330,12 @@ static int rs5c_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
 		buf &= ~RS5C_CTRL1_AALE;
 
 	if (i2c_smbus_write_byte_data(client, addr, buf) < 0) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: can't update alarm\n",
 			rs5c->rtc->name);
+=======
+		dev_warn(dev, "can't update alarm\n");
+>>>>>>> refs/remotes/origin/master
 		status = -EIO;
 	} else
 		rs5c->regs[RS5C_REG_CTRL1] = buf;
@@ -375,7 +404,11 @@ static int rs5c_set_alarm(struct device *dev, struct rtc_wkalrm *t)
 		addr = RS5C_ADDR(RS5C_REG_CTRL1);
 		buf[0] = rs5c->regs[RS5C_REG_CTRL1] & ~RS5C_CTRL1_AALE;
 		if (i2c_smbus_write_byte_data(client, addr, buf[0]) < 0) {
+<<<<<<< HEAD
 			pr_debug("%s: can't disable alarm\n", rs5c->rtc->name);
+=======
+			dev_dbg(dev, "can't disable alarm\n");
+>>>>>>> refs/remotes/origin/master
 			return -EIO;
 		}
 		rs5c->regs[RS5C_REG_CTRL1] = buf[0];
@@ -389,7 +422,11 @@ static int rs5c_set_alarm(struct device *dev, struct rtc_wkalrm *t)
 	for (i = 0; i < sizeof(buf); i++) {
 		addr = RS5C_ADDR(RS5C_REG_ALARM_A_MIN + i);
 		if (i2c_smbus_write_byte_data(client, addr, buf[i]) < 0) {
+<<<<<<< HEAD
 			pr_debug("%s: can't set alarm time\n", rs5c->rtc->name);
+=======
+			dev_dbg(dev, "can't set alarm time\n");
+>>>>>>> refs/remotes/origin/master
 			return -EIO;
 		}
 	}
@@ -399,8 +436,12 @@ static int rs5c_set_alarm(struct device *dev, struct rtc_wkalrm *t)
 		addr = RS5C_ADDR(RS5C_REG_CTRL1);
 		buf[0] = rs5c->regs[RS5C_REG_CTRL1] | RS5C_CTRL1_AALE;
 		if (i2c_smbus_write_byte_data(client, addr, buf[0]) < 0)
+<<<<<<< HEAD
 			printk(KERN_WARNING "%s: can't enable alarm\n",
 				rs5c->rtc->name);
+=======
+			dev_warn(dev, "can't enable alarm\n");
+>>>>>>> refs/remotes/origin/master
 		rs5c->regs[RS5C_REG_CTRL1] = buf[0];
 	}
 
@@ -525,6 +566,10 @@ static int rs5c_oscillator_setup(struct rs5c372 *rs5c372)
 		rs5c372->time24 = 1;
 		break;
 	case rtc_r2025sd:
+<<<<<<< HEAD
+=======
+	case rtc_r2221tl:
+>>>>>>> refs/remotes/origin/master
 	case rtc_rv5c386:
 	case rtc_rv5c387a:
 		buf[0] |= RV5C387_CTRL1_24;
@@ -575,7 +620,13 @@ static int rs5c372_probe(struct i2c_client *client,
 		}
 	}
 
+<<<<<<< HEAD
 	if (!(rs5c372 = kzalloc(sizeof(struct rs5c372), GFP_KERNEL))) {
+=======
+	rs5c372 = devm_kzalloc(&client->dev, sizeof(struct rs5c372),
+				GFP_KERNEL);
+	if (!rs5c372) {
+>>>>>>> refs/remotes/origin/master
 		err = -ENOMEM;
 		goto exit;
 	}
@@ -590,7 +641,11 @@ static int rs5c372_probe(struct i2c_client *client,
 
 	err = rs5c_get_regs(rs5c372);
 	if (err < 0)
+<<<<<<< HEAD
 		goto exit_kfree;
+=======
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 
 	/* clock may be set for am/pm or 24 hr time */
 	switch (rs5c372->type) {
@@ -603,6 +658,10 @@ static int rs5c372_probe(struct i2c_client *client,
 			rs5c372->time24 = 1;
 		break;
 	case rtc_r2025sd:
+<<<<<<< HEAD
+=======
+	case rtc_r2221tl:
+>>>>>>> refs/remotes/origin/master
 	case rtc_rv5c386:
 	case rtc_rv5c387a:
 		if (rs5c372->regs[RS5C_REG_CTRL1] & RV5C387_CTRL1_24)
@@ -613,7 +672,11 @@ static int rs5c372_probe(struct i2c_client *client,
 		break;
 	default:
 		dev_err(&client->dev, "unknown RTC type\n");
+<<<<<<< HEAD
 		goto exit_kfree;
+=======
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* if the oscillator lost power and no other software (like
@@ -625,7 +688,11 @@ static int rs5c372_probe(struct i2c_client *client,
 	err = rs5c_oscillator_setup(rs5c372);
 	if (unlikely(err < 0)) {
 		dev_err(&client->dev, "setup error\n");
+<<<<<<< HEAD
 		goto exit_kfree;
+=======
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (rs5c372_get_datetime(client, &tm) < 0)
@@ -634,6 +701,10 @@ static int rs5c372_probe(struct i2c_client *client,
 	dev_info(&client->dev, "%s found, %s, driver version " DRV_VERSION "\n",
 			({ char *s; switch (rs5c372->type) {
 			case rtc_r2025sd:	s = "r2025sd"; break;
+<<<<<<< HEAD
+=======
+			case rtc_r2221tl:	s = "r2221tl"; break;
+>>>>>>> refs/remotes/origin/master
 			case rtc_rs5c372a:	s = "rs5c372a"; break;
 			case rtc_rs5c372b:	s = "rs5c372b"; break;
 			case rtc_rv5c386:	s = "rv5c386"; break;
@@ -644,6 +715,7 @@ static int rs5c372_probe(struct i2c_client *client,
 			);
 
 	/* REVISIT use client->irq to register alarm irq ... */
+<<<<<<< HEAD
 
 	rs5c372->rtc = rtc_device_register(rs5c372_driver.driver.name,
 				&client->dev, &rs5c372_rtc_ops, THIS_MODULE);
@@ -651,10 +723,20 @@ static int rs5c372_probe(struct i2c_client *client,
 	if (IS_ERR(rs5c372->rtc)) {
 		err = PTR_ERR(rs5c372->rtc);
 		goto exit_kfree;
+=======
+	rs5c372->rtc = devm_rtc_device_register(&client->dev,
+					rs5c372_driver.driver.name,
+					&rs5c372_rtc_ops, THIS_MODULE);
+
+	if (IS_ERR(rs5c372->rtc)) {
+		err = PTR_ERR(rs5c372->rtc);
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	err = rs5c_sysfs_register(&client->dev);
 	if (err)
+<<<<<<< HEAD
 		goto exit_devreg;
 
 	return 0;
@@ -665,17 +747,27 @@ exit_devreg:
 exit_kfree:
 	kfree(rs5c372);
 
+=======
+		goto exit;
+
+	return 0;
+
+>>>>>>> refs/remotes/origin/master
 exit:
 	return err;
 }
 
 static int rs5c372_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	struct rs5c372 *rs5c372 = i2c_get_clientdata(client);
 
 	rtc_device_unregister(rs5c372->rtc);
 	rs5c_sysfs_unregister(&client->dev);
 	kfree(rs5c372);
+=======
+	rs5c_sysfs_unregister(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -688,6 +780,8 @@ static struct i2c_driver rs5c372_driver = {
 	.id_table	= rs5c372_id,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static __init int rs5c372_init(void)
 {
 	return i2c_add_driver(&rs5c372_driver);
@@ -700,6 +794,12 @@ static __exit void rs5c372_exit(void)
 
 module_init(rs5c372_init);
 module_exit(rs5c372_exit);
+=======
+module_i2c_driver(rs5c372_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(rs5c372_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(
 		"Pavel Mironchik <pmironchik@optifacio.net>, "

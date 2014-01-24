@@ -21,6 +21,14 @@
 #include <linux/fb.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
@@ -363,7 +371,11 @@ static void set_graphics_start(struct fb_info *info, int xoffset, int yoffset)
 static void set_dumb_panel_control(struct fb_info *info)
 {
 	struct pxa168fb_info *fbi = info->par;
+<<<<<<< HEAD
 	struct pxa168fb_mach_info *mi = fbi->dev->platform_data;
+=======
+	struct pxa168fb_mach_info *mi = dev_get_platdata(fbi->dev);
+>>>>>>> refs/remotes/origin/master
 	u32 x;
 
 	/*
@@ -406,7 +418,11 @@ static int pxa168fb_set_par(struct fb_info *info)
 	u32 x;
 	struct pxa168fb_mach_info *mi;
 
+<<<<<<< HEAD
 	mi = fbi->dev->platform_data;
+=======
+	mi = dev_get_platdata(fbi->dev);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Set additional mode info.
@@ -559,7 +575,11 @@ static struct fb_ops pxa168fb_ops = {
 	.fb_imageblit	= cfb_imageblit,
 };
 
+<<<<<<< HEAD
 static int __devinit pxa168fb_init_mode(struct fb_info *info,
+=======
+static int pxa168fb_init_mode(struct fb_info *info,
+>>>>>>> refs/remotes/origin/master
 			      struct pxa168fb_mach_info *mi)
 {
 	struct pxa168fb_info *fbi = info->par;
@@ -599,7 +619,11 @@ static int __devinit pxa168fb_init_mode(struct fb_info *info,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit pxa168fb_probe(struct platform_device *pdev)
+=======
+static int pxa168fb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxa168fb_mach_info *mi;
 	struct fb_info *info = 0;
@@ -608,7 +632,11 @@ static int __devinit pxa168fb_probe(struct platform_device *pdev)
 	struct clk *clk;
 	int irq, ret;
 
+<<<<<<< HEAD
 	mi = pdev->dev.platform_data;
+=======
+	mi = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (mi == NULL) {
 		dev_err(&pdev->dev, "no platform data defined\n");
 		return -EINVAL;
@@ -662,7 +690,15 @@ static int __devinit pxa168fb_probe(struct platform_device *pdev)
 	info->fix.ypanstep = 0;
 	info->fix.ywrapstep = 0;
 	info->fix.mmio_start = res->start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info->fix.mmio_len = res->end - res->start + 1;
+=======
+	info->fix.mmio_len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->fix.mmio_len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	info->fix.accel = FB_ACCEL_NONE;
 	info->fbops = &pxa168fb_ops;
 	info->pseudo_palette = fbi->pseudo_palette;
@@ -670,7 +706,17 @@ static int __devinit pxa168fb_probe(struct platform_device *pdev)
 	/*
 	 * Map LCD controller registers.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fbi->reg_base = ioremap_nocache(res->start, resource_size(res));
+=======
+	fbi->reg_base = devm_ioremap_nocache(&pdev->dev, res->start,
+					     resource_size(res));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fbi->reg_base = devm_ioremap_nocache(&pdev->dev, res->start,
+					     resource_size(res));
+>>>>>>> refs/remotes/origin/master
 	if (fbi->reg_base == NULL) {
 		ret = -ENOMEM;
 		goto failed_free_info;
@@ -739,8 +785,18 @@ static int __devinit pxa168fb_probe(struct platform_device *pdev)
 	/*
 	 * Register irq handler.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(irq, pxa168fb_handle_irq, IRQF_SHARED,
 					info->fix.id, fbi);
+=======
+	ret = devm_request_irq(&pdev->dev, irq, pxa168fb_handle_irq,
+			       IRQF_SHARED, info->fix.id, fbi);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = devm_request_irq(&pdev->dev, irq, pxa168fb_handle_irq,
+			       IRQF_SHARED, info->fix.id, fbi);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(&pdev->dev, "unable to request IRQ\n");
 		ret = -ENXIO;
@@ -759,14 +815,28 @@ static int __devinit pxa168fb_probe(struct platform_device *pdev)
 	if (ret < 0) {
 		dev_err(&pdev->dev, "Failed to register pxa168-fb: %d\n", ret);
 		ret = -ENXIO;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto failed_free_irq;
+=======
+		goto failed_free_cmap;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto failed_free_cmap;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, fbi);
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 failed_free_irq:
 	free_irq(irq, fbi);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 failed_free_cmap:
 	fb_dealloc_cmap(&info->cmap);
 failed_free_clk:
@@ -783,7 +853,11 @@ failed_put_clk:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit pxa168fb_remove(struct platform_device *pdev)
+=======
+static int pxa168fb_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxa168fb_info *fbi = platform_get_drvdata(pdev);
 	struct fb_info *info;
@@ -808,13 +882,25 @@ static int __devexit pxa168fb_remove(struct platform_device *pdev)
 		fb_dealloc_cmap(&info->cmap);
 
 	irq = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	free_irq(irq, fbi);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dma_free_writecombine(fbi->dev, PAGE_ALIGN(info->fix.smem_len),
 				info->screen_base, info->fix.smem_start);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iounmap(fbi->reg_base);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	clk_disable(fbi->clk);
 	clk_put(fbi->clk);
 
@@ -829,9 +915,11 @@ static struct platform_driver pxa168fb_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= pxa168fb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pxa168fb_remove),
 };
 
+<<<<<<< HEAD
 static int __init pxa168fb_init(void)
 {
 	return platform_driver_register(&pxa168fb_driver);
@@ -843,6 +931,15 @@ static void __exit pxa168fb_exit(void)
 	platform_driver_unregister(&pxa168fb_driver);
 }
 module_exit(pxa168fb_exit);
+=======
+module_platform_driver(pxa168fb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= pxa168fb_remove,
+};
+
+module_platform_driver(pxa168fb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Lennert Buytenhek <buytenh@marvell.com> "
 	      "Green Wan <gwan@marvell.com>");

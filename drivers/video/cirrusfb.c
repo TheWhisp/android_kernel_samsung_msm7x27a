@@ -53,12 +53,15 @@
 #ifdef CONFIG_AMIGA
 #include <asm/amigahw.h>
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_PREP
 #include <asm/machdep.h>
 #define isPReP machine_is(prep)
 #else
 #define isPReP 0
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <video/vga.h>
 #include <video/cirrus.h>
@@ -280,6 +283,8 @@ MODULE_DEVICE_TABLE(pci, cirrusfb_pci_table);
 #endif /* CONFIG_PCI */
 
 #ifdef CONFIG_ZORRO
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct zorro_device_id cirrusfb_zorro_table[] = {
 	{
 		.id		= ZORRO_PROD_HELFRICH_SD64_RAM,
@@ -296,10 +301,111 @@ static const struct zorro_device_id cirrusfb_zorro_table[] = {
 	}, {
 		.id		= ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z3,
 		.driver_data	= BT_PICASSO4,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct zorrocl {
+	enum cirrus_board type;	/* Board type */
+	u32 regoffset;		/* Offset of registers in first Zorro device */
+	u32 ramsize;		/* Size of video RAM in first Zorro device */
+				/* If zero, use autoprobe on RAM device */
+	u32 ramoffset;		/* Offset of video RAM in first Zorro device */
+	zorro_id ramid;		/* Zorro ID of RAM device */
+	zorro_id ramid2;	/* Zorro ID of optional second RAM device */
+};
+
+<<<<<<< HEAD
+static const struct zorrocl zcl_sd64 __devinitconst = {
+=======
+static const struct zorrocl zcl_sd64 = {
+>>>>>>> refs/remotes/origin/master
+	.type		= BT_SD64,
+	.ramid		= ZORRO_PROD_HELFRICH_SD64_RAM,
+};
+
+<<<<<<< HEAD
+static const struct zorrocl zcl_piccolo __devinitconst = {
+=======
+static const struct zorrocl zcl_piccolo = {
+>>>>>>> refs/remotes/origin/master
+	.type		= BT_PICCOLO,
+	.ramid		= ZORRO_PROD_HELFRICH_PICCOLO_RAM,
+};
+
+<<<<<<< HEAD
+static const struct zorrocl zcl_picasso __devinitconst = {
+=======
+static const struct zorrocl zcl_picasso = {
+>>>>>>> refs/remotes/origin/master
+	.type		= BT_PICASSO,
+	.ramid		= ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_RAM,
+};
+
+<<<<<<< HEAD
+static const struct zorrocl zcl_spectrum __devinitconst = {
+=======
+static const struct zorrocl zcl_spectrum = {
+>>>>>>> refs/remotes/origin/master
+	.type		= BT_SPECTRUM,
+	.ramid		= ZORRO_PROD_GVP_EGS_28_24_SPECTRUM_RAM,
+};
+
+<<<<<<< HEAD
+static const struct zorrocl zcl_picasso4_z3 __devinitconst = {
+=======
+static const struct zorrocl zcl_picasso4_z3 = {
+>>>>>>> refs/remotes/origin/master
+	.type		= BT_PICASSO4,
+	.regoffset	= 0x00600000,
+	.ramsize	= 4 * MB_,
+	.ramoffset	= 0x01000000,	/* 0x02000000 for 64 MiB boards */
+};
+
+<<<<<<< HEAD
+static const struct zorrocl zcl_picasso4_z2 __devinitconst = {
+=======
+static const struct zorrocl zcl_picasso4_z2 = {
+>>>>>>> refs/remotes/origin/master
+	.type		= BT_PICASSO4,
+	.regoffset	= 0x10000,
+	.ramid		= ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_RAM1,
+	.ramid2		= ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_RAM2,
+};
+
+
+<<<<<<< HEAD
+static const struct zorro_device_id cirrusfb_zorro_table[] __devinitconst = {
+=======
+static const struct zorro_device_id cirrusfb_zorro_table[] = {
+>>>>>>> refs/remotes/origin/master
+	{
+		.id		= ZORRO_PROD_HELFRICH_SD64_REG,
+		.driver_data	= (unsigned long)&zcl_sd64,
+	}, {
+		.id		= ZORRO_PROD_HELFRICH_PICCOLO_REG,
+		.driver_data	= (unsigned long)&zcl_piccolo,
+	}, {
+		.id	= ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_REG,
+		.driver_data	= (unsigned long)&zcl_picasso,
+	}, {
+		.id		= ZORRO_PROD_GVP_EGS_28_24_SPECTRUM_REG,
+		.driver_data	= (unsigned long)&zcl_spectrum,
+	}, {
+		.id		= ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z3,
+		.driver_data	= (unsigned long)&zcl_picasso4_z3,
+	}, {
+		.id		= ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_REG,
+		.driver_data	= (unsigned long)&zcl_picasso4_z2,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	{ 0 }
 };
 MODULE_DEVICE_TABLE(zorro, cirrusfb_zorro_table);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static const struct {
 	zorro_id id2;
@@ -326,6 +432,10 @@ static const struct {
 		.size	= 0x400000
 	}
 };
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_ZORRO */
 
 #ifdef CIRRUSFB_DEBUG
@@ -350,8 +460,17 @@ struct cirrusfb_info {
 	void (*unmap)(struct fb_info *info);
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int noaccel __devinitdata;
+=======
+static bool noaccel __devinitdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 static char *mode_option __devinitdata = "640x480@60";
+=======
+static bool noaccel;
+static char *mode_option = "640x480@60";
+>>>>>>> refs/remotes/origin/master
 
 /****************************************************************************/
 /**** BEGIN PROTOTYPES ******************************************************/
@@ -535,6 +654,7 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
 		break;
 
 	case 16:
+<<<<<<< HEAD
 		if (isPReP) {
 			var->red.offset = 2;
 			var->green.offset = -3;
@@ -544,12 +664,18 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
 			var->green.offset = 5;
 			var->blue.offset = 0;
 		}
+=======
+		var->red.offset = 11;
+		var->green.offset = 5;
+		var->blue.offset = 0;
+>>>>>>> refs/remotes/origin/master
 		var->red.length = 5;
 		var->green.length = 6;
 		var->blue.length = 5;
 		break;
 
 	case 24:
+<<<<<<< HEAD
 		if (isPReP) {
 			var->red.offset = 0;
 			var->green.offset = 8;
@@ -559,6 +685,11 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
 			var->green.offset = 8;
 			var->blue.offset = 0;
 		}
+=======
+		var->red.offset = 16;
+		var->green.offset = 8;
+		var->blue.offset = 0;
+>>>>>>> refs/remotes/origin/master
 		var->red.length = 8;
 		var->green.length = 8;
 		var->blue.length = 8;
@@ -591,11 +722,14 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (var->xoffset < 0)
 		var->xoffset = 0;
 	if (var->yoffset < 0)
 		var->yoffset = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* truncate xoffset and yoffset to maximum if too high */
 	if (var->xoffset > var->xres_virtual - var->xres)
 		var->xoffset = var->xres_virtual - var->xres - 1;
@@ -1589,7 +1723,11 @@ static void init_vgachip(struct fb_info *info)
 	/* ext. display controls: ext.adr. wrap */
 	vga_wcrt(cinfo->regbase, CL_CRT1B, 0x02);
 
+<<<<<<< HEAD
 	/* Set/Reset registes: - */
+=======
+	/* Set/Reset registers: - */
+>>>>>>> refs/remotes/origin/master
 	vga_wgfx(cinfo->regbase, VGA_GFX_SR_VALUE, 0x00);
 	/* Set/Reset enable: - */
 	vga_wgfx(cinfo->regbase, VGA_GFX_SR_ENABLE, 0x00);
@@ -1852,6 +1990,7 @@ static void cirrusfb_imageblit(struct fb_info *info,
 	}
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_PREP
 #define PREP_VIDEO_BASE ((volatile unsigned long) 0xC0000000)
 #define PREP_IO_BASE    ((volatile unsigned char *) 0x80000000)
@@ -1863,6 +2002,8 @@ static void get_prep_addrs(unsigned long *display, unsigned long *registers)
 
 #endif				/* CONFIG_PPC_PREP */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PCI
 static int release_io_ports;
 
@@ -1870,8 +2011,13 @@ static int release_io_ports;
  * based on the DRAM bandwidth bit and DRAM bank switching bit.  This
  * works with 1MB, 2MB and 4MB configurations (which the Motorola boards
  * seem to have. */
+<<<<<<< HEAD
 static unsigned int __devinit cirrusfb_get_memsize(struct fb_info *info,
 						   u8 __iomem *regbase)
+=======
+static unsigned int cirrusfb_get_memsize(struct fb_info *info,
+					 u8 __iomem *regbase)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long mem;
 	struct cirrusfb_info *cinfo = info->par;
@@ -1956,6 +2102,8 @@ static void cirrusfb_zorro_unmap(struct fb_info *info)
 	struct cirrusfb_info *cinfo = info->par;
 	struct zorro_dev *zdev = to_zorro_dev(info->device);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	zorro_release_device(zdev);
 
 	if (cinfo->btype == BT_PICASSO4) {
@@ -1966,6 +2114,19 @@ static void cirrusfb_zorro_unmap(struct fb_info *info)
 		if (zorro_resource_start(zdev) > 0x01000000)
 			iounmap(info->screen_base);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (info->fix.smem_start > 16 * MB_)
+		iounmap(info->screen_base);
+	if (info->fix.mmio_start > 16 * MB_)
+		iounmap(cinfo->regbase);
+
+	zorro_release_device(zdev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_ZORRO */
 
@@ -1985,7 +2146,11 @@ static struct fb_ops cirrusfb_ops = {
 	.fb_imageblit	= cirrusfb_imageblit,
 };
 
+<<<<<<< HEAD
 static int __devinit cirrusfb_set_fbinfo(struct fb_info *info)
+=======
+static int cirrusfb_set_fbinfo(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cirrusfb_info *cinfo = info->par;
 	struct fb_var_screeninfo *var = &info->var;
@@ -2034,7 +2199,11 @@ static int __devinit cirrusfb_set_fbinfo(struct fb_info *info)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit cirrusfb_register(struct fb_info *info)
+=======
+static int cirrusfb_register(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cirrusfb_info *cinfo = info->par;
 	int err;
@@ -2078,7 +2247,11 @@ err_dealloc_cmap:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit cirrusfb_cleanup(struct fb_info *info)
+=======
+static void cirrusfb_cleanup(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cirrusfb_info *cinfo = info->par;
 
@@ -2091,8 +2264,13 @@ static void __devexit cirrusfb_cleanup(struct fb_info *info)
 }
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 static int __devinit cirrusfb_pci_register(struct pci_dev *pdev,
 					   const struct pci_device_id *ent)
+=======
+static int cirrusfb_pci_register(struct pci_dev *pdev,
+				 const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cirrusfb_info *cinfo;
 	struct fb_info *info;
@@ -2121,6 +2299,7 @@ static int __devinit cirrusfb_pci_register(struct pci_dev *pdev,
 	dev_dbg(info->device, " base address 1 is 0x%Lx\n",
 		(unsigned long long)pdev->resource[1].start);
 
+<<<<<<< HEAD
 	if (isPReP) {
 		pci_write_config_dword(pdev, PCI_BASE_ADDRESS_0, 0x00000000);
 #ifdef CONFIG_PPC_PREP
@@ -2136,6 +2315,14 @@ static int __devinit cirrusfb_pci_register(struct pci_dev *pdev,
 		cinfo->regbase = NULL;
 		cinfo->laguna_mmio = ioremap(info->fix.mmio_start, 0x1000);
 	}
+=======
+	dev_dbg(info->device,
+		"Attempt to get PCI info for Cirrus Graphics Card\n");
+	get_pci_addrs(pdev, &board_addr, &info->fix.mmio_start);
+	/* FIXME: this forces VGA.  alternatives? */
+	cinfo->regbase = NULL;
+	cinfo->laguna_mmio = ioremap(info->fix.mmio_start, 0x1000);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(info->device, "Board address: 0x%lx, register address: 0x%lx\n",
 		board_addr, info->fix.mmio_start);
@@ -2179,7 +2366,10 @@ static int __devinit cirrusfb_pci_register(struct pci_dev *pdev,
 	if (!ret)
 		return 0;
 
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	iounmap(info->screen_base);
 err_release_legacy:
 	if (release_io_ports)
@@ -2197,7 +2387,11 @@ err_out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit cirrusfb_pci_unregister(struct pci_dev *pdev)
+=======
+static void cirrusfb_pci_unregister(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(pdev);
 
@@ -2208,7 +2402,11 @@ static struct pci_driver cirrusfb_pci_driver = {
 	.name		= "cirrusfb",
 	.id_table	= cirrusfb_pci_table,
 	.probe		= cirrusfb_pci_register,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cirrusfb_pci_unregister),
+=======
+	.remove		= cirrusfb_pci_unregister,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 #if 0
 	.suspend	= cirrusfb_pci_suspend,
@@ -2219,9 +2417,11 @@ static struct pci_driver cirrusfb_pci_driver = {
 #endif /* CONFIG_PCI */
 
 #ifdef CONFIG_ZORRO
+<<<<<<< HEAD
 static int __devinit cirrusfb_zorro_register(struct zorro_dev *z,
 					     const struct zorro_device_id *ent)
 {
+<<<<<<< HEAD
 	struct cirrusfb_info *cinfo;
 	struct fb_info *info;
 	enum cirrus_board btype;
@@ -2233,10 +2433,28 @@ static int __devinit cirrusfb_zorro_register(struct zorro_dev *z,
 	if (cirrusfb_zorro_table2[btype].id2)
 		z2 = zorro_find_device(cirrusfb_zorro_table2[btype].id2, NULL);
 	size = cirrusfb_zorro_table2[btype].size;
+=======
+=======
+static int cirrusfb_zorro_register(struct zorro_dev *z,
+				   const struct zorro_device_id *ent)
+{
+>>>>>>> refs/remotes/origin/master
+	struct fb_info *info;
+	int error;
+	const struct zorrocl *zcl;
+	enum cirrus_board btype;
+	unsigned long regbase, ramsize, rambase;
+	struct cirrusfb_info *cinfo;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	info = framebuffer_alloc(sizeof(struct cirrusfb_info), &z->dev);
 	if (!info) {
 		printk(KERN_ERR "cirrusfb: could not allocate memory\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = -ENOMEM;
 		goto err_out;
 	}
@@ -2309,12 +2527,101 @@ static int __devinit cirrusfb_zorro_register(struct zorro_dev *z,
 		 board_size / MB_, board_addr);
 
 	zorro_set_drvdata(z, info);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		return -ENOMEM;
+	}
+
+	zcl = (const struct zorrocl *)ent->driver_data;
+	btype = zcl->type;
+	regbase = zorro_resource_start(z) + zcl->regoffset;
+	ramsize = zcl->ramsize;
+	if (ramsize) {
+		rambase = zorro_resource_start(z) + zcl->ramoffset;
+		if (zorro_resource_len(z) == 64 * MB_) {
+			/* Quirk for 64 MiB Picasso IV */
+			rambase += zcl->ramoffset;
+		}
+	} else {
+		struct zorro_dev *ram = zorro_find_device(zcl->ramid, NULL);
+		if (!ram || !zorro_resource_len(ram)) {
+			dev_err(info->device, "No video RAM found\n");
+			error = -ENODEV;
+			goto err_release_fb;
+		}
+		rambase = zorro_resource_start(ram);
+		ramsize = zorro_resource_len(ram);
+		if (zcl->ramid2 &&
+		    (ram = zorro_find_device(zcl->ramid2, NULL))) {
+			if (zorro_resource_start(ram) != rambase + ramsize) {
+				dev_warn(info->device,
+					 "Skipping non-contiguous RAM at %pR\n",
+					 &ram->resource);
+			} else {
+				ramsize += zorro_resource_len(ram);
+			}
+		}
+	}
+
+	dev_info(info->device,
+		 "%s board detected, REG at 0x%lx, %lu MiB RAM at 0x%lx\n",
+		 cirrusfb_board_info[btype].name, regbase, ramsize / MB_,
+		 rambase);
+
+	if (!zorro_request_device(z, "cirrusfb")) {
+		dev_err(info->device, "Cannot reserve %pR\n", &z->resource);
+		error = -EBUSY;
+		goto err_release_fb;
+	}
+
+	cinfo = info->par;
+	cinfo->btype = btype;
+
+	info->fix.mmio_start = regbase;
+	cinfo->regbase = regbase > 16 * MB_ ? ioremap(regbase, 64 * 1024)
+<<<<<<< HEAD
+					    : (caddr_t)ZTWO_VADDR(regbase);
+=======
+					    : ZTWO_VADDR(regbase);
+>>>>>>> refs/remotes/origin/master
+	if (!cinfo->regbase) {
+		dev_err(info->device, "Cannot map registers\n");
+		error = -EIO;
+		goto err_release_dev;
+	}
+
+	info->fix.smem_start = rambase;
+	info->screen_size = ramsize;
+	info->screen_base = rambase > 16 * MB_ ? ioremap(rambase, ramsize)
+<<<<<<< HEAD
+					       : (caddr_t)ZTWO_VADDR(rambase);
+=======
+					       : ZTWO_VADDR(rambase);
+>>>>>>> refs/remotes/origin/master
+	if (!info->screen_base) {
+		dev_err(info->device, "Cannot map video RAM\n");
+		error = -EIO;
+		goto err_unmap_reg;
+	}
+
+	cinfo->unmap = cirrusfb_zorro_unmap;
+
+	dev_info(info->device,
+		 "Cirrus Logic chipset on Zorro bus, RAM (%lu MiB) at 0x%lx\n",
+		 ramsize / MB_, rambase);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* MCLK select etc. */
 	if (cirrusfb_board_info[btype].init_sr1f)
 		vga_wseq(cinfo->regbase, CL_SEQR1F,
 			 cirrusfb_board_info[btype].sr1f);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = cirrusfb_register(info);
 	if (!ret)
 		return 0;
@@ -2331,20 +2638,64 @@ err_release_fb:
 	framebuffer_release(info);
 err_out:
 	return ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	error = cirrusfb_register(info);
+	if (error) {
+		dev_err(info->device, "Failed to register device, error %d\n",
+			error);
+		goto err_unmap_ram;
+	}
+
+	zorro_set_drvdata(z, info);
+	return 0;
+
+err_unmap_ram:
+	if (rambase > 16 * MB_)
+		iounmap(info->screen_base);
+
+err_unmap_reg:
+	if (regbase > 16 * MB_)
+		iounmap(cinfo->regbase);
+err_release_dev:
+	zorro_release_device(z);
+err_release_fb:
+	framebuffer_release(info);
+	return error;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void __devexit cirrusfb_zorro_unregister(struct zorro_dev *z)
+=======
+}
+
+void cirrusfb_zorro_unregister(struct zorro_dev *z)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = zorro_get_drvdata(z);
 
 	cirrusfb_cleanup(info);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	zorro_set_drvdata(z, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	zorro_set_drvdata(z, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct zorro_driver cirrusfb_zorro_driver = {
 	.name		= "cirrusfb",
 	.id_table	= cirrusfb_zorro_table,
 	.probe		= cirrusfb_zorro_register,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cirrusfb_zorro_unregister),
+=======
+	.remove		= cirrusfb_zorro_unregister,
+>>>>>>> refs/remotes/origin/master
 };
 #endif /* CONFIG_ZORRO */
 

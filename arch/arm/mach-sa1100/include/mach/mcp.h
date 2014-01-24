@@ -16,7 +16,11 @@ struct mcp_plat_data {
 	u32 mccr0;
 	u32 mccr1;
 	unsigned int sclk_rate;
+<<<<<<< HEAD
 	int gpio_base;
+=======
+	void *codec_pdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif

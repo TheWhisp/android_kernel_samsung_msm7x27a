@@ -19,7 +19,11 @@
 #include <linux/interrupt.h>
 #include <linux/efi.h>
 #include <linux/timex.h>
+<<<<<<< HEAD
 #include <linux/clocksource.h>
+=======
+#include <linux/timekeeper_internal.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 
 #include <asm/machvec.h>
@@ -29,15 +33,29 @@
 #include <asm/ptrace.h>
 #include <asm/sal.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "fsyscall_gtod_data.h"
 
 static cycle_t itc_get_cycles(struct clocksource *cs);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct fsyscall_gtod_data_t fsyscall_gtod_data = {
 	.lock = __SEQLOCK_UNLOCKED(fsyscall_gtod_data.lock),
 };
+=======
+struct fsyscall_gtod_data_t fsyscall_gtod_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct fsyscall_gtod_data_t fsyscall_gtod_data;
+>>>>>>> refs/remotes/origin/master
 
 struct itc_jitter_data_t itc_jitter_data;
 
@@ -80,17 +98,37 @@ static struct clocksource clocksource_itc = {
 };
 static struct clocksource *itc_clocksource;
 
+<<<<<<< HEAD
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/kernel_stat.h>
 
 extern cputime_t cycle_to_cputime(u64 cyc);
 
+<<<<<<< HEAD
+=======
+void vtime_account_user(struct task_struct *tsk)
+{
+	cputime_t delta_utime;
+	struct thread_info *ti = task_thread_info(tsk);
+
+	if (ti->ac_utime) {
+		delta_utime = cycle_to_cputime(ti->ac_utime);
+		account_user_time(tsk, delta_utime, delta_utime);
+		ti->ac_utime = 0;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Called from the context switch with interrupts disabled, to charge all
  * accumulated times to the current process, and to prepare accounting on
  * the next process.
  */
+<<<<<<< HEAD
 void ia64_account_on_switch(struct task_struct *prev, struct task_struct *next)
 {
 	struct thread_info *pi = task_thread_info(prev);
@@ -112,6 +150,14 @@ void ia64_account_on_switch(struct task_struct *prev, struct task_struct *next)
 	}
 
 	pi->ac_stamp = ni->ac_stamp = now;
+=======
+void arch_vtime_task_switch(struct task_struct *prev)
+{
+	struct thread_info *pi = task_thread_info(prev);
+	struct thread_info *ni = task_thread_info(current);
+
+	pi->ac_stamp = ni->ac_stamp;
+>>>>>>> refs/remotes/origin/master
 	ni->ac_stime = ni->ac_utime = 0;
 }
 
@@ -119,6 +165,7 @@ void ia64_account_on_switch(struct task_struct *prev, struct task_struct *next)
  * Account time for a transition between system, hard irq or soft irq state.
  * Note that this function is called with interrupts enabled.
  */
+<<<<<<< HEAD
 void account_system_vtime(struct task_struct *tsk)
 {
 	struct thread_info *ti = task_thread_info(tsk);
@@ -127,10 +174,20 @@ void account_system_vtime(struct task_struct *tsk)
 	__u64 now;
 
 	local_irq_save(flags);
+=======
+static cputime_t vtime_delta(struct task_struct *tsk)
+{
+	struct thread_info *ti = task_thread_info(tsk);
+	cputime_t delta_stime;
+	__u64 now;
+
+	WARN_ON_ONCE(!irqs_disabled());
+>>>>>>> refs/remotes/origin/master
 
 	now = ia64_get_itc();
 
 	delta_stime = cycle_to_cputime(ti->ac_stime + (now - ti->ac_stamp));
+<<<<<<< HEAD
 	if (irq_count() || idle_task(smp_processor_id()) != tsk)
 		account_system_time(tsk, 0, delta_stime, delta_stime);
 	else
@@ -160,6 +217,28 @@ void account_process_tick(struct task_struct *p, int user_tick)
 }
 
 #endif /* CONFIG_VIRT_CPU_ACCOUNTING */
+=======
+	ti->ac_stime = 0;
+	ti->ac_stamp = now;
+
+	return delta_stime;
+}
+
+void vtime_account_system(struct task_struct *tsk)
+{
+	cputime_t delta = vtime_delta(tsk);
+
+	account_system_time(tsk, 0, delta, delta);
+}
+EXPORT_SYMBOL_GPL(vtime_account_system);
+
+void vtime_account_idle(struct task_struct *tsk)
+{
+	account_idle_time(vtime_delta(tsk));
+}
+
+#endif /* CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
+>>>>>>> refs/remotes/origin/master
 
 static irqreturn_t
 timer_interrupt (int irq, void *dev_id)
@@ -260,8 +339,12 @@ static int __init nojitter_setup(char *str)
 __setup("nojitter", nojitter_setup);
 
 
+<<<<<<< HEAD
 void __devinit
 ia64_init_itm (void)
+=======
+void ia64_init_itm(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long platform_base_freq, itc_freq;
 	struct pal_freq_ratio itc_ratio, proc_ratio;
@@ -457,18 +540,37 @@ void update_vsyscall_tz(void)
 {
 }
 
+<<<<<<< HEAD
 void update_vsyscall(struct timespec *wall, struct timespec *wtm,
 			struct clocksource *c, u32 mult)
 {
+<<<<<<< HEAD
         unsigned long flags;
 
         write_seqlock_irqsave(&fsyscall_gtod_data.lock, flags);
+=======
+	write_seqcount_begin(&fsyscall_gtod_data.seq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void update_vsyscall_old(struct timespec *wall, struct timespec *wtm,
+			struct clocksource *c, u32 mult)
+{
+	write_seqcount_begin(&fsyscall_gtod_data.seq);
+>>>>>>> refs/remotes/origin/master
 
         /* copy fsyscall clock data */
         fsyscall_gtod_data.clk_mask = c->mask;
         fsyscall_gtod_data.clk_mult = mult;
         fsyscall_gtod_data.clk_shift = c->shift;
+<<<<<<< HEAD
+<<<<<<< HEAD
         fsyscall_gtod_data.clk_fsys_mmio = c->fsys_mmio;
+=======
+        fsyscall_gtod_data.clk_fsys_mmio = c->archdata.fsys_mmio;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+        fsyscall_gtod_data.clk_fsys_mmio = c->archdata.fsys_mmio;
+>>>>>>> refs/remotes/origin/master
         fsyscall_gtod_data.clk_cycle_last = c->cycle_last;
 
 	/* copy kernel time structures */
@@ -485,6 +587,14 @@ void update_vsyscall(struct timespec *wall, struct timespec *wtm,
 		fsyscall_gtod_data.monotonic_time.tv_sec++;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
         write_sequnlock_irqrestore(&fsyscall_gtod_data.lock, flags);
+=======
+	write_seqcount_end(&fsyscall_gtod_data.seq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	write_seqcount_end(&fsyscall_gtod_data.seq);
+>>>>>>> refs/remotes/origin/master
 }
 

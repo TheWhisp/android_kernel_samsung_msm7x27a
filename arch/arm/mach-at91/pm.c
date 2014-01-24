@@ -10,6 +10,14 @@
  * (at your option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/suspend.h>
 #include <linux/sched.h>
 #include <linux/proc_fs.h>
@@ -20,24 +28,52 @@
 #include <linux/io.h>
 
 #include <asm/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/time.h>
 #include <asm/mach/irq.h>
 
 #include <mach/at91_pmc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/cpu.h>
 
+=======
+#include <mach/cpu.h>
+
+#include "at91_aic.h"
+>>>>>>> refs/remotes/origin/master
 #include "generic.h"
 #include "pm.h"
 
 /*
  * Show the reason for the previous system reset.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(AT91_SHDWC)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/at91_rstc.h>
 #include <mach/at91_shdwc.h>
+=======
+
+#include "at91_rstc.h"
+#include "at91_shdwc.h"
+
+static void (*at91_pm_standby)(void);
+>>>>>>> refs/remotes/origin/master
 
 static void __init show_reset_status(void)
 {
@@ -58,8 +94,22 @@ static void __init show_reset_status(void)
 	char *reason, *r2 = reset;
 	u32 reset_type, wake_type;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reset_type = at91_sys_read(AT91_RSTC_SR) & AT91_RSTC_RSTTYP;
 	wake_type = at91_sys_read(AT91_SHDW_SR);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!at91_shdwc_base || !at91_rstc_base)
+		return;
+
+	reset_type = at91_rstc_read(AT91_RSTC_SR) & AT91_RSTC_RSTTYP;
+	wake_type = at91_shdwc_read(AT91_SHDW_SR);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (reset_type) {
 	case AT91_RSTC_RSTTYP_GENERAL:
@@ -99,10 +149,16 @@ static void __init show_reset_status(void)
 	}
 	pr_info("AT91: Starting after %s %s\n", reason, r2);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else
 static void __init show_reset_status(void) {}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int at91_pm_valid_state(suspend_state_t state)
 {
@@ -138,7 +194,15 @@ static int at91_pm_verify_clocks(void)
 	unsigned long scsr;
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	scsr = at91_sys_read(AT91_PMC_SCSR);
+=======
+	scsr = at91_pmc_read(AT91_PMC_SCSR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	scsr = at91_pmc_read(AT91_PMC_SCSR);
+>>>>>>> refs/remotes/origin/master
 
 	/* USB must not be using PLLB */
 	if (cpu_is_at91rm9200()) {
@@ -152,14 +216,25 @@ static int at91_pm_verify_clocks(void)
 			pr_err("AT91: PM - Suspend-to-RAM with USB still active\n");
 			return 0;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (cpu_is_at91cap9()) {
 		if ((scsr & AT91CAP9_PMC_UHP) != 0) {
 			pr_err("AT91: PM - Suspend-to-RAM with USB still active\n");
 			return 0;
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 #ifdef CONFIG_AT91_PROGRAMMABLE_CLOCKS
+=======
+	}
+
+	if (!IS_ENABLED(CONFIG_AT91_PROGRAMMABLE_CLOCKS))
+		return 1;
+
+>>>>>>> refs/remotes/origin/master
 	/* PCK0..PCK3 must be disabled, or configured to use clk32k */
 	for (i = 0; i < 4; i++) {
 		u32 css;
@@ -167,13 +242,24 @@ static int at91_pm_verify_clocks(void)
 		if ((scsr & (AT91_PMC_PCK0 << i)) == 0)
 			continue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		css = at91_sys_read(AT91_PMC_PCKR(i)) & AT91_PMC_CSS;
+=======
+		css = at91_pmc_read(AT91_PMC_PCKR(i)) & AT91_PMC_CSS;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		css = at91_pmc_read(AT91_PMC_PCKR(i)) & AT91_PMC_CSS;
+>>>>>>> refs/remotes/origin/master
 		if (css != AT91_PMC_CSS_SLOW) {
 			pr_err("AT91: PM - Suspend-to-RAM with PCK%d src %d\n", i, css);
 			return 0;
 		}
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -195,6 +281,8 @@ int at91_suspend_entering_slow_clock(void)
 EXPORT_SYMBOL(at91_suspend_entering_slow_clock);
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void (*slow_clock)(void);
 
 #ifdef CONFIG_AT91_SLOW_CLOCK
@@ -206,16 +294,54 @@ extern u32 at91_slow_clock_sz;
 static int at91_pm_enter(suspend_state_t state)
 {
 	u32 saved_lpr;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void (*slow_clock)(void __iomem *pmc, void __iomem *ramc0,
+			  void __iomem *ramc1, int memctrl);
+
+#ifdef CONFIG_AT91_SLOW_CLOCK
+extern void at91_slow_clock(void __iomem *pmc, void __iomem *ramc0,
+			    void __iomem *ramc1, int memctrl);
+extern u32 at91_slow_clock_sz;
+#endif
+
+static int at91_pm_enter(suspend_state_t state)
+{
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	at91_gpio_suspend();
+=======
+	if (of_have_populated_dt())
+		at91_pinctrl_gpio_suspend();
+	else
+		at91_gpio_suspend();
+>>>>>>> refs/remotes/origin/master
 	at91_irq_suspend();
 
 	pr_debug("AT91: PM - wake mask %08x, pm state %d\n",
 			/* remember all the always-wake irqs */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			(at91_sys_read(AT91_PMC_PCSR)
 					| (1 << AT91_ID_FIQ)
 					| (1 << AT91_ID_SYS)
 					| (at91_extern_irq))
 				& at91_sys_read(AT91_AIC_IMR),
+=======
+			(at91_pmc_read(AT91_PMC_PCSR)
+					| (1 << AT91_ID_FIQ)
+					| (1 << AT91_ID_SYS)
+					| (at91_extern_irq))
+				& at91_aic_read(AT91_AIC_IMR),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			(at91_pmc_read(AT91_PMC_PCSR)
+					| (1 << AT91_ID_FIQ)
+					| (1 << AT91_ID_SYS)
+					| (at91_get_extern_irq()))
+				& at91_aic_read(AT91_AIC_IMR),
+>>>>>>> refs/remotes/origin/master
 			state);
 
 	switch (state) {
@@ -236,11 +362,36 @@ static int at91_pm_enter(suspend_state_t state)
 			 * turning off the main oscillator; reverse on wakeup.
 			 */
 			if (slow_clock) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				int memctrl = AT91_MEMCTRL_SDRAMC;
+
+				if (cpu_is_at91rm9200())
+					memctrl = AT91_MEMCTRL_MC;
+				else if (cpu_is_at91sam9g45())
+					memctrl = AT91_MEMCTRL_DDRSDR;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_AT91_SLOW_CLOCK
 				/* copy slow_clock handler to SRAM, and call it */
 				memcpy(slow_clock, at91_slow_clock, at91_slow_clock_sz);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 				slow_clock();
+=======
+				slow_clock(at91_pmc_base, at91_ramc_base[0],
+					   at91_ramc_base[1], memctrl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				slow_clock(at91_pmc_base, at91_ramc_base[0],
+					   at91_ramc_base[1], memctrl);
+>>>>>>> refs/remotes/origin/master
 				break;
 			} else {
 				pr_info("AT91: PM - no slow clock mode enabled ...\n");
@@ -261,6 +412,8 @@ static int at91_pm_enter(suspend_state_t state)
 			 * For ARM 926 based chips, this requirement is weaker
 			 * as at91sam9 can access a RAM in self-refresh mode.
 			 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			asm volatile (	"mov r0, #0\n\t"
 					"b 1f\n\t"
 					".align 5\n\t"
@@ -271,6 +424,13 @@ static int at91_pm_enter(suspend_state_t state)
 			saved_lpr = sdram_selfrefresh_enable();
 			wait_for_interrupt_enable();
 			sdram_selfrefresh_disable(saved_lpr);
+=======
+			at91_standby();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (at91_pm_standby)
+				at91_pm_standby();
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case PM_SUSPEND_ON:
@@ -283,12 +443,27 @@ static int at91_pm_enter(suspend_state_t state)
 	}
 
 	pr_debug("AT91: PM - wakeup %08x\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			at91_sys_read(AT91_AIC_IPR) & at91_sys_read(AT91_AIC_IMR));
+=======
+			at91_aic_read(AT91_AIC_IPR) & at91_aic_read(AT91_AIC_IMR));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			at91_aic_read(AT91_AIC_IPR) & at91_aic_read(AT91_AIC_IMR));
+>>>>>>> refs/remotes/origin/master
 
 error:
 	target_state = PM_SUSPEND_ON;
 	at91_irq_resume();
+<<<<<<< HEAD
 	at91_gpio_resume();
+=======
+	if (of_have_populated_dt())
+		at91_pinctrl_gpio_resume();
+	else
+		at91_gpio_resume();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -308,6 +483,21 @@ static const struct platform_suspend_ops at91_pm_ops = {
 	.end	= at91_pm_end,
 };
 
+<<<<<<< HEAD
+=======
+static struct platform_device at91_cpuidle_device = {
+	.name = "cpuidle-at91",
+};
+
+void at91_pm_set_standby(void (*at91_standby)(void))
+{
+	if (at91_standby) {
+		at91_cpuidle_device.dev.platform_data = at91_standby;
+		at91_pm_standby = at91_standby;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __init at91_pm_init(void)
 {
 #ifdef CONFIG_AT91_SLOW_CLOCK
@@ -316,10 +506,23 @@ static int __init at91_pm_init(void)
 
 	pr_info("AT91: Power Management%s\n", (slow_clock ? " (with slow clock mode)" : ""));
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_AT91RM9200
 	/* AT91RM9200 SDRAM low-power mode cannot be used with self-refresh. */
+<<<<<<< HEAD
 	at91_sys_write(AT91_SDRAMC_LPR, 0);
+=======
+	at91_ramc_write(0, AT91RM9200_SDRAMC_LPR, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+	/* AT91RM9200 SDRAM low-power mode cannot be used with self-refresh. */
+	if (cpu_is_at91rm9200())
+		at91_ramc_write(0, AT91RM9200_SDRAMC_LPR, 0);
+	
+	if (at91_cpuidle_device.dev.platform_data)
+		platform_device_register(&at91_cpuidle_device);
+>>>>>>> refs/remotes/origin/master
 
 	suspend_set_ops(&at91_pm_ops);
 

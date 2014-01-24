@@ -64,7 +64,10 @@ mISDN_open(struct inode *ino, struct file *filep)
 	dev->work = 0;
 	init_waitqueue_head(&dev->wait);
 	filep->private_data = dev;
+<<<<<<< HEAD
 	__module_get(THIS_MODULE);
+=======
+>>>>>>> refs/remotes/origin/master
 	return nonseekable_open(ino, filep);
 }
 
@@ -72,19 +75,42 @@ static int
 mISDN_close(struct inode *ino, struct file *filep)
 {
 	struct mISDNtimerdev	*dev = filep->private_data;
+<<<<<<< HEAD
+=======
+	struct list_head	*list = &dev->pending;
+>>>>>>> refs/remotes/origin/master
 	struct mISDNtimer	*timer, *next;
 
 	if (*debug & DEBUG_TIMER)
 		printk(KERN_DEBUG "%s(%p,%p)\n", __func__, ino, filep);
+<<<<<<< HEAD
 	list_for_each_entry_safe(timer, next, &dev->pending, list) {
 		del_timer(&timer->tl);
 		kfree(timer);
 	}
+=======
+
+	spin_lock_irq(&dev->lock);
+	while (!list_empty(list)) {
+		timer = list_first_entry(list, struct mISDNtimer, list);
+		spin_unlock_irq(&dev->lock);
+		del_timer_sync(&timer->tl);
+		spin_lock_irq(&dev->lock);
+		/* it might have been moved to ->expired */
+		list_del(&timer->list);
+		kfree(timer);
+	}
+	spin_unlock_irq(&dev->lock);
+
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(timer, next, &dev->expired, list) {
 		kfree(timer);
 	}
 	kfree(dev);
+<<<<<<< HEAD
 	module_put(THIS_MODULE);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -92,19 +118,33 @@ static ssize_t
 mISDN_read(struct file *filep, char __user *buf, size_t count, loff_t *off)
 {
 	struct mISDNtimerdev	*dev = filep->private_data;
+<<<<<<< HEAD
 	struct mISDNtimer	*timer;
 	u_long	flags;
+=======
+	struct list_head *list = &dev->expired;
+	struct mISDNtimer	*timer;
+>>>>>>> refs/remotes/origin/master
 	int	ret = 0;
 
 	if (*debug & DEBUG_TIMER)
 		printk(KERN_DEBUG "%s(%p, %p, %d, %p)\n", __func__,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			filep, buf, (int)count, off);
+=======
+		       filep, buf, (int)count, off);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (list_empty(&dev->expired) && (dev->work == 0)) {
 		if (filep->f_flags & O_NONBLOCK)
 			return -EAGAIN;
 		wait_event_interruptible(dev->wait, (dev->work ||
+<<<<<<< HEAD
 		    !list_empty(&dev->expired)));
+=======
+						     !list_empty(&dev->expired)));
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (signal_pending(current))
 			return -ERESTARTSYS;
 	}
@@ -117,11 +157,40 @@ mISDN_read(struct file *filep, char __user *buf, size_t count, loff_t *off)
 		timer = (struct mISDNtimer *)dev->expired.next;
 		list_del(&timer->list);
 		spin_unlock_irqrestore(&dev->lock, flags);
+=======
+		       filep, buf, (int)count, off);
+
+	if (count < sizeof(int))
+		return -ENOSPC;
+
+	spin_lock_irq(&dev->lock);
+	while (list_empty(list) && (dev->work == 0)) {
+		spin_unlock_irq(&dev->lock);
+		if (filep->f_flags & O_NONBLOCK)
+			return -EAGAIN;
+		wait_event_interruptible(dev->wait, (dev->work ||
+						     !list_empty(list)));
+		if (signal_pending(current))
+			return -ERESTARTSYS;
+		spin_lock_irq(&dev->lock);
+	}
+	if (dev->work)
+		dev->work = 0;
+	if (!list_empty(list)) {
+		timer = list_first_entry(list, struct mISDNtimer, list);
+		list_del(&timer->list);
+		spin_unlock_irq(&dev->lock);
+>>>>>>> refs/remotes/origin/master
 		if (put_user(timer->id, (int __user *)buf))
 			ret = -EFAULT;
 		else
 			ret = sizeof(int);
 		kfree(timer);
+<<<<<<< HEAD
+=======
+	} else {
+		spin_unlock_irq(&dev->lock);
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
@@ -141,7 +210,15 @@ mISDN_poll(struct file *filep, poll_table *wait)
 			mask |= (POLLIN | POLLRDNORM);
 		if (*debug & DEBUG_TIMER)
 			printk(KERN_DEBUG "%s work(%d) empty(%d)\n", __func__,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				dev->work, list_empty(&dev->expired));
+=======
+			       dev->work, list_empty(&dev->expired));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       dev->work, list_empty(&dev->expired));
+>>>>>>> refs/remotes/origin/master
 	}
 	return mask;
 }
@@ -153,7 +230,12 @@ dev_expire_timer(unsigned long data)
 	u_long			flags;
 
 	spin_lock_irqsave(&timer->dev->lock, flags);
+<<<<<<< HEAD
 	list_move_tail(&timer->list, &timer->dev->expired);
+=======
+	if (timer->id >= 0)
+		list_move_tail(&timer->list, &timer->dev->expired);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&timer->dev->lock, flags);
 	wake_up_interruptible(&timer->dev->wait);
 }
@@ -161,8 +243,16 @@ dev_expire_timer(unsigned long data)
 static int
 misdn_add_timer(struct mISDNtimerdev *dev, int timeout)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int 			id;
+=======
+	int			id;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u_long			flags;
+=======
+	int			id;
+>>>>>>> refs/remotes/origin/master
 	struct mISDNtimer	*timer;
 
 	if (!timeout) {
@@ -173,6 +263,7 @@ misdn_add_timer(struct mISDNtimerdev *dev, int timeout)
 		timer = kzalloc(sizeof(struct mISDNtimer), GFP_KERNEL);
 		if (!timer)
 			return -ENOMEM;
+<<<<<<< HEAD
 		spin_lock_irqsave(&dev->lock, flags);
 		timer->id = dev->next_id++;
 		if (dev->next_id < 0)
@@ -186,6 +277,18 @@ misdn_add_timer(struct mISDNtimerdev *dev, int timeout)
 		timer->tl.expires = jiffies + ((HZ * (u_long)timeout) / 1000);
 		add_timer(&timer->tl);
 		id = timer->id;
+=======
+		timer->dev = dev;
+		setup_timer(&timer->tl, dev_expire_timer, (long)timer);
+		spin_lock_irq(&dev->lock);
+		id = timer->id = dev->next_id++;
+		if (dev->next_id < 0)
+			dev->next_id = 1;
+		list_add_tail(&timer->list, &dev->pending);
+		timer->tl.expires = jiffies + ((HZ * (u_long)timeout) / 1000);
+		add_timer(&timer->tl);
+		spin_unlock_irq(&dev->lock);
+>>>>>>> refs/remotes/origin/master
 	}
 	return id;
 }
@@ -193,6 +296,7 @@ misdn_add_timer(struct mISDNtimerdev *dev, int timeout)
 static int
 misdn_del_timer(struct mISDNtimerdev *dev, int id)
 {
+<<<<<<< HEAD
 	u_long			flags;
 	struct mISDNtimer	*timer;
 	int			ret = 0;
@@ -213,6 +317,23 @@ misdn_del_timer(struct mISDNtimerdev *dev, int id)
 unlock:
 	spin_unlock_irqrestore(&dev->lock, flags);
 	return ret;
+=======
+	struct mISDNtimer	*timer;
+
+	spin_lock_irq(&dev->lock);
+	list_for_each_entry(timer, &dev->pending, list) {
+		if (timer->id == id) {
+			list_del_init(&timer->list);
+			timer->id = -1;
+			spin_unlock_irq(&dev->lock);
+			del_timer_sync(&timer->tl);
+			kfree(timer);
+			return id;
+		}
+	}
+	spin_unlock_irq(&dev->lock);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static long
@@ -224,7 +345,15 @@ mISDN_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 
 	if (*debug & DEBUG_TIMER)
 		printk(KERN_DEBUG "%s(%p, %x, %lx)\n", __func__,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    filep, cmd, arg);
+=======
+		       filep, cmd, arg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       filep, cmd, arg);
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&mISDN_mutex);
 	switch (cmd) {
 	case IMADDTIMER:
@@ -235,7 +364,15 @@ mISDN_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 		id = misdn_add_timer(dev, tout);
 		if (*debug & DEBUG_TIMER)
 			printk(KERN_DEBUG "%s add %d id %d\n", __func__,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    tout, id);
+=======
+			       tout, id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       tout, id);
+>>>>>>> refs/remotes/origin/master
 		if (id < 0) {
 			ret = id;
 			break;
@@ -262,6 +399,10 @@ mISDN_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 }
 
 static const struct file_operations mISDN_fops = {
+<<<<<<< HEAD
+=======
+	.owner		= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.read		= mISDN_read,
 	.poll		= mISDN_poll,
 	.unlocked_ioctl	= mISDN_ioctl,

@@ -17,7 +17,13 @@
 #include <asm/bootinfo.h>
 #include <asm/mmu_context.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern void build_tlb_refill_handler(void);
 
@@ -214,14 +220,22 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
 static void __cpuinit probe_tlb(unsigned long config)
+=======
+static void probe_tlb(unsigned long config)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cpuinfo_mips *c = &current_cpu_data;
 
 	c->tlbsize = 3 * 128;		/* 3 sets each 128 entries */
 }
 
+<<<<<<< HEAD
 void __cpuinit tlb_init(void)
+=======
+void tlb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int config = read_c0_config();
 	unsigned long status;

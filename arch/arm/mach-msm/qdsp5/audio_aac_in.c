@@ -2,7 +2,15 @@
  *
  * aac audio input device
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This code is based in part on arch/arm/mach-msm/qdsp5v2/audio_aac_in.c,
  * Copyright (C) 2008 Google, Inc.
@@ -32,15 +40,31 @@
 #include <linux/dma-mapping.h>
 #include <linux/delay.h>
 #include <linux/msm_audio_aac.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/android_pmem.h>
 #include <linux/memory_alloc.h>
+=======
+#include <linux/memory_alloc.h>
+#include <linux/ion.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/memory_alloc.h>
+#include <linux/ion.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "audmgr.h"
 
 #include <mach/msm_rpcrouter.h>
 #include <mach/msm_memtypes.h>
 #include <mach/iommu.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/iommu_domains.h>
 
 #include <mach/msm_adsp.h>
@@ -110,7 +134,13 @@ struct audio_aac_in {
 	int out_frame_cnt;
 
 	struct msm_adsp_module *audrec;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_adsp_module *audpre;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 	/* configuration to use on next enable */
@@ -141,13 +171,37 @@ struct audio_aac_in {
 	/* data allocated for various buffers */
 	char *data;
 	dma_addr_t phys;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_mapped_buffer *map_v_read;
 	struct msm_mapped_buffer *map_v_write;
+=======
+	void *map_v_read;
+	void *map_v_write;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *map_v_read;
+	void *map_v_write;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int opened;
 	int enabled;
 	int running;
 	int stopped; /* set when stopped, cleared on flush */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct ion_client *client;
+	struct ion_handle *input_buff_handle;
+	struct ion_handle *output_buff_handle;
+
+	struct audrec_session_info session_info; /*audrec session info*/
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct audio_frame {
@@ -271,6 +325,40 @@ static unsigned int bitrate_to_record_quality(unsigned int sample_rate,
 	return temp;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* ------------------- dsp --------------------- */
+static void audpre_dsp_event(void *data, unsigned id,  void *event_data)
+{
+
+	uint16_t *msg = event_data;
+
+	if (!msg)
+		return;
+
+	switch (id) {
+	case AUDPREPROC_MSG_CMD_CFG_DONE_MSG:
+		MM_DBG("type %d, status_flag %d\n",\
+			msg[0], msg[1]);
+		break;
+	case AUDPREPROC_MSG_ERROR_MSG_ID:
+		MM_INFO("err_index %d\n", msg[0]);
+		break;
+	case ADSP_MESSAGE_ID:
+		MM_DBG("Received ADSP event: module enable(audpreproctask)\n");
+		break;
+	default:
+		MM_ERR("unknown event %d\n", id);
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* must be called with audio->lock held */
 static int audaac_in_enable(struct audio_aac_in *audio)
 {
@@ -291,6 +379,8 @@ static int audaac_in_enable(struct audio_aac_in *audio)
 		if (rc < 0)
 			return rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (msm_adsp_enable(audio->audpre)) {
 			audmgr_disable(&audio->audmgr);
 			MM_ERR("msm_adsp_enable(audpre) failed\n");
@@ -301,6 +391,31 @@ static int audaac_in_enable(struct audio_aac_in *audio)
 		if (audio->mode == MSM_AUD_ENC_MODE_TUNNEL) {
 			audmgr_disable(&audio->audmgr);
 			msm_adsp_disable(audio->audpre);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (audpreproc_enable(audio->enc_id,
+				&audpre_dsp_event, audio)) {
+			MM_ERR("msm_adsp_enable(audpreproc) failed\n");
+			audmgr_disable(&audio->audmgr);
+			return -ENODEV;
+		}
+
+		/*update aurec session info in audpreproc layer*/
+		audio->session_info.session_id = audio->enc_id;
+		audio->session_info.sampling_freq =
+			convert_samp_index(audio->samp_rate);
+		audpreproc_update_audrec_info(&audio->session_info);
+	}
+
+	if (msm_adsp_enable(audio->audrec)) {
+		if (audio->mode == MSM_AUD_ENC_MODE_TUNNEL) {
+			audpreproc_disable(audio->enc_id, audio);
+			audmgr_disable(&audio->audmgr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		MM_ERR("msm_adsp_enable(audrec) failed\n");
 		return -ENODEV;
@@ -320,18 +435,40 @@ static int audaac_in_disable(struct audio_aac_in *audio)
 
 		audaac_in_dsp_enable(audio, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		wake_up(&audio->wait);
 		wait_event_interruptible_timeout(audio->wait_enable,
 				audio->running == 0, 1*HZ);
 		msm_adsp_disable(audio->audrec);
 		if (audio->mode == MSM_AUD_ENC_MODE_TUNNEL) {
 			msm_adsp_disable(audio->audpre);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		wait_event_interruptible_timeout(audio->wait_enable,
+				audio->running == 0, 1*HZ);
+		audio->stopped = 1;
+		wake_up(&audio->wait);
+		msm_adsp_disable(audio->audrec);
+		if (audio->mode == MSM_AUD_ENC_MODE_TUNNEL) {
+			audpreproc_disable(audio->enc_id, audio);
+			/*reset the sampling frequency information at
+			audpreproc layer*/
+			audio->session_info.sampling_freq = 0;
+			audpreproc_update_audrec_info(&audio->session_info);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			audmgr_disable(&audio->audmgr);
 		}
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* ------------------- dsp --------------------- */
 static void audpre_dsp_event(void *data, unsigned id, size_t len,
 			    void (*getevent)(void *ptr, size_t len))
@@ -355,6 +492,10 @@ static void audpre_dsp_event(void *data, unsigned id, size_t len,
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void audaac_in_get_dsp_frames(struct audio_aac_in *audio)
 {
 	struct audio_frame *frame;
@@ -593,11 +734,19 @@ static void audrec_dsp_event(void *data, unsigned id, size_t len,
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct msm_adsp_ops audpre_aac_adsp_ops = {
 	.event = audpre_dsp_event,
 };
 
 struct msm_adsp_ops audrec_aac_adsp_ops = {
+=======
+static struct msm_adsp_ops audrec_aac_adsp_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct msm_adsp_ops audrec_aac_adsp_ops = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	.event = audrec_dsp_event,
 };
 
@@ -697,6 +846,8 @@ static void audaac_ioport_reset(struct audio_aac_in *audio)
 	 * sleep and knowing that system is not able
 	 * to process io request at the moment
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up(&audio->write_wait);
 	mutex_lock(&audio->write_lock);
 	audaac_in_flush(audio);
@@ -705,13 +856,41 @@ static void audaac_ioport_reset(struct audio_aac_in *audio)
 	mutex_lock(&audio->read_lock);
 	audaac_out_flush(audio);
 	mutex_unlock(&audio->read_lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	wake_up(&audio->wait);
+	mutex_lock(&audio->read_lock);
+	audaac_in_flush(audio);
+	mutex_unlock(&audio->read_lock);
+	wake_up(&audio->write_wait);
+	mutex_lock(&audio->write_lock);
+	audaac_out_flush(audio);
+	mutex_unlock(&audio->write_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void audaac_in_flush(struct audio_aac_in *audio)
 {
 	int i;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	audio->dsp_cnt = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	unsigned long flags;
+
+	audio->dsp_cnt = 0;
+	spin_lock_irqsave(&audio->dsp_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	audio->in_head = 0;
 	audio->in_tail = 0;
 	audio->in_count = 0;
@@ -720,6 +899,14 @@ static void audaac_in_flush(struct audio_aac_in *audio)
 		audio->in[i].size = 0;
 		audio->in[i].read = 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&audio->dsp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&audio->dsp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	MM_DBG("in_bytes %d\n", atomic_read(&audio->in_bytes));
 	MM_DBG("in_samples %d\n", atomic_read(&audio->in_samples));
 	atomic_set(&audio->in_bytes, 0);
@@ -729,15 +916,38 @@ static void audaac_in_flush(struct audio_aac_in *audio)
 static void audaac_out_flush(struct audio_aac_in *audio)
 {
 	int i;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	audio->out_head = 0;
 	audio->out_tail = 0;
 	audio->out_count = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	unsigned long flags;
+
+	audio->out_head = 0;
+	audio->out_count = 0;
+	spin_lock_irqsave(&audio->dsp_lock, flags);
+	audio->out_tail = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = OUT_FRAME_NUM-1; i >= 0; i--) {
 		audio->out[i].size = 0;
 		audio->out[i].read = 0;
 		audio->out[i].used = 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&audio->dsp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&audio->dsp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /* ------------------- device --------------------- */
@@ -777,7 +987,13 @@ static long audaac_in_ioctl(struct file *file,
 	}
 	case AUDIO_STOP: {
 		rc = audaac_in_disable(audio);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		audio->stopped = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 	case AUDIO_FLUSH: {
@@ -1056,7 +1272,15 @@ static void audrec_pcm_send_data(struct audio_aac_in *audio, unsigned needed)
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int audaac_in_fsync(struct file *file,	int datasync)
+=======
+static int audaac_in_fsync(struct file *file, loff_t a, loff_t b, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int audaac_in_fsync(struct file *file, loff_t a, loff_t b, int datasync)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 {
 	struct audio_aac_in *audio = file->private_data;
@@ -1233,26 +1457,62 @@ static int audaac_in_release(struct inode *inode, struct file *file)
 	audaac_in_flush(audio);
 	msm_adsp_put(audio->audrec);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (audio->mode == MSM_AUD_ENC_MODE_TUNNEL)
 		msm_adsp_put(audio->audpre);
 
 	audpreproc_aenc_free(audio->enc_id);
 	audio->audrec = NULL;
 	audio->audpre = NULL;
+=======
+
+	audpreproc_aenc_free(audio->enc_id);
+	audio->audrec = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	audpreproc_aenc_free(audio->enc_id);
+	audio->audrec = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	audio->opened = 0;
 
 	if ((audio->mode == MSM_AUD_ENC_MODE_NONTUNNEL) && \
 	   (audio->out_data)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msm_subsystem_unmap_buffer(audio->map_v_write);
 		free_contiguous_memory_by_paddr(audio->out_phys);
+=======
+		ion_unmap_kernel(audio->client, audio->input_buff_handle);
+		ion_free(audio->client, audio->input_buff_handle);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ion_unmap_kernel(audio->client, audio->input_buff_handle);
+		ion_free(audio->client, audio->input_buff_handle);
+>>>>>>> refs/remotes/origin/cm-11.0
 		audio->out_data = NULL;
 	}
 
 	if (audio->data) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msm_subsystem_unmap_buffer(audio->map_v_read);
 		free_contiguous_memory_by_paddr(audio->phys);
 		audio->data = NULL;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		ion_unmap_kernel(audio->client, audio->output_buff_handle);
+		ion_free(audio->client, audio->output_buff_handle);
+		audio->data = NULL;
+	}
+	ion_client_destroy(audio->client);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&audio->lock);
 	return 0;
 }
@@ -1265,6 +1525,20 @@ static int audaac_in_open(struct inode *inode, struct file *file)
 	int rc;
 	int encid;
 	int dma_size = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int len = 0;
+	unsigned long ionflag = 0;
+	ion_phys_addr_t addr = 0;
+	struct ion_handle *handle = NULL;
+	struct ion_client *client = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&audio->lock);
 	if (audio->opened) {
@@ -1328,6 +1602,8 @@ static int audaac_in_open(struct inode *inode, struct file *file)
 		goto done;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (audio->mode == MSM_AUD_ENC_MODE_TUNNEL) {
 		rc = msm_adsp_get("AUDPREPROCTASK", &audio->audpre,
 				&audpre_aac_adsp_ops, audio);
@@ -1338,6 +1614,10 @@ static int audaac_in_open(struct inode *inode, struct file *file)
 		}
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	audio->dsp_cnt = 0;
 	audio->stopped = 0;
 	audio->wflush = 0;
@@ -1347,6 +1627,8 @@ static int audaac_in_open(struct inode *inode, struct file *file)
 	audaac_in_flush(audio);
 	audaac_out_flush(audio);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	audio->phys = allocate_contiguous_ebi_nomap(dma_size, SZ_4K);
 	if (audio->phys) {
 		audio->map_v_read = msm_subsystem_map_buffer(
@@ -1394,6 +1676,109 @@ static int audaac_in_open(struct inode *inode, struct file *file)
 			MM_DBG("wr buf: phy addr 0x%08x kernel addr 0x%08x\n",
 					audio->out_phys, (int)audio->out_data);
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	client = msm_ion_client_create(UINT_MAX, "Audio_AAC_in_client");
+	if (IS_ERR_OR_NULL(client)) {
+		MM_ERR("Unable to create ION client\n");
+		rc = -ENOMEM;
+		goto client_create_error;
+	}
+	audio->client = client;
+
+	MM_DBG("allocating mem sz = %d\n", dma_size);
+	handle = ion_alloc(client, dma_size, SZ_4K,
+		ION_HEAP(ION_AUDIO_HEAP_ID));
+	if (IS_ERR_OR_NULL(handle)) {
+		MM_ERR("Unable to create allocate O/P buffers\n");
+		rc = -ENOMEM;
+		goto output_buff_alloc_error;
+	}
+
+	audio->output_buff_handle = handle;
+
+	rc = ion_phys(client , handle, &addr, &len);
+	if (rc) {
+		MM_ERR("O/P buffers:Invalid phy: %x sz: %x\n",
+			(unsigned int) addr, (unsigned int) len);
+		rc = -ENOMEM;
+		goto output_buff_get_phys_error;
+	} else {
+		MM_INFO("O/P buffers:valid phy: %x sz: %x\n",
+			(unsigned int) addr, (unsigned int) len);
+	}
+	audio->phys = (int32_t)addr;
+
+	rc = ion_handle_get_flags(client, handle, &ionflag);
+	if (rc) {
+		MM_ERR("could not get flags for the handle\n");
+		rc = -ENOMEM;
+		goto output_buff_get_flags_error;
+	}
+
+	audio->map_v_read = ion_map_kernel(client, handle, ionflag);
+	if (IS_ERR(audio->map_v_read)) {
+		MM_ERR("could not map read buffers,freeing instance 0x%08x\n",
+				(int)audio);
+		rc = -ENOMEM;
+		goto output_buff_map_error;
+	}
+	audio->data = audio->map_v_read;
+	MM_DBG("read buf: phy addr 0x%08x kernel addr 0x%08x\n",
+		audio->phys, (int)audio->data);
+
+	audio->out_data = NULL;
+	if (audio->mode == MSM_AUD_ENC_MODE_NONTUNNEL) {
+
+		MM_DBG("allocating BUFFER_SIZE  %d\n", BUFFER_SIZE);
+		handle = ion_alloc(client, BUFFER_SIZE,
+				SZ_4K, ION_HEAP(ION_AUDIO_HEAP_ID));
+		if (IS_ERR_OR_NULL(handle)) {
+			MM_ERR("Unable to create allocate I/P buffers\n");
+			rc = -ENOMEM;
+			goto input_buff_alloc_error;
+		}
+
+		audio->input_buff_handle = handle;
+
+		rc = ion_phys(client , handle, &addr, &len);
+		if (rc) {
+			MM_ERR("I/P buffers:Invalid phy: %x sz: %x\n",
+				(unsigned int) addr, (unsigned int) len);
+			rc = -ENOMEM;
+			goto input_buff_get_phys_error;
+		} else {
+			MM_INFO("Got valid phy: %x sz: %x\n",
+				(unsigned int) addr,
+				(unsigned int) len);
+		}
+		audio->out_phys = (int32_t)addr;
+
+		rc = ion_handle_get_flags(client,
+			handle, &ionflag);
+		if (rc) {
+			MM_ERR("could not get flags for the handle\n");
+			rc = -ENOMEM;
+			goto input_buff_get_flags_error;
+		}
+
+		audio->map_v_write = ion_map_kernel(client,
+			handle, ionflag);
+		if (IS_ERR(audio->map_v_write)) {
+			MM_ERR("could not map write buffers\n");
+			rc = -ENOMEM;
+			goto input_buff_map_error;
+		}
+		audio->out_data = audio->map_v_write;
+		MM_DBG("write buf: phy addr 0x%08x kernel addr 0x%08x\n",
+					(unsigned int)addr,
+					(unsigned int)audio->out_data);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		/* Initialize buffer */
 		audio->out[0].data = audio->out_data + 0;
@@ -1416,10 +1801,33 @@ static int audaac_in_open(struct inode *inode, struct file *file)
 done:
 	mutex_unlock(&audio->lock);
 	return rc;
+<<<<<<< HEAD
+<<<<<<< HEAD
 evt_error:
 	msm_adsp_put(audio->audrec);
 	if (audio->mode == MSM_AUD_ENC_MODE_TUNNEL)
 		msm_adsp_put(audio->audpre);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+input_buff_map_error:
+input_buff_get_flags_error:
+input_buff_get_phys_error:
+	ion_free(client, audio->input_buff_handle);
+input_buff_alloc_error:
+	ion_unmap_kernel(client, audio->output_buff_handle);
+output_buff_map_error:
+output_buff_get_phys_error:
+output_buff_get_flags_error:
+	ion_free(client, audio->output_buff_handle);
+output_buff_alloc_error:
+	ion_client_destroy(client);
+client_create_error:
+	msm_adsp_put(audio->audrec);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	audpreproc_aenc_free(audio->enc_id);
 	mutex_unlock(&audio->lock);

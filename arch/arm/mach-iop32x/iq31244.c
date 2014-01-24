@@ -37,6 +37,10 @@
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <mach/time.h>
+<<<<<<< HEAD
+=======
+#include "gpio-iop32x.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Until March of 2007 iq31244 platforms and ep80219 platforms shared the
@@ -75,10 +79,13 @@ static void __init iq31244_timer_init(void)
 	}
 }
 
+<<<<<<< HEAD
 static struct sys_timer iq31244_timer = {
 	.init		= iq31244_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * IQ31244 I/O.
@@ -103,7 +110,15 @@ void __init iq31244_map_io(void)
  * EP80219/IQ31244 PCI.
  */
 static int __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 ep80219_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+ep80219_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ep80219_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 
@@ -130,16 +145,31 @@ ep80219_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 }
 
 static struct hw_pci ep80219_pci __initdata = {
+<<<<<<< HEAD
 	.swizzle	= pci_std_swizzle,
 	.nr_controllers = 1,
 	.setup		= iop3xx_pci_setup,
 	.preinit	= iop3xx_pci_preinit,
 	.scan		= iop3xx_pci_scan_bus,
+=======
+	.nr_controllers = 1,
+	.ops		= &iop3xx_ops,
+	.setup		= iop3xx_pci_setup,
+	.preinit	= iop3xx_pci_preinit,
+>>>>>>> refs/remotes/origin/master
 	.map_irq	= ep80219_pci_map_irq,
 };
 
 static int __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 iq31244_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+iq31244_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+iq31244_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 
@@ -166,11 +196,18 @@ iq31244_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 }
 
 static struct hw_pci iq31244_pci __initdata = {
+<<<<<<< HEAD
 	.swizzle	= pci_std_swizzle,
 	.nr_controllers = 1,
 	.setup		= iop3xx_pci_setup,
 	.preinit	= iop3xx_pci_preinit,
 	.scan		= iop3xx_pci_scan_bus,
+=======
+	.nr_controllers = 1,
+	.ops		= &iop3xx_ops,
+	.setup		= iop3xx_pci_setup,
+	.preinit	= iop3xx_pci_preinit,
+>>>>>>> refs/remotes/origin/master
 	.map_irq	= iq31244_pci_map_irq,
 };
 
@@ -289,6 +326,10 @@ void ep80219_power_off(void)
 
 static void __init iq31244_init_machine(void)
 {
+<<<<<<< HEAD
+=======
+	register_iop32x_gpio();
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&iop3xx_i2c0_device);
 	platform_device_register(&iop3xx_i2c1_device);
 	platform_device_register(&iq31244_flash_device);
@@ -313,11 +354,28 @@ __setup("force_ep80219", force_ep80219_setup);
 
 MACHINE_START(IQ31244, "Intel IQ31244")
 	/* Maintainer: Intel Corp. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= iq31244_map_io,
 	.init_irq	= iop32x_init_irq,
 	.timer		= &iq31244_timer,
 	.init_machine	= iq31244_init_machine,
+<<<<<<< HEAD
+=======
+	.restart	= iop3xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= iq31244_map_io,
+	.init_irq	= iop32x_init_irq,
+	.init_time	= iq31244_timer_init,
+	.init_machine	= iq31244_init_machine,
+	.restart	= iop3xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 
 /* There should have been an ep80219 machine identifier from the beginning.
@@ -327,9 +385,26 @@ MACHINE_END
  */
 MACHINE_START(EP80219, "Intel EP80219")
 	/* Maintainer: Intel Corp. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= iq31244_map_io,
 	.init_irq	= iop32x_init_irq,
 	.timer		= &iq31244_timer,
 	.init_machine	= iq31244_init_machine,
+<<<<<<< HEAD
+=======
+	.restart	= iop3xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= iq31244_map_io,
+	.init_irq	= iop32x_init_irq,
+	.init_time	= iq31244_timer_init,
+	.init_machine	= iq31244_init_machine,
+	.restart	= iop3xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

@@ -138,8 +138,13 @@ int input_ff_upload(struct input_dev *dev, struct ff_effect *effect,
 
 	if (effect->id == -1) {
 		for (id = 0; id < ff->max_effects; id++)
+<<<<<<< HEAD
 		     if (!ff->effect_owners[id])
 			break;
+=======
+			if (!ff->effect_owners[id])
+				break;
+>>>>>>> refs/remotes/origin/master
 
 		if (id >= ff->max_effects) {
 			ret = -ENOSPC;
@@ -309,9 +314,22 @@ EXPORT_SYMBOL_GPL(input_ff_event);
  * Once ff device is created you need to setup its upload, erase,
  * playback and other handlers before registering input device
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int input_ff_create(struct input_dev *dev, int max_effects)
 {
 	struct ff_device *ff;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int input_ff_create(struct input_dev *dev, unsigned int max_effects)
+{
+	struct ff_device *ff;
+	size_t ff_dev_size;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (!max_effects) {
@@ -319,8 +337,23 @@ int input_ff_create(struct input_dev *dev, int max_effects)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ff = kzalloc(sizeof(struct ff_device) +
 		     max_effects * sizeof(struct file *), GFP_KERNEL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ff_dev_size = sizeof(struct ff_device) +
+				max_effects * sizeof(struct file *);
+	if (ff_dev_size < max_effects) /* overflow */
+		return -EINVAL;
+
+	ff = kzalloc(ff_dev_size, GFP_KERNEL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!ff)
 		return -ENOMEM;
 

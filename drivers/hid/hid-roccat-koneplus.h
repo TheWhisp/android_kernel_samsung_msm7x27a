@@ -14,6 +14,16 @@
 
 #include <linux/types.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct koneplus_talk {
+	uint8_t command; /* KONEPLUS_COMMAND_TALK */
+	uint8_t size; /* always 0x10 */
+	uint8_t data[14];
+} __packed;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * case 1: writes request 80 and reads value 1
  *
@@ -30,22 +40,43 @@ struct koneplus_control {
 
 enum koneplus_control_requests {
 	KONEPLUS_CONTROL_REQUEST_STATUS = 0x00,
+=======
+enum {
+	KONEPLUS_SIZE_ACTUAL_PROFILE = 0x03,
+	KONEPLUS_SIZE_CONTROL = 0x03,
+	KONEPLUS_SIZE_FIRMWARE_WRITE = 0x0402,
+	KONEPLUS_SIZE_INFO = 0x06,
+	KONEPLUS_SIZE_MACRO = 0x0822,
+	KONEPLUS_SIZE_PROFILE_SETTINGS = 0x2b,
+	KONEPLUS_SIZE_PROFILE_BUTTONS = 0x4d,
+	KONEPLUS_SIZE_SENSOR = 0x06,
+	KONEPLUS_SIZE_TALK = 0x10,
+	KONEPLUS_SIZE_TCU = 0x04,
+	KONEPLUS_SIZE_TCU_IMAGE = 0x0404,
+};
+
+enum koneplus_control_requests {
+>>>>>>> refs/remotes/origin/master
 	KONEPLUS_CONTROL_REQUEST_PROFILE_SETTINGS = 0x80,
 	KONEPLUS_CONTROL_REQUEST_PROFILE_BUTTONS = 0x90,
 };
 
+<<<<<<< HEAD
 enum koneplus_control_values {
 	KONEPLUS_CONTROL_REQUEST_STATUS_OVERLOAD = 0,
 	KONEPLUS_CONTROL_REQUEST_STATUS_OK = 1,
 	KONEPLUS_CONTROL_REQUEST_STATUS_WAIT = 3,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct koneplus_actual_profile {
 	uint8_t command; /* KONEPLUS_COMMAND_ACTUAL_PROFILE */
 	uint8_t size; /* always 3 */
 	uint8_t actual_profile; /* Range 0-4! */
 } __attribute__ ((__packed__));
 
+<<<<<<< HEAD
 struct koneplus_profile_settings {
 	uint8_t command; /* KONEPLUS_COMMAND_PROFILE_SETTINGS */
 	uint8_t size; /* always 43 */
@@ -85,6 +116,8 @@ struct koneplus_macro {
 	uint16_t checksum;
 } __attribute__ ((__packed__));
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct koneplus_info {
 	uint8_t command; /* KONEPLUS_COMMAND_INFO */
 	uint8_t size; /* always 6 */
@@ -92,6 +125,7 @@ struct koneplus_info {
 	uint8_t unknown[3];
 } __attribute__ ((__packed__));
 
+<<<<<<< HEAD
 struct koneplus_e {
 	uint8_t command; /* KONEPLUS_COMMAND_E */
 	uint8_t size; /* always 3 */
@@ -133,16 +167,38 @@ struct koneplus_tcu_image {
 enum koneplus_commands {
 	KONEPLUS_COMMAND_CONTROL = 0x4,
 	KONEPLUS_COMMAND_ACTUAL_PROFILE = 0x5,
+=======
+enum koneplus_commands {
+	KONEPLUS_COMMAND_ACTUAL_PROFILE = 0x5,
+	KONEPLUS_COMMAND_CONTROL = 0x4,
+>>>>>>> refs/remotes/origin/master
 	KONEPLUS_COMMAND_PROFILE_SETTINGS = 0x6,
 	KONEPLUS_COMMAND_PROFILE_BUTTONS = 0x7,
 	KONEPLUS_COMMAND_MACRO = 0x8,
 	KONEPLUS_COMMAND_INFO = 0x9,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	KONEPLUS_COMMAND_E = 0xe,
 	KONEPLUS_COMMAND_SENSOR = 0xf,
+=======
+	KONEPLUS_COMMAND_TCU = 0xc,
+	KONEPLUS_COMMAND_E = 0xe,
+	KONEPLUS_COMMAND_SENSOR = 0xf,
+	KONEPLUS_COMMAND_TALK = 0x10,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	KONEPLUS_COMMAND_TCU = 0xc,
+	KONEPLUS_COMMAND_TCU_IMAGE = 0xc,
+	KONEPLUS_COMMAND_E = 0xe,
+	KONEPLUS_COMMAND_SENSOR = 0xf,
+	KONEPLUS_COMMAND_TALK = 0x10,
+>>>>>>> refs/remotes/origin/master
 	KONEPLUS_COMMAND_FIRMWARE_WRITE = 0x1b,
 	KONEPLUS_COMMAND_FIRMWARE_WRITE_CONTROL = 0x1c,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum koneplus_usb_commands {
 	KONEPLUS_USB_COMMAND_CONTROL = 0x304,
 	KONEPLUS_USB_COMMAND_ACTUAL_PROFILE = 0x305,
@@ -157,6 +213,10 @@ enum koneplus_usb_commands {
 	KONEPLUS_USB_COMMAND_FIRMWARE_WRITE_CONTROL = 0x31c,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum koneplus_mouse_report_numbers {
 	KONEPLUS_MOUSE_REPORT_NUMBER_HID = 1,
 	KONEPLUS_MOUSE_REPORT_NUMBER_AUDIO = 2,
@@ -193,6 +253,14 @@ enum koneplus_mouse_report_button_types {
 	 * data2 = action
 	 */
 	KONEPLUS_MOUSE_REPORT_BUTTON_TYPE_MULTIMEDIA = 0xf0,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	KONEPLUS_MOUSE_REPORT_TALK = 0xff,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	KONEPLUS_MOUSE_REPORT_TALK = 0xff,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum koneplus_mouse_report_button_action {
@@ -214,10 +282,13 @@ struct koneplus_device {
 	int chrdev_minor;
 
 	struct mutex koneplus_lock;
+<<<<<<< HEAD
 
 	struct koneplus_info info;
 	struct koneplus_profile_settings profile_settings[5];
 	struct koneplus_profile_buttons profile_buttons[5];
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

@@ -122,6 +122,10 @@ void ixp2000_map_io(void);
 void ixp2000_uart_init(void);
 void ixp2000_init_irq(void);
 void ixp2000_init_time(unsigned long);
+<<<<<<< HEAD
+=======
+void ixp2000_restart(char, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned long ixp2000_gettimeoffset(void);
 
 struct pci_sys_data;

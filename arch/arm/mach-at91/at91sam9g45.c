@@ -11,11 +11,21 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm.h>
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/irq.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/at91sam9g45.h>
 #include <mach/at91_pmc.h>
 #include <mach/at91_rstc.h>
@@ -38,6 +48,27 @@ static struct map_desc at91sam9g45_io_desc[] __initdata = {
 		.type		= MT_DEVICE,
 	}
 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/system_misc.h>
+#include <mach/at91sam9g45.h>
+#include <mach/at91_pmc.h>
+#include <mach/cpu.h>
+
+<<<<<<< HEAD
+=======
+#include "at91_aic.h"
+>>>>>>> refs/remotes/origin/master
+#include "soc.h"
+#include "generic.h"
+#include "clock.h"
+#include "sam9_smc.h"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "pm.h"
+>>>>>>> refs/remotes/origin/master
 
 /* --------------------------------------------------------------------
  *  Clocks
@@ -66,6 +97,20 @@ static struct clk pioDE_clk = {
 	.pmc_mask	= 1 << AT91SAM9G45_ID_PIODE,
 	.type		= CLK_TYPE_PERIPHERAL,
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct clk trng_clk = {
+	.name		= "trng_clk",
+	.pmc_mask	= 1 << AT91SAM9G45_ID_TRNG,
+	.type		= CLK_TYPE_PERIPHERAL,
+};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct clk usart0_clk = {
 	.name		= "usart0_clk",
 	.pmc_mask	= 1 << AT91SAM9G45_ID_US0,
@@ -157,7 +202,15 @@ static struct clk ac97_clk = {
 	.type		= CLK_TYPE_PERIPHERAL,
 };
 static struct clk macb_clk = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.name		= "macb_clk",
+=======
+	.name		= "pclk",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name		= "pclk",
+>>>>>>> refs/remotes/origin/master
 	.pmc_mask	= 1 << AT91SAM9G45_ID_EMAC,
 	.type		= CLK_TYPE_PERIPHERAL,
 };
@@ -184,11 +237,35 @@ static struct clk vdec_clk = {
 	.type		= CLK_TYPE_PERIPHERAL,
 };
 
+<<<<<<< HEAD
+=======
+static struct clk adc_op_clk = {
+	.name		= "adc_op_clk",
+	.type		= CLK_TYPE_PERIPHERAL,
+	.rate_hz	= 13200000,
+};
+
+/* AES/TDES/SHA clock - Only for sam9m11/sam9g56 */
+static struct clk aestdessha_clk = {
+	.name		= "aestdessha_clk",
+	.pmc_mask	= 1 << AT91SAM9G45_ID_AESTDESSHA,
+	.type		= CLK_TYPE_PERIPHERAL,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct clk *periph_clocks[] __initdata = {
 	&pioA_clk,
 	&pioB_clk,
 	&pioC_clk,
 	&pioDE_clk,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	&trng_clk,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&trng_clk,
+>>>>>>> refs/remotes/origin/master
 	&usart0_clk,
 	&usart1_clk,
 	&usart2_clk,
@@ -211,12 +288,31 @@ static struct clk *periph_clocks[] __initdata = {
 	&isi_clk,
 	&udphs_clk,
 	&mmc1_clk,
+<<<<<<< HEAD
+=======
+	&adc_op_clk,
+	&aestdessha_clk,
+>>>>>>> refs/remotes/origin/master
 	// irq0
 };
 
 static struct clk_lookup periph_clocks_lookups[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* One additional fake clock for macb_hclk */
+	CLKDEV_CON_ID("hclk", &macb_clk),
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* One additional fake clock for ohci */
 	CLKDEV_CON_ID("ohci_clk", &uhphs_clk),
+=======
+	/* One additional fake clock for macb_hclk */
+	CLKDEV_CON_ID("hclk", &macb_clk),
+	/* One additional fake clock for ohci */
+	CLKDEV_CON_ID("ohci_clk", &uhphs_clk),
+	CLKDEV_CON_DEV_ID("hclk", "at91sam9g45-lcdfb.0", &lcdc_clk),
+	CLKDEV_CON_DEV_ID("hclk", "at91sam9g45es-lcdfb.0", &lcdc_clk),
+>>>>>>> refs/remotes/origin/master
 	CLKDEV_CON_DEV_ID("ehci_clk", "atmel-ehci", &uhphs_clk),
 	CLKDEV_CON_DEV_ID("hclk", "atmel_usba_udc", &utmi_clk),
 	CLKDEV_CON_DEV_ID("pclk", "atmel_usba_udc", &udphs_clk),
@@ -226,8 +322,67 @@ static struct clk_lookup periph_clocks_lookups[] = {
 	CLKDEV_CON_DEV_ID("spi_clk", "atmel_spi.1", &spi1_clk),
 	CLKDEV_CON_DEV_ID("t0_clk", "atmel_tcb.0", &tcb0_clk),
 	CLKDEV_CON_DEV_ID("t0_clk", "atmel_tcb.1", &tcb0_clk),
+<<<<<<< HEAD
 	CLKDEV_CON_DEV_ID("pclk", "ssc.0", &ssc0_clk),
 	CLKDEV_CON_DEV_ID("pclk", "ssc.1", &ssc1_clk),
+<<<<<<< HEAD
+=======
+	CLKDEV_CON_DEV_ID(NULL, "atmel-trng", &trng_clk),
+=======
+	CLKDEV_CON_DEV_ID(NULL, "i2c-at91sam9g10.0", &twi0_clk),
+	CLKDEV_CON_DEV_ID(NULL, "i2c-at91sam9g10.1", &twi1_clk),
+	CLKDEV_CON_DEV_ID("pclk", "at91sam9g45_ssc.0", &ssc0_clk),
+	CLKDEV_CON_DEV_ID("pclk", "at91sam9g45_ssc.1", &ssc1_clk),
+	CLKDEV_CON_DEV_ID("pclk", "fff9c000.ssc", &ssc0_clk),
+	CLKDEV_CON_DEV_ID("pclk", "fffa0000.ssc", &ssc1_clk),
+	CLKDEV_CON_DEV_ID(NULL, "atmel-trng", &trng_clk),
+	CLKDEV_CON_DEV_ID(NULL, "atmel_sha", &aestdessha_clk),
+	CLKDEV_CON_DEV_ID(NULL, "atmel_tdes", &aestdessha_clk),
+	CLKDEV_CON_DEV_ID(NULL, "atmel_aes", &aestdessha_clk),
+>>>>>>> refs/remotes/origin/master
+	/* more usart lookup table for DT entries */
+	CLKDEV_CON_DEV_ID("usart", "ffffee00.serial", &mck),
+	CLKDEV_CON_DEV_ID("usart", "fff8c000.serial", &usart0_clk),
+	CLKDEV_CON_DEV_ID("usart", "fff90000.serial", &usart1_clk),
+	CLKDEV_CON_DEV_ID("usart", "fff94000.serial", &usart2_clk),
+	CLKDEV_CON_DEV_ID("usart", "fff98000.serial", &usart3_clk),
+	/* more tc lookup table for DT entries */
+	CLKDEV_CON_DEV_ID("t0_clk", "fff7c000.timer", &tcb0_clk),
+	CLKDEV_CON_DEV_ID("t0_clk", "fffd4000.timer", &tcb0_clk),
+	CLKDEV_CON_DEV_ID("hclk", "700000.ohci", &uhphs_clk),
+	CLKDEV_CON_DEV_ID("ehci_clk", "800000.ehci", &uhphs_clk),
+<<<<<<< HEAD
+	/* fake hclk clock */
+	CLKDEV_CON_DEV_ID("hclk", "at91_ohci", &uhphs_clk),
+=======
+	CLKDEV_CON_DEV_ID("mci_clk", "fff80000.mmc", &mmc0_clk),
+	CLKDEV_CON_DEV_ID("mci_clk", "fffd0000.mmc", &mmc1_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fff84000.i2c", &twi0_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fff88000.i2c", &twi1_clk),
+	CLKDEV_CON_DEV_ID("spi_clk", "fffa4000.spi", &spi0_clk),
+	CLKDEV_CON_DEV_ID("spi_clk", "fffa8000.spi", &spi1_clk),
+	CLKDEV_CON_DEV_ID("hclk", "600000.gadget", &utmi_clk),
+	CLKDEV_CON_DEV_ID("pclk", "600000.gadget", &udphs_clk),
+	/* fake hclk clock */
+	CLKDEV_CON_DEV_ID("hclk", "at91_ohci", &uhphs_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fffff200.gpio", &pioA_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fffff400.gpio", &pioB_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fffff600.gpio", &pioC_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fffff800.gpio", &pioDE_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fffffa00.gpio", &pioDE_clk),
+
+>>>>>>> refs/remotes/origin/master
+	CLKDEV_CON_ID("pioA", &pioA_clk),
+	CLKDEV_CON_ID("pioB", &pioB_clk),
+	CLKDEV_CON_ID("pioC", &pioC_clk),
+	CLKDEV_CON_ID("pioD", &pioDE_clk),
+	CLKDEV_CON_ID("pioE", &pioDE_clk),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Fake adc clock */
+	CLKDEV_CON_ID("adc_clk", &tsc_clk),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct clk_lookup usart_clocks_lookups[] = {
@@ -274,6 +429,7 @@ static void __init at91sam9g45_register_clocks(void)
 	clk_register(&pck1);
 }
 
+<<<<<<< HEAD
 static struct clk_lookup console_clock_lookup;
 
 void __init at91sam9g45_set_console_clock(int id)
@@ -286,10 +442,14 @@ void __init at91sam9g45_set_console_clock(int id)
 	clkdev_add(&console_clock_lookup);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* --------------------------------------------------------------------
  *  GPIO
  * -------------------------------------------------------------------- */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct at91_gpio_bank at91sam9g45_gpio[] = {
 	{
 		.id		= AT91SAM9G45_ID_PIOA,
@@ -325,10 +485,38 @@ static void at91sam9g45_poweroff(void)
 }
 
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct at91_gpio_bank at91sam9g45_gpio[] __initdata = {
+	{
+		.id		= AT91SAM9G45_ID_PIOA,
+		.regbase	= AT91SAM9G45_BASE_PIOA,
+	}, {
+		.id		= AT91SAM9G45_ID_PIOB,
+		.regbase	= AT91SAM9G45_BASE_PIOB,
+	}, {
+		.id		= AT91SAM9G45_ID_PIOC,
+		.regbase	= AT91SAM9G45_BASE_PIOC,
+	}, {
+		.id		= AT91SAM9G45_ID_PIODE,
+		.regbase	= AT91SAM9G45_BASE_PIOD,
+	}, {
+		.id		= AT91SAM9G45_ID_PIODE,
+		.regbase	= AT91SAM9G45_BASE_PIOE,
+	}
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* --------------------------------------------------------------------
  *  AT91SAM9G45 processor initialization
  * -------------------------------------------------------------------- */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __init at91sam9g45_map_io(void)
 {
 	/* Map peripherals */
@@ -346,6 +534,45 @@ void __init at91sam9g45_initialize(unsigned long main_clock)
 
 	/* Register the processor-specific clocks */
 	at91sam9g45_register_clocks();
+=======
+static void __init at91sam9g45_map_io(void)
+{
+	at91_init_sram(0, AT91SAM9G45_SRAM_BASE, AT91SAM9G45_SRAM_SIZE);
+	init_consistent_dma_size(SZ_4M);
+=======
+static void __init at91sam9g45_map_io(void)
+{
+	at91_init_sram(0, AT91SAM9G45_SRAM_BASE, AT91SAM9G45_SRAM_SIZE);
+>>>>>>> refs/remotes/origin/master
+}
+
+static void __init at91sam9g45_ioremap_registers(void)
+{
+	at91_ioremap_shdwc(AT91SAM9G45_BASE_SHDWC);
+	at91_ioremap_rstc(AT91SAM9G45_BASE_RSTC);
+	at91_ioremap_ramc(0, AT91SAM9G45_BASE_DDRSDRC1, 512);
+	at91_ioremap_ramc(1, AT91SAM9G45_BASE_DDRSDRC0, 512);
+	at91sam926x_ioremap_pit(AT91SAM9G45_BASE_PIT);
+	at91sam9_ioremap_smc(0, AT91SAM9G45_BASE_SMC);
+	at91_ioremap_matrix(AT91SAM9G45_BASE_MATRIX);
+<<<<<<< HEAD
+=======
+	at91_pm_set_standby(at91_ddr_standby);
+>>>>>>> refs/remotes/origin/master
+}
+
+static void __init at91sam9g45_initialize(void)
+{
+	arm_pm_idle = at91sam9_idle;
+	arm_pm_restart = at91sam9g45_restart;
+<<<<<<< HEAD
+	at91_extern_irq = (1 << AT91SAM9G45_ID_IRQ0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	at91_sysirq_mask_rtc(AT91SAM9G45_BASE_RTC);
+	at91_sysirq_mask_rtt(AT91SAM9G45_BASE_RTT);
+>>>>>>> refs/remotes/origin/master
 
 	/* Register GPIO subsystem */
 	at91_gpio_init(at91sam9g45_gpio, 5);
@@ -387,12 +614,18 @@ static unsigned int at91sam9g45_default_irq_priority[NR_AIC_IRQS] __initdata = {
 	3,	/* Ethernet */
 	0,	/* Image Sensor Interface */
 	2,	/* USB Device High speed port */
+<<<<<<< HEAD
 	0,
+=======
+	0,	/* AESTDESSHA Crypto HW Accelerators */
+>>>>>>> refs/remotes/origin/master
 	0,	/* Multimedia Card Interface 1 */
 	0,
 	0,	/* Advanced Interrupt Controller (IRQ0) */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __init at91sam9g45_init_interrupts(unsigned int priority[NR_AIC_IRQS])
 {
 	if (!priority)
@@ -404,3 +637,22 @@ void __init at91sam9g45_init_interrupts(unsigned int priority[NR_AIC_IRQS])
 	/* Enable GPIO interrupts */
 	at91_gpio_irq_setup();
 }
+=======
+struct at91_init_soc __initdata at91sam9g45_soc = {
+	.map_io = at91sam9g45_map_io,
+	.default_irq_priority = at91sam9g45_default_irq_priority,
+	.ioremap_registers = at91sam9g45_ioremap_registers,
+	.register_clocks = at91sam9g45_register_clocks,
+	.init = at91sam9g45_initialize,
+};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+AT91_SOC_START(at91sam9g45)
+	.map_io = at91sam9g45_map_io,
+	.default_irq_priority = at91sam9g45_default_irq_priority,
+	.extern_irq = (1 << AT91SAM9G45_ID_IRQ0),
+	.ioremap_registers = at91sam9g45_ioremap_registers,
+	.register_clocks = at91sam9g45_register_clocks,
+	.init = at91sam9g45_initialize,
+AT91_SOC_END
+>>>>>>> refs/remotes/origin/master

@@ -27,7 +27,15 @@ config NF_CONNTRACK_IPV4
 
 config NF_CONNTRACK_PROC_COMPAT
 	bool "proc/sysctl compatibility with old connection tracking"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	depends on NF_CONNTRACK_IPV4
+=======
+	depends on NF_CONNTRACK_PROCFS && NF_CONNTRACK_IPV4
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on NF_CONNTRACK_PROCFS && NF_CONNTRACK_IPV4
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 	  This option enables /proc and sysctl compatibility with the old
@@ -36,6 +44,7 @@ config NF_CONNTRACK_PROC_COMPAT
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 config IP_NF_QUEUE
 	tristate "IP Userspace queueing via NETLINK (OBSOLETE)"
 	depends on NETFILTER_ADVANCED
@@ -48,6 +57,28 @@ config IP_NF_QUEUE
 	  CONFIG_NETFILTER_NETLINK_QUEUE).
 
 	  To compile it as a module, choose M here.  If unsure, say N.
+=======
+config NF_TABLES_IPV4
+	depends on NF_TABLES
+	tristate "IPv4 nf_tables support"
+
+config NFT_REJECT_IPV4
+	depends on NF_TABLES_IPV4
+	tristate "nf_tables IPv4 reject support"
+
+config NFT_CHAIN_ROUTE_IPV4
+	depends on NF_TABLES_IPV4
+	tristate "IPv4 nf_tables route chain support"
+
+config NFT_CHAIN_NAT_IPV4
+	depends on NF_TABLES_IPV4
+	depends on NF_NAT_IPV4 && NFT_NAT
+	tristate "IPv4 nf_tables nat chain support"
+
+config NF_TABLES_ARP
+	depends on NF_TABLES
+	tristate "ARP nf_tables support"
+>>>>>>> refs/remotes/origin/master
 
 config IP_NF_IPTABLES
 	tristate "IP tables support (required for filtering/masq/NAT)"
@@ -76,11 +107,39 @@ config IP_NF_MATCH_AH
 config IP_NF_MATCH_ECN
 	tristate '"ecn" match support'
 	depends on NETFILTER_ADVANCED
+<<<<<<< HEAD
+<<<<<<< HEAD
 	help
 	  This option adds a `ECN' match, which allows you to match against
 	  the IPv4 and TCP header ECN fields.
 
 	  To compile it as a module, choose M here.  If unsure, say N.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	select NETFILTER_XT_MATCH_ECN
+	---help---
+	This is a backwards-compat option for the user's convenience
+	(e.g. when running oldconfig). It selects
+	CONFIG_NETFILTER_XT_MATCH_ECN.
+
+config IP_NF_MATCH_RPFILTER
+	tristate '"rpfilter" reverse path filter match support'
+<<<<<<< HEAD
+	depends on NETFILTER_ADVANCED
+=======
+	depends on NETFILTER_ADVANCED && (IP_NF_MANGLE || IP_NF_RAW)
+>>>>>>> refs/remotes/origin/master
+	---help---
+	  This option allows you to match packets whose replies would
+	  go out via the interface the packet came in.
+
+	  To compile it as a module, choose M here.  If unsure, say N.
+	  The module will be called ipt_rpfilter.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config IP_NF_MATCH_TTL
 	tristate '"ttl" match support'
@@ -113,6 +172,10 @@ config IP_NF_TARGET_REJECT
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config IP_NF_TARGET_REJECT_SKERR
 	bool "Force socket error when rejecting with icmp*"
 	depends on IP_NF_TARGET_REJECT
@@ -125,6 +188,8 @@ config IP_NF_TARGET_REJECT_SKERR
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config IP_NF_TARGET_LOG
 	tristate "LOG target support"
 	default m if NETFILTER_ADVANCED=n
@@ -134,8 +199,29 @@ config IP_NF_TARGET_LOG
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config IP_NF_TARGET_ULOG
 	tristate "ULOG target support"
+=======
+config IP_NF_TARGET_SYNPROXY
+	tristate "SYNPROXY target support"
+	depends on NF_CONNTRACK && NETFILTER_ADVANCED
+	select NETFILTER_SYNPROXY
+	select SYN_COOKIES
+	help
+	  The SYNPROXY target allows you to intercept TCP connections and
+	  establish them using syncookies before they are passed on to the
+	  server. This allows to avoid conntrack and server resource usage
+	  during SYN-flood attacks.
+
+	  To compile it as a module, choose M here. If unsure, say N.
+
+config IP_NF_TARGET_ULOG
+	tristate "ULOG target support (obsolete)"
+>>>>>>> refs/remotes/origin/master
 	default m if NETFILTER_ADVANCED=n
 	---help---
 
@@ -154,17 +240,28 @@ config IP_NF_TARGET_ULOG
 	  To compile it as a module, choose M here.  If unsure, say N.
 
 # NAT + specific targets: nf_conntrack
+<<<<<<< HEAD
 config NF_NAT
 	tristate "Full NAT"
 	depends on NF_CONNTRACK_IPV4
 	default m if NETFILTER_ADVANCED=n
 	help
 	  The Full NAT option allows masquerading, port forwarding and other
+=======
+config NF_NAT_IPV4
+	tristate "IPv4 NAT"
+	depends on NF_CONNTRACK_IPV4
+	default m if NETFILTER_ADVANCED=n
+	select NF_NAT
+	help
+	  The IPv4 NAT option allows masquerading, port forwarding and other
+>>>>>>> refs/remotes/origin/master
 	  forms of full Network Address Port Translation.  It is controlled by
 	  the `nat' table in iptables: see the man page for iptables(8).
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
 config NF_NAT_NEEDED
 	bool
 	depends on NF_NAT
@@ -173,6 +270,12 @@ config NF_NAT_NEEDED
 config IP_NF_TARGET_MASQUERADE
 	tristate "MASQUERADE target support"
 	depends on NF_NAT
+=======
+if NF_NAT_IPV4
+
+config IP_NF_TARGET_MASQUERADE
+	tristate "MASQUERADE target support"
+>>>>>>> refs/remotes/origin/master
 	default m if NETFILTER_ADVANCED=n
 	help
 	  Masquerading is a special case of NAT: all outgoing connections are
@@ -185,6 +288,7 @@ config IP_NF_TARGET_MASQUERADE
 
 config IP_NF_TARGET_NETMAP
 	tristate "NETMAP target support"
+<<<<<<< HEAD
 	depends on NF_NAT
 	depends on NETFILTER_ADVANCED
 	help
@@ -209,6 +313,29 @@ config IP_NF_TARGET_REDIRECT
 config NF_NAT_SNMP_BASIC
 	tristate "Basic SNMP-ALG support"
 	depends on NF_CONNTRACK_SNMP && NF_NAT
+=======
+	depends on NETFILTER_ADVANCED
+	select NETFILTER_XT_TARGET_NETMAP
+	---help---
+	This is a backwards-compat option for the user's convenience
+	(e.g. when running oldconfig). It selects
+	CONFIG_NETFILTER_XT_TARGET_NETMAP.
+
+config IP_NF_TARGET_REDIRECT
+	tristate "REDIRECT target support"
+	depends on NETFILTER_ADVANCED
+	select NETFILTER_XT_TARGET_REDIRECT
+	---help---
+	This is a backwards-compat option for the user's convenience
+	(e.g. when running oldconfig). It selects
+	CONFIG_NETFILTER_XT_TARGET_REDIRECT.
+
+endif
+
+config NF_NAT_SNMP_BASIC
+	tristate "Basic SNMP-ALG support"
+	depends on NF_CONNTRACK_SNMP && NF_NAT_IPV4
+>>>>>>> refs/remotes/origin/master
 	depends on NETFILTER_ADVANCED
 	default NF_NAT && NF_CONNTRACK_SNMP
 	---help---
@@ -230,6 +357,7 @@ config NF_NAT_SNMP_BASIC
 #           <expr> '&&' <expr>                   (6)
 #
 # (6) Returns the result of min(/expr/, /expr/).
+<<<<<<< HEAD
 config NF_NAT_PROTO_DCCP
 	tristate
 	depends on NF_NAT && NF_CT_PROTO_DCCP
@@ -274,10 +402,22 @@ config NF_NAT_PPTP
 	tristate
 	depends on NF_CONNTRACK && NF_NAT
 	default NF_NAT && NF_CONNTRACK_PPTP
+=======
+
+config NF_NAT_PROTO_GRE
+	tristate
+	depends on NF_NAT_IPV4 && NF_CT_PROTO_GRE
+
+config NF_NAT_PPTP
+	tristate
+	depends on NF_CONNTRACK && NF_NAT_IPV4
+	default NF_NAT_IPV4 && NF_CONNTRACK_PPTP
+>>>>>>> refs/remotes/origin/master
 	select NF_NAT_PROTO_GRE
 
 config NF_NAT_H323
 	tristate
+<<<<<<< HEAD
 	depends on NF_CONNTRACK && NF_NAT
 	default NF_NAT && NF_CONNTRACK_H323
 
@@ -285,6 +425,10 @@ config NF_NAT_SIP
 	tristate
 	depends on NF_CONNTRACK && NF_NAT
 	default NF_NAT && NF_CONNTRACK_SIP
+=======
+	depends on NF_CONNTRACK && NF_NAT_IPV4
+	default NF_NAT_IPV4 && NF_CONNTRACK_H323
+>>>>>>> refs/remotes/origin/master
 
 # mangle + specific targets
 config IP_NF_MANGLE
@@ -298,8 +442,13 @@ config IP_NF_MANGLE
 	  To compile it as a module, choose M here.  If unsure, say N.
 
 config IP_NF_TARGET_CLUSTERIP
+<<<<<<< HEAD
 	tristate "CLUSTERIP target support (EXPERIMENTAL)"
 	depends on IP_NF_MANGLE && EXPERIMENTAL
+=======
+	tristate "CLUSTERIP target support"
+	depends on IP_NF_MANGLE
+>>>>>>> refs/remotes/origin/master
 	depends on NF_CONNTRACK_IPV4
 	depends on NETFILTER_ADVANCED
 	select NF_CONNTRACK_MARK
@@ -337,7 +486,13 @@ config IP_NF_TARGET_TTL
 # raw + specific targets
 config IP_NF_RAW
 	tristate  'raw table support (required for NOTRACK/TRACE)'
+<<<<<<< HEAD
+<<<<<<< HEAD
 	depends on NETFILTER_ADVANCED
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option adds a `raw' table to iptables. This table is the very
 	  first in the netfilter framework and hooks in at the PREROUTING

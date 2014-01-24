@@ -10,12 +10,20 @@
 #include <linux/linkage.h>
 
 #include <asm/page.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/thread_info.h>
 #include <asm/sysreg.h>
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	.section .init.text,"ax"
 	.global kernel_entry
 kernel_entry:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Initialize status register */
 	lddpc   r0, init_sr
 	mtsr	SYSREG_SR, r0
@@ -30,13 +38,23 @@ kernel_entry:
 	mov	r7, 0
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Start the show */
 	lddpc   pc, kernel_start_addr
 
 	.align  2
+<<<<<<< HEAD
+<<<<<<< HEAD
 init_sr:
 	.long   0x007f0000	/* Supervisor mode, everything masked */
 stack_addr:
 	.long   init_thread_union
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 kernel_start_addr:
 	.long   start_kernel

@@ -45,9 +45,13 @@ MODULE_DESCRIPTION("ACPI Fan Driver");
 MODULE_LICENSE("GPL");
 
 static int acpi_fan_add(struct acpi_device *device);
+<<<<<<< HEAD
 static int acpi_fan_remove(struct acpi_device *device, int type);
 static int acpi_fan_suspend(struct acpi_device *device, pm_message_t state);
 static int acpi_fan_resume(struct acpi_device *device);
+=======
+static int acpi_fan_remove(struct acpi_device *device);
+>>>>>>> refs/remotes/origin/master
 
 static const struct acpi_device_id fan_device_ids[] = {
 	{"PNP0C0B", 0},
@@ -55,6 +59,15 @@ static const struct acpi_device_id fan_device_ids[] = {
 };
 MODULE_DEVICE_TABLE(acpi, fan_device_ids);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+static int acpi_fan_suspend(struct device *dev);
+static int acpi_fan_resume(struct device *dev);
+#endif
+static SIMPLE_DEV_PM_OPS(acpi_fan_pm, acpi_fan_suspend, acpi_fan_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct acpi_driver acpi_fan_driver = {
 	.name = "fan",
 	.class = ACPI_FAN_CLASS,
@@ -62,9 +75,14 @@ static struct acpi_driver acpi_fan_driver = {
 	.ops = {
 		.add = acpi_fan_add,
 		.remove = acpi_fan_remove,
+<<<<<<< HEAD
 		.suspend = acpi_fan_suspend,
 		.resume = acpi_fan_resume,
 		},
+=======
+		},
+	.drv.pm = &acpi_fan_pm,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* thermal cooling device callbacks */
@@ -81,7 +99,11 @@ static int fan_get_cur_state(struct thermal_cooling_device *cdev, unsigned long
 {
 	struct acpi_device *device = cdev->devdata;
 	int result;
+<<<<<<< HEAD
 	int acpi_state;
+=======
+	int acpi_state = ACPI_STATE_D0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!device)
 		return -EINVAL;
@@ -90,7 +112,11 @@ static int fan_get_cur_state(struct thermal_cooling_device *cdev, unsigned long
 	if (result)
 		return result;
 
+<<<<<<< HEAD
 	*state = (acpi_state == ACPI_STATE_D3 ? 0 :
+=======
+	*state = (acpi_state == ACPI_STATE_D3_COLD ? 0 :
+>>>>>>> refs/remotes/origin/master
 		 (acpi_state == ACPI_STATE_D0 ? 1 : -1));
 	return 0;
 }
@@ -105,12 +131,24 @@ fan_set_cur_state(struct thermal_cooling_device *cdev, unsigned long state)
 		return -EINVAL;
 
 	result = acpi_bus_set_power(device->handle,
+<<<<<<< HEAD
 				state ? ACPI_STATE_D0 : ACPI_STATE_D3);
+=======
+				state ? ACPI_STATE_D0 : ACPI_STATE_D3_COLD);
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct thermal_cooling_device_ops fan_cooling_ops = {
+=======
+static const struct thermal_cooling_device_ops fan_cooling_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct thermal_cooling_device_ops fan_cooling_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_max_state = fan_get_max_state,
 	.get_cur_state = fan_get_cur_state,
 	.set_cur_state = fan_set_cur_state,
@@ -165,6 +203,7 @@ static int acpi_fan_add(struct acpi_device *device)
 	       acpi_device_name(device), acpi_device_bid(device),
 	       !device->power.state ? "on" : "off");
 
+<<<<<<< HEAD
       end:
 	return result;
 }
@@ -174,6 +213,21 @@ static int acpi_fan_remove(struct acpi_device *device, int type)
 	struct thermal_cooling_device *cdev = acpi_driver_data(device);
 
 	if (!device || !cdev)
+=======
+end:
+	return result;
+}
+
+static int acpi_fan_remove(struct acpi_device *device)
+{
+	struct thermal_cooling_device *cdev;
+
+	if (!device)
+		return -EINVAL;
+
+	cdev =  acpi_driver_data(device);
+	if (!cdev)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	sysfs_remove_link(&device->dev.kobj, "thermal_cooling");
@@ -183,16 +237,27 @@ static int acpi_fan_remove(struct acpi_device *device, int type)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int acpi_fan_suspend(struct acpi_device *device, pm_message_t state)
 {
 	if (!device)
 		return -EINVAL;
 
 	acpi_bus_set_power(device->handle, ACPI_STATE_D0);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int acpi_fan_suspend(struct device *dev)
+{
+	if (!dev)
+		return -EINVAL;
+
+	acpi_bus_set_power(to_acpi_device(dev)->handle, ACPI_STATE_D0);
+>>>>>>> refs/remotes/origin/master
 
 	return AE_OK;
 }
 
+<<<<<<< HEAD
 static int acpi_fan_resume(struct acpi_device *device)
 {
 	int result;
@@ -201,11 +266,22 @@ static int acpi_fan_resume(struct acpi_device *device)
 		return -EINVAL;
 
 	result = acpi_bus_update_power(device->handle, NULL);
+=======
+static int acpi_fan_resume(struct device *dev)
+{
+	int result;
+
+	if (!dev)
+		return -EINVAL;
+
+	result = acpi_bus_update_power(to_acpi_device(dev)->handle, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (result)
 		printk(KERN_ERR PREFIX "Error updating fan power state\n");
 
 	return result;
 }
+<<<<<<< HEAD
 
 static int __init acpi_fan_init(void)
 {
@@ -228,3 +304,8 @@ static void __exit acpi_fan_exit(void)
 
 module_init(acpi_fan_init);
 module_exit(acpi_fan_exit);
+=======
+#endif
+
+module_acpi_driver(acpi_fan_driver);
+>>>>>>> refs/remotes/origin/master

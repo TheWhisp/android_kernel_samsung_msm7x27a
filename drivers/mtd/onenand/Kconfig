@@ -1,6 +1,14 @@
 menuconfig MTD_ONENAND
 	tristate "OneNAND Device Support"
 	depends on MTD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	depends on HAS_IOMEM
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on HAS_IOMEM
+>>>>>>> refs/remotes/origin/master
 	help
 	  This enables support for accessing all type of OneNAND flash
 	  devices. For further information see
@@ -39,7 +47,10 @@ config MTD_ONENAND_SAMSUNG
 
 config MTD_ONENAND_OTP
 	bool "OneNAND OTP Support"
+<<<<<<< HEAD
 	select HAVE_MTD_OTP
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  One Block of the NAND Flash Array memory is reserved as
 	  a One-Time Programmable Block memory area.
@@ -67,10 +78,13 @@ config MTD_ONENAND_2X_PROGRAM
 
 	  And more recent chips
 
+<<<<<<< HEAD
 config MTD_ONENAND_SIM
 	tristate "OneNAND simulator support"
 	help
 	  The simulator may simulate various OneNAND flash chips for the
 	  OneNAND MTD layer.
 
+=======
+>>>>>>> refs/remotes/origin/master
 endif # MTD_ONENAND

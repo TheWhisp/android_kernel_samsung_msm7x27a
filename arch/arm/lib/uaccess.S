@@ -32,11 +32,25 @@
 		rsb	ip, ip, #4
 		cmp	ip, #2
 		ldrb	r3, [r1], #1
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(strb)	r3, [r0], #1)			@ May fault
 		ldrgeb	r3, [r1], #1
 USER(		T(strgeb) r3, [r0], #1)			@ May fault
 		ldrgtb	r3, [r1], #1
 USER(		T(strgtb) r3, [r0], #1)			@ May fault
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+USER(	TUSER(	strb)	r3, [r0], #1)			@ May fault
+		ldrgeb	r3, [r1], #1
+USER(	TUSER(	strgeb) r3, [r0], #1)			@ May fault
+		ldrgtb	r3, [r1], #1
+USER(	TUSER(	strgtb) r3, [r0], #1)			@ May fault
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		sub	r2, r2, ip
 		b	.Lc2u_dest_aligned
 
@@ -59,7 +73,15 @@ ENTRY(__copy_to_user)
 		addmi	ip, r2, #4
 		bmi	.Lc2u_0nowords
 		ldr	r3, [r1], #4
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(str)	r3, [r0], #4)			@ May fault
+=======
+USER(	TUSER(	str)	r3, [r0], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	str)	r3, [r0], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		mov	ip, r0, lsl #32 - PAGE_SHIFT	@ On each page, use a ld/st??t instruction
 		rsb	ip, ip, #0
 		movs	ip, ip, lsr #32 - PAGE_SHIFT
@@ -88,18 +110,40 @@ USER(		T(str)	r3, [r0], #4)			@ May fault
 		stmneia	r0!, {r3 - r4}			@ Shouldnt fault
 		tst	ip, #4
 		ldrne	r3, [r1], #4
+<<<<<<< HEAD
+<<<<<<< HEAD
 		T(strne) r3, [r0], #4			@ Shouldnt fault
+=======
+	TUSER(	strne) r3, [r0], #4			@ Shouldnt fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TUSER(	strne) r3, [r0], #4			@ Shouldnt fault
+>>>>>>> refs/remotes/origin/master
 		ands	ip, ip, #3
 		beq	.Lc2u_0fupi
 .Lc2u_0nowords:	teq	ip, #0
 		beq	.Lc2u_finished
 .Lc2u_nowords:	cmp	ip, #2
 		ldrb	r3, [r1], #1
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(strb)	r3, [r0], #1)			@ May fault
 		ldrgeb	r3, [r1], #1
 USER(		T(strgeb) r3, [r0], #1)			@ May fault
 		ldrgtb	r3, [r1], #1
 USER(		T(strgtb) r3, [r0], #1)			@ May fault
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+USER(	TUSER(	strb)	r3, [r0], #1)			@ May fault
+		ldrgeb	r3, [r1], #1
+USER(	TUSER(	strgeb) r3, [r0], #1)			@ May fault
+		ldrgtb	r3, [r1], #1
+USER(	TUSER(	strgtb) r3, [r0], #1)			@ May fault
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		b	.Lc2u_finished
 
 .Lc2u_not_enough:
@@ -120,7 +164,15 @@ USER(		T(strgtb) r3, [r0], #1)			@ May fault
 		mov	r3, r7, pull #8
 		ldr	r7, [r1], #4
 		orr	r3, r3, r7, push #24
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(str)	r3, [r0], #4)			@ May fault
+=======
+USER(	TUSER(	str)	r3, [r0], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	str)	r3, [r0], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		mov	ip, r0, lsl #32 - PAGE_SHIFT
 		rsb	ip, ip, #0
 		movs	ip, ip, lsr #32 - PAGE_SHIFT
@@ -155,18 +207,40 @@ USER(		T(str)	r3, [r0], #4)			@ May fault
 		movne	r3, r7, pull #8
 		ldrne	r7, [r1], #4
 		orrne	r3, r3, r7, push #24
+<<<<<<< HEAD
+<<<<<<< HEAD
 		T(strne) r3, [r0], #4			@ Shouldnt fault
+=======
+	TUSER(	strne) r3, [r0], #4			@ Shouldnt fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TUSER(	strne) r3, [r0], #4			@ Shouldnt fault
+>>>>>>> refs/remotes/origin/master
 		ands	ip, ip, #3
 		beq	.Lc2u_1fupi
 .Lc2u_1nowords:	mov	r3, r7, get_byte_1
 		teq	ip, #0
 		beq	.Lc2u_finished
 		cmp	ip, #2
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(strb)	r3, [r0], #1)			@ May fault
 		movge	r3, r7, get_byte_2
 USER(		T(strgeb) r3, [r0], #1)			@ May fault
 		movgt	r3, r7, get_byte_3
 USER(		T(strgtb) r3, [r0], #1)			@ May fault
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+USER(	TUSER(	strb)	r3, [r0], #1)			@ May fault
+		movge	r3, r7, get_byte_2
+USER(	TUSER(	strgeb) r3, [r0], #1)			@ May fault
+		movgt	r3, r7, get_byte_3
+USER(	TUSER(	strgtb) r3, [r0], #1)			@ May fault
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		b	.Lc2u_finished
 
 .Lc2u_2fupi:	subs	r2, r2, #4
@@ -175,7 +249,15 @@ USER(		T(strgtb) r3, [r0], #1)			@ May fault
 		mov	r3, r7, pull #16
 		ldr	r7, [r1], #4
 		orr	r3, r3, r7, push #16
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(str)	r3, [r0], #4)			@ May fault
+=======
+USER(	TUSER(	str)	r3, [r0], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	str)	r3, [r0], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		mov	ip, r0, lsl #32 - PAGE_SHIFT
 		rsb	ip, ip, #0
 		movs	ip, ip, lsr #32 - PAGE_SHIFT
@@ -210,18 +292,40 @@ USER(		T(str)	r3, [r0], #4)			@ May fault
 		movne	r3, r7, pull #16
 		ldrne	r7, [r1], #4
 		orrne	r3, r3, r7, push #16
+<<<<<<< HEAD
+<<<<<<< HEAD
 		T(strne) r3, [r0], #4			@ Shouldnt fault
+=======
+	TUSER(	strne) r3, [r0], #4			@ Shouldnt fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TUSER(	strne) r3, [r0], #4			@ Shouldnt fault
+>>>>>>> refs/remotes/origin/master
 		ands	ip, ip, #3
 		beq	.Lc2u_2fupi
 .Lc2u_2nowords:	mov	r3, r7, get_byte_2
 		teq	ip, #0
 		beq	.Lc2u_finished
 		cmp	ip, #2
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(strb)	r3, [r0], #1)			@ May fault
 		movge	r3, r7, get_byte_3
 USER(		T(strgeb) r3, [r0], #1)			@ May fault
 		ldrgtb	r3, [r1], #0
 USER(		T(strgtb) r3, [r0], #1)			@ May fault
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+USER(	TUSER(	strb)	r3, [r0], #1)			@ May fault
+		movge	r3, r7, get_byte_3
+USER(	TUSER(	strgeb) r3, [r0], #1)			@ May fault
+		ldrgtb	r3, [r1], #0
+USER(	TUSER(	strgtb) r3, [r0], #1)			@ May fault
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		b	.Lc2u_finished
 
 .Lc2u_3fupi:	subs	r2, r2, #4
@@ -230,7 +334,15 @@ USER(		T(strgtb) r3, [r0], #1)			@ May fault
 		mov	r3, r7, pull #24
 		ldr	r7, [r1], #4
 		orr	r3, r3, r7, push #8
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(str)	r3, [r0], #4)			@ May fault
+=======
+USER(	TUSER(	str)	r3, [r0], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	str)	r3, [r0], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		mov	ip, r0, lsl #32 - PAGE_SHIFT
 		rsb	ip, ip, #0
 		movs	ip, ip, lsr #32 - PAGE_SHIFT
@@ -265,18 +377,40 @@ USER(		T(str)	r3, [r0], #4)			@ May fault
 		movne	r3, r7, pull #24
 		ldrne	r7, [r1], #4
 		orrne	r3, r3, r7, push #8
+<<<<<<< HEAD
+<<<<<<< HEAD
 		T(strne) r3, [r0], #4			@ Shouldnt fault
+=======
+	TUSER(	strne) r3, [r0], #4			@ Shouldnt fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TUSER(	strne) r3, [r0], #4			@ Shouldnt fault
+>>>>>>> refs/remotes/origin/master
 		ands	ip, ip, #3
 		beq	.Lc2u_3fupi
 .Lc2u_3nowords:	mov	r3, r7, get_byte_3
 		teq	ip, #0
 		beq	.Lc2u_finished
 		cmp	ip, #2
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(strb)	r3, [r0], #1)			@ May fault
 		ldrgeb	r3, [r1], #1
 USER(		T(strgeb) r3, [r0], #1)			@ May fault
 		ldrgtb	r3, [r1], #0
 USER(		T(strgtb) r3, [r0], #1)			@ May fault
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+USER(	TUSER(	strb)	r3, [r0], #1)			@ May fault
+		ldrgeb	r3, [r1], #1
+USER(	TUSER(	strgeb) r3, [r0], #1)			@ May fault
+		ldrgtb	r3, [r1], #0
+USER(	TUSER(	strgtb) r3, [r0], #1)			@ May fault
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		b	.Lc2u_finished
 ENDPROC(__copy_to_user)
 
@@ -295,11 +429,25 @@ ENDPROC(__copy_to_user)
 .Lcfu_dest_not_aligned:
 		rsb	ip, ip, #4
 		cmp	ip, #2
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldrb)	r3, [r1], #1)			@ May fault
 		strb	r3, [r0], #1
 USER(		T(ldrgeb) r3, [r1], #1)			@ May fault
 		strgeb	r3, [r0], #1
 USER(		T(ldrgtb) r3, [r1], #1)			@ May fault
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+USER(	TUSER(	ldrb)	r3, [r1], #1)			@ May fault
+		strb	r3, [r0], #1
+USER(	TUSER(	ldrgeb) r3, [r1], #1)			@ May fault
+		strgeb	r3, [r0], #1
+USER(	TUSER(	ldrgtb) r3, [r1], #1)			@ May fault
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		strgtb	r3, [r0], #1
 		sub	r2, r2, ip
 		b	.Lcfu_dest_aligned
@@ -322,7 +470,15 @@ ENTRY(__copy_from_user)
 .Lcfu_0fupi:	subs	r2, r2, #4
 		addmi	ip, r2, #4
 		bmi	.Lcfu_0nowords
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldr)	r3, [r1], #4)
+=======
+USER(	TUSER(	ldr)	r3, [r1], #4)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	ldr)	r3, [r1], #4)
+>>>>>>> refs/remotes/origin/master
 		str	r3, [r0], #4
 		mov	ip, r1, lsl #32 - PAGE_SHIFT	@ On each page, use a ld/st??t instruction
 		rsb	ip, ip, #0
@@ -351,18 +507,40 @@ USER(		T(ldr)	r3, [r1], #4)
 		ldmneia	r1!, {r3 - r4}			@ Shouldnt fault
 		stmneia	r0!, {r3 - r4}
 		tst	ip, #4
+<<<<<<< HEAD
+<<<<<<< HEAD
 		T(ldrne) r3, [r1], #4			@ Shouldnt fault
+=======
+	TUSER(	ldrne) r3, [r1], #4			@ Shouldnt fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TUSER(	ldrne) r3, [r1], #4			@ Shouldnt fault
+>>>>>>> refs/remotes/origin/master
 		strne	r3, [r0], #4
 		ands	ip, ip, #3
 		beq	.Lcfu_0fupi
 .Lcfu_0nowords:	teq	ip, #0
 		beq	.Lcfu_finished
 .Lcfu_nowords:	cmp	ip, #2
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldrb)	r3, [r1], #1)			@ May fault
 		strb	r3, [r0], #1
 USER(		T(ldrgeb) r3, [r1], #1)			@ May fault
 		strgeb	r3, [r0], #1
 USER(		T(ldrgtb) r3, [r1], #1)			@ May fault
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+USER(	TUSER(	ldrb)	r3, [r1], #1)			@ May fault
+		strb	r3, [r0], #1
+USER(	TUSER(	ldrgeb) r3, [r1], #1)			@ May fault
+		strgeb	r3, [r0], #1
+USER(	TUSER(	ldrgtb) r3, [r1], #1)			@ May fault
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		strgtb	r3, [r0], #1
 		b	.Lcfu_finished
 
@@ -375,7 +553,15 @@ USER(		T(ldrgtb) r3, [r1], #1)			@ May fault
 
 .Lcfu_src_not_aligned:
 		bic	r1, r1, #3
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldr)	r7, [r1], #4)			@ May fault
+=======
+USER(	TUSER(	ldr)	r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	ldr)	r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		cmp	ip, #2
 		bgt	.Lcfu_3fupi
 		beq	.Lcfu_2fupi
@@ -383,7 +569,15 @@ USER(		T(ldr)	r7, [r1], #4)			@ May fault
 		addmi	ip, r2, #4
 		bmi	.Lcfu_1nowords
 		mov	r3, r7, pull #8
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldr)	r7, [r1], #4)			@ May fault
+=======
+USER(	TUSER(	ldr)	r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	ldr)	r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		orr	r3, r3, r7, push #24
 		str	r3, [r0], #4
 		mov	ip, r1, lsl #32 - PAGE_SHIFT
@@ -418,7 +612,15 @@ USER(		T(ldr)	r7, [r1], #4)			@ May fault
 		stmneia	r0!, {r3 - r4}
 		tst	ip, #4
 		movne	r3, r7, pull #8
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldrne) r7, [r1], #4)			@ May fault
+=======
+USER(	TUSER(	ldrne) r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	ldrne) r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		orrne	r3, r3, r7, push #24
 		strne	r3, [r0], #4
 		ands	ip, ip, #3
@@ -438,7 +640,15 @@ USER(		T(ldrne) r7, [r1], #4)			@ May fault
 		addmi	ip, r2, #4
 		bmi	.Lcfu_2nowords
 		mov	r3, r7, pull #16
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldr)	r7, [r1], #4)			@ May fault
+=======
+USER(	TUSER(	ldr)	r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	ldr)	r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		orr	r3, r3, r7, push #16
 		str	r3, [r0], #4
 		mov	ip, r1, lsl #32 - PAGE_SHIFT
@@ -474,7 +684,15 @@ USER(		T(ldr)	r7, [r1], #4)			@ May fault
 		stmneia	r0!, {r3 - r4}
 		tst	ip, #4
 		movne	r3, r7, pull #16
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldrne) r7, [r1], #4)			@ May fault
+=======
+USER(	TUSER(	ldrne) r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	ldrne) r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		orrne	r3, r3, r7, push #16
 		strne	r3, [r0], #4
 		ands	ip, ip, #3
@@ -486,7 +704,15 @@ USER(		T(ldrne) r7, [r1], #4)			@ May fault
 		strb	r3, [r0], #1
 		movge	r3, r7, get_byte_3
 		strgeb	r3, [r0], #1
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldrgtb) r3, [r1], #0)			@ May fault
+=======
+USER(	TUSER(	ldrgtb) r3, [r1], #0)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	ldrgtb) r3, [r1], #0)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		strgtb	r3, [r0], #1
 		b	.Lcfu_finished
 
@@ -494,7 +720,15 @@ USER(		T(ldrgtb) r3, [r1], #0)			@ May fault
 		addmi	ip, r2, #4
 		bmi	.Lcfu_3nowords
 		mov	r3, r7, pull #24
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldr)	r7, [r1], #4)			@ May fault
+=======
+USER(	TUSER(	ldr)	r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	ldr)	r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		orr	r3, r3, r7, push #8
 		str	r3, [r0], #4
 		mov	ip, r1, lsl #32 - PAGE_SHIFT
@@ -529,7 +763,15 @@ USER(		T(ldr)	r7, [r1], #4)			@ May fault
 		stmneia	r0!, {r3 - r4}
 		tst	ip, #4
 		movne	r3, r7, pull #24
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldrne) r7, [r1], #4)			@ May fault
+=======
+USER(	TUSER(	ldrne) r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	ldrne) r7, [r1], #4)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		orrne	r3, r3, r7, push #8
 		strne	r3, [r0], #4
 		ands	ip, ip, #3
@@ -539,9 +781,21 @@ USER(		T(ldrne) r7, [r1], #4)			@ May fault
 		beq	.Lcfu_finished
 		cmp	ip, #2
 		strb	r3, [r0], #1
+<<<<<<< HEAD
+<<<<<<< HEAD
 USER(		T(ldrgeb) r3, [r1], #1)			@ May fault
 		strgeb	r3, [r0], #1
 USER(		T(ldrgtb) r3, [r1], #1)			@ May fault
+=======
+USER(	TUSER(	ldrgeb) r3, [r1], #1)			@ May fault
+		strgeb	r3, [r0], #1
+USER(	TUSER(	ldrgtb) r3, [r1], #1)			@ May fault
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+USER(	TUSER(	ldrgeb) r3, [r1], #1)			@ May fault
+		strgeb	r3, [r0], #1
+USER(	TUSER(	ldrgtb) r3, [r1], #1)			@ May fault
+>>>>>>> refs/remotes/origin/master
 		strgtb	r3, [r0], #1
 		b	.Lcfu_finished
 ENDPROC(__copy_from_user)

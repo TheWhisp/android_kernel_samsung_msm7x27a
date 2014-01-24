@@ -43,10 +43,16 @@ void evaluate_message(int tag);
 /* Boot a secondary cpu */
 void online_secondary(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Call a function on a specified set of CPUs (may include this one). */
 extern void on_each_cpu_mask(const struct cpumask *mask,
 			     void (*func)(void *), void *info, bool wait);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Topology of the supervisor tile grid, and coordinates of boot processor */
 extern HV_Topology smp_topology;
 
@@ -91,9 +97,15 @@ void print_disabled_cpus(void);
 
 #else /* !CONFIG_SMP */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define on_each_cpu_mask(mask, func, info, wait)		\
   do { if (cpumask_test_cpu(0, (mask))) func(info); } while (0)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define smp_master_cpu		0
 #define smp_height		1
 #define smp_width		1
@@ -108,10 +120,15 @@ void print_disabled_cpus(void);
 extern struct cpumask cpu_lotar_map;
 #define cpu_is_valid_lotar(cpu) cpumask_test_cpu((cpu), &cpu_lotar_map)
 
+<<<<<<< HEAD
 #if CHIP_HAS_CBOX_HOME_MAP()
 /* Which processors are used for hash-for-home mapping */
 extern struct cpumask hash_for_home_map;
 #endif
+=======
+/* Which processors are used for hash-for-home mapping */
+extern struct cpumask hash_for_home_map;
+>>>>>>> refs/remotes/origin/master
 
 /* Which cpus can have their cache flushed by hv_flush_remote(). */
 extern struct cpumask cpu_cacheable_map;

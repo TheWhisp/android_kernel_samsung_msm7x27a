@@ -19,6 +19,14 @@
 #include <asm/blackfin.h>
 #include <asm/fixed_code.h>
 #include <asm/mem_map.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage void ret_from_fork(void);
 
@@ -38,12 +46,15 @@ int nr_l1stack_tasks;
 void *l1_stack_base;
 unsigned long l1_stack_len;
 
+<<<<<<< HEAD
 /*
  * Powermanagement idle function, if any..
  */
 void (*pm_idle)(void) = NULL;
 EXPORT_SYMBOL(pm_idle);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void (*pm_power_off)(void) = NULL;
 EXPORT_SYMBOL(pm_power_off);
 
@@ -51,15 +62,23 @@ EXPORT_SYMBOL(pm_power_off);
  * The idle loop on BFIN
  */
 #ifdef CONFIG_IDLE_L1
+<<<<<<< HEAD
 static void default_idle(void)__attribute__((l1_text));
 void cpu_idle(void)__attribute__((l1_text));
+=======
+void arch_cpu_idle(void)__attribute__((l1_text));
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
  * This is our default idle handler.  We need to disable
  * interrupts here to ensure we don't miss a wakeup call.
  */
+<<<<<<< HEAD
 static void default_idle(void)
+=======
+void arch_cpu_idle(void)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_IPIPE
 	ipipe_suspend_domain();
@@ -71,6 +90,7 @@ static void default_idle(void)
 	hard_local_irq_enable();
 }
 
+<<<<<<< HEAD
 /*
  * The idle thread.  We try to conserve power, while trying to keep
  * overall latency low.  The architecture specific idle is passed
@@ -88,6 +108,7 @@ void cpu_idle(void)
 #endif
 		if (!idle)
 			idle = default_idle;
+<<<<<<< HEAD
 		tick_nohz_stop_sched_tick(1);
 		while (!need_resched())
 			idle();
@@ -95,6 +116,15 @@ void cpu_idle(void)
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+		tick_nohz_idle_enter();
+		rcu_idle_enter();
+		while (!need_resched())
+			idle();
+		rcu_idle_exit();
+		tick_nohz_idle_exit();
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -131,6 +161,14 @@ pid_t kernel_thread(int (*fn) (void *), void *arg, unsigned long flags)
 		       NULL);
 }
 EXPORT_SYMBOL(kernel_thread);
+=======
+#ifdef CONFIG_HOTPLUG_CPU
+void arch_cpu_idle_dead(void)
+{
+	cpu_die();
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Do necessary setup to start up a newly executed thread.
@@ -140,7 +178,13 @@ EXPORT_SYMBOL(kernel_thread);
  */
 void start_thread(struct pt_regs *regs, unsigned long new_ip, unsigned long new_sp)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set_fs(USER_DS);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	regs->pc = new_ip;
 	if (current->mm)
 		regs->p5 = current->mm->start_data;
@@ -159,6 +203,7 @@ void flush_thread(void)
 {
 }
 
+<<<<<<< HEAD
 asmlinkage int bfin_vfork(struct pt_regs *regs)
 {
 	return do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD, rdusp(), regs, 0, NULL,
@@ -183,11 +228,23 @@ asmlinkage int bfin_clone(struct pt_regs *regs)
 	else
 		newsp -= 12;
 	return do_fork(clone_flags, newsp, regs, 0, NULL, NULL);
+=======
+asmlinkage int bfin_clone(unsigned long clone_flags, unsigned long newsp)
+{
+#ifdef __ARCH_SYNC_CORE_DCACHE
+	if (current->nr_cpus_allowed == num_possible_cpus())
+		set_cpus_allowed_ptr(current, cpumask_of(smp_processor_id()));
+#endif
+	if (newsp)
+		newsp -= 12;
+	return do_fork(clone_flags, newsp, 0, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 int
 copy_thread(unsigned long clone_flags,
 	    unsigned long usp, unsigned long topstk,
+<<<<<<< HEAD
 	    struct task_struct *p, struct pt_regs *regs)
 {
 	struct pt_regs *childregs;
@@ -198,11 +255,37 @@ copy_thread(unsigned long clone_flags,
 
 	p->thread.usp = usp;
 	p->thread.ksp = (unsigned long)childregs;
+=======
+	    struct task_struct *p)
+{
+	struct pt_regs *childregs;
+	unsigned long *v;
+
+	childregs = (struct pt_regs *) (task_stack_page(p) + THREAD_SIZE) - 1;
+	v = ((unsigned long *)childregs) - 2;
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(childregs, 0, sizeof(struct pt_regs));
+		v[0] = usp;
+		v[1] = topstk;
+		childregs->orig_p0 = -1;
+		childregs->ipend = 0x8000;
+		__asm__ __volatile__("%0 = syscfg;":"=da"(childregs->syscfg):);
+		p->thread.usp = 0;
+	} else {
+		*childregs = *current_pt_regs();
+		childregs->r0 = 0;
+		p->thread.usp = usp ? : rdusp();
+		v[0] = v[1] = 0;
+	}
+
+	p->thread.ksp = (unsigned long)v;
+>>>>>>> refs/remotes/origin/master
 	p->thread.pc = (unsigned long)ret_from_fork;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * sys_execve() executes a new program.
  */
@@ -223,6 +306,8 @@ asmlinkage int sys_execve(const char __user *name,
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long get_wchan(struct task_struct *p)
 {
 	unsigned long fp, pc;
@@ -329,12 +414,22 @@ int in_mem_const(unsigned long addr, unsigned long size,
 {
 	return in_mem_const_off(addr, size, 0, const_addr, const_size);
 }
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BF60x
+#define ASYNC_ENABLED(bnum, bctlnum)	1
+#else
+>>>>>>> refs/remotes/origin/master
 #define ASYNC_ENABLED(bnum, bctlnum) \
 ({ \
 	(bfin_read_EBIU_AMGCTL() & 0xe) < ((bnum + 1) << 1) ? 0 : \
 	bfin_read_EBIU_AMBCTL##bctlnum() & B##bnum##RDYEN ? 0 : \
 	1; \
 })
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 /*
  * We can't read EBIU banks that aren't enabled or we end up hanging
  * on the access to the async space.  Make sure we validate accesses

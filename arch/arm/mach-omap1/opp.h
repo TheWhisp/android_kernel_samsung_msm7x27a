@@ -21,6 +21,14 @@ struct mpu_rate {
 	unsigned long		pll_rate;
 	__u16			ckctl_val;
 	__u16			dpllctl_val;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u32			flags;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32			flags;
+>>>>>>> refs/remotes/origin/master
 };
 
 extern struct mpu_rate omap1_rate_table[];

@@ -4,8 +4,18 @@
 
 menuconfig TIDSPBRIDGE
 	tristate "DSP Bridge driver"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	depends on ARCH_OMAP3
+=======
+	depends on ARCH_OMAP3 && BROKEN
+>>>>>>> refs/remotes/origin/cm-11.0
 	select OMAP_MBOX_FWK
+=======
+	depends on ARCH_OMAP3 && !ARCH_MULTIPLATFORM && BROKEN
+	select MAILBOX
+	select OMAP2PLUS_MBOX
+>>>>>>> refs/remotes/origin/master
 	help
 	  DSP/BIOS Bridge is designed for platforms that contain a GPP and
 	  one or more attached DSPs.  The GPP is considered the master or
@@ -31,12 +41,18 @@ config TIDSPBRIDGE_MEMPOOL_SIZE
 	  Allocate specified size of memory at booting time to avoid allocation
 	  failure under heavy memory fragmentation after some use time.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config TIDSPBRIDGE_DEBUG
 	bool "Debug Support"
 	depends on TIDSPBRIDGE
 	help
 	  Say Y to enable Bridge debugging capabilities
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config TIDSPBRIDGE_RECOVERY
 	bool "Recovery Support"
 	depends on TIDSPBRIDGE
@@ -58,6 +74,8 @@ config TIDSPBRIDGE_CACHE_LINE_CHECK
 	  This can lead to heap corruption. Say Y, to enforce the check for 128
 	  byte alignment, buffers failing this check will be rejected.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config TIDSPBRIDGE_WDT3
 	bool "Enable watchdog timer"
 	depends on TIDSPBRIDGE
@@ -74,11 +92,23 @@ config TIDSPBRIDGE_WDT_TIMEOUT
 	   Watchdog timer timeout value, after that time if the watchdog timer
 	   counter is not reset the wdt overflow interrupt will be triggered
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config TIDSPBRIDGE_NTFY_PWRERR
 	bool "Notify power errors"
 	depends on TIDSPBRIDGE
 	help
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  Enable notifications to registered clients on the event of power errror
+=======
+	  Enable notifications to registered clients on the event of power error
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Enable notifications to registered clients on the event of power error
+>>>>>>> refs/remotes/origin/master
 	  trying to suspend bridge driver. Say Y, to signal this event as a fatal
 	  error, this will require a bridge restart to recover.
 

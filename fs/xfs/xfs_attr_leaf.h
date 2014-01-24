@@ -1,5 +1,9 @@
 /*
  * Copyright (c) 2000,2002-2003,2005 Silicon Graphics, Inc.
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2013 Red Hat, Inc.
+>>>>>>> refs/remotes/origin/master
  * All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -18,6 +22,7 @@
 #ifndef __XFS_ATTR_LEAF_H__
 #define	__XFS_ATTR_LEAF_H__
 
+<<<<<<< HEAD
 /*
  * Attribute storage layout, internal structure, access macros, etc.
  *
@@ -32,12 +37,18 @@ struct attrlist;
 struct attrlist_cursor_kern;
 struct xfs_attr_list_context;
 struct xfs_dabuf;
+=======
+struct attrlist;
+struct attrlist_cursor_kern;
+struct xfs_attr_list_context;
+>>>>>>> refs/remotes/origin/master
 struct xfs_da_args;
 struct xfs_da_state;
 struct xfs_da_state_blk;
 struct xfs_inode;
 struct xfs_trans;
 
+<<<<<<< HEAD
 /*========================================================================
  * Attribute structure when equal to XFS_LBSIZE(mp) bytes.
  *========================================================================*/
@@ -192,6 +203,8 @@ static inline int xfs_attr_leaf_entsize_local_max(int bsize)
 	return (((bsize) >> 1) + ((bsize) >> 2));
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Used to keep a list of "remote value" extents when unlinking an inode.
  */
@@ -215,23 +228,37 @@ int	xfs_attr_shortform_getvalue(struct xfs_da_args *args);
 int	xfs_attr_shortform_to_leaf(struct xfs_da_args *args);
 int	xfs_attr_shortform_remove(struct xfs_da_args *args);
 int	xfs_attr_shortform_list(struct xfs_attr_list_context *context);
+<<<<<<< HEAD
 int	xfs_attr_shortform_allfit(struct xfs_dabuf *bp, struct xfs_inode *dp);
+=======
+int	xfs_attr_shortform_allfit(struct xfs_buf *bp, struct xfs_inode *dp);
+>>>>>>> refs/remotes/origin/master
 int	xfs_attr_shortform_bytesfit(xfs_inode_t *dp, int bytes);
 
 
 /*
  * Internal routines when attribute fork size == XFS_LBSIZE(mp).
  */
+<<<<<<< HEAD
 int	xfs_attr_leaf_to_node(struct xfs_da_args *args);
 int	xfs_attr_leaf_to_shortform(struct xfs_dabuf *bp,
 				   struct xfs_da_args *args, int forkoff);
 int	xfs_attr_leaf_clearflag(struct xfs_da_args *args);
 int	xfs_attr_leaf_setflag(struct xfs_da_args *args);
 int	xfs_attr_leaf_flipflags(xfs_da_args_t *args);
+=======
+int	xfs_attr3_leaf_to_node(struct xfs_da_args *args);
+int	xfs_attr3_leaf_to_shortform(struct xfs_buf *bp,
+				   struct xfs_da_args *args, int forkoff);
+int	xfs_attr3_leaf_clearflag(struct xfs_da_args *args);
+int	xfs_attr3_leaf_setflag(struct xfs_da_args *args);
+int	xfs_attr3_leaf_flipflags(struct xfs_da_args *args);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Routines used for growing the Btree.
  */
+<<<<<<< HEAD
 int	xfs_attr_leaf_split(struct xfs_da_state *state,
 				   struct xfs_da_state_blk *oldblk,
 				   struct xfs_da_state_blk *newblk);
@@ -243,23 +270,60 @@ int	xfs_attr_leaf_add(struct xfs_dabuf *leaf_buffer,
 int	xfs_attr_leaf_remove(struct xfs_dabuf *leaf_buffer,
 				    struct xfs_da_args *args);
 int	xfs_attr_leaf_list_int(struct xfs_dabuf *bp,
+=======
+int	xfs_attr3_leaf_split(struct xfs_da_state *state,
+				   struct xfs_da_state_blk *oldblk,
+				   struct xfs_da_state_blk *newblk);
+int	xfs_attr3_leaf_lookup_int(struct xfs_buf *leaf,
+					struct xfs_da_args *args);
+int	xfs_attr3_leaf_getvalue(struct xfs_buf *bp, struct xfs_da_args *args);
+int	xfs_attr3_leaf_add(struct xfs_buf *leaf_buffer,
+				 struct xfs_da_args *args);
+int	xfs_attr3_leaf_remove(struct xfs_buf *leaf_buffer,
+				    struct xfs_da_args *args);
+int	xfs_attr3_leaf_list_int(struct xfs_buf *bp,
+>>>>>>> refs/remotes/origin/master
 				      struct xfs_attr_list_context *context);
 
 /*
  * Routines used for shrinking the Btree.
  */
+<<<<<<< HEAD
 int	xfs_attr_leaf_toosmall(struct xfs_da_state *state, int *retval);
 void	xfs_attr_leaf_unbalance(struct xfs_da_state *state,
 				       struct xfs_da_state_blk *drop_blk,
 				       struct xfs_da_state_blk *save_blk);
 int	xfs_attr_root_inactive(struct xfs_trans **trans, struct xfs_inode *dp);
+=======
+int	xfs_attr3_leaf_toosmall(struct xfs_da_state *state, int *retval);
+void	xfs_attr3_leaf_unbalance(struct xfs_da_state *state,
+				       struct xfs_da_state_blk *drop_blk,
+				       struct xfs_da_state_blk *save_blk);
+int	xfs_attr3_root_inactive(struct xfs_trans **trans, struct xfs_inode *dp);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Utility routines.
  */
+<<<<<<< HEAD
 xfs_dahash_t	xfs_attr_leaf_lasthash(struct xfs_dabuf *bp, int *count);
 int	xfs_attr_leaf_order(struct xfs_dabuf *leaf1_bp,
 				   struct xfs_dabuf *leaf2_bp);
 int	xfs_attr_leaf_newentsize(int namelen, int valuelen, int blocksize,
 					int *local);
+=======
+xfs_dahash_t	xfs_attr_leaf_lasthash(struct xfs_buf *bp, int *count);
+int	xfs_attr_leaf_order(struct xfs_buf *leaf1_bp,
+				   struct xfs_buf *leaf2_bp);
+int	xfs_attr_leaf_newentsize(int namelen, int valuelen, int blocksize,
+					int *local);
+int	xfs_attr3_leaf_read(struct xfs_trans *tp, struct xfs_inode *dp,
+			xfs_dablk_t bno, xfs_daddr_t mappedbno,
+			struct xfs_buf **bpp);
+void	xfs_attr3_leaf_hdr_from_disk(struct xfs_attr3_icleaf_hdr *to,
+				     struct xfs_attr_leafblock *from);
+void	xfs_attr3_leaf_hdr_to_disk(struct xfs_attr_leafblock *to,
+				   struct xfs_attr3_icleaf_hdr *from);
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* __XFS_ATTR_LEAF_H__ */

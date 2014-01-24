@@ -162,7 +162,11 @@ static irqreturn_t sh_keysc_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit sh_keysc_probe(struct platform_device *pdev)
+=======
+static int sh_keysc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sh_keysc_priv *priv;
 	struct sh_keysc_info *pdata;
@@ -266,13 +270,20 @@ static int __devinit sh_keysc_probe(struct platform_device *pdev)
  err2:
 	iounmap(priv->iomem_base);
  err1:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(priv);
  err0:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit sh_keysc_remove(struct platform_device *pdev)
+=======
+static int sh_keysc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sh_keysc_priv *priv = platform_get_drvdata(pdev);
 
@@ -285,13 +296,24 @@ static int __devexit sh_keysc_remove(struct platform_device *pdev)
 	pm_runtime_put_sync(&pdev->dev);
 	pm_runtime_disable(&pdev->dev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(priv);
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if CONFIG_PM_SLEEP
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int sh_keysc_suspend(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
@@ -331,12 +353,18 @@ static SIMPLE_DEV_PM_OPS(sh_keysc_dev_pm_ops,
 
 static struct platform_driver sh_keysc_device_driver = {
 	.probe		= sh_keysc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(sh_keysc_remove),
+=======
+	.remove		= sh_keysc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "sh_keysc",
 		.pm	= &sh_keysc_dev_pm_ops,
 	}
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init sh_keysc_init(void)
 {
@@ -350,6 +378,12 @@ static void __exit sh_keysc_exit(void)
 
 module_init(sh_keysc_init);
 module_exit(sh_keysc_exit);
+=======
+module_platform_driver(sh_keysc_device_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(sh_keysc_device_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Magnus Damm");
 MODULE_DESCRIPTION("SuperH KEYSC Keypad Driver");

@@ -1213,6 +1213,11 @@ static struct tda18271_std_map tda18271c1_std_map = {
 		      .if_lvl = 1, .rfagc_top = 0x37, }, /* EP3[4:0] 0x1e */
 	.qam_6    = { .if_freq = 4000, .fm_rfn = 0, .agc_mode = 3, .std = 5,
 		      .if_lvl = 1, .rfagc_top = 0x37, }, /* EP3[4:0] 0x1d */
+<<<<<<< HEAD
+=======
+	.qam_7    = { .if_freq = 4500, .fm_rfn = 0, .agc_mode = 3, .std = 6,
+		      .if_lvl = 1, .rfagc_top = 0x37, }, /* EP3[4:0] 0x1e */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.qam_8    = { .if_freq = 5000, .fm_rfn = 0, .agc_mode = 3, .std = 7,
 		      .if_lvl = 1, .rfagc_top = 0x37, }, /* EP3[4:0] 0x1f */
 };
@@ -1244,6 +1249,11 @@ static struct tda18271_std_map tda18271c2_std_map = {
 		      .if_lvl = 1, .rfagc_top = 0x37, }, /* EP3[4:0] 0x1d */
 	.qam_6    = { .if_freq = 4000, .fm_rfn = 0, .agc_mode = 3, .std = 5,
 		      .if_lvl = 1, .rfagc_top = 0x37, }, /* EP3[4:0] 0x1d */
+<<<<<<< HEAD
+=======
+	.qam_7    = { .if_freq = 4500, .fm_rfn = 0, .agc_mode = 3, .std = 6,
+		      .if_lvl = 1, .rfagc_top = 0x37, }, /* EP3[4:0] 0x1e */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.qam_8    = { .if_freq = 5000, .fm_rfn = 0, .agc_mode = 3, .std = 7,
 		      .if_lvl = 1, .rfagc_top = 0x37, }, /* EP3[4:0] 0x1f */
 };

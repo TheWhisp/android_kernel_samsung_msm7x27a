@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +61,11 @@ ACPI_MODULE_NAME("uteval")
  * FUNCTION:    acpi_ut_evaluate_object
  *
  * PARAMETERS:  prefix_node         - Starting node
+<<<<<<< HEAD
  *              Path                - Path to object from starting node
+=======
+ *              path                - Path to object from starting node
+>>>>>>> refs/remotes/origin/master
  *              expected_return_types - Bitmap of allowed return types
  *              return_desc         - Where a return value is stored
  *
@@ -87,7 +99,11 @@ acpi_ut_evaluate_object(struct acpi_namespace_node *prefix_node,
 	}
 
 	info->prefix_node = prefix_node;
+<<<<<<< HEAD
 	info->pathname = path;
+=======
+	info->relative_pathname = path;
+>>>>>>> refs/remotes/origin/master
 
 	/* Evaluate the object/method */
 
@@ -123,22 +139,42 @@ acpi_ut_evaluate_object(struct acpi_namespace_node *prefix_node,
 
 	switch ((info->return_object)->common.type) {
 	case ACPI_TYPE_INTEGER:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return_btype = ACPI_BTYPE_INTEGER;
 		break;
 
 	case ACPI_TYPE_BUFFER:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return_btype = ACPI_BTYPE_BUFFER;
 		break;
 
 	case ACPI_TYPE_STRING:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return_btype = ACPI_BTYPE_STRING;
 		break;
 
 	case ACPI_TYPE_PACKAGE:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return_btype = ACPI_BTYPE_PACKAGE;
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return_btype = 0;
 		break;
 	}
@@ -176,7 +212,11 @@ acpi_ut_evaluate_object(struct acpi_namespace_node *prefix_node,
 
 	*return_desc = info->return_object;
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	ACPI_FREE(info);
 	return_ACPI_STATUS(status);
 }
@@ -187,7 +227,11 @@ acpi_ut_evaluate_object(struct acpi_namespace_node *prefix_node,
  *
  * PARAMETERS:  object_name         - Object name to be evaluated
  *              device_node         - Node for the device
+<<<<<<< HEAD
  *              Value               - Where the value is returned
+=======
+ *              value               - Where the value is returned
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -229,12 +273,21 @@ acpi_ut_evaluate_numeric_object(char *object_name,
  * FUNCTION:    acpi_ut_execute_STA
  *
  * PARAMETERS:  device_node         - Node for the device
+<<<<<<< HEAD
  *              Flags               - Where the status flags are returned
+=======
+ *              flags               - Where the status flags are returned
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
  * DESCRIPTION: Executes _STA for selected device and stores results in
+<<<<<<< HEAD
  *              *Flags.
+=======
+ *              *Flags. If _STA does not exist, then the device is assumed
+ *              to be present/functional/enabled (as per the ACPI spec).
+>>>>>>> refs/remotes/origin/master
  *
  *              NOTE: Internal function, no parameter validation
  *
@@ -252,6 +305,14 @@ acpi_ut_execute_STA(struct acpi_namespace_node *device_node, u32 * flags)
 					 ACPI_BTYPE_INTEGER, &obj_desc);
 	if (ACPI_FAILURE(status)) {
 		if (AE_NOT_FOUND == status) {
+<<<<<<< HEAD
+=======
+			/*
+			 * if _STA does not exist, then (as per the ACPI specification),
+			 * the returned flags will indicate that the device is present,
+			 * functional, and enabled.
+			 */
+>>>>>>> refs/remotes/origin/master
 			ACPI_DEBUG_PRINT((ACPI_DB_EXEC,
 					  "_STA on %4.4s was not found, assuming device is present\n",
 					  acpi_ut_get_node_name(device_node)));

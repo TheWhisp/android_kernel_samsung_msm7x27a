@@ -53,6 +53,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <scsi/sas.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/bitops.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bitops.h>
+>>>>>>> refs/remotes/origin/master
 #include "isci.h"
 #include "port.h"
 #include "remote_device.h"
@@ -61,6 +69,23 @@
 #include "scu_event_codes.h"
 #include "task.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#undef C
+#define C(a) (#a)
+const char *dev_state_name(enum sci_remote_device_states state)
+{
+	static const char * const strings[] = REMOTE_DEV_STATES;
+
+	return strings[state];
+}
+#undef C
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * isci_remote_device_not_ready() - This function is called by the ihost when
  *    the remote device is not ready. We mark the isci device as ready (not
@@ -101,6 +126,13 @@ static void isci_remote_device_not_ready(struct isci_host *ihost,
 		clear_bit(IDEV_IO_READY, &idev->flags);
 		break;
 	}
+=======
+enum sci_status sci_remote_device_suspend(struct isci_remote_device *idev,
+					  enum sci_remote_node_suspension_reasons reason)
+{
+	return sci_remote_node_context_suspend(&idev->rnc, reason,
+					       SCI_SOFTWARE_SUSPEND_EXPECTED_EVENT);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -122,6 +154,7 @@ static void isci_remote_device_ready(struct isci_host *ihost, struct isci_remote
 		wake_up(&ihost->eventq);
 }
 
+<<<<<<< HEAD
 /* called once the remote node context is ready to be freed.
  * The remote device can now report that its stop operation is complete. none
  */
@@ -134,6 +167,31 @@ static void rnc_destruct_done(void *_dev)
 }
 
 static enum sci_status sci_remote_device_terminate_requests(struct isci_remote_device *idev)
+=======
+static enum sci_status sci_remote_device_terminate_req(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev,
+	int check_abort,
+	struct isci_request *ireq)
+{
+	if (!test_bit(IREQ_ACTIVE, &ireq->flags) ||
+	    (ireq->target_device != idev) ||
+	    (check_abort && !test_bit(IREQ_PENDING_ABORT, &ireq->flags)))
+		return SCI_SUCCESS;
+
+	dev_dbg(&ihost->pdev->dev,
+		"%s: idev=%p; flags=%lx; req=%p; req target=%p\n",
+		__func__, idev, idev->flags, ireq, ireq->target_device);
+
+	set_bit(IREQ_ABORT_PATH_ACTIVE, &ireq->flags);
+
+	return sci_controller_terminate_request(ihost, idev, ireq);
+}
+
+static enum sci_status sci_remote_device_terminate_reqs_checkabort(
+	struct isci_remote_device *idev,
+	int chk)
+>>>>>>> refs/remotes/origin/master
 {
 	struct isci_host *ihost = idev->owning_port->owning_controller;
 	enum sci_status status  = SCI_SUCCESS;
@@ -143,6 +201,7 @@ static enum sci_status sci_remote_device_terminate_requests(struct isci_remote_d
 		struct isci_request *ireq = ihost->reqs[i];
 		enum sci_status s;
 
+<<<<<<< HEAD
 		if (!test_bit(IREQ_ACTIVE, &ireq->flags) ||
 		    ireq->target_device != idev)
 			continue;
@@ -155,6 +214,212 @@ static enum sci_status sci_remote_device_terminate_requests(struct isci_remote_d
 	return status;
 }
 
+=======
+		s = sci_remote_device_terminate_req(ihost, idev, chk, ireq);
+		if (s != SCI_SUCCESS)
+			status = s;
+	}
+	return status;
+}
+
+static bool isci_compare_suspendcount(
+	struct isci_remote_device *idev,
+	u32 localcount)
+{
+	smp_rmb();
+
+	/* Check for a change in the suspend count, or the RNC
+	 * being destroyed.
+	 */
+	return (localcount != idev->rnc.suspend_count)
+	    || sci_remote_node_context_is_being_destroyed(&idev->rnc);
+}
+
+static bool isci_check_reqterm(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev,
+	struct isci_request *ireq,
+	u32 localcount)
+{
+	unsigned long flags;
+	bool res;
+
+	spin_lock_irqsave(&ihost->scic_lock, flags);
+	res = isci_compare_suspendcount(idev, localcount)
+		&& !test_bit(IREQ_ABORT_PATH_ACTIVE, &ireq->flags);
+	spin_unlock_irqrestore(&ihost->scic_lock, flags);
+
+	return res;
+}
+
+static bool isci_check_devempty(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev,
+	u32 localcount)
+{
+	unsigned long flags;
+	bool res;
+
+	spin_lock_irqsave(&ihost->scic_lock, flags);
+	res = isci_compare_suspendcount(idev, localcount)
+		&& idev->started_request_count == 0;
+	spin_unlock_irqrestore(&ihost->scic_lock, flags);
+
+	return res;
+}
+
+enum sci_status isci_remote_device_terminate_requests(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev,
+	struct isci_request *ireq)
+{
+	enum sci_status status = SCI_SUCCESS;
+	unsigned long flags;
+	u32 rnc_suspend_count;
+
+	spin_lock_irqsave(&ihost->scic_lock, flags);
+
+	if (isci_get_device(idev) == NULL) {
+		dev_dbg(&ihost->pdev->dev, "%s: failed isci_get_device(idev=%p)\n",
+			__func__, idev);
+		spin_unlock_irqrestore(&ihost->scic_lock, flags);
+		status = SCI_FAILURE;
+	} else {
+		/* If already suspended, don't wait for another suspension. */
+		smp_rmb();
+		rnc_suspend_count
+			= sci_remote_node_context_is_suspended(&idev->rnc)
+				? 0 : idev->rnc.suspend_count;
+
+		dev_dbg(&ihost->pdev->dev,
+			"%s: idev=%p, ireq=%p; started_request_count=%d, "
+				"rnc_suspend_count=%d, rnc.suspend_count=%d"
+				"about to wait\n",
+			__func__, idev, ireq, idev->started_request_count,
+			rnc_suspend_count, idev->rnc.suspend_count);
+
+		#define MAX_SUSPEND_MSECS 10000
+		if (ireq) {
+			/* Terminate a specific TC. */
+			set_bit(IREQ_NO_AUTO_FREE_TAG, &ireq->flags);
+			sci_remote_device_terminate_req(ihost, idev, 0, ireq);
+			spin_unlock_irqrestore(&ihost->scic_lock, flags);
+			if (!wait_event_timeout(ihost->eventq,
+						isci_check_reqterm(ihost, idev, ireq,
+								   rnc_suspend_count),
+						msecs_to_jiffies(MAX_SUSPEND_MSECS))) {
+
+				dev_warn(&ihost->pdev->dev, "%s host%d timeout single\n",
+					 __func__, ihost->id);
+				dev_dbg(&ihost->pdev->dev,
+					 "%s: ******* Timeout waiting for "
+					 "suspend; idev=%p, current state %s; "
+					 "started_request_count=%d, flags=%lx\n\t"
+					 "rnc_suspend_count=%d, rnc.suspend_count=%d "
+					 "RNC: current state %s, current "
+					 "suspend_type %x dest state %d;\n"
+					 "ireq=%p, ireq->flags = %lx\n",
+					 __func__, idev,
+					 dev_state_name(idev->sm.current_state_id),
+					 idev->started_request_count, idev->flags,
+					 rnc_suspend_count, idev->rnc.suspend_count,
+					 rnc_state_name(idev->rnc.sm.current_state_id),
+					 idev->rnc.suspend_type,
+					 idev->rnc.destination_state,
+					 ireq, ireq->flags);
+			}
+			spin_lock_irqsave(&ihost->scic_lock, flags);
+			clear_bit(IREQ_NO_AUTO_FREE_TAG, &ireq->flags);
+			if (!test_bit(IREQ_ABORT_PATH_ACTIVE, &ireq->flags))
+				isci_free_tag(ihost, ireq->io_tag);
+			spin_unlock_irqrestore(&ihost->scic_lock, flags);
+		} else {
+			/* Terminate all TCs. */
+			sci_remote_device_terminate_requests(idev);
+			spin_unlock_irqrestore(&ihost->scic_lock, flags);
+			if (!wait_event_timeout(ihost->eventq,
+						isci_check_devempty(ihost, idev,
+								    rnc_suspend_count),
+						msecs_to_jiffies(MAX_SUSPEND_MSECS))) {
+
+				dev_warn(&ihost->pdev->dev, "%s host%d timeout all\n",
+					 __func__, ihost->id);
+				dev_dbg(&ihost->pdev->dev,
+					"%s: ******* Timeout waiting for "
+					"suspend; idev=%p, current state %s; "
+					"started_request_count=%d, flags=%lx\n\t"
+					"rnc_suspend_count=%d, "
+					"RNC: current state %s, "
+					"rnc.suspend_count=%d, current "
+					"suspend_type %x dest state %d\n",
+					__func__, idev,
+					dev_state_name(idev->sm.current_state_id),
+					idev->started_request_count, idev->flags,
+					rnc_suspend_count,
+					rnc_state_name(idev->rnc.sm.current_state_id),
+					idev->rnc.suspend_count,
+					idev->rnc.suspend_type,
+					idev->rnc.destination_state);
+			}
+		}
+		dev_dbg(&ihost->pdev->dev, "%s: idev=%p, wait done\n",
+			__func__, idev);
+		isci_put_device(idev);
+	}
+	return status;
+}
+
+/**
+* isci_remote_device_not_ready() - This function is called by the ihost when
+*    the remote device is not ready. We mark the isci device as ready (not
+*    "ready_for_io") and signal the waiting proccess.
+* @isci_host: This parameter specifies the isci host object.
+* @isci_device: This parameter specifies the remote device
+*
+* sci_lock is held on entrance to this function.
+*/
+static void isci_remote_device_not_ready(struct isci_host *ihost,
+					 struct isci_remote_device *idev,
+					 u32 reason)
+{
+	dev_dbg(&ihost->pdev->dev,
+		"%s: isci_device = %p; reason = %d\n", __func__, idev, reason);
+
+	switch (reason) {
+	case SCIC_REMOTE_DEVICE_NOT_READY_SATA_SDB_ERROR_FIS_RECEIVED:
+		set_bit(IDEV_IO_NCQERROR, &idev->flags);
+
+		/* Suspend the remote device so the I/O can be terminated. */
+		sci_remote_device_suspend(idev, SCI_SW_SUSPEND_NORMAL);
+
+		/* Kill all outstanding requests for the device. */
+		sci_remote_device_terminate_requests(idev);
+
+		/* Fall through into the default case... */
+	default:
+		clear_bit(IDEV_IO_READY, &idev->flags);
+		break;
+	}
+}
+
+/* called once the remote node context is ready to be freed.
+ * The remote device can now report that its stop operation is complete. none
+ */
+static void rnc_destruct_done(void *_dev)
+{
+	struct isci_remote_device *idev = _dev;
+
+	BUG_ON(idev->started_request_count != 0);
+	sci_change_state(&idev->sm, SCI_DEV_STOPPED);
+}
+
+enum sci_status sci_remote_device_terminate_requests(
+	struct isci_remote_device *idev)
+{
+	return sci_remote_device_terminate_reqs_checkabort(idev, 0);
+}
+
+>>>>>>> refs/remotes/origin/master
 enum sci_status sci_remote_device_stop(struct isci_remote_device *idev,
 					u32 timeout)
 {
@@ -166,8 +431,18 @@ enum sci_status sci_remote_device_stop(struct isci_remote_device *idev,
 	case SCI_DEV_FAILED:
 	case SCI_DEV_FINAL:
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %d\n",
 			 __func__, state);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/master
 		return SCI_FAILURE_INVALID_STATE;
 	case SCI_DEV_STOPPED:
 		return SCI_SUCCESS;
@@ -190,6 +465,7 @@ enum sci_status sci_remote_device_stop(struct isci_remote_device *idev,
 	case SCI_SMP_DEV_IDLE:
 	case SCI_SMP_DEV_CMD:
 		sci_change_state(sm, SCI_DEV_STOPPING);
+<<<<<<< HEAD
 		if (idev->started_request_count == 0) {
 			sci_remote_node_context_destruct(&idev->rnc,
 							      rnc_destruct_done, idev);
@@ -197,6 +473,18 @@ enum sci_status sci_remote_device_stop(struct isci_remote_device *idev,
 		} else
 			return sci_remote_device_terminate_requests(idev);
 		break;
+=======
+		if (idev->started_request_count == 0)
+			sci_remote_node_context_destruct(&idev->rnc,
+							 rnc_destruct_done,
+							 idev);
+		else {
+			sci_remote_device_suspend(
+				idev, SCI_SW_SUSPEND_LINKHANG_DETECT);
+			sci_remote_device_terminate_requests(idev);
+		}
+		return SCI_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 	case SCI_DEV_STOPPING:
 		/* All requests should have been terminated, but if there is an
 		 * attempt to stop a device already in the stopping state, then
@@ -225,8 +513,18 @@ enum sci_status sci_remote_device_reset(struct isci_remote_device *idev)
 	case SCI_DEV_RESETTING:
 	case SCI_DEV_FINAL:
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %d\n",
 			 __func__, state);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/master
 		return SCI_FAILURE_INVALID_STATE;
 	case SCI_DEV_READY:
 	case SCI_STP_DEV_IDLE:
@@ -245,8 +543,18 @@ enum sci_status sci_remote_device_reset_complete(struct isci_remote_device *idev
 	enum sci_remote_device_states state = sm->current_state_id;
 
 	if (state != SCI_DEV_RESETTING) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %d\n",
 			 __func__, state);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/master
 		return SCI_FAILURE_INVALID_STATE;
 	}
 
@@ -254,6 +562,7 @@ enum sci_status sci_remote_device_reset_complete(struct isci_remote_device *idev
 	return SCI_SUCCESS;
 }
 
+<<<<<<< HEAD
 enum sci_status sci_remote_device_suspend(struct isci_remote_device *idev,
 					       u32 suspend_type)
 {
@@ -261,8 +570,13 @@ enum sci_status sci_remote_device_suspend(struct isci_remote_device *idev,
 	enum sci_remote_device_states state = sm->current_state_id;
 
 	if (state != SCI_STP_DEV_CMD) {
+<<<<<<< HEAD
 		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %d\n",
 			 __func__, state);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/cm-10.0
 		return SCI_FAILURE_INVALID_STATE;
 	}
 
@@ -270,6 +584,8 @@ enum sci_status sci_remote_device_suspend(struct isci_remote_device *idev,
 						    suspend_type, NULL, NULL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum sci_status sci_remote_device_frame_handler(struct isci_remote_device *idev,
 						     u32 frame_index)
 {
@@ -286,8 +602,18 @@ enum sci_status sci_remote_device_frame_handler(struct isci_remote_device *idev,
 	case SCI_SMP_DEV_IDLE:
 	case SCI_DEV_FINAL:
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %d\n",
 			 __func__, state);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/master
 		/* Return the frame back to the controller */
 		sci_controller_release_frame(ihost, frame_index);
 		return SCI_FAILURE_INVALID_STATE;
@@ -386,12 +712,39 @@ static bool is_remote_device_ready(struct isci_remote_device *idev)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * called once the remote node context has transisitioned to a ready
+ * state (after suspending RX and/or TX due to early D2H fis)
+ */
+static void atapi_remote_device_resume_done(void *_dev)
+{
+	struct isci_remote_device *idev = _dev;
+	struct isci_request *ireq = idev->working_request;
+
+	sci_change_state(&ireq->sm, SCI_REQ_COMPLETED);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 enum sci_status sci_remote_device_event_handler(struct isci_remote_device *idev,
 						     u32 event_code)
 {
 	struct sci_base_state_machine *sm = &idev->sm;
 	enum sci_remote_device_states state = sm->current_state_id;
 	enum sci_status status;
+=======
+enum sci_status sci_remote_device_event_handler(struct isci_remote_device *idev,
+						     u32 event_code)
+{
+	enum sci_status status;
+	struct sci_base_state_machine *sm = &idev->sm;
+	enum sci_remote_device_states state = sm->current_state_id;
+>>>>>>> refs/remotes/origin/master
 
 	switch (scu_get_event_type(event_code)) {
 	case SCU_EVENT_TYPE_RNC_OPS_MISC:
@@ -404,9 +757,13 @@ enum sci_status sci_remote_device_event_handler(struct isci_remote_device *idev,
 			status = SCI_SUCCESS;
 
 			/* Suspend the associated RNC */
+<<<<<<< HEAD
 			sci_remote_node_context_suspend(&idev->rnc,
 							      SCI_SOFTWARE_SUSPENSION,
 							      NULL, NULL);
+=======
+			sci_remote_device_suspend(idev, SCI_SW_SUSPEND_NORMAL);
+>>>>>>> refs/remotes/origin/master
 
 			dev_dbg(scirdev_to_dev(idev),
 				"%s: device: %p event code: %x: %s\n",
@@ -432,6 +789,29 @@ enum sci_status sci_remote_device_event_handler(struct isci_remote_device *idev,
 	if (status != SCI_SUCCESS)
 		return status;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+	/* Decode device-specific states that may require an RNC resume during
+	 * normal operation.  When the abort path is active, these resumes are
+	 * managed when the abort path exits.
+	 */
+>>>>>>> refs/remotes/origin/master
+	if (state == SCI_STP_DEV_ATAPI_ERROR) {
+		/* For ATAPI error state resume the RNC right away. */
+		if (scu_get_event_type(event_code) == SCU_EVENT_TYPE_RNC_SUSPEND_TX ||
+		    scu_get_event_type(event_code) == SCU_EVENT_TYPE_RNC_SUSPEND_TX_RX) {
+			return sci_remote_node_context_resume(&idev->rnc,
+							      atapi_remote_device_resume_done,
+							      idev);
+		}
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (state == SCI_STP_DEV_IDLE) {
 
 		/* We pick up suspension events to handle specifically to this
@@ -479,8 +859,18 @@ enum sci_status sci_remote_device_start_io(struct isci_host *ihost,
 	case SCI_DEV_RESETTING:
 	case SCI_DEV_FINAL:
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %d\n",
 			 __func__, state);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/master
 		return SCI_FAILURE_INVALID_STATE;
 	case SCI_DEV_READY:
 		/* attempt to start an io request for this device object. The remote
@@ -614,8 +1004,18 @@ enum sci_status sci_remote_device_complete_io(struct isci_host *ihost,
 	case SCI_DEV_FAILED:
 	case SCI_DEV_FINAL:
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %d\n",
 			 __func__, state);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/master
 		return SCI_FAILURE_INVALID_STATE;
 	case SCI_DEV_READY:
 	case SCI_STP_DEV_AWAIT_RESET:
@@ -625,6 +1025,14 @@ enum sci_status sci_remote_device_complete_io(struct isci_host *ihost,
 	case SCI_STP_DEV_CMD:
 	case SCI_STP_DEV_NCQ:
 	case SCI_STP_DEV_NCQ_ERROR:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SCI_STP_DEV_ATAPI_ERROR:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SCI_STP_DEV_ATAPI_ERROR:
+>>>>>>> refs/remotes/origin/master
 		status = common_complete_io(iport, idev, ireq);
 		if (status != SCI_SUCCESS)
 			break;
@@ -697,8 +1105,18 @@ enum sci_status sci_remote_device_start_task(struct isci_host *ihost,
 	case SCI_DEV_RESETTING:
 	case SCI_DEV_FINAL:
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %d\n",
 			 __func__, state);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/master
 		return SCI_FAILURE_INVALID_STATE;
 	case SCI_STP_DEV_IDLE:
 	case SCI_STP_DEV_CMD:
@@ -709,10 +1127,13 @@ enum sci_status sci_remote_device_start_task(struct isci_host *ihost,
 		if (status != SCI_SUCCESS)
 			return status;
 
+<<<<<<< HEAD
 		status = sci_remote_node_context_start_task(&idev->rnc, ireq);
 		if (status != SCI_SUCCESS)
 			goto out;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		status = sci_request_start(ireq);
 		if (status != SCI_SUCCESS)
 			goto out;
@@ -731,11 +1152,19 @@ enum sci_status sci_remote_device_start_task(struct isci_host *ihost,
 		 * the correct action when the remote node context is suspended
 		 * and later resumed.
 		 */
+<<<<<<< HEAD
 		sci_remote_node_context_suspend(&idev->rnc,
 				SCI_SOFTWARE_SUSPENSION, NULL, NULL);
 		sci_remote_node_context_resume(&idev->rnc,
 				sci_remote_device_continue_request,
 						    idev);
+=======
+		sci_remote_device_suspend(idev,
+					  SCI_SW_SUSPEND_LINKHANG_DETECT);
+
+		status = sci_remote_node_context_start_task(&idev->rnc, ireq,
+				sci_remote_device_continue_request, idev);
+>>>>>>> refs/remotes/origin/master
 
 	out:
 		sci_remote_device_start_request(idev, ireq, status);
@@ -749,7 +1178,13 @@ enum sci_status sci_remote_device_start_task(struct isci_host *ihost,
 		if (status != SCI_SUCCESS)
 			return status;
 
+<<<<<<< HEAD
 		status = sci_remote_node_context_start_task(&idev->rnc, ireq);
+=======
+		/* Resume the RNC as needed: */
+		status = sci_remote_node_context_start_task(&idev->rnc, ireq,
+							    NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (status != SCI_SUCCESS)
 			break;
 
@@ -829,8 +1264,18 @@ static enum sci_status sci_remote_device_destruct(struct isci_remote_device *ide
 	struct isci_host *ihost;
 
 	if (state != SCI_DEV_STOPPED) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %d\n",
 			 __func__, state);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/master
 		return SCI_FAILURE_INVALID_STATE;
 	}
 
@@ -858,7 +1303,11 @@ static void isci_remote_device_deconstruct(struct isci_host *ihost, struct isci_
 	 * here should go through isci_remote_device_nuke_requests.
 	 * If we hit this condition, we will need a way to complete
 	 * io requests in process */
+<<<<<<< HEAD
 	BUG_ON(!list_empty(&idev->reqs_in_process));
+=======
+	BUG_ON(idev->started_request_count > 0);
+>>>>>>> refs/remotes/origin/master
 
 	sci_remote_device_destruct(idev);
 	list_del_init(&idev->node);
@@ -896,7 +1345,11 @@ static void sci_remote_device_ready_state_enter(struct sci_base_state_machine *s
 	struct isci_host *ihost = idev->owning_port->owning_controller;
 	struct domain_device *dev = idev->domain_dev;
 
+<<<<<<< HEAD
 	if (dev->dev_type == SATA_DEV || (dev->tproto & SAS_PROTOCOL_SATA)) {
+=======
+	if (dev->dev_type == SAS_SATA_DEV || (dev->tproto & SAS_PROTOCOL_SATA)) {
+>>>>>>> refs/remotes/origin/master
 		sci_change_state(&idev->sm, SCI_STP_DEV_IDLE);
 	} else if (dev_is_expander(dev)) {
 		sci_change_state(&idev->sm, SCI_SMP_DEV_IDLE);
@@ -909,7 +1362,11 @@ static void sci_remote_device_ready_state_exit(struct sci_base_state_machine *sm
 	struct isci_remote_device *idev = container_of(sm, typeof(*idev), sm);
 	struct domain_device *dev = idev->domain_dev;
 
+<<<<<<< HEAD
 	if (dev->dev_type == SAS_END_DEV) {
+=======
+	if (dev->dev_type == SAS_END_DEVICE) {
+>>>>>>> refs/remotes/origin/master
 		struct isci_host *ihost = idev->owning_port->owning_controller;
 
 		isci_remote_device_not_ready(ihost, idev,
@@ -920,14 +1377,30 @@ static void sci_remote_device_ready_state_exit(struct sci_base_state_machine *sm
 static void sci_remote_device_resetting_state_enter(struct sci_base_state_machine *sm)
 {
 	struct isci_remote_device *idev = container_of(sm, typeof(*idev), sm);
+<<<<<<< HEAD
 
 	sci_remote_node_context_suspend(
 		&idev->rnc, SCI_SOFTWARE_SUSPENSION, NULL, NULL);
+=======
+	struct isci_host *ihost = idev->owning_port->owning_controller;
+
+	dev_dbg(&ihost->pdev->dev,
+		"%s: isci_device = %p\n", __func__, idev);
+
+	sci_remote_device_suspend(idev, SCI_SW_SUSPEND_LINKHANG_DETECT);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sci_remote_device_resetting_state_exit(struct sci_base_state_machine *sm)
 {
 	struct isci_remote_device *idev = container_of(sm, typeof(*idev), sm);
+<<<<<<< HEAD
+=======
+	struct isci_host *ihost = idev->owning_port->owning_controller;
+
+	dev_dbg(&ihost->pdev->dev,
+		"%s: isci_device = %p\n", __func__, idev);
+>>>>>>> refs/remotes/origin/master
 
 	sci_remote_node_context_resume(&idev->rnc, NULL, NULL);
 }
@@ -1020,6 +1493,14 @@ static const struct sci_base_state sci_remote_device_state_table[] = {
 	[SCI_STP_DEV_NCQ_ERROR] = {
 		.enter_state = sci_stp_remote_device_ready_ncq_error_substate_enter,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	[SCI_STP_DEV_ATAPI_ERROR] = { },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[SCI_STP_DEV_ATAPI_ERROR] = { },
+>>>>>>> refs/remotes/origin/master
 	[SCI_STP_DEV_AWAIT_RESET] = { },
 	[SCI_SMP_DEV_IDLE] = {
 		.enter_state = sci_smp_remote_device_ready_idle_substate_enter,
@@ -1077,6 +1558,11 @@ static enum sci_status sci_remote_device_da_construct(struct isci_port *iport,
 						       struct isci_remote_device *idev)
 {
 	enum sci_status status;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct sci_port_properties properties;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct domain_device *dev = idev->domain_dev;
 
 	sci_remote_device_construct(iport, idev);
@@ -1086,13 +1572,34 @@ static enum sci_status sci_remote_device_da_construct(struct isci_port *iport,
 	 * entries will be needed to store the remote node.
 	 */
 	idev->is_direct_attached = true;
+<<<<<<< HEAD
+=======
+
+=======
+	struct sci_port_properties properties;
+
+	sci_remote_device_construct(iport, idev);
+
+>>>>>>> refs/remotes/origin/master
+	sci_port_get_properties(iport, &properties);
+	/* Get accurate port width from port's phy mask for a DA device. */
+	idev->device_port_width = hweight32(properties.phy_mask);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	status = sci_controller_allocate_remote_node_context(iport->owning_controller,
 								  idev,
 								  &idev->rnc.remote_node_index);
+=======
+	status = sci_controller_allocate_remote_node_context(iport->owning_controller,
+							     idev,
+							     &idev->rnc.remote_node_index);
+>>>>>>> refs/remotes/origin/master
 
 	if (status != SCI_SUCCESS)
 		return status;
 
+<<<<<<< HEAD
 	if (dev->dev_type == SAS_END_DEV || dev->dev_type == SATA_DEV ||
 	    (dev->tproto & SAS_PROTOCOL_STP) || dev_is_expander(dev))
 		/* pass */;
@@ -1101,9 +1608,16 @@ static enum sci_status sci_remote_device_da_construct(struct isci_port *iport,
 
 	idev->connection_rate = sci_port_get_max_allowed_speed(iport);
 
+<<<<<<< HEAD
 	/* / @todo Should I assign the port width by reading all of the phys on the port? */
 	idev->device_port_width = 1;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	idev->connection_rate = sci_port_get_max_allowed_speed(iport);
+
+>>>>>>> refs/remotes/origin/master
 	return SCI_SUCCESS;
 }
 
@@ -1133,6 +1647,7 @@ static enum sci_status sci_remote_device_ea_construct(struct isci_port *iport,
 	if (status != SCI_SUCCESS)
 		return status;
 
+<<<<<<< HEAD
 	if (dev->dev_type == SAS_END_DEV || dev->dev_type == SATA_DEV ||
 	    (dev->tproto & SAS_PROTOCOL_STP) || dev_is_expander(dev))
 		/* pass */;
@@ -1141,11 +1656,19 @@ static enum sci_status sci_remote_device_ea_construct(struct isci_port *iport,
 
 	/*
 	 * For SAS-2 the physical link rate is actually a logical link
+=======
+	/* For SAS-2 the physical link rate is actually a logical link
+>>>>>>> refs/remotes/origin/master
 	 * rate that incorporates multiplexing.  The SCU doesn't
 	 * incorporate multiplexing and for the purposes of the
 	 * connection the logical link rate is that same as the
 	 * physical.  Furthermore, the SAS-2 and SAS-1.1 fields overlay
+<<<<<<< HEAD
 	 * one another, so this code works for both situations. */
+=======
+	 * one another, so this code works for both situations.
+	 */
+>>>>>>> refs/remotes/origin/master
 	idev->connection_rate = min_t(u16, sci_port_get_max_allowed_speed(iport),
 					 dev->linkrate);
 
@@ -1155,6 +1678,108 @@ static enum sci_status sci_remote_device_ea_construct(struct isci_port *iport,
 	return SCI_SUCCESS;
 }
 
+<<<<<<< HEAD
+=======
+enum sci_status sci_remote_device_resume(
+	struct isci_remote_device *idev,
+	scics_sds_remote_node_context_callback cb_fn,
+	void *cb_p)
+{
+	enum sci_status status;
+
+	status = sci_remote_node_context_resume(&idev->rnc, cb_fn, cb_p);
+	if (status != SCI_SUCCESS)
+		dev_dbg(scirdev_to_dev(idev), "%s: failed to resume: %d\n",
+			__func__, status);
+	return status;
+}
+
+static void isci_remote_device_resume_from_abort_complete(void *cbparam)
+{
+	struct isci_remote_device *idev = cbparam;
+	struct isci_host *ihost = idev->owning_port->owning_controller;
+	scics_sds_remote_node_context_callback abort_resume_cb =
+		idev->abort_resume_cb;
+
+	dev_dbg(scirdev_to_dev(idev), "%s: passing-along resume: %p\n",
+		__func__, abort_resume_cb);
+
+	if (abort_resume_cb != NULL) {
+		idev->abort_resume_cb = NULL;
+		abort_resume_cb(idev->abort_resume_cbparam);
+	}
+	clear_bit(IDEV_ABORT_PATH_RESUME_PENDING, &idev->flags);
+	wake_up(&ihost->eventq);
+}
+
+static bool isci_remote_device_test_resume_done(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev)
+{
+	unsigned long flags;
+	bool done;
+
+	spin_lock_irqsave(&ihost->scic_lock, flags);
+	done = !test_bit(IDEV_ABORT_PATH_RESUME_PENDING, &idev->flags)
+		|| test_bit(IDEV_STOP_PENDING, &idev->flags)
+		|| sci_remote_node_context_is_being_destroyed(&idev->rnc);
+	spin_unlock_irqrestore(&ihost->scic_lock, flags);
+
+	return done;
+}
+
+void isci_remote_device_wait_for_resume_from_abort(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev)
+{
+	dev_dbg(&ihost->pdev->dev, "%s: starting resume wait: %p\n",
+		 __func__, idev);
+
+	#define MAX_RESUME_MSECS 10000
+	if (!wait_event_timeout(ihost->eventq,
+				isci_remote_device_test_resume_done(ihost, idev),
+				msecs_to_jiffies(MAX_RESUME_MSECS))) {
+
+		dev_warn(&ihost->pdev->dev, "%s: #### Timeout waiting for "
+			 "resume: %p\n", __func__, idev);
+	}
+	clear_bit(IDEV_ABORT_PATH_RESUME_PENDING, &idev->flags);
+
+	dev_dbg(&ihost->pdev->dev, "%s: resume wait done: %p\n",
+		 __func__, idev);
+}
+
+enum sci_status isci_remote_device_resume_from_abort(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev)
+{
+	unsigned long flags;
+	enum sci_status status = SCI_SUCCESS;
+	int destroyed;
+
+	spin_lock_irqsave(&ihost->scic_lock, flags);
+	/* Preserve any current resume callbacks, for instance from other
+	 * resumptions.
+	 */
+	idev->abort_resume_cb = idev->rnc.user_callback;
+	idev->abort_resume_cbparam = idev->rnc.user_cookie;
+	set_bit(IDEV_ABORT_PATH_RESUME_PENDING, &idev->flags);
+	clear_bit(IDEV_ABORT_PATH_ACTIVE, &idev->flags);
+	destroyed = sci_remote_node_context_is_being_destroyed(&idev->rnc);
+	if (!destroyed)
+		status = sci_remote_device_resume(
+			idev, isci_remote_device_resume_from_abort_complete,
+			idev);
+	spin_unlock_irqrestore(&ihost->scic_lock, flags);
+	if (!destroyed && (status == SCI_SUCCESS))
+		isci_remote_device_wait_for_resume_from_abort(ihost, idev);
+	else
+		clear_bit(IDEV_ABORT_PATH_RESUME_PENDING, &idev->flags);
+
+	return status;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * sci_remote_device_start() - This method will start the supplied remote
  *    device.  This method enables normal IO requests to flow through to the
@@ -1169,21 +1794,40 @@ static enum sci_status sci_remote_device_ea_construct(struct isci_port *iport,
  * the device when there have been no phys added to it.
  */
 static enum sci_status sci_remote_device_start(struct isci_remote_device *idev,
+<<<<<<< HEAD
 						u32 timeout)
+=======
+					       u32 timeout)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sci_base_state_machine *sm = &idev->sm;
 	enum sci_remote_device_states state = sm->current_state_id;
 	enum sci_status status;
 
 	if (state != SCI_DEV_STOPPED) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %d\n",
 			 __func__, state);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+>>>>>>> refs/remotes/origin/cm-10.0
 		return SCI_FAILURE_INVALID_STATE;
 	}
 
 	status = sci_remote_node_context_resume(&idev->rnc,
 						     remote_device_resume_done,
 						     idev);
+=======
+		dev_warn(scirdev_to_dev(idev), "%s: in wrong state: %s\n",
+			 __func__, dev_state_name(state));
+		return SCI_FAILURE_INVALID_STATE;
+	}
+
+	status = sci_remote_device_resume(idev, remote_device_resume_done,
+					  idev);
+>>>>>>> refs/remotes/origin/master
 	if (status != SCI_SUCCESS)
 		return status;
 
@@ -1221,6 +1865,7 @@ static enum sci_status isci_remote_device_construct(struct isci_port *iport,
 	return status;
 }
 
+<<<<<<< HEAD
 void isci_remote_device_nuke_requests(struct isci_host *ihost, struct isci_remote_device *idev)
 {
 	DECLARE_COMPLETION_ONSTACK(aborted_task_completion);
@@ -1235,6 +1880,8 @@ void isci_remote_device_nuke_requests(struct isci_host *ihost, struct isci_remot
 		"%s: idev = %p, done\n", __func__, idev);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * This function builds the isci_remote_device when a libsas dev_found message
  *    is received.
@@ -1259,10 +1906,13 @@ isci_remote_device_alloc(struct isci_host *ihost, struct isci_port *iport)
 		dev_warn(&ihost->pdev->dev, "%s: failed\n", __func__);
 		return NULL;
 	}
+<<<<<<< HEAD
 
 	if (WARN_ONCE(!list_empty(&idev->reqs_in_process), "found requests in process\n"))
 		return NULL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (WARN_ONCE(!list_empty(&idev->node), "found non-idle remote device\n"))
 		return NULL;
 
@@ -1280,7 +1930,13 @@ void isci_remote_device_release(struct kref *kref)
 	clear_bit(IDEV_STOP_PENDING, &idev->flags);
 	clear_bit(IDEV_IO_READY, &idev->flags);
 	clear_bit(IDEV_GONE, &idev->flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clear_bit(IDEV_EH, &idev->flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	smp_mb__before_clear_bit();
 	clear_bit(IDEV_ALLOCATED, &idev->flags);
 	wake_up(&ihost->eventq);
@@ -1305,6 +1961,7 @@ enum sci_status isci_remote_device_stop(struct isci_host *ihost, struct isci_rem
 	spin_lock_irqsave(&ihost->scic_lock, flags);
 	idev->domain_dev->lldd_dev = NULL; /* disable new lookups */
 	set_bit(IDEV_GONE, &idev->flags);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&ihost->scic_lock, flags);
 
 	/* Kill all outstanding requests. */
@@ -1313,6 +1970,10 @@ enum sci_status isci_remote_device_stop(struct isci_host *ihost, struct isci_rem
 	set_bit(IDEV_STOP_PENDING, &idev->flags);
 
 	spin_lock_irqsave(&ihost->scic_lock, flags);
+=======
+
+	set_bit(IDEV_STOP_PENDING, &idev->flags);
+>>>>>>> refs/remotes/origin/master
 	status = sci_remote_device_stop(idev, 50);
 	spin_unlock_irqrestore(&ihost->scic_lock, flags);
 
@@ -1322,6 +1983,12 @@ enum sci_status isci_remote_device_stop(struct isci_host *ihost, struct isci_rem
 	else
 		wait_for_device_stop(ihost, idev);
 
+<<<<<<< HEAD
+=======
+	dev_dbg(&ihost->pdev->dev,
+		"%s: isci_device = %p, waiting done.\n", __func__, idev);
+
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -1353,6 +2020,8 @@ void isci_remote_device_gone(struct domain_device *dev)
  *
  * status, zero indicates success.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int isci_remote_device_found(struct domain_device *domain_dev)
 {
 	struct isci_host *isci_host = dev_to_ihost(domain_dev);
@@ -1360,10 +2029,23 @@ int isci_remote_device_found(struct domain_device *domain_dev)
 	struct isci_phy *isci_phy;
 	struct asd_sas_port *sas_port;
 	struct asd_sas_phy *sas_phy;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int isci_remote_device_found(struct domain_device *dev)
+{
+	struct isci_host *isci_host = dev_to_ihost(dev);
+	struct isci_port *isci_port = dev->port->lldd_port;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct isci_remote_device *isci_device;
 	enum sci_status status;
 
 	dev_dbg(&isci_host->pdev->dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		"%s: domain_device = %p\n", __func__, domain_dev);
 
 	wait_for_start(isci_host);
@@ -1381,6 +2063,16 @@ int isci_remote_device_found(struct domain_device *domain_dev)
 
 	if ((isci_stopping == isci_port_get_state(isci_port)) ||
 	    (isci_stopped == isci_port_get_state(isci_port)))
+=======
+		"%s: domain_device = %p\n", __func__, dev);
+
+	if (!isci_port)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"%s: domain_device = %p\n", __func__, dev);
+
+	if (!isci_port)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	isci_device = isci_remote_device_alloc(isci_host, isci_port);
@@ -1391,7 +2083,15 @@ int isci_remote_device_found(struct domain_device *domain_dev)
 	INIT_LIST_HEAD(&isci_device->node);
 
 	spin_lock_irq(&isci_host->scic_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	isci_device->domain_dev = domain_dev;
+=======
+	isci_device->domain_dev = dev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	isci_device->domain_dev = dev;
+>>>>>>> refs/remotes/origin/master
 	isci_device->isci_port = isci_port;
 	list_add_tail(&isci_device->node, &isci_port->remote_dev_list);
 
@@ -1404,7 +2104,15 @@ int isci_remote_device_found(struct domain_device *domain_dev)
 
 	if (status == SCI_SUCCESS) {
 		/* device came up, advertise it to the world */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		domain_dev->lldd_dev = isci_device;
+=======
+		dev->lldd_dev = isci_device;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev->lldd_dev = isci_device;
+>>>>>>> refs/remotes/origin/master
 	} else
 		isci_put_device(isci_device);
 	spin_unlock_irq(&isci_host->scic_lock);
@@ -1414,6 +2122,8 @@ int isci_remote_device_found(struct domain_device *domain_dev)
 
 	return status == SCI_SUCCESS ? 0 : -ENODEV;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * isci_device_is_reset_pending() - This function will check if there is any
  *    pending reset condition on the device.
@@ -1499,3 +2209,77 @@ void isci_device_clear_reset_pending(struct isci_host *ihost, struct isci_remote
 	}
 	spin_unlock_irqrestore(&ihost->scic_lock, flags);
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+enum sci_status isci_remote_device_suspend_terminate(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev,
+	struct isci_request *ireq)
+{
+	unsigned long flags;
+	enum sci_status status;
+
+	/* Put the device into suspension. */
+	spin_lock_irqsave(&ihost->scic_lock, flags);
+	set_bit(IDEV_ABORT_PATH_ACTIVE, &idev->flags);
+	sci_remote_device_suspend(idev, SCI_SW_SUSPEND_LINKHANG_DETECT);
+	spin_unlock_irqrestore(&ihost->scic_lock, flags);
+
+	/* Terminate and wait for the completions. */
+	status = isci_remote_device_terminate_requests(ihost, idev, ireq);
+	if (status != SCI_SUCCESS)
+		dev_dbg(&ihost->pdev->dev,
+			"%s: isci_remote_device_terminate_requests(%p) "
+				"returned %d!\n",
+			__func__, idev, status);
+
+	/* NOTE: RNC resumption is left to the caller! */
+	return status;
+}
+
+int isci_remote_device_is_safe_to_abort(
+	struct isci_remote_device *idev)
+{
+	return sci_remote_node_context_is_safe_to_abort(&idev->rnc);
+}
+
+enum sci_status sci_remote_device_abort_requests_pending_abort(
+	struct isci_remote_device *idev)
+{
+	return sci_remote_device_terminate_reqs_checkabort(idev, 1);
+}
+
+enum sci_status isci_remote_device_reset_complete(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev)
+{
+	unsigned long flags;
+	enum sci_status status;
+
+	spin_lock_irqsave(&ihost->scic_lock, flags);
+	status = sci_remote_device_reset_complete(idev);
+	spin_unlock_irqrestore(&ihost->scic_lock, flags);
+
+	return status;
+}
+
+void isci_dev_set_hang_detection_timeout(
+	struct isci_remote_device *idev,
+	u32 timeout)
+{
+	if (dev_is_sata(idev->domain_dev)) {
+		if (timeout) {
+			if (test_and_set_bit(IDEV_RNC_LLHANG_ENABLED,
+					     &idev->flags))
+				return;  /* Already enabled. */
+		} else if (!test_and_clear_bit(IDEV_RNC_LLHANG_ENABLED,
+					       &idev->flags))
+			return;  /* Not enabled. */
+
+		sci_port_set_hang_detection_timeout(idev->owning_port,
+						    timeout);
+	}
+}
+>>>>>>> refs/remotes/origin/master

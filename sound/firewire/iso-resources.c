@@ -8,6 +8,14 @@
 #include <linux/device.h>
 #include <linux/firewire.h>
 #include <linux/firewire-constants.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/jiffies.h>
 #include <linux/mutex.h>
 #include <linux/sched.h>

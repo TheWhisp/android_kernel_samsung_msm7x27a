@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/kernel/time.c
+=======
+>>>>>>> refs/remotes/origin/master
  *    Time of day based timer functions.
  *
  *  S390 version
@@ -27,7 +30,15 @@
 #include <linux/cpu.h>
 #include <linux/stop_machine.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/init.h>
 #include <linux/smp.h>
@@ -35,7 +46,11 @@
 #include <linux/profile.h>
 #include <linux/timex.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
 #include <linux/clocksource.h>
+=======
+#include <linux/timekeeper_internal.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/clockchips.h>
 #include <linux/gfp.h>
 #include <linux/kprobes.h>
@@ -45,9 +60,20 @@
 #include <asm/vdso.h>
 #include <asm/irq.h>
 #include <asm/irq_regs.h>
+<<<<<<< HEAD
 #include <asm/timer.h>
 #include <asm/etr.h>
 #include <asm/cio.h>
+<<<<<<< HEAD
+=======
+#include "entry.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/vtimer.h>
+#include <asm/etr.h>
+#include <asm/cio.h>
+#include "entry.h"
+>>>>>>> refs/remotes/origin/master
 
 /* change this if you have some constant time drift */
 #define USECS_PER_JIFFY     ((unsigned long) 1000000/HZ)
@@ -63,7 +89,15 @@ static DEFINE_PER_CPU(struct clock_event_device, comparators);
  */
 unsigned long long notrace __kprobes sched_clock(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return tod_to_ns(get_clock_monotonic());
+=======
+	return tod_to_ns(get_tod_clock_monotonic());
+>>>>>>> refs/remotes/origin/master
+=======
+	return tod_to_ns(get_clock_monotonic());
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -92,7 +126,10 @@ void clock_comparator_work(void)
 	struct clock_event_device *cd;
 
 	S390_lowcore.clock_comparator = -1ULL;
+<<<<<<< HEAD
 	set_clock_comparator(S390_lowcore.clock_comparator);
+=======
+>>>>>>> refs/remotes/origin/master
 	cd = &__get_cpu_var(comparators);
 	cd->event_handler(cd);
 }
@@ -109,10 +146,37 @@ static void fixup_clock_comparator(unsigned long long delta)
 	set_clock_comparator(S390_lowcore.clock_comparator);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int s390_next_event(unsigned long delta,
 			   struct clock_event_device *evt)
 {
 	S390_lowcore.clock_comparator = get_clock() + delta;
+=======
+static int s390_next_ktime(ktime_t expires,
+			   struct clock_event_device *evt)
+{
+	struct timespec ts;
+	u64 nsecs;
+
+	ts.tv_sec = ts.tv_nsec = 0;
+	monotonic_to_bootbased(&ts);
+	nsecs = ktime_to_ns(ktime_add(timespec_to_ktime(ts), expires));
+	do_div(nsecs, 125);
+	S390_lowcore.clock_comparator = sched_clock_base_cc + (nsecs << 9);
+	/* Program the maximum value if we have an overflow (== year 2042) */
+	if (unlikely(S390_lowcore.clock_comparator < sched_clock_base_cc))
+		S390_lowcore.clock_comparator = -1ULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int s390_next_event(unsigned long delta,
+			   struct clock_event_device *evt)
+{
+	S390_lowcore.clock_comparator = get_tod_clock() + delta;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	set_clock_comparator(S390_lowcore.clock_comparator);
 	return 0;
 }
@@ -137,14 +201,31 @@ void init_cpu_timer(void)
 	cpu = smp_processor_id();
 	cd = &per_cpu(comparators, cpu);
 	cd->name		= "comparator";
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cd->features		= CLOCK_EVT_FEAT_ONESHOT;
+=======
+	cd->features		= CLOCK_EVT_FEAT_ONESHOT |
+				  CLOCK_EVT_FEAT_KTIME;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cd->features		= CLOCK_EVT_FEAT_ONESHOT;
+>>>>>>> refs/remotes/origin/master
 	cd->mult		= 16777;
 	cd->shift		= 12;
 	cd->min_delta_ns	= 1;
 	cd->max_delta_ns	= LONG_MAX;
 	cd->rating		= 400;
 	cd->cpumask		= cpumask_of(cpu);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cd->set_next_event	= s390_next_event;
+=======
+	cd->set_next_ktime	= s390_next_ktime;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cd->set_next_event	= s390_next_event;
+>>>>>>> refs/remotes/origin/master
 	cd->set_mode		= s390_set_mode;
 
 	clockevents_register_device(cd);
@@ -156,11 +237,23 @@ void init_cpu_timer(void)
 	__ctl_set_bit(0, 4);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void clock_comparator_interrupt(unsigned int ext_int_code,
+=======
+static void clock_comparator_interrupt(struct ext_code ext_code,
+>>>>>>> refs/remotes/origin/cm-10.0
 				       unsigned int param32,
 				       unsigned long param64)
 {
 	kstat_cpu(smp_processor_id()).irqs[EXTINT_CLK]++;
+=======
+static void clock_comparator_interrupt(struct ext_code ext_code,
+				       unsigned int param32,
+				       unsigned long param64)
+{
+	inc_irq_stat(IRQEXT_CLK);
+>>>>>>> refs/remotes/origin/master
 	if (S390_lowcore.clock_comparator == -1ULL)
 		set_clock_comparator(S390_lowcore.clock_comparator);
 }
@@ -168,10 +261,21 @@ static void clock_comparator_interrupt(unsigned int ext_int_code,
 static void etr_timing_alert(struct etr_irq_parm *);
 static void stp_timing_alert(struct stp_irq_parm *);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void timing_alert_interrupt(unsigned int ext_int_code,
+=======
+static void timing_alert_interrupt(struct ext_code ext_code,
+>>>>>>> refs/remotes/origin/cm-10.0
 				   unsigned int param32, unsigned long param64)
 {
 	kstat_cpu(smp_processor_id()).irqs[EXTINT_TLA]++;
+=======
+static void timing_alert_interrupt(struct ext_code ext_code,
+				   unsigned int param32, unsigned long param64)
+{
+	inc_irq_stat(IRQEXT_TLA);
+>>>>>>> refs/remotes/origin/master
 	if (param32 & 0x00c40000)
 		etr_timing_alert((struct etr_irq_parm *) &param32);
 	if (param32 & 0x00038000)
@@ -183,7 +287,11 @@ static void stp_reset(void);
 
 void read_persistent_clock(struct timespec *ts)
 {
+<<<<<<< HEAD
 	tod_to_timeval(get_clock() - TOD_UNIX_EPOCH, ts);
+=======
+	tod_to_timeval(get_tod_clock() - TOD_UNIX_EPOCH, ts);
+>>>>>>> refs/remotes/origin/master
 }
 
 void read_boot_clock(struct timespec *ts)
@@ -193,7 +301,11 @@ void read_boot_clock(struct timespec *ts)
 
 static cycle_t read_tod_clock(struct clocksource *cs)
 {
+<<<<<<< HEAD
 	return get_clock();
+=======
+	return get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct clocksource clocksource_tod = {
@@ -211,21 +323,46 @@ struct clocksource * __init clocksource_default_clock(void)
 	return &clocksource_tod;
 }
 
+<<<<<<< HEAD
 void update_vsyscall(struct timespec *wall_time, struct timespec *wtm,
 			struct clocksource *clock, u32 mult)
 {
 	if (clock != &clocksource_tod)
+=======
+void update_vsyscall(struct timekeeper *tk)
+{
+	u64 nsecps;
+
+	if (tk->clock != &clocksource_tod)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/* Make userspace gettimeofday spin until we're done. */
 	++vdso_data->tb_update_count;
 	smp_wmb();
+<<<<<<< HEAD
 	vdso_data->xtime_tod_stamp = clock->cycle_last;
 	vdso_data->xtime_clock_sec = wall_time->tv_sec;
 	vdso_data->xtime_clock_nsec = wall_time->tv_nsec;
 	vdso_data->wtom_clock_sec = wtm->tv_sec;
 	vdso_data->wtom_clock_nsec = wtm->tv_nsec;
 	vdso_data->ntp_mult = mult;
+=======
+	vdso_data->xtime_tod_stamp = tk->clock->cycle_last;
+	vdso_data->xtime_clock_sec = tk->xtime_sec;
+	vdso_data->xtime_clock_nsec = tk->xtime_nsec;
+	vdso_data->wtom_clock_sec =
+		tk->xtime_sec + tk->wall_to_monotonic.tv_sec;
+	vdso_data->wtom_clock_nsec = tk->xtime_nsec +
+		+ (tk->wall_to_monotonic.tv_nsec << tk->shift);
+	nsecps = (u64) NSEC_PER_SEC << tk->shift;
+	while (vdso_data->wtom_clock_nsec >= nsecps) {
+		vdso_data->wtom_clock_nsec -= nsecps;
+		vdso_data->wtom_clock_sec++;
+	}
+	vdso_data->tk_mult = tk->mult;
+	vdso_data->tk_shift = tk->shift;
+>>>>>>> refs/remotes/origin/master
 	smp_wmb();
 	++vdso_data->tb_update_count;
 }
@@ -321,7 +458,11 @@ static unsigned long clock_sync_flags;
  * The synchronous get_clock function. It will write the current clock
  * value to the clock pointer and return 0 if the clock is in sync with
  * the external time source. If the clock mode is local it will return
+<<<<<<< HEAD
  * -ENOSYS and -EAGAIN if the clock is not in sync with the external
+=======
+ * -EOPNOTSUPP and -EAGAIN if the clock is not in sync with the external
+>>>>>>> refs/remotes/origin/master
  * reference.
  */
 int get_sync_clock(unsigned long long *clock)
@@ -331,7 +472,11 @@ int get_sync_clock(unsigned long long *clock)
 
 	sw_ptr = &get_cpu_var(clock_sync_word);
 	sw0 = atomic_read(sw_ptr);
+<<<<<<< HEAD
 	*clock = get_clock();
+=======
+	*clock = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 	sw1 = atomic_read(sw_ptr);
 	put_cpu_var(clock_sync_word);
 	if (sw0 == sw1 && (sw0 & 0x80000000U))
@@ -339,7 +484,11 @@ int get_sync_clock(unsigned long long *clock)
 		return 0;
 	if (!test_bit(CLOCK_SYNC_HAS_ETR, &clock_sync_flags) &&
 	    !test_bit(CLOCK_SYNC_HAS_STP, &clock_sync_flags))
+<<<<<<< HEAD
 		return -ENOSYS;
+=======
+		return -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 	if (!test_bit(CLOCK_SYNC_ETR, &clock_sync_flags) &&
 	    !test_bit(CLOCK_SYNC_STP, &clock_sync_flags))
 		return -EACCES;
@@ -475,7 +624,11 @@ static void etr_reset(void)
 		.p0 = 0, .p1 = 0, ._pad1 = 0, .ea = 0,
 		.es = 0, .sl = 0 };
 	if (etr_setr(&etr_eacr) == 0) {
+<<<<<<< HEAD
 		etr_tolec = get_clock();
+=======
+		etr_tolec = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 		set_bit(CLOCK_SYNC_HAS_ETR, &clock_sync_flags);
 		if (etr_port0_online && etr_port1_online)
 			set_bit(CLOCK_SYNC_ETR, &clock_sync_flags);
@@ -757,8 +910,13 @@ static int etr_sync_clock(void *data)
 	__ctl_set_bit(14, 21);
 	__ctl_set_bit(0, 29);
 	clock = ((unsigned long long) (aib->edf2.etv + 1)) << 32;
+<<<<<<< HEAD
 	old_clock = get_clock();
 	if (set_clock(clock) == 0) {
+=======
+	old_clock = get_tod_clock();
+	if (set_tod_clock(clock) == 0) {
+>>>>>>> refs/remotes/origin/master
 		__udelay(1);	/* Wait for the clock to start. */
 		__ctl_clear_bit(0, 29);
 		__ctl_clear_bit(14, 21);
@@ -834,7 +992,11 @@ static struct etr_eacr etr_handle_events(struct etr_eacr eacr)
 			 * assume that this can have caused an stepping
 			 * port switch.
 			 */
+<<<<<<< HEAD
 			etr_tolec = get_clock();
+=======
+			etr_tolec = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 		eacr.p0 = etr_port0_online;
 		if (!eacr.p0)
 			eacr.e0 = 0;
@@ -847,7 +1009,11 @@ static struct etr_eacr etr_handle_events(struct etr_eacr eacr)
 			 * assume that this can have caused an stepping
 			 * port switch.
 			 */
+<<<<<<< HEAD
 			etr_tolec = get_clock();
+=======
+			etr_tolec = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 		eacr.p1 = etr_port1_online;
 		if (!eacr.p1)
 			eacr.e1 = 0;
@@ -963,7 +1129,11 @@ static void etr_update_eacr(struct etr_eacr eacr)
 	etr_eacr = eacr;
 	etr_setr(&etr_eacr);
 	if (dp_changed)
+<<<<<<< HEAD
 		etr_tolec = get_clock();
+=======
+		etr_tolec = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1001,7 +1171,11 @@ static void etr_work_fn(struct work_struct *work)
 	/* Store aib to get the current ETR status word. */
 	BUG_ON(etr_stetr(&aib) != 0);
 	etr_port0.esw = etr_port1.esw = aib.esw;	/* Copy status word. */
+<<<<<<< HEAD
 	now = get_clock();
+=======
+	now = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Update the port information if the last stepping port change
@@ -1110,6 +1284,8 @@ out_unlock:
 /*
  * Sysfs interface functions
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct sysdev_class etr_sysclass = {
 	.name	= "etr",
 };
@@ -1129,15 +1305,55 @@ static struct sys_device etr_port1_dev = {
  */
 static ssize_t etr_stepping_port_show(struct sysdev_class *class,
 					struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct bus_type etr_subsys = {
+	.name		= "etr",
+	.dev_name	= "etr",
+};
+
+static struct device etr_port0_dev = {
+	.id	= 0,
+	.bus	= &etr_subsys,
+};
+
+static struct device etr_port1_dev = {
+	.id	= 1,
+	.bus	= &etr_subsys,
+};
+
+/*
+ * ETR subsys attributes
+ */
+static ssize_t etr_stepping_port_show(struct device *dev,
+					struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					char *buf)
 {
 	return sprintf(buf, "%i\n", etr_port0.esw.p);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(stepping_port, 0400, etr_stepping_port_show, NULL);
 
 static ssize_t etr_stepping_mode_show(struct sysdev_class *class,
 				      	struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(stepping_port, 0400, etr_stepping_port_show, NULL);
+
+static ssize_t etr_stepping_mode_show(struct device *dev,
+					struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					char *buf)
 {
 	char *mode_str;
@@ -1151,12 +1367,28 @@ static ssize_t etr_stepping_mode_show(struct sysdev_class *class,
 	return sprintf(buf, "%s\n", mode_str);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(stepping_mode, 0400, etr_stepping_mode_show, NULL);
+=======
+static DEVICE_ATTR(stepping_mode, 0400, etr_stepping_mode_show, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR(stepping_mode, 0400, etr_stepping_mode_show, NULL);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ETR port attributes
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct etr_aib *etr_aib_from_dev(struct sys_device *dev)
+=======
+static inline struct etr_aib *etr_aib_from_dev(struct device *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct etr_aib *etr_aib_from_dev(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (dev == &etr_port0_dev)
 		return etr_port0_online ? &etr_port0 : NULL;
@@ -1164,8 +1396,18 @@ static inline struct etr_aib *etr_aib_from_dev(struct sys_device *dev)
 		return etr_port1_online ? &etr_port1 : NULL;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t etr_online_show(struct sys_device *dev,
 				struct sysdev_attribute *attr,
+=======
+static ssize_t etr_online_show(struct device *dev,
+				struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t etr_online_show(struct device *dev,
+				struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 				char *buf)
 {
 	unsigned int online;
@@ -1174,8 +1416,18 @@ static ssize_t etr_online_show(struct sys_device *dev,
 	return sprintf(buf, "%i\n", online);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t etr_online_store(struct sys_device *dev,
 				struct sysdev_attribute *attr,
+=======
+static ssize_t etr_online_store(struct device *dev,
+				struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t etr_online_store(struct device *dev,
+				struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 				const char *buf, size_t count)
 {
 	unsigned int value;
@@ -1212,20 +1464,46 @@ out:
 	return count;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(online, 0600, etr_online_show, etr_online_store);
 
 static ssize_t etr_stepping_control_show(struct sys_device *dev,
 					struct sysdev_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(online, 0600, etr_online_show, etr_online_store);
+
+static ssize_t etr_stepping_control_show(struct device *dev,
+					struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					char *buf)
 {
 	return sprintf(buf, "%i\n", (dev == &etr_port0_dev) ?
 		       etr_eacr.e0 : etr_eacr.e1);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(stepping_control, 0400, etr_stepping_control_show, NULL);
 
 static ssize_t etr_mode_code_show(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(stepping_control, 0400, etr_stepping_control_show, NULL);
+
+static ssize_t etr_mode_code_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (!etr_port0_online && !etr_port1_online)
 		/* Status word is not uptodate if both ports are offline. */
@@ -1234,10 +1512,23 @@ static ssize_t etr_mode_code_show(struct sys_device *dev,
 		       etr_port0.esw.psc0 : etr_port0.esw.psc1);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(state_code, 0400, etr_mode_code_show, NULL);
 
 static ssize_t etr_untuned_show(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(state_code, 0400, etr_mode_code_show, NULL);
+
+static ssize_t etr_untuned_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct etr_aib *aib = etr_aib_from_dev(dev);
 
@@ -1246,10 +1537,23 @@ static ssize_t etr_untuned_show(struct sys_device *dev,
 	return sprintf(buf, "%i\n", aib->edf1.u);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(untuned, 0400, etr_untuned_show, NULL);
 
 static ssize_t etr_network_id_show(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(untuned, 0400, etr_untuned_show, NULL);
+
+static ssize_t etr_network_id_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct etr_aib *aib = etr_aib_from_dev(dev);
 
@@ -1258,10 +1562,23 @@ static ssize_t etr_network_id_show(struct sys_device *dev,
 	return sprintf(buf, "%i\n", aib->edf1.net_id);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(network, 0400, etr_network_id_show, NULL);
 
 static ssize_t etr_id_show(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(network, 0400, etr_network_id_show, NULL);
+
+static ssize_t etr_id_show(struct device *dev,
+			struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct etr_aib *aib = etr_aib_from_dev(dev);
 
@@ -1270,10 +1587,23 @@ static ssize_t etr_id_show(struct sys_device *dev,
 	return sprintf(buf, "%i\n", aib->edf1.etr_id);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(id, 0400, etr_id_show, NULL);
 
 static ssize_t etr_port_number_show(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(id, 0400, etr_id_show, NULL);
+
+static ssize_t etr_port_number_show(struct device *dev,
+			struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct etr_aib *aib = etr_aib_from_dev(dev);
 
@@ -1282,10 +1612,23 @@ static ssize_t etr_port_number_show(struct sys_device *dev,
 	return sprintf(buf, "%i\n", aib->edf1.etr_pn);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(port, 0400, etr_port_number_show, NULL);
 
 static ssize_t etr_coupled_show(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(port, 0400, etr_port_number_show, NULL);
+
+static ssize_t etr_coupled_show(struct device *dev,
+			struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct etr_aib *aib = etr_aib_from_dev(dev);
 
@@ -1294,10 +1637,23 @@ static ssize_t etr_coupled_show(struct sys_device *dev,
 	return sprintf(buf, "%i\n", aib->edf3.c);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(coupled, 0400, etr_coupled_show, NULL);
 
 static ssize_t etr_local_time_show(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(coupled, 0400, etr_coupled_show, NULL);
+
+static ssize_t etr_local_time_show(struct device *dev,
+			struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct etr_aib *aib = etr_aib_from_dev(dev);
 
@@ -1306,10 +1662,23 @@ static ssize_t etr_local_time_show(struct sys_device *dev,
 	return sprintf(buf, "%i\n", aib->edf3.blto);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(local_time, 0400, etr_local_time_show, NULL);
 
 static ssize_t etr_utc_offset_show(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *buf)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(local_time, 0400, etr_local_time_show, NULL);
+
+static ssize_t etr_utc_offset_show(struct device *dev,
+			struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct etr_aib *aib = etr_aib_from_dev(dev);
 
@@ -1318,6 +1687,8 @@ static ssize_t etr_utc_offset_show(struct sys_device *dev,
 	return sprintf(buf, "%i\n", aib->edf3.buo);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(utc_offset, 0400, etr_utc_offset_show, NULL);
 
 static struct sysdev_attribute *etr_port_attributes[] = {
@@ -1344,18 +1715,63 @@ static int __init etr_register_port(struct sys_device *dev)
 		goto out;
 	for (attr = etr_port_attributes; *attr; attr++) {
 		rc = sysdev_create_file(dev, *attr);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(utc_offset, 0400, etr_utc_offset_show, NULL);
+
+static struct device_attribute *etr_port_attributes[] = {
+	&dev_attr_online,
+	&dev_attr_stepping_control,
+	&dev_attr_state_code,
+	&dev_attr_untuned,
+	&dev_attr_network,
+	&dev_attr_id,
+	&dev_attr_port,
+	&dev_attr_coupled,
+	&dev_attr_local_time,
+	&dev_attr_utc_offset,
+	NULL
+};
+
+static int __init etr_register_port(struct device *dev)
+{
+	struct device_attribute **attr;
+	int rc;
+
+	rc = device_register(dev);
+	if (rc)
+		goto out;
+	for (attr = etr_port_attributes; *attr; attr++) {
+		rc = device_create_file(dev, *attr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (rc)
 			goto out_unreg;
 	}
 	return 0;
 out_unreg:
 	for (; attr >= etr_port_attributes; attr--)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sysdev_remove_file(dev, *attr);
 	sysdev_unregister(dev);
+=======
+		device_remove_file(dev, *attr);
+	device_unregister(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		device_remove_file(dev, *attr);
+	device_unregister(dev);
+>>>>>>> refs/remotes/origin/master
 out:
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __init etr_unregister_port(struct sys_device *dev)
 {
 	struct sysdev_attribute **attr;
@@ -1363,12 +1779,28 @@ static void __init etr_unregister_port(struct sys_device *dev)
 	for (attr = etr_port_attributes; *attr; attr++)
 		sysdev_remove_file(dev, *attr);
 	sysdev_unregister(dev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void __init etr_unregister_port(struct device *dev)
+{
+	struct device_attribute **attr;
+
+	for (attr = etr_port_attributes; *attr; attr++)
+		device_remove_file(dev, *attr);
+	device_unregister(dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init etr_init_sysfs(void)
 {
 	int rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = sysdev_class_register(&etr_sysclass);
 	if (rc)
 		goto out;
@@ -1376,6 +1808,20 @@ static int __init etr_init_sysfs(void)
 	if (rc)
 		goto out_unreg_class;
 	rc = sysdev_class_create_file(&etr_sysclass, &attr_stepping_mode);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rc = subsys_system_register(&etr_subsys, NULL);
+	if (rc)
+		goto out;
+	rc = device_create_file(etr_subsys.dev_root, &dev_attr_stepping_port);
+	if (rc)
+		goto out_unreg_subsys;
+	rc = device_create_file(etr_subsys.dev_root, &dev_attr_stepping_mode);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto out_remove_stepping_port;
 	rc = etr_register_port(&etr_port0_dev);
@@ -1389,11 +1835,25 @@ static int __init etr_init_sysfs(void)
 out_remove_port0:
 	etr_unregister_port(&etr_port0_dev);
 out_remove_stepping_mode:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sysdev_class_remove_file(&etr_sysclass, &attr_stepping_mode);
 out_remove_stepping_port:
 	sysdev_class_remove_file(&etr_sysclass, &attr_stepping_port);
 out_unreg_class:
 	sysdev_class_unregister(&etr_sysclass);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	device_remove_file(etr_subsys.dev_root, &dev_attr_stepping_mode);
+out_remove_stepping_port:
+	device_remove_file(etr_subsys.dev_root, &dev_attr_stepping_port);
+out_unreg_subsys:
+	bus_unregister(&etr_subsys);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	return rc;
 }
@@ -1525,10 +1985,17 @@ static int stp_sync_clock(void *data)
 	if (stp_info.todoff[0] || stp_info.todoff[1] ||
 	    stp_info.todoff[2] || stp_info.todoff[3] ||
 	    stp_info.tmd != 2) {
+<<<<<<< HEAD
 		old_clock = get_clock();
 		rc = chsc_sstpc(stp_page, STP_OP_SYNC, 0);
 		if (rc == 0) {
 			delta = adjust_time(old_clock, get_clock(), 0);
+=======
+		old_clock = get_tod_clock();
+		rc = chsc_sstpc(stp_page, STP_OP_SYNC, 0);
+		if (rc == 0) {
+			delta = adjust_time(old_clock, get_tod_clock(), 0);
+>>>>>>> refs/remotes/origin/master
 			fixup_clock_comparator(delta);
 			rc = chsc_sstpi(stp_page, &stp_info,
 					sizeof(struct stp_sstpi));
@@ -1593,6 +2060,8 @@ out_unlock:
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * STP class sysfs interface functions
  */
 static struct sysdev_class stp_sysclass = {
@@ -1601,6 +2070,22 @@ static struct sysdev_class stp_sysclass = {
 
 static ssize_t stp_ctn_id_show(struct sysdev_class *class,
 				struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * STP subsys sysfs interface functions
+ */
+static struct bus_type stp_subsys = {
+	.name		= "stp",
+	.dev_name	= "stp",
+};
+
+static ssize_t stp_ctn_id_show(struct device *dev,
+				struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				char *buf)
 {
 	if (!stp_online)
@@ -1609,10 +2094,23 @@ static ssize_t stp_ctn_id_show(struct sysdev_class *class,
 		       *(unsigned long long *) stp_info.ctnid);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(ctn_id, 0400, stp_ctn_id_show, NULL);
 
 static ssize_t stp_ctn_type_show(struct sysdev_class *class,
 				struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(ctn_id, 0400, stp_ctn_id_show, NULL);
+
+static ssize_t stp_ctn_type_show(struct device *dev,
+				struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				char *buf)
 {
 	if (!stp_online)
@@ -1620,10 +2118,23 @@ static ssize_t stp_ctn_type_show(struct sysdev_class *class,
 	return sprintf(buf, "%i\n", stp_info.ctn);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(ctn_type, 0400, stp_ctn_type_show, NULL);
 
 static ssize_t stp_dst_offset_show(struct sysdev_class *class,
 				   struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(ctn_type, 0400, stp_ctn_type_show, NULL);
+
+static ssize_t stp_dst_offset_show(struct device *dev,
+				   struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				   char *buf)
 {
 	if (!stp_online || !(stp_info.vbits & 0x2000))
@@ -1631,10 +2142,23 @@ static ssize_t stp_dst_offset_show(struct sysdev_class *class,
 	return sprintf(buf, "%i\n", (int)(s16) stp_info.dsto);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(dst_offset, 0400, stp_dst_offset_show, NULL);
 
 static ssize_t stp_leap_seconds_show(struct sysdev_class *class,
 					struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(dst_offset, 0400, stp_dst_offset_show, NULL);
+
+static ssize_t stp_leap_seconds_show(struct device *dev,
+					struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					char *buf)
 {
 	if (!stp_online || !(stp_info.vbits & 0x8000))
@@ -1642,10 +2166,23 @@ static ssize_t stp_leap_seconds_show(struct sysdev_class *class,
 	return sprintf(buf, "%i\n", (int)(s16) stp_info.leaps);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(leap_seconds, 0400, stp_leap_seconds_show, NULL);
 
 static ssize_t stp_stratum_show(struct sysdev_class *class,
 				struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(leap_seconds, 0400, stp_leap_seconds_show, NULL);
+
+static ssize_t stp_stratum_show(struct device *dev,
+				struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				char *buf)
 {
 	if (!stp_online)
@@ -1653,10 +2190,23 @@ static ssize_t stp_stratum_show(struct sysdev_class *class,
 	return sprintf(buf, "%i\n", (int)(s16) stp_info.stratum);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(stratum, 0400, stp_stratum_show, NULL);
 
 static ssize_t stp_time_offset_show(struct sysdev_class *class,
 				struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(stratum, 0400, stp_stratum_show, NULL);
+
+static ssize_t stp_time_offset_show(struct device *dev,
+				struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				char *buf)
 {
 	if (!stp_online || !(stp_info.vbits & 0x0800))
@@ -1664,10 +2214,23 @@ static ssize_t stp_time_offset_show(struct sysdev_class *class,
 	return sprintf(buf, "%i\n", (int) stp_info.tto);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(time_offset, 0400, stp_time_offset_show, NULL);
 
 static ssize_t stp_time_zone_offset_show(struct sysdev_class *class,
 				struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(time_offset, 0400, stp_time_offset_show, NULL);
+
+static ssize_t stp_time_zone_offset_show(struct device *dev,
+				struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				char *buf)
 {
 	if (!stp_online || !(stp_info.vbits & 0x4000))
@@ -1675,11 +2238,25 @@ static ssize_t stp_time_zone_offset_show(struct sysdev_class *class,
 	return sprintf(buf, "%i\n", (int)(s16) stp_info.tzo);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(time_zone_offset, 0400,
 			 stp_time_zone_offset_show, NULL);
 
 static ssize_t stp_timing_mode_show(struct sysdev_class *class,
 				struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(time_zone_offset, 0400,
+			 stp_time_zone_offset_show, NULL);
+
+static ssize_t stp_timing_mode_show(struct device *dev,
+				struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				char *buf)
 {
 	if (!stp_online)
@@ -1687,10 +2264,23 @@ static ssize_t stp_timing_mode_show(struct sysdev_class *class,
 	return sprintf(buf, "%i\n", stp_info.tmd);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(timing_mode, 0400, stp_timing_mode_show, NULL);
 
 static ssize_t stp_timing_state_show(struct sysdev_class *class,
 				struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(timing_mode, 0400, stp_timing_mode_show, NULL);
+
+static ssize_t stp_timing_state_show(struct device *dev,
+				struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				char *buf)
 {
 	if (!stp_online)
@@ -1698,17 +2288,40 @@ static ssize_t stp_timing_state_show(struct sysdev_class *class,
 	return sprintf(buf, "%i\n", stp_info.tst);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(timing_state, 0400, stp_timing_state_show, NULL);
 
 static ssize_t stp_online_show(struct sysdev_class *class,
 				struct sysdev_class_attribute *attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEVICE_ATTR(timing_state, 0400, stp_timing_state_show, NULL);
+
+static ssize_t stp_online_show(struct device *dev,
+				struct device_attribute *attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				char *buf)
 {
 	return sprintf(buf, "%i\n", stp_online);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t stp_online_store(struct sysdev_class *class,
 				struct sysdev_class_attribute *attr,
+=======
+static ssize_t stp_online_store(struct device *dev,
+				struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t stp_online_store(struct device *dev,
+				struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 				const char *buf, size_t count)
 {
 	unsigned int value;
@@ -1730,15 +2343,30 @@ static ssize_t stp_online_store(struct sysdev_class *class,
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Can't use SYSDEV_CLASS_ATTR because the attribute should be named
  * stp/online but attr_online already exists in this file ..
  */
 static struct sysdev_class_attribute attr_stp_online = {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Can't use DEVICE_ATTR because the attribute should be named
+ * stp/online but dev_attr_online already exists in this file ..
+ */
+static struct device_attribute dev_attr_stp_online = {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.attr = { .name = "online", .mode = 0600 },
 	.show	= stp_online_show,
 	.store	= stp_online_store,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct sysdev_class_attribute *stp_attributes[] = {
 	&attr_ctn_id,
 	&attr_ctn_type,
@@ -1750,11 +2378,31 @@ static struct sysdev_class_attribute *stp_attributes[] = {
 	&attr_time_zone_offset,
 	&attr_timing_mode,
 	&attr_timing_state,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct device_attribute *stp_attributes[] = {
+	&dev_attr_ctn_id,
+	&dev_attr_ctn_type,
+	&dev_attr_dst_offset,
+	&dev_attr_leap_seconds,
+	&dev_attr_stp_online,
+	&dev_attr_stratum,
+	&dev_attr_time_offset,
+	&dev_attr_time_zone_offset,
+	&dev_attr_timing_mode,
+	&dev_attr_timing_state,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 
 static int __init stp_init_sysfs(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sysdev_class_attribute **attr;
 	int rc;
 
@@ -1763,14 +2411,39 @@ static int __init stp_init_sysfs(void)
 		goto out;
 	for (attr = stp_attributes; *attr; attr++) {
 		rc = sysdev_class_create_file(&stp_sysclass, *attr);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct device_attribute **attr;
+	int rc;
+
+	rc = subsys_system_register(&stp_subsys, NULL);
+	if (rc)
+		goto out;
+	for (attr = stp_attributes; *attr; attr++) {
+		rc = device_create_file(stp_subsys.dev_root, *attr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (rc)
 			goto out_unreg;
 	}
 	return 0;
 out_unreg:
 	for (; attr >= stp_attributes; attr--)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sysdev_class_remove_file(&stp_sysclass, *attr);
 	sysdev_class_unregister(&stp_sysclass);
+=======
+		device_remove_file(stp_subsys.dev_root, *attr);
+	bus_unregister(&stp_subsys);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		device_remove_file(stp_subsys.dev_root, *attr);
+	bus_unregister(&stp_subsys);
+>>>>>>> refs/remotes/origin/master
 out:
 	return rc;
 }

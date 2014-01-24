@@ -19,15 +19,29 @@
 #include <linux/security.h>
 #include <linux/compat.h>
 #include <linux/signal.h>
+<<<<<<< HEAD
 
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/audit.h>
+
+#include <asm/uaccess.h>
+#include <asm/pgtable.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <asm/asm-offsets.h>
 
 /* PSW bits we allow the debugger to modify */
+<<<<<<< HEAD
 #define USER_PSW_BITS	(PSW_N | PSW_V | PSW_CB)
+=======
+#define USER_PSW_BITS	(PSW_N | PSW_B | PSW_V | PSW_CB)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called by kernel/ptrace.c when detaching..
@@ -268,11 +282,36 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 
 long do_syscall_trace_enter(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
 	    tracehook_report_syscall_entry(regs))
 		return -1L;
 
 	return regs->gr[20];
+=======
+	long ret = 0;
+
+	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+	    tracehook_report_syscall_entry(regs))
+		ret = -1L;
+
+#ifdef CONFIG_64BIT
+	if (!is_compat_task())
+		audit_syscall_entry(AUDIT_ARCH_PARISC64,
+			regs->gr[20],
+			regs->gr[26], regs->gr[25],
+			regs->gr[24], regs->gr[23]);
+	else
+#endif
+		audit_syscall_entry(AUDIT_ARCH_PARISC,
+			regs->gr[20] & 0xffffffff,
+			regs->gr[26] & 0xffffffff,
+			regs->gr[25] & 0xffffffff,
+			regs->gr[24] & 0xffffffff,
+			regs->gr[23] & 0xffffffff);
+
+	return ret ? : regs->gr[20];
+>>>>>>> refs/remotes/origin/master
 }
 
 void do_syscall_trace_exit(struct pt_regs *regs)
@@ -280,6 +319,11 @@ void do_syscall_trace_exit(struct pt_regs *regs)
 	int stepping = test_thread_flag(TIF_SINGLESTEP) ||
 		test_thread_flag(TIF_BLOCKSTEP);
 
+<<<<<<< HEAD
+=======
+	audit_syscall_exit(regs);
+
+>>>>>>> refs/remotes/origin/master
 	if (stepping || test_thread_flag(TIF_SYSCALL_TRACE))
 		tracehook_report_syscall_exit(regs, stepping);
 }

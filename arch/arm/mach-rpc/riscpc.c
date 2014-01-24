@@ -20,13 +20,31 @@
 #include <linux/ata_platform.h>
 #include <linux/io.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/elf.h>
 #include <asm/mach-types.h>
 #include <mach/hardware.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/page.h>
 #include <asm/domain.h>
 #include <asm/setup.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/hardware/iomd.h>
+#include <asm/page.h>
+#include <asm/domain.h>
+#include <asm/setup.h>
+#include <asm/system_misc.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/map.h>
 #include <asm/mach/arch.h>
@@ -74,7 +92,15 @@ static struct map_desc rpc_io_desc[] __initdata = {
 		.length		= 	IO_SIZE	 ,
 		.type		= MT_DEVICE
 	}, {	/* EASI space	*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual	= EASI_BASE,
+=======
+		.virtual	= (unsigned long)EASI_BASE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual	= (unsigned long)EASI_BASE,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(EASI_START),
 		.length		= EASI_SIZE,
 		.type		= MT_DEVICE
@@ -97,6 +123,8 @@ static void __init rpc_map_io(void)
 }
 
 static struct resource acornfb_resources[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{	/* VIDC */
 		.start		= 0x03400000,
 		.end		= 0x035fffff,
@@ -106,6 +134,16 @@ static struct resource acornfb_resources[] = {
 		.end		= IRQ_VSYNCPULSE,
 		.flags		= IORESOURCE_IRQ,
 	},
+=======
+	/* VIDC */
+	DEFINE_RES_MEM(0x03400000, 0x00200000),
+	DEFINE_RES_IRQ(IRQ_VSYNCPULSE),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* VIDC */
+	DEFINE_RES_MEM(0x03400000, 0x00200000),
+	DEFINE_RES_IRQ(IRQ_VSYNCPULSE),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device acornfb_device = {
@@ -119,11 +157,19 @@ static struct platform_device acornfb_device = {
 };
 
 static struct resource iomd_resources[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{
 		.start		= 0x03200000,
 		.end		= 0x0320ffff,
 		.flags		= IORESOURCE_MEM,
 	},
+=======
+	DEFINE_RES_MEM(0x03200000, 0x10000),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEFINE_RES_MEM(0x03200000, 0x10000),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device iomd_device = {
@@ -133,18 +179,50 @@ static struct platform_device iomd_device = {
 	.resource		= iomd_resources,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct resource iomd_kart_resources[] = {
+	DEFINE_RES_IRQ(IRQ_KEYBOARDRX),
+	DEFINE_RES_IRQ(IRQ_KEYBOARDTX),
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device kbd_device = {
 	.name			= "kart",
 	.id			= -1,
 	.dev			= {
 		.parent 	= &iomd_device.dev,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.num_resources		= ARRAY_SIZE(iomd_kart_resources),
+	.resource		= iomd_kart_resources,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_resources		= ARRAY_SIZE(iomd_kart_resources),
+	.resource		= iomd_kart_resources,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct plat_serial8250_port serial_platform_data[] = {
 	{
 		.mapbase	= 0x03010fe0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= 10,
+=======
+		.irq		= IRQ_SERIALPORT,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= IRQ_SERIALPORT,
+>>>>>>> refs/remotes/origin/master
 		.uartclk	= 1843200,
 		.regshift	= 2,
 		.iotype		= UPIO_MEM,
@@ -166,6 +244,8 @@ static struct pata_platform_info pata_platform_data = {
 };
 
 static struct resource pata_resources[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	[0] = {
 		.start		= 0x030107c0,
 		.end		= 0x030107df,
@@ -181,6 +261,16 @@ static struct resource pata_resources[] = {
 		.end		= IRQ_HARDDISK,
 		.flags		= IORESOURCE_IRQ,
 	},
+=======
+	DEFINE_RES_MEM(0x030107c0, 0x20),
+	DEFINE_RES_MEM(0x03010fd8, 0x04),
+	DEFINE_RES_IRQ(IRQ_HARDDISK),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEFINE_RES_MEM(0x030107c0, 0x20),
+	DEFINE_RES_MEM(0x03010fd8, 0x04),
+	DEFINE_RES_IRQ(IRQ_HARDDISK),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device pata_device = {
@@ -214,14 +304,52 @@ static int __init rpc_init(void)
 
 arch_initcall(rpc_init);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static void rpc_restart(char mode, const char *cmd)
+=======
+static void rpc_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
+{
+	iomd_writeb(0, IOMD_ROMCR0);
+
+	/*
+	 * Jump into the ROM
+	 */
+	soft_restart(0);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct sys_timer ioc_timer;
 
 MACHINE_START(RISCPC, "Acorn-RiscPC")
 	/* Maintainer: Russell King */
+<<<<<<< HEAD
 	.boot_params	= 0x10000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ioc_timer_init(void);
+
+MACHINE_START(RISCPC, "Acorn-RiscPC")
+	/* Maintainer: Russell King */
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.reserve_lp0	= 1,
 	.reserve_lp1	= 1,
 	.map_io		= rpc_map_io,
 	.init_irq	= rpc_init_irq,
+<<<<<<< HEAD
 	.timer		= &ioc_timer,
+<<<<<<< HEAD
+=======
+	.restart	= rpc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= ioc_timer_init,
+	.restart	= rpc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

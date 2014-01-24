@@ -15,7 +15,13 @@
 #include <linux/vmalloc.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/ldt.h>
 #include <asm/desc.h>
 #include <asm/mmu_context.h>

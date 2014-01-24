@@ -31,7 +31,11 @@
 
 /* all the pci device has the PCIA pin, check the datasheet. */
 static char irq_tab[][5] __initdata = {
+<<<<<<< HEAD
 	/*      INTA    INTB    INTC    INTD */
+=======
+	/*	INTA	INTB	INTC	INTD */
+>>>>>>> refs/remotes/origin/master
 	{0, 0, 0, 0, 0},	/*  11: Unused */
 	{0, 0, 0, 0, 0},	/*  12: Unused */
 	{0, 0, 0, 0, 0},	/*  13: Unused */
@@ -69,6 +73,7 @@ int __init pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 		case 2:
 			pci_write_config_byte(dev, PCI_INTERRUPT_LINE,
 					      CS5536_IDE_INTR);
+<<<<<<< HEAD
 			return CS5536_IDE_INTR;	/*  for IDE */
 		case 3:
 			pci_write_config_byte(dev, PCI_INTERRUPT_LINE,
@@ -78,6 +83,17 @@ int __init pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 		case 5:	/*  for EHCI */
 		case 6:	/*  for UDC */
 		case 7:	/*  for OTG */
+=======
+			return CS5536_IDE_INTR; /*  for IDE */
+		case 3:
+			pci_write_config_byte(dev, PCI_INTERRUPT_LINE,
+					      CS5536_ACC_INTR);
+			return CS5536_ACC_INTR; /*  for AUDIO */
+		case 4: /*  for OHCI */
+		case 5: /*  for EHCI */
+		case 6: /*  for UDC */
+		case 7: /*  for OTG */
+>>>>>>> refs/remotes/origin/master
 			pci_write_config_byte(dev, PCI_INTERRUPT_LINE,
 					      CS5536_USB_INTR);
 			return CS5536_USB_INTR;
@@ -96,21 +112,33 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 }
 
 /* CS5536 SPEC. fixup */
+<<<<<<< HEAD
 static void __init loongson_cs5536_isa_fixup(struct pci_dev *pdev)
+=======
+static void loongson_cs5536_isa_fixup(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* the uart1 and uart2 interrupt in PIC is enabled as default */
 	pci_write_config_dword(pdev, PCI_UART1_INT_REG, 1);
 	pci_write_config_dword(pdev, PCI_UART2_INT_REG, 1);
 }
 
+<<<<<<< HEAD
 static void __init loongson_cs5536_ide_fixup(struct pci_dev *pdev)
+=======
+static void loongson_cs5536_ide_fixup(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* setting the mutex pin as IDE function */
 	pci_write_config_dword(pdev, PCI_IDE_CFG_REG,
 			       CS5536_IDE_FLASH_SIGNATURE);
 }
 
+<<<<<<< HEAD
 static void __init loongson_cs5536_acc_fixup(struct pci_dev *pdev)
+=======
+static void loongson_cs5536_acc_fixup(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* enable the AUDIO interrupt in PIC  */
 	pci_write_config_dword(pdev, PCI_ACC_INT_REG, 1);
@@ -118,14 +146,22 @@ static void __init loongson_cs5536_acc_fixup(struct pci_dev *pdev)
 	pci_write_config_byte(pdev, PCI_LATENCY_TIMER, 0xc0);
 }
 
+<<<<<<< HEAD
 static void __init loongson_cs5536_ohci_fixup(struct pci_dev *pdev)
+=======
+static void loongson_cs5536_ohci_fixup(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* enable the OHCI interrupt in PIC */
 	/* THE OHCI, EHCI, UDC, OTG are shared with interrupt in PIC */
 	pci_write_config_dword(pdev, PCI_OHCI_INT_REG, 1);
 }
 
+<<<<<<< HEAD
 static void __init loongson_cs5536_ehci_fixup(struct pci_dev *pdev)
+=======
+static void loongson_cs5536_ehci_fixup(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 hi, lo;
 
@@ -137,7 +173,11 @@ static void __init loongson_cs5536_ehci_fixup(struct pci_dev *pdev)
 	pci_write_config_dword(pdev, PCI_EHCI_FLADJ_REG, 0x2000);
 }
 
+<<<<<<< HEAD
 static void __init loongson_nec_fixup(struct pci_dev *pdev)
+=======
+static void loongson_nec_fixup(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int val;
 

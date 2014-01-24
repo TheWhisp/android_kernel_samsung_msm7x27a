@@ -12,7 +12,15 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <crypto/internal/rng.h>
 #include <linux/err.h>
 #include <linux/module.h>
@@ -21,6 +29,16 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/cryptouser.h>
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cryptouser.h>
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_MUTEX(crypto_default_rng_lock);
 struct crypto_rng *crypto_default_rng;
@@ -58,6 +76,45 @@ static int crypto_init_rng_ops(struct crypto_tfm *tfm, u32 type, u32 mask)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_NET
+static int crypto_rng_report(struct sk_buff *skb, struct crypto_alg *alg)
+{
+	struct crypto_report_rng rrng;
+
+	strncpy(rrng.type, "rng", sizeof(rrng.type));
+
+	rrng.seedsize = alg->cra_rng.seedsize;
+
+<<<<<<< HEAD
+	NLA_PUT(skb, CRYPTOCFGA_REPORT_RNG,
+		sizeof(struct crypto_report_rng), &rrng);
+
+=======
+	if (nla_put(skb, CRYPTOCFGA_REPORT_RNG,
+		    sizeof(struct crypto_report_rng), &rrng))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
+	return 0;
+
+nla_put_failure:
+	return -EMSGSIZE;
+}
+#else
+static int crypto_rng_report(struct sk_buff *skb, struct crypto_alg *alg)
+{
+	return -ENOSYS;
+}
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void crypto_rng_show(struct seq_file *m, struct crypto_alg *alg)
 	__attribute__ ((unused));
 static void crypto_rng_show(struct seq_file *m, struct crypto_alg *alg)
@@ -78,6 +135,14 @@ const struct crypto_type crypto_rng_type = {
 #ifdef CONFIG_PROC_FS
 	.show = crypto_rng_show,
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.report = crypto_rng_report,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.report = crypto_rng_report,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL_GPL(crypto_rng_type);
 

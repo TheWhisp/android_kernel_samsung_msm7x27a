@@ -16,6 +16,10 @@
 #include <net/cfg80211.h>
 #include "sysfs.h"
 #include "core.h"
+<<<<<<< HEAD
+=======
+#include "rdev-ops.h"
+>>>>>>> refs/remotes/origin/master
 
 static inline struct cfg80211_registered_device *dev_to_rdev(
 	struct device *dev)
@@ -29,7 +33,12 @@ static ssize_t name ## _show(struct device *dev,			\
 			      char *buf)				\
 {									\
 	return sprintf(buf, fmt "\n", dev_to_rdev(dev)->member);	\
+<<<<<<< HEAD
 }
+=======
+}									\
+static DEVICE_ATTR_RO(name)
+>>>>>>> refs/remotes/origin/master
 
 SHOW_FMT(index, "%d", wiphy_idx);
 SHOW_FMT(macaddress, "%pM", wiphy.perm_addr);
@@ -41,7 +50,11 @@ static ssize_t name_show(struct device *dev,
 	struct wiphy *wiphy = &dev_to_rdev(dev)->wiphy;
 	return sprintf(buf, "%s\n", dev_name(&wiphy->dev));
 }
+<<<<<<< HEAD
 
+=======
+static DEVICE_ATTR_RO(name);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t addresses_show(struct device *dev,
 			      struct device_attribute *attr,
@@ -59,6 +72,7 @@ static ssize_t addresses_show(struct device *dev,
 
 	return buf - start;
 }
+<<<<<<< HEAD
 
 static struct device_attribute ieee80211_dev_attrs[] = {
 	__ATTR_RO(index),
@@ -68,6 +82,19 @@ static struct device_attribute ieee80211_dev_attrs[] = {
 	__ATTR_RO(name),
 	{}
 };
+=======
+static DEVICE_ATTR_RO(addresses);
+
+static struct attribute *ieee80211_attrs[] = {
+	&dev_attr_index.attr,
+	&dev_attr_macaddress.attr,
+	&dev_attr_address_mask.attr,
+	&dev_attr_addresses.attr,
+	&dev_attr_name.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(ieee80211);
+>>>>>>> refs/remotes/origin/master
 
 static void wiphy_dev_release(struct device *dev)
 {
@@ -76,13 +103,28 @@ static void wiphy_dev_release(struct device *dev)
 	cfg80211_dev_free(rdev);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
 static int wiphy_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
 	/* TODO, we probably need stuff here */
 	return 0;
 }
+<<<<<<< HEAD
 #endif
+=======
+
+#ifdef CONFIG_PM
+static void cfg80211_leave_all(struct cfg80211_registered_device *rdev)
+{
+	struct wireless_dev *wdev;
+
+	list_for_each_entry(wdev, &rdev->wdev_list, list)
+		cfg80211_leave(rdev, wdev);
+}
+>>>>>>> refs/remotes/origin/master
 
 static int wiphy_suspend(struct device *dev, pm_message_t state)
 {
@@ -91,11 +133,32 @@ static int wiphy_suspend(struct device *dev, pm_message_t state)
 
 	rdev->suspend_at = get_seconds();
 
+<<<<<<< HEAD
 	if (rdev->ops->suspend) {
 		rtnl_lock();
+<<<<<<< HEAD
 		ret = rdev->ops->suspend(&rdev->wiphy, rdev->wowlan);
+=======
+		if (rdev->wiphy.registered)
+			ret = rdev->ops->suspend(&rdev->wiphy, rdev->wowlan);
+>>>>>>> refs/remotes/origin/cm-10.0
 		rtnl_unlock();
 	}
+=======
+	rtnl_lock();
+	if (rdev->wiphy.registered) {
+		if (!rdev->wiphy.wowlan_config)
+			cfg80211_leave_all(rdev);
+		if (rdev->ops->suspend)
+			ret = rdev_suspend(rdev, rdev->wiphy.wowlan_config);
+		if (ret == 1) {
+			/* Driver refuse to configure wowlan */
+			cfg80211_leave_all(rdev);
+			ret = rdev_suspend(rdev, NULL);
+		}
+	}
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -106,18 +169,36 @@ static int wiphy_resume(struct device *dev)
 	int ret = 0;
 
 	/* Age scan results with time spent in suspend */
+<<<<<<< HEAD
 	spin_lock_bh(&rdev->bss_lock);
 	cfg80211_bss_age(rdev, get_seconds() - rdev->suspend_at);
 	spin_unlock_bh(&rdev->bss_lock);
 
 	if (rdev->ops->resume) {
 		rtnl_lock();
+<<<<<<< HEAD
 		ret = rdev->ops->resume(&rdev->wiphy);
+=======
+		if (rdev->wiphy.registered)
+			ret = rdev->ops->resume(&rdev->wiphy);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cfg80211_bss_age(rdev, get_seconds() - rdev->suspend_at);
+
+	if (rdev->ops->resume) {
+		rtnl_lock();
+		if (rdev->wiphy.registered)
+			ret = rdev_resume(rdev);
+>>>>>>> refs/remotes/origin/master
 		rtnl_unlock();
 	}
 
 	return ret;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static const void *wiphy_namespace(struct device *d)
 {
@@ -130,12 +211,21 @@ struct class ieee80211_class = {
 	.name = "ieee80211",
 	.owner = THIS_MODULE,
 	.dev_release = wiphy_dev_release,
+<<<<<<< HEAD
 	.dev_attrs = ieee80211_dev_attrs,
 #ifdef CONFIG_HOTPLUG
 	.dev_uevent = wiphy_uevent,
 #endif
 	.suspend = wiphy_suspend,
 	.resume = wiphy_resume,
+=======
+	.dev_groups = ieee80211_groups,
+	.dev_uevent = wiphy_uevent,
+#ifdef CONFIG_PM
+	.suspend = wiphy_suspend,
+	.resume = wiphy_resume,
+#endif
+>>>>>>> refs/remotes/origin/master
 	.ns_type = &net_ns_type_operations,
 	.namespace = wiphy_namespace,
 };

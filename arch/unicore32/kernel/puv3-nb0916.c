@@ -13,7 +13,13 @@
 
 #include <linux/init.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/mtd/physmap.h>
 #include <linux/io.h>
@@ -55,6 +61,10 @@ static struct platform_pwm_backlight_data nb0916_backlight_data = {
 	.max_brightness	= 100,
 	.dft_brightness	= 100,
 	.pwm_period_ns	= 70 * 1024,
+<<<<<<< HEAD
+=======
+	.enable_gpio	= -1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct gpio_keys_button nb0916_gpio_keys[] = {
@@ -124,7 +134,15 @@ int __init mach_nb0916_init(void)
 
 	if (request_irq(gpio_to_irq(GPI_LCD_CASE_OFF),
 		&nb0916_lcdcaseoff_handler,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		IRQF_DISABLED | IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+=======
+		IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/master
 		"NB0916 lcd case off", NULL) < 0) {
 
 		printk(KERN_DEBUG "LCD-Case-OFF IRQ %d not available\n",
@@ -132,7 +150,15 @@ int __init mach_nb0916_init(void)
 	}
 
 	if (request_irq(gpio_to_irq(GPI_OTP_INT), &nb0916_overheat_handler,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		IRQF_DISABLED | IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+=======
+		IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/master
 		"NB0916 overheating protection", NULL) < 0) {
 
 		printk(KERN_DEBUG "Overheating Protection IRQ %d not available\n",

@@ -41,7 +41,11 @@
 #include <asm/mach/flash.h>
 
 #include <mach/pxa25x.h>
+<<<<<<< HEAD
 #include <mach/mmc.h>
+=======
+#include <linux/platform_data/mmc-pxamci.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/udc.h>
 #include <mach/gumstix.h>
 
@@ -233,9 +237,29 @@ static void __init gumstix_init(void)
 }
 
 MACHINE_START(GUMSTIX, "Gumstix")
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100, /* match u-boot bi_boot_params */
 	.map_io		= pxa25x_map_io,
 	.init_irq	= pxa25x_init_irq,
 	.timer		= &pxa_timer,
 	.init_machine	= gumstix_init,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.atag_offset	= 0x100, /* match u-boot bi_boot_params */
+	.map_io		= pxa25x_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa25x_init_irq,
+	.handle_irq	= pxa25x_handle_irq,
+<<<<<<< HEAD
+	.timer		= &pxa_timer,
+	.init_machine	= gumstix_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.init_machine	= gumstix_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

@@ -12,6 +12,7 @@
 #ifndef _ASM_UNISTD_H
 #define _ASM_UNISTD_H
 
+<<<<<<< HEAD
 #include <asm/sgidefs.h>
 
 #if _MIPS_SIM == _MIPS_SIM_ABI32
@@ -363,17 +364,32 @@
 #define __NR_open_by_handle_at		(__NR_Linux + 340)
 #define __NR_clock_adjtime		(__NR_Linux + 341)
 #define __NR_syncfs			(__NR_Linux + 342)
+<<<<<<< HEAD
 #define __NR_setns			(__NR_Linux + 343)
+=======
+#define __NR_sendmmsg			(__NR_Linux + 343)
+#define __NR_setns			(__NR_Linux + 344)
+#define __NR_process_vm_readv		(__NR_Linux + 345)
+#define __NR_process_vm_writev		(__NR_Linux + 346)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Offset of the last Linux o32 flavoured syscall
  */
+<<<<<<< HEAD
 #define __NR_Linux_syscalls		343
+=======
+#define __NR_Linux_syscalls		346
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _MIPS_SIM == _MIPS_SIM_ABI32 */
 
 #define __NR_O32_Linux			4000
+<<<<<<< HEAD
 #define __NR_O32_Linux_syscalls		343
+=======
+#define __NR_O32_Linux_syscalls		346
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if _MIPS_SIM == _MIPS_SIM_ABI64
 
@@ -683,17 +699,32 @@
 #define __NR_open_by_handle_at		(__NR_Linux + 299)
 #define __NR_clock_adjtime		(__NR_Linux + 300)
 #define __NR_syncfs			(__NR_Linux + 301)
+<<<<<<< HEAD
 #define __NR_setns			(__NR_Linux + 302)
+=======
+#define __NR_sendmmsg			(__NR_Linux + 302)
+#define __NR_setns			(__NR_Linux + 303)
+#define __NR_process_vm_readv		(__NR_Linux + 304)
+#define __NR_process_vm_writev		(__NR_Linux + 305)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Offset of the last Linux 64-bit flavoured syscall
  */
+<<<<<<< HEAD
 #define __NR_Linux_syscalls		302
+=======
+#define __NR_Linux_syscalls		305
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _MIPS_SIM == _MIPS_SIM_ABI64 */
 
 #define __NR_64_Linux			5000
+<<<<<<< HEAD
 #define __NR_64_Linux_syscalls		302
+=======
+#define __NR_64_Linux_syscalls		305
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if _MIPS_SIM == _MIPS_SIM_NABI32
 
@@ -1008,24 +1039,53 @@
 #define __NR_open_by_handle_at		(__NR_Linux + 304)
 #define __NR_clock_adjtime		(__NR_Linux + 305)
 #define __NR_syncfs			(__NR_Linux + 306)
+<<<<<<< HEAD
 #define __NR_setns			(__NR_Linux + 307)
+=======
+#define __NR_sendmmsg			(__NR_Linux + 307)
+#define __NR_setns			(__NR_Linux + 308)
+#define __NR_process_vm_readv		(__NR_Linux + 309)
+#define __NR_process_vm_writev		(__NR_Linux + 310)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Offset of the last N32 flavoured syscall
  */
+<<<<<<< HEAD
 #define __NR_Linux_syscalls		307
+=======
+#define __NR_Linux_syscalls		310
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _MIPS_SIM == _MIPS_SIM_NABI32 */
 
 #define __NR_N32_Linux			6000
+<<<<<<< HEAD
 #define __NR_N32_Linux_syscalls		307
+=======
+#define __NR_N32_Linux_syscalls		310
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/unistd.h>
+
+#ifdef CONFIG_MIPS32_N32
+#define NR_syscalls  (__NR_N32_Linux + __NR_N32_Linux_syscalls)
+#elif defined(CONFIG_64BIT)
+#define NR_syscalls  (__NR_64_Linux + __NR_64_Linux_syscalls)
+#else
+#define NR_syscalls  (__NR_O32_Linux + __NR_O32_Linux_syscalls)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
 #define __ARCH_OMIT_COMPAT_SYS_GETDENTS64
+<<<<<<< HEAD
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_OLD_READDIR
 #define __ARCH_WANT_SYS_ALARM
 #define __ARCH_WANT_SYS_GETHOSTNAME
@@ -1043,7 +1103,10 @@
 #define __ARCH_WANT_SYS_OLDUMOUNT
 #define __ARCH_WANT_SYS_SIGPENDING
 #define __ARCH_WANT_SYS_SIGPROCMASK
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
+=======
+>>>>>>> refs/remotes/origin/master
 # ifdef CONFIG_32BIT
 #  define __ARCH_WANT_STAT64
 #  define __ARCH_WANT_SYS_TIME
@@ -1051,6 +1114,11 @@
 # ifdef CONFIG_MIPS32_O32
 #  define __ARCH_WANT_COMPAT_SYS_TIME
 # endif
+<<<<<<< HEAD
+=======
+#define __ARCH_WANT_SYS_FORK
+#define __ARCH_WANT_SYS_CLONE
+>>>>>>> refs/remotes/origin/master
 
 /* whitelists for checksyscalls */
 #define __IGNORE_select
@@ -1070,6 +1138,7 @@
 
 #endif /* !__ASSEMBLY__ */
 
+<<<<<<< HEAD
 /*
  * "Conditional" syscalls
  *
@@ -1079,4 +1148,6 @@
 #define cond_syscall(x) asm(".weak\t" #x "\n" #x "\t=\tsys_ni_syscall")
 
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_UNISTD_H */

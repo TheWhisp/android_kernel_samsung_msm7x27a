@@ -21,6 +21,14 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -37,10 +45,20 @@
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
 
+<<<<<<< HEAD
 #include <mach/board.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/at91sam9_smc.h>
 
+=======
+#include <mach/at91sam9_smc.h>
+
+#include "at91_aic.h"
+#include "board.h"
+>>>>>>> refs/remotes/origin/master
 #include "sam9_smc.h"
 #include "generic.h"
 
@@ -48,7 +66,12 @@
 static void __init cam60_init_early(void)
 {
 	/* Initialize processor: 10 MHz crystal */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	at91sam9260_initialize(10000000);
+=======
+	at91_initialize(10000000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* DBGU on ttyS0. (Rx & Tx only) */
 	at91_register_uart(0, 0, 0);
@@ -57,17 +80,35 @@ static void __init cam60_init_early(void)
 	at91_set_serial_console(0);
 }
 
+<<<<<<< HEAD
 static void __init cam60_init_irq(void)
 {
 	at91sam9260_init_interrupts(NULL);
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_initialize(10000000);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * USB Host
  */
 static struct at91_usbh_data __initdata cam60_usbh_data = {
 	.ports		= 1,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -121,7 +162,15 @@ static struct spi_board_info cam60_spi_devices[] __initdata = {
 /*
  * MACB Ethernet device
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct __initdata at91_eth_data cam60_macb_data = {
+=======
+static struct __initdata macb_platform_data cam60_macb_data = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct macb_platform_data cam60_macb_data __initdata = {
+>>>>>>> refs/remotes/origin/master
 	.phy_irq_pin	= AT91_PIN_PB5,
 	.is_rmii	= 0,
 };
@@ -138,6 +187,8 @@ static struct mtd_partition __initdata cam60_nand_partition[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
 {
 	*num_partitions = ARRAY_SIZE(cam60_nand_partition);
@@ -151,6 +202,22 @@ static struct atmel_nand_data __initdata cam60_nand_data = {
 	.rdy_pin	= AT91_PIN_PA9,
 	.enable_pin	= AT91_PIN_PA7,
 	.partition_info	= nand_partitions,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct atmel_nand_data __initdata cam60_nand_data = {
+	.ale		= 21,
+	.cle		= 22,
+	.det_pin	= -EINVAL,
+	.rdy_pin	= AT91_PIN_PA9,
+	.enable_pin	= AT91_PIN_PA7,
+	.ecc_mode	= NAND_ECC_SOFT,
+	.parts		= cam60_nand_partition,
+	.num_parts	= ARRAY_SIZE(cam60_nand_partition),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct sam9_smc_config __initdata cam60_nand_smc_config = {
@@ -174,7 +241,15 @@ static struct sam9_smc_config __initdata cam60_nand_smc_config = {
 static void __init cam60_add_device_nand(void)
 {
 	/* configure chip-select 3 (NAND) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sam9_smc_configure(3, &cam60_nand_smc_config);
+=======
+	sam9_smc_configure(0, 3, &cam60_nand_smc_config);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sam9_smc_configure(0, 3, &cam60_nand_smc_config);
+>>>>>>> refs/remotes/origin/master
 
 	at91_add_device_nand(&cam60_nand_data);
 }
@@ -183,6 +258,11 @@ static void __init cam60_add_device_nand(void)
 static void __init cam60_board_init(void)
 {
 	/* Serial */
+<<<<<<< HEAD
+=======
+	/* DBGU on ttyS0. (Rx & Tx only) */
+	at91_register_uart(0, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	at91_add_device_serial();
 	/* SPI */
 	at91_add_device_spi(cam60_spi_devices, ARRAY_SIZE(cam60_spi_devices));
@@ -198,9 +278,23 @@ static void __init cam60_board_init(void)
 
 MACHINE_START(CAM60, "KwikByte CAM60")
 	/* Maintainer: KwikByte */
+<<<<<<< HEAD
 	.timer		= &at91sam926x_timer,
+<<<<<<< HEAD
 	.map_io		= at91sam9260_map_io,
 	.init_early	= cam60_init_early,
 	.init_irq	= cam60_init_irq,
+=======
+	.map_io		= at91_map_io,
+	.init_early	= cam60_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= at91sam926x_pit_init,
+	.map_io		= at91_map_io,
+	.handle_irq	= at91_aic_handle_irq,
+	.init_early	= cam60_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= cam60_board_init,
 MACHINE_END

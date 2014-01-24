@@ -8,6 +8,7 @@
 #ifndef __ASM_AVR32_TERMIOS_H
 #define __ASM_AVR32_TERMIOS_H
 
+<<<<<<< HEAD
 #include <asm/termbits.h>
 #include <asm/ioctls.h>
 
@@ -47,6 +48,10 @@ struct termio {
 /* ioctl (fd, TIOCSERGETLSR, &result) where result may be as below */
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/termios.h>
+
+>>>>>>> refs/remotes/origin/master
 /*	intr=^C		quit=^\		erase=del	kill=^U
 	eof=^D		vtime=\0	vmin=\1		sxtc=\0
 	start=^Q	stop=^S		susp=^Z		eol=\0
@@ -57,6 +62,9 @@ struct termio {
 
 #include <asm-generic/termios-base.h>
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* __ASM_AVR32_TERMIOS_H */

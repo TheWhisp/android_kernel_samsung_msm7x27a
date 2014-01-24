@@ -82,11 +82,25 @@ static psmouse_ret_t ps2pp_process_byte(struct psmouse *psmouse)
 			packet[0] = packet[2] | 0x08;
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef DEBUG
 		default:
 			printk(KERN_WARNING "psmouse.c: Received PS2++ packet #%x, but don't know how to handle.\n",
 				(packet[1] >> 4) | (packet[0] & 0x30));
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		default:
+			psmouse_dbg(psmouse,
+				    "Received PS2++ packet #%x, but don't know how to handle.\n",
+				    (packet[1] >> 4) | (packet[0] & 0x30));
+			break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		/* Standard PS/2 motion data */
@@ -155,9 +169,26 @@ static ssize_t ps2pp_attr_show_smartscroll(struct psmouse *psmouse,
 static ssize_t ps2pp_attr_set_smartscroll(struct psmouse *psmouse, void *data,
 					  const char *buf, size_t count)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 
 	if (strict_strtoul(buf, 10, &value) || value > 1)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned int value;
+	int err;
+
+	err = kstrtouint(buf, 10, &value);
+	if (err)
+		return err;
+
+	if (value > 1)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	ps2pp_set_smartscroll(psmouse, value);
@@ -382,7 +413,15 @@ int ps2pp_init(struct psmouse *psmouse, bool set_properties)
 		}
 
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "logips2pp: Detected unknown logitech mouse model %d\n", model);
+=======
+		psmouse_warn(psmouse, "Detected unknown Logitech mouse model %d\n", model);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_warn(psmouse, "Detected unknown Logitech mouse model %d\n", model);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (set_properties) {
@@ -400,9 +439,21 @@ int ps2pp_init(struct psmouse *psmouse, bool set_properties)
 				error = device_create_file(&psmouse->ps2dev.serio->dev,
 							   &psmouse_attr_smartscroll.dattr);
 				if (error) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 					printk(KERN_ERR
 						"logips2pp.c: failed to create smartscroll "
 						"sysfs attribute, error: %d\n", error);
+=======
+					psmouse_err(psmouse,
+						    "failed to create smartscroll sysfs attribute, error: %d\n",
+						    error);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					psmouse_err(psmouse,
+						    "failed to create smartscroll sysfs attribute, error: %d\n",
+						    error);
+>>>>>>> refs/remotes/origin/master
 					return -1;
 				}
 			}

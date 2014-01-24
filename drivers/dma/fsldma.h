@@ -112,7 +112,11 @@ struct fsldma_chan_regs {
 };
 
 struct fsldma_chan;
+<<<<<<< HEAD
 #define FSL_DMA_MAX_CHANS_PER_DEVICE 4
+=======
+#define FSL_DMA_MAX_CHANS_PER_DEVICE 8
+>>>>>>> refs/remotes/origin/master
 
 struct fsldma_device {
 	void __iomem *regs;	/* DGSR register base */
@@ -137,7 +141,13 @@ struct fsldma_device {
 struct fsldma_chan {
 	char name[8];			/* Channel name */
 	struct fsldma_chan_regs __iomem *regs;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dma_cookie_t completed_cookie;	/* The maximum cookie completed */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spinlock_t desc_lock;		/* Descriptor operation lock */
 	struct list_head ld_pending;	/* Link descriptors queue */
 	struct list_head ld_running;	/* Link descriptors queue */

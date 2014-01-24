@@ -1,6 +1,10 @@
 /*
  *  This is a direct copy of the ev96100.h file, with a global
+<<<<<<< HEAD
  * search and replace.  The numbers are the same.
+=======
+ * search and replace.	The numbers are the same.
+>>>>>>> refs/remotes/origin/master
  *
  *  The reason I'm duplicating this is so that the 64120/96100
  * defines won't be confusing in the source code.

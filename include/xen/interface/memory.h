@@ -31,10 +31,17 @@ struct xen_memory_reservation {
      *   OUT: GMFN bases of extents that were allocated
      *   (NB. This command also updates the mach_to_phys translation table)
      */
+<<<<<<< HEAD
     GUEST_HANDLE(ulong) extent_start;
 
     /* Number of extents, and size/alignment of each (2^extent_order pages). */
     unsigned long  nr_extents;
+=======
+    GUEST_HANDLE(xen_pfn_t) extent_start;
+
+    /* Number of extents, and size/alignment of each (2^extent_order pages). */
+    xen_ulong_t  nr_extents;
+>>>>>>> refs/remotes/origin/master
     unsigned int   extent_order;
 
     /*
@@ -92,7 +99,11 @@ struct xen_memory_exchange {
      *     command will be non-zero.
      *  5. THIS FIELD MUST BE INITIALISED TO ZERO BY THE CALLER!
      */
+<<<<<<< HEAD
     unsigned long nr_exchanged;
+=======
+    xen_ulong_t nr_exchanged;
+>>>>>>> refs/remotes/origin/master
 };
 
 DEFINE_GUEST_HANDLE_STRUCT(xen_memory_exchange);
@@ -130,7 +141,11 @@ struct xen_machphys_mfn_list {
      * any large discontiguities in the machine address space, 2MB gaps in
      * the machphys table will be represented by an MFN base of zero.
      */
+<<<<<<< HEAD
     GUEST_HANDLE(ulong) extent_start;
+=======
+    GUEST_HANDLE(xen_pfn_t) extent_start;
+>>>>>>> refs/remotes/origin/master
 
     /*
      * Number of extents written to the above array. This will be smaller
@@ -148,11 +163,27 @@ DEFINE_GUEST_HANDLE_STRUCT(xen_machphys_mfn_list);
  */
 #define XENMEM_machphys_mapping     12
 struct xen_machphys_mapping {
+<<<<<<< HEAD
     unsigned long v_start, v_end; /* Start and end virtual addresses.   */
     unsigned long max_mfn;        /* Maximum MFN that can be looked up. */
 };
 DEFINE_GUEST_HANDLE_STRUCT(xen_machphys_mapping_t);
 
+=======
+    xen_ulong_t v_start, v_end; /* Start and end virtual addresses.   */
+    xen_ulong_t max_mfn;        /* Maximum MFN that can be looked up. */
+};
+DEFINE_GUEST_HANDLE_STRUCT(xen_machphys_mapping_t);
+
+#define XENMAPSPACE_shared_info  0 /* shared info page */
+#define XENMAPSPACE_grant_table  1 /* grant table page */
+#define XENMAPSPACE_gmfn         2 /* GMFN */
+#define XENMAPSPACE_gmfn_range   3 /* GMFN range, XENMEM_add_to_physmap only. */
+#define XENMAPSPACE_gmfn_foreign 4 /* GMFN from another dom,
+				    * XENMEM_add_to_physmap_range only.
+				    */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Sets the GPFN at which a particular page appears in the specified guest's
  * pseudophysical address space.
@@ -163,6 +194,7 @@ struct xen_add_to_physmap {
     /* Which domain to change the mapping for. */
     domid_t domid;
 
+<<<<<<< HEAD
     /* Source mapping space. */
 #define XENMAPSPACE_shared_info 0 /* shared info page */
 #define XENMAPSPACE_grant_table 1 /* grant table page */
@@ -198,6 +230,48 @@ struct xen_translate_gpfn_list {
     GUEST_HANDLE(ulong) mfn_list;
 };
 DEFINE_GUEST_HANDLE_STRUCT(xen_translate_gpfn_list);
+=======
+    /* Number of pages to go through for gmfn_range */
+    uint16_t    size;
+
+    /* Source mapping space. */
+    unsigned int space;
+
+    /* Index into source mapping space. */
+    xen_ulong_t idx;
+
+    /* GPFN where the source mapping page should appear. */
+    xen_pfn_t gpfn;
+};
+DEFINE_GUEST_HANDLE_STRUCT(xen_add_to_physmap);
+
+/*** REMOVED ***/
+/*#define XENMEM_translate_gpfn_list  8*/
+
+#define XENMEM_add_to_physmap_range 23
+struct xen_add_to_physmap_range {
+    /* IN */
+    /* Which domain to change the mapping for. */
+    domid_t domid;
+    uint16_t space; /* => enum phys_map_space */
+
+    /* Number of pages to go through */
+    uint16_t size;
+    domid_t foreign_domid; /* IFF gmfn_foreign */
+
+    /* Indexes into space being mapped. */
+    GUEST_HANDLE(xen_ulong_t) idxs;
+
+    /* GPFN in domid where the source mapping page should appear. */
+    GUEST_HANDLE(xen_pfn_t) gpfns;
+
+    /* OUT */
+
+    /* Per index error code. */
+    GUEST_HANDLE(int) errs;
+};
+DEFINE_GUEST_HANDLE_STRUCT(xen_add_to_physmap_range);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Returns the pseudo-physical memory map as it was when the domain
@@ -234,4 +308,23 @@ DEFINE_GUEST_HANDLE_STRUCT(xen_memory_map);
  * during a driver critical region.
  */
 extern spinlock_t xen_reservation_lock;
+<<<<<<< HEAD
+=======
+
+/*
+ * Unmaps the page appearing at a particular GPFN from the specified guest's
+ * pseudophysical address space.
+ * arg == addr of xen_remove_from_physmap_t.
+ */
+#define XENMEM_remove_from_physmap      15
+struct xen_remove_from_physmap {
+    /* Which domain to change the mapping for. */
+    domid_t domid;
+
+    /* GPFN of the current mapping of the page. */
+    xen_pfn_t gpfn;
+};
+DEFINE_GUEST_HANDLE_STRUCT(xen_remove_from_physmap);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __XEN_PUBLIC_MEMORY_H__ */

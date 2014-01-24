@@ -6,6 +6,12 @@
  *
  * Licence: GPL
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/blkdev.h>
@@ -14,7 +20,11 @@
 #include <linux/list.h>
 #include <linux/init.h>
 #include <linux/mtd/mtd.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 #include <linux/mount.h>
 #include <linux/slab.h>
@@ -22,6 +32,12 @@
 #define ERROR(fmt, args...) printk(KERN_ERR "block2mtd: " fmt "\n" , ## args)
 #define INFO(fmt, args...) printk(KERN_INFO "block2mtd: " fmt "\n" , ## args)
 
+=======
+#include <linux/mutex.h>
+#include <linux/mount.h>
+#include <linux/slab.h>
+#include <linux/major.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Info for the block device */
 struct block2mtd_dev {
@@ -53,8 +69,11 @@ static int _block2mtd_erase(struct block2mtd_dev *dev, loff_t to, size_t len)
 
 	while (pages) {
 		page = page_read(mapping, index);
+<<<<<<< HEAD
 		if (!page)
 			return -ENOMEM;
+=======
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(page))
 			return PTR_ERR(page);
 
@@ -65,6 +84,10 @@ static int _block2mtd_erase(struct block2mtd_dev *dev, loff_t to, size_t len)
 				memset(page_address(page), 0xff, PAGE_SIZE);
 				set_page_dirty(page);
 				unlock_page(page);
+<<<<<<< HEAD
+=======
+				balance_dirty_pages_ratelimited(mapping);
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 
@@ -86,7 +109,11 @@ static int block2mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
 	err = _block2mtd_erase(dev, from, len);
 	mutex_unlock(&dev->write_mutex);
 	if (err) {
+<<<<<<< HEAD
 		ERROR("erase failed err = %d", err);
+=======
+		pr_err("erase failed err = %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		instr->state = MTD_ERASE_FAILED;
 	} else
 		instr->state = MTD_ERASE_DONE;
@@ -105,6 +132,8 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
 	int offset = from & (PAGE_SIZE-1);
 	int cpylen;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (from > mtd->size)
 		return -EINVAL;
 	if (from + len > mtd->size)
@@ -113,6 +142,10 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
 	if (retlen)
 		*retlen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (len) {
 		if ((offset + len) > PAGE_SIZE)
 			cpylen = PAGE_SIZE - offset;	// multiple pages
@@ -121,8 +154,11 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
 		len = len - cpylen;
 
 		page = page_read(dev->blkdev->bd_inode->i_mapping, index);
+<<<<<<< HEAD
 		if (!page)
 			return -ENOMEM;
+=======
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(page))
 			return PTR_ERR(page);
 
@@ -149,8 +185,14 @@ static int _block2mtd_write(struct block2mtd_dev *dev, const u_char *buf,
 	int offset = to & ~PAGE_MASK;	// page offset
 	int cpylen;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (retlen)
 		*retlen = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (len) {
 		if ((offset+len) > PAGE_SIZE)
 			cpylen = PAGE_SIZE - offset;	// multiple pages
@@ -159,8 +201,11 @@ static int _block2mtd_write(struct block2mtd_dev *dev, const u_char *buf,
 		len = len - cpylen;
 
 		page = page_read(mapping, index);
+<<<<<<< HEAD
 		if (!page)
 			return -ENOMEM;
+=======
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(page))
 			return PTR_ERR(page);
 
@@ -169,6 +214,10 @@ static int _block2mtd_write(struct block2mtd_dev *dev, const u_char *buf,
 			memcpy(page_address(page) + offset, buf, cpylen);
 			set_page_dirty(page);
 			unlock_page(page);
+<<<<<<< HEAD
+=======
+			balance_dirty_pages_ratelimited(mapping);
+>>>>>>> refs/remotes/origin/master
 		}
 		page_cache_release(page);
 
@@ -189,6 +238,8 @@ static int block2mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
 	struct block2mtd_dev *dev = mtd->priv;
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!len)
 		return 0;
 	if (to >= mtd->size)
@@ -196,6 +247,10 @@ static int block2mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
 	if (to + len > mtd->size)
 		len = mtd->size - to;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&dev->write_mutex);
 	err = _block2mtd_write(dev, buf, to, len, retlen);
 	mutex_unlock(&dev->write_mutex);
@@ -261,13 +316,21 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
 #endif
 
 	if (IS_ERR(bdev)) {
+<<<<<<< HEAD
 		ERROR("error: cannot open device %s", devname);
+=======
+		pr_err("error: cannot open device %s\n", devname);
+>>>>>>> refs/remotes/origin/master
 		goto devinit_err;
 	}
 	dev->blkdev = bdev;
 
 	if (MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) {
+<<<<<<< HEAD
 		ERROR("attempting to use an MTD device as a block device");
+=======
+		pr_err("attempting to use an MTD device as a block device\n");
+>>>>>>> refs/remotes/origin/master
 		goto devinit_err;
 	}
 
@@ -287,11 +350,24 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
 	dev->mtd.writebufsize = PAGE_SIZE;
 	dev->mtd.type = MTD_RAM;
 	dev->mtd.flags = MTD_CAP_RAM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev->mtd.erase = block2mtd_erase;
 	dev->mtd.write = block2mtd_write;
 	dev->mtd.writev = default_mtd_writev;
 	dev->mtd.sync = block2mtd_sync;
 	dev->mtd.read = block2mtd_read;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	dev->mtd._erase = block2mtd_erase;
+	dev->mtd._write = block2mtd_write;
+	dev->mtd._sync = block2mtd_sync;
+	dev->mtd._read = block2mtd_read;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->mtd.priv = dev;
 	dev->mtd.owner = THIS_MODULE;
 
@@ -300,9 +376,16 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
 		goto devinit_err;
 	}
 	list_add(&dev->list, &blkmtd_device_list);
+<<<<<<< HEAD
 	INFO("mtd%d: [%s] erase_size = %dKiB [%d]", dev->mtd.index,
 			dev->mtd.name + strlen("block2mtd: "),
 			dev->mtd.erasesize >> 10, dev->mtd.erasesize);
+=======
+	pr_info("mtd%d: [%s] erase_size = %dKiB [%d]\n",
+		dev->mtd.index,
+		dev->mtd.name + strlen("block2mtd: "),
+		dev->mtd.erasesize >> 10, dev->mtd.erasesize);
+>>>>>>> refs/remotes/origin/master
 	return dev;
 
 devinit_err:
@@ -362,17 +445,23 @@ static inline void kill_final_newline(char *str)
 }
 
 
+<<<<<<< HEAD
 #define parse_err(fmt, args...) do {	\
 	ERROR(fmt, ## args);		\
 	return 0;			\
 } while (0)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef MODULE
 static int block2mtd_init_called = 0;
 static char block2mtd_paramline[80 + 12]; /* 80 for device, 12 for erase size */
 #endif
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int block2mtd_setup2(const char *val)
 {
 	char buf[80 + 12]; /* 80 for device, 12 for erase size */
@@ -382,8 +471,15 @@ static int block2mtd_setup2(const char *val)
 	size_t erase_size = PAGE_SIZE;
 	int i, ret;
 
+<<<<<<< HEAD
 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
 		parse_err("parameter too long");
+=======
+	if (strnlen(val, sizeof(buf)) >= sizeof(buf)) {
+		pr_err("parameter too long\n");
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	strcpy(str, val);
 	kill_final_newline(str);
@@ -391,6 +487,7 @@ static int block2mtd_setup2(const char *val)
 	for (i = 0; i < 2; i++)
 		token[i] = strsep(&str, ",");
 
+<<<<<<< HEAD
 	if (str)
 		parse_err("too many arguments");
 
@@ -400,11 +497,33 @@ static int block2mtd_setup2(const char *val)
 	name = token[0];
 	if (strlen(name) + 1 > 80)
 		parse_err("device name too long");
+=======
+	if (str) {
+		pr_err("too many arguments\n");
+		return 0;
+	}
+
+	if (!token[0]) {
+		pr_err("no argument\n");
+		return 0;
+	}
+
+	name = token[0];
+	if (strlen(name) + 1 > 80) {
+		pr_err("device name too long\n");
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (token[1]) {
 		ret = parse_num(&erase_size, token[1]);
 		if (ret) {
+<<<<<<< HEAD
 			parse_err("illegal erase size");
+=======
+			pr_err("illegal erase size\n");
+			return 0;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -458,7 +577,11 @@ static int __init block2mtd_init(void)
 }
 
 
+<<<<<<< HEAD
 static void __devexit block2mtd_exit(void)
+=======
+static void block2mtd_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct list_head *pos, *next;
 
@@ -467,8 +590,14 @@ static void __devexit block2mtd_exit(void)
 		struct block2mtd_dev *dev = list_entry(pos, typeof(*dev), list);
 		block2mtd_sync(&dev->mtd);
 		mtd_device_unregister(&dev->mtd);
+<<<<<<< HEAD
 		INFO("mtd%d: [%s] removed", dev->mtd.index,
 				dev->mtd.name + strlen("block2mtd: "));
+=======
+		pr_info("mtd%d: [%s] removed\n",
+			dev->mtd.index,
+			dev->mtd.name + strlen("block2mtd: "));
+>>>>>>> refs/remotes/origin/master
 		list_del(&dev->list);
 		block2mtd_free_device(dev);
 	}

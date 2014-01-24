@@ -1,6 +1,8 @@
 /*
  * ppp-comp.h - Definitions for doing PPP packet compression.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 1994 The Australian National University.
  * All rights reserved.
  *
@@ -37,9 +39,28 @@
  *     installation script can recognize it.
  */
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Copyright 1994-1998 Paul Mackerras.
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  version 2 as published by the Free Software Foundation.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _NET_PPP_COMP_H
 #define _NET_PPP_COMP_H
 
+=======
+#ifndef _NET_PPP_COMP_H
+#define _NET_PPP_COMP_H
+
+#include <uapi/linux/ppp-comp.h>
+
+
+>>>>>>> refs/remotes/origin/master
 struct module;
 
 /*
@@ -128,6 +149,7 @@ struct compressor {
 #define DECOMP_ERROR		-1	/* error detected before decomp. */
 #define DECOMP_FATALERROR	-2	/* error detected after decomp. */
 
+<<<<<<< HEAD
 /*
  * CCP codes.
  */
@@ -211,4 +233,8 @@ extern int ppp_register_compressor(struct compressor *);
 extern void ppp_unregister_compressor(struct compressor *);
 #endif /* __KERNEL__ */
 
+=======
+extern int ppp_register_compressor(struct compressor *);
+extern void ppp_unregister_compressor(struct compressor *);
+>>>>>>> refs/remotes/origin/master
 #endif /* _NET_PPP_COMP_H */

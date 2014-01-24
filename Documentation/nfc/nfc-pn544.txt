@@ -1,14 +1,18 @@
 Kernel driver for the NXP Semiconductors PN544 Near Field
 Communication chip
 
+<<<<<<< HEAD
 Author: Jari Vanhala
 Contact: Matti Aaltonen (matti.j.aaltonen at nokia.com)
 
+=======
+>>>>>>> refs/remotes/origin/master
 General
 -------
 
 The PN544 is an integrated transmission module for contactless
 communication. The driver goes under drives/nfc/ and is compiled as a
+<<<<<<< HEAD
 module named "pn544". It registers a misc device and creates a device
 file named "/dev/pn544".
 
@@ -27,6 +31,12 @@ chip. The main function of the driver is just to pass those messages
 without caring about the message content.
 
 
+=======
+module named "pn544".
+
+Host Interfaces: I2C, SPI and HSU, this driver supports currently only I2C.
+
+>>>>>>> refs/remotes/origin/master
 Protocols
 ---------
 
@@ -47,6 +57,7 @@ and third (LSB) bytes of the message. The maximum FW message length is
 
 For the ETSI HCI specification see
 http://www.etsi.org/WebSite/Technologies/ProtocolSpecification.aspx
+<<<<<<< HEAD
 
 The Hardware Test
 -----------------
@@ -112,3 +123,5 @@ static struct pn544_nfc_platform_data rx71_nfc_data = {
 	.test = rx71_pn544_nfc_test,
 	.disable = rx71_pn544_nfc_disable,
 };
+=======
+>>>>>>> refs/remotes/origin/master

@@ -3,11 +3,21 @@
  *
  * Copyright (C) 2006-2007 Renesas Solutions Corp.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Author : Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+=======
+ * Author : Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author : Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,15 +28,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __M66592_UDC_H__
 #define __M66592_UDC_H__
 
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 #include <linux/clk.h>
 #endif
 
+=======
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb/m66592.h>
 
 #define M66592_SYSCFG		0x00
@@ -466,7 +484,11 @@ struct m66592_ep {
 	unsigned		use_dma:1;
 	u16			pipenum;
 	u16			type;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*desc;
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* register address */
 	unsigned long		fifoaddr;
 	unsigned long		fifosel;
@@ -478,9 +500,13 @@ struct m66592_ep {
 struct m66592 {
 	spinlock_t		lock;
 	void __iomem		*reg;
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 	struct clk *clk;
 #endif
+=======
+	struct clk *clk;
+>>>>>>> refs/remotes/origin/master
 	struct m66592_platdata	*pdata;
 	unsigned long		irq_trigger;
 
@@ -507,6 +533,10 @@ struct m66592 {
 	int isochronous;
 	int num_dma;
 };
+<<<<<<< HEAD
+=======
+#define to_m66592(g)	(container_of((g), struct m66592, gadget))
+>>>>>>> refs/remotes/origin/master
 
 #define gadget_to_m66592(_gadget) container_of(_gadget, struct m66592, gadget)
 #define m66592_to_gadget(m66592) (&m66592->gadget)
@@ -561,11 +591,40 @@ static inline void m66592_write(struct m66592 *m66592, u16 val,
 	iowrite16(val, m66592->reg + offset);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void m66592_write_fifo(struct m66592 *m66592,
 		unsigned long offset,
 		void *buf, unsigned long len)
 {
 	void __iomem *fifoaddr = m66592->reg + offset;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void m66592_mdfy(struct m66592 *m66592, u16 val, u16 pat,
+		unsigned long offset)
+{
+	u16 tmp;
+	tmp = m66592_read(m66592, offset);
+	tmp = tmp & (~pat);
+	tmp = tmp | val;
+	m66592_write(m66592, tmp, offset);
+}
+
+#define m66592_bclr(m66592, val, offset)	\
+			m66592_mdfy(m66592, 0, val, offset)
+#define m66592_bset(m66592, val, offset)	\
+			m66592_mdfy(m66592, val, 0, offset)
+
+static inline void m66592_write_fifo(struct m66592 *m66592,
+		struct m66592_ep *ep,
+		void *buf, unsigned long len)
+{
+	void __iomem *fifoaddr = m66592->reg + ep->fifoaddr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (m66592->pdata->on_chip) {
 		unsigned long count;
@@ -591,11 +650,27 @@ static inline void m66592_write_fifo(struct m66592 *m66592,
 		iowrite16_rep(fifoaddr, buf, len);
 		if (odd) {
 			unsigned char *p = buf + len*2;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			iowrite8(*p, fifoaddr);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			if (m66592->pdata->wr0_shorted_to_wr1)
+				m66592_bclr(m66592, M66592_MBW_16, ep->fifosel);
+			iowrite8(*p, fifoaddr);
+			if (m66592->pdata->wr0_shorted_to_wr1)
+				m66592_bset(m66592, M66592_MBW_16, ep->fifosel);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void m66592_mdfy(struct m66592 *m66592, u16 val, u16 pat,
 		unsigned long offset)
 {
@@ -611,6 +686,10 @@ static inline void m66592_mdfy(struct m66592 *m66592, u16 val, u16 pat,
 #define m66592_bset(m66592, val, offset)	\
 			m66592_mdfy(m66592, val, 0, offset)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* ifndef __M66592_UDC_H__ */
 
 

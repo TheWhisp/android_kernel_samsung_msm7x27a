@@ -15,11 +15,30 @@
 #include <linux/err.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/common.h>
 
+=======
+#include "iomap.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "prcm_mpu44xx.h"
 #include "cm-regbits-44xx.h"
 
+=======
+#include "iomap.h"
+#include "common.h"
+#include "prcm_mpu44xx.h"
+#include "cm-regbits-44xx.h"
+
+/*
+ * prcm_mpu_base: the virtual address of the start of the PRCM_MPU IP
+ *   block registers
+ */
+void __iomem *prcm_mpu_base;
+
+>>>>>>> refs/remotes/origin/master
 /* PRCM_MPU low-level functions */
 
 u32 omap4_prcm_mpu_read_inst_reg(s16 inst, u16 reg)
@@ -43,3 +62,17 @@ u32 omap4_prcm_mpu_rmw_inst_reg_bits(u32 mask, u32 bits, s16 inst, s16 reg)
 
 	return v;
 }
+<<<<<<< HEAD
+=======
+
+/**
+ * omap2_set_globals_prcm_mpu - set the MPU PRCM base address (for early use)
+ * @prcm_mpu: PRCM_MPU base virtual address
+ *
+ * XXX Will be replaced when the PRM/CM drivers are completed.
+ */
+void __init omap2_set_globals_prcm_mpu(void __iomem *prcm_mpu)
+{
+	prcm_mpu_base = prcm_mpu;
+}
+>>>>>>> refs/remotes/origin/master

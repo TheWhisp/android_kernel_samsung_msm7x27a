@@ -16,6 +16,10 @@
 #include <net/netfilter/nf_conntrack.h>
 #include <net/netfilter/nf_conntrack_helper.h>
 #include <net/netfilter/nf_conntrack_expect.h>
+<<<<<<< HEAD
+=======
+#include <linux/netfilter/nf_conntrack_snmp.h>
+>>>>>>> refs/remotes/origin/master
 
 #define SNMP_PORT	161
 

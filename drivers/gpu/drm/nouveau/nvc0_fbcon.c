@@ -22,20 +22,31 @@
  * Authors: Ben Skeggs
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "nouveau_drv.h"
 #include "nouveau_dma.h"
 #include "nouveau_ramht.h"
 #include "nouveau_fbcon.h"
 #include "nouveau_mm.h"
+=======
+#include "nouveau_drm.h"
+#include "nouveau_dma.h"
+#include "nouveau_fbcon.h"
+>>>>>>> refs/remotes/origin/master
 
 int
 nvc0_fbcon_fillrect(struct fb_info *info, const struct fb_fillrect *rect)
 {
 	struct nouveau_fbdev *nfbdev = info->par;
+<<<<<<< HEAD
 	struct drm_device *dev = nfbdev->dev;
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct nouveau_channel *chan = dev_priv->channel;
+=======
+	struct nouveau_drm *drm = nouveau_drm(nfbdev->dev);
+	struct nouveau_channel *chan = drm->channel;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = RING_SPACE(chan, rect->rop == ROP_COPY ? 7 : 11);
@@ -43,22 +54,37 @@ nvc0_fbcon_fillrect(struct fb_info *info, const struct fb_fillrect *rect)
 		return ret;
 
 	if (rect->rop != ROP_COPY) {
+<<<<<<< HEAD
 		BEGIN_NVC0(chan, 2, NvSub2D, 0x02ac, 1);
 		OUT_RING  (chan, 1);
 	}
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0588, 1);
+=======
+		BEGIN_NVC0(chan, NvSub2D, 0x02ac, 1);
+		OUT_RING  (chan, 1);
+	}
+	BEGIN_NVC0(chan, NvSub2D, 0x0588, 1);
+>>>>>>> refs/remotes/origin/master
 	if (info->fix.visual == FB_VISUAL_TRUECOLOR ||
 	    info->fix.visual == FB_VISUAL_DIRECTCOLOR)
 		OUT_RING  (chan, ((uint32_t *)info->pseudo_palette)[rect->color]);
 	else
 		OUT_RING  (chan, rect->color);
+<<<<<<< HEAD
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0600, 4);
+=======
+	BEGIN_NVC0(chan, NvSub2D, 0x0600, 4);
+>>>>>>> refs/remotes/origin/master
 	OUT_RING  (chan, rect->dx);
 	OUT_RING  (chan, rect->dy);
 	OUT_RING  (chan, rect->dx + rect->width);
 	OUT_RING  (chan, rect->dy + rect->height);
 	if (rect->rop != ROP_COPY) {
+<<<<<<< HEAD
 		BEGIN_NVC0(chan, 2, NvSub2D, 0x02ac, 1);
+=======
+		BEGIN_NVC0(chan, NvSub2D, 0x02ac, 1);
+>>>>>>> refs/remotes/origin/master
 		OUT_RING  (chan, 3);
 	}
 	FIRE_RING(chan);
@@ -69,23 +95,38 @@ int
 nvc0_fbcon_copyarea(struct fb_info *info, const struct fb_copyarea *region)
 {
 	struct nouveau_fbdev *nfbdev = info->par;
+<<<<<<< HEAD
 	struct drm_device *dev = nfbdev->dev;
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct nouveau_channel *chan = dev_priv->channel;
+=======
+	struct nouveau_drm *drm = nouveau_drm(nfbdev->dev);
+	struct nouveau_channel *chan = drm->channel;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = RING_SPACE(chan, 12);
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0110, 1);
 	OUT_RING  (chan, 0);
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x08b0, 4);
+=======
+	BEGIN_NVC0(chan, NvSub2D, 0x0110, 1);
+	OUT_RING  (chan, 0);
+	BEGIN_NVC0(chan, NvSub2D, 0x08b0, 4);
+>>>>>>> refs/remotes/origin/master
 	OUT_RING  (chan, region->dx);
 	OUT_RING  (chan, region->dy);
 	OUT_RING  (chan, region->width);
 	OUT_RING  (chan, region->height);
+<<<<<<< HEAD
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x08d0, 4);
+=======
+	BEGIN_NVC0(chan, NvSub2D, 0x08d0, 4);
+>>>>>>> refs/remotes/origin/master
 	OUT_RING  (chan, 0);
 	OUT_RING  (chan, region->sx);
 	OUT_RING  (chan, 0);
@@ -98,9 +139,14 @@ int
 nvc0_fbcon_imageblit(struct fb_info *info, const struct fb_image *image)
 {
 	struct nouveau_fbdev *nfbdev = info->par;
+<<<<<<< HEAD
 	struct drm_device *dev = nfbdev->dev;
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct nouveau_channel *chan = dev_priv->channel;
+=======
+	struct nouveau_drm *drm = nouveau_drm(nfbdev->dev);
+	struct nouveau_channel *chan = drm->channel;
+>>>>>>> refs/remotes/origin/master
 	uint32_t width, dwords, *data = (uint32_t *)image->data;
 	uint32_t mask = ~(~0 >> (32 - info->var.bits_per_pixel));
 	uint32_t *palette = info->pseudo_palette;
@@ -116,7 +162,11 @@ nvc0_fbcon_imageblit(struct fb_info *info, const struct fb_image *image)
 	width = ALIGN(image->width, 32);
 	dwords = (width * image->height) >> 5;
 
+<<<<<<< HEAD
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0814, 2);
+=======
+	BEGIN_NVC0(chan, NvSub2D, 0x0814, 2);
+>>>>>>> refs/remotes/origin/master
 	if (info->fix.visual == FB_VISUAL_TRUECOLOR ||
 	    info->fix.visual == FB_VISUAL_DIRECTCOLOR) {
 		OUT_RING  (chan, palette[image->bg_color] | mask);
@@ -125,10 +175,17 @@ nvc0_fbcon_imageblit(struct fb_info *info, const struct fb_image *image)
 		OUT_RING  (chan, image->bg_color);
 		OUT_RING  (chan, image->fg_color);
 	}
+<<<<<<< HEAD
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0838, 2);
 	OUT_RING  (chan, image->width);
 	OUT_RING  (chan, image->height);
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0850, 4);
+=======
+	BEGIN_NVC0(chan, NvSub2D, 0x0838, 2);
+	OUT_RING  (chan, image->width);
+	OUT_RING  (chan, image->height);
+	BEGIN_NVC0(chan, NvSub2D, 0x0850, 4);
+>>>>>>> refs/remotes/origin/master
 	OUT_RING  (chan, 0);
 	OUT_RING  (chan, image->dx);
 	OUT_RING  (chan, 0);
@@ -143,7 +200,11 @@ nvc0_fbcon_imageblit(struct fb_info *info, const struct fb_image *image)
 
 		dwords -= push;
 
+<<<<<<< HEAD
 		BEGIN_NVC0(chan, 6, NvSub2D, 0x0860, push);
+=======
+		BEGIN_NIC0(chan, NvSub2D, 0x0860, push);
+>>>>>>> refs/remotes/origin/master
 		OUT_RINGp(chan, data, push);
 		data += push;
 	}
@@ -157,12 +218,27 @@ nvc0_fbcon_accel_init(struct fb_info *info)
 {
 	struct nouveau_fbdev *nfbdev = info->par;
 	struct drm_device *dev = nfbdev->dev;
+<<<<<<< HEAD
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct nouveau_channel *chan = dev_priv->channel;
+<<<<<<< HEAD
 	struct nouveau_bo *nvbo = nfbdev->nouveau_fb.nvbo;
+=======
+	struct nouveau_framebuffer *fb = &nfbdev->nouveau_fb;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret, format;
 
 	ret = nouveau_gpuobj_gr_new(chan, 0x902d, 0x902d);
+=======
+	struct nouveau_framebuffer *fb = &nfbdev->nouveau_fb;
+	struct nouveau_drm *drm = nouveau_drm(dev);
+	struct nouveau_channel *chan = drm->channel;
+	struct nouveau_object *object;
+	int ret, format;
+
+	ret = nouveau_object_new(nv_object(chan->cli), NVDRM_CHAN, Nv2D,
+				 0x902d, NULL, 0, &object);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -200,11 +276,17 @@ nvc0_fbcon_accel_init(struct fb_info *info)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0000, 1);
 	OUT_RING  (chan, 0x0000902d);
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0104, 2);
+<<<<<<< HEAD
 	OUT_RING  (chan, upper_32_bits(chan->notifier_bo->bo.offset));
 	OUT_RING  (chan, lower_32_bits(chan->notifier_bo->bo.offset));
+=======
+	OUT_RING  (chan, upper_32_bits(chan->notifier_vma.offset));
+	OUT_RING  (chan, lower_32_bits(chan->notifier_vma.offset));
+>>>>>>> refs/remotes/origin/cm-10.0
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0290, 1);
 	OUT_RING  (chan, 0);
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0888, 1);
@@ -214,10 +296,24 @@ nvc0_fbcon_accel_init(struct fb_info *info)
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x02a0, 1);
 	OUT_RING  (chan, 0x55);
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x08c0, 4);
+=======
+	BEGIN_NVC0(chan, NvSub2D, 0x0000, 1);
+	OUT_RING  (chan, 0x0000902d);
+	BEGIN_NVC0(chan, NvSub2D, 0x0290, 1);
+	OUT_RING  (chan, 0);
+	BEGIN_NVC0(chan, NvSub2D, 0x0888, 1);
+	OUT_RING  (chan, 1);
+	BEGIN_NVC0(chan, NvSub2D, 0x02ac, 1);
+	OUT_RING  (chan, 3);
+	BEGIN_NVC0(chan, NvSub2D, 0x02a0, 1);
+	OUT_RING  (chan, 0x55);
+	BEGIN_NVC0(chan, NvSub2D, 0x08c0, 4);
+>>>>>>> refs/remotes/origin/master
 	OUT_RING  (chan, 0);
 	OUT_RING  (chan, 1);
 	OUT_RING  (chan, 0);
 	OUT_RING  (chan, 1);
+<<<<<<< HEAD
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0580, 2);
 	OUT_RING  (chan, 4);
 	OUT_RING  (chan, format);
@@ -236,11 +332,35 @@ nvc0_fbcon_accel_init(struct fb_info *info)
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x081c, 1);
 	OUT_RING  (chan, 1);
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0840, 4);
+=======
+	BEGIN_NVC0(chan, NvSub2D, 0x0580, 2);
+	OUT_RING  (chan, 4);
+	OUT_RING  (chan, format);
+	BEGIN_NVC0(chan, NvSub2D, 0x02e8, 2);
+	OUT_RING  (chan, 2);
+	OUT_RING  (chan, 1);
+
+	BEGIN_NVC0(chan, NvSub2D, 0x0804, 1);
+	OUT_RING  (chan, format);
+	BEGIN_NVC0(chan, NvSub2D, 0x0800, 1);
+	OUT_RING  (chan, 1);
+	BEGIN_NVC0(chan, NvSub2D, 0x0808, 3);
+	OUT_RING  (chan, 0);
+	OUT_RING  (chan, 0);
+	OUT_RING  (chan, 1);
+	BEGIN_NVC0(chan, NvSub2D, 0x081c, 1);
+	OUT_RING  (chan, 1);
+	BEGIN_NVC0(chan, NvSub2D, 0x0840, 4);
+>>>>>>> refs/remotes/origin/master
 	OUT_RING  (chan, 0);
 	OUT_RING  (chan, 1);
 	OUT_RING  (chan, 0);
 	OUT_RING  (chan, 1);
+<<<<<<< HEAD
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0200, 10);
+=======
+	BEGIN_NVC0(chan, NvSub2D, 0x0200, 10);
+>>>>>>> refs/remotes/origin/master
 	OUT_RING  (chan, format);
 	OUT_RING  (chan, 1);
 	OUT_RING  (chan, 0);
@@ -249,9 +369,20 @@ nvc0_fbcon_accel_init(struct fb_info *info)
 	OUT_RING  (chan, info->fix.line_length);
 	OUT_RING  (chan, info->var.xres_virtual);
 	OUT_RING  (chan, info->var.yres_virtual);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	OUT_RING  (chan, upper_32_bits(nvbo->vma.offset));
 	OUT_RING  (chan, lower_32_bits(nvbo->vma.offset));
+=======
+	OUT_RING  (chan, upper_32_bits(fb->vma.offset));
+	OUT_RING  (chan, lower_32_bits(fb->vma.offset));
+>>>>>>> refs/remotes/origin/cm-10.0
 	BEGIN_NVC0(chan, 2, NvSub2D, 0x0230, 10);
+=======
+	OUT_RING  (chan, upper_32_bits(fb->vma.offset));
+	OUT_RING  (chan, lower_32_bits(fb->vma.offset));
+	BEGIN_NVC0(chan, NvSub2D, 0x0230, 10);
+>>>>>>> refs/remotes/origin/master
 	OUT_RING  (chan, format);
 	OUT_RING  (chan, 1);
 	OUT_RING  (chan, 0);
@@ -260,8 +391,18 @@ nvc0_fbcon_accel_init(struct fb_info *info)
 	OUT_RING  (chan, info->fix.line_length);
 	OUT_RING  (chan, info->var.xres_virtual);
 	OUT_RING  (chan, info->var.yres_virtual);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	OUT_RING  (chan, upper_32_bits(nvbo->vma.offset));
 	OUT_RING  (chan, lower_32_bits(nvbo->vma.offset));
+=======
+	OUT_RING  (chan, upper_32_bits(fb->vma.offset));
+	OUT_RING  (chan, lower_32_bits(fb->vma.offset));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	OUT_RING  (chan, upper_32_bits(fb->vma.offset));
+	OUT_RING  (chan, lower_32_bits(fb->vma.offset));
+>>>>>>> refs/remotes/origin/master
 	FIRE_RING (chan);
 
 	return 0;

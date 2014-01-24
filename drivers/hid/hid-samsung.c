@@ -5,7 +5,10 @@
  *  Copyright (c) 2000-2005 Vojtech Pavlik <vojtech@suse.cz>
  *  Copyright (c) 2005 Michael Haboustak <mike-@cinci.rr.com> for Concept2, Inc
  *  Copyright (c) 2006-2007 Jiri Kosina
+<<<<<<< HEAD
  *  Copyright (c) 2007 Paul Walmsley
+=======
+>>>>>>> refs/remotes/origin/master
  *  Copyright (c) 2008 Jiri Slaby
  *  Copyright (c) 2010 Don Prince <dhprince.devel@yahoo.co.uk>
  *
@@ -197,6 +200,7 @@ static struct hid_driver samsung_driver = {
 	.input_mapping = samsung_input_mapping,
 	.probe = samsung_probe,
 };
+<<<<<<< HEAD
 
 static int __init samsung_init(void)
 {
@@ -210,4 +214,8 @@ static void __exit samsung_exit(void)
 
 module_init(samsung_init);
 module_exit(samsung_exit);
+=======
+module_hid_driver(samsung_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

@@ -11,9 +11,11 @@
  *  option) any later version.
  */
 
+<<<<<<< HEAD
 #include <linux/i2c.h>
 #include <linux/spi/spi.h>
 #include <sound/soc.h>
+<<<<<<< HEAD
 #include <linux/lzo.h>
 #include <linux/bitmap.h>
 #include <linux/rbtree.h>
@@ -436,6 +438,22 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
 }
 EXPORT_SYMBOL_GPL(snd_soc_codec_set_cache_io);
 
+=======
+#include <linux/bitmap.h>
+#include <linux/rbtree.h>
+#include <linux/export.h>
+
+#include <trace/events/asoc.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <sound/soc.h>
+#include <linux/export.h>
+#include <linux/slab.h>
+
+#include <trace/events/asoc.h>
+
+>>>>>>> refs/remotes/origin/master
 static bool snd_soc_set_cache_val(void *base, unsigned int idx,
 				  unsigned int val, unsigned int word_size)
 {
@@ -455,7 +473,12 @@ static bool snd_soc_set_cache_val(void *base, unsigned int idx,
 		break;
 	}
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Invalid word_size %d\n", word_size);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 	return false;
 }
@@ -476,12 +499,19 @@ static unsigned int snd_soc_get_cache_val(const void *base, unsigned int idx,
 		return cache[idx];
 	}
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Invalid word_size %d\n", word_size);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 	/* unreachable */
 	return -1;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct snd_soc_rbtree_node {
 	struct rb_node node;
 	unsigned int reg;
@@ -616,10 +646,32 @@ static int snd_soc_rbtree_cache_read(struct snd_soc_codec *codec,
 		/* uninitialized registers default to 0 */
 		*value = 0;
 	}
+=======
+int snd_soc_cache_init(struct snd_soc_codec *codec)
+{
+	const struct snd_soc_codec_driver *codec_drv = codec->driver;
+	size_t reg_size;
+
+	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
+
+	mutex_init(&codec->cache_rw_mutex);
+
+	dev_dbg(codec->dev, "ASoC: Initializing cache for %s codec\n",
+				codec->name);
+
+	if (codec_drv->reg_cache_default)
+		codec->reg_cache = kmemdup(codec_drv->reg_cache_default,
+					   reg_size, GFP_KERNEL);
+	else
+		codec->reg_cache = kzalloc(reg_size, GFP_KERNEL);
+	if (!codec->reg_cache)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int snd_soc_rbtree_cache_exit(struct snd_soc_codec *codec)
 {
 	struct rb_node *next;
@@ -1066,6 +1118,66 @@ err_tofree:
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * NOTE: keep in mind that this function might be called
+ * multiple times.
+ */
+int snd_soc_cache_exit(struct snd_soc_codec *codec)
+{
+	dev_dbg(codec->dev, "ASoC: Destroying cache for %s codec\n",
+			codec->name);
+	if (!codec->reg_cache)
+		return 0;
+	kfree(codec->reg_cache);
+	codec->reg_cache = NULL;
+	return 0;
+}
+
+/**
+ * snd_soc_cache_read: Fetch the value of a given register from the cache.
+ *
+ * @codec: CODEC to configure.
+ * @reg: The register index.
+ * @value: The value to be returned.
+ */
+int snd_soc_cache_read(struct snd_soc_codec *codec,
+		       unsigned int reg, unsigned int *value)
+{
+	if (!value)
+		return -EINVAL;
+
+	mutex_lock(&codec->cache_rw_mutex);
+	*value = snd_soc_get_cache_val(codec->reg_cache, reg,
+				       codec->driver->reg_word_size);
+	mutex_unlock(&codec->cache_rw_mutex);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_soc_cache_read);
+
+/**
+ * snd_soc_cache_write: Set the value of a given register in the cache.
+ *
+ * @codec: CODEC to configure.
+ * @reg: The register index.
+ * @value: The new register value.
+ */
+int snd_soc_cache_write(struct snd_soc_codec *codec,
+			unsigned int reg, unsigned int value)
+{
+	mutex_lock(&codec->cache_rw_mutex);
+	snd_soc_set_cache_val(codec->reg_cache, reg, value,
+			      codec->driver->reg_word_size);
+	mutex_unlock(&codec->cache_rw_mutex);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_soc_cache_write);
+
+>>>>>>> refs/remotes/origin/master
 static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
 {
 	int i;
@@ -1075,8 +1187,12 @@ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
 
 	codec_drv = codec->driver;
 	for (i = 0; i < codec_drv->reg_cache_size; ++i) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		WARN_ON(codec->writable_register &&
 			codec->writable_register(codec, i));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = snd_soc_cache_read(codec, i, &val);
 		if (ret)
 			return ret;
@@ -1084,15 +1200,38 @@ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
 			if (snd_soc_get_cache_val(codec->reg_def_copy,
 						  i, codec_drv->reg_word_size) == val)
 				continue;
+<<<<<<< HEAD
+=======
+
+		WARN_ON(!snd_soc_codec_writable_register(codec, i));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = snd_soc_write(codec, i, val);
 		if (ret)
 			return ret;
 		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
+=======
+		ret = snd_soc_cache_read(codec, i, &val);
+		if (ret)
+			return ret;
+		if (codec_drv->reg_cache_default)
+			if (snd_soc_get_cache_val(codec_drv->reg_cache_default,
+						  i, codec_drv->reg_word_size) == val)
+				continue;
+
+		WARN_ON(!snd_soc_codec_writable_register(codec, i));
+
+		ret = snd_soc_write(codec, i, val);
+		if (ret)
+			return ret;
+		dev_dbg(codec->dev, "ASoC: Synced register %#x, value = %#x\n",
+>>>>>>> refs/remotes/origin/master
 			i, val);
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 static int snd_soc_flat_cache_write(struct snd_soc_codec *codec,
 				    unsigned int reg, unsigned int value)
 {
@@ -1120,10 +1259,13 @@ static int snd_soc_flat_cache_exit(struct snd_soc_codec *codec)
 
 static int snd_soc_flat_cache_init(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	const struct snd_soc_codec_driver *codec_drv;
 
 	codec_drv = codec->driver;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (codec->reg_def_copy)
 		codec->reg_cache = kmemdup(codec->reg_def_copy,
 					   codec->reg_size, GFP_KERNEL);
@@ -1147,6 +1289,7 @@ static const struct snd_soc_cache_ops cache_types[] = {
 		.write = snd_soc_flat_cache_write,
 		.sync = snd_soc_flat_cache_sync
 	},
+<<<<<<< HEAD
 #ifdef CONFIG_SND_SOC_CACHE_LZO
 	{
 		.id = SND_SOC_LZO_COMPRESSION,
@@ -1167,6 +1310,8 @@ static const struct snd_soc_cache_ops cache_types[] = {
 		.write = snd_soc_rbtree_cache_write,
 		.sync = snd_soc_rbtree_cache_sync
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int snd_soc_cache_init(struct snd_soc_codec *codec)
@@ -1261,6 +1406,8 @@ int snd_soc_cache_write(struct snd_soc_codec *codec,
 }
 EXPORT_SYMBOL_GPL(snd_soc_cache_write);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * snd_soc_cache_sync: Sync the register cache with the hardware.
  *
@@ -1272,6 +1419,7 @@ EXPORT_SYMBOL_GPL(snd_soc_cache_write);
  */
 int snd_soc_cache_sync(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	int ret;
 	const char *name;
 
@@ -1292,12 +1440,25 @@ int snd_soc_cache_sync(struct snd_soc_codec *codec)
 			codec->cache_ops->name, codec->name);
 	trace_snd_soc_cache_sync(codec, name, "start");
 	ret = codec->cache_ops->sync(codec);
+=======
+	const char *name = "flat";
+	int ret;
+
+	if (!codec->cache_sync)
+		return 0;
+
+	dev_dbg(codec->dev, "ASoC: Syncing cache for %s codec\n",
+		codec->name);
+	trace_snd_soc_cache_sync(codec, name, "start");
+	ret = snd_soc_flat_cache_sync(codec);
+>>>>>>> refs/remotes/origin/master
 	if (!ret)
 		codec->cache_sync = 0;
 	trace_snd_soc_cache_sync(codec, name, "end");
 	return ret;
 }
 EXPORT_SYMBOL_GPL(snd_soc_cache_sync);
+<<<<<<< HEAD
 
 static int snd_soc_get_reg_access_index(struct snd_soc_codec *codec,
 					unsigned int reg)
@@ -1361,3 +1522,5 @@ int snd_soc_default_writable_register(struct snd_soc_codec *codec,
 	return codec->driver->reg_access_default[index].write;
 }
 EXPORT_SYMBOL_GPL(snd_soc_default_writable_register);
+=======
+>>>>>>> refs/remotes/origin/master

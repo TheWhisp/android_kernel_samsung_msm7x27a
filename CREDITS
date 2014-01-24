@@ -504,7 +504,15 @@ N: Dominik Brodowski
 E: linux@brodo.de
 W: http://www.brodo.de/
 P: 1024D/725B37C6  190F 3E77 9C89 3B6D BECD  46EE 67C3 0308 725B 37C6
+<<<<<<< HEAD
+<<<<<<< HEAD
 D: parts of CPUFreq code, ACPI bugfixes
+=======
+D: parts of CPUFreq code, ACPI bugfixes, PCMCIA rewrite, cpufrequtils
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+D: parts of CPUFreq code, ACPI bugfixes, PCMCIA rewrite, cpufrequtils
+>>>>>>> refs/remotes/origin/master
 S: Tuebingen, Germany
 
 N: Andries Brouwer
@@ -514,6 +522,20 @@ S: Bessemerstraat 21
 S: Amsterdam
 S: The Netherlands
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+N: NeilBrown
+E: neil@brown.name
+P: 4096R/566281B9 1BC6 29EB D390 D870 7B5F  497A 39EC 9EDD 5662 81B9
+D: NFSD Maintainer 2000-2007
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 N: Zach Brown
 E: zab@zabbo.net
 D: maestro pci sound
@@ -569,6 +591,17 @@ D: misc kernel hacking
 S: Mandriva
 S: Brazil
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+N: NeilBrown
+E: neil@brown.name
+P: 4096R/566281B9 1BC6 29EB D390 D870 7B5F  497A 39EC 9EDD 5662 81B9
+D: NFSD Maintainer 2000-2007
+
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 N: Remy Card
 E: Remy.Card@masi.ibp.fr
 E: Remy.Card@linux.org
@@ -632,6 +665,7 @@ S: 14509 NE 39th Street #1096
 S: Bellevue, Washington 98007
 S: USA
 
+<<<<<<< HEAD
 N: Christopher L. Cheney
 E: ccheney@debian.org
 E: ccheney@cheney.cx
@@ -640,6 +674,15 @@ P: 1024D/8E384AF2 2D31 1927 87D7 1F24 9FF9  1BC5 D106 5AB3 8E38 4AF2
 D: Vista Imaging usb webcam driver
 S: 314 Prince of Wales
 S: Conroe, TX 77304
+=======
+N: Chris Cheney
+E: chris.cheney@gmail.com
+E: ccheney@redhat.com
+P: 1024D/8E384AF2 2D31 1927 87D7 1F24 9FF9  1BC5 D106 5AB3 8E38 4AF2
+D: Vista Imaging usb webcam driver
+S: 2308 Therrell Way
+S: McKinney, TX 75070
+>>>>>>> refs/remotes/origin/master
 S: USA
 
 N: Stuart Cheshire
@@ -651,6 +694,14 @@ S: Stanford University
 S: Stanford, California 94305
 S: USA
 
+<<<<<<< HEAD
+=======
+N: Carlos Chinea
+E: carlos.chinea@nokia.com
+E: cch.devel@gmail.com
+D: Author of HSI Subsystem
+
+>>>>>>> refs/remotes/origin/master
 N: Randolph Chung
 E: tausq@debian.org
 D: Linux/PA-RISC hacker
@@ -688,10 +739,26 @@ S: Oxfordshire, UK.
 
 N: Kees Cook
 E: kees@outflux.net
+<<<<<<< HEAD
+<<<<<<< HEAD
 W: http://outflux.net/
 P: 1024D/17063E6D 9FA3 C49C 23C9 D1BC 2E30  1975 1FFF 4BA9 1706 3E6D
 D: Minor updates to SCSI types, added /proc/pid/maps protection
 S: (ask for current address)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+E: kees@ubuntu.com
+E: keescook@chromium.org
+W: http://outflux.net/blog/
+P: 4096R/DC6DC026 A5C3 F68F 229D D60F 723E  6E13 8972 F4DF DC6D C026
+D: Various security things, bug fixes, and documentation.
+S: (ask for current address)
+S: Portland, Oregon
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 S: USA
 
 N: Robin Cornelius
@@ -753,6 +820,13 @@ S: Northampton
 S: NN1 3QT
 S: United Kingdom
 
+<<<<<<< HEAD
+=======
+N: Massimo Dal Zotto
+E: dz@debian.org
+D: i8k Dell laptop SMM driver
+
+>>>>>>> refs/remotes/origin/master
 N: Uwe Dannowski
 E: Uwe.Dannowski@ira.uka.de
 W: http://i30www.ira.uka.de/~dannowsk/
@@ -857,6 +931,19 @@ S: One Dell Way
 S: Round Rock, TX  78682
 S: USA
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+N: Mattia Dongili
+E: malattia@gmail.com
+D: cpufrequtils (precursor to cpupowerutils)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 N: Ben Dooks
 E: ben-linux@fluff.org
 E: ben@simtec.co.uk
@@ -941,11 +1028,19 @@ S: Blacksburg, Virginia 24061
 S: USA
 
 N: Randy Dunlap
+<<<<<<< HEAD
 E: rdunlap@xenotime.net
 W: http://www.xenotime.net/linux/linux.html
 W: http://www.linux-usb.org
 D: Linux-USB subsystem, USB core/UHCI/printer/storage drivers
 D: x86 SMP, ACPI, bootflag hacking
+=======
+E: rdunlap@infradead.org
+W: http://www.infradead.org/~rdunlap/
+D: Linux-USB subsystem, USB core/UHCI/printer/storage drivers
+D: x86 SMP, ACPI, bootflag hacking
+D: documentation, builds
+>>>>>>> refs/remotes/origin/master
 S: (ask for current address)
 S: USA
 
@@ -1104,6 +1199,10 @@ D: author of userfs filesystem
 D: Improved mmap and munmap handling
 D: General mm minor tidyups
 D: autofs v4 maintainer
+<<<<<<< HEAD
+=======
+D: Xen subsystem
+>>>>>>> refs/remotes/origin/master
 S: 987 Alabama St
 S: San Francisco
 S: CA, 94110
@@ -1498,6 +1597,17 @@ D: Natsemi ethernet
 D: Cobalt Networks (x86) support
 D: This-and-That
 
+<<<<<<< HEAD
+=======
+N: Mark M. Hoffman
+E: mhoffman@lightlink.com
+D: asb100, lm93 and smsc47b397 hardware monitoring drivers
+D: hwmon subsystem core
+D: hwmon subsystem maintainer
+D: i2c-sis96x and i2c-stub SMBus drivers
+S: USA
+
+>>>>>>> refs/remotes/origin/master
 N: Dirk Hohndel
 E: hohndel@suse.de
 D: The XFree86[tm] Project
@@ -1560,12 +1670,21 @@ S: Wantage, New Jersey 07461
 S: USA
 
 N: Harald Hoyer
+<<<<<<< HEAD
 E: harald.hoyer@parzelle.de
 W: http://parzelle.de/
 D: ip_masq_quake
 D: md boot support
 S: Hohe Strasse 30
 S: D-70176 Stuttgart
+=======
+E: harald@redhat.com
+W: http://www.harald-hoyer.de
+D: ip_masq_quake
+D: md boot support
+S: Am Strand 5
+S: D-19063 Schwerin
+>>>>>>> refs/remotes/origin/master
 S: Germany
 
 N: Jan Hubicka
@@ -1811,6 +1930,14 @@ S: Kattreinstr 38
 S: D-64295
 S: Germany
 
+<<<<<<< HEAD
+=======
+N: Avi Kivity
+E: avi.kivity@gmail.com
+D: Kernel-based Virtual Machine (KVM)
+S: Ra'annana, Israel
+
+>>>>>>> refs/remotes/origin/master
 N: Andi Kleen
 E: andi@firstfloor.org
 U: http://www.halobates.de
@@ -1883,6 +2010,20 @@ S: Kruislaan 419
 S: 1098 VA Amsterdam 
 S: The Netherlands
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+N: Goran Koruga
+E: korugag@siol.net
+D: cpufrequtils (precursor to cpupowerutils)
+S: Slovenia
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 N: Jiri Kosina
 E: jikos@jikos.cz
 E: jkosina@suse.cz
@@ -2542,7 +2683,11 @@ S: Toronto, Ontario
 S: Canada
 
 N: Zwane Mwaikambo
+<<<<<<< HEAD
 E: zwane@arm.linux.org.uk
+=======
+E: zwanem@gmail.com
+>>>>>>> refs/remotes/origin/master
 D: Various driver hacking
 D: Lowlevel x86 kernel hacking
 D: General debugging
@@ -2774,8 +2919,12 @@ S: Ottawa, Ontario
 S: Canada K2P 0X8
 
 N: Mikael Pettersson
+<<<<<<< HEAD
 E: mikpe@it.uu.se
 W: http://user.it.uu.se/~mikpe/linux/
+=======
+E: mikpelinux@gmail.com
+>>>>>>> refs/remotes/origin/master
 D: Miscellaneous fixes
 
 N: Reed H. Petty
@@ -2862,6 +3011,14 @@ S: Framewood Road
 S: Wexham SL3 6PJ
 S: United Kingdom
 
+<<<<<<< HEAD
+=======
+N: Richard Purdie
+E: rpurdie@rpsys.net
+D: Backlight subsystem maintainer
+S: United Kingdom
+
+>>>>>>> refs/remotes/origin/master
 N: Daniel Quinlan
 E: quinlan@pathname.com
 W: http://www.pathname.com/~quinlan/
@@ -2916,6 +3073,21 @@ S: Schlossbergring 9
 S: 79098 Freiburg
 S: Germany
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+N: Thomas Renninger
+E: trenn@suse.de
+D: cpupowerutils
+S: SUSE Linux GmbH
+S: Germany
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 N: Joerg Reuter
 E: jreuter@yaina.de
 W: http://yaina.de/jreuter/
@@ -3113,6 +3285,14 @@ N: Dipankar Sarma
 E: dipankar@in.ibm.com
 D: RCU
 
+<<<<<<< HEAD
+=======
+N: Yoshinori Sato
+E: ysato@users.sourceforge.jp
+D: uClinux for Renesas H8/300 (H8300)
+D: http://uclinux-h8.sourceforge.jp/
+
+>>>>>>> refs/remotes/origin/master
 N: Hannu Savolainen
 E: hannu@opensound.com
 D: Maintainer of the sound drivers until 2.1.x days.
@@ -3791,8 +3971,13 @@ D: INFO-SHEET, former maintainer
 D: Author of the longest-living linux bug
 
 N: Jonathan Woithe
+<<<<<<< HEAD
 E: jwoithe@physics.adelaide.edu.au
 W: http://www.physics.adelaide.edu.au/~jwoithe
+=======
+E: jwoithe@just42.net
+W: http:/www.just42.net/jwoithe
+>>>>>>> refs/remotes/origin/master
 D: ALS-007 sound card extensions to Sound Blaster driver
 S: 20 Jordan St
 S: Valley View, SA 5093

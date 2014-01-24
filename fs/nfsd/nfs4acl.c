@@ -36,6 +36,14 @@
 
 #include <linux/slab.h>
 #include <linux/nfs_fs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "acl.h"
 
 
@@ -263,7 +271,11 @@ _posix_to_nfsv4_one(struct posix_acl *pacl, struct nfs4_acl *acl,
 			ace->flag = eflag;
 			ace->access_mask = deny_mask_from_posix(deny, flags);
 			ace->whotype = NFS4_ACL_WHO_NAMED;
+<<<<<<< HEAD
 			ace->who = pa->e_id;
+=======
+			ace->who_uid = pa->e_uid;
+>>>>>>> refs/remotes/origin/master
 			ace++;
 			acl->naces++;
 		}
@@ -272,7 +284,11 @@ _posix_to_nfsv4_one(struct posix_acl *pacl, struct nfs4_acl *acl,
 		ace->access_mask = mask_from_posix(pa->e_perm & pas.mask,
 						   flags);
 		ace->whotype = NFS4_ACL_WHO_NAMED;
+<<<<<<< HEAD
 		ace->who = pa->e_id;
+=======
+		ace->who_uid = pa->e_uid;
+>>>>>>> refs/remotes/origin/master
 		ace++;
 		acl->naces++;
 		pa++;
@@ -299,7 +315,11 @@ _posix_to_nfsv4_one(struct posix_acl *pacl, struct nfs4_acl *acl,
 		ace->access_mask = mask_from_posix(pa->e_perm & pas.mask,
 						   flags);
 		ace->whotype = NFS4_ACL_WHO_NAMED;
+<<<<<<< HEAD
 		ace->who = pa->e_id;
+=======
+		ace->who_gid = pa->e_gid;
+>>>>>>> refs/remotes/origin/master
 		ace++;
 		acl->naces++;
 		pa++;
@@ -328,7 +348,11 @@ _posix_to_nfsv4_one(struct posix_acl *pacl, struct nfs4_acl *acl,
 			ace->flag = eflag | NFS4_ACE_IDENTIFIER_GROUP;
 			ace->access_mask = deny_mask_from_posix(deny, flags);
 			ace->whotype = NFS4_ACL_WHO_NAMED;
+<<<<<<< HEAD
 			ace->who = pa->e_id;
+=======
+			ace->who_gid = pa->e_gid;
+>>>>>>> refs/remotes/origin/master
 			ace++;
 			acl->naces++;
 		}
@@ -344,6 +368,21 @@ _posix_to_nfsv4_one(struct posix_acl *pacl, struct nfs4_acl *acl,
 	acl->naces++;
 }
 
+<<<<<<< HEAD
+=======
+static bool
+pace_gt(struct posix_acl_entry *pace1, struct posix_acl_entry *pace2)
+{
+	if (pace1->e_tag != pace2->e_tag)
+		return pace1->e_tag > pace2->e_tag;
+	if (pace1->e_tag == ACL_USER)
+		return uid_gt(pace1->e_uid, pace2->e_uid);
+	if (pace1->e_tag == ACL_GROUP)
+		return gid_gt(pace1->e_gid, pace2->e_gid);
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void
 sort_pacl_range(struct posix_acl *pacl, int start, int end) {
 	int sorted = 0, i;
@@ -354,8 +393,13 @@ sort_pacl_range(struct posix_acl *pacl, int start, int end) {
 	while (!sorted) {
 		sorted = 1;
 		for (i = start; i < end; i++) {
+<<<<<<< HEAD
 			if (pacl->a_entries[i].e_id
 					> pacl->a_entries[i+1].e_id) {
+=======
+			if (pace_gt(&pacl->a_entries[i],
+				    &pacl->a_entries[i+1])) {
+>>>>>>> refs/remotes/origin/master
 				sorted = 0;
 				tmp = pacl->a_entries[i];
 				pacl->a_entries[i] = pacl->a_entries[i+1];
@@ -397,7 +441,14 @@ struct posix_ace_state {
 };
 
 struct posix_user_ace_state {
+<<<<<<< HEAD
 	uid_t uid;
+=======
+	union {
+		kuid_t uid;
+		kgid_t gid;
+	};
+>>>>>>> refs/remotes/origin/master
 	struct posix_ace_state perms;
 };
 
@@ -520,7 +571,10 @@ posix_state_to_acl(struct posix_acl_state *state, unsigned int flags)
 	if (error)
 		goto out_err;
 	low_mode_from_nfs4(state->owner.allow, &pace->e_perm, flags);
+<<<<<<< HEAD
 	pace->e_id = ACL_UNDEFINED_ID;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i=0; i < state->users->n; i++) {
 		pace++;
@@ -530,7 +584,11 @@ posix_state_to_acl(struct posix_acl_state *state, unsigned int flags)
 			goto out_err;
 		low_mode_from_nfs4(state->users->aces[i].perms.allow,
 					&pace->e_perm, flags);
+<<<<<<< HEAD
 		pace->e_id = state->users->aces[i].uid;
+=======
+		pace->e_uid = state->users->aces[i].uid;
+>>>>>>> refs/remotes/origin/master
 		add_to_mask(state, &state->users->aces[i].perms);
 	}
 
@@ -540,7 +598,10 @@ posix_state_to_acl(struct posix_acl_state *state, unsigned int flags)
 	if (error)
 		goto out_err;
 	low_mode_from_nfs4(state->group.allow, &pace->e_perm, flags);
+<<<<<<< HEAD
 	pace->e_id = ACL_UNDEFINED_ID;
+=======
+>>>>>>> refs/remotes/origin/master
 	add_to_mask(state, &state->group);
 
 	for (i=0; i < state->groups->n; i++) {
@@ -551,14 +612,21 @@ posix_state_to_acl(struct posix_acl_state *state, unsigned int flags)
 			goto out_err;
 		low_mode_from_nfs4(state->groups->aces[i].perms.allow,
 					&pace->e_perm, flags);
+<<<<<<< HEAD
 		pace->e_id = state->groups->aces[i].uid;
+=======
+		pace->e_gid = state->groups->aces[i].gid;
+>>>>>>> refs/remotes/origin/master
 		add_to_mask(state, &state->groups->aces[i].perms);
 	}
 
 	pace++;
 	pace->e_tag = ACL_MASK;
 	low_mode_from_nfs4(state->mask.allow, &pace->e_perm, flags);
+<<<<<<< HEAD
 	pace->e_id = ACL_UNDEFINED_ID;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pace++;
 	pace->e_tag = ACL_OTHER;
@@ -566,7 +634,10 @@ posix_state_to_acl(struct posix_acl_state *state, unsigned int flags)
 	if (error)
 		goto out_err;
 	low_mode_from_nfs4(state->other.allow, &pace->e_perm, flags);
+<<<<<<< HEAD
 	pace->e_id = ACL_UNDEFINED_ID;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return pacl;
 out_err:
@@ -586,12 +657,22 @@ static inline void deny_bits(struct posix_ace_state *astate, u32 mask)
 	astate->deny |= mask & ~astate->allow;
 }
 
+<<<<<<< HEAD
 static int find_uid(struct posix_acl_state *state, struct posix_ace_state_array *a, uid_t uid)
 {
 	int i;
 
 	for (i = 0; i < a->n; i++)
 		if (a->aces[i].uid == uid)
+=======
+static int find_uid(struct posix_acl_state *state, kuid_t uid)
+{
+	struct posix_ace_state_array *a = state->users;
+	int i;
+
+	for (i = 0; i < a->n; i++)
+		if (uid_eq(a->aces[i].uid, uid))
+>>>>>>> refs/remotes/origin/master
 			return i;
 	/* Not found: */
 	a->n++;
@@ -602,6 +683,26 @@ static int find_uid(struct posix_acl_state *state, struct posix_ace_state_array 
 	return i;
 }
 
+<<<<<<< HEAD
+=======
+static int find_gid(struct posix_acl_state *state, kgid_t gid)
+{
+	struct posix_ace_state_array *a = state->groups;
+	int i;
+
+	for (i = 0; i < a->n; i++)
+		if (gid_eq(a->aces[i].gid, gid))
+			return i;
+	/* Not found: */
+	a->n++;
+	a->aces[i].gid = gid;
+	a->aces[i].perms.allow = state->everyone.allow;
+	a->aces[i].perms.deny  = state->everyone.deny;
+
+	return i;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void deny_bits_array(struct posix_ace_state_array *a, u32 mask)
 {
 	int i;
@@ -635,7 +736,11 @@ static void process_one_v4_ace(struct posix_acl_state *state,
 		}
 		break;
 	case ACL_USER:
+<<<<<<< HEAD
 		i = find_uid(state, state->users, ace->who);
+=======
+		i = find_uid(state, ace->who_uid);
+>>>>>>> refs/remotes/origin/master
 		if (ace->type == NFS4_ACE_ACCESS_ALLOWED_ACE_TYPE) {
 			allow_bits(&state->users->aces[i].perms, mask);
 		} else {
@@ -657,7 +762,11 @@ static void process_one_v4_ace(struct posix_acl_state *state,
 		}
 		break;
 	case ACL_GROUP:
+<<<<<<< HEAD
 		i = find_uid(state, state->groups, ace->who);
+=======
+		i = find_gid(state, ace->who_gid);
+>>>>>>> refs/remotes/origin/master
 		if (ace->type == NFS4_ACE_ACCESS_ALLOWED_ACE_TYPE) {
 			allow_bits(&state->groups->aces[i].perms, mask);
 		} else {

@@ -9,6 +9,8 @@
 #include <asm/uaccess.h>
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copy a null terminated string from userspace.
  */
 
@@ -58,6 +60,10 @@ strncpy_from_user(char *dst, const char __user *src, long count)
 EXPORT_SYMBOL(strncpy_from_user);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Zero Userspace
  */
 
@@ -67,6 +73,10 @@ unsigned long __clear_user(void __user *addr, unsigned long size)
 	might_fault();
 	/* no memory constraint because it doesn't change any memory gcc knows
 	   about */
+<<<<<<< HEAD
+=======
+	stac();
+>>>>>>> refs/remotes/origin/master
 	asm volatile(
 		"	testq  %[size8],%[size8]\n"
 		"	jz     4f\n"
@@ -89,6 +99,10 @@ unsigned long __clear_user(void __user *addr, unsigned long size)
 		: [size8] "=&c"(size), [dst] "=&D" (__d0)
 		: [size1] "r"(size & 7), "[size8]" (size / 8), "[dst]"(addr),
 		  [zero] "r" (0UL), [eight] "r" (8UL));
+<<<<<<< HEAD
+=======
+	clac();
+>>>>>>> refs/remotes/origin/master
 	return size;
 }
 EXPORT_SYMBOL(__clear_user);
@@ -101,6 +115,7 @@ unsigned long clear_user(void __user *to, unsigned long n)
 }
 EXPORT_SYMBOL(clear_user);
 
+<<<<<<< HEAD
 /*
  * Return the size of a string (including the ending 0)
  *
@@ -149,6 +164,8 @@ long strlen_user(const char __user *s)
 }
 EXPORT_SYMBOL(strlen_user);
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long copy_in_user(void __user *to, const void __user *from, unsigned len)
 {
 	if (access_ok(VERIFY_WRITE, to, len) && access_ok(VERIFY_READ, from, len)) { 
@@ -163,7 +180,11 @@ EXPORT_SYMBOL(copy_in_user);
  * Since protection fault in copy_from/to_user is not a normal situation,
  * it is not necessary to optimize tail handling.
  */
+<<<<<<< HEAD
 unsigned long
+=======
+__visible unsigned long
+>>>>>>> refs/remotes/origin/master
 copy_user_handle_tail(char *to, char *from, unsigned len, unsigned zerorest)
 {
 	char c;
@@ -179,5 +200,9 @@ copy_user_handle_tail(char *to, char *from, unsigned len, unsigned zerorest)
 	for (c = 0, zero_len = len; zerorest && zero_len; --zero_len)
 		if (__put_user_nocheck(c, to++, sizeof(char)))
 			break;
+<<<<<<< HEAD
+=======
+	clac();
+>>>>>>> refs/remotes/origin/master
 	return len;
 }

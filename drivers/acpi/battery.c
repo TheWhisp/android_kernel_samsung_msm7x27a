@@ -36,12 +36,15 @@
 #include <linux/suspend.h>
 #include <asm/unaligned.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <asm/uaccess.h>
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi_bus.h>
 #include <acpi/acpi_drivers.h>
 #include <linux/power_supply.h>
@@ -56,6 +59,18 @@
 #define ACPI_BATTERY_NOTIFY_INFO	0x81
 #define ACPI_BATTERY_NOTIFY_THRESHOLD   0x82
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* Battery power unit: 0 means mW, 1 means mA */
+#define ACPI_BATTERY_POWER_UNIT_MA	1
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Battery power unit: 0 means mW, 1 means mA */
+#define ACPI_BATTERY_POWER_UNIT_MA	1
+
+>>>>>>> refs/remotes/origin/master
 #define _COMPONENT		ACPI_BATTERY_COMPONENT
 
 ACPI_MODULE_NAME("battery");
@@ -65,10 +80,15 @@ MODULE_AUTHOR("Alexey Starikovskiy <astarikovskiy@suse.de>");
 MODULE_DESCRIPTION("ACPI Battery Driver");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
+=======
+static int battery_bix_broken_package;
+>>>>>>> refs/remotes/origin/master
 static unsigned int cache_time = 1000;
 module_param(cache_time, uint, 0644);
 MODULE_PARM_DESC(cache_time, "cache time in milliseconds");
 
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 extern struct proc_dir_entry *acpi_lock_battery_dir(void);
 extern void *acpi_unlock_battery_dir(struct proc_dir_entry *acpi_battery_dir);
@@ -82,6 +102,8 @@ enum acpi_battery_files {
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct acpi_device_id battery_device_ids[] = {
 	{"PNP0C0A", 0},
 	{"", 0},
@@ -92,11 +114,17 @@ MODULE_DEVICE_TABLE(acpi, battery_device_ids);
 enum {
 	ACPI_BATTERY_ALARM_PRESENT,
 	ACPI_BATTERY_XINFO_PRESENT,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* For buggy DSDTs that report negative 16-bit values for either
 	 * charging or discharging current and/or report 0 as 65536
 	 * due to bad math.
 	 */
 	ACPI_BATTERY_QUIRK_SIGNED16_CURRENT,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ACPI_BATTERY_QUIRK_PERCENTAGE_CAPACITY,
 	/* On Lenovo Thinkpad models from 2010 and 2011, the power unit
 	   switches between mWh and mAh depending on whether the system
@@ -114,6 +142,14 @@ enum {
 
 struct acpi_battery {
 	struct mutex lock;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct mutex sysfs_lock;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mutex sysfs_lock;
+>>>>>>> refs/remotes/origin/master
 	struct power_supply bat;
 	struct acpi_device *device;
 	struct notifier_block pm_nb;
@@ -146,9 +182,19 @@ struct acpi_battery {
 	unsigned long flags;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define to_acpi_battery(x) container_of(x, struct acpi_battery, bat);
+=======
+#define to_acpi_battery(x) container_of(x, struct acpi_battery, bat)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 inline int acpi_battery_present(struct acpi_battery *battery)
+=======
+#define to_acpi_battery(x) container_of(x, struct acpi_battery, bat)
+
+static inline int acpi_battery_present(struct acpi_battery *battery)
+>>>>>>> refs/remotes/origin/master
 {
 	return battery->device->status.battery_present;
 }
@@ -265,6 +311,16 @@ static int acpi_battery_get_property(struct power_supply *psy,
 		else
 			val->intval = battery->capacity_now * 1000;
 		break;
+<<<<<<< HEAD
+=======
+	case POWER_SUPPLY_PROP_CAPACITY:
+		if (battery->capacity_now && battery->full_charge_capacity)
+			val->intval = battery->capacity_now * 100/
+					battery->full_charge_capacity;
+		else
+			val->intval = 0;
+		break;
+>>>>>>> refs/remotes/origin/master
 	case POWER_SUPPLY_PROP_MODEL_NAME:
 		val->strval = battery->model_number;
 		break;
@@ -291,6 +347,10 @@ static enum power_supply_property charge_battery_props[] = {
 	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
 	POWER_SUPPLY_PROP_CHARGE_FULL,
 	POWER_SUPPLY_PROP_CHARGE_NOW,
+<<<<<<< HEAD
+=======
+	POWER_SUPPLY_PROP_CAPACITY,
+>>>>>>> refs/remotes/origin/master
 	POWER_SUPPLY_PROP_MODEL_NAME,
 	POWER_SUPPLY_PROP_MANUFACTURER,
 	POWER_SUPPLY_PROP_SERIAL_NUMBER,
@@ -307,18 +367,30 @@ static enum power_supply_property energy_battery_props[] = {
 	POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN,
 	POWER_SUPPLY_PROP_ENERGY_FULL,
 	POWER_SUPPLY_PROP_ENERGY_NOW,
+<<<<<<< HEAD
+=======
+	POWER_SUPPLY_PROP_CAPACITY,
+>>>>>>> refs/remotes/origin/master
 	POWER_SUPPLY_PROP_MODEL_NAME,
 	POWER_SUPPLY_PROP_MANUFACTURER,
 	POWER_SUPPLY_PROP_SERIAL_NUMBER,
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 inline char *acpi_battery_units(struct acpi_battery *battery)
 {
+<<<<<<< HEAD
 	return (battery->power_unit)?"mA":"mW";
+=======
+	return (battery->power_unit == ACPI_BATTERY_POWER_UNIT_MA) ?
+		"mA" : "mW";
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* --------------------------------------------------------------------------
                                Battery Management
    -------------------------------------------------------------------------- */
@@ -418,7 +490,11 @@ static int acpi_battery_get_info(struct acpi_battery *battery)
 {
 	int result = -EFAULT;
 	acpi_status status = 0;
+<<<<<<< HEAD
 	char *name = test_bit(ACPI_BATTERY_XINFO_PRESENT, &battery->flags)?
+=======
+	char *name = test_bit(ACPI_BATTERY_XINFO_PRESENT, &battery->flags) ?
+>>>>>>> refs/remotes/origin/master
 			"_BIX" : "_BIF";
 
 	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
@@ -434,7 +510,16 @@ static int acpi_battery_get_info(struct acpi_battery *battery)
 		ACPI_EXCEPTION((AE_INFO, status, "Evaluating %s", name));
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 	if (test_bit(ACPI_BATTERY_XINFO_PRESENT, &battery->flags))
+=======
+
+	if (battery_bix_broken_package)
+		result = extract_package(battery, buffer.pointer,
+				extended_info_offsets + 1,
+				ARRAY_SIZE(extended_info_offsets) - 1);
+	else if (test_bit(ACPI_BATTERY_XINFO_PRESENT, &battery->flags))
+>>>>>>> refs/remotes/origin/master
 		result = extract_package(battery, buffer.pointer,
 				extended_info_offsets,
 				ARRAY_SIZE(extended_info_offsets));
@@ -491,9 +576,29 @@ static int acpi_battery_get_state(struct acpi_battery *battery)
 	battery->update_time = jiffies;
 	kfree(buffer.pointer);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (test_bit(ACPI_BATTERY_QUIRK_SIGNED16_CURRENT, &battery->flags) &&
 	    battery->rate_now != -1)
 		battery->rate_now = abs((s16)battery->rate_now);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* For buggy DSDTs that report negative 16-bit values for either
+	 * charging or discharging current and/or report 0 as 65536
+	 * due to bad math.
+	 */
+	if (battery->power_unit == ACPI_BATTERY_POWER_UNIT_MA &&
+		battery->rate_now != ACPI_BATTERY_VALUE_UNKNOWN &&
+		(s16)(battery->rate_now) < 0) {
+		battery->rate_now = abs((s16)battery->rate_now);
+		printk_once(KERN_WARNING FW_BUG "battery: (dis)charge rate"
+			" invalid.\n");
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(ACPI_BATTERY_QUIRK_PERCENTAGE_CAPACITY, &battery->flags)
 	    && battery->capacity_now >= 0 && battery->capacity_now <= 100)
@@ -510,18 +615,27 @@ static int acpi_battery_get_state(struct acpi_battery *battery)
 static int acpi_battery_set_alarm(struct acpi_battery *battery)
 {
 	acpi_status status = 0;
+<<<<<<< HEAD
 	union acpi_object arg0 = { .type = ACPI_TYPE_INTEGER };
 	struct acpi_object_list arg_list = { 1, &arg0 };
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!acpi_battery_present(battery) ||
 	    !test_bit(ACPI_BATTERY_ALARM_PRESENT, &battery->flags))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	arg0.integer.value = battery->alarm;
 
 	mutex_lock(&battery->lock);
 	status = acpi_evaluate_object(battery->device->handle, "_BTP",
 				 &arg_list, NULL);
+=======
+	mutex_lock(&battery->lock);
+	status = acpi_execute_simple_method(battery->device->handle, "_BTP",
+					    battery->alarm);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&battery->lock);
 
 	if (ACPI_FAILURE(status))
@@ -533,12 +647,17 @@ static int acpi_battery_set_alarm(struct acpi_battery *battery)
 
 static int acpi_battery_init_alarm(struct acpi_battery *battery)
 {
+<<<<<<< HEAD
 	acpi_status status = AE_OK;
 	acpi_handle handle = NULL;
 
 	/* See if alarms are supported, and if so, set default */
 	status = acpi_get_handle(battery->device->handle, "_BTP", &handle);
 	if (ACPI_FAILURE(status)) {
+=======
+	/* See if alarms are supported, and if so, set default */
+	if (!acpi_has_method(battery->device->handle, "_BTP")) {
+>>>>>>> refs/remotes/origin/master
 		clear_bit(ACPI_BATTERY_ALARM_PRESENT, &battery->flags);
 		return 0;
 	}
@@ -579,7 +698,15 @@ static int sysfs_add_battery(struct acpi_battery *battery)
 {
 	int result;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (battery->power_unit) {
+=======
+	if (battery->power_unit == ACPI_BATTERY_POWER_UNIT_MA) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (battery->power_unit == ACPI_BATTERY_POWER_UNIT_MA) {
+>>>>>>> refs/remotes/origin/master
 		battery->bat.properties = charge_battery_props;
 		battery->bat.num_properties =
 			ARRAY_SIZE(charge_battery_props);
@@ -601,6 +728,8 @@ static int sysfs_add_battery(struct acpi_battery *battery)
 
 static void sysfs_remove_battery(struct acpi_battery *battery)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!battery->bat.dev)
 		return;
 	device_remove_file(battery->bat.dev, &alarm_attr);
@@ -612,6 +741,41 @@ static void acpi_battery_quirks(struct acpi_battery *battery)
 {
 	if (dmi_name_in_vendors("Acer") && battery->power_unit) {
 		set_bit(ACPI_BATTERY_QUIRK_SIGNED16_CURRENT, &battery->flags);
+	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mutex_lock(&battery->sysfs_lock);
+	if (!battery->bat.dev) {
+		mutex_unlock(&battery->sysfs_lock);
+		return;
+	}
+
+	device_remove_file(battery->bat.dev, &alarm_attr);
+	power_supply_unregister(&battery->bat);
+	battery->bat.dev = NULL;
+	mutex_unlock(&battery->sysfs_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+}
+
+static void find_battery(const struct dmi_header *dm, void *private)
+{
+	struct acpi_battery *battery = (struct acpi_battery *)private;
+	/* Note: the hardcoded offsets below have been extracted from
+	   the source code of dmidecode.  */
+	if (dm->type == DMI_ENTRY_PORTABLE_BATTERY && dm->length >= 8) {
+		const u8 *dmi_data = (const u8 *)(dm + 1);
+		int dmi_capacity = get_unaligned((const u16 *)(dmi_data + 6));
+		if (dm->length >= 18)
+			dmi_capacity *= dmi_data[17];
+		if (battery->design_capacity * battery->design_voltage / 1000
+		    != dmi_capacity &&
+		    battery->design_capacity * 10 == dmi_capacity)
+			set_bit(ACPI_BATTERY_QUIRK_THINKPAD_MAH,
+				&battery->flags);
 	}
 }
 
@@ -645,7 +809,12 @@ static void find_battery(const struct dmi_header *dm, void *private)
  *
  * Handle this correctly so that they won't break userspace.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void acpi_battery_quirks2(struct acpi_battery *battery)
+=======
+static void acpi_battery_quirks(struct acpi_battery *battery)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (test_bit(ACPI_BATTERY_QUIRK_PERCENTAGE_CAPACITY, &battery->flags))
 		return ;
@@ -653,6 +822,16 @@ static void acpi_battery_quirks2(struct acpi_battery *battery)
         if (battery->full_charge_capacity == 100 &&
             battery->rate_now == ACPI_BATTERY_VALUE_UNKNOWN &&
             battery->capacity_now >=0 && battery->capacity_now <= 100) {
+=======
+static void acpi_battery_quirks(struct acpi_battery *battery)
+{
+	if (test_bit(ACPI_BATTERY_QUIRK_PERCENTAGE_CAPACITY, &battery->flags))
+		return;
+
+	if (battery->full_charge_capacity == 100 &&
+		battery->rate_now == ACPI_BATTERY_VALUE_UNKNOWN &&
+		battery->capacity_now >= 0 && battery->capacity_now <= 100) {
+>>>>>>> refs/remotes/origin/master
 		set_bit(ACPI_BATTERY_QUIRK_PERCENTAGE_CAPACITY, &battery->flags);
 		battery->full_charge_capacity = battery->design_capacity;
 		battery->capacity_now = (battery->capacity_now *
@@ -660,7 +839,15 @@ static void acpi_battery_quirks2(struct acpi_battery *battery)
 	}
 
 	if (test_bit(ACPI_BATTERY_QUIRK_THINKPAD_MAH, &battery->flags))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return ;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
+=======
+		return ;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (battery->power_unit && dmi_name_in_vendors("LENOVO")) {
 		const char *s;
@@ -702,6 +889,8 @@ static int acpi_battery_update(struct acpi_battery *battery)
 		result = acpi_battery_get_info(battery);
 		if (result)
 			return result;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		acpi_battery_quirks(battery);
 		acpi_battery_init_alarm(battery);
 	}
@@ -709,6 +898,22 @@ static int acpi_battery_update(struct acpi_battery *battery)
 		sysfs_add_battery(battery);
 	result = acpi_battery_get_state(battery);
 	acpi_battery_quirks2(battery);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		acpi_battery_init_alarm(battery);
+	}
+	if (!battery->bat.dev) {
+		result = sysfs_add_battery(battery);
+		if (result)
+			return result;
+	}
+	result = acpi_battery_get_state(battery);
+	acpi_battery_quirks(battery);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
@@ -732,6 +937,7 @@ static void acpi_battery_refresh(struct acpi_battery *battery)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
                               FS Interface (/proc)
    -------------------------------------------------------------------------- */
 
@@ -950,9 +1156,15 @@ DECLARE_FILE_FUNCTIONS(alarm);
 		}, \
 	}
 
+<<<<<<< HEAD
 static struct battery_file {
 	struct file_operations ops;
 	mode_t mode;
+=======
+static const struct battery_file {
+	struct file_operations ops;
+	umode_t mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const char *name;
 } acpi_battery_file[] = {
 	FILE_DESCRIPTION_RO(info),
@@ -1005,6 +1217,8 @@ static void acpi_battery_remove_fs(struct acpi_device *device)
 #endif
 
 /* --------------------------------------------------------------------------
+=======
+>>>>>>> refs/remotes/origin/master
                                  Driver Interface
    -------------------------------------------------------------------------- */
 
@@ -1019,8 +1233,11 @@ static void acpi_battery_notify(struct acpi_device *device, u32 event)
 	if (event == ACPI_BATTERY_NOTIFY_INFO)
 		acpi_battery_refresh(battery);
 	acpi_battery_update(battery);
+<<<<<<< HEAD
 	acpi_bus_generate_proc_event(device, event,
 				     acpi_battery_present(battery));
+=======
+>>>>>>> refs/remotes/origin/master
 	acpi_bus_generate_netlink_event(device->pnp.device_class,
 					dev_name(&device->dev), event,
 					acpi_battery_present(battery));
@@ -1035,20 +1252,53 @@ static int battery_notify(struct notifier_block *nb,
 	struct acpi_battery *battery = container_of(nb, struct acpi_battery,
 						    pm_nb);
 	switch (mode) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case PM_POST_SUSPEND:
 		sysfs_remove_battery(battery);
 		sysfs_add_battery(battery);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case PM_POST_HIBERNATION:
+	case PM_POST_SUSPEND:
+		if (battery->bat.dev) {
+			sysfs_remove_battery(battery);
+			sysfs_add_battery(battery);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static struct dmi_system_id bat_dmi_table[] = {
+	{
+		.ident = "NEC LZ750/LS",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "NEC"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "PC-LZ750LS"),
+		},
+	},
+	{},
+};
+
+>>>>>>> refs/remotes/origin/master
 static int acpi_battery_add(struct acpi_device *device)
 {
 	int result = 0;
 	struct acpi_battery *battery = NULL;
+<<<<<<< HEAD
 	acpi_handle handle;
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (!device)
 		return -EINVAL;
 	battery = kzalloc(sizeof(struct acpi_battery), GFP_KERNEL);
@@ -1059,6 +1309,8 @@ static int acpi_battery_add(struct acpi_device *device)
 	strcpy(acpi_device_class(device), ACPI_BATTERY_CLASS);
 	device->driver_data = battery;
 	mutex_init(&battery->lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ACPI_SUCCESS(acpi_get_handle(battery->device->handle,
 			"_BIX", &handle)))
 		set_bit(ACPI_BATTERY_XINFO_PRESENT, &battery->flags);
@@ -1077,13 +1329,65 @@ static int acpi_battery_add(struct acpi_device *device)
 		kfree(battery);
 	}
 
+=======
+	mutex_init(&battery->sysfs_lock);
+	if (ACPI_SUCCESS(acpi_get_handle(battery->device->handle,
+			"_BIX", &handle)))
+=======
+	mutex_init(&battery->sysfs_lock);
+	if (acpi_has_method(battery->device->handle, "_BIX"))
+>>>>>>> refs/remotes/origin/master
+		set_bit(ACPI_BATTERY_XINFO_PRESENT, &battery->flags);
+	result = acpi_battery_update(battery);
+	if (result)
+		goto fail;
+<<<<<<< HEAD
+#ifdef CONFIG_ACPI_PROCFS_POWER
+	result = acpi_battery_add_fs(device);
+#endif
+	if (result) {
+#ifdef CONFIG_ACPI_PROCFS_POWER
+		acpi_battery_remove_fs(device);
+#endif
+		goto fail;
+	}
+=======
+>>>>>>> refs/remotes/origin/master
+
+	printk(KERN_INFO PREFIX "%s Slot [%s] (battery %s)\n",
+		ACPI_BATTERY_DEVICE_NAME, acpi_device_bid(device),
+		device->status.battery_present ? "present" : "absent");
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	battery->pm_nb.notifier_call = battery_notify;
 	register_pm_notifier(&battery->pm_nb);
 
 	return result;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+fail:
+	sysfs_remove_battery(battery);
+	mutex_destroy(&battery->lock);
+	mutex_destroy(&battery->sysfs_lock);
+	kfree(battery);
+	return result;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int acpi_battery_remove(struct acpi_device *device, int type)
+=======
+}
+
+static int acpi_battery_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_battery *battery = NULL;
 
@@ -1091,15 +1395,26 @@ static int acpi_battery_remove(struct acpi_device *device, int type)
 		return -EINVAL;
 	battery = acpi_driver_data(device);
 	unregister_pm_notifier(&battery->pm_nb);
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	acpi_battery_remove_fs(device);
 #endif
 	sysfs_remove_battery(battery);
 	mutex_destroy(&battery->lock);
+<<<<<<< HEAD
+=======
+	mutex_destroy(&battery->sysfs_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sysfs_remove_battery(battery);
+	mutex_destroy(&battery->lock);
+	mutex_destroy(&battery->sysfs_lock);
+>>>>>>> refs/remotes/origin/master
 	kfree(battery);
 	return 0;
 }
 
+<<<<<<< HEAD
 /* this is needed to learn about changes made in suspended state */
 static int acpi_battery_resume(struct acpi_device *device)
 {
@@ -1107,10 +1422,31 @@ static int acpi_battery_resume(struct acpi_device *device)
 	if (!device)
 		return -EINVAL;
 	battery = acpi_driver_data(device);
+=======
+#ifdef CONFIG_PM_SLEEP
+/* this is needed to learn about changes made in suspended state */
+static int acpi_battery_resume(struct device *dev)
+{
+	struct acpi_battery *battery;
+
+	if (!dev)
+		return -EINVAL;
+
+	battery = acpi_driver_data(to_acpi_device(dev));
+	if (!battery)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	battery->update_time = 0;
 	acpi_battery_update(battery);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(acpi_battery_pm, NULL, acpi_battery_resume);
+>>>>>>> refs/remotes/origin/master
 
 static struct acpi_driver acpi_battery_driver = {
 	.name = "battery",
@@ -1119,16 +1455,24 @@ static struct acpi_driver acpi_battery_driver = {
 	.flags = ACPI_DRIVER_ALL_NOTIFY_EVENTS,
 	.ops = {
 		.add = acpi_battery_add,
+<<<<<<< HEAD
 		.resume = acpi_battery_resume,
 		.remove = acpi_battery_remove,
 		.notify = acpi_battery_notify,
 		},
+=======
+		.remove = acpi_battery_remove,
+		.notify = acpi_battery_notify,
+		},
+	.drv.pm = &acpi_battery_pm,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init acpi_battery_init_async(void *unused, async_cookie_t cookie)
 {
 	if (acpi_disabled)
 		return;
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	acpi_battery_dir = acpi_lock_battery_dir();
 	if (!acpi_battery_dir)
@@ -1141,6 +1485,12 @@ static void __init acpi_battery_init_async(void *unused, async_cookie_t cookie)
 		return;
 	}
 	return;
+=======
+
+	if (dmi_check_system(bat_dmi_table))
+		battery_bix_broken_package = 1;
+	acpi_bus_register_driver(&acpi_battery_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init acpi_battery_init(void)
@@ -1152,9 +1502,12 @@ static int __init acpi_battery_init(void)
 static void __exit acpi_battery_exit(void)
 {
 	acpi_bus_unregister_driver(&acpi_battery_driver);
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	acpi_unlock_battery_dir(acpi_battery_dir);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(acpi_battery_init);

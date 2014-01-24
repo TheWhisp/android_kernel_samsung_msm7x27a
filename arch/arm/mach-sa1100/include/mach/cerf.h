@@ -14,6 +14,8 @@
 #define CERF_ETH_IO			0xf0000000
 #define CERF_ETH_IRQ IRQ_GPIO26
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define CERF_GPIO_CF_BVD2		GPIO_GPIO (19)
 #define CERF_GPIO_CF_BVD1		GPIO_GPIO (20)
 #define CERF_GPIO_CF_RESET		GPIO_GPIO (21)
@@ -24,5 +26,17 @@
 #define CERF_IRQ_GPIO_CF_BVD1		IRQ_GPIO20
 #define CERF_IRQ_GPIO_CF_IRQ		IRQ_GPIO22
 #define CERF_IRQ_GPIO_CF_CD		IRQ_GPIO23
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define CERF_GPIO_CF_BVD2		19
+#define CERF_GPIO_CF_BVD1		20
+#define CERF_GPIO_CF_RESET		21
+#define CERF_GPIO_CF_IRQ		22
+#define CERF_GPIO_CF_CD			23
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif // _INCLUDE_CERF_H_

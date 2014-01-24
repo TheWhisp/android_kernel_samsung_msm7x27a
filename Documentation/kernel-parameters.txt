@@ -40,15 +40,40 @@ parameter is applicable:
 	ALSA	ALSA sound support is enabled.
 	APIC	APIC support is enabled.
 	APM	Advanced Power Management support is enabled.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ARM	ARM architecture is enabled.
+>>>>>>> refs/remotes/origin/cm-10.0
 	AVR32	AVR32 architecture is enabled.
 	AX25	Appropriate AX.25 support is enabled.
 	BLACKFIN Blackfin architecture is enabled.
+=======
+	ARM	ARM architecture is enabled.
+	AVR32	AVR32 architecture is enabled.
+	AX25	Appropriate AX.25 support is enabled.
+	BLACKFIN Blackfin architecture is enabled.
+	CLK	Common clock infrastructure is enabled.
+	CMA	Contiguous Memory Area support is enabled.
+>>>>>>> refs/remotes/origin/master
 	DRM	Direct Rendering Management support is enabled.
 	DYNAMIC_DEBUG Build in debug messages and enable them at runtime
 	EDD	BIOS Enhanced Disk Drive Services (EDD) is enabled
 	EFI	EFI Partitioning (GPT) is enabled
 	EIDE	EIDE/ATAPI support is enabled.
+<<<<<<< HEAD
+<<<<<<< HEAD
 	FB	The frame buffer device is enabled.
+=======
+	EVM	Extended Verification Module
+	FB	The frame buffer device is enabled.
+	FTRACE	Function tracing enabled.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EVM	Extended Verification Module
+	FB	The frame buffer device is enabled.
+	FTRACE	Function tracing enabled.
+>>>>>>> refs/remotes/origin/master
 	GCOV	GCOV profiling is enabled.
 	HW	Appropriate hardware is enabled.
 	IA-64	IA-64 architecture is enabled.
@@ -67,8 +92,17 @@ parameter is applicable:
 	M68k	M68k architecture is enabled.
 			These options have more detailed description inside of
 			Documentation/m68k/kernel-options.txt.
+<<<<<<< HEAD
 	MCA	MCA bus support is enabled.
 	MDA	MDA console support is enabled.
+<<<<<<< HEAD
+=======
+	MIPS	MIPS architecture is enabled.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MDA	MDA console support is enabled.
+	MIPS	MIPS architecture is enabled.
+>>>>>>> refs/remotes/origin/master
 	MOUSE	Appropriate mouse support is enabled.
 	MSI	Message Signaled Interrupts (PCI).
 	MTD	MTD (Memory Technology Device) support is enabled.
@@ -100,13 +134,23 @@ parameter is applicable:
 	SPARC	Sparc architecture is enabled.
 	SWSUSP	Software suspend (hibernation) is enabled.
 	SUSPEND	System suspend states are enabled.
+<<<<<<< HEAD
+<<<<<<< HEAD
 	FTRACE	Function tracing enabled.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	TPM	TPM drivers are enabled.
 	TS	Appropriate touchscreen support is enabled.
 	UMS	USB Mass Storage support is enabled.
 	USB	USB support is enabled.
 	USBHID	USB Human Interface Device support is enabled.
 	V4L	Video For Linux support is enabled.
+<<<<<<< HEAD
+=======
+	VMMIO   Driver for memory mapped virtio devices is enabled.
+>>>>>>> refs/remotes/origin/master
 	VGA	The VGA console has been enabled.
 	VT	Virtual terminal support is enabled.
 	WDT	Watchdog support is enabled.
@@ -115,7 +159,15 @@ parameter is applicable:
 	X86-64	X86-64 architecture is enabled.
 			More X86-64 boot options can be found in
 			Documentation/x86/x86_64/boot-options.txt .
+<<<<<<< HEAD
+<<<<<<< HEAD
 	X86	Either 32bit or 64bit x86 (same as X86-32+X86-64)
+=======
+	X86	Either 32-bit or 64-bit x86 (same as X86-32+X86-64)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	X86	Either 32-bit or 64-bit x86 (same as X86-32+X86-64)
+>>>>>>> refs/remotes/origin/master
 	XEN	Xen support is enabled
 
 In addition, the following text indicates that the option:
@@ -161,7 +213,22 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			rsdt -- prefer RSDT over (default) XSDT
 			copy_dsdt -- copy DSDT to memory
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			See also Documentation/power/pm.txt, pci=noacpi
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			See also Documentation/power/runtime_pm.txt, pci=noacpi
+
+	acpi_rsdp=	[ACPI,EFI,KEXEC]
+			Pass the RSDP address to the kernel, mostly used
+			on machines running EFI runtime service to boot the
+			second kernel for kdump.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	acpi_apic_instance=	[ACPI, IOAPIC]
 			Format: <int>
@@ -225,10 +292,68 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Format: To spoof as Windows 98: ="Microsoft Windows"
 
 	acpi_osi=	[HW,ACPI] Modify list of supported OS interface strings
+<<<<<<< HEAD
 			acpi_osi="string1"	# add string1 -- only one string
 			acpi_osi="!string2"	# remove built-in string2
 			acpi_osi=		# disable all strings
 
+=======
+			acpi_osi="string1"	# add string1
+			acpi_osi="!string2"	# remove string2
+			acpi_osi=!*		# remove all strings
+			acpi_osi=!		# disable all built-in OS vendor
+						  strings
+			acpi_osi=		# disable all strings
+
+			'acpi_osi=!' can be used in combination with single or
+			multiple 'acpi_osi="string1"' to support specific OS
+			vendor string(s).  Note that such command can only
+			affect the default state of the OS vendor strings, thus
+			it cannot affect the default state of the feature group
+			strings and the current state of the OS vendor strings,
+			specifying it multiple times through kernel command line
+			is meaningless.  This command is useful when one do not
+			care about the state of the feature group strings which
+			should be controlled by the OSPM.
+			Examples:
+			  1. 'acpi_osi=! acpi_osi="Windows 2000"' is equivalent
+			     to 'acpi_osi="Windows 2000" acpi_osi=!', they all
+			     can make '_OSI("Windows 2000")' TRUE.
+
+			'acpi_osi=' cannot be used in combination with other
+			'acpi_osi=' command lines, the _OSI method will not
+			exist in the ACPI namespace.  NOTE that such command can
+			only affect the _OSI support state, thus specifying it
+			multiple times through kernel command line is also
+			meaningless.
+			Examples:
+			  1. 'acpi_osi=' can make 'CondRefOf(_OSI, Local1)'
+			     FALSE.
+
+			'acpi_osi=!*' can be used in combination with single or
+			multiple 'acpi_osi="string1"' to support specific
+			string(s).  Note that such command can affect the
+			current state of both the OS vendor strings and the
+			feature group strings, thus specifying it multiple times
+			through kernel command line is meaningful.  But it may
+			still not able to affect the final state of a string if
+			there are quirks related to this string.  This command
+			is useful when one want to control the state of the
+			feature group strings to debug BIOS issues related to
+			the OSPM features.
+			Examples:
+			  1. 'acpi_osi="Module Device" acpi_osi=!*' can make
+			     '_OSI("Module Device")' FALSE.
+			  2. 'acpi_osi=!* acpi_osi="Module Device"' can make
+			     '_OSI("Module Device")' TRUE.
+			  3. 'acpi_osi=! acpi_osi=!* acpi_osi="Windows 2000"' is
+			     equivalent to
+			     'acpi_osi=!* acpi_osi=! acpi_osi="Windows 2000"'
+			     and
+			     'acpi_osi=!* acpi_osi="Windows 2000" acpi_osi=!',
+			     they all will make '_OSI("Windows 2000")' TRUE.
+
+>>>>>>> refs/remotes/origin/master
 	acpi_pm_good	[X86]
 			Override the pmtimer bug detection: force the kernel
 			to assume that this machine's pmtimer latches its value
@@ -299,7 +424,38 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			behaviour to be specified.  Bit 0 enables warnings,
 			bit 1 enables fixups, and bit 2 sends a segfault.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	amd_iommu=	[HW,X86-84]
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	align_va_addr=	[X86-64]
+			Align virtual addresses by clearing slice [14:12] when
+			allocating a VMA at process creation time. This option
+			gives you up to 3% performance improvement on AMD F15h
+			machines (where it is enabled by default) for a
+			CPU-intensive style benchmark, and it can vary highly in
+			a microbenchmark depending on workload and compiler.
+
+			32: only for 32-bit processes
+			64: only for 64-bit processes
+			on: enable for both 32- and 64-bit processes
+			off: disable for both 32- and 64-bit processes
+
+<<<<<<< HEAD
+	amd_iommu=	[HW,X86-64]
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alloc_snapshot	[FTRACE]
+			Allocate the ftrace snapshot buffer on boot up when the
+			main buffer is allocated. This is handy if debugging
+			and you need to use tracing_snapshot() on boot up, and
+			do not want to use tracing_snapshot_alloc() as it needs
+			to be done where GFP_KERNEL allocations are allowed.
+
+	amd_iommu=	[HW,X86-64]
+>>>>>>> refs/remotes/origin/master
 			Pass parameters to the AMD IOMMU driver in the system.
 			Possible values are:
 			fullflush - enable flushing of IO/TLB entries when
@@ -308,11 +464,39 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 				    is a lot of faster
 			off	  - do not initialize any AMD IOMMU found in
 				    the system
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			force_isolation - Force device isolation for all
+					  devices. The IOMMU driver is not
+					  allowed anymore to lift isolation
+					  requirements as needed. This option
+					  does not override iommu=pt
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	amd_iommu_dump=	[HW,X86-64]
+			Enable AMD IOMMU driver option to dump the ACPI table
+			for AMD IOMMU. With this option enabled, AMD IOMMU
+			driver will print ACPI tables for AMD IOMMU during
+			IOMMU initialization.
+>>>>>>> refs/remotes/origin/master
 
 	amijoy.map=	[HW,JOY] Amiga joystick support
 			Map of devices attached to JOY0DAT and JOY1DAT
 			Format: <a>,<b>
+<<<<<<< HEAD
+<<<<<<< HEAD
 			See also Documentation/kernel/input/joystick.txt
+=======
+			See also Documentation/input/joystick.txt
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			See also Documentation/input/joystick.txt
+>>>>>>> refs/remotes/origin/master
 
 	analog.map=	[HW,JOY] Analog joystick and gamepad support
 			Specifies type or capabilities of an analog joystick
@@ -371,8 +555,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	atkbd.softrepeat= [HW]
 			Use software keyboard repeat
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	autotest	[IA64]
+=======
+	autotest	[IA-64]
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 	baycom_epp=	[HW,AX25]
 			Format: <io>,<mode>
 
@@ -390,6 +581,13 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Format: <io>,<irq>,<mode>
 			See header of drivers/net/hamradio/baycom_ser_hdx.c.
 
+<<<<<<< HEAD
+=======
+	blkdevparts=	Manual partition parsing of block device(s) for
+			embedded devices based on command line input.
+			See Documentation/block/cmdline-partition.txt
+
+>>>>>>> refs/remotes/origin/master
 	boot_delay=	Milliseconds to delay each printk during boot.
 			Values larger than 10 seconds (10000) are changed to
 			no delay (0).
@@ -401,7 +599,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	bttv.radio=	Most important insmod options are available as
 			kernel args too.
 	bttv.pll=	See Documentation/video4linux/bttv/Insmod-options
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bttv.tuner=	and Documentation/video4linux/bttv/CARDLIST
+=======
+	bttv.tuner=
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bttv.tuner=
+>>>>>>> refs/remotes/origin/master
 
 	bulk_remove=off	[PPC]  This parameter disables the use of the pSeries
 			firmware feature for flushing multiple hpte entries
@@ -416,12 +622,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			possible to determine what the correct size should be.
 			This option provides an override for these situations.
 
+<<<<<<< HEAD
 	capability.disable=
 			[SECURITY] Disable capabilities.  This would normally
 			be used only if an alternative security model is to be
 			configured.  Potentially dangerous and should only be
 			used if you are entirely sure of the consequences.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ccw_timeout_log [S390]
 			See Documentation/s390/CommonIO for details.
 
@@ -441,6 +650,16 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	cio_ignore=	[S390]
 			See Documentation/s390/CommonIO for details.
+<<<<<<< HEAD
+=======
+	clk_ignore_unused
+			[CLK]
+			Keep all clocks already enabled by bootloader on,
+			even if no driver has claimed them. This is useful
+			for debug and development, but should not be
+			needed on a platform with proper driver support.
+			For more information, see Documentation/clk.txt.
+>>>>>>> refs/remotes/origin/master
 
 	clock=		[BUGS=X86-32, HW] gettimeofday clocksource override.
 			[Deprecated]
@@ -482,6 +701,26 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Also note the kernel might malfunction if you disable
 			some critical bits.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	cma=nn[MG]	[ARM,KNL]
+			Sets the size of kernel global memory area for contiguous
+			memory allocations. For more information, see
+			include/linux/dma-contiguous.h
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	cmo_free_hint=	[PPC] Format: { yes | no }
 			Specify whether pages are marked as being inactive
 			when they are freed.  This is used in CMO environments
@@ -489,6 +728,26 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			a hypervisor.
 			Default: yes
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	coherent_pool=nn[KMG]	[ARM,KNL]
+			Sets the size of memory pool for coherent, atomic dma
+			allocations if Contiguous Memory Allocator (CMA) is used.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	coherent_pool=nn[KMG]	[ARM,KNL]
+			Sets the size of memory pool for coherent, atomic dma
+			allocations, by default set to 256K.
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	code_bytes	[X86] How many bytes of object code to print
 			in an oops report.
 			Range: 0 - 8192
@@ -548,6 +807,18 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			/proc/<pid>/coredump_filter.
 			See also Documentation/filesystems/proc.txt.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cpuidle.off=1	[CPU_IDLE]
+			disable the cpuidle sub-system
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpuidle.off=1	[CPU_IDLE]
+			disable the cpuidle sub-system
+
+>>>>>>> refs/remotes/origin/master
 	cpcihp_generic=	[HW,PCI] Generic port I/O CompactPCI driver
 			Format:
 			<first_slot>,<last_slot>,<port>,<enum_bit>[,<debug>]
@@ -567,6 +838,29 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			a memory unit (amount[KMG]). See also
 			Documentation/kdump/kdump.txt for an example.
 
+<<<<<<< HEAD
+=======
+	crashkernel=size[KMG],high
+			[KNL, x86_64] range could be above 4G. Allow kernel
+			to allocate physical memory region from top, so could
+			be above 4G if system have more than 4G ram installed.
+			Otherwise memory region will be allocated below 4G, if
+			available.
+			It will be ignored if crashkernel=X is specified.
+	crashkernel=size[KMG],low
+			[KNL, x86_64] range under 4G. When crashkernel=X,high
+			is passed, kernel could allocate physical memory region
+			above 4G, that cause second kernel crash on system
+			that require some amount of low memory, e.g. swiotlb
+			requires at least 64M+32K low memory.  Kernel would
+			try to allocate 72M below 4G automatically.
+			This one let user to specify own low range under 4G
+			for second kernel instead.
+			0: to disable low allocation.
+			It will be ignored when crashkernel=X,high is not used
+			or memory reserved is below 4G.
+
+>>>>>>> refs/remotes/origin/master
 	cs89x0_dma=	[HW,NET]
 			Format: <dma>
 
@@ -583,7 +877,11 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	ddebug_query=   [KNL,DYNAMIC_DEBUG] Enable debug messages at early boot
 			time. See Documentation/dynamic-debug-howto.txt for
+<<<<<<< HEAD
 			details.
+=======
+			details.  Deprecated, see dyndbg.
+>>>>>>> refs/remotes/origin/master
 
 	debug		[KNL] Enable kernel debugging (events log level).
 
@@ -601,6 +899,34 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	no_debug_objects
 			[KNL] Disable object debugging
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	debug_guardpage_minorder=
+			[KNL] When CONFIG_DEBUG_PAGEALLOC is set, this
+			parameter allows control of the order of pages that will
+			be intentionally kept free (and hence protected) by the
+			buddy allocator. Bigger value increase the probability
+			of catching random memory corruption, but reduce the
+			amount of memory for normal system use. The maximum
+			possible value is MAX_ORDER/2.  Setting this parameter
+			to 1 or 2 should be enough to identify most random
+			memory corruption problems caused by bugs in kernel or
+			driver code when a CPU writes to (or reads from) a
+			random memory location. Note that there exists a class
+			of memory corruptions problems caused by buggy H/W or
+			F/W or by drivers badly programing DMA (basically when
+			memory is written at bus level and the CPU MMU is
+			bypassed) which are not detectable by
+			CONFIG_DEBUG_PAGEALLOC, hence this option will not help
+			tracking down these problems.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	debugpat	[X86] Enable PAT debugging
 
 	decnet.addr=	[HW,NET]
@@ -628,6 +954,18 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	disable=	[IPV6]
 			See Documentation/networking/ipv6.txt.
 
+<<<<<<< HEAD
+=======
+	disable_cpu_apicid= [X86,APIC,SMP]
+			Format: <int>
+			The number of initial APIC ID for the
+			corresponding CPU to be disabled at boot,
+			mostly used for the kdump 2nd kernel to
+			disable BSP to wake up multiple CPUs without
+			causing system reset or hang due to sending
+			INIT from AP to BSP.
+
+>>>>>>> refs/remotes/origin/master
 	disable_ddw     [PPC/PSERIES]
 			Disable Dynamic DMA Window support. Use this if
 			to workaround buggy firmware.
@@ -667,16 +1005,53 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			The filter can be disabled or changed to another
 			driver later using sysfs.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	drm_kms_helper.edid_firmware=[<connector>:]<file>
+			Broken monitors, graphic adapters and KVMs may
+			send no or incorrect EDID data sets. This parameter
+			allows to specify an EDID data set in the
+			/lib/firmware directory that is used instead.
+			Generic built-in EDID data sets are used, if one of
+			edid/1024x768.bin, edid/1280x1024.bin,
+			edid/1680x1050.bin, or edid/1920x1080.bin is given
+			and no file with the same name exists. Details and
+			instructions how to build your own EDID data are
+			available in Documentation/EDID/HOWTO.txt. An EDID
+			data set will only be used for a particular connector,
+			if its name and a colon are prepended to the EDID
+			name.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dscc4.setup=	[NET]
 
+=======
+	dscc4.setup=	[NET]
+
+	dyndbg[="val"]		[KNL,DYNAMIC_DEBUG]
+	module.dyndbg[="val"]
+			Enable debug messages at boot time.  See
+			Documentation/dynamic-debug-howto.txt for details.
+
+>>>>>>> refs/remotes/origin/master
 	earlycon=	[KNL] Output early console device and options.
 		uart[8250],io,<addr>[,options]
 		uart[8250],mmio,<addr>[,options]
 		uart[8250],mmio32,<addr>[,options]
 			Start an early, polled-mode console on the 8250/16550
 			UART at the specified I/O port or MMIO address.
+<<<<<<< HEAD
+<<<<<<< HEAD
 			MMIO inter-register address stride is either 8bit (mmio)
                         or 32bit (mmio32).
+=======
+			MMIO inter-register address stride is either 8-bit
+			(mmio) or 32-bit (mmio32).
+>>>>>>> refs/remotes/origin/cm-10.0
 			The options are the same as for ttyS, above.
 
 	earlyprintk=	[X86,SH,BLACKFIN]
@@ -692,15 +1067,67 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Only vga or serial or usb debug port at a time.
 
 			Currently only ttyS0 and ttyS1 are supported.
+=======
+			MMIO inter-register address stride is either 8-bit
+			(mmio) or 32-bit (mmio32).
+			The options are the same as for ttyS, above.
+
+	earlyprintk=	[X86,SH,BLACKFIN,ARM]
+			earlyprintk=vga
+			earlyprintk=efi
+			earlyprintk=xen
+			earlyprintk=serial[,ttySn[,baudrate]]
+			earlyprintk=serial[,0x...[,baudrate]]
+			earlyprintk=ttySn[,baudrate]
+			earlyprintk=dbgp[debugController#]
+
+			earlyprintk is useful when the kernel crashes before
+			the normal console is initialized. It is not enabled by
+			default because it has some cosmetic problems.
+
+			Append ",keep" to not disable it when the real console
+			takes over.
+
+			Only one of vga, efi, serial, or usb debug port can
+			be used at a time.
+
+			Currently only ttyS0 and ttyS1 may be specified by
+			name.  Other I/O ports may be explicitly specified
+			on some architectures (x86 and arm at least) by
+			replacing ttySn with an I/O port address, like this:
+				earlyprintk=serial,0x1008,115200
+			You can find the port for a given device in
+			/proc/tty/driver/serial:
+				2: uart:ST16650V2 port:00001008 irq:18 ...
+>>>>>>> refs/remotes/origin/master
 
 			Interaction with the standard serial driver is not
 			very good.
 
+<<<<<<< HEAD
 			The VGA output is eventually overwritten by the real
 			console.
 
 			The xen output can only be used by Xen PV guests.
 
+<<<<<<< HEAD
+=======
+			The VGA and EFI output is eventually overwritten by
+			the real console.
+
+			The xen output can only be used by Xen PV guests.
+
+	edac_report=	[HW,EDAC] Control how to report EDAC event
+			Format: {"on" | "off" | "force"}
+			on: enable EDAC to report H/W event. May be overridden
+			by other higher priority error reporting module.
+			off: disable H/W event reporting through EDAC.
+			force: enforce the use of EDAC to report H/W event.
+			default: on.
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ekgdboc=	[X86,KGDB] Allow early kernel console debugging
 			ekgdboc=kbd
 
@@ -710,6 +1137,21 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	edd=		[EDD]
 			Format: {"off" | "on" | "skip[mbr]"}
 
+<<<<<<< HEAD
+=======
+	efi=		[EFI]
+			Format: { "old_map" }
+			old_map [X86-64]: switch to the old ioremap-based EFI
+			runtime services mapping. 32-bit still uses this one by
+			default.
+
+	efi_no_storage_paranoia [EFI; X86]
+			Using this parameter you can use more than 50% of
+			your efi variable storage. Use this parameter only if
+			you are really sure that your UEFI does sane gc and
+			fulfills the spec otherwise your board may brick.
+
+>>>>>>> refs/remotes/origin/master
 	eisa_irq_edge=	[PARISC,HW]
 			See header of drivers/parisc/eisa.c.
 
@@ -719,6 +1161,8 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	elevator=	[IOSCHED]
 			Format: {"cfq" | "deadline" | "noop"}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			See Documentation/block/as-iosched.txt and
 			Documentation/block/deadline-iosched.txt for details.
 
@@ -726,6 +1170,20 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Specifies physical address of start of kernel core
 			image elf header. Generally kexec loader will
 			pass this option to capture kernel.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			See Documentation/block/cfq-iosched.txt and
+			Documentation/block/deadline-iosched.txt for details.
+
+	elfcorehdr=[size[KMG]@]offset[KMG] [IA64,PPC,SH,X86,S390]
+			Specifies physical address of start of kernel core
+			image elf header and optionally the size. Generally
+			kexec loader will pass this option to capture kernel.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			See Documentation/kdump/kdump.txt for details.
 
 	enable_mtrr_cleanup [X86]
@@ -755,12 +1213,34 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			This option is obsoleted by the "netdev=" option, which
 			has equivalent usage. See its documentation for details.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	evm=		[EVM]
+			Format: { "fix" }
+			Permit 'security.evm' to be updated regardless of
+			current integrity status.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	failslab=
 	fail_page_alloc=
 	fail_make_request=[KNL]
 			General fault injection mechanism.
 			Format: <interval>,<probability>,<space>,<times>
+<<<<<<< HEAD
+<<<<<<< HEAD
 			See also /Documentation/fault-injection/.
+=======
+			See also Documentation/fault-injection/.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			See also Documentation/fault-injection/.
+>>>>>>> refs/remotes/origin/master
 
 	floppy=		[HW]
 			See Documentation/blockdev/floppy.txt.
@@ -788,7 +1268,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			tracer at boot up. function-list is a comma separated
 			list of functions. This list can be changed at run
 			time by the set_ftrace_filter file in the debugfs
+<<<<<<< HEAD
+<<<<<<< HEAD
 			tracing directory. 
+=======
+			tracing directory.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tracing directory.
+>>>>>>> refs/remotes/origin/master
 
 	ftrace_notrace=[function-list]
 			[FTRACE] Do not trace the functions specified in
@@ -824,9 +1312,37 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	gpt		[EFI] Forces disk with valid GPT signature but
 			invalid Protective MBR to be treated as GPT.
 
+<<<<<<< HEAD
 	hashdist=	[KNL,NUMA] Large hashes allocated during boot
 			are distributed across NUMA nodes.  Defaults on
+<<<<<<< HEAD
 			for 64bit NUMA, off otherwise.
+=======
+			for 64-bit NUMA, off otherwise.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	grcan.enable0=	[HW] Configuration of physical interface 0. Determines
+			the "Enable 0" bit of the configuration register.
+			Format: 0 | 1
+			Default: 0
+	grcan.enable1=	[HW] Configuration of physical interface 1. Determines
+			the "Enable 0" bit of the configuration register.
+			Format: 0 | 1
+			Default: 0
+	grcan.select=	[HW] Select which physical interface to use.
+			Format: 0 | 1
+			Default: 0
+	grcan.txsize=	[HW] Sets the size of the tx buffer.
+			Format: <unsigned int> such that (txsize & ~0x1fffc0) == 0.
+			Default: 1024
+	grcan.rxsize=	[HW] Sets the size of the rx buffer.
+			Format: <unsigned int> such that (rxsize & ~0x1fffc0) == 0.
+			Default: 1024
+
+	hashdist=	[KNL,NUMA] Large hashes allocated during boot
+			are distributed across NUMA nodes.  Defaults on
+			for 64-bit NUMA, off otherwise.
+>>>>>>> refs/remotes/origin/master
 			Format: 0 | 1 (for off | on)
 
 	hcl=		[IA-64] SGI's Hardware Graph compatibility layer
@@ -861,6 +1377,12 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 				VIA, nVidia)
 			verbose: show contents of HPET registers during setup
 
+<<<<<<< HEAD
+=======
+	hpet_mmap=	[X86, HPET_MMAP] Allow userspace to mmap HPET
+			registers.  Default set by CONFIG_HPET_MMAP_DEFAULT.
+
+>>>>>>> refs/remotes/origin/master
 	hugepages=	[HW,X86-32,IA-64] HugeTLB pages to allocate at boot.
 	hugepagesz=	[HW,IA-64,PPC,X86-64] The size of the HugeTLB pages.
 			On x86-64 and powerpc, this option can be specified
@@ -877,6 +1399,13 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			       If specified, z/VM IUCV HVC accepts connections
 			       from listed z/VM user IDs only.
 
+<<<<<<< HEAD
+=======
+	hwthread_map=	[METAG] Comma-separated list of Linux cpu id to
+			        hardware thread id mappings.
+				Format: <cpu>:<hwthread>
+
+>>>>>>> refs/remotes/origin/master
 	keep_bootcon	[KNL]
 			Do not unregister boot console at start. This is only
 			useful for debugging when something happens in the window
@@ -902,7 +1431,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			     controller
 	i8042.nopnp	[HW] Don't use ACPIPnP / PnPBIOS to discover KBD/AUX
 			     controllers
+<<<<<<< HEAD
+<<<<<<< HEAD
 	i8042.notimeout	[HW] Ignore timeout condition signalled by conroller
+=======
+	i8042.notimeout	[HW] Ignore timeout condition signalled by controller
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i8042.notimeout	[HW] Ignore timeout condition signalled by controller
+>>>>>>> refs/remotes/origin/master
 	i8042.reset	[HW] Reset the controller during init and cleanup
 	i8042.unlock	[HW] Unlock (ignore) the keylock
 
@@ -919,6 +1456,23 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	i8k.restricted	[HW] Allow controlling fans only if SYS_ADMIN
 			capability is set.
 
+<<<<<<< HEAD
+=======
+	i915.invert_brightness=
+			[DRM] Invert the sense of the variable that is used to
+			set the brightness of the panel backlight. Normally a
+			brightness value of 0 indicates backlight switched off,
+			and the maximum of the brightness value sets the backlight
+			to maximum brightness. If this parameter is set to 0
+			(default) and the machine requires it, or this parameter
+			is set to 1, a brightness value of 0 sets the backlight
+			to maximum brightness, and the maximum of the brightness
+			value switches the backlight off.
+			-1 -- never invert brightness
+			 0 -- machine default
+			 1 -- force brightness inversion
+
+>>>>>>> refs/remotes/origin/master
 	icn=		[HW,ISDN]
 			Format: <io>[,<membase>[,<icn_id>[,<icn_id2>]]]
 
@@ -932,16 +1486,23 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Claim all unknown PCI IDE storage controllers.
 
 	idle=		[X86]
+<<<<<<< HEAD
 			Format: idle=poll, idle=mwait, idle=halt, idle=nomwait
+=======
+			Format: idle=poll, idle=halt, idle=nomwait
+>>>>>>> refs/remotes/origin/master
 			Poll forces a polling idle loop that can slightly
 			improve the performance of waking up a idle CPU, but
 			will use a lot of power and make the system run hot.
 			Not recommended.
+<<<<<<< HEAD
 			idle=mwait: On systems which support MONITOR/MWAIT but
 			the kernel chose to not use it because it doesn't save
 			as much power as a normal idle loop, use the
 			MONITOR/MWAIT idle loop anyways. Performance should be
 			the same as idle=poll.
+=======
+>>>>>>> refs/remotes/origin/master
 			idle=halt: Halt is forced to be used for CPU idle.
 			In such case C2/C3 won't be used again.
 			idle=nomwait: Disable mwait for CPU C-states
@@ -949,10 +1510,23 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	ignore_loglevel	[KNL]
 			Ignore loglevel setting - this will print /all/
 			kernel messages to the console. Useful for debugging.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			We also add it as printk module parameter, so users
+			could change it dynamically, usually by
+			/sys/module/printk/parameters/ignore_loglevel.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			We also add it as printk module parameter, so users
+			could change it dynamically, usually by
+			/sys/module/printk/parameters/ignore_loglevel.
+>>>>>>> refs/remotes/origin/master
 
 	ihash_entries=	[KNL]
 			Set number of hash buckets for inode cache.
 
+<<<<<<< HEAD
 	ima_audit=	[IMA]
 			Format: { "0" | "1" }
 			0 -- integrity auditing messages. (Default)
@@ -962,12 +1536,38 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Format: { "sha1" | "md5" }
 			default: "sha1"
 
+=======
+	ima_appraise=	[IMA] appraise integrity measurements
+			Format: { "off" | "enforce" | "fix" }
+			default: "enforce"
+
+	ima_appraise_tcb [IMA]
+			The builtin appraise policy appraises all files
+			owned by uid=0.
+
+	ima_hash=	[IMA]
+			Format: { md5 | sha1 | rmd160 | sha256 | sha384
+				   | sha512 | ... }
+			default: "sha1"
+
+			The list of supported hash algorithms is defined
+			in crypto/hash_info.h.
+
+>>>>>>> refs/remotes/origin/master
 	ima_tcb		[IMA]
 			Load a policy which meets the needs of the Trusted
 			Computing Base.  This means IMA will measure all
 			programs exec'd, files mmap'd for exec, and all files
 			opened for read by uid=0.
 
+<<<<<<< HEAD
+=======
+	ima_template=   [IMA]
+			Select one of defined IMA measurements template formats.
+			Formats: { "ima" | "ima-ng" }
+			Default: "ima-ng"
+
+>>>>>>> refs/remotes/origin/master
 	init=		[KNL]
 			Format: <full_path>
 			Run specified binary instead of /sbin/init as init
@@ -982,6 +1582,16 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	inport.irq=	[HW] Inport (ATI XL and Microsoft) busmouse driver
 			Format: <irq>
 
+<<<<<<< HEAD
+=======
+	int_pln_enable  [x86] Enable power limit notification interrupt
+
+	integrity_audit=[IMA]
+			Format: { "0" | "1" }
+			0 -- basic integrity auditing messages. (Default)
+			1 -- additional integrity auditing messages.
+
+>>>>>>> refs/remotes/origin/master
 	intel_iommu=	[DMAR] Intel IOMMU driver (DMAR) option
 		on
 			Enable intel iommu driver.
@@ -995,10 +1605,23 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			DMA.
 		forcedac [x86_64]
 			With this option iommu will not optimize to look
+<<<<<<< HEAD
+<<<<<<< HEAD
 			for io virtual address below 32 bit forcing dual
 			address cycle on pci bus for cards supporting greater
 			than 32 bit addressing. The default is to look
 			for translation below 32 bit and if not available
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			for io virtual address below 32-bit forcing dual
+			address cycle on pci bus for cards supporting greater
+			than 32-bit addressing. The default is to look
+			for translation below 32-bit and if not available
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			then look in the higher range.
 		strict [Default Off]
 			With this option on every unmap_single operation will
@@ -1008,6 +1631,8 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			By default, super page will be supported if Intel IOMMU
 			has the capability. With this option, super page will
 			not be supported.
+<<<<<<< HEAD
+<<<<<<< HEAD
 	intremap=	[X86-64, Intel-IOMMU]
 			Format: { on (default) | off | nosid }
 			on	enable Interrupt Remapping (default)
@@ -1015,6 +1640,32 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			nosid	disable Source ID checking
 
 	inttest=	[IA64]
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	intel_idle.max_cstate=	[KNL,HW,ACPI,X86]
+			0	disables intel_idle and fall back on acpi_idle.
+			1 to 6	specify maximum depth of C-state.
+
+<<<<<<< HEAD
+=======
+	intel_pstate=  [X86]
+		       disable
+		         Do not enable intel_pstate as the default
+		         scaling driver for the supported processors
+
+>>>>>>> refs/remotes/origin/master
+	intremap=	[X86-64, Intel-IOMMU]
+			on	enable Interrupt Remapping (default)
+			off	disable Interrupt Remapping
+			nosid	disable Source ID checking
+			no_x2apic_optout
+				BIOS x2APIC opt-out request will be ignored
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	iomem=		Disable strict checking of access to MMIO memory
 		strict	regions from userspace.
@@ -1031,7 +1682,18 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 		nomerge
 		forcesac
 		soft
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pt	[x86, IA64]
+=======
+		pt		[x86, IA-64]
+		group_mf	[x86, IA-64]
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pt		[x86, IA-64]
+
+>>>>>>> refs/remotes/origin/master
 
 	io7=		[HW] IO7 for Marvel based alpha systems
 			See comment before marvel_specify_io7 in
@@ -1091,6 +1753,23 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	iucv=		[HW,NET]
 
+<<<<<<< HEAD
+=======
+	ivrs_ioapic	[HW,X86_64]
+			Provide an override to the IOAPIC-ID<->DEVICE-ID
+			mapping provided in the IVRS ACPI table. For
+			example, to map IOAPIC-ID decimal 10 to
+			PCI device 00:14.0 write the parameter as:
+				ivrs_ioapic[10]=00:14.0
+
+	ivrs_hpet	[HW,X86_64]
+			Provide an override to the HPET-ID<->DEVICE-ID
+			mapping provided in the IVRS ACPI table. For
+			example, to map HPET-ID decimal 0 to
+			PCI device 00:14.0 write the parameter as:
+				ivrs_hpet[0]=00:14.0
+
+>>>>>>> refs/remotes/origin/master
 	js=		[HW,JOY] Analog joystick
 			See Documentation/input/joystick.txt.
 
@@ -1104,7 +1783,11 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			pages. In the event, a node is too small to have both
 			kernelcore and Movable pages, kernelcore pages will
 			take priority and other nodes will have a larger number
+<<<<<<< HEAD
 			of kernelcore pages.  The Movable zone is used for the
+=======
+			of Movable pages.  The Movable zone is used for the
+>>>>>>> refs/remotes/origin/master
 			allocation of pages that may be reclaimed or moved
 			by the page migration subsystem.  This means that
 			HugeTLB pages may not be allocated from this zone.
@@ -1150,9 +1833,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	kvm.ignore_msrs=[KVM] Ignore guest accesses to unhandled MSRs.
 			Default is 0 (don't ignore, but inject #GP)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kvm.oos_shadow=	[KVM] Disable out-of-sync shadow paging.
 			Default is 1 (enabled)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kvm.mmu_audit=	[KVM] This is a R/W parameter which allows audit
 			KVM MMU at runtime.
 			Default is 0 (off)
@@ -1162,11 +1851,19 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	kvm-amd.npt=	[KVM,AMD] Disable nested paging (virtualized MMU)
 			for all guests.
+<<<<<<< HEAD
+<<<<<<< HEAD
 			Default is 1 (enabled) if in 64bit or 32bit-PAE mode
 
 	kvm-intel.bypass_guest_pf=
 			[KVM,Intel] Disables bypassing of guest page faults
 			on Intel chips. Default is 1 (enabled)
+=======
+			Default is 1 (enabled) if in 64-bit or 32-bit PAE mode.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			Default is 1 (enabled) if in 64-bit or 32-bit PAE mode.
+>>>>>>> refs/remotes/origin/master
 
 	kvm-intel.ept=	[KVM,Intel] Disable extended page tables
 			(virtualized MMU) support on capable Intel chips.
@@ -1180,6 +1877,19 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			[KVM,Intel] Disable FlexPriority feature (TPR shadow).
 			Default is 1 (enabled)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	kvm-intel.nested=
+			[KVM,Intel] Enable VMX nesting (nVMX).
+			Default is 0 (disabled)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kvm-intel.unrestricted_guest=
 			[KVM,Intel] Disable unrestricted guest feature
 			(virtualized real and unpaged mode) on capable
@@ -1196,6 +1906,13 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	lapic		[X86-32,APIC] Enable the local APIC even if BIOS
 			disabled it.
 
+<<<<<<< HEAD
+=======
+	lapic=		[x86,APIC] "notscdeadline" Do not use TSC deadline
+			value for LAPIC timer one-shot implementation. Default
+			back to the programmable timer unit in the LAPIC.
+
+>>>>>>> refs/remotes/origin/master
 	lapic_timer_c2_ok	[X86,APIC] trust the local apic timer
 			in C2 power state.
 
@@ -1203,10 +1920,23 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			libata.dma=0	  Disable all PATA and SATA DMA
 			libata.dma=1	  PATA and SATA Disk DMA only
 			libata.dma=2	  ATAPI (CDROM) DMA only
+<<<<<<< HEAD
+<<<<<<< HEAD
 			libata.dma=4	  Compact Flash DMA only 
 			Combinations also work, so libata.dma=3 enables DMA
 			for disks and CDROMs, but not CFs.
 	
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			libata.dma=4	  Compact Flash DMA only
+			Combinations also work, so libata.dma=3 enables DMA
+			for disks and CDROMs, but not CFs.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	libata.ignore_hpa=	[LIBATA] Ignore HPA limit
 			libata.ignore_hpa=0	  keep BIOS limits (default)
 			libata.ignore_hpa=1	  ignore limits, using full disk
@@ -1250,8 +1980,20 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			* nohrst, nosrst, norst: suppress hard, soft
                           and both resets.
 
+<<<<<<< HEAD
 			* dump_id: dump IDENTIFY data.
 
+=======
+			* rstonce: only attempt one reset during
+			  hot-unplug link recovery
+
+			* dump_id: dump IDENTIFY data.
+
+			* atapi_dmadir: Enable ATAPI DMADIR bridge support
+
+			* disable: Disable this device.
+
+>>>>>>> refs/remotes/origin/master
 			If there are multiple matching configurations changing
 			the same attribute, the last one is used.
 
@@ -1332,7 +2074,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	ltpc=		[NET]
 			Format: <io>,<irq>,<dma>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	machvec=	[IA64] Force the use of a particular machine-vector
+=======
+	machvec=	[IA-64] Force the use of a particular machine-vector
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	machvec=	[IA-64] Force the use of a particular machine-vector
+>>>>>>> refs/remotes/origin/master
 			(machvec) in a generic kernel.
 			Example: machvec=hpzx1_swiotlb
 
@@ -1349,11 +2099,26 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			it is equivalent to "nosmp", which also disables
 			the IO APIC.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	max_loop=	[LOOP] Maximum number of loopback devices that can
 			be mounted
 			Format: <1-256>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	max_loop=	[LOOP] The number of loop block devices that get
+	(loop.max_loop)	unconditionally pre-created at init time. The default
+			number is configured by BLK_DEV_LOOP_MIN_COUNT. Instead
+			of statically allocating a predefined number, loop
+			devices can be requested on-demand with the
+			/dev/loop-control interface.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mcatest=	[IA-64]
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mce		[X86-32] Machine Check Exception
 
@@ -1369,9 +2134,16 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	mem=nn[KMG]	[KNL,BOOT] Force usage of a specific amount of memory
 			Amount of memory to be used when the kernel is not able
 			to see the whole system memory or for test.
+<<<<<<< HEAD
 			[X86-32] Use together with memmap= to avoid physical
 			address space collisions. Without memmap= PCI devices
 			could be placed at addresses belonging to unused RAM.
+=======
+			[X86] Work as limiting max address. Use together
+			with memmap= to avoid physical address space collisions.
+			Without memmap= PCI devices could be placed at addresses
+			belonging to unused RAM.
+>>>>>>> refs/remotes/origin/master
 
 	mem=nopentium	[BUGS=X86-32] Disable usage of 4MB pages for kernel
 			memory.
@@ -1481,6 +2253,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			log everything. Information is printed at KERN_DEBUG
 			so loglevel=8 may also need to be specified.
 
+<<<<<<< HEAD
+=======
+	module.sig_enforce
+			[KNL] When CONFIG_MODULE_SIG is set, this means that
+			modules without (valid) signatures will fail to load.
+			Note that if CONFIG_MODULE_SIG_FORCE is set, that
+			is always true, so this option does nothing.
+
+>>>>>>> refs/remotes/origin/master
 	mousedev.tap_time=
 			[MOUSE] Maximum time between finger touching and
 			leaving touchpad surface for touch to be considered
@@ -1502,6 +2283,12 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			that the amount of memory usable for all allocations
 			is not too small.
 
+<<<<<<< HEAD
+=======
+	movable_node	[KNL,X86] Boot-time switch to enable the effects
+			of CONFIG_MOVABLE_NODE=y. See mm/Kconfig for details.
+
+>>>>>>> refs/remotes/origin/master
 	MTD_Partition=	[MTD]
 			Format: <name>,<region-number>,<size>,<offset>
 
@@ -1598,6 +2385,8 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			of returning the full 64-bit number.
 			The default is to return 64-bit inode numbers.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nfs.nfs4_disable_idmapping=
 			[NFSv4] When set, this option disables the NFSv4
 			idmapper on the client, but only if the mount
@@ -1605,6 +2394,77 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			make migration from legacy NFSv2/v3 systems easier
 			provided that the server has the appropriate support.
 			The default is to always enable NFSv4 idmapping.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	nfs.max_session_slots=
+			[NFSv4.1] Sets the maximum number of session slots
+			the client will attempt to negotiate with the server.
+			This limits the number of simultaneous RPC requests
+			that the client can send to the NFSv4.1 server.
+			Note that there is little point in setting this
+			value higher than the max_tcp_slot_table_limit.
+
+	nfs.nfs4_disable_idmapping=
+			[NFSv4] When set to the default of '1', this option
+			ensures that both the RPC level authentication
+			scheme and the NFS level operations agree to use
+			numeric uids/gids if the mount is using the
+			'sec=sys' security flavour. In effect it is
+			disabling idmapping, which can make migration from
+			legacy NFSv2/v3 systems to NFSv4 easier.
+			Servers that do not support this mode of operation
+			will be autodetected by the client, and it will fall
+			back to using the idmapper.
+			To turn off this behaviour, set the value to '0'.
+<<<<<<< HEAD
+=======
+	nfs.nfs4_unique_id=
+			[NFS4] Specify an additional fixed unique ident-
+			ification string that NFSv4 clients can insert into
+			their nfs_client_id4 string.  This is typically a
+			UUID that is generated at system install time.
+>>>>>>> refs/remotes/origin/master
+
+	nfs.send_implementation_id =
+			[NFSv4.1] Send client implementation identification
+			information in exchange_id requests.
+			If zero, no implementation identification information
+			will be sent.
+			The default is to send the implementation identification
+			information.
+<<<<<<< HEAD
+=======
+	
+	nfs.recover_lost_locks =
+			[NFSv4] Attempt to recover locks that were lost due
+			to a lease timeout on the server. Please note that
+			doing this risks data corruption, since there are
+			no guarantees that the file will remain unchanged
+			after the locks are lost.
+			If you want to enable the kernel legacy behaviour of
+			attempting to recover these locks, then set this
+			parameter to '1'.
+			The default parameter value of '0' causes the kernel
+			not to attempt recovery of lost locks.
+>>>>>>> refs/remotes/origin/master
+
+	nfsd.nfs4_disable_idmapping=
+			[NFSv4] When set to the default of '1', the NFSv4
+			server will return only numeric uids and gids to
+			clients using auth_sys, and will accept numeric uids
+			and gids from such clients.  This is intended to ease
+			migration from NFSv2/v3.
+
+	objlayoutdriver.osd_login_prog=
+			[NFS] [OBJLAYOUT] sets the pathname to the program which
+			is used to automatically discover and login into new
+			osd-targets. Please see:
+			Documentation/filesystems/pnfs.txt for more explanations
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	nmi_debug=	[KNL,AVR32,SH] Specify one or more actions to take
 			when a NMI is triggered.
@@ -1638,6 +2498,20 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			debugging driver suspend/resume hooks).  This may
 			not work reliably with all consoles, but is known
 			to work with serial and VGA consoles.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			To facilitate more flexible debugging, we also add
+			console_suspend, a printk module parameter to control
+			it. Users could use console_suspend (usually
+			/sys/module/printk/parameters/console_suspend) to
+			turn on/off it dynamically.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	noaliencache	[MM, NUMA, SLAB] Disables the allocation of alien
 			caches in the slab allocator.  Saves per-node memory,
@@ -1648,6 +2522,13 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	noapic		[SMP,APIC] Tells the kernel to not make use of any
 			IOAPICs that may be present in the system.
 
+<<<<<<< HEAD
+=======
+	nokaslr		[X86]
+			Disable kernel base offset ASLR (Address Space
+			Layout Randomization) if built into the kernel.
+
+>>>>>>> refs/remotes/origin/master
 	noautogroup	Disable scheduler automatic task group creation.
 
 	nobats		[PPC] Do not use BATs for mapping kernel lowmem
@@ -1672,8 +2553,17 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			noexec=on: enable non-executable mappings (default)
 			noexec=off: disable non-executable mappings
 
+<<<<<<< HEAD
 	nosmep		[X86]
 			Disable SMEP (Supervisor Mode Execution Protection)
+=======
+	nosmap		[X86]
+			Disable SMAP (Supervisor Mode Access Prevention)
+			even if it is supported by processor.
+
+	nosmep		[X86]
+			Disable SMEP (Supervisor Mode Execution Prevention)
+>>>>>>> refs/remotes/origin/master
 			even if it is supported by processor.
 
 	noexec32	[X86-64]
@@ -1693,14 +2583,26 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			and restore using xsave. The kernel will fallback to
 			enabling legacy floating-point and sse state.
 
+<<<<<<< HEAD
+=======
+	eagerfpu=	[X86]
+			on	enable eager fpu restore
+			off	disable eager fpu restore
+			auto	selects the default scheme, which automatically
+				enables eagerfpu restore for xsaveopt.
+
+>>>>>>> refs/remotes/origin/master
 	nohlt		[BUGS=ARM,SH] Tells the kernel that the sleep(SH) or
 			wfi(ARM) instruction doesn't work correctly and not to
 			use it. This is also useful when using JTAG debugger.
 
+<<<<<<< HEAD
 	no-hlt		[BUGS=X86-32] Tells the kernel that the hlt
 			instruction doesn't work correctly and not to
 			use it.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	no_file_caps	Tells the kernel not to honor file capabilities.  The
 			only way then for a file to be executed with privilege
 			is to be setuid root or executed by root.
@@ -1716,6 +2618,17 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Valid arguments: on, off
 			Default: on
 
+<<<<<<< HEAD
+=======
+	nohz_full=	[KNL,BOOT]
+			In kernels built with CONFIG_NO_HZ_FULL=y, set
+			the specified list of CPUs whose tick will be stopped
+			whenever possible. The boot CPU will be forced outside
+			the range to maintain the timekeeping.
+			The CPUs in this range must also be included in the
+			rcu_nocbs= set.
+
+>>>>>>> refs/remotes/origin/master
 	noiotrap	[SH] Disables trapped I/O port accesses.
 
 	noirqdebug	[X86-32] Disables the code which attempts to detect and
@@ -1735,13 +2648,34 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	nointroute	[IA-64]
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nojitter	[IA64] Disables jitter checking for ITC timers.
+=======
+	nojitter	[IA-64] Disables jitter checking for ITC timers.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nojitter	[IA-64] Disables jitter checking for ITC timers.
+>>>>>>> refs/remotes/origin/master
 
 	no-kvmclock	[X86,KVM] Disable paravirtualized KVM clock driver
 
 	no-kvmapf	[X86,KVM] Disable paravirtualized asynchronous page
 			fault handling.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	no-steal-acc    [X86,KVM] Disable paravirtualized steal time accounting.
+			steal time is computed, but won't influence scheduler
+			behaviour
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	nolapic		[X86-32,APIC] Do not enable or use the local APIC.
 
 	nolapic_timer	[X86-32,APIC] Do not use the local APIC timer.
@@ -1756,6 +2690,21 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	nomfgpt		[X86-32] Disable Multi-Function General Purpose
 			Timer usage (for AMD Geode machines).
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	nonmi_ipi	[X86] Disable using NMI IPIs during panic/reboot to
+			shutdown the other cpus.  Instead use the REBOOT_VECTOR
+			irq.
+
+	nomodule	Disable module load
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	nopat		[X86] Disable PAT (page attribute table extension of
 			pagetables) support.
 
@@ -1767,8 +2716,11 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	noreplace-smp	[X86-32,SMP] Don't replace SMP instructions
 			with UP alternatives
 
+<<<<<<< HEAD
 	noresidual	[PPC] Don't use residual data on PReP machines.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	nordrand	[X86] Disable the direct use of the RDRAND
 			instruction even if it is supported by the
 			processor.  RDRAND is still available to user
@@ -1802,7 +2754,29 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	nox2apic	[X86-64,APIC] Do not enable x2APIC mode.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nptcg=		[IA64] Override max number of concurrent global TLB
+=======
+	nptcg=		[IA-64] Override max number of concurrent global TLB
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpu0_hotplug	[X86] Turn on CPU0 hotplug feature when
+			CONFIG_BOOTPARAM_HOTPLUG_CPU0 is off.
+			Some features depend on CPU0. Known dependencies are:
+			1. Resume from suspend/hibernate depends on CPU0.
+			Suspend/hibernate will fail if CPU0 is offline and you
+			need to online CPU0 before suspend/hibernate.
+			2. PIC interrupts also depend on CPU0. CPU0 can't be
+			removed if a PIC interrupt is detected.
+			It's said poweroff/reboot may depend on CPU0 on some
+			machines although I haven't seen such issues so far
+			after CPU0 is offline on a few tested machines.
+			If the dependencies are under your control, you can
+			turn on cpu0_hotplug.
+
+	nptcg=		[IA-64] Override max number of concurrent global TLB
+>>>>>>> refs/remotes/origin/master
 			purges which is reported from either PAL_VM_SUMMARY or
 			SAL PALO.
 
@@ -1814,6 +2788,12 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	nr_uarts=	[SERIAL] maximum number of UARTs to be registered.
 
+<<<<<<< HEAD
+=======
+	numa_balancing=	[KNL,X86] Enable or disable automatic NUMA balancing.
+			Allowed values are enable and disable
+
+>>>>>>> refs/remotes/origin/master
 	numa_zonelist_order= [KNL, BOOT] Select zonelist order for NUMA.
 			one of ['zone', 'node', 'default'] can be specified
 			This can be set from sysctl after boot.
@@ -1845,6 +2825,20 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			arch_perfmon: [X86] Force use of architectural
 				perfmon on Intel CPUs instead of the
 				CPU specific event set.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			timer: [X86] Force use of architectural NMI
+				timer mode (see also oprofile.timer
+				for generic hr timer mode)
+				[s390] Force legacy basic mode sampling
+                                (report cpu_type "timer")
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	oops=panic	Always panic on oopses. Default is to just kill the
 			process, but there is a small probability of
@@ -1856,7 +2850,19 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			See Documentation/sound/oss/oss-parameters.txt
 
 	panic=		[KNL] Kernel behaviour on panic: delay <timeout>
+<<<<<<< HEAD
+<<<<<<< HEAD
 			seconds before rebooting
+=======
+			timeout > 0: seconds before rebooting
+			timeout = 0: wait forever
+			timeout < 0: reboot immediately
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			timeout > 0: seconds before rebooting
+			timeout = 0: wait forever
+			timeout < 0: reboot immediately
+>>>>>>> refs/remotes/origin/master
 			Format: <timeout>
 
 	parkbd.port=	[HW] Parallel port number the keyboard adapter is
@@ -2004,6 +3010,24 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 				This sorting is done to get a device
 				order compatible with older (<= 2.4) kernels.
 		nobfsort	Don't sort PCI devices into breadth-first order.
+<<<<<<< HEAD
+=======
+		pcie_bus_tune_off	Disable PCIe MPS (Max Payload Size)
+				tuning and use the BIOS-configured MPS defaults.
+		pcie_bus_safe	Set every device's MPS to the largest value
+				supported by all devices below the root complex.
+		pcie_bus_perf	Set device MPS to the largest allowable MPS
+				based on its parent bus. Also set MRRS (Max
+				Read Request Size) to the largest supported
+				value (no larger than the MPS that the device
+				or bus can support) for best performance.
+		pcie_bus_peer2peer	Set every device's MPS to 128B, which
+				every device is guaranteed to support. This
+				configuration allows peer-to-peer DMA between
+				any pair of devices, possibly at the cost of
+				reduced performance.  This also guarantees
+				that hot-added devices will work.
+>>>>>>> refs/remotes/origin/master
 		cbiosize=nn[KMG]	The fixed amount of bus space which is
 				reserved for the CardBus bridge's IO window.
 				The default value is 256 bytes.
@@ -2025,8 +3049,34 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 				the default.
 				off: Turn ECRC off
 				on: Turn ECRC on.
+<<<<<<< HEAD
+<<<<<<< HEAD
 		realloc		reallocate PCI resources if allocations done by BIOS
 				are erroneous.
+=======
+=======
+		hpiosize=nn[KMG]	The fixed amount of bus space which is
+				reserved for hotplug bridge's IO window.
+				Default size is 256 bytes.
+		hpmemsize=nn[KMG]	The fixed amount of bus space which is
+				reserved for hotplug bridge's memory window.
+				Default size is 2 megabytes.
+>>>>>>> refs/remotes/origin/master
+		realloc=	Enable/disable reallocating PCI bridge resources
+				if allocations done by BIOS are too small to
+				accommodate resources required by all child
+				devices.
+				off: Turn realloc off
+				on: Turn realloc on
+		realloc		same as realloc=on
+		noari		do not use PCIe ARI.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pcie_scan_all	Scan all possible PCIe devices.  Otherwise we
+				only look for one device below a PCIe downstream
+				port.
+>>>>>>> refs/remotes/origin/master
 
 	pcie_aspm=	[PCIE] Forcibly enable or disable PCIe Active State Power
 			Management.
@@ -2034,6 +3084,19 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 		force	Enable ASPM even on devices that claim not to support it.
 			WARNING: Forcing ASPM on may cause system lockups.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pcie_hp=	[PCIE] PCI Express Hotplug driver options:
+		nomsi	Do not use MSI for PCI Express Native Hotplug (this
+			makes all PCIe ports use INTx for hotplug services).
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pcie_ports=	[PCIE] PCIe ports handling:
 		auto	Ask the BIOS whether or not to use native PCIe services
 			associated with PCIe ports (PME, hot-plug, AER).  Use
@@ -2077,6 +3140,8 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Format: { parport<nr> | timid | 0 }
 			See also Documentation/parport.txt.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pmtmr=		[X86] Manual setup of pmtmr I/O Port. 
 			Override pmtimer IOPort with a hex value.
 			e.g. pmtmr=0x508
@@ -2084,6 +3149,23 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	pnp.debug	[PNP]
 			Enable PNP debug messages.  This depends on the
 			CONFIG_PNP_DEBUG_MESSAGES option.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pmtmr=		[X86] Manual setup of pmtmr I/O Port.
+			Override pmtimer IOPort with a hex value.
+			e.g. pmtmr=0x508
+
+	pnp.debug=1	[PNP]
+			Enable PNP debug messages (depends on the
+			CONFIG_PNP_DEBUG_MESSAGES option).  Change at run-time
+			via /sys/module/pnp/parameters/debug.  We always show
+			current resource usage; turning this on also shows
+			possible settings and some assignment information.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pnpacpi=	[ACPI]
 			{ off }
@@ -2124,6 +3206,21 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 			default: off.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	printk.always_kmsg_dump=
+			Trigger kmsg_dump for cases other than kernel oops or
+			panics
+			Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
+			default: disabled
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	printk.time=	Show timing data prefixed to each printk message line
 			Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
 
@@ -2161,6 +3258,16 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			[HW,MOUSE] Controls Logitech smartscroll autorepeat.
 			0 = disabled, 1 = enabled (default).
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pstore.backend=	Specify the name of the pstore backend to use
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pstore.backend=	Specify the name of the pstore backend to use
+
+>>>>>>> refs/remotes/origin/master
 	pt.		[PARIDE]
 			See Documentation/blockdev/paride.txt.
 
@@ -2181,6 +3288,7 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	ramdisk_size=	[RAM] Sizes of RAM disks in kilobytes
 			See Documentation/blockdev/ramdisk.txt.
 
+<<<<<<< HEAD
 	rcupdate.blimit=	[KNL,BOOT]
 			Set maximum number of finished RCU callbacks to process
 			in one batch.
@@ -2193,14 +3301,192 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Set threshold of queued RCU callbacks below which
 			batch limiting is re-enabled.
 
+=======
+	rcu_nocbs=	[KNL]
+			In kernels built with CONFIG_RCU_NOCB_CPU=y, set
+			the specified list of CPUs to be no-callback CPUs.
+			Invocation of these CPUs' RCU callbacks will
+			be offloaded to "rcuox/N" kthreads created for
+			that purpose, where "x" is "b" for RCU-bh, "p"
+			for RCU-preempt, and "s" for RCU-sched, and "N"
+			is the CPU number.  This reduces OS jitter on the
+			offloaded CPUs, which can be useful for HPC and
+			real-time workloads.  It can also improve energy
+			efficiency for asymmetric multiprocessors.
+
+	rcu_nocb_poll	[KNL]
+			Rather than requiring that offloaded CPUs
+			(specified by rcu_nocbs= above) explicitly
+			awaken the corresponding "rcuoN" kthreads,
+			make these kthreads poll for callbacks.
+			This improves the real-time response for the
+			offloaded CPUs by relieving them of the need to
+			wake up the corresponding kthread, but degrades
+			energy efficiency by requiring that the kthreads
+			periodically wake up to do the polling.
+
+	rcutree.blimit=	[KNL]
+			Set maximum number of finished RCU callbacks to
+			process in one batch.
+
+	rcutree.rcu_fanout_leaf= [KNL]
+			Increase the number of CPUs assigned to each
+			leaf rcu_node structure.  Useful for very large
+			systems.
+
+	rcutree.jiffies_till_first_fqs= [KNL]
+			Set delay from grace-period initialization to
+			first attempt to force quiescent states.
+			Units are jiffies, minimum value is zero,
+			and maximum value is HZ.
+
+	rcutree.jiffies_till_next_fqs= [KNL]
+			Set delay between subsequent attempts to force
+			quiescent states.  Units are jiffies, minimum
+			value is one, and maximum value is HZ.
+
+	rcutree.qhimark= [KNL]
+			Set threshold of queued RCU callbacks beyond which
+			batch limiting is disabled.
+
+	rcutree.qlowmark= [KNL]
+			Set threshold of queued RCU callbacks below which
+			batch limiting is re-enabled.
+
+	rcutree.rcu_idle_gp_delay= [KNL]
+			Set wakeup interval for idle CPUs that have
+			RCU callbacks (RCU_FAST_NO_HZ=y).
+
+	rcutree.rcu_idle_lazy_gp_delay= [KNL]
+			Set wakeup interval for idle CPUs that have
+			only "lazy" RCU callbacks (RCU_FAST_NO_HZ=y).
+			Lazy RCU callbacks are those which RCU can
+			prove do nothing more than free memory.
+
+	rcutorture.fqs_duration= [KNL]
+			Set duration of force_quiescent_state bursts.
+
+	rcutorture.fqs_holdoff= [KNL]
+			Set holdoff time within force_quiescent_state bursts.
+
+	rcutorture.fqs_stutter= [KNL]
+			Set wait time between force_quiescent_state bursts.
+
+	rcutorture.gp_exp= [KNL]
+			Use expedited update-side primitives.
+
+	rcutorture.gp_normal= [KNL]
+			Use normal (non-expedited) update-side primitives.
+			If both gp_exp and gp_normal are set, do both.
+			If neither gp_exp nor gp_normal are set, still
+			do both.
+
+	rcutorture.n_barrier_cbs= [KNL]
+			Set callbacks/threads for rcu_barrier() testing.
+
+	rcutorture.nfakewriters= [KNL]
+			Set number of concurrent RCU writers.  These just
+			stress RCU, they don't participate in the actual
+			test, hence the "fake".
+
+	rcutorture.nreaders= [KNL]
+			Set number of RCU readers.
+
+	rcutorture.object_debug= [KNL]
+			Enable debug-object double-call_rcu() testing.
+
+	rcutorture.onoff_holdoff= [KNL]
+			Set time (s) after boot for CPU-hotplug testing.
+
+	rcutorture.onoff_interval= [KNL]
+			Set time (s) between CPU-hotplug operations, or
+			zero to disable CPU-hotplug testing.
+
+	rcutorture.rcutorture_runnable= [BOOT]
+			Start rcutorture running at boot time.
+
+	rcutorture.shuffle_interval= [KNL]
+			Set task-shuffle interval (s).  Shuffling tasks
+			allows some CPUs to go into dyntick-idle mode
+			during the rcutorture test.
+
+	rcutorture.shutdown_secs= [KNL]
+			Set time (s) after boot system shutdown.  This
+			is useful for hands-off automated testing.
+
+	rcutorture.stall_cpu= [KNL]
+			Duration of CPU stall (s) to test RCU CPU stall
+			warnings, zero to disable.
+
+	rcutorture.stall_cpu_holdoff= [KNL]
+			Time to wait (s) after boot before inducing stall.
+
+	rcutorture.stat_interval= [KNL]
+			Time (s) between statistics printk()s.
+
+	rcutorture.stutter= [KNL]
+			Time (s) to stutter testing, for example, specifying
+			five seconds causes the test to run for five seconds,
+			wait for five seconds, and so on.  This tests RCU's
+			ability to transition abruptly to and from idle.
+
+	rcutorture.test_boost= [KNL]
+			Test RCU priority boosting?  0=no, 1=maybe, 2=yes.
+			"Maybe" means test if the RCU implementation
+			under test support RCU priority boosting.
+
+	rcutorture.test_boost_duration= [KNL]
+			Duration (s) of each individual boost test.
+
+	rcutorture.test_boost_interval= [KNL]
+			Interval (s) between each boost test.
+
+	rcutorture.test_no_idle_hz= [KNL]
+			Test RCU's dyntick-idle handling.  See also the
+			rcutorture.shuffle_interval parameter.
+
+	rcutorture.torture_type= [KNL]
+			Specify the RCU implementation to test.
+
+	rcutorture.verbose= [KNL]
+			Enable additional printk() statements.
+
+	rcupdate.rcu_expedited= [KNL]
+			Use expedited grace-period primitives, for
+			example, synchronize_rcu_expedited() instead
+			of synchronize_rcu().  This reduces latency,
+			but can increase CPU utilization, degrade
+			real-time latency, and degrade energy efficiency.
+
+	rcupdate.rcu_cpu_stall_suppress= [KNL]
+			Suppress RCU CPU stall warning messages.
+
+	rcupdate.rcu_cpu_stall_timeout= [KNL]
+			Set timeout for RCU CPU stall warning messages.
+
+>>>>>>> refs/remotes/origin/master
 	rdinit=		[KNL]
 			Format: <full_path>
 			Run specified binary instead of /init from the ramdisk,
 			used for early userspace startup. See initrd.
 
+<<<<<<< HEAD
 	reboot=		[BUGS=X86-32,BUGS=ARM,BUGS=IA-64] Rebooting mode
 			Format: <reboot_mode>[,<reboot_mode2>[,...]]
 			See arch/*/kernel/reboot.c or arch/*/kernel/process.c
+=======
+	reboot=		[KNL]
+			Format (x86 or x86_64):
+				[w[arm] | c[old] | h[ard] | s[oft] | g[pio]] \
+				[[,]s[mp]#### \
+				[[,]b[ios] | a[cpi] | k[bd] | t[riple] | e[fi] | p[ci]] \
+				[[,]f[orce]
+			Where reboot_mode is one of warm (soft) or cold (hard) or gpio,
+			      reboot_type is one of bios, acpi, kbd, triple, efi, or pci,
+			      reboot_force is either force or not specified,
+			      reboot_cpu is s[mp]#### with #### being the processor
+					to be used for rebooting.
+>>>>>>> refs/remotes/origin/master
 
 	relax_domain_level=
 			[KNL, SMP] Set scheduler's default relax_domain_level.
@@ -2223,6 +3509,11 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	resume=		[SWSUSP]
 			Specify the partition device for software suspend
+<<<<<<< HEAD
+=======
+			Format:
+			{/dev/<dev> | PARTUUID=<uuid> | <int>:<int> | <hex>}
+>>>>>>> refs/remotes/origin/master
 
 	resume_offset=	[SWSUSP]
 			Specify the offset from the beginning of the partition
@@ -2230,6 +3521,22 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			in <PAGE_SIZE> units (needed only for swap files).
 			See  Documentation/power/swsusp-and-swap-files.txt
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	resumedelay=	[HIBERNATION] Delay (in seconds) to pause before attempting to
+			read the resume files
+
+	resumewait	[HIBERNATION] Wait (indefinitely) for resume device to show up.
+			Useful for devices that are detected asynchronously
+			(e.g. USB and MMC devices).
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hibernate=	[HIBERNATION]
 		noresume	Don't check if there's a hibernation image
 				present during boot.
@@ -2246,6 +3553,14 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	ro		[KNL] Mount root device read-only on boot
 
 	root=		[KNL] Root filesystem
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			See name_to_dev_t comment in init/do_mounts.c.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			See name_to_dev_t comment in init/do_mounts.c.
+>>>>>>> refs/remotes/origin/master
 
 	rootdelay=	[KNL] Delay (in seconds) to pause before attempting to
 			mount the root filesystem
@@ -2258,6 +3573,14 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			Useful for devices that are detected asynchronously
 			(e.g. USB and MMC devices).
 
+<<<<<<< HEAD
+=======
+	rproc_mem=nn[KMG][@address]
+			[KNL,ARM,CMA] Remoteproc physical memory block.
+			Memory area to be used by remote processor image,
+			managed by CMA.
+
+>>>>>>> refs/remotes/origin/master
 	rw		[KNL] Mount root device read-write on boot
 
 	S		[KNL] Run init in single mode
@@ -2269,6 +3592,18 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	sched_debug	[KNL] Enables verbose scheduler debug messages.
 
+<<<<<<< HEAD
+=======
+	skew_tick=	[KNL] Offset the periodic timer tick per cpu to mitigate
+			xtime_lock contention on larger systems, and/or RCU lock
+			contention on all systems with CONFIG_MAXSMP set.
+			Format: { "0" | "1" }
+			0 -- disable. (may be 1 via CONFIG_CMDLINE="skew_tick=1"
+			1 -- enable.
+			Note: increases power consumption, thus should only be
+			enabled if running jitter sensitive (HPC/RT) workloads.
+
+>>>>>>> refs/remotes/origin/master
 	security=	[SECURITY] Choose a security module to enable at boot.
 			If this boot parameter is not specified, only the first
 			security module asking for security registration will be
@@ -2307,6 +3642,21 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	slram=		[HW,MTD]
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	slab_max_order=	[MM, SLAB]
+			Determines the maximum allowed order for slabs.
+			A high setting may cause OOMs due to memory
+			fragmentation.  Defaults to 1 for systems with
+			more than 32MB of RAM, 0 otherwise.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	slub_debug[=options[,slabs]]	[MM, SLUB]
 			Enabling slub_debug allows one to determine the
 			culprit if slab objects become corrupted. Enabling
@@ -2331,7 +3681,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			For more information see Documentation/vm/slub.txt.
 
 	slub_min_order=	[MM, SLUB]
+<<<<<<< HEAD
+<<<<<<< HEAD
 			Determines the mininum page order for slabs. Must be
+=======
+			Determines the minimum page order for slabs. Must be
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			Determines the minimum page order for slabs. Must be
+>>>>>>> refs/remotes/origin/master
 			lower than slub_max_order.
 			For more information see Documentation/vm/slub.txt.
 
@@ -2345,9 +3703,12 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	smart2=		[HW]
 			Format: <io1>[,<io2>[,...,<io8>]]
 
+<<<<<<< HEAD
 	smp-alt-once	[X86-32,SMP] On a hotplug CPU system, only
 			attempt to substitute SMP alternatives once at boot.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
 	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
 	smsc-ircc2.ircc_sir=	[HW] SIR base I/O port
@@ -2359,16 +3720,33 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 				1: Fast pin select (default)
 				2: ATC IRMode
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	snddev_icodec.msm_codec_i2s_slave_mode= [ARM-MSM]
 			1, codec is I2S master
 			0, MSM is I2S master (default)
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	softlockup_panic=
 			[KNL] Should the soft-lockup detector generate panics.
 			Format: <integer>
 
 	sonypi.*=	[HW] Sony Programmable I/O Control Device driver
+<<<<<<< HEAD
+<<<<<<< HEAD
 			See Documentation/sonypi.txt
+=======
+			See Documentation/laptops/sonypi.txt
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			See Documentation/laptops/sonypi.txt
+>>>>>>> refs/remotes/origin/master
 
 	specialix=	[HW,SERIAL] Specialix multi-serial port adapter
 			See Documentation/serial/specialix.txt.
@@ -2381,6 +3759,23 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	stacktrace	[FTRACE]
 			Enabled the stack tracer on boot up.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	stacktrace_filter=[function-list]
+			[FTRACE] Limit the functions that the stack tracer
+			will trace at boot up. function-list is a comma separated
+			list of functions. This list can be changed at run
+			time by the stack_trace_filter file in the debugfs
+			tracing directory. Note, this enables stack tracing
+			and the stacktrace above is not needed.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sti=		[PARISC,HW]
 			Format: <num>
 			Set the STI (builtin display/keyboard on the HP-PARISC
@@ -2431,7 +3826,11 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			improve throughput, but will also increase the
 			amount of memory reserved for use by the client.
 
+<<<<<<< HEAD
 	swapaccount[=0|1]
+=======
+	swapaccount=[0|1]
+>>>>>>> refs/remotes/origin/master
 			[KNL] Enable accounting of swap in memory resource
 			controller if no parameter or 1 is given or disable
 			it if 0 is given (See Documentation/cgroups/memory.txt)
@@ -2493,7 +3892,36 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	threadirqs	[KNL]
 			Force threading of all interrupt handlers except those
+<<<<<<< HEAD
+<<<<<<< HEAD
 			marked explicitely IRQF_NO_THREAD.
+=======
+			marked explicitly IRQF_NO_THREAD.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			marked explicitly IRQF_NO_THREAD.
+
+	tmem		[KNL,XEN]
+			Enable the Transcendent memory driver if built-in.
+
+	tmem.cleancache=0|1 [KNL, XEN]
+			Default is on (1). Disable the usage of the cleancache
+			API to send anonymous pages to the hypervisor.
+
+	tmem.frontswap=0|1 [KNL, XEN]
+			Default is on (1). Disable the usage of the frontswap
+			API to send swap pages to the hypervisor. If disabled
+			the selfballooning and selfshrinking are force disabled.
+
+	tmem.selfballooning=0|1 [KNL, XEN]
+			Default is on (1). Disable the driving of swap pages
+			to the hypervisor.
+
+	tmem.selfshrinking=0|1 [KNL, XEN]
+			Default is on (1). Partial swapoff that immediately
+			transfers pages from Xen hypervisor back to the
+			kernel based on different criteria.
+>>>>>>> refs/remotes/origin/master
 
 	topology=	[S390]
 			Format: {off | on}
@@ -2522,6 +3950,51 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			to facilitate early boot debugging.
 			See also Documentation/trace/events.txt
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+	trace_options=[option-list]
+			[FTRACE] Enable or disable tracer options at boot.
+			The option-list is a comma delimited list of options
+			that can be enabled or disabled just as if you were
+			to echo the option name into
+
+			    /sys/kernel/debug/tracing/trace_options
+
+			For example, to enable stacktrace option (to dump the
+			stack trace of each event), add to the command line:
+
+			      trace_options=stacktrace
+
+			See also Documentation/trace/ftrace.txt "trace options"
+			section.
+
+	traceoff_on_warning
+			[FTRACE] enable this option to disable tracing when a
+			warning is hit. This turns off "tracing_on". Tracing can
+			be enabled again by echoing '1' into the "tracing_on"
+			file located in /sys/kernel/debug/tracing/
+
+			This option is useful, as it disables the trace before
+			the WARNING dump is called, which prevents the trace to
+			be filled with content caused by the warning output.
+
+			This option can also be set at run time via the sysctl
+			option:  kernel/traceoff_on_warning
+
+>>>>>>> refs/remotes/origin/master
+	transparent_hugepage=
+			[KNL]
+			Format: [always|madvise|never]
+			Can be used to control the default behavior of the system
+			with respect to transparent hugepages.
+			See Documentation/vm/transhuge.txt for more details.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tsc=		Disable clocksource stability checks for TSC.
 			Format: <string>
 			[x86] reliable: mark tsc clocksource as reliable, this
@@ -2540,6 +4013,20 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			<port#>,<js1>,<js2>,<js3>,<js4>,<js5>,<js6>,<js7>
 			See also Documentation/input/joystick-parport.txt
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	udbg-immortal	[PPC] When debugging early kernel crashes that
+			happen after console_init() and before a proper 
+			console driver takes over, this boot options might
+			help "seeing" what's going on.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	uhash_entries=	[KNL,NET]
 			Set number of hash buckets for UDP/UDP-Lite connections
 
@@ -2554,6 +4041,20 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	unknown_nmi_panic
 			[X86] Cause panic on unknown NMI.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	usbcore.authorized_default=
+			[USB] Default USB device authorization:
+			(default -1 = authorized except for wireless USB,
+			0 = not authorized, 1 = authorized)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	usbcore.autosuspend=
 			[USB] The autosuspend time delay (in seconds) used
 			for newly-detected USB devices (default 2).  This
@@ -2571,6 +4072,19 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			[USB] Start with the old device initialization
 			scheme (default 0 = off).
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	usbcore.usbfs_memory_mb=
+			[USB] Memory limit (in MB) for buffers allocated by
+			usbfs (default = 16, 0 = max = 2047).
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	usbcore.use_both_schemes=
 			[USB] Try the other device initialization scheme
 			if the first one fails (default 1 = enabled).
@@ -2618,6 +4132,11 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 					initial READ(10) command);
 				o = CAPACITY_OK (accept the capacity
 					reported by the device);
+<<<<<<< HEAD
+=======
+				p = WRITE_CACHE (the device cache is ON
+					by default);
+>>>>>>> refs/remotes/origin/master
 				r = IGNORE_RESIDUE (the device reports
 					bogus residue values);
 				s = SINGLE_LUN (the device has only one
@@ -2626,6 +4145,25 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 					medium is write-protected).
 			Example: quirks=0419:aaf5:rl,0421:0433:rc
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	user_debug=	[KNL,ARM]
+			Format: <int>
+			See arch/arm/Kconfig.debug help text.
+				 1 - undefined instruction events
+				 2 - system calls
+				 4 - invalid data aborts
+				 8 - SIGSEGV faults
+				16 - SIGBUS faults
+			Example: user_debug=31
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	userpte=
 			[X86] Flags controlling user PTE allocations.
 
@@ -2649,6 +4187,34 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	video=		[FB] Frame buffer configuration
 			See Documentation/fb/modedb.txt.
 
+<<<<<<< HEAD
+=======
+	video.brightness_switch_enabled= [0,1]
+			If set to 1, on receiving an ACPI notify event
+			generated by hotkey, video driver will adjust brightness
+			level and then send out the event to user space through
+			the allocated input device; If set to 0, video driver
+			will only send out the event without touching backlight
+			brightness level.
+			default: 1
+
+	virtio_mmio.device=
+			[VMMIO] Memory mapped virtio (platform) device.
+
+				<size>@<baseaddr>:<irq>[:<id>]
+			where:
+				<size>     := size (can use standard suffixes
+						like K, M and G)
+				<baseaddr> := physical base address
+				<irq>      := interrupt number (as passed to
+						request_irq())
+				<id>       := (optional) platform device id
+			example:
+				virtio_mmio.device=1K@0x100b0000:48:7
+
+			Can be used multiple times for multiple devices.
+
+>>>>>>> refs/remotes/origin/master
 	vga=		[BOOT,X86-32] Select a particular video mode
 			See Documentation/x86/boot.txt and
 			Documentation/svga.txt.
@@ -2671,6 +4237,40 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	vmpoff=		[KNL,S390] Perform z/VM CP command after power off.
 			Format: <command>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	vsyscall=	[X86-64]
+			Controls the behavior of vsyscalls (i.e. calls to
+			fixed addresses of 0xffffffffff600x00 from legacy
+			code).  Most statically-linked binaries and older
+			versions of glibc use these calls.  Because these
+			functions are at fixed addresses, they make nice
+			targets for exploits that can control RIP.
+
+			emulate     [default] Vsyscalls turn into traps and are
+			            emulated reasonably safely.
+
+			native      Vsyscalls are native syscall instructions.
+			            This is a little bit faster than trapping
+			            and makes a few dynamic recompilers work
+			            better than they would in emulation mode.
+			            It also makes exploits much easier to write.
+
+			none        Vsyscalls don't work at all.  This makes
+			            them quite hard to use for exploits but
+			            might break your system.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vt.color=	[VT] Default text color.
+			Format: 0xYX, X = foreground, Y = background.
+			Default: 0x07 = light gray on black.
+
+>>>>>>> refs/remotes/origin/master
 	vt.cur_default=	[VT] Default cursor shape.
 			Format: 0xCCBBAA, where AA, BB, and CC are the same as
 			the parameters of the <Esc>[?A;B;Cc escape sequence;
@@ -2710,15 +4310,52 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			overridden by individual drivers. 0 will hide
 			cursors, 1 will display them.
 
+<<<<<<< HEAD
+=======
+	vt.italic=	[VT] Default color for italic text; 0-15.
+			Default: 2 = green.
+
+	vt.underline=	[VT] Default color for underlined text; 0-15.
+			Default: 3 = cyan.
+
+>>>>>>> refs/remotes/origin/master
 	watchdog timers	[HW,WDT] For information on watchdog timers,
 			see Documentation/watchdog/watchdog-parameters.txt
 			or other driver-specific files in the
 			Documentation/watchdog/ directory.
 
+<<<<<<< HEAD
+=======
+	workqueue.disable_numa
+			By default, all work items queued to unbound
+			workqueues are affine to the NUMA nodes they're
+			issued on, which results in better behavior in
+			general.  If NUMA affinity needs to be disabled for
+			whatever reason, this option can be used.  Note
+			that this also can be controlled per-workqueue for
+			workqueues visible under /sys/bus/workqueue/.
+
+	workqueue.power_efficient
+			Per-cpu workqueues are generally preferred because
+			they show better performance thanks to cache
+			locality; unfortunately, per-cpu workqueues tend to
+			be more power hungry than unbound workqueues.
+
+			Enabling this makes the per-cpu workqueues which
+			were observed to contribute significantly to power
+			consumption unbound, leading to measurably lower
+			power usage at the cost of small performance
+			overhead.
+
+			The default value of this parameter is determined by
+			the config option CONFIG_WQ_POWER_EFFICIENT_DEFAULT.
+
+>>>>>>> refs/remotes/origin/master
 	x2apic_phys	[X86-64,APIC] Use x2apic physical mode instead of
 			default x2apic cluster mode on platforms
 			supporting x2apic.
 
+<<<<<<< HEAD
 	x86_mrst_timer= [X86-32,APBT]
 			Choose timer option for x86 Moorestown MID platform.
 			Two valid options are apbt timer only and lapic timer
@@ -2727,6 +4364,13 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	xd=		[HW,XT] Original XT pre-IDE (RLL encoded) disks.
 	xd_geo=		See header of drivers/block/xd.c.
+=======
+	x86_intel_mid_timer= [X86-32,APBT]
+			Choose timer option for x86 Intel MID platform.
+			Two valid options are apbt timer only and lapic timer
+			plus one apbt timer for broadcast timer.
+			x86_intel_mid_timer=apbt_only | lapic_and_apbt
+>>>>>>> refs/remotes/origin/master
 
 	xen_emul_unplug=		[HW,X86,XEN]
 			Unplug Xen emulated devices
@@ -2740,6 +4384,13 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 				the unplug protocol
 			never -- do not unplug even if version check succeeds
 
+<<<<<<< HEAD
+=======
+	xen_nopvspin	[X86,XEN]
+			Disables the ticketlock slowpath using Xen PV
+			optimizations.
+
+>>>>>>> refs/remotes/origin/master
 	xirc2ps_cs=	[NET,PCMCIA]
 			Format:
 			<irq>,<irq_mask>,<io>,<full_duplex>,<do_sound>,<lockup_hack>[,<irq2>[,<irq3>[,<irq4>]]]

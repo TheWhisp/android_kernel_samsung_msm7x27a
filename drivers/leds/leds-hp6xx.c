@@ -10,6 +10,14 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -78,9 +86,15 @@ static int hp6xxled_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* work with hotplug and coldplug */
 MODULE_ALIAS("platform:hp6xx-led");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver hp6xxled_driver = {
 	.probe		= hp6xxled_probe,
 	.remove		= hp6xxled_remove,
@@ -90,6 +104,8 @@ static struct platform_driver hp6xxled_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init hp6xxled_init(void)
 {
 	return platform_driver_register(&hp6xxled_driver);
@@ -102,7 +118,21 @@ static void __exit hp6xxled_exit(void)
 
 module_init(hp6xxled_init);
 module_exit(hp6xxled_exit);
+=======
+module_platform_driver(hp6xxled_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(hp6xxled_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kristoffer Ericson <kristoffer.ericson@gmail.com>");
 MODULE_DESCRIPTION("HP Jornada 6xx LED driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:hp6xx-led");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:hp6xx-led");
+>>>>>>> refs/remotes/origin/master

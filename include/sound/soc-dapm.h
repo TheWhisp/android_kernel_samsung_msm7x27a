@@ -13,10 +13,25 @@
 #ifndef __LINUX_SND_SOC_DAPM_H
 #define __LINUX_SND_SOC_DAPM_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/types.h>
 #include <sound/control.h>
 
+=======
+#include <linux/types.h>
+#include <sound/control.h>
+
+struct device;
+
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/device.h>
+#include <linux/types.h>
+#include <sound/control.h>
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* widget has no PM register bit */
 #define SND_SOC_NOPM	-1
 
@@ -43,6 +58,18 @@
 	.num_kcontrols = 0}
 
 /* platform domain */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define SND_SOC_DAPM_SIGGEN(wname) \
+{	.id = snd_soc_dapm_siggen, .name = wname, .kcontrol_news = NULL, \
+	.num_kcontrols = 0, .reg = SND_SOC_NOPM }
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SND_SOC_DAPM_SIGGEN(wname) \
+{	.id = snd_soc_dapm_siggen, .name = wname, .kcontrol_news = NULL, \
+	.num_kcontrols = 0, .reg = SND_SOC_NOPM }
+>>>>>>> refs/remotes/origin/master
 #define SND_SOC_DAPM_INPUT(wname) \
 {	.id = snd_soc_dapm_input, .name = wname, .kcontrol_news = NULL, \
 	.num_kcontrols = 0, .reg = SND_SOC_NOPM }
@@ -66,6 +93,7 @@
 	.num_kcontrols = 0, .reg = SND_SOC_NOPM, .event = wevent, \
 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD}
 
+<<<<<<< HEAD
 /* path domain */
 #define SND_SOC_DAPM_PGA(wname, wreg, wshift, winvert,\
 	 wcontrols, wncontrols) \
@@ -100,10 +128,58 @@
 {	.id = snd_soc_dapm_value_mux, .name = wname, .reg = wreg, \
 	.shift = wshift, .invert = winvert, .kcontrol_news = wcontrols, \
 	.num_kcontrols = 1}
+=======
+#define SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert) \
+	.reg = wreg, .mask = 1, .shift = wshift, \
+	.on_val = winvert ? 0 : 1, .off_val = winvert ? 1 : 0
+
+/* path domain */
+#define SND_SOC_DAPM_PGA(wname, wreg, wshift, winvert,\
+	 wcontrols, wncontrols) \
+{	.id = snd_soc_dapm_pga, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols}
+#define SND_SOC_DAPM_OUT_DRV(wname, wreg, wshift, winvert,\
+	 wcontrols, wncontrols) \
+{	.id = snd_soc_dapm_out_drv, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols}
+#define SND_SOC_DAPM_MIXER(wname, wreg, wshift, winvert, \
+	 wcontrols, wncontrols)\
+{	.id = snd_soc_dapm_mixer, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols}
+#define SND_SOC_DAPM_MIXER_NAMED_CTL(wname, wreg, wshift, winvert, \
+	 wcontrols, wncontrols)\
+{       .id = snd_soc_dapm_mixer_named_ctl, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols}
+#define SND_SOC_DAPM_MICBIAS(wname, wreg, wshift, winvert) \
+{	.id = snd_soc_dapm_micbias, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = NULL, .num_kcontrols = 0}
+#define SND_SOC_DAPM_SWITCH(wname, wreg, wshift, winvert, wcontrols) \
+{	.id = snd_soc_dapm_switch, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = 1}
+#define SND_SOC_DAPM_MUX(wname, wreg, wshift, winvert, wcontrols) \
+{	.id = snd_soc_dapm_mux, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = 1}
+#define SND_SOC_DAPM_VIRT_MUX(wname, wreg, wshift, winvert, wcontrols) \
+{	.id = snd_soc_dapm_virt_mux, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = 1}
+#define SND_SOC_DAPM_VALUE_MUX(wname, wreg, wshift, winvert, wcontrols) \
+{	.id = snd_soc_dapm_value_mux, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = 1}
+>>>>>>> refs/remotes/origin/master
 
 /* Simplified versions of above macros, assuming wncontrols = ARRAY_SIZE(wcontrols) */
 #define SOC_PGA_ARRAY(wname, wreg, wshift, winvert,\
 	 wcontrols) \
+<<<<<<< HEAD
 {	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
 	.invert = winvert, .kcontrol_news = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols)}
 #define SOC_MIXER_ARRAY(wname, wreg, wshift, winvert, \
@@ -115,10 +191,26 @@
 {       .id = snd_soc_dapm_mixer_named_ctl, .name = wname, .reg = wreg, \
 	.shift = wshift, .invert = winvert, .kcontrol_news = wcontrols, \
 	.num_kcontrols = ARRAY_SIZE(wcontrols)}
+=======
+{	.id = snd_soc_dapm_pga, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols)}
+#define SOC_MIXER_ARRAY(wname, wreg, wshift, winvert, \
+	 wcontrols)\
+{	.id = snd_soc_dapm_mixer, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols)}
+#define SOC_MIXER_NAMED_CTL_ARRAY(wname, wreg, wshift, winvert, \
+	 wcontrols)\
+{       .id = snd_soc_dapm_mixer_named_ctl, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols)}
+>>>>>>> refs/remotes/origin/master
 
 /* path domain with event - event handler must return 0 for success */
 #define SND_SOC_DAPM_PGA_E(wname, wreg, wshift, winvert, wcontrols, \
 	wncontrols, wevent, wflags) \
+<<<<<<< HEAD
 {	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
 	.invert = winvert, .kcontrol_news = wcontrols, .num_kcontrols = wncontrols, \
 	.event = wevent, .event_flags = wflags}
@@ -155,11 +247,53 @@
 	wevent, wflags) \
 {	.id = snd_soc_dapm_virt_mux, .name = wname, .reg = wreg, .shift = wshift, \
 	.invert = winvert, .kcontrol_news = wcontrols, .num_kcontrols = 1, \
+=======
+{	.id = snd_soc_dapm_pga, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols, \
+	.event = wevent, .event_flags = wflags}
+#define SND_SOC_DAPM_OUT_DRV_E(wname, wreg, wshift, winvert, wcontrols, \
+	wncontrols, wevent, wflags) \
+{	.id = snd_soc_dapm_out_drv, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols, \
+	.event = wevent, .event_flags = wflags}
+#define SND_SOC_DAPM_MIXER_E(wname, wreg, wshift, winvert, wcontrols, \
+	wncontrols, wevent, wflags) \
+{	.id = snd_soc_dapm_mixer, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols, \
+	.event = wevent, .event_flags = wflags}
+#define SND_SOC_DAPM_MIXER_NAMED_CTL_E(wname, wreg, wshift, winvert, \
+	wcontrols, wncontrols, wevent, wflags) \
+{       .id = snd_soc_dapm_mixer, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, \
+	.num_kcontrols = wncontrols, .event = wevent, .event_flags = wflags}
+#define SND_SOC_DAPM_SWITCH_E(wname, wreg, wshift, winvert, wcontrols, \
+	wevent, wflags) \
+{	.id = snd_soc_dapm_switch, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = 1, \
+	.event = wevent, .event_flags = wflags}
+#define SND_SOC_DAPM_MUX_E(wname, wreg, wshift, winvert, wcontrols, \
+	wevent, wflags) \
+{	.id = snd_soc_dapm_mux, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = 1, \
+	.event = wevent, .event_flags = wflags}
+#define SND_SOC_DAPM_VIRT_MUX_E(wname, wreg, wshift, winvert, wcontrols, \
+	wevent, wflags) \
+{	.id = snd_soc_dapm_virt_mux, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = 1, \
+>>>>>>> refs/remotes/origin/master
 	.event = wevent, .event_flags = wflags}
 
 /* additional sequencing control within an event type */
 #define SND_SOC_DAPM_PGA_S(wname, wsubseq, wreg, wshift, winvert, \
 	wevent, wflags) \
+<<<<<<< HEAD
 {	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
 	.invert = winvert, .event = wevent, .event_flags = wflags, \
 	.subseq = wsubseq}
@@ -168,10 +302,22 @@
 {	.id = snd_soc_dapm_supply, .name = wname, .reg = wreg,	\
 	.shift = wshift, .invert = winvert, .event = wevent, \
 	.event_flags = wflags, .subseq = wsubseq}
+=======
+{	.id = snd_soc_dapm_pga, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.event = wevent, .event_flags = wflags, \
+	.subseq = wsubseq}
+#define SND_SOC_DAPM_SUPPLY_S(wname, wsubseq, wreg, wshift, winvert, wevent, \
+	wflags)	\
+{	.id = snd_soc_dapm_supply, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.event = wevent, .event_flags = wflags, .subseq = wsubseq}
+>>>>>>> refs/remotes/origin/master
 
 /* Simplified versions of above macros, assuming wncontrols = ARRAY_SIZE(wcontrols) */
 #define SOC_PGA_E_ARRAY(wname, wreg, wshift, winvert, wcontrols, \
 	wevent, wflags) \
+<<<<<<< HEAD
 {	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
 	.invert = winvert, .kcontrol_news = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols), \
 	.event = wevent, .event_flags = wflags}
@@ -185,6 +331,24 @@
 {       .id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
 	.invert = winvert, .kcontrol_news = wcontrols, \
 	.num_kcontrols = ARRAY_SIZE(wcontrols), .event = wevent, .event_flags = wflags}
+=======
+{	.id = snd_soc_dapm_pga, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols), \
+	.event = wevent, .event_flags = wflags}
+#define SOC_MIXER_E_ARRAY(wname, wreg, wshift, winvert, wcontrols, \
+	wevent, wflags) \
+{	.id = snd_soc_dapm_mixer, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols), \
+	.event = wevent, .event_flags = wflags}
+#define SOC_MIXER_NAMED_CTL_E_ARRAY(wname, wreg, wshift, winvert, \
+	wcontrols, wevent, wflags) \
+{       .id = snd_soc_dapm_mixer, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.kcontrol_news = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols), \
+	.event = wevent, .event_flags = wflags}
+>>>>>>> refs/remotes/origin/master
 
 /* events that are pre and post DAPM */
 #define SND_SOC_DAPM_PRE(wname, wevent) \
@@ -199,6 +363,7 @@
 /* stream domain */
 #define SND_SOC_DAPM_AIF_IN(wname, stname, wslot, wreg, wshift, winvert) \
 {	.id = snd_soc_dapm_aif_in, .name = wname, .sname = stname, \
+<<<<<<< HEAD
 	.reg = wreg, .shift = wshift, .invert = winvert }
 #define SND_SOC_DAPM_AIF_IN_E(wname, stname, wslot, wreg, wshift, winvert, \
 			      wevent, wflags)				\
@@ -229,6 +394,43 @@
 {	.id = snd_soc_dapm_adc, .name = wname, .sname = stname, .reg = wreg, \
 	.shift = wshift, .invert = winvert, \
 	.event = wevent, .event_flags = wflags}
+=======
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), }
+#define SND_SOC_DAPM_AIF_IN_E(wname, stname, wslot, wreg, wshift, winvert, \
+			      wevent, wflags)				\
+{	.id = snd_soc_dapm_aif_in, .name = wname, .sname = stname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.event = wevent, .event_flags = wflags }
+#define SND_SOC_DAPM_AIF_OUT(wname, stname, wslot, wreg, wshift, winvert) \
+{	.id = snd_soc_dapm_aif_out, .name = wname, .sname = stname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), }
+#define SND_SOC_DAPM_AIF_OUT_E(wname, stname, wslot, wreg, wshift, winvert, \
+			     wevent, wflags)				\
+{	.id = snd_soc_dapm_aif_out, .name = wname, .sname = stname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.event = wevent, .event_flags = wflags }
+#define SND_SOC_DAPM_DAC(wname, stname, wreg, wshift, winvert) \
+{	.id = snd_soc_dapm_dac, .name = wname, .sname = stname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert) }
+#define SND_SOC_DAPM_DAC_E(wname, stname, wreg, wshift, winvert, \
+			   wevent, wflags)				\
+{	.id = snd_soc_dapm_dac, .name = wname, .sname = stname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.event = wevent, .event_flags = wflags}
+
+#define SND_SOC_DAPM_ADC(wname, stname, wreg, wshift, winvert) \
+{	.id = snd_soc_dapm_adc, .name = wname, .sname = stname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), }
+#define SND_SOC_DAPM_ADC_E(wname, stname, wreg, wshift, winvert, \
+			   wevent, wflags)				\
+{	.id = snd_soc_dapm_adc, .name = wname, .sname = stname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.event = wevent, .event_flags = wflags}
+#define SND_SOC_DAPM_CLOCK_SUPPLY(wname) \
+{	.id = snd_soc_dapm_clock_supply, .name = wname, \
+	.reg = SND_SOC_NOPM, .event = dapm_clock_event, \
+	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }
+>>>>>>> refs/remotes/origin/master
 
 /* generic widgets */
 #define SND_SOC_DAPM_REG(wid, wname, wreg, wshift, wmask, won_val, woff_val) \
@@ -237,23 +439,62 @@
 	.on_val = won_val, .off_val = woff_val, .event = dapm_reg_event, \
 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD}
 #define SND_SOC_DAPM_SUPPLY(wname, wreg, wshift, winvert, wevent, wflags) \
+<<<<<<< HEAD
 {	.id = snd_soc_dapm_supply, .name = wname, .reg = wreg,	\
 	.shift = wshift, .invert = winvert, .event = wevent, \
 	.event_flags = wflags}
+<<<<<<< HEAD
+=======
+{	.id = snd_soc_dapm_supply, .name = wname, \
+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+	.event = wevent, .event_flags = wflags}
+#define SND_SOC_DAPM_REGULATOR_SUPPLY(wname, wdelay, wflags)	    \
+{	.id = snd_soc_dapm_regulator_supply, .name = wname, \
+	.reg = SND_SOC_NOPM, .shift = wdelay, .event = dapm_regulator_event, \
+	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD, \
+	.on_val = wflags}
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* dapm kcontrol types */
 #define SOC_DAPM_SINGLE(xname, reg, shift, max, invert) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 	.info = snd_soc_info_volsw, \
 	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
+<<<<<<< HEAD
 	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
+=======
+	.private_value = SOC_SINGLE_VALUE(reg, shift, max, invert, 0) }
+#define SOC_DAPM_SINGLE_AUTODISABLE(xname, reg, shift, max, invert) \
+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+	.info = snd_soc_info_volsw, \
+	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
+	.private_value = SOC_SINGLE_VALUE(reg, shift, max, invert, 1) }
+#define SOC_DAPM_SINGLE_VIRT(xname, max) \
+	SOC_DAPM_SINGLE(xname, SND_SOC_NOPM, 0, max, 0)
+>>>>>>> refs/remotes/origin/master
 #define SOC_DAPM_SINGLE_TLV(xname, reg, shift, max, invert, tlv_array) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 	.info = snd_soc_info_volsw, \
 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | SNDRV_CTL_ELEM_ACCESS_READWRITE,\
 	.tlv.p = (tlv_array), \
 	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
+<<<<<<< HEAD
 	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
+=======
+	.private_value = SOC_SINGLE_VALUE(reg, shift, max, invert, 0) }
+#define SOC_DAPM_SINGLE_TLV_AUTODISABLE(xname, reg, shift, max, invert, tlv_array) \
+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+	.info = snd_soc_info_volsw, \
+	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | SNDRV_CTL_ELEM_ACCESS_READWRITE,\
+	.tlv.p = (tlv_array), \
+	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
+	.private_value = SOC_SINGLE_VALUE(reg, shift, max, invert, 0) }
+#define SOC_DAPM_SINGLE_TLV_VIRT(xname, max, tlv_array) \
+	SOC_DAPM_SINGLE(xname, SND_SOC_NOPM, 0, max, 0, tlv_array)
+>>>>>>> refs/remotes/origin/master
 #define SOC_DAPM_ENUM(xname, xenum) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 	.info = snd_soc_info_enum_double, \
@@ -272,6 +513,24 @@
 	.get = xget, \
 	.put = xput, \
 	.private_value = (unsigned long)&xenum }
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define SOC_DAPM_ENUM_EXT(xname, xenum, xget, xput) \
+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+	.info = snd_soc_info_enum_double, \
+	.get = xget, \
+	.put = xput, \
+	.private_value = (unsigned long)&xenum }
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SOC_DAPM_VALUE_ENUM(xname, xenum) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 	.info = snd_soc_info_enum_double, \
@@ -301,6 +560,11 @@
 #define SND_SOC_DAPM_POST_PMD	0x8		/* after widget power down */
 #define SND_SOC_DAPM_PRE_REG	0x10	/* before audio path setup */
 #define SND_SOC_DAPM_POST_REG	0x20	/* after audio path setup */
+<<<<<<< HEAD
+=======
+#define SND_SOC_DAPM_WILL_PMU   0x40    /* called at start of sequence */
+#define SND_SOC_DAPM_WILL_PMD   0x80    /* called at start of sequence */
+>>>>>>> refs/remotes/origin/master
 #define SND_SOC_DAPM_PRE_POST_PMD \
 				(SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD)
 
@@ -310,16 +574,42 @@
 #define SND_SOC_DAPM_EVENT_OFF(e)	\
 	(e & (SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD))
 
+<<<<<<< HEAD
+=======
+/* regulator widget flags */
+#define SND_SOC_DAPM_REGULATOR_BYPASS     0x1     /* bypass when disabled */
+
+>>>>>>> refs/remotes/origin/master
 struct snd_soc_dapm_widget;
 enum snd_soc_dapm_type;
 struct snd_soc_dapm_path;
 struct snd_soc_dapm_pin;
 struct snd_soc_dapm_route;
 struct snd_soc_dapm_context;
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct snd_soc_dapm_widget_list;
 
 int dapm_reg_event(struct snd_soc_dapm_widget *w,
 		   struct snd_kcontrol *kcontrol, int event);
+=======
+struct regulator;
+struct snd_soc_dapm_widget_list;
+struct snd_soc_dapm_update;
+
+int dapm_reg_event(struct snd_soc_dapm_widget *w,
+		   struct snd_kcontrol *kcontrol, int event);
+int dapm_regulator_event(struct snd_soc_dapm_widget *w,
+			 struct snd_kcontrol *kcontrol, int event);
+int dapm_clock_event(struct snd_soc_dapm_widget *w,
+			 struct snd_kcontrol *kcontrol, int event);
+>>>>>>> refs/remotes/origin/master
+=======
+struct snd_soc_dapm_widget_list;
+
+int dapm_reg_event(struct snd_soc_dapm_widget *w,
+		   struct snd_kcontrol *kcontrol, int event);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* dapm controls */
 int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
@@ -344,6 +634,8 @@ int snd_soc_dapm_get_pin_switch(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *uncontrol);
 int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *uncontrol);
+<<<<<<< HEAD
+<<<<<<< HEAD
 int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
 	const struct snd_soc_dapm_widget *widget);
 int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
@@ -355,6 +647,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm);
 void snd_soc_dapm_free(struct snd_soc_dapm_context *dapm);
 int snd_soc_dapm_add_routes(struct snd_soc_dapm_context *dapm,
 			    const struct snd_soc_dapm_route *route, int num);
+<<<<<<< HEAD
 int snd_soc_dapm_query_path(struct snd_soc_dapm_context *dapm,
 	const char *source_name, const char *sink_name, int stream);
 const char *snd_soc_dapm_get_aif(struct snd_soc_dapm_context *dapm,
@@ -363,6 +656,53 @@ const char *snd_soc_dapm_get_aif(struct snd_soc_dapm_context *dapm,
 /* dapm events */
 int snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd,
 	const char *stream, int event);
+=======
+=======
+int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
+	const struct snd_soc_dapm_widget *widget,
+	int num);
+int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+				 struct snd_soc_dai *dai);
+int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
+void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
+int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+			 const struct snd_soc_pcm_stream *params,
+			 struct snd_soc_dapm_widget *source,
+			 struct snd_soc_dapm_widget *sink);
+=======
+int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+	const struct snd_soc_dapm_widget *widget);
+int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
+	const struct snd_soc_dapm_widget *widget,
+	int num);
+>>>>>>> refs/remotes/origin/cm-11.0
+
+/* dapm path setup */
+int snd_soc_dapm_new_widgets(struct snd_soc_card *card);
+void snd_soc_dapm_free(struct snd_soc_dapm_context *dapm);
+int snd_soc_dapm_add_routes(struct snd_soc_dapm_context *dapm,
+			    const struct snd_soc_dapm_route *route, int num);
+int snd_soc_dapm_del_routes(struct snd_soc_dapm_context *dapm,
+			    const struct snd_soc_dapm_route *route, int num);
+>>>>>>> refs/remotes/origin/master
+int snd_soc_dapm_weak_routes(struct snd_soc_dapm_context *dapm,
+			     const struct snd_soc_dapm_route *route, int num);
+
+/* dapm events */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+void snd_soc_dapm_codec_stream_event(struct snd_soc_codec *codec,
+	const char *stream, int event);
+int snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd,
+	const char *stream, int event);
+void snd_soc_dapm_rtd_stream_event(struct snd_soc_pcm_runtime *rtd,
+	int stream, int event);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void snd_soc_dapm_shutdown(struct snd_soc_card *card);
 /* external DAPM widget events */
 int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
@@ -370,6 +710,22 @@ int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
 int snd_soc_dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
 				 struct snd_kcontrol *kcontrol, int change,
 				 int mux, struct soc_enum *e);
+<<<<<<< HEAD
+=======
+void snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
+	int event);
+void snd_soc_dapm_shutdown(struct snd_soc_card *card);
+
+/* external DAPM widget events */
+int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_context *dapm,
+		struct snd_kcontrol *kcontrol, int connect,
+		struct snd_soc_dapm_update *update);
+int snd_soc_dapm_mux_update_power(struct snd_soc_dapm_context *dapm,
+		struct snd_kcontrol *kcontrol, int mux, struct soc_enum *e,
+		struct snd_soc_dapm_update *update);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* dapm sys fs - used by the core */
 int snd_soc_dapm_sys_add(struct device *dev);
@@ -389,6 +745,8 @@ int snd_soc_dapm_force_enable_pin(struct snd_soc_dapm_context *dapm,
 				  const char *pin);
 int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
 				const char *pin);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /* dapm path query */
 int snd_soc_dapm_get_connected_widgets_type(struct snd_soc_dapm_context *dapm,
@@ -396,6 +754,41 @@ int snd_soc_dapm_get_connected_widgets_type(struct snd_soc_dapm_context *dapm,
 		int stream, enum snd_soc_dapm_type type);
 int snd_soc_dapm_get_connected_widgets_name(struct snd_soc_dapm_context *dapm,
 		const char *name, struct snd_soc_dapm_widget_list **list, int stream);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void snd_soc_dapm_auto_nc_codec_pins(struct snd_soc_codec *codec);
+
+/* Mostly internal - should not normally be used */
+void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason);
+<<<<<<< HEAD
+
+struct snd_soc_dapm_widget *snd_soc_get_codec_widget(struct snd_soc_card *card,
+		struct snd_soc_codec *codec, const char *name);
+struct snd_soc_dapm_widget *snd_soc_get_platform_widget(struct snd_soc_card *card,
+		struct snd_soc_platform *platform, const char *name);
+=======
+void dapm_mark_io_dirty(struct snd_soc_dapm_context *dapm);
+>>>>>>> refs/remotes/origin/master
+
+/* dapm path query */
+int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+	struct snd_soc_dapm_widget_list **list);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+struct snd_soc_codec *snd_soc_dapm_kcontrol_codec(struct snd_kcontrol *kcontrol);
+>>>>>>> refs/remotes/origin/master
+
+struct snd_soc_dapm_widget *snd_soc_get_codec_widget(struct snd_soc_card *card,
+		struct snd_soc_codec *codec, const char *name);
+struct snd_soc_dapm_widget *snd_soc_get_platform_widget(struct snd_soc_card *card,
+		struct snd_soc_platform *platform, const char *name);
+
+/* dapm path query */
+int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+	struct snd_soc_dapm_widget_list **list);
 
 /* dapm widget types */
 enum snd_soc_dapm_type {
@@ -420,8 +813,35 @@ enum snd_soc_dapm_type {
 	snd_soc_dapm_pre,			/* machine specific pre widget - exec first */
 	snd_soc_dapm_post,			/* machine specific post widget - exec last */
 	snd_soc_dapm_supply,		/* power/clock supply */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_aif_in,		/* audio interface input */
 	snd_soc_dapm_aif_out,		/* audio interface output */
+<<<<<<< HEAD
+=======
+	snd_soc_dapm_siggen,		/* signal generator */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_dapm_regulator_supply,	/* external regulator */
+	snd_soc_dapm_clock_supply,	/* external clock */
+	snd_soc_dapm_aif_in,		/* audio interface input */
+	snd_soc_dapm_aif_out,		/* audio interface output */
+	snd_soc_dapm_siggen,		/* signal generator */
+	snd_soc_dapm_dai_in,		/* link to DAI structure */
+	snd_soc_dapm_dai_out,
+	snd_soc_dapm_dai_link,		/* link between two DAI structures */
+	snd_soc_dapm_kcontrol,		/* Auto-disabled kcontrol */
+};
+
+enum snd_soc_dapm_subclass {
+	SND_SOC_DAPM_CLASS_INIT		= 0,
+	SND_SOC_DAPM_CLASS_RUNTIME	= 1,
+>>>>>>> refs/remotes/origin/master
+=======
+	snd_soc_dapm_aif_in,		/* audio interface input */
+	snd_soc_dapm_aif_out,		/* audio interface output */
+	snd_soc_dapm_siggen,		/* signal generator */
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /*
@@ -442,34 +862,74 @@ struct snd_soc_dapm_route {
 
 /* dapm audio path between two widgets */
 struct snd_soc_dapm_path {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	char *name;
 	char *long_name;
+=======
+	const char *name;
+>>>>>>> refs/remotes/origin/master
+=======
+	char *name;
+	char *long_name;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* source (input) and sink (output) widgets */
 	struct snd_soc_dapm_widget *source;
 	struct snd_soc_dapm_widget *sink;
+<<<<<<< HEAD
 	struct snd_kcontrol *kcontrol;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* status */
 	u32 connect:1;	/* source and sink widgets are connected */
 	u32 walked:1;	/* path has been walked */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 length:6;	/* path length - used by route mapper */
+=======
+	u32 weak:1;	/* path ignored for power management */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 walking:1;  /* path is in the process of being walked */
+	u32 weak:1;	/* path ignored for power management */
+>>>>>>> refs/remotes/origin/master
 
 	int (*connected)(struct snd_soc_dapm_widget *source,
 			 struct snd_soc_dapm_widget *sink);
 
 	struct list_head list_source;
 	struct list_head list_sink;
+<<<<<<< HEAD
+=======
+	struct list_head list_kcontrol;
+>>>>>>> refs/remotes/origin/master
 	struct list_head list;
 };
 
 /* dapm widget */
 struct snd_soc_dapm_widget {
 	enum snd_soc_dapm_type id;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	char *name;		/* widget name */
+<<<<<<< HEAD
 	char *sname;	/* stream name */
 	struct snd_soc_codec *codec;
 	struct snd_soc_platform *platform;
+=======
+=======
+	char *name;		/* widget name */
+>>>>>>> refs/remotes/origin/cm-11.0
+	const char *sname;	/* stream name */
+	struct snd_soc_codec *codec;
+	struct snd_soc_platform *platform;
+	struct snd_soc_dai *dai;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct list_head list;
 	struct snd_soc_dapm_context *dapm;
 
@@ -478,20 +938,58 @@ struct snd_soc_dapm_widget {
 	unsigned char shift;			/* bits to shift */
 	unsigned int saved_value;		/* widget saved value */
 	unsigned int value;				/* widget current value */
+<<<<<<< HEAD
 	unsigned int path_idx;
 	unsigned int hops;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char *name;		/* widget name */
+	const char *sname;	/* stream name */
+	struct snd_soc_codec *codec;
+	struct snd_soc_platform *platform;
+	struct list_head list;
+	struct snd_soc_dapm_context *dapm;
+
+	void *priv;				/* widget specific data */
+	struct regulator *regulator;		/* attached regulator */
+	const struct snd_soc_pcm_stream *params; /* params for dai links */
+
+	/* dapm control */
+	int reg;				/* negative reg = no direct dapm */
+	unsigned char shift;			/* bits to shift */
+>>>>>>> refs/remotes/origin/master
 	unsigned int mask;			/* non-shifted mask */
 	unsigned int on_val;			/* on state value */
 	unsigned int off_val;			/* off state value */
 	unsigned char power:1;			/* block power status */
+<<<<<<< HEAD
 	unsigned char invert:1;			/* invert the power bit */
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char active:1;			/* active stream on DAC, ADC's */
 	unsigned char connected:1;		/* connected codec pin */
 	unsigned char new:1;			/* cnew complete */
 	unsigned char ext:1;			/* has external widgets */
 	unsigned char force:1;			/* force state */
 	unsigned char ignore_suspend:1;         /* kept enabled over suspend */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int subseq;				/* sort within widget type */
+=======
+	unsigned char new_power:1;		/* power from this run */
+	unsigned char power_checked:1;		/* power checked this run */
+	int subseq;				/* sort within widget type */
+	void *private_data;			/* for widget specific data */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char new_power:1;		/* power from this run */
+	unsigned char power_checked:1;		/* power checked this run */
+	int subseq;				/* sort within widget type */
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int (*power_check)(struct snd_soc_dapm_widget *w);
 
@@ -510,10 +1008,27 @@ struct snd_soc_dapm_widget {
 
 	/* used during DAPM updates */
 	struct list_head power_list;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct list_head dirty;
+	int inputs;
+	int outputs;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct snd_soc_dapm_update {
 	struct snd_soc_dapm_widget *widget;
+=======
+	struct list_head dirty;
+	int inputs;
+	int outputs;
+
+	struct clk *clk;
+};
+
+struct snd_soc_dapm_update {
+>>>>>>> refs/remotes/origin/master
 	struct snd_kcontrol *kcontrol;
 	int reg;
 	int mask;
@@ -522,19 +1037,27 @@ struct snd_soc_dapm_update {
 
 /* DAPM context */
 struct snd_soc_dapm_context {
+<<<<<<< HEAD
 	int n_widgets; /* number of widgets in this context */
+=======
+>>>>>>> refs/remotes/origin/master
 	enum snd_soc_bias_level bias_level;
 	enum snd_soc_bias_level suspend_bias_level;
 	struct delayed_work delayed_work;
 	unsigned int idle_bias_off:1; /* Use BIAS_OFF instead of STANDBY */
 
+<<<<<<< HEAD
 	struct snd_soc_dapm_update *update;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	void (*seq_notifier)(struct snd_soc_dapm_context *,
 			     enum snd_soc_dapm_type, int);
 
 	struct device *dev; /* from parent - for debug */
 	struct snd_soc_codec *codec; /* parent codec */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_platform *platform; /*parent platform */
 	struct snd_soc_card *card; /* parent card */
 
@@ -545,6 +1068,27 @@ struct snd_soc_dapm_context {
 	int num_valid_paths;
 
 	int (*stream_event)(struct snd_soc_dapm_context *dapm);
+=======
+	struct snd_soc_platform *platform; /* parent platform */
+	struct snd_soc_dai *dai; /* parent DAI */
+=======
+	struct snd_soc_platform *platform; /* parent platform */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+	struct snd_soc_dai *dai; /* parent DAI */
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct snd_soc_card *card; /* parent card */
+
+	/* used during DAPM updates */
+	enum snd_soc_bias_level target_bias_level;
+	struct list_head list;
+
+	int (*stream_event)(struct snd_soc_dapm_context *dapm, int event);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DEBUG_FS
 	struct dentry *debugfs_dapm;
@@ -557,4 +1101,37 @@ struct snd_soc_dapm_widget_list {
 	struct snd_soc_dapm_widget *widgets[0];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct snd_soc_dapm_stats {
+	int power_checks;
+	int path_checks;
+	int neighbour_checks;
+};
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* Accessors for snd_soc_dapm_widget->private_data */
+static inline void *snd_soc_dapm_widget_get_pdata(struct snd_soc_dapm_widget *w)
+{
+	return w->private_data;
+}
+
+static inline void snd_soc_dapm_widget_set_pdata(struct snd_soc_dapm_widget *w,
+		void *data)
+{
+	w->private_data = data;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

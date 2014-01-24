@@ -28,18 +28,38 @@
 
 #include "soc_common.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SG2_S0_BUFF_CTL		120
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SG2_S0_POWER_CTL	108
 #define SG2_S0_GPIO_RESET	82
 #define SG2_S0_GPIO_DETECT	53
 #define SG2_S0_GPIO_READY	81
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct pcmcia_irqs irqs[] = {
 	{ 0, IRQ_GPIO(SG2_S0_GPIO_DETECT), "PCMCIA0 CD" },
+=======
+static struct gpio sg2_pcmcia_gpios[] = {
+	{ SG2_S0_GPIO_RESET, GPIOF_OUT_INIT_HIGH, "PCMCIA Reset" },
+	{ SG2_S0_POWER_CTL, GPIOF_OUT_INIT_HIGH, "PCMCIA Power Ctrl" },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct gpio sg2_pcmcia_gpios[] = {
+	{ SG2_S0_GPIO_RESET, GPIOF_OUT_INIT_HIGH, "PCMCIA Reset" },
+	{ SG2_S0_POWER_CTL, GPIOF_OUT_INIT_HIGH, "PCMCIA Power Ctrl" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static int sg2_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	skt->socket.pci_irq = IRQ_GPIO(SG2_S0_GPIO_READY);
 	return soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
 }
@@ -47,18 +67,42 @@ static int sg2_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 static void sg2_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 {
 	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	skt->stat[SOC_STAT_CD].gpio = SG2_S0_GPIO_DETECT;
+	skt->stat[SOC_STAT_CD].name = "PCMCIA0 CD";
+	skt->stat[SOC_STAT_RDY].gpio = SG2_S0_GPIO_READY;
+	skt->stat[SOC_STAT_RDY].name = "PCMCIA0 RDY";
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sg2_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 				    struct pcmcia_state *state)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	state->detect = !gpio_get_value(SG2_S0_GPIO_DETECT);
 	state->ready  = !!gpio_get_value(SG2_S0_GPIO_READY);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	state->bvd1   = 0; /* not available - battery detect on card */
 	state->bvd2   = 0; /* not available */
 	state->vs_3v  = 1; /* not available - voltage detect for card */
 	state->vs_Xv  = 0; /* not available */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	state->wrprot = 0; /* not available - write protect */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int sg2_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
@@ -88,6 +132,8 @@ static int sg2_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void sg2_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
 	soc_pcmcia_enable_irqs(skt, irqs, ARRAY_SIZE(irqs));
@@ -106,6 +152,20 @@ static struct pcmcia_low_level sg2_pcmcia_ops __initdata = {
 	.configure_socket	= sg2_pcmcia_configure_socket,
 	.socket_init		= sg2_pcmcia_socket_init,
 	.socket_suspend		= sg2_pcmcia_socket_suspend,
+=======
+static struct pcmcia_low_level sg2_pcmcia_ops __initdata = {
+	.owner			= THIS_MODULE,
+	.hw_init		= sg2_pcmcia_hw_init,
+	.socket_state		= sg2_pcmcia_socket_state,
+	.configure_socket	= sg2_pcmcia_configure_socket,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct pcmcia_low_level sg2_pcmcia_ops __initdata = {
+	.owner			= THIS_MODULE,
+	.hw_init		= sg2_pcmcia_hw_init,
+	.socket_state		= sg2_pcmcia_socket_state,
+	.configure_socket	= sg2_pcmcia_configure_socket,
+>>>>>>> refs/remotes/origin/master
 	.nr			= 1,
 };
 
@@ -122,6 +182,8 @@ static int __init sg2_pcmcia_init(void)
 	if (!sg2_pcmcia_device)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = gpio_request(SG2_S0_BUFF_CTL, "SG2 CF buff ctl");
 	if (ret)
 		goto error_put_platform_device;
@@ -135,11 +197,23 @@ static int __init sg2_pcmcia_init(void)
 	gpio_direction_output(SG2_S0_BUFF_CTL, 0);
 	gpio_direction_output(SG2_S0_POWER_CTL, 1);
 	gpio_direction_output(SG2_S0_GPIO_RESET, 1);
+=======
+	ret = gpio_request_array(sg2_pcmcia_gpios, ARRAY_SIZE(sg2_pcmcia_gpios));
+	if (ret)
+		goto error_put_platform_device;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = gpio_request_array(sg2_pcmcia_gpios, ARRAY_SIZE(sg2_pcmcia_gpios));
+	if (ret)
+		goto error_put_platform_device;
+>>>>>>> refs/remotes/origin/master
 
 	ret = platform_device_add_data(sg2_pcmcia_device,
 				       &sg2_pcmcia_ops,
 				       sizeof(sg2_pcmcia_ops));
 	if (ret)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto error_free_gpio_reset;
 
 	ret = platform_device_add(sg2_pcmcia_device);
@@ -153,6 +227,22 @@ error_free_gpio_power_ctl:
 	gpio_free(SG2_S0_POWER_CTL);
 error_free_gpio_buff_ctl:
 	gpio_free(SG2_S0_BUFF_CTL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		goto error_free_gpios;
+
+	ret = platform_device_add(sg2_pcmcia_device);
+	if (ret)
+		goto error_free_gpios;
+
+	return 0;
+error_free_gpios:
+	gpio_free_array(sg2_pcmcia_gpios, ARRAY_SIZE(sg2_pcmcia_gpios));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 error_put_platform_device:
 	platform_device_put(sg2_pcmcia_device);
 
@@ -162,9 +252,17 @@ error_put_platform_device:
 static void __exit sg2_pcmcia_exit(void)
 {
 	platform_device_unregister(sg2_pcmcia_device);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	gpio_free(SG2_S0_BUFF_CTL);
 	gpio_free(SG2_S0_POWER_CTL);
 	gpio_free(SG2_S0_GPIO_RESET);
+=======
+	gpio_free_array(sg2_pcmcia_gpios, ARRAY_SIZE(sg2_pcmcia_gpios));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_free_array(sg2_pcmcia_gpios, ARRAY_SIZE(sg2_pcmcia_gpios));
+>>>>>>> refs/remotes/origin/master
 }
 
 fs_initcall(sg2_pcmcia_init);

@@ -7,6 +7,8 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,6 +19,10 @@
  * along with this program; if not, write to the
  * Free Software Foundation, Inc.,
  * 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef AT91_UDC_H
@@ -115,9 +121,12 @@ struct at91_ep {
 	unsigned			is_in:1;
 	unsigned			is_iso:1;
 	unsigned			fifo_bank:1;
+<<<<<<< HEAD
 
 	const struct usb_endpoint_descriptor
 					*desc;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -139,7 +148,11 @@ struct at91_udc {
 	unsigned			active_suspend:1;
 	u8				addr;
 	struct at91_udc_data		board;
+<<<<<<< HEAD
 	struct clk			*iclk, *fclk;
+=======
+	struct clk			*iclk, *fclk, *uclk;
+>>>>>>> refs/remotes/origin/master
 	struct platform_device		*pdev;
 	struct proc_dir_entry		*pde;
 	void __iomem			*udp_baseaddr;

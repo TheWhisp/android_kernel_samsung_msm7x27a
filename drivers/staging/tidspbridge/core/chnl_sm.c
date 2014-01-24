@@ -20,7 +20,11 @@
  *      The lower edge functions must be implemented by the Bridge driver
  *      writer, and are declared in chnl_sm.h.
  *
+<<<<<<< HEAD
  *      Care is taken in this code to prevent simulataneous access to channel
+=======
+ *      Care is taken in this code to prevent simultaneous access to channel
+>>>>>>> refs/remotes/origin/master
  *      queues from
  *      1. Threads.
  *      2. io_dpc(), scheduled from the io_isr() as an event.
@@ -34,7 +38,11 @@
  *  Channel Invariant:
  *      There is an important invariant condition which must be maintained per
  *      channel outside of bridge_chnl_get_ioc() and IO_Dispatch(), violation of
+<<<<<<< HEAD
  *      which may cause timeouts and/or failure offunction sync_wait_on_event.
+=======
+ *      which may cause timeouts and/or failure of function sync_wait_on_event.
+>>>>>>> refs/remotes/origin/master
  *      This invariant condition is:
  *
  *          list_empty(&pchnl->io_completions) ==> pchnl->sync_event is reset
@@ -50,9 +58,15 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/sync.h>
 
@@ -97,7 +111,11 @@ int bridge_chnl_add_io_req(struct chnl_object *chnl_obj, void *host_buf,
 	struct dev_object *dev_obj;
 	u8 dw_state;
 	bool is_eos;
+<<<<<<< HEAD
 	struct chnl_mgr *chnl_mgr_obj = pchnl->chnl_mgr_obj;
+=======
+	struct chnl_mgr *chnl_mgr_obj;
+>>>>>>> refs/remotes/origin/master
 	u8 *host_sys_buf = NULL;
 	bool sched_dpc = false;
 	u16 mb_val = 0;
@@ -123,7 +141,13 @@ int bridge_chnl_add_io_req(struct chnl_object *chnl_obj, void *host_buf,
 				CHNL_IS_OUTPUT(pchnl->chnl_mode))
 			return -EPIPE;
 		/* No other possible states left */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev_obj = dev_get_first();
@@ -157,6 +181,10 @@ func_cont:
 	 * If DPC is scheduled in process context (iosm_schedule) and any
 	 * non-mailbox interrupt occurs, that DPC will run and break CS. Hence
 	 * we disable ALL DPCs. We will try to disable ONLY IO DPC later. */
+<<<<<<< HEAD
+=======
+	chnl_mgr_obj = pchnl->chnl_mgr_obj;
+>>>>>>> refs/remotes/origin/master
 	spin_lock_bh(&chnl_mgr_obj->chnl_mgr_lock);
 	omap_mbox_disable_irq(dev_ctxt->mbox, IRQ_RX);
 	if (pchnl->chnl_type == CHNL_PCPY) {
@@ -190,7 +218,13 @@ func_cont:
 	 * Note: for dma chans dw_dsp_addr contains dsp address
 	 * of SM buffer.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT(chnl_mgr_obj->word_size != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* DSP address */
 	chnl_packet_obj->dsp_tx_addr = dw_dsp_addr / chnl_mgr_obj->word_size;
 	chnl_packet_obj->byte_size = byte_size;
@@ -201,7 +235,13 @@ func_cont:
 			CHNL_IOCSTATCOMPLETE);
 	list_add_tail(&chnl_packet_obj->link, &pchnl->io_requests);
 	pchnl->cio_reqs++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT(pchnl->cio_reqs <= pchnl->chnl_packets);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If end of stream, update the channel state to prevent
 	 * more IOR's.
@@ -209,8 +249,14 @@ func_cont:
 	if (is_eos)
 		pchnl->state |= CHNL_STATEEOS;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Legacy DSM Processor-Copy */
 	DBC_ASSERT(pchnl->chnl_type == CHNL_PCPY);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Request IO from the DSP */
 	io_request_chnl(chnl_mgr_obj->iomgr, pchnl,
 			(CHNL_IS_INPUT(pchnl->chnl_mode) ? IO_INPUT :
@@ -283,7 +329,13 @@ int bridge_chnl_cancel_io(struct chnl_object *chnl_obj)
 		list_add_tail(&chirp->link, &pchnl->io_completions);
 		pchnl->cio_cs++;
 		pchnl->cio_reqs--;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(pchnl->cio_reqs >= 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_unlock_bh(&chnl_mgr_obj->chnl_mgr_lock);
@@ -311,8 +363,14 @@ int bridge_chnl_close(struct chnl_object *chnl_obj)
 	status = bridge_chnl_cancel_io(chnl_obj);
 	if (status)
 		return status;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Assert I/O on this channel is now cancelled: Protects from io_dpc */
 	DBC_ASSERT((pchnl->state & CHNL_STATECANCEL));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Invalidate channel object: Protects from CHNL_GetIOCompletion() */
 	/* Free the slot in the channel manager: */
 	pchnl->chnl_mgr_obj->channels[pchnl->chnl_id] = NULL;
@@ -358,6 +416,8 @@ int bridge_chnl_create(struct chnl_mgr **channel_mgr,
 	struct chnl_mgr *chnl_mgr_obj = NULL;
 	u8 max_channels;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check DBC requirements: */
 	DBC_REQUIRE(channel_mgr != NULL);
 	DBC_REQUIRE(mgr_attrts != NULL);
@@ -365,6 +425,10 @@ int bridge_chnl_create(struct chnl_mgr **channel_mgr,
 	DBC_REQUIRE(mgr_attrts->max_channels <= CHNL_MAXCHANNELS);
 	DBC_REQUIRE(mgr_attrts->word_size != 0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Allocate channel manager object */
 	chnl_mgr_obj = kzalloc(sizeof(struct chnl_mgr), GFP_KERNEL);
 	if (chnl_mgr_obj) {
@@ -374,7 +438,13 @@ int bridge_chnl_create(struct chnl_mgr **channel_mgr,
 		 *      mgr_attrts->max_channels = CHNL_MAXCHANNELS =
 		 *                       DDMA_MAXDDMACHNLS = DDMA_MAXZCPYCHNLS.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(mgr_attrts->max_channels == CHNL_MAXCHANNELS);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		max_channels = CHNL_MAXCHANNELS + CHNL_MAXCHANNELS * CHNL_PCPY;
 		/* Create array of channels */
 		chnl_mgr_obj->channels = kzalloc(sizeof(struct chnl_object *)
@@ -491,7 +561,13 @@ int bridge_chnl_flush_io(struct chnl_object *chnl_obj, u32 timeout)
 			pchnl->state &= ~CHNL_STATECANCEL;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE(status || list_empty(&pchnl->io_requests));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -592,7 +668,13 @@ int bridge_chnl_get_ioc(struct chnl_object *chnl_obj, u32 timeout,
 	omap_mbox_disable_irq(dev_ctxt->mbox, IRQ_RX);
 	if (dequeue_ioc) {
 		/* Dequeue IOC and set chan_ioc; */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(!list_empty(&pchnl->io_completions));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		chnl_packet_obj = list_first_entry(&pchnl->io_completions,
 				struct chnl_irp, link);
 		list_del(&chnl_packet_obj->link);
@@ -623,7 +705,11 @@ int bridge_chnl_get_ioc(struct chnl_object *chnl_obj, u32 timeout,
 		/*  Since DSPStream_Reclaim() does not take a timeout
 		 *  parameter, we pass the stream's timeout value to
 		 *  bridge_chnl_get_ioc. We cannot determine whether or not
+<<<<<<< HEAD
 		 *  we have waited in User mode. Since the stream's timeout
+=======
+		 *  we have waited in user mode. Since the stream's timeout
+>>>>>>> refs/remotes/origin/master
 		 *  value may be non-zero, we still have to set the event.
 		 *  Therefore, this optimization is taken out.
 		 *
@@ -705,8 +791,14 @@ int bridge_chnl_idle(struct chnl_object *chnl_obj, u32 timeout,
 	struct chnl_mgr *chnl_mgr_obj;
 	int status = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(chnl_obj);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	chnl_mode = chnl_obj->chnl_mode;
 	chnl_mgr_obj = chnl_obj->chnl_mgr_obj;
 
@@ -736,10 +828,18 @@ int bridge_chnl_open(struct chnl_object **chnl,
 	struct chnl_mgr *chnl_mgr_obj = hchnl_mgr;
 	struct chnl_object *pchnl = NULL;
 	struct sync_object *sync_event = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Ensure DBC requirements: */
 	DBC_REQUIRE(chnl != NULL);
 	DBC_REQUIRE(pattrs != NULL);
 	DBC_REQUIRE(hchnl_mgr != NULL);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	*chnl = NULL;
 
 	/* Validate Args: */
@@ -761,7 +861,13 @@ int bridge_chnl_open(struct chnl_object **chnl,
 			return status;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT(ch_id < chnl_mgr_obj->max_channels);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Create channel object: */
 	pchnl = kzalloc(sizeof(struct chnl_object), GFP_KERNEL);
@@ -850,7 +956,13 @@ int bridge_chnl_register_notify(struct chnl_object *chnl_obj,
 {
 	int status = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT(!(event_mask & ~(DSP_STREAMDONE | DSP_STREAMIOCOMPLETION)));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (event_mask)
 		status = ntfy_register(chnl_obj->ntfy_obj, hnotification,
@@ -906,8 +1018,14 @@ static void free_chirp_list(struct list_head *chirp_list)
 {
 	struct chnl_irp *chirp, *tmp;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(chirp_list != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(chirp, tmp, chirp_list, link) {
 		list_del(&chirp->link);
 		kfree(chirp);
@@ -924,8 +1042,14 @@ static int search_free_channel(struct chnl_mgr *chnl_mgr_obj,
 	int status = -ENOSR;
 	u32 i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(chnl_mgr_obj);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < chnl_mgr_obj->max_channels; i++) {
 		if (chnl_mgr_obj->channels[i] == NULL) {
 			status = 0;

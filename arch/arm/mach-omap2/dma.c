@@ -27,10 +27,20 @@
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 
 #include <plat/omap_hwmod.h>
 #include <plat/omap_device.h>
 #include <plat/dma.h>
+=======
+#include <linux/dma-mapping.h>
+#include <linux/of.h>
+#include <linux/omap-dma.h>
+
+#include "soc.h"
+#include "omap_hwmod.h"
+#include "omap_device.h"
+>>>>>>> refs/remotes/origin/master
 
 #define OMAP2_DMA_STRIDE	0x60
 
@@ -87,6 +97,8 @@ static u16 reg_map[] = {
 	[CCDN]			= 0xd8,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct omap_device_pm_latency omap2_dma_latency[] = {
 	{
 		.deactivate_func = omap_device_idle_hwmods,
@@ -95,6 +107,10 @@ static struct omap_device_pm_latency omap2_dma_latency[] = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __iomem *dma_base;
 static inline void dma_write(u32 val, int reg, int lch)
 {
@@ -228,17 +244,32 @@ static u32 configure_dma_errata(void)
 /* One time initializations */
 static int __init omap2_system_dma_init_dev(struct omap_hwmod *oh, void *unused)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct omap_device			*od;
+=======
+	struct platform_device			*pdev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct platform_device			*pdev;
+>>>>>>> refs/remotes/origin/master
 	struct omap_system_dma_plat_info	*p;
 	struct resource				*mem;
 	char					*name = "omap_dma_system";
 
 	dma_stride		= OMAP2_DMA_STRIDE;
 	dma_common_ch_start	= CSDP;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_omap3630() || cpu_is_omap4430())
+=======
+	if (cpu_is_omap3630() || cpu_is_omap44xx())
+>>>>>>> refs/remotes/origin/cm-10.0
 		dma_common_ch_end = CCDN;
 	else
 		dma_common_ch_end = CCFN;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	p = kzalloc(sizeof(struct omap_system_dma_plat_info), GFP_KERNEL);
 	if (!p) {
@@ -258,6 +289,8 @@ static int __init omap2_system_dma_init_dev(struct omap_hwmod *oh, void *unused)
 
 	p->errata		= configure_dma_errata();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	od = omap_device_build(name, 0, oh, p, sizeof(*p),
 			omap2_dma_latency, ARRAY_SIZE(omap2_dma_latency), 0);
 	kfree(p);
@@ -270,11 +303,38 @@ static int __init omap2_system_dma_init_dev(struct omap_hwmod *oh, void *unused)
 	mem = platform_get_resource(&od->pdev, IORESOURCE_MEM, 0);
 	if (!mem) {
 		dev_err(&od->pdev.dev, "%s: no mem resource\n", __func__);
+=======
+	pdev = omap_device_build(name, 0, oh, p, sizeof(*p), NULL, 0, 0);
+=======
+	pdev = omap_device_build(name, 0, oh, p, sizeof(*p));
+>>>>>>> refs/remotes/origin/master
+	kfree(p);
+	if (IS_ERR(pdev)) {
+		pr_err("%s: Can't build omap_device for %s:%s.\n",
+			__func__, name, oh->name);
+		return PTR_ERR(pdev);
+	}
+
+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!mem) {
+		dev_err(&pdev->dev, "%s: no mem resource\n", __func__);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	dma_base = ioremap(mem->start, resource_size(mem));
 	if (!dma_base) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&od->pdev.dev, "%s: ioremap fail\n", __func__);
+=======
+		dev_err(&pdev->dev, "%s: ioremap fail\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "%s: ioremap fail\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -283,7 +343,12 @@ static int __init omap2_system_dma_init_dev(struct omap_hwmod *oh, void *unused)
 					(d->lch_count), GFP_KERNEL);
 
 	if (!d->chan) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&od->pdev.dev, "%s: kzalloc fail\n", __func__);
+=======
+		dev_err(&pdev->dev, "%s: kzalloc fail\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 	return 0;
@@ -295,3 +360,47 @@ static int __init omap2_system_dma_init(void)
 			omap2_system_dma_init_dev, NULL);
 }
 arch_initcall(omap2_system_dma_init);
+=======
+		dev_err(&pdev->dev, "%s: kzalloc fail\n", __func__);
+		return -ENOMEM;
+	}
+
+	if (cpu_is_omap34xx() && (omap_type() != OMAP2_DEVICE_TYPE_GP))
+		d->dev_caps |= HS_CHANNELS_RESERVED;
+
+	/* Check the capabilities register for descriptor loading feature */
+	if (dma_read(CAPS_0, 0) & DMA_HAS_DESCRIPTOR_CAPS)
+		dma_common_ch_end = CCDN;
+	else
+		dma_common_ch_end = CCFN;
+
+	return 0;
+}
+
+static const struct platform_device_info omap_dma_dev_info = {
+	.name = "omap-dma-engine",
+	.id = -1,
+	.dma_mask = DMA_BIT_MASK(32),
+};
+
+static int __init omap2_system_dma_init(void)
+{
+	struct platform_device *pdev;
+	int res;
+
+	res = omap_hwmod_for_each_by_class("dma",
+			omap2_system_dma_init_dev, NULL);
+	if (res)
+		return res;
+
+	if (of_have_populated_dt())
+		return res;
+
+	pdev = platform_device_register_full(&omap_dma_dev_info);
+	if (IS_ERR(pdev))
+		return PTR_ERR(pdev);
+
+	return res;
+}
+omap_arch_initcall(omap2_system_dma_init);
+>>>>>>> refs/remotes/origin/master

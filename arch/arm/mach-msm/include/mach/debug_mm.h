@@ -13,6 +13,16 @@
 #ifndef __ARCH_ARM_MACH_MSM_DEBUG_MM_H_
 #define __ARCH_ARM_MACH_MSM_DEBUG_MM_H_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/string.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/string.h>
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* The below macro removes the directory path name and retains only the
  * file name to avoid long path names in log messages that comes as
  * part of __FILE__ to compiler.

@@ -22,7 +22,11 @@
  * and usb-storage.
  *
  * TODO:
+<<<<<<< HEAD
  * - usb suspend/resume triggered by sl811 (with USB_SUSPEND)
+=======
+ * - usb suspend/resume triggered by sl811 (with PM_RUNTIME)
+>>>>>>> refs/remotes/origin/master
  * - various issues noted in the code
  * - performance work; use both register banks; ...
  * - use urb->iso_frame_desc[] with ISO transfers
@@ -39,7 +43,10 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 #include <linux/list.h>
 #include <linux/interrupt.h>
@@ -48,10 +55,21 @@
 #include <linux/usb/hcd.h>
 #include <linux/platform_device.h>
 #include <linux/prefetch.h>
+<<<<<<< HEAD
 
 #include <asm/io.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/debugfs.h>
+#include <linux/seq_file.h>
+
+#include <asm/io.h>
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 #include <asm/unaligned.h>
 
@@ -64,11 +82,14 @@ MODULE_ALIAS("platform:sl811-hcd");
 
 #define DRIVER_VERSION	"19 May 2005"
 
+<<<<<<< HEAD
 
 #ifndef DEBUG
 #	define	STUB_DEBUG_FILE
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* for now, use only one transfer register bank */
 #undef	USE_B
 
@@ -101,7 +122,12 @@ static void port_power(struct sl811 *sl811, int is_on)
 
 	if (sl811->board && sl811->board->port_power) {
 		/* switch VBUS, at 500mA unless hub power budget gets set */
+<<<<<<< HEAD
 		DBG("power %s\n", is_on ? "on" : "off");
+=======
+		dev_dbg(hcd->self.controller, "power %s\n",
+			is_on ? "on" : "off");
+>>>>>>> refs/remotes/origin/master
 		sl811->board->port_power(hcd->self.controller, is_on);
 	}
 
@@ -157,7 +183,11 @@ static void setup_packet(
 	writeb(SL_SETUP /* | ep->epnum */, data_reg);
 	writeb(usb_pipedevice(urb->pipe), data_reg);
 
+<<<<<<< HEAD
 	/* always OUT/data0 */ ;
+=======
+	/* always OUT/data0 */
+>>>>>>> refs/remotes/origin/master
 	sl811_write(sl811, bank + SL11H_HOSTCTLREG,
 			control | SL11H_HCTLMASK_OUT);
 	ep->length = 0;
@@ -283,7 +313,11 @@ static inline void sofirq_on(struct sl811 *sl811)
 {
 	if (sl811->irq_enable & SL11H_INTMASK_SOFINTR)
 		return;
+<<<<<<< HEAD
 	VDBG("sof irq on\n");
+=======
+	dev_dbg(sl811_to_hcd(sl811)->self.controller, "sof irq on\n");
+>>>>>>> refs/remotes/origin/master
 	sl811->irq_enable |= SL11H_INTMASK_SOFINTR;
 }
 
@@ -291,7 +325,11 @@ static inline void sofirq_off(struct sl811 *sl811)
 {
 	if (!(sl811->irq_enable & SL11H_INTMASK_SOFINTR))
 		return;
+<<<<<<< HEAD
 	VDBG("sof irq off\n");
+=======
+	dev_dbg(sl811_to_hcd(sl811)->self.controller, "sof irq off\n");
+>>>>>>> refs/remotes/origin/master
 	sl811->irq_enable &= ~SL11H_INTMASK_SOFINTR;
 }
 
@@ -339,7 +377,12 @@ static struct sl811h_ep	*start(struct sl811 *sl811, u8 bank)
 	}
 
 	if (unlikely(list_empty(&ep->hep->urb_list))) {
+<<<<<<< HEAD
 		DBG("empty %p queue?\n", ep);
+=======
+		dev_dbg(sl811_to_hcd(sl811)->self.controller,
+			"empty %p queue?\n", ep);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -392,7 +435,12 @@ static struct sl811h_ep	*start(struct sl811 *sl811, u8 bank)
 		status_packet(sl811, ep, urb, bank, control);
 		break;
 	default:
+<<<<<<< HEAD
 		DBG("bad ep%p pid %02x\n", ep, ep->nextpid);
+=======
+		dev_dbg(sl811_to_hcd(sl811)->self.controller,
+			"bad ep%p pid %02x\n", ep, ep->nextpid);
+>>>>>>> refs/remotes/origin/master
 		ep = NULL;
 	}
 	return ep;
@@ -448,7 +496,12 @@ static void finish_request(
 	}
 
 	/* periodic deschedule */
+<<<<<<< HEAD
 	DBG("deschedule qh%d/%p branch %d\n", ep->period, ep, ep->branch);
+=======
+	dev_dbg(sl811_to_hcd(sl811)->self.controller,
+		"deschedule qh%d/%p branch %d\n", ep->period, ep, ep->branch);
+>>>>>>> refs/remotes/origin/master
 	for (i = ep->branch; i < PERIODIC_SIZE; i += ep->period) {
 		struct sl811h_ep	*temp;
 		struct sl811h_ep	**prev = &sl811->periodic[i];
@@ -594,7 +647,12 @@ static inline u8 checkdone(struct sl811 *sl811)
 		ctl = sl811_read(sl811, SL811_EP_A(SL11H_HOSTCTLREG));
 		if (ctl & SL11H_HCTLMASK_ARM)
 			sl811_write(sl811, SL811_EP_A(SL11H_HOSTCTLREG), 0);
+<<<<<<< HEAD
 		DBG("%s DONE_A: ctrl %02x sts %02x\n",
+=======
+		dev_dbg(sl811_to_hcd(sl811)->self.controller,
+			"%s DONE_A: ctrl %02x sts %02x\n",
+>>>>>>> refs/remotes/origin/master
 			(ctl & SL11H_HCTLMASK_ARM) ? "timeout" : "lost",
 			ctl,
 			sl811_read(sl811, SL811_EP_A(SL11H_PKTSTATREG)));
@@ -605,7 +663,12 @@ static inline u8 checkdone(struct sl811 *sl811)
 		ctl = sl811_read(sl811, SL811_EP_B(SL11H_HOSTCTLREG));
 		if (ctl & SL11H_HCTLMASK_ARM)
 			sl811_write(sl811, SL811_EP_B(SL11H_HOSTCTLREG), 0);
+<<<<<<< HEAD
 		DBG("%s DONE_B: ctrl %02x sts %02x\n",
+=======
+		dev_dbg(sl811_to_hcd(sl811)->self.controller,
+			"%s DONE_B: ctrl %02x sts %02x\n",
+>>>>>>> refs/remotes/origin/master
 			(ctl & SL11H_HCTLMASK_ARM) ? "timeout" : "lost",
 			ctl,
 			sl811_read(sl811, SL811_EP_B(SL11H_PKTSTATREG)));
@@ -666,7 +729,11 @@ retry:
 		 * this one has nothing scheduled.
 		 */
 		if (sl811->next_periodic) {
+<<<<<<< HEAD
 			// ERR("overrun to slot %d\n", index);
+=======
+			// dev_err(hcd->self.controller, "overrun to slot %d\n", index);
+>>>>>>> refs/remotes/origin/master
 			sl811->stat_overrun++;
 		}
 		if (sl811->periodic[index])
@@ -724,7 +791,11 @@ retry:
 
 	} else if (irqstat & SL11H_INTMASK_RD) {
 		if (sl811->port1 & USB_PORT_STAT_SUSPEND) {
+<<<<<<< HEAD
 			DBG("wakeup\n");
+=======
+			dev_dbg(hcd->self.controller, "wakeup\n");
+>>>>>>> refs/remotes/origin/master
 			sl811->port1 |= USB_PORT_STAT_C_SUSPEND << 16;
 			sl811->stat_wake++;
 		} else
@@ -853,8 +924,14 @@ static int sl811h_urb_enqueue(
 
 		if (ep->maxpacket > H_MAXPACKET) {
 			/* iso packets up to 240 bytes could work... */
+<<<<<<< HEAD
 			DBG("dev %d ep%d maxpacket %d\n",
 				udev->devnum, epnum, ep->maxpacket);
+=======
+			dev_dbg(hcd->self.controller,
+				"dev %d ep%d maxpacket %d\n", udev->devnum,
+				epnum, ep->maxpacket);
+>>>>>>> refs/remotes/origin/master
 			retval = -EINVAL;
 			kfree(ep);
 			goto fail;
@@ -918,7 +995,12 @@ static int sl811h_urb_enqueue(
 		 * to share the faster parts of the tree without needing
 		 * dummy/placeholder nodes
 		 */
+<<<<<<< HEAD
 		DBG("schedule qh%d/%p branch %d\n", ep->period, ep, ep->branch);
+=======
+		dev_dbg(hcd->self.controller, "schedule qh%d/%p branch %d\n",
+			ep->period, ep, ep->branch);
+>>>>>>> refs/remotes/origin/master
 		for (i = ep->branch; i < PERIODIC_SIZE; i += ep->period) {
 			struct sl811h_ep	**prev = &sl811->periodic[i];
 			struct sl811h_ep	*here = *prev;
@@ -977,7 +1059,12 @@ static int sl811h_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 		} else if (sl811->active_a == ep) {
 			if (time_before_eq(sl811->jiffies_a, jiffies)) {
 				/* happens a lot with lowspeed?? */
+<<<<<<< HEAD
 				DBG("giveup on DONE_A: ctrl %02x sts %02x\n",
+=======
+				dev_dbg(hcd->self.controller,
+					"giveup on DONE_A: ctrl %02x sts %02x\n",
+>>>>>>> refs/remotes/origin/master
 					sl811_read(sl811,
 						SL811_EP_A(SL11H_HOSTCTLREG)),
 					sl811_read(sl811,
@@ -991,7 +1078,12 @@ static int sl811h_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 		} else if (sl811->active_b == ep) {
 			if (time_before_eq(sl811->jiffies_a, jiffies)) {
 				/* happens a lot with lowspeed?? */
+<<<<<<< HEAD
 				DBG("giveup on DONE_B: ctrl %02x sts %02x\n",
+=======
+				dev_dbg(hcd->self.controller,
+					"giveup on DONE_B: ctrl %02x sts %02x\n",
+>>>>>>> refs/remotes/origin/master
 					sl811_read(sl811,
 						SL811_EP_B(SL11H_HOSTCTLREG)),
 					sl811_read(sl811,
@@ -1009,7 +1101,12 @@ static int sl811h_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 		if (urb)
 			finish_request(sl811, ep, urb, 0);
 		else
+<<<<<<< HEAD
 			VDBG("dequeue, urb %p active %s; wait4irq\n", urb,
+=======
+			dev_dbg(sl811_to_hcd(sl811)->self.controller,
+				"dequeue, urb %p active %s; wait4irq\n", urb,
+>>>>>>> refs/remotes/origin/master
 				(sl811->active_a == ep) ? "A" : "B");
 	} else
 		retval = -EINVAL;
@@ -1030,7 +1127,11 @@ sl811h_endpoint_disable(struct usb_hcd *hcd, struct usb_host_endpoint *hep)
 	if (!list_empty(&hep->urb_list))
 		msleep(3);
 	if (!list_empty(&hep->urb_list))
+<<<<<<< HEAD
 		WARNING("ep %p not empty?\n", ep);
+=======
+		dev_warn(hcd->self.controller, "ep %p not empty?\n", ep);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(ep);
 	hep->hcpriv = NULL;
@@ -1133,7 +1234,11 @@ sl811h_timer(unsigned long _sl811)
 
 	switch (signaling) {
 	case SL11H_CTL1MASK_SE0:
+<<<<<<< HEAD
 		DBG("end reset\n");
+=======
+		dev_dbg(sl811_to_hcd(sl811)->self.controller, "end reset\n");
+>>>>>>> refs/remotes/origin/master
 		sl811->port1 = (USB_PORT_STAT_C_RESET << 16)
 				 | USB_PORT_STAT_POWER;
 		sl811->ctrl1 = 0;
@@ -1142,11 +1247,20 @@ sl811h_timer(unsigned long _sl811)
 			irqstat &= ~SL11H_INTMASK_RD;
 		break;
 	case SL11H_CTL1MASK_K:
+<<<<<<< HEAD
 		DBG("end resume\n");
 		sl811->port1 &= ~USB_PORT_STAT_SUSPEND;
 		break;
 	default:
 		DBG("odd timer signaling: %02x\n", signaling);
+=======
+		dev_dbg(sl811_to_hcd(sl811)->self.controller, "end resume\n");
+		sl811->port1 &= ~USB_PORT_STAT_SUSPEND;
+		break;
+	default:
+		dev_dbg(sl811_to_hcd(sl811)->self.controller,
+			"odd timer signaling: %02x\n", signaling);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	sl811_write(sl811, SL11H_IRQ_STATUS, irqstat);
@@ -1244,7 +1358,11 @@ sl811h_hub_control(
 				break;
 
 			/* 20 msec of resume/K signaling, other irqs blocked */
+<<<<<<< HEAD
 			DBG("start resume...\n");
+=======
+			dev_dbg(hcd->self.controller, "start resume...\n");
+>>>>>>> refs/remotes/origin/master
 			sl811->irq_enable = 0;
 			sl811_write(sl811, SL11H_IRQ_ENABLE,
 						sl811->irq_enable);
@@ -1282,7 +1400,12 @@ sl811h_hub_control(
 #ifndef	VERBOSE
 	if (*(u16*)(buf+2))	/* only if wPortChange is interesting */
 #endif
+<<<<<<< HEAD
 		DBG("GetPortStatus %08x\n", sl811->port1);
+=======
+		dev_dbg(hcd->self.controller, "GetPortStatus %08x\n",
+			sl811->port1);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SetPortFeature:
 		if (wIndex != 1 || wLength != 0)
@@ -1294,7 +1417,11 @@ sl811h_hub_control(
 			if (!(sl811->port1 & USB_PORT_STAT_ENABLE))
 				goto error;
 
+<<<<<<< HEAD
 			DBG("suspend...\n");
+=======
+			dev_dbg(hcd->self.controller,"suspend...\n");
+>>>>>>> refs/remotes/origin/master
 			sl811->ctrl1 &= ~SL11H_CTL1MASK_SOF_ENA;
 			sl811_write(sl811, SL11H_CTLREG1, sl811->ctrl1);
 			break;
@@ -1339,7 +1466,11 @@ static int
 sl811h_bus_suspend(struct usb_hcd *hcd)
 {
 	// SOFs off
+<<<<<<< HEAD
 	DBG("%s\n", __func__);
+=======
+	dev_dbg(hcd->self.controller, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1347,7 +1478,11 @@ static int
 sl811h_bus_resume(struct usb_hcd *hcd)
 {
 	// SOFs on
+<<<<<<< HEAD
 	DBG("%s\n", __func__);
+=======
+	dev_dbg(hcd->self.controller, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1361,6 +1496,7 @@ sl811h_bus_resume(struct usb_hcd *hcd)
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 #ifdef STUB_DEBUG_FILE
 
 static inline void create_debug_file(struct sl811 *sl811) { }
@@ -1371,6 +1507,8 @@ static inline void remove_debug_file(struct sl811 *sl811) { }
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void dump_irq(struct seq_file *s, char *label, u8 mask)
 {
 	seq_printf(s, "%s %02x%s%s%s%s%s%s\n", label, mask,
@@ -1382,7 +1520,11 @@ static void dump_irq(struct seq_file *s, char *label, u8 mask)
 		(mask & SL11H_INTMASK_DP) ? " dp" : "");
 }
 
+<<<<<<< HEAD
 static int proc_sl811h_show(struct seq_file *s, void *unused)
+=======
+static int sl811h_show(struct seq_file *s, void *unused)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sl811		*sl811 = s->private;
 	struct sl811h_ep	*ep;
@@ -1414,7 +1556,11 @@ static int proc_sl811h_show(struct seq_file *s, void *unused)
 			case SL11H_CTL1MASK_SE0: s = " se0/reset"; break;
 			case SL11H_CTL1MASK_K: s = " k/resume"; break;
 			default: s = "j"; break;
+<<<<<<< HEAD
 			}; s; }),
+=======
+			} s; }),
+>>>>>>> refs/remotes/origin/master
 			(t & SL11H_CTL1MASK_LSPD) ? " lowspeed" : "",
 			(t & SL11H_CTL1MASK_SUSPEND) ? " suspend" : "");
 
@@ -1447,7 +1593,11 @@ static int proc_sl811h_show(struct seq_file *s, void *unused)
 			case USB_PID_SETUP: s = "setup"; break;
 			case USB_PID_ACK: s = "status"; break;
 			default: s = "?"; break;
+<<<<<<< HEAD
 			}; s;}),
+=======
+			} s;}),
+>>>>>>> refs/remotes/origin/master
 			ep->maxpacket,
 			ep->nak_count, ep->error_count);
 		list_for_each_entry (urb, &ep->hep->urb_list, urb_list) {
@@ -1493,6 +1643,7 @@ static int proc_sl811h_show(struct seq_file *s, void *unused)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int proc_sl811h_open(struct inode *inode, struct file *file)
 {
 	return single_open(file, proc_sl811h_show, PDE(inode)->data);
@@ -1500,27 +1651,50 @@ static int proc_sl811h_open(struct inode *inode, struct file *file)
 
 static const struct file_operations proc_ops = {
 	.open		= proc_sl811h_open,
+=======
+static int sl811h_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, sl811h_show, inode->i_private);
+}
+
+static const struct file_operations debug_ops = {
+	.open		= sl811h_open,
+>>>>>>> refs/remotes/origin/master
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= single_release,
 };
 
 /* expect just one sl811 per system */
+<<<<<<< HEAD
 static const char proc_filename[] = "driver/sl811h";
 
 static void create_debug_file(struct sl811 *sl811)
 {
 	sl811->pde = proc_create_data(proc_filename, 0, NULL, &proc_ops, sl811);
+=======
+static void create_debug_file(struct sl811 *sl811)
+{
+	sl811->debug_file = debugfs_create_file("sl811h", S_IRUGO,
+						usb_debug_root, sl811,
+						&debug_ops);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void remove_debug_file(struct sl811 *sl811)
 {
+<<<<<<< HEAD
 	if (sl811->pde)
 		remove_proc_entry(proc_filename, NULL);
 }
 
 #endif
 
+=======
+	debugfs_remove(sl811->debug_file);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 static void
@@ -1596,7 +1770,11 @@ static struct hc_driver sl811h_hc_driver = {
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devexit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 sl811h_remove(struct platform_device *dev)
 {
 	struct usb_hcd		*hcd = platform_get_drvdata(dev);
@@ -1619,7 +1797,11 @@ sl811h_remove(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 sl811h_probe(struct platform_device *dev)
 {
 	struct usb_hcd		*hcd;
@@ -1632,6 +1814,18 @@ sl811h_probe(struct platform_device *dev)
 	u8			tmp, ioaddr = 0;
 	unsigned long		irqflags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (usb_disabled())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (usb_disabled())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	/* basic sanity checks first.  board-specific init logic should
 	 * have initialized these three resources and probably board
 	 * specific platform_data.  we don't probe for IRQs, and do only
@@ -1646,7 +1840,11 @@ sl811h_probe(struct platform_device *dev)
 
 	/* refuse to confuse usbcore */
 	if (dev->dev.dma_mask) {
+<<<<<<< HEAD
 		DBG("no we won't dma\n");
+=======
+		dev_dbg(&dev->dev, "no we won't dma\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -1692,7 +1890,11 @@ sl811h_probe(struct platform_device *dev)
 
 	spin_lock_init(&sl811->lock);
 	INIT_LIST_HEAD(&sl811->async);
+<<<<<<< HEAD
 	sl811->board = dev->dev.platform_data;
+=======
+	sl811->board = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	init_timer(&sl811->timer);
 	sl811->timer.function = sl811h_timer;
 	sl811->timer.data = (unsigned long) sl811;
@@ -1714,7 +1916,11 @@ sl811h_probe(struct platform_device *dev)
 		break;
 	default:
 		/* reject case 0, SL11S is less functional */
+<<<<<<< HEAD
 		DBG("chiprev %02x\n", tmp);
+=======
+		dev_dbg(&dev->dev, "chiprev %02x\n", tmp);
+>>>>>>> refs/remotes/origin/master
 		retval = -ENXIO;
 		goto err6;
 	}
@@ -1729,10 +1935,23 @@ sl811h_probe(struct platform_device *dev)
 	 * Use resource IRQ flags if set by platform device setup.
 	 */
 	irqflags |= IRQF_SHARED;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = usb_add_hcd(hcd, irq, IRQF_DISABLED | irqflags);
+=======
+	retval = usb_add_hcd(hcd, irq, irqflags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval != 0)
 		goto err6;
 
+=======
+	retval = usb_add_hcd(hcd, irq, irqflags);
+	if (retval != 0)
+		goto err6;
+
+	device_wakeup_enable(hcd->self.controller);
+
+>>>>>>> refs/remotes/origin/master
 	create_debug_file(sl811);
 	return retval;
 
@@ -1745,7 +1964,11 @@ sl811h_probe(struct platform_device *dev)
 	if (!ioaddr)
 		iounmap(addr_reg);
  err2:
+<<<<<<< HEAD
 	DBG("init error, %d\n", retval);
+=======
+	dev_dbg(&dev->dev, "init error, %d\n", retval);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -1753,7 +1976,11 @@ sl811h_probe(struct platform_device *dev)
 
 /* for this device there's no useful distinction between the controller
  * and its root hub, except that the root hub only gets direct PM calls
+<<<<<<< HEAD
  * when CONFIG_USB_SUSPEND is enabled.
+=======
+ * when CONFIG_PM_RUNTIME is enabled.
+>>>>>>> refs/remotes/origin/master
  */
 
 static int
@@ -1806,7 +2033,11 @@ sl811h_resume(struct platform_device *dev)
 /* this driver is exported so sl811_cs can depend on it */
 struct platform_driver sl811h_driver = {
 	.probe =	sl811h_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(sl811h_remove),
+=======
+	.remove =	sl811h_remove,
+>>>>>>> refs/remotes/origin/master
 
 	.suspend =	sl811h_suspend,
 	.resume =	sl811h_resume,
@@ -1817,6 +2048,8 @@ struct platform_driver sl811h_driver = {
 };
 EXPORT_SYMBOL(sl811h_driver);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*-------------------------------------------------------------------------*/
 
 static int __init sl811h_init(void)
@@ -1834,3 +2067,9 @@ static void __exit sl811h_cleanup(void)
 	platform_driver_unregister(&sl811h_driver);
 }
 module_exit(sl811h_cleanup);
+=======
+module_platform_driver(sl811h_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(sl811h_driver);
+>>>>>>> refs/remotes/origin/master

@@ -12,15 +12,23 @@
 
 /include/ "mpc5200b.dtsi"
 
+<<<<<<< HEAD
+=======
+&gpt0 { fsl,has-wdt; };
+
+>>>>>>> refs/remotes/origin/master
 / {
 	model = "schindler,cm5200";
 	compatible = "schindler,cm5200";
 
 	soc5200@f0000000 {
+<<<<<<< HEAD
 		timer@600 {	// General Purpose Timer
 			fsl,has-wdt;
 		};
 
+=======
+>>>>>>> refs/remotes/origin/master
 		can@900 {
 			status = "disabled";
 		};

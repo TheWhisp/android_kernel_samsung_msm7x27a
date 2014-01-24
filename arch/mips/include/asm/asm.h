@@ -33,12 +33,21 @@
  * Not used for the kernel but here seems to be the right place.
  */
 #ifdef __PIC__
+<<<<<<< HEAD
 #define CPRESTORE(register)                             \
 		.cprestore register
 #define CPADD(register)                                 \
 		.cpadd	register
 #define CPLOAD(register)                                \
 		.cpload	register
+=======
+#define CPRESTORE(register)				\
+		.cprestore register
+#define CPADD(register)					\
+		.cpadd	register
+#define CPLOAD(register)				\
+		.cpload register
+>>>>>>> refs/remotes/origin/master
 #else
 #define CPRESTORE(register)
 #define CPADD(register)
@@ -48,35 +57,60 @@
 /*
  * LEAF - declare leaf routine
  */
+<<<<<<< HEAD
 #define	LEAF(symbol)                                    \
 		.globl	symbol;                         \
 		.align	2;                              \
 		.type	symbol, @function;              \
 		.ent	symbol, 0;                      \
+=======
+#define LEAF(symbol)					\
+		.globl	symbol;				\
+		.align	2;				\
+		.type	symbol, @function;		\
+		.ent	symbol, 0;			\
+>>>>>>> refs/remotes/origin/master
 symbol:		.frame	sp, 0, ra
 
 /*
  * NESTED - declare nested routine entry point
  */
+<<<<<<< HEAD
 #define	NESTED(symbol, framesize, rpc)                  \
 		.globl	symbol;                         \
 		.align	2;                              \
 		.type	symbol, @function;              \
 		.ent	symbol, 0;                       \
+=======
+#define NESTED(symbol, framesize, rpc)			\
+		.globl	symbol;				\
+		.align	2;				\
+		.type	symbol, @function;		\
+		.ent	symbol, 0;			 \
+>>>>>>> refs/remotes/origin/master
 symbol:		.frame	sp, framesize, rpc
 
 /*
  * END - mark end of function
  */
+<<<<<<< HEAD
 #define	END(function)                                   \
 		.end	function;		        \
+=======
+#define END(function)					\
+		.end	function;			\
+>>>>>>> refs/remotes/origin/master
 		.size	function, .-function
 
 /*
  * EXPORT - export definition of symbol
  */
 #define EXPORT(symbol)					\
+<<<<<<< HEAD
 		.globl	symbol;                         \
+=======
+		.globl	symbol;				\
+>>>>>>> refs/remotes/origin/master
 symbol:
 
 /*
@@ -90,6 +124,7 @@ symbol:
 /*
  * ABS - export absolute symbol
  */
+<<<<<<< HEAD
 #define	ABS(symbol,value)                               \
 		.globl	symbol;                         \
 symbol		=	value
@@ -100,6 +135,18 @@ symbol		=	value
 		PTR_LA	a0, 8f;                          \
 		jal	panic;                          \
 9:		b	9b;                             \
+=======
+#define ABS(symbol,value)				\
+		.globl	symbol;				\
+symbol		=	value
+
+#define PANIC(msg)					\
+		.set	push;				\
+		.set	reorder;			\
+		PTR_LA	a0, 8f;				 \
+		jal	panic;				\
+9:		b	9b;				\
+>>>>>>> refs/remotes/origin/master
 		.set	pop;				\
 		TEXT(msg)
 
@@ -107,31 +154,54 @@ symbol		=	value
  * Print formatted string
  */
 #ifdef CONFIG_PRINTK
+<<<<<<< HEAD
 #define PRINT(string)                                   \
 		.set	push;				\
 		.set	reorder;                        \
 		PTR_LA	a0, 8f;                          \
 		jal	printk;                         \
+=======
+#define PRINT(string)					\
+		.set	push;				\
+		.set	reorder;			\
+		PTR_LA	a0, 8f;				 \
+		jal	printk;				\
+>>>>>>> refs/remotes/origin/master
 		.set	pop;				\
 		TEXT(string)
 #else
 #define PRINT(string)
 #endif
 
+<<<<<<< HEAD
 #define	TEXT(msg)                                       \
 		.pushsection .data;			\
 8:		.asciiz	msg;                            \
+=======
+#define TEXT(msg)					\
+		.pushsection .data;			\
+8:		.asciiz msg;				\
+>>>>>>> refs/remotes/origin/master
 		.popsection;
 
 /*
  * Build text tables
  */
+<<<<<<< HEAD
 #define TTABLE(string)                                  \
 		.pushsection .text;			\
 		.word	1f;                             \
 		.popsection				\
 		.pushsection .data;			\
 1:		.asciiz	string;                         \
+=======
+#define TTABLE(string)					\
+		.pushsection .text;			\
+		.word	1f;				\
+		.popsection				\
+		.pushsection .data;			\
+1:		.asciiz string;				\
+>>>>>>> refs/remotes/origin/master
 		.popsection
 
 /*
@@ -143,13 +213,21 @@ symbol		=	value
  */
 #ifdef CONFIG_CPU_HAS_PREFETCH
 
+<<<<<<< HEAD
 #define PREF(hint,addr)                                 \
+=======
+#define PREF(hint,addr)					\
+>>>>>>> refs/remotes/origin/master
 		.set	push;				\
 		.set	mips4;				\
 		pref	hint, addr;			\
 		.set	pop
 
+<<<<<<< HEAD
 #define PREFX(hint,addr)                                \
+=======
+#define PREFX(hint,addr)				\
+>>>>>>> refs/remotes/origin/master
 		.set	push;				\
 		.set	mips4;				\
 		prefx	hint, addr;			\
@@ -166,6 +244,7 @@ symbol		=	value
  * MIPS ISA IV/V movn/movz instructions and equivalents for older CPUs.
  */
 #if (_MIPS_ISA == _MIPS_ISA_MIPS1)
+<<<<<<< HEAD
 #define MOVN(rd, rs, rt)                                \
 		.set	push;				\
 		.set	reorder;			\
@@ -178,10 +257,25 @@ symbol		=	value
 		.set	reorder;			\
 		bnez	rt, 9f;                         \
 		move	rd, rs;                         \
+=======
+#define MOVN(rd, rs, rt)				\
+		.set	push;				\
+		.set	reorder;			\
+		beqz	rt, 9f;				\
+		move	rd, rs;				\
+		.set	pop;				\
+9:
+#define MOVZ(rd, rs, rt)				\
+		.set	push;				\
+		.set	reorder;			\
+		bnez	rt, 9f;				\
+		move	rd, rs;				\
+>>>>>>> refs/remotes/origin/master
 		.set	pop;				\
 9:
 #endif /* _MIPS_ISA == _MIPS_ISA_MIPS1 */
 #if (_MIPS_ISA == _MIPS_ISA_MIPS2) || (_MIPS_ISA == _MIPS_ISA_MIPS3)
+<<<<<<< HEAD
 #define MOVN(rd, rs, rt)                                \
 		.set	push;				\
 		.set	noreorder;			\
@@ -194,14 +288,34 @@ symbol		=	value
 		.set	noreorder;			\
 		beqzl	rt, 9f;                         \
 		 move	rd, rs;                         \
+=======
+#define MOVN(rd, rs, rt)				\
+		.set	push;				\
+		.set	noreorder;			\
+		bnezl	rt, 9f;				\
+		 move	rd, rs;				\
+		.set	pop;				\
+9:
+#define MOVZ(rd, rs, rt)				\
+		.set	push;				\
+		.set	noreorder;			\
+		beqzl	rt, 9f;				\
+		 move	rd, rs;				\
+>>>>>>> refs/remotes/origin/master
 		.set	pop;				\
 9:
 #endif /* (_MIPS_ISA == _MIPS_ISA_MIPS2) || (_MIPS_ISA == _MIPS_ISA_MIPS3) */
 #if (_MIPS_ISA == _MIPS_ISA_MIPS4 ) || (_MIPS_ISA == _MIPS_ISA_MIPS5) || \
     (_MIPS_ISA == _MIPS_ISA_MIPS32) || (_MIPS_ISA == _MIPS_ISA_MIPS64)
+<<<<<<< HEAD
 #define MOVN(rd, rs, rt)                                \
 		movn	rd, rs, rt
 #define MOVZ(rd, rs, rt)                                \
+=======
+#define MOVN(rd, rs, rt)				\
+		movn	rd, rs, rt
+#define MOVZ(rd, rs, rt)				\
+>>>>>>> refs/remotes/origin/master
 		movz	rd, rs, rt
 #endif /* MIPS IV, MIPS V, MIPS32 or MIPS64 */
 
@@ -296,6 +410,10 @@ symbol		=	value
 #define LONG_SUBU	subu
 #define LONG_L		lw
 #define LONG_S		sw
+<<<<<<< HEAD
+=======
+#define LONG_SP		swp
+>>>>>>> refs/remotes/origin/master
 #define LONG_SLL	sll
 #define LONG_SLLV	sllv
 #define LONG_SRL	srl
@@ -318,6 +436,10 @@ symbol		=	value
 #define LONG_SUBU	dsubu
 #define LONG_L		ld
 #define LONG_S		sd
+<<<<<<< HEAD
+=======
+#define LONG_SP		sdp
+>>>>>>> refs/remotes/origin/master
 #define LONG_SLL	dsll
 #define LONG_SLLV	dsllv
 #define LONG_SRL	dsrl

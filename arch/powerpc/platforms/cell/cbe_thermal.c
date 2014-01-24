@@ -46,7 +46,15 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/cpu.h>
 #include <asm/spu.h>
@@ -59,8 +67,18 @@
 #define TEMP_MIN 65
 #define TEMP_MAX 125
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SYSDEV_PREFIX_ATTR(_prefix,_name,_mode)			\
 struct sysdev_attribute attr_ ## _prefix ## _ ## _name = {	\
+=======
+#define DEVICE_PREFIX_ATTR(_prefix,_name,_mode)			\
+struct device_attribute attr_ ## _prefix ## _ ## _name = {	\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DEVICE_PREFIX_ATTR(_prefix,_name,_mode)			\
+struct device_attribute attr_ ## _prefix ## _ ## _name = {	\
+>>>>>>> refs/remotes/origin/master
 	.attr = { .name = __stringify(_name), .mode = _mode },	\
 	.show	= _prefix ## _show_ ## _name,			\
 	.store	= _prefix ## _store_ ## _name,			\
@@ -76,36 +94,86 @@ static inline u8 temp_to_reg(u8 temp)
 	return ((temp - TEMP_MIN) >> 1) & 0x3f;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct cbe_pmd_regs __iomem *get_pmd_regs(struct sys_device *sysdev)
 {
 	struct spu *spu;
 
 	spu = container_of(sysdev, struct spu, sysdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct cbe_pmd_regs __iomem *get_pmd_regs(struct device *dev)
+{
+	struct spu *spu;
+
+	spu = container_of(dev, struct spu, dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return cbe_get_pmd_regs(spu_devnode(spu));
 }
 
 /* returns the value for a given spu in a given register */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u8 spu_read_register_value(struct sys_device *sysdev, union spe_reg __iomem *reg)
+=======
+static u8 spu_read_register_value(struct device *dev, union spe_reg __iomem *reg)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u8 spu_read_register_value(struct device *dev, union spe_reg __iomem *reg)
+>>>>>>> refs/remotes/origin/master
 {
 	union spe_reg value;
 	struct spu *spu;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spu = container_of(sysdev, struct spu, sysdev);
+=======
+	spu = container_of(dev, struct spu, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spu = container_of(dev, struct spu, dev);
+>>>>>>> refs/remotes/origin/master
 	value.val = in_be64(&reg->val);
 
 	return value.spe[spu->spe_id];
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t spu_show_temp(struct sys_device *sysdev, struct sysdev_attribute *attr,
+=======
+static ssize_t spu_show_temp(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t spu_show_temp(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			char *buf)
 {
 	u8 value;
 	struct cbe_pmd_regs __iomem *pmd_regs;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pmd_regs = get_pmd_regs(sysdev);
 
 	value = spu_read_register_value(sysdev, &pmd_regs->ts_ctsr1);
+=======
+	pmd_regs = get_pmd_regs(dev);
+
+	value = spu_read_register_value(dev, &pmd_regs->ts_ctsr1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pmd_regs = get_pmd_regs(dev);
+
+	value = spu_read_register_value(dev, &pmd_regs->ts_ctsr1);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n", reg_to_temp(value));
 }
@@ -147,6 +215,8 @@ static ssize_t store_throttle(struct cbe_pmd_regs __iomem *pmd_regs, const char 
 	return size;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t spu_show_throttle_end(struct sys_device *sysdev,
 			struct sysdev_attribute *attr, char *buf)
 {
@@ -184,11 +254,63 @@ static ssize_t spu_store_throttle_full_stop(struct sys_device *sysdev,
 }
 
 static ssize_t ppe_show_temp(struct sys_device *sysdev, char *buf, int pos)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static ssize_t spu_show_throttle_end(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	return show_throttle(get_pmd_regs(dev), buf, 0);
+}
+
+static ssize_t spu_show_throttle_begin(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	return show_throttle(get_pmd_regs(dev), buf, 8);
+}
+
+static ssize_t spu_show_throttle_full_stop(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	return show_throttle(get_pmd_regs(dev), buf, 16);
+}
+
+static ssize_t spu_store_throttle_end(struct device *dev,
+			struct device_attribute *attr, const char *buf, size_t size)
+{
+	return store_throttle(get_pmd_regs(dev), buf, size, 0);
+}
+
+static ssize_t spu_store_throttle_begin(struct device *dev,
+			struct device_attribute *attr, const char *buf, size_t size)
+{
+	return store_throttle(get_pmd_regs(dev), buf, size, 8);
+}
+
+static ssize_t spu_store_throttle_full_stop(struct device *dev,
+			struct device_attribute *attr, const char *buf, size_t size)
+{
+	return store_throttle(get_pmd_regs(dev), buf, size, 16);
+}
+
+static ssize_t ppe_show_temp(struct device *dev, char *buf, int pos)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct cbe_pmd_regs __iomem *pmd_regs;
 	u64 value;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pmd_regs = cbe_get_cpu_pmd_regs(sysdev->id);
+=======
+	pmd_regs = cbe_get_cpu_pmd_regs(dev->id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pmd_regs = cbe_get_cpu_pmd_regs(dev->id);
+>>>>>>> refs/remotes/origin/master
 	value = in_be64(&pmd_regs->ts_ctsr2);
 
 	value = (value >> pos) & 0x3f;
@@ -199,6 +321,8 @@ static ssize_t ppe_show_temp(struct sys_device *sysdev, char *buf, int pos)
 
 /* shows the temperature of the DTS on the PPE,
  * located near the linear thermal sensor */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t ppe_show_temp0(struct sys_device *sysdev,
 			struct sysdev_attribute *attr, char *buf)
 {
@@ -250,13 +374,83 @@ static ssize_t ppe_store_throttle_full_stop(struct sys_device *sysdev,
 
 
 static struct sysdev_attribute attr_spu_temperature = {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static ssize_t ppe_show_temp0(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	return ppe_show_temp(dev, buf, 32);
+}
+
+/* shows the temperature of the second DTS on the PPE */
+static ssize_t ppe_show_temp1(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	return ppe_show_temp(dev, buf, 0);
+}
+
+static ssize_t ppe_show_throttle_end(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	return show_throttle(cbe_get_cpu_pmd_regs(dev->id), buf, 32);
+}
+
+static ssize_t ppe_show_throttle_begin(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	return show_throttle(cbe_get_cpu_pmd_regs(dev->id), buf, 40);
+}
+
+static ssize_t ppe_show_throttle_full_stop(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	return show_throttle(cbe_get_cpu_pmd_regs(dev->id), buf, 48);
+}
+
+static ssize_t ppe_store_throttle_end(struct device *dev,
+			struct device_attribute *attr, const char *buf, size_t size)
+{
+	return store_throttle(cbe_get_cpu_pmd_regs(dev->id), buf, size, 32);
+}
+
+static ssize_t ppe_store_throttle_begin(struct device *dev,
+			struct device_attribute *attr, const char *buf, size_t size)
+{
+	return store_throttle(cbe_get_cpu_pmd_regs(dev->id), buf, size, 40);
+}
+
+static ssize_t ppe_store_throttle_full_stop(struct device *dev,
+			struct device_attribute *attr, const char *buf, size_t size)
+{
+	return store_throttle(cbe_get_cpu_pmd_regs(dev->id), buf, size, 48);
+}
+
+
+static struct device_attribute attr_spu_temperature = {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.attr = {.name = "temperature", .mode = 0400 },
 	.show = spu_show_temp,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_PREFIX_ATTR(spu, throttle_end, 0600);
 static SYSDEV_PREFIX_ATTR(spu, throttle_begin, 0600);
 static SYSDEV_PREFIX_ATTR(spu, throttle_full_stop, 0600);
+=======
+static DEVICE_PREFIX_ATTR(spu, throttle_end, 0600);
+static DEVICE_PREFIX_ATTR(spu, throttle_begin, 0600);
+static DEVICE_PREFIX_ATTR(spu, throttle_full_stop, 0600);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_PREFIX_ATTR(spu, throttle_end, 0600);
+static DEVICE_PREFIX_ATTR(spu, throttle_begin, 0600);
+static DEVICE_PREFIX_ATTR(spu, throttle_full_stop, 0600);
+>>>>>>> refs/remotes/origin/master
 
 
 static struct attribute *spu_attributes[] = {
@@ -272,19 +466,47 @@ static struct attribute_group spu_attribute_group = {
 	.attrs	= spu_attributes,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct sysdev_attribute attr_ppe_temperature0 = {
+=======
+static struct device_attribute attr_ppe_temperature0 = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct device_attribute attr_ppe_temperature0 = {
+>>>>>>> refs/remotes/origin/master
 	.attr = {.name = "temperature0", .mode = 0400 },
 	.show = ppe_show_temp0,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct sysdev_attribute attr_ppe_temperature1 = {
+=======
+static struct device_attribute attr_ppe_temperature1 = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct device_attribute attr_ppe_temperature1 = {
+>>>>>>> refs/remotes/origin/master
 	.attr = {.name = "temperature1", .mode = 0400 },
 	.show = ppe_show_temp1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_PREFIX_ATTR(ppe, throttle_end, 0600);
 static SYSDEV_PREFIX_ATTR(ppe, throttle_begin, 0600);
 static SYSDEV_PREFIX_ATTR(ppe, throttle_full_stop, 0600);
+=======
+static DEVICE_PREFIX_ATTR(ppe, throttle_end, 0600);
+static DEVICE_PREFIX_ATTR(ppe, throttle_begin, 0600);
+static DEVICE_PREFIX_ATTR(ppe, throttle_full_stop, 0600);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_PREFIX_ATTR(ppe, throttle_end, 0600);
+static DEVICE_PREFIX_ATTR(ppe, throttle_begin, 0600);
+static DEVICE_PREFIX_ATTR(ppe, throttle_full_stop, 0600);
+>>>>>>> refs/remotes/origin/master
 
 static struct attribute *ppe_attributes[] = {
 	&attr_ppe_temperature0.attr,
@@ -307,7 +529,15 @@ static int __init init_default_values(void)
 {
 	int cpu;
 	struct cbe_pmd_regs __iomem *pmd_regs;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sys_device *sysdev;
+=======
+	struct device *dev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *dev;
+>>>>>>> refs/remotes/origin/master
 	union ppe_spe_reg tpr;
 	union spe_reg str1;
 	u64 str2;
@@ -349,6 +579,8 @@ static int __init init_default_values(void)
 
 	for_each_possible_cpu (cpu) {
 		pr_debug("processing cpu %d\n", cpu);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sysdev = get_cpu_sysdev(cpu);
 
 		if (!sysdev) {
@@ -357,6 +589,21 @@ static int __init init_default_values(void)
 		}
 
 		pmd_regs = cbe_get_cpu_pmd_regs(sysdev->id);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		dev = get_cpu_device(cpu);
+
+		if (!dev) {
+			pr_info("invalid dev pointer for cbe_thermal\n");
+			return -EINVAL;
+		}
+
+		pmd_regs = cbe_get_cpu_pmd_regs(dev->id);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (!pmd_regs) {
 			pr_info("invalid CBE regs pointer for cbe_thermal\n");
@@ -379,8 +626,18 @@ static int __init thermal_init(void)
 	int rc = init_default_values();
 
 	if (rc == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		spu_add_sysdev_attr_group(&spu_attribute_group);
 		cpu_add_sysdev_attr_group(&ppe_attribute_group);
+=======
+		spu_add_dev_attr_group(&spu_attribute_group);
+		cpu_add_dev_attr_group(&ppe_attribute_group);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spu_add_dev_attr_group(&spu_attribute_group);
+		cpu_add_dev_attr_group(&ppe_attribute_group);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return rc;
@@ -389,8 +646,18 @@ module_init(thermal_init);
 
 static void __exit thermal_exit(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spu_remove_sysdev_attr_group(&spu_attribute_group);
 	cpu_remove_sysdev_attr_group(&ppe_attribute_group);
+=======
+	spu_remove_dev_attr_group(&spu_attribute_group);
+	cpu_remove_dev_attr_group(&ppe_attribute_group);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spu_remove_dev_attr_group(&spu_attribute_group);
+	cpu_remove_dev_attr_group(&ppe_attribute_group);
+>>>>>>> refs/remotes/origin/master
 }
 module_exit(thermal_exit);
 

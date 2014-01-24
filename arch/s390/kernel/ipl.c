@@ -1,8 +1,18 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/kernel/ipl.c
  *    ipl/reipl/dump support for Linux on s390.
  *
+<<<<<<< HEAD
  *    Copyright IBM Corp. 2005,2007
+=======
+ *    Copyright IBM Corp. 2005,2012
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    ipl/reipl/dump support for Linux on s390.
+ *
+ *    Copyright IBM Corp. 2005, 2012
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Michael Holzheu <holzheu@de.ibm.com>
  *		 Heiko Carstens <heiko.carstens@de.ibm.com>
  *		 Volker Sameske <sameske@de.ibm.com>
@@ -16,6 +26,16 @@
 #include <linux/ctype.h>
 #include <linux/fs.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/crash_dump.h>
+#include <linux/debug_locks.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/crash_dump.h>
+#include <linux/debug_locks.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/ipl.h>
 #include <asm/smp.h>
 #include <asm/setup.h>
@@ -24,8 +44,21 @@
 #include <asm/ebcdic.h>
 #include <asm/reset.h>
 #include <asm/sclp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/sigp.h>
 #include <asm/checksum.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/checksum.h>
+#include <asm/debug.h>
+#include <asm/os_info.h>
+#include "entry.h"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define IPL_PARM_BLOCK_VERSION 0
 
@@ -45,11 +78,27 @@
  * - halt
  * - power off
  * - reipl
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * - restart
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * - restart
+>>>>>>> refs/remotes/origin/master
  */
 #define ON_PANIC_STR		"on_panic"
 #define ON_HALT_STR		"on_halt"
 #define ON_POFF_STR		"on_poff"
 #define ON_REIPL_STR		"on_reboot"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define ON_RESTART_STR		"on_restart"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ON_RESTART_STR		"on_restart"
+>>>>>>> refs/remotes/origin/master
 
 struct shutdown_action;
 struct shutdown_trigger {
@@ -273,8 +322,18 @@ static ssize_t ipl_type_show(struct kobject *kobj, struct kobj_attribute *attr,
 static struct kobj_attribute sys_ipl_type_attr = __ATTR_RO(ipl_type);
 
 /* VM IPL PARM routines */
+<<<<<<< HEAD
+<<<<<<< HEAD
 size_t reipl_get_ascii_vmparm(char *dest, size_t size,
 				   const struct ipl_parameter_block *ipb)
+=======
+static size_t reipl_get_ascii_vmparm(char *dest, size_t size,
+				     const struct ipl_parameter_block *ipb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static size_t reipl_get_ascii_vmparm(char *dest, size_t size,
+				     const struct ipl_parameter_block *ipb)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	size_t len;
@@ -336,8 +395,18 @@ static size_t scpdata_length(const char* buf, size_t count)
 	return count;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 size_t reipl_append_ascii_scpdata(char *dest, size_t size,
 				  const struct ipl_parameter_block *ipb)
+=======
+static size_t reipl_append_ascii_scpdata(char *dest, size_t size,
+					 const struct ipl_parameter_block *ipb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static size_t reipl_append_ascii_scpdata(char *dest, size_t size,
+					 const struct ipl_parameter_block *ipb)
+>>>>>>> refs/remotes/origin/master
 {
 	size_t count;
 	size_t i;
@@ -567,7 +636,15 @@ static void __ipl_run(void *unused)
 
 static void ipl_run(struct shutdown_trigger *trigger)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	smp_switch_to_ipl_cpu(__ipl_run, NULL);
+=======
+	smp_call_ipl_cpu(__ipl_run, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	smp_call_ipl_cpu(__ipl_run, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init ipl_init(void)
@@ -749,9 +826,15 @@ static struct bin_attribute sys_reipl_fcp_scp_data_attr = {
 	.write = reipl_fcp_scpdata_write,
 };
 
+<<<<<<< HEAD
 DEFINE_IPL_ATTR_RW(reipl_fcp, wwpn, "0x%016llx\n", "%016llx\n",
 		   reipl_block_fcp->ipl_info.fcp.wwpn);
 DEFINE_IPL_ATTR_RW(reipl_fcp, lun, "0x%016llx\n", "%016llx\n",
+=======
+DEFINE_IPL_ATTR_RW(reipl_fcp, wwpn, "0x%016llx\n", "%llx\n",
+		   reipl_block_fcp->ipl_info.fcp.wwpn);
+DEFINE_IPL_ATTR_RW(reipl_fcp, lun, "0x%016llx\n", "%llx\n",
+>>>>>>> refs/remotes/origin/master
 		   reipl_block_fcp->ipl_info.fcp.lun);
 DEFINE_IPL_ATTR_RW(reipl_fcp, bootprog, "%lld\n", "%lld\n",
 		   reipl_block_fcp->ipl_info.fcp.bootprog);
@@ -946,6 +1029,22 @@ static struct attribute_group reipl_nss_attr_group = {
 	.attrs = reipl_nss_attrs,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void set_reipl_block_actual(struct ipl_parameter_block *reipl_block)
+{
+	reipl_block_actual = reipl_block;
+	os_info_entry_add(OS_INFO_REIPL_BLOCK, reipl_block_actual,
+			  reipl_block->hdr.len);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* reipl type */
 
 static int reipl_set_type(enum ipl_type type)
@@ -961,7 +1060,15 @@ static int reipl_set_type(enum ipl_type type)
 			reipl_method = REIPL_METHOD_CCW_VM;
 		else
 			reipl_method = REIPL_METHOD_CCW_CIO;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		reipl_block_actual = reipl_block_ccw;
+=======
+		set_reipl_block_actual(reipl_block_ccw);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_reipl_block_actual(reipl_block_ccw);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case IPL_TYPE_FCP:
 		if (diag308_set_works)
@@ -970,7 +1077,15 @@ static int reipl_set_type(enum ipl_type type)
 			reipl_method = REIPL_METHOD_FCP_RO_VM;
 		else
 			reipl_method = REIPL_METHOD_FCP_RO_DIAG;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		reipl_block_actual = reipl_block_fcp;
+=======
+		set_reipl_block_actual(reipl_block_fcp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_reipl_block_actual(reipl_block_fcp);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case IPL_TYPE_FCP_DUMP:
 		reipl_method = REIPL_METHOD_FCP_DUMP;
@@ -980,7 +1095,15 @@ static int reipl_set_type(enum ipl_type type)
 			reipl_method = REIPL_METHOD_NSS_DIAG;
 		else
 			reipl_method = REIPL_METHOD_NSS;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		reipl_block_actual = reipl_block_nss;
+=======
+		set_reipl_block_actual(reipl_block_nss);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_reipl_block_actual(reipl_block_nss);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case IPL_TYPE_UNKNOWN:
 		reipl_method = REIPL_METHOD_DEFAULT;
@@ -1097,7 +1220,15 @@ static void __reipl_run(void *unused)
 
 static void reipl_run(struct shutdown_trigger *trigger)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	smp_switch_to_ipl_cpu(__reipl_run, NULL);
+=======
+	smp_call_ipl_cpu(__reipl_run, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	smp_call_ipl_cpu(__reipl_run, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void reipl_block_ccw_init(struct ipl_parameter_block *ipb)
@@ -1218,7 +1349,15 @@ static int __init reipl_fcp_init(void)
 	/* sysfs: create fcp kset for mixing attr group and bin attrs */
 	reipl_fcp_kset = kset_create_and_add(IPL_FCP_STR, NULL,
 					     &reipl_kset->kobj);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!reipl_kset) {
+=======
+	if (!reipl_fcp_kset) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!reipl_fcp_kset) {
+>>>>>>> refs/remotes/origin/master
 		free_page((unsigned long) reipl_block_fcp);
 		return -ENOMEM;
 	}
@@ -1252,6 +1391,38 @@ static int __init reipl_fcp_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int __init reipl_type_init(void)
+{
+	enum ipl_type reipl_type = ipl_info.type;
+	struct ipl_parameter_block *reipl_block;
+	unsigned long size;
+
+	reipl_block = os_info_old_entry(OS_INFO_REIPL_BLOCK, &size);
+	if (!reipl_block)
+		goto out;
+	/*
+	 * If we have an OS info reipl block, this will be used
+	 */
+	if (reipl_block->hdr.pbt == DIAG308_IPL_TYPE_FCP) {
+		memcpy(reipl_block_fcp, reipl_block, size);
+		reipl_type = IPL_TYPE_FCP;
+	} else if (reipl_block->hdr.pbt == DIAG308_IPL_TYPE_CCW) {
+		memcpy(reipl_block_ccw, reipl_block, size);
+		reipl_type = IPL_TYPE_CCW;
+	}
+out:
+	return reipl_set_type(reipl_type);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init reipl_init(void)
 {
 	int rc;
@@ -1273,10 +1444,18 @@ static int __init reipl_init(void)
 	rc = reipl_nss_init();
 	if (rc)
 		return rc;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = reipl_set_type(ipl_info.type);
 	if (rc)
 		return rc;
 	return 0;
+=======
+	return reipl_type_init();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return reipl_type_init();
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct shutdown_action __refdata reipl_action = {
@@ -1291,9 +1470,15 @@ static struct shutdown_action __refdata reipl_action = {
 
 /* FCP dump device attributes */
 
+<<<<<<< HEAD
 DEFINE_IPL_ATTR_RW(dump_fcp, wwpn, "0x%016llx\n", "%016llx\n",
 		   dump_block_fcp->ipl_info.fcp.wwpn);
 DEFINE_IPL_ATTR_RW(dump_fcp, lun, "0x%016llx\n", "%016llx\n",
+=======
+DEFINE_IPL_ATTR_RW(dump_fcp, wwpn, "0x%016llx\n", "%llx\n",
+		   dump_block_fcp->ipl_info.fcp.wwpn);
+DEFINE_IPL_ATTR_RW(dump_fcp, lun, "0x%016llx\n", "%llx\n",
+>>>>>>> refs/remotes/origin/master
 		   dump_block_fcp->ipl_info.fcp.lun);
 DEFINE_IPL_ATTR_RW(dump_fcp, bootprog, "%lld\n", "%lld\n",
 		   dump_block_fcp->ipl_info.fcp.bootprog);
@@ -1382,6 +1567,19 @@ static struct kobj_attribute dump_type_attr =
 
 static struct kset *dump_kset;
 
+<<<<<<< HEAD
+=======
+static void diag308_dump(void *dump_block)
+{
+	diag308(DIAG308_SET, dump_block);
+	while (1) {
+		if (diag308(DIAG308_DUMP, NULL) != 0x302)
+			break;
+		udelay_simple(USEC_PER_SEC);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static void __dump_run(void *unused)
 {
 	struct ccw_dev_id devid;
@@ -1400,12 +1598,19 @@ static void __dump_run(void *unused)
 		__cpcmd(buf, NULL, 0, NULL);
 		break;
 	case DUMP_METHOD_CCW_DIAG:
+<<<<<<< HEAD
 		diag308(DIAG308_SET, dump_block_ccw);
 		diag308(DIAG308_DUMP, NULL);
 		break;
 	case DUMP_METHOD_FCP_DIAG:
 		diag308(DIAG308_SET, dump_block_fcp);
 		diag308(DIAG308_DUMP, NULL);
+=======
+		diag308_dump(dump_block_ccw);
+		break;
+	case DUMP_METHOD_FCP_DIAG:
+		diag308_dump(dump_block_fcp);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
@@ -1417,7 +1622,15 @@ static void dump_run(struct shutdown_trigger *trigger)
 	if (dump_method == DUMP_METHOD_NONE)
 		return;
 	smp_send_stop();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	smp_switch_to_ipl_cpu(__dump_run, NULL);
+=======
+	smp_call_ipl_cpu(__dump_run, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	smp_call_ipl_cpu(__dump_run, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init dump_ccw_init(void)
@@ -1495,6 +1708,8 @@ static struct shutdown_action __refdata dump_action = {
 
 static void dump_reipl_run(struct shutdown_trigger *trigger)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	preempt_disable();
 	/*
 	 * Bypass dynamic address translation (DAT) when storing IPL parameter
@@ -1519,6 +1734,22 @@ static void dump_reipl_run(struct shutdown_trigger *trigger)
 				     reipl_block_actual->hdr.len, 0)),
 		"a" (&lowcore_ptr[smp_processor_id()]->ipib_checksum));
 	preempt_enable();
+=======
+	u32 csum;
+
+	csum = csum_partial(reipl_block_actual, reipl_block_actual->hdr.len, 0);
+	copy_to_absolute_zero(&S390_lowcore.ipib_checksum, &csum, sizeof(csum));
+	copy_to_absolute_zero(&S390_lowcore.ipib, &reipl_block_actual,
+			      sizeof(reipl_block_actual));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long ipib = (unsigned long) reipl_block_actual;
+	unsigned int csum;
+
+	csum = csum_partial(reipl_block_actual, reipl_block_actual->hdr.len, 0);
+	mem_assign_absolute(S390_lowcore.ipib, ipib);
+	mem_assign_absolute(S390_lowcore.ipib_checksum, csum);
+>>>>>>> refs/remotes/origin/master
 	dump_run(trigger);
 }
 
@@ -1544,17 +1775,41 @@ static char vmcmd_on_reboot[128];
 static char vmcmd_on_panic[128];
 static char vmcmd_on_halt[128];
 static char vmcmd_on_poff[128];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static char vmcmd_on_restart[128];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char vmcmd_on_restart[128];
+>>>>>>> refs/remotes/origin/master
 
 DEFINE_IPL_ATTR_STR_RW(vmcmd, on_reboot, "%s\n", "%s\n", vmcmd_on_reboot);
 DEFINE_IPL_ATTR_STR_RW(vmcmd, on_panic, "%s\n", "%s\n", vmcmd_on_panic);
 DEFINE_IPL_ATTR_STR_RW(vmcmd, on_halt, "%s\n", "%s\n", vmcmd_on_halt);
 DEFINE_IPL_ATTR_STR_RW(vmcmd, on_poff, "%s\n", "%s\n", vmcmd_on_poff);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+DEFINE_IPL_ATTR_STR_RW(vmcmd, on_restart, "%s\n", "%s\n", vmcmd_on_restart);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+DEFINE_IPL_ATTR_STR_RW(vmcmd, on_restart, "%s\n", "%s\n", vmcmd_on_restart);
+>>>>>>> refs/remotes/origin/master
 
 static struct attribute *vmcmd_attrs[] = {
 	&sys_vmcmd_on_reboot_attr.attr,
 	&sys_vmcmd_on_panic_attr.attr,
 	&sys_vmcmd_on_halt_attr.attr,
 	&sys_vmcmd_on_poff_attr.attr,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	&sys_vmcmd_on_restart_attr.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&sys_vmcmd_on_restart_attr.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -1566,7 +1821,11 @@ static struct kset *vmcmd_kset;
 
 static void vmcmd_run(struct shutdown_trigger *trigger)
 {
+<<<<<<< HEAD
 	char *cmd, *next_cmd;
+=======
+	char *cmd;
+>>>>>>> refs/remotes/origin/master
 
 	if (strcmp(trigger->name, ON_REIPL_STR) == 0)
 		cmd = vmcmd_on_reboot;
@@ -1576,11 +1835,22 @@ static void vmcmd_run(struct shutdown_trigger *trigger)
 		cmd = vmcmd_on_halt;
 	else if (strcmp(trigger->name, ON_POFF_STR) == 0)
 		cmd = vmcmd_on_poff;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	else if (strcmp(trigger->name, ON_RESTART_STR) == 0)
+		cmd = vmcmd_on_restart;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (strcmp(trigger->name, ON_RESTART_STR) == 0)
+		cmd = vmcmd_on_restart;
+>>>>>>> refs/remotes/origin/master
 	else
 		return;
 
 	if (strlen(cmd) == 0)
 		return;
+<<<<<<< HEAD
 	do {
 		next_cmd = strchr(cmd, '\n');
 		if (next_cmd) {
@@ -1590,6 +1860,9 @@ static void vmcmd_run(struct shutdown_trigger *trigger)
 		__cpcmd(cmd, NULL, 0, NULL);
 		cmd = next_cmd;
 	} while (cmd != NULL);
+=======
+	__cpcmd(cmd, NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vmcmd_init(void)
@@ -1611,11 +1884,24 @@ static struct shutdown_action vmcmd_action = {SHUTDOWN_ACTION_VMCMD_STR,
 
 static void stop_run(struct shutdown_trigger *trigger)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (strcmp(trigger->name, ON_PANIC_STR) == 0)
 		disabled_wait((unsigned long) __builtin_return_address(0));
 	while (sigp(smp_processor_id(), sigp_stop) == sigp_busy)
 		cpu_relax();
 	for (;;);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (strcmp(trigger->name, ON_PANIC_STR) == 0 ||
+	    strcmp(trigger->name, ON_RESTART_STR) == 0)
+		disabled_wait((unsigned long) __builtin_return_address(0));
+	smp_stop_cpu();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct shutdown_action stop_action = {SHUTDOWN_ACTION_STOP_STR,
@@ -1703,10 +1989,70 @@ static struct kobj_attribute on_panic_attr =
 
 static void do_panic(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	lgr_info_log();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lgr_info_log();
+>>>>>>> refs/remotes/origin/master
 	on_panic_trigger.action->fn(&on_panic_trigger);
 	stop_run(&on_panic_trigger);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* on restart */
+
+static struct shutdown_trigger on_restart_trigger = {ON_RESTART_STR,
+	&stop_action};
+
+static ssize_t on_restart_show(struct kobject *kobj,
+			       struct kobj_attribute *attr, char *page)
+{
+	return sprintf(page, "%s\n", on_restart_trigger.action->name);
+}
+
+static ssize_t on_restart_store(struct kobject *kobj,
+				struct kobj_attribute *attr,
+				const char *buf, size_t len)
+{
+	return set_trigger(buf, &on_restart_trigger, len);
+}
+
+static struct kobj_attribute on_restart_attr =
+	__ATTR(on_restart, 0644, on_restart_show, on_restart_store);
+
+static void __do_restart(void *ignore)
+{
+<<<<<<< HEAD
+=======
+	__arch_local_irq_stosm(0x04); /* enable DAT */
+>>>>>>> refs/remotes/origin/master
+	smp_send_stop();
+#ifdef CONFIG_CRASH_DUMP
+	crash_kexec(NULL);
+#endif
+	on_restart_trigger.action->fn(&on_restart_trigger);
+	stop_run(&on_restart_trigger);
+}
+
+void do_restart(void)
+{
+	tracing_off();
+	debug_locks_off();
+	lgr_info_log();
+	smp_call_online_cpu(__do_restart, NULL);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* on halt */
 
 static struct shutdown_trigger on_halt_trigger = {ON_HALT_STR, &stop_action};
@@ -1783,7 +2129,19 @@ static void __init shutdown_triggers_init(void)
 	if (sysfs_create_file(&shutdown_actions_kset->kobj,
 			      &on_poff_attr.attr))
 		goto fail;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	if (sysfs_create_file(&shutdown_actions_kset->kobj,
+			      &on_restart_attr.attr))
+		goto fail;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sysfs_create_file(&shutdown_actions_kset->kobj,
+			      &on_restart_attr.attr))
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 	return;
 fail:
 	panic("shutdown_triggers_init failed\n");
@@ -1959,13 +2317,36 @@ static void do_reset_calls(void)
 {
 	struct reset_call *reset;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_64BIT
+	if (diag308_set_works) {
+		diag308_reset();
+		return;
+	}
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(reset, &rcall, list)
 		reset->fn();
 }
 
 u32 dump_prefix_page;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void s390_reset_system(void)
+=======
+void s390_reset_system(void (*func)(void *), void *data)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void s390_reset_system(void (*func)(void *), void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct _lowcore *lc;
 
@@ -1984,11 +2365,21 @@ void s390_reset_system(void)
 	__ctl_clear_bit(0,28);
 
 	/* Set new machine check handler */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	S390_lowcore.mcck_new_psw.mask = psw_kernel_bits & ~PSW_MASK_MCHECK;
+=======
+	S390_lowcore.mcck_new_psw.mask = psw_kernel_bits | PSW_MASK_DAT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	S390_lowcore.mcck_new_psw.mask = PSW_KERNEL_BITS | PSW_MASK_DAT;
+>>>>>>> refs/remotes/origin/master
 	S390_lowcore.mcck_new_psw.addr =
 		PSW_ADDR_AMODE | (unsigned long) s390_base_mcck_handler;
 
 	/* Set new program check handler */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	S390_lowcore.program_new_psw.mask = psw_kernel_bits & ~PSW_MASK_MCHECK;
 	S390_lowcore.program_new_psw.addr =
 		PSW_ADDR_AMODE | (unsigned long) s390_base_pgm_handler;
@@ -1996,3 +2387,22 @@ void s390_reset_system(void)
 	do_reset_calls();
 }
 
+=======
+	S390_lowcore.program_new_psw.mask = psw_kernel_bits | PSW_MASK_DAT;
+=======
+	S390_lowcore.program_new_psw.mask = PSW_KERNEL_BITS | PSW_MASK_DAT;
+>>>>>>> refs/remotes/origin/master
+	S390_lowcore.program_new_psw.addr =
+		PSW_ADDR_AMODE | (unsigned long) s390_base_pgm_handler;
+
+	/* Store status at absolute zero */
+	store_status();
+
+	do_reset_calls();
+	if (func)
+		func(data);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

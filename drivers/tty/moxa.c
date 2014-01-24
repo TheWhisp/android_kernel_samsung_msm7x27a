@@ -44,8 +44,18 @@
 #include <linux/init.h>
 #include <linux/bitops.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/system.h>
+=======
+#include <linux/ratelimit.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/uaccess.h>
 
@@ -169,6 +179,10 @@ static DEFINE_SPINLOCK(moxa_lock);
 static unsigned long baseaddr[MAX_BOARDS];
 static unsigned int type[MAX_BOARDS];
 static unsigned int numports[MAX_BOARDS];
+<<<<<<< HEAD
+=======
+static struct tty_port moxa_service_port;
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("William Chen");
 MODULE_DESCRIPTION("MOXA Intellio Family Multiport Board Device Driver");
@@ -242,8 +256,18 @@ static void moxa_wait_finish(void __iomem *ofsAddr)
 	while (readw(ofsAddr + FuncCode) != 0)
 		if (time_after(jiffies, end))
 			return;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (readw(ofsAddr + FuncCode) != 0 && printk_ratelimit())
 		printk(KERN_WARNING "moxa function expired\n");
+=======
+	if (readw(ofsAddr + FuncCode) != 0)
+		printk_ratelimited(KERN_WARNING "moxa function expired\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (readw(ofsAddr + FuncCode) != 0)
+		printk_ratelimited(KERN_WARNING "moxa function expired\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void moxafunc(void __iomem *ofsAddr, u16 cmd, u16 arg)
@@ -367,10 +391,17 @@ static int moxa_ioctl(struct tty_struct *tty,
 					tmp.dcd = 1;
 
 				ttyp = tty_port_tty_get(&p->port);
+<<<<<<< HEAD
 				if (!ttyp || !ttyp->termios)
 					tmp.cflag = p->cflag;
 				else
 					tmp.cflag = ttyp->termios->c_cflag;
+=======
+				if (!ttyp)
+					tmp.cflag = p->cflag;
+				else
+					tmp.cflag = ttyp->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 				tty_kref_put(ttyp);
 copy:
 				if (copy_to_user(argm, &tmp, sizeof(tmp)))
@@ -834,7 +865,11 @@ static int moxa_init_board(struct moxa_board_conf *brd, struct device *dev)
 	const struct firmware *fw;
 	const char *file;
 	struct moxa_port *p;
+<<<<<<< HEAD
 	unsigned int i;
+=======
+	unsigned int i, first_idx;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	brd->ports = kcalloc(MAX_PORTS_PER_BOARD, sizeof(*brd->ports),
@@ -887,8 +922,20 @@ static int moxa_init_board(struct moxa_board_conf *brd, struct device *dev)
 		mod_timer(&moxaTimer, jiffies + HZ / 50);
 	spin_unlock_bh(&moxa_lock);
 
+<<<<<<< HEAD
 	return 0;
 err_free:
+=======
+	first_idx = (brd - moxa_boards) * MAX_PORTS_PER_BOARD;
+	for (i = 0; i < brd->numPorts; i++)
+		tty_port_register_device(&brd->ports[i].port, moxaDriver,
+				first_idx + i, dev);
+
+	return 0;
+err_free:
+	for (i = 0; i < MAX_PORTS_PER_BOARD; i++)
+		tty_port_destroy(&brd->ports[i].port);
+>>>>>>> refs/remotes/origin/master
 	kfree(brd->ports);
 err:
 	return ret;
@@ -896,7 +943,11 @@ err:
 
 static void moxa_board_deinit(struct moxa_board_conf *brd)
 {
+<<<<<<< HEAD
 	unsigned int a, opened;
+=======
+	unsigned int a, opened, first_idx;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&moxa_openlock);
 	spin_lock_bh(&moxa_lock);
@@ -905,6 +956,7 @@ static void moxa_board_deinit(struct moxa_board_conf *brd)
 
 	/* pci hot-un-plug support */
 	for (a = 0; a < brd->numPorts; a++)
+<<<<<<< HEAD
 		if (brd->ports[a].port.flags & ASYNC_INITIALIZED) {
 			struct tty_struct *tty = tty_port_tty_get(
 						&brd->ports[a].port);
@@ -913,6 +965,14 @@ static void moxa_board_deinit(struct moxa_board_conf *brd)
 				tty_kref_put(tty);
 			}
 		}
+=======
+		if (brd->ports[a].port.flags & ASYNC_INITIALIZED)
+			tty_port_tty_hangup(&brd->ports[a].port, false);
+
+	for (a = 0; a < MAX_PORTS_PER_BOARD; a++)
+		tty_port_destroy(&brd->ports[a].port);
+
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		opened = 0;
 		for (a = 0; a < brd->numPorts; a++)
@@ -925,13 +985,24 @@ static void moxa_board_deinit(struct moxa_board_conf *brd)
 		mutex_lock(&moxa_openlock);
 	}
 
+<<<<<<< HEAD
+=======
+	first_idx = (brd - moxa_boards) * MAX_PORTS_PER_BOARD;
+	for (a = 0; a < brd->numPorts; a++)
+		tty_unregister_device(moxaDriver, first_idx + a);
+
+>>>>>>> refs/remotes/origin/master
 	iounmap(brd->basemem);
 	brd->basemem = NULL;
 	kfree(brd->ports);
 }
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 static int __devinit moxa_pci_probe(struct pci_dev *pdev,
+=======
+static int moxa_pci_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 		const struct pci_device_id *ent)
 {
 	struct moxa_board_conf *board;
@@ -967,6 +1038,10 @@ static int __devinit moxa_pci_probe(struct pci_dev *pdev,
 	board->basemem = ioremap_nocache(pci_resource_start(pdev, 2), 0x4000);
 	if (board->basemem == NULL) {
 		dev_err(&pdev->dev, "can't remap io space 2\n");
+<<<<<<< HEAD
+=======
+		retval = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto err_reg;
 	}
 
@@ -1005,7 +1080,11 @@ err:
 	return retval;
 }
 
+<<<<<<< HEAD
 static void __devexit moxa_pci_remove(struct pci_dev *pdev)
+=======
+static void moxa_pci_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct moxa_board_conf *brd = pci_get_drvdata(pdev);
 
@@ -1018,7 +1097,11 @@ static struct pci_driver moxa_pci_driver = {
 	.name = "moxa",
 	.id_table = moxa_pcibrds,
 	.probe = moxa_pci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(moxa_pci_remove)
+=======
+	.remove = moxa_pci_remove
+>>>>>>> refs/remotes/origin/master
 };
 #endif /* CONFIG_PCI */
 
@@ -1031,11 +1114,26 @@ static int __init moxa_init(void)
 
 	printk(KERN_INFO "MOXA Intellio family driver version %s\n",
 			MOXA_VERSION);
+<<<<<<< HEAD
 	moxaDriver = alloc_tty_driver(MAX_PORTS + 1);
 	if (!moxaDriver)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	moxaDriver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	tty_port_init(&moxa_service_port);
+
+	moxaDriver = tty_alloc_driver(MAX_PORTS + 1,
+			TTY_DRIVER_REAL_RAW |
+			TTY_DRIVER_DYNAMIC_DEV);
+	if (IS_ERR(moxaDriver))
+		return PTR_ERR(moxaDriver);
+
+>>>>>>> refs/remotes/origin/master
 	moxaDriver->name = "ttyMX";
 	moxaDriver->major = ttymajor;
 	moxaDriver->minor_start = 0;
@@ -1045,8 +1143,14 @@ static int __init moxa_init(void)
 	moxaDriver->init_termios.c_cflag = B9600 | CS8 | CREAD | CLOCAL | HUPCL;
 	moxaDriver->init_termios.c_ispeed = 9600;
 	moxaDriver->init_termios.c_ospeed = 9600;
+<<<<<<< HEAD
 	moxaDriver->flags = TTY_DRIVER_REAL_RAW;
 	tty_set_operations(moxaDriver, &moxa_ops);
+=======
+	tty_set_operations(moxaDriver, &moxa_ops);
+	/* Having one more port only for ioctls is ugly */
+	tty_port_link_device(&moxa_service_port, moxaDriver, MAX_PORTS);
+>>>>>>> refs/remotes/origin/master
 
 	if (tty_register_driver(moxaDriver)) {
 		printk(KERN_ERR "can't register MOXA Smartio tty driver!\n");
@@ -1179,7 +1283,11 @@ static int moxa_open(struct tty_struct *tty, struct file *filp)
 	mutex_lock(&ch->port.mutex);
 	if (!(ch->port.flags & ASYNC_INITIALIZED)) {
 		ch->statusflags = 0;
+<<<<<<< HEAD
 		moxa_set_tty_param(tty, tty->termios);
+=======
+		moxa_set_tty_param(tty, &tty->termios);
+>>>>>>> refs/remotes/origin/master
 		MoxaPortLineCtrl(ch, 1, 1);
 		MoxaPortEnable(ch);
 		MoxaSetFifo(ch, ch->type == PORT_16550A);
@@ -1194,7 +1302,11 @@ static int moxa_open(struct tty_struct *tty, struct file *filp)
 static void moxa_close(struct tty_struct *tty, struct file *filp)
 {
 	struct moxa_port *ch = tty->driver_data;
+<<<<<<< HEAD
 	ch->cflag = tty->termios->c_cflag;
+=======
+	ch->cflag = tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 	tty_port_close(&ch->port, tty, filp);
 }
 
@@ -1345,7 +1457,10 @@ static void moxa_hangup(struct tty_struct *tty)
 
 static void moxa_new_dcdstate(struct moxa_port *p, u8 dcd)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	dcd = !!dcd;
 
@@ -1353,10 +1468,15 @@ static void moxa_new_dcdstate(struct moxa_port *p, u8 dcd)
 	if (dcd != p->DCDState) {
         	p->DCDState = dcd;
         	spin_unlock_irqrestore(&p->port.lock, flags);
+<<<<<<< HEAD
 		tty = tty_port_tty_get(&p->port);
 		if (tty && C_CLOCAL(tty) && !dcd)
 			tty_hangup(tty);
 		tty_kref_put(tty);
+=======
+		if (!dcd)
+			tty_port_tty_hangup(&p->port, true);
+>>>>>>> refs/remotes/origin/master
 	}
 	else
 		spin_unlock_irqrestore(&p->port.lock, flags);
@@ -1385,7 +1505,11 @@ static int moxa_poll_port(struct moxa_port *p, unsigned int handle,
 		if (inited && !test_bit(TTY_THROTTLED, &tty->flags) &&
 				MoxaPortRxQueue(p) > 0) { /* RX */
 			MoxaPortReadData(p);
+<<<<<<< HEAD
 			tty_schedule_flip(tty);
+=======
+			tty_schedule_flip(&p->port);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		clear_bit(EMPTYWAIT, &p->statusflags);
@@ -1409,8 +1533,13 @@ static int moxa_poll_port(struct moxa_port *p, unsigned int handle,
 		goto put;
 
 	if (tty && (intr & IntrBreak) && !I_IGNBRK(tty)) { /* BREAK */
+<<<<<<< HEAD
 		tty_insert_flip_char(tty, 0, TTY_BREAK);
 		tty_schedule_flip(tty);
+=======
+		tty_insert_flip_char(&p->port, 0, TTY_BREAK);
+		tty_schedule_flip(&p->port);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (intr & IntrLine)
@@ -1465,7 +1594,11 @@ static void moxa_poll(unsigned long ignored)
 
 static void moxa_set_tty_param(struct tty_struct *tty, struct ktermios *old_termios)
 {
+<<<<<<< HEAD
 	register struct ktermios *ts = tty->termios;
+=======
+	register struct ktermios *ts = &tty->termios;
+>>>>>>> refs/remotes/origin/master
 	struct moxa_port *ch = tty->driver_data;
 	int rts, cts, txflow, rxflow, xany, baud;
 
@@ -1946,7 +2079,11 @@ static int MoxaPortReadData(struct moxa_port *port)
 			ofs = baseAddr + DynPage_addr + bufhead + head;
 			len = (tail >= head) ? (tail - head) :
 					(rx_mask + 1 - head);
+<<<<<<< HEAD
 			len = tty_prepare_flip_string(tty, &dst,
+=======
+			len = tty_prepare_flip_string(&port->port, &dst,
+>>>>>>> refs/remotes/origin/master
 					min(len, count));
 			memcpy_fromio(dst, ofs, len);
 			head = (head + len) & rx_mask;
@@ -1958,7 +2095,11 @@ static int MoxaPortReadData(struct moxa_port *port)
 		while (count > 0) {
 			writew(pageno, baseAddr + Control_reg);
 			ofs = baseAddr + DynPage_addr + pageofs;
+<<<<<<< HEAD
 			len = tty_prepare_flip_string(tty, &dst,
+=======
+			len = tty_prepare_flip_string(&port->port, &dst,
+>>>>>>> refs/remotes/origin/master
 					min(Page_size - pageofs, count));
 			memcpy_fromio(dst, ofs, len);
 

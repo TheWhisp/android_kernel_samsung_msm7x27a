@@ -33,23 +33,44 @@
 #ifndef MLX4_DRIVER_H
 #define MLX4_DRIVER_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mlx4/device.h>
 
 struct mlx4_dev;
 
+<<<<<<< HEAD
+=======
+#define MLX4_MAC_MASK	   0xffffffffffffULL
+
+>>>>>>> refs/remotes/origin/master
 enum mlx4_dev_event {
 	MLX4_DEV_EVENT_CATASTROPHIC_ERROR,
 	MLX4_DEV_EVENT_PORT_UP,
 	MLX4_DEV_EVENT_PORT_DOWN,
 	MLX4_DEV_EVENT_PORT_REINIT,
+<<<<<<< HEAD
+=======
+	MLX4_DEV_EVENT_PORT_MGMT_CHANGE,
+	MLX4_DEV_EVENT_SLAVE_INIT,
+	MLX4_DEV_EVENT_SLAVE_SHUTDOWN,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mlx4_interface {
 	void *			(*add)	 (struct mlx4_dev *dev);
 	void			(*remove)(struct mlx4_dev *dev, void *context);
 	void			(*event) (struct mlx4_dev *dev, void *context,
+<<<<<<< HEAD
 					  enum mlx4_dev_event event, int port);
+=======
+					  enum mlx4_dev_event event, unsigned long param);
+>>>>>>> refs/remotes/origin/master
 	void *			(*get_dev)(struct mlx4_dev *dev, void *context, u8 port);
 	struct list_head	list;
 	enum mlx4_protocol	protocol;

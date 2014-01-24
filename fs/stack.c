@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/fs_stack.h>
 
@@ -29,10 +37,18 @@ void fsstack_copy_inode_size(struct inode *dst, struct inode *src)
 	 *
 	 * We don't actually know what locking is used at the lower level;
 	 * but if it's a filesystem that supports quotas, it will be using
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * i_lock as in inode_add_bytes().  tmpfs uses other locking, and
 	 * its 32-bit is (just) able to exceed 2TB i_size with the aid of
 	 * holes; but its i_blocks cannot carry into the upper long without
 	 * almost 2TB swap - let's ignore that case.
+=======
+	 * i_lock as in inode_add_bytes().
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * i_lock as in inode_add_bytes().
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (sizeof(i_blocks) > sizeof(long))
 		spin_lock(&src->i_lock);
@@ -74,6 +90,14 @@ void fsstack_copy_attr_all(struct inode *dest, const struct inode *src)
 	dest->i_ctime = src->i_ctime;
 	dest->i_blkbits = src->i_blkbits;
 	dest->i_flags = src->i_flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dest->i_nlink = src->i_nlink;
+=======
+	set_nlink(dest, src->i_nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(dest, src->i_nlink);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(fsstack_copy_attr_all);

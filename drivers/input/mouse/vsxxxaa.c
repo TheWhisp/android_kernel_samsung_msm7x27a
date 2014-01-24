@@ -548,6 +548,7 @@ static struct serio_driver vsxxxaa_drv = {
 	.disconnect	= vsxxxaa_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init vsxxxaa_init(void)
 {
 	return serio_register_driver(&vsxxxaa_drv);
@@ -561,3 +562,6 @@ static void __exit vsxxxaa_exit(void)
 module_init(vsxxxaa_init);
 module_exit(vsxxxaa_exit);
 
+=======
+module_serio_driver(vsxxxaa_drv);
+>>>>>>> refs/remotes/origin/master

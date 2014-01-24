@@ -13,6 +13,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
 
 void arch_idle(void);
@@ -26,6 +27,8 @@ static inline void arch_reset(char mode, const char *cmd)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* low level hardware reset hook -- for example, hitting the
  * PSHOLD line on the PMIC to hard reset the system
  */

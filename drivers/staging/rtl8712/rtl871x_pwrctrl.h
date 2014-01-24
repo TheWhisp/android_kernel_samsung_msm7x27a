@@ -1,3 +1,37 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/******************************************************************************
+ *
+ * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of version 2 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ * Modifications for inclusion into the Linux staging tree are
+ * Copyright(c) 2010 Larry Finger. All rights reserved.
+ *
+ * Contact information:
+ * WLAN FAE <wlanfae@realtek.com>
+ * Larry Finger <Larry.Finger@lwfinger.net>
+ *
+ ******************************************************************************/
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __RTL871X_PWRCTRL_H_
 #define __RTL871X_PWRCTRL_H_
 
@@ -5,6 +39,7 @@
 #include "drv_types.h"
 
 
+<<<<<<< HEAD
 #define FW_PWR0	0
 #define FW_PWR1		1
 #define FW_PWR2		2
@@ -25,6 +60,9 @@
 #define CMD_ALIVE	BIT(2)
 #define EVT_ALIVE	BIT(3)
 
+=======
+#define CMD_ALIVE	BIT(2)
+>>>>>>> refs/remotes/origin/master
 
 enum Power_Mgnt {
 	PS_MODE_ACTIVE	= 0	,
@@ -41,7 +79,10 @@ enum Power_Mgnt {
 	PS_MODE_NUM
 };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
 	BIT[2:0] = HW state
 	BIT[3] = Protocol PS state, 0: register active state,
@@ -108,7 +149,13 @@ struct	pwrctrl_priv {
 	u8	rpwm_retry;
 	uint	bSetPSModeWorkItemInProgress;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct semaphore pnp_pwr_mgnt_sema;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spinlock_t pnp_pwr_mgnt_lock;
 	s32	pnp_current_pwr_state;
 	u8	pnp_bstop_trx;

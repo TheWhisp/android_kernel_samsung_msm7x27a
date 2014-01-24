@@ -46,4 +46,7 @@ static void flush(void)
  * nothing to do
  */
 #define arch_decomp_setup()
+<<<<<<< HEAD
 #define arch_decomp_wdog()
+=======
+>>>>>>> refs/remotes/origin/master

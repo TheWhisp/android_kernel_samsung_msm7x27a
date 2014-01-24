@@ -7,6 +7,21 @@
 #define APEI_INTERNAL_H
 
 #include <linux/cper.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/acpi.h>
+#include <linux/acpi_io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/acpi.h>
+#include <linux/acpi_io.h>
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/acpi.h>
+#include <linux/acpi_io.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct apei_exec_context;
 
@@ -50,13 +65,56 @@ static inline u64 apei_exec_ctx_get_output(struct apei_exec_context *ctx)
 	return ctx->value;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int apei_exec_run(struct apei_exec_context *ctx, u8 action);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int __apei_exec_run(struct apei_exec_context *ctx, u8 action, bool optional);
+
+static inline int apei_exec_run(struct apei_exec_context *ctx, u8 action)
+{
+	return __apei_exec_run(ctx, action, 0);
+}
+
+/* It is optional whether the firmware provides the action */
+static inline int apei_exec_run_optional(struct apei_exec_context *ctx, u8 action)
+{
+	return __apei_exec_run(ctx, action, 1);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Common instruction implementation */
 
 /* IP has been set in instruction function */
 #define APEI_EXEC_SET_IP	1
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int apei_map_generic_address(struct acpi_generic_address *reg);
+
+static inline void apei_unmap_generic_address(struct acpi_generic_address *reg)
+{
+	acpi_os_unmap_generic_address(reg);
+}
+
+int apei_read(u64 *val, struct acpi_generic_address *reg);
+int apei_write(u64 val, struct acpi_generic_address *reg);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int __apei_exec_read_register(struct acpi_whea_header *entry, u64 *val);
 int __apei_exec_write_register(struct acpi_whea_header *entry, u64 val);
 int apei_exec_read_register(struct apei_exec_context *ctx,
@@ -84,6 +142,18 @@ static inline void apei_resources_init(struct apei_resources *resources)
 }
 
 void apei_resources_fini(struct apei_resources *resources);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int apei_resources_add(struct apei_resources *resources,
+		       unsigned long start, unsigned long size,
+		       bool iomem);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int apei_resources_add(struct apei_resources *resources,
+		       unsigned long start, unsigned long size,
+		       bool iomem);
+>>>>>>> refs/remotes/origin/master
 int apei_resources_sub(struct apei_resources *resources1,
 		       struct apei_resources *resources2);
 int apei_resources_request(struct apei_resources *resources,
@@ -96,11 +166,19 @@ struct dentry;
 struct dentry *apei_get_debugfs_dir(void);
 
 #define apei_estatus_for_each_section(estatus, section)			\
+<<<<<<< HEAD
 	for (section = (struct acpi_hest_generic_data *)(estatus + 1);	\
 	     (void *)section - (void *)estatus < estatus->data_length;	\
 	     section = (void *)(section+1) + section->error_data_length)
 
 static inline u32 apei_estatus_len(struct acpi_hest_generic_status *estatus)
+=======
+	for (section = (struct acpi_generic_data *)(estatus + 1);	\
+	     (void *)section - (void *)estatus < estatus->data_length;	\
+	     section = (void *)(section+1) + section->error_data_length)
+
+static inline u32 cper_estatus_len(struct acpi_generic_status *estatus)
+>>>>>>> refs/remotes/origin/master
 {
 	if (estatus->raw_data_length)
 		return estatus->raw_data_offset + \
@@ -109,8 +187,22 @@ static inline u32 apei_estatus_len(struct acpi_hest_generic_status *estatus)
 		return sizeof(*estatus) + estatus->data_length;
 }
 
+<<<<<<< HEAD
 void apei_estatus_print(const char *pfx,
 			const struct acpi_hest_generic_status *estatus);
 int apei_estatus_check_header(const struct acpi_hest_generic_status *estatus);
 int apei_estatus_check(const struct acpi_hest_generic_status *estatus);
+<<<<<<< HEAD
+=======
+
+int apei_osc_setup(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void cper_estatus_print(const char *pfx,
+			const struct acpi_generic_status *estatus);
+int cper_estatus_check_header(const struct acpi_generic_status *estatus);
+int cper_estatus_check(const struct acpi_generic_status *estatus);
+
+int apei_osc_setup(void);
+>>>>>>> refs/remotes/origin/master
 #endif

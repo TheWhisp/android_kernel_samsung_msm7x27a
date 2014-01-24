@@ -34,11 +34,25 @@
 static int lpc32xx_clkevt_next_event(unsigned long delta,
     struct clock_event_device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(LCP32XX_TIMER_CNTR_TCR_RESET,
 		LCP32XX_TIMER_TCR(LPC32XX_TIMER0_BASE));
 	__raw_writel(delta, LCP32XX_TIMER_PR(LPC32XX_TIMER0_BASE));
 	__raw_writel(LCP32XX_TIMER_CNTR_TCR_EN,
 		LCP32XX_TIMER_TCR(LPC32XX_TIMER0_BASE));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	__raw_writel(LPC32XX_TIMER_CNTR_TCR_RESET,
+		LPC32XX_TIMER_TCR(LPC32XX_TIMER0_BASE));
+	__raw_writel(delta, LPC32XX_TIMER_PR(LPC32XX_TIMER0_BASE));
+	__raw_writel(LPC32XX_TIMER_CNTR_TCR_EN,
+		LPC32XX_TIMER_TCR(LPC32XX_TIMER0_BASE));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -58,7 +72,15 @@ static void lpc32xx_clkevt_mode(enum clock_event_mode mode,
 		 * disable the timer to wait for the first call to
 		 * set_next_event().
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		__raw_writel(0, LCP32XX_TIMER_TCR(LPC32XX_TIMER0_BASE));
+=======
+		__raw_writel(0, LPC32XX_TIMER_TCR(LPC32XX_TIMER0_BASE));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__raw_writel(0, LPC32XX_TIMER_TCR(LPC32XX_TIMER0_BASE));
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case CLOCK_EVT_MODE_UNUSED:
@@ -70,7 +92,10 @@ static void lpc32xx_clkevt_mode(enum clock_event_mode mode,
 static struct clock_event_device lpc32xx_clkevt = {
 	.name		= "lpc32xx_clkevt",
 	.features	= CLOCK_EVT_FEAT_ONESHOT,
+<<<<<<< HEAD
 	.shift		= 32,
+=======
+>>>>>>> refs/remotes/origin/master
 	.rating		= 300,
 	.set_next_event	= lpc32xx_clkevt_next_event,
 	.set_mode	= lpc32xx_clkevt_mode,
@@ -81,8 +106,18 @@ static irqreturn_t lpc32xx_timer_interrupt(int irq, void *dev_id)
 	struct clock_event_device *evt = &lpc32xx_clkevt;
 
 	/* Clear match */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(LCP32XX_TIMER_CNTR_MTCH_BIT(0),
 		LCP32XX_TIMER_IR(LPC32XX_TIMER0_BASE));
+=======
+	__raw_writel(LPC32XX_TIMER_CNTR_MTCH_BIT(0),
+		LPC32XX_TIMER_IR(LPC32XX_TIMER0_BASE));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__raw_writel(LPC32XX_TIMER_CNTR_MTCH_BIT(0),
+		LPC32XX_TIMER_IR(LPC32XX_TIMER0_BASE));
+>>>>>>> refs/remotes/origin/master
 
 	evt->event_handler(evt);
 
@@ -100,7 +135,11 @@ static struct irqaction lpc32xx_timer_irq = {
  * clocks need to be enabled here manually and then tagged as used in
  * the clock driver initialization
  */
+<<<<<<< HEAD
 static void __init lpc32xx_timer_init(void)
+=======
+void __init lpc32xx_timer_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 clkrate, pllreg;
 
@@ -128,6 +167,8 @@ static void __init lpc32xx_timer_init(void)
 	clkrate = clkrate / clk_get_pclk_div();
 
 	/* Initial timer setup */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(0, LCP32XX_TIMER_TCR(LPC32XX_TIMER0_BASE));
 	__raw_writel(LCP32XX_TIMER_CNTR_MTCH_BIT(0),
 		LCP32XX_TIMER_IR(LPC32XX_TIMER0_BASE));
@@ -136,11 +177,27 @@ static void __init lpc32xx_timer_init(void)
 		LCP32XX_TIMER_CNTR_MCR_STOP(0) |
 		LCP32XX_TIMER_CNTR_MCR_RESET(0),
 		LCP32XX_TIMER_MCR(LPC32XX_TIMER0_BASE));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	__raw_writel(0, LPC32XX_TIMER_TCR(LPC32XX_TIMER0_BASE));
+	__raw_writel(LPC32XX_TIMER_CNTR_MTCH_BIT(0),
+		LPC32XX_TIMER_IR(LPC32XX_TIMER0_BASE));
+	__raw_writel(1, LPC32XX_TIMER_MR0(LPC32XX_TIMER0_BASE));
+	__raw_writel(LPC32XX_TIMER_CNTR_MCR_MTCH(0) |
+		LPC32XX_TIMER_CNTR_MCR_STOP(0) |
+		LPC32XX_TIMER_CNTR_MCR_RESET(0),
+		LPC32XX_TIMER_MCR(LPC32XX_TIMER0_BASE));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup tick interrupt */
 	setup_irq(IRQ_LPC32XX_TIMER0, &lpc32xx_timer_irq);
 
 	/* Setup the clockevent structure. */
+<<<<<<< HEAD
 	lpc32xx_clkevt.mult = div_sc(clkrate, NSEC_PER_SEC,
 		lpc32xx_clkevt.shift);
 	lpc32xx_clkevt.max_delta_ns = clockevent_delta2ns(-1,
@@ -151,6 +208,7 @@ static void __init lpc32xx_timer_init(void)
 	clockevents_register_device(&lpc32xx_clkevt);
 
 	/* Use timer1 as clock source. */
+<<<<<<< HEAD
 	__raw_writel(LCP32XX_TIMER_CNTR_TCR_RESET,
 		LCP32XX_TIMER_TCR(LPC32XX_TIMER1_BASE));
 	__raw_writel(0, LCP32XX_TIMER_PR(LPC32XX_TIMER1_BASE));
@@ -159,6 +217,23 @@ static void __init lpc32xx_timer_init(void)
 		LCP32XX_TIMER_TCR(LPC32XX_TIMER1_BASE));
 
 	clocksource_mmio_init(LCP32XX_TIMER_TC(LPC32XX_TIMER1_BASE),
+=======
+=======
+	lpc32xx_clkevt.cpumask = cpumask_of(0);
+	clockevents_config_and_register(&lpc32xx_clkevt, clkrate, 1, -1);
+
+	/* Use timer1 as clock source. */
+>>>>>>> refs/remotes/origin/master
+	__raw_writel(LPC32XX_TIMER_CNTR_TCR_RESET,
+		LPC32XX_TIMER_TCR(LPC32XX_TIMER1_BASE));
+	__raw_writel(0, LPC32XX_TIMER_PR(LPC32XX_TIMER1_BASE));
+	__raw_writel(0, LPC32XX_TIMER_MCR(LPC32XX_TIMER1_BASE));
+	__raw_writel(LPC32XX_TIMER_CNTR_TCR_EN,
+		LPC32XX_TIMER_TCR(LPC32XX_TIMER1_BASE));
+
+	clocksource_mmio_init(LPC32XX_TIMER_TC(LPC32XX_TIMER1_BASE),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		"lpc32xx_clksrc", clkrate, 300, 32, clocksource_mmio_readl_up);
 }
 
@@ -166,3 +241,7 @@ struct sys_timer lpc32xx_timer = {
 	.init		= &lpc32xx_timer_init,
 };
 
+=======
+		"lpc32xx_clksrc", clkrate, 300, 32, clocksource_mmio_readl_up);
+}
+>>>>>>> refs/remotes/origin/master

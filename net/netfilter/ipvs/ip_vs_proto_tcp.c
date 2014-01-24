@@ -33,21 +33,33 @@
 
 static int
 tcp_conn_schedule(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
+<<<<<<< HEAD
 		  int *verdict, struct ip_vs_conn **cpp)
+=======
+		  int *verdict, struct ip_vs_conn **cpp,
+		  struct ip_vs_iphdr *iph)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net *net;
 	struct ip_vs_service *svc;
 	struct tcphdr _tcph, *th;
+<<<<<<< HEAD
 	struct ip_vs_iphdr iph;
 
 	ip_vs_fill_iphdr(af, skb_network_header(skb), &iph);
 
 	th = skb_header_pointer(skb, iph.len, sizeof(_tcph), &_tcph);
+=======
+	struct netns_ipvs *ipvs;
+
+	th = skb_header_pointer(skb, iph->len, sizeof(_tcph), &_tcph);
+>>>>>>> refs/remotes/origin/master
 	if (th == NULL) {
 		*verdict = NF_DROP;
 		return 0;
 	}
 	net = skb_net(skb);
+<<<<<<< HEAD
 	/* No !th->ack check to allow scheduling on SYN+ACK for Active FTP */
 	if (th->syn &&
 	    (svc = ip_vs_service_get(net, af, skb->mark, iph.protocol,
@@ -55,11 +67,26 @@ tcp_conn_schedule(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
 		int ignored;
 
 		if (ip_vs_todrop(net_ipvs(net))) {
+=======
+	ipvs = net_ipvs(net);
+	/* No !th->ack check to allow scheduling on SYN+ACK for Active FTP */
+	rcu_read_lock();
+	if ((th->syn || sysctl_sloppy_tcp(ipvs)) && !th->rst &&
+	    (svc = ip_vs_service_find(net, af, skb->mark, iph->protocol,
+				      &iph->daddr, th->dest))) {
+		int ignored;
+
+		if (ip_vs_todrop(ipvs)) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * It seems that we are very loaded.
 			 * We have to drop this packet :(
 			 */
+<<<<<<< HEAD
 			ip_vs_service_put(svc);
+=======
+			rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 			*verdict = NF_DROP;
 			return 0;
 		}
@@ -68,6 +95,7 @@ tcp_conn_schedule(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
 		 * Let the virtual server select a real server for the
 		 * incoming connection, and create a connection entry.
 		 */
+<<<<<<< HEAD
 		*cpp = ip_vs_schedule(svc, skb, pd, &ignored);
 		if (!*cpp && ignored <= 0) {
 			if (!ignored)
@@ -80,6 +108,19 @@ tcp_conn_schedule(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
 		}
 		ip_vs_service_put(svc);
 	}
+=======
+		*cpp = ip_vs_schedule(svc, skb, pd, &ignored, iph);
+		if (!*cpp && ignored <= 0) {
+			if (!ignored)
+				*verdict = ip_vs_leave(svc, skb, pd, iph);
+			else
+				*verdict = NF_DROP;
+			rcu_read_unlock();
+			return 0;
+		}
+	}
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	/* NF_ACCEPT */
 	return 1;
 }
@@ -128,20 +169,34 @@ tcp_partial_csum_update(int af, struct tcphdr *tcph,
 
 
 static int
+<<<<<<< HEAD
 tcp_snat_handler(struct sk_buff *skb,
 		 struct ip_vs_protocol *pp, struct ip_vs_conn *cp)
 {
 	struct tcphdr *tcph;
 	unsigned int tcphoff;
+=======
+tcp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
+		 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph)
+{
+	struct tcphdr *tcph;
+	unsigned int tcphoff = iph->len;
+>>>>>>> refs/remotes/origin/master
 	int oldlen;
 	int payload_csum = 0;
 
 #ifdef CONFIG_IP_VS_IPV6
+<<<<<<< HEAD
 	if (cp->af == AF_INET6)
 		tcphoff = sizeof(struct ipv6hdr);
 	else
 #endif
 		tcphoff = ip_hdrlen(skb);
+=======
+	if (cp->af == AF_INET6 && iph->fragoffs)
+		return 1;
+#endif
+>>>>>>> refs/remotes/origin/master
 	oldlen = skb->len - tcphoff;
 
 	/* csum_check requires unshared skb */
@@ -208,20 +263,34 @@ tcp_snat_handler(struct sk_buff *skb,
 
 
 static int
+<<<<<<< HEAD
 tcp_dnat_handler(struct sk_buff *skb,
 		 struct ip_vs_protocol *pp, struct ip_vs_conn *cp)
 {
 	struct tcphdr *tcph;
 	unsigned int tcphoff;
+=======
+tcp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
+		 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph)
+{
+	struct tcphdr *tcph;
+	unsigned int tcphoff = iph->len;
+>>>>>>> refs/remotes/origin/master
 	int oldlen;
 	int payload_csum = 0;
 
 #ifdef CONFIG_IP_VS_IPV6
+<<<<<<< HEAD
 	if (cp->af == AF_INET6)
 		tcphoff = sizeof(struct ipv6hdr);
 	else
 #endif
 		tcphoff = ip_hdrlen(skb);
+=======
+	if (cp->af == AF_INET6 && iph->fragoffs)
+		return 1;
+#endif
+>>>>>>> refs/remotes/origin/master
 	oldlen = skb->len - tcphoff;
 
 	/* csum_check requires unshared skb */
@@ -407,7 +476,11 @@ static struct tcp_states_t tcp_states [] = {
 /*        sNO, sES, sSS, sSR, sFW, sTW, sCL, sCW, sLA, sLI, sSA	*/
 /*syn*/ {{sSR, sES, sES, sSR, sSR, sSR, sSR, sSR, sSR, sSR, sSR }},
 /*fin*/ {{sCL, sCW, sSS, sTW, sTW, sTW, sCL, sCW, sLA, sLI, sTW }},
+<<<<<<< HEAD
 /*ack*/ {{sCL, sES, sSS, sES, sFW, sTW, sCL, sCW, sCL, sLI, sES }},
+=======
+/*ack*/ {{sES, sES, sSS, sES, sFW, sTW, sCL, sCW, sCL, sLI, sES }},
+>>>>>>> refs/remotes/origin/master
 /*rst*/ {{sCL, sCL, sCL, sSR, sCL, sCL, sCL, sCL, sLA, sLI, sSR }},
 
 /*	OUTPUT */
@@ -421,7 +494,11 @@ static struct tcp_states_t tcp_states [] = {
 /*        sNO, sES, sSS, sSR, sFW, sTW, sCL, sCW, sLA, sLI, sSA	*/
 /*syn*/ {{sSR, sES, sES, sSR, sSR, sSR, sSR, sSR, sSR, sSR, sSR }},
 /*fin*/ {{sCL, sFW, sSS, sTW, sFW, sTW, sCL, sCW, sLA, sLI, sTW }},
+<<<<<<< HEAD
 /*ack*/ {{sCL, sES, sSS, sES, sFW, sTW, sCL, sCW, sCL, sLI, sES }},
+=======
+/*ack*/ {{sES, sES, sSS, sES, sFW, sTW, sCL, sCW, sCL, sLI, sES }},
+>>>>>>> refs/remotes/origin/master
 /*rst*/ {{sCL, sCL, sCL, sSR, sCL, sCL, sCL, sCL, sLA, sLI, sCL }},
 };
 
@@ -430,7 +507,11 @@ static struct tcp_states_t tcp_states_dos [] = {
 /*        sNO, sES, sSS, sSR, sFW, sTW, sCL, sCW, sLA, sLI, sSA	*/
 /*syn*/ {{sSR, sES, sES, sSR, sSR, sSR, sSR, sSR, sSR, sSR, sSA }},
 /*fin*/ {{sCL, sCW, sSS, sTW, sTW, sTW, sCL, sCW, sLA, sLI, sSA }},
+<<<<<<< HEAD
 /*ack*/ {{sCL, sES, sSS, sSR, sFW, sTW, sCL, sCW, sCL, sLI, sSA }},
+=======
+/*ack*/ {{sES, sES, sSS, sSR, sFW, sTW, sCL, sCW, sCL, sLI, sSA }},
+>>>>>>> refs/remotes/origin/master
 /*rst*/ {{sCL, sCL, sCL, sSR, sCL, sCL, sCL, sCL, sLA, sLI, sCL }},
 
 /*	OUTPUT */
@@ -444,7 +525,11 @@ static struct tcp_states_t tcp_states_dos [] = {
 /*        sNO, sES, sSS, sSR, sFW, sTW, sCL, sCW, sLA, sLI, sSA	*/
 /*syn*/ {{sSA, sES, sES, sSR, sSA, sSA, sSA, sSA, sSA, sSA, sSA }},
 /*fin*/ {{sCL, sFW, sSS, sTW, sFW, sTW, sCL, sCW, sLA, sLI, sTW }},
+<<<<<<< HEAD
 /*ack*/ {{sCL, sES, sSS, sES, sFW, sTW, sCL, sCW, sCL, sLI, sES }},
+=======
+/*ack*/ {{sES, sES, sSS, sES, sFW, sTW, sCL, sCW, sCL, sLI, sES }},
+>>>>>>> refs/remotes/origin/master
 /*rst*/ {{sCL, sCL, sCL, sSR, sCL, sCL, sCL, sCL, sLA, sLI, sCL }},
 };
 
@@ -546,7 +631,15 @@ set_tcp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
 /*
  *	Handle state transitions
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int
+=======
+static void
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 tcp_state_transition(struct ip_vs_conn *cp, int direction,
 		     const struct sk_buff *skb,
 		     struct ip_vs_proto_data *pd)
@@ -561,13 +654,28 @@ tcp_state_transition(struct ip_vs_conn *cp, int direction,
 
 	th = skb_header_pointer(skb, ihl, sizeof(_tcph), &_tcph);
 	if (th == NULL)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock(&cp->lock);
 	set_tcp_state(pd, cp, direction, th);
 	spin_unlock(&cp->lock);
+<<<<<<< HEAD
 
 	return 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+
+	spin_lock_bh(&cp->lock);
+	set_tcp_state(pd, cp, direction, th);
+	spin_unlock_bh(&cp->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline __u16 tcp_app_hashkey(__be16 port)
@@ -588,18 +696,28 @@ static int tcp_register_app(struct net *net, struct ip_vs_app *inc)
 
 	hash = tcp_app_hashkey(port);
 
+<<<<<<< HEAD
 	spin_lock_bh(&ipvs->tcp_app_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(i, &ipvs->tcp_apps[hash], p_list) {
 		if (i->port == port) {
 			ret = -EEXIST;
 			goto out;
 		}
 	}
+<<<<<<< HEAD
 	list_add(&inc->p_list, &ipvs->tcp_apps[hash]);
 	atomic_inc(&pd->appcnt);
 
   out:
 	spin_unlock_bh(&ipvs->tcp_app_lock);
+=======
+	list_add_rcu(&inc->p_list, &ipvs->tcp_apps[hash]);
+	atomic_inc(&pd->appcnt);
+
+  out:
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -607,6 +725,7 @@ static int tcp_register_app(struct net *net, struct ip_vs_app *inc)
 static void
 tcp_unregister_app(struct net *net, struct ip_vs_app *inc)
 {
+<<<<<<< HEAD
 	struct netns_ipvs *ipvs = net_ipvs(net);
 	struct ip_vs_proto_data *pd = ip_vs_proto_data_get(net, IPPROTO_TCP);
 
@@ -614,6 +733,12 @@ tcp_unregister_app(struct net *net, struct ip_vs_app *inc)
 	atomic_dec(&pd->appcnt);
 	list_del(&inc->p_list);
 	spin_unlock_bh(&ipvs->tcp_app_lock);
+=======
+	struct ip_vs_proto_data *pd = ip_vs_proto_data_get(net, IPPROTO_TCP);
+
+	atomic_dec(&pd->appcnt);
+	list_del_rcu(&inc->p_list);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -632,12 +757,21 @@ tcp_app_conn_bind(struct ip_vs_conn *cp)
 	/* Lookup application incarnations and bind the right one */
 	hash = tcp_app_hashkey(cp->vport);
 
+<<<<<<< HEAD
 	spin_lock(&ipvs->tcp_app_lock);
 	list_for_each_entry(inc, &ipvs->tcp_apps[hash], p_list) {
 		if (inc->port == cp->vport) {
 			if (unlikely(!ip_vs_app_inc_get(inc)))
 				break;
 			spin_unlock(&ipvs->tcp_app_lock);
+=======
+	rcu_read_lock();
+	list_for_each_entry_rcu(inc, &ipvs->tcp_apps[hash], p_list) {
+		if (inc->port == cp->vport) {
+			if (unlikely(!ip_vs_app_inc_get(inc)))
+				break;
+			rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 			IP_VS_DBG_BUF(9, "%s(): Binding conn %s:%u->"
 				      "%s:%u to app %s on port %u\n",
@@ -654,7 +788,11 @@ tcp_app_conn_bind(struct ip_vs_conn *cp)
 			goto out;
 		}
 	}
+<<<<<<< HEAD
 	spin_unlock(&ipvs->tcp_app_lock);
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
   out:
 	return result;
@@ -668,26 +806,57 @@ void ip_vs_tcp_conn_listen(struct net *net, struct ip_vs_conn *cp)
 {
 	struct ip_vs_proto_data *pd = ip_vs_proto_data_get(net, IPPROTO_TCP);
 
+<<<<<<< HEAD
 	spin_lock(&cp->lock);
 	cp->state = IP_VS_TCP_S_LISTEN;
 	cp->timeout = (pd ? pd->timeout_table[IP_VS_TCP_S_LISTEN]
 			   : tcp_timeouts[IP_VS_TCP_S_LISTEN]);
 	spin_unlock(&cp->lock);
+=======
+	spin_lock_bh(&cp->lock);
+	cp->state = IP_VS_TCP_S_LISTEN;
+	cp->timeout = (pd ? pd->timeout_table[IP_VS_TCP_S_LISTEN]
+			   : tcp_timeouts[IP_VS_TCP_S_LISTEN]);
+	spin_unlock_bh(&cp->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ---------------------------------------------
  *   timeouts is netns related now.
  * ---------------------------------------------
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __ip_vs_tcp_init(struct net *net, struct ip_vs_proto_data *pd)
+=======
+static int __ip_vs_tcp_init(struct net *net, struct ip_vs_proto_data *pd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __ip_vs_tcp_init(struct net *net, struct ip_vs_proto_data *pd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
 	ip_vs_init_hash_table(ipvs->tcp_apps, TCP_APP_TAB_SIZE);
+<<<<<<< HEAD
 	spin_lock_init(&ipvs->tcp_app_lock);
 	pd->timeout_table = ip_vs_create_timeout_table((int *)tcp_timeouts,
 							sizeof(tcp_timeouts));
+<<<<<<< HEAD
 	pd->tcp_state_table =  tcp_states;
+=======
+=======
+	pd->timeout_table = ip_vs_create_timeout_table((int *)tcp_timeouts,
+							sizeof(tcp_timeouts));
+>>>>>>> refs/remotes/origin/master
+	if (!pd->timeout_table)
+		return -ENOMEM;
+	pd->tcp_state_table =  tcp_states;
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __ip_vs_tcp_exit(struct net *net, struct ip_vs_proto_data *pd)

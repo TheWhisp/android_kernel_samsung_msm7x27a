@@ -9,10 +9,12 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 struct irq_data;
 struct sys_timer;
 
 extern struct sys_timer pxa_timer;
+<<<<<<< HEAD
 extern void __init pxa_init_irq(int irq_nr,
 				int (*set_wake)(struct irq_data *,
 						unsigned int));
@@ -28,6 +30,19 @@ extern void __init pxa_map_io(void);
 extern void __init pxa25x_map_io(void);
 extern void __init pxa27x_map_io(void);
 extern void __init pxa3xx_map_io(void);
+=======
+
+extern void __init pxa_map_io(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/reboot.h>
+
+struct irq_data;
+
+extern void pxa_timer_init(void);
+
+extern void __init pxa_map_io(void);
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned int get_clk_frequency_khz(int info);
 
@@ -62,7 +77,13 @@ extern unsigned pxa3xx_get_clk_frequency_khz(int);
 #endif
 
 extern struct syscore_ops pxa_irq_syscore_ops;
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern struct syscore_ops pxa_gpio_syscore_ops;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct syscore_ops pxa2xx_mfp_syscore_ops;
 extern struct syscore_ops pxa3xx_mfp_syscore_ops;
 
@@ -70,3 +91,13 @@ void __init pxa_set_ffuart_info(void *info);
 void __init pxa_set_btuart_info(void *info);
 void __init pxa_set_stuart_info(void *info);
 void __init pxa_set_hwuart_info(void *info);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+void pxa_restart(char, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+void pxa_restart(enum reboot_mode, const char *);
+>>>>>>> refs/remotes/origin/master

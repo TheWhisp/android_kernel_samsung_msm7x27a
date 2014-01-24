@@ -28,6 +28,16 @@
  *		2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/types.h>
@@ -48,7 +58,13 @@
 
 #include <net/sock.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/dma.h>
 #include <asm/uaccess.h>
@@ -112,8 +128,16 @@ static void dlci_receive(struct sk_buff *skb, struct net_device *dev)
 
 	dlp = netdev_priv(dev);
 	if (!pskb_may_pull(skb, sizeof(*hdr))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "%s: invalid data no header\n",
 		       dev->name);
+=======
+		netdev_notice(dev, "invalid data no header\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_notice(dev, "invalid data no header\n");
+>>>>>>> refs/remotes/origin/master
 		dev->stats.rx_errors++;
 		kfree_skb(skb);
 		return;
@@ -126,7 +150,17 @@ static void dlci_receive(struct sk_buff *skb, struct net_device *dev)
 
 	if (hdr->control != FRAD_I_UI)
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "%s: Invalid header flag 0x%02X.\n", dev->name, hdr->control);
+=======
+		netdev_notice(dev, "Invalid header flag 0x%02X\n",
+			      hdr->control);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_notice(dev, "Invalid header flag 0x%02X\n",
+			      hdr->control);
+>>>>>>> refs/remotes/origin/master
 		dev->stats.rx_errors++;
 	}
 	else
@@ -135,14 +169,37 @@ static void dlci_receive(struct sk_buff *skb, struct net_device *dev)
 			case FRAD_P_PADDING:
 				if (hdr->NLPID != FRAD_P_SNAP)
 				{
+<<<<<<< HEAD
+<<<<<<< HEAD
 					printk(KERN_NOTICE "%s: Unsupported NLPID 0x%02X.\n", dev->name, hdr->NLPID);
+=======
+					netdev_notice(dev, "Unsupported NLPID 0x%02X\n",
+						      hdr->NLPID);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					netdev_notice(dev, "Unsupported NLPID 0x%02X\n",
+						      hdr->NLPID);
+>>>>>>> refs/remotes/origin/master
 					dev->stats.rx_errors++;
 					break;
 				}
 	 
 				if (hdr->OUI[0] + hdr->OUI[1] + hdr->OUI[2] != 0)
 				{
+<<<<<<< HEAD
+<<<<<<< HEAD
 					printk(KERN_NOTICE "%s: Unsupported organizationally unique identifier 0x%02X-%02X-%02X.\n", dev->name, hdr->OUI[0], hdr->OUI[1], hdr->OUI[2]);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					netdev_notice(dev, "Unsupported organizationally unique identifier 0x%02X-%02X-%02X\n",
+						      hdr->OUI[0],
+						      hdr->OUI[1],
+						      hdr->OUI[2]);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					dev->stats.rx_errors++;
 					break;
 				}
@@ -163,12 +220,32 @@ static void dlci_receive(struct sk_buff *skb, struct net_device *dev)
 			case FRAD_P_SNAP:
 			case FRAD_P_Q933:
 			case FRAD_P_CLNP:
+<<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_NOTICE "%s: Unsupported NLPID 0x%02X.\n", dev->name, hdr->pad);
+=======
+				netdev_notice(dev, "Unsupported NLPID 0x%02X\n",
+					      hdr->pad);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_notice(dev, "Unsupported NLPID 0x%02X\n",
+					      hdr->pad);
+>>>>>>> refs/remotes/origin/master
 				dev->stats.rx_errors++;
 				break;
 
 			default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_NOTICE "%s: Invalid pad byte 0x%02X.\n", dev->name, hdr->pad);
+=======
+				netdev_notice(dev, "Invalid pad byte 0x%02X\n",
+					      hdr->pad);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_notice(dev, "Invalid pad byte 0x%02X\n",
+					      hdr->pad);
+>>>>>>> refs/remotes/origin/master
 				dev->stats.rx_errors++;
 				break;				
 		}
@@ -486,7 +563,11 @@ static void dlci_setup(struct net_device *dev)
 static int dlci_dev_event(struct notifier_block *unused,
 			  unsigned long event, void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = (struct net_device *) ptr;
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	if (dev_net(dev) != &init_net)
 		return NOTIFY_DONE;

@@ -12,7 +12,13 @@
 #include <asm/bcache.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/bootinfo.h>
 #include <asm/sgi/ip22.h>
 #include <asm/sgi/mc.h>
@@ -160,7 +166,11 @@ static inline int __init indy_sc_probe(void)
 }
 
 /* XXX Check with wje if the Indy caches can differenciate between
+<<<<<<< HEAD
    writeback + invalidate and just invalidate.  */
+=======
+   writeback + invalidate and just invalidate.	*/
+>>>>>>> refs/remotes/origin/master
 static struct bcache_ops indy_sc_ops = {
 	.bc_enable = indy_sc_enable,
 	.bc_disable = indy_sc_disable,
@@ -168,7 +178,11 @@ static struct bcache_ops indy_sc_ops = {
 	.bc_inv = indy_sc_wback_invalidate
 };
 
+<<<<<<< HEAD
 void __cpuinit indy_sc_init(void)
+=======
+void indy_sc_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (indy_sc_probe()) {
 		indy_sc_enable();

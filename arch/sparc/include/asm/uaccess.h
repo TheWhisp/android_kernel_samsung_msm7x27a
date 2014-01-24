@@ -5,4 +5,13 @@
 #else
 #include <asm/uaccess_32.h>
 #endif
+<<<<<<< HEAD
+=======
+
+#define user_addr_max() \
+	(segment_eq(get_fs(), USER_DS) ? TASK_SIZE : ~0UL)
+
+extern long strncpy_from_user(char *dest, const char __user *src, long count);
+
+>>>>>>> refs/remotes/origin/master
 #endif

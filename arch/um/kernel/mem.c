@@ -4,6 +4,14 @@
  */
 
 #include <linux/stddef.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bootmem.h>
 #include <linux/highmem.h>
 #include <linux/mm.h>
@@ -11,6 +19,7 @@
 #include <linux/slab.h>
 #include <asm/fixmap.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include "as-layout.h"
 #include "init.h"
 #include "kern.h"
@@ -20,6 +29,22 @@
 
 /* allocated in paging_init, zeroed in mem_init, and unchanged thereafter */
 unsigned long *empty_zero_page = NULL;
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(empty_zero_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <as-layout.h>
+#include <init.h>
+#include <kern.h>
+#include <kern_util.h>
+#include <mem_user.h>
+#include <os.h>
+
+/* allocated in paging_init, zeroed in mem_init, and unchanged thereafter */
+unsigned long *empty_zero_page = NULL;
+EXPORT_SYMBOL(empty_zero_page);
+>>>>>>> refs/remotes/origin/master
 /* allocated in paging_init and unchanged thereafter */
 static unsigned long *empty_bad_page = NULL;
 
@@ -40,17 +65,25 @@ static unsigned long brk_end;
 static void setup_highmem(unsigned long highmem_start,
 			  unsigned long highmem_len)
 {
+<<<<<<< HEAD
 	struct page *page;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long highmem_pfn;
 	int i;
 
 	highmem_pfn = __pa(highmem_start) >> PAGE_SHIFT;
+<<<<<<< HEAD
 	for (i = 0; i < highmem_len >> PAGE_SHIFT; i++) {
 		page = &mem_map[highmem_pfn + i];
 		ClearPageReserved(page);
 		init_page_count(page);
 		__free_page(page);
 	}
+=======
+	for (i = 0; i < highmem_len >> PAGE_SHIFT; i++)
+		free_highmem_page(&mem_map[highmem_pfn + i]);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -68,6 +101,7 @@ void __init mem_init(void)
 	uml_reserved = brk_end;
 
 	/* this will put all low memory onto the freelists */
+<<<<<<< HEAD
 	totalram_pages = free_all_bootmem();
 	max_low_pfn = totalram_pages;
 #ifdef CONFIG_HIGHMEM
@@ -83,6 +117,16 @@ void __init mem_init(void)
 #ifdef CONFIG_HIGHMEM
 	setup_highmem(end_iomem, highmem);
 #endif
+=======
+	free_all_bootmem();
+	max_low_pfn = totalram_pages;
+#ifdef CONFIG_HIGHMEM
+	setup_highmem(end_iomem, highmem);
+#endif
+	max_pfn = totalram_pages;
+	mem_init_print_info(NULL);
+	kmalloc_ok = 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -252,6 +296,7 @@ void free_initmem(void)
 #ifdef CONFIG_BLK_DEV_INITRD
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	if (start < end)
 		printk(KERN_INFO "Freeing initrd memory: %ldk freed\n",
 		       (end - start) >> 10);
@@ -261,6 +306,9 @@ void free_initrd_mem(unsigned long start, unsigned long end)
 		free_page(start);
 		totalram_pages++;
 	}
+=======
+	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -297,8 +345,17 @@ pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long address)
 	struct page *pte;
 
 	pte = alloc_page(GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO);
+<<<<<<< HEAD
 	if (pte)
 		pgtable_page_ctor(pte);
+=======
+	if (!pte)
+		return NULL;
+	if (!pgtable_page_ctor(pte)) {
+		__free_page(pte);
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 	return pte;
 }
 

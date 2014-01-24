@@ -20,6 +20,10 @@
 #include <linux/i2c-pca-platform.h>
 #include <linux/i2c-algo-pca.h>
 #include <linux/usb/r8a66597.h>
+<<<<<<< HEAD
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <linux/clk.h>
@@ -28,6 +32,14 @@
 #include <cpu/sh7785.h>
 #include <asm/heartbeat.h>
 #include <asm/clock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/bl_bit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/bl_bit.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * NOTE: This board has 2 physical memory maps.
@@ -104,8 +116,13 @@ static struct resource r8a66597_usb_host_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 2,
 		.end	= 2,
+=======
+		.start	= evt2irq(0x240),
+		.end	= evt2irq(0x240),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IRQF_TRIGGER_LOW,
 	},
 };
@@ -134,7 +151,11 @@ static struct resource sm501_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[2]	= {
+<<<<<<< HEAD
 		.start	= 10,
+=======
+		.start	= evt2irq(0x340),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -222,8 +243,13 @@ static struct resource i2c_proto_resources[] = {
 		.flags	= IORESOURCE_MEM | IORESOURCE_MEM_8BIT,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 12,
 		.end	= 12,
+=======
+		.start	= evt2irq(0x380),
+		.end	= evt2irq(0x380),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -235,8 +261,13 @@ static struct resource i2c_resources[] = {
 		.flags	= IORESOURCE_MEM | IORESOURCE_MEM_8BIT,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 12,
 		.end	= 12,
+=======
+		.start	= evt2irq(0x380),
+		.end	= evt2irq(0x380),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -299,7 +330,15 @@ static int sh7785lcr_clk_init(void)
 	int ret;
 
 	clk = clk_get(NULL, "extal");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!clk || IS_ERR(clk))
+=======
+	if (IS_ERR(clk))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (IS_ERR(clk))
+>>>>>>> refs/remotes/origin/master
 		return PTR_ERR(clk);
 	ret = clk_set_rate(clk, 33333333);
 	clk_put(clk);

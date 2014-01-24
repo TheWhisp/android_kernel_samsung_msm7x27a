@@ -217,6 +217,7 @@ static int __init vr41xx_cmu_init(void)
 	unsigned long start, size;
 
 	switch (current_cpu_type()) {
+<<<<<<< HEAD
         case CPU_VR4111:
         case CPU_VR4121:
 		start = CMU_TYPE1_BASE;
@@ -235,6 +236,26 @@ static int __init vr41xx_cmu_init(void)
 		panic("Unexpected CPU of NEC VR4100 series");
 		break;
         }
+=======
+	case CPU_VR4111:
+	case CPU_VR4121:
+		start = CMU_TYPE1_BASE;
+		size = CMU_TYPE1_SIZE;
+		break;
+	case CPU_VR4122:
+	case CPU_VR4131:
+		start = CMU_TYPE2_BASE;
+		size = CMU_TYPE2_SIZE;
+		break;
+	case CPU_VR4133:
+		start = CMU_TYPE3_BASE;
+		size = CMU_TYPE3_SIZE;
+		break;
+	default:
+		panic("Unexpected CPU of NEC VR4100 series");
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (request_mem_region(start, size, "CMU") == NULL)
 		return -EBUSY;

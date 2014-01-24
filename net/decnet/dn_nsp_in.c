@@ -60,7 +60,13 @@
 #include <linux/slab.h>
 #include <net/sock.h>
 #include <net/tcp_states.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/termios.h>
@@ -81,12 +87,24 @@ extern int decnet_log_martians;
 
 static void dn_log_martian(struct sk_buff *skb, const char *msg)
 {
+<<<<<<< HEAD
 	if (decnet_log_martians && net_ratelimit()) {
 		char *devname = skb->dev ? skb->dev->name : "???";
 		struct dn_skb_cb *cb = DN_SKB_CB(skb);
 		printk(KERN_INFO "DECnet: Martian packet (%s) dev=%s src=0x%04hx dst=0x%04hx srcport=0x%04hx dstport=0x%04hx\n",
 		       msg, devname, le16_to_cpu(cb->src), le16_to_cpu(cb->dst),
 		       le16_to_cpu(cb->src_port), le16_to_cpu(cb->dst_port));
+=======
+	if (decnet_log_martians) {
+		char *devname = skb->dev ? skb->dev->name : "???";
+		struct dn_skb_cb *cb = DN_SKB_CB(skb);
+		net_info_ratelimited("DECnet: Martian packet (%s) dev=%s src=0x%04hx dst=0x%04hx srcport=0x%04hx dstport=0x%04hx\n",
+				     msg, devname,
+				     le16_to_cpu(cb->src),
+				     le16_to_cpu(cb->dst),
+				     le16_to_cpu(cb->src_port),
+				     le16_to_cpu(cb->dst_port));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -101,6 +119,8 @@ static void dn_ack(struct sock *sk, struct sk_buff *skb, unsigned short ack)
 	unsigned short type = ((ack >> 12) & 0x0003);
 	int wakeup = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(type) {
 		case 0: /* ACK - Data */
 			if (dn_after(ack, scp->ackrcv_dat)) {
@@ -118,6 +138,34 @@ static void dn_ack(struct sock *sk, struct sk_buff *skb, unsigned short ack)
 			break;
 		case 3: /* NAK - OtherData */
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (type) {
+	case 0: /* ACK - Data */
+		if (dn_after(ack, scp->ackrcv_dat)) {
+			scp->ackrcv_dat = ack & 0x0fff;
+			wakeup |= dn_nsp_check_xmit_queue(sk, skb,
+							  &scp->data_xmit_queue,
+							  ack);
+		}
+		break;
+	case 1: /* NAK - Data */
+		break;
+	case 2: /* ACK - OtherData */
+		if (dn_after(ack, scp->ackrcv_oth)) {
+			scp->ackrcv_oth = ack & 0x0fff;
+			wakeup |= dn_nsp_check_xmit_queue(sk, skb,
+							  &scp->other_xmit_queue,
+							  ack);
+		}
+		break;
+	case 3: /* NAK - OtherData */
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (wakeup && !sock_flag(sk, SOCK_DEAD))
@@ -417,6 +465,8 @@ static void dn_nsp_disc_init(struct sock *sk, struct sk_buff *skb)
 	scp->addrrem = cb->src_port;
 	sk->sk_state = TCP_CLOSE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(scp->state) {
 		case DN_CI:
 		case DN_CD:
@@ -430,6 +480,26 @@ static void dn_nsp_disc_init(struct sock *sk, struct sk_buff *skb)
 		case DN_DI:
 			scp->state = DN_DIC;
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (scp->state) {
+	case DN_CI:
+	case DN_CD:
+		scp->state = DN_RJ;
+		sk->sk_err = ECONNREFUSED;
+		break;
+	case DN_RUN:
+		sk->sk_shutdown |= SHUTDOWN_MASK;
+		scp->state = DN_DN;
+		break;
+	case DN_DI:
+		scp->state = DN_DIC;
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!sock_flag(sk, SOCK_DEAD)) {
@@ -470,6 +540,8 @@ static void dn_nsp_disc_conf(struct sock *sk, struct sk_buff *skb)
 
 	sk->sk_state = TCP_CLOSE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(scp->state) {
 		case DN_CI:
 			scp->state = DN_NR;
@@ -487,6 +559,30 @@ static void dn_nsp_disc_conf(struct sock *sk, struct sk_buff *skb)
 			sk->sk_shutdown |= SHUTDOWN_MASK;
 		case DN_CC:
 			scp->state = DN_CN;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (scp->state) {
+	case DN_CI:
+		scp->state = DN_NR;
+		break;
+	case DN_DR:
+		if (reason == NSP_REASON_DC)
+			scp->state = DN_DRC;
+		if (reason == NSP_REASON_NL)
+			scp->state = DN_CN;
+		break;
+	case DN_DI:
+		scp->state = DN_DIC;
+		break;
+	case DN_RUN:
+		sk->sk_shutdown |= SHUTDOWN_MASK;
+	case DN_CC:
+		scp->state = DN_CN;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!sock_flag(sk, SOCK_DEAD)) {
@@ -585,7 +681,11 @@ static __inline__ int dn_queue_skb(struct sock *sk, struct sk_buff *skb, int sig
 	   number of warnings when compiling with -W --ANK
 	 */
 	if (atomic_read(&sk->sk_rmem_alloc) + skb->truesize >=
+<<<<<<< HEAD
 	    (unsigned)sk->sk_rcvbuf) {
+=======
+	    (unsigned int)sk->sk_rcvbuf) {
+>>>>>>> refs/remotes/origin/master
 		err = -ENOMEM;
 		goto out;
 	}
@@ -692,6 +792,8 @@ static int dn_nsp_no_socket(struct sk_buff *skb, unsigned short reason)
 		goto out;
 
 	if ((reason != NSP_REASON_OK) && ((cb->nsp_flags & 0x0c) == 0x08)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		switch(cb->nsp_flags & 0x70) {
 			case 0x10:
 			case 0x60: /* (Retransmitted) Connect Init */
@@ -702,6 +804,23 @@ static int dn_nsp_no_socket(struct sk_buff *skb, unsigned short reason)
 				dn_nsp_return_disc(skb, NSP_DISCCONF, reason);
 				ret = NET_RX_SUCCESS;
 				break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		switch (cb->nsp_flags & 0x70) {
+		case 0x10:
+		case 0x60: /* (Retransmitted) Connect Init */
+			dn_nsp_return_disc(skb, NSP_DISCINIT, reason);
+			ret = NET_RX_SUCCESS;
+			break;
+		case 0x20: /* Connect Confirm */
+			dn_nsp_return_disc(skb, NSP_DISCCONF, reason);
+			ret = NET_RX_SUCCESS;
+			break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -733,6 +852,8 @@ static int dn_nsp_rx_packet(struct sk_buff *skb)
 	 * Filter out conninits and useless packet types
 	 */
 	if ((cb->nsp_flags & 0x0c) == 0x08) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		switch(cb->nsp_flags & 0x70) {
 			case 0x00: /* NOP */
 			case 0x70: /* Reserved */
@@ -744,6 +865,24 @@ static int dn_nsp_rx_packet(struct sk_buff *skb)
 					goto free_out;
 				sk = dn_find_listener(skb, &reason);
 				goto got_it;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		switch (cb->nsp_flags & 0x70) {
+		case 0x00: /* NOP */
+		case 0x70: /* Reserved */
+		case 0x50: /* Reserved, Phase II node init */
+			goto free_out;
+		case 0x10:
+		case 0x60:
+			if (unlikely(cb->rt_flags & DN_RT_F_RTS))
+				goto free_out;
+			sk = dn_find_listener(skb, &reason);
+			goto got_it;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -836,6 +975,8 @@ int dn_nsp_backlog_rcv(struct sock *sk, struct sk_buff *skb)
 	 * Control packet.
 	 */
 	if ((cb->nsp_flags & 0x0c) == 0x08) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		switch(cb->nsp_flags & 0x70) {
 			case 0x10:
 			case 0x60:
@@ -850,6 +991,27 @@ int dn_nsp_backlog_rcv(struct sock *sk, struct sk_buff *skb)
 			case 0x40:
 				dn_nsp_disc_conf(sk, skb);
 				break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		switch (cb->nsp_flags & 0x70) {
+		case 0x10:
+		case 0x60:
+			dn_nsp_conn_init(sk, skb);
+			break;
+		case 0x20:
+			dn_nsp_conn_conf(sk, skb);
+			break;
+		case 0x30:
+			dn_nsp_disc_init(sk, skb);
+			break;
+		case 0x40:
+			dn_nsp_disc_conf(sk, skb);
+			break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 	} else if (cb->nsp_flags == 0x24) {
@@ -890,6 +1052,8 @@ int dn_nsp_backlog_rcv(struct sock *sk, struct sk_buff *skb)
 			if (scp->state != DN_RUN)
 				goto free_out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			switch(cb->nsp_flags) {
 				case 0x10: /* LS */
 					dn_nsp_linkservice(sk, skb);
@@ -899,6 +1063,22 @@ int dn_nsp_backlog_rcv(struct sock *sk, struct sk_buff *skb)
 					break;
 				default:
 					dn_nsp_data(sk, skb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			switch (cb->nsp_flags) {
+			case 0x10: /* LS */
+				dn_nsp_linkservice(sk, skb);
+				break;
+			case 0x30: /* OD */
+				dn_nsp_otherdata(sk, skb);
+				break;
+			default:
+				dn_nsp_data(sk, skb);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 
 		} else { /* Ack, chuck it out here */

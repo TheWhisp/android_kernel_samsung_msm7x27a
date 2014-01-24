@@ -10,7 +10,10 @@
 
 #include <linux/gfp.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/tty.h>
 #include <linux/module.h>
 #include <linux/usb.h>
@@ -35,14 +38,20 @@ static const struct usb_device_id id_table[] = {
 };
 MODULE_DEVICE_TABLE(usb, id_table);
 
+<<<<<<< HEAD
 static struct usb_driver debug_driver = {
 	.name =		"debug",
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* This HW really does not support a serial break, so one will be
  * emulated when ever the break state is set to true.
  */
@@ -54,11 +63,21 @@ static void usb_debug_break_ctl(struct tty_struct *tty, int break_state)
 	usb_serial_generic_write(tty, port, USB_DEBUG_BRK, USB_DEBUG_BRK_SIZE);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void usb_debug_read_bulk_callback(struct urb *urb)
+=======
+static void usb_debug_process_read_urb(struct urb *urb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void usb_debug_process_read_urb(struct urb *urb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_serial_port *port = urb->context;
 
 	if (urb->actual_length == USB_DEBUG_BRK_SIZE &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    memcmp(urb->transfer_buffer, USB_DEBUG_BRK,
 		   USB_DEBUG_BRK_SIZE) == 0) {
 		usb_serial_handle_break(port);
@@ -67,6 +86,20 @@ static void usb_debug_read_bulk_callback(struct urb *urb)
 	}
 
 	usb_serial_generic_read_bulk_callback(urb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		memcmp(urb->transfer_buffer, USB_DEBUG_BRK,
+						USB_DEBUG_BRK_SIZE) == 0) {
+		usb_serial_handle_break(port);
+		return;
+	}
+
+	usb_serial_generic_process_read_urb(urb);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct usb_serial_driver debug_device = {
@@ -75,6 +108,8 @@ static struct usb_serial_driver debug_device = {
 		.name =		"debug",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver =		&debug_driver,
 	.num_ports =		1,
 	.bulk_out_size =	USB_DEBUG_MAX_PACKET_SIZE,
@@ -103,4 +138,23 @@ static void __exit debug_exit(void)
 
 module_init(debug_init);
 module_exit(debug_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.num_ports =		1,
+	.bulk_out_size =	USB_DEBUG_MAX_PACKET_SIZE,
+	.break_ctl =		usb_debug_break_ctl,
+	.process_read_urb =	usb_debug_process_read_urb,
+};
+
+static struct usb_serial_driver * const serial_drivers[] = {
+	&debug_device, NULL
+};
+
+<<<<<<< HEAD
+module_usb_serial_driver(debug_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_serial_driver(serial_drivers, id_table);
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

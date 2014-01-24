@@ -244,7 +244,11 @@ static int get_key_avermedia_cardbus(struct IR_i2c *ir,
 
 /* ----------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static void ir_key_poll(struct IR_i2c *ir)
+=======
+static int ir_key_poll(struct IR_i2c *ir)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static u32 ir_key, ir_raw;
 	int rc;
@@ -253,20 +257,41 @@ static void ir_key_poll(struct IR_i2c *ir)
 	rc = ir->get_key(ir, &ir_key, &ir_raw);
 	if (rc < 0) {
 		dprintk(2,"error\n");
+<<<<<<< HEAD
 		return;
+=======
+		return rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (rc) {
 		dprintk(1, "%s: keycode = 0x%04x\n", __func__, ir_key);
 		rc_keydown(ir->rc, ir_key, 0);
 	}
+<<<<<<< HEAD
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void ir_work(struct work_struct *work)
 {
+<<<<<<< HEAD
 	struct IR_i2c *ir = container_of(work, struct IR_i2c, work.work);
 
 	ir_key_poll(ir);
+=======
+	int rc;
+	struct IR_i2c *ir = container_of(work, struct IR_i2c, work.work);
+
+	rc = ir_key_poll(ir);
+	if (rc == -ENODEV) {
+		rc_unregister_device(ir->rc);
+		ir->rc = NULL;
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	schedule_delayed_work(&ir->work, msecs_to_jiffies(ir->polling_interval));
 }
 
@@ -446,7 +471,12 @@ static int ir_remove(struct i2c_client *client)
 	cancel_delayed_work_sync(&ir->work);
 
 	/* unregister device */
+<<<<<<< HEAD
 	rc_unregister_device(ir->rc);
+=======
+	if (ir->rc)
+		rc_unregister_device(ir->rc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* free memory */
 	kfree(ir);
@@ -462,7 +492,11 @@ static const struct i2c_device_id ir_kbd_id[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static struct i2c_driver driver = {
+=======
+static struct i2c_driver ir_kbd_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver = {
 		.name   = "ir-kbd-i2c",
 	},
@@ -471,11 +505,17 @@ static struct i2c_driver driver = {
 	.id_table       = ir_kbd_id,
 };
 
+<<<<<<< HEAD
+=======
+module_i2c_driver(ir_kbd_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ----------------------------------------------------------------------- */
 
 MODULE_AUTHOR("Gerd Knorr, Michal Kochanowicz, Christoph Bartelmus, Ulrich Mueller");
 MODULE_DESCRIPTION("input driver for i2c IR remote controls");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 static int __init ir_init(void)
 {
@@ -497,3 +537,5 @@ module_exit(ir_fini);
  * c-basic-offset: 8
  * End:
  */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

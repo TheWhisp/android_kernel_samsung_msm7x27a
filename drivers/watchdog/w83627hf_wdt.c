@@ -1,10 +1,24 @@
 /*
  *	w83627hf/thf WDT driver
  *
+<<<<<<< HEAD
  *	(c) Copyright 2007 Vlad Drukker <vlad@storewiz.com>
  *		added support for W83627THF.
  *
+<<<<<<< HEAD
  *	(c) Copyright 2003,2007 P�draig Brady <P@draigBrady.com>
+=======
+ *	(c) Copyright 2003,2007 Pádraig Brady <P@draigBrady.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	(c) Copyright 2013 Guenter Roeck
+ *		converted to watchdog infrastructure
+ *
+ *	(c) Copyright 2007 Vlad Drukker <vlad@storewiz.com>
+ *		added support for W83627THF.
+ *
+ *	(c) Copyright 2003,2007 Pádraig Brady <P@draigBrady.com>
+>>>>>>> refs/remotes/origin/master
  *
  *	Based on advantechwdt.c which is based on wdt.c.
  *	Original copyright messages:
@@ -26,43 +40,84 @@
  *	(c) Copyright 1995    Alan Cox <alan@lxorguk.ukuu.org.uk>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
 #include <linux/miscdevice.h>
 #include <linux/watchdog.h>
 #include <linux/fs.h>
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/types.h>
+#include <linux/watchdog.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/notifier.h>
 #include <linux/reboot.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/spinlock.h>
 #include <linux/io.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #define WATCHDOG_NAME "w83627hf/thf/hg/dhg WDT"
 #define PFX WATCHDOG_NAME ": "
+=======
+
+#define WATCHDOG_NAME "w83627hf/thf/hg/dhg WDT"
+>>>>>>> refs/remotes/origin/cm-10.0
 #define WATCHDOG_TIMEOUT 60		/* 60 sec default timeout */
 
 static unsigned long wdt_is_open;
 static char expect_close;
 static DEFINE_SPINLOCK(io_lock);
 
+=======
+#include <linux/io.h>
+
+#define WATCHDOG_NAME "w83627hf/thf/hg/dhg WDT"
+#define WATCHDOG_TIMEOUT 60		/* 60 sec default timeout */
+
+>>>>>>> refs/remotes/origin/master
 /* You must set this - there is no sane way to probe for this board. */
 static int wdt_io = 0x2E;
 module_param(wdt_io, int, 0);
 MODULE_PARM_DESC(wdt_io, "w83627hf/thf WDT io port (default 0x2E)");
 
+<<<<<<< HEAD
 static int timeout = WATCHDOG_TIMEOUT;	/* in seconds */
+=======
+static int timeout;			/* in seconds */
+>>>>>>> refs/remotes/origin/master
 module_param(timeout, int, 0);
 MODULE_PARM_DESC(timeout,
 		"Watchdog timeout in seconds. 1 <= timeout <= 255, default="
 				__MODULE_STRING(WATCHDOG_TIMEOUT) ".");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -76,6 +131,7 @@ MODULE_PARM_DESC(nowayout,
 							(same as EFER) */
 #define WDT_EFDR (WDT_EFIR+1) /* Extended Function Data Register */
 
+<<<<<<< HEAD
 static void w83627hf_select_wd_register(void)
 {
 	unsigned char c;
@@ -105,11 +161,48 @@ static void w83627hf_select_wd_register(void)
 static void w83627hf_unselect_wd_register(void)
 {
 	outb_p(0xAA, WDT_EFER); /* Leave extended function mode */
+=======
+#define W83627HF_LD_WDT		0x08
+
+static void superio_outb(int reg, int val)
+{
+	outb(reg, WDT_EFER);
+	outb(val, WDT_EFDR);
+}
+
+static inline int superio_inb(int reg)
+{
+	outb(reg, WDT_EFER);
+	return inb(WDT_EFDR);
+}
+
+static int superio_enter(void)
+{
+	if (!request_muxed_region(wdt_io, 2, WATCHDOG_NAME))
+		return -EBUSY;
+
+	outb_p(0x87, WDT_EFER); /* Enter extended function mode */
+	outb_p(0x87, WDT_EFER); /* Again according to manual */
+
+	return 0;
+}
+
+static void superio_select(int ld)
+{
+	superio_outb(0x07, ld);
+}
+
+static void superio_exit(void)
+{
+	outb_p(0xAA, WDT_EFER); /* Leave extended function mode */
+	release_region(wdt_io, 2);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* tyan motherboards seem to set F5 to 0x4C ?
  * So explicitly init to appropriate value. */
 
+<<<<<<< HEAD
 static void w83627hf_init(void)
 {
 	unsigned char t;
@@ -119,9 +212,14 @@ static void w83627hf_init(void)
 	outb_p(0xF6, WDT_EFER); /* Select CRF6 */
 	t = inb_p(WDT_EFDR);      /* read CRF6 */
 	if (t != 0) {
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 		     "Watchdog already running. Resetting timeout to %d sec\n",
 								timeout);
+=======
+		pr_info("Watchdog already running. Resetting timeout to %d sec\n",
+			timeout);
+>>>>>>> refs/remotes/origin/cm-10.0
 		outb_p(timeout, WDT_EFDR);    /* Write back to CRF6 */
 	}
 
@@ -142,7 +240,11 @@ static void w83627hf_init(void)
 	w83627hf_unselect_wd_register();
 }
 
+<<<<<<< HEAD
 static void wdt_ctrl(int timeout)
+=======
+static void wdt_set_time(int timeout)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	spin_lock(&io_lock);
 
@@ -158,13 +260,21 @@ static void wdt_ctrl(int timeout)
 
 static int wdt_ping(void)
 {
+<<<<<<< HEAD
 	wdt_ctrl(timeout);
+=======
+	wdt_set_time(timeout);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int wdt_disable(void)
 {
+<<<<<<< HEAD
 	wdt_ctrl(0);
+=======
+	wdt_set_time(0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -176,6 +286,27 @@ static int wdt_set_heartbeat(int t)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int wdt_get_time(void)
+{
+	int timeleft;
+
+	spin_lock(&io_lock);
+
+	w83627hf_select_wd_register();
+
+	outb_p(0xF6, WDT_EFER);    /* Select CRF6 */
+	timeleft = inb_p(WDT_EFDR); /* Read Timeout counter to CRF6 */
+
+	w83627hf_unselect_wd_register();
+
+	spin_unlock(&io_lock);
+
+	return timeleft;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t wdt_write(struct file *file, const char __user *buf,
 						size_t count, loff_t *ppos)
 {
@@ -202,7 +333,11 @@ static long wdt_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	void __user *argp = (void __user *)arg;
 	int __user *p = argp;
+<<<<<<< HEAD
 	int new_timeout;
+=======
+	int timeval;
+>>>>>>> refs/remotes/origin/cm-10.0
 	static const struct watchdog_info ident = {
 		.options = WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT |
 							WDIOF_MAGICCLOSE,
@@ -238,14 +373,26 @@ static long wdt_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		wdt_ping();
 		break;
 	case WDIOC_SETTIMEOUT:
+<<<<<<< HEAD
 		if (get_user(new_timeout, p))
 			return -EFAULT;
 		if (wdt_set_heartbeat(new_timeout))
+=======
+		if (get_user(timeval, p))
+			return -EFAULT;
+		if (wdt_set_heartbeat(timeval))
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EINVAL;
 		wdt_ping();
 		/* Fall */
 	case WDIOC_GETTIMEOUT:
 		return put_user(timeout, p);
+<<<<<<< HEAD
+=======
+	case WDIOC_GETTIMELEFT:
+		timeval = wdt_get_time();
+		return put_user(timeval, p);
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		return -ENOTTY;
 	}
@@ -269,24 +416,129 @@ static int wdt_close(struct inode *inode, struct file *file)
 	if (expect_close == 42)
 		wdt_disable();
 	else {
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 			"Unexpected close, not stopping watchdog!\n");
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		wdt_ping();
 	}
 	expect_close = 0;
 	clear_bit(0, &wdt_is_open);
 	return 0;
+=======
+static int w83627hf_init(struct watchdog_device *wdog)
+{
+	int ret;
+	unsigned char t;
+
+	ret = superio_enter();
+	if (ret)
+		return ret;
+
+	superio_select(W83627HF_LD_WDT);
+	t = superio_inb(0x20);	/* check chip version	*/
+	if (t == 0x82) {	/* W83627THF		*/
+		t = (superio_inb(0x2b) & 0xf7);
+		superio_outb(0x2b, t | 0x04); /* set GPIO3 to WDT0 */
+	} else if (t == 0x88 || t == 0xa0) {	/* W83627EHF / W83627DHG */
+		t = superio_inb(0x2d);
+		superio_outb(0x2d, t & ~0x01);	/* set GPIO5 to WDT0 */
+	}
+
+	/* set CR30 bit 0 to activate GPIO2 */
+	t = superio_inb(0x30);
+	if (!(t & 0x01))
+		superio_outb(0x30, t | 0x01);
+
+	t = superio_inb(0xF6);
+	if (t != 0) {
+		pr_info("Watchdog already running. Resetting timeout to %d sec\n",
+			wdog->timeout);
+		superio_outb(0xF6, wdog->timeout);
+	}
+
+	/* set second mode & disable keyboard turning off watchdog */
+	t = superio_inb(0xF5) & ~0x0C;
+	/* enable the WDTO# output low pulse to the KBRST# pin */
+	t |= 0x02;
+	superio_outb(0xF5, t);
+
+	/* disable keyboard & mouse turning off watchdog */
+	t = superio_inb(0xF7) & ~0xC0;
+	superio_outb(0xF7, t);
+
+	superio_exit();
+
+	return 0;
+}
+
+static int wdt_set_time(unsigned int timeout)
+{
+	int ret;
+
+	ret = superio_enter();
+	if (ret)
+		return ret;
+
+	superio_select(W83627HF_LD_WDT);
+	superio_outb(0xF6, timeout);
+	superio_exit();
+
+	return 0;
+}
+
+static int wdt_start(struct watchdog_device *wdog)
+{
+	return wdt_set_time(wdog->timeout);
+}
+
+static int wdt_stop(struct watchdog_device *wdog)
+{
+	return wdt_set_time(0);
+}
+
+static int wdt_set_timeout(struct watchdog_device *wdog, unsigned int timeout)
+{
+	wdog->timeout = timeout;
+
+	return 0;
+}
+
+static unsigned int wdt_get_time(struct watchdog_device *wdog)
+{
+	unsigned int timeleft;
+	int ret;
+
+	ret = superio_enter();
+	if (ret)
+		return 0;
+
+	superio_select(W83627HF_LD_WDT);
+	timeleft = superio_inb(0xF6);
+	superio_exit();
+
+	return timeleft;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  *	Notifier for system down
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int wdt_notify_sys(struct notifier_block *this, unsigned long code,
 	void *unused)
 {
 	if (code == SYS_DOWN || code == SYS_HALT)
+<<<<<<< HEAD
 		wdt_disable();	/* Turn the WDT off */
+=======
+		wdt_set_time(0);	/* Turn the WDT off */
+>>>>>>> refs/remotes/origin/master
 
 	return NOTIFY_DONE;
 }
@@ -295,6 +547,7 @@ static int wdt_notify_sys(struct notifier_block *this, unsigned long code,
  *	Kernel Interfaces
  */
 
+<<<<<<< HEAD
 static const struct file_operations wdt_fops = {
 	.owner		= THIS_MODULE,
 	.llseek		= no_llseek,
@@ -308,6 +561,27 @@ static struct miscdevice wdt_miscdev = {
 	.minor = WATCHDOG_MINOR,
 	.name = "watchdog",
 	.fops = &wdt_fops,
+=======
+static struct watchdog_info wdt_info = {
+	.options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
+	.identity = "W83627HF Watchdog",
+};
+
+static struct watchdog_ops wdt_ops = {
+	.owner = THIS_MODULE,
+	.start = wdt_start,
+	.stop = wdt_stop,
+	.set_timeout = wdt_set_timeout,
+	.get_timeleft = wdt_get_time,
+};
+
+static struct watchdog_device wdt_dev = {
+	.info = &wdt_info,
+	.ops = &wdt_ops,
+	.timeout = WATCHDOG_TIMEOUT,
+	.min_timeout = 1,
+	.max_timeout = 255,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -323,6 +597,8 @@ static int __init wdt_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "WDT driver for the Winbond(TM) W83627HF/THF/HG/DHG Super I/O chip initialising.\n");
 
 	if (wdt_set_heartbeat(timeout)) {
@@ -335,6 +611,18 @@ static int __init wdt_init(void)
 	if (!request_region(wdt_io, 1, WATCHDOG_NAME)) {
 		printk(KERN_ERR PFX "I/O address 0x%04x already in use\n",
 			wdt_io);
+=======
+	pr_info("WDT driver for the Winbond(TM) W83627HF/THF/HG/DHG Super I/O chip initialising\n");
+
+	if (wdt_set_heartbeat(timeout)) {
+		wdt_set_heartbeat(WATCHDOG_TIMEOUT);
+		pr_info("timeout value must be 1 <= timeout <= 255, using %d\n",
+			WATCHDOG_TIMEOUT);
+	}
+
+	if (!request_region(wdt_io, 1, WATCHDOG_NAME)) {
+		pr_err("I/O address 0x%04x already in use\n", wdt_io);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -EIO;
 		goto out;
 	}
@@ -343,13 +631,18 @@ static int __init wdt_init(void)
 
 	ret = register_reboot_notifier(&wdt_notifier);
 	if (ret != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", ret);
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto unreg_regions;
 	}
 
 	ret = misc_register(&wdt_miscdev);
 	if (ret != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 							WATCHDOG_MINOR, ret);
@@ -359,6 +652,15 @@ static int __init wdt_init(void)
 	printk(KERN_INFO PFX
 			"initialized. timeout=%d sec (nowayout=%d)\n",
 							timeout, nowayout);
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+		goto unreg_reboot;
+	}
+
+	pr_info("initialized. timeout=%d sec (nowayout=%d)\n",
+		timeout, nowayout);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	return ret;
@@ -367,19 +669,64 @@ unreg_reboot:
 unreg_regions:
 	release_region(wdt_io, 1);
 	goto out;
+=======
+	pr_info("WDT driver for the Winbond(TM) W83627HF/THF/HG/DHG Super I/O chip initialising\n");
+
+	watchdog_init_timeout(&wdt_dev, timeout, NULL);
+	watchdog_set_nowayout(&wdt_dev, nowayout);
+
+	ret = w83627hf_init(&wdt_dev);
+	if (ret) {
+		pr_err("failed to initialize watchdog (err=%d)\n", ret);
+		return ret;
+	}
+
+	ret = register_reboot_notifier(&wdt_notifier);
+	if (ret != 0) {
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+		return ret;
+	}
+
+	ret = watchdog_register_device(&wdt_dev);
+	if (ret)
+		goto unreg_reboot;
+
+	pr_info("initialized. timeout=%d sec (nowayout=%d)\n",
+		wdt_dev.timeout, nowayout);
+
+	return ret;
+
+unreg_reboot:
+	unregister_reboot_notifier(&wdt_notifier);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit wdt_exit(void)
 {
+<<<<<<< HEAD
 	misc_deregister(&wdt_miscdev);
 	unregister_reboot_notifier(&wdt_notifier);
 	release_region(wdt_io, 1);
+=======
+	watchdog_unregister_device(&wdt_dev);
+	unregister_reboot_notifier(&wdt_notifier);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(wdt_init);
 module_exit(wdt_exit);
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_AUTHOR("P�draig Brady <P@draigBrady.com>");
+=======
+MODULE_AUTHOR("Pádraig  Brady <P@draigBrady.com>");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("w83627hf/thf WDT driver");
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+MODULE_AUTHOR("Pádraig  Brady <P@draigBrady.com>");
+MODULE_DESCRIPTION("w83627hf/thf WDT driver");
+>>>>>>> refs/remotes/origin/master

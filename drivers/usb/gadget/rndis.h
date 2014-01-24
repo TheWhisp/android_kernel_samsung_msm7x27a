@@ -15,11 +15,17 @@
 #ifndef _LINUX_RNDIS_H
 #define _LINUX_RNDIS_H
 
+<<<<<<< HEAD
+=======
+#include <linux/rndis.h>
+#include "u_ether.h"
+>>>>>>> refs/remotes/origin/master
 #include "ndis.h"
 
 #define RNDIS_MAXIMUM_FRAME_SIZE	1518
 #define RNDIS_MAX_TOTAL_SIZE		1558
 
+<<<<<<< HEAD
 /* Remote NDIS Versions */
 #define RNDIS_MAJOR_VERSION		1
 #define RNDIS_MINOR_VERSION		0
@@ -67,6 +73,8 @@
 #define OID_PNP_ENABLE_WAKE_UP			0xFD010106
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct rndis_init_msg_type
 {
 	__le32	MessageType;
@@ -262,7 +270,10 @@ int  rndis_signal_disconnect (int configNr);
 int  rndis_state (int configNr);
 extern void rndis_set_host_mac (int configNr, const u8 *addr);
 
+<<<<<<< HEAD
 int rndis_init(void);
 void rndis_exit (void);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif  /* _LINUX_RNDIS_H */

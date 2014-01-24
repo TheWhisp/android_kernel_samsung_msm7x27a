@@ -2,10 +2,23 @@
  * PCBIT-D device driver definitions
  *
  * Copyright (C) 1996 Universidade de Lisboa
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
+ *
+ * This software may be used and distributed according to the terms of
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * the GNU General Public License, incorporated herein by reference.
  */
 
@@ -32,14 +45,30 @@ struct pcbit_chan {
 	unsigned short r_refnum;
 	unsigned short fsm_state;
 	struct timer_list fsm_timer;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef  BLOCK_TIMER
+=======
+#ifdef BLOCK_TIMER
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef BLOCK_TIMER
+>>>>>>> refs/remotes/origin/master
 	struct timer_list block_timer;
 #endif
 };
 
 struct msn_entry {
 	char *msn;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msn_entry * next;
+=======
+	struct msn_entry *next;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msn_entry *next;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct pcbit_dev {
@@ -49,15 +78,36 @@ struct pcbit_dev {
 	unsigned long ph_mem;
 	unsigned int irq;
 	unsigned int id;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int interrupt;			/* set during interrupt 
+=======
+	unsigned int interrupt;			/* set during interrupt
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int interrupt;			/* set during interrupt
+>>>>>>> refs/remotes/origin/master
 						   processing */
 	spinlock_t lock;
 	/* isdn4linux */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msn_entry * msn_list;		/* ISDN address list */
 	
 	isdn_if * dev_if;
 	
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct msn_entry *msn_list;		/* ISDN address list */
+
+	isdn_if *dev_if;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ushort ll_hdrlen;
 	ushort hl_hdrlen;
 
@@ -89,17 +139,39 @@ struct pcbit_dev {
 	unsigned char send_seq;
 	unsigned char rcv_seq;
 	unsigned char unack_seq;
+<<<<<<< HEAD
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	unsigned short free;
 
 	/* channels */
 
 	struct pcbit_chan *b1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct pcbit_chan *b2;  
 };
 
 #define STATS_TIMER (10*HZ)
 #define ERRTIME     (HZ/10)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct pcbit_chan *b2;
+};
+
+#define STATS_TIMER (10 * HZ)
+#define ERRTIME     (HZ / 10)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* MRU */
 #define MAXBUFSIZE  1534
@@ -107,7 +179,15 @@ struct pcbit_dev {
 
 #define STATBUF_LEN 2048
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  */
 
 #endif /* __KERNEL__ */
@@ -169,9 +249,21 @@ struct pcbit_ioctl {
 void pcbit_deliver(struct work_struct *work);
 int pcbit_init_dev(int board, int mem_base, int irq);
 void pcbit_terminate(int board);
+<<<<<<< HEAD
+<<<<<<< HEAD
 void pcbit_l3_receive(struct pcbit_dev * dev, ulong msg, struct sk_buff * skb,
 		      ushort hdr_len, ushort refnum);
 void pcbit_state_change(struct pcbit_dev * dev, struct pcbit_chan * chan,
+=======
+void pcbit_l3_receive(struct pcbit_dev *dev, ulong msg, struct sk_buff *skb,
+		      ushort hdr_len, ushort refnum);
+void pcbit_state_change(struct pcbit_dev *dev, struct pcbit_chan *chan,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void pcbit_l3_receive(struct pcbit_dev *dev, ulong msg, struct sk_buff *skb,
+		      ushort hdr_len, ushort refnum);
+void pcbit_state_change(struct pcbit_dev *dev, struct pcbit_chan *chan,
+>>>>>>> refs/remotes/origin/master
 			unsigned short i, unsigned short ev, unsigned short f);
 
 #endif

@@ -24,6 +24,14 @@
  *     Alex Deucher <alexander.deucher@amd.com>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/kernel.h>
 
@@ -316,6 +324,7 @@ const u32 cayman_default_state[] =
 	0x00000010, /*  */
 };
 
+<<<<<<< HEAD
 const u32 cayman_vs[] =
 {
 	0x00000004,
@@ -370,4 +379,6 @@ const u32 cayman_ps[] =
 
 const u32 cayman_ps_size = ARRAY_SIZE(cayman_ps);
 const u32 cayman_vs_size = ARRAY_SIZE(cayman_vs);
+=======
+>>>>>>> refs/remotes/origin/master
 const u32 cayman_default_size = ARRAY_SIZE(cayman_default_state);

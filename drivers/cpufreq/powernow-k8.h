@@ -5,6 +5,7 @@
  *  http://www.gnu.org/licenses/gpl.html
  */
 
+<<<<<<< HEAD
 enum pstate {
 	HW_PSTATE_INVALID = 0xff,
 	HW_PSTATE_0 = 0,
@@ -17,12 +18,17 @@ enum pstate {
 	HW_PSTATE_7 = 7,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct powernow_k8_data {
 	unsigned int cpu;
 
 	u32 numps;  /* number of p-states */
 	u32 batps;  /* number of p-states supported on battery */
+<<<<<<< HEAD
 	u32 max_hw_pstate; /* maximum legal hardware pstate */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* these values are constant when the PSB is used to determine
 	 * vid/fid pairings, but are modified during the ->target() call
@@ -37,7 +43,10 @@ struct powernow_k8_data {
 	/* keep track of the current fid / vid or pstate */
 	u32 currvid;
 	u32 currfid;
+<<<<<<< HEAD
 	enum pstate currpstate;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* the powernow_table includes all frequency and vid/fid pairings:
 	 * fid are the lower 8 bits of the index, vid are the upper 8 bits.
@@ -97,6 +106,7 @@ struct powernow_k8_data {
 #define MSR_S_HI_CURRENT_VID      0x0000003f
 #define MSR_C_HI_STP_GNT_BENIGN	  0x00000001
 
+<<<<<<< HEAD
 
 /* Hardware Pstate _PSS and MSR definitions */
 #define USE_HW_PSTATE		0x00000080
@@ -114,6 +124,8 @@ struct powernow_k8_data {
 #define CPU_HW_PSTATE 1
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * There are restrictions frequencies have to follow:
  * - only 1 entry in the low fid table ( <=1.4GHz )
@@ -218,5 +230,8 @@ static int core_frequency_transition(struct powernow_k8_data *data, u32 reqfid);
 
 static void powernow_k8_acpi_pst_values(struct powernow_k8_data *data, unsigned int index);
 
+<<<<<<< HEAD
 static int fill_powernow_table_pstate(struct powernow_k8_data *data, struct cpufreq_frequency_table *powernow_table);
+=======
+>>>>>>> refs/remotes/origin/master
 static int fill_powernow_table_fidvid(struct powernow_k8_data *data, struct cpufreq_frequency_table *powernow_table);

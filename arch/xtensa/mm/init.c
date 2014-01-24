@@ -26,11 +26,23 @@
 
 #include <asm/bootparam.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 
 /* References to section boundaries */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern char _ftext, _etext, _fdata, _edata, _rodata_end;
+=======
+extern char _stext, _etext, _sdata, _edata, _rodata_end;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern char _stext, _etext, _sdata, _edata, _rodata_end;
+>>>>>>> refs/remotes/origin/cm-11.0
 extern char __init_begin, __init_end;
+=======
+#include <asm/sections.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * mem_reserve(start, end, must_exist)
@@ -79,6 +91,7 @@ int __init mem_reserve(unsigned long start, unsigned long end, int must_exist)
 			sysmem.nr_banks++;
 		}
 		sysmem.bank[i].end = start;
+<<<<<<< HEAD
 	} else {
 		if (end < sysmem.bank[i].end)
 			sysmem.bank[i].start = end;
@@ -88,6 +101,17 @@ int __init mem_reserve(unsigned long start, unsigned long end, int must_exist)
 			sysmem.bank[i].start = sysmem.bank[sysmem.nr_banks].start;
 			sysmem.bank[i].end   = sysmem.bank[sysmem.nr_banks].end;
 		}
+=======
+
+	} else if (end < sysmem.bank[i].end) {
+		sysmem.bank[i].start = end;
+
+	} else {
+		/* remove entry */
+		sysmem.nr_banks--;
+		sysmem.bank[i].start = sysmem.bank[sysmem.nr_banks].start;
+		sysmem.bank[i].end   = sysmem.bank[sysmem.nr_banks].end;
+>>>>>>> refs/remotes/origin/master
 	}
 	return -1;
 }
@@ -177,17 +201,23 @@ void __init zones_init(void)
 
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	unsigned long codesize, reservedpages, datasize, initsize;
 	unsigned long highmemsize, tmp, ram;
 
 	max_mapnr = num_physpages = max_low_pfn - ARCH_PFN_OFFSET;
 	high_memory = (void *) __va(max_low_pfn << PAGE_SHIFT);
 	highmemsize = 0;
+=======
+	max_mapnr = max_low_pfn - ARCH_PFN_OFFSET;
+	high_memory = (void *) __va(max_low_pfn << PAGE_SHIFT);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HIGHMEM
 #error HIGHGMEM not implemented in init.c
 #endif
 
+<<<<<<< HEAD
 	totalram_pages += free_all_bootmem();
 
 	reservedpages = ram = 0;
@@ -197,8 +227,18 @@ void __init mem_init(void)
 			reservedpages++;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	codesize =  (unsigned long) &_etext - (unsigned long) &_ftext;
 	datasize =  (unsigned long) &_edata - (unsigned long) &_fdata;
+=======
+	codesize =  (unsigned long) &_etext - (unsigned long) &_stext;
+	datasize =  (unsigned long) &_edata - (unsigned long) &_sdata;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	codesize =  (unsigned long) &_etext - (unsigned long) &_stext;
+	datasize =  (unsigned long) &_edata - (unsigned long) &_sdata;
+>>>>>>> refs/remotes/origin/cm-11.0
 	initsize =  (unsigned long) &__init_end - (unsigned long) &__init_begin;
 
 	printk("Memory: %luk/%luk available (%ldk kernel code, %ldk reserved, "
@@ -221,6 +261,11 @@ free_reserved_mem(void *start, void *end)
 		free_page((unsigned long)start);
 		totalram_pages++;
 	}
+=======
+	free_all_bootmem();
+
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_BLK_DEV_INITRD
@@ -228,16 +273,25 @@ extern int initrd_is_mapped;
 
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	if (initrd_is_mapped) {
 		free_reserved_mem((void*)start, (void*)end);
 		printk ("Freeing initrd memory: %ldk freed\n",(end-start)>>10);
 	}
+=======
+	if (initrd_is_mapped)
+		free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 void free_initmem(void)
 {
+<<<<<<< HEAD
 	free_reserved_mem(&__init_begin, &__init_end);
 	printk("Freeing unused kernel memory: %dk freed\n",
 	       (&__init_end - &__init_begin) >> 10);
+=======
+	free_initmem_default(-1);
+>>>>>>> refs/remotes/origin/master
 }

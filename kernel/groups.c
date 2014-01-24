@@ -2,7 +2,15 @@
  * Supplementary group IDs
  */
 #include <linux/cred.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/security.h>
 #include <linux/syscalls.h>
@@ -31,7 +39,11 @@ struct group_info *groups_alloc(int gidsetsize)
 		group_info->blocks[0] = group_info->small_block;
 	else {
 		for (i = 0; i < nblocks; i++) {
+<<<<<<< HEAD
 			gid_t *b;
+=======
+			kgid_t *b;
+>>>>>>> refs/remotes/origin/master
 			b = (void *)__get_free_page(GFP_USER);
 			if (!b)
 				goto out_undo_partial_alloc;
@@ -66,6 +78,7 @@ EXPORT_SYMBOL(groups_free);
 static int groups_to_user(gid_t __user *grouplist,
 			  const struct group_info *group_info)
 {
+<<<<<<< HEAD
 	int i;
 	unsigned int count = group_info->ngroups;
 
@@ -78,6 +91,17 @@ static int groups_to_user(gid_t __user *grouplist,
 
 		grouplist += NGROUPS_PER_BLOCK;
 		count -= cp_count;
+=======
+	struct user_namespace *user_ns = current_user_ns();
+	int i;
+	unsigned int count = group_info->ngroups;
+
+	for (i = 0; i < count; i++) {
+		gid_t gid;
+		gid = from_kgid_munged(user_ns, GROUP_AT(group_info, i));
+		if (put_user(gid, grouplist+i))
+			return -EFAULT;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -86,6 +110,7 @@ static int groups_to_user(gid_t __user *grouplist,
 static int groups_from_user(struct group_info *group_info,
     gid_t __user *grouplist)
 {
+<<<<<<< HEAD
 	int i;
 	unsigned int count = group_info->ngroups;
 
@@ -98,6 +123,23 @@ static int groups_from_user(struct group_info *group_info,
 
 		grouplist += NGROUPS_PER_BLOCK;
 		count -= cp_count;
+=======
+	struct user_namespace *user_ns = current_user_ns();
+	int i;
+	unsigned int count = group_info->ngroups;
+
+	for (i = 0; i < count; i++) {
+		gid_t gid;
+		kgid_t kgid;
+		if (get_user(gid, grouplist+i))
+			return -EFAULT;
+
+		kgid = make_kgid(user_ns, gid);
+		if (!gid_valid(kgid))
+			return -EINVAL;
+
+		GROUP_AT(group_info, i) = kgid;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -117,9 +159,15 @@ static void groups_sort(struct group_info *group_info)
 		for (base = 0; base < max; base++) {
 			int left = base;
 			int right = left + stride;
+<<<<<<< HEAD
 			gid_t tmp = GROUP_AT(group_info, right);
 
 			while (left >= 0 && GROUP_AT(group_info, left) > tmp) {
+=======
+			kgid_t tmp = GROUP_AT(group_info, right);
+
+			while (left >= 0 && gid_gt(GROUP_AT(group_info, left), tmp)) {
+>>>>>>> refs/remotes/origin/master
 				GROUP_AT(group_info, right) =
 				    GROUP_AT(group_info, left);
 				right = left;
@@ -132,7 +180,11 @@ static void groups_sort(struct group_info *group_info)
 }
 
 /* a simple bsearch */
+<<<<<<< HEAD
 int groups_search(const struct group_info *group_info, gid_t grp)
+=======
+int groups_search(const struct group_info *group_info, kgid_t grp)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int left, right;
 
@@ -143,9 +195,15 @@ int groups_search(const struct group_info *group_info, gid_t grp)
 	right = group_info->ngroups;
 	while (left < right) {
 		unsigned int mid = (left+right)/2;
+<<<<<<< HEAD
 		if (grp > GROUP_AT(group_info, mid))
 			left = mid + 1;
 		else if (grp < GROUP_AT(group_info, mid))
+=======
+		if (gid_gt(grp, GROUP_AT(group_info, mid)))
+			left = mid + 1;
+		else if (gid_lt(grp, GROUP_AT(group_info, mid)))
+>>>>>>> refs/remotes/origin/master
 			right = mid;
 		else
 			return 1;
@@ -233,7 +291,11 @@ SYSCALL_DEFINE2(setgroups, int, gidsetsize, gid_t __user *, grouplist)
 	struct group_info *group_info;
 	int retval;
 
+<<<<<<< HEAD
 	if (!nsown_capable(CAP_SETGID))
+=======
+	if (!ns_capable(current_user_ns(), CAP_SETGID))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 	if ((unsigned)gidsetsize > NGROUPS_MAX)
 		return -EINVAL;
@@ -256,24 +318,40 @@ SYSCALL_DEFINE2(setgroups, int, gidsetsize, gid_t __user *, grouplist)
 /*
  * Check whether we're fsgid/egid or in the supplemental group..
  */
+<<<<<<< HEAD
 int in_group_p(gid_t grp)
+=======
+int in_group_p(kgid_t grp)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct cred *cred = current_cred();
 	int retval = 1;
 
+<<<<<<< HEAD
 	if (grp != cred->fsgid)
+=======
+	if (!gid_eq(grp, cred->fsgid))
+>>>>>>> refs/remotes/origin/master
 		retval = groups_search(cred->group_info, grp);
 	return retval;
 }
 
 EXPORT_SYMBOL(in_group_p);
 
+<<<<<<< HEAD
 int in_egroup_p(gid_t grp)
+=======
+int in_egroup_p(kgid_t grp)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct cred *cred = current_cred();
 	int retval = 1;
 
+<<<<<<< HEAD
 	if (grp != cred->egid)
+=======
+	if (!gid_eq(grp, cred->egid))
+>>>>>>> refs/remotes/origin/master
 		retval = groups_search(cred->group_info, grp);
 	return retval;
 }

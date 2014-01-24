@@ -23,6 +23,12 @@
 
 #include "aerdrv.h"
 
+<<<<<<< HEAD
+=======
+#define CREATE_TRACE_POINTS
+#include <trace/events/ras.h>
+
+>>>>>>> refs/remotes/origin/master
 #define AER_AGENT_RECEIVER		0
 #define AER_AGENT_REQUESTER		1
 #define AER_AGENT_COMPLETER		2
@@ -121,12 +127,19 @@ static const char *aer_agent_string[] = {
 	"Transmitter ID"
 };
 
+<<<<<<< HEAD
 static void __aer_print_error(const char *prefix,
+=======
+static void __aer_print_error(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 			      struct aer_err_info *info)
 {
 	int i, status;
 	const char *errmsg = NULL;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	status = (info->status & ~info->mask);
 
 	for (i = 0; i < 32; i++) {
@@ -141,17 +154,26 @@ static void __aer_print_error(const char *prefix,
 				aer_uncorrectable_error_string[i] : NULL;
 
 		if (errmsg)
+<<<<<<< HEAD
 			printk("%s""   [%2d] %-22s%s\n", prefix, i, errmsg,
 				info->first_error == i ? " (First)" : "");
 		else
 			printk("%s""   [%2d] Unknown Error Bit%s\n", prefix, i,
 				info->first_error == i ? " (First)" : "");
+=======
+			dev_err(&dev->dev, "   [%2d] %-22s%s\n", i, errmsg,
+				info->first_error == i ? " (First)" : "");
+		else
+			dev_err(&dev->dev, "   [%2d] Unknown Error Bit%s\n",
+				i, info->first_error == i ? " (First)" : "");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
 {
 	int id = ((dev->bus->number << 8) | dev->devfn);
+<<<<<<< HEAD
 	char prefix[44];
 
 	snprintf(prefix, sizeof(prefix), "%s%s %s: ",
@@ -161,6 +183,13 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
 	if (info->status == 0) {
 		printk("%s""PCIe Bus Error: severity=%s, type=Unaccessible, "
 			"id=%04x(Unregistered Agent ID)\n", prefix,
+=======
+
+	if (info->status == 0) {
+		dev_err(&dev->dev,
+			"PCIe Bus Error: severity=%s, type=Unaccessible, "
+			"id=%04x(Unregistered Agent ID)\n",
+>>>>>>> refs/remotes/origin/master
 			aer_error_severity_string[info->severity], id);
 	} else {
 		int layer, agent;
@@ -168,6 +197,7 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
 		layer = AER_GET_LAYER_ERROR(info->severity, info->status);
 		agent = AER_GET_AGENT(info->severity, info->status);
 
+<<<<<<< HEAD
 		printk("%s""PCIe Bus Error: severity=%s, type=%s, id=%04x(%s)\n",
 			prefix, aer_error_severity_string[info->severity],
 			aer_error_layer[layer], id, aer_agent_string[agent]);
@@ -184,6 +214,26 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
 				" %02x%02x%02x%02x %02x%02x%02x%02x"
 				" %02x%02x%02x%02x %02x%02x%02x%02x\n",
 				prefix, *(tlp + 3), *(tlp + 2), *(tlp + 1), *tlp,
+=======
+		dev_err(&dev->dev,
+			"PCIe Bus Error: severity=%s, type=%s, id=%04x(%s)\n",
+			aer_error_severity_string[info->severity],
+			aer_error_layer[layer], id, aer_agent_string[agent]);
+
+		dev_err(&dev->dev,
+			"  device [%04x:%04x] error status/mask=%08x/%08x\n",
+			dev->vendor, dev->device,
+			info->status, info->mask);
+
+		__aer_print_error(dev, info);
+
+		if (info->tlp_header_valid) {
+			unsigned char *tlp = (unsigned char *) &info->tlp;
+			dev_err(&dev->dev, "  TLP Header:"
+				" %02x%02x%02x%02x %02x%02x%02x%02x"
+				" %02x%02x%02x%02x %02x%02x%02x%02x\n",
+				*(tlp + 3), *(tlp + 2), *(tlp + 1), *tlp,
+>>>>>>> refs/remotes/origin/master
 				*(tlp + 7), *(tlp + 6), *(tlp + 5), *(tlp + 4),
 				*(tlp + 11), *(tlp + 10), *(tlp + 9),
 				*(tlp + 8), *(tlp + 15), *(tlp + 14),
@@ -192,8 +242,16 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
 	}
 
 	if (info->id && info->error_dev_num > 1 && info->id == id)
+<<<<<<< HEAD
 		printk("%s""  Error of this Agent(%04x) is reported first\n",
 			prefix, id);
+=======
+		dev_err(&dev->dev,
+			   "  Error of this Agent(%04x) is reported first\n",
+			id);
+	trace_aer_event(dev_name(&dev->dev), (info->status & ~info->mask),
+			info->severity);
+>>>>>>> refs/remotes/origin/master
 }
 
 void aer_print_port_info(struct pci_dev *dev, struct aer_err_info *info)
@@ -204,7 +262,15 @@ void aer_print_port_info(struct pci_dev *dev, struct aer_err_info *info)
 }
 
 #ifdef CONFIG_ACPI_APEI_PCIEAER
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int cper_severity_to_aer(int cper_severity)
+=======
+int cper_severity_to_aer(int cper_severity)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int cper_severity_to_aer(int cper_severity)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (cper_severity) {
 	case CPER_SEV_RECOVERABLE:
@@ -215,8 +281,18 @@ static int cper_severity_to_aer(int cper_severity)
 		return AER_CORRECTABLE;
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(cper_severity_to_aer);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void cper_print_aer(const char *prefix, int cper_severity,
+=======
+EXPORT_SYMBOL_GPL(cper_severity_to_aer);
+
+void cper_print_aer(struct pci_dev *dev, int cper_severity,
+>>>>>>> refs/remotes/origin/master
 		    struct aer_capability_regs *aer)
 {
 	int aer_severity, layer, agent, status_strs_size, tlp_header_valid = 0;
@@ -238,6 +314,7 @@ void cper_print_aer(const char *prefix, int cper_severity,
 	}
 	layer = AER_GET_LAYER_ERROR(aer_severity, status);
 	agent = AER_GET_AGENT(aer_severity, status);
+<<<<<<< HEAD
 	printk("%s""aer_status: 0x%08x, aer_mask: 0x%08x\n",
 	       prefix, status, mask);
 	cper_print_bits(prefix, status, status_strs, status_strs_size);
@@ -253,10 +330,32 @@ void cper_print_aer(const char *prefix, int cper_severity,
 			" %02x%02x%02x%02x %02x%02x%02x%02x"
 			" %02x%02x%02x%02x %02x%02x%02x%02x\n",
 			prefix, *(tlp + 3), *(tlp + 2), *(tlp + 1), *tlp,
+=======
+	dev_err(&dev->dev, "aer_status: 0x%08x, aer_mask: 0x%08x\n",
+	       status, mask);
+	cper_print_bits("", status, status_strs, status_strs_size);
+	dev_err(&dev->dev, "aer_layer=%s, aer_agent=%s\n",
+	       aer_error_layer[layer], aer_agent_string[agent]);
+	if (aer_severity != AER_CORRECTABLE)
+		dev_err(&dev->dev, "aer_uncor_severity: 0x%08x\n",
+		       aer->uncor_severity);
+	if (tlp_header_valid) {
+		const unsigned char *tlp;
+		tlp = (const unsigned char *)&aer->header_log;
+		dev_err(&dev->dev, "aer_tlp_header:"
+			" %02x%02x%02x%02x %02x%02x%02x%02x"
+			" %02x%02x%02x%02x %02x%02x%02x%02x\n",
+			*(tlp + 3), *(tlp + 2), *(tlp + 1), *tlp,
+>>>>>>> refs/remotes/origin/master
 			*(tlp + 7), *(tlp + 6), *(tlp + 5), *(tlp + 4),
 			*(tlp + 11), *(tlp + 10), *(tlp + 9),
 			*(tlp + 8), *(tlp + 15), *(tlp + 14),
 			*(tlp + 13), *(tlp + 12));
 	}
+<<<<<<< HEAD
+=======
+	trace_aer_event(dev_name(&dev->dev), (status & ~mask),
+			aer_severity);
+>>>>>>> refs/remotes/origin/master
 }
 #endif

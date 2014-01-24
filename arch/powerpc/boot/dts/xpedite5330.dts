@@ -477,7 +477,15 @@
 		serial0: serial@4500 {
 			cell-index = <0>;
 			device_type = "serial";
+<<<<<<< HEAD
+<<<<<<< HEAD
 			compatible = "ns16550";
+=======
+			compatible = "fsl,ns16550", "ns16550";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			compatible = "fsl,ns16550", "ns16550";
+>>>>>>> refs/remotes/origin/master
 			reg = <0x4500 0x100>;
 			clock-frequency = <0>;
 			interrupts = <42 2>;
@@ -488,7 +496,15 @@
 		serial1: serial@4600 {
 			cell-index = <1>;
 			device_type = "serial";
+<<<<<<< HEAD
+<<<<<<< HEAD
 			compatible = "ns16550";
+=======
+			compatible = "fsl,ns16550", "ns16550";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			compatible = "fsl,ns16550", "ns16550";
+>>>>>>> refs/remotes/origin/master
 			reg = <0x4600 0x100>;
 			clock-frequency = <0>;
 			interrupts = <42 2>;
@@ -583,14 +599,22 @@
 		tlu@2f000 {
 			compatible = "fsl,mpc8572-tlu", "fsl_tlu";
 			reg = <0x2f000 0x1000>;
+<<<<<<< HEAD
 			interupts = <61 2 >;
+=======
+			interrupts = <61 2>;
+>>>>>>> refs/remotes/origin/master
 			interrupt-parent = <&mpic>;
 		};
 
 		tlu@15000 {
 			compatible = "fsl,mpc8572-tlu", "fsl_tlu";
 			reg = <0x15000 0x1000>;
+<<<<<<< HEAD
 			interupts = <75 2>;
+=======
+			interrupts = <75 2>;
+>>>>>>> refs/remotes/origin/master
 			interrupt-parent = <&mpic>;
 		};
 	};

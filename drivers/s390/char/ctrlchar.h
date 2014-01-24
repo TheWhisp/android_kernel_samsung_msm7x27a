@@ -1,8 +1,14 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/ctrlchar.c
  *  Unified handling of special chars.
  *
  *    Copyright (C) 2001 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  Unified handling of special chars.
+ *
+ *    Copyright IBM Corp. 2001
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Fritz Elfert <felfert@millenux.com> <elfert@de.ibm.com>
  *
  */

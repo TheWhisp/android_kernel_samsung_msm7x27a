@@ -3,7 +3,13 @@
  * Handler for storing security labels as extended attributes.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/fs.h>
 #include <linux/security.h>
@@ -48,6 +54,8 @@ ext4_xattr_security_set(struct dentry *dentry, const char *name,
 			      name, value, size, flags);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int
 ext4_init_security(handle_t *handle, struct inode *inode, struct inode *dir,
 		   const struct qstr *qstr)
@@ -70,6 +78,40 @@ ext4_init_security(handle_t *handle, struct inode *inode, struct inode *dir,
 	return err;
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int
+ext4_initxattrs(struct inode *inode, const struct xattr *xattr_array,
+		void *fs_info)
+{
+	const struct xattr *xattr;
+	handle_t *handle = fs_info;
+	int err = 0;
+
+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
+		err = ext4_xattr_set_handle(handle, inode,
+					    EXT4_XATTR_INDEX_SECURITY,
+					    xattr->name, xattr->value,
+					    xattr->value_len, 0);
+		if (err < 0)
+			break;
+	}
+	return err;
+}
+
+int
+ext4_init_security(handle_t *handle, struct inode *inode, struct inode *dir,
+		   const struct qstr *qstr)
+{
+	return security_inode_init_security(inode, dir, qstr,
+					    &ext4_initxattrs, handle);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 const struct xattr_handler ext4_xattr_security_handler = {
 	.prefix	= XATTR_SECURITY_PREFIX,
 	.list	= ext4_xattr_security_list,

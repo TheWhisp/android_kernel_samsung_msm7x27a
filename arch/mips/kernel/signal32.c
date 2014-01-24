@@ -29,10 +29,23 @@
 #include <asm/cacheflush.h>
 #include <asm/sim.h>
 #include <asm/ucontext.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/fpu.h>
 #include <asm/war.h>
 #include <asm/vdso.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/fpu.h>
+#include <asm/war.h>
+#include <asm/vdso.h>
+#include <asm/dsp.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "signal-common.h"
 
@@ -48,13 +61,18 @@ extern asmlinkage int fpu_emulator_restore_context32(struct sigcontext32 __user 
 /*
  * Including <asm/unistd.h> would give use the 64-bit syscall numbers ...
  */
+<<<<<<< HEAD
 #define __NR_O32_restart_syscall        4253
+=======
+#define __NR_O32_restart_syscall	4253
+>>>>>>> refs/remotes/origin/master
 
 /* 32-bit compatibility types */
 
 typedef unsigned int __sighandler32_t;
 typedef void (*vfptr_t)(void);
 
+<<<<<<< HEAD
 struct sigaction32 {
 	unsigned int		sa_flags;
 	__sighandler32_t	sa_handler;
@@ -74,6 +92,14 @@ struct ucontext32 {
 	stack32_t           uc_stack;
 	struct sigcontext32 uc_mcontext;
 	compat_sigset_t     uc_sigmask;   /* mask last for extensibility */
+=======
+struct ucontext32 {
+	u32		    uc_flags;
+	s32		    uc_link;
+	compat_stack_t      uc_stack;
+	struct sigcontext32 uc_mcontext;
+	compat_sigset_t	    uc_sigmask;	  /* mask last for extensibility */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sigframe32 {
@@ -280,6 +306,7 @@ static inline int get_sigset(sigset_t *kbuf, const compat_sigset_t __user *ubuf)
  * Atomically swap in the new signal mask, and wait for a signal.
  */
 
+<<<<<<< HEAD
 asmlinkage int sys32_sigsuspend(nabi_no_regargs struct pt_regs regs)
 {
 	compat_sigset_t __user *uset;
@@ -290,11 +317,16 @@ asmlinkage int sys32_sigsuspend(nabi_no_regargs struct pt_regs regs)
 		return -EFAULT;
 	sigdelsetmask(&newset, ~_BLOCKABLE);
 
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->saved_sigmask = current->blocked;
 	current->blocked = newset;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	current->saved_sigmask = current->blocked;
+	set_current_blocked(&newset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	current->state = TASK_INTERRUPTIBLE;
 	schedule();
@@ -318,11 +350,16 @@ asmlinkage int sys32_rt_sigsuspend(nabi_no_regargs struct pt_regs regs)
 		return -EFAULT;
 	sigdelsetmask(&newset, ~_BLOCKABLE);
 
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->saved_sigmask = current->blocked;
 	current->blocked = newset;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	current->saved_sigmask = current->blocked;
+	set_current_blocked(&newset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	current->state = TASK_INTERRUPTIBLE;
 	schedule();
@@ -332,6 +369,15 @@ asmlinkage int sys32_rt_sigsuspend(nabi_no_regargs struct pt_regs regs)
 
 SYSCALL_DEFINE3(32_sigaction, long, sig, const struct sigaction32 __user *, act,
 	struct sigaction32 __user *, oact)
+=======
+asmlinkage int sys32_sigsuspend(compat_sigset_t __user *uset)
+{
+	return compat_sys_rt_sigsuspend(uset, sizeof(compat_sigset_t));
+}
+
+SYSCALL_DEFINE3(32_sigaction, long, sig, const struct compat_sigaction __user *, act,
+	struct compat_sigaction __user *, oact)
+>>>>>>> refs/remotes/origin/master
 {
 	struct k_sigaction new_ka, old_ka;
 	int ret;
@@ -360,7 +406,11 @@ SYSCALL_DEFINE3(32_sigaction, long, sig, const struct sigaction32 __user *, act,
 			return -EFAULT;
 		err |= __put_user(old_ka.sa.sa_flags, &oact->sa_flags);
 		err |= __put_user((u32)(u64)old_ka.sa.sa_handler,
+<<<<<<< HEAD
 		                  &oact->sa_handler);
+=======
+				  &oact->sa_handler);
+>>>>>>> refs/remotes/origin/master
 		err |= __put_user(old_ka.sa.sa_mask.sig[0], oact->sa_mask.sig);
 		err |= __put_user(0, &oact->sa_mask.sig[1]);
 		err |= __put_user(0, &oact->sa_mask.sig[2]);
@@ -372,6 +422,7 @@ SYSCALL_DEFINE3(32_sigaction, long, sig, const struct sigaction32 __user *, act,
 	return ret;
 }
 
+<<<<<<< HEAD
 asmlinkage int sys32_sigaltstack(nabi_no_regargs struct pt_regs regs)
 {
 	const stack32_t __user *uss = (const stack32_t __user *) regs.regs[4];
@@ -412,6 +463,9 @@ asmlinkage int sys32_sigaltstack(nabi_no_regargs struct pt_regs regs)
 }
 
 int copy_siginfo_to_user32(compat_siginfo_t __user *to, siginfo_t *from)
+=======
+int copy_siginfo_to_user32(compat_siginfo_t __user *to, const siginfo_t *from)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -487,11 +541,19 @@ asmlinkage void sys32_sigreturn(nabi_no_regargs struct pt_regs regs)
 	if (__copy_conv_sigset_from_user(&blocked, &frame->sf_mask))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&blocked, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = blocked;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&blocked);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_blocked(&blocked);
+>>>>>>> refs/remotes/origin/master
 
 	sig = restore_sigcontext32(&regs, &frame->sf_sc);
 	if (sig < 0)
@@ -516,10 +578,14 @@ badframe:
 asmlinkage void sys32_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
 {
 	struct rt_sigframe32 __user *frame;
+<<<<<<< HEAD
 	mm_segment_t old_fs;
 	sigset_t set;
 	stack_t st;
 	s32 sp;
+=======
+	sigset_t set;
+>>>>>>> refs/remotes/origin/master
 	int sig;
 
 	frame = (struct rt_sigframe32 __user *) regs.regs[29];
@@ -528,11 +594,19 @@ asmlinkage void sys32_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
 	if (__copy_conv_sigset_from_user(&set, &frame->rs_uc.uc_sigmask))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	sig = restore_sigcontext32(&regs, &frame->rs_uc.uc_mcontext);
 	if (sig < 0)
@@ -540,6 +614,7 @@ asmlinkage void sys32_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
 	else if (sig)
 		force_sig(sig, current);
 
+<<<<<<< HEAD
 	/* The ucontext contains a stack32_t, so we must convert!  */
 	if (__get_user(sp, &frame->rs_uc.uc_stack.ss_sp))
 		goto badframe;
@@ -555,6 +630,10 @@ asmlinkage void sys32_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
 	set_fs(KERNEL_DS);
 	do_sigaltstack((stack_t __user *)&st, NULL, regs.regs[29]);
 	set_fs(old_fs);
+=======
+	if (compat_restore_altstack(&frame->rs_uc.uc_stack))
+		goto badframe;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Don't let your children do this ...
@@ -620,7 +699,10 @@ static int setup_rt_frame_32(void *sig_return, struct k_sigaction *ka,
 {
 	struct rt_sigframe32 __user *frame;
 	int err = 0;
+<<<<<<< HEAD
 	s32 sp;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	frame = get_sigframe(ka, regs, sizeof(*frame));
 	if (!access_ok(VERIFY_WRITE, frame, sizeof (*frame)))
@@ -629,6 +711,7 @@ static int setup_rt_frame_32(void *sig_return, struct k_sigaction *ka,
 	/* Convert (siginfo_t -> compat_siginfo_t) and copy to user. */
 	err |= copy_siginfo_to_user32(&frame->rs_info, info);
 
+<<<<<<< HEAD
 	/* Create the ucontext.  */
 	err |= __put_user(0, &frame->rs_uc.uc_flags);
 	err |= __put_user(0, &frame->rs_uc.uc_link);
@@ -639,6 +722,12 @@ static int setup_rt_frame_32(void *sig_return, struct k_sigaction *ka,
 	                  &frame->rs_uc.uc_stack.ss_flags);
 	err |= __put_user(current->sas_ss_size,
 	                  &frame->rs_uc.uc_stack.ss_size);
+=======
+	/* Create the ucontext.	 */
+	err |= __put_user(0, &frame->rs_uc.uc_flags);
+	err |= __put_user(0, &frame->rs_uc.uc_link);
+	err |= __compat_save_altstack(&frame->rs_uc.uc_stack, regs->regs[29]);
+>>>>>>> refs/remotes/origin/master
 	err |= setup_sigcontext32(regs, &frame->rs_uc.uc_mcontext);
 	err |= __copy_conv_sigset_to_user(&frame->rs_uc.uc_sigmask, set);
 
@@ -680,12 +769,17 @@ struct mips_abi mips_abi_32 = {
 	.setup_frame	= setup_frame_32,
 	.signal_return_offset =
 		offsetof(struct mips_vdso, o32_signal_trampoline),
+<<<<<<< HEAD
 	.setup_rt_frame	= setup_rt_frame_32,
+=======
+	.setup_rt_frame = setup_rt_frame_32,
+>>>>>>> refs/remotes/origin/master
 	.rt_signal_return_offset =
 		offsetof(struct mips_vdso, o32_rt_signal_trampoline),
 	.restart	= __NR_O32_restart_syscall
 };
 
+<<<<<<< HEAD
 SYSCALL_DEFINE4(32_rt_sigaction, int, sig,
 	const struct sigaction32 __user *, act,
 	struct sigaction32 __user *, oact, unsigned int, sigsetsize)
@@ -811,6 +905,8 @@ SYSCALL_DEFINE5(32_waitid, int, which, compat_pid_t, pid,
 	return copy_siginfo_to_user32(uinfo, &info);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int signal32_init(void)
 {
 	if (cpu_has_fpu) {

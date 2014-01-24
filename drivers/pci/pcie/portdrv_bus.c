@@ -18,8 +18,13 @@
 static int pcie_port_bus_match(struct device *dev, struct device_driver *drv);
 
 struct bus_type pcie_port_bus_type = {
+<<<<<<< HEAD
 	.name 		= "pci_express",
 	.match 		= pcie_port_bus_match,
+=======
+	.name		= "pci_express",
+	.match		= pcie_port_bus_match,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL_GPL(pcie_port_bus_type);
 
@@ -38,7 +43,11 @@ static int pcie_port_bus_match(struct device *dev, struct device_driver *drv)
 		return 0;
 
 	if ((driver->port_type != PCIE_ANY_PORT) &&
+<<<<<<< HEAD
 	    (driver->port_type != pciedev->port->pcie_type))
+=======
+	    (driver->port_type != pci_pcie_type(pciedev->port)))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	return 1;

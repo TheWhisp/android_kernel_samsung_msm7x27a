@@ -1,6 +1,7 @@
 #ifndef _ASM_M32R_SETUP_H
 #define _ASM_M32R_SETUP_H
 
+<<<<<<< HEAD
 /*
  * This is set up by the setup-routine at boot-time
  */
@@ -8,6 +9,10 @@
 #define COMMAND_LINE_SIZE       512
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/setup.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define PARAM			((unsigned char *)empty_zero_page)
 
@@ -33,6 +38,9 @@
 extern unsigned long memory_start;
 extern unsigned long memory_end;
 
+<<<<<<< HEAD
 #endif  /*  __KERNEL__  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_M32R_SETUP_H */

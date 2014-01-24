@@ -1,4 +1,6 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
     emc2103.c - Support for SMSC EMC2103
     Copyright (c) 2010 SMSC
 
@@ -16,6 +18,30 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * emc2103.c - Support for SMSC EMC2103
+ * Copyright (c) 2010 SMSC
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -48,14 +74,37 @@ static const u8 REG_TEMP_MAX[4] = { 0x34, 0x30, 0x31, 0x32 };
 /* equation 4 from datasheet: rpm = (3932160 * multipler) / count */
 #define FAN_RPM_FACTOR		3932160
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* 2103-2 and 2103-4's 3rd temperature sensor can be connected to two diodes
+=======
+/*
+ * 2103-2 and 2103-4's 3rd temperature sensor can be connected to two diodes
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * 2103-2 and 2103-4's 3rd temperature sensor can be connected to two diodes
+>>>>>>> refs/remotes/origin/master
  * in anti-parallel mode, and in this configuration both can be read
  * independently (so we have 4 temperature inputs).  The device can't
  * detect if it's connected in this mode, so we have to manually enable
  * it.  Default is to leave the device in the state it's already in (-1).
+<<<<<<< HEAD
+<<<<<<< HEAD
  * This parameter allows APD mode to be optionally forced on or off */
 static int apd = -1;
 module_param(apd, bool, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * This parameter allows APD mode to be optionally forced on or off
+ */
+static int apd = -1;
+module_param(apd, bint, 0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(init, "Set to zero to disable anti-parallel diode mode");
 
 struct temperature {
@@ -244,9 +293,19 @@ static ssize_t set_temp_min(struct device *dev, struct device_attribute *da,
 	struct emc2103_data *data = i2c_get_clientdata(client);
 	long val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int result = strict_strtol(buf, 10, &val);
+=======
+	int result = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (result < 0)
 		return -EINVAL;
+=======
+	int result = kstrtol(buf, 10, &val);
+	if (result < 0)
+		return result;
+>>>>>>> refs/remotes/origin/master
 
 	val = DIV_ROUND_CLOSEST(val, 1000);
 	if ((val < -63) || (val > 127))
@@ -268,9 +327,19 @@ static ssize_t set_temp_max(struct device *dev, struct device_attribute *da,
 	struct emc2103_data *data = i2c_get_clientdata(client);
 	long val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int result = strict_strtol(buf, 10, &val);
+=======
+	int result = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (result < 0)
 		return -EINVAL;
+=======
+	int result = kstrtol(buf, 10, &val);
+	if (result < 0)
+		return result;
+>>>>>>> refs/remotes/origin/master
 
 	val = DIV_ROUND_CLOSEST(val, 1000);
 	if ((val < -63) || (val > 127))
@@ -302,10 +371,25 @@ show_fan_div(struct device *dev, struct device_attribute *da, char *buf)
 	return sprintf(buf, "%d\n", fan_div);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Note: we also update the fan target here, because its value is
    determined in part by the fan clock divider.  This follows the principle
    of least surprise; the user doesn't expect the fan target to change just
    because the divider changed. */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Note: we also update the fan target here, because its value is
+ * determined in part by the fan clock divider.  This follows the principle
+ * of least surprise; the user doesn't expect the fan target to change just
+ * because the divider changed.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_fan_div(struct device *dev, struct device_attribute *da,
 			   const char *buf, size_t count)
 {
@@ -314,9 +398,19 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *da,
 	int new_range_bits, old_div = 8 / data->fan_multiplier;
 	long new_div;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int status = strict_strtol(buf, 10, &new_div);
+=======
+	int status = kstrtol(buf, 10, &new_div);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (status < 0)
 		return -EINVAL;
+=======
+	int status = kstrtol(buf, 10, &new_div);
+	if (status < 0)
+		return status;
+>>>>>>> refs/remotes/origin/master
 
 	if (new_div == old_div) /* No change */
 		return count;
@@ -388,9 +482,19 @@ static ssize_t set_fan_target(struct device *dev, struct device_attribute *da,
 	struct i2c_client *client = to_i2c_client(dev);
 	long rpm_target;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int result = strict_strtol(buf, 10, &rpm_target);
+=======
+	int result = kstrtol(buf, 10, &rpm_target);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (result < 0)
 		return -EINVAL;
+=======
+	int result = kstrtol(buf, 10, &rpm_target);
+	if (result < 0)
+		return result;
+>>>>>>> refs/remotes/origin/master
 
 	/* Datasheet states 16384 as maximum RPM target (table 3.2) */
 	if ((rpm_target < 0) || (rpm_target > 16384))
@@ -401,7 +505,11 @@ static ssize_t set_fan_target(struct device *dev, struct device_attribute *da,
 	if (rpm_target == 0)
 		data->fan_target = 0x1fff;
 	else
+<<<<<<< HEAD
 		data->fan_target = SENSORS_LIMIT(
+=======
+		data->fan_target = clamp_val(
+>>>>>>> refs/remotes/origin/master
 			(FAN_RPM_FACTOR * data->fan_multiplier) / rpm_target,
 			0, 0x1fff);
 
@@ -434,9 +542,19 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute *da,
 	long new_value;
 	u8 conf_reg;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int result = strict_strtol(buf, 10, &new_value);
+=======
+	int result = kstrtol(buf, 10, &new_value);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (result < 0)
 		return -EINVAL;
+=======
+	int result = kstrtol(buf, 10, &new_value);
+	if (result < 0)
+		return result;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	switch (new_value) {
@@ -447,11 +565,23 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute *da,
 		data->fan_rpm_control = true;
 		break;
 	default:
+<<<<<<< HEAD
 		mutex_unlock(&data->update_lock);
 		return -EINVAL;
 	}
 
 	read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg);
+=======
+		count = -EINVAL;
+		goto err;
+	}
+
+	result = read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg);
+	if (result) {
+		count = result;
+		goto err;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (data->fan_rpm_control)
 		conf_reg |= 0x80;
@@ -459,7 +589,11 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute *da,
 		conf_reg &= ~0x80;
 
 	i2c_smbus_write_byte_data(client, REG_FAN_CONF1, conf_reg);
+<<<<<<< HEAD
 
+=======
+err:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -582,7 +716,12 @@ emc2103_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
 		return -EIO;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct emc2103_data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct emc2103_data),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
@@ -600,7 +739,11 @@ emc2103_probe(struct i2c_client *client, const struct i2c_device_id *id)
 		if (status < 0) {
 			dev_dbg(&client->dev, "reg 0x%02x, err %d\n", REG_CONF1,
 				status);
+<<<<<<< HEAD
 			goto exit_free;
+=======
+			return status;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* detect current state of hardware */
@@ -623,7 +766,11 @@ emc2103_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	/* Register sysfs hooks */
 	status = sysfs_create_group(&client->dev.kobj, &emc2103_group);
 	if (status)
+<<<<<<< HEAD
 		goto exit_free;
+=======
+		return status;
+>>>>>>> refs/remotes/origin/master
 
 	if (data->temp_count >= 3) {
 		status = sysfs_create_group(&client->dev.kobj,
@@ -658,8 +805,11 @@ exit_remove_temp3:
 		sysfs_remove_group(&client->dev.kobj, &emc2103_temp3_group);
 exit_remove:
 	sysfs_remove_group(&client->dev.kobj, &emc2103_group);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -677,7 +827,10 @@ static int emc2103_remove(struct i2c_client *client)
 
 	sysfs_remove_group(&client->dev.kobj, &emc2103_group);
 
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -722,6 +875,8 @@ static struct i2c_driver emc2103_driver = {
 	.address_list	= normal_i2c,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_emc2103_init(void)
 {
 	return i2c_add_driver(&emc2103_driver);
@@ -731,10 +886,23 @@ static void __exit sensors_emc2103_exit(void)
 {
 	i2c_del_driver(&emc2103_driver);
 }
+=======
+module_i2c_driver(emc2103_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Steve Glendinning <steve.glendinning@smsc.com>");
 MODULE_DESCRIPTION("SMSC EMC2103 hwmon driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(sensors_emc2103_init);
 module_exit(sensors_emc2103_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(emc2103_driver);
+
+MODULE_AUTHOR("Steve Glendinning <steve.glendinning@shawell.net>");
+MODULE_DESCRIPTION("SMSC EMC2103 hwmon driver");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

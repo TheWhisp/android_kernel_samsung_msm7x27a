@@ -69,9 +69,18 @@ static void tile_edac_check(struct mem_ctl_info *mci)
 
 	/* Check if the current error count is different from the saved one. */
 	if (mem_error.sbe_count != priv->ce_count) {
+<<<<<<< HEAD
 		dev_dbg(mci->dev, "ECC CE err on node %d\n", priv->node);
 		priv->ce_count = mem_error.sbe_count;
 		edac_mc_handle_ce(mci, 0, 0, 0, 0, 0, mci->ctl_name);
+=======
+		dev_dbg(mci->pdev, "ECC CE err on node %d\n", priv->node);
+		priv->ce_count = mem_error.sbe_count;
+		edac_mc_handle_error(HW_EVENT_ERR_CORRECTED, mci, 1,
+				     0, 0, 0,
+				     0, 0, -1,
+				     mci->ctl_name, "");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -79,11 +88,20 @@ static void tile_edac_check(struct mem_ctl_info *mci)
  * Initialize the 'csrows' table within the mci control structure with the
  * addressing of memory.
  */
+<<<<<<< HEAD
 static int __devinit tile_edac_init_csrows(struct mem_ctl_info *mci)
 {
 	struct csrow_info	*csrow = &mci->csrows[0];
 	struct tile_edac_priv	*priv = mci->pvt_info;
 	struct mshim_mem_info	mem_info;
+=======
+static int tile_edac_init_csrows(struct mem_ctl_info *mci)
+{
+	struct csrow_info	*csrow = mci->csrows[0];
+	struct tile_edac_priv	*priv = mci->pvt_info;
+	struct mshim_mem_info	mem_info;
+	struct dimm_info *dimm = csrow->channels[0]->dimm;
+>>>>>>> refs/remotes/origin/master
 
 	if (hv_dev_pread(priv->hv_devhdl, 0, (HV_VirtAddr)&mem_info,
 		sizeof(struct mshim_mem_info), MSHIM_MEM_INFO_OFF) !=
@@ -93,6 +111,7 @@ static int __devinit tile_edac_init_csrows(struct mem_ctl_info *mci)
 	}
 
 	if (mem_info.mem_ecc)
+<<<<<<< HEAD
 		csrow->edac_mode = EDAC_SECDED;
 	else
 		csrow->edac_mode = EDAC_NONE;
@@ -103,26 +122,52 @@ static int __devinit tile_edac_init_csrows(struct mem_ctl_info *mci)
 
 	case DDR3:
 		csrow->mtype = MEM_DDR3;
+=======
+		dimm->edac_mode = EDAC_SECDED;
+	else
+		dimm->edac_mode = EDAC_NONE;
+	switch (mem_info.mem_type) {
+	case DDR2:
+		dimm->mtype = MEM_DDR2;
+		break;
+
+	case DDR3:
+		dimm->mtype = MEM_DDR3;
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
 		return -1;
 	}
 
+<<<<<<< HEAD
 	csrow->first_page = 0;
 	csrow->nr_pages = mem_info.mem_size >> PAGE_SHIFT;
 	csrow->last_page = csrow->first_page + csrow->nr_pages - 1;
 	csrow->grain = TILE_EDAC_ERROR_GRAIN;
 	csrow->dtype = DEV_UNKNOWN;
+=======
+	dimm->nr_pages = mem_info.mem_size >> PAGE_SHIFT;
+	dimm->grain = TILE_EDAC_ERROR_GRAIN;
+	dimm->dtype = DEV_UNKNOWN;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit tile_edac_mc_probe(struct platform_device *pdev)
+=======
+static int tile_edac_mc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	char			hv_file[32];
 	int			hv_devhdl;
 	struct mem_ctl_info	*mci;
+<<<<<<< HEAD
+=======
+	struct edac_mc_layer	layers[2];
+>>>>>>> refs/remotes/origin/master
 	struct tile_edac_priv	*priv;
 	int			rc;
 
@@ -132,20 +177,49 @@ static int __devinit tile_edac_mc_probe(struct platform_device *pdev)
 		return -EINVAL;
 
 	/* A TILE MC has a single channel and one chip-select row. */
+<<<<<<< HEAD
 	mci = edac_mc_alloc(sizeof(struct tile_edac_priv),
 		TILE_EDAC_NR_CSROWS, TILE_EDAC_NR_CHANS, pdev->id);
+=======
+	layers[0].type = EDAC_MC_LAYER_CHIP_SELECT;
+	layers[0].size = TILE_EDAC_NR_CSROWS;
+	layers[0].is_virt_csrow = true;
+	layers[1].type = EDAC_MC_LAYER_CHANNEL;
+	layers[1].size = TILE_EDAC_NR_CHANS;
+	layers[1].is_virt_csrow = false;
+	mci = edac_mc_alloc(pdev->id, ARRAY_SIZE(layers), layers,
+			    sizeof(struct tile_edac_priv));
+>>>>>>> refs/remotes/origin/master
 	if (mci == NULL)
 		return -ENOMEM;
 	priv = mci->pvt_info;
 	priv->node = pdev->id;
 	priv->hv_devhdl = hv_devhdl;
 
+<<<<<<< HEAD
 	mci->dev = &pdev->dev;
+=======
+	mci->pdev = &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	mci->mtype_cap = MEM_FLAG_DDR2;
 	mci->edac_ctl_cap = EDAC_FLAG_SECDED;
 
 	mci->mod_name = DRV_NAME;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mci->ctl_name = "TILEPro_Memory_Controller";
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef __tilegx__
+	mci->ctl_name = "TILEGx_Memory_Controller";
+#else
+	mci->ctl_name = "TILEPro_Memory_Controller";
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mci->dev_name = dev_name(&pdev->dev);
 	mci->edac_check = tile_edac_check;
 
@@ -173,7 +247,11 @@ static int __devinit tile_edac_mc_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit tile_edac_mc_remove(struct platform_device *pdev)
+=======
+static int tile_edac_mc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mem_ctl_info *mci = platform_get_drvdata(pdev);
 
@@ -189,7 +267,11 @@ static struct platform_driver tile_edac_mc_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= tile_edac_mc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(tile_edac_mc_remove),
+=======
+	.remove		= tile_edac_mc_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -244,7 +326,10 @@ static void __exit tile_edac_exit(void)
 		if (!pdev)
 			continue;
 
+<<<<<<< HEAD
 		platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		platform_device_unregister(pdev);
 	}
 	platform_driver_unregister(&tile_edac_mc_driver);

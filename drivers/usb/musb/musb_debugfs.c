@@ -33,6 +33,8 @@
 
 #include <linux/module.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sched.h>
 #include <linux/init.h>
 #include <linux/list.h>
@@ -47,15 +49,33 @@
 #include <asm/mach-types.h>
 #endif
 
+=======
+#include <linux/init.h>
+#include <linux/debugfs.h>
+#include <linux/seq_file.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/init.h>
+#include <linux/debugfs.h>
+#include <linux/seq_file.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #include "musb_core.h"
 #include "musb_debug.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_DAVINCI
 #include "davinci.h"
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct musb_register_map {
 	char			*name;
 	unsigned		offset;
@@ -117,8 +137,11 @@ static const struct musb_register_map musb_regmap[] = {
 	{  }	/* Terminating Entry */
 };
 
+<<<<<<< HEAD
 static struct dentry *musb_debugfs_root;
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int musb_regdump_show(struct seq_file *s, void *unused)
 {
 	struct musb		*musb = s->private;
@@ -249,33 +272,76 @@ static const struct file_operations musb_test_mode_fops = {
 	.release		= single_release,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __init musb_init_debugfs(struct musb *musb)
+=======
+int __devinit musb_init_debugfs(struct musb *musb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int musb_init_debugfs(struct musb *musb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dentry		*root;
 	struct dentry		*file;
 	int			ret;
 
+<<<<<<< HEAD
 	root = debugfs_create_dir("musb", NULL);
+<<<<<<< HEAD
 	if (IS_ERR(root)) {
 		ret = PTR_ERR(root);
+=======
+	if (!root) {
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	root = debugfs_create_dir(dev_name(musb->controller), NULL);
+	if (!root) {
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto err0;
 	}
 
 	file = debugfs_create_file("regdump", S_IRUGO, root, musb,
 			&musb_regdump_fops);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_ERR(file)) {
 		ret = PTR_ERR(file);
+=======
+	if (!file) {
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!file) {
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto err1;
 	}
 
 	file = debugfs_create_file("testmode", S_IRUGO | S_IWUSR,
 			root, musb, &musb_test_mode_fops);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_ERR(file)) {
 		ret = PTR_ERR(file);
+=======
+	if (!file) {
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto err1;
 	}
 
 	musb_debugfs_root = root;
+=======
+	if (!file) {
+		ret = -ENOMEM;
+		goto err1;
+	}
+
+	musb->debugfs_root = root;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -288,5 +354,9 @@ err0:
 
 void /* __init_or_exit */ musb_exit_debugfs(struct musb *musb)
 {
+<<<<<<< HEAD
 	debugfs_remove_recursive(musb_debugfs_root);
+=======
+	debugfs_remove_recursive(musb->debugfs_root);
+>>>>>>> refs/remotes/origin/master
 }

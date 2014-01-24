@@ -1,15 +1,43 @@
 config IUCV
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "IUCV support (S390 - z/VM only)"
 	depends on S390
+=======
+	depends on S390
+	def_tristate y if S390
+	prompt "IUCV support (S390 - z/VM only)"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on S390
+	def_tristate y if S390
+	prompt "IUCV support (S390 - z/VM only)"
+>>>>>>> refs/remotes/origin/master
 	help
 	  Select this option if you want to use inter-user communication
 	  under VM or VIF. If you run on z/VM, say "Y" to enable a fast
 	  communication link between VM guests.
 
 config AFIUCV
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "AF_IUCV support (S390 - z/VM only)"
 	depends on IUCV
 	help
 	  Select this option if you want to use inter-user communication under
 	  VM or VIF sockets. If you run on z/VM, say "Y" to enable a fast
 	  communication link between VM guests.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	depends on S390
+	def_tristate m if QETH_L3 || IUCV
+	prompt "AF_IUCV Socket support (S390 - z/VM and HiperSockets transport)"
+	help
+	  Select this option if you want to use AF_IUCV socket applications
+	  based on z/VM inter-user communication vehicle or based on
+	  HiperSockets.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

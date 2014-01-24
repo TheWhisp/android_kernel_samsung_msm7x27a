@@ -40,7 +40,13 @@
  *      -EPERM:      Failure occurred, unable to allocate buffers.
  *      -EINVAL:      usize must be > 0 bytes.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      ap_buffer != NULL.
  *  Ensures:
  */
@@ -63,7 +69,13 @@ extern int strm_allocate_buffer(struct strm_res_object *strmres,
  *                      been reclaimed.
  *      -EPERM:      Failure to close stream.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  Ensures:
  */
 extern int strm_close(struct strm_res_object *strmres,
@@ -83,7 +95,13 @@ extern int strm_close(struct strm_res_object *strmres,
  *      -ENOMEM:    Insufficient memory for requested resources.
  *      -EPERM:      General failure.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      strm_man != NULL.
  *      dev_obj != NULL.
  *  Ensures:
@@ -101,7 +119,13 @@ extern int strm_create(struct strm_mgr **strm_man,
  *      strm_mgr_obj:       Handle to STRM manager object from strm_create.
  *  Returns:
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      Valid strm_mgr_obj.
  *  Ensures:
  *      strm_mgr_obj is not valid.
@@ -109,6 +133,8 @@ extern int strm_create(struct strm_mgr **strm_man,
 extern void strm_delete(struct strm_mgr *strm_mgr_obj);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== strm_exit ========
  *  Purpose:
  *      Discontinue usage of STRM module.
@@ -121,6 +147,10 @@ extern void strm_delete(struct strm_mgr *strm_mgr_obj);
 extern void strm_exit(void);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== strm_free_buffer ========
  *  Purpose:
  *      Free buffer(s) allocated with strm_allocate_buffer.
@@ -133,7 +163,13 @@ extern void strm_exit(void);
  *      -EFAULT:    Invalid stream handle.
  *      -EPERM:      Failure occurred, unable to free buffers.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      ap_buffer != NULL.
  *  Ensures:
  */
@@ -156,7 +192,13 @@ extern int strm_free_buffer(struct strm_res_object *strmres,
  *      -EINVAL:          stream_info_size < sizeof(dsp_streaminfo).
  *      -EPERM:          Unable to get stream info.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      stream_info != NULL.
  *  Ensures:
  */
@@ -184,12 +226,20 @@ extern int strm_get_info(struct strm_object *stream_obj,
  *      -ETIME:   A timeout occurred before the stream could be idled.
  *      -EPERM:      Unable to idle stream.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  Ensures:
  */
 extern int strm_idle(struct strm_object *stream_obj, bool flush_data);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== strm_init ========
  *  Purpose:
  *      Initialize the STRM module.
@@ -202,6 +252,10 @@ extern int strm_idle(struct strm_object *stream_obj, bool flush_data);
 extern bool strm_init(void);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== strm_issue ========
  *  Purpose:
  *      Send a buffer of data to a stream.
@@ -217,8 +271,16 @@ extern bool strm_init(void);
  *      -ENOSR:    The stream is full.
  *      -EPERM:          Failure occurred, unable to issue buffer.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
  *      pbuf != NULL.
+=======
+*      pbuf != NULL.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+*      pbuf != NULL.
+>>>>>>> refs/remotes/origin/master
  *  Ensures:
  */
 extern int strm_issue(struct strm_object *stream_obj, u8 * pbuf,
@@ -235,7 +297,11 @@ extern int strm_issue(struct strm_object *stream_obj, u8 * pbuf,
  *      index:         Stream index.
  *      pattr:          Pointer to structure containing attributes to be
  *                      applied to stream. Cannot be NULL.
+<<<<<<< HEAD
  *      strmres:     Location to store stream resuorce info handle on output.
+=======
+ *      strmres:     Location to store stream resource info handle on output.
+>>>>>>> refs/remotes/origin/master
  *  Returns:
  *      0:        Success.
  *      -EFAULT:    Invalid hnode.
@@ -244,7 +310,13 @@ extern int strm_issue(struct strm_object *stream_obj, u8 * pbuf,
  *              Unable to open stream.
  *      -EINVAL:     Invalid index.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      strmres != NULL.
  *      pattr != NULL.
  *  Ensures:
@@ -275,7 +347,13 @@ extern int strm_open(struct node_object *hnode, u32 dir,
  *                      retrieved.
  *      -EPERM:      Failure occurred, unable to reclaim buffer.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      buf_ptr != NULL.
  *      nbytes != NULL.
  *      pdw_arg != NULL.
@@ -302,7 +380,13 @@ extern int strm_reclaim(struct strm_object *stream_obj,
  *      -ENOSYS:   Notification type specified by notify_type is not
  *                      supported.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      hnotification != NULL.
  *  Ensures:
  */
@@ -328,7 +412,13 @@ extern int strm_register_notify(struct strm_object *stream_obj,
  *      -ETIME:   A timeout occurred before a stream became ready.
  *      -EPERM:      Failure occurred, unable to select a stream.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      strm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      strm_tab != NULL.
  *      strms > 0.
  *      pmask != NULL.

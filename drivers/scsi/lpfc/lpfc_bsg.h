@@ -1,7 +1,11 @@
 /*******************************************************************
  * This file is part of the Emulex Linux Device Driver for         *
  * Fibre Channel Host Bus Adapters.                                *
+<<<<<<< HEAD
  * Copyright (C) 2010 Emulex.  All rights reserved.                *
+=======
+ * Copyright (C) 2010-2012 Emulex.  All rights reserved.                *
+>>>>>>> refs/remotes/origin/master
  * EMULEX and SLI are trademarks of Emulex.                        *
  * www.emulex.com                                                  *
  *                                                                 *
@@ -96,7 +100,15 @@ struct get_mgmt_rev {
 };
 
 #define MANAGEMENT_MAJOR_REV   1
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MANAGEMENT_MINOR_REV   0
+=======
+#define MANAGEMENT_MINOR_REV   1
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MANAGEMENT_MINOR_REV   1
+>>>>>>> refs/remotes/origin/master
 
 /* the MgmtRevInfo structure */
 struct MgmtRevInfo {
@@ -248,6 +260,15 @@ struct lpfc_sli_config_emb1_subsys {
 #define COMN_OPCODE_WRITE_OBJECT	0xAC
 #define COMN_OPCODE_READ_OBJECT_LIST	0xAD
 #define COMN_OPCODE_DELETE_OBJECT	0xAE
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define COMN_OPCODE_GET_CNTL_ADDL_ATTRIBUTES	0x79
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define COMN_OPCODE_GET_CNTL_ADDL_ATTRIBUTES	0x79
+#define COMN_OPCODE_GET_CNTL_ATTRIBUTES	0x20
+>>>>>>> refs/remotes/origin/master
 	uint32_t timeout;
 	uint32_t request_length;
 	uint32_t word9;

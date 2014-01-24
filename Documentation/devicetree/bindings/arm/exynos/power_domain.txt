@@ -1,0 +1,41 @@
+* Samsung Exynos Power Domains
+
+Exynos processors include support for multiple power domains which are used
+to gate power to one or more peripherals on the processor.
+
+Required Properties:
+<<<<<<< HEAD
+- compatiable: should be one of the following.
+=======
+- compatible: should be one of the following.
+>>>>>>> refs/remotes/origin/master
+    * samsung,exynos4210-pd - for exynos4210 type power domain.
+- reg: physical base address of the controller and length of memory mapped
+    region.
+
+<<<<<<< HEAD
+Optional Properties:
+- samsung,exynos4210-pd-off: Specifies that the power domain is in turned-off
+    state during boot and remains to be turned-off until explicitly turned-on.
+=======
+Node of a device using power domains must have a samsung,power-domain property
+defined with a phandle to respective power domain.
+>>>>>>> refs/remotes/origin/master
+
+Example:
+
+	lcd0: power-domain-lcd0 {
+		compatible = "samsung,exynos4210-pd";
+		reg = <0x10023C00 0x10>;
+	};
+<<<<<<< HEAD
+=======
+
+Example of the node using power domain:
+
+	node {
+		/* ... */
+		samsung,power-domain = <&lcd0>;
+		/* ... */
+	};
+>>>>>>> refs/remotes/origin/master

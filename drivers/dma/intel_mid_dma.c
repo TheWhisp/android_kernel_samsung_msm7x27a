@@ -27,6 +27,18 @@
 #include <linux/interrupt.h>
 #include <linux/pm_runtime.h>
 #include <linux/intel_mid_dma.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+
+#include "dmaengine.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+
+#include "dmaengine.h"
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_CHAN	4 /*max ch across controllers*/
 #include "intel_mid_dma_regs.h"
@@ -115,16 +127,36 @@ DMAC1 interrupt Functions*/
 
 /**
  * dmac1_mask_periphral_intr -	mask the periphral interrupt
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @midc: dma channel for which masking is required
+=======
+ * @mid: dma device for which masking is required
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @mid: dma device for which masking is required
+>>>>>>> refs/remotes/origin/master
  *
  * Masks the DMA periphral interrupt
  * this is valid for DMAC1 family controllers only
  * This controller should have periphral mask registers already mapped
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void dmac1_mask_periphral_intr(struct intel_mid_dma_chan *midc)
 {
 	u32 pimr;
 	struct middma_device *mid = to_middma_device(midc->chan.device);
+=======
+static void dmac1_mask_periphral_intr(struct middma_device *mid)
+{
+	u32 pimr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void dmac1_mask_periphral_intr(struct middma_device *mid)
+{
+	u32 pimr;
+>>>>>>> refs/remotes/origin/master
 
 	if (mid->pimr_mask) {
 		pimr = readl(mid->mask_reg + LNW_PERIPHRAL_MASK);
@@ -184,7 +216,13 @@ static void enable_dma_interrupt(struct intel_mid_dma_chan *midc)
 static void disable_dma_interrupt(struct intel_mid_dma_chan *midc)
 {
 	/*Check LPE PISR, make sure fwd is disabled*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dmac1_mask_periphral_intr(midc);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	iowrite32(MASK_INTR_REG(midc->ch_id), midc->dma_base + MASK_BLOCK);
 	iowrite32(MASK_INTR_REG(midc->ch_id), midc->dma_base + MASK_TFR);
 	iowrite32(MASK_INTR_REG(midc->ch_id), midc->dma_base + MASK_ERR);
@@ -281,14 +319,32 @@ static void midc_dostart(struct intel_mid_dma_chan *midc,
  * callbacks but must be called with the lock held.
  */
 static void midc_descriptor_complete(struct intel_mid_dma_chan *midc,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	       struct intel_mid_dma_desc *desc)
+=======
+		struct intel_mid_dma_desc *desc)
+		__releases(&midc->lock) __acquires(&midc->lock)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct intel_mid_dma_desc *desc)
+		__releases(&midc->lock) __acquires(&midc->lock)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dma_async_tx_descriptor	*txd = &desc->txd;
 	dma_async_tx_callback callback_txd = NULL;
 	struct intel_mid_dma_lli	*llitem;
 	void *param_txd = NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	midc->completed = txd->cookie;
+=======
+	dma_cookie_complete(txd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_cookie_complete(txd);
+>>>>>>> refs/remotes/origin/master
 	callback_txd = txd->callback;
 	param_txd = txd->callback_param;
 
@@ -307,11 +363,23 @@ static void midc_descriptor_complete(struct intel_mid_dma_chan *midc,
 		callback_txd(param_txd);
 	}
 	if (midc->raw_tfr) {
+<<<<<<< HEAD
 		desc->status = DMA_SUCCESS;
+=======
+		desc->status = DMA_COMPLETE;
+>>>>>>> refs/remotes/origin/master
 		if (desc->lli != NULL) {
 			pci_pool_free(desc->lli_pool, desc->lli,
 						desc->lli_phys);
 			pci_pool_destroy(desc->lli_pool);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			desc->lli = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			desc->lli = NULL;
+>>>>>>> refs/remotes/origin/master
 		}
 		list_move(&desc->desc_node, &midc->free_list);
 		midc->busy = false;
@@ -391,15 +459,33 @@ static int midc_lli_fill_sg(struct intel_mid_dma_chan *midc,
 			}
 		}
 		/*Populate CTL_HI values*/
+<<<<<<< HEAD
 		ctl_hi.ctlx.block_ts = get_block_ts(sg->length,
 							desc->width,
 							midc->dma->block_size);
 		/*Populate SAR and DAR values*/
 		sg_phy_addr = sg_phys(sg);
+<<<<<<< HEAD
 		if (desc->dirn ==  DMA_TO_DEVICE) {
 			lli_bloc_desc->sar  = sg_phy_addr;
 			lli_bloc_desc->dar  = mids->dma_slave.dst_addr;
 		} else if (desc->dirn ==  DMA_FROM_DEVICE) {
+=======
+=======
+		ctl_hi.ctlx.block_ts = get_block_ts(sg_dma_len(sg),
+							desc->width,
+							midc->dma->block_size);
+		/*Populate SAR and DAR values*/
+		sg_phy_addr = sg_dma_address(sg);
+>>>>>>> refs/remotes/origin/master
+		if (desc->dirn ==  DMA_MEM_TO_DEV) {
+			lli_bloc_desc->sar  = sg_phy_addr;
+			lli_bloc_desc->dar  = mids->dma_slave.dst_addr;
+		} else if (desc->dirn ==  DMA_DEV_TO_MEM) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			lli_bloc_desc->sar  = mids->dma_slave.src_addr;
 			lli_bloc_desc->dar  = sg_phy_addr;
 		}
@@ -424,7 +510,11 @@ DMA engine callback Functions*/
  * intel_mid_dma_tx_submit -	callback to submit DMA transaction
  * @tx: dma engine descriptor
  *
+<<<<<<< HEAD
  * Submit the DMA trasaction for this descriptor, start if ch idle
+=======
+ * Submit the DMA transaction for this descriptor, start if ch idle
+>>>>>>> refs/remotes/origin/master
  */
 static dma_cookie_t intel_mid_dma_tx_submit(struct dma_async_tx_descriptor *tx)
 {
@@ -433,6 +523,8 @@ static dma_cookie_t intel_mid_dma_tx_submit(struct dma_async_tx_descriptor *tx)
 	dma_cookie_t		cookie;
 
 	spin_lock_bh(&midc->lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cookie = midc->chan.cookie;
 
 	if (++cookie < 0)
@@ -441,6 +533,12 @@ static dma_cookie_t intel_mid_dma_tx_submit(struct dma_async_tx_descriptor *tx)
 	midc->chan.cookie = cookie;
 	desc->txd.cookie = cookie;
 
+=======
+	cookie = dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cookie = dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/master
 
 	if (list_empty(&midc->active_list))
 		list_add_tail(&desc->desc_node, &midc->active_list);
@@ -481,6 +579,8 @@ static enum dma_status intel_mid_dma_tx_status(struct dma_chan *chan,
 						dma_cookie_t cookie,
 						struct dma_tx_state *txstate)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct intel_mid_dma_chan	*midc = to_intel_mid_dma_chan(chan);
 	dma_cookie_t		last_used;
 	dma_cookie_t		last_complete;
@@ -504,6 +604,29 @@ static enum dma_status intel_mid_dma_tx_status(struct dma_chan *chan,
 		txstate->used = last_used;
 		txstate->residue = 0;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct intel_mid_dma_chan *midc = to_intel_mid_dma_chan(chan);
+	enum dma_status ret;
+
+	ret = dma_cookie_status(chan, cookie, txstate);
+<<<<<<< HEAD
+	if (ret != DMA_SUCCESS) {
+=======
+	if (ret != DMA_COMPLETE) {
+>>>>>>> refs/remotes/origin/master
+		spin_lock_bh(&midc->lock);
+		midc_scan_descriptors(to_middma_device(chan->device), midc);
+		spin_unlock_bh(&midc->lock);
+
+		ret = dma_cookie_status(chan, cookie, txstate);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -567,6 +690,14 @@ static int intel_mid_dma_device_control(struct dma_chan *chan,
 			pci_pool_free(desc->lli_pool, desc->lli,
 						desc->lli_phys);
 			pci_pool_destroy(desc->lli_pool);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			desc->lli = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			desc->lli = NULL;
+>>>>>>> refs/remotes/origin/master
 		}
 		list_move(&desc->desc_node, &midc->free_list);
 	}
@@ -633,13 +764,29 @@ static struct dma_async_tx_descriptor *intel_mid_dma_prep_memcpy(
 		if (midc->dma->pimr_mask) {
 			cfg_hi.cfgx.protctl = 0x0; /*default value*/
 			cfg_hi.cfgx.fifo_mode = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (mids->dma_slave.direction == DMA_TO_DEVICE) {
+=======
+			if (mids->dma_slave.direction == DMA_MEM_TO_DEV) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (mids->dma_slave.direction == DMA_MEM_TO_DEV) {
+>>>>>>> refs/remotes/origin/master
 				cfg_hi.cfgx.src_per = 0;
 				if (mids->device_instance == 0)
 					cfg_hi.cfgx.dst_per = 3;
 				if (mids->device_instance == 1)
 					cfg_hi.cfgx.dst_per = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			} else if (mids->dma_slave.direction == DMA_FROM_DEVICE) {
+=======
+			} else if (mids->dma_slave.direction == DMA_DEV_TO_MEM) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} else if (mids->dma_slave.direction == DMA_DEV_TO_MEM) {
+>>>>>>> refs/remotes/origin/master
 				if (mids->device_instance == 0)
 					cfg_hi.cfgx.src_per = 2;
 				if (mids->device_instance == 1)
@@ -683,11 +830,25 @@ static struct dma_async_tx_descriptor *intel_mid_dma_prep_memcpy(
 		ctl_lo.ctlx.sinc = 0;
 		ctl_lo.ctlx.dinc = 0;
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (mids->dma_slave.direction == DMA_TO_DEVICE) {
 			ctl_lo.ctlx.sinc = 0;
 			ctl_lo.ctlx.dinc = 2;
 			ctl_lo.ctlx.tt_fc = 1;
 		} else if (mids->dma_slave.direction == DMA_FROM_DEVICE) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (mids->dma_slave.direction == DMA_MEM_TO_DEV) {
+			ctl_lo.ctlx.sinc = 0;
+			ctl_lo.ctlx.dinc = 2;
+			ctl_lo.ctlx.tt_fc = 1;
+		} else if (mids->dma_slave.direction == DMA_DEV_TO_MEM) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ctl_lo.ctlx.sinc = 2;
 			ctl_lo.ctlx.dinc = 0;
 			ctl_lo.ctlx.tt_fc = 2;
@@ -728,13 +889,31 @@ err_desc_get:
  * @sg_len: length of sg txn
  * @direction: DMA transfer dirtn
  * @flags: DMA flags
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @context: transfer context (ignored)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @context: transfer context (ignored)
+>>>>>>> refs/remotes/origin/master
  *
  * Prepares LLI based periphral transfer
  */
 static struct dma_async_tx_descriptor *intel_mid_dma_prep_slave_sg(
 			struct dma_chan *chan, struct scatterlist *sgl,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			unsigned int sg_len, enum dma_data_direction direction,
 			unsigned long flags)
+=======
+			unsigned int sg_len, enum dma_transfer_direction direction,
+			unsigned long flags, void *context)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			unsigned int sg_len, enum dma_transfer_direction direction,
+			unsigned long flags, void *context)
+>>>>>>> refs/remotes/origin/master
 {
 	struct intel_mid_dma_chan *midc = NULL;
 	struct intel_mid_dma_slave *mids = NULL;
@@ -760,7 +939,11 @@ static struct dma_async_tx_descriptor *intel_mid_dma_prep_slave_sg(
 			txd = intel_mid_dma_prep_memcpy(chan,
 						mids->dma_slave.dst_addr,
 						mids->dma_slave.src_addr,
+<<<<<<< HEAD
 						sgl->length,
+=======
+						sg_dma_len(sgl),
+>>>>>>> refs/remotes/origin/master
 						flags);
 			return txd;
 		} else {
@@ -772,7 +955,11 @@ static struct dma_async_tx_descriptor *intel_mid_dma_prep_slave_sg(
 	pr_debug("MDMA: SG Length = %d, direction = %d, Flags = %#lx\n",
 			sg_len, direction, flags);
 
+<<<<<<< HEAD
 	txd = intel_mid_dma_prep_memcpy(chan, 0, 0, sgl->length, flags);
+=======
+	txd = intel_mid_dma_prep_memcpy(chan, 0, 0, sg_dma_len(sgl), flags);
+>>>>>>> refs/remotes/origin/master
 	if (NULL == txd) {
 		pr_err("MDMA: Prep memcpy failed\n");
 		return NULL;
@@ -828,7 +1015,13 @@ static void intel_mid_dma_free_chan_resources(struct dma_chan *chan)
 		/*trying to free ch in use!!!!!*/
 		pr_err("ERR_MDMA: trying to free ch in use\n");
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pm_runtime_put(&mid->pdev->dev);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_bh(&midc->lock);
 	midc->descs_allocated = 0;
 	list_for_each_entry_safe(desc, _desc, &midc->active_list, desc_node) {
@@ -849,6 +1042,14 @@ static void intel_mid_dma_free_chan_resources(struct dma_chan *chan)
 	/* Disable CH interrupts */
 	iowrite32(MASK_INTR_REG(midc->ch_id), mid->dma_base + MASK_BLOCK);
 	iowrite32(MASK_INTR_REG(midc->ch_id), mid->dma_base + MASK_ERR);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pm_runtime_put(&mid->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_runtime_put(&mid->pdev->dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -869,7 +1070,15 @@ static int intel_mid_dma_alloc_chan_resources(struct dma_chan *chan)
 	pm_runtime_get_sync(&mid->pdev->dev);
 
 	if (mid->state == SUSPENDED) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (dma_resume(mid->pdev)) {
+=======
+		if (dma_resume(&mid->pdev->dev)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (dma_resume(&mid->pdev->dev)) {
+>>>>>>> refs/remotes/origin/master
 			pr_err("ERR_MDMA: resume failed");
 			return -EFAULT;
 		}
@@ -882,7 +1091,15 @@ static int intel_mid_dma_alloc_chan_resources(struct dma_chan *chan)
 		pm_runtime_put(&mid->pdev->dev);
 		return -EIO;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	midc->completed = chan->cookie = 1;
+=======
+	dma_cookie_init(chan);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_cookie_init(chan);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_bh(&midc->lock);
 	while (midc->descs_allocated < DESCS_PER_CHANNEL) {
@@ -1052,7 +1269,17 @@ static irqreturn_t intel_mid_dma_interrupt(int irq, void *data)
 	}
 	err_status &= mid->intr_mask;
 	if (err_status) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		iowrite32(MASK_INTR_REG(err_status), mid->dma_base + MASK_ERR);
+=======
+		iowrite32((err_status << INT_MASK_WE),
+			  mid->dma_base + MASK_ERR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iowrite32((err_status << INT_MASK_WE),
+			  mid->dma_base + MASK_ERR);
+>>>>>>> refs/remotes/origin/master
 		call_tasklet = 1;
 	}
 	if (call_tasklet)
@@ -1100,7 +1327,17 @@ static int mid_setup_dma(struct pci_dev *pdev)
 					LNW_PERIPHRAL_MASK_SIZE);
 		if (dma->mask_reg == NULL) {
 			pr_err("ERR_MDMA:Can't map periphral intr space !!\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return -ENOMEM;
+=======
+			err = -ENOMEM;
+			goto err_ioremap;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = -ENOMEM;
+			goto err_ioremap;
+>>>>>>> refs/remotes/origin/master
 		}
 	} else
 		dma->mask_reg = NULL;
@@ -1113,8 +1350,16 @@ static int mid_setup_dma(struct pci_dev *pdev)
 		struct intel_mid_dma_chan *midch = &dma->ch[i];
 
 		midch->chan.device = &dma->common;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		midch->chan.cookie =  1;
 		midch->chan.chan_id = i;
+=======
+		dma_cookie_init(&midch->chan);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dma_cookie_init(&midch->chan);
+>>>>>>> refs/remotes/origin/master
 		midch->ch_id = dma->chan_base + i;
 		pr_debug("MDMA:Init CH %d, ID %d\n", i, midch->ch_id);
 
@@ -1150,7 +1395,13 @@ static int mid_setup_dma(struct pci_dev *pdev)
 	dma_cap_set(DMA_SLAVE, dma->common.cap_mask);
 	dma_cap_set(DMA_PRIVATE, dma->common.cap_mask);
 	dma->common.dev = &pdev->dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dma->common.chancnt = dma->max_chan;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dma->common.device_alloc_chan_resources =
 					intel_mid_dma_alloc_chan_resources;
@@ -1199,6 +1450,18 @@ static int mid_setup_dma(struct pci_dev *pdev)
 err_engine:
 	free_irq(pdev->irq, dma);
 err_irq:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (dma->mask_reg)
+		iounmap(dma->mask_reg);
+err_ioremap:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dma->mask_reg)
+		iounmap(dma->mask_reg);
+err_ioremap:
+>>>>>>> refs/remotes/origin/master
 	pci_pool_destroy(dma->dma_pool);
 err_dma_pool:
 	pr_err("ERR_MDMA:setup_dma failed: %d\n", err);
@@ -1235,7 +1498,11 @@ static void middma_shutdown(struct pci_dev *pdev)
  * Initialize the PCI device, map BARs, query driver data.
  * Call setup_dma to complete contoller and chan initilzation
  */
+<<<<<<< HEAD
 static int __devinit intel_mid_dma_probe(struct pci_dev *pdev,
+=======
+static int intel_mid_dma_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 					const struct pci_device_id *id)
 {
 	struct middma_device *device;
@@ -1318,7 +1585,11 @@ err_enable_device:
  * Free up all resources and data
  * Call shutdown_dma to complete contoller and chan cleanup
  */
+<<<<<<< HEAD
 static void __devexit intel_mid_dma_remove(struct pci_dev *pdev)
+=======
+static void intel_mid_dma_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct middma_device *device = pci_get_drvdata(pdev);
 
@@ -1340,8 +1611,20 @@ static void __devexit intel_mid_dma_remove(struct pci_dev *pdev)
 *
 * This function is called by OS when a power event occurs
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int dma_suspend(struct pci_dev *pci, pm_message_t state)
 {
+=======
+static int dma_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int dma_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	int i;
 	struct middma_device *device = pci_get_drvdata(pci);
 	pr_debug("MDMA: dma_suspend called\n");
@@ -1350,8 +1633,18 @@ int dma_suspend(struct pci_dev *pci, pm_message_t state)
 		if (device->ch[i].in_use)
 			return -EAGAIN;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	device->state = SUSPENDED;
 	pci_set_drvdata(pci, device);
+=======
+	dmac1_mask_periphral_intr(device);
+	device->state = SUSPENDED;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dmac1_mask_periphral_intr(device);
+	device->state = SUSPENDED;
+>>>>>>> refs/remotes/origin/master
 	pci_save_state(pci);
 	pci_disable_device(pci);
 	pci_set_power_state(pci, PCI_D3hot);
@@ -1365,8 +1658,20 @@ int dma_suspend(struct pci_dev *pci, pm_message_t state)
 *
 * This function is called by OS when a power event occurs
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int dma_resume(struct pci_dev *pci)
 {
+=======
+int dma_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int dma_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct middma_device *device = pci_get_drvdata(pci);
 
@@ -1380,7 +1685,13 @@ int dma_resume(struct pci_dev *pci)
 	}
 	device->state = RUNNING;
 	iowrite32(REG_BIT0, device->dma_base + DMA_CFG);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_set_drvdata(pci, device);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1414,7 +1725,11 @@ static int dma_runtime_idle(struct device *dev)
 			return -EAGAIN;
 	}
 
+<<<<<<< HEAD
 	return pm_schedule_suspend(dev, 0);
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /******************************************************************************
@@ -1433,16 +1748,34 @@ static const struct dev_pm_ops intel_mid_dma_pm = {
 	.runtime_suspend = dma_runtime_suspend,
 	.runtime_resume = dma_runtime_resume,
 	.runtime_idle = dma_runtime_idle,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.suspend = dma_suspend,
+	.resume = dma_resume,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.suspend = dma_suspend,
+	.resume = dma_resume,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct pci_driver intel_mid_dma_pci_driver = {
 	.name		=	"Intel MID DMA",
 	.id_table	=	intel_mid_dma_ids,
 	.probe		=	intel_mid_dma_probe,
+<<<<<<< HEAD
 	.remove		=	__devexit_p(intel_mid_dma_remove),
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 	.suspend = dma_suspend,
 	.resume = dma_resume,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		=	intel_mid_dma_remove,
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.pm = &intel_mid_dma_pm,
 	},

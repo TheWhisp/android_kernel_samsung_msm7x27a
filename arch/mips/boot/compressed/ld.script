@@ -8,6 +8,12 @@
 
 OUTPUT_ARCH(mips)
 ENTRY(start)
+<<<<<<< HEAD
+=======
+PHDRS {
+	text PT_LOAD FLAGS(7); /* RWX */
+}
+>>>>>>> refs/remotes/origin/master
 SECTIONS
 {
 	/* Text and read-only data */
@@ -15,7 +21,11 @@ SECTIONS
 	.text : {
 		*(.text)
 		*(.rodata)
+<<<<<<< HEAD
 	}
+=======
+	}: text
+>>>>>>> refs/remotes/origin/master
 	/* End of text section */
 
 	/* Writable data */

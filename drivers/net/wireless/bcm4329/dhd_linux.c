@@ -2086,6 +2086,8 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	memcpy(netdev_priv(net), &dhd, sizeof(dhd));
 	dhd->pub.osh = osh;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&dhd->proto_sem);
 	mutex_init(&dhd->sdsem);
 	/* Initialize other structure content */
@@ -2097,6 +2099,10 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	spin_lock_init(&dhd->txqlock);
 	spin_lock_init(&dhd->dhd_lock);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Set network interface name if it was provided as module parameter */
 	if (iface_name[0]) {
 		int len;
@@ -2118,6 +2124,25 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	net->netdev_ops = NULL;
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	mutex_init(&dhd->proto_sem);
+	/* Initialize other structure content */
+	init_waitqueue_head(&dhd->ioctl_resp_wait);
+	init_waitqueue_head(&dhd->ctrl_wait);
+
+	/* Initialize the spinlocks */
+	spin_lock_init(&dhd->sdlock);
+	spin_lock_init(&dhd->txqlock);
+	spin_lock_init(&dhd->dhd_lock);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Initialize Wakelock stuff */
 	spin_lock_init(&dhd->wl_lock);
 	dhd->wl_count = 0;
@@ -2155,6 +2180,14 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	dhd->timer.function = dhd_watchdog;
 
 	/* Initialize thread based operation and lock */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mutex_init(&dhd->sdsem);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&dhd->sdsem);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((dhd_watchdog_prio >= 0) && (dhd_dpc_prio >= 0)) {
 		dhd->threads_only = TRUE;
 	}

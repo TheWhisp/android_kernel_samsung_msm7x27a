@@ -16,6 +16,8 @@
 #include <linux/bitops.h>
 #include <linux/sched.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const int nibblemap[] = { 4,3,3,2,3,2,2,1,3,2,2,1,2,1,1,0 };
 
 static DEFINE_SPINLOCK(bitmap_lock);
@@ -48,6 +50,33 @@ static unsigned long count_free(struct buffer_head *map[], unsigned numblocks, _
 		sum += nibblemap[(i>>8) & 0xf] + nibblemap[(i>>12) & 0xf];
 	}
 	return(sum);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEFINE_SPINLOCK(bitmap_lock);
+
+/*
+ * bitmap consists of blocks filled with 16bit words
+ * bit set == busy, bit clear == free
+ * endianness is a mess, but for counting zero bits it really doesn't matter...
+ */
+static __u32 count_free(struct buffer_head *map[], unsigned blocksize, __u32 numbits)
+{
+	__u32 sum = 0;
+	unsigned blocks = DIV_ROUND_UP(numbits, blocksize * 8);
+
+	while (blocks--) {
+		unsigned words = blocksize / 2;
+		__u16 *p = (__u16 *)(*map++)->b_data;
+		while (words--)
+			sum += 16 - hweight16(*p++);
+	}
+
+	return sum;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void minix_free_block(struct inode *inode, unsigned long block)
@@ -105,10 +134,25 @@ int minix_new_block(struct inode * inode)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long minix_count_free_blocks(struct minix_sb_info *sbi)
 {
 	return (count_free(sbi->s_zmap, sbi->s_zmap_blocks,
 		sbi->s_nzones - sbi->s_firstdatazone + 1)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+unsigned long minix_count_free_blocks(struct super_block *sb)
+{
+	struct minix_sb_info *sbi = minix_sb(sb);
+	u32 bits = sbi->s_nzones - (sbi->s_firstdatazone + 1);
+
+	return (count_free(sbi->s_zmap, sb->s_blocksize, bits)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		<< sbi->s_log_zone_size);
 }
 
@@ -219,7 +263,15 @@ void minix_free_inode(struct inode * inode)
 	mark_buffer_dirty(bh);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct inode *minix_new_inode(const struct inode *dir, int mode, int *error)
+=======
+struct inode *minix_new_inode(const struct inode *dir, umode_t mode, int *error)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct inode *minix_new_inode(const struct inode *dir, umode_t mode, int *error)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = dir->i_sb;
 	struct minix_sb_info *sbi = minix_sb(sb);
@@ -273,7 +325,22 @@ struct inode *minix_new_inode(const struct inode *dir, int mode, int *error)
 	return inode;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long minix_count_free_inodes(struct minix_sb_info *sbi)
 {
 	return count_free(sbi->s_imap, sbi->s_imap_blocks, sbi->s_ninodes + 1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+unsigned long minix_count_free_inodes(struct super_block *sb)
+{
+	struct minix_sb_info *sbi = minix_sb(sb);
+	u32 bits = sbi->s_ninodes + 1;
+
+	return count_free(sbi->s_imap, sb->s_blocksize, bits);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

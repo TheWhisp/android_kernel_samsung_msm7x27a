@@ -10,6 +10,7 @@ static const char *OP_not	= "!";	/* Logical NOT */
 #define is_operator(c)	((c) == '|' || (c) == '&' || (c) == '!')
 #define is_separator(c)	(is_operator(c) || (c) == '(' || (c) == ')')
 
+<<<<<<< HEAD
 static void strfilter_node__delete(struct strfilter_node *self)
 {
 	if (self) {
@@ -26,6 +27,24 @@ void strfilter__delete(struct strfilter *self)
 	if (self) {
 		strfilter_node__delete(self->root);
 		free(self);
+=======
+static void strfilter_node__delete(struct strfilter_node *node)
+{
+	if (node) {
+		if (node->p && !is_operator(*node->p))
+			zfree((char **)&node->p);
+		strfilter_node__delete(node->l);
+		strfilter_node__delete(node->r);
+		free(node);
+	}
+}
+
+void strfilter__delete(struct strfilter *filter)
+{
+	if (filter) {
+		strfilter_node__delete(filter->root);
+		free(filter);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -62,6 +81,7 @@ static struct strfilter_node *strfilter_node__alloc(const char *op,
 						    struct strfilter_node *l,
 						    struct strfilter_node *r)
 {
+<<<<<<< HEAD
 	struct strfilter_node *ret = zalloc(sizeof(struct strfilter_node));
 
 	if (ret) {
@@ -71,6 +91,17 @@ static struct strfilter_node *strfilter_node__alloc(const char *op,
 	}
 
 	return ret;
+=======
+	struct strfilter_node *node = zalloc(sizeof(*node));
+
+	if (node) {
+		node->p = op;
+		node->l = l;
+		node->r = r;
+	}
+
+	return node;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct strfilter_node *strfilter_node__new(const char *s,
@@ -154,6 +185,7 @@ error:
  */
 struct strfilter *strfilter__new(const char *rules, const char **err)
 {
+<<<<<<< HEAD
 	struct strfilter *ret = zalloc(sizeof(struct strfilter));
 	const char *ep = NULL;
 
@@ -187,13 +219,56 @@ static bool strfilter_node__compare(struct strfilter_node *self,
 		return !strfilter_node__compare(self->r, str);
 	default:
 		return strglobmatch(str, self->p);
+=======
+	struct strfilter *filter = zalloc(sizeof(*filter));
+	const char *ep = NULL;
+
+	if (filter)
+		filter->root = strfilter_node__new(rules, &ep);
+
+	if (!filter || !filter->root || *ep != '\0') {
+		if (err)
+			*err = ep;
+		strfilter__delete(filter);
+		filter = NULL;
+	}
+
+	return filter;
+}
+
+static bool strfilter_node__compare(struct strfilter_node *node,
+				    const char *str)
+{
+	if (!node || !node->p)
+		return false;
+
+	switch (*node->p) {
+	case '|':	/* OR */
+		return strfilter_node__compare(node->l, str) ||
+			strfilter_node__compare(node->r, str);
+	case '&':	/* AND */
+		return strfilter_node__compare(node->l, str) &&
+			strfilter_node__compare(node->r, str);
+	case '!':	/* NOT */
+		return !strfilter_node__compare(node->r, str);
+	default:
+		return strglobmatch(str, node->p);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 /* Return true if STR matches the filter rules */
+<<<<<<< HEAD
 bool strfilter__compare(struct strfilter *self, const char *str)
 {
 	if (!self)
 		return false;
 	return strfilter_node__compare(self->root, str);
+=======
+bool strfilter__compare(struct strfilter *filter, const char *str)
+{
+	if (!filter)
+		return false;
+	return strfilter_node__compare(filter->root, str);
+>>>>>>> refs/remotes/origin/master
 }

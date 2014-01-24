@@ -33,7 +33,15 @@
 
 #define ERST_DBG_PFX			"ERST DBG: "
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define ERST_DBG_RECORD_LEN_MAX		4096
+=======
+#define ERST_DBG_RECORD_LEN_MAX		0x4000
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ERST_DBG_RECORD_LEN_MAX		0x4000
+>>>>>>> refs/remotes/origin/master
 
 static void *erst_dbg_buf;
 static unsigned int erst_dbg_buf_len;
@@ -111,8 +119,22 @@ retry_next:
 	if (rc)
 		goto out;
 	/* no more record */
+<<<<<<< HEAD
 	if (id == APEI_ERST_INVALID_RECORD_ID)
 		goto out;
+=======
+	if (id == APEI_ERST_INVALID_RECORD_ID) {
+		/*
+		 * If the persistent store is empty initially, the function
+		 * 'erst_read' below will return "-ENOENT" value. This causes
+		 * 'retry_next' label is entered again. The returned value
+		 * should be zero indicating the read operation is EOF.
+		 */
+		len = 0;
+
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 retry:
 	rc = len = erst_read(id, erst_dbg_buf, erst_dbg_buf_len);
 	/* The record may be cleared by others, try read next record */
@@ -213,6 +235,19 @@ static struct miscdevice erst_dbg_dev = {
 
 static __init int erst_dbg_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (erst_disable) {
+		pr_info(ERST_DBG_PFX "ERST support is disabled.\n");
+		return -ENODEV;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return misc_register(&erst_dbg_dev);
 }
 

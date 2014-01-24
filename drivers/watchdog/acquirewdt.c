@@ -52,14 +52,28 @@
  *	Includes, defines, variables, module parameters, ...
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 /* Includes */
 #include <linux/module.h>		/* For module specific items */
 #include <linux/moduleparam.h>		/* For new moduleparam's */
 #include <linux/types.h>		/* For standard types (like size_t) */
 #include <linux/errno.h>		/* For the -ENODEV/... values */
 #include <linux/kernel.h>		/* For printk/panic/... */
+<<<<<<< HEAD
 #include <linux/miscdevice.h>		/* For MODULE_ALIAS_MISCDEV
 							(WATCHDOG_MINOR) */
+=======
+#include <linux/miscdevice.h>		/* For struct miscdevice */
+>>>>>>> refs/remotes/origin/master
 #include <linux/watchdog.h>		/* For the watchdog specific items */
 #include <linux/fs.h>			/* For file operations */
 #include <linux/ioport.h>		/* For io-port access */
@@ -70,7 +84,13 @@
 
 /* Module information */
 #define DRV_NAME "acquirewdt"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX DRV_NAME ": "
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define WATCHDOG_NAME "Acquire WDT"
 /* There is no way to see what the correct time-out period is */
 #define WATCHDOG_HEARTBEAT 0
@@ -92,8 +112,18 @@ static int wdt_start = 0x443;
 module_param(wdt_start, int, 0);
 MODULE_PARM_DESC(wdt_start, "Acquire WDT 'start' io port (default 0x443)");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 	__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -208,8 +238,16 @@ static int acq_close(struct inode *inode, struct file *file)
 	if (expect_close == 42) {
 		acq_stop();
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 			"Unexpected close, not stopping watchdog!\n");
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		acq_keepalive();
 	}
 	clear_bit(0, &acq_is_open);
@@ -240,33 +278,67 @@ static struct miscdevice acq_miscdev = {
  *	Init & exit routines
  */
 
+<<<<<<< HEAD
 static int __devinit acq_probe(struct platform_device *dev)
+=======
+static int acq_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
 	if (wdt_stop != wdt_start) {
 		if (!request_region(wdt_stop, 1, WATCHDOG_NAME)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR PFX
 			    "I/O address 0x%04x already in use\n", wdt_stop);
+=======
+			pr_err("I/O address 0x%04x already in use\n", wdt_stop);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("I/O address 0x%04x already in use\n", wdt_stop);
+>>>>>>> refs/remotes/origin/master
 			ret = -EIO;
 			goto out;
 		}
 	}
 
 	if (!request_region(wdt_start, 1, WATCHDOG_NAME)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "I/O address 0x%04x already in use\n",
 			wdt_start);
+=======
+		pr_err("I/O address 0x%04x already in use\n", wdt_start);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("I/O address 0x%04x already in use\n", wdt_start);
+>>>>>>> refs/remotes/origin/master
 		ret = -EIO;
 		goto unreg_stop;
 	}
 	ret = misc_register(&acq_miscdev);
 	if (ret != 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 							WATCHDOG_MINOR, ret);
 		goto unreg_regions;
 	}
 	printk(KERN_INFO PFX "initialized. (nowayout=%d)\n", nowayout);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+		goto unreg_regions;
+	}
+	pr_info("initialized. (nowayout=%d)\n", nowayout);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 unreg_regions:
@@ -278,7 +350,11 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit acq_remove(struct platform_device *dev)
+=======
+static int acq_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	misc_deregister(&acq_miscdev);
 	release_region(wdt_start, 1);
@@ -296,7 +372,11 @@ static void acq_shutdown(struct platform_device *dev)
 
 static struct platform_driver acquirewdt_driver = {
 	.probe		= acq_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(acq_remove),
+=======
+	.remove		= acq_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= acq_shutdown,
 	.driver		= {
 		.owner	= THIS_MODULE,
@@ -308,8 +388,16 @@ static int __init acq_init(void)
 {
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO
 	      "WDT driver for Acquire single board computer initialising.\n");
+=======
+	pr_info("WDT driver for Acquire single board computer initialising\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("WDT driver for Acquire single board computer initialising\n");
+>>>>>>> refs/remotes/origin/master
 
 	err = platform_driver_register(&acquirewdt_driver);
 	if (err)
@@ -332,7 +420,15 @@ static void __exit acq_exit(void)
 {
 	platform_device_unregister(acq_platform_device);
 	platform_driver_unregister(&acquirewdt_driver);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Watchdog Module Unloaded.\n");
+=======
+	pr_info("Watchdog Module Unloaded\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Watchdog Module Unloaded\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(acq_init);
@@ -341,4 +437,7 @@ module_exit(acq_exit);
 MODULE_AUTHOR("David Woodhouse");
 MODULE_DESCRIPTION("Acquire Inc. Single Board Computer Watchdog Timer driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

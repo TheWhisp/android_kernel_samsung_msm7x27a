@@ -33,7 +33,11 @@
 
 #include <linux/vmalloc.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DEBUG_SCATTER 0
 
@@ -46,7 +50,11 @@ static inline void *drm_vmalloc_dma(unsigned long size)
 #endif
 }
 
+<<<<<<< HEAD
 void drm_sg_cleanup(struct drm_sg_mem * entry)
+=======
+static void drm_sg_cleanup(struct drm_sg_mem * entry)
+>>>>>>> refs/remotes/origin/master
 {
 	struct page *page;
 	int i;
@@ -64,49 +72,108 @@ void drm_sg_cleanup(struct drm_sg_mem * entry)
 	kfree(entry);
 }
 
+<<<<<<< HEAD
+=======
+void drm_legacy_sg_cleanup(struct drm_device *dev)
+{
+	if (drm_core_check_feature(dev, DRIVER_SG) && dev->sg &&
+	    !drm_core_check_feature(dev, DRIVER_MODESET)) {
+		drm_sg_cleanup(dev->sg);
+		dev->sg = NULL;
+	}
+}
+>>>>>>> refs/remotes/origin/master
 #ifdef _LP64
 # define ScatterHandle(x) (unsigned int)((x >> 32) + (x & ((1L << 32) - 1)))
 #else
 # define ScatterHandle(x) (unsigned int)(x)
 #endif
 
+<<<<<<< HEAD
 int drm_sg_alloc(struct drm_device *dev, struct drm_scatter_gather * request)
 {
+=======
+int drm_sg_alloc(struct drm_device *dev, void *data,
+		 struct drm_file *file_priv)
+{
+	struct drm_scatter_gather *request = data;
+>>>>>>> refs/remotes/origin/master
 	struct drm_sg_mem *entry;
 	unsigned long pages, i, j;
 
 	DRM_DEBUG("\n");
 
+<<<<<<< HEAD
+=======
+	if (drm_core_check_feature(dev, DRIVER_MODESET))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (!drm_core_check_feature(dev, DRIVER_SG))
 		return -EINVAL;
 
 	if (dev->sg)
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
 	if (!entry)
 		return -ENOMEM;
 
 	memset(entry, 0, sizeof(*entry));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+	if (!entry)
+		return -ENOMEM;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pages = (request->size + PAGE_SIZE - 1) / PAGE_SIZE;
 	DRM_DEBUG("size=%ld pages=%ld\n", request->size, pages);
 
 	entry->pages = pages;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	entry->pagelist = kmalloc(pages * sizeof(*entry->pagelist), GFP_KERNEL);
+=======
+	entry->pagelist = kcalloc(pages, sizeof(*entry->pagelist), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	entry->pagelist = kcalloc(pages, sizeof(*entry->pagelist), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!entry->pagelist) {
 		kfree(entry);
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(entry->pagelist, 0, pages * sizeof(*entry->pagelist));
 
 	entry->busaddr = kmalloc(pages * sizeof(*entry->busaddr), GFP_KERNEL);
+=======
+	entry->busaddr = kcalloc(pages, sizeof(*entry->busaddr), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	entry->busaddr = kcalloc(pages, sizeof(*entry->busaddr), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!entry->busaddr) {
 		kfree(entry->pagelist);
 		kfree(entry);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset((void *)entry->busaddr, 0, pages * sizeof(*entry->busaddr));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	entry->virtual = drm_vmalloc_dma(pages << PAGE_SHIFT);
 	if (!entry->virtual) {
@@ -185,6 +252,7 @@ int drm_sg_alloc(struct drm_device *dev, struct drm_scatter_gather * request)
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 int drm_sg_alloc_ioctl(struct drm_device *dev, void *data,
 		       struct drm_file *file_priv)
 {
@@ -194,12 +262,20 @@ int drm_sg_alloc_ioctl(struct drm_device *dev, void *data,
 
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int drm_sg_free(struct drm_device *dev, void *data,
 		struct drm_file *file_priv)
 {
 	struct drm_scatter_gather *request = data;
 	struct drm_sg_mem *entry;
 
+<<<<<<< HEAD
+=======
+	if (drm_core_check_feature(dev, DRIVER_MODESET))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (!drm_core_check_feature(dev, DRIVER_SG))
 		return -EINVAL;
 

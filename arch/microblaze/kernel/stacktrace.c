@@ -9,11 +9,18 @@
  * for more details.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/stacktrace.h>
 #include <linux/thread_info.h>
 #include <linux/ptrace.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/unwind.h>
 
 void save_stack_trace(struct stack_trace *trace)

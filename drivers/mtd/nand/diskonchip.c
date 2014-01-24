@@ -31,13 +31,25 @@
 #include <linux/mtd/doc2000.h>
 #include <linux/mtd/partitions.h>
 #include <linux/mtd/inftl.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Where to look for the devices? */
 #ifndef CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS
 #define CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS 0
 #endif
 
+<<<<<<< HEAD
 static unsigned long __initdata doc_locations[] = {
+=======
+static unsigned long doc_locations[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 #if defined (__alpha__) || defined(__i386__) || defined(__x86_64__)
 #ifdef CONFIG_MTD_NAND_DISKONCHIP_PROBE_HIGH
 	0xfffc8000, 0xfffca000, 0xfffcc000, 0xfffce000,
@@ -45,15 +57,23 @@ static unsigned long __initdata doc_locations[] = {
 	0xfffd8000, 0xfffda000, 0xfffdc000, 0xfffde000,
 	0xfffe0000, 0xfffe2000, 0xfffe4000, 0xfffe6000,
 	0xfffe8000, 0xfffea000, 0xfffec000, 0xfffee000,
+<<<<<<< HEAD
 #else /*  CONFIG_MTD_DOCPROBE_HIGH */
+=======
+#else
+>>>>>>> refs/remotes/origin/master
 	0xc8000, 0xca000, 0xcc000, 0xce000,
 	0xd0000, 0xd2000, 0xd4000, 0xd6000,
 	0xd8000, 0xda000, 0xdc000, 0xde000,
 	0xe0000, 0xe2000, 0xe4000, 0xe6000,
 	0xe8000, 0xea000, 0xec000, 0xee000,
+<<<<<<< HEAD
 #endif /*  CONFIG_MTD_DOCPROBE_HIGH */
 #else
 #warning Unknown architecture for DiskOnChip. No default probe locations defined
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif
 	0xffffffff };
 
@@ -132,7 +152,15 @@ static struct rs_control *rs_decoder;
 
 /*
  * The HW decoder in the DoC ASIC's provides us a error syndrome,
+<<<<<<< HEAD
+<<<<<<< HEAD
  * which we must convert to a standard syndrom usable by the generic
+=======
+ * which we must convert to a standard syndrome usable by the generic
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * which we must convert to a standard syndrome usable by the generic
+>>>>>>> refs/remotes/origin/master
  * Reed-Solomon library code.
  *
  * Fabrice Bellard figured this out in the old docecc code. I added
@@ -153,7 +181,15 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
 	ds[3] = ((ecc[3] & 0xc0) >> 6) | ((ecc[0] & 0xff) << 2);
 	parity = ecc[1];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Initialize the syndrom buffer */
+=======
+	/* Initialize the syndrome buffer */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Initialize the syndrome buffer */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < NROOTS; i++)
 		s[i] = ds[0];
 	/*
@@ -375,6 +411,7 @@ static void doc2000_readbuf_dword(struct mtd_info *mtd, u_char *buf, int len)
 	}
 }
 
+<<<<<<< HEAD
 static int doc2000_verifybuf(struct mtd_info *mtd, const u_char *buf, int len)
 {
 	struct nand_chip *this = mtd->priv;
@@ -388,6 +425,8 @@ static int doc2000_verifybuf(struct mtd_info *mtd, const u_char *buf, int len)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static uint16_t __init doc200x_ident_chip(struct mtd_info *mtd, int nr)
 {
 	struct nand_chip *this = mtd->priv;
@@ -525,6 +564,7 @@ static void doc2001_readbuf(struct mtd_info *mtd, u_char *buf, int len)
 	buf[i] = ReadDOC(docptr, LastDataRead);
 }
 
+<<<<<<< HEAD
 static int doc2001_verifybuf(struct mtd_info *mtd, const u_char *buf, int len)
 {
 	struct nand_chip *this = mtd->priv;
@@ -545,6 +585,8 @@ static int doc2001_verifybuf(struct mtd_info *mtd, const u_char *buf, int len)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u_char doc2001plus_read_byte(struct mtd_info *mtd)
 {
 	struct nand_chip *this = mtd->priv;
@@ -609,6 +651,7 @@ static void doc2001plus_readbuf(struct mtd_info *mtd, u_char *buf, int len)
 		printk("\n");
 }
 
+<<<<<<< HEAD
 static int doc2001plus_verifybuf(struct mtd_info *mtd, const u_char *buf, int len)
 {
 	struct nand_chip *this = mtd->priv;
@@ -636,6 +679,8 @@ static int doc2001plus_verifybuf(struct mtd_info *mtd, const u_char *buf, int le
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void doc2001plus_select_chip(struct mtd_info *mtd, int chip)
 {
 	struct nand_chip *this = mtd->priv;
@@ -1031,7 +1076,15 @@ static int doc200x_correct_data(struct mtd_info *mtd, u_char *dat,
 		WriteDOC(DOC_ECC_DIS, docptr, Mplus_ECCConf);
 	else
 		WriteDOC(DOC_ECC_DIS, docptr, ECCConf);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (no_ecc_failures && (ret == -EBADMSG)) {
+=======
+	if (no_ecc_failures && mtd_is_eccerr(ret)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (no_ecc_failures && mtd_is_eccerr(ret)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "suppressing ECC failure\n");
 		ret = 0;
 	}
@@ -1071,7 +1124,15 @@ static int __init find_media_headers(struct mtd_info *mtd, u_char *buf, const ch
 	size_t retlen;
 
 	for (offs = 0; offs < mtd->size; offs += mtd->erasesize) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = mtd->read(mtd, offs, mtd->writesize, &retlen, buf);
+=======
+		ret = mtd_read(mtd, offs, mtd->writesize, &retlen, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = mtd_read(mtd, offs, mtd->writesize, &retlen, buf);
+>>>>>>> refs/remotes/origin/master
 		if (retlen != mtd->writesize)
 			continue;
 		if (ret) {
@@ -1096,7 +1157,15 @@ static int __init find_media_headers(struct mtd_info *mtd, u_char *buf, const ch
 	/* Only one mediaheader was found.  We want buf to contain a
 	   mediaheader on return, so we'll have to re-read the one we found. */
 	offs = doc->mh0_page << this->page_shift;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mtd->read(mtd, offs, mtd->writesize, &retlen, buf);
+=======
+	ret = mtd_read(mtd, offs, mtd->writesize, &retlen, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mtd_read(mtd, offs, mtd->writesize, &retlen, buf);
+>>>>>>> refs/remotes/origin/master
 	if (retlen != mtd->writesize) {
 		/* Insanity.  Give up. */
 		printk(KERN_ERR "Read DiskOnChip Media Header once, but can't reread it???\n");
@@ -1431,7 +1500,10 @@ static inline int __init doc2000_init(struct mtd_info *mtd)
 	this->read_byte = doc2000_read_byte;
 	this->write_buf = doc2000_writebuf;
 	this->read_buf = doc2000_readbuf;
+<<<<<<< HEAD
 	this->verify_buf = doc2000_verifybuf;
+=======
+>>>>>>> refs/remotes/origin/master
 	this->scan_bbt = nftl_scan_bbt;
 
 	doc->CDSNControl = CDSN_CTRL_FLASH_IO | CDSN_CTRL_ECC_IO;
@@ -1448,7 +1520,10 @@ static inline int __init doc2001_init(struct mtd_info *mtd)
 	this->read_byte = doc2001_read_byte;
 	this->write_buf = doc2001_writebuf;
 	this->read_buf = doc2001_readbuf;
+<<<<<<< HEAD
 	this->verify_buf = doc2001_verifybuf;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ReadDOC(doc->virtadr, ChipID);
 	ReadDOC(doc->virtadr, ChipID);
@@ -1479,7 +1554,10 @@ static inline int __init doc2001plus_init(struct mtd_info *mtd)
 	this->read_byte = doc2001plus_read_byte;
 	this->write_buf = doc2001plus_writebuf;
 	this->read_buf = doc2001plus_readbuf;
+<<<<<<< HEAD
 	this->verify_buf = doc2001plus_verifybuf;
+=======
+>>>>>>> refs/remotes/origin/master
 	this->scan_bbt = inftl_scan_bbt;
 	this->cmd_ctrl = NULL;
 	this->select_chip = doc2001plus_select_chip;
@@ -1652,7 +1730,17 @@ static int __init doc_probe(unsigned long physadr)
 	nand->ecc.mode		= NAND_ECC_HW_SYNDROME;
 	nand->ecc.size		= 512;
 	nand->ecc.bytes		= 6;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nand->options		= NAND_USE_FLASH_BBT;
+=======
+	nand->ecc.strength	= 2;
+	nand->bbt_options	= NAND_BBT_USE_FLASH;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nand->ecc.strength	= 2;
+	nand->bbt_options	= NAND_BBT_USE_FLASH;
+>>>>>>> refs/remotes/origin/master
 
 	doc->physadr		= physadr;
 	doc->virtadr		= virtadr;

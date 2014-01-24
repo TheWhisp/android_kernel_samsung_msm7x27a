@@ -89,7 +89,11 @@ static int adt7316_spi_write(void *client, u8 reg, u8 val)
  * device probe and remove
  */
 
+<<<<<<< HEAD
 static int __devinit adt7316_spi_probe(struct spi_device *spi_dev)
+=======
+static int adt7316_spi_probe(struct spi_device *spi_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adt7316_bus bus = {
 		.client = spi_dev,
@@ -116,11 +120,14 @@ static int __devinit adt7316_spi_probe(struct spi_device *spi_dev)
 	return adt7316_probe(&spi_dev->dev, &bus, spi_dev->modalias);
 }
 
+<<<<<<< HEAD
 static int __devexit adt7316_spi_remove(struct spi_device *spi_dev)
 {
 	return adt7316_remove(&spi_dev->dev);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct spi_device_id adt7316_spi_id[] = {
 	{ "adt7316", 0 },
 	{ "adt7317", 0 },
@@ -133,6 +140,8 @@ static const struct spi_device_id adt7316_spi_id[] = {
 
 MODULE_DEVICE_TABLE(spi, adt7316_spi_id);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int adt7316_spi_suspend(struct spi_device *spi_dev, pm_message_t message)
 {
@@ -152,10 +161,20 @@ static struct spi_driver adt7316_driver = {
 	.driver = {
 		.name = "adt7316",
 		.bus = &spi_bus_type,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct spi_driver adt7316_driver = {
+	.driver = {
+		.name = "adt7316",
+		.pm = ADT7316_PM_OPS,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe = adt7316_spi_probe,
 	.remove = __devexit_p(adt7316_spi_remove),
+<<<<<<< HEAD
 	.suspend = adt7316_spi_suspend,
 	.resume = adt7316_spi_resume,
 	.id_table = adt7316_spi_id,
@@ -170,11 +189,31 @@ static __exit void adt7316_spi_exit(void)
 {
 	spi_unregister_driver(&adt7316_driver);
 }
+=======
+	.id_table = adt7316_spi_id,
+};
+module_spi_driver(adt7316_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Sonic Zhang <sonic.zhang@analog.com>");
 MODULE_DESCRIPTION("SPI bus driver for Analog Devices ADT7316/7/8 and"
 			"ADT7516/7/9 digital temperature sensor, ADC and DAC");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 
 module_init(adt7316_spi_init);
 module_exit(adt7316_spi_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.owner = THIS_MODULE,
+	},
+	.probe = adt7316_spi_probe,
+	.id_table = adt7316_spi_id,
+};
+module_spi_driver(adt7316_driver);
+
+MODULE_AUTHOR("Sonic Zhang <sonic.zhang@analog.com>");
+MODULE_DESCRIPTION("SPI bus driver for Analog Devices ADT7316/7/8 and ADT7516/7/9 digital temperature sensor, ADC and DAC");
+MODULE_LICENSE("GPL v2");
+>>>>>>> refs/remotes/origin/master

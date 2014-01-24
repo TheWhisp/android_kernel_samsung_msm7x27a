@@ -16,6 +16,7 @@
 #include <net/checksum.h>
 #include <linux/module.h>
 
+<<<<<<< HEAD
 static inline unsigned int longto16(unsigned long x)
 {
 	unsigned long ret;
@@ -29,6 +30,8 @@ static inline unsigned int longto16(unsigned long x)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 __wsum do_csum(const unsigned char *buff, int len)
 {
 	int odd, count;
@@ -94,7 +97,11 @@ __wsum do_csum(const unsigned char *buff, int len)
 	}
 	if (len & 1)
 		result += *buff;
+<<<<<<< HEAD
 	result = longto16(result);
+=======
+	result = csum_long(result);
+>>>>>>> refs/remotes/origin/master
 	if (odd)
 		result = swab16(result);
 out:

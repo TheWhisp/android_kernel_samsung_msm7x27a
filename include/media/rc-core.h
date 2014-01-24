@@ -23,8 +23,22 @@
 #include <media/rc-map.h>
 
 extern int rc_core_debug;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IR_dprintk(level, fmt, arg...)	if (rc_core_debug >= level) \
 	printk(KERN_DEBUG "%s: " fmt , __func__, ## arg)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define IR_dprintk(level, fmt, ...)				\
+do {								\
+	if (rc_core_debug >= level)				\
+		pr_debug("%s: " fmt, __func__, ##__VA_ARGS__);	\
+} while (0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 enum rc_driver_type {
 	RC_DRIVER_SCANCODE = 0,	/* Driver or hardware generates a scancode */
@@ -47,7 +61,12 @@ enum rc_driver_type {
  * @input_dev: the input child device used to communicate events to userspace
  * @driver_type: specifies if protocol decoding is done in hardware or software
  * @idle: used to keep track of RX state
+<<<<<<< HEAD
  * @allowed_protos: bitmask with the supported RC_TYPE_* protocols
+=======
+ * @allowed_protos: bitmask with the supported RC_BIT_* protocols
+ * @enabled_protocols: bitmask with the enabled RC_BIT_* protocols
+>>>>>>> refs/remotes/origin/master
  * @scanmask: some hardware decoders are not capable of providing the full
  *	scancode to the application. As this is a hardware limit, we can't do
  *	anything with it. Yet, as the same keycode table can be used with other
@@ -96,6 +115,11 @@ struct rc_dev {
 	enum rc_driver_type		driver_type;
 	bool				idle;
 	u64				allowed_protos;
+<<<<<<< HEAD
+=======
+	u64				enabled_protocols;
+	u32				users;
+>>>>>>> refs/remotes/origin/master
 	u32				scanmask;
 	void				*priv;
 	spinlock_t			keylock;
@@ -110,14 +134,26 @@ struct rc_dev {
 	u32				max_timeout;
 	u32				rx_resolution;
 	u32				tx_resolution;
+<<<<<<< HEAD
 	int				(*change_protocol)(struct rc_dev *dev, u64 rc_type);
+=======
+	int				(*change_protocol)(struct rc_dev *dev, u64 *rc_type);
+>>>>>>> refs/remotes/origin/master
 	int				(*open)(struct rc_dev *dev);
 	void				(*close)(struct rc_dev *dev);
 	int				(*s_tx_mask)(struct rc_dev *dev, u32 mask);
 	int				(*s_tx_carrier)(struct rc_dev *dev, u32 carrier);
 	int				(*s_tx_duty_cycle)(struct rc_dev *dev, u32 duty_cycle);
 	int				(*s_rx_carrier_range)(struct rc_dev *dev, u32 min, u32 max);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int				(*tx_ir)(struct rc_dev *dev, int *txbuf, u32 n);
+=======
+	int				(*tx_ir)(struct rc_dev *dev, unsigned *txbuf, unsigned n);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int				(*tx_ir)(struct rc_dev *dev, unsigned *txbuf, unsigned n);
+>>>>>>> refs/remotes/origin/master
 	void				(*s_idle)(struct rc_dev *dev, bool enable);
 	int				(*s_learning_mode)(struct rc_dev *dev, int enable);
 	int				(*s_carrier_report) (struct rc_dev *dev, int enable);
@@ -137,6 +173,12 @@ void rc_free_device(struct rc_dev *dev);
 int rc_register_device(struct rc_dev *dev);
 void rc_unregister_device(struct rc_dev *dev);
 
+<<<<<<< HEAD
+=======
+int rc_open(struct rc_dev *rdev);
+void rc_close(struct rc_dev *rdev);
+
+>>>>>>> refs/remotes/origin/master
 void rc_repeat(struct rc_dev *dev);
 void rc_keydown(struct rc_dev *dev, int scancode, u8 toggle);
 void rc_keydown_notimeout(struct rc_dev *dev, int scancode, u8 toggle);

@@ -2,6 +2,14 @@
 #define _LINUX_INIT_H
 
 #include <linux/compiler.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/master
 
 /* These macros are used to mark some functions or 
  * initialized data (doesn't apply to uninitialized data)
@@ -25,8 +33,13 @@
  * extern int initialize_foobar_device(int, int, int) __init;
  *
  * For initialized data:
+<<<<<<< HEAD
  * You should insert __initdata between the variable name and equal
  * sign followed by value, e.g.:
+=======
+ * You should insert __initdata or __initconst between the variable name
+ * and equal sign followed by value, e.g.:
+>>>>>>> refs/remotes/origin/master
  *
  * static int init_variable __initdata = 0;
  * static const char linux_logo[] __initconst = { 0x32, 0x36, ... };
@@ -34,19 +47,40 @@
  * Don't forget to initialize data not at file scope, i.e. within a function,
  * as gcc otherwise puts the data into the bss section and not into the init
  * section.
+<<<<<<< HEAD
  * 
  * Also note, that this data cannot be "const".
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /* These are for everybody (although not all archs will actually
    discard it in modules) */
 #define __init		__section(.init.text) __cold notrace
 #define __initdata	__section(.init.data)
+<<<<<<< HEAD
 #define __initconst	__section(.init.rodata)
+=======
+#define __initconst	__constsection(.init.rodata)
+>>>>>>> refs/remotes/origin/master
 #define __exitdata	__section(.exit.data)
 #define __exit_call	__used __section(.exitcall.exit)
 
 /*
+<<<<<<< HEAD
+=======
+ * Some architecture have tool chains which do not handle rodata attributes
+ * correctly. For those disable special sections for const, so that other
+ * architectures can annotate correctly.
+ */
+#ifdef CONFIG_BROKEN_RODATA
+#define __constsection(x)
+#else
+#define __constsection(x) __section(x)
+#endif
+
+/*
+>>>>>>> refs/remotes/origin/master
  * modpost check for section mismatches during the kernel build.
  * A section mismatch happens when there are references from a
  * code or data section to an init section (both code or data).
@@ -65,7 +99,11 @@
  */
 #define __ref            __section(.ref.text) noinline
 #define __refdata        __section(.ref.data)
+<<<<<<< HEAD
 #define __refconst       __section(.ref.rodata)
+=======
+#define __refconst       __constsection(.ref.rodata)
+>>>>>>> refs/remotes/origin/master
 
 /* compatibility defines */
 #define __init_refok     __ref
@@ -81,6 +119,7 @@
 
 #define __exit          __section(.exit.text) __exitused __cold notrace
 
+<<<<<<< HEAD
 /* Used for HOTPLUG */
 #define __devinit        __section(.devinit.text) __cold notrace
 #define __devinitdata    __section(.devinit.data)
@@ -96,14 +135,30 @@
 #define __cpuexit        __section(.cpuexit.text) __exitused __cold notrace
 #define __cpuexitdata    __section(.cpuexit.data)
 #define __cpuexitconst   __section(.cpuexit.rodata)
+=======
+/* temporary, until all users are removed */
+#define __cpuinit
+#define __cpuinitdata
+#define __cpuinitconst
+#define __cpuexit
+#define __cpuexitdata
+#define __cpuexitconst
+>>>>>>> refs/remotes/origin/master
 
 /* Used for MEMORY_HOTPLUG */
 #define __meminit        __section(.meminit.text) __cold notrace
 #define __meminitdata    __section(.meminit.data)
+<<<<<<< HEAD
 #define __meminitconst   __section(.meminit.rodata)
 #define __memexit        __section(.memexit.text) __exitused __cold notrace
 #define __memexitdata    __section(.memexit.data)
 #define __memexitconst   __section(.memexit.rodata)
+=======
+#define __meminitconst   __constsection(.meminit.rodata)
+#define __memexit        __section(.memexit.text) __exitused __cold notrace
+#define __memexitdata    __section(.memexit.data)
+#define __memexitconst   __constsection(.memexit.rodata)
+>>>>>>> refs/remotes/origin/master
 
 /* For assembly routines */
 #define __HEAD		.section	".head.text","ax"
@@ -114,6 +169,7 @@
 #define __INITRODATA	.section	".init.rodata","a",%progbits
 #define __FINITDATA	.previous
 
+<<<<<<< HEAD
 #define __DEVINIT        .section	".devinit.text", "ax"
 #define __DEVINITDATA    .section	".devinit.data", "aw"
 #define __DEVINITRODATA  .section	".devinit.rodata", "a"
@@ -121,6 +177,10 @@
 #define __CPUINIT        .section	".cpuinit.text", "ax"
 #define __CPUINITDATA    .section	".cpuinit.data", "aw"
 #define __CPUINITRODATA  .section	".cpuinit.rodata", "a"
+=======
+/* temporary, until all users are removed */
+#define __CPUINIT
+>>>>>>> refs/remotes/origin/master
 
 #define __MEMINIT        .section	".meminit.text", "ax"
 #define __MEMINITDATA    .section	".meminit.data", "aw"
@@ -153,10 +213,23 @@ extern unsigned int reset_devices;
 /* used by init/main.c */
 void setup_arch(char **);
 void prepare_namespace(void);
+<<<<<<< HEAD
 
 extern void (*late_time_init)(void);
 
+<<<<<<< HEAD
 extern int initcall_debug;
+=======
+extern bool initcall_debug;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init load_default_modules(void);
+int __init init_rootfs(void);
+
+extern void (*late_time_init)(void);
+
+extern bool initcall_debug;
+>>>>>>> refs/remotes/origin/master
 
 #endif
   
@@ -174,22 +247,33 @@ extern int initcall_debug;
  * can point at the same handler without causing duplicate-symbol build errors.
  */
 
+<<<<<<< HEAD
 #define __define_initcall(level,fn,id) \
 	static initcall_t __initcall_##fn##id __used \
 	__attribute__((__section__(".initcall" level ".init"))) = fn
+=======
+#define __define_initcall(fn, id) \
+	static initcall_t __initcall_##fn##id __used \
+	__attribute__((__section__(".initcall" #id ".init"))) = fn
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Early initcalls run before initializing SMP.
  *
  * Only for built-in code, not modules.
  */
+<<<<<<< HEAD
 #define early_initcall(fn)		__define_initcall("early",fn,early)
+=======
+#define early_initcall(fn)		__define_initcall(fn, early)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * A "pure" initcall has no dependencies on anything else, and purely
  * initializes variables that couldn't be statically initialized.
  *
  * This only exists for built-in code, not for modules.
+<<<<<<< HEAD
  */
 #define pure_initcall(fn)		__define_initcall("0",fn,0)
 
@@ -208,6 +292,27 @@ extern int initcall_debug;
 #define device_initcall_sync(fn)	__define_initcall("6s",fn,6s)
 #define late_initcall(fn)		__define_initcall("7",fn,7)
 #define late_initcall_sync(fn)		__define_initcall("7s",fn,7s)
+=======
+ * Keep main.c:initcall_level_names[] in sync.
+ */
+#define pure_initcall(fn)		__define_initcall(fn, 0)
+
+#define core_initcall(fn)		__define_initcall(fn, 1)
+#define core_initcall_sync(fn)		__define_initcall(fn, 1s)
+#define postcore_initcall(fn)		__define_initcall(fn, 2)
+#define postcore_initcall_sync(fn)	__define_initcall(fn, 2s)
+#define arch_initcall(fn)		__define_initcall(fn, 3)
+#define arch_initcall_sync(fn)		__define_initcall(fn, 3s)
+#define subsys_initcall(fn)		__define_initcall(fn, 4)
+#define subsys_initcall_sync(fn)	__define_initcall(fn, 4s)
+#define fs_initcall(fn)			__define_initcall(fn, 5)
+#define fs_initcall_sync(fn)		__define_initcall(fn, 5s)
+#define rootfs_initcall(fn)		__define_initcall(fn, rootfs)
+#define device_initcall(fn)		__define_initcall(fn, 6)
+#define device_initcall_sync(fn)	__define_initcall(fn, 6s)
+#define late_initcall(fn)		__define_initcall(fn, 7)
+#define late_initcall_sync(fn)		__define_initcall(fn, 7s)
+>>>>>>> refs/remotes/origin/master
 
 #define __initcall(fn) device_initcall(fn)
 
@@ -279,16 +384,28 @@ void __init parse_early_options(char *cmdline);
 
 #else /* MODULE */
 
+<<<<<<< HEAD
 /* Don't use these in modules, but some people do... */
+=======
+/* Don't use these in loadable modules, but some people do... */
+>>>>>>> refs/remotes/origin/master
 #define early_initcall(fn)		module_init(fn)
 #define core_initcall(fn)		module_init(fn)
 #define postcore_initcall(fn)		module_init(fn)
 #define arch_initcall(fn)		module_init(fn)
 #define subsys_initcall(fn)		module_init(fn)
 #define fs_initcall(fn)			module_init(fn)
+<<<<<<< HEAD
 #define device_initcall(fn)		module_init(fn)
 #define late_initcall(fn)		module_init(fn)
 
+=======
+#define rootfs_initcall(fn)		module_init(fn)
+#define device_initcall(fn)		module_init(fn)
+#define late_initcall(fn)		module_init(fn)
+
+#define console_initcall(fn)		module_init(fn)
+>>>>>>> refs/remotes/origin/master
 #define security_initcall(fn)		module_init(fn)
 
 /* Each module must use one module_init(). */
@@ -328,6 +445,7 @@ void __init parse_early_options(char *cmdline);
 #define __INITRODATA_OR_MODULE __INITRODATA
 #endif /*CONFIG_MODULES*/
 
+<<<<<<< HEAD
 /* Functions marked as __devexit may be discarded at kernel link time, depending
    on config options.  Newer versions of binutils detect references from
    retained sections to discarded sections and flag an error.  Pointers to
@@ -340,6 +458,8 @@ void __init parse_early_options(char *cmdline);
 #define __devexit_p(x) NULL
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef MODULE
 #define __exit_p(x) x
 #else

@@ -9,7 +9,15 @@
  */
 
 #include <linux/errno.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/param.h>
@@ -419,7 +427,11 @@ static struct platform_device rtc_cmos_device = {
 	.num_resources	= 1,
 };
 
+<<<<<<< HEAD
 static int __devinit rtc_probe(struct platform_device *op)
+=======
+static int rtc_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *r;
 
@@ -477,7 +489,11 @@ static struct platform_device rtc_bq4802_device = {
 	.num_resources	= 1,
 };
 
+<<<<<<< HEAD
 static int __devinit bq4802_probe(struct platform_device *op)
+=======
+static int bq4802_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 
 	printk(KERN_INFO "%s: BQ4802 regs at 0x%llx\n",
@@ -534,7 +550,11 @@ static struct platform_device m48t59_rtc = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit mostek_probe(struct platform_device *op)
+=======
+static int mostek_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 
@@ -746,7 +766,11 @@ void __irq_entry timer_interrupt(int irq, struct pt_regs *regs)
 	set_irq_regs(old_regs);
 }
 
+<<<<<<< HEAD
 void __devinit setup_sparc64_timer(void)
+=======
+void setup_sparc64_timer(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct clock_event_device *sevt;
 	unsigned long pstate;
@@ -844,7 +868,11 @@ unsigned long long sched_clock(void)
 		>> SPARC64_NSEC_PER_CYC_SHIFT;
 }
 
+<<<<<<< HEAD
 int __devinit read_current_timer(unsigned long *timer_val)
+=======
+int read_current_timer(unsigned long *timer_val)
+>>>>>>> refs/remotes/origin/master
 {
 	*timer_val = tick_ops->get_tick();
 	return 0;

@@ -35,7 +35,15 @@
  *	in any case.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr *address, int mode)
+=======
+int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr_storage *address, int mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr_storage *address, int mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int size, ct, err;
 
@@ -48,7 +56,17 @@ int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr *address, 
 			if (err < 0)
 				return err;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		m->msg_name = address;
+=======
+		if (m->msg_name)
+			m->msg_name = address;
+>>>>>>> refs/remotes/origin/master
+=======
+		if (m->msg_name)
+			m->msg_name = address;
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		m->msg_name = NULL;
 	}
@@ -75,6 +93,7 @@ int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr *address, 
 
 /*
  *	Copy kernel to iovec. Returns -EFAULT on error.
+<<<<<<< HEAD
  *
  *	Note: this modifies the original iovec.
  */
@@ -100,6 +119,8 @@ EXPORT_SYMBOL(memcpy_toiovec);
 
 /*
  *	Copy kernel to iovec. Returns -EFAULT on error.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 int memcpy_toiovecend(const struct iovec *iov, unsigned char *kdata,
@@ -126,6 +147,7 @@ EXPORT_SYMBOL(memcpy_toiovecend);
 
 /*
  *	Copy iovec to kernel. Returns -EFAULT on error.
+<<<<<<< HEAD
  *
  *	Note: this modifies the original iovec.
  */
@@ -151,6 +173,8 @@ EXPORT_SYMBOL(memcpy_fromiovec);
 
 /*
  *	Copy iovec from kernel. Returns -EFAULT on error.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 int memcpy_fromiovecend(unsigned char *kdata, const struct iovec *iov,
@@ -262,3 +286,30 @@ out_fault:
 	goto out;
 }
 EXPORT_SYMBOL(csum_partial_copy_fromiovecend);
+<<<<<<< HEAD
+=======
+
+unsigned long iov_pages(const struct iovec *iov, int offset,
+			unsigned long nr_segs)
+{
+	unsigned long seg, base;
+	int pages = 0, len, size;
+
+	while (nr_segs && (offset >= iov->iov_len)) {
+		offset -= iov->iov_len;
+		++iov;
+		--nr_segs;
+	}
+
+	for (seg = 0; seg < nr_segs; seg++) {
+		base = (unsigned long)iov[seg].iov_base + offset;
+		len = iov[seg].iov_len - offset;
+		size = ((base & ~PAGE_MASK) + len + ~PAGE_MASK) >> PAGE_SHIFT;
+		pages += size;
+		offset = 0;
+	}
+
+	return pages;
+}
+EXPORT_SYMBOL(iov_pages);
+>>>>>>> refs/remotes/origin/master

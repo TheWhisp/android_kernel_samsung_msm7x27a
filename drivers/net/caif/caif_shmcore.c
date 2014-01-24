@@ -134,7 +134,11 @@ int caif_shmdrv_rx_cb(u32 mbx_msg, void *priv)
 	u32 avail_emptybuff = 0;
 	unsigned long flags = 0;
 
+<<<<<<< HEAD
 	pshm_drv = (struct shmdrv_layer *)priv;
+=======
+	pshm_drv = priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Check for received buffers. */
 	if (mbx_msg & SHM_FULL_MASK) {
@@ -238,11 +242,18 @@ int caif_shmdrv_rx_cb(u32 mbx_msg, void *priv)
 		if ((avail_emptybuff > HIGH_WATERMARK) &&
 					(!pshm_drv->tx_empty_available)) {
 			pshm_drv->tx_empty_available = 1;
+<<<<<<< HEAD
+=======
+			spin_unlock_irqrestore(&pshm_drv->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 			pshm_drv->cfdev.flowctrl
 					(pshm_drv->pshm_dev->pshm_netdev,
 								CAIF_FLOW_ON);
 
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&pshm_drv->lock, flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			/* Schedule the work queue. if required */
 			if (!work_pending(&pshm_drv->shm_tx_work))
@@ -285,6 +296,10 @@ static void shm_rx_work_func(struct work_struct *rx_work)
 			list_entry(pshm_drv->rx_full_list.next, struct buf_list,
 					list);
 		list_del_init(&pbuf->list);
+<<<<<<< HEAD
+=======
+		spin_unlock_irqrestore(&pshm_drv->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Retrieve pointer to start of the packet descriptor area. */
 		pck_desc = (struct shm_pck_desc *) pbuf->desc_vptr;
@@ -336,7 +351,15 @@ static void shm_rx_work_func(struct work_struct *rx_work)
 			/* Get a suitable CAIF packet and copy in data. */
 			skb = netdev_alloc_skb(pshm_drv->pshm_dev->pshm_netdev,
 							frm_pck_len + 1);
+<<<<<<< HEAD
 			BUG_ON(skb == NULL);
+=======
+
+			if (skb == NULL) {
+				pr_info("OOM: Try next frame in descriptor\n");
+				break;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			p = skb_put(skb, frm_pck_len);
 			memcpy(p, pbuf->desc_vptr + frm_pck_ofs, frm_pck_len);
@@ -360,6 +383,10 @@ static void shm_rx_work_func(struct work_struct *rx_work)
 			pck_desc++;
 		}
 
+<<<<<<< HEAD
+=======
+		spin_lock_irqsave(&pshm_drv->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		list_add_tail(&pbuf->list, &pshm_drv->rx_pend_list);
 
 		spin_unlock_irqrestore(&pshm_drv->lock, flags);
@@ -412,7 +439,10 @@ static void shm_tx_work_func(struct work_struct *tx_work)
 
 		if (skb == NULL)
 			goto send_msg;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Check the available no. of buffers in the empty list */
 		list_for_each(pos, &pshm_drv->tx_empty_list)
 			avail_emptybuff++;
@@ -421,9 +451,17 @@ static void shm_tx_work_func(struct work_struct *tx_work)
 					pshm_drv->tx_empty_available) {
 			/* Update blocking condition. */
 			pshm_drv->tx_empty_available = 0;
+<<<<<<< HEAD
 			pshm_drv->cfdev.flowctrl
 					(pshm_drv->pshm_dev->pshm_netdev,
 					CAIF_FLOW_OFF);
+=======
+			spin_unlock_irqrestore(&pshm_drv->lock, flags);
+			pshm_drv->cfdev.flowctrl
+					(pshm_drv->pshm_dev->pshm_netdev,
+					CAIF_FLOW_OFF);
+			spin_lock_irqsave(&pshm_drv->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		/*
 		 * We simply return back to the caller if we do not have space
@@ -469,6 +507,11 @@ static void shm_tx_work_func(struct work_struct *tx_work)
 			}
 
 			skb = skb_dequeue(&pshm_drv->sk_qhead);
+<<<<<<< HEAD
+=======
+			if (skb == NULL)
+				break;
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* Copy in CAIF frame. */
 			skb_copy_bits(skb, 0, pbuf->desc_vptr +
 					pbuf->frm_ofs + SHM_HDR_LEN +
@@ -477,7 +520,11 @@ static void shm_tx_work_func(struct work_struct *tx_work)
 			pshm_drv->pshm_dev->pshm_netdev->stats.tx_packets++;
 			pshm_drv->pshm_dev->pshm_netdev->stats.tx_bytes +=
 									frmlen;
+<<<<<<< HEAD
 			dev_kfree_skb(skb);
+=======
+			dev_kfree_skb_irq(skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			/* Fill in the shared memory packet descriptor area. */
 			pck_desc = (struct shm_pck_desc *) (pbuf->desc_vptr);
@@ -512,6 +559,7 @@ send_msg:
 static int shm_netdev_tx(struct sk_buff *skb, struct net_device *shm_netdev)
 {
 	struct shmdrv_layer *pshm_drv;
+<<<<<<< HEAD
 	unsigned long flags = 0;
 
 	pshm_drv = netdev_priv(shm_netdev);
@@ -522,6 +570,13 @@ static int shm_netdev_tx(struct sk_buff *skb, struct net_device *shm_netdev)
 
 	spin_unlock_irqrestore(&pshm_drv->lock, flags);
 
+=======
+
+	pshm_drv = netdev_priv(shm_netdev);
+
+	skb_queue_tail(&pshm_drv->sk_qhead, skb);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Schedule Tx work queue. for deferred processing of skbs*/
 	if (!work_pending(&pshm_drv->shm_tx_work))
 		queue_work(pshm_drv->pshm_tx_workqueue, &pshm_drv->shm_tx_work);
@@ -606,6 +661,10 @@ int caif_shmcore_probe(struct shmdev_layer *pshm_dev)
 		pshm_drv->shm_rx_addr = pshm_dev->shm_base_addr +
 						(NR_TX_BUF * TX_BUF_SZ);
 
+<<<<<<< HEAD
+=======
+	spin_lock_init(&pshm_drv->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	INIT_LIST_HEAD(&pshm_drv->tx_empty_list);
 	INIT_LIST_HEAD(&pshm_drv->tx_pend_list);
 	INIT_LIST_HEAD(&pshm_drv->tx_full_list);
@@ -640,7 +699,11 @@ int caif_shmcore_probe(struct shmdev_layer *pshm_dev)
 		tx_buf->frm_ofs = SHM_CAIF_FRM_OFS;
 
 		if (pshm_dev->shm_loopback)
+<<<<<<< HEAD
 			tx_buf->desc_vptr = (char *)tx_buf->phy_addr;
+=======
+			tx_buf->desc_vptr = (unsigned char *)tx_buf->phy_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			tx_buf->desc_vptr =
 					ioremap(tx_buf->phy_addr, TX_BUF_SZ);
@@ -664,7 +727,11 @@ int caif_shmcore_probe(struct shmdev_layer *pshm_dev)
 		rx_buf->len = RX_BUF_SZ;
 
 		if (pshm_dev->shm_loopback)
+<<<<<<< HEAD
 			rx_buf->desc_vptr = (char *)rx_buf->phy_addr;
+=======
+			rx_buf->desc_vptr = (unsigned char *)rx_buf->phy_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			rx_buf->desc_vptr =
 					ioremap(rx_buf->phy_addr, RX_BUF_SZ);

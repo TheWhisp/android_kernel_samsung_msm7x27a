@@ -72,19 +72,76 @@ static struct pci_device_id ioat_pci_tbl[] = {
 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_JSF8) },
 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_JSF9) },
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_SNB0) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_SNB1) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_SNB2) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_SNB3) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_SNB4) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_SNB5) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_SNB6) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_SNB7) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_SNB8) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_SNB9) },
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_IVB0) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_IVB1) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_IVB2) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_IVB3) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_IVB4) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_IVB5) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_IVB6) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_IVB7) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_IVB8) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_IVB9) },
+
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_HSW0) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_HSW1) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_HSW2) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_HSW3) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_HSW4) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_HSW5) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_HSW6) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_HSW7) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_HSW8) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_HSW9) },
+
+	/* I/OAT v3.3 platforms */
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_BWD0) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_BWD1) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_BWD2) },
+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_IOAT_BWD3) },
+
+>>>>>>> refs/remotes/origin/master
 	{ 0, }
 };
 MODULE_DEVICE_TABLE(pci, ioat_pci_tbl);
 
+<<<<<<< HEAD
 static int __devinit ioat_pci_probe(struct pci_dev *pdev,
 				    const struct pci_device_id *id);
 static void __devexit ioat_remove(struct pci_dev *pdev);
+=======
+static int ioat_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
+static void ioat_remove(struct pci_dev *pdev);
+>>>>>>> refs/remotes/origin/master
 
 static int ioat_dca_enabled = 1;
 module_param(ioat_dca_enabled, int, 0644);
 MODULE_PARM_DESC(ioat_dca_enabled, "control support of dca service (default: 1)");
 
 struct kmem_cache *ioat2_cache;
+<<<<<<< HEAD
+=======
+struct kmem_cache *ioat3_sed_cache;
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_NAME "ioatdma"
 
@@ -92,7 +149,11 @@ static struct pci_driver ioat_pci_driver = {
 	.name		= DRV_NAME,
 	.id_table	= ioat_pci_tbl,
 	.probe		= ioat_pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ioat_remove),
+=======
+	.remove		= ioat_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct ioatdma_device *
@@ -108,7 +169,11 @@ alloc_ioatdma(struct pci_dev *pdev, void __iomem *iobase)
 	return d;
 }
 
+<<<<<<< HEAD
 static int __devinit ioat_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+=======
+static int ioat_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem * const *iomap;
 	struct device *dev = &pdev->dev;
@@ -162,7 +227,11 @@ static int __devinit ioat_pci_probe(struct pci_dev *pdev, const struct pci_devic
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit ioat_remove(struct pci_dev *pdev)
+=======
+static void ioat_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ioatdma_device *device = pci_get_drvdata(pdev);
 
@@ -180,7 +249,11 @@ static void __devexit ioat_remove(struct pci_dev *pdev)
 
 static int __init ioat_init_module(void)
 {
+<<<<<<< HEAD
 	int err;
+=======
+	int err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	pr_info("%s: Intel(R) QuickData Technology Driver %s\n",
 		DRV_NAME, IOAT_DMA_VERSION);
@@ -190,9 +263,27 @@ static int __init ioat_init_module(void)
 	if (!ioat2_cache)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	err = pci_register_driver(&ioat_pci_driver);
 	if (err)
 		kmem_cache_destroy(ioat2_cache);
+=======
+	ioat3_sed_cache = KMEM_CACHE(ioat_sed_ent, 0);
+	if (!ioat3_sed_cache)
+		goto err_ioat2_cache;
+
+	err = pci_register_driver(&ioat_pci_driver);
+	if (err)
+		goto err_ioat3_cache;
+
+	return 0;
+
+ err_ioat3_cache:
+	kmem_cache_destroy(ioat3_sed_cache);
+
+ err_ioat2_cache:
+	kmem_cache_destroy(ioat2_cache);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

@@ -28,8 +28,14 @@
  * Authors: Thomas Hellstrom <thellstrom-at-vmware-dot-com>
  */
 
+<<<<<<< HEAD
 #include "ttm/ttm_bo_driver.h"
 #include "ttm/ttm_placement.h"
+=======
+#include <drm/ttm/ttm_bo_driver.h>
+#include <drm/ttm/ttm_placement.h>
+#include <drm/drm_vma_manager.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/highmem.h>
 #include <linux/wait.h>
@@ -43,7 +49,11 @@ void ttm_bo_free_old_node(struct ttm_buffer_object *bo)
 }
 
 int ttm_bo_move_ttm(struct ttm_buffer_object *bo,
+<<<<<<< HEAD
 		    bool evict, bool no_wait_reserve,
+=======
+		    bool evict,
+>>>>>>> refs/remotes/origin/master
 		    bool no_wait_gpu, struct ttm_mem_reg *new_mem)
 {
 	struct ttm_tt *ttm = bo->ttm;
@@ -86,6 +96,10 @@ int ttm_mem_io_lock(struct ttm_mem_type_manager *man, bool interruptible)
 	mutex_lock(&man->io_reserve_mutex);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(ttm_mem_io_lock);
+>>>>>>> refs/remotes/origin/master
 
 void ttm_mem_io_unlock(struct ttm_mem_type_manager *man)
 {
@@ -94,6 +108,10 @@ void ttm_mem_io_unlock(struct ttm_mem_type_manager *man)
 
 	mutex_unlock(&man->io_reserve_mutex);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(ttm_mem_io_unlock);
+>>>>>>> refs/remotes/origin/master
 
 static int ttm_mem_io_evict(struct ttm_mem_type_manager *man)
 {
@@ -111,8 +129,14 @@ static int ttm_mem_io_evict(struct ttm_mem_type_manager *man)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ttm_mem_io_reserve(struct ttm_bo_device *bdev,
 			      struct ttm_mem_reg *mem)
+=======
+
+int ttm_mem_io_reserve(struct ttm_bo_device *bdev,
+		       struct ttm_mem_reg *mem)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ttm_mem_type_manager *man = &bdev->man[mem->mem_type];
 	int ret = 0;
@@ -134,9 +158,16 @@ retry:
 	}
 	return ret;
 }
+<<<<<<< HEAD
 
 static void ttm_mem_io_free(struct ttm_bo_device *bdev,
 			    struct ttm_mem_reg *mem)
+=======
+EXPORT_SYMBOL(ttm_mem_io_reserve);
+
+void ttm_mem_io_free(struct ttm_bo_device *bdev,
+		     struct ttm_mem_reg *mem)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ttm_mem_type_manager *man = &bdev->man[mem->mem_type];
 
@@ -149,6 +180,10 @@ static void ttm_mem_io_free(struct ttm_bo_device *bdev,
 		bdev->driver->io_mem_free(bdev, mem);
 
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(ttm_mem_io_free);
+>>>>>>> refs/remotes/origin/master
 
 int ttm_mem_io_reserve_vm(struct ttm_buffer_object *bo)
 {
@@ -244,7 +279,15 @@ static int ttm_copy_io_ttm_page(struct ttm_tt *ttm, void *src,
 				unsigned long page,
 				pgprot_t prot)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *d = ttm_tt_get_page(ttm, page);
+=======
+	struct page *d = ttm->pages[page];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct page *d = ttm->pages[page];
+>>>>>>> refs/remotes/origin/master
 	void *dst;
 
 	if (!d)
@@ -281,7 +324,15 @@ static int ttm_copy_ttm_io_page(struct ttm_tt *ttm, void *dst,
 				unsigned long page,
 				pgprot_t prot)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *s = ttm_tt_get_page(ttm, page);
+=======
+	struct page *s = ttm->pages[page];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct page *s = ttm->pages[page];
+>>>>>>> refs/remotes/origin/master
 	void *src;
 
 	if (!s)
@@ -314,14 +365,26 @@ static int ttm_copy_ttm_io_page(struct ttm_tt *ttm, void *dst,
 }
 
 int ttm_bo_move_memcpy(struct ttm_buffer_object *bo,
+<<<<<<< HEAD
 		       bool evict, bool no_wait_reserve, bool no_wait_gpu,
+=======
+		       bool evict, bool no_wait_gpu,
+>>>>>>> refs/remotes/origin/master
 		       struct ttm_mem_reg *new_mem)
 {
 	struct ttm_bo_device *bdev = bo->bdev;
 	struct ttm_mem_type_manager *man = &bdev->man[new_mem->mem_type];
 	struct ttm_tt *ttm = bo->ttm;
 	struct ttm_mem_reg *old_mem = &bo->mem;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ttm_mem_reg old_copy;
+=======
+	struct ttm_mem_reg old_copy = *old_mem;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ttm_mem_reg old_copy = *old_mem;
+>>>>>>> refs/remotes/origin/master
 	void *old_iomap;
 	void *new_iomap;
 	int ret;
@@ -337,11 +400,52 @@ int ttm_bo_move_memcpy(struct ttm_buffer_object *bo,
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 	if (old_iomap == NULL && new_iomap == NULL)
 		goto out2;
 	if (old_iomap == NULL && ttm == NULL)
 		goto out2;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (ttm->state == tt_unpopulated) {
+=======
+	/*
+	 * Single TTM move. NOP.
+	 */
+	if (old_iomap == NULL && new_iomap == NULL)
+		goto out2;
+
+	/*
+	 * Don't move nonexistent data. Clear destination instead.
+	 */
+	if (old_iomap == NULL &&
+	    (ttm == NULL || (ttm->state == tt_unpopulated &&
+			     !(ttm->page_flags & TTM_PAGE_FLAG_SWAPPED)))) {
+		memset_io(new_iomap, 0, new_mem->num_pages*PAGE_SIZE);
+		goto out2;
+	}
+
+	/*
+	 * TTM might be null for moves within the same region.
+	 */
+	if (ttm && ttm->state == tt_unpopulated) {
+>>>>>>> refs/remotes/origin/master
+=======
+	/* TTM might be null for moves within the same region.
+	 */
+	if (ttm && ttm->state == tt_unpopulated) {
+>>>>>>> refs/remotes/origin/cm-11.0
+		ret = ttm->bdev->driver->ttm_tt_populate(ttm);
+		if (ret)
+			goto out1;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	add = 0;
 	dir = 1;
 
@@ -384,7 +488,16 @@ out1:
 	ttm_mem_reg_iounmap(bdev, old_mem, new_iomap);
 out:
 	ttm_mem_reg_iounmap(bdev, &old_copy, old_iomap);
+<<<<<<< HEAD
 	ttm_bo_mem_put(bo, &old_copy);
+=======
+
+	/*
+	 * On error, keep the mm node!
+	 */
+	if (!ret)
+		ttm_bo_mem_put(bo, &old_copy);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(ttm_bo_move_memcpy);
@@ -415,8 +528,14 @@ static int ttm_buffer_object_transfer(struct ttm_buffer_object *bo,
 	struct ttm_buffer_object *fbo;
 	struct ttm_bo_device *bdev = bo->bdev;
 	struct ttm_bo_driver *driver = bdev->driver;
+<<<<<<< HEAD
 
 	fbo = kzalloc(sizeof(*fbo), GFP_KERNEL);
+=======
+	int ret;
+
+	fbo = kmalloc(sizeof(*fbo), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!fbo)
 		return -ENOMEM;
 
@@ -427,11 +546,15 @@ static int ttm_buffer_object_transfer(struct ttm_buffer_object *bo,
 	 * TODO: Explicit member copy would probably be better here.
 	 */
 
+<<<<<<< HEAD
 	init_waitqueue_head(&fbo->event_queue);
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&fbo->ddestroy);
 	INIT_LIST_HEAD(&fbo->lru);
 	INIT_LIST_HEAD(&fbo->swap);
 	INIT_LIST_HEAD(&fbo->io_reserve_lru);
+<<<<<<< HEAD
 	fbo->vm_node = NULL;
 	atomic_set(&fbo->cpu_writers, 0);
 
@@ -439,6 +562,29 @@ static int ttm_buffer_object_transfer(struct ttm_buffer_object *bo,
 	kref_init(&fbo->list_kref);
 	kref_init(&fbo->kref);
 	fbo->destroy = &ttm_transfered_destroy;
+<<<<<<< HEAD
+=======
+	fbo->acc_size = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	drm_vma_node_reset(&fbo->vma_node);
+	atomic_set(&fbo->cpu_writers, 0);
+
+	spin_lock(&bdev->fence_lock);
+	if (bo->sync_obj)
+		fbo->sync_obj = driver->sync_obj_ref(bo->sync_obj);
+	else
+		fbo->sync_obj = NULL;
+	spin_unlock(&bdev->fence_lock);
+	kref_init(&fbo->list_kref);
+	kref_init(&fbo->kref);
+	fbo->destroy = &ttm_transfered_destroy;
+	fbo->acc_size = 0;
+	fbo->resv = &fbo->ttm_resv;
+	reservation_object_init(fbo->resv);
+	ret = ww_mutex_trylock(&fbo->resv->lock);
+	WARN_ON(!ret);
+>>>>>>> refs/remotes/origin/master
 
 	*new_obj = fbo;
 	return 0;
@@ -465,7 +611,11 @@ pgprot_t ttm_io_prot(uint32_t caching_flags, pgprot_t tmp)
 	else
 		tmp = pgprot_noncached(tmp);
 #endif
+<<<<<<< HEAD
 #if defined(__sparc__)
+=======
+#if defined(__sparc__) || defined(__mips__)
+>>>>>>> refs/remotes/origin/master
 	if (!(caching_flags & TTM_PL_FLAG_CACHED))
 		tmp = pgprot_noncached(tmp);
 #endif
@@ -502,10 +652,29 @@ static int ttm_bo_kmap_ttm(struct ttm_buffer_object *bo,
 {
 	struct ttm_mem_reg *mem = &bo->mem; pgprot_t prot;
 	struct ttm_tt *ttm = bo->ttm;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *d;
 	int i;
 
 	BUG_ON(!ttm);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ret;
+
+	BUG_ON(!ttm);
+
+	if (ttm->state == tt_unpopulated) {
+		ret = ttm->bdev->driver->ttm_tt_populate(ttm);
+		if (ret)
+			return ret;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (num_pages == 1 && (mem->placement & TTM_PL_FLAG_CACHED)) {
 		/*
 		 * We're mapping a single page, and the desired
@@ -513,6 +682,8 @@ static int ttm_bo_kmap_ttm(struct ttm_buffer_object *bo,
 		 */
 
 		map->bo_kmap_type = ttm_bo_map_kmap;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		map->page = ttm_tt_get_page(ttm, start_page);
 		map->virtual = kmap(map->page);
 	} else {
@@ -525,6 +696,16 @@ static int ttm_bo_kmap_ttm(struct ttm_buffer_object *bo,
 				return -ENOMEM;
 		}
 
+=======
+		map->page = ttm->pages[start_page];
+		map->virtual = kmap(map->page);
+	} else {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		map->page = ttm->pages[start_page];
+		map->virtual = kmap(map->page);
+	} else {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We need to use vmap to get the desired page protection
 		 * or to make the buffer object look contiguous.
@@ -607,8 +788,12 @@ EXPORT_SYMBOL(ttm_bo_kunmap);
 
 int ttm_bo_move_accel_cleanup(struct ttm_buffer_object *bo,
 			      void *sync_obj,
+<<<<<<< HEAD
 			      void *sync_obj_arg,
 			      bool evict, bool no_wait_reserve,
+=======
+			      bool evict,
+>>>>>>> refs/remotes/origin/master
 			      bool no_wait_gpu,
 			      struct ttm_mem_reg *new_mem)
 {
@@ -626,7 +811,10 @@ int ttm_bo_move_accel_cleanup(struct ttm_buffer_object *bo,
 		bo->sync_obj = NULL;
 	}
 	bo->sync_obj = driver->sync_obj_ref(sync_obj);
+<<<<<<< HEAD
 	bo->sync_obj_arg = sync_obj_arg;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (evict) {
 		ret = ttm_bo_wait(bo, false, false, false);
 		spin_unlock(&bdev->fence_lock);

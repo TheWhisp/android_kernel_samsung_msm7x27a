@@ -14,12 +14,28 @@
 #ifndef _LINUX_NODE_H_
 #define _LINUX_NODE_H_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/cpumask.h>
 #include <linux/workqueue.h>
 
 struct node {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sys_device	sysdev;
+=======
+	struct device	dev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device	dev;
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_MEMORY_HOTPLUG_SPARSE) && defined(CONFIG_HUGETLBFS)
 	struct work_struct	node_work;
@@ -27,10 +43,16 @@ struct node {
 };
 
 struct memory_block;
+<<<<<<< HEAD
 extern struct node node_devices[];
 typedef  void (*node_registration_func_t)(struct node *);
 
 extern int register_node(struct node *, int, struct node *);
+=======
+extern struct node *node_devices[];
+typedef  void (*node_registration_func_t)(struct node *);
+
+>>>>>>> refs/remotes/origin/master
 extern void unregister_node(struct node *node);
 #ifdef CONFIG_NUMA
 extern int register_one_node(int nid);
@@ -80,6 +102,14 @@ static inline void register_hugetlbfs_with_node(node_registration_func_t reg,
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define to_node(sys_device) container_of(sys_device, struct node, sysdev)
+=======
+#define to_node(device) container_of(device, struct node, dev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define to_node(device) container_of(device, struct node, dev)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_NODE_H_ */

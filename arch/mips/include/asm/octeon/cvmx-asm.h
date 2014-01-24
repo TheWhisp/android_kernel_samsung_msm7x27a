@@ -32,7 +32,11 @@
 #ifndef __CVMX_ASM_H__
 #define __CVMX_ASM_H__
 
+<<<<<<< HEAD
 #include "octeon-model.h"
+=======
+#include <asm/octeon/octeon-model.h>
+>>>>>>> refs/remotes/origin/master
 
 /* other useful stuff */
 #define CVMX_SYNC asm volatile ("sync" : : : "memory")

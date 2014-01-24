@@ -25,7 +25,11 @@
 #define handle_sys64 handle_sys
 #endif
 
+<<<<<<< HEAD
 	.align  5
+=======
+	.align	5
+>>>>>>> refs/remotes/origin/master
 NESTED(handle_sys64, PT_SIZE, sp)
 #if !defined(CONFIG_MIPS32_O32) && !defined(CONFIG_MIPS32_N32)
 	/*
@@ -40,7 +44,11 @@ NESTED(handle_sys64, PT_SIZE, sp)
 #endif
 
 	dsubu	t0, v0, __NR_64_Linux	# check syscall number
+<<<<<<< HEAD
 	sltiu	t0, t0,	__NR_64_Linux_syscalls + 1
+=======
+	sltiu	t0, t0, __NR_64_Linux_syscalls + 1
+>>>>>>> refs/remotes/origin/master
 #if !defined(CONFIG_MIPS32_O32) && !defined(CONFIG_MIPS32_N32)
 	ld	t1, PT_EPC(sp)		# skip syscall on return
 	daddiu	t1, 4			# skip to next instruction
@@ -54,7 +62,11 @@ NESTED(handle_sys64, PT_SIZE, sp)
 
 	sd	a3, PT_R26(sp)		# save a3 for syscall restarting
 
+<<<<<<< HEAD
 	li	t1, _TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT
+=======
+	li	t1, _TIF_WORK_SYSCALL_ENTRY
+>>>>>>> refs/remotes/origin/master
 	LONG_L	t0, TI_FLAGS($28)	# syscall tracing enabled?
 	and	t0, t1, t0
 	bnez	t0, syscall_trace_entry
@@ -72,6 +84,7 @@ NESTED(handle_sys64, PT_SIZE, sp)
 1:	sd	v0, PT_R2(sp)		# result
 
 n64_syscall_exit:
+<<<<<<< HEAD
 	local_irq_disable		# make sure need_resched and
 					# signals dont change between
 					# sampling and return
@@ -84,6 +97,9 @@ n64_syscall_exit:
 
 n64_syscall_exit_work:
 	j	syscall_exit_work_partial
+=======
+	j	syscall_exit_partial
+>>>>>>> refs/remotes/origin/master
 
 /* ------------------------------------------------------------------------ */
 
@@ -125,7 +141,12 @@ illegal_syscall:
 	END(handle_sys64)
 
 	.align	3
+<<<<<<< HEAD
 sys_call_table:
+=======
+	.type	sys_call_table, @object
+EXPORT(sys_call_table)
+>>>>>>> refs/remotes/origin/master
 	PTR	sys_read			/* 5000 */
 	PTR	sys_write
 	PTR	sys_open
@@ -181,8 +202,13 @@ sys_call_table:
 	PTR	sys_socketpair
 	PTR	sys_setsockopt
 	PTR	sys_getsockopt
+<<<<<<< HEAD
 	PTR	sys_clone			/* 5055 */
 	PTR	sys_fork
+=======
+	PTR	__sys_clone			/* 5055 */
+	PTR	__sys_fork
+>>>>>>> refs/remotes/origin/master
 	PTR	sys_execve
 	PTR	sys_exit
 	PTR	sys_wait4
@@ -299,9 +325,19 @@ sys_call_table:
 	PTR	sys_ni_syscall			/* 5170, was get_kernel_syms */
 	PTR	sys_ni_syscall			/* was query_module */
 	PTR	sys_quotactl
+<<<<<<< HEAD
+<<<<<<< HEAD
 	PTR	sys_nfsservctl
+=======
+	PTR	sys_ni_syscall			/* was nfsservctl */
+>>>>>>> refs/remotes/origin/cm-10.0
 	PTR	sys_ni_syscall			/* res. for getpmsg */
 	PTR	sys_ni_syscall			/* 5175  for putpmsg */
+=======
+	PTR	sys_ni_syscall			/* was nfsservctl */
+	PTR	sys_ni_syscall			/* res. for getpmsg */
+	PTR	sys_ni_syscall			/* 5175	 for putpmsg */
+>>>>>>> refs/remotes/origin/master
 	PTR	sys_ni_syscall			/* res. for afs_syscall */
 	PTR	sys_ni_syscall			/* res. for security */
 	PTR	sys_gettid
@@ -428,5 +464,21 @@ sys_call_table:
 	PTR	sys_open_by_handle_at
 	PTR	sys_clock_adjtime		/* 5300 */
 	PTR	sys_syncfs
+<<<<<<< HEAD
+<<<<<<< HEAD
 	PTR	sys_setns
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	PTR	sys_sendmmsg
+	PTR	sys_setns
+	PTR	sys_process_vm_readv
+	PTR	sys_process_vm_writev		/* 5305 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PTR	sys_kcmp
+	PTR	sys_finit_module
+	PTR	sys_getdents64
+>>>>>>> refs/remotes/origin/master
 	.size	sys_call_table,.-sys_call_table

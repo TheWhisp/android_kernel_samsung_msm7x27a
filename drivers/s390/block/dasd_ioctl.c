@@ -1,11 +1,18 @@
 /*
+<<<<<<< HEAD
  * File...........: linux/drivers/s390/block/dasd_ioctl.c
+=======
+>>>>>>> refs/remotes/origin/master
  * Author(s)......: Holger Smolinski <Holger.Smolinski@de.ibm.com>
  *		    Horst Hummel <Horst.Hummel@de.ibm.com>
  *		    Carsten Otte <Cotte@de.ibm.com>
  *		    Martin Schwidefsky <schwidefsky@de.ibm.com>
  * Bugreports.to..: <Linux390@de.ibm.com>
+<<<<<<< HEAD
  * (C) IBM Corporation, IBM Deutschland Entwicklung GmbH, 1999-2001
+=======
+ * Copyright IBM Corp. 1999, 2001
+>>>>>>> refs/remotes/origin/master
  *
  * i/o controls for the dasd driver.
  */
@@ -20,6 +27,10 @@
 #include <linux/slab.h>
 #include <asm/compat.h>
 #include <asm/ccwdev.h>
+<<<<<<< HEAD
+=======
+#include <asm/schid.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/cmb.h>
 #include <asm/uaccess.h>
 
@@ -141,6 +152,7 @@ static int dasd_ioctl_resume(struct dasd_block *block)
 }
 
 /*
+<<<<<<< HEAD
  * performs formatting of _device_ according to _fdata_
  * Note: The discipline's format_function is assumed to deliver formatting
  * commands to format a single unit of the device. In terms of the ECKD
@@ -149,6 +161,69 @@ static int dasd_ioctl_resume(struct dasd_block *block)
 static int dasd_format(struct dasd_block *block, struct format_data_t *fdata)
 {
 	struct dasd_ccw_req *cqr;
+=======
+ * Abort all failfast I/O on a device.
+ */
+static int dasd_ioctl_abortio(struct dasd_block *block)
+{
+	unsigned long flags;
+	struct dasd_device *base;
+	struct dasd_ccw_req *cqr, *n;
+
+	base = block->base;
+	if (!capable(CAP_SYS_ADMIN))
+		return -EACCES;
+
+	if (test_and_set_bit(DASD_FLAG_ABORTALL, &base->flags))
+		return 0;
+	DBF_DEV_EVENT(DBF_NOTICE, base, "%s", "abortall flag set");
+
+	spin_lock_irqsave(&block->request_queue_lock, flags);
+	spin_lock(&block->queue_lock);
+	list_for_each_entry_safe(cqr, n, &block->ccw_queue, blocklist) {
+		if (test_bit(DASD_CQR_FLAGS_FAILFAST, &cqr->flags) &&
+		    cqr->callback_data &&
+		    cqr->callback_data != DASD_SLEEPON_START_TAG &&
+		    cqr->callback_data != DASD_SLEEPON_END_TAG) {
+			spin_unlock(&block->queue_lock);
+			blk_abort_request(cqr->callback_data);
+			spin_lock(&block->queue_lock);
+		}
+	}
+	spin_unlock(&block->queue_lock);
+	spin_unlock_irqrestore(&block->request_queue_lock, flags);
+
+	dasd_schedule_block_bh(block);
+	return 0;
+}
+
+/*
+ * Allow I/O on a device
+ */
+static int dasd_ioctl_allowio(struct dasd_block *block)
+{
+	struct dasd_device *base;
+
+	base = block->base;
+	if (!capable(CAP_SYS_ADMIN))
+		return -EACCES;
+
+	if (test_and_clear_bit(DASD_FLAG_ABORTALL, &base->flags))
+		DBF_DEV_EVENT(DBF_NOTICE, base, "%s", "abortall flag unset");
+
+	return 0;
+}
+
+/*
+ * performs formatting of _device_ according to _fdata_
+ * Note: The discipline's format_function is assumed to deliver formatting
+ * commands to format multiple units of the device. In terms of the ECKD
+ * devices this means CCWs are generated to format multiple tracks.
+ */
+static int
+dasd_format(struct dasd_block *block, struct format_data_t *fdata)
+{
+>>>>>>> refs/remotes/origin/master
 	struct dasd_device *base;
 	int rc;
 
@@ -157,8 +232,13 @@ static int dasd_format(struct dasd_block *block, struct format_data_t *fdata)
 		return -EPERM;
 
 	if (base->state != DASD_STATE_BASIC) {
+<<<<<<< HEAD
 		pr_warning("%s: The DASD cannot be formatted while it is "
 			   "enabled\n",  dev_name(&base->cdev->dev));
+=======
+		pr_warn("%s: The DASD cannot be formatted while it is enabled\n",
+			dev_name(&base->cdev->dev));
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
@@ -178,6 +258,7 @@ static int dasd_format(struct dasd_block *block, struct format_data_t *fdata)
 		bdput(bdev);
 	}
 
+<<<<<<< HEAD
 	while (fdata->start_unit <= fdata->stop_unit) {
 		cqr = base->discipline->format_device(base, fdata);
 		if (IS_ERR(cqr))
@@ -193,6 +274,12 @@ static int dasd_format(struct dasd_block *block, struct format_data_t *fdata)
 		}
 		fdata->start_unit++;
 	}
+=======
+	rc = base->discipline->format_device(base, fdata);
+	if (rc)
+		return rc;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -240,7 +327,15 @@ dasd_ioctl_format(struct block_device *bdev, void __user *argp)
  */
 static int dasd_ioctl_reset_profile(struct dasd_block *block)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(&block->profile, 0, sizeof(struct dasd_profile_info_t));
+=======
+	dasd_profile_reset(&block->profile);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dasd_profile_reset(&block->profile);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -249,22 +344,79 @@ static int dasd_ioctl_reset_profile(struct dasd_block *block)
  */
 static int dasd_ioctl_read_profile(struct dasd_block *block, void __user *argp)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dasd_profile_level == DASD_PROFILE_OFF)
 		return -EIO;
 	if (copy_to_user(argp, &block->profile,
 			 sizeof(struct dasd_profile_info_t)))
 		return -EFAULT;
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct dasd_profile_info_t *data;
+	int rc = 0;
+
+	data = kmalloc(sizeof(*data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+
+	spin_lock_bh(&block->profile.lock);
+	if (block->profile.data) {
+		data->dasd_io_reqs = block->profile.data->dasd_io_reqs;
+		data->dasd_io_sects = block->profile.data->dasd_io_sects;
+		memcpy(data->dasd_io_secs, block->profile.data->dasd_io_secs,
+		       sizeof(data->dasd_io_secs));
+		memcpy(data->dasd_io_times, block->profile.data->dasd_io_times,
+		       sizeof(data->dasd_io_times));
+		memcpy(data->dasd_io_timps, block->profile.data->dasd_io_timps,
+		       sizeof(data->dasd_io_timps));
+		memcpy(data->dasd_io_time1, block->profile.data->dasd_io_time1,
+		       sizeof(data->dasd_io_time1));
+		memcpy(data->dasd_io_time2, block->profile.data->dasd_io_time2,
+		       sizeof(data->dasd_io_time2));
+		memcpy(data->dasd_io_time2ps,
+		       block->profile.data->dasd_io_time2ps,
+		       sizeof(data->dasd_io_time2ps));
+		memcpy(data->dasd_io_time3, block->profile.data->dasd_io_time3,
+		       sizeof(data->dasd_io_time3));
+		memcpy(data->dasd_io_nr_req,
+		       block->profile.data->dasd_io_nr_req,
+		       sizeof(data->dasd_io_nr_req));
+		spin_unlock_bh(&block->profile.lock);
+	} else {
+		spin_unlock_bh(&block->profile.lock);
+		rc = -EIO;
+		goto out;
+	}
+	if (copy_to_user(argp, data, sizeof(*data)))
+		rc = -EFAULT;
+out:
+	kfree(data);
+	return rc;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static int dasd_ioctl_reset_profile(struct dasd_block *block)
 {
+<<<<<<< HEAD
 	return -ENOSYS;
+=======
+	return -ENOTTY;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int dasd_ioctl_read_profile(struct dasd_block *block, void __user *argp)
 {
+<<<<<<< HEAD
 	return -ENOSYS;
+=======
+	return -ENOTTY;
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -275,11 +427,20 @@ static int dasd_ioctl_information(struct dasd_block *block,
 				  unsigned int cmd, void __user *argp)
 {
 	struct dasd_information2_t *dasd_info;
+<<<<<<< HEAD
 	unsigned long flags;
 	int rc;
 	struct dasd_device *base;
 	struct ccw_device *cdev;
 	struct ccw_dev_id dev_id;
+=======
+	struct subchannel_id sch_id;
+	struct ccw_dev_id dev_id;
+	struct dasd_device *base;
+	struct ccw_device *cdev;
+	unsigned long flags;
+	int rc;
+>>>>>>> refs/remotes/origin/master
 
 	base = block->base;
 	if (!base->discipline || !base->discipline->fill_info)
@@ -297,9 +458,16 @@ static int dasd_ioctl_information(struct dasd_block *block,
 
 	cdev = base->cdev;
 	ccw_device_get_id(cdev, &dev_id);
+<<<<<<< HEAD
 
 	dasd_info->devno = dev_id.devno;
 	dasd_info->schid = _ccw_device_get_subchannel_number(base->cdev);
+=======
+	ccw_device_get_schid(cdev, &sch_id);
+
+	dasd_info->devno = dev_id.devno;
+	dasd_info->schid = sch_id.sch_no;
+>>>>>>> refs/remotes/origin/master
 	dasd_info->cu_type = cdev->id.cu_type;
 	dasd_info->cu_model = cdev->id.cu_model;
 	dasd_info->dev_type = cdev->id.dev_type;
@@ -433,6 +601,15 @@ int dasd_ioctl(struct block_device *bdev, fmode_t mode,
 	case BIODASDRESUME:
 		rc = dasd_ioctl_resume(block);
 		break;
+<<<<<<< HEAD
+=======
+	case BIODASDABORTIO:
+		rc = dasd_ioctl_abortio(block);
+		break;
+	case BIODASDALLOWIO:
+		rc = dasd_ioctl_allowio(block);
+		break;
+>>>>>>> refs/remotes/origin/master
 	case BIODASDFMT:
 		rc = dasd_ioctl_format(bdev, argp);
 		break;
@@ -465,12 +642,18 @@ int dasd_ioctl(struct block_device *bdev, fmode_t mode,
 		break;
 	default:
 		/* if the discipline has an ioctl method try it. */
+<<<<<<< HEAD
 		if (base->discipline->ioctl) {
 			rc = base->discipline->ioctl(block, cmd, argp);
 			if (rc == -ENOIOCTLCMD)
 				rc = -EINVAL;
 		} else
 			rc = -EINVAL;
+=======
+		rc = -ENOTTY;
+		if (base->discipline->ioctl)
+			rc = base->discipline->ioctl(block, cmd, argp);
+>>>>>>> refs/remotes/origin/master
 	}
 	dasd_put_device(base);
 	return rc;

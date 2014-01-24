@@ -4,6 +4,8 @@
  * Copyright (C) 2001-2003 Andreas Gruenbacher, <agruen@suse.de>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
@@ -11,6 +13,12 @@
 #include <linux/fs.h>
 #include <linux/ext3_jbd.h>
 #include <linux/ext3_fs.h>
+=======
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/master
 #include "xattr.h"
 #include "acl.h"
 
@@ -54,16 +62,35 @@ ext3_acl_from_disk(const void *value, size_t size)
 			case ACL_OTHER:
 				value = (char *)value +
 					sizeof(ext3_acl_entry_short);
+<<<<<<< HEAD
 				acl->a_entries[n].e_id = ACL_UNDEFINED_ID;
 				break;
 
 			case ACL_USER:
+=======
+				break;
+
+			case ACL_USER:
+				value = (char *)value + sizeof(ext3_acl_entry);
+				if ((char *)value > end)
+					goto fail;
+				acl->a_entries[n].e_uid =
+					make_kuid(&init_user_ns,
+						  le32_to_cpu(entry->e_id));
+				break;
+>>>>>>> refs/remotes/origin/master
 			case ACL_GROUP:
 				value = (char *)value + sizeof(ext3_acl_entry);
 				if ((char *)value > end)
 					goto fail;
+<<<<<<< HEAD
 				acl->a_entries[n].e_id =
 					le32_to_cpu(entry->e_id);
+=======
+				acl->a_entries[n].e_gid =
+					make_kgid(&init_user_ns,
+						  le32_to_cpu(entry->e_id));
+>>>>>>> refs/remotes/origin/master
 				break;
 
 			default:
@@ -97,6 +124,7 @@ ext3_acl_to_disk(const struct posix_acl *acl, size_t *size)
 	ext_acl->a_version = cpu_to_le32(EXT3_ACL_VERSION);
 	e = (char *)ext_acl + sizeof(ext3_acl_header);
 	for (n=0; n < acl->a_count; n++) {
+<<<<<<< HEAD
 		ext3_acl_entry *entry = (ext3_acl_entry *)e;
 		entry->e_tag  = cpu_to_le16(acl->a_entries[n].e_tag);
 		entry->e_perm = cpu_to_le16(acl->a_entries[n].e_perm);
@@ -105,6 +133,21 @@ ext3_acl_to_disk(const struct posix_acl *acl, size_t *size)
 			case ACL_GROUP:
 				entry->e_id =
 					cpu_to_le32(acl->a_entries[n].e_id);
+=======
+		const struct posix_acl_entry *acl_e = &acl->a_entries[n];
+		ext3_acl_entry *entry = (ext3_acl_entry *)e;
+		entry->e_tag  = cpu_to_le16(acl_e->e_tag);
+		entry->e_perm = cpu_to_le16(acl_e->e_perm);
+		switch(acl_e->e_tag) {
+			case ACL_USER:
+				entry->e_id = cpu_to_le32(
+					from_kuid(&init_user_ns, acl_e->e_uid));
+				e += sizeof(ext3_acl_entry);
+				break;
+			case ACL_GROUP:
+				entry->e_id = cpu_to_le32(
+					from_kgid(&init_user_ns, acl_e->e_gid));
+>>>>>>> refs/remotes/origin/master
 				e += sizeof(ext3_acl_entry);
 				break;
 
@@ -131,7 +174,15 @@ fail:
  *
  * inode->i_mutex: don't care
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct posix_acl *
+=======
+struct posix_acl *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct posix_acl *
+>>>>>>> refs/remotes/origin/master
 ext3_get_acl(struct inode *inode, int type)
 {
 	int name_index;
@@ -199,12 +250,25 @@ ext3_set_acl(handle_t *handle, struct inode *inode, int type,
 		case ACL_TYPE_ACCESS:
 			name_index = EXT3_XATTR_INDEX_POSIX_ACL_ACCESS;
 			if (acl) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				mode_t mode = inode->i_mode;
 				error = posix_acl_equiv_mode(acl, &mode);
 				if (error < 0)
 					return error;
 				else {
 					inode->i_mode = mode;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				error = posix_acl_equiv_mode(acl, &inode->i_mode);
+				if (error < 0)
+					return error;
+				else {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					inode->i_ctime = CURRENT_TIME_SEC;
 					ext3_mark_inode_dirty(handle, inode);
 					if (error == 0)
@@ -239,6 +303,8 @@ ext3_set_acl(handle_t *handle, struct inode *inode, int type,
 	return error;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int
 ext3_check_acl(struct inode *inode, int mask, unsigned int flags)
 {
@@ -262,6 +328,10 @@ ext3_check_acl(struct inode *inode, int mask, unsigned int flags)
 	return -EAGAIN;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialize the ACLs of a new inode. Called from ext3_new_inode.
  *
@@ -284,15 +354,23 @@ ext3_init_acl(handle_t *handle, struct inode *inode, struct inode *dir)
 			inode->i_mode &= ~current_umask();
 	}
 	if (test_opt(inode->i_sb, POSIX_ACL) && acl) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct posix_acl *clone;
 		mode_t mode;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (S_ISDIR(inode->i_mode)) {
 			error = ext3_set_acl(handle, inode,
 					     ACL_TYPE_DEFAULT, acl);
 			if (error)
 				goto cleanup;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		clone = posix_acl_clone(acl, GFP_NOFS);
 		error = -ENOMEM;
 		if (!clone)
@@ -309,6 +387,21 @@ ext3_init_acl(handle_t *handle, struct inode *inode, struct inode *dir)
 			}
 		}
 		posix_acl_release(clone);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		error = posix_acl_create(&acl, GFP_NOFS, &inode->i_mode);
+		if (error < 0)
+			return error;
+
+		if (error > 0) {
+			/* This is an extended ACL */
+			error = ext3_set_acl(handle, inode, ACL_TYPE_ACCESS, acl);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 cleanup:
 	posix_acl_release(acl);
@@ -332,7 +425,19 @@ cleanup:
 int
 ext3_acl_chmod(struct inode *inode)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
+=======
+	struct posix_acl *acl;
+	handle_t *handle;
+	int retries = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct posix_acl *acl;
+	handle_t *handle;
+	int retries = 0;
+>>>>>>> refs/remotes/origin/master
         int error;
 
 	if (S_ISLNK(inode->i_mode))
@@ -342,6 +447,8 @@ ext3_acl_chmod(struct inode *inode)
 	acl = ext3_get_acl(inode, ACL_TYPE_ACCESS);
 	if (IS_ERR(acl) || !acl)
 		return PTR_ERR(acl);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clone = posix_acl_clone(acl, GFP_KERNEL);
 	posix_acl_release(acl);
 	if (!clone)
@@ -367,6 +474,31 @@ ext3_acl_chmod(struct inode *inode)
 	}
 out:
 	posix_acl_release(clone);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	error = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+	if (error)
+		return error;
+retry:
+	handle = ext3_journal_start(inode,
+			EXT3_DATA_TRANS_BLOCKS(inode->i_sb));
+	if (IS_ERR(handle)) {
+		error = PTR_ERR(handle);
+		ext3_std_error(inode->i_sb, error);
+		goto out;
+	}
+	error = ext3_set_acl(handle, inode, ACL_TYPE_ACCESS, acl);
+	ext3_journal_stop(handle);
+	if (error == -ENOSPC &&
+	    ext3_should_retry_alloc(inode->i_sb, &retries))
+		goto retry;
+out:
+	posix_acl_release(acl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -416,7 +548,11 @@ ext3_xattr_get_acl(struct dentry *dentry, const char *name, void *buffer,
 		return PTR_ERR(acl);
 	if (acl == NULL)
 		return -ENODATA;
+<<<<<<< HEAD
 	error = posix_acl_to_xattr(acl, buffer, size);
+=======
+	error = posix_acl_to_xattr(&init_user_ns, acl, buffer, size);
+>>>>>>> refs/remotes/origin/master
 	posix_acl_release(acl);
 
 	return error;
@@ -439,7 +575,11 @@ ext3_xattr_set_acl(struct dentry *dentry, const char *name, const void *value,
 		return -EPERM;
 
 	if (value) {
+<<<<<<< HEAD
 		acl = posix_acl_from_xattr(value, size);
+=======
+		acl = posix_acl_from_xattr(&init_user_ns, value, size);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(acl))
 			return PTR_ERR(acl);
 		else if (acl) {

@@ -21,7 +21,15 @@
 #include <linux/io.h>
 #include <linux/uaccess.h>
 #include <linux/wakelock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/atomic.h>
 
@@ -73,7 +81,15 @@ static int trace_enabled;
 static int cpu_to_dump;
 static int next_cpu_to_dump;
 static struct wake_lock etm_wake_lock;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct pm_qos_request_list etm_qos_req;
+=======
+static struct pm_qos_request etm_qos_req;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct pm_qos_request etm_qos_req;
+>>>>>>> refs/remotes/origin/cm-11.0
 static int trace_on_boot;
 module_param_named(
 	trace_on_boot, trace_on_boot, int, S_IRUGO

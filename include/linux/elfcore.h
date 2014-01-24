@@ -1,11 +1,16 @@
 #ifndef _LINUX_ELFCORE_H
 #define _LINUX_ELFCORE_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/signal.h>
 #include <linux/time.h>
 #ifdef __KERNEL__
 #include <linux/user.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 #include <linux/ptrace.h>
 #include <linux/elf.h>
@@ -103,6 +108,15 @@ typedef struct elf_prpsinfo prpsinfo_t;
 #endif
 
 #ifdef __KERNEL__
+=======
+#include <linux/user.h>
+#include <linux/bug.h>
+#include <asm/elf.h>
+#include <uapi/linux/elfcore.h>
+
+struct coredump_params;
+
+>>>>>>> refs/remotes/origin/master
 static inline void elf_core_copy_regs(elf_gregset_t *elfregs, struct pt_regs *regs)
 {
 #ifdef ELF_CORE_COPY_REGS
@@ -160,6 +174,7 @@ static inline int elf_core_copy_task_xfpregs(struct task_struct *t, elf_fpxregse
  */
 extern Elf_Half elf_core_extra_phdrs(void);
 extern int
+<<<<<<< HEAD
 elf_core_write_extra_phdrs(struct file *file, loff_t offset, size_t *size,
 			   unsigned long limit);
 extern int
@@ -168,4 +183,11 @@ extern size_t elf_core_extra_data_size(void);
 
 #endif /* __KERNEL__ */
 
+=======
+elf_core_write_extra_phdrs(struct coredump_params *cprm, loff_t offset);
+extern int
+elf_core_write_extra_data(struct coredump_params *cprm);
+extern size_t elf_core_extra_data_size(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_ELFCORE_H */

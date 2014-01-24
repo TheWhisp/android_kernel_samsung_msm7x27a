@@ -25,7 +25,15 @@
  *			there is always data available.  *OBSOLETE*
  * @data_read:		Read data from the RNG device.
  *			Returns the number of lower random bytes in "data".
+<<<<<<< HEAD
+<<<<<<< HEAD
  *			Must not be NULL.    *OSOLETE*
+=======
+ *			Must not be NULL.    *OBSOLETE*
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *			Must not be NULL.    *OBSOLETE*
+>>>>>>> refs/remotes/origin/master
  * @read:		New API. drivers can fill up to max bytes of data
  *			into the buffer. The buffer is aligned for any type.
  * @priv:		Private data, for use by the RNG driver.

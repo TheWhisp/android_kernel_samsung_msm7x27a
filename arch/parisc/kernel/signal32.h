@@ -21,6 +21,7 @@
 
 #include <linux/compat.h>
 
+<<<<<<< HEAD
 typedef compat_uptr_t compat_sighandler_t;
 
 typedef struct compat_sigaltstack {
@@ -38,6 +39,8 @@ struct compat_sigaction {
         compat_sigset_t sa_mask;               /* mask last for extensibility */
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* 32-bit ucontext as seen from an 64-bit kernel */
 struct compat_ucontext {
         compat_uint_t uc_flags;
@@ -51,6 +54,7 @@ struct compat_ucontext {
 
 /* ELF32 signal handling */
 
+<<<<<<< HEAD
 struct k_sigaction32 {
 	struct compat_sigaction sa;
 };
@@ -108,6 +112,9 @@ typedef struct compat_siginfo {
 } compat_siginfo_t;
 
 int copy_siginfo_to_user32 (compat_siginfo_t __user *to, siginfo_t *from);
+=======
+int copy_siginfo_to_user32 (compat_siginfo_t __user *to, const siginfo_t *from);
+>>>>>>> refs/remotes/origin/master
 int copy_siginfo_from_user32 (siginfo_t *to, compat_siginfo_t __user *from);
 
 /* In a deft move of uber-hackery, we decide to carry the top half of all
@@ -154,8 +161,11 @@ struct compat_rt_sigframe {
 
 void sigset_32to64(sigset_t *s64, compat_sigset_t *s32);
 void sigset_64to32(compat_sigset_t *s32, sigset_t *s64);
+<<<<<<< HEAD
 int do_sigaltstack32 (const compat_stack_t __user *uss32, 
 		compat_stack_t __user *uoss32, unsigned long sp);
+=======
+>>>>>>> refs/remotes/origin/master
 long restore_sigcontext32(struct compat_sigcontext __user *sc, 
 		struct compat_regfile __user *rf,
 		struct pt_regs *regs);

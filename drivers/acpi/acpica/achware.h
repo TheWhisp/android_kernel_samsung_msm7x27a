@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,6 +89,49 @@ acpi_status acpi_hw_register_write(u32 register_id, u32 value);
 acpi_status acpi_hw_clear_acpi_status(void);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * hwsleep - sleep/wake support (Legacy sleep registers)
+ */
+acpi_status acpi_hw_legacy_sleep(u8 sleep_state, u8 flags);
+
+acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state, u8 flags);
+
+acpi_status acpi_hw_legacy_wake(u8 sleep_state, u8 flags);
+=======
+ * hwsleep - sleep/wake support (Legacy sleep registers)
+ */
+acpi_status acpi_hw_legacy_sleep(u8 sleep_state);
+
+acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state);
+
+acpi_status acpi_hw_legacy_wake(u8 sleep_state);
+>>>>>>> refs/remotes/origin/master
+
+/*
+ * hwesleep - sleep/wake support (Extended FADT-V5 sleep registers)
+ */
+void acpi_hw_execute_sleep_method(char *method_name, u32 integer_argument);
+
+<<<<<<< HEAD
+acpi_status acpi_hw_extended_sleep(u8 sleep_state, u8 flags);
+
+acpi_status acpi_hw_extended_wake_prep(u8 sleep_state, u8 flags);
+
+acpi_status acpi_hw_extended_wake(u8 sleep_state, u8 flags);
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+acpi_status acpi_hw_extended_sleep(u8 sleep_state);
+
+acpi_status acpi_hw_extended_wake_prep(u8 sleep_state);
+
+acpi_status acpi_hw_extended_wake(u8 sleep_state);
+
+/*
+>>>>>>> refs/remotes/origin/master
  * hwvalid - Port I/O with validation
  */
 acpi_status acpi_hw_read_port(acpi_io_address address, u32 *value, u32 width);
@@ -90,8 +141,12 @@ acpi_status acpi_hw_write_port(acpi_io_address address, u32 value, u32 width);
 /*
  * hwgpe - GPE support
  */
+<<<<<<< HEAD
 u32 acpi_hw_get_gpe_register_bit(struct acpi_gpe_event_info *gpe_event_info,
 			     struct acpi_gpe_register_info *gpe_register_info);
+=======
+u32 acpi_hw_get_gpe_register_bit(struct acpi_gpe_event_info *gpe_event_info);
+>>>>>>> refs/remotes/origin/master
 
 acpi_status
 acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_event_info, u32 action);
@@ -128,6 +183,8 @@ acpi_status
 acpi_hw_derive_pci_id(struct acpi_pci_id *pci_id,
 		      acpi_handle root_pci_device, acpi_handle pci_region);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef	ACPI_FUTURE_USAGE
 /*
  * hwtimer - ACPI Timer prototypes
@@ -140,4 +197,8 @@ acpi_status
 acpi_get_timer_duration(u32 start_ticks, u32 end_ticks, u32 * time_elapsed);
 #endif				/* ACPI_FUTURE_USAGE */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif				/* __ACHWARE_H__ */

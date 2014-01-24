@@ -34,7 +34,15 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/platform_device.h>
 
@@ -73,7 +81,15 @@ MODULE_SUPPORTED_DEVICE("{{Xilinx,ML403 AC97 Controller Reference}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for ML403 AC97 Controller Reference.");
@@ -1063,7 +1079,11 @@ snd_ml403_ac97cr_codec_write(struct snd_ac97 *ac97, unsigned short reg,
 	return;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_ml403_ac97cr_chip_init(struct snd_ml403_ac97cr *ml403_ac97cr)
 {
 	unsigned long end_time;
@@ -1108,7 +1128,11 @@ static int snd_ml403_ac97cr_dev_free(struct snd_device *snddev)
 	return snd_ml403_ac97cr_free(ml403_ac97cr);
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_ml403_ac97cr_create(struct snd_card *card, struct platform_device *pfdev,
 			struct snd_ml403_ac97cr **rml403_ac97cr)
 {
@@ -1153,7 +1177,15 @@ snd_ml403_ac97cr_create(struct snd_card *card, struct platform_device *pfdev,
 		   "0x%x done\n", (unsigned int)ml403_ac97cr->port);
 	/* get irq */
 	irq = platform_get_irq(pfdev, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(irq, snd_ml403_ac97cr_irq, IRQF_DISABLED,
+=======
+	if (request_irq(irq, snd_ml403_ac97cr_irq, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (request_irq(irq, snd_ml403_ac97cr_irq, 0,
+>>>>>>> refs/remotes/origin/master
 			dev_name(&pfdev->dev), (void *)ml403_ac97cr)) {
 		snd_printk(KERN_ERR SND_ML403_AC97CR_DRIVER ": "
 			   "unable to grab IRQ %d\n",
@@ -1166,7 +1198,15 @@ snd_ml403_ac97cr_create(struct snd_card *card, struct platform_device *pfdev,
 		   "request (playback) irq %d done\n",
 		   ml403_ac97cr->irq);
 	irq = platform_get_irq(pfdev, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(irq, snd_ml403_ac97cr_irq, IRQF_DISABLED,
+=======
+	if (request_irq(irq, snd_ml403_ac97cr_irq, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (request_irq(irq, snd_ml403_ac97cr_irq, 0,
+>>>>>>> refs/remotes/origin/master
 			dev_name(&pfdev->dev), (void *)ml403_ac97cr)) {
 		snd_printk(KERN_ERR SND_ML403_AC97CR_DRIVER ": "
 			   "unable to grab IRQ %d\n",
@@ -1204,7 +1244,11 @@ static void snd_ml403_ac97cr_mixer_free(struct snd_ac97 *ac97)
 	PDEBUG(INIT_INFO, "mixer_free(): (done)\n");
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_ml403_ac97cr_mixer(struct snd_ml403_ac97cr *ml403_ac97cr)
 {
 	struct snd_ac97_bus *bus;
@@ -1237,7 +1281,11 @@ snd_ml403_ac97cr_mixer(struct snd_ml403_ac97cr *ml403_ac97cr)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_ml403_ac97cr_pcm(struct snd_ml403_ac97cr *ml403_ac97cr, int device,
 		     struct snd_pcm **rpcm)
 {
@@ -1268,7 +1316,11 @@ snd_ml403_ac97cr_pcm(struct snd_ml403_ac97cr *ml403_ac97cr, int device,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_ml403_ac97cr_probe(struct platform_device *pfdev)
+=======
+static int snd_ml403_ac97cr_probe(struct platform_device *pfdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct snd_ml403_ac97cr *ml403_ac97cr = NULL;
@@ -1325,7 +1377,10 @@ static int __devinit snd_ml403_ac97cr_probe(struct platform_device *pfdev)
 static int snd_ml403_ac97cr_remove(struct platform_device *pfdev)
 {
 	snd_card_free(platform_get_drvdata(pfdev));
+<<<<<<< HEAD
 	platform_set_drvdata(pfdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1341,6 +1396,8 @@ static struct platform_driver snd_ml403_ac97cr_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init alsa_card_ml403_ac97cr_init(void)
 {
 	return platform_driver_register(&snd_ml403_ac97cr_driver);
@@ -1353,3 +1410,9 @@ static void __exit alsa_card_ml403_ac97cr_exit(void)
 
 module_init(alsa_card_ml403_ac97cr_init)
 module_exit(alsa_card_ml403_ac97cr_exit)
+=======
+module_platform_driver(snd_ml403_ac97cr_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(snd_ml403_ac97cr_driver);
+>>>>>>> refs/remotes/origin/master

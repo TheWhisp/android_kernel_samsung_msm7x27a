@@ -36,6 +36,10 @@
 #include <linux/interrupt.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/idle.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <asm/time.h>
 #include <asm/mach-au1x00/au1000.h>
@@ -53,7 +57,11 @@ static struct clocksource au1x_counter1_clocksource = {
 	.read		= au1x_counter1_read,
 	.mask		= CLOCKSOURCE_MASK(32),
 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
+<<<<<<< HEAD
 	.rating		= 100,
+=======
+	.rating		= 1500,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int au1x_rtcmatch2_set_next_event(unsigned long delta,
@@ -84,15 +92,28 @@ static irqreturn_t au1x_rtcmatch2_irq(int irq, void *dev_id)
 static struct clock_event_device au1x_rtcmatch2_clockdev = {
 	.name		= "rtcmatch2",
 	.features	= CLOCK_EVT_FEAT_ONESHOT,
+<<<<<<< HEAD
 	.rating		= 100,
 	.set_next_event	= au1x_rtcmatch2_set_next_event,
+=======
+	.rating		= 1500,
+	.set_next_event = au1x_rtcmatch2_set_next_event,
+>>>>>>> refs/remotes/origin/master
 	.set_mode	= au1x_rtcmatch2_set_mode,
 	.cpumask	= cpu_all_mask,
 };
 
 static struct irqaction au1x_rtcmatch2_irqaction = {
 	.handler	= au1x_rtcmatch2_irq,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_TIMER,
+=======
+	.flags		= IRQF_TIMER,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 	.name		= "timer",
 	.dev_id		= &au1x_rtcmatch2_clockdev,
 };
@@ -146,7 +167,15 @@ static int __init alchemy_time_init(unsigned int m2int)
 	cd->shift = 32;
 	cd->mult = div_sc(32768, NSEC_PER_SEC, cd->shift);
 	cd->max_delta_ns = clockevent_delta2ns(0xffffffff, cd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cd->min_delta_ns = clockevent_delta2ns(8, cd);	/* ~0.25ms */
+=======
+	cd->min_delta_ns = clockevent_delta2ns(9, cd);	/* ~0.28ms */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cd->min_delta_ns = clockevent_delta2ns(9, cd);	/* ~0.28ms */
+>>>>>>> refs/remotes/origin/master
 	clockevents_register_device(cd);
 	setup_irq(m2int, &au1x_rtcmatch2_irqaction);
 
@@ -158,6 +187,7 @@ cntr_err:
 	return -1;
 }
 
+<<<<<<< HEAD
 static void __init alchemy_setup_c0timer(void)
 {
 	/*
@@ -172,12 +202,22 @@ static void __init alchemy_setup_c0timer(void)
 	init_r4k_clocksource();
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int alchemy_m2inttab[] __initdata = {
 	AU1000_RTC_MATCH2_INT,
 	AU1500_RTC_MATCH2_INT,
 	AU1100_RTC_MATCH2_INT,
 	AU1550_RTC_MATCH2_INT,
 	AU1200_RTC_MATCH2_INT,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	AU1300_RTC_MATCH2_INT,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	AU1300_RTC_MATCH2_INT,
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init plat_time_init(void)
@@ -185,8 +225,14 @@ void __init plat_time_init(void)
 	int t;
 
 	t = alchemy_get_cputype();
+<<<<<<< HEAD
 	if (t == ALCHEMY_CPU_UNKNOWN)
 		alchemy_setup_c0timer();
 	else if (alchemy_time_init(alchemy_m2inttab[t]))
 		alchemy_setup_c0timer();
+=======
+	if (t == ALCHEMY_CPU_UNKNOWN ||
+	    alchemy_time_init(alchemy_m2inttab[t]))
+		cpu_wait = NULL;	/* wait doesn't work with r4k timer */
+>>>>>>> refs/remotes/origin/master
 }

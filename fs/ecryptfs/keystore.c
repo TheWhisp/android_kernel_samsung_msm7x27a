@@ -109,7 +109,15 @@ int ecryptfs_parse_packet_length(unsigned char *data, size_t *size,
 		(*size) += ((unsigned char)(data[1]) + 192);
 		(*length_size) = 2;
 	} else if (data[0] == 255) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* Five-byte length; we're not supposed to see this */
+=======
+		/* If support is added, adjust ECRYPTFS_MAX_PKT_LEN_SIZE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* If support is added, adjust ECRYPTFS_MAX_PKT_LEN_SIZE */
+>>>>>>> refs/remotes/origin/master
 		ecryptfs_printk(KERN_ERR, "Five-byte packet length not "
 				"supported\n");
 		rc = -EINVAL;
@@ -126,7 +134,15 @@ out:
 /**
  * ecryptfs_write_packet_length
  * @dest: The byte array target into which to write the length. Must
+<<<<<<< HEAD
+<<<<<<< HEAD
  *        have at least 5 bytes allocated.
+=======
+ *        have at least ECRYPTFS_MAX_PKT_LEN_SIZE bytes allocated.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *        have at least ECRYPTFS_MAX_PKT_LEN_SIZE bytes allocated.
+>>>>>>> refs/remotes/origin/master
  * @size: The length to write.
  * @packet_size_length: The number of bytes used to encode the packet
  *                      length is written to this address.
@@ -146,6 +162,14 @@ int ecryptfs_write_packet_length(char *dest, size_t size,
 		dest[1] = ((size - 192) % 256);
 		(*packet_size_length) = 2;
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		/* If support is added, adjust ECRYPTFS_MAX_PKT_LEN_SIZE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* If support is added, adjust ECRYPTFS_MAX_PKT_LEN_SIZE */
+>>>>>>> refs/remotes/origin/master
 		rc = -EINVAL;
 		ecryptfs_printk(KERN_WARNING,
 				"Unsupported packet size: [%zd]\n", size);
@@ -678,10 +702,18 @@ ecryptfs_write_tag_70_packet(char *dest, size_t *remaining_bytes,
 	 * Octets N3-N4: Block-aligned encrypted filename
 	 *  - Consists of a minimum number of random characters, a \0
 	 *    separator, and then the filename */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	s->max_packet_size = (1                   /* Tag 70 identifier */
 			      + 3                 /* Max Tag 70 packet size */
 			      + ECRYPTFS_SIG_SIZE /* FNEK sig */
 			      + 1                 /* Cipher identifier */
+=======
+	s->max_packet_size = (ECRYPTFS_TAG_70_MAX_METADATA_SIZE
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s->max_packet_size = (ECRYPTFS_TAG_70_MAX_METADATA_SIZE
+>>>>>>> refs/remotes/origin/master
 			      + s->block_aligned_filename_size);
 	if (dest == NULL) {
 		(*packet_size) = s->max_packet_size;
@@ -933,10 +965,23 @@ ecryptfs_parse_tag_70_packet(char **filename, size_t *filename_size,
 		goto out;
 	}
 	s->desc.flags = CRYPTO_TFM_REQ_MAY_SLEEP;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (max_packet_size < (1 + 1 + ECRYPTFS_SIG_SIZE + 1 + 1)) {
 		printk(KERN_WARNING "%s: max_packet_size is [%zd]; it must be "
 		       "at least [%d]\n", __func__, max_packet_size,
 			(1 + 1 + ECRYPTFS_SIG_SIZE + 1 + 1));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (max_packet_size < ECRYPTFS_TAG_70_MIN_METADATA_SIZE) {
+		printk(KERN_WARNING "%s: max_packet_size is [%zd]; it must be "
+		       "at least [%d]\n", __func__, max_packet_size,
+		       ECRYPTFS_TAG_70_MIN_METADATA_SIZE);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = -EINVAL;
 		goto out;
 	}
@@ -1151,8 +1196,13 @@ decrypt_pki_encrypted_session_key(struct ecryptfs_auth_tok *auth_tok,
 	struct ecryptfs_msg_ctx *msg_ctx;
 	struct ecryptfs_message *msg = NULL;
 	char *auth_tok_sig;
+<<<<<<< HEAD
 	char *payload;
 	size_t payload_len;
+=======
+	char *payload = NULL;
+	size_t payload_len = 0;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ecryptfs_get_auth_tok_sig(&auth_tok_sig, auth_tok);
@@ -1170,7 +1220,11 @@ decrypt_pki_encrypted_session_key(struct ecryptfs_auth_tok *auth_tok,
 	rc = ecryptfs_send_message(payload, payload_len, &msg_ctx);
 	if (rc) {
 		ecryptfs_printk(KERN_ERR, "Error sending message to "
+<<<<<<< HEAD
 				"ecryptfsd\n");
+=======
+				"ecryptfsd: %d\n", rc);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	rc = ecryptfs_wait_for_response(msg_ctx, &msg);
@@ -1204,8 +1258,13 @@ decrypt_pki_encrypted_session_key(struct ecryptfs_auth_tok *auth_tok,
 				  crypt_stat->key_size);
 	}
 out:
+<<<<<<< HEAD
 	if (msg)
 		kfree(msg);
+=======
+	kfree(msg);
+	kfree(payload);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -1635,11 +1694,28 @@ int ecryptfs_keyring_auth_tok_for_sig(struct key **auth_tok_key,
 
 	(*auth_tok_key) = request_key(&key_type_user, sig, NULL);
 	if (!(*auth_tok_key) || IS_ERR(*auth_tok_key)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Could not find key with description: [%s]\n",
 		       sig);
 		rc = process_request_key_err(PTR_ERR(*auth_tok_key));
 		(*auth_tok_key) = NULL;
 		goto out;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		(*auth_tok_key) = ecryptfs_get_encrypted_key(sig);
+		if (!(*auth_tok_key) || IS_ERR(*auth_tok_key)) {
+			printk(KERN_ERR "Could not find key with description: [%s]\n",
+			      sig);
+			rc = process_request_key_err(PTR_ERR(*auth_tok_key));
+			(*auth_tok_key) = NULL;
+			goto out;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	down_write(&(*auth_tok_key)->sem);
 	rc = ecryptfs_verify_auth_tok_from_key(*auth_tok_key, auth_tok);
@@ -1970,7 +2046,15 @@ pki_encrypt_session_key(struct key *auth_tok_key,
 {
 	struct ecryptfs_msg_ctx *msg_ctx = NULL;
 	char *payload = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	size_t payload_len;
+=======
+	size_t payload_len = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	size_t payload_len = 0;
+>>>>>>> refs/remotes/origin/master
 	struct ecryptfs_message *msg;
 	int rc;
 
@@ -1988,7 +2072,11 @@ pki_encrypt_session_key(struct key *auth_tok_key,
 	rc = ecryptfs_send_message(payload, payload_len, &msg_ctx);
 	if (rc) {
 		ecryptfs_printk(KERN_ERR, "Error sending message to "
+<<<<<<< HEAD
 				"ecryptfsd\n");
+=======
+				"ecryptfsd: %d\n", rc);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	rc = ecryptfs_wait_for_response(msg_ctx, &msg);
@@ -2255,7 +2343,15 @@ write_tag_3_packet(char *dest, size_t *remaining_bytes,
 		       auth_tok->token.password.session_key_encryption_key,
 		       crypt_stat->key_size);
 		ecryptfs_printk(KERN_DEBUG,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"Cached session key " "encryption key: \n");
+=======
+				"Cached session key encryption key:\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				"Cached session key encryption key:\n");
+>>>>>>> refs/remotes/origin/master
 		if (ecryptfs_verbosity > 0)
 			ecryptfs_dump_hex(session_key_encryption_key, 16);
 	}

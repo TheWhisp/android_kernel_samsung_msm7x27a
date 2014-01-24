@@ -3,11 +3,21 @@
  *
  * Copyright (C) 2007-2009 Renesas Solutions Corp.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Author : Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+=======
+ * Author : Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author : Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,15 +28,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __R8A66597_H__
 #define __R8A66597_H__
 
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 #include <linux/clk.h>
 #endif
 
+=======
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb/r8a66597.h>
 
 #define R8A66597_MAX_SAMPLING	10
@@ -53,6 +71,14 @@
 	((pipenum >= R8A66597_BASE_PIPENUM_ISOC) && \
 	 (pipenum < (R8A66597_BASE_PIPENUM_ISOC + R8A66597_MAX_NUM_ISOC)))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define r8a66597_is_sudmac(r8a66597)	(r8a66597->pdata->sudmac)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define r8a66597_is_sudmac(r8a66597)	(r8a66597->pdata->sudmac)
+>>>>>>> refs/remotes/origin/master
 struct r8a66597_pipe_info {
 	u16	pipe;
 	u16	epnum;
@@ -70,6 +96,14 @@ struct r8a66597_request {
 struct r8a66597_ep {
 	struct usb_ep		ep;
 	struct r8a66597		*r8a66597;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct r8a66597_dma	*dma;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct r8a66597_dma	*dma;
+>>>>>>> refs/remotes/origin/master
 
 	struct list_head	queue;
 	unsigned		busy:1;
@@ -80,22 +114,53 @@ struct r8a66597_ep {
 	unsigned		use_dma:1;
 	u16			pipenum;
 	u16			type;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*desc;
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* register address */
 	unsigned char		fifoaddr;
 	unsigned char		fifosel;
 	unsigned char		fifoctr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char		fifotrn;
 	unsigned char		pipectr;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned char		pipectr;
+	unsigned char		pipetre;
+	unsigned char		pipetrn;
+};
+
+struct r8a66597_dma {
+	unsigned		used:1;
+	unsigned		dir:1;	/* 1 = IN(write), 0 = OUT(read) */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct r8a66597 {
 	spinlock_t		lock;
 	void __iomem		*reg;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	void __iomem		*sudmac_reg;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_HAVE_CLK
 	struct clk *clk;
 #endif
+=======
+	void __iomem		*sudmac_reg;
+
+	struct clk *clk;
+>>>>>>> refs/remotes/origin/master
 	struct r8a66597_platdata	*pdata;
 
 	struct usb_gadget		gadget;
@@ -104,6 +169,14 @@ struct r8a66597 {
 	struct r8a66597_ep	ep[R8A66597_MAX_NUM_PIPE];
 	struct r8a66597_ep	*pipenum2ep[R8A66597_MAX_NUM_PIPE];
 	struct r8a66597_ep	*epaddr2ep[16];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct r8a66597_dma	dma;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct r8a66597_dma	dma;
+>>>>>>> refs/remotes/origin/master
 
 	struct timer_list	timer;
 	struct usb_request	*ep0_req;	/* for internal request */
@@ -111,6 +184,10 @@ struct r8a66597 {
 	u16			old_vbus;
 	u16			scount;
 	u16			old_dvsq;
+<<<<<<< HEAD
+=======
+	u16			device_status;	/* for GET_STATUS */
+>>>>>>> refs/remotes/origin/master
 
 	/* pipe config */
 	unsigned char bulk;
@@ -124,6 +201,14 @@ struct r8a66597 {
 #define gadget_to_r8a66597(_gadget)	\
 		container_of(_gadget, struct r8a66597, gadget)
 #define r8a66597_to_gadget(r8a66597) (&r8a66597->gadget)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define r8a66597_to_dev(r8a66597)	(r8a66597->gadget.dev.parent)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define r8a66597_to_dev(r8a66597)	(r8a66597->gadget.dev.parent)
+>>>>>>> refs/remotes/origin/master
 
 static inline u16 r8a66597_read(struct r8a66597 *r8a66597, unsigned long offset)
 {
@@ -182,12 +267,42 @@ static inline void r8a66597_write(struct r8a66597 *r8a66597, u16 val,
 	iowrite16(val, r8a66597->reg + offset);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void r8a66597_write_fifo(struct r8a66597 *r8a66597,
 				       unsigned long offset,
 				       unsigned char *buf,
 				       int len)
 {
 	void __iomem *fifoaddr = r8a66597->reg + offset;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void r8a66597_mdfy(struct r8a66597 *r8a66597,
+				 u16 val, u16 pat, unsigned long offset)
+{
+	u16 tmp;
+	tmp = r8a66597_read(r8a66597, offset);
+	tmp = tmp & (~pat);
+	tmp = tmp | val;
+	r8a66597_write(r8a66597, tmp, offset);
+}
+
+#define r8a66597_bclr(r8a66597, val, offset)	\
+			r8a66597_mdfy(r8a66597, 0, val, offset)
+#define r8a66597_bset(r8a66597, val, offset)	\
+			r8a66597_mdfy(r8a66597, val, 0, offset)
+
+static inline void r8a66597_write_fifo(struct r8a66597 *r8a66597,
+				       struct r8a66597_ep *ep,
+				       unsigned char *buf,
+				       int len)
+{
+	void __iomem *fifoaddr = r8a66597->reg + ep->fifoaddr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int adj = 0;
 	int i;
 
@@ -215,6 +330,8 @@ static inline void r8a66597_write_fifo(struct r8a66597 *r8a66597,
 			adj = 0x01; /* 16-bit wide */
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < len; i++)
 		iowrite8(buf[i], fifoaddr + adj - (i & adj));
 }
@@ -227,6 +344,19 @@ static inline void r8a66597_mdfy(struct r8a66597 *r8a66597,
 	tmp = tmp & (~pat);
 	tmp = tmp | val;
 	r8a66597_write(r8a66597, tmp, offset);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (r8a66597->pdata->wr0_shorted_to_wr1)
+		r8a66597_bclr(r8a66597, MBW_16, ep->fifosel);
+	for (i = 0; i < len; i++)
+		iowrite8(buf[i], fifoaddr + adj - (i & adj));
+	if (r8a66597->pdata->wr0_shorted_to_wr1)
+		r8a66597_bclr(r8a66597, MBW_16, ep->fifosel);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u16 get_xtal_from_pdata(struct r8a66597_platdata *pdata)
@@ -251,12 +381,36 @@ static inline u16 get_xtal_from_pdata(struct r8a66597_platdata *pdata)
 	return clock;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define r8a66597_bclr(r8a66597, val, offset)	\
 			r8a66597_mdfy(r8a66597, 0, val, offset)
 #define r8a66597_bset(r8a66597, val, offset)	\
 			r8a66597_mdfy(r8a66597, val, 0, offset)
 
 #define get_pipectr_addr(pipenum)	(PIPE1CTR + (pipenum - 1) * 2)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline u32 r8a66597_sudmac_read(struct r8a66597 *r8a66597,
+				       unsigned long offset)
+{
+	return ioread32(r8a66597->sudmac_reg + offset);
+}
+
+static inline void r8a66597_sudmac_write(struct r8a66597 *r8a66597, u32 val,
+					 unsigned long offset)
+{
+	iowrite32(val, r8a66597->sudmac_reg + offset);
+}
+
+#define get_pipectr_addr(pipenum)	(PIPE1CTR + (pipenum - 1) * 2)
+#define get_pipetre_addr(pipenum)	(PIPE1TRE + (pipenum - 1) * 4)
+#define get_pipetrn_addr(pipenum)	(PIPE1TRN + (pipenum - 1) * 4)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define enable_irq_ready(r8a66597, pipenum)	\
 	enable_pipe_irq(r8a66597, pipenum, BRDYENB)

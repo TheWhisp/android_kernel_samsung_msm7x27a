@@ -100,6 +100,7 @@ void __init paging_init(void)
 
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	int codesize, reservedpages, datasize, initsize;
 	int nid, i;
 
@@ -161,10 +162,23 @@ static inline void free_area(unsigned long addr, unsigned long end, char *s)
 	if (size && s)
 		printk(KERN_INFO "Freeing %s memory: %dK (%lx - %lx)\n",
 		       s, size, end - (size << 10), end);
+=======
+	pg_data_t *pgdat;
+
+	high_memory = NULL;
+	for_each_online_pgdat(pgdat)
+		high_memory = max_t(void *, high_memory,
+				    __va(pgdat_end_pfn(pgdat) << PAGE_SHIFT));
+
+	set_max_mapnr(MAP_NR(high_memory));
+	free_all_bootmem();
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 void free_initmem(void)
 {
+<<<<<<< HEAD
 	free_area((unsigned long)__init_begin, (unsigned long)__init_end,
 		  "init");
 }
@@ -176,4 +190,14 @@ void free_initrd_mem(unsigned long start, unsigned long end)
 	free_area(start, end, "initrd");
 }
 
+=======
+	free_initmem_default(-1);
+}
+
+#ifdef CONFIG_BLK_DEV_INITRD
+void free_initrd_mem(unsigned long start, unsigned long end)
+{
+	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+}
+>>>>>>> refs/remotes/origin/master
 #endif

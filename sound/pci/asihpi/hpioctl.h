@@ -1,7 +1,15 @@
 /*******************************************************************************
 
     AudioScience HPI driver
+<<<<<<< HEAD
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -19,9 +27,15 @@
 Linux HPI ioctl, and shared module init functions
 *******************************************************************************/
 
+<<<<<<< HEAD
 int __devinit asihpi_adapter_probe(struct pci_dev *pci_dev,
 	const struct pci_device_id *pci_id);
 void __devexit asihpi_adapter_remove(struct pci_dev *pci_dev);
+=======
+int asihpi_adapter_probe(struct pci_dev *pci_dev,
+			 const struct pci_device_id *pci_id);
+void asihpi_adapter_remove(struct pci_dev *pci_dev);
+>>>>>>> refs/remotes/origin/master
 void __init asihpi_init(void);
 void __exit asihpi_exit(void);
 

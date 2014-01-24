@@ -31,6 +31,10 @@
 #include <linux/dma-mapping.h>
 #include <linux/mm.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/v4l2-event.h>
 
 #include "isp.h"
@@ -365,7 +369,11 @@ static void ccdc_lsc_free_request(struct isp_ccdc_device *ccdc,
 		dma_unmap_sg(isp->dev, req->iovm->sgt->sgl,
 			     req->iovm->sgt->nents, DMA_TO_DEVICE);
 	if (req->table)
+<<<<<<< HEAD
 		iommu_vfree(isp->iommu, req->table);
+=======
+		omap_iommu_vfree(isp->domain, isp->dev, req->table);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(req);
 }
 
@@ -437,15 +445,24 @@ static int ccdc_lsc_config(struct isp_ccdc_device *ccdc,
 
 		req->enable = 1;
 
+<<<<<<< HEAD
 		req->table = iommu_vmalloc(isp->iommu, 0, req->config.size,
 					   IOMMU_FLAG);
+=======
+		req->table = omap_iommu_vmalloc(isp->domain, isp->dev, 0,
+					req->config.size, IOMMU_FLAG);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR_VALUE(req->table)) {
 			req->table = 0;
 			ret = -ENOMEM;
 			goto done;
 		}
 
+<<<<<<< HEAD
 		req->iovm = find_iovm_area(isp->iommu, req->table);
+=======
+		req->iovm = omap_find_iovm_area(isp->dev, req->table);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (req->iovm == NULL) {
 			ret = -ENOMEM;
 			goto done;
@@ -461,7 +478,11 @@ static int ccdc_lsc_config(struct isp_ccdc_device *ccdc,
 		dma_sync_sg_for_cpu(isp->dev, req->iovm->sgt->sgl,
 				    req->iovm->sgt->nents, DMA_TO_DEVICE);
 
+<<<<<<< HEAD
 		table = da_to_va(isp->iommu, req->table);
+=======
+		table = omap_da_to_va(isp->dev, req->table);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (copy_from_user(table, config->lsc, req->config.size)) {
 			ret = -EFAULT;
 			goto done;
@@ -730,6 +751,7 @@ static int ccdc_config(struct isp_ccdc_device *ccdc,
 
 			/*
 			 * table_new must be 64-bytes aligned, but it's
+<<<<<<< HEAD
 			 * already done by iommu_vmalloc().
 			 */
 			size = ccdc->fpc.fpnum * 4;
@@ -742,6 +764,21 @@ static int ccdc_config(struct isp_ccdc_device *ccdc,
 					   (__force void __user *)
 					   ccdc->fpc.fpcaddr, size)) {
 				iommu_vfree(isp->iommu, table_new);
+=======
+			 * already done by omap_iommu_vmalloc().
+			 */
+			size = ccdc->fpc.fpnum * 4;
+			table_new = omap_iommu_vmalloc(isp->domain, isp->dev,
+							0, size, IOMMU_FLAG);
+			if (IS_ERR_VALUE(table_new))
+				return -ENOMEM;
+
+			if (copy_from_user(omap_da_to_va(isp->dev, table_new),
+					   (__force void __user *)
+					   ccdc->fpc.fpcaddr, size)) {
+				omap_iommu_vfree(isp->domain, isp->dev,
+								table_new);
+>>>>>>> refs/remotes/origin/cm-10.0
 				return -EFAULT;
 			}
 
@@ -751,7 +788,11 @@ static int ccdc_config(struct isp_ccdc_device *ccdc,
 
 		ccdc_configure_fpc(ccdc);
 		if (table_old != 0)
+<<<<<<< HEAD
 			iommu_vfree(isp->iommu, table_old);
+=======
+			omap_iommu_vfree(isp->domain, isp->dev, table_old);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return ccdc_lsc_config(ccdc, ccdc_struct);
@@ -1148,6 +1189,11 @@ static void ccdc_configure(struct isp_ccdc_device *ccdc)
 	omap3isp_configure_bridge(isp, ccdc->input, pdata, shift);
 
 	ccdc->syncif.datsz = depth_out;
+<<<<<<< HEAD
+=======
+	ccdc->syncif.hdpol = pdata ? pdata->hs_pol : 0;
+	ccdc->syncif.vdpol = pdata ? pdata->vs_pol : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ccdc_config_sync_if(ccdc, &ccdc->syncif);
 
 	/* CCDC_PAD_SINK */
@@ -1402,11 +1448,21 @@ static int __ccdc_handle_stopping(struct isp_ccdc_device *ccdc, u32 event)
 
 static void ccdc_hs_vs_isr(struct isp_ccdc_device *ccdc)
 {
+<<<<<<< HEAD
 	struct video_device *vdev = &ccdc->subdev.devnode;
 	struct v4l2_event event;
 
 	memset(&event, 0, sizeof(event));
 	event.type = V4L2_EVENT_OMAP3ISP_HS_VS;
+=======
+	struct isp_pipeline *pipe = to_isp_pipeline(&ccdc->subdev.entity);
+	struct video_device *vdev = ccdc->subdev.devnode;
+	struct v4l2_event event;
+
+	memset(&event, 0, sizeof(event));
+	event.type = V4L2_EVENT_FRAME_SYNC;
+	event.u.frame_sync.frame_sequence = atomic_read(&pipe->frame_number);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	v4l2_event_queue(vdev, &event);
 }
@@ -1421,8 +1477,16 @@ static void ccdc_lsc_isr(struct isp_ccdc_device *ccdc, u32 events)
 	unsigned long flags;
 
 	if (events & IRQ0STATUS_CCDC_LSC_PREF_ERR_IRQ) {
+<<<<<<< HEAD
 		ccdc_lsc_error_handler(ccdc);
 		ccdc->error = 1;
+=======
+		struct isp_pipeline *pipe =
+			to_isp_pipeline(&ccdc->subdev.entity);
+
+		ccdc_lsc_error_handler(ccdc);
+		pipe->error = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_dbg(to_device(ccdc), "lsc prefetch error\n");
 	}
 
@@ -1497,7 +1561,11 @@ static int ccdc_isr_buffer(struct isp_ccdc_device *ccdc)
 		goto done;
 	}
 
+<<<<<<< HEAD
 	buffer = omap3isp_video_buffer_next(&ccdc->video_out, ccdc->error);
+=======
+	buffer = omap3isp_video_buffer_next(&ccdc->video_out);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (buffer != NULL) {
 		ccdc_set_outaddr(ccdc, buffer->isp_addr);
 		restart = 1;
@@ -1511,7 +1579,10 @@ static int ccdc_isr_buffer(struct isp_ccdc_device *ccdc)
 					ISP_PIPELINE_STREAM_SINGLESHOT);
 
 done:
+<<<<<<< HEAD
 	ccdc->error = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return restart;
 }
 
@@ -1688,10 +1759,21 @@ static long ccdc_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
 static int ccdc_subscribe_event(struct v4l2_subdev *sd, struct v4l2_fh *fh,
 				struct v4l2_event_subscription *sub)
 {
+<<<<<<< HEAD
 	if (sub->type != V4L2_EVENT_OMAP3ISP_HS_VS)
 		return -EINVAL;
 
 	return v4l2_event_subscribe(fh, sub);
+=======
+	if (sub->type != V4L2_EVENT_FRAME_SYNC)
+		return -EINVAL;
+
+	/* line number is zero at frame start */
+	if (sub->id != 0)
+		return -EINVAL;
+
+	return v4l2_event_subscribe(fh, sub, OMAP3ISP_CCDC_NEVENTS);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int ccdc_unsubscribe_event(struct v4l2_subdev *sd, struct v4l2_fh *fh,
@@ -1733,7 +1815,10 @@ static int ccdc_set_stream(struct v4l2_subdev *sd, int enable)
 		 */
 		ccdc_config_vp(ccdc);
 		ccdc_enable_vp(ccdc, 1);
+<<<<<<< HEAD
 		ccdc->error = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		ccdc_print_status(ccdc);
 	}
 
@@ -1825,7 +1910,11 @@ ccdc_try_format(struct isp_ccdc_device *ccdc, struct v4l2_subdev_fh *fh,
 		 * callers to request an output size bigger than the input size
 		 * up to the nearest multiple of 16.
 		 */
+<<<<<<< HEAD
 		fmt->width = clamp_t(u32, width, 32, (fmt->width + 15) & ~15);
+=======
+		fmt->width = clamp_t(u32, width, 32, fmt->width + 15);
+>>>>>>> refs/remotes/origin/cm-10.0
 		fmt->width &= ~15;
 		fmt->height = clamp_t(u32, height, 32, fmt->height);
 		break;
@@ -2141,6 +2230,40 @@ static const struct media_entity_operations ccdc_media_ops = {
 	.link_setup = ccdc_link_setup,
 };
 
+<<<<<<< HEAD
+=======
+void omap3isp_ccdc_unregister_entities(struct isp_ccdc_device *ccdc)
+{
+	v4l2_device_unregister_subdev(&ccdc->subdev);
+	omap3isp_video_unregister(&ccdc->video_out);
+}
+
+int omap3isp_ccdc_register_entities(struct isp_ccdc_device *ccdc,
+	struct v4l2_device *vdev)
+{
+	int ret;
+
+	/* Register the subdev and video node. */
+	ret = v4l2_device_register_subdev(vdev, &ccdc->subdev);
+	if (ret < 0)
+		goto error;
+
+	ret = omap3isp_video_register(&ccdc->video_out, vdev);
+	if (ret < 0)
+		goto error;
+
+	return 0;
+
+error:
+	omap3isp_ccdc_unregister_entities(ccdc);
+	return ret;
+}
+
+/* -----------------------------------------------------------------------------
+ * ISP CCDC initialisation and cleanup
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * ccdc_init_entities - Initialize V4L2 subdev and media entity
  * @ccdc: ISP CCDC module
@@ -2162,7 +2285,10 @@ static int ccdc_init_entities(struct isp_ccdc_device *ccdc)
 	sd->grp_id = 1 << 16;	/* group ID for isp subdevs */
 	v4l2_set_subdevdata(sd, ccdc);
 	sd->flags |= V4L2_SUBDEV_FL_HAS_EVENTS | V4L2_SUBDEV_FL_HAS_DEVNODE;
+<<<<<<< HEAD
 	sd->nevents = OMAP3ISP_CCDC_NEVENTS;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pads[CCDC_PAD_SINK].flags = MEDIA_PAD_FL_SINK;
 	pads[CCDC_PAD_SOURCE_VP].flags = MEDIA_PAD_FL_SOURCE;
@@ -2183,12 +2309,17 @@ static int ccdc_init_entities(struct isp_ccdc_device *ccdc)
 
 	ret = omap3isp_video_init(&ccdc->video_out, "CCDC");
 	if (ret < 0)
+<<<<<<< HEAD
 		return ret;
+=======
+		goto error_video;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Connect the CCDC subdev to the video node. */
 	ret = media_entity_create_link(&ccdc->subdev.entity, CCDC_PAD_SOURCE_OF,
 			&ccdc->video_out.video.entity, 0, 0);
 	if (ret < 0)
+<<<<<<< HEAD
 		return ret;
 
 	return 0;
@@ -2227,6 +2358,19 @@ error:
  * ISP CCDC initialisation and cleanup
  */
 
+=======
+		goto error_link;
+
+	return 0;
+
+error_link:
+	omap3isp_video_cleanup(&ccdc->video_out);
+error_video:
+	media_entity_cleanup(me);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * omap3isp_ccdc_init - CCDC module initialization.
  * @dev: Device pointer specific to the OMAP3 ISP.
@@ -2238,6 +2382,10 @@ error:
 int omap3isp_ccdc_init(struct isp_device *isp)
 {
 	struct isp_ccdc_device *ccdc = &isp->isp_ccdc;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_init(&ccdc->lock);
 	init_waitqueue_head(&ccdc->wait);
@@ -2257,8 +2405,11 @@ int omap3isp_ccdc_init(struct isp_device *isp)
 	ccdc->syncif.fldout = 0;
 	ccdc->syncif.fldpol = 0;
 	ccdc->syncif.fldstat = 0;
+<<<<<<< HEAD
 	ccdc->syncif.hdpol = 0;
 	ccdc->syncif.vdpol = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ccdc->clamp.oblen = 0;
 	ccdc->clamp.dcsubval = 0;
@@ -2268,7 +2419,17 @@ int omap3isp_ccdc_init(struct isp_device *isp)
 	ccdc->update = OMAP3ISP_CCDC_BLCLAMP;
 	ccdc_apply_controls(ccdc);
 
+<<<<<<< HEAD
 	return ccdc_init_entities(ccdc);
+=======
+	ret = ccdc_init_entities(ccdc);
+	if (ret < 0) {
+		mutex_destroy(&ccdc->ioctl_lock);
+		return ret;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -2279,6 +2440,12 @@ void omap3isp_ccdc_cleanup(struct isp_device *isp)
 {
 	struct isp_ccdc_device *ccdc = &isp->isp_ccdc;
 
+<<<<<<< HEAD
+=======
+	omap3isp_video_cleanup(&ccdc->video_out);
+	media_entity_cleanup(&ccdc->subdev.entity);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Free LSC requests. As the CCDC is stopped there's no active request,
 	 * so only the pending request and the free queue need to be handled.
 	 */
@@ -2287,5 +2454,11 @@ void omap3isp_ccdc_cleanup(struct isp_device *isp)
 	ccdc_lsc_free_queue(ccdc, &ccdc->lsc.free_queue);
 
 	if (ccdc->fpc.fpcaddr != 0)
+<<<<<<< HEAD
 		iommu_vfree(isp->iommu, ccdc->fpc.fpcaddr);
+=======
+		omap_iommu_vfree(isp->domain, isp->dev, ccdc->fpc.fpcaddr);
+
+	mutex_destroy(&ccdc->ioctl_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

@@ -39,6 +39,10 @@
 #include "vnic_intr.h"
 #include "vnic_stats.h"
 #include "fnic_io.h"
+<<<<<<< HEAD
+=======
+#include "fnic_fip.h"
+>>>>>>> refs/remotes/origin/master
 #include "fnic.h"
 
 #define PCI_DEVICE_ID_CISCO_FNIC	0x0045
@@ -68,6 +72,17 @@ unsigned int fnic_log_level;
 module_param(fnic_log_level, int, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(fnic_log_level, "bit mask of fnic logging levels");
 
+<<<<<<< HEAD
+=======
+unsigned int fnic_trace_max_pages = 16;
+module_param(fnic_trace_max_pages, uint, S_IRUGO|S_IWUSR);
+MODULE_PARM_DESC(fnic_trace_max_pages, "Total allocated memory pages "
+					"for fnic trace buffer");
+
+static unsigned int fnic_max_qdepth = FNIC_DFLT_QUEUE_DEPTH;
+module_param(fnic_max_qdepth, uint, S_IRUGO|S_IWUSR);
+MODULE_PARM_DESC(fnic_max_qdepth, "Queue depth to report for each LUN");
+>>>>>>> refs/remotes/origin/master
 
 static struct libfc_function_template fnic_transport_template = {
 	.frame_send = fnic_send,
@@ -86,7 +101,11 @@ static int fnic_slave_alloc(struct scsi_device *sdev)
 	if (!rport || fc_remote_port_chkready(rport))
 		return -ENXIO;
 
+<<<<<<< HEAD
 	scsi_activate_tcq(sdev, FNIC_DFLT_QUEUE_DEPTH);
+=======
+	scsi_activate_tcq(sdev, fnic_max_qdepth);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -121,6 +140,10 @@ fnic_set_rport_dev_loss_tmo(struct fc_rport *rport, u32 timeout)
 static void fnic_get_host_speed(struct Scsi_Host *shost);
 static struct scsi_transport_template *fnic_fc_transport;
 static struct fc_host_statistics *fnic_get_stats(struct Scsi_Host *);
+<<<<<<< HEAD
+=======
+static void fnic_reset_host_stats(struct Scsi_Host *);
+>>>>>>> refs/remotes/origin/master
 
 static struct fc_function_template fnic_fc_functions = {
 
@@ -148,6 +171,10 @@ static struct fc_function_template fnic_fc_functions = {
 	.set_rport_dev_loss_tmo = fnic_set_rport_dev_loss_tmo,
 	.issue_fc_host_lip = fnic_reset,
 	.get_fc_host_stats = fnic_get_stats,
+<<<<<<< HEAD
+=======
+	.reset_fc_host_stats = fnic_reset_host_stats,
+>>>>>>> refs/remotes/origin/master
 	.dd_fcrport_size = sizeof(struct fc_rport_libfc_priv),
 	.terminate_rport_io = fnic_terminate_rport_io,
 	.bsg_request = fc_lport_bsg_request,
@@ -201,13 +228,123 @@ static struct fc_host_statistics *fnic_get_stats(struct Scsi_Host *host)
 	stats->error_frames = vs->tx.tx_errors + vs->rx.rx_errors;
 	stats->dumped_frames = vs->tx.tx_drops + vs->rx.rx_drop;
 	stats->invalid_crc_count = vs->rx.rx_crc_errors;
+<<<<<<< HEAD
 	stats->seconds_since_last_reset = (jiffies - lp->boot_time) / HZ;
+=======
+	stats->seconds_since_last_reset =
+			(jiffies - fnic->stats_reset_time) / HZ;
+>>>>>>> refs/remotes/origin/master
 	stats->fcp_input_megabytes = div_u64(fnic->fcp_input_bytes, 1000000);
 	stats->fcp_output_megabytes = div_u64(fnic->fcp_output_bytes, 1000000);
 
 	return stats;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * fnic_dump_fchost_stats
+ * note : dumps fc_statistics into system logs
+ */
+void fnic_dump_fchost_stats(struct Scsi_Host *host,
+				struct fc_host_statistics *stats)
+{
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: seconds since last reset = %llu\n",
+			stats->seconds_since_last_reset);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: tx frames		= %llu\n",
+			stats->tx_frames);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: tx words		= %llu\n",
+			stats->tx_words);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: rx frames		= %llu\n",
+			stats->rx_frames);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: rx words		= %llu\n",
+			stats->rx_words);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: lip count		= %llu\n",
+			stats->lip_count);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: nos count		= %llu\n",
+			stats->nos_count);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: error frames		= %llu\n",
+			stats->error_frames);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: dumped frames	= %llu\n",
+			stats->dumped_frames);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: link failure count	= %llu\n",
+			stats->link_failure_count);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: loss of sync count	= %llu\n",
+			stats->loss_of_sync_count);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: loss of signal count	= %llu\n",
+			stats->loss_of_signal_count);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: prim seq protocol err count = %llu\n",
+			stats->prim_seq_protocol_err_count);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: invalid tx word count= %llu\n",
+			stats->invalid_tx_word_count);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: invalid crc count	= %llu\n",
+			stats->invalid_crc_count);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: fcp input requests	= %llu\n",
+			stats->fcp_input_requests);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: fcp output requests	= %llu\n",
+			stats->fcp_output_requests);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: fcp control requests	= %llu\n",
+			stats->fcp_control_requests);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: fcp input megabytes	= %llu\n",
+			stats->fcp_input_megabytes);
+	FNIC_MAIN_NOTE(KERN_NOTICE, host,
+			"fnic: fcp output megabytes	= %llu\n",
+			stats->fcp_output_megabytes);
+	return;
+}
+
+/*
+ * fnic_reset_host_stats : clears host stats
+ * note : called when reset_statistics set under sysfs dir
+ */
+static void fnic_reset_host_stats(struct Scsi_Host *host)
+{
+	int ret;
+	struct fc_lport *lp = shost_priv(host);
+	struct fnic *fnic = lport_priv(lp);
+	struct fc_host_statistics *stats;
+	unsigned long flags;
+
+	/* dump current stats, before clearing them */
+	stats = fnic_get_stats(host);
+	fnic_dump_fchost_stats(host, stats);
+
+	spin_lock_irqsave(&fnic->fnic_lock, flags);
+	ret = vnic_dev_stats_clear(fnic->vdev);
+	spin_unlock_irqrestore(&fnic->fnic_lock, flags);
+
+	if (ret) {
+		FNIC_MAIN_DBG(KERN_DEBUG, fnic->lport->host,
+				"fnic: Reset vnic stats failed"
+				" 0x%x", ret);
+		return;
+	}
+	fnic->stats_reset_time = jiffies;
+	memset(stats, 0, sizeof(*stats));
+
+	return;
+}
+
+>>>>>>> refs/remotes/origin/master
 void fnic_log_q_error(struct fnic *fnic)
 {
 	unsigned int i;
@@ -288,6 +425,16 @@ static void fnic_notify_timer(unsigned long data)
 		  round_jiffies(jiffies + FNIC_NOTIFY_TIMER_PERIOD));
 }
 
+<<<<<<< HEAD
+=======
+static void fnic_fip_notify_timer(unsigned long data)
+{
+	struct fnic *fnic = (struct fnic *)data;
+
+	fnic_handle_fip_timer(fnic);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void fnic_notify_timer_start(struct fnic *fnic)
 {
 	switch (vnic_dev_get_intr_mode(fnic->vdev)) {
@@ -388,6 +535,8 @@ static void fnic_iounmap(struct fnic *fnic)
 		iounmap(fnic->bar0.vaddr);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Allocate element for mempools requiring GFP_DMA flag.
  * Otherwise, checks in kmem_flagcheck() hit BUG_ON().
@@ -399,6 +548,10 @@ static void *fnic_alloc_slab_dma(gfp_t gfp_mask, void *pool_data)
 	return kmem_cache_alloc(mem, gfp_mask | GFP_ATOMIC | GFP_DMA);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * fnic_get_mac() - get assigned data MAC address for FIP code.
  * @lport: 	local port.
@@ -410,8 +563,18 @@ static u8 *fnic_get_mac(struct fc_lport *lport)
 	return fnic->data_src_addr;
 }
 
+<<<<<<< HEAD
 static int __devinit fnic_probe(struct pci_dev *pdev,
 				const struct pci_device_id *ent)
+=======
+static void fnic_set_vlan(struct fnic *fnic, u16 vlan_id)
+{
+	u16 old_vlan;
+	old_vlan = vnic_dev_set_default_vlan(fnic->vdev, vlan_id);
+}
+
+static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host;
 	struct fc_lport *lp;
@@ -441,11 +604,19 @@ static int __devinit fnic_probe(struct pci_dev *pdev,
 
 	host->transportt = fnic_fc_transport;
 
+<<<<<<< HEAD
 	err = scsi_init_shared_tag_map(host, FNIC_MAX_IO_REQ);
 	if (err) {
 		shost_printk(KERN_ERR, fnic->lport->host,
 			     "Unable to alloc shared tag map\n");
 		goto err_out_free_hba;
+=======
+	err = fnic_stats_debugfs_init(fnic);
+	if (err) {
+		shost_printk(KERN_ERR, fnic->lport->host,
+				"Failed to initialize debugfs for stats\n");
+		fnic_stats_debugfs_remove(fnic);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Setup PCI resources */
@@ -470,10 +641,17 @@ static int __devinit fnic_probe(struct pci_dev *pdev,
 	pci_set_master(pdev);
 
 	/* Query PCI controller on system for DMA addressing
+<<<<<<< HEAD
 	 * limitation for the device.  Try 40-bit first, and
 	 * fail to 32-bit.
 	 */
 	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(40));
+=======
+	 * limitation for the device.  Try 64-bit first, and
+	 * fail to 32-bit.
+	 */
+	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (err) {
@@ -490,10 +668,17 @@ static int __devinit fnic_probe(struct pci_dev *pdev,
 			goto err_out_release_regions;
 		}
 	} else {
+<<<<<<< HEAD
 		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(40));
 		if (err) {
 			shost_printk(KERN_ERR, fnic->lport->host,
 				     "Unable to obtain 40-bit DMA "
+=======
+		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+		if (err) {
+			shost_printk(KERN_ERR, fnic->lport->host,
+				     "Unable to obtain 64-bit DMA "
+>>>>>>> refs/remotes/origin/master
 				     "for consistent allocations, aborting.\n");
 			goto err_out_release_regions;
 		}
@@ -560,6 +745,25 @@ static int __devinit fnic_probe(struct pci_dev *pdev,
 			     "aborting.\n");
 		goto err_out_dev_close;
 	}
+<<<<<<< HEAD
+=======
+
+	/* Configure Maximum Outstanding IO reqs*/
+	if (fnic->config.io_throttle_count != FNIC_UCSM_DFLT_THROTTLE_CNT_BLD) {
+		host->can_queue = min_t(u32, FNIC_MAX_IO_REQ,
+					max_t(u32, FNIC_MIN_IO_REQ,
+					fnic->config.io_throttle_count));
+	}
+	fnic->fnic_max_tag_id = host->can_queue;
+
+	err = scsi_init_shared_tag_map(host, fnic->fnic_max_tag_id);
+	if (err) {
+		shost_printk(KERN_ERR, fnic->lport->host,
+			  "Unable to alloc shared tag map\n");
+		goto err_out_dev_close;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	host->max_lun = fnic->config.luns_per_tgt;
 	host->max_id = FNIC_MAX_FCP_TARGET;
 	host->max_cmd_len = FCOE_MAX_CMD_LEN;
@@ -603,14 +807,30 @@ static int __devinit fnic_probe(struct pci_dev *pdev,
 	if (!fnic->io_req_pool)
 		goto err_out_free_resources;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pool = mempool_create(2, fnic_alloc_slab_dma, mempool_free_slab,
 			      fnic_sgl_cache[FNIC_SGL_CACHE_DFLT]);
+=======
+	pool = mempool_create_slab_pool(2, fnic_sgl_cache[FNIC_SGL_CACHE_DFLT]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pool = mempool_create_slab_pool(2, fnic_sgl_cache[FNIC_SGL_CACHE_DFLT]);
+>>>>>>> refs/remotes/origin/master
 	if (!pool)
 		goto err_out_free_ioreq_pool;
 	fnic->io_sgl_pool[FNIC_SGL_CACHE_DFLT] = pool;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pool = mempool_create(2, fnic_alloc_slab_dma, mempool_free_slab,
 			      fnic_sgl_cache[FNIC_SGL_CACHE_MAX]);
+=======
+	pool = mempool_create_slab_pool(2, fnic_sgl_cache[FNIC_SGL_CACHE_MAX]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pool = mempool_create_slab_pool(2, fnic_sgl_cache[FNIC_SGL_CACHE_MAX]);
+>>>>>>> refs/remotes/origin/master
 	if (!pool)
 		goto err_out_free_dflt_pool;
 	fnic->io_sgl_pool[FNIC_SGL_CACHE_MAX] = pool;
@@ -630,7 +850,20 @@ static int __devinit fnic_probe(struct pci_dev *pdev,
 		vnic_dev_packet_filter(fnic->vdev, 1, 1, 0, 0, 0);
 		vnic_dev_add_addr(fnic->vdev, FIP_ALL_ENODE_MACS);
 		vnic_dev_add_addr(fnic->vdev, fnic->ctlr.ctl_src_addr);
+<<<<<<< HEAD
 		fcoe_ctlr_init(&fnic->ctlr, FIP_MODE_AUTO);
+=======
+		fnic->set_vlan = fnic_set_vlan;
+		fcoe_ctlr_init(&fnic->ctlr, FIP_MODE_AUTO);
+		setup_timer(&fnic->fip_timer, fnic_fip_notify_timer,
+							(unsigned long)fnic);
+		spin_lock_init(&fnic->vlans_lock);
+		INIT_WORK(&fnic->fip_frame_work, fnic_handle_fip_frame);
+		INIT_WORK(&fnic->event_work, fnic_handle_event);
+		skb_queue_head_init(&fnic->fip_frame_queue);
+		INIT_LIST_HEAD(&fnic->evlist);
+		INIT_LIST_HEAD(&fnic->vlans);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		shost_printk(KERN_INFO, fnic->lport->host,
 			     "firmware uses non-FIP mode\n");
@@ -638,6 +871,12 @@ static int __devinit fnic_probe(struct pci_dev *pdev,
 	}
 	fnic->state = FNIC_IN_FC_MODE;
 
+<<<<<<< HEAD
+=======
+	atomic_set(&fnic->in_flight, 0);
+	fnic->state_flags = FNIC_FLAGS_NONE;
+
+>>>>>>> refs/remotes/origin/master
 	/* Enable hardware stripping of vlan header on ingress */
 	fnic_set_nic_config(fnic, 0, 0, 0, 0, 0, 0, 1);
 
@@ -703,6 +942,10 @@ static int __devinit fnic_probe(struct pci_dev *pdev,
 	}
 
 	fc_lport_init_stats(lp);
+<<<<<<< HEAD
+=======
+	fnic->stats_reset_time = jiffies;
+>>>>>>> refs/remotes/origin/master
 
 	fc_lport_config(lp);
 
@@ -782,12 +1025,20 @@ err_out_release_regions:
 err_out_disable_device:
 	pci_disable_device(pdev);
 err_out_free_hba:
+<<<<<<< HEAD
+=======
+	fnic_stats_debugfs_remove(fnic);
+>>>>>>> refs/remotes/origin/master
 	scsi_host_put(lp->host);
 err_out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit fnic_remove(struct pci_dev *pdev)
+=======
+static void fnic_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fnic *fnic = pci_get_drvdata(pdev);
 	struct fc_lport *lp = fnic->lport;
@@ -814,6 +1065,16 @@ static void __devexit fnic_remove(struct pci_dev *pdev)
 	skb_queue_purge(&fnic->frame_queue);
 	skb_queue_purge(&fnic->tx_queue);
 
+<<<<<<< HEAD
+=======
+	if (fnic->config.flags & VFCF_FIP_CAPABLE) {
+		del_timer_sync(&fnic->fip_timer);
+		skb_queue_purge(&fnic->fip_frame_queue);
+		fnic_fcoe_reset_vlans(fnic);
+		fnic_fcoe_evlist_free(fnic);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Log off the fabric. This stops all remote ports, dns port,
 	 * logs off the fabric. This flushes all rport, disc, lport work
@@ -827,6 +1088,10 @@ static void __devexit fnic_remove(struct pci_dev *pdev)
 
 	fcoe_ctlr_destroy(&fnic->ctlr);
 	fc_lport_destroy(lp);
+<<<<<<< HEAD
+=======
+	fnic_stats_debugfs_remove(fnic);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * This stops the fnic device, masks all interrupts. Completed
@@ -854,7 +1119,10 @@ static void __devexit fnic_remove(struct pci_dev *pdev)
 	fnic_iounmap(fnic);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	scsi_host_put(lp->host);
 }
 
@@ -862,7 +1130,11 @@ static struct pci_driver fnic_driver = {
 	.name = DRV_NAME,
 	.id_table = fnic_id_table,
 	.probe = fnic_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(fnic_remove),
+=======
+	.remove = fnic_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init fnic_init_module(void)
@@ -872,11 +1144,38 @@ static int __init fnic_init_module(void)
 
 	printk(KERN_INFO PFX "%s, ver %s\n", DRV_DESCRIPTION, DRV_VERSION);
 
+<<<<<<< HEAD
+=======
+	/* Create debugfs entries for fnic */
+	err = fnic_debugfs_init();
+	if (err < 0) {
+		printk(KERN_ERR PFX "Failed to create fnic directory "
+				"for tracing and stats logging\n");
+		fnic_debugfs_terminate();
+	}
+
+	/* Allocate memory for trace buffer */
+	err = fnic_trace_buf_init();
+	if (err < 0) {
+		printk(KERN_ERR PFX "Trace buffer initialization Failed "
+				  "Fnic Tracing utility is disabled\n");
+		fnic_trace_free();
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Create a cache for allocation of default size sgls */
 	len = sizeof(struct fnic_dflt_sgl_list);
 	fnic_sgl_cache[FNIC_SGL_CACHE_DFLT] = kmem_cache_create
 		("fnic_sgl_dflt", len + FNIC_SG_DESC_ALIGN, FNIC_SG_DESC_ALIGN,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 SLAB_HWCACHE_ALIGN | SLAB_CACHE_DMA,
+=======
+		 SLAB_HWCACHE_ALIGN,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 SLAB_HWCACHE_ALIGN,
+>>>>>>> refs/remotes/origin/master
 		 NULL);
 	if (!fnic_sgl_cache[FNIC_SGL_CACHE_DFLT]) {
 		printk(KERN_ERR PFX "failed to create fnic dflt sgl slab\n");
@@ -888,8 +1187,17 @@ static int __init fnic_init_module(void)
 	len = sizeof(struct fnic_sgl_list);
 	fnic_sgl_cache[FNIC_SGL_CACHE_MAX] = kmem_cache_create
 		("fnic_sgl_max", len + FNIC_SG_DESC_ALIGN, FNIC_SG_DESC_ALIGN,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 SLAB_HWCACHE_ALIGN | SLAB_CACHE_DMA,
+=======
+		 SLAB_HWCACHE_ALIGN,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 NULL);
+=======
+		  SLAB_HWCACHE_ALIGN,
+		  NULL);
+>>>>>>> refs/remotes/origin/master
 	if (!fnic_sgl_cache[FNIC_SGL_CACHE_MAX]) {
 		printk(KERN_ERR PFX "failed to create fnic max sgl slab\n");
 		err = -ENOMEM;
@@ -916,6 +1224,16 @@ static int __init fnic_init_module(void)
 	spin_lock_init(&fnic_list_lock);
 	INIT_LIST_HEAD(&fnic_list);
 
+<<<<<<< HEAD
+=======
+	fnic_fip_queue = create_singlethread_workqueue("fnic_fip_q");
+	if (!fnic_fip_queue) {
+		printk(KERN_ERR PFX "fnic FIP work queue create failed\n");
+		err = -ENOMEM;
+		goto err_create_fip_workq;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	fnic_fc_transport = fc_attach_transport(&fnic_fc_functions);
 	if (!fnic_fc_transport) {
 		printk(KERN_ERR PFX "fc_attach_transport error\n");
@@ -934,6 +1252,11 @@ static int __init fnic_init_module(void)
 err_pci_register:
 	fc_release_transport(fnic_fc_transport);
 err_fc_transport:
+<<<<<<< HEAD
+=======
+	destroy_workqueue(fnic_fip_queue);
+err_create_fip_workq:
+>>>>>>> refs/remotes/origin/master
 	destroy_workqueue(fnic_event_queue);
 err_create_fnic_workq:
 	kmem_cache_destroy(fnic_io_req_cache);
@@ -942,6 +1265,11 @@ err_create_fnic_ioreq_slab:
 err_create_fnic_sgl_slab_max:
 	kmem_cache_destroy(fnic_sgl_cache[FNIC_SGL_CACHE_DFLT]);
 err_create_fnic_sgl_slab_dflt:
+<<<<<<< HEAD
+=======
+	fnic_trace_free();
+	fnic_debugfs_terminate();
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -949,10 +1277,22 @@ static void __exit fnic_cleanup_module(void)
 {
 	pci_unregister_driver(&fnic_driver);
 	destroy_workqueue(fnic_event_queue);
+<<<<<<< HEAD
+=======
+	if (fnic_fip_queue) {
+		flush_workqueue(fnic_fip_queue);
+		destroy_workqueue(fnic_fip_queue);
+	}
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(fnic_sgl_cache[FNIC_SGL_CACHE_MAX]);
 	kmem_cache_destroy(fnic_sgl_cache[FNIC_SGL_CACHE_DFLT]);
 	kmem_cache_destroy(fnic_io_req_cache);
 	fc_release_transport(fnic_fc_transport);
+<<<<<<< HEAD
+=======
+	fnic_trace_free();
+	fnic_debugfs_terminate();
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(fnic_init_module);

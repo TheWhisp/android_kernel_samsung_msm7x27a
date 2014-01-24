@@ -150,8 +150,11 @@ do {						\
  */
 #define ELF_PLATFORM  (NULL)
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 #define SET_PERSONALITY(ex) set_personality(PER_LINUX)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_ELF_H */

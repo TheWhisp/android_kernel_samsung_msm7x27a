@@ -31,7 +31,11 @@ extern const struct cred *dns_resolver_cache;
 /*
  * debug tracing
  */
+<<<<<<< HEAD
 extern unsigned dns_resolver_debug;
+=======
+extern unsigned int dns_resolver_debug;
+>>>>>>> refs/remotes/origin/master
 
 #define	kdebug(FMT, ...)				\
 do {							\

@@ -8,6 +8,8 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,13 +19,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/kernel.h>
 #include <linux/utsname.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "u_ether.h"
 #include "u_serial.h"
+=======
+ */
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+
+#include "u_ether.h"
+#include "u_serial.h"
+#include "u_ecm.h"
+>>>>>>> refs/remotes/origin/master
 
 
 #define DRIVER_DESC		"CDC Composite Gadget"
@@ -41,6 +59,7 @@
 #define CDC_VENDOR_NUM		0x0525	/* NetChip */
 #define CDC_PRODUCT_NUM		0xa4aa	/* CDC Composite: ECM + ACM */
 
+<<<<<<< HEAD
 /*-------------------------------------------------------------------------*/
 
 /*
@@ -59,6 +78,11 @@
 #include "f_acm.c"
 #include "f_ecm.c"
 #include "u_ether.c"
+=======
+USB_GADGET_COMPOSITE_OPTIONS();
+
+USB_ETHERNET_MODULE_PARAMETERS();
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
@@ -100,6 +124,7 @@ static const struct usb_descriptor_header *otg_desc[] = {
 
 
 /* string IDs are assigned dynamically */
+<<<<<<< HEAD
 
 #define STRING_MANUFACTURER_IDX		0
 #define STRING_PRODUCT_IDX		1
@@ -109,6 +134,12 @@ static char manufacturer[50];
 static struct usb_string strings_dev[] = {
 	[STRING_MANUFACTURER_IDX].s = manufacturer,
 	[STRING_PRODUCT_IDX].s = DRIVER_DESC,
+=======
+static struct usb_string strings_dev[] = {
+	[USB_GADGET_MANUFACTURER_IDX].s = "",
+	[USB_GADGET_PRODUCT_IDX].s = DRIVER_DESC,
+	[USB_GADGET_SERIAL_IDX].s = "",
+>>>>>>> refs/remotes/origin/master
 	{  } /* end of list */
 };
 
@@ -122,9 +153,18 @@ static struct usb_gadget_strings *dev_strings[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 static u8 hostaddr[ETH_ALEN];
 
 /*-------------------------------------------------------------------------*/
+=======
+/*-------------------------------------------------------------------------*/
+static struct usb_function *f_acm;
+static struct usb_function_instance *fi_serial;
+
+static struct usb_function *f_ecm;
+static struct usb_function_instance *fi_ecm;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * We _always_ have both CDC ECM and CDC ACM functions.
@@ -138,6 +178,7 @@ static int __init cdc_do_config(struct usb_configuration *c)
 		c->bmAttributes |= USB_CONFIG_ATT_WAKEUP;
 	}
 
+<<<<<<< HEAD
 	status = ecm_bind_config(c, hostaddr);
 	if (status < 0)
 		return status;
@@ -147,6 +188,37 @@ static int __init cdc_do_config(struct usb_configuration *c)
 		return status;
 
 	return 0;
+=======
+	f_ecm = usb_get_function(fi_ecm);
+	if (IS_ERR(f_ecm)) {
+		status = PTR_ERR(f_ecm);
+		goto err_get_ecm;
+	}
+
+	status = usb_add_function(c, f_ecm);
+	if (status)
+		goto err_add_ecm;
+
+	f_acm = usb_get_function(fi_serial);
+	if (IS_ERR(f_acm)) {
+		status = PTR_ERR(f_acm);
+		goto err_get_acm;
+	}
+
+	status = usb_add_function(c, f_acm);
+	if (status)
+		goto err_add_acm;
+	return 0;
+
+err_add_acm:
+	usb_put_function(f_acm);
+err_get_acm:
+	usb_remove_function(c, f_ecm);
+err_add_ecm:
+	usb_put_function(f_ecm);
+err_get_ecm:
+	return status;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct usb_configuration cdc_config_driver = {
@@ -160,8 +232,13 @@ static struct usb_configuration cdc_config_driver = {
 
 static int __init cdc_bind(struct usb_composite_dev *cdev)
 {
+<<<<<<< HEAD
 	int			gcnum;
 	struct usb_gadget	*gadget = cdev->gadget;
+=======
+	struct usb_gadget	*gadget = cdev->gadget;
+	struct f_ecm_opts	*ecm_opts;
+>>>>>>> refs/remotes/origin/master
 	int			status;
 
 	if (!can_support_ecm(cdev->gadget)) {
@@ -170,6 +247,7 @@ static int __init cdc_bind(struct usb_composite_dev *cdev)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	/* set up network link layer */
 	status = gether_setup(cdev->gadget, hostaddr);
 	if (status < 0)
@@ -195,11 +273,31 @@ static int __init cdc_bind(struct usb_composite_dev *cdev)
 			cpu_to_le16(0x0300 | 0x0099);
 	}
 
+=======
+	fi_ecm = usb_get_function_instance("ecm");
+	if (IS_ERR(fi_ecm))
+		return PTR_ERR(fi_ecm);
+
+	ecm_opts = container_of(fi_ecm, struct f_ecm_opts, func_inst);
+
+	gether_set_qmult(ecm_opts->net, qmult);
+	if (!gether_set_host_addr(ecm_opts->net, host_addr))
+		pr_info("using host ethernet address: %s", host_addr);
+	if (!gether_set_dev_addr(ecm_opts->net, dev_addr))
+		pr_info("using self ethernet address: %s", dev_addr);
+
+	fi_serial = usb_get_function_instance("acm");
+	if (IS_ERR(fi_serial)) {
+		status = PTR_ERR(fi_serial);
+		goto fail;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Allocate string descriptor numbers ... note that string
 	 * contents can be overridden by the composite_dev glue.
 	 */
 
+<<<<<<< HEAD
 	/* device descriptor strings: manufacturer, product */
 	snprintf(manufacturer, sizeof manufacturer, "%s %s with %s",
 		init_utsname()->sysname, init_utsname()->release,
@@ -215,26 +313,44 @@ static int __init cdc_bind(struct usb_composite_dev *cdev)
 		goto fail1;
 	strings_dev[STRING_PRODUCT_IDX].id = status;
 	device_desc.iProduct = status;
+=======
+	status = usb_string_ids_tab(cdev, strings_dev);
+	if (status < 0)
+		goto fail1;
+	device_desc.iManufacturer = strings_dev[USB_GADGET_MANUFACTURER_IDX].id;
+	device_desc.iProduct = strings_dev[USB_GADGET_PRODUCT_IDX].id;
+>>>>>>> refs/remotes/origin/master
 
 	/* register our configuration */
 	status = usb_add_config(cdev, &cdc_config_driver, cdc_do_config);
 	if (status < 0)
 		goto fail1;
 
+<<<<<<< HEAD
+=======
+	usb_composite_overwrite_options(cdev, &coverwrite);
+>>>>>>> refs/remotes/origin/master
 	dev_info(&gadget->dev, "%s, version: " DRIVER_VERSION "\n",
 			DRIVER_DESC);
 
 	return 0;
 
 fail1:
+<<<<<<< HEAD
 	gserial_cleanup();
 fail0:
 	gether_cleanup();
+=======
+	usb_put_function_instance(fi_serial);
+fail:
+	usb_put_function_instance(fi_ecm);
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
 static int __exit cdc_unbind(struct usb_composite_dev *cdev)
 {
+<<<<<<< HEAD
 	gserial_cleanup();
 	gether_cleanup();
 	return 0;
@@ -244,6 +360,27 @@ static struct usb_composite_driver cdc_driver = {
 	.name		= "g_cdc",
 	.dev		= &device_desc,
 	.strings	= dev_strings,
+<<<<<<< HEAD
+=======
+	.max_speed	= USB_SPEED_HIGH,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_put_function(f_acm);
+	usb_put_function_instance(fi_serial);
+	if (!IS_ERR_OR_NULL(f_ecm))
+		usb_put_function(f_ecm);
+	if (!IS_ERR_OR_NULL(fi_ecm))
+		usb_put_function_instance(fi_ecm);
+	return 0;
+}
+
+static __refdata struct usb_composite_driver cdc_driver = {
+	.name		= "g_cdc",
+	.dev		= &device_desc,
+	.strings	= dev_strings,
+	.max_speed	= USB_SPEED_HIGH,
+	.bind		= cdc_bind,
+>>>>>>> refs/remotes/origin/master
 	.unbind		= __exit_p(cdc_unbind),
 };
 
@@ -253,7 +390,11 @@ MODULE_LICENSE("GPL");
 
 static int __init init(void)
 {
+<<<<<<< HEAD
 	return usb_composite_probe(&cdc_driver, cdc_bind);
+=======
+	return usb_composite_probe(&cdc_driver);
+>>>>>>> refs/remotes/origin/master
 }
 module_init(init);
 

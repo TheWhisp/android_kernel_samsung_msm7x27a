@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: exstoren - AML Interpreter object store support,
@@ -7,7 +10,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +72,11 @@ ACPI_MODULE_NAME("exstoren")
  *
  * RETURN:      Status, resolved object in source_desc_ptr.
  *
+<<<<<<< HEAD
  * DESCRIPTION: Resolve an object.  If the object is a reference, dereference
+=======
+ * DESCRIPTION: Resolve an object. If the object is a reference, dereference
+>>>>>>> refs/remotes/origin/master
  *              it and return the actual object in the source_desc_ptr.
  *
  ******************************************************************************/
@@ -86,6 +101,7 @@ acpi_ex_resolve_object(union acpi_operand_object **source_desc_ptr,
 		 * These cases all require only Integers or values that
 		 * can be converted to Integers (Strings or Buffers)
 		 */
+<<<<<<< HEAD
 
 	case ACPI_TYPE_INTEGER:
 	case ACPI_TYPE_STRING:
@@ -94,6 +110,14 @@ acpi_ex_resolve_object(union acpi_operand_object **source_desc_ptr,
 		/*
 		 * Stores into a Field/Region or into a Integer/Buffer/String
 		 * are all essentially the same.  This case handles the
+=======
+	case ACPI_TYPE_INTEGER:
+	case ACPI_TYPE_STRING:
+	case ACPI_TYPE_BUFFER:
+		/*
+		 * Stores into a Field/Region or into a Integer/Buffer/String
+		 * are all essentially the same. This case handles the
+>>>>>>> refs/remotes/origin/master
 		 * "interchangeable" types Integer, String, and Buffer.
 		 */
 		if (source_desc->common.type == ACPI_TYPE_LOCAL_REFERENCE) {
@@ -134,7 +158,10 @@ acpi_ex_resolve_object(union acpi_operand_object **source_desc_ptr,
 
 	case ACPI_TYPE_LOCAL_ALIAS:
 	case ACPI_TYPE_LOCAL_METHOD_ALIAS:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * All aliases should have been resolved earlier, during the
 		 * operand resolution phase.
@@ -145,7 +172,10 @@ acpi_ex_resolve_object(union acpi_operand_object **source_desc_ptr,
 
 	case ACPI_TYPE_PACKAGE:
 	default:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * All other types than Alias and the various Fields come here,
 		 * including the untyped case - ACPI_TYPE_ANY.
@@ -167,7 +197,11 @@ acpi_ex_resolve_object(union acpi_operand_object **source_desc_ptr,
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: "Store" an object to another object.  This may include
+=======
+ * DESCRIPTION: "Store" an object to another object. This may include
+>>>>>>> refs/remotes/origin/master
  *              converting the source type to the target type (implicit
  *              conversion), and a copy of the value of the source to
  *              the target.
@@ -178,14 +212,22 @@ acpi_ex_resolve_object(union acpi_operand_object **source_desc_ptr,
  *              with the input value.
  *
  *              When storing into an object the data is converted to the
+<<<<<<< HEAD
  *              target object type then stored in the object.  This means
+=======
+ *              target object type then stored in the object. This means
+>>>>>>> refs/remotes/origin/master
  *              that the target object type (for an initialized target) will
  *              not be changed by a store operation.
  *
  *              This module allows destination types of Number, String,
  *              Buffer, and Package.
  *
+<<<<<<< HEAD
  *              Assumes parameters are already validated.  NOTE: source_desc
+=======
+ *              Assumes parameters are already validated. NOTE: source_desc
+>>>>>>> refs/remotes/origin/master
  *              resolution (from a reference object) must be performed by
  *              the caller if necessary.
  *
@@ -254,7 +296,11 @@ acpi_ex_store_object_to_object(union acpi_operand_object *source_desc,
 
 		/* Truncate value if we are executing from a 32-bit ACPI table */
 
+<<<<<<< HEAD
 		acpi_ex_truncate_for32bit_table(dest_desc);
+=======
+		(void)acpi_ex_truncate_for32bit_table(dest_desc);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case ACPI_TYPE_STRING:

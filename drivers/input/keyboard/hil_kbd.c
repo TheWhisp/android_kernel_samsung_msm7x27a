@@ -583,6 +583,7 @@ static struct serio_driver hil_serio_drv = {
 	.interrupt	= hil_dev_interrupt
 };
 
+<<<<<<< HEAD
 static int __init hil_dev_init(void)
 {
 	return serio_register_driver(&hil_serio_drv);
@@ -595,3 +596,6 @@ static void __exit hil_dev_exit(void)
 
 module_init(hil_dev_init);
 module_exit(hil_dev_exit);
+=======
+module_serio_driver(hil_serio_drv);
+>>>>>>> refs/remotes/origin/master

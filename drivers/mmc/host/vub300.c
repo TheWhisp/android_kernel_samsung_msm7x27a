@@ -223,25 +223,61 @@ enum SD_RESPONSE_TYPE {
 #define FUN(c) (0x000007 & (c->arg>>28))
 #define REG(c) (0x01FFFF & (c->arg>>9))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int limit_speed_to_24_MHz;
 module_param(limit_speed_to_24_MHz, bool, 0644);
 MODULE_PARM_DESC(limit_speed_to_24_MHz, "Limit Max SDIO Clock Speed to 24 MHz");
 
 static int pad_input_to_usb_pkt;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static bool limit_speed_to_24_MHz;
+module_param(limit_speed_to_24_MHz, bool, 0644);
+MODULE_PARM_DESC(limit_speed_to_24_MHz, "Limit Max SDIO Clock Speed to 24 MHz");
+
+static bool pad_input_to_usb_pkt;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(pad_input_to_usb_pkt, bool, 0644);
 MODULE_PARM_DESC(pad_input_to_usb_pkt,
 		 "Pad USB data input transfers to whole USB Packet");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int disable_offload_processing;
 module_param(disable_offload_processing, bool, 0644);
 MODULE_PARM_DESC(disable_offload_processing, "Disable Offload Processing");
 
 static int force_1_bit_data_xfers;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static bool disable_offload_processing;
+module_param(disable_offload_processing, bool, 0644);
+MODULE_PARM_DESC(disable_offload_processing, "Disable Offload Processing");
+
+static bool force_1_bit_data_xfers;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(force_1_bit_data_xfers, bool, 0644);
 MODULE_PARM_DESC(force_1_bit_data_xfers,
 		 "Force SDIO Data Transfers to 1-bit Mode");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int force_polling_for_irqs;
+=======
+static bool force_polling_for_irqs;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool force_polling_for_irqs;
+>>>>>>> refs/remotes/origin/master
 module_param(force_polling_for_irqs, bool, 0644);
 MODULE_PARM_DESC(force_polling_for_irqs, "Force Polling for SDIO interrupts");
 
@@ -806,7 +842,11 @@ static void command_res_completed(struct urb *urb)
 		 * we suspect a buggy USB host controller
 		 */
 	} else if (!vub300->data) {
+<<<<<<< HEAD
 		/* this means that the command (typically CMD52) suceeded */
+=======
+		/* this means that the command (typically CMD52) succeeded */
+>>>>>>> refs/remotes/origin/master
 	} else if (vub300->resp.common.header_type != 0x02) {
 		/*
 		 * this is an error response from the VUB300 chip
@@ -1625,8 +1665,18 @@ static void __vub300_command_response(struct vub300_mmc_host *vub300,
 		cmd->error = respretval;
 	} else if (cmd->error) {
 		/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * the error occured sending the command
 		 * or recieving the response
+=======
+		 * the error occurred sending the command
+		 * or receiving the response
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * the error occurred sending the command
+		 * or receiving the response
+>>>>>>> refs/remotes/origin/master
 		 */
 	} else if (vub300->command_out_urb->status) {
 		vub300->usb_transport_fail = vub300->command_out_urb->status;
@@ -2079,7 +2129,11 @@ static void vub300_enable_sdio_irq(struct mmc_host *mmc, int enable)
 	kref_put(&vub300->kref, vub300_delete);
 }
 
+<<<<<<< HEAD
 void vub300_init_card(struct mmc_host *mmc, struct mmc_card *card)
+=======
+static void vub300_init_card(struct mmc_host *mmc, struct mmc_card *card)
+>>>>>>> refs/remotes/origin/master
 {				/* NOT irq */
 	struct vub300_mmc_host *vub300 = mmc_priv(mmc);
 	dev_info(&vub300->udev->dev, "NO host QUIRKS for this card\n");
@@ -2358,10 +2412,18 @@ error5:
 	 * which is contained at the end of struct mmc
 	 */
 error4:
+<<<<<<< HEAD
 	usb_free_urb(command_out_urb);
 error1:
 	usb_free_urb(command_res_urb);
 error0:
+=======
+	usb_free_urb(command_res_urb);
+error1:
+	usb_free_urb(command_out_urb);
+error0:
+	usb_put_dev(udev);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -2391,6 +2453,7 @@ static void vub300_disconnect(struct usb_interface *interface)
 #ifdef CONFIG_PM
 static int vub300_suspend(struct usb_interface *intf, pm_message_t message)
 {
+<<<<<<< HEAD
 	struct vub300_mmc_host *vub300 = usb_get_intfdata(intf);
 	if (!vub300 || !vub300->mmc) {
 		return 0;
@@ -2399,10 +2462,14 @@ static int vub300_suspend(struct usb_interface *intf, pm_message_t message)
 		mmc_suspend_host(mmc);
 		return 0;
 	}
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vub300_resume(struct usb_interface *intf)
 {
+<<<<<<< HEAD
 	struct vub300_mmc_host *vub300 = usb_get_intfdata(intf);
 	if (!vub300 || !vub300->mmc) {
 		return 0;
@@ -2411,6 +2478,9 @@ static int vub300_resume(struct usb_interface *intf)
 		mmc_resume_host(mmc);
 		return 0;
 	}
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 #else
 #define vub300_suspend NULL

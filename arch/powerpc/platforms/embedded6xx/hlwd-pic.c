@@ -18,6 +18,11 @@
 #include <linux/init.h>
 #include <linux/irq.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include "hlwd-pic.h"
@@ -89,9 +94,21 @@ static struct irq_chip hlwd_pic = {
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host *hlwd_irq_host;
 
 static int hlwd_pic_map(struct irq_host *h, unsigned int virq,
+=======
+static struct irq_domain *hlwd_irq_host;
+
+static int hlwd_pic_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct irq_domain *hlwd_irq_host;
+
+static int hlwd_pic_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			   irq_hw_number_t hwirq)
 {
 	irq_set_chip_data(virq, h->host_data);
@@ -100,11 +117,25 @@ static int hlwd_pic_map(struct irq_host *h, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host_ops hlwd_irq_host_ops = {
 	.map = hlwd_pic_map,
 };
 
 static unsigned int __hlwd_pic_get_irq(struct irq_host *h)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct irq_domain_ops hlwd_irq_domain_ops = {
+	.map = hlwd_pic_map,
+};
+
+static unsigned int __hlwd_pic_get_irq(struct irq_domain *h)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *io_base = h->host_data;
 	int irq;
@@ -123,14 +154,30 @@ static void hlwd_pic_irq_cascade(unsigned int cascade_virq,
 				      struct irq_desc *desc)
 {
 	struct irq_chip *chip = irq_desc_get_chip(desc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct irq_host *irq_host = irq_get_handler_data(cascade_virq);
+=======
+	struct irq_domain *irq_domain = irq_get_handler_data(cascade_virq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_domain *irq_domain = irq_get_handler_data(cascade_virq);
+>>>>>>> refs/remotes/origin/master
 	unsigned int virq;
 
 	raw_spin_lock(&desc->lock);
 	chip->irq_mask(&desc->irq_data); /* IRQ_LEVEL */
 	raw_spin_unlock(&desc->lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	virq = __hlwd_pic_get_irq(irq_host);
+=======
+	virq = __hlwd_pic_get_irq(irq_domain);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	virq = __hlwd_pic_get_irq(irq_domain);
+>>>>>>> refs/remotes/origin/master
 	if (virq != NO_IRQ)
 		generic_handle_irq(virq);
 	else
@@ -155,9 +202,21 @@ static void __hlwd_quiesce(void __iomem *io_base)
 	out_be32(io_base + HW_BROADWAY_ICR, 0xffffffff);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct irq_host *hlwd_pic_init(struct device_node *np)
 {
 	struct irq_host *irq_host;
+=======
+struct irq_domain *hlwd_pic_init(struct device_node *np)
+{
+	struct irq_domain *irq_domain;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct irq_domain *hlwd_pic_init(struct device_node *np)
+{
+	struct irq_domain *irq_domain;
+>>>>>>> refs/remotes/origin/master
 	struct resource res;
 	void __iomem *io_base;
 	int retval;
@@ -177,6 +236,8 @@ struct irq_host *hlwd_pic_init(struct device_node *np)
 
 	__hlwd_quiesce(io_base);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	irq_host = irq_alloc_host(np, IRQ_HOST_MAP_LINEAR, HLWD_NR_IRQS,
 				  &hlwd_irq_host_ops, -1);
 	if (!irq_host) {
@@ -186,6 +247,25 @@ struct irq_host *hlwd_pic_init(struct device_node *np)
 	irq_host->host_data = io_base;
 
 	return irq_host;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	irq_domain = irq_domain_add_linear(np, HLWD_NR_IRQS,
+					   &hlwd_irq_domain_ops, io_base);
+	if (!irq_domain) {
+		pr_err("failed to allocate irq_domain\n");
+<<<<<<< HEAD
+=======
+		iounmap(io_base);
+>>>>>>> refs/remotes/origin/master
+		return NULL;
+	}
+
+	return irq_domain;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned int hlwd_pic_get_irq(void)
@@ -200,7 +280,15 @@ unsigned int hlwd_pic_get_irq(void)
 
 void hlwd_pic_probe(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct irq_host *host;
+=======
+	struct irq_domain *host;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_domain *host;
+>>>>>>> refs/remotes/origin/master
 	struct device_node *np;
 	const u32 *interrupts;
 	int cascade_virq;

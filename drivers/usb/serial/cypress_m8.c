@@ -16,6 +16,8 @@
  *
  * See http://geocities.com/i0xox0i for information on this driver and the
  * earthmate usb device.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  *  Lonnie Mendez <dignome@gmail.com>
  *  4-29-2005
@@ -42,6 +44,10 @@
  *  10-2003
  *	Driver first released.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /* Thanks to Neil Whelchel for writing the first cypress m8 implementation
@@ -53,7 +59,10 @@
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -72,15 +81,29 @@
 #include "cypress_m8.h"
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug;
 static int stats;
 static int interval;
 static int unstable_bauds;
+=======
+static bool debug;
+static bool stats;
+static int interval;
+static bool unstable_bauds;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Version Information
  */
 #define DRIVER_VERSION "v1.10"
+=======
+static bool stats;
+static int interval;
+static bool unstable_bauds;
+
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_AUTHOR "Lonnie Mendez <dignome@gmail.com>, Neil Whelchel <koyama@firstlight.net>"
 #define DRIVER_DESC "Cypress USB to Serial Driver"
 
@@ -117,14 +140,20 @@ static const struct usb_device_id id_table_combined[] = {
 
 MODULE_DEVICE_TABLE(usb, id_table_combined);
 
+<<<<<<< HEAD
 static struct usb_driver cypress_driver = {
 	.name =		"cypress",
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum packet_format {
 	packet_format_1,  /* b0:status, b1:payload count */
 	packet_format_2   /* b0[7:3]:status, b0[2:0]:payload count */
@@ -152,18 +181,29 @@ struct cypress_private {
 	int baud_rate;			   /* stores current baud rate in
 					      integer form */
 	int isthrottled;		   /* if throttled, discard reads */
+<<<<<<< HEAD
 	wait_queue_head_t delta_msr_wait;  /* used for TIOCMIWAIT */
 	char prev_status, diff_status;	   /* used for TIOCMIWAIT */
+=======
+	char prev_status;		   /* used for TIOCMIWAIT */
+>>>>>>> refs/remotes/origin/master
 	/* we pass a pointer to this as the argument sent to
 	   cypress_set_termios old_termios */
 	struct ktermios tmp_termios; 	   /* stores the old termios settings */
 };
 
 /* function prototypes for the Cypress USB to serial device */
+<<<<<<< HEAD
 static int  cypress_earthmate_startup(struct usb_serial *serial);
 static int  cypress_hidcom_startup(struct usb_serial *serial);
 static int  cypress_ca42v2_startup(struct usb_serial *serial);
 static void cypress_release(struct usb_serial *serial);
+=======
+static int  cypress_earthmate_port_probe(struct usb_serial_port *port);
+static int  cypress_hidcom_port_probe(struct usb_serial_port *port);
+static int  cypress_ca42v2_port_probe(struct usb_serial_port *port);
+static int  cypress_port_remove(struct usb_serial_port *port);
+>>>>>>> refs/remotes/origin/master
 static int  cypress_open(struct tty_struct *tty, struct usb_serial_port *port);
 static void cypress_close(struct usb_serial_port *port);
 static void cypress_dtr_rts(struct usb_serial_port *port, int on);
@@ -171,8 +211,11 @@ static int  cypress_write(struct tty_struct *tty, struct usb_serial_port *port,
 			const unsigned char *buf, int count);
 static void cypress_send(struct usb_serial_port *port);
 static int  cypress_write_room(struct tty_struct *tty);
+<<<<<<< HEAD
 static int  cypress_ioctl(struct tty_struct *tty,
 			unsigned int cmd, unsigned long arg);
+=======
+>>>>>>> refs/remotes/origin/master
 static void cypress_set_termios(struct tty_struct *tty,
 			struct usb_serial_port *port, struct ktermios *old);
 static int  cypress_tiocmget(struct tty_struct *tty);
@@ -191,20 +234,37 @@ static struct usb_serial_driver cypress_earthmate_device = {
 		.name =			"earthmate",
 	},
 	.description =			"DeLorme Earthmate USB",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver = 			&cypress_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =			id_table_earthmate,
 	.num_ports =			1,
 	.attach =			cypress_earthmate_startup,
 	.release =			cypress_release,
+=======
+	.id_table =			id_table_earthmate,
+	.num_ports =			1,
+	.port_probe =			cypress_earthmate_port_probe,
+	.port_remove =			cypress_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.open =				cypress_open,
 	.close =			cypress_close,
 	.dtr_rts =			cypress_dtr_rts,
 	.write =			cypress_write,
 	.write_room =			cypress_write_room,
+<<<<<<< HEAD
 	.ioctl =			cypress_ioctl,
 	.set_termios =			cypress_set_termios,
 	.tiocmget =			cypress_tiocmget,
 	.tiocmset =			cypress_tiocmset,
+=======
+	.set_termios =			cypress_set_termios,
+	.tiocmget =			cypress_tiocmget,
+	.tiocmset =			cypress_tiocmset,
+	.tiocmiwait =			usb_serial_generic_tiocmiwait,
+>>>>>>> refs/remotes/origin/master
 	.chars_in_buffer =		cypress_chars_in_buffer,
 	.throttle =		 	cypress_throttle,
 	.unthrottle =			cypress_unthrottle,
@@ -218,20 +278,37 @@ static struct usb_serial_driver cypress_hidcom_device = {
 		.name =			"cyphidcom",
 	},
 	.description =			"HID->COM RS232 Adapter",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver = 			&cypress_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =			id_table_cyphidcomrs232,
 	.num_ports =			1,
 	.attach =			cypress_hidcom_startup,
 	.release =			cypress_release,
+=======
+	.id_table =			id_table_cyphidcomrs232,
+	.num_ports =			1,
+	.port_probe =			cypress_hidcom_port_probe,
+	.port_remove =			cypress_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.open =				cypress_open,
 	.close =			cypress_close,
 	.dtr_rts =			cypress_dtr_rts,
 	.write =			cypress_write,
 	.write_room =			cypress_write_room,
+<<<<<<< HEAD
 	.ioctl =			cypress_ioctl,
 	.set_termios =			cypress_set_termios,
 	.tiocmget =			cypress_tiocmget,
 	.tiocmset =			cypress_tiocmset,
+=======
+	.set_termios =			cypress_set_termios,
+	.tiocmget =			cypress_tiocmget,
+	.tiocmset =			cypress_tiocmset,
+	.tiocmiwait =			usb_serial_generic_tiocmiwait,
+>>>>>>> refs/remotes/origin/master
 	.chars_in_buffer =		cypress_chars_in_buffer,
 	.throttle =			cypress_throttle,
 	.unthrottle =			cypress_unthrottle,
@@ -245,20 +322,37 @@ static struct usb_serial_driver cypress_ca42v2_device = {
 		.name =			"nokiaca42v2",
 	},
 	.description =			"Nokia CA-42 V2 Adapter",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver = 			&cypress_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =			id_table_nokiaca42v2,
 	.num_ports =			1,
 	.attach =			cypress_ca42v2_startup,
 	.release =			cypress_release,
+=======
+	.id_table =			id_table_nokiaca42v2,
+	.num_ports =			1,
+	.port_probe =			cypress_ca42v2_port_probe,
+	.port_remove =			cypress_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.open =				cypress_open,
 	.close =			cypress_close,
 	.dtr_rts =			cypress_dtr_rts,
 	.write =			cypress_write,
 	.write_room =			cypress_write_room,
+<<<<<<< HEAD
 	.ioctl =			cypress_ioctl,
 	.set_termios =			cypress_set_termios,
 	.tiocmget =			cypress_tiocmget,
 	.tiocmset =			cypress_tiocmset,
+=======
+	.set_termios =			cypress_set_termios,
+	.tiocmget =			cypress_tiocmget,
+	.tiocmset =			cypress_tiocmset,
+	.tiocmiwait =			usb_serial_generic_tiocmiwait,
+>>>>>>> refs/remotes/origin/master
 	.chars_in_buffer =		cypress_chars_in_buffer,
 	.throttle =			cypress_throttle,
 	.unthrottle =			cypress_unthrottle,
@@ -266,6 +360,20 @@ static struct usb_serial_driver cypress_ca42v2_device = {
 	.write_int_callback =		cypress_write_int_callback,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct usb_serial_driver * const serial_drivers[] = {
+	&cypress_earthmate_device, &cypress_hidcom_device,
+	&cypress_ca42v2_device, NULL
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*****************************************************************************
  * Cypress serial helper functions
  *****************************************************************************/
@@ -307,8 +415,14 @@ static int analyze_baud_rate(struct usb_serial_port *port, speed_t new_rate)
 		 * safest speed for a part like that.
 		 */
 		if (new_rate > 4800) {
+<<<<<<< HEAD
 			dbg("%s - failed setting baud rate, device incapable "
 			    "speed %d", __func__, new_rate);
+=======
+			dev_dbg(&port->dev,
+				"%s - failed setting baud rate, device incapable speed %d\n",
+				__func__, new_rate);
+>>>>>>> refs/remotes/origin/master
 			return -1;
 		}
 	}
@@ -318,8 +432,14 @@ static int analyze_baud_rate(struct usb_serial_port *port, speed_t new_rate)
 			/* 300 and 600 baud rates are supported under
 			 * the generic firmware, but are not used with
 			 * NMEA and SiRF protocols */
+<<<<<<< HEAD
 			dbg("%s - failed setting baud rate, unsupported speed "
 			    "of %d on Earthmate GPS", __func__, new_rate);
+=======
+			dev_dbg(&port->dev,
+				"%s - failed setting baud rate, unsupported speed of %d on Earthmate GPS",
+				__func__, new_rate);
+>>>>>>> refs/remotes/origin/master
 			return -1;
 		}
 		break;
@@ -338,12 +458,19 @@ static int cypress_serial_control(struct tty_struct *tty,
 {
 	int new_baudrate = 0, retval = 0, tries = 0;
 	struct cypress_private *priv;
+<<<<<<< HEAD
+=======
+	struct device *dev = &port->dev;
+>>>>>>> refs/remotes/origin/master
 	u8 *feature_buffer;
 	const unsigned int feature_len = 5;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	priv = usb_get_serial_port_data(port);
 
 	if (!priv->comm_is_ok)
@@ -358,6 +485,7 @@ static int cypress_serial_control(struct tty_struct *tty,
 		/* 0 means 'Hang up' so doesn't change the true bit rate */
 		new_baudrate = priv->baud_rate;
 		if (baud_rate && baud_rate != priv->baud_rate) {
+<<<<<<< HEAD
 			dbg("%s - baud rate is changing", __func__);
 			retval = analyze_baud_rate(port, baud_rate);
 			if (retval >= 0) {
@@ -368,6 +496,18 @@ static int cypress_serial_control(struct tty_struct *tty,
 		}
 		dbg("%s - baud rate is being sent as %d",
 					__func__, new_baudrate);
+=======
+			dev_dbg(dev, "%s - baud rate is changing\n", __func__);
+			retval = analyze_baud_rate(port, baud_rate);
+			if (retval >= 0) {
+				new_baudrate = retval;
+				dev_dbg(dev, "%s - New baud rate set to %d\n",
+					__func__, new_baudrate);
+			}
+		}
+		dev_dbg(dev, "%s - baud rate is being sent as %d\n", __func__,
+			new_baudrate);
+>>>>>>> refs/remotes/origin/master
 
 		/* fill the feature_buffer with new configuration */
 		put_unaligned_le32(new_baudrate, feature_buffer);
@@ -379,9 +519,14 @@ static int cypress_serial_control(struct tty_struct *tty,
 		/* 1 bit gap */
 		feature_buffer[4] |= (reset << 7);   /* assign reset at end of byte, 1 bit space */
 
+<<<<<<< HEAD
 		dbg("%s - device is being sent this feature report:",
 								__func__);
 		dbg("%s - %02X - %02X - %02X - %02X - %02X", __func__,
+=======
+		dev_dbg(dev, "%s - device is being sent this feature report:\n", __func__);
+		dev_dbg(dev, "%s - %02X - %02X - %02X - %02X - %02X\n", __func__,
+>>>>>>> refs/remotes/origin/master
 			feature_buffer[0], feature_buffer[1],
 			feature_buffer[2], feature_buffer[3],
 			feature_buffer[4]);
@@ -401,8 +546,13 @@ static int cypress_serial_control(struct tty_struct *tty,
 			 retval != -ENODEV);
 
 		if (retval != feature_len) {
+<<<<<<< HEAD
 			dev_err(&port->dev, "%s - failed sending serial "
 				"line settings - %d\n", __func__, retval);
+=======
+			dev_err(dev, "%s - failed sending serial line settings - %d\n",
+				__func__, retval);
+>>>>>>> refs/remotes/origin/master
 			cypress_set_dead(port);
 		} else {
 			spin_lock_irqsave(&priv->lock, flags);
@@ -423,7 +573,11 @@ static int cypress_serial_control(struct tty_struct *tty,
 			retval = -ENOTTY;
 			goto out;
 		}
+<<<<<<< HEAD
 		dbg("%s - retreiving serial line settings", __func__);
+=======
+		dev_dbg(dev, "%s - retreiving serial line settings\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		do {
 			retval = usb_control_msg(port->serial->dev,
 					usb_rcvctrlpipe(port->serial->dev, 0),
@@ -438,8 +592,13 @@ static int cypress_serial_control(struct tty_struct *tty,
 						&& retval != -ENODEV);
 
 		if (retval != feature_len) {
+<<<<<<< HEAD
 			dev_err(&port->dev, "%s - failed to retrieve serial "
 				"line settings - %d\n", __func__, retval);
+=======
+			dev_err(dev, "%s - failed to retrieve serial line settings - %d\n",
+				__func__, retval);
+>>>>>>> refs/remotes/origin/master
 			cypress_set_dead(port);
 			goto out;
 		} else {
@@ -474,7 +633,11 @@ static void cypress_set_dead(struct usb_serial_port *port)
 	spin_unlock_irqrestore(&priv->lock, flags);
 
 	dev_err(&port->dev, "cypress_m8 suspending failing port %d - "
+<<<<<<< HEAD
 		"interval might be too short\n", port->number);
+=======
+		"interval might be too short\n", port->port_number);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -483,12 +646,19 @@ static void cypress_set_dead(struct usb_serial_port *port)
  *****************************************************************************/
 
 
+<<<<<<< HEAD
 static int generic_startup(struct usb_serial *serial)
 {
 	struct cypress_private *priv;
 	struct usb_serial_port *port = serial->port[0];
 
 	dbg("%s - port %d", __func__, port->number);
+=======
+static int cypress_generic_port_probe(struct usb_serial_port *port)
+{
+	struct usb_serial *serial = port->serial;
+	struct cypress_private *priv;
+>>>>>>> refs/remotes/origin/master
 
 	priv = kzalloc(sizeof(struct cypress_private), GFP_KERNEL);
 	if (!priv)
@@ -500,7 +670,10 @@ static int generic_startup(struct usb_serial *serial)
 		kfree(priv);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	init_waitqueue_head(&priv->delta_msr_wait);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Skip reset for FRWD device. It is a workaound:
 	   device hangs if it receives SET_CONFIGURE in Configured
@@ -526,6 +699,7 @@ static int generic_startup(struct usb_serial *serial)
 	if (interval > 0) {
 		priv->write_urb_interval = interval;
 		priv->read_urb_interval = interval;
+<<<<<<< HEAD
 		dbg("%s - port %d read & write intervals forced to %d",
 		    __func__, port->number, interval);
 	} else {
@@ -537,10 +711,26 @@ static int generic_startup(struct usb_serial *serial)
 	}
 	usb_set_serial_port_data(port, priv);
 
+=======
+		dev_dbg(&port->dev, "%s - read & write intervals forced to %d\n",
+			__func__, interval);
+	} else {
+		priv->write_urb_interval = port->interrupt_out_urb->interval;
+		priv->read_urb_interval = port->interrupt_in_urb->interval;
+		dev_dbg(&port->dev, "%s - intervals: read=%d write=%d\n",
+			__func__, priv->read_urb_interval,
+			priv->write_urb_interval);
+	}
+	usb_set_serial_port_data(port, priv);
+
+	port->port.drain_delay = 256;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 
+<<<<<<< HEAD
 static int cypress_earthmate_startup(struct usb_serial *serial)
 {
 	struct cypress_private *priv;
@@ -552,6 +742,18 @@ static int cypress_earthmate_startup(struct usb_serial *serial)
 		dbg("%s - Failed setting up port %d", __func__,
 				port->number);
 		return 1;
+=======
+static int cypress_earthmate_port_probe(struct usb_serial_port *port)
+{
+	struct usb_serial *serial = port->serial;
+	struct cypress_private *priv;
+	int ret;
+
+	ret = cypress_generic_port_probe(port);
+	if (ret) {
+		dev_dbg(&port->dev, "%s - Failed setting up port\n", __func__);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	priv = usb_get_serial_port_data(port);
@@ -565,12 +767,19 @@ static int cypress_earthmate_startup(struct usb_serial *serial)
 		   handle GET_CONFIG requests; everything they've
 		   produced since that time crashes if this command is
 		   attempted :-( */
+<<<<<<< HEAD
 		dbg("%s - Marking this device as unsafe for GET_CONFIG "
 		    "commands", __func__);
+=======
+		dev_dbg(&port->dev,
+			"%s - Marking this device as unsafe for GET_CONFIG commands\n",
+			__func__);
+>>>>>>> refs/remotes/origin/master
 		priv->get_cfg_unsafe = !0;
 	}
 
 	return 0;
+<<<<<<< HEAD
 } /* cypress_earthmate_startup */
 
 
@@ -629,6 +838,56 @@ static void cypress_release(struct usb_serial *serial)
 }
 
 
+=======
+}
+
+static int cypress_hidcom_port_probe(struct usb_serial_port *port)
+{
+	struct cypress_private *priv;
+	int ret;
+
+	ret = cypress_generic_port_probe(port);
+	if (ret) {
+		dev_dbg(&port->dev, "%s - Failed setting up port\n", __func__);
+		return ret;
+	}
+
+	priv = usb_get_serial_port_data(port);
+	priv->chiptype = CT_CYPHIDCOM;
+
+	return 0;
+}
+
+static int cypress_ca42v2_port_probe(struct usb_serial_port *port)
+{
+	struct cypress_private *priv;
+	int ret;
+
+	ret = cypress_generic_port_probe(port);
+	if (ret) {
+		dev_dbg(&port->dev, "%s - Failed setting up port\n", __func__);
+		return ret;
+	}
+
+	priv = usb_get_serial_port_data(port);
+	priv->chiptype = CT_CA42V2;
+
+	return 0;
+}
+
+static int cypress_port_remove(struct usb_serial_port *port)
+{
+	struct cypress_private *priv;
+
+	priv = usb_get_serial_port_data(port);
+
+	kfifo_free(&priv->write_fifo);
+	kfree(priv);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int cypress_open(struct tty_struct *tty, struct usb_serial_port *port)
 {
 	struct cypress_private *priv = usb_get_serial_port_data(port);
@@ -636,8 +895,11 @@ static int cypress_open(struct tty_struct *tty, struct usb_serial_port *port)
 	unsigned long flags;
 	int result = 0;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!priv->comm_is_ok)
 		return -EIO;
 
@@ -679,7 +941,11 @@ static int cypress_open(struct tty_struct *tty, struct usb_serial_port *port)
 							__func__, result);
 		cypress_set_dead(port);
 	}
+<<<<<<< HEAD
 	port->port.drain_delay = 256;
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return result;
 } /* cypress_open */
 
@@ -702,6 +968,7 @@ static void cypress_close(struct usb_serial_port *port)
 	struct cypress_private *priv = usb_get_serial_port_data(port);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
 	/* writing is potentially harmful, lock must be taken */
@@ -710,18 +977,27 @@ static void cypress_close(struct usb_serial_port *port)
 		mutex_unlock(&port->serial->disc_mutex);
 		return;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	kfifo_reset_out(&priv->write_fifo);
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
 	dbg("%s - stopping urbs", __func__);
+=======
+	dev_dbg(&port->dev, "%s - stopping urbs\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	usb_kill_urb(port->interrupt_in_urb);
 	usb_kill_urb(port->interrupt_out_urb);
 
 	if (stats)
 		dev_info(&port->dev, "Statistics: %d Bytes In | %d Bytes Out | %d Commands Issued\n",
 			priv->bytes_in, priv->bytes_out, priv->cmd_count);
+<<<<<<< HEAD
 	mutex_unlock(&port->serial->disc_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 } /* cypress_close */
 
 
@@ -730,7 +1006,11 @@ static int cypress_write(struct tty_struct *tty, struct usb_serial_port *port,
 {
 	struct cypress_private *priv = usb_get_serial_port_data(port);
 
+<<<<<<< HEAD
 	dbg("%s - port %d, %d bytes", __func__, port->number, count);
+=======
+	dev_dbg(&port->dev, "%s - %d bytes\n", __func__, count);
+>>>>>>> refs/remotes/origin/master
 
 	/* line control commands, which need to be executed immediately,
 	   are not put into the buffer for obvious reasons.
@@ -756,11 +1036,16 @@ static void cypress_send(struct usb_serial_port *port)
 {
 	int count = 0, result, offset, actual_size;
 	struct cypress_private *priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
+=======
+	struct device *dev = &port->dev;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (!priv->comm_is_ok)
 		return;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 	dbg("%s - interrupt out size is %d", __func__,
 						port->interrupt_out_size);
@@ -768,6 +1053,14 @@ static void cypress_send(struct usb_serial_port *port)
 	spin_lock_irqsave(&priv->lock, flags);
 	if (priv->write_urb_in_use) {
 		dbg("%s - can't write, urb in use", __func__);
+=======
+	dev_dbg(dev, "%s - interrupt out size is %d\n", __func__,
+		port->interrupt_out_size);
+
+	spin_lock_irqsave(&priv->lock, flags);
+	if (priv->write_urb_in_use) {
+		dev_dbg(dev, "%s - can't write, urb in use\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&priv->lock, flags);
 		return;
 	}
@@ -797,7 +1090,11 @@ static void cypress_send(struct usb_serial_port *port)
 
 	if (priv->cmd_ctrl) {
 		priv->cmd_count++;
+<<<<<<< HEAD
 		dbg("%s - line control command being issued", __func__);
+=======
+		dev_dbg(dev, "%s - line control command being issued\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&priv->lock, flags);
 		goto send;
 	} else
@@ -819,7 +1116,11 @@ static void cypress_send(struct usb_serial_port *port)
 		port->interrupt_out_buffer[0] |= count;
 	}
 
+<<<<<<< HEAD
 	dbg("%s - count is %d", __func__, count);
+=======
+	dev_dbg(dev, "%s - count is %d\n", __func__, count);
+>>>>>>> refs/remotes/origin/master
 
 send:
 	spin_lock_irqsave(&priv->lock, flags);
@@ -832,9 +1133,14 @@ send:
 		actual_size = count +
 			      (priv->pkt_fmt == packet_format_1 ? 2 : 1);
 
+<<<<<<< HEAD
 	usb_serial_debug_data(debug, &port->dev, __func__,
 		port->interrupt_out_size,
 		port->interrupt_out_urb->transfer_buffer);
+=======
+	usb_serial_debug_data(dev, __func__, port->interrupt_out_size,
+			      port->interrupt_out_urb->transfer_buffer);
+>>>>>>> refs/remotes/origin/master
 
 	usb_fill_int_urb(port->interrupt_out_urb, port->serial->dev,
 		usb_sndintpipe(port->serial->dev, port->interrupt_out_endpointAddress),
@@ -842,7 +1148,15 @@ send:
 		cypress_write_int_callback, port, priv->write_urb_interval);
 	result = usb_submit_urb(port->interrupt_out_urb, GFP_ATOMIC);
 	if (result) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&port->dev,
+=======
+		dev_err_console(port,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err_console(port,
+>>>>>>> refs/remotes/origin/master
 				"%s - failed submitting write urb, error %d\n",
 							__func__, result);
 		priv->write_urb_in_use = 0;
@@ -869,13 +1183,20 @@ static int cypress_write_room(struct tty_struct *tty)
 	int room = 0;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	room = kfifo_avail(&priv->write_fifo);
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
 	dbg("%s - returns %d", __func__, room);
+=======
+	dev_dbg(&port->dev, "%s - returns %d\n", __func__, room);
+>>>>>>> refs/remotes/origin/master
 	return room;
 }
 
@@ -888,8 +1209,11 @@ static int cypress_tiocmget(struct tty_struct *tty)
 	unsigned int result = 0;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	control = priv->line_control;
 	status = priv->current_status;
@@ -902,7 +1226,11 @@ static int cypress_tiocmget(struct tty_struct *tty)
 		| ((status & UART_RI)         ? TIOCM_RI  : 0)
 		| ((status & UART_CD)         ? TIOCM_CD  : 0);
 
+<<<<<<< HEAD
 	dbg("%s - result = %x", __func__, result);
+=======
+	dev_dbg(&port->dev, "%s - result = %x\n", __func__, result);
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
@@ -915,8 +1243,11 @@ static int cypress_tiocmset(struct tty_struct *tty,
 	struct cypress_private *priv = usb_get_serial_port_data(port);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	if (set & TIOCM_RTS)
 		priv->line_control |= CONTROL_RTS;
@@ -932,6 +1263,7 @@ static int cypress_tiocmset(struct tty_struct *tty,
 	return cypress_write(tty, port, NULL, 0);
 }
 
+<<<<<<< HEAD
 
 static int cypress_ioctl(struct tty_struct *tty,
 					unsigned int cmd, unsigned long arg)
@@ -979,23 +1311,33 @@ static int cypress_ioctl(struct tty_struct *tty,
 } /* cypress_ioctl */
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void cypress_set_termios(struct tty_struct *tty,
 	struct usb_serial_port *port, struct ktermios *old_termios)
 {
 	struct cypress_private *priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
+=======
+	struct device *dev = &port->dev;
+>>>>>>> refs/remotes/origin/master
 	int data_bits, stop_bits, parity_type, parity_enable;
 	unsigned cflag, iflag;
 	unsigned long flags;
 	__u8 oldlines;
 	int linechange = 0;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	/* We can't clean this one up as we don't know the device type
 	   early enough */
 	if (!priv->termios_initialized) {
 		if (priv->chiptype == CT_EARTHMATE) {
+<<<<<<< HEAD
 			*(tty->termios) = tty_std_termios;
 			tty->termios->c_cflag = B4800 | CS8 | CREAD | HUPCL |
 				CLOCAL;
@@ -1013,21 +1355,51 @@ static void cypress_set_termios(struct tty_struct *tty,
 				CLOCAL;
 			tty->termios->c_ispeed = 9600;
 			tty->termios->c_ospeed = 9600;
+=======
+			tty->termios = tty_std_termios;
+			tty->termios.c_cflag = B4800 | CS8 | CREAD | HUPCL |
+				CLOCAL;
+			tty->termios.c_ispeed = 4800;
+			tty->termios.c_ospeed = 4800;
+		} else if (priv->chiptype == CT_CYPHIDCOM) {
+			tty->termios = tty_std_termios;
+			tty->termios.c_cflag = B9600 | CS8 | CREAD | HUPCL |
+				CLOCAL;
+			tty->termios.c_ispeed = 9600;
+			tty->termios.c_ospeed = 9600;
+		} else if (priv->chiptype == CT_CA42V2) {
+			tty->termios = tty_std_termios;
+			tty->termios.c_cflag = B9600 | CS8 | CREAD | HUPCL |
+				CLOCAL;
+			tty->termios.c_ispeed = 9600;
+			tty->termios.c_ospeed = 9600;
+>>>>>>> refs/remotes/origin/master
 		}
 		priv->termios_initialized = 1;
 	}
 	spin_unlock_irqrestore(&priv->lock, flags);
 
 	/* Unsupported features need clearing */
+<<<<<<< HEAD
 	tty->termios->c_cflag &= ~(CMSPAR|CRTSCTS);
 
 	cflag = tty->termios->c_cflag;
 	iflag = tty->termios->c_iflag;
+=======
+	tty->termios.c_cflag &= ~(CMSPAR|CRTSCTS);
+
+	cflag = tty->termios.c_cflag;
+	iflag = tty->termios.c_iflag;
+>>>>>>> refs/remotes/origin/master
 
 	/* check if there are new settings */
 	if (old_termios) {
 		spin_lock_irqsave(&priv->lock, flags);
+<<<<<<< HEAD
 		priv->tmp_termios = *(tty->termios);
+=======
+		priv->tmp_termios = tty->termios;
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&priv->lock, flags);
 	}
 
@@ -1058,23 +1430,36 @@ static void cypress_set_termios(struct tty_struct *tty,
 		data_bits = 3;
 		break;
 	default:
+<<<<<<< HEAD
 		dev_err(&port->dev, "%s - CSIZE was set, but not CS5-CS8\n",
 			__func__);
+=======
+		dev_err(dev, "%s - CSIZE was set, but not CS5-CS8\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		data_bits = 3;
 	}
 	spin_lock_irqsave(&priv->lock, flags);
 	oldlines = priv->line_control;
 	if ((cflag & CBAUD) == B0) {
 		/* drop dtr and rts */
+<<<<<<< HEAD
 		dbg("%s - dropping the lines, baud rate 0bps", __func__);
+=======
+		dev_dbg(dev, "%s - dropping the lines, baud rate 0bps\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		priv->line_control &= ~(CONTROL_DTR | CONTROL_RTS);
 	} else
 		priv->line_control = (CONTROL_DTR | CONTROL_RTS);
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
 	dbg("%s - sending %d stop_bits, %d parity_enable, %d parity_type, "
 			"%d data_bits (+5)", __func__, stop_bits,
 			parity_enable, parity_type, data_bits);
+=======
+	dev_dbg(dev, "%s - sending %d stop_bits, %d parity_enable, %d parity_type, %d data_bits (+5)\n",
+		__func__, stop_bits, parity_enable, parity_type, data_bits);
+>>>>>>> refs/remotes/origin/master
 
 	cypress_serial_control(tty, port, tty_get_baud_rate(tty),
 			data_bits, stop_bits,
@@ -1091,11 +1476,18 @@ static void cypress_set_termios(struct tty_struct *tty,
 
 	spin_lock_irqsave(&priv->lock, flags);
 	if (priv->chiptype == CT_EARTHMATE && priv->baud_rate == 4800) {
+<<<<<<< HEAD
 		dbg("Using custom termios settings for a baud rate of "
 				"4800bps.");
 		/* define custom termios settings for NMEA protocol */
 
 		tty->termios->c_iflag /* input modes - */
+=======
+		dev_dbg(dev, "Using custom termios settings for a baud rate of 4800bps.\n");
+		/* define custom termios settings for NMEA protocol */
+
+		tty->termios.c_iflag /* input modes - */
+>>>>>>> refs/remotes/origin/master
 			&= ~(IGNBRK  /* disable ignore break */
 			| BRKINT     /* disable break causes interrupt */
 			| PARMRK     /* disable mark parity errors */
@@ -1105,10 +1497,17 @@ static void cypress_set_termios(struct tty_struct *tty,
 			| ICRNL      /* disable translate CR to NL */
 			| IXON);     /* disable enable XON/XOFF flow control */
 
+<<<<<<< HEAD
 		tty->termios->c_oflag /* output modes */
 			&= ~OPOST;    /* disable postprocess output char */
 
 		tty->termios->c_lflag /* line discipline modes */
+=======
+		tty->termios.c_oflag /* output modes */
+			&= ~OPOST;    /* disable postprocess output char */
+
+		tty->termios.c_lflag /* line discipline modes */
+>>>>>>> refs/remotes/origin/master
 			&= ~(ECHO     /* disable echo input characters */
 			| ECHONL      /* disable echo new line */
 			| ICANON      /* disable erase, kill, werase, and rprnt
@@ -1137,13 +1536,20 @@ static int cypress_chars_in_buffer(struct tty_struct *tty)
 	int chars = 0;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	chars = kfifo_len(&priv->write_fifo);
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
 	dbg("%s - returns %d", __func__, chars);
+=======
+	dev_dbg(&port->dev, "%s - returns %d\n", __func__, chars);
+>>>>>>> refs/remotes/origin/master
 	return chars;
 }
 
@@ -1153,8 +1559,11 @@ static void cypress_throttle(struct tty_struct *tty)
 	struct usb_serial_port *port = tty->driver_data;
 	struct cypress_private *priv = usb_get_serial_port_data(port);
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&priv->lock);
 	priv->rx_flags = THROTTLED;
 	spin_unlock_irq(&priv->lock);
@@ -1167,8 +1576,11 @@ static void cypress_unthrottle(struct tty_struct *tty)
 	struct cypress_private *priv = usb_get_serial_port_data(port);
 	int actually_throttled, result;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&priv->lock);
 	actually_throttled = priv->rx_flags & ACTUALLY_THROTTLED;
 	priv->rx_flags = 0;
@@ -1178,8 +1590,14 @@ static void cypress_unthrottle(struct tty_struct *tty)
 		return;
 
 	if (actually_throttled) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		port->interrupt_in_urb->dev = port->serial->dev;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		result = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
 		if (result) {
 			dev_err(&port->dev, "%s - failed submitting read urb, "
@@ -1194,6 +1612,10 @@ static void cypress_read_int_callback(struct urb *urb)
 {
 	struct usb_serial_port *port = urb->context;
 	struct cypress_private *priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
+=======
+	struct device *dev = &urb->dev->dev;
+>>>>>>> refs/remotes/origin/master
 	struct tty_struct *tty;
 	unsigned char *data = urb->transfer_buffer;
 	unsigned long flags;
@@ -1204,8 +1626,11 @@ static void cypress_read_int_callback(struct urb *urb)
 	int i = 0;
 	int status = urb->status;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (status) {
 	case 0: /* success */
 		break;
@@ -1219,16 +1644,25 @@ static void cypress_read_int_callback(struct urb *urb)
 		/* FALLS THROUGH */
 	default:
 		/* something ugly is going on... */
+<<<<<<< HEAD
 		dev_err(&urb->dev->dev,
 			"%s - unexpected nonzero read status received: %d\n",
 							__func__, status);
+=======
+		dev_err(dev, "%s - unexpected nonzero read status received: %d\n",
+			__func__, status);
+>>>>>>> refs/remotes/origin/master
 		cypress_set_dead(port);
 		return;
 	}
 
 	spin_lock_irqsave(&priv->lock, flags);
 	if (priv->rx_flags & THROTTLED) {
+<<<<<<< HEAD
 		dbg("%s - now throttling", __func__);
+=======
+		dev_dbg(dev, "%s - now throttling\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		priv->rx_flags |= ACTUALLY_THROTTLED;
 		spin_unlock_irqrestore(&priv->lock, flags);
 		return;
@@ -1237,7 +1671,11 @@ static void cypress_read_int_callback(struct urb *urb)
 
 	tty = tty_port_tty_get(&port->port);
 	if (!tty) {
+<<<<<<< HEAD
 		dbg("%s - bad tty pointer - exiting", __func__);
+=======
+		dev_dbg(dev, "%s - bad tty pointer - exiting\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -1264,6 +1702,7 @@ static void cypress_read_int_callback(struct urb *urb)
 	}
 	spin_unlock_irqrestore(&priv->lock, flags);
 	if (result < bytes) {
+<<<<<<< HEAD
 		dbg("%s - wrong packet size - received %d bytes but packet "
 		    "said %d bytes", __func__, result, bytes);
 		goto continue_read;
@@ -1271,22 +1710,55 @@ static void cypress_read_int_callback(struct urb *urb)
 
 	usb_serial_debug_data(debug, &port->dev, __func__,
 						urb->actual_length, data);
+=======
+		dev_dbg(dev,
+			"%s - wrong packet size - received %d bytes but packet said %d bytes\n",
+			__func__, result, bytes);
+		goto continue_read;
+	}
+
+	usb_serial_debug_data(&port->dev, __func__, urb->actual_length, data);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&priv->lock, flags);
 	/* check to see if status has changed */
 	if (priv->current_status != priv->prev_status) {
+<<<<<<< HEAD
 		priv->diff_status |= priv->current_status ^
 			priv->prev_status;
 		wake_up_interruptible(&priv->delta_msr_wait);
+=======
+		u8 delta = priv->current_status ^ priv->prev_status;
+
+		if (delta & UART_MSR_MASK) {
+			if (delta & UART_CTS)
+				port->icount.cts++;
+			if (delta & UART_DSR)
+				port->icount.dsr++;
+			if (delta & UART_RI)
+				port->icount.rng++;
+			if (delta & UART_CD)
+				port->icount.dcd++;
+
+			wake_up_interruptible(&port->port.delta_msr_wait);
+		}
+
+>>>>>>> refs/remotes/origin/master
 		priv->prev_status = priv->current_status;
 	}
 	spin_unlock_irqrestore(&priv->lock, flags);
 
 	/* hangup, as defined in acm.c... this might be a bad place for it
 	 * though */
+<<<<<<< HEAD
 	if (tty && !(tty->termios->c_cflag & CLOCAL) &&
 			!(priv->current_status & UART_CD)) {
 		dbg("%s - calling hangup", __func__);
+=======
+	if (tty && !(tty->termios.c_cflag & CLOCAL) &&
+			!(priv->current_status & UART_CD)) {
+		dev_dbg(dev, "%s - calling hangup\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		tty_hangup(tty);
 		goto continue_read;
 	}
@@ -1299,15 +1771,26 @@ static void cypress_read_int_callback(struct urb *urb)
 	if (priv->current_status & CYP_ERROR) {
 		spin_unlock_irqrestore(&priv->lock, flags);
 		tty_flag = TTY_PARITY;
+<<<<<<< HEAD
 		dbg("%s - Parity Error detected", __func__);
+=======
+		dev_dbg(dev, "%s - Parity Error detected\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	} else
 		spin_unlock_irqrestore(&priv->lock, flags);
 
 	/* process read if there is data other than line status */
+<<<<<<< HEAD
 	if (tty && bytes > i) {
 		tty_insert_flip_string_fixed_flag(tty, data + i,
 				tty_flag, bytes - i);
 		tty_flip_buffer_push(tty);
+=======
+	if (bytes > i) {
+		tty_insert_flip_string_fixed_flag(&port->port, data + i,
+				tty_flag, bytes - i);
+		tty_flip_buffer_push(&port->port);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock_irqsave(&priv->lock, flags);
@@ -1330,9 +1813,14 @@ continue_read:
 				priv->read_urb_interval);
 		result = usb_submit_urb(port->interrupt_in_urb, GFP_ATOMIC);
 		if (result && result != -EPERM) {
+<<<<<<< HEAD
 			dev_err(&urb->dev->dev, "%s - failed resubmitting "
 					"read urb, error %d\n", __func__,
 					result);
+=======
+			dev_err(dev, "%s - failed resubmitting read urb, error %d\n",
+				__func__, result);
+>>>>>>> refs/remotes/origin/master
 			cypress_set_dead(port);
 		}
 	}
@@ -1343,11 +1831,18 @@ static void cypress_write_int_callback(struct urb *urb)
 {
 	struct usb_serial_port *port = urb->context;
 	struct cypress_private *priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
 	int result;
 	int status = urb->status;
 
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+	struct device *dev = &urb->dev->dev;
+	int result;
+	int status = urb->status;
+
+>>>>>>> refs/remotes/origin/master
 	switch (status) {
 	case 0:
 		/* success */
@@ -1356,8 +1851,13 @@ static void cypress_write_int_callback(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d",
 						__func__, status);
+=======
+		dev_dbg(dev, "%s - urb shutting down with status: %d\n",
+			__func__, status);
+>>>>>>> refs/remotes/origin/master
 		priv->write_urb_in_use = 0;
 		return;
 	case -EPIPE: /* no break needed; clear halt and resubmit */
@@ -1365,10 +1865,14 @@ static void cypress_write_int_callback(struct urb *urb)
 			break;
 		usb_clear_halt(port->serial->dev, 0x02);
 		/* error in the urb, so we have to resubmit it */
+<<<<<<< HEAD
 		dbg("%s - nonzero write bulk status received: %d",
 			__func__, status);
 		port->interrupt_out_urb->transfer_buffer_length = 1;
+<<<<<<< HEAD
 		port->interrupt_out_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		result = usb_submit_urb(port->interrupt_out_urb, GFP_ATOMIC);
 		if (!result)
 			return;
@@ -1381,6 +1885,21 @@ static void cypress_write_int_callback(struct urb *urb)
 		dev_err(&urb->dev->dev,
 			 "%s - unexpected nonzero write status received: %d\n",
 							__func__, status);
+=======
+		dev_dbg(dev, "%s - nonzero write bulk status received: %d\n",
+			__func__, status);
+		port->interrupt_out_urb->transfer_buffer_length = 1;
+		result = usb_submit_urb(port->interrupt_out_urb, GFP_ATOMIC);
+		if (!result)
+			return;
+		dev_err(dev, "%s - failed resubmitting write urb, error %d\n",
+			__func__, result);
+		cypress_set_dead(port);
+		break;
+	default:
+		dev_err(dev, "%s - unexpected nonzero write status received: %d\n",
+			__func__, status);
+>>>>>>> refs/remotes/origin/master
 		cypress_set_dead(port);
 		break;
 	}
@@ -1390,6 +1909,8 @@ static void cypress_write_int_callback(struct urb *urb)
 	cypress_send(port);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /*****************************************************************************
  * Module functions
@@ -1442,6 +1963,9 @@ static void __exit cypress_exit(void)
 
 module_init(cypress_init);
 module_exit(cypress_exit);
+=======
+module_usb_serial_driver(cypress_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
@@ -1450,6 +1974,14 @@ MODULE_LICENSE("GPL");
 
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
+=======
+module_usb_serial_driver(serial_drivers, id_table_combined);
+
+MODULE_AUTHOR(DRIVER_AUTHOR);
+MODULE_DESCRIPTION(DRIVER_DESC);
+MODULE_LICENSE("GPL");
+
+>>>>>>> refs/remotes/origin/master
 module_param(stats, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(stats, "Enable statistics or not");
 module_param(interval, int, S_IRUGO | S_IWUSR);

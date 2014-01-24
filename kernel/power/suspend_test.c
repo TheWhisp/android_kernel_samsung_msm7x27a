@@ -112,7 +112,11 @@ static void __init test_wakealarm(struct rtc_device *rtc, suspend_state_t state)
 	rtc_set_alarm(rtc, &alm);
 }
 
+<<<<<<< HEAD
 static int __init has_wakealarm(struct device *dev, void *name_ptr)
+=======
+static int __init has_wakealarm(struct device *dev, const void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *candidate = to_rtc_device(dev);
 
@@ -121,7 +125,10 @@ static int __init has_wakealarm(struct device *dev, void *name_ptr)
 	if (!device_may_wakeup(candidate->dev.parent))
 		return 0;
 
+<<<<<<< HEAD
 	*(const char **)name_ptr = dev_name(dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -159,8 +166,13 @@ static int __init test_suspend(void)
 	static char		warn_no_rtc[] __initdata =
 		KERN_WARNING "PM: no wakealarm-capable RTC driver is ready\n";
 
+<<<<<<< HEAD
 	char			*pony = NULL;
 	struct rtc_device	*rtc = NULL;
+=======
+	struct rtc_device	*rtc = NULL;
+	struct device		*dev;
+>>>>>>> refs/remotes/origin/master
 
 	/* PM is initialized by now; is that state testable? */
 	if (test_state == PM_SUSPEND_ON)
@@ -171,9 +183,15 @@ static int __init test_suspend(void)
 	}
 
 	/* RTCs have initialized by now too ... can we use one? */
+<<<<<<< HEAD
 	class_find_device(rtc_class, NULL, &pony, has_wakealarm);
 	if (pony)
 		rtc = rtc_class_open(pony);
+=======
+	dev = class_find_device(rtc_class, NULL, NULL, has_wakealarm);
+	if (dev)
+		rtc = rtc_class_open(dev_name(dev));
+>>>>>>> refs/remotes/origin/master
 	if (!rtc) {
 		printk(warn_no_rtc);
 		goto done;

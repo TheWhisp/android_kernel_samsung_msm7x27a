@@ -23,9 +23,15 @@
  * Misconfigurations can be detected through the FPGA via the slot
  * resistors to determine card presence. Hotplug remains unsupported.
  */
+<<<<<<< HEAD
 static unsigned int slot4en __devinitdata;
 
 char *__devinit pcibios_setup(char *str)
+=======
+static unsigned int slot4en __initdata;
+
+char *__init pcibios_setup(char *str)
+>>>>>>> refs/remotes/origin/master
 {
 	if (strcmp(str, "slot4en") == 0) {
 		slot4en = 1;

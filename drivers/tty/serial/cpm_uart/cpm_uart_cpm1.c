@@ -29,7 +29,10 @@
 #include <linux/tty.h>
 #include <linux/gfp.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/serial.h>
 #include <linux/console.h>
 #include <linux/sysrq.h>
@@ -45,6 +48,10 @@
 #include <linux/kernel.h>
 
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "cpm_uart.h"
 

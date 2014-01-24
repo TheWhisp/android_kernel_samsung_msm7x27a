@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #if !defined(_ASM_GENERIC_UNISTD_H) || defined(__SYSCALL)
 #define _ASM_GENERIC_UNISTD_H
 
@@ -143,7 +144,11 @@ __SYSCALL(__NR_pivot_root, sys_pivot_root)
 
 /* fs/nfsctl.c */
 #define __NR_nfsservctl 42
+<<<<<<< HEAD
 __SC_COMP(__NR_nfsservctl, sys_nfsservctl, compat_sys_nfsservctl)
+=======
+__SYSCALL(__NR_nfsservctl, sys_ni_syscall)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* fs/open.c */
 #define __NR3264_statfs 43
@@ -685,9 +690,21 @@ __SYSCALL(__NR_syncfs, sys_syncfs)
 __SYSCALL(__NR_setns, sys_setns)
 #define __NR_sendmmsg 269
 __SC_COMP(__NR_sendmmsg, sys_sendmmsg, compat_sys_sendmmsg)
+<<<<<<< HEAD
 
 #undef __NR_syscalls
 #define __NR_syscalls 270
+=======
+#define __NR_process_vm_readv 270
+__SC_COMP(__NR_process_vm_readv, sys_process_vm_readv, \
+          compat_sys_process_vm_readv)
+#define __NR_process_vm_writev 271
+__SC_COMP(__NR_process_vm_writev, sys_process_vm_writev, \
+          compat_sys_process_vm_writev)
+
+#undef __NR_syscalls
+#define __NR_syscalls 272
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * All syscalls below here should go away really,
@@ -897,6 +914,10 @@ __SYSCALL(__NR_fork, sys_ni_syscall)
 #endif
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm-generic/unistd.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are required system calls, we should
@@ -907,6 +928,7 @@ __SYSCALL(__NR_fork, sys_ni_syscall)
 #define __ARCH_WANT_STAT64
 #define __ARCH_WANT_SYS_LLSEEK
 #endif
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 #define __ARCH_WANT_COMPAT_SYS_RT_SIGSUSPEND
@@ -923,3 +945,5 @@ __SYSCALL(__NR_fork, sys_ni_syscall)
 
 #endif /* __KERNEL__ */
 #endif /* _ASM_GENERIC_UNISTD_H */
+=======
+>>>>>>> refs/remotes/origin/master

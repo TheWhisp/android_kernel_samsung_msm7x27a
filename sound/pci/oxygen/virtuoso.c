@@ -19,6 +19,14 @@
 
 #include <linux/pci.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/pcm.h>
@@ -31,7 +39,15 @@ MODULE_SUPPORTED_DEVICE("{{Asus,AV66},{Asus,AV100},{Asus,AV200}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "card index");
@@ -51,13 +67,22 @@ static DEFINE_PCI_DEVICE_TABLE(xonar_ids) = {
 	{ OXYGEN_PCI_SUBID(0x1043, 0x835d) },
 	{ OXYGEN_PCI_SUBID(0x1043, 0x835e) },
 	{ OXYGEN_PCI_SUBID(0x1043, 0x838e) },
+<<<<<<< HEAD
+=======
+	{ OXYGEN_PCI_SUBID(0x1043, 0x8522) },
+>>>>>>> refs/remotes/origin/master
 	{ OXYGEN_PCI_SUBID_BROKEN_EEPROM },
 	{ }
 };
 MODULE_DEVICE_TABLE(pci, xonar_ids);
 
+<<<<<<< HEAD
 static int __devinit get_xonar_model(struct oxygen *chip,
 				     const struct pci_device_id *id)
+=======
+static int get_xonar_model(struct oxygen *chip,
+			   const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	if (get_xonar_pcm179x_model(chip, id) >= 0)
 		return 0;
@@ -68,8 +93,13 @@ static int __devinit get_xonar_model(struct oxygen *chip,
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int __devinit xonar_probe(struct pci_dev *pci,
 				 const struct pci_device_id *pci_id)
+=======
+static int xonar_probe(struct pci_dev *pci,
+		       const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	int err;
@@ -88,17 +118,33 @@ static int __devinit xonar_probe(struct pci_dev *pci,
 }
 
 static struct pci_driver xonar_driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.name = "AV200",
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = xonar_ids,
 	.probe = xonar_probe,
 	.remove = __devexit_p(oxygen_pci_remove),
 #ifdef CONFIG_PM
 	.suspend = oxygen_pci_suspend,
 	.resume = oxygen_pci_resume,
+=======
+	.name = KBUILD_MODNAME,
+	.id_table = xonar_ids,
+	.probe = xonar_probe,
+	.remove = oxygen_pci_remove,
+#ifdef CONFIG_PM_SLEEP
+	.driver = {
+		.pm = &oxygen_pci_pm,
+	},
+>>>>>>> refs/remotes/origin/master
 #endif
 	.shutdown = oxygen_pci_shutdown,
 };
 
+<<<<<<< HEAD
 static int __init alsa_card_xonar_init(void)
 {
 	return pci_register_driver(&xonar_driver);
@@ -111,3 +157,6 @@ static void __exit alsa_card_xonar_exit(void)
 
 module_init(alsa_card_xonar_init)
 module_exit(alsa_card_xonar_exit)
+=======
+module_pci_driver(xonar_driver);
+>>>>>>> refs/remotes/origin/master

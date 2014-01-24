@@ -9,6 +9,7 @@
 #define HWSAMPLER_H_
 
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 
 struct hws_qsi_info_block          /* QUERY SAMPLING information block  */
 { /* Bit(s) */
@@ -30,6 +31,9 @@ struct hws_qsi_info_block          /* QUERY SAMPLING information block  */
 	unsigned long long rsvrd1;  /* 48-55: reserved                   */
 	unsigned long long rsvrd2;  /* 56-63: reserved                   */
 };
+=======
+#include <asm/cpu_mf.h>
+>>>>>>> refs/remotes/origin/master
 
 struct hws_ssctl_request_block     /* SET SAMPLING CONTROLS req block   */
 { /* bytes 0 - 7  Bit(s) */
@@ -68,6 +72,7 @@ struct hws_cpu_buffer {
 	unsigned int stop_mode:1;
 };
 
+<<<<<<< HEAD
 struct hws_data_entry {
 	unsigned int def:16;        /* 0-15  Data Entry Format           */
 	unsigned int R:4;           /* 16-19 reserved                    */
@@ -98,6 +103,8 @@ struct hws_trailer_entry {
 	unsigned long progusage2;   /*                                   */
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 int hwsampler_setup(void);
 int hwsampler_shutdown(void);
 int hwsampler_allocate(unsigned long sdbt, unsigned long sdb);

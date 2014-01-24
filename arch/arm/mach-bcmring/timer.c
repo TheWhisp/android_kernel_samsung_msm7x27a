@@ -12,7 +12,10 @@
 * consent.
 *****************************************************************************/
 
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 #include <linux/module.h>
 #include <csp/tmrHw.h>

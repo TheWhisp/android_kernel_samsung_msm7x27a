@@ -19,6 +19,14 @@
 #include <linux/console.h>
 #include <linux/vt_kern.h>
 #include <linux/input.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_CONFIG_LEN		40
 
@@ -44,7 +52,11 @@ static int kgdboc_reset_connect(struct input_handler *handler,
 {
 	input_reset_device(dev);
 
+<<<<<<< HEAD
 	/* Retrun an error - we do not want to bind, just to reset */
+=======
+	/* Return an error - we do not want to bind, just to reset */
+>>>>>>> refs/remotes/origin/master
 	return -ENODEV;
 }
 
@@ -96,7 +108,12 @@ static void kgdboc_restore_input(void)
 
 static int kgdboc_register_kbd(char **cptr)
 {
+<<<<<<< HEAD
 	if (strncmp(*cptr, "kbd", 3) == 0) {
+=======
+	if (strncmp(*cptr, "kbd", 3) == 0 ||
+		strncmp(*cptr, "kdb", 3) == 0) {
+>>>>>>> refs/remotes/origin/master
 		if (kdb_poll_idx < KDB_POLL_FUNC_MAX) {
 			kdb_poll_funcs[kdb_poll_idx] = kdb_get_kbd_char;
 			kdb_poll_idx++;
@@ -121,7 +138,11 @@ static void kgdboc_unregister_kbd(void)
 			i--;
 		}
 	}
+<<<<<<< HEAD
 	flush_work_sync(&kgdboc_restore_input_work);
+=======
+	flush_work(&kgdboc_restore_input_work);
+>>>>>>> refs/remotes/origin/master
 }
 #else /* ! CONFIG_KDB_KEYBOARD */
 #define kgdboc_register_kbd(x) 0
@@ -144,6 +165,11 @@ __setup("kgdboc=", kgdboc_option_setup);
 
 static void cleanup_kgdboc(void)
 {
+<<<<<<< HEAD
+=======
+	if (kgdb_unregister_nmi_console())
+		return;
+>>>>>>> refs/remotes/origin/master
 	kgdboc_unregister_kbd();
 	if (configured == 1)
 		kgdb_unregister_io_module(&kgdboc_io_ops);
@@ -197,11 +223,25 @@ do_register:
 	if (err)
 		goto noconfig;
 
+<<<<<<< HEAD
+=======
+	err = kgdb_register_nmi_console();
+	if (err)
+		goto nmi_con_failed;
+
+>>>>>>> refs/remotes/origin/master
 	configured = 1;
 
 	return 0;
 
+<<<<<<< HEAD
 noconfig:
+=======
+nmi_con_failed:
+	kgdb_unregister_io_module(&kgdboc_io_ops);
+noconfig:
+	kgdboc_unregister_kbd();
+>>>>>>> refs/remotes/origin/master
 	config[0] = 0;
 	configured = 0;
 	cleanup_kgdboc();

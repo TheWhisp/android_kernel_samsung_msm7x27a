@@ -35,6 +35,7 @@
 #include <mach/pxa27x-udc.h>
 #include <mach/audio.h>
 #include <mach/palmtreo.h>
+<<<<<<< HEAD
 #include <mach/mmc.h>
 #include <mach/pxafb.h>
 #include <mach/irda.h>
@@ -44,6 +45,17 @@
 #include <mach/pxa2xx-regs.h>
 #include <mach/palmasoc.h>
 #include <mach/camera.h>
+=======
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/irda-pxaficp.h>
+#include <linux/platform_data/keypad-pxa27x.h>
+#include <mach/udc.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <mach/pxa2xx-regs.h>
+#include <linux/platform_data/asoc-palm27x.h>
+#include <linux/platform_data/camera-pxa.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/palm27x.h>
 
 #include <sound/pxa2xx-lib.h>
@@ -98,9 +110,12 @@ static unsigned long treo_pin_config[] __initdata = {
 	GPIO96_KP_MKOUT_6,
 	GPIO93_KP_DKIN_0 | WAKEUP_ON_LEVEL_HIGH,	/* Hotsync button */
 
+<<<<<<< HEAD
 	/* LCD */
 	GPIOxx_LCD_TFT_16BPP,
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Quick Capture Interface */
 	GPIO84_CIF_FV,
 	GPIO85_CIF_LV,
@@ -140,6 +155,15 @@ static unsigned long treo680_pin_config[] __initdata = {
 	/* MATRIX KEYPAD - different wake up source */
 	GPIO100_KP_MKIN_0 | WAKEUP_ON_LEVEL_HIGH,
 	GPIO99_KP_MKIN_5,
+<<<<<<< HEAD
+=======
+
+	/* LCD... L_BIAS alt fn not configured on Treo680; is GPIO instead */
+	GPIOxx_LCD_16BPP,
+	GPIO74_LCD_FCLK,
+	GPIO75_LCD_LCLK,
+	GPIO76_LCD_PCLK,
+>>>>>>> refs/remotes/origin/master
 };
 #endif /* CONFIG_MACH_TREO680 */
 
@@ -155,14 +179,25 @@ static unsigned long centro685_pin_config[] __initdata = {
 	/* MATRIX KEYPAD - different wake up source */
 	GPIO100_KP_MKIN_0,
 	GPIO99_KP_MKIN_5 | WAKEUP_ON_LEVEL_HIGH,
+<<<<<<< HEAD
+=======
+
+	/* LCD */
+	GPIOxx_LCD_TFT_16BPP,
+>>>>>>> refs/remotes/origin/master
 };
 #endif /* CONFIG_MACH_CENTRO */
 
 /******************************************************************************
  * GPIO keyboard
  ******************************************************************************/
+<<<<<<< HEAD
 #if defined(CONFIG_KEYBOARD_PXA27x) || defined(CONFIG_KEYBOARD_PXA27x_MODULE)
 static unsigned int treo680_matrix_keys[] = {
+=======
+#if IS_ENABLED(CONFIG_KEYBOARD_PXA27x)
+static const unsigned int treo680_matrix_keys[] = {
+>>>>>>> refs/remotes/origin/master
 	KEY(0, 0, KEY_F8),		/* Red/Off/Power */
 	KEY(0, 1, KEY_LEFT),
 	KEY(0, 2, KEY_LEFTCTRL),	/* Alternate */
@@ -221,7 +256,11 @@ static unsigned int treo680_matrix_keys[] = {
 	KEY(7, 5, KEY_I),
 };
 
+<<<<<<< HEAD
 static unsigned int centro_matrix_keys[] = {
+=======
+static const unsigned int centro_matrix_keys[] = {
+>>>>>>> refs/remotes/origin/master
 	KEY(0, 0, KEY_F9),		/* Home */
 	KEY(0, 1, KEY_LEFT),
 	KEY(0, 2, KEY_LEFTCTRL),	/* Alternate */
@@ -280,11 +319,28 @@ static unsigned int centro_matrix_keys[] = {
 	KEY(7, 5, KEY_I),
 };
 
+<<<<<<< HEAD
 static struct pxa27x_keypad_platform_data treo680_keypad_pdata = {
 	.matrix_key_rows	= 8,
 	.matrix_key_cols	= 7,
 	.matrix_key_map		= treo680_matrix_keys,
 	.matrix_key_map_size	= ARRAY_SIZE(treo680_matrix_keys),
+=======
+static struct matrix_keymap_data treo680_matrix_keymap_data = {
+	.keymap			= treo680_matrix_keys,
+	.keymap_size		= ARRAY_SIZE(treo680_matrix_keys),
+};
+
+static struct matrix_keymap_data centro_matrix_keymap_data = {
+	.keymap			= centro_matrix_keys,
+	.keymap_size		= ARRAY_SIZE(centro_matrix_keys),
+};
+
+static struct pxa27x_keypad_platform_data treo680_keypad_pdata = {
+	.matrix_key_rows	= 8,
+	.matrix_key_cols	= 7,
+	.matrix_keymap_data	= &treo680_matrix_keymap_data,
+>>>>>>> refs/remotes/origin/master
 	.direct_key_map		= { KEY_CONNECT },
 	.direct_key_num		= 1,
 
@@ -295,10 +351,15 @@ static void __init palmtreo_kpc_init(void)
 {
 	static struct pxa27x_keypad_platform_data *data = &treo680_keypad_pdata;
 
+<<<<<<< HEAD
 	if (machine_is_centro()) {
 		data->matrix_key_map = centro_matrix_keys;
 		data->matrix_key_map_size = ARRAY_SIZE(centro_matrix_keys);
 	}
+=======
+	if (machine_is_centro())
+		data->matrix_keymap_data = &centro_matrix_keymap_data;
+>>>>>>> refs/remotes/origin/master
 
 	pxa_set_keypad_info(&treo680_keypad_pdata);
 }
@@ -309,7 +370,11 @@ static inline void palmtreo_kpc_init(void) {}
 /******************************************************************************
  * USB host
  ******************************************************************************/
+<<<<<<< HEAD
 #if defined(CONFIG_USB_OHCI_HCD) || defined(CONFIG_USB_OHCI_HCD_MODULE)
+=======
+#if IS_ENABLED(CONFIG_USB_OHCI_HCD)
+>>>>>>> refs/remotes/origin/master
 static struct pxaohci_platform_data treo680_ohci_info = {
 	.port_mode    = PMM_PERPORT_MODE,
 	.flags        = ENABLE_PORT1 | ENABLE_PORT3,
@@ -328,7 +393,10 @@ static inline void palmtreo_uhc_init(void) {}
 /******************************************************************************
  * Vibra and LEDs
  ******************************************************************************/
+<<<<<<< HEAD
 #ifdef CONFIG_MACH_TREO680
+=======
+>>>>>>> refs/remotes/origin/master
 static struct gpio_led treo680_gpio_leds[] = {
 	{
 		.name			= "treo680:vibra:vibra",
@@ -379,20 +447,60 @@ static struct gpio_led_platform_data centro_gpio_led_info = {
 static struct platform_device palmtreo_leds = {
 	.name   = "leds-gpio",
 	.id     = -1,
+<<<<<<< HEAD
 	.dev    = {
 		.platform_data  = &treo680_gpio_led_info,
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init palmtreo_leds_init(void)
 {
 	if (machine_is_centro())
 		palmtreo_leds.dev.platform_data = &centro_gpio_led_info;
+<<<<<<< HEAD
 
 	platform_device_register(&palmtreo_leds);
 }
 #else
 static inline void palmtreo_leds_init(void) {}
+=======
+	else if (machine_is_treo680())
+		palmtreo_leds.dev.platform_data = &treo680_gpio_led_info;
+
+	platform_device_register(&palmtreo_leds);
+}
+
+/******************************************************************************
+ * diskonchip docg4 flash
+ ******************************************************************************/
+#if defined(CONFIG_MACH_TREO680)
+/* REVISIT: does the centro have this device also? */
+#if IS_ENABLED(CONFIG_MTD_NAND_DOCG4)
+static struct resource docg4_resources[] = {
+	{
+		.start	= 0x00000000,
+		.end	= 0x00001FFF,
+		.flags	= IORESOURCE_MEM,
+	},
+};
+
+static struct platform_device treo680_docg4_flash = {
+	.name   = "docg4",
+	.id     = -1,
+	.resource = docg4_resources,
+	.num_resources = ARRAY_SIZE(docg4_resources),
+};
+
+static void __init treo680_docg4_flash_init(void)
+{
+	platform_device_register(&treo680_docg4_flash);
+}
+#else
+static inline void treo680_docg4_flash_init(void) {}
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /******************************************************************************
@@ -423,14 +531,87 @@ static void __init palmphone_common_init(void)
 	palmtreo_leds_init();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MACH_TREO680
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MACH_TREO680
+void __init treo680_gpio_init(void)
+{
+	unsigned int gpio;
+
+	/* drive all three lcd gpios high initially */
+	const unsigned long lcd_flags = GPIOF_INIT_HIGH | GPIOF_DIR_OUT;
+
+	/*
+	 * LCD GPIO initialization...
+	 */
+
+	/*
+	 * This is likely the power to the lcd.  Toggling it low/high appears to
+	 * turn the lcd off/on.  Can be toggled after lcd is initialized without
+	 * any apparent adverse effects to the lcd operation.  Note that this
+	 * gpio line is used by the lcd controller as the L_BIAS signal, but
+	 * treo680 configures it as gpio.
+	 */
+	gpio = GPIO_NR_TREO680_LCD_POWER;
+	if (gpio_request_one(gpio, lcd_flags, "LCD power") < 0)
+		goto fail;
+
+	/*
+	 * These two are called "enables", for lack of a better understanding.
+	 * If either of these are toggled after the lcd is initialized, the
+	 * image becomes degraded.  N.B. The IPL shipped with the treo
+	 * configures GPIO_NR_TREO680_LCD_EN_N as output and drives it high.  If
+	 * the IPL is ever reprogrammed, this initialization may be need to be
+	 * revisited.
+	 */
+	gpio = GPIO_NR_TREO680_LCD_EN;
+	if (gpio_request_one(gpio, lcd_flags, "LCD enable") < 0)
+		goto fail;
+	gpio = GPIO_NR_TREO680_LCD_EN_N;
+	if (gpio_request_one(gpio, lcd_flags, "LCD enable_n") < 0)
+		goto fail;
+
+	/* driving this low turns LCD on */
+	gpio_set_value(GPIO_NR_TREO680_LCD_EN_N, 0);
+
+	return;
+ fail:
+	pr_err("gpio %d initialization failed\n", gpio);
+	gpio_free(GPIO_NR_TREO680_LCD_POWER);
+	gpio_free(GPIO_NR_TREO680_LCD_EN);
+	gpio_free(GPIO_NR_TREO680_LCD_EN_N);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void __init treo680_init(void)
 {
 	pxa2xx_mfp_config(ARRAY_AND_SIZE(treo680_pin_config));
 	palmphone_common_init();
+<<<<<<< HEAD
 	palm27x_mmc_init(GPIO_NR_TREO_SD_DETECT_N, GPIO_NR_TREO680_SD_READONLY,
 			GPIO_NR_TREO680_SD_POWER, 0);
 }
+<<<<<<< HEAD
 
+=======
+#endif
+
+#ifdef CONFIG_MACH_CENTRO
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	treo680_gpio_init();
+	palm27x_mmc_init(GPIO_NR_TREO_SD_DETECT_N, GPIO_NR_TREO680_SD_READONLY,
+			GPIO_NR_TREO680_SD_POWER, 0);
+	treo680_docg4_flash_init();
+}
+#endif
+
+#ifdef CONFIG_MACH_CENTRO
+>>>>>>> refs/remotes/origin/master
 static void __init centro_init(void)
 {
 	pxa2xx_mfp_config(ARRAY_AND_SIZE(centro685_pin_config));
@@ -438,6 +619,8 @@ static void __init centro_init(void)
 	palm27x_mmc_init(GPIO_NR_TREO_SD_DETECT_N, -1,
 			GPIO_NR_CENTRO_SD_POWER, 1);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 MACHINE_START(TREO680, "Palm Treo 680")
 	.boot_params    = 0xa0000100,
@@ -456,3 +639,47 @@ MACHINE_START(CENTRO, "Palm Centro 685")
 	.timer          = &pxa_timer,
 	.init_machine	= centro_init,
 MACHINE_END
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#endif
+
+#ifdef CONFIG_MACH_TREO680
+MACHINE_START(TREO680, "Palm Treo 680")
+	.atag_offset    = 0x100,
+	.map_io         = pxa27x_map_io,
+	.reserve	= treo_reserve,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq       = pxa27x_init_irq,
+	.handle_irq       = pxa27x_handle_irq,
+<<<<<<< HEAD
+	.timer          = &pxa_timer,
+=======
+	.init_time	= pxa_timer_init,
+>>>>>>> refs/remotes/origin/master
+	.init_machine   = treo680_init,
+	.restart	= pxa_restart,
+MACHINE_END
+#endif
+
+#ifdef CONFIG_MACH_CENTRO
+MACHINE_START(CENTRO, "Palm Centro 685")
+	.atag_offset    = 0x100,
+	.map_io         = pxa27x_map_io,
+	.reserve	= treo_reserve,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq       = pxa27x_init_irq,
+	.handle_irq       = pxa27x_handle_irq,
+<<<<<<< HEAD
+	.timer          = &pxa_timer,
+=======
+	.init_time	= pxa_timer_init,
+>>>>>>> refs/remotes/origin/master
+	.init_machine	= centro_init,
+	.restart	= pxa_restart,
+MACHINE_END
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

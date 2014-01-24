@@ -311,18 +311,32 @@ lgs8gl5_read_ucblocks(struct dvb_frontend *fe, u32 *ucblocks)
 
 
 static int
+<<<<<<< HEAD
 lgs8gl5_set_frontend(struct dvb_frontend *fe,
 		struct dvb_frontend_parameters *p)
 {
+=======
+lgs8gl5_set_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct lgs8gl5_state *state = fe->demodulator_priv;
 
 	dprintk("%s\n", __func__);
 
+<<<<<<< HEAD
 	if (p->u.ofdm.bandwidth != BANDWIDTH_8_MHZ)
 		return -EINVAL;
 
 	if (fe->ops.tuner_ops.set_params) {
 		fe->ops.tuner_ops.set_params(fe, p);
+=======
+	if (p->bandwidth_hz != 8000000)
+		return -EINVAL;
+
+	if (fe->ops.tuner_ops.set_params) {
+		fe->ops.tuner_ops.set_params(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (fe->ops.i2c_gate_ctrl)
 			fe->ops.i2c_gate_ctrl(fe, 0);
 	}
@@ -336,6 +350,7 @@ lgs8gl5_set_frontend(struct dvb_frontend *fe,
 
 
 static int
+<<<<<<< HEAD
 lgs8gl5_get_frontend(struct dvb_frontend *fe,
 		struct dvb_frontend_parameters *p)
 {
@@ -352,6 +367,23 @@ lgs8gl5_get_frontend(struct dvb_frontend *fe,
 	o->constellation = QAM_64;
 	o->hierarchy_information = HIERARCHY_NONE;
 	o->bandwidth = BANDWIDTH_8_MHZ;
+=======
+lgs8gl5_get_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+	struct lgs8gl5_state *state = fe->demodulator_priv;
+	u8 inv = lgs8gl5_read_reg(state, REG_INVERSION);
+
+	p->inversion = (inv & REG_INVERSION_ON) ? INVERSION_ON : INVERSION_OFF;
+
+	p->code_rate_HP = FEC_1_2;
+	p->code_rate_LP = FEC_7_8;
+	p->guard_interval = GUARD_INTERVAL_1_32;
+	p->transmission_mode = TRANSMISSION_MODE_2K;
+	p->modulation = QAM_64;
+	p->hierarchy = HIERARCHY_NONE;
+	p->bandwidth_hz = 8000000;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -413,9 +445,15 @@ EXPORT_SYMBOL(lgs8gl5_attach);
 
 
 static struct dvb_frontend_ops lgs8gl5_ops = {
+<<<<<<< HEAD
 	.info = {
 		.name			= "Legend Silicon LGS-8GL5 DMB-TH",
 		.type			= FE_OFDM,
+=======
+	.delsys = { SYS_DMBTH },
+	.info = {
+		.name			= "Legend Silicon LGS-8GL5 DMB-TH",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min		= 474000000,
 		.frequency_max		= 858000000,
 		.frequency_stepsize	= 10000,

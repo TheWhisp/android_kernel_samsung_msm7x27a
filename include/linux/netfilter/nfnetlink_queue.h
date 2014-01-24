@@ -8,6 +8,10 @@ enum nfqnl_msg_types {
 	NFQNL_MSG_PACKET,		/* packet from kernel to userspace */
 	NFQNL_MSG_VERDICT,		/* verdict from userspace to kernel */
 	NFQNL_MSG_CONFIG,		/* connect to a particular queue */
+<<<<<<< HEAD
+=======
+	NFQNL_MSG_VERDICT_BATCH,	/* batchv from userspace to kernel */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	NFQNL_MSG_MAX
 };

@@ -19,18 +19,47 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/irqs.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/dma.h>
 #include <plat/mux.h>
 #include <plat/cpu.h>
 #include <plat/mcbsp.h>
 
+<<<<<<< HEAD
+=======
+=======
+#include <linux/omap-dma.h>
+#include <mach/mux.h>
+#include "soc.h"
+#include <linux/platform_data/asoc-ti-mcbsp.h>
+
+>>>>>>> refs/remotes/origin/master
+#include <mach/irqs.h>
+
+#include "iomap.h"
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DPS_RSTCT2_PER_EN	(1 << 0)
 #define DSP_RSTCT2_WD_PER_EN	(1 << 1)
 
 static int dsp_use;
 static struct clk *api_clk;
 static struct clk *dsp_clk;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static struct platform_device **omap_mcbsp_devices;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_device **omap_mcbsp_devices;
+>>>>>>> refs/remotes/origin/master
 
 static void omap1_mcbsp_request(unsigned int id)
 {
@@ -38,7 +67,15 @@ static void omap1_mcbsp_request(unsigned int id)
 	 * On 1510, 1610 and 1710, McBSP1 and McBSP3
 	 * are DSP public peripherals.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (id == OMAP_MCBSP1 || id == OMAP_MCBSP3) {
+=======
+	if (id == 0 || id == 2) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (id == 0 || id == 2) {
+>>>>>>> refs/remotes/origin/master
 		if (dsp_use++ == 0) {
 			api_clk = clk_get(NULL, "api_ck");
 			dsp_clk = clk_get(NULL, "dsp_ck");
@@ -59,7 +96,15 @@ static void omap1_mcbsp_request(unsigned int id)
 
 static void omap1_mcbsp_free(unsigned int id)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (id == OMAP_MCBSP1 || id == OMAP_MCBSP3) {
+=======
+	if (id == 0 || id == 2) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (id == 0 || id == 2) {
+>>>>>>> refs/remotes/origin/master
 		if (--dsp_use == 0) {
 			if (!IS_ERR(api_clk)) {
 				clk_disable(api_clk);
@@ -78,6 +123,26 @@ static struct omap_mcbsp_ops omap1_mcbsp_ops = {
 	.free		= omap1_mcbsp_free,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define OMAP7XX_MCBSP1_BASE	0xfffb1000
+#define OMAP7XX_MCBSP2_BASE	0xfffb1800
+
+#define OMAP1510_MCBSP1_BASE	0xe1011800
+#define OMAP1510_MCBSP2_BASE	0xfffb1000
+#define OMAP1510_MCBSP3_BASE	0xe1017000
+
+#define OMAP1610_MCBSP1_BASE	0xe1011800
+#define OMAP1610_MCBSP2_BASE	0xfffb1000
+#define OMAP1610_MCBSP3_BASE	0xe1017000
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_ARCH_OMAP730) || defined(CONFIG_ARCH_OMAP850)
 struct resource omap7xx_mcbsp_res[][6] = {
 	{
@@ -98,12 +163,20 @@ struct resource omap7xx_mcbsp_res[][6] = {
 		},
 		{
 			.name  = "rx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP1_RX,
+=======
+			.start = 9,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 		{
 			.name  = "tx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP1_TX,
+=======
+			.start = 8,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 	},
@@ -125,12 +198,20 @@ struct resource omap7xx_mcbsp_res[][6] = {
 		},
 		{
 			.name  = "rx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP3_RX,
+=======
+			.start = 11,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 		{
 			.name  = "tx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP3_TX,
+=======
+			.start = 10,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 	},
@@ -175,12 +256,20 @@ struct resource omap15xx_mcbsp_res[][6] = {
 		},
 		{
 			.name  = "rx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP1_RX,
+=======
+			.start = 9,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 		{
 			.name  = "tx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP1_TX,
+=======
+			.start = 8,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 	},
@@ -202,12 +291,20 @@ struct resource omap15xx_mcbsp_res[][6] = {
 		},
 		{
 			.name  = "rx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP2_RX,
+=======
+			.start = 17,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 		{
 			.name  = "tx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP2_TX,
+=======
+			.start = 16,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 	},
@@ -229,12 +326,20 @@ struct resource omap15xx_mcbsp_res[][6] = {
 		},
 		{
 			.name  = "rx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP3_RX,
+=======
+			.start = 11,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 		{
 			.name  = "tx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP3_TX,
+=======
+			.start = 10,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 	},
@@ -282,12 +387,20 @@ struct resource omap16xx_mcbsp_res[][6] = {
 		},
 		{
 			.name  = "rx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP1_RX,
+=======
+			.start = 9,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 		{
 			.name  = "tx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP1_TX,
+=======
+			.start = 8,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 	},
@@ -309,12 +422,20 @@ struct resource omap16xx_mcbsp_res[][6] = {
 		},
 		{
 			.name  = "rx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP2_RX,
+=======
+			.start = 17,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 		{
 			.name  = "tx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP2_TX,
+=======
+			.start = 16,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 	},
@@ -336,12 +457,20 @@ struct resource omap16xx_mcbsp_res[][6] = {
 		},
 		{
 			.name  = "rx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP3_RX,
+=======
+			.start = 11,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 		{
 			.name  = "tx",
+<<<<<<< HEAD
 			.start = OMAP_DMA_MCBSP3_TX,
+=======
+			.start = 10,
+>>>>>>> refs/remotes/origin/master
 			.flags = IORESOURCE_DMA,
 		},
 	},
@@ -369,12 +498,56 @@ static struct omap_mcbsp_platform_data omap16xx_mcbsp_pdata[] = {
 #define OMAP16XX_MCBSP_COUNT		0
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void omap_mcbsp_register_board_cfg(struct resource *res, int res_count,
+			struct omap_mcbsp_platform_data *config, int size)
+{
+	int i;
+
+	omap_mcbsp_devices = kzalloc(size * sizeof(struct platform_device *),
+				     GFP_KERNEL);
+	if (!omap_mcbsp_devices) {
+		printk(KERN_ERR "Could not register McBSP devices\n");
+		return;
+	}
+
+	for (i = 0; i < size; i++) {
+		struct platform_device *new_mcbsp;
+		int ret;
+
+		new_mcbsp = platform_device_alloc("omap-mcbsp", i + 1);
+		if (!new_mcbsp)
+			continue;
+		platform_device_add_resources(new_mcbsp, &res[i * res_count],
+					res_count);
+		config[i].reg_size = 2;
+		config[i].reg_step = 2;
+		new_mcbsp->dev.platform_data = &config[i];
+		ret = platform_device_add(new_mcbsp);
+		if (ret) {
+			platform_device_put(new_mcbsp);
+			continue;
+		}
+		omap_mcbsp_devices[i] = new_mcbsp;
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init omap1_mcbsp_init(void)
 {
 	if (!cpu_class_is_omap1())
 		return -ENODEV;
 
 	if (cpu_is_omap7xx())
+<<<<<<< HEAD
+<<<<<<< HEAD
 		omap_mcbsp_count = OMAP7XX_MCBSP_COUNT;
 	else if (cpu_is_omap15xx())
 		omap_mcbsp_count = OMAP15XX_MCBSP_COUNT;
@@ -387,6 +560,10 @@ static int __init omap1_mcbsp_init(void)
 		return -ENOMEM;
 
 	if (cpu_is_omap7xx())
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		omap_mcbsp_register_board_cfg(omap7xx_mcbsp_res_0,
 					OMAP7XX_MCBSP_RES_SZ,
 					omap7xx_mcbsp_pdata,
@@ -404,7 +581,15 @@ static int __init omap1_mcbsp_init(void)
 					omap16xx_mcbsp_pdata,
 					OMAP16XX_MCBSP_COUNT);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return omap_mcbsp_init();
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 arch_initcall(omap1_mcbsp_init);

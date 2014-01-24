@@ -2,6 +2,8 @@
 #define QDSP5AUDPREPROCMSG_H
 
 /*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*
+<<<<<<< HEAD
+<<<<<<< HEAD
 
     A U D I O   P R E   P R O C E S S I N G  M E S S A G E S
 
@@ -26,6 +28,37 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+*
+*     A U D I O   P R E   P R O C E S S I N G  M E S S A G E S
+*
+* GENERAL DESCRIPTION
+*   This file contains defintions of format blocks of messages
+*   that are rcvd by AUDPREPROC Task
+*
+* REFERENCES
+*   None
+*
+* EXTERNALIZED FUNCTIONS
+*   None
+*
+* Copyright (c) 1992-2009, 2012 The Linux Foundation. All rights reserved.
+*
+* This software is licensed under the terms of the GNU General Public
+* License version 2, as published by the Free Software Foundation, and
+* may be copied, distributed, and modified under those terms.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 *====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*/
 /*===========================================================================
 
@@ -82,4 +115,12 @@ typedef struct {
 	 unsigned short	err_index;
 } __attribute__((packed)) audpreproc_msg_error_msg_id;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define AUDPREPROC_MSG_FEAT_QUERY_DM_DONE 0x0003
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AUDPREPROC_MSG_FEAT_QUERY_DM_DONE 0x0003
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

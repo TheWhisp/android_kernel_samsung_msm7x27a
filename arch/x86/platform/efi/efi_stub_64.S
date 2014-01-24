@@ -34,10 +34,54 @@
 	mov %rsi, %cr0;			\
 	mov (%rsp), %rsp
 
+<<<<<<< HEAD
 ENTRY(efi_call0)
 	SAVE_XMM
 	subq $32, %rsp
 	call *%rdi
+=======
+	/* stolen from gcc */
+	.macro FLUSH_TLB_ALL
+	movq %r15, efi_scratch(%rip)
+	movq %r14, efi_scratch+8(%rip)
+	movq %cr4, %r15
+	movq %r15, %r14
+	andb $0x7f, %r14b
+	movq %r14, %cr4
+	movq %r15, %cr4
+	movq efi_scratch+8(%rip), %r14
+	movq efi_scratch(%rip), %r15
+	.endm
+
+	.macro SWITCH_PGT
+	cmpb $0, efi_scratch+24(%rip)
+	je 1f
+	movq %r15, efi_scratch(%rip)		# r15
+	# save previous CR3
+	movq %cr3, %r15
+	movq %r15, efi_scratch+8(%rip)		# prev_cr3
+	movq efi_scratch+16(%rip), %r15		# EFI pgt
+	movq %r15, %cr3
+	1:
+	.endm
+
+	.macro RESTORE_PGT
+	cmpb $0, efi_scratch+24(%rip)
+	je 2f
+	movq efi_scratch+8(%rip), %r15
+	movq %r15, %cr3
+	movq efi_scratch(%rip), %r15
+	FLUSH_TLB_ALL
+	2:
+	.endm
+
+ENTRY(efi_call0)
+	SAVE_XMM
+	subq $32, %rsp
+	SWITCH_PGT
+	call *%rdi
+	RESTORE_PGT
+>>>>>>> refs/remotes/origin/master
 	addq $32, %rsp
 	RESTORE_XMM
 	ret
@@ -47,7 +91,13 @@ ENTRY(efi_call1)
 	SAVE_XMM
 	subq $32, %rsp
 	mov  %rsi, %rcx
+<<<<<<< HEAD
 	call *%rdi
+=======
+	SWITCH_PGT
+	call *%rdi
+	RESTORE_PGT
+>>>>>>> refs/remotes/origin/master
 	addq $32, %rsp
 	RESTORE_XMM
 	ret
@@ -57,7 +107,13 @@ ENTRY(efi_call2)
 	SAVE_XMM
 	subq $32, %rsp
 	mov  %rsi, %rcx
+<<<<<<< HEAD
 	call *%rdi
+=======
+	SWITCH_PGT
+	call *%rdi
+	RESTORE_PGT
+>>>>>>> refs/remotes/origin/master
 	addq $32, %rsp
 	RESTORE_XMM
 	ret
@@ -68,7 +124,13 @@ ENTRY(efi_call3)
 	subq $32, %rsp
 	mov  %rcx, %r8
 	mov  %rsi, %rcx
+<<<<<<< HEAD
 	call *%rdi
+=======
+	SWITCH_PGT
+	call *%rdi
+	RESTORE_PGT
+>>>>>>> refs/remotes/origin/master
 	addq $32, %rsp
 	RESTORE_XMM
 	ret
@@ -80,7 +142,13 @@ ENTRY(efi_call4)
 	mov %r8, %r9
 	mov %rcx, %r8
 	mov %rsi, %rcx
+<<<<<<< HEAD
 	call *%rdi
+=======
+	SWITCH_PGT
+	call *%rdi
+	RESTORE_PGT
+>>>>>>> refs/remotes/origin/master
 	addq $32, %rsp
 	RESTORE_XMM
 	ret
@@ -93,7 +161,13 @@ ENTRY(efi_call5)
 	mov %r8, %r9
 	mov %rcx, %r8
 	mov %rsi, %rcx
+<<<<<<< HEAD
 	call *%rdi
+=======
+	SWITCH_PGT
+	call *%rdi
+	RESTORE_PGT
+>>>>>>> refs/remotes/origin/master
 	addq $48, %rsp
 	RESTORE_XMM
 	ret
@@ -109,8 +183,22 @@ ENTRY(efi_call6)
 	mov %r8, %r9
 	mov %rcx, %r8
 	mov %rsi, %rcx
+<<<<<<< HEAD
 	call *%rdi
+=======
+	SWITCH_PGT
+	call *%rdi
+	RESTORE_PGT
+>>>>>>> refs/remotes/origin/master
 	addq $48, %rsp
 	RESTORE_XMM
 	ret
 ENDPROC(efi_call6)
+<<<<<<< HEAD
+=======
+
+	.data
+ENTRY(efi_scratch)
+	.fill 3,8,0
+	.byte 0
+>>>>>>> refs/remotes/origin/master

@@ -2,6 +2,7 @@
  * Copyright (C) 2001-2003 Hewlett-Packard Co
  *               Stephane Eranian <eranian@hpl.hp.com>
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_IA64_PERFMON_H
 #define _ASM_IA64_PERFMON_H
@@ -175,6 +176,14 @@ typedef union {
 
 #ifdef __KERNEL__
 
+=======
+#ifndef _ASM_IA64_PERFMON_H
+#define _ASM_IA64_PERFMON_H
+
+#include <uapi/asm/perfmon.h>
+
+
+>>>>>>> refs/remotes/origin/master
 extern long perfmonctl(int fd, int cmd, void *arg, int narg);
 
 typedef struct {
@@ -274,6 +283,9 @@ typedef struct {
 extern pfm_sysctl_t pfm_sysctl;
 
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_IA64_PERFMON_H */

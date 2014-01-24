@@ -89,7 +89,15 @@ CONFIG_I2C=y
 CONFIG_I2C_CHARDEV=y
 CONFIG_I2C_BLACKFIN_TWI=y
 CONFIG_SPI=y
+<<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_SPI_BFIN=y
+=======
+CONFIG_SPI_BFIN5XX=y
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_SPI_BFIN5XX=y
+>>>>>>> refs/remotes/origin/master
 # CONFIG_HWMON is not set
 CONFIG_WATCHDOG=y
 CONFIG_BFIN_WDT=y
@@ -107,7 +115,11 @@ CONFIG_USB_ZERO=m
 CONFIG_USB_ETH=m
 # CONFIG_USB_ETH_RNDIS is not set
 CONFIG_USB_GADGETFS=m
+<<<<<<< HEAD
 CONFIG_USB_FILE_STORAGE=m
+=======
+CONFIG_USB_MASS_STORAGE=m
+>>>>>>> refs/remotes/origin/master
 CONFIG_USB_G_SERIAL=m
 CONFIG_USB_G_PRINTER=m
 CONFIG_MMC=m

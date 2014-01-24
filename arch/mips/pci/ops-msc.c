@@ -1,8 +1,15 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 1999, 2000, 2004, 2005  MIPS Technologies, Inc.
  *    All rights reserved.
  *    Authors: Carsten Langgaard <carstenl@mips.com>
  *             Maciej W. Rozycki <macro@mips.com>
+=======
+ * Copyright (C) 1999, 2000, 2004, 2005	 MIPS Technologies, Inc.
+ *    All rights reserved.
+ *    Authors: Carsten Langgaard <carstenl@mips.com>
+ *	       Maciej W. Rozycki <macro@mips.com>
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2005 Ralf Baechle (ralf@linux-mips.org)
  *
  *  This program is free software; you can distribute it and/or modify it
@@ -28,13 +35,18 @@
 
 #include <asm/mips-boards/msc01_pci.h>
 
+<<<<<<< HEAD
 #define PCI_ACCESS_READ  0
+=======
+#define PCI_ACCESS_READ	 0
+>>>>>>> refs/remotes/origin/master
 #define PCI_ACCESS_WRITE 1
 
 /*
  *  PCI configuration cycle AD bus definition
  */
 /* Type 0 */
+<<<<<<< HEAD
 #define PCI_CFG_TYPE0_REG_SHF           0
 #define PCI_CFG_TYPE0_FUNC_SHF          8
 
@@ -43,6 +55,16 @@
 #define PCI_CFG_TYPE1_FUNC_SHF          8
 #define PCI_CFG_TYPE1_DEV_SHF           11
 #define PCI_CFG_TYPE1_BUS_SHF           16
+=======
+#define PCI_CFG_TYPE0_REG_SHF		0
+#define PCI_CFG_TYPE0_FUNC_SHF		8
+
+/* Type 1 */
+#define PCI_CFG_TYPE1_REG_SHF		0
+#define PCI_CFG_TYPE1_FUNC_SHF		8
+#define PCI_CFG_TYPE1_DEV_SHF		11
+#define PCI_CFG_TYPE1_BUS_SHF		16
+>>>>>>> refs/remotes/origin/master
 
 static int msc_pcibios_config_access(unsigned char access_type,
 	struct pci_bus *bus, unsigned int devfn, int where, u32 * data)
@@ -97,7 +119,11 @@ static int msc_pcibios_read(struct pci_bus *bus, unsigned int devfn,
 		return PCIBIOS_BAD_REGISTER_NUMBER;
 
 	if (msc_pcibios_config_access(PCI_ACCESS_READ, bus, devfn, where,
+<<<<<<< HEAD
 	                              &data))
+=======
+				      &data))
+>>>>>>> refs/remotes/origin/master
 		return -1;
 
 	if (size == 1)
@@ -124,7 +150,11 @@ static int msc_pcibios_write(struct pci_bus *bus, unsigned int devfn,
 		data = val;
 	else {
 		if (msc_pcibios_config_access(PCI_ACCESS_READ, bus, devfn,
+<<<<<<< HEAD
 		                              where, &data))
+=======
+					      where, &data))
+>>>>>>> refs/remotes/origin/master
 			return -1;
 
 		if (size == 1)

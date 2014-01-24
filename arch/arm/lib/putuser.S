@@ -16,6 +16,18 @@
  * __put_user_X
  *
  * Inputs:	r0 contains the address
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *		r1 contains the address limit, which must be preserved
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *		r1 contains the address limit, which must be preserved
+>>>>>>> refs/remotes/origin/master
+=======
+ *		r1 contains the address limit, which must be preserved
+>>>>>>> refs/remotes/origin/cm-11.0
  *		r2, r3 contains the value
  * Outputs:	r0 is the error code
  *		lr corrupted
@@ -27,16 +39,44 @@
  * Note also that it is intended that __put_user_bad is not global.
  */
 #include <linux/linkage.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/assembler.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/assembler.h>
+>>>>>>> refs/remotes/origin/master
+=======
+#include <asm/assembler.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/errno.h>
 #include <asm/domain.h>
 
 ENTRY(__put_user_1)
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 1:	T(strb)	r2, [r0]
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	check_uaccess r0, 1, r1, ip, __put_user_bad
+1: TUSER(strb)	r2, [r0]
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	check_uaccess r0, 1, r1, ip, __put_user_bad
+1: TUSER(strb)	r2, [r0]
+>>>>>>> refs/remotes/origin/master
 	mov	r0, #0
 	mov	pc, lr
 ENDPROC(__put_user_1)
 
 ENTRY(__put_user_2)
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mov	ip, r2, lsr #8
 #ifdef CONFIG_THUMB2_KERNEL
 #ifndef __ARMEB__
@@ -53,6 +93,32 @@ ENTRY(__put_user_2)
 #else
 2:	T(strb)	ip, [r0], #1
 3:	T(strb)	r2, [r0]
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	check_uaccess r0, 2, r1, ip, __put_user_bad
+	mov	ip, r2, lsr #8
+#ifdef CONFIG_THUMB2_KERNEL
+#ifndef __ARMEB__
+2: TUSER(strb)	r2, [r0]
+3: TUSER(strb)	ip, [r0, #1]
+#else
+2: TUSER(strb)	ip, [r0]
+3: TUSER(strb)	r2, [r0, #1]
+#endif
+#else	/* !CONFIG_THUMB2_KERNEL */
+#ifndef __ARMEB__
+2: TUSER(strb)	r2, [r0], #1
+3: TUSER(strb)	ip, [r0]
+#else
+2: TUSER(strb)	ip, [r0], #1
+3: TUSER(strb)	r2, [r0]
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 #endif	/* CONFIG_THUMB2_KERNEL */
 	mov	r0, #0
@@ -60,18 +126,50 @@ ENTRY(__put_user_2)
 ENDPROC(__put_user_2)
 
 ENTRY(__put_user_4)
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 4:	T(str)	r2, [r0]
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	check_uaccess r0, 4, r1, ip, __put_user_bad
+4: TUSER(str)	r2, [r0]
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	check_uaccess r0, 4, r1, ip, __put_user_bad
+4: TUSER(str)	r2, [r0]
+>>>>>>> refs/remotes/origin/master
 	mov	r0, #0
 	mov	pc, lr
 ENDPROC(__put_user_4)
 
 ENTRY(__put_user_8)
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_THUMB2_KERNEL
 5:	T(str)	r2, [r0]
 6:	T(str)	r3, [r0, #4]
 #else
 5:	T(str)	r2, [r0], #4
 6:	T(str)	r3, [r0]
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	check_uaccess r0, 8, r1, ip, __put_user_bad
+#ifdef CONFIG_THUMB2_KERNEL
+5: TUSER(str)	r2, [r0]
+6: TUSER(str)	r3, [r0, #4]
+#else
+5: TUSER(str)	r2, [r0], #4
+6: TUSER(str)	r3, [r0]
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	mov	r0, #0
 	mov	pc, lr

@@ -38,20 +38,44 @@
 #include <linux/usb/otg.h>
 #include <linux/usb/ulpi.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/regulator/machine.h>
+#include <linux/regulator/fixed.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/hardware.h>
+=======
+#include <linux/regulator/machine.h>
+#include <linux/regulator/fixed.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 #include <asm/memory.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/iomux-mx3.h>
 #include <mach/ulpi.h>
 
 #include "devices-imx31.h"
+<<<<<<< HEAD
 #include "crmregs-imx31.h"
+=======
+#include "crmregs-imx3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "common.h"
+#include "devices-imx31.h"
+#include "crmregs-imx3.h"
+#include "hardware.h"
+#include "iomux-mx3.h"
+#include "ulpi.h"
+>>>>>>> refs/remotes/origin/master
 
 static int armadillo5x0_pins[] = {
 	/* UART1 */
@@ -314,18 +338,38 @@ static struct mtd_partition armadillo5x0_nor_flash_partitions[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct physmap_flash_data armadillo5x0_nor_flash_pdata = {
+=======
+static const struct physmap_flash_data
+		armadillo5x0_nor_flash_pdata __initconst = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct physmap_flash_data
+		armadillo5x0_nor_flash_pdata __initconst = {
+>>>>>>> refs/remotes/origin/master
 	.width		= 2,
 	.parts		= armadillo5x0_nor_flash_partitions,
 	.nr_parts	= ARRAY_SIZE(armadillo5x0_nor_flash_partitions),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct resource armadillo5x0_nor_flash_resource = {
+=======
+static const struct resource armadillo5x0_nor_flash_resource __initconst = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct resource armadillo5x0_nor_flash_resource __initconst = {
+>>>>>>> refs/remotes/origin/master
 	.flags		= IORESOURCE_MEM,
 	.start		= MX31_CS0_BASE_ADDR,
 	.end		= MX31_CS0_BASE_ADDR + SZ_64M - 1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device armadillo5x0_nor_flash = {
 	.name			= "physmap-flash",
 	.id			= -1,
@@ -333,6 +377,10 @@ static struct platform_device armadillo5x0_nor_flash = {
 	.resource		= &armadillo5x0_nor_flash_resource,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * FB support
  */
@@ -371,10 +419,13 @@ static const struct fb_videomode fb_modedb[] = {
 	},
 };
 
+<<<<<<< HEAD
 static const struct ipu_platform_data mx3_ipu_data __initconst = {
 	.irq_base = MXC_IPU_IRQ_START,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mx3fb_platform_data mx3fb_pdata __initdata = {
 	.name		= "CRT-VGA",
 	.mode		= fb_modedb,
@@ -412,8 +463,13 @@ static int armadillo5x0_sdhc1_init(struct device *dev,
 	gpio_direction_input(gpio_wp);
 
 	/* When supported the trigger type have to be BOTH */
+<<<<<<< HEAD
 	ret = request_irq(IOMUX_TO_IRQ(MX31_PIN_ATA_DMACK), detect_irq,
 			  IRQF_DISABLED | IRQF_TRIGGER_FALLING,
+=======
+	ret = request_irq(gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_ATA_DMACK)),
+			  detect_irq, IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/master
 			  "sdhc-detect", data);
 
 	if (ret)
@@ -433,7 +489,11 @@ err_gpio_free:
 
 static void armadillo5x0_sdhc1_exit(struct device *dev, void *data)
 {
+<<<<<<< HEAD
 	free_irq(IOMUX_TO_IRQ(MX31_PIN_ATA_DMACK), data);
+=======
+	free_irq(gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_ATA_DMACK)), data);
+>>>>>>> refs/remotes/origin/master
 	gpio_free(IOMUX_TO_GPIO(MX31_PIN_ATA_DMACK));
 	gpio_free(IOMUX_TO_GPIO(MX31_PIN_ATA_RESET_B));
 }
@@ -454,8 +514,12 @@ static struct resource armadillo5x0_smc911x_resources[] = {
 		.end	= MX31_CS3_BASE_ADDR + SZ_32M - 1,
 		.flags	= IORESOURCE_MEM,
 	}, {
+<<<<<<< HEAD
 		.start	= IOMUX_TO_IRQ(MX31_PIN_GPIO1_0),
 		.end	= IOMUX_TO_IRQ(MX31_PIN_GPIO1_0),
+=======
+		/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_LOWLEVEL,
 	},
 };
@@ -485,14 +549,48 @@ static struct platform_device *devices[] __initdata = {
 	&armadillo5x0_smc911x_device,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct regulator_consumer_supply dummy_supplies[] = {
+	REGULATOR_SUPPLY("vdd33a", "smsc911x"),
+	REGULATOR_SUPPLY("vddvario", "smsc911x"),
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Perform board specific initializations
  */
 static void __init armadillo5x0_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mxc_iomux_setup_multiple_pins(armadillo5x0_pins,
 			ARRAY_SIZE(armadillo5x0_pins), "armadillo5x0");
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	imx31_soc_init();
+
+	mxc_iomux_setup_multiple_pins(armadillo5x0_pins,
+			ARRAY_SIZE(armadillo5x0_pins), "armadillo5x0");
+
+	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	armadillo5x0_smc911x_resources[1].start =
+			gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO1_0));
+	armadillo5x0_smc911x_resources[1].end =
+			gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO1_0));
+>>>>>>> refs/remotes/origin/master
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 	imx_add_gpio_keys(&armadillo5x0_button_data);
 	imx31_add_imx_i2c1(NULL);
@@ -508,18 +606,40 @@ static void __init armadillo5x0_init(void)
 	imx31_add_mxc_mmc(0, &sdhc_pdata);
 
 	/* Register FB */
+<<<<<<< HEAD
 	imx31_add_ipu_core(&mx3_ipu_data);
 	imx31_add_mx3_sdc_fb(&mx3fb_pdata);
 
 	/* Register NOR Flash */
+<<<<<<< HEAD
 	mxc_register_device(&armadillo5x0_nor_flash,
 			    &armadillo5x0_nor_flash_pdata);
+=======
+=======
+	imx31_add_ipu_core();
+	imx31_add_mx3_sdc_fb(&mx3fb_pdata);
+
+	/* Register NOR Flash */
+>>>>>>> refs/remotes/origin/master
+	platform_device_register_resndata(NULL, "physmap-flash", -1,
+			&armadillo5x0_nor_flash_resource, 1,
+			&armadillo5x0_nor_flash_pdata,
+			sizeof(armadillo5x0_nor_flash_pdata));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Register NAND Flash */
 	imx31_add_mxc_nand(&armadillo5x0_nand_board_info);
 
 	/* set NAND page size to 2k if not configured via boot mode pins */
+<<<<<<< HEAD
 	__raw_writel(__raw_readl(MXC_CCM_RCSR) | (1 << 30), MXC_CCM_RCSR);
+=======
+	__raw_writel(__raw_readl(mx3_ccm_base + MXC_CCM_RCSR) |
+					(1 << 30), mx3_ccm_base + MXC_CCM_RCSR);
+>>>>>>> refs/remotes/origin/master
 
 	/* RTC */
 	/* Get RTC IRQ and register the chip */
@@ -550,16 +670,38 @@ static void __init armadillo5x0_timer_init(void)
 	mx31_clocks_init(26000000);
 }
 
+<<<<<<< HEAD
 static struct sys_timer armadillo5x0_timer = {
 	.init	= armadillo5x0_timer_init,
 };
 
 MACHINE_START(ARMADILLO5X0, "Armadillo-500")
 	/* Maintainer: Alberto Panizzo  */
+<<<<<<< HEAD
 	.boot_params = MX3x_PHYS_OFFSET + 0x100,
 	.map_io = mx31_map_io,
 	.init_early = imx31_init_early,
 	.init_irq = mx31_init_irq,
 	.timer = &armadillo5x0_timer,
 	.init_machine = armadillo5x0_init,
+=======
+=======
+MACHINE_START(ARMADILLO5X0, "Armadillo-500")
+	/* Maintainer: Alberto Panizzo  */
+>>>>>>> refs/remotes/origin/master
+	.atag_offset = 0x100,
+	.map_io = mx31_map_io,
+	.init_early = imx31_init_early,
+	.init_irq = mx31_init_irq,
+	.handle_irq = imx31_handle_irq,
+<<<<<<< HEAD
+	.timer = &armadillo5x0_timer,
+	.init_machine = armadillo5x0_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= armadillo5x0_timer_init,
+	.init_machine = armadillo5x0_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

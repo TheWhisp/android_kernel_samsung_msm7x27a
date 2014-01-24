@@ -2,12 +2,23 @@
 # Generated files
 #
 config*
+<<<<<<< HEAD
+<<<<<<< HEAD
 lex.*.c
+=======
+*.lex.c
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+*.lex.c
+>>>>>>> refs/remotes/origin/master
 *.tab.c
 *.tab.h
 zconf.hash.c
 *.moc
+<<<<<<< HEAD
 lkc_defs.h
+=======
+>>>>>>> refs/remotes/origin/master
 gconf.glade.h
 *.pot
 *.mo

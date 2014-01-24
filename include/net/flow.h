@@ -9,7 +9,15 @@
 
 #include <linux/socket.h>
 #include <linux/in6.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 struct flowi_common {
 	int	flowic_oif;
@@ -20,8 +28,13 @@ struct flowi_common {
 	__u8	flowic_proto;
 	__u8	flowic_flags;
 #define FLOWI_FLAG_ANYSRC		0x01
+<<<<<<< HEAD
 #define FLOWI_FLAG_PRECOW_METRICS	0x02
 #define FLOWI_FLAG_CAN_SLEEP		0x04
+=======
+#define FLOWI_FLAG_CAN_SLEEP		0x02
+#define FLOWI_FLAG_KNOWN_NH		0x04
+>>>>>>> refs/remotes/origin/master
 	__u32	flowic_secid;
 };
 
@@ -59,8 +72,22 @@ struct flowi4 {
 #define flowi4_proto		__fl_common.flowic_proto
 #define flowi4_flags		__fl_common.flowic_flags
 #define flowi4_secid		__fl_common.flowic_secid
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__be32			daddr;
 	__be32			saddr;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/* (saddr,daddr) must be grouped, same order as in IP header */
+	__be32			saddr;
+	__be32			daddr;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union flowi_uli		uli;
 #define fl4_sport		uli.ports.sport
 #define fl4_dport		uli.ports.dport
@@ -75,7 +102,15 @@ static inline void flowi4_init_output(struct flowi4 *fl4, int oif,
 				      __u32 mark, __u8 tos, __u8 scope,
 				      __u8 proto, __u8 flags,
 				      __be32 daddr, __be32 saddr,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				      __be16 dport, __be32 sport)
+=======
+				      __be16 dport, __be16 sport)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      __be16 dport, __be16 sport)
+>>>>>>> refs/remotes/origin/master
 {
 	fl4->flowi4_oif = oif;
 	fl4->flowi4_iif = 0;
@@ -212,11 +247,25 @@ typedef struct flow_cache_object *(*flow_resolve_t)(
 		struct net *net, const struct flowi *key, u16 family,
 		u8 dir, struct flow_cache_object *oldobj, void *ctx);
 
+<<<<<<< HEAD
 extern struct flow_cache_object *flow_cache_lookup(
 		struct net *net, const struct flowi *key, u16 family,
 		u8 dir, flow_resolve_t resolver, void *ctx);
 
 extern void flow_cache_flush(void);
+<<<<<<< HEAD
+=======
+extern void flow_cache_flush_deferred(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct flow_cache_object *flow_cache_lookup(struct net *net,
+					    const struct flowi *key, u16 family,
+					    u8 dir, flow_resolve_t resolver,
+					    void *ctx);
+
+void flow_cache_flush(void);
+void flow_cache_flush_deferred(void);
+>>>>>>> refs/remotes/origin/master
 extern atomic_t flow_cache_genid;
 
 #endif

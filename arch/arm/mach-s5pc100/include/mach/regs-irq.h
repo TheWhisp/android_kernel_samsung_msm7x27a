@@ -14,6 +14,9 @@
 #define __ASM_ARCH_REGS_IRQ_H __FILE__
 
 #include <mach/map.h>
+<<<<<<< HEAD
 #include <asm/hardware/vic.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_ARCH_REGS_IRQ_H */

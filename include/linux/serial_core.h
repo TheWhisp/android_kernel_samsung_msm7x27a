@@ -20,6 +20,7 @@
 #ifndef LINUX_SERIAL_CORE_H
 #define LINUX_SERIAL_CORE_H
 
+<<<<<<< HEAD
 #include <linux/serial.h>
 
 /*
@@ -46,7 +47,12 @@
 #define PORT_AR7	18	/* Texas Instruments AR7 internal UART */
 #define PORT_U6_16550A	19	/* ST-Ericsson U6xxx internal UART */
 #define PORT_TEGRA	20	/* NVIDIA Tegra internal UART */
+<<<<<<< HEAD
 #define PORT_MAX_8250	20	/* max port ID */
+=======
+#define PORT_XR17D15X	21	/* Exar XR17D15x UART */
+#define PORT_MAX_8250	21	/* max port ID */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * ARM specific type numbers.  These are not currently guaranteed
@@ -206,7 +212,18 @@
 /* Xilinx PSS UART */
 #define PORT_XUARTPS	98
 
+<<<<<<< HEAD
+=======
+/* Atheros AR933X SoC */
+#define PORT_AR933X	99
+
+/* Energy Micro efm32 SoC */
+#define PORT_EFMUART   100
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/compiler.h>
 #include <linux/interrupt.h>
@@ -216,15 +233,31 @@
 #include <linux/tty.h>
 #include <linux/mutex.h>
 #include <linux/sysrq.h>
+<<<<<<< HEAD
 #include <linux/pps_kernel.h>
+=======
+#include <uapi/linux/serial_core.h>
+
+#ifdef CONFIG_SERIAL_CORE_CONSOLE
+#define uart_console(port) \
+	((port)->cons && (port)->cons->index == (port)->line)
+#else
+#define uart_console(port)      (0)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 struct uart_port;
 struct serial_struct;
 struct device;
 
 /*
+<<<<<<< HEAD
  * This structure describes all the operations that can be
  * done on the physical hardware.
+=======
+ * This structure describes all the operations that can be done on the
+ * physical hardware.  See Documentation/serial/driver for details.
+>>>>>>> refs/remotes/origin/master
  */
 struct uart_ops {
 	unsigned int	(*tx_empty)(struct uart_port *);
@@ -232,6 +265,11 @@ struct uart_ops {
 	unsigned int	(*get_mctrl)(struct uart_port *);
 	void		(*stop_tx)(struct uart_port *);
 	void		(*start_tx)(struct uart_port *);
+<<<<<<< HEAD
+=======
+	void		(*throttle)(struct uart_port *);
+	void		(*unthrottle)(struct uart_port *);
+>>>>>>> refs/remotes/origin/master
 	void		(*send_xchar)(struct uart_port *, char ch);
 	void		(*stop_rx)(struct uart_port *);
 	void		(*enable_ms)(struct uart_port *);
@@ -244,13 +282,23 @@ struct uart_ops {
 	void		(*set_ldisc)(struct uart_port *, int new);
 	void		(*pm)(struct uart_port *, unsigned int state,
 			      unsigned int oldstate);
+<<<<<<< HEAD
 	int		(*set_wake)(struct uart_port *, unsigned int state);
 	void		(*wake_peer)(struct uart_port *);
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Return a string describing the type of the port
 	 */
+<<<<<<< HEAD
 	const char *(*type)(struct uart_port *);
+=======
+	const char	*(*type)(struct uart_port *);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Release IO and memory resources used by the port.
@@ -267,7 +315,12 @@ struct uart_ops {
 	int		(*verify_port)(struct uart_port *, struct serial_struct *);
 	int		(*ioctl)(struct uart_port *, unsigned int, unsigned long);
 #ifdef CONFIG_CONSOLE_POLL
+<<<<<<< HEAD
 	void	(*poll_put_char)(struct uart_port *, unsigned char);
+=======
+	int		(*poll_init)(struct uart_port *);
+	void		(*poll_put_char)(struct uart_port *, unsigned char);
+>>>>>>> refs/remotes/origin/master
 	int		(*poll_get_char)(struct uart_port *);
 #endif
 };
@@ -301,8 +354,19 @@ struct uart_port {
 	void			(*set_termios)(struct uart_port *,
 				               struct ktermios *new,
 				               struct ktermios *old);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int			(*handle_irq)(struct uart_port *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	void			(*pm)(struct uart_port *, unsigned int state,
 				      unsigned int old);
+=======
+	int			(*handle_irq)(struct uart_port *);
+	void			(*pm)(struct uart_port *, unsigned int state,
+				      unsigned int old);
+	void			(*handle_break)(struct uart_port *);
+>>>>>>> refs/remotes/origin/master
 	unsigned int		irq;			/* irq number */
 	unsigned long		irqflags;		/* irq flags  */
 	unsigned int		uartclk;		/* base uart clock */
@@ -316,11 +380,20 @@ struct uart_port {
 #define UPIO_HUB6		(1)
 #define UPIO_MEM		(2)
 #define UPIO_MEM32		(3)
+<<<<<<< HEAD
 #define UPIO_AU			(4)			/* Au1x00 type IO */
 #define UPIO_TSI		(5)			/* Tsi108/109 type IO */
+<<<<<<< HEAD
 #define UPIO_DWAPB		(6)			/* DesignWare APB UART */
 #define UPIO_RM9000		(7)			/* RM9000 type IO */
 #define UPIO_DWAPB32		(8)			/* DesignWare APB UART (32 bit accesses) */
+=======
+#define UPIO_RM9000		(6)			/* RM9000 type IO */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UPIO_AU			(4)			/* Au1x00 and RT288x type IO */
+#define UPIO_TSI		(5)			/* Tsi108/109 type IO */
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int		read_status_mask;	/* driver specific */
 	unsigned int		ignore_status_mask;	/* driver specific */
@@ -349,8 +422,24 @@ struct uart_port {
 #define UPF_BUGGY_UART		((__force upf_t) (1 << 14))
 #define UPF_NO_TXEN_TEST	((__force upf_t) (1 << 15))
 #define UPF_MAGIC_MULTIPLIER	((__force upf_t) (1 << 16))
+<<<<<<< HEAD
 #define UPF_CONS_FLOW		((__force upf_t) (1 << 23))
 #define UPF_SHARE_IRQ		((__force upf_t) (1 << 24))
+<<<<<<< HEAD
+=======
+#define UPF_EXAR_EFR		((__force upf_t) (1 << 25))
+#define UPF_BUG_THRE		((__force upf_t) (1 << 26))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Port has hardware-assisted h/w flow control (iow, auto-RTS *not* auto-CTS) */
+#define UPF_HARD_FLOW		((__force upf_t) (1 << 21))
+/* Port has hardware-assisted s/w flow control */
+#define UPF_SOFT_FLOW		((__force upf_t) (1 << 22))
+#define UPF_CONS_FLOW		((__force upf_t) (1 << 23))
+#define UPF_SHARE_IRQ		((__force upf_t) (1 << 24))
+#define UPF_EXAR_EFR		((__force upf_t) (1 << 25))
+#define UPF_BUG_THRE		((__force upf_t) (1 << 26))
+>>>>>>> refs/remotes/origin/master
 /* The exact UART type is known and should not be probed.  */
 #define UPF_FIXED_TYPE		((__force upf_t) (1 << 27))
 #define UPF_BOOT_AUTOCONF	((__force upf_t) (1 << 28))
@@ -376,16 +465,56 @@ struct uart_port {
 	void			*private_data;		/* generic platform data pointer */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline int serial_port_in(struct uart_port *up, int offset)
+{
+	return up->serial_in(up, offset);
+}
+
+static inline void serial_port_out(struct uart_port *up, int offset, int value)
+{
+	up->serial_out(up, offset, value);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ * enum uart_pm_state - power states for UARTs
+ * @UART_PM_STATE_ON: UART is powered, up and operational
+ * @UART_PM_STATE_OFF: UART is powered off
+ * @UART_PM_STATE_UNDEFINED: sentinel
+ */
+enum uart_pm_state {
+	UART_PM_STATE_ON = 0,
+	UART_PM_STATE_OFF = 3, /* number taken from ACPI */
+	UART_PM_STATE_UNDEFINED,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This is the state information which is persistent across opens.
  */
 struct uart_state {
 	struct tty_port		port;
 
+<<<<<<< HEAD
 	int			pm_state;
 	struct circ_buf		xmit;
 
+<<<<<<< HEAD
 	struct tasklet_struct	tlet;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum uart_pm_state	pm_state;
+	struct circ_buf		xmit;
+
+>>>>>>> refs/remotes/origin/master
 	struct uart_port	*uart_port;
 };
 
@@ -484,10 +613,32 @@ static inline int uart_tx_stopped(struct uart_port *port)
 /*
  * The following are helper functions for the low level drivers.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int
 uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
 {
 #ifdef SUPPORT_SYSRQ
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+extern void uart_handle_dcd_change(struct uart_port *uport,
+		unsigned int status);
+extern void uart_handle_cts_change(struct uart_port *uport,
+		unsigned int status);
+
+extern void uart_insert_char(struct uart_port *port, unsigned int status,
+		 unsigned int overrun, unsigned int ch, unsigned int flag);
+
+#ifdef SUPPORT_SYSRQ
+static inline int
+uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
+{
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (port->sysrq) {
 		if (ch && time_before(jiffies, port->sysrq)) {
 			handle_sysrq(ch);
@@ -496,11 +647,24 @@ uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
 		}
 		port->sysrq = 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 	return 0;
 }
 #ifndef SUPPORT_SYSRQ
 #define uart_handle_sysrq_char(port,ch) uart_handle_sysrq_char(port, 0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	return 0;
+}
+#else
+#define uart_handle_sysrq_char(port,ch) ({ (void)port; 0; })
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -509,6 +673,13 @@ uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
 static inline int uart_handle_break(struct uart_port *port)
 {
 	struct uart_state *state = port->state;
+<<<<<<< HEAD
+=======
+
+	if (port->handle_break)
+		port->handle_break(port);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef SUPPORT_SYSRQ
 	if (port->cons && port->cons->index == port->line) {
 		if (!port->sysrq) {
@@ -523,6 +694,8 @@ static inline int uart_handle_break(struct uart_port *port)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  *	uart_handle_dcd_change - handle a change of carrier detect state
  *	@uport: uart_port structure for the open port
@@ -606,6 +779,10 @@ uart_insert_char(struct uart_port *port, unsigned int status,
 		tty_insert_flip_char(tty, 0, TTY_OVERRUN);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	UART_ENABLE_MS - determine if port should enable modem status irqs
  */
@@ -613,6 +790,9 @@ uart_insert_char(struct uart_port *port, unsigned int status,
 					 (cflag) & CRTSCTS || \
 					 !((cflag) & CLOCAL))
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* LINUX_SERIAL_CORE_H */

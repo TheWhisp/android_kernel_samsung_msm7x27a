@@ -19,8 +19,11 @@ typedef elf_greg_t elf_gregset_t[ELF_NGREG];
 
 typedef struct user_fp elf_fpregset_t;
 
+<<<<<<< HEAD
 #define EM_ARM	40
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define EF_ARM_EABI_MASK	0xff000000
 #define EF_ARM_EABI_UNKNOWN	0x00000000
 #define EF_ARM_EABI_VER1	0x01000000
@@ -130,8 +133,20 @@ struct mm_struct;
 extern unsigned long arch_randomize_brk(struct mm_struct *mm);
 #define arch_randomize_brk arch_randomize_brk
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int vectors_user_mapping(void);
 #define arch_setup_additional_pages(bprm, uses_interp) vectors_user_mapping()
 #define ARCH_HAS_SETUP_ADDITIONAL_PAGES
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MMU
+#define ARCH_HAS_SETUP_ADDITIONAL_PAGES 1
+struct linux_binprm;
+int arch_setup_additional_pages(struct linux_binprm *, int);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif

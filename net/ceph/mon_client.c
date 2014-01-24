@@ -8,8 +8,18 @@
 
 #include <linux/ceph/mon_client.h>
 #include <linux/ceph/libceph.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/ceph/decode.h>
 
+=======
+#include <linux/ceph/debugfs.h>
+#include <linux/ceph/decode.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ceph/debugfs.h>
+#include <linux/ceph/decode.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ceph/auth.h>
 
 /*
@@ -106,9 +116,27 @@ static void __send_prepared_auth_request(struct ceph_mon_client *monc, int len)
 	monc->pending_auth = 1;
 	monc->m_auth->front.iov_len = len;
 	monc->m_auth->hdr.front_len = cpu_to_le32(len);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ceph_con_revoke(monc->con, monc->m_auth);
 	ceph_msg_get(monc->m_auth);  /* keep our ref */
 	ceph_con_send(monc->con, monc->m_auth);
+=======
+	ceph_msg_revoke(monc->m_auth);
+	ceph_msg_get(monc->m_auth);  /* keep our ref */
+	ceph_con_send(&monc->con, monc->m_auth);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ceph_msg_revoke(monc->m_auth);
+	ceph_msg_get(monc->m_auth);  /* keep our ref */
+	ceph_con_send(&monc->con, monc->m_auth);
+>>>>>>> refs/remotes/origin/master
+=======
+	ceph_msg_revoke(monc->m_auth);
+	ceph_msg_get(monc->m_auth);  /* keep our ref */
+	ceph_con_send(&monc->con, monc->m_auth);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -116,6 +144,8 @@ static void __send_prepared_auth_request(struct ceph_mon_client *monc, int len)
  */
 static void __close_session(struct ceph_mon_client *monc)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (monc->con) {
 		dout("__close_session closing mon%d\n", monc->cur_mon);
 		ceph_con_revoke(monc->con, monc->m_auth);
@@ -124,6 +154,22 @@ static void __close_session(struct ceph_mon_client *monc)
 		monc->pending_auth = 0;
 		ceph_auth_reset(monc->auth);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	dout("__close_session closing mon%d\n", monc->cur_mon);
+	ceph_msg_revoke(monc->m_auth);
+	ceph_msg_revoke_incoming(monc->m_auth_reply);
+	ceph_msg_revoke(monc->m_subscribe);
+	ceph_msg_revoke_incoming(monc->m_subscribe_ack);
+	ceph_con_close(&monc->con);
+	monc->cur_mon = -1;
+	monc->pending_auth = 0;
+	ceph_auth_reset(monc->auth);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -144,9 +190,24 @@ static int __open_session(struct ceph_mon_client *monc)
 		monc->want_next_osdmap = !!monc->want_next_osdmap;
 
 		dout("open_session mon%d opening\n", monc->cur_mon);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		monc->con->peer_name.type = CEPH_ENTITY_TYPE_MON;
 		monc->con->peer_name.num = cpu_to_le64(monc->cur_mon);
 		ceph_con_open(monc->con,
+=======
+		ceph_con_open(&monc->con,
+			      CEPH_ENTITY_TYPE_MON, monc->cur_mon,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ceph_con_open(&monc->con,
+			      CEPH_ENTITY_TYPE_MON, monc->cur_mon,
+>>>>>>> refs/remotes/origin/master
+=======
+		ceph_con_open(&monc->con,
+			      CEPH_ENTITY_TYPE_MON, monc->cur_mon,
+>>>>>>> refs/remotes/origin/cm-11.0
 			      &monc->monmap->mon_inst[monc->cur_mon].addr);
 
 		/* initiatiate authentication handshake */
@@ -170,7 +231,11 @@ static bool __sub_expired(struct ceph_mon_client *monc)
  */
 static void __schedule_delayed(struct ceph_mon_client *monc)
 {
+<<<<<<< HEAD
 	unsigned delay;
+=======
+	unsigned int delay;
+>>>>>>> refs/remotes/origin/master
 
 	if (monc->cur_mon < 0 || __sub_expired(monc))
 		delay = 10 * HZ;
@@ -186,7 +251,11 @@ static void __schedule_delayed(struct ceph_mon_client *monc)
 static void __send_subscribe(struct ceph_mon_client *monc)
 {
 	dout("__send_subscribe sub_sent=%u exp=%u want_osd=%d\n",
+<<<<<<< HEAD
 	     (unsigned)monc->sub_sent, __sub_expired(monc),
+=======
+	     (unsigned int)monc->sub_sent, __sub_expired(monc),
+>>>>>>> refs/remotes/origin/master
 	     monc->want_next_osdmap);
 	if ((__sub_expired(monc) && !monc->sub_sent) ||
 	    monc->want_next_osdmap == 1) {
@@ -203,7 +272,11 @@ static void __send_subscribe(struct ceph_mon_client *monc)
 
 		if (monc->want_next_osdmap) {
 			dout("__send_subscribe to 'osdmap' %u\n",
+<<<<<<< HEAD
 			     (unsigned)monc->have_osdmap);
+=======
+			     (unsigned int)monc->have_osdmap);
+>>>>>>> refs/remotes/origin/master
 			ceph_encode_string(&p, end, "osdmap", 6);
 			i = p;
 			i->have = cpu_to_le64(monc->have_osdmap);
@@ -213,7 +286,11 @@ static void __send_subscribe(struct ceph_mon_client *monc)
 		}
 		if (monc->want_mdsmap) {
 			dout("__send_subscribe to 'mdsmap' %u+\n",
+<<<<<<< HEAD
 			     (unsigned)monc->have_mdsmap);
+=======
+			     (unsigned int)monc->have_mdsmap);
+>>>>>>> refs/remotes/origin/master
 			ceph_encode_string(&p, end, "mdsmap", 6);
 			i = p;
 			i->have = cpu_to_le64(monc->have_mdsmap);
@@ -228,8 +305,23 @@ static void __send_subscribe(struct ceph_mon_client *monc)
 
 		msg->front.iov_len = p - msg->front.iov_base;
 		msg->hdr.front_len = cpu_to_le32(msg->front.iov_len);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ceph_con_revoke(monc->con, msg);
 		ceph_con_send(monc->con, ceph_msg_get(msg));
+=======
+		ceph_msg_revoke(msg);
+		ceph_con_send(&monc->con, ceph_msg_get(msg));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ceph_msg_revoke(msg);
+		ceph_con_send(&monc->con, ceph_msg_get(msg));
+>>>>>>> refs/remotes/origin/master
+=======
+		ceph_msg_revoke(msg);
+		ceph_con_send(&monc->con, ceph_msg_get(msg));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		monc->sub_sent = jiffies | 1;  /* never 0 */
 	}
@@ -238,7 +330,11 @@ static void __send_subscribe(struct ceph_mon_client *monc)
 static void handle_subscribe_ack(struct ceph_mon_client *monc,
 				 struct ceph_msg *msg)
 {
+<<<<<<< HEAD
 	unsigned seconds;
+=======
+	unsigned int seconds;
+>>>>>>> refs/remotes/origin/master
 	struct ceph_mon_subscribe_ack *h = msg->front.iov_base;
 
 	if (msg->front.iov_len < sizeof(*h))
@@ -249,7 +345,19 @@ static void handle_subscribe_ack(struct ceph_mon_client *monc,
 	if (monc->hunting) {
 		pr_info("mon%d %s session established\n",
 			monc->cur_mon,
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ceph_pr_addr(&monc->con->peer_addr.in_addr));
+=======
+			ceph_pr_addr(&monc->con.peer_addr.in_addr));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ceph_pr_addr(&monc->con.peer_addr.in_addr));
+>>>>>>> refs/remotes/origin/master
+=======
+			ceph_pr_addr(&monc->con.peer_addr.in_addr));
+>>>>>>> refs/remotes/origin/cm-11.0
 		monc->hunting = false;
 	}
 	dout("handle_subscribe_ack after %d seconds\n", seconds);
@@ -302,6 +410,8 @@ void ceph_monc_request_next_osdmap(struct ceph_mon_client *monc)
  */
 int ceph_monc_open_session(struct ceph_mon_client *monc)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!monc->con) {
 		monc->con = kmalloc(sizeof(*monc->con), GFP_KERNEL);
 		if (!monc->con)
@@ -311,6 +421,10 @@ int ceph_monc_open_session(struct ceph_mon_client *monc)
 		monc->con->ops = &mon_con_ops;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&monc->mutex);
 	__open_session(monc);
 	__schedule_delayed(monc);
@@ -320,6 +434,32 @@ int ceph_monc_open_session(struct ceph_mon_client *monc)
 EXPORT_SYMBOL(ceph_monc_open_session);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ * We require the fsid and global_id in order to initialize our
+ * debugfs dir.
+ */
+static bool have_debugfs_info(struct ceph_mon_client *monc)
+{
+	dout("have_debugfs_info fsid %d globalid %lld\n",
+	     (int)monc->client->have_fsid, monc->auth->global_id);
+	return monc->client->have_fsid && monc->auth->global_id > 0;
+}
+
+/*
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * The monitor responds with mount ack indicate mount success.  The
  * included client ticket allows the client to talk to MDSs and OSDs.
  */
@@ -329,9 +469,33 @@ static void ceph_monc_handle_map(struct ceph_mon_client *monc,
 	struct ceph_client *client = monc->client;
 	struct ceph_monmap *monmap = NULL, *old = monc->monmap;
 	void *p, *end;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	mutex_lock(&monc->mutex);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int had_debugfs_info, init_debugfs = 0;
+
+	mutex_lock(&monc->mutex);
+
+	had_debugfs_info = have_debugfs_info(monc);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	int had_debugfs_info, init_debugfs = 0;
+
+	mutex_lock(&monc->mutex);
+
+	had_debugfs_info = have_debugfs_info(monc);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	dout("handle_monmap\n");
 	p = msg->front.iov_base;
 	end = p + msg->front.iov_len;
@@ -351,8 +515,40 @@ static void ceph_monc_handle_map(struct ceph_mon_client *monc,
 	client->monc.monmap = monmap;
 	kfree(old);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 out:
 	mutex_unlock(&monc->mutex);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!client->have_fsid) {
+		client->have_fsid = true;
+		if (!had_debugfs_info && have_debugfs_info(monc)) {
+			pr_info("client%lld fsid %pU\n",
+				ceph_client_id(monc->client),
+				&monc->client->fsid);
+			init_debugfs = 1;
+		}
+		mutex_unlock(&monc->mutex);
+
+		if (init_debugfs) {
+			/*
+			 * do debugfs initialization without mutex to avoid
+			 * creating a locking dependency
+			 */
+			ceph_debugfs_client_init(monc->client);
+		}
+
+		goto out_unlocked;
+	}
+out:
+	mutex_unlock(&monc->mutex);
+out_unlocked:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wake_up_all(&client->auth_wq);
 }
 
@@ -439,6 +635,18 @@ static struct ceph_msg *get_generic_reply(struct ceph_connection *con,
 		m = NULL;
 	} else {
 		dout("get_generic_reply %lld got %p\n", tid, req->reply);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		*skip = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*skip = 0;
+>>>>>>> refs/remotes/origin/master
+=======
+		*skip = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 		m = ceph_msg_get(req->reply);
 		/*
 		 * we don't need to track the connection reading into
@@ -461,7 +669,19 @@ static int do_generic_request(struct ceph_mon_client *monc,
 	req->request->hdr.tid = cpu_to_le64(req->tid);
 	__insert_generic_request(monc, req);
 	monc->num_generic_requests++;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ceph_con_send(monc->con, ceph_msg_get(req->request));
+=======
+	ceph_con_send(&monc->con, ceph_msg_get(req->request));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ceph_con_send(&monc->con, ceph_msg_get(req->request));
+>>>>>>> refs/remotes/origin/master
+=======
+	ceph_con_send(&monc->con, ceph_msg_get(req->request));
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&monc->mutex);
 
 	err = wait_for_completion_interruptible(&req->completion);
@@ -528,10 +748,25 @@ int ceph_monc_do_statfs(struct ceph_mon_client *monc, struct ceph_statfs *buf)
 	init_completion(&req->completion);
 
 	err = -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	req->request = ceph_msg_new(CEPH_MSG_STATFS, sizeof(*h), GFP_NOFS);
 	if (!req->request)
 		goto out;
 	req->reply = ceph_msg_new(CEPH_MSG_STATFS_REPLY, 1024, GFP_NOFS);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	req->request = ceph_msg_new(CEPH_MSG_STATFS, sizeof(*h), GFP_NOFS,
+				    true);
+	if (!req->request)
+		goto out;
+	req->reply = ceph_msg_new(CEPH_MSG_STATFS_REPLY, 1024, GFP_NOFS,
+				  true);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!req->reply)
 		goto out;
 
@@ -608,7 +843,11 @@ bad:
 /*
  * Do a synchronous pool op.
  */
+<<<<<<< HEAD
 int ceph_monc_do_poolop(struct ceph_mon_client *monc, u32 op,
+=======
+static int do_poolop(struct ceph_mon_client *monc, u32 op,
+>>>>>>> refs/remotes/origin/master
 			u32 pool, u64 snapid,
 			char *buf, int len)
 {
@@ -626,10 +865,25 @@ int ceph_monc_do_poolop(struct ceph_mon_client *monc, u32 op,
 	init_completion(&req->completion);
 
 	err = -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	req->request = ceph_msg_new(CEPH_MSG_POOLOP, sizeof(*h), GFP_NOFS);
 	if (!req->request)
 		goto out;
 	req->reply = ceph_msg_new(CEPH_MSG_POOLOP_REPLY, 1024, GFP_NOFS);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	req->request = ceph_msg_new(CEPH_MSG_POOLOP, sizeof(*h), GFP_NOFS,
+				    true);
+	if (!req->request)
+		goto out;
+	req->reply = ceph_msg_new(CEPH_MSG_POOLOP_REPLY, 1024, GFP_NOFS,
+				  true);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!req->reply)
 		goto out;
 
@@ -656,7 +910,11 @@ out:
 int ceph_monc_create_snapid(struct ceph_mon_client *monc,
 			    u32 pool, u64 *snapid)
 {
+<<<<<<< HEAD
 	return ceph_monc_do_poolop(monc,  POOL_OP_CREATE_UNMANAGED_SNAP,
+=======
+	return do_poolop(monc,  POOL_OP_CREATE_UNMANAGED_SNAP,
+>>>>>>> refs/remotes/origin/master
 				   pool, 0, (char *)snapid, sizeof(*snapid));
 
 }
@@ -665,8 +923,13 @@ EXPORT_SYMBOL(ceph_monc_create_snapid);
 int ceph_monc_delete_snapid(struct ceph_mon_client *monc,
 			    u32 pool, u64 snapid)
 {
+<<<<<<< HEAD
 	return ceph_monc_do_poolop(monc,  POOL_OP_CREATE_UNMANAGED_SNAP,
 				   pool, snapid, 0, 0);
+=======
+	return do_poolop(monc,  POOL_OP_CREATE_UNMANAGED_SNAP,
+				   pool, snapid, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -680,8 +943,26 @@ static void __resend_generic_request(struct ceph_mon_client *monc)
 
 	for (p = rb_first(&monc->generic_request_tree); p; p = rb_next(p)) {
 		req = rb_entry(p, struct ceph_mon_generic_request, node);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ceph_con_revoke(monc->con, req->request);
 		ceph_con_send(monc->con, ceph_msg_get(req->request));
+=======
+		ceph_msg_revoke(req->request);
+		ceph_msg_revoke_incoming(req->reply);
+		ceph_con_send(&monc->con, ceph_msg_get(req->request));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ceph_msg_revoke(req->request);
+		ceph_msg_revoke_incoming(req->reply);
+		ceph_con_send(&monc->con, ceph_msg_get(req->request));
+>>>>>>> refs/remotes/origin/master
+=======
+		ceph_msg_revoke(req->request);
+		ceph_msg_revoke_incoming(req->reply);
+		ceph_con_send(&monc->con, ceph_msg_get(req->request));
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -701,11 +982,33 @@ static void delayed_work(struct work_struct *work)
 		__close_session(monc);
 		__open_session(monc);  /* continue hunting */
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ceph_con_keepalive(monc->con);
 
 		__validate_auth(monc);
 
 		if (monc->auth->ops->is_authenticated(monc->auth))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ceph_con_keepalive(&monc->con);
+
+		__validate_auth(monc);
+
+		if (ceph_auth_is_authenticated(monc->auth))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+		ceph_con_keepalive(&monc->con);
+
+		__validate_auth(monc);
+
+		if (ceph_auth_is_authenticated(monc->auth))
+>>>>>>> refs/remotes/origin/cm-11.0
 			__send_subscribe(monc);
 	}
 	__schedule_delayed(monc);
@@ -737,7 +1040,10 @@ static int build_initial_monmap(struct ceph_mon_client *monc)
 		monc->monmap->mon_inst[i].name.num = cpu_to_le64(i);
 	}
 	monc->monmap->num_mon = num_mon;
+<<<<<<< HEAD
 	monc->have_fsid = false;
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -755,13 +1061,34 @@ int ceph_monc_init(struct ceph_mon_client *monc, struct ceph_client *cl)
 	if (err)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	monc->con = NULL;
 
+=======
+	/* connection */
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* authentication */
 	monc->auth = ceph_auth_init(cl->options->name,
 				    cl->options->key);
 	if (IS_ERR(monc->auth))
 		return PTR_ERR(monc->auth);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* connection */
+	/* authentication */
+	monc->auth = ceph_auth_init(cl->options->name,
+				    cl->options->key);
+	if (IS_ERR(monc->auth)) {
+		err = PTR_ERR(monc->auth);
+		goto out_monmap;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	monc->auth->want_keys =
 		CEPH_ENTITY_TYPE_AUTH | CEPH_ENTITY_TYPE_MON |
 		CEPH_ENTITY_TYPE_OSD | CEPH_ENTITY_TYPE_MDS;
@@ -770,6 +1097,8 @@ int ceph_monc_init(struct ceph_mon_client *monc, struct ceph_client *cl)
 	err = -ENOMEM;
 	monc->m_subscribe_ack = ceph_msg_new(CEPH_MSG_MON_SUBSCRIBE_ACK,
 				     sizeof(struct ceph_mon_subscribe_ack),
+<<<<<<< HEAD
+<<<<<<< HEAD
 				     GFP_NOFS);
 	if (!monc->m_subscribe_ack)
 		goto out_monmap;
@@ -783,10 +1112,50 @@ int ceph_monc_init(struct ceph_mon_client *monc, struct ceph_client *cl)
 		goto out_subscribe;
 
 	monc->m_auth = ceph_msg_new(CEPH_MSG_AUTH, 4096, GFP_NOFS);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				     GFP_NOFS, true);
+	if (!monc->m_subscribe_ack)
+		goto out_auth;
+
+	monc->m_subscribe = ceph_msg_new(CEPH_MSG_MON_SUBSCRIBE, 96, GFP_NOFS,
+					 true);
+	if (!monc->m_subscribe)
+		goto out_subscribe_ack;
+
+	monc->m_auth_reply = ceph_msg_new(CEPH_MSG_AUTH_REPLY, 4096, GFP_NOFS,
+					  true);
+	if (!monc->m_auth_reply)
+		goto out_subscribe;
+
+	monc->m_auth = ceph_msg_new(CEPH_MSG_AUTH, 4096, GFP_NOFS, true);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	monc->pending_auth = 0;
 	if (!monc->m_auth)
 		goto out_auth_reply;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ceph_con_init(&monc->con, monc, &mon_con_ops,
+		      &monc->client->msgr);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ceph_con_init(&monc->con, monc, &mon_con_ops,
+		      &monc->client->msgr);
+
+>>>>>>> refs/remotes/origin/master
+=======
+	ceph_con_init(&monc->con, monc, &mon_con_ops,
+		      &monc->client->msgr);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	monc->cur_mon = -1;
 	monc->hunting = true;
 	monc->sub_renew_after = jiffies;
@@ -808,6 +1177,19 @@ out_subscribe:
 	ceph_msg_put(monc->m_subscribe);
 out_subscribe_ack:
 	ceph_msg_put(monc->m_subscribe_ack);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+out_auth:
+	ceph_auth_destroy(monc->auth);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_auth:
+	ceph_auth_destroy(monc->auth);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out_monmap:
 	kfree(monc->monmap);
 out:
@@ -822,6 +1204,8 @@ void ceph_monc_stop(struct ceph_mon_client *monc)
 
 	mutex_lock(&monc->mutex);
 	__close_session(monc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (monc->con) {
 		monc->con->private = NULL;
 		monc->con->ops->put(monc->con);
@@ -829,6 +1213,30 @@ void ceph_monc_stop(struct ceph_mon_client *monc)
 	}
 	mutex_unlock(&monc->mutex);
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	mutex_unlock(&monc->mutex);
+
+	/*
+	 * flush msgr queue before we destroy ourselves to ensure that:
+	 *  - any work that references our embedded con is finished.
+	 *  - any osd_client or other work that may reference an authorizer
+	 *    finishes before we shut down the auth subsystem.
+	 */
+	ceph_msgr_flush();
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ceph_auth_destroy(monc->auth);
 
 	ceph_msg_put(monc->m_auth);
@@ -845,10 +1253,32 @@ static void handle_auth_reply(struct ceph_mon_client *monc,
 {
 	int ret;
 	int was_auth = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	mutex_lock(&monc->mutex);
 	if (monc->auth->ops)
 		was_auth = monc->auth->ops->is_authenticated(monc->auth);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int had_debugfs_info, init_debugfs = 0;
+
+	mutex_lock(&monc->mutex);
+	had_debugfs_info = have_debugfs_info(monc);
+	was_auth = ceph_auth_is_authenticated(monc->auth);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	int had_debugfs_info, init_debugfs = 0;
+
+	mutex_lock(&monc->mutex);
+	had_debugfs_info = have_debugfs_info(monc);
+	was_auth = ceph_auth_is_authenticated(monc->auth);
+>>>>>>> refs/remotes/origin/cm-11.0
 	monc->pending_auth = 0;
 	ret = ceph_handle_auth_reply(monc->auth, msg->front.iov_base,
 				     msg->front.iov_len,
@@ -859,17 +1289,78 @@ static void handle_auth_reply(struct ceph_mon_client *monc,
 		wake_up_all(&monc->client->auth_wq);
 	} else if (ret > 0) {
 		__send_prepared_auth_request(monc, ret);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (!was_auth && monc->auth->ops->is_authenticated(monc->auth)) {
 		dout("authenticated, starting session\n");
 
 		monc->client->msgr->inst.name.type = CEPH_ENTITY_TYPE_CLIENT;
 		monc->client->msgr->inst.name.num =
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	} else if (!was_auth && ceph_auth_is_authenticated(monc->auth)) {
+		dout("authenticated, starting session\n");
+
+		monc->client->msgr.inst.name.type = CEPH_ENTITY_TYPE_CLIENT;
+		monc->client->msgr.inst.name.num =
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	} else if (!was_auth && ceph_auth_is_authenticated(monc->auth)) {
+		dout("authenticated, starting session\n");
+
+		monc->client->msgr.inst.name.type = CEPH_ENTITY_TYPE_CLIENT;
+		monc->client->msgr.inst.name.num =
+>>>>>>> refs/remotes/origin/cm-11.0
 					cpu_to_le64(monc->auth->global_id);
 
 		__send_subscribe(monc);
 		__resend_generic_request(monc);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&monc->mutex);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (!had_debugfs_info && have_debugfs_info(monc)) {
+		pr_info("client%lld fsid %pU\n",
+			ceph_client_id(monc->client),
+			&monc->client->fsid);
+		init_debugfs = 1;
+	}
+	mutex_unlock(&monc->mutex);
+=======
+
+	if (!had_debugfs_info && have_debugfs_info(monc)) {
+		pr_info("client%lld fsid %pU\n",
+			ceph_client_id(monc->client),
+			&monc->client->fsid);
+		init_debugfs = 1;
+	}
+	mutex_unlock(&monc->mutex);
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (init_debugfs) {
+		/*
+		 * do debugfs initialization without mutex to avoid
+		 * creating a locking dependency
+		 */
+		ceph_debugfs_client_init(monc->client);
+	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int __validate_auth(struct ceph_mon_client *monc)
@@ -973,7 +1464,22 @@ static struct ceph_msg *mon_alloc_msg(struct ceph_connection *con,
 	case CEPH_MSG_MON_MAP:
 	case CEPH_MSG_MDS_MAP:
 	case CEPH_MSG_OSD_MAP:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		m = ceph_msg_new(type, front_len, GFP_NOFS);
+=======
+		m = ceph_msg_new(type, front_len, GFP_NOFS, false);
+		if (!m)
+			return NULL;	/* ENOMEM--return skip == 0 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		m = ceph_msg_new(type, front_len, GFP_NOFS, false);
+		if (!m)
+			return NULL;	/* ENOMEM--return skip == 0 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 
@@ -1000,10 +1506,27 @@ static void mon_fault(struct ceph_connection *con)
 	if (!con->private)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (monc->con && !monc->hunting)
 		pr_info("mon%d %s session lost, "
 			"hunting for new mon\n", monc->cur_mon,
+<<<<<<< HEAD
 			ceph_pr_addr(&monc->con->peer_addr.in_addr));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!monc->hunting)
+		pr_info("mon%d %s session lost, "
+			"hunting for new mon\n", monc->cur_mon,
+			ceph_pr_addr(&monc->con.peer_addr.in_addr));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+			ceph_pr_addr(&monc->con.peer_addr.in_addr));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	__close_session(monc);
 	if (!monc->hunting) {
@@ -1018,9 +1541,55 @@ out:
 	mutex_unlock(&monc->mutex);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct ceph_connection_operations mon_con_ops = {
 	.get = ceph_con_get,
 	.put = ceph_con_put,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * We can ignore refcounting on the connection struct, as all references
+ * will come from the messenger workqueue, which is drained prior to
+ * mon_client destruction.
+ */
+static struct ceph_connection *con_get(struct ceph_connection *con)
+{
+	return con;
+}
+
+static void con_put(struct ceph_connection *con)
+{
+}
+
+static const struct ceph_connection_operations mon_con_ops = {
+	.get = con_get,
+	.put = con_put,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+/*
+ * We can ignore refcounting on the connection struct, as all references
+ * will come from the messenger workqueue, which is drained prior to
+ * mon_client destruction.
+ */
+static struct ceph_connection *con_get(struct ceph_connection *con)
+{
+	return con;
+}
+
+static void con_put(struct ceph_connection *con)
+{
+}
+
+static const struct ceph_connection_operations mon_con_ops = {
+	.get = con_get,
+	.put = con_put,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.dispatch = dispatch,
 	.fault = mon_fault,
 	.alloc_msg = mon_alloc_msg,

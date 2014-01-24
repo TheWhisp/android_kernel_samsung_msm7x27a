@@ -16,7 +16,10 @@
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/usb.h>
@@ -417,6 +420,8 @@ static void cytherm_disconnect(struct usb_interface *interface)
 	dev_info(&interface->dev, "Cypress thermometer now disconnected\n");
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init usb_cytherm_init(void)
 {
@@ -442,6 +447,12 @@ static void __exit usb_cytherm_exit(void)
 
 module_init (usb_cytherm_init);
 module_exit (usb_cytherm_exit);
+=======
+module_usb_driver(cytherm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(cytherm_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

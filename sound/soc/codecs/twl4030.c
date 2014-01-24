@@ -26,8 +26,16 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/i2c/twl.h>
 #include <linux/slab.h>
+=======
+#include <linux/of.h>
+#include <linux/of_gpio.h>
+#include <linux/i2c/twl.h>
+#include <linux/slab.h>
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -38,6 +46,7 @@
 /* Register descriptions are here */
 #include <linux/mfd/twl4030-audio.h>
 
+<<<<<<< HEAD
 /* Shadow register used by the audio driver */
 #define TWL4030_REG_SW_SHADOW		0x4A
 #define TWL4030_CACHEREGNUM	(TWL4030_REG_SW_SHADOW + 1)
@@ -131,6 +140,17 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
 struct twl4030_priv {
 	struct snd_soc_codec codec;
 
+=======
+/* TWL4030 PMBR1 Register */
+#define TWL4030_PMBR1_REG		0x0D
+/* TWL4030 PMBR1 Register GPIO6 mux bits */
+#define TWL4030_GPIO6_PWM0_MUTE(value)	((value & 0x03) << 2)
+
+#define TWL4030_CACHEREGNUM	(TWL4030_REG_MISC_SET_2 + 1)
+
+/* codec private data */
+struct twl4030_priv {
+>>>>>>> refs/remotes/origin/master
 	unsigned int codec_powered;
 
 	/* reference counts of AIF/APLL users */
@@ -151,6 +171,7 @@ struct twl4030_priv {
 	u8 earpiece_enabled;
 	u8 predrivel_enabled, predriver_enabled;
 	u8 carkitl_enabled, carkitr_enabled;
+<<<<<<< HEAD
 
 	/* Delay needed after enabling the digimic interface */
 	unsigned int digimic_delay;
@@ -163,10 +184,33 @@ static inline unsigned int twl4030_read_reg_cache(struct snd_soc_codec *codec,
 	unsigned int reg)
 {
 	u8 *cache = codec->reg_cache;
+=======
+	u8 ctl_cache[TWL4030_REG_PRECKR_CTL - TWL4030_REG_EAR_CTL + 1];
+
+	struct twl4030_codec_data *pdata;
+};
+
+static void tw4030_init_ctl_cache(struct twl4030_priv *twl4030)
+{
+	int i;
+	u8 byte;
+
+	for (i = TWL4030_REG_EAR_CTL; i <= TWL4030_REG_PRECKR_CTL; i++) {
+		twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &byte, i);
+		twl4030->ctl_cache[i - TWL4030_REG_EAR_CTL] = byte;
+	}
+}
+
+static unsigned int twl4030_read(struct snd_soc_codec *codec, unsigned int reg)
+{
+	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+	u8 value = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (reg >= TWL4030_CACHEREGNUM)
 		return -EIO;
 
+<<<<<<< HEAD
 	return cache[reg];
 }
 
@@ -229,6 +273,87 @@ static int twl4030_write(struct snd_soc_codec *codec,
 			return twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
 						    value, reg);
 	}
+=======
+	switch (reg) {
+	case TWL4030_REG_EAR_CTL:
+	case TWL4030_REG_PREDL_CTL:
+	case TWL4030_REG_PREDR_CTL:
+	case TWL4030_REG_PRECKL_CTL:
+	case TWL4030_REG_PRECKR_CTL:
+	case TWL4030_REG_HS_GAIN_SET:
+		value = twl4030->ctl_cache[reg - TWL4030_REG_EAR_CTL];
+		break;
+	default:
+		twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &value, reg);
+		break;
+	}
+
+	return value;
+}
+
+static bool twl4030_can_write_to_chip(struct twl4030_priv *twl4030,
+				      unsigned int reg)
+{
+	bool write_to_reg = false;
+
+	/* Decide if the given register can be written */
+	switch (reg) {
+	case TWL4030_REG_EAR_CTL:
+		if (twl4030->earpiece_enabled)
+			write_to_reg = true;
+		break;
+	case TWL4030_REG_PREDL_CTL:
+		if (twl4030->predrivel_enabled)
+			write_to_reg = true;
+		break;
+	case TWL4030_REG_PREDR_CTL:
+		if (twl4030->predriver_enabled)
+			write_to_reg = true;
+		break;
+	case TWL4030_REG_PRECKL_CTL:
+		if (twl4030->carkitl_enabled)
+			write_to_reg = true;
+		break;
+	case TWL4030_REG_PRECKR_CTL:
+		if (twl4030->carkitr_enabled)
+			write_to_reg = true;
+		break;
+	case TWL4030_REG_HS_GAIN_SET:
+		if (twl4030->hsl_enabled || twl4030->hsr_enabled)
+			write_to_reg = true;
+		break;
+	default:
+		/* All other register can be written */
+		write_to_reg = true;
+		break;
+	}
+
+	return write_to_reg;
+}
+
+static int twl4030_write(struct snd_soc_codec *codec, unsigned int reg,
+			 unsigned int value)
+{
+	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+
+	/* Update the ctl cache */
+	switch (reg) {
+	case TWL4030_REG_EAR_CTL:
+	case TWL4030_REG_PREDL_CTL:
+	case TWL4030_REG_PREDR_CTL:
+	case TWL4030_REG_PRECKL_CTL:
+	case TWL4030_REG_PRECKR_CTL:
+	case TWL4030_REG_HS_GAIN_SET:
+		twl4030->ctl_cache[reg - TWL4030_REG_EAR_CTL] = value;
+		break;
+	default:
+		break;
+	}
+
+	if (twl4030_can_write_to_chip(twl4030, reg))
+		return twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, value, reg);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -255,16 +380,22 @@ static void twl4030_codec_enable(struct snd_soc_codec *codec, int enable)
 	else
 		mode = twl4030_audio_disable_resource(TWL4030_AUDIO_RES_POWER);
 
+<<<<<<< HEAD
 	if (mode >= 0) {
 		twl4030_write_reg_cache(codec, TWL4030_REG_CODEC_MODE, mode);
 		twl4030->codec_powered = enable;
 	}
+=======
+	if (mode >= 0)
+		twl4030->codec_powered = enable;
+>>>>>>> refs/remotes/origin/master
 
 	/* REVISIT: this delay is present in TI sample drivers */
 	/* but there seems to be no TRM requirement for it     */
 	udelay(10);
 }
 
+<<<<<<< HEAD
 static inline void twl4030_check_defaults(struct snd_soc_codec *codec)
 {
 	int i, difference = 0;
@@ -293,15 +424,62 @@ static inline void twl4030_reset_registers(struct snd_soc_codec *codec)
 		if (i != TWL4030_REG_APLL_CTL)
 			twl4030_write(codec, i, twl4030_reg[i]);
 
+=======
+static void twl4030_setup_pdata_of(struct twl4030_codec_data *pdata,
+				   struct device_node *node)
+{
+	int value;
+
+	of_property_read_u32(node, "ti,digimic_delay",
+			     &pdata->digimic_delay);
+	of_property_read_u32(node, "ti,ramp_delay_value",
+			     &pdata->ramp_delay_value);
+	of_property_read_u32(node, "ti,offset_cncl_path",
+			     &pdata->offset_cncl_path);
+	if (!of_property_read_u32(node, "ti,hs_extmute", &value))
+		pdata->hs_extmute = value;
+
+	pdata->hs_extmute_gpio = of_get_named_gpio(node,
+						   "ti,hs_extmute_gpio", 0);
+	if (gpio_is_valid(pdata->hs_extmute_gpio))
+		pdata->hs_extmute = 1;
+}
+
+static struct twl4030_codec_data *twl4030_get_pdata(struct snd_soc_codec *codec)
+{
+	struct twl4030_codec_data *pdata = dev_get_platdata(codec->dev);
+	struct device_node *twl4030_codec_node = NULL;
+
+	twl4030_codec_node = of_find_node_by_name(codec->dev->parent->of_node,
+						  "codec");
+
+	if (!pdata && twl4030_codec_node) {
+		pdata = devm_kzalloc(codec->dev,
+				     sizeof(struct twl4030_codec_data),
+				     GFP_KERNEL);
+		if (!pdata) {
+			dev_err(codec->dev, "Can not allocate memory\n");
+			return NULL;
+		}
+		twl4030_setup_pdata_of(pdata, twl4030_codec_node);
+	}
+
+	return pdata;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void twl4030_init_chip(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	struct twl4030_codec_data *pdata = dev_get_platdata(codec->dev);
+=======
+	struct twl4030_codec_data *pdata;
+>>>>>>> refs/remotes/origin/master
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
 	u8 reg, byte;
 	int i = 0;
 
+<<<<<<< HEAD
 	/* Check defaults, if instructed before anything else */
 	if (pdata && pdata->check_defaults)
 		twl4030_check_defaults(codec);
@@ -323,6 +501,50 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
 	twl4030_write(codec, TWL4030_REG_OPTION,
 		TWL4030_ATXL1_EN | TWL4030_ATXR1_EN |
 		TWL4030_ARXL2_EN | TWL4030_ARXR2_EN);
+=======
+	pdata = twl4030_get_pdata(codec);
+
+	if (pdata && pdata->hs_extmute) {
+		if (gpio_is_valid(pdata->hs_extmute_gpio)) {
+			int ret;
+
+			if (!pdata->hs_extmute_gpio)
+				dev_warn(codec->dev,
+					"Extmute GPIO is 0 is this correct?\n");
+
+			ret = gpio_request_one(pdata->hs_extmute_gpio,
+					       GPIOF_OUT_INIT_LOW,
+					       "hs_extmute");
+			if (ret) {
+				dev_err(codec->dev,
+					"Failed to get hs_extmute GPIO\n");
+				pdata->hs_extmute_gpio = -1;
+			}
+		} else {
+			u8 pin_mux;
+
+			/* Set TWL4030 GPIO6 as EXTMUTE signal */
+			twl_i2c_read_u8(TWL4030_MODULE_INTBR, &pin_mux,
+					TWL4030_PMBR1_REG);
+			pin_mux &= ~TWL4030_GPIO6_PWM0_MUTE(0x03);
+			pin_mux |= TWL4030_GPIO6_PWM0_MUTE(0x02);
+			twl_i2c_write_u8(TWL4030_MODULE_INTBR, pin_mux,
+					 TWL4030_PMBR1_REG);
+		}
+	}
+
+	/* Initialize the local ctl register cache */
+	tw4030_init_ctl_cache(twl4030);
+
+	/* anti-pop when changing analog gain */
+	reg = twl4030_read(codec, TWL4030_REG_MISC_SET_1);
+	twl4030_write(codec, TWL4030_REG_MISC_SET_1,
+		      reg | TWL4030_SMOOTH_ANAVOL_EN);
+
+	twl4030_write(codec, TWL4030_REG_OPTION,
+		      TWL4030_ATXL1_EN | TWL4030_ATXR1_EN |
+		      TWL4030_ARXL2_EN | TWL4030_ARXR2_EN);
+>>>>>>> refs/remotes/origin/master
 
 	/* REG_ARXR2_APGA_CTL reset according to the TRM: 0dB, DA_EN */
 	twl4030_write(codec, TWL4030_REG_ARXR2_APGA_CTL, 0x32);
@@ -331,21 +553,38 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
 	if (!pdata)
 		return;
 
+<<<<<<< HEAD
 	twl4030->digimic_delay = pdata->digimic_delay;
 
 	reg = twl4030_read_reg_cache(codec, TWL4030_REG_HS_POPN_SET);
 	reg &= ~TWL4030_RAMP_DELAY;
 	reg |= (pdata->ramp_delay_value << 2);
 	twl4030_write_reg_cache(codec, TWL4030_REG_HS_POPN_SET, reg);
+=======
+	twl4030->pdata = pdata;
+
+	reg = twl4030_read(codec, TWL4030_REG_HS_POPN_SET);
+	reg &= ~TWL4030_RAMP_DELAY;
+	reg |= (pdata->ramp_delay_value << 2);
+	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, reg);
+>>>>>>> refs/remotes/origin/master
 
 	/* initiate offset cancellation */
 	twl4030_codec_enable(codec, 1);
 
+<<<<<<< HEAD
 	reg = twl4030_read_reg_cache(codec, TWL4030_REG_ANAMICL);
 	reg &= ~TWL4030_OFFSET_CNCL_SEL;
 	reg |= pdata->offset_cncl_path;
 	twl4030_write(codec, TWL4030_REG_ANAMICL,
 		reg | TWL4030_CNCL_OFFSET_START);
+=======
+	reg = twl4030_read(codec, TWL4030_REG_ANAMICL);
+	reg &= ~TWL4030_OFFSET_CNCL_SEL;
+	reg |= pdata->offset_cncl_path;
+	twl4030_write(codec, TWL4030_REG_ANAMICL,
+		      reg | TWL4030_CNCL_OFFSET_START);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Wait for offset cancellation to complete.
@@ -355,15 +594,25 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
 	msleep(20);
 	do {
 		usleep_range(1000, 2000);
+<<<<<<< HEAD
 		twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &byte,
 				    TWL4030_REG_ANAMICL);
+=======
+		twl_set_regcache_bypass(TWL4030_MODULE_AUDIO_VOICE, true);
+		twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &byte,
+				TWL4030_REG_ANAMICL);
+		twl_set_regcache_bypass(TWL4030_MODULE_AUDIO_VOICE, false);
+>>>>>>> refs/remotes/origin/master
 	} while ((i++ < 100) &&
 		 ((byte & TWL4030_CNCL_OFFSET_START) ==
 		  TWL4030_CNCL_OFFSET_START));
 
+<<<<<<< HEAD
 	/* Make sure that the reg_cache has the same value as the HW */
 	twl4030_write_reg_cache(codec, TWL4030_REG_ANAMICL, byte);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	twl4030_codec_enable(codec, 0);
 }
 
@@ -383,9 +632,12 @@ static void twl4030_apll_enable(struct snd_soc_codec *codec, int enable)
 			status = twl4030_audio_disable_resource(
 							TWL4030_AUDIO_RES_APLL);
 	}
+<<<<<<< HEAD
 
 	if (status >= 0)
 		twl4030_write_reg_cache(codec, TWL4030_REG_APLL_CTL, status);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Earpiece */
@@ -454,7 +706,11 @@ SOC_DAPM_ENUM("Route", twl4030_handsfreel_enum);
 
 /* Handsfree Left virtual mute */
 static const struct snd_kcontrol_new twl4030_dapm_handsfreelmute_control =
+<<<<<<< HEAD
 	SOC_DAPM_SINGLE("Switch", TWL4030_REG_SW_SHADOW, 0, 1, 0);
+=======
+	SOC_DAPM_SINGLE_VIRT("Switch", 1);
+>>>>>>> refs/remotes/origin/master
 
 /* Handsfree Right */
 static const char *twl4030_handsfreer_texts[] =
@@ -470,7 +726,11 @@ SOC_DAPM_ENUM("Route", twl4030_handsfreer_enum);
 
 /* Handsfree Right virtual mute */
 static const struct snd_kcontrol_new twl4030_dapm_handsfreermute_control =
+<<<<<<< HEAD
 	SOC_DAPM_SINGLE("Switch", TWL4030_REG_SW_SHADOW, 1, 1, 0);
+=======
+	SOC_DAPM_SINGLE_VIRT("Switch", 1);
+>>>>>>> refs/remotes/origin/master
 
 /* Vibra */
 /* Vibra audio path selection */
@@ -601,13 +861,18 @@ static const struct snd_kcontrol_new twl4030_dapm_dbypassv_control =
  */
 #define TWL4030_OUTPUT_PGA(pin_name, reg, mask)				\
 static int pin_name##pga_event(struct snd_soc_dapm_widget *w,		\
+<<<<<<< HEAD
 		struct snd_kcontrol *kcontrol, int event)		\
+=======
+			       struct snd_kcontrol *kcontrol, int event) \
+>>>>>>> refs/remotes/origin/master
 {									\
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(w->codec); \
 									\
 	switch (event) {						\
 	case SND_SOC_DAPM_POST_PMU:					\
 		twl4030->pin_name##_enabled = 1;			\
+<<<<<<< HEAD
 		twl4030_write(w->codec, reg,				\
 			twl4030_read_reg_cache(w->codec, reg));		\
 		break;							\
@@ -615,6 +880,13 @@ static int pin_name##pga_event(struct snd_soc_dapm_widget *w,		\
 		twl4030->pin_name##_enabled = 0;			\
 		twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,		\
 					0, reg);			\
+=======
+		twl4030_write(w->codec, reg, twl4030_read(w->codec, reg)); \
+		break;							\
+	case SND_SOC_DAPM_POST_PMD:					\
+		twl4030->pin_name##_enabled = 0;			\
+		twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, 0, reg);	\
+>>>>>>> refs/remotes/origin/master
 		break;							\
 	}								\
 	return 0;							\
@@ -630,7 +902,11 @@ static void handsfree_ramp(struct snd_soc_codec *codec, int reg, int ramp)
 {
 	unsigned char hs_ctl;
 
+<<<<<<< HEAD
 	hs_ctl = twl4030_read_reg_cache(codec, reg);
+=======
+	hs_ctl = twl4030_read(codec, reg);
+>>>>>>> refs/remotes/origin/master
 
 	if (ramp) {
 		/* HF ramp-up */
@@ -657,7 +933,11 @@ static void handsfree_ramp(struct snd_soc_codec *codec, int reg, int ramp)
 }
 
 static int handsfreelpga_event(struct snd_soc_dapm_widget *w,
+<<<<<<< HEAD
 		struct snd_kcontrol *kcontrol, int event)
+=======
+			       struct snd_kcontrol *kcontrol, int event)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (event) {
 	case SND_SOC_DAPM_POST_PMU:
@@ -671,7 +951,11 @@ static int handsfreelpga_event(struct snd_soc_dapm_widget *w,
 }
 
 static int handsfreerpga_event(struct snd_soc_dapm_widget *w,
+<<<<<<< HEAD
 		struct snd_kcontrol *kcontrol, int event)
+=======
+			       struct snd_kcontrol *kcontrol, int event)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (event) {
 	case SND_SOC_DAPM_POST_PMU:
@@ -685,14 +969,22 @@ static int handsfreerpga_event(struct snd_soc_dapm_widget *w,
 }
 
 static int vibramux_event(struct snd_soc_dapm_widget *w,
+<<<<<<< HEAD
 		struct snd_kcontrol *kcontrol, int event)
+=======
+			  struct snd_kcontrol *kcontrol, int event)
+>>>>>>> refs/remotes/origin/master
 {
 	twl4030_write(w->codec, TWL4030_REG_VIBRA_SET, 0xff);
 	return 0;
 }
 
 static int apll_event(struct snd_soc_dapm_widget *w,
+<<<<<<< HEAD
 		struct snd_kcontrol *kcontrol, int event)
+=======
+		      struct snd_kcontrol *kcontrol, int event)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
@@ -706,11 +998,19 @@ static int apll_event(struct snd_soc_dapm_widget *w,
 }
 
 static int aif_event(struct snd_soc_dapm_widget *w,
+<<<<<<< HEAD
 		struct snd_kcontrol *kcontrol, int event)
 {
 	u8 audio_if;
 
 	audio_if = twl4030_read_reg_cache(w->codec, TWL4030_REG_AUDIO_IF);
+=======
+		     struct snd_kcontrol *kcontrol, int event)
+{
+	u8 audio_if;
+
+	audio_if = twl4030_read(w->codec, TWL4030_REG_AUDIO_IF);
+>>>>>>> refs/remotes/origin/master
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
 		/* Enable AIF */
@@ -718,12 +1018,20 @@ static int aif_event(struct snd_soc_dapm_widget *w,
 		twl4030_apll_enable(w->codec, 1);
 
 		twl4030_write(w->codec, TWL4030_REG_AUDIO_IF,
+<<<<<<< HEAD
 						audio_if | TWL4030_AIF_EN);
+=======
+			      audio_if | TWL4030_AIF_EN);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SND_SOC_DAPM_POST_PMD:
 		/* disable the DAI before we stop it's source PLL */
 		twl4030_write(w->codec, TWL4030_REG_AUDIO_IF,
+<<<<<<< HEAD
 						audio_if &  ~TWL4030_AIF_EN);
+=======
+			      audio_if &  ~TWL4030_AIF_EN);
+>>>>>>> refs/remotes/origin/master
 		twl4030_apll_enable(w->codec, 0);
 		break;
 	}
@@ -732,24 +1040,40 @@ static int aif_event(struct snd_soc_dapm_widget *w,
 
 static void headset_ramp(struct snd_soc_codec *codec, int ramp)
 {
+<<<<<<< HEAD
 	struct twl4030_codec_data *pdata = codec->dev->platform_data;
 	unsigned char hs_gain, hs_pop;
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+=======
+	unsigned char hs_gain, hs_pop;
+	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+	struct twl4030_codec_data *pdata = twl4030->pdata;
+>>>>>>> refs/remotes/origin/master
 	/* Base values for ramp delay calculation: 2^19 - 2^26 */
 	unsigned int ramp_base[] = {524288, 1048576, 2097152, 4194304,
 				    8388608, 16777216, 33554432, 67108864};
 	unsigned int delay;
 
+<<<<<<< HEAD
 	hs_gain = twl4030_read_reg_cache(codec, TWL4030_REG_HS_GAIN_SET);
 	hs_pop = twl4030_read_reg_cache(codec, TWL4030_REG_HS_POPN_SET);
+=======
+	hs_gain = twl4030_read(codec, TWL4030_REG_HS_GAIN_SET);
+	hs_pop = twl4030_read(codec, TWL4030_REG_HS_POPN_SET);
+>>>>>>> refs/remotes/origin/master
 	delay = (ramp_base[(hs_pop & TWL4030_RAMP_DELAY) >> 2] /
 		twl4030->sysclk) + 1;
 
 	/* Enable external mute control, this dramatically reduces
 	 * the pop-noise */
 	if (pdata && pdata->hs_extmute) {
+<<<<<<< HEAD
 		if (pdata->set_hs_extmute) {
 			pdata->set_hs_extmute(1);
+=======
+		if (gpio_is_valid(pdata->hs_extmute_gpio)) {
+			gpio_set_value(pdata->hs_extmute_gpio, 1);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			hs_pop |= TWL4030_EXTMUTE;
 			twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
@@ -761,9 +1085,14 @@ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
 		hs_pop |= TWL4030_VMID_EN;
 		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
 		/* Actually write to the register */
+<<<<<<< HEAD
 		twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
 					hs_gain,
 					TWL4030_REG_HS_GAIN_SET);
+=======
+		twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, hs_gain,
+				 TWL4030_REG_HS_GAIN_SET);
+>>>>>>> refs/remotes/origin/master
 		hs_pop |= TWL4030_RAMP_EN;
 		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
 		/* Wait ramp delay time + 1, so the VMID can settle */
@@ -776,9 +1105,14 @@ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
 		/* Wait ramp delay time + 1, so the VMID can settle */
 		twl4030_wait_ms(delay);
 		/* Bypass the reg_cache to mute the headset */
+<<<<<<< HEAD
 		twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
 					hs_gain & (~0x0f),
 					TWL4030_REG_HS_GAIN_SET);
+=======
+		twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, hs_gain & (~0x0f),
+				 TWL4030_REG_HS_GAIN_SET);
+>>>>>>> refs/remotes/origin/master
 
 		hs_pop &= ~TWL4030_VMID_EN;
 		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
@@ -786,8 +1120,13 @@ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
 
 	/* Disable external mute */
 	if (pdata && pdata->hs_extmute) {
+<<<<<<< HEAD
 		if (pdata->set_hs_extmute) {
 			pdata->set_hs_extmute(0);
+=======
+		if (gpio_is_valid(pdata->hs_extmute_gpio)) {
+			gpio_set_value(pdata->hs_extmute_gpio, 0);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			hs_pop &= ~TWL4030_EXTMUTE;
 			twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
@@ -796,7 +1135,11 @@ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
 }
 
 static int headsetlpga_event(struct snd_soc_dapm_widget *w,
+<<<<<<< HEAD
 		struct snd_kcontrol *kcontrol, int event)
+=======
+			     struct snd_kcontrol *kcontrol, int event)
+>>>>>>> refs/remotes/origin/master
 {
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(w->codec);
 
@@ -820,7 +1163,11 @@ static int headsetlpga_event(struct snd_soc_dapm_widget *w,
 }
 
 static int headsetrpga_event(struct snd_soc_dapm_widget *w,
+<<<<<<< HEAD
 		struct snd_kcontrol *kcontrol, int event)
+=======
+			     struct snd_kcontrol *kcontrol, int event)
+>>>>>>> refs/remotes/origin/master
 {
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(w->codec);
 
@@ -844,12 +1191,22 @@ static int headsetrpga_event(struct snd_soc_dapm_widget *w,
 }
 
 static int digimic_event(struct snd_soc_dapm_widget *w,
+<<<<<<< HEAD
 		struct snd_kcontrol *kcontrol, int event)
 {
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(w->codec);
 
 	if (twl4030->digimic_delay)
 		twl4030_wait_ms(twl4030->digimic_delay);
+=======
+			 struct snd_kcontrol *kcontrol, int event)
+{
+	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(w->codec);
+	struct twl4030_codec_data *pdata = twl4030->pdata;
+
+	if (pdata && pdata->digimic_delay)
+		twl4030_wait_ms(pdata->digimic_delay);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -863,6 +1220,8 @@ static int digimic_event(struct snd_soc_dapm_widget *w,
  * Inverting not going to help with these.
  * Custom volsw and volsw_2r get/put functions to handle these gain bits.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SOC_DOUBLE_TLV_TWL4030(xname, xreg, shift_left, shift_right, xmax,\
 			       xinvert, tlv_array) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
@@ -891,8 +1250,14 @@ static int digimic_event(struct snd_soc_dapm_widget *w,
 	SOC_DOUBLE_TLV_TWL4030(xname, xreg, xshift, xshift, xmax, \
 			       xinvert, tlv_array)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int snd_soc_get_volsw_twl4030(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
+=======
+static int snd_soc_get_volsw_twl4030(struct snd_kcontrol *kcontrol,
+				     struct snd_ctl_elem_value *ucontrol)
+>>>>>>> refs/remotes/origin/master
 {
 	struct soc_mixer_control *mc =
 		(struct soc_mixer_control *)kcontrol->private_value;
@@ -921,7 +1286,11 @@ static int snd_soc_get_volsw_twl4030(struct snd_kcontrol *kcontrol,
 }
 
 static int snd_soc_put_volsw_twl4030(struct snd_kcontrol *kcontrol,
+<<<<<<< HEAD
 	struct snd_ctl_elem_value *ucontrol)
+=======
+				     struct snd_ctl_elem_value *ucontrol)
+>>>>>>> refs/remotes/origin/master
 {
 	struct soc_mixer_control *mc =
 		(struct soc_mixer_control *)kcontrol->private_value;
@@ -950,7 +1319,11 @@ static int snd_soc_put_volsw_twl4030(struct snd_kcontrol *kcontrol,
 }
 
 static int snd_soc_get_volsw_r2_twl4030(struct snd_kcontrol *kcontrol,
+<<<<<<< HEAD
 	struct snd_ctl_elem_value *ucontrol)
+=======
+					struct snd_ctl_elem_value *ucontrol)
+>>>>>>> refs/remotes/origin/master
 {
 	struct soc_mixer_control *mc =
 		(struct soc_mixer_control *)kcontrol->private_value;
@@ -977,7 +1350,11 @@ static int snd_soc_get_volsw_r2_twl4030(struct snd_kcontrol *kcontrol,
 }
 
 static int snd_soc_put_volsw_r2_twl4030(struct snd_kcontrol *kcontrol,
+<<<<<<< HEAD
 	struct snd_ctl_elem_value *ucontrol)
+=======
+					struct snd_ctl_elem_value *ucontrol)
+>>>>>>> refs/remotes/origin/master
 {
 	struct soc_mixer_control *mc =
 		(struct soc_mixer_control *)kcontrol->private_value;
@@ -1027,26 +1404,50 @@ static int snd_soc_put_twl4030_opmode_enum_double(struct snd_kcontrol *kcontrol,
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
 	unsigned short val;
+<<<<<<< HEAD
 	unsigned short mask, bitmask;
 
 	if (twl4030->configured) {
+<<<<<<< HEAD
 		printk(KERN_ERR "twl4030 operation mode cannot be "
 			"changed on-the-fly\n");
+=======
+		dev_err(codec->dev,
+			"operation mode cannot be changed on-the-fly\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EBUSY;
 	}
 
 	for (bitmask = 1; bitmask < e->max; bitmask <<= 1)
 		;
+=======
+	unsigned short mask;
+
+	if (twl4030->configured) {
+		dev_err(codec->dev,
+			"operation mode cannot be changed on-the-fly\n");
+		return -EBUSY;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (ucontrol->value.enumerated.item[0] > e->max - 1)
 		return -EINVAL;
 
 	val = ucontrol->value.enumerated.item[0] << e->shift_l;
+<<<<<<< HEAD
 	mask = (bitmask - 1) << e->shift_l;
+=======
+	mask = e->mask << e->shift_l;
+>>>>>>> refs/remotes/origin/master
 	if (e->shift_l != e->shift_r) {
 		if (ucontrol->value.enumerated.item[1] > e->max - 1)
 			return -EINVAL;
 		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
+<<<<<<< HEAD
 		mask |= (bitmask - 1) << e->shift_r;
+=======
+		mask |= e->mask << e->shift_r;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return snd_soc_update_bits(codec, e->reg, mask, val);
@@ -1197,6 +1598,8 @@ static const struct snd_kcontrol_new twl4030_snd_controls[] = {
 		TWL4030_REG_VDL_APGA_CTL, 1, 1, 0),
 
 	/* Separate output gain controls */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SOC_DOUBLE_R_TLV_TWL4030("PreDriv Playback Volume",
 		TWL4030_REG_PREDL_CTL, TWL4030_REG_PREDR_CTL,
 		4, 3, 0, output_tvl),
@@ -1210,6 +1613,30 @@ static const struct snd_kcontrol_new twl4030_snd_controls[] = {
 
 	SOC_SINGLE_TLV_TWL4030("Earpiece Playback Volume",
 		TWL4030_REG_EAR_CTL, 4, 3, 0, output_ear_tvl),
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	SOC_DOUBLE_R_EXT_TLV("PreDriv Playback Volume",
+		TWL4030_REG_PREDL_CTL, TWL4030_REG_PREDR_CTL,
+		4, 3, 0, snd_soc_get_volsw_r2_twl4030,
+		snd_soc_put_volsw_r2_twl4030, output_tvl),
+
+	SOC_DOUBLE_EXT_TLV("Headset Playback Volume",
+		TWL4030_REG_HS_GAIN_SET, 0, 2, 3, 0, snd_soc_get_volsw_twl4030,
+		snd_soc_put_volsw_twl4030, output_tvl),
+
+	SOC_DOUBLE_R_EXT_TLV("Carkit Playback Volume",
+		TWL4030_REG_PRECKL_CTL, TWL4030_REG_PRECKR_CTL,
+		4, 3, 0, snd_soc_get_volsw_r2_twl4030,
+		snd_soc_put_volsw_r2_twl4030, output_tvl),
+
+	SOC_SINGLE_EXT_TLV("Earpiece Playback Volume",
+		TWL4030_REG_EAR_CTL, 4, 3, 0, snd_soc_get_volsw_twl4030,
+		snd_soc_put_volsw_twl4030, output_ear_tvl),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Common capture gain controls */
 	SOC_DOUBLE_R_TLV("TX1 Digital Capture Volume",
@@ -1263,6 +1690,7 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
 	SND_SOC_DAPM_OUTPUT("Virtual Voice OUT"),
 
 	/* DACs */
+<<<<<<< HEAD
 	SND_SOC_DAPM_DAC("DAC Right1", "Right Front HiFi Playback",
 			SND_SOC_NOPM, 0, 0),
 	SND_SOC_DAPM_DAC("DAC Left1", "Left Front HiFi Playback",
@@ -1273,6 +1701,16 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
 			SND_SOC_NOPM, 0, 0),
 	SND_SOC_DAPM_DAC("DAC Voice", "Voice Playback",
 			SND_SOC_NOPM, 0, 0),
+=======
+	SND_SOC_DAPM_DAC("DAC Right1", NULL, SND_SOC_NOPM, 0, 0),
+	SND_SOC_DAPM_DAC("DAC Left1", NULL, SND_SOC_NOPM, 0, 0),
+	SND_SOC_DAPM_DAC("DAC Right2", NULL, SND_SOC_NOPM, 0, 0),
+	SND_SOC_DAPM_DAC("DAC Left2", NULL, SND_SOC_NOPM, 0, 0),
+	SND_SOC_DAPM_DAC("DAC Voice", NULL, SND_SOC_NOPM, 0, 0),
+
+	SND_SOC_DAPM_AIF_IN("VAIFIN", "Voice Playback", 0,
+			    TWL4030_REG_VOICE_IF, 6, 0),
+>>>>>>> refs/remotes/origin/master
 
 	/* Analog bypasses */
 	SND_SOC_DAPM_SWITCH("Right1 Analog Loopback", SND_SOC_NOPM, 0, 0,
@@ -1401,6 +1839,7 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
 
 	/* Introducing four virtual ADC, since TWL4030 have four channel for
 	   capture */
+<<<<<<< HEAD
 	SND_SOC_DAPM_ADC("ADC Virtual Left1", "Left Front Capture",
 		SND_SOC_NOPM, 0, 0),
 	SND_SOC_DAPM_ADC("ADC Virtual Right1", "Right Front Capture",
@@ -1409,6 +1848,15 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
 		SND_SOC_NOPM, 0, 0),
 	SND_SOC_DAPM_ADC("ADC Virtual Right2", "Right Rear Capture",
 		SND_SOC_NOPM, 0, 0),
+=======
+	SND_SOC_DAPM_ADC("ADC Virtual Left1", NULL, SND_SOC_NOPM, 0, 0),
+	SND_SOC_DAPM_ADC("ADC Virtual Right1", NULL, SND_SOC_NOPM, 0, 0),
+	SND_SOC_DAPM_ADC("ADC Virtual Left2", NULL, SND_SOC_NOPM, 0, 0),
+	SND_SOC_DAPM_ADC("ADC Virtual Right2", NULL, SND_SOC_NOPM, 0, 0),
+
+	SND_SOC_DAPM_AIF_OUT("VAIFOUT", "Voice Capture", 0,
+			     TWL4030_REG_VOICE_IF, 5, 0),
+>>>>>>> refs/remotes/origin/master
 
 	/* Analog/Digital mic path selection.
 	   TX1 Left/Right: either analog Left/Right or Digimic0
@@ -1445,6 +1893,7 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
 	SND_SOC_DAPM_SUPPLY("micbias2 select", TWL4030_REG_MICBIAS_CTL, 6, 0,
 			    NULL, 0),
 
+<<<<<<< HEAD
 	SND_SOC_DAPM_MICBIAS("Mic Bias 1", TWL4030_REG_MICBIAS_CTL, 0, 0),
 	SND_SOC_DAPM_MICBIAS("Mic Bias 2", TWL4030_REG_MICBIAS_CTL, 1, 0),
 	SND_SOC_DAPM_MICBIAS("Headset Mic Bias", TWL4030_REG_MICBIAS_CTL, 2, 0),
@@ -1452,6 +1901,36 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
 };
 
 static const struct snd_soc_dapm_route intercon[] = {
+=======
+	/* Microphone bias */
+	SND_SOC_DAPM_SUPPLY("Mic Bias 1",
+			    TWL4030_REG_MICBIAS_CTL, 0, 0, NULL, 0),
+	SND_SOC_DAPM_SUPPLY("Mic Bias 2",
+			    TWL4030_REG_MICBIAS_CTL, 1, 0, NULL, 0),
+	SND_SOC_DAPM_SUPPLY("Headset Mic Bias",
+			    TWL4030_REG_MICBIAS_CTL, 2, 0, NULL, 0),
+
+	SND_SOC_DAPM_SUPPLY("VIF Enable", TWL4030_REG_VOICE_IF, 0, 0, NULL, 0),
+};
+
+static const struct snd_soc_dapm_route intercon[] = {
+	/* Stream -> DAC mapping */
+	{"DAC Right1", NULL, "HiFi Playback"},
+	{"DAC Left1", NULL, "HiFi Playback"},
+	{"DAC Right2", NULL, "HiFi Playback"},
+	{"DAC Left2", NULL, "HiFi Playback"},
+	{"DAC Voice", NULL, "VAIFIN"},
+
+	/* ADC -> Stream mapping */
+	{"HiFi Capture", NULL, "ADC Virtual Left1"},
+	{"HiFi Capture", NULL, "ADC Virtual Right1"},
+	{"HiFi Capture", NULL, "ADC Virtual Left2"},
+	{"HiFi Capture", NULL, "ADC Virtual Right2"},
+	{"VAIFOUT", NULL, "ADC Virtual Left2"},
+	{"VAIFOUT", NULL, "ADC Virtual Right2"},
+	{"VAIFOUT", NULL, "VIF Enable"},
+
+>>>>>>> refs/remotes/origin/master
 	{"Digital L1 Playback Mixer", NULL, "DAC Left1"},
 	{"Digital R1 Playback Mixer", NULL, "DAC Right1"},
 	{"Digital L2 Playback Mixer", NULL, "DAC Left2"},
@@ -1465,6 +1944,10 @@ static const struct snd_soc_dapm_route intercon[] = {
 	{"DAC Right1", NULL, "AIF Enable"},
 	{"DAC Left2", NULL, "AIF Enable"},
 	{"DAC Right1", NULL, "AIF Enable"},
+<<<<<<< HEAD
+=======
+	{"DAC Voice", NULL, "VIF Enable"},
+>>>>>>> refs/remotes/origin/master
 
 	{"Digital R2 Playback Mixer", NULL, "AIF Enable"},
 	{"Digital L2 Playback Mixer", NULL, "AIF Enable"},
@@ -1633,6 +2116,8 @@ static const struct snd_soc_dapm_route intercon[] = {
 
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int twl4030_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -1644,6 +2129,10 @@ static int twl4030_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int twl4030_set_bias_level(struct snd_soc_codec *codec,
 				  enum snd_soc_bias_level level)
 {
@@ -1698,11 +2187,19 @@ static void twl4030_constraints(struct twl4030_priv *twl4030,
 /* In case of 4 channel mode, the RX1 L/R for playback and the TX2 L/R for
  * capture has to be enabled/disabled. */
 static void twl4030_tdm_enable(struct snd_soc_codec *codec, int direction,
+<<<<<<< HEAD
 				int enable)
 {
 	u8 reg, mask;
 
 	reg = twl4030_read_reg_cache(codec, TWL4030_REG_OPTION);
+=======
+			       int enable)
+{
+	u8 reg, mask;
+
+	reg = twl4030_read(codec, TWL4030_REG_OPTION);
+>>>>>>> refs/remotes/origin/master
 
 	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
 		mask = TWL4030_ARXL1_VRX_EN | TWL4030_ARXR1_EN;
@@ -1720,11 +2217,20 @@ static void twl4030_tdm_enable(struct snd_soc_codec *codec, int direction,
 static int twl4030_startup(struct snd_pcm_substream *substream,
 			   struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
 
+<<<<<<< HEAD
 	snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_codec *codec = dai->codec;
+	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+
+>>>>>>> refs/remotes/origin/master
 	if (twl4030->master_substream) {
 		twl4030->slave_substream = substream;
 		/* The DAI has one configuration for playback and capture, so
@@ -1733,14 +2239,23 @@ static int twl4030_startup(struct snd_pcm_substream *substream,
 		if (twl4030->configured)
 			twl4030_constraints(twl4030, twl4030->master_substream);
 	} else {
+<<<<<<< HEAD
 		if (!(twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE) &
+=======
+		if (!(twl4030_read(codec, TWL4030_REG_CODEC_MODE) &
+>>>>>>> refs/remotes/origin/master
 			TWL4030_OPTION_1)) {
 			/* In option2 4 channel is not supported, set the
 			 * constraint for the first stream for channels, the
 			 * second stream will 'inherit' this cosntraint */
 			snd_pcm_hw_constraint_minmax(substream->runtime,
+<<<<<<< HEAD
 						SNDRV_PCM_HW_PARAM_CHANNELS,
 						2, 2);
+=======
+						     SNDRV_PCM_HW_PARAM_CHANNELS,
+						     2, 2);
+>>>>>>> refs/remotes/origin/master
 		}
 		twl4030->master_substream = substream;
 	}
@@ -1751,8 +2266,12 @@ static int twl4030_startup(struct snd_pcm_substream *substream,
 static void twl4030_shutdown(struct snd_pcm_substream *substream,
 			     struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
 
 	if (twl4030->master_substream == substream)
@@ -1773,18 +2292,30 @@ static void twl4030_shutdown(struct snd_pcm_substream *substream,
 }
 
 static int twl4030_hw_params(struct snd_pcm_substream *substream,
+<<<<<<< HEAD
 			   struct snd_pcm_hw_params *params,
 			   struct snd_soc_dai *dai)
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+			     struct snd_pcm_hw_params *params,
+			     struct snd_soc_dai *dai)
+{
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
 	u8 mode, old_mode, format, old_format;
 
 	 /* If the substream has 4 channel, do the necessary setup */
 	if (params_channels(params) == 4) {
+<<<<<<< HEAD
 		format = twl4030_read_reg_cache(codec, TWL4030_REG_AUDIO_IF);
 		mode = twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE);
+=======
+		format = twl4030_read(codec, TWL4030_REG_AUDIO_IF);
+		mode = twl4030_read(codec, TWL4030_REG_CODEC_MODE);
+>>>>>>> refs/remotes/origin/master
 
 		/* Safety check: are we in the correct operating mode and
 		 * the interface is in TDM mode? */
@@ -1800,8 +2331,13 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
 		return 0;
 
 	/* bit rate */
+<<<<<<< HEAD
 	old_mode = twl4030_read_reg_cache(codec,
 			TWL4030_REG_CODEC_MODE) & ~TWL4030_CODECPDZ;
+=======
+	old_mode = twl4030_read(codec,
+				TWL4030_REG_CODEC_MODE) & ~TWL4030_CODECPDZ;
+>>>>>>> refs/remotes/origin/master
 	mode = old_mode & ~TWL4030_APLL_RATE;
 
 	switch (params_rate(params)) {
@@ -1836,13 +2372,25 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
 		mode |= TWL4030_APLL_RATE_96000;
 		break;
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "TWL4030 hw params: unknown rate %d\n",
+=======
+		dev_err(codec->dev, "%s: unknown rate %d\n", __func__,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(codec->dev, "%s: unknown rate %d\n", __func__,
+>>>>>>> refs/remotes/origin/master
 			params_rate(params));
 		return -EINVAL;
 	}
 
 	/* sample size */
+<<<<<<< HEAD
 	old_format = twl4030_read_reg_cache(codec, TWL4030_REG_AUDIO_IF);
+=======
+	old_format = twl4030_read(codec, TWL4030_REG_AUDIO_IF);
+>>>>>>> refs/remotes/origin/master
 	format = old_format;
 	format &= ~TWL4030_DATA_WIDTH;
 	switch (params_format(params)) {
@@ -1853,7 +2401,15 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
 		format |= TWL4030_DATA_WIDTH_32S_24W;
 		break;
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "TWL4030 hw params: unknown format %d\n",
+=======
+		dev_err(codec->dev, "%s: unknown format %d\n", __func__,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(codec->dev, "%s: unknown format %d\n", __func__,
+>>>>>>> refs/remotes/origin/master
 			params_format(params));
 		return -EINVAL;
 	}
@@ -1891,8 +2447,13 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int twl4030_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 		int clk_id, unsigned int freq, int dir)
+=======
+static int twl4030_set_dai_sysclk(struct snd_soc_dai *codec_dai, int clk_id,
+				  unsigned int freq, int dir)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_codec *codec = codec_dai->codec;
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
@@ -1903,13 +2464,29 @@ static int twl4030_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 	case 38400000:
 		break;
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(codec->dev, "Unsupported APLL mclk: %u\n", freq);
+=======
+		dev_err(codec->dev, "Unsupported HFCLKIN: %u\n", freq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(codec->dev, "Unsupported HFCLKIN: %u\n", freq);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	if ((freq / 1000) != twl4030->sysclk) {
 		dev_err(codec->dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"Mismatch in APLL mclk: %u (configured: %u)\n",
+=======
+			"Mismatch in HFCLKIN: %u (configured: %u)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"Mismatch in HFCLKIN: %u (configured: %u)\n",
+>>>>>>> refs/remotes/origin/master
 			freq, twl4030->sysclk * 1000);
 		return -EINVAL;
 	}
@@ -1917,15 +2494,23 @@ static int twl4030_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai,
 			     unsigned int fmt)
+=======
+static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_codec *codec = codec_dai->codec;
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
 	u8 old_format, format;
 
 	/* get format */
+<<<<<<< HEAD
 	old_format = twl4030_read_reg_cache(codec, TWL4030_REG_AUDIO_IF);
+=======
+	old_format = twl4030_read(codec, TWL4030_REG_AUDIO_IF);
+>>>>>>> refs/remotes/origin/master
 	format = old_format;
 
 	/* set master/slave audio interface */
@@ -1975,7 +2560,11 @@ static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai,
 static int twl4030_set_tristate(struct snd_soc_dai *dai, int tristate)
 {
 	struct snd_soc_codec *codec = dai->codec;
+<<<<<<< HEAD
 	u8 reg = twl4030_read_reg_cache(codec, TWL4030_REG_AUDIO_IF);
+=======
+	u8 reg = twl4030_read(codec, TWL4030_REG_AUDIO_IF);
+>>>>>>> refs/remotes/origin/master
 
 	if (tristate)
 		reg |= TWL4030_AIF_TRI_EN;
@@ -1988,11 +2577,19 @@ static int twl4030_set_tristate(struct snd_soc_dai *dai, int tristate)
 /* In case of voice mode, the RX1 L(VRX) for downlink and the TX2 L/R
  * (VTXL, VTXR) for uplink has to be enabled/disabled. */
 static void twl4030_voice_enable(struct snd_soc_codec *codec, int direction,
+<<<<<<< HEAD
 				int enable)
 {
 	u8 reg, mask;
 
 	reg = twl4030_read_reg_cache(codec, TWL4030_REG_OPTION);
+=======
+				 int enable)
+{
+	u8 reg, mask;
+
+	reg = twl4030_read(codec, TWL4030_REG_OPTION);
+>>>>>>> refs/remotes/origin/master
 
 	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
 		mask = TWL4030_ARXL1_VRX_EN;
@@ -2008,10 +2605,16 @@ static void twl4030_voice_enable(struct snd_soc_codec *codec, int direction,
 }
 
 static int twl4030_voice_startup(struct snd_pcm_substream *substream,
+<<<<<<< HEAD
 		struct snd_soc_dai *dai)
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+				 struct snd_soc_dai *dai)
+{
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
 	u8 mode;
 
@@ -2019,21 +2622,47 @@ static int twl4030_voice_startup(struct snd_pcm_substream *substream,
 	 * not available.
 	 */
 	if (twl4030->sysclk != 26000) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(codec->dev, "The board is configured for %u Hz, while"
 			"the Voice interface needs 26MHz APLL mclk\n",
 			twl4030->sysclk * 1000);
+=======
+		dev_err(codec->dev,
+			"%s: HFCLKIN is %u KHz, voice interface needs 26MHz\n",
+			__func__, twl4030->sysclk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(codec->dev,
+			"%s: HFCLKIN is %u KHz, voice interface needs 26MHz\n",
+			__func__, twl4030->sysclk);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	/* If the codec mode is not option2, the voice PCM interface is not
 	 * available.
 	 */
+<<<<<<< HEAD
 	mode = twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE)
 		& TWL4030_OPT_MODE;
 
 	if (mode != TWL4030_OPTION_2) {
+<<<<<<< HEAD
 		printk(KERN_ERR "TWL4030 voice startup: "
 			"the codec mode is not option2\n");
+=======
+		dev_err(codec->dev, "%s: the codec mode is not option2\n",
+			__func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mode = twl4030_read(codec, TWL4030_REG_CODEC_MODE)
+		& TWL4030_OPT_MODE;
+
+	if (mode != TWL4030_OPTION_2) {
+		dev_err(codec->dev, "%s: the codec mode is not option2\n",
+			__func__);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -2041,20 +2670,33 @@ static int twl4030_voice_startup(struct snd_pcm_substream *substream,
 }
 
 static void twl4030_voice_shutdown(struct snd_pcm_substream *substream,
+<<<<<<< HEAD
 				struct snd_soc_dai *dai)
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+				   struct snd_soc_dai *dai)
+{
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable voice digital filters */
 	twl4030_voice_enable(codec, substream->stream, 0);
 }
 
 static int twl4030_voice_hw_params(struct snd_pcm_substream *substream,
+<<<<<<< HEAD
 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+				   struct snd_pcm_hw_params *params,
+				   struct snd_soc_dai *dai)
+{
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
 	u8 old_mode, mode;
 
@@ -2062,8 +2704,13 @@ static int twl4030_voice_hw_params(struct snd_pcm_substream *substream,
 	twl4030_voice_enable(codec, substream->stream, 1);
 
 	/* bit rate */
+<<<<<<< HEAD
 	old_mode = twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE)
 		& ~(TWL4030_CODECPDZ);
+=======
+	old_mode = twl4030_read(codec,
+				TWL4030_REG_CODEC_MODE) & ~TWL4030_CODECPDZ;
+>>>>>>> refs/remotes/origin/master
 	mode = old_mode;
 
 	switch (params_rate(params)) {
@@ -2074,7 +2721,15 @@ static int twl4030_voice_hw_params(struct snd_pcm_substream *substream,
 		mode |= TWL4030_SEL_16K;
 		break;
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "TWL4030 voice hw params: unknown rate %d\n",
+=======
+		dev_err(codec->dev, "%s: unknown rate %d\n", __func__,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(codec->dev, "%s: unknown rate %d\n", __func__,
+>>>>>>> refs/remotes/origin/master
 			params_rate(params));
 		return -EINVAL;
 	}
@@ -2097,19 +2752,43 @@ static int twl4030_voice_hw_params(struct snd_pcm_substream *substream,
 }
 
 static int twl4030_voice_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+<<<<<<< HEAD
 		int clk_id, unsigned int freq, int dir)
+=======
+					int clk_id, unsigned int freq, int dir)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_codec *codec = codec_dai->codec;
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
 
 	if (freq != 26000000) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(codec->dev, "Unsupported APLL mclk: %u, the Voice"
 			"interface needs 26MHz APLL mclk\n", freq);
+=======
+		dev_err(codec->dev,
+			"%s: HFCLKIN is %u KHz, voice interface needs 26MHz\n",
+			__func__, freq / 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(codec->dev,
+			"%s: HFCLKIN is %u KHz, voice interface needs 26MHz\n",
+			__func__, freq / 1000);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	if ((freq / 1000) != twl4030->sysclk) {
 		dev_err(codec->dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"Mismatch in APLL mclk: %u (configured: %u)\n",
+=======
+			"Mismatch in HFCLKIN: %u (configured: %u)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"Mismatch in HFCLKIN: %u (configured: %u)\n",
+>>>>>>> refs/remotes/origin/master
 			freq, twl4030->sysclk * 1000);
 		return -EINVAL;
 	}
@@ -2117,14 +2796,22 @@ static int twl4030_voice_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 }
 
 static int twl4030_voice_set_dai_fmt(struct snd_soc_dai *codec_dai,
+<<<<<<< HEAD
 		unsigned int fmt)
+=======
+				     unsigned int fmt)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_codec *codec = codec_dai->codec;
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
 	u8 old_format, format;
 
 	/* get format */
+<<<<<<< HEAD
 	old_format = twl4030_read_reg_cache(codec, TWL4030_REG_VOICE_IF);
+=======
+	old_format = twl4030_read(codec, TWL4030_REG_VOICE_IF);
+>>>>>>> refs/remotes/origin/master
 	format = old_format;
 
 	/* set master/slave audio interface */
@@ -2171,7 +2858,11 @@ static int twl4030_voice_set_dai_fmt(struct snd_soc_dai *codec_dai,
 static int twl4030_voice_set_tristate(struct snd_soc_dai *dai, int tristate)
 {
 	struct snd_soc_codec *codec = dai->codec;
+<<<<<<< HEAD
 	u8 reg = twl4030_read_reg_cache(codec, TWL4030_REG_VOICE_IF);
+=======
+	u8 reg = twl4030_read(codec, TWL4030_REG_VOICE_IF);
+>>>>>>> refs/remotes/origin/master
 
 	if (tristate)
 		reg |= TWL4030_VIF_TRI_EN;
@@ -2184,7 +2875,15 @@ static int twl4030_voice_set_tristate(struct snd_soc_dai *dai, int tristate)
 #define TWL4030_RATES	 (SNDRV_PCM_RATE_8000_48000)
 #define TWL4030_FORMATS	 (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops twl4030_dai_hifi_ops = {
+=======
+static const struct snd_soc_dai_ops twl4030_dai_hifi_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops twl4030_dai_hifi_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= twl4030_startup,
 	.shutdown	= twl4030_shutdown,
 	.hw_params	= twl4030_hw_params,
@@ -2193,7 +2892,15 @@ static struct snd_soc_dai_ops twl4030_dai_hifi_ops = {
 	.set_tristate	= twl4030_set_tristate,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops twl4030_dai_voice_ops = {
+=======
+static const struct snd_soc_dai_ops twl4030_dai_voice_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops twl4030_dai_voice_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= twl4030_voice_startup,
 	.shutdown	= twl4030_voice_shutdown,
 	.hw_params	= twl4030_voice_hw_params,
@@ -2210,13 +2917,35 @@ static struct snd_soc_dai_driver twl4030_dai[] = {
 		.channels_min = 2,
 		.channels_max = 4,
 		.rates = TWL4030_RATES | SNDRV_PCM_RATE_96000,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.formats = TWL4030_FORMATS,},
+=======
+		.formats = TWL4030_FORMATS,
+		.sig_bits = 24,},
+>>>>>>> refs/remotes/origin/cm-10.0
 	.capture = {
 		.stream_name = "Capture",
 		.channels_min = 2,
 		.channels_max = 4,
 		.rates = TWL4030_RATES,
+<<<<<<< HEAD
 		.formats = TWL4030_FORMATS,},
+=======
+		.formats = TWL4030_FORMATS,
+		.sig_bits = 24,},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.formats = TWL4030_FORMATS,
+		.sig_bits = 24,},
+	.capture = {
+		.stream_name = "HiFi Capture",
+		.channels_min = 2,
+		.channels_max = 4,
+		.rates = TWL4030_RATES,
+		.formats = TWL4030_FORMATS,
+		.sig_bits = 24,},
+>>>>>>> refs/remotes/origin/master
 	.ops = &twl4030_dai_hifi_ops,
 },
 {
@@ -2228,7 +2957,11 @@ static struct snd_soc_dai_driver twl4030_dai[] = {
 		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
 	.capture = {
+<<<<<<< HEAD
 		.stream_name = "Capture",
+=======
+		.stream_name = "Voice Capture",
+>>>>>>> refs/remotes/origin/master
 		.channels_min = 1,
 		.channels_max = 2,
 		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
@@ -2237,7 +2970,12 @@ static struct snd_soc_dai_driver twl4030_dai[] = {
 },
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int twl4030_soc_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int twl4030_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -2249,18 +2987,33 @@ static int twl4030_soc_resume(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int twl4030_soc_probe(struct snd_soc_codec *codec)
 {
 	struct twl4030_priv *twl4030;
 
+<<<<<<< HEAD
 	twl4030 = kzalloc(sizeof(struct twl4030_priv), GFP_KERNEL);
 	if (twl4030 == NULL) {
+<<<<<<< HEAD
 		printk("Can not allocate memroy\n");
+=======
+		dev_err(codec->dev, "Can not allocate memory\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	twl4030 = devm_kzalloc(codec->dev, sizeof(struct twl4030_priv),
+			       GFP_KERNEL);
+	if (twl4030 == NULL) {
+		dev_err(codec->dev, "Can not allocate memory\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	snd_soc_codec_set_drvdata(codec, twl4030);
 	/* Set the defaults, and power up the codec */
 	twl4030->sysclk = twl4030_audio_get_mclk() / 1000;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	codec->dapm.idle_bias_off = 1;
 
 	twl4030_init_chip(codec);
@@ -2268,31 +3021,73 @@ static int twl4030_soc_probe(struct snd_soc_codec *codec)
 	snd_soc_add_controls(codec, twl4030_snd_controls,
 				ARRAY_SIZE(twl4030_snd_controls));
 	twl4030_add_widgets(codec);
+=======
+
+	twl4030_init_chip(codec);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	twl4030_init_chip(codec);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int twl4030_soc_remove(struct snd_soc_codec *codec)
 {
 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 
 	/* Reset registers to their chip default before leaving */
 	twl4030_reset_registers(codec);
 	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	kfree(twl4030);
+=======
+	struct twl4030_codec_data *pdata = twl4030->pdata;
+
+	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
+
+	if (pdata && pdata->hs_extmute && gpio_is_valid(pdata->hs_extmute_gpio))
+		gpio_free(pdata->hs_extmute_gpio);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct snd_soc_codec_driver soc_codec_dev_twl4030 = {
 	.probe = twl4030_soc_probe,
 	.remove = twl4030_soc_remove,
+<<<<<<< HEAD
 	.suspend = twl4030_soc_suspend,
 	.resume = twl4030_soc_resume,
 	.read = twl4030_read_reg_cache,
 	.write = twl4030_write,
 	.set_bias_level = twl4030_set_bias_level,
+<<<<<<< HEAD
 	.reg_cache_size = sizeof(twl4030_reg),
 	.reg_word_size = sizeof(u8),
 	.reg_cache_default = twl4030_reg,
+=======
+	.idle_bias_off = true,
+	.reg_cache_size = sizeof(twl4030_reg),
+	.reg_word_size = sizeof(u8),
+	.reg_cache_default = twl4030_reg,
+=======
+	.read = twl4030_read,
+	.write = twl4030_write,
+	.set_bias_level = twl4030_set_bias_level,
+	.idle_bias_off = true,
+>>>>>>> refs/remotes/origin/master
+
+	.controls = twl4030_snd_controls,
+	.num_controls = ARRAY_SIZE(twl4030_snd_controls),
+	.dapm_widgets = twl4030_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(twl4030_dapm_widgets),
+	.dapm_routes = intercon,
+	.num_dapm_routes = ARRAY_SIZE(intercon),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __devinit twl4030_codec_probe(struct platform_device *pdev)
@@ -2309,6 +3104,17 @@ static int __devinit twl4030_codec_probe(struct platform_device *pdev)
 }
 
 static int __devexit twl4030_codec_remove(struct platform_device *pdev)
+=======
+};
+
+static int twl4030_codec_probe(struct platform_device *pdev)
+{
+	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_twl4030,
+				      twl4030_dai, ARRAY_SIZE(twl4030_dai));
+}
+
+static int twl4030_codec_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_codec(&pdev->dev);
 	return 0;
@@ -2318,13 +3124,19 @@ MODULE_ALIAS("platform:twl4030-codec");
 
 static struct platform_driver twl4030_codec_driver = {
 	.probe		= twl4030_codec_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(twl4030_codec_remove),
+=======
+	.remove		= twl4030_codec_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "twl4030-codec",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init twl4030_modinit(void)
 {
 	return platform_driver_register(&twl4030_codec_driver);
@@ -2336,6 +3148,12 @@ static void __exit twl4030_exit(void)
 	platform_driver_unregister(&twl4030_codec_driver);
 }
 module_exit(twl4030_exit);
+=======
+module_platform_driver(twl4030_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(twl4030_codec_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC TWL4030 codec driver");
 MODULE_AUTHOR("Steve Sakoman");

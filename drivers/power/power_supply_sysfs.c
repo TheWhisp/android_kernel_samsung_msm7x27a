@@ -12,8 +12,21 @@
  */
 
 #include <linux/ctype.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/power_supply.h>
 #include <linux/slab.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/device.h>
+#include <linux/power_supply.h>
+#include <linux/slab.h>
+#include <linux/stat.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "power_supply.h"
 
@@ -42,7 +55,15 @@ static ssize_t power_supply_show_property(struct device *dev,
 					  struct device_attribute *attr,
 					  char *buf) {
 	static char *type_text[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		"Battery", "UPS", "Mains", "USB",
+=======
+		"Unknown", "Battery", "UPS", "Mains", "USB",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"Unknown", "Battery", "UPS", "Mains", "USB",
+>>>>>>> refs/remotes/origin/master
 		"USB_DCP", "USB_CDP", "USB_ACA"
 	};
 	static char *status_text[] = {
@@ -53,7 +74,12 @@ static ssize_t power_supply_show_property(struct device *dev,
 	};
 	static char *health_text[] = {
 		"Unknown", "Good", "Overheat", "Dead", "Over voltage",
+<<<<<<< HEAD
 		"Unspecified failure", "Cold",
+=======
+		"Unspecified failure", "Cold", "Watchdog timer expire",
+		"Safety timer expire"
+>>>>>>> refs/remotes/origin/master
 	};
 	static char *technology_text[] = {
 		"Unknown", "NiMH", "Li-ion", "Li-poly", "LiFe", "NiCd",
@@ -62,6 +88,18 @@ static ssize_t power_supply_show_property(struct device *dev,
 	static char *capacity_level_text[] = {
 		"Unknown", "Critical", "Low", "Normal", "High", "Full"
 	};
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	static char *scope_text[] = {
+		"Unknown", "System", "Device"
+	};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static char *scope_text[] = {
+		"Unknown", "System", "Device"
+	};
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret = 0;
 	struct power_supply *psy = dev_get_drvdata(dev);
 	const ptrdiff_t off = attr - power_supply_attrs;
@@ -77,8 +115,18 @@ static ssize_t power_supply_show_property(struct device *dev,
 			dev_dbg(dev, "driver has no data for `%s' property\n",
 				attr->attr.name);
 		else if (ret != -ENODEV)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(dev, "driver failed to report `%s' property\n",
 				attr->attr.name);
+=======
+			dev_err(dev, "driver failed to report `%s' property: %zd\n",
+				attr->attr.name, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(dev, "driver failed to report `%s' property: %zd\n",
+				attr->attr.name, ret);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -94,6 +142,16 @@ static ssize_t power_supply_show_property(struct device *dev,
 		return sprintf(buf, "%s\n", capacity_level_text[value.intval]);
 	else if (off == POWER_SUPPLY_PROP_TYPE)
 		return sprintf(buf, "%s\n", type_text[value.intval]);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	else if (off == POWER_SUPPLY_PROP_SCOPE)
+		return sprintf(buf, "%s\n", scope_text[value.intval]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (off == POWER_SUPPLY_PROP_SCOPE)
+		return sprintf(buf, "%s\n", scope_text[value.intval]);
+>>>>>>> refs/remotes/origin/master
 	else if (off >= POWER_SUPPLY_PROP_MODEL_NAME)
 		return sprintf(buf, "%s\n", value.strval);
 
@@ -110,7 +168,11 @@ static ssize_t power_supply_store_property(struct device *dev,
 	long long_val;
 
 	/* TODO: support other types than int */
+<<<<<<< HEAD
 	ret = strict_strtol(buf, 10, &long_val);
+=======
+	ret = kstrtol(buf, 10, &long_val);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
@@ -131,6 +193,10 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(health),
 	POWER_SUPPLY_ATTR(present),
 	POWER_SUPPLY_ATTR(online),
+<<<<<<< HEAD
+=======
+	POWER_SUPPLY_ATTR(authentic),
+>>>>>>> refs/remotes/origin/master
 	POWER_SUPPLY_ATTR(technology),
 	POWER_SUPPLY_ATTR(cycle_count),
 	POWER_SUPPLY_ATTR(voltage_max),
@@ -139,6 +205,10 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(voltage_min_design),
 	POWER_SUPPLY_ATTR(voltage_now),
 	POWER_SUPPLY_ATTR(voltage_avg),
+<<<<<<< HEAD
+=======
+	POWER_SUPPLY_ATTR(voltage_ocv),
+>>>>>>> refs/remotes/origin/master
 	POWER_SUPPLY_ATTR(current_max),
 	POWER_SUPPLY_ATTR(current_now),
 	POWER_SUPPLY_ATTR(current_avg),
@@ -151,6 +221,15 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(charge_now),
 	POWER_SUPPLY_ATTR(charge_avg),
 	POWER_SUPPLY_ATTR(charge_counter),
+<<<<<<< HEAD
+=======
+	POWER_SUPPLY_ATTR(constant_charge_current),
+	POWER_SUPPLY_ATTR(constant_charge_current_max),
+	POWER_SUPPLY_ATTR(constant_charge_voltage),
+	POWER_SUPPLY_ATTR(constant_charge_voltage_max),
+	POWER_SUPPLY_ATTR(charge_control_limit),
+	POWER_SUPPLY_ATTR(charge_control_limit_max),
+>>>>>>> refs/remotes/origin/master
 	POWER_SUPPLY_ATTR(energy_full_design),
 	POWER_SUPPLY_ATTR(energy_empty_design),
 	POWER_SUPPLY_ATTR(energy_full),
@@ -158,14 +237,34 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(energy_now),
 	POWER_SUPPLY_ATTR(energy_avg),
 	POWER_SUPPLY_ATTR(capacity),
+<<<<<<< HEAD
 	POWER_SUPPLY_ATTR(capacity_level),
 	POWER_SUPPLY_ATTR(temp),
 	POWER_SUPPLY_ATTR(temp_ambient),
+=======
+	POWER_SUPPLY_ATTR(capacity_alert_min),
+	POWER_SUPPLY_ATTR(capacity_alert_max),
+	POWER_SUPPLY_ATTR(capacity_level),
+	POWER_SUPPLY_ATTR(temp),
+	POWER_SUPPLY_ATTR(temp_alert_min),
+	POWER_SUPPLY_ATTR(temp_alert_max),
+	POWER_SUPPLY_ATTR(temp_ambient),
+	POWER_SUPPLY_ATTR(temp_ambient_alert_min),
+	POWER_SUPPLY_ATTR(temp_ambient_alert_max),
+>>>>>>> refs/remotes/origin/master
 	POWER_SUPPLY_ATTR(time_to_empty_now),
 	POWER_SUPPLY_ATTR(time_to_empty_avg),
 	POWER_SUPPLY_ATTR(time_to_full_now),
 	POWER_SUPPLY_ATTR(time_to_full_avg),
 	POWER_SUPPLY_ATTR(type),
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	POWER_SUPPLY_ATTR(scope),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	POWER_SUPPLY_ATTR(scope),
+>>>>>>> refs/remotes/origin/master
 	/* Properties of type `const char *' */
 	POWER_SUPPLY_ATTR(model_name),
 	POWER_SUPPLY_ATTR(manufacturer),
@@ -175,13 +274,29 @@ static struct device_attribute power_supply_attrs[] = {
 static struct attribute *
 __power_supply_attrs[ARRAY_SIZE(power_supply_attrs) + 1];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t power_supply_attr_is_visible(struct kobject *kobj,
+=======
+static umode_t power_supply_attr_is_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static umode_t power_supply_attr_is_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/master
 					   struct attribute *attr,
 					   int attrno)
 {
 	struct device *dev = container_of(kobj, struct device, kobj);
 	struct power_supply *psy = dev_get_drvdata(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode = S_IRUSR | S_IRGRP | S_IROTH;
+=======
+	umode_t mode = S_IRUSR | S_IRGRP | S_IROTH;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode = S_IRUSR | S_IRGRP | S_IROTH;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (attrno == POWER_SUPPLY_PROP_TYPE)

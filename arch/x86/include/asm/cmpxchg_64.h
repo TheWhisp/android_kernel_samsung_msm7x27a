@@ -1,13 +1,21 @@
 #ifndef _ASM_X86_CMPXCHG_64_H
 #define _ASM_X86_CMPXCHG_64_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/alternative.h> /* Provides LOCK_PREFIX */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void set_64bit(volatile u64 *ptr, u64 val)
 {
 	*ptr = val;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void __xchg_wrong_size(void);
 extern void __cmpxchg_wrong_size(void);
 
@@ -139,6 +147,14 @@ extern void __cmpxchg_wrong_size(void);
 #define cmpxchg_local(ptr, old, new)					\
 	__cmpxchg_local((ptr), (old), (new), sizeof(*ptr))
 
+=======
+#define __HAVE_ARCH_CMPXCHG 1
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __HAVE_ARCH_CMPXCHG 1
+
+>>>>>>> refs/remotes/origin/master
 #define cmpxchg64(ptr, o, n)						\
 ({									\
 	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
@@ -151,4 +167,14 @@ extern void __cmpxchg_wrong_size(void);
 	cmpxchg_local((ptr), (o), (n));					\
 })
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define system_has_cmpxchg_double() cpu_has_cx16
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define system_has_cmpxchg_double() cpu_has_cx16
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_CMPXCHG_64_H */

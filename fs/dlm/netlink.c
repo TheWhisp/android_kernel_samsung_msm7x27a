@@ -14,7 +14,11 @@
 #include "dlm_internal.h"
 
 static uint32_t dlm_nl_seqnum;
+<<<<<<< HEAD
 static uint32_t listener_nlpid;
+=======
+static uint32_t listener_nlportid;
+>>>>>>> refs/remotes/origin/master
 
 static struct genl_family family = {
 	.id		= GENL_ID_GENERATE,
@@ -64,11 +68,16 @@ static int send_data(struct sk_buff *skb)
 		return rv;
 	}
 
+<<<<<<< HEAD
 	return genlmsg_unicast(&init_net, skb, listener_nlpid);
+=======
+	return genlmsg_unicast(&init_net, skb, listener_nlportid);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int user_cmd(struct sk_buff *skb, struct genl_info *info)
 {
+<<<<<<< HEAD
 	listener_nlpid = info->snd_pid;
 	printk("user_cmd nlpid %u\n", listener_nlpid);
 	return 0;
@@ -77,11 +86,27 @@ static int user_cmd(struct sk_buff *skb, struct genl_info *info)
 static struct genl_ops dlm_nl_ops = {
 	.cmd		= DLM_CMD_HELLO,
 	.doit		= user_cmd,
+=======
+	listener_nlportid = info->snd_portid;
+	printk("user_cmd nlpid %u\n", listener_nlportid);
+	return 0;
+}
+
+static struct genl_ops dlm_nl_ops[] = {
+	{
+		.cmd	= DLM_CMD_HELLO,
+		.doit	= user_cmd,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 int __init dlm_netlink_init(void)
 {
+<<<<<<< HEAD
 	return genl_register_family_with_ops(&family, &dlm_nl_ops, 1);
+=======
+	return genl_register_family_with_ops(&family, dlm_nl_ops);
+>>>>>>> refs/remotes/origin/master
 }
 
 void dlm_netlink_exit(void)

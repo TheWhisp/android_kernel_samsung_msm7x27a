@@ -16,7 +16,13 @@
 #include <linux/errno.h>
 
 #include <asm/memory.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define __copy_from_user	__copy_from_user
 #define __copy_to_user		__copy_to_user

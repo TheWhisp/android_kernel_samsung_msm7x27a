@@ -2,8 +2,30 @@ menu "Machine selection"
 
 config SCORE
        def_bool y
+<<<<<<< HEAD
        select HAVE_GENERIC_HARDIRQS
        select GENERIC_IRQ_SHOW
+<<<<<<< HEAD
+=======
+       select GENERIC_IOMAP
+=======
+       select GENERIC_IRQ_SHOW
+       select GENERIC_IOMAP
+       select GENERIC_ATOMIC64
+>>>>>>> refs/remotes/origin/master
+       select HAVE_MEMBLOCK
+       select HAVE_MEMBLOCK_NODE_MAP
+       select ARCH_DISCARD_MEMBLOCK
+       select GENERIC_CPU_DEVICES
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+       select GENERIC_CLOCKEVENTS
+       select HAVE_MOD_ARCH_SPECIFIC
+	select VIRT_TO_BUS
+	select MODULES_USE_ELF_REL
+	select CLONE_BACKWARDS
+>>>>>>> refs/remotes/origin/master
 
 choice
 	prompt "System type"
@@ -33,9 +55,15 @@ endmenu
 config CPU_SCORE7
 	bool
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config GENERIC_IOMAP
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config NO_DMA
 	bool
 	default y
@@ -49,9 +77,11 @@ config GENERIC_HWEIGHT
 config GENERIC_CALIBRATE_DELAY
 	def_bool y
 
+<<<<<<< HEAD
 config GENERIC_CLOCKEVENTS
 	def_bool y
 
+<<<<<<< HEAD
 config SCHED_NO_NO_OMIT_FRAME_POINTER
 	def_bool y
 
@@ -62,6 +92,10 @@ config SCORE_L1_CACHE_SHIFT
 	int
 	default "4"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 menu "Kernel type"
 
 config 32BIT
@@ -70,16 +104,25 @@ config 32BIT
 config ARCH_FLATMEM_ENABLE
 	def_bool y
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config ARCH_POPULATES_NODE_MAP
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 source "mm/Kconfig"
 
 config MEMORY_START
 	hex
 	default	0xa0000000
 
+<<<<<<< HEAD
 source "kernel/time/Kconfig"
+=======
+>>>>>>> refs/remotes/origin/master
 source "kernel/Kconfig.hz"
 source "kernel/Kconfig.preempt"
 
@@ -96,6 +139,8 @@ config STACKTRACE_SUPPORT
 
 source "init/Kconfig"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config PROBE_INITRD_HEADER
 	bool "Probe initrd header created by addinitrd"
 	depends on BLK_DEV_INITRD
@@ -105,6 +150,12 @@ config PROBE_INITRD_HEADER
 	  add initrd or initramfs image to the kernel image.
 	  Otherwise, say N.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "kernel/Kconfig.freezer"
+
+>>>>>>> refs/remotes/origin/master
 config MMU
 	def_bool y
 
@@ -127,3 +178,9 @@ source "security/Kconfig"
 source "crypto/Kconfig"
 
 source "lib/Kconfig"
+<<<<<<< HEAD
+=======
+
+config NO_IOMEM
+       def_bool y
+>>>>>>> refs/remotes/origin/master

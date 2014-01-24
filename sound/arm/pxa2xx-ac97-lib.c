@@ -16,11 +16,34 @@
 #include <linux/interrupt.h>
 #include <linux/clk.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+#include <linux/io.h>
+#include <linux/gpio.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/io.h>
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <sound/ac97_codec.h>
 #include <sound/pxa2xx-lib.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/irq.h>
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/regs-ac97.h>
 #include <mach/audio.h>
 
@@ -31,7 +54,11 @@ static struct clk *ac97_clk;
 static struct clk *ac97conf_clk;
 static int reset_gpio;
 
+<<<<<<< HEAD
 extern void pxa27x_assert_ac97reset(int reset_gpio, int on);
+=======
+extern void pxa27x_configure_ac97reset(int reset_gpio, bool to_gpio);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Beware PXA27x bugs:
@@ -114,8 +141,12 @@ static inline void pxa_ac97_warm_pxa25x(void)
 {
 	gsr_bits = 0;
 
+<<<<<<< HEAD
 	GCR |= GCR_WARM_RST | GCR_PRIRDY_IEN | GCR_SECRDY_IEN;
 	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
+=======
+	GCR |= GCR_WARM_RST;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void pxa_ac97_cold_pxa25x(void)
@@ -126,8 +157,11 @@ static inline void pxa_ac97_cold_pxa25x(void)
 	gsr_bits = 0;
 
 	GCR = GCR_COLD_RST;
+<<<<<<< HEAD
 	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
 	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -137,17 +171,32 @@ static inline void pxa_ac97_warm_pxa27x(void)
 	gsr_bits = 0;
 
 	/* warm reset broken on Bulverde, so manually keep AC97 reset high */
+<<<<<<< HEAD
 	pxa27x_assert_ac97reset(reset_gpio, 1);
 	udelay(10);
 	GCR |= GCR_WARM_RST;
 	pxa27x_assert_ac97reset(reset_gpio, 0);
+=======
+	pxa27x_configure_ac97reset(reset_gpio, true);
+	udelay(10);
+	GCR |= GCR_WARM_RST;
+	pxa27x_configure_ac97reset(reset_gpio, false);
+>>>>>>> refs/remotes/origin/master
 	udelay(500);
 }
 
 static inline void pxa_ac97_cold_pxa27x(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int timeout;
 
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	unsigned int timeout;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	GCR &=  GCR_COLD_RST;  /* clear everything but nCRST */
 	GCR &= ~GCR_COLD_RST;  /* then assert nCRST */
 
@@ -158,29 +207,47 @@ static inline void pxa_ac97_cold_pxa27x(void)
 	udelay(5);
 	clk_disable(ac97conf_clk);
 	GCR = GCR_COLD_RST | GCR_WARM_RST;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	timeout = 100;     /* wait for the codec-ready bit to be set */
 	while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
 		mdelay(1);
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	timeout = 100;     /* wait for the codec-ready bit to be set */
+	while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
+		mdelay(1);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif
 
 #ifdef CONFIG_PXA3xx
 static inline void pxa_ac97_warm_pxa3xx(void)
 {
+<<<<<<< HEAD
 	int timeout = 100;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	gsr_bits = 0;
 
 	/* Can't use interrupts */
 	GCR |= GCR_WARM_RST;
+<<<<<<< HEAD
 	while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
 		mdelay(1);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void pxa_ac97_cold_pxa3xx(void)
 {
+<<<<<<< HEAD
 	int timeout = 1000;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Hold CLKBPB for 100us */
 	GCR = 0;
 	GCR = GCR_CLKBPB;
@@ -196,14 +263,21 @@ static inline void pxa_ac97_cold_pxa3xx(void)
 	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
 
 	GCR = GCR_WARM_RST | GCR_COLD_RST;
+<<<<<<< HEAD
 	while (!(GSR & (GSR_PCR | GSR_SCR)) && timeout--)
 		mdelay(10);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
 {
 	unsigned long gsr;
+<<<<<<< HEAD
+=======
+	unsigned int timeout = 100;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PXA25x
 	if (cpu_is_pxa25x())
@@ -220,7 +294,15 @@ bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
 		pxa_ac97_warm_pxa3xx();
 	else
 #endif
+<<<<<<< HEAD
 		BUG();
+=======
+		snd_BUG();
+
+	while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
+		mdelay(1);
+
+>>>>>>> refs/remotes/origin/master
 	gsr = GSR | gsr_bits;
 	if (!(gsr & (GSR_PCR | GSR_SCR))) {
 		printk(KERN_INFO "%s: warm reset timeout (GSR=%#lx)\n",
@@ -236,6 +318,10 @@ EXPORT_SYMBOL_GPL(pxa2xx_ac97_try_warm_reset);
 bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
 {
 	unsigned long gsr;
+<<<<<<< HEAD
+=======
+	unsigned int timeout = 1000;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PXA25x
 	if (cpu_is_pxa25x())
@@ -252,7 +338,14 @@ bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
 		pxa_ac97_cold_pxa3xx();
 	else
 #endif
+<<<<<<< HEAD
 		BUG();
+=======
+		snd_BUG();
+
+	while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
+		mdelay(1);
+>>>>>>> refs/remotes/origin/master
 
 	gsr = GSR | gsr_bits;
 	if (!(gsr & (GSR_PCR | GSR_SCR))) {
@@ -316,7 +409,11 @@ int pxa2xx_ac97_hw_resume(void)
 EXPORT_SYMBOL_GPL(pxa2xx_ac97_hw_resume);
 #endif
 
+<<<<<<< HEAD
 int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
+=======
+int pxa2xx_ac97_hw_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	pxa2xx_audio_ops_t *pdata = dev->dev.platform_data;
@@ -342,8 +439,52 @@ int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
 	}
 
 	if (cpu_is_pxa27x()) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* Use GPIO 113 as AC97 Reset on Bulverde */
 		pxa27x_assert_ac97reset(reset_gpio, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * This gpio is needed for a work-around to a bug in the ac97
+		 * controller during warm reset.  The direction and level is set
+		 * here so that it is an output driven high when switching from
+		 * AC97_nRESET alt function to generic gpio.
+		 */
+		ret = gpio_request_one(reset_gpio, GPIOF_OUT_INIT_HIGH,
+				       "pxa27x ac97 reset");
+		if (ret < 0) {
+			pr_err("%s: gpio_request_one() failed: %d\n",
+			       __func__, ret);
+			goto err_conf;
+		}
+<<<<<<< HEAD
+		pxa27x_assert_ac97reset(reset_gpio, 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pxa27x_configure_ac97reset(reset_gpio, false);
+
+>>>>>>> refs/remotes/origin/master
+=======
+		/*
+		 * This gpio is needed for a work-around to a bug in the ac97
+		 * controller during warm reset.  The direction and level is set
+		 * here so that it is an output driven high when switching from
+		 * AC97_nRESET alt function to generic gpio.
+		 */
+		ret = gpio_request_one(reset_gpio, GPIOF_OUT_INIT_HIGH,
+				       "pxa27x ac97 reset");
+		if (ret < 0) {
+			pr_err("%s: gpio_request_one() failed: %d\n",
+			       __func__, ret);
+			goto err_conf;
+		}
+		pxa27x_assert_ac97reset(reset_gpio, 0);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		ac97conf_clk = clk_get(&dev->dev, "AC97CONFCLK");
 		if (IS_ERR(ac97conf_clk)) {
 			ret = PTR_ERR(ac97conf_clk);
@@ -363,7 +504,15 @@ int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
 	if (ret)
 		goto err_clk2;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, IRQF_DISABLED, "AC97", NULL);
+=======
+	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, 0, "AC97", NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, 0, "AC97", NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto err_irq;
 
@@ -386,6 +535,21 @@ EXPORT_SYMBOL_GPL(pxa2xx_ac97_hw_probe);
 
 void pxa2xx_ac97_hw_remove(struct platform_device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (cpu_is_pxa27x())
+		gpio_free(reset_gpio);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_is_pxa27x())
+		gpio_free(reset_gpio);
+>>>>>>> refs/remotes/origin/master
+=======
+	if (cpu_is_pxa27x())
+		gpio_free(reset_gpio);
+>>>>>>> refs/remotes/origin/cm-11.0
 	GCR |= GCR_ACLINK_OFF;
 	free_irq(IRQ_AC97, NULL);
 	if (ac97conf_clk) {

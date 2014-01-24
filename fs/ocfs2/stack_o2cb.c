@@ -28,6 +28,14 @@
 #include "cluster/masklog.h"
 #include "cluster/nodemanager.h"
 #include "cluster/heartbeat.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "cluster/tcp.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "cluster/tcp.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "stackglue.h"
 
@@ -256,6 +264,70 @@ static void o2cb_dump_lksb(struct ocfs2_dlm_lksb *lksb)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Check if this node is heartbeating and is connected to all other
+ * heartbeating nodes.
+ */
+static int o2cb_cluster_check(void)
+{
+	u8 node_num;
+	int i;
+	unsigned long hbmap[BITS_TO_LONGS(O2NM_MAX_NODES)];
+	unsigned long netmap[BITS_TO_LONGS(O2NM_MAX_NODES)];
+
+	node_num = o2nm_this_node();
+	if (node_num == O2NM_MAX_NODES) {
+		printk(KERN_ERR "o2cb: This node has not been configured.\n");
+		return -EINVAL;
+	}
+
+	/*
+	 * o2dlm expects o2net sockets to be created. If not, then
+	 * dlm_join_domain() fails with a stack of errors which are both cryptic
+	 * and incomplete. The idea here is to detect upfront whether we have
+	 * managed to connect to all nodes or not. If not, then list the nodes
+	 * to allow the user to check the configuration (incorrect IP, firewall,
+	 * etc.) Yes, this is racy. But its not the end of the world.
+	 */
+#define	O2CB_MAP_STABILIZE_COUNT	60
+	for (i = 0; i < O2CB_MAP_STABILIZE_COUNT; ++i) {
+		o2hb_fill_node_map(hbmap, sizeof(hbmap));
+		if (!test_bit(node_num, hbmap)) {
+			printk(KERN_ERR "o2cb: %s heartbeat has not been "
+			       "started.\n", (o2hb_global_heartbeat_active() ?
+					      "Global" : "Local"));
+			return -EINVAL;
+		}
+		o2net_fill_node_map(netmap, sizeof(netmap));
+		/* Force set the current node to allow easy compare */
+		set_bit(node_num, netmap);
+		if (!memcmp(hbmap, netmap, sizeof(hbmap)))
+			return 0;
+		if (i < O2CB_MAP_STABILIZE_COUNT)
+			msleep(1000);
+	}
+
+	printk(KERN_ERR "o2cb: This node could not connect to nodes:");
+	i = -1;
+	while ((i = find_next_bit(hbmap, O2NM_MAX_NODES,
+				  i + 1)) < O2NM_MAX_NODES) {
+		if (!test_bit(i, netmap))
+			printk(" %u", i);
+	}
+	printk(".\n");
+
+	return -ENOTCONN;
+}
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Called from the dlm when it's about to evict a node. This is how the
  * classic stack signals node death.
  */
@@ -263,8 +335,18 @@ static void o2dlm_eviction_cb(int node_num, void *data)
 {
 	struct ocfs2_cluster_connection *conn = data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mlog(ML_NOTICE, "o2dlm has evicted node %d from group %.*s\n",
 	     node_num, conn->cc_namelen, conn->cc_name);
+=======
+	printk(KERN_NOTICE "o2cb: o2dlm has evicted node %d from domain %.*s\n",
+	       node_num, conn->cc_namelen, conn->cc_name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_NOTICE "o2cb: o2dlm has evicted node %d from domain %.*s\n",
+	       node_num, conn->cc_namelen, conn->cc_name);
+>>>>>>> refs/remotes/origin/master
 
 	conn->cc_recovery_handler(node_num, conn->cc_recovery_data);
 }
@@ -280,12 +362,26 @@ static int o2cb_cluster_connect(struct ocfs2_cluster_connection *conn)
 	BUG_ON(conn == NULL);
 	BUG_ON(conn->cc_proto == NULL);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* for now we only have one cluster/node, make sure we see it
 	 * in the heartbeat universe */
 	if (!o2hb_check_local_node_heartbeating()) {
 		if (o2hb_global_heartbeat_active())
 			mlog(ML_ERROR, "Global heartbeat not started\n");
 		rc = -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Ensure cluster stack is up and all nodes are connected */
+	rc = o2cb_cluster_check();
+	if (rc) {
+		printk(KERN_ERR "o2cb: Cluster check failed. Fix errors "
+		       "before retrying.\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -321,7 +417,11 @@ static int o2cb_cluster_connect(struct ocfs2_cluster_connection *conn)
 	dlm_register_eviction_cb(dlm, &priv->op_eviction_cb);
 
 out_free:
+<<<<<<< HEAD
 	if (rc && conn->cc_private)
+=======
+	if (rc)
+>>>>>>> refs/remotes/origin/master
 		kfree(conn->cc_private);
 
 out:
@@ -343,7 +443,12 @@ static int o2cb_cluster_disconnect(struct ocfs2_cluster_connection *conn)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int o2cb_cluster_this_node(unsigned int *node)
+=======
+static int o2cb_cluster_this_node(struct ocfs2_cluster_connection *conn,
+				  unsigned int *node)
+>>>>>>> refs/remotes/origin/master
 {
 	int node_num;
 

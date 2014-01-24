@@ -2,7 +2,11 @@
 #define __ASM_SH_TLB_H
 
 #ifdef CONFIG_SUPERH64
+<<<<<<< HEAD
 # include "tlb_64.h"
+=======
+# include <asm/tlb_64.h>
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifndef __ASSEMBLY__
@@ -36,10 +40,19 @@ static inline void init_tlb_gather(struct mmu_gather *tlb)
 }
 
 static inline void
+<<<<<<< HEAD
 tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm, unsigned int full_mm_flush)
 {
 	tlb->mm = mm;
 	tlb->fullmm = full_mm_flush;
+=======
+tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm, unsigned long start, unsigned long end)
+{
+	tlb->mm = mm;
+	tlb->start = start;
+	tlb->end = end;
+	tlb->fullmm = !(start | (end+1));
+>>>>>>> refs/remotes/origin/master
 
 	init_tlb_gather(tlb);
 }

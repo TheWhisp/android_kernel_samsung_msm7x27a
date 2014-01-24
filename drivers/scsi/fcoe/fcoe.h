@@ -40,9 +40,17 @@
 #define FCOE_MIN_XID		0x0000	/* the min xid supported by fcoe_sw */
 #define FCOE_MAX_XID		0x0FFF	/* the max xid supported by fcoe_sw */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int fcoe_debug_logging;
 module_param_named(debug_logging, fcoe_debug_logging, int, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(debug_logging, "a bit mask of logging levels");
+=======
+extern unsigned int fcoe_debug_logging;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern unsigned int fcoe_debug_logging;
+>>>>>>> refs/remotes/origin/master
 
 #define FCOE_LOGGING	    0x01 /* General logging, not categorized */
 #define FCOE_NETDEV_LOGGING 0x02 /* Netdevice logging */
@@ -57,12 +65,21 @@ do {                                                            	\
 
 #define FCOE_DBG(fmt, args...)						\
 	FCOE_CHECK_LOGGING(FCOE_LOGGING,				\
+<<<<<<< HEAD
 			   printk(KERN_INFO "fcoe: " fmt, ##args);)
 
 #define FCOE_NETDEV_DBG(netdev, fmt, args...)			\
 	FCOE_CHECK_LOGGING(FCOE_NETDEV_LOGGING,			\
 			   printk(KERN_INFO "fcoe: %s: " fmt,	\
 				  netdev->name, ##args);)
+=======
+			   pr_info("fcoe: " fmt, ##args);)
+
+#define FCOE_NETDEV_DBG(netdev, fmt, args...)			\
+	FCOE_CHECK_LOGGING(FCOE_NETDEV_LOGGING,			\
+			   pr_info("fcoe: %s: " fmt,		\
+				   netdev->name, ##args);)
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct fcoe_interface - A FCoE interface
@@ -70,24 +87,58 @@ do {                                                            	\
  * @netdev:	      The associated net device
  * @fcoe_packet_type: FCoE packet type
  * @fip_packet_type:  FIP packet type
+<<<<<<< HEAD
  * @ctlr:	      The FCoE controller (for FIP)
  * @oem:	      The offload exchange manager for all local port
  *		      instances associated with this port
+<<<<<<< HEAD
  * @kref:	      The kernel reference
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * This structure is 1:1 with a net devive.
+=======
+ * @oem:	      The offload exchange manager for all local port
+ *		      instances associated with this port
+ * @removed:	      Indicates fcoe interface removed from net device
+ * @priority:	      Priority for the FCoE packet (DCB)
+ * This structure is 1:1 with a net device.
+>>>>>>> refs/remotes/origin/master
  */
 struct fcoe_interface {
 	struct list_head   list;
 	struct net_device  *netdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct net_device  *realdev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct packet_type fcoe_packet_type;
 	struct packet_type fip_packet_type;
 	struct fcoe_ctlr   ctlr;
 	struct fc_exch_mgr *oem;
+<<<<<<< HEAD
 	struct kref	   kref;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define fcoe_from_ctlr(fip) container_of(fip, struct fcoe_interface, ctlr)
+=======
+	struct net_device  *realdev;
+	struct packet_type fcoe_packet_type;
+	struct packet_type fip_packet_type;
+	struct fc_exch_mgr *oem;
+	u8	removed;
+	u8	priority;
+};
+
+#define fcoe_to_ctlr(x)						\
+	(struct fcoe_ctlr *)(((struct fcoe_ctlr *)(x)) - 1)
+
+#define fcoe_from_ctlr(x)			\
+	((struct fcoe_interface *)((x) + 1))
+>>>>>>> refs/remotes/origin/master
 
 /**
  * fcoe_netdev() - Return the net device associated with a local port
@@ -99,6 +150,8 @@ static inline struct net_device *fcoe_netdev(const struct fc_lport *lport)
 			((struct fcoe_port *)lport_priv(lport))->priv)->netdev;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void wwn_to_str(u64 wwn, char *buf, int len)
 {
 	u8 wwpn[8];
@@ -109,4 +162,8 @@ static inline void wwn_to_str(u64 wwn, char *buf, int len)
 		wwpn[4], wwpn[5], wwpn[6], wwpn[7]);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _FCOE_H_ */

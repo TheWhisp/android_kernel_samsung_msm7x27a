@@ -239,7 +239,13 @@
 #include <asm/irq.h>
 #include <linux/io.h>
 #include <linux/blkdev.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/completion.h>
 #include <linux/errno.h>
 #include <linux/string.h>
@@ -421,11 +427,34 @@ MODULE_PARM_DESC(aha152x1, "parameters for second controller");
 #endif /* MODULE */
 
 #ifdef __ISAPNP__
+<<<<<<< HEAD
 static struct isapnp_device_id id_table[] __devinitdata = {
+<<<<<<< HEAD
 	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,
 		ISAPNP_VENDOR('A','D','P'), ISAPNP_FUNCTION(0x1505), 0 },
 	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,
 		ISAPNP_VENDOR('A','D','P'), ISAPNP_FUNCTION(0x1530), 0 },
+=======
+=======
+static struct isapnp_device_id id_table[] = {
+>>>>>>> refs/remotes/origin/master
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x1502), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x1505), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x1510), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x1515), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x1520), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x2015), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x1522), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x2215), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x1530), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x3015), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x1532), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x3215), 0 },
+	{ ISAPNP_ANY_ID, ISAPNP_ANY_ID,	ISAPNP_VENDOR('A', 'D', 'P'), ISAPNP_FUNCTION(0x6360), 0 },
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ ISAPNP_DEVICE_SINGLE_END, }
 };
 MODULE_DEVICE_TABLE(isapnp, id_table);
@@ -2969,6 +2998,7 @@ static void show_queues(struct Scsi_Host *shpnt)
 }
 
 #undef SPRINTF
+<<<<<<< HEAD
 #define SPRINTF(args...) pos += sprintf(pos, ## args)
 
 static int get_command(char *pos, Scsi_Cmnd * ptr)
@@ -2976,8 +3006,28 @@ static int get_command(char *pos, Scsi_Cmnd * ptr)
 	char *start = pos;
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SPRINTF("0x%08x: target=%d; lun=%d; cmnd=( ",
 		(unsigned int) ptr, ptr->device->id, ptr->device->lun);
+=======
+	SPRINTF("%p: target=%d; lun=%d; cmnd=( ",
+		ptr, ptr->device->id, ptr->device->lun);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SPRINTF(args...) seq_printf(m, ##args)
+
+static void get_command(struct seq_file *m, Scsi_Cmnd * ptr)
+{
+	int i;
+
+	SPRINTF("%p: target=%d; lun=%d; cmnd=( ",
+		ptr, ptr->device->id, ptr->device->lun);
+>>>>>>> refs/remotes/origin/master
+=======
+	SPRINTF("%p: target=%d; lun=%d; cmnd=( ",
+		ptr, ptr->device->id, ptr->device->lun);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < COMMAND_SIZE(ptr->cmnd[0]); i++)
 		SPRINTF("0x%02x ", ptr->cmnd[i]);
@@ -3003,6 +3053,7 @@ static int get_command(char *pos, Scsi_Cmnd * ptr)
 	if (ptr->SCp.phase & syncneg)
 		SPRINTF("syncneg|");
 	SPRINTF("; next=0x%p\n", SCNEXT(ptr));
+<<<<<<< HEAD
 
 	return (pos - start);
 }
@@ -3010,6 +3061,12 @@ static int get_command(char *pos, Scsi_Cmnd * ptr)
 static int get_ports(struct Scsi_Host *shpnt, char *pos)
 {
 	char *start = pos;
+=======
+}
+
+static void get_ports(struct seq_file *m, struct Scsi_Host *shpnt)
+{
+>>>>>>> refs/remotes/origin/master
 	int s;
 
 	SPRINTF("\n%s: %s(%s) ", CURRENT_SC ? "on bus" : "waiting", states[STATE].name, states[PREVSTATE].name);
@@ -3265,11 +3322,17 @@ static int get_ports(struct Scsi_Host *shpnt, char *pos)
 	if (s & ENREQINIT)
 		SPRINTF("ENREQINIT ");
 	SPRINTF(")\n");
+<<<<<<< HEAD
 
 	return (pos - start);
 }
 
 static int aha152x_set_info(char *buffer, int length, struct Scsi_Host *shpnt)
+=======
+}
+
+static int aha152x_set_info(struct Scsi_Host *shpnt, char *buffer, int length)
+>>>>>>> refs/remotes/origin/master
 {
 	if(!shpnt || !buffer || length<8 || strncmp("aha152x ", buffer, 8)!=0)
 		return -EINVAL;
@@ -3312,6 +3375,7 @@ static int aha152x_set_info(char *buffer, int length, struct Scsi_Host *shpnt)
 	return length;
 }
 
+<<<<<<< HEAD
 #undef SPRINTF
 #define SPRINTF(args...) \
 	do { if(pos < buffer + length) pos += sprintf(pos, ## args); } while(0)
@@ -3332,6 +3396,13 @@ static int aha152x_proc_info(struct Scsi_Host *shpnt, char *buffer, char **start
 
 	if (inout)
 		return aha152x_set_info(buffer, length, shpnt);
+=======
+static int aha152x_show_info(struct seq_file *m, struct Scsi_Host *shpnt)
+{
+	int i;
+	Scsi_Cmnd *ptr;
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	SPRINTF(AHA152X_REVID "\n");
 
@@ -3384,25 +3455,41 @@ static int aha152x_proc_info(struct Scsi_Host *shpnt, char *buffer, char **start
 	if (ISSUE_SC) {
 		SPRINTF("not yet issued commands:\n");
 		for (ptr = ISSUE_SC; ptr; ptr = SCNEXT(ptr))
+<<<<<<< HEAD
 			pos += get_command(pos, ptr);
+=======
+			get_command(m, ptr);
+>>>>>>> refs/remotes/origin/master
 	} else
 		SPRINTF("no not yet issued commands\n");
 	DO_UNLOCK(flags);
 
 	if (CURRENT_SC) {
 		SPRINTF("current command:\n");
+<<<<<<< HEAD
 		pos += get_command(pos, CURRENT_SC);
+=======
+		get_command(m, CURRENT_SC);
+>>>>>>> refs/remotes/origin/master
 	} else
 		SPRINTF("no current command\n");
 
 	if (DISCONNECTED_SC) {
 		SPRINTF("disconnected commands:\n");
 		for (ptr = DISCONNECTED_SC; ptr; ptr = SCNEXT(ptr))
+<<<<<<< HEAD
 			pos += get_command(pos, ptr);
 	} else
 		SPRINTF("no disconnected commands\n");
 
 	pos += get_ports(shpnt, pos);
+=======
+			get_command(m, ptr);
+	} else
+		SPRINTF("no disconnected commands\n");
+
+	get_ports(m, shpnt);
+>>>>>>> refs/remotes/origin/master
 
 #if defined(AHA152X_STAT)
 	SPRINTF("statistics:\n"
@@ -3432,6 +3519,7 @@ static int aha152x_proc_info(struct Scsi_Host *shpnt, char *buffer, char **start
 			HOSTDATA(shpnt)->time[i]);
 	}
 #endif
+<<<<<<< HEAD
 
 	DPRINTK(debug_procinfo, KERN_DEBUG "aha152x_proc_info: pos=%p\n", pos);
 
@@ -3450,6 +3538,9 @@ static int aha152x_proc_info(struct Scsi_Host *shpnt, char *buffer, char **start
 
 	*start = buffer + offset;
 	return thislength < length ? thislength : length;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int aha152x_adjust_queue(struct scsi_device *device)
@@ -3462,7 +3553,12 @@ static struct scsi_host_template aha152x_driver_template = {
 	.module				= THIS_MODULE,
 	.name				= AHA152X_REVID,
 	.proc_name			= "aha152x",
+<<<<<<< HEAD
 	.proc_info			= aha152x_proc_info,
+=======
+	.show_info			= aha152x_show_info,
+	.write_info			= aha152x_set_info,
+>>>>>>> refs/remotes/origin/master
 	.queuecommand			= aha152x_queue,
 	.eh_abort_handler		= aha152x_abort,
 	.eh_device_reset_handler	= aha152x_device_reset,

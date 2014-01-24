@@ -17,7 +17,11 @@
 #include <linux/interrupt.h>
 #include <linux/ioport.h>
 #include <linux/cpufreq.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <linux/clk.h>
 #include <linux/err.h>
@@ -270,7 +274,12 @@ struct s3c_cpufreq_info s3c2440_cpufreq_info = {
 	.debug_io_show  = s3c_cpufreq_debugfs_call(s3c2410_iotiming_debugfs),
 };
 
+<<<<<<< HEAD
 static int s3c2440_cpufreq_add(struct sys_device *sysdev)
+=======
+static int s3c2440_cpufreq_add(struct device *dev,
+			       struct subsys_interface *sif)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	xtal = s3c_cpufreq_clk_get(NULL, "xtal");
 	hclk = s3c_cpufreq_clk_get(NULL, "hclk");
@@ -285,27 +294,49 @@ static int s3c2440_cpufreq_add(struct sys_device *sysdev)
 	return s3c_cpufreq_register(&s3c2440_cpufreq_info);
 }
 
+<<<<<<< HEAD
 static struct sysdev_driver s3c2440_cpufreq_driver = {
 	.add		= s3c2440_cpufreq_add,
+=======
+static struct subsys_interface s3c2440_cpufreq_interface = {
+	.name		= "s3c2440_cpufreq",
+	.subsys		= &s3c2440_subsys,
+	.add_dev	= s3c2440_cpufreq_add,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int s3c2440_cpufreq_init(void)
 {
+<<<<<<< HEAD
 	return sysdev_driver_register(&s3c2440_sysclass,
 				      &s3c2440_cpufreq_driver);
+=======
+	return subsys_interface_register(&s3c2440_cpufreq_interface);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* arch_initcall adds the clocks we need, so use subsys_initcall. */
 subsys_initcall(s3c2440_cpufreq_init);
 
+<<<<<<< HEAD
 static struct sysdev_driver s3c2442_cpufreq_driver = {
 	.add		= s3c2440_cpufreq_add,
+=======
+static struct subsys_interface s3c2442_cpufreq_interface = {
+	.name		= "s3c2442_cpufreq",
+	.subsys		= &s3c2442_subsys,
+	.add_dev	= s3c2440_cpufreq_add,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int s3c2442_cpufreq_init(void)
 {
+<<<<<<< HEAD
 	return sysdev_driver_register(&s3c2442_sysclass,
 				      &s3c2442_cpufreq_driver);
+=======
+	return subsys_interface_register(&s3c2442_cpufreq_interface);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 subsys_initcall(s3c2442_cpufreq_init);

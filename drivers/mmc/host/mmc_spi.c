@@ -27,6 +27,14 @@
 #include <linux/sched.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bio.h>
 #include <linux/dma-mapping.h>
 #include <linux/crc7.h>
@@ -35,6 +43,10 @@
 
 #include <linux/mmc/host.h>
 #include <linux/mmc/mmc.h>		/* for R1_SPI_* bit values */
+<<<<<<< HEAD
+=======
+#include <linux/mmc/slot-gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/spi/spi.h>
 #include <linux/spi/mmc_spi.h>
@@ -1271,6 +1283,7 @@ static void mmc_spi_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	}
 }
 
+<<<<<<< HEAD
 static int mmc_spi_get_ro(struct mmc_host *mmc)
 {
 	struct mmc_spi_host *host = mmc_priv(mmc);
@@ -1298,6 +1311,13 @@ static const struct mmc_host_ops mmc_spi_ops = {
 	.set_ios	= mmc_spi_set_ios,
 	.get_ro		= mmc_spi_get_ro,
 	.get_cd		= mmc_spi_get_cd,
+=======
+static const struct mmc_host_ops mmc_spi_ops = {
+	.request	= mmc_spi_request,
+	.set_ios	= mmc_spi_set_ios,
+	.get_ro		= mmc_gpio_get_ro,
+	.get_cd		= mmc_gpio_get_cd,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -1323,6 +1343,10 @@ static int mmc_spi_probe(struct spi_device *spi)
 	struct mmc_host		*mmc;
 	struct mmc_spi_host	*host;
 	int			status;
+<<<<<<< HEAD
+=======
+	bool			has_ro = false;
+>>>>>>> refs/remotes/origin/master
 
 	/* We rely on full duplex transfers, mostly to reduce
 	 * per-transfer overheads (by making fewer transfers).
@@ -1447,18 +1471,46 @@ static int mmc_spi_probe(struct spi_device *spi)
 	}
 
 	/* pass platform capabilities, if any */
+<<<<<<< HEAD
 	if (host->pdata)
 		mmc->caps |= host->pdata->caps;
+=======
+	if (host->pdata) {
+		mmc->caps |= host->pdata->caps;
+		mmc->caps2 |= host->pdata->caps2;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	status = mmc_add_host(mmc);
 	if (status != 0)
 		goto fail_add_host;
 
+<<<<<<< HEAD
 	dev_info(&spi->dev, "SD/MMC host %s%s%s%s%s\n",
 			dev_name(&mmc->class_dev),
 			host->dma_dev ? "" : ", no DMA",
 			(host->pdata && host->pdata->get_ro)
 				? "" : ", no WP",
+=======
+	if (host->pdata && host->pdata->flags & MMC_SPI_USE_CD_GPIO) {
+		status = mmc_gpio_request_cd(mmc, host->pdata->cd_gpio,
+					     host->pdata->cd_debounce);
+		if (status != 0)
+			goto fail_add_host;
+	}
+
+	if (host->pdata && host->pdata->flags & MMC_SPI_USE_RO_GPIO) {
+		has_ro = true;
+		status = mmc_gpio_request_ro(mmc, host->pdata->ro_gpio);
+		if (status != 0)
+			goto fail_add_host;
+	}
+
+	dev_info(&spi->dev, "SD/MMC host %s%s%s%s%s\n",
+			dev_name(&mmc->class_dev),
+			host->dma_dev ? "" : ", no DMA",
+			has_ro ? "" : ", no WP",
+>>>>>>> refs/remotes/origin/master
 			(host->pdata && host->pdata->setpower)
 				? "" : ", no poweroff",
 			(mmc->caps & MMC_CAP_NEEDS_POLL)
@@ -1484,7 +1536,11 @@ nomem:
 }
 
 
+<<<<<<< HEAD
 static int __devexit mmc_spi_remove(struct spi_device *spi)
+=======
+static int mmc_spi_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mmc_host		*mmc = dev_get_drvdata(&spi->dev);
 	struct mmc_spi_host	*host;
@@ -1516,7 +1572,11 @@ static int __devexit mmc_spi_remove(struct spi_device *spi)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct of_device_id mmc_spi_of_match_table[] __devinitdata = {
+=======
+static struct of_device_id mmc_spi_of_match_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "mmc-spi-slot", },
 	{},
 };
@@ -1524,11 +1584,18 @@ static struct of_device_id mmc_spi_of_match_table[] __devinitdata = {
 static struct spi_driver mmc_spi_driver = {
 	.driver = {
 		.name =		"mmc_spi",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.bus =		&spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.owner =	THIS_MODULE,
 		.of_match_table = mmc_spi_of_match_table,
 	},
 	.probe =	mmc_spi_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(mmc_spi_remove),
 };
 
@@ -1546,6 +1613,12 @@ static void __exit mmc_spi_exit(void)
 }
 module_exit(mmc_spi_exit);
 
+=======
+	.remove =	mmc_spi_remove,
+};
+
+module_spi_driver(mmc_spi_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mike Lavender, David Brownell, "
 		"Hans-Peter Nilsson, Jan Nikitenko");

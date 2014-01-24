@@ -1,4 +1,8 @@
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <asm/mach-powertv/interrupts.h>
 #include "powertv-pci.h"

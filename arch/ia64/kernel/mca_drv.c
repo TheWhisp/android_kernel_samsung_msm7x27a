@@ -28,7 +28,13 @@
 #include <asm/machvec.h>
 #include <asm/page.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/sal.h>
 #include <asm/mca.h>
 
@@ -159,7 +165,12 @@ mca_handler_bh(unsigned long paddr, void *iip, unsigned long ipsr)
 	ia64_mlogbuf_dump();
 	printk(KERN_ERR "OS_MCA: process [cpu %d, pid: %d, uid: %d, "
 		"iip: %p, psr: 0x%lx,paddr: 0x%lx](%s) encounters MCA.\n",
+<<<<<<< HEAD
 	       raw_smp_processor_id(), current->pid, current_uid(),
+=======
+	       raw_smp_processor_id(), current->pid,
+		from_kuid(&init_user_ns, current_uid()),
+>>>>>>> refs/remotes/origin/master
 		iip, ipsr, paddr, current->comm);
 
 	spin_lock(&mca_bh_lock);
@@ -349,7 +360,11 @@ init_record_index_pools(void)
 
 	/* - 3 - */
 	slidx_pool.max_idx = (rec_max_size/sect_min_size) * 2 + 1;
+<<<<<<< HEAD
 	slidx_pool.buffer = (slidx_list_t *)
+=======
+	slidx_pool.buffer =
+>>>>>>> refs/remotes/origin/master
 		kmalloc(slidx_pool.max_idx * sizeof(slidx_list_t), GFP_KERNEL);
 
 	return slidx_pool.buffer ? 0 : -ENOMEM;

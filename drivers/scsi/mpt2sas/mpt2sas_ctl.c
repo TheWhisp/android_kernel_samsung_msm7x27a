@@ -3,7 +3,11 @@
  * controllers
  *
  * This code is based on drivers/scsi/mpt2sas/mpt2_ctl.c
+<<<<<<< HEAD
  * Copyright (C) 2007-2010  LSI Corporation
+=======
+ * Copyright (C) 2007-2013  LSI Corporation
+>>>>>>> refs/remotes/origin/master
  *  (mailto:DL-MPTFusionLinux@lsi.com)
  *
  * This program is free software; you can redistribute it and/or
@@ -42,7 +46,13 @@
  * USA.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/errno.h>
@@ -398,18 +408,34 @@ mpt2sas_ctl_add_to_event_log(struct MPT2SAS_ADAPTER *ioc,
  * This function merely adds a new work task into ioc->firmware_event_thread.
  * The tasks are worked from _firmware_event_work in user context.
  *
+<<<<<<< HEAD
  * Return 1 meaning mf should be freed from _base_interrupt
  *        0 means the mf is freed from this function.
  */
 u8
+=======
+ * Returns void.
+ */
+void
+>>>>>>> refs/remotes/origin/master
 mpt2sas_ctl_event_callback(struct MPT2SAS_ADAPTER *ioc, u8 msix_index,
 	u32 reply)
 {
 	Mpi2EventNotificationReply_t *mpi_reply;
 
 	mpi_reply = mpt2sas_base_get_reply_virt_addr(ioc, reply);
+<<<<<<< HEAD
 	mpt2sas_ctl_add_to_event_log(ioc, mpi_reply);
 	return 1;
+=======
+	if (unlikely(!mpi_reply)) {
+		printk(MPT2SAS_ERR_FMT "mpi_reply not valid at %s:%d/%s()!\n",
+		    ioc->name, __FILE__, __LINE__, __func__);
+		return;
+	}
+	mpt2sas_ctl_add_to_event_log(ioc, mpi_reply);
+	return;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -506,6 +532,7 @@ _ctl_fasync(int fd, struct file *filep, int mode)
 }
 
 /**
+<<<<<<< HEAD
  * _ctl_release -
  * @inode -
  * @filep -
@@ -519,6 +546,8 @@ _ctl_release(struct inode *inode, struct file *filep)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * _ctl_poll -
  * @file -
  * @wait -
@@ -621,11 +650,18 @@ _ctl_set_task_mid(struct MPT2SAS_ADAPTER *ioc, struct mpt2_ioctl_command *karg,
  * @ioc: per adapter object
  * @karg - (struct mpt2_ioctl_command)
  * @mf - pointer to mf in user space
+<<<<<<< HEAD
  * @state - NON_BLOCKING or BLOCKING
  */
 static long
 _ctl_do_mpt_command(struct MPT2SAS_ADAPTER *ioc,
     struct mpt2_ioctl_command karg, void __user *mf, enum block_state state)
+=======
+ */
+static long
+_ctl_do_mpt_command(struct MPT2SAS_ADAPTER *ioc, struct mpt2_ioctl_command karg,
+	void __user *mf)
+>>>>>>> refs/remotes/origin/master
 {
 	MPI2RequestHeader_t *mpi_request = NULL, *request;
 	MPI2DefaultReply_t *mpi_reply;
@@ -648,11 +684,14 @@ _ctl_do_mpt_command(struct MPT2SAS_ADAPTER *ioc,
 
 	issue_reset = 0;
 
+<<<<<<< HEAD
 	if (state == NON_BLOCKING && !mutex_trylock(&ioc->ctl_cmds.mutex))
 		return -EAGAIN;
 	else if (mutex_lock_interruptible(&ioc->ctl_cmds.mutex))
 		return -ERESTARTSYS;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ioc->ctl_cmds.status != MPT2_CMD_NOT_USED) {
 		printk(MPT2SAS_ERR_FMT "%s: ctl_cmd in use\n",
 		    ioc->name, __func__);
@@ -819,6 +858,14 @@ _ctl_do_mpt_command(struct MPT2SAS_ADAPTER *ioc,
 	_ctl_display_some_debug(ioc, smid, "ctl_request", NULL);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	init_completion(&ioc->ctl_cmds.done);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_completion(&ioc->ctl_cmds.done);
+>>>>>>> refs/remotes/origin/master
 	switch (mpi_request->Function) {
 	case MPI2_FUNCTION_SCSI_IO_REQUEST:
 	case MPI2_FUNCTION_RAID_SCSI_IO_PASSTHROUGH:
@@ -871,8 +918,21 @@ _ctl_do_mpt_command(struct MPT2SAS_ADAPTER *ioc,
 		if (smp_request->PassthroughFlags &
 		    MPI2_SMP_PT_REQ_PT_FLAGS_IMMEDIATE)
 			data = (u8 *)&smp_request->SGL;
+<<<<<<< HEAD
 		else
 			data = data_out;
+=======
+		else {
+			if (unlikely(data_out == NULL)) {
+				printk(KERN_ERR "failure at %s:%d/%s()!\n",
+				    __FILE__, __LINE__, __func__);
+				mpt2sas_base_free_smid(ioc, smid);
+				ret = -EINVAL;
+				goto out;
+			}
+			data = data_out;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if (data[1] == 0x91 && (data[10] == 1 || data[10] == 2)) {
 			ioc->ioc_link_reset_in_progress = 1;
@@ -904,7 +964,13 @@ _ctl_do_mpt_command(struct MPT2SAS_ADAPTER *ioc,
 		timeout = MPT2_IOCTL_DEFAULT_TIMEOUT;
 	else
 		timeout = karg.timeout;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	init_completion(&ioc->ctl_cmds.done);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	timeleft = wait_for_completion_timeout(&ioc->ctl_cmds.done,
 	    timeout*HZ);
 	if (mpi_request->Function == MPI2_FUNCTION_SCSI_TASK_MGMT) {
@@ -986,7 +1052,12 @@ _ctl_do_mpt_command(struct MPT2SAS_ADAPTER *ioc,
 		ret = -ENODATA;
 		if ((mpi_request->Function == MPI2_FUNCTION_SCSI_IO_REQUEST ||
 		    mpi_request->Function ==
+<<<<<<< HEAD
 		    MPI2_FUNCTION_RAID_SCSI_IO_PASSTHROUGH)) {
+=======
+		    MPI2_FUNCTION_RAID_SCSI_IO_PASSTHROUGH ||
+		    mpi_request->Function == MPI2_FUNCTION_SATA_PASSTHROUGH)) {
+>>>>>>> refs/remotes/origin/master
 			printk(MPT2SAS_INFO_FMT "issue target reset: handle "
 			    "= (0x%04x)\n", ioc->name,
 			    le16_to_cpu(mpi_request->FunctionDependent1));
@@ -994,7 +1065,15 @@ _ctl_do_mpt_command(struct MPT2SAS_ADAPTER *ioc,
 			mpt2sas_scsih_issue_tm(ioc,
 			    le16_to_cpu(mpi_request->FunctionDependent1), 0, 0,
 			    0, MPI2_SCSITASKMGMT_TASKTYPE_TARGET_RESET, 0, 10,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    NULL);
+=======
+			    0, TM_MUTEX_ON);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    0, TM_MUTEX_ON);
+>>>>>>> refs/remotes/origin/master
 			ioc->tm_cmds.status = MPT2_CMD_NOT_USED;
 		} else
 			mpt2sas_base_hard_reset_handler(ioc, CAN_SLEEP,
@@ -1014,12 +1093,16 @@ _ctl_do_mpt_command(struct MPT2SAS_ADAPTER *ioc,
 
 	kfree(mpi_request);
 	ioc->ctl_cmds.status = MPT2_CMD_NOT_USED;
+<<<<<<< HEAD
 	mutex_unlock(&ioc->ctl_cmds.mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 /**
  * _ctl_getiocinfo - main handler for MPT2IOCINFO opcode
+<<<<<<< HEAD
  * @arg - user space buffer containing ioctl content
  */
 static long
@@ -1027,15 +1110,30 @@ _ctl_getiocinfo(void __user *arg)
 {
 	struct mpt2_ioctl_iocinfo karg;
 	struct MPT2SAS_ADAPTER *ioc;
+<<<<<<< HEAD
 	u8 revision;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @ioc: per adapter object
+ * @arg - user space buffer containing ioctl content
+ */
+static long
+_ctl_getiocinfo(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_ioctl_iocinfo karg;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&karg, arg, sizeof(karg))) {
 		printk(KERN_ERR "failure at %s:%d/%s()!\n",
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dctlprintk(ioc, printk(MPT2SAS_INFO_FMT "%s: enter\n", ioc->name,
 	    __func__));
@@ -1047,8 +1145,16 @@ _ctl_getiocinfo(void __user *arg)
 		karg.adapter_type = MPT2_IOCTL_INTERFACE_SAS2;
 	if (ioc->pfacts)
 		karg.port_number = ioc->pfacts[0].PortNumber;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_read_config_byte(ioc->pdev, PCI_CLASS_REVISION, &revision);
 	karg.hw_rev = revision;
+=======
+	karg.hw_rev = ioc->pdev->revision;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	karg.hw_rev = ioc->pdev->revision;
+>>>>>>> refs/remotes/origin/master
 	karg.pci_id = ioc->pdev->device;
 	karg.subsystem_device = ioc->pdev->subsystem_device;
 	karg.subsystem_vendor = ioc->pdev->subsystem_vendor;
@@ -1072,6 +1178,7 @@ _ctl_getiocinfo(void __user *arg)
 
 /**
  * _ctl_eventquery - main handler for MPT2EVENTQUERY opcode
+<<<<<<< HEAD
  * @arg - user space buffer containing ioctl content
  */
 static long
@@ -1079,14 +1186,26 @@ _ctl_eventquery(void __user *arg)
 {
 	struct mpt2_ioctl_eventquery karg;
 	struct MPT2SAS_ADAPTER *ioc;
+=======
+ * @ioc: per adapter object
+ * @arg - user space buffer containing ioctl content
+ */
+static long
+_ctl_eventquery(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_ioctl_eventquery karg;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&karg, arg, sizeof(karg))) {
 		printk(KERN_ERR "failure at %s:%d/%s()!\n",
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dctlprintk(ioc, printk(MPT2SAS_INFO_FMT "%s: enter\n", ioc->name,
 	    __func__));
@@ -1105,6 +1224,7 @@ _ctl_eventquery(void __user *arg)
 
 /**
  * _ctl_eventenable - main handler for MPT2EVENTENABLE opcode
+<<<<<<< HEAD
  * @arg - user space buffer containing ioctl content
  */
 static long
@@ -1112,14 +1232,26 @@ _ctl_eventenable(void __user *arg)
 {
 	struct mpt2_ioctl_eventenable karg;
 	struct MPT2SAS_ADAPTER *ioc;
+=======
+ * @ioc: per adapter object
+ * @arg - user space buffer containing ioctl content
+ */
+static long
+_ctl_eventenable(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_ioctl_eventenable karg;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&karg, arg, sizeof(karg))) {
 		printk(KERN_ERR "failure at %s:%d/%s()!\n",
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dctlprintk(ioc, printk(MPT2SAS_INFO_FMT "%s: enter\n", ioc->name,
 	    __func__));
@@ -1145,6 +1277,7 @@ _ctl_eventenable(void __user *arg)
 
 /**
  * _ctl_eventreport - main handler for MPT2EVENTREPORT opcode
+<<<<<<< HEAD
  * @arg - user space buffer containing ioctl content
  */
 static long
@@ -1152,6 +1285,15 @@ _ctl_eventreport(void __user *arg)
 {
 	struct mpt2_ioctl_eventreport karg;
 	struct MPT2SAS_ADAPTER *ioc;
+=======
+ * @ioc: per adapter object
+ * @arg - user space buffer containing ioctl content
+ */
+static long
+_ctl_eventreport(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_ioctl_eventreport karg;
+>>>>>>> refs/remotes/origin/master
 	u32 number_bytes, max_events, max;
 	struct mpt2_ioctl_eventreport __user *uarg = arg;
 
@@ -1160,8 +1302,11 @@ _ctl_eventreport(void __user *arg)
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dctlprintk(ioc, printk(MPT2SAS_INFO_FMT "%s: enter\n", ioc->name,
 	    __func__));
@@ -1191,6 +1336,7 @@ _ctl_eventreport(void __user *arg)
 
 /**
  * _ctl_do_reset - main handler for MPT2HARDRESET opcode
+<<<<<<< HEAD
  * @arg - user space buffer containing ioctl content
  */
 static long
@@ -1198,6 +1344,15 @@ _ctl_do_reset(void __user *arg)
 {
 	struct mpt2_ioctl_diag_reset karg;
 	struct MPT2SAS_ADAPTER *ioc;
+=======
+ * @ioc: per adapter object
+ * @arg - user space buffer containing ioctl content
+ */
+static long
+_ctl_do_reset(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_ioctl_diag_reset karg;
+>>>>>>> refs/remotes/origin/master
 	int retval;
 
 	if (copy_from_user(&karg, arg, sizeof(karg))) {
@@ -1205,9 +1360,22 @@ _ctl_do_reset(void __user *arg)
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
 
+<<<<<<< HEAD
+=======
+	if (ioc->shost_recovery || ioc->pci_error_recovery ||
+		ioc->is_driver_loading)
+		return -EAGAIN;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (ioc->shost_recovery || ioc->pci_error_recovery ||
+		ioc->is_driver_loading)
+		return -EAGAIN;
+>>>>>>> refs/remotes/origin/master
 	dctlprintk(ioc, printk(MPT2SAS_INFO_FMT "%s: enter\n", ioc->name,
 	    __func__));
 
@@ -1292,6 +1460,7 @@ _ctl_btdh_search_raid_device(struct MPT2SAS_ADAPTER *ioc,
 
 /**
  * _ctl_btdh_mapping - main handler for MPT2BTDHMAPPING opcode
+<<<<<<< HEAD
  * @arg - user space buffer containing ioctl content
  */
 static long
@@ -1299,6 +1468,15 @@ _ctl_btdh_mapping(void __user *arg)
 {
 	struct mpt2_ioctl_btdh_mapping karg;
 	struct MPT2SAS_ADAPTER *ioc;
+=======
+ * @ioc: per adapter object
+ * @arg - user space buffer containing ioctl content
+ */
+static long
+_ctl_btdh_mapping(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_ioctl_btdh_mapping karg;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	if (copy_from_user(&karg, arg, sizeof(karg))) {
@@ -1306,8 +1484,11 @@ _ctl_btdh_mapping(void __user *arg)
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dctlprintk(ioc, printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 	    __func__));
@@ -1475,8 +1656,18 @@ _ctl_diag_register_2(struct MPT2SAS_ADAPTER *ioc,
 		mpi_request->ProductSpecific[i] =
 			cpu_to_le32(ioc->product_specific[buffer_type][i]);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mpt2sas_base_put_smid_default(ioc, smid);
 	init_completion(&ioc->ctl_cmds.done);
+=======
+	init_completion(&ioc->ctl_cmds.done);
+	mpt2sas_base_put_smid_default(ioc, smid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_completion(&ioc->ctl_cmds.done);
+	mpt2sas_base_put_smid_default(ioc, smid);
+>>>>>>> refs/remotes/origin/master
 	timeleft = wait_for_completion_timeout(&ioc->ctl_cmds.done,
 	    MPT2_IOCTL_DEFAULT_TIMEOUT*HZ);
 
@@ -1576,17 +1767,28 @@ mpt2sas_enable_diag_buffer(struct MPT2SAS_ADAPTER *ioc, u8 bits_to_register)
 
 /**
  * _ctl_diag_register - application register with driver
+<<<<<<< HEAD
  * @arg - user space buffer containing ioctl content
  * @state - NON_BLOCKING or BLOCKING
+=======
+ * @ioc: per adapter object
+ * @arg - user space buffer containing ioctl content
+>>>>>>> refs/remotes/origin/master
  *
  * This will allow the driver to setup any required buffers that will be
  * needed by firmware to communicate with the driver.
  */
 static long
+<<<<<<< HEAD
 _ctl_diag_register(void __user *arg, enum block_state state)
 {
 	struct mpt2_diag_register karg;
 	struct MPT2SAS_ADAPTER *ioc;
+=======
+_ctl_diag_register(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_diag_register karg;
+>>>>>>> refs/remotes/origin/master
 	long rc;
 
 	if (copy_from_user(&karg, arg, sizeof(karg))) {
@@ -1594,6 +1796,7 @@ _ctl_diag_register(void __user *arg, enum block_state state)
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
 
@@ -1603,21 +1806,35 @@ _ctl_diag_register(void __user *arg, enum block_state state)
 		return -ERESTARTSYS;
 	rc = _ctl_diag_register_2(ioc, &karg);
 	mutex_unlock(&ioc->ctl_cmds.mutex);
+=======
+
+	rc = _ctl_diag_register_2(ioc, &karg);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 /**
  * _ctl_diag_unregister - application unregister with driver
+<<<<<<< HEAD
+=======
+ * @ioc: per adapter object
+>>>>>>> refs/remotes/origin/master
  * @arg - user space buffer containing ioctl content
  *
  * This will allow the driver to cleanup any memory allocated for diag
  * messages and to free up any resources.
  */
 static long
+<<<<<<< HEAD
 _ctl_diag_unregister(void __user *arg)
 {
 	struct mpt2_diag_unregister karg;
 	struct MPT2SAS_ADAPTER *ioc;
+=======
+_ctl_diag_unregister(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_diag_unregister karg;
+>>>>>>> refs/remotes/origin/master
 	void *request_data;
 	dma_addr_t request_data_dma;
 	u32 request_data_sz;
@@ -1628,8 +1845,11 @@ _ctl_diag_unregister(void __user *arg)
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dctlprintk(ioc, printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 	    __func__));
@@ -1678,6 +1898,10 @@ _ctl_diag_unregister(void __user *arg)
 
 /**
  * _ctl_diag_query - query relevant info associated with diag buffers
+<<<<<<< HEAD
+=======
+ * @ioc: per adapter object
+>>>>>>> refs/remotes/origin/master
  * @arg - user space buffer containing ioctl content
  *
  * The application will send only buffer_type and unique_id.  Driver will
@@ -1685,10 +1909,16 @@ _ctl_diag_unregister(void __user *arg)
  * 0x00, the driver will return info specified by Buffer Type.
  */
 static long
+<<<<<<< HEAD
 _ctl_diag_query(void __user *arg)
 {
 	struct mpt2_diag_query karg;
 	struct MPT2SAS_ADAPTER *ioc;
+=======
+_ctl_diag_query(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_diag_query karg;
+>>>>>>> refs/remotes/origin/master
 	void *request_data;
 	int i;
 	u8 buffer_type;
@@ -1698,8 +1928,11 @@ _ctl_diag_query(void __user *arg)
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dctlprintk(ioc, printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 	    __func__));
@@ -1819,8 +2052,18 @@ _ctl_send_release(struct MPT2SAS_ADAPTER *ioc, u8 buffer_type, u8 *issue_reset)
 	mpi_request->VF_ID = 0; /* TODO */
 	mpi_request->VP_ID = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mpt2sas_base_put_smid_default(ioc, smid);
 	init_completion(&ioc->ctl_cmds.done);
+=======
+	init_completion(&ioc->ctl_cmds.done);
+	mpt2sas_base_put_smid_default(ioc, smid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_completion(&ioc->ctl_cmds.done);
+	mpt2sas_base_put_smid_default(ioc, smid);
+>>>>>>> refs/remotes/origin/master
 	timeleft = wait_for_completion_timeout(&ioc->ctl_cmds.done,
 	    MPT2_IOCTL_DEFAULT_TIMEOUT*HZ);
 
@@ -1866,17 +2109,26 @@ _ctl_send_release(struct MPT2SAS_ADAPTER *ioc, u8 buffer_type, u8 *issue_reset)
 /**
  * _ctl_diag_release - request to send Diag Release Message to firmware
  * @arg - user space buffer containing ioctl content
+<<<<<<< HEAD
  * @state - NON_BLOCKING or BLOCKING
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This allows ownership of the specified buffer to returned to the driver,
  * allowing an application to read the buffer without fear that firmware is
  * overwritting information in the buffer.
  */
 static long
+<<<<<<< HEAD
 _ctl_diag_release(void __user *arg, enum block_state state)
 {
 	struct mpt2_diag_release karg;
 	struct MPT2SAS_ADAPTER *ioc;
+=======
+_ctl_diag_release(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_diag_release karg;
+>>>>>>> refs/remotes/origin/master
 	void *request_data;
 	int rc;
 	u8 buffer_type;
@@ -1887,8 +2139,11 @@ _ctl_diag_release(void __user *arg, enum block_state state)
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dctlprintk(ioc, printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 	    __func__));
@@ -1942,23 +2197,30 @@ _ctl_diag_release(void __user *arg, enum block_state state)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (state == NON_BLOCKING && !mutex_trylock(&ioc->ctl_cmds.mutex))
 		return -EAGAIN;
 	else if (mutex_lock_interruptible(&ioc->ctl_cmds.mutex))
 		return -ERESTARTSYS;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = _ctl_send_release(ioc, buffer_type, &issue_reset);
 
 	if (issue_reset)
 		mpt2sas_base_hard_reset_handler(ioc, CAN_SLEEP,
 		    FORCE_BIG_HAMMER);
 
+<<<<<<< HEAD
 	mutex_unlock(&ioc->ctl_cmds.mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 /**
  * _ctl_diag_read_buffer - request for copy of the diag buffer
+<<<<<<< HEAD
  * @arg - user space buffer containing ioctl content
  * @state - NON_BLOCKING or BLOCKING
  */
@@ -1968,6 +2230,16 @@ _ctl_diag_read_buffer(void __user *arg, enum block_state state)
 	struct mpt2_diag_read_buffer karg;
 	struct mpt2_diag_read_buffer __user *uarg = arg;
 	struct MPT2SAS_ADAPTER *ioc;
+=======
+ * @ioc: per adapter object
+ * @arg - user space buffer containing ioctl content
+ */
+static long
+_ctl_diag_read_buffer(struct MPT2SAS_ADAPTER *ioc, void __user *arg)
+{
+	struct mpt2_diag_read_buffer karg;
+	struct mpt2_diag_read_buffer __user *uarg = arg;
+>>>>>>> refs/remotes/origin/master
 	void *request_data, *diag_data;
 	Mpi2DiagBufferPostRequest_t *mpi_request;
 	Mpi2DiagBufferPostReply_t *mpi_reply;
@@ -1983,8 +2255,11 @@ _ctl_diag_read_buffer(void __user *arg, enum block_state state)
 		    __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 	if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dctlprintk(ioc, printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 	    __func__));
@@ -2055,10 +2330,13 @@ _ctl_diag_read_buffer(void __user *arg, enum block_state state)
 	}
 	/* Get a free request frame and save the message context.
 	*/
+<<<<<<< HEAD
 	if (state == NON_BLOCKING && !mutex_trylock(&ioc->ctl_cmds.mutex))
 		return -EAGAIN;
 	else if (mutex_lock_interruptible(&ioc->ctl_cmds.mutex))
 		return -ERESTARTSYS;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ioc->ctl_cmds.status != MPT2_CMD_NOT_USED) {
 		printk(MPT2SAS_ERR_FMT "%s: ctl_cmd in use\n",
@@ -2093,8 +2371,18 @@ _ctl_diag_read_buffer(void __user *arg, enum block_state state)
 	mpi_request->VF_ID = 0; /* TODO */
 	mpi_request->VP_ID = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mpt2sas_base_put_smid_default(ioc, smid);
 	init_completion(&ioc->ctl_cmds.done);
+=======
+	init_completion(&ioc->ctl_cmds.done);
+	mpt2sas_base_put_smid_default(ioc, smid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_completion(&ioc->ctl_cmds.done);
+	mpt2sas_base_put_smid_default(ioc, smid);
+>>>>>>> refs/remotes/origin/master
 	timeleft = wait_for_completion_timeout(&ioc->ctl_cmds.done,
 	    MPT2_IOCTL_DEFAULT_TIMEOUT*HZ);
 
@@ -2139,15 +2427,69 @@ _ctl_diag_read_buffer(void __user *arg, enum block_state state)
  out:
 
 	ioc->ctl_cmds.status = MPT2_CMD_NOT_USED;
+<<<<<<< HEAD
 	mutex_unlock(&ioc->ctl_cmds.mutex);
 	return rc;
 }
 
+=======
+	return rc;
+}
+
+
+#ifdef CONFIG_COMPAT
+/**
+ * _ctl_compat_mpt_command - convert 32bit pointers to 64bit.
+ * @ioc: per adapter object
+ * @cmd - ioctl opcode
+ * @arg - (struct mpt2_ioctl_command32)
+ *
+ * MPT2COMMAND32 - Handle 32bit applications running on 64bit os.
+ */
+static long
+_ctl_compat_mpt_command(struct MPT2SAS_ADAPTER *ioc, unsigned cmd,
+	void __user *arg)
+{
+	struct mpt2_ioctl_command32 karg32;
+	struct mpt2_ioctl_command32 __user *uarg;
+	struct mpt2_ioctl_command karg;
+
+	if (_IOC_SIZE(cmd) != sizeof(struct mpt2_ioctl_command32))
+		return -EINVAL;
+
+	uarg = (struct mpt2_ioctl_command32 __user *) arg;
+
+	if (copy_from_user(&karg32, (char __user *)arg, sizeof(karg32))) {
+		printk(KERN_ERR "failure at %s:%d/%s()!\n",
+		    __FILE__, __LINE__, __func__);
+		return -EFAULT;
+	}
+
+	memset(&karg, 0, sizeof(struct mpt2_ioctl_command));
+	karg.hdr.ioc_number = karg32.hdr.ioc_number;
+	karg.hdr.port_number = karg32.hdr.port_number;
+	karg.hdr.max_data_size = karg32.hdr.max_data_size;
+	karg.timeout = karg32.timeout;
+	karg.max_reply_bytes = karg32.max_reply_bytes;
+	karg.data_in_size = karg32.data_in_size;
+	karg.data_out_size = karg32.data_out_size;
+	karg.max_sense_bytes = karg32.max_sense_bytes;
+	karg.data_sge_offset = karg32.data_sge_offset;
+	karg.reply_frame_buf_ptr = compat_ptr(karg32.reply_frame_buf_ptr);
+	karg.data_in_buf_ptr = compat_ptr(karg32.data_in_buf_ptr);
+	karg.data_out_buf_ptr = compat_ptr(karg32.data_out_buf_ptr);
+	karg.sense_data_ptr = compat_ptr(karg32.sense_data_ptr);
+	return _ctl_do_mpt_command(ioc, karg, &uarg->mf);
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /**
  * _ctl_ioctl_main - main ioctl entry point
  * @file - (struct file)
  * @cmd - ioctl opcode
  * @arg -
+<<<<<<< HEAD
  */
 static long
 _ctl_ioctl_main(struct file *file, unsigned int cmd, void __user *arg)
@@ -2157,10 +2499,45 @@ _ctl_ioctl_main(struct file *file, unsigned int cmd, void __user *arg)
 
 	state = (file->f_flags & O_NONBLOCK) ? NON_BLOCKING :
 	    BLOCKING;
+=======
+ * compat - handles 32 bit applications in 64bit os
+ */
+static long
+_ctl_ioctl_main(struct file *file, unsigned int cmd, void __user *arg,
+	u8 compat)
+{
+	struct MPT2SAS_ADAPTER *ioc;
+	struct mpt2_ioctl_header ioctl_header;
+	enum block_state state;
+	long ret = -EINVAL;
+
+	/* get IOCTL header */
+	if (copy_from_user(&ioctl_header, (char __user *)arg,
+	    sizeof(struct mpt2_ioctl_header))) {
+		printk(KERN_ERR "failure at %s:%d/%s()!\n",
+		    __FILE__, __LINE__, __func__);
+		return -EFAULT;
+	}
+
+	if (_ctl_verify_adapter(ioctl_header.ioc_number, &ioc) == -1 || !ioc)
+		return -ENODEV;
+	if (ioc->shost_recovery || ioc->pci_error_recovery ||
+	    ioc->is_driver_loading)
+		return -EAGAIN;
+
+	state = (file->f_flags & O_NONBLOCK) ? NON_BLOCKING : BLOCKING;
+	if (state == NON_BLOCKING) {
+		if (!mutex_trylock(&ioc->ctl_cmds.mutex))
+			return -EAGAIN;
+	} else if (mutex_lock_interruptible(&ioc->ctl_cmds.mutex)) {
+		return -ERESTARTSYS;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case MPT2IOCINFO:
 		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_ioctl_iocinfo))
+<<<<<<< HEAD
 			ret = _ctl_getiocinfo(arg);
 		break;
 	case MPT2COMMAND:
@@ -2179,17 +2556,50 @@ _ctl_ioctl_main(struct file *file, unsigned int cmd, void __user *arg)
 		    !ioc)
 			return -ENODEV;
 
+<<<<<<< HEAD
 		if (ioc->shost_recovery || ioc->pci_error_recovery)
+=======
+		if (ioc->shost_recovery || ioc->pci_error_recovery ||
+				ioc->is_driver_loading)
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EAGAIN;
 
 		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_ioctl_command)) {
 			uarg = arg;
 			ret = _ctl_do_mpt_command(ioc, karg, &uarg->mf, state);
+=======
+			ret = _ctl_getiocinfo(ioc, arg);
+		break;
+#ifdef CONFIG_COMPAT
+	case MPT2COMMAND32:
+#endif
+	case MPT2COMMAND:
+	{
+		struct mpt2_ioctl_command __user *uarg;
+		struct mpt2_ioctl_command karg;
+#ifdef CONFIG_COMPAT
+		if (compat) {
+			ret = _ctl_compat_mpt_command(ioc, cmd, arg);
+			break;
+		}
+#endif
+		if (copy_from_user(&karg, arg, sizeof(karg))) {
+			printk(KERN_ERR "failure at %s:%d/%s()!\n",
+			    __FILE__, __LINE__, __func__);
+			ret = -EFAULT;
+			break;
+		}
+
+		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_ioctl_command)) {
+			uarg = arg;
+			ret = _ctl_do_mpt_command(ioc, karg, &uarg->mf);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	}
 	case MPT2EVENTQUERY:
 		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_ioctl_eventquery))
+<<<<<<< HEAD
 			ret = _ctl_eventquery(arg);
 		break;
 	case MPT2EVENTENABLE:
@@ -2241,12 +2651,57 @@ _ctl_ioctl_main(struct file *file, unsigned int cmd, void __user *arg)
 		if (_ctl_verify_adapter(karg.hdr.ioc_number, &ioc) == -1 ||
 		    !ioc)
 			return -ENODEV;
+=======
+			ret = _ctl_eventquery(ioc, arg);
+		break;
+	case MPT2EVENTENABLE:
+		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_ioctl_eventenable))
+			ret = _ctl_eventenable(ioc, arg);
+		break;
+	case MPT2EVENTREPORT:
+		ret = _ctl_eventreport(ioc, arg);
+		break;
+	case MPT2HARDRESET:
+		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_ioctl_diag_reset))
+			ret = _ctl_do_reset(ioc, arg);
+		break;
+	case MPT2BTDHMAPPING:
+		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_ioctl_btdh_mapping))
+			ret = _ctl_btdh_mapping(ioc, arg);
+		break;
+	case MPT2DIAGREGISTER:
+		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_diag_register))
+			ret = _ctl_diag_register(ioc, arg);
+		break;
+	case MPT2DIAGUNREGISTER:
+		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_diag_unregister))
+			ret = _ctl_diag_unregister(ioc, arg);
+		break;
+	case MPT2DIAGQUERY:
+		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_diag_query))
+			ret = _ctl_diag_query(ioc, arg);
+		break;
+	case MPT2DIAGRELEASE:
+		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_diag_release))
+			ret = _ctl_diag_release(ioc, arg);
+		break;
+	case MPT2DIAGREADBUFFER:
+		if (_IOC_SIZE(cmd) == sizeof(struct mpt2_diag_read_buffer))
+			ret = _ctl_diag_read_buffer(ioc, arg);
+		break;
+	default:
+>>>>>>> refs/remotes/origin/master
 
 		dctlprintk(ioc, printk(MPT2SAS_INFO_FMT
 		    "unsupported ioctl opcode(0x%08x)\n", ioc->name, cmd));
 		break;
 	}
+<<<<<<< HEAD
 	}
+=======
+
+	mutex_unlock(&ioc->ctl_cmds.mutex);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2261,6 +2716,7 @@ _ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	long ret;
 
+<<<<<<< HEAD
 	mutex_lock(&_ctl_mutex);
 	ret = _ctl_ioctl_main(file, cmd, (void __user *)arg);
 	mutex_unlock(&_ctl_mutex);
@@ -2298,7 +2754,12 @@ _ctl_compat_mpt_command(struct file *file, unsigned cmd, unsigned long arg)
 	if (_ctl_verify_adapter(karg32.hdr.ioc_number, &ioc) == -1 || !ioc)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (ioc->shost_recovery || ioc->pci_error_recovery)
+=======
+	if (ioc->shost_recovery || ioc->pci_error_recovery ||
+			ioc->is_driver_loading)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EAGAIN;
 
 	memset(&karg, 0, sizeof(struct mpt2_ioctl_command));
@@ -2320,6 +2781,13 @@ _ctl_compat_mpt_command(struct file *file, unsigned cmd, unsigned long arg)
 }
 
 /**
+=======
+	ret = _ctl_ioctl_main(file, cmd, (void __user *)arg, 0);
+	return ret;
+}
+#ifdef CONFIG_COMPAT
+/**
+>>>>>>> refs/remotes/origin/master
  * _ctl_ioctl_compat - main ioctl entry point (compat)
  * @file -
  * @cmd -
@@ -2332,12 +2800,16 @@ _ctl_ioctl_compat(struct file *file, unsigned cmd, unsigned long arg)
 {
 	long ret;
 
+<<<<<<< HEAD
 	mutex_lock(&_ctl_mutex);
 	if (cmd == MPT2COMMAND32)
 		ret = _ctl_compat_mpt_command(file, cmd, arg);
 	else
 		ret = _ctl_ioctl_main(file, cmd, (void __user *)arg);
 	mutex_unlock(&_ctl_mutex);
+=======
+	ret = _ctl_ioctl_main(file, cmd, (void __user *)arg, 1);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 #endif
@@ -2705,6 +3177,111 @@ _ctl_ioc_reset_count_show(struct device *cdev, struct device_attribute *attr,
 static DEVICE_ATTR(ioc_reset_count, S_IRUGO,
     _ctl_ioc_reset_count_show, NULL);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * _ctl_ioc_reply_queue_count_show - number of reply queues
+ * @cdev - pointer to embedded class device
+ * @buf - the buffer returned
+ *
+ * This is number of reply queues
+ *
+ * A sysfs 'read-only' shost attribute.
+ */
+static ssize_t
+_ctl_ioc_reply_queue_count_show(struct device *cdev,
+	 struct device_attribute *attr, char *buf)
+{
+	u8 reply_queue_count;
+	struct Scsi_Host *shost = class_to_shost(cdev);
+	struct MPT2SAS_ADAPTER *ioc = shost_priv(shost);
+
+	if ((ioc->facts.IOCCapabilities &
+	    MPI2_IOCFACTS_CAPABILITY_MSI_X_INDEX) && ioc->msix_enable)
+		reply_queue_count = ioc->reply_queue_count;
+	else
+		reply_queue_count = 1;
+	return snprintf(buf, PAGE_SIZE, "%d\n", reply_queue_count);
+}
+static DEVICE_ATTR(reply_queue_count, S_IRUGO,
+	 _ctl_ioc_reply_queue_count_show, NULL);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ * _ctl_BRM_status_show - Backup Rail Monitor Status
+ * @cdev - pointer to embedded class device
+ * @buf - the buffer returned
+ *
+ * This is number of reply queues
+ *
+ * A sysfs 'read-only' shost attribute.
+ */
+static ssize_t
+_ctl_BRM_status_show(struct device *cdev, struct device_attribute *attr,
+	char *buf)
+{
+	struct Scsi_Host *shost = class_to_shost(cdev);
+	struct MPT2SAS_ADAPTER *ioc = shost_priv(shost);
+	Mpi2IOUnitPage3_t *io_unit_pg3 = NULL;
+	Mpi2ConfigReply_t mpi_reply;
+	u16 backup_rail_monitor_status = 0;
+	u16 ioc_status;
+	int sz;
+	ssize_t rc = 0;
+
+	if (!ioc->is_warpdrive) {
+		printk(MPT2SAS_ERR_FMT "%s: BRM attribute is only for"\
+		    "warpdrive\n", ioc->name, __func__);
+		goto out;
+	}
+
+	/* allocate upto GPIOVal 36 entries */
+	sz = offsetof(Mpi2IOUnitPage3_t, GPIOVal) + (sizeof(u16) * 36);
+	io_unit_pg3 = kzalloc(sz, GFP_KERNEL);
+	if (!io_unit_pg3) {
+		printk(MPT2SAS_ERR_FMT "%s: failed allocating memory"\
+		    "for iounit_pg3: (%d) bytes\n", ioc->name, __func__, sz);
+		goto out;
+	}
+
+	if (mpt2sas_config_get_iounit_pg3(ioc, &mpi_reply, io_unit_pg3, sz) !=
+	    0) {
+		printk(MPT2SAS_ERR_FMT
+		    "%s: failed reading iounit_pg3\n", ioc->name,
+		    __func__);
+		goto out;
+	}
+
+	ioc_status = le16_to_cpu(mpi_reply.IOCStatus) & MPI2_IOCSTATUS_MASK;
+	if (ioc_status != MPI2_IOCSTATUS_SUCCESS) {
+		printk(MPT2SAS_ERR_FMT "%s: iounit_pg3 failed with"\
+		    "ioc_status(0x%04x)\n", ioc->name, __func__, ioc_status);
+		goto out;
+	}
+
+	if (io_unit_pg3->GPIOCount < 25) {
+		printk(MPT2SAS_ERR_FMT "%s: iounit_pg3->GPIOCount less than"\
+		     "25 entries, detected (%d) entries\n", ioc->name, __func__,
+		    io_unit_pg3->GPIOCount);
+		goto out;
+	}
+
+	/* BRM status is in bit zero of GPIOVal[24] */
+	backup_rail_monitor_status = le16_to_cpu(io_unit_pg3->GPIOVal[24]);
+	rc = snprintf(buf, PAGE_SIZE, "%d\n", (backup_rail_monitor_status & 1));
+
+ out:
+	kfree(io_unit_pg3);
+	return rc;
+}
+static DEVICE_ATTR(BRM_status, S_IRUGO, _ctl_BRM_status_show, NULL);
+
+>>>>>>> refs/remotes/origin/master
 struct DIAG_BUFFER_START {
 	__le32 Size;
 	__le32 DiagVersion;
@@ -2855,7 +3432,11 @@ _ctl_host_trace_buffer_enable_store(struct device *cdev,
 	struct mpt2_diag_register diag_register;
 	u8 issue_reset = 0;
 
+<<<<<<< HEAD
 	if (sscanf(buf, "%s", str) != 1)
+=======
+	if (sscanf(buf, "%9s", str) != 1)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (!strcmp(str, "post")) {
@@ -2915,6 +3496,15 @@ struct device_attribute *mpt2sas_host_attrs[] = {
 	&dev_attr_host_trace_buffer_size,
 	&dev_attr_host_trace_buffer,
 	&dev_attr_host_trace_buffer_enable,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	&dev_attr_reply_queue_count,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_reply_queue_count,
+	&dev_attr_BRM_status,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -2969,7 +3559,10 @@ struct device_attribute *mpt2sas_dev_attrs[] = {
 static const struct file_operations ctl_fops = {
 	.owner = THIS_MODULE,
 	.unlocked_ioctl = _ctl_ioctl,
+<<<<<<< HEAD
 	.release = _ctl_release,
+=======
+>>>>>>> refs/remotes/origin/master
 	.poll = _ctl_poll,
 	.fasync = _ctl_fasync,
 #ifdef CONFIG_COMPAT

@@ -1,4 +1,8 @@
 header-y += raw.h
 header-y += bcm.h
+<<<<<<< HEAD
+=======
+header-y += gw.h
+>>>>>>> refs/remotes/origin/cm-10.0
 header-y += error.h
 header-y += netlink.h

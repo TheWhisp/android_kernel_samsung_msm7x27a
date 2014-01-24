@@ -26,8 +26,13 @@
  * Date: Sep 4, 2002
  *
  * Functions:
+<<<<<<< HEAD
  *      s_dwGetUINT32 - Convert from BYTE[] to DWORD in a portable way
  *      s_vPutUINT32 - Convert from DWORD to BYTE[] in a portable way
+=======
+ *      s_dwGetUINT32 - Convert from u8[] to u32 in a portable way
+ *      s_vPutUINT32 - Convert from u32 to u8[] in a portable way
+>>>>>>> refs/remotes/origin/master
  *      s_vClear - Reset the state to the empty message.
  *      s_vSetKey - Set the key.
  *      MIC_vInit - Set the key.
@@ -42,6 +47,7 @@
 #include "tmacro.h"
 #include "michael.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 
 /*---------------------  Static Variables  --------------------------*/
@@ -51,11 +57,18 @@
  * static DWORD s_dwGetUINT32(BYTE * p);         Get DWORD from
  *							4 bytes LSByte first
  * static void s_vPutUINT32(BYTE* p, DWORD val); Put DWORD into
+=======
+/*
+ * static u32 s_dwGetUINT32(u8 * p);         Get u32 from
+ *							4 bytes LSByte first
+ * static void s_vPutUINT32(u8* p, u32 val); Put u32 into
+>>>>>>> refs/remotes/origin/master
  *							4 bytes LSByte first
  */
 static void s_vClear(void);		/* Clear the internal message,
 					 * resets the object to the
 					 * state just after construction. */
+<<<<<<< HEAD
 static void s_vSetKey(DWORD dwK0, DWORD dwK1);
 static void s_vAppendByte(BYTE b);	/* Add a single byte to the internal
 					 * message */
@@ -73,18 +86,43 @@ static DWORD s_dwGetUINT32 (BYTE * p)
 // Convert from BYTE[] to DWORD in a portable way
 {
 	DWORD res = 0;
+=======
+static void s_vSetKey(u32 dwK0, u32 dwK1);
+static void s_vAppendByte(u8 b);	/* Add a single byte to the internal
+					 * message */
+
+static u32  L, R;		/* Current state */
+static u32  K0, K1;		/* Key */
+static u32  M;		/* Message accumulator (single word) */
+static unsigned int   nBytesInM;	/* # bytes in M */
+
+/*
+static u32 s_dwGetUINT32 (u8 * p)
+// Convert from u8[] to u32 in a portable way
+{
+	u32 res = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 	for (i = 0; i < 4; i++)
 		res |= (*p++) << (8*i);
 	return res;
 }
 
+<<<<<<< HEAD
 static void s_vPutUINT32(BYTE *p, DWORD val)
 // Convert from DWORD to BYTE[] in a portable way
 {
 	unsigned int i;
 	for (i = 0; i < 4; i++) {
 		*p++ = (BYTE) (val & 0xff);
+=======
+static void s_vPutUINT32(u8 *p, u32 val)
+// Convert from u32 to u8[] in a portable way
+{
+	unsigned int i;
+	for (i = 0; i < 4; i++) {
+		*p++ = (u8) (val & 0xff);
+>>>>>>> refs/remotes/origin/master
 		val >>= 8;
 	}
 }
@@ -99,7 +137,11 @@ static void s_vClear(void)
 	M = 0;
 }
 
+<<<<<<< HEAD
 static void s_vSetKey(DWORD dwK0, DWORD dwK1)
+=======
+static void s_vSetKey(u32 dwK0, u32 dwK1)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Set the key */
 	K0 = dwK0;
@@ -108,7 +150,11 @@ static void s_vSetKey(DWORD dwK0, DWORD dwK1)
 	s_vClear();
 }
 
+<<<<<<< HEAD
 static void s_vAppendByte(BYTE b)
+=======
+static void s_vAppendByte(u8 b)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Append the byte to our word-sized buffer */
 	M |= b << (8*nBytesInM);
@@ -130,13 +176,20 @@ static void s_vAppendByte(BYTE b)
 	}
 }
 
+<<<<<<< HEAD
 void MIC_vInit(DWORD dwK0, DWORD dwK1)
+=======
+void MIC_vInit(u32 dwK0, u32 dwK1)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Set the key */
 	s_vSetKey(dwK0, dwK1);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void MIC_vUnInit(void)
 {
 	/* Wipe the key material */
@@ -148,7 +201,11 @@ void MIC_vUnInit(void)
 	s_vClear();
 }
 
+<<<<<<< HEAD
 void MIC_vAppend(PBYTE src, unsigned int nBytes)
+=======
+void MIC_vAppend(u8 * src, unsigned int nBytes)
+>>>>>>> refs/remotes/origin/master
 {
     /* This is simple */
 	while (nBytes > 0) {
@@ -157,7 +214,11 @@ void MIC_vAppend(PBYTE src, unsigned int nBytes)
 	}
 }
 
+<<<<<<< HEAD
 void MIC_vGetMIC(PDWORD pdwL, PDWORD pdwR)
+=======
+void MIC_vGetMIC(u32 * pdwL, u32 * pdwR)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Append the minimum padding */
 	s_vAppendByte(0x5a);

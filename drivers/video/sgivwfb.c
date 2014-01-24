@@ -47,7 +47,11 @@ static int ywrap = 0;
 
 static int flatpanel_id = -1;
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo sgivwfb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo sgivwfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id		= "SGI Vis WS FB",
 	.type		= FB_TYPE_PACKED_PIXELS,
         .visual		= FB_VISUAL_PSEUDOCOLOR,
@@ -57,7 +61,11 @@ static struct fb_fix_screeninfo sgivwfb_fix __devinitdata = {
 	.line_length	= 640,
 };
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo sgivwfb_var __devinitdata = {
+=======
+static struct fb_var_screeninfo sgivwfb_var = {
+>>>>>>> refs/remotes/origin/master
 	/* 640x480, 8 bpp */
 	.xres		= 640,
 	.yres		= 480,
@@ -79,7 +87,11 @@ static struct fb_var_screeninfo sgivwfb_var __devinitdata = {
 	.vmode		= FB_VMODE_NONINTERLACED
 };
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo sgivwfb_var1600sw __devinitdata = {
+=======
+static struct fb_var_screeninfo sgivwfb_var1600sw = {
+>>>>>>> refs/remotes/origin/master
 	/* 1600x1024, 8 bpp */
 	.xres		= 1600,
 	.yres		= 1024,
@@ -705,6 +717,7 @@ static int sgivwfb_setcolreg(u_int regno, u_int red, u_int green,
 static int sgivwfb_mmap(struct fb_info *info,
 			struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 	unsigned long size = vma->vm_end - vma->vm_start;
 	unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
 
@@ -722,6 +735,19 @@ static int sgivwfb_mmap(struct fb_info *info,
 	printk(KERN_DEBUG "sgivwfb: mmap framebuffer P(%lx)->V(%lx)\n",
 	       offset, vma->vm_start);
 	return 0;
+=======
+	int r;
+
+	pgprot_val(vma->vm_page_prot) =
+		pgprot_val(vma->vm_page_prot) | _PAGE_PCD;
+
+	r = vm_iomap_memory(vma, sgivwfb_mem_phys, sgivwfb_mem_size);
+
+	printk(KERN_DEBUG "sgivwfb: mmap framebuffer P(%lx)->V(%lx)\n",
+		sgivwfb_mem_phys + (vma->vm_pgoff << PAGE_SHIFT), vma->vm_start);
+
+	return r;
+>>>>>>> refs/remotes/origin/master
 }
 
 int __init sgivwfb_setup(char *options)
@@ -745,7 +771,11 @@ int __init sgivwfb_setup(char *options)
 /*
  *  Initialisation
  */
+<<<<<<< HEAD
 static int __devinit sgivwfb_probe(struct platform_device *dev)
+=======
+static int sgivwfb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sgivw_par *par;
 	struct fb_info *info;
@@ -809,8 +839,13 @@ static int __devinit sgivwfb_probe(struct platform_device *dev)
 
 	platform_set_drvdata(dev, info);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: SGI DBE frame buffer device, using %ldK of video memory at %#lx\n",      
 		info->node, sgivwfb_mem_size >> 10, sgivwfb_mem_phys);
+=======
+	fb_info(info, "SGI DBE frame buffer device, using %ldK of video memory at %#lx\n",
+		sgivwfb_mem_size >> 10, sgivwfb_mem_phys);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 fail_register_framebuffer:
@@ -825,7 +860,11 @@ fail_ioremap_regs:
 	return -ENXIO;
 }
 
+<<<<<<< HEAD
 static int __devexit sgivwfb_remove(struct platform_device *dev)
+=======
+static int sgivwfb_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = platform_get_drvdata(dev);
 
@@ -845,7 +884,11 @@ static int __devexit sgivwfb_remove(struct platform_device *dev)
 
 static struct platform_driver sgivwfb_driver = {
 	.probe	= sgivwfb_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(sgivwfb_remove),
+=======
+	.remove	= sgivwfb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= "sgivwfb",
 	},

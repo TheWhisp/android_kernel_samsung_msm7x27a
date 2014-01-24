@@ -17,6 +17,7 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_IF_ETHER_H
 #define _LINUX_IF_ETHER_H
@@ -78,11 +79,27 @@
 					 */
 #define ETH_P_PAE	0x888E		/* Port Access Entity (IEEE 802.1X) */
 #define ETH_P_AOE	0x88A2		/* ATA over Ethernet		*/
+<<<<<<< HEAD
 #define ETH_P_TIPC	0x88CA		/* TIPC 			*/
 #define ETH_P_1588	0x88F7		/* IEEE 1588 Timesync */
 #define ETH_P_FCOE	0x8906		/* Fibre Channel over Ethernet  */
 #define ETH_P_FIP	0x8914		/* FCoE Initialization Protocol */
 #define ETH_P_EDSA	0xDADA		/* Ethertype DSA [ NOT AN OFFICIALLY REGISTERED ID ] */
+=======
+#define ETH_P_8021AD	0x88A8          /* 802.1ad Service VLAN		*/
+#define ETH_P_802_EX1	0x88B5		/* 802.1 Local Experimental 1.  */
+#define ETH_P_TIPC	0x88CA		/* TIPC 			*/
+#define ETH_P_8021AH	0x88E7          /* 802.1ah Backbone Service Tag */
+#define ETH_P_1588	0x88F7		/* IEEE 1588 Timesync */
+#define ETH_P_FCOE	0x8906		/* Fibre Channel over Ethernet  */
+#define ETH_P_TDLS	0x890D          /* TDLS */
+#define ETH_P_FIP	0x8914		/* FCoE Initialization Protocol */
+#define ETH_P_QINQ1	0x9100		/* deprecated QinQ VLAN [ NOT AN OFFICIALLY REGISTERED ID ] */
+#define ETH_P_QINQ2	0x9200		/* deprecated QinQ VLAN [ NOT AN OFFICIALLY REGISTERED ID ] */
+#define ETH_P_QINQ3	0x9300		/* deprecated QinQ VLAN [ NOT AN OFFICIALLY REGISTERED ID ] */
+#define ETH_P_EDSA	0xDADA		/* Ethertype DSA [ NOT AN OFFICIALLY REGISTERED ID ] */
+#define ETH_P_AF_IUCV   0xFBFB		/* IBM af_iucv [ NOT AN OFFICIALLY REGISTERED ID ] */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *	Non DIX types. Won't clash for 1500 types.
@@ -124,6 +141,13 @@ struct ethhdr {
 
 #ifdef __KERNEL__
 #include <linux/skbuff.h>
+=======
+#ifndef _LINUX_IF_ETHER_H
+#define _LINUX_IF_ETHER_H
+
+#include <linux/skbuff.h>
+#include <uapi/linux/if_ether.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline struct ethhdr *eth_hdr(const struct sk_buff *skb)
 {
@@ -132,9 +156,14 @@ static inline struct ethhdr *eth_hdr(const struct sk_buff *skb)
 
 int eth_header_parse(const struct sk_buff *skb, unsigned char *haddr);
 
+<<<<<<< HEAD
 int mac_pton(const char *s, u8 *mac);
 extern ssize_t sysfs_format_mac(char *buf, const unsigned char *addr, int len);
 
 #endif
 
+=======
+extern ssize_t sysfs_format_mac(char *buf, const unsigned char *addr, int len);
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_IF_ETHER_H */

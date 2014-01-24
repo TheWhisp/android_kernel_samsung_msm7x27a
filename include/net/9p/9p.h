@@ -40,6 +40,14 @@
  * @P9_DEBUG_FID: fid allocation/deallocation tracking
  * @P9_DEBUG_PKT: packet marshalling/unmarshalling
  * @P9_DEBUG_FSC: FS-cache tracing
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @P9_DEBUG_VPKT: Verbose packet debugging (full packet dump)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @P9_DEBUG_VPKT: Verbose packet debugging (full packet dump)
+>>>>>>> refs/remotes/origin/master
  *
  * These flags are passed at mount time to turn on various levels of
  * verbosity and tracing which will be output to the system logs.
@@ -57,10 +65,20 @@ enum p9_debug_flags {
 	P9_DEBUG_FID =		(1<<9),
 	P9_DEBUG_PKT =		(1<<10),
 	P9_DEBUG_FSC =		(1<<11),
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	P9_DEBUG_VPKT =		(1<<12),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	P9_DEBUG_VPKT =		(1<<12),
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_NET_9P_DEBUG
 extern unsigned int p9_debug_level;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #define P9_DPRINTK(level, format, arg...) \
 do {  \
@@ -84,6 +102,23 @@ do { \
 		format , __func__, task_pid_nr(current), ## arg); \
 } while (0)
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+__printf(3, 4)
+void _p9_debug(enum p9_debug_flags level, const char *func,
+	       const char *fmt, ...);
+#define p9_debug(level, fmt, ...)			\
+	_p9_debug(level, __func__, fmt, ##__VA_ARGS__)
+#else
+#define p9_debug(level, fmt, ...)			\
+	no_printk(fmt, ##__VA_ARGS__)
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * enum p9_msg_t - 9P message types
  * @P9_TLERROR: not used
@@ -175,6 +210,19 @@ enum p9_msg_t {
 	P9_RLINK,
 	P9_TMKDIR = 72,
 	P9_RMKDIR,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	P9_TRENAMEAT = 74,
+	P9_RRENAMEAT,
+	P9_TUNLINKAT = 76,
+	P9_RUNLINKAT,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	P9_TVERSION = 100,
 	P9_RVERSION,
 	P9_TAUTH = 102,
@@ -302,6 +350,20 @@ enum p9_perm_t {
 /* 9p2000.L at flags */
 #define P9_DOTL_AT_REMOVEDIR		0x200
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* 9p2000.L lock type */
+#define P9_LOCK_TYPE_RDLCK 0
+#define P9_LOCK_TYPE_WRLCK 1
+#define P9_LOCK_TYPE_UNLCK 2
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * enum p9_qid_t - QID types
  * @P9_QTDIR: directory
@@ -344,6 +406,8 @@ enum p9_qid_t {
 /* Room for readdir header */
 #define P9_READDIRHDRSZ	24
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* 9p2000.L lock type */
 #define P9_LOCK_TYPE_RDLCK 0
 #define P9_LOCK_TYPE_WRLCK 1
@@ -363,6 +427,14 @@ struct p9_str {
 	u16 len;
 	char *str;
 };
+=======
+/* size of header for zero copy read/write */
+#define P9_ZC_HDR_SZ 4096
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* size of header for zero copy read/write */
+#define P9_ZC_HDR_SZ 4096
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct p9_qid - file system entity information
@@ -400,11 +472,25 @@ struct p9_qid {
  * @atime: Last access/read time
  * @mtime: Last modify/write time
  * @length: file length
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @name: last element of path (aka filename) in type &p9_str
  * @uid: owner name in type &p9_str
  * @gid: group owner in type &p9_str
  * @muid: last modifier in type &p9_str
  * @extension: area used to encode extended UNIX support in type &p9_str
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @name: last element of path (aka filename)
+ * @uid: owner name
+ * @gid: group owner
+ * @muid: last modifier
+ * @extension: area used to encode extended UNIX support
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @n_uid: numeric user id of owner (part of 9p2000.u extension)
  * @n_gid: numeric group id (part of 9p2000.u extension)
  * @n_muid: numeric user id of laster modifier (part of 9p2000.u extension)
@@ -426,17 +512,28 @@ struct p9_wstat {
 	char *gid;
 	char *muid;
 	char *extension;	/* 9p2000.u extensions */
+<<<<<<< HEAD
 	u32 n_uid;		/* 9p2000.u extensions */
 	u32 n_gid;		/* 9p2000.u extensions */
 	u32 n_muid;		/* 9p2000.u extensions */
+=======
+	kuid_t n_uid;		/* 9p2000.u extensions */
+	kgid_t n_gid;		/* 9p2000.u extensions */
+	kuid_t n_muid;		/* 9p2000.u extensions */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct p9_stat_dotl {
 	u64 st_result_mask;
 	struct p9_qid qid;
 	u32 st_mode;
+<<<<<<< HEAD
 	u32 st_uid;
 	u32 st_gid;
+=======
+	kuid_t st_uid;
+	kgid_t st_gid;
+>>>>>>> refs/remotes/origin/master
 	u64 st_nlink;
 	u64 st_rdev;
 	u64 st_size;
@@ -490,8 +587,13 @@ struct p9_stat_dotl {
 struct p9_iattr_dotl {
 	u32 valid;
 	u32 mode;
+<<<<<<< HEAD
 	u32 uid;
 	u32 gid;
+=======
+	kuid_t uid;
+	kgid_t gid;
+>>>>>>> refs/remotes/origin/master
 	u64 size;
 	u64 atime_sec;
 	u64 atime_nsec;
@@ -541,11 +643,17 @@ struct p9_getlock {
 	char *client_id;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Structures for Protocol Operations */
 struct p9_tstatfs {
 	u32 fid;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct p9_rstatfs {
 	u32 type;
 	u32 bsize;
@@ -558,6 +666,8 @@ struct p9_rstatfs {
 	u32 namelen;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct p9_trename {
 	u32 fid;
 	u32 newdirfid;
@@ -711,6 +821,10 @@ struct p9_twstat {
 struct p9_rwstat {
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct p9_fcall - primary packet structure
  * @size: prefixed length of the structure
@@ -718,10 +832,16 @@ struct p9_rwstat {
  * @tag: transaction id of the request
  * @offset: used by marshalling routines to track current position in buffer
  * @capacity: used by marshalling routines to track total malloc'd capacity
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @pubuf: Payload user buffer given by the caller
  * @pkbuf: Payload kernel buffer given by the caller
  * @pbuf_size: pubuf/pkbuf(only one will be !NULL) size to be read/write.
  * @private: For transport layer's use.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @sdata: payload
  *
  * &p9_fcall represents the structure for all 9P RPC
@@ -738,10 +858,16 @@ struct p9_fcall {
 
 	size_t offset;
 	size_t capacity;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	char __user *pubuf;
 	char *pkbuf;
 	size_t pbuf_size;
 	void *private;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	u8 *sdata;
 };

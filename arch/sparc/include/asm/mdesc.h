@@ -73,6 +73,10 @@ extern void mdesc_register_notifier(struct mdesc_notifier_client *client);
 
 extern void mdesc_fill_in_cpu_data(cpumask_t *mask);
 extern void mdesc_populate_present_mask(cpumask_t *mask);
+<<<<<<< HEAD
+=======
+extern void mdesc_get_page_sizes(cpumask_t *mask, unsigned long *pgsz_mask);
+>>>>>>> refs/remotes/origin/master
 
 extern void sun4v_mdesc_init(void);
 

@@ -13,7 +13,18 @@
 #include <asm/thread_info.h>	
 #include <asm/segment.h>
 #include <asm/irqflags.h>
+<<<<<<< HEAD
 #include <linux/linkage.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/asm.h>
+#include <asm/smap.h>
+#include <linux/linkage.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Avoid __ASSEMBLER__'ifying <linux/audit.h> just for this.  */
 #include <linux/elf-em.h>
@@ -27,8 +38,14 @@
 
 	.section .entry.text, "ax"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IA32_NR_syscalls ((ia32_syscall_end - ia32_sys_call_table)/8)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.macro IA32_ARG_FIXUP noebp=0
 	movl	%edi,%r8d
 	.if \noebp
@@ -134,7 +151,15 @@ ENTRY(ia32_sysenter_target)
 	CFI_REL_OFFSET rsp,0
 	pushfq_cfi
 	/*CFI_REL_OFFSET rflags,0*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 	movl	8*3-THREAD_SIZE+TI_sysenter_return(%rsp), %r10d
+=======
+	movl	TI_sysenter_return+THREAD_INFO(%rsp,3*8-KERNEL_STACK_OFFSET),%r10d
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	movl	TI_sysenter_return+THREAD_INFO(%rsp,3*8-KERNEL_STACK_OFFSET),%r10d
+>>>>>>> refs/remotes/origin/master
 	CFI_REGISTER rip,r10
 	pushq_cfi $__USER32_CS
 	/*CFI_REL_OFFSET cs,0*/
@@ -143,16 +168,37 @@ ENTRY(ia32_sysenter_target)
 	CFI_REL_OFFSET rip,0
 	pushq_cfi %rax
 	cld
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SAVE_ARGS 0,0,1
+=======
+	SAVE_ARGS 0,1,0
+>>>>>>> refs/remotes/origin/cm-10.0
  	/* no need to do an access_ok check here because rbp has been
  	   32bit zero extended */ 
 1:	movl	(%rbp),%ebp
  	.section __ex_table,"a"
  	.quad 1b,ia32_badarg
  	.previous	
+<<<<<<< HEAD
 	GET_THREAD_INFO(%r10)
 	orl    $TS_COMPAT,TI_status(%r10)
 	testl  $_TIF_WORK_SYSCALL_ENTRY,TI_flags(%r10)
+=======
+	orl     $TS_COMPAT,TI_status+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+	testl   $_TIF_WORK_SYSCALL_ENTRY,TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SAVE_ARGS 0,1,0
+ 	/* no need to do an access_ok check here because rbp has been
+ 	   32bit zero extended */ 
+	ASM_STAC
+1:	movl	(%rbp),%ebp
+	_ASM_EXTABLE(1b,ia32_badarg)
+	ASM_CLAC
+	orl     $TS_COMPAT,TI_status+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+	testl   $_TIF_WORK_SYSCALL_ENTRY,TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/master
 	CFI_REMEMBER_STATE
 	jnz  sysenter_tracesys
 	cmpq	$(IA32_NR_syscalls-1),%rax
@@ -162,6 +208,8 @@ sysenter_do_call:
 sysenter_dispatch:
 	call	*ia32_sys_call_table(,%rax,8)
 	movq	%rax,RAX-ARGOFFSET(%rsp)
+<<<<<<< HEAD
+<<<<<<< HEAD
 	GET_THREAD_INFO(%r10)
 	DISABLE_INTERRUPTS(CLBR_NONE)
 	TRACE_IRQS_OFF
@@ -169,11 +217,32 @@ sysenter_dispatch:
 	jnz	sysexit_audit
 sysexit_from_sys_call:
 	andl    $~TS_COMPAT,TI_status(%r10)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	DISABLE_INTERRUPTS(CLBR_NONE)
+	TRACE_IRQS_OFF
+	testl	$_TIF_ALLWORK_MASK,TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+	jnz	sysexit_audit
+sysexit_from_sys_call:
+	andl    $~TS_COMPAT,TI_status+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* clear IF, that popfq doesn't enable interrupts early */
 	andl  $~0x200,EFLAGS-R11(%rsp) 
 	movl	RIP-R11(%rsp),%edx		/* User %eip */
 	CFI_REGISTER rip,rdx
+<<<<<<< HEAD
+<<<<<<< HEAD
 	RESTORE_ARGS 1,24,1,1,1,1
+=======
+	RESTORE_ARGS 0,24,0,0,0,0
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RESTORE_ARGS 0,24,0,0,0,0
+>>>>>>> refs/remotes/origin/master
 	xorq	%r8,%r8
 	xorq	%r9,%r9
 	xorq	%r10,%r10
@@ -193,7 +262,15 @@ sysexit_from_sys_call:
 	movl %ebx,%edx			/* 3rd arg: 1st syscall arg */
 	movl %eax,%esi			/* 2nd arg: syscall number */
 	movl $AUDIT_ARCH_I386,%edi	/* 1st arg: audit arch */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	call audit_syscall_entry
+=======
+	call __audit_syscall_entry
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	call __audit_syscall_entry
+>>>>>>> refs/remotes/origin/master
 	movl RAX-ARGOFFSET(%rsp),%eax	/* reload syscall number */
 	cmpq $(IA32_NR_syscalls-1),%rax
 	ja ia32_badsys
@@ -205,11 +282,21 @@ sysexit_from_sys_call:
 	.endm
 
 	.macro auditsys_exit exit
+<<<<<<< HEAD
+<<<<<<< HEAD
 	testl $(_TIF_ALLWORK_MASK & ~_TIF_SYSCALL_AUDIT),TI_flags(%r10)
+=======
+	testl $(_TIF_ALLWORK_MASK & ~_TIF_SYSCALL_AUDIT),TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	testl $(_TIF_ALLWORK_MASK & ~_TIF_SYSCALL_AUDIT),TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/master
 	jnz ia32_ret_from_sys_call
 	TRACE_IRQS_ON
 	ENABLE_INTERRUPTS(CLBR_NONE)
 	movl %eax,%esi		/* second arg, syscall return value */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmpl $0,%eax		/* is it < 0? */
 	setl %al		/* 1 if so, 0 if not */
 	movzbl %al,%edi		/* zero-extend that into %edi */
@@ -221,6 +308,24 @@ sysexit_from_sys_call:
 	DISABLE_INTERRUPTS(CLBR_NONE)
 	TRACE_IRQS_OFF
 	testl %edi,TI_flags(%r10)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	cmpl $-MAX_ERRNO,%eax	/* is it an error ? */
+	jbe 1f
+	movslq %eax, %rsi	/* if error sign extend to 64 bits */
+1:	setbe %al		/* 1 if error, 0 if not */
+	movzbl %al,%edi		/* zero-extend that into %edi */
+	call __audit_syscall_exit
+	movq RAX-ARGOFFSET(%rsp),%rax	/* reload syscall return value */
+	movl $(_TIF_ALLWORK_MASK & ~_TIF_SYSCALL_AUDIT),%edi
+	DISABLE_INTERRUPTS(CLBR_NONE)
+	TRACE_IRQS_OFF
+	testl %edi,TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	jz \exit
 	CLEAR_RREGS -ARGOFFSET
 	jmp int_with_check
@@ -238,7 +343,15 @@ sysexit_audit:
 
 sysenter_tracesys:
 #ifdef CONFIG_AUDITSYSCALL
+<<<<<<< HEAD
+<<<<<<< HEAD
 	testl	$(_TIF_WORK_SYSCALL_ENTRY & ~_TIF_SYSCALL_AUDIT),TI_flags(%r10)
+=======
+	testl	$(_TIF_WORK_SYSCALL_ENTRY & ~_TIF_SYSCALL_AUDIT),TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	testl	$(_TIF_WORK_SYSCALL_ENTRY & ~_TIF_SYSCALL_AUDIT),TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/master
 	jz	sysenter_auditsys
 #endif
 	SAVE_REST
@@ -289,7 +402,15 @@ ENTRY(ia32_cstar_target)
 	 * disabled irqs and here we enable it straight after entry:
 	 */
 	ENABLE_INTERRUPTS(CLBR_NONE)
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SAVE_ARGS 8,1,1
+=======
+	SAVE_ARGS 8,0,0
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SAVE_ARGS 8,0,0
+>>>>>>> refs/remotes/origin/master
 	movl 	%eax,%eax	/* zero extension */
 	movq	%rax,ORIG_RAX-ARGOFFSET(%rsp)
 	movq	%rcx,RIP-ARGOFFSET(%rsp)
@@ -305,13 +426,27 @@ ENTRY(ia32_cstar_target)
 	/* no need to do an access_ok check here because r8 has been
 	   32bit zero extended */ 
 	/* hardware stack frame is complete now */	
+<<<<<<< HEAD
 1:	movl	(%r8),%r9d
 	.section __ex_table,"a"
 	.quad 1b,ia32_badarg
 	.previous	
+<<<<<<< HEAD
 	GET_THREAD_INFO(%r10)
 	orl   $TS_COMPAT,TI_status(%r10)
 	testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags(%r10)
+=======
+	orl     $TS_COMPAT,TI_status+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+	testl   $_TIF_WORK_SYSCALL_ENTRY,TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASM_STAC
+1:	movl	(%r8),%r9d
+	_ASM_EXTABLE(1b,ia32_badarg)
+	ASM_CLAC
+	orl     $TS_COMPAT,TI_status+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+	testl   $_TIF_WORK_SYSCALL_ENTRY,TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/master
 	CFI_REMEMBER_STATE
 	jnz   cstar_tracesys
 	cmpq $IA32_NR_syscalls-1,%rax
@@ -321,6 +456,8 @@ cstar_do_call:
 cstar_dispatch:
 	call *ia32_sys_call_table(,%rax,8)
 	movq %rax,RAX-ARGOFFSET(%rsp)
+<<<<<<< HEAD
+<<<<<<< HEAD
 	GET_THREAD_INFO(%r10)
 	DISABLE_INTERRUPTS(CLBR_NONE)
 	TRACE_IRQS_OFF
@@ -329,6 +466,20 @@ cstar_dispatch:
 sysretl_from_sys_call:
 	andl $~TS_COMPAT,TI_status(%r10)
 	RESTORE_ARGS 1,-ARG_SKIP,1,1,1
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	DISABLE_INTERRUPTS(CLBR_NONE)
+	TRACE_IRQS_OFF
+	testl $_TIF_ALLWORK_MASK,TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+	jnz sysretl_audit
+sysretl_from_sys_call:
+	andl $~TS_COMPAT,TI_status+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+	RESTORE_ARGS 0,-ARG_SKIP,0,0,0
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	movl RIP-ARGOFFSET(%rsp),%ecx
 	CFI_REGISTER rip,rcx
 	movl EFLAGS-ARGOFFSET(%rsp),%r11d	
@@ -355,7 +506,15 @@ sysretl_audit:
 
 cstar_tracesys:
 #ifdef CONFIG_AUDITSYSCALL
+<<<<<<< HEAD
+<<<<<<< HEAD
 	testl $(_TIF_WORK_SYSCALL_ENTRY & ~_TIF_SYSCALL_AUDIT),TI_flags(%r10)
+=======
+	testl $(_TIF_WORK_SYSCALL_ENTRY & ~_TIF_SYSCALL_AUDIT),TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	testl $(_TIF_WORK_SYSCALL_ENTRY & ~_TIF_SYSCALL_AUDIT),TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/master
 	jz cstar_auditsys
 #endif
 	xchgl %r9d,%ebp
@@ -373,6 +532,10 @@ cstar_tracesys:
 END(ia32_cstar_target)
 				
 ia32_badarg:
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	movq $-EFAULT,%rax
 	jmp ia32_sysret
 	CFI_ENDPROC
@@ -419,10 +582,22 @@ ENTRY(ia32_syscall)
 	cld
 	/* note the registers are not zero extended to the sf.
 	   this could be a problem. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SAVE_ARGS 0,0,1
 	GET_THREAD_INFO(%r10)
 	orl   $TS_COMPAT,TI_status(%r10)
 	testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags(%r10)
+=======
+	SAVE_ARGS 0,1,0
+	orl $TS_COMPAT,TI_status+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+	testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SAVE_ARGS 0,1,0
+	orl $TS_COMPAT,TI_status+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+	testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags+THREAD_INFO(%rsp,RIP-ARGOFFSET)
+>>>>>>> refs/remotes/origin/master
 	jnz ia32_tracesys
 	cmpq $(IA32_NR_syscalls-1),%rax
 	ja ia32_badsys
@@ -453,6 +628,8 @@ ia32_badsys:
 	movq $-ENOSYS,%rax
 	jmp ia32_sysret
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 quiet_ni_syscall:
 	movq $-ENOSYS,%rax
 	ret
@@ -461,13 +638,29 @@ quiet_ni_syscall:
 	.macro PTREGSCALL label, func, arg
 	.globl \label
 \label:
+=======
+	CFI_ENDPROC
+	
+	.macro PTREGSCALL label, func, arg
+	ALIGN
+GLOBAL(\label)
+>>>>>>> refs/remotes/origin/cm-10.0
 	leaq \func(%rip),%rax
 	leaq -ARGOFFSET+8(%rsp),\arg	/* 8 for return address */
+=======
+	CFI_ENDPROC
+	
+	.macro PTREGSCALL label, func
+	ALIGN
+GLOBAL(\label)
+	leaq \func(%rip),%rax
+>>>>>>> refs/remotes/origin/master
 	jmp  ia32_ptregs_common	
 	.endm
 
 	CFI_STARTPROC32
 
+<<<<<<< HEAD
 	PTREGSCALL stub32_rt_sigreturn, sys32_rt_sigreturn, %rdi
 	PTREGSCALL stub32_sigreturn, sys32_sigreturn, %rdi
 	PTREGSCALL stub32_sigaltstack, sys32_sigaltstack, %rdx
@@ -477,7 +670,28 @@ quiet_ni_syscall:
 	PTREGSCALL stub32_vfork, sys_vfork, %rdi
 	PTREGSCALL stub32_iopl, sys_iopl, %rsi
 
+<<<<<<< HEAD
 ENTRY(ia32_ptregs_common)
+=======
+	ALIGN
+ia32_ptregs_common:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PTREGSCALL stub32_rt_sigreturn, sys32_rt_sigreturn
+	PTREGSCALL stub32_sigreturn, sys32_sigreturn
+	PTREGSCALL stub32_execve, compat_sys_execve
+	PTREGSCALL stub32_fork, sys_fork
+	PTREGSCALL stub32_vfork, sys_vfork
+
+	ALIGN
+GLOBAL(stub32_clone)
+	leaq sys_clone(%rip),%rax
+	mov	%r8, %rcx
+	jmp  ia32_ptregs_common	
+
+	ALIGN
+ia32_ptregs_common:
+>>>>>>> refs/remotes/origin/master
 	popq %r11
 	CFI_ENDPROC
 	CFI_STARTPROC32	simple
@@ -499,6 +713,8 @@ ENTRY(ia32_ptregs_common)
 	jmp  ia32_sysret	/* misbalances the return cache */
 	CFI_ENDPROC
 END(ia32_ptregs_common)
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	.section .rodata,"a"
 	.align 8
@@ -851,3 +1067,7 @@ ia32_sys_call_table:
 	.quad compat_sys_sendmmsg	/* 345 */
 	.quad sys_setns
 ia32_syscall_end:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

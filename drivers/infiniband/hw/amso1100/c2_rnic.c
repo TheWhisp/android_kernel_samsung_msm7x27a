@@ -439,10 +439,17 @@ static int c2_rnic_close(struct c2_dev *c2dev)
 
 /*
  * Called by c2_probe to initialize the RNIC. This principally
+<<<<<<< HEAD
  * involves initalizing the various limits and resouce pools that
  * comprise the RNIC instance.
  */
 int __devinit c2_rnic_init(struct c2_dev *c2dev)
+=======
+ * involves initializing the various limits and resource pools that
+ * comprise the RNIC instance.
+ */
+int c2_rnic_init(struct c2_dev *c2dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	u32 qsize, msgsize;
@@ -611,7 +618,11 @@ int __devinit c2_rnic_init(struct c2_dev *c2dev)
 /*
  * Called by c2_remove to cleanup the RNIC resources.
  */
+<<<<<<< HEAD
 void __devexit c2_rnic_term(struct c2_dev *c2dev)
+=======
+void c2_rnic_term(struct c2_dev *c2dev)
+>>>>>>> refs/remotes/origin/master
 {
 
 	/* Close the open adapter instance */

@@ -100,6 +100,18 @@
 #define S3C_PA_USB_HSOTG		S5PC100_PA_USB_HSOTG
 #define S3C_PA_USB_HSPHY		S5PC100_PA_USB_HSPHY
 #define S3C_PA_WDT			S5PC100_PA_WATCHDOG
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define S3C_PA_SPI0			S5PC100_PA_SPI0
+#define S3C_PA_SPI1			S5PC100_PA_SPI1
+#define S3C_PA_SPI2			S5PC100_PA_SPI2
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define S3C_PA_SPI0			S5PC100_PA_SPI0
+#define S3C_PA_SPI1			S5PC100_PA_SPI1
+#define S3C_PA_SPI2			S5PC100_PA_SPI2
+>>>>>>> refs/remotes/origin/master
 
 #define S5P_PA_CHIPID			S5PC100_PA_CHIPID
 #define S5P_PA_FIMC0			S5PC100_PA_FIMC0
@@ -113,6 +125,10 @@
 #define SAMSUNG_PA_ADC			S5PC100_PA_TSADC
 #define SAMSUNG_PA_CFCON		S5PC100_PA_CFCON
 #define SAMSUNG_PA_KEYPAD		S5PC100_PA_KEYPAD
+<<<<<<< HEAD
+=======
+#define SAMSUNG_PA_TIMER		S5PC100_PA_TIMER
+>>>>>>> refs/remotes/origin/master
 
 #define S5PC100_VA_OTHERS		(S3C_VA_SYS + 0x10000)
 

@@ -73,10 +73,14 @@ static void hd64461_irq_demux(unsigned int irq, struct irq_desc *desc)
 
 int __init setup_hd64461(void)
 {
+<<<<<<< HEAD
 	int i, nid = cpu_to_node(boot_cpu_data);
 
 	if (!MACH_HD64461)
 		return 0;
+=======
+	int irq_base, i;
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO
 	       "HD64461 configured at 0x%x on irq %d(mapped into %d to %d)\n",
@@ -89,6 +93,7 @@ int __init setup_hd64461(void)
 #endif
 	__raw_writew(0xffff, HD64461_NIMR);
 
+<<<<<<< HEAD
 	/*  IRQ 80 -> 95 belongs to HD64461  */
 	for (i = HD64461_IRQBASE; i < HD64461_IRQBASE + 16; i++) {
 		unsigned int irq;
@@ -111,6 +116,18 @@ int __init setup_hd64461(void)
 					 handle_level_irq);
 	}
 
+=======
+	irq_base = irq_alloc_descs(HD64461_IRQBASE, HD64461_IRQBASE, 16, -1);
+	if (IS_ERR_VALUE(irq_base)) {
+		pr_err("%s: failed hooking irqs for HD64461\n", __func__);
+		return irq_base;
+	}
+
+	for (i = 0; i < 16; i++)
+		irq_set_chip_and_handler(irq_base + i, &hd64461_irq_chip,
+					 handle_level_irq);
+
+>>>>>>> refs/remotes/origin/master
 	irq_set_chained_handler(CONFIG_HD64461_IRQ, hd64461_irq_demux);
 	irq_set_irq_type(CONFIG_HD64461_IRQ, IRQ_TYPE_LEVEL_LOW);
 

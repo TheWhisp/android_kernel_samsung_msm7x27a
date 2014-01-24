@@ -20,6 +20,8 @@
 
 #include <linux/module.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/completion.h>
 #include <linux/delay.h>
 #include <linux/input.h>
@@ -31,13 +33,43 @@
 #include <linux/ucb1400.h>
 
 static int adcsync;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/delay.h>
+#include <linux/sched.h>
+#include <linux/wait.h>
+#include <linux/input.h>
+#include <linux/device.h>
+#include <linux/interrupt.h>
+#include <linux/ucb1400.h>
+
+#define UCB1400_TS_POLL_PERIOD	10 /* ms */
+
+static bool adcsync;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ts_delay = 55; /* us */
 static int ts_delay_pressure;	/* us */
 
 /* Switch to interrupt mode. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void ucb1400_ts_mode_int(struct snd_ac97 *ac97)
 {
 	ucb1400_reg_write(ac97, UCB_TS_CR,
+=======
+static void ucb1400_ts_mode_int(struct ucb1400_ts *ucb)
+{
+	ucb1400_reg_write(ucb->ac97, UCB_TS_CR,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ucb1400_ts_mode_int(struct ucb1400_ts *ucb)
+{
+	ucb1400_reg_write(ucb->ac97, UCB_TS_CR,
+>>>>>>> refs/remotes/origin/master
 			UCB_TS_CR_TSMX_POW | UCB_TS_CR_TSPX_POW |
 			UCB_TS_CR_TSMY_GND | UCB_TS_CR_TSPY_GND |
 			UCB_TS_CR_MODE_INT);
@@ -47,13 +79,33 @@ static inline void ucb1400_ts_mode_int(struct snd_ac97 *ac97)
  * Switch to pressure mode, and read pressure.  We don't need to wait
  * here, since both plates are being driven.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int ucb1400_ts_read_pressure(struct ucb1400_ts *ucb)
+=======
+static unsigned int ucb1400_ts_read_pressure(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int ucb1400_ts_read_pressure(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/master
 {
 	ucb1400_reg_write(ucb->ac97, UCB_TS_CR,
 			UCB_TS_CR_TSMX_POW | UCB_TS_CR_TSPX_POW |
 			UCB_TS_CR_TSMY_GND | UCB_TS_CR_TSPY_GND |
 			UCB_TS_CR_MODE_PRES | UCB_TS_CR_BIAS_ENA);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	udelay(ts_delay_pressure);
+=======
+
+	udelay(ts_delay_pressure);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	udelay(ts_delay_pressure);
+
+>>>>>>> refs/remotes/origin/master
 	return ucb1400_adc_read(ucb->ac97, UCB_ADC_INP_TSPY, adcsync);
 }
 
@@ -63,7 +115,15 @@ static inline unsigned int ucb1400_ts_read_pressure(struct ucb1400_ts *ucb)
  * gives a faster response time.  Even so, we need to wait about 55us
  * for things to stabilise.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int ucb1400_ts_read_xpos(struct ucb1400_ts *ucb)
+=======
+static unsigned int ucb1400_ts_read_xpos(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int ucb1400_ts_read_xpos(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/master
 {
 	ucb1400_reg_write(ucb->ac97, UCB_TS_CR,
 			UCB_TS_CR_TSMX_GND | UCB_TS_CR_TSPX_POW |
@@ -86,7 +146,15 @@ static inline unsigned int ucb1400_ts_read_xpos(struct ucb1400_ts *ucb)
  * gives a faster response time.  Even so, we need to wait about 55us
  * for things to stabilise.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int ucb1400_ts_read_ypos(struct ucb1400_ts *ucb)
+=======
+static int ucb1400_ts_read_ypos(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ucb1400_ts_read_ypos(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/master
 {
 	ucb1400_reg_write(ucb->ac97, UCB_TS_CR,
 			UCB_TS_CR_TSMY_GND | UCB_TS_CR_TSPY_POW |
@@ -107,7 +175,15 @@ static inline unsigned int ucb1400_ts_read_ypos(struct ucb1400_ts *ucb)
  * Switch to X plate resistance mode.  Set MX to ground, PX to
  * supply.  Measure current.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int ucb1400_ts_read_xres(struct ucb1400_ts *ucb)
+=======
+static unsigned int ucb1400_ts_read_xres(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int ucb1400_ts_read_xres(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/master
 {
 	ucb1400_reg_write(ucb->ac97, UCB_TS_CR,
 			UCB_TS_CR_TSMX_GND | UCB_TS_CR_TSPX_POW |
@@ -119,7 +195,15 @@ static inline unsigned int ucb1400_ts_read_xres(struct ucb1400_ts *ucb)
  * Switch to Y plate resistance mode.  Set MY to ground, PY to
  * supply.  Measure current.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int ucb1400_ts_read_yres(struct ucb1400_ts *ucb)
+=======
+static unsigned int ucb1400_ts_read_yres(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int ucb1400_ts_read_yres(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/master
 {
 	ucb1400_reg_write(ucb->ac97, UCB_TS_CR,
 			UCB_TS_CR_TSMY_GND | UCB_TS_CR_TSPY_POW |
@@ -127,13 +211,27 @@ static inline unsigned int ucb1400_ts_read_yres(struct ucb1400_ts *ucb)
 	return ucb1400_adc_read(ucb->ac97, 0, adcsync);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int ucb1400_ts_pen_up(struct snd_ac97 *ac97)
 {
 	unsigned short val = ucb1400_reg_read(ac97, UCB_TS_CR);
+=======
+static int ucb1400_ts_pen_up(struct ucb1400_ts *ucb)
+{
+	unsigned short val = ucb1400_reg_read(ucb->ac97, UCB_TS_CR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ucb1400_ts_pen_up(struct ucb1400_ts *ucb)
+{
+	unsigned short val = ucb1400_reg_read(ucb->ac97, UCB_TS_CR);
+>>>>>>> refs/remotes/origin/master
 
 	return val & (UCB_TS_CR_TSPX_LOW | UCB_TS_CR_TSMX_LOW);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void ucb1400_ts_irq_enable(struct snd_ac97 *ac97)
 {
 	ucb1400_reg_write(ac97, UCB_IE_CLEAR, UCB_IE_TSPX);
@@ -147,6 +245,26 @@ static inline void ucb1400_ts_irq_disable(struct snd_ac97 *ac97)
 }
 
 static void ucb1400_ts_evt_add(struct input_dev *idev, u16 pressure, u16 x, u16 y)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void ucb1400_ts_irq_enable(struct ucb1400_ts *ucb)
+{
+	ucb1400_reg_write(ucb->ac97, UCB_IE_CLEAR, UCB_IE_TSPX);
+	ucb1400_reg_write(ucb->ac97, UCB_IE_CLEAR, 0);
+	ucb1400_reg_write(ucb->ac97, UCB_IE_FAL, UCB_IE_TSPX);
+}
+
+static void ucb1400_ts_irq_disable(struct ucb1400_ts *ucb)
+{
+	ucb1400_reg_write(ucb->ac97, UCB_IE_FAL, 0);
+}
+
+static void ucb1400_ts_report_event(struct input_dev *idev, u16 pressure, u16 x, u16 y)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	input_report_abs(idev, ABS_X, x);
 	input_report_abs(idev, ABS_Y, y);
@@ -162,7 +280,15 @@ static void ucb1400_ts_event_release(struct input_dev *idev)
 	input_sync(idev);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void ucb1400_handle_pending_irq(struct ucb1400_ts *ucb)
+=======
+static void ucb1400_clear_pending_irq(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ucb1400_clear_pending_irq(struct ucb1400_ts *ucb)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int isr;
 
@@ -171,6 +297,8 @@ static void ucb1400_handle_pending_irq(struct ucb1400_ts *ucb)
 	ucb1400_reg_write(ucb->ac97, UCB_IE_CLEAR, 0);
 
 	if (isr & UCB_IE_TSPX)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ucb1400_ts_irq_disable(ucb->ac97);
 	else
 		dev_dbg(&ucb->ts_idev->dev, "ucb1400: unexpected IE_STATUS = %#x\n", isr);
@@ -197,6 +325,41 @@ static int ucb1400_ts_thread(void *_ucb)
 			ucb->irq_pending = 0;
 			ucb1400_handle_pending_irq(ucb);
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ucb1400_ts_irq_disable(ucb);
+	else
+		dev_dbg(&ucb->ts_idev->dev,
+			"ucb1400: unexpected IE_STATUS = %#x\n", isr);
+}
+
+/*
+ * A restriction with interrupts exists when using the ucb1400, as
+ * the codec read/write routines may sleep while waiting for codec
+ * access completion and uses semaphores for access control to the
+ * AC97 bus. Therefore the driver is forced to use threaded interrupt
+ * handler.
+ */
+static irqreturn_t ucb1400_irq(int irqnr, void *devid)
+{
+	struct ucb1400_ts *ucb = devid;
+	unsigned int x, y, p;
+	bool penup;
+
+	if (unlikely(irqnr != ucb->irq))
+		return IRQ_NONE;
+
+	ucb1400_clear_pending_irq(ucb);
+
+	/* Start with a small delay before checking pendown state */
+	msleep(UCB1400_TS_POLL_PERIOD);
+
+	while (!ucb->stopped && !(penup = ucb1400_ts_pen_up(ucb))) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ucb1400_adc_enable(ucb->ac97);
 		x = ucb1400_ts_read_xpos(ucb);
@@ -204,6 +367,8 @@ static int ucb1400_ts_thread(void *_ucb)
 		p = ucb1400_ts_read_pressure(ucb);
 		ucb1400_adc_disable(ucb->ac97);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* Switch back to interrupt mode. */
 		ucb1400_ts_mode_int(ucb->ac97);
 
@@ -262,11 +427,60 @@ static irqreturn_t ucb1400_hard_irq(int irqnr, void *devid)
 		return IRQ_HANDLED;
 	}
 	return IRQ_NONE;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ucb1400_ts_report_event(ucb->ts_idev, p, x, y);
+
+		wait_event_timeout(ucb->ts_wait, ucb->stopped,
+				   msecs_to_jiffies(UCB1400_TS_POLL_PERIOD));
+	}
+
+	ucb1400_ts_event_release(ucb->ts_idev);
+
+	if (!ucb->stopped) {
+		/* Switch back to interrupt mode. */
+		ucb1400_ts_mode_int(ucb);
+		ucb1400_ts_irq_enable(ucb);
+	}
+
+	return IRQ_HANDLED;
+}
+
+static void ucb1400_ts_stop(struct ucb1400_ts *ucb)
+{
+	/* Signal IRQ thread to stop polling and disable the handler. */
+	ucb->stopped = true;
+	mb();
+	wake_up(&ucb->ts_wait);
+	disable_irq(ucb->irq);
+
+	ucb1400_ts_irq_disable(ucb);
+	ucb1400_reg_write(ucb->ac97, UCB_TS_CR, 0);
+}
+
+/* Must be called with ts->lock held */
+static void ucb1400_ts_start(struct ucb1400_ts *ucb)
+{
+	/* Tell IRQ thread that it may poll the device. */
+	ucb->stopped = false;
+	mb();
+
+	ucb1400_ts_mode_int(ucb);
+	ucb1400_ts_irq_enable(ucb);
+
+	enable_irq(ucb->irq);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ucb1400_ts_open(struct input_dev *idev)
 {
 	struct ucb1400_ts *ucb = input_get_drvdata(idev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 
 	BUG_ON(ucb->ts_task);
@@ -278,17 +492,36 @@ static int ucb1400_ts_open(struct input_dev *idev)
 	}
 
 	return ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	ucb1400_ts_start(ucb);
+
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ucb1400_ts_close(struct input_dev *idev)
 {
 	struct ucb1400_ts *ucb = input_get_drvdata(idev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ucb->ts_task)
 		kthread_stop(ucb->ts_task);
 
 	ucb1400_ts_irq_disable(ucb->ac97);
 	ucb1400_reg_write(ucb->ac97, UCB_TS_CR, 0);
+=======
+	ucb1400_ts_stop(ucb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ucb1400_ts_stop(ucb);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifndef NO_IRQ
@@ -299,7 +532,17 @@ static void ucb1400_ts_close(struct input_dev *idev)
  * Try to probe our interrupt, rather than relying on lots of
  * hard-coded machine dependencies.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ucb1400_ts_detect_irq(struct ucb1400_ts *ucb)
+=======
+static int __devinit ucb1400_ts_detect_irq(struct ucb1400_ts *ucb,
+					   struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ucb1400_ts_detect_irq(struct ucb1400_ts *ucb,
+					   struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long mask, timeout;
 
@@ -321,7 +564,15 @@ static int ucb1400_ts_detect_irq(struct ucb1400_ts *ucb)
 						UCB_ADC_DAT_VALID)) {
 		cpu_relax();
 		if (time_after(jiffies, timeout)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "ucb1400: timed out in IRQ probe\n");
+=======
+			dev_err(&pdev->dev, "timed out in IRQ probe\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pdev->dev, "timed out in IRQ probe\n");
+>>>>>>> refs/remotes/origin/master
 			probe_irq_off(mask);
 			return -ENODEV;
 		}
@@ -342,11 +593,26 @@ static int ucb1400_ts_detect_irq(struct ucb1400_ts *ucb)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ucb1400_ts_probe(struct platform_device *dev)
 {
 	int error, x_res, y_res;
 	u16 fcsr;
 	struct ucb1400_ts *ucb = dev->dev.platform_data;
+=======
+static int __devinit ucb1400_ts_probe(struct platform_device *pdev)
+=======
+static int ucb1400_ts_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
+{
+	struct ucb1400_ts *ucb = pdev->dev.platform_data;
+	int error, x_res, y_res;
+	u16 fcsr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ucb->ts_idev = input_allocate_device();
 	if (!ucb->ts_idev) {
@@ -356,6 +622,8 @@ static int ucb1400_ts_probe(struct platform_device *dev)
 
 	/* Only in case the IRQ line wasn't supplied, try detecting it */
 	if (ucb->irq < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = ucb1400_ts_detect_irq(ucb);
 		if (error) {
 			printk(KERN_ERR "UCB1400: IRQ probe failed\n");
@@ -377,6 +645,26 @@ static int ucb1400_ts_probe(struct platform_device *dev)
 	input_set_drvdata(ucb->ts_idev, ucb);
 
 	ucb->ts_idev->dev.parent	= &dev->dev;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		error = ucb1400_ts_detect_irq(ucb, pdev);
+		if (error) {
+			dev_err(&pdev->dev, "IRQ probe failed\n");
+			goto err_free_devs;
+		}
+	}
+	dev_dbg(&pdev->dev, "found IRQ %d\n", ucb->irq);
+
+	init_waitqueue_head(&ucb->ts_wait);
+
+	input_set_drvdata(ucb->ts_idev, ucb);
+
+	ucb->ts_idev->dev.parent	= &pdev->dev;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ucb->ts_idev->name		= "UCB1400 touchscreen interface";
 	ucb->ts_idev->id.vendor		= ucb1400_reg_read(ucb->ac97,
 						AC97_VENDOR_ID1);
@@ -398,12 +686,40 @@ static int ucb1400_ts_probe(struct platform_device *dev)
 	x_res = ucb1400_ts_read_xres(ucb);
 	y_res = ucb1400_ts_read_yres(ucb);
 	ucb1400_adc_disable(ucb->ac97);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_DEBUG "UCB1400: x/y = %d/%d\n", x_res, y_res);
+=======
+	dev_dbg(&pdev->dev, "x/y = %d/%d\n", x_res, y_res);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&pdev->dev, "x/y = %d/%d\n", x_res, y_res);
+>>>>>>> refs/remotes/origin/master
 
 	input_set_abs_params(ucb->ts_idev, ABS_X, 0, x_res, 0, 0);
 	input_set_abs_params(ucb->ts_idev, ABS_Y, 0, y_res, 0, 0);
 	input_set_abs_params(ucb->ts_idev, ABS_PRESSURE, 0, 0, 0, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ucb1400_ts_stop(ucb);
+
+	error = request_threaded_irq(ucb->irq, NULL, ucb1400_irq,
+				     IRQF_TRIGGER_RISING | IRQF_ONESHOT,
+				     "UCB1400", ucb);
+	if (error) {
+		dev_err(&pdev->dev,
+			"unable to grab irq%d: %d\n", ucb->irq, error);
+		goto err_free_devs;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	error = input_register_device(ucb->ts_idev);
 	if (error)
 		goto err_free_irq;
@@ -416,6 +732,8 @@ err_free_devs:
 	input_free_device(ucb->ts_idev);
 err:
 	return error;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 }
 
@@ -466,6 +784,75 @@ static void __exit ucb1400_ts_exit(void)
 {
 	platform_driver_unregister(&ucb1400_ts_driver);
 }
+=======
+}
+
+static int __devexit ucb1400_ts_remove(struct platform_device *pdev)
+=======
+}
+
+static int ucb1400_ts_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
+{
+	struct ucb1400_ts *ucb = pdev->dev.platform_data;
+
+	free_irq(ucb->irq, ucb);
+	input_unregister_device(ucb->ts_idev);
+
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int ucb1400_ts_suspend(struct device *dev)
+{
+	struct ucb1400_ts *ucb = dev->platform_data;
+	struct input_dev *idev = ucb->ts_idev;
+
+	mutex_lock(&idev->mutex);
+
+	if (idev->users)
+		ucb1400_ts_start(ucb);
+
+	mutex_unlock(&idev->mutex);
+	return 0;
+}
+
+static int ucb1400_ts_resume(struct device *dev)
+{
+	struct ucb1400_ts *ucb = dev->platform_data;
+	struct input_dev *idev = ucb->ts_idev;
+
+	mutex_lock(&idev->mutex);
+
+	if (idev->users)
+		ucb1400_ts_stop(ucb);
+
+	mutex_unlock(&idev->mutex);
+	return 0;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(ucb1400_ts_pm_ops,
+			 ucb1400_ts_suspend, ucb1400_ts_resume);
+
+static struct platform_driver ucb1400_ts_driver = {
+	.probe	= ucb1400_ts_probe,
+<<<<<<< HEAD
+	.remove	= __devexit_p(ucb1400_ts_remove),
+=======
+	.remove	= ucb1400_ts_remove,
+>>>>>>> refs/remotes/origin/master
+	.driver	= {
+		.name	= "ucb1400_ts",
+		.owner	= THIS_MODULE,
+		.pm	= &ucb1400_ts_pm_ops,
+	},
+};
+module_platform_driver(ucb1400_ts_driver);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 module_param(adcsync, bool, 0444);
 MODULE_PARM_DESC(adcsync, "Synchronize touch readings with ADCSYNC pin.");
@@ -479,8 +866,14 @@ MODULE_PARM_DESC(ts_delay_pressure,
 		"delay between panel setup and pressure read."
 		"  Default = 0us.");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_init(ucb1400_ts_init);
 module_exit(ucb1400_ts_exit);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("Philips UCB1400 touchscreen driver");
 MODULE_LICENSE("GPL");

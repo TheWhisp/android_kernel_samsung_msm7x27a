@@ -46,10 +46,16 @@
 #define HVC_ALLOC_TTY_ADAPTERS	8
 
 struct hvc_struct {
+<<<<<<< HEAD
 	spinlock_t lock;
 	int index;
 	struct tty_struct *tty;
 	int count;
+=======
+	struct tty_port port;
+	spinlock_t lock;
+	int index;
+>>>>>>> refs/remotes/origin/master
 	int do_wakeup;
 	char *outbuf;
 	int outbuf_size;
@@ -61,7 +67,10 @@ struct hvc_struct {
 	struct winsize ws;
 	struct work_struct tty_resize;
 	struct list_head next;
+<<<<<<< HEAD
 	struct kref kref; /* ref count & hvc_struct lifetime */
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* implemented by a low level driver */
@@ -73,6 +82,22 @@ struct hv_ops {
 	int (*notifier_add)(struct hvc_struct *hp, int irq);
 	void (*notifier_del)(struct hvc_struct *hp, int irq);
 	void (*notifier_hangup)(struct hvc_struct *hp, int irq);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/* tiocmget/set implementation */
+	int (*tiocmget)(struct hvc_struct *hp);
+	int (*tiocmset)(struct hvc_struct *hp, unsigned int set, unsigned int clear);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* Callbacks to handle tty ports */
+	void (*dtr_rts)(struct hvc_struct *hp, int raise);
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Register a vterm and a slot index for use as a console (console_init) */

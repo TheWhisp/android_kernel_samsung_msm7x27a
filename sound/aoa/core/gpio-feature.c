@@ -10,8 +10,14 @@
  * registers.
  */
 
+<<<<<<< HEAD
 #include <asm/pmac_feature.h>
 #include <linux/interrupt.h>
+=======
+#include <linux/of_irq.h>
+#include <linux/interrupt.h>
+#include <asm/pmac_feature.h>
+>>>>>>> refs/remotes/origin/master
 #include "../aoa.h"
 
 /* TODO: these are lots of global variables

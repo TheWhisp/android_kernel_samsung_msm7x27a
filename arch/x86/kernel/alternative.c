@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "SMP alternatives: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/sched.h>
 #include <linux/mutex.h>
@@ -9,12 +14,22 @@
 #include <linux/memory.h>
 #include <linux/stop_machine.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/kdebug.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/alternative.h>
 #include <asm/sections.h>
 #include <asm/pgtable.h>
 #include <asm/mce.h>
 #include <asm/nmi.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/vsyscall.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/cacheflush.h>
 #include <asm/tlbflush.h>
 #include <asm/io.h>
@@ -22,6 +37,7 @@
 
 #define MAX_PATCH_LEN (255-1)
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG_CPU
 static int smp_alt_once;
 
@@ -35,6 +51,8 @@ __setup("smp-alt-boot", bootonly);
 #define smp_alt_once 1
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int __initdata_or_module debug_alternative;
 
 static int __init debug_alt(char *str)
@@ -64,8 +82,16 @@ static int __init setup_noreplace_paravirt(char *str)
 __setup("noreplace-paravirt", setup_noreplace_paravirt);
 #endif
 
+<<<<<<< HEAD
 #define DPRINTK(fmt, args...) if (debug_alternative) \
 	printk(KERN_DEBUG fmt, args)
+=======
+#define DPRINTK(fmt, ...)				\
+do {							\
+	if (debug_alternative)				\
+		printk(KERN_DEBUG fmt, ##__VA_ARGS__);	\
+} while (0)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Each GENERIC_NOPX is of X bytes, and defined as an array of bytes
@@ -250,7 +276,13 @@ static void __init_or_module add_nops(void *insns, unsigned int len)
 
 extern struct alt_instr __alt_instructions[], __alt_instructions_end[];
 extern s32 __smp_locks[], __smp_locks_end[];
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern char __vsyscall_0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void *text_poke_early(void *addr, const void *opcode, size_t len);
 
 /* Replace instructions with better alternatives for this CPU type.
@@ -263,6 +295,14 @@ void __init_or_module apply_alternatives(struct alt_instr *start,
 					 struct alt_instr *end)
 {
 	struct alt_instr *a;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8 *instr, *replacement;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 *instr, *replacement;
+>>>>>>> refs/remotes/origin/master
 	u8 insnbuf[MAX_PATCH_LEN];
 
 	DPRINTK("%s: alt table %p -> %p\n", __func__, start, end);
@@ -276,12 +316,19 @@ void __init_or_module apply_alternatives(struct alt_instr *start,
 	 * order.
 	 */
 	for (a = start; a < end; a++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		u8 *instr = a->instr;
+=======
+		instr = (u8 *)&a->instr_offset + a->instr_offset;
+		replacement = (u8 *)&a->repl_offset + a->repl_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 		BUG_ON(a->replacementlen > a->instrlen);
 		BUG_ON(a->instrlen > sizeof(insnbuf));
 		BUG_ON(a->cpuid >= NCAPINTS*32);
 		if (!boot_cpu_has(a->cpuid))
 			continue;
+<<<<<<< HEAD
 #ifdef CONFIG_X86_64
 		/* vsyscall code is not mapped yet. resolve it manually. */
 		if (instr >= (u8 *)VSYSCALL_START && instr < (u8*)VSYSCALL_END) {
@@ -295,6 +342,30 @@ void __init_or_module apply_alternatives(struct alt_instr *start,
 		    *(s32 *)(insnbuf + 1) += a->replacement - a->instr;
 		add_nops(insnbuf + a->replacementlen,
 			 a->instrlen - a->replacementlen);
+=======
+=======
+		instr = (u8 *)&a->instr_offset + a->instr_offset;
+		replacement = (u8 *)&a->repl_offset + a->repl_offset;
+		BUG_ON(a->replacementlen > a->instrlen);
+		BUG_ON(a->instrlen > sizeof(insnbuf));
+		BUG_ON(a->cpuid >= (NCAPINTS + NBUGINTS) * 32);
+		if (!boot_cpu_has(a->cpuid))
+			continue;
+>>>>>>> refs/remotes/origin/master
+
+		memcpy(insnbuf, replacement, a->replacementlen);
+
+		/* 0xe8 is a relative jump; fix the offset. */
+		if (*insnbuf == 0xe8 && a->replacementlen == 5)
+		    *(s32 *)(insnbuf + 1) += replacement - instr;
+
+		add_nops(insnbuf + a->replacementlen,
+			 a->instrlen - a->replacementlen);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		text_poke_early(instr, insnbuf, a->instrlen);
 	}
 }
@@ -315,7 +386,11 @@ static void alternatives_smp_lock(const s32 *start, const s32 *end,
 		/* turn DS segment override prefix into lock prefix */
 		if (*ptr == 0x3e)
 			text_poke(ptr, ((unsigned char []){0xf0}), 1);
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&text_mutex);
 }
 
@@ -324,9 +399,12 @@ static void alternatives_smp_unlock(const s32 *start, const s32 *end,
 {
 	const s32 *poff;
 
+<<<<<<< HEAD
 	if (noreplace_smp)
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&text_mutex);
 	for (poff = start; poff < end; poff++) {
 		u8 *ptr = (u8 *)poff + *poff;
@@ -336,7 +414,11 @@ static void alternatives_smp_unlock(const s32 *start, const s32 *end,
 		/* turn lock prefix into DS segment override prefix */
 		if (*ptr == 0xf0)
 			text_poke(ptr, ((unsigned char []){0x3E}), 1);
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&text_mutex);
 }
 
@@ -357,7 +439,11 @@ struct smp_alt_module {
 };
 static LIST_HEAD(smp_alt_modules);
 static DEFINE_MUTEX(smp_alt);
+<<<<<<< HEAD
 static int smp_mode = 1;	/* protected by smp_alt */
+=======
+static bool uniproc_patched = false;	/* protected by smp_alt */
+>>>>>>> refs/remotes/origin/master
 
 void __init_or_module alternatives_smp_module_add(struct module *mod,
 						  char *name,
@@ -366,6 +452,7 @@ void __init_or_module alternatives_smp_module_add(struct module *mod,
 {
 	struct smp_alt_module *smp;
 
+<<<<<<< HEAD
 	if (noreplace_smp)
 		return;
 
@@ -379,6 +466,20 @@ void __init_or_module alternatives_smp_module_add(struct module *mod,
 	smp = kzalloc(sizeof(*smp), GFP_KERNEL);
 	if (NULL == smp)
 		return; /* we'll run the (safe but slow) SMP code then ... */
+=======
+	mutex_lock(&smp_alt);
+	if (!uniproc_patched)
+		goto unlock;
+
+	if (num_possible_cpus() == 1)
+		/* Don't bother remembering, we'll never have to undo it. */
+		goto smp_unlock;
+
+	smp = kzalloc(sizeof(*smp), GFP_KERNEL);
+	if (NULL == smp)
+		/* we'll run the (safe but slow) SMP code then ... */
+		goto unlock;
+>>>>>>> refs/remotes/origin/master
 
 	smp->mod	= mod;
 	smp->name	= name;
@@ -390,11 +491,18 @@ void __init_or_module alternatives_smp_module_add(struct module *mod,
 		__func__, smp->locks, smp->locks_end,
 		smp->text, smp->text_end, smp->name);
 
+<<<<<<< HEAD
 	mutex_lock(&smp_alt);
 	list_add_tail(&smp->next, &smp_alt_modules);
 	if (boot_cpu_has(X86_FEATURE_UP))
 		alternatives_smp_unlock(smp->locks, smp->locks_end,
 					smp->text, smp->text_end);
+=======
+	list_add_tail(&smp->next, &smp_alt_modules);
+smp_unlock:
+	alternatives_smp_unlock(locks, locks_end, text, text_end);
+unlock:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&smp_alt);
 }
 
@@ -402,22 +510,31 @@ void __init_or_module alternatives_smp_module_del(struct module *mod)
 {
 	struct smp_alt_module *item;
 
+<<<<<<< HEAD
 	if (smp_alt_once || noreplace_smp)
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&smp_alt);
 	list_for_each_entry(item, &smp_alt_modules, next) {
 		if (mod != item->mod)
 			continue;
 		list_del(&item->next);
+<<<<<<< HEAD
 		mutex_unlock(&smp_alt);
 		DPRINTK("%s: %s\n", __func__, item->name);
 		kfree(item);
 		return;
+=======
+		kfree(item);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&smp_alt);
 }
 
+<<<<<<< HEAD
 bool skip_smp_alternatives;
 void alternatives_smp_switch(int smp)
 {
@@ -448,11 +565,26 @@ void alternatives_smp_switch(int smp)
 		/* nothing */
 	} else if (smp) {
 		printk(KERN_INFO "SMP alternatives: switching to SMP code\n");
+=======
+void alternatives_enable_smp(void)
+{
+	struct smp_alt_module *mod;
+
+	/* Why bother if there are no other CPUs? */
+	BUG_ON(num_possible_cpus() == 1);
+
+	mutex_lock(&smp_alt);
+
+	if (uniproc_patched) {
+		pr_info("switching to SMP code\n");
+		BUG_ON(num_online_cpus() != 1);
+>>>>>>> refs/remotes/origin/master
 		clear_cpu_cap(&boot_cpu_data, X86_FEATURE_UP);
 		clear_cpu_cap(&cpu_data(0), X86_FEATURE_UP);
 		list_for_each_entry(mod, &smp_alt_modules, next)
 			alternatives_smp_lock(mod->locks, mod->locks_end,
 					      mod->text, mod->text_end);
+<<<<<<< HEAD
 	} else {
 		printk(KERN_INFO "SMP alternatives: switching to UP code\n");
 		set_cpu_cap(&boot_cpu_data, X86_FEATURE_UP);
@@ -462,6 +594,10 @@ void alternatives_smp_switch(int smp)
 						mod->text, mod->text_end);
 	}
 	smp_mode = smp;
+=======
+		uniproc_patched = false;
+	}
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&smp_alt);
 }
 
@@ -538,6 +674,7 @@ void __init alternative_instructions(void)
 
 	apply_alternatives(__alt_instructions, __alt_instructions_end);
 
+<<<<<<< HEAD
 	/* switch to patch-once-at-boottime-only mode and free the
 	 * tables in case we know the number of CPUs will never ever
 	 * change */
@@ -572,6 +709,24 @@ void __init alternative_instructions(void)
 		free_init_pages("SMP alternatives",
 				(unsigned long)__smp_locks,
 				(unsigned long)__smp_locks_end);
+=======
+#ifdef CONFIG_SMP
+	/* Patch to UP if other cpus not imminent. */
+	if (!noreplace_smp && (num_present_cpus() == 1 || setup_max_cpus <= 1)) {
+		uniproc_patched = true;
+		alternatives_smp_module_add(NULL, "core kernel",
+					    __smp_locks, __smp_locks_end,
+					    _text, _etext);
+	}
+
+	if (!uniproc_patched || num_possible_cpus() == 1)
+		free_init_pages("SMP alternatives",
+				(unsigned long)__smp_locks,
+				(unsigned long)__smp_locks_end);
+#endif
+
+	apply_paravirt(__parainstructions, __parainstructions_end);
+>>>>>>> refs/remotes/origin/master
 
 	restart_nmi();
 }
@@ -649,6 +804,7 @@ void *__kprobes text_poke(void *addr, const void *opcode, size_t len)
 	return addr;
 }
 
+<<<<<<< HEAD
 /*
  * Cross-modifying kernel text with stop_machine().
  * This code originally comes from immediate value.
@@ -741,5 +897,101 @@ void __kprobes text_poke_smp_batch(struct text_poke_param *params, int n)
 
 	atomic_set(&stop_machine_first, 1);
 	wrote_text = 0;
+<<<<<<< HEAD
 	__stop_machine(stop_machine_text_poke, (void *)&tpp, NULL);
+=======
+	__stop_machine(stop_machine_text_poke, (void *)&tpp, cpu_online_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
+=======
+static void do_sync_core(void *info)
+{
+	sync_core();
+}
+
+static bool bp_patching_in_progress;
+static void *bp_int3_handler, *bp_int3_addr;
+
+int poke_int3_handler(struct pt_regs *regs)
+{
+	/* bp_patching_in_progress */
+	smp_rmb();
+
+	if (likely(!bp_patching_in_progress))
+		return 0;
+
+	if (user_mode_vm(regs) || regs->ip != (unsigned long)bp_int3_addr)
+		return 0;
+
+	/* set up the specified breakpoint handler */
+	regs->ip = (unsigned long) bp_int3_handler;
+
+	return 1;
+
+}
+
+/**
+ * text_poke_bp() -- update instructions on live kernel on SMP
+ * @addr:	address to patch
+ * @opcode:	opcode of new instruction
+ * @len:	length to copy
+ * @handler:	address to jump to when the temporary breakpoint is hit
+ *
+ * Modify multi-byte instruction by using int3 breakpoint on SMP.
+ * We completely avoid stop_machine() here, and achieve the
+ * synchronization using int3 breakpoint.
+ *
+ * The way it is done:
+ *	- add a int3 trap to the address that will be patched
+ *	- sync cores
+ *	- update all but the first byte of the patched range
+ *	- sync cores
+ *	- replace the first byte (int3) by the first byte of
+ *	  replacing opcode
+ *	- sync cores
+ *
+ * Note: must be called under text_mutex.
+ */
+void *text_poke_bp(void *addr, const void *opcode, size_t len, void *handler)
+{
+	unsigned char int3 = 0xcc;
+
+	bp_int3_handler = handler;
+	bp_int3_addr = (u8 *)addr + sizeof(int3);
+	bp_patching_in_progress = true;
+	/*
+	 * Corresponding read barrier in int3 notifier for
+	 * making sure the in_progress flags is correctly ordered wrt.
+	 * patching
+	 */
+	smp_wmb();
+
+	text_poke(addr, &int3, sizeof(int3));
+
+	on_each_cpu(do_sync_core, NULL, 1);
+
+	if (len - sizeof(int3) > 0) {
+		/* patch all but the first byte */
+		text_poke((char *)addr + sizeof(int3),
+			  (const char *) opcode + sizeof(int3),
+			  len - sizeof(int3));
+		/*
+		 * According to Intel, this core syncing is very likely
+		 * not necessary and we'd be safe even without it. But
+		 * better safe than sorry (plus there's not only Intel).
+		 */
+		on_each_cpu(do_sync_core, NULL, 1);
+	}
+
+	/* patch the first byte */
+	text_poke(addr, opcode, sizeof(int3));
+
+	on_each_cpu(do_sync_core, NULL, 1);
+
+	bp_patching_in_progress = false;
+	smp_wmb();
+
+	return addr;
+}
+
+>>>>>>> refs/remotes/origin/master

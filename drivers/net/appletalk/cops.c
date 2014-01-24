@@ -70,7 +70,13 @@ static const char *version =
 #include <linux/bitops.h>
 #include <linux/jiffies.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/dma.h>
 
@@ -264,7 +270,15 @@ static const struct net_device_ops cops_netdev_ops = {
 	.ndo_start_xmit   	= cops_send_packet,
 	.ndo_tx_timeout		= cops_timeout,
         .ndo_do_ioctl           = cops_ioctl,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list = set_multicast_list,
+=======
+	.ndo_set_rx_mode	= set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -937,7 +951,11 @@ static int cops_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 {
         struct cops_local *lp = netdev_priv(dev);
         struct sockaddr_at *sa = (struct sockaddr_at *)&ifr->ifr_addr;
+<<<<<<< HEAD
         struct atalk_addr *aa = (struct atalk_addr *)&lp->node_addr;
+=======
+        struct atalk_addr *aa = &lp->node_addr;
+>>>>>>> refs/remotes/origin/master
 
         switch(cmd)
         {
@@ -997,9 +1015,13 @@ static int __init cops_module_init(void)
 		printk(KERN_WARNING "%s: You shouldn't autoprobe with insmod\n",
 			cardname);
 	cops_dev = cops_probe(-1);
+<<<<<<< HEAD
 	if (IS_ERR(cops_dev))
 		return PTR_ERR(cops_dev);
         return 0;
+=======
+	return PTR_ERR_OR_ZERO(cops_dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit cops_module_exit(void)

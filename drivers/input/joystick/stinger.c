@@ -208,6 +208,7 @@ static struct serio_driver stinger_drv = {
 	.disconnect	= stinger_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -224,3 +225,6 @@ static void __exit stinger_exit(void)
 
 module_init(stinger_init);
 module_exit(stinger_exit);
+=======
+module_serio_driver(stinger_drv);
+>>>>>>> refs/remotes/origin/master

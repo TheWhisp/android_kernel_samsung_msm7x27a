@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * Module Name: hwregs - Read/write access functions for the various ACPI
@@ -7,7 +10,15 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,12 +56,23 @@
 
 #include <acpi/acpi.h>
 #include "accommon.h"
+<<<<<<< HEAD
 #include "acnamesp.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "acevents.h"
 
 #define _COMPONENT          ACPI_HARDWARE
 ACPI_MODULE_NAME("hwregs")
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+>>>>>>> refs/remotes/origin/master
 /* Local Prototypes */
 static acpi_status
 acpi_hw_read_multiple(u32 *value,
@@ -62,13 +84,29 @@ acpi_hw_write_multiple(u32 value,
 		       struct acpi_generic_address *register_a,
 		       struct acpi_generic_address *register_b);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * FUNCTION:    acpi_hw_validate_register
  *
+<<<<<<< HEAD
  * PARAMETERS:  Reg                 - GAS register structure
  *              max_bit_width       - Max bit_width supported (32 or 64)
  *              Address             - Pointer to where the gas->address
+=======
+ * PARAMETERS:  reg                 - GAS register structure
+ *              max_bit_width       - Max bit_width supported (32 or 64)
+ *              address             - Pointer to where the gas->address
+>>>>>>> refs/remotes/origin/master
  *                                    is returned
  *
  * RETURN:      Status
@@ -99,7 +137,11 @@ acpi_hw_validate_register(struct acpi_generic_address *reg,
 		return (AE_BAD_ADDRESS);
 	}
 
+<<<<<<< HEAD
 	/* Validate the space_iD */
+=======
+	/* Validate the space_ID */
+>>>>>>> refs/remotes/origin/master
 
 	if ((reg->space_id != ACPI_ADR_SPACE_SYSTEM_MEMORY) &&
 	    (reg->space_id != ACPI_ADR_SPACE_SYSTEM_IO)) {
@@ -134,8 +176,13 @@ acpi_hw_validate_register(struct acpi_generic_address *reg,
  *
  * FUNCTION:    acpi_hw_read
  *
+<<<<<<< HEAD
  * PARAMETERS:  Value               - Where the value is returned
  *              Reg                 - GAS register structure
+=======
+ * PARAMETERS:  value               - Where the value is returned
+ *              reg                 - GAS register structure
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -145,7 +192,11 @@ acpi_hw_validate_register(struct acpi_generic_address *reg,
  *
  * LIMITATIONS: <These limitations also apply to acpi_hw_write>
  *      bit_width must be exactly 8, 16, or 32.
+<<<<<<< HEAD
  *      space_iD must be system_memory or system_iO.
+=======
+ *      space_ID must be system_memory or system_IO.
+>>>>>>> refs/remotes/origin/master
  *      bit_offset and access_width are currently ignored, as there has
  *          not been a need to implement these.
  *
@@ -154,6 +205,14 @@ acpi_hw_validate_register(struct acpi_generic_address *reg,
 acpi_status acpi_hw_read(u32 *value, struct acpi_generic_address *reg)
 {
 	u64 address;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u64 value64;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 value64;
+>>>>>>> refs/remotes/origin/master
 	acpi_status status;
 
 	ACPI_FUNCTION_NAME(hw_read);
@@ -175,7 +234,19 @@ acpi_status acpi_hw_read(u32 *value, struct acpi_generic_address *reg)
 	 */
 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
 		status = acpi_os_read_memory((acpi_physical_address)
+<<<<<<< HEAD
+<<<<<<< HEAD
 					     address, value, reg->bit_width);
+=======
+					     address, &value64, reg->bit_width);
+
+		*value = (u32)value64;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					     address, &value64, reg->bit_width);
+
+		*value = (u32)value64;
+>>>>>>> refs/remotes/origin/master
 	} else {		/* ACPI_ADR_SPACE_SYSTEM_IO, validated earlier */
 
 		status = acpi_hw_read_port((acpi_io_address)
@@ -194,8 +265,13 @@ acpi_status acpi_hw_read(u32 *value, struct acpi_generic_address *reg)
  *
  * FUNCTION:    acpi_hw_write
  *
+<<<<<<< HEAD
  * PARAMETERS:  Value               - Value to be written
  *              Reg                 - GAS register structure
+=======
+ * PARAMETERS:  value               - Value to be written
+ *              reg                 - GAS register structure
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -225,7 +301,17 @@ acpi_status acpi_hw_write(u32 value, struct acpi_generic_address *reg)
 	 */
 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
 		status = acpi_os_write_memory((acpi_physical_address)
+<<<<<<< HEAD
+<<<<<<< HEAD
 					      address, value, reg->bit_width);
+=======
+					      address, (u64)value,
+					      reg->bit_width);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					      address, (u64)value,
+					      reg->bit_width);
+>>>>>>> refs/remotes/origin/master
 	} else {		/* ACPI_ADR_SPACE_SYSTEM_IO, validated earlier */
 
 		status = acpi_hw_write_port((acpi_io_address)
@@ -240,6 +326,14 @@ acpi_status acpi_hw_write(u32 value, struct acpi_generic_address *reg)
 	return (status);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_hw_clear_acpi_status
@@ -269,22 +363,52 @@ acpi_status acpi_hw_clear_acpi_status(void)
 
 	status = acpi_hw_register_write(ACPI_REGISTER_PM1_STATUS,
 					ACPI_BITMASK_ALL_FIXED_STATUS);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ACPI_FAILURE(status)) {
 		goto unlock_and_exit;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	acpi_os_release_lock(acpi_gbl_hardware_lock, lock_flags);
+
+	if (ACPI_FAILURE(status))
+		goto exit;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Clear the GPE Bits in all GPE registers in all GPE blocks */
 
 	status = acpi_ev_walk_gpe_list(acpi_hw_clear_gpe_block, NULL);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
       unlock_and_exit:
 	acpi_os_release_lock(acpi_gbl_hardware_lock, lock_flags);
+=======
+exit:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * FUNCTION:    acpi_hw_get_register_bit_mask
+=======
+ * FUNCTION:    acpi_hw_get_bit_register_info
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * FUNCTION:    acpi_hw_get_bit_register_info
+>>>>>>> refs/remotes/origin/master
  *
  * PARAMETERS:  register_id         - Index of ACPI Register to access
  *
@@ -356,8 +480,12 @@ acpi_status acpi_hw_write_pm1_control(u32 pm1a_control, u32 pm1b_control)
  * DESCRIPTION: Read from the specified ACPI register
  *
  ******************************************************************************/
+<<<<<<< HEAD
 acpi_status
 acpi_hw_register_read(u32 register_id, u32 * return_value)
+=======
+acpi_status acpi_hw_register_read(u32 register_id, u32 *return_value)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 value = 0;
 	acpi_status status;
@@ -413,6 +541,10 @@ acpi_hw_register_read(u32 register_id, u32 * return_value)
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		ACPI_ERROR((AE_INFO, "Unknown Register ID: 0x%X", register_id));
 		status = AE_BAD_PARAMETER;
 		break;
@@ -430,7 +562,11 @@ acpi_hw_register_read(u32 register_id, u32 * return_value)
  * FUNCTION:    acpi_hw_register_write
  *
  * PARAMETERS:  register_id         - ACPI Register ID
+<<<<<<< HEAD
  *              Value               - The value to write
+=======
+ *              value               - The value to write
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -477,7 +613,11 @@ acpi_status acpi_hw_register_write(u32 register_id, u32 value)
 						&acpi_gbl_xpm1b_status);
 		break;
 
+<<<<<<< HEAD
 	case ACPI_REGISTER_PM1_ENABLE:	/* PM1 A/B: 16-bit access */
+=======
+	case ACPI_REGISTER_PM1_ENABLE:	/* PM1 A/B: 16-bit access each */
+>>>>>>> refs/remotes/origin/master
 
 		status = acpi_hw_write_multiple(value,
 						&acpi_gbl_xpm1a_enable,
@@ -485,7 +625,10 @@ acpi_status acpi_hw_register_write(u32 register_id, u32 value)
 		break;
 
 	case ACPI_REGISTER_PM1_CONTROL:	/* PM1 A/B: 16-bit access each */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Perform a read first to preserve certain bits (per ACPI spec)
 		 * Note: This includes SCI_EN, we never want to change this bit
@@ -514,7 +657,10 @@ acpi_status acpi_hw_register_write(u32 register_id, u32 value)
 		break;
 
 	case ACPI_REGISTER_PM2_CONTROL:	/* 8-bit access */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * For control registers, all reserved bits must be preserved,
 		 * as per the ACPI spec.
@@ -549,12 +695,20 @@ acpi_status acpi_hw_register_write(u32 register_id, u32 value)
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		ACPI_ERROR((AE_INFO, "Unknown Register ID: 0x%X", register_id));
 		status = AE_BAD_PARAMETER;
 		break;
 	}
 
+<<<<<<< HEAD
       exit:
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 
@@ -562,7 +716,11 @@ acpi_status acpi_hw_register_write(u32 register_id, u32 value)
  *
  * FUNCTION:    acpi_hw_read_multiple
  *
+<<<<<<< HEAD
  * PARAMETERS:  Value               - Where the register value is returned
+=======
+ * PARAMETERS:  value               - Where the register value is returned
+>>>>>>> refs/remotes/origin/master
  *              register_a           - First ACPI register (required)
  *              register_b           - Second ACPI register (optional)
  *
@@ -615,7 +773,11 @@ acpi_hw_read_multiple(u32 *value,
  *
  * FUNCTION:    acpi_hw_write_multiple
  *
+<<<<<<< HEAD
  * PARAMETERS:  Value               - The value to write
+=======
+ * PARAMETERS:  value               - The value to write
+>>>>>>> refs/remotes/origin/master
  *              register_a           - First ACPI register (required)
  *              register_b           - Second ACPI register (optional)
  *
@@ -657,3 +819,13 @@ acpi_hw_write_multiple(u32 value,
 
 	return (status);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master

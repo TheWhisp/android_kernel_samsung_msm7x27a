@@ -25,9 +25,23 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/err.h>
 #include <linux/kdev_t.h>
 #include <linux/random.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/export.h>
+#include <linux/err.h>
+#include <linux/kdev_t.h>
+#include <linux/random.h>
+#include <linux/stat.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "uwb-internal.h"
 
 /* We initialize addresses to 0xff (invalid, as it is bcast) */
@@ -242,7 +256,11 @@ static ssize_t uwb_dev_RSSI_store(struct device *dev,
 static DEVICE_ATTR(RSSI, S_IRUGO | S_IWUSR, uwb_dev_RSSI_show, uwb_dev_RSSI_store);
 
 
+<<<<<<< HEAD
 static struct attribute *dev_attrs[] = {
+=======
+static struct attribute *uwb_dev_attrs[] = {
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_EUI_48.attr,
 	&dev_attr_DevAddr.attr,
 	&dev_attr_BPST.attr,
@@ -251,6 +269,7 @@ static struct attribute *dev_attrs[] = {
 	&dev_attr_RSSI.attr,
 	NULL,
 };
+<<<<<<< HEAD
 
 static struct attribute_group dev_attr_group = {
 	.attrs = dev_attrs,
@@ -265,6 +284,12 @@ static const struct attribute_group *groups[] = {
  * Device SYSFS registration
  *
  *
+=======
+ATTRIBUTE_GROUPS(uwb_dev);
+
+/**
+ * Device SYSFS registration
+>>>>>>> refs/remotes/origin/master
  */
 static int __uwb_dev_sys_add(struct uwb_dev *uwb_dev, struct device *parent_dev)
 {
@@ -274,7 +299,11 @@ static int __uwb_dev_sys_add(struct uwb_dev *uwb_dev, struct device *parent_dev)
 	/* Device sysfs files are only useful for neighbor devices not
 	   local radio controllers. */
 	if (&uwb_dev->rc->uwb_dev != uwb_dev)
+<<<<<<< HEAD
 		dev->groups = groups;
+=======
+		dev->groups = uwb_dev_groups;
+>>>>>>> refs/remotes/origin/master
 	dev->parent = parent_dev;
 	dev_set_drvdata(dev, uwb_dev);
 
@@ -438,7 +467,11 @@ void uwbd_dev_onair(struct uwb_rc *rc, struct uwb_beca_e *bce)
 	uwb_dev_init(uwb_dev);		/* This sets refcnt to one, we own it */
 	uwb_dev->mac_addr = *bce->mac_addr;
 	uwb_dev->dev_addr = bce->dev_addr;
+<<<<<<< HEAD
 	dev_set_name(&uwb_dev->dev, macbuf);
+=======
+	dev_set_name(&uwb_dev->dev, "%s", macbuf);
+>>>>>>> refs/remotes/origin/master
 	result = uwb_dev_add(uwb_dev, &rc->uwb_dev.dev, rc);
 	if (result < 0) {
 		dev_err(dev, "new device %s: cannot instantiate device\n",

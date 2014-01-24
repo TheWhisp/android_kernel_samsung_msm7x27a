@@ -22,7 +22,10 @@
 #include <linux/skbuff.h>
 #include <linux/init.h>
 #include <linux/kmod.h>
+<<<<<<< HEAD
 #include <linux/netlink.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/slab.h>
 #include <net/net_namespace.h>
@@ -40,9 +43,21 @@ static DEFINE_RWLOCK(cls_mod_lock);
 
 /* Find classifier type by string name */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct tcf_proto_ops *tcf_proto_lookup_ops(struct nlattr *kind)
 {
 	struct tcf_proto_ops *t = NULL;
+=======
+static const struct tcf_proto_ops *tcf_proto_lookup_ops(struct nlattr *kind)
+{
+	const struct tcf_proto_ops *t = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct tcf_proto_ops *tcf_proto_lookup_ops(struct nlattr *kind)
+{
+	const struct tcf_proto_ops *t = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	if (kind) {
 		read_lock(&cls_mod_lock);
@@ -118,7 +133,11 @@ static inline u32 tcf_auto_prio(struct tcf_proto *tp)
 
 /* Add/change/delete/get a filter node */
 
+<<<<<<< HEAD
 static int tc_ctl_tfilter(struct sk_buff *skb, struct nlmsghdr *n, void *arg)
+=======
+static int tc_ctl_tfilter(struct sk_buff *skb, struct nlmsghdr *n)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net *net = sock_net(skb->sk);
 	struct nlattr *tca[TCA_MAX + 1];
@@ -132,15 +151,35 @@ static int tc_ctl_tfilter(struct sk_buff *skb, struct nlmsghdr *n, void *arg)
 	struct Qdisc  *q;
 	struct tcf_proto **back, **chain;
 	struct tcf_proto *tp;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct tcf_proto_ops *tp_ops;
+=======
+	const struct tcf_proto_ops *tp_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct tcf_proto_ops *tp_ops;
+>>>>>>> refs/remotes/origin/master
 	const struct Qdisc_class_ops *cops;
 	unsigned long cl;
 	unsigned long fh;
 	int err;
 	int tp_created = 0;
 
+<<<<<<< HEAD
 replay:
 	t = NLMSG_DATA(n);
+=======
+	if ((n->nlmsg_type != RTM_GETTFILTER) && !capable(CAP_NET_ADMIN))
+		return -EPERM;
+
+replay:
+	err = nlmsg_parse(n, sizeof(*t), tca, TCA_MAX, NULL);
+	if (err < 0)
+		return err;
+
+	t = nlmsg_data(n);
+>>>>>>> refs/remotes/origin/master
 	protocol = TC_H_MIN(t->tcm_info);
 	prio = TC_H_MAJ(t->tcm_info);
 	nprio = prio;
@@ -162,10 +201,13 @@ replay:
 	if (dev == NULL)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	err = nlmsg_parse(n, sizeof(*t), tca, TCA_MAX, NULL);
 	if (err < 0)
 		return err;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Find qdisc */
 	if (!parent) {
 		q = dev->qdisc;
@@ -319,7 +361,11 @@ replay:
 		}
 	}
 
+<<<<<<< HEAD
 	err = tp->ops->change(tp, cl, t->tcm_handle, tca, &fh);
+=======
+	err = tp->ops->change(net, skb, tp, cl, t->tcm_handle, tca, &fh);
+>>>>>>> refs/remotes/origin/master
 	if (err == 0) {
 		if (tp_created) {
 			spin_lock_bh(root_lock);
@@ -343,21 +389,37 @@ errout:
 }
 
 static int tcf_fill_node(struct sk_buff *skb, struct tcf_proto *tp,
+<<<<<<< HEAD
 			 unsigned long fh, u32 pid, u32 seq, u16 flags, int event)
+=======
+			 unsigned long fh, u32 portid, u32 seq, u16 flags, int event)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcmsg *tcm;
 	struct nlmsghdr  *nlh;
 	unsigned char *b = skb_tail_pointer(skb);
 
+<<<<<<< HEAD
 	nlh = NLMSG_NEW(skb, pid, seq, event, sizeof(*tcm), flags);
 	tcm = NLMSG_DATA(nlh);
+=======
+	nlh = nlmsg_put(skb, portid, seq, event, sizeof(*tcm), flags);
+	if (!nlh)
+		goto out_nlmsg_trim;
+	tcm = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	tcm->tcm_family = AF_UNSPEC;
 	tcm->tcm__pad1 = 0;
 	tcm->tcm__pad2 = 0;
 	tcm->tcm_ifindex = qdisc_dev(tp->q)->ifindex;
 	tcm->tcm_parent = tp->classid;
 	tcm->tcm_info = TC_H_MAKE(tp->prio, tp->protocol);
+<<<<<<< HEAD
 	NLA_PUT_STRING(skb, TCA_KIND, tp->ops->kind);
+=======
+	if (nla_put_string(skb, TCA_KIND, tp->ops->kind))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	tcm->tcm_handle = fh;
 	if (RTM_DELTFILTER != event) {
 		tcm->tcm_handle = 0;
@@ -367,7 +429,11 @@ static int tcf_fill_node(struct sk_buff *skb, struct tcf_proto *tp,
 	nlh->nlmsg_len = skb_tail_pointer(skb) - b;
 	return skb->len;
 
+<<<<<<< HEAD
 nlmsg_failure:
+=======
+out_nlmsg_trim:
+>>>>>>> refs/remotes/origin/master
 nla_put_failure:
 	nlmsg_trim(skb, b);
 	return -1;
@@ -378,18 +444,30 @@ static int tfilter_notify(struct net *net, struct sk_buff *oskb,
 			  unsigned long fh, int event)
 {
 	struct sk_buff *skb;
+<<<<<<< HEAD
 	u32 pid = oskb ? NETLINK_CB(oskb).pid : 0;
+=======
+	u32 portid = oskb ? NETLINK_CB(oskb).portid : 0;
+>>>>>>> refs/remotes/origin/master
 
 	skb = alloc_skb(NLMSG_GOODSIZE, GFP_KERNEL);
 	if (!skb)
 		return -ENOBUFS;
 
+<<<<<<< HEAD
 	if (tcf_fill_node(skb, tp, fh, pid, n->nlmsg_seq, 0, event) <= 0) {
+=======
+	if (tcf_fill_node(skb, tp, fh, portid, n->nlmsg_seq, 0, event) <= 0) {
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	return rtnetlink_send(skb, net, pid, RTNLGRP_TC,
+=======
+	return rtnetlink_send(skb, net, portid, RTNLGRP_TC,
+>>>>>>> refs/remotes/origin/master
 			      n->nlmsg_flags & NLM_F_ECHO);
 }
 
@@ -404,7 +482,11 @@ static int tcf_node_dump(struct tcf_proto *tp, unsigned long n,
 {
 	struct tcf_dump_args *a = (void *)arg;
 
+<<<<<<< HEAD
 	return tcf_fill_node(a->skb, tp, n, NETLINK_CB(a->cb->skb).pid,
+=======
+	return tcf_fill_node(a->skb, tp, n, NETLINK_CB(a->cb->skb).portid,
+>>>>>>> refs/remotes/origin/master
 			     a->cb->nlh->nlmsg_seq, NLM_F_MULTI, RTM_NEWTFILTER);
 }
 
@@ -417,12 +499,20 @@ static int tc_dump_tfilter(struct sk_buff *skb, struct netlink_callback *cb)
 	struct net_device *dev;
 	struct Qdisc *q;
 	struct tcf_proto *tp, **chain;
+<<<<<<< HEAD
 	struct tcmsg *tcm = (struct tcmsg *)NLMSG_DATA(cb->nlh);
+=======
+	struct tcmsg *tcm = nlmsg_data(cb->nlh);
+>>>>>>> refs/remotes/origin/master
 	unsigned long cl = 0;
 	const struct Qdisc_class_ops *cops;
 	struct tcf_dump_args arg;
 
+<<<<<<< HEAD
 	if (cb->nlh->nlmsg_len < NLMSG_LENGTH(sizeof(*tcm)))
+=======
+	if (nlmsg_len(cb->nlh) < sizeof(*tcm))
+>>>>>>> refs/remotes/origin/master
 		return skb->len;
 	dev = __dev_get_by_index(net, tcm->tcm_ifindex);
 	if (!dev)
@@ -462,7 +552,11 @@ static int tc_dump_tfilter(struct sk_buff *skb, struct netlink_callback *cb)
 		if (t > s_t)
 			memset(&cb->args[1], 0, sizeof(cb->args)-sizeof(cb->args[0]));
 		if (cb->args[1] == 0) {
+<<<<<<< HEAD
 			if (tcf_fill_node(skb, tp, 0, NETLINK_CB(cb->skb).pid,
+=======
+			if (tcf_fill_node(skb, tp, 0, NETLINK_CB(cb->skb).portid,
+>>>>>>> refs/remotes/origin/master
 					  cb->nlh->nlmsg_seq, NLM_F_MULTI,
 					  RTM_NEWTFILTER) <= 0)
 				break;
@@ -503,7 +597,11 @@ void tcf_exts_destroy(struct tcf_proto *tp, struct tcf_exts *exts)
 }
 EXPORT_SYMBOL(tcf_exts_destroy);
 
+<<<<<<< HEAD
 int tcf_exts_validate(struct tcf_proto *tp, struct nlattr **tb,
+=======
+int tcf_exts_validate(struct net *net, struct tcf_proto *tp, struct nlattr **tb,
+>>>>>>> refs/remotes/origin/master
 		  struct nlattr *rate_tlv, struct tcf_exts *exts,
 		  const struct tcf_ext_map *map)
 {
@@ -514,7 +612,11 @@ int tcf_exts_validate(struct tcf_proto *tp, struct nlattr **tb,
 		struct tc_action *act;
 
 		if (map->police && tb[map->police]) {
+<<<<<<< HEAD
 			act = tcf_action_init_1(tb[map->police], rate_tlv,
+=======
+			act = tcf_action_init_1(net, tb[map->police], rate_tlv,
+>>>>>>> refs/remotes/origin/master
 						"police", TCA_ACT_NOREPLACE,
 						TCA_ACT_BIND);
 			if (IS_ERR(act))
@@ -523,8 +625,14 @@ int tcf_exts_validate(struct tcf_proto *tp, struct nlattr **tb,
 			act->type = TCA_OLD_COMPAT;
 			exts->action = act;
 		} else if (map->action && tb[map->action]) {
+<<<<<<< HEAD
 			act = tcf_action_init(tb[map->action], rate_tlv, NULL,
 					      TCA_ACT_NOREPLACE, TCA_ACT_BIND);
+=======
+			act = tcf_action_init(net, tb[map->action], rate_tlv,
+					      NULL, TCA_ACT_NOREPLACE,
+					      TCA_ACT_BIND);
+>>>>>>> refs/remotes/origin/master
 			if (IS_ERR(act))
 				return PTR_ERR(act);
 

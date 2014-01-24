@@ -12,12 +12,24 @@
 
 #include <linux/module.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/irq.h>
 #include <linux/dma-mapping.h>
 
 #include <mach/pxa930.h>
 
+=======
+#include <linux/dma-mapping.h>
+#include <linux/irq.h>
+#include <linux/gpio-pxa.h>
+#include <linux/platform_device.h>
+
+#include <mach/pxa930.h>
+
+#include "devices.h"
+
+>>>>>>> refs/remotes/origin/master
 static struct mfp_addr_map pxa930_mfp_addr_map[] __initdata = {
 
 	MFP_ADDR(GPIO0, 0x02e0),
@@ -190,11 +202,29 @@ static struct mfp_addr_map pxa935_mfp_addr_map[] __initdata = {
 	MFP_ADDR_END,
 };
 
+<<<<<<< HEAD
 static int __init pxa930_init(void)
 {
 	if (cpu_is_pxa93x()) {
 		mfp_init_base(io_p2v(MFPR_BASE));
 		mfp_init_addr(pxa930_mfp_addr_map);
+=======
+static struct pxa_gpio_platform_data pxa93x_gpio_pdata = {
+	.irq_base	= PXA_GPIO_TO_IRQ(0),
+};
+
+static int __init pxa930_init(void)
+{
+	int ret = 0;
+
+	if (cpu_is_pxa93x()) {
+		mfp_init_base(io_p2v(MFPR_BASE));
+		mfp_init_addr(pxa930_mfp_addr_map);
+		platform_device_add_data(&pxa93x_device_gpio,
+					 &pxa93x_gpio_pdata,
+					 sizeof(pxa93x_gpio_pdata));
+		ret = platform_device_register(&pxa93x_device_gpio);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (cpu_is_pxa935())

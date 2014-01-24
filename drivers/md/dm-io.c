@@ -19,8 +19,11 @@
 #define DM_MSG_PREFIX "io"
 
 #define DM_IO_MAX_REGIONS	BITS_PER_LONG
+<<<<<<< HEAD
 #define MIN_IOS		16
 #define MIN_BIOS	16
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct dm_io_client {
 	mempool_t *pool;
@@ -50,16 +53,28 @@ static struct kmem_cache *_dm_io_cache;
 struct dm_io_client *dm_io_client_create(void)
 {
 	struct dm_io_client *client;
+<<<<<<< HEAD
+=======
+	unsigned min_ios = dm_get_reserved_bio_based_ios();
+>>>>>>> refs/remotes/origin/master
 
 	client = kmalloc(sizeof(*client), GFP_KERNEL);
 	if (!client)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	client->pool = mempool_create_slab_pool(MIN_IOS, _dm_io_cache);
 	if (!client->pool)
 		goto bad;
 
 	client->bios = bioset_create(MIN_BIOS, 0);
+=======
+	client->pool = mempool_create_slab_pool(min_ios, _dm_io_cache);
+	if (!client->pool)
+		goto bad;
+
+	client->bios = bioset_create(min_ios, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!client->bios)
 		goto bad;
 
@@ -249,6 +264,7 @@ static void vm_dp_init(struct dpages *dp, void *data)
 	dp->context_ptr = data;
 }
 
+<<<<<<< HEAD
 static void dm_bio_destructor(struct bio *bio)
 {
 	unsigned region;
@@ -259,6 +275,8 @@ static void dm_bio_destructor(struct bio *bio)
 	bio_free(bio, io->client->bios);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Functions for getting the pages from kernel memory.
  */
@@ -297,7 +315,12 @@ static void do_region(int rw, unsigned region, struct dm_io_region *where,
 	unsigned num_bvecs;
 	sector_t remaining = where->count;
 	struct request_queue *q = bdev_get_queue(where->bdev);
+<<<<<<< HEAD
 	sector_t discard_sectors;
+=======
+	unsigned short logical_block_size = queue_logical_block_size(q);
+	sector_t num_sectors;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * where->count may be zero if rw holds a flush and we need to
@@ -307,7 +330,11 @@ static void do_region(int rw, unsigned region, struct dm_io_region *where,
 		/*
 		 * Allocate a suitably sized-bio.
 		 */
+<<<<<<< HEAD
 		if (rw & REQ_DISCARD)
+=======
+		if ((rw & REQ_DISCARD) || (rw & REQ_WRITE_SAME))
+>>>>>>> refs/remotes/origin/master
 			num_bvecs = 1;
 		else
 			num_bvecs = min_t(int, bio_get_nr_vecs(where->bdev),
@@ -317,6 +344,7 @@ static void do_region(int rw, unsigned region, struct dm_io_region *where,
 		bio->bi_sector = where->sector + (where->count - remaining);
 		bio->bi_bdev = where->bdev;
 		bio->bi_end_io = endio;
+<<<<<<< HEAD
 		bio->bi_destructor = dm_bio_destructor;
 		store_io_and_region_in_bio(bio, io, region);
 
@@ -324,6 +352,26 @@ static void do_region(int rw, unsigned region, struct dm_io_region *where,
 			discard_sectors = min_t(sector_t, q->limits.max_discard_sectors, remaining);
 			bio->bi_size = discard_sectors << SECTOR_SHIFT;
 			remaining -= discard_sectors;
+=======
+		store_io_and_region_in_bio(bio, io, region);
+
+		if (rw & REQ_DISCARD) {
+			num_sectors = min_t(sector_t, q->limits.max_discard_sectors, remaining);
+			bio->bi_size = num_sectors << SECTOR_SHIFT;
+			remaining -= num_sectors;
+		} else if (rw & REQ_WRITE_SAME) {
+			/*
+			 * WRITE SAME only uses a single page.
+			 */
+			dp->get_page(dp, &page, &len, &offset);
+			bio_add_page(bio, page, logical_block_size, offset);
+			num_sectors = min_t(sector_t, q->limits.max_write_same_sectors, remaining);
+			bio->bi_size = num_sectors << SECTOR_SHIFT;
+
+			offset = 0;
+			remaining -= num_sectors;
+			dp->next_page(dp);
+>>>>>>> refs/remotes/origin/master
 		} else while (remaining) {
 			/*
 			 * Try and add as many pages as possible.

@@ -238,6 +238,8 @@ hostsleep
 		echo "1" > hostsleep : enable host sleep.
 		echo "0" > hostsleep : disable host sleep
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ========================
 IWCONFIG COMMANDS
 ========================
@@ -263,3 +265,7 @@ power period
 		iwconfig wlan0 power period -1
 
 ==============================================================================
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

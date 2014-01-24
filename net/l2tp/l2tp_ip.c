@@ -9,6 +9,11 @@
  *	2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/icmp.h>
 #include <linux/module.h>
 #include <linux/skbuff.h>
@@ -32,6 +37,7 @@ struct l2tp_ip_sock {
 	/* inet_sock has to be the first member of l2tp_ip_sock */
 	struct inet_sock	inet;
 
+<<<<<<< HEAD
 	__u32			conn_id;
 	__u32			peer_conn_id;
 
@@ -41,6 +47,10 @@ struct l2tp_ip_sock {
 	__u64			rx_packets;
 	__u64			rx_bytes;
 	__u64			rx_errors;
+=======
+	u32			conn_id;
+	u32			peer_conn_id;
+>>>>>>> refs/remotes/origin/master
 };
 
 static DEFINE_RWLOCK(l2tp_ip_lock);
@@ -54,10 +64,16 @@ static inline struct l2tp_ip_sock *l2tp_ip_sk(const struct sock *sk)
 
 static struct sock *__l2tp_ip_bind_lookup(struct net *net, __be32 laddr, int dif, u32 tunnel_id)
 {
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct sock *sk;
 
 	sk_for_each_bound(sk, node, &l2tp_ip_bind_table) {
+=======
+	struct sock *sk;
+
+	sk_for_each_bound(sk, &l2tp_ip_bind_table) {
+>>>>>>> refs/remotes/origin/master
 		struct inet_sock *inet = inet_sk(sk);
 		struct l2tp_ip_sock *l2tp = l2tp_ip_sk(sk);
 
@@ -120,6 +136,10 @@ static inline struct sock *l2tp_ip_bind_lookup(struct net *net, __be32 laddr, in
  */
 static int l2tp_ip_recv(struct sk_buff *skb)
 {
+<<<<<<< HEAD
+=======
+	struct net *net = dev_net(skb->dev);
+>>>>>>> refs/remotes/origin/master
 	struct sock *sk;
 	u32 session_id;
 	u32 tunnel_id;
@@ -127,7 +147,10 @@ static int l2tp_ip_recv(struct sk_buff *skb)
 	struct l2tp_session *session;
 	struct l2tp_tunnel *tunnel = NULL;
 	int length;
+<<<<<<< HEAD
 	int offset;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Point to L2TP header */
 	optr = ptr = skb->data;
@@ -148,7 +171,11 @@ static int l2tp_ip_recv(struct sk_buff *skb)
 	}
 
 	/* Ok, this is a data packet. Lookup the session. */
+<<<<<<< HEAD
 	session = l2tp_session_find(&init_net, NULL, session_id);
+=======
+	session = l2tp_session_find(net, NULL, session_id);
+>>>>>>> refs/remotes/origin/master
 	if (session == NULL)
 		goto discard;
 
@@ -162,6 +189,7 @@ static int l2tp_ip_recv(struct sk_buff *skb)
 		if (!pskb_may_pull(skb, length))
 			goto discard;
 
+<<<<<<< HEAD
 		printk(KERN_DEBUG "%s: ip recv: ", tunnel->name);
 
 		offset = 0;
@@ -170,6 +198,10 @@ static int l2tp_ip_recv(struct sk_buff *skb)
 		} while (++offset < length);
 
 		printk("\n");
+=======
+		pr_debug("%s: ip recv\n", tunnel->name);
+		print_hex_dump_bytes("", DUMP_PREFIX_OFFSET, ptr, length);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	l2tp_recv_common(session, skb, ptr, optr, 0, skb->len, tunnel->recv_payload_hook);
@@ -185,14 +217,22 @@ pass_up:
 		goto discard;
 
 	tunnel_id = ntohl(*(__be32 *) &skb->data[4]);
+<<<<<<< HEAD
 	tunnel = l2tp_tunnel_find(&init_net, tunnel_id);
+=======
+	tunnel = l2tp_tunnel_find(net, tunnel_id);
+>>>>>>> refs/remotes/origin/master
 	if (tunnel != NULL)
 		sk = tunnel->sock;
 	else {
 		struct iphdr *iph = (struct iphdr *) skb_network_header(skb);
 
 		read_lock_bh(&l2tp_ip_lock);
+<<<<<<< HEAD
 		sk = __l2tp_ip_bind_lookup(&init_net, iph->daddr, 0, tunnel_id);
+=======
+		sk = __l2tp_ip_bind_lookup(net, iph->daddr, 0, tunnel_id);
+>>>>>>> refs/remotes/origin/master
 		read_unlock_bh(&l2tp_ip_lock);
 	}
 
@@ -232,7 +272,15 @@ static void l2tp_ip_close(struct sock *sk, long timeout)
 {
 	write_lock_bh(&l2tp_ip_lock);
 	hlist_del_init(&sk->sk_bind_node);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hlist_del_init(&sk->sk_node);
+=======
+	sk_del_node_init(sk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sk_del_node_init(sk);
+>>>>>>> refs/remotes/origin/master
 	write_unlock_bh(&l2tp_ip_lock);
 	sk_common_release(sk);
 }
@@ -240,10 +288,22 @@ static void l2tp_ip_close(struct sock *sk, long timeout)
 static void l2tp_ip_destroy_sock(struct sock *sk)
 {
 	struct sk_buff *skb;
+<<<<<<< HEAD
+=======
+	struct l2tp_tunnel *tunnel = l2tp_sock_to_tunnel(sk);
+>>>>>>> refs/remotes/origin/master
 
 	while ((skb = __skb_dequeue_tail(&sk->sk_write_queue)) != NULL)
 		kfree_skb(skb);
 
+<<<<<<< HEAD
+=======
+	if (tunnel) {
+		l2tp_tunnel_closeall(tunnel);
+		sock_put(sk);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	sk_refcnt_debug_dec(sk);
 }
 
@@ -251,6 +311,13 @@ static int l2tp_ip_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 {
 	struct inet_sock *inet = inet_sk(sk);
 	struct sockaddr_l2tpip *addr = (struct sockaddr_l2tpip *) uaddr;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct net *net = sock_net(sk);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret;
 	int chk_addr_ret;
 
@@ -263,7 +330,12 @@ static int l2tp_ip_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 
 	ret = -EADDRINUSE;
 	read_lock_bh(&l2tp_ip_lock);
+<<<<<<< HEAD
 	if (__l2tp_ip_bind_lookup(&init_net, addr->l2tp_addr.s_addr, sk->sk_bound_dev_if, addr->l2tp_conn_id))
+=======
+	if (__l2tp_ip_bind_lookup(net, addr->l2tp_addr.s_addr,
+				  sk->sk_bound_dev_if, addr->l2tp_conn_id))
+>>>>>>> refs/remotes/origin/master
 		goto out_in_use;
 
 	read_unlock_bh(&l2tp_ip_lock);
@@ -272,13 +344,27 @@ static int l2tp_ip_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 	if (sk->sk_state != TCP_CLOSE || addr_len < sizeof(struct sockaddr_l2tpip))
 		goto out;
 
+<<<<<<< HEAD
 	chk_addr_ret = inet_addr_type(&init_net, addr->l2tp_addr.s_addr);
+=======
+	chk_addr_ret = inet_addr_type(net, addr->l2tp_addr.s_addr);
+>>>>>>> refs/remotes/origin/master
 	ret = -EADDRNOTAVAIL;
 	if (addr->l2tp_addr.s_addr && chk_addr_ret != RTN_LOCAL &&
 	    chk_addr_ret != RTN_MULTICAST && chk_addr_ret != RTN_BROADCAST)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inet->inet_rcv_saddr = inet->inet_saddr = addr->l2tp_addr.s_addr;
+=======
+	if (addr->l2tp_addr.s_addr)
+		inet->inet_rcv_saddr = inet->inet_saddr = addr->l2tp_addr.s_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (addr->l2tp_addr.s_addr)
+		inet->inet_rcv_saddr = inet->inet_saddr = addr->l2tp_addr.s_addr;
+>>>>>>> refs/remotes/origin/master
 	if (chk_addr_ret == RTN_MULTICAST || chk_addr_ret == RTN_BROADCAST)
 		inet->inet_saddr = 0;  /* Use device */
 	sk_dst_reset(sk);
@@ -306,18 +392,32 @@ out_in_use:
 static int l2tp_ip_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 {
 	struct sockaddr_l2tpip *lsa = (struct sockaddr_l2tpip *) uaddr;
+<<<<<<< HEAD
 	struct inet_sock *inet = inet_sk(sk);
 	struct flowi4 *fl4;
 	struct rtable *rt;
 	__be32 saddr;
 	int oif, rc;
+=======
+	int rc;
+>>>>>>> refs/remotes/origin/master
 
+	if (sock_flag(sk, SOCK_ZAPPED)) /* Must bind first - autobinding does not work */
+		return -EINVAL;
+
+<<<<<<< HEAD
+	if (addr_len < sizeof(*lsa))
+		return -EINVAL;
+
+<<<<<<< HEAD
+=======
 	if (sock_flag(sk, SOCK_ZAPPED)) /* Must bind first - autobinding does not work */
 		return -EINVAL;
 
 	if (addr_len < sizeof(*lsa))
 		return -EINVAL;
 
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (lsa->l2tp_family != AF_INET)
 		return -EAFNOSUPPORT;
 
@@ -362,13 +462,29 @@ static int l2tp_ip_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len
 
 	sk_dst_set(sk, &rt->dst);
 
+=======
+	if (ipv4_is_multicast(lsa->l2tp_addr.s_addr))
+		return -EINVAL;
+
+	rc = ip4_datagram_connect(sk, uaddr, addr_len);
+	if (rc < 0)
+		return rc;
+
+	lock_sock(sk);
+
+	l2tp_ip_sk(sk)->peer_conn_id = lsa->l2tp_conn_id;
+
+>>>>>>> refs/remotes/origin/master
 	write_lock_bh(&l2tp_ip_lock);
 	hlist_del_init(&sk->sk_bind_node);
 	sk_add_bind_node(sk, &l2tp_ip_bind_table);
 	write_unlock_bh(&l2tp_ip_lock);
 
+<<<<<<< HEAD
 	rc = 0;
 out:
+=======
+>>>>>>> refs/remotes/origin/master
 	release_sock(sk);
 	return rc;
 }
@@ -419,7 +535,11 @@ static int l2tp_ip_backlog_recv(struct sock *sk, struct sk_buff *skb)
 	return 0;
 
 drop:
+<<<<<<< HEAD
 	IP_INC_STATS(&init_net, IPSTATS_MIB_INDISCARDS);
+=======
+	IP_INC_STATS(sock_net(sk), IPSTATS_MIB_INDISCARDS);
+>>>>>>> refs/remotes/origin/master
 	kfree_skb(skb);
 	return -1;
 }
@@ -431,7 +551,10 @@ static int l2tp_ip_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 {
 	struct sk_buff *skb;
 	int rc;
+<<<<<<< HEAD
 	struct l2tp_ip_sock *lsa = l2tp_ip_sk(sk);
+=======
+>>>>>>> refs/remotes/origin/master
 	struct inet_sock *inet = inet_sk(sk);
 	struct rtable *rt = NULL;
 	struct flowi4 *fl4;
@@ -494,18 +617,37 @@ static int l2tp_ip_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 	if (connected)
 		rt = (struct rtable *) __sk_dst_check(sk, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rt == NULL) {
 		struct ip_options_rcu *inet_opt;
 
 		rcu_read_lock();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rcu_read_lock();
+	if (rt == NULL) {
+		const struct ip_options_rcu *inet_opt;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		inet_opt = rcu_dereference(inet->inet_opt);
 
 		/* Use correct destination address if we have options. */
 		if (inet_opt && inet_opt->opt.srr)
 			daddr = inet_opt->opt.faddr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rcu_read_unlock();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* If this fails, retransmit mechanism of transport layer will
 		 * keep trying until route appears or the connection times
 		 * itself out.
@@ -517,12 +659,39 @@ static int l2tp_ip_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 					   sk->sk_bound_dev_if);
 		if (IS_ERR(rt))
 			goto no_route;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sk_setup_caps(sk, &rt->dst);
 	}
 	skb_dst_set(skb, dst_clone(&rt->dst));
 
 	/* Queue the packet to IP for output */
 	rc = ip_queue_xmit(skb, &inet->cork.fl);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (connected) {
+			sk_setup_caps(sk, &rt->dst);
+		} else {
+			skb_dst_set(skb, &rt->dst);
+			goto xmit;
+		}
+	}
+
+	/* We dont need to clone dst here, it is guaranteed to not disappear.
+	 *  __dev_xmit_skb() might force a refcount if needed.
+	 */
+	skb_dst_set_noref(skb, &rt->dst);
+
+xmit:
+	/* Queue the packet to IP for output */
+	rc = ip_queue_xmit(skb, &inet->cork.fl);
+	rcu_read_unlock();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 error:
 	/* Update stats */
@@ -533,12 +702,26 @@ error:
 	} else {
 		lsa->tx_errors++;
 	}
+=======
+
+error:
+	if (rc >= 0)
+		rc = len;
+>>>>>>> refs/remotes/origin/master
 
 out:
 	release_sock(sk);
 	return rc;
 
 no_route:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	IP_INC_STATS(sock_net(sk), IPSTATS_MIB_OUTNOROUTES);
 	kfree_skb(skb);
 	rc = -EHOSTUNREACH;
@@ -549,7 +732,10 @@ static int l2tp_ip_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 			   size_t len, int noblock, int flags, int *addr_len)
 {
 	struct inet_sock *inet = inet_sk(sk);
+<<<<<<< HEAD
 	struct l2tp_ip_sock *lsk = l2tp_ip_sk(sk);
+=======
+>>>>>>> refs/remotes/origin/master
 	size_t copied = 0;
 	int err = -EOPNOTSUPP;
 	struct sockaddr_in *sin = (struct sockaddr_in *)msg->msg_name;
@@ -558,9 +744,15 @@ static int l2tp_ip_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 	if (flags & MSG_OOB)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (addr_len)
 		*addr_len = sizeof(*sin);
 
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb = skb_recv_datagram(sk, flags, noblock, &err);
 	if (!skb)
 		goto out;
@@ -583,6 +775,14 @@ static int l2tp_ip_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 		sin->sin_addr.s_addr = ip_hdr(skb)->saddr;
 		sin->sin_port = 0;
 		memset(&sin->sin_zero, 0, sizeof(sin->sin_zero));
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		*addr_len = sizeof(*sin);
+>>>>>>> refs/remotes/origin/master
+=======
+		*addr_len = sizeof(*sin);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (inet->cmsg_flags)
 		ip_cmsg_recv(msg, skb);
@@ -591,6 +791,7 @@ static int l2tp_ip_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 done:
 	skb_free_datagram(sk, skb);
 out:
+<<<<<<< HEAD
 	if (err) {
 		lsk->rx_errors++;
 		return err;
@@ -600,6 +801,9 @@ out:
 	lsk->rx_bytes += copied;
 
 	return copied;
+=======
+	return err ? err : copied;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct proto l2tp_ip_prot = {
@@ -661,13 +865,21 @@ static struct inet_protosw l2tp_ip_protosw = {
 
 static struct net_protocol l2tp_ip_protocol __read_mostly = {
 	.handler	= l2tp_ip_recv,
+<<<<<<< HEAD
+=======
+	.netns_ok	= 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init l2tp_ip_init(void)
 {
 	int err;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "L2TP IP encapsulation support (L2TPv3)\n");
+=======
+	pr_info("L2TP IP encapsulation support (L2TPv3)\n");
+>>>>>>> refs/remotes/origin/master
 
 	err = proto_register(&l2tp_ip_prot, 1);
 	if (err != 0)

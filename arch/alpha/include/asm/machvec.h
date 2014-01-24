@@ -33,6 +33,10 @@ struct alpha_machine_vector
 
 	int nr_irqs;
 	int rtc_port;
+<<<<<<< HEAD
+=======
+	int rtc_boot_cpu_only;
+>>>>>>> refs/remotes/origin/master
 	unsigned int max_asn;
 	unsigned long max_isa_dma_address;
 	unsigned long irq_probe_mask;
@@ -90,14 +94,25 @@ struct alpha_machine_vector
 	void (*kill_arch)(int);
 
 	u8 (*pci_swizzle)(struct pci_dev *, u8 *);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int (*pci_map_irq)(struct pci_dev *, u8, u8);
+=======
+	int (*pci_map_irq)(const struct pci_dev *, u8, u8);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*pci_map_irq)(const struct pci_dev *, u8, u8);
+>>>>>>> refs/remotes/origin/master
 	struct pci_ops *pci_ops;
 
 	struct _alpha_agp_info *(*agp_info)(void);
 
+<<<<<<< HEAD
 	unsigned int (*rtc_get_time)(struct rtc_time *);
 	int (*rtc_set_time)(struct rtc_time *);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *vector_name;
 
 	/* NUMA information */
@@ -126,6 +141,7 @@ extern struct alpha_machine_vector alpha_mv;
 
 #ifdef CONFIG_ALPHA_GENERIC
 extern int alpha_using_srm;
+<<<<<<< HEAD
 #else
 #ifdef CONFIG_ALPHA_SRM
 #define alpha_using_srm 1
@@ -135,4 +151,21 @@ extern int alpha_using_srm;
 #endif /* GENERIC */
 
 #endif
+=======
+extern int alpha_using_qemu;
+#else
+# ifdef CONFIG_ALPHA_SRM
+#  define alpha_using_srm 1
+# else
+#  define alpha_using_srm 0
+# endif
+# ifdef CONFIG_ALPHA_QEMU
+#  define alpha_using_qemu 1
+# else
+#  define alpha_using_qemu 0
+# endif
+#endif /* GENERIC */
+
+#endif /* __KERNEL__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* __ALPHA_MACHVEC_H */

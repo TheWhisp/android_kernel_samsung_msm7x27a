@@ -11,7 +11,13 @@
 #include <linux/kernel.h>
 #include <linux/mm.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu_context.h>
 #include <asm/cacheflush.h>
 

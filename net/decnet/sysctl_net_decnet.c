@@ -55,7 +55,13 @@ static int max_decnet_no_fc_max_cwnd[] = { NSP_MAX_WINDOW };
 static char node_name[7] = "???";
 
 static struct ctl_table_header *dn_table_header = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct ctl_table_header *dn_skeleton_table_header = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ctype.h :-)
@@ -69,6 +75,8 @@ static struct ctl_table_header *dn_skeleton_table_header = NULL;
 static void strip_it(char *str)
 {
 	for(;;) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		switch(*str) {
 			case ' ':
 			case '\n':
@@ -77,6 +85,22 @@ static void strip_it(char *str)
 				*str = 0;
 			case 0:
 				return;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		switch (*str) {
+		case ' ':
+		case '\n':
+		case '\r':
+		case ':':
+			*str = 0;
+			/* Fallthrough */
+		case 0:
+			return;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		str++;
 	}
@@ -132,7 +156,11 @@ static int parse_addr(__le16 *addr, char *str)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int dn_node_address_handler(ctl_table *table, int write,
+=======
+static int dn_node_address_handler(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 				void __user *buffer,
 				size_t *lenp, loff_t *ppos)
 {
@@ -183,7 +211,11 @@ static int dn_node_address_handler(ctl_table *table, int write,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int dn_def_dev_handler(ctl_table *table, int write,
+=======
+static int dn_def_dev_handler(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 				void __user *buffer,
 				size_t *lenp, loff_t *ppos)
 {
@@ -246,7 +278,11 @@ static int dn_def_dev_handler(ctl_table *table, int write,
 	return 0;
 }
 
+<<<<<<< HEAD
 static ctl_table dn_table[] = {
+=======
+static struct ctl_table dn_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname = "node_address",
 		.maxlen = 7,
@@ -351,12 +387,14 @@ static ctl_table dn_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static struct ctl_path dn_path[] = {
 	{ .procname = "net", },
 	{ .procname = "decnet", },
 	{ }
 };
 
+<<<<<<< HEAD
 static struct ctl_table empty[1];
 
 static struct ctl_table dn_skeleton[] = {
@@ -378,23 +416,40 @@ void dn_unregister_sysctl_skeleton(void)
 	unregister_sysctl_table(dn_skeleton_table_header);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void dn_register_sysctl(void)
 {
 	dn_table_header = register_sysctl_paths(dn_path, dn_table);
+=======
+void dn_register_sysctl(void)
+{
+	dn_table_header = register_net_sysctl(&init_net, "net/decnet", dn_table);
+>>>>>>> refs/remotes/origin/master
 }
 
 void dn_unregister_sysctl(void)
 {
+<<<<<<< HEAD
 	unregister_sysctl_table(dn_table_header);
 }
 
 #else  /* CONFIG_SYSCTL */
+<<<<<<< HEAD
 void dn_register_sysctl_skeleton(void)
 {
 }
 void dn_unregister_sysctl_skeleton(void)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unregister_net_sysctl_table(dn_table_header);
+}
+
+#else  /* CONFIG_SYSCTL */
+>>>>>>> refs/remotes/origin/master
 void dn_unregister_sysctl(void)
 {
 }

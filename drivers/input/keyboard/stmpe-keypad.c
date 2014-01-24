@@ -166,7 +166,11 @@ static irqreturn_t stmpe_keypad_irq(int irq, void *dev)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit stmpe_keypad_altfunc_init(struct stmpe_keypad *keypad)
+=======
+static int stmpe_keypad_altfunc_init(struct stmpe_keypad *keypad)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct stmpe_keypad_variant *variant = keypad->variant;
 	unsigned int col_gpios = variant->col_gpios;
@@ -207,7 +211,11 @@ static int __devinit stmpe_keypad_altfunc_init(struct stmpe_keypad *keypad)
 	return stmpe_set_altfunc(stmpe, pins, STMPE_BLOCK_KEYPAD);
 }
 
+<<<<<<< HEAD
 static int __devinit stmpe_keypad_chip_init(struct stmpe_keypad *keypad)
+=======
+static int stmpe_keypad_chip_init(struct stmpe_keypad *keypad)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct stmpe_keypad_platform_data *plat = keypad->plat;
 	const struct stmpe_keypad_variant *variant = keypad->variant;
@@ -257,6 +265,7 @@ static int __devinit stmpe_keypad_chip_init(struct stmpe_keypad *keypad)
 			      (plat->debounce_ms << 1));
 }
 
+<<<<<<< HEAD
 static int __devinit stmpe_keypad_probe(struct platform_device *pdev)
 {
 	struct stmpe *stmpe = dev_get_drvdata(pdev->dev.parent);
@@ -270,11 +279,74 @@ static int __devinit stmpe_keypad_probe(struct platform_device *pdev)
 	plat = stmpe->pdata->keypad;
 	if (!plat)
 		return -ENODEV;
+=======
+static void stmpe_keypad_fill_used_pins(struct stmpe_keypad *keypad)
+{
+	int row, col;
+
+	for (row = 0; row < STMPE_KEYPAD_MAX_ROWS; row++) {
+		for (col = 0; col < STMPE_KEYPAD_MAX_COLS; col++) {
+			int code = MATRIX_SCAN_CODE(row, col,
+						STMPE_KEYPAD_ROW_SHIFT);
+			if (keypad->keymap[code] != KEY_RESERVED) {
+				keypad->rows |= 1 << row;
+				keypad->cols |= 1 << col;
+			}
+		}
+	}
+}
+
+#ifdef CONFIG_OF
+static const struct stmpe_keypad_platform_data *
+stmpe_keypad_of_probe(struct device *dev)
+{
+	struct device_node *np = dev->of_node;
+	struct stmpe_keypad_platform_data *plat;
+
+	if (!np)
+		return ERR_PTR(-ENODEV);
+
+	plat = devm_kzalloc(dev, sizeof(*plat), GFP_KERNEL);
+	if (!plat)
+		return ERR_PTR(-ENOMEM);
+
+	of_property_read_u32(np, "debounce-interval", &plat->debounce_ms);
+	of_property_read_u32(np, "st,scan-count", &plat->scan_count);
+
+	plat->no_autorepeat = of_property_read_bool(np, "st,no-autorepeat");
+
+	return plat;
+}
+#else
+static inline const struct stmpe_keypad_platform_data *
+stmpe_keypad_of_probe(struct device *dev)
+{
+	return ERR_PTR(-EINVAL);
+}
+#endif
+
+static int stmpe_keypad_probe(struct platform_device *pdev)
+{
+	struct stmpe *stmpe = dev_get_drvdata(pdev->dev.parent);
+	const struct stmpe_keypad_platform_data *plat;
+	struct stmpe_keypad *keypad;
+	struct input_dev *input;
+	int error;
+	int irq;
+
+	plat = stmpe->pdata->keypad;
+	if (!plat) {
+		plat = stmpe_keypad_of_probe(&pdev->dev);
+		if (IS_ERR(plat))
+			return PTR_ERR(plat);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	irq = platform_get_irq(pdev, 0);
 	if (irq < 0)
 		return irq;
 
+<<<<<<< HEAD
 	keypad = kzalloc(sizeof(struct stmpe_keypad), GFP_KERNEL);
 	if (!keypad)
 		return -ENOMEM;
@@ -284,11 +356,22 @@ static int __devinit stmpe_keypad_probe(struct platform_device *pdev)
 		ret = -ENOMEM;
 		goto out_freekeypad;
 	}
+=======
+	keypad = devm_kzalloc(&pdev->dev, sizeof(struct stmpe_keypad),
+			      GFP_KERNEL);
+	if (!keypad)
+		return -ENOMEM;
+
+	input = devm_input_allocate_device(&pdev->dev);
+	if (!input)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	input->name = "STMPE keypad";
 	input->id.bustype = BUS_I2C;
 	input->dev.parent = &pdev->dev;
 
+<<<<<<< HEAD
 	input_set_capability(input, EV_MSC, MSC_SCAN);
 
 	__set_bit(EV_KEY, input->evbit);
@@ -308,12 +391,27 @@ static int __devinit stmpe_keypad_probe(struct platform_device *pdev)
 		keypad->cols |= 1 << KEY_COL(key);
 		keypad->rows |= 1 << KEY_ROW(key);
 	}
+=======
+	error = matrix_keypad_build_keymap(plat->keymap_data, NULL,
+					   STMPE_KEYPAD_MAX_ROWS,
+					   STMPE_KEYPAD_MAX_COLS,
+					   keypad->keymap, input);
+	if (error)
+		return error;
+
+	input_set_capability(input, EV_MSC, MSC_SCAN);
+	if (!plat->no_autorepeat)
+		__set_bit(EV_REP, input->evbit);
+
+	stmpe_keypad_fill_used_pins(keypad);
+>>>>>>> refs/remotes/origin/master
 
 	keypad->stmpe = stmpe;
 	keypad->plat = plat;
 	keypad->input = input;
 	keypad->variant = &stmpe_keypad_variants[stmpe->partnum];
 
+<<<<<<< HEAD
 	ret = stmpe_keypad_chip_init(keypad);
 	if (ret < 0)
 		goto out_freeinput;
@@ -330,11 +428,31 @@ static int __devinit stmpe_keypad_probe(struct platform_device *pdev)
 	if (ret) {
 		dev_err(&pdev->dev, "unable to get irq: %d\n", ret);
 		goto out_unregisterinput;
+=======
+	error = stmpe_keypad_chip_init(keypad);
+	if (error < 0)
+		return error;
+
+	error = devm_request_threaded_irq(&pdev->dev, irq,
+					  NULL, stmpe_keypad_irq,
+					  IRQF_ONESHOT, "stmpe-keypad", keypad);
+	if (error) {
+		dev_err(&pdev->dev, "unable to get irq: %d\n", error);
+		return error;
+	}
+
+	error = input_register_device(input);
+	if (error) {
+		dev_err(&pdev->dev,
+			"unable to register input device: %d\n", error);
+		return error;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, keypad);
 
 	return 0;
+<<<<<<< HEAD
 
 out_unregisterinput:
 	input_unregister_device(input);
@@ -358,6 +476,15 @@ static int __devexit stmpe_keypad_remove(struct platform_device *pdev)
 	input_unregister_device(keypad->input);
 	platform_set_drvdata(pdev, NULL);
 	kfree(keypad);
+=======
+}
+
+static int stmpe_keypad_remove(struct platform_device *pdev)
+{
+	struct stmpe_keypad *keypad = platform_get_drvdata(pdev);
+
+	stmpe_disable(keypad->stmpe, STMPE_BLOCK_KEYPAD);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -366,8 +493,10 @@ static struct platform_driver stmpe_keypad_driver = {
 	.driver.name	= "stmpe-keypad",
 	.driver.owner	= THIS_MODULE,
 	.probe		= stmpe_keypad_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(stmpe_keypad_remove),
 };
+<<<<<<< HEAD
 
 static int __init stmpe_keypad_init(void)
 {
@@ -380,6 +509,14 @@ static void __exit stmpe_keypad_exit(void)
 	platform_driver_unregister(&stmpe_keypad_driver);
 }
 module_exit(stmpe_keypad_exit);
+=======
+module_platform_driver(stmpe_keypad_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= stmpe_keypad_remove,
+};
+module_platform_driver(stmpe_keypad_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("STMPExxxx keypad driver");

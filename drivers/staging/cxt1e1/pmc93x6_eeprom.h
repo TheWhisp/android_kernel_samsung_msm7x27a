@@ -1,7 +1,13 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * $Id: pmc93x6_eeprom.h,v 1.1 2005/09/28 00:10:08 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _INC_PMC93X6_EEPROM_H_
 #define _INC_PMC93X6_EEPROM_H_
 
@@ -23,6 +29,8 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
  * RCS info:
  *-----------------------------------------------------------------------------
  * $Log: pmc93x6_eeprom.h,v $
@@ -43,6 +51,16 @@
 #else
 #include <linux/types.h>
 #endif
+=======
+ */
+
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __KERNEL__
 

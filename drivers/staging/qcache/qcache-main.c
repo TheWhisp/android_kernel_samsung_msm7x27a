@@ -160,6 +160,8 @@ static void *qcache_alloc(void)
 
 	spin_lock_irqsave(&qc->lock, flags);
 	offset = bitmap_find_free_region(qc->bitmap, qc->pages, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&qc->lock, flags);
 
 	if (offset < 0)
@@ -169,6 +171,25 @@ static void *qcache_alloc(void)
 	zcache_qc_allocated++;
 	zcache_qc_used++;
 	zcache_qc_max_used = max(zcache_qc_max_used, zcache_qc_used);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (offset < 0) {
+		spin_unlock_irqrestore(&qc->lock, flags);
+		return NULL;
+	}
+
+	zcache_qc_allocated++;
+	zcache_qc_used++;
+	zcache_qc_max_used = max(zcache_qc_max_used, zcache_qc_used);
+	spin_unlock_irqrestore(&qc->lock, flags);
+
+	addr = qc->addr + offset * PAGE_SIZE;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return addr;
 }
@@ -183,10 +204,23 @@ static void qcache_free(void *addr)
 
 	spin_lock_irqsave(&qc->lock, flags);
 	bitmap_release_region(qc->bitmap, offset, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&qc->lock, flags);
 
 	zcache_qc_freed++;
 	zcache_qc_used--;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	zcache_qc_freed++;
+	zcache_qc_used--;
+	spin_unlock_irqrestore(&qc->lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -423,13 +457,29 @@ static int zbud_decompress(struct page *page, struct zbud_hdr *zh)
 	}
 	ASSERT_SENTINEL(zh, ZBH);
 	BUG_ON(zh->size == 0 || zh->size > zbud_max_buddy_size());
+<<<<<<< HEAD
+<<<<<<< HEAD
 	to_va = kmap_atomic(page, KM_USER0);
+=======
+	to_va = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	to_va = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-11.0
 	size = zh->size;
 	from_va = zbud_data(zh, size);
 	ret = lzo1x_decompress_safe(from_va, size, to_va, &out_len);
 	BUG_ON(ret != LZO_E_OK);
 	BUG_ON(out_len != PAGE_SIZE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(to_va, KM_USER0);
+=======
+	kunmap_atomic(to_va);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(to_va);
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	spin_unlock(&zbpg->lock);
 	return ret;
@@ -744,6 +794,16 @@ static void zcache_flush_all_obj(void)
 	for (pool_id = 0; pool_id < MAX_POOLS_PER_CLIENT; pool_id++) {
 		pool = zcache_get_pool_by_id(LOCAL_CLIENT, pool_id);
 		tmem_flush_pool(pool);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (pool)
+			zcache_put_pool(pool);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pool)
+			zcache_put_pool(pool);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (kp->page) {
 		qcache_free(kp->page);
@@ -905,12 +965,28 @@ static int zcache_compress(struct page *from, void **out_va, size_t *out_len)
 	BUG_ON(!irqs_disabled());
 	if (unlikely(dmem == NULL || wmem == NULL))
 		goto out;  /* no buffer, so can't compress */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	from_va = kmap_atomic(from, KM_USER0);
+=======
+	from_va = kmap_atomic(from);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	from_va = kmap_atomic(from);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mb();
 	ret = lzo1x_1_compress(from_va, PAGE_SIZE, dmem, out_len, wmem);
 	BUG_ON(ret != LZO_E_OK);
 	*out_va = dmem;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(from_va, KM_USER0);
+=======
+	kunmap_atomic(from_va);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(from_va);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = 1;
 out:
 	return ret;
@@ -1268,9 +1344,21 @@ static int zcache_cleancache_init_shared_fs(char *uuid, size_t pagesize)
 static struct cleancache_ops zcache_cleancache_ops = {
 	.put_page = zcache_cleancache_put_page,
 	.get_page = zcache_cleancache_get_page,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flush_page = zcache_cleancache_flush_page,
 	.flush_inode = zcache_cleancache_flush_inode,
 	.flush_fs = zcache_cleancache_flush_fs,
+=======
+	.invalidate_page = zcache_cleancache_flush_page,
+	.invalidate_inode = zcache_cleancache_flush_inode,
+	.invalidate_fs = zcache_cleancache_flush_fs,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.invalidate_page = zcache_cleancache_flush_page,
+	.invalidate_inode = zcache_cleancache_flush_inode,
+	.invalidate_fs = zcache_cleancache_flush_fs,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.init_shared_fs = zcache_cleancache_init_shared_fs,
 	.init_fs = zcache_cleancache_init_fs
 };

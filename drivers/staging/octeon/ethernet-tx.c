@@ -27,17 +27,39 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/etherdevice.h>
 #include <linux/ip.h>
+<<<<<<< HEAD
 #include <linux/string.h>
+=======
+#include <linux/ratelimit.h>
+#include <linux/string.h>
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/etherdevice.h>
+#include <linux/ip.h>
+#include <linux/ratelimit.h>
+#include <linux/string.h>
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/dst.h>
 #ifdef CONFIG_XFRM
 #include <linux/xfrm.h>
 #include <net/xfrm.h>
 #endif /* CONFIG_XFRM */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/octeon/octeon.h>
 
@@ -46,6 +68,8 @@
 #include "ethernet-tx.h"
 #include "ethernet-util.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "cvmx-wqe.h"
 #include "cvmx-fau.h"
 #include "cvmx-pip.h"
@@ -53,6 +77,20 @@
 #include "cvmx-helper.h"
 
 #include "cvmx-gmxx-defs.h"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/octeon/cvmx-wqe.h>
+#include <asm/octeon/cvmx-fau.h>
+#include <asm/octeon/cvmx-pip.h>
+#include <asm/octeon/cvmx-pko.h>
+#include <asm/octeon/cvmx-helper.h>
+
+#include <asm/octeon/cvmx-gmxx-defs.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define CVM_OCT_SKB_CB(skb)	((u64 *)((skb)->cb))
 
@@ -60,7 +98,11 @@
  * You can define GET_SKBUFF_QOS() to override how the skbuff output
  * function determines which output queue is used. The default
  * implementation always uses the base queue for the port. If, for
+<<<<<<< HEAD
  * example, you wanted to use the skb->priority fieid, define
+=======
+ * example, you wanted to use the skb->priority field, define
+>>>>>>> refs/remotes/origin/master
  * GET_SKBUFF_QOS as: #define GET_SKBUFF_QOS(skb) ((skb)->priority)
  */
 #ifndef GET_SKBUFF_QOS
@@ -76,10 +118,19 @@ static DECLARE_TASKLET(cvm_oct_tx_cleanup_tasklet, cvm_oct_tx_do_cleanup, 0);
 static inline int32_t cvm_oct_adjust_skb_to_free(int32_t skb_to_free, int fau)
 {
 	int32_t undo;
+<<<<<<< HEAD
 	undo = skb_to_free > 0 ? MAX_SKB_TO_FREE : skb_to_free + MAX_SKB_TO_FREE;
 	if (undo > 0)
 		cvmx_fau_atomic_add32(fau, -undo);
 	skb_to_free = -skb_to_free > MAX_SKB_TO_FREE ? MAX_SKB_TO_FREE : -skb_to_free;
+=======
+	undo = skb_to_free > 0 ? MAX_SKB_TO_FREE : skb_to_free +
+						   MAX_SKB_TO_FREE;
+	if (undo > 0)
+		cvmx_fau_atomic_add32(fau, -undo);
+	skb_to_free = -skb_to_free > MAX_SKB_TO_FREE ? MAX_SKB_TO_FREE :
+						       -skb_to_free;
+>>>>>>> refs/remotes/origin/master
 	return skb_to_free;
 }
 
@@ -106,8 +157,15 @@ void cvm_oct_free_tx_skbs(struct net_device *dev)
 	for (qos = 0; qos < queues_per_port; qos++) {
 		if (skb_queue_len(&priv->tx_free_list[qos]) == 0)
 			continue;
+<<<<<<< HEAD
 		skb_to_free = cvmx_fau_fetch_and_add32(priv->fau+qos*4, MAX_SKB_TO_FREE);
 		skb_to_free = cvm_oct_adjust_skb_to_free(skb_to_free, priv->fau+qos*4);
+=======
+		skb_to_free = cvmx_fau_fetch_and_add32(priv->fau+qos*4,
+						       MAX_SKB_TO_FREE);
+		skb_to_free = cvm_oct_adjust_skb_to_free(skb_to_free,
+							 priv->fau+qos*4);
+>>>>>>> refs/remotes/origin/master
 
 
 		total_freed += skb_to_free;
@@ -115,12 +173,22 @@ void cvm_oct_free_tx_skbs(struct net_device *dev)
 			struct sk_buff *to_free_list = NULL;
 			spin_lock_irqsave(&priv->tx_free_list[qos].lock, flags);
 			while (skb_to_free > 0) {
+<<<<<<< HEAD
 				struct sk_buff *t = __skb_dequeue(&priv->tx_free_list[qos]);
+=======
+				struct sk_buff *t;
+				t = __skb_dequeue(&priv->tx_free_list[qos]);
+>>>>>>> refs/remotes/origin/master
 				t->next = to_free_list;
 				to_free_list = t;
 				skb_to_free--;
 			}
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&priv->tx_free_list[qos].lock, flags);
+=======
+			spin_unlock_irqrestore(&priv->tx_free_list[qos].lock,
+					       flags);
+>>>>>>> refs/remotes/origin/master
 			/* Do the actual freeing outside of the lock. */
 			while (to_free_list) {
 				struct sk_buff *t = to_free_list;
@@ -163,8 +231,13 @@ int cvm_oct_xmit(struct sk_buff *skb, struct net_device *dev)
 #endif
 
 	/*
+<<<<<<< HEAD
 	 * Prefetch the private data structure.  It is larger that one
 	 * cache line.
+=======
+	 * Prefetch the private data structure.  It is larger than the
+	 * one cache line.
+>>>>>>> refs/remotes/origin/master
 	 */
 	prefetch(priv);
 
@@ -209,6 +282,7 @@ int cvm_oct_xmit(struct sk_buff *skb, struct net_device *dev)
 		if (unlikely(__skb_linearize(skb))) {
 			queue_type = QUEUE_DROP;
 			if (USE_ASYNC_IOBDMA) {
+<<<<<<< HEAD
 				/* Get the number of skbuffs in use by the hardware */
 				CVMX_SYNCIOBDMA;
 				skb_to_free = cvmx_scratch_read64(CVMX_SCR_SCRATCH);
@@ -218,6 +292,25 @@ int cvm_oct_xmit(struct sk_buff *skb, struct net_device *dev)
 								       MAX_SKB_TO_FREE);
 			}
 			skb_to_free = cvm_oct_adjust_skb_to_free(skb_to_free, priv->fau + qos * 4);
+=======
+				/*
+				 * Get the number of skbuffs in use
+				 * by the hardware
+				 */
+				CVMX_SYNCIOBDMA;
+				skb_to_free =
+					cvmx_scratch_read64(CVMX_SCR_SCRATCH);
+			} else {
+				/*
+				 * Get the number of skbuffs in use
+				 * by the hardware
+				 */
+				skb_to_free = cvmx_fau_fetch_and_add32(
+					priv->fau + qos * 4, MAX_SKB_TO_FREE);
+			}
+			skb_to_free = cvm_oct_adjust_skb_to_free(skb_to_free,
+							priv->fau + qos * 4);
+>>>>>>> refs/remotes/origin/master
 			spin_lock_irqsave(&priv->tx_free_list[qos].lock, flags);
 			goto skip_xmit;
 		}
@@ -274,7 +367,17 @@ int cvm_oct_xmit(struct sk_buff *skb, struct net_device *dev)
 		CVM_OCT_SKB_CB(skb)[0] = hw_buffer.u64;
 		for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
 			struct skb_frag_struct *fs = skb_shinfo(skb)->frags + i;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			hw_buffer.s.addr = XKPHYS_TO_PHYS((u64)(page_address(fs->page) + fs->page_offset));
+=======
+			hw_buffer.s.addr = XKPHYS_TO_PHYS((u64)(page_address(fs->page.p) + fs->page_offset));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			hw_buffer.s.addr = XKPHYS_TO_PHYS(
+				(u64)(page_address(fs->page.p) +
+				fs->page_offset));
+>>>>>>> refs/remotes/origin/master
 			hw_buffer.s.size = fs->size;
 			CVM_OCT_SKB_CB(skb)[i + 1] = hw_buffer.u64;
 		}
@@ -289,8 +392,13 @@ int cvm_oct_xmit(struct sk_buff *skb, struct net_device *dev)
 	 * See if we can put this skb in the FPA pool. Any strange
 	 * behavior from the Linux networking stack will most likely
 	 * be caused by a bug in the following code. If some field is
+<<<<<<< HEAD
 	 * in use by the network stack and get carried over when a
 	 * buffer is reused, bad thing may happen.  If in doubt and
+=======
+	 * in use by the network stack and gets carried over when a
+	 * buffer is reused, bad things may happen.  If in doubt and
+>>>>>>> refs/remotes/origin/master
 	 * you dont need the absolute best performance, disable the
 	 * define REUSE_SKBUFFS_WITHOUT_FREE. The reuse of buffers has
 	 * shown a 25% increase in performance under some loads.
@@ -343,7 +451,11 @@ int cvm_oct_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 	if (unlikely
 	    (skb->truesize !=
+<<<<<<< HEAD
 	     sizeof(*skb) + skb_end_pointer(skb) - skb->head)) {
+=======
+	     sizeof(*skb) + skb_end_offset(skb))) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		   printk("TX buffer truesize has been changed\n");
 		 */
@@ -356,7 +468,13 @@ int cvm_oct_xmit(struct sk_buff *skb, struct net_device *dev)
 	 */
 	pko_command.s.dontfree = 0;
 
+<<<<<<< HEAD
 	hw_buffer.s.back = ((unsigned long)skb->data >> 7) - ((unsigned long)fpa_head >> 7);
+=======
+	hw_buffer.s.back = ((unsigned long)skb->data >> 7) -
+			   ((unsigned long)fpa_head >> 7);
+
+>>>>>>> refs/remotes/origin/master
 	*(struct sk_buff **)(fpa_head - sizeof(void *)) = skb;
 
 	/*
@@ -420,17 +538,35 @@ dont_put_skbuff_in_hw:
 		queue_type = QUEUE_HW;
 	}
 	if (USE_ASYNC_IOBDMA)
+<<<<<<< HEAD
 		cvmx_fau_async_fetch_and_add32(CVMX_SCR_SCRATCH, FAU_TOTAL_TX_TO_CLEAN, 1);
+=======
+		cvmx_fau_async_fetch_and_add32(
+				CVMX_SCR_SCRATCH, FAU_TOTAL_TX_TO_CLEAN, 1);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&priv->tx_free_list[qos].lock, flags);
 
 	/* Drop this packet if we have too many already queued to the HW */
+<<<<<<< HEAD
 	if (unlikely(skb_queue_len(&priv->tx_free_list[qos]) >= MAX_OUT_QUEUE_DEPTH)) {
 		if (dev->tx_queue_len != 0) {
 			/* Drop the lock when notifying the core.  */
 			spin_unlock_irqrestore(&priv->tx_free_list[qos].lock, flags);
 			netif_stop_queue(dev);
 			spin_lock_irqsave(&priv->tx_free_list[qos].lock, flags);
+=======
+	if (unlikely(skb_queue_len(&priv->tx_free_list[qos]) >=
+		     MAX_OUT_QUEUE_DEPTH)) {
+
+		if (dev->tx_queue_len != 0) {
+			/* Drop the lock when notifying the core.  */
+			spin_unlock_irqrestore(&priv->tx_free_list[qos].lock,
+					       flags);
+			netif_stop_queue(dev);
+			spin_lock_irqsave(&priv->tx_free_list[qos].lock,
+					  flags);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* If not using normal queueing.  */
 			queue_type = QUEUE_DROP;
@@ -446,7 +582,16 @@ dont_put_skbuff_in_hw:
 						 priv->queue + qos,
 						 pko_command, hw_buffer,
 						 CVMX_PKO_LOCK_NONE))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUGPRINT("%s: Failed to send the packet\n", dev->name);
+=======
+		printk_ratelimited("%s: Failed to send the packet\n", dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk_ratelimited("%s: Failed to send the packet\n",
+				   dev->name);
+>>>>>>> refs/remotes/origin/master
 		queue_type = QUEUE_DROP;
 	}
 skip_xmit:
@@ -491,7 +636,12 @@ skip_xmit:
 		cvmx_scratch_write64(CVMX_SCR_SCRATCH, old_scratch);
 		cvmx_scratch_write64(CVMX_SCR_SCRATCH + 8, old_scratch2);
 	} else {
+<<<<<<< HEAD
 		total_to_clean = cvmx_fau_fetch_and_add32(FAU_TOTAL_TX_TO_CLEAN, 1);
+=======
+		total_to_clean = cvmx_fau_fetch_and_add32(
+						FAU_TOTAL_TX_TO_CLEAN, 1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (total_to_clean & 0x3ff) {
@@ -525,8 +675,18 @@ int cvm_oct_xmit_pow(struct sk_buff *skb, struct net_device *dev)
 	/* Get a work queue entry */
 	cvmx_wqe_t *work = cvmx_fpa_alloc(CVMX_FPA_WQE_POOL);
 	if (unlikely(work == NULL)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUGPRINT("%s: Failed to allocate a work queue entry\n",
 			   dev->name);
+=======
+		printk_ratelimited("%s: Failed to allocate a work "
+				   "queue entry\n", dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk_ratelimited("%s: Failed to allocate a work queue entry\n",
+				   dev->name);
+>>>>>>> refs/remotes/origin/master
 		priv->stats.tx_dropped++;
 		dev_kfree_skb(skb);
 		return 0;
@@ -535,8 +695,18 @@ int cvm_oct_xmit_pow(struct sk_buff *skb, struct net_device *dev)
 	/* Get a packet buffer */
 	packet_buffer = cvmx_fpa_alloc(CVMX_FPA_PACKET_POOL);
 	if (unlikely(packet_buffer == NULL)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUGPRINT("%s: Failed to allocate a packet buffer\n",
 			   dev->name);
+=======
+		printk_ratelimited("%s: Failed to allocate a packet buffer\n",
+				   dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk_ratelimited("%s: Failed to allocate a packet buffer\n",
+				   dev->name);
+>>>>>>> refs/remotes/origin/master
 		cvmx_fpa_free(work, CVMX_FPA_WQE_POOL, DONT_WRITEBACK(1));
 		priv->stats.tx_dropped++;
 		dev_kfree_skb(skb);
@@ -707,7 +877,11 @@ void cvm_oct_tx_initialize(void)
 
 	/* Disable the interrupt.  */
 	cvmx_write_csr(CVMX_CIU_TIMX(1), 0);
+<<<<<<< HEAD
 	/* Register an IRQ hander for to receive CIU_TIMX(1) interrupts */
+=======
+	/* Register an IRQ handler to receive CIU_TIMX(1) interrupts */
+>>>>>>> refs/remotes/origin/master
 	i = request_irq(OCTEON_IRQ_TIMER1,
 			cvm_oct_tx_cleanup_watchdog, 0,
 			"Ethernet", cvm_oct_device);

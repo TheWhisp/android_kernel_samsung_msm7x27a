@@ -21,6 +21,16 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/cryptouser.h>
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cryptouser.h>
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "internal.h"
 
@@ -44,7 +54,15 @@ static int hash_walk_next(struct crypto_hash_walk *walk)
 	unsigned int nbytes = min(walk->entrylen,
 				  ((unsigned int)(PAGE_SIZE)) - offset);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	walk->data = crypto_kmap(walk->pg, 0);
+=======
+	walk->data = kmap_atomic(walk->pg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	walk->data = kmap_atomic(walk->pg);
+>>>>>>> refs/remotes/origin/master
 	walk->data += offset;
 
 	if (offset & alignmask) {
@@ -91,7 +109,15 @@ int crypto_hash_walk_done(struct crypto_hash_walk *walk, int err)
 		return nbytes;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	crypto_kunmap(walk->data, 0);
+=======
+	kunmap_atomic(walk->data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(walk->data);
+>>>>>>> refs/remotes/origin/master
 	crypto_yield(walk->flags);
 
 	if (err)
@@ -397,6 +423,46 @@ static unsigned int crypto_ahash_extsize(struct crypto_alg *alg)
 	return sizeof(struct crypto_shash *);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_NET
+static int crypto_ahash_report(struct sk_buff *skb, struct crypto_alg *alg)
+{
+	struct crypto_report_hash rhash;
+
+	strncpy(rhash.type, "ahash", sizeof(rhash.type));
+
+	rhash.blocksize = alg->cra_blocksize;
+	rhash.digestsize = __crypto_hash_alg_common(alg)->digestsize;
+
+<<<<<<< HEAD
+	NLA_PUT(skb, CRYPTOCFGA_REPORT_HASH,
+		sizeof(struct crypto_report_hash), &rhash);
+
+=======
+	if (nla_put(skb, CRYPTOCFGA_REPORT_HASH,
+		    sizeof(struct crypto_report_hash), &rhash))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
+	return 0;
+
+nla_put_failure:
+	return -EMSGSIZE;
+}
+#else
+static int crypto_ahash_report(struct sk_buff *skb, struct crypto_alg *alg)
+{
+	return -ENOSYS;
+}
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void crypto_ahash_show(struct seq_file *m, struct crypto_alg *alg)
 	__attribute__ ((unused));
 static void crypto_ahash_show(struct seq_file *m, struct crypto_alg *alg)
@@ -415,6 +481,14 @@ const struct crypto_type crypto_ahash_type = {
 #ifdef CONFIG_PROC_FS
 	.show = crypto_ahash_show,
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.report = crypto_ahash_report,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.report = crypto_ahash_report,
+>>>>>>> refs/remotes/origin/master
 	.maskclear = ~CRYPTO_ALG_TYPE_MASK,
 	.maskset = CRYPTO_ALG_TYPE_AHASH_MASK,
 	.type = CRYPTO_ALG_TYPE_AHASH,

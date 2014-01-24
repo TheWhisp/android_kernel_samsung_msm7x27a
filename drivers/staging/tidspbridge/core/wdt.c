@@ -25,9 +25,17 @@
 #include <dspbridge/host_os.h>
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_TIDSPBRIDGE_WDT3
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define OMAP34XX_WDT3_BASE 		(L4_PER_34XX_BASE + 0x30000)
+=======
+#define OMAP34XX_WDT3_BASE	(0x49000000 + 0x30000)
+#define INT_34XX_WDT3_IRQ	(36 + NR_IRQS)
+>>>>>>> refs/remotes/origin/master
 
 static struct dsp_wdt_setting dsp_wdt;
 
@@ -55,17 +63,43 @@ int dsp_wdt_init(void)
 	int ret = 0;
 
 	dsp_wdt.sm_wdt = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dsp_wdt.reg_base = OMAP2_L4_IO_ADDRESS(OMAP34XX_WDT3_BASE);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	dsp_wdt.reg_base = ioremap(OMAP34XX_WDT3_BASE, SZ_4K);
+	if (!dsp_wdt.reg_base)
+		return -ENOMEM;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tasklet_init(&dsp_wdt.wdt3_tasklet, dsp_wdt_dpc, 0);
 
 	dsp_wdt.fclk = clk_get(NULL, "wdt3_fck");
 
+<<<<<<< HEAD
 	if (dsp_wdt.fclk) {
 		dsp_wdt.iclk = clk_get(NULL, "wdt3_ick");
 		if (!dsp_wdt.iclk) {
 			clk_put(dsp_wdt.fclk);
 			dsp_wdt.fclk = NULL;
 			ret = -EFAULT;
+=======
+	if (!IS_ERR(dsp_wdt.fclk)) {
+		clk_prepare(dsp_wdt.fclk);
+
+		dsp_wdt.iclk = clk_get(NULL, "wdt3_ick");
+		if (IS_ERR(dsp_wdt.iclk)) {
+			clk_put(dsp_wdt.fclk);
+			dsp_wdt.fclk = NULL;
+			ret = -EFAULT;
+		} else {
+			clk_prepare(dsp_wdt.iclk);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else
 		ret = -EFAULT;
@@ -84,7 +118,15 @@ int dsp_wdt_init(void)
 void dsp_wdt_sm_set(void *data)
 {
 	dsp_wdt.sm_wdt = data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dsp_wdt.sm_wdt->wdt_overflow = CONFIG_TIDSPBRIDGE_WDT_TIMEOUT;
+=======
+	dsp_wdt.sm_wdt->wdt_overflow = 5;	/* in seconds */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dsp_wdt.sm_wdt->wdt_overflow = 5;	/* in seconds */
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -93,14 +135,37 @@ void dsp_wdt_exit(void)
 	free_irq(INT_34XX_WDT3_IRQ, &dsp_wdt);
 	tasklet_kill(&dsp_wdt.wdt3_tasklet);
 
+<<<<<<< HEAD
 	if (dsp_wdt.fclk)
 		clk_put(dsp_wdt.fclk);
 	if (dsp_wdt.iclk)
 		clk_put(dsp_wdt.iclk);
+=======
+	if (dsp_wdt.fclk) {
+		clk_unprepare(dsp_wdt.fclk);
+		clk_put(dsp_wdt.fclk);
+	}
+	if (dsp_wdt.iclk) {
+		clk_unprepare(dsp_wdt.iclk);
+		clk_put(dsp_wdt.iclk);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	dsp_wdt.fclk = NULL;
 	dsp_wdt.iclk = NULL;
 	dsp_wdt.sm_wdt = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	if (dsp_wdt.reg_base)
+		iounmap(dsp_wdt.reg_base);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (dsp_wdt.reg_base)
+		iounmap(dsp_wdt.reg_base);
+>>>>>>> refs/remotes/origin/master
 	dsp_wdt.reg_base = NULL;
 }
 
@@ -128,6 +193,8 @@ void dsp_wdt_enable(bool enable)
 		clk_disable(dsp_wdt.fclk);
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #else
 void dsp_wdt_enable(bool enable)
@@ -148,3 +215,7 @@ void dsp_wdt_exit(void)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -127,6 +127,14 @@ static int stv0288_set_symbolrate(struct dvb_frontend *fe, u32 srate)
 	if ((srate < 1000000) || (srate > 45000000))
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	stv0288_writeregI(state, 0x22, 0);
+	stv0288_writeregI(state, 0x23, 0);
+	stv0288_writeregI(state, 0x2b, 0xff);
+	stv0288_writeregI(state, 0x2c, 0xf7);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	temp = (unsigned int)srate / 1000;
 
 		temp = temp * 32768;
@@ -447,6 +455,7 @@ static int stv0288_set_property(struct dvb_frontend *fe, struct dtv_property *p)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int stv0288_get_property(struct dvb_frontend *fe, struct dtv_property *p)
 {
 	dprintk("%s(..)\n", __func__);
@@ -455,12 +464,19 @@ static int stv0288_get_property(struct dvb_frontend *fe, struct dtv_property *p)
 
 static int stv0288_set_frontend(struct dvb_frontend *fe,
 					struct dvb_frontend_parameters *dfp)
+=======
+static int stv0288_set_frontend(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct stv0288_state *state = fe->demodulator_priv;
 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 
 	char tm;
 	unsigned char tda[3];
+<<<<<<< HEAD
+=======
+	u8 reg, time_out = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dprintk("%s : FE_SET_FRONTEND\n", __func__);
 
@@ -475,10 +491,15 @@ static int stv0288_set_frontend(struct dvb_frontend *fe,
 		state->config->set_ts_params(fe, 0);
 
 	/* only frequency & symbol_rate are used for tuner*/
+<<<<<<< HEAD
 	dfp->frequency = c->frequency;
 	dfp->u.qpsk.symbol_rate = c->symbol_rate;
 	if (fe->ops.tuner_ops.set_params) {
 		fe->ops.tuner_ops.set_params(fe, dfp);
+=======
+	if (fe->ops.tuner_ops.set_params) {
+		fe->ops.tuner_ops.set_params(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (fe->ops.i2c_gate_ctrl)
 			fe->ops.i2c_gate_ctrl(fe, 0);
 	}
@@ -488,6 +509,7 @@ static int stv0288_set_frontend(struct dvb_frontend *fe,
 	/* Carrier lock control register */
 	stv0288_writeregI(state, 0x15, 0xc5);
 
+<<<<<<< HEAD
 	tda[0] = 0x2b; /* CFRM */
 	tda[2] = 0x0; /* CFRL */
 	for (tm = -6; tm < 7;) {
@@ -504,6 +526,31 @@ static int stv0288_set_frontend(struct dvb_frontend *fe,
 		udelay(30);
 	}
 
+=======
+	tda[2] = 0x0; /* CFRL */
+	for (tm = -9; tm < 7;) {
+		/* Viterbi status */
+		reg = stv0288_readreg(state, 0x24);
+		if (reg & 0x8)
+				break;
+		if (reg & 0x80) {
+			time_out++;
+			if (time_out > 10)
+				break;
+			tda[2] += 40;
+			if (tda[2] < 40)
+				tm++;
+		} else {
+			tm++;
+			tda[2] = 0;
+			time_out = 0;
+		}
+		tda[1] = (unsigned char)tm;
+		stv0288_writeregI(state, 0x2b, tda[1]);
+		stv0288_writeregI(state, 0x2c, tda[2]);
+		msleep(30);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	state->tuner_frequency = c->frequency;
 	state->fec_inner = FEC_AUTO;
 	state->symbol_rate = c->symbol_rate;
@@ -532,10 +579,16 @@ static void stv0288_release(struct dvb_frontend *fe)
 }
 
 static struct dvb_frontend_ops stv0288_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		.name			= "ST STV0288 DVB-S",
 		.type			= FE_QPSK,
+=======
+	.delsys = { SYS_DVBS },
+	.info = {
+		.name			= "ST STV0288 DVB-S",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min		= 950000,
 		.frequency_max		= 2150000,
 		.frequency_stepsize	= 1000,	 /* kHz for QPSK frontends */
@@ -565,7 +618,10 @@ static struct dvb_frontend_ops stv0288_ops = {
 	.set_voltage = stv0288_set_voltage,
 
 	.set_property = stv0288_set_property,
+<<<<<<< HEAD
 	.get_property = stv0288_get_property,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set_frontend = stv0288_set_frontend,
 };
 

@@ -7,6 +7,10 @@
 #include <linux/mm.h>
 #include <linux/init.h>
 #include <linux/sysctl.h>
+<<<<<<< HEAD
+=======
+#include <net/net_namespace.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/llc.h>
 
 #ifndef CONFIG_SYSCTL
@@ -46,6 +50,7 @@ static struct ctl_table llc2_timeout_table[] = {
 };
 
 static struct ctl_table llc_station_table[] = {
+<<<<<<< HEAD
 	{
 		.procname	= "ack_timeout",
 		.data		= &sysctl_llc_station_ack_timeout,
@@ -92,12 +97,40 @@ int __init llc_sysctl_init(void)
 	llc_table_header = register_sysctl_paths(llc_path, llc_table);
 
 	return llc_table_header ? 0 : -ENOMEM;
+=======
+	{ },
+};
+
+static struct ctl_table_header *llc2_timeout_header;
+static struct ctl_table_header *llc_station_header;
+
+int __init llc_sysctl_init(void)
+{
+	llc2_timeout_header = register_net_sysctl(&init_net, "net/llc/llc2/timeout", llc2_timeout_table);
+	llc_station_header = register_net_sysctl(&init_net, "net/llc/station", llc_station_table);
+
+	if (!llc2_timeout_header || !llc_station_header) {
+		llc_sysctl_exit();
+		return -ENOMEM;
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void llc_sysctl_exit(void)
 {
+<<<<<<< HEAD
 	if (llc_table_header) {
 		unregister_sysctl_table(llc_table_header);
 		llc_table_header = NULL;
+=======
+	if (llc2_timeout_header) {
+		unregister_net_sysctl_table(llc2_timeout_header);
+		llc2_timeout_header = NULL;
+	}
+	if (llc_station_header) {
+		unregister_net_sysctl_table(llc_station_header);
+		llc_station_header = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 }

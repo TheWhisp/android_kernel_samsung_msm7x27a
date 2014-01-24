@@ -23,12 +23,49 @@
 #include "ath5k.h"
 #include "reg.h"
 #include "debug.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "base.h"
 
 /*
  * Set led state
  */
 void ath5k_hw_set_ledstate(struct ath5k_hw *ah, unsigned int state)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+
+/**
+ * DOC: GPIO/LED functions
+ *
+ * Here we control the 6 bidirectional GPIO pins provided by the hw.
+ * We can set a GPIO pin to be an input or an output pin on GPIO control
+ * register and then read or set its status from GPIO data input/output
+ * registers.
+ *
+ * We also control the two LED pins provided by the hw, LED_0 is our
+ * "power" LED and LED_1 is our "network activity" LED but many scenarios
+ * are available from hw. Vendors might also provide LEDs connected to the
+ * GPIO pins, we handle them through the LED subsystem on led.c
+ */
+
+
+/**
+ * ath5k_hw_set_ledstate() - Set led state
+ * @ah: The &struct ath5k_hw
+ * @state: One of AR5K_LED_*
+ *
+ * Used to set the LED blinking state. This only
+ * works for the LED connected to the LED_0, LED_1 pins,
+ * not the GPIO based.
+ */
+void
+ath5k_hw_set_ledstate(struct ath5k_hw *ah, unsigned int state)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 led;
 	/*5210 has different led mode handling*/
@@ -75,10 +112,26 @@ void ath5k_hw_set_ledstate(struct ath5k_hw *ah, unsigned int state)
 		AR5K_REG_ENABLE_BITS(ah, AR5K_PCICFG, led_5210);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set GPIO inputs
  */
 int ath5k_hw_set_gpio_input(struct ath5k_hw *ah, u32 gpio)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * ath5k_hw_set_gpio_input() - Set GPIO inputs
+ * @ah: The &struct ath5k_hw
+ * @gpio: GPIO pin to set as input
+ */
+int
+ath5k_hw_set_gpio_input(struct ath5k_hw *ah, u32 gpio)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (gpio >= AR5K_NUM_GPIO)
 		return -EINVAL;
@@ -90,10 +143,26 @@ int ath5k_hw_set_gpio_input(struct ath5k_hw *ah, u32 gpio)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set GPIO outputs
  */
 int ath5k_hw_set_gpio_output(struct ath5k_hw *ah, u32 gpio)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * ath5k_hw_set_gpio_output() - Set GPIO outputs
+ * @ah: The &struct ath5k_hw
+ * @gpio: The GPIO pin to set as output
+ */
+int
+ath5k_hw_set_gpio_output(struct ath5k_hw *ah, u32 gpio)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (gpio >= AR5K_NUM_GPIO)
 		return -EINVAL;
@@ -105,10 +174,26 @@ int ath5k_hw_set_gpio_output(struct ath5k_hw *ah, u32 gpio)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Get GPIO state
  */
 u32 ath5k_hw_get_gpio(struct ath5k_hw *ah, u32 gpio)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * ath5k_hw_get_gpio() - Get GPIO state
+ * @ah: The &struct ath5k_hw
+ * @gpio: The GPIO pin to read
+ */
+u32
+ath5k_hw_get_gpio(struct ath5k_hw *ah, u32 gpio)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (gpio >= AR5K_NUM_GPIO)
 		return 0xffffffff;
@@ -118,10 +203,27 @@ u32 ath5k_hw_get_gpio(struct ath5k_hw *ah, u32 gpio)
 		0x1;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set GPIO state
  */
 int ath5k_hw_set_gpio(struct ath5k_hw *ah, u32 gpio, u32 val)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * ath5k_hw_set_gpio() - Set GPIO state
+ * @ah: The &struct ath5k_hw
+ * @gpio: The GPIO pin to set
+ * @val: Value to set (boolean)
+ */
+int
+ath5k_hw_set_gpio(struct ath5k_hw *ah, u32 gpio, u32 val)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 data;
 
@@ -139,10 +241,32 @@ int ath5k_hw_set_gpio(struct ath5k_hw *ah, u32 gpio, u32 val)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Initialize the GPIO interrupt (RFKill switch)
  */
 void ath5k_hw_set_gpio_intr(struct ath5k_hw *ah, unsigned int gpio,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * ath5k_hw_set_gpio_intr() - Initialize the GPIO interrupt (RFKill switch)
+ * @ah: The &struct ath5k_hw
+ * @gpio: The GPIO pin to use
+ * @interrupt_level: True to generate interrupt on active pin (high)
+ *
+ * This function is used to set up the GPIO interrupt for the hw RFKill switch.
+ * That switch is connected to a GPIO pin and it's number is stored on EEPROM.
+ * It can either open or close the circuit to indicate that we should disable
+ * RF/Wireless to save power (we also get that from EEPROM).
+ */
+void
+ath5k_hw_set_gpio_intr(struct ath5k_hw *ah, unsigned int gpio,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		u32 interrupt_level)
 {
 	u32 data;

@@ -23,7 +23,11 @@ int dibusb_streaming_ctrl(struct dvb_usb_adapter *adap, int onoff)
 	if (adap->priv != NULL) {
 		struct dibusb_state *st = adap->priv;
 		if (st->ops.fifo_ctrl != NULL)
+<<<<<<< HEAD
 			if (st->ops.fifo_ctrl(adap->fe,onoff)) {
+=======
+			if (st->ops.fifo_ctrl(adap->fe_adap[0].fe, onoff)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				err("error while controlling the fifo of the demod.");
 				return -ENODEV;
 			}
@@ -37,7 +41,12 @@ int dibusb_pid_filter(struct dvb_usb_adapter *adap, int index, u16 pid, int onof
 	if (adap->priv != NULL) {
 		struct dibusb_state *st = adap->priv;
 		if (st->ops.pid_ctrl != NULL)
+<<<<<<< HEAD
 			st->ops.pid_ctrl(adap->fe,index,pid,onoff);
+=======
+			st->ops.pid_ctrl(adap->fe_adap[0].fe,
+					 index, pid, onoff);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }
@@ -48,7 +57,11 @@ int dibusb_pid_filter_ctrl(struct dvb_usb_adapter *adap, int onoff)
 	if (adap->priv != NULL) {
 		struct dibusb_state *st = adap->priv;
 		if (st->ops.pid_parse != NULL)
+<<<<<<< HEAD
 			if (st->ops.pid_parse(adap->fe,onoff) < 0)
+=======
+			if (st->ops.pid_parse(adap->fe_adap[0].fe, onoff) < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 				err("could not handle pid_parser");
 	}
 	return 0;
@@ -254,8 +267,21 @@ int dibusb_dib3000mc_frontend_attach(struct dvb_usb_adapter *adap)
 		msleep(1000);
 	}
 
+<<<<<<< HEAD
 	if ((adap->fe = dvb_attach(dib3000mc_attach, &adap->dev->i2c_adap, DEFAULT_DIB3000P_I2C_ADDRESS,  &mod3000p_dib3000p_config)) != NULL ||
 		(adap->fe = dvb_attach(dib3000mc_attach, &adap->dev->i2c_adap, DEFAULT_DIB3000MC_I2C_ADDRESS, &mod3000p_dib3000p_config)) != NULL) {
+=======
+	adap->fe_adap[0].fe = dvb_attach(dib3000mc_attach,
+					 &adap->dev->i2c_adap,
+					 DEFAULT_DIB3000P_I2C_ADDRESS,
+					 &mod3000p_dib3000p_config);
+	if ((adap->fe_adap[0].fe) == NULL)
+		adap->fe_adap[0].fe = dvb_attach(dib3000mc_attach,
+						 &adap->dev->i2c_adap,
+						 DEFAULT_DIB3000MC_I2C_ADDRESS,
+						 &mod3000p_dib3000p_config);
+	if ((adap->fe_adap[0].fe) != NULL) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (adap->priv != NULL) {
 			struct dibusb_state *st = adap->priv;
 			st->ops.pid_parse = dib3000mc_pid_parse;
@@ -309,15 +335,26 @@ int dibusb_dib3000mc_tuner_attach(struct dvb_usb_adapter *adap)
 		}
 	}
 
+<<<<<<< HEAD
 	tun_i2c = dib3000mc_get_tuner_i2c_master(adap->fe, 1);
 	if (dvb_attach(mt2060_attach, adap->fe, tun_i2c, &stk3000p_mt2060_config, if1) == NULL) {
 		/* not found - use panasonic pll parameters */
 		if (dvb_attach(dvb_pll_attach, adap->fe, 0x60, tun_i2c, DVB_PLL_ENV57H1XD5) == NULL)
+=======
+	tun_i2c = dib3000mc_get_tuner_i2c_master(adap->fe_adap[0].fe, 1);
+	if (dvb_attach(mt2060_attach, adap->fe_adap[0].fe, tun_i2c, &stk3000p_mt2060_config, if1) == NULL) {
+		/* not found - use panasonic pll parameters */
+		if (dvb_attach(dvb_pll_attach, adap->fe_adap[0].fe, 0x60, tun_i2c, DVB_PLL_ENV57H1XD5) == NULL)
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -ENOMEM;
 	} else {
 		st->mt2060_present = 1;
 		/* set the correct parameters for the dib3000p */
+<<<<<<< HEAD
 		dib3000mc_set_config(adap->fe, &stk3000p_dib3000p_config);
+=======
+		dib3000mc_set_config(adap->fe_adap[0].fe, &stk3000p_dib3000p_config);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }

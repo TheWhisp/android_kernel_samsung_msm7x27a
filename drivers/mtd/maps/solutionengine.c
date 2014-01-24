@@ -19,8 +19,14 @@
 static struct mtd_info *flash_mtd;
 static struct mtd_info *eprom_mtd;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct mtd_partition *parsed_parts;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct map_info soleng_eprom_map = {
 	.name = "Solution Engine EPROM",
 	.size = 0x400000,
@@ -33,7 +39,11 @@ struct map_info soleng_flash_map = {
 	.bankwidth = 4,
 };
 
+<<<<<<< HEAD
 static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+=======
+static const char * const probes[] = { "RedBoot", "cmdlinepart", NULL };
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_MTD_SUPERH_RESERVE
 static struct mtd_partition superh_se_partitions[] = {
@@ -51,12 +61,31 @@ static struct mtd_partition superh_se_partitions[] = {
 		.size = MTDPART_SIZ_FULL,
 	}
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define NUM_PARTITIONS ARRAY_SIZE(superh_se_partitions)
+#else
+#define superh_se_partitions NULL
+#define NUM_PARTITIONS 0
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MTD_SUPERH_RESERVE */
 
 static int __init init_soleng_maps(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int nr_parts = 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* First probe at offset 0 */
 	soleng_flash_map.phys = 0;
 	soleng_flash_map.virt = (void __iomem *)P2SEGADDR(0);
@@ -92,6 +121,8 @@ static int __init init_soleng_maps(void)
 		mtd_device_register(eprom_mtd, NULL, 0);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nr_parts = parse_mtd_partitions(flash_mtd, probes, &parsed_parts, 0);
 
 #ifdef CONFIG_MTD_SUPERH_RESERVE
@@ -107,6 +138,14 @@ static int __init init_soleng_maps(void)
 		mtd_device_register(flash_mtd, parsed_parts, nr_parts);
 	else
 		mtd_device_register(flash_mtd, NULL, 0);
+=======
+	mtd_device_parse_register(flash_mtd, probes, NULL,
+				  superh_se_partitions, NUM_PARTITIONS);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_device_parse_register(flash_mtd, probes, NULL,
+				  superh_se_partitions, NUM_PARTITIONS);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -118,10 +157,18 @@ static void __exit cleanup_soleng_maps(void)
 		map_destroy(eprom_mtd);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (parsed_parts)
 		mtd_device_unregister(flash_mtd);
 	else
 		mtd_device_unregister(flash_mtd);
+=======
+	mtd_device_unregister(flash_mtd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_device_unregister(flash_mtd);
+>>>>>>> refs/remotes/origin/master
 	map_destroy(flash_mtd);
 }
 

@@ -247,12 +247,22 @@ static int pps_cdev_open(struct inode *inode, struct file *file)
 	struct pps_device *pps = container_of(inode->i_cdev,
 						struct pps_device, cdev);
 	file->private_data = pps;
+<<<<<<< HEAD
 
+=======
+	kobject_get(&pps->dev->kobj);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int pps_cdev_release(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
+=======
+	struct pps_device *pps = container_of(inode->i_cdev,
+						struct pps_device, cdev);
+	kobject_put(&pps->dev->kobj);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -274,8 +284,15 @@ static void pps_device_destruct(struct device *dev)
 {
 	struct pps_device *pps = dev_get_drvdata(dev);
 
+<<<<<<< HEAD
 	/* release id here to protect others from using it while it's
 	 * still in use */
+=======
+	cdev_del(&pps->cdev);
+
+	/* Now we can release the ID for re-use */
+	pr_debug("deallocating pps%d\n", pps->id);
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&pps_idr_lock);
 	idr_remove(&pps_idr, pps->id);
 	mutex_unlock(&pps_idr_lock);
@@ -290,6 +307,7 @@ int pps_register_cdev(struct pps_device *pps)
 	dev_t devt;
 
 	mutex_lock(&pps_idr_lock);
+<<<<<<< HEAD
 	/* Get new ID for the new PPS source */
 	if (idr_pre_get(&pps_idr, GFP_KERNEL) == 0) {
 		mutex_unlock(&pps_idr_lock);
@@ -313,6 +331,23 @@ int pps_register_cdev(struct pps_device *pps)
 		err = -EBUSY;
 		goto free_idr;
 	}
+=======
+	/*
+	 * Get new ID for the new PPS source.  After idr_alloc() calling
+	 * the new source will be freely available into the kernel.
+	 */
+	err = idr_alloc(&pps_idr, pps, 0, PPS_MAX_SOURCES, GFP_KERNEL);
+	if (err < 0) {
+		if (err == -ENOSPC) {
+			pr_err("%s: too many PPS sources in the system\n",
+			       pps->info.name);
+			err = -EBUSY;
+		}
+		goto out_unlock;
+	}
+	pps->id = err;
+	mutex_unlock(&pps_idr_lock);
+>>>>>>> refs/remotes/origin/master
 
 	devt = MKDEV(MAJOR(pps_devt), pps->id);
 
@@ -327,9 +362,18 @@ int pps_register_cdev(struct pps_device *pps)
 	}
 	pps->dev = device_create(pps_class, pps->info.dev, devt, pps,
 							"pps%d", pps->id);
+<<<<<<< HEAD
 	if (IS_ERR(pps->dev))
 		goto del_cdev;
 
+=======
+	if (IS_ERR(pps->dev)) {
+		err = PTR_ERR(pps->dev);
+		goto del_cdev;
+	}
+
+	/* Override the release function with our own */
+>>>>>>> refs/remotes/origin/master
 	pps->dev->release = pps_device_destruct;
 
 	pr_debug("source %s got cdev (%d:%d)\n", pps->info.name,
@@ -343,18 +387,64 @@ del_cdev:
 free_idr:
 	mutex_lock(&pps_idr_lock);
 	idr_remove(&pps_idr, pps->id);
+<<<<<<< HEAD
 	mutex_unlock(&pps_idr_lock);
 
+=======
+out_unlock:
+	mutex_unlock(&pps_idr_lock);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 void pps_unregister_cdev(struct pps_device *pps)
 {
+<<<<<<< HEAD
 	device_destroy(pps_class, pps->dev->devt);
 	cdev_del(&pps->cdev);
 }
 
 /*
+=======
+	pr_debug("unregistering pps%d\n", pps->id);
+	pps->lookup_cookie = NULL;
+	device_destroy(pps_class, pps->dev->devt);
+}
+
+/*
+ * Look up a pps device by magic cookie.
+ * The cookie is usually a pointer to some enclosing device, but this
+ * code doesn't care; you should never be dereferencing it.
+ *
+ * This is a bit of a kludge that is currently used only by the PPS
+ * serial line discipline.  It may need to be tweaked when a second user
+ * is found.
+ *
+ * There is no function interface for setting the lookup_cookie field.
+ * It's initialized to NULL when the pps device is created, and if a
+ * client wants to use it, just fill it in afterward.
+ *
+ * The cookie is automatically set to NULL in pps_unregister_source()
+ * so that it will not be used again, even if the pps device cannot
+ * be removed from the idr due to pending references holding the minor
+ * number in use.
+ */
+struct pps_device *pps_lookup_dev(void const *cookie)
+{
+	struct pps_device *pps;
+	unsigned id;
+
+	rcu_read_lock();
+	idr_for_each_entry(&pps_idr, pps, id)
+		if (cookie == pps->lookup_cookie)
+			break;
+	rcu_read_unlock();
+	return pps;
+}
+EXPORT_SYMBOL(pps_lookup_dev);
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Module stuff
  */
 
@@ -369,11 +459,25 @@ static int __init pps_init(void)
 	int err;
 
 	pps_class = class_create(THIS_MODULE, "pps");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!pps_class) {
 		pr_err("failed to allocate class\n");
 		return -ENOMEM;
+=======
+	if (IS_ERR(pps_class)) {
+		pr_err("failed to allocate class\n");
+		return PTR_ERR(pps_class);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	pps_class->dev_attrs = pps_attrs;
+=======
+	if (IS_ERR(pps_class)) {
+		pr_err("failed to allocate class\n");
+		return PTR_ERR(pps_class);
+	}
+	pps_class->dev_groups = pps_groups;
+>>>>>>> refs/remotes/origin/master
 
 	err = alloc_chrdev_region(&pps_devt, 0, PPS_MAX_SOURCES, "pps");
 	if (err < 0) {

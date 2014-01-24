@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/kernel/traps.c
  *
  *  S390 version
  *    Copyright (C) 1999,2000 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999, 2000
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com),
  *               Denis Joseph Barrow (djbarrow@de.ibm.com,barrow_dj@yahoo.com),
  *
@@ -14,11 +19,16 @@
  * 'Traps.c' handles hardware traps and faults after we have saved some
  * state in 'asm.s'.
  */
+<<<<<<< HEAD
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/tracehook.h>
+=======
+#include <linux/ptrace.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/timer.h>
 #include <linux/mm.h>
 #include <linux/smp.h>
@@ -33,14 +43,21 @@
 #include <linux/kprobes.h>
 #include <linux/bug.h>
 #include <linux/utsname.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
 #include <asm/atomic.h>
+=======
+#include <asm/uaccess.h>
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mathemu.h>
 #include <asm/cpcmd.h>
 #include <asm/lowcore.h>
 #include <asm/debug.h>
+<<<<<<< HEAD
 #include "entry.h"
 
 pgm_check_handler_t *pgm_check_table[128];
@@ -50,6 +67,14 @@ int show_unhandled_signals;
 extern pgm_check_handler_t do_protection_exception;
 extern pgm_check_handler_t do_dat_exception;
 extern pgm_check_handler_t do_asce_exception;
+=======
+#include <asm/ipl.h>
+#include "entry.h"
+
+void (*pgm_check_table[128])(struct pt_regs *regs);
+
+int show_unhandled_signals = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define stack_pointer ({ void **sp; asm("la %0,0(15)" : "=&d" (sp)); sp; })
 
@@ -148,8 +173,13 @@ void show_stack(struct task_struct *task, unsigned long *sp)
 	for (i = 0; i < kstack_depth_to_print; i++) {
 		if (((addr_t) stack & (THREAD_SIZE-1)) == 0)
 			break;
+<<<<<<< HEAD
 		if (i && ((i * sizeof (long) % 32) == 0))
 			printk("\n       ");
+=======
+		if ((i * sizeof(long) % 32) == 0)
+			printk("%s       ", i == 0 ? "" : "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(LONG, *stack++);
 	}
 	printk("\n");
@@ -204,7 +234,11 @@ void show_registers(struct pt_regs *regs)
 	       mask_bits(regs, PSW_MASK_PSTATE), mask_bits(regs, PSW_MASK_ASC),
 	       mask_bits(regs, PSW_MASK_CC), mask_bits(regs, PSW_MASK_PM));
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
 	printk(" EA:%x", mask_bits(regs, PSW_BASE_BITS));
+=======
+	printk(" EA:%x", mask_bits(regs, PSW_MASK_EA | PSW_MASK_BA));
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	printk("\n%s GPRS: " FOURLONG, mode,
 	       regs->gprs[0], regs->gprs[1], regs->gprs[2], regs->gprs[3]);
@@ -238,16 +272,28 @@ void show_regs(struct pt_regs *regs)
 
 static DEFINE_SPINLOCK(die_lock);
 
+<<<<<<< HEAD
 void die(const char * str, struct pt_regs * regs, long err)
+=======
+void die(struct pt_regs *regs, const char *str)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static int die_counter;
 
 	oops_enter();
+<<<<<<< HEAD
+=======
+	lgr_info_log();
+>>>>>>> refs/remotes/origin/cm-10.0
 	debug_stop_all();
 	console_verbose();
 	spin_lock_irq(&die_lock);
 	bust_spinlocks(1);
+<<<<<<< HEAD
 	printk("%s: %04lx [#%d] ", str, err & 0xffff, ++die_counter);
+=======
+	printk("%s: %04x [#%d] ", str, regs->int_code & 0xffff, ++die_counter);
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PREEMPT
 	printk("PREEMPT ");
 #endif
@@ -258,7 +304,11 @@ void die(const char * str, struct pt_regs * regs, long err)
 	printk("DEBUG_PAGEALLOC");
 #endif
 	printk("\n");
+<<<<<<< HEAD
 	notify_die(DIE_OOPS, str, regs, err, current->thread.trap_no, SIGSEGV);
+=======
+	notify_die(DIE_OOPS, str, regs, 0, regs->int_code & 0xffff, SIGSEGV);
+>>>>>>> refs/remotes/origin/cm-10.0
 	show_regs(regs);
 	bust_spinlocks(0);
 	add_taint(TAINT_DIE);
@@ -271,8 +321,42 @@ void die(const char * str, struct pt_regs * regs, long err)
 	do_exit(SIGSEGV);
 }
 
+<<<<<<< HEAD
 static void inline report_user_fault(struct pt_regs *regs, long int_code,
 				     int signr)
+=======
+static inline void report_user_fault(struct pt_regs *regs, int signr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kprobes.h>
+#include <linux/kdebug.h>
+#include <linux/module.h>
+#include <linux/ptrace.h>
+#include <linux/sched.h>
+#include <linux/mm.h>
+#include "entry.h"
+
+int show_unhandled_signals = 1;
+
+static inline void __user *get_trap_ip(struct pt_regs *regs)
+{
+#ifdef CONFIG_64BIT
+	unsigned long address;
+
+	if (regs->int_code & 0x200)
+		address = *(unsigned long *)(current->thread.trap_tdb + 24);
+	else
+		address = regs->psw.addr;
+	return (void __user *)
+		((address - (regs->int_code >> 16)) & PSW_ADDR_INSN);
+#else
+	return (void __user *)
+		((regs->psw.addr - (regs->int_code >> 16)) & PSW_ADDR_INSN);
+#endif
+}
+
+static inline void report_user_fault(struct pt_regs *regs, int signr)
+>>>>>>> refs/remotes/origin/master
 {
 	if ((task_pid_nr(current) > 1) && !show_unhandled_signals)
 		return;
@@ -280,7 +364,15 @@ static void inline report_user_fault(struct pt_regs *regs, long int_code,
 		return;
 	if (!printk_ratelimit())
 		return;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk("User process fault: interruption code 0x%lX ", int_code);
+=======
+	printk("User process fault: interruption code 0x%X ", regs->int_code);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk("User process fault: interruption code 0x%X ", regs->int_code);
+>>>>>>> refs/remotes/origin/master
 	print_vma_addr("in ", regs->psw.addr & PSW_ADDR_INSN);
 	printk("\n");
 	show_regs(regs);
@@ -291,6 +383,8 @@ int is_valid_bugaddr(unsigned long addr)
 	return 1;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void __kprobes do_trap(long pgm_int_code, int signr, char *str,
 				     struct pt_regs *regs, siginfo_t *info)
 {
@@ -304,22 +398,72 @@ static inline void __kprobes do_trap(long pgm_int_code, int signr, char *str,
 		tsk->thread.trap_no = pgm_int_code & 0xffff;
 		force_sig_info(signr, info, tsk);
 		report_user_fault(regs, pgm_int_code, signr);
+=======
+static inline void __user *get_psw_address(struct pt_regs *regs)
+{
+	return (void __user *)
+		((regs->psw.addr - (regs->int_code >> 16)) & PSW_ADDR_INSN);
+}
+
+=======
+>>>>>>> refs/remotes/origin/master
+static void __kprobes do_trap(struct pt_regs *regs,
+			      int si_signo, int si_code, char *str)
+{
+	siginfo_t info;
+
+	if (notify_die(DIE_TRAP, str, regs, 0,
+		       regs->int_code, si_signo) == NOTIFY_STOP)
+		return;
+
+<<<<<<< HEAD
+        if (regs->psw.mask & PSW_MASK_PSTATE) {
+		info.si_signo = si_signo;
+		info.si_errno = 0;
+		info.si_code = si_code;
+		info.si_addr = get_psw_address(regs);
+		force_sig_info(si_signo, &info, current);
+		report_user_fault(regs, si_signo);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (user_mode(regs)) {
+		info.si_signo = si_signo;
+		info.si_errno = 0;
+		info.si_code = si_code;
+		info.si_addr = get_trap_ip(regs);
+		force_sig_info(si_signo, &info, current);
+		report_user_fault(regs, si_signo);
+>>>>>>> refs/remotes/origin/master
         } else {
                 const struct exception_table_entry *fixup;
                 fixup = search_exception_tables(regs->psw.addr & PSW_ADDR_INSN);
                 if (fixup)
+<<<<<<< HEAD
                         regs->psw.addr = fixup->fixup | PSW_ADDR_AMODE;
+=======
+			regs->psw.addr = extable_fixup(fixup) | PSW_ADDR_AMODE;
+>>>>>>> refs/remotes/origin/master
 		else {
 			enum bug_trap_type btt;
 
 			btt = report_bug(regs->psw.addr & PSW_ADDR_INSN, regs);
 			if (btt == BUG_TRAP_TYPE_WARN)
 				return;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			die(str, regs, pgm_int_code);
+=======
+			die(regs, str);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			die(regs, str);
+>>>>>>> refs/remotes/origin/master
 		}
         }
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void __user *get_psw_address(struct pt_regs *regs,
 					   long pgm_int_code)
 {
@@ -355,6 +499,51 @@ static void name(struct pt_regs *regs, long pgm_int_code, \
         info.si_code = sicode; \
 	info.si_addr = get_psw_address(regs, pgm_int_code); \
 	do_trap(pgm_int_code, signr, str, regs, &info);	    \
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void __kprobes do_per_trap(struct pt_regs *regs)
+{
+	siginfo_t info;
+
+	if (notify_die(DIE_SSTEP, "sstep", regs, 0, 0, SIGTRAP) == NOTIFY_STOP)
+		return;
+	if (!current->ptrace)
+		return;
+	info.si_signo = SIGTRAP;
+	info.si_errno = 0;
+	info.si_code = TRAP_HWBKPT;
+	info.si_addr =
+		(void __force __user *) current->thread.per_event.address;
+	force_sig_info(SIGTRAP, &info, current);
+}
+
+<<<<<<< HEAD
+static void default_trap_handler(struct pt_regs *regs)
+{
+        if (regs->psw.mask & PSW_MASK_PSTATE) {
+=======
+void default_trap_handler(struct pt_regs *regs)
+{
+	if (user_mode(regs)) {
+>>>>>>> refs/remotes/origin/master
+		report_user_fault(regs, SIGSEGV);
+		do_exit(SIGSEGV);
+	} else
+		die(regs, "Unknown program exception");
+}
+
+#define DO_ERROR_INFO(name, signr, sicode, str) \
+<<<<<<< HEAD
+static void name(struct pt_regs *regs) \
+{ \
+	do_trap(regs, signr, sicode, str); \
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void name(struct pt_regs *regs)			\
+{						\
+	do_trap(regs, signr, sicode, str);	\
+>>>>>>> refs/remotes/origin/master
 }
 
 DO_ERROR_INFO(addressing_exception, SIGILL, ILL_ILLADR,
@@ -384,6 +573,8 @@ DO_ERROR_INFO(special_op_exception, SIGILL, ILL_ILLOPN,
 DO_ERROR_INFO(translation_exception, SIGILL, ILL_ILLOPN,
 	      "translation exception")
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void do_fp_trap(struct pt_regs *regs, void __user *location,
 			      int fpc, long pgm_int_code)
 {
@@ -393,10 +584,27 @@ static inline void do_fp_trap(struct pt_regs *regs, void __user *location,
 	si.si_errno = 0;
 	si.si_addr = location;
 	si.si_code = 0;
+=======
+static inline void do_fp_trap(struct pt_regs *regs, int fpc)
+{
+	int si_code = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_64BIT
+DO_ERROR_INFO(transaction_exception, SIGILL, ILL_ILLOPN,
+	      "transaction constraint exception")
+#endif
+
+static inline void do_fp_trap(struct pt_regs *regs, int fpc)
+{
+	int si_code = 0;
+>>>>>>> refs/remotes/origin/master
 	/* FPC[2] is Data Exception Code */
 	if ((fpc & 0x00000300) == 0) {
 		/* bits 6 and 7 of DXC are 0 iff IEEE exception */
 		if (fpc & 0x8000) /* invalid fp operation */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			si.si_code = FPE_FLTINV;
 		else if (fpc & 0x4000) /* div by 0 */
 			si.si_code = FPE_FLTDIV;
@@ -413,21 +621,69 @@ static inline void do_fp_trap(struct pt_regs *regs, void __user *location,
 
 static void __kprobes illegal_op(struct pt_regs *regs, long pgm_int_code,
 				 unsigned long trans_exc_code)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			si_code = FPE_FLTINV;
+		else if (fpc & 0x4000) /* div by 0 */
+			si_code = FPE_FLTDIV;
+		else if (fpc & 0x2000) /* overflow */
+			si_code = FPE_FLTOVF;
+		else if (fpc & 0x1000) /* underflow */
+			si_code = FPE_FLTUND;
+		else if (fpc & 0x0800) /* inexact */
+			si_code = FPE_FLTRES;
+	}
+	do_trap(regs, SIGFPE, si_code, "floating point exception");
+}
+
+<<<<<<< HEAD
+static void __kprobes illegal_op(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __kprobes illegal_op(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	siginfo_t info;
         __u8 opcode[6];
 	__u16 __user *location;
 	int signal = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	location = get_psw_address(regs, pgm_int_code);
+=======
+	location = get_psw_address(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (regs->psw.mask & PSW_MASK_PSTATE) {
 		if (get_user(*((__u16 *) opcode), (__u16 __user *) location))
 			return;
 		if (*((__u16 *) opcode) == S390_BREAKPOINT_U16) {
+<<<<<<< HEAD
 			if (tracehook_consider_fatal_signal(current, SIGTRAP))
 				force_sig(SIGTRAP, current);
 			else
+=======
+=======
+	location = get_trap_ip(regs);
+
+	if (user_mode(regs)) {
+		if (get_user(*((__u16 *) opcode), (__u16 __user *) location))
+			return;
+		if (*((__u16 *) opcode) == S390_BREAKPOINT_U16) {
+>>>>>>> refs/remotes/origin/master
+			if (current->ptrace) {
+				info.si_signo = SIGTRAP;
+				info.si_errno = 0;
+				info.si_code = TRAP_BRKPT;
+				info.si_addr = location;
+				force_sig_info(SIGTRAP, &info, current);
+			} else
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				signal = SIGILL;
 #ifdef CONFIG_MATHEMU
 		} else if (opcode[0] == 0xb3) {
@@ -459,13 +715,23 @@ static void __kprobes illegal_op(struct pt_regs *regs, long pgm_int_code,
 		 * If we get an illegal op in kernel mode, send it through the
 		 * kprobes notifier. If kprobes doesn't pick it up, SIGILL
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (notify_die(DIE_BPT, "bpt", regs, pgm_int_code,
+=======
+		if (notify_die(DIE_BPT, "bpt", regs, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (notify_die(DIE_BPT, "bpt", regs, 0,
+>>>>>>> refs/remotes/origin/master
 			       3, SIGTRAP) != NOTIFY_STOP)
 			signal = SIGILL;
 	}
 
 #ifdef CONFIG_MATHEMU
         if (signal == SIGFPE)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		do_fp_trap(regs, location,
 			   current->thread.fp_regs.fpc, pgm_int_code);
         else if (signal == SIGSEGV) {
@@ -485,21 +751,53 @@ static void __kprobes illegal_op(struct pt_regs *regs, long pgm_int_code,
 		do_trap(pgm_int_code, signal,
 			"illegal operation", regs, &info);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		do_fp_trap(regs, current->thread.fp_regs.fpc);
+	else if (signal == SIGSEGV)
+		do_trap(regs, signal, SEGV_MAPERR, "user address fault");
+	else
+#endif
+	if (signal)
+		do_trap(regs, signal, ILL_ILLOPC, "illegal operation");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 #ifdef CONFIG_MATHEMU
+<<<<<<< HEAD
+<<<<<<< HEAD
 asmlinkage void specification_exception(struct pt_regs *regs,
 					long pgm_int_code,
 					unsigned long trans_exc_code)
+=======
+void specification_exception(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void specification_exception(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
         __u8 opcode[6];
 	__u16 __user *location = NULL;
 	int signal = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	location = (__u16 __user *) get_psw_address(regs, pgm_int_code);
+=======
+	location = (__u16 __user *) get_psw_address(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
         if (regs->psw.mask & PSW_MASK_PSTATE) {
+=======
+	location = (__u16 __user *) get_trap_ip(regs);
+
+	if (user_mode(regs)) {
+>>>>>>> refs/remotes/origin/master
 		get_user(*((__u16 *) opcode), location);
 		switch (opcode[0]) {
 		case 0x28: /* LDR Rx,Ry   */
@@ -532,6 +830,8 @@ asmlinkage void specification_exception(struct pt_regs *regs,
 		signal = SIGILL;
 
         if (signal == SIGFPE)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		do_fp_trap(regs, location,
 			   current->thread.fp_regs.fpc, pgm_int_code);
         else if (signal) {
@@ -543,25 +843,55 @@ asmlinkage void specification_exception(struct pt_regs *regs,
 		do_trap(pgm_int_code, signal,
 			"specification exception", regs, &info);
 	}
+=======
+		do_fp_trap(regs, current->thread.fp_regs.fpc);
+	else if (signal)
+		do_trap(regs, signal, ILL_ILLOPN, "specification exception");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		do_fp_trap(regs, current->thread.fp_regs.fpc);
+	else if (signal)
+		do_trap(regs, signal, ILL_ILLOPN, "specification exception");
+>>>>>>> refs/remotes/origin/master
 }
 #else
 DO_ERROR_INFO(specification_exception, SIGILL, ILL_ILLOPN,
 	      "specification exception");
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void data_exception(struct pt_regs *regs, long pgm_int_code,
 			   unsigned long trans_exc_code)
+=======
+static void data_exception(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void data_exception(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	__u16 __user *location;
 	int signal = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	location = get_psw_address(regs, pgm_int_code);
+=======
+	location = get_psw_address(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	location = get_trap_ip(regs);
+>>>>>>> refs/remotes/origin/master
 
 	if (MACHINE_HAS_IEEE)
 		asm volatile("stfpc %0" : "=m" (current->thread.fp_regs.fpc));
 
 #ifdef CONFIG_MATHEMU
+<<<<<<< HEAD
         else if (regs->psw.mask & PSW_MASK_PSTATE) {
+=======
+	else if (user_mode(regs)) {
+>>>>>>> refs/remotes/origin/master
         	__u8 opcode[6];
 		get_user(*((__u16 *) opcode), location);
 		switch (opcode[0]) {
@@ -620,6 +950,8 @@ static void data_exception(struct pt_regs *regs, long pgm_int_code,
 	else
 		signal = SIGILL;
         if (signal == SIGFPE)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		do_fp_trap(regs, location,
 			   current->thread.fp_regs.fpc, pgm_int_code);
         else if (signal) {
@@ -637,10 +969,23 @@ static void space_switch_exception(struct pt_regs *regs, long pgm_int_code,
 {
         siginfo_t info;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		do_fp_trap(regs, current->thread.fp_regs.fpc);
+	else if (signal)
+		do_trap(regs, signal, ILL_ILLOPN, "data exception");
+}
+
+<<<<<<< HEAD
+static void space_switch_exception(struct pt_regs *regs)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Set user psw back to home space mode. */
 	if (regs->psw.mask & PSW_MASK_PSTATE)
 		regs->psw.mask |= PSW_ASC_HOME;
 	/* Send SIGILL. */
+<<<<<<< HEAD
         info.si_signo = SIGILL;
         info.si_errno = 0;
         info.si_code = ILL_PRVOPC;
@@ -649,6 +994,23 @@ static void space_switch_exception(struct pt_regs *regs, long pgm_int_code,
 }
 
 asmlinkage void __kprobes kernel_stack_overflow(struct pt_regs * regs)
+=======
+=======
+void space_switch_exception(struct pt_regs *regs)
+{
+	/* Set user psw back to home space mode. */
+	if (user_mode(regs))
+		regs->psw.mask |= PSW_ASC_HOME;
+	/* Send SIGILL. */
+>>>>>>> refs/remotes/origin/master
+	do_trap(regs, SIGILL, ILL_PRVOPC, "space switch event");
+}
+
+void __kprobes kernel_stack_overflow(struct pt_regs * regs)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	bust_spinlocks(1);
 	printk("Kernel stack overflow.\n");
@@ -657,6 +1019,7 @@ asmlinkage void __kprobes kernel_stack_overflow(struct pt_regs * regs)
 	panic("Corrupt kernel stack, can't continue.");
 }
 
+<<<<<<< HEAD
 /* init is done in lowcore.S and head.S */
 
 void __init trap_init(void)
@@ -694,5 +1057,9 @@ void __init trap_init(void)
         pgm_check_table[0x1C] = &space_switch_exception;
         pgm_check_table[0x1D] = &hfp_sqrt_exception;
 	/* Enable machine checks early. */
+=======
+void __init trap_init(void)
+{
+>>>>>>> refs/remotes/origin/master
 	local_mcck_enable();
 }

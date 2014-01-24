@@ -1,9 +1,12 @@
 #ifndef _LINUX_POLL_H
 #define _LINUX_POLL_H
 
+<<<<<<< HEAD
 #include <asm/poll.h>
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/compiler.h>
 #include <linux/ktime.h>
@@ -12,6 +15,10 @@
 #include <linux/fs.h>
 #include <linux/sysctl.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <uapi/linux/poll.h>
+>>>>>>> refs/remotes/origin/master
 
 extern struct ctl_table epoll_table[]; /* for sysctl */
 /* ~832 bytes of stack space used max in sys_select/sys_poll before allocating
@@ -32,21 +39,79 @@ struct poll_table_struct;
  */
 typedef void (*poll_queue_proc)(struct file *, wait_queue_head_t *, struct poll_table_struct *);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct poll_table_struct {
 	poll_queue_proc qproc;
 	unsigned long key;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Do not touch the structure directly, use the access functions
+ * poll_does_not_wait() and poll_requested_events() instead.
+ */
+typedef struct poll_table_struct {
+	poll_queue_proc _qproc;
+	unsigned long _key;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } poll_table;
 
 static inline void poll_wait(struct file * filp, wait_queue_head_t * wait_address, poll_table *p)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (p && wait_address)
 		p->qproc(filp, wait_address, p);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (p && p->_qproc && wait_address)
+		p->_qproc(filp, wait_address, p);
+}
+
+/*
+ * Return true if it is guaranteed that poll will not wait. This is the case
+ * if the poll() of another file descriptor in the set got an event, so there
+ * is no need for waiting.
+ */
+static inline bool poll_does_not_wait(const poll_table *p)
+{
+	return p == NULL || p->_qproc == NULL;
+}
+
+/*
+ * Return the set of events that the application wants to poll for.
+ * This is useful for drivers that need to know whether a DMA transfer has
+ * to be started implicitly on poll(). You typically only want to do that
+ * if the application is actually polling for POLLIN and/or POLLOUT.
+ */
+static inline unsigned long poll_requested_events(const poll_table *p)
+{
+	return p ? p->_key : ~0UL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void init_poll_funcptr(poll_table *pt, poll_queue_proc qproc)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pt->qproc = qproc;
 	pt->key   = ~0UL; /* all events enabled */
+=======
+	pt->_qproc = qproc;
+	pt->_key   = ~0UL; /* all events enabled */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pt->_qproc = qproc;
+	pt->_key   = ~0UL; /* all events enabled */
+>>>>>>> refs/remotes/origin/master
 }
 
 struct poll_table_entry {
@@ -138,6 +203,9 @@ extern int core_sys_select(int n, fd_set __user *inp, fd_set __user *outp,
 
 extern int poll_select_set_timeout(struct timespec *to, long sec, long nsec);
 
+<<<<<<< HEAD
 #endif /* KERNEL */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_POLL_H */

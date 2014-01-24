@@ -5,7 +5,15 @@
 #include <cpu/irq.h>
 #include "pci-sh5.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __init pcibios_map_platform_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+int __init pcibios_map_platform_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init pcibios_map_platform_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int result = -1;
 

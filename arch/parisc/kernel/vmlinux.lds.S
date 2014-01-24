@@ -6,6 +6,7 @@
  *    Copyright (C) 2000 Michael Ang <mang with subcarrier.org>
  *    Copyright (C) 2002 Randolph Chung <tausq with parisc-linux.org>
  *    Copyright (C) 2003 James Bottomley <jejb with parisc-linux.org>
+<<<<<<< HEAD
  *    Copyright (C) 2006 Helge Deller <deller@gmx.de>
  *
  *
@@ -24,6 +25,21 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #include <asm-generic/vmlinux.lds.h>
+=======
+ *    Copyright (C) 2006-2013 Helge Deller <deller@gmx.de>
+ */
+
+/*
+ * Put page table entries (swapper_pg_dir) as the first thing in .bss. This
+ * will ensure that it has .bss alignment (PAGE_SIZE).
+ */
+#define BSS_FIRST_SECTIONS	*(.data..vm0.pmd) \
+				*(.data..vm0.pgd) \
+				*(.data..vm0.pte)
+
+#include <asm-generic/vmlinux.lds.h>
+
+>>>>>>> refs/remotes/origin/master
 /* needed for the processor specific cache alignment size */	
 #include <asm/cache.h>
 #include <asm/page.h>
@@ -39,7 +55,11 @@ OUTPUT_FORMAT("elf64-hppa-linux")
 OUTPUT_ARCH(hppa:hppa2.0w)
 #endif
 
+<<<<<<< HEAD
 ENTRY(_stext)
+=======
+ENTRY(parisc_kernel_start)
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_64BIT
 jiffies = jiffies_64 + 4;
 #else
@@ -49,11 +69,40 @@ SECTIONS
 {
 	. = KERNEL_BINARY_TEXT_START;
 
+<<<<<<< HEAD
 	_text = .;		/* Text and read-only data */
 	.head ALIGN(16) : {
 		HEAD_TEXT
 	} = 0
 	.text ALIGN(16) : {
+<<<<<<< HEAD
+=======
+	__init_begin = .;
+	HEAD_TEXT_SECTION
+	INIT_TEXT_SECTION(8)
+
+	. = ALIGN(PAGE_SIZE);
+	INIT_DATA_SECTION(PAGE_SIZE)
+	/* we have to discard exit text and such at runtime, not link time */
+	.exit.text :
+	{
+		EXIT_TEXT
+	}
+	.exit.data :
+	{
+		EXIT_DATA
+	}
+	PERCPU_SECTION(8)
+	. = ALIGN(PAGE_SIZE);
+	__init_end = .;
+	/* freed after init ends here */
+
+	_text = .;		/* Text and read-only data */
+	_stext = .;
+	.text ALIGN(PAGE_SIZE) : {
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		TEXT_TEXT
 		SCHED_TEXT
 		LOCK_TEXT
@@ -68,12 +117,22 @@ SECTIONS
 		*(.lock.text)		/* out-of-line lock text */
 		*(.gnu.warning)
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* End of text section */
 	_etext = .;
+=======
+	. = ALIGN(PAGE_SIZE);
+	_etext = .;
+	/* End of text section */
+>>>>>>> refs/remotes/origin/master
 
 	/* Start of data section */
 	_sdata = .;
 
+<<<<<<< HEAD
 	RODATA
 
 	/* writeable */
@@ -83,6 +142,23 @@ SECTIONS
 	 */
 	. = ALIGN(PAGE_SIZE);
 	data_start = .;
+=======
+	RO_DATA_SECTION(8)
+
+#ifdef CONFIG_64BIT
+	. = ALIGN(16);
+	/* Linkage tables */
+	.opd : {
+		*(.opd)
+	} PROVIDE (__gp = .);
+	.plt : {
+		*(.plt)
+	}
+	.dlt : {
+		*(.dlt)
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* unwind info */
 	.PARISC.unwind : {
@@ -91,11 +167,27 @@ SECTIONS
 		__stop___unwind = .;
 	}
 
+<<<<<<< HEAD
 	EXCEPTION_TABLE(16)
 	NOTES
 
 	/* Data */
 	RW_DATA_SECTION(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
+=======
+	/* writeable */
+	/* Make sure this is page aligned so
+	 * that we can properly leave these
+	 * as writable
+	 */
+	. = ALIGN(PAGE_SIZE);
+	data_start = .;
+
+	EXCEPTION_TABLE(8)
+	NOTES
+
+	/* Data */
+	RW_DATA_SECTION(L1_CACHE_BYTES, PAGE_SIZE, PAGE_SIZE)
+>>>>>>> refs/remotes/origin/master
 
 	/* PA-RISC locks requires 16-byte alignment */
 	. = ALIGN(16);
@@ -107,6 +199,7 @@ SECTIONS
 	_edata = .;
 
 	/* BSS */
+<<<<<<< HEAD
 	__bss_start = .;
 	/* page table entries need to be PAGE_SIZE aligned */
 	. = ALIGN(PAGE_SIZE);
@@ -155,6 +248,10 @@ SECTIONS
 	. = ALIGN(PAGE_SIZE);
 	__init_end = .;
 	/* freed after init ends here */
+=======
+	BSS_SECTION(PAGE_SIZE, PAGE_SIZE, 8)
+
+>>>>>>> refs/remotes/origin/master
 	_end = . ;
 
 	STABS_DEBUG

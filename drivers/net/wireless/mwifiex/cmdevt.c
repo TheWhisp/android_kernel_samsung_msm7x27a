@@ -24,6 +24,10 @@
 #include "main.h"
 #include "wmm.h"
 #include "11n.h"
+<<<<<<< HEAD
+=======
+#include "11ac.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This function initializes a command node.
@@ -40,8 +44,23 @@ mwifiex_init_cmd_node(struct mwifiex_private *priv,
 {
 	cmd_node->priv = priv;
 	cmd_node->cmd_oid = cmd_oid;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmd_node->wait_q_enabled = priv->adapter->cmd_wait_q_required;
 	priv->adapter->cmd_wait_q_required = false;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (priv->adapter->cmd_wait_q_required) {
+		cmd_node->wait_q_enabled = priv->adapter->cmd_wait_q_required;
+		priv->adapter->cmd_wait_q_required = false;
+		cmd_node->cmd_wait_q_woken = false;
+		cmd_node->condition = &cmd_node->cmd_wait_q_woken;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cmd_node->data_buf = data_buf;
 	cmd_node->cmd_skb = cmd_node->skb;
 }
@@ -63,7 +82,15 @@ mwifiex_get_cmd_node(struct mwifiex_adapter *adapter)
 		return NULL;
 	}
 	cmd_node = list_first_entry(&adapter->cmd_free_q,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			struct cmd_ctrl_node, list);
+=======
+				    struct cmd_ctrl_node, list);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    struct cmd_ctrl_node, list);
+>>>>>>> refs/remotes/origin/master
 	list_del(&cmd_node->list);
 	spin_unlock_irqrestore(&adapter->cmd_free_q_lock, flags);
 
@@ -90,8 +117,22 @@ mwifiex_clean_cmd_node(struct mwifiex_adapter *adapter,
 	cmd_node->data_buf = NULL;
 	cmd_node->wait_q_enabled = false;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cmd_node->resp_skb) {
 		dev_kfree_skb_any(cmd_node->resp_skb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (cmd_node->cmd_skb)
+		skb_trim(cmd_node->cmd_skb, 0);
+
+	if (cmd_node->resp_skb) {
+		adapter->if_ops.cmdrsp_complete(adapter, cmd_node->resp_skb);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cmd_node->resp_skb = NULL;
 	}
 }
@@ -104,6 +145,8 @@ mwifiex_clean_cmd_node(struct mwifiex_adapter *adapter,
  * main thread.
  */
 static int mwifiex_cmd_host_cmd(struct mwifiex_private *priv,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				struct host_cmd_ds_command *cmd, void *data_buf)
 {
 	struct mwifiex_ds_misc_cmd *pcmd_ptr =
@@ -111,6 +154,18 @@ static int mwifiex_cmd_host_cmd(struct mwifiex_private *priv,
 
 	/* Copy the HOST command to command buffer */
 	memcpy((void *) cmd, pcmd_ptr->cmd, pcmd_ptr->len);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				struct host_cmd_ds_command *cmd,
+				struct mwifiex_ds_misc_cmd *pcmd_ptr)
+{
+	/* Copy the HOST command to command buffer */
+	memcpy(cmd, pcmd_ptr->cmd, pcmd_ptr->len);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(priv->adapter->dev, "cmd: host cmd size = %d\n", pcmd_ptr->len);
 	return 0;
 }
@@ -134,6 +189,10 @@ static int mwifiex_dnld_cmd_to_fw(struct mwifiex_private *priv,
 	uint16_t cmd_size;
 	struct timeval tstamp;
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	__le32 tmp;
+>>>>>>> refs/remotes/origin/master
 
 	if (!adapter || !cmd_node)
 		return -1;
@@ -146,37 +205,94 @@ static int mwifiex_dnld_cmd_to_fw(struct mwifiex_private *priv,
 			" or cmd size is 0, not sending\n");
 		if (cmd_node->wait_q_enabled)
 			adapter->cmd_wait_q.status = -1;
+<<<<<<< HEAD
 		mwifiex_insert_cmd_to_free_q(adapter, cmd_node);
+=======
+		mwifiex_recycle_cmd_node(adapter, cmd_node);
+		return -1;
+	}
+
+	cmd_code = le16_to_cpu(host_cmd->command);
+	cmd_size = le16_to_cpu(host_cmd->size);
+
+	if (adapter->hw_status == MWIFIEX_HW_STATUS_RESET &&
+	    cmd_code != HostCmd_CMD_FUNC_SHUTDOWN &&
+	    cmd_code != HostCmd_CMD_FUNC_INIT) {
+		dev_err(adapter->dev,
+			"DNLD_CMD: FW in reset state, ignore cmd %#x\n",
+			cmd_code);
+		mwifiex_complete_cmd(adapter, cmd_node);
+		mwifiex_recycle_cmd_node(adapter, cmd_node);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
 	/* Set command sequence number */
 	adapter->seq_num++;
 	host_cmd->seq_num = cpu_to_le16(HostCmd_SET_SEQ_NO_BSS_INFO
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    (adapter->seq_num, cmd_node->priv->bss_num,
 			     cmd_node->priv->bss_type));
+=======
+					(adapter->seq_num,
+					 cmd_node->priv->bss_num,
+					 cmd_node->priv->bss_type));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					(adapter->seq_num,
+					 cmd_node->priv->bss_num,
+					 cmd_node->priv->bss_type));
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&adapter->mwifiex_cmd_lock, flags);
 	adapter->curr_cmd = cmd_node;
 	spin_unlock_irqrestore(&adapter->mwifiex_cmd_lock, flags);
 
+<<<<<<< HEAD
 	cmd_code = le16_to_cpu(host_cmd->command);
 	cmd_size = le16_to_cpu(host_cmd->size);
 
 	skb_trim(cmd_node->cmd_skb, cmd_size);
+=======
+	/* Adjust skb length */
+	if (cmd_node->cmd_skb->len > cmd_size)
+		/*
+		 * cmd_size is less than sizeof(struct host_cmd_ds_command).
+		 * Trim off the unused portion.
+		 */
+		skb_trim(cmd_node->cmd_skb, cmd_size);
+	else if (cmd_node->cmd_skb->len < cmd_size)
+		/*
+		 * cmd_size is larger than sizeof(struct host_cmd_ds_command)
+		 * because we have appended custom IE TLV. Increase skb length
+		 * accordingly.
+		 */
+		skb_put(cmd_node->cmd_skb, cmd_size - cmd_node->cmd_skb->len);
+>>>>>>> refs/remotes/origin/master
 
 	do_gettimeofday(&tstamp);
 	dev_dbg(adapter->dev, "cmd: DNLD_CMD: (%lu.%lu): %#x, act %#x, len %d,"
 		" seqno %#x\n",
 		tstamp.tv_sec, tstamp.tv_usec, cmd_code,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	       le16_to_cpu(*(__le16 *) ((u8 *) host_cmd + S_DS_GEN)), cmd_size,
 	       le16_to_cpu(host_cmd->seq_num));
+=======
+		le16_to_cpu(*(__le16 *) ((u8 *) host_cmd + S_DS_GEN)), cmd_size,
+		le16_to_cpu(host_cmd->seq_num));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	skb_push(cmd_node->cmd_skb, INTF_HEADER_LEN);
 
 	ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_TYPE_CMD,
+<<<<<<< HEAD
 					     cmd_node->cmd_skb->data,
 					     cmd_node->cmd_skb->len, NULL);
+=======
+					   cmd_node->cmd_skb, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	skb_pull(cmd_node->cmd_skb, INTF_HEADER_LEN);
 
@@ -185,6 +301,36 @@ static int mwifiex_dnld_cmd_to_fw(struct mwifiex_private *priv,
 		if (cmd_node->wait_q_enabled)
 			adapter->cmd_wait_q.status = -1;
 		mwifiex_insert_cmd_to_free_q(adapter, adapter->curr_cmd);
+=======
+		le16_to_cpu(*(__le16 *) ((u8 *) host_cmd + S_DS_GEN)), cmd_size,
+		le16_to_cpu(host_cmd->seq_num));
+
+	if (adapter->iface_type == MWIFIEX_USB) {
+		tmp = cpu_to_le32(MWIFIEX_USB_TYPE_CMD);
+		skb_push(cmd_node->cmd_skb, MWIFIEX_TYPE_LEN);
+		memcpy(cmd_node->cmd_skb->data, &tmp, MWIFIEX_TYPE_LEN);
+		adapter->cmd_sent = true;
+		ret = adapter->if_ops.host_to_card(adapter,
+						   MWIFIEX_USB_EP_CMD_EVENT,
+						   cmd_node->cmd_skb, NULL);
+		skb_pull(cmd_node->cmd_skb, MWIFIEX_TYPE_LEN);
+		if (ret == -EBUSY)
+			cmd_node->cmd_skb = NULL;
+	} else {
+		skb_push(cmd_node->cmd_skb, INTF_HEADER_LEN);
+		ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_TYPE_CMD,
+						   cmd_node->cmd_skb, NULL);
+		skb_pull(cmd_node->cmd_skb, INTF_HEADER_LEN);
+	}
+
+	if (ret == -1) {
+		dev_err(adapter->dev, "DNLD_CMD: host to card failed\n");
+		if (adapter->iface_type == MWIFIEX_USB)
+			adapter->cmd_sent = false;
+		if (cmd_node->wait_q_enabled)
+			adapter->cmd_wait_q.status = -1;
+		mwifiex_recycle_cmd_node(adapter, adapter->curr_cmd);
+>>>>>>> refs/remotes/origin/master
 
 		spin_lock_irqsave(&adapter->mwifiex_cmd_lock, flags);
 		adapter->curr_cmd = NULL;
@@ -196,17 +342,38 @@ static int mwifiex_dnld_cmd_to_fw(struct mwifiex_private *priv,
 
 	/* Save the last command id and action to debug log */
 	adapter->dbg.last_cmd_index =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(adapter->dbg.last_cmd_index + 1) % DBG_CMD_NUM;
 	adapter->dbg.last_cmd_id[adapter->dbg.last_cmd_index] = cmd_code;
 	adapter->dbg.last_cmd_act[adapter->dbg.last_cmd_index] =
 		le16_to_cpu(*(__le16 *) ((u8 *) host_cmd + S_DS_GEN));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			(adapter->dbg.last_cmd_index + 1) % DBG_CMD_NUM;
+	adapter->dbg.last_cmd_id[adapter->dbg.last_cmd_index] = cmd_code;
+	adapter->dbg.last_cmd_act[adapter->dbg.last_cmd_index] =
+			le16_to_cpu(*(__le16 *) ((u8 *) host_cmd + S_DS_GEN));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Clear BSS_NO_BITS from HostCmd */
 	cmd_code &= HostCmd_CMD_ID_MASK;
 
 	/* Setup the timer after transmit command */
 	mod_timer(&adapter->cmd_timer,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		jiffies + (MWIFIEX_TIMER_10S * HZ) / 1000);
+=======
+		  jiffies + (MWIFIEX_TIMER_10S * HZ) / 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  jiffies + msecs_to_jiffies(MWIFIEX_TIMER_10S));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -226,7 +393,18 @@ static int mwifiex_dnld_sleep_confirm_cmd(struct mwifiex_adapter *adapter)
 	struct mwifiex_private *priv;
 	struct mwifiex_opt_sleep_confirm *sleep_cfm_buf =
 				(struct mwifiex_opt_sleep_confirm *)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				adapter->sleep_cfm->data;
+=======
+						adapter->sleep_cfm->data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						adapter->sleep_cfm->data;
+	struct sk_buff *sleep_cfm_tmp;
+	__le32 tmp;
+
+>>>>>>> refs/remotes/origin/master
 	priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_ANY);
 
 	sleep_cfm_buf->seq_num =
@@ -235,11 +413,40 @@ static int mwifiex_dnld_sleep_confirm_cmd(struct mwifiex_adapter *adapter)
 					 priv->bss_type)));
 	adapter->seq_num++;
 
+<<<<<<< HEAD
 	skb_push(adapter->sleep_cfm, INTF_HEADER_LEN);
 	ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_TYPE_CMD,
+<<<<<<< HEAD
 					     adapter->sleep_cfm->data,
 					     adapter->sleep_cfm->len, NULL);
+=======
+					   adapter->sleep_cfm, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	skb_pull(adapter->sleep_cfm, INTF_HEADER_LEN);
+=======
+	if (adapter->iface_type == MWIFIEX_USB) {
+		sleep_cfm_tmp =
+			dev_alloc_skb(sizeof(struct mwifiex_opt_sleep_confirm)
+				      + MWIFIEX_TYPE_LEN);
+		skb_put(sleep_cfm_tmp, sizeof(struct mwifiex_opt_sleep_confirm)
+			+ MWIFIEX_TYPE_LEN);
+		tmp = cpu_to_le32(MWIFIEX_USB_TYPE_CMD);
+		memcpy(sleep_cfm_tmp->data, &tmp, MWIFIEX_TYPE_LEN);
+		memcpy(sleep_cfm_tmp->data + MWIFIEX_TYPE_LEN,
+		       adapter->sleep_cfm->data,
+		       sizeof(struct mwifiex_opt_sleep_confirm));
+		ret = adapter->if_ops.host_to_card(adapter,
+						   MWIFIEX_USB_EP_CMD_EVENT,
+						   sleep_cfm_tmp, NULL);
+		if (ret != -EBUSY)
+			dev_kfree_skb_any(sleep_cfm_tmp);
+	} else {
+		skb_push(adapter->sleep_cfm, INTF_HEADER_LEN);
+		ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_TYPE_CMD,
+						   adapter->sleep_cfm, NULL);
+		skb_pull(adapter->sleep_cfm, INTF_HEADER_LEN);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (ret == -1) {
 		dev_err(adapter->dev, "SLEEP_CFM: failed\n");
@@ -247,7 +454,15 @@ static int mwifiex_dnld_sleep_confirm_cmd(struct mwifiex_adapter *adapter)
 		return -1;
 	}
 	if (GET_BSS_ROLE(mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_ANY))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			== MWIFIEX_BSS_ROLE_STA) {
+=======
+	    == MWIFIEX_BSS_ROLE_STA) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    == MWIFIEX_BSS_ROLE_STA) {
+>>>>>>> refs/remotes/origin/master
 		if (!sleep_cfm_buf->resp_ctrl)
 			/* Response is not needed for sleep
 			   confirm command */
@@ -255,12 +470,27 @@ static int mwifiex_dnld_sleep_confirm_cmd(struct mwifiex_adapter *adapter)
 		else
 			adapter->ps_state = PS_STATE_SLEEP_CFM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!sleep_cfm_buf->resp_ctrl
 				&& (adapter->is_hs_configured
 					&& !adapter->sleep_period.period)) {
 			adapter->pm_wakeup_card_req = true;
 			mwifiex_hs_activated_event(mwifiex_get_priv(adapter,
 						MWIFIEX_BSS_ROLE_STA), true);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (!sleep_cfm_buf->resp_ctrl &&
+		    (adapter->is_hs_configured &&
+		     !adapter->sleep_period.period)) {
+			adapter->pm_wakeup_card_req = true;
+			mwifiex_hs_activated_event(mwifiex_get_priv
+					(adapter, MWIFIEX_BSS_ROLE_STA), true);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -282,6 +512,7 @@ static int mwifiex_dnld_sleep_confirm_cmd(struct mwifiex_adapter *adapter)
 int mwifiex_alloc_cmd_buffer(struct mwifiex_adapter *adapter)
 {
 	struct cmd_ctrl_node *cmd_array;
+<<<<<<< HEAD
 	u32 buf_size;
 	u32 i;
 
@@ -290,12 +521,27 @@ int mwifiex_alloc_cmd_buffer(struct mwifiex_adapter *adapter)
 	cmd_array = kzalloc(buf_size, GFP_KERNEL);
 	if (!cmd_array) {
 		dev_err(adapter->dev, "%s: failed to alloc cmd_array\n",
+<<<<<<< HEAD
 				__func__);
+=======
+			__func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 
 	adapter->cmd_pool = cmd_array;
 	memset(adapter->cmd_pool, 0, buf_size);
+=======
+	u32 i;
+
+	/* Allocate and initialize struct cmd_ctrl_node */
+	cmd_array = kcalloc(MWIFIEX_NUM_OF_CMD_BUFFER,
+			    sizeof(struct cmd_ctrl_node), GFP_KERNEL);
+	if (!cmd_array)
+		return -ENOMEM;
+
+	adapter->cmd_pool = cmd_array;
+>>>>>>> refs/remotes/origin/master
 
 	/* Allocate and initialize command buffers */
 	for (i = 0; i < MWIFIEX_NUM_OF_CMD_BUFFER; i++) {
@@ -339,7 +585,16 @@ int mwifiex_free_cmd_buffer(struct mwifiex_adapter *adapter)
 		}
 		if (!cmd_array[i].resp_skb)
 			continue;
+<<<<<<< HEAD
 		dev_kfree_skb_any(cmd_array[i].resp_skb);
+=======
+
+		if (adapter->iface_type == MWIFIEX_USB)
+			adapter->if_ops.cmdrsp_complete(adapter,
+							cmd_array[i].resp_skb);
+		else
+			dev_kfree_skb_any(cmd_array[i].resp_skb);
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Release struct cmd_ctrl_node */
 	if (adapter->cmd_pool) {
@@ -373,9 +628,21 @@ int mwifiex_process_event(struct mwifiex_adapter *adapter)
 
 	/* Save the last event to debug log */
 	adapter->dbg.last_event_index =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(adapter->dbg.last_event_index + 1) % DBG_CMD_NUM;
 	adapter->dbg.last_event[adapter->dbg.last_event_index] =
 		(u16) eventcause;
+=======
+			(adapter->dbg.last_event_index + 1) % DBG_CMD_NUM;
+	adapter->dbg.last_event[adapter->dbg.last_event_index] =
+							(u16) eventcause;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			(adapter->dbg.last_event_index + 1) % DBG_CMD_NUM;
+	adapter->dbg.last_event[adapter->dbg.last_event_index] =
+							(u16) eventcause;
+>>>>>>> refs/remotes/origin/master
 
 	/* Get BSS number and corresponding priv */
 	priv = mwifiex_get_priv_by_id(adapter, EVENT_GET_BSS_NUM(eventcause),
@@ -388,21 +655,58 @@ int mwifiex_process_event(struct mwifiex_adapter *adapter)
 
 	if (skb) {
 		rx_info = MWIFIEX_SKB_RXCB(skb);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rx_info->bss_index = priv->bss_index;
+=======
+		rx_info->bss_num = priv->bss_num;
+		rx_info->bss_type = priv->bss_type;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rx_info->bss_num = priv->bss_num;
+		rx_info->bss_type = priv->bss_type;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (eventcause != EVENT_PS_SLEEP && eventcause != EVENT_PS_AWAKE) {
 		do_gettimeofday(&tstamp);
 		dev_dbg(adapter->dev, "event: %lu.%lu: cause: %#x\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       tstamp.tv_sec, tstamp.tv_usec, eventcause);
+=======
+			tstamp.tv_sec, tstamp.tv_usec, eventcause);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	ret = mwifiex_process_sta_event(priv);
 
 	adapter->event_cause = 0;
 	adapter->event_skb = NULL;
+<<<<<<< HEAD
 
 	dev_kfree_skb_any(skb);
+=======
+	adapter->if_ops.event_complete(adapter, skb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tstamp.tv_sec, tstamp.tv_usec, eventcause);
+	} else {
+		/* Handle PS_SLEEP/AWAKE events on STA */
+		priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_STA);
+		if (!priv)
+			priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_ANY);
+	}
+
+	if (priv->bss_role == MWIFIEX_BSS_ROLE_UAP)
+		ret = mwifiex_process_uap_event(priv);
+	else
+		ret = mwifiex_process_sta_event(priv);
+
+	adapter->event_cause = 0;
+	adapter->event_skb = NULL;
+	adapter->if_ops.event_complete(adapter, skb);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -420,12 +724,21 @@ int mwifiex_send_cmd_sync(struct mwifiex_private *priv, uint16_t cmd_no,
 	struct mwifiex_adapter *adapter = priv->adapter;
 
 	adapter->cmd_wait_q_required = true;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	adapter->cmd_wait_q.condition = false;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = mwifiex_send_cmd_async(priv, cmd_no, cmd_action, cmd_oid,
 				     data_buf);
 	if (!ret)
 		ret = mwifiex_wait_queue_complete(adapter);
+=======
+
+	ret = mwifiex_send_cmd_async(priv, cmd_no, cmd_action, cmd_oid,
+				     data_buf);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -497,8 +810,26 @@ int mwifiex_send_cmd_async(struct mwifiex_private *priv, uint16_t cmd_no,
 
 	/* Prepare command */
 	if (cmd_no) {
+<<<<<<< HEAD
 		ret = mwifiex_sta_prepare_cmd(priv, cmd_no, cmd_action,
 					      cmd_oid, data_buf, cmd_ptr);
+=======
+		switch (cmd_no) {
+		case HostCmd_CMD_UAP_SYS_CONFIG:
+		case HostCmd_CMD_UAP_BSS_START:
+		case HostCmd_CMD_UAP_BSS_STOP:
+		case HostCmd_CMD_UAP_STA_DEAUTH:
+			ret = mwifiex_uap_prepare_cmd(priv, cmd_no, cmd_action,
+						      cmd_oid, data_buf,
+						      cmd_ptr);
+			break;
+		default:
+			ret = mwifiex_sta_prepare_cmd(priv, cmd_no, cmd_action,
+						      cmd_oid, data_buf,
+						      cmd_ptr);
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 	} else {
 		ret = mwifiex_cmd_host_cmd(priv, cmd_ptr, data_buf);
 		cmd_node->cmd_flag |= CMD_F_HOSTCMD;
@@ -507,16 +838,44 @@ int mwifiex_send_cmd_async(struct mwifiex_private *priv, uint16_t cmd_no,
 	/* Return error, since the command preparation failed */
 	if (ret) {
 		dev_err(adapter->dev, "PREP_CMD: cmd %#x preparation failed\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 							cmd_no);
+=======
+			cmd_no);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			cmd_no);
+>>>>>>> refs/remotes/origin/master
 		mwifiex_insert_cmd_to_free_q(adapter, cmd_node);
 		return -1;
 	}
 
 	/* Send command */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cmd_no == HostCmd_CMD_802_11_SCAN)
 		mwifiex_queue_scan_cmd(priv, cmd_node);
 	else
 		mwifiex_insert_cmd_to_pending_q(adapter, cmd_node, true);
+=======
+	if (cmd_no == HostCmd_CMD_802_11_SCAN) {
+		mwifiex_queue_scan_cmd(priv, cmd_node);
+	} else {
+		adapter->cmd_queued = cmd_node;
+		mwifiex_insert_cmd_to_pending_q(adapter, cmd_node, true);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cmd_no == HostCmd_CMD_802_11_SCAN) {
+		mwifiex_queue_scan_cmd(priv, cmd_node);
+	} else {
+		mwifiex_insert_cmd_to_pending_q(adapter, cmd_node, true);
+		queue_work(adapter->workqueue, &adapter->main_work);
+		if (cmd_node->wait_q_enabled)
+			ret = mwifiex_wait_queue_complete(adapter, cmd_node);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -537,7 +896,15 @@ mwifiex_insert_cmd_to_free_q(struct mwifiex_adapter *adapter,
 		return;
 
 	if (cmd_node->wait_q_enabled)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mwifiex_complete_cmd(adapter);
+=======
+		mwifiex_complete_cmd(adapter, cmd_node);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mwifiex_complete_cmd(adapter, cmd_node);
+>>>>>>> refs/remotes/origin/master
 	/* Clean the node */
 	mwifiex_clean_cmd_node(adapter, cmd_node);
 
@@ -547,6 +914,23 @@ mwifiex_insert_cmd_to_free_q(struct mwifiex_adapter *adapter,
 	spin_unlock_irqrestore(&adapter->cmd_free_q_lock, flags);
 }
 
+<<<<<<< HEAD
+=======
+/* This function reuses a command node. */
+void mwifiex_recycle_cmd_node(struct mwifiex_adapter *adapter,
+			      struct cmd_ctrl_node *cmd_node)
+{
+	struct host_cmd_ds_command *host_cmd = (void *)cmd_node->cmd_skb->data;
+
+	mwifiex_insert_cmd_to_free_q(adapter, cmd_node);
+
+	atomic_dec(&adapter->cmd_pending);
+	dev_dbg(adapter->dev, "cmd: FREE_CMD: cmd=%#x, cmd_pending=%d\n",
+		le16_to_cpu(host_cmd->command),
+		atomic_read(&adapter->cmd_pending));
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This function queues a command to the command pending queue.
  *
@@ -573,9 +957,21 @@ mwifiex_insert_cmd_to_pending_q(struct mwifiex_adapter *adapter,
 	/* Exit_PS command needs to be queued in the header always. */
 	if (command == HostCmd_CMD_802_11_PS_MODE_ENH) {
 		struct host_cmd_ds_802_11_ps_mode_enh *pm =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			&host_cmd->params.psmode_enh;
 		if ((le16_to_cpu(pm->action) == DIS_PS)
 		    || (le16_to_cpu(pm->action) == DIS_AUTO_PS)) {
+=======
+						&host_cmd->params.psmode_enh;
+		if ((le16_to_cpu(pm->action) == DIS_PS) ||
+		    (le16_to_cpu(pm->action) == DIS_AUTO_PS)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						&host_cmd->params.psmode_enh;
+		if ((le16_to_cpu(pm->action) == DIS_PS) ||
+		    (le16_to_cpu(pm->action) == DIS_AUTO_PS)) {
+>>>>>>> refs/remotes/origin/master
 			if (adapter->ps_state != PS_STATE_AWAKE)
 				add_tail = false;
 		}
@@ -588,7 +984,13 @@ mwifiex_insert_cmd_to_pending_q(struct mwifiex_adapter *adapter,
 		list_add(&cmd_node->list, &adapter->cmd_pending_q);
 	spin_unlock_irqrestore(&adapter->cmd_pending_q_lock, flags);
 
+<<<<<<< HEAD
 	dev_dbg(adapter->dev, "cmd: QUEUE_CMD: cmd=%#x is queued\n", command);
+=======
+	atomic_inc(&adapter->cmd_pending);
+	dev_dbg(adapter->dev, "cmd: QUEUE_CMD: cmd=%#x, cmd_pending=%d\n",
+		command, atomic_read(&adapter->cmd_pending));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -688,7 +1090,15 @@ int mwifiex_process_cmdresp(struct mwifiex_adapter *adapter)
 	if (!adapter->curr_cmd || !adapter->curr_cmd->resp_skb) {
 		resp = (struct host_cmd_ds_command *) adapter->upld_buf;
 		dev_err(adapter->dev, "CMD_RESP: NULL curr_cmd, %#x\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       le16_to_cpu(resp->command));
+=======
+			le16_to_cpu(resp->command));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			le16_to_cpu(resp->command));
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -697,8 +1107,17 @@ int mwifiex_process_cmdresp(struct mwifiex_adapter *adapter)
 	resp = (struct host_cmd_ds_command *) adapter->curr_cmd->resp_skb->data;
 	if (adapter->curr_cmd->cmd_flag & CMD_F_CANCELED) {
 		dev_err(adapter->dev, "CMD_RESP: %#x been canceled\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				le16_to_cpu(resp->command));
+=======
+			le16_to_cpu(resp->command));
+>>>>>>> refs/remotes/origin/cm-10.0
 		mwifiex_insert_cmd_to_free_q(adapter, adapter->curr_cmd);
+=======
+			le16_to_cpu(resp->command));
+		mwifiex_recycle_cmd_node(adapter, adapter->curr_cmd);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&adapter->mwifiex_cmd_lock, flags);
 		adapter->curr_cmd = NULL;
 		spin_unlock_irqrestore(&adapter->mwifiex_cmd_lock, flags);
@@ -707,23 +1126,53 @@ int mwifiex_process_cmdresp(struct mwifiex_adapter *adapter)
 
 	if (adapter->curr_cmd->cmd_flag & CMD_F_HOSTCMD) {
 		/* Copy original response back to response buffer */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct mwifiex_ds_misc_cmd *hostcmd = NULL;
+=======
+		struct mwifiex_ds_misc_cmd *hostcmd;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct mwifiex_ds_misc_cmd *hostcmd;
+>>>>>>> refs/remotes/origin/master
 		uint16_t size = le16_to_cpu(resp->size);
 		dev_dbg(adapter->dev, "info: host cmd resp size = %d\n", size);
 		size = min_t(u16, size, MWIFIEX_SIZE_OF_CMD_BUFFER);
 		if (adapter->curr_cmd->data_buf) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			hostcmd = (struct mwifiex_ds_misc_cmd *)
 						adapter->curr_cmd->data_buf;
 			hostcmd->len = size;
 			memcpy(hostcmd->cmd, (void *) resp, size);
+=======
+			hostcmd = adapter->curr_cmd->data_buf;
+			hostcmd->len = size;
+			memcpy(hostcmd->cmd, resp, size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			hostcmd = adapter->curr_cmd->data_buf;
+			hostcmd->len = size;
+			memcpy(hostcmd->cmd, resp, size);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	orig_cmdresp_no = le16_to_cpu(resp->command);
 
 	/* Get BSS number and corresponding priv */
 	priv = mwifiex_get_priv_by_id(adapter,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			HostCmd_GET_BSS_NO(le16_to_cpu(resp->seq_num)),
 			HostCmd_GET_BSS_TYPE(le16_to_cpu(resp->seq_num)));
+=======
+			     HostCmd_GET_BSS_NO(le16_to_cpu(resp->seq_num)),
+			     HostCmd_GET_BSS_TYPE(le16_to_cpu(resp->seq_num)));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     HostCmd_GET_BSS_NO(le16_to_cpu(resp->seq_num)),
+			     HostCmd_GET_BSS_TYPE(le16_to_cpu(resp->seq_num)));
+>>>>>>> refs/remotes/origin/master
 	if (!priv)
 		priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_ANY);
 	/* Clear RET_BIT from HostCmd */
@@ -734,9 +1183,21 @@ int mwifiex_process_cmdresp(struct mwifiex_adapter *adapter)
 
 	/* Save the last command response to debug log */
 	adapter->dbg.last_cmd_resp_index =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(adapter->dbg.last_cmd_resp_index + 1) % DBG_CMD_NUM;
 	adapter->dbg.last_cmd_resp_id[adapter->dbg.last_cmd_resp_index] =
 		orig_cmdresp_no;
+=======
+			(adapter->dbg.last_cmd_resp_index + 1) % DBG_CMD_NUM;
+	adapter->dbg.last_cmd_resp_id[adapter->dbg.last_cmd_resp_index] =
+								orig_cmdresp_no;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			(adapter->dbg.last_cmd_resp_index + 1) % DBG_CMD_NUM;
+	adapter->dbg.last_cmd_resp_id[adapter->dbg.last_cmd_resp_index] =
+								orig_cmdresp_no;
+>>>>>>> refs/remotes/origin/master
 
 	do_gettimeofday(&tstamp);
 	dev_dbg(adapter->dev, "cmd: CMD_RESP: (%lu.%lu): 0x%x, result %d,"
@@ -749,7 +1210,11 @@ int mwifiex_process_cmdresp(struct mwifiex_adapter *adapter)
 		if (adapter->curr_cmd->wait_q_enabled)
 			adapter->cmd_wait_q.status = -1;
 
+<<<<<<< HEAD
 		mwifiex_insert_cmd_to_free_q(adapter, adapter->curr_cmd);
+=======
+		mwifiex_recycle_cmd_node(adapter, adapter->curr_cmd);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&adapter->mwifiex_cmd_lock, flags);
 		adapter->curr_cmd = NULL;
 		spin_unlock_irqrestore(&adapter->mwifiex_cmd_lock, flags);
@@ -758,8 +1223,18 @@ int mwifiex_process_cmdresp(struct mwifiex_adapter *adapter)
 
 	if (adapter->curr_cmd->cmd_flag & CMD_F_HOSTCMD) {
 		adapter->curr_cmd->cmd_flag &= ~CMD_F_HOSTCMD;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((cmdresp_result == HostCmd_RESULT_OK)
 		    && (cmdresp_no == HostCmd_CMD_802_11_HS_CFG_ENH))
+=======
+		if ((cmdresp_result == HostCmd_RESULT_OK) &&
+		    (cmdresp_no == HostCmd_CMD_802_11_HS_CFG_ENH))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((cmdresp_result == HostCmd_RESULT_OK) &&
+		    (cmdresp_no == HostCmd_CMD_802_11_HS_CFG_ENH))
+>>>>>>> refs/remotes/origin/master
 			ret = mwifiex_ret_802_11_hs_cfg(priv, resp);
 	} else {
 		/* handle response */
@@ -768,7 +1243,15 @@ int mwifiex_process_cmdresp(struct mwifiex_adapter *adapter)
 
 	/* Check init command response */
 	if (adapter->hw_status == MWIFIEX_HW_STATUS_INITIALIZING) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ret == -1) {
+=======
+		if (ret) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ret) {
+>>>>>>> refs/remotes/origin/master
 			dev_err(adapter->dev, "%s: cmd %#x failed during "
 				"initialization\n", __func__, cmdresp_no);
 			mwifiex_init_fw_complete(adapter);
@@ -778,13 +1261,25 @@ int mwifiex_process_cmdresp(struct mwifiex_adapter *adapter)
 	}
 
 	if (adapter->curr_cmd) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (adapter->curr_cmd->wait_q_enabled && (!ret))
 			adapter->cmd_wait_q.status = 0;
 		else if (adapter->curr_cmd->wait_q_enabled && (ret == -1))
 			adapter->cmd_wait_q.status = -1;
+=======
+		if (adapter->curr_cmd->wait_q_enabled)
+			adapter->cmd_wait_q.status = ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Clean up and put current command back to cmd_free_q */
 		mwifiex_insert_cmd_to_free_q(adapter, adapter->curr_cmd);
+=======
+		if (adapter->curr_cmd->wait_q_enabled)
+			adapter->cmd_wait_q.status = ret;
+
+		mwifiex_recycle_cmd_node(adapter, adapter->curr_cmd);
+>>>>>>> refs/remotes/origin/master
 
 		spin_lock_irqsave(&adapter->mwifiex_cmd_lock, flags);
 		adapter->curr_cmd = NULL;
@@ -814,15 +1309,26 @@ mwifiex_cmd_timeout_func(unsigned long function_context)
 		return;
 	}
 	cmd_node = adapter->curr_cmd;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cmd_node->wait_q_enabled)
 		adapter->cmd_wait_q.status = -ETIMEDOUT;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (cmd_node) {
 		adapter->dbg.timeout_cmd_id =
 			adapter->dbg.last_cmd_id[adapter->dbg.last_cmd_index];
 		adapter->dbg.timeout_cmd_act =
 			adapter->dbg.last_cmd_act[adapter->dbg.last_cmd_index];
 		do_gettimeofday(&tstamp);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(adapter->dev, "%s: Timeout cmd id (%lu.%lu) = %#x,"
 			" act = %#x\n", __func__,
 		       tstamp.tv_sec, tstamp.tv_usec,
@@ -861,9 +1367,93 @@ mwifiex_cmd_timeout_func(unsigned long function_context)
 
 		dev_err(adapter->dev, "ps_mode=%d ps_state=%d\n",
 				adapter->ps_mode, adapter->ps_state);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		dev_err(adapter->dev,
+			"%s: Timeout cmd id (%lu.%lu) = %#x, act = %#x\n",
+			__func__, tstamp.tv_sec, tstamp.tv_usec,
+			adapter->dbg.timeout_cmd_id,
+			adapter->dbg.timeout_cmd_act);
+
+		dev_err(adapter->dev, "num_data_h2c_failure = %d\n",
+			adapter->dbg.num_tx_host_to_card_failure);
+		dev_err(adapter->dev, "num_cmd_h2c_failure = %d\n",
+			adapter->dbg.num_cmd_host_to_card_failure);
+
+		dev_err(adapter->dev, "num_cmd_timeout = %d\n",
+			adapter->dbg.num_cmd_timeout);
+		dev_err(adapter->dev, "num_tx_timeout = %d\n",
+			adapter->dbg.num_tx_timeout);
+
+		dev_err(adapter->dev, "last_cmd_index = %d\n",
+			adapter->dbg.last_cmd_index);
+<<<<<<< HEAD
+		print_hex_dump_bytes("last_cmd_id: ", DUMP_PREFIX_OFFSET,
+				     adapter->dbg.last_cmd_id, DBG_CMD_NUM);
+		print_hex_dump_bytes("last_cmd_act: ", DUMP_PREFIX_OFFSET,
+				     adapter->dbg.last_cmd_act, DBG_CMD_NUM);
+
+		dev_err(adapter->dev, "last_cmd_resp_index = %d\n",
+			adapter->dbg.last_cmd_resp_index);
+		print_hex_dump_bytes("last_cmd_resp_id: ", DUMP_PREFIX_OFFSET,
+				     adapter->dbg.last_cmd_resp_id,
+				     DBG_CMD_NUM);
+
+		dev_err(adapter->dev, "last_event_index = %d\n",
+			adapter->dbg.last_event_index);
+		print_hex_dump_bytes("last_event: ", DUMP_PREFIX_OFFSET,
+				     adapter->dbg.last_event, DBG_CMD_NUM);
+=======
+		dev_err(adapter->dev, "last_cmd_id: %*ph\n",
+			(int)sizeof(adapter->dbg.last_cmd_id),
+			adapter->dbg.last_cmd_id);
+		dev_err(adapter->dev, "last_cmd_act: %*ph\n",
+			(int)sizeof(adapter->dbg.last_cmd_act),
+			adapter->dbg.last_cmd_act);
+
+		dev_err(adapter->dev, "last_cmd_resp_index = %d\n",
+			adapter->dbg.last_cmd_resp_index);
+		dev_err(adapter->dev, "last_cmd_resp_id: %*ph\n",
+			(int)sizeof(adapter->dbg.last_cmd_resp_id),
+			adapter->dbg.last_cmd_resp_id);
+
+		dev_err(adapter->dev, "last_event_index = %d\n",
+			adapter->dbg.last_event_index);
+		dev_err(adapter->dev, "last_event: %*ph\n",
+			(int)sizeof(adapter->dbg.last_event),
+			adapter->dbg.last_event);
+>>>>>>> refs/remotes/origin/master
+
+		dev_err(adapter->dev, "data_sent=%d cmd_sent=%d\n",
+			adapter->data_sent, adapter->cmd_sent);
+
+		dev_err(adapter->dev, "ps_mode=%d ps_state=%d\n",
+			adapter->ps_mode, adapter->ps_state);
+
+		if (cmd_node->wait_q_enabled) {
+			adapter->cmd_wait_q.status = -ETIMEDOUT;
+			wake_up_interruptible(&adapter->cmd_wait_q.wait);
+			mwifiex_cancel_pending_ioctl(adapter);
+			/* reset cmd_sent flag to unblock new commands */
+			adapter->cmd_sent = false;
+		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (adapter->hw_status == MWIFIEX_HW_STATUS_INITIALIZING)
 		mwifiex_init_fw_complete(adapter);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	}
+	if (adapter->hw_status == MWIFIEX_HW_STATUS_INITIALIZING)
+		mwifiex_init_fw_complete(adapter);
+
+	if (adapter->if_ops.card_reset)
+		adapter->if_ops.card_reset(adapter);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -885,7 +1475,15 @@ mwifiex_cancel_all_pending_cmd(struct mwifiex_adapter *adapter)
 		adapter->curr_cmd->wait_q_enabled = false;
 		spin_unlock_irqrestore(&adapter->mwifiex_cmd_lock, flags);
 		adapter->cmd_wait_q.status = -1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mwifiex_complete_cmd(adapter);
+=======
+		mwifiex_complete_cmd(adapter, adapter->curr_cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mwifiex_complete_cmd(adapter, adapter->curr_cmd);
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Cancel all pending command */
 	spin_lock_irqsave(&adapter->cmd_pending_q_lock, flags);
@@ -896,10 +1494,21 @@ mwifiex_cancel_all_pending_cmd(struct mwifiex_adapter *adapter)
 
 		if (cmd_node->wait_q_enabled) {
 			adapter->cmd_wait_q.status = -1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			mwifiex_complete_cmd(adapter);
+=======
+			mwifiex_complete_cmd(adapter, cmd_node);
+>>>>>>> refs/remotes/origin/cm-10.0
 			cmd_node->wait_q_enabled = false;
 		}
 		mwifiex_insert_cmd_to_free_q(adapter, cmd_node);
+=======
+			mwifiex_complete_cmd(adapter, cmd_node);
+			cmd_node->wait_q_enabled = false;
+		}
+		mwifiex_recycle_cmd_node(adapter, cmd_node);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&adapter->cmd_pending_q_lock, flags);
 	}
 	spin_unlock_irqrestore(&adapter->cmd_pending_q_lock, flags);
@@ -937,22 +1546,49 @@ mwifiex_cancel_pending_ioctl(struct mwifiex_adapter *adapter)
 {
 	struct cmd_ctrl_node *cmd_node = NULL, *tmp_node = NULL;
 	unsigned long cmd_flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long cmd_pending_q_flags;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long scan_pending_q_flags;
 	uint16_t cancel_scan_cmd = false;
 
 	if ((adapter->curr_cmd) &&
+<<<<<<< HEAD
 	     (adapter->curr_cmd->wait_q_enabled)) {
+=======
+	    (adapter->curr_cmd->wait_q_enabled)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long scan_pending_q_flags;
+	bool cancel_scan_cmd = false;
+
+	if ((adapter->curr_cmd) &&
+	    (adapter->curr_cmd->wait_q_enabled)) {
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&adapter->mwifiex_cmd_lock, cmd_flags);
 		cmd_node = adapter->curr_cmd;
 		cmd_node->wait_q_enabled = false;
 		cmd_node->cmd_flag |= CMD_F_CANCELED;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock_irqsave(&adapter->cmd_pending_q_lock,
 				  cmd_pending_q_flags);
 		list_del(&cmd_node->list);
 		spin_unlock_irqrestore(&adapter->cmd_pending_q_lock,
 				       cmd_pending_q_flags);
 		mwifiex_insert_cmd_to_free_q(adapter, cmd_node);
+=======
+		mwifiex_insert_cmd_to_free_q(adapter, cmd_node);
+		mwifiex_complete_cmd(adapter, adapter->curr_cmd);
+		adapter->curr_cmd = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mwifiex_recycle_cmd_node(adapter, cmd_node);
+		mwifiex_complete_cmd(adapter, adapter->curr_cmd);
+		adapter->curr_cmd = NULL;
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&adapter->mwifiex_cmd_lock, cmd_flags);
 	}
 
@@ -979,7 +1615,13 @@ mwifiex_cancel_pending_ioctl(struct mwifiex_adapter *adapter)
 		spin_unlock_irqrestore(&adapter->mwifiex_cmd_lock, cmd_flags);
 	}
 	adapter->cmd_wait_q.status = -1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mwifiex_complete_cmd(adapter);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1000,9 +1642,21 @@ mwifiex_check_ps_cond(struct mwifiex_adapter *adapter)
 	else
 		dev_dbg(adapter->dev,
 			"cmd: Delay Sleep Confirm (%s%s%s)\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       (adapter->cmd_sent) ? "D" : "",
 		       (adapter->curr_cmd) ? "C" : "",
 		       (IS_CARD_RX_RCVD(adapter)) ? "R" : "");
+=======
+			(adapter->cmd_sent) ? "D" : "",
+			(adapter->curr_cmd) ? "C" : "",
+			(IS_CARD_RX_RCVD(adapter)) ? "R" : "");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			(adapter->cmd_sent) ? "D" : "",
+			(adapter->curr_cmd) ? "C" : "",
+			(IS_CARD_RX_RCVD(adapter)) ? "R" : "");
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1016,6 +1670,11 @@ mwifiex_hs_activated_event(struct mwifiex_private *priv, u8 activated)
 	if (activated) {
 		if (priv->adapter->is_hs_configured) {
 			priv->adapter->hs_activated = true;
+<<<<<<< HEAD
+=======
+			mwifiex_update_rxreor_flags(priv->adapter,
+						    RXREOR_FORCE_NO_DROP);
+>>>>>>> refs/remotes/origin/master
 			dev_dbg(priv->adapter->dev, "event: hs_activated\n");
 			priv->adapter->hs_activate_wait_q_woken = true;
 			wake_up_interruptible(
@@ -1047,18 +1706,38 @@ int mwifiex_ret_802_11_hs_cfg(struct mwifiex_private *priv,
 		&resp->params.opt_hs_cfg;
 	uint32_t conditions = le32_to_cpu(phs_cfg->params.hs_config.conditions);
 
+<<<<<<< HEAD
 	if (phs_cfg->action == cpu_to_le16(HS_ACTIVATE)) {
+=======
+	if (phs_cfg->action == cpu_to_le16(HS_ACTIVATE) &&
+	    adapter->iface_type != MWIFIEX_USB) {
+>>>>>>> refs/remotes/origin/master
 		mwifiex_hs_activated_event(priv, true);
 		return 0;
 	} else {
 		dev_dbg(adapter->dev, "cmd: CMD_RESP: HS_CFG cmd reply"
 			" result=%#x, conditions=0x%x gpio=0x%x gap=0x%x\n",
 			resp->result, conditions,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       phs_cfg->params.hs_config.gpio,
 		       phs_cfg->params.hs_config.gap);
+=======
+			phs_cfg->params.hs_config.gpio,
+			phs_cfg->params.hs_config.gap);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (conditions != HOST_SLEEP_CFG_CANCEL) {
 		adapter->is_hs_configured = true;
+=======
+			phs_cfg->params.hs_config.gpio,
+			phs_cfg->params.hs_config.gap);
+	}
+	if (conditions != HS_CFG_CANCEL) {
+		adapter->is_hs_configured = true;
+		if (adapter->iface_type == MWIFIEX_USB)
+			mwifiex_hs_activated_event(priv, true);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		adapter->is_hs_configured = false;
 		if (adapter->hs_activated)
@@ -1083,8 +1762,20 @@ mwifiex_process_hs_config(struct mwifiex_adapter *adapter)
 	adapter->is_hs_configured = false;
 	adapter->is_suspended = false;
 	mwifiex_hs_activated_event(mwifiex_get_priv(adapter,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				   MWIFIEX_BSS_ROLE_ANY), false);
+=======
+						    MWIFIEX_BSS_ROLE_ANY),
+				   false);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
+=======
+						    MWIFIEX_BSS_ROLE_ANY),
+				   false);
+}
+EXPORT_SYMBOL_GPL(mwifiex_process_hs_config);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This function handles the command response of a sleep confirm command.
@@ -1119,22 +1810,54 @@ mwifiex_process_sleep_confirm_resp(struct mwifiex_adapter *adapter,
 	command &= HostCmd_CMD_ID_MASK;
 
 	if (command != HostCmd_CMD_802_11_PS_MODE_ENH) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(adapter->dev, "%s: received unexpected response for"
 			" cmd %x, result = %x\n", __func__, command, result);
+=======
+		dev_err(adapter->dev,
+			"%s: rcvd unexpected resp for cmd %#x, result = %x\n",
+			__func__, command, result);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(adapter->dev,
+			"%s: rcvd unexpected resp for cmd %#x, result = %x\n",
+			__func__, command, result);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	if (result) {
 		dev_err(adapter->dev, "%s: sleep confirm cmd failed\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 						__func__);
+=======
+			__func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			__func__);
+>>>>>>> refs/remotes/origin/master
 		adapter->pm_wakeup_card_req = false;
 		adapter->ps_state = PS_STATE_AWAKE;
 		return;
 	}
 	adapter->pm_wakeup_card_req = true;
 	if (adapter->is_hs_configured)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mwifiex_hs_activated_event(mwifiex_get_priv(adapter,
 					   MWIFIEX_BSS_ROLE_ANY), true);
+=======
+		mwifiex_hs_activated_event(mwifiex_get_priv
+						(adapter, MWIFIEX_BSS_ROLE_ANY),
+					   true);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mwifiex_hs_activated_event(mwifiex_get_priv
+						(adapter, MWIFIEX_BSS_ROLE_ANY),
+					   true);
+>>>>>>> refs/remotes/origin/master
 	adapter->ps_state = PS_STATE_SLEEP;
 	cmd->command = cpu_to_le16(command);
 	cmd->seq_num = cpu_to_le16(seq_num);
@@ -1156,7 +1879,15 @@ EXPORT_SYMBOL_GPL(mwifiex_process_sleep_confirm_resp);
 int mwifiex_cmd_enh_power_mode(struct mwifiex_private *priv,
 			       struct host_cmd_ds_command *cmd,
 			       u16 cmd_action, uint16_t ps_bitmap,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			       void *data_buf)
+=======
+			       struct mwifiex_ds_auto_ds *auto_ds)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       struct mwifiex_ds_auto_ds *auto_ds)
+>>>>>>> refs/remotes/origin/master
 {
 	struct host_cmd_ds_802_11_ps_mode_enh *psmode_enh =
 		&cmd->params.psmode_enh;
@@ -1168,17 +1899,41 @@ int mwifiex_cmd_enh_power_mode(struct mwifiex_private *priv,
 		psmode_enh->action = cpu_to_le16(DIS_AUTO_PS);
 		psmode_enh->params.ps_bitmap = cpu_to_le16(ps_bitmap);
 		cmd->size = cpu_to_le16(S_DS_GEN + sizeof(psmode_enh->action) +
+<<<<<<< HEAD
+<<<<<<< HEAD
 				sizeof(psmode_enh->params.ps_bitmap));
+=======
+					sizeof(psmode_enh->params.ps_bitmap));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					sizeof(psmode_enh->params.ps_bitmap));
+>>>>>>> refs/remotes/origin/master
 	} else if (cmd_action == GET_PS) {
 		psmode_enh->action = cpu_to_le16(GET_PS);
 		psmode_enh->params.ps_bitmap = cpu_to_le16(ps_bitmap);
 		cmd->size = cpu_to_le16(S_DS_GEN + sizeof(psmode_enh->action) +
+<<<<<<< HEAD
+<<<<<<< HEAD
 				sizeof(psmode_enh->params.ps_bitmap));
+=======
+					sizeof(psmode_enh->params.ps_bitmap));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					sizeof(psmode_enh->params.ps_bitmap));
+>>>>>>> refs/remotes/origin/master
 	} else if (cmd_action == EN_AUTO_PS) {
 		psmode_enh->action = cpu_to_le16(EN_AUTO_PS);
 		psmode_enh->params.ps_bitmap = cpu_to_le16(ps_bitmap);
 		cmd_size = S_DS_GEN + sizeof(psmode_enh->action) +
+<<<<<<< HEAD
+<<<<<<< HEAD
 				sizeof(psmode_enh->params.ps_bitmap);
+=======
+					sizeof(psmode_enh->params.ps_bitmap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					sizeof(psmode_enh->params.ps_bitmap);
+>>>>>>> refs/remotes/origin/master
 		tlv = (u8 *) cmd + cmd_size;
 		if (ps_bitmap & BITMAP_STA_PS) {
 			struct mwifiex_adapter *adapter = priv->adapter;
@@ -1192,19 +1947,43 @@ int mwifiex_cmd_enh_power_mode(struct mwifiex_private *priv,
 			tlv += sizeof(*ps_tlv);
 			dev_dbg(adapter->dev, "cmd: PS Command: Enter PS\n");
 			ps_mode->null_pkt_interval =
+<<<<<<< HEAD
+<<<<<<< HEAD
 				cpu_to_le16(adapter->null_pkt_interval);
 			ps_mode->multiple_dtims =
 				cpu_to_le16(adapter->multiple_dtim);
 			ps_mode->bcn_miss_timeout =
 				cpu_to_le16(adapter->bcn_miss_time_out);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					cpu_to_le16(adapter->null_pkt_interval);
+			ps_mode->multiple_dtims =
+					cpu_to_le16(adapter->multiple_dtim);
+			ps_mode->bcn_miss_timeout =
+					cpu_to_le16(adapter->bcn_miss_time_out);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ps_mode->local_listen_interval =
 				cpu_to_le16(adapter->local_listen_interval);
 			ps_mode->adhoc_wake_period =
 				cpu_to_le16(adapter->adhoc_awake_period);
 			ps_mode->delay_to_ps =
+<<<<<<< HEAD
+<<<<<<< HEAD
 				cpu_to_le16(adapter->delay_to_ps);
 			ps_mode->mode =
 				cpu_to_le16(adapter->enhanced_ps_mode);
+=======
+					cpu_to_le16(adapter->delay_to_ps);
+			ps_mode->mode = cpu_to_le16(adapter->enhanced_ps_mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					cpu_to_le16(adapter->delay_to_ps);
+			ps_mode->mode = cpu_to_le16(adapter->enhanced_ps_mode);
+>>>>>>> refs/remotes/origin/master
 
 		}
 		if (ps_bitmap & BITMAP_AUTO_DS) {
@@ -1219,11 +1998,24 @@ int mwifiex_cmd_enh_power_mode(struct mwifiex_private *priv,
 					sizeof(struct mwifiex_ie_types_header));
 			cmd_size += sizeof(*auto_ds_tlv);
 			tlv += sizeof(*auto_ds_tlv);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (data_buf)
 				idletime = ((struct mwifiex_ds_auto_ds *)
 					     data_buf)->idle_time;
 			dev_dbg(priv->adapter->dev,
 					"cmd: PS Command: Enter Auto Deep Sleep\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			if (auto_ds)
+				idletime = auto_ds->idle_time;
+			dev_dbg(priv->adapter->dev,
+				"cmd: PS Command: Enter Auto Deep Sleep\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			auto_ds_tlv->deep_sleep_timeout = cpu_to_le16(idletime);
 		}
 		cmd->size = cpu_to_le16(cmd_size);
@@ -1240,7 +2032,15 @@ int mwifiex_cmd_enh_power_mode(struct mwifiex_private *priv,
  */
 int mwifiex_ret_enh_power_mode(struct mwifiex_private *priv,
 			       struct host_cmd_ds_command *resp,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			       void *data_buf)
+=======
+			       struct mwifiex_ds_pm_cfg *pm_cfg)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       struct mwifiex_ds_pm_cfg *pm_cfg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mwifiex_adapter *adapter = priv->adapter;
 	struct host_cmd_ds_802_11_ps_mode_enh *ps_mode =
@@ -1250,8 +2050,20 @@ int mwifiex_ret_enh_power_mode(struct mwifiex_private *priv,
 	uint16_t auto_ps_bitmap =
 		le16_to_cpu(ps_mode->params.ps_bitmap);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(adapter->dev, "info: %s: PS_MODE cmd reply result=%#x action=%#X\n",
 					__func__, resp->result, action);
+=======
+	dev_dbg(adapter->dev,
+		"info: %s: PS_MODE cmd reply result=%#x action=%#X\n",
+		__func__, resp->result, action);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(adapter->dev,
+		"info: %s: PS_MODE cmd reply result=%#x action=%#X\n",
+		__func__, resp->result, action);
+>>>>>>> refs/remotes/origin/master
 	if (action == EN_AUTO_PS) {
 		if (auto_ps_bitmap & BITMAP_AUTO_DS) {
 			dev_dbg(adapter->dev, "cmd: Enabled auto deep sleep\n");
@@ -1260,7 +2072,17 @@ int mwifiex_ret_enh_power_mode(struct mwifiex_private *priv,
 		if (auto_ps_bitmap & BITMAP_STA_PS) {
 			dev_dbg(adapter->dev, "cmd: Enabled STA power save\n");
 			if (adapter->sleep_period.period)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				dev_dbg(adapter->dev, "cmd: set to uapsd/pps mode\n");
+=======
+				dev_dbg(adapter->dev,
+					"cmd: set to uapsd/pps mode\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dev_dbg(adapter->dev,
+					"cmd: set to uapsd/pps mode\n");
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if (action == DIS_AUTO_PS) {
 		if (ps_bitmap & BITMAP_AUTO_DS) {
@@ -1283,10 +2105,20 @@ int mwifiex_ret_enh_power_mode(struct mwifiex_private *priv,
 
 		dev_dbg(adapter->dev, "cmd: ps_bitmap=%#x\n", ps_bitmap);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (data_buf) {
 			/* This section is for get power save mode */
 			struct mwifiex_ds_pm_cfg *pm_cfg =
 					(struct mwifiex_ds_pm_cfg *)data_buf;
+=======
+		if (pm_cfg) {
+			/* This section is for get power save mode */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pm_cfg) {
+			/* This section is for get power save mode */
+>>>>>>> refs/remotes/origin/master
 			if (ps_bitmap & BITMAP_STA_PS)
 				pm_cfg->param.ps_mode = 1;
 			else
@@ -1380,13 +2212,48 @@ int mwifiex_ret_get_hw_spec(struct mwifiex_private *priv,
 	adapter->fw_release_number = le32_to_cpu(hw_spec->fw_release_number);
 	adapter->number_of_antenna = le16_to_cpu(hw_spec->number_of_antenna);
 
+<<<<<<< HEAD
 	dev_dbg(adapter->dev, "info: GET_HW_SPEC: fw_release_number- %#x\n",
+<<<<<<< HEAD
 	       adapter->fw_release_number);
 	dev_dbg(adapter->dev, "info: GET_HW_SPEC: permanent addr: %pM\n",
 					hw_spec->permanent_addr);
 	dev_dbg(adapter->dev, "info: GET_HW_SPEC: hw_if_version=%#x  version=%#x\n",
 		le16_to_cpu(hw_spec->hw_if_version),
 	       le16_to_cpu(hw_spec->version));
+=======
+=======
+	if (le32_to_cpu(hw_spec->dot_11ac_dev_cap)) {
+		adapter->is_hw_11ac_capable = true;
+
+		/* Copy 11AC cap */
+		adapter->hw_dot_11ac_dev_cap =
+					le32_to_cpu(hw_spec->dot_11ac_dev_cap);
+		adapter->usr_dot_11ac_dev_cap_bg = adapter->hw_dot_11ac_dev_cap;
+		adapter->usr_dot_11ac_dev_cap_a = adapter->hw_dot_11ac_dev_cap;
+
+		/* Copy 11AC mcs */
+		adapter->hw_dot_11ac_mcs_support =
+				le32_to_cpu(hw_spec->dot_11ac_mcs_support);
+		adapter->usr_dot_11ac_mcs_support =
+					adapter->hw_dot_11ac_mcs_support;
+	} else {
+		adapter->is_hw_11ac_capable = false;
+	}
+
+	dev_dbg(adapter->dev, "info: GET_HW_SPEC: fw_release_number- %#x\n",
+>>>>>>> refs/remotes/origin/master
+		adapter->fw_release_number);
+	dev_dbg(adapter->dev, "info: GET_HW_SPEC: permanent addr: %pM\n",
+		hw_spec->permanent_addr);
+	dev_dbg(adapter->dev,
+		"info: GET_HW_SPEC: hw_if_version=%#x version=%#x\n",
+		le16_to_cpu(hw_spec->hw_if_version),
+		le16_to_cpu(hw_spec->version));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (priv->curr_addr[0] == 0xff)
 		memmove(priv->curr_addr, hw_spec->permanent_addr, ETH_ALEN);
@@ -1401,7 +2268,17 @@ int mwifiex_ret_get_hw_spec(struct mwifiex_private *priv,
 	/* If it's unidentified region code, use the default (USA) */
 	if (i >= MWIFIEX_MAX_REGION_CODE) {
 		adapter->region_code = 0x10;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(adapter->dev, "cmd: unknown region code, use default (USA)\n");
+=======
+		dev_dbg(adapter->dev,
+			"cmd: unknown region code, use default (USA)\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(adapter->dev,
+			"cmd: unknown region code, use default (USA)\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	adapter->hw_dot_11n_dev_cap = le32_to_cpu(hw_spec->dot_11n_dev_cap);

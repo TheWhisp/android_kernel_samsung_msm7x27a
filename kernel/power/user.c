@@ -20,15 +20,28 @@
 #include <linux/swapops.h>
 #include <linux/pm.h>
 #include <linux/fs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/compat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/console.h>
 #include <linux/cpu.h>
 #include <linux/freezer.h>
 #include <scsi/scsi_scan.h>
+=======
+#include <linux/compat.h>
+#include <linux/console.h>
+#include <linux/cpu.h>
+#include <linux/freezer.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 
 #include "power.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * NOTE: The SNAPSHOT_SET_SWAP_FILE and SNAPSHOT_PMOPS ioctls are obsolete and
  * will be removed in the future.  They are only preserved here for
@@ -51,6 +64,10 @@
 #define SNAPSHOT_AVAIL_SWAP		_IOR(SNAPSHOT_IOC_MAGIC, 7, void *)
 #define SNAPSHOT_GET_SWAP_PAGE		_IOR(SNAPSHOT_IOC_MAGIC, 8, void *)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SNAPSHOT_MINOR	231
 
@@ -58,9 +75,16 @@ static struct snapshot_data {
 	struct snapshot_handle handle;
 	int swap;
 	int mode;
+<<<<<<< HEAD
 	char frozen;
 	char ready;
 	char platform_support;
+=======
+	bool frozen;
+	bool ready;
+	bool platform_support;
+	bool free_bitmaps;
+>>>>>>> refs/remotes/origin/master
 } snapshot_state;
 
 atomic_t snapshot_device_available = ATOMIC_INIT(1);
@@ -70,7 +94,15 @@ static int snapshot_open(struct inode *inode, struct file *filp)
 	struct snapshot_data *data;
 	int error;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&pm_mutex);
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/master
 
 	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
 		error = -EBUSY;
@@ -82,11 +114,14 @@ static int snapshot_open(struct inode *inode, struct file *filp)
 		error = -ENOSYS;
 		goto Unlock;
 	}
+<<<<<<< HEAD
 	if(create_basic_memory_bitmaps()) {
 		atomic_inc(&snapshot_device_available);
 		error = -ENOMEM;
 		goto Unlock;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	nonseekable_open(inode, filp);
 	data = &snapshot_state;
 	filp->private_data = data;
@@ -96,6 +131,10 @@ static int snapshot_open(struct inode *inode, struct file *filp)
 		data->swap = swsusp_resume_device ?
 			swap_type_of(swsusp_resume_device, 0, NULL) : -1;
 		data->mode = O_RDONLY;
+<<<<<<< HEAD
+=======
+		data->free_bitmaps = false;
+>>>>>>> refs/remotes/origin/master
 		error = pm_notifier_call_chain(PM_HIBERNATION_PREPARE);
 		if (error)
 			pm_notifier_call_chain(PM_POST_HIBERNATION);
@@ -105,11 +144,15 @@ static int snapshot_open(struct inode *inode, struct file *filp)
 		 * appear.
 		 */
 		wait_for_device_probe();
+<<<<<<< HEAD
 		scsi_complete_async_scans();
+=======
+>>>>>>> refs/remotes/origin/master
 
 		data->swap = -1;
 		data->mode = O_WRONLY;
 		error = pm_notifier_call_chain(PM_RESTORE_PREPARE);
+<<<<<<< HEAD
 		if (error)
 			pm_notifier_call_chain(PM_POST_RESTORE);
 	}
@@ -122,7 +165,29 @@ static int snapshot_open(struct inode *inode, struct file *filp)
 	data->platform_support = 0;
 
  Unlock:
+<<<<<<< HEAD
 	mutex_unlock(&pm_mutex);
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!error) {
+			error = create_basic_memory_bitmaps();
+			data->free_bitmaps = !error;
+		}
+		if (error)
+			pm_notifier_call_chain(PM_POST_RESTORE);
+	}
+	if (error)
+		atomic_inc(&snapshot_device_available);
+
+	data->frozen = false;
+	data->ready = false;
+	data->platform_support = false;
+
+ Unlock:
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 }
@@ -131,21 +196,46 @@ static int snapshot_release(struct inode *inode, struct file *filp)
 {
 	struct snapshot_data *data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&pm_mutex);
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	swsusp_free();
 	free_basic_memory_bitmaps();
+=======
+	lock_system_sleep();
+
+	swsusp_free();
+>>>>>>> refs/remotes/origin/master
 	data = filp->private_data;
 	free_all_swap_pages(data->swap);
 	if (data->frozen) {
 		pm_restore_gfp_mask();
+<<<<<<< HEAD
 		thaw_processes();
+=======
+		free_basic_memory_bitmaps();
+		thaw_processes();
+	} else if (data->free_bitmaps) {
+		free_basic_memory_bitmaps();
+>>>>>>> refs/remotes/origin/master
 	}
 	pm_notifier_call_chain(data->mode == O_RDONLY ?
 			PM_POST_HIBERNATION : PM_POST_RESTORE);
 	atomic_inc(&snapshot_device_available);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&pm_mutex);
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -157,7 +247,15 @@ static ssize_t snapshot_read(struct file *filp, char __user *buf,
 	ssize_t res;
 	loff_t pg_offp = *offp & ~PAGE_MASK;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&pm_mutex);
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/master
 
 	data = filp->private_data;
 	if (!data->ready) {
@@ -178,7 +276,15 @@ static ssize_t snapshot_read(struct file *filp, char __user *buf,
 		*offp += res;
 
  Unlock:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&pm_mutex);
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/master
 
 	return res;
 }
@@ -190,7 +296,15 @@ static ssize_t snapshot_write(struct file *filp, const char __user *buf,
 	ssize_t res;
 	loff_t pg_offp = *offp & ~PAGE_MASK;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&pm_mutex);
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/master
 
 	data = filp->private_data;
 
@@ -207,11 +321,21 @@ static ssize_t snapshot_write(struct file *filp, const char __user *buf,
 	if (res > 0)
 		*offp += res;
 unlock:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&pm_mutex);
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/master
 
 	return res;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void snapshot_deprecated_ioctl(unsigned int cmd)
 {
 	if (printk_ratelimit())
@@ -221,6 +345,10 @@ static void snapshot_deprecated_ioctl(unsigned int cmd)
 				__builtin_return_address(0), cmd);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 							unsigned long arg)
 {
@@ -239,6 +367,10 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 	if (!mutex_trylock(&pm_mutex))
 		return -EBUSY;
 
+<<<<<<< HEAD
+=======
+	lock_device_hotplug();
+>>>>>>> refs/remotes/origin/master
 	data = filp->private_data;
 
 	switch (cmd) {
@@ -251,6 +383,8 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 		sys_sync();
 		printk("done.\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = usermodehelper_disable();
 		if (error)
 			break;
@@ -260,21 +394,51 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 			thaw_processes();
 			usermodehelper_enable();
 		}
+=======
+		error = freeze_processes();
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!error)
 			data->frozen = 1;
+=======
+		error = freeze_processes();
+		if (error)
+			break;
+
+		error = create_basic_memory_bitmaps();
+		if (error)
+			thaw_processes();
+		else
+			data->frozen = true;
+
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case SNAPSHOT_UNFREEZE:
 		if (!data->frozen || data->ready)
 			break;
 		pm_restore_gfp_mask();
+<<<<<<< HEAD
 		thaw_processes();
+<<<<<<< HEAD
 		usermodehelper_enable();
 		data->frozen = 0;
 		break;
 
 	case SNAPSHOT_ATOMIC_SNAPSHOT:
 		snapshot_deprecated_ioctl(cmd);
+=======
+		data->frozen = 0;
+		break;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		free_basic_memory_bitmaps();
+		data->free_bitmaps = false;
+		thaw_processes();
+		data->frozen = false;
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case SNAPSHOT_CREATE_IMAGE:
 		if (data->mode != O_RDONLY || !data->frozen  || data->ready) {
 			error = -EPERM;
@@ -282,10 +446,24 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 		}
 		pm_restore_gfp_mask();
 		error = hibernation_snapshot(data->platform_support);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!error)
 			error = put_user(in_suspend, (int __user *)arg);
 		if (!error)
 			data->ready = 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (!error) {
+			error = put_user(in_suspend, (int __user *)arg);
+			data->ready = !freezer_test_done && !error;
+			freezer_test_done = false;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case SNAPSHOT_ATOMIC_RESTORE:
@@ -301,11 +479,32 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 	case SNAPSHOT_FREE:
 		swsusp_free();
 		memset(&data->handle, 0, sizeof(struct snapshot_handle));
+<<<<<<< HEAD
 		data->ready = 0;
+<<<<<<< HEAD
 		break;
 
 	case SNAPSHOT_SET_IMAGE_SIZE:
 		snapshot_deprecated_ioctl(cmd);
+=======
+=======
+		data->ready = false;
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * It is necessary to thaw kernel threads here, because
+		 * SNAPSHOT_CREATE_IMAGE may be invoked directly after
+		 * SNAPSHOT_FREE.  In that case, if kernel threads were not
+		 * thawed, the preallocation of memory carried out by
+		 * hibernation_snapshot() might run into problems (i.e. it
+		 * might fail or even deadlock).
+		 */
+		thaw_kernel_threads();
+		break;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case SNAPSHOT_PREF_IMAGE_SIZE:
 		image_size = arg;
 		break;
@@ -320,16 +519,28 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 		error = put_user(size, (loff_t __user *)arg);
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case SNAPSHOT_AVAIL_SWAP:
 		snapshot_deprecated_ioctl(cmd);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case SNAPSHOT_AVAIL_SWAP_SIZE:
 		size = count_swap_pages(data->swap, 1);
 		size <<= PAGE_SHIFT;
 		error = put_user(size, (loff_t __user *)arg);
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case SNAPSHOT_GET_SWAP_PAGE:
 		snapshot_deprecated_ioctl(cmd);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case SNAPSHOT_ALLOC_SWAP_PAGE:
 		if (data->swap < 0 || data->swap >= MAX_SWAPFILES) {
 			error = -ENODEV;
@@ -352,6 +563,8 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 		free_all_swap_pages(data->swap);
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case SNAPSHOT_SET_SWAP_FILE: /* This ioctl is deprecated */
 		snapshot_deprecated_ioctl(cmd);
 		if (!swsusp_swap_in_use()) {
@@ -373,6 +586,10 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 		}
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case SNAPSHOT_S2RAM:
 		if (!data->frozen) {
 			error = -EPERM;
@@ -383,7 +600,11 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 		 * PM_HIBERNATION_PREPARE
 		 */
 		error = suspend_devices_and_enter(PM_SUSPEND_MEM);
+<<<<<<< HEAD
 		data->ready = 0;
+=======
+		data->ready = false;
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case SNAPSHOT_PLATFORM_SUPPORT:
@@ -395,6 +616,8 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 			error = hibernation_platform_enter();
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case SNAPSHOT_PMOPS: /* This ioctl is deprecated */
 		snapshot_deprecated_ioctl(cmd);
 		error = -EINVAL;
@@ -422,6 +645,10 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 		}
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case SNAPSHOT_SET_SWAP_AREA:
 		if (swsusp_swap_in_use()) {
 			error = -EPERM;
@@ -458,11 +685,84 @@ static long snapshot_ioctl(struct file *filp, unsigned int cmd,
 
 	}
 
+<<<<<<< HEAD
+=======
+	unlock_device_hotplug();
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&pm_mutex);
 
 	return error;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_COMPAT
+
+struct compat_resume_swap_area {
+	compat_loff_t offset;
+	u32 dev;
+} __packed;
+
+static long
+snapshot_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+{
+	BUILD_BUG_ON(sizeof(loff_t) != sizeof(compat_loff_t));
+
+	switch (cmd) {
+	case SNAPSHOT_GET_IMAGE_SIZE:
+	case SNAPSHOT_AVAIL_SWAP_SIZE:
+	case SNAPSHOT_ALLOC_SWAP_PAGE: {
+		compat_loff_t __user *uoffset = compat_ptr(arg);
+		loff_t offset;
+		mm_segment_t old_fs;
+		int err;
+
+		old_fs = get_fs();
+		set_fs(KERNEL_DS);
+		err = snapshot_ioctl(file, cmd, (unsigned long) &offset);
+		set_fs(old_fs);
+		if (!err && put_user(offset, uoffset))
+			err = -EFAULT;
+		return err;
+	}
+
+	case SNAPSHOT_CREATE_IMAGE:
+		return snapshot_ioctl(file, cmd,
+				      (unsigned long) compat_ptr(arg));
+
+	case SNAPSHOT_SET_SWAP_AREA: {
+		struct compat_resume_swap_area __user *u_swap_area =
+			compat_ptr(arg);
+		struct resume_swap_area swap_area;
+		mm_segment_t old_fs;
+		int err;
+
+		err = get_user(swap_area.offset, &u_swap_area->offset);
+		err |= get_user(swap_area.dev, &u_swap_area->dev);
+		if (err)
+			return -EFAULT;
+		old_fs = get_fs();
+		set_fs(KERNEL_DS);
+		err = snapshot_ioctl(file, SNAPSHOT_SET_SWAP_AREA,
+				     (unsigned long) &swap_area);
+		set_fs(old_fs);
+		return err;
+	}
+
+	default:
+		return snapshot_ioctl(file, cmd, arg);
+	}
+}
+
+#endif /* CONFIG_COMPAT */
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations snapshot_fops = {
 	.open = snapshot_open,
 	.release = snapshot_release,
@@ -470,6 +770,18 @@ static const struct file_operations snapshot_fops = {
 	.write = snapshot_write,
 	.llseek = no_llseek,
 	.unlocked_ioctl = snapshot_ioctl,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = snapshot_compat_ioctl,
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = snapshot_compat_ioctl,
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct miscdevice snapshot_device = {

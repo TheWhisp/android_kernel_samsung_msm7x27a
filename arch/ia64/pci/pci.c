@@ -15,15 +15,32 @@
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/pci-acpi.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/ioport.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/machvec.h>
 #include <asm/page.h>
 #include <asm/system.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/export.h>
+
+#include <asm/machvec.h>
+#include <asm/page.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/sal.h>
 #include <asm/smp.h>
@@ -116,8 +133,12 @@ struct pci_ops pci_root_ops = {
 
 /* Called by ACPI when it finds a new root bus.  */
 
+<<<<<<< HEAD
 static struct pci_controller * __devinit
 alloc_pci_controller (int seg)
+=======
+static struct pci_controller *alloc_pci_controller(int seg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_controller *controller;
 
@@ -133,6 +154,18 @@ alloc_pci_controller (int seg)
 struct pci_root_info {
 	struct acpi_device *bridge;
 	struct pci_controller *controller;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct list_head resources;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head resources;
+	struct resource *res;
+	resource_size_t *res_offset;
+	unsigned int res_num;
+	struct list_head io_resources;
+>>>>>>> refs/remotes/origin/master
 	char *name;
 };
 
@@ -152,7 +185,11 @@ new_space (u64 phys_base, int sparse)
 			return i;
 
 	if (num_io_spaces == MAX_IO_SPACES) {
+<<<<<<< HEAD
 		printk(KERN_ERR "PCI: Too many IO port spaces "
+=======
+		pr_err("PCI: Too many IO port spaces "
+>>>>>>> refs/remotes/origin/master
 			"(MAX_IO_SPACES=%lu)\n", MAX_IO_SPACES);
 		return ~0;
 	}
@@ -164,14 +201,22 @@ new_space (u64 phys_base, int sparse)
 	return i;
 }
 
+<<<<<<< HEAD
 static u64 __devinit
 add_io_space (struct pci_root_info *info, struct acpi_resource_address64 *addr)
 {
+=======
+static u64 add_io_space(struct pci_root_info *info,
+			struct acpi_resource_address64 *addr)
+{
+	struct iospace_resource *iospace;
+>>>>>>> refs/remotes/origin/master
 	struct resource *resource;
 	char *name;
 	unsigned long base, min, max, base_port;
 	unsigned int sparse = 0, space_nr, len;
 
+<<<<<<< HEAD
 	resource = kzalloc(sizeof(*resource), GFP_KERNEL);
 	if (!resource) {
 		printk(KERN_ERR "PCI: No memory for %s I/O port space\n",
@@ -186,6 +231,18 @@ add_io_space (struct pci_root_info *info, struct acpi_resource_address64 *addr)
 			info->name);
 		goto free_resource;
 	}
+=======
+	len = strlen(info->name) + 32;
+	iospace = kzalloc(sizeof(*iospace) + len, GFP_KERNEL);
+	if (!iospace) {
+		dev_err(&info->bridge->dev,
+				"PCI: No memory for %s I/O port space\n",
+				info->name);
+		goto out;
+	}
+
+	name = (char *)(iospace + 1);
+>>>>>>> refs/remotes/origin/master
 
 	min = addr->minimum;
 	max = min + addr->address_length - 1;
@@ -194,7 +251,11 @@ add_io_space (struct pci_root_info *info, struct acpi_resource_address64 *addr)
 
 	space_nr = new_space(addr->translation_offset, sparse);
 	if (space_nr == ~0)
+<<<<<<< HEAD
 		goto free_name;
+=======
+		goto free_resource;
+>>>>>>> refs/remotes/origin/master
 
 	base = __pa(io_space[space_nr].mmio_base);
 	base_port = IO_SPACE_BASE(space_nr);
@@ -209,10 +270,15 @@ add_io_space (struct pci_root_info *info, struct acpi_resource_address64 *addr)
 	if (space_nr == 0)
 		sparse = 1;
 
+<<<<<<< HEAD
+=======
+	resource = &iospace->res;
+>>>>>>> refs/remotes/origin/master
 	resource->name  = name;
 	resource->flags = IORESOURCE_MEM;
 	resource->start = base + (sparse ? IO_SPACE_SPARSE_ENCODING(min) : min);
 	resource->end   = base + (sparse ? IO_SPACE_SPARSE_ENCODING(max) : max);
+<<<<<<< HEAD
 	insert_resource(&iomem_resource, resource);
 
 	return base_port;
@@ -221,12 +287,31 @@ free_name:
 	kfree(name);
 free_resource:
 	kfree(resource);
+=======
+	if (insert_resource(&iomem_resource, resource)) {
+		dev_err(&info->bridge->dev,
+				"can't allocate host bridge io space resource  %pR\n",
+				resource);
+		goto free_resource;
+	}
+
+	list_add_tail(&iospace->list, &info->io_resources);
+	return base_port;
+
+free_resource:
+	kfree(iospace);
+>>>>>>> refs/remotes/origin/master
 out:
 	return ~0;
 }
 
+<<<<<<< HEAD
 static acpi_status __devinit resource_to_window(struct acpi_resource *resource,
 	struct acpi_resource_address64 *addr)
+=======
+static acpi_status resource_to_window(struct acpi_resource *resource,
+				      struct acpi_resource_address64 *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 
@@ -248,8 +333,12 @@ static acpi_status __devinit resource_to_window(struct acpi_resource *resource,
 	return AE_ERROR;
 }
 
+<<<<<<< HEAD
 static acpi_status __devinit
 count_window (struct acpi_resource *resource, void *data)
+=======
+static acpi_status count_window(struct acpi_resource *resource, void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int *windows = (unsigned int *) data;
 	struct acpi_resource_address64 addr;
@@ -262,10 +351,17 @@ count_window (struct acpi_resource *resource, void *data)
 	return AE_OK;
 }
 
+<<<<<<< HEAD
 static __devinit acpi_status add_window(struct acpi_resource *res, void *data)
 {
 	struct pci_root_info *info = data;
 	struct pci_window *window;
+=======
+static acpi_status add_window(struct acpi_resource *res, void *data)
+{
+	struct pci_root_info *info = data;
+	struct resource *resource;
+>>>>>>> refs/remotes/origin/master
 	struct acpi_resource_address64 addr;
 	acpi_status status;
 	unsigned long flags, offset = 0;
@@ -289,6 +385,7 @@ static __devinit acpi_status add_window(struct acpi_resource *res, void *data)
 	} else
 		return AE_OK;
 
+<<<<<<< HEAD
 	window = &info->controller->window[info->controller->windows++];
 	window->resource.name = info->name;
 	window->resource.flags = flags;
@@ -301,10 +398,24 @@ static __devinit acpi_status add_window(struct acpi_resource *res, void *data)
 		dev_err(&info->bridge->dev,
 			"can't allocate host bridge window %pR\n",
 			&window->resource);
+=======
+	resource = &info->res[info->res_num];
+	resource->name = info->name;
+	resource->flags = flags;
+	resource->start = addr.minimum + offset;
+	resource->end = resource->start + addr.address_length - 1;
+	info->res_offset[info->res_num] = offset;
+
+	if (insert_resource(root, resource)) {
+		dev_err(&info->bridge->dev,
+			"can't allocate host bridge window %pR\n",
+			resource);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (offset)
 			dev_info(&info->bridge->dev, "host bridge window %pR "
 				 "(PCI address [%#llx-%#llx])\n",
+<<<<<<< HEAD
 				 &window->resource,
 				 window->resource.start - offset,
 				 window->resource.end - offset);
@@ -314,6 +425,7 @@ static __devinit acpi_status add_window(struct acpi_resource *res, void *data)
 				 &window->resource);
 	}
 
+<<<<<<< HEAD
 	return AE_OK;
 }
 
@@ -332,16 +444,145 @@ pcibios_setup_root_windows(struct pci_bus *bus, struct pci_controller *ctrl)
 			continue;
 		pci_bus_add_resource(bus, res, 0);
 	}
+=======
+	/* HP's firmware has a hack to work around a Windows bug.
+	 * Ignore these tiny memory ranges */
+	if (!((window->resource.flags & IORESOURCE_MEM) &&
+	      (window->resource.end - window->resource.start < 16)))
+		pci_add_resource_offset(&info->resources, &window->resource,
+					window->offset);
+
+	return AE_OK;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct pci_bus * __devinit
 pci_acpi_scan_root(struct acpi_pci_root *root)
+=======
+				 resource,
+				 resource->start - offset,
+				 resource->end - offset);
+		else
+			dev_info(&info->bridge->dev,
+				 "host bridge window %pR\n", resource);
+	}
+	/* HP's firmware has a hack to work around a Windows bug.
+	 * Ignore these tiny memory ranges */
+	if (!((resource->flags & IORESOURCE_MEM) &&
+	      (resource->end - resource->start < 16)))
+		pci_add_resource_offset(&info->resources, resource,
+					info->res_offset[info->res_num]);
+
+	info->res_num++;
+	return AE_OK;
+}
+
+static void free_pci_root_info_res(struct pci_root_info *info)
+{
+	struct iospace_resource *iospace, *tmp;
+
+	list_for_each_entry_safe(iospace, tmp, &info->io_resources, list)
+		kfree(iospace);
+
+	kfree(info->name);
+	kfree(info->res);
+	info->res = NULL;
+	kfree(info->res_offset);
+	info->res_offset = NULL;
+	info->res_num = 0;
+	kfree(info->controller);
+	info->controller = NULL;
+}
+
+static void __release_pci_root_info(struct pci_root_info *info)
+{
+	int i;
+	struct resource *res;
+	struct iospace_resource *iospace;
+
+	list_for_each_entry(iospace, &info->io_resources, list)
+		release_resource(&iospace->res);
+
+	for (i = 0; i < info->res_num; i++) {
+		res = &info->res[i];
+
+		if (!res->parent)
+			continue;
+
+		if (!(res->flags & (IORESOURCE_MEM | IORESOURCE_IO)))
+			continue;
+
+		release_resource(res);
+	}
+
+	free_pci_root_info_res(info);
+	kfree(info);
+}
+
+static void release_pci_root_info(struct pci_host_bridge *bridge)
+{
+	struct pci_root_info *info = bridge->release_data;
+
+	__release_pci_root_info(info);
+}
+
+static int
+probe_pci_root_info(struct pci_root_info *info, struct acpi_device *device,
+		int busnum, int domain)
+{
+	char *name;
+
+	name = kmalloc(16, GFP_KERNEL);
+	if (!name)
+		return -ENOMEM;
+
+	sprintf(name, "PCI Bus %04x:%02x", domain, busnum);
+	info->bridge = device;
+	info->name = name;
+
+	acpi_walk_resources(device->handle, METHOD_NAME__CRS, count_window,
+			&info->res_num);
+	if (info->res_num) {
+		info->res =
+			kzalloc_node(sizeof(*info->res) * info->res_num,
+				     GFP_KERNEL, info->controller->node);
+		if (!info->res) {
+			kfree(name);
+			return -ENOMEM;
+		}
+
+		info->res_offset =
+			kzalloc_node(sizeof(*info->res_offset) * info->res_num,
+					GFP_KERNEL, info->controller->node);
+		if (!info->res_offset) {
+			kfree(name);
+			kfree(info->res);
+			info->res = NULL;
+			return -ENOMEM;
+		}
+
+		info->res_num = 0;
+		acpi_walk_resources(device->handle, METHOD_NAME__CRS,
+			add_window, info);
+	} else
+		kfree(name);
+
+	return 0;
+}
+
+struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_device *device = root->device;
 	int domain = root->segment;
 	int bus = root->secondary.start;
 	struct pci_controller *controller;
+<<<<<<< HEAD
 	unsigned int windows = 0;
+<<<<<<< HEAD
+=======
+	struct pci_root_info info;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pci_bus *pbus;
 	char *name;
 	int pxm;
@@ -353,16 +594,38 @@ pci_acpi_scan_root(struct acpi_pci_root *root)
 	controller->acpi_handle = device->handle;
 
 	pxm = acpi_get_pxm(controller->acpi_handle);
+=======
+	struct pci_root_info *info = NULL;
+	int busnum = root->secondary.start;
+	struct pci_bus *pbus;
+	int pxm, ret;
+
+	controller = alloc_pci_controller(domain);
+	if (!controller)
+		return NULL;
+
+	controller->companion = device;
+
+	pxm = acpi_get_pxm(device->handle);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NUMA
 	if (pxm >= 0)
 		controller->node = pxm_to_node(pxm);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	acpi_walk_resources(device->handle, METHOD_NAME__CRS, count_window,
 			&windows);
 	if (windows) {
 		struct pci_root_info info;
 
+=======
+	INIT_LIST_HEAD(&info.resources);
+	acpi_walk_resources(device->handle, METHOD_NAME__CRS, count_window,
+			&windows);
+	if (windows) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		controller->window =
 			kmalloc_node(sizeof(*controller->window) * windows,
 				     GFP_KERNEL, controller->node);
@@ -380,14 +643,49 @@ pci_acpi_scan_root(struct acpi_pci_root *root)
 		acpi_walk_resources(device->handle, METHOD_NAME__CRS,
 			add_window, &info);
 	}
+=======
+	info = kzalloc(sizeof(*info), GFP_KERNEL);
+	if (!info) {
+		dev_err(&device->dev,
+				"pci_bus %04x:%02x: ignored (out of memory)\n",
+				domain, busnum);
+		kfree(controller);
+		return NULL;
+	}
+
+	info->controller = controller;
+	INIT_LIST_HEAD(&info->io_resources);
+	INIT_LIST_HEAD(&info->resources);
+
+	ret = probe_pci_root_info(info, device, busnum, domain);
+	if (ret) {
+		kfree(info->controller);
+		kfree(info);
+		return NULL;
+	}
+	/* insert busn resource at first */
+	pci_add_resource(&info->resources, &root->secondary);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * See arch/x86/pci/acpi.c.
 	 * The desired pci bus might already be scanned in a quirk. We
 	 * should handle the case here, but it appears that IA64 hasn't
 	 * such quirk. So we just ignore the case now.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pbus = pci_scan_bus_parented(NULL, bus, &pci_root_ops, controller);
 
+=======
+	pbus = pci_create_root_bus(NULL, bus, &pci_root_ops, controller,
+				   &info.resources);
+	if (!pbus) {
+		pci_free_resource_list(&info.resources);
+		return NULL;
+	}
+
+	pbus->subordinate = pci_scan_child_bus(pbus);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return pbus;
 
 out3:
@@ -398,6 +696,7 @@ out1:
 	return NULL;
 }
 
+<<<<<<< HEAD
 void pcibios_resource_to_bus(struct pci_dev *dev,
 		struct pci_bus_region *region, struct resource *res)
 {
@@ -446,7 +745,34 @@ void pcibios_bus_to_resource(struct pci_dev *dev,
 }
 EXPORT_SYMBOL(pcibios_bus_to_resource);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit is_valid_resource(struct pci_dev *dev, int idx)
+=======
+	pbus = pci_create_root_bus(NULL, bus, &pci_root_ops, controller,
+				   &info->resources);
+	if (!pbus) {
+		pci_free_resource_list(&info->resources);
+		__release_pci_root_info(info);
+		return NULL;
+	}
+
+	pci_set_host_bridge_release(to_pci_host_bridge(pbus->bridge),
+			release_pci_root_info, info);
+	pci_scan_child_bus(pbus);
+	return pbus;
+}
+
+int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
+{
+	struct pci_controller *controller = bridge->bus->sysdata;
+
+	ACPI_COMPANION_SET(&bridge->dev, controller->companion);
+	return 0;
+}
+
+static int is_valid_resource(struct pci_dev *dev, int idx)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i, type_mask = IORESOURCE_IO | IORESOURCE_MEM;
 	struct resource *devr = &dev->resource[idx], *busr;
@@ -464,30 +790,52 @@ static int __devinit is_valid_resource(struct pci_dev *dev, int idx)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit
 pcibios_fixup_resources(struct pci_dev *dev, int start, int limit)
 {
+<<<<<<< HEAD
 	struct pci_bus_region region;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void pcibios_fixup_resources(struct pci_dev *dev, int start, int limit)
+{
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = start; i < limit; i++) {
 		if (!dev->resource[i].flags)
 			continue;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		region.start = dev->resource[i].start;
 		region.end = dev->resource[i].end;
 		pcibios_bus_to_resource(dev, &dev->resource[i], &region);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if ((is_valid_resource(dev, i)))
 			pci_claim_resource(dev, i);
 	}
 }
 
+<<<<<<< HEAD
 void __devinit pcibios_fixup_device_resources(struct pci_dev *dev)
+=======
+void pcibios_fixup_device_resources(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	pcibios_fixup_resources(dev, 0, PCI_BRIDGE_RESOURCES);
 }
 EXPORT_SYMBOL_GPL(pcibios_fixup_device_resources);
 
+<<<<<<< HEAD
 static void __devinit pcibios_fixup_bridge_resources(struct pci_dev *dev)
+=======
+static void pcibios_fixup_bridge_resources(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	pcibios_fixup_resources(dev, PCI_BRIDGE_RESOURCES, PCI_NUM_RESOURCES);
 }
@@ -495,22 +843,41 @@ static void __devinit pcibios_fixup_bridge_resources(struct pci_dev *dev)
 /*
  *  Called after each bus is probed, but before its children are examined.
  */
+<<<<<<< HEAD
 void __devinit
 pcibios_fixup_bus (struct pci_bus *b)
+=======
+void pcibios_fixup_bus(struct pci_bus *b)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev;
 
 	if (b->self) {
 		pci_read_bridge_bases(b);
 		pcibios_fixup_bridge_resources(b->self);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 		pcibios_setup_root_windows(b, b->sysdata);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	list_for_each_entry(dev, &b->devices, bus_list)
 		pcibios_fixup_device_resources(dev);
 	platform_pci_fixup_bus(b);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	return;
+=======
+}
+
+void pcibios_set_master (struct pci_dev *dev)
+{
+	/* No special bus mastering setup handling */
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void __devinit
@@ -519,6 +886,23 @@ pcibios_update_irq (struct pci_dev *dev, int irq)
 	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
 
 	/* ??? FIXME -- record old value for shutdown.  */
+=======
+}
+
+void pcibios_add_bus(struct pci_bus *bus)
+{
+	acpi_pci_add_bus(bus);
+}
+
+void pcibios_remove_bus(struct pci_bus *bus)
+{
+	acpi_pci_remove_bus(bus);
+}
+
+void pcibios_set_master (struct pci_dev *dev)
+{
+	/* No special bus mastering setup handling */
+>>>>>>> refs/remotes/origin/master
 }
 
 int
@@ -550,6 +934,7 @@ pcibios_align_resource (void *data, const struct resource *res,
 	return res->start;
 }
 
+<<<<<<< HEAD
 /*
  * PCI BIOS setup, always defaults to SAL interface
  */
@@ -559,6 +944,8 @@ pcibios_setup (char *str)
 	return str;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int
 pci_mmap_page_range (struct pci_dev *dev, struct vm_area_struct *vma,
 		     enum pci_mmap_state mmap_state, int write_combine)
@@ -747,7 +1134,11 @@ static void __init set_pci_dfl_cacheline_size(void)
 
 	status = ia64_pal_cache_summary(&levels, &unique_caches);
 	if (status != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: ia64_pal_cache_summary() failed "
+=======
+		pr_err("%s: ia64_pal_cache_summary() failed "
+>>>>>>> refs/remotes/origin/master
 			"(status=%ld)\n", __func__, status);
 		return;
 	}
@@ -755,7 +1146,11 @@ static void __init set_pci_dfl_cacheline_size(void)
 	status = ia64_pal_cache_config_info(levels - 1,
 				/* cache_type (data_or_unified)= */ 2, &cci);
 	if (status != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: ia64_pal_cache_config_info() failed "
+=======
+		pr_err("%s: ia64_pal_cache_config_info() failed "
+>>>>>>> refs/remotes/origin/master
 			"(status=%ld)\n", __func__, status);
 		return;
 	}

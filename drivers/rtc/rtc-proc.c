@@ -18,6 +18,29 @@
 
 #include "rtc-core.h"
 
+<<<<<<< HEAD
+=======
+#define NAME_SIZE	10
+
+#if defined(CONFIG_RTC_HCTOSYS_DEVICE)
+static bool is_rtc_hctosys(struct rtc_device *rtc)
+{
+	int size;
+	char name[NAME_SIZE];
+
+	size = scnprintf(name, NAME_SIZE, "rtc%d", rtc->id);
+	if (size > NAME_SIZE)
+		return false;
+
+	return !strncmp(name, CONFIG_RTC_HCTOSYS_DEVICE, NAME_SIZE);
+}
+#else
+static bool is_rtc_hctosys(struct rtc_device *rtc)
+{
+	return (rtc->id == 0);
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static int rtc_proc_show(struct seq_file *seq, void *offset)
 {
@@ -90,7 +113,11 @@ static int rtc_proc_show(struct seq_file *seq, void *offset)
 static int rtc_proc_open(struct inode *inode, struct file *file)
 {
 	int ret;
+<<<<<<< HEAD
 	struct rtc_device *rtc = PDE(inode)->data;
+=======
+	struct rtc_device *rtc = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 
 	if (!try_module_get(THIS_MODULE))
 		return -ENODEV;
@@ -117,12 +144,20 @@ static const struct file_operations rtc_proc_fops = {
 
 void rtc_proc_add_device(struct rtc_device *rtc)
 {
+<<<<<<< HEAD
 	if (rtc->id == 0)
+=======
+	if (is_rtc_hctosys(rtc))
+>>>>>>> refs/remotes/origin/master
 		proc_create_data("driver/rtc", 0, NULL, &rtc_proc_fops, rtc);
 }
 
 void rtc_proc_del_device(struct rtc_device *rtc)
 {
+<<<<<<< HEAD
 	if (rtc->id == 0)
+=======
+	if (is_rtc_hctosys(rtc))
+>>>>>>> refs/remotes/origin/master
 		remove_proc_entry("driver/rtc", NULL);
 }

@@ -5,7 +5,11 @@
  *
  * Copyright (C) 2008 Nokia Corporation.
  *
+<<<<<<< HEAD
  * Contact: Remi Denis-Courmont <remi.denis-courmont@nokia.com>
+=======
+ * Author: Rémi Denis-Courmont
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,6 +31,13 @@
 #include <linux/errno.h>
 #include <linux/init.h>
 
+<<<<<<< HEAD
+=======
+#include <net/sock.h>
+#include <linux/phonet.h>
+#include <net/phonet/phonet.h>
+
+>>>>>>> refs/remotes/origin/master
 #define DYNAMIC_PORT_MIN	0x40
 #define DYNAMIC_PORT_MAX	0x7f
 
@@ -46,7 +57,12 @@ static void set_local_port_range(int range[2])
 
 void phonet_get_local_port_range(int *min, int *max)
 {
+<<<<<<< HEAD
 	unsigned seq;
+=======
+	unsigned int seq;
+
+>>>>>>> refs/remotes/origin/master
 	do {
 		seq = read_seqbegin(&local_port_range_lock);
 		if (min)
@@ -56,13 +72,21 @@ void phonet_get_local_port_range(int *min, int *max)
 	} while (read_seqretry(&local_port_range_lock, seq));
 }
 
+<<<<<<< HEAD
 static int proc_local_port_range(ctl_table *table, int write,
+=======
+static int proc_local_port_range(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 				void __user *buffer,
 				size_t *lenp, loff_t *ppos)
 {
 	int ret;
 	int range[2] = {local_port_range[0], local_port_range[1]};
+<<<<<<< HEAD
 	ctl_table tmp = {
+=======
+	struct ctl_table tmp = {
+>>>>>>> refs/remotes/origin/master
 		.data = &range,
 		.maxlen = sizeof(range),
 		.mode = table->mode,
@@ -93,6 +117,7 @@ static struct ctl_table phonet_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static struct ctl_path phonet_ctl_path[] = {
 	{ .procname = "net", },
 	{ .procname = "phonet", },
@@ -102,10 +127,19 @@ static struct ctl_path phonet_ctl_path[] = {
 int __init phonet_sysctl_init(void)
 {
 	phonet_table_hrd = register_sysctl_paths(phonet_ctl_path, phonet_table);
+=======
+int __init phonet_sysctl_init(void)
+{
+	phonet_table_hrd = register_net_sysctl(&init_net, "net/phonet", phonet_table);
+>>>>>>> refs/remotes/origin/master
 	return phonet_table_hrd == NULL ? -ENOMEM : 0;
 }
 
 void phonet_sysctl_exit(void)
 {
+<<<<<<< HEAD
 	unregister_sysctl_table(phonet_table_hrd);
+=======
+	unregister_net_sysctl_table(phonet_table_hrd);
+>>>>>>> refs/remotes/origin/master
 }

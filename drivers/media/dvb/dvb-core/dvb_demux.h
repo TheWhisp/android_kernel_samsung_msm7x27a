@@ -4,6 +4,16 @@
  * Copyright (C) 2000-2001 Marcus Metzler & Ralph Metzler
  *                         for convergence integrated media GmbH
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2012, The Linux Foundation. All rights reserved.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2012, The Linux Foundation. All rights reserved.
+ *
+>>>>>>> refs/remotes/origin/cm-11.0
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -27,6 +37,14 @@
 #include <linux/timer.h>
 #include <linux/spinlock.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/debugfs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/debugfs.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "demux.h"
 
@@ -92,10 +110,28 @@ struct dvb_demux_feed {
 	int cc;
 	int pusi_seen;		/* prevents feeding of garbage from previous section */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 peslen;
 
 	struct list_head list_head;
 	unsigned int index;	/* a unique index for each feed (can be used as hardware pid filter index) */
+=======
+	u32 peslen;
+
+	struct list_head list_head;
+	unsigned int index;	/* a unique index for each feed (can be used as hardware pid filter index) */
+
+	struct dmx_indexing_video_params indexing_params;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 peslen;
+
+	struct list_head list_head;
+	unsigned int index;	/* a unique index for each feed (can be used as hardware pid filter index) */
+
+	struct dmx_indexing_video_params indexing_params;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct dvb_demux {
@@ -107,6 +143,21 @@ struct dvb_demux {
 	int (*stop_feed)(struct dvb_demux_feed *feed);
 	int (*write_to_decoder)(struct dvb_demux_feed *feed,
 				 const u8 *buf, size_t len);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int (*decoder_fullness_init)(struct dvb_demux_feed *feed);
+	int (*decoder_fullness_wait)(struct dvb_demux_feed *feed,
+				 size_t required_space);
+	int (*decoder_fullness_abort)(struct dvb_demux_feed *feed);
+	int (*decoder_buffer_status)(struct dvb_demux_feed *feed,
+				struct dmx_buffer_status *dmx_buffer_status);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 (*check_crc32)(struct dvb_demux_feed *feed,
 			    const u8 *buf, size_t len);
 	void (*memcopy)(struct dvb_demux_feed *feed, u8 *dst,
@@ -136,6 +187,37 @@ struct dvb_demux {
 
 	struct timespec speed_last_time; /* for TS speed check */
 	uint32_t speed_pkts_cnt; /* for TS speed check */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	enum dmx_tsp_format_t tsp_format;
+	enum dmx_tsp_format_t tsp_out_format;
+
+	enum dmx_playback_mode_t playback_mode;
+	int sw_filter_abort;
+
+	struct {
+		dmx_ts_fullness ts;
+		dmx_section_fullness sec;
+	} buffer_ctrl;
+
+	/*
+	 * the following is used for debugfs exposing info
+	 * about dvb demux performance.
+	 */
+#define MAX_DVB_DEMUX_NAME_LEN 10
+	char alias[MAX_DVB_DEMUX_NAME_LEN];
+
+	u32 total_process_time;
+	u32 total_crc_time;
+	struct dentry *debugfs_demux_dir;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int dvb_dmx_init(struct dvb_demux *dvbdemux);
@@ -145,5 +227,19 @@ void dvb_dmx_swfilter_packets(struct dvb_demux *dvbdmx, const u8 *buf,
 void dvb_dmx_swfilter(struct dvb_demux *demux, const u8 *buf, size_t count);
 void dvb_dmx_swfilter_204(struct dvb_demux *demux, const u8 *buf,
 			  size_t count);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+void dvb_dmx_swfilter_format(
+			struct dvb_demux *demux, const u8 *buf,
+			size_t count,
+			enum dmx_tsp_format_t tsp_format);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif /* _DVB_DEMUX_H_ */

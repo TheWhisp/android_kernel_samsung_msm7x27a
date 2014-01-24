@@ -144,7 +144,11 @@ static int cbaf_check(struct cbaf *cbaf)
 		CBAF_REQ_GET_ASSOCIATION_INFORMATION,
 		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
 		0, cbaf->usb_iface->cur_altsetting->desc.bInterfaceNumber,
+<<<<<<< HEAD
 		cbaf->buffer, cbaf->buffer_size, 1000 /* FIXME: arbitrary */);
+=======
+		cbaf->buffer, cbaf->buffer_size, USB_CTRL_GET_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 	if (result < 0) {
 		dev_err(dev, "Cannot get available association types: %d\n",
 			result);
@@ -184,7 +188,11 @@ static int cbaf_check(struct cbaf *cbaf)
 		assoc_request = itr;
 
 		if (top - itr < sizeof(*assoc_request)) {
+<<<<<<< HEAD
 			dev_err(dev, "Not enough data to decode associaton "
+=======
+			dev_err(dev, "Not enough data to decode association "
+>>>>>>> refs/remotes/origin/master
 				"request (%zu vs %zu bytes needed)\n",
 				top - itr, sizeof(*assoc_request));
 			break;
@@ -208,9 +216,15 @@ static int cbaf_check(struct cbaf *cbaf)
 				ar_name = "ASSOCIATE";
 				ar_assoc = 1;
 				break;
+<<<<<<< HEAD
 			};
 			break;
 		};
+=======
+			}
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		dev_dbg(dev, "Association request #%02u: 0x%04x/%04x "
 			 "(%zu bytes): %s\n",
@@ -235,7 +249,11 @@ static int cbaf_check(struct cbaf *cbaf)
 
 static const struct wusb_cbaf_host_info cbaf_host_info_defaults = {
 	.AssociationTypeId_hdr    = WUSB_AR_AssociationTypeId,
+<<<<<<< HEAD
 	.AssociationTypeId    	  = cpu_to_le16(AR_TYPE_WUSB),
+=======
+	.AssociationTypeId	  = cpu_to_le16(AR_TYPE_WUSB),
+>>>>>>> refs/remotes/origin/master
 	.AssociationSubTypeId_hdr = WUSB_AR_AssociationSubTypeId,
 	.AssociationSubTypeId = cpu_to_le16(AR_TYPE_WUSB_RETRIEVE_HOST_INFO),
 	.CHID_hdr                 = WUSB_AR_CHID,
@@ -260,12 +278,21 @@ static int cbaf_send_host_info(struct cbaf *cbaf)
 	hi->HostFriendlyName_hdr.len = cpu_to_le16(name_len);
 	hi_size = sizeof(*hi) + name_len;
 
+<<<<<<< HEAD
 	return usb_control_msg(cbaf->usb_dev, usb_sndctrlpipe(cbaf->usb_dev, 0),
+=======
+	return usb_control_msg(cbaf->usb_dev,
+			usb_sndctrlpipe(cbaf->usb_dev, 0),
+>>>>>>> refs/remotes/origin/master
 			CBAF_REQ_SET_ASSOCIATION_RESPONSE,
 			USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
 			0x0101,
 			cbaf->usb_iface->cur_altsetting->desc.bInterfaceNumber,
+<<<<<<< HEAD
 			hi, hi_size, 1000 /* FIXME: arbitrary */);
+=======
+			hi, hi_size, USB_CTRL_SET_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -288,9 +315,16 @@ static int cbaf_cdid_get(struct cbaf *cbaf)
 		CBAF_REQ_GET_ASSOCIATION_REQUEST,
 		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
 		0x0200, cbaf->usb_iface->cur_altsetting->desc.bInterfaceNumber,
+<<<<<<< HEAD
 		di, cbaf->buffer_size, 1000 /* FIXME: arbitrary */);
 	if (result < 0) {
 		dev_err(dev, "Cannot request device information: %d\n", result);
+=======
+		di, cbaf->buffer_size, USB_CTRL_GET_TIMEOUT);
+	if (result < 0) {
+		dev_err(dev, "Cannot request device information: %d\n",
+			result);
+>>>>>>> refs/remotes/origin/master
 		return result;
 	}
 
@@ -298,7 +332,15 @@ static int cbaf_cdid_get(struct cbaf *cbaf)
 	if (result < needed) {
 		dev_err(dev, "Not enough data in DEVICE_INFO reply (%zu vs "
 			"%zu bytes needed)\n", (size_t)result, needed);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return result;
+=======
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	strlcpy(cbaf->device_name, di->DeviceFriendlyName, CBA_NAME_LEN);
@@ -350,7 +392,15 @@ static ssize_t cbaf_wusb_chid_store(struct device *dev,
 		return result;
 	result = cbaf_cdid_get(cbaf);
 	if (result < 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -result;
+=======
+		return result;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return result;
+>>>>>>> refs/remotes/origin/master
 	return size;
 }
 static DEVICE_ATTR(wusb_chid, 0600, cbaf_wusb_chid_show, cbaf_wusb_chid_store);
@@ -491,11 +541,19 @@ static DEVICE_ATTR(wusb_device_name, 0600, cbaf_wusb_device_name_show, NULL);
 
 static const struct wusb_cbaf_cc_data cbaf_cc_data_defaults = {
 	.AssociationTypeId_hdr    = WUSB_AR_AssociationTypeId,
+<<<<<<< HEAD
 	.AssociationTypeId    	  = cpu_to_le16(AR_TYPE_WUSB),
 	.AssociationSubTypeId_hdr = WUSB_AR_AssociationSubTypeId,
 	.AssociationSubTypeId     = cpu_to_le16(AR_TYPE_WUSB_ASSOCIATE),
 	.Length_hdr               = WUSB_AR_Length,
 	.Length               	  = cpu_to_le32(sizeof(struct wusb_cbaf_cc_data)),
+=======
+	.AssociationTypeId	  = cpu_to_le16(AR_TYPE_WUSB),
+	.AssociationSubTypeId_hdr = WUSB_AR_AssociationSubTypeId,
+	.AssociationSubTypeId     = cpu_to_le16(AR_TYPE_WUSB_ASSOCIATE),
+	.Length_hdr               = WUSB_AR_Length,
+	.Length		= cpu_to_le32(sizeof(struct wusb_cbaf_cc_data)),
+>>>>>>> refs/remotes/origin/master
 	.ConnectionContext_hdr    = WUSB_AR_ConnectionContext,
 	.BandGroups_hdr           = WUSB_AR_BandGroups,
 };
@@ -536,7 +594,11 @@ static int cbaf_cc_upload(struct cbaf *cbaf)
 		CBAF_REQ_SET_ASSOCIATION_RESPONSE,
 		USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
 		0x0201, cbaf->usb_iface->cur_altsetting->desc.bInterfaceNumber,
+<<<<<<< HEAD
 		ccd, sizeof(*ccd), 1000 /* FIXME: arbitrary */);
+=======
+		ccd, sizeof(*ccd), USB_CTRL_SET_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
@@ -623,6 +685,11 @@ static int cbaf_probe(struct usb_interface *iface,
 
 error_create_group:
 error_check:
+<<<<<<< HEAD
+=======
+	usb_put_intf(iface);
+	usb_put_dev(cbaf->usb_dev);
+>>>>>>> refs/remotes/origin/master
 	kfree(cbaf->buffer);
 error_kmalloc_buffer:
 	kfree(cbaf);
@@ -637,6 +704,10 @@ static void cbaf_disconnect(struct usb_interface *iface)
 	sysfs_remove_group(&dev->kobj, &cbaf_dev_attr_group);
 	usb_set_intfdata(iface, NULL);
 	usb_put_intf(iface);
+<<<<<<< HEAD
+=======
+	usb_put_dev(cbaf->usb_dev);
+>>>>>>> refs/remotes/origin/master
 	kfree(cbaf->buffer);
 	/* paranoia: clean up crypto keys */
 	kzfree(cbaf);
@@ -655,6 +726,8 @@ static struct usb_driver cbaf_driver = {
 	.disconnect =	cbaf_disconnect,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init cbaf_driver_init(void)
 {
 	return usb_register(&cbaf_driver);
@@ -666,6 +739,12 @@ static void __exit cbaf_driver_exit(void)
 	usb_deregister(&cbaf_driver);
 }
 module_exit(cbaf_driver_exit);
+=======
+module_usb_driver(cbaf_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(cbaf_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>");
 MODULE_DESCRIPTION("Wireless USB Cable Based Association");

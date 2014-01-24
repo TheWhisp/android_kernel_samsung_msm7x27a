@@ -2,8 +2,18 @@
 # Cryptographic API
 #
 
+<<<<<<< HEAD
 obj-$(CONFIG_CRYPTO) += crypto.o
 crypto-y := api.o cipher.o compress.o
+=======
+# memneq MUST be built with -Os or -O0 to prevent early-return optimizations
+# that will defeat memneq's actual purpose to prevent timing attacks.
+CFLAGS_REMOVE_memneq.o := -O1 -O2 -O3
+CFLAGS_memneq.o := -Os
+
+obj-$(CONFIG_CRYPTO) += crypto.o
+crypto-y := api.o cipher.o compress.o memneq.o
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_CRYPTO_WORKQUEUE) += crypto_wq.o
 
@@ -31,6 +41,15 @@ obj-$(CONFIG_CRYPTO_PCOMP2) += pcompress.o
 cryptomgr-y := algboss.o testmgr.o
 
 obj-$(CONFIG_CRYPTO_MANAGER2) += cryptomgr.o
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_CRYPTO_USER) += crypto_user.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_CRYPTO_USER) += crypto_user.o
+obj-$(CONFIG_CRYPTO_CMAC) += cmac.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_CRYPTO_HMAC) += hmac.o
 obj-$(CONFIG_CRYPTO_VMAC) += vmac.o
 obj-$(CONFIG_CRYPTO_XCBC) += xcbc.o
@@ -60,14 +79,33 @@ obj-$(CONFIG_CRYPTO_PCRYPT) += pcrypt.o
 obj-$(CONFIG_CRYPTO_CRYPTD) += cryptd.o
 obj-$(CONFIG_CRYPTO_DES) += des_generic.o
 obj-$(CONFIG_CRYPTO_FCRYPT) += fcrypt.o
+<<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_CRYPTO_BLOWFISH) += blowfish.o
 obj-$(CONFIG_CRYPTO_TWOFISH) += twofish_generic.o
 obj-$(CONFIG_CRYPTO_TWOFISH_COMMON) += twofish_common.o
 obj-$(CONFIG_CRYPTO_SERPENT) += serpent.o
 obj-$(CONFIG_CRYPTO_AES) += aes_generic.o
 obj-$(CONFIG_CRYPTO_CAMELLIA) += camellia.o
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+obj-$(CONFIG_CRYPTO_BLOWFISH) += blowfish_generic.o
+obj-$(CONFIG_CRYPTO_BLOWFISH_COMMON) += blowfish_common.o
+obj-$(CONFIG_CRYPTO_TWOFISH) += twofish_generic.o
+obj-$(CONFIG_CRYPTO_TWOFISH_COMMON) += twofish_common.o
+obj-$(CONFIG_CRYPTO_SERPENT) += serpent_generic.o
+obj-$(CONFIG_CRYPTO_AES) += aes_generic.o
+obj-$(CONFIG_CRYPTO_CAMELLIA) += camellia_generic.o
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_CRYPTO_CAST5) += cast5.o
 obj-$(CONFIG_CRYPTO_CAST6) += cast6.o
+=======
+obj-$(CONFIG_CRYPTO_CAST_COMMON) += cast_common.o
+obj-$(CONFIG_CRYPTO_CAST5) += cast5_generic.o
+obj-$(CONFIG_CRYPTO_CAST6) += cast6_generic.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_CRYPTO_ARC4) += arc4.o
 obj-$(CONFIG_CRYPTO_TEA) += tea.o
 obj-$(CONFIG_CRYPTO_KHAZAD) += khazad.o
@@ -78,8 +116,18 @@ obj-$(CONFIG_CRYPTO_DEFLATE) += deflate.o
 obj-$(CONFIG_CRYPTO_ZLIB) += zlib.o
 obj-$(CONFIG_CRYPTO_MICHAEL_MIC) += michael_mic.o
 obj-$(CONFIG_CRYPTO_CRC32C) += crc32c.o
+<<<<<<< HEAD
 obj-$(CONFIG_CRYPTO_AUTHENC) += authenc.o authencesn.o
 obj-$(CONFIG_CRYPTO_LZO) += lzo.o
+=======
+obj-$(CONFIG_CRYPTO_CRC32) += crc32.o
+obj-$(CONFIG_CRYPTO_CRCT10DIF) += crct10dif_common.o crct10dif_generic.o
+obj-$(CONFIG_CRYPTO_AUTHENC) += authenc.o authencesn.o
+obj-$(CONFIG_CRYPTO_LZO) += lzo.o
+obj-$(CONFIG_CRYPTO_LZ4) += lz4.o
+obj-$(CONFIG_CRYPTO_LZ4HC) += lz4hc.o
+obj-$(CONFIG_CRYPTO_842) += 842.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_CRYPTO_RNG2) += rng.o
 obj-$(CONFIG_CRYPTO_RNG2) += krng.o
 obj-$(CONFIG_CRYPTO_ANSI_CPRNG) += ansi_cprng.o
@@ -94,3 +142,9 @@ obj-$(CONFIG_CRYPTO_USER_API_SKCIPHER) += algif_skcipher.o
 #
 obj-$(CONFIG_XOR_BLOCKS) += xor.o
 obj-$(CONFIG_ASYNC_CORE) += async_tx/
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_ASYMMETRIC_KEY_TYPE) += asymmetric_keys/
+obj-$(CONFIG_CRYPTO_HASH_INFO) += hash_info.o
+obj-$(CONFIG_CRYPTO_ABLK_HELPER) += ablk_helper.o
+>>>>>>> refs/remotes/origin/master

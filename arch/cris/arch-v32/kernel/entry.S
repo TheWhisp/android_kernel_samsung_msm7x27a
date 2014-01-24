@@ -31,6 +31,10 @@
 	.globl system_call
 	.globl ret_from_intr
 	.globl ret_from_fork
+<<<<<<< HEAD
+=======
+	.globl ret_from_kernel_thread
+>>>>>>> refs/remotes/origin/master
 	.globl resume
 	.globl multiple_interrupt
 	.globl nmi_interrupt
@@ -84,6 +88,21 @@ ret_from_fork:
 	nop
 	.size	ret_from_fork, . - ret_from_fork
 
+<<<<<<< HEAD
+=======
+	.type	ret_from_kernel_thread,@function
+ret_from_kernel_thread:
+	jsr schedule_tail
+	nop
+	move.d	$r2, $r10
+	jsr	$r1
+	nop
+	moveq	0, $r9			; no syscall restarts, TYVM...
+	ba  ret_from_sys_call
+	nop
+	.size	ret_from_kernel_thread, . - ret_from_kernel_thread
+
+>>>>>>> refs/remotes/origin/master
 	.type	ret_from_intr,@function
 ret_from_intr:
 	;; Check for resched if preemptive kernel, or if we're going back to
@@ -531,6 +550,7 @@ _ugdb_handle_exception:
 	ba	do_sigtrap		; SIGTRAP the offending process.
 	move.d	[$sp+], $r0		; Restore R0 in delay slot.
 
+<<<<<<< HEAD
 	.global kernel_execve
 	.type	kernel_execve,@function
 kernel_execve:
@@ -540,6 +560,8 @@ kernel_execve:
 	nop
 	.size	kernel_execve, . - kernel_execve
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.data
 
 	.section .rodata,"a"
@@ -714,7 +736,15 @@ sys_call_table:
 	.long sys_ni_syscall	/* sys_vm86 */
 	.long sys_ni_syscall	/* Old sys_query_module */
 	.long sys_poll
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.long sys_nfsservctl
+=======
+	.long sys_ni_syscall	/* Old nfsservctl */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long sys_ni_syscall	/* Old nfsservctl */
+>>>>>>> refs/remotes/origin/master
 	.long sys_setresgid16	/* 170 */
 	.long sys_getresgid16
 	.long sys_prctl

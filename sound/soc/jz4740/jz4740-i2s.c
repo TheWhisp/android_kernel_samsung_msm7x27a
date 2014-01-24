@@ -29,9 +29,17 @@
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
 #include <sound/initval.h>
+<<<<<<< HEAD
 
 #include "jz4740-i2s.h"
 #include "jz4740-pcm.h"
+=======
+#include <sound/dmaengine_pcm.h>
+
+#include <asm/mach-jz4740/dma.h>
+
+#include "jz4740-i2s.h"
+>>>>>>> refs/remotes/origin/master
 
 #define JZ_REG_AIC_CONF		0x00
 #define JZ_REG_AIC_CTRL		0x04
@@ -89,8 +97,13 @@ struct jz4740_i2s {
 	struct clk *clk_aic;
 	struct clk *clk_i2s;
 
+<<<<<<< HEAD
 	struct jz4740_pcm_config pcm_config_playback;
 	struct jz4740_pcm_config pcm_config_capture;
+=======
+	struct snd_dmaengine_dai_dma_data playback_dma_data;
+	struct snd_dmaengine_dai_dma_data capture_dma_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline uint32_t jz4740_i2s_read(const struct jz4740_i2s *i2s,
@@ -118,7 +131,11 @@ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
 	ctrl |= JZ_AIC_CTRL_FLUSH;
 	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
 
+<<<<<<< HEAD
 	clk_enable(i2s->clk_i2s);
+=======
+	clk_prepare_enable(i2s->clk_i2s);
+>>>>>>> refs/remotes/origin/master
 
 	conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
 	conf |= JZ_AIC_CONF_ENABLE;
@@ -140,7 +157,11 @@ static void jz4740_i2s_shutdown(struct snd_pcm_substream *substream,
 	conf &= ~JZ_AIC_CONF_ENABLE;
 	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
 
+<<<<<<< HEAD
 	clk_disable(i2s->clk_i2s);
+=======
+	clk_disable_unprepare(i2s->clk_i2s);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int jz4740_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
@@ -233,8 +254,11 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
 {
 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+<<<<<<< HEAD
 	enum jz4740_dma_width dma_width;
 	struct jz4740_pcm_config *pcm_config;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int sample_size;
 	uint32_t ctrl;
 
@@ -243,11 +267,17 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
 	switch (params_format(params)) {
 	case SNDRV_PCM_FORMAT_S8:
 		sample_size = 0;
+<<<<<<< HEAD
 		dma_width = JZ4740_DMA_WIDTH_8BIT;
 		break;
 	case SNDRV_PCM_FORMAT_S16:
 		sample_size = 1;
 		dma_width = JZ4740_DMA_WIDTH_16BIT;
+=======
+		break;
+	case SNDRV_PCM_FORMAT_S16:
+		sample_size = 1;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
@@ -260,6 +290,7 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
 			ctrl |= JZ_AIC_CTRL_MONO_TO_STEREO;
 		else
 			ctrl &= ~JZ_AIC_CTRL_MONO_TO_STEREO;
+<<<<<<< HEAD
 
 		pcm_config = &i2s->pcm_config_playback;
 		pcm_config->dma_config.dst_width = dma_width;
@@ -270,12 +301,20 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
 
 		pcm_config = &i2s->pcm_config_capture;
 		pcm_config->dma_config.src_width = dma_width;
+=======
+	} else {
+		ctrl &= ~JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_MASK;
+		ctrl |= sample_size << JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
 
+<<<<<<< HEAD
 	snd_soc_dai_set_dma_data(dai, substream, pcm_config);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -314,10 +353,17 @@ static int jz4740_i2s_suspend(struct snd_soc_dai *dai)
 		conf &= ~JZ_AIC_CONF_ENABLE;
 		jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
 
+<<<<<<< HEAD
 		clk_disable(i2s->clk_i2s);
 	}
 
 	clk_disable(i2s->clk_aic);
+=======
+		clk_disable_unprepare(i2s->clk_i2s);
+	}
+
+	clk_disable_unprepare(i2s->clk_aic);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -327,10 +373,17 @@ static int jz4740_i2s_resume(struct snd_soc_dai *dai)
 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
 	uint32_t conf;
 
+<<<<<<< HEAD
 	clk_enable(i2s->clk_aic);
 
 	if (dai->active) {
 		clk_enable(i2s->clk_i2s);
+=======
+	clk_prepare_enable(i2s->clk_aic);
+
+	if (dai->active) {
+		clk_prepare_enable(i2s->clk_i2s);
+>>>>>>> refs/remotes/origin/master
 
 		conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
 		conf |= JZ_AIC_CONF_ENABLE;
@@ -342,6 +395,7 @@ static int jz4740_i2s_resume(struct snd_soc_dai *dai)
 
 static void jz4740_i2c_init_pcm_config(struct jz4740_i2s *i2s)
 {
+<<<<<<< HEAD
 	struct jz4740_dma_config *dma_config;
 
 	/* Playback */
@@ -361,6 +415,21 @@ static void jz4740_i2c_init_pcm_config(struct jz4740_i2s *i2s)
 	dma_config->flags = JZ4740_DMA_DST_AUTOINC;
 	dma_config->mode = JZ4740_DMA_MODE_SINGLE;
 	i2s->pcm_config_capture.fifo_addr = i2s->phys_base + JZ_REG_AIC_FIFO;
+=======
+	struct snd_dmaengine_dai_dma_data *dma_data;
+
+	/* Playback */
+	dma_data = &i2s->playback_dma_data;
+	dma_data->maxburst = 16;
+	dma_data->slave_id = JZ4740_DMA_TYPE_AIC_TRANSMIT;
+	dma_data->addr = i2s->phys_base + JZ_REG_AIC_FIFO;
+
+	/* Capture */
+	dma_data = &i2s->capture_dma_data;
+	dma_data->maxburst = 16;
+	dma_data->slave_id = JZ4740_DMA_TYPE_AIC_RECEIVE;
+	dma_data->addr = i2s->phys_base + JZ_REG_AIC_FIFO;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
@@ -368,9 +437,17 @@ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
 	uint32_t conf;
 
+<<<<<<< HEAD
 	clk_enable(i2s->clk_aic);
 
 	jz4740_i2c_init_pcm_config(i2s);
+=======
+	clk_prepare_enable(i2s->clk_aic);
+
+	jz4740_i2c_init_pcm_config(i2s);
+	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
+		&i2s->capture_dma_data);
+>>>>>>> refs/remotes/origin/master
 
 	conf = (7 << JZ_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET) |
 		(8 << JZ_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET) |
@@ -388,11 +465,23 @@ static int jz4740_i2s_dai_remove(struct snd_soc_dai *dai)
 {
 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
 
+<<<<<<< HEAD
 	clk_disable(i2s->clk_aic);
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops jz4740_i2s_dai_ops = {
+=======
+static const struct snd_soc_dai_ops jz4740_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(i2s->clk_aic);
+	return 0;
+}
+
+static const struct snd_soc_dai_ops jz4740_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup = jz4740_i2s_startup,
 	.shutdown = jz4740_i2s_shutdown,
 	.trigger = jz4740_i2s_trigger,
@@ -425,6 +514,7 @@ static struct snd_soc_dai_driver jz4740_i2s_dai = {
 	.resume = jz4740_i2s_resume,
 };
 
+<<<<<<< HEAD
 static int __devinit jz4740_i2s_dev_probe(struct platform_device *pdev)
 {
 	struct jz4740_i2s *i2s;
@@ -508,17 +598,62 @@ static int __devexit jz4740_i2s_dev_remove(struct platform_device *pdev)
 	kfree(i2s);
 
 	return 0;
+=======
+static const struct snd_soc_component_driver jz4740_i2s_component = {
+	.name		= "jz4740-i2s",
+};
+
+static int jz4740_i2s_dev_probe(struct platform_device *pdev)
+{
+	struct jz4740_i2s *i2s;
+	struct resource *mem;
+	int ret;
+
+	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
+	if (!i2s)
+		return -ENOMEM;
+
+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	i2s->base = devm_ioremap_resource(&pdev->dev, mem);
+	if (IS_ERR(i2s->base))
+		return PTR_ERR(i2s->base);
+
+	i2s->phys_base = mem->start;
+
+	i2s->clk_aic = devm_clk_get(&pdev->dev, "aic");
+	if (IS_ERR(i2s->clk_aic))
+		return PTR_ERR(i2s->clk_aic);
+
+	i2s->clk_i2s = devm_clk_get(&pdev->dev, "i2s");
+	if (IS_ERR(i2s->clk_i2s))
+		return PTR_ERR(i2s->clk_i2s);
+
+	platform_set_drvdata(pdev, i2s);
+
+	ret = devm_snd_soc_register_component(&pdev->dev,
+		&jz4740_i2s_component, &jz4740_i2s_dai, 1);
+	if (ret)
+		return ret;
+
+	return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL,
+		SND_DMAENGINE_PCM_FLAG_COMPAT);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver jz4740_i2s_driver = {
 	.probe = jz4740_i2s_dev_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(jz4740_i2s_dev_remove),
+=======
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "jz4740-i2s",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init jz4740_i2s_init(void)
 {
 	return platform_driver_register(&jz4740_i2s_driver);
@@ -530,6 +665,12 @@ static void __exit jz4740_i2s_exit(void)
 	platform_driver_unregister(&jz4740_i2s_driver);
 }
 module_exit(jz4740_i2s_exit);
+=======
+module_platform_driver(jz4740_i2s_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(jz4740_i2s_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Lars-Peter Clausen, <lars@metafoo.de>");
 MODULE_DESCRIPTION("Ingenic JZ4740 SoC I2S driver");

@@ -58,7 +58,11 @@ struct tegra_usb_phy {
 	struct clk *pad_clk;
 	enum tegra_usb_phy_mode mode;
 	void *config;
+<<<<<<< HEAD
 	struct otg_transceiver *ulpi;
+=======
+	struct usb_phy *ulpi;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct tegra_usb_phy *tegra_usb_phy_open(int instance, void __iomem *regs,

@@ -33,7 +33,11 @@
 #include "radeon_reg.h"
 #include "radeon.h"
 #include "radeon_asic.h"
+<<<<<<< HEAD
 #include "radeon_drm.h"
+=======
+#include <drm/radeon_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "r100_track.h"
 #include "r300d.h"
 #include "rv350d.h"
@@ -74,7 +78,15 @@ void rv370_pcie_gart_tlb_flush(struct radeon_device *rdev)
 
 int rv370_pcie_gart_set_page(struct radeon_device *rdev, int i, uint64_t addr)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void __iomem *ptr = (void *)rdev->gart.table.vram.ptr;
+=======
+	void __iomem *ptr = rdev->gart.ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __iomem *ptr = rdev->gart.ptr;
+>>>>>>> refs/remotes/origin/master
 
 	if (i < 0 || i > rdev->gart.num_gpu_pages) {
 		return -EINVAL;
@@ -93,7 +105,15 @@ int rv370_pcie_gart_init(struct radeon_device *rdev)
 {
 	int r;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rdev->gart.table.vram.robj) {
+=======
+	if (rdev->gart.robj) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rdev->gart.robj) {
+>>>>>>> refs/remotes/origin/master
 		WARN(1, "RV370 PCIE GART already initialized\n");
 		return 0;
 	}
@@ -105,8 +125,18 @@ int rv370_pcie_gart_init(struct radeon_device *rdev)
 	if (r)
 		DRM_ERROR("Failed to register debugfs file for PCIE gart !\n");
 	rdev->gart.table_size = rdev->gart.num_gpu_pages * 4;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rdev->asic->gart_tlb_flush = &rv370_pcie_gart_tlb_flush;
 	rdev->asic->gart_set_page = &rv370_pcie_gart_set_page;
+=======
+	rdev->asic->gart.tlb_flush = &rv370_pcie_gart_tlb_flush;
+	rdev->asic->gart.set_page = &rv370_pcie_gart_set_page;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rdev->asic->gart.tlb_flush = &rv370_pcie_gart_tlb_flush;
+	rdev->asic->gart.set_page = &rv370_pcie_gart_set_page;
+>>>>>>> refs/remotes/origin/master
 	return radeon_gart_table_vram_alloc(rdev);
 }
 
@@ -116,7 +146,15 @@ int rv370_pcie_gart_enable(struct radeon_device *rdev)
 	uint32_t tmp;
 	int r;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rdev->gart.table.vram.robj == NULL) {
+=======
+	if (rdev->gart.robj == NULL) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rdev->gart.robj == NULL) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(rdev->dev, "No VRAM object for PCIE GART.\n");
 		return -EINVAL;
 	}
@@ -144,8 +182,20 @@ int rv370_pcie_gart_enable(struct radeon_device *rdev)
 	tmp |= RADEON_PCIE_TX_GART_UNMAPPED_ACCESS_DISCARD;
 	WREG32_PCIE(RADEON_PCIE_TX_GART_CNTL, tmp);
 	rv370_pcie_gart_tlb_flush(rdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DRM_INFO("PCIE GART of %uM enabled (table at 0x%08X).\n",
 		 (unsigned)(rdev->mc.gtt_size >> 20), table_addr);
+=======
+	DRM_INFO("PCIE GART of %uM enabled (table at 0x%016llX).\n",
+		 (unsigned)(rdev->mc.gtt_size >> 20),
+		 (unsigned long long)table_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DRM_INFO("PCIE GART of %uM enabled (table at 0x%016llX).\n",
+		 (unsigned)(rdev->mc.gtt_size >> 20),
+		 (unsigned long long)table_addr);
+>>>>>>> refs/remotes/origin/master
 	rdev->gart.ready = true;
 	return 0;
 }
@@ -153,7 +203,13 @@ int rv370_pcie_gart_enable(struct radeon_device *rdev)
 void rv370_pcie_gart_disable(struct radeon_device *rdev)
 {
 	u32 tmp;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int r;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	WREG32_PCIE(RADEON_PCIE_TX_GART_START_LO, 0);
 	WREG32_PCIE(RADEON_PCIE_TX_GART_END_LO, 0);
@@ -162,6 +218,8 @@ void rv370_pcie_gart_disable(struct radeon_device *rdev)
 	tmp = RREG32_PCIE(RADEON_PCIE_TX_GART_CNTL);
 	tmp |= RADEON_PCIE_TX_GART_UNMAPPED_ACCESS_DISCARD;
 	WREG32_PCIE(RADEON_PCIE_TX_GART_CNTL, tmp & ~RADEON_PCIE_TX_GART_EN);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rdev->gart.table.vram.robj) {
 		r = radeon_bo_reserve(rdev->gart.table.vram.robj, false);
 		if (likely(r == 0)) {
@@ -170,6 +228,12 @@ void rv370_pcie_gart_disable(struct radeon_device *rdev)
 			radeon_bo_unreserve(rdev->gart.table.vram.robj);
 		}
 	}
+=======
+	radeon_gart_table_vram_unpin(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	radeon_gart_table_vram_unpin(rdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 void rv370_pcie_gart_fini(struct radeon_device *rdev)
@@ -182,6 +246,8 @@ void rv370_pcie_gart_fini(struct radeon_device *rdev)
 void r300_fence_ring_emit(struct radeon_device *rdev,
 			  struct radeon_fence *fence)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Who ever call radeon_fence_emit should call ring_lock and ask
 	 * for enough space (today caller are ib schedule and buffer move) */
 	/* Write SC register so SC & US assert idle */
@@ -212,6 +278,45 @@ void r300_fence_ring_emit(struct radeon_device *rdev,
 }
 
 void r300_ring_start(struct radeon_device *rdev)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct radeon_ring *ring = &rdev->ring[fence->ring];
+
+	/* Who ever call radeon_fence_emit should call ring_lock and ask
+	 * for enough space (today caller are ib schedule and buffer move) */
+	/* Write SC register so SC & US assert idle */
+	radeon_ring_write(ring, PACKET0(R300_RE_SCISSORS_TL, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(R300_RE_SCISSORS_BR, 0));
+	radeon_ring_write(ring, 0);
+	/* Flush 3D cache */
+	radeon_ring_write(ring, PACKET0(R300_RB3D_DSTCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, R300_RB3D_DC_FLUSH);
+	radeon_ring_write(ring, PACKET0(R300_RB3D_ZCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, R300_ZC_FLUSH);
+	/* Wait until IDLE & CLEAN */
+	radeon_ring_write(ring, PACKET0(RADEON_WAIT_UNTIL, 0));
+	radeon_ring_write(ring, (RADEON_WAIT_3D_IDLECLEAN |
+				 RADEON_WAIT_2D_IDLECLEAN |
+				 RADEON_WAIT_DMA_GUI_IDLE));
+	radeon_ring_write(ring, PACKET0(RADEON_HOST_PATH_CNTL, 0));
+	radeon_ring_write(ring, rdev->config.r300.hdp_cntl |
+				RADEON_HDP_READ_BUFFER_INVALIDATE);
+	radeon_ring_write(ring, PACKET0(RADEON_HOST_PATH_CNTL, 0));
+	radeon_ring_write(ring, rdev->config.r300.hdp_cntl);
+	/* Emit fence sequence & fire IRQ */
+	radeon_ring_write(ring, PACKET0(rdev->fence_drv[fence->ring].scratch_reg, 0));
+	radeon_ring_write(ring, fence->seq);
+	radeon_ring_write(ring, PACKET0(RADEON_GEN_INT_STATUS, 0));
+	radeon_ring_write(ring, RADEON_SW_INT_FIRE);
+}
+
+void r300_ring_start(struct radeon_device *rdev, struct radeon_ring *ring)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned gb_tile_config;
 	int r;
@@ -234,16 +339,33 @@ void r300_ring_start(struct radeon_device *rdev)
 		break;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_ring_lock(rdev, 64);
 	if (r) {
 		return;
 	}
 	radeon_ring_write(rdev, PACKET0(RADEON_ISYNC_CNTL, 0));
 	radeon_ring_write(rdev,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	r = radeon_ring_lock(rdev, ring, 64);
+	if (r) {
+		return;
+	}
+	radeon_ring_write(ring, PACKET0(RADEON_ISYNC_CNTL, 0));
+	radeon_ring_write(ring,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			  RADEON_ISYNC_ANY2D_IDLE3D |
 			  RADEON_ISYNC_ANY3D_IDLE2D |
 			  RADEON_ISYNC_WAIT_IDLEGUI |
 			  RADEON_ISYNC_CPSCRATCH_IDLEGUI);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(R300_GB_TILE_CONFIG, 0));
 	radeon_ring_write(rdev, gb_tile_config);
 	radeon_ring_write(rdev, PACKET0(RADEON_WAIT_UNTIL, 0));
@@ -272,6 +394,41 @@ void r300_ring_start(struct radeon_device *rdev)
 	radeon_ring_write(rdev, R300_ZC_FLUSH | R300_ZC_FREE);
 	radeon_ring_write(rdev, PACKET0(R300_GB_MSPOS0, 0));
 	radeon_ring_write(rdev,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	radeon_ring_write(ring, PACKET0(R300_GB_TILE_CONFIG, 0));
+	radeon_ring_write(ring, gb_tile_config);
+	radeon_ring_write(ring, PACKET0(RADEON_WAIT_UNTIL, 0));
+	radeon_ring_write(ring,
+			  RADEON_WAIT_2D_IDLECLEAN |
+			  RADEON_WAIT_3D_IDLECLEAN);
+	radeon_ring_write(ring, PACKET0(R300_DST_PIPE_CONFIG, 0));
+	radeon_ring_write(ring, R300_PIPE_AUTO_CONFIG);
+	radeon_ring_write(ring, PACKET0(R300_GB_SELECT, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(R300_GB_ENABLE, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(R300_RB3D_DSTCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, R300_RB3D_DC_FLUSH | R300_RB3D_DC_FREE);
+	radeon_ring_write(ring, PACKET0(R300_RB3D_ZCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, R300_ZC_FLUSH | R300_ZC_FREE);
+	radeon_ring_write(ring, PACKET0(RADEON_WAIT_UNTIL, 0));
+	radeon_ring_write(ring,
+			  RADEON_WAIT_2D_IDLECLEAN |
+			  RADEON_WAIT_3D_IDLECLEAN);
+	radeon_ring_write(ring, PACKET0(R300_GB_AA_CONFIG, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(R300_RB3D_DSTCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, R300_RB3D_DC_FLUSH | R300_RB3D_DC_FREE);
+	radeon_ring_write(ring, PACKET0(R300_RB3D_ZCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, R300_ZC_FLUSH | R300_ZC_FREE);
+	radeon_ring_write(ring, PACKET0(R300_GB_MSPOS0, 0));
+	radeon_ring_write(ring,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			  ((6 << R300_MS_X0_SHIFT) |
 			   (6 << R300_MS_Y0_SHIFT) |
 			   (6 << R300_MS_X1_SHIFT) |
@@ -280,8 +437,18 @@ void r300_ring_start(struct radeon_device *rdev)
 			   (6 << R300_MS_Y2_SHIFT) |
 			   (6 << R300_MSBD0_Y_SHIFT) |
 			   (6 << R300_MSBD0_X_SHIFT)));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(R300_GB_MSPOS1, 0));
 	radeon_ring_write(rdev,
+=======
+	radeon_ring_write(ring, PACKET0(R300_GB_MSPOS1, 0));
+	radeon_ring_write(ring,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	radeon_ring_write(ring, PACKET0(R300_GB_MSPOS1, 0));
+	radeon_ring_write(ring,
+>>>>>>> refs/remotes/origin/master
 			  ((6 << R300_MS_X3_SHIFT) |
 			   (6 << R300_MS_Y3_SHIFT) |
 			   (6 << R300_MS_X4_SHIFT) |
@@ -289,6 +456,8 @@ void r300_ring_start(struct radeon_device *rdev)
 			   (6 << R300_MS_X5_SHIFT) |
 			   (6 << R300_MS_Y5_SHIFT) |
 			   (6 << R300_MSBD1_SHIFT)));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(R300_GA_ENHANCE, 0));
 	radeon_ring_write(rdev, R300_GA_DEADLOCK_CNTL | R300_GA_FASTSYNC_CNTL);
 	radeon_ring_write(rdev, PACKET0(R300_GA_POLY_MODE, 0));
@@ -299,9 +468,29 @@ void r300_ring_start(struct radeon_device *rdev)
 			  R300_GEOMETRY_ROUND_NEAREST |
 			  R300_COLOR_ROUND_NEAREST);
 	radeon_ring_unlock_commit(rdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	radeon_ring_write(ring, PACKET0(R300_GA_ENHANCE, 0));
+	radeon_ring_write(ring, R300_GA_DEADLOCK_CNTL | R300_GA_FASTSYNC_CNTL);
+	radeon_ring_write(ring, PACKET0(R300_GA_POLY_MODE, 0));
+	radeon_ring_write(ring,
+			  R300_FRONT_PTYPE_TRIANGE | R300_BACK_PTYPE_TRIANGE);
+	radeon_ring_write(ring, PACKET0(R300_GA_ROUND_MODE, 0));
+	radeon_ring_write(ring,
+			  R300_GEOMETRY_ROUND_NEAREST |
+			  R300_COLOR_ROUND_NEAREST);
+	radeon_ring_unlock_commit(rdev, ring);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void r300_errata(struct radeon_device *rdev)
+=======
+}
+
+static void r300_errata(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	rdev->pll_errata = 0;
 
@@ -327,7 +516,11 @@ int r300_mc_wait_for_idle(struct radeon_device *rdev)
 	return -1;
 }
 
+<<<<<<< HEAD
 void r300_gpu_init(struct radeon_device *rdev)
+=======
+static void r300_gpu_init(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	uint32_t gb_tile_config, tmp;
 
@@ -382,13 +575,19 @@ void r300_gpu_init(struct radeon_device *rdev)
 		 rdev->num_gb_pipes, rdev->num_z_pipes);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 bool r300_gpu_is_lockup(struct radeon_device *rdev)
+=======
+bool r300_gpu_is_lockup(struct radeon_device *rdev, struct radeon_ring *ring)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u32 rbbm_status;
 	int r;
 
 	rbbm_status = RREG32(R_000E40_RBBM_STATUS);
 	if (!G_000E40_GUI_ACTIVE(rbbm_status)) {
+<<<<<<< HEAD
 		r100_gpu_lockup_update(&rdev->config.r300.lockup, &rdev->cp);
 		return false;
 	}
@@ -402,8 +601,25 @@ bool r300_gpu_is_lockup(struct radeon_device *rdev)
 	}
 	rdev->cp.rptr = RREG32(RADEON_CP_RB_RPTR);
 	return r100_gpu_cp_is_lockup(rdev, &rdev->config.r300.lockup, &rdev->cp);
+=======
+		r100_gpu_lockup_update(&rdev->config.r300.lockup, ring);
+		return false;
+	}
+	/* force CP activities */
+	r = radeon_ring_lock(rdev, ring, 2);
+	if (!r) {
+		/* PACKET2 NOP */
+		radeon_ring_write(ring, 0x80000000);
+		radeon_ring_write(ring, 0x80000000);
+		radeon_ring_unlock_commit(rdev, ring);
+	}
+	ring->rptr = RREG32(RADEON_CP_RB_RPTR);
+	return r100_gpu_cp_is_lockup(rdev, &rdev->config.r300.lockup, ring);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int r300_asic_reset(struct radeon_device *rdev)
 {
 	struct r100_mc_save save;
@@ -454,7 +670,10 @@ int r300_asic_reset(struct radeon_device *rdev)
 	/* Check if GPU is idle */
 	if (G_000E40_GA_BUSY(status) || G_000E40_VAP_BUSY(status)) {
 		dev_err(rdev->dev, "failed to reset GPU\n");
+<<<<<<< HEAD
 		rdev->gpu_lockup = true;
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -1;
 	} else
 		dev_info(rdev->dev, "GPU reset succeed\n");
@@ -632,7 +851,11 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 	int r;
 	u32 idx_value;
 
+<<<<<<< HEAD
 	ib = p->ib->ptr;
+=======
+	ib = p->ib.ptr;
+>>>>>>> refs/remotes/origin/master
 	track = (struct r100_cs_track *)p->track;
 	idx_value = radeon_get_ib_value(p, idx);
 
@@ -643,7 +866,11 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
 					idx, reg);
+<<<<<<< HEAD
 			r100_cs_dump_packet(p, pkt);
+=======
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		break;
@@ -658,11 +885,19 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 	case R300_RB3D_COLOROFFSET2:
 	case R300_RB3D_COLOROFFSET3:
 		i = (reg - R300_RB3D_COLOROFFSET0) >> 2;
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
 					idx, reg);
 			r100_cs_dump_packet(p, pkt);
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+					idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		track->cb[i].robj = reloc->robj;
@@ -671,11 +906,19 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 		ib[idx] = idx_value + ((u32)reloc->lobj.gpu_offset);
 		break;
 	case R300_ZB_DEPTHOFFSET:
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
 					idx, reg);
 			r100_cs_dump_packet(p, pkt);
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+					idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		track->zb.robj = reloc->robj;
@@ -700,6 +943,7 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 	case R300_TX_OFFSET_0+56:
 	case R300_TX_OFFSET_0+60:
 		i = (reg - R300_TX_OFFSET_0) >> 2;
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
@@ -708,6 +952,7 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 			return r;
 		}
 
+<<<<<<< HEAD
 		if (reloc->lobj.tiling_flags & RADEON_TILING_MACRO)
 			tile_flags |= R300_TXO_MACRO_TILE;
 		if (reloc->lobj.tiling_flags & RADEON_TILING_MICRO)
@@ -718,6 +963,36 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 		tmp = idx_value + ((u32)reloc->lobj.gpu_offset);
 		tmp |= tile_flags;
 		ib[idx] = tmp;
+=======
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+					idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+			return r;
+		}
+
+>>>>>>> refs/remotes/origin/master
+		if (p->cs_flags & RADEON_CS_KEEP_TILING_FLAGS) {
+			ib[idx] = (idx_value & 31) | /* keep the 1st 5 bits */
+				  ((idx_value & ~31) + (u32)reloc->lobj.gpu_offset);
+		} else {
+			if (reloc->lobj.tiling_flags & RADEON_TILING_MACRO)
+				tile_flags |= R300_TXO_MACRO_TILE;
+			if (reloc->lobj.tiling_flags & RADEON_TILING_MICRO)
+				tile_flags |= R300_TXO_MICRO_TILE;
+			else if (reloc->lobj.tiling_flags & RADEON_TILING_MICRO_SQUARE)
+				tile_flags |= R300_TXO_MICRO_TILE_SQUARE;
+
+			tmp = idx_value + ((u32)reloc->lobj.gpu_offset);
+			tmp |= tile_flags;
+			ib[idx] = tmp;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		track->textures[i].robj = reloc->robj;
 		track->tex_dirty = true;
 		break;
@@ -767,6 +1042,8 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 		/* RB3D_COLORPITCH1 */
 		/* RB3D_COLORPITCH2 */
 		/* RB3D_COLORPITCH3 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
@@ -785,6 +1062,39 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 		tmp = idx_value & ~(0x7 << 16);
 		tmp |= tile_flags;
 		ib[idx] = tmp;
+=======
+		if (!(p->cs_flags & RADEON_CS_KEEP_TILING_FLAGS)) {
+			r = r100_cs_packet_next_reloc(p, &reloc);
+			if (r) {
+				DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+					  idx, reg);
+				r100_cs_dump_packet(p, pkt);
+=======
+		if (!(p->cs_flags & RADEON_CS_KEEP_TILING_FLAGS)) {
+			r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+			if (r) {
+				DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+					  idx, reg);
+				radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
+				return r;
+			}
+
+			if (reloc->lobj.tiling_flags & RADEON_TILING_MACRO)
+				tile_flags |= R300_COLOR_TILE_ENABLE;
+			if (reloc->lobj.tiling_flags & RADEON_TILING_MICRO)
+				tile_flags |= R300_COLOR_MICROTILE_ENABLE;
+			else if (reloc->lobj.tiling_flags & RADEON_TILING_MICRO_SQUARE)
+				tile_flags |= R300_COLOR_MICROTILE_SQUARE_ENABLE;
+
+			tmp = idx_value & ~(0x7 << 16);
+			tmp |= tile_flags;
+			ib[idx] = tmp;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		i = (reg - 0x4E38) >> 2;
 		track->cb[i].pitch = idx_value & 0x3FFE;
 		switch (((idx_value >> 21) & 0xF)) {
@@ -850,6 +1160,8 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 		break;
 	case 0x4F24:
 		/* ZB_DEPTHPITCH */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
@@ -869,6 +1181,39 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 		tmp |= tile_flags;
 		ib[idx] = tmp;
 
+=======
+		if (!(p->cs_flags & RADEON_CS_KEEP_TILING_FLAGS)) {
+			r = r100_cs_packet_next_reloc(p, &reloc);
+			if (r) {
+				DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+					  idx, reg);
+				r100_cs_dump_packet(p, pkt);
+=======
+		if (!(p->cs_flags & RADEON_CS_KEEP_TILING_FLAGS)) {
+			r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+			if (r) {
+				DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+					  idx, reg);
+				radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
+				return r;
+			}
+
+			if (reloc->lobj.tiling_flags & RADEON_TILING_MACRO)
+				tile_flags |= R300_DEPTHMACROTILE_ENABLE;
+			if (reloc->lobj.tiling_flags & RADEON_TILING_MICRO)
+				tile_flags |= R300_DEPTHMICROTILE_TILED;
+			else if (reloc->lobj.tiling_flags & RADEON_TILING_MICRO_SQUARE)
+				tile_flags |= R300_DEPTHMICROTILE_TILED_SQUARE;
+
+			tmp = idx_value & ~(0x7 << 16);
+			tmp |= tile_flags;
+			ib[idx] = tmp;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		track->zb.pitch = idx_value & 0x3FFC;
 		track->zb_dirty = true;
 		break;
@@ -1065,11 +1410,19 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 		track->tex_dirty = true;
 		break;
 	case R300_ZB_ZPASS_ADDR:
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
 					idx, reg);
 			r100_cs_dump_packet(p, pkt);
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+					idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		ib[idx] = idx_value + ((u32)reloc->lobj.gpu_offset);
@@ -1107,11 +1460,19 @@ static int r300_packet0_check(struct radeon_cs_parser *p,
 		track->cb_dirty = true;
 		break;
 	case R300_RB3D_AARESOLVE_OFFSET:
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
 				  idx, reg);
 			r100_cs_dump_packet(p, pkt);
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+				  idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		track->aa.robj = reloc->robj;
@@ -1166,7 +1527,11 @@ static int r300_packet3_check(struct radeon_cs_parser *p,
 	unsigned idx;
 	int r;
 
+<<<<<<< HEAD
 	ib = p->ib->ptr;
+=======
+	ib = p->ib.ptr;
+>>>>>>> refs/remotes/origin/master
 	idx = pkt->idx + 1;
 	track = (struct r100_cs_track *)p->track;
 	switch(pkt->opcode) {
@@ -1176,10 +1541,17 @@ static int r300_packet3_check(struct radeon_cs_parser *p,
 			return r;
 		break;
 	case PACKET3_INDX_BUFFER:
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for packet3 %d\n", pkt->opcode);
 			r100_cs_dump_packet(p, pkt);
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for packet3 %d\n", pkt->opcode);
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		ib[idx+1] = radeon_get_ib_value(p, idx + 1) + ((u32)reloc->lobj.gpu_offset);
@@ -1277,21 +1649,35 @@ int r300_cs_parse(struct radeon_cs_parser *p)
 	r100_cs_track_clear(p->rdev, track);
 	p->track = track;
 	do {
+<<<<<<< HEAD
 		r = r100_cs_packet_parse(p, &pkt, p->idx);
+=======
+		r = radeon_cs_packet_parse(p, &pkt, p->idx);
+>>>>>>> refs/remotes/origin/master
 		if (r) {
 			return r;
 		}
 		p->idx += pkt.count + 2;
 		switch (pkt.type) {
+<<<<<<< HEAD
 		case PACKET_TYPE0:
+=======
+		case RADEON_PACKET_TYPE0:
+>>>>>>> refs/remotes/origin/master
 			r = r100_cs_parse_packet0(p, &pkt,
 						  p->rdev->config.r300.reg_safe_bm,
 						  p->rdev->config.r300.reg_safe_bm_size,
 						  &r300_packet0_check);
 			break;
+<<<<<<< HEAD
 		case PACKET_TYPE2:
 			break;
 		case PACKET_TYPE3:
+=======
+		case RADEON_PACKET_TYPE2:
+			break;
+		case RADEON_PACKET_TYPE3:
+>>>>>>> refs/remotes/origin/master
 			r = r300_packet3_check(p, &pkt);
 			break;
 		default:
@@ -1395,7 +1781,32 @@ static int r300_startup(struct radeon_device *rdev)
 	if (r)
 		return r;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Enable IRQ */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	r = radeon_fence_driver_start_ring(rdev, RADEON_RING_TYPE_GFX_INDEX);
+	if (r) {
+		dev_err(rdev->dev, "failed initializing CP fences (%d).\n", r);
+		return r;
+	}
+
+	/* Enable IRQ */
+	if (!rdev->irq.installed) {
+		r = radeon_irq_kms_init(rdev);
+		if (r)
+			return r;
+	}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	r100_irq_set(rdev);
 	rdev->config.r300.hdp_cntl = RREG32(RADEON_HOST_PATH_CNTL);
 	/* 1M ring buffer */
@@ -1404,16 +1815,51 @@ static int r300_startup(struct radeon_device *rdev)
 		dev_err(rdev->dev, "failed initializing CP (%d).\n", r);
 		return r;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r = r100_ib_init(rdev);
 	if (r) {
 		dev_err(rdev->dev, "failed initializing IB (%d).\n", r);
 		return r;
 	}
+=======
+
+	r = radeon_ib_pool_start(rdev);
+	if (r)
+		return r;
+
+	r = radeon_ib_test(rdev, RADEON_RING_TYPE_GFX_INDEX, &rdev->ring[RADEON_RING_TYPE_GFX_INDEX]);
+	if (r) {
+		dev_err(rdev->dev, "failed testing IB (%d).\n", r);
+		rdev->accel_working = false;
+		return r;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	r = radeon_ib_pool_init(rdev);
+	if (r) {
+		dev_err(rdev->dev, "IB initialization failed (%d).\n", r);
+		return r;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 int r300_resume(struct radeon_device *rdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int r;
+
+>>>>>>> refs/remotes/origin/master
 	/* Make sur GART are not working */
 	if (rdev->flags & RADEON_IS_PCIE)
 		rv370_pcie_gart_disable(rdev);
@@ -1433,11 +1879,34 @@ int r300_resume(struct radeon_device *rdev)
 	r300_clock_startup(rdev);
 	/* Initialize surface registers */
 	radeon_surface_init(rdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return r300_startup(rdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	rdev->accel_working = true;
+	r = r300_startup(rdev);
+	if (r) {
+		rdev->accel_working = false;
+	}
+	return r;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int r300_suspend(struct radeon_device *rdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	radeon_ib_pool_suspend(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	r100_cp_disable(rdev);
 	radeon_wb_disable(rdev);
 	r100_irq_disable(rdev);
@@ -1452,7 +1921,11 @@ void r300_fini(struct radeon_device *rdev)
 {
 	r100_cp_fini(rdev);
 	radeon_wb_fini(rdev);
+<<<<<<< HEAD
 	r100_ib_fini(rdev);
+=======
+	radeon_ib_pool_fini(rdev);
+>>>>>>> refs/remotes/origin/master
 	radeon_gem_fini(rdev);
 	if (rdev->flags & RADEON_IS_PCIE)
 		rv370_pcie_gart_fini(rdev);
@@ -1520,9 +1993,18 @@ int r300_init(struct radeon_device *rdev)
 	r = radeon_fence_driver_init(rdev);
 	if (r)
 		return r;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r)
 		return r;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Memory manager */
 	r = radeon_bo_init(rdev);
 	if (r)
@@ -1538,7 +2020,19 @@ int r300_init(struct radeon_device *rdev)
 			return r;
 	}
 	r300_set_reg_safe(rdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rdev->accel_working = true;
+=======
+
+	r = radeon_ib_pool_init(rdev);
+	rdev->accel_working = true;
+	if (r) {
+		dev_err(rdev->dev, "IB initialization failed (%d).\n", r);
+		rdev->accel_working = false;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	r = r300_startup(rdev);
 	if (r) {
 		/* Somethings want wront with the accel init stop accel */
@@ -1546,6 +2040,17 @@ int r300_init(struct radeon_device *rdev)
 		r100_cp_fini(rdev);
 		radeon_wb_fini(rdev);
 		r100_ib_fini(rdev);
+=======
+
+	rdev->accel_working = true;
+	r = r300_startup(rdev);
+	if (r) {
+		/* Something went wrong with the accel init, so stop accel */
+		dev_err(rdev->dev, "Disabling GPU acceleration\n");
+		r100_cp_fini(rdev);
+		radeon_wb_fini(rdev);
+		radeon_ib_pool_fini(rdev);
+>>>>>>> refs/remotes/origin/master
 		radeon_irq_kms_fini(rdev);
 		if (rdev->flags & RADEON_IS_PCIE)
 			rv370_pcie_gart_fini(rdev);

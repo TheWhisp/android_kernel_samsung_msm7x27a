@@ -1,6 +1,7 @@
 #ifndef _LINUX_SECUREBITS_H
 #define _LINUX_SECUREBITS_H 1
 
+<<<<<<< HEAD
 /* Each securesetting is implemented using two bits. One bit specifies
    whether the setting is on or off. The other bit specify whether the
    setting is locked or not. A setting which is locked cannot be
@@ -51,4 +52,9 @@
 				 issecure_mask(SECURE_KEEP_CAPS))
 #define SECURE_ALL_LOCKS	(SECURE_ALL_BITS << 1)
 
+=======
+#include <uapi/linux/securebits.h>
+
+#define issecure(X)		(issecure_mask(X) & current_cred_xxx(securebits))
+>>>>>>> refs/remotes/origin/master
 #endif /* !_LINUX_SECUREBITS_H */

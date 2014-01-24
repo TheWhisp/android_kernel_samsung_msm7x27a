@@ -14,6 +14,14 @@
 #include <linux/list.h>
 #include <linux/poll.h>
 #include <linux/socket.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <net/iucv/iucv.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/iucv/iucv.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifndef AF_IUCV
 #define AF_IUCV		32
@@ -26,13 +34,27 @@ enum {
 	IUCV_OPEN,
 	IUCV_BOUND,
 	IUCV_LISTEN,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	IUCV_SEVERED,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	IUCV_DISCONN,
 	IUCV_CLOSING,
 	IUCV_CLOSED
 };
 
 #define IUCV_QUEUELEN_DEFAULT	65535
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define IUCV_HIPER_MSGLIM_DEFAULT	128
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IUCV_HIPER_MSGLIM_DEFAULT	128
+>>>>>>> refs/remotes/origin/master
 #define IUCV_CONN_TIMEOUT	(HZ * 40)
 #define IUCV_DISCONN_TIMEOUT	(HZ * 2)
 #define IUCV_CONN_IDLE_TIMEOUT	(HZ * 60)
@@ -57,8 +79,63 @@ struct sock_msg_q {
 	spinlock_t		lock;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define iucv_sk(__sk) ((struct iucv_sock *) __sk)
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define AF_IUCV_FLAG_ACK 0x1
+#define AF_IUCV_FLAG_SYN 0x2
+#define AF_IUCV_FLAG_FIN 0x4
+#define AF_IUCV_FLAG_WIN 0x8
+#define AF_IUCV_FLAG_SHT 0x10
+
+struct af_iucv_trans_hdr {
+	u16 magic;
+	u8 version;
+	u8 flags;
+	u16 window;
+	char destNodeID[8];
+	char destUserID[8];
+	char destAppName[16];
+	char srcNodeID[8];
+	char srcUserID[8];
+	char srcAppName[16];             /* => 70 bytes */
+	struct iucv_message iucv_hdr;    /* => 33 bytes */
+	u8 pad;                          /* total 104 bytes */
+} __packed;
+
+enum iucv_tx_notify {
+	/* transmission of skb is completed and was successful */
+	TX_NOTIFY_OK = 0,
+	/* target is unreachable */
+	TX_NOTIFY_UNREACHABLE = 1,
+	/* transfer pending queue full */
+	TX_NOTIFY_TPQFULL = 2,
+	/* general error */
+	TX_NOTIFY_GENERALERROR = 3,
+	/* transmission of skb is pending - may interleave
+	 * with TX_NOTIFY_DELAYED_* */
+	TX_NOTIFY_PENDING = 4,
+	/* transmission of skb was done successfully (delayed) */
+	TX_NOTIFY_DELAYED_OK = 5,
+	/* target unreachable (detected delayed) */
+	TX_NOTIFY_DELAYED_UNREACHABLE = 6,
+	/* general error (detected delayed) */
+	TX_NOTIFY_DELAYED_GENERALERROR = 7,
+};
+
+#define iucv_sk(__sk) ((struct iucv_sock *) __sk)
+
+#define AF_IUCV_TRANS_IUCV 0
+#define AF_IUCV_TRANS_HIPER 1
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct iucv_sock {
 	struct sock		sk;
 	char			src_user_id[8];
@@ -69,17 +146,59 @@ struct iucv_sock {
 	spinlock_t		accept_q_lock;
 	struct sock		*parent;
 	struct iucv_path	*path;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct net_device	*hs_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device	*hs_dev;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff_head	send_skb_q;
 	struct sk_buff_head	backlog_skb_q;
 	struct sock_msg_q	message_q;
 	unsigned int		send_tag;
 	u8			flags;
 	u16			msglimit;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u16			msglimit_peer;
+	atomic_t		msg_sent;
+	atomic_t		msg_recv;
+	atomic_t		pendings;
+	int			transport;
+	void                    (*sk_txnotify)(struct sk_buff *skb,
+					       enum iucv_tx_notify n);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* iucv socket options (SOL_IUCV) */
 #define SO_IPRMDATA_MSG	0x0080		/* send/recv IPRM_DATA msgs */
 #define SO_MSGLIMIT	0x1000		/* get/set IUCV MSGLIMIT */
+<<<<<<< HEAD
+=======
+#define SO_MSGSIZE	0x0800		/* get maximum msgsize */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+struct iucv_skb_cb {
+	u32	class;		/* target class of message */
+	u32	tag;		/* tag associated with message */
+	u32	offset;		/* offset for skb receival */
+};
+
+#define IUCV_SKB_CB(__skb)	((struct iucv_skb_cb *)&((__skb)->cb[0]))
+
+/* iucv socket options (SOL_IUCV) */
+#define SO_IPRMDATA_MSG	0x0080		/* send/recv IPRM_DATA msgs */
+#define SO_MSGLIMIT	0x1000		/* get/set IUCV MSGLIMIT */
+#define SO_MSGSIZE	0x0800		/* get maximum msgsize */
+>>>>>>> refs/remotes/origin/master
 
 /* iucv related control messages (scm) */
 #define SCM_IUCV_TRGCLS	0x0001		/* target class control message */
@@ -94,7 +213,13 @@ unsigned int iucv_sock_poll(struct file *file, struct socket *sock,
 			    poll_table *wait);
 void iucv_sock_link(struct iucv_sock_list *l, struct sock *s);
 void iucv_sock_unlink(struct iucv_sock_list *l, struct sock *s);
+<<<<<<< HEAD
+<<<<<<< HEAD
 int  iucv_sock_wait_cnt(struct sock *sk, unsigned long timeo);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void iucv_accept_enqueue(struct sock *parent, struct sock *sk);
 void iucv_accept_unlink(struct sock *sk);
 struct sock *iucv_accept_dequeue(struct sock *parent, struct socket *newsock);

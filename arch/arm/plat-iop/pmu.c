@@ -9,7 +9,10 @@
  */
 
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <asm/pmu.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/irqs.h>
 
 static struct resource pmu_resource = {
@@ -26,7 +29,11 @@ static struct resource pmu_resource = {
 
 static struct platform_device pmu_device = {
 	.name		= "arm-pmu",
+<<<<<<< HEAD
 	.id		= ARM_PMU_DEVICE_CPU,
+=======
+	.id		= -1,
+>>>>>>> refs/remotes/origin/master
 	.resource	= &pmu_resource,
 	.num_resources	= 1,
 };

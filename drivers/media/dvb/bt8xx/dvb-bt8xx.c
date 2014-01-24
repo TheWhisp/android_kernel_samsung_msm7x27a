@@ -19,6 +19,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "dvb_bt8xx: " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/bitops.h>
 #include <linux/module.h>
 #include <linux/init.h>
@@ -148,8 +153,14 @@ static int thomson_dtt7579_demod_init(struct dvb_frontend* fe)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int thomson_dtt7579_tuner_calc_regs(struct dvb_frontend* fe, struct dvb_frontend_parameters* params, u8* pllbuf, int buf_len)
 {
+=======
+static int thomson_dtt7579_tuner_calc_regs(struct dvb_frontend *fe, u8* pllbuf, int buf_len)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 div;
 	unsigned char bs = 0;
 	unsigned char cp = 0;
@@ -157,18 +168,32 @@ static int thomson_dtt7579_tuner_calc_regs(struct dvb_frontend* fe, struct dvb_f
 	if (buf_len < 5)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	div = (((params->frequency + 83333) * 3) / 500000) + IF_FREQUENCYx6;
 
 	if (params->frequency < 542000000)
 		cp = 0xb4;
 	else if (params->frequency < 771000000)
+=======
+	div = (((c->frequency + 83333) * 3) / 500000) + IF_FREQUENCYx6;
+
+	if (c->frequency < 542000000)
+		cp = 0xb4;
+	else if (c->frequency < 771000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		cp = 0xbc;
 	else
 		cp = 0xf4;
 
+<<<<<<< HEAD
 	if (params->frequency == 0)
 		bs = 0x03;
 	else if (params->frequency < 443250000)
+=======
+	if (c->frequency == 0)
+		bs = 0x03;
+	else if (c->frequency < 443250000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		bs = 0x02;
 	else
 		bs = 0x08;
@@ -191,6 +216,7 @@ static struct zl10353_config thomson_dtt7579_zl10353_config = {
 	.demod_address = 0x0f,
 };
 
+<<<<<<< HEAD
 static int cx24108_tuner_set_params(struct dvb_frontend* fe, struct dvb_frontend_parameters* params)
 {
 	u32 freq = params->frequency;
@@ -198,6 +224,14 @@ static int cx24108_tuner_set_params(struct dvb_frontend* fe, struct dvb_frontend
 	int i, a, n, pump;
 	u32 band, pll;
 
+=======
+static int cx24108_tuner_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+	u32 freq = c->frequency;
+	int i, a, n, pump;
+	u32 band, pll;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 osci[]={950000,1019000,1075000,1178000,1296000,1432000,
 		1576000,1718000,1856000,2036000,2150000};
 	u32 bandsel[]={0,0x00020000,0x00040000,0x00100800,0x00101000,
@@ -205,7 +239,11 @@ static int cx24108_tuner_set_params(struct dvb_frontend* fe, struct dvb_frontend
 		0x00120000,0x00140000};
 
 	#define XTAL 1011100 /* Hz, really 1.0111 MHz and a /10 prescaler */
+<<<<<<< HEAD
 	printk("cx24108 debug: entering SetTunerFreq, freq=%d\n",freq);
+=======
+	dprintk("cx24108 debug: entering SetTunerFreq, freq=%d\n", freq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* This is really the bit driving the tuner chip cx24108 */
 
@@ -216,7 +254,11 @@ static int cx24108_tuner_set_params(struct dvb_frontend* fe, struct dvb_frontend
 
 	/* decide which VCO to use for the input frequency */
 	for(i = 1; (i < ARRAY_SIZE(osci) - 1) && (osci[i] < freq); i++);
+<<<<<<< HEAD
 	printk("cx24108 debug: select vco #%d (f=%d)\n",i,freq);
+=======
+	dprintk("cx24108 debug: select vco #%d (f=%d)\n", i, freq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	band=bandsel[i];
 	/* the gain values must be set by SetSymbolrate */
 	/* compute the pll divider needed, from Conexant data sheet,
@@ -232,7 +274,11 @@ static int cx24108_tuner_set_params(struct dvb_frontend* fe, struct dvb_frontend
 	    ((a&0x1f)<<11);
 	/* everything is shifted left 11 bits to left-align the bits in the
 	   32bit word. Output to the tuner goes MSB-aligned, after all */
+<<<<<<< HEAD
 	printk("cx24108 debug: pump=%d, n=%d, a=%d\n",pump,n,a);
+=======
+	dprintk("cx24108 debug: pump=%d, n=%d, a=%d\n", pump, n, a);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cx24110_pll_write(fe,band);
 	/* set vga and vca to their widest-band settings, as a precaution.
 	   SetSymbolrate might not be called to set this up */
@@ -267,14 +313,21 @@ static struct cx24110_config pctvsat_config = {
 	.demod_address = 0x55,
 };
 
+<<<<<<< HEAD
 static int microtune_mt7202dtf_tuner_set_params(struct dvb_frontend* fe, struct dvb_frontend_parameters* params)
 {
+=======
+static int microtune_mt7202dtf_tuner_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dvb_bt8xx_card *card = (struct dvb_bt8xx_card *) fe->dvb->priv;
 	u8 cfg, cpump, band_select;
 	u8 data[4];
 	u32 div;
 	struct i2c_msg msg = { .addr = 0x60, .flags = 0, .buf = data, .len = sizeof(data) };
 
+<<<<<<< HEAD
 	div = (36000000 + params->frequency + 83333) / 166666;
 	cfg = 0x88;
 
@@ -285,13 +338,31 @@ static int microtune_mt7202dtf_tuner_set_params(struct dvb_frontend* fe, struct 
 	else if (params->frequency < 470000000)
 		cpump = 2;
 	else if (params->frequency < 750000000)
+=======
+	div = (36000000 + c->frequency + 83333) / 166666;
+	cfg = 0x88;
+
+	if (c->frequency < 175000000)
+		cpump = 2;
+	else if (c->frequency < 390000000)
+		cpump = 1;
+	else if (c->frequency < 470000000)
+		cpump = 2;
+	else if (c->frequency < 750000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		cpump = 2;
 	else
 		cpump = 3;
 
+<<<<<<< HEAD
 	if (params->frequency < 175000000)
 		band_select = 0x0e;
 	else if (params->frequency < 470000000)
+=======
+	if (c->frequency < 175000000)
+		band_select = 0x0e;
+	else if (c->frequency < 470000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		band_select = 0x05;
 	else
 		band_select = 0x03;
@@ -342,14 +413,21 @@ static int advbt771_samsung_tdtc9251dh0_demod_init(struct dvb_frontend* fe)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int advbt771_samsung_tdtc9251dh0_tuner_calc_regs(struct dvb_frontend* fe, struct dvb_frontend_parameters* params, u8* pllbuf, int buf_len)
 {
+=======
+static int advbt771_samsung_tdtc9251dh0_tuner_calc_regs(struct dvb_frontend *fe, u8 *pllbuf, int buf_len)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 div;
 	unsigned char bs = 0;
 	unsigned char cp = 0;
 
 	if (buf_len < 5) return -EINVAL;
 
+<<<<<<< HEAD
 	div = (((params->frequency + 83333) * 3) / 500000) + IF_FREQUENCYx6;
 
 	if (params->frequency < 150000000)
@@ -367,10 +445,30 @@ static int advbt771_samsung_tdtc9251dh0_tuner_calc_regs(struct dvb_frontend* fe,
 	else if (params->frequency < 600000000)
 		cp = 0xBC;
 	else if (params->frequency < 730000000)
+=======
+	div = (((c->frequency + 83333) * 3) / 500000) + IF_FREQUENCYx6;
+
+	if (c->frequency < 150000000)
+		cp = 0xB4;
+	else if (c->frequency < 173000000)
+		cp = 0xBC;
+	else if (c->frequency < 250000000)
+		cp = 0xB4;
+	else if (c->frequency < 400000000)
+		cp = 0xBC;
+	else if (c->frequency < 420000000)
+		cp = 0xF4;
+	else if (c->frequency < 470000000)
+		cp = 0xFC;
+	else if (c->frequency < 600000000)
+		cp = 0xBC;
+	else if (c->frequency < 730000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		cp = 0xF4;
 	else
 		cp = 0xFC;
 
+<<<<<<< HEAD
 	if (params->frequency < 150000000)
 		bs = 0x01;
 	else if (params->frequency < 173000000)
@@ -386,6 +484,23 @@ static int advbt771_samsung_tdtc9251dh0_tuner_calc_regs(struct dvb_frontend* fe,
 	else if (params->frequency < 600000000)
 		bs = 0x08;
 	else if (params->frequency < 730000000)
+=======
+	if (c->frequency < 150000000)
+		bs = 0x01;
+	else if (c->frequency < 173000000)
+		bs = 0x01;
+	else if (c->frequency < 250000000)
+		bs = 0x02;
+	else if (c->frequency < 400000000)
+		bs = 0x02;
+	else if (c->frequency < 420000000)
+		bs = 0x02;
+	else if (c->frequency < 470000000)
+		bs = 0x02;
+	else if (c->frequency < 600000000)
+		bs = 0x08;
+	else if (c->frequency < 730000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		bs = 0x08;
 	else
 		bs = 0x08;
@@ -461,18 +576,29 @@ static struct or51211_config or51211_config = {
 	.sleep = or51211_sleep,
 };
 
+<<<<<<< HEAD
 static int vp3021_alps_tded4_tuner_set_params(struct dvb_frontend* fe, struct dvb_frontend_parameters* params)
 {
+=======
+static int vp3021_alps_tded4_tuner_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dvb_bt8xx_card *card = (struct dvb_bt8xx_card *) fe->dvb->priv;
 	u8 buf[4];
 	u32 div;
 	struct i2c_msg msg = { .addr = 0x60, .flags = 0, .buf = buf, .len = sizeof(buf) };
 
+<<<<<<< HEAD
 	div = (params->frequency + 36166667) / 166667;
+=======
+	div = (c->frequency + 36166667) / 166667;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	buf[0] = (div >> 8) & 0x7F;
 	buf[1] = div & 0xFF;
 	buf[2] = 0x85;
+<<<<<<< HEAD
 	if ((params->frequency >= 47000000) && (params->frequency < 153000000))
 		buf[3] = 0x01;
 	else if ((params->frequency >= 153000000) && (params->frequency < 430000000))
@@ -480,6 +606,15 @@ static int vp3021_alps_tded4_tuner_set_params(struct dvb_frontend* fe, struct dv
 	else if ((params->frequency >= 430000000) && (params->frequency < 824000000))
 		buf[3] = 0x0C;
 	else if ((params->frequency >= 824000000) && (params->frequency < 863000000))
+=======
+	if ((c->frequency >= 47000000) && (c->frequency < 153000000))
+		buf[3] = 0x01;
+	else if ((c->frequency >= 153000000) && (c->frequency < 430000000))
+		buf[3] = 0x02;
+	else if ((c->frequency >= 430000000) && (c->frequency < 824000000))
+		buf[3] = 0x0C;
+	else if ((c->frequency >= 824000000) && (c->frequency < 863000000))
+>>>>>>> refs/remotes/origin/cm-10.0
 		buf[3] = 0x8C;
 	else
 		return -EINVAL;
@@ -513,31 +648,54 @@ static int digitv_alps_tded4_demod_init(struct dvb_frontend* fe)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int digitv_alps_tded4_tuner_calc_regs(struct dvb_frontend* fe, struct dvb_frontend_parameters* params, u8* pllbuf, int buf_len)
 {
 	u32 div;
 	struct dvb_ofdm_parameters *op = &params->u.ofdm;
+=======
+static int digitv_alps_tded4_tuner_calc_regs(struct dvb_frontend *fe,  u8 *pllbuf, int buf_len)
+{
+	u32 div;
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (buf_len < 5)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	div = (((params->frequency + 83333) * 3) / 500000) + IF_FREQUENCYx6;
+=======
+	div = (((c->frequency + 83333) * 3) / 500000) + IF_FREQUENCYx6;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pllbuf[0] = 0x61;
 	pllbuf[1] = (div >> 8) & 0x7F;
 	pllbuf[2] = div & 0xFF;
 	pllbuf[3] = 0x85;
 
+<<<<<<< HEAD
 	dprintk("frequency %u, div %u\n", params->frequency, div);
 
 	if (params->frequency < 470000000)
 		pllbuf[4] = 0x02;
 	else if (params->frequency > 823000000)
+=======
+	dprintk("frequency %u, div %u\n", c->frequency, div);
+
+	if (c->frequency < 470000000)
+		pllbuf[4] = 0x02;
+	else if (c->frequency > 823000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		pllbuf[4] = 0x88;
 	else
 		pllbuf[4] = 0x08;
 
+<<<<<<< HEAD
 	if (op->bandwidth == 8)
+=======
+	if (c->bandwidth_hz == 8000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		pllbuf[4] |= 0x04;
 
 	return 5;
@@ -663,7 +821,11 @@ static void frontend_init(struct dvb_bt8xx_card *card, u32 type)
 		/*	DST is not a frontend driver !!!		*/
 		state = kmalloc(sizeof (struct dst_state), GFP_KERNEL);
 		if (!state) {
+<<<<<<< HEAD
 			printk("dvb_bt8xx: No memory\n");
+=======
+			pr_err("No memory\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 		/*	Setup the Card					*/
@@ -673,7 +835,11 @@ static void frontend_init(struct dvb_bt8xx_card *card, u32 type)
 		state->dst_ca = NULL;
 		/*	DST is not a frontend, attaching the ASIC	*/
 		if (dvb_attach(dst_attach, state, &card->dvb_adapter) == NULL) {
+<<<<<<< HEAD
 			printk("%s: Could not find a Twinhan DST.\n", __func__);
+=======
+			pr_err("%s: Could not find a Twinhan DST\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 		/*	Attach other DST peripherals if any		*/
@@ -702,14 +868,22 @@ static void frontend_init(struct dvb_bt8xx_card *card, u32 type)
 	}
 
 	if (card->fe == NULL)
+<<<<<<< HEAD
 		printk("dvb-bt8xx: A frontend driver was not found for device [%04x:%04x] subsystem [%04x:%04x]\n",
+=======
+		pr_err("A frontend driver was not found for device [%04x:%04x] subsystem [%04x:%04x]\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       card->bt->dev->vendor,
 		       card->bt->dev->device,
 		       card->bt->dev->subsystem_vendor,
 		       card->bt->dev->subsystem_device);
 	else
 		if (dvb_register_frontend(&card->dvb_adapter, card->fe)) {
+<<<<<<< HEAD
 			printk("dvb-bt8xx: Frontend registration failed!\n");
+=======
+			pr_err("Frontend registration failed!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			dvb_frontend_detach(card->fe);
 			card->fe = NULL;
 		}
@@ -723,7 +897,11 @@ static int __devinit dvb_bt8xx_load_card(struct dvb_bt8xx_card *card, u32 type)
 				      THIS_MODULE, &card->bt->dev->dev,
 				      adapter_nr);
 	if (result < 0) {
+<<<<<<< HEAD
 		printk("dvb_bt8xx: dvb_register_adapter failed (errno = %d)\n", result);
+=======
+		pr_err("dvb_register_adapter failed (errno = %d)\n", result);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return result;
 	}
 	card->dvb_adapter.priv = card;
@@ -741,27 +919,42 @@ static int __devinit dvb_bt8xx_load_card(struct dvb_bt8xx_card *card, u32 type)
 	card->demux.stop_feed = dvb_bt8xx_stop_feed;
 	card->demux.write_to_decoder = NULL;
 
+<<<<<<< HEAD
 	if ((result = dvb_dmx_init(&card->demux)) < 0) {
 		printk("dvb_bt8xx: dvb_dmx_init failed (errno = %d)\n", result);
 
 		dvb_unregister_adapter(&card->dvb_adapter);
 		return result;
+=======
+	result = dvb_dmx_init(&card->demux);
+	if (result < 0) {
+		pr_err("dvb_dmx_init failed (errno = %d)\n", result);
+		goto err_unregister_adaptor;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	card->dmxdev.filternum = 256;
 	card->dmxdev.demux = &card->demux.dmx;
 	card->dmxdev.capabilities = 0;
 
+<<<<<<< HEAD
 	if ((result = dvb_dmxdev_init(&card->dmxdev, &card->dvb_adapter)) < 0) {
 		printk("dvb_bt8xx: dvb_dmxdev_init failed (errno = %d)\n", result);
 
 		dvb_dmx_release(&card->demux);
 		dvb_unregister_adapter(&card->dvb_adapter);
 		return result;
+=======
+	result = dvb_dmxdev_init(&card->dmxdev, &card->dvb_adapter);
+	if (result < 0) {
+		pr_err("dvb_dmxdev_init failed (errno = %d)\n", result);
+		goto err_dmx_release;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	card->fe_hw.source = DMX_FRONTEND_0;
 
+<<<<<<< HEAD
 	if ((result = card->demux.dmx.add_frontend(&card->demux.dmx, &card->fe_hw)) < 0) {
 		printk("dvb_bt8xx: dvb_dmx_init failed (errno = %d)\n", result);
 
@@ -769,10 +962,17 @@ static int __devinit dvb_bt8xx_load_card(struct dvb_bt8xx_card *card, u32 type)
 		dvb_dmx_release(&card->demux);
 		dvb_unregister_adapter(&card->dvb_adapter);
 		return result;
+=======
+	result = card->demux.dmx.add_frontend(&card->demux.dmx, &card->fe_hw);
+	if (result < 0) {
+		pr_err("dvb_dmx_init failed (errno = %d)\n", result);
+		goto err_dmxdev_release;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	card->fe_mem.source = DMX_MEMORY_FE;
 
+<<<<<<< HEAD
 	if ((result = card->demux.dmx.add_frontend(&card->demux.dmx, &card->fe_mem)) < 0) {
 		printk("dvb_bt8xx: dvb_dmx_init failed (errno = %d)\n", result);
 
@@ -795,12 +995,48 @@ static int __devinit dvb_bt8xx_load_card(struct dvb_bt8xx_card *card, u32 type)
 	}
 
 	dvb_net_init(&card->dvb_adapter, &card->dvbnet, &card->demux.dmx);
+=======
+	result = card->demux.dmx.add_frontend(&card->demux.dmx, &card->fe_mem);
+	if (result < 0) {
+		pr_err("dvb_dmx_init failed (errno = %d)\n", result);
+		goto err_remove_hw_frontend;
+	}
+
+	result = card->demux.dmx.connect_frontend(&card->demux.dmx, &card->fe_hw);
+	if (result < 0) {
+		pr_err("dvb_dmx_init failed (errno = %d)\n", result);
+		goto err_remove_mem_frontend;
+	}
+
+	result = dvb_net_init(&card->dvb_adapter, &card->dvbnet, &card->demux.dmx);
+	if (result < 0) {
+		pr_err("dvb_net_init failed (errno = %d)\n", result);
+		goto err_disconnect_frontend;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	tasklet_init(&card->bt->tasklet, dvb_bt8xx_task, (unsigned long) card);
 
 	frontend_init(card, type);
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+err_disconnect_frontend:
+	card->demux.dmx.disconnect_frontend(&card->demux.dmx);
+err_remove_mem_frontend:
+	card->demux.dmx.remove_frontend(&card->demux.dmx, &card->fe_mem);
+err_remove_hw_frontend:
+	card->demux.dmx.remove_frontend(&card->demux.dmx, &card->fe_hw);
+err_dmxdev_release:
+	dvb_dmxdev_release(&card->dmxdev);
+err_dmx_release:
+	dvb_dmx_release(&card->demux);
+err_unregister_adaptor:
+	dvb_unregister_adapter(&card->dvb_adapter);
+	return result;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devinit dvb_bt8xx_probe(struct bttv_sub_device *sub)
@@ -881,8 +1117,12 @@ static int __devinit dvb_bt8xx_probe(struct bttv_sub_device *sub)
 		break;
 
 	default:
+<<<<<<< HEAD
 		printk(KERN_WARNING "dvb_bt8xx: Unknown bttv card type: %d.\n",
 				sub->core->type);
+=======
+		pr_err("Unknown bttv card type: %d\n", sub->core->type);
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(card);
 		return -ENODEV;
 	}
@@ -890,6 +1130,7 @@ static int __devinit dvb_bt8xx_probe(struct bttv_sub_device *sub)
 	dprintk("dvb_bt8xx: identified card%d as %s\n", card->bttv_nr, card->card_name);
 
 	if (!(bttv_pci_dev = bttv_get_pcidev(card->bttv_nr))) {
+<<<<<<< HEAD
 		printk("dvb_bt8xx: no pci device for card %d\n", card->bttv_nr);
 		kfree(card);
 		return -EFAULT;
@@ -903,6 +1144,19 @@ static int __devinit dvb_bt8xx_probe(struct bttv_sub_device *sub)
 
 		kfree(card);
 		return -EFAULT;
+=======
+		pr_err("no pci device for card %d\n", card->bttv_nr);
+		kfree(card);
+		return -ENODEV;
+	}
+
+	if (!(card->bt = dvb_bt8xx_878_match(card->bttv_nr, bttv_pci_dev))) {
+		pr_err("unable to determine DMA core of card %d,\n", card->bttv_nr);
+		pr_err("if you have the ALSA bt87x audio driver installed, try removing it.\n");
+
+		kfree(card);
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	mutex_init(&card->bt->gpio_lock);

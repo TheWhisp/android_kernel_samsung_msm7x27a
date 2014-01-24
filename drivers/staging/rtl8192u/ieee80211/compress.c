@@ -12,10 +12,23 @@
  *
  */
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 //#include <linux/crypto.h>
 #include "rtl_crypto.h"
 #include <linux/errno.h>
 #include <asm/scatterlist.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*#include <linux/crypto.h>*/
+#include "rtl_crypto.h"
+#include <linux/errno.h>
+#include <linux/scatterlist.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include "internal.h"
 

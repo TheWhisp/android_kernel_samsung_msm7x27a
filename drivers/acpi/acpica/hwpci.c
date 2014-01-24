@@ -5,7 +5,15 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -259,7 +267,11 @@ acpi_hw_process_pci_list(struct acpi_pci_id *pci_id,
 		status = acpi_hw_get_pci_device_info(pci_id, info->device,
 						     &bus_number, &is_bridge);
 		if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 			return_ACPI_STATUS(status);
+=======
+			return (status);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		info = info->next;
@@ -271,7 +283,11 @@ acpi_hw_process_pci_list(struct acpi_pci_id *pci_id,
 			  pci_id->segment, pci_id->bus, pci_id->device,
 			  pci_id->function, status, bus_number, is_bridge));
 
+<<<<<<< HEAD
 	return_ACPI_STATUS(AE_OK);
+=======
+	return (AE_OK);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************

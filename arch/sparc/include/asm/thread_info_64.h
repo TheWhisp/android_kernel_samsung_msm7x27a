@@ -14,12 +14,21 @@
 #define TI_FLAG_FAULT_CODE_SHIFT	56
 #define TI_FLAG_BYTE_WSTATE		1
 #define TI_FLAG_WSTATE_SHIFT		48
+<<<<<<< HEAD
 #define TI_FLAG_BYTE_CWP		2
 #define TI_FLAG_CWP_SHIFT		40
 #define TI_FLAG_BYTE_CURRENT_DS		3
 #define TI_FLAG_CURRENT_DS_SHIFT	32
 #define TI_FLAG_BYTE_FPDEPTH		4
 #define TI_FLAG_FPDEPTH_SHIFT		24
+=======
+#define TI_FLAG_BYTE_NOERROR		2
+#define TI_FLAG_BYTE_NOERROR_SHIFT	40
+#define TI_FLAG_BYTE_FPDEPTH		3
+#define TI_FLAG_FPDEPTH_SHIFT		32
+#define TI_FLAG_BYTE_CWP		4
+#define TI_FLAG_CWP_SHIFT		24
+>>>>>>> refs/remotes/origin/master
 #define TI_FLAG_BYTE_WSAVED		5
 #define TI_FLAG_WSAVED_SHIFT		16
 
@@ -47,7 +56,11 @@ struct thread_info {
 	struct exec_domain	*exec_domain;
 	int			preempt_count;	/* 0 => preemptable, <0 => BUG */
 	__u8			new_child;
+<<<<<<< HEAD
 	__u8			syscall_noerror;
+=======
+	__u8			current_ds;
+>>>>>>> refs/remotes/origin/master
 	__u16			cpu;
 
 	unsigned long		*utraps;
@@ -74,9 +87,15 @@ struct thread_info {
 #define TI_FAULT_CODE	(TI_FLAGS + TI_FLAG_BYTE_FAULT_CODE)
 #define TI_WSTATE	(TI_FLAGS + TI_FLAG_BYTE_WSTATE)
 #define TI_CWP		(TI_FLAGS + TI_FLAG_BYTE_CWP)
+<<<<<<< HEAD
 #define TI_CURRENT_DS	(TI_FLAGS + TI_FLAG_BYTE_CURRENT_DS)
 #define TI_FPDEPTH	(TI_FLAGS + TI_FLAG_BYTE_FPDEPTH)
 #define TI_WSAVED	(TI_FLAGS + TI_FLAG_BYTE_WSAVED)
+=======
+#define TI_FPDEPTH	(TI_FLAGS + TI_FLAG_BYTE_FPDEPTH)
+#define TI_WSAVED	(TI_FLAGS + TI_FLAG_BYTE_WSAVED)
+#define TI_SYS_NOERROR	(TI_FLAGS + TI_FLAG_BYTE_NOERROR)
+>>>>>>> refs/remotes/origin/master
 #define TI_FPSAVED	0x00000010
 #define TI_KSP		0x00000018
 #define TI_FAULT_ADDR	0x00000020
@@ -84,7 +103,11 @@ struct thread_info {
 #define TI_EXEC_DOMAIN	0x00000030
 #define TI_PRE_COUNT	0x00000038
 #define TI_NEW_CHILD	0x0000003c
+<<<<<<< HEAD
 #define TI_SYS_NOERROR	0x0000003d
+=======
+#define TI_CURRENT_DS	0x0000003d
+>>>>>>> refs/remotes/origin/master
 #define TI_CPU		0x0000003e
 #define TI_UTRAPS	0x00000040
 #define TI_REG_WINDOW	0x00000048
@@ -111,8 +134,11 @@ struct thread_info {
 #define THREAD_SHIFT PAGE_SHIFT
 #endif /* PAGE_SHIFT == 13 */
 
+<<<<<<< HEAD
 #define PREEMPT_ACTIVE		0x10000000
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * macros/functions for gaining access to the thread information structure
  */
@@ -121,7 +147,11 @@ struct thread_info {
 #define INIT_THREAD_INFO(tsk)				\
 {							\
 	.task		=	&tsk,			\
+<<<<<<< HEAD
 	.flags		= ((unsigned long)ASI_P) << TI_FLAG_CURRENT_DS_SHIFT,	\
+=======
+	.current_ds	=	ASI_P,			\
+>>>>>>> refs/remotes/origin/master
 	.exec_domain	=	&default_exec_domain,	\
 	.preempt_count	=	INIT_PREEMPT_COUNT,	\
 	.restart_block	= {				\
@@ -138,6 +168,7 @@ register struct thread_info *current_thread_info_reg asm("g6");
 
 /* thread information allocation */
 #if PAGE_SHIFT == 13
+<<<<<<< HEAD
 #define __THREAD_INFO_ORDER	1
 #else /* PAGE_SHIFT == 13 */
 #define __THREAD_INFO_ORDER	0
@@ -164,6 +195,13 @@ register struct thread_info *current_thread_info_reg asm("g6");
 #define free_thread_info(ti) \
 	free_pages((unsigned long)(ti),__THREAD_INFO_ORDER)
 
+=======
+#define THREAD_SIZE_ORDER	1
+#else /* PAGE_SHIFT == 13 */
+#define THREAD_SIZE_ORDER	0
+#endif /* PAGE_SHIFT == 13 */
+
+>>>>>>> refs/remotes/origin/master
 #define __thread_flag_byte_ptr(ti)	\
 	((unsigned char *)(&((ti)->flags)))
 #define __cur_thread_flag_byte_ptr	__thread_flag_byte_ptr(current_thread_info())
@@ -174,13 +212,21 @@ register struct thread_info *current_thread_info_reg asm("g6");
 #define set_thread_wstate(val)		(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_WSTATE] = (val))
 #define get_thread_cwp()		(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_CWP])
 #define set_thread_cwp(val)		(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_CWP] = (val))
+<<<<<<< HEAD
 #define get_thread_current_ds()		(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_CURRENT_DS])
 #define set_thread_current_ds(val)	(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_CURRENT_DS] = (val))
+=======
+#define get_thread_noerror()		(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_NOERROR])
+#define set_thread_noerror(val)		(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_NOERROR] = (val))
+>>>>>>> refs/remotes/origin/master
 #define get_thread_fpdepth()		(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_FPDEPTH])
 #define set_thread_fpdepth(val)		(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_FPDEPTH] = (val))
 #define get_thread_wsaved()		(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_WSAVED])
 #define set_thread_wsaved(val)		(__cur_thread_flag_byte_ptr[TI_FLAG_BYTE_WSAVED] = (val))
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(__ASSEMBLY__) */
 
 /*
@@ -214,7 +260,11 @@ register struct thread_info *current_thread_info_reg asm("g6");
 #define TIF_UNALIGNED		5	/* allowed to do unaligned accesses */
 /* flag bit 6 is available */
 #define TIF_32BIT		7	/* 32-bit binary */
+<<<<<<< HEAD
 /* flag bit 8 is available */
+=======
+#define TIF_NOHZ		8	/* in adaptive nohz mode */
+>>>>>>> refs/remotes/origin/master
 #define TIF_SECCOMP		9	/* secure computing */
 #define TIF_SYSCALL_AUDIT	10	/* syscall auditing active */
 #define TIF_SYSCALL_TRACEPOINT	11	/* syscall tracepoint instrumentation */
@@ -225,7 +275,13 @@ register struct thread_info *current_thread_info_reg asm("g6");
 /* flag bit 12 is available */
 #define TIF_MEMDIE		13	/* is terminating due to OOM killer */
 #define TIF_POLLING_NRFLAG	14
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define TIF_FREEZE		15	/* is freezing for suspend */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
 #define _TIF_NOTIFY_RESUME	(1<<TIF_NOTIFY_RESUME)
@@ -233,11 +289,21 @@ register struct thread_info *current_thread_info_reg asm("g6");
 #define _TIF_NEED_RESCHED	(1<<TIF_NEED_RESCHED)
 #define _TIF_UNALIGNED		(1<<TIF_UNALIGNED)
 #define _TIF_32BIT		(1<<TIF_32BIT)
+<<<<<<< HEAD
+=======
+#define _TIF_NOHZ		(1<<TIF_NOHZ)
+>>>>>>> refs/remotes/origin/master
 #define _TIF_SECCOMP		(1<<TIF_SECCOMP)
 #define _TIF_SYSCALL_AUDIT	(1<<TIF_SYSCALL_AUDIT)
 #define _TIF_SYSCALL_TRACEPOINT	(1<<TIF_SYSCALL_TRACEPOINT)
 #define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define _TIF_FREEZE		(1<<TIF_FREEZE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define _TIF_USER_WORK_MASK	((0xff << TI_FLAG_WSAVED_SHIFT) | \
 				 _TIF_DO_NOTIFY_RESUME_MASK | \
@@ -261,8 +327,35 @@ static inline void set_restore_sigmask(void)
 {
 	struct thread_info *ti = current_thread_info();
 	ti->status |= TS_RESTORE_SIGMASK;
+<<<<<<< HEAD
 	set_bit(TIF_SIGPENDING, &ti->flags);
 }
+=======
+	WARN_ON(!test_bit(TIF_SIGPENDING, &ti->flags));
+}
+static inline void clear_restore_sigmask(void)
+{
+	current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
+}
+static inline bool test_restore_sigmask(void)
+{
+	return current_thread_info()->status & TS_RESTORE_SIGMASK;
+}
+static inline bool test_and_clear_restore_sigmask(void)
+{
+	struct thread_info *ti = current_thread_info();
+	if (!(ti->status & TS_RESTORE_SIGMASK))
+		return false;
+	ti->status &= ~TS_RESTORE_SIGMASK;
+	return true;
+}
+
+#define thread32_stack_is_64bit(__SP) (((__SP) & 0x1) != 0)
+#define test_thread_64bit_stack(__SP) \
+	((test_thread_flag(TIF_32BIT) && !thread32_stack_is_64bit(__SP)) ? \
+	 false : true)
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* !__ASSEMBLY__ */
 
 #endif /* __KERNEL__ */

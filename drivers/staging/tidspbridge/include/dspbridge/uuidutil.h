@@ -21,6 +21,7 @@
 
 #define MAXUUIDLEN  37
 
+<<<<<<< HEAD
 /*
  *  ======== uuid_uuid_to_string ========
  *  Purpose:
@@ -59,4 +60,6 @@ void uuid_uuid_to_string(struct dsp_uuid *uuid_obj, char *sz_uuid,
 extern void uuid_uuid_from_string(char *sz_uuid,
 				  struct dsp_uuid *uuid_obj);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* UUIDUTIL_ */

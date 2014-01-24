@@ -5,6 +5,10 @@
  *
  * Copyright (C) 1995 - 2000 by Ralf Baechle
  */
+<<<<<<< HEAD
+=======
+#include <linux/context_tracking.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/signal.h>
 #include <linux/sched.h>
 #include <linux/interrupt.h>
@@ -22,7 +26,13 @@
 
 #include <asm/branch.h>
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/ptrace.h>
 #include <asm/highmem.h>		/* For VMALLOC_END */
@@ -33,8 +43,13 @@
  * and the problem, and then passes it off to one of the appropriate
  * routines.
  */
+<<<<<<< HEAD
 asmlinkage void __kprobes do_page_fault(struct pt_regs *regs, unsigned long write,
 			      unsigned long address)
+=======
+static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
+	unsigned long address)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vm_area_struct * vma = NULL;
 	struct task_struct *tsk = current;
@@ -42,6 +57,15 @@ asmlinkage void __kprobes do_page_fault(struct pt_regs *regs, unsigned long writ
 	const int field = sizeof(unsigned long) * 2;
 	siginfo_t info;
 	int fault;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
+						 (write ? FAULT_FLAG_WRITE : 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+>>>>>>> refs/remotes/origin/master
 
 #if 0
 	printk("Cpu%d[%s:%d:%0*lx:%ld:%0*lx]\n", raw_smp_processor_id(),
@@ -51,7 +75,11 @@ asmlinkage void __kprobes do_page_fault(struct pt_regs *regs, unsigned long writ
 
 #ifdef CONFIG_KPROBES
 	/*
+<<<<<<< HEAD
 	 * This is to notify the fault handler of the kprobes.  The
+=======
+	 * This is to notify the fault handler of the kprobes.	The
+>>>>>>> refs/remotes/origin/master
 	 * exception code is redundant as it is also carried in REGS,
 	 * but we pass it anyhow.
 	 */
@@ -91,6 +119,16 @@ asmlinkage void __kprobes do_page_fault(struct pt_regs *regs, unsigned long writ
 	if (in_atomic() || !mm)
 		goto bad_area_nosemaphore;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+retry:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (user_mode(regs))
+		flags |= FAULT_FLAG_USER;
+retry:
+>>>>>>> refs/remotes/origin/master
 	down_read(&mm->mmap_sem);
 	vma = find_vma(mm, address);
 	if (!vma)
@@ -111,8 +149,14 @@ good_area:
 	if (write) {
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
 	} else {
 		if (kernel_uses_smartmips_rixi) {
+=======
+		flags |= FAULT_FLAG_WRITE;
+	} else {
+		if (cpu_has_rixi) {
+>>>>>>> refs/remotes/origin/master
 			if (address == regs->cp0_epc && !(vma->vm_flags & VM_EXEC)) {
 #if 0
 				pr_notice("Cpu%d[%s:%d:%0*lx:%ld:%0*lx] XI violation\n",
@@ -144,8 +188,23 @@ good_area:
 	 * make sure we exit gracefully rather than endlessly redo
 	 * the fault.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, write ? FAULT_FLAG_WRITE : 0);
 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, 0, regs, address);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	fault = handle_mm_fault(mm, vma, address, flags);
+
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		return;
+
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
@@ -153,6 +212,8 @@ good_area:
 			goto do_sigbus;
 		BUG();
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (fault & VM_FAULT_MAJOR) {
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ,
 				1, 0, regs, address);
@@ -161,6 +222,38 @@ good_area:
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN,
 				1, 0, regs, address);
 		tsk->min_flt++;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+		if (fault & VM_FAULT_MAJOR) {
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
+						  regs, address);
+			tsk->maj_flt++;
+		} else {
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
+						  regs, address);
+			tsk->min_flt++;
+		}
+		if (fault & VM_FAULT_RETRY) {
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+<<<<<<< HEAD
+=======
+			flags |= FAULT_FLAG_TRIED;
+>>>>>>> refs/remotes/origin/master
+
+			/*
+			 * No need to up_read(&mm->mmap_sem) as we would
+			 * have already released it in __lock_page_or_retry
+			 * in mm/filemap.c.
+			 */
+
+			goto retry;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	up_read(&mm->mmap_sem);
@@ -196,7 +289,11 @@ bad_area_nosemaphore:
 	}
 
 no_context:
+<<<<<<< HEAD
 	/* Are we prepared to handle this kernel fault?  */
+=======
+	/* Are we prepared to handle this kernel fault?	 */
+>>>>>>> refs/remotes/origin/master
 	if (fixup_exception(regs)) {
 		current->thread.cp0_baduaddr = address;
 		return;
@@ -220,6 +317,11 @@ out_of_memory:
 	 * (which will retry the fault, or kill us if we got oom-killed).
 	 */
 	up_read(&mm->mmap_sem);
+<<<<<<< HEAD
+=======
+	if (!user_mode(regs))
+		goto no_context;
+>>>>>>> refs/remotes/origin/master
 	pagefault_out_of_memory();
 	return;
 
@@ -292,3 +394,16 @@ vmalloc_fault:
 	}
 #endif
 }
+<<<<<<< HEAD
+=======
+
+asmlinkage void __kprobes do_page_fault(struct pt_regs *regs,
+	unsigned long write, unsigned long address)
+{
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+	__do_page_fault(regs, write, address);
+	exception_exit(prev_state);
+}
+>>>>>>> refs/remotes/origin/master

@@ -4,7 +4,15 @@
  *
  * Author       Petr Novak
  * Copyright    by Petr Novak        <petr.novak@i.cz>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -18,11 +26,25 @@
 
 /* B-channel FIFO read/write routines */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define READW6692BFIFO(cs,bchan,ptr,count) \
 	insb(cs->hw.w6692.iobase+W_B_RFIFO+(bchan?0x40:0),ptr,count)
 
 #define WRITEW6692BFIFO(cs,bchan,ptr,count) \
 	outsb(cs->hw.w6692.iobase+W_B_XFIFO+(bchan?0x40:0),ptr,count)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define READW6692BFIFO(cs, bchan, ptr, count)				\
+	insb(cs->hw.w6692.iobase + W_B_RFIFO + (bchan ? 0x40 : 0), ptr, count)
+
+#define WRITEW6692BFIFO(cs, bchan, ptr, count)				\
+	outsb(cs->hw.w6692.iobase + W_B_XFIFO + (bchan ? 0x40 : 0), ptr, count)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Specifications of W6692 registers */
 

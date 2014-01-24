@@ -31,7 +31,10 @@
 #include <linux/fb.h>
 #include <linux/init.h>
 
+<<<<<<< HEAD
 #include <asm/abs_addr.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/cell-regs.h>
 #include <asm/lv1call.h>
 #include <asm/ps3av.h>
@@ -260,7 +263,11 @@ static const struct fb_videomode ps3fb_modedb[] = {
 static int ps3fb_mode;
 module_param(ps3fb_mode, int, 0);
 
+<<<<<<< HEAD
 static char *mode_option __devinitdata;
+=======
+static char *mode_option;
+>>>>>>> refs/remotes/origin/master
 
 static int ps3fb_cmp_mode(const struct fb_videomode *vmode,
 			  const struct fb_var_screeninfo *var)
@@ -706,6 +713,7 @@ static int ps3fb_pan_display(struct fb_var_screeninfo *var,
 
 static int ps3fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 	unsigned long size, offset;
 
 	size = vma->vm_end - vma->vm_start;
@@ -721,6 +729,17 @@ static int ps3fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 	dev_dbg(info->device, "ps3fb: mmap framebuffer P(%lx)->V(%lx)\n",
 		offset, vma->vm_start);
 	return 0;
+=======
+	int r;
+
+	r = vm_iomap_memory(vma, info->fix.smem_start, info->fix.smem_len);
+
+	dev_dbg(info->device, "ps3fb: mmap framebuffer P(%lx)->V(%lx)\n",
+		info->fix.smem_start + (vma->vm_pgoff << PAGE_SHIFT),
+		vma->vm_start);
+
+	return r;
+>>>>>>> refs/remotes/origin/master
 }
 
     /*
@@ -959,14 +978,22 @@ static struct fb_ops ps3fb_ops = {
 	.fb_compat_ioctl = ps3fb_ioctl
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo ps3fb_fix __initdata = {
+=======
+static struct fb_fix_screeninfo ps3fb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id =		DEVICE_NAME,
 	.type =		FB_TYPE_PACKED_PIXELS,
 	.visual =	FB_VISUAL_TRUECOLOR,
 	.accel =	FB_ACCEL_NONE,
 };
 
+<<<<<<< HEAD
 static int __devinit ps3fb_probe(struct ps3_system_bus_device *dev)
+=======
+static int ps3fb_probe(struct ps3_system_bus_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	struct ps3fb_par *par;
@@ -1035,6 +1062,10 @@ static int __devinit ps3fb_probe(struct ps3_system_bus_device *dev)
 	if (status) {
 		dev_err(&dev->core, "%s: lv1_gpu_memory_allocate failed: %d\n",
 			__func__, status);
+<<<<<<< HEAD
+=======
+		retval = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto err_close_device;
 	}
 	dev_dbg(&dev->core, "ddr:lpar:0x%llx\n", ddr_lpar);
@@ -1047,6 +1078,10 @@ static int __devinit ps3fb_probe(struct ps3_system_bus_device *dev)
 		dev_err(&dev->core,
 			"%s: lv1_gpu_context_allocate failed: %d\n", __func__,
 			status);
+<<<<<<< HEAD
+=======
+		retval = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto err_gpu_memory_free;
 	}
 
@@ -1054,6 +1089,10 @@ static int __devinit ps3fb_probe(struct ps3_system_bus_device *dev)
 	dinfo = (void __force *)ioremap(lpar_driver_info, 128 * 1024);
 	if (!dinfo) {
 		dev_err(&dev->core, "%s: ioremap failed\n", __func__);
+<<<<<<< HEAD
+=======
+		retval = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto err_gpu_context_free;
 	}
 
@@ -1082,7 +1121,15 @@ static int __devinit ps3fb_probe(struct ps3_system_bus_device *dev)
 	}
 
 	retval = request_irq(ps3fb.irq_no, ps3fb_vsync_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			     IRQF_DISABLED, DEVICE_NAME, &dev->core);
+=======
+			     0, DEVICE_NAME, &dev->core);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     0, DEVICE_NAME, &dev->core);
+>>>>>>> refs/remotes/origin/master
 	if (retval) {
 		dev_err(&dev->core, "%s: request_irq failed %d\n", __func__,
 			retval);
@@ -1122,8 +1169,15 @@ static int __devinit ps3fb_probe(struct ps3_system_bus_device *dev)
 	}
 
 	info = framebuffer_alloc(sizeof(struct ps3fb_par), &dev->core);
+<<<<<<< HEAD
 	if (!info)
 		goto err_context_fb_close;
+=======
+	if (!info) {
+		retval = -ENOMEM;
+		goto err_context_fb_close;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	par = info->par;
 	par->mode_id = ~ps3fb_mode;	/* != ps3fb_mode, to trigger change */
@@ -1141,7 +1195,11 @@ static int __devinit ps3fb_probe(struct ps3_system_bus_device *dev)
 	 */
 	fb_start = ps3fb_videomemory.address + GPU_FB_START;
 	info->screen_base = (char __force __iomem *)fb_start;
+<<<<<<< HEAD
 	info->fix.smem_start = virt_to_abs(fb_start);
+=======
+	info->fix.smem_start = __pa(fb_start);
+>>>>>>> refs/remotes/origin/master
 	info->fix.smem_len = ps3fb_videomemory.size - GPU_FB_START;
 
 	info->pseudo_palette = par->pseudo_palette;

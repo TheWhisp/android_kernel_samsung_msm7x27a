@@ -29,7 +29,13 @@
 #include <mach/smemc.h>
 #include <asm/io.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/pxa2xx-regs.h>
 #include <asm/mach-types.h>
 
@@ -231,6 +237,14 @@ void pxa2xx_configure_sockets(struct device *dev)
 
 	__raw_writel(mecr, MECR);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(pxa2xx_configure_sockets);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(pxa2xx_configure_sockets);
+>>>>>>> refs/remotes/origin/master
 
 static const char *skt_names[] = {
 	"PCMCIA socket 0",
@@ -297,7 +311,11 @@ static int pxa2xx_drv_pcmcia_probe(struct platform_device *dev)
 	}
 
 	clk = clk_get(&dev->dev, NULL);
+<<<<<<< HEAD
 	if (!clk)
+=======
+	if (IS_ERR(clk))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	pxa2xx_drv_pcmcia_ops(ops);
@@ -317,16 +335,26 @@ static int pxa2xx_drv_pcmcia_probe(struct platform_device *dev)
 
 		skt->nr = ops->first + i;
 		skt->clk = clk;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		skt->ops = ops;
 		skt->socket.owner = ops->owner;
 		skt->socket.dev.parent = &dev->dev;
 		skt->socket.pci_irq = NO_IRQ;
+=======
+		soc_pcmcia_init_one(skt, ops, &dev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		soc_pcmcia_init_one(skt, ops, &dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 		ret = pxa2xx_drv_pcmcia_add_one(skt);
 		if (ret)
 			goto err1;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret) {
 		while (--i >= 0)
 			soc_pcmcia_remove_one(&sinfo->skt[i]);
@@ -336,12 +364,28 @@ static int pxa2xx_drv_pcmcia_probe(struct platform_device *dev)
 		pxa2xx_configure_sockets(&dev->dev);
 		dev_set_drvdata(&dev->dev, sinfo);
 	}
+=======
+	pxa2xx_configure_sockets(&dev->dev);
+	dev_set_drvdata(&dev->dev, sinfo);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pxa2xx_configure_sockets(&dev->dev);
+	dev_set_drvdata(&dev->dev, sinfo);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 err1:
 	while (--i >= 0)
 		soc_pcmcia_remove_one(&sinfo->skt[i]);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	clk_put(clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_put(clk);
+>>>>>>> refs/remotes/origin/master
 	kfree(sinfo);
 err0:
 	return ret;

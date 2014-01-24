@@ -56,6 +56,8 @@ static int z2_hw_params(struct snd_pcm_substream *substream,
 		break;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* set codec DAI configuration */
 	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
@@ -68,6 +70,10 @@ static int z2_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* set the codec system clock for DAC and ADC */
 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
 		SND_SOC_CLOCK_IN);
@@ -124,7 +130,15 @@ static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
 };
 
 /* Z2 machine audio_map */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route z2_audio_map[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route z2_audio_map[] = {
+>>>>>>> refs/remotes/origin/master
 
 	/* headphone connected to LOUT1, ROUT1 */
 	{"Headphone Jack", NULL, "LOUT1"},
@@ -154,6 +168,8 @@ static int z2_wm8750_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_disable_pin(dapm, "OUT3");
 	snd_soc_dapm_disable_pin(dapm, "MONO1");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Add z2 specific widgets */
 	snd_soc_dapm_new_controls(dapm, wm8750_dapm_widgets,
 				 ARRAY_SIZE(wm8750_dapm_widgets));
@@ -165,6 +181,10 @@ static int z2_wm8750_init(struct snd_soc_pcm_runtime *rtd)
 	if (ret)
 		goto err;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Jack detection API stuff */
 	ret = snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET,
 				&hs_jack);
@@ -198,16 +218,46 @@ static struct snd_soc_dai_link z2_dai = {
 	.cpu_dai_name	= "pxa2xx-i2s",
 	.codec_dai_name	= "wm8750-hifi",
 	.platform_name = "pxa-pcm-audio",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.codec_name	= "wm8750-codec.0-001b",
 	.init		= z2_wm8750_init,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.codec_name	= "wm8750.0-001b",
+	.init		= z2_wm8750_init,
+	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			  SND_SOC_DAIFMT_CBS_CFS,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ops		= &z2_ops,
 };
 
 /* z2 audio machine driver */
 static struct snd_soc_card snd_soc_z2 = {
 	.name		= "Z2",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.dai_link	= &z2_dai,
 	.num_links	= 1,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.owner		= THIS_MODULE,
+	.dai_link	= &z2_dai,
+	.num_links	= 1,
+
+	.dapm_widgets = wm8750_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8750_dapm_widgets),
+	.dapm_routes = z2_audio_map,
+	.num_dapm_routes = ARRAY_SIZE(z2_audio_map),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *z2_snd_device;

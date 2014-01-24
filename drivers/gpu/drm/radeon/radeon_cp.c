@@ -27,12 +27,28 @@
  * Authors:
  *    Kevin E. Martin <martin@valinux.com>
  *    Gareth Hughes <gareth@valinux.com>
+<<<<<<< HEAD
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 #include "drm.h"
 #include "drm_sarea.h"
 #include "radeon_drm.h"
+=======
+ *
+ * ------------------------ This file is DEPRECATED! -------------------------
+ */
+
+#include <linux/module.h>
+
+#include <drm/drmP.h>
+#include <drm/radeon_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon_drv.h"
 #include "r300_reg.h"
 
@@ -116,6 +132,7 @@ u32 radeon_get_scratch(drm_radeon_private_t *dev_priv, int index)
 	}
 }
 
+<<<<<<< HEAD
 u32 RADEON_READ_MM(drm_radeon_private_t *dev_priv, int addr)
 {
 	u32 ret;
@@ -130,6 +147,8 @@ u32 RADEON_READ_MM(drm_radeon_private_t *dev_priv, int addr)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 R500_READ_MCIND(drm_radeon_private_t *dev_priv, int addr)
 {
 	u32 ret;
@@ -1456,6 +1475,7 @@ static int radeon_do_init_cp(struct drm_device *dev, drm_radeon_init_t *init,
 	dev_priv->ring.end = ((u32 *) dev_priv->cp_ring->handle
 			      + init->ring_size / sizeof(u32));
 	dev_priv->ring.size = init->ring_size;
+<<<<<<< HEAD
 	dev_priv->ring.size_l2qw = drm_order(init->ring_size / 8);
 
 	dev_priv->ring.rptr_update = /* init->rptr_update */ 4096;
@@ -1463,6 +1483,15 @@ static int radeon_do_init_cp(struct drm_device *dev, drm_radeon_init_t *init,
 
 	dev_priv->ring.fetch_size = /* init->fetch_size */ 32;
 	dev_priv->ring.fetch_size_l2ow = drm_order( /* init->fetch_size */ 32 / 16);
+=======
+	dev_priv->ring.size_l2qw = order_base_2(init->ring_size / 8);
+
+	dev_priv->ring.rptr_update = /* init->rptr_update */ 4096;
+	dev_priv->ring.rptr_update_l2qw = order_base_2( /* init->rptr_update */ 4096 / 8);
+
+	dev_priv->ring.fetch_size = /* init->fetch_size */ 32;
+	dev_priv->ring.fetch_size_l2ow = order_base_2( /* init->fetch_size */ 32 / 16);
+>>>>>>> refs/remotes/origin/master
 	dev_priv->ring.tail_mask = (dev_priv->ring.size / sizeof(u32)) - 1;
 
 	dev_priv->ring.high_mark = RADEON_RING_HIGH_MARK;
@@ -1825,6 +1854,7 @@ void radeon_do_release(struct drm_device * dev)
 			r600_do_cleanup_cp(dev);
 		else
 			radeon_do_cleanup_cp(dev);
+<<<<<<< HEAD
 		if (dev_priv->me_fw) {
 			release_firmware(dev_priv->me_fw);
 			dev_priv->me_fw = NULL;
@@ -1833,6 +1863,12 @@ void radeon_do_release(struct drm_device * dev)
 			release_firmware(dev_priv->pfp_fw);
 			dev_priv->pfp_fw = NULL;
 		}
+=======
+		release_firmware(dev_priv->me_fw);
+		dev_priv->me_fw = NULL;
+		release_firmware(dev_priv->pfp_fw);
+		dev_priv->pfp_fw = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2113,9 +2149,23 @@ int radeon_driver_load(struct drm_device *dev, unsigned long flags)
 		break;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (drm_pci_device_is_agp(dev))
 		dev_priv->flags |= RADEON_IS_AGP;
 	else if (drm_pci_device_is_pcie(dev))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pci_set_master(dev->pdev);
+
+	if (drm_pci_device_is_agp(dev))
+		dev_priv->flags |= RADEON_IS_AGP;
+	else if (pci_is_pcie(dev->pdev))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_priv->flags |= RADEON_IS_PCIE;
 	else
 		dev_priv->flags |= RADEON_IS_PCI;

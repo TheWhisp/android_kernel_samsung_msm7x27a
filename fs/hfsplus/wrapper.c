@@ -24,6 +24,7 @@ struct hfsplus_wd {
 	u16 embed_count;
 };
 
+<<<<<<< HEAD
 static void hfsplus_end_io_sync(struct bio *bio, int err)
 {
 	if (err)
@@ -31,6 +32,8 @@ static void hfsplus_end_io_sync(struct bio *bio, int err)
 	complete(bio->bi_private);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * hfsplus_submit_bio - Perfrom block I/O
  * @sb: super block of volume for I/O
@@ -53,7 +56,10 @@ static void hfsplus_end_io_sync(struct bio *bio, int err)
 int hfsplus_submit_bio(struct super_block *sb, sector_t sector,
 		void *buf, void **data, int rw)
 {
+<<<<<<< HEAD
 	DECLARE_COMPLETION_ONSTACK(wait);
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bio *bio;
 	int ret = 0;
 	u64 io_size;
@@ -73,8 +79,11 @@ int hfsplus_submit_bio(struct super_block *sb, sector_t sector,
 	bio = bio_alloc(GFP_NOIO, 1);
 	bio->bi_sector = sector;
 	bio->bi_bdev = sb->s_bdev;
+<<<<<<< HEAD
 	bio->bi_end_io = hfsplus_end_io_sync;
 	bio->bi_private = &wait;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!(rw & WRITE) && data)
 		*data = (u8 *)buf + offset;
@@ -93,12 +102,16 @@ int hfsplus_submit_bio(struct super_block *sb, sector_t sector,
 		buf = (u8 *)buf + len;
 	}
 
+<<<<<<< HEAD
 	submit_bio(rw, bio);
 	wait_for_completion(&wait);
 
 	if (!bio_flagged(bio, BIO_UPTODATE))
 		ret = -EIO;
 
+=======
+	ret = submit_bio_wait(rw, bio);
+>>>>>>> refs/remotes/origin/master
 out:
 	bio_put(bio);
 	return ret < 0 ? ret : 0;
@@ -156,7 +169,11 @@ static int hfsplus_get_last_session(struct super_block *sb,
 			*start = (sector_t)te.cdte_addr.lba << 2;
 			return 0;
 		}
+<<<<<<< HEAD
 		printk(KERN_ERR "hfs: invalid session number or type of track\n");
+=======
+		pr_err("invalid session number or type of track\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	ms_info.addr_format = CDROM_LBA;
@@ -184,10 +201,16 @@ int hfsplus_read_wrapper(struct super_block *sb)
 
 	if (hfsplus_get_last_session(sb, &part_start, &part_size))
 		goto out;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((u64)part_start + part_size > 0x100000000ULL) {
 		pr_err("hfs: volumes larger than 2TB are not supported yet\n");
 		goto out;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	error = -ENOMEM;
 	sbi->s_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
@@ -215,8 +238,20 @@ reread:
 		if (!hfsplus_read_mdb(sbi->s_vhdr, &wd))
 			goto out_free_backup_vhdr;
 		wd.ablk_size >>= HFSPLUS_SECTOR_SHIFT;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		part_start += wd.ablk_start + wd.embed_start * wd.ablk_size;
 		part_size = wd.embed_count * wd.ablk_size;
+=======
+		part_start += (sector_t)wd.ablk_start +
+			       (sector_t)wd.embed_start * wd.ablk_size;
+		part_size = (sector_t)wd.embed_count * wd.ablk_size;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		part_start += (sector_t)wd.ablk_start +
+			       (sector_t)wd.embed_start * wd.ablk_size;
+		part_size = (sector_t)wd.embed_count * wd.ablk_size;
+>>>>>>> refs/remotes/origin/master
 		goto reread;
 	default:
 		/*
@@ -237,8 +272,12 @@ reread:
 
 	error = -EINVAL;
 	if (sbi->s_backup_vhdr->signature != sbi->s_vhdr->signature) {
+<<<<<<< HEAD
 		printk(KERN_WARNING
 			"hfs: invalid secondary volume header\n");
+=======
+		pr_warn("invalid secondary volume header\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_free_backup_vhdr;
 	}
 
@@ -262,8 +301,12 @@ reread:
 		blocksize >>= 1;
 
 	if (sb_set_blocksize(sb, blocksize) != blocksize) {
+<<<<<<< HEAD
 		printk(KERN_ERR "hfs: unable to set blocksize to %u!\n",
 			blocksize);
+=======
+		pr_err("unable to set blocksize to %u!\n", blocksize);
+>>>>>>> refs/remotes/origin/master
 		goto out_free_backup_vhdr;
 	}
 

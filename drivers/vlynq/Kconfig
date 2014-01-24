@@ -1,5 +1,9 @@
 menu "TI VLYNQ"
+<<<<<<< HEAD
 	depends on AR7 && EXPERIMENTAL
+=======
+	depends on AR7
+>>>>>>> refs/remotes/origin/master
 
 config VLYNQ
 	bool "TI VLYNQ bus support"

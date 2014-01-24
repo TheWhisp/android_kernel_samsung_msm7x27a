@@ -3,6 +3,7 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "linux/fs.h"
 #include "linux/tty.h"
 #include "linux/tty_driver.h"
@@ -12,22 +13,48 @@
 #include "linux/console.h"
 #include "asm/termbits.h"
 #include "asm/irq.h"
+<<<<<<< HEAD
 #include "line.h"
 #include "ssl.h"
 #include "chan_kern.h"
 #include "kern.h"
+=======
+#include "ssl.h"
+#include "chan.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "init.h"
 #include "irq_user.h"
+=======
+#include <linux/fs.h>
+#include <linux/tty.h>
+#include <linux/tty_driver.h>
+#include <linux/major.h>
+#include <linux/mm.h>
+#include <linux/init.h>
+#include <linux/console.h>
+#include <asm/termbits.h>
+#include <asm/irq.h>
+#include "ssl.h"
+#include "chan.h"
+#include <init.h>
+#include <irq_user.h>
+>>>>>>> refs/remotes/origin/master
 #include "mconsole_kern.h"
 
 static const int ssl_version = 1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Referenced only by tty_driver below - presumably it's locked correctly
  * by the tty driver.
  */
 
 static struct tty_driver *ssl_driver;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define NR_PORTS 64
 
 static void ssl_announce(char *dev_name, int dev)
@@ -73,8 +100,20 @@ static struct line_driver driver = {
 /* The array is initialized by line_init, at initcall time.  The
  * elements are locked individually as needed.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct line serial_lines[NR_PORTS] =
 	{ [0 ... NR_PORTS - 1] = LINE_INIT(CONFIG_SSL_CHAN, &driver) };
+=======
+static char *conf[NR_PORTS];
+static char *def_conf = CONFIG_SSL_CHAN;
+static struct line serial_lines[NR_PORTS];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *conf[NR_PORTS];
+static char *def_conf = CONFIG_SSL_CHAN;
+static struct line serial_lines[NR_PORTS];
+>>>>>>> refs/remotes/origin/master
 
 static int ssl_config(char *str, char **error_out)
 {
@@ -94,6 +133,7 @@ static int ssl_remove(int n, char **error_out)
 			   error_out);
 }
 
+<<<<<<< HEAD
 static int ssl_open(struct tty_struct *tty, struct file *filp)
 {
 	int err = line_open(serial_lines, tty);
@@ -128,6 +168,15 @@ void ssl_hangup(struct tty_struct *tty)
 
 static const struct tty_operations ssl_ops = {
 	.open 	 		= ssl_open,
+=======
+static int ssl_install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	return line_install(driver, tty, &serial_lines[tty->index]);
+}
+
+static const struct tty_operations ssl_ops = {
+	.open 	 		= line_open,
+>>>>>>> refs/remotes/origin/master
 	.close 	 		= line_close,
 	.write 	 		= line_write,
 	.put_char 		= line_put_char,
@@ -136,6 +185,7 @@ static const struct tty_operations ssl_ops = {
 	.flush_buffer 		= line_flush_buffer,
 	.flush_chars 		= line_flush_chars,
 	.set_termios 		= line_set_termios,
+<<<<<<< HEAD
 	.ioctl 	 		= line_ioctl,
 	.throttle 		= line_throttle,
 	.unthrottle 		= line_unthrottle,
@@ -144,6 +194,12 @@ static const struct tty_operations ssl_ops = {
 	.start 	 		= ssl_start,
 	.hangup 	 	= ssl_hangup,
 #endif
+=======
+	.throttle 		= line_throttle,
+	.unthrottle 		= line_unthrottle,
+	.install		= ssl_install,
+	.hangup			= line_hangup,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Changed by ssl_init and referenced by ssl_exit, which are both serialized
@@ -158,14 +214,30 @@ static void ssl_console_write(struct console *c, const char *string,
 	unsigned long flags;
 
 	spin_lock_irqsave(&line->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	console_write_chan(&line->chan_list, string, len);
+=======
+	console_write_chan(line->chan_out, string, len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	console_write_chan(line->chan_out, string, len);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&line->lock, flags);
 }
 
 static struct tty_driver *ssl_console_device(struct console *c, int *index)
 {
 	*index = c->index;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return ssl_driver;
+=======
+	return driver.driver;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return driver.driver;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ssl_console_setup(struct console *co, char *options)
@@ -188,17 +260,54 @@ static struct console ssl_cons = {
 static int ssl_init(void)
 {
 	char *new_title;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	printk(KERN_INFO "Initializing software serial port version %d\n",
 	       ssl_version);
 	ssl_driver = register_lines(&driver, &ssl_ops, serial_lines,
 				    ARRAY_SIZE(serial_lines));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int err;
+	int i;
+
+	printk(KERN_INFO "Initializing software serial port version %d\n",
+	       ssl_version);
+
+	err = register_lines(&driver, &ssl_ops, serial_lines,
+				    ARRAY_SIZE(serial_lines));
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	new_title = add_xterm_umid(opts.xterm_title);
 	if (new_title != NULL)
 		opts.xterm_title = new_title;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lines_init(serial_lines, ARRAY_SIZE(serial_lines), &opts);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	for (i = 0; i < NR_PORTS; i++) {
+		char *error;
+		char *s = conf[i];
+		if (!s)
+			s = def_conf;
+		if (setup_one_line(serial_lines, i, s, &opts, &error))
+			printk(KERN_ERR "setup_one_line failed for "
+			       "device %d : %s\n", i, error);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ssl_init_done = 1;
 	register_console(&ssl_cons);
@@ -216,6 +325,8 @@ __uml_exitcall(ssl_exit);
 
 static int ssl_chan_setup(char *str)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	char *error;
 	int ret;
 
@@ -224,6 +335,12 @@ static int ssl_chan_setup(char *str)
 		printk(KERN_ERR "Failed to set up serial line with "
 		       "configuration string \"%s\" : %s\n", str, error);
 
+=======
+	line_setup(conf, NR_PORTS, &def_conf, str, "serial line");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	line_setup(conf, NR_PORTS, &def_conf, str, "serial line");
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 

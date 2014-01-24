@@ -26,10 +26,18 @@
 #include <acpi/pdc_intel.h>
 
 #include <asm/numa.h>
+<<<<<<< HEAD
 #include <asm/processor.h>
 #include <asm/mmu.h>
 #include <asm/mpspec.h>
 #include <asm/trampoline.h>
+=======
+#include <asm/fixmap.h>
+#include <asm/processor.h>
+#include <asm/mmu.h>
+#include <asm/mpspec.h>
+#include <asm/realmode.h>
+>>>>>>> refs/remotes/origin/master
 
 #define COMPILER_DEPENDENT_INT64   long long
 #define COMPILER_DEPENDENT_UINT64  unsigned long long
@@ -49,10 +57,13 @@
 
 /* Asm macros */
 
+<<<<<<< HEAD
 #define ACPI_ASM_MACROS
 #define BREAKPOINT3
 #define ACPI_DISABLE_IRQS() local_irq_disable()
 #define ACPI_ENABLE_IRQS()  local_irq_enable()
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_FLUSH_CPU_CACHE()	wbinvd()
 
 int __acpi_acquire_global_lock(unsigned int *lock);
@@ -90,6 +101,10 @@ extern int acpi_pci_disabled;
 extern int acpi_skip_timer_override;
 extern int acpi_use_timer_override;
 extern int acpi_fix_pin2_polarity;
+<<<<<<< HEAD
+=======
+extern int acpi_disable_cmcff;
+>>>>>>> refs/remotes/origin/master
 
 extern u8 acpi_sci_flags;
 extern int acpi_sci_override_gsi;
@@ -115,6 +130,7 @@ static inline void acpi_disable_pci(void)
 }
 
 /* Low-level suspend routine. */
+<<<<<<< HEAD
 extern int acpi_suspend_lowlevel(void);
 
 extern const unsigned char acpi_wakeup_code[];
@@ -122,6 +138,12 @@ extern const unsigned char acpi_wakeup_code[];
 
 /* early initialization routine */
 extern void acpi_reserve_wakeup_memory(void);
+=======
+extern int (*acpi_suspend_lowlevel)(void);
+
+/* Physical address to resume after wakeup */
+#define acpi_wakeup_address ((unsigned long)(real_mode_header->wakeup_start))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Check if the CPU can handle C2 and deeper
@@ -175,6 +197,10 @@ static inline void arch_acpi_set_pdc_bits(u32 *buf)
 
 #define acpi_lapic 0
 #define acpi_ioapic 0
+<<<<<<< HEAD
+=======
+#define acpi_disable_cmcff 0
+>>>>>>> refs/remotes/origin/master
 static inline void acpi_noirq_set(void) { }
 static inline void acpi_disable_pci(void) { }
 static inline void disable_acpi(void) { }

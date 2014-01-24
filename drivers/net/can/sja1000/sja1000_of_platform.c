@@ -29,7 +29,15 @@
  *           nxp,external-clock-frequency = <16000000>;
  *   };
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * See "Documentation/powerpc/dts-bindings/can/sja1000.txt" for further
+=======
+ * See "Documentation/devicetree/bindings/net/can/sja1000.txt" for further
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See "Documentation/devicetree/bindings/net/can/sja1000.txt" for further
+>>>>>>> refs/remotes/origin/master
  * information.
  */
 
@@ -38,10 +46,23 @@
 #include <linux/interrupt.h>
 #include <linux/netdevice.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/can/dev.h>
 
 #include <linux/of_platform.h>
 #include <asm/prom.h>
+=======
+#include <linux/io.h>
+#include <linux/can/dev.h>
+
+#include <linux/of_platform.h>
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "sja1000.h"
 
@@ -58,24 +79,40 @@ MODULE_LICENSE("GPL v2");
 
 static u8 sja1000_ofp_read_reg(const struct sja1000_priv *priv, int reg)
 {
+<<<<<<< HEAD
 	return in_8(priv->reg_base + reg);
+=======
+	return ioread8(priv->reg_base + reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sja1000_ofp_write_reg(const struct sja1000_priv *priv,
 				  int reg, u8 val)
 {
+<<<<<<< HEAD
 	out_8(priv->reg_base + reg, val);
 }
 
 static int __devexit sja1000_ofp_remove(struct platform_device *ofdev)
 {
 	struct net_device *dev = dev_get_drvdata(&ofdev->dev);
+=======
+	iowrite8(val, priv->reg_base + reg);
+}
+
+static int sja1000_ofp_remove(struct platform_device *ofdev)
+{
+	struct net_device *dev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 	struct sja1000_priv *priv = netdev_priv(dev);
 	struct device_node *np = ofdev->dev.of_node;
 	struct resource res;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	unregister_sja1000dev(dev);
 	free_sja1000dev(dev);
 	iounmap(priv->reg_base);
@@ -87,14 +124,33 @@ static int __devexit sja1000_ofp_remove(struct platform_device *ofdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit sja1000_ofp_probe(struct platform_device *ofdev)
+=======
+static int sja1000_ofp_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = ofdev->dev.of_node;
 	struct net_device *dev;
 	struct sja1000_priv *priv;
 	struct resource res;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const u32 *prop;
 	int err, irq, res_size, prop_size;
+=======
+	u32 prop;
+	int err, irq, res_size;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 prop;
+	int err, irq, res_size;
+>>>>>>> refs/remotes/origin/master
+=======
+	u32 prop;
+	int err, irq, res_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 	void __iomem *base;
 
 	err = of_address_to_resource(np, 0, &res);
@@ -118,7 +174,11 @@ static int __devinit sja1000_ofp_probe(struct platform_device *ofdev)
 	}
 
 	irq = irq_of_parse_and_map(np, 0);
+<<<<<<< HEAD
 	if (irq == NO_IRQ) {
+=======
+	if (irq == 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&ofdev->dev, "no irq found\n");
 		err = -ENODEV;
 		goto exit_unmap_mem;
@@ -135,27 +195,69 @@ static int __devinit sja1000_ofp_probe(struct platform_device *ofdev)
 	priv->read_reg = sja1000_ofp_read_reg;
 	priv->write_reg = sja1000_ofp_write_reg;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	prop = of_get_property(np, "nxp,external-clock-frequency", &prop_size);
 	if (prop && (prop_size ==  sizeof(u32)))
 		priv->can.clock.freq = *prop / 2;
+=======
+	err = of_property_read_u32(np, "nxp,external-clock-frequency", &prop);
+	if (!err)
+		priv->can.clock.freq = prop / 2;
+>>>>>>> refs/remotes/origin/cm-11.0
 	else
 		priv->can.clock.freq = SJA1000_OFP_CAN_CLOCK; /* default */
 
-	prop = of_get_property(np, "nxp,tx-output-mode", &prop_size);
-	if (prop && (prop_size == sizeof(u32)))
-		priv->ocr |= *prop & OCR_MODE_MASK;
+	err = of_property_read_u32(np, "nxp,tx-output-mode", &prop);
+	if (!err)
+		priv->ocr |= prop & OCR_MODE_MASK;
 	else
 		priv->ocr |= OCR_MODE_NORMAL; /* default */
 
-	prop = of_get_property(np, "nxp,tx-output-config", &prop_size);
-	if (prop && (prop_size == sizeof(u32)))
-		priv->ocr |= (*prop << OCR_TX_SHIFT) & OCR_TX_MASK;
+	err = of_property_read_u32(np, "nxp,tx-output-config", &prop);
+	if (!err)
+		priv->ocr |= (prop << OCR_TX_SHIFT) & OCR_TX_MASK;
 	else
 		priv->ocr |= OCR_TX0_PULLDOWN; /* default */
 
+<<<<<<< HEAD
 	prop = of_get_property(np, "nxp,clock-out-frequency", &prop_size);
 	if (prop && (prop_size == sizeof(u32)) && *prop) {
 		u32 divider = priv->can.clock.freq * 2 / *prop;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	err = of_property_read_u32(np, "nxp,external-clock-frequency", &prop);
+	if (!err)
+		priv->can.clock.freq = prop / 2;
+	else
+		priv->can.clock.freq = SJA1000_OFP_CAN_CLOCK; /* default */
+
+	err = of_property_read_u32(np, "nxp,tx-output-mode", &prop);
+	if (!err)
+		priv->ocr |= prop & OCR_MODE_MASK;
+	else
+		priv->ocr |= OCR_MODE_NORMAL; /* default */
+
+	err = of_property_read_u32(np, "nxp,tx-output-config", &prop);
+	if (!err)
+		priv->ocr |= (prop << OCR_TX_SHIFT) & OCR_TX_MASK;
+	else
+		priv->ocr |= OCR_TX0_PULLDOWN; /* default */
+
+	err = of_property_read_u32(np, "nxp,clock-out-frequency", &prop);
+	if (!err && prop) {
+		u32 divider = priv->can.clock.freq * 2 / prop;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	err = of_property_read_u32(np, "nxp,clock-out-frequency", &prop);
+	if (!err && prop) {
+		u32 divider = priv->can.clock.freq * 2 / prop;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (divider > 1)
 			priv->cdr |= divider / 2 - 1;
@@ -165,8 +267,20 @@ static int __devinit sja1000_ofp_probe(struct platform_device *ofdev)
 		priv->cdr |= CDR_CLK_OFF; /* default */
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	prop = of_get_property(np, "nxp,no-comparator-bypass", NULL);
 	if (!prop)
+=======
+	if (!of_property_read_bool(np, "nxp,no-comparator-bypass"))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!of_property_read_bool(np, "nxp,no-comparator-bypass"))
+>>>>>>> refs/remotes/origin/master
+=======
+	if (!of_property_read_bool(np, "nxp,no-comparator-bypass"))
+>>>>>>> refs/remotes/origin/cm-11.0
 		priv->cdr |= CDR_CBP; /* default */
 
 	priv->irq_flags = IRQF_SHARED;
@@ -179,7 +293,11 @@ static int __devinit sja1000_ofp_probe(struct platform_device *ofdev)
 		 priv->reg_base, dev->irq, priv->can.clock.freq,
 		 priv->ocr, priv->cdr);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, dev);
+=======
+	platform_set_drvdata(ofdev, dev);
+>>>>>>> refs/remotes/origin/master
 	SET_NETDEV_DEV(dev, &ofdev->dev);
 
 	err = register_sja1000dev(dev);
@@ -203,7 +321,11 @@ exit_release_mem:
 	return err;
 }
 
+<<<<<<< HEAD
 static struct of_device_id __devinitdata sja1000_ofp_table[] = {
+=======
+static struct of_device_id sja1000_ofp_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{.compatible = "nxp,sja1000"},
 	{},
 };
@@ -216,9 +338,11 @@ static struct platform_driver sja1000_ofp_driver = {
 		.of_match_table = sja1000_ofp_table,
 	},
 	.probe = sja1000_ofp_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(sja1000_ofp_remove),
 };
 
+<<<<<<< HEAD
 static int __init sja1000_ofp_init(void)
 {
 	return platform_driver_register(&sja1000_ofp_driver);
@@ -230,3 +354,12 @@ static void __exit sja1000_ofp_exit(void)
 	return platform_driver_unregister(&sja1000_ofp_driver);
 };
 module_exit(sja1000_ofp_exit);
+=======
+module_platform_driver(sja1000_ofp_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = sja1000_ofp_remove,
+};
+
+module_platform_driver(sja1000_ofp_driver);
+>>>>>>> refs/remotes/origin/master

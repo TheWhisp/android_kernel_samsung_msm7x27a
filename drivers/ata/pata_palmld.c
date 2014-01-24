@@ -48,7 +48,11 @@ static struct ata_port_operations palmld_port_ops = {
 	.cable_detect		= ata_cable_40wire,
 };
 
+<<<<<<< HEAD
 static __devinit int palmld_pata_probe(struct platform_device *pdev)
+=======
+static int palmld_pata_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ata_host *host;
 	struct ata_port *ap;
@@ -109,11 +113,17 @@ err1:
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devexit int palmld_pata_remove(struct platform_device *dev)
 {
 	struct ata_host *host = platform_get_drvdata(dev);
 
 	ata_host_detach(host);
+=======
+static int palmld_pata_remove(struct platform_device *dev)
+{
+	ata_platform_remove_one(dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* power down the HDD */
 	gpio_set_value(GPIO_NR_PALMLD_IDE_PWEN, 0);
@@ -129,9 +139,11 @@ static struct platform_driver palmld_pata_platform_driver = {
 		.owner  = THIS_MODULE,
 	},
 	.probe		= palmld_pata_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(palmld_pata_remove),
 };
 
+<<<<<<< HEAD
 static int __init palmld_pata_init(void)
 {
 	return platform_driver_register(&palmld_pata_platform_driver);
@@ -141,11 +153,26 @@ static void __exit palmld_pata_exit(void)
 {
 	platform_driver_unregister(&palmld_pata_platform_driver);
 }
+=======
+module_platform_driver(palmld_pata_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= palmld_pata_remove,
+};
+
+module_platform_driver(palmld_pata_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Marek Vasut <marek.vasut@gmail.com>");
 MODULE_DESCRIPTION("PalmLD PATA driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:" DRV_NAME);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(palmld_pata_init);
 module_exit(palmld_pata_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

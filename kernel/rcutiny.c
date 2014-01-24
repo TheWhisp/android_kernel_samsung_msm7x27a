@@ -22,13 +22,20 @@
  * For detailed explanation of Read-Copy Update mechanism see -
  *		Documentation/RCU
  */
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/completion.h>
 #include <linux/interrupt.h>
 #include <linux/notifier.h>
 #include <linux/rcupdate.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 #include <linux/sched.h>
 #include <linux/types.h>
@@ -37,6 +44,7 @@
 #include <linux/cpu.h>
 #include <linux/prefetch.h>
 
+<<<<<<< HEAD
 /* Controls for rcu_kthread() kthread, replacing RCU_SOFTIRQ used previously. */
 static struct task_struct *rcu_kthread_task;
 static DECLARE_WAIT_QUEUE_HEAD(rcu_kthread_wq);
@@ -47,12 +55,26 @@ struct rcu_ctrlblk;
 static void invoke_rcu_kthread(void);
 static void rcu_process_callbacks(struct rcu_ctrlblk *rcp);
 static int rcu_kthread(void *arg);
+=======
+#ifdef CONFIG_RCU_TRACE
+#include <trace/events/rcu.h>
+#endif /* #else #ifdef CONFIG_RCU_TRACE */
+
+#include "rcu.h"
+
+/* Forward declarations for rcutiny_plugin.h. */
+struct rcu_ctrlblk;
+static void invoke_rcu_callbacks(void);
+static void __rcu_process_callbacks(struct rcu_ctrlblk *rcp);
+static void rcu_process_callbacks(struct softirq_action *unused);
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __call_rcu(struct rcu_head *head,
 		       void (*func)(struct rcu_head *rcu),
 		       struct rcu_ctrlblk *rcp);
 
 #include "rcutiny_plugin.h"
 
+<<<<<<< HEAD
 #ifdef CONFIG_NO_HZ
 
 static long rcu_dynticks_nesting = 1;
@@ -78,6 +100,149 @@ void rcu_exit_nohz(void)
 }
 
 #endif /* #ifdef CONFIG_NO_HZ */
+=======
+static long long rcu_dynticks_nesting = DYNTICK_TASK_EXIT_IDLE;
+
+/* Common code for rcu_idle_enter() and rcu_irq_exit(), see kernel/rcutree.c. */
+static void rcu_idle_enter_common(long long oldval)
+{
+	if (rcu_dynticks_nesting) {
+		RCU_TRACE(trace_rcu_dyntick("--=",
+					    oldval, rcu_dynticks_nesting));
+		return;
+	}
+	RCU_TRACE(trace_rcu_dyntick("Start", oldval, rcu_dynticks_nesting));
+	if (!is_idle_task(current)) {
+		struct task_struct *idle = idle_task(smp_processor_id());
+
+		RCU_TRACE(trace_rcu_dyntick("Error on entry: not idle task",
+					    oldval, rcu_dynticks_nesting));
+		ftrace_dump(DUMP_ALL);
+		WARN_ONCE(1, "Current pid: %d comm: %s / Idle pid: %d comm: %s",
+			  current->pid, current->comm,
+			  idle->pid, idle->comm); /* must be idle task! */
+	}
+	rcu_sched_qs(0); /* implies rcu_bh_qsctr_inc(0) */
+}
+
+/*
+ * Enter idle, which is an extended quiescent state if we have fully
+ * entered that mode (i.e., if the new value of dynticks_nesting is zero).
+ */
+void rcu_idle_enter(void)
+{
+	unsigned long flags;
+	long long oldval;
+
+	local_irq_save(flags);
+	oldval = rcu_dynticks_nesting;
+	WARN_ON_ONCE((rcu_dynticks_nesting & DYNTICK_TASK_NEST_MASK) == 0);
+	if ((rcu_dynticks_nesting & DYNTICK_TASK_NEST_MASK) ==
+	    DYNTICK_TASK_NEST_VALUE)
+		rcu_dynticks_nesting = 0;
+	else
+		rcu_dynticks_nesting  -= DYNTICK_TASK_NEST_VALUE;
+	rcu_idle_enter_common(oldval);
+	local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(rcu_idle_enter);
+
+/*
+ * Exit an interrupt handler towards idle.
+ */
+void rcu_irq_exit(void)
+{
+	unsigned long flags;
+	long long oldval;
+
+	local_irq_save(flags);
+	oldval = rcu_dynticks_nesting;
+	rcu_dynticks_nesting--;
+	WARN_ON_ONCE(rcu_dynticks_nesting < 0);
+	rcu_idle_enter_common(oldval);
+	local_irq_restore(flags);
+}
+
+/* Common code for rcu_idle_exit() and rcu_irq_enter(), see kernel/rcutree.c. */
+static void rcu_idle_exit_common(long long oldval)
+{
+	if (oldval) {
+		RCU_TRACE(trace_rcu_dyntick("++=",
+					    oldval, rcu_dynticks_nesting));
+		return;
+	}
+	RCU_TRACE(trace_rcu_dyntick("End", oldval, rcu_dynticks_nesting));
+	if (!is_idle_task(current)) {
+		struct task_struct *idle = idle_task(smp_processor_id());
+
+		RCU_TRACE(trace_rcu_dyntick("Error on exit: not idle task",
+			  oldval, rcu_dynticks_nesting));
+		ftrace_dump(DUMP_ALL);
+		WARN_ONCE(1, "Current pid: %d comm: %s / Idle pid: %d comm: %s",
+			  current->pid, current->comm,
+			  idle->pid, idle->comm); /* must be idle task! */
+	}
+}
+
+/*
+ * Exit idle, so that we are no longer in an extended quiescent state.
+ */
+void rcu_idle_exit(void)
+{
+	unsigned long flags;
+	long long oldval;
+
+	local_irq_save(flags);
+	oldval = rcu_dynticks_nesting;
+	WARN_ON_ONCE(rcu_dynticks_nesting < 0);
+	if (rcu_dynticks_nesting & DYNTICK_TASK_NEST_MASK)
+		rcu_dynticks_nesting += DYNTICK_TASK_NEST_VALUE;
+	else
+		rcu_dynticks_nesting = DYNTICK_TASK_EXIT_IDLE;
+	rcu_idle_exit_common(oldval);
+	local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(rcu_idle_exit);
+
+/*
+ * Enter an interrupt handler, moving away from idle.
+ */
+void rcu_irq_enter(void)
+{
+	unsigned long flags;
+	long long oldval;
+
+	local_irq_save(flags);
+	oldval = rcu_dynticks_nesting;
+	rcu_dynticks_nesting++;
+	WARN_ON_ONCE(rcu_dynticks_nesting == 0);
+	rcu_idle_exit_common(oldval);
+	local_irq_restore(flags);
+}
+
+#ifdef CONFIG_PROVE_RCU
+
+/*
+ * Test whether RCU thinks that the current CPU is idle.
+ */
+int rcu_is_cpu_idle(void)
+{
+	return !rcu_dynticks_nesting;
+}
+EXPORT_SYMBOL(rcu_is_cpu_idle);
+
+#endif /* #ifdef CONFIG_PROVE_RCU */
+
+/*
+ * Test whether the current CPU was interrupted from idle.  Nested
+ * interrupts don't count, we must be running at the first interrupt
+ * level.
+ */
+int rcu_is_cpu_rrupt_from_idle(void)
+{
+	return rcu_dynticks_nesting <= 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Helper function for rcu_sched_qs() and rcu_bh_qs().
@@ -96,6 +261,7 @@ static int rcu_qsctr_help(struct rcu_ctrlblk *rcp)
 }
 
 /*
+<<<<<<< HEAD
  * Wake up rcu_kthread() to process callbacks now eligible for invocation
  * or to boost readers.
  */
@@ -106,6 +272,8 @@ static void invoke_rcu_kthread(void)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Record an rcu quiescent state.  And an rcu_bh quiescent state while we
  * are at it, given that any rcu quiescent state is also an rcu_bh
  * quiescent state.  Use "+" instead of "||" to defeat short circuiting.
@@ -117,7 +285,11 @@ void rcu_sched_qs(int cpu)
 	local_irq_save(flags);
 	if (rcu_qsctr_help(&rcu_sched_ctrlblk) +
 	    rcu_qsctr_help(&rcu_bh_ctrlblk))
+<<<<<<< HEAD
 		invoke_rcu_kthread();
+=======
+		invoke_rcu_callbacks();
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_restore(flags);
 }
 
@@ -130,12 +302,17 @@ void rcu_bh_qs(int cpu)
 
 	local_irq_save(flags);
 	if (rcu_qsctr_help(&rcu_bh_ctrlblk))
+<<<<<<< HEAD
 		invoke_rcu_kthread();
+=======
+		invoke_rcu_callbacks();
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_restore(flags);
 }
 
 /*
  * Check to see if the scheduling-clock interrupt came from an extended
+<<<<<<< HEAD
  * quiescent state, and, if so, tell RCU about it.
  */
 void rcu_check_callbacks(int cpu, int user)
@@ -144,6 +321,15 @@ void rcu_check_callbacks(int cpu, int user)
 	    (idle_cpu(cpu) &&
 	     !in_softirq() &&
 	     hardirq_count() <= (1 << HARDIRQ_SHIFT)))
+=======
+ * quiescent state, and, if so, tell RCU about it.  This function must
+ * be called from hardirq context.  It is normally called from the
+ * scheduling-clock interrupt.
+ */
+void rcu_check_callbacks(int cpu, int user)
+{
+	if (user || rcu_is_cpu_rrupt_from_idle())
+>>>>>>> refs/remotes/origin/cm-10.0
 		rcu_sched_qs(cpu);
 	else if (!in_softirq())
 		rcu_bh_qs(cpu);
@@ -154,18 +340,40 @@ void rcu_check_callbacks(int cpu, int user)
  * Invoke the RCU callbacks on the specified rcu_ctrlkblk structure
  * whose grace period has elapsed.
  */
+<<<<<<< HEAD
 static void rcu_process_callbacks(struct rcu_ctrlblk *rcp)
 {
+=======
+static void __rcu_process_callbacks(struct rcu_ctrlblk *rcp)
+{
+	char *rn = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct rcu_head *next, *list;
 	unsigned long flags;
 	RCU_TRACE(int cb_count = 0);
 
 	/* If no RCU callbacks ready to invoke, just return. */
+<<<<<<< HEAD
 	if (&rcp->rcucblist == rcp->donetail)
 		return;
 
 	/* Move the ready-to-invoke callbacks to a local list. */
 	local_irq_save(flags);
+=======
+	if (&rcp->rcucblist == rcp->donetail) {
+		RCU_TRACE(trace_rcu_batch_start(rcp->name, 0, 0, -1));
+		RCU_TRACE(trace_rcu_batch_end(rcp->name, 0,
+					      ACCESS_ONCE(rcp->rcucblist),
+					      need_resched(),
+					      is_idle_task(current),
+					      rcu_is_callbacks_kthread()));
+		return;
+	}
+
+	/* Move the ready-to-invoke callbacks to a local list. */
+	local_irq_save(flags);
+	RCU_TRACE(trace_rcu_batch_start(rcp->name, 0, rcp->qlen, -1));
+>>>>>>> refs/remotes/origin/cm-10.0
 	list = rcp->rcucblist;
 	rcp->rcucblist = *rcp->donetail;
 	*rcp->donetail = NULL;
@@ -176,17 +384,26 @@ static void rcu_process_callbacks(struct rcu_ctrlblk *rcp)
 	local_irq_restore(flags);
 
 	/* Invoke the callbacks on the local list. */
+<<<<<<< HEAD
+=======
+	RCU_TRACE(rn = rcp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (list) {
 		next = list->next;
 		prefetch(next);
 		debug_rcu_head_unqueue(list);
 		local_bh_disable();
+<<<<<<< HEAD
 		__rcu_reclaim(list);
+=======
+		__rcu_reclaim(rn, list);
+>>>>>>> refs/remotes/origin/cm-10.0
 		local_bh_enable();
 		list = next;
 		RCU_TRACE(cb_count++);
 	}
 	RCU_TRACE(rcu_trace_sub_qlen(rcp, cb_count));
+<<<<<<< HEAD
 }
 
 /*
@@ -219,6 +436,18 @@ static int rcu_kthread(void *arg)
 	}
 
 	return 0;  /* Not reached, but needed to shut gcc up. */
+=======
+	RCU_TRACE(trace_rcu_batch_end(rcp->name, cb_count, 0, need_resched(),
+				      is_idle_task(current),
+				      rcu_is_callbacks_kthread()));
+}
+
+static void rcu_process_callbacks(struct softirq_action *unused)
+{
+	__rcu_process_callbacks(&rcu_sched_ctrlblk);
+	__rcu_process_callbacks(&rcu_bh_ctrlblk);
+	rcu_preempt_process_callbacks();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -236,6 +465,13 @@ static int rcu_kthread(void *arg)
  */
 void synchronize_sched(void)
 {
+<<<<<<< HEAD
+=======
+	rcu_lockdep_assert(!lock_is_held(&rcu_bh_lock_map) &&
+			   !lock_is_held(&rcu_lock_map) &&
+			   !lock_is_held(&rcu_sched_lock_map),
+			   "Illegal synchronize_sched() in RCU read-side critical section");
+>>>>>>> refs/remotes/origin/cm-10.0
 	cond_resched();
 }
 EXPORT_SYMBOL_GPL(synchronize_sched);
@@ -280,6 +516,7 @@ void call_rcu_bh(struct rcu_head *head, void (*func)(struct rcu_head *rcu))
 	__call_rcu(head, func, &rcu_bh_ctrlblk);
 }
 EXPORT_SYMBOL_GPL(call_rcu_bh);
+<<<<<<< HEAD
 
 void rcu_barrier_bh(void)
 {
@@ -322,3 +559,5 @@ static int __init rcu_spawn_kthreads(void)
 	return 0;
 }
 early_initcall(rcu_spawn_kthreads);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

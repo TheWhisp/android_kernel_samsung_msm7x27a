@@ -1,5 +1,9 @@
 /*
  * Copyright (c) 2004, 2005, 2006 Voltaire, Inc. All rights reserved.
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2013 Mellanox Technologies. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This software is available to you under a choice of one of two
  * licenses.  You may choose to be licensed under the terms of the GNU
@@ -48,6 +52,10 @@ static int iser_prepare_read_cmd(struct iscsi_task *task,
 
 {
 	struct iscsi_iser_task *iser_task = task->dd_data;
+<<<<<<< HEAD
+=======
+	struct iser_device  *device = iser_task->iser_conn->ib_conn->device;
+>>>>>>> refs/remotes/origin/master
 	struct iser_regd_buf *regd_buf;
 	int err;
 	struct iser_hdr *hdr = &iser_task->desc.iser_header;
@@ -68,7 +76,11 @@ static int iser_prepare_read_cmd(struct iscsi_task *task,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	err = iser_reg_rdma_mem(iser_task,ISER_DIR_IN);
+=======
+	err = device->iser_reg_rdma_mem(iser_task, ISER_DIR_IN);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		iser_err("Failed to set up Data-IN RDMA\n");
 		return err;
@@ -97,6 +109,10 @@ iser_prepare_write_cmd(struct iscsi_task *task,
 		       unsigned int edtl)
 {
 	struct iscsi_iser_task *iser_task = task->dd_data;
+<<<<<<< HEAD
+=======
+	struct iser_device  *device = iser_task->iser_conn->ib_conn->device;
+>>>>>>> refs/remotes/origin/master
 	struct iser_regd_buf *regd_buf;
 	int err;
 	struct iser_hdr *hdr = &iser_task->desc.iser_header;
@@ -118,7 +134,11 @@ iser_prepare_write_cmd(struct iscsi_task *task,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	err = iser_reg_rdma_mem(iser_task,ISER_DIR_OUT);
+=======
+	err = device->iser_reg_rdma_mem(iser_task, ISER_DIR_OUT);
+>>>>>>> refs/remotes/origin/master
 	if (err != 0) {
 		iser_err("Failed to register write cmd RDMA mem\n");
 		return err;
@@ -169,8 +189,83 @@ static void iser_create_send_desc(struct iser_conn	*ib_conn,
 	}
 }
 
+<<<<<<< HEAD
 
 int iser_alloc_rx_descriptors(struct iser_conn *ib_conn)
+=======
+static void iser_free_login_buf(struct iser_conn *ib_conn)
+{
+	if (!ib_conn->login_buf)
+		return;
+
+	if (ib_conn->login_req_dma)
+		ib_dma_unmap_single(ib_conn->device->ib_device,
+				    ib_conn->login_req_dma,
+				    ISCSI_DEF_MAX_RECV_SEG_LEN, DMA_TO_DEVICE);
+
+	if (ib_conn->login_resp_dma)
+		ib_dma_unmap_single(ib_conn->device->ib_device,
+				    ib_conn->login_resp_dma,
+				    ISER_RX_LOGIN_SIZE, DMA_FROM_DEVICE);
+
+	kfree(ib_conn->login_buf);
+
+	/* make sure we never redo any unmapping */
+	ib_conn->login_req_dma = 0;
+	ib_conn->login_resp_dma = 0;
+	ib_conn->login_buf = NULL;
+}
+
+static int iser_alloc_login_buf(struct iser_conn *ib_conn)
+{
+	struct iser_device	*device;
+	int			req_err, resp_err;
+
+	BUG_ON(ib_conn->device == NULL);
+
+	device = ib_conn->device;
+
+	ib_conn->login_buf = kmalloc(ISCSI_DEF_MAX_RECV_SEG_LEN +
+				     ISER_RX_LOGIN_SIZE, GFP_KERNEL);
+	if (!ib_conn->login_buf)
+		goto out_err;
+
+	ib_conn->login_req_buf  = ib_conn->login_buf;
+	ib_conn->login_resp_buf = ib_conn->login_buf +
+						ISCSI_DEF_MAX_RECV_SEG_LEN;
+
+	ib_conn->login_req_dma = ib_dma_map_single(ib_conn->device->ib_device,
+				(void *)ib_conn->login_req_buf,
+				ISCSI_DEF_MAX_RECV_SEG_LEN, DMA_TO_DEVICE);
+
+	ib_conn->login_resp_dma = ib_dma_map_single(ib_conn->device->ib_device,
+				(void *)ib_conn->login_resp_buf,
+				ISER_RX_LOGIN_SIZE, DMA_FROM_DEVICE);
+
+	req_err  = ib_dma_mapping_error(device->ib_device,
+					ib_conn->login_req_dma);
+	resp_err = ib_dma_mapping_error(device->ib_device,
+					ib_conn->login_resp_dma);
+
+	if (req_err || resp_err) {
+		if (req_err)
+			ib_conn->login_req_dma = 0;
+		if (resp_err)
+			ib_conn->login_resp_dma = 0;
+		goto free_login_buf;
+	}
+	return 0;
+
+free_login_buf:
+	iser_free_login_buf(ib_conn);
+
+out_err:
+	iser_err("unable to alloc or map login buf\n");
+	return -ENOMEM;
+}
+
+int iser_alloc_rx_descriptors(struct iser_conn *ib_conn, struct iscsi_session *session)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, j;
 	u64 dma_addr;
@@ -178,14 +273,32 @@ int iser_alloc_rx_descriptors(struct iser_conn *ib_conn)
 	struct ib_sge       *rx_sg;
 	struct iser_device  *device = ib_conn->device;
 
+<<<<<<< HEAD
 	ib_conn->rx_descs = kmalloc(ISER_QP_MAX_RECV_DTOS *
+=======
+	ib_conn->qp_max_recv_dtos = session->cmds_max;
+	ib_conn->qp_max_recv_dtos_mask = session->cmds_max - 1; /* cmds_max is 2^N */
+	ib_conn->min_posted_rx = ib_conn->qp_max_recv_dtos >> 2;
+
+	if (device->iser_alloc_rdma_reg_res(ib_conn, session->scsi_cmds_max))
+		goto create_rdma_reg_res_failed;
+
+	if (iser_alloc_login_buf(ib_conn))
+		goto alloc_login_buf_fail;
+
+	ib_conn->rx_descs = kmalloc(session->cmds_max *
+>>>>>>> refs/remotes/origin/master
 				sizeof(struct iser_rx_desc), GFP_KERNEL);
 	if (!ib_conn->rx_descs)
 		goto rx_desc_alloc_fail;
 
 	rx_desc = ib_conn->rx_descs;
 
+<<<<<<< HEAD
 	for (i = 0; i < ISER_QP_MAX_RECV_DTOS; i++, rx_desc++)  {
+=======
+	for (i = 0; i < ib_conn->qp_max_recv_dtos; i++, rx_desc++)  {
+>>>>>>> refs/remotes/origin/master
 		dma_addr = ib_dma_map_single(device->ib_device, (void *)rx_desc,
 					ISER_RX_PAYLOAD_SIZE, DMA_FROM_DEVICE);
 		if (ib_dma_mapping_error(device->ib_device, dma_addr))
@@ -206,10 +319,21 @@ rx_desc_dma_map_failed:
 	rx_desc = ib_conn->rx_descs;
 	for (j = 0; j < i; j++, rx_desc++)
 		ib_dma_unmap_single(device->ib_device, rx_desc->dma_addr,
+<<<<<<< HEAD
 			ISER_RX_PAYLOAD_SIZE, DMA_FROM_DEVICE);
 	kfree(ib_conn->rx_descs);
 	ib_conn->rx_descs = NULL;
 rx_desc_alloc_fail:
+=======
+				    ISER_RX_PAYLOAD_SIZE, DMA_FROM_DEVICE);
+	kfree(ib_conn->rx_descs);
+	ib_conn->rx_descs = NULL;
+rx_desc_alloc_fail:
+	iser_free_login_buf(ib_conn);
+alloc_login_buf_fail:
+	device->iser_free_rdma_reg_res(ib_conn);
+create_rdma_reg_res_failed:
+>>>>>>> refs/remotes/origin/master
 	iser_err("failed allocating rx descriptors / data buffers\n");
 	return -ENOMEM;
 }
@@ -220,12 +344,16 @@ void iser_free_rx_descriptors(struct iser_conn *ib_conn)
 	struct iser_rx_desc *rx_desc;
 	struct iser_device *device = ib_conn->device;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ib_conn->login_buf) {
 		ib_dma_unmap_single(device->ib_device, ib_conn->login_dma,
 			ISER_RX_LOGIN_SIZE, DMA_FROM_DEVICE);
 		kfree(ib_conn->login_buf);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!ib_conn->rx_descs)
 		return;
 
@@ -234,11 +362,33 @@ void iser_free_rx_descriptors(struct iser_conn *ib_conn)
 		ib_dma_unmap_single(device->ib_device, rx_desc->dma_addr,
 			ISER_RX_PAYLOAD_SIZE, DMA_FROM_DEVICE);
 	kfree(ib_conn->rx_descs);
+=======
+	if (!ib_conn->rx_descs)
+		goto free_login_buf;
+
+	if (device->iser_free_rdma_reg_res)
+		device->iser_free_rdma_reg_res(ib_conn);
+
+	rx_desc = ib_conn->rx_descs;
+	for (i = 0; i < ib_conn->qp_max_recv_dtos; i++, rx_desc++)
+		ib_dma_unmap_single(device->ib_device, rx_desc->dma_addr,
+				    ISER_RX_PAYLOAD_SIZE, DMA_FROM_DEVICE);
+	kfree(ib_conn->rx_descs);
+	/* make sure we never redo any unmapping */
+	ib_conn->rx_descs = NULL;
+
+free_login_buf:
+	iser_free_login_buf(ib_conn);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int iser_post_rx_bufs(struct iscsi_conn *conn, struct iscsi_hdr *req)
 {
 	struct iscsi_iser_conn *iser_conn = conn->dd_data;
+<<<<<<< HEAD
+=======
+	struct iscsi_session *session = conn->session;
+>>>>>>> refs/remotes/origin/master
 
 	iser_dbg("req op %x flags %x\n", req->opcode, req->flags);
 	/* check if this is the last login - going to full feature phase */
@@ -253,9 +403,22 @@ static int iser_post_rx_bufs(struct iscsi_conn *conn, struct iscsi_hdr *req)
 	WARN_ON(iser_conn->ib_conn->post_recv_buf_count != 1);
 	WARN_ON(atomic_read(&iser_conn->ib_conn->post_send_buf_count) != 0);
 
+<<<<<<< HEAD
 	iser_dbg("Initially post: %d\n", ISER_MIN_POSTED_RX);
 	/* Initial post receive buffers */
 	if (iser_post_recvm(iser_conn->ib_conn, ISER_MIN_POSTED_RX))
+=======
+	if (session->discovery_sess) {
+		iser_info("Discovery session, re-using login RX buffer\n");
+		return 0;
+	} else
+		iser_info("Normal session, posting batch of RX %d buffers\n",
+			  iser_conn->ib_conn->min_posted_rx);
+
+	/* Initial post receive buffers */
+	if (iser_post_recvm(iser_conn->ib_conn,
+			    iser_conn->ib_conn->min_posted_rx))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	return 0;
@@ -272,7 +435,15 @@ int iser_send_command(struct iscsi_conn *conn,
 	unsigned long edtl;
 	int err;
 	struct iser_data_buf *data_buf;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct iscsi_cmd *hdr =  (struct iscsi_cmd *)task->hdr;
+=======
+	struct iscsi_scsi_req *hdr = (struct iscsi_scsi_req *)task->hdr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iscsi_scsi_req *hdr = (struct iscsi_scsi_req *)task->hdr;
+>>>>>>> refs/remotes/origin/master
 	struct scsi_cmnd *sc  =  task->sc;
 	struct iser_tx_desc *tx_desc = &iser_task->desc;
 
@@ -395,6 +566,14 @@ int iser_send_control(struct iscsi_conn *conn,
 	unsigned long data_seg_len;
 	int err = 0;
 	struct iser_device *device;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct iser_conn *ib_conn = iser_conn->ib_conn;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iser_conn *ib_conn = iser_conn->ib_conn;
+>>>>>>> refs/remotes/origin/master
 
 	/* build the tx desc regd header and add it to the tx desc dto */
 	mdesc->type = ISCSI_TX_CONTROL;
@@ -410,15 +589,43 @@ int iser_send_control(struct iscsi_conn *conn,
 			iser_err("data present on non login task!!!\n");
 			goto send_control_error;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		memcpy(iser_conn->ib_conn->login_buf, task->data,
 							task->data_count);
 		tx_dsg->addr    = iser_conn->ib_conn->login_dma;
 		tx_dsg->length  = data_seg_len;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+		ib_dma_sync_single_for_cpu(device->ib_device,
+			ib_conn->login_req_dma, task->data_count,
+			DMA_TO_DEVICE);
+
+		memcpy(iser_conn->ib_conn->login_req_buf, task->data,
+							task->data_count);
+
+		ib_dma_sync_single_for_device(device->ib_device,
+			ib_conn->login_req_dma, task->data_count,
+			DMA_TO_DEVICE);
+
+		tx_dsg->addr    = iser_conn->ib_conn->login_req_dma;
+		tx_dsg->length  = task->data_count;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		tx_dsg->lkey    = device->mr->lkey;
 		mdesc->num_sge = 2;
 	}
 
 	if (task == conn->login_task) {
+<<<<<<< HEAD
+=======
+		iser_dbg("op %x dsl %lx, posting login rx buffer\n",
+			 task->hdr->opcode, data_seg_len);
+>>>>>>> refs/remotes/origin/master
 		err = iser_post_recvl(iser_conn->ib_conn);
 		if (err)
 			goto send_control_error;
@@ -449,8 +656,18 @@ void iser_rcv_completion(struct iser_rx_desc *rx_desc,
 	int rx_buflen, outstanding, count, err;
 
 	/* differentiate between login to all other PDUs */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((char *)rx_desc == ib_conn->login_buf) {
 		rx_dma = ib_conn->login_dma;
+=======
+	if ((char *)rx_desc == ib_conn->login_resp_buf) {
+		rx_dma = ib_conn->login_resp_dma;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((char *)rx_desc == ib_conn->login_resp_buf) {
+		rx_dma = ib_conn->login_resp_dma;
+>>>>>>> refs/remotes/origin/master
 		rx_buflen = ISER_RX_LOGIN_SIZE;
 	} else {
 		rx_dma = rx_desc->dma_addr;
@@ -477,13 +694,27 @@ void iser_rcv_completion(struct iser_rx_desc *rx_desc,
 	 * for the posted rx bufs refcount to become zero handles everything   */
 	conn->ib_conn->post_recv_buf_count--;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rx_dma == ib_conn->login_dma)
+=======
+	if (rx_dma == ib_conn->login_resp_dma)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	outstanding = ib_conn->post_recv_buf_count;
 	if (outstanding + ISER_MIN_POSTED_RX <= ISER_QP_MAX_RECV_DTOS) {
 		count = min(ISER_QP_MAX_RECV_DTOS - outstanding,
 						ISER_MIN_POSTED_RX);
+=======
+	if (rx_dma == ib_conn->login_resp_dma)
+		return;
+
+	outstanding = ib_conn->post_recv_buf_count;
+	if (outstanding + ib_conn->min_posted_rx <= ib_conn->qp_max_recv_dtos) {
+		count = min(ib_conn->qp_max_recv_dtos - outstanding,
+						ib_conn->min_posted_rx);
+>>>>>>> refs/remotes/origin/master
 		err = iser_post_recvm(ib_conn, count);
 		if (err)
 			iser_err("posting %d rx bufs err %d\n", count, err);
@@ -532,8 +763,13 @@ void iser_task_rdma_init(struct iscsi_iser_task *iser_task)
 
 void iser_task_rdma_finalize(struct iscsi_iser_task *iser_task)
 {
+<<<<<<< HEAD
 	int is_rdma_aligned = 1;
 	struct iser_regd_buf *regd;
+=======
+	struct iser_device *device = iser_task->iser_conn->ib_conn->device;
+	int is_rdma_aligned = 1;
+>>>>>>> refs/remotes/origin/master
 
 	/* if we were reading, copy back to unaligned sglist,
 	 * anyway dma_unmap and free the copy
@@ -547,6 +783,7 @@ void iser_task_rdma_finalize(struct iscsi_iser_task *iser_task)
 		iser_finalize_rdma_unaligned_sg(iser_task, ISER_DIR_OUT);
 	}
 
+<<<<<<< HEAD
 	if (iser_task->dir[ISER_DIR_IN]) {
 		regd = &iser_task->rdma_regd[ISER_DIR_IN];
 		if (regd->reg.is_fmr)
@@ -558,6 +795,13 @@ void iser_task_rdma_finalize(struct iscsi_iser_task *iser_task)
 		if (regd->reg.is_fmr)
 			iser_unreg_mem(&regd->reg);
 	}
+=======
+	if (iser_task->dir[ISER_DIR_IN])
+		device->iser_unreg_rdma_mem(iser_task, ISER_DIR_IN);
+
+	if (iser_task->dir[ISER_DIR_OUT])
+		device->iser_unreg_rdma_mem(iser_task, ISER_DIR_OUT);
+>>>>>>> refs/remotes/origin/master
 
        /* if the data was unaligned, it was already unmapped and then copied */
        if (is_rdma_aligned)

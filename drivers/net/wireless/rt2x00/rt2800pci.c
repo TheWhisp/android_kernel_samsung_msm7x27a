@@ -37,6 +37,7 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/eeprom_93cx6.h>
 
@@ -44,16 +45,41 @@
 #include "rt2x00pci.h"
 #include "rt2x00soc.h"
 #include "rt2800lib.h"
+=======
+#include <linux/eeprom_93cx6.h>
+
+#include "rt2x00.h"
+#include "rt2x00mmio.h"
+#include "rt2x00pci.h"
+#include "rt2800lib.h"
+#include "rt2800mmio.h"
+>>>>>>> refs/remotes/origin/master
 #include "rt2800.h"
 #include "rt2800pci.h"
 
 /*
  * Allow hardware encryption to be disabled.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int modparam_nohwcrypt = 0;
+=======
+static bool modparam_nohwcrypt = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(nohwcrypt, modparam_nohwcrypt, bool, S_IRUGO);
 MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption.");
 
+=======
+static bool modparam_nohwcrypt = false;
+module_param_named(nohwcrypt, modparam_nohwcrypt, bool, S_IRUGO);
+MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption.");
+
+static bool rt2800pci_hwcrypt_disabled(struct rt2x00_dev *rt2x00dev)
+{
+	return modparam_nohwcrypt;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void rt2800pci_mcu_status(struct rt2x00_dev *rt2x00dev, const u8 token)
 {
 	unsigned int i;
@@ -66,7 +92,11 @@ static void rt2800pci_mcu_status(struct rt2x00_dev *rt2x00dev, const u8 token)
 		return;
 
 	for (i = 0; i < 200; i++) {
+<<<<<<< HEAD
 		rt2x00pci_register_read(rt2x00dev, H2M_MAILBOX_CID, &reg);
+=======
+		rt2x00mmio_register_read(rt2x00dev, H2M_MAILBOX_CID, &reg);
+>>>>>>> refs/remotes/origin/master
 
 		if ((rt2x00_get_field32(reg, H2M_MAILBOX_CID_CMD0) == token) ||
 		    (rt2x00_get_field32(reg, H2M_MAILBOX_CID_CMD1) == token) ||
@@ -78,6 +108,7 @@ static void rt2800pci_mcu_status(struct rt2x00_dev *rt2x00dev, const u8 token)
 	}
 
 	if (i == 200)
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "MCU request failed, no response from hardware\n");
 
 	rt2x00pci_register_write(rt2x00dev, H2M_MAILBOX_STATUS, ~0);
@@ -100,12 +131,24 @@ static inline void rt2800pci_read_eeprom_soc(struct rt2x00_dev *rt2x00dev)
 #endif /* CONFIG_RALINK_RT288X || CONFIG_RALINK_RT305X */
 
 #ifdef CONFIG_PCI
+=======
+		rt2x00_err(rt2x00dev, "MCU request failed, no response from hardware\n");
+
+	rt2x00mmio_register_write(rt2x00dev, H2M_MAILBOX_STATUS, ~0);
+	rt2x00mmio_register_write(rt2x00dev, H2M_MAILBOX_CID, ~0);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void rt2800pci_eepromregister_read(struct eeprom_93cx6 *eeprom)
 {
 	struct rt2x00_dev *rt2x00dev = eeprom->data;
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, E2PROM_CSR, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, E2PROM_CSR, &reg);
+>>>>>>> refs/remotes/origin/master
 
 	eeprom->reg_data_in = !!rt2x00_get_field32(reg, E2PROM_CSR_DATA_IN);
 	eeprom->reg_data_out = !!rt2x00_get_field32(reg, E2PROM_CSR_DATA_OUT);
@@ -127,15 +170,26 @@ static void rt2800pci_eepromregister_write(struct eeprom_93cx6 *eeprom)
 	rt2x00_set_field32(&reg, E2PROM_CSR_CHIP_SELECT,
 			   !!eeprom->reg_chip_select);
 
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, E2PROM_CSR, reg);
 }
 
 static void rt2800pci_read_eeprom_pci(struct rt2x00_dev *rt2x00dev)
+=======
+	rt2x00mmio_register_write(rt2x00dev, E2PROM_CSR, reg);
+}
+
+static int rt2800pci_read_eeprom_pci(struct rt2x00_dev *rt2x00dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct eeprom_93cx6 eeprom;
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, E2PROM_CSR, &reg);
+=======
+	rt2x00mmio_register_read(rt2x00dev, E2PROM_CSR, &reg);
+>>>>>>> refs/remotes/origin/master
 
 	eeprom.data = rt2x00dev;
 	eeprom.register_read = rt2800pci_eepromregister_read;
@@ -159,6 +213,7 @@ static void rt2800pci_read_eeprom_pci(struct rt2x00_dev *rt2x00dev)
 
 	eeprom_93cx6_multiread(&eeprom, EEPROM_BASE, rt2x00dev->eeprom,
 			       EEPROM_SIZE / sizeof(u16));
+<<<<<<< HEAD
 }
 
 static int rt2800pci_efuse_detect(struct rt2x00_dev *rt2x00dev)
@@ -200,6 +255,7 @@ static void rt2800pci_start_queue(struct data_queue *queue)
 		rt2x00pci_register_write(rt2x00dev, MAC_SYS_CTRL, reg);
 		break;
 	case QID_BEACON:
+<<<<<<< HEAD
 		/*
 		 * Allow beacon tasklets to be scheduled for periodic
 		 * beacon updates.
@@ -207,6 +263,8 @@ static void rt2800pci_start_queue(struct data_queue *queue)
 		tasklet_enable(&rt2x00dev->tbtt_tasklet);
 		tasklet_enable(&rt2x00dev->pretbtt_tasklet);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		rt2x00pci_register_read(rt2x00dev, BCN_TIME_CFG, &reg);
 		rt2x00_set_field32(&reg, BCN_TIME_CFG_TSF_TICKING, 1);
 		rt2x00_set_field32(&reg, BCN_TIME_CFG_TBTT_ENABLE, 1);
@@ -219,7 +277,11 @@ static void rt2800pci_start_queue(struct data_queue *queue)
 		break;
 	default:
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rt2800pci_kick_queue(struct data_queue *queue)
@@ -269,14 +331,38 @@ static void rt2800pci_stop_queue(struct data_queue *queue)
 		rt2x00pci_register_write(rt2x00dev, INT_TIMER_EN, reg);
 
 		/*
+<<<<<<< HEAD
 		 * Wait for tbtt tasklets to finish.
 		 */
 		tasklet_disable(&rt2x00dev->tbtt_tasklet);
 		tasklet_disable(&rt2x00dev->pretbtt_tasklet);
+=======
+		 * Wait for current invocation to finish. The tasklet
+		 * won't be scheduled anymore afterwards since we disabled
+		 * the TBTT and PRE TBTT timer.
+		 */
+		tasklet_kill(&rt2x00dev->tbtt_tasklet);
+		tasklet_kill(&rt2x00dev->pretbtt_tasklet);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		break;
 	}
+=======
+
+	return 0;
+}
+
+static int rt2800pci_efuse_detect(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2800_efuse_detect(rt2x00dev);
+}
+
+static inline int rt2800pci_read_eeprom_efuse(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2800_read_eeprom_efuse(rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -284,7 +370,17 @@ static void rt2800pci_stop_queue(struct data_queue *queue)
  */
 static char *rt2800pci_get_firmware_name(struct rt2x00_dev *rt2x00dev)
 {
+<<<<<<< HEAD
 	return FIRMWARE_RT2860;
+=======
+	/*
+	 * Chip rt3290 use specific 4KB firmware named rt3290.bin.
+	 */
+	if (rt2x00_rt(rt2x00dev, RT3290))
+		return FIRMWARE_RT3290;
+	else
+		return FIRMWARE_RT2860;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int rt2800pci_write_firmware(struct rt2x00_dev *rt2x00dev,
@@ -297,11 +393,16 @@ static int rt2800pci_write_firmware(struct rt2x00_dev *rt2x00dev,
 	 */
 	reg = 0;
 	rt2x00_set_field32(&reg, PBF_SYS_CTRL_HOST_RAM_WRITE, 1);
+<<<<<<< HEAD
 	rt2x00pci_register_write(rt2x00dev, PBF_SYS_CTRL, reg);
+=======
+	rt2x00mmio_register_write(rt2x00dev, PBF_SYS_CTRL, reg);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Write firmware to device.
 	 */
+<<<<<<< HEAD
 	rt2x00pci_register_multiwrite(rt2x00dev, FIRMWARE_IMAGE_BASE,
 				      data, len);
 
@@ -416,6 +517,16 @@ static int rt2800pci_init_queues(struct rt2x00_dev *rt2x00dev)
 	rt2x00pci_register_write(rt2x00dev, WPDMA_GLO_CFG, reg);
 
 	rt2x00pci_register_write(rt2x00dev, DELAY_INT_CFG, 0);
+=======
+	rt2x00mmio_register_multiwrite(rt2x00dev, FIRMWARE_IMAGE_BASE,
+				       data, len);
+
+	rt2x00mmio_register_write(rt2x00dev, PBF_SYS_CTRL, 0x00000);
+	rt2x00mmio_register_write(rt2x00dev, PBF_SYS_CTRL, 0x00001);
+
+	rt2x00mmio_register_write(rt2x00dev, H2M_BBP_AGENT, 0);
+	rt2x00mmio_register_write(rt2x00dev, H2M_MAILBOX_CSR, 0);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -423,6 +534,7 @@ static int rt2800pci_init_queues(struct rt2x00_dev *rt2x00dev)
 /*
  * Device state switch handlers.
  */
+<<<<<<< HEAD
 static void rt2800pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 				 enum dev_state state)
 {
@@ -436,6 +548,7 @@ static void rt2800pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 	if (state == STATE_RADIO_IRQ_ON) {
 		rt2x00pci_register_read(rt2x00dev, INT_SOURCE_CSR, &reg);
 		rt2x00pci_register_write(rt2x00dev, INT_SOURCE_CSR, reg);
+<<<<<<< HEAD
 
 		/*
 		 * Enable tasklets. The beacon related tasklets are
@@ -444,6 +557,8 @@ static void rt2800pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 		tasklet_enable(&rt2x00dev->txstatus_tasklet);
 		tasklet_enable(&rt2x00dev->rxdone_tasklet);
 		tasklet_enable(&rt2x00dev->autowake_tasklet);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	spin_lock_irqsave(&rt2x00dev->irqmask_lock, flags);
@@ -460,12 +575,22 @@ static void rt2800pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 
 	if (state == STATE_RADIO_IRQ_OFF) {
 		/*
+<<<<<<< HEAD
 		 * Ensure that all tasklets are finished before
 		 * disabling the interrupts.
 		 */
 		tasklet_disable(&rt2x00dev->txstatus_tasklet);
 		tasklet_disable(&rt2x00dev->rxdone_tasklet);
 		tasklet_disable(&rt2x00dev->autowake_tasklet);
+=======
+		 * Wait for possibly running tasklets to finish.
+		 */
+		tasklet_kill(&rt2x00dev->txstatus_tasklet);
+		tasklet_kill(&rt2x00dev->rxdone_tasklet);
+		tasklet_kill(&rt2x00dev->autowake_tasklet);
+		tasklet_kill(&rt2x00dev->tbtt_tasklet);
+		tasklet_kill(&rt2x00dev->pretbtt_tasklet);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -489,7 +614,14 @@ static int rt2800pci_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00pci_register_write(rt2x00dev, PBF_SYS_CTRL, 0x00000e1f);
 	rt2x00pci_register_write(rt2x00dev, PBF_SYS_CTRL, 0x00000e00);
 
+<<<<<<< HEAD
 	if (rt2x00_rt(rt2x00dev, RT5390)) {
+=======
+	if (rt2x00_is_pcie(rt2x00dev) &&
+	    (rt2x00_rt(rt2x00dev, RT3572) ||
+	     rt2x00_rt(rt2x00dev, RT5390) ||
+	     rt2x00_rt(rt2x00dev, RT5392))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		rt2x00pci_register_read(rt2x00dev, AUX_CTRL, &reg);
 		rt2x00_set_field32(&reg, AUX_CTRL_FORCE_PCIE_CLK, 1);
 		rt2x00_set_field32(&reg, AUX_CTRL_WAKE_PCIE_EN, 1);
@@ -498,7 +630,11 @@ static int rt2800pci_init_registers(struct rt2x00_dev *rt2x00dev)
 
 	rt2x00pci_register_write(rt2x00dev, PWR_PIN_CFG, 0x00000003);
 
+<<<<<<< HEAD
 	rt2x00pci_register_read(rt2x00dev, MAC_SYS_CTRL, &reg);
+=======
+	reg = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	rt2x00_set_field32(&reg, MAC_SYS_CTRL_RESET_CSR, 1);
 	rt2x00_set_field32(&reg, MAC_SYS_CTRL_RESET_BBP, 1);
 	rt2x00pci_register_write(rt2x00dev, MAC_SYS_CTRL, reg);
@@ -510,11 +646,47 @@ static int rt2800pci_init_registers(struct rt2x00_dev *rt2x00dev)
 
 static int rt2800pci_enable_radio(struct rt2x00_dev *rt2x00dev)
 {
+<<<<<<< HEAD
+=======
+	int retval;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(rt2800_wait_wpdma_ready(rt2x00dev) ||
 		     rt2800pci_init_queues(rt2x00dev)))
 		return -EIO;
 
+<<<<<<< HEAD
 	return rt2800_enable_radio(rt2x00dev);
+=======
+	retval = rt2800_enable_radio(rt2x00dev);
+=======
+static int rt2800pci_enable_radio(struct rt2x00_dev *rt2x00dev)
+{
+	int retval;
+
+	retval = rt2800mmio_enable_radio(rt2x00dev);
+>>>>>>> refs/remotes/origin/master
+	if (retval)
+		return retval;
+
+	/* After resume MCU_BOOT_SIGNAL will trash these. */
+<<<<<<< HEAD
+	rt2x00pci_register_write(rt2x00dev, H2M_MAILBOX_STATUS, ~0);
+	rt2x00pci_register_write(rt2x00dev, H2M_MAILBOX_CID, ~0);
+=======
+	rt2x00mmio_register_write(rt2x00dev, H2M_MAILBOX_STATUS, ~0);
+	rt2x00mmio_register_write(rt2x00dev, H2M_MAILBOX_CID, ~0);
+>>>>>>> refs/remotes/origin/master
+
+	rt2800_mcu_request(rt2x00dev, MCU_SLEEP, TOKEN_RADIO_OFF, 0xff, 0x02);
+	rt2800pci_mcu_status(rt2x00dev, TOKEN_RADIO_OFF);
+
+	rt2800_mcu_request(rt2x00dev, MCU_WAKEUP, TOKEN_WAKEUP, 0, 0);
+	rt2800pci_mcu_status(rt2x00dev, TOKEN_WAKEUP);
+
+	return retval;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rt2800pci_disable_radio(struct rt2x00_dev *rt2x00dev)
@@ -524,20 +696,46 @@ static void rt2800pci_disable_radio(struct rt2x00_dev *rt2x00dev)
 		rt2x00pci_register_write(rt2x00dev, PWR_PIN_CFG, 0);
 		rt2x00pci_register_write(rt2x00dev, TX_PIN_CFG, 0);
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int rt2800pci_set_state(struct rt2x00_dev *rt2x00dev,
 			       enum dev_state state)
 {
 	if (state == STATE_AWAKE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rt2800_mcu_request(rt2x00dev, MCU_WAKEUP, TOKEN_WAKUP, 0, 0x02);
 		rt2800pci_mcu_status(rt2x00dev, TOKEN_WAKUP);
+=======
+		rt2800_mcu_request(rt2x00dev, MCU_WAKEUP, TOKEN_WAKEUP,
+				   0, 0x02);
+		rt2800pci_mcu_status(rt2x00dev, TOKEN_WAKEUP);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else if (state == STATE_SLEEP) {
 		rt2x00pci_register_write(rt2x00dev, H2M_MAILBOX_STATUS,
 					 0xffffffff);
 		rt2x00pci_register_write(rt2x00dev, H2M_MAILBOX_CID,
 					 0xffffffff);
+<<<<<<< HEAD
 		rt2800_mcu_request(rt2x00dev, MCU_SLEEP, 0x01, 0xff, 0x01);
+=======
+		rt2800_mcu_request(rt2x00dev, MCU_SLEEP, TOKEN_SLEEP,
+				   0xff, 0x01);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rt2800_mcu_request(rt2x00dev, MCU_WAKEUP, TOKEN_WAKEUP,
+				   0, 0x02);
+		rt2800pci_mcu_status(rt2x00dev, TOKEN_WAKEUP);
+	} else if (state == STATE_SLEEP) {
+		rt2x00mmio_register_write(rt2x00dev, H2M_MAILBOX_STATUS,
+					  0xffffffff);
+		rt2x00mmio_register_write(rt2x00dev, H2M_MAILBOX_CID,
+					  0xffffffff);
+		rt2800_mcu_request(rt2x00dev, MCU_SLEEP, TOKEN_SLEEP,
+				   0xff, 0x01);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -550,6 +748,8 @@ static int rt2800pci_set_device_state(struct rt2x00_dev *rt2x00dev,
 
 	switch (state) {
 	case STATE_RADIO_ON:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/*
 		 * Before the radio can be enabled, the device first has
 		 * to be woken up. After that it needs a bit of time
@@ -557,6 +757,10 @@ static int rt2800pci_set_device_state(struct rt2x00_dev *rt2x00dev,
 		 */
 		rt2800pci_set_state(rt2x00dev, STATE_AWAKE);
 		msleep(1);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		retval = rt2800pci_enable_radio(rt2x00dev);
 		break;
 	case STATE_RADIO_OFF:
@@ -564,12 +768,19 @@ static int rt2800pci_set_device_state(struct rt2x00_dev *rt2x00dev,
 		 * After the radio has been disabled, the device should
 		 * be put to sleep for powersaving.
 		 */
+<<<<<<< HEAD
 		rt2800pci_disable_radio(rt2x00dev);
+=======
+>>>>>>> refs/remotes/origin/master
 		rt2800pci_set_state(rt2x00dev, STATE_SLEEP);
 		break;
 	case STATE_RADIO_IRQ_ON:
 	case STATE_RADIO_IRQ_OFF:
+<<<<<<< HEAD
 		rt2800pci_toggle_irq(rt2x00dev, state);
+=======
+		rt2800mmio_toggle_irq(rt2x00dev, state);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case STATE_DEEP_SLEEP:
 	case STATE_SLEEP:
@@ -583,13 +794,19 @@ static int rt2800pci_set_device_state(struct rt2x00_dev *rt2x00dev,
 	}
 
 	if (unlikely(retval))
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Device failed to enter state %d (%d).\n",
 		      state, retval);
+=======
+		rt2x00_err(rt2x00dev, "Device failed to enter state %d (%d)\n",
+			   state, retval);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
 
 /*
+<<<<<<< HEAD
  * TX descriptor initialization
  */
 static __le32 *rt2800pci_get_txwi(struct queue_entry *entry)
@@ -616,11 +833,19 @@ static void rt2800pci_write_tx_desc(struct queue_entry *entry,
 	/*
 	 * Initialize TX descriptor
 	 */
+<<<<<<< HEAD
 	rt2x00_desc_read(txd, 0, &word);
 	rt2x00_set_field32(&word, TXD_W0_SD_PTR0, skbdesc->skb_dma);
 	rt2x00_desc_write(txd, 0, word);
 
 	rt2x00_desc_read(txd, 1, &word);
+=======
+	word = 0;
+	rt2x00_set_field32(&word, TXD_W0_SD_PTR0, skbdesc->skb_dma);
+	rt2x00_desc_write(txd, 0, word);
+
+	word = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	rt2x00_set_field32(&word, TXD_W1_SD_LEN1, entry->skb->len);
 	rt2x00_set_field32(&word, TXD_W1_LAST_SEC1,
 			   !test_bit(ENTRY_TXD_MORE_FRAG, &txdesc->flags));
@@ -631,12 +856,20 @@ static void rt2800pci_write_tx_desc(struct queue_entry *entry,
 	rt2x00_set_field32(&word, TXD_W1_DMA_DONE, 0);
 	rt2x00_desc_write(txd, 1, word);
 
+<<<<<<< HEAD
 	rt2x00_desc_read(txd, 2, &word);
+=======
+	word = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	rt2x00_set_field32(&word, TXD_W2_SD_PTR1,
 			   skbdesc->skb_dma + TXWI_DESC_SIZE);
 	rt2x00_desc_write(txd, 2, word);
 
+<<<<<<< HEAD
 	rt2x00_desc_read(txd, 3, &word);
+=======
+	word = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	rt2x00_set_field32(&word, TXD_W3_WIV,
 			   !test_bit(ENTRY_TXD_ENCRYPT_IV, &txdesc->flags));
 	rt2x00_set_field32(&word, TXD_W3_QSEL, 2);
@@ -757,7 +990,11 @@ static bool rt2800pci_txdone(struct rt2x00_dev *rt2x00dev)
 		}
 
 		entry = rt2x00queue_get_entry(queue, Q_INDEX_DONE);
+<<<<<<< HEAD
 		rt2800_txdone_entry(entry, status);
+=======
+		rt2800_txdone_entry(entry, status, rt2800pci_get_txwi(entry));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (--max_tx_done == 0)
 			break;
@@ -799,14 +1036,51 @@ static void rt2800pci_pretbtt_tasklet(unsigned long data)
 {
 	struct rt2x00_dev *rt2x00dev = (struct rt2x00_dev *)data;
 	rt2x00lib_pretbtt(rt2x00dev);
+<<<<<<< HEAD
 	rt2800pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_PRE_TBTT);
+=======
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		rt2800pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_PRE_TBTT);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rt2800pci_tbtt_tasklet(unsigned long data)
 {
 	struct rt2x00_dev *rt2x00dev = (struct rt2x00_dev *)data;
+<<<<<<< HEAD
 	rt2x00lib_beacondone(rt2x00dev);
 	rt2800pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_TBTT);
+=======
+	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
+	u32 reg;
+
+	rt2x00lib_beacondone(rt2x00dev);
+
+	if (rt2x00dev->intf_ap_count) {
+		/*
+		 * The rt2800pci hardware tbtt timer is off by 1us per tbtt
+		 * causing beacon skew and as a result causing problems with
+		 * some powersaving clients over time. Shorten the beacon
+		 * interval every 64 beacons by 64us to mitigate this effect.
+		 */
+		if (drv_data->tbtt_tick == (BCN_TBTT_OFFSET - 2)) {
+			rt2x00pci_register_read(rt2x00dev, BCN_TIME_CFG, &reg);
+			rt2x00_set_field32(&reg, BCN_TIME_CFG_BEACON_INTERVAL,
+					   (rt2x00dev->beacon_int * 16) - 1);
+			rt2x00pci_register_write(rt2x00dev, BCN_TIME_CFG, reg);
+		} else if (drv_data->tbtt_tick == (BCN_TBTT_OFFSET - 1)) {
+			rt2x00pci_register_read(rt2x00dev, BCN_TIME_CFG, &reg);
+			rt2x00_set_field32(&reg, BCN_TIME_CFG_BEACON_INTERVAL,
+					   (rt2x00dev->beacon_int * 16));
+			rt2x00pci_register_write(rt2x00dev, BCN_TIME_CFG, reg);
+		}
+		drv_data->tbtt_tick++;
+		drv_data->tbtt_tick %= BCN_TBTT_OFFSET;
+	}
+
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		rt2800pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_TBTT);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rt2800pci_rxdone_tasklet(unsigned long data)
@@ -814,7 +1088,11 @@ static void rt2800pci_rxdone_tasklet(unsigned long data)
 	struct rt2x00_dev *rt2x00dev = (struct rt2x00_dev *)data;
 	if (rt2x00pci_rxdone(rt2x00dev))
 		tasklet_schedule(&rt2x00dev->rxdone_tasklet);
+<<<<<<< HEAD
 	else
+=======
+	else if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+>>>>>>> refs/remotes/origin/cm-10.0
 		rt2800pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_RX_DONE);
 }
 
@@ -822,7 +1100,12 @@ static void rt2800pci_autowake_tasklet(unsigned long data)
 {
 	struct rt2x00_dev *rt2x00dev = (struct rt2x00_dev *)data;
 	rt2800pci_wakeup(rt2x00dev);
+<<<<<<< HEAD
 	rt2800pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_AUTO_WAKEUP);
+=======
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		rt2800pci_enable_interrupt(rt2x00dev, INT_MASK_CSR_AUTO_WAKEUP);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rt2800pci_txstatus_interrupt(struct rt2x00_dev *rt2x00dev)
@@ -1002,6 +1285,20 @@ static int rt2800pci_probe_hw(struct rt2x00_dev *rt2x00dev)
 	rt2x00dev->rssi_offset = DEFAULT_RSSI_OFFSET;
 
 	return 0;
+=======
+ * Device probe functions.
+ */
+static int rt2800pci_read_eeprom(struct rt2x00_dev *rt2x00dev)
+{
+	int retval;
+
+	if (rt2800pci_efuse_detect(rt2x00dev))
+		retval = rt2800pci_read_eeprom_efuse(rt2x00dev);
+	else
+		retval = rt2800pci_read_eeprom_pci(rt2x00dev);
+
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct ieee80211_ops rt2800pci_mac80211_ops = {
@@ -1018,6 +1315,16 @@ static const struct ieee80211_ops rt2800pci_mac80211_ops = {
 	.get_stats		= rt2x00mac_get_stats,
 	.get_tkip_seq		= rt2800_get_tkip_seq,
 	.set_rts_threshold	= rt2800_set_rts_threshold,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.sta_add		= rt2x00mac_sta_add,
+	.sta_remove		= rt2x00mac_sta_remove,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sta_add		= rt2x00mac_sta_add,
+	.sta_remove		= rt2x00mac_sta_remove,
+>>>>>>> refs/remotes/origin/master
 	.bss_info_changed	= rt2x00mac_bss_info_changed,
 	.conf_tx		= rt2800_conf_tx,
 	.get_tsf		= rt2800_get_tsf,
@@ -1026,6 +1333,11 @@ static const struct ieee80211_ops rt2800pci_mac80211_ops = {
 	.flush			= rt2x00mac_flush,
 	.get_survey		= rt2800_get_survey,
 	.get_ringparam		= rt2x00mac_get_ringparam,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.tx_frames_pending	= rt2x00mac_tx_frames_pending,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const struct rt2800_ops rt2800pci_rt2800_ops = {
@@ -1056,12 +1368,52 @@ static const struct rt2x00lib_ops rt2800pci_rt2x00_ops = {
 	.uninitialize		= rt2x00pci_uninitialize,
 	.get_entry_state	= rt2800pci_get_entry_state,
 	.clear_entry		= rt2800pci_clear_entry,
+=======
+	.tx_frames_pending	= rt2x00mac_tx_frames_pending,
+};
+
+static const struct rt2800_ops rt2800pci_rt2800_ops = {
+	.register_read		= rt2x00mmio_register_read,
+	.register_read_lock	= rt2x00mmio_register_read, /* same for PCI */
+	.register_write		= rt2x00mmio_register_write,
+	.register_write_lock	= rt2x00mmio_register_write, /* same for PCI */
+	.register_multiread	= rt2x00mmio_register_multiread,
+	.register_multiwrite	= rt2x00mmio_register_multiwrite,
+	.regbusy_read		= rt2x00mmio_regbusy_read,
+	.read_eeprom		= rt2800pci_read_eeprom,
+	.hwcrypt_disabled	= rt2800pci_hwcrypt_disabled,
+	.drv_write_firmware	= rt2800pci_write_firmware,
+	.drv_init_registers	= rt2800mmio_init_registers,
+	.drv_get_txwi		= rt2800mmio_get_txwi,
+};
+
+static const struct rt2x00lib_ops rt2800pci_rt2x00_ops = {
+	.irq_handler		= rt2800mmio_interrupt,
+	.txstatus_tasklet	= rt2800mmio_txstatus_tasklet,
+	.pretbtt_tasklet	= rt2800mmio_pretbtt_tasklet,
+	.tbtt_tasklet		= rt2800mmio_tbtt_tasklet,
+	.rxdone_tasklet		= rt2800mmio_rxdone_tasklet,
+	.autowake_tasklet	= rt2800mmio_autowake_tasklet,
+	.probe_hw		= rt2800_probe_hw,
+	.get_firmware_name	= rt2800pci_get_firmware_name,
+	.check_firmware		= rt2800_check_firmware,
+	.load_firmware		= rt2800_load_firmware,
+	.initialize		= rt2x00mmio_initialize,
+	.uninitialize		= rt2x00mmio_uninitialize,
+	.get_entry_state	= rt2800mmio_get_entry_state,
+	.clear_entry		= rt2800mmio_clear_entry,
+>>>>>>> refs/remotes/origin/master
 	.set_device_state	= rt2800pci_set_device_state,
 	.rfkill_poll		= rt2800_rfkill_poll,
 	.link_stats		= rt2800_link_stats,
 	.reset_tuner		= rt2800_reset_tuner,
 	.link_tuner		= rt2800_link_tuner,
 	.gain_calibration	= rt2800_gain_calibration,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.vco_calibration	= rt2800_vco_calibration,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.start_queue		= rt2800pci_start_queue,
 	.kick_queue		= rt2800pci_kick_queue,
 	.stop_queue		= rt2800pci_stop_queue,
@@ -1071,6 +1423,18 @@ static const struct rt2x00lib_ops rt2800pci_rt2x00_ops = {
 	.write_beacon		= rt2800_write_beacon,
 	.clear_beacon		= rt2800_clear_beacon,
 	.fill_rxdone		= rt2800pci_fill_rxdone,
+=======
+	.vco_calibration	= rt2800_vco_calibration,
+	.start_queue		= rt2800mmio_start_queue,
+	.kick_queue		= rt2800mmio_kick_queue,
+	.stop_queue		= rt2800mmio_stop_queue,
+	.flush_queue		= rt2x00mmio_flush_queue,
+	.write_tx_desc		= rt2800mmio_write_tx_desc,
+	.write_tx_data		= rt2800_write_tx_data,
+	.write_beacon		= rt2800_write_beacon,
+	.clear_beacon		= rt2800_clear_beacon,
+	.fill_rxdone		= rt2800mmio_fill_rxdone,
+>>>>>>> refs/remotes/origin/master
 	.config_shared_key	= rt2800_config_shared_key,
 	.config_pairwise_key	= rt2800_config_pairwise_key,
 	.config_filter		= rt2800_config_filter,
@@ -1078,6 +1442,12 @@ static const struct rt2x00lib_ops rt2800pci_rt2x00_ops = {
 	.config_erp		= rt2800_config_erp,
 	.config_ant		= rt2800_config_ant,
 	.config			= rt2800_config,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.sta_add		= rt2800_sta_add,
+	.sta_remove		= rt2800_sta_remove,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const struct data_queue_desc rt2800pci_queue_rx = {
@@ -1099,19 +1469,35 @@ static const struct data_queue_desc rt2800pci_queue_bcn = {
 	.data_size		= 0, /* No DMA required for beacons */
 	.desc_size		= TXWI_DESC_SIZE,
 	.priv_size		= sizeof(struct queue_entry_priv_pci),
+=======
+	.sta_add		= rt2800_sta_add,
+	.sta_remove		= rt2800_sta_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct rt2x00_ops rt2800pci_ops = {
 	.name			= KBUILD_MODNAME,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.drv_data_size		= sizeof(struct rt2800_drv_data),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.max_sta_intf		= 1,
+=======
+	.drv_data_size		= sizeof(struct rt2800_drv_data),
+>>>>>>> refs/remotes/origin/master
 	.max_ap_intf		= 8,
 	.eeprom_size		= EEPROM_SIZE,
 	.rf_size		= RF_SIZE,
 	.tx_queues		= NUM_TX_QUEUES,
+<<<<<<< HEAD
 	.extra_tx_headroom	= TXWI_DESC_SIZE,
 	.rx			= &rt2800pci_queue_rx,
 	.tx			= &rt2800pci_queue_tx,
 	.bcn			= &rt2800pci_queue_bcn,
+=======
+	.queue_init		= rt2800mmio_queue_init,
+>>>>>>> refs/remotes/origin/master
 	.lib			= &rt2800pci_rt2x00_ops,
 	.drv			= &rt2800pci_rt2800_ops,
 	.hw			= &rt2800pci_mac80211_ops,
@@ -1123,7 +1509,10 @@ static const struct rt2x00_ops rt2800pci_ops = {
 /*
  * RT2800pci module information.
  */
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
+=======
+>>>>>>> refs/remotes/origin/master
 static DEFINE_PCI_DEVICE_TABLE(rt2800pci_device_table) = {
 	{ PCI_DEVICE(0x1814, 0x0601) },
 	{ PCI_DEVICE(0x1814, 0x0681) },
@@ -1141,6 +1530,12 @@ static DEFINE_PCI_DEVICE_TABLE(rt2800pci_device_table) = {
 	{ PCI_DEVICE(0x1432, 0x7768) },
 	{ PCI_DEVICE(0x1462, 0x891a) },
 	{ PCI_DEVICE(0x1a3b, 0x1059) },
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_RT2800PCI_RT3290
+	{ PCI_DEVICE(0x1814, 0x3290) },
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_RT2800PCI_RT33XX
 	{ PCI_DEVICE(0x1814, 0x3390) },
 #endif
@@ -1152,19 +1547,39 @@ static DEFINE_PCI_DEVICE_TABLE(rt2800pci_device_table) = {
 	{ PCI_DEVICE(0x1814, 0x3562) },
 	{ PCI_DEVICE(0x1814, 0x3592) },
 	{ PCI_DEVICE(0x1814, 0x3593) },
+<<<<<<< HEAD
 #endif
 #ifdef CONFIG_RT2800PCI_RT53XX
 	{ PCI_DEVICE(0x1814, 0x5390) },
+<<<<<<< HEAD
+=======
+	{ PCI_DEVICE(0x1814, 0x539a) },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ PCI_DEVICE(0x1814, 0x359f) },
+#endif
+#ifdef CONFIG_RT2800PCI_RT53XX
+	{ PCI_DEVICE(0x1814, 0x5360) },
+	{ PCI_DEVICE(0x1814, 0x5362) },
+	{ PCI_DEVICE(0x1814, 0x5390) },
+	{ PCI_DEVICE(0x1814, 0x5392) },
+	{ PCI_DEVICE(0x1814, 0x539a) },
+	{ PCI_DEVICE(0x1814, 0x539b) },
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(0x1814, 0x539f) },
 #endif
 	{ 0, }
 };
+<<<<<<< HEAD
 #endif /* CONFIG_PCI */
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRV_PROJECT);
 MODULE_VERSION(DRV_VERSION);
 MODULE_DESCRIPTION("Ralink RT2800 PCI & PCMCIA Wireless LAN driver.");
 MODULE_SUPPORTED_DEVICE("Ralink RT2860 PCI & PCMCIA chipset based cards");
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 MODULE_FIRMWARE(FIRMWARE_RT2860);
 MODULE_DEVICE_TABLE(pci, rt2800pci_device_table);
@@ -1191,6 +1606,12 @@ static struct platform_driver rt2800soc_driver = {
 #endif /* CONFIG_RALINK_RT288X || CONFIG_RALINK_RT305X */
 
 #ifdef CONFIG_PCI
+=======
+MODULE_FIRMWARE(FIRMWARE_RT2860);
+MODULE_DEVICE_TABLE(pci, rt2800pci_device_table);
+MODULE_LICENSE("GPL");
+
+>>>>>>> refs/remotes/origin/master
 static int rt2800pci_probe(struct pci_dev *pci_dev,
 			   const struct pci_device_id *id)
 {
@@ -1201,6 +1622,7 @@ static struct pci_driver rt2800pci_driver = {
 	.name		= KBUILD_MODNAME,
 	.id_table	= rt2800pci_device_table,
 	.probe		= rt2800pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rt2x00pci_remove),
 	.suspend	= rt2x00pci_suspend,
 	.resume		= rt2x00pci_resume,
@@ -1241,3 +1663,11 @@ static void __exit rt2800pci_exit(void)
 
 module_init(rt2800pci_init);
 module_exit(rt2800pci_exit);
+=======
+	.remove		= rt2x00pci_remove,
+	.suspend	= rt2x00pci_suspend,
+	.resume		= rt2x00pci_resume,
+};
+
+module_pci_driver(rt2800pci_driver);
+>>>>>>> refs/remotes/origin/master

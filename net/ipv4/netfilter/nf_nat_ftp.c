@@ -113,14 +113,22 @@ out:
 
 static void __exit nf_nat_ftp_fini(void)
 {
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_nat_ftp_hook, NULL);
+=======
+	RCU_INIT_POINTER(nf_nat_ftp_hook, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	synchronize_rcu();
 }
 
 static int __init nf_nat_ftp_init(void)
 {
 	BUG_ON(nf_nat_ftp_hook != NULL);
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_nat_ftp_hook, nf_nat_ftp);
+=======
+	RCU_INIT_POINTER(nf_nat_ftp_hook, nf_nat_ftp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

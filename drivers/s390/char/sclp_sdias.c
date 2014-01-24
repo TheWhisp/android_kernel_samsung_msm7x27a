@@ -1,18 +1,36 @@
 /*
+<<<<<<< HEAD
  * Sclp "store data in absolut storage"
  *
  * Copyright IBM Corp. 2003,2007
+=======
+ * SCLP "store data in absolute storage"
+ *
+ * Copyright IBM Corp. 2003, 2013
+>>>>>>> refs/remotes/origin/master
  * Author(s): Michael Holzheu
  */
 
 #define KMSG_COMPONENT "sclp_sdias"
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/completion.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/completion.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <asm/sclp.h>
 #include <asm/debug.h>
 #include <asm/ipl.h>
 
+<<<<<<< HEAD
+=======
+#include "sclp_sdias.h"
+>>>>>>> refs/remotes/origin/master
 #include "sclp.h"
 #include "sclp_rw.h"
 
@@ -21,6 +39,7 @@
 #define SDIAS_RETRIES 300
 #define SDIAS_SLEEP_TICKS 50
 
+<<<<<<< HEAD
 #define EQ_STORE_DATA	0x0
 #define EQ_SIZE		0x1
 #define DI_FCP_DUMP	0x0
@@ -30,12 +49,15 @@
 #define EVSTATE_NO_DATA		0x3
 #define EVSTATE_PART_STORED	0x10
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct debug_info *sdias_dbf;
 
 static struct sclp_register sclp_sdias_register = {
 	.send_mask = EVTYP_SDIAS_MASK,
 };
 
+<<<<<<< HEAD
 struct sdias_evbuf {
 	struct	evbuf_header hdr;
 	u8	event_qual;
@@ -62,6 +84,7 @@ struct sdias_sccb {
 } __attribute__((packed));
 
 static struct sdias_sccb sccb __attribute__((aligned(4096)));
+<<<<<<< HEAD
 
 static int sclp_req_done;
 static wait_queue_head_t sdias_wq;
@@ -71,6 +94,37 @@ static void sdias_callback(struct sclp_req *request, void *data)
 {
 	sclp_req_done = 1;
 	wake_up(&sdias_wq); /* Inform caller, that request is complete */
+=======
+=======
+static struct sdias_sccb sccb __attribute__((aligned(4096)));
+>>>>>>> refs/remotes/origin/master
+static struct sdias_evbuf sdias_evbuf;
+
+static DECLARE_COMPLETION(evbuf_accepted);
+static DECLARE_COMPLETION(evbuf_done);
+static DEFINE_MUTEX(sdias_mutex);
+
+/*
+ * Called by SCLP base when read event data has been completed (async mode only)
+ */
+static void sclp_sdias_receiver_fn(struct evbuf_header *evbuf)
+{
+	memcpy(&sdias_evbuf, evbuf,
+	       min_t(unsigned long, sizeof(sdias_evbuf), evbuf->length));
+	complete(&evbuf_done);
+	TRACE("sclp_sdias_receiver_fn done\n");
+}
+
+/*
+ * Called by SCLP base when sdias event has been accepted
+ */
+static void sdias_callback(struct sclp_req *request, void *data)
+{
+	complete(&evbuf_accepted);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	TRACE("callback done\n");
 }
 
@@ -80,7 +134,13 @@ static int sdias_sclp_send(struct sclp_req *req)
 	int rc;
 
 	for (retries = SDIAS_RETRIES; retries; retries--) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sclp_req_done = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		TRACE("add request\n");
 		rc = sclp_add_request(req);
 		if (rc) {
@@ -91,6 +151,8 @@ static int sdias_sclp_send(struct sclp_req *req)
 			continue;
 		}
 		/* initiated, wait for completion of service call */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		wait_event(sdias_wq, (sclp_req_done == 1));
 		if (req->status == SCLP_REQ_FAILED) {
 			TRACE("sclp request failed\n");
@@ -101,6 +163,38 @@ static int sdias_sclp_send(struct sclp_req *req)
 		break;
 	}
 	return rc;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		wait_for_completion(&evbuf_accepted);
+		if (req->status == SCLP_REQ_FAILED) {
+			TRACE("sclp request failed\n");
+			continue;
+		}
+		/* if not accepted, retry */
+		if (!(sccb.evbuf.hdr.flags & 0x80)) {
+			TRACE("sclp request failed: flags=%x\n",
+			      sccb.evbuf.hdr.flags);
+			continue;
+		}
+		/*
+		 * for the sync interface the response is in the initial sccb
+		 */
+		if (!sclp_sdias_register.receiver_fn) {
+			memcpy(&sdias_evbuf, &sccb.evbuf, sizeof(sdias_evbuf));
+			TRACE("sync request done\n");
+			return 0;
+		}
+		/* otherwise we wait for completion */
+		wait_for_completion(&evbuf_done);
+		TRACE("request done\n");
+		return 0;
+	}
+	return -EIO;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -119,8 +213,13 @@ int sclp_sdias_blk_count(void)
 	sccb.hdr.length = sizeof(sccb);
 	sccb.evbuf.hdr.length = sizeof(struct sdias_evbuf);
 	sccb.evbuf.hdr.type = EVTYP_SDIAS;
+<<<<<<< HEAD
 	sccb.evbuf.event_qual = EQ_SIZE;
 	sccb.evbuf.data_id = DI_FCP_DUMP;
+=======
+	sccb.evbuf.event_qual = SDIAS_EQ_SIZE;
+	sccb.evbuf.data_id = SDIAS_DI_FCP_DUMP;
+>>>>>>> refs/remotes/origin/master
 	sccb.evbuf.event_id = 4712;
 	sccb.evbuf.dbs = 1;
 
@@ -140,6 +239,8 @@ int sclp_sdias_blk_count(void)
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch (sccb.evbuf.event_status) {
 		case 0:
 			rc = sccb.evbuf.blk_cnt;
@@ -147,6 +248,19 @@ int sclp_sdias_blk_count(void)
 		default:
 			pr_err("SCLP error: %x\n",
 			       sccb.evbuf.event_status);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (sdias_evbuf.event_status) {
+		case 0:
+			rc = sdias_evbuf.blk_cnt;
+			break;
+		default:
+			pr_err("SCLP error: %x\n", sdias_evbuf.event_status);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			rc = -EIO;
 			goto out;
 	}
@@ -180,6 +294,7 @@ int sclp_sdias_copy(void *dest, int start_blk, int nr_blks)
 	sccb.evbuf.hdr.length = sizeof(struct sdias_evbuf);
 	sccb.evbuf.hdr.type = EVTYP_SDIAS;
 	sccb.evbuf.hdr.flags = 0;
+<<<<<<< HEAD
 	sccb.evbuf.event_qual = EQ_STORE_DATA;
 	sccb.evbuf.data_id = DI_FCP_DUMP;
 	sccb.evbuf.event_id = 4712;
@@ -187,6 +302,15 @@ int sclp_sdias_copy(void *dest, int start_blk, int nr_blks)
 	sccb.evbuf.asa_size = ASA_SIZE_64;
 #else
 	sccb.evbuf.asa_size = ASA_SIZE_32;
+=======
+	sccb.evbuf.event_qual = SDIAS_EQ_STORE_DATA;
+	sccb.evbuf.data_id = SDIAS_DI_FCP_DUMP;
+	sccb.evbuf.event_id = 4712;
+#ifdef CONFIG_64BIT
+	sccb.evbuf.asa_size = SDIAS_ASA_SIZE_64;
+#else
+	sccb.evbuf.asa_size = SDIAS_ASA_SIZE_32;
+>>>>>>> refs/remotes/origin/master
 #endif
 	sccb.evbuf.event_status = 0;
 	sccb.evbuf.blk_cnt = nr_blks;
@@ -211,38 +335,124 @@ int sclp_sdias_copy(void *dest, int start_blk, int nr_blks)
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch (sccb.evbuf.event_status) {
 		case EVSTATE_ALL_STORED:
 			TRACE("all stored\n");
 		case EVSTATE_PART_STORED:
 			TRACE("part stored: %i\n", sccb.evbuf.blk_cnt);
+=======
+	switch (sdias_evbuf.event_status) {
+		case EVSTATE_ALL_STORED:
+			TRACE("all stored\n");
+		case EVSTATE_PART_STORED:
+			TRACE("part stored: %i\n", sdias_evbuf.blk_cnt);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case EVSTATE_NO_DATA:
 			TRACE("no data\n");
 		default:
 			pr_err("Error from SCLP while copying hsa. "
 			       "Event status = %x\n",
+<<<<<<< HEAD
 			       sccb.evbuf.event_status);
+=======
+			       sdias_evbuf.event_status);
+>>>>>>> refs/remotes/origin/cm-10.0
 			rc = -EIO;
+=======
+	switch (sdias_evbuf.event_status) {
+	case SDIAS_EVSTATE_ALL_STORED:
+		TRACE("all stored\n");
+		break;
+	case SDIAS_EVSTATE_PART_STORED:
+		TRACE("part stored: %i\n", sdias_evbuf.blk_cnt);
+		break;
+	case SDIAS_EVSTATE_NO_DATA:
+		TRACE("no data\n");
+		/* fall through */
+	default:
+		pr_err("Error from SCLP while copying hsa. Event status = %x\n",
+		       sdias_evbuf.event_status);
+		rc = -EIO;
+>>>>>>> refs/remotes/origin/master
 	}
 out:
 	mutex_unlock(&sdias_mutex);
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __init sclp_sdias_init(void)
 {
 	int rc;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int __init sclp_sdias_register_check(void)
+{
+	int rc;
+
+	rc = sclp_register(&sclp_sdias_register);
+	if (rc)
+		return rc;
+	if (sclp_sdias_blk_count() == 0) {
+		sclp_unregister(&sclp_sdias_register);
+		return -ENODEV;
+	}
+	return 0;
+}
+
+static int __init sclp_sdias_init_sync(void)
+{
+	TRACE("Try synchronous mode\n");
+	sclp_sdias_register.receive_mask = 0;
+	sclp_sdias_register.receiver_fn = NULL;
+	return sclp_sdias_register_check();
+}
+
+static int __init sclp_sdias_init_async(void)
+{
+	TRACE("Try asynchronous mode\n");
+	sclp_sdias_register.receive_mask = EVTYP_SDIAS_MASK;
+	sclp_sdias_register.receiver_fn = sclp_sdias_receiver_fn;
+	return sclp_sdias_register_check();
+}
+
+int __init sclp_sdias_init(void)
+{
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ipl_info.type != IPL_TYPE_FCP_DUMP)
 		return 0;
 	sdias_dbf = debug_register("dump_sdias", 4, 1, 4 * sizeof(long));
 	debug_register_view(sdias_dbf, &debug_sprintf_view);
 	debug_set_level(sdias_dbf, 6);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = sclp_register(&sclp_sdias_register);
 	if (rc)
 		return rc;
 	init_waitqueue_head(&sdias_wq);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (sclp_sdias_init_sync() == 0)
+		goto out;
+	if (sclp_sdias_init_async() == 0)
+		goto out;
+	TRACE("init failed\n");
+	return -ENODEV;
+out:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	TRACE("init done\n");
 	return 0;
 }

@@ -113,6 +113,10 @@ MODULE_ALIAS("sound-layout-100");
 MODULE_ALIAS("aoa-device-id-14");
 MODULE_ALIAS("aoa-device-id-22");
 MODULE_ALIAS("aoa-device-id-35");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("aoa-device-id-44");
+>>>>>>> refs/remotes/origin/master
 
 /* onyx with all but microphone connected */
 static struct codec_connection onyx_connections_nomic[] = {
@@ -361,6 +365,16 @@ static struct layout layouts[] = {
 		.connections = tas_connections_nolineout,
 	  },
 	},
+<<<<<<< HEAD
+=======
+	/* PowerBook6,5 */
+	{ .device_id = 44,
+	  .codecs[0] = {
+		.name = "tas",
+		.connections = tas_connections_all,
+	  },
+	},
+>>>>>>> refs/remotes/origin/master
 	/* PowerBook6,7 */
 	{ .layout_id = 80,
 	  .codecs[0] = {
@@ -636,7 +650,11 @@ static int n##_control_put(struct snd_kcontrol *kcontrol,		\
 			   struct snd_ctl_elem_value *ucontrol)		\
 {									\
 	struct gpio_runtime *gpio = snd_kcontrol_chip(kcontrol);	\
+<<<<<<< HEAD
 	if (gpio->methods && gpio->methods->get_##n)			\
+=======
+	if (gpio->methods && gpio->methods->set_##n)			\
+>>>>>>> refs/remotes/origin/master
 		gpio->methods->set_##n(gpio,				\
 			!!ucontrol->value.integer.value[0]);		\
 	return 1;							\
@@ -1073,10 +1091,23 @@ static int aoa_fabric_layout_probe(struct soundbus_dev *sdev)
 	sdev->pcmid = -1;
 	list_del(&ldev->list);
 	layouts_list_items--;
+<<<<<<< HEAD
+<<<<<<< HEAD
  outnodev:
  	of_node_put(sound);
  	layout_device = NULL;
  	kfree(ldev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	kfree(ldev);
+ outnodev:
+ 	of_node_put(sound);
+ 	layout_device = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return -ENODEV;
 }
 
@@ -1127,7 +1158,11 @@ static int aoa_fabric_layout_resume(struct soundbus_dev *sdev)
 {
 	struct layout_dev *ldev = dev_get_drvdata(&sdev->ofdev.dev);
 
+<<<<<<< HEAD
 	if (ldev->gpio.methods && ldev->gpio.methods->all_amps_off)
+=======
+	if (ldev->gpio.methods && ldev->gpio.methods->all_amps_restore)
+>>>>>>> refs/remotes/origin/master
 		ldev->gpio.methods->all_amps_restore(&ldev->gpio);
 
 	return 0;

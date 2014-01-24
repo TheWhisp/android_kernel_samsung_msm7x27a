@@ -26,6 +26,14 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/firmware.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/asoundef.h>
@@ -51,7 +59,10 @@ MODULE_LICENSE("GPL");
 int snd_vx_check_reg_bit(struct vx_core *chip, int reg, int mask, int bit, int time)
 {
 	unsigned long end_time = jiffies + (time * HZ + 999) / 1000;
+<<<<<<< HEAD
 #ifdef CONFIG_SND_DEBUG
+=======
+>>>>>>> refs/remotes/origin/master
 	static char *reg_names[VX_REG_MAX] = {
 		"ICR", "CVR", "ISR", "IVR", "RXH", "RXM", "RXL",
 		"DMA", "CDSP", "RFREQ", "RUER/V2", "DATA", "MEMIRQ",
@@ -59,7 +70,11 @@ int snd_vx_check_reg_bit(struct vx_core *chip, int reg, int mask, int bit, int t
 		"MIC3", "INTCSR", "CNTRL", "GPIOC",
 		"LOFREQ", "HIFREQ", "CSUER", "RUER"
 	};
+<<<<<<< HEAD
 #endif
+=======
+
+>>>>>>> refs/remotes/origin/master
 	do {
 		if ((snd_vx_inb(chip, reg) & mask) == bit)
 			return 0;
@@ -205,7 +220,11 @@ static int vx_read_status(struct vx_core *chip, struct vx_rmh *rmh)
 
 	if (size < 1)
 		return 0;
+<<<<<<< HEAD
 	if (snd_BUG_ON(size > SIZE_MAX_STATUS))
+=======
+	if (snd_BUG_ON(size >= SIZE_MAX_STATUS))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	for (i = 1; i <= size; i++) {
@@ -724,7 +743,11 @@ EXPORT_SYMBOL(snd_vx_dsp_load);
 /*
  * suspend
  */
+<<<<<<< HEAD
 int snd_vx_suspend(struct vx_core *chip, pm_message_t state)
+=======
+int snd_vx_suspend(struct vx_core *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 

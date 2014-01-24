@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *	drivers/s390/net/ctcm_mpc.c
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *	Copyright IBM Corp. 2004, 2007
  *	Authors:	Belinda Thompson (belindat@us.ibm.com)
  *			Andy Richter (richtera@us.ibm.com)
@@ -53,8 +56,18 @@
 #include <linux/moduleparam.h>
 #include <asm/idals.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "ctcm_mpc.h"
 #include "ctcm_main.h"
+=======
+#include "ctcm_main.h"
+#include "ctcm_mpc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ctcm_main.h"
+#include "ctcm_mpc.h"
+>>>>>>> refs/remotes/origin/master
 #include "ctcm_fsms.h"
 
 static const struct xid2 init_xid = {
@@ -132,7 +145,15 @@ void ctcmpc_dumpit(char *buf, int len)
 	__u32	ct, sw, rm, dup;
 	char	*ptr, *rptr;
 	char	tbuf[82], tdup[82];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	#if (UTS_MACHINE == s390x)
+=======
+	#ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	#ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 	char	addr[22];
 	#else
 	char	addr[12];
@@ -149,8 +170,18 @@ void ctcmpc_dumpit(char *buf, int len)
 
 	for (ct = 0; ct < len; ct++, ptr++, rptr++) {
 		if (sw == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			#if (UTS_MACHINE == s390x)
 			sprintf(addr, "%16.16lx", (__u64)rptr);
+=======
+			#ifdef CONFIG_64BIT
+			sprintf(addr, "%16.16llx", (__u64)rptr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			#ifdef CONFIG_64BIT
+			sprintf(addr, "%16.16llx", (__u64)rptr);
+>>>>>>> refs/remotes/origin/master
 			#else
 			sprintf(addr, "%8.8X", (__u32)rptr);
 			#endif
@@ -164,8 +195,18 @@ void ctcmpc_dumpit(char *buf, int len)
 		if (sw == 8)
 			strcat(bhex, "	");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		#if (UTS_MACHINE == s390x)
 		sprintf(tbuf, "%2.2lX", (__u64)*ptr);
+=======
+		#if CONFIG_64BIT
+		sprintf(tbuf, "%2.2llX", (__u64)*ptr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		#if CONFIG_64BIT
+		sprintf(tbuf, "%2.2llX", (__u64)*ptr);
+>>>>>>> refs/remotes/origin/master
 		#else
 		sprintf(tbuf, "%2.2X", (__u32)*ptr);
 		#endif
@@ -1369,7 +1410,10 @@ static void mpc_action_go_inop(fsm_instance *fi, int event, void *arg)
 	struct mpc_group *grp;
 	struct channel *wch;
 
+<<<<<<< HEAD
 	BUG_ON(dev == NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	CTCM_PR_DEBUG("Enter %s: %s\n",	__func__, dev->name);
 
 	priv  = dev->ml_priv;
@@ -1474,8 +1518,11 @@ static void mpc_action_timeout(fsm_instance *fi, int event, void *arg)
 	struct channel *wch;
 	struct channel *rch;
 
+<<<<<<< HEAD
 	BUG_ON(dev == NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	priv = dev->ml_priv;
 	grp = priv->mpcg;
 	wch = priv->channel[CTCM_WRITE];

@@ -72,10 +72,18 @@ enum {
 };
 
 unsigned long lx_dsp_reg_read(struct lx6464es *chip, int port);
+<<<<<<< HEAD
+<<<<<<< HEAD
 void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data, u32 len);
 void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data);
 void lx_dsp_reg_writebuf(struct lx6464es *chip, int port, const u32 *data,
 			 u32 len);
+=======
+void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data);
+>>>>>>> refs/remotes/origin/master
 
 /* plx register access */
 enum {
@@ -112,11 +120,23 @@ struct lx_rmh {
 
 
 /* low-level dsp access */
+<<<<<<< HEAD
 int __devinit lx_dsp_get_version(struct lx6464es *chip, u32 *rdsp_version);
 int lx_dsp_get_clock_frequency(struct lx6464es *chip, u32 *rfreq);
 int lx_dsp_set_granularity(struct lx6464es *chip, u32 gran);
 int lx_dsp_read_async_events(struct lx6464es *chip, u32 *data);
+<<<<<<< HEAD
 int lx_dsp_get_mac(struct lx6464es *chip, u8 *mac_address);
+=======
+int lx_dsp_get_mac(struct lx6464es *chip);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int lx_dsp_get_version(struct lx6464es *chip, u32 *rdsp_version);
+int lx_dsp_get_clock_frequency(struct lx6464es *chip, u32 *rfreq);
+int lx_dsp_set_granularity(struct lx6464es *chip, u32 gran);
+int lx_dsp_read_async_events(struct lx6464es *chip, u32 *data);
+int lx_dsp_get_mac(struct lx6464es *chip);
+>>>>>>> refs/remotes/origin/master
 
 
 /* low-level pipe handling */

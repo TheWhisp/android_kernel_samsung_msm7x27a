@@ -169,6 +169,7 @@ static struct serio_driver xtkbd_drv = {
 	.disconnect	= xtkbd_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init xtkbd_init(void)
 {
 	return serio_register_driver(&xtkbd_drv);
@@ -181,3 +182,6 @@ static void __exit xtkbd_exit(void)
 
 module_init(xtkbd_init);
 module_exit(xtkbd_exit);
+=======
+module_serio_driver(xtkbd_drv);
+>>>>>>> refs/remotes/origin/master

@@ -29,7 +29,12 @@
 #include "file.h"
 #include "resource.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern const char *profile_mode_names[];
+=======
+extern const char *const profile_mode_names[];
+>>>>>>> refs/remotes/origin/cm-10.0
 #define APPARMOR_NAMES_MAX_INDEX 3
 
 #define COMPLAIN_MODE(_profile)	\
@@ -42,6 +47,25 @@ extern const char *profile_mode_names[];
 
 #define PROFILE_IS_HAT(_profile) ((_profile)->flags & PFLAG_HAT)
 
+=======
+extern const char *const aa_profile_mode_names[];
+#define APPARMOR_MODE_NAMES_MAX_INDEX 4
+
+#define PROFILE_MODE(_profile, _mode)		\
+	((aa_g_profile_mode == (_mode)) ||	\
+	 ((_profile)->mode == (_mode)))
+
+#define COMPLAIN_MODE(_profile)	PROFILE_MODE((_profile), APPARMOR_COMPLAIN)
+
+#define KILL_MODE(_profile) PROFILE_MODE((_profile), APPARMOR_KILL)
+
+#define PROFILE_IS_HAT(_profile) ((_profile)->flags & PFLAG_HAT)
+
+#define PROFILE_INVALID(_profile) ((_profile)->flags & PFLAG_INVALID)
+
+#define on_list_rcu(X) (!list_empty(X) && (X)->prev != LIST_POISON2)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * FIXME: currently need a clean way to replace and remove profiles as a
  * set.  It should be done at the namespace level.
@@ -52,17 +76,29 @@ enum profile_mode {
 	APPARMOR_ENFORCE,	/* enforce access rules */
 	APPARMOR_COMPLAIN,	/* allow and log access violations */
 	APPARMOR_KILL,		/* kill task on access violation */
+<<<<<<< HEAD
+=======
+	APPARMOR_UNCONFINED,	/* profile set to unconfined */
+>>>>>>> refs/remotes/origin/master
 };
 
 enum profile_flags {
 	PFLAG_HAT = 1,			/* profile is a hat */
+<<<<<<< HEAD
 	PFLAG_UNCONFINED = 2,		/* profile is an unconfined profile */
+=======
+>>>>>>> refs/remotes/origin/master
 	PFLAG_NULL = 4,			/* profile is null learning profile */
 	PFLAG_IX_ON_NAME_ERROR = 8,	/* fallback to ix on name lookup fail */
 	PFLAG_IMMUTABLE = 0x10,		/* don't allow changes/replacement */
 	PFLAG_USER_DEFINED = 0x20,	/* user based profile - lower privs */
 	PFLAG_NO_LIST_REF = 0x40,	/* list doesn't keep profile ref */
 	PFLAG_OLD_NULL_TRANS = 0x100,	/* use // as the null transition */
+<<<<<<< HEAD
+=======
+	PFLAG_INVALID = 0x200,		/* profile replaced/removed */
+	PFLAG_NS_COUNT = 0x400,		/* carries NS ref count */
+>>>>>>> refs/remotes/origin/master
 
 	/* These flags must correspond with PATH_flags */
 	PFLAG_MEDIATE_DELETED = 0x10000, /* mediate instead delegate deleted */
@@ -73,14 +109,20 @@ struct aa_profile;
 /* struct aa_policy - common part of both namespaces and profiles
  * @name: name of the object
  * @hname - The hierarchical name
+<<<<<<< HEAD
  * @count: reference count of the obj
+=======
+>>>>>>> refs/remotes/origin/master
  * @list: list policy object is on
  * @profiles: head of the profiles list contained in the object
  */
 struct aa_policy {
 	char *name;
 	char *hname;
+<<<<<<< HEAD
 	struct kref count;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head list;
 	struct list_head profiles;
 };
@@ -105,6 +147,12 @@ struct aa_ns_acct {
  * @acct: accounting for the namespace
  * @unconfined: special unconfined profile for the namespace
  * @sub_ns: list of namespaces under the current namespace.
+<<<<<<< HEAD
+=======
+ * @uniq_null: uniq value used for null learning profiles
+ * @uniq_id: a unique id count for the profiles in the namespace
+ * @dents: dentries for the namespaces file entries in apparmorfs
+>>>>>>> refs/remotes/origin/master
  *
  * An aa_namespace defines the set profiles that are searched to determine
  * which profile to attach to a task.  Profiles can not be shared between
@@ -123,37 +171,101 @@ struct aa_ns_acct {
 struct aa_namespace {
 	struct aa_policy base;
 	struct aa_namespace *parent;
+<<<<<<< HEAD
 	rwlock_t lock;
 	struct aa_ns_acct acct;
 	struct aa_profile *unconfined;
 	struct list_head sub_ns;
 };
 
+<<<<<<< HEAD
+=======
+=======
+	struct mutex lock;
+	struct aa_ns_acct acct;
+	struct aa_profile *unconfined;
+	struct list_head sub_ns;
+	atomic_t uniq_null;
+	long uniq_id;
+
+	struct dentry *dents[AAFS_NS_SIZEOF];
+};
+
+>>>>>>> refs/remotes/origin/master
+/* struct aa_policydb - match engine for a policy
+ * dfa: dfa pattern match
+ * start: set of start states for the different classes of data
+ */
+struct aa_policydb {
+	/* Generic policy DFA specific rule types will be subsections of it */
+	struct aa_dfa *dfa;
+	unsigned int start[AA_CLASS_LAST + 1];
+
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 /* struct aa_profile - basic confinement data
  * @base - base components of the profile (name, refcount, lists, lock ...)
+=======
+struct aa_replacedby {
+	struct kref count;
+	struct aa_profile __rcu *profile;
+};
+
+
+/* struct aa_profile - basic confinement data
+ * @base - base components of the profile (name, refcount, lists, lock ...)
+ * @count: reference count of the obj
+ * @rcu: rcu head used when removing from @list
+>>>>>>> refs/remotes/origin/master
  * @parent: parent of profile
  * @ns: namespace the profile is in
  * @replacedby: is set to the profile that replaced this profile
  * @rename: optional profile name that this profile renamed
+<<<<<<< HEAD
  * @xmatch: optional extended matching for unconfined executables names
  * @xmatch_len: xmatch prefix len, used to determine xmatch priority
  * @sid: the unique security id number of this profile
+=======
+ * @attach: human readable attachment string
+ * @xmatch: optional extended matching for unconfined executables names
+ * @xmatch_len: xmatch prefix len, used to determine xmatch priority
+>>>>>>> refs/remotes/origin/master
  * @audit: the auditing mode of the profile
  * @mode: the enforcement mode of the profile
  * @flags: flags controlling profile behavior
  * @path_flags: flags controlling path generation behavior
  * @size: the memory consumed by this profiles rules
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @policy: general match rules governing policy
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @policy: general match rules governing policy
+>>>>>>> refs/remotes/origin/master
  * @file: The set of rules governing basic file access and domain transitions
  * @caps: capabilities for the profile
  * @rlimits: rlimits for the profile
  *
+<<<<<<< HEAD
+=======
+ * @dents: dentries for the profiles file entries in apparmorfs
+ * @dirname: name of the profile dir in apparmorfs
+ *
+>>>>>>> refs/remotes/origin/master
  * The AppArmor profile contains the basic confinement data.  Each profile
  * has a name, and exists in a namespace.  The @name and @exec_match are
  * used to determine profile attachment against unconfined tasks.  All other
  * attachments are determined by profile X transition rules.
  *
+<<<<<<< HEAD
  * The @replacedby field is write protected by the profile lock.  Reads
  * are assumed to be atomic, and are done without locking.
+=======
+ * The @replacedby struct is write protected by the profile lock.
+>>>>>>> refs/remotes/origin/master
  *
  * Profiles have a hierarchy where hats and children profiles keep
  * a reference to their parent.
@@ -164,6 +276,7 @@ struct aa_namespace {
  */
 struct aa_profile {
 	struct aa_policy base;
+<<<<<<< HEAD
 	struct aa_profile *parent;
 
 	struct aa_namespace *ns;
@@ -179,9 +292,40 @@ struct aa_profile {
 	u32 path_flags;
 	int size;
 
+<<<<<<< HEAD
+=======
+	struct aa_policydb policy;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct aa_file_rules file;
 	struct aa_caps caps;
 	struct aa_rlimit rlimits;
+=======
+	struct kref count;
+	struct rcu_head rcu;
+	struct aa_profile __rcu *parent;
+
+	struct aa_namespace *ns;
+	struct aa_replacedby *replacedby;
+	const char *rename;
+
+	const char *attach;
+	struct aa_dfa *xmatch;
+	int xmatch_len;
+	enum audit_mode audit;
+	long mode;
+	long flags;
+	u32 path_flags;
+	int size;
+
+	struct aa_policydb policy;
+	struct aa_file_rules file;
+	struct aa_caps caps;
+	struct aa_rlimit rlimits;
+
+	unsigned char *hash;
+	char *dirname;
+	struct dentry *dents[AAFS_PROF_SIZEOF];
+>>>>>>> refs/remotes/origin/master
 };
 
 extern struct aa_namespace *root_ns;
@@ -198,6 +342,7 @@ void aa_free_namespace_kref(struct kref *kref);
 struct aa_namespace *aa_find_namespace(struct aa_namespace *root,
 				       const char *name);
 
+<<<<<<< HEAD
 static inline struct aa_policy *aa_get_common(struct aa_policy *c)
 {
 	if (c)
@@ -235,6 +380,13 @@ static inline void aa_put_namespace(struct aa_namespace *ns)
 
 struct aa_profile *aa_alloc_profile(const char *name);
 struct aa_profile *aa_new_null_profile(struct aa_profile *parent, int hat);
+=======
+
+void aa_free_replacedby_kref(struct kref *kref);
+struct aa_profile *aa_alloc_profile(const char *name);
+struct aa_profile *aa_new_null_profile(struct aa_profile *parent, int hat);
+void aa_free_profile(struct aa_profile *profile);
+>>>>>>> refs/remotes/origin/master
 void aa_free_profile_kref(struct kref *kref);
 struct aa_profile *aa_find_child(struct aa_profile *parent, const char *name);
 struct aa_profile *aa_lookup_profile(struct aa_namespace *ns, const char *name);
@@ -246,6 +398,7 @@ ssize_t aa_remove_profiles(char *name, size_t size);
 #define PROF_ADD 1
 #define PROF_REPLACE 0
 
+<<<<<<< HEAD
 #define unconfined(X) ((X)->flags & PFLAG_UNCONFINED)
 
 /**
@@ -265,6 +418,15 @@ static inline struct aa_profile *aa_newest_version(struct aa_profile *profile)
 		profile = profile->replacedby;
 
 	return profile;
+=======
+#define unconfined(X) ((X)->mode == APPARMOR_UNCONFINED)
+
+
+static inline struct aa_profile *aa_deref_parent(struct aa_profile *p)
+{
+	return rcu_dereference_protected(p->parent,
+					 mutex_is_locked(&p->ns->lock));
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -277,19 +439,137 @@ static inline struct aa_profile *aa_newest_version(struct aa_profile *profile)
 static inline struct aa_profile *aa_get_profile(struct aa_profile *p)
 {
 	if (p)
+<<<<<<< HEAD
 		kref_get(&(p->base.count));
+=======
+		kref_get(&(p->count));
+>>>>>>> refs/remotes/origin/master
 
 	return p;
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * aa_get_profile_not0 - increment refcount on profile @p found via lookup
+ * @p: profile  (MAYBE NULL)
+ *
+ * Returns: pointer to @p if @p is NULL will return NULL
+ * Requires: @p must be held with valid refcount when called
+ */
+static inline struct aa_profile *aa_get_profile_not0(struct aa_profile *p)
+{
+	if (p && kref_get_not0(&p->count))
+		return p;
+
+	return NULL;
+}
+
+/**
+ * aa_get_profile_rcu - increment a refcount profile that can be replaced
+ * @p: pointer to profile that can be replaced (NOT NULL)
+ *
+ * Returns: pointer to a refcounted profile.
+ *     else NULL if no profile
+ */
+static inline struct aa_profile *aa_get_profile_rcu(struct aa_profile __rcu **p)
+{
+	struct aa_profile *c;
+
+	rcu_read_lock();
+	do {
+		c = rcu_dereference(*p);
+	} while (c && !kref_get_not0(&c->count));
+	rcu_read_unlock();
+
+	return c;
+}
+
+/**
+ * aa_get_newest_profile - find the newest version of @profile
+ * @profile: the profile to check for newer versions of
+ *
+ * Returns: refcounted newest version of @profile taking into account
+ *          replacement, renames and removals
+ *          return @profile.
+ */
+static inline struct aa_profile *aa_get_newest_profile(struct aa_profile *p)
+{
+	if (!p)
+		return NULL;
+
+	if (PROFILE_INVALID(p))
+		return aa_get_profile_rcu(&p->replacedby->profile);
+
+	return aa_get_profile(p);
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * aa_put_profile - decrement refcount on profile @p
  * @p: profile  (MAYBE NULL)
  */
 static inline void aa_put_profile(struct aa_profile *p)
 {
 	if (p)
+<<<<<<< HEAD
 		kref_put(&p->base.count, aa_free_profile_kref);
+=======
+		kref_put(&p->count, aa_free_profile_kref);
+}
+
+static inline struct aa_replacedby *aa_get_replacedby(struct aa_replacedby *p)
+{
+	if (p)
+		kref_get(&(p->count));
+
+	return p;
+}
+
+static inline void aa_put_replacedby(struct aa_replacedby *p)
+{
+	if (p)
+		kref_put(&p->count, aa_free_replacedby_kref);
+}
+
+/* requires profile list write lock held */
+static inline void __aa_update_replacedby(struct aa_profile *orig,
+					  struct aa_profile *new)
+{
+	struct aa_profile *tmp;
+	tmp = rcu_dereference_protected(orig->replacedby->profile,
+					mutex_is_locked(&orig->ns->lock));
+	rcu_assign_pointer(orig->replacedby->profile, aa_get_profile(new));
+	orig->flags |= PFLAG_INVALID;
+	aa_put_profile(tmp);
+}
+
+/**
+ * aa_get_namespace - increment references count on @ns
+ * @ns: namespace to increment reference count of (MAYBE NULL)
+ *
+ * Returns: pointer to @ns, if @ns is NULL returns NULL
+ * Requires: @ns must be held with valid refcount when called
+ */
+static inline struct aa_namespace *aa_get_namespace(struct aa_namespace *ns)
+{
+	if (ns)
+		aa_get_profile(ns->unconfined);
+
+	return ns;
+}
+
+/**
+ * aa_put_namespace - decrement refcount on @ns
+ * @ns: namespace to put reference of
+ *
+ * Decrement reference count of @ns and if no longer in use free it
+ */
+static inline void aa_put_namespace(struct aa_namespace *ns)
+{
+	if (ns)
+		aa_put_profile(ns->unconfined);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int AUDIT_MODE(struct aa_profile *profile)

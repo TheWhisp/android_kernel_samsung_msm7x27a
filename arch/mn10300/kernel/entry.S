@@ -15,7 +15,13 @@
 #include <linux/sys.h>
 #include <linux/linkage.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/irqflags.h>
 #include <asm/thread_info.h>
 #include <asm/intctl-regs.h>
@@ -56,6 +62,19 @@ ENTRY(ret_from_fork)
 	mov	d0,(REG_D0,fp)
 	jmp	syscall_exit
 
+<<<<<<< HEAD
+=======
+ENTRY(ret_from_kernel_thread)
+	call	schedule_tail[],0
+	mov	(REG_D0,fp),d0
+	mov	(REG_A0,fp),a0
+	calls	(a0)
+	GET_THREAD_INFO a2		# A2 must be set on return from sys_exit()
+	clr	d0
+	mov	d0,(REG_D0,fp)
+	jmp	syscall_exit
+
+>>>>>>> refs/remotes/origin/master
 ###############################################################################
 #
 # system call handler
@@ -95,10 +114,21 @@ restore_all:
 ###############################################################################
 	ALIGN
 syscall_exit_work:
+<<<<<<< HEAD
 	btst	_TIF_SYSCALL_TRACE,d2
 	beq	work_pending
 	LOCAL_IRQ_ENABLE		# could let syscall_trace_exit() call
 					# schedule() instead
+=======
+	mov	(REG_EPSW,fp),d0
+	and	EPSW_nSL,d0
+	beq	resume_kernel		# returning to supervisor mode
+
+	LOCAL_IRQ_ENABLE		# could let syscall_trace_exit() call
+					# schedule() instead
+	btst	_TIF_SYSCALL_TRACE,d2
+	beq	work_pending
+>>>>>>> refs/remotes/origin/master
 	mov	fp,d0
 	call	syscall_trace_exit[],0	# do_syscall_trace(regs)
 	jmp	resume_userspace
@@ -111,6 +141,10 @@ work_pending:
 work_resched:
 	call	schedule[],0
 
+<<<<<<< HEAD
+=======
+resume_userspace:
+>>>>>>> refs/remotes/origin/master
 	# make sure we don't miss an interrupt setting need_resched or
 	# sigpending between sampling and the rti
 	LOCAL_IRQ_DISABLE
@@ -119,6 +153,11 @@ work_resched:
 	mov	(TI_flags,a2),d2
 	btst	_TIF_WORK_MASK,d2
 	beq	restore_all
+<<<<<<< HEAD
+=======
+
+	LOCAL_IRQ_ENABLE
+>>>>>>> refs/remotes/origin/master
 	btst	_TIF_NEED_RESCHED,d2
 	bne	work_resched
 
@@ -155,6 +194,7 @@ ret_from_intr:
 	mov	(REG_EPSW,fp),d0	# need to deliver signals before
 					# returning to userspace
 	and	EPSW_nSL,d0
+<<<<<<< HEAD
 	beq	resume_kernel		# returning to supervisor mode
 
 ENTRY(resume_userspace)
@@ -170,6 +210,12 @@ ENTRY(resume_userspace)
 
 #ifdef CONFIG_PREEMPT
 ENTRY(resume_kernel)
+=======
+	bne	resume_userspace	# returning to userspace
+
+#ifdef CONFIG_PREEMPT
+resume_kernel:
+>>>>>>> refs/remotes/origin/master
 	LOCAL_IRQ_DISABLE
 	mov	(TI_preempt_count,a2),d0	# non-zero preempt_count ?
 	cmp	0,d0
@@ -184,6 +230,11 @@ need_resched:
 	bne	restore_all
 	call	preempt_schedule_irq[],0
 	jmp	need_resched
+<<<<<<< HEAD
+=======
+#else
+	jmp	resume_kernel
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -589,7 +640,15 @@ ENTRY(sys_call_table)
 	.long sys_ni_syscall	/* vm86 */
 	.long sys_ni_syscall	/* Old sys_query_module */
 	.long sys_poll
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.long sys_nfsservctl
+=======
+	.long sys_ni_syscall	/* was nfsservctl */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long sys_ni_syscall	/* was nfsservctl */
+>>>>>>> refs/remotes/origin/master
 	.long sys_setresgid16	/* 170 */
 	.long sys_getresgid16
 	.long sys_prctl

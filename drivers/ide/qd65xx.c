@@ -29,7 +29,13 @@
 #include <linux/blkdev.h>
 #include <linux/ide.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #define DRV_NAME "qd65xx"
@@ -336,7 +342,11 @@ static const struct ide_port_ops qd6580_port_ops = {
 	.set_pio_mode		= qd6580_set_pio_mode,
 };
 
+<<<<<<< HEAD
 static const struct ide_port_info qd65xx_port_info __initdata = {
+=======
+static const struct ide_port_info qd65xx_port_info __initconst = {
+>>>>>>> refs/remotes/origin/master
 	.name			= DRV_NAME,
 	.tp_ops 		= &qd65xx_tp_ops,
 	.chipset		= ide_qd65xx,
@@ -417,7 +427,15 @@ static int __init qd_probe(int base)
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int probe_qd65xx;
+=======
+static bool probe_qd65xx;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool probe_qd65xx;
+>>>>>>> refs/remotes/origin/master
 
 module_param_named(probe, probe_qd65xx, bool, 0);
 MODULE_PARM_DESC(probe, "probe for QD65xx chipsets");

@@ -23,6 +23,7 @@
 
 #define IO_SPACE_LIMIT 0xffff
 
+<<<<<<< HEAD
 /* On TEGRA, many peripherals are very closely packed in
  * two 256MB io windows (that actually only use about 64KB
  * at the start of each).
@@ -73,6 +74,10 @@ void tegra_iounmap(volatile void __iomem *addr);
 
 #define IO_ADDRESS(n) ((void __iomem *) IO_TO_VIRT(n))
 
+=======
+#ifndef __ASSEMBLER__
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_TEGRA_PCI
 extern void __iomem *tegra_pcie_io_base;
 
@@ -88,7 +93,10 @@ static inline void __iomem *__io(unsigned long addr)
 #endif
 
 #define __io(a)         __io(a)
+<<<<<<< HEAD
 #define __mem_pci(a)    (a)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif
 

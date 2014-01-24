@@ -35,6 +35,10 @@
 #include <linux/time.h>
 #include <linux/debugfs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/bitmap.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "heartbeat.h"
 #include "tcp.h"
@@ -176,7 +180,11 @@ static void o2hb_dead_threshold_set(unsigned int threshold)
 	}
 }
 
+<<<<<<< HEAD
 static int o2hb_global_hearbeat_mode_set(unsigned int hb_mode)
+=======
+static int o2hb_global_heartbeat_mode_set(unsigned int hb_mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -1;
 
@@ -216,6 +224,14 @@ struct o2hb_region {
 
 	struct list_head	hr_all_item;
 	unsigned		hr_unclean_stop:1,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				hr_aborted_start:1,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				hr_aborted_start:1,
+>>>>>>> refs/remotes/origin/master
 				hr_item_pinned:1,
 				hr_item_dropped:1;
 
@@ -254,6 +270,19 @@ struct o2hb_region {
 	 * a more complete api that doesn't lead to this sort of fragility. */
 	atomic_t		hr_steady_iterations;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* terminate o2hb thread if it does not reach steady state
+	 * (hr_steady_iterations == 0) within hr_unsteady_iterations */
+	atomic_t		hr_unsteady_iterations;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	char			hr_dev_name[BDEVNAME_SIZE];
 
 	unsigned int		hr_timeout_ms;
@@ -277,6 +306,7 @@ struct o2hb_bio_wait_ctxt {
 	int               wc_error;
 };
 
+<<<<<<< HEAD
 static int o2hb_pop_count(void *map, int count)
 {
 	int i = -1, pop = 0;
@@ -286,6 +316,8 @@ static int o2hb_pop_count(void *map, int count)
 	return pop;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void o2hb_write_timeout(struct work_struct *work)
 {
 	int failed, quorum;
@@ -302,9 +334,15 @@ static void o2hb_write_timeout(struct work_struct *work)
 		spin_lock_irqsave(&o2hb_live_lock, flags);
 		if (test_bit(reg->hr_region_num, o2hb_quorum_region_bitmap))
 			set_bit(reg->hr_region_num, o2hb_failed_region_bitmap);
+<<<<<<< HEAD
 		failed = o2hb_pop_count(&o2hb_failed_region_bitmap,
 					O2NM_MAX_REGIONS);
 		quorum = o2hb_pop_count(&o2hb_quorum_region_bitmap,
+=======
+		failed = bitmap_weight(o2hb_failed_region_bitmap,
+					O2NM_MAX_REGIONS);
+		quorum = bitmap_weight(o2hb_quorum_region_bitmap,
+>>>>>>> refs/remotes/origin/master
 					O2NM_MAX_REGIONS);
 		spin_unlock_irqrestore(&o2hb_live_lock, flags);
 
@@ -324,6 +362,19 @@ static void o2hb_write_timeout(struct work_struct *work)
 
 static void o2hb_arm_write_timeout(struct o2hb_region *reg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Arm writeout only after thread reaches steady state */
+	if (atomic_read(&reg->hr_steady_iterations) != 0)
+		return;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mlog(ML_HEARTBEAT, "Queue write timeout for %u ms\n",
 	     O2HB_MAX_WRITE_TIMEOUT_MS);
 
@@ -491,7 +542,11 @@ static int o2hb_issue_node_write(struct o2hb_region *reg,
 	}
 
 	atomic_inc(&write_wc->wc_num_reqs);
+<<<<<<< HEAD
 	submit_bio(WRITE, bio);
+=======
+	submit_bio(WRITE_SYNC, bio);
+>>>>>>> refs/remotes/origin/master
 
 	status = 0;
 bail:
@@ -537,9 +592,26 @@ static int o2hb_verify_crc(struct o2hb_region *reg,
 	return read == computed;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* We want to make sure that nobody is heartbeating on top of us --
  * this will help detect an invalid configuration. */
 static void o2hb_check_last_timestamp(struct o2hb_region *reg)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Compare the slot data with what we wrote in the last iteration.
+ * If the match fails, print an appropriate error message. This is to
+ * detect errors like... another node hearting on the same slot,
+ * flaky device that is losing writes, etc.
+ * Returns 1 if check succeeds, 0 otherwise.
+ */
+static int o2hb_check_own_slot(struct o2hb_region *reg)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct o2hb_disk_slot *slot;
 	struct o2hb_disk_heartbeat_block *hb_block;
@@ -548,13 +620,29 @@ static void o2hb_check_last_timestamp(struct o2hb_region *reg)
 	slot = &reg->hr_slots[o2nm_this_node()];
 	/* Don't check on our 1st timestamp */
 	if (!slot->ds_last_time)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	hb_block = slot->ds_raw_block;
 	if (le64_to_cpu(hb_block->hb_seq) == slot->ds_last_time &&
 	    le64_to_cpu(hb_block->hb_generation) == slot->ds_last_generation &&
 	    hb_block->hb_node == slot->ds_node_num)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return;
+=======
+		return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 1;
+>>>>>>> refs/remotes/origin/master
 
 #define ERRSTR1		"Another node is heartbeating on device"
 #define ERRSTR2		"Heartbeat generation mismatch on device"
@@ -574,6 +662,16 @@ static void o2hb_check_last_timestamp(struct o2hb_region *reg)
 	     (unsigned long long)slot->ds_last_time, hb_block->hb_node,
 	     (unsigned long long)le64_to_cpu(hb_block->hb_generation),
 	     (unsigned long long)le64_to_cpu(hb_block->hb_seq));
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void o2hb_prepare_block(struct o2hb_region *reg,
@@ -612,11 +710,17 @@ static void o2hb_fire_callbacks(struct o2hb_callback *hbcall,
 				struct o2nm_node *node,
 				int idx)
 {
+<<<<<<< HEAD
 	struct list_head *iter;
 	struct o2hb_callback_func *f;
 
 	list_for_each(iter, &hbcall->list) {
 		f = list_entry(iter, struct o2hb_callback_func, hc_item);
+=======
+	struct o2hb_callback_func *f;
+
+	list_for_each_entry(f, &hbcall->list, hc_item) {
+>>>>>>> refs/remotes/origin/master
 		mlog(ML_HEARTBEAT, "calling funcs %p\n", f);
 		(f->hc_func)(node, idx, f->hc_data);
 	}
@@ -625,6 +729,7 @@ static void o2hb_fire_callbacks(struct o2hb_callback *hbcall,
 /* Will run the list in order until we process the passed event */
 static void o2hb_run_event_list(struct o2hb_node_event *queued_event)
 {
+<<<<<<< HEAD
 	int empty;
 	struct o2hb_callback *hbcall;
 	struct o2hb_node_event *event;
@@ -635,6 +740,11 @@ static void o2hb_run_event_list(struct o2hb_node_event *queued_event)
 	if (empty)
 		return;
 
+=======
+	struct o2hb_callback *hbcall;
+	struct o2hb_node_event *event;
+
+>>>>>>> refs/remotes/origin/master
 	/* Holding callback sem assures we don't alter the callback
 	 * lists when doing this, and serializes ourselves with other
 	 * processes wanting callbacks. */
@@ -693,6 +803,10 @@ static void o2hb_shutdown_slot(struct o2hb_disk_slot *slot)
 	struct o2hb_node_event event =
 		{ .hn_item = LIST_HEAD_INIT(event.hn_item), };
 	struct o2nm_node *node;
+<<<<<<< HEAD
+=======
+	int queued = 0;
+>>>>>>> refs/remotes/origin/master
 
 	node = o2nm_get_node_by_num(slot->ds_node_num);
 	if (!node)
@@ -710,15 +824,26 @@ static void o2hb_shutdown_slot(struct o2hb_disk_slot *slot)
 
 			o2hb_queue_node_event(&event, O2HB_NODE_DOWN_CB, node,
 					      slot->ds_node_num);
+<<<<<<< HEAD
+=======
+			queued = 1;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	spin_unlock(&o2hb_live_lock);
 
+<<<<<<< HEAD
 	o2hb_run_event_list(&event);
+=======
+	if (queued)
+		o2hb_run_event_list(&event);
+>>>>>>> refs/remotes/origin/master
 
 	o2nm_node_put(node);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void o2hb_set_quorum_device(struct o2hb_region *reg,
 				   struct o2hb_disk_slot *slot)
 {
@@ -730,6 +855,31 @@ static void o2hb_set_quorum_device(struct o2hb_region *reg,
 	if (test_bit(reg->hr_region_num, o2hb_quorum_region_bitmap))
 		return;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void o2hb_set_quorum_device(struct o2hb_region *reg)
+{
+	if (!o2hb_global_heartbeat_active())
+		return;
+
+	/* Prevent race with o2hb_heartbeat_group_drop_item() */
+	if (kthread_should_stop())
+		return;
+
+	/* Tag region as quorum only after thread reaches steady state */
+	if (atomic_read(&reg->hr_steady_iterations) != 0)
+		return;
+
+	spin_lock(&o2hb_live_lock);
+
+	if (test_bit(reg->hr_region_num, o2hb_quorum_region_bitmap))
+		goto unlock;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * A region can be added to the quorum only when it sees all
 	 * live nodes heartbeat on it. In other words, the region has been
@@ -737,6 +887,8 @@ static void o2hb_set_quorum_device(struct o2hb_region *reg,
 	 */
 	if (memcmp(reg->hr_live_node_bitmap, o2hb_live_node_bitmap,
 		   sizeof(o2hb_live_node_bitmap)))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return;
 
 	if (slot->ds_changed_samples < O2HB_LIVE_THRESHOLD)
@@ -744,6 +896,17 @@ static void o2hb_set_quorum_device(struct o2hb_region *reg,
 
 	printk(KERN_NOTICE "o2hb: Region %s is now a quorum device\n",
 	       config_item_name(&reg->hr_item));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		goto unlock;
+
+	printk(KERN_NOTICE "o2hb: Region %s (%s) is now a quorum device\n",
+	       config_item_name(&reg->hr_item), reg->hr_dev_name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	set_bit(reg->hr_region_num, o2hb_quorum_region_bitmap);
 
@@ -751,9 +914,22 @@ static void o2hb_set_quorum_device(struct o2hb_region *reg,
 	 * If global heartbeat active, unpin all regions if the
 	 * region count > CUT_OFF
 	 */
+<<<<<<< HEAD
 	if (o2hb_pop_count(&o2hb_quorum_region_bitmap,
 			   O2NM_MAX_REGIONS) > O2HB_PIN_CUT_OFF)
 		o2hb_region_unpin(NULL);
+<<<<<<< HEAD
+=======
+unlock:
+	spin_unlock(&o2hb_live_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bitmap_weight(o2hb_quorum_region_bitmap,
+			   O2NM_MAX_REGIONS) > O2HB_PIN_CUT_OFF)
+		o2hb_region_unpin(NULL);
+unlock:
+	spin_unlock(&o2hb_live_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int o2hb_check_slot(struct o2hb_region *reg,
@@ -768,6 +944,10 @@ static int o2hb_check_slot(struct o2hb_region *reg,
 	unsigned int dead_ms = o2hb_dead_threshold * O2HB_REGION_TIMEOUT_MS;
 	unsigned int slot_dead_ms;
 	int tmp;
+<<<<<<< HEAD
+=======
+	int queued = 0;
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(hb_block, slot->ds_raw_block, reg->hr_block_bytes);
 
@@ -861,6 +1041,10 @@ fire_callbacks:
 					      slot->ds_node_num);
 
 			changed = 1;
+<<<<<<< HEAD
+=======
+			queued = 1;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		list_add_tail(&slot->ds_live_item,
@@ -912,6 +1096,10 @@ fire_callbacks:
 					      node, slot->ds_node_num);
 
 			changed = 1;
+<<<<<<< HEAD
+=======
+			queued = 1;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* We don't clear this because the node is still
@@ -925,17 +1113,28 @@ fire_callbacks:
 		slot->ds_equal_samples = 0;
 	}
 out:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	o2hb_set_quorum_device(reg, slot);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock(&o2hb_live_lock);
 
 	o2hb_run_event_list(&event);
+=======
+	spin_unlock(&o2hb_live_lock);
+
+	if (queued)
+		o2hb_run_event_list(&event);
+>>>>>>> refs/remotes/origin/master
 
 	if (node)
 		o2nm_node_put(node);
 	return changed;
 }
 
+<<<<<<< HEAD
 /* This could be faster if we just implmented a find_last_bit, but I
  * don't think the circumstances warrant it. */
 static int o2hb_highest_node(unsigned long *nodes,
@@ -953,11 +1152,26 @@ static int o2hb_highest_node(unsigned long *nodes,
 	}
 
 	return highest;
+=======
+static int o2hb_highest_node(unsigned long *nodes, int numbits)
+{
+	return find_last_bit(nodes, numbits);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int o2hb_do_disk_heartbeat(struct o2hb_region *reg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i, ret, highest_node, change = 0;
+=======
+	int i, ret, highest_node;
+	int membership_change = 0, own_slot_ok = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, ret, highest_node;
+	int membership_change = 0, own_slot_ok = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned long configured_nodes[BITS_TO_LONGS(O2NM_MAX_NODES)];
 	unsigned long live_node_bitmap[BITS_TO_LONGS(O2NM_MAX_NODES)];
 	struct o2hb_bio_wait_ctxt write_wc;
@@ -966,7 +1180,15 @@ static int o2hb_do_disk_heartbeat(struct o2hb_region *reg)
 				       sizeof(configured_nodes));
 	if (ret) {
 		mlog_errno(ret);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return ret;
+=======
+		goto bail;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto bail;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -982,8 +1204,20 @@ static int o2hb_do_disk_heartbeat(struct o2hb_region *reg)
 
 	highest_node = o2hb_highest_node(configured_nodes, O2NM_MAX_NODES);
 	if (highest_node >= O2NM_MAX_NODES) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_NOTICE, "ocfs2_heartbeat: no configured nodes found!\n");
 		return -EINVAL;
+=======
+		mlog(ML_NOTICE, "o2hb: No configured nodes found!\n");
+		ret = -EINVAL;
+		goto bail;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mlog(ML_NOTICE, "o2hb: No configured nodes found!\n");
+		ret = -EINVAL;
+		goto bail;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* No sense in reading the slots of nodes that don't exist
@@ -993,29 +1227,66 @@ static int o2hb_do_disk_heartbeat(struct o2hb_region *reg)
 	ret = o2hb_read_slots(reg, highest_node + 1);
 	if (ret < 0) {
 		mlog_errno(ret);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return ret;
+=======
+		goto bail;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto bail;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* With an up to date view of the slots, we can check that no
 	 * other node has been improperly configured to heartbeat in
 	 * our slot. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	o2hb_check_last_timestamp(reg);
+=======
+	own_slot_ok = o2hb_check_own_slot(reg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	own_slot_ok = o2hb_check_own_slot(reg);
+>>>>>>> refs/remotes/origin/master
 
 	/* fill in the proper info for our next heartbeat */
 	o2hb_prepare_block(reg, reg->hr_generation);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* And fire off the write. Note that we don't wait on this I/O
 	 * until later. */
 	ret = o2hb_issue_node_write(reg, &write_wc);
 	if (ret < 0) {
 		mlog_errno(ret);
 		return ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = o2hb_issue_node_write(reg, &write_wc);
+	if (ret < 0) {
+		mlog_errno(ret);
+		goto bail;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	i = -1;
 	while((i = find_next_bit(configured_nodes,
 				 O2NM_MAX_NODES, i + 1)) < O2NM_MAX_NODES) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		change |= o2hb_check_slot(reg, &reg->hr_slots[i]);
+=======
+		membership_change |= o2hb_check_slot(reg, &reg->hr_slots[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		membership_change |= o2hb_check_slot(reg, &reg->hr_slots[i]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1030,6 +1301,8 @@ static int o2hb_do_disk_heartbeat(struct o2hb_region *reg)
 		 * disk */
 		mlog(ML_ERROR, "Write error %d on device \"%s\"\n",
 		     write_wc.wc_error, reg->hr_dev_name);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return write_wc.wc_error;
 	}
 
@@ -1042,6 +1315,46 @@ static int o2hb_do_disk_heartbeat(struct o2hb_region *reg)
 	}
 
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ret = write_wc.wc_error;
+		goto bail;
+	}
+
+	/* Skip disarming the timeout if own slot has stale/bad data */
+	if (own_slot_ok) {
+		o2hb_set_quorum_device(reg);
+		o2hb_arm_write_timeout(reg);
+	}
+
+bail:
+	/* let the person who launched us know when things are steady */
+	if (atomic_read(&reg->hr_steady_iterations) != 0) {
+		if (!ret && own_slot_ok && !membership_change) {
+			if (atomic_dec_and_test(&reg->hr_steady_iterations))
+				wake_up(&o2hb_steady_queue);
+		}
+	}
+
+	if (atomic_read(&reg->hr_steady_iterations) != 0) {
+		if (atomic_dec_and_test(&reg->hr_unsteady_iterations)) {
+			printk(KERN_NOTICE "o2hb: Unable to stabilize "
+			       "heartbeart on region %s (%s)\n",
+			       config_item_name(&reg->hr_item),
+			       reg->hr_dev_name);
+			atomic_set(&reg->hr_steady_iterations, 0);
+			reg->hr_aborted_start = 1;
+			wake_up(&o2hb_steady_queue);
+			ret = -EIO;
+		}
+	}
+
+	return ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Subtract b from a, storing the result in a. a *must* have a larger
@@ -1095,7 +1408,17 @@ static int o2hb_thread(void *data)
 	/* Pin node */
 	o2nm_depend_this_node();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (!kthread_should_stop() && !reg->hr_unclean_stop) {
+=======
+	while (!kthread_should_stop() &&
+	       !reg->hr_unclean_stop && !reg->hr_aborted_start) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (!kthread_should_stop() &&
+	       !reg->hr_unclean_stop && !reg->hr_aborted_start) {
+>>>>>>> refs/remotes/origin/master
 		/* We track the time spent inside
 		 * o2hb_do_disk_heartbeat so that we avoid more than
 		 * hr_timeout_ms between disk writes. On busy systems
@@ -1103,10 +1426,18 @@ static int o2hb_thread(void *data)
 		 * likely to time itself out. */
 		do_gettimeofday(&before_hb);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		i = 0;
 		do {
 			ret = o2hb_do_disk_heartbeat(reg);
 		} while (ret && ++i < 2);
+=======
+		ret = o2hb_do_disk_heartbeat(reg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = o2hb_do_disk_heartbeat(reg);
+>>>>>>> refs/remotes/origin/master
 
 		do_gettimeofday(&after_hb);
 		elapsed_msec = o2hb_elapsed_msecs(&before_hb, &after_hb);
@@ -1117,7 +1448,17 @@ static int o2hb_thread(void *data)
 		     after_hb.tv_sec, (unsigned long) after_hb.tv_usec,
 		     elapsed_msec);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (elapsed_msec < reg->hr_timeout_ms) {
+=======
+		if (!kthread_should_stop() &&
+		    elapsed_msec < reg->hr_timeout_ms) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!kthread_should_stop() &&
+		    elapsed_msec < reg->hr_timeout_ms) {
+>>>>>>> refs/remotes/origin/master
 			/* the kthread api has blocked signals for us so no
 			 * need to record the return value. */
 			msleep_interruptible(reg->hr_timeout_ms - elapsed_msec);
@@ -1134,6 +1475,8 @@ static int o2hb_thread(void *data)
 	 * to timeout on this region when we could just as easily
 	 * write a clear generation - thus indicating to them that
 	 * this node has left this region.
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 *
 	 * XXX: Should we skip this on unclean_stop? */
 	o2hb_prepare_block(reg, 0);
@@ -1142,12 +1485,35 @@ static int o2hb_thread(void *data)
 		o2hb_wait_on_io(reg, &write_wc);
 	} else {
 		mlog_errno(ret);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 */
+	if (!reg->hr_unclean_stop && !reg->hr_aborted_start) {
+		o2hb_prepare_block(reg, 0);
+		ret = o2hb_issue_node_write(reg, &write_wc);
+		if (ret == 0)
+			o2hb_wait_on_io(reg, &write_wc);
+		else
+			mlog_errno(ret);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Unpin node */
 	o2nm_undepend_this_node();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mlog(ML_HEARTBEAT|ML_KTHREAD, "hb thread exiting\n");
+=======
+	mlog(ML_HEARTBEAT|ML_KTHREAD, "o2hb thread exiting\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mlog(ML_HEARTBEAT|ML_KTHREAD, "o2hb thread exiting\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1158,6 +1524,14 @@ static int o2hb_debug_open(struct inode *inode, struct file *file)
 	struct o2hb_debug_buf *db = inode->i_private;
 	struct o2hb_region *reg;
 	unsigned long map[BITS_TO_LONGS(O2NM_MAX_NODES)];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long lts;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long lts;
+>>>>>>> refs/remotes/origin/master
 	char *buf = NULL;
 	int i = -1;
 	int out = 0;
@@ -1194,9 +1568,23 @@ static int o2hb_debug_open(struct inode *inode, struct file *file)
 
 	case O2HB_DB_TYPE_REGION_ELAPSED_TIME:
 		reg = (struct o2hb_region *)db->db_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		out += snprintf(buf + out, PAGE_SIZE - out, "%u\n",
 				jiffies_to_msecs(jiffies -
 						 reg->hr_last_timeout_start));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		lts = reg->hr_last_timeout_start;
+		/* If 0, it has never been set before */
+		if (lts)
+			lts = jiffies_to_msecs(jiffies - lts);
+		out += snprintf(buf + out, PAGE_SIZE - out, "%lu\n", lts);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto done;
 
 	case O2HB_DB_TYPE_REGION_PINNED:
@@ -1426,8 +1814,19 @@ static void o2hb_region_release(struct config_item *item)
 	struct page *page;
 	struct o2hb_region *reg = to_o2hb_region(item);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mlog(ML_HEARTBEAT, "hb region release (%s)\n", reg->hr_dev_name);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (reg->hr_tmp_block)
 		kfree(reg->hr_tmp_block);
+=======
+	mlog(ML_HEARTBEAT, "hb region release (%s)\n", reg->hr_dev_name);
+
+	kfree(reg->hr_tmp_block);
+>>>>>>> refs/remotes/origin/master
 
 	if (reg->hr_slot_data) {
 		for (i = 0; i < reg->hr_num_pages; i++) {
@@ -1441,8 +1840,12 @@ static void o2hb_region_release(struct config_item *item)
 	if (reg->hr_bdev)
 		blkdev_put(reg->hr_bdev, FMODE_READ|FMODE_WRITE);
 
+<<<<<<< HEAD
 	if (reg->hr_slots)
 		kfree(reg->hr_slots);
+=======
+	kfree(reg->hr_slots);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(reg->hr_db_regnum);
 	kfree(reg->hr_db_livenodes);
@@ -1701,8 +2104,13 @@ static ssize_t o2hb_region_dev_write(struct o2hb_region *reg,
 	long fd;
 	int sectsize;
 	char *p = (char *)page;
+<<<<<<< HEAD
 	struct file *filp = NULL;
 	struct inode *inode = NULL;
+=======
+	struct fd f;
+	struct inode *inode;
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret = -EINVAL;
 	int live_threshold;
 
@@ -1721,12 +2129,18 @@ static ssize_t o2hb_region_dev_write(struct o2hb_region *reg,
 	if (fd < 0 || fd >= INT_MAX)
 		goto out;
 
+<<<<<<< HEAD
 	filp = fget(fd);
 	if (filp == NULL)
+=======
+	f = fdget(fd);
+	if (f.file == NULL)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	if (reg->hr_blocks == 0 || reg->hr_start_block == 0 ||
 	    reg->hr_block_bytes == 0)
+<<<<<<< HEAD
 		goto out;
 
 	inode = igrab(filp->f_mapping->host);
@@ -1741,6 +2155,22 @@ static ssize_t o2hb_region_dev_write(struct o2hb_region *reg,
 	if (ret) {
 		reg->hr_bdev = NULL;
 		goto out;
+=======
+		goto out2;
+
+	inode = igrab(f.file->f_mapping->host);
+	if (inode == NULL)
+		goto out2;
+
+	if (!S_ISBLK(inode->i_mode))
+		goto out3;
+
+	reg->hr_bdev = I_BDEV(f.file->f_mapping->host);
+	ret = blkdev_get(reg->hr_bdev, FMODE_WRITE | FMODE_READ, NULL);
+	if (ret) {
+		reg->hr_bdev = NULL;
+		goto out3;
+>>>>>>> refs/remotes/origin/master
 	}
 	inode = NULL;
 
@@ -1752,7 +2182,11 @@ static ssize_t o2hb_region_dev_write(struct o2hb_region *reg,
 		     "blocksize %u incorrect for device, expected %d",
 		     reg->hr_block_bytes, sectsize);
 		ret = -EINVAL;
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	o2hb_init_region_params(reg);
@@ -1766,13 +2200,21 @@ static ssize_t o2hb_region_dev_write(struct o2hb_region *reg,
 	ret = o2hb_map_slot_data(reg);
 	if (ret) {
 		mlog_errno(ret);
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = o2hb_populate_slot_data(reg);
 	if (ret) {
 		mlog_errno(ret);
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	INIT_DELAYED_WORK(&reg->hr_write_timeout_work, o2hb_write_timeout);
@@ -1788,18 +2230,39 @@ static ssize_t o2hb_region_dev_write(struct o2hb_region *reg,
 	live_threshold = O2HB_LIVE_THRESHOLD;
 	if (o2hb_global_heartbeat_active()) {
 		spin_lock(&o2hb_live_lock);
+<<<<<<< HEAD
 		if (o2hb_pop_count(&o2hb_region_bitmap, O2NM_MAX_REGIONS) == 1)
 			live_threshold <<= 1;
 		spin_unlock(&o2hb_live_lock);
 	}
+<<<<<<< HEAD
 	atomic_set(&reg->hr_steady_iterations, live_threshold + 1);
+=======
+=======
+		if (bitmap_weight(o2hb_region_bitmap, O2NM_MAX_REGIONS) == 1)
+			live_threshold <<= 1;
+		spin_unlock(&o2hb_live_lock);
+	}
+>>>>>>> refs/remotes/origin/master
+	++live_threshold;
+	atomic_set(&reg->hr_steady_iterations, live_threshold);
+	/* unsteady_iterations is double the steady_iterations */
+	atomic_set(&reg->hr_unsteady_iterations, (live_threshold << 1));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	hb_task = kthread_run(o2hb_thread, reg, "o2hb-%s",
 			      reg->hr_item.ci_name);
 	if (IS_ERR(hb_task)) {
 		ret = PTR_ERR(hb_task);
 		mlog_errno(ret);
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock(&o2hb_live_lock);
@@ -1809,6 +2272,8 @@ static ssize_t o2hb_region_dev_write(struct o2hb_region *reg,
 	ret = wait_event_interruptible(o2hb_steady_queue,
 				atomic_read(&reg->hr_steady_iterations) == 0);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* We got interrupted (hello ptrace!).  Clean up */
 		spin_lock(&o2hb_live_lock);
 		hb_task = reg->hr_task;
@@ -1817,7 +2282,21 @@ static ssize_t o2hb_region_dev_write(struct o2hb_region *reg,
 
 		if (hb_task)
 			kthread_stop(hb_task);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		atomic_set(&reg->hr_steady_iterations, 0);
+		reg->hr_aborted_start = 1;
+	}
+
+	if (reg->hr_aborted_start) {
+		ret = -EIO;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
+=======
+		goto out3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Ok, we were woken.  Make sure it wasn't by drop_item() */
@@ -1833,14 +2312,30 @@ static ssize_t o2hb_region_dev_write(struct o2hb_region *reg,
 		ret = -EIO;
 
 	if (hb_task && o2hb_global_heartbeat_active())
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "o2hb: Heartbeat started on region %s\n",
 		       config_item_name(&reg->hr_item));
+=======
+		printk(KERN_NOTICE "o2hb: Heartbeat started on region %s (%s)\n",
+		       config_item_name(&reg->hr_item), reg->hr_dev_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	if (filp)
 		fput(filp);
 	if (inode)
 		iput(inode);
+=======
+		printk(KERN_NOTICE "o2hb: Heartbeat started on region %s (%s)\n",
+		       config_item_name(&reg->hr_item), reg->hr_dev_name);
+
+out3:
+	iput(inode);
+out2:
+	fdput(f);
+out:
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		if (reg->hr_bdev) {
 			blkdev_put(reg->hr_bdev, FMODE_READ|FMODE_WRITE);
@@ -2092,6 +2587,8 @@ static void o2hb_heartbeat_group_drop_item(struct config_group *group,
 
 	/* stop the thread when the user removes the region dir */
 	spin_lock(&o2hb_live_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (o2hb_global_heartbeat_active()) {
 		clear_bit(reg->hr_region_num, o2hb_region_bitmap);
 		clear_bit(reg->hr_region_num, o2hb_live_region_bitmap);
@@ -2099,6 +2596,10 @@ static void o2hb_heartbeat_group_drop_item(struct config_group *group,
 			quorum_region = 1;
 		clear_bit(reg->hr_region_num, o2hb_quorum_region_bitmap);
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hb_task = reg->hr_task;
 	reg->hr_task = NULL;
 	reg->hr_item_dropped = 1;
@@ -2107,19 +2608,56 @@ static void o2hb_heartbeat_group_drop_item(struct config_group *group,
 	if (hb_task)
 		kthread_stop(hb_task);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (o2hb_global_heartbeat_active()) {
+		spin_lock(&o2hb_live_lock);
+		clear_bit(reg->hr_region_num, o2hb_region_bitmap);
+		clear_bit(reg->hr_region_num, o2hb_live_region_bitmap);
+		if (test_bit(reg->hr_region_num, o2hb_quorum_region_bitmap))
+			quorum_region = 1;
+		clear_bit(reg->hr_region_num, o2hb_quorum_region_bitmap);
+		spin_unlock(&o2hb_live_lock);
+		printk(KERN_NOTICE "o2hb: Heartbeat %s on region %s (%s)\n",
+		       ((atomic_read(&reg->hr_steady_iterations) == 0) ?
+			"stopped" : "start aborted"), config_item_name(item),
+		       reg->hr_dev_name);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If we're racing a dev_write(), we need to wake them.  They will
 	 * check reg->hr_task
 	 */
 	if (atomic_read(&reg->hr_steady_iterations) != 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		reg->hr_aborted_start = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		reg->hr_aborted_start = 1;
+>>>>>>> refs/remotes/origin/master
 		atomic_set(&reg->hr_steady_iterations, 0);
 		wake_up(&o2hb_steady_queue);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (o2hb_global_heartbeat_active())
 		printk(KERN_NOTICE "o2hb: Heartbeat stopped on region %s\n",
 		       config_item_name(&reg->hr_item));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	config_item_put(item);
 
 	if (!o2hb_global_heartbeat_active() || !quorum_region)
@@ -2134,7 +2672,11 @@ static void o2hb_heartbeat_group_drop_item(struct config_group *group,
 	if (!o2hb_dependent_users)
 		goto unlock;
 
+<<<<<<< HEAD
 	if (o2hb_pop_count(&o2hb_quorum_region_bitmap,
+=======
+	if (bitmap_weight(o2hb_quorum_region_bitmap,
+>>>>>>> refs/remotes/origin/master
 			   O2NM_MAX_REGIONS) <= O2HB_PIN_CUT_OFF)
 		o2hb_region_pin(NULL);
 
@@ -2223,7 +2765,11 @@ ssize_t o2hb_heartbeat_group_mode_store(struct o2hb_heartbeat_group *group,
 		if (strnicmp(page, o2hb_heartbeat_mode_desc[i], len))
 			continue;
 
+<<<<<<< HEAD
 		ret = o2hb_global_hearbeat_mode_set(i);
+=======
+		ret = o2hb_global_heartbeat_mode_set(i);
+>>>>>>> refs/remotes/origin/master
 		if (!ret)
 			printk(KERN_NOTICE "o2hb: Heartbeat mode set to %s\n",
 			       o2hb_heartbeat_mode_desc[i]);
@@ -2256,7 +2802,11 @@ static struct configfs_attribute *o2hb_heartbeat_group_attrs[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 static struct configfs_item_operations o2hb_hearbeat_group_item_ops = {
+=======
+static struct configfs_item_operations o2hb_heartbeat_group_item_ops = {
+>>>>>>> refs/remotes/origin/master
 	.show_attribute		= o2hb_heartbeat_group_show,
 	.store_attribute	= o2hb_heartbeat_group_store,
 };
@@ -2268,7 +2818,11 @@ static struct configfs_group_operations o2hb_heartbeat_group_group_ops = {
 
 static struct config_item_type o2hb_heartbeat_group_type = {
 	.ct_group_ops	= &o2hb_heartbeat_group_group_ops,
+<<<<<<< HEAD
 	.ct_item_ops	= &o2hb_hearbeat_group_item_ops,
+=======
+	.ct_item_ops	= &o2hb_heartbeat_group_item_ops,
+>>>>>>> refs/remotes/origin/master
 	.ct_attrs	= o2hb_heartbeat_group_attrs,
 	.ct_owner	= THIS_MODULE,
 };
@@ -2341,6 +2895,12 @@ static int o2hb_region_pin(const char *region_uuid)
 	assert_spin_locked(&o2hb_live_lock);
 
 	list_for_each_entry(reg, &o2hb_all_regions, hr_all_item) {
+<<<<<<< HEAD
+=======
+		if (reg->hr_item_dropped)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		uuid = config_item_name(&reg->hr_item);
 
 		/* local heartbeat */
@@ -2391,6 +2951,12 @@ static void o2hb_region_unpin(const char *region_uuid)
 	assert_spin_locked(&o2hb_live_lock);
 
 	list_for_each_entry(reg, &o2hb_all_regions, hr_all_item) {
+<<<<<<< HEAD
+=======
+		if (reg->hr_item_dropped)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		uuid = config_item_name(&reg->hr_item);
 		if (region_uuid) {
 			if (strcmp(region_uuid, uuid))
@@ -2428,7 +2994,11 @@ static int o2hb_region_inc_user(const char *region_uuid)
 	if (o2hb_dependent_users > 1)
 		goto unlock;
 
+<<<<<<< HEAD
 	if (o2hb_pop_count(&o2hb_quorum_region_bitmap,
+=======
+	if (bitmap_weight(o2hb_quorum_region_bitmap,
+>>>>>>> refs/remotes/origin/master
 			   O2NM_MAX_REGIONS) <= O2HB_PIN_CUT_OFF)
 		ret = o2hb_region_pin(NULL);
 
@@ -2462,8 +3032,12 @@ unlock:
 int o2hb_register_callback(const char *region_uuid,
 			   struct o2hb_callback_func *hc)
 {
+<<<<<<< HEAD
 	struct o2hb_callback_func *tmp;
 	struct list_head *iter;
+=======
+	struct o2hb_callback_func *f;
+>>>>>>> refs/remotes/origin/master
 	struct o2hb_callback *hbcall;
 	int ret;
 
@@ -2486,10 +3060,16 @@ int o2hb_register_callback(const char *region_uuid,
 
 	down_write(&o2hb_callback_sem);
 
+<<<<<<< HEAD
 	list_for_each(iter, &hbcall->list) {
 		tmp = list_entry(iter, struct o2hb_callback_func, hc_item);
 		if (hc->hc_priority < tmp->hc_priority) {
 			list_add_tail(&hc->hc_item, iter);
+=======
+	list_for_each_entry(f, &hbcall->list, hc_item) {
+		if (hc->hc_priority < f->hc_priority) {
+			list_add_tail(&hc->hc_item, &f->hc_item);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -2606,6 +3186,12 @@ int o2hb_get_all_regions(char *region_uuids, u8 max_regions)
 
 	p = region_uuids;
 	list_for_each_entry(reg, &o2hb_all_regions, hr_all_item) {
+<<<<<<< HEAD
+=======
+		if (reg->hr_item_dropped)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		mlog(0, "Region: %s\n", config_item_name(&reg->hr_item));
 		if (numregs < max_regions) {
 			memcpy(p, config_item_name(&reg->hr_item),

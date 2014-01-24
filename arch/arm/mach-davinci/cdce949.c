@@ -17,6 +17,14 @@
 #include <linux/clk.h>
 #include <linux/platform_device.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/clock.h>
 #include <mach/cdce949.h>
@@ -255,7 +263,11 @@ static int cdce_probe(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit cdce_remove(struct i2c_client *client)
+=======
+static int cdce_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	cdce_i2c_client = NULL;
 	return 0;
@@ -273,7 +285,11 @@ static struct i2c_driver cdce_driver = {
 		.name	= "cdce949",
 	},
 	.probe		= cdce_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cdce_remove),
+=======
+	.remove		= cdce_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= cdce_id,
 };
 

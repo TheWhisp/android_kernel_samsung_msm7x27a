@@ -405,6 +405,7 @@ static struct serio_driver elo_drv = {
 	.disconnect	= elo_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -421,3 +422,6 @@ static void __exit elo_exit(void)
 
 module_init(elo_init);
 module_exit(elo_exit);
+=======
+module_serio_driver(elo_drv);
+>>>>>>> refs/remotes/origin/master

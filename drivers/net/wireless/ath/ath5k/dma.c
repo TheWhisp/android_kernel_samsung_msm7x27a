@@ -20,6 +20,8 @@
 * DMA and interrupt masking functions *
 \*************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * dma.c - DMA and interrupt masking functions
  *
@@ -30,12 +32,36 @@
  *
  * TODO: Handle SISR on 5211+ and introduce a function to return the queue
  * number that resulted the interrupt.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * DOC: DMA and interrupt masking functions
+ *
+ * Here we setup descriptor pointers (rxdp/txdp) start/stop dma engine and
+ * handle queue setup for 5210 chipset (rest are handled on qcu.c).
+ * Also we setup interrupt mask register (IMR) and read the various interrupt
+ * status registers (ISR).
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include "ath5k.h"
 #include "reg.h"
 #include "debug.h"
+<<<<<<< HEAD
 #include "base.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include "ath5k.h"
+#include "reg.h"
+#include "debug.h"
+>>>>>>> refs/remotes/origin/master
 
 
 /*********\
@@ -43,22 +69,50 @@
 \*********/
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_start_rx_dma - Start DMA receive
  *
  * @ah:	The &struct ath5k_hw
  */
 void ath5k_hw_start_rx_dma(struct ath5k_hw *ah)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * ath5k_hw_start_rx_dma() - Start DMA receive
+ * @ah:	The &struct ath5k_hw
+ */
+void
+ath5k_hw_start_rx_dma(struct ath5k_hw *ah)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	ath5k_hw_reg_write(ah, AR5K_CR_RXE, AR5K_CR);
 	ath5k_hw_reg_read(ah, AR5K_CR);
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_stop_rx_dma - Stop DMA receive
  *
  * @ah:	The &struct ath5k_hw
  */
 static int ath5k_hw_stop_rx_dma(struct ath5k_hw *ah)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * ath5k_hw_stop_rx_dma() - Stop DMA receive
+ * @ah:	The &struct ath5k_hw
+ */
+static int
+ath5k_hw_stop_rx_dma(struct ath5k_hw *ah)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 
@@ -73,34 +127,78 @@ static int ath5k_hw_stop_rx_dma(struct ath5k_hw *ah)
 		udelay(100);
 
 	if (!i)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_DMA,
+=======
+		ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+>>>>>>> refs/remotes/origin/master
 				"failed to stop RX DMA !\n");
 
 	return i ? 0 : -EBUSY;
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_get_rxdp - Get RX Descriptor's address
  *
  * @ah: The &struct ath5k_hw
  */
 u32 ath5k_hw_get_rxdp(struct ath5k_hw *ah)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * ath5k_hw_get_rxdp() - Get RX Descriptor's address
+ * @ah: The &struct ath5k_hw
+ */
+u32
+ath5k_hw_get_rxdp(struct ath5k_hw *ah)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return ath5k_hw_reg_read(ah, AR5K_RXDP);
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_set_rxdp - Set RX Descriptor's address
  *
+=======
+ * ath5k_hw_set_rxdp() - Set RX Descriptor's address
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_set_rxdp() - Set RX Descriptor's address
+>>>>>>> refs/remotes/origin/master
  * @ah: The &struct ath5k_hw
  * @phys_addr: RX descriptor address
  *
  * Returns -EIO if rx is active
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ath5k_hw_set_rxdp(struct ath5k_hw *ah, u32 phys_addr)
 {
 	if (ath5k_hw_reg_read(ah, AR5K_CR) & AR5K_CR_RXE) {
 		ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_DMA,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int
+ath5k_hw_set_rxdp(struct ath5k_hw *ah, u32 phys_addr)
+{
+	if (ath5k_hw_reg_read(ah, AR5K_CR) & AR5K_CR_RXE) {
+		ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				"tried to set RXDP while rx was active !\n");
 		return -EIO;
 	}
@@ -115,8 +213,16 @@ int ath5k_hw_set_rxdp(struct ath5k_hw *ah, u32 phys_addr)
 \**********/
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_start_tx_dma - Start DMA transmit for a specific queue
  *
+=======
+ * ath5k_hw_start_tx_dma() - Start DMA transmit for a specific queue
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_start_tx_dma() - Start DMA transmit for a specific queue
+>>>>>>> refs/remotes/origin/master
  * @ah: The &struct ath5k_hw
  * @queue: The hw queue number
  *
@@ -129,7 +235,17 @@ int ath5k_hw_set_rxdp(struct ath5k_hw *ah, u32 phys_addr)
  * NOTE: Must be called after setting up tx control descriptor for that
  * queue (see below).
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ath5k_hw_start_tx_dma(struct ath5k_hw *ah, unsigned int queue)
+=======
+int
+ath5k_hw_start_tx_dma(struct ath5k_hw *ah, unsigned int queue)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int
+ath5k_hw_start_tx_dma(struct ath5k_hw *ah, unsigned int queue)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 tx_queue;
 
@@ -178,17 +294,37 @@ int ath5k_hw_start_tx_dma(struct ath5k_hw *ah, unsigned int queue)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_stop_tx_dma - Stop DMA transmit on a specific queue
  *
+=======
+ * ath5k_hw_stop_tx_dma() - Stop DMA transmit on a specific queue
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_stop_tx_dma() - Stop DMA transmit on a specific queue
+>>>>>>> refs/remotes/origin/master
  * @ah: The &struct ath5k_hw
  * @queue: The hw queue number
  *
  * Stop DMA transmit on a specific hw queue and drain queue so we don't
  * have any pending frames. Returns -EBUSY if we still have pending frames,
  * -EINVAL if queue number is out of range or inactive.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  */
 static int ath5k_hw_stop_tx_dma(struct ath5k_hw *ah, unsigned int queue)
+=======
+ */
+static int
+ath5k_hw_stop_tx_dma(struct ath5k_hw *ah, unsigned int queue)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+static int
+ath5k_hw_stop_tx_dma(struct ath5k_hw *ah, unsigned int queue)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i = 40;
 	u32 tx_queue, pending;
@@ -243,7 +379,15 @@ static int ath5k_hw_stop_tx_dma(struct ath5k_hw *ah, unsigned int queue)
 			udelay(100);
 
 		if (AR5K_REG_READ_Q(ah, AR5K_QCU_TXE, queue))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_DMA,
+=======
+			ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+>>>>>>> refs/remotes/origin/master
 				"queue %i didn't stop !\n", queue);
 
 		/* Check for pending frames */
@@ -258,7 +402,15 @@ static int ath5k_hw_stop_tx_dma(struct ath5k_hw *ah, unsigned int queue)
 		/* For 2413+ order PCU to drop packets using
 		 * QUIET mechanism */
 		if (ah->ah_mac_version >= (AR5K_SREV_AR2414 >> 4) &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pending){
+=======
+		    pending) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    pending) {
+>>>>>>> refs/remotes/origin/master
 			/* Set periodicity and duration */
 			ath5k_hw_reg_write(ah,
 				AR5K_REG_SM(100, AR5K_QUIET_CTL2_QT_PER)|
@@ -295,7 +447,15 @@ static int ath5k_hw_stop_tx_dma(struct ath5k_hw *ah, unsigned int queue)
 					AR5K_DIAG_SW_CHANNEL_IDLE_HIGH);
 
 			if (pending)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_DMA,
+=======
+				ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+>>>>>>> refs/remotes/origin/master
 					"quiet mechanism didn't work q:%i !\n",
 					queue);
 		}
@@ -309,7 +469,15 @@ static int ath5k_hw_stop_tx_dma(struct ath5k_hw *ah, unsigned int queue)
 		/* Clear register */
 		ath5k_hw_reg_write(ah, 0, AR5K_QCU_TXD);
 		if (pending) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_DMA,
+=======
+			ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+>>>>>>> refs/remotes/origin/master
 					"tx dma didn't stop (q:%i, frm:%i) !\n",
 					queue, pending);
 			return -EBUSY;
@@ -321,6 +489,8 @@ static int ath5k_hw_stop_tx_dma(struct ath5k_hw *ah, unsigned int queue)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_stop_beacon_queue - Stop beacon queue
  *
  * @ah The &struct ath5k_hw
@@ -329,11 +499,34 @@ static int ath5k_hw_stop_tx_dma(struct ath5k_hw *ah, unsigned int queue)
  * Returns -EIO if queue didn't stop
  */
 int ath5k_hw_stop_beacon_queue(struct ath5k_hw *ah, unsigned int queue)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * ath5k_hw_stop_beacon_queue() - Stop beacon queue
+ * @ah: The &struct ath5k_hw
+ * @queue: The queue number
+ *
+ * Returns -EIO if queue didn't stop
+ */
+int
+ath5k_hw_stop_beacon_queue(struct ath5k_hw *ah, unsigned int queue)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	ret = ath5k_hw_stop_tx_dma(ah, queue);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_DMA,
+=======
+		ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_DBG(ah, ATH5K_DEBUG_DMA,
+>>>>>>> refs/remotes/origin/master
 				"beacon queue didn't stop !\n");
 		return -EIO;
 	}
@@ -341,8 +534,16 @@ int ath5k_hw_stop_beacon_queue(struct ath5k_hw *ah, unsigned int queue)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_get_txdp - Get TX Descriptor's address for a specific queue
  *
+=======
+ * ath5k_hw_get_txdp() - Get TX Descriptor's address for a specific queue
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_get_txdp() - Get TX Descriptor's address for a specific queue
+>>>>>>> refs/remotes/origin/master
  * @ah: The &struct ath5k_hw
  * @queue: The hw queue number
  *
@@ -353,7 +554,17 @@ int ath5k_hw_stop_beacon_queue(struct ath5k_hw *ah, unsigned int queue)
  *
  * XXX: Is TXDP read and clear ?
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 ath5k_hw_get_txdp(struct ath5k_hw *ah, unsigned int queue)
+=======
+u32
+ath5k_hw_get_txdp(struct ath5k_hw *ah, unsigned int queue)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+u32
+ath5k_hw_get_txdp(struct ath5k_hw *ah, unsigned int queue)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 tx_reg;
 
@@ -383,10 +594,23 @@ u32 ath5k_hw_get_txdp(struct ath5k_hw *ah, unsigned int queue)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_set_txdp - Set TX Descriptor's address for a specific queue
  *
  * @ah: The &struct ath5k_hw
  * @queue: The hw queue number
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * ath5k_hw_set_txdp() - Set TX Descriptor's address for a specific queue
+ * @ah: The &struct ath5k_hw
+ * @queue: The hw queue number
+ * @phys_addr: The physical address
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Set TX descriptor's address for a specific queue. For 5210 we ignore
  * the queue number and we use tx queue type since we only have 2 queues
@@ -395,7 +619,17 @@ u32 ath5k_hw_get_txdp(struct ath5k_hw *ah, unsigned int queue)
  * Returns -EINVAL if queue type is invalid for 5210 and -EIO if queue is still
  * active.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ath5k_hw_set_txdp(struct ath5k_hw *ah, unsigned int queue, u32 phys_addr)
+=======
+int
+ath5k_hw_set_txdp(struct ath5k_hw *ah, unsigned int queue, u32 phys_addr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int
+ath5k_hw_set_txdp(struct ath5k_hw *ah, unsigned int queue, u32 phys_addr)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 tx_reg;
 
@@ -436,8 +670,16 @@ int ath5k_hw_set_txdp(struct ath5k_hw *ah, unsigned int queue, u32 phys_addr)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_update_tx_triglevel - Update tx trigger level
  *
+=======
+ * ath5k_hw_update_tx_triglevel() - Update tx trigger level
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_update_tx_triglevel() - Update tx trigger level
+>>>>>>> refs/remotes/origin/master
  * @ah: The &struct ath5k_hw
  * @increase: Flag to force increase of trigger level
  *
@@ -445,6 +687,8 @@ int ath5k_hw_set_txdp(struct ath5k_hw *ah, unsigned int queue, u32 phys_addr)
  * buffer (aka FIFO threshold) that is used to indicate when PCU flushes
  * the buffer and transmits its data. Lowering this results sending small
  * frames more quickly but can lead to tx underruns, raising it a lot can
+<<<<<<< HEAD
+<<<<<<< HEAD
  * result other problems (i think bmiss is related). Right now we start with
  * the lowest possible (64Bytes) and if we get tx underrun we increase it using
  * the increase flag. Returns -EIO if we have reached maximum/minimum.
@@ -454,6 +698,22 @@ int ath5k_hw_set_txdp(struct ath5k_hw *ah, unsigned int queue, u32 phys_addr)
  * TODO: Needs testing, i think it's related to bmiss...
  */
 int ath5k_hw_update_tx_triglevel(struct ath5k_hw *ah, bool increase)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * result other problems. Right now we start with the lowest possible
+ * (64Bytes) and if we get tx underrun we increase it using the increase
+ * flag. Returns -EIO if we have reached maximum/minimum.
+ *
+ * XXX: Link this with tx DMA size ?
+ * XXX2: Use it to save interrupts ?
+ */
+int
+ath5k_hw_update_tx_triglevel(struct ath5k_hw *ah, bool increase)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 trigger_level, imr;
 	int ret = -EIO;
@@ -499,21 +759,47 @@ done:
 \*******************/
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_is_intr_pending - Check if we have pending interrupts
  *
+=======
+ * ath5k_hw_is_intr_pending() - Check if we have pending interrupts
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_is_intr_pending() - Check if we have pending interrupts
+>>>>>>> refs/remotes/origin/master
  * @ah: The &struct ath5k_hw
  *
  * Check if we have pending interrupts to process. Returns 1 if we
  * have pending interrupts and 0 if we haven't.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 bool ath5k_hw_is_intr_pending(struct ath5k_hw *ah)
+=======
+bool
+ath5k_hw_is_intr_pending(struct ath5k_hw *ah)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool
+ath5k_hw_is_intr_pending(struct ath5k_hw *ah)
+>>>>>>> refs/remotes/origin/master
 {
 	return ath5k_hw_reg_read(ah, AR5K_INTPEND) == 1 ? 1 : 0;
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_get_isr - Get interrupt status
  *
+=======
+ * ath5k_hw_get_isr() - Get interrupt status
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_get_isr() - Get interrupt status
+>>>>>>> refs/remotes/origin/master
  * @ah: The @struct ath5k_hw
  * @interrupt_mask: Driver's interrupt mask used to filter out
  * interrupts in sw.
@@ -524,6 +810,8 @@ bool ath5k_hw_is_intr_pending(struct ath5k_hw *ah)
  * being mapped on some standard non hw-specific positions
  * (check out &ath5k_int).
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * NOTE: We use read-and-clear register, so after this function is called ISR
  * is zeroed.
  */
@@ -580,6 +868,173 @@ int ath5k_hw_get_isr(struct ath5k_hw *ah, enum ath5k_int *interrupt_mask)
 			*interrupt_mask |= AR5K_INT_TIM;
 
 		if (data & AR5K_ISR_BCNMISC) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * NOTE: We do write-to-clear, so the active PISR/SISR bits at the time this
+ * function gets called are cleared on return.
+ */
+int
+ath5k_hw_get_isr(struct ath5k_hw *ah, enum ath5k_int *interrupt_mask)
+{
+	u32 data = 0;
+
+	/*
+	 * Read interrupt status from Primary Interrupt
+	 * Register.
+	 *
+	 * Note: PISR/SISR Not available on 5210
+	 */
+	if (ah->ah_version == AR5K_AR5210) {
+		u32 isr = 0;
+		isr = ath5k_hw_reg_read(ah, AR5K_ISR);
+		if (unlikely(isr == AR5K_INT_NOCARD)) {
+			*interrupt_mask = isr;
+			return -ENODEV;
+		}
+
+		/*
+		 * Filter out the non-common bits from the interrupt
+		 * status.
+		 */
+		*interrupt_mask = (isr & AR5K_INT_COMMON) & ah->ah_imr;
+
+		/* Hanlde INT_FATAL */
+		if (unlikely(isr & (AR5K_ISR_SSERR | AR5K_ISR_MCABT
+						| AR5K_ISR_DPERR)))
+			*interrupt_mask |= AR5K_INT_FATAL;
+
+		/*
+		 * XXX: BMISS interrupts may occur after association.
+		 * I found this on 5210 code but it needs testing. If this is
+		 * true we should disable them before assoc and re-enable them
+		 * after a successful assoc + some jiffies.
+			interrupt_mask &= ~AR5K_INT_BMISS;
+		 */
+
+		data = isr;
+	} else {
+		u32 pisr = 0;
+		u32 pisr_clear = 0;
+		u32 sisr0 = 0;
+		u32 sisr1 = 0;
+		u32 sisr2 = 0;
+		u32 sisr3 = 0;
+		u32 sisr4 = 0;
+
+		/* Read PISR and SISRs... */
+		pisr = ath5k_hw_reg_read(ah, AR5K_PISR);
+		if (unlikely(pisr == AR5K_INT_NOCARD)) {
+			*interrupt_mask = pisr;
+			return -ENODEV;
+		}
+
+		sisr0 = ath5k_hw_reg_read(ah, AR5K_SISR0);
+		sisr1 = ath5k_hw_reg_read(ah, AR5K_SISR1);
+		sisr2 = ath5k_hw_reg_read(ah, AR5K_SISR2);
+		sisr3 = ath5k_hw_reg_read(ah, AR5K_SISR3);
+		sisr4 = ath5k_hw_reg_read(ah, AR5K_SISR4);
+
+		/*
+		 * PISR holds the logical OR of interrupt bits
+		 * from SISR registers:
+		 *
+		 * TXOK and TXDESC  -> Logical OR of TXOK and TXDESC
+		 *			per-queue bits on SISR0
+		 *
+		 * TXERR and TXEOL -> Logical OR of TXERR and TXEOL
+		 *			per-queue bits on SISR1
+		 *
+		 * TXURN -> Logical OR of TXURN per-queue bits on SISR2
+		 *
+		 * HIUERR -> Logical OR of MCABT, SSERR and DPER bits on SISR2
+		 *
+		 * BCNMISC -> Logical OR of TIM, CAB_END, DTIM_SYNC
+		 *		BCN_TIMEOUT, CAB_TIMEOUT and DTIM
+		 *		(and TSFOOR ?) bits on SISR2
+		 *
+		 * QCBRORN and QCBRURN -> Logical OR of QCBRORN and
+		 *			QCBRURN per-queue bits on SISR3
+		 * QTRIG -> Logical OR of QTRIG per-queue bits on SISR4
+		 *
+		 * If we clean these bits on PISR we 'll also clear all
+		 * related bits from SISRs, e.g. if we write the TXOK bit on
+		 * PISR we 'll clean all TXOK bits from SISR0 so if a new TXOK
+		 * interrupt got fired for another queue while we were reading
+		 * the interrupt registers and we write back the TXOK bit on
+		 * PISR we 'll lose it. So make sure that we don't write back
+		 * on PISR any bits that come from SISRs. Clearing them from
+		 * SISRs will also clear PISR so no need to worry here.
+		 */
+
+		pisr_clear = pisr & ~AR5K_ISR_BITS_FROM_SISRS;
+
+		/*
+		 * Write to clear them...
+		 * Note: This means that each bit we write back
+		 * to the registers will get cleared, leaving the
+		 * rest unaffected. So this won't affect new interrupts
+		 * we didn't catch while reading/processing, we 'll get
+		 * them next time get_isr gets called.
+		 */
+		ath5k_hw_reg_write(ah, sisr0, AR5K_SISR0);
+		ath5k_hw_reg_write(ah, sisr1, AR5K_SISR1);
+		ath5k_hw_reg_write(ah, sisr2, AR5K_SISR2);
+		ath5k_hw_reg_write(ah, sisr3, AR5K_SISR3);
+		ath5k_hw_reg_write(ah, sisr4, AR5K_SISR4);
+		ath5k_hw_reg_write(ah, pisr_clear, AR5K_PISR);
+		/* Flush previous write */
+		ath5k_hw_reg_read(ah, AR5K_PISR);
+
+		/*
+		 * Filter out the non-common bits from the interrupt
+		 * status.
+		 */
+		*interrupt_mask = (pisr & AR5K_INT_COMMON) & ah->ah_imr;
+
+
+		/* We treat TXOK,TXDESC, TXERR and TXEOL
+		 * the same way (schedule the tx tasklet)
+		 * so we track them all together per queue */
+		if (pisr & AR5K_ISR_TXOK)
+			ah->ah_txq_isr_txok_all |= AR5K_REG_MS(sisr0,
+						AR5K_SISR0_QCU_TXOK);
+
+		if (pisr & AR5K_ISR_TXDESC)
+			ah->ah_txq_isr_txok_all |= AR5K_REG_MS(sisr0,
+						AR5K_SISR0_QCU_TXDESC);
+
+		if (pisr & AR5K_ISR_TXERR)
+			ah->ah_txq_isr_txok_all |= AR5K_REG_MS(sisr1,
+						AR5K_SISR1_QCU_TXERR);
+
+		if (pisr & AR5K_ISR_TXEOL)
+			ah->ah_txq_isr_txok_all |= AR5K_REG_MS(sisr1,
+						AR5K_SISR1_QCU_TXEOL);
+
+<<<<<<< HEAD
+		/* Currently this is not much usefull since we treat
+=======
+		/* Currently this is not much useful since we treat
+>>>>>>> refs/remotes/origin/master
+		 * all queues the same way if we get a TXURN (update
+		 * tx trigger level) but we might need it later on*/
+		if (pisr & AR5K_ISR_TXURN)
+			ah->ah_txq_isr_txurn |= AR5K_REG_MS(sisr2,
+						AR5K_SISR2_QCU_TXURN);
+
+		/* Misc Beacon related interrupts */
+
+		/* For AR5211 */
+		if (pisr & AR5K_ISR_TIM)
+			*interrupt_mask |= AR5K_INT_TIM;
+
+		/* For AR5212+ */
+		if (pisr & AR5K_ISR_BCNMISC) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (sisr2 & AR5K_SISR2_TIM)
 				*interrupt_mask |= AR5K_INT_TIM;
 			if (sisr2 & AR5K_SISR2_DTIM)
@@ -592,6 +1047,8 @@ int ath5k_hw_get_isr(struct ath5k_hw *ah, enum ath5k_int *interrupt_mask)
 				*interrupt_mask |= AR5K_INT_CAB_TIMEOUT;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (data & AR5K_ISR_RXDOPPLER)
 			*interrupt_mask |= AR5K_INT_RX_DOPPLER;
 		if (data & AR5K_ISR_QCBRORN) {
@@ -649,6 +1106,46 @@ int ath5k_hw_get_isr(struct ath5k_hw *ah, enum ath5k_int *interrupt_mask)
 		 * after a successful assoc + some jiffies.
 			interrupt_mask &= ~AR5K_INT_BMISS;
 		 */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/* Below interrupts are unlikely to happen */
+
+		/* HIU = Host Interface Unit (PCI etc)
+		 * Can be one of MCABT, SSERR, DPERR from SISR2 */
+		if (unlikely(pisr & (AR5K_ISR_HIUERR)))
+			*interrupt_mask |= AR5K_INT_FATAL;
+
+		/*Beacon Not Ready*/
+		if (unlikely(pisr & (AR5K_ISR_BNR)))
+			*interrupt_mask |= AR5K_INT_BNR;
+
+		/* A queue got CBR overrun */
+		if (unlikely(pisr & (AR5K_ISR_QCBRORN))) {
+			*interrupt_mask |= AR5K_INT_QCBRORN;
+			ah->ah_txq_isr_qcborn |= AR5K_REG_MS(sisr3,
+						AR5K_SISR3_QCBRORN);
+		}
+
+		/* A queue got CBR underrun */
+		if (unlikely(pisr & (AR5K_ISR_QCBRURN))) {
+			*interrupt_mask |= AR5K_INT_QCBRURN;
+			ah->ah_txq_isr_qcburn |= AR5K_REG_MS(sisr3,
+						AR5K_SISR3_QCBRURN);
+		}
+
+		/* A queue got triggered */
+		if (unlikely(pisr & (AR5K_ISR_QTRIG))) {
+			*interrupt_mask |= AR5K_INT_QTRIG;
+			ah->ah_txq_isr_qtrig |= AR5K_REG_MS(sisr4,
+						AR5K_SISR4_QTRIG);
+		}
+
+		data = pisr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -662,8 +1159,16 @@ int ath5k_hw_get_isr(struct ath5k_hw *ah, enum ath5k_int *interrupt_mask)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_set_imr - Set interrupt mask
  *
+=======
+ * ath5k_hw_set_imr() - Set interrupt mask
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_set_imr() - Set interrupt mask
+>>>>>>> refs/remotes/origin/master
  * @ah: The &struct ath5k_hw
  * @new_mask: The new interrupt mask to be set
  *
@@ -671,7 +1176,17 @@ int ath5k_hw_get_isr(struct ath5k_hw *ah, enum ath5k_int *interrupt_mask)
  * ath5k_int bits to hw-specific bits to remove abstraction and writing
  * Interrupt Mask Register.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum ath5k_int ath5k_hw_set_imr(struct ath5k_hw *ah, enum ath5k_int new_mask)
+=======
+enum ath5k_int
+ath5k_hw_set_imr(struct ath5k_hw *ah, enum ath5k_int new_mask)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ath5k_int
+ath5k_hw_set_imr(struct ath5k_hw *ah, enum ath5k_int new_mask)
+>>>>>>> refs/remotes/origin/master
 {
 	enum ath5k_int old_mask, int_mask;
 
@@ -698,16 +1213,32 @@ enum ath5k_int ath5k_hw_set_imr(struct ath5k_hw *ah, enum ath5k_int new_mask)
 		u32 simr2 = ath5k_hw_reg_read(ah, AR5K_SIMR2)
 				& AR5K_SIMR2_QCU_TXURN;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		/* Fatal interrupt abstraction for 5211+ */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Fatal interrupt abstraction for 5211+ */
+>>>>>>> refs/remotes/origin/master
 		if (new_mask & AR5K_INT_FATAL) {
 			int_mask |= AR5K_IMR_HIUERR;
 			simr2 |= (AR5K_SIMR2_MCABT | AR5K_SIMR2_SSERR
 				| AR5K_SIMR2_DPERR);
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/*Beacon Not Ready*/
 		if (new_mask & AR5K_INT_BNR)
 			int_mask |= AR5K_INT_BNR;
 
+=======
+		/* Misc beacon related interrupts */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Misc beacon related interrupts */
+>>>>>>> refs/remotes/origin/master
 		if (new_mask & AR5K_INT_TIM)
 			int_mask |= AR5K_IMR_TIM;
 
@@ -722,19 +1253,50 @@ enum ath5k_int ath5k_hw_set_imr(struct ath5k_hw *ah, enum ath5k_int new_mask)
 		if (new_mask & AR5K_INT_CAB_TIMEOUT)
 			simr2 |= AR5K_SISR2_CAB_TIMEOUT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (new_mask & AR5K_INT_RX_DOPPLER)
 			int_mask |= AR5K_IMR_RXDOPPLER;
 
 		/* Note: Per queue interrupt masks
 		 * are set via reset_tx_queue (qcu.c) */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*Beacon Not Ready*/
+		if (new_mask & AR5K_INT_BNR)
+			int_mask |= AR5K_INT_BNR;
+
+		/* Note: Per queue interrupt masks
+		 * are set via ath5k_hw_reset_tx_queue() (qcu.c) */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ath5k_hw_reg_write(ah, int_mask, AR5K_PIMR);
 		ath5k_hw_reg_write(ah, simr2, AR5K_SIMR2);
 
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		/* Fatal interrupt abstraction for 5210 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Fatal interrupt abstraction for 5210 */
+>>>>>>> refs/remotes/origin/master
 		if (new_mask & AR5K_INT_FATAL)
 			int_mask |= (AR5K_IMR_SSERR | AR5K_IMR_MCABT
 				| AR5K_IMR_HIUERR | AR5K_IMR_DPERR);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		/* Only common interrupts left for 5210 (no SIMRs) */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Only common interrupts left for 5210 (no SIMRs) */
+>>>>>>> refs/remotes/origin/master
 		ath5k_hw_reg_write(ah, int_mask, AR5K_IMR);
 	}
 
@@ -761,8 +1323,16 @@ enum ath5k_int ath5k_hw_set_imr(struct ath5k_hw *ah, enum ath5k_int new_mask)
 \********************/
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_dma_init - Initialize DMA unit
  *
+=======
+ * ath5k_hw_dma_init() - Initialize DMA unit
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_dma_init() - Initialize DMA unit
+>>>>>>> refs/remotes/origin/master
  * @ah: The &struct ath5k_hw
  *
  * Set DMA size and pre-enable interrupts
@@ -771,7 +1341,17 @@ enum ath5k_int ath5k_hw_set_imr(struct ath5k_hw *ah, enum ath5k_int new_mask)
  *
  * XXX: Save/restore RXDP/TXDP registers ?
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void ath5k_hw_dma_init(struct ath5k_hw *ah)
+=======
+void
+ath5k_hw_dma_init(struct ath5k_hw *ah)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void
+ath5k_hw_dma_init(struct ath5k_hw *ah)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Set Rx/Tx DMA Configuration
@@ -783,7 +1363,15 @@ void ath5k_hw_dma_init(struct ath5k_hw *ah)
 	 * for all PCI-E cards to be safe).
 	 *
 	 * XXX: need to check 5210 for this
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * TODO: Check out tx triger level, it's always 64 on dumps but I
+=======
+	 * TODO: Check out tx trigger level, it's always 64 on dumps but I
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * TODO: Check out tx trigger level, it's always 64 on dumps but I
+>>>>>>> refs/remotes/origin/master
 	 * guess we can tweak it and see how it goes ;-)
 	 */
 	if (ah->ah_version != AR5K_AR5210) {
@@ -800,8 +1388,16 @@ void ath5k_hw_dma_init(struct ath5k_hw *ah)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_dma_stop - stop DMA unit
  *
+=======
+ * ath5k_hw_dma_stop() - stop DMA unit
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_dma_stop() - stop DMA unit
+>>>>>>> refs/remotes/origin/master
  * @ah: The &struct ath5k_hw
  *
  * Stop tx/rx DMA and interrupts. Returns
@@ -811,7 +1407,17 @@ void ath5k_hw_dma_init(struct ath5k_hw *ah)
  * stuck frames on tx queues, only a reset
  * can fix that.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ath5k_hw_dma_stop(struct ath5k_hw *ah)
+=======
+int
+ath5k_hw_dma_stop(struct ath5k_hw *ah)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int
+ath5k_hw_dma_stop(struct ath5k_hw *ah)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, qmax, err;
 	err = 0;

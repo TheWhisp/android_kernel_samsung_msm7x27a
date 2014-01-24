@@ -3,7 +3,11 @@
 #
 
 menuconfig MEMSTICK
+<<<<<<< HEAD
 	tristate "Sony MemoryStick card support (EXPERIMENTAL)"
+=======
+	tristate "Sony MemoryStick card support"
+>>>>>>> refs/remotes/origin/master
 	help
 	  Sony MemoryStick is a proprietary storage/extension card protocol.
 

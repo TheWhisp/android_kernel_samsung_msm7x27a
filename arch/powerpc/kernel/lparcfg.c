@@ -26,12 +26,18 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/iseries/hv_lp_config.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/lppaca.h>
 #include <asm/hvcall.h>
 #include <asm/firmware.h>
 #include <asm/rtas.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/prom.h>
 #include <asm/vdso_datapage.h>
@@ -55,6 +61,7 @@ static unsigned long get_purr(void)
 	int cpu;
 
 	for_each_possible_cpu(cpu) {
+<<<<<<< HEAD
 		if (firmware_has_feature(FW_FEATURE_ISERIES))
 			sum_purr += lppaca_of(cpu).emulated_time_base;
 		else {
@@ -63,10 +70,17 @@ static unsigned long get_purr(void)
 			cu = &per_cpu(cpu_usage_array, cpu);
 			sum_purr += cu->current_tb;
 		}
+=======
+		struct cpu_usage *cu;
+
+		cu = &per_cpu(cpu_usage_array, cpu);
+		sum_purr += cu->current_tb;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return sum_purr;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 
 /*
@@ -129,6 +143,8 @@ static int iseries_lparcfg_data(struct seq_file *m, void *v)
 #endif				/* CONFIG_PPC_ISERIES */
 
 #ifdef CONFIG_PPC_PSERIES
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Methods used to fetch LPAR data when running on a pSeries platform.
  */
@@ -648,8 +664,12 @@ static ssize_t lparcfg_write(struct file *file, const char __user * buf,
 	u8 new_weight, *new_weight_ptr = &new_weight;
 	ssize_t retval;
 
+<<<<<<< HEAD
 	if (!firmware_has_feature(FW_FEATURE_SPLPAR) ||
 			firmware_has_feature(FW_FEATURE_ISERIES))
+=======
+	if (!firmware_has_feature(FW_FEATURE_SPLPAR))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	if (count > kbuf_sz)
@@ -709,6 +729,7 @@ static ssize_t lparcfg_write(struct file *file, const char __user * buf,
 	return retval;
 }
 
+<<<<<<< HEAD
 #else				/* CONFIG_PPC_PSERIES */
 
 static int pseries_lparcfg_data(struct seq_file *m, void *v)
@@ -724,6 +745,8 @@ static ssize_t lparcfg_write(struct file *file, const char __user * buf,
 
 #endif				/* CONFIG_PPC_PSERIES */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int lparcfg_data(struct seq_file *m, void *v)
 {
 	struct device_node *rootdn;
@@ -738,6 +761,7 @@ static int lparcfg_data(struct seq_file *m, void *v)
 	rootdn = of_find_node_by_path("/");
 	if (rootdn) {
 		tmp = of_get_property(rootdn, "model", NULL);
+<<<<<<< HEAD
 		if (tmp) {
 			model = tmp;
 			/* Skip "IBM," - see platforms/iseries/dt.c */
@@ -751,6 +775,13 @@ static int lparcfg_data(struct seq_file *m, void *v)
 			if (firmware_has_feature(FW_FEATURE_ISERIES))
 				system_id += 4;
 		}
+=======
+		if (tmp)
+			model = tmp;
+		tmp = of_get_property(rootdn, "system-id", NULL);
+		if (tmp)
+			system_id = tmp;
+>>>>>>> refs/remotes/origin/cm-10.0
 		lp_index_ptr = of_get_property(rootdn, "ibm,partition-no",
 					NULL);
 		if (lp_index_ptr)
@@ -761,8 +792,11 @@ static int lparcfg_data(struct seq_file *m, void *v)
 	seq_printf(m, "system_type=%s\n", model);
 	seq_printf(m, "partition_id=%d\n", (int)lp_index);
 
+<<<<<<< HEAD
 	if (firmware_has_feature(FW_FEATURE_ISERIES))
 		return iseries_lparcfg_data(m, v);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return pseries_lparcfg_data(m, v);
 }
 
@@ -783,11 +817,18 @@ static const struct file_operations lparcfg_fops = {
 static int __init lparcfg_init(void)
 {
 	struct proc_dir_entry *ent;
+<<<<<<< HEAD
 	mode_t mode = S_IRUSR | S_IRGRP | S_IROTH;
 
 	/* Allow writing if we have FW_FEATURE_SPLPAR */
 	if (firmware_has_feature(FW_FEATURE_SPLPAR) &&
 			!firmware_has_feature(FW_FEATURE_ISERIES))
+=======
+	umode_t mode = S_IRUSR | S_IRGRP | S_IROTH;
+
+	/* Allow writing if we have FW_FEATURE_SPLPAR */
+	if (firmware_has_feature(FW_FEATURE_SPLPAR))
+>>>>>>> refs/remotes/origin/cm-10.0
 		mode |= S_IWUSR;
 
 	ent = proc_create("powerpc/lparcfg", mode, NULL, &lparcfg_fops);

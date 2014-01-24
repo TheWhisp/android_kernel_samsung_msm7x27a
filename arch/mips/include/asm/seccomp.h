@@ -10,7 +10,11 @@
 /*
  * Kludge alert:
  *
+<<<<<<< HEAD
  * The generic seccomp code currently allows only a single compat ABI.  Until
+=======
+ * The generic seccomp code currently allows only a single compat ABI.	Until
+>>>>>>> refs/remotes/origin/master
  * this is fixed we priorize O32 as the compat ABI over N32.
  */
 #ifdef CONFIG_MIPS32_O32

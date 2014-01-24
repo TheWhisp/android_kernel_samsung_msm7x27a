@@ -13,7 +13,15 @@
  */
 
 #include <linux/syscalls.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/list.h>
 #include <linux/mount.h>
@@ -25,6 +33,10 @@
 #include <linux/dcookies.h>
 #include <linux/mutex.h>
 #include <linux/path.h>
+<<<<<<< HEAD
+=======
+#include <linux/compat.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 /* The dcookies are allocated from a kmem_cache and
@@ -145,7 +157,11 @@ out:
 /* And here is where the userspace process can look up the cookie value
  * to retrieve the path.
  */
+<<<<<<< HEAD
 SYSCALL_DEFINE(lookup_dcookie)(u64 cookie64, char __user * buf, size_t len)
+=======
+SYSCALL_DEFINE3(lookup_dcookie, u64, cookie64, char __user *, buf, size_t, len)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long cookie = (unsigned long)cookie64;
 	int err = -EINVAL;
@@ -201,12 +217,25 @@ out:
 	mutex_unlock(&dcookie_mutex);
 	return err;
 }
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_SYSCALL_WRAPPERS
 asmlinkage long SyS_lookup_dcookie(u64 cookie64, long buf, long len)
 {
 	return SYSC_lookup_dcookie(cookie64, (char __user *) buf, (size_t) len);
 }
 SYSCALL_ALIAS(sys_lookup_dcookie, SyS_lookup_dcookie);
+=======
+
+#ifdef CONFIG_COMPAT
+COMPAT_SYSCALL_DEFINE4(lookup_dcookie, u32, w0, u32, w1, char __user *, buf, size_t, len)
+{
+#ifdef __BIG_ENDIAN
+	return sys_lookup_dcookie(((u64)w0 << 32) | w1, buf, len);
+#else
+	return sys_lookup_dcookie(((u64)w1 << 32) | w0, buf, len);
+#endif
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int dcookie_init(void)

@@ -18,8 +18,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define LV1_CALL(name, in, out, num)                          \
   extern s64 _lv1_##name(LV1_##in##_IN_##out##_OUT_ARG_DECL); \
   EXPORT_SYMBOL(_lv1_##name);

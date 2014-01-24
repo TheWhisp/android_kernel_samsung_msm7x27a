@@ -52,7 +52,15 @@ machine_device_initcall(ppc44x_simple, ppc44x_device_probe);
 static char *board[] __initdata = {
 	"amcc,arches",
 	"amcc,bamboo",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	"amcc,bluestone",
+=======
+	"apm,bluestone",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"apm,bluestone",
+>>>>>>> refs/remotes/origin/master
 	"amcc,glacier",
 	"ibm,ebony",
 	"amcc,eiger",
@@ -72,7 +80,15 @@ static int __init ppc44x_probe(void)
 
 	for (i = 0; i < ARRAY_SIZE(board); i++) {
 		if (of_flat_dt_is_compatible(root, board[i])) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ppc_pci_set_flags(PPC_PCI_REASSIGN_ALL_RSRC);
+=======
+			pci_set_flags(PCI_REASSIGN_ALL_RSRC);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pci_set_flags(PCI_REASSIGN_ALL_RSRC);
+>>>>>>> refs/remotes/origin/master
 			return 1;
 		}
 	}

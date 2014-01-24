@@ -10,10 +10,13 @@ config ASYNC_XOR
 	select ASYNC_CORE
 	select XOR_BLOCKS
 
+<<<<<<< HEAD
 config ASYNC_MEMSET
 	tristate
 	select ASYNC_CORE
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ASYNC_PQ
 	tristate
 	select ASYNC_CORE

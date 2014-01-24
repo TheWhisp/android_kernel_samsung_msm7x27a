@@ -24,12 +24,19 @@ void __init ath79_register_leds_gpio(int id,
 	struct gpio_led *p;
 	int err;
 
+<<<<<<< HEAD
 	p = kmalloc(num_leds * sizeof(*p), GFP_KERNEL);
 	if (!p)
 		return;
 
 	memcpy(p, leds, num_leds * sizeof(*p));
 
+=======
+	p = kmemdup(leds, num_leds * sizeof(*p), GFP_KERNEL);
+	if (!p)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	pdev = platform_device_alloc("leds-gpio", id);
 	if (!pdev)
 		goto err_free_leds;

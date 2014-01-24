@@ -32,8 +32,18 @@
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 #include <linux/sched.h>
+=======
+#include <linux/interrupt.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/pkt_sched.h>
 #include <net/net_namespace.h>
 
@@ -41,8 +51,27 @@
 struct ifb_private {
 	struct tasklet_struct   ifb_tasklet;
 	int     tasklet_pending;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff_head     rq;
 	struct sk_buff_head     tq;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	struct u64_stats_sync	rsync;
+	struct sk_buff_head     rq;
+	u64 rx_packets;
+	u64 rx_bytes;
+
+	struct u64_stats_sync	tsync;
+	struct sk_buff_head     tq;
+	u64 tx_packets;
+	u64 tx_bytes;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int numifbs = 2;
@@ -54,10 +83,20 @@ static int ifb_close(struct net_device *dev);
 
 static void ri_tasklet(unsigned long dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	struct net_device *_dev = (struct net_device *)dev;
 	struct ifb_private *dp = netdev_priv(_dev);
 	struct net_device_stats *stats = &_dev->stats;
+=======
+	struct net_device *_dev = (struct net_device *)dev;
+	struct ifb_private *dp = netdev_priv(_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *_dev = (struct net_device *)dev;
+	struct ifb_private *dp = netdev_priv(_dev);
+>>>>>>> refs/remotes/origin/master
 	struct netdev_queue *txq;
 	struct sk_buff *skb;
 
@@ -77,15 +116,40 @@ static void ri_tasklet(unsigned long dev)
 
 		skb->tc_verd = 0;
 		skb->tc_verd = SET_TC_NCLS(skb->tc_verd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		stats->tx_packets++;
 		stats->tx_bytes +=skb->len;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+		u64_stats_update_begin(&dp->tsync);
+		dp->tx_packets++;
+		dp->tx_bytes += skb->len;
+		u64_stats_update_end(&dp->tsync);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		rcu_read_lock();
 		skb->dev = dev_get_by_index_rcu(&init_net, skb->skb_iif);
 		if (!skb->dev) {
 			rcu_read_unlock();
 			dev_kfree_skb(skb);
+<<<<<<< HEAD
 			stats->tx_dropped++;
+=======
+			_dev->stats.tx_dropped++;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		rcu_read_lock();
+		skb->dev = dev_get_by_index_rcu(dev_net(_dev), skb->skb_iif);
+		if (!skb->dev) {
+			rcu_read_unlock();
+			dev_kfree_skb(skb);
+			_dev->stats.tx_dropped++;
+>>>>>>> refs/remotes/origin/master
 			if (skb_queue_len(&dp->tq) != 0)
 				goto resched;
 			break;
@@ -120,16 +184,67 @@ resched:
 
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct net_device_ops ifb_netdev_ops = {
 	.ndo_open	= ifb_open,
 	.ndo_stop	= ifb_close,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct rtnl_link_stats64 *ifb_stats64(struct net_device *dev,
+					     struct rtnl_link_stats64 *stats)
+{
+	struct ifb_private *dp = netdev_priv(dev);
+	unsigned int start;
+
+	do {
+		start = u64_stats_fetch_begin_bh(&dp->rsync);
+		stats->rx_packets = dp->rx_packets;
+		stats->rx_bytes = dp->rx_bytes;
+	} while (u64_stats_fetch_retry_bh(&dp->rsync, start));
+
+	do {
+		start = u64_stats_fetch_begin_bh(&dp->tsync);
+
+		stats->tx_packets = dp->tx_packets;
+		stats->tx_bytes = dp->tx_bytes;
+
+	} while (u64_stats_fetch_retry_bh(&dp->tsync, start));
+
+	stats->rx_dropped = dev->stats.rx_dropped;
+	stats->tx_dropped = dev->stats.tx_dropped;
+
+	return stats;
+}
+
+
+static const struct net_device_ops ifb_netdev_ops = {
+	.ndo_open	= ifb_open,
+	.ndo_stop	= ifb_close,
+	.ndo_get_stats64 = ifb_stats64,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ndo_start_xmit	= ifb_xmit,
 	.ndo_validate_addr = eth_validate_addr,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IFB_FEATURES (NETIF_F_NO_CSUM | NETIF_F_SG  | NETIF_F_FRAGLIST	| \
+=======
+#define IFB_FEATURES (NETIF_F_HW_CSUM | NETIF_F_SG  | NETIF_F_FRAGLIST	| \
+>>>>>>> refs/remotes/origin/cm-10.0
 		      NETIF_F_TSO_ECN | NETIF_F_TSO | NETIF_F_TSO6	| \
 		      NETIF_F_HIGHDMA | NETIF_F_HW_VLAN_TX)
+=======
+#define IFB_FEATURES (NETIF_F_HW_CSUM | NETIF_F_SG  | NETIF_F_FRAGLIST	| \
+		      NETIF_F_TSO_ECN | NETIF_F_TSO | NETIF_F_TSO6	| \
+		      NETIF_F_HIGHDMA | NETIF_F_HW_VLAN_CTAG_TX		| \
+		      NETIF_F_HW_VLAN_STAG_TX)
+>>>>>>> refs/remotes/origin/master
 
 static void ifb_setup(struct net_device *dev)
 {
@@ -147,12 +262,22 @@ static void ifb_setup(struct net_device *dev)
 	dev->flags |= IFF_NOARP;
 	dev->flags &= ~IFF_MULTICAST;
 	dev->priv_flags &= ~(IFF_XMIT_DST_RELEASE | IFF_TX_SKB_SHARING);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	random_ether_addr(dev->dev_addr);
+=======
+	eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static netdev_tx_t ifb_xmit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct ifb_private *dp = netdev_priv(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device_stats *stats = &dev->stats;
 	u32 from = G_TC_FROM(skb->tc_verd);
 
@@ -162,6 +287,23 @@ static netdev_tx_t ifb_xmit(struct sk_buff *skb, struct net_device *dev)
 	if (!(from & (AT_INGRESS|AT_EGRESS)) || !skb->skb_iif) {
 		dev_kfree_skb(skb);
 		stats->rx_dropped++;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u32 from = G_TC_FROM(skb->tc_verd);
+
+	u64_stats_update_begin(&dp->rsync);
+	dp->rx_packets++;
+	dp->rx_bytes += skb->len;
+	u64_stats_update_end(&dp->rsync);
+
+	if (!(from & (AT_INGRESS|AT_EGRESS)) || !skb->skb_iif) {
+		dev_kfree_skb(skb);
+		dev->stats.rx_dropped++;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return NETDEV_TX_OK;
 	}
 
@@ -226,6 +368,10 @@ MODULE_PARM_DESC(numifbs, "Number of ifb devices");
 static int __init ifb_init_one(int index)
 {
 	struct net_device *dev_ifb;
+<<<<<<< HEAD
+=======
+	struct ifb_private *dp;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	dev_ifb = alloc_netdev(sizeof(struct ifb_private),
@@ -234,6 +380,13 @@ static int __init ifb_init_one(int index)
 	if (!dev_ifb)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	dp = netdev_priv(dev_ifb);
+	u64_stats_init(&dp->rsync);
+	u64_stats_init(&dp->tsync);
+
+>>>>>>> refs/remotes/origin/master
 	dev_ifb->rtnl_link_ops = &ifb_link_ops;
 	err = register_netdevice(dev_ifb);
 	if (err < 0)

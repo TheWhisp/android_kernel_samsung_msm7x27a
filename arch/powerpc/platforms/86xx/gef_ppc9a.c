@@ -24,7 +24,13 @@
 #include <linux/seq_file.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -37,9 +43,21 @@
 
 #include <sysdev/fsl_pci.h>
 #include <sysdev/fsl_soc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "mpc86xx.h"
 #include "gef_pic.h"
+=======
+#include <sysdev/ge/ge_pic.h>
+
+#include "mpc86xx.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <sysdev/ge/ge_pic.h>
+
+#include "mpc86xx.h"
+>>>>>>> refs/remotes/origin/master
 
 #undef DEBUG
 
@@ -74,6 +92,7 @@ static void __init gef_ppc9a_init_irq(void)
 static void __init gef_ppc9a_setup_arch(void)
 {
 	struct device_node *regs;
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 
@@ -81,6 +100,8 @@ static void __init gef_ppc9a_setup_arch(void)
 		fsl_add_bridge(np, 1);
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "GE Intelligent Platforms PPC9A 6U VME SBC\n");
 
@@ -88,6 +109,11 @@ static void __init gef_ppc9a_setup_arch(void)
 	mpc86xx_smp_init();
 #endif
 
+<<<<<<< HEAD
+=======
+	fsl_pci_assign_primary();
+
+>>>>>>> refs/remotes/origin/master
 	/* Remap basic board registers */
 	regs = of_find_compatible_node(NULL, NULL, "gef,ppc9a-fpga-regs");
 	if (regs) {
@@ -165,7 +191,11 @@ static void gef_ppc9a_show_cpuinfo(struct seq_file *m)
 		gef_ppc9a_get_vme_is_syscon() ? "yes" : "no");
 }
 
+<<<<<<< HEAD
 static void __init gef_ppc9a_nec_fixup(struct pci_dev *pdev)
+=======
+static void gef_ppc9a_nec_fixup(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int val;
 
@@ -222,6 +252,10 @@ static long __init mpc86xx_time_init(void)
 static __initdata struct of_device_id of_bus_ids[] = {
 	{ .compatible = "simple-bus", },
 	{ .compatible = "gianfar", },
+<<<<<<< HEAD
+=======
+	{ .compatible = "fsl,mpc8641-pcie", },
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 
@@ -232,7 +266,11 @@ static int __init declare_of_platform_devices(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 machine_device_initcall(gef_ppc9a, declare_of_platform_devices);
+=======
+machine_arch_initcall(gef_ppc9a, declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/master
 
 define_machine(gef_ppc9a) {
 	.name			= "GE PPC9A",

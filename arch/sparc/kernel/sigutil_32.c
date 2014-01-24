@@ -7,6 +7,14 @@
 #include <asm/sigcontext.h>
 #include <asm/fpumacro.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "sigutil.h"
 

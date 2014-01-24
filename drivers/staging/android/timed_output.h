@@ -31,7 +31,12 @@ struct timed_output_dev {
 	int		state;
 };
 
+<<<<<<< HEAD
 extern int timed_output_dev_register(struct timed_output_dev *dev);
 extern void timed_output_dev_unregister(struct timed_output_dev *dev);
+=======
+int timed_output_dev_register(struct timed_output_dev *dev);
+void timed_output_dev_unregister(struct timed_output_dev *dev);
+>>>>>>> refs/remotes/origin/master
 
 #endif

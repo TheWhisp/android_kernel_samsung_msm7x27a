@@ -25,7 +25,15 @@
 #include <linux/isa.h>
 #include <linux/time.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/wss.h>
 #include <sound/mpu401.h>
@@ -41,7 +49,15 @@ MODULE_SUPPORTED_DEVICE("{{Crystal Semiconductors,CS4231}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/master
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
 static long mpu_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
 static int irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* 5,7,9,11,12,15 */
@@ -68,7 +84,11 @@ MODULE_PARM_DESC(dma1, "DMA1 # for " CRD_NAME " driver.");
 module_param_array(dma2, int, NULL, 0444);
 MODULE_PARM_DESC(dma2, "DMA2 # for " CRD_NAME " driver.");
 
+<<<<<<< HEAD
 static int __devinit snd_cs4231_match(struct device *dev, unsigned int n)
+=======
+static int snd_cs4231_match(struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!enable[n])
 		return 0;
@@ -88,7 +108,11 @@ static int __devinit snd_cs4231_match(struct device *dev, unsigned int n)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cs4231_probe(struct device *dev, unsigned int n)
+=======
+static int snd_cs4231_probe(struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct snd_wss *chip;
@@ -131,7 +155,13 @@ static int __devinit snd_cs4231_probe(struct device *dev, unsigned int n)
 			mpu_irq[n] = -1;
 		if (snd_mpu401_uart_new(card, 0, MPU401_HW_CS4232,
 					mpu_port[n], 0, mpu_irq[n],
+<<<<<<< HEAD
+<<<<<<< HEAD
 					mpu_irq[n] >= 0 ? IRQF_DISABLED : 0,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					NULL) < 0)
 			dev_warn(dev, "MPU401 not detected\n");
 	}
@@ -149,10 +179,16 @@ out:	snd_card_free(card);
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_cs4231_remove(struct device *dev, unsigned int n)
 {
 	snd_card_free(dev_get_drvdata(dev));
 	dev_set_drvdata(dev, NULL);
+=======
+static int snd_cs4231_remove(struct device *dev, unsigned int n)
+{
+	snd_card_free(dev_get_drvdata(dev));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -181,7 +217,11 @@ static int snd_cs4231_resume(struct device *dev, unsigned int n)
 static struct isa_driver snd_cs4231_driver = {
 	.match		= snd_cs4231_match,
 	.probe		= snd_cs4231_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_cs4231_remove),
+=======
+	.remove		= snd_cs4231_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= snd_cs4231_suspend,
 	.resume		= snd_cs4231_resume,

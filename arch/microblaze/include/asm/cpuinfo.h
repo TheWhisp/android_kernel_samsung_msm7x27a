@@ -38,6 +38,14 @@ struct cpuinfo {
 	u32 use_exc;
 	u32 ver_code;
 	u32 mmu;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u32 mmu_privins;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 mmu_privins;
+>>>>>>> refs/remotes/origin/master
 	u32 endian;
 
 	/* CPU caches */

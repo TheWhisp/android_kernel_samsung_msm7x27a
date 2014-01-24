@@ -11,12 +11,28 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/uaccess.h>
 #include <linux/interrupt.h>
 #include <mach/irqs.h>
 #include <linux/io.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/regulator/consumer.h>
 #include <linux/clk.h>
 #include <mach/clk.h>
@@ -48,6 +64,8 @@ static long long vpe_do_div(long long num, long long den)
 static int vpe_start(void)
 {
 	/*  enable the frame irq, bit 0 = Display list 0 ROI done */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w_mb(1, vpe_ctrl->vpebase + VPE_INTR_ENABLE_OFFSET);
 	msm_io_dump(vpe_ctrl->vpebase, 0x120);
 	msm_io_dump(vpe_ctrl->vpebase + 0x10000, 0x250);
@@ -56,6 +74,23 @@ static int vpe_start(void)
 	msm_io_dump(vpe_ctrl->vpebase + 0x50400, 0x10);
 	/* this triggers the operation. */
 	msm_io_w(1, vpe_ctrl->vpebase + VPE_DL0_START_OFFSET);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msm_camera_io_w_mb(1, vpe_ctrl->vpebase + VPE_INTR_ENABLE_OFFSET);
+	msm_camera_io_dump(vpe_ctrl->vpebase, 0x120);
+	msm_camera_io_dump(vpe_ctrl->vpebase + 0x00400, 0x18);
+	msm_camera_io_dump(vpe_ctrl->vpebase + 0x10000, 0x250);
+	msm_camera_io_dump(vpe_ctrl->vpebase + 0x30000, 0x20);
+	msm_camera_io_dump(vpe_ctrl->vpebase + 0x50000, 0x30);
+	msm_camera_io_dump(vpe_ctrl->vpebase + 0x50400, 0x10);
+
+	/* this triggers the operation. */
+	msm_camera_io_w(1, vpe_ctrl->vpebase + VPE_DL0_START_OFFSET);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	wmb();
 	return 0;
 }
@@ -69,15 +104,36 @@ void vpe_reset_state_variables(void)
 
 static void vpe_config_axi_default(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(0x25, vpe_ctrl->vpebase + VPE_AXI_ARB_2_OFFSET);
+=======
+	msm_camera_io_w(0x25, vpe_ctrl->vpebase + VPE_AXI_ARB_2_OFFSET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(0x25, vpe_ctrl->vpebase + VPE_AXI_ARB_2_OFFSET);
+>>>>>>> refs/remotes/origin/cm-11.0
 	CDBG("%s: yaddr %ld cbcraddr %ld", __func__,
 		 vpe_ctrl->out_y_addr, vpe_ctrl->out_cbcr_addr);
 	if (!vpe_ctrl->out_y_addr || !vpe_ctrl->out_cbcr_addr)
 		return;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(vpe_ctrl->out_y_addr,
 		vpe_ctrl->vpebase + VPE_OUTP0_ADDR_OFFSET);
 	/* for video  CbCr address */
 	msm_io_w(vpe_ctrl->out_cbcr_addr,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msm_camera_io_w(vpe_ctrl->out_y_addr,
+		vpe_ctrl->vpebase + VPE_OUTP0_ADDR_OFFSET);
+	/* for video  CbCr address */
+	msm_camera_io_w(vpe_ctrl->out_cbcr_addr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vpe_ctrl->vpebase + VPE_OUTP1_ADDR_OFFSET);
 
 }
@@ -86,6 +142,8 @@ static int vpe_reset(void)
 {
 	uint32_t vpe_version;
 	uint32_t rc = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	vpe_reset_state_variables();
 	vpe_version = msm_io_r(vpe_ctrl->vpebase + VPE_HW_VERSION_OFFSET);
@@ -100,11 +158,44 @@ static int vpe_reset(void)
 	while (1) {
 		rc =
 		msm_io_r(vpe_ctrl->vpebase + VPE_SW_RESET_OFFSET) & 0x10;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	unsigned long flags = 0;
+
+	spin_lock_irqsave(&vpe_ctrl->lock, flags);
+	if (vpe_ctrl->state == VPE_STATE_IDLE) {
+		CDBG("%s: VPE already disabled.", __func__);
+		spin_unlock_irqrestore(&vpe_ctrl->lock, flags);
+		return rc;
+	}
+	spin_unlock_irqrestore(&vpe_ctrl->lock, flags);
+
+	vpe_reset_state_variables();
+	vpe_version = msm_camera_io_r(
+			vpe_ctrl->vpebase + VPE_HW_VERSION_OFFSET);
+	CDBG("vpe_version = 0x%x\n", vpe_version);
+	/* disable all interrupts.*/
+	msm_camera_io_w(0, vpe_ctrl->vpebase + VPE_INTR_ENABLE_OFFSET);
+	/* clear all pending interrupts*/
+	msm_camera_io_w(0x1fffff, vpe_ctrl->vpebase + VPE_INTR_CLEAR_OFFSET);
+	/* write sw_reset to reset the core. */
+	msm_camera_io_w(0x10, vpe_ctrl->vpebase + VPE_SW_RESET_OFFSET);
+	/* then poll the reset bit, it should be self-cleared. */
+	while (1) {
+		rc =
+		msm_camera_io_r(vpe_ctrl->vpebase + VPE_SW_RESET_OFFSET) & 0x10;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc == 0)
 			break;
 	}
 	/*  at this point, hardware is reset. Then pogram to default
 		values. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(VPE_AXI_RD_ARB_CONFIG_VALUE,
 			vpe_ctrl->vpebase + VPE_AXI_RD_ARB_CONFIG_OFFSET);
 
@@ -114,6 +205,22 @@ static int vpe_reset(void)
 	msm_io_w(VPE_DEFAULT_OP_MODE_VALUE,
 			vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET);
 	msm_io_w(VPE_DEFAULT_SCALE_CONFIG,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msm_camera_io_w(VPE_AXI_RD_ARB_CONFIG_VALUE,
+			vpe_ctrl->vpebase + VPE_AXI_RD_ARB_CONFIG_OFFSET);
+
+	msm_camera_io_w(VPE_CGC_ENABLE_VALUE,
+			vpe_ctrl->vpebase + VPE_CGC_EN_OFFSET);
+	msm_camera_io_w(1, vpe_ctrl->vpebase + VPE_CMD_MODE_OFFSET);
+	msm_camera_io_w(VPE_DEFAULT_OP_MODE_VALUE,
+			vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET);
+	msm_camera_io_w(VPE_DEFAULT_SCALE_CONFIG,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			vpe_ctrl->vpebase + VPE_SCALE_CONFIG_OFFSET);
 	vpe_config_axi_default();
 	return rc;
@@ -124,7 +231,15 @@ static int msm_vpe_cfg_update(void *pinfo)
 	uint32_t  rot_flag, rc = 0;
 	struct msm_pp_crop *pcrop = (struct msm_pp_crop *)pinfo;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rot_flag = msm_io_r(vpe_ctrl->vpebase +
+=======
+	rot_flag = msm_camera_io_r(vpe_ctrl->vpebase +
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rot_flag = msm_camera_io_r(vpe_ctrl->vpebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 						VPE_OP_MODE_OFFSET) & 0xE00;
 	if (pinfo != NULL) {
 		CDBG("%s: Crop info in2_w = %d, in2_h = %d "
@@ -144,36 +259,92 @@ void vpe_update_scale_coef(uint32_t *p)
 	uint32_t i, offset;
 	offset = *p;
 	for (i = offset; i < (VPE_SCALE_COEFF_NUM + offset); i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_SCALE_COEFF_LSBn(i));
 		msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_SCALE_COEFF_MSBn(i));
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		msm_camera_io_w(*(++p),
+			vpe_ctrl->vpebase + VPE_SCALE_COEFF_LSBn(i));
+		msm_camera_io_w(*(++p),
+			vpe_ctrl->vpebase + VPE_SCALE_COEFF_MSBn(i));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
 void vpe_input_plane_config(uint32_t *p)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(*p, vpe_ctrl->vpebase + VPE_SRC_FORMAT_OFFSET);
 	msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_SRC_UNPACK_PATTERN1_OFFSET);
 	msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_SRC_IMAGE_SIZE_OFFSET);
 	msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_SRC_YSTRIDE1_OFFSET);
 	msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_SRC_SIZE_OFFSET);
 	msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_SRC_XY_OFFSET);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msm_camera_io_w(*p, vpe_ctrl->vpebase + VPE_SRC_FORMAT_OFFSET);
+	msm_camera_io_w(*(++p),
+		vpe_ctrl->vpebase + VPE_SRC_UNPACK_PATTERN1_OFFSET);
+	msm_camera_io_w(*(++p), vpe_ctrl->vpebase + VPE_SRC_IMAGE_SIZE_OFFSET);
+	msm_camera_io_w(*(++p), vpe_ctrl->vpebase + VPE_SRC_YSTRIDE1_OFFSET);
+	msm_camera_io_w(*(++p), vpe_ctrl->vpebase + VPE_SRC_SIZE_OFFSET);
+	msm_camera_io_w(*(++p), vpe_ctrl->vpebase + VPE_SRC_XY_OFFSET);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void vpe_output_plane_config(uint32_t *p)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(*p, vpe_ctrl->vpebase + VPE_OUT_FORMAT_OFFSET);
 	msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_OUT_PACK_PATTERN1_OFFSET);
 	msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_OUT_YSTRIDE1_OFFSET);
 	msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_OUT_SIZE_OFFSET);
 	msm_io_w(*(++p), vpe_ctrl->vpebase + VPE_OUT_XY_OFFSET);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msm_camera_io_w(*p, vpe_ctrl->vpebase + VPE_OUT_FORMAT_OFFSET);
+	msm_camera_io_w(*(++p),
+		vpe_ctrl->vpebase + VPE_OUT_PACK_PATTERN1_OFFSET);
+	msm_camera_io_w(*(++p), vpe_ctrl->vpebase + VPE_OUT_YSTRIDE1_OFFSET);
+	msm_camera_io_w(*(++p), vpe_ctrl->vpebase + VPE_OUT_SIZE_OFFSET);
+	msm_camera_io_w(*(++p), vpe_ctrl->vpebase + VPE_OUT_XY_OFFSET);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int vpe_operation_config(uint32_t *p)
 {
 	uint32_t w, h, temp;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(*p, vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET);
 
 	temp = msm_io_r(vpe_ctrl->vpebase + VPE_OUT_SIZE_OFFSET);
+=======
+	msm_camera_io_w(*p, vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET);
+
+	temp = msm_camera_io_r(vpe_ctrl->vpebase + VPE_OUT_SIZE_OFFSET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(*p, vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET);
+
+	temp = msm_camera_io_r(vpe_ctrl->vpebase + VPE_OUT_SIZE_OFFSET);
+>>>>>>> refs/remotes/origin/cm-11.0
 	w = temp & 0xFFF;
 	h = (temp & 0xFFF0000) >> 16;
 	if (*p++ & 0xE00) {
@@ -215,8 +386,18 @@ static int vpe_update_scaler(struct msm_pp_crop *pcrop)
 	/* assumption is both direction need zoom. this can be
 	improved. */
 	temp =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msm_io_r(vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET) | 0x3;
 	msm_io_w(temp, vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET);
+=======
+		msm_camera_io_r(vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET) | 0x3;
+	msm_camera_io_w(temp, vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_camera_io_r(vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET) | 0x3;
+	msm_camera_io_w(temp, vpe_ctrl->vpebase + VPE_OP_MODE_OFFSET);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	src_ROI_width = pcrop->src_w;
 	src_ROI_height = pcrop->src_h;
@@ -228,7 +409,15 @@ static int vpe_update_scaler(struct msm_pp_crop *pcrop)
 		out_ROI_height);
 	src_roi = (src_ROI_height << 16) + src_ROI_width;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(src_roi, vpe_ctrl->vpebase + VPE_SRC_SIZE_OFFSET);
+=======
+	msm_camera_io_w(src_roi, vpe_ctrl->vpebase + VPE_SRC_SIZE_OFFSET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(src_roi, vpe_ctrl->vpebase + VPE_SRC_SIZE_OFFSET);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	src_x = pcrop->src_x;
 	src_y = pcrop->src_y;
@@ -236,7 +425,15 @@ static int vpe_update_scaler(struct msm_pp_crop *pcrop)
 	CDBG("src_x = %d, src_y=%d.\n", src_x, src_y);
 
 	src_xy = src_y*(1<<16) + src_x;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(src_xy, vpe_ctrl->vpebase +
+=======
+	msm_camera_io_w(src_xy, vpe_ctrl->vpebase +
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_camera_io_w(src_xy, vpe_ctrl->vpebase +
+>>>>>>> refs/remotes/origin/cm-11.0
 			VPE_SRC_XY_OFFSET);
 	CDBG("src_xy = %d, src_roi=%d.\n", src_xy, src_roi);
 
@@ -376,6 +573,8 @@ static int vpe_update_scaler(struct msm_pp_crop *pcrop)
 	CDBG("phase init x = %d, init y = %d.\n",
 		 phase_init_x, phase_init_y);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w(phase_step_x, vpe_ctrl->vpebase +
 			VPE_SCALE_PHASEX_STEP_OFFSET);
 	msm_io_w(phase_step_y, vpe_ctrl->vpebase +
@@ -385,6 +584,22 @@ static int vpe_update_scaler(struct msm_pp_crop *pcrop)
 			VPE_SCALE_PHASEX_INIT_OFFSET);
 
 	msm_io_w(phase_init_y, vpe_ctrl->vpebase +
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msm_camera_io_w(phase_step_x, vpe_ctrl->vpebase +
+			VPE_SCALE_PHASEX_STEP_OFFSET);
+	msm_camera_io_w(phase_step_y, vpe_ctrl->vpebase +
+			VPE_SCALE_PHASEY_STEP_OFFSET);
+
+	msm_camera_io_w(phase_init_x, vpe_ctrl->vpebase +
+			VPE_SCALE_PHASEX_INIT_OFFSET);
+
+	msm_camera_io_w(phase_init_y, vpe_ctrl->vpebase +
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			VPE_SCALE_PHASEY_INIT_OFFSET);
 
 	return 1;
@@ -406,6 +621,8 @@ static int msm_send_frame_to_vpe(void)
 	unsigned long flags;
 
 	spin_lock_irqsave(&vpe_ctrl->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_io_w((vpe_ctrl->pp_frame_info->src_frame.sp.phy_addr +
 			  vpe_ctrl->pp_frame_info->src_frame.sp.y_off),
 			vpe_ctrl->vpebase + VPE_SRCP0_ADDR_OFFSET);
@@ -416,6 +633,23 @@ static int msm_send_frame_to_vpe(void)
 			  vpe_ctrl->pp_frame_info->dest_frame.sp.y_off),
 			vpe_ctrl->vpebase + VPE_OUTP0_ADDR_OFFSET);
 	msm_io_w((vpe_ctrl->pp_frame_info->dest_frame.sp.phy_addr +
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msm_camera_io_w((vpe_ctrl->pp_frame_info->src_frame.sp.phy_addr +
+			  vpe_ctrl->pp_frame_info->src_frame.sp.y_off),
+			vpe_ctrl->vpebase + VPE_SRCP0_ADDR_OFFSET);
+	msm_camera_io_w((vpe_ctrl->pp_frame_info->src_frame.sp.phy_addr +
+			  vpe_ctrl->pp_frame_info->src_frame.sp.cbcr_off),
+			vpe_ctrl->vpebase + VPE_SRCP1_ADDR_OFFSET);
+	msm_camera_io_w((vpe_ctrl->pp_frame_info->dest_frame.sp.phy_addr +
+			  vpe_ctrl->pp_frame_info->dest_frame.sp.y_off),
+			vpe_ctrl->vpebase + VPE_OUTP0_ADDR_OFFSET);
+	msm_camera_io_w((vpe_ctrl->pp_frame_info->dest_frame.sp.phy_addr +
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			  vpe_ctrl->pp_frame_info->dest_frame.sp.cbcr_off),
 			vpe_ctrl->vpebase + VPE_OUTP1_ADDR_OFFSET);
 	vpe_ctrl->state = VPE_STATE_ACTIVE;
@@ -457,11 +691,25 @@ DECLARE_TASKLET(vpe_tasklet, vpe_do_tasklet, 0);
 
 static irqreturn_t vpe_parse_irq(int irq_num, void *data)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vpe_ctrl->irq_status = msm_io_r_mb(vpe_ctrl->vpebase +
 							VPE_INTR_STATUS_OFFSET);
 	msm_io_w_mb(vpe_ctrl->irq_status, vpe_ctrl->vpebase +
 				VPE_INTR_CLEAR_OFFSET);
 	msm_io_w(0, vpe_ctrl->vpebase + VPE_INTR_ENABLE_OFFSET);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	vpe_ctrl->irq_status = msm_camera_io_r_mb(vpe_ctrl->vpebase +
+							VPE_INTR_STATUS_OFFSET);
+	msm_camera_io_w_mb(vpe_ctrl->irq_status, vpe_ctrl->vpebase +
+				VPE_INTR_CLEAR_OFFSET);
+	msm_camera_io_w(0, vpe_ctrl->vpebase + VPE_INTR_ENABLE_OFFSET);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	CDBG("%s: vpe_parse_irq =0x%x.\n", __func__, vpe_ctrl->irq_status);
 	tasklet_schedule(&vpe_tasklet);
 	return IRQ_HANDLED;
@@ -568,6 +816,8 @@ static int msm_vpe_do_pp(struct msm_mctl_pp_cmd *cmd,
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static long msm_vpe_subdev_ioctl(struct v4l2_subdev *sd,
 			unsigned int subdev_cmd, void *arg)
 {
@@ -630,6 +880,17 @@ static int msm_vpe_resource_init(struct platform_device *pdev);
 
 int msm_vpe_subdev_init(struct v4l2_subdev *sd, void *data,
 	struct platform_device *pdev)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int msm_vpe_resource_init(void);
+
+int msm_vpe_subdev_init(struct v4l2_subdev *sd,
+		struct msm_cam_media_controller *mctl)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int rc = 0;
 	CDBG("%s:begin", __func__);
@@ -639,19 +900,43 @@ int msm_vpe_subdev_init(struct v4l2_subdev *sd, void *data,
 	}
 	atomic_set(&vpe_init_done, 1);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = msm_vpe_resource_init(pdev);
+=======
+	rc = msm_vpe_resource_init();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = msm_vpe_resource_init();
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0) {
 		atomic_set(&vpe_init_done, 0);
 		return rc;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	v4l2_set_subdev_hostdata(sd, data);
+=======
+	v4l2_set_subdev_hostdata(sd, mctl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	v4l2_set_subdev_hostdata(sd, mctl);
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock_init(&vpe_ctrl->lock);
 	CDBG("%s:end", __func__);
 	return rc;
 }
 EXPORT_SYMBOL(msm_vpe_subdev_init);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_vpe_resource_init(struct platform_device *pdev)
+=======
+static int msm_vpe_resource_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_vpe_resource_init(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int rc = 0;
 
@@ -668,10 +953,24 @@ static int msm_vpe_resource_init(struct platform_device *pdev)
 /* from this part it is error handling. */
 vpe_unmap_mem_region:
 	iounmap(vpe_ctrl->vpebase);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return rc;  /* this rc should have error code. */
 }
 
 void msm_vpe_subdev_release(struct platform_device *pdev)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	vpe_ctrl->vpebase = NULL;
+	return rc;  /* this rc should have error code. */
+}
+
+void msm_vpe_subdev_release(void)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	if (!atomic_read(&vpe_init_done)) {
 		/* no VPE object created */
@@ -679,11 +978,104 @@ void msm_vpe_subdev_release(struct platform_device *pdev)
 		return;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iounmap(vpe_ctrl->vpebase);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	vpe_reset();
+	vpe_disable();
+	iounmap(vpe_ctrl->vpebase);
+	vpe_ctrl->vpebase = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&vpe_init_done, 0);
 }
 EXPORT_SYMBOL(msm_vpe_subdev_release);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static long msm_vpe_subdev_ioctl(struct v4l2_subdev *sd,
+			unsigned int subdev_cmd, void *arg)
+{
+	struct msm_mctl_pp_params *vpe_params;
+	struct msm_mctl_pp_cmd *cmd;
+	int rc = 0;
+
+	if (subdev_cmd == VIDIOC_MSM_VPE_INIT) {
+		struct msm_cam_media_controller *mctl =
+			(struct msm_cam_media_controller *)arg;
+		msm_vpe_subdev_init(sd, mctl);
+	} else if (subdev_cmd == VIDIOC_MSM_VPE_RELEASE) {
+		msm_vpe_subdev_release();
+	} else if (subdev_cmd == VIDIOC_MSM_VPE_CFG) {
+		vpe_params = (struct msm_mctl_pp_params *)arg;
+		cmd = vpe_params->cmd;
+		switch (cmd->id) {
+		case VPE_CMD_INIT:
+		case VPE_CMD_DEINIT:
+			break;
+		case VPE_CMD_RESET:
+			rc = vpe_reset();
+			break;
+		case VPE_CMD_OPERATION_MODE_CFG:
+			rc = vpe_operation_config(cmd->value);
+			break;
+		case VPE_CMD_INPUT_PLANE_CFG:
+			vpe_input_plane_config(cmd->value);
+			break;
+		case VPE_CMD_OUTPUT_PLANE_CFG:
+			vpe_output_plane_config(cmd->value);
+			break;
+		case VPE_CMD_SCALE_CFG_TYPE:
+			vpe_update_scale_coef(cmd->value);
+			break;
+		case VPE_CMD_ZOOM: {
+			rc = msm_vpe_do_pp(cmd,
+			(struct msm_mctl_pp_frame_info *)vpe_params->data);
+			break;
+		}
+		case VPE_CMD_ENABLE: {
+			struct msm_vpe_clock_rate *clk_rate = cmd->value;
+			int turbo_mode = (int)clk_rate->rate;
+			rc = turbo_mode ?
+				vpe_enable(VPE_TURBO_MODE_CLOCK_RATE) :
+				vpe_enable(VPE_NORMAL_MODE_CLOCK_RATE);
+			break;
+		}
+		case VPE_CMD_DISABLE:
+			rc = vpe_disable();
+			break;
+		case VPE_CMD_INPUT_PLANE_UPDATE:
+		case VPE_CMD_FLUSH:
+		default:
+			break;
+		}
+		CDBG("%s: end, id = %d, rc = %d", __func__, cmd->id, rc);
+	}
+	return rc;
+}
+
+static const struct v4l2_subdev_core_ops msm_vpe_subdev_core_ops = {
+	.ioctl = msm_vpe_subdev_ioctl,
+};
+
+static const struct v4l2_subdev_ops msm_vpe_subdev_ops = {
+	.core = &msm_vpe_subdev_core_ops,
+};
+
+static const struct v4l2_subdev_internal_ops msm_vpe_internal_ops;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit vpe_probe(struct platform_device *pdev)
 {
 	int rc = 0;
@@ -696,6 +1088,16 @@ static int __devinit vpe_probe(struct platform_device *pdev)
 
 	v4l2_subdev_init(&vpe_ctrl->subdev, &msm_vpe_subdev_ops);
 	v4l2_set_subdevdata(&vpe_ctrl->subdev, vpe_ctrl);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	vpe_ctrl->subdev.internal_ops = &msm_vpe_internal_ops;
+	vpe_ctrl->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vpe_ctrl->subdev.internal_ops = &msm_vpe_internal_ops;
+	vpe_ctrl->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+>>>>>>> refs/remotes/origin/cm-11.0
 	snprintf(vpe_ctrl->subdev.name, sizeof(vpe_ctrl->subdev.name), "vpe");
 	platform_set_drvdata(pdev, &vpe_ctrl->subdev);
 
@@ -723,7 +1125,15 @@ static int __devinit vpe_probe(struct platform_device *pdev)
 	}
 
 	rc = request_irq(vpe_ctrl->vpeirq->start, vpe_parse_irq,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		IRQF_TRIGGER_RISING, "vfe", 0);
+=======
+		IRQF_TRIGGER_RISING, "vpe", 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		IRQF_TRIGGER_RISING, "vpe", 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rc < 0) {
 		release_mem_region(vpe_ctrl->vpemem->start,
 			resource_size(vpe_ctrl->vpemem));
@@ -735,6 +1145,14 @@ static int __devinit vpe_probe(struct platform_device *pdev)
 	disable_irq(vpe_ctrl->vpeirq->start);
 
 	vpe_ctrl->pdev = pdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	msm_cam_register_subdev_node(&vpe_ctrl->subdev, VPE_DEV, pdev->id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_cam_register_subdev_node(&vpe_ctrl->subdev, VPE_DEV, pdev->id);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 vpe_no_resource:

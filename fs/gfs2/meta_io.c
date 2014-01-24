@@ -37,7 +37,15 @@ static int gfs2_aspace_writepage(struct page *page, struct writeback_control *wb
 {
 	struct buffer_head *bh, *head;
 	int nr_underway = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int write_op = REQ_META |
+=======
+	int write_op = REQ_META | REQ_PRIO |
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int write_op = REQ_META | REQ_PRIO |
+>>>>>>> refs/remotes/origin/master
 		(wbc->sync_mode == WB_SYNC_ALL ? WRITE_SYNC : WRITE);
 
 	BUG_ON(!PageLocked(page));
@@ -52,7 +60,11 @@ static int gfs2_aspace_writepage(struct page *page, struct writeback_control *wb
 		/*
 		 * If it's a fully non-blocking write attempt and we cannot
 		 * lock the buffer then redirty the page.  Note that this can
+<<<<<<< HEAD
 		 * potentially cause a busy-wait loop from pdflush and kswapd
+=======
+		 * potentially cause a busy-wait loop from flusher thread and kswapd
+>>>>>>> refs/remotes/origin/master
 		 * activity, but those code paths have their own higher-level
 		 * throttling.
 		 */
@@ -98,6 +110,7 @@ const struct address_space_operations gfs2_meta_aops = {
 };
 
 /**
+<<<<<<< HEAD
  * gfs2_meta_sync - Sync all buffers associated with a glock
  * @gl: The glock
  *
@@ -116,6 +129,8 @@ void gfs2_meta_sync(struct gfs2_glock *gl)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * gfs2_getbuf - Get a buffer with a given address space
  * @gl: the glock
  * @blkno: the block number (filesystem scope)
@@ -134,6 +149,12 @@ struct buffer_head *gfs2_getbuf(struct gfs2_glock *gl, u64 blkno, int create)
 	unsigned long index;
 	unsigned int bufnum;
 
+<<<<<<< HEAD
+=======
+	if (mapping == NULL)
+		mapping = &sdp->sd_aspace;
+
+>>>>>>> refs/remotes/origin/master
 	shift = PAGE_CACHE_SHIFT - sdp->sd_sb.sb_bsize_shift;
 	index = blkno >> shift;             /* convert block to page */
 	bufnum = blkno - (index << shift);  /* block buf index within page */
@@ -213,8 +234,15 @@ int gfs2_meta_read(struct gfs2_glock *gl, u64 blkno, int flags,
 	struct gfs2_sbd *sdp = gl->gl_sbd;
 	struct buffer_head *bh;
 
+<<<<<<< HEAD
 	if (unlikely(test_bit(SDF_SHUTDOWN, &sdp->sd_flags)))
 		return -EIO;
+=======
+	if (unlikely(test_bit(SDF_SHUTDOWN, &sdp->sd_flags))) {
+		*bhp = NULL;
+		return -EIO;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	*bhp = bh = gfs2_getbuf(gl, blkno, CREATE);
 
@@ -225,7 +253,15 @@ int gfs2_meta_read(struct gfs2_glock *gl, u64 blkno, int flags,
 	}
 	bh->b_end_io = end_buffer_read_sync;
 	get_bh(bh);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	submit_bh(READ_SYNC | REQ_META, bh);
+=======
+	submit_bh(READ_SYNC | REQ_META | REQ_PRIO, bh);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	submit_bh(READ_SYNC | REQ_META | REQ_PRIO, bh);
+>>>>>>> refs/remotes/origin/master
 	if (!(flags & DIO_WAIT))
 		return 0;
 
@@ -235,6 +271,10 @@ int gfs2_meta_read(struct gfs2_glock *gl, u64 blkno, int flags,
 		if (tr && tr->tr_touched)
 			gfs2_io_error_bh(sdp, bh);
 		brelse(bh);
+<<<<<<< HEAD
+=======
+		*bhp = NULL;
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -268,6 +308,7 @@ int gfs2_meta_wait(struct gfs2_sbd *sdp, struct buffer_head *bh)
 	return 0;
 }
 
+<<<<<<< HEAD
 /**
  * gfs2_attach_bufdata - attach a struct gfs2_bufdata structure to a buffer
  * @gl: the glock the buffer belongs to
@@ -304,16 +345,26 @@ void gfs2_attach_bufdata(struct gfs2_glock *gl, struct buffer_head *bh,
 		unlock_page(bh->b_page);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void gfs2_remove_from_journal(struct buffer_head *bh, struct gfs2_trans *tr, int meta)
 {
 	struct address_space *mapping = bh->b_page->mapping;
 	struct gfs2_sbd *sdp = gfs2_mapping2sbd(mapping);
 	struct gfs2_bufdata *bd = bh->b_private;
+<<<<<<< HEAD
+=======
+	int was_pinned = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (test_clear_buffer_pinned(bh)) {
 		trace_gfs2_pin(bd, 0);
 		atomic_dec(&sdp->sd_log_pinned);
+<<<<<<< HEAD
 		list_del_init(&bd->bd_le.le_list);
+=======
+		list_del_init(&bd->bd_list);
+>>>>>>> refs/remotes/origin/master
 		if (meta) {
 			gfs2_assert_warn(sdp, sdp->sd_log_num_buf);
 			sdp->sd_log_num_buf--;
@@ -324,16 +375,28 @@ void gfs2_remove_from_journal(struct buffer_head *bh, struct gfs2_trans *tr, int
 			tr->tr_num_databuf_rm++;
 		}
 		tr->tr_touched = 1;
+<<<<<<< HEAD
+=======
+		was_pinned = 1;
+>>>>>>> refs/remotes/origin/master
 		brelse(bh);
 	}
 	if (bd) {
 		spin_lock(&sdp->sd_ail_lock);
+<<<<<<< HEAD
 		if (bd->bd_ail) {
 			gfs2_remove_from_ail(bd);
 			bh->b_private = NULL;
 			bd->bd_bh = NULL;
 			bd->bd_blkno = bh->b_blocknr;
 			gfs2_trans_add_revoke(sdp, bd);
+=======
+		if (bd->bd_tr) {
+			gfs2_trans_add_revoke(sdp, bd);
+		} else if (was_pinned) {
+			bh->b_private = NULL;
+			kmem_cache_free(gfs2_bufdata_cachep, bd);
+>>>>>>> refs/remotes/origin/master
 		}
 		spin_unlock(&sdp->sd_ail_lock);
 	}
@@ -375,19 +438,27 @@ void gfs2_meta_wipe(struct gfs2_inode *ip, u64 bstart, u32 blen)
  * @ip: The GFS2 inode
  * @height: The level of this buf in the metadata (indir addr) tree (if any)
  * @num: The block number (device relative) of the buffer
+<<<<<<< HEAD
  * @new: Non-zero if we may create a new buffer
+=======
+>>>>>>> refs/remotes/origin/master
  * @bhp: the buffer is returned here
  *
  * Returns: errno
  */
 
 int gfs2_meta_indirect_buffer(struct gfs2_inode *ip, int height, u64 num,
+<<<<<<< HEAD
 			      int new, struct buffer_head **bhp)
+=======
+			      struct buffer_head **bhp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gfs2_sbd *sdp = GFS2_SB(&ip->i_inode);
 	struct gfs2_glock *gl = ip->i_gl;
 	struct buffer_head *bh;
 	int ret = 0;
+<<<<<<< HEAD
 
 	if (new) {
 		BUG_ON(height == 0);
@@ -402,6 +473,14 @@ int gfs2_meta_indirect_buffer(struct gfs2_inode *ip, int height, u64 num,
 			brelse(bh);
 			ret = -EIO;
 		}
+=======
+	u32 mtype = height ? GFS2_METATYPE_IN : GFS2_METATYPE_DI;
+
+	ret = gfs2_meta_read(gl, num, DIO_WAIT, &bh);
+	if (ret == 0 && gfs2_metatype_check(sdp, bh, mtype)) {
+		brelse(bh);
+		ret = -EIO;
+>>>>>>> refs/remotes/origin/master
 	}
 	*bhp = bh;
 	return ret;
@@ -444,7 +523,15 @@ struct buffer_head *gfs2_meta_ra(struct gfs2_glock *gl, u64 dblock, u32 extlen)
 		bh = gfs2_getbuf(gl, dblock, CREATE);
 
 		if (!buffer_uptodate(bh) && !buffer_locked(bh))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ll_rw_block(READA, 1, &bh);
+=======
+			ll_rw_block(READA | REQ_META, 1, &bh);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ll_rw_block(READA | REQ_META, 1, &bh);
+>>>>>>> refs/remotes/origin/master
 		brelse(bh);
 		dblock++;
 		extlen--;

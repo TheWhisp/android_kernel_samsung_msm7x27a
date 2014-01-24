@@ -1,9 +1,22 @@
 config DX_SEP
 	tristate "Discretix SEP driver"
+<<<<<<< HEAD
 	depends on PCI
 	help
 	  Discretix SEP driver; used for the security processor subsystem
+<<<<<<< HEAD
 	  on bard the Intel Mobile Internet Device.
+=======
+	  on board the Intel Mobile Internet Device and adds SEP availability
+	  to the kernel crypto infrastructure
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on PCI && CRYPTO
+	help
+	  Discretix SEP driver; used for the security processor subsystem
+	  on board the Intel Mobile Internet Device and adds SEP availability
+	  to the kernel crypto infrastructure
+>>>>>>> refs/remotes/origin/master
 
 	  The driver's name is sep_driver.
 

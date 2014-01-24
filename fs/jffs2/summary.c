@@ -11,6 +11,16 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/mtd/mtd.h>
@@ -442,6 +452,8 @@ static int jffs2_sum_process_sum_data(struct jffs2_sb_info *c, struct jffs2_eras
 				/* This should never happen, but https://dev.laptop.org/ticket/4184 */
 				checkedlen = strnlen(spd->name, spd->nsize);
 				if (!checkedlen) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 					printk(KERN_ERR "Dirent at %08x has zero at start of name. Aborting mount.\n",
 					       jeb->offset + je32_to_cpu(spd->offset));
 					return -EIO;
@@ -449,6 +461,23 @@ static int jffs2_sum_process_sum_data(struct jffs2_sb_info *c, struct jffs2_eras
 				if (checkedlen < spd->nsize) {
 					printk(KERN_ERR "Dirent at %08x has zeroes in name. Truncating to %d chars\n",
 					       jeb->offset + je32_to_cpu(spd->offset), checkedlen);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					pr_err("Dirent at %08x has zero at start of name. Aborting mount.\n",
+					       jeb->offset +
+					       je32_to_cpu(spd->offset));
+					return -EIO;
+				}
+				if (checkedlen < spd->nsize) {
+					pr_err("Dirent at %08x has zeroes in name. Truncating to %d chars\n",
+					       jeb->offset +
+					       je32_to_cpu(spd->offset),
+					       checkedlen);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 
 
@@ -808,8 +837,16 @@ static int jffs2_sum_write_data(struct jffs2_sb_info *c, struct jffs2_eraseblock
 
 	sum_ofs = jeb->offset + c->sector_size - jeb->free_size;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_summary("JFFS2: writing out data to flash to pos : 0x%08x\n",
 		    sum_ofs);
+=======
+	dbg_summary("writing out data to flash to pos : 0x%08x\n", sum_ofs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_summary("writing out data to flash to pos : 0x%08x\n", sum_ofs);
+>>>>>>> refs/remotes/origin/master
 
 	ret = jffs2_flash_writev(c, vecs, 2, sum_ofs, &retlen, 0);
 

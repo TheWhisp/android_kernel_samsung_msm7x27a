@@ -60,7 +60,13 @@
 #include <linux/ioctl.h>
 #include <linux/synclink.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/dma.h>
@@ -103,8 +109,12 @@ static MGSL_PARAMS default_params = {
 	ASYNC_PARITY_NONE		/* unsigned char parity; */
 };
 
+<<<<<<< HEAD
 typedef struct
 {
+=======
+typedef struct {
+>>>>>>> refs/remotes/origin/master
 	int count;
 	unsigned char status;
 	char data[1];
@@ -211,7 +221,11 @@ typedef struct _mgslpc_info {
 	char testing_irq;
 	unsigned int init_error;	/* startup error (DIAGS)	*/
 
+<<<<<<< HEAD
 	char flag_buf[MAX_ASYNC_BUFFER_SIZE];
+=======
+	char *flag_buf;
+>>>>>>> refs/remotes/origin/master
 	bool drop_rts_on_tx_done;
 
 	struct	_input_signal_events	input_signal_events;
@@ -327,10 +341,17 @@ typedef struct _mgslpc_info {
 #define write_reg16(info, reg, val) outw((val), (info)->io_base + (reg))
 
 #define set_reg_bits(info, reg, mask) \
+<<<<<<< HEAD
     write_reg(info, (reg), \
 		 (unsigned char) (read_reg(info, (reg)) | (mask)))
 #define clear_reg_bits(info, reg, mask) \
     write_reg(info, (reg), \
+=======
+	write_reg(info, (reg), \
+		 (unsigned char) (read_reg(info, (reg)) | (mask)))
+#define clear_reg_bits(info, reg, mask) \
+	write_reg(info, (reg), \
+>>>>>>> refs/remotes/origin/master
 		 (unsigned char) (read_reg(info, (reg)) & ~(mask)))
 /*
  * interrupt enable/disable routines
@@ -357,10 +378,17 @@ static void irq_enable(MGSLPC_INFO *info, unsigned char channel, unsigned short 
 }
 
 #define port_irq_disable(info, mask) \
+<<<<<<< HEAD
   { info->pim_value |= (mask); write_reg(info, PIM, info->pim_value); }
 
 #define port_irq_enable(info, mask) \
   { info->pim_value &= ~(mask); write_reg(info, PIM, info->pim_value); }
+=======
+	{ info->pim_value |= (mask); write_reg(info, PIM, info->pim_value); }
+
+#define port_irq_enable(info, mask) \
+	{ info->pim_value &= ~(mask); write_reg(info, PIM, info->pim_value); }
+>>>>>>> refs/remotes/origin/master
 
 static void rx_start(MGSLPC_INFO *info);
 static void rx_stop(MGSLPC_INFO *info);
@@ -398,7 +426,11 @@ static int adapter_test(MGSLPC_INFO *info);
 
 static int claim_resources(MGSLPC_INFO *info);
 static void release_resources(MGSLPC_INFO *info);
+<<<<<<< HEAD
 static void mgslpc_add_device(MGSLPC_INFO *info);
+=======
+static int mgslpc_add_device(MGSLPC_INFO *info);
+>>>>>>> refs/remotes/origin/master
 static void mgslpc_remove_device(MGSLPC_INFO *info);
 
 static bool rx_get_frame(MGSLPC_INFO *info, struct tty_struct *tty);
@@ -439,7 +471,15 @@ static int mgslpc_device_count = 0;
  * .text section address and breakpoint on module load.
  * This is useful for use with gdb and add-symbol-file command.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int break_on_load=0;
+=======
+static bool break_on_load=0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool break_on_load=0;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Driver major number, defaults to zero to get auto
@@ -515,6 +555,7 @@ static const struct tty_port_operations mgslpc_port_ops = {
 
 static int mgslpc_probe(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
     MGSLPC_INFO *info;
     int ret;
 
@@ -556,6 +597,58 @@ static int mgslpc_probe(struct pcmcia_device *link)
     mgslpc_add_device(info);
 
     return 0;
+=======
+	MGSLPC_INFO *info;
+	int ret;
+
+	if (debug_level >= DEBUG_LEVEL_INFO)
+		printk("mgslpc_attach\n");
+
+	info = kzalloc(sizeof(MGSLPC_INFO), GFP_KERNEL);
+	if (!info) {
+		printk("Error can't allocate device instance data\n");
+		return -ENOMEM;
+	}
+
+	info->magic = MGSLPC_MAGIC;
+	tty_port_init(&info->port);
+	info->port.ops = &mgslpc_port_ops;
+	INIT_WORK(&info->task, bh_handler);
+	info->max_frame_size = 4096;
+	info->port.close_delay = 5*HZ/10;
+	info->port.closing_wait = 30*HZ;
+	init_waitqueue_head(&info->status_event_wait_q);
+	init_waitqueue_head(&info->event_wait_q);
+	spin_lock_init(&info->lock);
+	spin_lock_init(&info->netlock);
+	memcpy(&info->params,&default_params,sizeof(MGSL_PARAMS));
+	info->idle_mode = HDLC_TXIDLE_FLAGS;
+	info->imra_value = 0xffff;
+	info->imrb_value = 0xffff;
+	info->pim_value = 0xff;
+
+	info->p_dev = link;
+	link->priv = info;
+
+	/* Initialize the struct pcmcia_device structure */
+
+	ret = mgslpc_config(link);
+	if (ret != 0)
+		goto failed;
+
+	ret = mgslpc_add_device(info);
+	if (ret != 0)
+		goto failed_release;
+
+	return 0;
+
+failed_release:
+	mgslpc_release((u_long)link);
+failed:
+	tty_port_destroy(&info->port);
+	kfree(info);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Card has been inserted.
@@ -568,6 +661,7 @@ static int mgslpc_ioprobe(struct pcmcia_device *p_dev, void *priv_data)
 
 static int mgslpc_config(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
     MGSLPC_INFO *info = link->priv;
     int ret;
 
@@ -597,6 +691,37 @@ static int mgslpc_config(struct pcmcia_device *link)
 failed:
     mgslpc_release((u_long)link);
     return -ENODEV;
+=======
+	MGSLPC_INFO *info = link->priv;
+	int ret;
+
+	if (debug_level >= DEBUG_LEVEL_INFO)
+		printk("mgslpc_config(0x%p)\n", link);
+
+	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
+
+	ret = pcmcia_loop_config(link, mgslpc_ioprobe, NULL);
+	if (ret != 0)
+		goto failed;
+
+	link->config_index = 8;
+	link->config_regs = PRESENT_OPTION;
+
+	ret = pcmcia_request_irq(link, mgslpc_isr);
+	if (ret)
+		goto failed;
+	ret = pcmcia_enable_device(link);
+	if (ret)
+		goto failed;
+
+	info->io_base = link->resource[0]->start;
+	info->irq_level = link->irq;
+	return 0;
+
+failed:
+	mgslpc_release((u_long)link);
+	return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Card has been removed.
@@ -702,12 +827,21 @@ static void tx_pause(struct tty_struct *tty)
 	if (mgslpc_paranoia_check(info, tty->name, "tx_pause"))
 		return;
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("tx_pause(%s)\n",info->device_name);
 
 	spin_lock_irqsave(&info->lock,flags);
 	if (info->tx_enabled)
 	 	tx_stop(info);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+		printk("tx_pause(%s)\n", info->device_name);
+
+	spin_lock_irqsave(&info->lock, flags);
+	if (info->tx_enabled)
+		tx_stop(info);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void tx_release(struct tty_struct *tty)
@@ -718,12 +852,21 @@ static void tx_release(struct tty_struct *tty)
 	if (mgslpc_paranoia_check(info, tty->name, "tx_release"))
 		return;
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("tx_release(%s)\n",info->device_name);
 
 	spin_lock_irqsave(&info->lock,flags);
 	if (!info->tx_enabled)
 	 	tx_start(info, tty);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+		printk("tx_release(%s)\n", info->device_name);
+
+	spin_lock_irqsave(&info->lock, flags);
+	if (!info->tx_enabled)
+		tx_start(info, tty);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Return next bottom half action to perform.
@@ -734,7 +877,11 @@ static int bh_action(MGSLPC_INFO *info)
 	unsigned long flags;
 	int rc = 0;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	if (info->pending_bh & BH_RECEIVE) {
 		info->pending_bh &= ~BH_RECEIVE;
@@ -753,7 +900,11 @@ static int bh_action(MGSLPC_INFO *info)
 		info->bh_requested = false;
 	}
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -764,11 +915,16 @@ static void bh_handler(struct work_struct *work)
 	struct tty_struct *tty;
 	int action;
 
+<<<<<<< HEAD
 	if (!info)
 		return;
 
 	if (debug_level >= DEBUG_LEVEL_BH)
 		printk( "%s(%d):bh_handler(%s) entry\n",
+=======
+	if (debug_level >= DEBUG_LEVEL_BH)
+		printk("%s(%d):bh_handler(%s) entry\n",
+>>>>>>> refs/remotes/origin/master
 			__FILE__,__LINE__,info->device_name);
 
 	info->bh_running = true;
@@ -777,8 +933,13 @@ static void bh_handler(struct work_struct *work)
 	while((action = bh_action(info)) != 0) {
 
 		/* Process work item */
+<<<<<<< HEAD
 		if ( debug_level >= DEBUG_LEVEL_BH )
 			printk( "%s(%d):bh_handler() work item action=%d\n",
+=======
+		if (debug_level >= DEBUG_LEVEL_BH)
+			printk("%s(%d):bh_handler() work item action=%d\n",
+>>>>>>> refs/remotes/origin/master
 				__FILE__,__LINE__,action);
 
 		switch (action) {
@@ -801,7 +962,11 @@ static void bh_handler(struct work_struct *work)
 
 	tty_kref_put(tty);
 	if (debug_level >= DEBUG_LEVEL_BH)
+<<<<<<< HEAD
 		printk( "%s(%d):bh_handler(%s) exit\n",
+=======
+		printk("%s(%d):bh_handler(%s) exit\n",
+>>>>>>> refs/remotes/origin/master
 			__FILE__,__LINE__,info->device_name);
 }
 
@@ -830,7 +995,11 @@ static void rx_ready_hdlc(MGSLPC_INFO *info, int eom)
 	RXBUF *buf = (RXBUF*)(info->rx_buf + (info->rx_put * info->rx_buf_size));
 
 	if (debug_level >= DEBUG_LEVEL_ISR)
+<<<<<<< HEAD
 		printk("%s(%d):rx_ready_hdlc(eom=%d)\n",__FILE__,__LINE__,eom);
+=======
+		printk("%s(%d):rx_ready_hdlc(eom=%d)\n", __FILE__, __LINE__, eom);
+>>>>>>> refs/remotes/origin/master
 
 	if (!info->rx_enabled)
 		return;
@@ -846,7 +1015,12 @@ static void rx_ready_hdlc(MGSLPC_INFO *info, int eom)
 
 	if (eom) {
 		/* end of frame, get FIFO count from RBCL register */
+<<<<<<< HEAD
 		if (!(fifo_count = (unsigned char)(read_reg(info, CHA+RBCL) & 0x1f)))
+=======
+		fifo_count = (unsigned char)(read_reg(info, CHA+RBCL) & 0x1f);
+		if (fifo_count == 0)
+>>>>>>> refs/remotes/origin/master
 			fifo_count = 32;
 	} else
 		fifo_count = 32;
@@ -885,12 +1059,22 @@ static void rx_ready_hdlc(MGSLPC_INFO *info, int eom)
 	issue_command(info, CHA, CMD_RXFIFO);
 }
 
+<<<<<<< HEAD
 static void rx_ready_async(MGSLPC_INFO *info, int tcd, struct tty_struct *tty)
 {
 	unsigned char data, status, flag;
 	int fifo_count;
 	int work = 0;
  	struct mgsl_icount *icount = &info->icount;
+=======
+static void rx_ready_async(MGSLPC_INFO *info, int tcd)
+{
+	struct tty_port *port = &info->port;
+	unsigned char data, status, flag;
+	int fifo_count;
+	int work = 0;
+	struct mgsl_icount *icount = &info->icount;
+>>>>>>> refs/remotes/origin/master
 
 	if (tcd) {
 		/* early termination, get FIFO count from RBCL register */
@@ -904,7 +1088,11 @@ static void rx_ready_async(MGSLPC_INFO *info, int tcd, struct tty_struct *tty)
 	} else
 		fifo_count = 32;
 
+<<<<<<< HEAD
 	tty_buffer_request_room(tty, fifo_count);
+=======
+	tty_buffer_request_room(port, fifo_count);
+>>>>>>> refs/remotes/origin/master
 	/* Flush received async data to receive data buffer. */
 	while (fifo_count) {
 		data   = read_reg(info, CHA + RXFIFO);
@@ -935,7 +1123,11 @@ static void rx_ready_async(MGSLPC_INFO *info, int tcd, struct tty_struct *tty)
 			else if (status & BIT6)
 				flag = TTY_FRAME;
 		}
+<<<<<<< HEAD
 		work += tty_insert_flip_char(tty, data, flag);
+=======
+		work += tty_insert_flip_char(port, data, flag);
+>>>>>>> refs/remotes/origin/master
 	}
 	issue_command(info, CHA, CMD_RXFIFO);
 
@@ -948,7 +1140,11 @@ static void rx_ready_async(MGSLPC_INFO *info, int tcd, struct tty_struct *tty)
 	}
 
 	if (work)
+<<<<<<< HEAD
 		tty_flip_buffer_push(tty);
+=======
+		tty_flip_buffer_push(port);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -981,7 +1177,11 @@ static void tx_done(MGSLPC_INFO *info, struct tty_struct *tty)
 	else
 #endif
 	{
+<<<<<<< HEAD
 		if (tty->stopped || tty->hw_stopped) {
+=======
+		if (tty && (tty->stopped || tty->hw_stopped)) {
+>>>>>>> refs/remotes/origin/master
 			tx_stop(info);
 			return;
 		}
@@ -995,13 +1195,21 @@ static void tx_ready(MGSLPC_INFO *info, struct tty_struct *tty)
 	int c;
 
 	if (debug_level >= DEBUG_LEVEL_ISR)
+<<<<<<< HEAD
 		printk("%s(%d):tx_ready(%s)\n", __FILE__,__LINE__,info->device_name);
+=======
+		printk("%s(%d):tx_ready(%s)\n", __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (info->params.mode == MGSL_MODE_HDLC) {
 		if (!info->tx_active)
 			return;
 	} else {
+<<<<<<< HEAD
 		if (tty->stopped || tty->hw_stopped) {
+=======
+		if (tty && (tty->stopped || tty->hw_stopped)) {
+>>>>>>> refs/remotes/origin/master
 			tx_stop(info);
 			return;
 		}
@@ -1051,13 +1259,21 @@ static void cts_change(MGSLPC_INFO *info, struct tty_struct *tty)
 	wake_up_interruptible(&info->status_event_wait_q);
 	wake_up_interruptible(&info->event_wait_q);
 
+<<<<<<< HEAD
 	if (info->port.flags & ASYNC_CTS_FLOW) {
+=======
+	if (tty && tty_port_cts_enabled(&info->port)) {
+>>>>>>> refs/remotes/origin/master
 		if (tty->hw_stopped) {
 			if (info->serial_signals & SerialSignal_CTS) {
 				if (debug_level >= DEBUG_LEVEL_ISR)
 					printk("CTS tx start...");
+<<<<<<< HEAD
 				if (tty)
 					tty->hw_stopped = 0;
+=======
+				tty->hw_stopped = 0;
+>>>>>>> refs/remotes/origin/master
 				tx_start(info, tty);
 				info->pending_bh |= BH_TRANSMIT;
 				return;
@@ -1066,8 +1282,12 @@ static void cts_change(MGSLPC_INFO *info, struct tty_struct *tty)
 			if (!(info->serial_signals & SerialSignal_CTS)) {
 				if (debug_level >= DEBUG_LEVEL_ISR)
 					printk("CTS tx stop...");
+<<<<<<< HEAD
 				if (tty)
 					tty->hw_stopped = 1;
+=======
+				tty->hw_stopped = 1;
+>>>>>>> refs/remotes/origin/master
 				tx_stop(info);
 			}
 		}
@@ -1178,14 +1398,22 @@ static irqreturn_t mgslpc_isr(int dummy, void *dev_id)
 		}
 		count++;
 
+<<<<<<< HEAD
 		if (gis & (BIT1 + BIT0)) {
+=======
+		if (gis & (BIT1 | BIT0)) {
+>>>>>>> refs/remotes/origin/master
 			isr = read_reg16(info, CHB + ISR);
 			if (isr & IRQ_DCD)
 				dcd_change(info, tty);
 			if (isr & IRQ_CTS)
 				cts_change(info, tty);
 		}
+<<<<<<< HEAD
 		if (gis & (BIT3 + BIT2))
+=======
+		if (gis & (BIT3 | BIT2))
+>>>>>>> refs/remotes/origin/master
 		{
 			isr = read_reg16(info, CHA + ISR);
 			if (isr & IRQ_TIMER) {
@@ -1206,11 +1434,19 @@ static irqreturn_t mgslpc_isr(int dummy, void *dev_id)
 			if (isr & IRQ_RXTIME) {
 				issue_command(info, CHA, CMD_RXFIFO_READ);
 			}
+<<<<<<< HEAD
 			if (isr & (IRQ_RXEOM + IRQ_RXFIFO)) {
 				if (info->params.mode == MGSL_MODE_HDLC)
 					rx_ready_hdlc(info, isr & IRQ_RXEOM);
 				else
 					rx_ready_async(info, isr & IRQ_RXEOM, tty);
+=======
+			if (isr & (IRQ_RXEOM | IRQ_RXFIFO)) {
+				if (info->params.mode == MGSL_MODE_HDLC)
+					rx_ready_hdlc(info, isr & IRQ_RXEOM);
+				else
+					rx_ready_async(info, isr & IRQ_RXEOM);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			/* transmit IRQs */
@@ -1242,7 +1478,11 @@ static irqreturn_t mgslpc_isr(int dummy, void *dev_id)
 	 */
 
 	if (info->pending_bh && !info->bh_running && !info->bh_requested) {
+<<<<<<< HEAD
 		if ( debug_level >= DEBUG_LEVEL_ISR )
+=======
+		if (debug_level >= DEBUG_LEVEL_ISR)
+>>>>>>> refs/remotes/origin/master
 			printk("%s(%d):%s queueing bh task.\n",
 				__FILE__,__LINE__,info->device_name);
 		schedule_work(&info->task);
@@ -1266,7 +1506,11 @@ static int startup(MGSLPC_INFO * info, struct tty_struct *tty)
 	int retval = 0;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("%s(%d):startup(%s)\n",__FILE__,__LINE__,info->device_name);
+=======
+		printk("%s(%d):startup(%s)\n", __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (info->port.flags & ASYNC_INITIALIZED)
 		return 0;
@@ -1276,7 +1520,11 @@ static int startup(MGSLPC_INFO * info, struct tty_struct *tty)
 		info->tx_buf = (unsigned char *)get_zeroed_page(GFP_KERNEL);
 		if (!info->tx_buf) {
 			printk(KERN_ERR"%s(%d):%s can't allocate transmit buffer\n",
+<<<<<<< HEAD
 				__FILE__,__LINE__,info->device_name);
+=======
+				__FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 		}
 	}
@@ -1291,6 +1539,7 @@ static int startup(MGSLPC_INFO * info, struct tty_struct *tty)
 	retval = claim_resources(info);
 
 	/* perform existence check and diagnostics */
+<<<<<<< HEAD
 	if ( !retval )
 		retval = adapter_test(info);
 
@@ -1300,6 +1549,17 @@ static int startup(MGSLPC_INFO * info, struct tty_struct *tty)
 		release_resources(info);
   		return retval;
   	}
+=======
+	if (!retval)
+		retval = adapter_test(info);
+
+	if (retval) {
+		if (capable(CAP_SYS_ADMIN) && tty)
+			set_bit(TTY_IO_ERROR, &tty->flags);
+		release_resources(info);
+		return retval;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* program hardware for current parameters */
 	mgslpc_change_params(info, tty);
@@ -1323,7 +1583,11 @@ static void shutdown(MGSLPC_INFO * info, struct tty_struct *tty)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_shutdown(%s)\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	/* clear status wait queue because status changes */
 	/* can't happen after shutting down the hardware */
@@ -1337,7 +1601,11 @@ static void shutdown(MGSLPC_INFO * info, struct tty_struct *tty)
 		info->tx_buf = NULL;
 	}
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	rx_stop(info);
 	tx_stop(info);
@@ -1345,12 +1613,21 @@ static void shutdown(MGSLPC_INFO * info, struct tty_struct *tty)
 	/* TODO:disable interrupts instead of reset to preserve signal states */
 	reset_device(info);
 
+<<<<<<< HEAD
  	if (!tty || tty->termios->c_cflag & HUPCL) {
  		info->serial_signals &= ~(SerialSignal_DTR + SerialSignal_RTS);
 		set_signals(info);
 	}
 
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	if (!tty || tty->termios.c_cflag & HUPCL) {
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+		set_signals(info);
+	}
+
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	release_resources(info);
 
@@ -1364,7 +1641,11 @@ static void mgslpc_program_hw(MGSLPC_INFO *info, struct tty_struct *tty)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	rx_stop(info);
 	tx_stop(info);
@@ -1386,10 +1667,17 @@ static void mgslpc_program_hw(MGSLPC_INFO *info, struct tty_struct *tty)
 	port_irq_enable(info, (unsigned char) PVR_DSR | PVR_RI);
 	get_signals(info);
 
+<<<<<<< HEAD
 	if (info->netcount || (tty && (tty->termios->c_cflag & CREAD)))
 		rx_start(info);
 
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	if (info->netcount || (tty && (tty->termios.c_cflag & CREAD)))
+		rx_start(info);
+
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Reconfigure adapter based on new parameters
@@ -1399,11 +1687,16 @@ static void mgslpc_change_params(MGSLPC_INFO *info, struct tty_struct *tty)
 	unsigned cflag;
 	int bits_per_char;
 
+<<<<<<< HEAD
 	if (!tty || !tty->termios)
+=======
+	if (!tty)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_change_params(%s)\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
 
 	cflag = tty->termios->c_cflag;
@@ -1414,6 +1707,18 @@ static void mgslpc_change_params(MGSLPC_INFO *info, struct tty_struct *tty)
 		info->serial_signals |= SerialSignal_RTS + SerialSignal_DTR;
 	else
 		info->serial_signals &= ~(SerialSignal_RTS + SerialSignal_DTR);
+=======
+			 __FILE__, __LINE__, info->device_name);
+
+	cflag = tty->termios.c_cflag;
+
+	/* if B0 rate (hangup) specified then negate RTS and DTR */
+	/* otherwise assert RTS and DTR */
+	if (cflag & CBAUD)
+		info->serial_signals |= SerialSignal_RTS | SerialSignal_DTR;
+	else
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+>>>>>>> refs/remotes/origin/master
 
 	/* byte size and parity */
 
@@ -1456,7 +1761,11 @@ static void mgslpc_change_params(MGSLPC_INFO *info, struct tty_struct *tty)
 		info->params.data_rate = tty_get_baud_rate(tty);
 	}
 
+<<<<<<< HEAD
 	if ( info->params.data_rate ) {
+=======
+	if (info->params.data_rate) {
+>>>>>>> refs/remotes/origin/master
 		info->timeout = (32*HZ*bits_per_char) /
 				info->params.data_rate;
 	}
@@ -1491,8 +1800,13 @@ static int mgslpc_put_char(struct tty_struct *tty, unsigned char ch)
 	unsigned long flags;
 
 	if (debug_level >= DEBUG_LEVEL_INFO) {
+<<<<<<< HEAD
 		printk( "%s(%d):mgslpc_put_char(%d) on %s\n",
 			__FILE__,__LINE__,ch,info->device_name);
+=======
+		printk("%s(%d):mgslpc_put_char(%d) on %s\n",
+			__FILE__, __LINE__, ch, info->device_name);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_put_char"))
@@ -1501,7 +1815,11 @@ static int mgslpc_put_char(struct tty_struct *tty, unsigned char ch)
 	if (!info->tx_buf)
 		return 0;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	if (info->params.mode == MGSL_MODE_ASYNC || !info->tx_active) {
 		if (info->tx_count < TXBUFSIZE - 1) {
@@ -1511,7 +1829,11 @@ static int mgslpc_put_char(struct tty_struct *tty, unsigned char ch)
 		}
 	}
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -1524,8 +1846,13 @@ static void mgslpc_flush_chars(struct tty_struct *tty)
 	unsigned long flags;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk( "%s(%d):mgslpc_flush_chars() entry on %s tx_count=%d\n",
 			__FILE__,__LINE__,info->device_name,info->tx_count);
+=======
+		printk("%s(%d):mgslpc_flush_chars() entry on %s tx_count=%d\n",
+			__FILE__, __LINE__, info->device_name, info->tx_count);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_flush_chars"))
 		return;
@@ -1535,6 +1862,7 @@ static void mgslpc_flush_chars(struct tty_struct *tty)
 		return;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk( "%s(%d):mgslpc_flush_chars() entry on %s starting transmitter\n",
 			__FILE__,__LINE__,info->device_name);
 
@@ -1542,6 +1870,15 @@ static void mgslpc_flush_chars(struct tty_struct *tty)
 	if (!info->tx_active)
 	 	tx_start(info, tty);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+		printk("%s(%d):mgslpc_flush_chars() entry on %s starting transmitter\n",
+			__FILE__, __LINE__, info->device_name);
+
+	spin_lock_irqsave(&info->lock, flags);
+	if (!info->tx_active)
+		tx_start(info, tty);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Send a block of data
@@ -1562,8 +1899,13 @@ static int mgslpc_write(struct tty_struct * tty,
 	unsigned long flags;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk( "%s(%d):mgslpc_write(%s) count=%d\n",
 			__FILE__,__LINE__,info->device_name,count);
+=======
+		printk("%s(%d):mgslpc_write(%s) count=%d\n",
+			__FILE__, __LINE__, info->device_name, count);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_write") ||
 		!info->tx_buf)
@@ -1589,16 +1931,24 @@ static int mgslpc_write(struct tty_struct * tty,
 
 		memcpy(info->tx_buf + info->tx_put, buf, c);
 
+<<<<<<< HEAD
 		spin_lock_irqsave(&info->lock,flags);
 		info->tx_put = (info->tx_put + c) & (TXBUFSIZE-1);
 		info->tx_count += c;
 		spin_unlock_irqrestore(&info->lock,flags);
+=======
+		spin_lock_irqsave(&info->lock, flags);
+		info->tx_put = (info->tx_put + c) & (TXBUFSIZE-1);
+		info->tx_count += c;
+		spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 		buf += c;
 		count -= c;
 		ret += c;
 	}
 start:
+<<<<<<< HEAD
  	if (info->tx_count && !tty->stopped && !tty->hw_stopped) {
 		spin_lock_irqsave(&info->lock,flags);
 		if (!info->tx_active)
@@ -1609,6 +1959,18 @@ cleanup:
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk( "%s(%d):mgslpc_write(%s) returning=%d\n",
 			__FILE__,__LINE__,info->device_name,ret);
+=======
+	if (info->tx_count && !tty->stopped && !tty->hw_stopped) {
+		spin_lock_irqsave(&info->lock, flags);
+		if (!info->tx_active)
+			tx_start(info, tty);
+		spin_unlock_irqrestore(&info->lock, flags);
+	}
+cleanup:
+	if (debug_level >= DEBUG_LEVEL_INFO)
+		printk("%s(%d):mgslpc_write(%s) returning=%d\n",
+			__FILE__, __LINE__, info->device_name, ret);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1636,7 +1998,11 @@ static int mgslpc_write_room(struct tty_struct *tty)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_write_room(%s)=%d\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name, ret);
+=======
+			 __FILE__, __LINE__, info->device_name, ret);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1649,7 +2015,11 @@ static int mgslpc_chars_in_buffer(struct tty_struct *tty)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_chars_in_buffer(%s)\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_chars_in_buffer"))
 		return 0;
@@ -1661,7 +2031,11 @@ static int mgslpc_chars_in_buffer(struct tty_struct *tty)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_chars_in_buffer(%s)=%d\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name, rc);
+=======
+			 __FILE__, __LINE__, info->device_name, rc);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -1675,15 +2049,26 @@ static void mgslpc_flush_buffer(struct tty_struct *tty)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_flush_buffer(%s) entry\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_flush_buffer"))
 		return;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
 	info->tx_count = info->tx_put = info->tx_get = 0;
 	del_timer(&info->tx_timer);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	info->tx_count = info->tx_put = info->tx_get = 0;
+	del_timer(&info->tx_timer);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	wake_up_interruptible(&tty->write_wait);
 	tty_wakeup(tty);
@@ -1698,17 +2083,28 @@ static void mgslpc_send_xchar(struct tty_struct *tty, char ch)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_send_xchar(%s,%d)\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name, ch );
+=======
+			 __FILE__, __LINE__, info->device_name, ch);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_send_xchar"))
 		return;
 
 	info->x_char = ch;
 	if (ch) {
+<<<<<<< HEAD
 		spin_lock_irqsave(&info->lock,flags);
 		if (!info->tx_enabled)
 		 	tx_start(info, tty);
 		spin_unlock_irqrestore(&info->lock,flags);
+=======
+		spin_lock_irqsave(&info->lock, flags);
+		if (!info->tx_enabled)
+			tx_start(info, tty);
+		spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1721,7 +2117,11 @@ static void mgslpc_throttle(struct tty_struct * tty)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_throttle(%s) entry\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_throttle"))
 		return;
@@ -1729,11 +2129,19 @@ static void mgslpc_throttle(struct tty_struct * tty)
 	if (I_IXOFF(tty))
 		mgslpc_send_xchar(tty, STOP_CHAR(tty));
 
+<<<<<<< HEAD
  	if (tty->termios->c_cflag & CRTSCTS) {
 		spin_lock_irqsave(&info->lock,flags);
 		info->serial_signals &= ~SerialSignal_RTS;
 	 	set_signals(info);
 		spin_unlock_irqrestore(&info->lock,flags);
+=======
+	if (tty->termios.c_cflag & CRTSCTS) {
+		spin_lock_irqsave(&info->lock, flags);
+		info->serial_signals &= ~SerialSignal_RTS;
+		set_signals(info);
+		spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1746,7 +2154,11 @@ static void mgslpc_unthrottle(struct tty_struct * tty)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_unthrottle(%s) entry\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_unthrottle"))
 		return;
@@ -1758,11 +2170,19 @@ static void mgslpc_unthrottle(struct tty_struct * tty)
 			mgslpc_send_xchar(tty, START_CHAR(tty));
 	}
 
+<<<<<<< HEAD
  	if (tty->termios->c_cflag & CRTSCTS) {
 		spin_lock_irqsave(&info->lock,flags);
 		info->serial_signals |= SerialSignal_RTS;
 	 	set_signals(info);
 		spin_unlock_irqrestore(&info->lock,flags);
+=======
+	if (tty->termios.c_cflag & CRTSCTS) {
+		spin_lock_irqsave(&info->lock, flags);
+		info->serial_signals |= SerialSignal_RTS;
+		set_signals(info);
+		spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1800,19 +2220,29 @@ static int get_params(MGSLPC_INFO * info, MGSL_PARAMS __user *user_params)
  *
  * Arguments:
  *
+<<<<<<< HEAD
  * 	info		pointer to device instance data
  * 	new_params	user buffer containing new serial params
+=======
+ *	info		pointer to device instance data
+ *	new_params	user buffer containing new serial params
+>>>>>>> refs/remotes/origin/master
  *
  * Returns:	0 if success, otherwise error code
  */
 static int set_params(MGSLPC_INFO * info, MGSL_PARAMS __user *new_params, struct tty_struct *tty)
 {
+<<<<<<< HEAD
  	unsigned long flags;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	MGSL_PARAMS tmp_params;
 	int err;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):set_params %s\n", __FILE__,__LINE__,
+<<<<<<< HEAD
 			info->device_name );
 	COPY_FROM_USER(err,&tmp_params, new_params, sizeof(MGSL_PARAMS));
 	if (err) {
@@ -1827,6 +2257,22 @@ static int set_params(MGSLPC_INFO * info, MGSL_PARAMS __user *new_params, struct
 	spin_unlock_irqrestore(&info->lock,flags);
 
  	mgslpc_change_params(info, tty);
+=======
+			info->device_name);
+	COPY_FROM_USER(err,&tmp_params, new_params, sizeof(MGSL_PARAMS));
+	if (err) {
+		if (debug_level >= DEBUG_LEVEL_INFO)
+			printk("%s(%d):set_params(%s) user buffer copy failed\n",
+				__FILE__, __LINE__, info->device_name);
+		return -EFAULT;
+	}
+
+	spin_lock_irqsave(&info->lock, flags);
+	memcpy(&info->params,&tmp_params,sizeof(MGSL_PARAMS));
+	spin_unlock_irqrestore(&info->lock, flags);
+
+	mgslpc_change_params(info, tty);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1844,6 +2290,7 @@ static int get_txidle(MGSLPC_INFO * info, int __user *idle_mode)
 
 static int set_txidle(MGSLPC_INFO * info, int idle_mode)
 {
+<<<<<<< HEAD
  	unsigned long flags;
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("set_txidle(%s,%d)\n", info->device_name, idle_mode);
@@ -1851,6 +2298,15 @@ static int set_txidle(MGSLPC_INFO * info, int idle_mode)
 	info->idle_mode = idle_mode;
 	tx_set_idle(info);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	unsigned long flags;
+	if (debug_level >= DEBUG_LEVEL_INFO)
+		printk("set_txidle(%s,%d)\n", info->device_name, idle_mode);
+	spin_lock_irqsave(&info->lock, flags);
+	info->idle_mode = idle_mode;
+	tx_set_idle(info);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1867,11 +2323,19 @@ static int get_interface(MGSLPC_INFO * info, int __user *if_mode)
 
 static int set_interface(MGSLPC_INFO * info, int if_mode)
 {
+<<<<<<< HEAD
  	unsigned long flags;
 	unsigned char val;
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("set_interface(%s,%d)\n", info->device_name, if_mode);
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	unsigned long flags;
+	unsigned char val;
+	if (debug_level >= DEBUG_LEVEL_INFO)
+		printk("set_interface(%s,%d)\n", info->device_name, if_mode);
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	info->if_mode = if_mode;
 
 	val = read_reg(info, PVR) & 0x0f;
@@ -1883,18 +2347,30 @@ static int set_interface(MGSLPC_INFO * info, int if_mode)
 	}
 	write_reg(info, PVR, val);
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int set_txenable(MGSLPC_INFO * info, int enable, struct tty_struct *tty)
 {
+<<<<<<< HEAD
  	unsigned long flags;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("set_txenable(%s,%d)\n", info->device_name, enable);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	if (enable) {
 		if (!info->tx_enabled)
 			tx_start(info, tty);
@@ -1902,18 +2378,30 @@ static int set_txenable(MGSLPC_INFO * info, int enable, struct tty_struct *tty)
 		if (info->tx_enabled)
 			tx_stop(info);
 	}
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int tx_abort(MGSLPC_INFO * info)
 {
+<<<<<<< HEAD
  	unsigned long flags;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("tx_abort(%s)\n", info->device_name);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	if (info->tx_active && info->tx_count &&
 	    info->params.mode == MGSL_MODE_HDLC) {
 		/* clear data count so FIFO is not filled on next IRQ.
@@ -1922,18 +2410,30 @@ static int tx_abort(MGSLPC_INFO * info)
 		info->tx_count = info->tx_put = info->tx_get = 0;
 		info->tx_aborting = true;
 	}
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int set_rxenable(MGSLPC_INFO * info, int enable)
 {
+<<<<<<< HEAD
  	unsigned long flags;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("set_rxenable(%s,%d)\n", info->device_name, enable);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	if (enable) {
 		if (!info->rx_enabled)
 			rx_start(info);
@@ -1941,12 +2441,17 @@ static int set_rxenable(MGSLPC_INFO * info, int enable)
 		if (info->rx_enabled)
 			rx_stop(info);
 	}
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /* wait for specified event to occur
  *
+<<<<<<< HEAD
  * Arguments:	 	info	pointer to device instance data
  * 			mask	pointer to bitmask of events to wait for
  * Return Value:	0 	if successful and bit mask updated with
@@ -1956,6 +2461,17 @@ static int set_rxenable(MGSLPC_INFO * info, int enable)
 static int wait_events(MGSLPC_INFO * info, int __user *mask_ptr)
 {
  	unsigned long flags;
+=======
+ * Arguments:		info	pointer to device instance data
+ *			mask	pointer to bitmask of events to wait for
+ * Return Value:	0	if successful and bit mask updated with
+ *				of events triggerred,
+ *			otherwise error code
+ */
+static int wait_events(MGSLPC_INFO * info, int __user *mask_ptr)
+{
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	int s;
 	int rc=0;
 	struct mgsl_icount cprev, cnow;
@@ -1971,18 +2487,30 @@ static int wait_events(MGSLPC_INFO * info, int __user *mask_ptr)
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("wait_events(%s,%d)\n", info->device_name, mask);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	/* return immediately if state matches requested events */
 	get_signals(info);
 	s = info->serial_signals;
 	events = mask &
 		( ((s & SerialSignal_DSR) ? MgslEvent_DsrActive:MgslEvent_DsrInactive) +
+<<<<<<< HEAD
  		  ((s & SerialSignal_DCD) ? MgslEvent_DcdActive:MgslEvent_DcdInactive) +
 		  ((s & SerialSignal_CTS) ? MgslEvent_CtsActive:MgslEvent_CtsInactive) +
 		  ((s & SerialSignal_RI)  ? MgslEvent_RiActive :MgslEvent_RiInactive) );
 	if (events) {
 		spin_unlock_irqrestore(&info->lock,flags);
+=======
+		  ((s & SerialSignal_DCD) ? MgslEvent_DcdActive:MgslEvent_DcdInactive) +
+		  ((s & SerialSignal_CTS) ? MgslEvent_CtsActive:MgslEvent_CtsInactive) +
+		  ((s & SerialSignal_RI)  ? MgslEvent_RiActive :MgslEvent_RiInactive) );
+	if (events) {
+		spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -1997,7 +2525,11 @@ static int wait_events(MGSLPC_INFO * info, int __user *mask_ptr)
 	set_current_state(TASK_INTERRUPTIBLE);
 	add_wait_queue(&info->event_wait_q, &wait);
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 
 	for(;;) {
@@ -2008,11 +2540,19 @@ static int wait_events(MGSLPC_INFO * info, int __user *mask_ptr)
 		}
 
 		/* get current irq counts */
+<<<<<<< HEAD
 		spin_lock_irqsave(&info->lock,flags);
 		cnow = info->icount;
 		newsigs = info->input_signal_events;
 		set_current_state(TASK_INTERRUPTIBLE);
 		spin_unlock_irqrestore(&info->lock,flags);
+=======
+		spin_lock_irqsave(&info->lock, flags);
+		cnow = info->icount;
+		newsigs = info->input_signal_events;
+		set_current_state(TASK_INTERRUPTIBLE);
+		spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 		/* if no change, wait aborted for some reason */
 		if (newsigs.dsr_up   == oldsigs.dsr_up   &&
@@ -2051,10 +2591,17 @@ static int wait_events(MGSLPC_INFO * info, int __user *mask_ptr)
 	set_current_state(TASK_RUNNING);
 
 	if (mask & MgslEvent_ExitHuntMode) {
+<<<<<<< HEAD
 		spin_lock_irqsave(&info->lock,flags);
 		if (!waitqueue_active(&info->event_wait_q))
 			irq_disable(info, CHA, IRQ_EXITHUNT);
 		spin_unlock_irqrestore(&info->lock,flags);
+=======
+		spin_lock_irqsave(&info->lock, flags);
+		if (!waitqueue_active(&info->event_wait_q))
+			irq_disable(info, CHA, IRQ_EXITHUNT);
+		spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 exit:
 	if (rc == 0)
@@ -2064,17 +2611,29 @@ exit:
 
 static int modem_input_wait(MGSLPC_INFO *info,int arg)
 {
+<<<<<<< HEAD
  	unsigned long flags;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 	struct mgsl_icount cprev, cnow;
 	DECLARE_WAITQUEUE(wait, current);
 
 	/* save current irq counts */
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
 	cprev = info->icount;
 	add_wait_queue(&info->status_event_wait_q, &wait);
 	set_current_state(TASK_INTERRUPTIBLE);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	cprev = info->icount;
+	add_wait_queue(&info->status_event_wait_q, &wait);
+	set_current_state(TASK_INTERRUPTIBLE);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	for(;;) {
 		schedule();
@@ -2084,10 +2643,17 @@ static int modem_input_wait(MGSLPC_INFO *info,int arg)
 		}
 
 		/* get new irq counts */
+<<<<<<< HEAD
 		spin_lock_irqsave(&info->lock,flags);
 		cnow = info->icount;
 		set_current_state(TASK_INTERRUPTIBLE);
 		spin_unlock_irqrestore(&info->lock,flags);
+=======
+		spin_lock_irqsave(&info->lock, flags);
+		cnow = info->icount;
+		set_current_state(TASK_INTERRUPTIBLE);
+		spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 		/* if no change, wait aborted for some reason */
 		if (cnow.rng == cprev.rng && cnow.dsr == cprev.dsr &&
@@ -2118,11 +2684,19 @@ static int tiocmget(struct tty_struct *tty)
 {
 	MGSLPC_INFO *info = (MGSLPC_INFO *)tty->driver_data;
 	unsigned int result;
+<<<<<<< HEAD
  	unsigned long flags;
 
 	spin_lock_irqsave(&info->lock,flags);
  	get_signals(info);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&info->lock, flags);
+	get_signals(info);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	result = ((info->serial_signals & SerialSignal_RTS) ? TIOCM_RTS:0) +
 		((info->serial_signals & SerialSignal_DTR) ? TIOCM_DTR:0) +
@@ -2133,7 +2707,11 @@ static int tiocmget(struct tty_struct *tty)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):%s tiocmget() value=%08X\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name, result );
+=======
+			 __FILE__, __LINE__, info->device_name, result);
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
@@ -2143,11 +2721,19 @@ static int tiocmset(struct tty_struct *tty,
 		    unsigned int set, unsigned int clear)
 {
 	MGSLPC_INFO *info = (MGSLPC_INFO *)tty->driver_data;
+<<<<<<< HEAD
  	unsigned long flags;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):%s tiocmset(%x,%x)\n",
 			__FILE__,__LINE__,info->device_name, set, clear);
+=======
+	unsigned long flags;
+
+	if (debug_level >= DEBUG_LEVEL_INFO)
+		printk("%s(%d):%s tiocmset(%x,%x)\n",
+			__FILE__, __LINE__, info->device_name, set, clear);
+>>>>>>> refs/remotes/origin/master
 
 	if (set & TIOCM_RTS)
 		info->serial_signals |= SerialSignal_RTS;
@@ -2158,9 +2744,15 @@ static int tiocmset(struct tty_struct *tty,
 	if (clear & TIOCM_DTR)
 		info->serial_signals &= ~SerialSignal_DTR;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
  	set_signals(info);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	set_signals(info);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2177,17 +2769,30 @@ static int mgslpc_break(struct tty_struct *tty, int break_state)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_break(%s,%d)\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name, break_state);
+=======
+			 __FILE__, __LINE__, info->device_name, break_state);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_break"))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
  	if (break_state == -1)
 		set_reg_bits(info, CHA+DAFO, BIT6);
 	else
 		clear_reg_bits(info, CHA+DAFO, BIT6);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	if (break_state == -1)
+		set_reg_bits(info, CHA+DAFO, BIT6);
+	else
+		clear_reg_bits(info, CHA+DAFO, BIT6);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2198,9 +2803,15 @@ static int mgslpc_get_icount(struct tty_struct *tty,
 	struct mgsl_icount cnow;	/* kernel counter temps */
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
 	cnow = info->icount;
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	cnow = info->icount;
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	icount->cts = cnow.cts;
 	icount->dsr = cnow.dsr;
@@ -2221,9 +2832,15 @@ static int mgslpc_get_icount(struct tty_struct *tty,
  *
  * Arguments:
  *
+<<<<<<< HEAD
  * 	tty	pointer to tty instance data
  * 	cmd	IOCTL command code
  * 	arg	command argument/context
+=======
+ *	tty	pointer to tty instance data
+ *	cmd	IOCTL command code
+ *	arg	command argument/context
+>>>>>>> refs/remotes/origin/master
  *
  * Return Value:	0 if success, otherwise error code
  */
@@ -2234,8 +2851,13 @@ static int mgslpc_ioctl(struct tty_struct *tty,
 	void __user *argp = (void __user *)arg;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("%s(%d):mgslpc_ioctl %s cmd=%08X\n", __FILE__,__LINE__,
 			info->device_name, cmd );
+=======
+		printk("%s(%d):mgslpc_ioctl %s cmd=%08X\n", __FILE__, __LINE__,
+			info->device_name, cmd);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_ioctl"))
 		return -ENODEV;
@@ -2281,8 +2903,13 @@ static int mgslpc_ioctl(struct tty_struct *tty,
  *
  * Arguments:
  *
+<<<<<<< HEAD
  * 	tty		pointer to tty structure
  * 	termios		pointer to buffer to hold returned old termios
+=======
+ *	tty		pointer to tty structure
+ *	termios		pointer to buffer to hold returned old termios
+>>>>>>> refs/remotes/origin/master
  */
 static void mgslpc_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 {
@@ -2290,12 +2917,21 @@ static void mgslpc_set_termios(struct tty_struct *tty, struct ktermios *old_term
 	unsigned long flags;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("%s(%d):mgslpc_set_termios %s\n", __FILE__,__LINE__,
 			tty->driver->name );
 
 	/* just return if nothing has changed */
 	if ((tty->termios->c_cflag == old_termios->c_cflag)
 	    && (RELEVANT_IFLAG(tty->termios->c_iflag)
+=======
+		printk("%s(%d):mgslpc_set_termios %s\n", __FILE__, __LINE__,
+			tty->driver->name);
+
+	/* just return if nothing has changed */
+	if ((tty->termios.c_cflag == old_termios->c_cflag)
+	    && (RELEVANT_IFLAG(tty->termios.c_iflag)
+>>>>>>> refs/remotes/origin/master
 		== RELEVANT_IFLAG(old_termios->c_iflag)))
 	  return;
 
@@ -2303,15 +2939,24 @@ static void mgslpc_set_termios(struct tty_struct *tty, struct ktermios *old_term
 
 	/* Handle transition to B0 status */
 	if (old_termios->c_cflag & CBAUD &&
+<<<<<<< HEAD
 	    !(tty->termios->c_cflag & CBAUD)) {
 		info->serial_signals &= ~(SerialSignal_RTS + SerialSignal_DTR);
 		spin_lock_irqsave(&info->lock,flags);
 	 	set_signals(info);
 		spin_unlock_irqrestore(&info->lock,flags);
+=======
+	    !(tty->termios.c_cflag & CBAUD)) {
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+		spin_lock_irqsave(&info->lock, flags);
+		set_signals(info);
+		spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Handle transition away from B0 status */
 	if (!(old_termios->c_cflag & CBAUD) &&
+<<<<<<< HEAD
 	    tty->termios->c_cflag & CBAUD) {
 		info->serial_signals |= SerialSignal_DTR;
  		if (!(tty->termios->c_cflag & CRTSCTS) ||
@@ -2321,11 +2966,26 @@ static void mgslpc_set_termios(struct tty_struct *tty, struct ktermios *old_term
 		spin_lock_irqsave(&info->lock,flags);
 	 	set_signals(info);
 		spin_unlock_irqrestore(&info->lock,flags);
+=======
+	    tty->termios.c_cflag & CBAUD) {
+		info->serial_signals |= SerialSignal_DTR;
+		if (!(tty->termios.c_cflag & CRTSCTS) ||
+		    !test_bit(TTY_THROTTLED, &tty->flags)) {
+			info->serial_signals |= SerialSignal_RTS;
+		}
+		spin_lock_irqsave(&info->lock, flags);
+		set_signals(info);
+		spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Handle turning off CRTSCTS */
 	if (old_termios->c_cflag & CRTSCTS &&
+<<<<<<< HEAD
 	    !(tty->termios->c_cflag & CRTSCTS)) {
+=======
+	    !(tty->termios.c_cflag & CRTSCTS)) {
+>>>>>>> refs/remotes/origin/master
 		tty->hw_stopped = 0;
 		tx_release(tty);
 	}
@@ -2341,15 +3001,24 @@ static void mgslpc_close(struct tty_struct *tty, struct file * filp)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_close(%s) entry, count=%d\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name, port->count);
+=======
+			 __FILE__, __LINE__, info->device_name, port->count);
+>>>>>>> refs/remotes/origin/master
 
 	WARN_ON(!port->count);
 
 	if (tty_port_close_start(port, tty, filp) == 0)
 		goto cleanup;
 
+<<<<<<< HEAD
  	if (port->flags & ASYNC_INITIALIZED)
  		mgslpc_wait_until_sent(tty, info->timeout);
+=======
+	if (port->flags & ASYNC_INITIALIZED)
+		mgslpc_wait_until_sent(tty, info->timeout);
+>>>>>>> refs/remotes/origin/master
 
 	mgslpc_flush_buffer(tty);
 
@@ -2360,7 +3029,11 @@ static void mgslpc_close(struct tty_struct *tty, struct file * filp)
 	tty_port_tty_set(port, NULL);
 cleanup:
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("%s(%d):mgslpc_close(%s) exit, count=%d\n", __FILE__,__LINE__,
+=======
+		printk("%s(%d):mgslpc_close(%s) exit, count=%d\n", __FILE__, __LINE__,
+>>>>>>> refs/remotes/origin/master
 			tty->driver->name, port->count);
 }
 
@@ -2371,12 +3044,20 @@ static void mgslpc_wait_until_sent(struct tty_struct *tty, int timeout)
 	MGSLPC_INFO * info = (MGSLPC_INFO *)tty->driver_data;
 	unsigned long orig_jiffies, char_time;
 
+<<<<<<< HEAD
 	if (!info )
+=======
+	if (!info)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_wait_until_sent(%s) entry\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_wait_until_sent"))
 		return;
@@ -2392,8 +3073,13 @@ static void mgslpc_wait_until_sent(struct tty_struct *tty, int timeout)
 	 * Note: use tight timings here to satisfy the NIST-PCTS.
 	 */
 
+<<<<<<< HEAD
 	if ( info->params.data_rate ) {
 	       	char_time = info->timeout/(32 * 5);
+=======
+	if (info->params.data_rate) {
+	     	char_time = info->timeout/(32 * 5);
+>>>>>>> refs/remotes/origin/master
 		if (!char_time)
 			char_time++;
 	} else
@@ -2424,7 +3110,11 @@ static void mgslpc_wait_until_sent(struct tty_struct *tty, int timeout)
 exit:
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_wait_until_sent(%s) exit\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Called by tty_hangup() when a hangup is signaled.
@@ -2436,7 +3126,11 @@ static void mgslpc_hangup(struct tty_struct *tty)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_hangup(%s)\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_hangup"))
 		return;
@@ -2451,9 +3145,15 @@ static int carrier_raised(struct tty_port *port)
 	MGSLPC_INFO *info = container_of(port, MGSLPC_INFO, port);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
  	get_signals(info);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	get_signals(info);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	if (info->serial_signals & SerialSignal_DCD)
 		return 1;
@@ -2465,6 +3165,7 @@ static void dtr_rts(struct tty_port *port, int onoff)
 	MGSLPC_INFO *info = container_of(port, MGSLPC_INFO, port);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
 	if (onoff)
 		info->serial_signals |= SerialSignal_RTS + SerialSignal_DTR;
@@ -2472,6 +3173,15 @@ static void dtr_rts(struct tty_port *port, int onoff)
 		info->serial_signals &= ~SerialSignal_RTS + SerialSignal_DTR;
 	set_signals(info);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	if (onoff)
+		info->serial_signals |= SerialSignal_RTS | SerialSignal_DTR;
+	else
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+	set_signals(info);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2479,14 +3189,29 @@ static int mgslpc_open(struct tty_struct *tty, struct file * filp)
 {
 	MGSLPC_INFO	*info;
 	struct tty_port *port;
+<<<<<<< HEAD
 	int 			retval, line;
 	unsigned long flags;
 
 	/* verify range of specified line number */
 	line = tty->index;
+<<<<<<< HEAD
 	if ((line < 0) || (line >= mgslpc_device_count)) {
+=======
+	if (line >= mgslpc_device_count) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk("%s(%d):mgslpc_open with invalid line #%d.\n",
 			__FILE__,__LINE__,line);
+=======
+	int		retval, line;
+	unsigned long	flags;
+
+	/* verify range of specified line number */
+	line = tty->index;
+	if (line >= mgslpc_device_count) {
+		printk("%s(%d):mgslpc_open with invalid line #%d.\n",
+			__FILE__, __LINE__, line);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -2503,18 +3228,31 @@ static int mgslpc_open(struct tty_struct *tty, struct file * filp)
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_open(%s), old ref count = %d\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__,tty->driver->name, port->count);
 
 	/* If port is closing, signal caller to try again */
 	if (tty_hung_up_p(filp) || port->flags & ASYNC_CLOSING){
 		if (port->flags & ASYNC_CLOSING)
 			interruptible_sleep_on(&port->close_wait);
+=======
+			 __FILE__, __LINE__, tty->driver->name, port->count);
+
+	/* If port is closing, signal caller to try again */
+	if (tty_hung_up_p(filp) || port->flags & ASYNC_CLOSING){
+		wait_event_interruptible_tty(tty, port->close_wait,
+					     !(port->flags & ASYNC_CLOSING));
+>>>>>>> refs/remotes/origin/master
 		retval = ((port->flags & ASYNC_HUP_NOTIFY) ?
 			-EAGAIN : -ERESTARTSYS);
 		goto cleanup;
 	}
 
+<<<<<<< HEAD
 	tty->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+=======
+	port->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&info->netlock, flags);
 	if (info->netcount) {
@@ -2538,13 +3276,21 @@ static int mgslpc_open(struct tty_struct *tty, struct file * filp)
 	if (retval) {
 		if (debug_level >= DEBUG_LEVEL_INFO)
 			printk("%s(%d):block_til_ready(%s) returned %d\n",
+<<<<<<< HEAD
 				 __FILE__,__LINE__, info->device_name, retval);
+=======
+				 __FILE__, __LINE__, info->device_name, retval);
+>>>>>>> refs/remotes/origin/master
 		goto cleanup;
 	}
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgslpc_open(%s) success\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name);
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 	retval = 0;
 
 cleanup:
@@ -2564,9 +3310,15 @@ static inline void line_info(struct seq_file *m, MGSLPC_INFO *info)
 		      info->device_name, info->io_base, info->irq_level);
 
 	/* output current serial signal states */
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
  	get_signals(info);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	get_signals(info);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	stat_buf[0] = 0;
 	stat_buf[1] = 0;
@@ -2628,7 +3380,11 @@ static int mgslpc_proc_show(struct seq_file *m, void *v)
 	seq_printf(m, "synclink driver:%s\n", driver_version);
 
 	info = mgslpc_device_list;
+<<<<<<< HEAD
 	while( info ) {
+=======
+	while (info) {
+>>>>>>> refs/remotes/origin/master
 		line_info(m, info);
 		info = info->next_device;
 	}
@@ -2667,6 +3423,17 @@ static int rx_alloc_buffers(MGSLPC_INFO *info)
 	if (info->rx_buf == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	/* unused flag buffer to satisfy receive_buf calling interface */
+	info->flag_buf = kzalloc(info->max_frame_size, GFP_KERNEL);
+	if (!info->flag_buf) {
+		kfree(info->rx_buf);
+		info->rx_buf = NULL;
+		return -ENOMEM;
+	}
+	
+>>>>>>> refs/remotes/origin/master
 	rx_reset_buffers(info);
 	return 0;
 }
@@ -2675,12 +3442,22 @@ static void rx_free_buffers(MGSLPC_INFO *info)
 {
 	kfree(info->rx_buf);
 	info->rx_buf = NULL;
+<<<<<<< HEAD
+=======
+	kfree(info->flag_buf);
+	info->flag_buf = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int claim_resources(MGSLPC_INFO *info)
 {
+<<<<<<< HEAD
 	if (rx_alloc_buffers(info) < 0 ) {
 		printk( "Can't allocate rx buffer %s\n", info->device_name);
+=======
+	if (rx_alloc_buffers(info) < 0) {
+		printk("Can't allocate rx buffer %s\n", info->device_name);
+>>>>>>> refs/remotes/origin/master
 		release_resources(info);
 		return -ENODEV;
 	}
@@ -2699,8 +3476,17 @@ static void release_resources(MGSLPC_INFO *info)
  *
  * Arguments:		info	pointer to device instance data
  */
+<<<<<<< HEAD
 static void mgslpc_add_device(MGSLPC_INFO *info)
 {
+=======
+static int mgslpc_add_device(MGSLPC_INFO *info)
+{
+	MGSLPC_INFO *current_dev = NULL;
+	struct device *tty_dev;
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	info->next_device = NULL;
 	info->line = mgslpc_device_count;
 	sprintf(info->device_name,"ttySLP%d",info->line);
@@ -2715,8 +3501,13 @@ static void mgslpc_add_device(MGSLPC_INFO *info)
 	if (!mgslpc_device_list)
 		mgslpc_device_list = info;
 	else {
+<<<<<<< HEAD
 		MGSLPC_INFO *current_dev = mgslpc_device_list;
 		while( current_dev->next_device )
+=======
+		current_dev = mgslpc_device_list;
+		while (current_dev->next_device)
+>>>>>>> refs/remotes/origin/master
 			current_dev = current_dev->next_device;
 		current_dev->next_device = info;
 	}
@@ -2726,12 +3517,43 @@ static void mgslpc_add_device(MGSLPC_INFO *info)
 	else if (info->max_frame_size > 65535)
 		info->max_frame_size = 65535;
 
+<<<<<<< HEAD
 	printk( "SyncLink PC Card %s:IO=%04X IRQ=%d\n",
 		info->device_name, info->io_base, info->irq_level);
 
 #if SYNCLINK_GENERIC_HDLC
 	hdlcdev_init(info);
 #endif
+=======
+	printk("SyncLink PC Card %s:IO=%04X IRQ=%d\n",
+		info->device_name, info->io_base, info->irq_level);
+
+#if SYNCLINK_GENERIC_HDLC
+	ret = hdlcdev_init(info);
+	if (ret != 0)
+		goto failed;
+#endif
+
+	tty_dev = tty_port_register_device(&info->port, serial_driver, info->line,
+			&info->p_dev->dev);
+	if (IS_ERR(tty_dev)) {
+		ret = PTR_ERR(tty_dev);
+#if SYNCLINK_GENERIC_HDLC
+		hdlcdev_exit(info);
+#endif
+		goto failed;
+	}
+
+	return 0;
+
+failed:
+	if (current_dev)
+		current_dev->next_device = NULL;
+	else
+		mgslpc_device_list = NULL;
+	mgslpc_device_count--;
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mgslpc_remove_device(MGSLPC_INFO *remove_info)
@@ -2745,10 +3567,18 @@ static void mgslpc_remove_device(MGSLPC_INFO *remove_info)
 				last->next_device = info->next_device;
 			else
 				mgslpc_device_list = info->next_device;
+<<<<<<< HEAD
+=======
+			tty_unregister_device(serial_driver, info->line);
+>>>>>>> refs/remotes/origin/master
 #if SYNCLINK_GENERIC_HDLC
 			hdlcdev_exit(info);
 #endif
 			release_resources(info);
+<<<<<<< HEAD
+=======
+			tty_port_destroy(&info->port);
+>>>>>>> refs/remotes/origin/master
 			kfree(info);
 			mgslpc_device_count--;
 			return;
@@ -2799,6 +3629,7 @@ static const struct tty_operations mgslpc_ops = {
 	.proc_fops = &mgslpc_proc_fops,
 };
 
+<<<<<<< HEAD
 static void synclink_cs_cleanup(void)
 {
 	int rc;
@@ -2836,7 +3667,10 @@ static int __init synclink_cs_init(void)
 
     /* Initialize the tty_driver structure */
 
+<<<<<<< HEAD
     serial_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
     serial_driver->driver_name = "synclink_cs";
     serial_driver->name = "ttySLP";
     serial_driver->major = ttymajor;
@@ -2866,11 +3700,69 @@ static int __init synclink_cs_init(void)
 error:
     synclink_cs_cleanup();
     return rc;
+=======
+static int __init synclink_cs_init(void)
+{
+	int rc;
+
+	if (break_on_load) {
+		mgslpc_get_text_ptr();
+		BREAKPOINT();
+	}
+
+	serial_driver = tty_alloc_driver(MAX_DEVICE_COUNT,
+			TTY_DRIVER_REAL_RAW |
+			TTY_DRIVER_DYNAMIC_DEV);
+	if (IS_ERR(serial_driver)) {
+		rc = PTR_ERR(serial_driver);
+		goto err;
+	}
+
+	/* Initialize the tty_driver structure */
+	serial_driver->driver_name = "synclink_cs";
+	serial_driver->name = "ttySLP";
+	serial_driver->major = ttymajor;
+	serial_driver->minor_start = 64;
+	serial_driver->type = TTY_DRIVER_TYPE_SERIAL;
+	serial_driver->subtype = SERIAL_TYPE_NORMAL;
+	serial_driver->init_termios = tty_std_termios;
+	serial_driver->init_termios.c_cflag =
+	B9600 | CS8 | CREAD | HUPCL | CLOCAL;
+	tty_set_operations(serial_driver, &mgslpc_ops);
+
+	rc = tty_register_driver(serial_driver);
+	if (rc < 0) {
+		printk(KERN_ERR "%s(%d):Couldn't register serial driver\n",
+				__FILE__, __LINE__);
+		goto err_put_tty;
+	}
+
+	rc = pcmcia_register_driver(&mgslpc_driver);
+	if (rc < 0)
+		goto err_unreg_tty;
+
+	printk(KERN_INFO "%s %s, tty major#%d\n", driver_name, driver_version,
+			serial_driver->major);
+
+	return 0;
+err_unreg_tty:
+	tty_unregister_driver(serial_driver);
+err_put_tty:
+	put_tty_driver(serial_driver);
+err:
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit synclink_cs_exit(void)
 {
+<<<<<<< HEAD
 	synclink_cs_cleanup();
+=======
+	pcmcia_unregister_driver(&mgslpc_driver);
+	tty_unregister_driver(serial_driver);
+	put_tty_driver(serial_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(synclink_cs_init);
@@ -3004,11 +3896,19 @@ static void loopback_enable(MGSLPC_INFO *info)
 	unsigned char val;
 
 	/* CCR1:02..00  CM[2..0] Clock Mode = 111 (clock mode 7) */
+<<<<<<< HEAD
 	val = read_reg(info, CHA + CCR1) | (BIT2 + BIT1 + BIT0);
 	write_reg(info, CHA + CCR1, val);
 
 	/* CCR2:04 SSEL Clock source select, 1=submode b */
 	val = read_reg(info, CHA + CCR2) | (BIT4 + BIT5);
+=======
+	val = read_reg(info, CHA + CCR1) | (BIT2 | BIT1 | BIT0);
+	write_reg(info, CHA + CCR1, val);
+
+	/* CCR2:04 SSEL Clock source select, 1=submode b */
+	val = read_reg(info, CHA + CCR2) | (BIT4 | BIT5);
+>>>>>>> refs/remotes/origin/master
 	write_reg(info, CHA + CCR2, val);
 
 	/* set LinkSpeed if available, otherwise default to 2Mbps */
@@ -3098,10 +3998,17 @@ static void hdlc_mode(MGSLPC_INFO *info)
 		val |= BIT4;
 		break;		// FM0
 	case HDLC_ENCODING_BIPHASE_MARK:
+<<<<<<< HEAD
 		val |= BIT4 + BIT2;
 		break;		// FM1
 	case HDLC_ENCODING_BIPHASE_LEVEL:
 		val |= BIT4 + BIT3;
+=======
+		val |= BIT4 | BIT2;
+		break;		// FM1
+	case HDLC_ENCODING_BIPHASE_LEVEL:
+		val |= BIT4 | BIT3;
+>>>>>>> refs/remotes/origin/master
 		break;		// Manchester
 	}
 	write_reg(info, CHA + CCR0, val);
@@ -3158,7 +4065,11 @@ static void hdlc_mode(MGSLPC_INFO *info)
 	 */
 	val = 0x00;
 	if (info->params.crc_type == HDLC_CRC_NONE)
+<<<<<<< HEAD
 		val |= BIT2 + BIT1;
+=======
+		val |= BIT2 | BIT1;
+>>>>>>> refs/remotes/origin/master
 	if (info->params.preamble != HDLC_PREAMBLE_PATTERN_NONE)
 		val |= BIT5;
 	switch (info->params.preamble_length)
@@ -3170,7 +4081,11 @@ static void hdlc_mode(MGSLPC_INFO *info)
 		val |= BIT6;
 		break;
 	case HDLC_PREAMBLE_LENGTH_64BITS:
+<<<<<<< HEAD
 		val |= BIT7 + BIT6;
+=======
+		val |= BIT7 | BIT6;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	write_reg(info, CHA + CCR3, val);
@@ -3237,8 +4152,13 @@ static void hdlc_mode(MGSLPC_INFO *info)
 		clear_reg_bits(info, CHA + PVR, BIT3);
 
 	irq_enable(info, CHA,
+<<<<<<< HEAD
 			 IRQ_RXEOM + IRQ_RXFIFO + IRQ_ALLSENT +
 			 IRQ_UNDERRUN + IRQ_TXFIFO);
+=======
+			 IRQ_RXEOM | IRQ_RXFIFO | IRQ_ALLSENT |
+			 IRQ_UNDERRUN | IRQ_TXFIFO);
+>>>>>>> refs/remotes/origin/master
 	issue_command(info, CHA, CMD_TXRESET + CMD_RXRESET);
 	wait_command_complete(info, CHA);
 	read_reg16(info, CHA + ISR);	/* clear pending IRQs */
@@ -3266,7 +4186,11 @@ static void rx_stop(MGSLPC_INFO *info)
 {
 	if (debug_level >= DEBUG_LEVEL_ISR)
 		printk("%s(%d):rx_stop(%s)\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	/* MODE:03 RAC Receiver Active, 0=inactive */
 	clear_reg_bits(info, CHA + MODE, BIT3);
@@ -3279,7 +4203,11 @@ static void rx_start(MGSLPC_INFO *info)
 {
 	if (debug_level >= DEBUG_LEVEL_ISR)
 		printk("%s(%d):rx_start(%s)\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	rx_reset_buffers(info);
 	info->rx_enabled = false;
@@ -3295,7 +4223,11 @@ static void tx_start(MGSLPC_INFO *info, struct tty_struct *tty)
 {
 	if (debug_level >= DEBUG_LEVEL_ISR)
 		printk("%s(%d):tx_start(%s)\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (info->tx_count) {
 		/* If auto RTS enabled and RTS is inactive, then assert */
@@ -3333,7 +4265,11 @@ static void tx_stop(MGSLPC_INFO *info)
 {
 	if (debug_level >= DEBUG_LEVEL_ISR)
 		printk("%s(%d):tx_stop(%s)\n",
+<<<<<<< HEAD
 			 __FILE__,__LINE__, info->device_name );
+=======
+			 __FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	del_timer(&info->tx_timer);
 
@@ -3555,8 +4491,13 @@ static void async_mode(MGSLPC_INFO *info)
 	} else
 		clear_reg_bits(info, CHA + PVR, BIT3);
 	irq_enable(info, CHA,
+<<<<<<< HEAD
 			  IRQ_RXEOM + IRQ_RXFIFO + IRQ_BREAK_ON + IRQ_RXTIME +
 			  IRQ_ALLSENT + IRQ_TXFIFO);
+=======
+			  IRQ_RXEOM | IRQ_RXFIFO | IRQ_BREAK_ON | IRQ_RXTIME |
+			  IRQ_ALLSENT | IRQ_TXFIFO);
+>>>>>>> refs/remotes/origin/master
 	issue_command(info, CHA, CMD_TXRESET + CMD_RXRESET);
 	wait_command_complete(info, CHA);
 	read_reg16(info, CHA + ISR);	/* clear pending IRQs */
@@ -3579,8 +4520,13 @@ static void get_signals(MGSLPC_INFO *info)
 {
 	unsigned char status = 0;
 
+<<<<<<< HEAD
 	/* preserve DTR and RTS */
 	info->serial_signals &= SerialSignal_DTR + SerialSignal_RTS;
+=======
+	/* preserve RTS and DTR */
+	info->serial_signals &= SerialSignal_RTS | SerialSignal_DTR;
+>>>>>>> refs/remotes/origin/master
 
 	if (read_reg(info, CHB + VSTR) & BIT7)
 		info->serial_signals |= SerialSignal_DCD;
@@ -3594,7 +4540,11 @@ static void get_signals(MGSLPC_INFO *info)
 		info->serial_signals |= SerialSignal_DSR;
 }
 
+<<<<<<< HEAD
 /* Set the state of DTR and RTS based on contents of
+=======
+/* Set the state of RTS and DTR based on contents of
+>>>>>>> refs/remotes/origin/master
  * serial_signals member of device extension.
  */
 static void set_signals(MGSLPC_INFO *info)
@@ -3685,7 +4635,11 @@ static bool rx_get_frame(MGSLPC_INFO *info, struct tty_struct *tty)
 
 	if (debug_level >= DEBUG_LEVEL_BH)
 		printk("%s(%d):rx_get_frame(%s) status=%04X size=%d\n",
+<<<<<<< HEAD
 			__FILE__,__LINE__,info->device_name,status,framesize);
+=======
+			__FILE__, __LINE__, info->device_name, status, framesize);
+>>>>>>> refs/remotes/origin/master
 
 	if (debug_level >= DEBUG_LEVEL_DATA)
 		trace_block(info, buf->data, framesize, 0);
@@ -3713,13 +4667,21 @@ static bool rx_get_frame(MGSLPC_INFO *info, struct tty_struct *tty)
 		}
 	}
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	buf->status = buf->count = 0;
 	info->rx_frame_count--;
 	info->rx_get++;
 	if (info->rx_get >= info->rx_buf_count)
 		info->rx_get = 0;
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return true;
 }
@@ -3733,7 +4695,11 @@ static bool register_test(MGSLPC_INFO *info)
 	bool rc = true;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	reset_device(info);
 
 	for (i = 0; i < count; i++) {
@@ -3746,7 +4712,11 @@ static bool register_test(MGSLPC_INFO *info)
 		}
 	}
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -3755,7 +4725,11 @@ static bool irq_test(MGSLPC_INFO *info)
 	unsigned long end_time;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	reset_device(info);
 
 	info->testing_irq = true;
@@ -3769,7 +4743,11 @@ static bool irq_test(MGSLPC_INFO *info)
 	write_reg(info, CHA + TIMR, 0);	/* 512 cycles */
 	issue_command(info, CHA, CMD_START_TIMER);
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	end_time=100;
 	while(end_time-- && !info->irq_occurred) {
@@ -3778,9 +4756,15 @@ static bool irq_test(MGSLPC_INFO *info)
 
 	info->testing_irq = false;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
 	reset_device(info);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	reset_device(info);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return info->irq_occurred;
 }
@@ -3789,21 +4773,35 @@ static int adapter_test(MGSLPC_INFO *info)
 {
 	if (!register_test(info)) {
 		info->init_error = DiagStatus_AddressFailure;
+<<<<<<< HEAD
 		printk( "%s(%d):Register test failure for device %s Addr=%04X\n",
 			__FILE__,__LINE__,info->device_name, (unsigned short)(info->io_base) );
+=======
+		printk("%s(%d):Register test failure for device %s Addr=%04X\n",
+			__FILE__, __LINE__, info->device_name, (unsigned short)(info->io_base));
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	if (!irq_test(info)) {
 		info->init_error = DiagStatus_IrqFailure;
+<<<<<<< HEAD
 		printk( "%s(%d):Interrupt test failure for device %s IRQ=%d\n",
 			__FILE__,__LINE__,info->device_name, (unsigned short)(info->irq_level) );
+=======
+		printk("%s(%d):Interrupt test failure for device %s IRQ=%d\n",
+			__FILE__, __LINE__, info->device_name, (unsigned short)(info->irq_level));
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):device %s passed diagnostics\n",
+<<<<<<< HEAD
 			__FILE__,__LINE__,info->device_name);
+=======
+			__FILE__, __LINE__, info->device_name);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3812,9 +4810,15 @@ static void trace_block(MGSLPC_INFO *info,const char* data, int count, int xmit)
 	int i;
 	int linecount;
 	if (xmit)
+<<<<<<< HEAD
 		printk("%s tx data:\n",info->device_name);
 	else
 		printk("%s rx data:\n",info->device_name);
+=======
+		printk("%s tx data:\n", info->device_name);
+	else
+		printk("%s rx data:\n", info->device_name);
+>>>>>>> refs/remotes/origin/master
 
 	while(count) {
 		if (count > 16)
@@ -3823,12 +4827,20 @@ static void trace_block(MGSLPC_INFO *info,const char* data, int count, int xmit)
 			linecount = count;
 
 		for(i=0;i<linecount;i++)
+<<<<<<< HEAD
 			printk("%02X ",(unsigned char)data[i]);
+=======
+			printk("%02X ", (unsigned char)data[i]);
+>>>>>>> refs/remotes/origin/master
 		for(;i<17;i++)
 			printk("   ");
 		for(i=0;i<linecount;i++) {
 			if (data[i]>=040 && data[i]<=0176)
+<<<<<<< HEAD
 				printk("%c",data[i]);
+=======
+				printk("%c", data[i]);
+>>>>>>> refs/remotes/origin/master
 			else
 				printk(".");
 		}
@@ -3847,6 +4859,7 @@ static void tx_timeout(unsigned long context)
 	MGSLPC_INFO *info = (MGSLPC_INFO*)context;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if ( debug_level >= DEBUG_LEVEL_INFO )
 		printk( "%s(%d):tx_timeout(%s)\n",
 			__FILE__,__LINE__,info->device_name);
@@ -3859,6 +4872,20 @@ static void tx_timeout(unsigned long context)
 	info->tx_count = info->tx_put = info->tx_get = 0;
 
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	if (debug_level >= DEBUG_LEVEL_INFO)
+		printk("%s(%d):tx_timeout(%s)\n",
+			__FILE__, __LINE__, info->device_name);
+	if (info->tx_active &&
+	    info->params.mode == MGSL_MODE_HDLC) {
+		info->icount.txtimeout++;
+	}
+	spin_lock_irqsave(&info->lock, flags);
+	info->tx_active = false;
+	info->tx_count = info->tx_put = info->tx_get = 0;
+
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 #if SYNCLINK_GENERIC_HDLC
 	if (info->netcount)
@@ -3940,7 +4967,11 @@ static netdev_tx_t hdlcdev_xmit(struct sk_buff *skb,
 	unsigned long flags;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk(KERN_INFO "%s:hdlc_xmit(%s)\n",__FILE__,dev->name);
+=======
+		printk(KERN_INFO "%s:hdlc_xmit(%s)\n", __FILE__, dev->name);
+>>>>>>> refs/remotes/origin/master
 
 	/* stop sending until this frame completes */
 	netif_stop_queue(dev);
@@ -3961,6 +4992,7 @@ static netdev_tx_t hdlcdev_xmit(struct sk_buff *skb,
 	dev->trans_start = jiffies;
 
 	/* start hardware transmitter if necessary */
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
 	if (!info->tx_active) {
 		struct tty_struct *tty = tty_port_tty_get(&info->port);
@@ -3968,6 +5000,15 @@ static netdev_tx_t hdlcdev_xmit(struct sk_buff *skb,
 	 	tty_kref_put(tty);
 	}
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	if (!info->tx_active) {
+		struct tty_struct *tty = tty_port_tty_get(&info->port);
+		tx_start(info, tty);
+		tty_kref_put(tty);
+	}
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return NETDEV_TX_OK;
 }
@@ -3988,10 +5029,18 @@ static int hdlcdev_open(struct net_device *dev)
 	unsigned long flags;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("%s:hdlcdev_open(%s)\n",__FILE__,dev->name);
 
 	/* generic HDLC layer open processing */
 	if ((rc = hdlc_open(dev)))
+=======
+		printk("%s:hdlcdev_open(%s)\n", __FILE__, dev->name);
+
+	/* generic HDLC layer open processing */
+	rc = hdlc_open(dev);
+	if (rc != 0)
+>>>>>>> refs/remotes/origin/master
 		return rc;
 
 	/* arbitrate between network and tty opens */
@@ -4006,15 +5055,25 @@ static int hdlcdev_open(struct net_device *dev)
 
 	tty = tty_port_tty_get(&info->port);
 	/* claim resources and init adapter */
+<<<<<<< HEAD
 	if ((rc = startup(info, tty)) != 0) {
+=======
+	rc = startup(info, tty);
+	if (rc != 0) {
+>>>>>>> refs/remotes/origin/master
 		tty_kref_put(tty);
 		spin_lock_irqsave(&info->netlock, flags);
 		info->netcount=0;
 		spin_unlock_irqrestore(&info->netlock, flags);
 		return rc;
 	}
+<<<<<<< HEAD
 	/* assert DTR and RTS, apply hardware settings */
 	info->serial_signals |= SerialSignal_RTS + SerialSignal_DTR;
+=======
+	/* assert RTS and DTR, apply hardware settings */
+	info->serial_signals |= SerialSignal_RTS | SerialSignal_DTR;
+>>>>>>> refs/remotes/origin/master
 	mgslpc_program_hw(info, tty);
 	tty_kref_put(tty);
 
@@ -4048,7 +5107,11 @@ static int hdlcdev_close(struct net_device *dev)
 	unsigned long flags;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("%s:hdlcdev_close(%s)\n",__FILE__,dev->name);
+=======
+		printk("%s:hdlcdev_close(%s)\n", __FILE__, dev->name);
+>>>>>>> refs/remotes/origin/master
 
 	netif_stop_queue(dev);
 
@@ -4082,7 +5145,11 @@ static int hdlcdev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 	unsigned int flags;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("%s:hdlcdev_ioctl(%s)\n",__FILE__,dev->name);
+=======
+		printk("%s:hdlcdev_ioctl(%s)\n", __FILE__, dev->name);
+>>>>>>> refs/remotes/origin/master
 
 	/* return error if TTY interface open */
 	if (info->port.count)
@@ -4183,14 +5250,24 @@ static void hdlcdev_tx_timeout(struct net_device *dev)
 	unsigned long flags;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("hdlcdev_tx_timeout(%s)\n",dev->name);
+=======
+		printk("hdlcdev_tx_timeout(%s)\n", dev->name);
+>>>>>>> refs/remotes/origin/master
 
 	dev->stats.tx_errors++;
 	dev->stats.tx_aborted_errors++;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&info->lock,flags);
 	tx_stop(info);
 	spin_unlock_irqrestore(&info->lock,flags);
+=======
+	spin_lock_irqsave(&info->lock, flags);
+	tx_stop(info);
+	spin_unlock_irqrestore(&info->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	netif_wake_queue(dev);
 }
@@ -4221,7 +5298,11 @@ static void hdlcdev_rx(MGSLPC_INFO *info, char *buf, int size)
 	struct net_device *dev = info->netdev;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
+<<<<<<< HEAD
 		printk("hdlcdev_rx(%s)\n",dev->name);
+=======
+		printk("hdlcdev_rx(%s)\n", dev->name);
+>>>>>>> refs/remotes/origin/master
 
 	if (skb == NULL) {
 		printk(KERN_NOTICE "%s: can't alloc skb, dropping packet\n", dev->name);
@@ -4264,8 +5345,14 @@ static int hdlcdev_init(MGSLPC_INFO *info)
 
 	/* allocate and initialize network and HDLC layer objects */
 
+<<<<<<< HEAD
 	if (!(dev = alloc_hdlcdev(info))) {
 		printk(KERN_ERR "%s:hdlc device allocation failure\n",__FILE__);
+=======
+	dev = alloc_hdlcdev(info);
+	if (dev == NULL) {
+		printk(KERN_ERR "%s:hdlc device allocation failure\n", __FILE__);
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -4284,8 +5371,14 @@ static int hdlcdev_init(MGSLPC_INFO *info)
 	hdlc->xmit   = hdlcdev_xmit;
 
 	/* register objects with HDLC layer */
+<<<<<<< HEAD
 	if ((rc = register_hdlc_device(dev))) {
 		printk(KERN_WARNING "%s:unable to register hdlc device\n",__FILE__);
+=======
+	rc = register_hdlc_device(dev);
+	if (rc) {
+		printk(KERN_WARNING "%s:unable to register hdlc device\n", __FILE__);
+>>>>>>> refs/remotes/origin/master
 		free_netdev(dev);
 		return rc;
 	}

@@ -168,7 +168,11 @@ __bfa_trc32(struct bfa_trc_mod_s *trcm, int fileno, int line, u32 data)
 /*
  * bfa_q_deq - dequeue an element from head of the queue
  */
+<<<<<<< HEAD
 #define bfa_q_deq(_q, _qe) {						\
+=======
+#define bfa_q_deq(_q, _qe) do {						\
+>>>>>>> refs/remotes/origin/master
 	if (!list_empty(_q)) {						\
 		(*((struct list_head **) (_qe))) = bfa_q_next(_q);	\
 		bfa_q_prev(bfa_q_next(*((struct list_head **) _qe))) =	\
@@ -177,7 +181,11 @@ __bfa_trc32(struct bfa_trc_mod_s *trcm, int fileno, int line, u32 data)
 	} else {							\
 		*((struct list_head **) (_qe)) = (struct list_head *) NULL;\
 	}								\
+<<<<<<< HEAD
 }
+=======
+} while (0)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * bfa_q_deq_tail - dequeue an element from tail of the queue

@@ -1,5 +1,15 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef __ASM_MIPS_PROM_H
 #define __ASM_MIPS_PROM_H
+=======
+#ifndef __ASM_MIPSPROM_H
+#define __ASM_MIPSPROM_H
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef __ASM_MIPSPROM_H
+#define __ASM_MIPSPROM_H
+>>>>>>> refs/remotes/origin/master
 
 #define PROM_RESET		0
 #define PROM_EXEC		1
@@ -73,4 +83,12 @@
 
 extern char *prom_getenv(char *);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* __ASM_MIPS_PROM_H */
+=======
+#endif /* __ASM_MIPSPROM_H */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* __ASM_MIPSPROM_H */
+>>>>>>> refs/remotes/origin/master

@@ -72,7 +72,13 @@
 #define FLG_LL_OK		24
 #define FLG_LL_CONN		25
 #define FLG_DTMFSEND		26
+<<<<<<< HEAD
 
+=======
+#define FLG_TX_EMPTY		27
+/* stop sending received data upstream */
+#define FLG_RX_OFF		28
+>>>>>>> refs/remotes/origin/master
 /* workq events */
 #define FLG_RECVQUEUE		30
 #define	FLG_PHCHANGE		31
@@ -135,10 +141,20 @@ extern int	create_l1(struct dchannel *, dchannel_l1callback *);
 #define HW_TESTRX_RAW	0x9602
 #define HW_TESTRX_HDLC	0x9702
 #define HW_TESTRX_OFF	0x9802
+<<<<<<< HEAD
+=======
+#define HW_TIMER3_IND	0x9902
+#define HW_TIMER3_VALUE	0x9a00
+#define HW_TIMER3_VMASK	0x00FF
+>>>>>>> refs/remotes/origin/master
 
 struct layer1;
 extern int	l1_event(struct layer1 *, u_int);
 
+<<<<<<< HEAD
+=======
+#define MISDN_BCH_FILL_SIZE	4
+>>>>>>> refs/remotes/origin/master
 
 struct bchannel {
 	struct mISDNchannel	ch;
@@ -150,8 +166,19 @@ struct bchannel {
 	int			slot;	/* multiport card channel slot */
 	struct timer_list	timer;
 	/* receive data */
+<<<<<<< HEAD
 	struct sk_buff		*rx_skb;
 	int			maxlen;
+=======
+	u8			fill[MISDN_BCH_FILL_SIZE];
+	struct sk_buff		*rx_skb;
+	unsigned short		maxlen;
+	unsigned short		init_maxlen; /* initial value */
+	unsigned short		next_maxlen; /* pending value */
+	unsigned short		minlen; /* for transparent data */
+	unsigned short		init_minlen; /* initial value */
+	unsigned short		next_minlen; /* pending value */
+>>>>>>> refs/remotes/origin/master
 	/* send data */
 	struct sk_buff		*next_skb;
 	struct sk_buff		*tx_skb;
@@ -163,6 +190,7 @@ struct bchannel {
 	int			err_crc;
 	int			err_tx;
 	int			err_rx;
+<<<<<<< HEAD
 };
 
 extern int	mISDN_initdchannel(struct dchannel *, int, void *);
@@ -170,16 +198,37 @@ extern int	mISDN_initbchannel(struct bchannel *, int);
 extern int	mISDN_freedchannel(struct dchannel *);
 extern void	mISDN_clear_bchannel(struct bchannel *);
 extern int	mISDN_freebchannel(struct bchannel *);
+=======
+	int			dropcnt;
+};
+
+extern int	mISDN_initdchannel(struct dchannel *, int, void *);
+extern int	mISDN_initbchannel(struct bchannel *, unsigned short,
+				   unsigned short);
+extern int	mISDN_freedchannel(struct dchannel *);
+extern void	mISDN_clear_bchannel(struct bchannel *);
+extern void	mISDN_freebchannel(struct bchannel *);
+extern int	mISDN_ctrl_bchannel(struct bchannel *, struct mISDN_ctrl_req *);
+>>>>>>> refs/remotes/origin/master
 extern void	queue_ch_frame(struct mISDNchannel *, u_int,
 			int, struct sk_buff *);
 extern int	dchannel_senddata(struct dchannel *, struct sk_buff *);
 extern int	bchannel_senddata(struct bchannel *, struct sk_buff *);
+<<<<<<< HEAD
 extern void	recv_Dchannel(struct dchannel *);
 extern void	recv_Echannel(struct dchannel *, struct dchannel *);
 extern void	recv_Bchannel(struct bchannel *, unsigned int id);
 extern void	recv_Dchannel_skb(struct dchannel *, struct sk_buff *);
 extern void	recv_Bchannel_skb(struct bchannel *, struct sk_buff *);
 extern void	confirm_Bsend(struct bchannel *bch);
+=======
+extern int      bchannel_get_rxbuf(struct bchannel *, int);
+extern void	recv_Dchannel(struct dchannel *);
+extern void	recv_Echannel(struct dchannel *, struct dchannel *);
+extern void	recv_Bchannel(struct bchannel *, unsigned int, bool);
+extern void	recv_Dchannel_skb(struct dchannel *, struct sk_buff *);
+extern void	recv_Bchannel_skb(struct bchannel *, struct sk_buff *);
+>>>>>>> refs/remotes/origin/master
 extern int	get_next_bframe(struct bchannel *);
 extern int	get_next_dframe(struct dchannel *);
 

@@ -337,6 +337,7 @@ cumanascsi_2_set_proc_info(struct Scsi_Host *host, char *buffer, int length)
 	return ret;
 }
 
+<<<<<<< HEAD
 /* Prototype: int cumanascsi_2_proc_info(char *buffer, char **start, off_t offset,
  *					 int length, int host_no, int inout)
  * Purpose  : Return information about the driver to a user process accessing
@@ -376,11 +377,31 @@ int cumanascsi_2_proc_info (struct Scsi_Host *host, char *buffer, char **start, 
 		pos = length;
 
 	return pos;
+=======
+static int cumanascsi_2_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	struct cumanascsi2_info *info;
+	info = (struct cumanascsi2_info *)host->hostdata;
+
+	seq_printf(m, "Cumana SCSI II driver v%s\n", VERSION);
+	fas216_print_host(&info->info, m);
+	seq_printf(m, "Term    : o%s\n",
+			info->terms ? "n" : "ff");
+
+	fas216_print_stats(&info->info, m);
+	fas216_print_devices(&info->info, m);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct scsi_host_template cumanascsi2_template = {
 	.module				= THIS_MODULE,
+<<<<<<< HEAD
 	.proc_info			= cumanascsi_2_proc_info,
+=======
+	.show_info			= cumanascsi_2_show_info,
+	.write_info			= cumanascsi_2_set_proc_info,
+>>>>>>> refs/remotes/origin/master
 	.name				= "Cumana SCSI II",
 	.info				= cumanascsi_2_info,
 	.queuecommand			= fas216_queue_command,
@@ -397,8 +418,13 @@ static struct scsi_host_template cumanascsi2_template = {
 	.proc_name			= "cumanascsi2",
 };
 
+<<<<<<< HEAD
 static int __devinit
 cumanascsi2_probe(struct expansion_card *ec, const struct ecard_id *id)
+=======
+static int cumanascsi2_probe(struct expansion_card *ec,
+			     const struct ecard_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host;
 	struct cumanascsi2_info *info;
@@ -495,7 +521,11 @@ cumanascsi2_probe(struct expansion_card *ec, const struct ecard_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit cumanascsi2_remove(struct expansion_card *ec)
+=======
+static void cumanascsi2_remove(struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = ecard_get_drvdata(ec);
 	struct cumanascsi2_info *info = (struct cumanascsi2_info *)host->hostdata;
@@ -519,7 +549,11 @@ static const struct ecard_id cumanascsi2_cids[] = {
 
 static struct ecard_driver cumanascsi2_driver = {
 	.probe		= cumanascsi2_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cumanascsi2_remove),
+=======
+	.remove		= cumanascsi2_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= cumanascsi2_cids,
 	.drv = {
 		.name		= "cumanascsi2",

@@ -70,6 +70,7 @@ void build_cpu_to_node_map(void);
 	.nr_balance_failed	= 0,			\
 }
 
+<<<<<<< HEAD
 /* sched_domains SD_NODE_INIT for IA64 NUMA machines */
 #define SD_NODE_INIT (struct sched_domain) {		\
 	.parent			= NULL,			\
@@ -95,6 +96,8 @@ void build_cpu_to_node_map(void);
 	.nr_balance_failed	= 0,			\
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_NUMA */
 
 #ifdef CONFIG_SMP

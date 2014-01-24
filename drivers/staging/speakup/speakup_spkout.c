@@ -107,7 +107,11 @@ static struct spk_synth synth_spkout = {
 	.startup = SYNTH_START,
 	.checkval = SYNTH_CHECK,
 	.vars = vars,
+<<<<<<< HEAD
 	.probe = serial_synth_probe,
+=======
+	.probe = spk_serial_synth_probe,
+>>>>>>> refs/remotes/origin/master
 	.release = spk_serial_release,
 	.synth_immediate = spk_synth_immediate,
 	.catch_up = spk_do_catch_up,

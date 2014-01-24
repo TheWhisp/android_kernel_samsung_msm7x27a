@@ -1,8 +1,13 @@
 #ifndef __LINUX_ATALK_H__
 #define __LINUX_ATALK_H__
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <asm/byteorder.h>
+<<<<<<< HEAD
+=======
+#include <linux/socket.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * AppleTalk networking structures
@@ -28,7 +33,11 @@ struct atalk_addr {
 };
 
 struct sockaddr_at {
+<<<<<<< HEAD
 	sa_family_t	  sat_family;
+=======
+	__kernel_sa_family_t sat_family;
+>>>>>>> refs/remotes/origin/cm-10.0
 	__u8		  sat_port;
 	struct atalk_addr sat_addr;
 	char		  sat_zero[8];
@@ -43,6 +52,11 @@ struct atalk_netrange {
 #ifdef __KERNEL__
 
 #include <net/sock.h>
+=======
+
+#include <net/sock.h>
+#include <uapi/linux/atalk.h>
+>>>>>>> refs/remotes/origin/master
 
 struct atalk_route {
 	struct net_device  *dev;
@@ -204,5 +218,8 @@ extern void atalk_proc_exit(void);
 #define atalk_proc_exit()	do { } while(0)
 #endif /* CONFIG_PROC_FS */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_ATALK_H__ */

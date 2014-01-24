@@ -21,10 +21,22 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/syscalls.h>
 #include <linux/perf_event.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/opcodes.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/opcodes.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/traps.h>
 #include <asm/uaccess.h>
 
@@ -78,6 +90,7 @@ static unsigned long abtcounter;
 static pid_t         previous_pid;
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 static int proc_read_status(char *page, char **start, off_t off, int count,
 			    int *eof, void *data)
 {
@@ -99,6 +112,29 @@ static int proc_read_status(char *page, char **start, off_t off, int count,
 
 	return len;
 }
+=======
+static int proc_status_show(struct seq_file *m, void *v)
+{
+	seq_printf(m, "Emulated SWP:\t\t%lu\n", swpcounter);
+	seq_printf(m, "Emulated SWPB:\t\t%lu\n", swpbcounter);
+	seq_printf(m, "Aborted SWP{B}:\t\t%lu\n", abtcounter);
+	if (previous_pid != 0)
+		seq_printf(m, "Last process:\t\t%d\n", previous_pid);
+	return 0;
+}
+
+static int proc_status_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, proc_status_show, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_status_fops = {
+	.open		= proc_status_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -175,6 +211,10 @@ static int emulate_swpX(unsigned int address, unsigned int *data,
 	return res;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int check_condition(struct pt_regs *regs, unsigned int insn)
 {
 	unsigned int base_cond, neg, cond = 0;
@@ -226,6 +266,11 @@ static int check_condition(struct pt_regs *regs, unsigned int insn)
 	return cond && !neg;
 }
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * swp_handler logs the id of calling process, dissects the instruction, sanity
  * checks the memory location, calls emulate_swpX for the actual operation and
@@ -236,7 +281,32 @@ static int swp_handler(struct pt_regs *regs, unsigned int instr)
 	unsigned int address, destreg, data, type;
 	unsigned int res = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, 0, regs, regs->ARM_pc);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, regs->ARM_pc);
+
+	res = arm_check_condition(instr, regs->ARM_cpsr);
+	switch (res) {
+	case ARM_OPCODE_CONDTEST_PASS:
+		break;
+	case ARM_OPCODE_CONDTEST_FAIL:
+		/* Condition failed - return to next instruction */
+		regs->ARM_pc += 4;
+		return 0;
+	case ARM_OPCODE_CONDTEST_UNCOND:
+		/* If unconditional encoding - not a SWP, undef */
+		return -EFAULT;
+	default:
+		return -EINVAL;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (current->pid != previous_pid) {
 		pr_debug("\"%s\" (%ld) uses deprecated SWP{B} instruction\n",
@@ -244,12 +314,21 @@ static int swp_handler(struct pt_regs *regs, unsigned int instr)
 		previous_pid = current->pid;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Ignore the instruction if it fails its condition code check */
 	if (!check_condition(regs, instr)) {
 		regs->ARM_pc += 4;
 		return 0;
 	}
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	address = regs->uregs[EXTRACT_REG_NUM(instr, RN_OFFSET)];
 	data	= regs->uregs[EXTRACT_REG_NUM(instr, RT2_OFFSET)];
 	destreg = EXTRACT_REG_NUM(instr, RT_OFFSET);
@@ -307,6 +386,7 @@ static struct undef_hook swp_hook = {
 static int __init swp_emulation_init(void)
 {
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 	struct proc_dir_entry *res;
 
 	res = create_proc_entry("cpu/swp_emulation", S_IRUGO, NULL);
@@ -315,6 +395,10 @@ static int __init swp_emulation_init(void)
 		return -ENOMEM;
 
 	res->read_proc = proc_read_status;
+=======
+	if (!proc_create("cpu/swp_emulation", S_IRUGO, NULL, &proc_status_fops))
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PROC_FS */
 
 	printk(KERN_NOTICE "Registering SWP/SWPB emulation handler\n");

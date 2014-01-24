@@ -28,6 +28,7 @@
 #define GFS2_LARGE_FH_SIZE 8
 #define GFS2_OLD_FH_SIZE 10
 
+<<<<<<< HEAD
 static int gfs2_encode_fh(struct dentry *dentry, __u32 *p, int *len,
 			  int connectable)
 {
@@ -42,6 +43,21 @@ static int gfs2_encode_fh(struct dentry *dentry, __u32 *p, int *len,
 	} else if (*len < GFS2_SMALL_FH_SIZE) {
 		*len = GFS2_SMALL_FH_SIZE;
 		return 255;
+=======
+static int gfs2_encode_fh(struct inode *inode, __u32 *p, int *len,
+			  struct inode *parent)
+{
+	__be32 *fh = (__force __be32 *)p;
+	struct super_block *sb = inode->i_sb;
+	struct gfs2_inode *ip = GFS2_I(inode);
+
+	if (parent && (*len < GFS2_LARGE_FH_SIZE)) {
+		*len = GFS2_LARGE_FH_SIZE;
+		return FILEID_INVALID;
+	} else if (*len < GFS2_SMALL_FH_SIZE) {
+		*len = GFS2_SMALL_FH_SIZE;
+		return FILEID_INVALID;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	fh[0] = cpu_to_be32(ip->i_no_formal_ino >> 32);
@@ -50,6 +66,7 @@ static int gfs2_encode_fh(struct dentry *dentry, __u32 *p, int *len,
 	fh[3] = cpu_to_be32(ip->i_no_addr & 0xFFFFFFFF);
 	*len = GFS2_SMALL_FH_SIZE;
 
+<<<<<<< HEAD
 	if (!connectable || inode == sb->s_root->d_inode)
 		return *len;
 
@@ -58,6 +75,12 @@ static int gfs2_encode_fh(struct dentry *dentry, __u32 *p, int *len,
 	ip = GFS2_I(inode);
 	igrab(inode);
 	spin_unlock(&dentry->d_lock);
+=======
+	if (!parent || inode == sb->s_root->d_inode)
+		return *len;
+
+	ip = GFS2_I(parent);
+>>>>>>> refs/remotes/origin/master
 
 	fh[4] = cpu_to_be32(ip->i_no_formal_ino >> 32);
 	fh[5] = cpu_to_be32(ip->i_no_formal_ino & 0xFFFFFFFF);
@@ -65,12 +88,19 @@ static int gfs2_encode_fh(struct dentry *dentry, __u32 *p, int *len,
 	fh[7] = cpu_to_be32(ip->i_no_addr & 0xFFFFFFFF);
 	*len = GFS2_LARGE_FH_SIZE;
 
+<<<<<<< HEAD
 	iput(inode);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return *len;
 }
 
 struct get_name_filldir {
+<<<<<<< HEAD
+=======
+	struct dir_context ctx;
+>>>>>>> refs/remotes/origin/master
 	struct gfs2_inum_host inum;
 	char *name;
 };
@@ -95,10 +125,24 @@ static int gfs2_get_name(struct dentry *parent, char *name,
 	struct inode *dir = parent->d_inode;
 	struct inode *inode = child->d_inode;
 	struct gfs2_inode *dip, *ip;
+<<<<<<< HEAD
 	struct get_name_filldir gnfd;
 	struct gfs2_holder gh;
 	u64 offset = 0;
 	int error;
+<<<<<<< HEAD
+=======
+	struct file_ra_state f_ra = { .start = 0 };
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct get_name_filldir gnfd = {
+		.ctx.actor = get_name_filldir,
+		.name = name
+	};
+	struct gfs2_holder gh;
+	int error;
+	struct file_ra_state f_ra = { .start = 0 };
+>>>>>>> refs/remotes/origin/master
 
 	if (!dir)
 		return -EINVAL;
@@ -112,13 +156,24 @@ static int gfs2_get_name(struct dentry *parent, char *name,
 	*name = 0;
 	gnfd.inum.no_addr = ip->i_no_addr;
 	gnfd.inum.no_formal_ino = ip->i_no_formal_ino;
+<<<<<<< HEAD
 	gnfd.name = name;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	error = gfs2_glock_nq_init(dip->i_gl, LM_ST_SHARED, 0, &gh);
 	if (error)
 		return error;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	error = gfs2_dir_read(dir, &offset, &gnfd, get_name_filldir);
+=======
+	error = gfs2_dir_read(dir, &offset, &gnfd, get_name_filldir, &f_ra);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = gfs2_dir_read(dir, &gnfd.ctx, &f_ra);
+>>>>>>> refs/remotes/origin/master
 
 	gfs2_glock_dq_uninit(&gh);
 

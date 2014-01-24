@@ -5,7 +5,17 @@
  */
 
 #include <linux/ctype.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/compiler.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/compiler.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 const unsigned char _ctype[] = {
 _C,_C,_C,_C,_C,_C,_C,_C,				/* 0-7 */

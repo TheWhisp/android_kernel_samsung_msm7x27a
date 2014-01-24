@@ -3,5 +3,8 @@
 #
 
 obj-y					+= eth.o
+<<<<<<< HEAD
 obj-$(subst m,y,$(CONFIG_IPX))		+= pe2.o
 obj-$(subst m,y,$(CONFIG_ATALK))	+= pe2.o
+=======
+>>>>>>> refs/remotes/origin/master

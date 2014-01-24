@@ -12,7 +12,11 @@
 #include <linux/err.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include "../iio.h"
+=======
+#include <linux/iio/iio.h>
+>>>>>>> refs/remotes/origin/master
 #include "ad7606.h"
 
 static int ad7606_par16_read_block(struct device *dev,
@@ -47,7 +51,11 @@ static const struct ad7606_bus_ops ad7606_par8_bops = {
 	.read_block	= ad7606_par8_read_block,
 };
 
+<<<<<<< HEAD
 static int __devinit ad7606_par_probe(struct platform_device *pdev)
+=======
+static int ad7606_par_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	struct iio_dev *indio_dev;
@@ -100,20 +108,35 @@ out1:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit ad7606_par_remove(struct platform_device *pdev)
+=======
+static int ad7606_par_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
 	struct resource *res;
 	struct ad7606_state *st = iio_priv(indio_dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ad7606_remove(indio_dev);
+=======
+	ad7606_remove(indio_dev, platform_get_irq(pdev, 0));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad7606_remove(indio_dev, platform_get_irq(pdev, 0));
+>>>>>>> refs/remotes/origin/master
 
 	iounmap(st->base_address);
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	release_mem_region(res->start, resource_size(res));
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -164,7 +187,11 @@ MODULE_DEVICE_TABLE(platform, ad7606_driver_ids);
 
 static struct platform_driver ad7606_driver = {
 	.probe = ad7606_par_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(ad7606_par_remove),
+=======
+	.remove	= ad7606_par_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = ad7606_driver_ids,
 	.driver = {
 		.name	 = "ad7606",
@@ -173,6 +200,8 @@ static struct platform_driver ad7606_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init ad7606_init(void)
 {
 	return platform_driver_register(&ad7606_driver);
@@ -185,8 +214,20 @@ static void __exit ad7606_cleanup(void)
 
 module_init(ad7606_init);
 module_exit(ad7606_cleanup);
+=======
+module_platform_driver(ad7606_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(ad7606_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("Analog Devices AD7606 ADC");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("platform:ad7606_par");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

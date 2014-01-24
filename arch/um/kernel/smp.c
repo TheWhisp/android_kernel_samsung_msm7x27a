@@ -3,6 +3,7 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "linux/percpu.h"
 #include "asm/pgalloc.h"
 #include "asm/tlb.h"
@@ -21,6 +22,26 @@
 #include "kern.h"
 #include "irq_user.h"
 #include "os.h"
+=======
+#include <linux/percpu.h>
+#include <asm/pgalloc.h>
+#include <asm/tlb.h>
+
+#ifdef CONFIG_SMP
+
+#include <linux/sched.h>
+#include <linux/module.h>
+#include <linux/threads.h>
+#include <linux/interrupt.h>
+#include <linux/err.h>
+#include <linux/hardirq.h>
+#include <asm/smp.h>
+#include <asm/processor.h>
+#include <asm/spinlock.h>
+#include <kern.h>
+#include <irq_user.h>
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Per CPU bogomips and other parameters
  * The only piece used here is the ipi pipe, which is set before SMP is
@@ -76,7 +97,15 @@ static int idle_proc(void *cpup)
 		cpu_relax();
 
 	notify_cpu_starting(cpu);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_set(cpu, cpu_online_map);
+=======
+	set_cpu_online(cpu, true);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_cpu_online(cpu, true);
+>>>>>>> refs/remotes/origin/master
 	default_idle();
 	return 0;
 }
@@ -110,8 +139,16 @@ void smp_prepare_cpus(unsigned int maxcpus)
 	for (i = 0; i < ncpus; ++i)
 		set_cpu_possible(i, true);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_clear(me, cpu_online_map);
 	cpu_set(me, cpu_online_map);
+=======
+	set_cpu_online(me, true);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_cpu_online(me, true);
+>>>>>>> refs/remotes/origin/master
 	cpu_set(me, cpu_callin_map);
 
 	err = os_pipe(cpu_data[me].ipi_pipe, 1, 1);
@@ -138,13 +175,31 @@ void smp_prepare_cpus(unsigned int maxcpus)
 
 void smp_prepare_boot_cpu(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_set(smp_processor_id(), cpu_online_map);
+=======
+	set_cpu_online(smp_processor_id(), true);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int __cpu_up(unsigned int cpu)
 {
 	cpu_set(cpu, smp_commenced_mask);
+<<<<<<< HEAD
 	while (!cpu_isset(cpu, cpu_online_map))
+=======
+	while (!cpu_online(cpu))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_cpu_online(smp_processor_id(), true);
+}
+
+int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+{
+	cpu_set(cpu, smp_commenced_mask);
+	while (!cpu_online(cpu))
+>>>>>>> refs/remotes/origin/master
 		mb();
 	return 0;
 }

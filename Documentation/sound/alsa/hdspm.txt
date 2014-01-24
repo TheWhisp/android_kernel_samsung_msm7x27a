@@ -359,4 +359,8 @@ Calling Parameter:
    enable_monitor int array (min = 1, max = 8), 
      "Enable Analog Out on Channel 63/64 by default."
 
+<<<<<<< HEAD
       note: here the analog output is enabled (but not routed).
+=======
+      note: here the analog output is enabled (but not routed).
+>>>>>>> refs/remotes/origin/master

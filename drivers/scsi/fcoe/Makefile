@@ -1,4 +1,8 @@
 obj-$(CONFIG_FCOE) += fcoe.o
 obj-$(CONFIG_LIBFCOE) += libfcoe.o
 
+<<<<<<< HEAD
 libfcoe-objs := fcoe_ctlr.o fcoe_transport.o
+=======
+libfcoe-objs := fcoe_ctlr.o fcoe_transport.o fcoe_sysfs.o
+>>>>>>> refs/remotes/origin/master

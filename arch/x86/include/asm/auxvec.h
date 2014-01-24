@@ -9,4 +9,14 @@
 #endif
 #define AT_SYSINFO_EHDR		33
 
+<<<<<<< HEAD
+=======
+/* entries in ARCH_DLINFO: */
+#if defined(CONFIG_IA32_EMULATION) || !defined(CONFIG_X86_64)
+# define AT_VECTOR_SIZE_ARCH 2
+#else /* else it's non-compat x86-64 */
+# define AT_VECTOR_SIZE_ARCH 1
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_X86_AUXVEC_H */

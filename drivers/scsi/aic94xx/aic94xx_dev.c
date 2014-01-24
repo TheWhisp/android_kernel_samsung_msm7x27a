@@ -84,7 +84,11 @@ static void asd_set_ddb_type(struct domain_device *dev)
 	struct asd_ha_struct *asd_ha = dev->port->ha->lldd_ha;
 	int ddb = (int) (unsigned long) dev->lldd_dev;
 
+<<<<<<< HEAD
 	if (dev->dev_type == SATA_PM_PORT)
+=======
+	if (dev->dev_type == SAS_SATA_PM_PORT)
+>>>>>>> refs/remotes/origin/master
 		asd_ddbsite_write_byte(asd_ha,ddb, DDB_TYPE, DDB_TYPE_PM_PORT);
 	else if (dev->tproto)
 		asd_ddbsite_write_byte(asd_ha,ddb, DDB_TYPE, DDB_TYPE_TARGET);
@@ -109,6 +113,8 @@ static int asd_init_sata_tag_ddb(struct domain_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int asd_init_sata(struct domain_device *dev)
 {
 	struct asd_ha_struct *asd_ha = dev->port->ha->lldd_ha;
@@ -125,20 +131,78 @@ static int asd_init_sata(struct domain_device *dev)
 
 		if (w76 & 0x100) /* NCQ? */
 			qdepth = (w75 & 0x1F) + 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void asd_set_dmamode(struct domain_device *dev)
+{
+	struct asd_ha_struct *asd_ha = dev->port->ha->lldd_ha;
+	struct ata_device *ata_dev = sas_to_ata_dev(dev);
+	int ddb = (int) (unsigned long) dev->lldd_dev;
+	u32 qdepth = 0;
+
+<<<<<<< HEAD
+	if (dev->dev_type == SATA_DEV || dev->dev_type == SATA_PM_PORT) {
+		if (ata_id_has_ncq(ata_dev->id))
+			qdepth = ata_id_queue_depth(ata_dev->id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->dev_type == SAS_SATA_DEV || dev->dev_type == SAS_SATA_PM_PORT) {
+		if (ata_id_has_ncq(ata_dev->id))
+			qdepth = ata_id_queue_depth(ata_dev->id);
+>>>>>>> refs/remotes/origin/master
 		asd_ddbsite_write_dword(asd_ha, ddb, SATA_TAG_ALLOC_MASK,
 					(1ULL<<qdepth)-1);
 		asd_ddbsite_write_byte(asd_ha, ddb, NUM_SATA_TAGS, qdepth);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (qdepth > 0)
+		if (asd_init_sata_tag_ddb(dev) != 0) {
+			unsigned long flags;
+
+			spin_lock_irqsave(dev->sata_dev.ap->lock, flags);
+			ata_dev->flags |= ATA_DFLAG_NCQ_OFF;
+			spin_unlock_irqrestore(dev->sata_dev.ap->lock, flags);
+		}
+}
+
+static int asd_init_sata(struct domain_device *dev)
+{
+	struct asd_ha_struct *asd_ha = dev->port->ha->lldd_ha;
+	int ddb = (int) (unsigned long) dev->lldd_dev;
+
+	asd_ddbsite_write_word(asd_ha, ddb, ATA_CMD_SCBPTR, 0xFFFF);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dev->dev_type == SATA_DEV || dev->dev_type == SATA_PM ||
 	    dev->dev_type == SATA_PM_PORT) {
+=======
+	if (dev->dev_type == SAS_SATA_DEV || dev->dev_type == SAS_SATA_PM ||
+	    dev->dev_type == SAS_SATA_PM_PORT) {
+>>>>>>> refs/remotes/origin/master
 		struct dev_to_host_fis *fis = (struct dev_to_host_fis *)
 			dev->frame_rcvd;
 		asd_ddbsite_write_byte(asd_ha, ddb, SATA_STATUS, fis->status);
 	}
 	asd_ddbsite_write_word(asd_ha, ddb, NCQ_DATA_SCB_PTR, 0xFFFF);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (qdepth > 0)
 		res = asd_init_sata_tag_ddb(dev);
 	return res;
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int asd_init_target_ddb(struct domain_device *dev)
@@ -164,7 +228,11 @@ static int asd_init_target_ddb(struct domain_device *dev)
 	asd_ddbsite_write_byte(asd_ha, ddb, CONN_MASK, dev->port->phy_mask);
 	if (dev->port->oob_mode != SATA_OOB_MODE) {
 		flags |= OPEN_REQUIRED;
+<<<<<<< HEAD
 		if ((dev->dev_type == SATA_DEV) ||
+=======
+		if ((dev->dev_type == SAS_SATA_DEV) ||
+>>>>>>> refs/remotes/origin/master
 		    (dev->tproto & SAS_PROTOCOL_STP)) {
 			struct smp_resp *rps_resp = &dev->sata_dev.rps_resp;
 			if (rps_resp->frame_type == SMP_RESPONSE &&
@@ -178,8 +246,13 @@ static int asd_init_target_ddb(struct domain_device *dev)
 		} else {
 			flags |= CONCURRENT_CONN_SUPP;
 			if (!dev->parent &&
+<<<<<<< HEAD
 			    (dev->dev_type == EDGE_DEV ||
 			     dev->dev_type == FANOUT_DEV))
+=======
+			    (dev->dev_type == SAS_EDGE_EXPANDER_DEVICE ||
+			     dev->dev_type == SAS_FANOUT_EXPANDER_DEVICE))
+>>>>>>> refs/remotes/origin/master
 				asd_ddbsite_write_byte(asd_ha, ddb, MAX_CCONN,
 						       4);
 			else
@@ -188,7 +261,11 @@ static int asd_init_target_ddb(struct domain_device *dev)
 			asd_ddbsite_write_byte(asd_ha, ddb, NUM_CTX, 1);
 		}
 	}
+<<<<<<< HEAD
 	if (dev->dev_type == SATA_PM)
+=======
+	if (dev->dev_type == SAS_SATA_PM)
+>>>>>>> refs/remotes/origin/master
 		flags |= SATA_MULTIPORT;
 	asd_ddbsite_write_byte(asd_ha, ddb, DDB_TARG_FLAGS, flags);
 
@@ -201,7 +278,11 @@ static int asd_init_target_ddb(struct domain_device *dev)
 	asd_ddbsite_write_word(asd_ha, ddb, SEND_QUEUE_TAIL, 0xFFFF);
 	asd_ddbsite_write_word(asd_ha, ddb, SISTER_DDB, 0xFFFF);
 
+<<<<<<< HEAD
 	if (dev->dev_type == SATA_DEV || (dev->tproto & SAS_PROTOCOL_STP)) {
+=======
+	if (dev->dev_type == SAS_SATA_DEV || (dev->tproto & SAS_PROTOCOL_STP)) {
+>>>>>>> refs/remotes/origin/master
 		i = asd_init_sata(dev);
 		if (i < 0) {
 			asd_free_ddb(asd_ha, ddb);
@@ -209,7 +290,11 @@ static int asd_init_target_ddb(struct domain_device *dev)
 		}
 	}
 
+<<<<<<< HEAD
 	if (dev->dev_type == SAS_END_DEV) {
+=======
+	if (dev->dev_type == SAS_END_DEVICE) {
+>>>>>>> refs/remotes/origin/master
 		struct sas_end_device *rdev = rphy_to_end_device(dev->rphy);
 		if (rdev->I_T_nexus_loss_timeout > 0)
 			asd_ddbsite_write_word(asd_ha, ddb, ITNL_TIMEOUT,
@@ -318,10 +403,17 @@ int asd_dev_found(struct domain_device *dev)
 
 	spin_lock_irqsave(&asd_ha->hw_prof.ddb_lock, flags);
 	switch (dev->dev_type) {
+<<<<<<< HEAD
 	case SATA_PM:
 		res = asd_init_sata_pm_ddb(dev);
 		break;
 	case SATA_PM_PORT:
+=======
+	case SAS_SATA_PM:
+		res = asd_init_sata_pm_ddb(dev);
+		break;
+	case SAS_SATA_PM_PORT:
+>>>>>>> refs/remotes/origin/master
 		res = asd_init_sata_pm_port_ddb(dev);
 		break;
 	default:

@@ -23,6 +23,7 @@
 #include <linux/io.h>
 #endif
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 
 /*
@@ -38,6 +39,12 @@
 		0)
 
 /*
+=======
+#include <mach/digctl.h>
+#include <mach/hardware.h>
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * IO addresses common to MXS-based
  */
 #define MXS_IO_BASE_ADDR		0x80000000
@@ -87,6 +94,11 @@
 	.type = _type,							\
 }
 
+<<<<<<< HEAD
+=======
+#define MXS_GPIO_NR(bank, nr)	((bank) * 32 + (nr))
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MXS_SET_ADDR		0x4
 #define MXS_CLR_ADDR		0x8
 #define MXS_TOG_ADDR		0xc
@@ -106,6 +118,24 @@ static inline void __mxs_togl(u32 mask, void __iomem *reg)
 {
 	__raw_writel(mask, reg + MXS_TOG_ADDR);
 }
+<<<<<<< HEAD
+=======
+
+/*
+ * MXS CPU types
+ */
+#define MXS_CHIPID (MXS_IO_ADDRESS(MXS_DIGCTL_BASE_ADDR) + HW_DIGCTL_CHIPID)
+
+static inline int cpu_is_mx23(void)
+{
+	return ((__raw_readl(MXS_CHIPID) >> 16) == 0x3780);
+}
+
+static inline int cpu_is_mx28(void)
+{
+	return ((__raw_readl(MXS_CHIPID) >> 16) == 0x2800);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #endif /* __MACH_MXS_H__ */

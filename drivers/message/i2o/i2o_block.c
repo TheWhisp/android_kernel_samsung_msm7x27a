@@ -600,16 +600,25 @@ static int i2o_block_open(struct block_device *bdev, fmode_t mode)
  *
  *	Unlock and unmount the media, and power down the device. Gets called if
  *	the block device is closed.
+<<<<<<< HEAD
  *
  *	Returns 0 on success or negative error code on failure.
  */
 static int i2o_block_release(struct gendisk *disk, fmode_t mode)
+=======
+ */
+static void i2o_block_release(struct gendisk *disk, fmode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct i2o_block_device *dev = disk->private_data;
 	u8 operation;
 
 	/*
+<<<<<<< HEAD
 	 * This is to deail with the case of an application
+=======
+	 * This is to deal with the case of an application
+>>>>>>> refs/remotes/origin/master
 	 * opening a device and then the device disappears while
 	 * it's in use, and then the application tries to release
 	 * it.  ex: Unmounting a deleted RAID volume at reboot.
@@ -617,7 +626,11 @@ static int i2o_block_release(struct gendisk *disk, fmode_t mode)
 	 * the TID no longer exists.
 	 */
 	if (!dev->i2o_dev)
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&i2o_block_mutex);
 	i2o_block_device_flush(dev->i2o_dev);
@@ -631,8 +644,11 @@ static int i2o_block_release(struct gendisk *disk, fmode_t mode)
 
 	i2o_block_device_power(dev, operation);
 	mutex_unlock(&i2o_block_mutex);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int i2o_block_getgeo(struct block_device *bdev, struct hd_geometry *geo)

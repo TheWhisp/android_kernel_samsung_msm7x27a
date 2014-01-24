@@ -204,7 +204,11 @@ int __init
 acpi_table_parse_entries(char *id,
 			     unsigned long table_size,
 			     int entry_id,
+<<<<<<< HEAD
 			     acpi_table_entry_handler handler,
+=======
+			     acpi_tbl_entry_handler handler,
+>>>>>>> refs/remotes/origin/master
 			     unsigned int max_entries)
 {
 	struct acpi_table_header *table_header = NULL;
@@ -240,10 +244,24 @@ acpi_table_parse_entries(char *id,
 	       table_end) {
 		if (entry->type == entry_id
 		    && (!max_entries || count++ < max_entries))
+<<<<<<< HEAD
 			if (handler(entry, table_end)) {
 				early_acpi_os_unmap_memory((char *)table_header, tbl_size);
 				return -EINVAL;
 			}
+=======
+			if (handler(entry, table_end))
+				goto err;
+
+		/*
+		 * If entry->length is 0, break from this loop to avoid
+		 * infinite loop.
+		 */
+		if (entry->length == 0) {
+			pr_err(PREFIX "[%4.4s:0x%02x] Invalid zero length\n", id, entry_id);
+			goto err;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		entry = (struct acpi_subtable_header *)
 		    ((unsigned long)entry + entry->length);
@@ -255,11 +273,21 @@ acpi_table_parse_entries(char *id,
 
 	early_acpi_os_unmap_memory((char *)table_header, tbl_size);
 	return count;
+<<<<<<< HEAD
+=======
+err:
+	early_acpi_os_unmap_memory((char *)table_header, tbl_size);
+	return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 }
 
 int __init
 acpi_table_parse_madt(enum acpi_madt_type id,
+<<<<<<< HEAD
 		      acpi_table_entry_handler handler, unsigned int max_entries)
+=======
+		      acpi_tbl_entry_handler handler, unsigned int max_entries)
+>>>>>>> refs/remotes/origin/master
 {
 	return acpi_table_parse_entries(ACPI_SIG_MADT,
 					    sizeof(struct acpi_table_madt), id,
@@ -275,7 +303,11 @@ acpi_table_parse_madt(enum acpi_madt_type id,
  * Scan the ACPI System Descriptor Table (STD) for a table matching @id,
  * run @handler on it.  Return 0 if table found, return on if not.
  */
+<<<<<<< HEAD
 int __init acpi_table_parse(char *id, acpi_table_handler handler)
+=======
+int __init acpi_table_parse(char *id, acpi_tbl_table_handler handler)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_table_header *table = NULL;
 	acpi_size tbl_size;

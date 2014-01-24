@@ -310,7 +310,11 @@ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
 {
 	struct kretprobe_instance *ri = NULL;
 	struct hlist_head *head, empty_rp;
+<<<<<<< HEAD
 	struct hlist_node *node, *tmp;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags, orig_ret_address = 0;
 	unsigned long trampoline_address = (unsigned long)&kretprobe_trampoline;
 
@@ -330,7 +334,11 @@ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
 	 *       real return address, and all the rest will point to
 	 *       kretprobe_trampoline
 	 */
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(ri, node, tmp, head, hlist) {
+=======
+	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+>>>>>>> refs/remotes/origin/master
 		if (ri->task != current)
 			/* another task is sharing our hash bucket */
 			continue;
@@ -360,7 +368,11 @@ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
 
 	preempt_enable_no_resched();
 
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(ri, node, tmp, &empty_rp, hlist) {
+=======
+	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+>>>>>>> refs/remotes/origin/master
 		hlist_del(&ri->hlist);
 		kfree(ri);
 	}

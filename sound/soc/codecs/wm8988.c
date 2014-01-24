@@ -18,7 +18,13 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 #include <linux/spi/spi.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -34,6 +40,8 @@
  * We can't read the WM8988 register space when we
  * are using 2 wire for device control, so we cache them instead.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const u16 wm8988_reg[] = {
 	0x0097, 0x0097, 0x0079, 0x0079,  /*  0 */
 	0x0000, 0x0008, 0x0000, 0x000a,  /*  4 */
@@ -56,6 +64,99 @@ struct wm8988_priv {
 };
 
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct reg_default wm8988_reg_defaults[] = {
+	{ 0, 0x0097 },
+	{ 1, 0x0097 },
+	{ 2, 0x0079 },
+	{ 3, 0x0079 },
+	{ 5, 0x0008 },
+	{ 7, 0x000a },
+	{ 8, 0x0000 },
+	{ 10, 0x00ff },
+	{ 11, 0x00ff },
+	{ 12, 0x000f },
+	{ 13, 0x000f },
+	{ 16, 0x0000 },
+	{ 17, 0x007b },
+	{ 18, 0x0000 },
+	{ 19, 0x0032 },
+	{ 20, 0x0000 },
+	{ 21, 0x00c3 },
+	{ 22, 0x00c3 },
+	{ 23, 0x00c0 },
+	{ 24, 0x0000 },
+	{ 25, 0x0000 },
+	{ 26, 0x0000 },
+	{ 27, 0x0000 },
+	{ 31, 0x0000 },
+	{ 32, 0x0000 },
+	{ 33, 0x0000 },
+	{ 34, 0x0050 },
+	{ 35, 0x0050 },
+	{ 36, 0x0050 },
+	{ 37, 0x0050 },
+	{ 40, 0x0079 },
+	{ 41, 0x0079 },
+	{ 42, 0x0079 },
+};
+
+static bool wm8988_writeable(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8988_LINVOL:
+	case WM8988_RINVOL:
+	case WM8988_LOUT1V:
+	case WM8988_ROUT1V:
+	case WM8988_ADCDAC:
+	case WM8988_IFACE:
+	case WM8988_SRATE:
+	case WM8988_LDAC:
+	case WM8988_RDAC:
+	case WM8988_BASS:
+	case WM8988_TREBLE:
+	case WM8988_RESET:
+	case WM8988_3D:
+	case WM8988_ALC1:
+	case WM8988_ALC2:
+	case WM8988_ALC3:
+	case WM8988_NGATE:
+	case WM8988_LADC:
+	case WM8988_RADC:
+	case WM8988_ADCTL1:
+	case WM8988_ADCTL2:
+	case WM8988_PWR1:
+	case WM8988_PWR2:
+	case WM8988_ADCTL3:
+	case WM8988_ADCIN:
+	case WM8988_LADCIN:
+	case WM8988_RADCIN:
+	case WM8988_LOUTM1:
+	case WM8988_LOUTM2:
+	case WM8988_ROUTM1:
+	case WM8988_ROUTM2:
+	case WM8988_LOUT2V:
+	case WM8988_ROUT2V:
+	case WM8988_LPPB:
+		return true;
+	default:
+		return false;
+	}
+}
+
+/* codec private data */
+struct wm8988_priv {
+	struct regmap *regmap;
+	unsigned int sysclk;
+	struct snd_pcm_hw_constraint_list *sysclk_constraints;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define wm8988_reset(c)	snd_soc_write(c, WM8988_RESET, 0)
 
 /*
@@ -268,7 +369,15 @@ static const struct snd_kcontrol_new wm8988_monomux_controls =
 	SOC_DAPM_ENUM("Route", monomux);
 
 static const struct snd_soc_dapm_widget wm8988_dapm_widgets[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SND_SOC_DAPM_MICBIAS("Mic Bias", WM8988_PWR1, 1, 0),
+=======
+	SND_SOC_DAPM_SUPPLY("Mic Bias", WM8988_PWR1, 1, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SND_SOC_DAPM_SUPPLY("Mic Bias", WM8988_PWR1, 1, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/master
 
 	SND_SOC_DAPM_MUX("Differential Mux", SND_SOC_NOPM, 0, 0,
 		&wm8988_diffmux_controls),
@@ -319,7 +428,15 @@ static const struct snd_soc_dapm_widget wm8988_dapm_widgets[] = {
 	SND_SOC_DAPM_INPUT("RINPUT2"),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route wm8988_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route wm8988_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 
 	{ "Left Line Mux", "Line 1", "LINPUT1" },
 	{ "Left Line Mux", "Line 2", "LINPUT2" },
@@ -605,8 +722,12 @@ static int wm8988_pcm_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params,
 				struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct wm8988_priv *wm8988 = snd_soc_codec_get_drvdata(codec);
 	u16 iface = snd_soc_read(codec, WM8988_IFACE) & 0x1f3;
 	u16 srate = snd_soc_read(codec, WM8988_SRATE) & 0x180;
@@ -663,6 +784,14 @@ static int wm8988_mute(struct snd_soc_dai *dai, int mute)
 static int wm8988_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct wm8988_priv *wm8988 = snd_soc_codec_get_drvdata(codec);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wm8988_priv *wm8988 = snd_soc_codec_get_drvdata(codec);
+>>>>>>> refs/remotes/origin/master
 	u16 pwr_reg = snd_soc_read(codec, WM8988_PWR1) & ~0x1c1;
 
 	switch (level) {
@@ -676,6 +805,16 @@ static int wm8988_set_bias_level(struct snd_soc_codec *codec,
 
 	case SND_SOC_BIAS_STANDBY:
 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			regcache_sync(wm8988->regmap);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			regcache_sync(wm8988->regmap);
+
+>>>>>>> refs/remotes/origin/master
 			/* VREF, VMID=2x5k */
 			snd_soc_write(codec, WM8988_PWR1, pwr_reg | 0x1c1);
 
@@ -700,7 +839,15 @@ static int wm8988_set_bias_level(struct snd_soc_codec *codec,
 #define WM8988_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
 	SNDRV_PCM_FMTBIT_S24_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8988_ops = {
+=======
+static const struct snd_soc_dai_ops wm8988_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8988_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup = wm8988_pcm_startup,
 	.hw_params = wm8988_pcm_hw_params,
 	.set_fmt = wm8988_set_dai_fmt,
@@ -728,14 +875,31 @@ static struct snd_soc_dai_driver wm8988_dai = {
 	.symmetric_rates = 1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8988_suspend(struct snd_soc_codec *codec, pm_message_t state)
 {
 	wm8988_set_bias_level(codec, SND_SOC_BIAS_OFF);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int wm8988_suspend(struct snd_soc_codec *codec)
+{
+	struct wm8988_priv *wm8988 = snd_soc_codec_get_drvdata(codec);
+
+	wm8988_set_bias_level(codec, SND_SOC_BIAS_OFF);
+	regcache_mark_dirty(wm8988->regmap);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int wm8988_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 	u8 data[2];
 	u16 *cache = codec->reg_cache;
@@ -751,17 +915,36 @@ static int wm8988_resume(struct snd_soc_codec *codec)
 
 	wm8988_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+=======
+	wm8988_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8988_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int wm8988_probe(struct snd_soc_codec *codec)
 {
 	struct wm8988_priv *wm8988 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 	int ret = 0;
 	u16 reg;
 
 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8988->control_type);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ret = 0;
+
+	codec->control_data = wm8988->regmap;
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -774,6 +957,8 @@ static int wm8988_probe(struct snd_soc_codec *codec)
 	}
 
 	/* set the update bits (we always update left then right) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reg = snd_soc_read(codec, WM8988_RADC);
 	snd_soc_write(codec, WM8988_RADC, reg | 0x100);
 	reg = snd_soc_read(codec, WM8988_RDAC);
@@ -793,6 +978,21 @@ static int wm8988_probe(struct snd_soc_codec *codec)
 				  ARRAY_SIZE(wm8988_dapm_widgets));
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	snd_soc_update_bits(codec, WM8988_RADC, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8988_RDAC, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8988_ROUT1V, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8988_ROUT2V, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8988_RINVOL, 0x0100, 0x0100);
+
+	wm8988_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -808,41 +1008,124 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8988 = {
 	.suspend =	wm8988_suspend,
 	.resume =	wm8988_resume,
 	.set_bias_level = wm8988_set_bias_level,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8988_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8988_reg,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	.controls = wm8988_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8988_snd_controls),
+	.dapm_widgets = wm8988_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8988_dapm_widgets),
+	.dapm_routes = wm8988_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8988_dapm_routes),
+};
+
+static struct regmap_config wm8988_regmap = {
+	.reg_bits = 7,
+	.val_bits = 9,
+
+	.max_register = WM8988_LPPB,
+	.writeable_reg = wm8988_writeable,
+
+	.cache_type = REGCACHE_RBTREE,
+	.reg_defaults = wm8988_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8988_reg_defaults),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #if defined(CONFIG_SPI_MASTER)
 static int __devinit wm8988_spi_probe(struct spi_device *spi)
+=======
+};
+
+#if defined(CONFIG_SPI_MASTER)
+static int wm8988_spi_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8988_priv *wm8988;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8988 = kzalloc(sizeof(struct wm8988_priv), GFP_KERNEL);
 	if (wm8988 == NULL)
 		return -ENOMEM;
 
 	wm8988->control_type = SND_SOC_SPI;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	wm8988 = devm_kzalloc(&spi->dev, sizeof(struct wm8988_priv),
+			      GFP_KERNEL);
+	if (wm8988 == NULL)
+		return -ENOMEM;
+
+<<<<<<< HEAD
+	wm8988->regmap = regmap_init_spi(spi, &wm8988_regmap);
+=======
+	wm8988->regmap = devm_regmap_init_spi(spi, &wm8988_regmap);
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(wm8988->regmap)) {
+		ret = PTR_ERR(wm8988->regmap);
+		dev_err(&spi->dev, "Failed to init regmap: %d\n", ret);
+		return ret;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spi_set_drvdata(spi, wm8988);
 
 	ret = snd_soc_register_codec(&spi->dev,
 			&soc_codec_dev_wm8988, &wm8988_dai, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8988);
+=======
+	if (ret != 0)
+		regmap_exit(wm8988->regmap);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit wm8988_spi_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	snd_soc_unregister_codec(&spi->dev);
 	kfree(spi_get_drvdata(spi));
+=======
+	struct wm8988_priv *wm8988 = spi_get_drvdata(spi);
+	snd_soc_unregister_codec(&spi->dev);
+	regmap_exit(wm8988->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+
+static int wm8988_spi_remove(struct spi_device *spi)
+{
+	snd_soc_unregister_codec(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct spi_driver wm8988_spi_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name	= "wm8988-codec",
+=======
+		.name	= "wm8988",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner	= THIS_MODULE,
 	},
 	.probe		= wm8988_spi_probe,
@@ -853,28 +1136,87 @@ static struct spi_driver wm8988_spi_driver = {
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static __devinit int wm8988_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+		.name	= "wm8988",
+		.owner	= THIS_MODULE,
+	},
+	.probe		= wm8988_spi_probe,
+	.remove		= wm8988_spi_remove,
+};
+#endif /* CONFIG_SPI_MASTER */
+
+#if IS_ENABLED(CONFIG_I2C)
+static int wm8988_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8988_priv *wm8988;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8988 = kzalloc(sizeof(struct wm8988_priv), GFP_KERNEL);
+=======
+	wm8988 = devm_kzalloc(&i2c->dev, sizeof(struct wm8988_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8988 = devm_kzalloc(&i2c->dev, sizeof(struct wm8988_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (wm8988 == NULL)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, wm8988);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8988->control_type = SND_SOC_I2C;
 
 	ret =  snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm8988, &wm8988_dai, 1);
 	if (ret < 0)
 		kfree(wm8988);
+=======
+
+	wm8988->regmap = regmap_init_i2c(i2c, &wm8988_regmap);
+=======
+
+	wm8988->regmap = devm_regmap_init_i2c(i2c, &wm8988_regmap);
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(wm8988->regmap)) {
+		ret = PTR_ERR(wm8988->regmap);
+		dev_err(&i2c->dev, "Failed to init regmap: %d\n", ret);
+		return ret;
+	}
+
+	ret =  snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_wm8988, &wm8988_dai, 1);
+<<<<<<< HEAD
+	if (ret != 0)
+		regmap_exit(wm8988->regmap);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int wm8988_i2c_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	snd_soc_unregister_codec(&client->dev);
 	kfree(i2c_get_clientdata(client));
+=======
+	struct wm8988_priv *wm8988 = i2c_get_clientdata(client);
+	snd_soc_unregister_codec(&client->dev);
+	regmap_exit(wm8988->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+
+static int wm8988_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -886,11 +1228,23 @@ MODULE_DEVICE_TABLE(i2c, wm8988_i2c_id);
 
 static struct i2c_driver wm8988_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8988-codec",
+=======
+		.name = "wm8988",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm8988_i2c_probe,
 	.remove =   __devexit_p(wm8988_i2c_remove),
+=======
+		.name = "wm8988",
+		.owner = THIS_MODULE,
+	},
+	.probe =    wm8988_i2c_probe,
+	.remove =   wm8988_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = wm8988_i2c_id,
 };
 #endif
@@ -898,7 +1252,11 @@ static struct i2c_driver wm8988_i2c_driver = {
 static int __init wm8988_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	ret = i2c_add_driver(&wm8988_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register WM8988 I2C driver: %d\n",
@@ -918,7 +1276,11 @@ module_init(wm8988_modinit);
 
 static void __exit wm8988_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	i2c_del_driver(&wm8988_i2c_driver);
 #endif
 #if defined(CONFIG_SPI_MASTER)

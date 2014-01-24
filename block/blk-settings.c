@@ -100,6 +100,8 @@ void blk_queue_lld_busy(struct request_queue *q, lld_busy_fn *fn)
 EXPORT_SYMBOL_GPL(blk_queue_lld_busy);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * blk_urgent_request() - Set an urgent_request handler function for queue
  * @q:		queue
  * @fn:		handler for urgent requests
@@ -112,13 +114,25 @@ void blk_urgent_request(struct request_queue *q, request_fn_proc *fn)
 EXPORT_SYMBOL(blk_urgent_request);
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * blk_set_default_limits - reset limits to default values
  * @lim:  the queue_limits structure to reset
  *
  * Description:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *   Returns a queue_limit struct to its default state.  Can be used by
  *   stacking drivers like DM that stage table swaps and reuse an
  *   existing device queue.
+=======
+ *   Returns a queue_limit struct to its default state.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *   Returns a queue_limit struct to its default state.
+>>>>>>> refs/remotes/origin/master
  */
 void blk_set_default_limits(struct queue_limits *lim)
 {
@@ -126,13 +140,30 @@ void blk_set_default_limits(struct queue_limits *lim)
 	lim->max_integrity_segments = 0;
 	lim->seg_boundary_mask = BLK_SEG_BOUNDARY_MASK;
 	lim->max_segment_size = BLK_MAX_SEGMENT_SIZE;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lim->max_sectors = BLK_DEF_MAX_SECTORS;
 	lim->max_hw_sectors = INT_MAX;
+=======
+	lim->max_sectors = lim->max_hw_sectors = BLK_SAFE_MAX_SECTORS;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lim->max_sectors = lim->max_hw_sectors = BLK_SAFE_MAX_SECTORS;
+	lim->max_write_same_sectors = 0;
+>>>>>>> refs/remotes/origin/master
 	lim->max_discard_sectors = 0;
 	lim->discard_granularity = 0;
 	lim->discard_alignment = 0;
 	lim->discard_misaligned = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lim->discard_zeroes_data = 1;
+=======
+	lim->discard_zeroes_data = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lim->discard_zeroes_data = 0;
+>>>>>>> refs/remotes/origin/master
 	lim->logical_block_size = lim->physical_block_size = lim->io_min = 512;
 	lim->bounce_pfn = (unsigned long)(BLK_BOUNCE_ANY >> PAGE_SHIFT);
 	lim->alignment_offset = 0;
@@ -143,6 +174,46 @@ void blk_set_default_limits(struct queue_limits *lim)
 EXPORT_SYMBOL(blk_set_default_limits);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * blk_set_stacking_limits - set default limits for stacking devices
+ * @lim:  the queue_limits structure to reset
+ *
+ * Description:
+ *   Returns a queue_limit struct to its default state. Should be used
+ *   by stacking drivers like DM that have no internal limits.
+ */
+void blk_set_stacking_limits(struct queue_limits *lim)
+{
+	blk_set_default_limits(lim);
+
+	/* Inherit limits from component devices */
+	lim->discard_zeroes_data = 1;
+	lim->max_segments = USHRT_MAX;
+	lim->max_hw_sectors = UINT_MAX;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	lim->max_segment_size = UINT_MAX;
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	lim->max_sectors = BLK_DEF_MAX_SECTORS;
+=======
+	lim->max_segment_size = UINT_MAX;
+	lim->max_sectors = UINT_MAX;
+	lim->max_write_same_sectors = UINT_MAX;
+>>>>>>> refs/remotes/origin/master
+}
+EXPORT_SYMBOL(blk_set_stacking_limits);
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * blk_queue_make_request - define an alternate make_request function for a device
  * @q:  the request queue for the device to be affected
  * @mfn: the alternate make_request function
@@ -177,8 +248,14 @@ void blk_queue_make_request(struct request_queue *q, make_request_fn *mfn)
 	q->nr_batching = BLK_BATCH_REQ;
 
 	blk_set_default_limits(&q->limits);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	blk_queue_max_hw_sectors(q, BLK_SAFE_MAX_SECTORS);
 	q->limits.discard_zeroes_data = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * by default assume old behaviour and bounce for any highmem page
@@ -190,17 +267,29 @@ EXPORT_SYMBOL(blk_queue_make_request);
 /**
  * blk_queue_bounce_limit - set bounce buffer limit for queue
  * @q: the request queue for the device
+<<<<<<< HEAD
  * @dma_mask: the maximum address the device can handle
+=======
+ * @max_addr: the maximum address the device can handle
+>>>>>>> refs/remotes/origin/master
  *
  * Description:
  *    Different hardware can have different requirements as to what pages
  *    it can do I/O directly to. A low level driver can call
  *    blk_queue_bounce_limit to have lower memory pages allocated as bounce
+<<<<<<< HEAD
  *    buffers for doing I/O to pages residing above @dma_mask.
  **/
 void blk_queue_bounce_limit(struct request_queue *q, u64 dma_mask)
 {
 	unsigned long b_pfn = dma_mask >> PAGE_SHIFT;
+=======
+ *    buffers for doing I/O to pages residing above @max_addr.
+ **/
+void blk_queue_bounce_limit(struct request_queue *q, u64 max_addr)
+{
+	unsigned long b_pfn = max_addr >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 	int dma = 0;
 
 	q->bounce_gfp = GFP_NOIO;
@@ -283,6 +372,21 @@ void blk_queue_max_discard_sectors(struct request_queue *q,
 EXPORT_SYMBOL(blk_queue_max_discard_sectors);
 
 /**
+<<<<<<< HEAD
+=======
+ * blk_queue_max_write_same_sectors - set max sectors for a single write same
+ * @q:  the request queue for the device
+ * @max_write_same_sectors: maximum number of sectors to write per command
+ **/
+void blk_queue_max_write_same_sectors(struct request_queue *q,
+				      unsigned int max_write_same_sectors)
+{
+	q->limits.max_write_same_sectors = max_write_same_sectors;
+}
+EXPORT_SYMBOL(blk_queue_max_write_same_sectors);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * blk_queue_max_segments - set max hw segments for a request for this queue
  * @q:  the request queue for the device
  * @max_segments:  max number of segments
@@ -507,6 +611,11 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
 
 	t->max_sectors = min_not_zero(t->max_sectors, b->max_sectors);
 	t->max_hw_sectors = min_not_zero(t->max_hw_sectors, b->max_hw_sectors);
+<<<<<<< HEAD
+=======
+	t->max_write_same_sectors = min(t->max_write_same_sectors,
+					b->max_write_same_sectors);
+>>>>>>> refs/remotes/origin/master
 	t->bounce_pfn = min_not_zero(t->bounce_pfn, b->bounce_pfn);
 
 	t->seg_boundary_mask = min_not_zero(t->seg_boundary_mask,
@@ -592,7 +701,11 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
 			bottom = b->discard_granularity + alignment;
 
 			/* Verify that top and bottom intervals line up */
+<<<<<<< HEAD
 			if (max(top, bottom) & (min(top, bottom) - 1))
+=======
+			if ((max(top, bottom) % min(top, bottom)) != 0)
+>>>>>>> refs/remotes/origin/master
 				t->discard_misaligned = 1;
 		}
 
@@ -600,8 +713,13 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
 						      b->max_discard_sectors);
 		t->discard_granularity = max(t->discard_granularity,
 					     b->discard_granularity);
+<<<<<<< HEAD
 		t->discard_alignment = lcm(t->discard_alignment, alignment) &
 			(t->discard_granularity - 1);
+=======
+		t->discard_alignment = lcm(t->discard_alignment, alignment) %
+			t->discard_granularity;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;

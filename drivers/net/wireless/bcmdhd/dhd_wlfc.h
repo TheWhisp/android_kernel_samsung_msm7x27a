@@ -1,7 +1,19 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
 * Copyright (C) 1999-2011, Broadcom Corporation
 * 
 *         Unless you and Broadcom execute a separate written software license
+=======
+* Copyright (C) 1999-2012, Broadcom Corporation
+* 
+*      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+* Copyright (C) 1999-2012, Broadcom Corporation
+* 
+*      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
 * agreement governing use of this software, this software is licensed to you
 * under the terms of the GNU General Public License version 2 (the "GPL"),
 * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -18,7 +30,15 @@
 *      Notwithstanding the above, under no circumstances may you combine this
 * software in any way with any other Broadcom software provided under a license
 * other than the GPL, without Broadcom's express prior written consent.
+<<<<<<< HEAD
+<<<<<<< HEAD
 * $Id: dhd_wlfc.h 286994 2011-09-29 21:27:44Z $
+=======
+* $Id: dhd_wlfc.h 328424 2012-04-19 05:23:09Z $
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+* $Id: dhd_wlfc.h 328424 2012-04-19 05:23:09Z $
+>>>>>>> refs/remotes/origin/cm-11.0
 *
 */
 #ifndef __wlfc_host_driver_definitions_h__
@@ -62,6 +82,14 @@ typedef enum ewlfc_packet_state {
 typedef enum ewlfc_mac_entry_action {
 	eWLFC_MAC_ENTRY_ACTION_ADD,
 	eWLFC_MAC_ENTRY_ACTION_DEL,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	eWLFC_MAC_ENTRY_ACTION_UPDATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	eWLFC_MAC_ENTRY_ACTION_UPDATE,
+>>>>>>> refs/remotes/origin/cm-11.0
 	eWLFC_MAC_ENTRY_ACTION_MAX
 } ewlfc_mac_entry_action_t;
 
@@ -92,12 +120,28 @@ typedef struct wlfc_hanger {
 #define WLFC_STATE_CLOSE	2
 
 #define WLFC_PSQ_PREC_COUNT		((AC_COUNT + 1) * 2) /* 2 for each AC traffic and bc/mc */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define WLFC_PSQ_LEN			64
 #define WLFC_SENDQ_LEN			256
 
 #define WLFC_FLOWCONTROL_DELTA		8
 #define WLFC_FLOWCONTROL_HIWATER	(WLFC_PSQ_LEN - WLFC_FLOWCONTROL_DELTA)
 #define WLFC_FLOWCONTROL_LOWATER	(WLFC_FLOWCONTROL_HIWATER - WLFC_FLOWCONTROL_DELTA)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define WLFC_PSQ_LEN			256
+#define WLFC_SENDQ_LEN			128
+
+
+#define WLFC_FLOWCONTROL_HIWATER	128
+#define WLFC_FLOWCONTROL_LOWATER	64
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 typedef struct wlfc_mac_descriptor {
 	uint8 occupied;

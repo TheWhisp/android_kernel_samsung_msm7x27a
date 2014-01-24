@@ -83,7 +83,10 @@ static void __iomem *detect_HRT_floating_pointer(void __iomem *begin, void __iom
 
 int cpqhp_configure_device (struct controller* ctrl, struct pci_func* func)
 {
+<<<<<<< HEAD
 	unsigned char bus;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_bus *child;
 	int num;
 
@@ -106,9 +109,16 @@ int cpqhp_configure_device (struct controller* ctrl, struct pci_func* func)
 	}
 
 	if (func->pci_dev->hdr_type == PCI_HEADER_TYPE_BRIDGE) {
+<<<<<<< HEAD
 		pci_read_config_byte(func->pci_dev, PCI_SECONDARY_BUS, &bus);
 		child = (struct pci_bus*) pci_add_new_bus(func->pci_dev->bus, (func->pci_dev), bus);
 		pci_do_scan_bus(child);
+=======
+		pci_hp_add_bridge(func->pci_dev);
+		child = func->pci_dev->subordinate;
+		if (child)
+			pci_bus_add_devices(child);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pci_dev_put(func->pci_dev);
@@ -127,7 +137,15 @@ int cpqhp_unconfigure_device(struct pci_func* func)
 		struct pci_dev* temp = pci_get_bus_and_slot(func->bus, PCI_DEVFN(func->device, j));
 		if (temp) {
 			pci_dev_put(temp);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pci_remove_bus_device(temp);
+=======
+			pci_stop_and_remove_bus_device(temp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pci_stop_and_remove_bus_device(temp);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return 0;
@@ -291,7 +309,11 @@ int cpqhp_get_bus_dev (struct controller *ctrl, u8 * bus_num, u8 * dev_num, u8 s
  *
  * Reads configuration for all slots in a PCI bus and saves info.
  *
+<<<<<<< HEAD
  * Note:  For non-hot plug busses, the slot # saved is the device #
+=======
+ * Note:  For non-hot plug buses, the slot # saved is the device #
+>>>>>>> refs/remotes/origin/master
  *
  * returns 0 if success
  */
@@ -455,7 +477,11 @@ int cpqhp_save_config(struct controller *ctrl, int busnumber, int is_hot_plug)
  * cpqhp_save_slot_config
  *
  * Saves configuration info for all PCI devices in a given slot
+<<<<<<< HEAD
  * including subordinate busses.
+=======
+ * including subordinate buses.
+>>>>>>> refs/remotes/origin/master
  *
  * returns 0 if success
  */
@@ -1556,4 +1582,7 @@ void cpqhp_destroy_board_resources (struct pci_func * func)
 		kfree(tres);
 	}
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

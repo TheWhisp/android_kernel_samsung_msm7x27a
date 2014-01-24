@@ -37,6 +37,10 @@
 #include <linux/wm97xx.h>
 #include <linux/mtd/physmap.h>
 #include <linux/usb/gpio_vbus.h>
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/regulator/max1586.h>
 #include <linux/slab.h>
 #include <linux/i2c/pxa-i2c.h>
@@ -46,6 +50,7 @@
 
 #include <mach/pxa27x.h>
 #include <mach/regs-rtc.h>
+<<<<<<< HEAD
 #include <plat/pxa27x_keypad.h>
 #include <mach/pxafb.h>
 #include <mach/mmc.h>
@@ -53,6 +58,20 @@
 #include <mach/pxa27x-udc.h>
 #include <mach/camera.h>
 #include <mach/audio.h>
+<<<<<<< HEAD
+=======
+#include <mach/smemc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/keypad-pxa27x.h>
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <mach/udc.h>
+#include <mach/pxa27x-udc.h>
+#include <linux/platform_data/camera-pxa.h>
+#include <mach/audio.h>
+#include <mach/smemc.h>
+>>>>>>> refs/remotes/origin/master
 #include <media/soc_camera.h>
 
 #include <mach/mioa701.h>
@@ -102,6 +121,10 @@ static unsigned long mioa701_pin_config[] = {
 	GPIO82_CIF_DD_5,
 	GPIO84_CIF_FV,
 	GPIO85_CIF_LV,
+<<<<<<< HEAD
+=======
+	MIO_CFG_OUT(GPIO56_MT9M111_nOE, AF0, DRIVE_LOW),
+>>>>>>> refs/remotes/origin/master
 
 	/* Bluetooth */
 	MIO_CFG_IN(GPIO14_BT_nACTIVITY, AF0),
@@ -177,6 +200,8 @@ static unsigned long mioa701_pin_config[] = {
 	MFP_CFG_OUT(GPIO116, AF0, DRIVE_HIGH),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MIO_GPIO_IN(num, _desc) \
 	{ .gpio = (num), .dir = 0, .desc = (_desc) }
 #define MIO_GPIO_OUT(num, _init, _desc) \
@@ -221,12 +246,20 @@ static void mio_gpio_free(struct gpio_ress *gpios, int size)
 		gpio_free(gpios[i].gpio);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* LCD Screen and Backlight */
 static struct platform_pwm_backlight_data mioa701_backlight_data = {
 	.pwm_id		= 0,
 	.max_brightness	= 100,
 	.dft_brightness	= 50,
 	.pwm_period_ns	= 4000 * 1024,	/* Fl = 250kHz */
+<<<<<<< HEAD
+=======
+	.enable_gpio	= -1,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -264,7 +297,11 @@ static struct pxafb_mach_info mioa701_pxafb_info = {
 /*
  * Keyboard configuration
  */
+<<<<<<< HEAD
 static unsigned int mioa701_matrix_keys[] = {
+=======
+static const unsigned int mioa701_matrix_keys[] = {
+>>>>>>> refs/remotes/origin/master
 	KEY(0, 0, KEY_UP),
 	KEY(0, 1, KEY_RIGHT),
 	KEY(0, 2, KEY_MEDIA),
@@ -275,11 +312,24 @@ static unsigned int mioa701_matrix_keys[] = {
 	KEY(2, 1, KEY_PHONE),	/* Phone Green key */
 	KEY(2, 2, KEY_CAMERA)	/* Camera key */
 };
+<<<<<<< HEAD
 static struct pxa27x_keypad_platform_data mioa701_keypad_info = {
 	.matrix_key_rows = 3,
 	.matrix_key_cols = 3,
 	.matrix_key_map = mioa701_matrix_keys,
 	.matrix_key_map_size = ARRAY_SIZE(mioa701_matrix_keys),
+=======
+
+static struct matrix_keymap_data mioa701_matrix_keymap_data = {
+	.keymap			= mioa701_matrix_keys,
+	.keymap_size		= ARRAY_SIZE(mioa701_matrix_keys),
+};
+
+static struct pxa27x_keypad_platform_data mioa701_keypad_info = {
+	.matrix_key_rows = 3,
+	.matrix_key_cols = 3,
+	.matrix_keymap_data = &mioa701_matrix_keymap_data,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -346,16 +396,36 @@ irqreturn_t gsm_on_irq(int irq, void *p)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct gpio_ress gsm_gpios[] = {
 	MIO_GPIO_IN(GPIO25_GSM_MOD_ON_STATE, "GSM state"),
 	MIO_GPIO_IN(GPIO113_GSM_EVENT, "GSM event"),
+=======
+static struct gpio gsm_gpios[] = {
+	{ GPIO25_GSM_MOD_ON_STATE, GPIOF_IN, "GSM state" },
+	{ GPIO113_GSM_EVENT, GPIOF_IN, "GSM event" },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct gpio gsm_gpios[] = {
+	{ GPIO25_GSM_MOD_ON_STATE, GPIOF_IN, "GSM state" },
+	{ GPIO113_GSM_EVENT, GPIOF_IN, "GSM event" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init gsm_init(void)
 {
 	int rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = mio_gpio_request(ARRAY_AND_SIZE(gsm_gpios));
+=======
+	rc = gpio_request_array(ARRAY_AND_SIZE(gsm_gpios));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = gpio_request_array(ARRAY_AND_SIZE(gsm_gpios));
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto err_gpio;
 	rc = request_irq(gpio_to_irq(GPIO25_GSM_MOD_ON_STATE), gsm_on_irq,
@@ -369,7 +439,15 @@ static int __init gsm_init(void)
 
 err_irq:
 	printk(KERN_ERR "Mioa701: Can't request GSM_ON irq\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mio_gpio_free(ARRAY_AND_SIZE(gsm_gpios));
+=======
+	gpio_free_array(ARRAY_AND_SIZE(gsm_gpios));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_free_array(ARRAY_AND_SIZE(gsm_gpios));
+>>>>>>> refs/remotes/origin/master
 err_gpio:
 	printk(KERN_ERR "Mioa701: gsm not available\n");
 	return rc;
@@ -378,7 +456,15 @@ err_gpio:
 static void gsm_exit(void)
 {
 	free_irq(gpio_to_irq(GPIO25_GSM_MOD_ON_STATE), NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mio_gpio_free(ARRAY_AND_SIZE(gsm_gpios));
+=======
+	gpio_free_array(ARRAY_AND_SIZE(gsm_gpios));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_free_array(ARRAY_AND_SIZE(gsm_gpios));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -434,6 +520,8 @@ static struct pxamci_platform_data mioa701_mci_info = {
 };
 
 /* FlashRAM */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct resource strataflash_resource = {
 	.start = PXA_CS0_PHYS,
 	.end   = PXA_CS0_PHYS + SZ_64M - 1,
@@ -452,6 +540,26 @@ static struct platform_device strataflash = {
 	.num_resources = 1,
 	.dev = {
 		.platform_data = &strataflash_data,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct resource docg3_resource = {
+	.start = PXA_CS0_PHYS,
+	.end   = PXA_CS0_PHYS + SZ_8K - 1,
+	.flags = IORESOURCE_MEM,
+};
+
+static struct platform_device docg3 = {
+	.name	       = "docg3",
+	.id	       = -1,
+	.resource      = &docg3_resource,
+	.num_resources = 1,
+	.dev = {
+		.platform_data = NULL,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -585,15 +693,35 @@ static struct pda_power_pdata power_pdata = {
 static struct resource power_resources[] = {
 	[0] = {
 		.name	= "ac",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= gpio_to_irq(GPIO96_AC_DETECT),
 		.end	= gpio_to_irq(GPIO96_AC_DETECT),
+=======
+		.start	= PXA_GPIO_TO_IRQ(GPIO96_AC_DETECT),
+		.end	= PXA_GPIO_TO_IRQ(GPIO96_AC_DETECT),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= PXA_GPIO_TO_IRQ(GPIO96_AC_DETECT),
+		.end	= PXA_GPIO_TO_IRQ(GPIO96_AC_DETECT),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE |
 		IORESOURCE_IRQ_LOWEDGE,
 	},
 	[1] = {
 		.name	= "usb",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= gpio_to_irq(GPIO13_nUSB_DETECT),
 		.end	= gpio_to_irq(GPIO13_nUSB_DETECT),
+=======
+		.start	= PXA_GPIO_TO_IRQ(GPIO13_nUSB_DETECT),
+		.end	= PXA_GPIO_TO_IRQ(GPIO13_nUSB_DETECT),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= PXA_GPIO_TO_IRQ(GPIO13_nUSB_DETECT),
+		.end	= PXA_GPIO_TO_IRQ(GPIO13_nUSB_DETECT),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE |
 		IORESOURCE_IRQ_LOWEDGE,
 	},
@@ -629,9 +757,13 @@ static struct wm97xx_pdata mioa701_wm97xx_pdata = {
  * Voltage regulation
  */
 static struct regulator_consumer_supply max1586_consumers[] = {
+<<<<<<< HEAD
 	{
 		.supply = "vcc_core",
 	}
+=======
+	REGULATOR_SUPPLY("vcc_core", NULL),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data max1586_v3_info = {
@@ -729,7 +861,15 @@ static struct platform_device *devices[] __initdata = {
 	&pxa2xx_pcm,
 	&mioa701_sound,
 	&power_dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	&strataflash,
+=======
+	&docg3,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&docg3,
+>>>>>>> refs/remotes/origin/master
 	&gpio_vbus,
 	&mioa701_camera,
 	&mioa701_board,
@@ -740,12 +880,18 @@ static void mioa701_machine_exit(void);
 static void mioa701_poweroff(void)
 {
 	mioa701_machine_exit();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	arm_machine_restart('s', NULL);
+=======
+	pxa_restart('s', NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void mioa701_restart(char c, const char *cmd)
 {
 	mioa701_machine_exit();
+<<<<<<< HEAD
 	arm_machine_restart('s', cmd);
 }
 
@@ -753,20 +899,82 @@ static struct gpio_ress global_gpios[] = {
 	MIO_GPIO_OUT(GPIO9_CHARGE_EN, 1, "Charger enable"),
 	MIO_GPIO_OUT(GPIO18_POWEROFF, 0, "Power Off"),
 	MIO_GPIO_OUT(GPIO87_LCD_POWER, 0, "LCD Power"),
+=======
+	pxa_restart('s', cmd);
+=======
+	pxa_restart(REBOOT_SOFT, NULL);
+}
+
+static void mioa701_restart(enum reboot_mode c, const char *cmd)
+{
+	mioa701_machine_exit();
+	pxa_restart(REBOOT_SOFT, cmd);
+>>>>>>> refs/remotes/origin/master
+}
+
+static struct gpio global_gpios[] = {
+	{ GPIO9_CHARGE_EN, GPIOF_OUT_INIT_HIGH, "Charger enable" },
+	{ GPIO18_POWEROFF, GPIOF_OUT_INIT_LOW, "Power Off" },
+	{ GPIO87_LCD_POWER, GPIOF_OUT_INIT_LOW, "LCD Power" },
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ GPIO56_MT9M111_nOE, GPIOF_OUT_INIT_LOW, "Camera nOE" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init mioa701_machine_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int rc;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc;
+
+>>>>>>> refs/remotes/origin/master
 	PSLR  = 0xff100000; /* SYSDEL=125ms, PWRDEL=125ms, PSLR_SL_ROD=1 */
 	PCFR = PCFR_DC_EN | PCFR_GPR_EN | PCFR_OPDE;
 	RTTR = 32768 - 1; /* Reset crazy WinCE value */
 	UP2OCR = UP2OCR_HXOE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Set up the flash memory : DiskOnChip G3 on first static memory bank
+	 */
+	__raw_writel(0x7ff02dd8, MSC0);
+	__raw_writel(0x0001c391, MCMEM0);
+	__raw_writel(0x0001c391, MCATT0);
+	__raw_writel(0x0001c391, MCIO0);
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pxa2xx_mfp_config(ARRAY_AND_SIZE(mioa701_pin_config));
 	pxa_set_ffuart_info(NULL);
 	pxa_set_btuart_info(NULL);
 	pxa_set_stuart_info(NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mio_gpio_request(ARRAY_AND_SIZE(global_gpios));
+=======
+	rc = gpio_request_array(ARRAY_AND_SIZE(global_gpios));
+	if (rc)
+		pr_err("MioA701: Failed to request GPIOs: %d", rc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = gpio_request_array(ARRAY_AND_SIZE(global_gpios));
+	if (rc)
+		pr_err("MioA701: Failed to request GPIOs: %d", rc);
+>>>>>>> refs/remotes/origin/master
 	bootstrap_init();
 	pxa_set_fb_info(NULL, &mioa701_pxafb_info);
 	pxa_set_mci_info(&mioa701_mci_info);
@@ -774,7 +982,13 @@ static void __init mioa701_machine_init(void)
 	pxa_set_udc_info(&mioa701_udc_info);
 	pxa_set_ac97_info(&mioa701_ac97_info);
 	pm_power_off = mioa701_poweroff;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	arm_pm_restart = mioa701_restart;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 	gsm_init();
 
@@ -791,9 +1005,30 @@ static void mioa701_machine_exit(void)
 }
 
 MACHINE_START(MIOA701, "MIO A701")
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= &pxa27x_map_io,
 	.init_irq	= &pxa27x_init_irq,
 	.init_machine	= mioa701_machine_init,
 	.timer		= &pxa_timer,
+=======
+	.atag_offset	= 0x100,
+	.restart_mode	= 's',
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
+	.map_io		= &pxa27x_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= &pxa27x_init_irq,
+	.handle_irq	= &pxa27x_handle_irq,
+	.init_machine	= mioa701_machine_init,
+<<<<<<< HEAD
+	.timer		= &pxa_timer,
+	.restart	= mioa701_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= mioa701_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

@@ -296,6 +296,7 @@
  ===============================================*/
 #define REG_EVENT_MAILBOX_PTR				(SCR_PAD1)
 
+<<<<<<< HEAD
 
 /* Misc */
 
@@ -371,6 +372,8 @@
 				      | CFG_RX_PRSP_EN)
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*===============================================
  EEPROM Read/Write Request 32bit RW
  ------------------------------------------
@@ -483,7 +486,11 @@
 
 
 /* Firmware image load chunk size */
+<<<<<<< HEAD
 #define CHUNK_SIZE          512
+=======
+#define CHUNK_SIZE	16384
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Firmware image header size */
 #define FW_HDR_SIZE 8
@@ -600,4 +607,34 @@ b12-b0 - Supported Rate indicator bits as defined below.
  */
 #define INTR_TRIG_TX_PROC1 BIT(18)
 
+<<<<<<< HEAD
+=======
+#define WL127X_REG_FUSE_DATA_2_1	0x050a
+#define WL128X_REG_FUSE_DATA_2_1	0x2152
+#define PG_VER_MASK			0x3c
+#define PG_VER_OFFSET			2
+
+#define WL127X_PG_MAJOR_VER_MASK	0x3
+#define WL127X_PG_MAJOR_VER_OFFSET	0x0
+#define WL127X_PG_MINOR_VER_MASK	0xc
+#define WL127X_PG_MINOR_VER_OFFSET	0x2
+
+#define WL128X_PG_MAJOR_VER_MASK	0xc
+#define WL128X_PG_MAJOR_VER_OFFSET	0x2
+#define WL128X_PG_MINOR_VER_MASK	0x3
+#define WL128X_PG_MINOR_VER_OFFSET	0x0
+
+#define WL127X_PG_GET_MAJOR(pg_ver) ((pg_ver & WL127X_PG_MAJOR_VER_MASK) >> \
+				     WL127X_PG_MAJOR_VER_OFFSET)
+#define WL127X_PG_GET_MINOR(pg_ver) ((pg_ver & WL127X_PG_MINOR_VER_MASK) >> \
+				     WL127X_PG_MINOR_VER_OFFSET)
+#define WL128X_PG_GET_MAJOR(pg_ver) ((pg_ver & WL128X_PG_MAJOR_VER_MASK) >> \
+				     WL128X_PG_MAJOR_VER_OFFSET)
+#define WL128X_PG_GET_MINOR(pg_ver) ((pg_ver & WL128X_PG_MINOR_VER_MASK) >> \
+				     WL128X_PG_MINOR_VER_OFFSET)
+
+#define WL12XX_REG_FUSE_BD_ADDR_1	0x00310eb4
+#define WL12XX_REG_FUSE_BD_ADDR_2	0x00310eb8
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

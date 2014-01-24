@@ -135,7 +135,13 @@
 
 #include <asm/irq.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* if you have more than 8 printers, remember to increase LP_NO */
 #define LP_NO 8
@@ -295,7 +301,11 @@ static int lp_wait_ready(int minor, int nonblock)
 static ssize_t lp_write(struct file * file, const char __user * buf,
 		        size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	unsigned int minor = iminor(file->f_path.dentry->d_inode);
+=======
+	unsigned int minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	struct parport *port = lp_table[minor].dev->port;
 	char *kbuf = lp_table[minor].lp_buffer;
 	ssize_t retv = 0;
@@ -414,7 +424,11 @@ static ssize_t lp_read(struct file * file, char __user * buf,
 		       size_t count, loff_t *ppos)
 {
 	DEFINE_WAIT(wait);
+<<<<<<< HEAD
 	unsigned int minor=iminor(file->f_path.dentry->d_inode);
+=======
+	unsigned int minor=iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	struct parport *port = lp_table[minor].dev->port;
 	ssize_t retval = 0;
 	char *kbuf = lp_table[minor].lp_buffer;
@@ -588,6 +602,11 @@ static int lp_do_ioctl(unsigned int minor, unsigned int cmd,
 		return -ENODEV;
 	switch ( cmd ) {
 		case LPTIME:
+<<<<<<< HEAD
+=======
+			if (arg > UINT_MAX / HZ)
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 			LP_TIME(minor) = arg * HZ/100;
 			break;
 		case LPCHAR:
@@ -623,9 +642,18 @@ static int lp_do_ioctl(unsigned int minor, unsigned int cmd,
 				return -EFAULT;
 			break;
 		case LPGETSTATUS:
+<<<<<<< HEAD
 			lp_claim_parport_or_block (&lp_table[minor]);
 			status = r_str(minor);
 			lp_release_parport (&lp_table[minor]);
+=======
+			if (mutex_lock_interruptible(&lp_table[minor].port_mutex))
+				return -EINTR;
+			lp_claim_parport_or_block (&lp_table[minor]);
+			status = r_str(minor);
+			lp_release_parport (&lp_table[minor]);
+			mutex_unlock(&lp_table[minor].port_mutex);
+>>>>>>> refs/remotes/origin/master
 
 			if (copy_to_user(argp, &status, sizeof(int)))
 				return -EFAULT;
@@ -680,7 +708,11 @@ static long lp_ioctl(struct file *file, unsigned int cmd,
 	struct timeval par_timeout;
 	int ret;
 
+<<<<<<< HEAD
 	minor = iminor(file->f_path.dentry->d_inode);
+=======
+	minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&lp_mutex);
 	switch (cmd) {
 	case LPSETTIMEOUT:
@@ -706,16 +738,33 @@ static long lp_compat_ioctl(struct file *file, unsigned int cmd,
 {
 	unsigned int minor;
 	struct timeval par_timeout;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct compat_timeval __user *tc;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	minor = iminor(file->f_path.dentry->d_inode);
 	mutex_lock(&lp_mutex);
 	switch (cmd) {
 	case LPSETTIMEOUT:
+<<<<<<< HEAD
 		tc = compat_ptr(arg);
 		if (get_user(par_timeout.tv_sec, &tc->tv_sec) ||
 		    get_user(par_timeout.tv_usec, &tc->tv_usec)) {
+=======
+		if (compat_get_timeval(&par_timeout, compat_ptr(arg))) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+
+	minor = iminor(file_inode(file));
+	mutex_lock(&lp_mutex);
+	switch (cmd) {
+	case LPSETTIMEOUT:
+		if (compat_get_timeval(&par_timeout, compat_ptr(arg))) {
+>>>>>>> refs/remotes/origin/master
 			ret = -EFAULT;
 			break;
 		}
@@ -829,7 +878,15 @@ static struct console lpcons = {
 
 static int parport_nr[LP_NO] = { [0 ... LP_NO-1] = LP_PARPORT_UNSPEC };
 static char *parport[LP_NO];
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int reset;
+=======
+static bool reset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool reset;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(parport, charp, NULL, 0);
 module_param(reset, bool, 0);

@@ -302,6 +302,7 @@ static const struct driver_info	cx82310_info = {
 	.tx_fixup	= cx82310_tx_fixup,
 };
 
+<<<<<<< HEAD
 #define USB_DEVICE_CLASS(vend, prod, cl, sc, pr) \
 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE | \
 		       USB_DEVICE_ID_MATCH_DEV_INFO, \
@@ -314,6 +315,11 @@ static const struct driver_info	cx82310_info = {
 static const struct usb_device_id products[] = {
 	{
 		USB_DEVICE_CLASS(0x0572, 0xcb01, 0xff, 0, 0),
+=======
+static const struct usb_device_id products[] = {
+	{
+		USB_DEVICE_AND_INTERFACE_INFO(0x0572, 0xcb01, 0xff, 0, 0),
+>>>>>>> refs/remotes/origin/master
 		.driver_info = (unsigned long) &cx82310_info
 	},
 	{ },
@@ -327,8 +333,10 @@ static struct usb_driver cx82310_driver = {
 	.disconnect	= usbnet_disconnect,
 	.suspend	= usbnet_suspend,
 	.resume		= usbnet_resume,
+<<<<<<< HEAD
 };
 
+<<<<<<< HEAD
 static int __init cx82310_init(void)
 {
 	return usb_register(&cx82310_driver);
@@ -340,6 +348,15 @@ static void __exit cx82310_exit(void)
 	usb_deregister(&cx82310_driver);
 }
 module_exit(cx82310_exit);
+=======
+module_usb_driver(cx82310_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(cx82310_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ondrej Zary");
 MODULE_DESCRIPTION("Conexant CX82310-based ADSL router USB ethernet driver");

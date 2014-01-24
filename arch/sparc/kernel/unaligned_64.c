@@ -16,14 +16,32 @@
 #include <asm/ptrace.h>
 #include <asm/pstate.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <linux/smp.h>
 #include <linux/bitops.h>
 #include <linux/perf_event.h>
 #include <linux/ratelimit.h>
+<<<<<<< HEAD
 #include <linux/bitops.h>
 #include <asm/fpumacro.h>
+<<<<<<< HEAD
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/context_tracking.h>
+#include <asm/fpumacro.h>
+#include <asm/cacheflush.h>
+
+#include "entry.h"
+>>>>>>> refs/remotes/origin/master
 
 enum direction {
 	load,    /* ld, ldd, ldh, ldsh */
@@ -114,6 +132,7 @@ static inline long sign_extend_imm13(long imm)
 
 static unsigned long fetch_reg(unsigned int reg, struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	unsigned long value;
 	
 	if (reg < 16)
@@ -129,6 +148,26 @@ static unsigned long fetch_reg(unsigned int reg, struct pt_regs *regs)
 	} else {
 		struct reg_window __user *win;
 		win = (struct reg_window __user *)(regs->u_regs[UREG_FP] + STACK_BIAS);
+=======
+	unsigned long value, fp;
+	
+	if (reg < 16)
+		return (!reg ? 0 : regs->u_regs[reg]);
+
+	fp = regs->u_regs[UREG_FP];
+
+	if (regs->tstate & TSTATE_PRIV) {
+		struct reg_window *win;
+		win = (struct reg_window *)(fp + STACK_BIAS);
+		value = win->locals[reg - 16];
+	} else if (!test_thread_64bit_stack(fp)) {
+		struct reg_window32 __user *win32;
+		win32 = (struct reg_window32 __user *)((unsigned long)((u32)fp));
+		get_user(value, &win32->locals[reg - 16]);
+	} else {
+		struct reg_window __user *win;
+		win = (struct reg_window __user *)(fp + STACK_BIAS);
+>>>>>>> refs/remotes/origin/master
 		get_user(value, &win->locals[reg - 16]);
 	}
 	return value;
@@ -136,6 +175,7 @@ static unsigned long fetch_reg(unsigned int reg, struct pt_regs *regs)
 
 static unsigned long *fetch_reg_addr(unsigned int reg, struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	if (reg < 16)
 		return &regs->u_regs[reg];
 	if (regs->tstate & TSTATE_PRIV) {
@@ -149,6 +189,26 @@ static unsigned long *fetch_reg_addr(unsigned int reg, struct pt_regs *regs)
 	} else {
 		struct reg_window *win;
 		win = (struct reg_window *)(regs->u_regs[UREG_FP] + STACK_BIAS);
+=======
+	unsigned long fp;
+
+	if (reg < 16)
+		return &regs->u_regs[reg];
+
+	fp = regs->u_regs[UREG_FP];
+
+	if (regs->tstate & TSTATE_PRIV) {
+		struct reg_window *win;
+		win = (struct reg_window *)(fp + STACK_BIAS);
+		return &win->locals[reg - 16];
+	} else if (!test_thread_64bit_stack(fp)) {
+		struct reg_window32 *win32;
+		win32 = (struct reg_window32 *)((unsigned long)((u32)fp));
+		return (unsigned long *)&win32->locals[reg - 16];
+	} else {
+		struct reg_window *win;
+		win = (struct reg_window *)(fp + STACK_BIAS);
+>>>>>>> refs/remotes/origin/master
 		return &win->locals[reg - 16];
 	}
 }
@@ -318,7 +378,15 @@ asmlinkage void kernel_unaligned_trap(struct pt_regs *regs, unsigned int insn)
 
 		addr = compute_effective_address(regs, insn,
 						 ((insn >> 25) & 0x1f));
+<<<<<<< HEAD
+<<<<<<< HEAD
 		perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, 0, regs, addr);
+=======
+		perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, addr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, addr);
+>>>>>>> refs/remotes/origin/master
 		switch (asi) {
 		case ASI_NL:
 		case ASI_AIUPL:
@@ -380,7 +448,15 @@ int handle_popc(u32 insn, struct pt_regs *regs)
 	int ret, rd = ((insn >> 25) & 0x1f);
 	u64 value;
 	                        
+<<<<<<< HEAD
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, 0, regs, 0);
+=======
+	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, 0);
+>>>>>>> refs/remotes/origin/master
 	if (insn & 0x2000) {
 		maybe_flush_windows(0, 0, rd, from_kernel);
 		value = sign_extend_imm13(insn);
@@ -393,6 +469,7 @@ int handle_popc(u32 insn, struct pt_regs *regs)
 		if (rd)
 			regs->u_regs[rd] = ret;
 	} else {
+<<<<<<< HEAD
 		if (test_thread_flag(TIF_32BIT)) {
 			struct reg_window32 __user *win32;
 			win32 = (struct reg_window32 __user *)((unsigned long)((u32)regs->u_regs[UREG_FP]));
@@ -400,6 +477,17 @@ int handle_popc(u32 insn, struct pt_regs *regs)
 		} else {
 			struct reg_window __user *win;
 			win = (struct reg_window __user *)(regs->u_regs[UREG_FP] + STACK_BIAS);
+=======
+		unsigned long fp = regs->u_regs[UREG_FP];
+
+		if (!test_thread_64bit_stack(fp)) {
+			struct reg_window32 __user *win32;
+			win32 = (struct reg_window32 __user *)((unsigned long)((u32)fp));
+			put_user(ret, &win32->locals[rd - 16]);
+		} else {
+			struct reg_window __user *win;
+			win = (struct reg_window __user *)(fp + STACK_BIAS);
+>>>>>>> refs/remotes/origin/master
 			put_user(ret, &win->locals[rd - 16]);
 		}
 	}
@@ -409,9 +497,12 @@ int handle_popc(u32 insn, struct pt_regs *regs)
 
 extern void do_fpother(struct pt_regs *regs);
 extern void do_privact(struct pt_regs *regs);
+<<<<<<< HEAD
 extern void spitfire_data_access_exception(struct pt_regs *regs,
 					   unsigned long sfsr,
 					   unsigned long sfar);
+=======
+>>>>>>> refs/remotes/origin/master
 extern void sun4v_data_access_exception(struct pt_regs *regs,
 					unsigned long addr,
 					unsigned long type_ctx);
@@ -424,7 +515,15 @@ int handle_ldf_stq(u32 insn, struct pt_regs *regs)
 	int asi = decode_asi(insn, regs);
 	int flag = (freg < 32) ? FPRS_DL : FPRS_DU;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, 0, regs, 0);
+=======
+	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, 0);
+>>>>>>> refs/remotes/origin/master
 
 	save_and_clear_fpu();
 	current_thread_info()->xfsr[0] &= ~0x1c000;
@@ -547,7 +646,15 @@ void handle_ld_nf(u32 insn, struct pt_regs *regs)
 	int from_kernel = (regs->tstate & TSTATE_PRIV) != 0;
 	unsigned long *reg;
 	                        
+<<<<<<< HEAD
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, 0, regs, 0);
+=======
+	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, 0);
+>>>>>>> refs/remotes/origin/master
 
 	maybe_flush_windows(0, 0, rd, from_kernel);
 	reg = fetch_reg_addr(rd, regs);
@@ -555,7 +662,11 @@ void handle_ld_nf(u32 insn, struct pt_regs *regs)
 		reg[0] = 0;
 		if ((insn & 0x780000) == 0x180000)
 			reg[1] = 0;
+<<<<<<< HEAD
 	} else if (test_thread_flag(TIF_32BIT)) {
+=======
+	} else if (!test_thread_64bit_stack(regs->u_regs[UREG_FP])) {
+>>>>>>> refs/remotes/origin/master
 		put_user(0, (int __user *) reg);
 		if ((insn & 0x780000) == 0x180000)
 			put_user(0, ((int __user *) reg) + 1);
@@ -569,6 +680,10 @@ void handle_ld_nf(u32 insn, struct pt_regs *regs)
 
 void handle_lddfmna(struct pt_regs *regs, unsigned long sfar, unsigned long sfsr)
 {
+<<<<<<< HEAD
+=======
+	enum ctx_state prev_state = exception_enter();
+>>>>>>> refs/remotes/origin/master
 	unsigned long pc = regs->tpc;
 	unsigned long tstate = regs->tstate;
 	u32 insn;
@@ -579,7 +694,15 @@ void handle_lddfmna(struct pt_regs *regs, unsigned long sfar, unsigned long sfsr
 
 	if (tstate & TSTATE_PRIV)
 		die_if_kernel("lddfmna from kernel", regs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, 0, regs, sfar);
+=======
+	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, sfar);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, sfar);
+>>>>>>> refs/remotes/origin/master
 	if (test_thread_flag(TIF_32BIT))
 		pc = (u32)pc;
 	if (get_user(insn, (u32 __user *) pc) != -EFAULT) {
@@ -623,13 +746,25 @@ daex:
 			sun4v_data_access_exception(regs, sfar, sfsr);
 		else
 			spitfire_data_access_exception(regs, sfsr, sfar);
+<<<<<<< HEAD
 		return;
 	}
 	advance(regs);
+=======
+		goto out;
+	}
+	advance(regs);
+out:
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 void handle_stdfmna(struct pt_regs *regs, unsigned long sfar, unsigned long sfsr)
 {
+<<<<<<< HEAD
+=======
+	enum ctx_state prev_state = exception_enter();
+>>>>>>> refs/remotes/origin/master
 	unsigned long pc = regs->tpc;
 	unsigned long tstate = regs->tstate;
 	u32 insn;
@@ -640,7 +775,15 @@ void handle_stdfmna(struct pt_regs *regs, unsigned long sfar, unsigned long sfsr
 
 	if (tstate & TSTATE_PRIV)
 		die_if_kernel("stdfmna from kernel", regs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, 0, regs, sfar);
+=======
+	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, sfar);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, sfar);
+>>>>>>> refs/remotes/origin/master
 	if (test_thread_flag(TIF_32BIT))
 		pc = (u32)pc;
 	if (get_user(insn, (u32 __user *) pc) != -EFAULT) {
@@ -671,7 +814,15 @@ daex:
 			sun4v_data_access_exception(regs, sfar, sfsr);
 		else
 			spitfire_data_access_exception(regs, sfsr, sfar);
+<<<<<<< HEAD
 		return;
 	}
 	advance(regs);
+=======
+		goto out;
+	}
+	advance(regs);
+out:
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }

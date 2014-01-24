@@ -5,6 +5,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/device.h>
@@ -32,6 +37,11 @@ static int fb_notifier_callback(struct notifier_block *self,
 	case FB_EVENT_BLANK:
 	case FB_EVENT_MODE_CHANGE:
 	case FB_EVENT_MODE_CHANGE_ALL:
+<<<<<<< HEAD
+=======
+	case FB_EARLY_EVENT_BLANK:
+	case FB_R_EARLY_EVENT_BLANK:
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return 0;
@@ -46,6 +56,17 @@ static int fb_notifier_callback(struct notifier_block *self,
 		if (event == FB_EVENT_BLANK) {
 			if (ld->ops->set_power)
 				ld->ops->set_power(ld, *(int *)evdata->data);
+<<<<<<< HEAD
+=======
+		} else if (event == FB_EARLY_EVENT_BLANK) {
+			if (ld->ops->early_set_power)
+				ld->ops->early_set_power(ld,
+						*(int *)evdata->data);
+		} else if (event == FB_R_EARLY_EVENT_BLANK) {
+			if (ld->ops->r_early_set_power)
+				ld->ops->r_early_set_power(ld,
+						*(int *)evdata->data);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			if (ld->ops->set_mode)
 				ld->ops->set_mode(ld, evdata->data);
@@ -77,7 +98,11 @@ static inline void lcd_unregister_fb(struct lcd_device *ld)
 }
 #endif /* CONFIG_FB */
 
+<<<<<<< HEAD
 static ssize_t lcd_show_power(struct device *dev, struct device_attribute *attr,
+=======
+static ssize_t lcd_power_show(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 		char *buf)
 {
 	int rc;
@@ -93,10 +118,12 @@ static ssize_t lcd_show_power(struct device *dev, struct device_attribute *attr,
 	return rc;
 }
 
+<<<<<<< HEAD
 static ssize_t lcd_store_power(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	int rc = -ENXIO;
+<<<<<<< HEAD
 	char *endp;
 	struct lcd_device *ld = to_lcd_device(dev);
 	int power = simple_strtoul(buf, &endp, 0);
@@ -110,6 +137,32 @@ static ssize_t lcd_store_power(struct device *dev,
 	mutex_lock(&ld->ops_lock);
 	if (ld->ops && ld->ops->set_power) {
 		pr_debug("lcd: set power to %d\n", power);
+=======
+=======
+static ssize_t lcd_power_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	int rc;
+>>>>>>> refs/remotes/origin/master
+	struct lcd_device *ld = to_lcd_device(dev);
+	unsigned long power;
+
+	rc = kstrtoul(buf, 0, &power);
+	if (rc)
+		return rc;
+
+<<<<<<< HEAD
+	mutex_lock(&ld->ops_lock);
+	if (ld->ops && ld->ops->set_power) {
+		pr_debug("lcd: set power to %lu\n", power);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = -ENXIO;
+
+	mutex_lock(&ld->ops_lock);
+	if (ld->ops && ld->ops->set_power) {
+		pr_debug("set power to %lu\n", power);
+>>>>>>> refs/remotes/origin/master
 		ld->ops->set_power(ld, power);
 		rc = count;
 	}
@@ -117,8 +170,14 @@ static ssize_t lcd_store_power(struct device *dev,
 
 	return rc;
 }
+<<<<<<< HEAD
 
 static ssize_t lcd_show_contrast(struct device *dev,
+=======
+static DEVICE_ATTR_RW(lcd_power);
+
+static ssize_t contrast_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *attr, char *buf)
 {
 	int rc = -ENXIO;
@@ -132,10 +191,12 @@ static ssize_t lcd_show_contrast(struct device *dev,
 	return rc;
 }
 
+<<<<<<< HEAD
 static ssize_t lcd_store_contrast(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	int rc = -ENXIO;
+<<<<<<< HEAD
 	char *endp;
 	struct lcd_device *ld = to_lcd_device(dev);
 	int contrast = simple_strtoul(buf, &endp, 0);
@@ -149,6 +210,32 @@ static ssize_t lcd_store_contrast(struct device *dev,
 	mutex_lock(&ld->ops_lock);
 	if (ld->ops && ld->ops->set_contrast) {
 		pr_debug("lcd: set contrast to %d\n", contrast);
+=======
+=======
+static ssize_t contrast_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	int rc;
+>>>>>>> refs/remotes/origin/master
+	struct lcd_device *ld = to_lcd_device(dev);
+	unsigned long contrast;
+
+	rc = kstrtoul(buf, 0, &contrast);
+	if (rc)
+		return rc;
+
+<<<<<<< HEAD
+	mutex_lock(&ld->ops_lock);
+	if (ld->ops && ld->ops->set_contrast) {
+		pr_debug("lcd: set contrast to %lu\n", contrast);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = -ENXIO;
+
+	mutex_lock(&ld->ops_lock);
+	if (ld->ops && ld->ops->set_contrast) {
+		pr_debug("set contrast to %lu\n", contrast);
+>>>>>>> refs/remotes/origin/master
 		ld->ops->set_contrast(ld, contrast);
 		rc = count;
 	}
@@ -156,14 +243,24 @@ static ssize_t lcd_store_contrast(struct device *dev,
 
 	return rc;
 }
+<<<<<<< HEAD
 
 static ssize_t lcd_show_max_contrast(struct device *dev,
+=======
+static DEVICE_ATTR_RW(contrast);
+
+static ssize_t max_contrast_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *attr, char *buf)
 {
 	struct lcd_device *ld = to_lcd_device(dev);
 
 	return sprintf(buf, "%d\n", ld->props.max_contrast);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(max_contrast);
+>>>>>>> refs/remotes/origin/master
 
 static struct class *lcd_class;
 
@@ -173,12 +270,22 @@ static void lcd_device_release(struct device *dev)
 	kfree(ld);
 }
 
+<<<<<<< HEAD
 static struct device_attribute lcd_device_attributes[] = {
 	__ATTR(lcd_power, 0644, lcd_show_power, lcd_store_power),
 	__ATTR(contrast, 0644, lcd_show_contrast, lcd_store_contrast),
 	__ATTR(max_contrast, 0444, lcd_show_max_contrast, NULL),
 	__ATTR_NULL,
 };
+=======
+static struct attribute *lcd_device_attrs[] = {
+	&dev_attr_lcd_power.attr,
+	&dev_attr_contrast.attr,
+	&dev_attr_max_contrast.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(lcd_device);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * lcd_device_register - register a new object of lcd_device class.
@@ -209,7 +316,11 @@ struct lcd_device *lcd_device_register(const char *name, struct device *parent,
 	new_ld->dev.class = lcd_class;
 	new_ld->dev.parent = parent;
 	new_ld->dev.release = lcd_device_release;
+<<<<<<< HEAD
 	dev_set_name(&new_ld->dev, name);
+=======
+	dev_set_name(&new_ld->dev, "%s", name);
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(&new_ld->dev, devdata);
 
 	rc = device_register(&new_ld->dev);
@@ -250,6 +361,79 @@ void lcd_device_unregister(struct lcd_device *ld)
 }
 EXPORT_SYMBOL(lcd_device_unregister);
 
+<<<<<<< HEAD
+=======
+static void devm_lcd_device_release(struct device *dev, void *res)
+{
+	struct lcd_device *lcd = *(struct lcd_device **)res;
+
+	lcd_device_unregister(lcd);
+}
+
+static int devm_lcd_device_match(struct device *dev, void *res, void *data)
+{
+	struct lcd_device **r = res;
+
+	return *r == data;
+}
+
+/**
+ * devm_lcd_device_register - resource managed lcd_device_register()
+ * @dev: the device to register
+ * @name: the name of the device
+ * @parent: a pointer to the parent device
+ * @devdata: an optional pointer to be stored for private driver use
+ * @ops: the lcd operations structure
+ *
+ * @return a struct lcd on success, or an ERR_PTR on error
+ *
+ * Managed lcd_device_register(). The lcd_device returned from this function
+ * are automatically freed on driver detach. See lcd_device_register()
+ * for more information.
+ */
+struct lcd_device *devm_lcd_device_register(struct device *dev,
+		const char *name, struct device *parent,
+		void *devdata, struct lcd_ops *ops)
+{
+	struct lcd_device **ptr, *lcd;
+
+	ptr = devres_alloc(devm_lcd_device_release, sizeof(*ptr), GFP_KERNEL);
+	if (!ptr)
+		return ERR_PTR(-ENOMEM);
+
+	lcd = lcd_device_register(name, parent, devdata, ops);
+	if (!IS_ERR(lcd)) {
+		*ptr = lcd;
+		devres_add(dev, ptr);
+	} else {
+		devres_free(ptr);
+	}
+
+	return lcd;
+}
+EXPORT_SYMBOL(devm_lcd_device_register);
+
+/**
+ * devm_lcd_device_unregister - resource managed lcd_device_unregister()
+ * @dev: the device to unregister
+ * @ld: the lcd device to unregister
+ *
+ * Deallocated a lcd allocated with devm_lcd_device_register(). Normally
+ * this function will not need to be called and the resource management
+ * code will ensure that the resource is freed.
+ */
+void devm_lcd_device_unregister(struct device *dev, struct lcd_device *ld)
+{
+	int rc;
+
+	rc = devres_release(dev, devm_lcd_device_release,
+				devm_lcd_device_match, ld);
+	WARN_ON(rc);
+}
+EXPORT_SYMBOL(devm_lcd_device_unregister);
+
+
+>>>>>>> refs/remotes/origin/master
 static void __exit lcd_class_exit(void)
 {
 	class_destroy(lcd_class);
@@ -259,12 +443,21 @@ static int __init lcd_class_init(void)
 {
 	lcd_class = class_create(THIS_MODULE, "lcd");
 	if (IS_ERR(lcd_class)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "Unable to create backlight class; errno = %ld\n",
 				PTR_ERR(lcd_class));
 		return PTR_ERR(lcd_class);
 	}
 
 	lcd_class->dev_attrs = lcd_device_attributes;
+=======
+		pr_warn("Unable to create backlight class; errno = %ld\n",
+			PTR_ERR(lcd_class));
+		return PTR_ERR(lcd_class);
+	}
+
+	lcd_class->dev_groups = lcd_device_groups;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

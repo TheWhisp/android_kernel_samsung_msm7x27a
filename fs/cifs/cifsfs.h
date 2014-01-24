@@ -41,6 +41,10 @@ extern struct file_system_type cifs_fs_type;
 extern const struct address_space_operations cifs_addr_ops;
 extern const struct address_space_operations cifs_addr_ops_smallbuf;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 /* Functions related to super block operations */
 extern void cifs_sb_active(struct super_block *sb);
 extern void cifs_sb_deactive(struct super_block *sb);
@@ -48,14 +52,39 @@ extern void cifs_sb_deactive(struct super_block *sb);
 /* Functions related to inodes */
 extern const struct inode_operations cifs_dir_inode_ops;
 extern struct inode *cifs_root_iget(struct super_block *);
+<<<<<<< HEAD
 extern int cifs_create(struct inode *, struct dentry *, int,
+=======
+/* Functions related to inodes */
+extern const struct inode_operations cifs_dir_inode_ops;
+extern struct inode *cifs_root_iget(struct super_block *);
+extern int cifs_create(struct inode *, struct dentry *, umode_t,
+>>>>>>> refs/remotes/origin/cm-10.0
 		       struct nameidata *);
 extern struct dentry *cifs_lookup(struct inode *, struct dentry *,
 				  struct nameidata *);
 extern int cifs_unlink(struct inode *dir, struct dentry *dentry);
 extern int cifs_hardlink(struct dentry *, struct inode *, struct dentry *);
+<<<<<<< HEAD
 extern int cifs_mknod(struct inode *, struct dentry *, int, dev_t);
 extern int cifs_mkdir(struct inode *, struct dentry *, int);
+=======
+extern int cifs_mknod(struct inode *, struct dentry *, umode_t, dev_t);
+extern int cifs_mkdir(struct inode *, struct dentry *, umode_t);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int cifs_create(struct inode *, struct dentry *, umode_t,
+		       bool excl);
+extern int cifs_atomic_open(struct inode *, struct dentry *,
+			    struct file *, unsigned, umode_t,
+			    int *);
+extern struct dentry *cifs_lookup(struct inode *, struct dentry *,
+				  unsigned int);
+extern int cifs_unlink(struct inode *dir, struct dentry *dentry);
+extern int cifs_hardlink(struct dentry *, struct inode *, struct dentry *);
+extern int cifs_mknod(struct inode *, struct dentry *, umode_t, dev_t);
+extern int cifs_mkdir(struct inode *, struct dentry *, umode_t);
+>>>>>>> refs/remotes/origin/master
 extern int cifs_rmdir(struct inode *, struct dentry *);
 extern int cifs_rename(struct inode *, struct dentry *, struct inode *,
 		       struct dentry *);
@@ -91,14 +120,28 @@ extern ssize_t cifs_user_writev(struct kiocb *iocb, const struct iovec *iov,
 extern ssize_t cifs_strict_writev(struct kiocb *iocb, const struct iovec *iov,
 				  unsigned long nr_segs, loff_t pos);
 extern int cifs_lock(struct file *, int, struct file_lock *);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int cifs_fsync(struct file *, int);
 extern int cifs_strict_fsync(struct file *, int);
+=======
+extern int cifs_fsync(struct file *, loff_t, loff_t, int);
+extern int cifs_strict_fsync(struct file *, loff_t, loff_t, int);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int cifs_fsync(struct file *, loff_t, loff_t, int);
+extern int cifs_strict_fsync(struct file *, loff_t, loff_t, int);
+>>>>>>> refs/remotes/origin/master
 extern int cifs_flush(struct file *, fl_owner_t id);
 extern int cifs_file_mmap(struct file * , struct vm_area_struct *);
 extern int cifs_file_strict_mmap(struct file * , struct vm_area_struct *);
 extern const struct file_operations cifs_dir_ops;
 extern int cifs_dir_open(struct inode *inode, struct file *file);
+<<<<<<< HEAD
 extern int cifs_readdir(struct file *file, void *direntry, filldir_t filldir);
+=======
+extern int cifs_readdir(struct file *file, struct dir_context *ctx);
+>>>>>>> refs/remotes/origin/master
 
 /* Functions related to dir entries */
 extern const struct dentry_operations cifs_dentry_ops;
@@ -112,8 +155,11 @@ extern struct vfsmount *cifs_dfs_d_automount(struct path *path);
 
 /* Functions related to symlinks */
 extern void *cifs_follow_link(struct dentry *direntry, struct nameidata *nd);
+<<<<<<< HEAD
 extern void cifs_put_link(struct dentry *direntry,
 			  struct nameidata *nd, void *);
+=======
+>>>>>>> refs/remotes/origin/master
 extern int cifs_readlink(struct dentry *direntry, char __user *buffer,
 			 int buflen);
 extern int cifs_symlink(struct inode *inode, struct dentry *direntry,
@@ -125,9 +171,24 @@ extern ssize_t	cifs_getxattr(struct dentry *, const char *, void *, size_t);
 extern ssize_t	cifs_listxattr(struct dentry *, char *, size_t);
 extern long cifs_ioctl(struct file *filep, unsigned int cmd, unsigned long arg);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CIFS_NFSD_EXPORT
 extern const struct export_operations cifs_export_ops;
 #endif /* CIFS_NFSD_EXPORT */
 
 #define CIFS_VERSION   "1.74"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_CIFS_NFSD_EXPORT
+extern const struct export_operations cifs_export_ops;
+#endif /* CONFIG_CIFS_NFSD_EXPORT */
+
+<<<<<<< HEAD
+#define CIFS_VERSION   "1.78"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CIFS_VERSION   "2.02"
+>>>>>>> refs/remotes/origin/master
 #endif				/* _CIFSFS_H */

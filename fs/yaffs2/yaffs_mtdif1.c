@@ -103,13 +103,29 @@ int nandmtd1_write_chunk_tags(struct yaffs_dev *dev,
 #endif
 
 	memset(&ops, 0, sizeof(ops));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_AUTO;
+=======
+	ops.mode = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops.mode = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ops.len = (data) ? chunk_bytes : 0;
 	ops.ooblen = YTAG1_SIZE;
 	ops.datbuf = (u8 *) data;
 	ops.oobbuf = (u8 *) & pt1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = mtd->write_oob(mtd, addr, &ops);
+=======
+	retval = mtd_write_oob(mtd, addr, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = mtd_write_oob(mtd, addr, &ops);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (retval) {
 		yaffs_trace(YAFFS_TRACE_MTD,
 			"write_oob failed, chunk %d, mtd error %d",
@@ -156,7 +172,15 @@ int nandmtd1_read_chunk_tags(struct yaffs_dev *dev,
 	int deleted;
 
 	memset(&ops, 0, sizeof(ops));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_AUTO;
+=======
+	ops.mode = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops.mode = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ops.len = (data) ? chunk_bytes : 0;
 	ops.ooblen = YTAG1_SIZE;
 	ops.datbuf = data;
@@ -165,7 +189,15 @@ int nandmtd1_read_chunk_tags(struct yaffs_dev *dev,
 	/* Read page and oob using MTD.
 	 * Check status and determine ECC result.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = mtd->read_oob(mtd, addr, &ops);
+=======
+	retval = mtd_read_oob(mtd, addr, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = mtd_read_oob(mtd, addr, &ops);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (retval) {
 		yaffs_trace(YAFFS_TRACE_MTD,
 			"read_oob failed, chunk %d, mtd error %d",
@@ -189,7 +221,15 @@ int nandmtd1_read_chunk_tags(struct yaffs_dev *dev,
 		/* fall into... */
 	default:
 		rettags(etags, YAFFS_ECC_RESULT_UNFIXED, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		etags->block_bad = (mtd->block_isbad) (mtd, addr);
+=======
+		etags->block_bad = mtd_block_isbad(mtd, addr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		etags->block_bad = mtd_block_isbad(mtd, addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return YAFFS_FAIL;
 	}
 
@@ -257,7 +297,15 @@ int nandmtd1_mark_block_bad(struct yaffs_dev *dev, int block_no)
 	yaffs_trace(YAFFS_TRACE_BAD_BLOCKS,
 		"marking block %d bad", block_no);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = mtd->block_markbad(mtd, (loff_t) blocksize * block_no);
+=======
+	retval = mtd_block_markbad(mtd, (loff_t) blocksize * block_no);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = mtd_block_markbad(mtd, (loff_t) blocksize * block_no);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return (retval) ? YAFFS_FAIL : YAFFS_OK;
 }
 
@@ -307,7 +355,15 @@ int nandmtd1_query_block(struct yaffs_dev *dev, int block_no,
 		return YAFFS_FAIL;
 
 	retval = nandmtd1_read_chunk_tags(dev, chunk_num, NULL, &etags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	etags.block_bad = (mtd->block_isbad) (mtd, addr);
+=======
+	etags.block_bad = mtd_block_isbad(mtd, addr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	etags.block_bad = mtd_block_isbad(mtd, addr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (etags.block_bad) {
 		yaffs_trace(YAFFS_TRACE_BAD_BLOCKS,
 			"block %d is marked bad", block_no);

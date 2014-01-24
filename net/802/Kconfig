@@ -5,3 +5,9 @@ config STP
 config GARP
 	tristate
 	select STP
+<<<<<<< HEAD
+=======
+
+config MRP
+	tristate
+>>>>>>> refs/remotes/origin/master

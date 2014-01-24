@@ -1,2 +1,6 @@
 vmImage*
 vmlinux*
+<<<<<<< HEAD
+=======
+uImage*
+>>>>>>> refs/remotes/origin/master

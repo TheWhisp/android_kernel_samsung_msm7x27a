@@ -21,7 +21,10 @@
 #include <linux/spinlock.h>
 #include <linux/completion.h>
 #include <linux/buffer_head.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kobject.h>
 
 #include "ctree.h"

@@ -22,8 +22,13 @@
 
 struct usbhs_priv;
 
+<<<<<<< HEAD
 #include "./mod.h"
 #include "./pipe.h"
+=======
+#include "mod.h"
+#include "pipe.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  *
@@ -33,9 +38,28 @@ struct usbhs_priv;
 #define SYSCFG		0x0000
 #define BUSWAIT		0x0002
 #define DVSTCTR		0x0008
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define CFIFO		0x0014
 #define CFIFOSEL	0x0020
 #define CFIFOCTR	0x0022
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define TESTMODE	0x000C
+#define CFIFO		0x0014
+#define CFIFOSEL	0x0020
+#define CFIFOCTR	0x0022
+#define D0FIFO		0x0100
+#define D0FIFOSEL	0x0028
+#define D0FIFOCTR	0x002A
+#define D1FIFO		0x0120
+#define D1FIFOSEL	0x002C
+#define D1FIFOCTR	0x002E
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define INTENB0		0x0030
 #define INTENB1		0x0032
 #define BRDYENB		0x0036
@@ -60,6 +84,50 @@ struct usbhs_priv;
 #define PIPEMAXP	0x006C
 #define PIPEPERI	0x006E
 #define PIPEnCTR	0x0070
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define PIPE1TRE	0x0090
+#define PIPE1TRN	0x0092
+#define PIPE2TRE	0x0094
+#define PIPE2TRN	0x0096
+#define PIPE3TRE	0x0098
+#define PIPE3TRN	0x009A
+#define PIPE4TRE	0x009C
+#define PIPE4TRN	0x009E
+#define PIPE5TRE	0x00A0
+#define PIPE5TRN	0x00A2
+#define PIPEBTRE	0x00A4
+#define PIPEBTRN	0x00A6
+#define PIPECTRE	0x00A8
+#define PIPECTRN	0x00AA
+#define PIPEDTRE	0x00AC
+#define PIPEDTRN	0x00AE
+#define PIPEETRE	0x00B0
+#define PIPEETRN	0x00B2
+#define PIPEFTRE	0x00B4
+#define PIPEFTRN	0x00B6
+#define PIPE9TRE	0x00B8
+#define PIPE9TRN	0x00BA
+#define PIPEATRE	0x00BC
+#define PIPEATRN	0x00BE
+#define DEVADD0		0x00D0 /* Device address n configuration */
+#define DEVADD1		0x00D2
+#define DEVADD2		0x00D4
+#define DEVADD3		0x00D6
+#define DEVADD4		0x00D8
+#define DEVADD5		0x00DA
+#define DEVADD6		0x00DC
+#define DEVADD7		0x00DE
+#define DEVADD8		0x00E0
+#define DEVADD9		0x00E2
+#define DEVADDA		0x00E4
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* SYSCFG */
 #define SCKE	(1 << 10)	/* USB Module Clock Enable */
@@ -72,12 +140,30 @@ struct usbhs_priv;
 /* DVSTCTR */
 #define EXTLP	(1 << 10)	/* Controls the EXTLP pin output state */
 #define PWEN	(1 << 9)	/* Controls the PWEN pin output state */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define USBRST	(1 << 6)	/* Bus Reset Output */
+#define UACT	(1 << 4)	/* USB Bus Enable */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define USBRST	(1 << 6)	/* Bus Reset Output */
+#define UACT	(1 << 4)	/* USB Bus Enable */
+>>>>>>> refs/remotes/origin/master
 #define RHST	(0x7)		/* Reset Handshake */
 #define  RHST_LOW_SPEED  1	/* Low-speed connection */
 #define  RHST_FULL_SPEED 2	/* Full-speed connection */
 #define  RHST_HIGH_SPEED 3	/* High-speed connection */
 
 /* CFIFOSEL */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define DREQE	(1 << 12)	/* DMA Transfer Request Enable */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DREQE	(1 << 12)	/* DMA Transfer Request Enable */
+>>>>>>> refs/remotes/origin/master
 #define MBW_32	(0x2 << 10)	/* CFIFO Port Access Bit Width */
 
 /* CFIFOCTR */
@@ -128,6 +214,24 @@ struct usbhs_priv;
 #define  NODATA_STATUS_STAGE	5	/* Control write NoData status stage */
 #define  SEQUENCE_ERROR		6	/* Control transfer sequence error */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* INTSTS1 */
+#define OVRCR	(1 << 15) /* OVRCR Interrupt Status */
+#define BCHG	(1 << 14) /* USB Bus Change Interrupt Status */
+#define DTCH	(1 << 12) /* USB Disconnection Detect Interrupt Status */
+#define ATTCH	(1 << 11) /* ATTCH Interrupt Status */
+#define EOFERR	(1 << 6)  /* EOF Error Detect Interrupt Status */
+#define SIGN	(1 << 5)  /* Setup Transaction Error Interrupt Status */
+#define SACK	(1 << 4)  /* Setup Transaction ACK Response Interrupt Status */
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* PIPECFG */
 /* DCPCFG */
 #define TYPE_NONE	(0 << 14)	/* Transfer Type */
@@ -152,9 +256,23 @@ struct usbhs_priv;
 /* PIPEnCTR */
 /* DCPCTR */
 #define BSTS		(1 << 15)	/* Buffer Status */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define CSSTS		(1 << 12)	/* CSSTS Status */
 #define SQCLR		(1 << 8)	/* Toggle Bit Clear */
 #define	ACLRM		(1 << 9)	/* Buffer Auto-Clear Mode */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define SUREQ		(1 << 14)	/* Sending SETUP Token */
+#define CSSTS		(1 << 12)	/* CSSTS Status */
+#define	ACLRM		(1 << 9)	/* Buffer Auto-Clear Mode */
+#define SQCLR		(1 << 8)	/* Toggle Bit Clear */
+#define SQSET		(1 << 7)	/* Toggle Bit Set */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PBUSY		(1 << 5)	/* Pipe Busy */
 #define PID_MASK	(0x3)		/* Response PID */
 #define  PID_NAK	0
@@ -164,9 +282,33 @@ struct usbhs_priv;
 
 #define CCPL		(1 << 2)	/* Control Transfer End Enable */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* FRMNUM */
 #define FRNM_MASK	(0x7FF)
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* PIPEnTRE */
+#define TRENB		(1 << 9)	/* Transaction Counter Enable */
+#define TRCLR		(1 << 8)	/* Transaction Counter Clear */
+
+/* FRMNUM */
+#define FRNM_MASK	(0x7FF)
+
+/* DEVADDn */
+#define UPPHUB(x)	(((x) & 0xF) << 11)	/* HUB Register */
+#define HUBPORT(x)	(((x) & 0x7) << 8)	/* HUB Port for Target Device */
+#define USBSPD(x)	(((x) & 0x3) << 6)	/* Device Transfer Rate */
+#define USBSPD_SPEED_LOW	0x1
+#define USBSPD_SPEED_FULL	0x2
+#define USBSPD_SPEED_HIGH	0x3
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *		struct
  */
@@ -174,9 +316,22 @@ struct usbhs_priv {
 
 	void __iomem *base;
 	unsigned int irq;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	struct renesas_usbhs_platform_callback	*pfunc;
 	struct renesas_usbhs_driver_param	*dparam;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long irqflags;
+
+	struct renesas_usbhs_platform_callback	pfunc;
+	struct renesas_usbhs_driver_param	dparam;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct delayed_work notify_hotplug_work;
 	struct platform_device *pdev;
@@ -194,6 +349,20 @@ struct usbhs_priv {
 	 * pipe control
 	 */
 	struct usbhs_pipe_info pipe_info;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/*
+	 * fifo control
+	 */
+	struct usbhs_fifo_info fifo_info;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -203,6 +372,8 @@ u16 usbhs_read(struct usbhs_priv *priv, u32 reg);
 void usbhs_write(struct usbhs_priv *priv, u32 reg, u16 data);
 void usbhs_bset(struct usbhs_priv *priv, u32 reg, u16 mask, u16 data);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int usbhsc_drvcllbck_notify_hotplug(struct platform_device *pdev);
 /*
  * sysconfig
@@ -212,6 +383,40 @@ void usbhs_sys_hispeed_ctrl(struct usbhs_priv *priv, int enable);
 void usbhs_sys_usb_ctrl(struct usbhs_priv *priv, int enable);
 void usbhs_sys_host_ctrl(struct usbhs_priv *priv, int enable);
 void usbhs_sys_function_ctrl(struct usbhs_priv *priv, int enable);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define usbhs_lock(p, f) spin_lock_irqsave(usbhs_priv_to_lock(p), f)
+#define usbhs_unlock(p, f) spin_unlock_irqrestore(usbhs_priv_to_lock(p), f)
+
+/*
+ * sysconfig
+ */
+void usbhs_sys_host_ctrl(struct usbhs_priv *priv, int enable);
+void usbhs_sys_function_ctrl(struct usbhs_priv *priv, int enable);
+<<<<<<< HEAD
+=======
+void usbhs_sys_function_pullup(struct usbhs_priv *priv, int enable);
+>>>>>>> refs/remotes/origin/master
+void usbhs_sys_set_test_mode(struct usbhs_priv *priv, u16 mode);
+
+/*
+ * usb request
+ */
+void usbhs_usbreq_get_val(struct usbhs_priv *priv, struct usb_ctrlrequest *req);
+void usbhs_usbreq_set_val(struct usbhs_priv *priv, struct usb_ctrlrequest *req);
+
+/*
+ * bus
+ */
+void usbhs_bus_send_sof_enable(struct usbhs_priv *priv);
+void usbhs_bus_send_reset(struct usbhs_priv *priv);
+int usbhs_bus_get_speed(struct usbhs_priv *priv);
+int usbhs_vbus_ctrl(struct usbhs_priv *priv, int enable);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * frame
@@ -219,10 +424,29 @@ void usbhs_sys_function_ctrl(struct usbhs_priv *priv, int enable);
 int usbhs_frame_get_num(struct usbhs_priv *priv);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * data
  */
 struct usbhs_priv *usbhs_pdev_to_priv(struct platform_device *pdev);
 #define usbhs_get_dparam(priv, param)	(priv->dparam->param)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * device config
+ */
+int usbhs_set_device_config(struct usbhs_priv *priv, int devnum, u16 upphub,
+			   u16 hubport, u16 speed);
+
+/*
+ * data
+ */
+struct usbhs_priv *usbhs_pdev_to_priv(struct platform_device *pdev);
+#define usbhs_get_dparam(priv, param)	(priv->dparam.param)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define usbhs_priv_to_pdev(priv)	(priv->pdev)
 #define usbhs_priv_to_dev(priv)		(&priv->pdev->dev)
 #define usbhs_priv_to_lock(priv)	(&priv->lock)

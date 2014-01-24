@@ -3,9 +3,21 @@
  */
 
 #include <linux/time.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 #include <linux/reiserfs_acl.h>
 #include <linux/reiserfs_xattr.h>
+=======
+#include "reiserfs.h"
+#include "acl.h"
+#include "xattr.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+#include "acl.h"
+#include "xattr.h"
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <linux/pagemap.h>
 #include <linux/swap.h>
@@ -126,7 +138,11 @@ static int reiserfs_file_open(struct inode *inode, struct file *file)
 	return err;
 }
 
+<<<<<<< HEAD
 static void reiserfs_vfs_truncate_file(struct inode *inode)
+=======
+void reiserfs_vfs_truncate_file(struct inode *inode)
+>>>>>>> refs/remotes/origin/master
 {
 	mutex_lock(&(REISERFS_I(inode)->tailpack));
 	reiserfs_truncate_file(inode, 1);
@@ -140,12 +156,36 @@ static void reiserfs_vfs_truncate_file(struct inode *inode)
  * be removed...
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int reiserfs_sync_file(struct file *filp, int datasync)
+=======
+static int reiserfs_sync_file(struct file *filp, loff_t start, loff_t end,
+			      int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int reiserfs_sync_file(struct file *filp, loff_t start, loff_t end,
+			      int datasync)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = filp->f_mapping->host;
 	int err;
 	int barrier_done;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (err)
+		return err;
+
+	mutex_lock(&inode->i_mutex);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(!S_ISREG(inode->i_mode));
 	err = sync_mapping_buffers(inode->i_mapping);
 	reiserfs_write_lock(inode->i_sb);
@@ -153,6 +193,14 @@ static int reiserfs_sync_file(struct file *filp, int datasync)
 	reiserfs_write_unlock(inode->i_sb);
 	if (barrier_done != 1 && reiserfs_barrier_flush(inode->i_sb))
 		blkdev_issue_flush(inode->i_sb->s_bdev, GFP_KERNEL, NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	if (barrier_done < 0)
 		return barrier_done;
 	return (err < 0) ? -EIO : 0;
@@ -227,6 +275,7 @@ int reiserfs_commit_page(struct inode *inode, struct page *page,
 	return ret;
 }
 
+<<<<<<< HEAD
 /* Write @count bytes at position @ppos in a file indicated by @file
    from the buffer @buf.
 
@@ -289,6 +338,11 @@ static ssize_t reiserfs_file_write(struct file *file,	/* the file we are going t
 const struct file_operations reiserfs_file_operations = {
 	.read = do_sync_read,
 	.write = reiserfs_file_write,
+=======
+const struct file_operations reiserfs_file_operations = {
+	.read = do_sync_read,
+	.write = do_sync_write,
+>>>>>>> refs/remotes/origin/master
 	.unlocked_ioctl = reiserfs_ioctl,
 #ifdef CONFIG_COMPAT
 	.compat_ioctl = reiserfs_compat_ioctl,
@@ -305,11 +359,22 @@ const struct file_operations reiserfs_file_operations = {
 };
 
 const struct inode_operations reiserfs_file_inode_operations = {
+<<<<<<< HEAD
 	.truncate = reiserfs_vfs_truncate_file,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setattr = reiserfs_setattr,
 	.setxattr = reiserfs_setxattr,
 	.getxattr = reiserfs_getxattr,
 	.listxattr = reiserfs_listxattr,
 	.removexattr = reiserfs_removexattr,
 	.permission = reiserfs_permission,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/master
 };

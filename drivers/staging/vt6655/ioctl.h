@@ -33,7 +33,10 @@
 
 /*---------------------  Export Definitions -------------------------*/
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*---------------------  Export Classes  ----------------------------*/
 
 /*---------------------  Export Variables  --------------------------*/
@@ -43,6 +46,7 @@
 int private_ioctl(PSDevice pDevice, struct ifreq *rq);
 
 /*
+<<<<<<< HEAD
 void vConfigWEPKey (
     PSDevice pDevice,
     unsigned long dwKeyIndex,
@@ -55,3 +59,14 @@ void vConfigWEPKey (
 
 
 
+=======
+  void vConfigWEPKey(
+  PSDevice pDevice,
+  unsigned long dwKeyIndex,
+  unsigned char *pbyKey,
+  unsigned long uKeyLength
+);
+*/
+
+#endif // __IOCTL_H__
+>>>>>>> refs/remotes/origin/master

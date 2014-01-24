@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * asm-s390/kvm_para.h - definition for paravirtual devices on s390
+=======
+ * definition for paravirtual devices on s390
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright IBM Corp. 2008
  *
@@ -9,12 +13,15 @@
  *
  *    Author(s): Christian Borntraeger <borntraeger@de.ibm.com>
  */
+<<<<<<< HEAD
 
 #ifndef __S390_KVM_PARA_H
 #define __S390_KVM_PARA_H
 
 #ifdef __KERNEL__
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Hypercalls for KVM on s390. The calling convention is similar to the
  * s390 ABI, so we use R2-R6 for parameters 1-5. In addition we use R1
@@ -29,6 +36,15 @@
  *
  * This work is licensed under the terms of the GNU GPL, version 2.
  */
+<<<<<<< HEAD
+=======
+#ifndef __S390_KVM_PARA_H
+#define __S390_KVM_PARA_H
+
+#include <uapi/asm/kvm_para.h>
+
+
+>>>>>>> refs/remotes/origin/master
 
 static inline long kvm_hypercall0(unsigned long nr)
 {
@@ -149,6 +165,13 @@ static inline unsigned int kvm_arch_para_features(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 #endif
+=======
+static inline bool kvm_check_and_clear_guest_paused(void)
+{
+	return false;
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __S390_KVM_PARA_H */

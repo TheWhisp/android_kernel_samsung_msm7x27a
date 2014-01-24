@@ -1,6 +1,11 @@
 config AFS_FS
+<<<<<<< HEAD
 	tristate "Andrew File System support (AFS) (EXPERIMENTAL)"
 	depends on INET && EXPERIMENTAL
+=======
+	tristate "Andrew File System support (AFS)"
+	depends on INET
+>>>>>>> refs/remotes/origin/master
 	select AF_RXRPC
 	select DNS_RESOLVER
 	help
@@ -22,8 +27,12 @@ config AFS_DEBUG
 	  If unsure, say N.
 
 config AFS_FSCACHE
+<<<<<<< HEAD
 	bool "Provide AFS client caching support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+	bool "Provide AFS client caching support"
+>>>>>>> refs/remotes/origin/master
 	depends on AFS_FS=m && FSCACHE || AFS_FS=y && FSCACHE=y
 	help
 	  Say Y here if you want AFS data to be cached locally on disk through

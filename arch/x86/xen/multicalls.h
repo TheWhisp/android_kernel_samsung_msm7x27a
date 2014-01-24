@@ -1,6 +1,16 @@
 #ifndef _XEN_MULTICALLS_H
 #define _XEN_MULTICALLS_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <trace/events/xen.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <trace/events/xen.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "xen-ops.h"
 
 /* Multicalls */
@@ -20,8 +30,21 @@ DECLARE_PER_CPU(unsigned long, xen_mc_irq_flags);
 static inline void xen_mc_batch(void)
 {
 	unsigned long flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* need to disable interrupts until this entry is complete */
 	local_irq_save(flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/* need to disable interrupts until this entry is complete */
+	local_irq_save(flags);
+	trace_xen_mc_batch(paravirt_get_lazy_mode());
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__this_cpu_write(xen_mc_irq_flags, flags);
 }
 
@@ -37,11 +60,29 @@ void xen_mc_flush(void);
 /* Issue a multicall if we're not in a lazy mode */
 static inline void xen_mc_issue(unsigned mode)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_xen_mc_issue(mode);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_xen_mc_issue(mode);
+
+>>>>>>> refs/remotes/origin/master
 	if ((paravirt_get_lazy_mode() & mode) == 0)
 		xen_mc_flush();
 
 	/* restore flags saved in xen_mc_batch */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_restore(percpu_read(xen_mc_irq_flags));
+=======
+	local_irq_restore(this_cpu_read(xen_mc_irq_flags));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	local_irq_restore(this_cpu_read(xen_mc_irq_flags));
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Set up a callback to be called when the current batch is flushed */

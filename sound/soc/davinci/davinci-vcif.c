@@ -183,7 +183,15 @@ static int davinci_vcif_startup(struct snd_pcm_substream *substream,
 
 #define DAVINCI_VCIF_RATES	SNDRV_PCM_RATE_8000_48000
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops davinci_vcif_dai_ops = {
+=======
+static const struct snd_soc_dai_ops davinci_vcif_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops davinci_vcif_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= davinci_vcif_startup,
 	.trigger	= davinci_vcif_trigger,
 	.hw_params	= davinci_vcif_hw_params,
@@ -204,13 +212,32 @@ static struct snd_soc_dai_driver davinci_vcif_dai = {
 
 };
 
+<<<<<<< HEAD
+=======
+static const struct snd_soc_component_driver davinci_vcif_component = {
+	.name		= "davinci-vcif",
+};
+
+>>>>>>> refs/remotes/origin/master
 static int davinci_vcif_probe(struct platform_device *pdev)
 {
 	struct davinci_vc *davinci_vc = pdev->dev.platform_data;
 	struct davinci_vcif_dev *davinci_vcif_dev;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	davinci_vcif_dev = kzalloc(sizeof(struct davinci_vcif_dev), GFP_KERNEL);
+=======
+	davinci_vcif_dev = devm_kzalloc(&pdev->dev,
+					sizeof(struct davinci_vcif_dev),
+					GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	davinci_vcif_dev = devm_kzalloc(&pdev->dev,
+					sizeof(struct davinci_vcif_dev),
+					GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!davinci_vcif_dev) {
 		dev_dbg(&pdev->dev,
 			"could not allocate memory for private data\n");
@@ -232,9 +259,11 @@ static int davinci_vcif_probe(struct platform_device *pdev)
 
 	dev_set_drvdata(&pdev->dev, davinci_vcif_dev);
 
+<<<<<<< HEAD
 	ret = snd_soc_register_dai(&pdev->dev, &davinci_vcif_dai);
 	if (ret != 0) {
 		dev_err(&pdev->dev, "could not register dai\n");
+<<<<<<< HEAD
 		goto fail;
 	}
 
@@ -244,14 +273,45 @@ fail:
 	kfree(davinci_vcif_dev);
 
 	return ret;
+=======
+=======
+	ret = snd_soc_register_component(&pdev->dev, &davinci_vcif_component,
+					 &davinci_vcif_dai, 1);
+	if (ret != 0) {
+		dev_err(&pdev->dev, "could not register dai\n");
+		return ret;
+	}
+
+	ret = davinci_soc_platform_register(&pdev->dev);
+	if (ret) {
+		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
+		snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
+		return ret;
+	}
+
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int davinci_vcif_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct davinci_vcif_dev *davinci_vcif_dev = dev_get_drvdata(&pdev->dev);
 
 	snd_soc_unregister_dai(&pdev->dev);
 	kfree(davinci_vcif_dev);
+=======
+	snd_soc_unregister_dai(&pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_unregister_component(&pdev->dev);
+	davinci_soc_platform_unregister(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -265,6 +325,8 @@ static struct platform_driver davinci_vcif_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init davinci_vcif_init(void)
 {
 	return platform_driver_probe(&davinci_vcif_driver, davinci_vcif_probe);
@@ -276,6 +338,12 @@ static void __exit davinci_vcif_exit(void)
 	platform_driver_unregister(&davinci_vcif_driver);
 }
 module_exit(davinci_vcif_exit);
+=======
+module_platform_driver(davinci_vcif_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(davinci_vcif_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Miguel Aguilar");
 MODULE_DESCRIPTION("Texas Instruments DaVinci ASoC Voice Codec Interface");

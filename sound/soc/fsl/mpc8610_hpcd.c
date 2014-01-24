@@ -12,19 +12,36 @@
 
 #include <linux/module.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/of_device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_i2c.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_address.h>
+#include <linux/of_device.h>
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/soc.h>
 #include <asm/fsl_guts.h>
 
 #include "fsl_dma.h"
 #include "fsl_ssi.h"
+<<<<<<< HEAD
+=======
+#include "fsl_utils.h"
+>>>>>>> refs/remotes/origin/master
 
 /* There's only one global utilities register */
 static phys_addr_t guts_phys;
 
+<<<<<<< HEAD
 #define DAI_NAME_SIZE	32
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * mpc8610_hpcd_data: machine-specific ASoC device data
  *
@@ -42,7 +59,10 @@ struct mpc8610_hpcd_data {
 	unsigned int dma_id[2];		/* 0 = DMA1, 1 = DMA2, etc */
 	unsigned int dma_channel_id[2]; /* 0 = ch 0, 1 = ch 1, etc*/
 	char codec_dai_name[DAI_NAME_SIZE];
+<<<<<<< HEAD
 	char codec_name[DAI_NAME_SIZE];
+=======
+>>>>>>> refs/remotes/origin/master
 	char platform_name[2][DAI_NAME_SIZE]; /* One for each DMA channel */
 };
 
@@ -57,9 +77,21 @@ static int mpc8610_hpcd_machine_probe(struct snd_soc_card *card)
 {
 	struct mpc8610_hpcd_data *machine_data =
 		container_of(card, struct mpc8610_hpcd_data, card);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ccsr_guts_86xx __iomem *guts;
 
 	guts = ioremap(guts_phys, sizeof(struct ccsr_guts_86xx));
+=======
+	struct ccsr_guts __iomem *guts;
+
+	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ccsr_guts __iomem *guts;
+
+	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
+>>>>>>> refs/remotes/origin/master
 	if (!guts) {
 		dev_err(card->dev, "could not map global utilities\n");
 		return -ENOMEM;
@@ -141,9 +173,21 @@ static int mpc8610_hpcd_machine_remove(struct snd_soc_card *card)
 {
 	struct mpc8610_hpcd_data *machine_data =
 		container_of(card, struct mpc8610_hpcd_data, card);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ccsr_guts_86xx __iomem *guts;
 
 	guts = ioremap(guts_phys, sizeof(struct ccsr_guts_86xx));
+=======
+	struct ccsr_guts __iomem *guts;
+
+	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ccsr_guts __iomem *guts;
+
+	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
+>>>>>>> refs/remotes/origin/master
 	if (!guts) {
 		dev_err(card->dev, "could not map global utilities\n");
 		return -ENOMEM;
@@ -180,6 +224,7 @@ static struct snd_soc_ops mpc8610_hpcd_ops = {
 };
 
 /**
+<<<<<<< HEAD
  * get_node_by_phandle_name - get a node by its phandle name
  *
  * This function takes a node, the name of a property in that node, and a
@@ -233,7 +278,11 @@ static int get_parent_cell_index(struct device_node *np)
 	if (!iprop)
 		return -1;
 
+<<<<<<< HEAD
 	return *iprop;
+=======
+	return be32_to_cpup(iprop);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -244,13 +293,23 @@ static int get_parent_cell_index(struct device_node *np)
  * 'struct device'  It's ugly and hackish, but it works.
  *
  * The dev_name for such devices include the bus number and I2C address. For
+<<<<<<< HEAD
  * example, "cs4270-codec.0-004f".
+=======
+ * example, "cs4270.0-004f".
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int codec_node_dev_name(struct device_node *np, char *buf, size_t len)
 {
 	const u32 *iprop;
+<<<<<<< HEAD
 	int bus, addr;
 	char temp[DAI_NAME_SIZE];
+=======
+	int addr;
+	char temp[DAI_NAME_SIZE];
+	struct i2c_client *i2c;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	of_modalias_node(np, temp, DAI_NAME_SIZE);
 
@@ -258,6 +317,7 @@ static int codec_node_dev_name(struct device_node *np, char *buf, size_t len)
 	if (!iprop)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	addr = *iprop;
 
 	bus = get_parent_cell_index(np);
@@ -265,12 +325,26 @@ static int codec_node_dev_name(struct device_node *np, char *buf, size_t len)
 		return bus;
 
 	snprintf(buf, len, "%s-codec.%u-%04x", temp, bus, addr);
+=======
+	addr = be32_to_cpup(iprop);
+
+	/* We need the adapter number */
+	i2c = of_find_i2c_device_by_node(np);
+	if (!i2c)
+		return -ENODEV;
+
+	snprintf(buf, len, "%s.%u-%04x", temp, i2c->adapter->nr, addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
 static int get_dma_channel(struct device_node *ssi_np,
+<<<<<<< HEAD
 			   const char *compatible,
+=======
+			   const char *name,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   struct snd_soc_dai_link *dai,
 			   unsigned int *dma_channel_id,
 			   unsigned int *dma_id)
@@ -280,7 +354,11 @@ static int get_dma_channel(struct device_node *ssi_np,
 	const u32 *iprop;
 	int ret;
 
+<<<<<<< HEAD
 	dma_channel_np = get_node_by_phandle_name(ssi_np, compatible,
+=======
+	dma_channel_np = get_node_by_phandle_name(ssi_np, name,
+>>>>>>> refs/remotes/origin/cm-10.0
 						  "fsl,ssi-dma-channel");
 	if (!dma_channel_np)
 		return -EINVAL;
@@ -305,7 +383,11 @@ static int get_dma_channel(struct device_node *ssi_np,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	*dma_channel_id = *iprop;
+=======
+	*dma_channel_id = be32_to_cpup(iprop);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*dma_id = get_parent_cell_index(dma_channel_np);
 	of_node_put(dma_channel_np);
 
@@ -313,6 +395,8 @@ static int get_dma_channel(struct device_node *ssi_np,
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * mpc8610_hpcd_probe: platform probe function for the machine driver
  *
  * Although this is a machine driver, the SSI node is the "master" node with
@@ -327,30 +411,57 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
 		container_of(dev, struct platform_device, dev);
 	struct device_node *np = ssi_pdev->dev.of_node;
 	struct device_node *codec_np = NULL;
+<<<<<<< HEAD
 	struct platform_device *sound_device = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mpc8610_hpcd_data *machine_data;
 	int ret = -ENODEV;
 	const char *sprop;
 	const u32 *iprop;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* We are only interested in SSIs with a codec phandle in them,
 	 * so let's make sure this SSI has one. The MPC8610 HPCD only
 	 * knows about the CS4270 codec, so reject anything else.
 	 */
 	codec_np = get_node_by_phandle_name(np, "codec-handle",
 					    "cirrus,cs4270");
+=======
+	/* Find the codec node for this SSI. */
+	codec_np = of_parse_phandle(np, "codec-handle", 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Find the codec node for this SSI. */
+	codec_np = of_parse_phandle(np, "codec-handle", 0);
+>>>>>>> refs/remotes/origin/master
 	if (!codec_np) {
 		dev_err(dev, "invalid codec node\n");
 		return -EINVAL;
 	}
 
 	machine_data = kzalloc(sizeof(struct mpc8610_hpcd_data), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!machine_data)
 		return -ENOMEM;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!machine_data) {
+		ret = -ENOMEM;
+		goto error_alloc;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	machine_data->dai[0].cpu_dai_name = dev_name(&ssi_pdev->dev);
 	machine_data->dai[0].ops = &mpc8610_hpcd_ops;
 
+<<<<<<< HEAD
 	/* Determine the codec name, it will be used as the codec DAI name */
 	ret = codec_node_dev_name(codec_np, machine_data->codec_name,
 				  DAI_NAME_SIZE);
@@ -361,6 +472,10 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
 		goto error;
 	}
 	machine_data->dai[0].codec_name = machine_data->codec_name;
+=======
+	/* ASoC core can match codec with device node */
+	machine_data->dai[0].codec_of_node = codec_np;
+>>>>>>> refs/remotes/origin/master
 
 	/* The DAI name from the codec (snd_soc_dai_driver.name) */
 	machine_data->dai[0].codec_dai_name = "cs4270-hifi";
@@ -379,7 +494,15 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
 		ret = -EINVAL;
 		goto error;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	machine_data->ssi_id = *iprop;
+=======
+	machine_data->ssi_id = be32_to_cpup(iprop);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	machine_data->ssi_id = be32_to_cpup(iprop);
+>>>>>>> refs/remotes/origin/master
 
 	/* Get the serial format and clock direction. */
 	sprop = of_get_property(np, "fsl,mode", NULL);
@@ -390,7 +513,17 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
 	}
 
 	if (strcasecmp(sprop, "i2s-slave") == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		machine_data->dai_format = SND_SOC_DAIFMT_I2S;
+=======
+		machine_data->dai_format =
+			SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		machine_data->dai_format =
+			SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM;
+>>>>>>> refs/remotes/origin/master
 		machine_data->codec_clk_direction = SND_SOC_CLOCK_OUT;
 		machine_data->cpu_clk_direction = SND_SOC_CLOCK_IN;
 
@@ -405,6 +538,8 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
 			ret = -EINVAL;
 			goto error;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		machine_data->clk_frequency = *iprop;
 	} else if (strcasecmp(sprop, "i2s-master") == 0) {
 		machine_data->dai_format = SND_SOC_DAIFMT_I2S;
@@ -432,6 +567,47 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
 		machine_data->cpu_clk_direction = SND_SOC_CLOCK_IN;
 	} else if (strcasecmp(sprop, "ac97-master") == 0) {
 		machine_data->dai_format = SND_SOC_DAIFMT_AC97;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		machine_data->clk_frequency = be32_to_cpup(iprop);
+	} else if (strcasecmp(sprop, "i2s-master") == 0) {
+		machine_data->dai_format =
+			SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS;
+		machine_data->codec_clk_direction = SND_SOC_CLOCK_IN;
+		machine_data->cpu_clk_direction = SND_SOC_CLOCK_OUT;
+	} else if (strcasecmp(sprop, "lj-slave") == 0) {
+		machine_data->dai_format =
+			SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_CBM_CFM;
+		machine_data->codec_clk_direction = SND_SOC_CLOCK_OUT;
+		machine_data->cpu_clk_direction = SND_SOC_CLOCK_IN;
+	} else if (strcasecmp(sprop, "lj-master") == 0) {
+		machine_data->dai_format =
+			SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_CBS_CFS;
+		machine_data->codec_clk_direction = SND_SOC_CLOCK_IN;
+		machine_data->cpu_clk_direction = SND_SOC_CLOCK_OUT;
+	} else if (strcasecmp(sprop, "rj-slave") == 0) {
+		machine_data->dai_format =
+			SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_CBM_CFM;
+		machine_data->codec_clk_direction = SND_SOC_CLOCK_OUT;
+		machine_data->cpu_clk_direction = SND_SOC_CLOCK_IN;
+	} else if (strcasecmp(sprop, "rj-master") == 0) {
+		machine_data->dai_format =
+			SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_CBS_CFS;
+		machine_data->codec_clk_direction = SND_SOC_CLOCK_IN;
+		machine_data->cpu_clk_direction = SND_SOC_CLOCK_OUT;
+	} else if (strcasecmp(sprop, "ac97-slave") == 0) {
+		machine_data->dai_format =
+			SND_SOC_DAIFMT_AC97 | SND_SOC_DAIFMT_CBM_CFM;
+		machine_data->codec_clk_direction = SND_SOC_CLOCK_OUT;
+		machine_data->cpu_clk_direction = SND_SOC_CLOCK_IN;
+	} else if (strcasecmp(sprop, "ac97-master") == 0) {
+		machine_data->dai_format =
+			SND_SOC_DAIFMT_AC97 | SND_SOC_DAIFMT_CBS_CFS;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		machine_data->codec_clk_direction = SND_SOC_CLOCK_IN;
 		machine_data->cpu_clk_direction = SND_SOC_CLOCK_OUT;
 	} else {
@@ -449,9 +625,16 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
 
 	/* Find the playback DMA channel to use. */
 	machine_data->dai[0].platform_name = machine_data->platform_name[0];
+<<<<<<< HEAD
 	ret = get_dma_channel(np, "fsl,playback-dma", &machine_data->dai[0],
 			      &machine_data->dma_channel_id[0],
 			      &machine_data->dma_id[0]);
+=======
+	ret = fsl_asoc_get_dma_channel(np, "fsl,playback-dma",
+				       &machine_data->dai[0],
+				       &machine_data->dma_channel_id[0],
+				       &machine_data->dma_id[0]);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&pdev->dev, "missing/invalid playback DMA phandle\n");
 		goto error;
@@ -459,9 +642,16 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
 
 	/* Find the capture DMA channel to use. */
 	machine_data->dai[1].platform_name = machine_data->platform_name[1];
+<<<<<<< HEAD
 	ret = get_dma_channel(np, "fsl,capture-dma", &machine_data->dai[1],
 			      &machine_data->dma_channel_id[1],
 			      &machine_data->dma_id[1]);
+=======
+	ret = fsl_asoc_get_dma_channel(np, "fsl,capture-dma",
+				       &machine_data->dai[1],
+				       &machine_data->dma_channel_id[1],
+				       &machine_data->dma_id[1]);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&pdev->dev, "missing/invalid capture DMA phandle\n");
 		goto error;
@@ -476,6 +666,7 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
 	machine_data->card.probe = mpc8610_hpcd_machine_probe;
 	machine_data->card.remove = mpc8610_hpcd_machine_remove;
 	machine_data->card.name = pdev->name; /* The platform driver name */
+<<<<<<< HEAD
 	machine_data->card.num_links = 2;
 	machine_data->card.dai_link = machine_data->dai;
 
@@ -494,14 +685,33 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
 	ret = platform_device_add(sound_device);
 	if (ret) {
 		dev_err(&pdev->dev, "platform device add failed\n");
+<<<<<<< HEAD
 		goto error;
+=======
+		goto error_sound;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	dev_set_drvdata(&pdev->dev, sound_device);
+=======
+	machine_data->card.owner = THIS_MODULE;
+	machine_data->card.dev = &pdev->dev;
+	machine_data->card.num_links = 2;
+	machine_data->card.dai_link = machine_data->dai;
+
+	/* Register with ASoC */
+	ret = snd_soc_register_card(&machine_data->card);
+	if (ret) {
+		dev_err(&pdev->dev, "could not register card\n");
+		goto error;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	of_node_put(codec_np);
 
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 error:
 	of_node_put(codec_np);
 
@@ -510,6 +720,19 @@ error:
 
 	kfree(machine_data);
 
+=======
+error_sound:
+	platform_device_put(sound_device);
+=======
+>>>>>>> refs/remotes/origin/master
+error:
+	kfree(machine_data);
+error_alloc:
+	of_node_put(codec_np);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -518,6 +741,7 @@ error:
  *
  * This function is called when the platform device is removed.
  */
+<<<<<<< HEAD
 static int __devexit mpc8610_hpcd_remove(struct platform_device *pdev)
 {
 	struct platform_device *sound_device = dev_get_drvdata(&pdev->dev);
@@ -531,15 +755,35 @@ static int __devexit mpc8610_hpcd_remove(struct platform_device *pdev)
 	sound_device->dev.platform_data = NULL;
 
 	dev_set_drvdata(&pdev->dev, NULL);
+=======
+static int mpc8610_hpcd_remove(struct platform_device *pdev)
+{
+	struct snd_soc_card *card = platform_get_drvdata(pdev);
+	struct mpc8610_hpcd_data *machine_data =
+		container_of(card, struct mpc8610_hpcd_data, card);
+
+	snd_soc_unregister_card(card);
+	kfree(machine_data);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver mpc8610_hpcd_driver = {
 	.probe = mpc8610_hpcd_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(mpc8610_hpcd_remove),
 	.driver = {
+<<<<<<< HEAD
 		/* The name must match the 'model' property in the device tree,
+=======
+		/* The name must match 'compatible' property in the device tree,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = mpc8610_hpcd_remove,
+	.driver = {
+		/* The name must match 'compatible' property in the device tree,
+>>>>>>> refs/remotes/origin/master
 		 * in lowercase letters.
 		 */
 		.name = "snd-soc-mpc8610hpcd",

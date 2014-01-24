@@ -22,6 +22,14 @@
 #include <linux/mtd/partitions.h>
 #include <linux/slab.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 #include <asm/irq.h>
@@ -50,8 +58,14 @@ static struct mtd_partition partition_info[] = {
 };
 #define NUM_PARTITIONS (ARRAY_SIZE(partition_info))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 const char *part_probes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u_char cmx270_read_byte(struct mtd_info *mtd)
 {
 	struct nand_chip *this = mtd->priv;
@@ -77,6 +91,7 @@ static void cmx270_read_buf(struct mtd_info *mtd, u_char *buf, int len)
 		*buf++ = readl(this->IO_ADDR_R) >> 16;
 }
 
+<<<<<<< HEAD
 static int cmx270_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
 {
 	int i;
@@ -89,6 +104,8 @@ static int cmx270_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void nand_cs_on(void)
 {
 	gpio_set_value(GPIO_NAND_CS, 0);
@@ -151,9 +168,15 @@ static int cmx270_device_ready(struct mtd_info *mtd)
 static int __init cmx270_init(void)
 {
 	struct nand_chip *this;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const char *part_type;
 	struct mtd_partition *mtd_parts;
 	int mtd_parts_nb = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (!(machine_is_armcore() && cpu_is_pxa27x()))
@@ -213,7 +236,10 @@ static int __init cmx270_init(void)
 	this->read_byte = cmx270_read_byte;
 	this->read_buf = cmx270_read_buf;
 	this->write_buf = cmx270_write_buf;
+<<<<<<< HEAD
 	this->verify_buf = cmx270_verify_buf;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Scan to find existence of the device */
 	if (nand_scan (cmx270_nand_mtd, 1)) {
@@ -222,6 +248,8 @@ static int __init cmx270_init(void)
 		goto err_scan;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MTD_CMDLINE_PARTS
 	mtd_parts_nb = parse_mtd_partitions(cmx270_nand_mtd, part_probes,
 					    &mtd_parts, 0);
@@ -239,6 +267,16 @@ static int __init cmx270_init(void)
 	/* Register the partitions */
 	pr_notice("Using %s partition definition\n", part_type);
 	ret = mtd_device_register(cmx270_nand_mtd, mtd_parts, mtd_parts_nb);
+=======
+	/* Register the partitions */
+	ret = mtd_device_parse_register(cmx270_nand_mtd, NULL, NULL,
+					partition_info, NUM_PARTITIONS);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Register the partitions */
+	ret = mtd_device_parse_register(cmx270_nand_mtd, NULL, NULL,
+					partition_info, NUM_PARTITIONS);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_scan;
 

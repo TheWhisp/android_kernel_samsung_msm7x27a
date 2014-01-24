@@ -16,6 +16,14 @@
 #include <linux/timex.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/msr.h>
 
 #define POWERNOW_IOPORT 0xfff0          /* it doesn't matter where, as long
@@ -57,22 +65,36 @@ static int powernow_k6_get_cpu_multiplier(void)
 	msrval = POWERNOW_IOPORT + 0x0;
 	wrmsr(MSR_K6_EPMR, msrval, 0); /* disable it again */
 
+<<<<<<< HEAD
 	return clock_ratio[(invalue >> 5)&7].index;
+=======
+	return clock_ratio[(invalue >> 5)&7].driver_data;
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /**
+<<<<<<< HEAD
  * powernow_k6_set_state - set the PowerNow! multiplier
+=======
+ * powernow_k6_target - set the PowerNow! multiplier
+>>>>>>> refs/remotes/origin/master
  * @best_i: clock_ratio[best_i] is the target multiplier
  *
  *   Tries to change the PowerNow! multiplier
  */
+<<<<<<< HEAD
 static void powernow_k6_set_state(unsigned int best_i)
+=======
+static int powernow_k6_target(struct cpufreq_policy *policy,
+		unsigned int best_i)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long outvalue = 0, invalue = 0;
 	unsigned long msrval;
 	struct cpufreq_freqs freqs;
 
+<<<<<<< HEAD
 	if (clock_ratio[best_i].index > max_multiplier) {
 		printk(KERN_ERR PFX "invalid target frequency\n");
 		return;
@@ -83,6 +105,17 @@ static void powernow_k6_set_state(unsigned int best_i)
 	freqs.cpu = 0; /* powernow-k6.c is UP only driver */
 
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
+=======
+	if (clock_ratio[best_i].driver_data > max_multiplier) {
+		printk(KERN_ERR PFX "invalid target frequency\n");
+		return -EINVAL;
+	}
+
+	freqs.old = busfreq * powernow_k6_get_cpu_multiplier();
+	freqs.new = busfreq * clock_ratio[best_i].driver_data;
+
+	cpufreq_notify_transition(policy, &freqs, CPUFREQ_PRECHANGE);
+>>>>>>> refs/remotes/origin/master
 
 	/* we now need to transform best_i to the BVC format, see AMD#23446 */
 
@@ -97,6 +130,7 @@ static void powernow_k6_set_state(unsigned int best_i)
 	msrval = POWERNOW_IOPORT + 0x0;
 	wrmsr(MSR_K6_EPMR, msrval, 0); /* disable it again */
 
+<<<<<<< HEAD
 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
 
 	return;
@@ -136,6 +170,9 @@ static int powernow_k6_target(struct cpufreq_policy *policy,
 		return -EINVAL;
 
 	powernow_k6_set_state(newstate);
+=======
+	cpufreq_notify_transition(policy, &freqs, CPUFREQ_POSTCHANGE);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -144,7 +181,10 @@ static int powernow_k6_target(struct cpufreq_policy *policy,
 static int powernow_k6_cpu_init(struct cpufreq_policy *policy)
 {
 	unsigned int i, f;
+<<<<<<< HEAD
 	int result;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (policy->cpu != 0)
 		return -ENODEV;
@@ -155,7 +195,11 @@ static int powernow_k6_cpu_init(struct cpufreq_policy *policy)
 
 	/* table init */
 	for (i = 0; (clock_ratio[i].frequency != CPUFREQ_TABLE_END); i++) {
+<<<<<<< HEAD
 		f = clock_ratio[i].index;
+=======
+		f = clock_ratio[i].driver_data;
+>>>>>>> refs/remotes/origin/master
 		if (f > max_multiplier)
 			clock_ratio[i].frequency = CPUFREQ_ENTRY_INVALID;
 		else
@@ -164,6 +208,7 @@ static int powernow_k6_cpu_init(struct cpufreq_policy *policy)
 
 	/* cpuinfo and default policy values */
 	policy->cpuinfo.transition_latency = 200000;
+<<<<<<< HEAD
 	policy->cur = busfreq * max_multiplier;
 
 	result = cpufreq_frequency_table_cpuinfo(policy, clock_ratio);
@@ -173,6 +218,10 @@ static int powernow_k6_cpu_init(struct cpufreq_policy *policy)
 	cpufreq_frequency_table_get_attr(clock_ratio, policy->cpu);
 
 	return 0;
+=======
+
+	return cpufreq_table_validate_and_show(policy, clock_ratio);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -181,7 +230,11 @@ static int powernow_k6_cpu_exit(struct cpufreq_policy *policy)
 	unsigned int i;
 	for (i = 0; i < 8; i++) {
 		if (i == max_multiplier)
+<<<<<<< HEAD
 			powernow_k6_set_state(i);
+=======
+			powernow_k6_target(policy, i);
+>>>>>>> refs/remotes/origin/master
 	}
 	cpufreq_frequency_table_put_attr(policy->cpu);
 	return 0;
@@ -194,6 +247,7 @@ static unsigned int powernow_k6_get(unsigned int cpu)
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct freq_attr *powernow_k6_attr[] = {
 	&cpufreq_freq_attr_scaling_available_freqs,
 	NULL,
@@ -202,14 +256,37 @@ static struct freq_attr *powernow_k6_attr[] = {
 static struct cpufreq_driver powernow_k6_driver = {
 	.verify		= powernow_k6_verify,
 	.target		= powernow_k6_target,
+=======
+static struct cpufreq_driver powernow_k6_driver = {
+	.verify		= cpufreq_generic_frequency_table_verify,
+	.target_index	= powernow_k6_target,
+>>>>>>> refs/remotes/origin/master
 	.init		= powernow_k6_cpu_init,
 	.exit		= powernow_k6_cpu_exit,
 	.get		= powernow_k6_get,
 	.name		= "powernow-k6",
+<<<<<<< HEAD
 	.owner		= THIS_MODULE,
 	.attr		= powernow_k6_attr,
 };
 
+<<<<<<< HEAD
+=======
+=======
+	.attr		= cpufreq_generic_attr,
+};
+
+>>>>>>> refs/remotes/origin/master
+static const struct x86_cpu_id powernow_k6_ids[] = {
+	{ X86_VENDOR_AMD, 5, 12 },
+	{ X86_VENDOR_AMD, 5, 13 },
+	{}
+};
+MODULE_DEVICE_TABLE(x86cpu, powernow_k6_ids);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * powernow_k6_init - initializes the k6 PowerNow! CPUFreq driver
@@ -220,10 +297,18 @@ static struct cpufreq_driver powernow_k6_driver = {
  */
 static int __init powernow_k6_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct cpuinfo_x86 *c = &cpu_data(0);
 
 	if ((c->x86_vendor != X86_VENDOR_AMD) || (c->x86 != 5) ||
 		((c->x86_model != 12) && (c->x86_model != 13)))
+=======
+	if (!x86_match_cpu(powernow_k6_ids))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!x86_match_cpu(powernow_k6_ids))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	if (!request_region(POWERNOW_IOPORT, 16, "PowerNow!")) {

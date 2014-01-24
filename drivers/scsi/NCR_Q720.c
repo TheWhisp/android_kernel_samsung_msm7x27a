@@ -351,7 +351,11 @@ static struct mca_driver NCR_Q720_driver = {
 		.name		= "NCR_Q720",
 		.bus		= &mca_bus_type,
 		.probe		= NCR_Q720_probe,
+<<<<<<< HEAD
 		.remove		= __devexit_p(NCR_Q720_remove),
+=======
+		.remove		= NCR_Q720_remove,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

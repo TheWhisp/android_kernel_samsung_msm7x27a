@@ -12,7 +12,10 @@
 
 #include <linux/kernel.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/ptrace.h>
 #include <linux/slab.h>
 #include <linux/string.h>
@@ -200,6 +203,7 @@ static struct pcmcia_driver sl811_cs_driver = {
 	.remove		= sl811_cs_detach,
 	.id_table	= sl811_ids,
 };
+<<<<<<< HEAD
 
 /*====================================================================*/
 
@@ -214,3 +218,6 @@ static void __exit exit_sl811_cs(void)
 	pcmcia_unregister_driver(&sl811_cs_driver);
 }
 module_exit(exit_sl811_cs);
+=======
+module_pcmcia_driver(sl811_cs_driver);
+>>>>>>> refs/remotes/origin/master

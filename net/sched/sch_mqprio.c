@@ -14,6 +14,14 @@
 #include <linux/string.h>
 #include <linux/errno.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/netlink.h>
 #include <net/pkt_sched.h>
 #include <net/sch_generic.h>
@@ -123,7 +131,11 @@ static int mqprio_init(struct Qdisc *sch, struct nlattr *opt)
 
 	for (i = 0; i < dev->num_tx_queues; i++) {
 		dev_queue = netdev_get_tx_queue(dev, i);
+<<<<<<< HEAD
 		qdisc = qdisc_create_dflt(dev_queue, &pfifo_fast_ops,
+=======
+		qdisc = qdisc_create_dflt(dev_queue, default_qdisc_ops,
+>>>>>>> refs/remotes/origin/master
 					  TC_H_MAKE(TC_H_MAJ(sch->handle),
 						    TC_H_MIN(i + 1)));
 		if (qdisc == NULL) {
@@ -131,6 +143,10 @@ static int mqprio_init(struct Qdisc *sch, struct nlattr *opt)
 			goto err;
 		}
 		priv->qdiscs[i] = qdisc;
+<<<<<<< HEAD
+=======
+		qdisc->flags |= TCQ_F_ONETXQUEUE;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* If the mqprio options indicate that hardware should own
@@ -204,6 +220,12 @@ static int mqprio_graft(struct Qdisc *sch, unsigned long cl, struct Qdisc *new,
 
 	*old = dev_graft_qdisc(dev_queue, new);
 
+<<<<<<< HEAD
+=======
+	if (new)
+		new->flags |= TCQ_F_ONETXQUEUE;
+
+>>>>>>> refs/remotes/origin/master
 	if (dev->flags & IFF_UP)
 		dev_activate(dev);
 
@@ -246,7 +268,12 @@ static int mqprio_dump(struct Qdisc *sch, struct sk_buff *skb)
 		opt.offset[i] = dev->tc_to_txq[i].offset;
 	}
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_OPTIONS, sizeof(opt), &opt);
+=======
+	if (nla_put(skb, TCA_OPTIONS, sizeof(opt), &opt))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	return skb->len;
 nla_put_failure:

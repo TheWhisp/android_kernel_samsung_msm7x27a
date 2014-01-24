@@ -28,7 +28,15 @@
 #include <linux/firmware.h>
 #include <linux/pnp.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <sound/core.h>
 #include <sound/wss.h>
@@ -683,7 +691,11 @@ static struct snd_kcontrol_new midi_mixer_ctl = {
  * These IRQs are encoded as bit patterns so that they can be
  * written to the control registers.
  */
+<<<<<<< HEAD
 static unsigned __devinit get_irq_config(int sscape_type, int irq)
+=======
+static unsigned get_irq_config(int sscape_type, int irq)
+>>>>>>> refs/remotes/origin/master
 {
 	static const int valid_irq[] = { 9, 5, 7, 10 };
 	static const int old_irq[] = { 9, 7, 5, 15 };
@@ -706,7 +718,11 @@ static unsigned __devinit get_irq_config(int sscape_type, int irq)
  * Perform certain arcane port-checks to see whether there
  * is a SoundScape board lurking behind the given ports.
  */
+<<<<<<< HEAD
 static int __devinit detect_sscape(struct soundscape *s, long wss_io)
+=======
+static int detect_sscape(struct soundscape *s, long wss_io)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	unsigned d;
@@ -817,16 +833,29 @@ static int mpu401_open(struct snd_mpu401 *mpu)
 /*
  * Initialse an MPU-401 subdevice for MIDI support on the SoundScape.
  */
+<<<<<<< HEAD
 static int __devinit create_mpu401(struct snd_card *card, int devnum,
 				   unsigned long port, int irq)
+=======
+static int create_mpu401(struct snd_card *card, int devnum,
+			 unsigned long port, int irq)
+>>>>>>> refs/remotes/origin/master
 {
 	struct soundscape *sscape = get_card_soundscape(card);
 	struct snd_rawmidi *rawmidi;
 	int err;
 
 	err = snd_mpu401_uart_new(card, devnum, MPU401_HW_MPU401, port,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				  MPU401_INFO_INTEGRATED, irq, IRQF_DISABLED,
 				  &rawmidi);
+=======
+				  MPU401_INFO_INTEGRATED, irq, &rawmidi);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  MPU401_INFO_INTEGRATED, irq, &rawmidi);
+>>>>>>> refs/remotes/origin/master
 	if (err == 0) {
 		struct snd_mpu401 *mpu = rawmidi->private_data;
 		mpu->open_input = mpu401_open;
@@ -846,8 +875,13 @@ static int __devinit create_mpu401(struct snd_card *card, int devnum,
  * try to support at least some of the extra bits by overriding
  * some of the CS4231 callback.
  */
+<<<<<<< HEAD
 static int __devinit create_ad1845(struct snd_card *card, unsigned port,
 				   int irq, int dma1, int dma2)
+=======
+static int create_ad1845(struct snd_card *card, unsigned port,
+			 int irq, int dma1, int dma2)
+>>>>>>> refs/remotes/origin/master
 {
 	register struct soundscape *sscape = get_card_soundscape(card);
 	struct snd_wss *chip;
@@ -938,7 +972,11 @@ _error:
  * Create an ALSA soundcard entry for the SoundScape, using
  * the given list of port, IRQ and DMA resources.
  */
+<<<<<<< HEAD
 static int __devinit create_sscape(int dev, struct snd_card *card)
+=======
+static int create_sscape(int dev, struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct soundscape *sscape = get_card_soundscape(card);
 	unsigned dma_cfg;
@@ -1020,13 +1058,33 @@ static int __devinit create_sscape(int dev, struct snd_card *card)
 	irq_cfg = get_irq_config(sscape->type, irq[dev]);
 	if (irq_cfg == INVALID_IRQ) {
 		snd_printk(KERN_ERR "sscape: Invalid IRQ %d\n", irq[dev]);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENXIO;
+=======
+		err = -ENXIO;
+		goto _release_dma;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = -ENXIO;
+		goto _release_dma;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mpu_irq_cfg = get_irq_config(sscape->type, mpu_irq[dev]);
 	if (mpu_irq_cfg == INVALID_IRQ) {
 		snd_printk(KERN_ERR "sscape: Invalid IRQ %d\n", mpu_irq[dev]);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENXIO;
+=======
+		err = -ENXIO;
+		goto _release_dma;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = -ENXIO;
+		goto _release_dma;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1142,7 +1200,11 @@ _release_region:
 }
 
 
+<<<<<<< HEAD
 static int __devinit snd_sscape_match(struct device *pdev, unsigned int i)
+=======
+static int snd_sscape_match(struct device *pdev, unsigned int i)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Make sure we were given ALL of the other parameters.
@@ -1162,7 +1224,11 @@ static int __devinit snd_sscape_match(struct device *pdev, unsigned int i)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_sscape_probe(struct device *pdev, unsigned int dev)
+=======
+static int snd_sscape_probe(struct device *pdev, unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct soundscape *sscape;
@@ -1196,10 +1262,16 @@ _release_card:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_sscape_remove(struct device *devptr, unsigned int dev)
 {
 	snd_card_free(dev_get_drvdata(devptr));
 	dev_set_drvdata(devptr, NULL);
+=======
+static int snd_sscape_remove(struct device *devptr, unsigned int dev)
+{
+	snd_card_free(dev_get_drvdata(devptr));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1208,7 +1280,11 @@ static int __devexit snd_sscape_remove(struct device *devptr, unsigned int dev)
 static struct isa_driver snd_sscape_driver = {
 	.match		= snd_sscape_match,
 	.probe		= snd_sscape_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_sscape_remove),
+=======
+	.remove		= snd_sscape_remove,
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: suspend/resume */
 	.driver		= {
 		.name	= DEV_NAME
@@ -1216,7 +1292,11 @@ static struct isa_driver snd_sscape_driver = {
 };
 
 #ifdef CONFIG_PNP
+<<<<<<< HEAD
 static inline int __devinit get_next_autoindex(int i)
+=======
+static inline int get_next_autoindex(int i)
+>>>>>>> refs/remotes/origin/master
 {
 	while (i < SNDRV_CARDS && port[i] != SNDRV_AUTO_PORT)
 		++i;
@@ -1224,8 +1304,13 @@ static inline int __devinit get_next_autoindex(int i)
 }
 
 
+<<<<<<< HEAD
 static int __devinit sscape_pnp_detect(struct pnp_card_link *pcard,
 				       const struct pnp_card_device_id *pid)
+=======
+static int sscape_pnp_detect(struct pnp_card_link *pcard,
+			     const struct pnp_card_device_id *pid)
+>>>>>>> refs/remotes/origin/master
 {
 	static int idx = 0;
 	struct pnp_dev *dev;
@@ -1309,7 +1394,11 @@ _release_card:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit sscape_pnp_remove(struct pnp_card_link * pcard)
+=======
+static void sscape_pnp_remove(struct pnp_card_link *pcard)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_card_free(pnp_get_card_drvdata(pcard));
 	pnp_set_card_drvdata(pcard, NULL);
@@ -1320,7 +1409,11 @@ static struct pnp_card_driver sscape_pnpc_driver = {
 	.name = "sscape",
 	.id_table = sscape_pnpids,
 	.probe = sscape_pnp_detect,
+<<<<<<< HEAD
 	.remove = __devexit_p(sscape_pnp_remove),
+=======
+	.remove = sscape_pnp_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* CONFIG_PNP */

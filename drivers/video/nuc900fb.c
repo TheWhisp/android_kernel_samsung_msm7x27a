@@ -38,8 +38,15 @@
 #include <mach/map.h>
 #include <mach/regs-clock.h>
 #include <mach/regs-ldm.h>
+<<<<<<< HEAD
 #include <mach/fb.h>
+<<<<<<< HEAD
 #include <mach/clkdev.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/video-nuc900fb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "nuc900fb.h"
 
@@ -92,7 +99,11 @@ static int nuc900fb_check_var(struct fb_var_screeninfo *var,
 			       struct fb_info *info)
 {
 	struct nuc900fb_info *fbi = info->par;
+<<<<<<< HEAD
 	struct nuc900fb_mach_info *mach_info = fbi->dev->platform_data;
+=======
+	struct nuc900fb_mach_info *mach_info = dev_get_platdata(fbi->dev);
+>>>>>>> refs/remotes/origin/master
 	struct nuc900fb_display *display = NULL;
 	struct nuc900fb_display *default_display = mach_info->displays +
 						   mach_info->default_display;
@@ -359,7 +370,11 @@ static inline void modify_gpio(void __iomem *reg,
 static int nuc900fb_init_registers(struct fb_info *info)
 {
 	struct nuc900fb_info *fbi = info->par;
+<<<<<<< HEAD
 	struct nuc900fb_mach_info *mach_info = fbi->dev->platform_data;
+=======
+	struct nuc900fb_mach_info *mach_info = dev_get_platdata(fbi->dev);
+>>>>>>> refs/remotes/origin/master
 	void __iomem *regs = fbi->io;
 
 	/*reset the display engine*/
@@ -388,7 +403,11 @@ static int nuc900fb_init_registers(struct fb_info *info)
  *    The buffer should be a non-cached, non-buffered, memory region
  *    to allow palette and pixel writes without flushing the cache.
  */
+<<<<<<< HEAD
 static int __init nuc900fb_map_video_memory(struct fb_info *info)
+=======
+static int nuc900fb_map_video_memory(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nuc900fb_info *fbi = info->par;
 	dma_addr_t map_dma;
@@ -500,7 +519,11 @@ static inline void nuc900fb_cpufreq_deregister(struct nuc900fb_info *info)
 
 static char driver_name[] = "nuc900fb";
 
+<<<<<<< HEAD
 static int __devinit nuc900fb_probe(struct platform_device *pdev)
+=======
+static int nuc900fb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nuc900fb_info *fbi;
 	struct nuc900fb_display *display;
@@ -513,7 +536,11 @@ static int __devinit nuc900fb_probe(struct platform_device *pdev)
 	int size;
 
 	dev_dbg(&pdev->dev, "devinit\n");
+<<<<<<< HEAD
 	mach_info = pdev->dev.platform_data;
+=======
+	mach_info = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (mach_info == NULL) {
 		dev_err(&pdev->dev,
 			"no platform data for lcd, cannot attach\n");
@@ -551,7 +578,15 @@ static int __devinit nuc900fb_probe(struct platform_device *pdev)
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	size = (res->end - res->start) + 1;
+=======
+	size = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	size = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	fbi->mem = request_mem_region(res->start, size, pdev->name);
 	if (fbi->mem == NULL) {
 		dev_err(&pdev->dev, "failed to alloc memory region\n");
@@ -588,8 +623,16 @@ static int __devinit nuc900fb_probe(struct platform_device *pdev)
 	fbinfo->flags			= FBINFO_FLAG_DEFAULT;
 	fbinfo->pseudo_palette		= &fbi->pseudo_pal;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(irq, nuc900fb_irqhandler, IRQF_DISABLED,
+=======
+	ret = request_irq(irq, nuc900fb_irqhandler, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  pdev->name, fbinfo);
+=======
+	ret = request_irq(irq, nuc900fb_irqhandler, 0, pdev->name, fbi);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&pdev->dev, "cannot register irq handler %d -err %d\n",
 			irq, ret);
@@ -649,8 +692,12 @@ static int __devinit nuc900fb_probe(struct platform_device *pdev)
 		goto free_cpufreq;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n",
 		fbinfo->node, fbinfo->fix.id);
+=======
+	fb_info(fbinfo, "%s frame buffer device\n", fbinfo->fix.id);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -708,7 +755,10 @@ static int nuc900fb_remove(struct platform_device *pdev)
 	release_resource(fbi->mem);
 	kfree(fbi->mem);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(fbinfo);
 
 	return 0;
@@ -763,6 +813,8 @@ static struct platform_driver nuc900fb_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __devinit nuc900fb_init(void)
 {
 	return platform_driver_register(&nuc900fb_driver);
@@ -775,6 +827,12 @@ static void __exit nuc900fb_cleanup(void)
 
 module_init(nuc900fb_init);
 module_exit(nuc900fb_cleanup);
+=======
+module_platform_driver(nuc900fb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(nuc900fb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Framebuffer driver for the NUC900");
 MODULE_LICENSE("GPL");

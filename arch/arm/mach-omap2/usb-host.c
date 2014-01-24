@@ -22,17 +22,23 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
 
 #include <asm/io.h>
 
 #include <mach/hardware.h>
 #include <mach/irqs.h>
 #include <plat/usb.h>
+<<<<<<< HEAD
+=======
+#include <plat/omap_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "mux.h"
 
 #ifdef CONFIG_MFD_OMAP_USB_HOST
 
+<<<<<<< HEAD
 #define OMAP_USBHS_DEVICE	"usbhs-omap"
 
 static struct resource usbhs_resources[] = {
@@ -68,16 +74,62 @@ static struct platform_device usbhs_device = {
 	.num_resources	= ARRAY_SIZE(usbhs_resources),
 	.resource	= usbhs_resources,
 };
+=======
+#define OMAP_USBHS_DEVICE	"usbhs_omap"
+#define	USBHS_UHH_HWMODNAME	"usb_host_hs"
+#define USBHS_TLL_HWMODNAME	"usb_tll_hs"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct usbhs_omap_platform_data		usbhs_data;
 static struct ehci_hcd_omap_platform_data	ehci_data;
 static struct ohci_hcd_omap_platform_data	ohci_data;
 
+<<<<<<< HEAD
+=======
+static struct omap_device_pm_latency omap_uhhtll_latency[] = {
+	  {
+		.deactivate_func = omap_device_idle_hwmods,
+		.activate_func	 = omap_device_enable_hwmods,
+		.flags = OMAP_DEVICE_LATENCY_AUTO_ADJUST,
+	  },
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regulator/machine.h>
+#include <linux/regulator/fixed.h>
+#include <linux/string.h>
+#include <linux/io.h>
+#include <linux/gpio.h>
+#include <linux/usb/phy.h>
+#include <linux/usb/usb_phy_gen_xceiv.h>
+
+#include "soc.h"
+#include "omap_device.h"
+#include "mux.h"
+#include "usb.h"
+
+#ifdef CONFIG_MFD_OMAP_USB_HOST
+
+#define OMAP_USBHS_DEVICE	"usbhs_omap"
+#define OMAP_USBTLL_DEVICE	"usbhs_tll"
+#define	USBHS_UHH_HWMODNAME	"usb_host_hs"
+#define USBHS_TLL_HWMODNAME	"usb_tll_hs"
+
+>>>>>>> refs/remotes/origin/master
 /* MUX settings for EHCI pins */
 /*
  * setup_ehci_io_mux - initialize IO pad mux for USBHOST
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void setup_ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+=======
+static void __init setup_ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init setup_ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (port_mode[0]) {
 	case OMAP_EHCI_PORT_MODE_PHY:
@@ -220,7 +272,13 @@ static void setup_ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
 	return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void setup_4430ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+=======
+static
+void __init setup_4430ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (port_mode[0]) {
 	case OMAP_EHCI_PORT_MODE_PHY:
@@ -338,7 +396,14 @@ static void setup_4430ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
 	}
 }
 
+<<<<<<< HEAD
 static void setup_ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+=======
+static void __init setup_ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init setup_ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (port_mode[0]) {
 	case OMAP_OHCI_PORT_MODE_PHY_6PIN_DATSE0:
@@ -435,7 +500,13 @@ static void setup_ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void setup_4430ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+=======
+static
+void __init setup_4430ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (port_mode[0]) {
 	case OMAP_OHCI_PORT_MODE_PHY_6PIN_DATSE0:
@@ -508,7 +579,14 @@ static void setup_4430ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
 
 void __init usbhs_init(const struct usbhs_omap_board_data *pdata)
 {
+<<<<<<< HEAD
 	int	i;
+=======
+	struct omap_hwmod	*oh[2];
+	struct platform_device	*pdev;
+	int			bus_id = -1;
+	int			i;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < OMAP3_HS_USB_PORTS; i++) {
 		usbhs_data.port_mode[i] = pdata->port_mode[i];
@@ -523,6 +601,7 @@ void __init usbhs_init(const struct usbhs_omap_board_data *pdata)
 	usbhs_data.ohci_data = &ohci_data;
 
 	if (cpu_is_omap34xx()) {
+<<<<<<< HEAD
 		usbhs_resources[0].start = OMAP34XX_UHH_CONFIG_BASE;
 		usbhs_resources[0].end = OMAP34XX_UHH_CONFIG_BASE + SZ_1K - 1;
 		usbhs_resources[1].start = OMAP34XX_USBTLL_BASE;
@@ -546,10 +625,16 @@ void __init usbhs_init(const struct usbhs_omap_board_data *pdata)
 		usbhs_resources[4].start = OMAP44XX_HSUSB_OHCI_BASE;
 		usbhs_resources[4].end = OMAP44XX_HSUSB_OHCI_BASE + SZ_1K - 1;
 		usbhs_resources[5].start = OMAP44XX_IRQ_OHCI;
+=======
+		setup_ehci_io_mux(pdata->port_mode);
+		setup_ohci_io_mux(pdata->port_mode);
+	} else if (cpu_is_omap44xx()) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		setup_4430ehci_io_mux(pdata->port_mode);
 		setup_4430ohci_io_mux(pdata->port_mode);
 	}
 
+<<<<<<< HEAD
 	if (platform_device_add_data(&usbhs_device,
 				&usbhs_data, sizeof(usbhs_data)) < 0) {
 		printk(KERN_ERR "USBHS platform_device_add_data failed\n");
@@ -561,14 +646,246 @@ void __init usbhs_init(const struct usbhs_omap_board_data *pdata)
 
 init_end:
 	return;
+=======
+	oh[0] = omap_hwmod_lookup(USBHS_UHH_HWMODNAME);
+	if (!oh[0]) {
+=======
+void __init usbhs_init(struct usbhs_omap_platform_data *pdata)
+{
+	struct omap_hwmod	*uhh_hwm, *tll_hwm;
+	struct platform_device	*pdev;
+	int			bus_id = -1;
+
+	if (cpu_is_omap34xx()) {
+		setup_ehci_io_mux(pdata->port_mode);
+		setup_ohci_io_mux(pdata->port_mode);
+
+		if (omap_rev() <= OMAP3430_REV_ES2_1)
+			pdata->single_ulpi_bypass = true;
+
+	}
+
+	uhh_hwm = omap_hwmod_lookup(USBHS_UHH_HWMODNAME);
+	if (!uhh_hwm) {
+>>>>>>> refs/remotes/origin/master
+		pr_err("Could not look up %s\n", USBHS_UHH_HWMODNAME);
+		return;
+	}
+
+<<<<<<< HEAD
+	oh[1] = omap_hwmod_lookup(USBHS_TLL_HWMODNAME);
+	if (!oh[1]) {
+=======
+	tll_hwm = omap_hwmod_lookup(USBHS_TLL_HWMODNAME);
+	if (!tll_hwm) {
+>>>>>>> refs/remotes/origin/master
+		pr_err("Could not look up %s\n", USBHS_TLL_HWMODNAME);
+		return;
+	}
+
+<<<<<<< HEAD
+	pdev = omap_device_build_ss(OMAP_USBHS_DEVICE, bus_id, oh, 2,
+				(void *)&usbhs_data, sizeof(usbhs_data),
+				omap_uhhtll_latency,
+				ARRAY_SIZE(omap_uhhtll_latency), false);
+	if (IS_ERR(pdev)) {
+		pr_err("Could not build hwmod devices %s,%s\n",
+			USBHS_UHH_HWMODNAME, USBHS_TLL_HWMODNAME);
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pdev = omap_device_build(OMAP_USBTLL_DEVICE, bus_id, tll_hwm,
+				pdata, sizeof(*pdata));
+	if (IS_ERR(pdev)) {
+		pr_err("Could not build hwmod device %s\n",
+		       USBHS_TLL_HWMODNAME);
+		return;
+	}
+
+	pdev = omap_device_build(OMAP_USBHS_DEVICE, bus_id, uhh_hwm,
+				pdata, sizeof(*pdata));
+	if (IS_ERR(pdev)) {
+		pr_err("Could not build hwmod devices %s\n",
+		       USBHS_UHH_HWMODNAME);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 #else
 
+<<<<<<< HEAD
 void __init usbhs_init(const struct usbhs_omap_board_data *pdata)
+=======
+void __init usbhs_init(struct usbhs_omap_platform_data *pdata)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* Template for PHY regulators */
+static struct fixed_voltage_config hsusb_reg_config = {
+	/* .supply_name filled later */
+	.microvolts = 3300000,
+	.gpio = -1,		/* updated later */
+	.startup_delay = 70000, /* 70msec */
+	.enable_high = 1,	/* updated later */
+	.enabled_at_boot = 0,	/* keep in RESET */
+	/* .init_data filled later */
+};
+
+static const char *nop_name = "usb_phy_gen_xceiv"; /* NOP PHY driver */
+static const char *reg_name = "reg-fixed-voltage"; /* Regulator driver */
+
+/**
+ * usbhs_add_regulator - Add a gpio based fixed voltage regulator device
+ * @name: name for the regulator
+ * @dev_id: device id of the device this regulator supplies power to
+ * @dev_supply: supply name that the device expects
+ * @gpio: GPIO number
+ * @polarity: 1 - Active high, 0 - Active low
+ */
+static int usbhs_add_regulator(char *name, char *dev_id, char *dev_supply,
+						int gpio, int polarity)
+{
+	struct regulator_consumer_supply *supplies;
+	struct regulator_init_data *reg_data;
+	struct fixed_voltage_config *config;
+	struct platform_device *pdev;
+	struct platform_device_info pdevinfo;
+	int ret = -ENOMEM;
+
+	supplies = kzalloc(sizeof(*supplies), GFP_KERNEL);
+	if (!supplies)
+		return -ENOMEM;
+
+	supplies->supply = dev_supply;
+	supplies->dev_name = dev_id;
+
+	reg_data = kzalloc(sizeof(*reg_data), GFP_KERNEL);
+	if (!reg_data)
+		goto err_data;
+
+	reg_data->constraints.valid_ops_mask = REGULATOR_CHANGE_STATUS;
+	reg_data->consumer_supplies = supplies;
+	reg_data->num_consumer_supplies = 1;
+
+	config = kmemdup(&hsusb_reg_config, sizeof(hsusb_reg_config),
+			GFP_KERNEL);
+	if (!config)
+		goto err_config;
+
+	config->supply_name = kstrdup(name, GFP_KERNEL);
+	if (!config->supply_name)
+		goto err_supplyname;
+
+	config->gpio = gpio;
+	config->enable_high = polarity;
+	config->init_data = reg_data;
+
+	/* create a regulator device */
+	memset(&pdevinfo, 0, sizeof(pdevinfo));
+	pdevinfo.name = reg_name;
+	pdevinfo.id = PLATFORM_DEVID_AUTO;
+	pdevinfo.data = config;
+	pdevinfo.size_data = sizeof(*config);
+
+	pdev = platform_device_register_full(&pdevinfo);
+	if (IS_ERR(pdev)) {
+		ret = PTR_ERR(pdev);
+		pr_err("%s: Failed registering regulator %s for %s : %d\n",
+				__func__, name, dev_id, ret);
+		goto err_register;
+	}
+
+	return 0;
+
+err_register:
+	kfree(config->supply_name);
+err_supplyname:
+	kfree(config);
+err_config:
+	kfree(reg_data);
+err_data:
+	kfree(supplies);
+	return ret;
+}
+
+#define MAX_STR 20
+
+int usbhs_init_phys(struct usbhs_phy_data *phy, int num_phys)
+{
+	char rail_name[MAX_STR];
+	int i;
+	struct platform_device *pdev;
+	char *phy_id;
+	struct platform_device_info pdevinfo;
+	struct usb_phy_gen_xceiv_platform_data nop_pdata;
+
+	for (i = 0; i < num_phys; i++) {
+
+		if (!phy->port) {
+			pr_err("%s: Invalid port 0. Must start from 1\n",
+						__func__);
+			continue;
+		}
+
+		/* do we need a NOP PHY device ? */
+		if (!gpio_is_valid(phy->reset_gpio) &&
+			!gpio_is_valid(phy->vcc_gpio))
+			continue;
+
+		phy_id = kmalloc(MAX_STR, GFP_KERNEL);
+		if (!phy_id) {
+			pr_err("%s: kmalloc() failed\n", __func__);
+			return -ENOMEM;
+		}
+
+		/* set platform data */
+		memset(&nop_pdata, 0, sizeof(nop_pdata));
+		if (gpio_is_valid(phy->vcc_gpio))
+			nop_pdata.needs_vcc = true;
+		nop_pdata.gpio_reset = phy->reset_gpio;
+		nop_pdata.type = USB_PHY_TYPE_USB2;
+
+		/* create a NOP PHY device */
+		memset(&pdevinfo, 0, sizeof(pdevinfo));
+		pdevinfo.name = nop_name;
+		pdevinfo.id = phy->port;
+		pdevinfo.data = &nop_pdata;
+		pdevinfo.size_data =
+			sizeof(struct usb_phy_gen_xceiv_platform_data);
+		scnprintf(phy_id, MAX_STR, "usb_phy_gen_xceiv.%d",
+					phy->port);
+		pdev = platform_device_register_full(&pdevinfo);
+		if (IS_ERR(pdev)) {
+			pr_err("%s: Failed to register device %s : %ld\n",
+				__func__,  phy_id, PTR_ERR(pdev));
+			kfree(phy_id);
+			continue;
+		}
+
+		usb_bind_phy("ehci-omap.0", phy->port - 1, phy_id);
+
+		/* Do we need VCC regulator ? */
+		if (gpio_is_valid(phy->vcc_gpio)) {
+			scnprintf(rail_name, MAX_STR, "hsusb%d_vcc", phy->port);
+			usbhs_add_regulator(rail_name, phy_id, "vcc",
+					phy->vcc_gpio, phy->vcc_polarity);
+		}
+
+		phy++;
+	}
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master

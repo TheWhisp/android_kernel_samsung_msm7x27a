@@ -32,7 +32,11 @@
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <mach/kirkwood.h>
+<<<<<<< HEAD
 #include <mach/leds-ns2.h>
+=======
+#include <linux/platform_data/leds-kirkwood-ns2.h>
+>>>>>>> refs/remotes/origin/master
 #include "common.h"
 #include "mpp.h"
 #include "lacie_v2-common.h"
@@ -221,10 +225,27 @@ static void __init d2net_v2_init(void)
 }
 
 MACHINE_START(D2NET_V2, "LaCie d2 Network v2")
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= d2net_v2_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
+<<<<<<< HEAD
 	.timer		= &kirkwood_timer,
+<<<<<<< HEAD
+=======
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= kirkwood_timer_init,
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

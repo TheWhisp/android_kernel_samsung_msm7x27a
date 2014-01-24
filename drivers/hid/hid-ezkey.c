@@ -5,7 +5,10 @@
  *  Copyright (c) 2000-2005 Vojtech Pavlik <vojtech@suse.cz>
  *  Copyright (c) 2005 Michael Haboustak <mike-@cinci.rr.com> for Concept2, Inc
  *  Copyright (c) 2006-2007 Jiri Kosina
+<<<<<<< HEAD
  *  Copyright (c) 2007 Paul Walmsley
+=======
+>>>>>>> refs/remotes/origin/master
  *  Copyright (c) 2008 Jiri Slaby
  */
 
@@ -77,6 +80,7 @@ static struct hid_driver ez_driver = {
 	.input_mapping = ez_input_mapping,
 	.event = ez_event,
 };
+<<<<<<< HEAD
 
 static int __init ez_init(void)
 {
@@ -90,4 +94,8 @@ static void __exit ez_exit(void)
 
 module_init(ez_init);
 module_exit(ez_exit);
+=======
+module_hid_driver(ez_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

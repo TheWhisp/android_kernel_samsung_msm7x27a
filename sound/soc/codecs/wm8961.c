@@ -1,6 +1,11 @@
 /*
  * wm8961.c  --  WM8961 ALSA SoC Audio driver
  *
+<<<<<<< HEAD
+=======
+ * Copyright 2009-10 Wolfson Microelectronics, plc
+ *
+>>>>>>> refs/remotes/origin/master
  * Author: Mark Brown
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,7 +22,14 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -30,6 +42,7 @@
 
 #define WM8961_MAX_REGISTER                     0xFC
 
+<<<<<<< HEAD
 static u16 wm8961_reg_defaults[] = {
 	0x009F,     /* R0   - Left Input volume */
 	0x009F,     /* R1   - Right Input volume */
@@ -292,11 +305,93 @@ struct wm8961_priv {
 };
 
 static int wm8961_volatile_register(struct snd_soc_codec *codec, unsigned int reg)
+=======
+static const struct reg_default wm8961_reg_defaults[] = {
+	{  0, 0x009F },     /* R0   - Left Input volume */
+	{  1, 0x009F },     /* R1   - Right Input volume */
+	{  2, 0x0000 },     /* R2   - LOUT1 volume */
+	{  3, 0x0000 },     /* R3   - ROUT1 volume */
+	{  4, 0x0020 },     /* R4   - Clocking1 */
+	{  5, 0x0008 },     /* R5   - ADC & DAC Control 1 */
+	{  6, 0x0000 },     /* R6   - ADC & DAC Control 2 */
+	{  7, 0x000A },     /* R7   - Audio Interface 0 */
+	{  8, 0x01F4 },     /* R8   - Clocking2 */
+	{  9, 0x0000 },     /* R9   - Audio Interface 1 */
+	{ 10, 0x00FF },     /* R10  - Left DAC volume */
+	{ 11, 0x00FF },     /* R11  - Right DAC volume */
+
+	{ 14, 0x0040 },     /* R14  - Audio Interface 2 */
+
+	{ 17, 0x007B },     /* R17  - ALC1 */
+	{ 18, 0x0000 },     /* R18  - ALC2 */
+	{ 19, 0x0032 },     /* R19  - ALC3 */
+	{ 20, 0x0000 },     /* R20  - Noise Gate */
+	{ 21, 0x00C0 },     /* R21  - Left ADC volume */
+	{ 22, 0x00C0 },     /* R22  - Right ADC volume */
+	{ 23, 0x0120 },     /* R23  - Additional control(1) */
+	{ 24, 0x0000 },     /* R24  - Additional control(2) */
+	{ 25, 0x0000 },     /* R25  - Pwr Mgmt (1) */
+	{ 26, 0x0000 },     /* R26  - Pwr Mgmt (2) */
+	{ 27, 0x0000 },     /* R27  - Additional Control (3) */
+	{ 28, 0x0000 },     /* R28  - Anti-pop */
+
+	{ 30, 0x005F },     /* R30  - Clocking 3 */
+
+	{ 32, 0x0000 },     /* R32  - ADCL signal path */
+	{ 33, 0x0000 },     /* R33  - ADCR signal path */
+
+	{ 40, 0x0000 },     /* R40  - LOUT2 volume */
+	{ 41, 0x0000 },     /* R41  - ROUT2 volume */
+
+	{ 47, 0x0000 },     /* R47  - Pwr Mgmt (3) */
+	{ 48, 0x0023 },     /* R48  - Additional Control (4) */
+	{ 49, 0x0000 },     /* R49  - Class D Control 1 */
+
+	{ 51, 0x0003 },     /* R51  - Class D Control 2 */
+
+	{ 56, 0x0106 },     /* R56  - Clocking 4 */
+	{ 57, 0x0000 },     /* R57  - DSP Sidetone 0 */
+	{ 58, 0x0000 },     /* R58  - DSP Sidetone 1 */
+
+	{ 60, 0x0000 },     /* R60  - DC Servo 0 */
+	{ 61, 0x0000 },     /* R61  - DC Servo 1 */
+
+	{ 63, 0x015E },     /* R63  - DC Servo 3 */
+
+	{ 65, 0x0010 },     /* R65  - DC Servo 5 */
+
+	{ 68, 0x0003 },     /* R68  - Analogue PGA Bias */
+	{ 69, 0x0000 },     /* R69  - Analogue HP 0 */
+
+	{ 71, 0x01FB },     /* R71  - Analogue HP 2 */
+	{ 72, 0x0000 },     /* R72  - Charge Pump 1 */
+
+	{ 82, 0x0000 },     /* R82  - Charge Pump B */
+
+	{ 87, 0x0000 },     /* R87  - Write Sequencer 1 */
+	{ 88, 0x0000 },     /* R88  - Write Sequencer 2 */
+	{ 89, 0x0000 },     /* R89  - Write Sequencer 3 */
+	{ 90, 0x0000 },     /* R90  - Write Sequencer 4 */
+	{ 91, 0x0000 },     /* R91  - Write Sequencer 5 */
+	{ 92, 0x0000 },     /* R92  - Write Sequencer 6 */
+	{ 93, 0x0000 },     /* R93  - Write Sequencer 7 */
+
+	{ 252, 0x0001 },     /* R252 - General test 1 */
+};
+
+struct wm8961_priv {
+	struct regmap *regmap;
+	int sysclk;
+};
+
+static bool wm8961_volatile(struct device *dev, unsigned int reg)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (reg) {
 	case WM8961_SOFTWARE_RESET:
 	case WM8961_WRITE_SEQUENCER_7:
 	case WM8961_DC_SERVO_1:
+<<<<<<< HEAD
 		return 1;
 
 	default:
@@ -307,6 +402,77 @@ static int wm8961_volatile_register(struct snd_soc_codec *codec, unsigned int re
 static int wm8961_reset(struct snd_soc_codec *codec)
 {
 	return snd_soc_write(codec, WM8961_SOFTWARE_RESET, 0);
+=======
+		return true;
+
+	default:
+		return false;
+	}
+}
+
+static bool wm8961_readable(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8961_LEFT_INPUT_VOLUME:
+	case WM8961_RIGHT_INPUT_VOLUME:
+	case WM8961_LOUT1_VOLUME:
+	case WM8961_ROUT1_VOLUME:
+	case WM8961_CLOCKING1:
+	case WM8961_ADC_DAC_CONTROL_1:
+	case WM8961_ADC_DAC_CONTROL_2:
+	case WM8961_AUDIO_INTERFACE_0:
+	case WM8961_CLOCKING2:
+	case WM8961_AUDIO_INTERFACE_1:
+	case WM8961_LEFT_DAC_VOLUME:
+	case WM8961_RIGHT_DAC_VOLUME:
+	case WM8961_AUDIO_INTERFACE_2:
+	case WM8961_SOFTWARE_RESET:
+	case WM8961_ALC1:
+	case WM8961_ALC2:
+	case WM8961_ALC3:
+	case WM8961_NOISE_GATE:
+	case WM8961_LEFT_ADC_VOLUME:
+	case WM8961_RIGHT_ADC_VOLUME:
+	case WM8961_ADDITIONAL_CONTROL_1:
+	case WM8961_ADDITIONAL_CONTROL_2:
+	case WM8961_PWR_MGMT_1:
+	case WM8961_PWR_MGMT_2:
+	case WM8961_ADDITIONAL_CONTROL_3:
+	case WM8961_ANTI_POP:
+	case WM8961_CLOCKING_3:
+	case WM8961_ADCL_SIGNAL_PATH:
+	case WM8961_ADCR_SIGNAL_PATH:
+	case WM8961_LOUT2_VOLUME:
+	case WM8961_ROUT2_VOLUME:
+	case WM8961_PWR_MGMT_3:
+	case WM8961_ADDITIONAL_CONTROL_4:
+	case WM8961_CLASS_D_CONTROL_1:
+	case WM8961_CLASS_D_CONTROL_2:
+	case WM8961_CLOCKING_4:
+	case WM8961_DSP_SIDETONE_0:
+	case WM8961_DSP_SIDETONE_1:
+	case WM8961_DC_SERVO_0:
+	case WM8961_DC_SERVO_1:
+	case WM8961_DC_SERVO_3:
+	case WM8961_DC_SERVO_5:
+	case WM8961_ANALOGUE_PGA_BIAS:
+	case WM8961_ANALOGUE_HP_0:
+	case WM8961_ANALOGUE_HP_2:
+	case WM8961_CHARGE_PUMP_1:
+	case WM8961_CHARGE_PUMP_B:
+	case WM8961_WRITE_SEQUENCER_1:
+	case WM8961_WRITE_SEQUENCER_2:
+	case WM8961_WRITE_SEQUENCER_3:
+	case WM8961_WRITE_SEQUENCER_4:
+	case WM8961_WRITE_SEQUENCER_5:
+	case WM8961_WRITE_SEQUENCER_6:
+	case WM8961_WRITE_SEQUENCER_7:
+	case WM8961_GENERAL_TEST_1:
+		return true;
+	default:
+		return false;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -423,11 +589,25 @@ static int wm8961_spk_event(struct snd_soc_dapm_widget *w,
 	}
 
 	if (event & SND_SOC_DAPM_PRE_PMD) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* Enable the amplifier */
 		spk_reg &= ~(WM8961_SPKL_ENA | WM8961_SPKR_ENA);
 		snd_soc_write(codec, WM8961_CLASS_D_CONTROL_1, spk_reg);
 
 		/* Enable the PGA */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/* Disable the amplifier */
+		spk_reg &= ~(WM8961_SPKL_ENA | WM8961_SPKR_ENA);
+		snd_soc_write(codec, WM8961_CLASS_D_CONTROL_1, spk_reg);
+
+		/* Disable the PGA */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pwr_reg &= ~(WM8961_SPKL_PGA | WM8961_SPKR_PGA);
 		snd_soc_write(codec, WM8961_PWR_MGMT_2, pwr_reg);
 	}
@@ -531,7 +711,15 @@ SND_SOC_DAPM_PGA("Right Input", WM8961_PWR_MGMT_1, 4, 0, NULL, 0),
 SND_SOC_DAPM_ADC("ADCL", "HiFi Capture", WM8961_PWR_MGMT_1, 3, 0),
 SND_SOC_DAPM_ADC("ADCR", "HiFi Capture", WM8961_PWR_MGMT_1, 2, 0),
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 SND_SOC_DAPM_MICBIAS("MICBIAS", WM8961_PWR_MGMT_1, 1, 0),
+=======
+SND_SOC_DAPM_SUPPLY("MICBIAS", WM8961_PWR_MGMT_1, 1, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+SND_SOC_DAPM_SUPPLY("MICBIAS", WM8961_PWR_MGMT_1, 1, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/master
 
 SND_SOC_DAPM_MUX("DACL Sidetone", SND_SOC_NOPM, 0, 0, &dacl_mux),
 SND_SOC_DAPM_MUX("DACR Sidetone", SND_SOC_NOPM, 0, 0, &dacr_mux),
@@ -929,7 +1117,15 @@ static int wm8961_set_bias_level(struct snd_soc_codec *codec,
 	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
 	SNDRV_PCM_FMTBIT_S24_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8961_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8961_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8961_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params = wm8961_hw_params,
 	.set_sysclk = wm8961_set_sysclk,
 	.set_fmt = wm8961_set_fmt,
@@ -961,12 +1157,17 @@ static int wm8961_probe(struct snd_soc_codec *codec)
 	int ret = 0;
 	u16 reg;
 
+<<<<<<< HEAD
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
+=======
+	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
 	}
 
+<<<<<<< HEAD
 	reg = snd_soc_read(codec, WM8961_SOFTWARE_RESET);
 	if (reg != 0x1801) {
 		dev_err(codec->dev, "Device is not a WM8961: ID=0x%x\n", reg);
@@ -974,7 +1175,13 @@ static int wm8961_probe(struct snd_soc_codec *codec)
 	}
 
 	/* This isn't volatile - readback doesn't correspond to write */
+<<<<<<< HEAD
 	reg = codec->hw_read(codec, WM8961_RIGHT_INPUT_VOLUME);
+=======
+	codec->cache_bypass = 1;
+	reg = snd_soc_read(codec, WM8961_RIGHT_INPUT_VOLUME);
+	codec->cache_bypass = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_info(codec->dev, "WM8961 family %d revision %c\n",
 		 (reg & WM8961_DEVICE_ID_MASK) >> WM8961_DEVICE_ID_SHIFT,
 		 ((reg & WM8961_CHIP_REV_MASK) >> WM8961_CHIP_REV_SHIFT)
@@ -986,6 +1193,8 @@ static int wm8961_probe(struct snd_soc_codec *codec)
 		return ret;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Enable class W */
 	reg = snd_soc_read(codec, WM8961_CHARGE_PUMP_B);
 	reg |= WM8961_CP_DYN_PWR_MASK;
@@ -1021,7 +1230,15 @@ static int wm8961_probe(struct snd_soc_codec *codec)
 
 	wm8961_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8961_snd_controls,
+=======
+	snd_soc_add_codec_controls(codec, wm8961_snd_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_add_codec_controls(codec, wm8961_snd_controls,
+>>>>>>> refs/remotes/origin/master
 				ARRAY_SIZE(wm8961_snd_controls));
 	snd_soc_dapm_new_controls(dapm, wm8961_dapm_widgets,
 				  ARRAY_SIZE(wm8961_dapm_widgets));
@@ -1037,7 +1254,15 @@ static int wm8961_remove(struct snd_soc_codec *codec)
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8961_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8961_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8961_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm8961_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
@@ -1046,6 +1271,8 @@ static int wm8961_suspend(struct snd_soc_codec *codec, pm_message_t state)
 
 static int wm8961_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 *reg_cache = codec->reg_cache;
 	int i;
 
@@ -1058,6 +1285,12 @@ static int wm8961_resume(struct snd_soc_codec *codec)
 
 		snd_soc_write(codec, i, reg_cache[i]);
 	}
+=======
+	snd_soc_cache_sync(codec);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_cache_sync(codec);
+>>>>>>> refs/remotes/origin/master
 
 	wm8961_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
@@ -1074,36 +1307,129 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8961 = {
 	.suspend =	wm8961_suspend,
 	.resume =	wm8961_resume,
 	.set_bias_level = wm8961_set_bias_level,
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8961_reg_defaults),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8961_reg_defaults,
 	.volatile_register = wm8961_volatile_register,
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static __devinit int wm8961_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
 {
 	struct wm8961_priv *wm8961;
 	int ret;
 
+<<<<<<< HEAD
 	wm8961 = kzalloc(sizeof(struct wm8961_priv), GFP_KERNEL);
+=======
+	wm8961 = devm_kzalloc(&i2c->dev, sizeof(struct wm8961_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (wm8961 == NULL)
 		return -ENOMEM;
 
+=======
+};
+
+static const struct regmap_config wm8961_regmap = {
+	.reg_bits = 8,
+	.val_bits = 16,
+	.max_register = WM8961_MAX_REGISTER,
+
+	.reg_defaults = wm8961_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8961_reg_defaults),
+	.cache_type = REGCACHE_RBTREE,
+
+	.volatile_reg = wm8961_volatile,
+	.readable_reg = wm8961_readable,
+};
+
+static int wm8961_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+{
+	struct wm8961_priv *wm8961;
+	unsigned int val;
+	int ret;
+
+	wm8961 = devm_kzalloc(&i2c->dev, sizeof(struct wm8961_priv),
+			      GFP_KERNEL);
+	if (wm8961 == NULL)
+		return -ENOMEM;
+
+	wm8961->regmap = devm_regmap_init_i2c(i2c, &wm8961_regmap);
+	if (IS_ERR(wm8961->regmap))
+		return PTR_ERR(wm8961->regmap);
+
+	ret = regmap_read(wm8961->regmap, WM8961_SOFTWARE_RESET, &val);
+	if (ret != 0) {
+		dev_err(&i2c->dev, "Failed to read chip ID: %d\n", ret);
+		return ret;
+	}
+
+	if (val != 0x1801) {
+		dev_err(&i2c->dev, "Device is not a WM8961: ID=0x%x\n", val);
+		return -EINVAL;
+	}
+
+	/* This isn't volatile - readback doesn't correspond to write */
+	regcache_cache_bypass(wm8961->regmap, true);
+	ret = regmap_read(wm8961->regmap, WM8961_RIGHT_INPUT_VOLUME, &val);
+	regcache_cache_bypass(wm8961->regmap, false);
+
+	if (ret != 0) {
+		dev_err(&i2c->dev, "Failed to read chip revision: %d\n", ret);
+		return ret;
+	}
+
+	dev_info(&i2c->dev, "WM8961 family %d revision %c\n",
+		 (val & WM8961_DEVICE_ID_MASK) >> WM8961_DEVICE_ID_SHIFT,
+		 ((val & WM8961_CHIP_REV_MASK) >> WM8961_CHIP_REV_SHIFT)
+		 + 'A');
+
+	ret = regmap_write(wm8961->regmap, WM8961_SOFTWARE_RESET, 0x1801);
+	if (ret != 0) {
+		dev_err(&i2c->dev, "Failed to issue reset: %d\n", ret);
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	i2c_set_clientdata(i2c, wm8961);
 
 	ret = snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm8961, &wm8961_dai, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8961);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int wm8961_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
+<<<<<<< HEAD
 	kfree(i2c_get_clientdata(client));
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return ret;
+}
+
+static int wm8961_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1115,36 +1441,65 @@ MODULE_DEVICE_TABLE(i2c, wm8961_i2c_id);
 
 static struct i2c_driver wm8961_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8961-codec",
+=======
+		.name = "wm8961",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm8961_i2c_probe,
 	.remove =   __devexit_p(wm8961_i2c_remove),
 	.id_table = wm8961_i2c_id,
 };
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init wm8961_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = i2c_add_driver(&wm8961_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register wm8961 I2C driver: %d\n",
 		       ret);
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 module_init(wm8961_modinit);
 
 static void __exit wm8961_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 	i2c_del_driver(&wm8961_i2c_driver);
 #endif
+=======
+	i2c_del_driver(&wm8961_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 module_exit(wm8961_exit);
+=======
+		.name = "wm8961",
+		.owner = THIS_MODULE,
+	},
+	.probe =    wm8961_i2c_probe,
+	.remove =   wm8961_i2c_remove,
+	.id_table = wm8961_i2c_id,
+};
+
+module_i2c_driver(wm8961_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC WM8961 driver");
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");

@@ -61,31 +61,71 @@ void dsp_dtmf_hardware(struct dsp *dsp)
 	if (dsp->tx_volume) {
 		if (dsp_debug & DEBUG_DSP_DTMF)
 			printk(KERN_DEBUG "%s dsp %s cannot do hardware DTMF, "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"because tx_volume is changed\n",
 				__func__, dsp->name);
+=======
+			       "because tx_volume is changed\n",
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "because tx_volume is changed\n",
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		hardware = 0;
 	}
 	if (dsp->rx_volume) {
 		if (dsp_debug & DEBUG_DSP_DTMF)
 			printk(KERN_DEBUG "%s dsp %s cannot do hardware DTMF, "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"because rx_volume is changed\n",
 				__func__, dsp->name);
+=======
+			       "because rx_volume is changed\n",
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "because rx_volume is changed\n",
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		hardware = 0;
 	}
 	/* check if encryption is enabled */
 	if (dsp->bf_enable) {
 		if (dsp_debug & DEBUG_DSP_DTMF)
 			printk(KERN_DEBUG "%s dsp %s cannot do hardware DTMF, "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"because encryption is enabled\n",
 				__func__, dsp->name);
+=======
+			       "because encryption is enabled\n",
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "because encryption is enabled\n",
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		hardware = 0;
 	}
 	/* check if pipeline exists */
 	if (dsp->pipeline.inuse) {
 		if (dsp_debug & DEBUG_DSP_DTMF)
 			printk(KERN_DEBUG "%s dsp %s cannot do hardware DTMF, "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"because pipeline exists.\n",
 				__func__, dsp->name);
+=======
+			       "because pipeline exists.\n",
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "because pipeline exists.\n",
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		hardware = 0;
 	}
 
@@ -150,12 +190,24 @@ again:
 		if (len < 64) {
 			if (len > 0)
 				printk(KERN_ERR "%s: coefficients have invalid "
+<<<<<<< HEAD
+<<<<<<< HEAD
 					"size. (is=%d < must=%d)\n",
 					__func__, len, 64);
+=======
+				       "size. (is=%d < must=%d)\n",
+				       __func__, len, 64);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       "size. (is=%d < must=%d)\n",
+				       __func__, len, 64);
+>>>>>>> refs/remotes/origin/master
 			return dsp->dtmf.digits;
 		}
 		hfccoeff = (s32 *)data;
 		for (k = 0; k < NCOEFF; k++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			sk2 = (*hfccoeff++)>>4;
 			sk = (*hfccoeff++)>>4;
 			if (sk > 32767 || sk < -32767 || sk2 > 32767
@@ -167,6 +219,24 @@ again:
 				 (sk * sk) -
 				 (((cos2pik[k] * sk) >> 15) * sk2) +
 				 (sk2 * sk2);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			sk2 = (*hfccoeff++) >> 4;
+			sk = (*hfccoeff++) >> 4;
+			if (sk > 32767 || sk < -32767 || sk2 > 32767
+			    || sk2 < -32767)
+				printk(KERN_WARNING
+				       "DTMF-Detection overflow\n");
+			/* compute |X(k)|**2 */
+			result[k] =
+				(sk * sk) -
+				(((cos2pik[k] * sk) >> 15) * sk2) +
+				(sk2 * sk2);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		data += 64;
 		len -= 64;
@@ -188,7 +258,15 @@ again:
 		buf = dsp->dtmf.buffer;
 		cos2pik_ = cos2pik[k];
 		for (n = 0; n < DSP_DTMF_NPOINTS; n++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			sk = ((cos2pik_*sk1)>>15) - sk2 + (*buf++);
+=======
+			sk = ((cos2pik_ * sk1) >> 15) - sk2 + (*buf++);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sk = ((cos2pik_ * sk1) >> 15) - sk2 + (*buf++);
+>>>>>>> refs/remotes/origin/master
 			sk2 = sk1;
 			sk1 = sk;
 		}
@@ -222,8 +300,10 @@ coefficients:
 		goto storedigit;
 	}
 
+<<<<<<< HEAD
 	if (dsp_debug & DEBUG_DSP_DTMFCOEFF)
 		printk(KERN_DEBUG "a %3d %3d %3d %3d %3d %3d %3d %3d"
+<<<<<<< HEAD
 			" tr:%3d r %3d %3d %3d %3d %3d %3d %3d %3d\n",
 			result[0]/10000, result[1]/10000, result[2]/10000,
 			result[3]/10000, result[4]/10000, result[5]/10000,
@@ -232,6 +312,36 @@ coefficients:
 			result[2]/(tresh/100), result[3]/(tresh/100),
 			result[4]/(tresh/100), result[5]/(tresh/100),
 			result[6]/(tresh/100), result[7]/(tresh/100));
+=======
+=======
+	if (dsp_debug & DEBUG_DSP_DTMFCOEFF) {
+		s32 tresh_100 = tresh/100;
+
+		if (tresh_100 == 0) {
+			tresh_100 = 1;
+			printk(KERN_DEBUG
+				"tresh(%d) too small set tresh/100 to 1\n",
+				tresh);
+		}
+		printk(KERN_DEBUG "a %3d %3d %3d %3d %3d %3d %3d %3d"
+>>>>>>> refs/remotes/origin/master
+		       " tr:%3d r %3d %3d %3d %3d %3d %3d %3d %3d\n",
+		       result[0] / 10000, result[1] / 10000, result[2] / 10000,
+		       result[3] / 10000, result[4] / 10000, result[5] / 10000,
+		       result[6] / 10000, result[7] / 10000, tresh / 10000,
+<<<<<<< HEAD
+		       result[0] / (tresh / 100), result[1] / (tresh / 100),
+		       result[2] / (tresh / 100), result[3] / (tresh / 100),
+		       result[4] / (tresh / 100), result[5] / (tresh / 100),
+		       result[6] / (tresh / 100), result[7] / (tresh / 100));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       result[0] / (tresh_100), result[1] / (tresh_100),
+		       result[2] / (tresh_100), result[3] / (tresh_100),
+		       result[4] / (tresh_100), result[5] / (tresh_100),
+		       result[6] / (tresh_100), result[7] / (tresh_100));
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* calc digit (lowgroup/highgroup) */
 	lowgroup = -1;
@@ -247,7 +357,15 @@ coefficients:
 			break;  /* noise in between */
 		}
 		/* good level found. This is allowed only one time per group */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (i < NCOEFF/2) {
+=======
+		if (i < NCOEFF / 2) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (i < NCOEFF / 2) {
+>>>>>>> refs/remotes/origin/master
 			/* lowgroup */
 			if (lowgroup >= 0) {
 				/* Bad. Another tone found. */
@@ -262,7 +380,15 @@ coefficients:
 				highgroup = -1;
 				break;
 			} else
+<<<<<<< HEAD
+<<<<<<< HEAD
 				highgroup = i-(NCOEFF/2);
+=======
+				highgroup = i - (NCOEFF / 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				highgroup = i - (NCOEFF / 2);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -285,6 +411,8 @@ storedigit:
 			if (what) {
 				if (dsp_debug & DEBUG_DSP_DTMF)
 					printk(KERN_DEBUG "DTMF digit: %c\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 						what);
 				if ((strlen(dsp->dtmf.digits)+1)
 					< sizeof(dsp->dtmf.digits)) {
@@ -292,6 +420,20 @@ storedigit:
 						dsp->dtmf.digits)+1] = '\0';
 					dsp->dtmf.digits[strlen(
 						dsp->dtmf.digits)] = what;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					       what);
+				if ((strlen(dsp->dtmf.digits) + 1)
+				    < sizeof(dsp->dtmf.digits)) {
+					dsp->dtmf.digits[strlen(
+							dsp->dtmf.digits) + 1] = '\0';
+					dsp->dtmf.digits[strlen(
+							dsp->dtmf.digits)] = what;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 		}
@@ -302,5 +444,11 @@ storedigit:
 
 	goto again;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

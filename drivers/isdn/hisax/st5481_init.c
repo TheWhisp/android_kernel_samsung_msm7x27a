@@ -4,13 +4,29 @@
  * Author       Frode Isaksen
  * Copyright    2001 by Frode Isaksen      <fisaksen@bewan.com>
  *              2001 by Kai Germaschewski  <kai.germaschewski@gmx.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* 
+=======
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * TODO:
  *
  * b layer1 delay?
@@ -63,9 +79,21 @@ static int probe_st5481(struct usb_interface *intf,
 	int retval, i;
 
 	printk(KERN_INFO "st541: found adapter VendorId %04x, ProductId %04x, LEDs %d\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	     le16_to_cpu(dev->descriptor.idVendor),
 	     le16_to_cpu(dev->descriptor.idProduct),
 	     number_of_leds);
+=======
+	       le16_to_cpu(dev->descriptor.idVendor),
+	       le16_to_cpu(dev->descriptor.idProduct),
+	       number_of_leds);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       le16_to_cpu(dev->descriptor.idVendor),
+	       le16_to_cpu(dev->descriptor.idProduct),
+	       number_of_leds);
+>>>>>>> refs/remotes/origin/master
 
 	adapter = kzalloc(sizeof(struct st5481_adapter), GFP_KERNEL);
 	if (!adapter)
@@ -105,7 +133,15 @@ static int probe_st5481(struct usb_interface *intf,
 		b_if[i] = &adapter->bcs[i].b_if;
 
 	if (hisax_register(&adapter->hisax_d_if, b_if, "st5481_usb",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			protocol) != 0)
+=======
+			   protocol) != 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   protocol) != 0)
+>>>>>>> refs/remotes/origin/master
 		goto err_b1;
 
 	st5481_start(adapter);
@@ -113,6 +149,8 @@ static int probe_st5481(struct usb_interface *intf,
 	usb_set_intfdata(intf, adapter);
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
  err_b1:
 	st5481_release_b(&adapter->bcs[1]);
  err_b:
@@ -122,6 +160,22 @@ static int probe_st5481(struct usb_interface *intf,
  err_usb:
 	st5481_release_usb(adapter);
  err:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+err_b1:
+	st5481_release_b(&adapter->bcs[1]);
+err_b:
+	st5481_release_b(&adapter->bcs[0]);
+err_d:
+	st5481_release_d(adapter);
+err_usb:
+	st5481_release_usb(adapter);
+err:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(adapter);
 	return -EIO;
 }
@@ -134,12 +188,28 @@ static void disconnect_st5481(struct usb_interface *intf)
 {
 	struct st5481_adapter *adapter = usb_get_intfdata(intf);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(1,"");
+=======
+	DBG(1, "");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(1, "");
+>>>>>>> refs/remotes/origin/master
 
 	usb_set_intfdata(intf, NULL);
 	if (!adapter)
 		return;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	st5481_stop(adapter);
 	st5481_release_b(&adapter->bcs[1]);
 	st5481_release_b(&adapter->bcs[0]);
@@ -157,6 +227,8 @@ static void disconnect_st5481(struct usb_interface *intf)
  * The last 4 bits in the Product Id is set with 4 pins on the chip.
  */
 static struct usb_device_id st5481_ids[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID+0x0) },
 	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID+0x1) },
 	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID+0x2) },
@@ -176,12 +248,42 @@ static struct usb_device_id st5481_ids[] = {
 	{ }
 };
 MODULE_DEVICE_TABLE (usb, st5481_ids);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0x0) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0x1) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0x2) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0x3) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0x4) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0x5) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0x6) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0x7) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0x8) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0x9) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0xA) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0xB) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0xC) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0xD) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0xE) },
+	{ USB_DEVICE(ST_VENDOR_ID, ST5481_PRODUCT_ID + 0xF) },
+	{ }
+};
+MODULE_DEVICE_TABLE(usb, st5481_ids);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct usb_driver st5481_usb_driver = {
 	.name =		"st5481_usb",
 	.probe =	probe_st5481,
 	.disconnect =	disconnect_st5481,
 	.id_table =	st5481_ids,
+<<<<<<< HEAD
+=======
+	.disable_hub_initiated_lpm = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init st5481_usb_init(void)
@@ -204,9 +306,21 @@ static int __init st5481_usb_init(void)
 
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
  out_d_exit:
 	st5481_d_exit();
  out:
+=======
+out_d_exit:
+	st5481_d_exit();
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_d_exit:
+	st5481_d_exit();
+out:
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 

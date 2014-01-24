@@ -267,8 +267,12 @@ static void atbm8830_release(struct dvb_frontend *fe)
 	kfree(state);
 }
 
+<<<<<<< HEAD
 static int atbm8830_set_fe(struct dvb_frontend *fe,
 			  struct dvb_frontend_parameters *fe_params)
+=======
+static int atbm8830_set_fe(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct atbm_state *priv = fe->demodulator_priv;
 	int i;
@@ -279,7 +283,11 @@ static int atbm8830_set_fe(struct dvb_frontend *fe,
 	if (fe->ops.tuner_ops.set_params) {
 		if (fe->ops.i2c_gate_ctrl)
 			fe->ops.i2c_gate_ctrl(fe, 1);
+<<<<<<< HEAD
 		fe->ops.tuner_ops.set_params(fe, fe_params);
+=======
+		fe->ops.tuner_ops.set_params(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (fe->ops.i2c_gate_ctrl)
 			fe->ops.i2c_gate_ctrl(fe, 0);
 	}
@@ -298,13 +306,20 @@ static int atbm8830_set_fe(struct dvb_frontend *fe,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int atbm8830_get_fe(struct dvb_frontend *fe,
 			  struct dvb_frontend_parameters *fe_params)
 {
+=======
+static int atbm8830_get_fe(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	dprintk("%s\n", __func__);
 
 	/* TODO: get real readings from device */
 	/* inversion status */
+<<<<<<< HEAD
 	fe_params->inversion = INVERSION_OFF;
 
 	/* bandwidth */
@@ -323,6 +338,26 @@ static int atbm8830_get_fe(struct dvb_frontend *fe,
 
 	/* hierarchy */
 	fe_params->u.ofdm.hierarchy_information = HIERARCHY_NONE;
+=======
+	c->inversion = INVERSION_OFF;
+
+	/* bandwidth */
+	c->bandwidth_hz = 8000000;
+
+	c->code_rate_HP = FEC_AUTO;
+	c->code_rate_LP = FEC_AUTO;
+
+	c->modulation = QAM_AUTO;
+
+	/* transmission mode */
+	c->transmission_mode = TRANSMISSION_MODE_AUTO;
+
+	/* guard interval */
+	c->guard_interval = GUARD_INTERVAL_AUTO;
+
+	/* hierarchy */
+	c->hierarchy = HIERARCHY_NONE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -429,9 +464,15 @@ static int atbm8830_i2c_gate_ctrl(struct dvb_frontend *fe, int enable)
 }
 
 static struct dvb_frontend_ops atbm8830_ops = {
+<<<<<<< HEAD
 	.info = {
 		.name = "AltoBeam ATBM8830/8831 DMB-TH",
 		.type = FE_OFDM,
+=======
+	.delsys = { SYS_DMBTH },
+	.info = {
+		.name = "AltoBeam ATBM8830/8831 DMB-TH",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min = 474000000,
 		.frequency_max = 858000000,
 		.frequency_stepsize = 10000,

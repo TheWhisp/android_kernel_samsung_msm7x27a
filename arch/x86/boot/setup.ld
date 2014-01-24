@@ -13,7 +13,11 @@ SECTIONS
 	.bstext		: { *(.bstext) }
 	.bsdata		: { *(.bsdata) }
 
+<<<<<<< HEAD
 	. = 497;
+=======
+	. = 495;
+>>>>>>> refs/remotes/origin/master
 	.header		: { *(.header) }
 	.entrytext	: { *(.entrytext) }
 	.inittext	: { *(.inittext) }

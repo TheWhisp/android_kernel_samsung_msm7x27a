@@ -20,6 +20,14 @@
  */
 
 #include "emu8000_local.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/asoundef.h>
 
 /*
@@ -174,7 +182,11 @@ get_voice(struct snd_emux *emu, struct snd_emux_port *port)
 	hw = emu->hw;
 
 	for (i = 0; i < END; i++) {
+<<<<<<< HEAD
 		best[i].time = (unsigned int)(-1); /* XXX MAX_?INT really */;
+=======
+		best[i].time = (unsigned int)(-1); /* XXX MAX_?INT really */
+>>>>>>> refs/remotes/origin/master
 		best[i].voice = -1;
 	}
 

@@ -72,14 +72,24 @@ static int ghash_update(struct shash_desc *desc,
 		if (!dctx->bytes) {
 			ret = crypt_s390_kimd(KIMD_GHASH, ctx, buf,
 					      GHASH_BLOCK_SIZE);
+<<<<<<< HEAD
 			BUG_ON(ret != GHASH_BLOCK_SIZE);
+=======
+			if (ret != GHASH_BLOCK_SIZE)
+				return -EIO;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	n = srclen & ~(GHASH_BLOCK_SIZE - 1);
 	if (n) {
 		ret = crypt_s390_kimd(KIMD_GHASH, ctx, src, n);
+<<<<<<< HEAD
 		BUG_ON(ret != n);
+=======
+		if (ret != n)
+			return -EIO;
+>>>>>>> refs/remotes/origin/master
 		src += n;
 		srclen -= n;
 	}
@@ -92,7 +102,11 @@ static int ghash_update(struct shash_desc *desc,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void ghash_flush(struct ghash_ctx *ctx, struct ghash_desc_ctx *dctx)
+=======
+static int ghash_flush(struct ghash_ctx *ctx, struct ghash_desc_ctx *dctx)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 *buf = dctx->buffer;
 	int ret;
@@ -103,21 +117,39 @@ static void ghash_flush(struct ghash_ctx *ctx, struct ghash_desc_ctx *dctx)
 		memset(pos, 0, dctx->bytes);
 
 		ret = crypt_s390_kimd(KIMD_GHASH, ctx, buf, GHASH_BLOCK_SIZE);
+<<<<<<< HEAD
 		BUG_ON(ret != GHASH_BLOCK_SIZE);
 	}
 
 	dctx->bytes = 0;
+=======
+		if (ret != GHASH_BLOCK_SIZE)
+			return -EIO;
+	}
+
+	dctx->bytes = 0;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ghash_final(struct shash_desc *desc, u8 *dst)
 {
 	struct ghash_desc_ctx *dctx = shash_desc_ctx(desc);
 	struct ghash_ctx *ctx = crypto_shash_ctx(desc->tfm);
+<<<<<<< HEAD
 
 	ghash_flush(ctx, dctx);
 	memcpy(dst, ctx->icv, GHASH_BLOCK_SIZE);
 
 	return 0;
+=======
+	int ret;
+
+	ret = ghash_flush(ctx, dctx);
+	if (!ret)
+		memcpy(dst, ctx->icv, GHASH_BLOCK_SIZE);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct shash_alg ghash_alg = {
@@ -135,7 +167,10 @@ static struct shash_alg ghash_alg = {
 		.cra_blocksize		= GHASH_BLOCK_SIZE,
 		.cra_ctxsize		= sizeof(struct ghash_ctx),
 		.cra_module		= THIS_MODULE,
+<<<<<<< HEAD
 		.cra_list		= LIST_HEAD_INIT(ghash_alg.base.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

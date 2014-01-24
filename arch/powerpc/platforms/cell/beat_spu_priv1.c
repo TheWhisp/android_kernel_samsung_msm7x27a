@@ -18,8 +18,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/types.h>
 #include <asm/spu.h>
 #include <asm/spu_priv1.h>

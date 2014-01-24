@@ -9,6 +9,7 @@
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
 #include <linux/amba/bus.h>
 #include <linux/amba/pl022.h>
@@ -101,6 +102,12 @@ static const dma_addr_t dma40_tx_map[DB8500_DMA_NR_DEV] = {
 	[DB8500_DMA_DEV41_SD_MM3_TX] = -1,
 	[DB8500_DMA_DEV42_SD_MM4_TX] = -1,
 	[DB8500_DMA_DEV43_SD_MM5_TX] = -1,
+<<<<<<< HEAD
+=======
+	[DB8500_DMA_DEV14_MSP2_TX] = U8500_MSP2_BASE + MSP_TX_RX_REG_OFFSET,
+	[DB8500_DMA_DEV30_MSP1_TX] = U8500_MSP1_BASE + MSP_TX_RX_REG_OFFSET,
+	[DB8500_DMA_DEV31_MSP0_TX_SLIM0_CH0_TX] = U8500_MSP0_BASE + MSP_TX_RX_REG_OFFSET,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Mapping between source event lines and physical device address */
@@ -133,6 +140,12 @@ static const dma_addr_t dma40_rx_map[DB8500_DMA_NR_DEV] = {
 	[DB8500_DMA_DEV41_SD_MM3_RX] = -1,
 	[DB8500_DMA_DEV42_SD_MM4_RX] = -1,
 	[DB8500_DMA_DEV43_SD_MM5_RX] = -1,
+<<<<<<< HEAD
+=======
+	[DB8500_DMA_DEV14_MSP2_RX] = U8500_MSP2_BASE + MSP_TX_RX_REG_OFFSET,
+	[DB8500_DMA_DEV30_MSP3_RX] = U8500_MSP3_BASE + MSP_TX_RX_REG_OFFSET,
+	[DB8500_DMA_DEV31_MSP0_RX_SLIM0_CH0_RX] = U8500_MSP0_BASE + MSP_TX_RX_REG_OFFSET,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Reserved event lines for memcpy only */
@@ -166,6 +179,7 @@ struct platform_device u8500_dma40_device = {
 	.resource = dma40_resources
 };
 
+<<<<<<< HEAD
 void dma40_u8500ed_fixup(void)
 {
 	dma40_plat_data.memcpy = NULL;
@@ -176,6 +190,8 @@ void dma40_u8500ed_fixup(void)
 	dma40_resources[1].end = U8500_DMA_LCPA_BASE_ED + 2 * SZ_1K - 1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct resource keypad_resources[] = {
 	[0] = {
 		.start = U8500_SKE_BASE,
@@ -194,4 +210,22 @@ struct platform_device u8500_ske_keypad_device = {
 	.id = -1,
 	.num_resources = ARRAY_SIZE(keypad_resources),
 	.resource = keypad_resources,
+=======
+#include <linux/amba/bus.h>
+#include <linux/amba/pl022.h>
+#include <linux/mfd/dbx500-prcmu.h>
+
+#include "setup.h"
+#include "irqs.h"
+
+#include "db8500-regs.h"
+#include "devices-db8500.h"
+
+struct prcmu_pdata db8500_prcmu_pdata = {
+	.ab_platdata	= &ab8500_platdata,
+	.ab_irq		= IRQ_DB8500_AB8500,
+	.irq_base	= IRQ_PRCMU_BASE,
+	.version_offset	= DB8500_PRCMU_FW_VERSION_OFFSET,
+	.legacy_offset	= DB8500_PRCMU_LEGACY_OFFSET,
+>>>>>>> refs/remotes/origin/master
 };

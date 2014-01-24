@@ -42,6 +42,10 @@
 #include <linux/kd.h>
 #include <linux/slab.h>
 #include <linux/vt_kern.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/selection.h>
 #include <linux/spinlock.h>
 #include <linux/ioport.h>
@@ -50,7 +54,15 @@
 #include <video/vga.h>
 #include <asm/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(vga_lock);
+=======
+static DEFINE_RAW_SPINLOCK(vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_RAW_SPINLOCK(vga_lock);
+>>>>>>> refs/remotes/origin/master
 static int cursor_size_lastfrom;
 static int cursor_size_lastto;
 static u32 vgacon_xres;
@@ -157,7 +169,15 @@ static inline void write_vga(unsigned char reg, unsigned int val)
 	 * ddprintk might set the console position from interrupt
 	 * handlers, thus the write has to be IRQ-atomic.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&vga_lock, flags);
+=======
+	raw_spin_lock_irqsave(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 #ifndef SLOW_VGA
 	v1 = reg + (val & 0xff00);
@@ -170,7 +190,15 @@ static inline void write_vga(unsigned char reg, unsigned int val)
 	outb_p(reg + 1, vga_video_port_reg);
 	outb_p(val & 0xff, vga_video_port_val);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&vga_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void vga_set_mem_top(struct vc_data *c)
@@ -664,7 +692,15 @@ static void vgacon_set_cursor_size(int xpos, int from, int to)
 	cursor_size_lastfrom = from;
 	cursor_size_lastto = to;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&vga_lock, flags);
+=======
+	raw_spin_lock_irqsave(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	if (vga_video_type >= VIDEO_TYPE_VGAC) {
 		outb_p(VGA_CRTC_CURSOR_START, vga_video_port_reg);
 		curs = inb_p(vga_video_port_val);
@@ -682,7 +718,15 @@ static void vgacon_set_cursor_size(int xpos, int from, int to)
 	outb_p(curs, vga_video_port_val);
 	outb_p(VGA_CRTC_CURSOR_END, vga_video_port_reg);
 	outb_p(cure, vga_video_port_val);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&vga_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void vgacon_cursor(struct vc_data *c, int mode)
@@ -757,7 +801,15 @@ static int vgacon_doresize(struct vc_data *c,
 	unsigned int scanlines = height * c->vc_font.height;
 	u8 scanlines_lo = 0, r7 = 0, vsync_end = 0, mode, max_scan;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&vga_lock, flags);
+=======
+	raw_spin_lock_irqsave(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	vgacon_xres = width * VGA_FONTWIDTH;
 	vgacon_yres = height * c->vc_font.height;
@@ -808,7 +860,15 @@ static int vgacon_doresize(struct vc_data *c,
 		outb_p(vsync_end, vga_video_port_val);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&vga_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&vga_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -891,11 +951,25 @@ static void vga_vesa_blank(struct vgastate *state, int mode)
 {
 	/* save original values of VGA controller registers */
 	if (!vga_vesa_blanked) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock_irq(&vga_lock);
 		vga_state.SeqCtrlIndex = vga_r(state->vgabase, VGA_SEQ_I);
 		vga_state.CrtCtrlIndex = inb_p(vga_video_port_reg);
 		vga_state.CrtMiscIO = vga_r(state->vgabase, VGA_MIS_R);
 		spin_unlock_irq(&vga_lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		raw_spin_lock_irq(&vga_lock);
+		vga_state.SeqCtrlIndex = vga_r(state->vgabase, VGA_SEQ_I);
+		vga_state.CrtCtrlIndex = inb_p(vga_video_port_reg);
+		vga_state.CrtMiscIO = vga_r(state->vgabase, VGA_MIS_R);
+		raw_spin_unlock_irq(&vga_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		outb_p(0x00, vga_video_port_reg);	/* HorizontalTotal */
 		vga_state.HorizontalTotal = inb_p(vga_video_port_val);
@@ -918,7 +992,15 @@ static void vga_vesa_blank(struct vgastate *state, int mode)
 
 	/* assure that video is enabled */
 	/* "0x20" is VIDEO_ENABLE_bit in register 01 of sequencer */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&vga_lock);
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/master
 	vga_wseq(state->vgabase, VGA_SEQ_CLOCK_MODE, vga_state.ClockingMode | 0x20);
 
 	/* test for vertical retrace in process.... */
@@ -954,13 +1036,29 @@ static void vga_vesa_blank(struct vgastate *state, int mode)
 	/* restore both index registers */
 	vga_w(state->vgabase, VGA_SEQ_I, vga_state.SeqCtrlIndex);
 	outb_p(vga_state.CrtCtrlIndex, vga_video_port_reg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irq(&vga_lock);
+=======
+	raw_spin_unlock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void vga_vesa_unblank(struct vgastate *state)
 {
 	/* restore original values of VGA controller registers */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&vga_lock);
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/master
 	vga_w(state->vgabase, VGA_MIS_W, vga_state.CrtMiscIO);
 
 	outb_p(0x00, vga_video_port_reg);	/* HorizontalTotal */
@@ -985,7 +1083,15 @@ static void vga_vesa_unblank(struct vgastate *state)
 	/* restore index/control registers */
 	vga_w(state->vgabase, VGA_SEQ_I, vga_state.SeqCtrlIndex);
 	outb_p(vga_state.CrtCtrlIndex, vga_video_port_reg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irq(&vga_lock);
+=======
+	raw_spin_unlock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void vga_pal_blank(struct vgastate *state)
@@ -1064,7 +1170,19 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 	unsigned short video_port_status = vga_video_port_reg + 6;
 	int font_select = 0x00, beg, i;
 	char *charmap;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+	bool clear_attribs = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool clear_attribs = false;
+>>>>>>> refs/remotes/origin/master
+=======
+	bool clear_attribs = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (vga_video_type != VIDEO_TYPE_EGAM) {
 		charmap = (char *) VGA_MAP_MEM(colourmap, 0);
 		beg = 0x0e;
@@ -1104,7 +1222,15 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 		charmap += 4 * cmapsz;
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&vga_lock);
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/master
 	/* First, the Sequencer */
 	vga_wseq(state->vgabase, VGA_SEQ_RESET, 0x1);
 	/* CPU writes only to map 2 */
@@ -1120,7 +1246,12 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 	vga_wgfx(state->vgabase, VGA_GFX_MODE, 0x00);
 	/* map start at A000:0000 */
 	vga_wgfx(state->vgabase, VGA_GFX_MISC, 0x00);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irq(&vga_lock);
+=======
+	raw_spin_unlock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (arg) {
 		if (set)
@@ -1129,6 +1260,21 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 		else
 			for (i = 0; i < cmapsz; i++)
 				arg[i] = vga_readb(charmap + i);
+=======
+	raw_spin_unlock_irq(&vga_lock);
+
+	if (arg) {
+		if (set)
+			for (i = 0; i < cmapsz; i++) {
+				vga_writeb(arg[i], charmap + i);
+				cond_resched();
+			}
+		else
+			for (i = 0; i < cmapsz; i++) {
+				arg[i] = vga_readb(charmap + i);
+				cond_resched();
+			}
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * In 512-character mode, the character map is not contiguous if
@@ -1139,6 +1285,7 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 			charmap += 2 * cmapsz;
 			arg += cmapsz;
 			if (set)
+<<<<<<< HEAD
 				for (i = 0; i < cmapsz; i++)
 					vga_writeb(arg[i], charmap + i);
 			else
@@ -1147,7 +1294,26 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 		}
 	}
 
+<<<<<<< HEAD
 	spin_lock_irq(&vga_lock);
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				for (i = 0; i < cmapsz; i++) {
+					vga_writeb(arg[i], charmap + i);
+					cond_resched();
+				}
+			else
+				for (i = 0; i < cmapsz; i++) {
+					arg[i] = vga_readb(charmap + i);
+					cond_resched();
+				}
+		}
+	}
+
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/master
 	/* First, the sequencer, Synchronous reset */
 	vga_wseq(state->vgabase, VGA_SEQ_RESET, 0x01);	
 	/* CPU writes to maps 0 and 1 */
@@ -1169,12 +1335,21 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 
 	/* if 512 char mode is already enabled don't re-enable it. */
 	if ((set) && (ch512 != vga_512_chars)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* attribute controller */
 		for (i = 0; i < MAX_NR_CONSOLES; i++) {
 			struct vc_data *c = vc_cons[i].d;
 			if (c && c->vc_sw == &vga_con)
 				c->vc_hi_font_mask = ch512 ? 0x0800 : 0;
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		vga_512_chars = ch512;
 		/* 256-char: enable intensity bit
 		   512-char: disable intensity bit */
@@ -1185,8 +1360,39 @@ static int vgacon_do_font_op(struct vgastate *state,char *arg,int set,int ch512)
 		   it means, but it works, and it appears necessary */
 		inb_p(video_port_status);
 		vga_wattr(state->vgabase, VGA_AR_ENABLE_DISPLAY, 0);	
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 	spin_unlock_irq(&vga_lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		clear_attribs = true;
+	}
+	raw_spin_unlock_irq(&vga_lock);
+
+	if (clear_attribs) {
+		for (i = 0; i < MAX_NR_CONSOLES; i++) {
+			struct vc_data *c = vc_cons[i].d;
+			if (c && c->vc_sw == &vga_con) {
+				/* force hi font mask to 0, so we always clear
+				   the bit on either transition */
+				c->vc_hi_font_mask = 0x00;
+				clear_buffer_attributes(c);
+				c->vc_hi_font_mask = ch512 ? 0x0800 : 0;
+			}
+		}
+	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -1211,26 +1417,58 @@ static int vgacon_adjust_height(struct vc_data *vc, unsigned fontheight)
 	   registers; they are write-only on EGA, but it appears that they
 	   are all don't care bits on EGA, so I guess it doesn't matter. */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&vga_lock);
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/master
 	outb_p(0x07, vga_video_port_reg);	/* CRTC overflow register */
 	ovr = inb_p(vga_video_port_val);
 	outb_p(0x09, vga_video_port_reg);	/* Font size register */
 	fsr = inb_p(vga_video_port_val);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irq(&vga_lock);
+=======
+	raw_spin_unlock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/master
 
 	vde = maxscan & 0xff;	/* Vertical display end reg */
 	ovr = (ovr & 0xbd) +	/* Overflow register */
 	    ((maxscan & 0x100) >> 7) + ((maxscan & 0x200) >> 3);
 	fsr = (fsr & 0xe0) + (fontheight - 1);	/*  Font size register */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&vga_lock);
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/master
 	outb_p(0x07, vga_video_port_reg);	/* CRTC overflow register */
 	outb_p(ovr, vga_video_port_val);
 	outb_p(0x09, vga_video_port_reg);	/* Font size */
 	outb_p(fsr, vga_video_port_val);
 	outb_p(0x12, vga_video_port_reg);	/* Vertical display limit */
 	outb_p(vde, vga_video_port_val);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irq(&vga_lock);
+=======
+	raw_spin_unlock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irq(&vga_lock);
+>>>>>>> refs/remotes/origin/master
 	vga_video_font_height = fontheight;
 
 	for (i = 0; i < MAX_NR_CONSOLES; i++) {

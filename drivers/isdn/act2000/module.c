@@ -4,7 +4,15 @@
  *
  * Author       Fritz Elfert
  * Copyright    by Fritz Elfert      <fritz@isdn4linux.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -21,8 +29,18 @@
 
 static unsigned short act2000_isa_ports[] =
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         0x0200, 0x0240, 0x0280, 0x02c0, 0x0300, 0x0340, 0x0380,
         0xcfe0, 0xcfa0, 0xcf60, 0xcf20, 0xcee0, 0xcea0, 0xce60,
+=======
+	0x0200, 0x0240, 0x0280, 0x02c0, 0x0300, 0x0340, 0x0380,
+	0xcfe0, 0xcfa0, 0xcf60, 0xcf20, 0xcee0, 0xcea0, 0xce60,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	0x0200, 0x0240, 0x0280, 0x02c0, 0x0300, 0x0340, 0x0380,
+	0xcfe0, 0xcfa0, 0xcf60, 0xcf20, 0xcee0, 0xcea0, 0xce60,
+>>>>>>> refs/remotes/origin/master
 };
 
 static act2000_card *cards = (act2000_card *) NULL;
@@ -33,6 +51,8 @@ static int   act_port = -1;  /* -1 = Autoprobe  */
 static int   act_irq  = -1;
 static char *act_id   = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_DESCRIPTION(       "ISDN4Linux: Driver for IBM Active 2000 ISDN card");
 MODULE_AUTHOR(            "Fritz Elfert");
 MODULE_LICENSE(           "GPL");
@@ -41,6 +61,21 @@ MODULE_PARM_DESC(membase, "Base port address of first card");
 MODULE_PARM_DESC(act_irq, "IRQ of first card");
 MODULE_PARM_DESC(act_id,  "ID-String of first card");
 module_param(act_bus,  int, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+MODULE_DESCRIPTION("ISDN4Linux: Driver for IBM Active 2000 ISDN card");
+MODULE_AUTHOR("Fritz Elfert");
+MODULE_LICENSE("GPL");
+MODULE_PARM_DESC(act_bus, "BusType of first card, 1=ISA, 2=MCA, 3=PCMCIA, currently only ISA");
+MODULE_PARM_DESC(membase, "Base port address of first card");
+MODULE_PARM_DESC(act_irq, "IRQ of first card");
+MODULE_PARM_DESC(act_id, "ID-String of first card");
+module_param(act_bus, int, 0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(act_port, int, 0);
 module_param(act_irq, int, 0);
 module_param(act_id, charp, 0);
@@ -51,7 +86,15 @@ static act2000_chan *
 find_channel(act2000_card *card, int channel)
 {
 	if ((channel >= 0) && (channel < ACT2000_BCH))
+<<<<<<< HEAD
+<<<<<<< HEAD
         	return &(card->bch[channel]);
+=======
+		return &(card->bch[channel]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return &(card->bch[channel]);
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_WARNING "act2000: Invalid channel %d\n", channel);
 	return NULL;
 }
@@ -84,7 +127,15 @@ act2000_clear_msn(act2000_card *card)
 static __u16
 act2000_find_msn(act2000_card *card, char *msn, int ia5)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         struct msn_entry *p = card->msn_list;
+=======
+	struct msn_entry *p = card->msn_list;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msn_entry *p = card->msn_list;
+>>>>>>> refs/remotes/origin/master
 	__u8 eaz = '0';
 
 	while (p) {
@@ -107,6 +158,8 @@ act2000_find_msn(act2000_card *card, char *msn, int ia5)
 char *
 act2000_find_eaz(act2000_card *card, char eaz)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         struct msn_entry *p = card->msn_list;
 
 	while (p) {
@@ -115,6 +168,21 @@ act2000_find_eaz(act2000_card *card, char eaz)
 		p = p->next;
 	}
 	return("\0");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct msn_entry *p = card->msn_list;
+
+	while (p) {
+		if (p->eaz == eaz)
+			return (p->msn);
+		p = p->next;
+	}
+	return ("\0");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -126,11 +194,25 @@ act2000_find_eaz(act2000_card *card, char eaz)
 static int
 act2000_set_msn(act2000_card *card, char *eazmsn)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         struct msn_entry *p = card->msn_list;
         struct msn_entry *q = NULL;
 	unsigned long flags;
 	int i;
 	
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct msn_entry *p = card->msn_list;
+	struct msn_entry *q = NULL;
+	unsigned long flags;
+	int i;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!strlen(eazmsn))
 		return 0;
 	if (strlen(eazmsn) > 16)
@@ -138,7 +220,15 @@ act2000_set_msn(act2000_card *card, char *eazmsn)
 	for (i = 0; i < strlen(eazmsn); i++)
 		if (!isdigit(eazmsn[i]))
 			return -EINVAL;
+<<<<<<< HEAD
+<<<<<<< HEAD
         if (strlen(eazmsn) == 1) {
+=======
+	if (strlen(eazmsn) == 1) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (strlen(eazmsn) == 1) {
+>>>>>>> refs/remotes/origin/master
 		/* Delete a single MSN */
 		while (p) {
 			if (p->eaz == eazmsn[0]) {
@@ -158,7 +248,15 @@ act2000_set_msn(act2000_card *card, char *eazmsn)
 			p = p->next;
 		}
 		return 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
         }
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	/* Add a single MSN */
 	while (p) {
 		/* Found in list, replace MSN */
@@ -198,6 +296,8 @@ act2000_transmit(struct work_struct *work)
 		container_of(work, struct act2000_card, snd_tq);
 
 	switch (card->bus) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case ACT2000_BUS_ISA:
 			act2000_isa_send(card);
 			break;
@@ -206,6 +306,21 @@ act2000_transmit(struct work_struct *work)
 		default:
 			printk(KERN_WARNING
 			       "act2000_transmit: Illegal bustype %d\n", card->bus);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case ACT2000_BUS_ISA:
+		act2000_isa_send(card);
+		break;
+	case ACT2000_BUS_PCMCIA:
+	case ACT2000_BUS_MCA:
+	default:
+		printk(KERN_WARNING
+		       "act2000_transmit: Illegal bustype %d\n", card->bus);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -216,6 +331,8 @@ act2000_receive(struct work_struct *work)
 		container_of(work, struct act2000_card, poll_tq);
 
 	switch (card->bus) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case ACT2000_BUS_ISA:
 			act2000_isa_receive(card);
 			break;
@@ -224,32 +341,78 @@ act2000_receive(struct work_struct *work)
 		default:
 			printk(KERN_WARNING
 			       "act2000_receive: Illegal bustype %d\n", card->bus);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case ACT2000_BUS_ISA:
+		act2000_isa_receive(card);
+		break;
+	case ACT2000_BUS_PCMCIA:
+	case ACT2000_BUS_MCA:
+	default:
+		printk(KERN_WARNING
+		       "act2000_receive: Illegal bustype %d\n", card->bus);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static void
 act2000_poll(unsigned long data)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	act2000_card * card = (act2000_card *)data;
+=======
+	act2000_card *card = (act2000_card *)data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	act2000_card *card = (act2000_card *)data;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	act2000_receive(&card->poll_tq);
 	spin_lock_irqsave(&card->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mod_timer(&card->ptimer, jiffies+3);
+=======
+	mod_timer(&card->ptimer, jiffies + 3);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mod_timer(&card->ptimer, jiffies + 3);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&card->lock, flags);
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 act2000_command(act2000_card * card, isdn_ctrl * c)
 {
         ulong a;
         act2000_chan *chan;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+act2000_command(act2000_card *card, isdn_ctrl *c)
+{
+	ulong a;
+	act2000_chan *chan;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	act2000_cdef cdef;
 	isdn_ctrl cmd;
 	char tmp[17];
 	int ret;
 	unsigned long flags;
 	void __user *arg;
+<<<<<<< HEAD
+<<<<<<< HEAD
  
         switch (c->command) {
 		case ISDN_CMD_IOCTL:
@@ -414,11 +577,184 @@ act2000_command(act2000_card * card, isdn_ctrl * c)
         }
 	
         return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	switch (c->command) {
+	case ISDN_CMD_IOCTL:
+		memcpy(&a, c->parm.num, sizeof(ulong));
+		arg = (void __user *)a;
+		switch (c->arg) {
+		case ACT2000_IOCTL_LOADBOOT:
+			switch (card->bus) {
+			case ACT2000_BUS_ISA:
+				ret = act2000_isa_download(card,
+							   arg);
+				if (!ret) {
+					card->flags |= ACT2000_FLAGS_LOADED;
+					if (!(card->flags & ACT2000_FLAGS_IVALID)) {
+						card->ptimer.expires = jiffies + 3;
+						card->ptimer.function = act2000_poll;
+						card->ptimer.data = (unsigned long)card;
+						add_timer(&card->ptimer);
+					}
+					actcapi_manufacturer_req_errh(card);
+				}
+				break;
+			default:
+				printk(KERN_WARNING
+				       "act2000: Illegal BUS type %d\n",
+				       card->bus);
+				ret = -EIO;
+			}
+			return ret;
+		case ACT2000_IOCTL_SETPROTO:
+			card->ptype = a ? ISDN_PTYPE_EURO : ISDN_PTYPE_1TR6;
+			if (!(card->flags & ACT2000_FLAGS_RUNNING))
+				return 0;
+			actcapi_manufacturer_req_net(card);
+			return 0;
+		case ACT2000_IOCTL_SETMSN:
+			if (copy_from_user(tmp, arg,
+					   sizeof(tmp)))
+				return -EFAULT;
+			if ((ret = act2000_set_msn(card, tmp)))
+				return ret;
+			if (card->flags & ACT2000_FLAGS_RUNNING)
+				return (actcapi_manufacturer_req_msn(card));
+			return 0;
+		case ACT2000_IOCTL_ADDCARD:
+			if (copy_from_user(&cdef, arg,
+					   sizeof(cdef)))
+				return -EFAULT;
+			if (act2000_addcard(cdef.bus, cdef.port, cdef.irq, cdef.id))
+				return -EIO;
+			return 0;
+		case ACT2000_IOCTL_TEST:
+			if (!(card->flags & ACT2000_FLAGS_RUNNING))
+				return -ENODEV;
+			return 0;
+		default:
+			return -EINVAL;
+		}
+		break;
+	case ISDN_CMD_DIAL:
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		if (!(chan = find_channel(card, c->arg & 0x0f)))
+			break;
+		spin_lock_irqsave(&card->lock, flags);
+		if (chan->fsm_state != ACT2000_STATE_NULL) {
+			spin_unlock_irqrestore(&card->lock, flags);
+			printk(KERN_WARNING "Dial on channel with state %d\n",
+			       chan->fsm_state);
+			return -EBUSY;
+		}
+		if (card->ptype == ISDN_PTYPE_EURO)
+			tmp[0] = act2000_find_msn(card, c->parm.setup.eazmsn, 1);
+		else
+			tmp[0] = c->parm.setup.eazmsn[0];
+		chan->fsm_state = ACT2000_STATE_OCALL;
+		chan->callref = 0xffff;
+		spin_unlock_irqrestore(&card->lock, flags);
+		ret = actcapi_connect_req(card, chan, c->parm.setup.phone,
+					  tmp[0], c->parm.setup.si1,
+					  c->parm.setup.si2);
+		if (ret) {
+			cmd.driver = card->myid;
+			cmd.command = ISDN_STAT_DHUP;
+			cmd.arg &= 0x0f;
+			card->interface.statcallb(&cmd);
+		}
+		return ret;
+	case ISDN_CMD_ACCEPTD:
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		if (!(chan = find_channel(card, c->arg & 0x0f)))
+			break;
+		if (chan->fsm_state == ACT2000_STATE_ICALL)
+			actcapi_select_b2_protocol_req(card, chan);
+		return 0;
+	case ISDN_CMD_ACCEPTB:
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		return 0;
+	case ISDN_CMD_HANGUP:
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		if (!(chan = find_channel(card, c->arg & 0x0f)))
+			break;
+		switch (chan->fsm_state) {
+		case ACT2000_STATE_ICALL:
+		case ACT2000_STATE_BSETUP:
+			actcapi_connect_resp(card, chan, 0x15);
+			break;
+		case ACT2000_STATE_ACTIVE:
+			actcapi_disconnect_b3_req(card, chan);
+			break;
+		}
+		return 0;
+	case ISDN_CMD_SETEAZ:
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		if (!(chan = find_channel(card, c->arg & 0x0f)))
+			break;
+		if (strlen(c->parm.num)) {
+			if (card->ptype == ISDN_PTYPE_EURO) {
+				chan->eazmask = act2000_find_msn(card, c->parm.num, 0);
+			}
+			if (card->ptype == ISDN_PTYPE_1TR6) {
+				int i;
+				chan->eazmask = 0;
+				for (i = 0; i < strlen(c->parm.num); i++)
+					if (isdigit(c->parm.num[i]))
+						chan->eazmask |= (1 << (c->parm.num[i] - '0'));
+			}
+		} else
+			chan->eazmask = 0x3ff;
+		actcapi_listen_req(card);
+		return 0;
+	case ISDN_CMD_CLREAZ:
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		if (!(chan = find_channel(card, c->arg & 0x0f)))
+			break;
+		chan->eazmask = 0;
+		actcapi_listen_req(card);
+		return 0;
+	case ISDN_CMD_SETL2:
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		if (!(chan = find_channel(card, c->arg & 0x0f)))
+			break;
+		chan->l2prot = (c->arg >> 8);
+		return 0;
+	case ISDN_CMD_SETL3:
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		if ((c->arg >> 8) != ISDN_PROTO_L3_TRANS) {
+			printk(KERN_WARNING "L3 protocol unknown\n");
+			return -1;
+		}
+		if (!(chan = find_channel(card, c->arg & 0x0f)))
+			break;
+		chan->l3prot = (c->arg >> 8);
+		return 0;
+	}
+
+	return -EINVAL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 act2000_sendbuf(act2000_card *card, int channel, int ack, struct sk_buff *skb)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         struct sk_buff *xmit_skb;
         int len;
         act2000_chan *chan;
@@ -431,6 +767,25 @@ act2000_sendbuf(act2000_card *card, int channel, int ack, struct sk_buff *skb)
         len = skb->len;
         if ((chan->queued + len) >= ACT2000_MAX_QUEUED)
                 return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sk_buff *xmit_skb;
+	int len;
+	act2000_chan *chan;
+	actcapi_msg *msg;
+
+	if (!(chan = find_channel(card, channel)))
+		return -1;
+	if (chan->fsm_state != ACT2000_STATE_ACTIVE)
+		return -1;
+	len = skb->len;
+	if ((chan->queued + len) >= ACT2000_MAX_QUEUED)
+		return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!len)
 		return 0;
 	if (skb_headroom(skb) < 19) {
@@ -462,15 +817,30 @@ act2000_sendbuf(act2000_card *card, int channel, int ack, struct sk_buff *skb)
 	msg->msg.data_b3_req.fakencci = MAKE_NCCI(chan->plci, 0, chan->ncci);
 	msg->msg.data_b3_req.flags = ack; /* Will be set to 0 on actual sending */
 	actcapi_debug_msg(xmit_skb, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
         chan->queued += len;
 	skb_queue_tail(&card->sndq, xmit_skb);
 	act2000_schedule_tx(card);
         return len;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	chan->queued += len;
+	skb_queue_tail(&card->sndq, xmit_skb);
+	act2000_schedule_tx(card);
+	return len;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /* Read the Status-replies from the Interface */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 act2000_readstatus(u_char __user * buf, int len, act2000_card * card)
 {
         int count;
@@ -484,6 +854,26 @@ act2000_readstatus(u_char __user * buf, int len, act2000_card * card)
                         card->status_buf_read = card->status_buf;
         }
         return count;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+act2000_readstatus(u_char __user *buf, int len, act2000_card *card)
+{
+	int count;
+	u_char __user *p;
+
+	for (p = buf, count = 0; count < len; p++, count++) {
+		if (card->status_buf_read == card->status_buf_write)
+			return count;
+		put_user(*card->status_buf_read++, p);
+		if (card->status_buf_read > card->status_buf_end)
+			card->status_buf_read = card->status_buf;
+	}
+	return count;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -492,6 +882,8 @@ act2000_readstatus(u_char __user * buf, int len, act2000_card * card)
 static inline act2000_card *
 act2000_findcard(int driverid)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         act2000_card *p = cards;
 
         while (p) {
@@ -500,12 +892,29 @@ act2000_findcard(int driverid)
                 p = p->next;
         }
         return (act2000_card *) 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	act2000_card *p = cards;
+
+	while (p) {
+		if (p->myid == driverid)
+			return p;
+		p = p->next;
+	}
+	return (act2000_card *) 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Wrapper functions for interface to linklevel
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 if_command(isdn_ctrl * c)
 {
         act2000_card *card = act2000_findcard(c->driver);
@@ -516,11 +925,30 @@ if_command(isdn_ctrl * c)
              "act2000: if_command %d called with invalid driverId %d!\n",
                c->command, c->driver);
         return -ENODEV;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+if_command(isdn_ctrl *c)
+{
+	act2000_card *card = act2000_findcard(c->driver);
+
+	if (card)
+		return (act2000_command(card, c));
+	printk(KERN_ERR
+	       "act2000: if_command %d called with invalid driverId %d!\n",
+	       c->command, c->driver);
+	return -ENODEV;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 if_writecmd(const u_char __user *buf, int len, int id, int channel)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         act2000_card *card = act2000_findcard(id);
 
         if (card) {
@@ -546,11 +974,45 @@ if_readstatus(u_char __user * buf, int len, int id, int channel)
         printk(KERN_ERR
                "act2000: if_readstatus called with invalid driverId!\n");
         return -ENODEV;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	act2000_card *card = act2000_findcard(id);
+
+	if (card) {
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		return (len);
+	}
+	printk(KERN_ERR
+	       "act2000: if_writecmd called with invalid driverId!\n");
+	return -ENODEV;
+}
+
+static int
+if_readstatus(u_char __user *buf, int len, int id, int channel)
+{
+	act2000_card *card = act2000_findcard(id);
+
+	if (card) {
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		return (act2000_readstatus(buf, len, card));
+	}
+	printk(KERN_ERR
+	       "act2000: if_readstatus called with invalid driverId!\n");
+	return -ENODEV;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 if_sendbuf(int id, int channel, int ack, struct sk_buff *skb)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         act2000_card *card = act2000_findcard(id);
 	
         if (card) {
@@ -561,6 +1023,23 @@ if_sendbuf(int id, int channel, int ack, struct sk_buff *skb)
         printk(KERN_ERR
                "act2000: if_sendbuf called with invalid driverId!\n");
         return -ENODEV;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	act2000_card *card = act2000_findcard(id);
+
+	if (card) {
+		if (!(card->flags & ACT2000_FLAGS_RUNNING))
+			return -ENODEV;
+		return (act2000_sendbuf(card, channel, ack, skb));
+	}
+	printk(KERN_ERR
+	       "act2000: if_sendbuf called with invalid driverId!\n");
+	return -ENODEV;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -572,6 +1051,8 @@ static void
 act2000_alloccard(int bus, int port, int irq, char *id)
 {
 	int i;
+<<<<<<< HEAD
+<<<<<<< HEAD
         act2000_card *card;
         if (!(card = kzalloc(sizeof(act2000_card), GFP_KERNEL))) {
                 printk(KERN_WARNING
@@ -580,6 +1061,21 @@ act2000_alloccard(int bus, int port, int irq, char *id)
         }
         spin_lock_init(&card->lock);
         spin_lock_init(&card->mnlock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	act2000_card *card;
+	if (!(card = kzalloc(sizeof(act2000_card), GFP_KERNEL))) {
+		printk(KERN_WARNING
+		       "act2000: (%s) Could not allocate card-struct.\n", id);
+		return;
+	}
+	spin_lock_init(&card->lock);
+	spin_lock_init(&card->mnlock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	skb_queue_head_init(&card->sndq);
 	skb_queue_head_init(&card->rcvq);
 	skb_queue_head_init(&card->ackq);
@@ -588,6 +1084,8 @@ act2000_alloccard(int bus, int port, int irq, char *id)
 	INIT_WORK(&card->poll_tq, act2000_receive);
 	init_timer(&card->ptimer);
 	card->interface.owner = THIS_MODULE;
+<<<<<<< HEAD
+<<<<<<< HEAD
         card->interface.channels = ACT2000_BCH;
         card->interface.maxbufsize = 4000;
         card->interface.command = if_command;
@@ -595,10 +1093,26 @@ act2000_alloccard(int bus, int port, int irq, char *id)
         card->interface.writecmd = if_writecmd;
         card->interface.readstat = if_readstatus;
         card->interface.features =
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	card->interface.channels = ACT2000_BCH;
+	card->interface.maxbufsize = 4000;
+	card->interface.command = if_command;
+	card->interface.writebuf_skb = if_sendbuf;
+	card->interface.writecmd = if_writecmd;
+	card->interface.readstat = if_readstatus;
+	card->interface.features =
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ISDN_FEATURE_L2_X75I |
 		ISDN_FEATURE_L2_HDLC |
 		ISDN_FEATURE_L3_TRANS |
 		ISDN_FEATURE_P_UNKNOWN;
+<<<<<<< HEAD
+<<<<<<< HEAD
         card->interface.hl_hdrlen = 20;
         card->ptype = ISDN_PTYPE_EURO;
         strlcpy(card->interface.id, id, sizeof(card->interface.id));
@@ -614,12 +1128,36 @@ act2000_alloccard(int bus, int port, int irq, char *id)
         card->irq = irq;
         card->next = cards;
         cards = card;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	card->interface.hl_hdrlen = 20;
+	card->ptype = ISDN_PTYPE_EURO;
+	strlcpy(card->interface.id, id, sizeof(card->interface.id));
+	for (i = 0; i < ACT2000_BCH; i++) {
+		card->bch[i].plci = 0x8000;
+		card->bch[i].ncci = 0x8000;
+		card->bch[i].l2prot = ISDN_PROTO_L2_X75I;
+		card->bch[i].l3prot = ISDN_PROTO_L3_TRANS;
+	}
+	card->myid = -1;
+	card->bus = bus;
+	card->port = port;
+	card->irq = irq;
+	card->next = cards;
+	cards = card;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * register card at linklevel
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 act2000_registercard(act2000_card * card)
 {
         switch (card->bus) {
@@ -664,6 +1202,57 @@ unregister_card(act2000_card * card)
 			       card->bus);
 			break;
         }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+act2000_registercard(act2000_card *card)
+{
+	switch (card->bus) {
+	case ACT2000_BUS_ISA:
+		break;
+	case ACT2000_BUS_MCA:
+	case ACT2000_BUS_PCMCIA:
+	default:
+		printk(KERN_WARNING
+		       "act2000: Illegal BUS type %d\n",
+		       card->bus);
+		return -1;
+	}
+	if (!register_isdn(&card->interface)) {
+		printk(KERN_WARNING
+		       "act2000: Unable to register %s\n",
+		       card->interface.id);
+		return -1;
+	}
+	card->myid = card->interface.channels;
+	sprintf(card->regname, "act2000-isdn (%s)", card->interface.id);
+	return 0;
+}
+
+static void
+unregister_card(act2000_card *card)
+{
+	isdn_ctrl cmd;
+
+	cmd.command = ISDN_STAT_UNLOAD;
+	cmd.driver = card->myid;
+	card->interface.statcallb(&cmd);
+	switch (card->bus) {
+	case ACT2000_BUS_ISA:
+		act2000_isa_release(card);
+		break;
+	case ACT2000_BUS_MCA:
+	case ACT2000_BUS_PCMCIA:
+	default:
+		printk(KERN_WARNING
+		       "act2000: Invalid BUS type %d\n",
+		       card->bus);
+		break;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -690,23 +1279,54 @@ act2000_addcard(int bus, int port, int irq, char *id)
 			for (i = 0; i < ARRAY_SIZE(act2000_isa_ports); i++)
 				if (act2000_isa_detect(act2000_isa_ports[i])) {
 					printk(KERN_INFO "act2000: Detected "
+<<<<<<< HEAD
+<<<<<<< HEAD
 						"ISA card at port 0x%x\n",
 						act2000_isa_ports[i]);
 					act2000_alloccard(bus,
 						act2000_isa_ports[i], irq, id);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					       "ISA card at port 0x%x\n",
+					       act2000_isa_ports[i]);
+					act2000_alloccard(bus,
+							  act2000_isa_ports[i], irq, id);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 			break;
 		case ACT2000_BUS_MCA:
 		case ACT2000_BUS_PCMCIA:
 		default:
 			printk(KERN_WARNING
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"act2000: addcard: Invalid BUS type %d\n", bus);
+=======
+			       "act2000: addcard: Invalid BUS type %d\n", bus);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "act2000: addcard: Invalid BUS type %d\n", bus);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (!cards)
 		return 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
         p = cards;
         while (p) {
+=======
+	p = cards;
+	while (p) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p = cards;
+	while (p) {
+>>>>>>> refs/remotes/origin/master
 		initialized = 0;
 		if (!p->interface.statcallb) {
 			/* Not yet registered.
@@ -714,6 +1334,8 @@ act2000_addcard(int bus, int port, int irq, char *id)
 			 */
 			added++;
 			switch (p->bus) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				case ACT2000_BUS_ISA:
 					if (act2000_isa_detect(p->port)) {
 						if (act2000_registercard(p))
@@ -750,10 +1372,55 @@ act2000_addcard(int bus, int port, int irq, char *id)
 					printk(KERN_WARNING
 					       "act2000: addcard: Invalid BUS type %d\n",
 					       p->bus);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			case ACT2000_BUS_ISA:
+				if (act2000_isa_detect(p->port)) {
+					if (act2000_registercard(p))
+						break;
+					if (act2000_isa_config_port(p, p->port)) {
+						printk(KERN_WARNING
+						       "act2000: Could not request port 0x%04x\n",
+						       p->port);
+						unregister_card(p);
+						p->interface.statcallb = NULL;
+						break;
+					}
+					if (act2000_isa_config_irq(p, p->irq)) {
+						printk(KERN_INFO
+						       "act2000: No IRQ available, fallback to polling\n");
+						/* Fall back to polled operation */
+						p->irq = 0;
+					}
+					printk(KERN_INFO
+					       "act2000: ISA"
+					       "-type card at port "
+					       "0x%04x ",
+					       p->port);
+					if (p->irq)
+						printk("irq %d\n", p->irq);
+					else
+						printk("polled\n");
+					initialized = 1;
+				}
+				break;
+			case ACT2000_BUS_MCA:
+			case ACT2000_BUS_PCMCIA:
+			default:
+				printk(KERN_WARNING
+				       "act2000: addcard: Invalid BUS type %d\n",
+				       p->bus);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		} else
 			/* Card already initialized */
 			initialized = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
                 if (initialized) {
 			/* Init OK, next card ... */
                         q = p;
@@ -776,22 +1443,68 @@ act2000_addcard(int bus, int port, int irq, char *id)
                 }
 	}
         return (added - failed);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (initialized) {
+			/* Init OK, next card ... */
+			q = p;
+			p = p->next;
+		} else {
+			/* Init failed, remove card from list, free memory */
+			printk(KERN_WARNING
+			       "act2000: Initialization of %s failed\n",
+			       p->interface.id);
+			if (q) {
+				q->next = p->next;
+				kfree(p);
+				p = q->next;
+			} else {
+				cards = p->next;
+				kfree(p);
+				p = cards;
+			}
+			failed++;
+		}
+	}
+	return (added - failed);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #define DRIVERNAME "IBM Active 2000 ISDN driver"
 
 static int __init act2000_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         printk(KERN_INFO "%s\n", DRIVERNAME);
         if (!cards)
 		act2000_addcard(act_bus, act_port, act_irq, act_id);
         if (!cards)
                 printk(KERN_INFO "act2000: No cards defined yet\n");
         return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	printk(KERN_INFO "%s\n", DRIVERNAME);
+	if (!cards)
+		act2000_addcard(act_bus, act_port, act_irq, act_id);
+	if (!cards)
+		printk(KERN_INFO "act2000: No cards defined yet\n");
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit act2000_exit(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         act2000_card *card = cards;
         act2000_card *last;
         while (card) {
@@ -807,6 +1520,28 @@ static void __exit act2000_exit(void)
                 kfree(last);
         }
         printk(KERN_INFO "%s unloaded\n", DRIVERNAME);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	act2000_card *card = cards;
+	act2000_card *last;
+	while (card) {
+		unregister_card(card);
+		del_timer(&card->ptimer);
+		card = card->next;
+	}
+	card = cards;
+	while (card) {
+		last = card;
+		card = card->next;
+		act2000_clear_msn(last);
+		kfree(last);
+	}
+	printk(KERN_INFO "%s unloaded\n", DRIVERNAME);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(act2000_init);

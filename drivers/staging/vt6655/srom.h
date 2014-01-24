@@ -69,7 +69,10 @@
 //}}
 #define EEP_OFS_OFDMA_PWR_dBm       0xD2
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 //----------need to remove --------------------
 #define EEP_OFS_BBTAB_LEN   0x70        // BB Table Length
 #define EEP_OFS_BBTAB_ADR   0x71        // BB Table Offset
@@ -77,7 +80,10 @@
 
 #define EEP_I2C_DEV_ID      0x50        // EEPROM device address on the I2C bus
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 //
 // Bits in EEP_OFS_ANTENNA
 //
@@ -97,6 +103,7 @@
 //      2048 bits = 256 bytes = 128 words
 //
 typedef struct tagSSromReg {
+<<<<<<< HEAD
     unsigned char abyPAR[6];                  // 0x00 (unsigned short)
 
     unsigned short wSUB_VID;                   // 0x03 (unsigned short)
@@ -125,6 +132,36 @@ typedef struct tagSSromReg {
 
     unsigned char abyReserved0[96];           // 0x10 (unsigned short)
     unsigned char abyCIS[128];                // 0x80 (unsigned short)
+=======
+	unsigned char abyPAR[6];                  // 0x00 (unsigned short)
+
+	unsigned short wSUB_VID;                   // 0x03 (unsigned short)
+	unsigned short wSUB_SID;
+
+	unsigned char byBCFG0;                    // 0x05 (unsigned short)
+	unsigned char byBCFG1;
+
+	unsigned char byFCR0;                     // 0x06 (unsigned short)
+	unsigned char byFCR1;
+	unsigned char byPMC0;                     // 0x07 (unsigned short)
+	unsigned char byPMC1;
+	unsigned char byMAXLAT;                   // 0x08 (unsigned short)
+	unsigned char byMINGNT;
+	unsigned char byCFG0;                     // 0x09 (unsigned short)
+	unsigned char byCFG1;
+	unsigned short wCISPTR;                    // 0x0A (unsigned short)
+	unsigned short wRsv0;                      // 0x0B (unsigned short)
+	unsigned short wRsv1;                      // 0x0C (unsigned short)
+	unsigned char byBBPAIR;                   // 0x0D (unsigned short)
+	unsigned char byRFTYPE;
+	unsigned char byMinChannel;               // 0x0E (unsigned short)
+	unsigned char byMaxChannel;
+	unsigned char bySignature;                // 0x0F (unsigned short)
+	unsigned char byCheckSum;
+
+	unsigned char abyReserved0[96];           // 0x10 (unsigned short)
+	unsigned char abyCIS[128];                // 0x80 (unsigned short)
+>>>>>>> refs/remotes/origin/master
 } SSromReg, *PSSromReg;
 
 /*---------------------  Export Macros ------------------------------*/
@@ -152,6 +189,10 @@ void SROMvWriteEtherAddress(unsigned long dwIoBase, unsigned char *pbyEtherAddre
 
 void SROMvReadSubSysVenId(unsigned long dwIoBase, unsigned long *pdwSubSysVenId);
 
+<<<<<<< HEAD
 bool SROMbAutoLoad (unsigned long dwIoBase);
+=======
+bool SROMbAutoLoad(unsigned long dwIoBase);
+>>>>>>> refs/remotes/origin/master
 
 #endif // __EEPROM_H__

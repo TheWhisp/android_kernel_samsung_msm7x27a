@@ -22,7 +22,10 @@
 #include <linux/module.h>
 #include <linux/bug.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <asm/traps.h>
 #include <asm/page.h>

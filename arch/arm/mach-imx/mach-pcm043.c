@@ -24,7 +24,11 @@
 #include <linux/interrupt.h>
 #include <linux/delay.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/i2c/at24.h>
+=======
+#include <linux/platform_data/at24.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb/otg.h>
 #include <linux/usb/ulpi.h>
 
@@ -33,13 +37,24 @@
 #include <asm/mach/time.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/common.h>
 #include <mach/iomux-mx35.h>
 #include <mach/ulpi.h>
+<<<<<<< HEAD
 #include <mach/audmux.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "devices-imx35.h"
+=======
+#include "common.h"
+#include "devices-imx35.h"
+#include "hardware.h"
+#include "iomux-mx35.h"
+#include "ulpi.h"
+>>>>>>> refs/remotes/origin/master
 
 static const struct fb_videomode fb_modedb[] = {
 	{
@@ -77,10 +92,13 @@ static const struct fb_videomode fb_modedb[] = {
 	},
 };
 
+<<<<<<< HEAD
 static const struct ipu_platform_data mx3_ipu_data __initconst = {
 	.irq_base = MXC_IPU_IRQ_START,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mx3fb_platform_data mx3fb_pdata __initdata = {
 	.name		= "Sharp-LQ035Q7",
 	.mode		= fb_modedb,
@@ -331,11 +349,16 @@ static const struct fsl_usb2_platform_data otg_device_pdata __initconst = {
 	.phy_mode       = FSL_USB2_PHY_UTMI,
 };
 
+<<<<<<< HEAD
 static int otg_mode_host;
+=======
+static bool otg_mode_host __initdata;
+>>>>>>> refs/remotes/origin/master
 
 static int __init pcm043_otg_mode(char *options)
 {
 	if (!strcmp(options, "host"))
+<<<<<<< HEAD
 		otg_mode_host = 1;
 	else if (!strcmp(options, "device"))
 		otg_mode_host = 0;
@@ -343,12 +366,31 @@ static int __init pcm043_otg_mode(char *options)
 		pr_info("otg_mode neither \"host\" nor \"device\". "
 			"Defaulting to device\n");
 	return 0;
+=======
+		otg_mode_host = true;
+	else if (!strcmp(options, "device"))
+		otg_mode_host = false;
+	else
+		pr_info("otg_mode neither \"host\" nor \"device\". "
+			"Defaulting to device\n");
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 __setup("otg_mode=", pcm043_otg_mode);
 
 static struct esdhc_platform_data sd1_pdata = {
 	.wp_gpio = SD1_GPIO_WP,
 	.cd_gpio = SD1_GPIO_CD,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.wp_type = ESDHC_WP_GPIO,
+	.cd_type = ESDHC_CD_GPIO,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.wp_type = ESDHC_WP_GPIO,
+	.cd_type = ESDHC_CD_GPIO,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -356,6 +398,8 @@ static struct esdhc_platform_data sd1_pdata = {
  */
 static void __init pcm043_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mxc_iomux_v3_setup_multiple_pads(pcm043_pads, ARRAY_SIZE(pcm043_pads));
 
 	mxc_audmux_v2_configure_port(3,
@@ -369,10 +413,24 @@ static void __init pcm043_init(void)
 			MXC_AUDMUX_V2_PTCR_TCSEL(3) |
 			MXC_AUDMUX_V2_PTCR_TCLKDIR, /* clock is output */
 			MXC_AUDMUX_V2_PDCR_RXDSEL(3));
+=======
+	imx35_soc_init();
+
+	mxc_iomux_v3_setup_multiple_pads(pcm043_pads, ARRAY_SIZE(pcm043_pads));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	imx35_add_fec(NULL);
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 	imx35_add_imx2_wdt(NULL);
+=======
+	imx35_soc_init();
+
+	mxc_iomux_v3_setup_multiple_pads(pcm043_pads, ARRAY_SIZE(pcm043_pads));
+
+	imx35_add_fec(NULL);
+	platform_add_devices(devices, ARRAY_SIZE(devices));
+	imx35_add_imx2_wdt();
+>>>>>>> refs/remotes/origin/master
 
 	imx35_add_imx_uart0(&uart_pdata);
 	imx35_add_mxc_nand(&pcm037_nand_board_info);
@@ -385,7 +443,11 @@ static void __init pcm043_init(void)
 
 	imx35_add_imx_i2c0(&pcm043_i2c0_data);
 
+<<<<<<< HEAD
 	imx35_add_ipu_core(&mx3_ipu_data);
+=======
+	imx35_add_ipu_core();
+>>>>>>> refs/remotes/origin/master
 	imx35_add_mx3_sdc_fb(&mx3fb_pdata);
 
 	if (otg_mode_host) {
@@ -399,7 +461,11 @@ static void __init pcm043_init(void)
 	if (!otg_mode_host)
 		imx35_add_fsl_usb2_udc(&otg_device_pdata);
 
+<<<<<<< HEAD
 	imx35_add_flexcan1(NULL);
+=======
+	imx35_add_flexcan1();
+>>>>>>> refs/remotes/origin/master
 	imx35_add_sdhci_esdhc_imx(0, &sd1_pdata);
 }
 
@@ -408,16 +474,38 @@ static void __init pcm043_timer_init(void)
 	mx35_clocks_init();
 }
 
+<<<<<<< HEAD
 struct sys_timer pcm043_timer = {
 	.init	= pcm043_timer_init,
 };
 
 MACHINE_START(PCM043, "Phytec Phycore pcm043")
 	/* Maintainer: Pengutronix */
+<<<<<<< HEAD
 	.boot_params = MX3x_PHYS_OFFSET + 0x100,
 	.map_io = mx35_map_io,
 	.init_early = imx35_init_early,
 	.init_irq = mx35_init_irq,
 	.timer = &pcm043_timer,
 	.init_machine = pcm043_init,
+=======
+=======
+MACHINE_START(PCM043, "Phytec Phycore pcm043")
+	/* Maintainer: Pengutronix */
+>>>>>>> refs/remotes/origin/master
+	.atag_offset = 0x100,
+	.map_io = mx35_map_io,
+	.init_early = imx35_init_early,
+	.init_irq = mx35_init_irq,
+	.handle_irq = imx35_handle_irq,
+<<<<<<< HEAD
+	.timer = &pcm043_timer,
+	.init_machine = pcm043_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time = pcm043_timer_init,
+	.init_machine = pcm043_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

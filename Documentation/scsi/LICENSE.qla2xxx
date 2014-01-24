@@ -1,12 +1,27 @@
+<<<<<<< HEAD
 Copyright (c) 2003-2011 QLogic Corporation
+<<<<<<< HEAD
 QLogic Linux/ESX Fibre Channel HBA Driver
 
 This program includes a device driver for Linux 2.6/ESX that may be
 distributed with QLogic hardware specific firmware binary file.
+=======
+QLogic Linux FC-FCoE Driver
+
+This program includes a device driver for Linux 3.x.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+Copyright (c) 2003-2013 QLogic Corporation
+QLogic Linux FC-FCoE Driver
+
+This program includes a device driver for Linux 3.x.
+>>>>>>> refs/remotes/origin/master
 You may modify and redistribute the device driver code under the
 GNU General Public License (a copy of which is attached hereto as
 Exhibit A) published by the Free Software Foundation (version 2).
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 You may redistribute the hardware specific firmware binary file
 under the following terms:
 
@@ -43,6 +58,10 @@ OTHERWISE IN ANY INTELLECTUAL PROPERTY RIGHTS (PATENT, COPYRIGHT,
 TRADE SECRET, MASK WORK, OR OTHER PROPRIETARY RIGHT) EMBODIED IN
 ANY OTHER QLOGIC HARDWARE OR SOFTWARE EITHER SOLELY OR IN
 COMBINATION WITH THIS PROGRAM.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 EXHIBIT A

@@ -36,17 +36,39 @@
  * Note that not all PXA2xx chips implement all those addresses, and the
  * kernel only maps the minimum needed range of this mapping.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define io_p2v(x) (0xf2000000 + ((x) & 0x01ffffff) + (((x) & 0x1c000000) >> 1))
 #define io_v2p(x) (0x3c000000 + ((x) & 0x01ffffff) + (((x) & 0x0e000000) << 1))
 
 #ifndef __ASSEMBLY__
 
 # define __REG(x)	(*((volatile u32 *)io_p2v(x)))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define io_v2p(x) (0x3c000000 + ((x) & 0x01ffffff) + (((x) & 0x0e000000) << 1))
+#define io_p2v(x) IOMEM(0xf2000000 + ((x) & 0x01ffffff) + (((x) & 0x1c000000) >> 1))
+
+#ifndef __ASSEMBLY__
+# define __REG(x)	(*((volatile u32 __iomem *)io_p2v(x)))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* With indexed regs we don't want to feed the index through io_p2v()
    especially if it is a variable, otherwise horrible code will result. */
 # define __REG2(x,y)	\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	(*(volatile u32 *)((u32)&__REG(x) + (y)))
+=======
+	(*(volatile u32 __iomem*)((u32)&__REG(x) + (y)))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(*(volatile u32 __iomem*)((u32)&__REG(x) + (y)))
+>>>>>>> refs/remotes/origin/master
 
 # define __PREG(x)	(io_v2p((u32)&(x)))
 
@@ -195,6 +217,7 @@
 #define __cpu_is_pxa935(id)	(0)
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_PXA955
 #define __cpu_is_pxa955(id)				\
 	({						\
@@ -206,6 +229,8 @@
 #define __cpu_is_pxa955(id)	(0)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define cpu_is_pxa210()					\
 	({						\
 		__cpu_is_pxa210(read_cpuid_id());	\
@@ -256,10 +281,13 @@
 		__cpu_is_pxa935(read_cpuid_id());	\
 	 })
 
+<<<<<<< HEAD
 #define cpu_is_pxa955()					\
 	({						\
 		__cpu_is_pxa955(read_cpuid_id());	\
 	})
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -298,6 +326,7 @@
 #define __cpu_is_pxa93x(id)	(0)
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_PXA95x
 #define __cpu_is_pxa95x(id)				\
 	({						\
@@ -307,6 +336,8 @@
 #define __cpu_is_pxa95x(id)	(0)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define cpu_is_pxa2xx()					\
 	({						\
 		__cpu_is_pxa2xx(read_cpuid_id());	\
@@ -322,10 +353,13 @@
 		__cpu_is_pxa93x(read_cpuid_id());	\
 	 })
 
+<<<<<<< HEAD
 #define cpu_is_pxa95x()					\
 	({						\
 		__cpu_is_pxa95x(read_cpuid_id());	\
 	})
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * return current memory and LCD clock frequency in units of 10kHz
@@ -336,6 +370,8 @@ extern unsigned int get_memclk_frequency_10khz(void);
 extern unsigned long get_clock_tick_rate(void);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_ARMCORE) && defined(CONFIG_PCI)
 #define PCIBIOS_MIN_IO		0
 #define PCIBIOS_MIN_MEM		0
@@ -343,4 +379,8 @@ extern unsigned long get_clock_tick_rate(void);
 #define ARCH_HAS_DMA_SET_COHERENT_MASK
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif  /* _ASM_ARCH_HARDWARE_H */

@@ -5,7 +5,10 @@
  *  Copyright (c) 2000-2005 Vojtech Pavlik <vojtech@suse.cz>
  *  Copyright (c) 2005 Michael Haboustak <mike-@cinci.rr.com> for Concept2, Inc
  *  Copyright (c) 2006-2007 Jiri Kosina
+<<<<<<< HEAD
  *  Copyright (c) 2007 Paul Walmsley
+=======
+>>>>>>> refs/remotes/origin/master
  *  Copyright (c) 2008 Jiri Slaby
  */
 
@@ -91,11 +94,18 @@ static int a4_probe(struct hid_device *hdev, const struct hid_device_id *id)
 	struct a4tech_sc *a4;
 	int ret;
 
+<<<<<<< HEAD
 	a4 = kzalloc(sizeof(*a4), GFP_KERNEL);
 	if (a4 == NULL) {
 		hid_err(hdev, "can't alloc device descriptor\n");
 		ret = -ENOMEM;
 		goto err_free;
+=======
+	a4 = devm_kzalloc(&hdev->dev, sizeof(*a4), GFP_KERNEL);
+	if (a4 == NULL) {
+		hid_err(hdev, "can't alloc device descriptor\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	a4->quirks = id->driver_data;
@@ -105,12 +115,17 @@ static int a4_probe(struct hid_device *hdev, const struct hid_device_id *id)
 	ret = hid_parse(hdev);
 	if (ret) {
 		hid_err(hdev, "parse failed\n");
+<<<<<<< HEAD
 		goto err_free;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
 	if (ret) {
 		hid_err(hdev, "hw start failed\n");
+<<<<<<< HEAD
 		goto err_free;
 	}
 
@@ -126,6 +141,12 @@ static void a4_remove(struct hid_device *hdev)
 
 	hid_hw_stop(hdev);
 	kfree(a4);
+=======
+		return ret;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct hid_device_id a4_devices[] = {
@@ -145,6 +166,7 @@ static struct hid_driver a4_driver = {
 	.input_mapped = a4_input_mapped,
 	.event = a4_event,
 	.probe = a4_probe,
+<<<<<<< HEAD
 	.remove = a4_remove,
 };
 
@@ -160,4 +182,9 @@ static void __exit a4_exit(void)
 
 module_init(a4_init);
 module_exit(a4_exit);
+=======
+};
+module_hid_driver(a4_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

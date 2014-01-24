@@ -59,6 +59,26 @@ enum iscsi_uevent_e {
 	ISCSI_UEVENT_TRANSPORT_EP_CONNECT_THROUGH_HOST	= UEVENT_BASE + 19,
 
 	ISCSI_UEVENT_PATH_UPDATE	= UEVENT_BASE + 20,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ISCSI_UEVENT_SET_IFACE_PARAMS	= UEVENT_BASE + 21,
+	ISCSI_UEVENT_PING		= UEVENT_BASE + 22,
+	ISCSI_UEVENT_GET_CHAP		= UEVENT_BASE + 23,
+	ISCSI_UEVENT_DELETE_CHAP	= UEVENT_BASE + 24,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ISCSI_UEVENT_SET_FLASHNODE_PARAMS	= UEVENT_BASE + 25,
+	ISCSI_UEVENT_NEW_FLASHNODE	= UEVENT_BASE + 26,
+	ISCSI_UEVENT_DEL_FLASHNODE	= UEVENT_BASE + 27,
+	ISCSI_UEVENT_LOGIN_FLASHNODE	= UEVENT_BASE + 28,
+	ISCSI_UEVENT_LOGOUT_FLASHNODE	= UEVENT_BASE + 29,
+	ISCSI_UEVENT_LOGOUT_FLASHNODE_SID	= UEVENT_BASE + 30,
+	ISCSI_UEVENT_SET_CHAP		= UEVENT_BASE + 31,
+>>>>>>> refs/remotes/origin/master
 
 	/* up events */
 	ISCSI_KEVENT_RECV_PDU		= KEVENT_BASE + 1,
@@ -70,6 +90,18 @@ enum iscsi_uevent_e {
 
 	ISCSI_KEVENT_PATH_REQ		= KEVENT_BASE + 7,
 	ISCSI_KEVENT_IF_DOWN		= KEVENT_BASE + 8,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ISCSI_KEVENT_CONN_LOGIN_STATE   = KEVENT_BASE + 9,
+	ISCSI_KEVENT_HOST_EVENT		= KEVENT_BASE + 10,
+	ISCSI_KEVENT_PING_COMP		= KEVENT_BASE + 11,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ISCSI_KEVENT_CONN_LOGIN_STATE   = KEVENT_BASE + 9,
+	ISCSI_KEVENT_HOST_EVENT		= KEVENT_BASE + 10,
+	ISCSI_KEVENT_PING_COMP		= KEVENT_BASE + 11,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum iscsi_tgt_dscvr {
@@ -78,6 +110,22 @@ enum iscsi_tgt_dscvr {
 	ISCSI_TGT_DSCVR_SLP		= 3,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum iscsi_host_event_code {
+	ISCSI_EVENT_LINKUP		= 1,
+	ISCSI_EVENT_LINKDOWN,
+	/* must always be last */
+	ISCSI_EVENT_MAX,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct iscsi_uevent {
 	uint32_t type; /* k/u events type */
 	uint32_t iferror; /* carries interface or resource errors */
@@ -172,6 +220,64 @@ struct iscsi_uevent {
 		struct msg_set_path {
 			uint32_t	host_no;
 		} set_path;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		struct msg_set_iface_params {
+			uint32_t	host_no;
+			uint32_t	count;
+		} set_iface_params;
+		struct msg_iscsi_ping {
+			uint32_t        host_no;
+			uint32_t        iface_num;
+			uint32_t        iface_type;
+			uint32_t        payload_size;
+			uint32_t	pid;	/* unique ping id associated
+						   with each ping request */
+		} iscsi_ping;
+		struct msg_get_chap {
+			uint32_t	host_no;
+			uint32_t	num_entries; /* number of CHAP entries
+						      * on request, number of
+						      * valid CHAP entries on
+						      * response */
+			uint16_t	chap_tbl_idx;
+		} get_chap;
+		struct msg_delete_chap {
+		       uint32_t        host_no;
+		       uint16_t        chap_tbl_idx;
+		} delete_chap;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct msg_set_flashnode_param {
+			uint32_t	host_no;
+			uint32_t	flashnode_idx;
+			uint32_t	count;
+		} set_flashnode;
+		struct msg_new_flashnode {
+			uint32_t	host_no;
+			uint32_t	len;
+		} new_flashnode;
+		struct msg_del_flashnode {
+			uint32_t	host_no;
+			uint32_t	flashnode_idx;
+		} del_flashnode;
+		struct msg_login_flashnode {
+			uint32_t	host_no;
+			uint32_t	flashnode_idx;
+		} login_flashnode;
+		struct msg_logout_flashnode {
+			uint32_t	host_no;
+			uint32_t	flashnode_idx;
+		} logout_flashnode;
+		struct msg_logout_flashnode_sid {
+			uint32_t	host_no;
+			uint32_t	sid;
+		} logout_flashnode_sid;
+>>>>>>> refs/remotes/origin/master
 	} u;
 	union {
 		/* messages k -> u */
@@ -193,6 +299,20 @@ struct iscsi_uevent {
 			uint32_t	cid;
 			uint64_t	recv_handle;
 		} recv_req;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		struct msg_conn_login {
+			uint32_t        sid;
+			uint32_t        cid;
+			uint32_t        state; /* enum iscsi_conn_state */
+		} conn_login;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct msg_conn_error {
 			uint32_t	sid;
 			uint32_t	cid;
@@ -211,9 +331,69 @@ struct iscsi_uevent {
 		struct msg_notify_if_down {
 			uint32_t	host_no;
 		} notify_if_down;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} r;
 } __attribute__ ((aligned (sizeof(uint64_t))));
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		struct msg_host_event {
+			uint32_t	host_no;
+			uint32_t	data_size;
+			enum iscsi_host_event_code code;
+		} host_event;
+		struct msg_ping_comp {
+			uint32_t        host_no;
+			uint32_t        status; /* enum
+						 * iscsi_ping_status_code */
+			uint32_t	pid;	/* unique ping id associated
+						   with each ping request */
+			uint32_t        data_size;
+		} ping_comp;
+<<<<<<< HEAD
+=======
+		struct msg_new_flashnode_ret {
+			uint32_t	flashnode_idx;
+		} new_flashnode_ret;
+>>>>>>> refs/remotes/origin/master
+	} r;
+} __attribute__ ((aligned (sizeof(uint64_t))));
+
+enum iscsi_param_type {
+	ISCSI_PARAM,		/* iscsi_param (session, conn, target, LU) */
+	ISCSI_HOST_PARAM,	/* iscsi_host_param */
+	ISCSI_NET_PARAM,	/* iscsi_net_param */
+<<<<<<< HEAD
+};
+
+=======
+	ISCSI_FLASHNODE_PARAM,	/* iscsi_flashnode_param */
+	ISCSI_CHAP_PARAM,	/* iscsi_chap_param */
+};
+
+/* structure for minimalist usecase */
+struct iscsi_param_info {
+	uint32_t len;		/* Actual length of the param value */
+	uint16_t param;		/* iscsi param */
+	uint8_t value[0];	/* length sized value follows */
+} __packed;
+
+>>>>>>> refs/remotes/origin/master
+struct iscsi_iface_param_info {
+	uint32_t iface_num;	/* iface number, 0 - n */
+	uint32_t len;		/* Actual length of the param */
+	uint16_t param;		/* iscsi param value */
+	uint8_t iface_type;	/* IPv4 or IPv6 */
+	uint8_t param_type;	/* iscsi_param_type */
+	uint8_t value[0];	/* length sized value follows */
+} __packed;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * To keep the struct iscsi_uevent size the same for userspace code
  * compatibility, the main structure for ISCSI_UEVENT_PATH_UPDATE and
@@ -237,6 +417,80 @@ struct iscsi_path {
 	uint16_t	pmtu;
 } __attribute__ ((aligned (sizeof(uint64_t))));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* iscsi iface enabled/disabled setting */
+#define ISCSI_IFACE_DISABLE	0x01
+#define ISCSI_IFACE_ENABLE	0x02
+
+/* ipv4 bootproto */
+#define ISCSI_BOOTPROTO_STATIC		0x01
+#define ISCSI_BOOTPROTO_DHCP		0x02
+
+/* ipv6 addr autoconfig type */
+#define ISCSI_IPV6_AUTOCFG_DISABLE		0x01
+#define ISCSI_IPV6_AUTOCFG_ND_ENABLE		0x02
+#define ISCSI_IPV6_AUTOCFG_DHCPV6_ENABLE	0x03
+
+/* ipv6 link local addr type */
+#define ISCSI_IPV6_LINKLOCAL_AUTOCFG_ENABLE	0x01
+#define ISCSI_IPV6_LINKLOCAL_AUTOCFG_DISABLE	0x02
+
+/* ipv6 router addr type */
+#define ISCSI_IPV6_ROUTER_AUTOCFG_ENABLE	0x01
+#define ISCSI_IPV6_ROUTER_AUTOCFG_DISABLE	0x02
+
+#define ISCSI_IFACE_TYPE_IPV4		0x01
+#define ISCSI_IFACE_TYPE_IPV6		0x02
+
+#define ISCSI_MAX_VLAN_ID		4095
+#define ISCSI_MAX_VLAN_PRIORITY		7
+
+/* iscsi vlan enable/disabled setting */
+#define ISCSI_VLAN_DISABLE	0x01
+#define ISCSI_VLAN_ENABLE	0x02
+
+/* iSCSI network params */
+enum iscsi_net_param {
+	ISCSI_NET_PARAM_IPV4_ADDR		= 1,
+	ISCSI_NET_PARAM_IPV4_SUBNET		= 2,
+	ISCSI_NET_PARAM_IPV4_GW			= 3,
+	ISCSI_NET_PARAM_IPV4_BOOTPROTO		= 4,
+	ISCSI_NET_PARAM_MAC			= 5,
+	ISCSI_NET_PARAM_IPV6_LINKLOCAL		= 6,
+	ISCSI_NET_PARAM_IPV6_ADDR		= 7,
+	ISCSI_NET_PARAM_IPV6_ROUTER		= 8,
+	ISCSI_NET_PARAM_IPV6_ADDR_AUTOCFG	= 9,
+	ISCSI_NET_PARAM_IPV6_LINKLOCAL_AUTOCFG	= 10,
+	ISCSI_NET_PARAM_IPV6_ROUTER_AUTOCFG	= 11,
+	ISCSI_NET_PARAM_IFACE_ENABLE		= 12,
+	ISCSI_NET_PARAM_VLAN_ID			= 13,
+	ISCSI_NET_PARAM_VLAN_PRIORITY		= 14,
+	ISCSI_NET_PARAM_VLAN_ENABLED		= 15,
+	ISCSI_NET_PARAM_VLAN_TAG		= 16,
+	ISCSI_NET_PARAM_IFACE_TYPE		= 17,
+	ISCSI_NET_PARAM_IFACE_NAME		= 18,
+	ISCSI_NET_PARAM_MTU			= 19,
+	ISCSI_NET_PARAM_PORT			= 20,
+};
+
+enum iscsi_conn_state {
+	ISCSI_CONN_STATE_FREE,
+	ISCSI_CONN_STATE_XPT_WAIT,
+	ISCSI_CONN_STATE_IN_LOGIN,
+	ISCSI_CONN_STATE_LOGGED_IN,
+	ISCSI_CONN_STATE_IN_LOGOUT,
+	ISCSI_CONN_STATE_LOGOUT_REQUESTED,
+	ISCSI_CONN_STATE_CLEANUP_WAIT,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Common error codes
  */
@@ -315,10 +569,61 @@ enum iscsi_param {
 
 	ISCSI_PARAM_TGT_RESET_TMO,
 	ISCSI_PARAM_TARGET_ALIAS,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	ISCSI_PARAM_CHAP_IN_IDX,
+	ISCSI_PARAM_CHAP_OUT_IDX,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	ISCSI_PARAM_CHAP_IN_IDX,
+	ISCSI_PARAM_CHAP_OUT_IDX,
+
+	ISCSI_PARAM_BOOT_ROOT,
+	ISCSI_PARAM_BOOT_NIC,
+	ISCSI_PARAM_BOOT_TARGET,
+
+	ISCSI_PARAM_AUTO_SND_TGT_DISABLE,
+	ISCSI_PARAM_DISCOVERY_SESS,
+	ISCSI_PARAM_PORTAL_TYPE,
+	ISCSI_PARAM_CHAP_AUTH_EN,
+	ISCSI_PARAM_DISCOVERY_LOGOUT_EN,
+	ISCSI_PARAM_BIDI_CHAP_EN,
+	ISCSI_PARAM_DISCOVERY_AUTH_OPTIONAL,
+
+	ISCSI_PARAM_DEF_TIME2WAIT,
+	ISCSI_PARAM_DEF_TIME2RETAIN,
+	ISCSI_PARAM_MAX_SEGMENT_SIZE,
+	ISCSI_PARAM_STATSN,
+	ISCSI_PARAM_KEEPALIVE_TMO,
+	ISCSI_PARAM_LOCAL_PORT,
+	ISCSI_PARAM_TSID,
+	ISCSI_PARAM_DEF_TASKMGMT_TMO,
+
+	ISCSI_PARAM_TCP_TIMESTAMP_STAT,
+	ISCSI_PARAM_TCP_WSF_DISABLE,
+	ISCSI_PARAM_TCP_NAGLE_DISABLE,
+	ISCSI_PARAM_TCP_TIMER_SCALE,
+	ISCSI_PARAM_TCP_TIMESTAMP_EN,
+	ISCSI_PARAM_TCP_XMIT_WSF,
+	ISCSI_PARAM_TCP_RECV_WSF,
+	ISCSI_PARAM_IP_FRAGMENT_DISABLE,
+	ISCSI_PARAM_IPV4_TOS,
+	ISCSI_PARAM_IPV6_TC,
+	ISCSI_PARAM_IPV6_FLOW_LABEL,
+	ISCSI_PARAM_IS_FW_ASSIGNED_IPV6,
+
+	ISCSI_PARAM_DISCOVERY_PARENT_IDX,
+	ISCSI_PARAM_DISCOVERY_PARENT_TYPE,
+>>>>>>> refs/remotes/origin/master
 	/* must always be last */
 	ISCSI_PARAM_MAX,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define ISCSI_MAX_RECV_DLENGTH		(1ULL << ISCSI_PARAM_MAX_RECV_DLENGTH)
 #define ISCSI_MAX_XMIT_DLENGTH		(1ULL << ISCSI_PARAM_MAX_XMIT_DLENGTH)
 #define ISCSI_HDRDGST_EN		(1ULL << ISCSI_PARAM_HDRDGST_EN)
@@ -357,12 +662,18 @@ enum iscsi_param {
 #define ISCSI_TGT_RESET_TMO		(1ULL << ISCSI_PARAM_TGT_RESET_TMO)
 #define ISCSI_TARGET_ALIAS		(1ULL << ISCSI_PARAM_TARGET_ALIAS)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* iSCSI HBA params */
 enum iscsi_host_param {
 	ISCSI_HOST_PARAM_HWADDRESS,
 	ISCSI_HOST_PARAM_INITIATOR_NAME,
 	ISCSI_HOST_PARAM_NETDEV_NAME,
 	ISCSI_HOST_PARAM_IPADDRESS,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ISCSI_HOST_PARAM_MAX,
 };
 
@@ -370,6 +681,131 @@ enum iscsi_host_param {
 #define ISCSI_HOST_INITIATOR_NAME	(1ULL << ISCSI_HOST_PARAM_INITIATOR_NAME)
 #define ISCSI_HOST_NETDEV_NAME		(1ULL << ISCSI_HOST_PARAM_NETDEV_NAME)
 #define ISCSI_HOST_IPADDRESS		(1ULL << ISCSI_HOST_PARAM_IPADDRESS)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ISCSI_HOST_PARAM_PORT_STATE,
+	ISCSI_HOST_PARAM_PORT_SPEED,
+	ISCSI_HOST_PARAM_MAX,
+};
+
+<<<<<<< HEAD
+=======
+/* portal type */
+#define PORTAL_TYPE_IPV4	"ipv4"
+#define PORTAL_TYPE_IPV6	"ipv6"
+
+/* iSCSI Flash Target params */
+enum iscsi_flashnode_param {
+	ISCSI_FLASHNODE_IS_FW_ASSIGNED_IPV6,
+	ISCSI_FLASHNODE_PORTAL_TYPE,
+	ISCSI_FLASHNODE_AUTO_SND_TGT_DISABLE,
+	ISCSI_FLASHNODE_DISCOVERY_SESS,
+	ISCSI_FLASHNODE_ENTRY_EN,
+	ISCSI_FLASHNODE_HDR_DGST_EN,
+	ISCSI_FLASHNODE_DATA_DGST_EN,
+	ISCSI_FLASHNODE_IMM_DATA_EN,
+	ISCSI_FLASHNODE_INITIAL_R2T_EN,
+	ISCSI_FLASHNODE_DATASEQ_INORDER,
+	ISCSI_FLASHNODE_PDU_INORDER,
+	ISCSI_FLASHNODE_CHAP_AUTH_EN,
+	ISCSI_FLASHNODE_SNACK_REQ_EN,
+	ISCSI_FLASHNODE_DISCOVERY_LOGOUT_EN,
+	ISCSI_FLASHNODE_BIDI_CHAP_EN,
+	/* make authentication for discovery sessions optional */
+	ISCSI_FLASHNODE_DISCOVERY_AUTH_OPTIONAL,
+	ISCSI_FLASHNODE_ERL,
+	ISCSI_FLASHNODE_TCP_TIMESTAMP_STAT,
+	ISCSI_FLASHNODE_TCP_NAGLE_DISABLE,
+	ISCSI_FLASHNODE_TCP_WSF_DISABLE,
+	ISCSI_FLASHNODE_TCP_TIMER_SCALE,
+	ISCSI_FLASHNODE_TCP_TIMESTAMP_EN,
+	ISCSI_FLASHNODE_IP_FRAG_DISABLE,
+	ISCSI_FLASHNODE_MAX_RECV_DLENGTH,
+	ISCSI_FLASHNODE_MAX_XMIT_DLENGTH,
+	ISCSI_FLASHNODE_FIRST_BURST,
+	ISCSI_FLASHNODE_DEF_TIME2WAIT,
+	ISCSI_FLASHNODE_DEF_TIME2RETAIN,
+	ISCSI_FLASHNODE_MAX_R2T,
+	ISCSI_FLASHNODE_KEEPALIVE_TMO,
+	ISCSI_FLASHNODE_ISID,
+	ISCSI_FLASHNODE_TSID,
+	ISCSI_FLASHNODE_PORT,
+	ISCSI_FLASHNODE_MAX_BURST,
+	ISCSI_FLASHNODE_DEF_TASKMGMT_TMO,
+	ISCSI_FLASHNODE_IPADDR,
+	ISCSI_FLASHNODE_ALIAS,
+	ISCSI_FLASHNODE_REDIRECT_IPADDR,
+	ISCSI_FLASHNODE_MAX_SEGMENT_SIZE,
+	ISCSI_FLASHNODE_LOCAL_PORT,
+	ISCSI_FLASHNODE_IPV4_TOS,
+	ISCSI_FLASHNODE_IPV6_TC,
+	ISCSI_FLASHNODE_IPV6_FLOW_LABEL,
+	ISCSI_FLASHNODE_NAME,
+	ISCSI_FLASHNODE_TPGT,
+	ISCSI_FLASHNODE_LINK_LOCAL_IPV6,
+	ISCSI_FLASHNODE_DISCOVERY_PARENT_IDX,
+	ISCSI_FLASHNODE_DISCOVERY_PARENT_TYPE,
+	ISCSI_FLASHNODE_TCP_XMIT_WSF,
+	ISCSI_FLASHNODE_TCP_RECV_WSF,
+	ISCSI_FLASHNODE_CHAP_IN_IDX,
+	ISCSI_FLASHNODE_CHAP_OUT_IDX,
+	ISCSI_FLASHNODE_USERNAME,
+	ISCSI_FLASHNODE_USERNAME_IN,
+	ISCSI_FLASHNODE_PASSWORD,
+	ISCSI_FLASHNODE_PASSWORD_IN,
+	ISCSI_FLASHNODE_STATSN,
+	ISCSI_FLASHNODE_EXP_STATSN,
+	ISCSI_FLASHNODE_IS_BOOT_TGT,
+
+	ISCSI_FLASHNODE_MAX,
+};
+
+struct iscsi_flashnode_param_info {
+	uint32_t len;		/* Actual length of the param */
+	uint16_t param;		/* iscsi param value */
+	uint8_t value[0];	/* length sized value follows */
+} __packed;
+
+enum iscsi_discovery_parent_type {
+	ISCSI_DISC_PARENT_UNKNOWN	= 0x1,
+	ISCSI_DISC_PARENT_SENDTGT	= 0x2,
+	ISCSI_DISC_PARENT_ISNS		= 0x3,
+};
+
+>>>>>>> refs/remotes/origin/master
+/* iSCSI port Speed */
+enum iscsi_port_speed {
+	ISCSI_PORT_SPEED_UNKNOWN	= 0x1,
+	ISCSI_PORT_SPEED_10MBPS		= 0x2,
+	ISCSI_PORT_SPEED_100MBPS	= 0x4,
+	ISCSI_PORT_SPEED_1GBPS		= 0x8,
+	ISCSI_PORT_SPEED_10GBPS		= 0x10,
+};
+
+/* iSCSI port state */
+enum iscsi_port_state {
+	ISCSI_PORT_STATE_DOWN		= 0x1,
+	ISCSI_PORT_STATE_UP		= 0x2,
+};
+
+/* iSCSI PING status/error code */
+enum iscsi_ping_status_code {
+	ISCSI_PING_SUCCESS			= 0,
+	ISCSI_PING_FW_DISABLED			= 0x1,
+	ISCSI_PING_IPADDR_INVALID		= 0x2,
+	ISCSI_PING_LINKLOCAL_IPV6_ADDR_INVALID	= 0x3,
+	ISCSI_PING_TIMEOUT			= 0x4,
+	ISCSI_PING_INVALID_DEST_ADDR		= 0x5,
+	ISCSI_PING_OVERSIZE_PACKET		= 0x6,
+	ISCSI_PING_ICMP_ERROR			= 0x7,
+	ISCSI_PING_MAX_REQ_EXCEEDED		= 0x8,
+	ISCSI_PING_NO_ARP_RECEIVED		= 0x9,
+};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define iscsi_ptr(_handle) ((void*)(unsigned long)_handle)
 #define iscsi_handle(_ptr) ((uint64_t)(unsigned long)_ptr)
@@ -392,6 +828,14 @@ enum iscsi_host_param {
 #define CAP_DIGEST_OFFLOAD	0x1000	/* offload hdr and data digests */
 #define CAP_PADDING_OFFLOAD	0x2000	/* offload padding insertion, removal,
 					 and verification */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define CAP_LOGIN_OFFLOAD	0x4000  /* offload session login */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CAP_LOGIN_OFFLOAD	0x4000  /* offload session login */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These flags describes reason of stop_conn() call
@@ -452,4 +896,39 @@ struct iscsi_stats {
 		__attribute__ ((aligned (sizeof(uint64_t))));
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum chap_type_e {
+	CHAP_TYPE_OUT,
+	CHAP_TYPE_IN,
+};
+
+<<<<<<< HEAD
+=======
+enum iscsi_chap_param {
+	ISCSI_CHAP_PARAM_INDEX,
+	ISCSI_CHAP_PARAM_CHAP_TYPE,
+	ISCSI_CHAP_PARAM_USERNAME,
+	ISCSI_CHAP_PARAM_PASSWORD,
+	ISCSI_CHAP_PARAM_PASSWORD_LEN
+};
+
+>>>>>>> refs/remotes/origin/master
+#define ISCSI_CHAP_AUTH_NAME_MAX_LEN	256
+#define ISCSI_CHAP_AUTH_SECRET_MAX_LEN	256
+struct iscsi_chap_rec {
+	uint16_t chap_tbl_idx;
+	enum chap_type_e chap_type;
+	char username[ISCSI_CHAP_AUTH_NAME_MAX_LEN];
+	uint8_t password[ISCSI_CHAP_AUTH_SECRET_MAX_LEN];
+	uint8_t password_length;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

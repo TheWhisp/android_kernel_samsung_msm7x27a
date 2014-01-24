@@ -3,7 +3,11 @@
  *
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -27,13 +31,20 @@
 #include <linux/wait.h>
 #include <linux/dma-mapping.h>
 #include <linux/msm_audio_qcp.h>
+<<<<<<< HEAD
 #include <linux/ion.h>
+=======
+#include <linux/android_pmem.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/memory_alloc.h>
 
 #include <mach/msm_adsp.h>
 #include <mach/iommu.h>
 #include <mach/iommu_domains.h>
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/socinfo.h>
 #include <mach/qdsp5v2/qdsp5audreccmdi.h>
 #include <mach/qdsp5v2/qdsp5audrecmsg.h>
@@ -131,16 +142,24 @@ struct audio_in {
 	/* data allocated for various buffers */
 	char *data;
 	dma_addr_t phys;
+<<<<<<< HEAD
 	struct msm_mapped_buffer *map_v_read;
 	struct msm_mapped_buffer *map_v_write;
+=======
+	void *map_v_read;
+	void *map_v_write;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int opened;
 	int enabled;
 	int running;
 	int stopped; /* set when stopped, cleared on flush */
 	char *build_id;
+<<<<<<< HEAD
 	struct ion_client *client;
 	struct ion_handle *input_buff_handle;
 	struct ion_handle *output_buff_handle;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct audio_frame {
@@ -1132,7 +1151,11 @@ static void audpreproc_pcm_send_data(struct audio_in *audio, unsigned needed)
 }
 
 
+<<<<<<< HEAD
 static int audevrc_in_fsync(struct file *file,	int datasync)
+=======
+static int audevrc_in_fsync(struct file *file, loff_t ppos1, loff_t ppos2, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 {
 	struct audio_in *audio = file->private_data;
@@ -1322,6 +1345,7 @@ static int audevrc_in_release(struct inode *inode, struct file *file)
 	audio->audrec = NULL;
 	audio->opened = 0;
 	if (audio->data) {
+<<<<<<< HEAD
 		ion_unmap_kernel(audio->client, audio->input_buff_handle);
 		ion_free(audio->client, audio->input_buff_handle);
 		audio->data = NULL;
@@ -1332,6 +1356,17 @@ static int audevrc_in_release(struct inode *inode, struct file *file)
 		audio->out_data = NULL;
 	}
 	ion_client_destroy(audio->client);
+=======
+		iounmap(audio->map_v_read);
+		free_contiguous_memory_by_paddr(audio->phys);
+		audio->data = NULL;
+	}
+	if (audio->out_data) {
+		iounmap(audio->map_v_write);
+		free_contiguous_memory_by_paddr(audio->out_phys);
+		audio->out_data = NULL;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&audio->lock);
 	return 0;
 }
@@ -1342,17 +1377,21 @@ static int audevrc_in_open(struct inode *inode, struct file *file)
 	struct audio_in *audio = &the_audio_evrc_in;
 	int rc;
 	int encid;
+<<<<<<< HEAD
 	int len = 0;
 	unsigned long ionflag = 0;
 	ion_phys_addr_t addr = 0;
 	struct ion_handle *handle = NULL;
 	struct ion_client *client = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&audio->lock);
 	if (audio->opened) {
 		rc = -EBUSY;
 		goto done;
 	}
+<<<<<<< HEAD
 
 	client = msm_ion_client_create(UINT_MAX, "Audio_EVRC_in_client");
 	if (IS_ERR_OR_NULL(client)) {
@@ -1401,6 +1440,23 @@ static int audevrc_in_open(struct inode *inode, struct file *file)
 	}
 	audio->data = (char *)audio->map_v_read;
 
+=======
+	audio->phys = allocate_contiguous_ebi_nomap(DMASZ, SZ_4K);
+	if (audio->phys) {
+		audio->map_v_read = ioremap(audio->phys, DMASZ);
+		if (IS_ERR(audio->map_v_read)) {
+			MM_ERR("failed to map read physical address\n");
+			rc = -ENOMEM;
+			free_contiguous_memory_by_paddr(audio->phys);
+			goto done;
+		}
+		audio->data = audio->map_v_read;
+	} else {
+		MM_ERR("could not allocate DMA buffers\n");
+		rc = -ENOMEM;
+		goto done;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	MM_DBG("Memory addr = 0x%8x  phy addr = 0x%8x\n",\
 		(int) audio->data, (int) audio->phys);
 	if ((file->f_mode & FMODE_WRITE) &&
@@ -1457,6 +1513,7 @@ static int audevrc_in_open(struct inode *inode, struct file *file)
 	audevrc_in_flush(audio);
 	audevrc_out_flush(audio);
 
+<<<<<<< HEAD
 	MM_DBG("allocating BUFFER_SIZE  %d\n", BUFFER_SIZE);
 	handle = ion_alloc(client, BUFFER_SIZE,
 			SZ_4K, ION_HEAP(ION_AUDIO_HEAP_ID));
@@ -1500,6 +1557,26 @@ static int audevrc_in_open(struct inode *inode, struct file *file)
 	MM_DBG("write buf: phy addr 0x%08x kernel addr 0x%08x\n",
 				(unsigned int)addr,
 				(unsigned int)audio->out_data);
+=======
+	audio->out_phys = allocate_contiguous_ebi_nomap(BUFFER_SIZE,
+								SZ_4K);
+	if (!audio->out_phys) {
+		MM_ERR("could not allocate write buffers\n");
+		rc = -ENOMEM;
+		goto evt_error;
+	} else {
+		audio->map_v_write = ioremap(audio->out_phys, BUFFER_SIZE);
+		if (IS_ERR(audio->map_v_write)) {
+			MM_ERR("could map write buffers\n");
+			rc = -ENOMEM;
+			free_contiguous_memory_by_paddr(audio->out_phys);
+			goto evt_error;
+		}
+		audio->out_data = audio->map_v_write;
+		MM_DBG("write buf: phy addr 0x%08x kernel addr 0x%08x\n",
+				audio->out_phys, (int)audio->out_data);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Initialize buffer */
 	audio->out[0].data = audio->out_data + 0;
@@ -1522,7 +1599,11 @@ static int audevrc_in_open(struct inode *inode, struct file *file)
 					evrc_in_listener, (void *) audio);
 	if (rc) {
 		MM_ERR("failed to register device event listener\n");
+<<<<<<< HEAD
 		msm_subsystem_unmap_buffer(audio->map_v_write);
+=======
+		iounmap(audio->map_v_write);
+>>>>>>> refs/remotes/origin/cm-10.0
 		free_contiguous_memory_by_paddr(audio->out_phys);
 		goto evt_error;
 	}
@@ -1540,6 +1621,7 @@ evt_error:
 	msm_adsp_put(audio->audrec);
 	audpreproc_aenc_free(audio->enc_id);
 	mutex_unlock(&audio->lock);
+<<<<<<< HEAD
 input_buff_map_error:
 	ion_free(client, audio->input_buff_handle);
 input_buff_alloc_error:
@@ -1551,6 +1633,8 @@ output_buff_get_flags_error:
 output_buff_alloc_error:
 	ion_client_destroy(client);
 client_create_error:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rc;
 }
 

@@ -26,7 +26,11 @@ void *memmove(void *dest, const void *src, size_t n)
 	char *ret = dest;
 
 	__asm__ __volatile__(
+<<<<<<< HEAD
 		/* Handle more 16bytes in loop */
+=======
+		/* Handle more 16 bytes in loop */
+>>>>>>> refs/remotes/origin/master
 		"cmp $0x10, %0\n\t"
 		"jb	1f\n\t"
 
@@ -51,7 +55,11 @@ void *memmove(void *dest, const void *src, size_t n)
 		"sub $0x10, %0\n\t"
 
 		/*
+<<<<<<< HEAD
 		 * We gobble 16byts forward in each loop.
+=======
+		 * We gobble 16 bytes forward in each loop.
+>>>>>>> refs/remotes/origin/master
 		 */
 		"3:\n\t"
 		"sub $0x10, %0\n\t"
@@ -117,7 +125,11 @@ void *memmove(void *dest, const void *src, size_t n)
 		"sub $0x10, %0\n\t"
 
 		/*
+<<<<<<< HEAD
 		 * We gobble 16byts backward in each loop.
+=======
+		 * We gobble 16 bytes backward in each loop.
+>>>>>>> refs/remotes/origin/master
 		 */
 		"7:\n\t"
 		"sub $0x10, %0\n\t"

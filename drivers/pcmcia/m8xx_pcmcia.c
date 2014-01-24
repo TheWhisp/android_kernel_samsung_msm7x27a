@@ -48,11 +48,23 @@
 #include <linux/interrupt.h>
 #include <linux/fsl_devices.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
 #include <linux/of_device.h>
 #include <linux/of_platform.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_address.h>
+#include <linux/of_device.h>
+#include <linux/of_irq.h>
+#include <linux/of_platform.h>
+
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/mpc8xx.h>
 #include <asm/8xx_immap.h>
@@ -69,12 +81,15 @@ MODULE_LICENSE("Dual MPL/GPL");
 
 #if !defined(CONFIG_PCMCIA_SLOT_A) && !defined(CONFIG_PCMCIA_SLOT_B)
 
+<<<<<<< HEAD
 /* The RPX series use SLOT_B */
 #if defined(CONFIG_RPXCLASSIC) || defined(CONFIG_RPXLITE)
 #define CONFIG_PCMCIA_SLOT_B
 #define CONFIG_BD_IS_MHZ
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* The ADS board use SLOT_A */
 #ifdef CONFIG_ADS
 #define CONFIG_PCMCIA_SLOT_A
@@ -254,6 +269,7 @@ static irqreturn_t m8xx_interrupt(int irq, void *dev);
 
 #define PCMCIA_BMT_LIMIT (15*4)	/* Bus Monitor Timeout value */
 
+<<<<<<< HEAD
 /* ------------------------------------------------------------------------- */
 /* board specific stuff:                                                     */
 /* voltage_set(), hardware_enable() and hardware_disable()                   */
@@ -329,6 +345,8 @@ static int voltage_set(int slot, int vcc, int vpp)
 
 #endif				/* CONFIG_RPXCLASSIC */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* FADS Boards from Motorola                                               */
 
 #if defined(CONFIG_FADS)
@@ -420,6 +438,7 @@ static inline int voltage_set(int slot, int vcc, int vpp)
 
 #endif
 
+<<<<<<< HEAD
 /* ------------------------------------------------------------------------- */
 /* Motorola MBX860                                                           */
 
@@ -479,6 +498,8 @@ static int voltage_set(int slot, int vcc, int vpp)
 
 #endif				/* CONFIG_MBX */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_PRxK)
 #include <asm/cpld.h>
 extern volatile fpga_pc_regs *fpga_pc;
@@ -1304,6 +1325,8 @@ static struct platform_driver m8xx_pcmcia_driver = {
 	.remove = m8xx_remove,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init m8xx_init(void)
 {
 	return platform_driver_register(&m8xx_pcmcia_driver);
@@ -1316,3 +1339,9 @@ static void __exit m8xx_exit(void)
 
 module_init(m8xx_init);
 module_exit(m8xx_exit);
+=======
+module_platform_driver(m8xx_pcmcia_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(m8xx_pcmcia_driver);
+>>>>>>> refs/remotes/origin/master

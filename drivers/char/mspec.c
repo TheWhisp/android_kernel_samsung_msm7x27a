@@ -44,9 +44,19 @@
 #include <linux/slab.h>
 #include <linux/numa.h>
 #include <asm/page.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/pgtable.h>
 #include <asm/atomic.h>
+=======
+#include <asm/pgtable.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/pgtable.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/tlbflush.h>
 #include <asm/uncached.h>
 #include <asm/sn/addrs.h>
@@ -268,7 +278,11 @@ mspec_mmap(struct file *file, struct vm_area_struct *vma,
 	if ((vma->vm_flags & VM_WRITE) == 0)
 		return -EPERM;
 
+<<<<<<< HEAD
 	pages = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+=======
+	pages = vma_pages(vma);
+>>>>>>> refs/remotes/origin/master
 	vdata_size = sizeof(struct vma_data) + pages * sizeof(long);
 	if (vdata_size <= PAGE_SIZE)
 		vdata = kzalloc(vdata_size, GFP_KERNEL);
@@ -287,7 +301,11 @@ mspec_mmap(struct file *file, struct vm_area_struct *vma,
 	atomic_set(&vdata->refcnt, 1);
 	vma->vm_private_data = vdata;
 
+<<<<<<< HEAD
 	vma->vm_flags |= (VM_IO | VM_RESERVED | VM_PFNMAP | VM_DONTEXPAND);
+=======
+	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 	if (vdata->type == MSPEC_FETCHOP || vdata->type == MSPEC_UNCACHED)
 		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 	vma->vm_ops = &mspec_vm_ops;

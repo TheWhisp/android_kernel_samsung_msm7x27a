@@ -3,6 +3,7 @@
  *
  * Copyright (C) 1995 David S. Miller (davem@caip.rutgers.edu)
  */
+<<<<<<< HEAD
 
 #ifndef _SPARC_TRAPS_H
 #define _SPARC_TRAPS_H
@@ -11,6 +12,14 @@
 
 #ifndef __ASSEMBLY__
 #ifdef __KERNEL__
+=======
+#ifndef _SPARC_TRAPS_H
+#define _SPARC_TRAPS_H
+
+#include <uapi/asm/traps.h>
+
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 /* This is for V8 compliant Sparc CPUS */
 struct tt_entry {
 	unsigned long inst_one;
@@ -22,6 +31,7 @@ struct tt_entry {
 /* We set this to _start in system setup. */
 extern struct tt_entry *sparc_ttable;
 
+<<<<<<< HEAD
 #endif /* (__KERNEL__) */
 #endif /* !(__ASSEMBLY__) */
 
@@ -130,4 +140,7 @@ extern struct tt_entry *sparc_ttable;
 			     (level == SP_TRAP_NETBSD) || \
 			     (level == SP_TRAP_LINUX))
 
+=======
+#endif /* !(__ASSEMBLY__) */
+>>>>>>> refs/remotes/origin/master
 #endif /* !(_SPARC_TRAPS_H) */

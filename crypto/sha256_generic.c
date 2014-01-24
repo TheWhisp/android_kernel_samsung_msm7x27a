@@ -246,7 +246,11 @@ static int sha256_init(struct shash_desc *desc)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int sha256_update(struct shash_desc *desc, const u8 *data,
+=======
+int crypto_sha256_update(struct shash_desc *desc, const u8 *data,
+>>>>>>> refs/remotes/origin/master
 			  unsigned int len)
 {
 	struct sha256_state *sctx = shash_desc_ctx(desc);
@@ -277,6 +281,10 @@ static int sha256_update(struct shash_desc *desc, const u8 *data,
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(crypto_sha256_update);
+>>>>>>> refs/remotes/origin/master
 
 static int sha256_final(struct shash_desc *desc, u8 *out)
 {
@@ -293,10 +301,17 @@ static int sha256_final(struct shash_desc *desc, u8 *out)
 	/* Pad out to 56 mod 64. */
 	index = sctx->count & 0x3f;
 	pad_len = (index < 56) ? (56 - index) : ((64+56) - index);
+<<<<<<< HEAD
 	sha256_update(desc, padding, pad_len);
 
 	/* Append length (before padding) */
 	sha256_update(desc, (const u8 *)&bits, sizeof(bits));
+=======
+	crypto_sha256_update(desc, padding, pad_len);
+
+	/* Append length (before padding) */
+	crypto_sha256_update(desc, (const u8 *)&bits, sizeof(bits));
+>>>>>>> refs/remotes/origin/master
 
 	/* Store state in digest */
 	for (i = 0; i < 8; i++)
@@ -336,10 +351,17 @@ static int sha256_import(struct shash_desc *desc, const void *in)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct shash_alg sha256 = {
 	.digestsize	=	SHA256_DIGEST_SIZE,
 	.init		=	sha256_init,
 	.update		=	sha256_update,
+=======
+static struct shash_alg sha256_algs[2] = { {
+	.digestsize	=	SHA256_DIGEST_SIZE,
+	.init		=	sha256_init,
+	.update		=	crypto_sha256_update,
+>>>>>>> refs/remotes/origin/master
 	.final		=	sha256_final,
 	.export		=	sha256_export,
 	.import		=	sha256_import,
@@ -352,12 +374,19 @@ static struct shash_alg sha256 = {
 		.cra_blocksize	=	SHA256_BLOCK_SIZE,
 		.cra_module	=	THIS_MODULE,
 	}
+<<<<<<< HEAD
 };
 
 static struct shash_alg sha224 = {
 	.digestsize	=	SHA224_DIGEST_SIZE,
 	.init		=	sha224_init,
 	.update		=	sha256_update,
+=======
+}, {
+	.digestsize	=	SHA224_DIGEST_SIZE,
+	.init		=	sha224_init,
+	.update		=	crypto_sha256_update,
+>>>>>>> refs/remotes/origin/master
 	.final		=	sha224_final,
 	.descsize	=	sizeof(struct sha256_state),
 	.base		=	{
@@ -367,6 +396,7 @@ static struct shash_alg sha224 = {
 		.cra_blocksize	=	SHA224_BLOCK_SIZE,
 		.cra_module	=	THIS_MODULE,
 	}
+<<<<<<< HEAD
 };
 
 static int __init sha256_generic_mod_init(void)
@@ -384,12 +414,23 @@ static int __init sha256_generic_mod_init(void)
 		crypto_unregister_shash(&sha224);
 
 	return ret;
+=======
+} };
+
+static int __init sha256_generic_mod_init(void)
+{
+	return crypto_register_shashes(sha256_algs, ARRAY_SIZE(sha256_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit sha256_generic_mod_fini(void)
 {
+<<<<<<< HEAD
 	crypto_unregister_shash(&sha224);
 	crypto_unregister_shash(&sha256);
+=======
+	crypto_unregister_shashes(sha256_algs, ARRAY_SIZE(sha256_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(sha256_generic_mod_init);

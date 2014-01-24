@@ -12,6 +12,14 @@
 #ifndef _MAGICIAN_H_
 #define _MAGICIAN_H_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/irqs.h>
 
 /*
@@ -77,7 +85,15 @@
  * CPLD EGPIOs
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MAGICIAN_EGPIO_BASE			0x80 /* GPIO_BOARD_START */
+=======
+#define MAGICIAN_EGPIO_BASE			PXA_NR_BUILTIN_GPIO
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAGICIAN_EGPIO_BASE			PXA_NR_BUILTIN_GPIO
+>>>>>>> refs/remotes/origin/master
 #define MAGICIAN_EGPIO(reg,bit) \
 	(MAGICIAN_EGPIO_BASE + 8*reg + bit)
 

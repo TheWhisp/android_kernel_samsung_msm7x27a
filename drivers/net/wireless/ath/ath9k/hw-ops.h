@@ -22,10 +22,25 @@
 /* Hardware core and driver accessible callbacks */
 
 static inline void ath9k_hw_configpcipowersave(struct ath_hw *ah,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					       int restore,
 					       int power_off)
 {
 	ath9k_hw_ops(ah)->config_pci_powersave(ah, restore, power_off);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					       bool power_off)
+{
+	if (!ah->aspm_enabled)
+		return;
+
+	ath9k_hw_ops(ah)->config_pci_powersave(ah, power_off);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void ath9k_hw_rxena(struct ath_hw *ah)
@@ -39,11 +54,17 @@ static inline void ath9k_hw_set_desc_link(struct ath_hw *ah, void *ds,
 	ath9k_hw_ops(ah)->set_desc_link(ds, link);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void ath9k_hw_get_desc_link(struct ath_hw *ah, void *ds,
 					  u32 **link)
 {
 	ath9k_hw_ops(ah)->get_desc_link(ds, link);
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline bool ath9k_hw_calibrate(struct ath_hw *ah,
 				      struct ath9k_channel *chan,
 				      u8 rxchainmask,
@@ -57,6 +78,8 @@ static inline bool ath9k_hw_getisr(struct ath_hw *ah, enum ath9k_int *masked)
 	return ath9k_hw_ops(ah)->get_isr(ah, masked);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void ath9k_hw_filltxdesc(struct ath_hw *ah, void *ds, u32 seglen,
 				  bool is_firstseg, bool is_lastseg,
 				  const void *ds0, dma_addr_t buf_addr,
@@ -64,6 +87,17 @@ static inline void ath9k_hw_filltxdesc(struct ath_hw *ah, void *ds, u32 seglen,
 {
 	ath9k_hw_ops(ah)->fill_txdesc(ah, ds, seglen, is_firstseg, is_lastseg,
 				      ds0, buf_addr, qcu);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void ath9k_hw_set_txdesc(struct ath_hw *ah, void *ds,
+				       struct ath_tx_info *i)
+{
+	return ath9k_hw_ops(ah)->set_txdesc(ah, ds, i);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int ath9k_hw_txprocdesc(struct ath_hw *ah, void *ds,
@@ -72,6 +106,8 @@ static inline int ath9k_hw_txprocdesc(struct ath_hw *ah, void *ds,
 	return ath9k_hw_ops(ah)->proc_txdesc(ah, ds, ts);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void ath9k_hw_set11n_txdesc(struct ath_hw *ah, void *ds,
 					  u32 pktLen, enum ath9k_pkt_type type,
 					  u32 txPower, u32 keyIx,
@@ -121,6 +157,8 @@ static inline void ath9k_hw_set_clrdmask(struct ath_hw *ah, void *ds, bool val)
 	ath9k_hw_ops(ah)->set_clrdmask(ah, ds, val);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void ath9k_hw_antdiv_comb_conf_get(struct ath_hw *ah,
 		struct ath_hw_antcomb_conf *antconf)
 {
@@ -132,6 +170,45 @@ static inline void ath9k_hw_antdiv_comb_conf_set(struct ath_hw *ah,
 {
 	ath9k_hw_ops(ah)->antdiv_comb_conf_set(ah, antconf);
 }
+=======
+static inline void ath9k_hw_antdiv_comb_conf_get(struct ath_hw *ah,
+		struct ath_hw_antcomb_conf *antconf)
+{
+	ath9k_hw_ops(ah)->antdiv_comb_conf_get(ah, antconf);
+}
+
+static inline void ath9k_hw_antdiv_comb_conf_set(struct ath_hw *ah,
+		struct ath_hw_antcomb_conf *antconf)
+{
+	ath9k_hw_ops(ah)->antdiv_comb_conf_set(ah, antconf);
+}
+
+static inline void ath9k_hw_tx99_start(struct ath_hw *ah, u32 qnum)
+{
+	ath9k_hw_ops(ah)->tx99_start(ah, qnum);
+}
+
+static inline void ath9k_hw_tx99_stop(struct ath_hw *ah)
+{
+	ath9k_hw_ops(ah)->tx99_stop(ah);
+}
+
+static inline void ath9k_hw_tx99_set_txpower(struct ath_hw *ah, u8 power)
+{
+	if (ath9k_hw_ops(ah)->tx99_set_txpower)
+		ath9k_hw_ops(ah)->tx99_set_txpower(ah, power);
+}
+
+#ifdef CONFIG_ATH9K_BTCOEX_SUPPORT
+
+static inline void ath9k_hw_set_bt_ant_diversity(struct ath_hw *ah, bool enable)
+{
+	if (ath9k_hw_ops(ah)->set_bt_ant_diversity)
+		ath9k_hw_ops(ah)->set_bt_ant_diversity(ah, enable);
+}
+
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /* Private hardware call ops */
 
@@ -149,6 +226,7 @@ static inline void ath9k_hw_spur_mitigate_freq(struct ath_hw *ah,
 	ath9k_hw_private_ops(ah)->spur_mitigate_freq(ah, chan);
 }
 
+<<<<<<< HEAD
 static inline int ath9k_hw_rf_alloc_ext_banks(struct ath_hw *ah)
 {
 	if (!ath9k_hw_private_ops(ah)->rf_alloc_ext_banks)
@@ -165,6 +243,8 @@ static inline void ath9k_hw_rf_free_ext_banks(struct ath_hw *ah)
 	ath9k_hw_private_ops(ah)->rf_free_ext_banks(ah);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline bool ath9k_hw_set_rf_regs(struct ath_hw *ah,
 					struct ath9k_channel *chan,
 					u16 modesIndex)
@@ -236,11 +316,17 @@ static inline void ath9k_hw_restore_chainmask(struct ath_hw *ah)
 	return ath9k_hw_private_ops(ah)->restore_chainmask(ah);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void ath9k_hw_set_diversity(struct ath_hw *ah, bool value)
 {
 	return ath9k_hw_private_ops(ah)->set_diversity(ah, value);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline bool ath9k_hw_ani_control(struct ath_hw *ah,
 					enum ath9k_ani_cmd cmd, int param)
 {
@@ -265,4 +351,29 @@ static inline void ath9k_hw_setup_calibration(struct ath_hw *ah,
 	ath9k_hw_private_ops(ah)->setup_calibration(ah, currCal);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline int ath9k_hw_fast_chan_change(struct ath_hw *ah,
+					    struct ath9k_channel *chan,
+					    u8 *ini_reloaded)
+{
+	return ath9k_hw_private_ops(ah)->fast_chan_change(ah, chan,
+							  ini_reloaded);
+}
+
+static inline void ath9k_hw_set_radar_params(struct ath_hw *ah)
+{
+	if (!ath9k_hw_private_ops(ah)->set_radar_params)
+		return;
+
+	ath9k_hw_private_ops(ah)->set_radar_params(ah, &ah->radar_conf);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* ATH9K_HW_OPS_H */

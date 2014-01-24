@@ -43,6 +43,8 @@
 #define BCSR_INT_PC1EJECT	0x0800
 #define BCSR_INT_SD0INSERT	0x1000
 #define BCSR_INT_SD0EJECT	0x2000
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #define IDE_PHYS_ADDR		0x18800000
 #define IDE_REG_SHIFT		5
@@ -50,17 +52,47 @@
 #define IDE_RQSIZE		128
 
 #define DB1200_IDE_PHYS_ADDR	IDE_PHYS_ADDR
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define BCSR_INT_SD1INSERT	0x4000
+#define BCSR_INT_SD1EJECT	0x8000
+
+#define IDE_REG_SHIFT		5
+
+#define DB1200_IDE_PHYS_ADDR	0x18800000
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DB1200_IDE_PHYS_LEN	(16 << IDE_REG_SHIFT)
 #define DB1200_ETH_PHYS_ADDR	0x19000300
 #define DB1200_NAND_PHYS_ADDR	0x20000000
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define PB1200_IDE_PHYS_ADDR	0x0C800000
+#define PB1200_ETH_PHYS_ADDR	0x0D000300
+#define PB1200_NAND_PHYS_ADDR	0x1C000000
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * External Interrupts for DBAu1200 as of 8/6/2004.
  * Bit positions in the CPLD registers can be calculated by taking
  * the interrupt define and subtracting the DB1200_INT_BEGIN value.
  *
  *   Example: IDE bis pos is  = 64 - 64
+<<<<<<< HEAD
  *            ETH bit pos is  = 65 - 64
+=======
+ *	      ETH bit pos is  = 65 - 64
+>>>>>>> refs/remotes/origin/master
  */
 enum external_db1200_ints {
 	DB1200_INT_BEGIN	= AU1000_MAX_INTR + 1,
@@ -79,6 +111,16 @@ enum external_db1200_ints {
 	DB1200_PC1_EJECT_INT,
 	DB1200_SD0_INSERT_INT,
 	DB1200_SD0_EJECT_INT,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	PB1200_SD1_INSERT_INT,
+	PB1200_SD1_EJECT_INT,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PB1200_SD1_INSERT_INT,
+	PB1200_SD1_EJECT_INT,
+>>>>>>> refs/remotes/origin/master
 
 	DB1200_INT_END		= DB1200_INT_BEGIN + 15,
 };

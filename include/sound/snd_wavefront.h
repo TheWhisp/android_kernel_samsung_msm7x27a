@@ -1,10 +1,17 @@
 #ifndef __SOUND_SND_WAVEFRONT_H__
 #define __SOUND_SND_WAVEFRONT_H__
 
+<<<<<<< HEAD
 #include "mpu401.h"
 #include "hwdep.h"
 #include "rawmidi.h"
 #include "wavefront.h"  /* generic OSS/ALSA/user-level wavefront header */
+=======
+#include <sound/mpu401.h>
+#include <sound/hwdep.h>
+#include <sound/rawmidi.h>
+#include <sound/wavefront.h>  /* generic OSS/ALSA/user-level wavefront header */
+>>>>>>> refs/remotes/origin/master
 
 /* MIDI interface */
 

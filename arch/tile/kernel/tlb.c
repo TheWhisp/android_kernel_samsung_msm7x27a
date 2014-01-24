@@ -15,6 +15,10 @@
 
 #include <linux/cpumask.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/hugetlb.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/tlbflush.h>
 #include <asm/homecache.h>
 #include <hv/hypervisor.h>
@@ -49,25 +53,43 @@ void flush_tlb_current_task(void)
 	flush_tlb_mm(current->mm);
 }
 
+<<<<<<< HEAD
 void flush_tlb_page_mm(const struct vm_area_struct *vma, struct mm_struct *mm,
 		       unsigned long va)
 {
 	unsigned long size = hv_page_size(vma);
+=======
+void flush_tlb_page_mm(struct vm_area_struct *vma, struct mm_struct *mm,
+		       unsigned long va)
+{
+	unsigned long size = vma_kernel_pagesize(vma);
+>>>>>>> refs/remotes/origin/master
 	int cache = (vma->vm_flags & VM_EXEC) ? HV_FLUSH_EVICT_L1I : 0;
 	flush_remote(0, cache, mm_cpumask(mm),
 		     va, size, size, mm_cpumask(mm), NULL, 0);
 }
 
+<<<<<<< HEAD
 void flush_tlb_page(const struct vm_area_struct *vma, unsigned long va)
+=======
+void flush_tlb_page(struct vm_area_struct *vma, unsigned long va)
+>>>>>>> refs/remotes/origin/master
 {
 	flush_tlb_page_mm(vma, vma->vm_mm, va);
 }
 EXPORT_SYMBOL(flush_tlb_page);
 
+<<<<<<< HEAD
 void flush_tlb_range(const struct vm_area_struct *vma,
 		     unsigned long start, unsigned long end)
 {
 	unsigned long size = hv_page_size(vma);
+=======
+void flush_tlb_range(struct vm_area_struct *vma,
+		     unsigned long start, unsigned long end)
+{
+	unsigned long size = vma_kernel_pagesize(vma);
+>>>>>>> refs/remotes/origin/master
 	struct mm_struct *mm = vma->vm_mm;
 	int cache = (vma->vm_flags & VM_EXEC) ? HV_FLUSH_EVICT_L1I : 0;
 	flush_remote(0, cache, mm_cpumask(mm), start, end - start, size,
@@ -90,8 +112,20 @@ void flush_tlb_all(void)
 	}
 }
 
+<<<<<<< HEAD
 void flush_tlb_kernel_range(unsigned long start, unsigned long end)
 {
 	flush_remote(0, HV_FLUSH_EVICT_L1I, cpu_online_mask,
+=======
+/*
+ * Callers need to flush the L1I themselves if necessary, e.g. for
+ * kernel module unload.  Otherwise we assume callers are not using
+ * executable pgprot_t's.  Using EVICT_L1I means that dataplane cpus
+ * will get an unnecessary interrupt otherwise.
+ */
+void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+{
+	flush_remote(0, 0, NULL,
+>>>>>>> refs/remotes/origin/master
 		     start, end - start, PAGE_SIZE, cpu_online_mask, NULL, 0);
 }

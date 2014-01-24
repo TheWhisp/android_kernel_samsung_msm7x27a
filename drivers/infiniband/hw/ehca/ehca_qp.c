@@ -321,7 +321,11 @@ static inline int init_qp_queue(struct ehca_shca *shca,
 			ret = -EINVAL;
 			goto init_qp_queue1;
 		}
+<<<<<<< HEAD
 		rpage = virt_to_abs(vpage);
+=======
+		rpage = __pa(vpage);
+>>>>>>> refs/remotes/origin/master
 
 		h_ret = hipz_h_register_rpage_qp(ipz_hca_handle,
 						 my_qp->ipz_qp_handle,
@@ -636,6 +640,7 @@ static struct ehca_qp *internal_create_qp(
 		my_qp->send_cq =
 			container_of(init_attr->send_cq, struct ehca_cq, ib_cq);
 
+<<<<<<< HEAD
 	do {
 		if (!idr_pre_get(&ehca_qp_idr, GFP_KERNEL)) {
 			ret = -ENOMEM;
@@ -660,6 +665,28 @@ static struct ehca_qp *internal_create_qp(
 		goto create_qp_exit1;
 	}
 
+=======
+	idr_preload(GFP_KERNEL);
+	write_lock_irqsave(&ehca_qp_idr_lock, flags);
+
+	ret = idr_alloc(&ehca_qp_idr, my_qp, 0, 0x2000000, GFP_NOWAIT);
+	if (ret >= 0)
+		my_qp->token = ret;
+
+	write_unlock_irqrestore(&ehca_qp_idr_lock, flags);
+	idr_preload_end();
+	if (ret < 0) {
+		if (ret == -ENOSPC) {
+			ret = -EINVAL;
+			ehca_err(pd->device, "Invalid number of qp");
+		} else {
+			ret = -ENOMEM;
+			ehca_err(pd->device, "Can't allocate new idr entry.");
+		}
+		goto create_qp_exit0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (has_srq)
 		parms.srq_token = my_qp->token;
 
@@ -977,6 +1004,18 @@ struct ib_srq *ehca_create_srq(struct ib_pd *pd,
 	struct hcp_modify_qp_control_block *mqpcb;
 	u64 hret, update_mask;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (srq_init_attr->srq_type != IB_SRQT_BASIC)
+		return ERR_PTR(-ENOSYS);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (srq_init_attr->srq_type != IB_SRQT_BASIC)
+		return ERR_PTR(-ENOSYS);
+
+>>>>>>> refs/remotes/origin/master
 	/* For common attributes, internal_create_qp() takes its info
 	 * out of qp_init_attr, so copy all common attrs there.
 	 */
@@ -1091,7 +1130,11 @@ static int prepare_sqe_rts(struct ehca_qp *my_qp, struct ehca_shca *shca,
 	ehca_dbg(&shca->ib_device, "qp_num=%x bad_send_wqe_p=%p",
 		 qp_num, bad_send_wqe_p);
 	/* convert wqe pointer to vadr */
+<<<<<<< HEAD
 	bad_send_wqe_v = abs_to_virt((u64)bad_send_wqe_p);
+=======
+	bad_send_wqe_v = __va((u64)bad_send_wqe_p);
+>>>>>>> refs/remotes/origin/master
 	if (ehca_debug_level >= 2)
 		ehca_dmp(bad_send_wqe_v, 32, "qp_num=%x bad_wqe", qp_num);
 	squeue = &my_qp->ipz_squeue;
@@ -1135,7 +1178,11 @@ static int calc_left_cqes(u64 wqe_p, struct ipz_queue *ipz_queue,
 	/* convert real to abs address */
 	wqe_p = wqe_p & (~(1UL << 63));
 
+<<<<<<< HEAD
 	wqe_v = abs_to_virt(wqe_p);
+=======
+	wqe_v = __va(wqe_p);
+>>>>>>> refs/remotes/origin/master
 
 	if (ipz_queue_abs_to_offset(ipz_queue, wqe_p, &q_ofs)) {
 		ehca_gen_err("Invalid offset for calculating left cqes "

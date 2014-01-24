@@ -4,29 +4,56 @@
 #define FD_VERSION		"4.0"
 
 #define FD_MAX_DEV_NAME		256
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Maximum queuedepth for the FILEIO HBA */
 #define FD_HBA_QUEUE_DEPTH	256
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define FD_DEVICE_QUEUE_DEPTH	32
 #define FD_MAX_DEVICE_QUEUE_DEPTH 128
 #define FD_BLOCKSIZE		512
 #define FD_MAX_SECTORS		1024
+=======
+#define FD_DEVICE_QUEUE_DEPTH	32
+#define FD_MAX_DEVICE_QUEUE_DEPTH 128
+#define FD_BLOCKSIZE		512
+/*
+ * Limited by the number of iovecs (2048) per vfs_[writev,readv] call
+ */
+#define FD_MAX_BYTES		8388608
+>>>>>>> refs/remotes/origin/master
 
 #define RRF_EMULATE_CDB		0x01
 #define RRF_GOT_LBA		0x02
 
+<<<<<<< HEAD
 struct fd_request {
 	struct se_task	fd_task;
+<<<<<<< HEAD
 	/* SCSI CDB from iSCSI Command PDU */
 	unsigned char	fd_scsi_cdb[TCM_MAX_COMMAND_SIZE];
 	/* FILEIO device */
 	struct fd_dev	*fd_dev;
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define FBDF_HAS_PATH		0x01
 #define FBDF_HAS_SIZE		0x02
 #define FDBD_USE_BUFFERED_IO	0x04
 
 struct fd_dev {
+=======
+#define FBDF_HAS_PATH		0x01
+#define FBDF_HAS_SIZE		0x02
+#define FDBD_HAS_BUFFERED_IO_WCE 0x04
+
+struct fd_dev {
+	struct se_device dev;
+
+>>>>>>> refs/remotes/origin/master
 	u32		fbd_flags;
 	unsigned char	fd_dev_name[FD_MAX_DEV_NAME];
 	/* Unique Ramdisk Device ID in Ramdisk HBA */

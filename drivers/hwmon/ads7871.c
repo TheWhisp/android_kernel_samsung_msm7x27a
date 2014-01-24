@@ -34,9 +34,21 @@
 #define REG_SER_CONTROL 24 /*Serial Interface Control Register*/
 #define REG_ID		31 /*ID Register*/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*From figure 17 in the datasheet
 * These bits get ORed with the address to form
 * the instruction byte */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * From figure 17 in the datasheet
+ * These bits get ORed with the address to form
+ * the instruction byte
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 /*Instruction Bit masks*/
 #define INST_MODE_bm	(1<<7)
 #define INST_READ_bm	(1<<6)
@@ -57,6 +69,28 @@
 #define OSC_BUFE_bm	(1<<2)
 #define OSC_R2V_bm	(1<<1)
 #define OSC_RBG_bm	(1<<0)
+=======
+/*Instruction Bit masks*/
+#define INST_MODE_BM	(1 << 7)
+#define INST_READ_BM	(1 << 6)
+#define INST_16BIT_BM	(1 << 5)
+
+/*From figure 18 in the datasheet*/
+/*bit masks for Rev/Oscillator Control Register*/
+#define MUX_CNV_BV	7
+#define MUX_CNV_BM	(1 << MUX_CNV_BV)
+#define MUX_M3_BM	(1 << 3) /*M3 selects single ended*/
+#define MUX_G_BV	4 /*allows for reg = (gain << MUX_G_BV) | ...*/
+
+/*From figure 18 in the datasheet*/
+/*bit masks for Rev/Oscillator Control Register*/
+#define OSC_OSCR_BM	(1 << 5)
+#define OSC_OSCE_BM	(1 << 4)
+#define OSC_REFE_BM	(1 << 3)
+#define OSC_BUFE_BM	(1 << 2)
+#define OSC_R2V_BM	(1 << 1)
+#define OSC_RBG_BM	(1 << 0)
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -77,7 +111,11 @@ struct ads7871_data {
 static int ads7871_read_reg8(struct spi_device *spi, int reg)
 {
 	int ret;
+<<<<<<< HEAD
 	reg = reg | INST_READ_bm;
+=======
+	reg = reg | INST_READ_BM;
+>>>>>>> refs/remotes/origin/master
 	ret = spi_w8r8(spi, reg);
 	return ret;
 }
@@ -85,7 +123,11 @@ static int ads7871_read_reg8(struct spi_device *spi, int reg)
 static int ads7871_read_reg16(struct spi_device *spi, int reg)
 {
 	int ret;
+<<<<<<< HEAD
 	reg = reg | INST_READ_bm | INST_16BIT_bm;
+=======
+	reg = reg | INST_READ_BM | INST_16BIT_BM;
+>>>>>>> refs/remotes/origin/master
 	ret = spi_w8r16(spi, reg);
 	return ret;
 }
@@ -105,8 +147,19 @@ static ssize_t show_voltage(struct device *dev,
 	uint8_t channel, mux_cnv;
 
 	channel = attr->index;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*TODO: add support for conversions
 	 *other than single ended with a gain of 1*/
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * TODO: add support for conversions
+	 * other than single ended with a gain of 1
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*MUX_M3_bm forces single ended*/
 	/*This is also where the gain of the PGA would be set*/
 	ads7871_write_reg8(spi, REG_GAIN_MUX,
@@ -114,19 +167,46 @@ static ssize_t show_voltage(struct device *dev,
 
 	ret = ads7871_read_reg8(spi, REG_GAIN_MUX);
 	mux_cnv = ((ret & MUX_CNV_bm)>>MUX_CNV_bv);
+<<<<<<< HEAD
 	/*on 400MHz arm9 platform the conversion
 	 *is already done when we do this test*/
+=======
+=======
+	/*MUX_M3_BM forces single ended*/
+	/*This is also where the gain of the PGA would be set*/
+	ads7871_write_reg8(spi, REG_GAIN_MUX,
+		(MUX_CNV_BM | MUX_M3_BM | channel));
+
+	ret = ads7871_read_reg8(spi, REG_GAIN_MUX);
+	mux_cnv = ((ret & MUX_CNV_BM) >> MUX_CNV_BV);
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * on 400MHz arm9 platform the conversion
+	 * is already done when we do this test
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	while ((i < 2) && mux_cnv) {
 		i++;
 		ret = ads7871_read_reg8(spi, REG_GAIN_MUX);
 		mux_cnv = ((ret & MUX_CNV_bm)>>MUX_CNV_bv);
+=======
+	while ((i < 2) && mux_cnv) {
+		i++;
+		ret = ads7871_read_reg8(spi, REG_GAIN_MUX);
+		mux_cnv = ((ret & MUX_CNV_BM) >> MUX_CNV_BV);
+>>>>>>> refs/remotes/origin/master
 		msleep_interruptible(1);
 	}
 
 	if (mux_cnv == 0) {
 		val = ads7871_read_reg16(spi, REG_LS_BYTE);
 		/*result in volts*10000 = (val/8192)*2.5*10000*/
+<<<<<<< HEAD
 		val = ((val>>2) * 25000) / 8192;
+=======
+		val = ((val >> 2) * 25000) / 8192;
+>>>>>>> refs/remotes/origin/master
 		return sprintf(buf, "%d\n", val);
 	} else {
 		return -1;
@@ -167,7 +247,11 @@ static const struct attribute_group ads7871_group = {
 	.attrs = ads7871_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit ads7871_probe(struct spi_device *spi)
+=======
+static int ads7871_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret, err;
 	uint8_t val;
@@ -183,13 +267,28 @@ static int __devinit ads7871_probe(struct spi_device *spi)
 	ads7871_write_reg8(spi, REG_SER_CONTROL, 0);
 	ads7871_write_reg8(spi, REG_AD_CONTROL, 0);
 
+<<<<<<< HEAD
 	val = (OSC_OSCR_bm | OSC_OSCE_bm | OSC_REFE_bm | OSC_BUFE_bm);
+=======
+	val = (OSC_OSCR_BM | OSC_OSCE_BM | OSC_REFE_BM | OSC_BUFE_BM);
+>>>>>>> refs/remotes/origin/master
 	ads7871_write_reg8(spi, REG_OSC_CONTROL, val);
 	ret = ads7871_read_reg8(spi, REG_OSC_CONTROL);
 
 	dev_dbg(&spi->dev, "REG_OSC_CONTROL write:%x, read:%x\n", val, ret);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*because there is no other error checking on an SPI bus
 	we need to make sure we really have a chip*/
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * because there is no other error checking on an SPI bus
+	 * we need to make sure we really have a chip
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (val != ret) {
 		err = -ENODEV;
 		goto exit;
@@ -204,6 +303,19 @@ static int __devinit ads7871_probe(struct spi_device *spi)
 	err = sysfs_create_group(&spi->dev.kobj, &ads7871_group);
 	if (err < 0)
 		goto error_free;
+=======
+	if (val != ret)
+		return -ENODEV;
+
+	pdata = devm_kzalloc(&spi->dev, sizeof(struct ads7871_data),
+			     GFP_KERNEL);
+	if (!pdata)
+		return -ENOMEM;
+
+	err = sysfs_create_group(&spi->dev.kobj, &ads7871_group);
+	if (err < 0)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	spi_set_drvdata(spi, pdata);
 
@@ -217,6 +329,7 @@ static int __devinit ads7871_probe(struct spi_device *spi)
 
 error_remove:
 	sysfs_remove_group(&spi->dev.kobj, &ads7871_group);
+<<<<<<< HEAD
 error_free:
 	kfree(pdata);
 exit:
@@ -224,26 +337,43 @@ exit:
 }
 
 static int __devexit ads7871_remove(struct spi_device *spi)
+=======
+	return err;
+}
+
+static int ads7871_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ads7871_data *pdata = spi_get_drvdata(spi);
 
 	hwmon_device_unregister(pdata->hwmon_dev);
 	sysfs_remove_group(&spi->dev.kobj, &ads7871_group);
+<<<<<<< HEAD
 	kfree(pdata);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct spi_driver ads7871_driver = {
 	.driver = {
 		.name = DEVICE_NAME,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.bus = &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 
 	.probe = ads7871_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ads7871_remove),
 };
 
+<<<<<<< HEAD
 static int __init ads7871_init(void)
 {
 	return spi_register_driver(&ads7871_driver);
@@ -256,6 +386,15 @@ static void __exit ads7871_exit(void)
 
 module_init(ads7871_init);
 module_exit(ads7871_exit);
+=======
+module_spi_driver(ads7871_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = ads7871_remove,
+};
+
+module_spi_driver(ads7871_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Paul Thomas <pthomas8589@gmail.com>");
 MODULE_DESCRIPTION("TI ADS7871 A/D driver");

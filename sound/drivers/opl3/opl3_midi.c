@@ -27,7 +27,15 @@
 
 extern char snd_opl3_regmap[MAX_OPL2_VOICES][4];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int use_internal_drums;
+=======
+extern bool use_internal_drums;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern bool use_internal_drums;
+>>>>>>> refs/remotes/origin/master
 
 static void snd_opl3_note_off_unsafe(void *p, int note, int vel,
 				     struct snd_midi_channel *chan);
@@ -163,7 +171,11 @@ static int opl3_get_voice(struct snd_opl3 *opl3, int instr_4op,
 	struct best *bp;
 
 	for (i = 0; i < END; i++) {
+<<<<<<< HEAD
 		best[i].time = (unsigned int)(-1); /* XXX MAX_?INT really */;
+=======
+		best[i].time = (unsigned int)(-1); /* XXX MAX_?INT really */
+>>>>>>> refs/remotes/origin/master
 		best[i].voice = -1;
 	}
 
@@ -390,6 +402,14 @@ void snd_opl3_note_on(void *p, int note, int vel, struct snd_midi_channel *chan)
 		voice = snd_opl3_oss_map[chan->number];		
 	}
 
+<<<<<<< HEAD
+=======
+	if (voice < 0) {
+		spin_unlock_irqrestore(&opl3->voice_lock, flags);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (voice < MAX_OPL2_VOICES) {
 		/* Left register block for voices 0 .. 8 */
 		reg_side = OPL3_LEFT;

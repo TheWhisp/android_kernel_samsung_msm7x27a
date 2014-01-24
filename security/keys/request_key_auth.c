@@ -18,8 +18,15 @@
 #include <linux/slab.h>
 #include <asm/uaccess.h>
 #include "internal.h"
+<<<<<<< HEAD
 
 static int request_key_auth_instantiate(struct key *, const void *, size_t);
+=======
+#include <keys/user-type.h>
+
+static int request_key_auth_instantiate(struct key *,
+					struct key_preparsed_payload *);
+>>>>>>> refs/remotes/origin/master
 static void request_key_auth_describe(const struct key *, struct seq_file *);
 static void request_key_auth_revoke(struct key *);
 static void request_key_auth_destroy(struct key *);
@@ -42,10 +49,16 @@ struct key_type key_type_request_key_auth = {
  * Instantiate a request-key authorisation key.
  */
 static int request_key_auth_instantiate(struct key *key,
+<<<<<<< HEAD
 					const void *data,
 					size_t datalen)
 {
 	key->payload.data = (struct request_key_auth *) data;
+=======
+					struct key_preparsed_payload *prep)
+{
+	key->payload.data = (struct request_key_auth *)prep->data;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -222,6 +235,7 @@ error_alloc:
 }
 
 /*
+<<<<<<< HEAD
  * See if an authorisation key is associated with a particular key.
  */
 static int key_get_instantiation_authkey_match(const struct key *key,
@@ -234,11 +248,14 @@ static int key_get_instantiation_authkey_match(const struct key *key,
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Search the current process's keyrings for the authorisation key for
  * instantiation of a key.
  */
 struct key *key_get_instantiation_authkey(key_serial_t target_id)
 {
+<<<<<<< HEAD
 	const struct cred *cred = current_cred();
 	struct key *authkey;
 	key_ref_t authkey_ref;
@@ -251,6 +268,33 @@ struct key *key_get_instantiation_authkey(key_serial_t target_id)
 
 	if (IS_ERR(authkey_ref)) {
 		authkey = ERR_CAST(authkey_ref);
+<<<<<<< HEAD
+=======
+		if (authkey == ERR_PTR(-EAGAIN))
+			authkey = ERR_PTR(-ENOKEY);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char description[16];
+	struct keyring_search_context ctx = {
+		.index_key.type		= &key_type_request_key_auth,
+		.index_key.description	= description,
+		.cred			= current_cred(),
+		.match			= user_match,
+		.match_data		= description,
+		.flags			= KEYRING_SEARCH_LOOKUP_DIRECT,
+	};
+	struct key *authkey;
+	key_ref_t authkey_ref;
+
+	sprintf(description, "%x", target_id);
+
+	authkey_ref = search_process_keyrings(&ctx);
+
+	if (IS_ERR(authkey_ref)) {
+		authkey = ERR_CAST(authkey_ref);
+		if (authkey == ERR_PTR(-EAGAIN))
+			authkey = ERR_PTR(-ENOKEY);
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 

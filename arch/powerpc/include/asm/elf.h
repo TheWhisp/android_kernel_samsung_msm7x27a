@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef _ASM_POWERPC_ELF_H
 #define _ASM_POWERPC_ELF_H
 
@@ -85,6 +86,8 @@
 /* keep this the last entry. */
 #define R_PPC_NUM		95
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ELF register definitions..
  *
@@ -93,6 +96,7 @@
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #define ELF_NGREG	48	/* includes nip, msr, lr, etc. */
 #define ELF_NFPREG	33	/* includes fpscr */
@@ -164,6 +168,16 @@ typedef elf_fpreg_t elf_vsrreghalf_t32[ELF_NVSRHALFREG];
 #endif
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_POWERPC_ELF_H
+#define _ASM_POWERPC_ELF_H
+
+#include <linux/sched.h>	/* for task_struct */
+#include <asm/page.h>
+#include <asm/string.h>
+#include <uapi/asm/elf.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This is used to ensure we don't load something for the wrong architecture.
  */
@@ -181,6 +195,11 @@ typedef elf_fpreg_t elf_vsrreghalf_t32[ELF_NVSRHALFREG];
 extern unsigned long randomize_et_dyn(unsigned long base);
 #define ELF_ET_DYN_BASE		(randomize_et_dyn(0x20000000))
 
+<<<<<<< HEAD
+=======
+#define ELF_CORE_EFLAGS (is_elf2_task() ? 2 : 0)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Our registers are always unsigned longs, whether we're a 32 bit
  * process or 64 bit, on either a 64 bit or 32 bit kernel.
@@ -211,6 +230,10 @@ typedef elf_vrregset_t elf_fpxregset_t;
    instruction set this cpu supports.  This could be done in userspace,
    but it's not easy, and we've already done it here.  */
 # define ELF_HWCAP	(cur_cpu_spec->cpu_user_features)
+<<<<<<< HEAD
+=======
+# define ELF_HWCAP2	(cur_cpu_spec->cpu_user_features2)
+>>>>>>> refs/remotes/origin/master
 
 /* This yields a string that ld.so will use to load implementation
    specific libraries for optimization.  This is more specific in
@@ -235,6 +258,11 @@ typedef elf_vrregset_t elf_fpxregset_t;
 #ifdef __powerpc64__
 # define SET_PERSONALITY(ex)					\
 do {								\
+<<<<<<< HEAD
+=======
+	if (((ex).e_flags & 0x3) == 2)				\
+		set_thread_flag(TIF_ELF2ABI);			\
+>>>>>>> refs/remotes/origin/master
 	if ((ex).e_ident[EI_CLASS] == ELFCLASS32)		\
 		set_thread_flag(TIF_32BIT);			\
 	else							\
@@ -253,8 +281,11 @@ do {								\
 # define elf_read_implies_exec(ex, exec_stk) (is_32bit_task() ? \
 		(exec_stk == EXSTACK_DEFAULT) : 0)
 #else 
+<<<<<<< HEAD
 # define SET_PERSONALITY(ex) \
   set_personality(PER_LINUX | (current->personality & (~PER_MASK)))
+=======
+>>>>>>> refs/remotes/origin/master
 # define elf_read_implies_exec(ex, exec_stk) (exec_stk == EXSTACK_DEFAULT)
 #endif /* __powerpc64__ */
 
@@ -267,7 +298,15 @@ extern int ucache_bsize;
 struct linux_binprm;
 extern int arch_setup_additional_pages(struct linux_binprm *bprm,
 				       int uses_interp);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define VDSO_AUX_ENT(a,b) NEW_AUX_ENT(a,b);
+=======
+#define VDSO_AUX_ENT(a,b) NEW_AUX_ENT(a,b)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VDSO_AUX_ENT(a,b) NEW_AUX_ENT(a,b)
+>>>>>>> refs/remotes/origin/master
 
 /* 1GB for 64bit, 8MB for 32bit */
 #define STACK_RND_MASK (is_32bit_task() ? \
@@ -277,6 +316,7 @@ extern int arch_setup_additional_pages(struct linux_binprm *bprm,
 extern unsigned long arch_randomize_brk(struct mm_struct *mm);
 #define arch_randomize_brk arch_randomize_brk
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /*
@@ -298,7 +338,11 @@ do {									\
 	NEW_AUX_ENT(AT_DCACHEBSIZE, dcache_bsize);			\
 	NEW_AUX_ENT(AT_ICACHEBSIZE, icache_bsize);			\
 	NEW_AUX_ENT(AT_UCACHEBSIZE, ucache_bsize);			\
+<<<<<<< HEAD
 	VDSO_AUX_ENT(AT_SYSINFO_EHDR, current->mm->context.vdso_base)	\
+=======
+	VDSO_AUX_ENT(AT_SYSINFO_EHDR, current->mm->context.vdso_base);	\
+>>>>>>> refs/remotes/origin/cm-10.0
 } while (0)
 
 /* PowerPC64 relocations defined by the ABIs */
@@ -424,6 +468,8 @@ struct ppc64_opd_entry
 };
 
 #ifdef  __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SPU_BASE
 /* Notes used in ET_CORE. Note name is "SPU/<fd>/<filename>". */
@@ -433,6 +479,9 @@ struct ppc64_opd_entry
 
 #endif /* CONFIG_SPU_BASE */
 
+<<<<<<< HEAD
 #endif /* __KERNEL */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_POWERPC_ELF_H */

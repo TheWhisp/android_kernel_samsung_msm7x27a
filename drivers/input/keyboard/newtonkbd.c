@@ -166,6 +166,7 @@ static struct serio_driver nkbd_drv = {
 	.disconnect	= nkbd_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init nkbd_init(void)
 {
 	return serio_register_driver(&nkbd_drv);
@@ -178,3 +179,6 @@ static void __exit nkbd_exit(void)
 
 module_init(nkbd_init);
 module_exit(nkbd_exit);
+=======
+module_serio_driver(nkbd_drv);
+>>>>>>> refs/remotes/origin/master

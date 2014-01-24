@@ -164,6 +164,7 @@ static struct pci_driver jmicron_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init jmicron_init(void)
 {
 	return pci_register_driver(&jmicron_pci_driver);
@@ -176,6 +177,9 @@ static void __exit jmicron_exit(void)
 
 module_init(jmicron_init);
 module_exit(jmicron_exit);
+=======
+module_pci_driver(jmicron_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("SCSI low-level driver for Jmicron PATA ports");

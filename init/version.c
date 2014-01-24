@@ -12,6 +12,10 @@
 #include <linux/utsname.h>
 #include <generated/utsrelease.h>
 #include <linux/version.h>
+<<<<<<< HEAD
+=======
+#include <linux/proc_ns.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_KALLSYMS
 #define version(a) Version_ ## a
@@ -34,6 +38,10 @@ struct uts_namespace init_uts_ns = {
 		.domainname	= UTS_DOMAINNAME,
 	},
 	.user_ns = &init_user_ns,
+<<<<<<< HEAD
+=======
+	.proc_inum = PROC_UTS_INIT_INO,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL_GPL(init_uts_ns);
 

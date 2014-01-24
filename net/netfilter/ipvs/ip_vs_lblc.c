@@ -90,11 +90,20 @@
  *      IP address and its destination server
  */
 struct ip_vs_lblc_entry {
+<<<<<<< HEAD
 	struct list_head        list;
 	int			af;		/* address family */
 	union nf_inet_addr      addr;           /* destination IP address */
 	struct ip_vs_dest       *dest;          /* real server (cache) */
 	unsigned long           lastuse;        /* last used time */
+=======
+	struct hlist_node	list;
+	int			af;		/* address family */
+	union nf_inet_addr      addr;           /* destination IP address */
+	struct ip_vs_dest	*dest;          /* real server (cache) */
+	unsigned long           lastuse;        /* last used time */
+	struct rcu_head		rcu_head;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -102,12 +111,23 @@ struct ip_vs_lblc_entry {
  *      IPVS lblc hash table
  */
 struct ip_vs_lblc_table {
+<<<<<<< HEAD
 	struct list_head        bucket[IP_VS_LBLC_TAB_SIZE];  /* hash bucket */
 	atomic_t                entries;        /* number of entries */
 	int                     max_size;       /* maximum size of entries */
 	struct timer_list       periodic_timer; /* collect stale entries */
 	int                     rover;          /* rover for expire check */
 	int                     counter;        /* counter for no expire */
+=======
+	struct rcu_head		rcu_head;
+	struct hlist_head	bucket[IP_VS_LBLC_TAB_SIZE];  /* hash bucket */
+	struct timer_list       periodic_timer; /* collect stale entries */
+	atomic_t                entries;        /* number of entries */
+	int                     max_size;       /* maximum size of entries */
+	int                     rover;          /* rover for expire check */
+	int                     counter;        /* counter for no expire */
+	bool			dead;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -115,7 +135,11 @@ struct ip_vs_lblc_table {
  *      IPVS LBLC sysctl table
  */
 #ifdef CONFIG_SYSCTL
+<<<<<<< HEAD
 static ctl_table vs_vars_table[] = {
+=======
+static struct ctl_table vs_vars_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "lblc_expiration",
 		.data		= NULL,
@@ -127,6 +151,7 @@ static ctl_table vs_vars_table[] = {
 };
 #endif
 
+<<<<<<< HEAD
 static inline void ip_vs_lblc_free(struct ip_vs_lblc_entry *en)
 {
 	list_del(&en->list);
@@ -138,11 +163,32 @@ static inline void ip_vs_lblc_free(struct ip_vs_lblc_entry *en)
 	kfree(en);
 }
 
+=======
+static void ip_vs_lblc_rcu_free(struct rcu_head *head)
+{
+	struct ip_vs_lblc_entry *en = container_of(head,
+						   struct ip_vs_lblc_entry,
+						   rcu_head);
+
+	ip_vs_dest_put_and_free(en->dest);
+	kfree(en);
+}
+
+static inline void ip_vs_lblc_del(struct ip_vs_lblc_entry *en)
+{
+	hlist_del_rcu(&en->list);
+	call_rcu(&en->rcu_head, ip_vs_lblc_rcu_free);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Returns hash value for IPVS LBLC entry
  */
+<<<<<<< HEAD
 static inline unsigned
+=======
+static inline unsigned int
+>>>>>>> refs/remotes/origin/master
 ip_vs_lblc_hashkey(int af, const union nf_inet_addr *addr)
 {
 	__be32 addr_fold = addr->ip;
@@ -163,25 +209,42 @@ ip_vs_lblc_hashkey(int af, const union nf_inet_addr *addr)
 static void
 ip_vs_lblc_hash(struct ip_vs_lblc_table *tbl, struct ip_vs_lblc_entry *en)
 {
+<<<<<<< HEAD
 	unsigned hash = ip_vs_lblc_hashkey(en->af, &en->addr);
 
 	list_add(&en->list, &tbl->bucket[hash]);
+=======
+	unsigned int hash = ip_vs_lblc_hashkey(en->af, &en->addr);
+
+	hlist_add_head_rcu(&en->list, &tbl->bucket[hash]);
+>>>>>>> refs/remotes/origin/master
 	atomic_inc(&tbl->entries);
 }
 
 
+<<<<<<< HEAD
 /*
  *  Get ip_vs_lblc_entry associated with supplied parameters. Called under read
  *  lock
  */
+=======
+/* Get ip_vs_lblc_entry associated with supplied parameters. */
+>>>>>>> refs/remotes/origin/master
 static inline struct ip_vs_lblc_entry *
 ip_vs_lblc_get(int af, struct ip_vs_lblc_table *tbl,
 	       const union nf_inet_addr *addr)
 {
+<<<<<<< HEAD
 	unsigned hash = ip_vs_lblc_hashkey(af, addr);
 	struct ip_vs_lblc_entry *en;
 
 	list_for_each_entry(en, &tbl->bucket[hash], list)
+=======
+	unsigned int hash = ip_vs_lblc_hashkey(af, addr);
+	struct ip_vs_lblc_entry *en;
+
+	hlist_for_each_entry_rcu(en, &tbl->bucket[hash], list)
+>>>>>>> refs/remotes/origin/master
 		if (ip_vs_addr_equal(af, &en->addr, addr))
 			return en;
 
@@ -191,7 +254,11 @@ ip_vs_lblc_get(int af, struct ip_vs_lblc_table *tbl,
 
 /*
  * Create or update an ip_vs_lblc_entry, which is a mapping of a destination IP
+<<<<<<< HEAD
  * address to a server. Called under write lock.
+=======
+ * address to a server. Called under spin lock.
+>>>>>>> refs/remotes/origin/master
  */
 static inline struct ip_vs_lblc_entry *
 ip_vs_lblc_new(struct ip_vs_lblc_table *tbl, const union nf_inet_addr *daddr,
@@ -200,12 +267,18 @@ ip_vs_lblc_new(struct ip_vs_lblc_table *tbl, const union nf_inet_addr *daddr,
 	struct ip_vs_lblc_entry *en;
 
 	en = ip_vs_lblc_get(dest->af, tbl, daddr);
+<<<<<<< HEAD
 	if (!en) {
 		en = kmalloc(sizeof(*en), GFP_ATOMIC);
+<<<<<<< HEAD
 		if (!en) {
 			pr_err("%s(): no memory\n", __func__);
 			return NULL;
 		}
+=======
+		if (!en)
+			return NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		en->af = dest->af;
 		ip_vs_addr_copy(dest->af, &en->addr, daddr);
@@ -220,6 +293,25 @@ ip_vs_lblc_new(struct ip_vs_lblc_table *tbl, const union nf_inet_addr *daddr,
 		atomic_inc(&dest->refcnt);
 		en->dest = dest;
 	}
+=======
+	if (en) {
+		if (en->dest == dest)
+			return en;
+		ip_vs_lblc_del(en);
+	}
+	en = kmalloc(sizeof(*en), GFP_ATOMIC);
+	if (!en)
+		return NULL;
+
+	en->af = dest->af;
+	ip_vs_addr_copy(dest->af, &en->addr, daddr);
+	en->lastuse = jiffies;
+
+	ip_vs_dest_hold(dest);
+	en->dest = dest;
+
+	ip_vs_lblc_hash(tbl, en);
+>>>>>>> refs/remotes/origin/master
 
 	return en;
 }
@@ -228,6 +320,7 @@ ip_vs_lblc_new(struct ip_vs_lblc_table *tbl, const union nf_inet_addr *daddr,
 /*
  *      Flush all the entries of the specified table.
  */
+<<<<<<< HEAD
 static void ip_vs_lblc_flush(struct ip_vs_lblc_table *tbl)
 {
 	struct ip_vs_lblc_entry *en, *nxt;
@@ -239,6 +332,24 @@ static void ip_vs_lblc_flush(struct ip_vs_lblc_table *tbl)
 			atomic_dec(&tbl->entries);
 		}
 	}
+=======
+static void ip_vs_lblc_flush(struct ip_vs_service *svc)
+{
+	struct ip_vs_lblc_table *tbl = svc->sched_data;
+	struct ip_vs_lblc_entry *en;
+	struct hlist_node *next;
+	int i;
+
+	spin_lock_bh(&svc->sched_lock);
+	tbl->dead = 1;
+	for (i=0; i<IP_VS_LBLC_TAB_SIZE; i++) {
+		hlist_for_each_entry_safe(en, next, &tbl->bucket[i], list) {
+			ip_vs_lblc_del(en);
+			atomic_dec(&tbl->entries);
+		}
+	}
+	spin_unlock_bh(&svc->sched_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int sysctl_lblc_expiration(struct ip_vs_service *svc)
@@ -254,24 +365,41 @@ static int sysctl_lblc_expiration(struct ip_vs_service *svc)
 static inline void ip_vs_lblc_full_check(struct ip_vs_service *svc)
 {
 	struct ip_vs_lblc_table *tbl = svc->sched_data;
+<<<<<<< HEAD
 	struct ip_vs_lblc_entry *en, *nxt;
+=======
+	struct ip_vs_lblc_entry *en;
+	struct hlist_node *next;
+>>>>>>> refs/remotes/origin/master
 	unsigned long now = jiffies;
 	int i, j;
 
 	for (i=0, j=tbl->rover; i<IP_VS_LBLC_TAB_SIZE; i++) {
 		j = (j + 1) & IP_VS_LBLC_TAB_MASK;
 
+<<<<<<< HEAD
 		write_lock(&svc->sched_lock);
 		list_for_each_entry_safe(en, nxt, &tbl->bucket[j], list) {
+=======
+		spin_lock(&svc->sched_lock);
+		hlist_for_each_entry_safe(en, next, &tbl->bucket[j], list) {
+>>>>>>> refs/remotes/origin/master
 			if (time_before(now,
 					en->lastuse +
 					sysctl_lblc_expiration(svc)))
 				continue;
 
+<<<<<<< HEAD
 			ip_vs_lblc_free(en);
 			atomic_dec(&tbl->entries);
 		}
 		write_unlock(&svc->sched_lock);
+=======
+			ip_vs_lblc_del(en);
+			atomic_dec(&tbl->entries);
+		}
+		spin_unlock(&svc->sched_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 	tbl->rover = j;
 }
@@ -295,7 +423,12 @@ static void ip_vs_lblc_check_expire(unsigned long data)
 	unsigned long now = jiffies;
 	int goal;
 	int i, j;
+<<<<<<< HEAD
 	struct ip_vs_lblc_entry *en, *nxt;
+=======
+	struct ip_vs_lblc_entry *en;
+	struct hlist_node *next;
+>>>>>>> refs/remotes/origin/master
 
 	if ((tbl->counter % COUNT_FOR_FULL_EXPIRATION) == 0) {
 		/* do full expiration check */
@@ -316,6 +449,7 @@ static void ip_vs_lblc_check_expire(unsigned long data)
 	for (i=0, j=tbl->rover; i<IP_VS_LBLC_TAB_SIZE; i++) {
 		j = (j + 1) & IP_VS_LBLC_TAB_MASK;
 
+<<<<<<< HEAD
 		write_lock(&svc->sched_lock);
 		list_for_each_entry_safe(en, nxt, &tbl->bucket[j], list) {
 			if (time_before(now, en->lastuse + ENTRY_TIMEOUT))
@@ -326,6 +460,18 @@ static void ip_vs_lblc_check_expire(unsigned long data)
 			goal--;
 		}
 		write_unlock(&svc->sched_lock);
+=======
+		spin_lock(&svc->sched_lock);
+		hlist_for_each_entry_safe(en, next, &tbl->bucket[j], list) {
+			if (time_before(now, en->lastuse + ENTRY_TIMEOUT))
+				continue;
+
+			ip_vs_lblc_del(en);
+			atomic_dec(&tbl->entries);
+			goal--;
+		}
+		spin_unlock(&svc->sched_lock);
+>>>>>>> refs/remotes/origin/master
 		if (goal <= 0)
 			break;
 	}
@@ -344,11 +490,24 @@ static int ip_vs_lblc_init_svc(struct ip_vs_service *svc)
 	/*
 	 *    Allocate the ip_vs_lblc_table for this service
 	 */
+<<<<<<< HEAD
 	tbl = kmalloc(sizeof(*tbl), GFP_ATOMIC);
+<<<<<<< HEAD
 	if (tbl == NULL) {
 		pr_err("%s(): no memory\n", __func__);
 		return -ENOMEM;
 	}
+=======
+	if (tbl == NULL)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tbl = kmalloc(sizeof(*tbl), GFP_KERNEL);
+	if (tbl == NULL)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	svc->sched_data = tbl;
 	IP_VS_DBG(6, "LBLC hash table (memory=%Zdbytes) allocated for "
 		  "current service\n", sizeof(*tbl));
@@ -357,11 +516,19 @@ static int ip_vs_lblc_init_svc(struct ip_vs_service *svc)
 	 *    Initialize the hash buckets
 	 */
 	for (i=0; i<IP_VS_LBLC_TAB_SIZE; i++) {
+<<<<<<< HEAD
 		INIT_LIST_HEAD(&tbl->bucket[i]);
+=======
+		INIT_HLIST_HEAD(&tbl->bucket[i]);
+>>>>>>> refs/remotes/origin/master
 	}
 	tbl->max_size = IP_VS_LBLC_TAB_SIZE*16;
 	tbl->rover = 0;
 	tbl->counter = 1;
+<<<<<<< HEAD
+=======
+	tbl->dead = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *    Hook periodic timer for garbage collection
@@ -374,7 +541,11 @@ static int ip_vs_lblc_init_svc(struct ip_vs_service *svc)
 }
 
 
+<<<<<<< HEAD
 static int ip_vs_lblc_done_svc(struct ip_vs_service *svc)
+=======
+static void ip_vs_lblc_done_svc(struct ip_vs_service *svc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ip_vs_lblc_table *tbl = svc->sched_data;
 
@@ -382,6 +553,7 @@ static int ip_vs_lblc_done_svc(struct ip_vs_service *svc)
 	del_timer_sync(&tbl->periodic_timer);
 
 	/* got to clean up table entries here */
+<<<<<<< HEAD
 	ip_vs_lblc_flush(tbl);
 
 	/* release the table itself */
@@ -390,6 +562,14 @@ static int ip_vs_lblc_done_svc(struct ip_vs_service *svc)
 		  sizeof(*tbl));
 
 	return 0;
+=======
+	ip_vs_lblc_flush(svc);
+
+	/* release the table itself */
+	kfree_rcu(tbl, rcu_head);
+	IP_VS_DBG(6, "LBLC hash table (memory=%Zdbytes) released\n",
+		  sizeof(*tbl));
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -411,7 +591,11 @@ __ip_vs_lblc_schedule(struct ip_vs_service *svc)
 	 * The server with weight=0 is quiesced and will not receive any
 	 * new connection.
 	 */
+<<<<<<< HEAD
 	list_for_each_entry(dest, &svc->destinations, n_list) {
+=======
+	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+>>>>>>> refs/remotes/origin/master
 		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
 			continue;
 		if (atomic_read(&dest->weight) > 0) {
@@ -426,13 +610,22 @@ __ip_vs_lblc_schedule(struct ip_vs_service *svc)
 	 *    Find the destination with the least load.
 	 */
   nextstage:
+<<<<<<< HEAD
 	list_for_each_entry_continue(dest, &svc->destinations, n_list) {
+=======
+	list_for_each_entry_continue_rcu(dest, &svc->destinations, n_list) {
+>>>>>>> refs/remotes/origin/master
 		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
 			continue;
 
 		doh = ip_vs_dest_conn_overhead(dest);
+<<<<<<< HEAD
 		if (loh * atomic_read(&dest->weight) >
 		    doh * atomic_read(&least->weight)) {
+=======
+		if ((__s64)loh * atomic_read(&dest->weight) >
+		    (__s64)doh * atomic_read(&least->weight)) {
+>>>>>>> refs/remotes/origin/master
 			least = dest;
 			loh = doh;
 		}
@@ -460,7 +653,11 @@ is_overloaded(struct ip_vs_dest *dest, struct ip_vs_service *svc)
 	if (atomic_read(&dest->activeconns) > atomic_read(&dest->weight)) {
 		struct ip_vs_dest *d;
 
+<<<<<<< HEAD
 		list_for_each_entry(d, &svc->destinations, n_list) {
+=======
+		list_for_each_entry_rcu(d, &svc->destinations, n_list) {
+>>>>>>> refs/remotes/origin/master
 			if (atomic_read(&d->activeconns)*2
 			    < atomic_read(&d->weight)) {
 				return 1;
@@ -475,6 +672,7 @@ is_overloaded(struct ip_vs_dest *dest, struct ip_vs_service *svc)
  *    Locality-Based (weighted) Least-Connection scheduling
  */
 static struct ip_vs_dest *
+<<<<<<< HEAD
 ip_vs_lblc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
 {
 	struct ip_vs_lblc_table *tbl = svc->sched_data;
@@ -489,6 +687,19 @@ ip_vs_lblc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
 	/* First look in our cache */
 	read_lock(&svc->sched_lock);
 	en = ip_vs_lblc_get(svc->af, tbl, &iph.daddr);
+=======
+ip_vs_lblc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+		    struct ip_vs_iphdr *iph)
+{
+	struct ip_vs_lblc_table *tbl = svc->sched_data;
+	struct ip_vs_dest *dest = NULL;
+	struct ip_vs_lblc_entry *en;
+
+	IP_VS_DBG(6, "%s(): Scheduling...\n", __func__);
+
+	/* First look in our cache */
+	en = ip_vs_lblc_get(svc->af, tbl, &iph->daddr);
+>>>>>>> refs/remotes/origin/master
 	if (en) {
 		/* We only hold a read lock, but this is atomic */
 		en->lastuse = jiffies;
@@ -502,6 +713,7 @@ ip_vs_lblc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
 		 * free up entries from the trash at any time.
 		 */
 
+<<<<<<< HEAD
 		if (en->dest->flags & IP_VS_DEST_F_AVAILABLE)
 			dest = en->dest;
 	}
@@ -510,6 +722,13 @@ ip_vs_lblc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
 	/* If the destination has a weight and is not overloaded, use it */
 	if (dest && atomic_read(&dest->weight) > 0 && !is_overloaded(dest, svc))
 		goto out;
+=======
+		dest = en->dest;
+		if ((dest->flags & IP_VS_DEST_F_AVAILABLE) &&
+		    atomic_read(&dest->weight) > 0 && !is_overloaded(dest, svc))
+			goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* No cache entry or it is invalid, time to schedule */
 	dest = __ip_vs_lblc_schedule(svc);
@@ -519,6 +738,7 @@ ip_vs_lblc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
 	}
 
 	/* If we fail to create a cache entry, we'll just use the valid dest */
+<<<<<<< HEAD
 	write_lock(&svc->sched_lock);
 	ip_vs_lblc_new(tbl, &iph.daddr, dest);
 	write_unlock(&svc->sched_lock);
@@ -526,6 +746,16 @@ ip_vs_lblc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
 out:
 	IP_VS_DBG_BUF(6, "LBLC: destination IP address %s --> server %s:%d\n",
 		      IP_VS_DBG_ADDR(svc->af, &iph.daddr),
+=======
+	spin_lock_bh(&svc->sched_lock);
+	if (!tbl->dead)
+		ip_vs_lblc_new(tbl, &iph->daddr, dest);
+	spin_unlock_bh(&svc->sched_lock);
+
+out:
+	IP_VS_DBG_BUF(6, "LBLC: destination IP address %s --> server %s:%d\n",
+		      IP_VS_DBG_ADDR(svc->af, &iph->daddr),
+>>>>>>> refs/remotes/origin/master
 		      IP_VS_DBG_ADDR(svc->af, &dest->addr), ntohs(dest->port));
 
 	return dest;
@@ -554,20 +784,44 @@ static int __net_init __ip_vs_lblc_init(struct net *net)
 {
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!ipvs)
+		return -ENOENT;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ipvs)
+		return -ENOENT;
+
+>>>>>>> refs/remotes/origin/master
 	if (!net_eq(net, &init_net)) {
 		ipvs->lblc_ctl_table = kmemdup(vs_vars_table,
 						sizeof(vs_vars_table),
 						GFP_KERNEL);
 		if (ipvs->lblc_ctl_table == NULL)
 			return -ENOMEM;
+<<<<<<< HEAD
+=======
+
+		/* Don't export sysctls to unprivileged users */
+		if (net->user_ns != &init_user_ns)
+			ipvs->lblc_ctl_table[0].procname = NULL;
+
+>>>>>>> refs/remotes/origin/master
 	} else
 		ipvs->lblc_ctl_table = vs_vars_table;
 	ipvs->sysctl_lblc_expiration = DEFAULT_EXPIRATION;
 	ipvs->lblc_ctl_table[0].data = &ipvs->sysctl_lblc_expiration;
 
 	ipvs->lblc_ctl_header =
+<<<<<<< HEAD
 		register_net_sysctl_table(net, net_vs_ctl_path,
 					  ipvs->lblc_ctl_table);
+=======
+		register_net_sysctl(net, "net/ipv4/vs", ipvs->lblc_ctl_table);
+>>>>>>> refs/remotes/origin/master
 	if (!ipvs->lblc_ctl_header) {
 		if (!net_eq(net, &init_net))
 			kfree(ipvs->lblc_ctl_table);
@@ -617,6 +871,10 @@ static void __exit ip_vs_lblc_cleanup(void)
 {
 	unregister_ip_vs_scheduler(&ip_vs_lblc_scheduler);
 	unregister_pernet_subsys(&ip_vs_lblc_ops);
+<<<<<<< HEAD
+=======
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 }
 
 

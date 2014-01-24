@@ -1,7 +1,15 @@
 /*******************************************************************************
 
     AudioScience HPI driver
+<<<<<<< HEAD
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -21,6 +29,14 @@ Common Linux HPI ioctl and module probe/remove functions
 #define SOURCEFILE_NAME "hpioctl.c"
 
 #include "hpi_internal.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "hpi_version.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "hpi_version.h"
+>>>>>>> refs/remotes/origin/master
 #include "hpimsginit.h"
 #include "hpidebug.h"
 #include "hpimsgx.h"
@@ -33,6 +49,14 @@ Common Linux HPI ioctl and module probe/remove functions
 #include <asm/uaccess.h>
 #include <linux/pci.h>
 #include <linux/stringify.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef MODULE_FIRMWARE
 MODULE_FIRMWARE("asihpi/dsp5000.bin");
@@ -64,9 +88,17 @@ static struct hpi_adapter adapters[HPI_MAX_ADAPTERS];
 static void hpi_send_recv_f(struct hpi_message *phm, struct hpi_response *phr,
 	struct file *file)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int adapter = phm->adapter_index;
 
 	if ((adapter >= HPI_MAX_ADAPTERS || adapter < 0)
+=======
+	if ((phm->adapter_index >= HPI_MAX_ADAPTERS)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((phm->adapter_index >= HPI_MAX_ADAPTERS)
+>>>>>>> refs/remotes/origin/master
 		&& (phm->object != HPI_OBJ_SUBSYSTEM))
 		phr->error = HPI_ERROR_INVALID_OBJ_INDEX;
 	else
@@ -107,7 +139,13 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	union hpi_response_buffer_v1 *hr;
 	u16 res_max_size;
 	u32 uncopied_bytes;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct hpi_adapter *pa = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	if (cmd != HPI_IOCTL_LINUX)
@@ -157,11 +195,17 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (hm->h.adapter_index >= HPI_MAX_ADAPTERS) {
 		err = -EINVAL;
 		goto out;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (hm->h.function) {
 	case HPI_SUBSYS_CREATE_ADAPTER:
 	case HPI_ADAPTER_DELETE:
@@ -183,6 +227,8 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	} else {
 		u16 __user *ptr = NULL;
 		u32 size = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		/* -1=no data 0=read from user mem, 1=write to user mem */
 		int wrflag = -1;
@@ -193,6 +239,23 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			hpi_init_response(&hr->r0, HPI_OBJ_ADAPTER,
 				HPI_ADAPTER_OPEN,
 				HPI_ERROR_BAD_ADAPTER_NUMBER);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/* -1=no data 0=read from user mem, 1=write to user mem */
+		int wrflag = -1;
+		struct hpi_adapter *pa = NULL;
+
+		if (hm->h.adapter_index < ARRAY_SIZE(adapters))
+			pa = &adapters[hm->h.adapter_index];
+
+		if (!pa || !pa->adapter || !pa->adapter->type) {
+			hpi_init_response(&hr->r0, hm->h.object,
+				hm->h.function, HPI_ERROR_BAD_ADAPTER_NUMBER);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			uncopied_bytes =
 				copy_to_user(puhr, hr, sizeof(hr->h));
@@ -203,7 +266,15 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			goto out;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (mutex_lock_interruptible(&adapters[adapter].mutex)) {
+=======
+		if (mutex_lock_interruptible(&pa->mutex)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (mutex_lock_interruptible(&pa->mutex)) {
+>>>>>>> refs/remotes/origin/master
 			err = -EINTR;
 			goto out;
 		}
@@ -239,8 +310,16 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 							"stream buffer size %d\n",
 							size);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 						mutex_unlock(&adapters
 							[adapter].mutex);
+=======
+						mutex_unlock(&pa->mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						mutex_unlock(&pa->mutex);
+>>>>>>> refs/remotes/origin/master
 						err = -EINVAL;
 						goto out;
 					}
@@ -281,7 +360,15 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 					uncopied_bytes, size);
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mutex_unlock(&adapters[adapter].mutex);
+=======
+		mutex_unlock(&pa->mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mutex_unlock(&pa->mutex);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* on return response size must be set */
@@ -314,10 +401,22 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 int __devinit asihpi_adapter_probe(struct pci_dev *pci_dev,
 	const struct pci_device_id *pci_id)
 {
 	int idx, nm;
+<<<<<<< HEAD
+=======
+	int adapter_index;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int asihpi_adapter_probe(struct pci_dev *pci_dev,
+			 const struct pci_device_id *pci_id)
+{
+	int idx, nm;
+	int adapter_index;
+>>>>>>> refs/remotes/origin/master
 	unsigned int memlen;
 	struct hpi_message hm;
 	struct hpi_response hr;
@@ -332,7 +431,11 @@ int __devinit asihpi_adapter_probe(struct pci_dev *pci_dev,
 		pci_dev->subsystem_device, pci_dev->devfn);
 
 	if (pci_enable_device(pci_dev) < 0) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pci_dev->dev,
+=======
+		dev_err(&pci_dev->dev,
+>>>>>>> refs/remotes/origin/master
 			"pci_enable_device failed, disabling device\n");
 		return -EIO;
 	}
@@ -346,8 +449,14 @@ int __devinit asihpi_adapter_probe(struct pci_dev *pci_dev,
 
 	hm.adapter_index = HPI_ADAPTER_INDEX_INVALID;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	adapter.pci = pci_dev;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	nm = HPI_MAX_ADAPTER_MEM_SPACES;
 
 	for (idx = 0; idx < nm; idx++) {
@@ -356,18 +465,37 @@ int __devinit asihpi_adapter_probe(struct pci_dev *pci_dev,
 
 		if (pci_resource_flags(pci_dev, idx) & IORESOURCE_MEM) {
 			memlen = pci_resource_len(pci_dev, idx);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			adapter.ap_remapped_mem_base[idx] =
 				ioremap(pci_resource_start(pci_dev, idx),
 				memlen);
 			if (!adapter.ap_remapped_mem_base[idx]) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			pci.ap_mem_base[idx] =
+				ioremap(pci_resource_start(pci_dev, idx),
+				memlen);
+			if (!pci.ap_mem_base[idx]) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				HPI_DEBUG_LOG(ERROR,
 					"ioremap failed, aborting\n");
 				/* unmap previously mapped pci mem space */
 				goto err;
 			}
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		pci.ap_mem_base[idx] = adapter.ap_remapped_mem_base[idx];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pci.pci_dev = pci_dev;
@@ -379,6 +507,18 @@ int __devinit asihpi_adapter_probe(struct pci_dev *pci_dev,
 	if (hr.error)
 		goto err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	adapter_index = hr.u.s.adapter_index;
+	adapter.adapter = hpi_find_adapter(adapter_index);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	adapter_index = hr.u.s.adapter_index;
+	adapter.adapter = hpi_find_adapter(adapter_index);
+
+>>>>>>> refs/remotes/origin/master
 	if (prealloc_stream_buf) {
 		adapter.p_buffer = vmalloc(prealloc_stream_buf);
 		if (!adapter.p_buffer) {
@@ -390,17 +530,31 @@ int __devinit asihpi_adapter_probe(struct pci_dev *pci_dev,
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	adapter.index = hr.u.s.adapter_index;
 	adapter.type = hr.u.s.adapter_type;
 
 	hpi_init_message_response(&hm, &hr, HPI_OBJ_ADAPTER,
 		HPI_ADAPTER_OPEN);
 	hm.adapter_index = adapter.index;
+=======
+	hpi_init_message_response(&hm, &hr, HPI_OBJ_ADAPTER,
+		HPI_ADAPTER_OPEN);
+	hm.adapter_index = adapter.adapter->index;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hpi_init_message_response(&hm, &hr, HPI_OBJ_ADAPTER,
+		HPI_ADAPTER_OPEN);
+	hm.adapter_index = adapter.adapter->index;
+>>>>>>> refs/remotes/origin/master
 	hpi_send_recv_ex(&hm, &hr, HOWNER_KERNEL);
 
 	if (hr.error)
 		goto err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	adapter.snd_card_asihpi = NULL;
 	/* WARNING can't init mutex in 'adapter'
 	 * and then copy it to adapters[] ?!?!
@@ -412,14 +566,45 @@ int __devinit asihpi_adapter_probe(struct pci_dev *pci_dev,
 	dev_printk(KERN_INFO, &pci_dev->dev,
 		"probe succeeded for ASI%04X HPI index %d\n", adapter.type,
 		adapter.index);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* WARNING can't init mutex in 'adapter'
+	 * and then copy it to adapters[] ?!?!
+	 */
+	adapters[adapter_index] = adapter;
+	mutex_init(&adapters[adapter_index].mutex);
+	pci_set_drvdata(pci_dev, &adapters[adapter_index]);
+
+<<<<<<< HEAD
+	dev_printk(KERN_INFO, &pci_dev->dev,
+		"probe succeeded for ASI%04X HPI index %d\n",
+		adapter.adapter->type, adapter_index);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_info(&pci_dev->dev, "probe succeeded for ASI%04X HPI index %d\n",
+		 adapter.adapter->type, adapter_index);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 err:
 	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (adapter.ap_remapped_mem_base[idx]) {
 			iounmap(adapter.ap_remapped_mem_base[idx]);
 			adapter.ap_remapped_mem_base[idx] = NULL;
+=======
+		if (pci.ap_mem_base[idx]) {
+			iounmap(pci.ap_mem_base[idx]);
+			pci.ap_mem_base[idx] = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pci.ap_mem_base[idx]) {
+			iounmap(pci.ap_mem_base[idx]);
+			pci.ap_mem_base[idx] = NULL;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -432,37 +617,81 @@ err:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 void __devexit asihpi_adapter_remove(struct pci_dev *pci_dev)
+=======
+void asihpi_adapter_remove(struct pci_dev *pci_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int idx;
 	struct hpi_message hm;
 	struct hpi_response hr;
 	struct hpi_adapter *pa;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pa = pci_get_drvdata(pci_dev);
 
 	hpi_init_message_response(&hm, &hr, HPI_OBJ_ADAPTER,
 		HPI_ADAPTER_DELETE);
 	hm.adapter_index = pa->index;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct hpi_pci pci;
+
+	pa = pci_get_drvdata(pci_dev);
+	pci = pa->adapter->pci;
+
+	hpi_init_message_response(&hm, &hr, HPI_OBJ_ADAPTER,
+		HPI_ADAPTER_DELETE);
+	hm.adapter_index = pa->adapter->index;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hpi_send_recv_ex(&hm, &hr, HOWNER_KERNEL);
 
 	/* unmap PCI memory space, mapped during device init. */
 	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (pa->ap_remapped_mem_base[idx]) {
 			iounmap(pa->ap_remapped_mem_base[idx]);
 			pa->ap_remapped_mem_base[idx] = NULL;
 		}
+=======
+		if (pci.ap_mem_base[idx])
+			iounmap(pci.ap_mem_base[idx]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pci.ap_mem_base[idx])
+			iounmap(pci.ap_mem_base[idx]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (pa->p_buffer)
 		vfree(pa->p_buffer);
 
+<<<<<<< HEAD
 	pci_set_drvdata(pci_dev, NULL);
 	if (1)
 		dev_printk(KERN_INFO, &pci_dev->dev,
 			"remove %04x:%04x,%04x:%04x,%04x," " HPI index %d.\n",
 			pci_dev->vendor, pci_dev->device,
 			pci_dev->subsystem_vendor, pci_dev->subsystem_device,
+<<<<<<< HEAD
 			pci_dev->devfn, pa->index);
+=======
+			pci_dev->devfn, pa->adapter->index);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (1)
+		dev_info(&pci_dev->dev,
+			 "remove %04x:%04x,%04x:%04x,%04x, HPI index %d\n",
+			 pci_dev->vendor, pci_dev->device,
+			 pci_dev->subsystem_vendor, pci_dev->subsystem_device,
+			 pci_dev->devfn, pa->adapter->index);
+>>>>>>> refs/remotes/origin/master
 
 	memset(pa, 0, sizeof(*pa));
 }

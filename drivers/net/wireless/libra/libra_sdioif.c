@@ -17,6 +17,14 @@
 #include <linux/mmc/mmc.h>
 #include <linux/mmc/host.h>
 #include <linux/mmc/card.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Libra SDIO function device */
 static struct sdio_func *libra_sdio_func;
@@ -26,6 +34,21 @@ static int libra_mmc_host_index;
 /* SDIO Card ID / Device ID */
 static unsigned short  libra_sdio_card_id;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* completion variables */
+struct completion gCard_rem_event_var;
+EXPORT_SYMBOL(gCard_rem_event_var);
+struct completion gShutdown_event_var;
+EXPORT_SYMBOL(gShutdown_event_var);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static suspend_handler_t *libra_suspend_hldr;
 static resume_handler_t *libra_resume_hldr;
 static notify_card_removal_t *libra_notify_card_removal_hdlr;

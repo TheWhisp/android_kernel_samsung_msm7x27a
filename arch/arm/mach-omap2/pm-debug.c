@@ -27,6 +27,7 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 #include <plat/clock.h>
 #include <plat/board.h>
 #include "powerdomain.h"
@@ -34,10 +35,20 @@
 #include <plat/dmtimer.h>
 #include <plat/omap-pm.h>
 
+=======
+#include "clock.h"
+#include "powerdomain.h"
+#include "clockdomain.h"
+#include "omap-pm.h"
+
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 #include "cm2xxx_3xxx.h"
 #include "prm2xxx_3xxx.h"
 #include "pm.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int omap2_pm_debug;
 u32 enable_off_mode;
 u32 sleep_while_idle;
@@ -178,15 +189,27 @@ void omap2_pm_wakeup_on_timer(u32 seconds, u32 milliseconds)
 		" (%d ticks at %d ticks/sec.)\n",
 		seconds, milliseconds, cycles, tick_rate);
 }
+=======
+u32 enable_off_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+u32 enable_off_mode;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DEBUG_FS
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void pm_dbg_regset_store(u32 *ptr);
 
 static struct dentry *pm_dbg_dir;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int pm_dbg_init_done;
 
 static int pm_dbg_init(void);
@@ -196,6 +219,8 @@ enum {
 	DEBUG_FILE_TIMERS,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct pm_module_def {
 	char name[8]; /* Name of the module */
 	short type; /* CM or PRM */
@@ -350,6 +375,10 @@ int pm_dbg_regset_save(int reg_set)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const char pwrdm_state_names[][PWRDM_MAX_PWRSTS] = {
 	"OFF",
 	"RET",
@@ -381,10 +410,15 @@ static int clkdm_dbg_show_counter(struct clockdomain *clkdm, void *user)
 		strncmp(clkdm->name, "dpll", 4) == 0)
 		return 0;
 
+<<<<<<< HEAD
 	seq_printf(s, "%s->%s (%d)", clkdm->name,
 			clkdm->pwrdm.ptr->name,
 			atomic_read(&clkdm->usecount));
 	seq_printf(s, "\n");
+=======
+	seq_printf(s, "%s->%s (%d)\n", clkdm->name, clkdm->pwrdm.ptr->name,
+		   clkdm->usecount);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -466,14 +500,23 @@ static int pm_dbg_open(struct inode *inode, struct file *file)
 	default:
 		return single_open(file, pm_dbg_show_timers,
 			&inode->i_private);
+<<<<<<< HEAD
 	};
 }
 
+<<<<<<< HEAD
 static int pm_dbg_reg_open(struct inode *inode, struct file *file)
 {
 	return single_open(file, pm_dbg_show_regs, inode->i_private);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations debug_fops = {
 	.open           = pm_dbg_open,
 	.read           = seq_read,
@@ -481,6 +524,8 @@ static const struct file_operations debug_fops = {
 	.release        = single_release,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct file_operations debug_reg_fops = {
 	.open           = pm_dbg_reg_open,
 	.read           = seq_read,
@@ -515,6 +560,10 @@ int pm_dbg_regset_init(int reg_set)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int pwrdm_suspend_get(void *data, u64 *val)
 {
 	int ret = -EINVAL;
@@ -556,8 +605,18 @@ static int __init pwrdms_setup(struct powerdomain *pwrdm, void *dir)
 		return 0;
 
 	d = debugfs_create_dir(pwrdm->name, (struct dentry *)dir);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	(void) debugfs_create_file("suspend", S_IRUGO|S_IWUSR, d,
+=======
+	if (!(IS_ERR_OR_NULL(d)))
+		(void) debugfs_create_file("suspend", S_IRUGO|S_IWUSR, d,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (d)
+		(void) debugfs_create_file("suspend", S_IRUGO|S_IWUSR, d,
+>>>>>>> refs/remotes/origin/master
 			(void *)pwrdm, &pwrdm_suspend_fops);
 
 	return 0;
@@ -576,9 +635,15 @@ static int option_set(void *data, u64 val)
 {
 	u32 *option = data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (option == &wakeup_timer_milliseconds && val >= 1000)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*option = val;
 
 	if (option == &enable_off_mode) {
@@ -595,15 +660,29 @@ static int option_set(void *data, u64 val)
 
 DEFINE_SIMPLE_ATTRIBUTE(pm_dbg_option_fops, option_get, option_set, "%llu\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int pm_dbg_init(void)
 {
 	int i;
 	struct dentry *d;
 	char name[2];
+=======
+static int __init pm_dbg_init(void)
+{
+	struct dentry *d;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init pm_dbg_init(void)
+{
+	struct dentry *d;
+>>>>>>> refs/remotes/origin/master
 
 	if (pm_dbg_init_done)
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_omap34xx())
 		pm_dbg_reg_modules = omap3_pm_reg_modules;
 	else {
@@ -613,7 +692,16 @@ static int pm_dbg_init(void)
 
 	d = debugfs_create_dir("pm_debug", NULL);
 	if (IS_ERR(d))
+=======
+	d = debugfs_create_dir("pm_debug", NULL);
+	if (IS_ERR_OR_NULL(d))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return PTR_ERR(d);
+=======
+	d = debugfs_create_dir("pm_debug", NULL);
+	if (!d)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	(void) debugfs_create_file("count", S_IRUGO,
 		d, (void *)DEBUG_FILE_COUNTERS, &debug_fops);
@@ -622,6 +710,8 @@ static int pm_dbg_init(void)
 
 	pwrdm_for_each(pwrdms_setup, (void *)d);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pm_dbg_dir = debugfs_create_dir("registers", d);
 	if (IS_ERR(pm_dbg_dir))
 		return PTR_ERR(pm_dbg_dir);
@@ -646,10 +736,22 @@ static int pm_dbg_init(void)
 	(void) debugfs_create_file("wakeup_timer_milliseconds",
 			S_IRUGO | S_IWUSR, d, &wakeup_timer_milliseconds,
 			&pm_dbg_option_fops);
+=======
+	(void) debugfs_create_file("enable_off_mode", S_IRUGO | S_IWUSR, d,
+				   &enable_off_mode, &pm_dbg_option_fops);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(void) debugfs_create_file("enable_off_mode", S_IRUGO | S_IWUSR, d,
+				   &enable_off_mode, &pm_dbg_option_fops);
+>>>>>>> refs/remotes/origin/master
 	pm_dbg_init_done = 1;
 
 	return 0;
 }
+<<<<<<< HEAD
 arch_initcall(pm_dbg_init);
+=======
+omap_arch_initcall(pm_dbg_init);
+>>>>>>> refs/remotes/origin/master
 
 #endif

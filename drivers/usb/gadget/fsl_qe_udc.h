@@ -153,10 +153,17 @@ struct usb_ep_para{
 #define USB_BUSMODE_DTB		0x02
 
 /* Endpoint basic handle */
+<<<<<<< HEAD
 #define ep_index(EP)		((EP)->desc->bEndpointAddress & 0xF)
 #define ep_maxpacket(EP)	((EP)->ep.maxpacket)
 #define ep_is_in(EP)	((ep_index(EP) == 0) ? (EP->udc->ep0_dir == \
 			USB_DIR_IN) : ((EP)->desc->bEndpointAddress \
+=======
+#define ep_index(EP)		((EP)->ep.desc->bEndpointAddress & 0xF)
+#define ep_maxpacket(EP)	((EP)->ep.maxpacket)
+#define ep_is_in(EP)	((ep_index(EP) == 0) ? (EP->udc->ep0_dir == \
+			USB_DIR_IN) : ((EP)->ep.desc->bEndpointAddress \
+>>>>>>> refs/remotes/origin/master
 			& USB_DIR_IN) == USB_DIR_IN)
 
 /* ep0 transfer state */
@@ -266,7 +273,10 @@ struct qe_ep {
 	struct usb_ep ep;
 	struct list_head queue;
 	struct qe_udc *udc;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor *desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usb_gadget *gadget;
 
 	u8 state;

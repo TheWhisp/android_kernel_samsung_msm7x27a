@@ -11,10 +11,16 @@
 #include <linux/const.h>
 
 /* thread information allocation */
+<<<<<<< HEAD
 #define THREAD_SIZE_ORDER 	(1)
 #define THREAD_SIZE 		(PAGE_SIZE << THREAD_SIZE_ORDER)
 #define THREAD_MASK 		(THREAD_SIZE - _AC(1,UL))
 #define __HAVE_ARCH_THREAD_INFO_ALLOCATOR
+=======
+#define THREAD_SIZE_ORDER	(1)
+#define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
+#define THREAD_MASK		(THREAD_SIZE - _AC(1,UL))
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
@@ -71,6 +77,7 @@ struct thread_info {
 register struct thread_info *__current_thread_info __asm__("r28");
 #define current_thread_info()	__current_thread_info
 
+<<<<<<< HEAD
 #define alloc_thread_info_node(tsk, node) kmalloc_node(THREAD_SIZE, GFP_KERNEL, node)
 #define free_thread_info(info) kfree(info)
 
@@ -78,6 +85,10 @@ register struct thread_info *__current_thread_info __asm__("r28");
 
 #define PREEMPT_ACTIVE		0x10000000
 
+=======
+#endif /* !__ASSEMBLY__ */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * thread information flags
  * - these are process state flags that various assembly files may need to
@@ -90,16 +101,22 @@ register struct thread_info *__current_thread_info __asm__("r28");
 #define TIF_NEED_RESCHED	2	/* rescheduling necessary */
 #define TIF_NOTIFY_RESUME	5	/* callback before returning to user */
 #define TIF_RESTORE_SIGMASK	9	/* restore signal mask in do_signal() */
+<<<<<<< HEAD
 #define TIF_POLLING_NRFLAG	17	/* true if poll_idle() is polling
 						 TIF_NEED_RESCHED */
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIF_MEMDIE		18	/* is terminating due to OOM killer */
 
 #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
 #define _TIF_SIGPENDING		(1<<TIF_SIGPENDING)
 #define _TIF_NEED_RESCHED	(1<<TIF_NEED_RESCHED)
 #define _TIF_NOTIFY_RESUME	(1<<TIF_NOTIFY_RESUME)
+<<<<<<< HEAD
 #define _TIF_RESTORE_SIGMASK	(1<<TIF_RESTORE_SIGMASK)
 #define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define _TIF_WORK_MASK		(0x0000ffff)
 

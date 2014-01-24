@@ -26,10 +26,14 @@
 #ifndef __R8A66597_H__
 #define __R8A66597_H__
 
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 #include <linux/clk.h>
 #endif
 
+=======
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb/r8a66597.h>
 
 #define R8A66597_MAX_NUM_PIPE		10
@@ -113,9 +117,13 @@ struct r8a66597_root_hub {
 struct r8a66597 {
 	spinlock_t lock;
 	void __iomem *reg;
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 	struct clk *clk;
 #endif
+=======
+	struct clk *clk;
+>>>>>>> refs/remotes/origin/master
 	struct r8a66597_platdata	*pdata;
 	struct r8a66597_device		device0;
 	struct r8a66597_root_hub	root_hub[R8A66597_MAX_ROOT_HUB];
@@ -201,11 +209,40 @@ static inline void r8a66597_write(struct r8a66597 *r8a66597, u16 val,
 	iowrite16(val, r8a66597->reg + offset);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void r8a66597_write_fifo(struct r8a66597 *r8a66597,
 				       unsigned long offset, u16 *buf,
 				       int len)
 {
 	void __iomem *fifoaddr = r8a66597->reg + offset;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void r8a66597_mdfy(struct r8a66597 *r8a66597,
+				 u16 val, u16 pat, unsigned long offset)
+{
+	u16 tmp;
+	tmp = r8a66597_read(r8a66597, offset);
+	tmp = tmp & (~pat);
+	tmp = tmp | val;
+	r8a66597_write(r8a66597, tmp, offset);
+}
+
+#define r8a66597_bclr(r8a66597, val, offset)	\
+			r8a66597_mdfy(r8a66597, 0, val, offset)
+#define r8a66597_bset(r8a66597, val, offset)	\
+			r8a66597_mdfy(r8a66597, val, 0, offset)
+
+static inline void r8a66597_write_fifo(struct r8a66597 *r8a66597,
+				       struct r8a66597_pipe *pipe, u16 *buf,
+				       int len)
+{
+	void __iomem *fifoaddr = r8a66597->reg + pipe->fifoaddr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long count;
 	unsigned char *pb;
 	int i;
@@ -230,11 +267,27 @@ static inline void r8a66597_write_fifo(struct r8a66597 *r8a66597,
 		iowrite16_rep(fifoaddr, buf, len);
 		if (unlikely(odd)) {
 			buf = &buf[len];
+<<<<<<< HEAD
+<<<<<<< HEAD
 			iowrite8((unsigned char)*buf, fifoaddr);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			if (r8a66597->pdata->wr0_shorted_to_wr1)
+				r8a66597_bclr(r8a66597, MBW_16, pipe->fifosel);
+			iowrite8((unsigned char)*buf, fifoaddr);
+			if (r8a66597->pdata->wr0_shorted_to_wr1)
+				r8a66597_bset(r8a66597, MBW_16, pipe->fifosel);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void r8a66597_mdfy(struct r8a66597 *r8a66597,
 				 u16 val, u16 pat, unsigned long offset)
 {
@@ -250,6 +303,10 @@ static inline void r8a66597_mdfy(struct r8a66597 *r8a66597,
 #define r8a66597_bset(r8a66597, val, offset)	\
 			r8a66597_mdfy(r8a66597, val, 0, offset)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long get_syscfg_reg(int port)
 {
 	return port == 0 ? SYSCFG0 : SYSCFG1;

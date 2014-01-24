@@ -3,10 +3,28 @@ config SUNRPC
 
 config SUNRPC_GSS
 	tristate
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+=======
+	select OID_REGISTRY
+
+>>>>>>> refs/remotes/origin/master
+config SUNRPC_BACKCHANNEL
+	bool
+	depends on SUNRPC
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 config SUNRPC_XPRT_RDMA
 	tristate
 	depends on SUNRPC && INFINIBAND && INFINIBAND_ADDR_TRANS && EXPERIMENTAL
+=======
+config SUNRPC_XPRT_RDMA
+	tristate
+	depends on SUNRPC && INFINIBAND && INFINIBAND_ADDR_TRANS
+>>>>>>> refs/remotes/origin/master
 	default SUNRPC && INFINIBAND
 	help
 	  This option allows the NFS client and server to support
@@ -17,6 +35,13 @@ config SUNRPC_XPRT_RDMA
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
+=======
+config SUNRPC_SWAP
+	bool
+	depends on SUNRPC
+
+>>>>>>> refs/remotes/origin/master
 config RPCSEC_GSS_KRB5
 	tristate "Secure RPC: Kerberos V mechanism"
 	depends on SUNRPC && CRYPTO
@@ -35,3 +60,25 @@ config RPCSEC_GSS_KRB5
 	  Kerberos support should be installed.
 
 	  If unsure, say Y.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+config SUNRPC_DEBUG
+	bool "RPC: Enable dprintk debugging"
+	depends on SUNRPC && SYSCTL
+	help
+	  This option enables a sysctl-based debugging interface
+	  that is be used by the 'rpcdebug' utility to turn on or off
+	  logging of different aspects of the kernel RPC activity.
+
+	  Disabling this option will make your kernel slightly smaller,
+	  but makes troubleshooting NFS issues significantly harder.
+
+	  If unsure, say Y.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

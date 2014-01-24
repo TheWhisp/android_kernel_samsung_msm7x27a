@@ -288,7 +288,11 @@ static enum drm_mode_status ivch_mode_valid(struct intel_dvo_device *dvo,
 }
 
 /** Sets the power state of the panel connected to the ivch */
+<<<<<<< HEAD
 static void ivch_dpms(struct intel_dvo_device *dvo, int mode)
+=======
+static void ivch_dpms(struct intel_dvo_device *dvo, bool enable)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	uint16_t vr01, vr30, backlight;
@@ -297,13 +301,21 @@ static void ivch_dpms(struct intel_dvo_device *dvo, int mode)
 	if (!ivch_read(dvo, VR01, &vr01))
 		return;
 
+<<<<<<< HEAD
 	if (mode == DRM_MODE_DPMS_ON)
+=======
+	if (enable)
+>>>>>>> refs/remotes/origin/master
 		backlight = 1;
 	else
 		backlight = 0;
 	ivch_write(dvo, VR80, backlight);
 
+<<<<<<< HEAD
 	if (mode == DRM_MODE_DPMS_ON)
+=======
+	if (enable)
+>>>>>>> refs/remotes/origin/master
 		vr01 |= VR01_LCD_ENABLE | VR01_DVO_ENABLE;
 	else
 		vr01 &= ~(VR01_LCD_ENABLE | VR01_DVO_ENABLE);
@@ -315,7 +327,11 @@ static void ivch_dpms(struct intel_dvo_device *dvo, int mode)
 		if (!ivch_read(dvo, VR30, &vr30))
 			break;
 
+<<<<<<< HEAD
 		if (((vr30 & VR30_PANEL_ON) != 0) == (mode == DRM_MODE_DPMS_ON))
+=======
+		if (((vr30 & VR30_PANEL_ON) != 0) == enable)
+>>>>>>> refs/remotes/origin/master
 			break;
 		udelay(1000);
 	}
@@ -323,6 +339,23 @@ static void ivch_dpms(struct intel_dvo_device *dvo, int mode)
 	udelay(16 * 1000);
 }
 
+<<<<<<< HEAD
+=======
+static bool ivch_get_hw_state(struct intel_dvo_device *dvo)
+{
+	uint16_t vr01;
+
+	/* Set the new power state of the panel. */
+	if (!ivch_read(dvo, VR01, &vr01))
+		return false;
+
+	if (vr01 & VR01_LCD_ENABLE)
+		return true;
+	else
+		return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void ivch_mode_set(struct intel_dvo_device *dvo,
 			  struct drm_display_mode *mode,
 			  struct drm_display_mode *adjusted_mode)
@@ -344,8 +377,18 @@ static void ivch_mode_set(struct intel_dvo_device *dvo,
 			   (adjusted_mode->hdisplay - 1)) >> 2;
 		y_ratio = (((mode->vdisplay - 1) << 16) /
 			   (adjusted_mode->vdisplay - 1)) >> 2;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ivch_write (dvo, VR42, x_ratio);
 		ivch_write (dvo, VR41, y_ratio);
+=======
+		ivch_write(dvo, VR42, x_ratio);
+		ivch_write(dvo, VR41, y_ratio);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ivch_write(dvo, VR42, x_ratio);
+		ivch_write(dvo, VR41, y_ratio);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		vr01 &= ~VR01_PANEL_FIT_ENABLE;
 		vr40 &= ~VR40_CLOCK_GATING_ENABLE;
@@ -410,9 +453,20 @@ static void ivch_destroy(struct intel_dvo_device *dvo)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct intel_dvo_dev_ops ivch_ops= {
+=======
+struct intel_dvo_dev_ops ivch_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init = ivch_init,
 	.dpms = ivch_dpms,
+=======
+struct intel_dvo_dev_ops ivch_ops = {
+	.init = ivch_init,
+	.dpms = ivch_dpms,
+	.get_hw_state = ivch_get_hw_state,
+>>>>>>> refs/remotes/origin/master
 	.mode_valid = ivch_mode_valid,
 	.mode_set = ivch_mode_set,
 	.detect = ivch_detect,

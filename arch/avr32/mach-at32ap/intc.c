@@ -13,6 +13,14 @@
 #include <linux/irq.h>
 #include <linux/platform_device.h>
 #include <linux/syscore_ops.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 
@@ -107,7 +115,15 @@ void __init init_IRQ(void)
 
 	clk_enable(pclk);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	intc0.regs = ioremap(regs->start, regs->end - regs->start + 1);
+=======
+	intc0.regs = ioremap(regs->start, resource_size(regs));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	intc0.regs = ioremap(regs->start, resource_size(regs));
+>>>>>>> refs/remotes/origin/master
 	if (!intc0.regs) {
 		printk(KERN_EMERG "intc: failed to map registers (0x%08lx)\n",
 		       (unsigned long)regs->start);

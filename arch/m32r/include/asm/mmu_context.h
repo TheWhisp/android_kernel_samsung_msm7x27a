@@ -11,7 +11,15 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgalloc.h>
 #include <asm/mmu.h>
 #include <asm/tlbflush.h>
@@ -45,7 +53,11 @@ static inline void get_new_mmu_context(struct mm_struct *mm)
 		   Flush all TLB and start new cycle. */
 		local_flush_tlb_all();
 		/* Fix version if needed.
+<<<<<<< HEAD
 		   Note that we avoid version #0 to distingush NO_CONTEXT. */
+=======
+		   Note that we avoid version #0 to distinguish NO_CONTEXT. */
+>>>>>>> refs/remotes/origin/master
 		if (!mc)
 			mmu_context_cache = mc = MMU_CONTEXT_FIRST_VERSION;
 	}

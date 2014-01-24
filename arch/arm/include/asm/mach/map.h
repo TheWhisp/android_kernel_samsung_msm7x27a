@@ -9,8 +9,28 @@
  *
  *  Page table mapping constructs and function prototypes
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifndef __ASM_ARM_MACH_MAP_H
+#define __ASM_ARM_MACH_MAP_H
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/io.h>
 #include <asm/page.h>
+=======
+#ifndef __ASM_ARM_MACH_MAP_H
+#define __ASM_ARM_MACH_MAP_H
+
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef __ASM_MACH_MAP_H
+#define __ASM_MACH_MAP_H
+
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/master
 
 struct map_desc {
 	unsigned long virtual;
@@ -30,14 +50,27 @@ struct map_desc {
 #define MT_MEMORY_NONCACHED	11
 #define MT_MEMORY_DTCM		12
 #define MT_MEMORY_ITCM		13
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MT_DEVICE_STRONGLY_ORDERED 14
 #define MT_MEMORY_R		15
 #define MT_MEMORY_RW		16
 #define MT_MEMORY_RX		17
+=======
+#define MT_MEMORY_SO		14
+#define MT_MEMORY_R		15
+#define MT_MEMORY_RW		16
+#define MT_MEMORY_RX		17
+#define MT_MEMORY_DMA_READY	18
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_MMU
 extern void iotable_init(struct map_desc *, int);
 
+<<<<<<< HEAD
 struct mem_type {
 	pteval_t prot_pte;
 	unsigned int prot_l1;
@@ -45,12 +78,64 @@ struct mem_type {
 	unsigned int domain;
 };
 
+=======
+struct mem_type;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MT_MEMORY_SO		14
+#define MT_MEMORY_DMA_READY	15
+
+#ifdef CONFIG_MMU
+extern void iotable_init(struct map_desc *, int);
+extern void vm_reserve_area_early(unsigned long addr, unsigned long size,
+				  void *caller);
+
+#ifdef CONFIG_DEBUG_LL
+extern void debug_ll_addr(unsigned long *paddr, unsigned long *vaddr);
+extern void debug_ll_io_init(void);
+#else
+static inline void debug_ll_io_init(void) {}
+#endif
+
+struct mem_type;
+>>>>>>> refs/remotes/origin/master
 extern const struct mem_type *get_mem_type(unsigned int type);
 /*
  * external interface to remap single page with appropriate type
  */
 extern int ioremap_page(unsigned long virt, unsigned long phys,
 			const struct mem_type *mtype);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else
 #define iotable_init(map,num)	do { } while (0)
 #endif
+=======
+
+extern int ioremap_pages(unsigned long virt, unsigned long phys,
+			unsigned long size, const struct mem_type *mtype);
+#else
+#define iotable_init(map,num)	do { } while (0)
+#endif
+
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else
+#define iotable_init(map,num)	do { } while (0)
+#define vm_reserve_area_early(a,s,c)	do { } while (0)
+#endif
+
+#endif
+>>>>>>> refs/remotes/origin/master
+=======
+
+extern int ioremap_pages(unsigned long virt, unsigned long phys,
+			unsigned long size, const struct mem_type *mtype);
+#else
+#define iotable_init(map,num)	do { } while (0)
+#endif
+
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0

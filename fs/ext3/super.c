@@ -17,6 +17,8 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/string.h>
 #include <linux/fs.h>
 #include <linux/time.h>
@@ -33,13 +35,42 @@
 #include <linux/random.h>
 #include <linux/mount.h>
 #include <linux/namei.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/blkdev.h>
+#include <linux/parser.h>
+#include <linux/exportfs.h>
+#include <linux/statfs.h>
+#include <linux/random.h>
+#include <linux/mount.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/quotaops.h>
 #include <linux/seq_file.h>
 #include <linux/log2.h>
 #include <linux/cleancache.h>
+<<<<<<< HEAD
 
 #include <asm/uaccess.h>
 
+<<<<<<< HEAD
+=======
+#define CREATE_TRACE_POINTS
+
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/namei.h>
+
+#include <asm/uaccess.h>
+
+#define CREATE_TRACE_POINTS
+
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/master
 #include "xattr.h"
 #include "acl.h"
 #include "namei.h"
@@ -71,11 +102,14 @@ static int ext3_freeze(struct super_block *sb);
 
 /*
  * Wrappers for journal_start/end.
+<<<<<<< HEAD
  *
  * The only special thing we need to do here is to make sure that all
  * journal_end calls result in the superblock being marked dirty, so
  * that sync() will call the filesystem's write_super callback if
  * appropriate.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 handle_t *ext3_journal_start_sb(struct super_block *sb, int nblocks)
 {
@@ -97,12 +131,15 @@ handle_t *ext3_journal_start_sb(struct super_block *sb, int nblocks)
 	return journal_start(journal, nblocks);
 }
 
+<<<<<<< HEAD
 /*
  * The only special thing we need to do here is to make sure that all
  * journal_stop calls result in the superblock being marked dirty, so
  * that sync() will call the filesystem's write_super callback if
  * appropriate.
  */
+=======
+>>>>>>> refs/remotes/origin/master
 int __ext3_journal_stop(const char *where, handle_t *handle)
 {
 	struct super_block *sb;
@@ -192,6 +229,14 @@ static void ext3_handle_error(struct super_block *sb)
 	if (test_opt (sb, ERRORS_RO)) {
 		ext3_msg(sb, KERN_CRIT,
 			"error: remounting filesystem read-only");
+<<<<<<< HEAD
+=======
+		/*
+		 * Make sure updated value of ->s_mount_state will be visible
+		 * before ->s_flags update.
+		 */
+		smp_wmb();
+>>>>>>> refs/remotes/origin/master
 		sb->s_flags |= MS_RDONLY;
 	}
 	ext3_commit_super(sb, es, 1);
@@ -309,8 +354,19 @@ void ext3_abort(struct super_block *sb, const char *function,
 	ext3_msg(sb, KERN_CRIT,
 		"error: remounting filesystem read-only");
 	EXT3_SB(sb)->s_mount_state |= EXT3_ERROR_FS;
+<<<<<<< HEAD
 	sb->s_flags |= MS_RDONLY;
 	set_opt(EXT3_SB(sb)->s_mount_opt, ABORT);
+=======
+	set_opt(EXT3_SB(sb)->s_mount_opt, ABORT);
+	/*
+	 * Make sure updated value of ->s_mount_state will be visible
+	 * before ->s_flags update.
+	 */
+	smp_wmb();
+	sb->s_flags |= MS_RDONLY;
+
+>>>>>>> refs/remotes/origin/master
 	if (EXT3_SB(sb)->s_journal)
 		journal_abort(EXT3_SB(sb)->s_journal, -EIO);
 }
@@ -380,6 +436,7 @@ fail:
 /*
  * Release the journal device
  */
+<<<<<<< HEAD
 static int ext3_blkdev_put(struct block_device *bdev)
 {
 	return blkdev_put(bdev, FMODE_READ|FMODE_WRITE|FMODE_EXCL);
@@ -396,6 +453,21 @@ static int ext3_blkdev_remove(struct ext3_sb_info *sbi)
 		sbi->journal_bdev = NULL;
 	}
 	return ret;
+=======
+static void ext3_blkdev_put(struct block_device *bdev)
+{
+	blkdev_put(bdev, FMODE_READ|FMODE_WRITE|FMODE_EXCL);
+}
+
+static void ext3_blkdev_remove(struct ext3_sb_info *sbi)
+{
+	struct block_device *bdev;
+	bdev = sbi->journal_bdev;
+	if (bdev) {
+		ext3_blkdev_put(bdev);
+		sbi->journal_bdev = NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct inode *orphan_list_entry(struct list_head *l)
@@ -497,10 +569,30 @@ static struct inode *ext3_alloc_inode(struct super_block *sb)
 	return &ei->vfs_inode;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void ext3_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int ext3_drop_inode(struct inode *inode)
+{
+	int drop = generic_drop_inode(inode);
+
+	trace_ext3_drop_inode(inode, drop);
+	return drop;
+}
+
+static void ext3_i_callback(struct rcu_head *head)
+{
+	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(ext3_inode_cachep, EXT3_I(inode));
 }
 
@@ -543,6 +635,14 @@ static int init_inodecache(void)
 
 static void destroy_inodecache(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(ext3_inode_cachep);
 }
 
@@ -600,9 +700,21 @@ static char *data_mode_string(unsigned long mode)
  *  - it's set to a non-default value OR
  *  - if the per-sb default is different from the global default
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ext3_show_options(struct seq_file *seq, struct vfsmount *vfs)
 {
 	struct super_block *sb = vfs->mnt_sb;
+=======
+static int ext3_show_options(struct seq_file *seq, struct dentry *root)
+{
+	struct super_block *sb = root->d_sb;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ext3_show_options(struct seq_file *seq, struct dentry *root)
+{
+	struct super_block *sb = root->d_sb;
+>>>>>>> refs/remotes/origin/master
 	struct ext3_sb_info *sbi = EXT3_SB(sb);
 	struct ext3_super_block *es = sbi->s_es;
 	unsigned long def_mount_opts;
@@ -617,6 +729,7 @@ static int ext3_show_options(struct seq_file *seq, struct vfsmount *vfs)
 		seq_puts(seq, ",grpid");
 	if (!test_opt(sb, GRPID) && (def_mount_opts & EXT3_DEFM_BSDGROUPS))
 		seq_puts(seq, ",nogrpid");
+<<<<<<< HEAD
 	if (sbi->s_resuid != EXT3_DEF_RESUID ||
 	    le16_to_cpu(es->s_def_resuid) != EXT3_DEF_RESUID) {
 		seq_printf(seq, ",resuid=%u", sbi->s_resuid);
@@ -624,6 +737,17 @@ static int ext3_show_options(struct seq_file *seq, struct vfsmount *vfs)
 	if (sbi->s_resgid != EXT3_DEF_RESGID ||
 	    le16_to_cpu(es->s_def_resgid) != EXT3_DEF_RESGID) {
 		seq_printf(seq, ",resgid=%u", sbi->s_resgid);
+=======
+	if (!uid_eq(sbi->s_resuid, make_kuid(&init_user_ns, EXT3_DEF_RESUID)) ||
+	    le16_to_cpu(es->s_def_resuid) != EXT3_DEF_RESUID) {
+		seq_printf(seq, ",resuid=%u",
+				from_kuid_munged(&init_user_ns, sbi->s_resuid));
+	}
+	if (!gid_eq(sbi->s_resgid, make_kgid(&init_user_ns, EXT3_DEF_RESGID)) ||
+	    le16_to_cpu(es->s_def_resgid) != EXT3_DEF_RESGID) {
+		seq_printf(seq, ",resgid=%u",
+				from_kgid_munged(&init_user_ns, sbi->s_resgid));
+>>>>>>> refs/remotes/origin/master
 	}
 	if (test_opt(sb, ERRORS_RO)) {
 		int def_errors = le16_to_cpu(es->s_errors);
@@ -641,8 +765,14 @@ static int ext3_show_options(struct seq_file *seq, struct vfsmount *vfs)
 		seq_puts(seq, ",nouid32");
 	if (test_opt(sb, DEBUG))
 		seq_puts(seq, ",debug");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (test_opt(sb, OLDALLOC))
 		seq_puts(seq, ",oldalloc");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_EXT3_FS_XATTR
 	if (test_opt(sb, XATTR_USER))
 		seq_puts(seq, ",user_xattr");
@@ -788,6 +918,14 @@ static const struct super_operations ext3_sops = {
 	.destroy_inode	= ext3_destroy_inode,
 	.write_inode	= ext3_write_inode,
 	.dirty_inode	= ext3_dirty_inode,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.drop_inode	= ext3_drop_inode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.drop_inode	= ext3_drop_inode,
+>>>>>>> refs/remotes/origin/master
 	.evict_inode	= ext3_evict_inode,
 	.put_super	= ext3_put_super,
 	.sync_fs	= ext3_sync_fs,
@@ -816,6 +954,10 @@ enum {
 	Opt_user_xattr, Opt_nouser_xattr, Opt_acl, Opt_noacl,
 	Opt_reservation, Opt_noreservation, Opt_noload, Opt_nobh, Opt_bh,
 	Opt_commit, Opt_journal_update, Opt_journal_inum, Opt_journal_dev,
+<<<<<<< HEAD
+=======
+	Opt_journal_path,
+>>>>>>> refs/remotes/origin/master
 	Opt_abort, Opt_data_journal, Opt_data_ordered, Opt_data_writeback,
 	Opt_data_err_abort, Opt_data_err_ignore,
 	Opt_usrjquota, Opt_grpjquota, Opt_offusrjquota, Opt_offgrpjquota,
@@ -857,6 +999,10 @@ static const match_table_t tokens = {
 	{Opt_journal_update, "journal=update"},
 	{Opt_journal_inum, "journal=%u"},
 	{Opt_journal_dev, "journal_dev=%u"},
+<<<<<<< HEAD
+=======
+	{Opt_journal_path, "journal_path=%s"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_abort, "abort"},
 	{Opt_data_journal, "data=journal"},
 	{Opt_data_ordered, "data=ordered"},
@@ -921,6 +1067,7 @@ static int set_qf_name(struct super_block *sb, int qtype, substring_t *args)
 			"Not enough memory for storing quotafile name");
 		return 0;
 	}
+<<<<<<< HEAD
 	if (sbi->s_qf_names[qtype] &&
 		strcmp(sbi->s_qf_names[qtype], qname)) {
 		ext3_msg(sb, KERN_ERR,
@@ -936,6 +1083,26 @@ static int set_qf_name(struct super_block *sb, int qtype, substring_t *args)
 		sbi->s_qf_names[qtype] = NULL;
 		return 0;
 	}
+=======
+	if (sbi->s_qf_names[qtype]) {
+		int same = !strcmp(sbi->s_qf_names[qtype], qname);
+
+		kfree(qname);
+		if (!same) {
+			ext3_msg(sb, KERN_ERR,
+				 "%s quota file already specified",
+				 QTYPE2NAME(qtype));
+		}
+		return same;
+	}
+	if (strchr(qname, '/')) {
+		ext3_msg(sb, KERN_ERR,
+			"quotafile must be on filesystem root");
+		kfree(qname);
+		return 0;
+	}
+	sbi->s_qf_names[qtype] = qname;
+>>>>>>> refs/remotes/origin/master
 	set_opt(sbi->s_mount_opt, QUOTA);
 	return 1;
 }
@@ -950,11 +1117,18 @@ static int clear_qf_name(struct super_block *sb, int qtype) {
 			" when quota turned on");
 		return 0;
 	}
+<<<<<<< HEAD
 	/*
 	 * The space will be released later when all options are confirmed
 	 * to be correct
 	 */
 	sbi->s_qf_names[qtype] = NULL;
+=======
+	if (sbi->s_qf_names[qtype]) {
+		kfree(sbi->s_qf_names[qtype]);
+		sbi->s_qf_names[qtype] = NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 #endif
@@ -968,6 +1142,16 @@ static int parse_options (char *options, struct super_block *sb,
 	substring_t args[MAX_OPT_ARGS];
 	int data_opt = 0;
 	int option;
+<<<<<<< HEAD
+=======
+	kuid_t uid;
+	kgid_t gid;
+	char *journal_path;
+	struct inode *journal_inode;
+	struct path path;
+	int error;
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_QUOTA
 	int qfmt;
 #endif
@@ -983,7 +1167,11 @@ static int parse_options (char *options, struct super_block *sb,
 		 * Initialize args struct so we know whether arg was
 		 * found; some options take optional arguments.
 		 */
+<<<<<<< HEAD
 		args[0].to = args[0].from = 0;
+=======
+		args[0].to = args[0].from = NULL;
+>>>>>>> refs/remotes/origin/master
 		token = match_token(p, tokens, args);
 		switch (token) {
 		case Opt_bsd_df:
@@ -1001,12 +1189,31 @@ static int parse_options (char *options, struct super_block *sb,
 		case Opt_resuid:
 			if (match_int(&args[0], &option))
 				return 0;
+<<<<<<< HEAD
 			sbi->s_resuid = option;
+=======
+			uid = make_kuid(current_user_ns(), option);
+			if (!uid_valid(uid)) {
+				ext3_msg(sb, KERN_ERR, "Invalid uid value %d", option);
+				return 0;
+
+			}
+			sbi->s_resuid = uid;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_resgid:
 			if (match_int(&args[0], &option))
 				return 0;
+<<<<<<< HEAD
 			sbi->s_resgid = option;
+=======
+			gid = make_kgid(current_user_ns(), option);
+			if (!gid_valid(gid)) {
+				ext3_msg(sb, KERN_ERR, "Invalid gid value %d", option);
+				return 0;
+			}
+			sbi->s_resgid = gid;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_sb:
 			/* handled by get_sb_block() instead of here */
@@ -1037,10 +1244,25 @@ static int parse_options (char *options, struct super_block *sb,
 			set_opt (sbi->s_mount_opt, DEBUG);
 			break;
 		case Opt_oldalloc:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			set_opt (sbi->s_mount_opt, OLDALLOC);
 			break;
 		case Opt_orlov:
 			clear_opt (sbi->s_mount_opt, OLDALLOC);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			ext3_msg(sb, KERN_WARNING,
+				"Ignoring deprecated oldalloc option");
+			break;
+		case Opt_orlov:
+			ext3_msg(sb, KERN_WARNING,
+				"Ignoring deprecated orlov option");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 #ifdef CONFIG_EXT3_FS_XATTR
 		case Opt_user_xattr:
@@ -1109,6 +1331,44 @@ static int parse_options (char *options, struct super_block *sb,
 				return 0;
 			*journal_devnum = option;
 			break;
+<<<<<<< HEAD
+=======
+		case Opt_journal_path:
+			if (is_remount) {
+				ext3_msg(sb, KERN_ERR, "error: cannot specify "
+				       "journal on remount");
+				return 0;
+			}
+
+			journal_path = match_strdup(&args[0]);
+			if (!journal_path) {
+				ext3_msg(sb, KERN_ERR, "error: could not dup "
+					"journal device string");
+				return 0;
+			}
+
+			error = kern_path(journal_path, LOOKUP_FOLLOW, &path);
+			if (error) {
+				ext3_msg(sb, KERN_ERR, "error: could not find "
+					"journal device path: error %d", error);
+				kfree(journal_path);
+				return 0;
+			}
+
+			journal_inode = path.dentry->d_inode;
+			if (!S_ISBLK(journal_inode->i_mode)) {
+				ext3_msg(sb, KERN_ERR, "error: journal path %s "
+					"is not a block device", journal_path);
+				path_put(&path);
+				kfree(journal_path);
+				return 0;
+			}
+
+			*journal_devnum = new_encode_dev(journal_inode->i_rdev);
+			path_put(&path);
+			kfree(journal_path);
+			break;
+>>>>>>> refs/remotes/origin/master
 		case Opt_noload:
 			set_opt (sbi->s_mount_opt, NOLOAD);
 			break;
@@ -1474,10 +1734,19 @@ static void ext3_orphan_cleanup (struct super_block * sb,
 	}
 
 	if (EXT3_SB(sb)->s_mount_state & EXT3_ERROR_FS) {
+<<<<<<< HEAD
 		if (es->s_last_orphan)
 			jbd_debug(1, "Errors on filesystem, "
 				  "clearing orphan list.\n");
 		es->s_last_orphan = 0;
+=======
+		/* don't clear list on RO mount w/ errors */
+		if (es->s_last_orphan && !(s_flags & MS_RDONLY)) {
+			jbd_debug(1, "Errors on filesystem, "
+				  "clearing orphan list.\n");
+			es->s_last_orphan = 0;
+		}
+>>>>>>> refs/remotes/origin/master
 		jbd_debug(1, "Skipping orphan recovery on fs with errors.\n");
 		return;
 	}
@@ -1649,9 +1918,12 @@ static int ext3_fill_super (struct super_block *sb, void *data, int silent)
 		return -ENOMEM;
 	}
 	sb->s_fs_info = sbi;
+<<<<<<< HEAD
 	sbi->s_mount_opt = 0;
 	sbi->s_resuid = EXT3_DEF_RESUID;
 	sbi->s_resgid = EXT3_DEF_RESGID;
+=======
+>>>>>>> refs/remotes/origin/master
 	sbi->s_sb_block = sb_block;
 
 	blocksize = sb_min_blocksize(sb, EXT3_MIN_BLOCK_SIZE);
@@ -1715,9 +1987,22 @@ static int ext3_fill_super (struct super_block *sb, void *data, int silent)
 	else
 		set_opt(sbi->s_mount_opt, ERRORS_RO);
 
+<<<<<<< HEAD
 	sbi->s_resuid = le16_to_cpu(es->s_def_resuid);
 	sbi->s_resgid = le16_to_cpu(es->s_def_resgid);
 
+<<<<<<< HEAD
+=======
+	/* enable barriers by default */
+	set_opt(sbi->s_mount_opt, BARRIER);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sbi->s_resuid = make_kuid(&init_user_ns, le16_to_cpu(es->s_def_resuid));
+	sbi->s_resgid = make_kgid(&init_user_ns, le16_to_cpu(es->s_def_resgid));
+
+	/* enable barriers by default */
+	set_opt(sbi->s_mount_opt, BARRIER);
+>>>>>>> refs/remotes/origin/master
 	set_opt(sbi->s_mount_opt, RESERVATION);
 
 	if (!parse_options ((char *) data, sb, &journal_inum, &journal_devnum,
@@ -2033,22 +2318,52 @@ static int ext3_fill_super (struct super_block *sb, void *data, int silent)
 		ext3_msg(sb, KERN_ERR, "error: corrupt root inode, run e2fsck");
 		goto failed_mount3;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root);
 	if (!sb->s_root) {
 		ext3_msg(sb, KERN_ERR, "error: get root dentry failed");
 		iput(root);
+=======
+	sb->s_root = d_make_root(root);
+	if (!sb->s_root) {
+		ext3_msg(sb, KERN_ERR, "error: get root dentry failed");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(root);
+	if (!sb->s_root) {
+		ext3_msg(sb, KERN_ERR, "error: get root dentry failed");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto failed_mount3;
 	}
 
+<<<<<<< HEAD
 	ext3_setup_super (sb, es, sb->s_flags & MS_RDONLY);
+=======
+	if (ext3_setup_super(sb, es, sb->s_flags & MS_RDONLY))
+		sb->s_flags |= MS_RDONLY;
+>>>>>>> refs/remotes/origin/master
 
 	EXT3_SB(sb)->s_mount_state |= EXT3_ORPHAN_FS;
 	ext3_orphan_cleanup(sb, es);
 	EXT3_SB(sb)->s_mount_state &= ~EXT3_ORPHAN_FS;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (needs_recovery)
 		ext3_msg(sb, KERN_INFO, "recovery complete");
 	ext3_mark_recovery_complete(sb, es);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (needs_recovery) {
+		ext3_mark_recovery_complete(sb, es);
+		ext3_msg(sb, KERN_INFO, "recovery complete");
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ext3_msg(sb, KERN_INFO, "mounted filesystem with %s data mode",
 		test_opt(sb,DATA_FLAGS) == EXT3_MOUNT_JOURNAL_DATA ? "journal":
 		test_opt(sb,DATA_FLAGS) == EXT3_MOUNT_ORDERED_DATA ? "ordered":
@@ -2216,11 +2531,25 @@ static journal_t *ext3_get_dev_journal(struct super_block *sb,
 		goto out_bdev;
 	}
 	journal->j_private = sb;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ll_rw_block(READ, 1, &journal->j_sb_buffer);
 	wait_on_buffer(journal->j_sb_buffer);
 	if (!buffer_uptodate(journal->j_sb_buffer)) {
 		ext3_msg(sb, KERN_ERR, "I/O error on journal device");
 		goto out_journal;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!bh_uptodate_or_lock(journal->j_sb_buffer)) {
+		if (bh_submit_read(journal->j_sb_buffer)) {
+			ext3_msg(sb, KERN_ERR, "I/O error on journal device");
+			goto out_journal;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (be32_to_cpu(journal->j_superblock->s_nr_users) != 1) {
 		ext3_msg(sb, KERN_ERR,
@@ -2507,6 +2836,19 @@ static int ext3_sync_fs(struct super_block *sb, int wait)
 {
 	tid_t target;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_sync_fs(sb, wait);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_sync_fs(sb, wait);
+	/*
+	 * Writeback quota in non-journalled quota case - journalled quota has
+	 * no dirty dquots
+	 */
+	dquot_writeback_dquots(sb, -1);
+>>>>>>> refs/remotes/origin/master
 	if (journal_start_commit(EXT3_SB(sb)->s_journal, &target)) {
 		if (wait)
 			log_wait_commit(EXT3_SB(sb)->s_journal, target);
@@ -2557,11 +2899,17 @@ out:
 static int ext3_unfreeze(struct super_block *sb)
 {
 	if (!(sb->s_flags & MS_RDONLY)) {
+<<<<<<< HEAD
 		lock_super(sb);
 		/* Reser the needs_recovery flag before the fs is unlocked. */
 		EXT3_SET_INCOMPAT_FEATURE(sb, EXT3_FEATURE_INCOMPAT_RECOVER);
 		ext3_commit_super(sb, EXT3_SB(sb)->s_es, 1);
 		unlock_super(sb);
+=======
+		/* Reser the needs_recovery flag before the fs is unlocked. */
+		EXT3_SET_INCOMPAT_FEATURE(sb, EXT3_FEATURE_INCOMPAT_RECOVER);
+		ext3_commit_super(sb, EXT3_SB(sb)->s_es, 1);
+>>>>>>> refs/remotes/origin/master
 		journal_unlock_updates(EXT3_SB(sb)->s_journal);
 	}
 	return 0;
@@ -2581,7 +2929,10 @@ static int ext3_remount (struct super_block * sb, int * flags, char * data)
 #endif
 
 	/* Store the original options */
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+>>>>>>> refs/remotes/origin/master
 	old_sb_flags = sb->s_flags;
 	old_opts.s_mount_opt = sbi->s_mount_opt;
 	old_opts.s_resuid = sbi->s_resuid;
@@ -2590,7 +2941,22 @@ static int ext3_remount (struct super_block * sb, int * flags, char * data)
 #ifdef CONFIG_QUOTA
 	old_opts.s_jquota_fmt = sbi->s_jquota_fmt;
 	for (i = 0; i < MAXQUOTAS; i++)
+<<<<<<< HEAD
 		old_opts.s_qf_names[i] = sbi->s_qf_names[i];
+=======
+		if (sbi->s_qf_names[i]) {
+			old_opts.s_qf_names[i] = kstrdup(sbi->s_qf_names[i],
+							 GFP_KERNEL);
+			if (!old_opts.s_qf_names[i]) {
+				int j;
+
+				for (j = 0; j < i; j++)
+					kfree(old_opts.s_qf_names[j]);
+				return -ENOMEM;
+			}
+		} else
+			old_opts.s_qf_names[i] = NULL;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/*
@@ -2654,13 +3020,29 @@ static int ext3_remount (struct super_block * sb, int * flags, char * data)
 			/*
 			 * If we have an unprocessed orphan list hanging
 			 * around from a previously readonly bdev mount,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 * require a full umount/remount for now.
+=======
+			 * require a full umount & mount for now.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 * require a full umount & mount for now.
+>>>>>>> refs/remotes/origin/master
 			 */
 			if (es->s_last_orphan) {
 				ext3_msg(sb, KERN_WARNING, "warning: couldn't "
 				       "remount RDWR because of unprocessed "
 				       "orphan inode list.  Please "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				       "umount/remount instead.");
+=======
+				       "umount & mount instead.");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       "umount & mount instead.");
+>>>>>>> refs/remotes/origin/master
 				err = -EINVAL;
 				goto restore_opts;
 			}
@@ -2683,12 +3065,17 @@ static int ext3_remount (struct super_block * sb, int * flags, char * data)
 #ifdef CONFIG_QUOTA
 	/* Release old quota file names */
 	for (i = 0; i < MAXQUOTAS; i++)
+<<<<<<< HEAD
 		if (old_opts.s_qf_names[i] &&
 		    old_opts.s_qf_names[i] != sbi->s_qf_names[i])
 			kfree(old_opts.s_qf_names[i]);
 #endif
 	unlock_super(sb);
 
+=======
+		kfree(old_opts.s_qf_names[i]);
+#endif
+>>>>>>> refs/remotes/origin/master
 	if (enable_quota)
 		dquot_resume(sb, -1);
 	return 0;
@@ -2701,6 +3088,7 @@ restore_opts:
 #ifdef CONFIG_QUOTA
 	sbi->s_jquota_fmt = old_opts.s_jquota_fmt;
 	for (i = 0; i < MAXQUOTAS; i++) {
+<<<<<<< HEAD
 		if (sbi->s_qf_names[i] &&
 		    old_opts.s_qf_names[i] != sbi->s_qf_names[i])
 			kfree(sbi->s_qf_names[i]);
@@ -2708,6 +3096,12 @@ restore_opts:
 	}
 #endif
 	unlock_super(sb);
+=======
+		kfree(sbi->s_qf_names[i]);
+		sbi->s_qf_names[i] = old_opts.s_qf_names[i];
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -2753,6 +3147,13 @@ static int ext3_statfs (struct dentry * dentry, struct kstatfs * buf)
 		 * bitmap, and an inode table.
 		 */
 		overhead += ngroups * (2 + sbi->s_itb_per_group);
+<<<<<<< HEAD
+=======
+
+		/* Add the journal blocks as well */
+                overhead += sbi->s_journal->j_maxlen;
+
+>>>>>>> refs/remotes/origin/master
 		sbi->s_overhead_last = overhead;
 		smp_wmb();
 		sbi->s_blocks_last = le32_to_cpu(es->s_blocks_count);
@@ -2789,7 +3190,11 @@ static int ext3_statfs (struct dentry * dentry, struct kstatfs * buf)
 
 static inline struct inode *dquot_to_inode(struct dquot *dquot)
 {
+<<<<<<< HEAD
 	return sb_dqopt(dquot->dq_sb)->files[dquot->dq_type];
+=======
+	return sb_dqopt(dquot->dq_sb)->files[dquot->dq_id.type];
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ext3_write_dquot(struct dquot *dquot)
@@ -2895,7 +3300,15 @@ static int ext3_quota_on(struct super_block *sb, int type, int format_id,
 		return -EINVAL;
 
 	/* Quotafile not on the same filesystem? */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (path->mnt->mnt_sb != sb)
+=======
+	if (path->dentry->d_sb != sb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (path->dentry->d_sb != sb)
+>>>>>>> refs/remotes/origin/master
 		return -EXDEV;
 	/* Journaling quota? */
 	if (EXT3_SB(sb)->s_qf_names[type]) {
@@ -2996,7 +3409,10 @@ static ssize_t ext3_quota_write(struct super_block *sb, int type,
 			(unsigned long long)off, (unsigned long long)len);
 		return -EIO;
 	}
+<<<<<<< HEAD
 	mutex_lock_nested(&inode->i_mutex, I_MUTEX_QUOTA);
+=======
+>>>>>>> refs/remotes/origin/master
 	bh = ext3_bread(handle, inode, blk, 1, &err);
 	if (!bh)
 		goto out;
@@ -3020,10 +3436,15 @@ static ssize_t ext3_quota_write(struct super_block *sb, int type,
 	}
 	brelse(bh);
 out:
+<<<<<<< HEAD
 	if (err) {
 		mutex_unlock(&inode->i_mutex);
 		return err;
 	}
+=======
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 	if (inode->i_size < off + len) {
 		i_size_write(inode, off + len);
 		EXT3_I(inode)->i_disksize = inode->i_size;
@@ -3031,7 +3452,10 @@ out:
 	inode->i_version++;
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME;
 	ext3_mark_inode_dirty(handle, inode);
+<<<<<<< HEAD
 	mutex_unlock(&inode->i_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
@@ -3050,6 +3474,10 @@ static struct file_system_type ext3_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("ext3");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_ext3_fs(void)
 {

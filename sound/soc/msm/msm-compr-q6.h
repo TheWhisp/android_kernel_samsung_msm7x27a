@@ -15,7 +15,15 @@
 #define _MSM_COMPR_H
 #include <sound/apr_audio.h>
 #include <sound/q6asm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <sound/snd_compress_params.h>
+=======
+#include <sound/compress_params.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <sound/compress_params.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/compress_offload.h>
 #include <sound/compress_driver.h>
 

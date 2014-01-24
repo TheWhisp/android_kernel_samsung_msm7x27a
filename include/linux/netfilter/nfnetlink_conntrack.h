@@ -43,6 +43,10 @@ enum ctattr_type {
 	CTA_ZONE,
 	CTA_SECCTX,
 	CTA_TIMESTAMP,
+<<<<<<< HEAD
+=======
+	CTA_MARK_MASK,
+>>>>>>> refs/remotes/origin/cm-10.0
 	__CTA_MAX
 };
 #define CTA_MAX (__CTA_MAX - 1)
@@ -172,10 +176,27 @@ enum ctattr_expect {
 	CTA_EXPECT_HELP_NAME,
 	CTA_EXPECT_ZONE,
 	CTA_EXPECT_FLAGS,
+<<<<<<< HEAD
+=======
+	CTA_EXPECT_CLASS,
+	CTA_EXPECT_NAT,
+	CTA_EXPECT_FN,
+>>>>>>> refs/remotes/origin/cm-10.0
 	__CTA_EXPECT_MAX
 };
 #define CTA_EXPECT_MAX (__CTA_EXPECT_MAX - 1)
 
+<<<<<<< HEAD
+=======
+enum ctattr_expect_nat {
+	CTA_EXPECT_NAT_UNSPEC,
+	CTA_EXPECT_NAT_DIR,
+	CTA_EXPECT_NAT_TUPLE,
+	__CTA_EXPECT_NAT_MAX
+};
+#define CTA_EXPECT_NAT_MAX (__CTA_EXPECT_NAT_MAX - 1)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 enum ctattr_help {
 	CTA_HELP_UNSPEC,
 	CTA_HELP_NAME,

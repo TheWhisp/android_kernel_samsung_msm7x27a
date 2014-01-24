@@ -22,7 +22,13 @@
 #include <linux/vmalloc.h>
 #include <linux/gfp.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
@@ -31,6 +37,15 @@
 #include <asm/mmu_context.h>
 #include <asm/console.h>
 #include <asm/tlb.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+#include <asm/sections.h>
+>>>>>>> refs/remotes/origin/master
 
 extern void die_if_kernel(char *,struct pt_regs *,long);
 
@@ -275,6 +290,7 @@ srm_paging_stop (void)
 }
 #endif
 
+<<<<<<< HEAD
 #ifndef CONFIG_DISCONTIGMEM
 static void __init
 printk_memory_info(void)
@@ -327,23 +343,40 @@ free_reserved_mem(void *start, void *end)
 		free_page((long)__start);
 		totalram_pages++;
 	}
+=======
+void __init
+mem_init(void)
+{
+	set_max_mapnr(max_low_pfn);
+	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
+	free_all_bootmem();
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 void
 free_initmem(void)
 {
+<<<<<<< HEAD
 	extern char __init_begin, __init_end;
 
 	free_reserved_mem(&__init_begin, &__init_end);
 	printk ("Freeing unused kernel memory: %ldk freed\n",
 		(&__init_end - &__init_begin) >> 10);
+=======
+	free_initmem_default(-1);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_BLK_DEV_INITRD
 void
 free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	free_reserved_mem((void *)start, (void *)end);
 	printk ("Freeing initrd memory: %ldk freed\n", (end - start) >> 10);
+=======
+	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif

@@ -15,7 +15,10 @@
 #include <asm/fpregdef.h>
 #include <asm/mipsregs.h>
 #include <asm/asm-offsets.h>
+<<<<<<< HEAD
 #include <asm/page.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable-bits.h>
 #include <asm/regdef.h>
 #include <asm/stackframe.h>
@@ -41,7 +44,11 @@
 
 /*
  * task_struct *resume(task_struct *prev, task_struct *next,
+<<<<<<< HEAD
  *                     struct thread_info *next_ti)
+=======
+ *		       struct thread_info *next_ti, int usedfpu)
+>>>>>>> refs/remotes/origin/master
  */
 	.align	5
 	LEAF(resume)
@@ -53,6 +60,7 @@
 	/*
 	 * check if we need to save FPU registers
 	 */
+<<<<<<< HEAD
 	PTR_L	t3, TASK_THREAD_INFO(a0)
 	LONG_L	t0, TI_FLAGS(t3)
 	li	t1, _TIF_USEDFPU
@@ -63,6 +71,12 @@
 	and	t0, t0, t1
 	LONG_S	t0, TI_FLAGS(t3)
 
+=======
+
+	beqz	a3, 1f
+
+	PTR_L	t3, TASK_THREAD_INFO(a0)
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * clear saved user stack CU1 bit
 	 */
@@ -75,6 +89,15 @@
 						# clobbers t1
 1:
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_CC_STACKPROTECTOR) && !defined(CONFIG_SMP)
+	PTR_LA	t8, __stack_chk_guard
+	LONG_L	t9, TASK_STACK_CANARY(a1)
+	LONG_S	t9, 0(t8)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The order of restoring the registers takes care of the race
 	 * updating $28, $29 and kernelsp without disabling ints.

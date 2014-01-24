@@ -31,9 +31,17 @@
  * IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
 #define DPRINTK(fmt, args...)				\
 	pr_debug("xenbus_probe (%s:%d) " fmt ".\n",	\
 		 __func__, __LINE__, ##args)
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#define DPRINTK(fmt, ...)				\
+	pr_debug("(%s:%d) " fmt "\n",			\
+		 __func__, __LINE__, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/kernel.h>
 #include <linux/err.h>
@@ -42,6 +50,14 @@
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -104,8 +120,20 @@ static int xenbus_uevent_backend(struct device *dev,
 
 	xdev = to_xenbus_device(dev);
 	bus = container_of(xdev->dev.bus, struct xen_bus_type, bus);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (xdev == NULL)
 		return -ENODEV;
+=======
+
+	if (add_uevent_var(env, "MODALIAS=xen-backend:%s", xdev->devicetype))
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (add_uevent_var(env, "MODALIAS=xen-backend:%s", xdev->devicetype))
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* stuff we want to pass to /sbin/hotplug */
 	if (add_uevent_var(env, "XENBUS_TYPE=%s", xdev->devicetype))
@@ -183,10 +211,16 @@ static void frontend_changed(struct xenbus_watch *watch,
 	xenbus_otherend_changed(watch, vec, len, 0);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct device_attribute xenbus_backend_dev_attrs[] = {
 	__ATTR_NULL
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct xen_bus_type xenbus_backend = {
 	.root = "backend",
 	.levels = 3,		/* backend/type/<frontend>/<id> */
@@ -200,7 +234,15 @@ static struct xen_bus_type xenbus_backend = {
 		.probe		= xenbus_dev_probe,
 		.remove		= xenbus_dev_remove,
 		.shutdown	= xenbus_dev_shutdown,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.dev_attrs	= xenbus_backend_dev_attrs,
+=======
+		.dev_attrs	= xenbus_dev_attrs,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.dev_groups	= xenbus_dev_groups,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -234,6 +276,8 @@ int xenbus_dev_is_online(struct xenbus_device *dev)
 }
 EXPORT_SYMBOL_GPL(xenbus_dev_is_online);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __xenbus_register_backend(struct xenbus_driver *drv,
 			      struct module *owner, const char *mod_name)
 {
@@ -243,6 +287,20 @@ int __xenbus_register_backend(struct xenbus_driver *drv,
 					     owner, mod_name);
 }
 EXPORT_SYMBOL_GPL(__xenbus_register_backend);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int xenbus_register_backend(struct xenbus_driver *drv)
+{
+	drv->read_otherend_details = read_frontend_details;
+
+	return xenbus_register_driver_common(drv, &xenbus_backend);
+}
+EXPORT_SYMBOL_GPL(xenbus_register_backend);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int backend_probe_and_watch(struct notifier_block *notifier,
 				   unsigned long event,

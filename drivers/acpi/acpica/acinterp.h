@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -458,7 +466,11 @@ void acpi_ex_reacquire_interpreter(void);
 
 void acpi_ex_relinquish_interpreter(void);
 
+<<<<<<< HEAD
 void acpi_ex_truncate_for32bit_table(union acpi_operand_object *obj_desc);
+=======
+u8 acpi_ex_truncate_for32bit_table(union acpi_operand_object *obj_desc);
+>>>>>>> refs/remotes/origin/master
 
 void acpi_ex_acquire_global_lock(u32 rule);
 
@@ -468,6 +480,16 @@ void acpi_ex_eisa_id_to_string(char *dest, u64 compressed_id);
 
 void acpi_ex_integer_to_string(char *dest, u64 value);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+u8 acpi_is_valid_space_id(u8 space_id);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+u8 acpi_is_valid_space_id(u8 space_id);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * exregion - default op_region handlers
  */

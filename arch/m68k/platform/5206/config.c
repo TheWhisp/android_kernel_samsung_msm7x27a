@@ -16,6 +16,7 @@
 #include <asm/machdep.h>
 #include <asm/coldfire.h>
 #include <asm/mcfsim.h>
+<<<<<<< HEAD
 #include <asm/mcfuart.h>
 
 /***************************************************************************/
@@ -93,14 +94,26 @@ void m5206_cpu_reset(void)
 	for (;;)
 		/* wait for watchdog to timeout */;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /***************************************************************************/
 
 void __init config_BSP(char *commandp, int size)
 {
+<<<<<<< HEAD
 	mach_reset = m5206_cpu_reset;
 	m5206_timers_init();
 	m5206_uarts_init();
+=======
+#if defined(CONFIG_NETtel)
+	/* Copy command line from FLASH to local buffer... */
+	memcpy(commandp, (char *) 0xf0004000, size);
+	commandp[size-1] = 0;
+#endif /* CONFIG_NETtel */
+
+	mach_sched_init = hw_timer_init;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Only support the external interrupts on their primary level */
 	mcf_mapirq2imr(25, MCFINTC_EINT1);
@@ -109,6 +122,7 @@ void __init config_BSP(char *commandp, int size)
 }
 
 /***************************************************************************/
+<<<<<<< HEAD
 
 static int __init init_BSP(void)
 {
@@ -119,3 +133,5 @@ static int __init init_BSP(void)
 arch_initcall(init_BSP);
 
 /***************************************************************************/
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

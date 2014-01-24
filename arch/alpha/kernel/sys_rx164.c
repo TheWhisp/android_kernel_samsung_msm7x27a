@@ -17,7 +17,13 @@
 #include <linux/bitops.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -144,7 +150,15 @@ rx164_init_irq(void)
  */
 
 static int __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 rx164_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+rx164_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+rx164_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 #if 0
 	static char irq_tab_pass1[6][5] __initdata = {

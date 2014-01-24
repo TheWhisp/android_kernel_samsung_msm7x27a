@@ -29,7 +29,13 @@
 #include <linux/gfp.h>
 
 #include <asm/processor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
@@ -100,21 +106,29 @@ void __init paging_init(void)
  */
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	int codesize, reservedpages, datasize, initsize;
 	int tmp;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(!mem_map);
 
 #define START_PFN	(contig_page_data.bdata->node_min_pfn)
 #define MAX_LOW_PFN	(contig_page_data.bdata->node_low_pfn)
 
+<<<<<<< HEAD
 	max_mapnr = num_physpages = MAX_LOW_PFN - START_PFN;
+=======
+	max_mapnr = MAX_LOW_PFN - START_PFN;
+>>>>>>> refs/remotes/origin/master
 	high_memory = (void *) __va(MAX_LOW_PFN * PAGE_SIZE);
 
 	/* clear the zero-page */
 	memset(empty_zero_page, 0, PAGE_SIZE);
 
 	/* this will put all low memory onto the freelists */
+<<<<<<< HEAD
 	totalram_pages += free_all_bootmem();
 
 	reservedpages = 0;
@@ -154,6 +168,11 @@ void free_init_pages(char *what, unsigned long begin, unsigned long end)
 		totalram_pages++;
 	}
 	printk(KERN_INFO "Freeing %s: %ldk freed\n", what, (end - begin) >> 10);
+=======
+	free_all_bootmem();
+
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -161,9 +180,13 @@ void free_init_pages(char *what, unsigned long begin, unsigned long end)
  */
 void free_initmem(void)
 {
+<<<<<<< HEAD
 	free_init_pages("unused kernel memory",
 			(unsigned long) &__init_begin,
 			(unsigned long) &__init_end);
+=======
+	free_initmem_default(POISON_FREE_INITMEM);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -172,6 +195,11 @@ void free_initmem(void)
 #ifdef CONFIG_BLK_DEV_INITRD
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	free_init_pages("initrd memory", start, end);
+=======
+	free_reserved_area((void *)start, (void *)end, POISON_FREE_INITMEM,
+			   "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif

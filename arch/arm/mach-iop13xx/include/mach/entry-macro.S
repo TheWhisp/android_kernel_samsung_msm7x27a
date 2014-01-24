@@ -16,9 +16,15 @@
  * Place - Suite 330, Boston, MA 02111-1307 USA.
  *
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.macro  disable_fiq
 	.endm
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.macro get_irqnr_preamble, base, tmp
 	mrc	p15, 0, \tmp, c15, c1, 0
 	orr	\tmp, \tmp, #(1 << 6)

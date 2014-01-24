@@ -37,7 +37,13 @@
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/interrupt.h>
 #include <linux/errno.h>
@@ -49,6 +55,10 @@
 #include <linux/highmem.h>
 #include <linux/spinlock.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/pagemap.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/protocol.h>
 #include <linux/skbuff.h>
@@ -57,6 +67,10 @@
 #include <net/sock.h>
 #include <net/tcp_states.h>
 #include <trace/events/skb.h>
+<<<<<<< HEAD
+=======
+#include <net/busy_poll.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Is a socket 'connection oriented' ?
@@ -66,7 +80,11 @@ static inline int connection_based(struct sock *sk)
 	return sk->sk_type == SOCK_SEQPACKET || sk->sk_type == SOCK_STREAM;
 }
 
+<<<<<<< HEAD
 static int receiver_wake_function(wait_queue_t *wait, unsigned mode, int sync,
+=======
+static int receiver_wake_function(wait_queue_t *wait, unsigned int mode, int sync,
+>>>>>>> refs/remotes/origin/master
 				  void *key)
 {
 	unsigned long bits = (unsigned long)key;
@@ -79,9 +97,16 @@ static int receiver_wake_function(wait_queue_t *wait, unsigned mode, int sync,
 	return autoremove_wake_function(wait, mode, sync, key);
 }
 /*
+<<<<<<< HEAD
  * Wait for a packet..
  */
 static int wait_for_packet(struct sock *sk, int *err, long *timeo_p)
+=======
+ * Wait for the last received packet to be different from skb
+ */
+static int wait_for_more_packets(struct sock *sk, int *err, long *timeo_p,
+				 const struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 	DEFINE_WAIT_FUNC(wait, receiver_wake_function);
@@ -93,7 +118,11 @@ static int wait_for_packet(struct sock *sk, int *err, long *timeo_p)
 	if (error)
 		goto out_err;
 
+<<<<<<< HEAD
 	if (!skb_queue_empty(&sk->sk_receive_queue))
+=======
+	if (sk->sk_receive_queue.prev != skb)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	/* Socket shut down? */
@@ -132,7 +161,18 @@ out_noerr:
  *	__skb_recv_datagram - Receive a datagram skbuff
  *	@sk: socket
  *	@flags: MSG_ flags
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *	@off: an offset in bytes to peek skb from. Returns an offset
+ *	      within an skb where data actually starts
+>>>>>>> refs/remotes/origin/cm-10.0
  *	@peeked: returns non-zero if this packet has been seen before
+=======
+ *	@peeked: returns non-zero if this packet has been seen before
+ *	@off: an offset in bytes to peek skb from. Returns an offset
+ *	      within an skb where data actually starts
+>>>>>>> refs/remotes/origin/master
  *	@err: error code returned
  *
  *	Get a datagram skbuff, understands the peeking, nonblocking wakeups
@@ -157,10 +197,21 @@ out_noerr:
  *	quite explicitly by POSIX 1003.1g, don't change them without having
  *	the standard around please.
  */
+<<<<<<< HEAD
 struct sk_buff *__skb_recv_datagram(struct sock *sk, unsigned flags,
+<<<<<<< HEAD
 				    int *peeked, int *err)
+=======
+				    int *peeked, int *off, int *err)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct sk_buff *skb;
+=======
+struct sk_buff *__skb_recv_datagram(struct sock *sk, unsigned int flags,
+				    int *peeked, int *off, int *err)
+{
+	struct sk_buff *skb, *last;
+>>>>>>> refs/remotes/origin/master
 	long timeo;
 	/*
 	 * Caller is allowed not to check sk->sk_err before skb_recv_datagram()
@@ -180,6 +231,8 @@ struct sk_buff *__skb_recv_datagram(struct sock *sk, unsigned flags,
 		 * However, this function was correct in any case. 8)
 		 */
 		unsigned long cpu_flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		spin_lock_irqsave(&sk->sk_receive_queue.lock, cpu_flags);
 		skb = skb_peek(&sk->sk_receive_queue);
@@ -195,13 +248,63 @@ struct sk_buff *__skb_recv_datagram(struct sock *sk, unsigned flags,
 
 		if (skb)
 			return skb;
+=======
+		struct sk_buff_head *queue = &sk->sk_receive_queue;
+
+		spin_lock_irqsave(&queue->lock, cpu_flags);
+		skb_queue_walk(queue, skb) {
+			*peeked = skb->peeked;
+			if (flags & MSG_PEEK) {
+				if (*off >= skb->len && skb->len) {
+					*off -= skb->len;
+=======
+		struct sk_buff_head *queue = &sk->sk_receive_queue;
+		int _off = *off;
+
+		last = (struct sk_buff *)queue;
+		spin_lock_irqsave(&queue->lock, cpu_flags);
+		skb_queue_walk(queue, skb) {
+			last = skb;
+			*peeked = skb->peeked;
+			if (flags & MSG_PEEK) {
+				if (_off >= skb->len && (skb->len || _off ||
+							 skb->peeked)) {
+					_off -= skb->len;
+>>>>>>> refs/remotes/origin/master
+					continue;
+				}
+				skb->peeked = 1;
+				atomic_inc(&skb->users);
+			} else
+				__skb_unlink(skb, queue);
+
+			spin_unlock_irqrestore(&queue->lock, cpu_flags);
+<<<<<<< HEAD
+			return skb;
+		}
+		spin_unlock_irqrestore(&queue->lock, cpu_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*off = _off;
+			return skb;
+		}
+		spin_unlock_irqrestore(&queue->lock, cpu_flags);
+
+		if (sk_can_busy_loop(sk) &&
+		    sk_busy_loop(sk, flags & MSG_DONTWAIT))
+			continue;
+>>>>>>> refs/remotes/origin/master
 
 		/* User doesn't want to wait */
 		error = -EAGAIN;
 		if (!timeo)
 			goto no_packet;
 
+<<<<<<< HEAD
 	} while (!wait_for_packet(sk, err, &timeo));
+=======
+	} while (!wait_for_more_packets(sk, err, &timeo, last));
+>>>>>>> refs/remotes/origin/master
 
 	return NULL;
 
@@ -211,13 +314,29 @@ no_packet:
 }
 EXPORT_SYMBOL(__skb_recv_datagram);
 
+<<<<<<< HEAD
 struct sk_buff *skb_recv_datagram(struct sock *sk, unsigned flags,
 				  int noblock, int *err)
 {
+<<<<<<< HEAD
 	int peeked;
 
 	return __skb_recv_datagram(sk, flags | (noblock ? MSG_DONTWAIT : 0),
 				   &peeked, err);
+=======
+=======
+struct sk_buff *skb_recv_datagram(struct sock *sk, unsigned int flags,
+				  int noblock, int *err)
+{
+>>>>>>> refs/remotes/origin/master
+	int peeked, off = 0;
+
+	return __skb_recv_datagram(sk, flags | (noblock ? MSG_DONTWAIT : 0),
+				   &peeked, &off, err);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(skb_recv_datagram);
 
@@ -243,7 +362,10 @@ void skb_free_datagram_locked(struct sock *sk, struct sk_buff *skb)
 	unlock_sock_fast(sk, slow);
 
 	/* skb is now orphaned, can be freed outside of locked section */
+<<<<<<< HEAD
 	trace_kfree_skb(skb, skb_free_datagram_locked);
+=======
+>>>>>>> refs/remotes/origin/master
 	__kfree_skb(skb);
 }
 EXPORT_SYMBOL(skb_free_datagram_locked);
@@ -324,6 +446,8 @@ int skb_copy_datagram_iovec(const struct sk_buff *skb, int offset,
 	/* Copy paged appendix. Hmm... why does this look so complicated? */
 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
 		int end;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		WARN_ON(start > offset + len);
 
@@ -333,6 +457,22 @@ int skb_copy_datagram_iovec(const struct sk_buff *skb, int offset,
 			u8  *vaddr;
 			skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 			struct page *page = frag->page;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
+
+		WARN_ON(start > offset + len);
+
+		end = start + skb_frag_size(frag);
+		if ((copy = end - offset) > 0) {
+			int err;
+			u8  *vaddr;
+			struct page *page = skb_frag_page(frag);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			if (copy > len)
 				copy = len;
@@ -410,6 +550,8 @@ int skb_copy_datagram_const_iovec(const struct sk_buff *skb, int offset,
 	/* Copy paged appendix. Hmm... why does this look so complicated? */
 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
 		int end;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		WARN_ON(start > offset + len);
 
@@ -419,6 +561,22 @@ int skb_copy_datagram_const_iovec(const struct sk_buff *skb, int offset,
 			u8  *vaddr;
 			skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 			struct page *page = frag->page;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
+
+		WARN_ON(start > offset + len);
+
+		end = start + skb_frag_size(frag);
+		if ((copy = end - offset) > 0) {
+			int err;
+			u8  *vaddr;
+			struct page *page = skb_frag_page(frag);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			if (copy > len)
 				copy = len;
@@ -500,6 +658,8 @@ int skb_copy_datagram_from_iovec(struct sk_buff *skb, int offset,
 	/* Copy paged appendix. Hmm... why does this look so complicated? */
 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
 		int end;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		WARN_ON(start > offset + len);
 
@@ -509,6 +669,22 @@ int skb_copy_datagram_from_iovec(struct sk_buff *skb, int offset,
 			u8  *vaddr;
 			skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 			struct page *page = frag->page;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
+
+		WARN_ON(start > offset + len);
+
+		end = start + skb_frag_size(frag);
+		if ((copy = end - offset) > 0) {
+			int err;
+			u8  *vaddr;
+			struct page *page = skb_frag_page(frag);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			if (copy > len)
 				copy = len;
@@ -558,6 +734,80 @@ fault:
 }
 EXPORT_SYMBOL(skb_copy_datagram_from_iovec);
 
+<<<<<<< HEAD
+=======
+/**
+ *	zerocopy_sg_from_iovec - Build a zerocopy datagram from an iovec
+ *	@skb: buffer to copy
+ *	@from: io vector to copy from
+ *	@offset: offset in the io vector to start copying from
+ *	@count: amount of vectors to copy to buffer from
+ *
+ *	The function will first copy up to headlen, and then pin the userspace
+ *	pages and build frags through them.
+ *
+ *	Returns 0, -EFAULT or -EMSGSIZE.
+ *	Note: the iovec is not modified during the copy
+ */
+int zerocopy_sg_from_iovec(struct sk_buff *skb, const struct iovec *from,
+				  int offset, size_t count)
+{
+	int len = iov_length(from, count) - offset;
+	int copy = min_t(int, skb_headlen(skb), len);
+	int size;
+	int i = 0;
+
+	/* copy up to skb headlen */
+	if (skb_copy_datagram_from_iovec(skb, 0, from, offset, copy))
+		return -EFAULT;
+
+	if (len == copy)
+		return 0;
+
+	offset += copy;
+	while (count--) {
+		struct page *page[MAX_SKB_FRAGS];
+		int num_pages;
+		unsigned long base;
+		unsigned long truesize;
+
+		/* Skip over from offset and copied */
+		if (offset >= from->iov_len) {
+			offset -= from->iov_len;
+			++from;
+			continue;
+		}
+		len = from->iov_len - offset;
+		base = (unsigned long)from->iov_base + offset;
+		size = ((base & ~PAGE_MASK) + len + ~PAGE_MASK) >> PAGE_SHIFT;
+		if (i + size > MAX_SKB_FRAGS)
+			return -EMSGSIZE;
+		num_pages = get_user_pages_fast(base, size, 0, &page[i]);
+		if (num_pages != size) {
+			release_pages(&page[i], num_pages, 0);
+			return -EFAULT;
+		}
+		truesize = size * PAGE_SIZE;
+		skb->data_len += len;
+		skb->len += len;
+		skb->truesize += truesize;
+		atomic_add(truesize, &skb->sk->sk_wmem_alloc);
+		while (len) {
+			int off = base & ~PAGE_MASK;
+			int size = min_t(int, len, PAGE_SIZE - off);
+			skb_fill_page_desc(skb, i, page[i], off, size);
+			base += size;
+			len -= size;
+			i++;
+		}
+		offset = 0;
+		++from;
+	}
+	return 0;
+}
+EXPORT_SYMBOL(zerocopy_sg_from_iovec);
+
+>>>>>>> refs/remotes/origin/master
 static int skb_copy_and_csum_datagram(const struct sk_buff *skb, int offset,
 				      u8 __user *to, int len,
 				      __wsum *csump)
@@ -585,16 +835,38 @@ static int skb_copy_and_csum_datagram(const struct sk_buff *skb, int offset,
 
 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
 		int end;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		WARN_ON(start > offset + len);
 
 		end = start + skb_shinfo(skb)->frags[i].size;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
+
+		WARN_ON(start > offset + len);
+
+		end = start + skb_frag_size(frag);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if ((copy = end - offset) > 0) {
 			__wsum csum2;
 			int err = 0;
 			u8  *vaddr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 			struct page *page = frag->page;
+=======
+			struct page *page = skb_frag_page(frag);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			struct page *page = skb_frag_page(frag);
+>>>>>>> refs/remotes/origin/master
 
 			if (copy > len)
 				copy = len;
@@ -745,7 +1017,13 @@ unsigned int datagram_poll(struct file *file, struct socket *sock,
 
 	/* exceptional events? */
 	if (sk->sk_err || !skb_queue_empty(&sk->sk_error_queue))
+<<<<<<< HEAD
 		mask |= POLLERR;
+=======
+		mask |= POLLERR |
+			(sock_flag(sk, SOCK_SELECT_ERR_QUEUE) ? POLLPRI : 0);
+
+>>>>>>> refs/remotes/origin/master
 	if (sk->sk_shutdown & RCV_SHUTDOWN)
 		mask |= POLLRDHUP | POLLIN | POLLRDNORM;
 	if (sk->sk_shutdown == SHUTDOWN_MASK)

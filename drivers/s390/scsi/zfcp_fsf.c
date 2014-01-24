@@ -254,6 +254,7 @@ static void zfcp_fsf_status_read_handler(struct zfcp_fsf_req *req)
 
 		break;
 	case FSF_STATUS_READ_NOTIFICATION_LOST:
+<<<<<<< HEAD
 		if (sr_buf->status_subtype & FSF_STATUS_READ_SUB_ACT_UPDATED)
 			zfcp_cfdc_adapter_access_changed(adapter);
 		if (sr_buf->status_subtype & FSF_STATUS_READ_SUB_INCOMING_ELS)
@@ -261,6 +262,10 @@ static void zfcp_fsf_status_read_handler(struct zfcp_fsf_req *req)
 		break;
 	case FSF_STATUS_READ_CFDC_UPDATED:
 		zfcp_cfdc_adapter_access_changed(adapter);
+=======
+		if (sr_buf->status_subtype & FSF_STATUS_READ_SUB_INCOMING_ELS)
+			zfcp_fc_conditional_port_scan(adapter);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case FSF_STATUS_READ_FEATURE_UPDATE_ALERT:
 		adapter->adapter_features = sr_buf->payload.word[0];
@@ -437,6 +442,49 @@ void zfcp_fsf_req_dismiss_all(struct zfcp_adapter *adapter)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define ZFCP_FSF_PORTSPEED_1GBIT	(1 <<  0)
+#define ZFCP_FSF_PORTSPEED_2GBIT	(1 <<  1)
+#define ZFCP_FSF_PORTSPEED_4GBIT	(1 <<  2)
+#define ZFCP_FSF_PORTSPEED_10GBIT	(1 <<  3)
+#define ZFCP_FSF_PORTSPEED_8GBIT	(1 <<  4)
+#define ZFCP_FSF_PORTSPEED_16GBIT	(1 <<  5)
+#define ZFCP_FSF_PORTSPEED_NOT_NEGOTIATED (1 << 15)
+
+static u32 zfcp_fsf_convert_portspeed(u32 fsf_speed)
+{
+	u32 fdmi_speed = 0;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_1GBIT)
+		fdmi_speed |= FC_PORTSPEED_1GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_2GBIT)
+		fdmi_speed |= FC_PORTSPEED_2GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_4GBIT)
+		fdmi_speed |= FC_PORTSPEED_4GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_10GBIT)
+		fdmi_speed |= FC_PORTSPEED_10GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_8GBIT)
+		fdmi_speed |= FC_PORTSPEED_8GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_16GBIT)
+		fdmi_speed |= FC_PORTSPEED_16GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_NOT_NEGOTIATED)
+		fdmi_speed |= FC_PORTSPEED_NOT_NEGOTIATED;
+	return fdmi_speed;
+}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int zfcp_fsf_exchange_config_evaluate(struct zfcp_fsf_req *req)
 {
 	struct fsf_qtcb_bottom_config *bottom = &req->qtcb->bottom.config;
@@ -472,7 +520,22 @@ static int zfcp_fsf_exchange_config_evaluate(struct zfcp_fsf_req *req)
 		return 0;
 
 	fc_host_port_id(shost) = ntoh24(bottom->s_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fc_host_speed(shost) = bottom->fc_link_speed;
+=======
+	fc_host_speed(shost) =
+		zfcp_fsf_convert_portspeed(bottom->fc_link_speed);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fc_host_speed(shost) =
+		zfcp_fsf_convert_portspeed(bottom->fc_link_speed);
+>>>>>>> refs/remotes/origin/master
+=======
+	fc_host_speed(shost) =
+		zfcp_fsf_convert_portspeed(bottom->fc_link_speed);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	adapter->hydra_version = bottom->adapter_type;
 
@@ -593,7 +656,22 @@ static void zfcp_fsf_exchange_port_evaluate(struct zfcp_fsf_req *req)
 	} else
 		fc_host_permanent_port_name(shost) = fc_host_port_name(shost);
 	fc_host_maxframe_size(shost) = bottom->maximum_frame_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fc_host_supported_speeds(shost) = bottom->supported_speed;
+=======
+	fc_host_supported_speeds(shost) =
+		zfcp_fsf_convert_portspeed(bottom->supported_speed);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fc_host_supported_speeds(shost) =
+		zfcp_fsf_convert_portspeed(bottom->supported_speed);
+>>>>>>> refs/remotes/origin/master
+=======
+	fc_host_supported_speeds(shost) =
+		zfcp_fsf_convert_portspeed(bottom->supported_speed);
+>>>>>>> refs/remotes/origin/cm-11.0
 	memcpy(fc_host_supported_fc4s(shost), bottom->supported_fc4_types,
 	       FC_FC4_LIST_SIZE);
 	memcpy(fc_host_active_fc4s(shost), bottom->active_fc4_types,
@@ -710,7 +788,11 @@ static int zfcp_fsf_req_send(struct zfcp_fsf_req *req)
 	zfcp_reqlist_add(adapter->req_list, req);
 
 	req->qdio_req.qdio_outb_usage = atomic_read(&qdio->req_q_free);
+<<<<<<< HEAD
 	req->issued = get_clock();
+=======
+	req->issued = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 	if (zfcp_qdio_send(qdio, &req->qdio_req)) {
 		del_timer(&req->timer);
 		/* lookup request again, list might have changed */
@@ -745,7 +827,12 @@ int zfcp_fsf_status_read(struct zfcp_qdio *qdio)
 	if (zfcp_qdio_sbal_get(qdio))
 		goto out;
 
+<<<<<<< HEAD
 	req = zfcp_fsf_req_create(qdio, FSF_QTCB_UNSOLICITED_STATUS, 0,
+=======
+	req = zfcp_fsf_req_create(qdio, FSF_QTCB_UNSOLICITED_STATUS,
+				  SBAL_SFLAGS0_TYPE_STATUS,
+>>>>>>> refs/remotes/origin/master
 				  adapter->pool.status_read_req);
 	if (IS_ERR(req)) {
 		retval = PTR_ERR(req);
@@ -914,8 +1001,11 @@ static void zfcp_fsf_send_ct_handler(struct zfcp_fsf_req *req)
 			break;
                 }
                 break;
+<<<<<<< HEAD
 	case FSF_ACCESS_DENIED:
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
         case FSF_PORT_BOXED:
 		req->status |= ZFCP_STATUS_FSFREQ_ERROR;
 		break;
@@ -951,6 +1041,8 @@ static int zfcp_fsf_setup_ct_els_sbals(struct zfcp_fsf_req *req,
 				       struct scatterlist *sg_resp)
 {
 	struct zfcp_adapter *adapter = req->adapter;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 feat = adapter->adapter_features;
 	int bytes;
 
@@ -961,16 +1053,47 @@ static int zfcp_fsf_setup_ct_els_sbals(struct zfcp_fsf_req *req,
 
 		zfcp_fsf_setup_ct_els_unchained(adapter->qdio, &req->qdio_req,
 						sg_req, sg_resp);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct zfcp_qdio *qdio = adapter->qdio;
+	struct fsf_qtcb *qtcb = req->qtcb;
+	u32 feat = adapter->adapter_features;
+
+	if (zfcp_adapter_multi_buffer_active(adapter)) {
+		if (zfcp_qdio_sbals_from_sg(qdio, &req->qdio_req, sg_req))
+			return -EIO;
+		if (zfcp_qdio_sbals_from_sg(qdio, &req->qdio_req, sg_resp))
+			return -EIO;
+
+		zfcp_qdio_set_data_div(qdio, &req->qdio_req,
+					zfcp_qdio_sbale_count(sg_req));
+		zfcp_qdio_set_sbale_last(qdio, &req->qdio_req);
+		zfcp_qdio_set_scount(qdio, &req->qdio_req);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	/* use single, unchained SBAL if it can hold the request */
 	if (zfcp_qdio_sg_one_sbale(sg_req) && zfcp_qdio_sg_one_sbale(sg_resp)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		zfcp_fsf_setup_ct_els_unchained(adapter->qdio, &req->qdio_req,
+=======
+		zfcp_fsf_setup_ct_els_unchained(qdio, &req->qdio_req,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		zfcp_fsf_setup_ct_els_unchained(qdio, &req->qdio_req,
+>>>>>>> refs/remotes/origin/master
 						sg_req, sg_resp);
 		return 0;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bytes = zfcp_qdio_sbals_from_sg(adapter->qdio, &req->qdio_req, sg_req);
 	if (bytes <= 0)
 		return -EIO;
@@ -984,6 +1107,30 @@ static int zfcp_fsf_setup_ct_els_sbals(struct zfcp_fsf_req *req,
 	if (bytes <= 0)
 		return -EIO;
 	zfcp_qdio_set_sbale_last(adapter->qdio, &req->qdio_req);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!(feat & FSF_FEATURE_ELS_CT_CHAINED_SBALS))
+		return -EOPNOTSUPP;
+
+	if (zfcp_qdio_sbals_from_sg(qdio, &req->qdio_req, sg_req))
+		return -EIO;
+
+	qtcb->bottom.support.req_buf_length = zfcp_qdio_real_bytes(sg_req);
+
+	zfcp_qdio_set_sbale_last(qdio, &req->qdio_req);
+	zfcp_qdio_skip_to_last_sbale(qdio, &req->qdio_req);
+
+	if (zfcp_qdio_sbals_from_sg(qdio, &req->qdio_req, sg_resp))
+		return -EIO;
+
+	qtcb->bottom.support.resp_buf_length = zfcp_qdio_real_bytes(sg_resp);
+
+	zfcp_qdio_set_sbale_last(qdio, &req->qdio_req);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1061,7 +1208,10 @@ out:
 static void zfcp_fsf_send_els_handler(struct zfcp_fsf_req *req)
 {
 	struct zfcp_fsf_ct_els *send_els = req->data;
+<<<<<<< HEAD
 	struct zfcp_port *port = send_els->port;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct fsf_qtcb_header *header = &req->qtcb->header;
 
 	send_els->status = -EINVAL;
@@ -1091,12 +1241,15 @@ static void zfcp_fsf_send_els_handler(struct zfcp_fsf_req *req)
 	case FSF_REQUEST_SIZE_TOO_LARGE:
 	case FSF_RESPONSE_SIZE_TOO_LARGE:
 		break;
+<<<<<<< HEAD
 	case FSF_ACCESS_DENIED:
 		if (port) {
 			zfcp_cfdc_port_denied(port, &header->fsf_status_qual);
 			req->status |= ZFCP_STATUS_FSFREQ_ERROR;
 		}
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case FSF_SBAL_MISMATCH:
 		/* should never occur, avoided in zfcp_fsf_send_els */
 		/* fall through */
@@ -1134,7 +1287,17 @@ int zfcp_fsf_send_els(struct zfcp_adapter *adapter, u32 d_id,
 
 	req->status |= ZFCP_STATUS_FSFREQ_CLEANUP;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	zfcp_qdio_sbal_limit(qdio, &req->qdio_req, 2);
+=======
+	if (!zfcp_adapter_multi_buffer_active(adapter))
+		zfcp_qdio_sbal_limit(qdio, &req->qdio_req, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!zfcp_adapter_multi_buffer_active(adapter))
+		zfcp_qdio_sbal_limit(qdio, &req->qdio_req, 2);
+>>>>>>> refs/remotes/origin/master
 
 	ret = zfcp_fsf_setup_ct_els(req, els->req, els->resp, timeout);
 
@@ -1183,8 +1346,11 @@ int zfcp_fsf_exchange_config_data(struct zfcp_erp_action *erp_action)
 	zfcp_qdio_set_sbale_last(qdio, &req->qdio_req);
 
 	req->qtcb->bottom.config.feature_selection =
+<<<<<<< HEAD
 			FSF_FEATURE_CFDC |
 			FSF_FEATURE_LUN_SHARING |
+=======
+>>>>>>> refs/remotes/origin/master
 			FSF_FEATURE_NOTIFICATION_LOST |
 			FSF_FEATURE_UPDATE_ALERT;
 	req->erp_action = erp_action;
@@ -1224,8 +1390,11 @@ int zfcp_fsf_exchange_config_data_sync(struct zfcp_qdio *qdio,
 	req->handler = zfcp_fsf_exchange_config_data_handler;
 
 	req->qtcb->bottom.config.feature_selection =
+<<<<<<< HEAD
 			FSF_FEATURE_CFDC |
 			FSF_FEATURE_LUN_SHARING |
+=======
+>>>>>>> refs/remotes/origin/master
 			FSF_FEATURE_NOTIFICATION_LOST |
 			FSF_FEATURE_UPDATE_ALERT;
 
@@ -1352,10 +1521,13 @@ static void zfcp_fsf_open_port_handler(struct zfcp_fsf_req *req)
 	switch (header->fsf_status) {
 	case FSF_PORT_ALREADY_OPEN:
 		break;
+<<<<<<< HEAD
 	case FSF_ACCESS_DENIED:
 		zfcp_cfdc_port_denied(port, &header->fsf_status_qual);
 		req->status |= ZFCP_STATUS_FSFREQ_ERROR;
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case FSF_MAXIMUM_NUMBER_OF_PORTS_EXCEEDED:
 		dev_warn(&req->adapter->ccw_device->dev,
 			 "Not enough FCP adapter resources to open "
@@ -1538,8 +1710,11 @@ static void zfcp_fsf_open_wka_port_handler(struct zfcp_fsf_req *req)
 		/* fall through */
 	case FSF_ADAPTER_STATUS_AVAILABLE:
 		req->status |= ZFCP_STATUS_FSFREQ_ERROR;
+<<<<<<< HEAD
 		/* fall through */
 	case FSF_ACCESS_DENIED:
+=======
+>>>>>>> refs/remotes/origin/master
 		wka_port->status = ZFCP_FC_WKA_PORT_OFFLINE;
 		break;
 	case FSF_GOOD:
@@ -1659,9 +1834,12 @@ static void zfcp_fsf_close_physical_port_handler(struct zfcp_fsf_req *req)
 		zfcp_erp_adapter_reopen(port->adapter, 0, "fscpph1");
 		req->status |= ZFCP_STATUS_FSFREQ_ERROR;
 		break;
+<<<<<<< HEAD
 	case FSF_ACCESS_DENIED:
 		zfcp_cfdc_port_denied(port, &header->fsf_status_qual);
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case FSF_PORT_BOXED:
 		/* can't use generic zfcp_erp_modify_port_status because
 		 * ZFCP_STATUS_COMMON_OPEN must not be reset for the port */
@@ -1747,7 +1925,11 @@ static void zfcp_fsf_open_lun_handler(struct zfcp_fsf_req *req)
 	struct scsi_device *sdev = req->data;
 	struct zfcp_scsi_dev *zfcp_sdev;
 	struct fsf_qtcb_header *header = &req->qtcb->header;
+<<<<<<< HEAD
 	struct fsf_qtcb_bottom_support *bottom = &req->qtcb->bottom.support;
+=======
+	union fsf_status_qual *qual = &header->fsf_status_qual;
+>>>>>>> refs/remotes/origin/master
 
 	if (req->status & ZFCP_STATUS_FSFREQ_ERROR)
 		return;
@@ -1755,9 +1937,13 @@ static void zfcp_fsf_open_lun_handler(struct zfcp_fsf_req *req)
 	zfcp_sdev = sdev_to_zfcp(sdev);
 
 	atomic_clear_mask(ZFCP_STATUS_COMMON_ACCESS_DENIED |
+<<<<<<< HEAD
 			  ZFCP_STATUS_COMMON_ACCESS_BOXED |
 			  ZFCP_STATUS_LUN_SHARED |
 			  ZFCP_STATUS_LUN_READONLY,
+=======
+			  ZFCP_STATUS_COMMON_ACCESS_BOXED,
+>>>>>>> refs/remotes/origin/master
 			  &zfcp_sdev->status);
 
 	switch (header->fsf_status) {
@@ -1767,10 +1953,13 @@ static void zfcp_fsf_open_lun_handler(struct zfcp_fsf_req *req)
 		/* fall through */
 	case FSF_LUN_ALREADY_OPEN:
 		break;
+<<<<<<< HEAD
 	case FSF_ACCESS_DENIED:
 		zfcp_cfdc_lun_denied(sdev, &header->fsf_status_qual);
 		req->status |= ZFCP_STATUS_FSFREQ_ERROR;
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case FSF_PORT_BOXED:
 		zfcp_erp_set_port_status(zfcp_sdev->port,
 					 ZFCP_STATUS_COMMON_ACCESS_BOXED);
@@ -1779,7 +1968,21 @@ static void zfcp_fsf_open_lun_handler(struct zfcp_fsf_req *req)
 		req->status |= ZFCP_STATUS_FSFREQ_ERROR;
 		break;
 	case FSF_LUN_SHARING_VIOLATION:
+<<<<<<< HEAD
 		zfcp_cfdc_lun_shrng_vltn(sdev, &header->fsf_status_qual);
+=======
+		if (qual->word[0])
+			dev_warn(&zfcp_sdev->port->adapter->ccw_device->dev,
+				 "LUN 0x%Lx on port 0x%Lx is already in "
+				 "use by CSS%d, MIF Image ID %x\n",
+				 zfcp_scsi_dev_lun(sdev),
+				 (unsigned long long)zfcp_sdev->port->wwpn,
+				 qual->fsf_queue_designator.cssid,
+				 qual->fsf_queue_designator.hla);
+		zfcp_erp_set_lun_status(sdev,
+					ZFCP_STATUS_COMMON_ERP_FAILED |
+					ZFCP_STATUS_COMMON_ACCESS_DENIED);
+>>>>>>> refs/remotes/origin/master
 		req->status |= ZFCP_STATUS_FSFREQ_ERROR;
 		break;
 	case FSF_MAXIMUM_NUMBER_OF_LUNS_EXCEEDED:
@@ -1807,7 +2010,10 @@ static void zfcp_fsf_open_lun_handler(struct zfcp_fsf_req *req)
 	case FSF_GOOD:
 		zfcp_sdev->lun_handle = header->lun_handle;
 		atomic_set_mask(ZFCP_STATUS_COMMON_OPEN, &zfcp_sdev->status);
+<<<<<<< HEAD
 		zfcp_cfdc_open_lun_eval(sdev, bottom);
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -2035,10 +2241,13 @@ static void zfcp_fsf_fcp_handler_common(struct zfcp_fsf_req *req)
 	case FSF_SERVICE_CLASS_NOT_SUPPORTED:
 		zfcp_fsf_class_not_supp(req);
 		break;
+<<<<<<< HEAD
 	case FSF_ACCESS_DENIED:
 		zfcp_cfdc_lun_denied(sdev, &header->fsf_status_qual);
 		req->status |= ZFCP_STATUS_FSFREQ_ERROR;
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case FSF_DIRECTION_INDICATOR_NOT_VALID:
 		dev_err(&req->adapter->ccw_device->dev,
 			"Incorrect direction %d, LUN 0x%016Lx on port "
@@ -2184,7 +2393,15 @@ int zfcp_fsf_fcp_cmnd(struct scsi_cmnd *scsi_cmnd)
 	struct zfcp_fsf_req *req;
 	struct fcp_cmnd *fcp_cmnd;
 	u8 sbtype = SBAL_SFLAGS0_TYPE_READ;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int real_bytes, retval = -EIO, dix_bytes = 0;
+=======
+	int retval = -EIO;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retval = -EIO;
+>>>>>>> refs/remotes/origin/master
 	struct scsi_device *sdev = scsi_cmnd->device;
 	struct zfcp_scsi_dev *zfcp_sdev = sdev_to_zfcp(sdev);
 	struct zfcp_adapter *adapter = zfcp_sdev->port->adapter;
@@ -2229,7 +2446,17 @@ int zfcp_fsf_fcp_cmnd(struct scsi_cmnd *scsi_cmnd)
 		io->ref_tag_value = scsi_get_lba(scsi_cmnd) & 0xFFFFFFFF;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	zfcp_fsf_set_data_dir(scsi_cmnd, &io->data_direction);
+=======
+	if (zfcp_fsf_set_data_dir(scsi_cmnd, &io->data_direction))
+		goto failed_scsi_cmnd;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (zfcp_fsf_set_data_dir(scsi_cmnd, &io->data_direction))
+		goto failed_scsi_cmnd;
+>>>>>>> refs/remotes/origin/master
 
 	fcp_cmnd = (struct fcp_cmnd *) &req->qtcb->bottom.io.fcp_cmnd;
 	zfcp_fc_scsi_to_fcp(fcp_cmnd, scsi_cmnd, 0);
@@ -2237,6 +2464,8 @@ int zfcp_fsf_fcp_cmnd(struct scsi_cmnd *scsi_cmnd)
 	if (scsi_prot_sg_count(scsi_cmnd)) {
 		zfcp_qdio_set_data_div(qdio, &req->qdio_req,
 				       scsi_prot_sg_count(scsi_cmnd));
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dix_bytes = zfcp_qdio_sbals_from_sg(qdio, &req->qdio_req,
 						scsi_prot_sglist(scsi_cmnd));
 		io->prot_data_length = dix_bytes;
@@ -2249,6 +2478,29 @@ int zfcp_fsf_fcp_cmnd(struct scsi_cmnd *scsi_cmnd)
 		goto failed_scsi_cmnd;
 
 	zfcp_qdio_set_sbale_last(adapter->qdio, &req->qdio_req);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		retval = zfcp_qdio_sbals_from_sg(qdio, &req->qdio_req,
+						 scsi_prot_sglist(scsi_cmnd));
+		if (retval)
+			goto failed_scsi_cmnd;
+		io->prot_data_length = zfcp_qdio_real_bytes(
+						scsi_prot_sglist(scsi_cmnd));
+	}
+
+	retval = zfcp_qdio_sbals_from_sg(qdio, &req->qdio_req,
+					 scsi_sglist(scsi_cmnd));
+	if (unlikely(retval))
+		goto failed_scsi_cmnd;
+
+	zfcp_qdio_set_sbale_last(adapter->qdio, &req->qdio_req);
+	if (zfcp_adapter_multi_buffer_active(adapter))
+		zfcp_qdio_set_scount(qdio, &req->qdio_req);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	retval = zfcp_fsf_req_send(req);
 	if (unlikely(retval))
@@ -2334,6 +2586,7 @@ out:
 	return req;
 }
 
+<<<<<<< HEAD
 static void zfcp_fsf_control_file_handler(struct zfcp_fsf_req *req)
 {
 }
@@ -2350,7 +2603,11 @@ struct zfcp_fsf_req *zfcp_fsf_control_file(struct zfcp_adapter *adapter,
 	struct zfcp_qdio *qdio = adapter->qdio;
 	struct zfcp_fsf_req *req = NULL;
 	struct fsf_qtcb_bottom_support *bottom;
+<<<<<<< HEAD
 	int retval = -EIO, bytes;
+=======
+	int retval = -EIO;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 direction;
 
 	if (!(adapter->adapter_features & FSF_FEATURE_CFDC))
@@ -2383,6 +2640,7 @@ struct zfcp_fsf_req *zfcp_fsf_control_file(struct zfcp_adapter *adapter,
 	bottom->operation_subtype = FSF_CFDC_OPERATION_SUBTYPE;
 	bottom->option = fsf_cfdc->option;
 
+<<<<<<< HEAD
 	bytes = zfcp_qdio_sbals_from_sg(qdio, &req->qdio_req, fsf_cfdc->sg);
 
 	if (bytes != ZFCP_CFDC_MAX_SIZE) {
@@ -2390,6 +2648,19 @@ struct zfcp_fsf_req *zfcp_fsf_control_file(struct zfcp_adapter *adapter,
 		goto out;
 	}
 	zfcp_qdio_set_sbale_last(adapter->qdio, &req->qdio_req);
+=======
+	retval = zfcp_qdio_sbals_from_sg(qdio, &req->qdio_req, fsf_cfdc->sg);
+
+	if (retval ||
+		(zfcp_qdio_real_bytes(fsf_cfdc->sg) != ZFCP_CFDC_MAX_SIZE)) {
+		zfcp_fsf_req_free(req);
+		retval = -EIO;
+		goto out;
+	}
+	zfcp_qdio_set_sbale_last(qdio, &req->qdio_req);
+	if (zfcp_adapter_multi_buffer_active(adapter))
+		zfcp_qdio_set_scount(qdio, &req->qdio_req);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	zfcp_fsf_start_timer(req, ZFCP_FSF_REQUEST_TIMEOUT);
 	retval = zfcp_fsf_req_send(req);
@@ -2403,6 +2674,8 @@ out:
 	return ERR_PTR(retval);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * zfcp_fsf_reqid_check - validate req_id contained in SBAL returned by QDIO
  * @adapter: pointer to struct zfcp_adapter
@@ -2440,6 +2713,7 @@ void zfcp_fsf_reqid_check(struct zfcp_qdio *qdio, int sbal_idx)
 			break;
 	}
 }
+<<<<<<< HEAD
 
 struct zfcp_fsf_req *zfcp_fsf_get_req(struct zfcp_qdio *qdio,
 				      struct qdio_buffer *sbal)
@@ -2449,3 +2723,5 @@ struct zfcp_fsf_req *zfcp_fsf_get_req(struct zfcp_qdio *qdio,
 
 	return zfcp_reqlist_find(qdio->adapter->req_list, req_id);
 }
+=======
+>>>>>>> refs/remotes/origin/master

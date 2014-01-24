@@ -24,6 +24,11 @@
  * 	This file is derived from net/ipv4/esp.c
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "IPv6: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <crypto/aead.h>
 #include <crypto/authenc.h>
 #include <linux/err.h>
@@ -37,6 +42,10 @@
 #include <linux/random.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <net/ip6_route.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/icmp.h>
 #include <net/ipv6.h>
 #include <net/protocol.h>
@@ -161,12 +170,18 @@ static int esp6_output(struct xfrm_state *x, struct sk_buff *skb)
 	u8 *iv;
 	u8 *tail;
 	__be32 *seqhi;
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
 
 	/* skb is pure payload to encrypt */
 	err = -ENOMEM;
 
 	aead = esp->aead;
+=======
+
+	/* skb is pure payload to encrypt */
+	aead = x->data;
+>>>>>>> refs/remotes/origin/master
 	alen = crypto_aead_authsize(aead);
 
 	tfclen = 0;
@@ -180,8 +195,11 @@ static int esp6_output(struct xfrm_state *x, struct sk_buff *skb)
 	}
 	blksize = ALIGN(crypto_aead_blocksize(aead), 4);
 	clen = ALIGN(skb->len + 2 + tfclen, blksize);
+<<<<<<< HEAD
 	if (esp->padlen)
 		clen = ALIGN(clen, esp->padlen);
+=======
+>>>>>>> refs/remotes/origin/master
 	plen = clen - skb->len - tfclen;
 
 	err = skb_cow_data(skb, tfclen + plen + alen, &trailer);
@@ -200,8 +218,15 @@ static int esp6_output(struct xfrm_state *x, struct sk_buff *skb)
 	}
 
 	tmp = esp_alloc_tmp(aead, nfrags + sglists, seqhilen);
+<<<<<<< HEAD
 	if (!tmp)
 		goto error;
+=======
+	if (!tmp) {
+		err = -ENOMEM;
+		goto error;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	seqhi = esp_tmp_seqhi(tmp);
 	iv = esp_tmp_iv(aead, tmp, seqhilen);
@@ -268,8 +293,12 @@ error:
 static int esp_input_done2(struct sk_buff *skb, int err)
 {
 	struct xfrm_state *x = xfrm_input_state(skb);
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
 	struct crypto_aead *aead = esp->aead;
+=======
+	struct crypto_aead *aead = x->data;
+>>>>>>> refs/remotes/origin/master
 	int alen = crypto_aead_authsize(aead);
 	int hlen = sizeof(struct ip_esp_hdr) + crypto_aead_ivsize(aead);
 	int elen = skb->len - hlen;
@@ -297,7 +326,14 @@ static int esp_input_done2(struct sk_buff *skb, int err)
 
 	pskb_trim(skb, skb->len - alen - padlen - 2);
 	__skb_pull(skb, hlen);
+<<<<<<< HEAD
 	skb_set_transport_header(skb, -hdr_len);
+=======
+	if (x->props.mode == XFRM_MODE_TUNNEL)
+		skb_reset_transport_header(skb);
+	else
+		skb_set_transport_header(skb, -hdr_len);
+>>>>>>> refs/remotes/origin/master
 
 	err = nexthdr[1];
 
@@ -319,8 +355,12 @@ static void esp_input_done(struct crypto_async_request *base, int err)
 static int esp6_input(struct xfrm_state *x, struct sk_buff *skb)
 {
 	struct ip_esp_hdr *esph;
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
 	struct crypto_aead *aead = esp->aead;
+=======
+	struct crypto_aead *aead = x->data;
+>>>>>>> refs/remotes/origin/master
 	struct aead_request *req;
 	struct sk_buff *trailer;
 	int elen = skb->len - sizeof(*esph) - crypto_aead_ivsize(aead);
@@ -408,9 +448,17 @@ out:
 
 static u32 esp6_get_mtu(struct xfrm_state *x, int mtu)
 {
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
 	u32 blksize = ALIGN(crypto_aead_blocksize(esp->aead), 4);
 	u32 align = max_t(u32, blksize, esp->padlen);
+<<<<<<< HEAD
+=======
+	struct crypto_aead *aead = x->data;
+	u32 blksize = ALIGN(crypto_aead_blocksize(aead), 4);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int net_adj;
 
 	if (x->props.mode != XFRM_MODE_TUNNEL)
@@ -418,8 +466,18 @@ static u32 esp6_get_mtu(struct xfrm_state *x, int mtu)
 	else
 		net_adj = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return ((mtu - x->props.header_len - crypto_aead_authsize(esp->aead) -
 		 net_adj) & ~(align - 1)) + (net_adj - 2);
+=======
+	return ((mtu - x->props.header_len - crypto_aead_authsize(aead) -
+		 net_adj) & ~(blksize - 1)) + net_adj - 2;
+>>>>>>> refs/remotes/origin/master
+=======
+	return ((mtu - x->props.header_len - crypto_aead_authsize(esp->aead) -
+		 net_adj) & ~(align - 1)) + (net_adj - 2);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void esp6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
@@ -430,21 +488,35 @@ static void esp6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 	struct ip_esp_hdr *esph = (struct ip_esp_hdr *)(skb->data + offset);
 	struct xfrm_state *x;
 
+<<<<<<< HEAD
 	if (type != ICMPV6_DEST_UNREACH &&
 	    type != ICMPV6_PKT_TOOBIG)
+=======
+	if (type != ICMPV6_PKT_TOOBIG &&
+	    type != NDISC_REDIRECT)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	x = xfrm_state_lookup(net, skb->mark, (const xfrm_address_t *)&iph->daddr,
 			      esph->spi, IPPROTO_ESP, AF_INET6);
 	if (!x)
 		return;
+<<<<<<< HEAD
 	printk(KERN_DEBUG "pmtu discovery on SA ESP/%08x/%pI6\n",
 			ntohl(esph->spi), &iph->daddr);
+=======
+
+	if (type == NDISC_REDIRECT)
+		ip6_redirect(skb, net, skb->dev->ifindex, 0);
+	else
+		ip6_update_pmtu(skb, net, info, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	xfrm_state_put(x);
 }
 
 static void esp6_destroy(struct xfrm_state *x)
 {
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
 
 	if (!esp)
@@ -452,11 +524,22 @@ static void esp6_destroy(struct xfrm_state *x)
 
 	crypto_free_aead(esp->aead);
 	kfree(esp);
+=======
+	struct crypto_aead *aead = x->data;
+
+	if (!aead)
+		return;
+
+	crypto_free_aead(aead);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int esp_init_aead(struct xfrm_state *x)
 {
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct crypto_aead *aead;
 	int err;
 
@@ -465,7 +548,11 @@ static int esp_init_aead(struct xfrm_state *x)
 	if (IS_ERR(aead))
 		goto error;
 
+<<<<<<< HEAD
 	esp->aead = aead;
+=======
+	x->data = aead;
+>>>>>>> refs/remotes/origin/master
 
 	err = crypto_aead_setkey(aead, x->aead->alg_key,
 				 (x->aead->alg_key_len + 7) / 8);
@@ -482,7 +569,10 @@ error:
 
 static int esp_init_authenc(struct xfrm_state *x)
 {
+<<<<<<< HEAD
 	struct esp_data *esp = x->data;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct crypto_aead *aead;
 	struct crypto_authenc_key_param *param;
 	struct rtattr *rta;
@@ -517,7 +607,11 @@ static int esp_init_authenc(struct xfrm_state *x)
 	if (IS_ERR(aead))
 		goto error;
 
+<<<<<<< HEAD
 	esp->aead = aead;
+=======
+	x->data = aead;
+>>>>>>> refs/remotes/origin/master
 
 	keylen = (x->aalg ? (x->aalg->alg_key_len + 7) / 8 : 0) +
 		 (x->ealg->alg_key_len + 7) / 8 + RTA_SPACE(sizeof(*param));
@@ -572,7 +666,10 @@ error:
 
 static int esp6_init_state(struct xfrm_state *x)
 {
+<<<<<<< HEAD
 	struct esp_data *esp;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct crypto_aead *aead;
 	u32 align;
 	int err;
@@ -580,11 +677,15 @@ static int esp6_init_state(struct xfrm_state *x)
 	if (x->encap)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	esp = kzalloc(sizeof(*esp), GFP_KERNEL);
 	if (esp == NULL)
 		return -ENOMEM;
 
 	x->data = esp;
+=======
+	x->data = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	if (x->aead)
 		err = esp_init_aead(x);
@@ -594,9 +695,13 @@ static int esp6_init_state(struct xfrm_state *x)
 	if (err)
 		goto error;
 
+<<<<<<< HEAD
 	aead = esp->aead;
 
 	esp->padlen = 0;
+=======
+	aead = x->data;
+>>>>>>> refs/remotes/origin/master
 
 	x->props.header_len = sizeof(struct ip_esp_hdr) +
 			      crypto_aead_ivsize(aead);
@@ -616,9 +721,13 @@ static int esp6_init_state(struct xfrm_state *x)
 	}
 
 	align = ALIGN(crypto_aead_blocksize(aead), 4);
+<<<<<<< HEAD
 	if (esp->padlen)
 		align = max_t(u32, align, esp->padlen);
 	x->props.trailer_len = align + 1 + crypto_aead_authsize(esp->aead);
+=======
+	x->props.trailer_len = align + 1 + crypto_aead_authsize(aead);
+>>>>>>> refs/remotes/origin/master
 
 error:
 	return err;
@@ -647,11 +756,19 @@ static const struct inet6_protocol esp6_protocol = {
 static int __init esp6_init(void)
 {
 	if (xfrm_register_type(&esp6_type, AF_INET6) < 0) {
+<<<<<<< HEAD
 		printk(KERN_INFO "ipv6 esp init: can't add xfrm type\n");
 		return -EAGAIN;
 	}
 	if (inet6_add_protocol(&esp6_protocol, IPPROTO_ESP) < 0) {
 		printk(KERN_INFO "ipv6 esp init: can't add protocol\n");
+=======
+		pr_info("%s: can't add xfrm type\n", __func__);
+		return -EAGAIN;
+	}
+	if (inet6_add_protocol(&esp6_protocol, IPPROTO_ESP) < 0) {
+		pr_info("%s: can't add protocol\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		xfrm_unregister_type(&esp6_type, AF_INET6);
 		return -EAGAIN;
 	}
@@ -662,9 +779,15 @@ static int __init esp6_init(void)
 static void __exit esp6_fini(void)
 {
 	if (inet6_del_protocol(&esp6_protocol, IPPROTO_ESP) < 0)
+<<<<<<< HEAD
 		printk(KERN_INFO "ipv6 esp close: can't remove protocol\n");
 	if (xfrm_unregister_type(&esp6_type, AF_INET6) < 0)
 		printk(KERN_INFO "ipv6 esp close: can't remove xfrm type\n");
+=======
+		pr_info("%s: can't remove protocol\n", __func__);
+	if (xfrm_unregister_type(&esp6_type, AF_INET6) < 0)
+		pr_info("%s: can't remove xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(esp6_init);

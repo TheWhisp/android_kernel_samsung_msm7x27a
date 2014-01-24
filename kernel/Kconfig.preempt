@@ -35,6 +35,16 @@ config PREEMPT_VOLUNTARY
 
 config PREEMPT
 	bool "Preemptible Kernel (Low-Latency Desktop)"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select PREEMPT_COUNT
+	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select PREEMPT_COUNT
+	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option reduces the latency of the kernel by making
 	  all kernel code (that is not executing in a critical section)
@@ -52,3 +62,13 @@ config PREEMPT
 
 endchoice
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+config PREEMPT_COUNT
+       bool
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config PREEMPT_COUNT
+       bool
+>>>>>>> refs/remotes/origin/master

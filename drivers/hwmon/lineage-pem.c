@@ -29,6 +29,10 @@
 #include <linux/i2c.h>
 #include <linux/hwmon.h>
 #include <linux/hwmon-sysfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This driver supports various Lineage Compact Power Line DC/DC and AC/DC
@@ -450,7 +454,15 @@ static int pem_probe(struct i2c_client *client,
 				     | I2C_FUNC_SMBUS_WRITE_BYTE))
 		return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
@@ -464,11 +476,25 @@ static int pem_probe(struct i2c_client *client,
 	ret = pem_read_block(client, PEM_READ_FIRMWARE_REV,
 			     data->firmware_rev, sizeof(data->firmware_rev));
 	if (ret < 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_kfree;
 
 	ret = i2c_smbus_write_byte(client, PEM_CLEAR_INFO_FLAGS);
 	if (ret < 0)
 		goto out_kfree;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		return ret;
+
+	ret = i2c_smbus_write_byte(client, PEM_CLEAR_INFO_FLAGS);
+	if (ret < 0)
+		return ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(&client->dev, "Firmware revision %d.%d.%d\n",
 		 data->firmware_rev[0], data->firmware_rev[1],
@@ -477,7 +503,15 @@ static int pem_probe(struct i2c_client *client,
 	/* Register sysfs hooks */
 	ret = sysfs_create_group(&client->dev.kobj, &pem_group);
 	if (ret)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_kfree;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check if input readings are supported.
@@ -536,8 +570,14 @@ out_remove_groups:
 	sysfs_remove_group(&client->dev.kobj, &pem_input_group);
 	sysfs_remove_group(&client->dev.kobj, &pem_fan_group);
 	sysfs_remove_group(&client->dev.kobj, &pem_group);
+<<<<<<< HEAD
+<<<<<<< HEAD
 out_kfree:
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -551,7 +591,13 @@ static int pem_remove(struct i2c_client *client)
 	sysfs_remove_group(&client->dev.kobj, &pem_fan_group);
 	sysfs_remove_group(&client->dev.kobj, &pem_group);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -570,6 +616,8 @@ static struct i2c_driver pem_driver = {
 	.id_table = pem_id,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init pem_init(void)
 {
 	return i2c_add_driver(&pem_driver);
@@ -579,10 +627,23 @@ static void __exit pem_exit(void)
 {
 	i2c_del_driver(&pem_driver);
 }
+=======
+module_i2c_driver(pem_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Guenter Roeck <guenter.roeck@ericsson.com>");
 MODULE_DESCRIPTION("Lineage CPL PEM hardware monitoring driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(pem_init);
 module_exit(pem_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(pem_driver);
+
+MODULE_AUTHOR("Guenter Roeck <linux@roeck-us.net>");
+MODULE_DESCRIPTION("Lineage CPL PEM hardware monitoring driver");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

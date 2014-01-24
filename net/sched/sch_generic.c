@@ -25,9 +25,21 @@
 #include <linux/rcupdate.h>
 #include <linux/list.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <net/pkt_sched.h>
 #include <net/dst.h>
 
+=======
+#include <linux/if_vlan.h>
+#include <net/sch_generic.h>
+#include <net/pkt_sched.h>
+#include <net/dst.h>
+
+/* Qdisc to use by default */
+const struct Qdisc_ops *default_qdisc_ops = &pfifo_fast_ops;
+EXPORT_SYMBOL(default_qdisc_ops);
+
+>>>>>>> refs/remotes/origin/master
 /* Main transmission queue. */
 
 /* Modifications to data participating in scheduling must be protected with
@@ -53,6 +65,7 @@ static inline int dev_requeue_skb(struct sk_buff *skb, struct Qdisc *q)
 static inline struct sk_buff *dequeue_skb(struct Qdisc *q)
 {
 	struct sk_buff *skb = q->gso_skb;
+<<<<<<< HEAD
 
 	if (unlikely(skb)) {
 		struct net_device *dev = qdisc_dev(q);
@@ -60,13 +73,30 @@ static inline struct sk_buff *dequeue_skb(struct Qdisc *q)
 
 		/* check the reason of requeuing without tx lock first */
 		txq = netdev_get_tx_queue(dev, skb_get_queue_mapping(skb));
+<<<<<<< HEAD
 		if (!netif_tx_queue_frozen_or_stopped(txq)) {
+=======
+		if (!netif_xmit_frozen_or_stopped(txq)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct netdev_queue *txq = q->dev_queue;
+
+	if (unlikely(skb)) {
+		/* check the reason of requeuing without tx lock first */
+		txq = netdev_get_tx_queue(txq->dev, skb_get_queue_mapping(skb));
+		if (!netif_xmit_frozen_or_stopped(txq)) {
+>>>>>>> refs/remotes/origin/master
 			q->gso_skb = NULL;
 			q->q.qlen--;
 		} else
 			skb = NULL;
 	} else {
+<<<<<<< HEAD
 		skb = q->dequeue(q);
+=======
+		if (!(q->flags & TCQ_F_ONETXQUEUE) || !netif_xmit_frozen_or_stopped(txq))
+			skb = q->dequeue(q);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return skb;
@@ -86,9 +116,14 @@ static inline int handle_dev_cpu_collision(struct sk_buff *skb,
 		 * deadloop is detected. Return OK to try the next skb.
 		 */
 		kfree_skb(skb);
+<<<<<<< HEAD
 		if (net_ratelimit())
 			pr_warning("Dead loop on netdevice %s, fix it urgently!\n",
 				   dev_queue->dev->name);
+=======
+		net_warn_ratelimited("Dead loop on netdevice %s, fix it urgently!\n",
+				     dev_queue->dev->name);
+>>>>>>> refs/remotes/origin/master
 		ret = qdisc_qlen(q);
 	} else {
 		/*
@@ -121,7 +156,15 @@ int sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
 	spin_unlock(root_lock);
 
 	HARD_TX_LOCK(dev, txq, smp_processor_id());
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!netif_tx_queue_frozen_or_stopped(txq))
+=======
+	if (!netif_xmit_frozen_or_stopped(txq))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!netif_xmit_frozen_or_stopped(txq))
+>>>>>>> refs/remotes/origin/master
 		ret = dev_hard_start_xmit(skb, dev, txq);
 
 	HARD_TX_UNLOCK(dev, txq);
@@ -136,14 +179,28 @@ int sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
 		ret = handle_dev_cpu_collision(skb, txq, q);
 	} else {
 		/* Driver returned NETDEV_TX_BUSY - requeue skb */
+<<<<<<< HEAD
 		if (unlikely (ret != NETDEV_TX_BUSY && net_ratelimit()))
 			pr_warning("BUG %s code %d qlen %d\n",
 				   dev->name, ret, q->q.qlen);
+=======
+		if (unlikely(ret != NETDEV_TX_BUSY))
+			net_warn_ratelimited("BUG %s code %d qlen %d\n",
+					     dev->name, ret, q->q.qlen);
+>>>>>>> refs/remotes/origin/master
 
 		ret = dev_requeue_skb(skb, q);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret && netif_tx_queue_frozen_or_stopped(txq))
+=======
+	if (ret && netif_xmit_frozen_or_stopped(txq))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret && netif_xmit_frozen_or_stopped(txq))
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 
 	return ret;
@@ -189,6 +246,8 @@ static inline int qdisc_restart(struct Qdisc *q)
 
 void __qdisc_run(struct Qdisc *q)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long start_time = jiffies;
 
 	while (qdisc_restart(q)) {
@@ -198,6 +257,22 @@ void __qdisc_run(struct Qdisc *q)
 		 * 2. we've been doing it for too long.
 		 */
 		if (need_resched() || jiffies != start_time) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int quota = weight_p;
+
+	while (qdisc_restart(q)) {
+		/*
+		 * Ordered by possible occurrence: Postpone processing if
+		 * 1. we've exceeded packet quota
+		 * 2. another process needs the CPU;
+		 */
+		if (--quota <= 0 || need_resched()) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			__netif_schedule(q);
 			break;
 		}
@@ -208,15 +283,28 @@ void __qdisc_run(struct Qdisc *q)
 
 unsigned long dev_trans_start(struct net_device *dev)
 {
+<<<<<<< HEAD
 	unsigned long val, res = dev->trans_start;
 	unsigned int i;
 
+=======
+	unsigned long val, res;
+	unsigned int i;
+
+	if (is_vlan_dev(dev))
+		dev = vlan_dev_real_dev(dev);
+	res = dev->trans_start;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < dev->num_tx_queues; i++) {
 		val = netdev_get_tx_queue(dev, i)->trans_start;
 		if (val && time_after(val, res))
 			res = val;
 	}
 	dev->trans_start = res;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 EXPORT_SYMBOL(dev_trans_start);
@@ -242,10 +330,24 @@ static void dev_watchdog(unsigned long arg)
 				 * old device drivers set dev->trans_start
 				 */
 				trans_start = txq->trans_start ? : dev->trans_start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (netif_tx_queue_stopped(txq) &&
 				    time_after(jiffies, (trans_start +
 							 dev->watchdog_timeo))) {
 					some_queue_timedout = 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				if (netif_xmit_stopped(txq) &&
+				    time_after(jiffies, (trans_start +
+							 dev->watchdog_timeo))) {
+					some_queue_timedout = 1;
+					txq->trans_timeout++;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					break;
 				}
 			}
@@ -324,6 +426,7 @@ void netif_carrier_off(struct net_device *dev)
 }
 EXPORT_SYMBOL(netif_carrier_off);
 
+<<<<<<< HEAD
 /**
  * 	netif_notify_peers - notify network peers about existence of @dev
  * 	@dev: network device
@@ -342,6 +445,8 @@ void netif_notify_peers(struct net_device *dev)
 }
 EXPORT_SYMBOL(netif_notify_peers);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* "NOOP" scheduler: the best scheduler, recommended for all interfaces
    under all circumstances. It is difficult to invent anything faster or
    cheaper.
@@ -511,7 +616,12 @@ static int pfifo_fast_dump(struct Qdisc *qdisc, struct sk_buff *skb)
 	struct tc_prio_qopt opt = { .bands = PFIFO_FAST_BANDS };
 
 	memcpy(&opt.priomap, prio2band, TC_PRIO_MAX + 1);
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_OPTIONS, sizeof(opt), &opt);
+=======
+	if (nla_put(skb, TCA_OPTIONS, sizeof(opt), &opt))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return skb->len;
 
 nla_put_failure:
@@ -542,15 +652,27 @@ struct Qdisc_ops pfifo_fast_ops __read_mostly = {
 	.dump		=	pfifo_fast_dump,
 	.owner		=	THIS_MODULE,
 };
+<<<<<<< HEAD
 EXPORT_SYMBOL(pfifo_fast_ops);
 
 struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queue,
 			  struct Qdisc_ops *ops)
+=======
+
+static struct lock_class_key qdisc_tx_busylock;
+
+struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queue,
+			  const struct Qdisc_ops *ops)
+>>>>>>> refs/remotes/origin/master
 {
 	void *p;
 	struct Qdisc *sch;
 	unsigned int size = QDISC_ALIGN(sizeof(*sch)) + ops->priv_size;
 	int err = -ENOBUFS;
+<<<<<<< HEAD
+=======
+	struct net_device *dev = dev_queue->dev;
+>>>>>>> refs/remotes/origin/master
 
 	p = kzalloc_node(size, GFP_KERNEL,
 			 netdev_queue_numa_node_read(dev_queue));
@@ -570,12 +692,24 @@ struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queue,
 	}
 	INIT_LIST_HEAD(&sch->list);
 	skb_queue_head_init(&sch->q);
+<<<<<<< HEAD
 	spin_lock_init(&sch->busylock);
+=======
+
+	spin_lock_init(&sch->busylock);
+	lockdep_set_class(&sch->busylock,
+			  dev->qdisc_tx_busylock ?: &qdisc_tx_busylock);
+
+>>>>>>> refs/remotes/origin/master
 	sch->ops = ops;
 	sch->enqueue = ops->enqueue;
 	sch->dequeue = ops->dequeue;
 	sch->dev_queue = dev_queue;
+<<<<<<< HEAD
 	dev_hold(qdisc_dev(sch));
+=======
+	dev_hold(dev);
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&sch->refcnt, 1);
 
 	return sch;
@@ -584,10 +718,21 @@ errout:
 }
 
 struct Qdisc *qdisc_create_dflt(struct netdev_queue *dev_queue,
+<<<<<<< HEAD
 				struct Qdisc_ops *ops, unsigned int parentid)
 {
 	struct Qdisc *sch;
 
+=======
+				const struct Qdisc_ops *ops,
+				unsigned int parentid)
+{
+	struct Qdisc *sch;
+
+	if (!try_module_get(ops->owner))
+		goto errout;
+
+>>>>>>> refs/remotes/origin/master
 	sch = qdisc_alloc(dev_queue, ops);
 	if (IS_ERR(sch))
 		goto errout;
@@ -691,11 +836,20 @@ static void attach_one_default_qdisc(struct net_device *dev,
 
 	if (dev->tx_queue_len) {
 		qdisc = qdisc_create_dflt(dev_queue,
+<<<<<<< HEAD
 					  &pfifo_fast_ops, TC_H_ROOT);
+=======
+					  default_qdisc_ops, TC_H_ROOT);
+>>>>>>> refs/remotes/origin/master
 		if (!qdisc) {
 			netdev_info(dev, "activation failed\n");
 			return;
 		}
+<<<<<<< HEAD
+=======
+		if (!netif_is_multiqueue(dev))
+			qdisc->flags |= TCQ_F_ONETXQUEUE;
+>>>>>>> refs/remotes/origin/master
 	}
 	dev_queue->qdisc_sleeping = qdisc;
 }
@@ -742,9 +896,14 @@ void dev_activate(struct net_device *dev)
 	int need_watchdog;
 
 	/* No queueing discipline is attached to device;
+<<<<<<< HEAD
 	   create default one i.e. pfifo_fast for devices,
 	   which need queueing and noqueue_qdisc for
 	   virtual interfaces
+=======
+	 * create default one for devices, which need queueing
+	 * and noqueue_qdisc for virtual interfaces
+>>>>>>> refs/remotes/origin/master
 	 */
 
 	if (dev->qdisc == &noop_qdisc)
@@ -826,7 +985,11 @@ void dev_deactivate_many(struct list_head *head)
 	struct net_device *dev;
 	bool sync_needed = false;
 
+<<<<<<< HEAD
 	list_for_each_entry(dev, head, unreg_list) {
+=======
+	list_for_each_entry(dev, head, close_list) {
+>>>>>>> refs/remotes/origin/master
 		netdev_for_each_tx_queue(dev, dev_deactivate_queue,
 					 &noop_qdisc);
 		if (dev_ingress_queue(dev))
@@ -845,7 +1008,11 @@ void dev_deactivate_many(struct list_head *head)
 		synchronize_net();
 
 	/* Wait for outstanding qdisc_run calls. */
+<<<<<<< HEAD
 	list_for_each_entry(dev, head, unreg_list)
+=======
+	list_for_each_entry(dev, head, close_list)
+>>>>>>> refs/remotes/origin/master
 		while (some_qdisc_is_busy(dev))
 			yield();
 }
@@ -854,7 +1021,11 @@ void dev_deactivate(struct net_device *dev)
 {
 	LIST_HEAD(single);
 
+<<<<<<< HEAD
 	list_add(&dev->unreg_list, &single);
+=======
+	list_add(&dev->close_list, &single);
+>>>>>>> refs/remotes/origin/master
 	dev_deactivate_many(&single);
 	list_del(&single);
 }
@@ -905,3 +1076,42 @@ void dev_shutdown(struct net_device *dev)
 
 	WARN_ON(timer_pending(&dev->watchdog_timer));
 }
+<<<<<<< HEAD
+=======
+
+void psched_ratecfg_precompute(struct psched_ratecfg *r,
+			       const struct tc_ratespec *conf,
+			       u64 rate64)
+{
+	memset(r, 0, sizeof(*r));
+	r->overhead = conf->overhead;
+	r->rate_bytes_ps = max_t(u64, conf->rate, rate64);
+	r->linklayer = (conf->linklayer & TC_LINKLAYER_MASK);
+	r->mult = 1;
+	/*
+	 * The deal here is to replace a divide by a reciprocal one
+	 * in fast path (a reciprocal divide is a multiply and a shift)
+	 *
+	 * Normal formula would be :
+	 *  time_in_ns = (NSEC_PER_SEC * len) / rate_bps
+	 *
+	 * We compute mult/shift to use instead :
+	 *  time_in_ns = (len * mult) >> shift;
+	 *
+	 * We try to get the highest possible mult value for accuracy,
+	 * but have to make sure no overflows will ever happen.
+	 */
+	if (r->rate_bytes_ps > 0) {
+		u64 factor = NSEC_PER_SEC;
+
+		for (;;) {
+			r->mult = div64_u64(factor, r->rate_bytes_ps);
+			if (r->mult & (1U << 31) || factor & (1ULL << 63))
+				break;
+			factor <<= 1;
+			r->shift++;
+		}
+	}
+}
+EXPORT_SYMBOL(psched_ratecfg_precompute);
+>>>>>>> refs/remotes/origin/master

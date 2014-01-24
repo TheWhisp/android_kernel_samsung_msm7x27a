@@ -20,6 +20,19 @@
 /*     BTCOEX     */
 /******************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define ATH_HTC_BTCOEX_PRODUCT_ID "wb193"
+
+#ifdef CONFIG_ATH9K_BTCOEX_SUPPORT
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Detects if there is any priority bt traffic
  */
@@ -33,17 +46,40 @@ static void ath_detect_bt_priority(struct ath9k_htc_priv *priv)
 
 	if (time_after(jiffies, btcoex->bt_priority_time +
 			msecs_to_jiffies(ATH_BT_PRIORITY_TIME_THRESHOLD))) {
+<<<<<<< HEAD
 		priv->op_flags &= ~(OP_BT_PRIORITY_DETECTED | OP_BT_SCAN);
 		/* Detect if colocated bt started scanning */
 		if (btcoex->bt_priority_cnt >= ATH_BT_CNT_SCAN_THRESHOLD) {
+<<<<<<< HEAD
 			ath_dbg(ath9k_hw_common(ah), ATH_DBG_BTCOEX,
+=======
+			ath_dbg(ath9k_hw_common(ah), BTCOEX,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"BT scan detected\n");
 			priv->op_flags |= (OP_BT_SCAN |
 					 OP_BT_PRIORITY_DETECTED);
 		} else if (btcoex->bt_priority_cnt >= ATH_BT_CNT_THRESHOLD) {
+<<<<<<< HEAD
 			ath_dbg(ath9k_hw_common(ah), ATH_DBG_BTCOEX,
+=======
+			ath_dbg(ath9k_hw_common(ah), BTCOEX,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"BT priority traffic detected\n");
 			priv->op_flags |= OP_BT_PRIORITY_DETECTED;
+=======
+		clear_bit(OP_BT_PRIORITY_DETECTED, &priv->op_flags);
+		clear_bit(OP_BT_SCAN, &priv->op_flags);
+		/* Detect if colocated bt started scanning */
+		if (btcoex->bt_priority_cnt >= ATH_BT_CNT_SCAN_THRESHOLD) {
+			ath_dbg(ath9k_hw_common(ah), BTCOEX,
+				"BT scan detected\n");
+			set_bit(OP_BT_PRIORITY_DETECTED, &priv->op_flags);
+			set_bit(OP_BT_SCAN, &priv->op_flags);
+		} else if (btcoex->bt_priority_cnt >= ATH_BT_CNT_THRESHOLD) {
+			ath_dbg(ath9k_hw_common(ah), BTCOEX,
+				"BT priority traffic detected\n");
+			set_bit(OP_BT_PRIORITY_DETECTED, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		btcoex->bt_priority_cnt = 0;
@@ -63,25 +99,46 @@ static void ath_btcoex_period_work(struct work_struct *work)
 	struct ath_btcoex *btcoex = &priv->btcoex;
 	struct ath_common *common = ath9k_hw_common(priv->ah);
 	u32 timer_period;
+<<<<<<< HEAD
 	bool is_btscan;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ath_detect_bt_priority(priv);
 
+<<<<<<< HEAD
 	is_btscan = !!(priv->op_flags & OP_BT_SCAN);
 
 	ret = ath9k_htc_update_cap_target(priv,
 				  !!(priv->op_flags & OP_BT_PRIORITY_DETECTED));
+=======
+	ret = ath9k_htc_update_cap_target(priv,
+			  test_bit(OP_BT_PRIORITY_DETECTED, &priv->op_flags));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		ath_err(common, "Unable to set BTCOEX parameters\n");
 		return;
 	}
 
+<<<<<<< HEAD
 	ath9k_hw_btcoex_bt_stomp(priv->ah, is_btscan ? ATH_BTCOEX_STOMP_ALL :
 			btcoex->bt_stomp_type);
 
+<<<<<<< HEAD
+=======
+	ath9k_hw_btcoex_enable(priv->ah);
+>>>>>>> refs/remotes/origin/cm-10.0
 	timer_period = is_btscan ? btcoex->btscan_no_stomp :
 		btcoex->btcoex_no_stomp;
+=======
+	ath9k_hw_btcoex_bt_stomp(priv->ah, test_bit(OP_BT_SCAN, &priv->op_flags) ?
+				 ATH_BTCOEX_STOMP_ALL : btcoex->bt_stomp_type);
+
+	ath9k_hw_btcoex_enable(priv->ah);
+	timer_period = test_bit(OP_BT_SCAN, &priv->op_flags) ?
+		btcoex->btscan_no_stomp : btcoex->btcoex_no_stomp;
+>>>>>>> refs/remotes/origin/master
 	ieee80211_queue_delayed_work(priv->hw, &priv->duty_cycle_work,
 				     msecs_to_jiffies(timer_period));
 	ieee80211_queue_delayed_work(priv->hw, &priv->coex_period_work,
@@ -99,18 +156,44 @@ static void ath_btcoex_duty_cycle_work(struct work_struct *work)
 	struct ath_hw *ah = priv->ah;
 	struct ath_btcoex *btcoex = &priv->btcoex;
 	struct ath_common *common = ath9k_hw_common(ah);
+<<<<<<< HEAD
 	bool is_btscan = priv->op_flags & OP_BT_SCAN;
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_BTCOEX,
 		"time slice work for bt and wlan\n");
+=======
+	ath_dbg(common, BTCOEX, "time slice work for bt and wlan\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (btcoex->bt_stomp_type == ATH_BTCOEX_STOMP_LOW || is_btscan)
 		ath9k_hw_btcoex_bt_stomp(ah, ATH_BTCOEX_STOMP_NONE);
 	else if (btcoex->bt_stomp_type == ATH_BTCOEX_STOMP_ALL)
 		ath9k_hw_btcoex_bt_stomp(ah, ATH_BTCOEX_STOMP_LOW);
+<<<<<<< HEAD
 }
 
 void ath_htc_init_btcoex_work(struct ath9k_htc_priv *priv)
+=======
+=======
+
+	ath_dbg(common, BTCOEX, "time slice work for bt and wlan\n");
+
+	if (btcoex->bt_stomp_type == ATH_BTCOEX_STOMP_LOW ||
+	    test_bit(OP_BT_SCAN, &priv->op_flags))
+		ath9k_hw_btcoex_bt_stomp(ah, ATH_BTCOEX_STOMP_NONE);
+	else if (btcoex->bt_stomp_type == ATH_BTCOEX_STOMP_ALL)
+		ath9k_hw_btcoex_bt_stomp(ah, ATH_BTCOEX_STOMP_LOW);
+
+>>>>>>> refs/remotes/origin/master
+	ath9k_hw_btcoex_enable(priv->ah);
+}
+
+static void ath_htc_init_btcoex_work(struct ath9k_htc_priv *priv)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath_btcoex *btcoex = &priv->btcoex;
 
@@ -127,16 +210,37 @@ void ath_htc_init_btcoex_work(struct ath9k_htc_priv *priv)
  * (Re)start btcoex work
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void ath_htc_resume_btcoex_work(struct ath9k_htc_priv *priv)
+=======
+static void ath_htc_resume_btcoex_work(struct ath9k_htc_priv *priv)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ath_htc_resume_btcoex_work(struct ath9k_htc_priv *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath_btcoex *btcoex = &priv->btcoex;
 	struct ath_hw *ah = priv->ah;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(ath9k_hw_common(ah), ATH_DBG_BTCOEX, "Starting btcoex work\n");
+=======
+	ath_dbg(ath9k_hw_common(ah), BTCOEX, "Starting btcoex work\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	btcoex->bt_priority_cnt = 0;
 	btcoex->bt_priority_time = jiffies;
 	priv->op_flags &= ~(OP_BT_PRIORITY_DETECTED | OP_BT_SCAN);
+=======
+	ath_dbg(ath9k_hw_common(ah), BTCOEX, "Starting btcoex work\n");
+
+	btcoex->bt_priority_cnt = 0;
+	btcoex->bt_priority_time = jiffies;
+	clear_bit(OP_BT_PRIORITY_DETECTED, &priv->op_flags);
+	clear_bit(OP_BT_SCAN, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 	ieee80211_queue_delayed_work(priv->hw, &priv->coex_period_work, 0);
 }
 
@@ -144,12 +248,111 @@ void ath_htc_resume_btcoex_work(struct ath9k_htc_priv *priv)
 /*
  * Cancel btcoex and bt duty cycle work.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void ath_htc_cancel_btcoex_work(struct ath9k_htc_priv *priv)
+=======
+static void ath_htc_cancel_btcoex_work(struct ath9k_htc_priv *priv)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ath_htc_cancel_btcoex_work(struct ath9k_htc_priv *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	cancel_delayed_work_sync(&priv->coex_period_work);
 	cancel_delayed_work_sync(&priv->duty_cycle_work);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void ath9k_htc_start_btcoex(struct ath9k_htc_priv *priv)
+{
+	struct ath_hw *ah = priv->ah;
+
+	if (ath9k_hw_get_btcoex_scheme(ah) == ATH_BTCOEX_CFG_3WIRE) {
+		ath9k_hw_btcoex_set_weight(ah, AR_BT_COEX_WGHT,
+<<<<<<< HEAD
+					   AR_STOMP_LOW_WLAN_WGHT);
+=======
+					   AR_STOMP_LOW_WLAN_WGHT, 0);
+>>>>>>> refs/remotes/origin/master
+		ath9k_hw_btcoex_enable(ah);
+		ath_htc_resume_btcoex_work(priv);
+	}
+}
+
+void ath9k_htc_stop_btcoex(struct ath9k_htc_priv *priv)
+{
+	struct ath_hw *ah = priv->ah;
+
+	if (ah->btcoex_hw.enabled &&
+	    ath9k_hw_get_btcoex_scheme(ah) != ATH_BTCOEX_CFG_NONE) {
+<<<<<<< HEAD
+		ath9k_hw_btcoex_disable(ah);
+		if (ah->btcoex_hw.scheme == ATH_BTCOEX_CFG_3WIRE)
+			ath_htc_cancel_btcoex_work(priv);
+=======
+		if (ah->btcoex_hw.scheme == ATH_BTCOEX_CFG_3WIRE)
+			ath_htc_cancel_btcoex_work(priv);
+		ath9k_hw_btcoex_disable(ah);
+>>>>>>> refs/remotes/origin/master
+	}
+}
+
+void ath9k_htc_init_btcoex(struct ath9k_htc_priv *priv, char *product)
+{
+	struct ath_hw *ah = priv->ah;
+<<<<<<< HEAD
+	int qnum;
+
+=======
+	struct ath_common *common = ath9k_hw_common(ah);
+	int qnum;
+
+	/*
+	 * Check if BTCOEX is globally disabled.
+	 */
+	if (!common->btcoex_enabled) {
+		ah->btcoex_hw.scheme = ATH_BTCOEX_CFG_NONE;
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
+	if (product && strncmp(product, ATH_HTC_BTCOEX_PRODUCT_ID, 5) == 0) {
+		ah->btcoex_hw.scheme = ATH_BTCOEX_CFG_3WIRE;
+	}
+
+	switch (ath9k_hw_get_btcoex_scheme(priv->ah)) {
+	case ATH_BTCOEX_CFG_NONE:
+		break;
+	case ATH_BTCOEX_CFG_3WIRE:
+		priv->ah->btcoex_hw.btactive_gpio = 7;
+		priv->ah->btcoex_hw.btpriority_gpio = 6;
+		priv->ah->btcoex_hw.wlanactive_gpio = 8;
+		priv->btcoex.bt_stomp_type = ATH_BTCOEX_STOMP_LOW;
+		ath9k_hw_btcoex_init_3wire(priv->ah);
+		ath_htc_init_btcoex_work(priv);
+<<<<<<< HEAD
+		qnum = priv->hwq_map[WME_AC_BE];
+=======
+		qnum = priv->hwq_map[IEEE80211_AC_BE];
+>>>>>>> refs/remotes/origin/master
+		ath9k_hw_init_btcoex_hw(priv->ah, qnum);
+		break;
+	default:
+		WARN_ON(1);
+		break;
+	}
+}
+
+#endif /* CONFIG_ATH9K_BTCOEX_SUPPORT */
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*******/
 /* LED */
 /*******/
@@ -228,8 +431,25 @@ void ath9k_init_leds(struct ath9k_htc_priv *priv)
 
 static bool ath_is_rfkill_set(struct ath9k_htc_priv *priv)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return ath9k_hw_gpio_get(priv->ah, priv->ah->rfkill_gpio) ==
 		priv->ah->rfkill_polarity;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	bool is_blocked;
+
+	ath9k_htc_ps_wakeup(priv);
+	is_blocked = ath9k_hw_gpio_get(priv->ah, priv->ah->rfkill_gpio) ==
+						 priv->ah->rfkill_polarity;
+	ath9k_htc_ps_restore(priv);
+
+	return is_blocked;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void ath9k_htc_rfkill_poll_state(struct ieee80211_hw *hw)
@@ -245,6 +465,7 @@ void ath9k_start_rfkill_poll(struct ath9k_htc_priv *priv)
 	if (priv->ah->caps.hw_caps & ATH9K_HW_CAP_RFSILENT)
 		wiphy_rfkill_start_polling(priv->hw->wiphy);
 }
+<<<<<<< HEAD
 
 void ath9k_htc_radio_enable(struct ieee80211_hw *hw)
 {
@@ -337,3 +558,5 @@ void ath9k_htc_radio_disable(struct ieee80211_hw *hw)
 	ath9k_htc_ps_restore(priv);
 	ath9k_htc_setpower(priv, ATH9K_PM_FULL_SLEEP);
 }
+=======
+>>>>>>> refs/remotes/origin/master

@@ -1,7 +1,11 @@
 /*
  * This file handles the architecture dependent parts of process handling.
  *
+<<<<<<< HEAD
  *    Copyright IBM Corp. 1999,2009
+=======
+ *    Copyright IBM Corp. 1999, 2009
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky <schwidefsky@de.ibm.com>,
  *		 Hartmut Penner <hp@de.ibm.com>,
  *		 Denis Joseph Barrow,
@@ -12,6 +16,14 @@
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/elfcore.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/elfcore.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/smp.h>
 #include <linux/slab.h>
 #include <linux/interrupt.h>
@@ -22,13 +34,32 @@
 #include <linux/kprobes.h>
 #include <linux/random.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/processor.h>
 #include <asm/irq.h>
 #include <asm/timer.h>
 #include <asm/nmi.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/io.h>
+#include <asm/processor.h>
+#include <asm/vtimer.h>
+#include <asm/exec.h>
+#include <asm/irq.h>
+#include <asm/nmi.h>
+#include <asm/smp.h>
+#include <asm/switch_to.h>
+#include <asm/runtime_instr.h>
+>>>>>>> refs/remotes/origin/master
 #include "entry.h"
 
 asmlinkage void ret_from_fork(void) asm ("ret_from_fork");
@@ -58,6 +89,7 @@ unsigned long thread_saved_pc(struct task_struct *tsk)
 	return sf->gprs[8];
 }
 
+<<<<<<< HEAD
 /*
  * The idle loop on a S390...
  */
@@ -70,10 +102,16 @@ static void default_idle(void)
 		local_irq_enable();
 		return;
 	}
+=======
+void arch_cpu_idle(void)
+{
+>>>>>>> refs/remotes/origin/master
 	local_mcck_disable();
 	if (test_thread_flag(TIF_MCCK_PENDING)) {
 		local_mcck_enable();
 		local_irq_enable();
+<<<<<<< HEAD
+<<<<<<< HEAD
 		s390_handle_mcck();
 		return;
 	}
@@ -84,11 +122,21 @@ static void default_idle(void)
 	vtime_stop_cpu();
 	/* Reenable preemption tracer. */
 	start_critical_timings();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		return;
+	}
+	/* Halt the cpu and keep track of cpu time accounting. */
+	vtime_stop_cpu();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void cpu_idle(void)
 {
 	for (;;) {
+<<<<<<< HEAD
 		tick_nohz_stop_sched_tick(1);
 		while (!need_resched())
 			default_idle();
@@ -96,6 +144,17 @@ void cpu_idle(void)
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+		tick_nohz_idle_enter();
+		rcu_idle_enter();
+		while (!need_resched() && !test_thread_flag(TIF_MCCK_PENDING))
+			default_idle();
+		rcu_idle_exit();
+		tick_nohz_idle_exit();
+		if (test_thread_flag(TIF_MCCK_PENDING))
+			s390_handle_mcck();
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -116,7 +175,12 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 	struct pt_regs regs;
 
 	memset(&regs, 0, sizeof(regs));
+<<<<<<< HEAD
 	regs.psw.mask = psw_kernel_bits | PSW_MASK_IO | PSW_MASK_EXT;
+=======
+	regs.psw.mask = psw_kernel_bits |
+		PSW_MASK_DAT | PSW_MASK_IO | PSW_MASK_EXT | PSW_MASK_MCHECK;
+>>>>>>> refs/remotes/origin/cm-10.0
 	regs.psw.addr = (unsigned long) kernel_thread_starter | PSW_ADDR_AMODE;
 	regs.gprs[9] = (unsigned long) fn;
 	regs.gprs[10] = (unsigned long) arg;
@@ -128,12 +192,33 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 		       0, &regs, 0, NULL, NULL);
 }
 EXPORT_SYMBOL(kernel_thread);
+=======
+	local_irq_enable();
+}
+
+void arch_cpu_idle_exit(void)
+{
+	if (test_thread_flag(TIF_MCCK_PENDING))
+		s390_handle_mcck();
+}
+
+void arch_cpu_idle_dead(void)
+{
+	cpu_die();
+}
+
+extern void __kprobes kernel_thread_starter(void);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Free current thread data structures etc..
  */
 void exit_thread(void)
 {
+<<<<<<< HEAD
+=======
+	exit_thread_runtime_instr();
+>>>>>>> refs/remotes/origin/master
 }
 
 void flush_thread(void)
@@ -145,8 +230,12 @@ void release_thread(struct task_struct *dead_task)
 }
 
 int copy_thread(unsigned long clone_flags, unsigned long new_stackp,
+<<<<<<< HEAD
 		unsigned long unused,
 		struct task_struct *p, struct pt_regs *regs)
+=======
+		unsigned long arg, struct task_struct *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct thread_info *ti;
 	struct fake_frame
@@ -157,6 +246,7 @@ int copy_thread(unsigned long clone_flags, unsigned long new_stackp,
 
 	frame = container_of(task_pt_regs(p), struct fake_frame, childregs);
 	p->thread.ksp = (unsigned long) frame;
+<<<<<<< HEAD
 	/* Store access registers to kernel stack of new process. */
 	frame->childregs = *regs;
 	frame->childregs.gprs[2] = 0;	/* child returns 0 on fork. */
@@ -171,17 +261,69 @@ int copy_thread(unsigned long clone_flags, unsigned long new_stackp,
 
 	/* Save access registers to new thread structure. */
 	save_access_regs(&p->thread.acrs[0]);
+=======
+	/* Save access registers to new thread structure. */
+	save_access_regs(&p->thread.acrs[0]);
+	/* start new process with ar4 pointing to the correct address space */
+	p->thread.mm_segment = get_fs();
+	/* Don't copy debug registers */
+	memset(&p->thread.per_user, 0, sizeof(p->thread.per_user));
+	memset(&p->thread.per_event, 0, sizeof(p->thread.per_event));
+	clear_tsk_thread_flag(p, TIF_SINGLE_STEP);
+	clear_tsk_thread_flag(p, TIF_PER_TRAP);
+	/* Initialize per thread user and system timer values */
+	ti = task_thread_info(p);
+	ti->user_timer = 0;
+	ti->system_timer = 0;
+
+	frame->sf.back_chain = 0;
+	/* new return point is ret_from_fork */
+	frame->sf.gprs[8] = (unsigned long) ret_from_fork;
+	/* fake return stack for resume(), don't go back to schedule */
+	frame->sf.gprs[9] = (unsigned long) frame;
+
+	/* Store access registers to kernel stack of new process. */
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		/* kernel thread */
+		memset(&frame->childregs, 0, sizeof(struct pt_regs));
+		frame->childregs.psw.mask = PSW_KERNEL_BITS | PSW_MASK_DAT |
+				PSW_MASK_IO | PSW_MASK_EXT | PSW_MASK_MCHECK;
+		frame->childregs.psw.addr = PSW_ADDR_AMODE |
+				(unsigned long) kernel_thread_starter;
+		frame->childregs.gprs[9] = new_stackp; /* function */
+		frame->childregs.gprs[10] = arg;
+		frame->childregs.gprs[11] = (unsigned long) do_exit;
+		frame->childregs.orig_gpr2 = -1;
+
+		return 0;
+	}
+	frame->childregs = *current_pt_regs();
+	frame->childregs.gprs[2] = 0;	/* child returns 0 on fork. */
+	if (new_stackp)
+		frame->childregs.gprs[15] = new_stackp;
+
+	/* Don't copy runtime instrumentation info */
+	p->thread.ri_cb = NULL;
+	p->thread.ri_signum = 0;
+	frame->childregs.psw.mask &= ~PSW_MASK_RI;
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_64BIT
 	/*
 	 * save fprs to current->thread.fp_regs to merge them with
 	 * the emulated registers and then copy the result to the child.
 	 */
+<<<<<<< HEAD
 	save_fp_regs(&current->thread.fp_regs);
+=======
+	save_fp_ctl(&current->thread.fp_regs.fpc);
+	save_fp_regs(current->thread.fp_regs.fprs);
+>>>>>>> refs/remotes/origin/master
 	memcpy(&p->thread.fp_regs, &current->thread.fp_regs,
 	       sizeof(s390_fp_regs));
 	/* Set a new TLS ?  */
 	if (clone_flags & CLONE_SETTLS)
+<<<<<<< HEAD
 		p->thread.acrs[0] = regs->gprs[6];
 #else /* CONFIG_64BIT */
 	/* Save the fpu registers to new thread structure. */
@@ -244,6 +386,28 @@ SYSCALL_DEFINE0(vfork)
 		       regs->gprs[15], regs, 0, NULL, NULL);
 }
 
+=======
+		p->thread.acrs[0] = frame->childregs.gprs[6];
+#else /* CONFIG_64BIT */
+	/* Save the fpu registers to new thread structure. */
+	save_fp_ctl(&p->thread.fp_regs.fpc);
+	save_fp_regs(p->thread.fp_regs.fprs);
+	p->thread.fp_regs.pad = 0;
+	/* Set a new TLS ?  */
+	if (clone_flags & CLONE_SETTLS) {
+		unsigned long tls = frame->childregs.gprs[6];
+		if (is_compat_task()) {
+			p->thread.acrs[0] = (unsigned int)tls;
+		} else {
+			p->thread.acrs[0] = (unsigned int)(tls >> 32);
+			p->thread.acrs[1] = (unsigned int)tls;
+		}
+	}
+#endif /* CONFIG_64BIT */
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 asmlinkage void execve_tail(void)
 {
 	current->thread.fp_regs.fpc = 0;
@@ -252,6 +416,7 @@ asmlinkage void execve_tail(void)
 }
 
 /*
+<<<<<<< HEAD
  * sys_execve() executes a new program.
  */
 SYSCALL_DEFINE3(execve, const char __user *, name,
@@ -277,6 +442,8 @@ out:
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * fill in the FPU structure for a core dump.
  */
 int dump_fpu (struct pt_regs * regs, s390_fp_regs *fpregs)
@@ -286,10 +453,19 @@ int dump_fpu (struct pt_regs * regs, s390_fp_regs *fpregs)
 	 * save fprs to current->thread.fp_regs to merge them with
 	 * the emulated registers and then copy the result to the dump.
 	 */
+<<<<<<< HEAD
 	save_fp_regs(&current->thread.fp_regs);
 	memcpy(fpregs, &current->thread.fp_regs, sizeof(s390_fp_regs));
 #else /* CONFIG_64BIT */
 	save_fp_regs(fpregs);
+=======
+	save_fp_ctl(&current->thread.fp_regs.fpc);
+	save_fp_regs(current->thread.fp_regs.fprs);
+	memcpy(fpregs, &current->thread.fp_regs, sizeof(s390_fp_regs));
+#else /* CONFIG_64BIT */
+	save_fp_ctl(&fpregs->fpc);
+	save_fp_regs(fpregs->fprs);
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_64BIT */
 	return 1;
 }
@@ -337,15 +513,23 @@ static inline unsigned long brk_rnd(void)
 
 unsigned long arch_randomize_brk(struct mm_struct *mm)
 {
+<<<<<<< HEAD
 	unsigned long ret = PAGE_ALIGN(mm->brk + brk_rnd());
 
 	if (ret < mm->brk)
 		return mm->brk;
 	return ret;
+=======
+	unsigned long ret;
+
+	ret = PAGE_ALIGN(mm->brk + brk_rnd());
+	return (ret > mm->brk) ? ret : mm->brk;
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned long randomize_et_dyn(unsigned long base)
 {
+<<<<<<< HEAD
 	unsigned long ret = PAGE_ALIGN(base + brk_rnd());
 
 	if (!(current->flags & PF_RANDOMIZE))
@@ -353,4 +537,12 @@ unsigned long randomize_et_dyn(unsigned long base)
 	if (ret < base)
 		return base;
 	return ret;
+=======
+	unsigned long ret;
+
+	if (!(current->flags & PF_RANDOMIZE))
+		return base;
+	ret = PAGE_ALIGN(base + brk_rnd());
+	return (ret > base) ? ret : base;
+>>>>>>> refs/remotes/origin/master
 }

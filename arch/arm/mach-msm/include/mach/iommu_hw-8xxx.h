@@ -57,8 +57,20 @@ do { \
 #define FL_TYPE_TABLE		(1 << 0)
 #define FL_TYPE_SECT		(2 << 0)
 #define FL_SUPERSECTION		(1 << 18)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define FL_AP_WRITE		(1 << 10)
 #define FL_AP_READ		(1 << 11)
+=======
+#define FL_AP0			(1 << 10)
+#define FL_AP1			(1 << 11)
+#define FL_AP2			(1 << 15)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FL_AP0			(1 << 10)
+#define FL_AP1			(1 << 11)
+#define FL_AP2			(1 << 15)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define FL_SHARED		(1 << 16)
 #define FL_BUFFERABLE		(1 << 2)
 #define FL_CACHEABLE		(1 << 3)
@@ -73,6 +85,14 @@ do { \
 #define SL_TYPE_SMALL		(2 << 0)
 #define SL_AP0			(1 << 4)
 #define SL_AP1			(2 << 4)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define SL_AP2			(1 << 9)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SL_AP2			(1 << 9)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SL_SHARED		(1 << 10)
 #define SL_BUFFERABLE		(1 << 2)
 #define SL_CACHEABLE		(1 << 3)

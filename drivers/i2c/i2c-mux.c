@@ -24,6 +24,10 @@
 #include <linux/slab.h>
 #include <linux/i2c.h>
 #include <linux/i2c-mux.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 /* multiplexer per channel data */
 struct i2c_mux_priv {
@@ -31,11 +35,19 @@ struct i2c_mux_priv {
 	struct i2c_algorithm algo;
 
 	struct i2c_adapter *parent;
+<<<<<<< HEAD
 	void *mux_dev;	/* the mux chip/device */
 	u32  chan_id;	/* the channel id */
 
 	int (*select)(struct i2c_adapter *, void *mux_dev, u32 chan_id);
 	int (*deselect)(struct i2c_adapter *, void *mux_dev, u32 chan_id);
+=======
+	void *mux_priv;	/* the mux chip/device */
+	u32  chan_id;	/* the channel id */
+
+	int (*select)(struct i2c_adapter *, void *mux_priv, u32 chan_id);
+	int (*deselect)(struct i2c_adapter *, void *mux_priv, u32 chan_id);
+>>>>>>> refs/remotes/origin/master
 };
 
 static int i2c_mux_master_xfer(struct i2c_adapter *adap,
@@ -47,11 +59,19 @@ static int i2c_mux_master_xfer(struct i2c_adapter *adap,
 
 	/* Switch to the right mux port and perform the transfer. */
 
+<<<<<<< HEAD
 	ret = priv->select(parent, priv->mux_dev, priv->chan_id);
 	if (ret >= 0)
 		ret = parent->algo->master_xfer(parent, msgs, num);
 	if (priv->deselect)
 		priv->deselect(parent, priv->mux_dev, priv->chan_id);
+=======
+	ret = priv->select(parent, priv->mux_priv, priv->chan_id);
+	if (ret >= 0)
+		ret = parent->algo->master_xfer(parent, msgs, num);
+	if (priv->deselect)
+		priv->deselect(parent, priv->mux_priv, priv->chan_id);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -67,12 +87,20 @@ static int i2c_mux_smbus_xfer(struct i2c_adapter *adap,
 
 	/* Select the right mux port and perform the transfer. */
 
+<<<<<<< HEAD
 	ret = priv->select(parent, priv->mux_dev, priv->chan_id);
+=======
+	ret = priv->select(parent, priv->mux_priv, priv->chan_id);
+>>>>>>> refs/remotes/origin/master
 	if (ret >= 0)
 		ret = parent->algo->smbus_xfer(parent, addr, flags,
 					read_write, command, size, data);
 	if (priv->deselect)
+<<<<<<< HEAD
 		priv->deselect(parent, priv->mux_dev, priv->chan_id);
+=======
+		priv->deselect(parent, priv->mux_priv, priv->chan_id);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -86,8 +114,28 @@ static u32 i2c_mux_functionality(struct i2c_adapter *adap)
 	return parent->algo->functionality(parent);
 }
 
+<<<<<<< HEAD
 struct i2c_adapter *i2c_add_mux_adapter(struct i2c_adapter *parent,
 				void *mux_dev, u32 force_nr, u32 chan_id,
+=======
+/* Return all parent classes, merged */
+static unsigned int i2c_mux_parent_classes(struct i2c_adapter *parent)
+{
+	unsigned int class = 0;
+
+	do {
+		class |= parent->class;
+		parent = i2c_parent_is_i2c_adapter(parent);
+	} while (parent);
+
+	return class;
+}
+
+struct i2c_adapter *i2c_add_mux_adapter(struct i2c_adapter *parent,
+				struct device *mux_dev,
+				void *mux_priv, u32 force_nr, u32 chan_id,
+				unsigned int class,
+>>>>>>> refs/remotes/origin/master
 				int (*select) (struct i2c_adapter *,
 					       void *, u32),
 				int (*deselect) (struct i2c_adapter *,
@@ -102,7 +150,11 @@ struct i2c_adapter *i2c_add_mux_adapter(struct i2c_adapter *parent,
 
 	/* Set up private adapter data */
 	priv->parent = parent;
+<<<<<<< HEAD
 	priv->mux_dev = mux_dev;
+=======
+	priv->mux_priv = mux_priv;
+>>>>>>> refs/remotes/origin/master
 	priv->chan_id = chan_id;
 	priv->select = select;
 	priv->deselect = deselect;
@@ -123,6 +175,38 @@ struct i2c_adapter *i2c_add_mux_adapter(struct i2c_adapter *parent,
 	priv->adap.algo = &priv->algo;
 	priv->adap.algo_data = priv;
 	priv->adap.dev.parent = &parent->dev;
+<<<<<<< HEAD
+=======
+	priv->adap.retries = parent->retries;
+	priv->adap.timeout = parent->timeout;
+
+	/* Sanity check on class */
+	if (i2c_mux_parent_classes(parent) & class)
+		dev_err(&parent->dev,
+			"Segment %d behind mux can't share classes with ancestors\n",
+			chan_id);
+	else
+		priv->adap.class = class;
+
+	/*
+	 * Try to populate the mux adapter's of_node, expands to
+	 * nothing if !CONFIG_OF.
+	 */
+	if (mux_dev->of_node) {
+		struct device_node *child;
+		u32 reg;
+
+		for_each_child_of_node(mux_dev->of_node, child) {
+			ret = of_property_read_u32(child, "reg", &reg);
+			if (ret)
+				continue;
+			if (chan_id == reg) {
+				priv->adap.dev.of_node = child;
+				break;
+			}
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (force_nr) {
 		priv->adap.nr = force_nr;
@@ -145,6 +229,7 @@ struct i2c_adapter *i2c_add_mux_adapter(struct i2c_adapter *parent,
 }
 EXPORT_SYMBOL_GPL(i2c_add_mux_adapter);
 
+<<<<<<< HEAD
 int i2c_del_mux_adapter(struct i2c_adapter *adap)
 {
 	struct i2c_mux_priv *priv = adap->algo_data;
@@ -156,6 +241,14 @@ int i2c_del_mux_adapter(struct i2c_adapter *adap)
 	kfree(priv);
 
 	return 0;
+=======
+void i2c_del_mux_adapter(struct i2c_adapter *adap)
+{
+	struct i2c_mux_priv *priv = adap->algo_data;
+
+	i2c_del_adapter(adap);
+	kfree(priv);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(i2c_del_mux_adapter);
 

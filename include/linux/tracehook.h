@@ -49,8 +49,10 @@
 #include <linux/sched.h>
 #include <linux/ptrace.h>
 #include <linux/security.h>
+<<<<<<< HEAD
 struct linux_binprm;
 
+<<<<<<< HEAD
 /**
  * tracehook_expect_breakpoints - guess if task memory might be touched
  * @task:		current task, making a new mapping
@@ -75,6 +77,25 @@ static inline void ptrace_report_syscall(struct pt_regs *regs)
 
 	if (!(ptrace & PT_PTRACED))
 		return;
+=======
+=======
+#include <linux/task_work.h>
+struct linux_binprm;
+
+>>>>>>> refs/remotes/origin/master
+/*
+ * ptrace report for syscall entry and exit looks identical.
+ */
+static inline int ptrace_report_syscall(struct pt_regs *regs)
+{
+	int ptrace = current->ptrace;
+
+	if (!(ptrace & PT_PTRACED))
+		return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ptrace_notify(SIGTRAP | ((ptrace & PT_TRACESYSGOOD) ? 0x80 : 0));
 
@@ -87,6 +108,16 @@ static inline void ptrace_report_syscall(struct pt_regs *regs)
 		send_sig(current->exit_code, current, 1);
 		current->exit_code = 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	return fatal_signal_pending(current);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return fatal_signal_pending(current);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -111,8 +142,16 @@ static inline void ptrace_report_syscall(struct pt_regs *regs)
 static inline __must_check int tracehook_report_syscall_entry(
 	struct pt_regs *regs)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ptrace_report_syscall(regs);
 	return 0;
+=======
+	return ptrace_report_syscall(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ptrace_report_syscall(regs);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -145,6 +184,8 @@ static inline void tracehook_report_syscall_exit(struct pt_regs *regs, int step)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * tracehook_unsafe_exec - check for exec declared unsafe due to tracing
  * @task:		current task doing exec
  *
@@ -368,6 +409,10 @@ static inline void tracehook_finish_release_task(struct task_struct *task)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * tracehook_signal_handler - signal handler setup is complete
  * @sig:		number of signal being delivered
  * @info:		siginfo_t of signal being delivered
@@ -390,6 +435,8 @@ static inline void tracehook_signal_handler(int sig, siginfo_t *info,
 		ptrace_notify(SIGTRAP);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * tracehook_consider_ignored_signal - suppress short-circuit of ignored signal
  * @task:		task receiving the signal
@@ -535,7 +582,11 @@ static inline void tracehook_report_death(struct task_struct *task,
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef TIF_NOTIFY_RESUME
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * set_notify_resume - cause tracehook_notify_resume() to be called
  * @task:		task that will call tracehook_notify_resume()
@@ -547,8 +598,15 @@ static inline void tracehook_report_death(struct task_struct *task,
  */
 static inline void set_notify_resume(struct task_struct *task)
 {
+<<<<<<< HEAD
 	if (!test_and_set_tsk_thread_flag(task, TIF_NOTIFY_RESUME))
 		kick_process(task);
+=======
+#ifdef TIF_NOTIFY_RESUME
+	if (!test_and_set_tsk_thread_flag(task, TIF_NOTIFY_RESUME))
+		kick_process(task);
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -566,7 +624,19 @@ static inline void set_notify_resume(struct task_struct *task)
  */
 static inline void tracehook_notify_resume(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 }
 #endif	/* TIF_NOTIFY_RESUME */
+=======
+	/*
+	 * The caller just cleared TIF_NOTIFY_RESUME. This barrier
+	 * pairs with task_work_add()->set_notify_resume() after
+	 * hlist_add_head(task->task_works);
+	 */
+	smp_mb__after_clear_bit();
+	if (unlikely(current->task_works))
+		task_work_run();
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* <linux/tracehook.h> */

@@ -21,7 +21,11 @@
  *
  * Copyright 2002 MontaVista Software Inc.
  * Author: MontaVista Software, Inc.
+<<<<<<< HEAD
  *              stevel@mvista.com or source@mvista.com
+=======
+ *		stevel@mvista.com or source@mvista.com
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/bitops.h>
@@ -42,7 +46,13 @@
 #include <asm/bootinfo.h>
 #include <asm/time.h>
 #include <asm/mipsregs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-rc32434/irq.h>
 #include <asm/mach-rc32434/gpio.h>
@@ -52,7 +62,11 @@ struct intr_group {
 	volatile u32 *base_addr;
 };
 
+<<<<<<< HEAD
 #define RC32434_NR_IRQS  (GROUP4_IRQ_BASE + 32)
+=======
+#define RC32434_NR_IRQS	 (GROUP4_IRQ_BASE + 32)
+>>>>>>> refs/remotes/origin/master
 
 #if (NR_IRQS < RC32434_NR_IRQS)
 #error Too little irqs defined. Did you override <asm/irq.h> ?

@@ -1,9 +1,19 @@
 #include <linux/stat.h>
 #include <linux/sysctl.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "../fs/xfs/linux-2.6/xfs_sysctl.h"
+=======
+#include "../fs/xfs/xfs_sysctl.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sunrpc/debug.h>
 #include <linux/string.h>
 #include <net/ip_vs.h>
+=======
+#include "../fs/xfs/xfs_sysctl.h"
+#include <linux/sunrpc/debug.h>
+#include <linux/string.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/syscalls.h>
 #include <linux/namei.h>
 #include <linux/mount.h>
@@ -15,6 +25,10 @@
 #include <linux/netdevice.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/compat.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SYSCTL_SYSCALL
 
@@ -137,7 +151,14 @@ static const struct bin_table bin_kern_table[] = {
 	{ CTL_INT,	KERN_COMPAT_LOG,		"compat-log" },
 	{ CTL_INT,	KERN_MAX_LOCK_DEPTH,		"max_lock_depth" },
 	{ CTL_INT,	KERN_PANIC_ON_NMI,		"panic_on_unrecovered_nmi" },
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ CTL_INT,	KERN_BOOT_REASON,		"boot_reason" },
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	{ CTL_INT,	KERN_BOOT_REASON,		"boot_reason" },
+>>>>>>> refs/remotes/origin/cm-11.0
 	{}
 };
 
@@ -148,7 +169,11 @@ static const struct bin_table bin_vm_table[] = {
 	{ CTL_INT,	VM_DIRTY_RATIO,			"dirty_ratio" },
 	/* VM_DIRTY_WB_CS "dirty_writeback_centisecs" no longer used */
 	/* VM_DIRTY_EXPIRE_CS "dirty_expire_centisecs" no longer used */
+<<<<<<< HEAD
 	{ CTL_INT,	VM_NR_PDFLUSH_THREADS,		"nr_pdflush_threads" },
+=======
+	/* VM_NR_PDFLUSH_THREADS "nr_pdflush_threads" no longer used */
+>>>>>>> refs/remotes/origin/master
 	{ CTL_INT,	VM_OVERCOMMIT_RATIO,		"overcommit_ratio" },
 	/* VM_PAGEBUF unused */
 	/* VM_HUGETLB_PAGES "nr_hugepages" no longer used */
@@ -215,7 +240,15 @@ static const struct bin_table bin_net_ipv4_route_table[] = {
 	{ CTL_INT,	NET_IPV4_ROUTE_GC_MIN_INTERVAL,		"gc_min_interval" },
 	{ CTL_INT,	NET_IPV4_ROUTE_GC_MIN_INTERVAL_MS,	"gc_min_interval_ms" },
 	{ CTL_INT,	NET_IPV4_ROUTE_GC_TIMEOUT,		"gc_timeout" },
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ CTL_INT,	NET_IPV4_ROUTE_GC_INTERVAL,		"gc_interval" },
+=======
+	/* NET_IPV4_ROUTE_GC_INTERVAL "gc_interval" no longer used */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* NET_IPV4_ROUTE_GC_INTERVAL "gc_interval" no longer used */
+>>>>>>> refs/remotes/origin/master
 	{ CTL_INT,	NET_IPV4_ROUTE_REDIRECT_LOAD,		"redirect_load" },
 	{ CTL_INT,	NET_IPV4_ROUTE_REDIRECT_NUMBER,		"redirect_number" },
 	{ CTL_INT,	NET_IPV4_ROUTE_REDIRECT_SILENCE,	"redirect_silence" },
@@ -388,7 +421,10 @@ static const struct bin_table bin_net_ipv4_table[] = {
 	{ CTL_INT,	NET_TCP_MODERATE_RCVBUF,		"tcp_moderate_rcvbuf" },
 	{ CTL_INT,	NET_TCP_TSO_WIN_DIVISOR,		"tcp_tso_win_divisor" },
 	{ CTL_STR,	NET_TCP_CONG_CONTROL,			"tcp_congestion_control" },
+<<<<<<< HEAD
 	{ CTL_INT,	NET_TCP_ABC,				"tcp_abc" },
+=======
+>>>>>>> refs/remotes/origin/master
 	{ CTL_INT,	NET_TCP_MTU_PROBING,			"tcp_mtu_probing" },
 	{ CTL_INT,	NET_TCP_BASE_MSS,			"tcp_base_mss" },
 	{ CTL_INT,	NET_IPV4_TCP_WORKAROUND_SIGNED_WINDOWS,	"tcp_workaround_signed_windows" },
@@ -524,6 +560,7 @@ static const struct bin_table bin_net_ipv6_conf_var_table[] = {
 	{ CTL_INT,	NET_IPV6_ACCEPT_RA_RT_INFO_MAX_PLEN,	"accept_ra_rt_info_max_plen" },
 	{ CTL_INT,	NET_IPV6_PROXY_NDP,			"proxy_ndp" },
 	{ CTL_INT,	NET_IPV6_ACCEPT_SOURCE_ROUTE,		"accept_source_route" },
+	{ CTL_INT,	NET_IPV6_ACCEPT_RA_PREFIX_ROUTE,	"accept_ra_prefix_route" },
 	{}
 };
 
@@ -972,7 +1009,10 @@ out:
 static ssize_t bin_intvec(struct file *file,
 	void __user *oldval, size_t oldlen, void __user *newval, size_t newlen)
 {
+<<<<<<< HEAD
 	mm_segment_t old_fs = get_fs();
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t copied = 0;
 	char *buffer;
 	ssize_t result;
@@ -985,6 +1025,7 @@ static ssize_t bin_intvec(struct file *file,
 	if (oldval && oldlen) {
 		unsigned __user *vec = oldval;
 		size_t length = oldlen / sizeof(*vec);
+<<<<<<< HEAD
 		loff_t pos = 0;
 		char *str, *end;
 		int i;
@@ -992,6 +1033,12 @@ static ssize_t bin_intvec(struct file *file,
 		set_fs(KERNEL_DS);
 		result = vfs_read(file, buffer, BUFSZ - 1, &pos);
 		set_fs(old_fs);
+=======
+		char *str, *end;
+		int i;
+
+		result = kernel_read(file, 0, buffer, BUFSZ - 1);
+>>>>>>> refs/remotes/origin/master
 		if (result < 0)
 			goto out_kfree;
 
@@ -1018,7 +1065,10 @@ static ssize_t bin_intvec(struct file *file,
 	if (newval && newlen) {
 		unsigned __user *vec = newval;
 		size_t length = newlen / sizeof(*vec);
+<<<<<<< HEAD
 		loff_t pos = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 		char *str, *end;
 		int i;
 
@@ -1031,12 +1081,19 @@ static ssize_t bin_intvec(struct file *file,
 			if (get_user(value, vec + i))
 				goto out_kfree;
 
+<<<<<<< HEAD
 			str += snprintf(str, end - str, "%lu\t", value);
 		}
 
 		set_fs(KERNEL_DS);
 		result = vfs_write(file, buffer, str - buffer, &pos);
 		set_fs(old_fs);
+=======
+			str += scnprintf(str, end - str, "%lu\t", value);
+		}
+
+		result = kernel_write(file, buffer, str - buffer, 0);
+>>>>>>> refs/remotes/origin/master
 		if (result < 0)
 			goto out_kfree;
 	}
@@ -1050,7 +1107,10 @@ out:
 static ssize_t bin_ulongvec(struct file *file,
 	void __user *oldval, size_t oldlen, void __user *newval, size_t newlen)
 {
+<<<<<<< HEAD
 	mm_segment_t old_fs = get_fs();
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t copied = 0;
 	char *buffer;
 	ssize_t result;
@@ -1063,6 +1123,7 @@ static ssize_t bin_ulongvec(struct file *file,
 	if (oldval && oldlen) {
 		unsigned long __user *vec = oldval;
 		size_t length = oldlen / sizeof(*vec);
+<<<<<<< HEAD
 		loff_t pos = 0;
 		char *str, *end;
 		int i;
@@ -1070,6 +1131,12 @@ static ssize_t bin_ulongvec(struct file *file,
 		set_fs(KERNEL_DS);
 		result = vfs_read(file, buffer, BUFSZ - 1, &pos);
 		set_fs(old_fs);
+=======
+		char *str, *end;
+		int i;
+
+		result = kernel_read(file, 0, buffer, BUFSZ - 1);
+>>>>>>> refs/remotes/origin/master
 		if (result < 0)
 			goto out_kfree;
 
@@ -1096,7 +1163,10 @@ static ssize_t bin_ulongvec(struct file *file,
 	if (newval && newlen) {
 		unsigned long __user *vec = newval;
 		size_t length = newlen / sizeof(*vec);
+<<<<<<< HEAD
 		loff_t pos = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 		char *str, *end;
 		int i;
 
@@ -1109,12 +1179,19 @@ static ssize_t bin_ulongvec(struct file *file,
 			if (get_user(value, vec + i))
 				goto out_kfree;
 
+<<<<<<< HEAD
 			str += snprintf(str, end - str, "%lu\t", value);
 		}
 
 		set_fs(KERNEL_DS);
 		result = vfs_write(file, buffer, str - buffer, &pos);
 		set_fs(old_fs);
+=======
+			str += scnprintf(str, end - str, "%lu\t", value);
+		}
+
+		result = kernel_write(file, buffer, str - buffer, 0);
+>>>>>>> refs/remotes/origin/master
 		if (result < 0)
 			goto out_kfree;
 	}
@@ -1128,19 +1205,29 @@ out:
 static ssize_t bin_uuid(struct file *file,
 	void __user *oldval, size_t oldlen, void __user *newval, size_t newlen)
 {
+<<<<<<< HEAD
 	mm_segment_t old_fs = get_fs();
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t result, copied = 0;
 
 	/* Only supports reads */
 	if (oldval && oldlen) {
+<<<<<<< HEAD
 		loff_t pos = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 		char buf[40], *str = buf;
 		unsigned char uuid[16];
 		int i;
 
+<<<<<<< HEAD
 		set_fs(KERNEL_DS);
 		result = vfs_read(file, buf, sizeof(buf) - 1, &pos);
 		set_fs(old_fs);
+=======
+		result = kernel_read(file, 0, buf, sizeof(buf) - 1);
+>>>>>>> refs/remotes/origin/master
 		if (result < 0)
 			goto out;
 
@@ -1176,18 +1263,28 @@ out:
 static ssize_t bin_dn_node_address(struct file *file,
 	void __user *oldval, size_t oldlen, void __user *newval, size_t newlen)
 {
+<<<<<<< HEAD
 	mm_segment_t old_fs = get_fs();
 	ssize_t result, copied = 0;
 
 	if (oldval && oldlen) {
 		loff_t pos = 0;
+=======
+	ssize_t result, copied = 0;
+
+	if (oldval && oldlen) {
+>>>>>>> refs/remotes/origin/master
 		char buf[15], *nodep;
 		unsigned long area, node;
 		__le16 dnaddr;
 
+<<<<<<< HEAD
 		set_fs(KERNEL_DS);
 		result = vfs_read(file, buf, sizeof(buf) - 1, &pos);
 		set_fs(old_fs);
+=======
+		result = kernel_read(file, 0, buf, sizeof(buf) - 1);
+>>>>>>> refs/remotes/origin/master
 		if (result < 0)
 			goto out;
 
@@ -1217,7 +1314,10 @@ static ssize_t bin_dn_node_address(struct file *file,
 	}
 
 	if (newval && newlen) {
+<<<<<<< HEAD
 		loff_t pos = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 		__le16 dnaddr;
 		char buf[15];
 		int len;
@@ -1230,6 +1330,7 @@ static ssize_t bin_dn_node_address(struct file *file,
 		if (get_user(dnaddr, (__le16 __user *)newval))
 			goto out;
 
+<<<<<<< HEAD
 		len = snprintf(buf, sizeof(buf), "%hu.%hu",
 				le16_to_cpu(dnaddr) >> 10,
 				le16_to_cpu(dnaddr) & 0x3ff);
@@ -1237,6 +1338,13 @@ static ssize_t bin_dn_node_address(struct file *file,
 		set_fs(KERNEL_DS);
 		result = vfs_write(file, buf, len, &pos);
 		set_fs(old_fs);
+=======
+		len = scnprintf(buf, sizeof(buf), "%hu.%hu",
+				le16_to_cpu(dnaddr) >> 10,
+				le16_to_cpu(dnaddr) & 0x3ff);
+
+		result = kernel_write(file, buf, len, 0);
+>>>>>>> refs/remotes/origin/master
 		if (result < 0)
 			goto out;
 	}
@@ -1346,7 +1454,11 @@ static ssize_t binary_sysctl(const int *name, int nlen,
 		goto out_putname;
 	}
 
+<<<<<<< HEAD
 	mnt = current->nsproxy->pid_ns->proc_mnt;
+=======
+	mnt = task_active_pid_ns(current)->proc_mnt;
+>>>>>>> refs/remotes/origin/master
 	file = file_open_root(mnt->mnt_root, mnt, pathname, flags);
 	result = PTR_ERR(file);
 	if (IS_ERR(file))
@@ -1474,7 +1586,10 @@ SYSCALL_DEFINE1(sysctl, struct __sysctl_args __user *, args)
 
 
 #ifdef CONFIG_COMPAT
+<<<<<<< HEAD
 #include <asm/compat.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct compat_sysctl_args {
 	compat_uptr_t	name;
@@ -1486,7 +1601,11 @@ struct compat_sysctl_args {
 	compat_ulong_t	__unused[4];
 };
 
+<<<<<<< HEAD
 asmlinkage long compat_sys_sysctl(struct compat_sysctl_args __user *args)
+=======
+COMPAT_SYSCALL_DEFINE1(sysctl, struct compat_sysctl_args __user *, args)
+>>>>>>> refs/remotes/origin/master
 {
 	struct compat_sysctl_args tmp;
 	compat_size_t __user *compat_oldlenp;

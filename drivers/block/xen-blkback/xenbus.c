@@ -93,33 +93,60 @@ static void xen_update_blkif_status(struct xen_blkif *blkif)
 	}
 	invalidate_inode_pages2(blkif->vbd.bdev->bd_inode->i_mapping);
 
+<<<<<<< HEAD
 	blkif->xenblkd = kthread_run(xen_blkif_schedule, blkif, name);
+=======
+	blkif->xenblkd = kthread_run(xen_blkif_schedule, blkif, "%s", name);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(blkif->xenblkd)) {
 		err = PTR_ERR(blkif->xenblkd);
 		blkif->xenblkd = NULL;
 		xenbus_dev_error(blkif->be->dev, err, "start xenblkd");
+<<<<<<< HEAD
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static struct xen_blkif *xen_blkif_alloc(domid_t domid)
 {
 	struct xen_blkif *blkif;
+<<<<<<< HEAD
 
 	blkif = kmem_cache_alloc(xen_blkif_cachep, GFP_KERNEL);
 	if (!blkif)
 		return ERR_PTR(-ENOMEM);
 
 	memset(blkif, 0, sizeof(*blkif));
+=======
+	struct pending_req *req, *n;
+	int i, j;
+
+	BUILD_BUG_ON(MAX_INDIRECT_PAGES > BLKIF_MAX_INDIRECT_PAGES_PER_REQUEST);
+
+	blkif = kmem_cache_zalloc(xen_blkif_cachep, GFP_KERNEL);
+	if (!blkif)
+		return ERR_PTR(-ENOMEM);
+
+>>>>>>> refs/remotes/origin/master
 	blkif->domid = domid;
 	spin_lock_init(&blkif->blk_ring_lock);
 	atomic_set(&blkif->refcnt, 1);
 	init_waitqueue_head(&blkif->wq);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	init_completion(&blkif->drain_complete);
+	atomic_set(&blkif->drain, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	blkif->st_print = jiffies;
 	init_waitqueue_head(&blkif->waiting_to_free);
 
 	return blkif;
 }
 
+<<<<<<< HEAD
 static int map_frontend_page(struct xen_blkif *blkif, unsigned long shared_page)
 {
 	struct gnttab_map_grant_ref op;
@@ -152,6 +179,68 @@ static void unmap_frontend_page(struct xen_blkif *blkif)
 		BUG();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_completion(&blkif->drain_complete);
+	atomic_set(&blkif->drain, 0);
+	blkif->st_print = jiffies;
+	init_waitqueue_head(&blkif->waiting_to_free);
+	blkif->persistent_gnts.rb_node = NULL;
+	spin_lock_init(&blkif->free_pages_lock);
+	INIT_LIST_HEAD(&blkif->free_pages);
+	blkif->free_pages_num = 0;
+	atomic_set(&blkif->persistent_gnt_in_use, 0);
+
+	INIT_LIST_HEAD(&blkif->pending_free);
+
+	for (i = 0; i < XEN_BLKIF_REQS; i++) {
+		req = kzalloc(sizeof(*req), GFP_KERNEL);
+		if (!req)
+			goto fail;
+		list_add_tail(&req->free_list,
+		              &blkif->pending_free);
+		for (j = 0; j < MAX_INDIRECT_SEGMENTS; j++) {
+			req->segments[j] = kzalloc(sizeof(*req->segments[0]),
+			                           GFP_KERNEL);
+			if (!req->segments[j])
+				goto fail;
+		}
+		for (j = 0; j < MAX_INDIRECT_PAGES; j++) {
+			req->indirect_pages[j] = kzalloc(sizeof(*req->indirect_pages[0]),
+			                                 GFP_KERNEL);
+			if (!req->indirect_pages[j])
+				goto fail;
+		}
+	}
+	spin_lock_init(&blkif->pending_free_lock);
+	init_waitqueue_head(&blkif->pending_free_wq);
+	init_waitqueue_head(&blkif->shutdown_wq);
+
+	return blkif;
+
+fail:
+	list_for_each_entry_safe(req, n, &blkif->pending_free, free_list) {
+		list_del(&req->free_list);
+		for (j = 0; j < MAX_INDIRECT_SEGMENTS; j++) {
+			if (!req->segments[j])
+				break;
+			kfree(req->segments[j]);
+		}
+		for (j = 0; j < MAX_INDIRECT_PAGES; j++) {
+			if (!req->indirect_pages[j])
+				break;
+			kfree(req->indirect_pages[j]);
+		}
+		kfree(req);
+	}
+
+	kmem_cache_free(xen_blkif_cachep, blkif);
+
+	return ERR_PTR(-ENOMEM);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int xen_blkif_map(struct xen_blkif *blkif, unsigned long shared_page,
 			 unsigned int evtchn)
 {
@@ -161,6 +250,8 @@ static int xen_blkif_map(struct xen_blkif *blkif, unsigned long shared_page,
 	if (blkif->irq)
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	blkif->blk_ring_area = alloc_vm_area(PAGE_SIZE);
 	if (!blkif->blk_ring_area)
 		return -ENOMEM;
@@ -170,26 +261,60 @@ static int xen_blkif_map(struct xen_blkif *blkif, unsigned long shared_page,
 		free_vm_area(blkif->blk_ring_area);
 		return err;
 	}
+=======
+	err = xenbus_map_ring_valloc(blkif->be->dev, shared_page, &blkif->blk_ring);
+	if (err < 0)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = xenbus_map_ring_valloc(blkif->be->dev, shared_page, &blkif->blk_ring);
+	if (err < 0)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	switch (blkif->blk_protocol) {
 	case BLKIF_PROTOCOL_NATIVE:
 	{
 		struct blkif_sring *sring;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sring = (struct blkif_sring *)blkif->blk_ring_area->addr;
+=======
+		sring = (struct blkif_sring *)blkif->blk_ring;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sring = (struct blkif_sring *)blkif->blk_ring;
+>>>>>>> refs/remotes/origin/master
 		BACK_RING_INIT(&blkif->blk_rings.native, sring, PAGE_SIZE);
 		break;
 	}
 	case BLKIF_PROTOCOL_X86_32:
 	{
 		struct blkif_x86_32_sring *sring_x86_32;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sring_x86_32 = (struct blkif_x86_32_sring *)blkif->blk_ring_area->addr;
+=======
+		sring_x86_32 = (struct blkif_x86_32_sring *)blkif->blk_ring;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sring_x86_32 = (struct blkif_x86_32_sring *)blkif->blk_ring;
+>>>>>>> refs/remotes/origin/master
 		BACK_RING_INIT(&blkif->blk_rings.x86_32, sring_x86_32, PAGE_SIZE);
 		break;
 	}
 	case BLKIF_PROTOCOL_X86_64:
 	{
 		struct blkif_x86_64_sring *sring_x86_64;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sring_x86_64 = (struct blkif_x86_64_sring *)blkif->blk_ring_area->addr;
+=======
+		sring_x86_64 = (struct blkif_x86_64_sring *)blkif->blk_ring;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sring_x86_64 = (struct blkif_x86_64_sring *)blkif->blk_ring;
+>>>>>>> refs/remotes/origin/master
 		BACK_RING_INIT(&blkif->blk_rings.x86_64, sring_x86_64, PAGE_SIZE);
 		break;
 	}
@@ -201,8 +326,16 @@ static int xen_blkif_map(struct xen_blkif *blkif, unsigned long shared_page,
 						    xen_blkif_be_int, 0,
 						    "blkif-backend", blkif);
 	if (err < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		unmap_frontend_page(blkif);
 		free_vm_area(blkif->blk_ring_area);
+=======
+		xenbus_unmap_ring_vfree(blkif->be->dev, blkif->blk_ring);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		xenbus_unmap_ring_vfree(blkif->be->dev, blkif->blk_ring);
+>>>>>>> refs/remotes/origin/master
 		blkif->blk_rings.common.sring = NULL;
 		return err;
 	}
@@ -215,6 +348,10 @@ static void xen_blkif_disconnect(struct xen_blkif *blkif)
 {
 	if (blkif->xenblkd) {
 		kthread_stop(blkif->xenblkd);
+<<<<<<< HEAD
+=======
+		wake_up(&blkif->shutdown_wq);
+>>>>>>> refs/remotes/origin/master
 		blkif->xenblkd = NULL;
 	}
 
@@ -228,16 +365,51 @@ static void xen_blkif_disconnect(struct xen_blkif *blkif)
 	}
 
 	if (blkif->blk_rings.common.sring) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		unmap_frontend_page(blkif);
 		free_vm_area(blkif->blk_ring_area);
+=======
+		xenbus_unmap_ring_vfree(blkif->be->dev, blkif->blk_ring);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		xenbus_unmap_ring_vfree(blkif->be->dev, blkif->blk_ring);
+>>>>>>> refs/remotes/origin/master
 		blkif->blk_rings.common.sring = NULL;
 	}
 }
 
+<<<<<<< HEAD
 void xen_blkif_free(struct xen_blkif *blkif)
 {
 	if (!atomic_dec_and_test(&blkif->refcnt))
 		BUG();
+=======
+static void xen_blkif_free(struct xen_blkif *blkif)
+{
+	struct pending_req *req, *n;
+	int i = 0, j;
+
+	if (!atomic_dec_and_test(&blkif->refcnt))
+		BUG();
+
+	/* Check that there is no request in use */
+	list_for_each_entry_safe(req, n, &blkif->pending_free, free_list) {
+		list_del(&req->free_list);
+
+		for (j = 0; j < MAX_INDIRECT_SEGMENTS; j++)
+			kfree(req->segments[j]);
+
+		for (j = 0; j < MAX_INDIRECT_PAGES; j++)
+			kfree(req->indirect_pages[j]);
+
+		kfree(req);
+		i++;
+	}
+
+	WARN_ON(i != XEN_BLKIF_REQS);
+
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(xen_blkif_cachep, blkif);
 }
 
@@ -268,18 +440,40 @@ int __init xen_blkif_interface_init(void)
 	}								\
 	static DEVICE_ATTR(name, S_IRUGO, show_##name, NULL)
 
+<<<<<<< HEAD
 VBD_SHOW(oo_req,  "%d\n", be->blkif->st_oo_req);
 VBD_SHOW(rd_req,  "%d\n", be->blkif->st_rd_req);
 VBD_SHOW(wr_req,  "%d\n", be->blkif->st_wr_req);
 VBD_SHOW(f_req,  "%d\n", be->blkif->st_f_req);
+<<<<<<< HEAD
+=======
+VBD_SHOW(ds_req,  "%d\n", be->blkif->st_ds_req);
+>>>>>>> refs/remotes/origin/cm-10.0
 VBD_SHOW(rd_sect, "%d\n", be->blkif->st_rd_sect);
 VBD_SHOW(wr_sect, "%d\n", be->blkif->st_wr_sect);
+=======
+VBD_SHOW(oo_req,  "%llu\n", be->blkif->st_oo_req);
+VBD_SHOW(rd_req,  "%llu\n", be->blkif->st_rd_req);
+VBD_SHOW(wr_req,  "%llu\n", be->blkif->st_wr_req);
+VBD_SHOW(f_req,  "%llu\n", be->blkif->st_f_req);
+VBD_SHOW(ds_req,  "%llu\n", be->blkif->st_ds_req);
+VBD_SHOW(rd_sect, "%llu\n", be->blkif->st_rd_sect);
+VBD_SHOW(wr_sect, "%llu\n", be->blkif->st_wr_sect);
+>>>>>>> refs/remotes/origin/master
 
 static struct attribute *xen_vbdstat_attrs[] = {
 	&dev_attr_oo_req.attr,
 	&dev_attr_rd_req.attr,
 	&dev_attr_wr_req.attr,
 	&dev_attr_f_req.attr,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	&dev_attr_ds_req.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_ds_req.attr,
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_rd_sect.attr,
 	&dev_attr_wr_sect.attr,
 	NULL
@@ -293,7 +487,11 @@ static struct attribute_group xen_vbdstat_group = {
 VBD_SHOW(physical_device, "%x:%x\n", be->major, be->minor);
 VBD_SHOW(mode, "%s\n", be->mode);
 
+<<<<<<< HEAD
 int xenvbd_sysfs_addif(struct xenbus_device *dev)
+=======
+static int xenvbd_sysfs_addif(struct xenbus_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 
@@ -317,7 +515,11 @@ fail1:	device_remove_file(&dev->dev, &dev_attr_physical_device);
 	return error;
 }
 
+<<<<<<< HEAD
 void xenvbd_sysfs_delif(struct xenbus_device *dev)
+=======
+static void xenvbd_sysfs_delif(struct xenbus_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	sysfs_remove_group(&dev->dev.kobj, &xen_vbdstat_group);
 	device_remove_file(&dev->dev, &dev_attr_mode);
@@ -374,6 +576,18 @@ static int xen_vbd_create(struct xen_blkif *blkif, blkif_vdev_t handle,
 	if (q && q->flush_flags)
 		vbd->flush_support = true;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (q && blk_queue_secdiscard(q))
+		vbd->discard_secure = true;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (q && blk_queue_secdiscard(q))
+		vbd->discard_secure = true;
+
+>>>>>>> refs/remotes/origin/master
 	DPRINTK("Successful creation of handle=%04x (dom=%u)\n",
 		handle, blkif->domid);
 	return 0;
@@ -415,7 +629,70 @@ int xen_blkbk_flush_diskcache(struct xenbus_transaction xbt,
 	err = xenbus_printf(xbt, dev->nodename, "feature-flush-cache",
 			    "%d", state);
 	if (err)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		xenbus_dev_fatal(dev, err, "writing feature-flush-cache");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		dev_warn(&dev->dev, "writing feature-flush-cache (%d)", err);
+
+	return err;
+}
+
+static void xen_blkbk_discard(struct xenbus_transaction xbt, struct backend_info *be)
+{
+	struct xenbus_device *dev = be->dev;
+	struct xen_blkif *blkif = be->blkif;
+	int err;
+	int state = 0;
+	struct block_device *bdev = be->blkif->vbd.bdev;
+	struct request_queue *q = bdev_get_queue(bdev);
+
+	if (blk_queue_discard(q)) {
+		err = xenbus_printf(xbt, dev->nodename,
+			"discard-granularity", "%u",
+			q->limits.discard_granularity);
+		if (err) {
+			dev_warn(&dev->dev, "writing discard-granularity (%d)", err);
+			return;
+		}
+		err = xenbus_printf(xbt, dev->nodename,
+			"discard-alignment", "%u",
+			q->limits.discard_alignment);
+		if (err) {
+			dev_warn(&dev->dev, "writing discard-alignment (%d)", err);
+			return;
+		}
+		state = 1;
+		/* Optional. */
+		err = xenbus_printf(xbt, dev->nodename,
+				    "discard-secure", "%d",
+				    blkif->vbd.discard_secure);
+		if (err) {
+			dev_warn(&dev->dev, "writing discard-secure (%d)", err);
+			return;
+		}
+	}
+	err = xenbus_printf(xbt, dev->nodename, "feature-discard",
+			    "%d", state);
+	if (err)
+		dev_warn(&dev->dev, "writing feature-discard (%d)", err);
+}
+int xen_blkbk_barrier(struct xenbus_transaction xbt,
+		      struct backend_info *be, int state)
+{
+	struct xenbus_device *dev = be->dev;
+	int err;
+
+	err = xenbus_printf(xbt, dev->nodename, "feature-barrier",
+			    "%d", state);
+	if (err)
+		dev_warn(&dev->dev, "writing feature-barrier (%d)", err);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -525,6 +802,19 @@ static void backend_changed(struct xenbus_watch *watch,
 	}
 
 	/* Front end dir is a number, which is used as the handle. */
+<<<<<<< HEAD
+<<<<<<< HEAD
+	err = strict_strtoul(strrchr(dev->otherend, '/') + 1, 0, &handle);
+=======
+	err = kstrtoul(strrchr(dev->otherend, '/') + 1, 0, &handle);
+>>>>>>> refs/remotes/origin/master
+	if (err)
+		return;
+
+	be->major = major;
+	be->minor = minor;
+
+=======
 	err = strict_strtoul(strrchr(dev->otherend, '/') + 1, 0, &handle);
 	if (err)
 		return;
@@ -532,6 +822,7 @@ static void backend_changed(struct xenbus_watch *watch,
 	be->major = major;
 	be->minor = minor;
 
+>>>>>>> refs/remotes/origin/cm-11.0
 	err = xen_vbd_create(be->blkif, handle, major, minor,
 			     !strchr(be->mode, 'w'), cdrom);
 
@@ -581,7 +872,15 @@ static void frontend_changed(struct xenbus_device *dev,
 	case XenbusStateConnected:
 		/*
 		 * Ensure we connect even when two watches fire in
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * close successsion and we miss the intermediate value
+=======
+		 * close succession and we miss the intermediate value
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * close succession and we miss the intermediate value
+>>>>>>> refs/remotes/origin/master
 		 * of frontend_state.
 		 */
 		if (dev->state == XenbusStateConnected)
@@ -589,7 +888,15 @@ static void frontend_changed(struct xenbus_device *dev,
 
 		/*
 		 * Enforce precondition before potential leak point.
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * blkif_disconnect() is idempotent.
+=======
+		 * xen_blkif_disconnect() is idempotent.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * xen_blkif_disconnect() is idempotent.
+>>>>>>> refs/remotes/origin/master
 		 */
 		xen_blkif_disconnect(be->blkif);
 
@@ -600,17 +907,39 @@ static void frontend_changed(struct xenbus_device *dev,
 		break;
 
 	case XenbusStateClosing:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		xen_blkif_disconnect(be->blkif);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		xenbus_switch_state(dev, XenbusStateClosing);
 		break;
 
 	case XenbusStateClosed:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		xen_blkif_disconnect(be->blkif);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		xen_blkif_disconnect(be->blkif);
+>>>>>>> refs/remotes/origin/master
 		xenbus_switch_state(dev, XenbusStateClosed);
 		if (xenbus_dev_is_online(dev))
 			break;
 		/* fall through if not online */
 	case XenbusStateUnknown:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* implies blkif_disconnect() via blkback_remove() */
+=======
+		/* implies xen_blkif_disconnect() via xen_blkbk_remove() */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* implies xen_blkif_disconnect() via xen_blkbk_remove() */
+>>>>>>> refs/remotes/origin/master
 		device_unregister(&dev->dev);
 		break;
 
@@ -645,9 +974,36 @@ again:
 		return;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = xen_blkbk_flush_diskcache(xbt, be, be->blkif->vbd.flush_support);
 	if (err)
 		goto abort;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* If we can't advertise it is OK. */
+	xen_blkbk_flush_diskcache(xbt, be, be->blkif->vbd.flush_support);
+
+	xen_blkbk_discard(xbt, be);
+
+	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u", 1);
+	if (err) {
+		xenbus_dev_fatal(dev, err, "writing %s/feature-persistent",
+				 dev->nodename);
+		goto abort;
+	}
+	err = xenbus_printf(xbt, dev->nodename, "feature-max-indirect-segments", "%u",
+			    MAX_INDIRECT_SEGMENTS);
+	if (err)
+		dev_warn(&dev->dev, "writing %s/feature-max-indirect-segments (%d)",
+			 dev->nodename, err);
+>>>>>>> refs/remotes/origin/master
 
 	err = xenbus_printf(xbt, dev->nodename, "sectors", "%llu",
 			    (unsigned long long)vbd_sz(&be->blkif->vbd));
@@ -674,6 +1030,14 @@ again:
 				 dev->nodename);
 		goto abort;
 	}
+<<<<<<< HEAD
+=======
+	err = xenbus_printf(xbt, dev->nodename, "physical-sector-size", "%u",
+			    bdev_physical_block_size(be->blkif->vbd.bdev));
+	if (err)
+		xenbus_dev_error(dev, err, "writing %s/physical-sector-size",
+				 dev->nodename);
+>>>>>>> refs/remotes/origin/master
 
 	err = xenbus_transaction_end(xbt, 0);
 	if (err == -EAGAIN)
@@ -683,7 +1047,15 @@ again:
 
 	err = xenbus_switch_state(dev, XenbusStateConnected);
 	if (err)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		xenbus_dev_fatal(dev, err, "switching to Connected state",
+=======
+		xenbus_dev_fatal(dev, err, "%s: switching to Connected state",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		xenbus_dev_fatal(dev, err, "%s: switching to Connected state",
+>>>>>>> refs/remotes/origin/master
 				 dev->nodename);
 
 	return;
@@ -697,6 +1069,10 @@ static int connect_ring(struct backend_info *be)
 	struct xenbus_device *dev = be->dev;
 	unsigned long ring_ref;
 	unsigned int evtchn;
+<<<<<<< HEAD
+=======
+	unsigned int pers_grants;
+>>>>>>> refs/remotes/origin/master
 	char protocol[64] = "";
 	int err;
 
@@ -726,8 +1102,23 @@ static int connect_ring(struct backend_info *be)
 		xenbus_dev_fatal(dev, err, "unknown fe protocol %s", protocol);
 		return -1;
 	}
+<<<<<<< HEAD
 	pr_info(DRV_PFX "ring-ref %ld, event-channel %d, protocol %d (%s)\n",
 		ring_ref, evtchn, be->blkif->blk_protocol, protocol);
+=======
+	err = xenbus_gather(XBT_NIL, dev->otherend,
+			    "feature-persistent", "%u",
+			    &pers_grants, NULL);
+	if (err)
+		pers_grants = 0;
+
+	be->blkif->vbd.feature_gnt_persistent = pers_grants;
+	be->blkif->vbd.overflow_max_grants = 0;
+
+	pr_info(DRV_PFX "ring-ref %ld, event-channel %d, protocol %d (%s) %s\n",
+		ring_ref, evtchn, be->blkif->blk_protocol, protocol,
+		pers_grants ? "persistent grants" : "");
+>>>>>>> refs/remotes/origin/master
 
 	/* Map the shared frame, irq etc. */
 	err = xen_blkif_map(be->blkif, ring_ref, evtchn);
@@ -750,6 +1141,8 @@ static const struct xenbus_device_id xen_blkbk_ids[] = {
 };
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct xenbus_driver xen_blkbk = {
 	.name = "vbd",
 	.owner = THIS_MODULE,
@@ -758,9 +1151,29 @@ static struct xenbus_driver xen_blkbk = {
 	.remove = xen_blkbk_remove,
 	.otherend_changed = frontend_changed
 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEFINE_XENBUS_DRIVER(xen_blkbk, ,
+	.probe = xen_blkbk_probe,
+	.remove = xen_blkbk_remove,
+	.otherend_changed = frontend_changed
+);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 int xen_blkif_xenbus_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return xenbus_register_backend(&xen_blkbk);
+=======
+	return xenbus_register_backend(&xen_blkbk_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return xenbus_register_backend(&xen_blkbk_driver);
+>>>>>>> refs/remotes/origin/master
 }

@@ -4,9 +4,21 @@
 #define __DIVA_PCI_INTERFACE_H__
 
 void __iomem *divasa_remap_pci_bar(diva_os_xdi_adapter_t *a,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   int id,
 			   unsigned long bar,
 			   unsigned long area_length);
+=======
+				   int id,
+				   unsigned long bar,
+				   unsigned long area_length);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   int id,
+				   unsigned long bar,
+				   unsigned long area_length);
+>>>>>>> refs/remotes/origin/master
 void divasa_unmap_pci_bar(void __iomem *bar);
 unsigned long divasa_get_pci_irq(unsigned char bus,
 				 unsigned char func, void *pci_dev_handle);

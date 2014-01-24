@@ -26,6 +26,7 @@
 #include <asm/pgtsrmmu.h>	/* SRMMU_PGDIR_SHIFT */
 
 	.data
+<<<<<<< HEAD
 /* 
  * The following are used with the prom_vector node-ops to figure out
  * the cpu-type 
@@ -59,18 +60,38 @@ cputypvar:
 /* Tested on SS-5, SS-10. Probably someone at Sun applied a spell-checker. */
 	.align 4
 cputypvar_sun4m:
+=======
+/* The following are used with the prom_vector node-ops to figure out
+ * the cpu-type
+ */
+	.align 4
+	.globl cputypval
+cputypval:
+	.asciz "sun4m"
+	.ascii "     "
+
+/* Tested on SS-5, SS-10 */
+	.align 4
+cputypvar:
+>>>>>>> refs/remotes/origin/master
 	.asciz "compatible"
 
 	.align 4
 
+<<<<<<< HEAD
 sun4_notsup:
 	.asciz	"Sparc-Linux sun4 support does no longer exist.\n\n"
+=======
+notsup:
+	.asciz	"Sparc-Linux sun4/sun4c or MMU-less not supported\n\n"
+>>>>>>> refs/remotes/origin/master
 	.align 4
 
 sun4e_notsup:
         .asciz  "Sparc-Linux sun4e support does not exist\n\n"
 	.align 4
 
+<<<<<<< HEAD
 	/* The Sparc trap table, bootloader gives us control at _start. */
 	__HEAD
 	.globl	_stext, _start, __stext
@@ -399,11 +420,17 @@ trapbase_cpu3:
 	BAD_TRAP(0xfc) KGDB_TRAP(0xfd) BAD_TRAP(0xfe) BAD_TRAP(0xff)
 
 #endif
+=======
+/* The trap-table - located in the __HEAD section */
+#include "ttable_32.S"
+
+>>>>>>> refs/remotes/origin/master
 	.align PAGE_SIZE
 
 /* This was the only reasonable way I could think of to properly align
  * these page-table data structures.
  */
+<<<<<<< HEAD
 	.globl pg0, pg1, pg2, pg3
 	.globl empty_bad_page
 	.globl empty_bad_page_table
@@ -416,6 +443,9 @@ pg2:			.skip PAGE_SIZE
 pg3:			.skip PAGE_SIZE
 empty_bad_page:		.skip PAGE_SIZE
 empty_bad_page_table:	.skip PAGE_SIZE
+=======
+	.globl empty_zero_page
+>>>>>>> refs/remotes/origin/master
 empty_zero_page:	.skip PAGE_SIZE
 
 	.global root_flags
@@ -474,7 +504,11 @@ current_pc:
 		tst	%o0
 		be	no_sun4u_here
 		 mov	%g4, %o7		/* Previous %o7. */
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 		mov	%o0, %l0		! stash away romvec
 		mov	%o0, %g7		! put it here too
 		mov	%o1, %l1		! stash away debug_vec too
@@ -483,7 +517,11 @@ current_pc:
 		set	current_pc, %g5
 		cmp	%g3, %g5
 		be	already_mapped
+<<<<<<< HEAD
 		 nop 
+=======
+		 nop
+>>>>>>> refs/remotes/origin/master
 
 		/* %l6 will hold the offset we have to subtract
 		 * from absolute symbols in order to access areas
@@ -523,10 +561,17 @@ copy_prom_lvl14:
 		ldd	[%g2 + 0x8], %g4
 		std	%g4, [%g3 + 0x8]	! Copy proms handler
 
+<<<<<<< HEAD
 /* Must determine whether we are on a sun4c MMU, SRMMU, or SUN4/400 MUTANT
  * MMU so we can remap ourselves properly.  DON'T TOUCH %l0 thru %l5 in these
  * remapping routines, we need their values afterwards!
  */
+=======
+/* DON'T TOUCH %l0 thru %l5 in these remapping routines,
+ * we need their values afterwards!
+ */
+
+>>>>>>> refs/remotes/origin/master
 		/* Now check whether we are already mapped, if we
 		 * are we can skip all this garbage coming up.
 		 */
@@ -535,6 +580,7 @@ copy_prom_done:
 		be	go_to_highmem		! this will be a nop then
 		 nop
 
+<<<<<<< HEAD
 		set	LOAD_ADDR, %g6
 		cmp	%g7, %g6
 		bne	remap_not_a_sun4	! This is not a Sun4
@@ -562,6 +608,51 @@ srmmu_remap:
 		and	%g2, %g3, %g3
 		subcc	%g3, 0x0, %g0
 		bz	srmmu_nviking
+=======
+		/* Validate that we are in fact running on an
+		 * SRMMU based cpu.
+		 */
+		set	0x4000, %g6
+		cmp	%g7, %g6
+		bne	not_a_sun4
+		 nop
+
+halt_notsup:
+		ld	[%g7 + 0x68], %o1
+		set	notsup, %o0
+		sub	%o0, %l6, %o0
+		call	%o1
+		 nop
+		ba	halt_me
+		 nop
+
+not_a_sun4:
+		/* It looks like this is a machine we support.
+		 * Now find out what MMU we are dealing with
+		 * LEON - identified by the psr.impl field
+		 * Viking - identified by the psr.impl field
+		 * In all other cases a sun4m srmmu.
+		 * We check that the MMU is enabled in all cases.
+		 */
+
+		/* Check if this is a LEON CPU */
+		rd	%psr, %g3
+		srl	%g3, PSR_IMPL_SHIFT, %g3
+		and	%g3, PSR_IMPL_SHIFTED_MASK, %g3
+		cmp	%g3, PSR_IMPL_LEON
+		be	leon_remap		/* It is a LEON - jump */
+		 nop
+
+		/* Sanity-check, is MMU enabled */
+		lda	[%g0] ASI_M_MMUREGS, %g1
+		andcc	%g1, 1, %g0
+		be	halt_notsup
+		 nop
+
+		/* Check for a viking (TI) module. */
+		cmp	%g3, PSR_IMPL_TI
+		bne	srmmu_not_viking
+>>>>>>> refs/remotes/origin/master
 		 nop
 
 		/* Figure out what kind of viking we are on.
@@ -576,14 +667,24 @@ srmmu_remap:
 		lda	[%g0] ASI_M_MMUREGS, %g3	! peek in the control reg
 		and	%g2, %g3, %g3
 		subcc	%g3, 0x0, %g0
+<<<<<<< HEAD
 		bnz	srmmu_nviking			! is in mbus mode
 		 nop
 		
+=======
+		bnz	srmmu_not_viking			! is in mbus mode
+		 nop
+
+>>>>>>> refs/remotes/origin/master
 		rd	%psr, %g3			! DO NOT TOUCH %g3
 		andn	%g3, PSR_ET, %g2
 		wr	%g2, 0x0, %psr
 		WRITE_PAUSE
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/master
 		/* Get context table pointer, then convert to
 		 * a physical address, which is 36 bits.
 		 */
@@ -606,12 +707,20 @@ srmmu_remap:
 		lda	[%g4] ASI_M_BYPASS, %o1		! This is a level 1 ptr
 		srl	%o1, 0x4, %o1			! Clear low 4 bits
 		sll	%o1, 0x8, %o1			! Make physical
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/master
 		/* Ok, pull in the PTD. */
 		lda	[%o1] ASI_M_BYPASS, %o2		! This is the 0x0 16MB pgd
 
 		/* Calculate to KERNBASE entry. */
+<<<<<<< HEAD
 		add	%o1, KERNBASE >> (SRMMU_PGDIR_SHIFT - 2), %o3		
+=======
+		add	%o1, KERNBASE >> (SRMMU_PGDIR_SHIFT - 2), %o3
+>>>>>>> refs/remotes/origin/master
 
 		/* Poke the entry into the calculated address. */
 		sta	%o2, [%o3] ASI_M_BYPASS
@@ -641,12 +750,19 @@ srmmu_remap:
 		b	go_to_highmem
 		 nop
 
+<<<<<<< HEAD
+=======
+srmmu_not_viking:
+>>>>>>> refs/remotes/origin/master
 		/* This works on viking's in Mbus mode and all
 		 * other MBUS modules.  It is virtually the same as
 		 * the above madness sans turning traps off and flipping
 		 * the AC bit.
 		 */
+<<<<<<< HEAD
 srmmu_nviking:
+=======
+>>>>>>> refs/remotes/origin/master
 		set	AC_M_CTPR, %g1
 		lda	[%g1] ASI_M_MMUREGS, %g1	! get ctx table ptr
 		sll	%g1, 0x4, %g1			! make physical addr
@@ -660,6 +776,7 @@ srmmu_nviking:
 		b	go_to_highmem
 		 nop					! wheee....
 
+<<<<<<< HEAD
 		/* This remaps the kernel on Sun4/4xx machines
 		 * that have the Sun Mutant Three Level MMU.
 		 * It's like a platypus, Sun didn't have the
@@ -726,6 +843,31 @@ sun4c_remap_loop:
 		subcc	%g3, %g5, %g0		! Reached limit?
 		bl	sun4c_remap_loop	! Nope, loop again
 		 add	%g4, %l6, %g4		! delay, Increment dest ptr
+=======
+
+leon_remap:
+		/* Sanity-check, is MMU enabled */
+		lda	[%g0] ASI_LEON_MMUREGS, %g1
+		andcc	%g1, 1, %g0
+		be	halt_notsup
+		 nop
+
+		/* Same code as in the srmmu_not_viking case,
+		 * with the LEON ASI for mmuregs
+		 */
+		set	AC_M_CTPR, %g1
+		lda	[%g1] ASI_LEON_MMUREGS, %g1	! get ctx table ptr
+		sll	%g1, 0x4, %g1			! make physical addr
+		lda	[%g1] ASI_M_BYPASS, %g1		! ptr to level 1 pg_table
+		srl	%g1, 0x4, %g1
+		sll	%g1, 0x8, %g1			! make phys addr for l1 tbl
+
+		lda	[%g1] ASI_M_BYPASS, %g2		! get level1 entry for 0x0
+		add	%g1, KERNBASE >> (SRMMU_PGDIR_SHIFT - 2), %g3
+		sta	%g2, [%g3] ASI_M_BYPASS		! place at KERNBASE entry
+		b	go_to_highmem
+		 nop					! wheee....
+>>>>>>> refs/remotes/origin/master
 
 /* Now do a non-relative jump so that PC is in high-memory */
 go_to_highmem:
@@ -750,6 +892,7 @@ execute_in_high_mem:
 		sethi	%hi(linux_dbvec), %g1
 		st	%o1, [%g1 + %lo(linux_dbvec)]
 
+<<<<<<< HEAD
 		ld	[%o0 + 0x4], %o3
 		and	%o3, 0x3, %o5			! get the version
 
@@ -779,6 +922,15 @@ found_version:
 		ld	[%l1], %l0
 		ld	[%l0], %l0
 		call 	%l0
+=======
+		/* Get the machine type via the romvec
+		 * getprops node operation
+		 */
+		add	%g7, 0x1c, %l1
+		ld	[%l1], %l0
+		ld	[%l0], %l0
+		call	%l0
+>>>>>>> refs/remotes/origin/master
 		 or	%g0, %g0, %o0		! next_node(0) = first_node
 		or	%o0, %g0, %g6
 
@@ -786,6 +938,7 @@ found_version:
 		or	%o1, %lo(cputypvar), %o1
 		sethi	%hi(cputypval), %o2	! information, the string
 		or	%o2, %lo(cputypval), %o2
+<<<<<<< HEAD
 		ld	[%l1], %l0		! 'compatibility' tells
 		ld	[%l0 + 0xc], %l0	! that we want 'sun4x' where
 		call	%l0			! x is one of '', 'c', 'm',
@@ -811,6 +964,51 @@ got_prop:
 #ifdef CONFIG_SPARC_LEON
 	        /* no cpu-type check is needed, it is a SPARC-LEON */
 
+=======
+		ld	[%l1], %l0		! 'compatible' tells
+		ld	[%l0 + 0xc], %l0	! that we want 'sun4x' where
+		call	%l0			! x is one of 'm', 'd' or 'e'.
+		 nop				! %o2 holds pointer
+						! to a buf where above string
+						! will get stored by the prom.
+
+
+		/* Check value of "compatible" property.
+		 * "value" => "model"
+		 * leon => sparc_leon
+		 * sun4m => sun4m
+		 * sun4s => sun4m
+		 * sun4d => sun4d
+		 * sun4e => "no_sun4e_here"
+		 * '*'   => "no_sun4u_here"
+		 * Check single letters only
+		 */
+
+		set	cputypval, %o2
+		/* If cputypval[0] == 'l' (lower case letter L) this is leon */
+		ldub	[%o2], %l1
+		cmp	%l1, 'l'
+		be	leon_init
+		 nop
+
+		/* Check cputypval[4] to find the sun model */
+		ldub	[%o2 + 0x4], %l1
+
+		cmp	%l1, 'm'
+		be	sun4m_init
+		 cmp	%l1, 's'
+		be	sun4m_init
+		 cmp	%l1, 'd'
+		be	sun4d_init
+		 cmp	%l1, 'e'
+		be	no_sun4e_here		! Could be a sun4e.
+		 nop
+		b	no_sun4u_here		! AIEEE, a V9 sun4u... Get our BIG BROTHER kernel :))
+		 nop
+
+leon_init:
+		/* LEON CPU - set boot_cpu_id */
+>>>>>>> refs/remotes/origin/master
 		sethi	%hi(boot_cpu_id), %g2	! boot-cpu index
 
 #ifdef CONFIG_SMP
@@ -826,6 +1024,7 @@ got_prop:
 		/* Update boot_cpu_id only on boot cpu */
 		stub	%g1, [%g2 + %lo(boot_cpu_id)]
 
+<<<<<<< HEAD
 		ba sun4c_continue_boot
 		 nop
 #endif
@@ -863,6 +1062,9 @@ got_prop:
 		stba	%g0, [%g1] ASI_CONTROL
 
 		b	sun4c_continue_boot
+=======
+		ba continue_boot
+>>>>>>> refs/remotes/origin/master
 		 nop
 
 /* CPUID in bootbus can be found at PA 0xff0140000 */
@@ -892,6 +1094,7 @@ sun4d_init:
 	/* Fall through to sun4m_init */
 
 sun4m_init:
+<<<<<<< HEAD
 	/* XXX Fucking Cypress... */
 	lda	[%g0] ASI_M_MMUREGS, %g5
 	srl	%g5, 28, %g4
@@ -952,6 +1155,8 @@ sun4m_init:
 
 #undef PATCH_IT
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Ok, the PROM could have done funny things and apple cider could still
  * be sitting in the fault status/address registers.  Read them all to
  * clear them so we don't get magic faults later on.
@@ -959,10 +1164,17 @@ sun4m_init:
 /* This sucks, apparently this makes Vikings call prom panic, will fix later */
 2:
 		rd	%psr, %o1
+<<<<<<< HEAD
 		srl	%o1, 28, %o1		! Get a type of the CPU
 
 		subcc	%o1, 4, %g0		! TI: Viking or MicroSPARC
 		be	sun4c_continue_boot
+=======
+		srl	%o1, PSR_IMPL_SHIFT, %o1	! Get a type of the CPU
+
+		subcc	%o1, PSR_IMPL_TI, %g0		! TI: Viking or MicroSPARC
+		be	continue_boot
+>>>>>>> refs/remotes/origin/master
 		 nop
 
 		set	AC_M_SFSR, %o0
@@ -972,7 +1184,11 @@ sun4m_init:
 
 		/* Fujitsu MicroSPARC-II has no asynchronous flavors of FARs */
 		subcc	%o1, 0, %g0
+<<<<<<< HEAD
 		be	sun4c_continue_boot
+=======
+		be	continue_boot
+>>>>>>> refs/remotes/origin/master
 		 nop
 
 		set	AC_M_AFSR, %o0
@@ -982,16 +1198,23 @@ sun4m_init:
 		 nop
 
 
+<<<<<<< HEAD
 sun4c_continue_boot:
 
+=======
+continue_boot:
+>>>>>>> refs/remotes/origin/master
 
 /* Aieee, now set PC and nPC, enable traps, give ourselves a stack and it's
  * show-time!
  */
+<<<<<<< HEAD
 
 		sethi	%hi(cputyp), %o0
 		st	%g4, [%o0 + %lo(cputyp)]
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Turn on Supervisor, EnableFloating, and all the PIL bits.
 		 * Also puts us in register window zero with traps off.
 		 */
@@ -1009,7 +1232,11 @@ sun4c_continue_boot:
 		set	__bss_start , %o0	! First address of BSS
 		set	_end , %o1		! Last address of BSS
 		add	%o0, 0x1, %o0
+<<<<<<< HEAD
 1:	
+=======
+1:
+>>>>>>> refs/remotes/origin/master
 		stb	%g0, [%o0]
 		subcc	%o0, %o1, %g0
 		bl	1b
@@ -1026,10 +1253,14 @@ sun4c_continue_boot:
 		mov	%g0, %g3
 		stub	%g3, [%g2 + %lo(boot_cpu_id)]
 
+<<<<<<< HEAD
 1:		/* boot_cpu_id set. calculate boot_cpu_id4 = boot_cpu_id*4 */
 		sll	%g3, 2, %g3
 		sethi	%hi(boot_cpu_id4), %g2
 		stub	%g3, [%g2 + %lo(boot_cpu_id4)]
+=======
+1:		sll	%g3, 2, %g3
+>>>>>>> refs/remotes/origin/master
 
 		/* Initialize the uwinmask value for init task just in case.
 		 * But first make current_set[boot_cpu_id] point to something useful.
@@ -1078,7 +1309,11 @@ sun4c_continue_boot:
 		set	dest, %g2; \
 		ld	[%g5], %g4; \
 		st	%g4, [%g2];
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 		/* Patch for window spills... */
 		PATCH_INSN(spnwin_patch1_7win, spnwin_patch1)
 		PATCH_INSN(spnwin_patch2_7win, spnwin_patch2)
@@ -1129,7 +1364,11 @@ sun4c_continue_boot:
 		st	%g4, [%g5 + 0x18]
 		st	%g4, [%g5 + 0x1c]
 
+<<<<<<< HEAD
 2:		
+=======
+2:
+>>>>>>> refs/remotes/origin/master
 		sethi	%hi(nwindows), %g4
 		st	%g3, [%g4 + %lo(nwindows)]	! store final value
 		sub	%g3, 0x1, %g3
@@ -1149,6 +1388,7 @@ sun4c_continue_boot:
 		wr	%g3, PSR_ET, %psr
 		WRITE_PAUSE
 
+<<<<<<< HEAD
 		/* First we call prom_init() to set up PROMLIB, then
 		 * off to start_kernel().
 		 */
@@ -1161,10 +1401,19 @@ sun4c_continue_boot:
 		call 	start_kernel
 		 nop
 	
+=======
+		/* Call sparc32_start_kernel(struct linux_romvec *rp) */
+		sethi	%hi(prom_vector_p), %g5
+		ld	[%g5 + %lo(prom_vector_p)], %o0
+		call	sparc32_start_kernel
+		 nop
+
+>>>>>>> refs/remotes/origin/master
 		/* We should not get here. */
 		call	halt_me
 		 nop
 
+<<<<<<< HEAD
 sun4_init:
 		sethi   %hi(SUN4_PROM_VECTOR+0x84), %o1
 		ld      [%o1 + %lo(SUN4_PROM_VECTOR+0x84)], %o1
@@ -1178,6 +1427,8 @@ sun4_init:
 1:		ba      1b                      ! Cannot exit into KMON
 		 nop
 
+=======
+>>>>>>> refs/remotes/origin/master
 no_sun4e_here:
 		ld	[%g7 + 0x68], %o1
 		set	sun4e_notsup, %o0
@@ -1204,7 +1455,11 @@ sun4u_5:
 		.asciz "write"
 		.align	4
 sun4u_6:
+<<<<<<< HEAD
         	.asciz  "\n\rOn sun4u you have to use UltraLinux (64bit) kernel\n\rand not a 32bit sun4[cdem] version\n\r\n\r"
+=======
+		.asciz  "\n\rOn sun4u you have to use sparc64 kernel\n\rand not a sparc32 version\n\r\n\r"
+>>>>>>> refs/remotes/origin/master
 sun4u_6e:
 		.align	4
 sun4u_7:

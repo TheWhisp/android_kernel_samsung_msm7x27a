@@ -91,6 +91,7 @@ static ssize_t uuid_show(struct gfs2_sbd *sdp, char *buf)
 
 static ssize_t freeze_show(struct gfs2_sbd *sdp, char *buf)
 {
+<<<<<<< HEAD
 	unsigned int count;
 
 	mutex_lock(&sdp->sd_freeze_lock);
@@ -98,10 +99,17 @@ static ssize_t freeze_show(struct gfs2_sbd *sdp, char *buf)
 	mutex_unlock(&sdp->sd_freeze_lock);
 
 	return snprintf(buf, PAGE_SIZE, "%u\n", count);
+=======
+	struct super_block *sb = sdp->sd_vfs;
+	int frozen = (sb->s_writers.frozen == SB_UNFROZEN) ? 0 : 1;
+
+	return snprintf(buf, PAGE_SIZE, "%u\n", frozen);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t freeze_store(struct gfs2_sbd *sdp, const char *buf, size_t len)
 {
+<<<<<<< HEAD
 	ssize_t ret = len;
 	int error = 0;
 	int n = simple_strtol(buf, NULL, 0);
@@ -124,6 +132,31 @@ static ssize_t freeze_store(struct gfs2_sbd *sdp, const char *buf, size_t len)
 		fs_warn(sdp, "freeze %d error %d", n, error);
 
 	return ret;
+=======
+	int error;
+	int n = simple_strtol(buf, NULL, 0);
+
+	if (!capable(CAP_SYS_ADMIN))
+		return -EPERM;
+
+	switch (n) {
+	case 0:
+		error = thaw_super(sdp->sd_vfs);
+		break;
+	case 1:
+		error = freeze_super(sdp->sd_vfs);
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	if (error) {
+		fs_warn(sdp, "freeze %d error %d", n, error);
+		return error;
+	}
+
+	return len;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t withdraw_show(struct gfs2_sbd *sdp, char *buf)
@@ -135,7 +168,11 @@ static ssize_t withdraw_show(struct gfs2_sbd *sdp, char *buf)
 static ssize_t withdraw_store(struct gfs2_sbd *sdp, const char *buf, size_t len)
 {
 	if (!capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		return -EACCES;
+=======
+		return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 	if (simple_strtol(buf, NULL, 0) != 1)
 		return -EINVAL;
@@ -150,7 +187,11 @@ static ssize_t statfs_sync_store(struct gfs2_sbd *sdp, const char *buf,
 				 size_t len)
 {
 	if (!capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		return -EACCES;
+=======
+		return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 	if (simple_strtol(buf, NULL, 0) != 1)
 		return -EINVAL;
@@ -163,42 +204,82 @@ static ssize_t quota_sync_store(struct gfs2_sbd *sdp, const char *buf,
 				size_t len)
 {
 	if (!capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		return -EACCES;
+=======
+		return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 	if (simple_strtol(buf, NULL, 0) != 1)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	gfs2_quota_sync(sdp->sd_vfs, 0, 1);
+=======
+	gfs2_quota_sync(sdp->sd_vfs, 0);
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
 static ssize_t quota_refresh_user_store(struct gfs2_sbd *sdp, const char *buf,
 					size_t len)
 {
+<<<<<<< HEAD
+=======
+	struct kqid qid;
+>>>>>>> refs/remotes/origin/master
 	int error;
 	u32 id;
 
 	if (!capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		return -EACCES;
 
 	id = simple_strtoul(buf, NULL, 0);
 
 	error = gfs2_quota_refresh(sdp, 1, id);
+=======
+		return -EPERM;
+
+	id = simple_strtoul(buf, NULL, 0);
+
+	qid = make_kqid(current_user_ns(), USRQUOTA, id);
+	if (!qid_valid(qid))
+		return -EINVAL;
+
+	error = gfs2_quota_refresh(sdp, qid);
+>>>>>>> refs/remotes/origin/master
 	return error ? error : len;
 }
 
 static ssize_t quota_refresh_group_store(struct gfs2_sbd *sdp, const char *buf,
 					 size_t len)
 {
+<<<<<<< HEAD
+=======
+	struct kqid qid;
+>>>>>>> refs/remotes/origin/master
 	int error;
 	u32 id;
 
 	if (!capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		return -EACCES;
 
 	id = simple_strtoul(buf, NULL, 0);
 
 	error = gfs2_quota_refresh(sdp, 0, id);
+=======
+		return -EPERM;
+
+	id = simple_strtoul(buf, NULL, 0);
+
+	qid = make_kqid(current_user_ns(), GRPQUOTA, id);
+	if (!qid_valid(qid))
+		return -EINVAL;
+
+	error = gfs2_quota_refresh(sdp, qid);
+>>>>>>> refs/remotes/origin/master
 	return error ? error : len;
 }
 
@@ -213,7 +294,11 @@ static ssize_t demote_rq_store(struct gfs2_sbd *sdp, const char *buf, size_t len
 	int rv;
 
 	if (!capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		return -EACCES;
+=======
+		return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 	rv = sscanf(buf, "%u:%llu %15s", &gltype, &glnum,
 		    mode);
@@ -276,7 +361,19 @@ static struct attribute *gfs2_attrs[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 static struct kobj_type gfs2_ktype = {
+=======
+static void gfs2_sbd_release(struct kobject *kobj)
+{
+	struct gfs2_sbd *sdp = container_of(kobj, struct gfs2_sbd, sd_kobj);
+
+	kfree(sdp);
+}
+
+static struct kobj_type gfs2_ktype = {
+	.release = gfs2_sbd_release,
+>>>>>>> refs/remotes/origin/master
 	.default_attrs = gfs2_attrs,
 	.sysfs_ops     = &gfs2_attr_ops,
 };
@@ -298,7 +395,15 @@ static ssize_t block_show(struct gfs2_sbd *sdp, char *buf)
 	ssize_t ret;
 	int val = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (test_bit(DFL_BLOCK_LOCKS, &ls->ls_flags))
+=======
+	if (test_bit(DFL_BLOCK_LOCKS, &ls->ls_recover_flags))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(DFL_BLOCK_LOCKS, &ls->ls_recover_flags))
+>>>>>>> refs/remotes/origin/master
 		val = 1;
 	ret = sprintf(buf, "%d\n", val);
 	return ret;
@@ -313,9 +418,21 @@ static ssize_t block_store(struct gfs2_sbd *sdp, const char *buf, size_t len)
 	val = simple_strtol(buf, NULL, 0);
 
 	if (val == 1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		set_bit(DFL_BLOCK_LOCKS, &ls->ls_flags);
 	else if (val == 0) {
 		clear_bit(DFL_BLOCK_LOCKS, &ls->ls_flags);
+=======
+		set_bit(DFL_BLOCK_LOCKS, &ls->ls_recover_flags);
+	else if (val == 0) {
+		clear_bit(DFL_BLOCK_LOCKS, &ls->ls_recover_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_bit(DFL_BLOCK_LOCKS, &ls->ls_recover_flags);
+	else if (val == 0) {
+		clear_bit(DFL_BLOCK_LOCKS, &ls->ls_recover_flags);
+>>>>>>> refs/remotes/origin/master
 		smp_mb__after_clear_bit();
 		gfs2_glock_thaw(sdp);
 	} else {
@@ -324,6 +441,31 @@ static ssize_t block_store(struct gfs2_sbd *sdp, const char *buf, size_t len)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t wdack_show(struct gfs2_sbd *sdp, char *buf)
+{
+	int val = completion_done(&sdp->sd_wdack) ? 1 : 0;
+
+	return sprintf(buf, "%d\n", val);
+}
+
+static ssize_t wdack_store(struct gfs2_sbd *sdp, const char *buf, size_t len)
+{
+	ssize_t ret = len;
+	int val;
+
+	val = simple_strtol(buf, NULL, 0);
+
+	if ((val == 1) &&
+	    !strcmp(sdp->sd_lockstruct.ls_ops->lm_proto_name, "lock_dlm"))
+		complete(&sdp->sd_wdack);
+	else
+		ret = -EINVAL;
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t lkfirst_show(struct gfs2_sbd *sdp, char *buf)
 {
 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
@@ -350,8 +492,18 @@ static ssize_t lkfirst_store(struct gfs2_sbd *sdp, const char *buf, size_t len)
 		goto out;
 	if (sdp->sd_lockstruct.ls_ops->lm_mount == NULL)
 		goto out;
+<<<<<<< HEAD
+<<<<<<< HEAD
         sdp->sd_lockstruct.ls_first = first;
         rv = 0;
+=======
+	sdp->sd_lockstruct.ls_first = first;
+	rv = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sdp->sd_lockstruct.ls_first = first;
+	rv = 0;
+>>>>>>> refs/remotes/origin/master
 out:
         spin_unlock(&sdp->sd_jindex_spin);
         return rv ? rv : len;
@@ -360,6 +512,8 @@ out:
 static ssize_t first_done_show(struct gfs2_sbd *sdp, char *buf)
 {
 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "%d\n", ls->ls_first_done);
 }
 
@@ -373,10 +527,26 @@ static ssize_t recover_store(struct gfs2_sbd *sdp, const char *buf, size_t len)
 	if (rv != 1)
 		return -EINVAL;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	return sprintf(buf, "%d\n", !!test_bit(DFL_FIRST_MOUNT_DONE, &ls->ls_recover_flags));
+}
+
+int gfs2_recover_set(struct gfs2_sbd *sdp, unsigned jid)
+{
+	struct gfs2_jdesc *jd;
+	int rv;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	rv = -ESHUTDOWN;
 	spin_lock(&sdp->sd_jindex_spin);
 	if (test_bit(SDF_NORECOVERY, &sdp->sd_flags))
 		goto out;
+=======
+	spin_lock(&sdp->sd_jindex_spin);
+>>>>>>> refs/remotes/origin/master
 	rv = -EBUSY;
 	if (sdp->sd_jdesc->jd_jid == jid)
 		goto out;
@@ -389,6 +559,36 @@ static ssize_t recover_store(struct gfs2_sbd *sdp, const char *buf, size_t len)
 	}
 out:
 	spin_unlock(&sdp->sd_jindex_spin);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	return rv;
+}
+
+static ssize_t recover_store(struct gfs2_sbd *sdp, const char *buf, size_t len)
+{
+	unsigned jid;
+	int rv;
+
+	rv = sscanf(buf, "%u", &jid);
+	if (rv != 1)
+		return -EINVAL;
+
+<<<<<<< HEAD
+	rv = gfs2_recover_set(sdp, jid);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(SDF_NORECOVERY, &sdp->sd_flags)) {
+		rv = -ESHUTDOWN;
+		goto out;
+	}
+
+	rv = gfs2_recover_set(sdp, jid);
+out:
+>>>>>>> refs/remotes/origin/master
 	return rv ? rv : len;
 }
 
@@ -444,7 +644,11 @@ static struct gfs2_attr gdlm_attr_##_name = __ATTR(_name,_mode,_show,_store)
 
 GDLM_ATTR(proto_name,		0444, proto_name_show,		NULL);
 GDLM_ATTR(block,		0644, block_show,		block_store);
+<<<<<<< HEAD
 GDLM_ATTR(withdraw,		0644, withdraw_show,		withdraw_store);
+=======
+GDLM_ATTR(withdraw,		0644, wdack_show,		wdack_store);
+>>>>>>> refs/remotes/origin/master
 GDLM_ATTR(jid,			0644, jid_show,			jid_store);
 GDLM_ATTR(first,		0644, lkfirst_show,		lkfirst_store);
 GDLM_ATTR(first_done,		0444, first_done_show,		NULL);
@@ -483,7 +687,11 @@ static ssize_t quota_scale_store(struct gfs2_sbd *sdp, const char *buf,
 	unsigned int x, y;
 
 	if (!capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		return -EACCES;
+=======
+		return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 	if (sscanf(buf, "%u %u", &x, &y) != 2 || !y)
 		return -EINVAL;
@@ -502,7 +710,11 @@ static ssize_t tune_set(struct gfs2_sbd *sdp, unsigned int *field,
 	unsigned int x;
 
 	if (!capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		return -EACCES;
+=======
+		return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 	x = simple_strtoul(buf, NULL, 0);
 
@@ -538,7 +750,10 @@ TUNE_ATTR(max_readahead, 0);
 TUNE_ATTR(complain_secs, 0);
 TUNE_ATTR(statfs_slow, 0);
 TUNE_ATTR(new_files_jdata, 0);
+<<<<<<< HEAD
 TUNE_ATTR(quota_simul_sync, 1);
+=======
+>>>>>>> refs/remotes/origin/master
 TUNE_ATTR(statfs_quantum, 1);
 TUNE_ATTR_3(quota_scale, quota_scale_show, quota_scale_store);
 
@@ -548,7 +763,10 @@ static struct attribute *tune_attrs[] = {
 	&tune_attr_max_readahead.attr,
 	&tune_attr_complain_secs.attr,
 	&tune_attr_statfs_slow.attr,
+<<<<<<< HEAD
 	&tune_attr_quota_simul_sync.attr,
+=======
+>>>>>>> refs/remotes/origin/master
 	&tune_attr_statfs_quantum.attr,
 	&tune_attr_quota_scale.attr,
 	&tune_attr_new_files_jdata.attr,
@@ -572,6 +790,10 @@ int gfs2_sys_fs_add(struct gfs2_sbd *sdp)
 	char ro[20];
 	char spectator[20];
 	char *envp[] = { ro, spectator, NULL };
+<<<<<<< HEAD
+=======
+	int sysfs_frees_sdp = 0;
+>>>>>>> refs/remotes/origin/master
 
 	sprintf(ro, "RDONLY=%d", (sb->s_flags & MS_RDONLY) ? 1 : 0);
 	sprintf(spectator, "SPECTATOR=%d", sdp->sd_args.ar_spectator ? 1 : 0);
@@ -580,8 +802,15 @@ int gfs2_sys_fs_add(struct gfs2_sbd *sdp)
 	error = kobject_init_and_add(&sdp->sd_kobj, &gfs2_ktype, NULL,
 				     "%s", sdp->sd_table_name);
 	if (error)
+<<<<<<< HEAD
 		goto fail;
 
+=======
+		goto fail_reg;
+
+	sysfs_frees_sdp = 1; /* Freeing sdp is now done by sysfs calling
+				function gfs2_sbd_release. */
+>>>>>>> refs/remotes/origin/master
 	error = sysfs_create_group(&sdp->sd_kobj, &tune_group);
 	if (error)
 		goto fail_reg;
@@ -604,9 +833,19 @@ fail_lock_module:
 fail_tune:
 	sysfs_remove_group(&sdp->sd_kobj, &tune_group);
 fail_reg:
+<<<<<<< HEAD
 	kobject_put(&sdp->sd_kobj);
 fail:
 	fs_err(sdp, "error %d adding sysfs files", error);
+=======
+	free_percpu(sdp->sd_lkstats);
+	fs_err(sdp, "error %d adding sysfs files", error);
+	if (sysfs_frees_sdp)
+		kobject_put(&sdp->sd_kobj);
+	else
+		kfree(sdp);
+	sb->s_fs_info = NULL;
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 

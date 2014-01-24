@@ -65,7 +65,11 @@ struct vga16fb_par {
 
 /* --------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo vga16fb_defined __devinitdata = {
+=======
+static struct fb_var_screeninfo vga16fb_defined = {
+>>>>>>> refs/remotes/origin/master
 	.xres		= 640,
 	.yres		= 480,
 	.xres_virtual	= 640,
@@ -85,7 +89,11 @@ static struct fb_var_screeninfo vga16fb_defined __devinitdata = {
 };
 
 /* name should not depend on EGA/VGA */
+<<<<<<< HEAD
 static struct fb_fix_screeninfo vga16fb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo vga16fb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id		= "VGA16 VGA",
 	.smem_start	= VGA_FB_PHYS,
 	.smem_len	= VGA_FB_PHYS_LEN,
@@ -207,7 +215,15 @@ static void vga16fb_pan_var(struct fb_info *info,
 	 * granularity if someone supports xoffset in bit resolution */
 	vga_io_r(VGA_IS1_RC);		/* reset flip-flop */
 	vga_io_w(VGA_ATT_IW, VGA_ATC_PEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (var->bits_per_pixel == 8)
+=======
+	if (info->var.bits_per_pixel == 8)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (info->var.bits_per_pixel == 8)
+>>>>>>> refs/remotes/origin/master
 		vga_io_w(VGA_ATT_IW, (xoffset & 3) << 1);
 	else
 		vga_io_w(VGA_ATT_IW, xoffset & 7);
@@ -1265,11 +1281,17 @@ static void vga16fb_imageblit(struct fb_info *info, const struct fb_image *image
 
 static void vga16fb_destroy(struct fb_info *info)
 {
+<<<<<<< HEAD
 	struct platform_device *dev = container_of(info->device, struct platform_device, dev);
 	iounmap(info->screen_base);
 	fb_dealloc_cmap(&info->cmap);
 	/* XXX unshare VGA regions */
 	platform_set_drvdata(dev, NULL);
+=======
+	iounmap(info->screen_base);
+	fb_dealloc_cmap(&info->cmap);
+	/* XXX unshare VGA regions */
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(info);
 }
 
@@ -1303,7 +1325,11 @@ static int __init vga16fb_setup(char *options)
 }
 #endif
 
+<<<<<<< HEAD
 static int __devinit vga16fb_probe(struct platform_device *dev)
+=======
+static int vga16fb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	struct vga16fb_par *par;
@@ -1379,8 +1405,12 @@ static int __devinit vga16fb_probe(struct platform_device *dev)
 		goto err_check_var;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n",
 	       info->node, info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 	platform_set_drvdata(dev, info);
 
 	return 0;
@@ -1395,7 +1425,11 @@ static int __devinit vga16fb_probe(struct platform_device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit vga16fb_remove(struct platform_device *dev)
+=======
+static int vga16fb_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = platform_get_drvdata(dev);
 
@@ -1407,7 +1441,11 @@ static int __devexit vga16fb_remove(struct platform_device *dev)
 
 static struct platform_driver vga16fb_driver = {
 	.probe = vga16fb_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(vga16fb_remove),
+=======
+	.remove = vga16fb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "vga16fb",
 	},

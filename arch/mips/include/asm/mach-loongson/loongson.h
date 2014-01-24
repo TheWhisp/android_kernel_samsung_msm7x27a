@@ -2,8 +2,13 @@
  * Copyright (C) 2009 Lemote, Inc.
  * Author: Wu Zhangjin <wuzhangjin@gmail.com>
  *
+<<<<<<< HEAD
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
+=======
+ * This program is free software; you can redistribute	it and/or modify it
+ * under  the terms of	the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  * Free Software Foundation;  either version 2 of the  License, or (at your
  * option) any later version.
  */
@@ -14,6 +19,10 @@
 #include <linux/io.h>
 #include <linux/init.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/kconfig.h>
+>>>>>>> refs/remotes/origin/master
 
 /* loongson internal northbridge initialization */
 extern void bonito_irq_init(void);
@@ -51,7 +60,11 @@ extern void mach_irq_dispatch(unsigned int pending);
 extern int mach_i8259_irq(void);
 
 /* We need this in some places... */
+<<<<<<< HEAD
 #define delay()	({		\
+=======
+#define delay() ({		\
+>>>>>>> refs/remotes/origin/master
 	int x;				\
 	for (x = 0; x < 100000; x++)	\
 		__asm__ __volatile__(""); \
@@ -66,7 +79,11 @@ extern int mach_i8259_irq(void);
 #include <linux/interrupt.h>
 static inline void do_perfcnt_IRQ(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_OPROFILE) || defined(CONFIG_OPROFILE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_OPROFILE)
+>>>>>>> refs/remotes/origin/master
 	do_IRQ(LOONGSON2_PERFCNT_IRQ);
 #endif
 }
@@ -81,6 +98,7 @@ static inline void do_perfcnt_IRQ(void)
 
 #define LOONGSON_BOOT_BASE	0x1fc00000
 #define LOONGSON_BOOT_SIZE	0x00100000	/* 1M */
+<<<<<<< HEAD
 #define LOONGSON_BOOT_TOP 	(LOONGSON_BOOT_BASE+LOONGSON_BOOT_SIZE-1)
 #define LOONGSON_REG_BASE 	0x1fe00000
 #define LOONGSON_REG_SIZE 	0x00100000	/* 256Bytes + 256Bytes + ??? */
@@ -88,6 +106,15 @@ static inline void do_perfcnt_IRQ(void)
 
 #define LOONGSON_LIO1_BASE 	0x1ff00000
 #define LOONGSON_LIO1_SIZE 	0x00100000	/* 1M */
+=======
+#define LOONGSON_BOOT_TOP	(LOONGSON_BOOT_BASE+LOONGSON_BOOT_SIZE-1)
+#define LOONGSON_REG_BASE	0x1fe00000
+#define LOONGSON_REG_SIZE	0x00100000	/* 256Bytes + 256Bytes + ??? */
+#define LOONGSON_REG_TOP	(LOONGSON_REG_BASE+LOONGSON_REG_SIZE-1)
+
+#define LOONGSON_LIO1_BASE	0x1ff00000
+#define LOONGSON_LIO1_SIZE	0x00100000	/* 1M */
+>>>>>>> refs/remotes/origin/master
 #define LOONGSON_LIO1_TOP	(LOONGSON_LIO1_BASE+LOONGSON_LIO1_SIZE-1)
 
 #define LOONGSON_PCILO0_BASE	0x10000000
@@ -114,6 +141,7 @@ static inline void do_perfcnt_IRQ(void)
 #define LOONGSON_PCI_REG(x)	LOONGSON_REG(LOONGSON_PCICONFIGBASE + (x))
 #define LOONGSON_PCIDID		LOONGSON_PCI_REG(0x00)
 #define LOONGSON_PCICMD		LOONGSON_PCI_REG(0x04)
+<<<<<<< HEAD
 #define LOONGSON_PCICLASS 	LOONGSON_PCI_REG(0x08)
 #define LOONGSON_PCILTIMER	LOONGSON_PCI_REG(0x0c)
 #define LOONGSON_PCIBASE0 	LOONGSON_PCI_REG(0x10)
@@ -121,6 +149,15 @@ static inline void do_perfcnt_IRQ(void)
 #define LOONGSON_PCIBASE2 	LOONGSON_PCI_REG(0x18)
 #define LOONGSON_PCIBASE3 	LOONGSON_PCI_REG(0x1c)
 #define LOONGSON_PCIBASE4 	LOONGSON_PCI_REG(0x20)
+=======
+#define LOONGSON_PCICLASS	LOONGSON_PCI_REG(0x08)
+#define LOONGSON_PCILTIMER	LOONGSON_PCI_REG(0x0c)
+#define LOONGSON_PCIBASE0	LOONGSON_PCI_REG(0x10)
+#define LOONGSON_PCIBASE1	LOONGSON_PCI_REG(0x14)
+#define LOONGSON_PCIBASE2	LOONGSON_PCI_REG(0x18)
+#define LOONGSON_PCIBASE3	LOONGSON_PCI_REG(0x1c)
+#define LOONGSON_PCIBASE4	LOONGSON_PCI_REG(0x20)
+>>>>>>> refs/remotes/origin/master
 #define LOONGSON_PCIEXPRBASE	LOONGSON_PCI_REG(0x30)
 #define LOONGSON_PCIINT		LOONGSON_PCI_REG(0x3c)
 
@@ -131,7 +168,11 @@ static inline void do_perfcnt_IRQ(void)
 #define LOONGSON_PCICMD_MABORT_CLR	0x20000000
 #define LOONGSON_PCICMD_MTABORT_CLR	0x10000000
 #define LOONGSON_PCICMD_TABORT_CLR	0x08000000
+<<<<<<< HEAD
 #define LOONGSON_PCICMD_MPERR_CLR 	0x01000000
+=======
+#define LOONGSON_PCICMD_MPERR_CLR	0x01000000
+>>>>>>> refs/remotes/origin/master
 #define LOONGSON_PCICMD_PERRRESPEN	0x00000040
 #define LOONGSON_PCICMD_ASTEPEN		0x00000080
 #define LOONGSON_PCICMD_SERREN		0x00000100
@@ -141,7 +182,11 @@ static inline void do_perfcnt_IRQ(void)
 /* Loongson h/w Configuration */
 
 #define LOONGSON_GENCFG_OFFSET		0x4
+<<<<<<< HEAD
 #define LOONGSON_GENCFG	LOONGSON_REG(LOONGSON_REGBASE + LOONGSON_GENCFG_OFFSET)
+=======
+#define LOONGSON_GENCFG LOONGSON_REG(LOONGSON_REGBASE + LOONGSON_GENCFG_OFFSET)
+>>>>>>> refs/remotes/origin/master
 
 #define LOONGSON_GENCFG_DEBUGMODE	0x00000001
 #define LOONGSON_GENCFG_SNOOPEN		0x00000002
@@ -172,25 +217,42 @@ static inline void do_perfcnt_IRQ(void)
 
 /* GPIO Regs - r/w */
 
+<<<<<<< HEAD
 #define LOONGSON_GPIODATA 		LOONGSON_REG(LOONGSON_REGBASE + 0x1c)
+=======
+#define LOONGSON_GPIODATA		LOONGSON_REG(LOONGSON_REGBASE + 0x1c)
+>>>>>>> refs/remotes/origin/master
 #define LOONGSON_GPIOIE			LOONGSON_REG(LOONGSON_REGBASE + 0x20)
 
 /* ICU Configuration Regs - r/w */
 
 #define LOONGSON_INTEDGE		LOONGSON_REG(LOONGSON_REGBASE + 0x24)
+<<<<<<< HEAD
 #define LOONGSON_INTSTEER 		LOONGSON_REG(LOONGSON_REGBASE + 0x28)
+=======
+#define LOONGSON_INTSTEER		LOONGSON_REG(LOONGSON_REGBASE + 0x28)
+>>>>>>> refs/remotes/origin/master
 #define LOONGSON_INTPOL			LOONGSON_REG(LOONGSON_REGBASE + 0x2c)
 
 /* ICU Enable Regs - IntEn & IntISR are r/o. */
 
+<<<<<<< HEAD
 #define LOONGSON_INTENSET 		LOONGSON_REG(LOONGSON_REGBASE + 0x30)
 #define LOONGSON_INTENCLR 		LOONGSON_REG(LOONGSON_REGBASE + 0x34)
+=======
+#define LOONGSON_INTENSET		LOONGSON_REG(LOONGSON_REGBASE + 0x30)
+#define LOONGSON_INTENCLR		LOONGSON_REG(LOONGSON_REGBASE + 0x34)
+>>>>>>> refs/remotes/origin/master
 #define LOONGSON_INTEN			LOONGSON_REG(LOONGSON_REGBASE + 0x38)
 #define LOONGSON_INTISR			LOONGSON_REG(LOONGSON_REGBASE + 0x3c)
 
 /* ICU */
 #define LOONGSON_ICU_MBOXES		0x0000000f
+<<<<<<< HEAD
 #define LOONGSON_ICU_MBOXES_SHIFT 	0
+=======
+#define LOONGSON_ICU_MBOXES_SHIFT	0
+>>>>>>> refs/remotes/origin/master
 #define LOONGSON_ICU_DMARDY		0x00000010
 #define LOONGSON_ICU_DMAEMPTY		0x00000020
 #define LOONGSON_ICU_COPYRDY		0x00000040
@@ -211,10 +273,17 @@ static inline void do_perfcnt_IRQ(void)
 
 /* PCI prefetch window base & mask */
 
+<<<<<<< HEAD
 #define LOONGSON_MEM_WIN_BASE_L 	LOONGSON_REG(LOONGSON_REGBASE + 0x40)
 #define LOONGSON_MEM_WIN_BASE_H 	LOONGSON_REG(LOONGSON_REGBASE + 0x44)
 #define LOONGSON_MEM_WIN_MASK_L 	LOONGSON_REG(LOONGSON_REGBASE + 0x48)
 #define LOONGSON_MEM_WIN_MASK_H 	LOONGSON_REG(LOONGSON_REGBASE + 0x4c)
+=======
+#define LOONGSON_MEM_WIN_BASE_L		LOONGSON_REG(LOONGSON_REGBASE + 0x40)
+#define LOONGSON_MEM_WIN_BASE_H		LOONGSON_REG(LOONGSON_REGBASE + 0x44)
+#define LOONGSON_MEM_WIN_MASK_L		LOONGSON_REG(LOONGSON_REGBASE + 0x48)
+#define LOONGSON_MEM_WIN_MASK_H		LOONGSON_REG(LOONGSON_REGBASE + 0x4c)
+>>>>>>> refs/remotes/origin/master
 
 /* PCI_Hit*_Sel_* */
 
@@ -244,7 +313,10 @@ static inline void do_perfcnt_IRQ(void)
 
 #ifdef CONFIG_CPU_SUPPORTS_CPUFREQ
 #include <linux/cpufreq.h>
+<<<<<<< HEAD
 extern void loongson2_cpu_wait(void);
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct cpufreq_frequency_table loongson2_clockmod_table[];
 
 /* Chip Config */

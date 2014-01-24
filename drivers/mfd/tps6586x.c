@@ -17,19 +17,37 @@
 
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
 #include <linux/i2c.h>
+=======
+#include <linux/err.h>
+#include <linux/i2c.h>
+#include <linux/platform_device.h>
+#include <linux/regmap.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mfd/core.h>
 #include <linux/mfd/tps6586x.h>
 
+<<<<<<< HEAD
 /* GPIO control registers */
 #define TPS6586X_GPIOSET1	0x5d
 #define TPS6586X_GPIOSET2	0x5e
+=======
+#define TPS6586X_SUPPLYENE	0x14
+#define EXITSLREQ_BIT		BIT(1)
+#define SLEEP_MODE_BIT		BIT(3)
+>>>>>>> refs/remotes/origin/master
 
 /* interrupt control registers */
 #define TPS6586X_INT_ACK1	0xb5
@@ -47,6 +65,12 @@
 /* device id */
 #define TPS6586X_VERSIONCRC	0xcd
 
+<<<<<<< HEAD
+=======
+/* Maximum register */
+#define TPS6586X_MAX_REGISTER	(TPS6586X_VERSIONCRC + 1)
+
+>>>>>>> refs/remotes/origin/master
 struct tps6586x_irq_data {
 	u8	mask_reg;
 	u8	mask_mask;
@@ -88,16 +112,52 @@ static const struct tps6586x_irq_data tps6586x_irqs[] = {
 	[TPS6586X_INT_RTC_ALM2] = TPS6586X_IRQ(TPS6586X_INT_MASK4, 1 << 1),
 };
 
+<<<<<<< HEAD
 struct tps6586x {
 	struct mutex		lock;
 	struct device		*dev;
 	struct i2c_client	*client;
 
 	struct gpio_chip	gpio;
+=======
+static struct resource tps6586x_rtc_resources[] = {
+	{
+		.start  = TPS6586X_INT_RTC_ALM1,
+		.end	= TPS6586X_INT_RTC_ALM1,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static const struct mfd_cell tps6586x_cell[] = {
+	{
+		.name = "tps6586x-gpio",
+	},
+	{
+		.name = "tps6586x-regulator",
+	},
+	{
+		.name = "tps6586x-rtc",
+		.num_resources = ARRAY_SIZE(tps6586x_rtc_resources),
+		.resources = &tps6586x_rtc_resources[0],
+	},
+	{
+		.name = "tps6586x-onkey",
+	},
+};
+
+struct tps6586x {
+	struct device		*dev;
+	struct i2c_client	*client;
+	struct regmap		*regmap;
+	int			version;
+
+	int			irq;
+>>>>>>> refs/remotes/origin/master
 	struct irq_chip		irq_chip;
 	struct mutex		irq_lock;
 	int			irq_base;
 	u32			irq_en;
+<<<<<<< HEAD
 	u8			mask_cache[5];
 	u8			mask_reg[5];
 };
@@ -159,34 +219,73 @@ static inline int __tps6586x_writes(struct i2c_client *client, int reg,
 	}
 
 	return 0;
+=======
+	u8			mask_reg[5];
+	struct irq_domain	*irq_domain;
+};
+
+static inline struct tps6586x *dev_to_tps6586x(struct device *dev)
+{
+	return i2c_get_clientdata(to_i2c_client(dev));
+>>>>>>> refs/remotes/origin/master
 }
 
 int tps6586x_write(struct device *dev, int reg, uint8_t val)
 {
+<<<<<<< HEAD
 	return __tps6586x_write(to_i2c_client(dev), reg, val);
+=======
+	struct tps6586x *tps6586x = dev_to_tps6586x(dev);
+
+	return regmap_write(tps6586x->regmap, reg, val);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(tps6586x_write);
 
 int tps6586x_writes(struct device *dev, int reg, int len, uint8_t *val)
 {
+<<<<<<< HEAD
 	return __tps6586x_writes(to_i2c_client(dev), reg, len, val);
+=======
+	struct tps6586x *tps6586x = dev_to_tps6586x(dev);
+
+	return regmap_bulk_write(tps6586x->regmap, reg, val, len);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(tps6586x_writes);
 
 int tps6586x_read(struct device *dev, int reg, uint8_t *val)
 {
+<<<<<<< HEAD
 	return __tps6586x_read(to_i2c_client(dev), reg, val);
+=======
+	struct tps6586x *tps6586x = dev_to_tps6586x(dev);
+	unsigned int rval;
+	int ret;
+
+	ret = regmap_read(tps6586x->regmap, reg, &rval);
+	if (!ret)
+		*val = rval;
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(tps6586x_read);
 
 int tps6586x_reads(struct device *dev, int reg, int len, uint8_t *val)
 {
+<<<<<<< HEAD
 	return __tps6586x_reads(to_i2c_client(dev), reg, len, val);
+=======
+	struct tps6586x *tps6586x = dev_to_tps6586x(dev);
+
+	return regmap_bulk_read(tps6586x->regmap, reg, val, len);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(tps6586x_reads);
 
 int tps6586x_set_bits(struct device *dev, int reg, uint8_t bit_mask)
 {
+<<<<<<< HEAD
 	struct tps6586x *tps6586x = dev_get_drvdata(dev);
 	uint8_t reg_val;
 	int ret = 0;
@@ -197,18 +296,28 @@ int tps6586x_set_bits(struct device *dev, int reg, uint8_t bit_mask)
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 	if ((reg_val & bit_mask) == 0) {
+=======
+	if ((reg_val & bit_mask) != bit_mask) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		reg_val |= bit_mask;
 		ret = __tps6586x_write(to_i2c_client(dev), reg, reg_val);
 	}
 out:
 	mutex_unlock(&tps6586x->lock);
 	return ret;
+=======
+	struct tps6586x *tps6586x = dev_to_tps6586x(dev);
+
+	return regmap_update_bits(tps6586x->regmap, reg, bit_mask, bit_mask);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(tps6586x_set_bits);
 
 int tps6586x_clr_bits(struct device *dev, int reg, uint8_t bit_mask)
 {
+<<<<<<< HEAD
 	struct tps6586x *tps6586x = dev_get_drvdata(dev);
 	uint8_t reg_val;
 	int ret = 0;
@@ -226,11 +335,17 @@ int tps6586x_clr_bits(struct device *dev, int reg, uint8_t bit_mask)
 out:
 	mutex_unlock(&tps6586x->lock);
 	return ret;
+=======
+	struct tps6586x *tps6586x = dev_to_tps6586x(dev);
+
+	return regmap_update_bits(tps6586x->regmap, reg, bit_mask, 0);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(tps6586x_clr_bits);
 
 int tps6586x_update(struct device *dev, int reg, uint8_t val, uint8_t mask)
 {
+<<<<<<< HEAD
 	struct tps6586x *tps6586x = dev_get_drvdata(dev);
 	uint8_t reg_val;
 	int ret = 0;
@@ -307,6 +422,29 @@ static int tps6586x_gpio_init(struct tps6586x *tps6586x, int gpio_base)
 
 	return gpiochip_add(&tps6586x->gpio);
 }
+=======
+	struct tps6586x *tps6586x = dev_to_tps6586x(dev);
+
+	return regmap_update_bits(tps6586x->regmap, reg, mask, val);
+}
+EXPORT_SYMBOL_GPL(tps6586x_update);
+
+int tps6586x_irq_get_virq(struct device *dev, int irq)
+{
+	struct tps6586x *tps6586x = dev_to_tps6586x(dev);
+
+	return irq_create_mapping(tps6586x->irq_domain, irq);
+}
+EXPORT_SYMBOL_GPL(tps6586x_irq_get_virq);
+
+int tps6586x_get_version(struct device *dev)
+{
+	struct tps6586x *tps6586x = dev_get_drvdata(dev);
+
+	return tps6586x->version;
+}
+EXPORT_SYMBOL_GPL(tps6586x_get_version);
+>>>>>>> refs/remotes/origin/master
 
 static int __remove_subdev(struct device *dev, void *unused)
 {
@@ -329,7 +467,11 @@ static void tps6586x_irq_lock(struct irq_data *data)
 static void tps6586x_irq_enable(struct irq_data *irq_data)
 {
 	struct tps6586x *tps6586x = irq_data_get_irq_chip_data(irq_data);
+<<<<<<< HEAD
 	unsigned int __irq = irq_data->irq - tps6586x->irq_base;
+=======
+	unsigned int __irq = irq_data->hwirq;
+>>>>>>> refs/remotes/origin/master
 	const struct tps6586x_irq_data *data = &tps6586x_irqs[__irq];
 
 	tps6586x->mask_reg[data->mask_reg] &= ~data->mask_mask;
@@ -340,7 +482,11 @@ static void tps6586x_irq_disable(struct irq_data *irq_data)
 {
 	struct tps6586x *tps6586x = irq_data_get_irq_chip_data(irq_data);
 
+<<<<<<< HEAD
 	unsigned int __irq = irq_data->irq - tps6586x->irq_base;
+=======
+	unsigned int __irq = irq_data->hwirq;
+>>>>>>> refs/remotes/origin/master
 	const struct tps6586x_irq_data *data = &tps6586x_irqs[__irq];
 
 	tps6586x->mask_reg[data->mask_reg] |= data->mask_mask;
@@ -353,17 +499,72 @@ static void tps6586x_irq_sync_unlock(struct irq_data *data)
 	int i;
 
 	for (i = 0; i < ARRAY_SIZE(tps6586x->mask_reg); i++) {
+<<<<<<< HEAD
 		if (tps6586x->mask_reg[i] != tps6586x->mask_cache[i]) {
 			if (!WARN_ON(tps6586x_write(tps6586x->dev,
 						    TPS6586X_INT_MASK1 + i,
 						    tps6586x->mask_reg[i])))
 				tps6586x->mask_cache[i] = tps6586x->mask_reg[i];
 		}
+=======
+		int ret;
+		ret = tps6586x_write(tps6586x->dev,
+					    TPS6586X_INT_MASK1 + i,
+					    tps6586x->mask_reg[i]);
+		WARN_ON(ret);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&tps6586x->irq_lock);
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+static int tps6586x_irq_set_wake(struct irq_data *irq_data, unsigned int on)
+{
+	struct tps6586x *tps6586x = irq_data_get_irq_chip_data(irq_data);
+	return irq_set_irq_wake(tps6586x->irq, on);
+}
+#else
+#define tps6586x_irq_set_wake NULL
+#endif
+
+static struct irq_chip tps6586x_irq_chip = {
+	.name = "tps6586x",
+	.irq_bus_lock = tps6586x_irq_lock,
+	.irq_bus_sync_unlock = tps6586x_irq_sync_unlock,
+	.irq_disable = tps6586x_irq_disable,
+	.irq_enable = tps6586x_irq_enable,
+	.irq_set_wake = tps6586x_irq_set_wake,
+};
+
+static int tps6586x_irq_map(struct irq_domain *h, unsigned int virq,
+				irq_hw_number_t hw)
+{
+	struct tps6586x *tps6586x = h->host_data;
+
+	irq_set_chip_data(virq, tps6586x);
+	irq_set_chip_and_handler(virq, &tps6586x_irq_chip, handle_simple_irq);
+	irq_set_nested_thread(virq, 1);
+
+	/* ARM needs us to explicitly flag the IRQ as valid
+	 * and will set them noprobe when we do so. */
+#ifdef CONFIG_ARM
+	set_irq_flags(virq, IRQF_VALID);
+#else
+	irq_set_noprobe(virq);
+#endif
+
+	return 0;
+}
+
+static struct irq_domain_ops tps6586x_domain_ops = {
+	.map    = tps6586x_irq_map,
+	.xlate  = irq_domain_xlate_twocell,
+};
+
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t tps6586x_irq(int irq, void *data)
 {
 	struct tps6586x *tps6586x = data;
@@ -384,7 +585,12 @@ static irqreturn_t tps6586x_irq(int irq, void *data)
 		int i = __ffs(acks);
 
 		if (tps6586x->irq_en & (1 << i))
+<<<<<<< HEAD
 			handle_nested_irq(tps6586x->irq_base + i);
+=======
+			handle_nested_irq(
+				irq_find_mapping(tps6586x->irq_domain, i));
+>>>>>>> refs/remotes/origin/master
 
 		acks &= ~(1 << i);
 	}
@@ -392,11 +598,16 @@ static irqreturn_t tps6586x_irq(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit tps6586x_irq_init(struct tps6586x *tps6586x, int irq,
+=======
+static int tps6586x_irq_init(struct tps6586x *tps6586x, int irq,
+>>>>>>> refs/remotes/origin/master
 				       int irq_base)
 {
 	int i, ret;
 	u8 tmp[4];
+<<<<<<< HEAD
 
 	if (!irq_base) {
 		dev_warn(tps6586x->dev, "No interrupt support on IRQ base\n");
@@ -406,12 +617,22 @@ static int __devinit tps6586x_irq_init(struct tps6586x *tps6586x, int irq,
 	mutex_init(&tps6586x->irq_lock);
 	for (i = 0; i < 5; i++) {
 		tps6586x->mask_cache[i] = 0xff;
+=======
+	int new_irq_base;
+	int irq_num = ARRAY_SIZE(tps6586x_irqs);
+
+	tps6586x->irq = irq;
+
+	mutex_init(&tps6586x->irq_lock);
+	for (i = 0; i < 5; i++) {
+>>>>>>> refs/remotes/origin/master
 		tps6586x->mask_reg[i] = 0xff;
 		tps6586x_write(tps6586x->dev, TPS6586X_INT_MASK1 + i, 0xff);
 	}
 
 	tps6586x_reads(tps6586x->dev, TPS6586X_INT_ACK1, sizeof(tmp), tmp);
 
+<<<<<<< HEAD
 	tps6586x->irq_base = irq_base;
 
 	tps6586x->irq_chip.name = "tps6586x";
@@ -438,11 +659,40 @@ static int __devinit tps6586x_irq_init(struct tps6586x *tps6586x, int irq,
 		device_init_wakeup(tps6586x->dev, 1);
 		enable_irq_wake(irq);
 	}
+=======
+	if  (irq_base > 0) {
+		new_irq_base = irq_alloc_descs(irq_base, 0, irq_num, -1);
+		if (new_irq_base < 0) {
+			dev_err(tps6586x->dev,
+				"Failed to alloc IRQs: %d\n", new_irq_base);
+			return new_irq_base;
+		}
+	} else {
+		new_irq_base = 0;
+	}
+
+	tps6586x->irq_domain = irq_domain_add_simple(tps6586x->dev->of_node,
+				irq_num, new_irq_base, &tps6586x_domain_ops,
+				tps6586x);
+	if (!tps6586x->irq_domain) {
+		dev_err(tps6586x->dev, "Failed to create IRQ domain\n");
+		return -ENOMEM;
+	}
+	ret = request_threaded_irq(irq, NULL, tps6586x_irq, IRQF_ONESHOT,
+				   "tps6586x", tps6586x);
+
+	if (!ret)
+		device_init_wakeup(tps6586x->dev, 1);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit tps6586x_add_subdevs(struct tps6586x *tps6586x,
+=======
+static int tps6586x_add_subdevs(struct tps6586x *tps6586x,
+>>>>>>> refs/remotes/origin/master
 					  struct tps6586x_platform_data *pdata)
 {
 	struct tps6586x_subdev_info *subdev;
@@ -460,6 +710,10 @@ static int __devinit tps6586x_add_subdevs(struct tps6586x *tps6586x,
 
 		pdev->dev.parent = tps6586x->dev;
 		pdev->dev.platform_data = subdev->platform_data;
+<<<<<<< HEAD
+=======
+		pdev->dev.of_node = subdev->of_node;
+>>>>>>> refs/remotes/origin/master
 
 		ret = platform_device_add(pdev);
 		if (ret) {
@@ -474,18 +728,115 @@ failed:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit tps6586x_i2c_probe(struct i2c_client *client,
 					const struct i2c_device_id *id)
 {
 	struct tps6586x_platform_data *pdata = client->dev.platform_data;
 	struct tps6586x *tps6586x;
 	int ret;
+=======
+#ifdef CONFIG_OF
+static struct tps6586x_platform_data *tps6586x_parse_dt(struct i2c_client *client)
+{
+	struct device_node *np = client->dev.of_node;
+	struct tps6586x_platform_data *pdata;
+
+	pdata = devm_kzalloc(&client->dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata) {
+		dev_err(&client->dev, "Memory allocation failed\n");
+		return NULL;
+	}
+
+	pdata->num_subdevs = 0;
+	pdata->subdevs = NULL;
+	pdata->gpio_base = -1;
+	pdata->irq_base = -1;
+	pdata->pm_off = of_property_read_bool(np, "ti,system-power-controller");
+
+	return pdata;
+}
+
+static struct of_device_id tps6586x_of_match[] = {
+	{ .compatible = "ti,tps6586x", },
+	{ },
+};
+#else
+static struct tps6586x_platform_data *tps6586x_parse_dt(struct i2c_client *client)
+{
+	return NULL;
+}
+#endif
+
+static bool is_volatile_reg(struct device *dev, unsigned int reg)
+{
+	/* Cache all interrupt mask register */
+	if ((reg >= TPS6586X_INT_MASK1) && (reg <= TPS6586X_INT_MASK5))
+		return false;
+
+	return true;
+}
+
+static const struct regmap_config tps6586x_regmap_config = {
+	.reg_bits = 8,
+	.val_bits = 8,
+	.max_register = TPS6586X_MAX_REGISTER - 1,
+	.volatile_reg = is_volatile_reg,
+	.cache_type = REGCACHE_RBTREE,
+};
+
+static struct device *tps6586x_dev;
+static void tps6586x_power_off(void)
+{
+	if (tps6586x_clr_bits(tps6586x_dev, TPS6586X_SUPPLYENE, EXITSLREQ_BIT))
+		return;
+
+	tps6586x_set_bits(tps6586x_dev, TPS6586X_SUPPLYENE, SLEEP_MODE_BIT);
+}
+
+static void tps6586x_print_version(struct i2c_client *client, int version)
+{
+	const char *name;
+
+	switch (version) {
+	case TPS658621A:
+		name = "TPS658621A";
+		break;
+	case TPS658621CD:
+		name = "TPS658621C/D";
+		break;
+	case TPS658623:
+		name = "TPS658623";
+		break;
+	case TPS658643:
+		name = "TPS658643";
+		break;
+	default:
+		name = "TPS6586X";
+		break;
+	}
+
+	dev_info(&client->dev, "Found %s, VERSIONCRC is %02x\n", name, version);
+}
+
+static int tps6586x_i2c_probe(struct i2c_client *client,
+					const struct i2c_device_id *id)
+{
+	struct tps6586x_platform_data *pdata = dev_get_platdata(&client->dev);
+	struct tps6586x *tps6586x;
+	int ret;
+	int version;
+
+	if (!pdata && client->dev.of_node)
+		pdata = tps6586x_parse_dt(client);
+>>>>>>> refs/remotes/origin/master
 
 	if (!pdata) {
 		dev_err(&client->dev, "tps6586x requires platform data\n");
 		return -ENOTSUPP;
 	}
 
+<<<<<<< HEAD
 	ret = i2c_smbus_read_byte_data(client, TPS6586X_VERSIONCRC);
 	if (ret < 0) {
 		dev_err(&client->dev, "Chip ID read failed: %d\n", ret);
@@ -498,17 +849,44 @@ static int __devinit tps6586x_i2c_probe(struct i2c_client *client,
 	if (tps6586x == NULL)
 		return -ENOMEM;
 
+=======
+	version = i2c_smbus_read_byte_data(client, TPS6586X_VERSIONCRC);
+	if (version < 0) {
+		dev_err(&client->dev, "Chip ID read failed: %d\n", version);
+		return -EIO;
+	}
+
+	tps6586x = devm_kzalloc(&client->dev, sizeof(*tps6586x), GFP_KERNEL);
+	if (!tps6586x)
+		return -ENOMEM;
+
+	tps6586x->version = version;
+	tps6586x_print_version(client, tps6586x->version);
+
+>>>>>>> refs/remotes/origin/master
 	tps6586x->client = client;
 	tps6586x->dev = &client->dev;
 	i2c_set_clientdata(client, tps6586x);
 
+<<<<<<< HEAD
 	mutex_init(&tps6586x->lock);
+=======
+	tps6586x->regmap = devm_regmap_init_i2c(client,
+					&tps6586x_regmap_config);
+	if (IS_ERR(tps6586x->regmap)) {
+		ret = PTR_ERR(tps6586x->regmap);
+		dev_err(&client->dev, "regmap init failed: %d\n", ret);
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 
 	if (client->irq) {
 		ret = tps6586x_irq_init(tps6586x, client->irq,
 					pdata->irq_base);
 		if (ret) {
 			dev_err(&client->dev, "IRQ init failed: %d\n", ret);
+<<<<<<< HEAD
 			goto err_irq_init;
 		}
 	}
@@ -517,6 +895,18 @@ static int __devinit tps6586x_i2c_probe(struct i2c_client *client,
 	if (ret) {
 		dev_err(&client->dev, "GPIO registration failed: %d\n", ret);
 		goto err_gpio_init;
+=======
+			return ret;
+		}
+	}
+
+	ret = mfd_add_devices(tps6586x->dev, -1,
+			      tps6586x_cell, ARRAY_SIZE(tps6586x_cell),
+			      NULL, 0, tps6586x->irq_domain);
+	if (ret < 0) {
+		dev_err(&client->dev, "mfd_add_devices failed: %d\n", ret);
+		goto err_mfd_add;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = tps6586x_add_subdevs(tps6586x, pdata);
@@ -525,6 +915,7 @@ static int __devinit tps6586x_i2c_probe(struct i2c_client *client,
 		goto err_add_devs;
 	}
 
+<<<<<<< HEAD
 	return 0;
 
 err_add_devs:
@@ -560,6 +951,31 @@ static int __devexit tps6586x_i2c_remove(struct i2c_client *client)
 
 	tps6586x_remove_subdevs(tps6586x);
 	kfree(tps6586x);
+=======
+	if (pdata->pm_off && !pm_power_off) {
+		tps6586x_dev = &client->dev;
+		pm_power_off = tps6586x_power_off;
+	}
+
+	return 0;
+
+err_add_devs:
+	mfd_remove_devices(tps6586x->dev);
+err_mfd_add:
+	if (client->irq)
+		free_irq(client->irq, tps6586x);
+	return ret;
+}
+
+static int tps6586x_i2c_remove(struct i2c_client *client)
+{
+	struct tps6586x *tps6586x = i2c_get_clientdata(client);
+
+	tps6586x_remove_subdevs(tps6586x);
+	mfd_remove_devices(tps6586x->dev);
+	if (client->irq)
+		free_irq(client->irq, tps6586x);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -573,9 +989,16 @@ static struct i2c_driver tps6586x_driver = {
 	.driver	= {
 		.name	= "tps6586x",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= tps6586x_i2c_probe,
 	.remove		= __devexit_p(tps6586x_i2c_remove),
+=======
+		.of_match_table = of_match_ptr(tps6586x_of_match),
+	},
+	.probe		= tps6586x_i2c_probe,
+	.remove		= tps6586x_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= tps6586x_id_table,
 };
 

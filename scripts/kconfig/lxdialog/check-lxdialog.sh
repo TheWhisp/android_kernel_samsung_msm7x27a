@@ -4,7 +4,13 @@
 # What library to link
 ldflags()
 {
+<<<<<<< HEAD
 	for ext in so a dylib ; do
+=======
+	pkg-config --libs ncursesw 2>/dev/null && exit
+	pkg-config --libs ncurses 2>/dev/null && exit
+	for ext in so a dll.a dylib ; do
+>>>>>>> refs/remotes/origin/master
 		for lib in ncursesw ncurses curses ; do
 			$cc -print-file-name=lib${lib}.${ext} | grep -q /
 			if [ $? -eq 0 ]; then
@@ -19,12 +25,22 @@ ldflags()
 # Where is ncurses.h?
 ccflags()
 {
+<<<<<<< HEAD
 	if [ -f /usr/include/ncurses/ncurses.h ]; then
 		echo '-I/usr/include/ncurses -DCURSES_LOC="<ncurses.h>"'
 	elif [ -f /usr/include/ncurses/curses.h ]; then
 		echo '-I/usr/include/ncurses -DCURSES_LOC="<ncurses/curses.h>"'
 	elif [ -f /usr/include/ncursesw/curses.h ]; then
 		echo '-I/usr/include/ncursesw -DCURSES_LOC="<ncursesw/curses.h>"'
+=======
+	if [ -f /usr/include/ncursesw/curses.h ]; then
+		echo '-I/usr/include/ncursesw -DCURSES_LOC="<curses.h>"'
+		echo ' -DNCURSES_WIDECHAR=1'
+	elif [ -f /usr/include/ncurses/ncurses.h ]; then
+		echo '-I/usr/include/ncurses -DCURSES_LOC="<ncurses.h>"'
+	elif [ -f /usr/include/ncurses/curses.h ]; then
+		echo '-I/usr/include/ncurses -DCURSES_LOC="<curses.h>"'
+>>>>>>> refs/remotes/origin/master
 	elif [ -f /usr/include/ncurses.h ]; then
 		echo '-DCURSES_LOC="<ncurses.h>"'
 	else

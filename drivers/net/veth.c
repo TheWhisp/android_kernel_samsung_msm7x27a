@@ -12,10 +12,26 @@
 #include <linux/slab.h>
 #include <linux/ethtool.h>
 #include <linux/etherdevice.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/u64_stats_sync.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/u64_stats_sync.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/dst.h>
 #include <net/xfrm.h>
 #include <linux/veth.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_NAME	"veth"
 #define DRV_VERSION	"1.0"
@@ -23,18 +39,39 @@
 #define MIN_MTU 68		/* Min L3 MTU */
 #define MAX_MTU 65535		/* Max L3 MTU (arbitrary) */
 
+<<<<<<< HEAD
 struct veth_net_stats {
+<<<<<<< HEAD
 	unsigned long	rx_packets;
 	unsigned long	tx_packets;
 	unsigned long	rx_bytes;
 	unsigned long	tx_bytes;
 	unsigned long	tx_dropped;
 	unsigned long	rx_dropped;
+=======
+	u64			rx_packets;
+	u64			rx_bytes;
+	u64			tx_packets;
+	u64			tx_bytes;
+	u64			rx_dropped;
+	struct u64_stats_sync	syncp;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct veth_priv {
 	struct net_device *peer;
 	struct veth_net_stats __percpu *stats;
+=======
+struct pcpu_vstats {
+	u64			packets;
+	u64			bytes;
+	struct u64_stats_sync	syncp;
+};
+
+struct veth_priv {
+	struct net_device __rcu	*peer;
+	atomic64_t		dropped;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -64,9 +101,19 @@ static int veth_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
 
 static void veth_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
 	strcpy(info->fw_version, "N/A");
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void veth_get_strings(struct net_device *dev, u32 stringset, u8 *buf)
@@ -91,10 +138,17 @@ static int veth_get_sset_count(struct net_device *dev, int sset)
 static void veth_get_ethtool_stats(struct net_device *dev,
 		struct ethtool_stats *stats, u64 *data)
 {
+<<<<<<< HEAD
 	struct veth_priv *priv;
 
 	priv = netdev_priv(dev);
 	data[0] = priv->peer->ifindex;
+=======
+	struct veth_priv *priv = netdev_priv(dev);
+	struct net_device *peer = rtnl_dereference(priv->peer);
+
+	data[0] = peer ? peer->ifindex : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct ethtool_ops veth_ethtool_ops = {
@@ -106,6 +160,7 @@ static const struct ethtool_ops veth_ethtool_ops = {
 	.get_ethtool_stats	= veth_get_ethtool_stats,
 };
 
+<<<<<<< HEAD
 /*
  * xmit
  */
@@ -124,19 +179,41 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
 	stats = this_cpu_ptr(priv->stats);
 	rcv_stats = this_cpu_ptr(rcv_priv->stats);
 
+<<<<<<< HEAD
 	if (!(rcv->flags & IFF_UP))
 		goto tx_drop;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* don't change ip_summed == CHECKSUM_PARTIAL, as that
 	   will cause bad checksum on forwarded packets */
+=======
+static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+{
+	struct veth_priv *priv = netdev_priv(dev);
+	struct net_device *rcv;
+	int length = skb->len;
+
+	rcu_read_lock();
+	rcv = rcu_dereference(priv->peer);
+	if (unlikely(!rcv)) {
+		kfree_skb(skb);
+		goto drop;
+	}
+	/* don't change ip_summed == CHECKSUM_PARTIAL, as that
+	 * will cause bad checksum on forwarded packets
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (skb->ip_summed == CHECKSUM_NONE &&
 	    rcv->features & NETIF_F_RXCSUM)
 		skb->ip_summed = CHECKSUM_UNNECESSARY;
 
+<<<<<<< HEAD
 	length = skb->len;
 	if (dev_forward_skb(rcv, skb) != NET_RX_SUCCESS)
 		goto rx_drop;
 
+<<<<<<< HEAD
 	stats->tx_bytes += length;
 	stats->tx_packets++;
 
@@ -152,6 +229,38 @@ tx_drop:
 
 rx_drop:
 	rcv_stats->rx_dropped++;
+=======
+	u64_stats_update_begin(&stats->syncp);
+	stats->tx_bytes += length;
+	stats->tx_packets++;
+	u64_stats_update_end(&stats->syncp);
+
+	u64_stats_update_begin(&rcv_stats->syncp);
+	rcv_stats->rx_bytes += length;
+	rcv_stats->rx_packets++;
+	u64_stats_update_end(&rcv_stats->syncp);
+
+	return NETDEV_TX_OK;
+
+rx_drop:
+	u64_stats_update_begin(&rcv_stats->syncp);
+	rcv_stats->rx_dropped++;
+	u64_stats_update_end(&rcv_stats->syncp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (likely(dev_forward_skb(rcv, skb) == NET_RX_SUCCESS)) {
+		struct pcpu_vstats *stats = this_cpu_ptr(dev->vstats);
+
+		u64_stats_update_begin(&stats->syncp);
+		stats->bytes += length;
+		stats->packets++;
+		u64_stats_update_end(&stats->syncp);
+	} else {
+drop:
+		atomic64_inc(&priv->dropped);
+	}
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	return NETDEV_TX_OK;
 }
 
@@ -159,6 +268,8 @@ rx_drop:
  * general routines
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct net_device_stats *veth_get_stats(struct net_device *dev)
 {
 	struct veth_priv *priv;
@@ -185,10 +296,90 @@ static struct net_device_stats *veth_get_stats(struct net_device *dev)
 	dev->stats.rx_dropped = total.rx_dropped;
 
 	return &dev->stats;
+=======
+static struct rtnl_link_stats64 *veth_get_stats64(struct net_device *dev,
+						  struct rtnl_link_stats64 *tot)
+=======
+static u64 veth_stats_one(struct pcpu_vstats *result, struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
+{
+	struct veth_priv *priv = netdev_priv(dev);
+	int cpu;
+
+<<<<<<< HEAD
+	for_each_possible_cpu(cpu) {
+		struct veth_net_stats *stats = per_cpu_ptr(priv->stats, cpu);
+		u64 rx_packets, rx_bytes, rx_dropped;
+		u64 tx_packets, tx_bytes;
+=======
+	result->packets = 0;
+	result->bytes = 0;
+	for_each_possible_cpu(cpu) {
+		struct pcpu_vstats *stats = per_cpu_ptr(dev->vstats, cpu);
+		u64 packets, bytes;
+>>>>>>> refs/remotes/origin/master
+		unsigned int start;
+
+		do {
+			start = u64_stats_fetch_begin_bh(&stats->syncp);
+<<<<<<< HEAD
+			rx_packets = stats->rx_packets;
+			tx_packets = stats->tx_packets;
+			rx_bytes = stats->rx_bytes;
+			tx_bytes = stats->tx_bytes;
+			rx_dropped = stats->rx_dropped;
+		} while (u64_stats_fetch_retry_bh(&stats->syncp, start));
+		tot->rx_packets += rx_packets;
+		tot->tx_packets += tx_packets;
+		tot->rx_bytes   += rx_bytes;
+		tot->tx_bytes   += tx_bytes;
+		tot->rx_dropped += rx_dropped;
+	}
+
+	return tot;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			packets = stats->packets;
+			bytes = stats->bytes;
+		} while (u64_stats_fetch_retry_bh(&stats->syncp, start));
+		result->packets += packets;
+		result->bytes += bytes;
+	}
+	return atomic64_read(&priv->dropped);
+}
+
+static struct rtnl_link_stats64 *veth_get_stats64(struct net_device *dev,
+						  struct rtnl_link_stats64 *tot)
+{
+	struct veth_priv *priv = netdev_priv(dev);
+	struct net_device *peer;
+	struct pcpu_vstats one;
+
+	tot->tx_dropped = veth_stats_one(&one, dev);
+	tot->tx_bytes = one.bytes;
+	tot->tx_packets = one.packets;
+
+	rcu_read_lock();
+	peer = rcu_dereference(priv->peer);
+	if (peer) {
+		tot->rx_dropped = veth_stats_one(&one, peer);
+		tot->rx_bytes = one.bytes;
+		tot->rx_packets = one.packets;
+	}
+	rcu_read_unlock();
+
+	return tot;
+}
+
+/* fake multicast ability */
+static void veth_set_multicast_list(struct net_device *dev)
+{
+>>>>>>> refs/remotes/origin/master
 }
 
 static int veth_open(struct net_device *dev)
 {
+<<<<<<< HEAD
 	struct veth_priv *priv;
 
 	priv = netdev_priv(dev);
@@ -198,6 +389,17 @@ static int veth_open(struct net_device *dev)
 	if (priv->peer->flags & IFF_UP) {
 		netif_carrier_on(dev);
 		netif_carrier_on(priv->peer);
+=======
+	struct veth_priv *priv = netdev_priv(dev);
+	struct net_device *peer = rtnl_dereference(priv->peer);
+
+	if (!peer)
+		return -ENOTCONN;
+
+	if (peer->flags & IFF_UP) {
+		netif_carrier_on(dev);
+		netif_carrier_on(peer);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -205,9 +407,17 @@ static int veth_open(struct net_device *dev)
 static int veth_close(struct net_device *dev)
 {
 	struct veth_priv *priv = netdev_priv(dev);
+<<<<<<< HEAD
 
 	netif_carrier_off(dev);
 	netif_carrier_off(priv->peer);
+=======
+	struct net_device *peer = rtnl_dereference(priv->peer);
+
+	netif_carrier_off(dev);
+	if (peer)
+		netif_carrier_off(peer);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -227,6 +437,7 @@ static int veth_change_mtu(struct net_device *dev, int new_mtu)
 
 static int veth_dev_init(struct net_device *dev)
 {
+<<<<<<< HEAD
 	struct veth_net_stats __percpu *stats;
 	struct veth_priv *priv;
 
@@ -236,15 +447,33 @@ static int veth_dev_init(struct net_device *dev)
 
 	priv = netdev_priv(dev);
 	priv->stats = stats;
+=======
+	int i;
+
+	dev->vstats = alloc_percpu(struct pcpu_vstats);
+	if (!dev->vstats)
+		return -ENOMEM;
+
+	for_each_possible_cpu(i) {
+		struct pcpu_vstats *veth_stats;
+		veth_stats = per_cpu_ptr(dev->vstats, i);
+		u64_stats_init(&veth_stats->syncp);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void veth_dev_free(struct net_device *dev)
 {
+<<<<<<< HEAD
 	struct veth_priv *priv;
 
 	priv = netdev_priv(dev);
 	free_percpu(priv->stats);
+=======
+	free_percpu(dev->vstats);
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);
 }
 
@@ -254,22 +483,58 @@ static const struct net_device_ops veth_netdev_ops = {
 	.ndo_stop            = veth_close,
 	.ndo_start_xmit      = veth_xmit,
 	.ndo_change_mtu      = veth_change_mtu,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_get_stats       = veth_get_stats,
+=======
+	.ndo_get_stats64     = veth_get_stats64,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_set_mac_address = eth_mac_addr,
 };
 
+=======
+	.ndo_get_stats64     = veth_get_stats64,
+	.ndo_set_rx_mode     = veth_set_multicast_list,
+	.ndo_set_mac_address = eth_mac_addr,
+};
+
+#define VETH_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_ALL_TSO |    \
+		       NETIF_F_HW_CSUM | NETIF_F_RXCSUM | NETIF_F_HIGHDMA | \
+		       NETIF_F_GSO_GRE | NETIF_F_GSO_UDP_TUNNEL |	    \
+		       NETIF_F_GSO_IPIP | NETIF_F_GSO_SIT | NETIF_F_UFO	|   \
+		       NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX | \
+		       NETIF_F_HW_VLAN_STAG_TX | NETIF_F_HW_VLAN_STAG_RX )
+
+>>>>>>> refs/remotes/origin/master
 static void veth_setup(struct net_device *dev)
 {
 	ether_setup(dev);
 
 	dev->priv_flags &= ~IFF_TX_SKB_SHARING;
+<<<<<<< HEAD
+=======
+	dev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
+>>>>>>> refs/remotes/origin/master
 
 	dev->netdev_ops = &veth_netdev_ops;
 	dev->ethtool_ops = &veth_ethtool_ops;
 	dev->features |= NETIF_F_LLTX;
+<<<<<<< HEAD
 	dev->destructor = veth_dev_free;
 
+<<<<<<< HEAD
 	dev->hw_features = NETIF_F_NO_CSUM | NETIF_F_SG | NETIF_F_RXCSUM;
+=======
+	dev->hw_features = NETIF_F_HW_CSUM | NETIF_F_SG | NETIF_F_RXCSUM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->features |= VETH_FEATURES;
+	dev->vlan_features = dev->features;
+	dev->destructor = veth_dev_free;
+
+	dev->hw_features = VETH_FEATURES;
+	dev->hw_enc_features = VETH_FEATURES;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -338,14 +603,29 @@ static int veth_newlink(struct net *src_net, struct net_device *dev,
 	if (IS_ERR(net))
 		return PTR_ERR(net);
 
+<<<<<<< HEAD
 	peer = rtnl_create_link(src_net, net, ifname, &veth_link_ops, tbp);
+=======
+	peer = rtnl_create_link(net, ifname, &veth_link_ops, tbp);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(peer)) {
 		put_net(net);
 		return PTR_ERR(peer);
 	}
 
 	if (tbp[IFLA_ADDRESS] == NULL)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		random_ether_addr(peer->dev_addr);
+=======
+		eth_hw_addr_random(peer);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		eth_hw_addr_random(peer);
+
+	if (ifmp && (dev->ifindex != 0))
+		peer->ifindex = ifmp->ifi_index;
+>>>>>>> refs/remotes/origin/master
 
 	err = register_netdevice(peer);
 	put_net(net);
@@ -367,19 +647,30 @@ static int veth_newlink(struct net *src_net, struct net_device *dev,
 	 */
 
 	if (tb[IFLA_ADDRESS] == NULL)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		random_ether_addr(dev->dev_addr);
+=======
+		eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (tb[IFLA_IFNAME])
 		nla_strlcpy(dev->name, tb[IFLA_IFNAME], IFNAMSIZ);
 	else
 		snprintf(dev->name, IFNAMSIZ, DRV_NAME "%%d");
 
+<<<<<<< HEAD
 	if (strchr(dev->name, '%')) {
 		err = dev_alloc_name(dev, dev->name);
 		if (err < 0)
 			goto err_alloc_name;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	err = register_netdevice(dev);
 	if (err < 0)
 		goto err_register_dev;
@@ -391,15 +682,25 @@ static int veth_newlink(struct net *src_net, struct net_device *dev,
 	 */
 
 	priv = netdev_priv(dev);
+<<<<<<< HEAD
 	priv->peer = peer;
 
 	priv = netdev_priv(peer);
 	priv->peer = dev;
+=======
+	rcu_assign_pointer(priv->peer, peer);
+
+	priv = netdev_priv(peer);
+	rcu_assign_pointer(priv->peer, dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_register_dev:
 	/* nothing to do */
+<<<<<<< HEAD
 err_alloc_name:
+=======
+>>>>>>> refs/remotes/origin/master
 err_configure_peer:
 	unregister_netdevice(peer);
 	return err;
@@ -415,10 +716,27 @@ static void veth_dellink(struct net_device *dev, struct list_head *head)
 	struct net_device *peer;
 
 	priv = netdev_priv(dev);
+<<<<<<< HEAD
 	peer = priv->peer;
 
 	unregister_netdevice_queue(dev, head);
 	unregister_netdevice_queue(peer, head);
+=======
+	peer = rtnl_dereference(priv->peer);
+
+	/* Note : dellink() is called from default_device_exit_batch(),
+	 * before a rcu_synchronize() point. The devices are guaranteed
+	 * not being freed before one RCU grace period.
+	 */
+	RCU_INIT_POINTER(priv->peer, NULL);
+	unregister_netdevice_queue(dev, head);
+
+	if (peer) {
+		priv = netdev_priv(peer);
+		RCU_INIT_POINTER(priv->peer, NULL);
+		unregister_netdevice_queue(peer, head);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct nla_policy veth_policy[VETH_INFO_MAX + 1] = {

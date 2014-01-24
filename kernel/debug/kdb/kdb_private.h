@@ -19,9 +19,16 @@
 #define KDB_CMD_GO	(-1001)
 #define KDB_CMD_CPU	(-1002)
 #define KDB_CMD_SS	(-1003)
+<<<<<<< HEAD
 #define KDB_CMD_SSB	(-1004)
 #define KDB_CMD_KGDB (-1005)
+<<<<<<< HEAD
 #define KDB_CMD_KGDB2 (-1006)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define KDB_CMD_KGDB (-1005)
+>>>>>>> refs/remotes/origin/master
 
 /* Internal debug flags */
 #define KDB_DEBUG_FLAG_BP	0x0002	/* Breakpoint subsystem debug */
@@ -126,8 +133,11 @@ extern int kdb_state;
 						 * kdb control */
 #define KDB_STATE_HOLD_CPU	0x00000010	/* Hold this cpu inside kdb */
 #define KDB_STATE_DOING_SS	0x00000020	/* Doing ss command */
+<<<<<<< HEAD
 #define KDB_STATE_DOING_SSB	0x00000040	/* Doing ssb command,
 						 * DOING_SS is also set */
+=======
+>>>>>>> refs/remotes/origin/master
 #define KDB_STATE_SSBPT		0x00000080	/* Install breakpoint
 						 * after one ss, independent of
 						 * DOING_SS */
@@ -146,7 +156,13 @@ extern int kdb_state;
 						 * keyboard on this cpu */
 #define KDB_STATE_KEXEC		0x00040000	/* kexec issued */
 #define KDB_STATE_DOING_KGDB	0x00080000	/* kgdb enter now issued */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define KDB_STATE_DOING_KGDB2	0x00100000	/* kgdb enter now issued */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define KDB_STATE_KGDB_TRANS	0x00200000	/* Transition to kgdb */
 #define KDB_STATE_ARCH		0xff000000	/* Reserved for arch
 						 * specific use */
@@ -193,7 +209,10 @@ extern void kdb_bp_remove(void);
 typedef enum {
 	KDB_DB_BPT,	/* Breakpoint */
 	KDB_DB_SS,	/* Single-step trap */
+<<<<<<< HEAD
 	KDB_DB_SSB,	/* Single step to branch */
+=======
+>>>>>>> refs/remotes/origin/master
 	KDB_DB_SSBPT,	/* Single step over breakpoint */
 	KDB_DB_NOBPT	/* Spurious breakpoint */
 } kdb_dbtrap_t;
@@ -207,7 +226,10 @@ extern char kdb_grep_string[];
 extern int kdb_grep_leading;
 extern int kdb_grep_trailing;
 extern char *kdb_cmds[];
+<<<<<<< HEAD
 extern void kdb_syslog_data(char *syslog_data[]);
+=======
+>>>>>>> refs/remotes/origin/master
 extern unsigned long kdb_task_state_string(const char *);
 extern char kdb_task_state_char (const struct task_struct *);
 extern unsigned long kdb_task_state(const struct task_struct *p,
@@ -218,6 +240,14 @@ extern void kdb_print_nameval(const char *name, unsigned long val);
 extern void kdb_send_sig_info(struct task_struct *p, struct siginfo *info);
 extern void kdb_meminfo_proc_show(void);
 extern char *kdb_getstr(char *, size_t, char *);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern void kdb_gdb_state_pass(char *buf);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void kdb_gdb_state_pass(char *buf);
+>>>>>>> refs/remotes/origin/master
 
 /* Defines for kdb_symbol_print */
 #define KDB_SP_SPACEB	0x0001		/* Space before string */
@@ -247,6 +277,22 @@ extern void debug_kusage(void);
 
 extern void kdb_set_current_task(struct task_struct *);
 extern struct task_struct *kdb_current_task;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#ifdef CONFIG_KDB_KEYBOARD
+extern void kdb_kbd_cleanup_state(void);
+#else /* ! CONFIG_KDB_KEYBOARD */
+#define kdb_kbd_cleanup_state()
+#endif /* ! CONFIG_KDB_KEYBOARD */
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MODULES
 extern struct list_head *kdb_modules;
 #endif /* CONFIG_MODULES */

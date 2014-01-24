@@ -31,17 +31,37 @@ static void ipcomp4_err(struct sk_buff *skb, u32 info)
 	struct ip_comp_hdr *ipch = (struct ip_comp_hdr *)(skb->data+(iph->ihl<<2));
 	struct xfrm_state *x;
 
+<<<<<<< HEAD
 	if (icmp_hdr(skb)->type != ICMP_DEST_UNREACH ||
 	    icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
 		return;
+=======
+	switch (icmp_hdr(skb)->type) {
+	case ICMP_DEST_UNREACH:
+		if (icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
+			return;
+	case ICMP_REDIRECT:
+		break;
+	default:
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	spi = htonl(ntohs(ipch->cpi));
 	x = xfrm_state_lookup(net, skb->mark, (const xfrm_address_t *)&iph->daddr,
 			      spi, IPPROTO_COMP, AF_INET);
 	if (!x)
 		return;
+<<<<<<< HEAD
 	NETDEBUG(KERN_DEBUG "pmtu discovery on SA IPCOMP/%08x/%pI4\n",
 		 spi, &iph->daddr);
+=======
+
+	if (icmp_hdr(skb)->type == ICMP_DEST_UNREACH)
+		ipv4_update_pmtu(skb, net, info, 0, 0, IPPROTO_COMP, 0);
+	else
+		ipv4_redirect(skb, net, 0, 0, IPPROTO_COMP, 0);
+>>>>>>> refs/remotes/origin/master
 	xfrm_state_put(x);
 }
 
@@ -63,6 +83,10 @@ static struct xfrm_state *ipcomp_tunnel_create(struct xfrm_state *x)
 	t->props.mode = x->props.mode;
 	t->props.saddr.a4 = x->props.saddr.a4;
 	t->props.flags = x->props.flags;
+<<<<<<< HEAD
+=======
+	t->props.extra_flags = x->props.extra_flags;
+>>>>>>> refs/remotes/origin/master
 	memcpy(&t->mark, &x->mark, sizeof(t->mark));
 
 	if (xfrm_init_state(t))
@@ -151,16 +175,34 @@ static const struct net_protocol ipcomp4_protocol = {
 	.handler	=	xfrm4_rcv,
 	.err_handler	=	ipcomp4_err,
 	.no_policy	=	1,
+<<<<<<< HEAD
+=======
+	.netns_ok	=	1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ipcomp4_init(void)
 {
 	if (xfrm_register_type(&ipcomp_type, AF_INET) < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "ipcomp init: can't add xfrm type\n");
 		return -EAGAIN;
 	}
 	if (inet_add_protocol(&ipcomp4_protocol, IPPROTO_COMP) < 0) {
 		printk(KERN_INFO "ipcomp init: can't add protocol\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_info("%s: can't add xfrm type\n", __func__);
+		return -EAGAIN;
+	}
+	if (inet_add_protocol(&ipcomp4_protocol, IPPROTO_COMP) < 0) {
+		pr_info("%s: can't add protocol\n", __func__);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		xfrm_unregister_type(&ipcomp_type, AF_INET);
 		return -EAGAIN;
 	}
@@ -170,9 +212,21 @@ static int __init ipcomp4_init(void)
 static void __exit ipcomp4_fini(void)
 {
 	if (inet_del_protocol(&ipcomp4_protocol, IPPROTO_COMP) < 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "ip ipcomp close: can't remove protocol\n");
 	if (xfrm_unregister_type(&ipcomp_type, AF_INET) < 0)
 		printk(KERN_INFO "ip ipcomp close: can't remove xfrm type\n");
+=======
+		pr_info("%s: can't remove protocol\n", __func__);
+	if (xfrm_unregister_type(&ipcomp_type, AF_INET) < 0)
+		pr_info("%s: can't remove xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("%s: can't remove protocol\n", __func__);
+	if (xfrm_unregister_type(&ipcomp_type, AF_INET) < 0)
+		pr_info("%s: can't remove xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(ipcomp4_init);

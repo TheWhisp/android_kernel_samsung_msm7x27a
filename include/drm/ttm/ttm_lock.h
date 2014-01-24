@@ -49,9 +49,19 @@
 #ifndef _TTM_LOCK_H_
 #define _TTM_LOCK_H_
 
+<<<<<<< HEAD
 #include "ttm/ttm_object.h"
 #include <linux/wait.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <ttm/ttm_object.h>
+#include <linux/wait.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct ttm_lock

@@ -30,7 +30,10 @@
 
 #define DEBUG_SIG	0
 #define STACK_ALIGN	16		/* minimal alignment for stack pointer */
+<<<<<<< HEAD
 #define _BLOCKABLE	(~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if _NSIG_WORDS > 1
 # define PUT_SIGSET(k,u)	__copy_to_user((u)->sig, (k)->sig, sizeof(sigset_t))
@@ -40,6 +43,7 @@
 # define GET_SIGSET(k,u)	__get_user((k)->sig[0], &(u)->sig[0])
 #endif
 
+<<<<<<< HEAD
 asmlinkage long
 sys_sigaltstack (const stack_t __user *uss, stack_t __user *uoss, long arg2,
 		 long arg3, long arg4, long arg5, long arg6, long arg7,
@@ -48,6 +52,8 @@ sys_sigaltstack (const stack_t __user *uss, stack_t __user *uoss, long arg2,
 	return do_sigaltstack(uss, uoss, regs.r12);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static long
 restore_sigcontext (struct sigcontext __user *sc, struct sigscratch *scr)
 {
@@ -114,7 +120,11 @@ restore_sigcontext (struct sigcontext __user *sc, struct sigscratch *scr)
 }
 
 int
+<<<<<<< HEAD
 copy_siginfo_to_user (siginfo_t __user *to, siginfo_t *from)
+=======
+copy_siginfo_to_user (siginfo_t __user *to, const siginfo_t *from)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!access_ok(VERIFY_WRITE, to, sizeof(siginfo_t)))
 		return -EFAULT;
@@ -200,6 +210,7 @@ ia64_rt_sigreturn (struct sigscratch *scr)
 	if (GET_SIGSET(&set, &sc->sc_mask))
 		goto give_sigsegv;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 
 	spin_lock_irq(&current->sighand->siglock);
@@ -208,6 +219,9 @@ ia64_rt_sigreturn (struct sigscratch *scr)
 		recalc_sigpending();
 	}
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	if (restore_sigcontext(sc, scr))
 		goto give_sigsegv;
@@ -216,11 +230,16 @@ ia64_rt_sigreturn (struct sigscratch *scr)
 	printk("SIG return (%s:%d): sp=%lx ip=%lx\n",
 	       current->comm, current->pid, scr->pt.r12, scr->pt.cr_iip);
 #endif
+<<<<<<< HEAD
 	/*
 	 * It is more difficult to avoid calling this function than to
 	 * call it and ignore errors.
 	 */
 	do_sigaltstack(&sc->sc_stack, NULL, scr->pt.r12);
+=======
+	if (restore_altstack(&sc->sc_stack))
+		goto give_sigsegv;
+>>>>>>> refs/remotes/origin/master
 	return retval;
 
   give_sigsegv:
@@ -228,7 +247,11 @@ ia64_rt_sigreturn (struct sigscratch *scr)
 	si.si_errno = 0;
 	si.si_code = SI_KERNEL;
 	si.si_pid = task_pid_vnr(current);
+<<<<<<< HEAD
 	si.si_uid = current_uid();
+=======
+	si.si_uid = from_kuid_munged(current_user_ns(), current_uid());
+>>>>>>> refs/remotes/origin/master
 	si.si_addr = sc;
 	force_sig_info(SIGSEGV, &si, current);
 	return retval;
@@ -325,7 +348,11 @@ force_sigsegv_info (int sig, void __user *addr)
 	si.si_errno = 0;
 	si.si_code = SI_KERNEL;
 	si.si_pid = task_pid_vnr(current);
+<<<<<<< HEAD
 	si.si_uid = current_uid();
+=======
+	si.si_uid = from_kuid_munged(current_user_ns(), current_uid());
+>>>>>>> refs/remotes/origin/master
 	si.si_addr = addr;
 	force_sig_info(SIGSEGV, &si, current);
 	return 0;
@@ -384,9 +411,13 @@ setup_frame (int sig, struct k_sigaction *ka, siginfo_t *info, sigset_t *set,
 
 	err |= copy_siginfo_to_user(&frame->info, info);
 
+<<<<<<< HEAD
 	err |= __put_user(current->sas_ss_sp, &frame->sc.sc_stack.ss_sp);
 	err |= __put_user(current->sas_ss_size, &frame->sc.sc_stack.ss_size);
 	err |= __put_user(sas_ss_flags(scr->pt.r12), &frame->sc.sc_stack.ss_flags);
+=======
+	err |= __save_altstack(&frame->sc.sc_stack, scr->pt.r12);
+>>>>>>> refs/remotes/origin/master
 	err |= setup_sigcontext(&frame->sc, set, scr);
 
 	if (unlikely(err))
@@ -421,6 +452,7 @@ setup_frame (int sig, struct k_sigaction *ka, siginfo_t *info, sigset_t *set,
 }
 
 static long
+<<<<<<< HEAD
 handle_signal (unsigned long sig, struct k_sigaction *ka, siginfo_t *info, sigset_t *oldset,
 	       struct sigscratch *scr)
 {
@@ -438,6 +470,15 @@ handle_signal (unsigned long sig, struct k_sigaction *ka, siginfo_t *info, sigse
 	 * Let tracing know that we've done the handler setup.
 	 */
 	tracehook_signal_handler(sig, info, ka, &scr->pt,
+=======
+handle_signal (unsigned long sig, struct k_sigaction *ka, siginfo_t *info,
+	       struct sigscratch *scr)
+{
+	if (!setup_frame(sig, ka, info, sigmask_to_save(), scr))
+		return 0;
+
+	signal_delivered(sig, info, ka, &scr->pt,
+>>>>>>> refs/remotes/origin/master
 				 test_thread_flag(TIF_SINGLESTEP));
 
 	return 1;
@@ -451,12 +492,16 @@ void
 ia64_do_signal (struct sigscratch *scr, long in_syscall)
 {
 	struct k_sigaction ka;
+<<<<<<< HEAD
 	sigset_t *oldset;
+=======
+>>>>>>> refs/remotes/origin/master
 	siginfo_t info;
 	long restart = in_syscall;
 	long errno = scr->pt.r8;
 
 	/*
+<<<<<<< HEAD
 	 * In the ia64_leave_kernel code path, we want the common case to go fast, which
 	 * is why we may in certain cases get here from kernel mode. Just return without
 	 * doing anything if so.
@@ -470,6 +515,8 @@ ia64_do_signal (struct sigscratch *scr, long in_syscall)
 		oldset = &current->blocked;
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * This only loops in the rare cases of handle_signal() failing, in which case we
 	 * need to push through a forced SIGSEGV.
 	 */
@@ -518,6 +565,7 @@ ia64_do_signal (struct sigscratch *scr, long in_syscall)
 		 * Whee!  Actually deliver the signal.  If the delivery failed, we need to
 		 * continue to iterate in this loop so we can deliver the SIGSEGV...
 		 */
+<<<<<<< HEAD
 		if (handle_signal(signr, &ka, &info, oldset, scr)) {
 			/*
 			 * A signal was successfully delivered; the saved
@@ -528,6 +576,10 @@ ia64_do_signal (struct sigscratch *scr, long in_syscall)
 			current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
 			return;
 		}
+=======
+		if (handle_signal(signr, &ka, &info, scr))
+			return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Did we come from a system call? */
@@ -549,8 +601,12 @@ ia64_do_signal (struct sigscratch *scr, long in_syscall)
 
 	/* if there's no signal to deliver, we just put the saved sigmask
 	 * back */
+<<<<<<< HEAD
 	if (current_thread_info()->status & TS_RESTORE_SIGMASK) {
 		current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
 	}
+=======
+	restore_saved_sigmask();
+>>>>>>> refs/remotes/origin/master
 }

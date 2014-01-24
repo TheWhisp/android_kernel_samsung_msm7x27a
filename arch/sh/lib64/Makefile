@@ -10,7 +10,11 @@
 #
 
 # Panic should really be compiled as PIC
+<<<<<<< HEAD
 lib-y  := udelay.o dbg.o panic.o memcpy.o memset.o \
+=======
+lib-y  := udelay.o panic.o memcpy.o memset.o \
+>>>>>>> refs/remotes/origin/master
 	  copy_user_memcpy.o copy_page.o strcpy.o strlen.o
 
 # Extracted from libgcc

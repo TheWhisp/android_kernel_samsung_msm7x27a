@@ -48,7 +48,15 @@
 #include <linux/io.h>
 
 #include <asm/apicdef.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/fixmap.h>
 #include <asm/mpspec.h>
 #include <asm/setup.h>
@@ -130,7 +138,11 @@ int					es7000_plat;
  */
 
 
+<<<<<<< HEAD
 static int __cpuinit wakeup_secondary_cpu_via_mip(int cpu, unsigned long eip)
+=======
+static int wakeup_secondary_cpu_via_mip(int cpu, unsigned long eip)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long vect = 0, psaival = 0;
 
@@ -394,6 +406,7 @@ static void es7000_enable_apic_mode(void)
 		WARN(1, "Command failed, status = %x\n", mip_status);
 }
 
+<<<<<<< HEAD
 static void es7000_vector_allocation_domain(int cpu, struct cpumask *retmask)
 {
 	/* Careful. Some cpus do not strictly honor the set of cpus
@@ -409,6 +422,8 @@ static void es7000_vector_allocation_domain(int cpu, struct cpumask *retmask)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void es7000_wait_for_init_deassert(atomic_t *deassert)
 {
 	while (!atomic_read(deassert))
@@ -540,20 +555,33 @@ static int es7000_check_phys_apicid_present(int cpu_physical_apicid)
 	return 1;
 }
 
+<<<<<<< HEAD
 static unsigned int es7000_cpu_mask_to_apicid(const struct cpumask *cpumask)
 {
 	unsigned int round = 0;
 	int cpu, uninitialized_var(apicid);
+=======
+static inline int
+es7000_cpu_mask_to_apicid(const struct cpumask *cpumask, unsigned int *dest_id)
+{
+	unsigned int round = 0;
+	unsigned int cpu, uninitialized_var(apicid);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The cpus in the mask must all be on the apic cluster.
 	 */
+<<<<<<< HEAD
 	for_each_cpu(cpu, cpumask) {
+=======
+	for_each_cpu_and(cpu, cpumask, cpu_online_mask) {
+>>>>>>> refs/remotes/origin/master
 		int new_apicid = early_per_cpu(x86_cpu_to_logical_apicid, cpu);
 
 		if (round && APIC_CLUSTER(apicid) != APIC_CLUSTER(new_apicid)) {
 			WARN(1, "Not a valid mask!");
 
+<<<<<<< HEAD
 			return BAD_APICID;
 		}
 		apicid = new_apicid;
@@ -579,6 +607,36 @@ es7000_cpu_mask_to_apicid_and(const struct cpumask *inmask,
 	free_cpumask_var(cpumask);
 
 	return apicid;
+=======
+			return -EINVAL;
+		}
+		apicid |= new_apicid;
+		round++;
+	}
+	if (!round)
+		return -EINVAL;
+	*dest_id = apicid;
+	return 0;
+}
+
+static int
+es7000_cpu_mask_to_apicid_and(const struct cpumask *inmask,
+			      const struct cpumask *andmask,
+			      unsigned int *apicid)
+{
+	cpumask_var_t cpumask;
+	*apicid = early_per_cpu(x86_cpu_to_logical_apicid, 0);
+
+	if (!alloc_cpumask_var(&cpumask, GFP_ATOMIC))
+		return 0;
+
+	cpumask_and(cpumask, inmask, andmask);
+	es7000_cpu_mask_to_apicid(cpumask, apicid);
+
+	free_cpumask_var(cpumask);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int es7000_phys_pkg_id(int cpuid_apic, int index_msb)
@@ -625,6 +683,14 @@ static struct apic __refdata apic_es7000_cluster = {
 	.name				= "es7000",
 	.probe				= probe_es7000,
 	.acpi_madt_oem_check		= es7000_acpi_madt_oem_check_cluster,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/master
 	.apic_id_registered		= es7000_apic_id_registered,
 
 	.irq_delivery_mode		= dest_LowestPrio,
@@ -637,7 +703,11 @@ static struct apic __refdata apic_es7000_cluster = {
 	.check_apicid_used		= es7000_check_apicid_used,
 	.check_apicid_present		= es7000_check_apicid_present,
 
+<<<<<<< HEAD
 	.vector_allocation_domain	= es7000_vector_allocation_domain,
+=======
+	.vector_allocation_domain	= flat_vector_allocation_domain,
+>>>>>>> refs/remotes/origin/master
 	.init_apic_ldr			= es7000_init_apic_ldr_cluster,
 
 	.ioapic_phys_id_map		= es7000_ioapic_phys_id_map,
@@ -655,7 +725,10 @@ static struct apic __refdata apic_es7000_cluster = {
 	.set_apic_id			= NULL,
 	.apic_id_mask			= 0xFF << 24,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= es7000_cpu_mask_to_apicid,
+=======
+>>>>>>> refs/remotes/origin/master
 	.cpu_mask_to_apicid_and		= es7000_cpu_mask_to_apicid_and,
 
 	.send_IPI_mask			= es7000_send_IPI_mask,
@@ -677,6 +750,10 @@ static struct apic __refdata apic_es7000_cluster = {
 
 	.read				= native_apic_mem_read,
 	.write				= native_apic_mem_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_mem_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_apic_icr_read,
 	.icr_write			= native_apic_icr_write,
 	.wait_icr_idle			= native_apic_wait_icr_idle,
@@ -690,6 +767,14 @@ static struct apic __refdata apic_es7000 = {
 	.name				= "es7000",
 	.probe				= probe_es7000,
 	.acpi_madt_oem_check		= es7000_acpi_madt_oem_check,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/master
 	.apic_id_registered		= es7000_apic_id_registered,
 
 	.irq_delivery_mode		= dest_Fixed,
@@ -702,7 +787,11 @@ static struct apic __refdata apic_es7000 = {
 	.check_apicid_used		= es7000_check_apicid_used,
 	.check_apicid_present		= es7000_check_apicid_present,
 
+<<<<<<< HEAD
 	.vector_allocation_domain	= es7000_vector_allocation_domain,
+=======
+	.vector_allocation_domain	= flat_vector_allocation_domain,
+>>>>>>> refs/remotes/origin/master
 	.init_apic_ldr			= es7000_init_apic_ldr,
 
 	.ioapic_phys_id_map		= es7000_ioapic_phys_id_map,
@@ -720,7 +809,10 @@ static struct apic __refdata apic_es7000 = {
 	.set_apic_id			= NULL,
 	.apic_id_mask			= 0xFF << 24,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= es7000_cpu_mask_to_apicid,
+=======
+>>>>>>> refs/remotes/origin/master
 	.cpu_mask_to_apicid_and		= es7000_cpu_mask_to_apicid_and,
 
 	.send_IPI_mask			= es7000_send_IPI_mask,
@@ -740,6 +832,10 @@ static struct apic __refdata apic_es7000 = {
 
 	.read				= native_apic_mem_read,
 	.write				= native_apic_mem_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_mem_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_apic_icr_read,
 	.icr_write			= native_apic_icr_write,
 	.wait_icr_idle			= native_apic_wait_icr_idle,

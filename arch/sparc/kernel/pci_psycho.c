@@ -9,6 +9,14 @@
 #include <linux/types.h>
 #include <linux/pci.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/interrupt.h>
 #include <linux/of_device.h>
@@ -365,8 +373,13 @@ static void pbm_config_busmastering(struct pci_pbm_info *pbm)
 	pci_config_write8(addr, 64);
 }
 
+<<<<<<< HEAD
 static void __devinit psycho_scan_bus(struct pci_pbm_info *pbm,
 				      struct device *parent)
+=======
+static void psycho_scan_bus(struct pci_pbm_info *pbm,
+			    struct device *parent)
+>>>>>>> refs/remotes/origin/master
 {
 	pbm_config_busmastering(pbm);
 	pbm->is_66mhz_capable = 0;
@@ -482,15 +495,24 @@ static void psycho_pbm_strbuf_init(struct pci_pbm_info *pbm,
 #define PSYCHO_MEMSPACE_B	0x180000000UL
 #define PSYCHO_MEMSPACE_SIZE	0x07fffffffUL
 
+<<<<<<< HEAD
 static void __devinit psycho_pbm_init(struct pci_pbm_info *pbm,
 				      struct platform_device *op, int is_pbm_a)
+=======
+static void psycho_pbm_init(struct pci_pbm_info *pbm,
+			    struct platform_device *op, int is_pbm_a)
+>>>>>>> refs/remotes/origin/master
 {
 	psycho_pbm_init_common(pbm, op, "PSYCHO", PBM_CHIP_TYPE_PSYCHO);
 	psycho_pbm_strbuf_init(pbm, is_pbm_a);
 	psycho_scan_bus(pbm, &op->dev);
 }
 
+<<<<<<< HEAD
 static struct pci_pbm_info * __devinit psycho_find_sibling(u32 upa_portid)
+=======
+static struct pci_pbm_info *psycho_find_sibling(u32 upa_portid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_pbm_info *pbm;
 
@@ -503,7 +525,11 @@ static struct pci_pbm_info * __devinit psycho_find_sibling(u32 upa_portid)
 
 #define PSYCHO_CONFIGSPACE	0x001000000UL
 
+<<<<<<< HEAD
 static int __devinit psycho_probe(struct platform_device *op)
+=======
+static int psycho_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct linux_prom64_registers *pr_regs;
 	struct device_node *dp = op->dev.of_node;

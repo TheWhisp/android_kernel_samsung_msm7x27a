@@ -25,6 +25,14 @@
 #include <linux/gfp.h>
 #include <linux/time.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/emu10k1.h>
@@ -262,8 +270,13 @@ int snd_emu10k1_memblk_map(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk *b
 	spin_lock_irqsave(&emu->memblk_lock, flags);
 	if (blk->mapped_page >= 0) {
 		/* update order link */
+<<<<<<< HEAD
 		list_del(&blk->mapped_order_link);
 		list_add_tail(&blk->mapped_order_link, &emu->mapped_order_link_head);
+=======
+		list_move_tail(&blk->mapped_order_link,
+			       &emu->mapped_order_link_head);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&emu->memblk_lock, flags);
 		return 0;
 	}
@@ -325,7 +338,14 @@ snd_emu10k1_alloc_pages(struct snd_emu10k1 *emu, struct snd_pcm_substream *subst
 	for (page = blk->first_page; page <= blk->last_page; page++, idx++) {
 		unsigned long ofs = idx << PAGE_SHIFT;
 		dma_addr_t addr;
+<<<<<<< HEAD
 		addr = snd_pcm_sgbuf_get_addr(substream, ofs);
+=======
+		if (ofs >= runtime->dma_bytes)
+			addr = emu->silent_page.addr;
+		else
+			addr = snd_pcm_sgbuf_get_addr(substream, ofs);
+>>>>>>> refs/remotes/origin/master
 		if (! is_valid_page(emu, addr)) {
 			printk(KERN_ERR "emu: failure page = %d\n", idx);
 			mutex_unlock(&hdr->block_mutex);

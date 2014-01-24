@@ -16,6 +16,10 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 */
 
+<<<<<<< HEAD
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb.h>
 #include <linux/gfp.h>
 #include <sound/rawmidi.h>
@@ -37,12 +41,21 @@ static int snd_usb_caiaq_midi_input_close(struct snd_rawmidi_substream *substrea
 
 static void snd_usb_caiaq_midi_input_trigger(struct snd_rawmidi_substream *substream, int up)
 {
+<<<<<<< HEAD
 	struct snd_usb_caiaqdev *dev = substream->rmidi->private_data;
 
 	if (!dev)
 		return;
 
 	dev->midi_receive_substream = up ? substream : NULL;
+=======
+	struct snd_usb_caiaqdev *cdev = substream->rmidi->private_data;
+
+	if (!cdev)
+		return;
+
+	cdev->midi_receive_substream = up ? substream : NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -53,14 +66,22 @@ static int snd_usb_caiaq_midi_output_open(struct snd_rawmidi_substream *substrea
 
 static int snd_usb_caiaq_midi_output_close(struct snd_rawmidi_substream *substream)
 {
+<<<<<<< HEAD
 	struct snd_usb_caiaqdev *dev = substream->rmidi->private_data;
 	if (dev->midi_out_active) {
 		usb_kill_urb(&dev->midi_out_urb);
 		dev->midi_out_active = 0;
+=======
+	struct snd_usb_caiaqdev *cdev = substream->rmidi->private_data;
+	if (cdev->midi_out_active) {
+		usb_kill_urb(&cdev->midi_out_urb);
+		cdev->midi_out_active = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 static void snd_usb_caiaq_midi_send(struct snd_usb_caiaqdev *dev,
 				    struct snd_rawmidi_substream *substream)
 {
@@ -69,11 +90,23 @@ static void snd_usb_caiaq_midi_send(struct snd_usb_caiaqdev *dev,
 	dev->midi_out_buf[0] = EP1_CMD_MIDI_WRITE;
 	dev->midi_out_buf[1] = 0; /* port */
 	len = snd_rawmidi_transmit(substream, dev->midi_out_buf + 3,
+=======
+static void snd_usb_caiaq_midi_send(struct snd_usb_caiaqdev *cdev,
+				    struct snd_rawmidi_substream *substream)
+{
+	int len, ret;
+	struct device *dev = caiaqdev_to_dev(cdev);
+
+	cdev->midi_out_buf[0] = EP1_CMD_MIDI_WRITE;
+	cdev->midi_out_buf[1] = 0; /* port */
+	len = snd_rawmidi_transmit(substream, cdev->midi_out_buf + 3,
+>>>>>>> refs/remotes/origin/master
 				   EP1_BUFSIZE - 3);
 
 	if (len <= 0)
 		return;
 
+<<<<<<< HEAD
 	dev->midi_out_buf[2] = len;
 	dev->midi_out_urb.transfer_buffer_length = len+3;
 
@@ -84,10 +117,23 @@ static void snd_usb_caiaq_midi_send(struct snd_usb_caiaqdev *dev,
 		    substream, ret, len);
 	else
 		dev->midi_out_active = 1;
+=======
+	cdev->midi_out_buf[2] = len;
+	cdev->midi_out_urb.transfer_buffer_length = len+3;
+
+	ret = usb_submit_urb(&cdev->midi_out_urb, GFP_ATOMIC);
+	if (ret < 0)
+		dev_err(dev,
+			"snd_usb_caiaq_midi_send(%p): usb_submit_urb() failed,"
+			"ret=%d, len=%d\n", substream, ret, len);
+	else
+		cdev->midi_out_active = 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void snd_usb_caiaq_midi_output_trigger(struct snd_rawmidi_substream *substream, int up)
 {
+<<<<<<< HEAD
 	struct snd_usb_caiaqdev *dev = substream->rmidi->private_data;
 
 	if (up) {
@@ -96,6 +142,16 @@ static void snd_usb_caiaq_midi_output_trigger(struct snd_rawmidi_substream *subs
 			snd_usb_caiaq_midi_send(dev, substream);
 	} else {
 		dev->midi_out_substream = NULL;
+=======
+	struct snd_usb_caiaqdev *cdev = substream->rmidi->private_data;
+
+	if (up) {
+		cdev->midi_out_substream = substream;
+		if (!cdev->midi_out_active)
+			snd_usb_caiaq_midi_send(cdev, substream);
+	} else {
+		cdev->midi_out_substream = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -114,6 +170,7 @@ static struct snd_rawmidi_ops snd_usb_caiaq_midi_input =
 	.trigger =      snd_usb_caiaq_midi_input_trigger,
 };
 
+<<<<<<< HEAD
 void snd_usb_caiaq_midi_handle_input(struct snd_usb_caiaqdev *dev,
 				     int port, const char *buf, int len)
 {
@@ -121,6 +178,15 @@ void snd_usb_caiaq_midi_handle_input(struct snd_usb_caiaqdev *dev,
 		return;
 
 	snd_rawmidi_receive(dev->midi_receive_substream, buf, len);
+=======
+void snd_usb_caiaq_midi_handle_input(struct snd_usb_caiaqdev *cdev,
+				     int port, const char *buf, int len)
+{
+	if (!cdev->midi_receive_substream)
+		return;
+
+	snd_rawmidi_receive(cdev->midi_receive_substream, buf, len);
+>>>>>>> refs/remotes/origin/master
 }
 
 int snd_usb_caiaq_midi_init(struct snd_usb_caiaqdev *device)
@@ -160,6 +226,7 @@ int snd_usb_caiaq_midi_init(struct snd_usb_caiaqdev *device)
 
 void snd_usb_caiaq_midi_output_done(struct urb* urb)
 {
+<<<<<<< HEAD
 	struct snd_usb_caiaqdev *dev = urb->context;
 
 	dev->midi_out_active = 0;
@@ -172,3 +239,16 @@ void snd_usb_caiaq_midi_output_done(struct urb* urb)
 	snd_usb_caiaq_midi_send(dev, dev->midi_out_substream);
 }
 
+=======
+	struct snd_usb_caiaqdev *cdev = urb->context;
+
+	cdev->midi_out_active = 0;
+	if (urb->status != 0)
+		return;
+
+	if (!cdev->midi_out_substream)
+		return;
+
+	snd_usb_caiaq_midi_send(cdev, cdev->midi_out_substream);
+}
+>>>>>>> refs/remotes/origin/master

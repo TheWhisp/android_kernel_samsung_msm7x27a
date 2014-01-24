@@ -151,7 +151,17 @@ edd_show_host_bus(struct edd_device *edev, char *buf)
 		p += scnprintf(p, left, "\tbase_address: %x\n",
 			     info->params.interface_path.isa.base_address);
 	} else if (!strncmp(info->params.host_bus_type, "PCIX", 4) ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 		   !strncmp(info->params.host_bus_type, "PCI", 3)) {
+=======
+		   !strncmp(info->params.host_bus_type, "PCI", 3) ||
+		   !strncmp(info->params.host_bus_type, "XPRS", 4)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   !strncmp(info->params.host_bus_type, "PCI", 3) ||
+		   !strncmp(info->params.host_bus_type, "XPRS", 4)) {
+>>>>>>> refs/remotes/origin/master
 		p += scnprintf(p, left,
 			     "\t%02x:%02x.%d  channel: %u\n",
 			     info->params.interface_path.pci.bus,
@@ -159,7 +169,13 @@ edd_show_host_bus(struct edd_device *edev, char *buf)
 			     info->params.interface_path.pci.function,
 			     info->params.interface_path.pci.channel);
 	} else if (!strncmp(info->params.host_bus_type, "IBND", 4) ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 		   !strncmp(info->params.host_bus_type, "XPRS", 4) ||
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		   !strncmp(info->params.host_bus_type, "HTPT", 4)) {
 		p += scnprintf(p, left,
 			     "\tTBD: %llx\n",
@@ -668,7 +684,15 @@ edd_get_pci_dev(struct edd_device *edev)
 {
 	struct edd_info *info = edd_dev_get_info(edev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (edd_dev_is_type(edev, "PCI")) {
+=======
+	if (edd_dev_is_type(edev, "PCI") || edd_dev_is_type(edev, "XPRS")) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (edd_dev_is_type(edev, "PCI") || edd_dev_is_type(edev, "XPRS")) {
+>>>>>>> refs/remotes/origin/master
 		return pci_get_bus_and_slot(info->params.interface_path.pci.bus,
 				     PCI_DEVFN(info->params.interface_path.pci.slot,
 					       info->params.interface_path.pci.

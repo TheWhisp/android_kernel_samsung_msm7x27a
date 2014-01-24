@@ -36,7 +36,15 @@
 #include <linux/blkdev.h>
 #include <linux/blkpg.h>
 #include <linux/hdreg.h>  /* HDIO_GETGEO */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bio.h>
 #include <linux/suspend.h>
 #include <linux/platform_device.h>
@@ -181,7 +189,15 @@ static unsigned long xpram_highest_page_index(void)
 /*
  * Block device make request function.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int xpram_make_request(struct request_queue *q, struct bio *bio)
+=======
+static void xpram_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void xpram_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	xpram_device_t *xdev = bio->bi_bdev->bd_disk->private_data;
 	struct bio_vec *bvec;
@@ -221,10 +237,22 @@ static int xpram_make_request(struct request_queue *q, struct bio *bio)
 	}
 	set_bit(BIO_UPTODATE, &bio->bi_flags);
 	bio_endio(bio, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 fail:
 	bio_io_error(bio);
 	return 0;
+=======
+	return;
+fail:
+	bio_io_error(bio);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return;
+fail:
+	bio_io_error(bio);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int xpram_getgeo(struct block_device *bdev, struct hd_geometry *geo)
@@ -344,6 +372,10 @@ static int __init xpram_setup_blkdev(void)
 			put_disk(xpram_disks[i]);
 			goto out;
 		}
+<<<<<<< HEAD
+=======
+		queue_flag_set_unlocked(QUEUE_FLAG_NONROT, xpram_queues[i]);
+>>>>>>> refs/remotes/origin/master
 		blk_queue_make_request(xpram_queues[i], xpram_make_request);
 		blk_queue_logical_block_size(xpram_queues[i], 4096);
 	}

@@ -203,7 +203,11 @@ configfs_write_file(struct file *file, const char __user *buf, size_t count, lof
 	mutex_lock(&buffer->mutex);
 	len = fill_write_buffer(buffer, buf, count);
 	if (len > 0)
+<<<<<<< HEAD
 		len = flush_write_buffer(file->f_path.dentry, buffer, count);
+=======
+		len = flush_write_buffer(file->f_path.dentry, buffer, len);
+>>>>>>> refs/remotes/origin/master
 	if (len > 0)
 		*ppos += len;
 	mutex_unlock(&buffer->mutex);

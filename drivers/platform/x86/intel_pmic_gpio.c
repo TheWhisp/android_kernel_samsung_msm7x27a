@@ -230,7 +230,11 @@ static irqreturn_t pmic_irq_handler(int irq, void *data)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit platform_pmic_gpio_probe(struct platform_device *pdev)
+=======
+static int platform_pmic_gpio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &pdev->dev;
 	int irq = platform_get_irq(pdev, 0);
@@ -288,7 +292,11 @@ static int __devinit platform_pmic_gpio_probe(struct platform_device *pdev)
 	retval = request_irq(pg->irq, pmic_irq_handler, 0, "pmic", pg);
 	if (retval) {
 		pr_warn("Interrupt request failed\n");
+<<<<<<< HEAD
 		goto err;
+=======
+		goto fail_request_irq;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < 8; i++) {
@@ -299,6 +307,13 @@ static int __devinit platform_pmic_gpio_probe(struct platform_device *pdev)
 		irq_set_chip_data(i + pg->irq_base, pg);
 	}
 	return 0;
+<<<<<<< HEAD
+=======
+
+fail_request_irq:
+	if (gpiochip_remove(&pg->chip))
+		pr_err("gpiochip_remove failed\n");
+>>>>>>> refs/remotes/origin/master
 err:
 	iounmap(pg->gpiointr);
 err2:

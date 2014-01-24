@@ -4,6 +4,14 @@ config DEBUG_PAGEALLOC
 	depends on !HIBERNATION || ARCH_SUPPORTS_DEBUG_PAGEALLOC && !PPC && !SPARC
 	depends on !KMEMCHECK
 	select PAGE_POISONING if !ARCH_SUPPORTS_DEBUG_PAGEALLOC
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select PAGE_GUARD if ARCH_SUPPORTS_DEBUG_PAGEALLOC
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select PAGE_GUARD if ARCH_SUPPORTS_DEBUG_PAGEALLOC
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Unmap pages from the kernel linear mapping after free_pages().
 	  This results in a large slowdown, but helps to find certain types
@@ -22,3 +30,16 @@ config WANT_PAGE_DEBUG_FLAGS
 config PAGE_POISONING
 	bool
 	select WANT_PAGE_DEBUG_FLAGS
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+config PAGE_GUARD
+	bool
+	select WANT_PAGE_DEBUG_FLAGS
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -30,6 +30,7 @@
  *-M*************************************************************************/
 
 
+<<<<<<< HEAD
 #define	BLS	(&aic7xxx_buffer[size])
 #define HDRB \
 "               0 - 4K   4 - 16K   16 - 64K  64 - 256K  256K - 1M        1M+"
@@ -74,18 +75,34 @@ aic7xxx_set_info(char *buffer, int length, struct Scsi_Host *HBAptr)
 /*+F*************************************************************************
  * Function:
  *   aic7xxx_proc_info
+=======
+#define HDRB \
+"               0 - 4K   4 - 16K   16 - 64K  64 - 256K  256K - 1M        1M+"
+
+
+/*+F*************************************************************************
+ * Function:
+ *   aic7xxx_show_info
+>>>>>>> refs/remotes/origin/master
  *
  * Description:
  *   Return information to handle /proc support for the driver.
  *-F*************************************************************************/
 int
+<<<<<<< HEAD
 aic7xxx_proc_info ( struct Scsi_Host *HBAptr, char *buffer, char **start, off_t offset, int length, 
                     int inout)
+=======
+aic7xxx_show_info(struct seq_file *m, struct Scsi_Host *HBAptr)
+>>>>>>> refs/remotes/origin/master
 {
   struct aic7xxx_host *p;
   struct aic_dev_data *aic_dev;
   struct scsi_device *sdptr;
+<<<<<<< HEAD
   int    size = 0;
+=======
+>>>>>>> refs/remotes/origin/master
   unsigned char i;
   unsigned char tindex;
 
@@ -94,6 +111,7 @@ aic7xxx_proc_info ( struct Scsi_Host *HBAptr, char *buffer, char **start, off_t 
 
   if (!p)
   {
+<<<<<<< HEAD
     size += sprintf(buffer, "Can't find adapter for host number %d\n", HBAptr->host_no);
     if (size > length)
     {
@@ -108,10 +126,15 @@ aic7xxx_proc_info ( struct Scsi_Host *HBAptr, char *buffer, char **start, off_t 
   if (inout == TRUE) /* Has data been written to the file? */ 
   {
     return (aic7xxx_set_info(buffer, length, HBAptr));
+=======
+    seq_printf(m, "Can't find adapter for host number %d\n", HBAptr->host_no);
+    return 0;
+>>>>>>> refs/remotes/origin/master
   }
 
   p = (struct aic7xxx_host *) HBAptr->hostdata;
 
+<<<<<<< HEAD
   /*
    * It takes roughly 1K of space to hold all relevant card info, not
    * counting any proc stats, so we start out with a 1.5k buffer size and
@@ -154,6 +177,17 @@ aic7xxx_proc_info ( struct Scsi_Host *HBAptr, char *buffer, char **start, off_t 
       board_names[p->board_name_index]);
   if (p->flags & AHC_TWIN)
     size += sprintf(BLS, "                         Twin Channel Controller ");
+=======
+  seq_printf(m, "Adaptec AIC7xxx driver version: ");
+  seq_printf(m, "%s/", AIC7XXX_C_VERSION);
+  seq_printf(m, "%s", AIC7XXX_H_VERSION);
+  seq_printf(m, "\n");
+  seq_printf(m, "Adapter Configuration:\n");
+  seq_printf(m, "           SCSI Adapter: %s\n",
+      board_names[p->board_name_index]);
+  if (p->flags & AHC_TWIN)
+    seq_printf(m, "                         Twin Channel Controller ");
+>>>>>>> refs/remotes/origin/master
   else
   {
     char *channel = "";
@@ -184,12 +218,17 @@ aic7xxx_proc_info ( struct Scsi_Host *HBAptr, char *buffer, char **start, off_t 
       ultra = "Ultra-2 LVD/SE ";
     else if (p->features & AHC_ULTRA)
       ultra = "Ultra ";
+<<<<<<< HEAD
     size += sprintf(BLS, "                           %s%sController%s ",
+=======
+    seq_printf(m, "                           %s%sController%s ",
+>>>>>>> refs/remotes/origin/master
       ultra, wide, channel);
   }
   switch(p->chip & ~AHC_CHIPID_MASK)
   {
     case AHC_VL:
+<<<<<<< HEAD
       size += sprintf(BLS, "at VLB slot %d\n", p->pci_device_fn);
       break;
     case AHC_EISA:
@@ -197,11 +236,21 @@ aic7xxx_proc_info ( struct Scsi_Host *HBAptr, char *buffer, char **start, off_t 
       break;
     default:
       size += sprintf(BLS, "at PCI %d/%d/%d\n", p->pci_bus,
+=======
+      seq_printf(m, "at VLB slot %d\n", p->pci_device_fn);
+      break;
+    case AHC_EISA:
+      seq_printf(m, "at EISA slot %d\n", p->pci_device_fn);
+      break;
+    default:
+      seq_printf(m, "at PCI %d/%d/%d\n", p->pci_bus,
+>>>>>>> refs/remotes/origin/master
         PCI_SLOT(p->pci_device_fn), PCI_FUNC(p->pci_device_fn));
       break;
   }
   if( !(p->maddr) )
   {
+<<<<<<< HEAD
     size += sprintf(BLS, "    Programmed I/O Base: %lx\n", p->base);
   }
   else
@@ -230,10 +279,41 @@ aic7xxx_proc_info ( struct Scsi_Host *HBAptr, char *buffer, char **start, off_t 
   if (p->chip & AHC_EISA)
   {
     size += sprintf(BLS, " %s\n",
+=======
+    seq_printf(m, "    Programmed I/O Base: %lx\n", p->base);
+  }
+  else
+  {
+    seq_printf(m, "    PCI MMAPed I/O Base: 0x%lx\n", p->mbase);
+  }
+  if( (p->chip & (AHC_VL | AHC_EISA)) )
+  {
+    seq_printf(m, "    BIOS Memory Address: 0x%08x\n", p->bios_address);
+  }
+  seq_printf(m, " Adapter SEEPROM Config: %s\n",
+          (p->flags & AHC_SEEPROM_FOUND) ? "SEEPROM found and used." :
+         ((p->flags & AHC_USEDEFAULTS) ? "SEEPROM not found, using defaults." :
+           "SEEPROM not found, using leftover BIOS values.") );
+  seq_printf(m, "      Adaptec SCSI BIOS: %s\n",
+          (p->flags & AHC_BIOS_ENABLED) ? "Enabled" : "Disabled");
+  seq_printf(m, "                    IRQ: %d\n", HBAptr->irq);
+  seq_printf(m, "                   SCBs: Active %d, Max Active %d,\n",
+            p->activescbs, p->max_activescbs);
+  seq_printf(m, "                         Allocated %d, HW %d, "
+            "Page %d\n", p->scb_data->numscbs, p->scb_data->maxhscbs,
+            p->scb_data->maxscbs);
+  if (p->flags & AHC_EXTERNAL_SRAM)
+    seq_printf(m, "                         Using External SCB SRAM\n");
+  seq_printf(m, "             Interrupts: %ld", p->isr_count);
+  if (p->chip & AHC_EISA)
+  {
+    seq_printf(m, " %s\n",
+>>>>>>> refs/remotes/origin/master
         (p->pause & IRQMS) ? "(Level Sensitive)" : "(Edge Triggered)");
   }
   else
   {
+<<<<<<< HEAD
     size += sprintf(BLS, "\n");
   }
   size += sprintf(BLS, "      BIOS Control Word: 0x%04x\n",
@@ -257,13 +337,44 @@ aic7xxx_proc_info ( struct Scsi_Host *HBAptr, char *buffer, char **start, off_t 
 
   size += sprintf(BLS, "\n");
   size += sprintf(BLS, "Statistics:\n\n");
+=======
+    seq_printf(m, "\n");
+  }
+  seq_printf(m, "      BIOS Control Word: 0x%04x\n",
+            p->bios_control);
+  seq_printf(m, "   Adapter Control Word: 0x%04x\n",
+            p->adapter_control);
+  seq_printf(m, "   Extended Translation: %sabled\n",
+      (p->flags & AHC_EXTEND_TRANS_A) ? "En" : "Dis");
+  seq_printf(m, "Disconnect Enable Flags: 0x%04x\n", p->discenable);
+  if (p->features & (AHC_ULTRA | AHC_ULTRA2))
+  {
+    seq_printf(m, "     Ultra Enable Flags: 0x%04x\n", p->ultraenb);
+  }
+  seq_printf(m, "Default Tag Queue Depth: %d\n", aic7xxx_default_queue_depth);
+  seq_printf(m, "    Tagged Queue By Device array for aic7xxx host "
+                       "instance %d:\n", p->instance);
+  seq_printf(m, "      {");
+  for(i=0; i < (MAX_TARGETS - 1); i++)
+    seq_printf(m, "%d,",aic7xxx_tag_info[p->instance].tag_commands[i]);
+  seq_printf(m, "%d}\n",aic7xxx_tag_info[p->instance].tag_commands[i]);
+
+  seq_printf(m, "\n");
+  seq_printf(m, "Statistics:\n\n");
+>>>>>>> refs/remotes/origin/master
   list_for_each_entry(aic_dev, &p->aic_devs, list)
   {
     sdptr = aic_dev->SDptr;
     tindex = sdptr->channel << 3 | sdptr->id;
+<<<<<<< HEAD
     size += sprintf(BLS, "(scsi%d:%d:%d:%d)\n",
         p->host_no, sdptr->channel, sdptr->id, sdptr->lun);
     size += sprintf(BLS, "  Device using %s/%s",
+=======
+    seq_printf(m, "(scsi%d:%d:%d:%d)\n",
+        p->host_no, sdptr->channel, sdptr->id, sdptr->lun);
+    seq_printf(m, "  Device using %s/%s",
+>>>>>>> refs/remotes/origin/master
           (aic_dev->cur.width == MSG_EXT_WDTR_BUS_16_BIT) ?
           "Wide" : "Narrow",
           (aic_dev->cur.offset != 0) ?
@@ -279,34 +390,56 @@ aic7xxx_proc_info ( struct Scsi_Host *HBAptr, char *buffer, char **start, off_t 
       sync_rate = aic7xxx_find_syncrate(p, &period, 0, &options);
       if (sync_rate != NULL)
       {
+<<<<<<< HEAD
         size += sprintf(BLS, "%s MByte/sec, offset %d\n",
+=======
+        seq_printf(m, "%s MByte/sec, offset %d\n",
+>>>>>>> refs/remotes/origin/master
                         sync_rate->rate[rate],
                         aic_dev->cur.offset );
       }
       else
       {
+<<<<<<< HEAD
         size += sprintf(BLS, "3.3 MByte/sec, offset %d\n",
                         aic_dev->cur.offset );
       }
     }
     size += sprintf(BLS, "  Transinfo settings: ");
     size += sprintf(BLS, "current(%d/%d/%d/%d), ",
+=======
+        seq_printf(m, "3.3 MByte/sec, offset %d\n",
+                        aic_dev->cur.offset );
+      }
+    }
+    seq_printf(m, "  Transinfo settings: ");
+    seq_printf(m, "current(%d/%d/%d/%d), ",
+>>>>>>> refs/remotes/origin/master
                     aic_dev->cur.period,
                     aic_dev->cur.offset,
                     aic_dev->cur.width,
                     aic_dev->cur.options);
+<<<<<<< HEAD
     size += sprintf(BLS, "goal(%d/%d/%d/%d), ",
+=======
+    seq_printf(m, "goal(%d/%d/%d/%d), ",
+>>>>>>> refs/remotes/origin/master
                     aic_dev->goal.period,
                     aic_dev->goal.offset,
                     aic_dev->goal.width,
                     aic_dev->goal.options);
+<<<<<<< HEAD
     size += sprintf(BLS, "user(%d/%d/%d/%d)\n",
+=======
+    seq_printf(m, "user(%d/%d/%d/%d)\n",
+>>>>>>> refs/remotes/origin/master
                     p->user[tindex].period,
                     p->user[tindex].offset,
                     p->user[tindex].width,
                     p->user[tindex].options);
     if(sdptr->simple_tags)
     {
+<<<<<<< HEAD
       size += sprintf(BLS, "  Tagged Command Queueing Enabled, Ordered Tags %s, Depth %d/%d\n", sdptr->ordered_tags ? "Enabled" : "Disabled", sdptr->queue_depth, aic_dev->max_q_depth);
     }
     if(aic_dev->barrier_total)
@@ -351,6 +484,33 @@ aic7xxx_proc_info ( struct Scsi_Host *HBAptr, char *buffer, char **start, off_t 
   }
 
   return (length);
+=======
+      seq_printf(m, "  Tagged Command Queueing Enabled, Ordered Tags %s, Depth %d/%d\n", sdptr->ordered_tags ? "Enabled" : "Disabled", sdptr->queue_depth, aic_dev->max_q_depth);
+    }
+    if(aic_dev->barrier_total)
+      seq_printf(m, "  Total transfers %ld:\n    (%ld/%ld/%ld/%ld reads/writes/REQ_BARRIER/Ordered Tags)\n",
+        aic_dev->r_total+aic_dev->w_total, aic_dev->r_total, aic_dev->w_total,
+        aic_dev->barrier_total, aic_dev->ordered_total);
+    else
+      seq_printf(m, "  Total transfers %ld:\n    (%ld/%ld reads/writes)\n",
+        aic_dev->r_total+aic_dev->w_total, aic_dev->r_total, aic_dev->w_total);
+    seq_printf(m, "%s\n", HDRB);
+    seq_printf(m, "   Reads:");
+    for (i = 0; i < ARRAY_SIZE(aic_dev->r_bins); i++)
+    {
+      seq_printf(m, " %10ld", aic_dev->r_bins[i]);
+    }
+    seq_printf(m, "\n");
+    seq_printf(m, "  Writes:");
+    for (i = 0; i < ARRAY_SIZE(aic_dev->w_bins); i++)
+    {
+      seq_printf(m, " %10ld", aic_dev->w_bins[i]);
+    }
+    seq_printf(m, "\n");
+    seq_printf(m, "\n\n");
+  }
+  return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

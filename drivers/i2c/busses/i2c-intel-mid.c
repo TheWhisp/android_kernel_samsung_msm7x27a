@@ -1093,7 +1093,11 @@ static void __devexit intel_mid_i2c_remove(struct pci_dev *dev)
 	pci_release_region(dev, 0);
 }
 
+<<<<<<< HEAD
 static struct pci_device_id intel_mid_i2c_ids[] = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(intel_mid_i2c_ids) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Moorestown */
 	{ PCI_VDEVICE(INTEL, 0x0802), 0 },
 	{ PCI_VDEVICE(INTEL, 0x0803), 1 },

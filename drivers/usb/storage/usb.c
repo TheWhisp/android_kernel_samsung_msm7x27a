@@ -53,7 +53,10 @@
 #include <linux/errno.h>
 #include <linux/freezer.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/kthread.h>
 #include <linux/mutex.h>
@@ -114,7 +117,11 @@ MODULE_PARM_DESC(quirks, "supplemental list of device IDs and their quirks");
 
 #define COMPLIANT_DEV	UNUSUAL_DEV
 
+<<<<<<< HEAD
 #define USUAL_DEV(use_protocol, use_transport, use_type) \
+=======
+#define USUAL_DEV(use_protocol, use_transport) \
+>>>>>>> refs/remotes/origin/master
 { \
 	.useProtocol = use_protocol,	\
 	.useTransport = use_transport,	\
@@ -132,15 +139,69 @@ MODULE_PARM_DESC(quirks, "supplemental list of device IDs and their quirks");
 }
 
 static struct us_unusual_dev us_unusual_dev_list[] = {
+<<<<<<< HEAD
 #	include "unusual_devs.h" 
 	{ }		/* Terminating entry */
 };
 
+<<<<<<< HEAD
+=======
+static struct us_unusual_dev for_dynamic_ids =
+		USUAL_DEV(USB_SC_SCSI, USB_PR_BULK, 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#	include "unusual_devs.h"
+	{ }		/* Terminating entry */
+};
+
+static struct us_unusual_dev for_dynamic_ids =
+		USUAL_DEV(USB_SC_SCSI, USB_PR_BULK);
+
+>>>>>>> refs/remotes/origin/master
 #undef UNUSUAL_DEV
 #undef COMPLIANT_DEV
 #undef USUAL_DEV
 #undef UNUSUAL_VENDOR_INTF
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_LOCKDEP
+
+static struct lock_class_key us_interface_key[USB_MAXINTERFACES];
+
+static void us_set_lock_class(struct mutex *mutex,
+		struct usb_interface *intf)
+{
+	struct usb_device *udev = interface_to_usbdev(intf);
+	struct usb_host_config *config = udev->actconfig;
+	int i;
+
+	for (i = 0; i < config->desc.bNumInterfaces; i++) {
+		if (config->interface[i] == intf)
+			break;
+	}
+
+	BUG_ON(i == config->desc.bNumInterfaces);
+
+	lockdep_set_class(mutex, &us_interface_key[i]);
+}
+
+#else
+
+static void us_set_lock_class(struct mutex *mutex,
+		struct usb_interface *intf)
+{
+}
+
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PM	/* Minimal support for suspend and resume */
 
@@ -151,7 +212,10 @@ int usb_stor_suspend(struct usb_interface *iface, pm_message_t message)
 	/* Wait until no command is running */
 	mutex_lock(&us->dev_mutex);
 
+<<<<<<< HEAD
 	US_DEBUGP("%s\n", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (us->suspend_resume_hook)
 		(us->suspend_resume_hook)(us, US_SUSPEND);
 
@@ -169,7 +233,10 @@ int usb_stor_resume(struct usb_interface *iface)
 
 	mutex_lock(&us->dev_mutex);
 
+<<<<<<< HEAD
 	US_DEBUGP("%s\n", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (us->suspend_resume_hook)
 		(us->suspend_resume_hook)(us, US_RESUME);
 
@@ -182,8 +249,11 @@ int usb_stor_reset_resume(struct usb_interface *iface)
 {
 	struct us_data *us = usb_get_intfdata(iface);
 
+<<<<<<< HEAD
 	US_DEBUGP("%s\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Report the reset to the SCSI core */
 	usb_stor_report_bus_reset(us);
 
@@ -204,8 +274,11 @@ int usb_stor_pre_reset(struct usb_interface *iface)
 {
 	struct us_data *us = usb_get_intfdata(iface);
 
+<<<<<<< HEAD
 	US_DEBUGP("%s\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Make sure no command runs during the reset */
 	mutex_lock(&us->dev_mutex);
 	return 0;
@@ -216,8 +289,11 @@ int usb_stor_post_reset(struct usb_interface *iface)
 {
 	struct us_data *us = usb_get_intfdata(iface);
 
+<<<<<<< HEAD
 	US_DEBUGP("%s\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Report the reset to the SCSI core */
 	usb_stor_report_bus_reset(us);
 
@@ -241,17 +317,29 @@ EXPORT_SYMBOL_GPL(usb_stor_post_reset);
 void fill_inquiry_response(struct us_data *us, unsigned char *data,
 		unsigned int data_len)
 {
+<<<<<<< HEAD
 	if (data_len<36) // You lose.
 		return;
 
 	memset(data+8, ' ', 28);
 	if(data[0]&0x20) { /* USB device currently not connected. Return
+=======
+	if (data_len < 36) /* You lose. */
+		return;
+
+	memset(data+8, ' ', 28);
+	if (data[0]&0x20) { /* USB device currently not connected. Return
+>>>>>>> refs/remotes/origin/master
 			      peripheral qualifier 001b ("...however, the
 			      physical device is not currently connected
 			      to this logical unit") and leave vendor and
 			      product identification empty. ("If the target
 			      does store some of the INQUIRY data on the
+<<<<<<< HEAD
 			      device, it may return zeros or ASCII spaces 
+=======
+			      device, it may return zeros or ASCII spaces
+>>>>>>> refs/remotes/origin/master
 			      (20h) in those fields until the data is
 			      available from the device."). */
 	} else {
@@ -278,12 +366,21 @@ static int usb_stor_control_thread(void * __us)
 	struct us_data *us = (struct us_data *)__us;
 	struct Scsi_Host *host = us_to_host(us);
 
+<<<<<<< HEAD
 	for(;;) {
 		US_DEBUGP("*** thread sleeping.\n");
 		if (wait_for_completion_interruptible(&us->cmnd_ready))
 			break;
 
 		US_DEBUGP("*** thread awakened.\n");
+=======
+	for (;;) {
+		usb_stor_dbg(us, "*** thread sleeping\n");
+		if (wait_for_completion_interruptible(&us->cmnd_ready))
+			break;
+
+		usb_stor_dbg(us, "*** thread awakened\n");
+>>>>>>> refs/remotes/origin/master
 
 		/* lock the device pointers */
 		mutex_lock(&(us->dev_mutex));
@@ -295,7 +392,11 @@ static int usb_stor_control_thread(void * __us)
 		if (us->srb == NULL) {
 			scsi_unlock(host);
 			mutex_unlock(&us->dev_mutex);
+<<<<<<< HEAD
 			US_DEBUGP("-- exiting\n");
+=======
+			usb_stor_dbg(us, "-- exiting\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -307,31 +408,55 @@ static int usb_stor_control_thread(void * __us)
 
 		scsi_unlock(host);
 
+<<<<<<< HEAD
 		/* reject the command if the direction indicator 
 		 * is UNKNOWN
 		 */
 		if (us->srb->sc_data_direction == DMA_BIDIRECTIONAL) {
 			US_DEBUGP("UNKNOWN data direction\n");
+=======
+		/* reject the command if the direction indicator
+		 * is UNKNOWN
+		 */
+		if (us->srb->sc_data_direction == DMA_BIDIRECTIONAL) {
+			usb_stor_dbg(us, "UNKNOWN data direction\n");
+>>>>>>> refs/remotes/origin/master
 			us->srb->result = DID_ERROR << 16;
 		}
 
 		/* reject if target != 0 or if LUN is higher than
 		 * the maximum known LUN
 		 */
+<<<<<<< HEAD
 		else if (us->srb->device->id && 
 				!(us->fflags & US_FL_SCM_MULT_TARG)) {
 			US_DEBUGP("Bad target number (%d:%d)\n",
 				  us->srb->device->id, us->srb->device->lun);
+=======
+		else if (us->srb->device->id &&
+				!(us->fflags & US_FL_SCM_MULT_TARG)) {
+			usb_stor_dbg(us, "Bad target number (%d:%d)\n",
+				     us->srb->device->id, us->srb->device->lun);
+>>>>>>> refs/remotes/origin/master
 			us->srb->result = DID_BAD_TARGET << 16;
 		}
 
 		else if (us->srb->device->lun > us->max_lun) {
+<<<<<<< HEAD
 			US_DEBUGP("Bad LUN (%d:%d)\n",
 				  us->srb->device->id, us->srb->device->lun);
 			us->srb->result = DID_BAD_TARGET << 16;
 		}
 
 		/* Handle those devices which need us to fake 
+=======
+			usb_stor_dbg(us, "Bad LUN (%d:%d)\n",
+				     us->srb->device->id, us->srb->device->lun);
+			us->srb->result = DID_BAD_TARGET << 16;
+		}
+
+		/* Handle those devices which need us to fake
+>>>>>>> refs/remotes/origin/master
 		 * their inquiry data */
 		else if ((us->srb->cmnd[0] == INQUIRY) &&
 			    (us->fflags & US_FL_FIX_INQUIRY)) {
@@ -339,14 +464,22 @@ static int usb_stor_control_thread(void * __us)
 			    0x00, 0x80, 0x02, 0x02,
 			    0x1F, 0x00, 0x00, 0x00};
 
+<<<<<<< HEAD
 			US_DEBUGP("Faking INQUIRY command\n");
+=======
+			usb_stor_dbg(us, "Faking INQUIRY command\n");
+>>>>>>> refs/remotes/origin/master
 			fill_inquiry_response(us, data_ptr, 36);
 			us->srb->result = SAM_STAT_GOOD;
 		}
 
 		/* we've got a command, let's do it! */
 		else {
+<<<<<<< HEAD
 			US_DEBUG(usb_stor_show_command(us->srb));
+=======
+			US_DEBUG(usb_stor_show_command(us, us->srb));
+>>>>>>> refs/remotes/origin/master
 			us->proto_handler(us->srb, us);
 			usb_mark_last_busy(us->pusb_dev);
 		}
@@ -356,12 +489,21 @@ static int usb_stor_control_thread(void * __us)
 
 		/* indicate that the command is done */
 		if (us->srb->result != DID_ABORT << 16) {
+<<<<<<< HEAD
 			US_DEBUGP("scsi cmd done, result=0x%x\n", 
 				   us->srb->result);
 			us->srb->scsi_done(us->srb);
 		} else {
 SkipForAbort:
 			US_DEBUGP("scsi command aborted\n");
+=======
+			usb_stor_dbg(us, "scsi cmd done, result=0x%x\n",
+				     us->srb->result);
+			us->srb->scsi_done(us->srb);
+		} else {
+SkipForAbort:
+			usb_stor_dbg(us, "scsi command aborted\n");
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* If an abort request was received we need to signal that
@@ -394,7 +536,11 @@ SkipForAbort:
 	}
 	__set_current_state(TASK_RUNNING);
 	return 0;
+<<<<<<< HEAD
 }	
+=======
+}
+>>>>>>> refs/remotes/origin/master
 
 /***********************************************************************
  * Device probing and disconnecting
@@ -403,12 +549,16 @@ SkipForAbort:
 /* Associate our private data with the USB device */
 static int associate_dev(struct us_data *us, struct usb_interface *intf)
 {
+<<<<<<< HEAD
 	US_DEBUGP("-- %s\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Fill in the device-related fields */
 	us->pusb_dev = interface_to_usbdev(intf);
 	us->pusb_intf = intf;
 	us->ifnum = intf->cur_altsetting->desc.bInterfaceNumber;
+<<<<<<< HEAD
 	US_DEBUGP("Vendor: 0x%04x, Product: 0x%04x, Revision: 0x%04x\n",
 			le16_to_cpu(us->pusb_dev->descriptor.idVendor),
 			le16_to_cpu(us->pusb_dev->descriptor.idProduct),
@@ -416,21 +566,39 @@ static int associate_dev(struct us_data *us, struct usb_interface *intf)
 	US_DEBUGP("Interface Subclass: 0x%02x, Protocol: 0x%02x\n",
 			intf->cur_altsetting->desc.bInterfaceSubClass,
 			intf->cur_altsetting->desc.bInterfaceProtocol);
+=======
+	usb_stor_dbg(us, "Vendor: 0x%04x, Product: 0x%04x, Revision: 0x%04x\n",
+		     le16_to_cpu(us->pusb_dev->descriptor.idVendor),
+		     le16_to_cpu(us->pusb_dev->descriptor.idProduct),
+		     le16_to_cpu(us->pusb_dev->descriptor.bcdDevice));
+	usb_stor_dbg(us, "Interface Subclass: 0x%02x, Protocol: 0x%02x\n",
+		     intf->cur_altsetting->desc.bInterfaceSubClass,
+		     intf->cur_altsetting->desc.bInterfaceProtocol);
+>>>>>>> refs/remotes/origin/master
 
 	/* Store our private data in the interface */
 	usb_set_intfdata(intf, us);
 
 	/* Allocate the control/setup and DMA-mapped buffers */
 	us->cr = kmalloc(sizeof(*us->cr), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!us->cr) {
 		US_DEBUGP("usb_ctrlrequest allocation failed\n");
 		return -ENOMEM;
 	}
+=======
+	if (!us->cr)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	us->iobuf = usb_alloc_coherent(us->pusb_dev, US_IOBUF_SIZE,
 			GFP_KERNEL, &us->iobuf_dma);
 	if (!us->iobuf) {
+<<<<<<< HEAD
 		US_DEBUGP("I/O buffer allocation failed\n");
+=======
+		usb_stor_dbg(us, "I/O buffer allocation failed\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	return 0;
@@ -453,7 +621,11 @@ static void adjust_quirks(struct us_data *us)
 			US_FL_CAPACITY_OK | US_FL_IGNORE_RESIDUE |
 			US_FL_SINGLE_LUN | US_FL_NO_WP_DETECT |
 			US_FL_NO_READ_DISC_INFO | US_FL_NO_READ_CAPACITY_16 |
+<<<<<<< HEAD
 			US_FL_INITIAL_READ10);
+=======
+			US_FL_INITIAL_READ10 | US_FL_WRITE_CACHE);
+>>>>>>> refs/remotes/origin/master
 
 	p = quirks;
 	while (*p) {
@@ -509,6 +681,12 @@ static void adjust_quirks(struct us_data *us)
 		case 'o':
 			f |= US_FL_CAPACITY_OK;
 			break;
+<<<<<<< HEAD
+=======
+		case 'p':
+			f |= US_FL_WRITE_CACHE;
+			break;
+>>>>>>> refs/remotes/origin/master
 		case 'r':
 			f |= US_FL_IGNORE_RESIDUE;
 			break;
@@ -541,7 +719,11 @@ static int get_device_info(struct us_data *us, const struct usb_device_id *id,
 	us->protocol = (unusual_dev->useTransport == USB_PR_DEVICE) ?
 			idesc->bInterfaceProtocol :
 			unusual_dev->useTransport;
+<<<<<<< HEAD
 	us->fflags = USB_US_ORIG_FLAGS(id->driver_info);
+=======
+	us->fflags = id->driver_info;
+>>>>>>> refs/remotes/origin/master
 	adjust_quirks(us);
 
 	if (us->fflags & US_FL_IGNORE_DEVICE) {
@@ -703,7 +885,11 @@ static int get_pipes(struct us_data *us)
 	}
 
 	if (!ep_in || !ep_out || (us->protocol == USB_PR_CBI && !ep_int)) {
+<<<<<<< HEAD
 		US_DEBUGP("Endpoint sanity check failed! Rejecting dev.\n");
+=======
+		usb_stor_dbg(us, "Endpoint sanity check failed! Rejecting dev.\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -712,7 +898,11 @@ static int get_pipes(struct us_data *us)
 	us->recv_ctrl_pipe = usb_rcvctrlpipe(us->pusb_dev, 0);
 	us->send_bulk_pipe = usb_sndbulkpipe(us->pusb_dev,
 		usb_endpoint_num(ep_out));
+<<<<<<< HEAD
 	us->recv_bulk_pipe = usb_rcvbulkpipe(us->pusb_dev, 
+=======
+	us->recv_bulk_pipe = usb_rcvbulkpipe(us->pusb_dev,
+>>>>>>> refs/remotes/origin/master
 		usb_endpoint_num(ep_in));
 	if (ep_int) {
 		us->recv_intr_pipe = usb_rcvintpipe(us->pusb_dev,
@@ -730,7 +920,11 @@ static int usb_stor_acquire_resources(struct us_data *us)
 
 	us->current_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!us->current_urb) {
+<<<<<<< HEAD
 		US_DEBUGP("URB allocation failed\n");
+=======
+		usb_stor_dbg(us, "URB allocation failed\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -757,20 +951,31 @@ static int usb_stor_acquire_resources(struct us_data *us)
 /* Release all our dynamic resources */
 static void usb_stor_release_resources(struct us_data *us)
 {
+<<<<<<< HEAD
 	US_DEBUGP("-- %s\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Tell the control thread to exit.  The SCSI host must
 	 * already have been removed and the DISCONNECTING flag set
 	 * so that we won't accept any more commands.
 	 */
+<<<<<<< HEAD
 	US_DEBUGP("-- sending exit command to thread\n");
+=======
+	usb_stor_dbg(us, "-- sending exit command to thread\n");
+>>>>>>> refs/remotes/origin/master
 	complete(&us->cmnd_ready);
 	if (us->ctl_thread)
 		kthread_stop(us->ctl_thread);
 
 	/* Call the destructor routine, if it exists */
 	if (us->extra_destructor) {
+<<<<<<< HEAD
 		US_DEBUGP("-- calling extra_destructor()\n");
+=======
+		usb_stor_dbg(us, "-- calling extra_destructor()\n");
+>>>>>>> refs/remotes/origin/master
 		us->extra_destructor(us->extra);
 	}
 
@@ -782,8 +987,11 @@ static void usb_stor_release_resources(struct us_data *us)
 /* Dissociate from the USB device */
 static void dissociate_dev(struct us_data *us)
 {
+<<<<<<< HEAD
 	US_DEBUGP("-- %s\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Free the buffers */
 	kfree(us->cr);
 	usb_free_coherent(us->pusb_dev, US_IOBUF_SIZE, us->iobuf, us->iobuf_dma);
@@ -883,7 +1091,11 @@ int usb_stor_probe1(struct us_data **pus,
 	struct us_data *us;
 	int result;
 
+<<<<<<< HEAD
 	US_DEBUGP("USB Mass Storage device detected\n");
+=======
+	dev_info(&intf->dev, "USB Mass Storage device detected\n");
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Ask the SCSI layer to allocate a host structure, with extra
@@ -891,8 +1103,12 @@ int usb_stor_probe1(struct us_data **pus,
 	 */
 	host = scsi_host_alloc(&usb_stor_host_template, sizeof(*us));
 	if (!host) {
+<<<<<<< HEAD
 		dev_warn(&intf->dev,
 				"Unable to allocate the scsi host\n");
+=======
+		dev_warn(&intf->dev, "Unable to allocate the scsi host\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -902,8 +1118,17 @@ int usb_stor_probe1(struct us_data **pus,
 	host->max_cmd_len = 16;
 	host->sg_tablesize = usb_stor_sg_tablesize(intf);
 	*pus = us = host_to_us(host);
+<<<<<<< HEAD
 	memset(us, 0, sizeof(struct us_data));
 	mutex_init(&(us->dev_mutex));
+<<<<<<< HEAD
+=======
+	us_set_lock_class(&us->dev_mutex, intf);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&(us->dev_mutex));
+	us_set_lock_class(&us->dev_mutex, intf);
+>>>>>>> refs/remotes/origin/master
 	init_completion(&us->cmnd_ready);
 	init_completion(&(us->notify));
 	init_waitqueue_head(&us->delay_wait);
@@ -929,7 +1154,11 @@ int usb_stor_probe1(struct us_data **pus,
 	return 0;
 
 BadDevice:
+<<<<<<< HEAD
 	US_DEBUGP("storage_probe() failed\n");
+=======
+	usb_stor_dbg(us, "storage_probe() failed\n");
+>>>>>>> refs/remotes/origin/master
 	release_everything(us);
 	return result;
 }
@@ -946,13 +1175,24 @@ int usb_stor_probe2(struct us_data *us)
 		result = -ENXIO;
 		goto BadDevice;
 	}
+<<<<<<< HEAD
 	US_DEBUGP("Transport: %s\n", us->transport_name);
 	US_DEBUGP("Protocol: %s\n", us->protocol_name);
+=======
+	usb_stor_dbg(us, "Transport: %s\n", us->transport_name);
+	usb_stor_dbg(us, "Protocol: %s\n", us->protocol_name);
+>>>>>>> refs/remotes/origin/master
 
 	/* fix for single-lun devices */
 	if (us->fflags & US_FL_SINGLE_LUN)
 		us->max_lun = 0;
 
+<<<<<<< HEAD
+=======
+	if (!(us->fflags & US_FL_SCM_MULT_TARG))
+		us_to_host(us)->max_id = 1;
+
+>>>>>>> refs/remotes/origin/master
 	/* Find the endpoints and calculate pipe values */
 	result = get_pipes(us);
 	if (result)
@@ -990,7 +1230,11 @@ int usb_stor_probe2(struct us_data *us)
 
 	/* We come here if there are any problems */
 BadDevice:
+<<<<<<< HEAD
 	US_DEBUGP("storage_probe() failed\n");
+=======
+	usb_stor_dbg(us, "storage_probe() failed\n");
+>>>>>>> refs/remotes/origin/master
 	release_everything(us);
 	return result;
 }
@@ -1001,7 +1245,10 @@ void usb_stor_disconnect(struct usb_interface *intf)
 {
 	struct us_data *us = usb_get_intfdata(intf);
 
+<<<<<<< HEAD
 	US_DEBUGP("storage_disconnect() called\n");
+=======
+>>>>>>> refs/remotes/origin/master
 	quiesce_and_remove_host(us);
 	release_everything(us);
 }
@@ -1011,8 +1258,19 @@ EXPORT_SYMBOL_GPL(usb_stor_disconnect);
 static int storage_probe(struct usb_interface *intf,
 			 const struct usb_device_id *id)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct us_data *us;
 	int result;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct us_unusual_dev *unusual_dev;
+	struct us_data *us;
+	int result;
+	int size;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * If libusual is configured, let it decide whether a standard
@@ -1022,6 +1280,14 @@ static int storage_probe(struct usb_interface *intf,
 	 */
 	if (usb_usual_check_type(id, USB_US_TYPE_STOR) ||
 			usb_usual_ignore_device(intf))
+=======
+
+	/*
+	 * If the device isn't standard (is handled by a subdriver
+	 * module) then don't accept it.
+	 */
+	if (usb_usual_ignore_device(intf))
+>>>>>>> refs/remotes/origin/master
 		return -ENXIO;
 
 	/*
@@ -1031,8 +1297,34 @@ static int storage_probe(struct usb_interface *intf,
 	 * table, so we use the index of the id entry to find the
 	 * corresponding unusual_devs entry.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	result = usb_stor_probe1(&us, intf, id,
 			(id - usb_storage_usb_ids) + us_unusual_dev_list);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	size = ARRAY_SIZE(us_unusual_dev_list);
+	if (id >= usb_storage_usb_ids && id < usb_storage_usb_ids + size) {
+		unusual_dev = (id - usb_storage_usb_ids) + us_unusual_dev_list;
+	} else {
+		unusual_dev = &for_dynamic_ids;
+
+<<<<<<< HEAD
+		US_DEBUGP("%s %s 0x%04x 0x%04x\n", "Use Bulk-Only transport",
+			"with the Transparent SCSI protocol for dynamic id:",
+=======
+		dev_dbg(&intf->dev, "Use Bulk-Only transport with the Transparent SCSI protocol for dynamic id: 0x%04x 0x%04x\n",
+>>>>>>> refs/remotes/origin/master
+			id->idVendor, id->idProduct);
+	}
+
+	result = usb_stor_probe1(&us, intf, id, unusual_dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (result)
 		return result;
 
@@ -1042,10 +1334,13 @@ static int storage_probe(struct usb_interface *intf,
 	return result;
 }
 
+<<<<<<< HEAD
 /***********************************************************************
  * Initialization and registration
  ***********************************************************************/
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_driver usb_storage_driver = {
 	.name =		"usb-storage",
 	.probe =	storage_probe,
@@ -1058,7 +1353,11 @@ static struct usb_driver usb_storage_driver = {
 	.id_table =	usb_storage_usb_ids,
 	.supports_autosuspend = 1,
 	.soft_unbind =	1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.no_dynamic_id = 1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init usb_stor_init(void)
@@ -1092,3 +1391,8 @@ static void __exit usb_stor_exit(void)
 
 module_init(usb_stor_init);
 module_exit(usb_stor_exit);
+=======
+};
+
+module_usb_driver(usb_storage_driver);
+>>>>>>> refs/remotes/origin/master

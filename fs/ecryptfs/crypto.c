@@ -37,6 +37,7 @@
 #include <asm/unaligned.h>
 #include "ecryptfs_kernel.h"
 
+<<<<<<< HEAD
 static int
 ecryptfs_decrypt_page_offset(struct ecryptfs_crypt_stat *crypt_stat,
 			     struct page *dst_page, int dst_offset,
@@ -47,6 +48,10 @@ ecryptfs_encrypt_page_offset(struct ecryptfs_crypt_stat *crypt_stat,
 			     struct page *dst_page, int dst_offset,
 			     struct page *src_page, int src_offset, int size,
 			     unsigned char *iv);
+=======
+#define DECRYPT		0
+#define ENCRYPT		1
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ecryptfs_to_hex
@@ -243,7 +248,11 @@ void ecryptfs_destroy_crypt_stat(struct ecryptfs_crypt_stat *crypt_stat)
 	struct ecryptfs_key_sig *key_sig, *key_sig_tmp;
 
 	if (crypt_stat->tfm)
+<<<<<<< HEAD
 		crypto_free_blkcipher(crypt_stat->tfm);
+=======
+		crypto_free_ablkcipher(crypt_stat->tfm);
+>>>>>>> refs/remotes/origin/master
 	if (crypt_stat->hash_tfm)
 		crypto_free_hash(crypt_stat->hash_tfm);
 	list_for_each_entry_safe(key_sig, key_sig_tmp,
@@ -301,6 +310,7 @@ int virt_to_scatterlist(const void *addr, int size, struct scatterlist *sg,
 	while (size > 0 && i < sg_size) {
 		pg = virt_to_page(addr);
 		offset = offset_in_page(addr);
+<<<<<<< HEAD
 		if (sg)
 			sg_set_page(&sg[i], pg, 0, offset);
 		remainder_of_page = PAGE_CACHE_SIZE - offset;
@@ -312,6 +322,16 @@ int virt_to_scatterlist(const void *addr, int size, struct scatterlist *sg,
 		} else {
 			if (sg)
 				sg[i].length = size;
+=======
+		sg_set_page(&sg[i], pg, 0, offset);
+		remainder_of_page = PAGE_CACHE_SIZE - offset;
+		if (size >= remainder_of_page) {
+			sg[i].length = remainder_of_page;
+			addr += remainder_of_page;
+			size -= remainder_of_page;
+		} else {
+			sg[i].length = size;
+>>>>>>> refs/remotes/origin/master
 			addr += size;
 			size = 0;
 		}
@@ -322,6 +342,7 @@ int virt_to_scatterlist(const void *addr, int size, struct scatterlist *sg,
 	return i;
 }
 
+<<<<<<< HEAD
 /**
  * encrypt_scatterlist
  * @crypt_stat: Pointer to the crypt_stat struct to initialize.
@@ -342,6 +363,42 @@ static int encrypt_scatterlist(struct ecryptfs_crypt_stat *crypt_stat,
 		.info = iv,
 		.flags = CRYPTO_TFM_REQ_MAY_SLEEP
 	};
+=======
+struct extent_crypt_result {
+	struct completion completion;
+	int rc;
+};
+
+static void extent_crypt_complete(struct crypto_async_request *req, int rc)
+{
+	struct extent_crypt_result *ecr = req->data;
+
+	if (rc == -EINPROGRESS)
+		return;
+
+	ecr->rc = rc;
+	complete(&ecr->completion);
+}
+
+/**
+ * crypt_scatterlist
+ * @crypt_stat: Pointer to the crypt_stat struct to initialize.
+ * @dst_sg: Destination of the data after performing the crypto operation
+ * @src_sg: Data to be encrypted or decrypted
+ * @size: Length of data
+ * @iv: IV to use
+ * @op: ENCRYPT or DECRYPT to indicate the desired operation
+ *
+ * Returns the number of bytes encrypted or decrypted; negative value on error
+ */
+static int crypt_scatterlist(struct ecryptfs_crypt_stat *crypt_stat,
+			     struct scatterlist *dst_sg,
+			     struct scatterlist *src_sg, int size,
+			     unsigned char *iv, int op)
+{
+	struct ablkcipher_request *req = NULL;
+	struct extent_crypt_result ecr;
+>>>>>>> refs/remotes/origin/master
 	int rc = 0;
 
 	BUG_ON(!crypt_stat || !crypt_stat->tfm
@@ -352,6 +409,7 @@ static int encrypt_scatterlist(struct ecryptfs_crypt_stat *crypt_stat,
 		ecryptfs_dump_hex(crypt_stat->key,
 				  crypt_stat->key_size);
 	}
+<<<<<<< HEAD
 	/* Consider doing this once, when the file is opened */
 	mutex_lock(&crypt_stat->cs_tfm_mutex);
 	if (!(crypt_stat->flags & ECRYPTFS_KEY_SET)) {
@@ -370,10 +428,54 @@ static int encrypt_scatterlist(struct ecryptfs_crypt_stat *crypt_stat,
 	crypto_blkcipher_encrypt_iv(&desc, dest_sg, src_sg, size);
 	mutex_unlock(&crypt_stat->cs_tfm_mutex);
 out:
+=======
+
+	init_completion(&ecr.completion);
+
+	mutex_lock(&crypt_stat->cs_tfm_mutex);
+	req = ablkcipher_request_alloc(crypt_stat->tfm, GFP_NOFS);
+	if (!req) {
+		mutex_unlock(&crypt_stat->cs_tfm_mutex);
+		rc = -ENOMEM;
+		goto out;
+	}
+
+	ablkcipher_request_set_callback(req,
+			CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+			extent_crypt_complete, &ecr);
+	/* Consider doing this once, when the file is opened */
+	if (!(crypt_stat->flags & ECRYPTFS_KEY_SET)) {
+		rc = crypto_ablkcipher_setkey(crypt_stat->tfm, crypt_stat->key,
+					      crypt_stat->key_size);
+		if (rc) {
+			ecryptfs_printk(KERN_ERR,
+					"Error setting key; rc = [%d]\n",
+					rc);
+			mutex_unlock(&crypt_stat->cs_tfm_mutex);
+			rc = -EINVAL;
+			goto out;
+		}
+		crypt_stat->flags |= ECRYPTFS_KEY_SET;
+	}
+	mutex_unlock(&crypt_stat->cs_tfm_mutex);
+	ablkcipher_request_set_crypt(req, src_sg, dst_sg, size, iv);
+	rc = op == ENCRYPT ? crypto_ablkcipher_encrypt(req) :
+			     crypto_ablkcipher_decrypt(req);
+	if (rc == -EINPROGRESS || rc == -EBUSY) {
+		struct extent_crypt_result *ecr = req->base.data;
+
+		wait_for_completion(&ecr->completion);
+		rc = ecr->rc;
+		reinit_completion(&ecr->completion);
+	}
+out:
+	ablkcipher_request_free(req);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 /**
+<<<<<<< HEAD
  * ecryptfs_lower_offset_for_extent
  *
  * Convert an eCryptfs page index into a lower byte offset
@@ -409,6 +511,45 @@ static int ecryptfs_encrypt_extent(struct page *enc_extent_page,
 
 	extent_base = (((loff_t)page->index)
 		       * (PAGE_CACHE_SIZE / crypt_stat->extent_size));
+=======
+ * lower_offset_for_page
+ *
+ * Convert an eCryptfs page index into a lower byte offset
+ */
+static loff_t lower_offset_for_page(struct ecryptfs_crypt_stat *crypt_stat,
+				    struct page *page)
+{
+	return ecryptfs_lower_header_size(crypt_stat) +
+	       ((loff_t)page->index << PAGE_CACHE_SHIFT);
+}
+
+/**
+ * crypt_extent
+ * @crypt_stat: crypt_stat containing cryptographic context for the
+ *              encryption operation
+ * @dst_page: The page to write the result into
+ * @src_page: The page to read from
+ * @extent_offset: Page extent offset for use in generating IV
+ * @op: ENCRYPT or DECRYPT to indicate the desired operation
+ *
+ * Encrypts or decrypts one extent of data.
+ *
+ * Return zero on success; non-zero otherwise
+ */
+static int crypt_extent(struct ecryptfs_crypt_stat *crypt_stat,
+			struct page *dst_page,
+			struct page *src_page,
+			unsigned long extent_offset, int op)
+{
+	pgoff_t page_index = op == ENCRYPT ? src_page->index : dst_page->index;
+	loff_t extent_base;
+	char extent_iv[ECRYPTFS_MAX_IV_BYTES];
+	struct scatterlist src_sg, dst_sg;
+	size_t extent_size = crypt_stat->extent_size;
+	int rc;
+
+	extent_base = (((loff_t)page_index) * (PAGE_CACHE_SIZE / extent_size));
+>>>>>>> refs/remotes/origin/master
 	rc = ecryptfs_derive_iv(extent_iv, crypt_stat,
 				(extent_base + extent_offset));
 	if (rc) {
@@ -417,6 +558,7 @@ static int ecryptfs_encrypt_extent(struct page *enc_extent_page,
 			(unsigned long long)(extent_base + extent_offset), rc);
 		goto out;
 	}
+<<<<<<< HEAD
 	rc = ecryptfs_encrypt_page_offset(crypt_stat, enc_extent_page, 0,
 					  page, (extent_offset
 						 * crypt_stat->extent_size),
@@ -426,6 +568,23 @@ static int ecryptfs_encrypt_extent(struct page *enc_extent_page,
 		       "page->index = [%ld], extent_offset = [%ld]; "
 		       "rc = [%d]\n", __func__, page->index, extent_offset,
 		       rc);
+=======
+
+	sg_init_table(&src_sg, 1);
+	sg_init_table(&dst_sg, 1);
+
+	sg_set_page(&src_sg, src_page, extent_size,
+		    extent_offset * extent_size);
+	sg_set_page(&dst_sg, dst_page, extent_size,
+		    extent_offset * extent_size);
+
+	rc = crypt_scatterlist(crypt_stat, &dst_sg, &src_sg, extent_size,
+			       extent_iv, op);
+	if (rc < 0) {
+		printk(KERN_ERR "%s: Error attempting to crypt page with "
+		       "page_index = [%ld], extent_offset = [%ld]; "
+		       "rc = [%d]\n", __func__, page_index, extent_offset, rc);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	rc = 0;
@@ -456,6 +615,10 @@ int ecryptfs_encrypt_page(struct page *page)
 	char *enc_extent_virt;
 	struct page *enc_extent_page = NULL;
 	loff_t extent_offset;
+<<<<<<< HEAD
+=======
+	loff_t lower_offset;
+>>>>>>> refs/remotes/origin/master
 	int rc = 0;
 
 	ecryptfs_inode = page->mapping->host;
@@ -469,6 +632,7 @@ int ecryptfs_encrypt_page(struct page *page)
 				"encrypted extent\n");
 		goto out;
 	}
+<<<<<<< HEAD
 	enc_extent_virt = kmap(enc_extent_page);
 	for (extent_offset = 0;
 	     extent_offset < (PAGE_CACHE_SIZE / crypt_stat->extent_size);
@@ -477,11 +641,20 @@ int ecryptfs_encrypt_page(struct page *page)
 
 		rc = ecryptfs_encrypt_extent(enc_extent_page, crypt_stat, page,
 					     extent_offset);
+=======
+
+	for (extent_offset = 0;
+	     extent_offset < (PAGE_CACHE_SIZE / crypt_stat->extent_size);
+	     extent_offset++) {
+		rc = crypt_extent(crypt_stat, enc_extent_page, page,
+				  extent_offset, ENCRYPT);
+>>>>>>> refs/remotes/origin/master
 		if (rc) {
 			printk(KERN_ERR "%s: Error encrypting extent; "
 			       "rc = [%d]\n", __func__, rc);
 			goto out;
 		}
+<<<<<<< HEAD
 		ecryptfs_lower_offset_for_extent(
 			&offset, ((((loff_t)page->index)
 				   * (PAGE_CACHE_SIZE
@@ -534,10 +707,29 @@ static int ecryptfs_decrypt_extent(struct page *page,
 		       "page->index = [%ld], extent_offset = [%ld]; "
 		       "rc = [%d]\n", __func__, page->index, extent_offset,
 		       rc);
+=======
+	}
+
+	lower_offset = lower_offset_for_page(crypt_stat, page);
+	enc_extent_virt = kmap(enc_extent_page);
+	rc = ecryptfs_write_lower(ecryptfs_inode, enc_extent_virt, lower_offset,
+				  PAGE_CACHE_SIZE);
+	kunmap(enc_extent_page);
+	if (rc < 0) {
+		ecryptfs_printk(KERN_ERR,
+			"Error attempting to write lower page; rc = [%d]\n",
+			rc);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	rc = 0;
 out:
+<<<<<<< HEAD
+=======
+	if (enc_extent_page) {
+		__free_page(enc_extent_page);
+	}
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -561,15 +753,22 @@ int ecryptfs_decrypt_page(struct page *page)
 {
 	struct inode *ecryptfs_inode;
 	struct ecryptfs_crypt_stat *crypt_stat;
+<<<<<<< HEAD
 	char *enc_extent_virt;
 	struct page *enc_extent_page = NULL;
 	unsigned long extent_offset;
+=======
+	char *page_virt;
+	unsigned long extent_offset;
+	loff_t lower_offset;
+>>>>>>> refs/remotes/origin/master
 	int rc = 0;
 
 	ecryptfs_inode = page->mapping->host;
 	crypt_stat =
 		&(ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat);
 	BUG_ON(!(crypt_stat->flags & ECRYPTFS_ENCRYPTED));
+<<<<<<< HEAD
 	enc_extent_page = alloc_page(GFP_USER);
 	if (!enc_extent_page) {
 		rc = -ENOMEM;
@@ -598,6 +797,26 @@ int ecryptfs_decrypt_page(struct page *page)
 		}
 		rc = ecryptfs_decrypt_extent(page, crypt_stat, enc_extent_page,
 					     extent_offset);
+=======
+
+	lower_offset = lower_offset_for_page(crypt_stat, page);
+	page_virt = kmap(page);
+	rc = ecryptfs_read_lower(page_virt, lower_offset, PAGE_CACHE_SIZE,
+				 ecryptfs_inode);
+	kunmap(page);
+	if (rc < 0) {
+		ecryptfs_printk(KERN_ERR,
+			"Error attempting to read lower page; rc = [%d]\n",
+			rc);
+		goto out;
+	}
+
+	for (extent_offset = 0;
+	     extent_offset < (PAGE_CACHE_SIZE / crypt_stat->extent_size);
+	     extent_offset++) {
+		rc = crypt_extent(crypt_stat, page, page,
+				  extent_offset, DECRYPT);
+>>>>>>> refs/remotes/origin/master
 		if (rc) {
 			printk(KERN_ERR "%s: Error encrypting extent; "
 			       "rc = [%d]\n", __func__, rc);
@@ -605,6 +824,7 @@ int ecryptfs_decrypt_page(struct page *page)
 		}
 	}
 out:
+<<<<<<< HEAD
 	if (enc_extent_page) {
 		kunmap(enc_extent_page);
 		__free_page(enc_extent_page);
@@ -715,6 +935,11 @@ ecryptfs_decrypt_page_offset(struct ecryptfs_crypt_stat *crypt_stat,
 	return decrypt_scatterlist(crypt_stat, &dst_sg, &src_sg, size, iv);
 }
 
+=======
+	return rc;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define ECRYPTFS_MAX_SCATTERLIST_LEN 4
 
 /**
@@ -731,32 +956,48 @@ int ecryptfs_init_crypt_ctx(struct ecryptfs_crypt_stat *crypt_stat)
 	char *full_alg_name;
 	int rc = -EINVAL;
 
+<<<<<<< HEAD
 	if (!crypt_stat->cipher) {
 		ecryptfs_printk(KERN_ERR, "No cipher specified\n");
 		goto out;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	ecryptfs_printk(KERN_DEBUG,
 			"Initializing cipher [%s]; strlen = [%d]; "
 			"key_size_bits = [%zd]\n",
 			crypt_stat->cipher, (int)strlen(crypt_stat->cipher),
 			crypt_stat->key_size << 3);
+<<<<<<< HEAD
 	if (crypt_stat->tfm) {
 		rc = 0;
 		goto out;
 	}
 	mutex_lock(&crypt_stat->cs_tfm_mutex);
+=======
+	mutex_lock(&crypt_stat->cs_tfm_mutex);
+	if (crypt_stat->tfm) {
+		rc = 0;
+		goto out_unlock;
+	}
+>>>>>>> refs/remotes/origin/master
 	rc = ecryptfs_crypto_api_algify_cipher_name(&full_alg_name,
 						    crypt_stat->cipher, "cbc");
 	if (rc)
 		goto out_unlock;
+<<<<<<< HEAD
 	crypt_stat->tfm = crypto_alloc_blkcipher(full_alg_name, 0,
 						 CRYPTO_ALG_ASYNC);
 	kfree(full_alg_name);
+=======
+	crypt_stat->tfm = crypto_alloc_ablkcipher(full_alg_name, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(crypt_stat->tfm)) {
 		rc = PTR_ERR(crypt_stat->tfm);
 		crypt_stat->tfm = NULL;
 		ecryptfs_printk(KERN_ERR, "cryptfs: init_crypt_ctx(): "
 				"Error initializing cipher [%s]\n",
+<<<<<<< HEAD
 				crypt_stat->cipher);
 		goto out_unlock;
 	}
@@ -765,6 +1006,17 @@ int ecryptfs_init_crypt_ctx(struct ecryptfs_crypt_stat *crypt_stat)
 out_unlock:
 	mutex_unlock(&crypt_stat->cs_tfm_mutex);
 out:
+=======
+				full_alg_name);
+		goto out_free;
+	}
+	crypto_ablkcipher_set_flags(crypt_stat->tfm, CRYPTO_TFM_REQ_WEAK_KEY);
+	rc = 0;
+out_free:
+	kfree(full_alg_name);
+out_unlock:
+	mutex_unlock(&crypt_stat->cs_tfm_mutex);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -927,7 +1179,15 @@ static void ecryptfs_set_default_crypt_stat_vals(
 
 /**
  * ecryptfs_new_file_context
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @ecryptfs_dentry: The eCryptfs dentry
+=======
+ * @ecryptfs_inode: The eCryptfs inode
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @ecryptfs_inode: The eCryptfs inode
+>>>>>>> refs/remotes/origin/master
  *
  * If the crypto context for the file has not yet been established,
  * this is where we do that.  Establishing a new crypto context
@@ -944,6 +1204,8 @@ static void ecryptfs_set_default_crypt_stat_vals(
  *
  * Returns zero on success; non-zero otherwise
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ecryptfs_new_file_context(struct dentry *ecryptfs_dentry)
 {
 	struct ecryptfs_crypt_stat *crypt_stat =
@@ -951,6 +1213,20 @@ int ecryptfs_new_file_context(struct dentry *ecryptfs_dentry)
 	struct ecryptfs_mount_crypt_stat *mount_crypt_stat =
 	    &ecryptfs_superblock_to_private(
 		    ecryptfs_dentry->d_sb)->mount_crypt_stat;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int ecryptfs_new_file_context(struct inode *ecryptfs_inode)
+{
+	struct ecryptfs_crypt_stat *crypt_stat =
+	    &ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat;
+	struct ecryptfs_mount_crypt_stat *mount_crypt_stat =
+	    &ecryptfs_superblock_to_private(
+		    ecryptfs_inode->i_sb)->mount_crypt_stat;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int cipher_name_len;
 	int rc = 0;
 
@@ -1259,12 +1535,28 @@ static int ecryptfs_write_headers_virt(char *page_virt, size_t max,
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 ecryptfs_write_metadata_to_contents(struct dentry *ecryptfs_dentry,
+=======
+ecryptfs_write_metadata_to_contents(struct inode *ecryptfs_inode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ecryptfs_write_metadata_to_contents(struct inode *ecryptfs_inode,
+>>>>>>> refs/remotes/origin/master
 				    char *virt, size_t virt_len)
 {
 	int rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = ecryptfs_write_lower(ecryptfs_dentry->d_inode, virt,
+=======
+	rc = ecryptfs_write_lower(ecryptfs_inode, virt,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = ecryptfs_write_lower(ecryptfs_inode, virt,
+>>>>>>> refs/remotes/origin/master
 				  0, virt_len);
 	if (rc < 0)
 		printk(KERN_ERR "%s: Error attempting to write header "
@@ -1298,7 +1590,17 @@ static unsigned long ecryptfs_get_zeroed_pages(gfp_t gfp_mask,
 
 /**
  * ecryptfs_write_metadata
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @ecryptfs_dentry: The eCryptfs dentry
+=======
+ * @ecryptfs_dentry: The eCryptfs dentry, which should be negative
+ * @ecryptfs_inode: The newly created eCryptfs inode
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @ecryptfs_dentry: The eCryptfs dentry, which should be negative
+ * @ecryptfs_inode: The newly created eCryptfs inode
+>>>>>>> refs/remotes/origin/master
  *
  * Write the file headers out.  This will likely involve a userspace
  * callout, in which the session key is encrypted with one or more
@@ -1308,10 +1610,24 @@ static unsigned long ecryptfs_get_zeroed_pages(gfp_t gfp_mask,
  *
  * Returns zero on success; non-zero on error
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ecryptfs_write_metadata(struct dentry *ecryptfs_dentry)
 {
 	struct ecryptfs_crypt_stat *crypt_stat =
 		&ecryptfs_inode_to_private(ecryptfs_dentry->d_inode)->crypt_stat;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int ecryptfs_write_metadata(struct dentry *ecryptfs_dentry,
+			    struct inode *ecryptfs_inode)
+{
+	struct ecryptfs_crypt_stat *crypt_stat =
+		&ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int order;
 	char *virt;
 	size_t virt_len;
@@ -1351,7 +1667,15 @@ int ecryptfs_write_metadata(struct dentry *ecryptfs_dentry)
 		rc = ecryptfs_write_metadata_to_xattr(ecryptfs_dentry, virt,
 						      size);
 	else
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rc = ecryptfs_write_metadata_to_contents(ecryptfs_dentry, virt,
+=======
+		rc = ecryptfs_write_metadata_to_contents(ecryptfs_inode, virt,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = ecryptfs_write_metadata_to_contents(ecryptfs_inode, virt,
+>>>>>>> refs/remotes/origin/master
 							 virt_len);
 	if (rc) {
 		printk(KERN_ERR "%s: Error writing metadata out to lower file; "
@@ -1548,8 +1872,18 @@ int ecryptfs_read_and_validate_xattr_region(struct dentry *dentry,
  */
 int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int rc = 0;
 	char *page_virt = NULL;
+=======
+	int rc;
+	char *page_virt;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc;
+	char *page_virt;
+>>>>>>> refs/remotes/origin/master
 	struct inode *ecryptfs_inode = ecryptfs_dentry->d_inode;
 	struct ecryptfs_crypt_stat *crypt_stat =
 	    &ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat;
@@ -1574,6 +1908,14 @@ int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
 						ecryptfs_dentry,
 						ECRYPTFS_VALIDATE_HEADER_SIZE);
 	if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		/* metadata is not in the file header, so try xattrs */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* metadata is not in the file header, so try xattrs */
+>>>>>>> refs/remotes/origin/master
 		memset(page_virt, 0, PAGE_CACHE_SIZE);
 		rc = ecryptfs_read_xattr_region(page_virt, ecryptfs_inode);
 		if (rc) {
@@ -1932,7 +2274,11 @@ static const unsigned char filename_rev_map[256] = {
  * @src: Source location for the filename to encode
  * @src_size: Size of the source in bytes
  */
+<<<<<<< HEAD
 void ecryptfs_encode_for_filename(unsigned char *dst, size_t *dst_size,
+=======
+static void ecryptfs_encode_for_filename(unsigned char *dst, size_t *dst_size,
+>>>>>>> refs/remotes/origin/master
 				  unsigned char *src, size_t src_size)
 {
 	size_t num_blocks;
@@ -1987,6 +2333,26 @@ out:
 	return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static size_t ecryptfs_max_decoded_size(size_t encoded_size)
+{
+	/* Not exact; conservatively long. Every block of 4
+	 * encoded characters decodes into a block of 3
+	 * decoded characters. This segment of code provides
+	 * the caller with the maximum amount of allocated
+	 * space that @dst will need to point to in a
+	 * subsequent call. */
+	return ((encoded_size + 1) * 3) / 4;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ecryptfs_decode_from_filename
  * @dst: If NULL, this function only sets @dst_size and returns. If
@@ -2005,6 +2371,8 @@ ecryptfs_decode_from_filename(unsigned char *dst, size_t *dst_size,
 	size_t dst_byte_offset = 0;
 
 	if (dst == NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* Not exact; conservatively long. Every block of 4
 		 * encoded characters decodes into a block of 3
 		 * decoded characters. This segment of code provides
@@ -2012,6 +2380,12 @@ ecryptfs_decode_from_filename(unsigned char *dst, size_t *dst_size,
 		 * space that @dst will need to point to in a
 		 * subsequent call. */
 		(*dst_size) = (((src_size + 1) * 3) / 4);
+=======
+		(*dst_size) = ecryptfs_max_decoded_size(src_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(*dst_size) = ecryptfs_max_decoded_size(src_size);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	while (src_byte_offset < src_size) {
@@ -2177,12 +2551,20 @@ out:
  */
 int ecryptfs_decode_and_decrypt_filename(char **plaintext_name,
 					 size_t *plaintext_name_size,
+<<<<<<< HEAD
 					 struct dentry *ecryptfs_dir_dentry,
 					 const char *name, size_t name_size)
 {
 	struct ecryptfs_mount_crypt_stat *mount_crypt_stat =
 		&ecryptfs_superblock_to_private(
 			ecryptfs_dir_dentry->d_sb)->mount_crypt_stat;
+=======
+					 struct super_block *sb,
+					 const char *name, size_t name_size)
+{
+	struct ecryptfs_mount_crypt_stat *mount_crypt_stat =
+		&ecryptfs_superblock_to_private(sb)->mount_crypt_stat;
+>>>>>>> refs/remotes/origin/master
 	char *decoded_name;
 	size_t decoded_name_size;
 	size_t packet_size;
@@ -2236,3 +2618,61 @@ out_free:
 out:
 	return rc;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#define ENC_NAME_MAX_BLOCKLEN_8_OR_16	143
+
+int ecryptfs_set_f_namelen(long *namelen, long lower_namelen,
+			   struct ecryptfs_mount_crypt_stat *mount_crypt_stat)
+{
+	struct blkcipher_desc desc;
+	struct mutex *tfm_mutex;
+	size_t cipher_blocksize;
+	int rc;
+
+	if (!(mount_crypt_stat->flags & ECRYPTFS_GLOBAL_ENCRYPT_FILENAMES)) {
+		(*namelen) = lower_namelen;
+		return 0;
+	}
+
+	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&desc.tfm, &tfm_mutex,
+			mount_crypt_stat->global_default_fn_cipher_name);
+	if (unlikely(rc)) {
+		(*namelen) = 0;
+		return rc;
+	}
+
+	mutex_lock(tfm_mutex);
+	cipher_blocksize = crypto_blkcipher_blocksize(desc.tfm);
+	mutex_unlock(tfm_mutex);
+
+	/* Return an exact amount for the common cases */
+	if (lower_namelen == NAME_MAX
+	    && (cipher_blocksize == 8 || cipher_blocksize == 16)) {
+		(*namelen) = ENC_NAME_MAX_BLOCKLEN_8_OR_16;
+		return 0;
+	}
+
+	/* Return a safe estimate for the uncommon cases */
+	(*namelen) = lower_namelen;
+	(*namelen) -= ECRYPTFS_FNEK_ENCRYPTED_FILENAME_PREFIX_SIZE;
+	/* Since this is the max decoded size, subtract 1 "decoded block" len */
+	(*namelen) = ecryptfs_max_decoded_size(*namelen) - 3;
+	(*namelen) -= ECRYPTFS_TAG_70_MAX_METADATA_SIZE;
+	(*namelen) -= ECRYPTFS_FILENAME_MIN_RANDOM_PREPEND_BYTES;
+	/* Worst case is that the filename is padded nearly a full block size */
+	(*namelen) -= cipher_blocksize - 1;
+
+	if ((*namelen) < 0)
+		(*namelen) = 0;
+
+	return 0;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

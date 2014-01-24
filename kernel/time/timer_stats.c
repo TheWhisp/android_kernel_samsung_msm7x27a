@@ -81,7 +81,15 @@ struct entry {
 /*
  * Spinlock protecting the tables - not taken during lookup:
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(table_lock);
+=======
+static DEFINE_RAW_SPINLOCK(table_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_RAW_SPINLOCK(table_lock);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Per-CPU lookup locks for fast hash lookup:
@@ -188,7 +196,15 @@ static struct entry *tstat_lookup(struct entry *entry, char *comm)
 	prev = NULL;
 	curr = *head;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&table_lock);
+=======
+	raw_spin_lock(&table_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock(&table_lock);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Make sure we have not raced with another CPU:
 	 */
@@ -215,7 +231,15 @@ static struct entry *tstat_lookup(struct entry *entry, char *comm)
 			*head = curr;
 	}
  out_unlock:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&table_lock);
+=======
+	raw_spin_unlock(&table_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock(&table_lock);
+>>>>>>> refs/remotes/origin/master
 
 	return curr;
 }
@@ -298,6 +322,7 @@ static int tstats_show(struct seq_file *m, void *v)
 	period = ktime_to_timespec(time);
 	ms = period.tv_nsec / 1000000;
 
+<<<<<<< HEAD
 	seq_puts(m, "Timer Stats Version: v0.2\n");
 	seq_printf(m, "Sample period: %ld.%03ld s\n", period.tv_sec, ms);
 	if (atomic_read(&overflow_count))
@@ -307,6 +332,17 @@ static int tstats_show(struct seq_file *m, void *v)
 	for (i = 0; i < nr_entries; i++) {
 		entry = entries + i;
  		if (entry->timer_flag & TIMER_STATS_FLAG_DEFERRABLE) {
+=======
+	seq_puts(m, "Timer Stats Version: v0.3\n");
+	seq_printf(m, "Sample period: %ld.%03ld s\n", period.tv_sec, ms);
+	if (atomic_read(&overflow_count))
+		seq_printf(m, "Overflow: %d entries\n", atomic_read(&overflow_count));
+	seq_printf(m, "Collection: %s\n", timer_stats_active ? "active" : "inactive");
+
+	for (i = 0; i < nr_entries; i++) {
+		entry = entries + i;
+		if (entry->timer_flag & TIMER_STATS_FLAG_DEFERRABLE) {
+>>>>>>> refs/remotes/origin/master
 			seq_printf(m, "%4luD, %5d %-16s ",
 				entry->count, entry->pid, entry->comm);
 		} else {

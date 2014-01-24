@@ -14,7 +14,11 @@
 
 /* Maximum number of arguments supported.  Must be even!  */
 #define O32_ARGC	32
+<<<<<<< HEAD
 /* Number of static registers we save.  */
+=======
+/* Number of static registers we save.	*/
+>>>>>>> refs/remotes/origin/master
 #define O32_STATC	11
 /* Frame size for static register  */
 #define O32_FRAMESZ	(SZREG * O32_STATC)

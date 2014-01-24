@@ -1,4 +1,6 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
     w83793.c - Linux kernel driver for hardware monitoring
     Copyright (C) 2006 Winbond Electronics Corp.
                   Yuan Mu
@@ -29,6 +31,43 @@
     Chip	#vin	#fanin	#pwm	#temp	wchipid	vendid	i2c	ISA
     w83793	10	12	8	6	0x7b	0x5ca3	yes	no
 */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * w83793.c - Linux kernel driver for hardware monitoring
+ * Copyright (C) 2006 Winbond Electronics Corp.
+ *	      Yuan Mu
+ *	      Rudolf Marek <r.marek@assembler.cz>
+ * Copyright (C) 2009-2010 Sven Anders <anders@anduras.de>, ANDURAS AG.
+ *		Watchdog driver part
+ *		(Based partially on fschmd driver,
+ *		 Copyright 2007-2008 by Hans de Goede)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation - version 2.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ */
+
+/*
+ * Supports following chips:
+ *
+ * Chip	#vin	#fanin	#pwm	#temp	wchipid	vendid	i2c	ISA
+ * w83793	10	12	8	6	0x7b	0x5ca3	yes	no
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -46,6 +85,10 @@
 #include <linux/kref.h>
 #include <linux/notifier.h>
 #include <linux/reboot.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Default values */
 #define WATCHDOG_TIMEOUT 2	/* 2 minute default timeout */
@@ -58,10 +101,21 @@ static const unsigned short normal_i2c[] = { 0x2c, 0x2d, 0x2e, 0x2f,
 
 static unsigned short force_subclients[4];
 module_param_array(force_subclients, short, NULL, 0);
+<<<<<<< HEAD
 MODULE_PARM_DESC(force_subclients, "List of subclient addresses: "
 		       "{bus, clientaddr, subclientaddr1, subclientaddr2}");
 
+<<<<<<< HEAD
 static int reset;
+=======
+static bool reset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_PARM_DESC(force_subclients,
+		 "List of subclient addresses: {bus, clientaddr, subclientaddr1, subclientaddr2}");
+
+static bool reset;
+>>>>>>> refs/remotes/origin/master
 module_param(reset, bool, 0);
 MODULE_PARM_DESC(reset, "Set to 1 to reset chip, not recommended");
 
@@ -71,16 +125,38 @@ MODULE_PARM_DESC(timeout,
 	"Watchdog timeout in minutes. 2<= timeout <=255 (default="
 				__MODULE_STRING(WATCHDOG_TIMEOUT) ")");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
    Address 0x00, 0x0d, 0x0e, 0x0f in all three banks are reserved
    as ID, Bank Select registers
 */
+=======
+ * Address 0x00, 0x0d, 0x0e, 0x0f in all three banks are reserved
+ * as ID, Bank Select registers
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Address 0x00, 0x0d, 0x0e, 0x0f in all three banks are reserved
+ * as ID, Bank Select registers
+ */
+>>>>>>> refs/remotes/origin/master
 #define W83793_REG_BANKSEL		0x00
 #define W83793_REG_VENDORID		0x0d
 #define W83793_REG_CHIPID		0x0e
@@ -110,8 +186,21 @@ static u16 W83793_REG_TEMP_MODE[2] = { 0x5e, 0x5f };
 #define TEMP_CRIT_HYST	2
 #define TEMP_WARN	3
 #define TEMP_WARN_HYST	4
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* only crit and crit_hyst affect real-time alarm status
    current crit crit_hyst warn warn_hyst */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * only crit and crit_hyst affect real-time alarm status
+ * current crit crit_hyst warn warn_hyst
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u16 W83793_REG_TEMP[][5] = {
 	{0x1c, 0x78, 0x79, 0x7a, 0x7b},
 	{0x1d, 0x7c, 0x7d, 0x7e, 0x7f},
@@ -181,34 +270,70 @@ static inline unsigned long FAN_FROM_REG(u16 val)
 {
 	if ((val >= 0xfff) || (val == 0))
 		return	0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return (1350000UL / val);
+=======
+	return 1350000UL / val;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 1350000UL / val;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u16 FAN_TO_REG(long rpm)
 {
 	if (rpm <= 0)
 		return 0x0fff;
+<<<<<<< HEAD
 	return SENSORS_LIMIT((1350000 + (rpm >> 1)) / rpm, 1, 0xffe);
+=======
+	return clamp_val((1350000 + (rpm >> 1)) / rpm, 1, 0xffe);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline unsigned long TIME_FROM_REG(u8 reg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return (reg * 100);
+=======
+	return reg * 100;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return reg * 100;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u8 TIME_TO_REG(unsigned long val)
 {
+<<<<<<< HEAD
 	return SENSORS_LIMIT((val + 50) / 100, 0, 0xff);
+=======
+	return clamp_val((val + 50) / 100, 0, 0xff);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long TEMP_FROM_REG(s8 reg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return (reg * 1000);
+=======
+	return reg * 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return reg * 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline s8 TEMP_TO_REG(long val, s8 min, s8 max)
 {
+<<<<<<< HEAD
 	return SENSORS_LIMIT((val + (val < 0 ? -500 : 500)) / 1000, min, max);
+=======
+	return clamp_val((val + (val < 0 ? -500 : 500)) / 1000, min, max);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct w83793_data {
@@ -218,7 +343,17 @@ struct w83793_data {
 	char valid;			/* !=0 if following fields are valid */
 	unsigned long last_updated;	/* In jiffies */
 	unsigned long last_nonvolatile;	/* In jiffies, last time we update the
+<<<<<<< HEAD
+<<<<<<< HEAD
 					   nonvolatile registers */
+=======
+					 * nonvolatile registers
+					 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 * nonvolatile registers
+					 */
+>>>>>>> refs/remotes/origin/master
 
 	u8 bank;
 	u8 vrm;
@@ -233,7 +368,17 @@ struct w83793_data {
 	s8 temp[6][5];		/* current, crit, crit_hyst,warn, warn_hyst */
 	u8 temp_low_bits;	/* Additional resolution TD1-TD4 */
 	u8 temp_mode[2];	/* byte 0: Temp D1-D4 mode each has 2 bits
+<<<<<<< HEAD
+<<<<<<< HEAD
 				   byte 1: Temp R1,R2 mode, each has 1 bit */
+=======
+				 * byte 1: Temp R1,R2 mode, each has 1 bit
+				 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 * byte 1: Temp R1,R2 mode, each has 1 bit
+				 */
+>>>>>>> refs/remotes/origin/master
 	u8 temp_critical;	/* If reached all fan will be at full speed */
 	u8 temp_fan_map[6];	/* Temp controls which pwm fan, bit field */
 
@@ -268,17 +413,45 @@ struct w83793_data {
 	int watchdog_timeout; /* watchdog timeout in minutes */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Somewhat ugly :( global data pointer list with all devices, so that
    we can find our device data as when using misc_register. There is no
    other method to get to one's device data from the open file-op and
    for usage in the reboot notifier callback. */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Somewhat ugly :( global data pointer list with all devices, so that
+ * we can find our device data as when using misc_register. There is no
+ * other method to get to one's device data from the open file-op and
+ * for usage in the reboot notifier callback.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static LIST_HEAD(watchdog_data_list);
 
 /* Note this lock not only protect list access, but also data.kref access */
 static DEFINE_MUTEX(watchdog_data_mutex);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Release our data struct when we're detached from the i2c client *and* all
    references to our watchdog device are released */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Release our data struct when we're detached from the i2c client *and* all
+ * references to our watchdog device are released
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void w83793_release_resources(struct kref *ref)
 {
 	struct w83793_data *data = container_of(ref, struct w83793_data, kref);
@@ -337,7 +510,24 @@ store_vrm(struct device *dev, struct device_attribute *attr,
 	  const char *buf, size_t count)
 {
 	struct w83793_data *data = dev_get_drvdata(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	data->vrm = simple_strtoul(buf, NULL, 10);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+
+	data->vrm = val;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -354,7 +544,15 @@ show_alarm_beep(struct device *dev, struct device_attribute *attr, char *buf)
 	int bit = sensor_attr->index & 0x07;
 	u8 val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ALARM_STATUS == nr) {
+=======
+	if (nr == ALARM_STATUS) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (nr == ALARM_STATUS) {
+>>>>>>> refs/remotes/origin/master
 		val = (data->alarms[index] >> (bit)) & 1;
 	} else {		/* BEEP_ENABLE */
 		val = (data->beeps[index] >> (bit)) & 1;
@@ -374,10 +572,27 @@ store_beep(struct device *dev, struct device_attribute *attr,
 	int index = sensor_attr->index >> 3;
 	int shift = sensor_attr->index & 0x07;
 	u8 beep_bit = 1 << shift;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 val;
 
 	val = simple_strtoul(buf, NULL, 10);
 	if (val != 0 && val != 1)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+
+	if (val > 1)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->update_lock);
@@ -403,9 +618,26 @@ store_beep_enable(struct device *dev, struct device_attribute *attr,
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct w83793_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 val = simple_strtoul(buf, NULL, 10);
 
 	if (val != 0 && val != 1)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+
+	if (val > 1)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->update_lock);
@@ -418,6 +650,7 @@ store_beep_enable(struct device *dev, struct device_attribute *attr,
 	return count;
 }
 
+<<<<<<< HEAD
 /* Write any value to clear chassis alarm */
 static ssize_t
 store_chassis_clear_legacy(struct device *dev,
@@ -439,6 +672,8 @@ store_chassis_clear_legacy(struct device *dev,
 	return count;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Write 0 to clear chassis alarm */
 static ssize_t
 store_chassis_clear(struct device *dev,
@@ -449,8 +684,23 @@ store_chassis_clear(struct device *dev,
 	struct w83793_data *data = i2c_get_clientdata(client);
 	unsigned long val;
 	u8 reg;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (strict_strtoul(buf, 10, &val) || val != 0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	if (val)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->update_lock);
@@ -473,11 +723,24 @@ show_fan(struct device *dev, struct device_attribute *attr, char *buf)
 	struct w83793_data *data = w83793_update_device(dev);
 	u16 val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (FAN_INPUT == nr) {
 		val = data->fan[index] & 0x0fff;
 	} else {
 		val = data->fan_min[index] & 0x0fff;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (nr == FAN_INPUT)
+		val = data->fan[index] & 0x0fff;
+	else
+		val = data->fan_min[index] & 0x0fff;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%lu\n", FAN_FROM_REG(val));
 }
@@ -491,7 +754,23 @@ store_fan_min(struct device *dev, struct device_attribute *attr,
 	int index = sensor_attr->index;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct w83793_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 val = FAN_TO_REG(simple_strtoul(buf, NULL, 10));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	val = FAN_TO_REG(val);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan_min[index] = val;
@@ -513,7 +792,15 @@ show_pwm(struct device *dev, struct device_attribute *attr, char *buf)
 	int nr = sensor_attr->nr;
 	int index = sensor_attr->index;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (PWM_STOP_TIME == nr)
+=======
+	if (nr == PWM_STOP_TIME)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (nr == PWM_STOP_TIME)
+>>>>>>> refs/remotes/origin/master
 		val = TIME_FROM_REG(data->pwm_stop_time[index]);
 	else
 		val = (data->pwm[index][nr] & 0x3f) << 2;
@@ -531,17 +818,44 @@ store_pwm(struct device *dev, struct device_attribute *attr,
 	    to_sensor_dev_attr_2(attr);
 	int nr = sensor_attr->nr;
 	int index = sensor_attr->index;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 val;
 
 	mutex_lock(&data->update_lock);
 	if (PWM_STOP_TIME == nr) {
 		val = TIME_TO_REG(simple_strtoul(buf, NULL, 10));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+
+	mutex_lock(&data->update_lock);
+	if (nr == PWM_STOP_TIME) {
+		val = TIME_TO_REG(val);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		data->pwm_stop_time[index] = val;
 		w83793_write_value(client, W83793_REG_PWM_STOP_TIME(index),
 				   val);
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		val = SENSORS_LIMIT(simple_strtoul(buf, NULL, 10), 0, 0xff)
 		      >> 2;
+=======
+		val = SENSORS_LIMIT(val, 0, 0xff) >> 2;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		val = clamp_val(val, 0, 0xff) >> 2;
+>>>>>>> refs/remotes/origin/master
 		data->pwm[index][nr] =
 		    w83793_read_value(client, W83793_REG_PWM(index, nr)) & 0xc0;
 		data->pwm[index][nr] |= val;
@@ -563,7 +877,15 @@ show_temp(struct device *dev, struct device_attribute *attr, char *buf)
 	struct w83793_data *data = w83793_update_device(dev);
 	long temp = TEMP_FROM_REG(data->temp[index][nr]);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (TEMP_READ == nr && index < 4) {	/* Only TD1-TD4 have low bits */
+=======
+	if (nr == TEMP_READ && index < 4) {	/* Only TD1-TD4 have low bits */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (nr == TEMP_READ && index < 4) {	/* Only TD1-TD4 have low bits */
+>>>>>>> refs/remotes/origin/master
 		int low = ((data->temp_low_bits >> (index * 2)) & 0x03) * 250;
 		temp += temp > 0 ? low : -low;
 	}
@@ -580,7 +902,22 @@ store_temp(struct device *dev, struct device_attribute *attr,
 	int index = sensor_attr->index;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct w83793_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	long tmp = simple_strtol(buf, NULL, 10);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	long tmp;
+	int err;
+
+	err = kstrtol(buf, 10, &tmp);
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp[index][nr] = TEMP_TO_REG(tmp, -128, 127);
@@ -591,6 +928,8 @@ store_temp(struct device *dev, struct device_attribute *attr,
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	TD1-TD4
 	each has 4 mode:(2 bits)
 	0:	Stop monitor
@@ -603,6 +942,25 @@ store_temp(struct device *dev, struct device_attribute *attr,
 	0:	Disable temp sensor monitor
 	1:	To enable temp sensors monitor
 */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * TD1-TD4
+ * each has 4 mode:(2 bits)
+ * 0:	Stop monitor
+ * 1:	Use internal temp sensor(default)
+ * 2:	Reserved
+ * 3:	Use sensor in Intel CPU and get result by PECI
+ *
+ * TR1-TR2
+ * each has 2 mode:(1 bit)
+ * 0:	Disable temp sensor monitor
+ * 1:	To enable temp sensors monitor
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* 0 disable, 6 PECI */
 static u8 TO_TEMP_MODE[] = { 0, 0, 0, 6 };
@@ -622,11 +980,24 @@ show_temp_mode(struct device *dev, struct device_attribute *attr, char *buf)
 	tmp = (data->temp_mode[index] >> shift) & mask;
 
 	/* for the internal sensor, found out if diode or thermistor */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (tmp == 1) {
 		tmp = index == 0 ? 3 : 4;
 	} else {
 		tmp = TO_TEMP_MODE[tmp];
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (tmp == 1)
+		tmp = index == 0 ? 3 : 4;
+	else
+		tmp = TO_TEMP_MODE[tmp];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n", tmp);
 }
@@ -642,7 +1013,22 @@ store_temp_mode(struct device *dev, struct device_attribute *attr,
 	int index = sensor_attr->index;
 	u8 mask = (index < 4) ? 0x03 : 0x01;
 	u8 shift = (index < 4) ? (2 * index) : (index - 4);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 val = simple_strtoul(buf, NULL, 10);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* transform the sysfs interface values into table above */
 	if ((val == 6) && (index < 4)) {
@@ -681,6 +1067,8 @@ show_sf_setup(struct device *dev, struct device_attribute *attr, char *buf)
 	struct w83793_data *data = w83793_update_device(dev);
 	u32 val = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (SETUP_PWM_DEFAULT == nr) {
 		val = (data->pwm_default & 0x3f) << 2;
 	} else if (SETUP_PWM_UPTIME == nr) {
@@ -690,6 +1078,21 @@ show_sf_setup(struct device *dev, struct device_attribute *attr, char *buf)
 	} else if (SETUP_TEMP_CRITICAL == nr) {
 		val = TEMP_FROM_REG(data->temp_critical & 0x7f);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (nr == SETUP_PWM_DEFAULT)
+		val = (data->pwm_default & 0x3f) << 2;
+	else if (nr == SETUP_PWM_UPTIME)
+		val = TIME_FROM_REG(data->pwm_uptime);
+	else if (nr == SETUP_PWM_DOWNTIME)
+		val = TIME_FROM_REG(data->pwm_downtime);
+	else if (nr == SETUP_TEMP_CRITICAL)
+		val = TEMP_FROM_REG(data->temp_critical & 0x7f);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n", val);
 }
@@ -703,6 +1106,8 @@ store_sf_setup(struct device *dev, struct device_attribute *attr,
 	int nr = sensor_attr->nr;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct w83793_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	mutex_lock(&data->update_lock);
 	if (SETUP_PWM_DEFAULT == nr) {
@@ -720,14 +1125,54 @@ store_sf_setup(struct device *dev, struct device_attribute *attr,
 							data->pwm_uptime);
 	} else if (SETUP_PWM_DOWNTIME == nr) {
 		data->pwm_downtime = TIME_TO_REG(simple_strtoul(buf, NULL, 10));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	long val;
+	int err;
+
+	err = kstrtol(buf, 10, &val);
+	if (err)
+		return err;
+
+	mutex_lock(&data->update_lock);
+	if (nr == SETUP_PWM_DEFAULT) {
+		data->pwm_default =
+		    w83793_read_value(client, W83793_REG_PWM_DEFAULT) & 0xc0;
+<<<<<<< HEAD
+		data->pwm_default |= SENSORS_LIMIT(val, 0, 0xff) >> 2;
+=======
+		data->pwm_default |= clamp_val(val, 0, 0xff) >> 2;
+>>>>>>> refs/remotes/origin/master
+		w83793_write_value(client, W83793_REG_PWM_DEFAULT,
+							data->pwm_default);
+	} else if (nr == SETUP_PWM_UPTIME) {
+		data->pwm_uptime = TIME_TO_REG(val);
+		data->pwm_uptime += data->pwm_uptime == 0 ? 1 : 0;
+		w83793_write_value(client, W83793_REG_PWM_UPTIME,
+							data->pwm_uptime);
+	} else if (nr == SETUP_PWM_DOWNTIME) {
+		data->pwm_downtime = TIME_TO_REG(val);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		data->pwm_downtime += data->pwm_downtime == 0 ? 1 : 0;
 		w83793_write_value(client, W83793_REG_PWM_DOWNTIME,
 							data->pwm_downtime);
 	} else {		/* SETUP_TEMP_CRITICAL */
 		data->temp_critical =
 		    w83793_read_value(client, W83793_REG_TEMP_CRITICAL) & 0x80;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		data->temp_critical |= TEMP_TO_REG(simple_strtol(buf, NULL, 10),
 						   0, 0x7f);
+=======
+		data->temp_critical |= TEMP_TO_REG(val, 0, 0x7f);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		data->temp_critical |= TEMP_TO_REG(val, 0, 0x7f);
+>>>>>>> refs/remotes/origin/master
 		w83793_write_value(client, W83793_REG_TEMP_CRITICAL,
 							data->temp_critical);
 	}
@@ -737,6 +1182,8 @@ store_sf_setup(struct device *dev, struct device_attribute *attr,
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	Temp SmartFan control
 	TEMP_FAN_MAP
 	Temp channel control which pwm fan, bitfield, bit 0 indicate pwm1...
@@ -762,6 +1209,38 @@ store_sf_setup(struct device *dev, struct device_attribute *attr,
 	will take actions to speed up or slow down the fan to keep the
 	temperature within the tolerance range.
 */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Temp SmartFan control
+ * TEMP_FAN_MAP
+ * Temp channel control which pwm fan, bitfield, bit 0 indicate pwm1...
+ * It's possible two or more temp channels control the same fan, w83793
+ * always prefers to pick the most critical request and applies it to
+ * the related Fan.
+ * It's possible one fan is not in any mapping of 6 temp channels, this
+ * means the fan is manual mode
+ *
+ * TEMP_PWM_ENABLE
+ * Each temp channel has its own SmartFan mode, and temp channel
+ * control fans that are set by TEMP_FAN_MAP
+ * 0:	SmartFanII mode
+ * 1:	Thermal Cruise Mode
+ *
+ * TEMP_CRUISE
+ * Target temperature in thermal cruise mode, w83793 will try to turn
+ * fan speed to keep the temperature of target device around this
+ * temperature.
+ *
+ * TEMP_TOLERANCE
+ * If Temp higher or lower than target with this tolerance, w83793
+ * will take actions to speed up or slow down the fan to keep the
+ * temperature within the tolerance range.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define TEMP_FAN_MAP			0
 #define TEMP_PWM_ENABLE			1
@@ -777,12 +1256,30 @@ show_sf_ctrl(struct device *dev, struct device_attribute *attr, char *buf)
 	struct w83793_data *data = w83793_update_device(dev);
 	u32 val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (TEMP_FAN_MAP == nr) {
 		val = data->temp_fan_map[index];
 	} else if (TEMP_PWM_ENABLE == nr) {
 		/* +2 to transfrom into 2 and 3 to conform with sysfs intf */
 		val = ((data->pwm_enable >> index) & 0x01) + 2;
 	} else if (TEMP_CRUISE == nr) {
+=======
+	if (nr == TEMP_FAN_MAP) {
+		val = data->temp_fan_map[index];
+	} else if (nr == TEMP_PWM_ENABLE) {
+		/* +2 to transfrom into 2 and 3 to conform with sysfs intf */
+		val = ((data->pwm_enable >> index) & 0x01) + 2;
+	} else if (nr == TEMP_CRUISE) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (nr == TEMP_FAN_MAP) {
+		val = data->temp_fan_map[index];
+	} else if (nr == TEMP_PWM_ENABLE) {
+		/* +2 to transform into 2 and 3 to conform with sysfs intf */
+		val = ((data->pwm_enable >> index) & 0x01) + 2;
+	} else if (nr == TEMP_CRUISE) {
+>>>>>>> refs/remotes/origin/master
 		val = TEMP_FROM_REG(data->temp_cruise[index] & 0x7f);
 	} else {		/* TEMP_TOLERANCE */
 		val = data->tolerance[index >> 1] >> ((index & 0x01) ? 4 : 0);
@@ -801,6 +1298,8 @@ store_sf_ctrl(struct device *dev, struct device_attribute *attr,
 	int index = sensor_attr->index;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct w83793_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val;
 
 	mutex_lock(&data->update_lock);
@@ -811,6 +1310,31 @@ store_sf_ctrl(struct device *dev, struct device_attribute *attr,
 	} else if (TEMP_PWM_ENABLE == nr) {
 		val = simple_strtoul(buf, NULL, 10);
 		if (2 == val || 3 == val) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	long val;
+	int err;
+
+	err = kstrtol(buf, 10, &val);
+	if (err)
+		return err;
+
+	mutex_lock(&data->update_lock);
+	if (nr == TEMP_FAN_MAP) {
+<<<<<<< HEAD
+		val = SENSORS_LIMIT(val, 0, 255);
+=======
+		val = clamp_val(val, 0, 255);
+>>>>>>> refs/remotes/origin/master
+		w83793_write_value(client, W83793_REG_TEMP_FAN_MAP(index), val);
+		data->temp_fan_map[index] = val;
+	} else if (nr == TEMP_PWM_ENABLE) {
+		if (val == 2 || val == 3) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			data->pwm_enable =
 			    w83793_read_value(client, W83793_REG_PWM_ENABLE);
 			if (val - 2)
@@ -823,12 +1347,26 @@ store_sf_ctrl(struct device *dev, struct device_attribute *attr,
 			mutex_unlock(&data->update_lock);
 			return -EINVAL;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (TEMP_CRUISE == nr) {
 		data->temp_cruise[index] =
 		    w83793_read_value(client, W83793_REG_TEMP_CRUISE(index));
 		val = TEMP_TO_REG(simple_strtol(buf, NULL, 10), 0, 0x7f);
 		data->temp_cruise[index] &= 0x80;
 		data->temp_cruise[index] |= val;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	} else if (nr == TEMP_CRUISE) {
+		data->temp_cruise[index] =
+		    w83793_read_value(client, W83793_REG_TEMP_CRUISE(index));
+		data->temp_cruise[index] &= 0x80;
+		data->temp_cruise[index] |= TEMP_TO_REG(val, 0, 0x7f);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		w83793_write_value(client, W83793_REG_TEMP_CRUISE(index),
 						data->temp_cruise[index]);
@@ -838,9 +1376,19 @@ store_sf_ctrl(struct device *dev, struct device_attribute *attr,
 		data->tolerance[i] =
 		    w83793_read_value(client, W83793_REG_TEMP_TOL(i));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		val = TEMP_TO_REG(simple_strtol(buf, NULL, 10), 0, 0x0f);
 		data->tolerance[i] &= ~(0x0f << shift);
 		data->tolerance[i] |= val << shift;
+=======
+		data->tolerance[i] &= ~(0x0f << shift);
+		data->tolerance[i] |= TEMP_TO_REG(val, 0, 0x0f) << shift;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		data->tolerance[i] &= ~(0x0f << shift);
+		data->tolerance[i] |= TEMP_TO_REG(val, 0, 0x0f) << shift;
+>>>>>>> refs/remotes/origin/master
 		w83793_write_value(client, W83793_REG_TEMP_TOL(i),
 							data->tolerance[i]);
 	}
@@ -871,7 +1419,24 @@ store_sf2_pwm(struct device *dev, struct device_attribute *attr,
 	    to_sensor_dev_attr_2(attr);
 	int nr = sensor_attr->nr;
 	int index = sensor_attr->index;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 val = SENSORS_LIMIT(simple_strtoul(buf, NULL, 10), 0, 0xff) >> 2;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+<<<<<<< HEAD
+	val = SENSORS_LIMIT(val, 0, 0xff) >> 2;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	val = clamp_val(val, 0, 0xff) >> 2;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->sf2_pwm[index][nr] =
@@ -906,7 +1471,23 @@ store_sf2_temp(struct device *dev, struct device_attribute *attr,
 	    to_sensor_dev_attr_2(attr);
 	int nr = sensor_attr->nr;
 	int index = sensor_attr->index;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 val = TEMP_TO_REG(simple_strtol(buf, NULL, 10), 0, 0x7f);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	long val;
+	int err;
+
+	err = kstrtol(buf, 10, &val);
+	if (err)
+		return err;
+	val = TEMP_TO_REG(val, 0, 0x7f);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->sf2_temp[index][nr] =
@@ -948,6 +1529,8 @@ store_in(struct device *dev, struct device_attribute *attr,
 	int index = sensor_attr->index;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct w83793_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val;
 
 	val =
@@ -959,9 +1542,32 @@ store_in(struct device *dev, struct device_attribute *attr,
 		if (1 == nr || 2 == nr) {
 			val -= scale_in_add[index] / scale_in[index];
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	val = (val + scale_in[index] / 2) / scale_in[index];
+
+	mutex_lock(&data->update_lock);
+	if (index > 2) {
+		/* fix the limit values of 5VDD and 5VSB to ALARM mechanism */
+		if (nr == 1 || nr == 2)
+			val -= scale_in_add[index] / scale_in[index];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		val = SENSORS_LIMIT(val, 0, 255);
 	} else {
 		val = SENSORS_LIMIT(val, 0, 0x3FF);
+=======
+		val = clamp_val(val, 0, 255);
+	} else {
+		val = clamp_val(val, 0, 0x3FF);
+>>>>>>> refs/remotes/origin/master
 		data->in_low_bits[nr] =
 		    w83793_read_value(client, W83793_REG_IN_LOW_BITS[nr]);
 		data->in_low_bits[nr] &= ~(0x03 << (2 * index));
@@ -1125,8 +1731,11 @@ static struct sensor_device_attribute_2 w83793_vid[] = {
 static DEVICE_ATTR(vrm, S_IWUSR | S_IRUGO, show_vrm, store_vrm);
 
 static struct sensor_device_attribute_2 sda_single_files[] = {
+<<<<<<< HEAD
 	SENSOR_ATTR_2(chassis, S_IWUSR | S_IRUGO, show_alarm_beep,
 		      store_chassis_clear_legacy, ALARM_STATUS, 30),
+=======
+>>>>>>> refs/remotes/origin/master
 	SENSOR_ATTR_2(intrusion0_alarm, S_IWUSR | S_IRUGO, show_alarm_beep,
 		      store_chassis_clear, ALARM_STATUS, 30),
 	SENSOR_ATTR_2(beep_enable, S_IWUSR | S_IRUGO, show_beep_enable,
@@ -1143,9 +1752,19 @@ static struct sensor_device_attribute_2 sda_single_files[] = {
 
 static void w83793_init_client(struct i2c_client *client)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (reset) {
 		w83793_write_value(client, W83793_REG_CONFIG, 0x80);
 	}
+=======
+	if (reset)
+		w83793_write_value(client, W83793_REG_CONFIG, 0x80);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (reset)
+		w83793_write_value(client, W83793_REG_CONFIG, 0x80);
+>>>>>>> refs/remotes/origin/master
 
 	/* Start monitoring */
 	w83793_write_value(client, W83793_REG_CONFIG,
@@ -1158,7 +1777,12 @@ static void w83793_init_client(struct i2c_client *client)
 
 static int watchdog_set_timeout(struct w83793_data *data, int timeout)
 {
+<<<<<<< HEAD
 	int ret, mtimeout;
+=======
+	unsigned int mtimeout;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	mtimeout = DIV_ROUND_UP(timeout, 60);
 
@@ -1259,10 +1883,25 @@ static int watchdog_open(struct inode *inode, struct file *filp)
 	struct w83793_data *pos, *data = NULL;
 	int watchdog_is_open;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* We get called from drivers/char/misc.c with misc_mtx hold, and we
 	   call misc_register() from  w83793_probe() with watchdog_data_mutex
 	   hold, as misc_register() takes the misc_mtx lock, this is a possible
 	   deadlock, so we use mutex_trylock here. */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * We get called from drivers/char/misc.c with misc_mtx hold, and we
+	 * call misc_register() from  w83793_probe() with watchdog_data_mutex
+	 * hold, as misc_register() takes the misc_mtx lock, this is a possible
+	 * deadlock, so we use mutex_trylock here.
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!mutex_trylock(&watchdog_data_mutex))
 		return -ERESTARTSYS;
 	list_for_each_entry(pos, &watchdog_data_list, list) {
@@ -1275,8 +1914,21 @@ static int watchdog_open(struct inode *inode, struct file *filp)
 	/* Check, if device is already open */
 	watchdog_is_open = test_and_set_bit(0, &data->watchdog_is_open);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Increase data reference counter (if not already done).
 	   Note we can never not have found data, so we don't check for this */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Increase data reference counter (if not already done).
+	 * Note we can never not have found data, so we don't check for this
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!watchdog_is_open)
 		kref_get(&data->kref);
 
@@ -1556,9 +2208,19 @@ w83793_detect_subclients(struct i2c_client *client)
 	}
 
 	tmp = w83793_read_value(client, W83793_REG_I2C_SUBADDR);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(tmp & 0x08)) {
 		data->lm75[0] = i2c_new_dummy(adapter, 0x48 + (tmp & 0x7));
 	}
+=======
+	if (!(tmp & 0x08))
+		data->lm75[0] = i2c_new_dummy(adapter, 0x48 + (tmp & 0x7));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(tmp & 0x08))
+		data->lm75[0] = i2c_new_dummy(adapter, 0x48 + (tmp & 0x7));
+>>>>>>> refs/remotes/origin/master
 	if (!(tmp & 0x80)) {
 		if ((data->lm75[0] != NULL)
 		    && ((tmp & 0x7) == ((tmp >> 4) & 0x7))) {
@@ -1591,9 +2253,19 @@ static int w83793_detect(struct i2c_client *client,
 	struct i2c_adapter *adapter = client->adapter;
 	unsigned short address = client->addr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA)) {
 		return -ENODEV;
 	}
+=======
+	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	bank = i2c_smbus_read_byte_data(client, W83793_REG_BANKSEL);
 
@@ -1604,8 +2276,21 @@ static int w83793_detect(struct i2c_client *client,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* If Winbond chip, address of chip and W83793_REG_I2C_ADDR
 	   should match */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * If Winbond chip, address of chip and W83793_REG_I2C_ADDR
+	 * should match
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((bank & 0x07) == 0
 	 && i2c_smbus_read_byte_data(client, W83793_REG_I2C_ADDR) !=
 	    (address << 1)) {
@@ -1647,9 +2332,23 @@ static int w83793_probe(struct i2c_client *client,
 	INIT_LIST_HEAD(&data->list);
 	kref_init(&data->kref);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Store client pointer in our data struct for watchdog usage
 	   (where the client is found through a data ptr instead of the
 	   otherway around) */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Store client pointer in our data struct for watchdog usage
+	 * (where the client is found through a data ptr instead of the
+	 * otherway around)
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	data->client = client;
 
 	err = w83793_detect_subclients(client);
@@ -1660,8 +2359,18 @@ static int w83793_probe(struct i2c_client *client,
 	w83793_init_client(client);
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	   Only fan 1-5 has their own input pins,
 	   Pwm 1-3 has their own pins
+=======
+	 * Only fan 1-5 has their own input pins,
+	 * Pwm 1-3 has their own pins
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Only fan 1-5 has their own input pins,
+	 * Pwm 1-3 has their own pins
+>>>>>>> refs/remotes/origin/master
 	 */
 	data->has_fan = 0x1f;
 	data->has_pwm = 0x07;
@@ -1723,7 +2432,15 @@ static int w83793_probe(struct i2c_client *client,
 	}
 
 	/* check the temp1-6 mode, ignore former AMDSI selected inputs */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tmp = w83793_read_value(client,W83793_REG_TEMP_MODE[0]);
+=======
+	tmp = w83793_read_value(client, W83793_REG_TEMP_MODE[0]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tmp = w83793_read_value(client, W83793_REG_TEMP_MODE[0]);
+>>>>>>> refs/remotes/origin/master
 	if (tmp & 0x01)
 		data->has_temp |= 0x01;
 	if (tmp & 0x04)
@@ -1733,7 +2450,15 @@ static int w83793_probe(struct i2c_client *client,
 	if (tmp & 0x40)
 		data->has_temp |= 0x08;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tmp = w83793_read_value(client,W83793_REG_TEMP_MODE[1]);
+=======
+	tmp = w83793_read_value(client, W83793_REG_TEMP_MODE[1]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tmp = w83793_read_value(client, W83793_REG_TEMP_MODE[1]);
+>>>>>>> refs/remotes/origin/master
 	if (tmp & 0x01)
 		data->has_temp |= 0x10;
 	if (tmp & 0x02)
@@ -1823,9 +2548,23 @@ static int w83793_probe(struct i2c_client *client,
 		goto exit_devunreg;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Enable Watchdog registers.
 	   Set Configuration Register to Enable Watch Dog Registers
 	   (Bit 2) = XXXX, X1XX. */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Enable Watchdog registers.
+	 * Set Configuration Register to Enable Watch Dog Registers
+	 * (Bit 2) = XXXX, X1XX.
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tmp = w83793_read_value(client, W83793_REG_CONFIG);
 	w83793_write_value(client, W83793_REG_CONFIG, tmp | 0x04);
 
@@ -1839,9 +2578,23 @@ static int w83793_probe(struct i2c_client *client,
 	/* Disable Soft Watchdog during initialiation */
 	watchdog_disable(data);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* We take the data_mutex lock early so that watchdog_open() cannot
 	   run when misc_register() has completed, but we've not yet added
 	   our data to the watchdog_data_list (and set the default timeout) */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * We take the data_mutex lock early so that watchdog_open() cannot
+	 * run when misc_register() has completed, but we've not yet added
+	 * our data to the watchdog_data_list (and set the default timeout)
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&watchdog_data_mutex);
 	for (i = 0; i < ARRAY_SIZE(watchdog_minors); i++) {
 		/* Register our watchdog part */
@@ -1870,8 +2623,13 @@ static int w83793_probe(struct i2c_client *client,
 	}
 	if (i == ARRAY_SIZE(watchdog_minors)) {
 		data->watchdog_miscdev.minor = 0;
+<<<<<<< HEAD
 		dev_warn(&client->dev, "Couldn't register watchdog chardev "
 			"(due to no free minor)\n");
+=======
+		dev_warn(&client->dev,
+			 "Couldn't register watchdog chardev (due to no free minor)\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&watchdog_data_mutex);
@@ -1921,9 +2679,21 @@ static void w83793_update_nonvolatile(struct device *dev)
 	struct w83793_data *data = i2c_get_clientdata(client);
 	int i, j;
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	   They are somewhat "stable" registers, and to update them every time
 	   takes so much time, it's just not worthy. Update them in a long
 	   interval to avoid exception.
+=======
+	 * They are somewhat "stable" registers, and to update them every time
+	 * takes so much time, it's just not worthy. Update them in a long
+	 * interval to avoid exception.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * They are somewhat "stable" registers, and to update them every time
+	 * takes so much time, it's just not worthy. Update them in a long
+	 * interval to avoid exception.
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (!(time_after(jiffies, data->last_nonvolatile + HZ * 300)
 	      || !data->valid))
@@ -1940,9 +2710,19 @@ static void w83793_update_nonvolatile(struct device *dev)
 
 	for (i = 0; i < ARRAY_SIZE(data->fan_min); i++) {
 		/* Update the Fan measured value and limits */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(data->has_fan & (1 << i))) {
 			continue;
 		}
+=======
+		if (!(data->has_fan & (1 << i)))
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!(data->has_fan & (1 << i)))
+			continue;
+>>>>>>> refs/remotes/origin/master
 		data->fan_min[i] =
 		    w83793_read_value(client, W83793_REG_FAN_MIN(i)) << 8;
 		data->fan_min[i] |=
@@ -1997,9 +2777,19 @@ static void w83793_update_nonvolatile(struct device *dev)
 	    w83793_read_value(client, W83793_REG_TEMP_CRITICAL);
 	data->beep_enable = w83793_read_value(client, W83793_REG_OVT_BEEP);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(data->beeps); i++) {
 		data->beeps[i] = w83793_read_value(client, W83793_REG_BEEP(i));
 	}
+=======
+	for (i = 0; i < ARRAY_SIZE(data->beeps); i++)
+		data->beeps[i] = w83793_read_value(client, W83793_REG_BEEP(i));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ARRAY_SIZE(data->beeps); i++)
+		data->beeps[i] = w83793_read_value(client, W83793_REG_BEEP(i));
+>>>>>>> refs/remotes/origin/master
 
 	data->last_nonvolatile = jiffies;
 }
@@ -2025,9 +2815,19 @@ static struct w83793_data *w83793_update_device(struct device *dev)
 	    w83793_read_value(client, W83793_REG_IN_LOW_BITS[IN_READ]);
 
 	for (i = 0; i < ARRAY_SIZE(data->fan); i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(data->has_fan & (1 << i))) {
 			continue;
 		}
+=======
+		if (!(data->has_fan & (1 << i)))
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!(data->has_fan & (1 << i)))
+			continue;
+>>>>>>> refs/remotes/origin/master
 		data->fan[i] =
 		    w83793_read_value(client, W83793_REG_FAN(i)) << 8;
 		data->fan[i] |=
@@ -2067,8 +2867,21 @@ END:
 	return data;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Ignore the possibility that somebody change bank outside the driver
    Must be called with data->update_lock held, except during initialization */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Ignore the possibility that somebody change bank outside the driver
+ * Must be called with data->update_lock held, except during initialization
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u8 w83793_read_value(struct i2c_client *client, u16 reg)
 {
 	struct w83793_data *data = i2c_get_clientdata(client);
@@ -2103,16 +2916,36 @@ static int w83793_write_value(struct i2c_client *client, u16 reg, u8 value)
 
 	new_bank |= data->bank & 0xfc;
 	if (data->bank != new_bank) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((res = i2c_smbus_write_byte_data
 		    (client, W83793_REG_BANKSEL, new_bank)) >= 0)
 			data->bank = new_bank;
 		else {
+=======
+		res = i2c_smbus_write_byte_data(client, W83793_REG_BANKSEL,
+						new_bank);
+		if (res < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		res = i2c_smbus_write_byte_data(client, W83793_REG_BANKSEL,
+						new_bank);
+		if (res < 0) {
+>>>>>>> refs/remotes/origin/master
 			dev_err(&client->dev,
 				"set bank to %d failed, fall back "
 				"to bank %d, write reg 0x%x error\n",
 				new_bank, data->bank, reg);
 			goto END;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		data->bank = new_bank;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		data->bank = new_bank;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	res = i2c_smbus_write_byte_data(client, reg & 0xff, value);
@@ -2120,6 +2953,8 @@ END:
 	return res;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_w83793_init(void)
 {
 	return i2c_add_driver(&w83793_driver);
@@ -2129,10 +2964,22 @@ static void __exit sensors_w83793_exit(void)
 {
 	i2c_del_driver(&w83793_driver);
 }
+=======
+module_i2c_driver(w83793_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(w83793_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Yuan Mu, Sven Anders");
 MODULE_DESCRIPTION("w83793 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(sensors_w83793_init);
 module_exit(sensors_w83793_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

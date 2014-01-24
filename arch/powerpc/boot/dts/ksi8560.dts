@@ -306,7 +306,15 @@
 	localbus@fdf05000 {
 		#address-cells = <2>;
 		#size-cells = <1>;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		compatible = "fsl,mpc8560-localbus";
+=======
+		compatible = "fsl,mpc8560-localbus", "simple-bus";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		compatible = "fsl,mpc8560-localbus", "simple-bus";
+>>>>>>> refs/remotes/origin/master
 		reg = <0xfdf05000 0x68>;
 
 		ranges = <0x0 0x0 0xe0000000 0x00800000

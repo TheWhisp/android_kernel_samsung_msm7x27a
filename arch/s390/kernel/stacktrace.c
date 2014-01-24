@@ -1,9 +1,15 @@
 /*
+<<<<<<< HEAD
  * arch/s390/kernel/stacktrace.c
  *
  * Stack trace management functions
  *
  *  Copyright (C) IBM Corp. 2006
+=======
+ * Stack trace management functions
+ *
+ *  Copyright IBM Corp. 2006
+>>>>>>> refs/remotes/origin/master
  *  Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
  */
 

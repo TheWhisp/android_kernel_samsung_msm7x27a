@@ -15,12 +15,20 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
 #include <linux/i2c/twl.h>
 #include <linux/power_supply.h>
 #include <linux/notifier.h>
 #include <linux/usb/otg.h>
+<<<<<<< HEAD
+=======
+#include <linux/regulator/machine.h>
+>>>>>>> refs/remotes/origin/master
 
 #define TWL4030_BCIMSTATEC	0x02
 #define TWL4030_BCIICHG		0x08
@@ -28,6 +36,10 @@
 #define TWL4030_BCIVBUS		0x0c
 #define TWL4030_BCIMFSTS4	0x10
 #define TWL4030_BCICTL1		0x23
+<<<<<<< HEAD
+=======
+#define TWL4030_BB_CFG		0x12
+>>>>>>> refs/remotes/origin/master
 
 #define TWL4030_BCIAUTOWEN	BIT(5)
 #define TWL4030_CONFIG_DONE	BIT(4)
@@ -37,6 +49,20 @@
 #define TWL4030_USBFASTMCHG	BIT(2)
 #define TWL4030_STS_VBUS	BIT(7)
 #define TWL4030_STS_USB_ID	BIT(2)
+<<<<<<< HEAD
+=======
+#define TWL4030_BBCHEN		BIT(4)
+#define TWL4030_BBSEL_MASK	0x0c
+#define TWL4030_BBSEL_2V5	0x00
+#define TWL4030_BBSEL_3V0	0x04
+#define TWL4030_BBSEL_3V1	0x08
+#define TWL4030_BBSEL_3V2	0x0c
+#define TWL4030_BBISEL_MASK	0x03
+#define TWL4030_BBISEL_25uA	0x00
+#define TWL4030_BBISEL_150uA	0x01
+#define TWL4030_BBISEL_500uA	0x02
+#define TWL4030_BBISEL_1000uA	0x03
+>>>>>>> refs/remotes/origin/master
 
 /* BCI interrupts */
 #define TWL4030_WOVF		BIT(0) /* Watchdog overflow */
@@ -62,18 +88,41 @@
 #define TWL4030_MSTATEC_COMPLETE4	0x0e
 
 static bool allow_usb;
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_param(allow_usb, bool, 1);
+=======
+module_param(allow_usb, bool, 0644);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(allow_usb, bool, 0644);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(allow_usb, "Allow USB charge drawing default current");
 
 struct twl4030_bci {
 	struct device		*dev;
 	struct power_supply	ac;
 	struct power_supply	usb;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct otg_transceiver	*transceiver;
 	struct notifier_block	otg_nb;
+=======
+	struct usb_phy		*transceiver;
+	struct notifier_block	usb_nb;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct work_struct	work;
 	int			irq_chg;
 	int			irq_bci;
+=======
+	struct usb_phy		*transceiver;
+	struct notifier_block	usb_nb;
+	struct work_struct	work;
+	int			irq_chg;
+	int			irq_bci;
+	struct regulator	*usb_reg;
+	int			usb_enabled;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned long		event;
 };
@@ -98,12 +147,20 @@ static int twl4030_clear_set(u8 mod_no, u8 clear, u8 set, u8 reg)
 
 static int twl4030_bci_read(u8 reg, u8 *val)
 {
+<<<<<<< HEAD
 	return twl_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE, val, reg);
+=======
+	return twl_i2c_read_u8(TWL_MODULE_MAIN_CHARGE, val, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int twl4030_clear_set_boot_bci(u8 clear, u8 set)
 {
+<<<<<<< HEAD
 	return twl4030_clear_set(TWL4030_MODULE_PM_MASTER, 0,
+=======
+	return twl4030_clear_set(TWL_MODULE_PM_MASTER, clear,
+>>>>>>> refs/remotes/origin/master
 			TWL4030_CONFIG_DONE | TWL4030_BCIAUTOWEN | set,
 			TWL4030_PM_MASTER_BOOT_BCI);
 }
@@ -136,7 +193,11 @@ static int twl4030_bci_have_vbus(struct twl4030_bci *bci)
 	int ret;
 	u8 hwsts;
 
+<<<<<<< HEAD
 	ret = twl_i2c_read_u8(TWL4030_MODULE_PM_MASTER, &hwsts,
+=======
+	ret = twl_i2c_read_u8(TWL_MODULE_PM_MASTER, &hwsts,
+>>>>>>> refs/remotes/origin/master
 			      TWL4030_PM_MASTER_STS_HW_CONDITIONS);
 	if (ret < 0)
 		return 0;
@@ -151,14 +212,22 @@ static int twl4030_bci_have_vbus(struct twl4030_bci *bci)
 }
 
 /*
+<<<<<<< HEAD
  * Enable/Disable USB Charge funtionality.
+=======
+ * Enable/Disable USB Charge functionality.
+>>>>>>> refs/remotes/origin/master
  */
 static int twl4030_charger_enable_usb(struct twl4030_bci *bci, bool enable)
 {
 	int ret;
 
 	if (enable) {
+<<<<<<< HEAD
 		/* Check for USB charger conneted */
+=======
+		/* Check for USB charger connected */
+>>>>>>> refs/remotes/origin/master
 		if (!twl4030_bci_have_vbus(bci))
 			return -ENODEV;
 
@@ -171,16 +240,41 @@ static int twl4030_charger_enable_usb(struct twl4030_bci *bci, bool enable)
 			return -EACCES;
 		}
 
+<<<<<<< HEAD
+=======
+		/* Need to keep regulator on */
+		if (!bci->usb_enabled) {
+			ret = regulator_enable(bci->usb_reg);
+			if (ret) {
+				dev_err(bci->dev,
+					"Failed to enable regulator\n");
+				return ret;
+			}
+			bci->usb_enabled = 1;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		/* forcing the field BCIAUTOUSB (BOOT_BCI[1]) to 1 */
 		ret = twl4030_clear_set_boot_bci(0, TWL4030_BCIAUTOUSB);
 		if (ret < 0)
 			return ret;
 
 		/* forcing USBFASTMCHG(BCIMFSTS4[2]) to 1 */
+<<<<<<< HEAD
 		ret = twl4030_clear_set(TWL4030_MODULE_MAIN_CHARGE, 0,
 			TWL4030_USBFASTMCHG, TWL4030_BCIMFSTS4);
 	} else {
 		ret = twl4030_clear_set_boot_bci(TWL4030_BCIAUTOUSB, 0);
+=======
+		ret = twl4030_clear_set(TWL_MODULE_MAIN_CHARGE, 0,
+			TWL4030_USBFASTMCHG, TWL4030_BCIMFSTS4);
+	} else {
+		ret = twl4030_clear_set_boot_bci(TWL4030_BCIAUTOUSB, 0);
+		if (bci->usb_enabled) {
+			regulator_disable(bci->usb_reg);
+			bci->usb_enabled = 0;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -202,6 +296,52 @@ static int twl4030_charger_enable_ac(bool enable)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Enable/Disable charging of Backup Battery.
+ */
+static int twl4030_charger_enable_backup(int uvolt, int uamp)
+{
+	int ret;
+	u8 flags;
+
+	if (uvolt < 2500000 ||
+	    uamp < 25) {
+		/* disable charging of backup battery */
+		ret = twl4030_clear_set(TWL_MODULE_PM_RECEIVER,
+					TWL4030_BBCHEN, 0, TWL4030_BB_CFG);
+		return ret;
+	}
+
+	flags = TWL4030_BBCHEN;
+	if (uvolt >= 3200000)
+		flags |= TWL4030_BBSEL_3V2;
+	else if (uvolt >= 3100000)
+		flags |= TWL4030_BBSEL_3V1;
+	else if (uvolt >= 3000000)
+		flags |= TWL4030_BBSEL_3V0;
+	else
+		flags |= TWL4030_BBSEL_2V5;
+
+	if (uamp >= 1000)
+		flags |= TWL4030_BBISEL_1000uA;
+	else if (uamp >= 500)
+		flags |= TWL4030_BBISEL_500uA;
+	else if (uamp >= 150)
+		flags |= TWL4030_BBISEL_150uA;
+	else
+		flags |= TWL4030_BBISEL_25uA;
+
+	ret = twl4030_clear_set(TWL_MODULE_PM_RECEIVER,
+				TWL4030_BBSEL_MASK | TWL4030_BBISEL_MASK,
+				flags,
+				TWL4030_BB_CFG);
+
+	return ret;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * TWL4030 CHG_PRES (AC charger presence) events
  */
 static irqreturn_t twl4030_charger_interrupt(int irq, void *arg)
@@ -279,7 +419,15 @@ static void twl4030_bci_usb_work(struct work_struct *data)
 static int twl4030_bci_usb_ncb(struct notifier_block *nb, unsigned long val,
 			       void *priv)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct twl4030_bci *bci = container_of(nb, struct twl4030_bci, otg_nb);
+=======
+	struct twl4030_bci *bci = container_of(nb, struct twl4030_bci, usb_nb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct twl4030_bci *bci = container_of(nb, struct twl4030_bci, usb_nb);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(bci->dev, "OTG notify %lu\n", val);
 
@@ -421,16 +569,63 @@ static enum power_supply_property twl4030_charger_props[] = {
 	POWER_SUPPLY_PROP_CURRENT_NOW,
 };
 
+<<<<<<< HEAD
 static int __init twl4030_bci_probe(struct platform_device *pdev)
 {
 	struct twl4030_bci *bci;
 	int ret;
+<<<<<<< HEAD
 	int reg;
+=======
+	u32 reg;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_OF
+static const struct twl4030_bci_platform_data *
+twl4030_bci_parse_dt(struct device *dev)
+{
+	struct device_node *np = dev->of_node;
+	struct twl4030_bci_platform_data *pdata;
+	u32 num;
+
+	if (!np)
+		return NULL;
+	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return pdata;
+
+	if (of_property_read_u32(np, "ti,bb-uvolt", &num) == 0)
+		pdata->bb_uvolt = num;
+	if (of_property_read_u32(np, "ti,bb-uamp", &num) == 0)
+		pdata->bb_uamp = num;
+	return pdata;
+}
+#else
+static inline const struct twl4030_bci_platform_data *
+twl4030_bci_parse_dt(struct device *dev)
+{
+	return NULL;
+}
+#endif
+
+static int __init twl4030_bci_probe(struct platform_device *pdev)
+{
+	struct twl4030_bci *bci;
+	const struct twl4030_bci_platform_data *pdata = pdev->dev.platform_data;
+	int ret;
+	u32 reg;
+>>>>>>> refs/remotes/origin/master
 
 	bci = kzalloc(sizeof(*bci), GFP_KERNEL);
 	if (bci == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	if (!pdata)
+		pdata = twl4030_bci_parse_dt(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	bci->dev = &pdev->dev;
 	bci->irq_chg = platform_get_irq(pdev, 0);
 	bci->irq_bci = platform_get_irq(pdev, 1);
@@ -455,6 +650,11 @@ static int __init twl4030_bci_probe(struct platform_device *pdev)
 	bci->usb.num_properties = ARRAY_SIZE(twl4030_charger_props);
 	bci->usb.get_property = twl4030_bci_get_property;
 
+<<<<<<< HEAD
+=======
+	bci->usb_reg = regulator_get(bci->dev, "bci3v1");
+
+>>>>>>> refs/remotes/origin/master
 	ret = power_supply_register(&pdev->dev, &bci->usb);
 	if (ret) {
 		dev_err(&pdev->dev, "failed to register usb: %d\n", ret);
@@ -462,7 +662,12 @@ static int __init twl4030_bci_probe(struct platform_device *pdev)
 	}
 
 	ret = request_threaded_irq(bci->irq_chg, NULL,
+<<<<<<< HEAD
 			twl4030_charger_interrupt, 0, pdev->name, bci);
+=======
+			twl4030_charger_interrupt, IRQF_ONESHOT, pdev->name,
+			bci);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(&pdev->dev, "could not request irq %d, status %d\n",
 			bci->irq_chg, ret);
@@ -470,7 +675,11 @@ static int __init twl4030_bci_probe(struct platform_device *pdev)
 	}
 
 	ret = request_threaded_irq(bci->irq_bci, NULL,
+<<<<<<< HEAD
 			twl4030_bci_interrupt, 0, pdev->name, bci);
+=======
+			twl4030_bci_interrupt, IRQF_ONESHOT, pdev->name, bci);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(&pdev->dev, "could not request irq %d, status %d\n",
 			bci->irq_bci, ret);
@@ -479,6 +688,8 @@ static int __init twl4030_bci_probe(struct platform_device *pdev)
 
 	INIT_WORK(&bci->work, twl4030_bci_usb_work);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bci->transceiver = otg_get_transceiver();
 	if (bci->transceiver != NULL) {
 		bci->otg_nb.notifier_call = twl4030_bci_usb_ncb;
@@ -487,6 +698,23 @@ static int __init twl4030_bci_probe(struct platform_device *pdev)
 
 	/* Enable interrupts now. */
 	reg = ~(TWL4030_ICHGLOW | TWL4030_ICHGEOC | TWL4030_TBATOR2 |
+=======
+	bci->transceiver = usb_get_transceiver();
+	if (bci->transceiver != NULL) {
+=======
+	bci->transceiver = usb_get_phy(USB_PHY_TYPE_USB2);
+	if (!IS_ERR_OR_NULL(bci->transceiver)) {
+>>>>>>> refs/remotes/origin/master
+		bci->usb_nb.notifier_call = twl4030_bci_usb_ncb;
+		usb_register_notifier(bci->transceiver, &bci->usb_nb);
+	}
+
+	/* Enable interrupts now. */
+	reg = ~(u32)(TWL4030_ICHGLOW | TWL4030_ICHGEOC | TWL4030_TBATOR2 |
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		TWL4030_TBATOR1 | TWL4030_BATSTS);
 	ret = twl_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, reg,
 			       TWL4030_INTERRUPTS_BCIIMR1A);
@@ -495,7 +723,15 @@ static int __init twl4030_bci_probe(struct platform_device *pdev)
 		goto fail_unmask_interrupts;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reg = ~(TWL4030_VBATOV | TWL4030_VBUSOV | TWL4030_ACCHGOV);
+=======
+	reg = ~(u32)(TWL4030_VBATOV | TWL4030_VBUSOV | TWL4030_ACCHGOV);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reg = ~(u32)(TWL4030_VBATOV | TWL4030_VBUSOV | TWL4030_ACCHGOV);
+>>>>>>> refs/remotes/origin/master
 	ret = twl_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, reg,
 			       TWL4030_INTERRUPTS_BCIIMR2A);
 	if (ret < 0)
@@ -503,13 +739,32 @@ static int __init twl4030_bci_probe(struct platform_device *pdev)
 
 	twl4030_charger_enable_ac(true);
 	twl4030_charger_enable_usb(bci, true);
+<<<<<<< HEAD
+=======
+	if (pdata)
+		twl4030_charger_enable_backup(pdata->bb_uvolt,
+					      pdata->bb_uamp);
+	else
+		twl4030_charger_enable_backup(0, 0);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 fail_unmask_interrupts:
+<<<<<<< HEAD
 	if (bci->transceiver != NULL) {
+<<<<<<< HEAD
 		otg_unregister_notifier(bci->transceiver, &bci->otg_nb);
 		otg_put_transceiver(bci->transceiver);
+=======
+		usb_unregister_notifier(bci->transceiver, &bci->usb_nb);
+		usb_put_transceiver(bci->transceiver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(bci->transceiver)) {
+		usb_unregister_notifier(bci->transceiver, &bci->usb_nb);
+		usb_put_phy(bci->transceiver);
+>>>>>>> refs/remotes/origin/master
 	}
 	free_irq(bci->irq_bci, bci);
 fail_bci_irq:
@@ -519,7 +774,10 @@ fail_chg_irq:
 fail_register_usb:
 	power_supply_unregister(&bci->ac);
 fail_register_ac:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(bci);
 
 	return ret;
@@ -531,6 +789,10 @@ static int __exit twl4030_bci_remove(struct platform_device *pdev)
 
 	twl4030_charger_enable_ac(false);
 	twl4030_charger_enable_usb(bci, false);
+<<<<<<< HEAD
+=======
+	twl4030_charger_enable_backup(0, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* mask interrupts */
 	twl_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xff,
@@ -538,28 +800,56 @@ static int __exit twl4030_bci_remove(struct platform_device *pdev)
 	twl_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xff,
 			 TWL4030_INTERRUPTS_BCIIMR2A);
 
+<<<<<<< HEAD
 	if (bci->transceiver != NULL) {
+<<<<<<< HEAD
 		otg_unregister_notifier(bci->transceiver, &bci->otg_nb);
 		otg_put_transceiver(bci->transceiver);
+=======
+		usb_unregister_notifier(bci->transceiver, &bci->usb_nb);
+		usb_put_transceiver(bci->transceiver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(bci->transceiver)) {
+		usb_unregister_notifier(bci->transceiver, &bci->usb_nb);
+		usb_put_phy(bci->transceiver);
+>>>>>>> refs/remotes/origin/master
 	}
 	free_irq(bci->irq_bci, bci);
 	free_irq(bci->irq_chg, bci);
 	power_supply_unregister(&bci->usb);
 	power_supply_unregister(&bci->ac);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(bci);
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id twl_bci_of_match[] = {
+	{.compatible = "ti,twl4030-bci", },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, twl_bci_of_match);
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver twl4030_bci_driver = {
 	.driver	= {
 		.name	= "twl4030_bci",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = of_match_ptr(twl_bci_of_match),
+>>>>>>> refs/remotes/origin/master
 	},
 	.remove	= __exit_p(twl4030_bci_remove),
 };
 
+<<<<<<< HEAD
 static int __init twl4030_bci_init(void)
 {
 	return platform_driver_probe(&twl4030_bci_driver, twl4030_bci_probe);
@@ -572,7 +862,16 @@ static void __exit twl4030_bci_exit(void)
 }
 module_exit(twl4030_bci_exit);
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Gražydas Ignotas");
+=======
+MODULE_AUTHOR("Gražvydas Ignotas");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver_probe(twl4030_bci_driver, twl4030_bci_probe);
+
+MODULE_AUTHOR("Gražvydas Ignotas");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("TWL4030 Battery Charger Interface driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:twl4030_bci");

@@ -83,7 +83,11 @@ config 32BIT
 
 config PMB
 	bool "Support 32-bit physical addressing through PMB"
+<<<<<<< HEAD
 	depends on MMU && EXPERIMENTAL && CPU_SH4A && !CPU_SH4AL_DSP
+=======
+	depends on MMU && CPU_SH4A && !CPU_SH4AL_DSP
+>>>>>>> refs/remotes/origin/master
 	select 32BIT
 	select UNCACHED_MAPPING
 	help
@@ -110,7 +114,12 @@ config VSYSCALL
 
 config NUMA
 	bool "Non Uniform Memory Access (NUMA) Support"
+<<<<<<< HEAD
 	depends on MMU && SYS_SUPPORTS_NUMA && EXPERIMENTAL
+=======
+	depends on MMU && SYS_SUPPORTS_NUMA
+	select ARCH_WANT_NUMA_VARIABLE_LOCALITY
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 	  Some SH systems have many various memories scattered around
@@ -136,6 +145,7 @@ config ARCH_SPARSEMEM_ENABLE
 config ARCH_SPARSEMEM_DEFAULT
 	def_bool y
 
+<<<<<<< HEAD
 config MAX_ACTIVE_REGIONS
 	int
 	default "6" if (CPU_SUBTYPE_SHX3 && SPARSEMEM)
@@ -143,9 +153,14 @@ config MAX_ACTIVE_REGIONS
 		       CPU_SUBTYPE_SH7785)
 	default "1"
 
+<<<<<<< HEAD
 config ARCH_POPULATES_NODE_MAP
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config ARCH_SELECT_MEMORY_MODEL
 	def_bool y
 

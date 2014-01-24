@@ -55,9 +55,12 @@
 /* semaphore for IPVS sockopts. And, [gs]etsockopt may sleep. */
 static DEFINE_MUTEX(__ip_vs_mutex);
 
+<<<<<<< HEAD
 /* lock for service table */
 static DEFINE_RWLOCK(__ip_vs_svc_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* sysctl variables */
 
 #ifdef CONFIG_IP_VS_DEBUG
@@ -71,11 +74,16 @@ int ip_vs_get_debug_level(void)
 
 
 /*  Protos */
+<<<<<<< HEAD
 static void __ip_vs_del_service(struct ip_vs_service *svc);
+=======
+static void __ip_vs_del_service(struct ip_vs_service *svc, bool cleanup);
+>>>>>>> refs/remotes/origin/master
 
 
 #ifdef CONFIG_IP_VS_IPV6
 /* Taken from rt6_fill_node() in net/ipv6/route.c, is there a better way? */
+<<<<<<< HEAD
 static int __ip_vs_addr_is_local_v6(struct net *net,
 				    const struct in6_addr *addr)
 {
@@ -85,10 +93,29 @@ static int __ip_vs_addr_is_local_v6(struct net *net,
 	};
 
 	rt = (struct rt6_info *)ip6_route_output(net, NULL, &fl6);
+<<<<<<< HEAD
 	if (rt && rt->rt6i_dev && (rt->rt6i_dev->flags & IFF_LOOPBACK))
+=======
+	if (rt && rt->dst.dev && (rt->dst.dev->flags & IFF_LOOPBACK))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 
 	return 0;
+=======
+static bool __ip_vs_addr_is_local_v6(struct net *net,
+				     const struct in6_addr *addr)
+{
+	struct flowi6 fl6 = {
+		.daddr = *addr,
+	};
+	struct dst_entry *dst = ip6_route_output(net, NULL, &fl6);
+	bool is_local;
+
+	is_local = !dst->error && dst->dev && (dst->dev->flags & IFF_LOOPBACK);
+
+	dst_release(dst);
+	return is_local;
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -257,36 +284,64 @@ ip_vs_use_count_dec(void)
 #define IP_VS_SVC_TAB_MASK (IP_VS_SVC_TAB_SIZE - 1)
 
 /* the service table hashed by <protocol, addr, port> */
+<<<<<<< HEAD
 static struct list_head ip_vs_svc_table[IP_VS_SVC_TAB_SIZE];
 /* the service table hashed by fwmark */
 static struct list_head ip_vs_svc_fwm_table[IP_VS_SVC_TAB_SIZE];
+=======
+static struct hlist_head ip_vs_svc_table[IP_VS_SVC_TAB_SIZE];
+/* the service table hashed by fwmark */
+static struct hlist_head ip_vs_svc_fwm_table[IP_VS_SVC_TAB_SIZE];
+>>>>>>> refs/remotes/origin/master
 
 
 /*
  *	Returns hash value for virtual service
  */
+<<<<<<< HEAD
 static inline unsigned
 ip_vs_svc_hashkey(struct net *net, int af, unsigned proto,
 		  const union nf_inet_addr *addr, __be16 port)
 {
 	register unsigned porth = ntohs(port);
 	__be32 addr_fold = addr->ip;
+=======
+static inline unsigned int
+ip_vs_svc_hashkey(struct net *net, int af, unsigned int proto,
+		  const union nf_inet_addr *addr, __be16 port)
+{
+	register unsigned int porth = ntohs(port);
+	__be32 addr_fold = addr->ip;
+	__u32 ahash;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IP_VS_IPV6
 	if (af == AF_INET6)
 		addr_fold = addr->ip6[0]^addr->ip6[1]^
 			    addr->ip6[2]^addr->ip6[3];
 #endif
+<<<<<<< HEAD
 	addr_fold ^= ((size_t)net>>8);
 
 	return (proto^ntohl(addr_fold)^(porth>>IP_VS_SVC_TAB_BITS)^porth)
 		& IP_VS_SVC_TAB_MASK;
+=======
+	ahash = ntohl(addr_fold);
+	ahash ^= ((size_t) net >> 8);
+
+	return (proto ^ ahash ^ (porth >> IP_VS_SVC_TAB_BITS) ^ porth) &
+	       IP_VS_SVC_TAB_MASK;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  *	Returns hash value of fwmark for virtual service lookup
  */
+<<<<<<< HEAD
 static inline unsigned ip_vs_svc_fwm_hashkey(struct net *net, __u32 fwmark)
+=======
+static inline unsigned int ip_vs_svc_fwm_hashkey(struct net *net, __u32 fwmark)
+>>>>>>> refs/remotes/origin/master
 {
 	return (((size_t)net>>8) ^ fwmark) & IP_VS_SVC_TAB_MASK;
 }
@@ -298,7 +353,11 @@ static inline unsigned ip_vs_svc_fwm_hashkey(struct net *net, __u32 fwmark)
  */
 static int ip_vs_svc_hash(struct ip_vs_service *svc)
 {
+<<<<<<< HEAD
 	unsigned hash;
+=======
+	unsigned int hash;
+>>>>>>> refs/remotes/origin/master
 
 	if (svc->flags & IP_VS_SVC_F_HASHED) {
 		pr_err("%s(): request for already hashed, called from %pF\n",
@@ -312,13 +371,21 @@ static int ip_vs_svc_hash(struct ip_vs_service *svc)
 		 */
 		hash = ip_vs_svc_hashkey(svc->net, svc->af, svc->protocol,
 					 &svc->addr, svc->port);
+<<<<<<< HEAD
 		list_add(&svc->s_list, &ip_vs_svc_table[hash]);
+=======
+		hlist_add_head_rcu(&svc->s_list, &ip_vs_svc_table[hash]);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/*
 		 *  Hash it by fwmark in svc_fwm_table
 		 */
 		hash = ip_vs_svc_fwm_hashkey(svc->net, svc->fwmark);
+<<<<<<< HEAD
 		list_add(&svc->f_list, &ip_vs_svc_fwm_table[hash]);
+=======
+		hlist_add_head_rcu(&svc->f_list, &ip_vs_svc_fwm_table[hash]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	svc->flags |= IP_VS_SVC_F_HASHED;
@@ -342,10 +409,17 @@ static int ip_vs_svc_unhash(struct ip_vs_service *svc)
 
 	if (svc->fwmark == 0) {
 		/* Remove it from the svc_table table */
+<<<<<<< HEAD
 		list_del(&svc->s_list);
 	} else {
 		/* Remove it from the svc_fwm_table table */
 		list_del(&svc->f_list);
+=======
+		hlist_del_rcu(&svc->s_list);
+	} else {
+		/* Remove it from the svc_fwm_table table */
+		hlist_del_rcu(&svc->f_list);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	svc->flags &= ~IP_VS_SVC_F_HASHED;
@@ -361,13 +435,21 @@ static inline struct ip_vs_service *
 __ip_vs_service_find(struct net *net, int af, __u16 protocol,
 		     const union nf_inet_addr *vaddr, __be16 vport)
 {
+<<<<<<< HEAD
 	unsigned hash;
+=======
+	unsigned int hash;
+>>>>>>> refs/remotes/origin/master
 	struct ip_vs_service *svc;
 
 	/* Check for "full" addressed entries */
 	hash = ip_vs_svc_hashkey(net, af, protocol, vaddr, vport);
 
+<<<<<<< HEAD
 	list_for_each_entry(svc, &ip_vs_svc_table[hash], s_list){
+=======
+	hlist_for_each_entry_rcu(svc, &ip_vs_svc_table[hash], s_list) {
+>>>>>>> refs/remotes/origin/master
 		if ((svc->af == af)
 		    && ip_vs_addr_equal(af, &svc->addr, vaddr)
 		    && (svc->port == vport)
@@ -388,13 +470,21 @@ __ip_vs_service_find(struct net *net, int af, __u16 protocol,
 static inline struct ip_vs_service *
 __ip_vs_svc_fwm_find(struct net *net, int af, __u32 fwmark)
 {
+<<<<<<< HEAD
 	unsigned hash;
+=======
+	unsigned int hash;
+>>>>>>> refs/remotes/origin/master
 	struct ip_vs_service *svc;
 
 	/* Check for fwmark addressed entries */
 	hash = ip_vs_svc_fwm_hashkey(net, fwmark);
 
+<<<<<<< HEAD
 	list_for_each_entry(svc, &ip_vs_svc_fwm_table[hash], f_list) {
+=======
+	hlist_for_each_entry_rcu(svc, &ip_vs_svc_fwm_table[hash], f_list) {
+>>>>>>> refs/remotes/origin/master
 		if (svc->fwmark == fwmark && svc->af == af
 		    && net_eq(svc->net, net)) {
 			/* HIT */
@@ -405,15 +495,25 @@ __ip_vs_svc_fwm_find(struct net *net, int af, __u32 fwmark)
 	return NULL;
 }
 
+<<<<<<< HEAD
 struct ip_vs_service *
 ip_vs_service_get(struct net *net, int af, __u32 fwmark, __u16 protocol,
 		  const union nf_inet_addr *vaddr, __be16 vport)
+=======
+/* Find service, called under RCU lock */
+struct ip_vs_service *
+ip_vs_service_find(struct net *net, int af, __u32 fwmark, __u16 protocol,
+		   const union nf_inet_addr *vaddr, __be16 vport)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ip_vs_service *svc;
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
+<<<<<<< HEAD
 	read_lock(&__ip_vs_svc_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *	Check the table hashed by fwmark first
 	 */
@@ -449,10 +549,13 @@ ip_vs_service_get(struct net *net, int af, __u32 fwmark, __u16 protocol,
 	}
 
   out:
+<<<<<<< HEAD
 	if (svc)
 		atomic_inc(&svc->usecnt);
 	read_unlock(&__ip_vs_svc_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	IP_VS_DBG_BUF(9, "lookup service: fwm %u %s %s:%u %s\n",
 		      fwmark, ip_vs_proto_name(protocol),
 		      IP_VS_DBG_ADDR(af, vaddr), ntohs(vport),
@@ -466,6 +569,7 @@ static inline void
 __ip_vs_bind_svc(struct ip_vs_dest *dest, struct ip_vs_service *svc)
 {
 	atomic_inc(&svc->refcnt);
+<<<<<<< HEAD
 	dest->svc = svc;
 }
 
@@ -482,6 +586,37 @@ __ip_vs_unbind_svc(struct ip_vs_dest *dest)
 			      ntohs(svc->port), atomic_read(&svc->usecnt));
 		free_percpu(svc->stats.cpustats);
 		kfree(svc);
+=======
+	rcu_assign_pointer(dest->svc, svc);
+}
+
+static void ip_vs_service_free(struct ip_vs_service *svc)
+{
+	if (svc->stats.cpustats)
+		free_percpu(svc->stats.cpustats);
+	kfree(svc);
+}
+
+static void ip_vs_service_rcu_free(struct rcu_head *head)
+{
+	struct ip_vs_service *svc;
+
+	svc = container_of(head, struct ip_vs_service, rcu_head);
+	ip_vs_service_free(svc);
+}
+
+static void __ip_vs_svc_put(struct ip_vs_service *svc, bool do_delay)
+{
+	if (atomic_dec_and_test(&svc->refcnt)) {
+		IP_VS_DBG_BUF(3, "Removing service %u/%s:%u\n",
+			      svc->fwmark,
+			      IP_VS_DBG_ADDR(svc->af, &svc->addr),
+			      ntohs(svc->port));
+		if (do_delay)
+			call_rcu(&svc->rcu_head, ip_vs_service_rcu_free);
+		else
+			ip_vs_service_free(svc);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -489,11 +624,19 @@ __ip_vs_unbind_svc(struct ip_vs_dest *dest)
 /*
  *	Returns hash value for real service
  */
+<<<<<<< HEAD
 static inline unsigned ip_vs_rs_hashkey(int af,
 					    const union nf_inet_addr *addr,
 					    __be16 port)
 {
 	register unsigned porth = ntohs(port);
+=======
+static inline unsigned int ip_vs_rs_hashkey(int af,
+					    const union nf_inet_addr *addr,
+					    __be16 port)
+{
+	register unsigned int porth = ntohs(port);
+>>>>>>> refs/remotes/origin/master
 	__be32 addr_fold = addr->ip;
 
 #ifdef CONFIG_IP_VS_IPV6
@@ -506,6 +649,7 @@ static inline unsigned ip_vs_rs_hashkey(int af,
 		& IP_VS_RTAB_MASK;
 }
 
+<<<<<<< HEAD
 /*
  *	Hashes ip_vs_dest in rs_table by <proto,addr,port>.
  *	should be called with locked tables.
@@ -517,6 +661,15 @@ static int ip_vs_rs_hash(struct netns_ipvs *ipvs, struct ip_vs_dest *dest)
 	if (!list_empty(&dest->d_list)) {
 		return 0;
 	}
+=======
+/* Hash ip_vs_dest in rs_table by <proto,addr,port>. */
+static void ip_vs_rs_hash(struct netns_ipvs *ipvs, struct ip_vs_dest *dest)
+{
+	unsigned int hash;
+
+	if (dest->in_rs_table)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *	Hash by proto,addr,port,
@@ -524,6 +677,7 @@ static int ip_vs_rs_hash(struct netns_ipvs *ipvs, struct ip_vs_dest *dest)
 	 */
 	hash = ip_vs_rs_hashkey(dest->af, &dest->addr, dest->port);
 
+<<<<<<< HEAD
 	list_add(&dest->d_list, &ipvs->rs_table[hash]);
 
 	return 1;
@@ -534,10 +688,19 @@ static int ip_vs_rs_hash(struct netns_ipvs *ipvs, struct ip_vs_dest *dest)
  *	should be called with locked tables.
  */
 static int ip_vs_rs_unhash(struct ip_vs_dest *dest)
+=======
+	hlist_add_head_rcu(&dest->d_list, &ipvs->rs_table[hash]);
+	dest->in_rs_table = 1;
+}
+
+/* Unhash ip_vs_dest from rs_table. */
+static void ip_vs_rs_unhash(struct ip_vs_dest *dest)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Remove it from the rs_table table.
 	 */
+<<<<<<< HEAD
 	if (!list_empty(&dest->d_list)) {
 		list_del(&dest->d_list);
 		INIT_LIST_HEAD(&dest->d_list);
@@ -583,6 +746,43 @@ ip_vs_lookup_real_service(struct net *net, int af, __u16 protocol,
 
 /*
  *	Lookup destination by {addr,port} in the given service
+=======
+	if (dest->in_rs_table) {
+		hlist_del_rcu(&dest->d_list);
+		dest->in_rs_table = 0;
+	}
+}
+
+/* Check if real service by <proto,addr,port> is present */
+bool ip_vs_has_real_service(struct net *net, int af, __u16 protocol,
+			    const union nf_inet_addr *daddr, __be16 dport)
+{
+	struct netns_ipvs *ipvs = net_ipvs(net);
+	unsigned int hash;
+	struct ip_vs_dest *dest;
+
+	/* Check for "full" addressed entries */
+	hash = ip_vs_rs_hashkey(af, daddr, dport);
+
+	rcu_read_lock();
+	hlist_for_each_entry_rcu(dest, &ipvs->rs_table[hash], d_list) {
+		if (dest->port == dport &&
+		    dest->af == af &&
+		    ip_vs_addr_equal(af, &dest->addr, daddr) &&
+		    (dest->protocol == protocol || dest->vfwmark)) {
+			/* HIT */
+			rcu_read_unlock();
+			return true;
+		}
+	}
+	rcu_read_unlock();
+
+	return false;
+}
+
+/* Lookup destination by {addr,port} in the given service
+ * Called under RCU lock.
+>>>>>>> refs/remotes/origin/master
  */
 static struct ip_vs_dest *
 ip_vs_lookup_dest(struct ip_vs_service *svc, const union nf_inet_addr *daddr,
@@ -593,7 +793,11 @@ ip_vs_lookup_dest(struct ip_vs_service *svc, const union nf_inet_addr *daddr,
 	/*
 	 * Find the destination for the given service
 	 */
+<<<<<<< HEAD
 	list_for_each_entry(dest, &svc->destinations, n_list) {
+=======
+	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+>>>>>>> refs/remotes/origin/master
 		if ((dest->af == svc->af)
 		    && ip_vs_addr_equal(svc->af, &dest->addr, daddr)
 		    && (dest->port == dport)) {
@@ -607,6 +811,7 @@ ip_vs_lookup_dest(struct ip_vs_service *svc, const union nf_inet_addr *daddr,
 
 /*
  * Find destination by {daddr,dport,vaddr,protocol}
+<<<<<<< HEAD
  * Cretaed to be used in ip_vs_process_message() in
  * the backup synchronization daemon. It finds the
  * destination to be bound to the received connection
@@ -614,26 +819,88 @@ ip_vs_lookup_dest(struct ip_vs_service *svc, const union nf_inet_addr *daddr,
  *
  * ip_vs_lookup_real_service() looked promissing, but
  * seems not working as expected.
+=======
+ * Created to be used in ip_vs_process_message() in
+ * the backup synchronization daemon. It finds the
+ * destination to be bound to the received connection
+ * on the backup.
+ * Called under RCU lock, no refcnt is returned.
+>>>>>>> refs/remotes/origin/master
  */
 struct ip_vs_dest *ip_vs_find_dest(struct net  *net, int af,
 				   const union nf_inet_addr *daddr,
 				   __be16 dport,
 				   const union nf_inet_addr *vaddr,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				   __be16 vport, __u16 protocol, __u32 fwmark)
 {
 	struct ip_vs_dest *dest;
 	struct ip_vs_service *svc;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				   __be16 vport, __u16 protocol, __u32 fwmark,
+				   __u32 flags)
+{
+	struct ip_vs_dest *dest;
+	struct ip_vs_service *svc;
+	__be16 port = dport;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	svc = ip_vs_service_get(net, af, fwmark, protocol, vaddr, vport);
 	if (!svc)
 		return NULL;
+<<<<<<< HEAD
 	dest = ip_vs_lookup_dest(svc, daddr, dport);
+=======
+=======
+
+	svc = ip_vs_service_find(net, af, fwmark, protocol, vaddr, vport);
+	if (!svc)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
+	if (fwmark && (flags & IP_VS_CONN_F_FWD_MASK) != IP_VS_CONN_F_MASQ)
+		port = 0;
+	dest = ip_vs_lookup_dest(svc, daddr, port);
+	if (!dest)
+		dest = ip_vs_lookup_dest(svc, daddr, port ^ dport);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dest)
 		atomic_inc(&dest->refcnt);
 	ip_vs_service_put(svc);
 	return dest;
 }
 
+=======
+	return dest;
+}
+
+void ip_vs_dest_dst_rcu_free(struct rcu_head *head)
+{
+	struct ip_vs_dest_dst *dest_dst = container_of(head,
+						       struct ip_vs_dest_dst,
+						       rcu_head);
+
+	dst_release(dest_dst->dst_cache);
+	kfree(dest_dst);
+}
+
+/* Release dest_dst and dst_cache for dest in user context */
+static void __ip_vs_dst_cache_reset(struct ip_vs_dest *dest)
+{
+	struct ip_vs_dest_dst *old;
+
+	old = rcu_dereference_protected(dest->dest_dst, 1);
+	if (old) {
+		RCU_INIT_POINTER(dest->dest_dst, NULL);
+		call_rcu(&old->rcu_head, ip_vs_dest_dst_rcu_free);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  *  Lookup dest by {svc,addr,port} in the destination trash.
  *  The destination trash is used to hold the destinations that are removed
@@ -648,13 +915,22 @@ static struct ip_vs_dest *
 ip_vs_trash_get_dest(struct ip_vs_service *svc, const union nf_inet_addr *daddr,
 		     __be16 dport)
 {
+<<<<<<< HEAD
 	struct ip_vs_dest *dest, *nxt;
+=======
+	struct ip_vs_dest *dest;
+>>>>>>> refs/remotes/origin/master
 	struct netns_ipvs *ipvs = net_ipvs(svc->net);
 
 	/*
 	 * Find the destination in trash
 	 */
+<<<<<<< HEAD
 	list_for_each_entry_safe(dest, nxt, &ipvs->dest_trash, n_list) {
+=======
+	spin_lock_bh(&ipvs->dest_trash_lock);
+	list_for_each_entry(dest, &ipvs->dest_trash, t_list) {
+>>>>>>> refs/remotes/origin/master
 		IP_VS_DBG_BUF(3, "Destination %u/%s:%u still in trash, "
 			      "dest->refcnt=%d\n",
 			      dest->vfwmark,
@@ -670,6 +946,7 @@ ip_vs_trash_get_dest(struct ip_vs_service *svc, const union nf_inet_addr *daddr,
 		     (ip_vs_addr_equal(svc->af, &dest->vaddr, &svc->addr) &&
 		      dest->vport == svc->port))) {
 			/* HIT */
+<<<<<<< HEAD
 			return dest;
 		}
 
@@ -693,6 +970,31 @@ ip_vs_trash_get_dest(struct ip_vs_service *svc, const union nf_inet_addr *daddr,
 	return NULL;
 }
 
+=======
+			list_del(&dest->t_list);
+			ip_vs_dest_hold(dest);
+			goto out;
+		}
+	}
+
+	dest = NULL;
+
+out:
+	spin_unlock_bh(&ipvs->dest_trash_lock);
+
+	return dest;
+}
+
+static void ip_vs_dest_free(struct ip_vs_dest *dest)
+{
+	struct ip_vs_service *svc = rcu_dereference_protected(dest->svc, 1);
+
+	__ip_vs_dst_cache_reset(dest);
+	__ip_vs_svc_put(svc, false);
+	free_percpu(dest->stats.cpustats);
+	ip_vs_dest_put_and_free(dest);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  *  Clean up all the destinations in the trash
@@ -701,19 +1003,31 @@ ip_vs_trash_get_dest(struct ip_vs_service *svc, const union nf_inet_addr *daddr,
  *  When the ip_vs_control_clearup is activated by ipvs module exit,
  *  the service tables must have been flushed and all the connections
  *  are expired, and the refcnt of each destination in the trash must
+<<<<<<< HEAD
  *  be 1, so we simply release them here.
+=======
+ *  be 0, so we simply release them here.
+>>>>>>> refs/remotes/origin/master
  */
 static void ip_vs_trash_cleanup(struct net *net)
 {
 	struct ip_vs_dest *dest, *nxt;
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
+<<<<<<< HEAD
 	list_for_each_entry_safe(dest, nxt, &ipvs->dest_trash, n_list) {
 		list_del(&dest->n_list);
 		ip_vs_dst_reset(dest);
 		__ip_vs_unbind_svc(dest);
 		free_percpu(dest->stats.cpustats);
 		kfree(dest);
+=======
+	del_timer_sync(&ipvs->dest_trash_timer);
+	/* No need to use dest_trash_lock */
+	list_for_each_entry_safe(dest, nxt, &ipvs->dest_trash, t_list) {
+		list_del(&dest->t_list);
+		ip_vs_dest_free(dest);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -763,6 +1077,11 @@ __ip_vs_update_dest(struct ip_vs_service *svc, struct ip_vs_dest *dest,
 		    struct ip_vs_dest_user_kern *udest, int add)
 {
 	struct netns_ipvs *ipvs = net_ipvs(svc->net);
+<<<<<<< HEAD
+=======
+	struct ip_vs_service *old_svc;
+	struct ip_vs_scheduler *sched;
+>>>>>>> refs/remotes/origin/master
 	int conn_flags;
 
 	/* set the weight and the flags */
@@ -778,13 +1097,18 @@ __ip_vs_update_dest(struct ip_vs_service *svc, struct ip_vs_dest *dest,
 		 *    Put the real service in rs_table if not present.
 		 *    For now only for NAT!
 		 */
+<<<<<<< HEAD
 		write_lock_bh(&ipvs->rs_lock);
 		ip_vs_rs_hash(ipvs, dest);
 		write_unlock_bh(&ipvs->rs_lock);
+=======
+		ip_vs_rs_hash(ipvs, dest);
+>>>>>>> refs/remotes/origin/master
 	}
 	atomic_set(&dest->conn_flags, conn_flags);
 
 	/* bind the service */
+<<<<<<< HEAD
 	if (!dest->svc) {
 		__ip_vs_bind_svc(dest, svc);
 	} else {
@@ -792,6 +1116,16 @@ __ip_vs_update_dest(struct ip_vs_service *svc, struct ip_vs_dest *dest,
 			__ip_vs_unbind_svc(dest);
 			ip_vs_zero_stats(&dest->stats);
 			__ip_vs_bind_svc(dest, svc);
+=======
+	old_svc = rcu_dereference_protected(dest->svc, 1);
+	if (!old_svc) {
+		__ip_vs_bind_svc(dest, svc);
+	} else {
+		if (old_svc != svc) {
+			ip_vs_zero_stats(&dest->stats);
+			__ip_vs_bind_svc(dest, svc);
+			__ip_vs_svc_put(old_svc, true);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -804,6 +1138,7 @@ __ip_vs_update_dest(struct ip_vs_service *svc, struct ip_vs_dest *dest,
 	dest->l_threshold = udest->l_threshold;
 
 	spin_lock_bh(&dest->dst_lock);
+<<<<<<< HEAD
 	ip_vs_dst_reset(dest);
 	spin_unlock_bh(&dest->dst_lock);
 
@@ -825,6 +1160,22 @@ __ip_vs_update_dest(struct ip_vs_service *svc, struct ip_vs_dest *dest,
 		svc->scheduler->update_service(svc);
 
 	write_unlock_bh(&__ip_vs_svc_lock);
+=======
+	__ip_vs_dst_cache_reset(dest);
+	spin_unlock_bh(&dest->dst_lock);
+
+	sched = rcu_dereference_protected(svc->scheduler, 1);
+	if (add) {
+		ip_vs_start_estimator(svc->net, &dest->stats);
+		list_add_rcu(&dest->n_list, &svc->destinations);
+		svc->num_dests++;
+		if (sched->add_dest)
+			sched->add_dest(svc, dest);
+	} else {
+		if (sched->upd_dest)
+			sched->upd_dest(svc, dest);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -836,7 +1187,11 @@ ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
 	       struct ip_vs_dest **dest_p)
 {
 	struct ip_vs_dest *dest;
+<<<<<<< HEAD
 	unsigned atype;
+=======
+	unsigned int atype, i;
+>>>>>>> refs/remotes/origin/master
 
 	EnterFunction(2);
 
@@ -856,6 +1211,8 @@ ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
 	}
 
 	dest = kzalloc(sizeof(struct ip_vs_dest), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dest == NULL) {
 		pr_err("%s(): no memory.\n", __func__);
 		return -ENOMEM;
@@ -865,6 +1222,25 @@ ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
 		pr_err("%s() alloc_percpu failed\n", __func__);
 		goto err_alloc;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (dest == NULL)
+		return -ENOMEM;
+
+	dest->stats.cpustats = alloc_percpu(struct ip_vs_cpu_stats);
+	if (!dest->stats.cpustats)
+		goto err_alloc;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	for_each_possible_cpu(i) {
+		struct ip_vs_cpu_stats *ip_vs_dest_stats;
+		ip_vs_dest_stats = per_cpu_ptr(dest->stats.cpustats, i);
+		u64_stats_init(&ip_vs_dest_stats->syncp);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	dest->af = svc->af;
 	dest->protocol = svc->protocol;
@@ -879,7 +1255,11 @@ ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
 	atomic_set(&dest->persistconns, 0);
 	atomic_set(&dest->refcnt, 1);
 
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&dest->d_list);
+=======
+	INIT_HLIST_NODE(&dest->d_list);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&dest->dst_lock);
 	spin_lock_init(&dest->stats.lock);
 	__ip_vs_update_dest(svc, dest, udest, 1);
@@ -921,10 +1301,17 @@ ip_vs_add_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
 
 	ip_vs_addr_copy(svc->af, &daddr, &udest->addr);
 
+<<<<<<< HEAD
 	/*
 	 * Check if the dest already exists in the list
 	 */
 	dest = ip_vs_lookup_dest(svc, &daddr, dport);
+=======
+	/* We use function that requires RCU lock */
+	rcu_read_lock();
+	dest = ip_vs_lookup_dest(svc, &daddr, dport);
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	if (dest != NULL) {
 		IP_VS_DBG(1, "%s(): dest already exists\n", __func__);
@@ -946,11 +1333,14 @@ ip_vs_add_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
 			      IP_VS_DBG_ADDR(svc->af, &dest->vaddr),
 			      ntohs(dest->vport));
 
+<<<<<<< HEAD
 		/*
 		 * Get the destination from the trash
 		 */
 		list_del(&dest->n_list);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		__ip_vs_update_dest(svc, dest, udest, 1);
 		ret = 0;
 	} else {
@@ -990,10 +1380,17 @@ ip_vs_edit_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
 
 	ip_vs_addr_copy(svc->af, &daddr, &udest->addr);
 
+<<<<<<< HEAD
 	/*
 	 *  Lookup the destination list
 	 */
 	dest = ip_vs_lookup_dest(svc, &daddr, dport);
+=======
+	/* We use function that requires RCU lock */
+	rcu_read_lock();
+	dest = ip_vs_lookup_dest(svc, &daddr, dport);
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	if (dest == NULL) {
 		IP_VS_DBG(1, "%s(): dest doesn't exist\n", __func__);
@@ -1006,11 +1403,19 @@ ip_vs_edit_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
 	return 0;
 }
 
+<<<<<<< HEAD
 
 /*
  *	Delete a destination (must be already unlinked from the service)
  */
 static void __ip_vs_del_dest(struct net *net, struct ip_vs_dest *dest)
+=======
+/*
+ *	Delete a destination (must be already unlinked from the service)
+ */
+static void __ip_vs_del_dest(struct net *net, struct ip_vs_dest *dest,
+			     bool cleanup)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
@@ -1019,6 +1424,7 @@ static void __ip_vs_del_dest(struct net *net, struct ip_vs_dest *dest)
 	/*
 	 *  Remove it from the d-linked list with the real services.
 	 */
+<<<<<<< HEAD
 	write_lock_bh(&ipvs->rs_lock);
 	ip_vs_rs_unhash(dest);
 	write_unlock_bh(&ipvs->rs_lock);
@@ -1051,6 +1457,22 @@ static void __ip_vs_del_dest(struct net *net, struct ip_vs_dest *dest)
 		list_add(&dest->n_list, &ipvs->dest_trash);
 		atomic_inc(&dest->refcnt);
 	}
+=======
+	ip_vs_rs_unhash(dest);
+
+	spin_lock_bh(&ipvs->dest_trash_lock);
+	IP_VS_DBG_BUF(3, "Moving dest %s:%u into trash, dest->refcnt=%d\n",
+		      IP_VS_DBG_ADDR(dest->af, &dest->addr), ntohs(dest->port),
+		      atomic_read(&dest->refcnt));
+	if (list_empty(&ipvs->dest_trash) && !cleanup)
+		mod_timer(&ipvs->dest_trash_timer,
+			  jiffies + (IP_VS_DEST_TRASH_PERIOD >> 1));
+	/* dest lives in trash without reference */
+	list_add(&dest->t_list, &ipvs->dest_trash);
+	dest->idle_start = 0;
+	spin_unlock_bh(&ipvs->dest_trash_lock);
+	ip_vs_dest_put(dest);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1066,6 +1488,7 @@ static void __ip_vs_unlink_dest(struct ip_vs_service *svc,
 	/*
 	 *  Remove it from the d-linked destination list.
 	 */
+<<<<<<< HEAD
 	list_del(&dest->n_list);
 	svc->num_dests--;
 
@@ -1074,6 +1497,18 @@ static void __ip_vs_unlink_dest(struct ip_vs_service *svc,
 	 */
 	if (svcupd && svc->scheduler->update_service)
 			svc->scheduler->update_service(svc);
+=======
+	list_del_rcu(&dest->n_list);
+	svc->num_dests--;
+
+	if (svcupd) {
+		struct ip_vs_scheduler *sched;
+
+		sched = rcu_dereference_protected(svc->scheduler, 1);
+		if (sched->del_dest)
+			sched->del_dest(svc, dest);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1088,13 +1523,21 @@ ip_vs_del_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
 
 	EnterFunction(2);
 
+<<<<<<< HEAD
 	dest = ip_vs_lookup_dest(svc, &udest->addr, dport);
+=======
+	/* We use function that requires RCU lock */
+	rcu_read_lock();
+	dest = ip_vs_lookup_dest(svc, &udest->addr, dport);
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	if (dest == NULL) {
 		IP_VS_DBG(1, "%s(): destination not found!\n", __func__);
 		return -ENOENT;
 	}
 
+<<<<<<< HEAD
 	write_lock_bh(&__ip_vs_svc_lock);
 
 	/*
@@ -1102,23 +1545,66 @@ ip_vs_del_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
 	 */
 	IP_VS_WAIT_WHILE(atomic_read(&svc->usecnt) > 0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *	Unlink dest from the service
 	 */
 	__ip_vs_unlink_dest(svc, dest, 1);
 
+<<<<<<< HEAD
 	write_unlock_bh(&__ip_vs_svc_lock);
 
 	/*
 	 *	Delete the destination
 	 */
 	__ip_vs_del_dest(svc->net, dest);
+=======
+	/*
+	 *	Delete the destination
+	 */
+	__ip_vs_del_dest(svc->net, dest, false);
+>>>>>>> refs/remotes/origin/master
 
 	LeaveFunction(2);
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void ip_vs_dest_trash_expire(unsigned long data)
+{
+	struct net *net = (struct net *) data;
+	struct netns_ipvs *ipvs = net_ipvs(net);
+	struct ip_vs_dest *dest, *next;
+	unsigned long now = jiffies;
+
+	spin_lock(&ipvs->dest_trash_lock);
+	list_for_each_entry_safe(dest, next, &ipvs->dest_trash, t_list) {
+		if (atomic_read(&dest->refcnt) > 0)
+			continue;
+		if (dest->idle_start) {
+			if (time_before(now, dest->idle_start +
+					     IP_VS_DEST_TRASH_PERIOD))
+				continue;
+		} else {
+			dest->idle_start = max(1UL, now);
+			continue;
+		}
+		IP_VS_DBG_BUF(3, "Removing destination %u/%s:%u from trash\n",
+			      dest->vfwmark,
+			      IP_VS_DBG_ADDR(dest->af, &dest->addr),
+			      ntohs(dest->port));
+		list_del(&dest->t_list);
+		ip_vs_dest_free(dest);
+	}
+	if (!list_empty(&ipvs->dest_trash))
+		mod_timer(&ipvs->dest_trash_timer,
+			  jiffies + (IP_VS_DEST_TRASH_PERIOD >> 1));
+	spin_unlock(&ipvs->dest_trash_lock);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Add a service into the service hash table
@@ -1127,7 +1613,11 @@ static int
 ip_vs_add_service(struct net *net, struct ip_vs_service_user_kern *u,
 		  struct ip_vs_service **svc_p)
 {
+<<<<<<< HEAD
 	int ret = 0;
+=======
+	int ret = 0, i;
+>>>>>>> refs/remotes/origin/master
 	struct ip_vs_scheduler *sched = NULL;
 	struct ip_vs_pe *pe = NULL;
 	struct ip_vs_service *svc = NULL;
@@ -1155,9 +1645,19 @@ ip_vs_add_service(struct net *net, struct ip_vs_service_user_kern *u,
 	}
 
 #ifdef CONFIG_IP_VS_IPV6
+<<<<<<< HEAD
 	if (u->af == AF_INET6 && (u->netmask < 1 || u->netmask > 128)) {
 		ret = -EINVAL;
 		goto out_err;
+=======
+	if (u->af == AF_INET6) {
+		__u32 plen = (__force __u32) u->netmask;
+
+		if (plen < 1 || plen > 128) {
+			ret = -EINVAL;
+			goto out_err;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -1168,13 +1668,34 @@ ip_vs_add_service(struct net *net, struct ip_vs_service_user_kern *u,
 		goto out_err;
 	}
 	svc->stats.cpustats = alloc_percpu(struct ip_vs_cpu_stats);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!svc->stats.cpustats) {
 		pr_err("%s() alloc_percpu failed\n", __func__);
 		goto out_err;
 	}
+=======
+	if (!svc->stats.cpustats)
+		goto out_err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* I'm the first user of the service */
 	atomic_set(&svc->usecnt, 0);
+=======
+	if (!svc->stats.cpustats) {
+		ret = -ENOMEM;
+		goto out_err;
+	}
+
+	for_each_possible_cpu(i) {
+		struct ip_vs_cpu_stats *ip_vs_stats;
+		ip_vs_stats = per_cpu_ptr(svc->stats.cpustats, i);
+		u64_stats_init(&ip_vs_stats->syncp);
+	}
+
+
+	/* I'm the first user of the service */
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&svc->refcnt, 0);
 
 	svc->af = u->af;
@@ -1188,7 +1709,11 @@ ip_vs_add_service(struct net *net, struct ip_vs_service_user_kern *u,
 	svc->net = net;
 
 	INIT_LIST_HEAD(&svc->destinations);
+<<<<<<< HEAD
 	rwlock_init(&svc->sched_lock);
+=======
+	spin_lock_init(&svc->sched_lock);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&svc->stats.lock);
 
 	/* Bind the scheduler */
@@ -1198,7 +1723,11 @@ ip_vs_add_service(struct net *net, struct ip_vs_service_user_kern *u,
 	sched = NULL;
 
 	/* Bind the ct retriever */
+<<<<<<< HEAD
 	ip_vs_bind_pe(svc, pe);
+=======
+	RCU_INIT_POINTER(svc->pe, pe);
+>>>>>>> refs/remotes/origin/master
 	pe = NULL;
 
 	/* Update the virtual service counters */
@@ -1214,9 +1743,13 @@ ip_vs_add_service(struct net *net, struct ip_vs_service_user_kern *u,
 		ipvs->num_services++;
 
 	/* Hash the service into the service table */
+<<<<<<< HEAD
 	write_lock_bh(&__ip_vs_svc_lock);
 	ip_vs_svc_hash(svc);
 	write_unlock_bh(&__ip_vs_svc_lock);
+=======
+	ip_vs_svc_hash(svc);
+>>>>>>> refs/remotes/origin/master
 
 	*svc_p = svc;
 	/* Now there is a service - full throttle */
@@ -1226,6 +1759,7 @@ ip_vs_add_service(struct net *net, struct ip_vs_service_user_kern *u,
 
  out_err:
 	if (svc != NULL) {
+<<<<<<< HEAD
 		ip_vs_unbind_scheduler(svc);
 		if (svc->inc) {
 			local_bh_disable();
@@ -1235,6 +1769,10 @@ ip_vs_add_service(struct net *net, struct ip_vs_service_user_kern *u,
 		if (svc->stats.cpustats)
 			free_percpu(svc->stats.cpustats);
 		kfree(svc);
+=======
+		ip_vs_unbind_scheduler(svc, sched);
+		ip_vs_service_free(svc);
+>>>>>>> refs/remotes/origin/master
 	}
 	ip_vs_scheduler_put(sched);
 	ip_vs_pe_put(pe);
@@ -1278,6 +1816,7 @@ ip_vs_edit_service(struct ip_vs_service *svc, struct ip_vs_service_user_kern *u)
 	}
 
 #ifdef CONFIG_IP_VS_IPV6
+<<<<<<< HEAD
 	if (u->af == AF_INET6 && (u->netmask < 1 || u->netmask > 128)) {
 		ret = -EINVAL;
 		goto out;
@@ -1290,6 +1829,29 @@ ip_vs_edit_service(struct ip_vs_service *svc, struct ip_vs_service_user_kern *u)
 	 * Wait until all other svc users go away.
 	 */
 	IP_VS_WAIT_WHILE(atomic_read(&svc->usecnt) > 0);
+=======
+	if (u->af == AF_INET6) {
+		__u32 plen = (__force __u32) u->netmask;
+
+		if (plen < 1 || plen > 128) {
+			ret = -EINVAL;
+			goto out;
+		}
+	}
+#endif
+
+	old_sched = rcu_dereference_protected(svc->scheduler, 1);
+	if (sched != old_sched) {
+		/* Bind the new scheduler */
+		ret = ip_vs_bind_scheduler(svc, sched);
+		if (ret) {
+			old_sched = sched;
+			goto out;
+		}
+		/* Unbind the old scheduler on success */
+		ip_vs_unbind_scheduler(svc, old_sched);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Set the flags and timeout value
@@ -1298,6 +1860,7 @@ ip_vs_edit_service(struct ip_vs_service *svc, struct ip_vs_service_user_kern *u)
 	svc->timeout = u->timeout * HZ;
 	svc->netmask = u->netmask;
 
+<<<<<<< HEAD
 	old_sched = svc->scheduler;
 	if (sched != old_sched) {
 		/*
@@ -1334,21 +1897,41 @@ ip_vs_edit_service(struct ip_vs_service *svc, struct ip_vs_service_user_kern *u)
 		ip_vs_bind_pe(svc, pe);
 	}
 
+<<<<<<< HEAD
   out_unlock:
 	write_unlock_bh(&__ip_vs_svc_lock);
   out:
+=======
+out_unlock:
+	write_unlock_bh(&__ip_vs_svc_lock);
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	old_pe = rcu_dereference_protected(svc->pe, 1);
+	if (pe != old_pe)
+		rcu_assign_pointer(svc->pe, pe);
+
+out:
+>>>>>>> refs/remotes/origin/master
 	ip_vs_scheduler_put(old_sched);
 	ip_vs_pe_put(old_pe);
 	return ret;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	Delete a service from the service list
  *	- The service must be unlinked, unlocked and not referenced!
  *	- We are called under _bh lock
  */
+<<<<<<< HEAD
 static void __ip_vs_del_service(struct ip_vs_service *svc)
+=======
+static void __ip_vs_del_service(struct ip_vs_service *svc, bool cleanup)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ip_vs_dest *dest, *nxt;
 	struct ip_vs_scheduler *old_sched;
@@ -1364,6 +1947,7 @@ static void __ip_vs_del_service(struct ip_vs_service *svc)
 	ip_vs_stop_estimator(svc->net, &svc->stats);
 
 	/* Unbind scheduler */
+<<<<<<< HEAD
 	old_sched = svc->scheduler;
 	ip_vs_unbind_scheduler(svc);
 	ip_vs_scheduler_put(old_sched);
@@ -1379,12 +1963,26 @@ static void __ip_vs_del_service(struct ip_vs_service *svc)
 		svc->inc = NULL;
 	}
 
+=======
+	old_sched = rcu_dereference_protected(svc->scheduler, 1);
+	ip_vs_unbind_scheduler(svc, old_sched);
+	ip_vs_scheduler_put(old_sched);
+
+	/* Unbind persistence engine, keep svc->pe */
+	old_pe = rcu_dereference_protected(svc->pe, 1);
+	ip_vs_pe_put(old_pe);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *    Unlink the whole destination list
 	 */
 	list_for_each_entry_safe(dest, nxt, &svc->destinations, n_list) {
 		__ip_vs_unlink_dest(svc, dest, 0);
+<<<<<<< HEAD
 		__ip_vs_del_dest(svc->net, dest);
+=======
+		__ip_vs_del_dest(svc->net, dest, cleanup);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1398,6 +1996,7 @@ static void __ip_vs_del_service(struct ip_vs_service *svc)
 	/*
 	 *    Free the service if nobody refers to it
 	 */
+<<<<<<< HEAD
 	if (atomic_read(&svc->refcnt) == 0) {
 		IP_VS_DBG_BUF(3, "Removing service %u/%s:%u usecnt=%d\n",
 			      svc->fwmark,
@@ -1406,6 +2005,9 @@ static void __ip_vs_del_service(struct ip_vs_service *svc)
 		free_percpu(svc->stats.cpustats);
 		kfree(svc);
 	}
+=======
+	__ip_vs_svc_put(svc, true);
+>>>>>>> refs/remotes/origin/master
 
 	/* decrease the module use count */
 	ip_vs_use_count_dec();
@@ -1414,6 +2016,7 @@ static void __ip_vs_del_service(struct ip_vs_service *svc)
 /*
  * Unlink a service from list and try to delete it if its refcnt reached 0
  */
+<<<<<<< HEAD
 static void ip_vs_unlink_service(struct ip_vs_service *svc)
 {
 	/*
@@ -1431,6 +2034,18 @@ static void ip_vs_unlink_service(struct ip_vs_service *svc)
 	__ip_vs_del_service(svc);
 
 	write_unlock_bh(&__ip_vs_svc_lock);
+=======
+static void ip_vs_unlink_service(struct ip_vs_service *svc, bool cleanup)
+{
+	/* Hold svc to avoid double release from dest_trash */
+	atomic_inc(&svc->refcnt);
+	/*
+	 * Unhash it from the service table
+	 */
+	ip_vs_svc_unhash(svc);
+
+	__ip_vs_del_service(svc, cleanup);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1440,7 +2055,11 @@ static int ip_vs_del_service(struct ip_vs_service *svc)
 {
 	if (svc == NULL)
 		return -EEXIST;
+<<<<<<< HEAD
 	ip_vs_unlink_service(svc);
+=======
+	ip_vs_unlink_service(svc, false);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1449,19 +2068,34 @@ static int ip_vs_del_service(struct ip_vs_service *svc)
 /*
  *	Flush all the virtual services
  */
+<<<<<<< HEAD
 static int ip_vs_flush(struct net *net)
 {
 	int idx;
 	struct ip_vs_service *svc, *nxt;
+=======
+static int ip_vs_flush(struct net *net, bool cleanup)
+{
+	int idx;
+	struct ip_vs_service *svc;
+	struct hlist_node *n;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Flush the service table hashed by <netns,protocol,addr,port>
 	 */
 	for(idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+<<<<<<< HEAD
 		list_for_each_entry_safe(svc, nxt, &ip_vs_svc_table[idx],
 					 s_list) {
 			if (net_eq(svc->net, net))
 				ip_vs_unlink_service(svc);
+=======
+		hlist_for_each_entry_safe(svc, n, &ip_vs_svc_table[idx],
+					  s_list) {
+			if (net_eq(svc->net, net))
+				ip_vs_unlink_service(svc, cleanup);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1469,10 +2103,17 @@ static int ip_vs_flush(struct net *net)
 	 * Flush the service table hashed by fwmark
 	 */
 	for(idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+<<<<<<< HEAD
 		list_for_each_entry_safe(svc, nxt,
 					 &ip_vs_svc_fwm_table[idx], f_list) {
 			if (net_eq(svc->net, net))
 				ip_vs_unlink_service(svc);
+=======
+		hlist_for_each_entry_safe(svc, n, &ip_vs_svc_fwm_table[idx],
+					  f_list) {
+			if (net_eq(svc->net, net))
+				ip_vs_unlink_service(svc, cleanup);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1483,11 +2124,20 @@ static int ip_vs_flush(struct net *net)
  *	Delete service by {netns} in the service table.
  *	Called by __ip_vs_cleanup()
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __ip_vs_service_cleanup(struct net *net)
+=======
+void ip_vs_service_net_cleanup(struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ip_vs_service_net_cleanup(struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 	EnterFunction(2);
 	/* Check for "full" addressed entries */
 	mutex_lock(&__ip_vs_mutex);
+<<<<<<< HEAD
 	ip_vs_flush(net);
 	mutex_unlock(&__ip_vs_mutex);
 	LeaveFunction(2);
@@ -1500,16 +2150,37 @@ __ip_vs_dev_reset(struct ip_vs_dest *dest, struct net_device *dev)
 {
 	spin_lock_bh(&dest->dst_lock);
 	if (dest->dst_cache && dest->dst_cache->dev == dev) {
+=======
+	ip_vs_flush(net, true);
+	mutex_unlock(&__ip_vs_mutex);
+	LeaveFunction(2);
+}
+
+/* Put all references for device (dst_cache) */
+static inline void
+ip_vs_forget_dev(struct ip_vs_dest *dest, struct net_device *dev)
+{
+	struct ip_vs_dest_dst *dest_dst;
+
+	spin_lock_bh(&dest->dst_lock);
+	dest_dst = rcu_dereference_protected(dest->dest_dst, 1);
+	if (dest_dst && dest_dst->dst_cache->dev == dev) {
+>>>>>>> refs/remotes/origin/master
 		IP_VS_DBG_BUF(3, "Reset dev:%s dest %s:%u ,dest->refcnt=%d\n",
 			      dev->name,
 			      IP_VS_DBG_ADDR(dest->af, &dest->addr),
 			      ntohs(dest->port),
 			      atomic_read(&dest->refcnt));
+<<<<<<< HEAD
 		ip_vs_dst_reset(dest);
+=======
+		__ip_vs_dst_cache_reset(dest);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_bh(&dest->dst_lock);
 
 }
+<<<<<<< HEAD
 /*
  * Netdev event receiver
  * Currently only NETDEV_UNREGISTER is handled, i.e. if we hold a reference to
@@ -1519,41 +2190,85 @@ static int ip_vs_dst_event(struct notifier_block *this, unsigned long event,
 			    void *ptr)
 {
 	struct net_device *dev = ptr;
+=======
+/* Netdev event receiver
+ * Currently only NETDEV_DOWN is handled to release refs to cached dsts
+ */
+static int ip_vs_dst_event(struct notifier_block *this, unsigned long event,
+			   void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 	struct net *net = dev_net(dev);
 	struct netns_ipvs *ipvs = net_ipvs(net);
 	struct ip_vs_service *svc;
 	struct ip_vs_dest *dest;
 	unsigned int idx;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (event != NETDEV_UNREGISTER || !ipvs)
+=======
+	if (event != NETDEV_DOWN || !ipvs)
+>>>>>>> refs/remotes/origin/master
+=======
+	if (event != NETDEV_UNREGISTER || !ipvs)
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NOTIFY_DONE;
 	IP_VS_DBG(3, "%s() dev=%s\n", __func__, dev->name);
 	EnterFunction(2);
 	mutex_lock(&__ip_vs_mutex);
 	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+<<<<<<< HEAD
 		list_for_each_entry(svc, &ip_vs_svc_table[idx], s_list) {
 			if (net_eq(svc->net, net)) {
 				list_for_each_entry(dest, &svc->destinations,
 						    n_list) {
 					__ip_vs_dev_reset(dest, dev);
+=======
+		hlist_for_each_entry(svc, &ip_vs_svc_table[idx], s_list) {
+			if (net_eq(svc->net, net)) {
+				list_for_each_entry(dest, &svc->destinations,
+						    n_list) {
+					ip_vs_forget_dev(dest, dev);
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 		}
 
+<<<<<<< HEAD
 		list_for_each_entry(svc, &ip_vs_svc_fwm_table[idx], f_list) {
 			if (net_eq(svc->net, net)) {
 				list_for_each_entry(dest, &svc->destinations,
 						    n_list) {
 					__ip_vs_dev_reset(dest, dev);
+=======
+		hlist_for_each_entry(svc, &ip_vs_svc_fwm_table[idx], f_list) {
+			if (net_eq(svc->net, net)) {
+				list_for_each_entry(dest, &svc->destinations,
+						    n_list) {
+					ip_vs_forget_dev(dest, dev);
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_for_each_entry(dest, &ipvs->dest_trash, n_list) {
 		__ip_vs_dev_reset(dest, dev);
 	}
+=======
+	spin_lock_bh(&ipvs->dest_trash_lock);
+	list_for_each_entry(dest, &ipvs->dest_trash, t_list) {
+		ip_vs_forget_dev(dest, dev);
+	}
+	spin_unlock_bh(&ipvs->dest_trash_lock);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&__ip_vs_mutex);
 	LeaveFunction(2);
 	return NOTIFY_DONE;
@@ -1566,12 +2281,18 @@ static int ip_vs_zero_service(struct ip_vs_service *svc)
 {
 	struct ip_vs_dest *dest;
 
+<<<<<<< HEAD
 	write_lock_bh(&__ip_vs_svc_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(dest, &svc->destinations, n_list) {
 		ip_vs_zero_stats(&dest->stats);
 	}
 	ip_vs_zero_stats(&svc->stats);
+<<<<<<< HEAD
 	write_unlock_bh(&__ip_vs_svc_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1581,14 +2302,22 @@ static int ip_vs_zero_all(struct net *net)
 	struct ip_vs_service *svc;
 
 	for(idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+<<<<<<< HEAD
 		list_for_each_entry(svc, &ip_vs_svc_table[idx], s_list) {
+=======
+		hlist_for_each_entry(svc, &ip_vs_svc_table[idx], s_list) {
+>>>>>>> refs/remotes/origin/master
 			if (net_eq(svc->net, net))
 				ip_vs_zero_service(svc);
 		}
 	}
 
 	for(idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+<<<<<<< HEAD
 		list_for_each_entry(svc, &ip_vs_svc_fwm_table[idx], f_list) {
+=======
+		hlist_for_each_entry(svc, &ip_vs_svc_fwm_table[idx], f_list) {
+>>>>>>> refs/remotes/origin/master
 			if (net_eq(svc->net, net))
 				ip_vs_zero_service(svc);
 		}
@@ -1599,8 +2328,17 @@ static int ip_vs_zero_all(struct net *net)
 }
 
 #ifdef CONFIG_SYSCTL
+<<<<<<< HEAD
 static int
 proc_do_defense_mode(ctl_table *table, int write,
+=======
+
+static int zero;
+static int three = 3;
+
+static int
+proc_do_defense_mode(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 		     void __user *buffer, size_t *lenp, loff_t *ppos)
 {
 	struct net *net = current->nsproxy->net_ns;
@@ -1621,7 +2359,11 @@ proc_do_defense_mode(ctl_table *table, int write,
 }
 
 static int
+<<<<<<< HEAD
 proc_do_sync_threshold(ctl_table *table, int write,
+=======
+proc_do_sync_threshold(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 		       void __user *buffer, size_t *lenp, loff_t *ppos)
 {
 	int *valp = table->data;
@@ -1632,7 +2374,12 @@ proc_do_sync_threshold(ctl_table *table, int write,
 	memcpy(val, valp, sizeof(val));
 
 	rc = proc_dointvec(table, write, buffer, lenp, ppos);
+<<<<<<< HEAD
 	if (write && (valp[0] < 0 || valp[1] < 0 || valp[0] >= valp[1])) {
+=======
+	if (write && (valp[0] < 0 || valp[1] < 0 ||
+	    (valp[0] >= valp[1] && valp[1]))) {
+>>>>>>> refs/remotes/origin/master
 		/* Restore the correct value */
 		memcpy(valp, val, sizeof(val));
 	}
@@ -1640,7 +2387,11 @@ proc_do_sync_threshold(ctl_table *table, int write,
 }
 
 static int
+<<<<<<< HEAD
 proc_do_sync_mode(ctl_table *table, int write,
+=======
+proc_do_sync_mode(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 		     void __user *buffer, size_t *lenp, loff_t *ppos)
 {
 	int *valp = table->data;
@@ -1652,9 +2403,30 @@ proc_do_sync_mode(ctl_table *table, int write,
 		if ((*valp < 0) || (*valp > 1)) {
 			/* Restore the correct value */
 			*valp = val;
+<<<<<<< HEAD
 		} else {
 			struct net *net = current->nsproxy->net_ns;
 			ip_vs_sync_switch_mode(net, val);
+=======
+		}
+	}
+	return rc;
+}
+
+static int
+proc_do_sync_ports(struct ctl_table *table, int write,
+		   void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	int *valp = table->data;
+	int val = *valp;
+	int rc;
+
+	rc = proc_dointvec(table, write, buffer, lenp, ppos);
+	if (write && (*valp != val)) {
+		if (*valp < 1 || !is_power_of_2(*valp)) {
+			/* Restore the correct value */
+			*valp = val;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return rc;
@@ -1663,7 +2435,15 @@ proc_do_sync_mode(ctl_table *table, int write,
 /*
  *	IPVS sysctl table (under the /proc/sys/net/ipv4/vs/)
  *	Do not change order or insert new entries without
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	align with netns init in __ip_vs_control_init()
+=======
+ *	align with netns init in ip_vs_control_net_init()
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	align with netns init in ip_vs_control_net_init()
+>>>>>>> refs/remotes/origin/master
  */
 
 static struct ctl_table vs_vars[] = {
@@ -1718,6 +2498,33 @@ static struct ctl_table vs_vars[] = {
 		.proc_handler	= &proc_do_sync_mode,
 	},
 	{
+<<<<<<< HEAD
+=======
+		.procname	= "sync_ports",
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= &proc_do_sync_ports,
+	},
+	{
+		.procname	= "sync_persist_mode",
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+	{
+		.procname	= "sync_qlen_max",
+		.maxlen		= sizeof(unsigned long),
+		.mode		= 0644,
+		.proc_handler	= proc_doulongvec_minmax,
+	},
+	{
+		.procname	= "sync_sock_size",
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+	{
+>>>>>>> refs/remotes/origin/master
 		.procname	= "cache_bypass",
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
@@ -1730,6 +2537,21 @@ static struct ctl_table vs_vars[] = {
 		.proc_handler	= proc_dointvec,
 	},
 	{
+<<<<<<< HEAD
+=======
+		.procname	= "sloppy_tcp",
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+	{
+		.procname	= "sloppy_sctp",
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+	{
+>>>>>>> refs/remotes/origin/master
 		.procname	= "expire_quiescent_template",
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
@@ -1743,11 +2565,43 @@ static struct ctl_table vs_vars[] = {
 		.proc_handler	= proc_do_sync_threshold,
 	},
 	{
+<<<<<<< HEAD
+=======
+		.procname	= "sync_refresh_period",
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec_jiffies,
+	},
+	{
+		.procname	= "sync_retries",
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &zero,
+		.extra2		= &three,
+	},
+	{
+>>>>>>> refs/remotes/origin/master
 		.procname	= "nat_icmp_send",
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.procname	= "pmtu_disc",
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+	{
+		.procname	= "backup_only",
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_IP_VS_DEBUG
 	{
 		.procname	= "debug_level",
@@ -1846,6 +2700,7 @@ static struct ctl_table vs_vars[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 const struct ctl_path net_vs_ctl_path[] = {
 	{ .procname = "net", },
 	{ .procname = "ipv4", },
@@ -1853,13 +2708,19 @@ const struct ctl_path net_vs_ctl_path[] = {
 	{ }
 };
 EXPORT_SYMBOL_GPL(net_vs_ctl_path);
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_PROC_FS
 
 struct ip_vs_iter {
 	struct seq_net_private p;  /* Do not move this, netns depends upon it*/
+<<<<<<< HEAD
 	struct list_head *table;
+=======
+	struct hlist_head *table;
+>>>>>>> refs/remotes/origin/master
 	int bucket;
 };
 
@@ -1867,7 +2728,11 @@ struct ip_vs_iter {
  *	Write the contents of the VS rule table to a PROCfs file.
  *	(It is kept just for backward compatibility)
  */
+<<<<<<< HEAD
 static inline const char *ip_vs_fwd_name(unsigned flags)
+=======
+static inline const char *ip_vs_fwd_name(unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (flags & IP_VS_CONN_F_FWD_MASK) {
 	case IP_VS_CONN_F_LOCALNODE:
@@ -1892,7 +2757,11 @@ static struct ip_vs_service *ip_vs_info_array(struct seq_file *seq, loff_t pos)
 
 	/* look in hash by protocol */
 	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+<<<<<<< HEAD
 		list_for_each_entry(svc, &ip_vs_svc_table[idx], s_list) {
+=======
+		hlist_for_each_entry_rcu(svc, &ip_vs_svc_table[idx], s_list) {
+>>>>>>> refs/remotes/origin/master
 			if (net_eq(svc->net, net) && pos-- == 0) {
 				iter->table = ip_vs_svc_table;
 				iter->bucket = idx;
@@ -1903,7 +2772,12 @@ static struct ip_vs_service *ip_vs_info_array(struct seq_file *seq, loff_t pos)
 
 	/* keep looking in fwmark */
 	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+<<<<<<< HEAD
 		list_for_each_entry(svc, &ip_vs_svc_fwm_table[idx], f_list) {
+=======
+		hlist_for_each_entry_rcu(svc, &ip_vs_svc_fwm_table[idx],
+					 f_list) {
+>>>>>>> refs/remotes/origin/master
 			if (net_eq(svc->net, net) && pos-- == 0) {
 				iter->table = ip_vs_svc_fwm_table;
 				iter->bucket = idx;
@@ -1916,17 +2790,27 @@ static struct ip_vs_service *ip_vs_info_array(struct seq_file *seq, loff_t pos)
 }
 
 static void *ip_vs_info_seq_start(struct seq_file *seq, loff_t *pos)
+<<<<<<< HEAD
 __acquires(__ip_vs_svc_lock)
 {
 
 	read_lock_bh(&__ip_vs_svc_lock);
+=======
+	__acquires(RCU)
+{
+	rcu_read_lock();
+>>>>>>> refs/remotes/origin/master
 	return *pos ? ip_vs_info_array(seq, *pos - 1) : SEQ_START_TOKEN;
 }
 
 
 static void *ip_vs_info_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 {
+<<<<<<< HEAD
 	struct list_head *e;
+=======
+	struct hlist_node *e;
+>>>>>>> refs/remotes/origin/master
 	struct ip_vs_iter *iter;
 	struct ip_vs_service *svc;
 
@@ -1939,6 +2823,7 @@ static void *ip_vs_info_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 
 	if (iter->table == ip_vs_svc_table) {
 		/* next service in table hashed by protocol */
+<<<<<<< HEAD
 		if ((e = svc->s_list.next) != &ip_vs_svc_table[iter->bucket])
 			return list_entry(e, struct ip_vs_service, s_list);
 
@@ -1946,6 +2831,16 @@ static void *ip_vs_info_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 		while (++iter->bucket < IP_VS_SVC_TAB_SIZE) {
 			list_for_each_entry(svc,&ip_vs_svc_table[iter->bucket],
 					    s_list) {
+=======
+		e = rcu_dereference(hlist_next_rcu(&svc->s_list));
+		if (e)
+			return hlist_entry(e, struct ip_vs_service, s_list);
+
+		while (++iter->bucket < IP_VS_SVC_TAB_SIZE) {
+			hlist_for_each_entry_rcu(svc,
+						 &ip_vs_svc_table[iter->bucket],
+						 s_list) {
+>>>>>>> refs/remotes/origin/master
 				return svc;
 			}
 		}
@@ -1956,6 +2851,7 @@ static void *ip_vs_info_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 	}
 
 	/* next service in hashed by fwmark */
+<<<<<<< HEAD
 	if ((e = svc->f_list.next) != &ip_vs_svc_fwm_table[iter->bucket])
 		return list_entry(e, struct ip_vs_service, f_list);
 
@@ -1963,6 +2859,17 @@ static void *ip_vs_info_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 	while (++iter->bucket < IP_VS_SVC_TAB_SIZE) {
 		list_for_each_entry(svc, &ip_vs_svc_fwm_table[iter->bucket],
 				    f_list)
+=======
+	e = rcu_dereference(hlist_next_rcu(&svc->f_list));
+	if (e)
+		return hlist_entry(e, struct ip_vs_service, f_list);
+
+ scan_fwmark:
+	while (++iter->bucket < IP_VS_SVC_TAB_SIZE) {
+		hlist_for_each_entry_rcu(svc,
+					 &ip_vs_svc_fwm_table[iter->bucket],
+					 f_list)
+>>>>>>> refs/remotes/origin/master
 			return svc;
 	}
 
@@ -1970,9 +2877,15 @@ static void *ip_vs_info_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 }
 
 static void ip_vs_info_seq_stop(struct seq_file *seq, void *v)
+<<<<<<< HEAD
 __releases(__ip_vs_svc_lock)
 {
 	read_unlock_bh(&__ip_vs_svc_lock);
+=======
+	__releases(RCU)
+{
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1990,6 +2903,10 @@ static int ip_vs_info_seq_show(struct seq_file *seq, void *v)
 		const struct ip_vs_service *svc = v;
 		const struct ip_vs_iter *iter = seq->private;
 		const struct ip_vs_dest *dest;
+<<<<<<< HEAD
+=======
+		struct ip_vs_scheduler *sched = rcu_dereference(svc->scheduler);
+>>>>>>> refs/remotes/origin/master
 
 		if (iter->table == ip_vs_svc_table) {
 #ifdef CONFIG_IP_VS_IPV6
@@ -1998,18 +2915,30 @@ static int ip_vs_info_seq_show(struct seq_file *seq, void *v)
 					   ip_vs_proto_name(svc->protocol),
 					   &svc->addr.in6,
 					   ntohs(svc->port),
+<<<<<<< HEAD
 					   svc->scheduler->name);
+=======
+					   sched->name);
+>>>>>>> refs/remotes/origin/master
 			else
 #endif
 				seq_printf(seq, "%s  %08X:%04X %s %s ",
 					   ip_vs_proto_name(svc->protocol),
 					   ntohl(svc->addr.ip),
 					   ntohs(svc->port),
+<<<<<<< HEAD
 					   svc->scheduler->name,
 					   (svc->flags & IP_VS_SVC_F_ONEPACKET)?"ops ":"");
 		} else {
 			seq_printf(seq, "FWM  %08X %s %s",
 				   svc->fwmark, svc->scheduler->name,
+=======
+					   sched->name,
+					   (svc->flags & IP_VS_SVC_F_ONEPACKET)?"ops ":"");
+		} else {
+			seq_printf(seq, "FWM  %08X %s %s",
+				   svc->fwmark, sched->name,
+>>>>>>> refs/remotes/origin/master
 				   (svc->flags & IP_VS_SVC_F_ONEPACKET)?"ops ":"");
 		}
 
@@ -2020,7 +2949,11 @@ static int ip_vs_info_seq_show(struct seq_file *seq, void *v)
 		else
 			seq_putc(seq, '\n');
 
+<<<<<<< HEAD
 		list_for_each_entry(dest, &svc->destinations, n_list) {
+=======
+		list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_IP_VS_IPV6
 			if (dest->af == AF_INET6)
 				seq_printf(seq,
@@ -2114,7 +3047,11 @@ static int ip_vs_stats_percpu_show(struct seq_file *seq, void *v)
 {
 	struct net *net = seq_file_single_net(seq);
 	struct ip_vs_stats *tot_stats = &net_ipvs(net)->tot_stats;
+<<<<<<< HEAD
 	struct ip_vs_cpu_stats *cpustats = tot_stats->cpustats;
+=======
+	struct ip_vs_cpu_stats __percpu *cpustats = tot_stats->cpustats;
+>>>>>>> refs/remotes/origin/master
 	struct ip_vs_stats_user rates;
 	int i;
 
@@ -2284,8 +3221,18 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 	struct ip_vs_service *svc;
 	struct ip_vs_dest_user *udest_compat;
 	struct ip_vs_dest_user_kern udest;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct netns_ipvs *ipvs = net_ipvs(net);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!capable(CAP_NET_ADMIN))
+=======
+	struct netns_ipvs *ipvs = net_ipvs(net);
+
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	if (cmd < IP_VS_BASE_CTL || cmd > IP_VS_SO_SET_MAX)
@@ -2304,6 +3251,33 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 	/* increase the module use count */
 	ip_vs_use_count_inc();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Handle daemons since they have another lock */
+	if (cmd == IP_VS_SO_SET_STARTDAEMON ||
+	    cmd == IP_VS_SO_SET_STOPDAEMON) {
+		struct ip_vs_daemon_user *dm = (struct ip_vs_daemon_user *)arg;
+
+		if (mutex_lock_interruptible(&ipvs->sync_mutex)) {
+			ret = -ERESTARTSYS;
+			goto out_dec;
+		}
+		if (cmd == IP_VS_SO_SET_STARTDAEMON)
+			ret = start_sync_thread(net, dm->state, dm->mcast_ifn,
+						dm->syncid);
+		else
+			ret = stop_sync_thread(net, dm->state);
+		mutex_unlock(&ipvs->sync_mutex);
+		goto out_dec;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (mutex_lock_interruptible(&__ip_vs_mutex)) {
 		ret = -ERESTARTSYS;
 		goto out_dec;
@@ -2311,12 +3285,18 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 
 	if (cmd == IP_VS_SO_SET_FLUSH) {
 		/* Flush the virtual service */
+<<<<<<< HEAD
 		ret = ip_vs_flush(net);
+=======
+		ret = ip_vs_flush(net, false);
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 	} else if (cmd == IP_VS_SO_SET_TIMEOUT) {
 		/* Set timeout values for (tcp tcpfin udp) */
 		ret = ip_vs_set_timeout(net, (struct ip_vs_timeout_user *)arg);
 		goto out_unlock;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (cmd == IP_VS_SO_SET_STARTDAEMON) {
 		struct ip_vs_daemon_user *dm = (struct ip_vs_daemon_user *)arg;
 		ret = start_sync_thread(net, dm->state, dm->mcast_ifn,
@@ -2326,6 +3306,10 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 		struct ip_vs_daemon_user *dm = (struct ip_vs_daemon_user *)arg;
 		ret = stop_sync_thread(net, dm->state);
 		goto out_unlock;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	usvc_compat = (struct ip_vs_service_user *)arg;
@@ -2355,11 +3339,19 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 	}
 
 	/* Lookup the exact service by <protocol, addr, port> or fwmark */
+<<<<<<< HEAD
+=======
+	rcu_read_lock();
+>>>>>>> refs/remotes/origin/master
 	if (usvc.fwmark == 0)
 		svc = __ip_vs_service_find(net, usvc.af, usvc.protocol,
 					   &usvc.addr, usvc.port);
 	else
 		svc = __ip_vs_svc_fwm_find(net, usvc.af, usvc.fwmark);
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	if (cmd != IP_VS_SO_SET_ADD
 	    && (svc == NULL || svc->protocol != usvc.protocol)) {
@@ -2411,11 +3403,21 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 static void
 ip_vs_copy_service(struct ip_vs_service_entry *dst, struct ip_vs_service *src)
 {
+<<<<<<< HEAD
+=======
+	struct ip_vs_scheduler *sched;
+
+	sched = rcu_dereference_protected(src->scheduler, 1);
+>>>>>>> refs/remotes/origin/master
 	dst->protocol = src->protocol;
 	dst->addr = src->addr.ip;
 	dst->port = src->port;
 	dst->fwmark = src->fwmark;
+<<<<<<< HEAD
 	strlcpy(dst->sched_name, src->scheduler->name, sizeof(dst->sched_name));
+=======
+	strlcpy(dst->sched_name, sched->name, sizeof(dst->sched_name));
+>>>>>>> refs/remotes/origin/master
 	dst->flags = src->flags;
 	dst->timeout = src->timeout / HZ;
 	dst->netmask = src->netmask;
@@ -2434,7 +3436,11 @@ __ip_vs_get_service_entries(struct net *net,
 	int ret = 0;
 
 	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+<<<<<<< HEAD
 		list_for_each_entry(svc, &ip_vs_svc_table[idx], s_list) {
+=======
+		hlist_for_each_entry(svc, &ip_vs_svc_table[idx], s_list) {
+>>>>>>> refs/remotes/origin/master
 			/* Only expose IPv4 entries to old interface */
 			if (svc->af != AF_INET || !net_eq(svc->net, net))
 				continue;
@@ -2453,7 +3459,11 @@ __ip_vs_get_service_entries(struct net *net,
 	}
 
 	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+<<<<<<< HEAD
 		list_for_each_entry(svc, &ip_vs_svc_fwm_table[idx], f_list) {
+=======
+		hlist_for_each_entry(svc, &ip_vs_svc_fwm_table[idx], f_list) {
+>>>>>>> refs/remotes/origin/master
 			/* Only expose IPv4 entries to old interface */
 			if (svc->af != AF_INET || !net_eq(svc->net, net))
 				continue;
@@ -2470,7 +3480,15 @@ __ip_vs_get_service_entries(struct net *net,
 			count++;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
   out:
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2482,17 +3500,29 @@ __ip_vs_get_dest_entries(struct net *net, const struct ip_vs_get_dests *get,
 	union nf_inet_addr addr = { .ip = get->addr };
 	int ret = 0;
 
+<<<<<<< HEAD
+=======
+	rcu_read_lock();
+>>>>>>> refs/remotes/origin/master
 	if (get->fwmark)
 		svc = __ip_vs_svc_fwm_find(net, AF_INET, get->fwmark);
 	else
 		svc = __ip_vs_service_find(net, AF_INET, get->protocol, &addr,
 					   get->port);
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	if (svc) {
 		int count = 0;
 		struct ip_vs_dest *dest;
 		struct ip_vs_dest_entry entry;
 
+<<<<<<< HEAD
+=======
+		memset(&entry, 0, sizeof(entry));
+>>>>>>> refs/remotes/origin/master
 		list_for_each_entry(dest, &svc->destinations, n_list) {
 			if (count >= get->num_dests)
 				break;
@@ -2526,6 +3556,11 @@ __ip_vs_get_timeouts(struct net *net, struct ip_vs_timeout_user *u)
 	struct ip_vs_proto_data *pd;
 #endif
 
+<<<<<<< HEAD
+=======
+	memset(u, 0, sizeof (*u));
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_IP_VS_PROTO_TCP
 	pd = ip_vs_proto_data_get(net, IPPROTO_TCP);
 	u->tcp_timeout = pd->timeout_table[IP_VS_TCP_S_ESTABLISHED] / HZ;
@@ -2567,7 +3602,11 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
 	BUG_ON(!net);
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	if (cmd < IP_VS_BASE_CTL || cmd > IP_VS_SO_GET_MAX)
@@ -2585,6 +3624,42 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
 
 	if (copy_from_user(arg, user, copylen) != 0)
 		return -EFAULT;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Handle daemons first since it has its own locking
+	 */
+	if (cmd == IP_VS_SO_GET_DAEMON) {
+		struct ip_vs_daemon_user d[2];
+
+		memset(&d, 0, sizeof(d));
+		if (mutex_lock_interruptible(&ipvs->sync_mutex))
+			return -ERESTARTSYS;
+
+		if (ipvs->sync_state & IP_VS_STATE_MASTER) {
+			d[0].state = IP_VS_STATE_MASTER;
+			strlcpy(d[0].mcast_ifn, ipvs->master_mcast_ifn,
+				sizeof(d[0].mcast_ifn));
+			d[0].syncid = ipvs->master_syncid;
+		}
+		if (ipvs->sync_state & IP_VS_STATE_BACKUP) {
+			d[1].state = IP_VS_STATE_BACKUP;
+			strlcpy(d[1].mcast_ifn, ipvs->backup_mcast_ifn,
+				sizeof(d[1].mcast_ifn));
+			d[1].syncid = ipvs->backup_syncid;
+		}
+		if (copy_to_user(user, &d, sizeof(d)) != 0)
+			ret = -EFAULT;
+		mutex_unlock(&ipvs->sync_mutex);
+		return ret;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mutex_lock_interruptible(&__ip_vs_mutex))
 		return -ERESTARTSYS;
@@ -2640,12 +3715,20 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
 
 		entry = (struct ip_vs_service_entry *)arg;
 		addr.ip = entry->addr;
+<<<<<<< HEAD
+=======
+		rcu_read_lock();
+>>>>>>> refs/remotes/origin/master
 		if (entry->fwmark)
 			svc = __ip_vs_svc_fwm_find(net, AF_INET, entry->fwmark);
 		else
 			svc = __ip_vs_service_find(net, AF_INET,
 						   entry->protocol, &addr,
 						   entry->port);
+<<<<<<< HEAD
+=======
+		rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 		if (svc) {
 			ip_vs_copy_service(entry, svc);
 			if (copy_to_user(user, entry, sizeof(*entry)) != 0)
@@ -2676,13 +3759,22 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
 	{
 		struct ip_vs_timeout_user t;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		memset(&t, 0, sizeof(t));
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+		memset(&t, 0, sizeof(t));
+>>>>>>> refs/remotes/origin/cm-11.0
 		__ip_vs_get_timeouts(net, &t);
 		if (copy_to_user(user, &t, sizeof(t)) != 0)
 			ret = -EFAULT;
 	}
 	break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case IP_VS_SO_GET_DAEMON:
 	{
 		struct ip_vs_daemon_user d[2];
@@ -2705,11 +3797,23 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
 	}
 	break;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		ret = -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   out:
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&__ip_vs_mutex);
 	return ret;
 }
@@ -2802,6 +3906,7 @@ static int ip_vs_genl_fill_stats(struct sk_buff *skb, int container_type,
 
 	ip_vs_copy_stats(&ustats, stats);
 
+<<<<<<< HEAD
 	NLA_PUT_U32(skb, IPVS_STATS_ATTR_CONNS, ustats.conns);
 	NLA_PUT_U32(skb, IPVS_STATS_ATTR_INPKTS, ustats.inpkts);
 	NLA_PUT_U32(skb, IPVS_STATS_ATTR_OUTPKTS, ustats.outpkts);
@@ -2813,6 +3918,19 @@ static int ip_vs_genl_fill_stats(struct sk_buff *skb, int container_type,
 	NLA_PUT_U32(skb, IPVS_STATS_ATTR_INBPS, ustats.inbps);
 	NLA_PUT_U32(skb, IPVS_STATS_ATTR_OUTBPS, ustats.outbps);
 
+=======
+	if (nla_put_u32(skb, IPVS_STATS_ATTR_CONNS, ustats.conns) ||
+	    nla_put_u32(skb, IPVS_STATS_ATTR_INPKTS, ustats.inpkts) ||
+	    nla_put_u32(skb, IPVS_STATS_ATTR_OUTPKTS, ustats.outpkts) ||
+	    nla_put_u64(skb, IPVS_STATS_ATTR_INBYTES, ustats.inbytes) ||
+	    nla_put_u64(skb, IPVS_STATS_ATTR_OUTBYTES, ustats.outbytes) ||
+	    nla_put_u32(skb, IPVS_STATS_ATTR_CPS, ustats.cps) ||
+	    nla_put_u32(skb, IPVS_STATS_ATTR_INPPS, ustats.inpps) ||
+	    nla_put_u32(skb, IPVS_STATS_ATTR_OUTPPS, ustats.outpps) ||
+	    nla_put_u32(skb, IPVS_STATS_ATTR_INBPS, ustats.inbps) ||
+	    nla_put_u32(skb, IPVS_STATS_ATTR_OUTBPS, ustats.outbps))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	nla_nest_end(skb, nl_stats);
 
 	return 0;
@@ -2825,6 +3943,11 @@ nla_put_failure:
 static int ip_vs_genl_fill_service(struct sk_buff *skb,
 				   struct ip_vs_service *svc)
 {
+<<<<<<< HEAD
+=======
+	struct ip_vs_scheduler *sched;
+	struct ip_vs_pe *pe;
+>>>>>>> refs/remotes/origin/master
 	struct nlattr *nl_service;
 	struct ip_vs_flags flags = { .flags = svc->flags,
 				     .mask = ~0 };
@@ -2833,6 +3956,7 @@ static int ip_vs_genl_fill_service(struct sk_buff *skb,
 	if (!nl_service)
 		return -EMSGSIZE;
 
+<<<<<<< HEAD
 	NLA_PUT_U16(skb, IPVS_SVC_ATTR_AF, svc->af);
 
 	if (svc->fwmark) {
@@ -2850,6 +3974,28 @@ static int ip_vs_genl_fill_service(struct sk_buff *skb,
 	NLA_PUT_U32(skb, IPVS_SVC_ATTR_TIMEOUT, svc->timeout / HZ);
 	NLA_PUT_U32(skb, IPVS_SVC_ATTR_NETMASK, svc->netmask);
 
+=======
+	if (nla_put_u16(skb, IPVS_SVC_ATTR_AF, svc->af))
+		goto nla_put_failure;
+	if (svc->fwmark) {
+		if (nla_put_u32(skb, IPVS_SVC_ATTR_FWMARK, svc->fwmark))
+			goto nla_put_failure;
+	} else {
+		if (nla_put_u16(skb, IPVS_SVC_ATTR_PROTOCOL, svc->protocol) ||
+		    nla_put(skb, IPVS_SVC_ATTR_ADDR, sizeof(svc->addr), &svc->addr) ||
+		    nla_put_be16(skb, IPVS_SVC_ATTR_PORT, svc->port))
+			goto nla_put_failure;
+	}
+
+	sched = rcu_dereference_protected(svc->scheduler, 1);
+	pe = rcu_dereference_protected(svc->pe, 1);
+	if (nla_put_string(skb, IPVS_SVC_ATTR_SCHED_NAME, sched->name) ||
+	    (pe && nla_put_string(skb, IPVS_SVC_ATTR_PE_NAME, pe->name)) ||
+	    nla_put(skb, IPVS_SVC_ATTR_FLAGS, sizeof(flags), &flags) ||
+	    nla_put_u32(skb, IPVS_SVC_ATTR_TIMEOUT, svc->timeout / HZ) ||
+	    nla_put_be32(skb, IPVS_SVC_ATTR_NETMASK, svc->netmask))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	if (ip_vs_genl_fill_stats(skb, IPVS_SVC_ATTR_STATS, &svc->stats))
 		goto nla_put_failure;
 
@@ -2868,7 +4014,11 @@ static int ip_vs_genl_dump_service(struct sk_buff *skb,
 {
 	void *hdr;
 
+<<<<<<< HEAD
 	hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).pid, cb->nlh->nlmsg_seq,
+=======
+	hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
+>>>>>>> refs/remotes/origin/master
 			  &ip_vs_genl_family, NLM_F_MULTI,
 			  IPVS_CMD_NEW_SERVICE);
 	if (!hdr)
@@ -2894,7 +4044,11 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
 
 	mutex_lock(&__ip_vs_mutex);
 	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
+<<<<<<< HEAD
 		list_for_each_entry(svc, &ip_vs_svc_table[i], s_list) {
+=======
+		hlist_for_each_entry(svc, &ip_vs_svc_table[i], s_list) {
+>>>>>>> refs/remotes/origin/master
 			if (++idx <= start || !net_eq(svc->net, net))
 				continue;
 			if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
@@ -2905,7 +4059,11 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
 	}
 
 	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
+<<<<<<< HEAD
 		list_for_each_entry(svc, &ip_vs_svc_fwm_table[i], f_list) {
+=======
+		hlist_for_each_entry(svc, &ip_vs_svc_fwm_table[i], f_list) {
+>>>>>>> refs/remotes/origin/master
 			if (++idx <= start || !net_eq(svc->net, net))
 				continue;
 			if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
@@ -2961,15 +4119,27 @@ static int ip_vs_genl_parse_service(struct net *net,
 	} else {
 		usvc->protocol = nla_get_u16(nla_protocol);
 		nla_memcpy(&usvc->addr, nla_addr, sizeof(usvc->addr));
+<<<<<<< HEAD
 		usvc->port = nla_get_u16(nla_port);
 		usvc->fwmark = 0;
 	}
 
+=======
+		usvc->port = nla_get_be16(nla_port);
+		usvc->fwmark = 0;
+	}
+
+	rcu_read_lock();
+>>>>>>> refs/remotes/origin/master
 	if (usvc->fwmark)
 		svc = __ip_vs_svc_fwm_find(net, usvc->af, usvc->fwmark);
 	else
 		svc = __ip_vs_service_find(net, usvc->af, usvc->protocol,
 					   &usvc->addr, usvc->port);
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	*ret_svc = svc;
 
 	/* If a full entry was requested, check for the additional fields */
@@ -2999,7 +4169,11 @@ static int ip_vs_genl_parse_service(struct net *net,
 		usvc->sched_name = nla_data(nla_sched);
 		usvc->pe_name = nla_pe ? nla_data(nla_pe) : NULL;
 		usvc->timeout = nla_get_u32(nla_timeout);
+<<<<<<< HEAD
 		usvc->netmask = nla_get_u32(nla_netmask);
+=======
+		usvc->netmask = nla_get_be32(nla_netmask);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -3024,6 +4198,7 @@ static int ip_vs_genl_fill_dest(struct sk_buff *skb, struct ip_vs_dest *dest)
 	if (!nl_dest)
 		return -EMSGSIZE;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, IPVS_DEST_ATTR_ADDR, sizeof(dest->addr), &dest->addr);
 	NLA_PUT_U16(skb, IPVS_DEST_ATTR_PORT, dest->port);
 
@@ -3039,6 +4214,24 @@ static int ip_vs_genl_fill_dest(struct sk_buff *skb, struct ip_vs_dest *dest)
 	NLA_PUT_U32(skb, IPVS_DEST_ATTR_PERSIST_CONNS,
 		    atomic_read(&dest->persistconns));
 
+=======
+	if (nla_put(skb, IPVS_DEST_ATTR_ADDR, sizeof(dest->addr), &dest->addr) ||
+	    nla_put_be16(skb, IPVS_DEST_ATTR_PORT, dest->port) ||
+	    nla_put_u32(skb, IPVS_DEST_ATTR_FWD_METHOD,
+			(atomic_read(&dest->conn_flags) &
+			 IP_VS_CONN_F_FWD_MASK)) ||
+	    nla_put_u32(skb, IPVS_DEST_ATTR_WEIGHT,
+			atomic_read(&dest->weight)) ||
+	    nla_put_u32(skb, IPVS_DEST_ATTR_U_THRESH, dest->u_threshold) ||
+	    nla_put_u32(skb, IPVS_DEST_ATTR_L_THRESH, dest->l_threshold) ||
+	    nla_put_u32(skb, IPVS_DEST_ATTR_ACTIVE_CONNS,
+			atomic_read(&dest->activeconns)) ||
+	    nla_put_u32(skb, IPVS_DEST_ATTR_INACT_CONNS,
+			atomic_read(&dest->inactconns)) ||
+	    nla_put_u32(skb, IPVS_DEST_ATTR_PERSIST_CONNS,
+			atomic_read(&dest->persistconns)))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	if (ip_vs_genl_fill_stats(skb, IPVS_DEST_ATTR_STATS, &dest->stats))
 		goto nla_put_failure;
 
@@ -3056,7 +4249,11 @@ static int ip_vs_genl_dump_dest(struct sk_buff *skb, struct ip_vs_dest *dest,
 {
 	void *hdr;
 
+<<<<<<< HEAD
 	hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).pid, cb->nlh->nlmsg_seq,
+=======
+	hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
+>>>>>>> refs/remotes/origin/master
 			  &ip_vs_genl_family, NLM_F_MULTI,
 			  IPVS_CMD_NEW_DEST);
 	if (!hdr)
@@ -3133,7 +4330,11 @@ static int ip_vs_genl_parse_dest(struct ip_vs_dest_user_kern *udest,
 	memset(udest, 0, sizeof(*udest));
 
 	nla_memcpy(&udest->addr, nla_addr, sizeof(udest->addr));
+<<<<<<< HEAD
 	udest->port = nla_get_u16(nla_port);
+=======
+	udest->port = nla_get_be16(nla_port);
+>>>>>>> refs/remotes/origin/master
 
 	/* If a full entry was requested, check for the additional fields */
 	if (full_entry) {
@@ -3158,8 +4359,13 @@ static int ip_vs_genl_parse_dest(struct ip_vs_dest_user_kern *udest,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ip_vs_genl_fill_daemon(struct sk_buff *skb, __be32 state,
 				  const char *mcast_ifn, __be32 syncid)
+=======
+static int ip_vs_genl_fill_daemon(struct sk_buff *skb, __u32 state,
+				  const char *mcast_ifn, __u32 syncid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nlattr *nl_daemon;
 
@@ -3167,10 +4373,17 @@ static int ip_vs_genl_fill_daemon(struct sk_buff *skb, __be32 state,
 	if (!nl_daemon)
 		return -EMSGSIZE;
 
+<<<<<<< HEAD
 	NLA_PUT_U32(skb, IPVS_DAEMON_ATTR_STATE, state);
 	NLA_PUT_STRING(skb, IPVS_DAEMON_ATTR_MCAST_IFN, mcast_ifn);
 	NLA_PUT_U32(skb, IPVS_DAEMON_ATTR_SYNC_ID, syncid);
 
+=======
+	if (nla_put_u32(skb, IPVS_DAEMON_ATTR_STATE, state) ||
+	    nla_put_string(skb, IPVS_DAEMON_ATTR_MCAST_IFN, mcast_ifn) ||
+	    nla_put_u32(skb, IPVS_DAEMON_ATTR_SYNC_ID, syncid))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	nla_nest_end(skb, nl_daemon);
 
 	return 0;
@@ -3180,12 +4393,21 @@ nla_put_failure:
 	return -EMSGSIZE;
 }
 
+<<<<<<< HEAD
 static int ip_vs_genl_dump_daemon(struct sk_buff *skb, __be32 state,
 				  const char *mcast_ifn, __be32 syncid,
 				  struct netlink_callback *cb)
 {
 	void *hdr;
 	hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).pid, cb->nlh->nlmsg_seq,
+=======
+static int ip_vs_genl_dump_daemon(struct sk_buff *skb, __u32 state,
+				  const char *mcast_ifn, __u32 syncid,
+				  struct netlink_callback *cb)
+{
+	void *hdr;
+	hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
+>>>>>>> refs/remotes/origin/master
 			  &ip_vs_genl_family, NLM_F_MULTI,
 			  IPVS_CMD_NEW_DAEMON);
 	if (!hdr)
@@ -3207,7 +4429,15 @@ static int ip_vs_genl_dump_daemons(struct sk_buff *skb,
 	struct net *net = skb_sknet(skb);
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&__ip_vs_mutex);
+=======
+	mutex_lock(&ipvs->sync_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&ipvs->sync_mutex);
+>>>>>>> refs/remotes/origin/master
 	if ((ipvs->sync_state & IP_VS_STATE_MASTER) && !cb->args[0]) {
 		if (ip_vs_genl_dump_daemon(skb, IP_VS_STATE_MASTER,
 					   ipvs->master_mcast_ifn,
@@ -3227,7 +4457,15 @@ static int ip_vs_genl_dump_daemons(struct sk_buff *skb,
 	}
 
 nla_put_failure:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&__ip_vs_mutex);
+=======
+	mutex_unlock(&ipvs->sync_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&ipvs->sync_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return skb->len;
 }
@@ -3273,6 +4511,8 @@ static int ip_vs_genl_set_config(struct net *net, struct nlattr **attrs)
 	return ip_vs_set_timeout(net, &t);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ip_vs_genl_set_cmd(struct sk_buff *skb, struct genl_info *info)
 {
 	struct ip_vs_service *svc = NULL;
@@ -3280,6 +4520,16 @@ static int ip_vs_genl_set_cmd(struct sk_buff *skb, struct genl_info *info)
 	struct ip_vs_dest_user_kern udest;
 	int ret = 0, cmd;
 	int need_full_svc = 0, need_full_dest = 0;
+=======
+static int ip_vs_genl_set_daemon(struct sk_buff *skb, struct genl_info *info)
+{
+	int ret = 0, cmd;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ip_vs_genl_set_daemon(struct sk_buff *skb, struct genl_info *info)
+{
+	int ret = 0, cmd;
+>>>>>>> refs/remotes/origin/master
 	struct net *net;
 	struct netns_ipvs *ipvs;
 
@@ -3287,6 +4537,8 @@ static int ip_vs_genl_set_cmd(struct sk_buff *skb, struct genl_info *info)
 	ipvs = net_ipvs(net);
 	cmd = info->genlhdr->cmd;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&__ip_vs_mutex);
 
 	if (cmd == IPVS_CMD_FLUSH) {
@@ -3300,6 +4552,17 @@ static int ip_vs_genl_set_cmd(struct sk_buff *skb, struct genl_info *info)
 
 		struct nlattr *daemon_attrs[IPVS_DAEMON_ATTR_MAX + 1];
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (cmd == IPVS_CMD_NEW_DAEMON || cmd == IPVS_CMD_DEL_DAEMON) {
+		struct nlattr *daemon_attrs[IPVS_DAEMON_ATTR_MAX + 1];
+
+		mutex_lock(&ipvs->sync_mutex);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!info->attrs[IPVS_CMD_ATTR_DAEMON] ||
 		    nla_parse_nested(daemon_attrs, IPVS_DAEMON_ATTR_MAX,
 				     info->attrs[IPVS_CMD_ATTR_DAEMON],
@@ -3312,6 +4575,44 @@ static int ip_vs_genl_set_cmd(struct sk_buff *skb, struct genl_info *info)
 			ret = ip_vs_genl_new_daemon(net, daemon_attrs);
 		else
 			ret = ip_vs_genl_del_daemon(net, daemon_attrs);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+out:
+		mutex_unlock(&ipvs->sync_mutex);
+	}
+	return ret;
+}
+
+static int ip_vs_genl_set_cmd(struct sk_buff *skb, struct genl_info *info)
+{
+	struct ip_vs_service *svc = NULL;
+	struct ip_vs_service_user_kern usvc;
+	struct ip_vs_dest_user_kern udest;
+	int ret = 0, cmd;
+	int need_full_svc = 0, need_full_dest = 0;
+	struct net *net;
+
+	net = skb_sknet(skb);
+	cmd = info->genlhdr->cmd;
+
+	mutex_lock(&__ip_vs_mutex);
+
+	if (cmd == IPVS_CMD_FLUSH) {
+<<<<<<< HEAD
+		ret = ip_vs_flush(net);
+		goto out;
+	} else if (cmd == IPVS_CMD_SET_CONFIG) {
+		ret = ip_vs_genl_set_config(net, info->attrs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = ip_vs_flush(net, false);
+		goto out;
+	} else if (cmd == IPVS_CMD_SET_CONFIG) {
+		ret = ip_vs_genl_set_config(net, info->attrs);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	} else if (cmd == IPVS_CMD_ZERO &&
 		   !info->attrs[IPVS_CMD_ATTR_SERVICE]) {
@@ -3394,10 +4695,20 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
 	void *reply;
 	int ret, cmd, reply_cmd;
 	struct net *net;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct netns_ipvs *ipvs;
 
 	net = skb_sknet(skb);
 	ipvs = net_ipvs(net);
+=======
+
+	net = skb_sknet(skb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	net = skb_sknet(skb);
+>>>>>>> refs/remotes/origin/master
 	cmd = info->genlhdr->cmd;
 
 	if (cmd == IPVS_CMD_GET_SERVICE)
@@ -3449,21 +4760,41 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
 
 		__ip_vs_get_timeouts(net, &t);
 #ifdef CONFIG_IP_VS_PROTO_TCP
+<<<<<<< HEAD
 		NLA_PUT_U32(msg, IPVS_CMD_ATTR_TIMEOUT_TCP, t.tcp_timeout);
 		NLA_PUT_U32(msg, IPVS_CMD_ATTR_TIMEOUT_TCP_FIN,
 			    t.tcp_fin_timeout);
 #endif
 #ifdef CONFIG_IP_VS_PROTO_UDP
 		NLA_PUT_U32(msg, IPVS_CMD_ATTR_TIMEOUT_UDP, t.udp_timeout);
+=======
+		if (nla_put_u32(msg, IPVS_CMD_ATTR_TIMEOUT_TCP,
+				t.tcp_timeout) ||
+		    nla_put_u32(msg, IPVS_CMD_ATTR_TIMEOUT_TCP_FIN,
+				t.tcp_fin_timeout))
+			goto nla_put_failure;
+#endif
+#ifdef CONFIG_IP_VS_PROTO_UDP
+		if (nla_put_u32(msg, IPVS_CMD_ATTR_TIMEOUT_UDP, t.udp_timeout))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 		break;
 	}
 
 	case IPVS_CMD_GET_INFO:
+<<<<<<< HEAD
 		NLA_PUT_U32(msg, IPVS_INFO_ATTR_VERSION, IP_VS_VERSION_CODE);
 		NLA_PUT_U32(msg, IPVS_INFO_ATTR_CONN_TAB_SIZE,
 			    ip_vs_conn_tab_size);
+=======
+		if (nla_put_u32(msg, IPVS_INFO_ATTR_VERSION,
+				IP_VS_VERSION_CODE) ||
+		    nla_put_u32(msg, IPVS_INFO_ATTR_CONN_TAB_SIZE,
+				ip_vs_conn_tab_size))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -3484,7 +4815,11 @@ out:
 }
 
 
+<<<<<<< HEAD
 static struct genl_ops ip_vs_genl_ops[] __read_mostly = {
+=======
+static const struct genl_ops ip_vs_genl_ops[] __read_mostly = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.cmd	= IPVS_CMD_NEW_SERVICE,
 		.flags	= GENL_ADMIN_PERM,
@@ -3538,13 +4873,29 @@ static struct genl_ops ip_vs_genl_ops[] __read_mostly = {
 		.cmd	= IPVS_CMD_NEW_DAEMON,
 		.flags	= GENL_ADMIN_PERM,
 		.policy	= ip_vs_cmd_policy,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.doit	= ip_vs_genl_set_cmd,
+=======
+		.doit	= ip_vs_genl_set_daemon,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.doit	= ip_vs_genl_set_daemon,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.cmd	= IPVS_CMD_DEL_DAEMON,
 		.flags	= GENL_ADMIN_PERM,
 		.policy	= ip_vs_cmd_policy,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.doit	= ip_vs_genl_set_cmd,
+=======
+		.doit	= ip_vs_genl_set_daemon,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.doit	= ip_vs_genl_set_daemon,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.cmd	= IPVS_CMD_GET_DAEMON,
@@ -3583,7 +4934,11 @@ static struct genl_ops ip_vs_genl_ops[] __read_mostly = {
 static int __init ip_vs_genl_register(void)
 {
 	return genl_register_family_with_ops(&ip_vs_genl_family,
+<<<<<<< HEAD
 		ip_vs_genl_ops, ARRAY_SIZE(ip_vs_genl_ops));
+=======
+					     ip_vs_genl_ops);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ip_vs_genl_unregister(void)
@@ -3597,7 +4952,15 @@ static void ip_vs_genl_unregister(void)
  * per netns intit/exit func.
  */
 #ifdef CONFIG_SYSCTL
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __net_init __ip_vs_control_init_sysctl(struct net *net)
+=======
+int __net_init ip_vs_control_net_init_sysctl(struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __net_init ip_vs_control_net_init_sysctl(struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 	int idx;
 	struct netns_ipvs *ipvs = net_ipvs(net);
@@ -3612,6 +4975,13 @@ int __net_init __ip_vs_control_init_sysctl(struct net *net)
 		tbl = kmemdup(vs_vars, sizeof(vs_vars), GFP_KERNEL);
 		if (tbl == NULL)
 			return -ENOMEM;
+<<<<<<< HEAD
+=======
+
+		/* Don't export sysctls to unprivileged users */
+		if (net->user_ns != &init_user_ns)
+			tbl[0].procname = NULL;
+>>>>>>> refs/remotes/origin/master
 	} else
 		tbl = vs_vars;
 	/* Initialize sysctl defaults */
@@ -3630,18 +5000,46 @@ int __net_init __ip_vs_control_init_sysctl(struct net *net)
 	tbl[idx++].data = &ipvs->sysctl_snat_reroute;
 	ipvs->sysctl_sync_ver = 1;
 	tbl[idx++].data = &ipvs->sysctl_sync_ver;
+<<<<<<< HEAD
 	tbl[idx++].data = &ipvs->sysctl_cache_bypass;
 	tbl[idx++].data = &ipvs->sysctl_expire_nodest_conn;
+=======
+	ipvs->sysctl_sync_ports = 1;
+	tbl[idx++].data = &ipvs->sysctl_sync_ports;
+	tbl[idx++].data = &ipvs->sysctl_sync_persist_mode;
+	ipvs->sysctl_sync_qlen_max = nr_free_buffer_pages() / 32;
+	tbl[idx++].data = &ipvs->sysctl_sync_qlen_max;
+	ipvs->sysctl_sync_sock_size = 0;
+	tbl[idx++].data = &ipvs->sysctl_sync_sock_size;
+	tbl[idx++].data = &ipvs->sysctl_cache_bypass;
+	tbl[idx++].data = &ipvs->sysctl_expire_nodest_conn;
+	tbl[idx++].data = &ipvs->sysctl_sloppy_tcp;
+	tbl[idx++].data = &ipvs->sysctl_sloppy_sctp;
+>>>>>>> refs/remotes/origin/master
 	tbl[idx++].data = &ipvs->sysctl_expire_quiescent_template;
 	ipvs->sysctl_sync_threshold[0] = DEFAULT_SYNC_THRESHOLD;
 	ipvs->sysctl_sync_threshold[1] = DEFAULT_SYNC_PERIOD;
 	tbl[idx].data = &ipvs->sysctl_sync_threshold;
 	tbl[idx++].maxlen = sizeof(ipvs->sysctl_sync_threshold);
+<<<<<<< HEAD
 	tbl[idx++].data = &ipvs->sysctl_nat_icmp_send;
 
 
 	ipvs->sysctl_hdr = register_net_sysctl_table(net, net_vs_ctl_path,
 						     tbl);
+=======
+	ipvs->sysctl_sync_refresh_period = DEFAULT_SYNC_REFRESH_PERIOD;
+	tbl[idx++].data = &ipvs->sysctl_sync_refresh_period;
+	ipvs->sysctl_sync_retries = clamp_t(int, DEFAULT_SYNC_RETRIES, 0, 3);
+	tbl[idx++].data = &ipvs->sysctl_sync_retries;
+	tbl[idx++].data = &ipvs->sysctl_nat_icmp_send;
+	ipvs->sysctl_pmtu_disc = 1;
+	tbl[idx++].data = &ipvs->sysctl_pmtu_disc;
+	tbl[idx++].data = &ipvs->sysctl_backup_only;
+
+
+	ipvs->sysctl_hdr = register_net_sysctl(net, "net/ipv4/vs", tbl);
+>>>>>>> refs/remotes/origin/master
 	if (ipvs->sysctl_hdr == NULL) {
 		if (!net_eq(net, &init_net))
 			kfree(tbl);
@@ -3656,7 +5054,15 @@ int __net_init __ip_vs_control_init_sysctl(struct net *net)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __net_init __ip_vs_control_cleanup_sysctl(struct net *net)
+=======
+void __net_exit ip_vs_control_net_cleanup_sysctl(struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __net_exit ip_vs_control_net_cleanup_sysctl(struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
@@ -3667,8 +5073,18 @@ void __net_init __ip_vs_control_cleanup_sysctl(struct net *net)
 
 #else
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __net_init __ip_vs_control_init_sysctl(struct net *net) { return 0; }
 void __net_init __ip_vs_control_cleanup_sysctl(struct net *net) { }
+=======
+int __net_init ip_vs_control_net_init_sysctl(struct net *net) { return 0; }
+void __net_exit ip_vs_control_net_cleanup_sysctl(struct net *net) { }
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __net_init ip_vs_control_net_init_sysctl(struct net *net) { return 0; }
+static void __net_exit ip_vs_control_net_cleanup_sysctl(struct net *net) { }
+>>>>>>> refs/remotes/origin/master
 
 #endif
 
@@ -3676,27 +5092,58 @@ static struct notifier_block ip_vs_dst_notifier = {
 	.notifier_call = ip_vs_dst_event,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __net_init __ip_vs_control_init(struct net *net)
+=======
+int __net_init ip_vs_control_net_init(struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int idx;
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
+<<<<<<< HEAD
 	ipvs->rs_lock = __RW_LOCK_UNLOCKED(ipvs->rs_lock);
+=======
+	rwlock_init(&ipvs->rs_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Initialize rs_table */
 	for (idx = 0; idx < IP_VS_RTAB_SIZE; idx++)
 		INIT_LIST_HEAD(&ipvs->rs_table[idx]);
 
 	INIT_LIST_HEAD(&ipvs->dest_trash);
+=======
+int __net_init ip_vs_control_net_init(struct net *net)
+{
+	int i, idx;
+	struct netns_ipvs *ipvs = net_ipvs(net);
+
+	/* Initialize rs_table */
+	for (idx = 0; idx < IP_VS_RTAB_SIZE; idx++)
+		INIT_HLIST_HEAD(&ipvs->rs_table[idx]);
+
+	INIT_LIST_HEAD(&ipvs->dest_trash);
+	spin_lock_init(&ipvs->dest_trash_lock);
+	setup_timer(&ipvs->dest_trash_timer, ip_vs_dest_trash_expire,
+		    (unsigned long) net);
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&ipvs->ftpsvc_counter, 0);
 	atomic_set(&ipvs->nullsvc_counter, 0);
 
 	/* procfs stats */
 	ipvs->tot_stats.cpustats = alloc_percpu(struct ip_vs_cpu_stats);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ipvs->tot_stats.cpustats) {
 		pr_err("%s(): alloc_percpu.\n", __func__);
 		return -ENOMEM;
 	}
+=======
+	if (!ipvs->tot_stats.cpustats)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_init(&ipvs->tot_stats.lock);
 
 	proc_net_fops_create(net, "ip_vs", 0, &ip_vs_info_fops);
@@ -3704,7 +5151,30 @@ int __net_init __ip_vs_control_init(struct net *net)
 	proc_net_fops_create(net, "ip_vs_stats_percpu", 0,
 			     &ip_vs_stats_percpu_fops);
 
+<<<<<<< HEAD
 	if (__ip_vs_control_init_sysctl(net))
+=======
+	if (ip_vs_control_net_init_sysctl(net))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ipvs->tot_stats.cpustats)
+		return -ENOMEM;
+
+	for_each_possible_cpu(i) {
+		struct ip_vs_cpu_stats *ipvs_tot_stats;
+		ipvs_tot_stats = per_cpu_ptr(ipvs->tot_stats.cpustats, i);
+		u64_stats_init(&ipvs_tot_stats->syncp);
+	}
+
+	spin_lock_init(&ipvs->tot_stats.lock);
+
+	proc_create("ip_vs", 0, net->proc_net, &ip_vs_info_fops);
+	proc_create("ip_vs_stats", 0, net->proc_net, &ip_vs_stats_fops);
+	proc_create("ip_vs_stats_percpu", 0, net->proc_net,
+		    &ip_vs_stats_percpu_fops);
+
+	if (ip_vs_control_net_init_sysctl(net))
+>>>>>>> refs/remotes/origin/master
 		goto err;
 
 	return 0;
@@ -3714,19 +5184,33 @@ err:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __net_exit __ip_vs_control_cleanup(struct net *net)
+=======
+void __net_exit ip_vs_control_net_cleanup(struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __net_exit ip_vs_control_net_cleanup(struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
 	ip_vs_trash_cleanup(net);
 	ip_vs_stop_estimator(net, &ipvs->tot_stats);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__ip_vs_control_cleanup_sysctl(net);
+=======
+	ip_vs_control_net_cleanup_sysctl(net);
+>>>>>>> refs/remotes/origin/cm-10.0
 	proc_net_remove(net, "ip_vs_stats_percpu");
 	proc_net_remove(net, "ip_vs_stats");
 	proc_net_remove(net, "ip_vs");
 	free_percpu(ipvs->tot_stats.cpustats);
 }
 
+<<<<<<< HEAD
 int __init ip_vs_control_init(void)
 {
 	int idx;
@@ -3742,6 +5226,24 @@ int __init ip_vs_control_init(void)
 
 	smp_wmb();	/* Do we really need it now ? */
 
+=======
+=======
+	ip_vs_control_net_cleanup_sysctl(net);
+	remove_proc_entry("ip_vs_stats_percpu", net->proc_net);
+	remove_proc_entry("ip_vs_stats", net->proc_net);
+	remove_proc_entry("ip_vs", net->proc_net);
+	free_percpu(ipvs->tot_stats.cpustats);
+}
+
+>>>>>>> refs/remotes/origin/master
+int __init ip_vs_register_nl_ioctl(void)
+{
+	int ret;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = nf_register_sockopt(&ip_vs_sockopts);
 	if (ret) {
 		pr_err("cannot register sockopt.\n");
@@ -3753,6 +5255,8 @@ int __init ip_vs_control_init(void)
 		pr_err("cannot register Generic Netlink interface.\n");
 		goto err_genl;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	ret = register_netdevice_notifier(&ip_vs_dst_notifier);
 	if (ret < 0)
@@ -3763,18 +5267,77 @@ int __init ip_vs_control_init(void)
 
 err_notf:
 	ip_vs_genl_unregister();
+=======
+	return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+
+>>>>>>> refs/remotes/origin/master
 err_genl:
 	nf_unregister_sockopt(&ip_vs_sockopts);
 err_sock:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void ip_vs_unregister_nl_ioctl(void)
+{
+	ip_vs_genl_unregister();
+	nf_unregister_sockopt(&ip_vs_sockopts);
+}
+
+int __init ip_vs_control_init(void)
+{
+	int idx;
+	int ret;
+
+	EnterFunction(2);
+
+<<<<<<< HEAD
+	/* Initialize svc_table, ip_vs_svc_fwm_table, rs_table */
+	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+		INIT_LIST_HEAD(&ip_vs_svc_table[idx]);
+		INIT_LIST_HEAD(&ip_vs_svc_fwm_table[idx]);
+=======
+	/* Initialize svc_table, ip_vs_svc_fwm_table */
+	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+		INIT_HLIST_HEAD(&ip_vs_svc_table[idx]);
+		INIT_HLIST_HEAD(&ip_vs_svc_fwm_table[idx]);
+>>>>>>> refs/remotes/origin/master
+	}
+
+	smp_wmb();	/* Do we really need it now ? */
+
+	ret = register_netdevice_notifier(&ip_vs_dst_notifier);
+	if (ret < 0)
+		return ret;
+
+	LeaveFunction(2);
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void ip_vs_control_cleanup(void)
 {
 	EnterFunction(2);
 	unregister_netdevice_notifier(&ip_vs_dst_notifier);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ip_vs_genl_unregister();
 	nf_unregister_sockopt(&ip_vs_sockopts);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	LeaveFunction(2);
 }

@@ -19,18 +19,36 @@
 #include <linux/dma-mapping.h>
 #include <linux/scatterlist.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
 #include <linux/mmc/host.h>
 
 #include <asm/sizes.h>
 #include <asm/unaligned.h>
 #include <plat/mvsdio.h>
+=======
+#include <linux/clk.h>
+#include <linux/gpio.h>
+#include <linux/of_gpio.h>
+#include <linux/of_irq.h>
+#include <linux/mmc/host.h>
+#include <linux/mmc/slot-gpio.h>
+#include <linux/pinctrl/consumer.h>
+
+#include <asm/sizes.h>
+#include <asm/unaligned.h>
+#include <linux/platform_data/mmc-mvsdio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "mvsdio.h"
 
 #define DRIVER_NAME	"mvsdio"
 
+<<<<<<< HEAD
 static int maxfreq = MVSD_CLOCKRATE_MAX;
+=======
+static int maxfreq;
+>>>>>>> refs/remotes/origin/master
 static int nodma;
 
 struct mvsd_host {
@@ -49,10 +67,14 @@ struct mvsd_host {
 	struct timer_list timer;
 	struct mmc_host *mmc;
 	struct device *dev;
+<<<<<<< HEAD
 	struct resource *res;
 	int irq;
 	int gpio_card_detect;
 	int gpio_write_protect;
+=======
+	struct clk *clk;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define mvsd_write(offs, val)	writel(val, iobase + (offs))
@@ -117,10 +139,19 @@ static int mvsd_setup_data(struct mvsd_host *host, struct mmc_data *data)
 		host->pio_size = data->blocks * data->blksz;
 		host->pio_ptr = sg_virt(data->sg);
 		if (!nodma)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_DEBUG "%s: fallback to PIO for data "
+=======
+			pr_debug("%s: fallback to PIO for data "
+>>>>>>> refs/remotes/origin/cm-10.0
 					  "at 0x%p size %d\n",
 					  mmc_hostname(host->mmc),
 					  host->pio_ptr, host->pio_size);
+=======
+			dev_dbg(host->dev, "fallback to PIO for data at 0x%p size %d\n",
+				host->pio_ptr, host->pio_size);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	} else {
 		dma_addr_t phys_addr;
@@ -471,8 +502,17 @@ static irqreturn_t mvsd_irq(int irq, void *dev)
 		if (mrq->data)
 			err_status = mvsd_finish_data(host, mrq->data, err_status);
 		if (err_status) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: unhandled error status %#04x\n",
+=======
+			pr_err("%s: unhandled error status %#04x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 					mmc_hostname(host->mmc), err_status);
+=======
+			dev_err(host->dev, "unhandled error status %#04x\n",
+				err_status);
+>>>>>>> refs/remotes/origin/master
 			cmd->error = -ENOMSG;
 		}
 
@@ -489,9 +529,18 @@ static irqreturn_t mvsd_irq(int irq, void *dev)
 	if (irq_handled)
 		return IRQ_HANDLED;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR "%s: unhandled interrupt status=0x%04x en=0x%04x "
+=======
+	pr_err("%s: unhandled interrupt status=0x%04x en=0x%04x "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"pio=%d\n", mmc_hostname(host->mmc), intr_status,
 			host->intr_en, host->pio_size);
+=======
+	dev_err(host->dev, "unhandled interrupt status=0x%04x en=0x%04x pio=%d\n",
+		intr_status, host->intr_en, host->pio_size);
+>>>>>>> refs/remotes/origin/master
 	return IRQ_NONE;
 }
 
@@ -505,13 +554,27 @@ static void mvsd_timeout_timer(unsigned long data)
 	spin_lock_irqsave(&host->lock, flags);
 	mrq = host->mrq;
 	if (mrq) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Timeout waiting for hardware interrupt.\n",
 				mmc_hostname(host->mmc));
 		printk(KERN_ERR "%s: hw_state=0x%04x, intr_status=0x%04x "
+=======
+		pr_err("%s: Timeout waiting for hardware interrupt.\n",
+				mmc_hostname(host->mmc));
+		pr_err("%s: hw_state=0x%04x, intr_status=0x%04x "
+>>>>>>> refs/remotes/origin/cm-10.0
 				"intr_en=0x%04x\n", mmc_hostname(host->mmc),
 				mvsd_read(MVSD_HW_STATE),
 				mvsd_read(MVSD_NOR_INTR_STATUS),
 				mvsd_read(MVSD_NOR_INTR_EN));
+=======
+		dev_err(host->dev, "Timeout waiting for hardware interrupt.\n");
+		dev_err(host->dev, "hw_state=0x%04x, intr_status=0x%04x intr_en=0x%04x\n",
+			mvsd_read(MVSD_HW_STATE),
+			mvsd_read(MVSD_NOR_INTR_STATUS),
+			mvsd_read(MVSD_NOR_INTR_EN));
+>>>>>>> refs/remotes/origin/master
 
 		host->mrq = NULL;
 
@@ -538,6 +601,7 @@ static void mvsd_timeout_timer(unsigned long data)
 		mmc_request_done(host->mmc, mrq);
 }
 
+<<<<<<< HEAD
 static irqreturn_t mvsd_card_detect_irq(int irq, void *dev)
 {
 	struct mvsd_host *host = dev;
@@ -545,6 +609,8 @@ static irqreturn_t mvsd_card_detect_irq(int irq, void *dev)
 	return IRQ_HANDLED;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void mvsd_enable_sdio_irq(struct mmc_host *mmc, int enable)
 {
 	struct mvsd_host *host = mmc_priv(mmc);
@@ -564,6 +630,7 @@ static void mvsd_enable_sdio_irq(struct mmc_host *mmc, int enable)
 	spin_unlock_irqrestore(&host->lock, flags);
 }
 
+<<<<<<< HEAD
 static int mvsd_get_ro(struct mmc_host *mmc)
 {
 	struct mvsd_host *host = mmc_priv(mmc);
@@ -578,6 +645,8 @@ static int mvsd_get_ro(struct mmc_host *mmc)
 	return -ENOSYS;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void mvsd_power_up(struct mvsd_host *host)
 {
 	void __iomem *iobase = host->base;
@@ -674,13 +743,29 @@ static void mvsd_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 
 static const struct mmc_host_ops mvsd_ops = {
 	.request		= mvsd_request,
+<<<<<<< HEAD
 	.get_ro			= mvsd_get_ro,
+=======
+	.get_ro			= mmc_gpio_get_ro,
+>>>>>>> refs/remotes/origin/master
 	.set_ios		= mvsd_set_ios,
 	.enable_sdio_irq	= mvsd_enable_sdio_irq,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __init mv_conf_mbus_windows(struct mvsd_host *host,
 					struct mbus_dram_target_info *dram)
+=======
+static void __init
+mv_conf_mbus_windows(struct mvsd_host *host,
+		     const struct mbus_dram_target_info *dram)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+mv_conf_mbus_windows(struct mvsd_host *host,
+		     const struct mbus_dram_target_info *dram)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *iobase = host->base;
 	int i;
@@ -691,7 +776,15 @@ static void __init mv_conf_mbus_windows(struct mvsd_host *host,
 	}
 
 	for (i = 0; i < dram->num_cs; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct mbus_dram_window *cs = dram->cs + i;
+=======
+		const struct mbus_dram_window *cs = dram->cs + i;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const struct mbus_dram_window *cs = dram->cs + i;
+>>>>>>> refs/remotes/origin/master
 		writel(((cs->size - 1) & 0xffff0000) |
 		       (cs->mbus_attr << 8) |
 		       (dram->mbus_dram_target_id << 4) | 1,
@@ -700,11 +793,16 @@ static void __init mv_conf_mbus_windows(struct mvsd_host *host,
 	}
 }
 
+<<<<<<< HEAD
 static int __init mvsd_probe(struct platform_device *pdev)
 {
 	struct mmc_host *mmc = NULL;
 	struct mvsd_host *host = NULL;
 	const struct mvsdio_platform_data *mvsd_data;
+<<<<<<< HEAD
+=======
+	const struct mbus_dram_target_info *dram;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct resource *r;
 	int ret, irq;
 
@@ -718,6 +816,23 @@ static int __init mvsd_probe(struct platform_device *pdev)
 	if (!r)
 		return -EBUSY;
 
+=======
+static int mvsd_probe(struct platform_device *pdev)
+{
+	struct device_node *np = pdev->dev.of_node;
+	struct mmc_host *mmc = NULL;
+	struct mvsd_host *host = NULL;
+	const struct mbus_dram_target_info *dram;
+	struct resource *r;
+	int ret, irq;
+	struct pinctrl *pinctrl;
+
+	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	irq = platform_get_irq(pdev, 0);
+	if (!r || irq < 0)
+		return -ENXIO;
+
+>>>>>>> refs/remotes/origin/master
 	mmc = mmc_alloc_host(sizeof(struct mvsd_host), &pdev->dev);
 	if (!mmc) {
 		ret = -ENOMEM;
@@ -727,17 +842,41 @@ static int __init mvsd_probe(struct platform_device *pdev)
 	host = mmc_priv(mmc);
 	host->mmc = mmc;
 	host->dev = &pdev->dev;
+<<<<<<< HEAD
 	host->res = r;
 	host->base_clock = mvsd_data->clock / 2;
+=======
+
+	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+	if (IS_ERR(pinctrl))
+		dev_warn(&pdev->dev, "no pins associated\n");
+
+	/*
+	 * Some non-DT platforms do not pass a clock, and the clock
+	 * frequency is passed through platform_data. On DT platforms,
+	 * a clock must always be passed, even if there is no gatable
+	 * clock associated to the SDIO interface (it can simply be a
+	 * fixed rate clock).
+	 */
+	host->clk = devm_clk_get(&pdev->dev, NULL);
+	if (!IS_ERR(host->clk))
+		clk_prepare_enable(host->clk);
+>>>>>>> refs/remotes/origin/master
 
 	mmc->ops = &mvsd_ops;
 
 	mmc->ocr_avail = MMC_VDD_32_33 | MMC_VDD_33_34;
+<<<<<<< HEAD
 	mmc->caps = MMC_CAP_4_BIT_DATA | MMC_CAP_SDIO_IRQ |
 		    MMC_CAP_SD_HIGHSPEED | MMC_CAP_MMC_HIGHSPEED;
 
 	mmc->f_min = DIV_ROUND_UP(host->base_clock, MVSD_BASE_DIV_MAX);
 	mmc->f_max = maxfreq;
+=======
+
+	mmc->f_min = DIV_ROUND_UP(host->base_clock, MVSD_BASE_DIV_MAX);
+	mmc->f_max = MVSD_CLOCKRATE_MAX;
+>>>>>>> refs/remotes/origin/master
 
 	mmc->max_blk_size = 2048;
 	mmc->max_blk_count = 65535;
@@ -746,23 +885,84 @@ static int __init mvsd_probe(struct platform_device *pdev)
 	mmc->max_seg_size = mmc->max_blk_size * mmc->max_blk_count;
 	mmc->max_req_size = mmc->max_blk_size * mmc->max_blk_count;
 
+<<<<<<< HEAD
 	spin_lock_init(&host->lock);
 
 	host->base = ioremap(r->start, SZ_4K);
 	if (!host->base) {
 		ret = -ENOMEM;
+=======
+	if (np) {
+		if (IS_ERR(host->clk)) {
+			dev_err(&pdev->dev, "DT platforms must have a clock associated\n");
+			ret = -EINVAL;
+			goto out;
+		}
+
+		host->base_clock = clk_get_rate(host->clk) / 2;
+		ret = mmc_of_parse(mmc);
+		if (ret < 0)
+			goto out;
+	} else {
+		const struct mvsdio_platform_data *mvsd_data;
+
+		mvsd_data = pdev->dev.platform_data;
+		if (!mvsd_data) {
+			ret = -ENXIO;
+			goto out;
+		}
+		mmc->caps = MMC_CAP_4_BIT_DATA | MMC_CAP_SDIO_IRQ |
+			    MMC_CAP_SD_HIGHSPEED | MMC_CAP_MMC_HIGHSPEED;
+		host->base_clock = mvsd_data->clock / 2;
+		/* GPIO 0 regarded as invalid for backward compatibility */
+		if (mvsd_data->gpio_card_detect &&
+		    gpio_is_valid(mvsd_data->gpio_card_detect)) {
+			ret = mmc_gpio_request_cd(mmc,
+						  mvsd_data->gpio_card_detect,
+						  0);
+			if (ret)
+				goto out;
+		} else {
+			mmc->caps |= MMC_CAP_NEEDS_POLL;
+		}
+
+		if (mvsd_data->gpio_write_protect &&
+		    gpio_is_valid(mvsd_data->gpio_write_protect))
+			mmc_gpio_request_ro(mmc, mvsd_data->gpio_write_protect);
+	}
+
+	if (maxfreq)
+		mmc->f_max = maxfreq;
+
+	spin_lock_init(&host->lock);
+
+	host->base = devm_ioremap_resource(&pdev->dev, r);
+	if (IS_ERR(host->base)) {
+		ret = PTR_ERR(host->base);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	/* (Re-)program MBUS remapping windows if we are asked to. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (mvsd_data->dram != NULL)
 		mv_conf_mbus_windows(host, mvsd_data->dram);
+=======
+	dram = mv_mbus_dram_info();
+	if (dram)
+		mv_conf_mbus_windows(host, dram);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mvsd_power_down(host);
 
 	ret = request_irq(irq, mvsd_irq, 0, DRIVER_NAME, host);
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: cannot assign irq %d\n", DRIVER_NAME, irq);
+=======
+		pr_err("%s: cannot assign irq %d\n", DRIVER_NAME, irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	} else
 		host->irq = irq;
@@ -794,6 +994,18 @@ static int __init mvsd_probe(struct platform_device *pdev)
 			host->gpio_write_protect =
 				mvsd_data->gpio_write_protect;
 		}
+=======
+	dram = mv_mbus_dram_info();
+	if (dram)
+		mv_conf_mbus_windows(host, dram);
+
+	mvsd_power_down(host);
+
+	ret = devm_request_irq(&pdev->dev, irq, mvsd_irq, 0, DRIVER_NAME, host);
+	if (ret) {
+		dev_err(&pdev->dev, "cannot assign irq %d\n", irq);
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	setup_timer(&host->timer, mvsd_timeout_timer, (unsigned long)host);
@@ -802,7 +1014,12 @@ static int __init mvsd_probe(struct platform_device *pdev)
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_NOTICE "%s: %s driver initialized, ",
+=======
+	pr_notice("%s: %s driver initialized, ",
+>>>>>>> refs/remotes/origin/cm-10.0
 			   mmc_hostname(mmc), DRIVER_NAME);
 	if (host->gpio_card_detect)
 		printk("using GPIO %d for card detection\n",
@@ -828,10 +1045,28 @@ out:
 		release_resource(r);
 	if (mmc)
 		mmc_free_host(mmc);
+=======
+	if (!(mmc->caps & MMC_CAP_NEEDS_POLL))
+		dev_notice(&pdev->dev, "using GPIO for card detection\n");
+	else
+		dev_notice(&pdev->dev,
+			   "lacking card detect (fall back to polling)\n");
+	return 0;
+
+out:
+	if (mmc) {
+		mmc_gpio_free_cd(mmc);
+		mmc_gpio_free_ro(mmc);
+		if (!IS_ERR(host->clk))
+			clk_disable_unprepare(host->clk);
+		mmc_free_host(mmc);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __exit mvsd_remove(struct platform_device *pdev)
 {
 	struct mmc_host *mmc = platform_get_drvdata(pdev);
@@ -905,6 +1140,43 @@ static void __exit mvsd_exit(void)
 
 module_init(mvsd_init);
 module_exit(mvsd_exit);
+=======
+static int mvsd_remove(struct platform_device *pdev)
+{
+	struct mmc_host *mmc = platform_get_drvdata(pdev);
+
+	struct mvsd_host *host = mmc_priv(mmc);
+
+	mmc_gpio_free_cd(mmc);
+	mmc_gpio_free_ro(mmc);
+	mmc_remove_host(mmc);
+	del_timer_sync(&host->timer);
+	mvsd_power_down(host);
+
+	if (!IS_ERR(host->clk))
+		clk_disable_unprepare(host->clk);
+	mmc_free_host(mmc);
+
+	return 0;
+}
+
+static const struct of_device_id mvsdio_dt_ids[] = {
+	{ .compatible = "marvell,orion-sdio" },
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(of, mvsdio_dt_ids);
+
+static struct platform_driver mvsd_driver = {
+	.probe		= mvsd_probe,
+	.remove		= mvsd_remove,
+	.driver		= {
+		.name	= DRIVER_NAME,
+		.of_match_table = mvsdio_dt_ids,
+	},
+};
+
+module_platform_driver(mvsd_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* maximum card clock frequency (default 50MHz) */
 module_param(maxfreq, int, 0);

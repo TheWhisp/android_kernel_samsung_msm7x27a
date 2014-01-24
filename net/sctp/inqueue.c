@@ -30,17 +30,24 @@
  *
  * Please send any bug reports or fixes you make to the
  * email address(es):
+<<<<<<< HEAD
  *    lksctp developers <lksctp-developers@lists.sourceforge.net>
  *
  * Or submit a bug report through the following website:
  *    http://www.sf.net/projects/lksctp
+=======
+ *    lksctp developers <linux-sctp@vger.kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Written or modified by:
  *    La Monte H.P. Yarroll <piggy@acm.org>
  *    Karl Knutson <karl@athena.chicago.il.us>
+<<<<<<< HEAD
  *
  * Any bugs reported given to us we will try to fix... any fixes shared will
  * be incorporated into the next SCTP release.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
@@ -58,8 +65,11 @@ void sctp_inq_init(struct sctp_inq *queue)
 
 	/* Create a task for delivering data.  */
 	INIT_WORK(&queue->immediate, NULL);
+<<<<<<< HEAD
 
 	queue->malloced = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Release the memory associated with an SCTP inqueue.  */
@@ -80,11 +90,14 @@ void sctp_inq_free(struct sctp_inq *queue)
 		sctp_chunk_free(queue->in_progress);
 		queue->in_progress = NULL;
 	}
+<<<<<<< HEAD
 
 	if (queue->malloced) {
 		/* Dump the master memory segment.  */
 		kfree(queue);
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Put a new packet in an SCTP inqueue.
@@ -104,6 +117,11 @@ void sctp_inq_push(struct sctp_inq *q, struct sctp_chunk *chunk)
 	 * on the BH related data structures.
 	 */
 	list_add_tail(&chunk->list, &q->in_chunk_list);
+<<<<<<< HEAD
+=======
+	if (chunk->asoc)
+		chunk->asoc->stats.ipackets++;
+>>>>>>> refs/remotes/origin/master
 	q->immediate.func(&q->immediate);
 }
 
@@ -224,10 +242,17 @@ struct sctp_chunk *sctp_inq_pop(struct sctp_inq *queue)
 		chunk->end_of_packet = 1;
 	}
 
+<<<<<<< HEAD
 	SCTP_DEBUG_PRINTK("+++sctp_inq_pop+++ chunk %p[%s],"
 			  " length %d, skb->len %d\n",chunk,
 			  sctp_cname(SCTP_ST_CHUNK(chunk->chunk_hdr->type)),
 			  ntohs(chunk->chunk_hdr->length), chunk->skb->len);
+=======
+	pr_debug("+++sctp_inq_pop+++ chunk:%p[%s], length:%d, skb->len:%d\n",
+		 chunk, sctp_cname(SCTP_ST_CHUNK(chunk->chunk_hdr->type)),
+		 ntohs(chunk->chunk_hdr->length), chunk->skb->len);
+
+>>>>>>> refs/remotes/origin/master
 	return chunk;
 }
 
@@ -243,4 +268,7 @@ void sctp_inq_set_th_handler(struct sctp_inq *q, work_func_t callback)
 {
 	INIT_WORK(&q->immediate, callback);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

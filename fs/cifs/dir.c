@@ -32,6 +32,10 @@
 #include "cifsproto.h"
 #include "cifs_debug.h"
 #include "cifs_fs_sb.h"
+<<<<<<< HEAD
+=======
+#include "cifs_unicode.h"
+>>>>>>> refs/remotes/origin/master
 
 static void
 renew_parental_timestamps(struct dentry *direntry)
@@ -44,6 +48,41 @@ renew_parental_timestamps(struct dentry *direntry)
 	} while (!IS_ROOT(direntry));
 }
 
+<<<<<<< HEAD
+=======
+char *
+cifs_build_path_to_root(struct smb_vol *vol, struct cifs_sb_info *cifs_sb,
+			struct cifs_tcon *tcon)
+{
+	int pplen = vol->prepath ? strlen(vol->prepath) + 1 : 0;
+	int dfsplen;
+	char *full_path = NULL;
+
+	/* if no prefix path, simply set path to the root of share to "" */
+	if (pplen == 0) {
+		full_path = kzalloc(1, GFP_KERNEL);
+		return full_path;
+	}
+
+	if (tcon->Flags & SMB_SHARE_IS_IN_DFS)
+		dfsplen = strnlen(tcon->treeName, MAX_TREE_SIZE + 1);
+	else
+		dfsplen = 0;
+
+	full_path = kmalloc(dfsplen + pplen + 1, GFP_KERNEL);
+	if (full_path == NULL)
+		return full_path;
+
+	if (dfsplen)
+		strncpy(full_path, tcon->treeName, dfsplen);
+	full_path[dfsplen] = CIFS_DIR_SEP(cifs_sb);
+	strncpy(full_path + dfsplen + 1, vol->prepath, pplen);
+	convert_delimiter(full_path, CIFS_DIR_SEP(cifs_sb));
+	full_path[dfsplen + pplen] = 0; /* add trailing null */
+	return full_path;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Note: caller must free return buffer */
 char *
 build_path_from_dentry(struct dentry *direntry)
@@ -57,11 +96,17 @@ build_path_from_dentry(struct dentry *direntry)
 	struct cifs_tcon *tcon = cifs_sb_master_tcon(cifs_sb);
 	unsigned seq;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (direntry == NULL)
 		return NULL;  /* not much we can do if dentry is freed and
 		we need to reopen the file after it was closed implicitly
 		when the server crashed */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dirsep = CIFS_DIR_SEP(cifs_sb);
 	if (tcon->Flags & SMB_SHARE_IS_IN_DFS)
 		dfsplen = strnlen(tcon->treeName, MAX_TREE_SIZE + 1);
@@ -75,7 +120,11 @@ cifs_bp_rename_retry:
 		namelen += (1 + temp->d_name.len);
 		temp = temp->d_parent;
 		if (temp == NULL) {
+<<<<<<< HEAD
 			cERROR(1, "corrupt dentry");
+=======
+			cifs_dbg(VFS, "corrupt dentry\n");
+>>>>>>> refs/remotes/origin/master
 			rcu_read_unlock();
 			return NULL;
 		}
@@ -97,12 +146,20 @@ cifs_bp_rename_retry:
 			full_path[namelen] = dirsep;
 			strncpy(full_path + namelen + 1, temp->d_name.name,
 				temp->d_name.len);
+<<<<<<< HEAD
 			cFYI(0, "name: %s", full_path + namelen);
+=======
+			cifs_dbg(FYI, "name: %s\n", full_path + namelen);
+>>>>>>> refs/remotes/origin/master
 		}
 		spin_unlock(&temp->d_lock);
 		temp = temp->d_parent;
 		if (temp == NULL) {
+<<<<<<< HEAD
 			cERROR(1, "corrupt dentry");
+=======
+			cifs_dbg(VFS, "corrupt dentry\n");
+>>>>>>> refs/remotes/origin/master
 			rcu_read_unlock();
 			kfree(full_path);
 			return NULL;
@@ -110,8 +167,13 @@ cifs_bp_rename_retry:
 	}
 	rcu_read_unlock();
 	if (namelen != dfsplen || read_seqretry(&rename_lock, seq)) {
+<<<<<<< HEAD
 		cFYI(1, "did not end path lookup where expected. namelen=%d "
 			"dfsplen=%d", namelen, dfsplen);
+=======
+		cifs_dbg(FYI, "did not end path lookup where expected. namelen=%ddfsplen=%d\n",
+			 namelen, dfsplen);
+>>>>>>> refs/remotes/origin/master
 		/* presumably this is only possible if racing with a rename
 		of one of the parent directories  (we can not lock the dentries
 		above us to prevent this, but retrying should be harmless) */
@@ -138,10 +200,15 @@ cifs_bp_rename_retry:
 	return full_path;
 }
 
+<<<<<<< HEAD
 /* Inode operations in similar order to how they appear in Linux file fs.h */
 
 int
+<<<<<<< HEAD
 cifs_create(struct inode *inode, struct dentry *direntry, int mode,
+=======
+cifs_create(struct inode *inode, struct dentry *direntry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct nameidata *nd)
 {
 	int rc = -ENOENT;
@@ -176,17 +243,71 @@ cifs_create(struct inode *inode, struct dentry *direntry, int mode,
 	}
 	tcon = tlink_tcon(tlink);
 
+<<<<<<< HEAD
 	if (oplockEnabled)
 		oplock = REQ_OPLOCK;
 
 	if (nd && (nd->flags & LOOKUP_OPEN))
+=======
+	if (tcon->ses->server->oplocks)
+		oplock = REQ_OPLOCK;
+
+	if (nd)
+>>>>>>> refs/remotes/origin/cm-10.0
 		oflags = nd->intent.open.file->f_flags;
 	else
 		oflags = O_RDONLY | O_CREAT;
+=======
+/*
+ * Don't allow the separator character in a path component.
+ * The VFS will not allow "/", but "\" is allowed by posix.
+ */
+static int
+check_name(struct dentry *direntry)
+{
+	struct cifs_sb_info *cifs_sb = CIFS_SB(direntry->d_sb);
+	int i;
+
+	if (!(cifs_sb->mnt_cifs_flags & CIFS_MOUNT_POSIX_PATHS)) {
+		for (i = 0; i < direntry->d_name.len; i++) {
+			if (direntry->d_name.name[i] == '\\') {
+				cifs_dbg(FYI, "Invalid file name\n");
+				return -EINVAL;
+			}
+		}
+	}
+	return 0;
+}
+
+
+/* Inode operations in similar order to how they appear in Linux file fs.h */
+
+static int
+cifs_do_create(struct inode *inode, struct dentry *direntry, unsigned int xid,
+	       struct tcon_link *tlink, unsigned oflags, umode_t mode,
+	       __u32 *oplock, struct cifs_fid *fid)
+{
+	int rc = -ENOENT;
+	int create_options = CREATE_NOT_DIR;
+	int desired_access;
+	struct cifs_sb_info *cifs_sb = CIFS_SB(inode->i_sb);
+	struct cifs_tcon *tcon = tlink_tcon(tlink);
+	char *full_path = NULL;
+	FILE_ALL_INFO *buf = NULL;
+	struct inode *newinode = NULL;
+	int disposition;
+	struct TCP_Server_Info *server = tcon->ses->server;
+	struct cifs_open_parms oparms;
+
+	*oplock = 0;
+	if (tcon->ses->server->oplocks)
+		*oplock = REQ_OPLOCK;
+>>>>>>> refs/remotes/origin/master
 
 	full_path = build_path_from_dentry(direntry);
 	if (full_path == NULL) {
 		rc = -ENOMEM;
+<<<<<<< HEAD
 		goto cifs_create_out;
 	}
 
@@ -214,7 +335,11 @@ cifs_create(struct inode *inode, struct dentry *direntry, int mode,
 		   which should be rare for path not covered on files) */
 	}
 
+<<<<<<< HEAD
 	if (nd && (nd->flags & LOOKUP_OPEN)) {
+=======
+	if (nd) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* if the file is going to stay open, then we
 		   need to set the desired access properly */
 		desiredAccess = 0;
@@ -235,11 +360,107 @@ cifs_create(struct inode *inode, struct dentry *direntry, int mode,
 
 	/* BB add processing to set equivalent of mode - e.g. via CreateX with
 	   ACLs */
+=======
+		goto out;
+	}
+
+	if (tcon->unix_ext && cap_unix(tcon->ses) && !tcon->broken_posix_open &&
+	    (CIFS_UNIX_POSIX_PATH_OPS_CAP &
+			le64_to_cpu(tcon->fsUnixInfo.Capability))) {
+		rc = cifs_posix_open(full_path, &newinode, inode->i_sb, mode,
+				     oflags, oplock, &fid->netfid, xid);
+		switch (rc) {
+		case 0:
+			if (newinode == NULL) {
+				/* query inode info */
+				goto cifs_create_get_file_info;
+			}
+
+			if (!S_ISREG(newinode->i_mode)) {
+				/*
+				 * The server may allow us to open things like
+				 * FIFOs, but the client isn't set up to deal
+				 * with that. If it's not a regular file, just
+				 * close it and proceed as if it were a normal
+				 * lookup.
+				 */
+				CIFSSMBClose(xid, tcon, fid->netfid);
+				goto cifs_create_get_file_info;
+			}
+			/* success, no need to query */
+			goto cifs_create_set_dentry;
+
+		case -ENOENT:
+			goto cifs_create_get_file_info;
+
+		case -EIO:
+		case -EINVAL:
+			/*
+			 * EIO could indicate that (posix open) operation is not
+			 * supported, despite what server claimed in capability
+			 * negotiation.
+			 *
+			 * POSIX open in samba versions 3.3.1 and earlier could
+			 * incorrectly fail with invalid parameter.
+			 */
+			tcon->broken_posix_open = true;
+			break;
+
+		case -EREMOTE:
+		case -EOPNOTSUPP:
+			/*
+			 * EREMOTE indicates DFS junction, which is not handled
+			 * in posix open.  If either that or op not supported
+			 * returned, follow the normal lookup.
+			 */
+			break;
+
+		default:
+			goto out;
+		}
+		/*
+		 * fallthrough to retry, using older open call, this is case
+		 * where server does not support this SMB level, and falsely
+		 * claims capability (also get here for DFS case which should be
+		 * rare for path not covered on files)
+		 */
+	}
+
+	desired_access = 0;
+	if (OPEN_FMODE(oflags) & FMODE_READ)
+		desired_access |= GENERIC_READ; /* is this too little? */
+	if (OPEN_FMODE(oflags) & FMODE_WRITE)
+		desired_access |= GENERIC_WRITE;
+
+	disposition = FILE_OVERWRITE_IF;
+	if ((oflags & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL))
+		disposition = FILE_CREATE;
+	else if ((oflags & (O_CREAT | O_TRUNC)) == (O_CREAT | O_TRUNC))
+		disposition = FILE_OVERWRITE_IF;
+	else if ((oflags & O_CREAT) == O_CREAT)
+		disposition = FILE_OPEN_IF;
+	else
+		cifs_dbg(FYI, "Create flag not set in create function\n");
+
+	/*
+	 * BB add processing to set equivalent of mode - e.g. via CreateX with
+	 * ACLs
+	 */
+
+	if (!server->ops->open) {
+		rc = -ENOSYS;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	buf = kmalloc(sizeof(FILE_ALL_INFO), GFP_KERNEL);
 	if (buf == NULL) {
 		rc = -ENOMEM;
+<<<<<<< HEAD
 		goto cifs_create_out;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -249,6 +470,13 @@ cifs_create(struct inode *inode, struct dentry *direntry, int mode,
 	if (!tcon->unix_ext && (mode & S_IWUGO) == 0)
 		create_options |= CREATE_OPTION_READONLY;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (backup_cred(cifs_sb))
+		create_options |= CREATE_OPEN_BACKUP_INTENT;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (tcon->ses->capabilities & CAP_NT_SMBS)
 		rc = CIFSSMBOpen(xid, tcon, full_path, disposition,
 			 desiredAccess, create_options,
@@ -272,6 +500,31 @@ cifs_create(struct inode *inode, struct dentry *direntry, int mode,
 	/* If Open reported that we actually created a file
 	   then we now have to set the mode if possible */
 	if ((tcon->unix_ext) && (oplock & CIFS_CREATE_ACTION)) {
+=======
+	if (backup_cred(cifs_sb))
+		create_options |= CREATE_OPEN_BACKUP_INTENT;
+
+	oparms.tcon = tcon;
+	oparms.cifs_sb = cifs_sb;
+	oparms.desired_access = desired_access;
+	oparms.create_options = create_options;
+	oparms.disposition = disposition;
+	oparms.path = full_path;
+	oparms.fid = fid;
+	oparms.reconnect = false;
+
+	rc = server->ops->open(xid, &oparms, oplock, buf);
+	if (rc) {
+		cifs_dbg(FYI, "cifs_create returned 0x%x\n", rc);
+		goto out;
+	}
+
+	/*
+	 * If Open reported that we actually created a file then we now have to
+	 * set the mode if possible.
+	 */
+	if ((tcon->unix_ext) && (*oplock & CIFS_CREATE_ACTION)) {
+>>>>>>> refs/remotes/origin/master
 		struct cifs_unix_set_info_args args = {
 				.mode	= mode,
 				.ctime	= NO_CHANGE_64,
@@ -281,6 +534,7 @@ cifs_create(struct inode *inode, struct dentry *direntry, int mode,
 		};
 
 		if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_SET_UID) {
+<<<<<<< HEAD
 			args.uid = (__u64) current_fsuid();
 			if (inode->i_mode & S_ISGID)
 				args.gid = (__u64) inode->i_gid;
@@ -295,6 +549,24 @@ cifs_create(struct inode *inode, struct dentry *direntry, int mode,
 	} else {
 		/* BB implement mode setting via Windows security
 		   descriptors e.g. */
+=======
+			args.uid = current_fsuid();
+			if (inode->i_mode & S_ISGID)
+				args.gid = inode->i_gid;
+			else
+				args.gid = current_fsgid();
+		} else {
+			args.uid = INVALID_UID; /* no change */
+			args.gid = INVALID_GID; /* no change */
+		}
+		CIFSSMBUnixSetFileInfo(xid, tcon, &args, fid->netfid,
+				       current->tgid);
+	} else {
+		/*
+		 * BB implement mode setting via Windows security
+		 * descriptors e.g.
+		 */
+>>>>>>> refs/remotes/origin/master
 		/* CIFSSMBWinSetPerms(xid,tcon,path,mode,-1,-1,nls);*/
 
 		/* Could set r/o dos attribute if mode & 0222 == 0 */
@@ -303,6 +575,7 @@ cifs_create(struct inode *inode, struct dentry *direntry, int mode,
 cifs_create_get_file_info:
 	/* server might mask mode so we have to query for it */
 	if (tcon->unix_ext)
+<<<<<<< HEAD
 		rc = cifs_get_inode_info_unix(&newinode, full_path,
 					      inode->i_sb, xid);
 	else {
@@ -312,6 +585,19 @@ cifs_create_get_file_info:
 			if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_DYNPERM)
 				newinode->i_mode = mode;
 			if ((oplock & CIFS_CREATE_ACTION) &&
+=======
+		rc = cifs_get_inode_info_unix(&newinode, full_path, inode->i_sb,
+					      xid);
+	else {
+		rc = cifs_get_inode_info(&newinode, full_path, buf, inode->i_sb,
+					 xid, &fid->netfid);
+		if (newinode) {
+			if (server->ops->set_lease_key)
+				server->ops->set_lease_key(newinode, fid);
+			if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_DYNPERM)
+				newinode->i_mode = mode;
+			if ((*oplock & CIFS_CREATE_ACTION) &&
+>>>>>>> refs/remotes/origin/master
 			    (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_SET_UID)) {
 				newinode->i_uid = current_fsuid();
 				if (inode->i_mode & S_ISGID)
@@ -323,12 +609,17 @@ cifs_create_get_file_info:
 	}
 
 cifs_create_set_dentry:
+<<<<<<< HEAD
 	if (rc == 0)
 		d_instantiate(direntry, newinode);
 	else
 		cFYI(1, "Create worked, get_inode_info failed rc = %d", rc);
 
+<<<<<<< HEAD
 	if (newinode && nd && (nd->flags & LOOKUP_OPEN)) {
+=======
+	if (newinode && nd) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct cifsFileInfo *pfile_info;
 		struct file *filp;
 
@@ -357,11 +648,188 @@ cifs_create_out:
 	return rc;
 }
 
+<<<<<<< HEAD
 int cifs_mknod(struct inode *inode, struct dentry *direntry, int mode,
+=======
+int cifs_mknod(struct inode *inode, struct dentry *direntry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_t device_number)
 {
 	int rc = -EPERM;
 	int xid;
+<<<<<<< HEAD
+=======
+	int create_options = CREATE_NOT_DIR | CREATE_OPTION_SPECIAL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rc != 0) {
+		cifs_dbg(FYI, "Create worked, get_inode_info failed rc = %d\n",
+			 rc);
+		if (server->ops->close)
+			server->ops->close(xid, tcon, fid);
+		goto out;
+	}
+	d_drop(direntry);
+	d_add(direntry, newinode);
+
+out:
+	kfree(buf);
+	kfree(full_path);
+	return rc;
+}
+
+int
+cifs_atomic_open(struct inode *inode, struct dentry *direntry,
+		 struct file *file, unsigned oflags, umode_t mode,
+		 int *opened)
+{
+	int rc;
+	unsigned int xid;
+	struct tcon_link *tlink;
+	struct cifs_tcon *tcon;
+	struct TCP_Server_Info *server;
+	struct cifs_fid fid;
+	struct cifs_pending_open open;
+	__u32 oplock;
+	struct cifsFileInfo *file_info;
+
+	/*
+	 * Posix open is only called (at lookup time) for file create now. For
+	 * opens (rather than creates), because we do not know if it is a file
+	 * or directory yet, and current Samba no longer allows us to do posix
+	 * open on dirs, we could end up wasting an open call on what turns out
+	 * to be a dir. For file opens, we wait to call posix open till
+	 * cifs_open.  It could be added to atomic_open in the future but the
+	 * performance tradeoff of the extra network request when EISDIR or
+	 * EACCES is returned would have to be weighed against the 50% reduction
+	 * in network traffic in the other paths.
+	 */
+	if (!(oflags & O_CREAT)) {
+		struct dentry *res;
+
+		/*
+		 * Check for hashed negative dentry. We have already revalidated
+		 * the dentry and it is fine. No need to perform another lookup.
+		 */
+		if (!d_unhashed(direntry))
+			return -ENOENT;
+
+		res = cifs_lookup(inode, direntry, 0);
+		if (IS_ERR(res))
+			return PTR_ERR(res);
+
+		return finish_no_open(file, res);
+	}
+
+	rc = check_name(direntry);
+	if (rc)
+		return rc;
+
+	xid = get_xid();
+
+	cifs_dbg(FYI, "parent inode = 0x%p name is: %s and dentry = 0x%p\n",
+		 inode, direntry->d_name.name, direntry);
+
+	tlink = cifs_sb_tlink(CIFS_SB(inode->i_sb));
+	if (IS_ERR(tlink)) {
+		rc = PTR_ERR(tlink);
+		goto out_free_xid;
+	}
+
+	tcon = tlink_tcon(tlink);
+	server = tcon->ses->server;
+
+	if (server->ops->new_lease_key)
+		server->ops->new_lease_key(&fid);
+
+	cifs_add_pending_open(&fid, tlink, &open);
+
+	rc = cifs_do_create(inode, direntry, xid, tlink, oflags, mode,
+			    &oplock, &fid);
+
+	if (rc) {
+		cifs_del_pending_open(&open);
+		goto out;
+	}
+
+	if ((oflags & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL))
+		*opened |= FILE_CREATED;
+
+	rc = finish_open(file, direntry, generic_file_open, opened);
+	if (rc) {
+		if (server->ops->close)
+			server->ops->close(xid, tcon, &fid);
+		cifs_del_pending_open(&open);
+		goto out;
+	}
+
+	file_info = cifs_new_fileinfo(&fid, file, tlink, oplock);
+	if (file_info == NULL) {
+		if (server->ops->close)
+			server->ops->close(xid, tcon, &fid);
+		cifs_del_pending_open(&open);
+		fput(file);
+		rc = -ENOMEM;
+	}
+
+out:
+	cifs_put_tlink(tlink);
+out_free_xid:
+	free_xid(xid);
+	return rc;
+}
+
+int cifs_create(struct inode *inode, struct dentry *direntry, umode_t mode,
+		bool excl)
+{
+	int rc;
+	unsigned int xid = get_xid();
+	/*
+	 * BB below access is probably too much for mknod to request
+	 *    but we have to do query and setpathinfo so requesting
+	 *    less could fail (unless we want to request getatr and setatr
+	 *    permissions (only).  At least for POSIX we do not have to
+	 *    request so much.
+	 */
+	unsigned oflags = O_EXCL | O_CREAT | O_RDWR;
+	struct tcon_link *tlink;
+	struct cifs_tcon *tcon;
+	struct TCP_Server_Info *server;
+	struct cifs_fid fid;
+	__u32 oplock;
+
+	cifs_dbg(FYI, "cifs_create parent inode = 0x%p name is: %s and dentry = 0x%p\n",
+		 inode, direntry->d_name.name, direntry);
+
+	tlink = cifs_sb_tlink(CIFS_SB(inode->i_sb));
+	rc = PTR_ERR(tlink);
+	if (IS_ERR(tlink))
+		goto out_free_xid;
+
+	tcon = tlink_tcon(tlink);
+	server = tcon->ses->server;
+
+	if (server->ops->new_lease_key)
+		server->ops->new_lease_key(&fid);
+
+	rc = cifs_do_create(inode, direntry, xid, tlink, oflags, mode,
+			    &oplock, &fid);
+	if (!rc && server->ops->close)
+		server->ops->close(xid, tcon, &fid);
+
+	cifs_put_tlink(tlink);
+out_free_xid:
+	free_xid(xid);
+	return rc;
+}
+
+int cifs_mknod(struct inode *inode, struct dentry *direntry, umode_t mode,
+		dev_t device_number)
+{
+	int rc = -EPERM;
+	unsigned int xid;
+	int create_options = CREATE_NOT_DIR | CREATE_OPTION_SPECIAL;
+>>>>>>> refs/remotes/origin/master
 	struct cifs_sb_info *cifs_sb;
 	struct tcon_link *tlink;
 	struct cifs_tcon *pTcon;
@@ -384,7 +852,11 @@ int cifs_mknod(struct inode *inode, struct dentry *direntry, int mode,
 
 	pTcon = tlink_tcon(tlink);
 
+<<<<<<< HEAD
 	xid = GetXid();
+=======
+	xid = get_xid();
+>>>>>>> refs/remotes/origin/master
 
 	full_path = build_path_from_dentry(direntry);
 	if (full_path == NULL) {
@@ -401,11 +873,19 @@ int cifs_mknod(struct inode *inode, struct dentry *direntry, int mode,
 			.device	= device_number,
 		};
 		if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_SET_UID) {
+<<<<<<< HEAD
 			args.uid = (__u64) current_fsuid();
 			args.gid = (__u64) current_fsgid();
 		} else {
 			args.uid = NO_CHANGE_64;
 			args.gid = NO_CHANGE_64;
+=======
+			args.uid = current_fsuid();
+			args.gid = current_fsgid();
+		} else {
+			args.uid = INVALID_UID; /* no change */
+			args.gid = INVALID_GID; /* no change */
+>>>>>>> refs/remotes/origin/master
 		}
 		rc = CIFSSMBUnixSetPathInfo(xid, pTcon, full_path, &args,
 					    cifs_sb->local_nls,
@@ -426,19 +906,41 @@ int cifs_mknod(struct inode *inode, struct dentry *direntry, int mode,
 		goto mknod_out;
 
 
+<<<<<<< HEAD
 	cFYI(1, "sfu compat create special file");
+=======
+	cifs_dbg(FYI, "sfu compat create special file\n");
+>>>>>>> refs/remotes/origin/master
 
 	buf = kmalloc(sizeof(FILE_ALL_INFO), GFP_KERNEL);
 	if (buf == NULL) {
 		kfree(full_path);
 		rc = -ENOMEM;
+<<<<<<< HEAD
 		FreeXid(xid);
 		return rc;
 	}
 
+<<<<<<< HEAD
 	/* FIXME: would WRITE_OWNER | WRITE_DAC be better? */
 	rc = CIFSSMBOpen(xid, pTcon, full_path, FILE_CREATE,
 			 GENERIC_WRITE, CREATE_NOT_DIR | CREATE_OPTION_SPECIAL,
+=======
+=======
+		free_xid(xid);
+		return rc;
+	}
+
+>>>>>>> refs/remotes/origin/master
+	if (backup_cred(cifs_sb))
+		create_options |= CREATE_OPEN_BACKUP_INTENT;
+
+	rc = CIFSSMBOpen(xid, pTcon, full_path, FILE_CREATE,
+			 GENERIC_WRITE, create_options,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			 &fileHandle, &oplock, buf, cifs_sb->local_nls,
 			 cifs_sb->mnt_cifs_flags & CIFS_MOUNT_MAP_SPECIAL_CHR);
 	if (rc)
@@ -480,18 +982,27 @@ int cifs_mknod(struct inode *inode, struct dentry *direntry, int mode,
 mknod_out:
 	kfree(full_path);
 	kfree(buf);
+<<<<<<< HEAD
 	FreeXid(xid);
+=======
+	free_xid(xid);
+>>>>>>> refs/remotes/origin/master
 	cifs_put_tlink(tlink);
 	return rc;
 }
 
 struct dentry *
 cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
+<<<<<<< HEAD
 	    struct nameidata *nd)
 {
 	int xid;
 	int rc = 0; /* to get around spurious gcc warning, set to zero here */
+<<<<<<< HEAD
 	__u32 oplock = 0;
+=======
+	__u32 oplock;
+>>>>>>> refs/remotes/origin/cm-10.0
 	__u16 fileHandle = 0;
 	bool posix_open = false;
 	struct cifs_sb_info *cifs_sb;
@@ -506,17 +1017,43 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
 
 	cFYI(1, "parent inode = 0x%p name is: %s and dentry = 0x%p",
 	      parent_dir_inode, direntry->d_name.name, direntry);
+=======
+	    unsigned int flags)
+{
+	unsigned int xid;
+	int rc = 0; /* to get around spurious gcc warning, set to zero here */
+	struct cifs_sb_info *cifs_sb;
+	struct tcon_link *tlink;
+	struct cifs_tcon *pTcon;
+	struct inode *newInode = NULL;
+	char *full_path = NULL;
+
+	xid = get_xid();
+
+	cifs_dbg(FYI, "parent inode = 0x%p name is: %s and dentry = 0x%p\n",
+		 parent_dir_inode, direntry->d_name.name, direntry);
+>>>>>>> refs/remotes/origin/master
 
 	/* check whether path exists */
 
 	cifs_sb = CIFS_SB(parent_dir_inode->i_sb);
 	tlink = cifs_sb_tlink(cifs_sb);
 	if (IS_ERR(tlink)) {
+<<<<<<< HEAD
 		FreeXid(xid);
+=======
+		free_xid(xid);
+>>>>>>> refs/remotes/origin/master
 		return (struct dentry *)tlink;
 	}
 	pTcon = tlink_tcon(tlink);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	oplock = pTcon->ses->server->oplocks ? REQ_OPLOCK : 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Don't allow the separator character in a path component.
 	 * The VFS will not allow "/", but "\" is allowed by posix.
@@ -540,6 +1077,11 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
 		rc = 0;
 		goto lookup_out;
 	}
+=======
+	rc = check_name(direntry);
+	if (rc)
+		goto lookup_out;
+>>>>>>> refs/remotes/origin/master
 
 	/* can not grab the rename sem here since it would
 	deadlock in the cases (beginning of sys_rename itself)
@@ -551,6 +1093,7 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
 	}
 
 	if (direntry->d_inode != NULL) {
+<<<<<<< HEAD
 		cFYI(1, "non-NULL inode in lookup");
 	} else {
 		cFYI(1, "NULL inode in lookup");
@@ -568,7 +1111,11 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
 	 * reduction in network traffic in the other paths.
 	 */
 	if (pTcon->unix_ext) {
+<<<<<<< HEAD
 		if (nd && !(nd->flags & (LOOKUP_PARENT | LOOKUP_DIRECTORY)) &&
+=======
+		if (nd && !(nd->flags & LOOKUP_DIRECTORY) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 		     (nd->flags & LOOKUP_OPEN) && !pTcon->broken_posix_open &&
 		     (nd->intent.open.file->f_flags & O_CREAT)) {
 			rc = cifs_posix_open(full_path, &newInode,
@@ -631,6 +1178,25 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
 				goto lookup_out;
 			}
 		}
+=======
+		cifs_dbg(FYI, "non-NULL inode in lookup\n");
+	} else {
+		cifs_dbg(FYI, "NULL inode in lookup\n");
+	}
+	cifs_dbg(FYI, "Full path: %s inode = 0x%p\n",
+		 full_path, direntry->d_inode);
+
+	if (pTcon->unix_ext) {
+		rc = cifs_get_inode_info_unix(&newInode, full_path,
+					      parent_dir_inode->i_sb, xid);
+	} else {
+		rc = cifs_get_inode_info(&newInode, full_path, NULL,
+				parent_dir_inode->i_sb, xid, NULL);
+	}
+
+	if ((rc == 0) && (newInode != NULL)) {
+		d_add(direntry, newInode);
+>>>>>>> refs/remotes/origin/master
 		/* since paths are not looked up by component - the parent
 		   directories are presumed to be good here */
 		renew_parental_timestamps(direntry);
@@ -642,7 +1208,11 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
 	/*	if it was once a directory (but how can we tell?) we could do
 		shrink_dcache_parent(direntry); */
 	} else if (rc != -EACCES) {
+<<<<<<< HEAD
 		cERROR(1, "Unexpected lookup error %d", rc);
+=======
+		cifs_dbg(FYI, "Unexpected lookup error %d\n", rc);
+>>>>>>> refs/remotes/origin/master
 		/* We special case check for Access Denied - since that
 		is a common return code */
 	}
@@ -650,28 +1220,68 @@ cifs_lookup(struct inode *parent_dir_inode, struct dentry *direntry,
 lookup_out:
 	kfree(full_path);
 	cifs_put_tlink(tlink);
+<<<<<<< HEAD
 	FreeXid(xid);
+=======
+	free_xid(xid);
+>>>>>>> refs/remotes/origin/master
 	return ERR_PTR(rc);
 }
 
 static int
+<<<<<<< HEAD
 cifs_d_revalidate(struct dentry *direntry, struct nameidata *nd)
 {
 	if (nd && (nd->flags & LOOKUP_RCU))
+=======
+cifs_d_revalidate(struct dentry *direntry, unsigned int flags)
+{
+	if (flags & LOOKUP_RCU)
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 
 	if (direntry->d_inode) {
 		if (cifs_revalidate_dentry(direntry))
 			return 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		else
 			return 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		else {
+			/*
+			 * If the inode wasn't known to be a dfs entry when
+			 * the dentry was instantiated, such as when created
+			 * via ->readdir(), it needs to be set now since the
+			 * attributes will have been updated by
+			 * cifs_revalidate_dentry().
+			 */
+			if (IS_AUTOMOUNT(direntry->d_inode) &&
+			   !(direntry->d_flags & DCACHE_NEED_AUTOMOUNT)) {
+				spin_lock(&direntry->d_lock);
+				direntry->d_flags |= DCACHE_NEED_AUTOMOUNT;
+				spin_unlock(&direntry->d_lock);
+			}
+
+			return 1;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
 	 * This may be nfsd (or something), anyway, we can't see the
 	 * intent of this. So, since this can be for creation, drop it.
 	 */
+<<<<<<< HEAD
 	if (!nd)
+=======
+	if (!flags)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/*
@@ -679,10 +1289,20 @@ cifs_d_revalidate(struct dentry *direntry, struct nameidata *nd)
 	 * case sensitive name which is specified by user if this is
 	 * for creation.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(nd->flags & (LOOKUP_CONTINUE | LOOKUP_PARENT))) {
 		if (nd->flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET))
 			return 0;
 	}
+=======
+	if (nd->flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET))
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (time_after(jiffies, direntry->d_time + HZ) || !lookupCacheEnabled)
 		return 0;
@@ -694,7 +1314,11 @@ cifs_d_revalidate(struct dentry *direntry, struct nameidata *nd)
 {
 	int rc = 0;
 
+<<<<<<< HEAD
 	cFYI(1, "In cifs d_delete, name = %s", direntry->d_name.name);
+=======
+	cifs_dbg(FYI, "In cifs d_delete, name = %s\n", direntry->d_name.name);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }     */
@@ -705,6 +1329,7 @@ const struct dentry_operations cifs_dentry_ops = {
 /* d_delete:       cifs_d_delete,      */ /* not needed except for debugging */
 };
 
+<<<<<<< HEAD
 static int cifs_ci_hash(const struct dentry *dentry, const struct inode *inode,
 		struct qstr *q)
 {
@@ -716,11 +1341,29 @@ static int cifs_ci_hash(const struct dentry *dentry, const struct inode *inode,
 	for (i = 0; i < q->len; i++)
 		hash = partial_name_hash(nls_tolower(codepage, q->name[i]),
 					 hash);
+=======
+static int cifs_ci_hash(const struct dentry *dentry, struct qstr *q)
+{
+	struct nls_table *codepage = CIFS_SB(dentry->d_sb)->local_nls;
+	unsigned long hash;
+	wchar_t c;
+	int i, charlen;
+
+	hash = init_name_hash();
+	for (i = 0; i < q->len; i += charlen) {
+		charlen = codepage->char2uni(&q->name[i], q->len - i, &c);
+		/* error out if we can't convert the character */
+		if (unlikely(charlen < 0))
+			return charlen;
+		hash = partial_name_hash(cifs_toupper(c), hash);
+	}
+>>>>>>> refs/remotes/origin/master
 	q->hash = end_name_hash(hash);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cifs_ci_compare(const struct dentry *parent,
 		const struct inode *pinode,
 		const struct dentry *dentry, const struct inode *inode,
@@ -732,6 +1375,53 @@ static int cifs_ci_compare(const struct dentry *parent,
 	    (nls_strnicmp(codepage, name->name, str, len) == 0))
 		return 0;
 	return 1;
+=======
+static int cifs_ci_compare(const struct dentry *parent, const struct dentry *dentry,
+		unsigned int len, const char *str, const struct qstr *name)
+{
+	struct nls_table *codepage = CIFS_SB(parent->d_sb)->local_nls;
+	wchar_t c1, c2;
+	int i, l1, l2;
+
+	/*
+	 * We make the assumption here that uppercase characters in the local
+	 * codepage are always the same length as their lowercase counterparts.
+	 *
+	 * If that's ever not the case, then this will fail to match it.
+	 */
+	if (name->len != len)
+		return 1;
+
+	for (i = 0; i < len; i += l1) {
+		/* Convert characters in both strings to UTF-16. */
+		l1 = codepage->char2uni(&str[i], len - i, &c1);
+		l2 = codepage->char2uni(&name->name[i], name->len - i, &c2);
+
+		/*
+		 * If we can't convert either character, just declare it to
+		 * be 1 byte long and compare the original byte.
+		 */
+		if (unlikely(l1 < 0 && l2 < 0)) {
+			if (str[i] != name->name[i])
+				return 1;
+			l1 = 1;
+			continue;
+		}
+
+		/*
+		 * Here, we again ass|u|me that upper/lowercase versions of
+		 * a character are the same length in the local NLS.
+		 */
+		if (l1 != l2)
+			return 1;
+
+		/* Now compare uppercase versions of these characters */
+		if (cifs_toupper(c1) != cifs_toupper(c2))
+			return 1;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 const struct dentry_operations cifs_ci_dentry_ops = {

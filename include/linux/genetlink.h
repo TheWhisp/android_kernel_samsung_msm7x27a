@@ -1,6 +1,7 @@
 #ifndef __LINUX_GENERIC_NETLINK_H
 #define __LINUX_GENERIC_NETLINK_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/netlink.h>
 
@@ -81,11 +82,52 @@ enum {
 #define CTRL_ATTR_MCAST_GRP_MAX (__CTRL_ATTR_MCAST_GRP_MAX - 1)
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/genetlink.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* All generic netlink requests are serialized by a global lock.  */
 extern void genl_lock(void);
 extern void genl_unlock(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PROVE_LOCKING
+=======
+#ifdef CONFIG_LOCKDEP
+>>>>>>> refs/remotes/origin/master
+extern int lockdep_genl_is_held(void);
+#endif
+
+/**
+ * rcu_dereference_genl - rcu_dereference with debug checking
+ * @p: The pointer to read, prior to dereferencing
+ *
+ * Do an rcu_dereference(p), but check caller either holds rcu_read_lock()
+ * or genl mutex. Note : Please prefer genl_dereference() or rcu_dereference()
+ */
+#define rcu_dereference_genl(p)					\
+	rcu_dereference_check(p, lockdep_genl_is_held())
+
+/**
+ * genl_dereference - fetch RCU pointer when updates are prevented by genl mutex
+ * @p: The pointer to read, prior to dereferencing
+ *
+ * Return the value of the specified RCU-protected pointer, but omit
+ * both the smp_read_barrier_depends() and the ACCESS_ONCE(), because
+ * caller holds genl mutex.
+ */
+#define genl_dereference(p)					\
+	rcu_dereference_protected(p, lockdep_genl_is_held())
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __KERNEL__ */
+=======
+
+#define MODULE_ALIAS_GENL_FAMILY(family)\
+ MODULE_ALIAS_NET_PF_PROTO_NAME(PF_NETLINK, NETLINK_GENERIC, "-family-" family)
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __LINUX_GENERIC_NETLINK_H */

@@ -281,6 +281,7 @@ static struct gameport_driver guillemot_drv = {
 	.disconnect	= guillemot_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init guillemot_init(void)
 {
 	return gameport_register_driver(&guillemot_drv);
@@ -293,3 +294,6 @@ static void __exit guillemot_exit(void)
 
 module_init(guillemot_init);
 module_exit(guillemot_exit);
+=======
+module_gameport_driver(guillemot_drv);
+>>>>>>> refs/remotes/origin/master

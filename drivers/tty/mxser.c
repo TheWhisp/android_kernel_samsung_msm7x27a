@@ -39,8 +39,18 @@
 #include <linux/pci.h>
 #include <linux/bitops.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/system.h>
+=======
+#include <linux/ratelimit.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/uaccess.h>
@@ -487,7 +497,11 @@ static void mxser_disable_must_rx_software_flow_control(unsigned long baseio)
 }
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 static int __devinit CheckIsMoxaMust(unsigned long io)
+=======
+static int CheckIsMoxaMust(unsigned long io)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 oldmcr, hwid;
 	int i;
@@ -643,7 +657,11 @@ static int mxser_change_speed(struct tty_struct *tty,
 	int ret = 0;
 	unsigned char status;
 
+<<<<<<< HEAD
 	cflag = tty->termios->c_cflag;
+=======
+	cflag = tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 	if (!info->ioaddr)
 		return ret;
 
@@ -830,7 +848,11 @@ static void mxser_check_modem_status(struct tty_struct *tty,
 			wake_up_interruptible(&port->port.open_wait);
 	}
 
+<<<<<<< HEAD
 	if (port->port.flags & ASYNC_CTS_FLOW) {
+=======
+	if (tty_port_cts_enabled(&port->port)) {
+>>>>>>> refs/remotes/origin/master
 		if (tty->hw_stopped) {
 			if (status & UART_MSR_CTS) {
 				tty->hw_stopped = 0;
@@ -1009,8 +1031,14 @@ static int mxser_open(struct tty_struct *tty, struct file *filp)
 	line = tty->index;
 	if (line == MXSER_PORTS)
 		return 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (line < 0 || line > MXSER_PORTS)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	info = &mxser_boards[line / MXSER_PORTS_PER_BOARD].ports[line % MXSER_PORTS_PER_BOARD];
 	if (!info->ioaddr)
 		return -ENODEV;
@@ -1086,6 +1114,13 @@ static void mxser_close(struct tty_struct *tty, struct file *filp)
 	mutex_lock(&port->mutex);
 	mxser_close_port(port);
 	mxser_flush_buffer(tty);
+<<<<<<< HEAD
+=======
+	if (test_bit(ASYNCB_INITIALIZED, &port->flags)) {
+		if (C_HUPCL(tty))
+			tty_port_lower_dtr_rts(port);
+	}
+>>>>>>> refs/remotes/origin/master
 	mxser_shutdown_port(port);
 	clear_bit(ASYNCB_INITIALIZED, &port->flags);
 	mutex_unlock(&port->mutex);
@@ -1266,7 +1301,11 @@ static int mxser_set_serial_info(struct tty_struct *tty,
 				(new_serial.flags & ASYNC_FLAGS));
 		port->close_delay = new_serial.close_delay * HZ / 100;
 		port->closing_wait = new_serial.closing_wait * HZ / 100;
+<<<<<<< HEAD
 		tty->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+=======
+		port->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 		if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_CUST &&
 				(new_serial.baud_base != info->baud_base ||
 				new_serial.custom_divisor !=
@@ -1490,8 +1529,16 @@ static int mxser_ioctl_special(unsigned int cmd, void __user *argp)
 
 	switch (cmd) {
 	case MOXA_GET_MAJOR:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (printk_ratelimit())
 			printk(KERN_WARNING "mxser: '%s' uses deprecated ioctl "
+=======
+		printk_ratelimited(KERN_WARNING "mxser: '%s' uses deprecated ioctl "
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk_ratelimited(KERN_WARNING "mxser: '%s' uses deprecated ioctl "
+>>>>>>> refs/remotes/origin/master
 					"%x (GET_MAJOR), fix your userspace\n",
 					current->comm, cmd);
 		return put_user(ttymajor, (int __user *)argp);
@@ -1523,10 +1570,17 @@ static int mxser_ioctl_special(unsigned int cmd, void __user *argp)
 				
 				tty = tty_port_tty_get(port);
 
+<<<<<<< HEAD
 				if (!tty || !tty->termios)
 					ms.cflag = ip->normal_termios.c_cflag;
 				else
 					ms.cflag = tty->termios->c_cflag;
+=======
+				if (!tty)
+					ms.cflag = ip->normal_termios.c_cflag;
+				else
+					ms.cflag = tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 				tty_kref_put(tty);
 				spin_lock_irq(&ip->slock);
 				status = inb(ip->ioaddr + UART_MSR);
@@ -1592,13 +1646,22 @@ static int mxser_ioctl_special(unsigned int cmd, void __user *argp)
 
 				tty = tty_port_tty_get(&ip->port);
 
+<<<<<<< HEAD
 				if (!tty || !tty->termios) {
+=======
+				if (!tty) {
+>>>>>>> refs/remotes/origin/master
 					cflag = ip->normal_termios.c_cflag;
 					iflag = ip->normal_termios.c_iflag;
 					me->baudrate[p] = tty_termios_baud_rate(&ip->normal_termios);
 				} else {
+<<<<<<< HEAD
 					cflag = tty->termios->c_cflag;
 					iflag = tty->termios->c_iflag;
+=======
+					cflag = tty->termios.c_cflag;
+					iflag = tty->termios.c_iflag;
+>>>>>>> refs/remotes/origin/master
 					me->baudrate[p] = tty_get_baud_rate(tty);
 				}
 				tty_kref_put(tty);
@@ -1617,8 +1680,17 @@ static int mxser_ioctl_special(unsigned int cmd, void __user *argp)
 				if (ip->type == PORT_16550A)
 					me->fifo[p] = 1;
 
+<<<<<<< HEAD
 				opmode = inb(ip->opmode_ioaddr)>>((p % 4) * 2);
 				opmode &= OP_MODE_MASK;
+=======
+				if (ip->board->chip_flag == MOXA_MUST_MU860_HWID) {
+					opmode = inb(ip->opmode_ioaddr)>>((p % 4) * 2);
+					opmode &= OP_MODE_MASK;
+				} else {
+					opmode = RS232_MODE;
+				}
+>>>>>>> refs/remotes/origin/master
 				me->iftype[p] = opmode;
 				mutex_unlock(&port->mutex);
 			}
@@ -1675,6 +1747,12 @@ static int mxser_ioctl(struct tty_struct *tty,
 		int shiftbit;
 		unsigned char val, mask;
 
+<<<<<<< HEAD
+=======
+		if (info->board->chip_flag != MOXA_MUST_MU860_HWID)
+			return -EFAULT;
+
+>>>>>>> refs/remotes/origin/master
 		p = tty->index % 4;
 		if (cmd == MOXA_SET_OP_MODE) {
 			if (get_user(opmode, (int __user *) argp))
@@ -1856,7 +1934,11 @@ static void mxser_stoprx(struct tty_struct *tty)
 		}
 	}
 
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CRTSCTS) {
+=======
+	if (tty->termios.c_cflag & CRTSCTS) {
+>>>>>>> refs/remotes/origin/master
 		info->MCR &= ~UART_MCR_RTS;
 		outb(info->MCR, info->ioaddr + UART_MCR);
 	}
@@ -1893,7 +1975,11 @@ static void mxser_unthrottle(struct tty_struct *tty)
 		}
 	}
 
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CRTSCTS) {
+=======
+	if (tty->termios.c_cflag & CRTSCTS) {
+>>>>>>> refs/remotes/origin/master
 		info->MCR |= UART_MCR_RTS;
 		outb(info->MCR, info->ioaddr + UART_MCR);
 	}
@@ -1942,14 +2028,22 @@ static void mxser_set_termios(struct tty_struct *tty, struct ktermios *old_termi
 	spin_unlock_irqrestore(&info->slock, flags);
 
 	if ((old_termios->c_cflag & CRTSCTS) &&
+<<<<<<< HEAD
 			!(tty->termios->c_cflag & CRTSCTS)) {
+=======
+			!(tty->termios.c_cflag & CRTSCTS)) {
+>>>>>>> refs/remotes/origin/master
 		tty->hw_stopped = 0;
 		mxser_start(tty);
 	}
 
 	/* Handle sw stopped */
 	if ((old_termios->c_iflag & IXON) &&
+<<<<<<< HEAD
 			!(tty->termios->c_iflag & IXON)) {
+=======
+			!(tty->termios.c_iflag & IXON)) {
+>>>>>>> refs/remotes/origin/master
 		tty->stopped = 0;
 
 		if (info->board->chip_flag) {
@@ -2005,6 +2099,8 @@ static void mxser_wait_until_sent(struct tty_struct *tty, int timeout)
 	 */
 	if (!timeout || timeout > 2 * info->timeout)
 		timeout = 2 * info->timeout;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef SERIAL_DEBUG_RS_WAIT_UNTIL_SENT
 	printk(KERN_DEBUG "In rs_wait_until_sent(%d) check=%lu...",
 		timeout, char_time);
@@ -2015,6 +2111,16 @@ static void mxser_wait_until_sent(struct tty_struct *tty, int timeout)
 #ifdef SERIAL_DEBUG_RS_WAIT_UNTIL_SENT
 		printk("lsr = %d (jiff=%lu)...", lsr, jiffies);
 #endif
+=======
+
+	spin_lock_irqsave(&info->slock, flags);
+	while (!((lsr = inb(info->ioaddr + UART_LSR)) & UART_LSR_TEMT)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	spin_lock_irqsave(&info->slock, flags);
+	while (!((lsr = inb(info->ioaddr + UART_LSR)) & UART_LSR_TEMT)) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&info->slock, flags);
 		schedule_timeout_interruptible(char_time);
 		spin_lock_irqsave(&info->slock, flags);
@@ -2025,10 +2131,16 @@ static void mxser_wait_until_sent(struct tty_struct *tty, int timeout)
 	}
 	spin_unlock_irqrestore(&info->slock, flags);
 	set_current_state(TASK_RUNNING);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef SERIAL_DEBUG_RS_WAIT_UNTIL_SENT
 	printk("lsr = %d (jiff=%lu)...done\n", lsr, jiffies);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2093,7 +2205,11 @@ static void mxser_receive_chars(struct tty_struct *tty,
 		}
 		while (gdl--) {
 			ch = inb(port->ioaddr + UART_RX);
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, ch, 0);
+=======
+			tty_insert_flip_char(&port->port, ch, 0);
+>>>>>>> refs/remotes/origin/master
 			cnt++;
 		}
 		goto end_intr;
@@ -2132,7 +2248,11 @@ intr_old:
 				} else
 					flag = TTY_BREAK;
 			}
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, ch, flag);
+=======
+			tty_insert_flip_char(&port->port, ch, flag);
+>>>>>>> refs/remotes/origin/master
 			cnt++;
 			if (cnt >= recv_room) {
 				if (!port->ldisc_stop_rx)
@@ -2159,7 +2279,11 @@ end_intr:
 	 * recursive locking.
 	 */
 	spin_unlock(&port->slock);
+<<<<<<< HEAD
 	tty_flip_buffer_push(tty);
+=======
+	tty_flip_buffer_push(&port->port);
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&port->slock);
 }
 
@@ -2340,7 +2464,11 @@ static const struct tty_operations mxser_ops = {
 	.get_icount = mxser_get_icount,
 };
 
+<<<<<<< HEAD
 struct tty_port_operations mxser_port_ops = {
+=======
+static struct tty_port_operations mxser_port_ops = {
+>>>>>>> refs/remotes/origin/master
 	.carrier_raised = mxser_carrier_raised,
 	.dtr_rts = mxser_dtr_rts,
 	.activate = mxser_activate,
@@ -2351,6 +2479,7 @@ struct tty_port_operations mxser_port_ops = {
  * The MOXA Smartio/Industio serial driver boot-time initialization code!
  */
 
+<<<<<<< HEAD
 static void mxser_release_ISA_res(struct mxser_board *brd)
 {
 	free_irq(brd->irq, brd);
@@ -2359,6 +2488,40 @@ static void mxser_release_ISA_res(struct mxser_board *brd)
 }
 
 static int __devinit mxser_initbrd(struct mxser_board *brd,
+=======
+static bool allow_overlapping_vector;
+module_param(allow_overlapping_vector, bool, S_IRUGO);
+MODULE_PARM_DESC(allow_overlapping_vector, "whether we allow ISA cards to be configured such that vector overlabs IO ports (default=no)");
+
+static bool mxser_overlapping_vector(struct mxser_board *brd)
+{
+	return allow_overlapping_vector &&
+		brd->vector >= brd->ports[0].ioaddr &&
+		brd->vector < brd->ports[0].ioaddr + 8 * brd->info->nports;
+}
+
+static int mxser_request_vector(struct mxser_board *brd)
+{
+	if (mxser_overlapping_vector(brd))
+		return 0;
+	return request_region(brd->vector, 1, "mxser(vector)") ? 0 : -EIO;
+}
+
+static void mxser_release_vector(struct mxser_board *brd)
+{
+	if (mxser_overlapping_vector(brd))
+		return;
+	release_region(brd->vector, 1);
+}
+
+static void mxser_release_ISA_res(struct mxser_board *brd)
+{
+	release_region(brd->ports[0].ioaddr, 8 * brd->info->nports);
+	mxser_release_vector(brd);
+}
+
+static int mxser_initbrd(struct mxser_board *brd,
+>>>>>>> refs/remotes/origin/master
 		struct pci_dev *pdev)
 {
 	struct mxser_port *info;
@@ -2400,17 +2563,44 @@ static int __devinit mxser_initbrd(struct mxser_board *brd,
 
 	retval = request_irq(brd->irq, mxser_interrupt, IRQF_SHARED, "mxser",
 			brd);
+<<<<<<< HEAD
 	if (retval)
 		printk(KERN_ERR "Board %s: Request irq failed, IRQ (%d) may "
 			"conflict with another device.\n",
 			brd->info->name, brd->irq);
+=======
+	if (retval) {
+		for (i = 0; i < brd->info->nports; i++)
+			tty_port_destroy(&brd->ports[i].port);
+		printk(KERN_ERR "Board %s: Request irq failed, IRQ (%d) may "
+			"conflict with another device.\n",
+			brd->info->name, brd->irq);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __init mxser_get_ISA_conf(int cap, struct mxser_board *brd)
 {
 	int id, i, bits;
+=======
+static void mxser_board_remove(struct mxser_board *brd)
+{
+	unsigned int i;
+
+	for (i = 0; i < brd->info->nports; i++) {
+		tty_unregister_device(mxvar_sdriver, brd->idx + i);
+		tty_port_destroy(&brd->ports[i].port);
+	}
+	free_irq(brd->irq, brd);
+}
+
+static int __init mxser_get_ISA_conf(int cap, struct mxser_board *brd)
+{
+	int id, i, bits, ret;
+>>>>>>> refs/remotes/origin/master
 	unsigned short regs[16], irq;
 	unsigned char scratch, scratch2;
 
@@ -2506,13 +2696,23 @@ static int __init mxser_get_ISA_conf(int cap, struct mxser_board *brd)
 				8 * brd->info->nports - 1);
 		return -EIO;
 	}
+<<<<<<< HEAD
 	if (!request_region(brd->vector, 1, "mxser(vector)")) {
+=======
+
+	ret = mxser_request_vector(brd);
+	if (ret) {
+>>>>>>> refs/remotes/origin/master
 		release_region(brd->ports[0].ioaddr, 8 * brd->info->nports);
 		printk(KERN_ERR "mxser: can't request interrupt vector region: "
 				"0x%.8lx-0x%.8lx\n",
 				brd->ports[0].ioaddr, brd->ports[0].ioaddr +
 				8 * brd->info->nports - 1);
+<<<<<<< HEAD
 		return -EIO;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 	return brd->info->nports;
 
@@ -2521,13 +2721,21 @@ err_irqconflict:
 	return -EIO;
 }
 
+<<<<<<< HEAD
 static int __devinit mxser_probe(struct pci_dev *pdev,
+=======
+static int mxser_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 		const struct pci_device_id *ent)
 {
 #ifdef CONFIG_PCI
 	struct mxser_board *brd;
 	unsigned int i, j;
 	unsigned long ioaddress;
+<<<<<<< HEAD
+=======
+	struct device *tty_dev;
+>>>>>>> refs/remotes/origin/master
 	int retval = -EINVAL;
 
 	for (i = 0; i < MXSER_BOARDS; i++)
@@ -2611,12 +2819,33 @@ static int __devinit mxser_probe(struct pci_dev *pdev,
 	if (retval)
 		goto err_rel3;
 
+<<<<<<< HEAD
 	for (i = 0; i < brd->info->nports; i++)
 		tty_register_device(mxvar_sdriver, brd->idx + i, &pdev->dev);
+=======
+	for (i = 0; i < brd->info->nports; i++) {
+		tty_dev = tty_port_register_device(&brd->ports[i].port,
+				mxvar_sdriver, brd->idx + i, &pdev->dev);
+		if (IS_ERR(tty_dev)) {
+			retval = PTR_ERR(tty_dev);
+			for (; i > 0; i--)
+				tty_unregister_device(mxvar_sdriver,
+					brd->idx + i - 1);
+			goto err_relbrd;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	pci_set_drvdata(pdev, brd);
 
 	return 0;
+<<<<<<< HEAD
+=======
+err_relbrd:
+	for (i = 0; i < brd->info->nports; i++)
+		tty_port_destroy(&brd->ports[i].port);
+	free_irq(brd->irq, brd);
+>>>>>>> refs/remotes/origin/master
 err_rel3:
 	pci_release_region(pdev, 3);
 err_zero:
@@ -2631,6 +2860,7 @@ err:
 #endif
 }
 
+<<<<<<< HEAD
 static void __devexit mxser_remove(struct pci_dev *pdev)
 {
 #ifdef CONFIG_PCI
@@ -2641,6 +2871,15 @@ static void __devexit mxser_remove(struct pci_dev *pdev)
 		tty_unregister_device(mxvar_sdriver, brd->idx + i);
 
 	free_irq(pdev->irq, brd);
+=======
+static void mxser_remove(struct pci_dev *pdev)
+{
+#ifdef CONFIG_PCI
+	struct mxser_board *brd = pci_get_drvdata(pdev);
+
+	mxser_board_remove(brd);
+
+>>>>>>> refs/remotes/origin/master
 	pci_release_region(pdev, 2);
 	pci_release_region(pdev, 3);
 	pci_disable_device(pdev);
@@ -2652,12 +2891,20 @@ static struct pci_driver mxser_driver = {
 	.name = "mxser",
 	.id_table = mxser_pcibrds,
 	.probe = mxser_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(mxser_remove)
+=======
+	.remove = mxser_remove
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init mxser_module_init(void)
 {
 	struct mxser_board *brd;
+<<<<<<< HEAD
+=======
+	struct device *tty_dev;
+>>>>>>> refs/remotes/origin/master
 	unsigned int b, i, m;
 	int retval;
 
@@ -2669,12 +2916,24 @@ static int __init mxser_module_init(void)
 		MXSER_VERSION);
 
 	/* Initialize the tty_driver structure */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mxvar_sdriver->owner = THIS_MODULE;
 	mxvar_sdriver->magic = TTY_DRIVER_MAGIC;
 	mxvar_sdriver->name = "ttyMI";
 	mxvar_sdriver->major = ttymajor;
 	mxvar_sdriver->minor_start = 0;
 	mxvar_sdriver->num = MXSER_PORTS + 1;
+=======
+	mxvar_sdriver->name = "ttyMI";
+	mxvar_sdriver->major = ttymajor;
+	mxvar_sdriver->minor_start = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mxvar_sdriver->name = "ttyMI";
+	mxvar_sdriver->major = ttymajor;
+	mxvar_sdriver->minor_start = 0;
+>>>>>>> refs/remotes/origin/master
 	mxvar_sdriver->type = TTY_DRIVER_TYPE_SERIAL;
 	mxvar_sdriver->subtype = SERIAL_TYPE_NORMAL;
 	mxvar_sdriver->init_termios = tty_std_termios;
@@ -2706,13 +2965,37 @@ static int __init mxser_module_init(void)
 
 		/* mxser_initbrd will hook ISR. */
 		if (mxser_initbrd(brd, NULL) < 0) {
+<<<<<<< HEAD
+=======
+			mxser_release_ISA_res(brd);
+>>>>>>> refs/remotes/origin/master
 			brd->info = NULL;
 			continue;
 		}
 
 		brd->idx = m * MXSER_PORTS_PER_BOARD;
+<<<<<<< HEAD
 		for (i = 0; i < brd->info->nports; i++)
 			tty_register_device(mxvar_sdriver, brd->idx + i, NULL);
+=======
+		for (i = 0; i < brd->info->nports; i++) {
+			tty_dev = tty_port_register_device(&brd->ports[i].port,
+					mxvar_sdriver, brd->idx + i, NULL);
+			if (IS_ERR(tty_dev)) {
+				for (; i > 0; i--)
+					tty_unregister_device(mxvar_sdriver,
+						brd->idx + i - 1);
+				for (i = 0; i < brd->info->nports; i++)
+					tty_port_destroy(&brd->ports[i].port);
+				free_irq(brd->irq, brd);
+				mxser_release_ISA_res(brd);
+				brd->info = NULL;
+				break;
+			}
+		}
+		if (brd->info == NULL)
+			continue;
+>>>>>>> refs/remotes/origin/master
 
 		m++;
 	}
@@ -2736,15 +3019,23 @@ err_put:
 
 static void __exit mxser_module_exit(void)
 {
+<<<<<<< HEAD
 	unsigned int i, j;
+=======
+	unsigned int i;
+>>>>>>> refs/remotes/origin/master
 
 	pci_unregister_driver(&mxser_driver);
 
 	for (i = 0; i < MXSER_BOARDS; i++) /* ISA remains */
 		if (mxser_boards[i].info != NULL)
+<<<<<<< HEAD
 			for (j = 0; j < mxser_boards[i].info->nports; j++)
 				tty_unregister_device(mxvar_sdriver,
 						mxser_boards[i].idx + j);
+=======
+			mxser_board_remove(&mxser_boards[i]);
+>>>>>>> refs/remotes/origin/master
 	tty_unregister_driver(mxvar_sdriver);
 	put_tty_driver(mxvar_sdriver);
 

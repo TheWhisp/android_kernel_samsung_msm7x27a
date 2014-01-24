@@ -29,8 +29,11 @@
 #ifndef __IOWPA_H__
 #define __IOWPA_H__
 
+<<<<<<< HEAD
 /*---------------------  Export Definitions -------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define WPA_IE_LEN 64
 
 //WPA related
@@ -55,7 +58,10 @@ enum {
 	VIAWGET_SET_DISASSOCIATE = 10
 };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum {
 	VIAWGET_ASSOC_MSG = 1,
 	VIAWGET_DISASSOC_MSG = 2,
@@ -65,8 +71,14 @@ enum {
 	VIAWGET_DEVICECLOSE_MSG = 6
 };
 
+<<<<<<< HEAD
 
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 typedef struct viawget_wpa_header {
 	u8 type;
 	u16 req_ie_len;
@@ -130,6 +142,7 @@ struct viawget_scan_result {
 	int maxrate;
 } __packed;
 
+<<<<<<< HEAD
 /*---------------------  Export Classes  ----------------------------*/
 
 /*---------------------  Export Variables  --------------------------*/
@@ -138,4 +151,6 @@ struct viawget_scan_result {
 
 /*---------------------  Export Functions  --------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __IOWPA_H__ */

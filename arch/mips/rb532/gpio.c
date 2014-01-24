@@ -29,6 +29,14 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
@@ -43,10 +51,17 @@ struct rb532_gpio_chip {
 
 static struct resource rb532_gpio_reg0_res[] = {
 	{
+<<<<<<< HEAD
 		.name 	= "gpio_reg0",
 		.start 	= REGBASE + GPIOBASE,
 		.end 	= REGBASE + GPIOBASE + sizeof(struct rb532_gpio_reg) - 1,
 		.flags 	= IORESOURCE_MEM,
+=======
+		.name	= "gpio_reg0",
+		.start	= REGBASE + GPIOBASE,
+		.end	= REGBASE + GPIOBASE + sizeof(struct rb532_gpio_reg) - 1,
+		.flags	= IORESOURCE_MEM,
+>>>>>>> refs/remotes/origin/master
 	}
 };
 

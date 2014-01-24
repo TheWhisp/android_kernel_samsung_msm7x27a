@@ -52,6 +52,11 @@
 #include <net/irda/ircomm_tty_attach.h>
 #include <net/irda/ircomm_tty.h>
 
+<<<<<<< HEAD
+=======
+static int ircomm_tty_install(struct tty_driver *driver,
+		struct tty_struct *tty);
+>>>>>>> refs/remotes/origin/master
 static int  ircomm_tty_open(struct tty_struct *tty, struct file *filp);
 static void ircomm_tty_close(struct tty_struct * tty, struct file *filp);
 static int  ircomm_tty_write(struct tty_struct * tty,
@@ -82,6 +87,10 @@ static struct tty_driver *driver;
 static hashbin_t *ircomm_tty = NULL;
 
 static const struct tty_operations ops = {
+<<<<<<< HEAD
+=======
+	.install	 = ircomm_tty_install,
+>>>>>>> refs/remotes/origin/master
 	.open            = ircomm_tty_open,
 	.close           = ircomm_tty_close,
 	.write           = ircomm_tty_write,
@@ -104,6 +113,38 @@ static const struct tty_operations ops = {
 #endif /* CONFIG_PROC_FS */
 };
 
+<<<<<<< HEAD
+=======
+static void ircomm_port_raise_dtr_rts(struct tty_port *port, int raise)
+{
+	struct ircomm_tty_cb *self = container_of(port, struct ircomm_tty_cb,
+			port);
+	/*
+	 * Here, we use to lock those two guys, but as ircomm_param_request()
+	 * does it itself, I don't see the point (and I see the deadlock).
+	 * Jean II
+	 */
+	if (raise)
+		self->settings.dte |= IRCOMM_RTS | IRCOMM_DTR;
+	else
+		self->settings.dte &= ~(IRCOMM_RTS | IRCOMM_DTR);
+
+	ircomm_param_request(self, IRCOMM_DTE, TRUE);
+}
+
+static int ircomm_port_carrier_raised(struct tty_port *port)
+{
+	struct ircomm_tty_cb *self = container_of(port, struct ircomm_tty_cb,
+			port);
+	return self->settings.dce & IRCOMM_CD;
+}
+
+static const struct tty_port_operations ircomm_port_ops = {
+	.dtr_rts = ircomm_port_raise_dtr_rts,
+	.carrier_raised = ircomm_port_carrier_raised,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Function ircomm_tty_init()
  *
@@ -122,7 +163,13 @@ static int __init ircomm_tty_init(void)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	driver->owner		= THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	driver->driver_name     = "ircomm";
 	driver->name            = "ircomm";
 	driver->major           = IRCOMM_TTY_MAJOR;
@@ -152,6 +199,10 @@ static void __exit __ircomm_tty_cleanup(struct ircomm_tty_cb *self)
 	ircomm_tty_shutdown(self);
 
 	self->magic = 0;
+<<<<<<< HEAD
+=======
+	tty_port_destroy(&self->port);
+>>>>>>> refs/remotes/origin/master
 	kfree(self);
 }
 
@@ -195,7 +246,11 @@ static int ircomm_tty_startup(struct ircomm_tty_cb *self)
 	IRDA_ASSERT(self->magic == IRCOMM_TTY_MAGIC, return -1;);
 
 	/* Check if already open */
+<<<<<<< HEAD
 	if (test_and_set_bit(ASYNC_B_INITIALIZED, &self->flags)) {
+=======
+	if (test_and_set_bit(ASYNCB_INITIALIZED, &self->port.flags)) {
+>>>>>>> refs/remotes/origin/master
 		IRDA_DEBUG(2, "%s(), already open so break out!\n", __func__ );
 		return 0;
 	}
@@ -232,7 +287,11 @@ static int ircomm_tty_startup(struct ircomm_tty_cb *self)
 
 	return 0;
 err:
+<<<<<<< HEAD
 	clear_bit(ASYNC_B_INITIALIZED, &self->flags);
+=======
+	clear_bit(ASYNCB_INITIALIZED, &self->port.flags);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -243,6 +302,7 @@ err:
  *
  */
 static int ircomm_tty_block_til_ready(struct ircomm_tty_cb *self,
+<<<<<<< HEAD
 				      struct file *filp)
 {
 	DECLARE_WAITQUEUE(wait, current);
@@ -255,30 +315,64 @@ static int ircomm_tty_block_til_ready(struct ircomm_tty_cb *self,
 
 	tty = self->tty;
 
+=======
+		struct tty_struct *tty, struct file *filp)
+{
+	struct tty_port *port = &self->port;
+	DECLARE_WAITQUEUE(wait, current);
+	int		retval;
+	int		do_clocal = 0;
+	unsigned long	flags;
+
+	IRDA_DEBUG(2, "%s()\n", __func__ );
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If non-blocking mode is set, or the port is not enabled,
 	 * then make the check up front and then exit.
 	 */
+<<<<<<< HEAD
 	if (filp->f_flags & O_NONBLOCK || tty->flags & (1 << TTY_IO_ERROR)){
 		/* nonblock mode is set or port is not enabled */
 		self->flags |= ASYNC_NORMAL_ACTIVE;
+=======
+	if (test_bit(TTY_IO_ERROR, &tty->flags)) {
+		port->flags |= ASYNC_NORMAL_ACTIVE;
+		return 0;
+	}
+
+	if (filp->f_flags & O_NONBLOCK) {
+		/* nonblock mode is set */
+		if (tty->termios.c_cflag & CBAUD)
+			tty_port_raise_dtr_rts(port);
+		port->flags |= ASYNC_NORMAL_ACTIVE;
+>>>>>>> refs/remotes/origin/master
 		IRDA_DEBUG(1, "%s(), O_NONBLOCK requested!\n", __func__ );
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CLOCAL) {
+=======
+	if (tty->termios.c_cflag & CLOCAL) {
+>>>>>>> refs/remotes/origin/master
 		IRDA_DEBUG(1, "%s(), doing CLOCAL!\n", __func__ );
 		do_clocal = 1;
 	}
 
 	/* Wait for carrier detect and the line to become
 	 * free (i.e., not in use by the callout).  While we are in
+<<<<<<< HEAD
 	 * this loop, self->open_count is dropped by one, so that
+=======
+	 * this loop, port->count is dropped by one, so that
+>>>>>>> refs/remotes/origin/master
 	 * mgsl_close() knows when to free things.  We restore it upon
 	 * exit, either normal or abnormal.
 	 */
 
 	retval = 0;
+<<<<<<< HEAD
 	add_wait_queue(&self->open_wait, &wait);
 
 	IRDA_DEBUG(2, "%s(%d):block_til_ready before block on %s open_count=%d\n",
@@ -309,6 +403,28 @@ static int ircomm_tty_block_til_ready(struct ircomm_tty_cb *self,
 		if (tty_hung_up_p(filp) ||
 		    !test_bit(ASYNC_B_INITIALIZED, &self->flags)) {
 			retval = (self->flags & ASYNC_HUP_NOTIFY) ?
+=======
+	add_wait_queue(&port->open_wait, &wait);
+
+	IRDA_DEBUG(2, "%s(%d):block_til_ready before block on %s open_count=%d\n",
+	      __FILE__, __LINE__, tty->driver->name, port->count);
+
+	spin_lock_irqsave(&port->lock, flags);
+	if (!tty_hung_up_p(filp))
+		port->count--;
+	port->blocked_open++;
+	spin_unlock_irqrestore(&port->lock, flags);
+
+	while (1) {
+		if (C_BAUD(tty) && test_bit(ASYNCB_INITIALIZED, &port->flags))
+			tty_port_raise_dtr_rts(port);
+
+		set_current_state(TASK_INTERRUPTIBLE);
+
+		if (tty_hung_up_p(filp) ||
+		    !test_bit(ASYNCB_INITIALIZED, &port->flags)) {
+			retval = (port->flags & ASYNC_HUP_NOTIFY) ?
+>>>>>>> refs/remotes/origin/master
 					-EAGAIN : -ERESTARTSYS;
 			break;
 		}
@@ -318,8 +434,13 @@ static int ircomm_tty_block_til_ready(struct ircomm_tty_cb *self,
 		 * specified, we cannot return before the IrCOMM link is
 		 * ready
 		 */
+<<<<<<< HEAD
 		if (!test_bit(ASYNC_B_CLOSING, &self->flags) &&
 		    (do_clocal || (self->settings.dce & IRCOMM_CD)) &&
+=======
+		if (!test_bit(ASYNCB_CLOSING, &port->flags) &&
+		    (do_clocal || tty_port_carrier_raised(port)) &&
+>>>>>>> refs/remotes/origin/master
 		    self->state == IRCOMM_TTY_READY)
 		{
 			break;
@@ -331,12 +452,17 @@ static int ircomm_tty_block_til_ready(struct ircomm_tty_cb *self,
 		}
 
 		IRDA_DEBUG(1, "%s(%d):block_til_ready blocking on %s open_count=%d\n",
+<<<<<<< HEAD
 		      __FILE__,__LINE__, tty->driver->name, self->open_count );
+=======
+		      __FILE__, __LINE__, tty->driver->name, port->count);
+>>>>>>> refs/remotes/origin/master
 
 		schedule();
 	}
 
 	__set_current_state(TASK_RUNNING);
+<<<<<<< HEAD
 	remove_wait_queue(&self->open_wait, &wait);
 
 	if (extra_count) {
@@ -352,10 +478,26 @@ static int ircomm_tty_block_til_ready(struct ircomm_tty_cb *self,
 
 	if (!retval)
 		self->flags |= ASYNC_NORMAL_ACTIVE;
+=======
+	remove_wait_queue(&port->open_wait, &wait);
+
+	spin_lock_irqsave(&port->lock, flags);
+	if (!tty_hung_up_p(filp))
+		port->count++;
+	port->blocked_open--;
+	spin_unlock_irqrestore(&port->lock, flags);
+
+	IRDA_DEBUG(1, "%s(%d):block_til_ready after blocking on %s open_count=%d\n",
+	      __FILE__, __LINE__, tty->driver->name, port->count);
+
+	if (!retval)
+		port->flags |= ASYNC_NORMAL_ACTIVE;
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
 
+<<<<<<< HEAD
 /*
  * Function ircomm_tty_open (tty, filp)
  *
@@ -366,16 +508,31 @@ static int ircomm_tty_block_til_ready(struct ircomm_tty_cb *self,
 static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
 {
 	struct ircomm_tty_cb *self;
+<<<<<<< HEAD
 	unsigned int line;
+=======
+	unsigned int line = tty->index;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long	flags;
 	int ret;
 
 	IRDA_DEBUG(2, "%s()\n", __func__ );
 
+<<<<<<< HEAD
 	line = tty->index;
 	if (line >= IRCOMM_TTY_PORTS)
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static int ircomm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	struct ircomm_tty_cb *self;
+	unsigned int line = tty->index;
+
+>>>>>>> refs/remotes/origin/master
 	/* Check if instance already exists */
 	self = hashbin_lock_find(ircomm_tty, line, NULL);
 	if (!self) {
@@ -386,6 +543,11 @@ static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
 			return -ENOMEM;
 		}
 
+<<<<<<< HEAD
+=======
+		tty_port_init(&self->port);
+		self->port.ops = &ircomm_port_ops;
+>>>>>>> refs/remotes/origin/master
 		self->magic = IRCOMM_TTY_MAGIC;
 		self->flow = FLOW_STOP;
 
@@ -393,6 +555,7 @@ static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
 		INIT_WORK(&self->tqueue, ircomm_tty_do_softint);
 		self->max_header_size = IRCOMM_TTY_HDR_UNINITIALISED;
 		self->max_data_size = IRCOMM_TTY_DATA_UNINITIALISED;
+<<<<<<< HEAD
 		self->close_delay = 5*HZ/10;
 		self->closing_wait = 30*HZ;
 
@@ -400,6 +563,11 @@ static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
 		init_timer(&self->watchdog_timer);
 		init_waitqueue_head(&self->open_wait);
 		init_waitqueue_head(&self->close_wait);
+=======
+
+		/* Init some important stuff */
+		init_timer(&self->watchdog_timer);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_init(&self->spinlock);
 
 		/*
@@ -409,12 +577,18 @@ static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
 		 *
 		 * Note this is completely usafe and doesn't work properly
 		 */
+<<<<<<< HEAD
 		tty->termios->c_iflag = 0;
 		tty->termios->c_oflag = 0;
+=======
+		tty->termios.c_iflag = 0;
+		tty->termios.c_oflag = 0;
+>>>>>>> refs/remotes/origin/master
 
 		/* Insert into hash */
 		hashbin_insert(ircomm_tty, (irda_queue_t *) self, line, NULL);
 	}
+<<<<<<< HEAD
 	/* ++ is not atomic, so this should be protected - Jean II */
 	spin_lock_irqsave(&self->spinlock, flags);
 	self->open_count++;
@@ -428,12 +602,50 @@ static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
 
 	/* Not really used by us, but lets do it anyway */
 	self->tty->low_latency = (self->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+=======
+
+	tty->driver_data = self;
+
+	return tty_port_install(&self->port, driver, tty);
+}
+
+/*
+ * Function ircomm_tty_open (tty, filp)
+ *
+ *    This routine is called when a particular tty device is opened. This
+ *    routine is mandatory; if this routine is not filled in, the attempted
+ *    open will fail with ENODEV.
+ */
+static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
+{
+	struct ircomm_tty_cb *self = tty->driver_data;
+	unsigned long	flags;
+	int ret;
+
+	IRDA_DEBUG(2, "%s()\n", __func__ );
+
+	/* ++ is not atomic, so this should be protected - Jean II */
+	spin_lock_irqsave(&self->port.lock, flags);
+	self->port.count++;
+	spin_unlock_irqrestore(&self->port.lock, flags);
+	tty_port_tty_set(&self->port, tty);
+
+	IRDA_DEBUG(1, "%s(), %s%d, count = %d\n", __func__ , tty->driver->name,
+		   self->line, self->port.count);
+
+	/* Not really used by us, but lets do it anyway */
+	self->port.low_latency = (self->port.flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If the port is the middle of closing, bail out now
 	 */
 	if (tty_hung_up_p(filp) ||
+<<<<<<< HEAD
 	    test_bit(ASYNC_B_CLOSING, &self->flags)) {
+=======
+	    test_bit(ASYNCB_CLOSING, &self->port.flags)) {
+>>>>>>> refs/remotes/origin/master
 
 		/* Hm, why are we blocking on ASYNC_CLOSING if we
 		 * do return -EAGAIN/-ERESTARTSYS below anyway?
@@ -443,14 +655,23 @@ static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
 		 * probably better sleep uninterruptible?
 		 */
 
+<<<<<<< HEAD
 		if (wait_event_interruptible(self->close_wait, !test_bit(ASYNC_B_CLOSING, &self->flags))) {
+=======
+		if (wait_event_interruptible(self->port.close_wait,
+				!test_bit(ASYNCB_CLOSING, &self->port.flags))) {
+>>>>>>> refs/remotes/origin/master
 			IRDA_WARNING("%s - got signal while blocking on ASYNC_CLOSING!\n",
 				     __func__);
 			return -ERESTARTSYS;
 		}
 
 #ifdef SERIAL_DO_RESTART
+<<<<<<< HEAD
 		return (self->flags & ASYNC_HUP_NOTIFY) ?
+=======
+		return (self->port.flags & ASYNC_HUP_NOTIFY) ?
+>>>>>>> refs/remotes/origin/master
 			-EAGAIN : -ERESTARTSYS;
 #else
 		return -EAGAIN;
@@ -458,7 +679,11 @@ static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
 	}
 
 	/* Check if this is a "normal" ircomm device, or an irlpt device */
+<<<<<<< HEAD
 	if (line < 0x10) {
+=======
+	if (self->line < 0x10) {
+>>>>>>> refs/remotes/origin/master
 		self->service_type = IRCOMM_3_WIRE | IRCOMM_9_WIRE;
 		self->settings.service_type = IRCOMM_9_WIRE; /* 9 wire as default */
 		/* Jan Kiszka -> add DSR/RI -> Conform to IrCOMM spec */
@@ -474,7 +699,11 @@ static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	ret = ircomm_tty_block_til_ready(self, filp);
+=======
+	ret = ircomm_tty_block_til_ready(self, tty, filp);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		IRDA_DEBUG(2,
 		      "%s(), returning after block_til_ready with %d\n", __func__ ,
@@ -494,13 +723,18 @@ static int ircomm_tty_open(struct tty_struct *tty, struct file *filp)
 static void ircomm_tty_close(struct tty_struct *tty, struct file *filp)
 {
 	struct ircomm_tty_cb *self = (struct ircomm_tty_cb *) tty->driver_data;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+	struct tty_port *port = &self->port;
+>>>>>>> refs/remotes/origin/master
 
 	IRDA_DEBUG(0, "%s()\n", __func__ );
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRCOMM_TTY_MAGIC, return;);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&self->spinlock, flags);
 
 	if (tty_hung_up_p(filp)) {
@@ -551,11 +785,20 @@ static void ircomm_tty_close(struct tty_struct *tty, struct file *filp)
 	 */
 	tty->closing = 1;
 	if (self->closing_wait != ASYNC_CLOSING_WAIT_NONE)
+<<<<<<< HEAD
 		tty_wait_until_sent(tty, self->closing_wait);
+=======
+		tty_wait_until_sent_from_close(tty, self->closing_wait);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tty_port_close_start(port, tty, filp) == 0)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	ircomm_tty_shutdown(self);
 
 	tty_driver_flush_buffer(tty);
+<<<<<<< HEAD
 	tty_ldisc_flush(tty);
 
 	tty->closing = 0;
@@ -569,6 +812,11 @@ static void ircomm_tty_close(struct tty_struct *tty, struct file *filp)
 
 	self->flags &= ~(ASYNC_NORMAL_ACTIVE|ASYNC_CLOSING);
 	wake_up_interruptible(&self->close_wait);
+=======
+
+	tty_port_close_end(port, tty);
+	tty_port_tty_set(port, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -611,7 +859,11 @@ static void ircomm_tty_do_softint(struct work_struct *work)
 	if (!self || self->magic != IRCOMM_TTY_MAGIC)
 		return;
 
+<<<<<<< HEAD
 	tty = self->tty;
+=======
+	tty = tty_port_tty_get(&self->port);
+>>>>>>> refs/remotes/origin/master
 	if (!tty)
 		return;
 
@@ -632,7 +884,11 @@ static void ircomm_tty_do_softint(struct work_struct *work)
 	}
 
 	if (tty->hw_stopped)
+<<<<<<< HEAD
 		return;
+=======
+		goto put;
+>>>>>>> refs/remotes/origin/master
 
 	/* Unlink transmit buffer */
 	spin_lock_irqsave(&self->spinlock, flags);
@@ -651,6 +907,11 @@ static void ircomm_tty_do_softint(struct work_struct *work)
 
 	/* Check if user (still) wants to be waken up */
 	tty_wakeup(tty);
+<<<<<<< HEAD
+=======
+put:
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -885,7 +1146,11 @@ static void ircomm_tty_throttle(struct tty_struct *tty)
 		ircomm_tty_send_xchar(tty, STOP_CHAR(tty));
 
 	/* Hardware flow control? */
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CRTSCTS) {
+=======
+	if (tty->termios.c_cflag & CRTSCTS) {
+>>>>>>> refs/remotes/origin/master
 		self->settings.dte &= ~IRCOMM_RTS;
 		self->settings.dte |= IRCOMM_DELTA_RTS;
 
@@ -917,7 +1182,11 @@ static void ircomm_tty_unthrottle(struct tty_struct *tty)
 	}
 
 	/* Using hardware flow control? */
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CRTSCTS) {
+=======
+	if (tty->termios.c_cflag & CRTSCTS) {
+>>>>>>> refs/remotes/origin/master
 		self->settings.dte |= (IRCOMM_RTS|IRCOMM_DELTA_RTS);
 
 		ircomm_param_request(self, IRCOMM_DTE, TRUE);
@@ -960,7 +1229,11 @@ static void ircomm_tty_shutdown(struct ircomm_tty_cb *self)
 
 	IRDA_DEBUG(0, "%s()\n", __func__ );
 
+<<<<<<< HEAD
 	if (!test_and_clear_bit(ASYNC_B_INITIALIZED, &self->flags))
+=======
+	if (!test_and_clear_bit(ASYNCB_INITIALIZED, &self->port.flags))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	ircomm_tty_detach_cable(self);
@@ -999,6 +1272,10 @@ static void ircomm_tty_shutdown(struct ircomm_tty_cb *self)
 static void ircomm_tty_hangup(struct tty_struct *tty)
 {
 	struct ircomm_tty_cb *self = (struct ircomm_tty_cb *) tty->driver_data;
+<<<<<<< HEAD
+=======
+	struct tty_port *port = &self->port;
+>>>>>>> refs/remotes/origin/master
 	unsigned long	flags;
 
 	IRDA_DEBUG(0, "%s()\n", __func__ );
@@ -1009,6 +1286,7 @@ static void ircomm_tty_hangup(struct tty_struct *tty)
 	/* ircomm_tty_flush_buffer(tty); */
 	ircomm_tty_shutdown(self);
 
+<<<<<<< HEAD
 	/* I guess we need to lock here - Jean II */
 	spin_lock_irqsave(&self->spinlock, flags);
 	self->flags &= ~ASYNC_NORMAL_ACTIVE;
@@ -1017,6 +1295,19 @@ static void ircomm_tty_hangup(struct tty_struct *tty)
 	spin_unlock_irqrestore(&self->spinlock, flags);
 
 	wake_up_interruptible(&self->open_wait);
+=======
+	spin_lock_irqsave(&port->lock, flags);
+	port->flags &= ~ASYNC_NORMAL_ACTIVE;
+	if (port->tty) {
+		set_bit(TTY_IO_ERROR, &port->tty->flags);
+		tty_kref_put(port->tty);
+	}
+	port->tty = NULL;
+	port->count = 0;
+	spin_unlock_irqrestore(&port->lock, flags);
+
+	wake_up_interruptible(&port->open_wait);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1076,20 +1367,32 @@ void ircomm_tty_check_modem_status(struct ircomm_tty_cb *self)
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRCOMM_TTY_MAGIC, return;);
 
+<<<<<<< HEAD
 	tty = self->tty;
+=======
+	tty = tty_port_tty_get(&self->port);
+>>>>>>> refs/remotes/origin/master
 
 	status = self->settings.dce;
 
 	if (status & IRCOMM_DCE_DELTA_ANY) {
 		/*wake_up_interruptible(&self->delta_msr_wait);*/
 	}
+<<<<<<< HEAD
 	if ((self->flags & ASYNC_CHECK_CD) && (status & IRCOMM_DELTA_CD)) {
+=======
+	if ((self->port.flags & ASYNC_CHECK_CD) && (status & IRCOMM_DELTA_CD)) {
+>>>>>>> refs/remotes/origin/master
 		IRDA_DEBUG(2,
 			   "%s(), ircomm%d CD now %s...\n", __func__ , self->line,
 			   (status & IRCOMM_CD) ? "on" : "off");
 
 		if (status & IRCOMM_CD) {
+<<<<<<< HEAD
 			wake_up_interruptible(&self->open_wait);
+=======
+			wake_up_interruptible(&self->port.open_wait);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			IRDA_DEBUG(2,
 				   "%s(), Doing serial hangup..\n", __func__ );
@@ -1097,10 +1400,17 @@ void ircomm_tty_check_modem_status(struct ircomm_tty_cb *self)
 				tty_hangup(tty);
 
 			/* Hangup will remote the tty, so better break out */
+<<<<<<< HEAD
 			return;
 		}
 	}
 	if (self->flags & ASYNC_CTS_FLOW) {
+=======
+			goto put;
+		}
+	}
+	if (tty && tty_port_cts_enabled(&self->port)) {
+>>>>>>> refs/remotes/origin/master
 		if (tty->hw_stopped) {
 			if (status & IRCOMM_CTS) {
 				IRDA_DEBUG(2,
@@ -1108,10 +1418,17 @@ void ircomm_tty_check_modem_status(struct ircomm_tty_cb *self)
 				tty->hw_stopped = 0;
 
 				/* Wake up processes blocked on open */
+<<<<<<< HEAD
 				wake_up_interruptible(&self->open_wait);
 
 				schedule_work(&self->tqueue);
 				return;
+=======
+				wake_up_interruptible(&self->port.open_wait);
+
+				schedule_work(&self->tqueue);
+				goto put;
+>>>>>>> refs/remotes/origin/master
 			}
 		} else {
 			if (!(status & IRCOMM_CTS)) {
@@ -1121,6 +1438,11 @@ void ircomm_tty_check_modem_status(struct ircomm_tty_cb *self)
 			}
 		}
 	}
+<<<<<<< HEAD
+=======
+put:
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1133,6 +1455,10 @@ static int ircomm_tty_data_indication(void *instance, void *sap,
 				      struct sk_buff *skb)
 {
 	struct ircomm_tty_cb *self = (struct ircomm_tty_cb *) instance;
+<<<<<<< HEAD
+=======
+	struct tty_struct *tty;
+>>>>>>> refs/remotes/origin/master
 
 	IRDA_DEBUG(2, "%s()\n", __func__ );
 
@@ -1140,7 +1466,12 @@ static int ircomm_tty_data_indication(void *instance, void *sap,
 	IRDA_ASSERT(self->magic == IRCOMM_TTY_MAGIC, return -1;);
 	IRDA_ASSERT(skb != NULL, return -1;);
 
+<<<<<<< HEAD
 	if (!self->tty) {
+=======
+	tty = tty_port_tty_get(&self->port);
+	if (!tty) {
+>>>>>>> refs/remotes/origin/master
 		IRDA_DEBUG(0, "%s(), no tty!\n", __func__ );
 		return 0;
 	}
@@ -1151,7 +1482,11 @@ static int ircomm_tty_data_indication(void *instance, void *sap,
 	 * Devices like WinCE can do this, and since they don't send any
 	 * params, we can just as well declare the hardware for running.
 	 */
+<<<<<<< HEAD
 	if (self->tty->hw_stopped && (self->flow == FLOW_START)) {
+=======
+	if (tty->hw_stopped && (self->flow == FLOW_START)) {
+>>>>>>> refs/remotes/origin/master
 		IRDA_DEBUG(0, "%s(), polling for line settings!\n", __func__ );
 		ircomm_param_request(self, IRCOMM_POLL, TRUE);
 
@@ -1159,13 +1494,22 @@ static int ircomm_tty_data_indication(void *instance, void *sap,
 		ircomm_tty_send_initial_parameters(self);
 		ircomm_tty_link_established(self);
 	}
+<<<<<<< HEAD
+=======
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Use flip buffer functions since the code may be called from interrupt
 	 * context
 	 */
+<<<<<<< HEAD
 	tty_insert_flip_string(self->tty, skb->data, skb->len);
 	tty_flip_buffer_push(self->tty);
+=======
+	tty_insert_flip_string(&self->port, skb->data, skb->len);
+	tty_flip_buffer_push(&self->port);
+>>>>>>> refs/remotes/origin/master
 
 	/* No need to kfree_skb - see ircomm_ttp_data_indication() */
 
@@ -1216,12 +1560,21 @@ static void ircomm_tty_flow_indication(void *instance, void *sap,
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRCOMM_TTY_MAGIC, return;);
 
+<<<<<<< HEAD
 	tty = self->tty;
+=======
+	tty = tty_port_tty_get(&self->port);
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case FLOW_START:
 		IRDA_DEBUG(2, "%s(), hw start!\n", __func__ );
+<<<<<<< HEAD
 		tty->hw_stopped = 0;
+=======
+		if (tty)
+			tty->hw_stopped = 0;
+>>>>>>> refs/remotes/origin/master
 
 		/* ircomm_tty_do_softint will take care of the rest */
 		schedule_work(&self->tqueue);
@@ -1229,15 +1582,28 @@ static void ircomm_tty_flow_indication(void *instance, void *sap,
 	default:  /* If we get here, something is very wrong, better stop */
 	case FLOW_STOP:
 		IRDA_DEBUG(2, "%s(), hw stopped!\n", __func__ );
+<<<<<<< HEAD
 		tty->hw_stopped = 1;
 		break;
 	}
+=======
+		if (tty)
+			tty->hw_stopped = 1;
+		break;
+	}
+
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 	self->flow = cmd;
 }
 
 #ifdef CONFIG_PROC_FS
 static void ircomm_tty_line_info(struct ircomm_tty_cb *self, struct seq_file *m)
 {
+<<<<<<< HEAD
+=======
+	struct tty_struct *tty;
+>>>>>>> refs/remotes/origin/master
 	char sep;
 
 	seq_printf(m, "State: %s\n", ircomm_tty_state[self->state]);
@@ -1333,6 +1699,7 @@ static void ircomm_tty_line_info(struct ircomm_tty_cb *self, struct seq_file *m)
 
 	seq_puts(m, "Flags:");
 	sep = ' ';
+<<<<<<< HEAD
 	if (self->flags & ASYNC_CTS_FLOW) {
 		seq_printf(m, "%cASYNC_CTS_FLOW", sep);
 		sep = '|';
@@ -1354,12 +1721,36 @@ static void ircomm_tty_line_info(struct ircomm_tty_cb *self, struct seq_file *m)
 		sep = '|';
 	}
 	if (self->flags & ASYNC_NORMAL_ACTIVE) {
+=======
+	if (tty_port_cts_enabled(&self->port)) {
+		seq_printf(m, "%cASYNC_CTS_FLOW", sep);
+		sep = '|';
+	}
+	if (self->port.flags & ASYNC_CHECK_CD) {
+		seq_printf(m, "%cASYNC_CHECK_CD", sep);
+		sep = '|';
+	}
+	if (self->port.flags & ASYNC_INITIALIZED) {
+		seq_printf(m, "%cASYNC_INITIALIZED", sep);
+		sep = '|';
+	}
+	if (self->port.flags & ASYNC_LOW_LATENCY) {
+		seq_printf(m, "%cASYNC_LOW_LATENCY", sep);
+		sep = '|';
+	}
+	if (self->port.flags & ASYNC_CLOSING) {
+		seq_printf(m, "%cASYNC_CLOSING", sep);
+		sep = '|';
+	}
+	if (self->port.flags & ASYNC_NORMAL_ACTIVE) {
+>>>>>>> refs/remotes/origin/master
 		seq_printf(m, "%cASYNC_NORMAL_ACTIVE", sep);
 		sep = '|';
 	}
 	seq_putc(m, '\n');
 
 	seq_printf(m, "Role: %s\n", self->client ? "client" : "server");
+<<<<<<< HEAD
 	seq_printf(m, "Open count: %d\n", self->open_count);
 	seq_printf(m, "Max data size: %d\n", self->max_data_size);
 	seq_printf(m, "Max header size: %d\n", self->max_header_size);
@@ -1367,6 +1758,18 @@ static void ircomm_tty_line_info(struct ircomm_tty_cb *self, struct seq_file *m)
 	if (self->tty)
 		seq_printf(m, "Hardware: %s\n",
 			       self->tty->hw_stopped ? "Stopped" : "Running");
+=======
+	seq_printf(m, "Open count: %d\n", self->port.count);
+	seq_printf(m, "Max data size: %d\n", self->max_data_size);
+	seq_printf(m, "Max header size: %d\n", self->max_header_size);
+
+	tty = tty_port_tty_get(&self->port);
+	if (tty) {
+		seq_printf(m, "Hardware: %s\n",
+			       tty->hw_stopped ? "Stopped" : "Running");
+		tty_kref_put(tty);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ircomm_tty_proc_show(struct seq_file *m, void *v)

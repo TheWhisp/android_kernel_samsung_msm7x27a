@@ -102,6 +102,9 @@ typedef struct user_fpu_struct elf_fpregset_t;
 
 #define ELF_PLATFORM  (NULL)
 
+<<<<<<< HEAD
 #define SET_PERSONALITY(ex) set_personality(PER_LINUX_32BIT)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_AVR32_ELF_H */

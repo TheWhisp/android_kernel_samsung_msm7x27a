@@ -5,6 +5,10 @@ power_supply-$(CONFIG_SYSFS)		+= power_supply_sysfs.o
 power_supply-$(CONFIG_LEDS_TRIGGERS)	+= power_supply_leds.o
 
 obj-$(CONFIG_POWER_SUPPLY)	+= power_supply.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_GENERIC_ADC_BATTERY)	+= generic-adc-battery.o
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_PDA_POWER)		+= pda_power.o
 obj-$(CONFIG_APM_POWER)		+= apm_power.o
@@ -14,33 +18,86 @@ obj-$(CONFIG_WM831X_POWER)	+= wm831x_power.o
 obj-$(CONFIG_WM8350_POWER)	+= wm8350_power.o
 obj-$(CONFIG_TEST_POWER)	+= test_power.o
 
+<<<<<<< HEAD
 obj-$(CONFIG_BATTERY_DS2760)	+= ds2760_battery.o
 obj-$(CONFIG_BATTERY_DS2780)	+= ds2780_battery.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_BATTERY_DS2781)	+= ds2781_battery.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_BATTERY_DS2782)	+= ds2782_battery.o
+=======
+obj-$(CONFIG_BATTERY_88PM860X)	+= 88pm860x_battery.o
+obj-$(CONFIG_BATTERY_DS2760)	+= ds2760_battery.o
+obj-$(CONFIG_BATTERY_DS2780)	+= ds2780_battery.o
+obj-$(CONFIG_BATTERY_DS2781)	+= ds2781_battery.o
+obj-$(CONFIG_BATTERY_DS2782)	+= ds2782_battery.o
+obj-$(CONFIG_BATTERY_GOLDFISH)	+= goldfish_battery.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_BATTERY_PMU)	+= pmu_battery.o
 obj-$(CONFIG_BATTERY_OLPC)	+= olpc_battery.o
 obj-$(CONFIG_BATTERY_TOSA)	+= tosa_battery.o
 obj-$(CONFIG_BATTERY_COLLIE)	+= collie_battery.o
 obj-$(CONFIG_BATTERY_WM97XX)	+= wm97xx_battery.o
+<<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_BATTERY_BQ20Z75)	+= bq20z75.o
 obj-$(CONFIG_BATTERY_BQ27x00)	+= bq27x00_battery.o
 obj-$(CONFIG_BATTERY_DA9030)	+= da9030_battery.o
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+obj-$(CONFIG_BATTERY_SBS)	+= sbs-battery.o
+obj-$(CONFIG_BATTERY_BQ27x00)	+= bq27x00_battery.o
+obj-$(CONFIG_BATTERY_DA9030)	+= da9030_battery.o
+obj-$(CONFIG_BATTERY_DA9052)	+= da9052-battery.o
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_BATTERY_MAX17040)	+= max17040_battery.o
 obj-$(CONFIG_BATTERY_MAX17042)	+= max17042_battery.o
 obj-$(CONFIG_BATTERY_Z2)	+= z2_battery.o
 obj-$(CONFIG_BATTERY_S3C_ADC)	+= s3c_adc_battery.o
+<<<<<<< HEAD
 obj-$(CONFIG_CHARGER_PCF50633)	+= pcf50633-charger.o
 obj-$(CONFIG_BATTERY_JZ4740)	+= jz4740-battery.o
 obj-$(CONFIG_BATTERY_INTEL_MID)	+= intel_mid_battery.o
+<<<<<<< HEAD
 obj-$(CONFIG_CHARGER_ISP1704)	+= isp1704_charger.o
 obj-$(CONFIG_CHARGER_MAX8903)	+= max8903_charger.o
 obj-$(CONFIG_CHARGER_TWL4030)	+= twl4030_charger.o
 obj-$(CONFIG_CHARGER_GPIO)	+= gpio-charger.o
+=======
+obj-$(CONFIG_AB8500_BM)		+= ab8500_charger.o ab8500_btemp.o ab8500_fg.o abx500_chargalg.o
+=======
+obj-$(CONFIG_BATTERY_TWL4030_MADC)	+= twl4030_madc_battery.o
+obj-$(CONFIG_CHARGER_88PM860X)	+= 88pm860x_charger.o
+obj-$(CONFIG_CHARGER_PCF50633)	+= pcf50633-charger.o
+obj-$(CONFIG_BATTERY_JZ4740)	+= jz4740-battery.o
+obj-$(CONFIG_BATTERY_INTEL_MID)	+= intel_mid_battery.o
+obj-$(CONFIG_BATTERY_RX51)	+= rx51_battery.o
+obj-$(CONFIG_AB8500_BM)		+= ab8500_bmdata.o ab8500_charger.o ab8500_fg.o ab8500_btemp.o abx500_chargalg.o pm2301_charger.o
+>>>>>>> refs/remotes/origin/master
+obj-$(CONFIG_CHARGER_ISP1704)	+= isp1704_charger.o
+obj-$(CONFIG_CHARGER_MAX8903)	+= max8903_charger.o
+obj-$(CONFIG_CHARGER_TWL4030)	+= twl4030_charger.o
+obj-$(CONFIG_CHARGER_LP8727)	+= lp8727_charger.o
+<<<<<<< HEAD
+obj-$(CONFIG_CHARGER_GPIO)	+= gpio-charger.o
+obj-$(CONFIG_CHARGER_MANAGER)	+= charger-manager.o
+obj-$(CONFIG_CHARGER_MAX8997)	+= max8997_charger.o
+obj-$(CONFIG_CHARGER_MAX8998)	+= max8998_charger.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_BATTERY_MSM)       += msm_battery.o
 obj-$(CONFIG_BATTERY_MSM_JENA)       += msm_battery_jena.o
 obj-$(CONFIG_BATTERY_MSM8X60)   += msm_charger.o
 obj-$(CONFIG_PM8058_CHARGER)    += pmic8058-charger.o
 obj-$(CONFIG_ISL9519_CHARGER)   += isl9519q.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SMB349_CHARGER)   += smb349.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_PM8058_FIX_USB)    += pm8058_usb_fix.o
 obj-$(CONFIG_BATTERY_QCIBAT)    += qci_battery.o
 obj-$(CONFIG_BATTERY_BQ27520)	+= bq27520_fuelgauger.o
@@ -50,4 +107,43 @@ obj-$(CONFIG_PM8XXX_CCADC)	+= pm8xxx-ccadc.o
 obj-$(CONFIG_PM8921_BMS)	+= pm8921-bms.o
 obj-$(CONFIG_PM8921_CHARGER)	+= pm8921-charger.o
 obj-$(CONFIG_LTC4088_CHARGER)	+= ltc4088-charger.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_CHARGER_SMB347)	+= smb347-charger.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_BQ27425_FUEL_GAUGE)	+= bq27425_fuelgauge.o
+=======
+obj-$(CONFIG_CHARGER_LP8788)	+= lp8788-charger.o
+obj-$(CONFIG_CHARGER_GPIO)	+= gpio-charger.o
+obj-$(CONFIG_CHARGER_MANAGER)	+= charger-manager.o
+obj-$(CONFIG_CHARGER_MAX14577)	+= max14577_charger.o
+obj-$(CONFIG_CHARGER_MAX8997)	+= max8997_charger.o
+obj-$(CONFIG_CHARGER_MAX8998)	+= max8998_charger.o
+<<<<<<< HEAD
+obj-$(CONFIG_CHARGER_BQ2415X)	+= bq2415x_charger.o
+obj-$(CONFIG_CHARGER_BQ24190)	+= bq24190_charger.o
+obj-$(CONFIG_CHARGER_BQ24735)	+= bq24735-charger.o
+obj-$(CONFIG_POWER_AVS)		+= avs/
+obj-$(CONFIG_CHARGER_SMB347)	+= smb347-charger.o
+obj-$(CONFIG_CHARGER_TPS65090)	+= tps65090-charger.o
+obj-$(CONFIG_POWER_RESET)	+= reset/
+>>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_BATTERY_MSM)       += msm_battery.o
+obj-$(CONFIG_BATTERY_MSM_JENA)       += msm_battery_jena.o
+obj-$(CONFIG_BATTERY_MSM8X60)   += msm_charger.o
+obj-$(CONFIG_PM8058_CHARGER)    += pmic8058-charger.o
+obj-$(CONFIG_ISL9519_CHARGER)   += isl9519q.o
+obj-$(CONFIG_SMB349_CHARGER)   += smb349.o
+obj-$(CONFIG_PM8058_FIX_USB)    += pm8058_usb_fix.o
+obj-$(CONFIG_BATTERY_QCIBAT)    += qci_battery.o
+obj-$(CONFIG_BATTERY_BQ27520)	+= bq27520_fuelgauger.o
+obj-$(CONFIG_BATTERY_BQ27541)	+= bq27541_fuelgauger.o
+obj-$(CONFIG_SMB137B_CHARGER)   += smb137b.o
+obj-$(CONFIG_PM8XXX_CCADC)	+= pm8xxx-ccadc.o
+obj-$(CONFIG_PM8921_BMS)	+= pm8921-bms.o
+obj-$(CONFIG_PM8921_CHARGER)	+= pm8921-charger.o
+obj-$(CONFIG_LTC4088_CHARGER)	+= ltc4088-charger.o
+obj-$(CONFIG_CHARGER_SMB347)	+= smb347-charger.o
+obj-$(CONFIG_BQ27425_FUEL_GAUGE)	+= bq27425_fuelgauge.o
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -14,11 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: 8255
@@ -60,6 +63,7 @@ I/O port base address can be found in the output of 'lspci -v'.
    set up the subdevice in the attach function of the driver by
    calling:
 
+<<<<<<< HEAD
      subdev_8255_init(device, subdevice, callback_function, arg)
 
    device and subdevice are pointers to the device and subdevice
@@ -69,6 +73,17 @@ I/O port base address can be found in the output of 'lspci -v'.
    as the last parameter.  If the 8255 device is mapped as 4
    consecutive I/O ports, you can use NULL for callback_function
    and the I/O port base for arg, and an internal function will
+=======
+     subdev_8255_init(device, subdevice, io_function, iobase)
+
+   device and subdevice are pointers to the device and subdevice
+   structures.  io_function will be called to provide the
+   low-level input/output to the device, i.e., actual register
+   access.  io_function will be called with the value of iobase
+   as the last parameter.  If the 8255 device is mapped as 4
+   consecutive I/O ports, you can use NULL for io_function
+   and the I/O port base for iobase, and an internal function will
+>>>>>>> refs/remotes/origin/master
    handle the register access.
 
    In addition, if the main driver handles interrupts, you can
@@ -78,6 +93,7 @@ I/O port base address can be found in the output of 'lspci -v'.
    will copy the latched value to a Comedi buffer.
  */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <linux/ioport.h>
@@ -88,6 +104,18 @@ I/O port base address can be found in the output of 'lspci -v'.
 
 #define _8255_DATA 0
 #define _8255_CR 3
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+#include "comedi_fc.h"
+#include "8255.h"
+
+#define _8255_SIZE	4
+
+#define _8255_DATA	0
+#define _8255_CR	3
+>>>>>>> refs/remotes/origin/master
 
 #define CR_C_LO_IO	0x01
 #define CR_B_IO		0x02
@@ -97,6 +125,7 @@ I/O port base address can be found in the output of 'lspci -v'.
 #define CR_A_MODE(a)	((a)<<5)
 #define CR_CW		0x80
 
+<<<<<<< HEAD
 struct subdev_8255_struct {
 	unsigned long cb_arg;
 	int (*cb_func) (int, int, int, unsigned long);
@@ -139,12 +168,39 @@ void subdev_8255_interrupt(struct comedi_device *dev,
 
 	d = CALLBACK_FUNC(0, _8255_DATA, 0, CALLBACK_ARG);
 	d |= (CALLBACK_FUNC(0, _8255_DATA + 1, 0, CALLBACK_ARG) << 8);
+=======
+struct subdev_8255_private {
+	unsigned long iobase;
+	int (*io)(int, int, int, unsigned long);
+};
+
+static int subdev_8255_io(int dir, int port, int data, unsigned long iobase)
+{
+	if (dir) {
+		outb(data, iobase + port);
+		return 0;
+	} else {
+		return inb(iobase + port);
+	}
+}
+
+void subdev_8255_interrupt(struct comedi_device *dev,
+			   struct comedi_subdevice *s)
+{
+	struct subdev_8255_private *spriv = s->private;
+	unsigned long iobase = spriv->iobase;
+	unsigned short d;
+
+	d = spriv->io(0, _8255_DATA, 0, iobase);
+	d |= (spriv->io(0, _8255_DATA + 1, 0, iobase) << 8);
+>>>>>>> refs/remotes/origin/master
 
 	comedi_buf_put(s->async, d);
 	s->async->events |= COMEDI_CB_EOS;
 
 	comedi_event(dev, s);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(subdev_8255_interrupt);
 
 static int subdev_8255_cb(int dir, int port, int data, unsigned long arg)
@@ -224,6 +280,46 @@ static int subdev_8255_insn_config(struct comedi_device *dev,
 
 static void do_config(struct comedi_device *dev, struct comedi_subdevice *s)
 {
+=======
+EXPORT_SYMBOL_GPL(subdev_8255_interrupt);
+
+static int subdev_8255_insn(struct comedi_device *dev,
+			    struct comedi_subdevice *s,
+			    struct comedi_insn *insn,
+			    unsigned int *data)
+{
+	struct subdev_8255_private *spriv = s->private;
+	unsigned long iobase = spriv->iobase;
+	unsigned int mask;
+	unsigned int v;
+
+	mask = comedi_dio_update_state(s, data);
+	if (mask) {
+		if (mask & 0xff)
+			spriv->io(1, _8255_DATA, s->state & 0xff, iobase);
+		if (mask & 0xff00)
+			spriv->io(1, _8255_DATA + 1, (s->state >> 8) & 0xff,
+				  iobase);
+		if (mask & 0xff0000)
+			spriv->io(1, _8255_DATA + 2, (s->state >> 16) & 0xff,
+				  iobase);
+	}
+
+	v = spriv->io(0, _8255_DATA, 0, iobase);
+	v |= (spriv->io(0, _8255_DATA + 1, 0, iobase) << 8);
+	v |= (spriv->io(0, _8255_DATA + 2, 0, iobase) << 16);
+
+	data[1] = v;
+
+	return insn->n;
+}
+
+static void subdev_8255_do_config(struct comedi_device *dev,
+				  struct comedi_subdevice *s)
+{
+	struct subdev_8255_private *spriv = s->private;
+	unsigned long iobase = spriv->iobase;
+>>>>>>> refs/remotes/origin/master
 	int config;
 
 	config = CR_CW;
@@ -236,6 +332,7 @@ static void do_config(struct comedi_device *dev, struct comedi_subdevice *s)
 		config |= CR_C_LO_IO;
 	if (!(s->io_bits & 0xf00000))
 		config |= CR_C_HI_IO;
+<<<<<<< HEAD
 	CALLBACK_FUNC(1, _8255_CR, config, CALLBACK_ARG);
 }
 
@@ -272,15 +369,67 @@ static int subdev_8255_cmdtest(struct comedi_device *dev,
 	cmd->stop_src &= TRIG_NONE;
 	if (!cmd->stop_src || tmp != cmd->stop_src)
 		err++;
+=======
+
+	spriv->io(1, _8255_CR, config, iobase);
+}
+
+static int subdev_8255_insn_config(struct comedi_device *dev,
+				   struct comedi_subdevice *s,
+				   struct comedi_insn *insn,
+				   unsigned int *data)
+{
+	unsigned int chan = CR_CHAN(insn->chanspec);
+	unsigned int mask;
+	int ret;
+
+	if (chan < 8)
+		mask = 0x0000ff;
+	else if (chan < 16)
+		mask = 0x00ff00;
+	else if (chan < 20)
+		mask = 0x0f0000;
+	else
+		mask = 0xf00000;
+
+	ret = comedi_dio_insn_config(dev, s, insn, data, mask);
+	if (ret)
+		return ret;
+
+	subdev_8255_do_config(dev, s);
+
+	return insn->n;
+}
+
+static int subdev_8255_cmdtest(struct comedi_device *dev,
+			       struct comedi_subdevice *s,
+			       struct comedi_cmd *cmd)
+{
+	int err = 0;
+
+	/* Step 1 : check if triggers are trivially valid */
+
+	err |= cfc_check_trigger_src(&cmd->start_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_begin_src, TRIG_EXT);
+	err |= cfc_check_trigger_src(&cmd->convert_src, TRIG_FOLLOW);
+	err |= cfc_check_trigger_src(&cmd->scan_end_src, TRIG_COUNT);
+	err |= cfc_check_trigger_src(&cmd->stop_src, TRIG_NONE);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 1;
 
+<<<<<<< HEAD
 	/* step 2 */
+=======
+	/* Step 2a : make sure trigger sources are unique */
+	/* Step 2b : and mutually compatible */
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 2;
 
+<<<<<<< HEAD
 	/* step 3 */
 
 	if (cmd->start_arg != 0) {
@@ -303,6 +452,15 @@ static int subdev_8255_cmdtest(struct comedi_device *dev,
 		cmd->stop_arg = 0;
 		err++;
 	}
+=======
+	/* Step 3: check if arguments are trivially valid */
+
+	err |= cfc_check_trigger_arg_is(&cmd->start_arg, 0);
+	err |= cfc_check_trigger_arg_is(&cmd->scan_begin_arg, 0);
+	err |= cfc_check_trigger_arg_is(&cmd->convert_arg, 0);
+	err |= cfc_check_trigger_arg_is(&cmd->scan_end_arg, 1);
+	err |= cfc_check_trigger_arg_is(&cmd->stop_arg, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 3;
@@ -332,6 +490,7 @@ static int subdev_8255_cancel(struct comedi_device *dev,
 }
 
 int subdev_8255_init(struct comedi_device *dev, struct comedi_subdevice *s,
+<<<<<<< HEAD
 		     int (*cb) (int, int, int, unsigned long),
 		     unsigned long arg)
 {
@@ -386,6 +545,51 @@ void subdev_8255_cleanup(struct comedi_device *dev, struct comedi_subdevice *s)
 	kfree(s->private);
 }
 EXPORT_SYMBOL(subdev_8255_cleanup);
+=======
+		     int (*io)(int, int, int, unsigned long),
+		     unsigned long iobase)
+{
+	struct subdev_8255_private *spriv;
+
+	spriv = comedi_alloc_spriv(s, sizeof(*spriv));
+	if (!spriv)
+		return -ENOMEM;
+
+	spriv->iobase	= iobase;
+	spriv->io	= io ? io : subdev_8255_io;
+
+	s->type		= COMEDI_SUBD_DIO;
+	s->subdev_flags	= SDF_READABLE | SDF_WRITABLE;
+	s->n_chan	= 24;
+	s->range_table	= &range_digital;
+	s->maxdata	= 1;
+	s->insn_bits	= subdev_8255_insn;
+	s->insn_config	= subdev_8255_insn_config;
+
+	subdev_8255_do_config(dev, s);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(subdev_8255_init);
+
+int subdev_8255_init_irq(struct comedi_device *dev, struct comedi_subdevice *s,
+			 int (*io)(int, int, int, unsigned long),
+			 unsigned long iobase)
+{
+	int ret;
+
+	ret = subdev_8255_init(dev, s, io, iobase);
+	if (ret)
+		return ret;
+
+	s->do_cmdtest	= subdev_8255_cmdtest;
+	s->do_cmd	= subdev_8255_cmd;
+	s->cancel	= subdev_8255_cancel;
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(subdev_8255_init_irq);
+>>>>>>> refs/remotes/origin/master
 
 /*
 
@@ -396,18 +600,26 @@ EXPORT_SYMBOL(subdev_8255_cleanup);
 static int dev_8255_attach(struct comedi_device *dev,
 			   struct comedi_devconfig *it)
 {
+<<<<<<< HEAD
+=======
+	struct comedi_subdevice *s;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	unsigned long iobase;
 	int i;
 
+<<<<<<< HEAD
 	dev->board_name = "8255";
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < COMEDI_NDEVCONFOPTS; i++) {
 		iobase = it->options[i];
 		if (!iobase)
 			break;
 	}
 	if (i == 0) {
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "comedi%d: 8255: no devices specified\n", dev->minor);
 		return -EINVAL;
@@ -462,6 +674,56 @@ static int dev_8255_detach(struct comedi_device *dev)
 	return 0;
 }
 
+=======
+		dev_warn(dev->class_dev, "no devices specified\n");
+		return -EINVAL;
+	}
+
+	ret = comedi_alloc_subdevices(dev, i);
+	if (ret)
+		return ret;
+
+	for (i = 0; i < dev->n_subdevices; i++) {
+		s = &dev->subdevices[i];
+		iobase = it->options[i];
+
+		ret = __comedi_request_region(dev, iobase, _8255_SIZE);
+		if (ret) {
+			s->type = COMEDI_SUBD_UNUSED;
+		} else {
+			ret = subdev_8255_init(dev, s, NULL, iobase);
+			if (ret)
+				return ret;
+		}
+	}
+
+	return 0;
+}
+
+static void dev_8255_detach(struct comedi_device *dev)
+{
+	struct comedi_subdevice *s;
+	struct subdev_8255_private *spriv;
+	int i;
+
+	for (i = 0; i < dev->n_subdevices; i++) {
+		s = &dev->subdevices[i];
+		if (s->type != COMEDI_SUBD_UNUSED) {
+			spriv = s->private;
+			release_region(spriv->iobase, _8255_SIZE);
+		}
+	}
+}
+
+static struct comedi_driver dev_8255_driver = {
+	.driver_name	= "8255",
+	.module		= THIS_MODULE,
+	.attach		= dev_8255_attach,
+	.detach		= dev_8255_detach,
+};
+module_comedi_driver(dev_8255_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");
 MODULE_LICENSE("GPL");

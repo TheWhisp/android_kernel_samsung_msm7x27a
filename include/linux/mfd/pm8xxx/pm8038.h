@@ -1,5 +1,13 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -28,6 +36,21 @@
 #include <linux/mfd/pm8xxx/misc.h>
 #include <linux/regulator/pm8xxx-regulator.h>
 #include <linux/mfd/pm8xxx/pm8xxx-adc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/mfd/pm8xxx/pm8921-charger.h>
+#include <linux/mfd/pm8xxx/pm8921-bms.h>
+#include <linux/leds-pm8xxx.h>
+#include <linux/mfd/pm8xxx/ccadc.h>
+#include <linux/mfd/pm8xxx/spk.h>
+#include <linux/mfd/pm8xxx/tm.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PM8038_CORE_DEV_NAME "pm8038-core"
 
@@ -59,6 +82,18 @@
 
 #define PM8038_RESOUT_IRQ		PM8038_IRQ_BLOCK_BIT(6, 4)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define PM8038_OVERTEMP_IRQ		PM8038_IRQ_BLOCK_BIT(4, 2)
+#define PM8038_TEMPSTAT_IRQ		PM8038_IRQ_BLOCK_BIT(6, 7)
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PM8038_OVERTEMP_IRQ		PM8038_IRQ_BLOCK_BIT(4, 2)
+#define PM8038_TEMPSTAT_IRQ		PM8038_IRQ_BLOCK_BIT(6, 7)
+
+>>>>>>> refs/remotes/origin/cm-11.0
 struct pm8038_platform_data {
 	int					irq_base;
 	struct pm8xxx_gpio_platform_data	*gpio_pdata;
@@ -69,7 +104,22 @@ struct pm8038_platform_data {
 	struct pm8xxx_misc_platform_data	*misc_pdata;
 	struct pm8xxx_regulator_platform_data	*regulator_pdatas;
 	int					num_regulators;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct pm8xxx_adc_platform_data		*adc_pdata;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct pm8921_charger_platform_data	*charger_pdata;
+	struct pm8921_bms_platform_data		*bms_pdata;
+	struct pm8xxx_adc_platform_data		*adc_pdata;
+	struct pm8xxx_led_platform_data		*leds_pdata;
+	struct pm8xxx_ccadc_platform_data	*ccadc_pdata;
+	struct pm8xxx_spk_platform_data		*spk_pdata;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #endif

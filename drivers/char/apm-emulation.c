@@ -31,7 +31,13 @@
 #include <linux/kthread.h>
 #include <linux/delay.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The apm_bios device is one of the misc char devices.
@@ -40,10 +46,18 @@
 #define APM_MINOR_DEV	134
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/Config.help for the configuration options.
  *
  * Various options can be changed at boot time as follows:
  * (We allow underscores for compatibility with the modules code)
+=======
+ * One option can be changed at boot time as follows:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * One option can be changed at boot time as follows:
+>>>>>>> refs/remotes/origin/master
  *	apm=on/off			enable/disable APM
  */
 
@@ -300,6 +314,8 @@ apm_ioctl(struct file *filp, u_int cmd, u_long arg)
 			/*
 			 * Wait for the suspend/resume to complete.  If there
 			 * are pending acknowledges, we wait here for them.
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 */
 			freezer_do_not_count();
 
@@ -311,6 +327,20 @@ apm_ioctl(struct file *filp, u_int cmd, u_long arg)
 			 * try_to_freeze() in freezer_count() will not trigger
 			 */
 			freezer_count();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			 * wait_event_freezable() is interruptible and pending
+			 * signal can cause busy looping.  We aren't doing
+			 * anything critical, chill a bit on each iteration.
+			 */
+			while (wait_event_freezable(apm_suspend_waitqueue,
+					as->suspend_state != SUSPEND_ACKED))
+				msleep(10);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case SUSPEND_ACKTO:
 			as->suspend_result = -ETIMEDOUT;
@@ -606,7 +636,15 @@ static int apm_suspend_notifier(struct notifier_block *nb,
 			return NOTIFY_OK;
 
 		/* interrupted by signal */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return NOTIFY_BAD;
+=======
+		return notifier_from_errno(err);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return notifier_from_errno(err);
+>>>>>>> refs/remotes/origin/master
 
 	case PM_POST_SUSPEND:
 		/*

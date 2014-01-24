@@ -25,7 +25,11 @@
 
 PyMODINIT_FUNC initperf_trace_context(void);
 
+<<<<<<< HEAD
 static PyObject *perf_trace_context_common_pc(PyObject *self, PyObject *args)
+=======
+static PyObject *perf_trace_context_common_pc(PyObject *obj, PyObject *args)
+>>>>>>> refs/remotes/origin/master
 {
 	static struct scripting_context *scripting_context;
 	PyObject *context;
@@ -40,7 +44,11 @@ static PyObject *perf_trace_context_common_pc(PyObject *self, PyObject *args)
 	return Py_BuildValue("i", retval);
 }
 
+<<<<<<< HEAD
 static PyObject *perf_trace_context_common_flags(PyObject *self,
+=======
+static PyObject *perf_trace_context_common_flags(PyObject *obj,
+>>>>>>> refs/remotes/origin/master
 						 PyObject *args)
 {
 	static struct scripting_context *scripting_context;
@@ -56,7 +64,11 @@ static PyObject *perf_trace_context_common_flags(PyObject *self,
 	return Py_BuildValue("i", retval);
 }
 
+<<<<<<< HEAD
 static PyObject *perf_trace_context_common_lock_depth(PyObject *self,
+=======
+static PyObject *perf_trace_context_common_lock_depth(PyObject *obj,
+>>>>>>> refs/remotes/origin/master
 						      PyObject *args)
 {
 	static struct scripting_context *scripting_context;

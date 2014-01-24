@@ -3,12 +3,24 @@
  *
  * Registration and callback for the s390 common I/O layer.
  *
+<<<<<<< HEAD
  * Copyright IBM Corporation 2002, 2010
+=======
+ * Copyright IBM Corp. 2002, 2010
+>>>>>>> refs/remotes/origin/master
  */
 
 #define KMSG_COMPONENT "zfcp"
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "zfcp_ext.h"
 #include "zfcp_reqlist.h"
 
@@ -56,7 +68,11 @@ static int zfcp_ccw_activate(struct ccw_device *cdev, int clear, char *tag)
 	zfcp_erp_adapter_reopen(adapter, ZFCP_STATUS_COMMON_ERP_FAILED,
 				tag);
 	zfcp_erp_wait(adapter);
+<<<<<<< HEAD
 	flush_work(&adapter->scan_work);
+=======
+	flush_work(&adapter->scan_work); /* ok to call even if nothing queued */
+>>>>>>> refs/remotes/origin/master
 
 	zfcp_ccw_adapter_put(adapter);
 
@@ -71,6 +87,7 @@ static struct ccw_device_id zfcp_ccw_device_id[] = {
 MODULE_DEVICE_TABLE(ccw, zfcp_ccw_device_id);
 
 /**
+<<<<<<< HEAD
  * zfcp_ccw_priv_sch - check if subchannel is privileged
  * @adapter: Adapter/Subchannel to check
  */
@@ -80,6 +97,8 @@ int zfcp_ccw_priv_sch(struct zfcp_adapter *adapter)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * zfcp_ccw_probe - probe function of zfcp driver
  * @cdev: pointer to belonging ccw device
  *
@@ -128,10 +147,17 @@ static void zfcp_ccw_remove(struct ccw_device *cdev)
 	zfcp_ccw_adapter_put(adapter); /* put from zfcp_ccw_adapter_by_cdev */
 
 	list_for_each_entry_safe(unit, u, &unit_remove_lh, list)
+<<<<<<< HEAD
 		zfcp_device_unregister(&unit->dev, &zfcp_sysfs_unit_attrs);
 
 	list_for_each_entry_safe(port, p, &port_remove_lh, list)
 		zfcp_device_unregister(&port->dev, &zfcp_sysfs_port_attrs);
+=======
+		device_unregister(&unit->dev);
+
+	list_for_each_entry_safe(port, p, &port_remove_lh, list)
+		device_unregister(&port->dev);
+>>>>>>> refs/remotes/origin/master
 
 	zfcp_adapter_unregister(adapter);
 }
@@ -170,6 +196,17 @@ static int zfcp_ccw_set_online(struct ccw_device *cdev)
 	adapter->req_no = 0;
 
 	zfcp_ccw_activate(cdev, 0, "ccsonl1");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* scan for remote ports
+	   either at the end of any successful adapter recovery
+	   or only after the adapter recovery for setting a device online */
+	zfcp_fc_inverse_conditional_port_scan(adapter);
+	flush_work(&adapter->scan_work); /* ok to call even if nothing queued */
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	zfcp_ccw_adapter_put(adapter);
 	return 0;
 }

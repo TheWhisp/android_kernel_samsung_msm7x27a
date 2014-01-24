@@ -10,8 +10,12 @@
 #ifndef __ASM_ARM_MACH_TIME_H
 #define __ASM_ARM_MACH_TIME_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * This is our kernel timer structure.
  *
@@ -44,4 +48,13 @@ struct sys_timer {
 
 extern void timer_tick(void);
 
+=======
+extern void timer_tick(void);
+
+struct timespec;
+typedef void (*clock_access_fn)(struct timespec *);
+extern int register_persistent_clock(clock_access_fn read_boot,
+				     clock_access_fn read_persistent);
+
+>>>>>>> refs/remotes/origin/master
 #endif

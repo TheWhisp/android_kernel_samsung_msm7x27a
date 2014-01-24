@@ -19,7 +19,14 @@ extern void request_event_sources_irqs(struct device_node *np,
 
 #include <linux/of.h>
 
+<<<<<<< HEAD
 extern void __init fw_feature_init(const char *hypertas, unsigned long len);
+=======
+extern void __init fw_hypertas_feature_init(const char *hypertas,
+					    unsigned long len);
+extern void __init fw_vec5_feature_init(const char *hypertas,
+					unsigned long len);
+>>>>>>> refs/remotes/origin/master
 
 struct pt_regs;
 
@@ -47,13 +54,40 @@ extern void pSeries_final_fixup(void);
 /* Poweron flag used for enabling auto ups restart */
 extern unsigned long rtas_poweron_auto;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void find_udbg_vterm(void);
+=======
+/* Provided by HVC VIO */
+extern void hvc_vio_init_early(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Provided by HVC VIO */
+extern void hvc_vio_init_early(void);
+>>>>>>> refs/remotes/origin/master
 
 /* Dynamic logical Partitioning/Mobility */
 extern void dlpar_free_cc_nodes(struct device_node *);
 extern void dlpar_free_cc_property(struct property *);
+<<<<<<< HEAD
 extern struct device_node *dlpar_configure_connector(u32);
 extern int dlpar_attach_node(struct device_node *);
 extern int dlpar_detach_node(struct device_node *);
 
+<<<<<<< HEAD
+=======
+/* Snooze Delay, pseries_idle */
+DECLARE_PER_CPU(long, smt_snooze_delay);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct device_node *dlpar_configure_connector(u32, struct device_node *);
+extern int dlpar_attach_node(struct device_node *);
+extern int dlpar_detach_node(struct device_node *);
+
+/* PCI root bridge prepare function override for pseries */
+struct pci_host_bridge;
+int pseries_root_bridge_prepare(struct pci_host_bridge *bridge);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _PSERIES_PSERIES_H */

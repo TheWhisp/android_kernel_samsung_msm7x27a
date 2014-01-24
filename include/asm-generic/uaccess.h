@@ -7,7 +7,10 @@
  * address space, e.g. all NOMMU machines.
  */
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/mm.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 
 #include <asm/segment.h>
@@ -32,7 +35,13 @@ static inline void set_fs(mm_segment_t fs)
 }
 #endif
 
+<<<<<<< HEAD
 #define segment_eq(a, b) ((a).seg == (b).seg)
+=======
+#ifndef segment_eq
+#define segment_eq(a, b) ((a).seg == (b).seg)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #define VERIFY_READ	0
 #define VERIFY_WRITE	1
@@ -162,18 +171,34 @@ static inline __must_check long __copy_to_user(void __user *to,
 
 #define put_user(x, ptr)					\
 ({								\
+<<<<<<< HEAD
 	might_sleep();						\
+=======
+	might_fault();						\
+>>>>>>> refs/remotes/origin/master
 	access_ok(VERIFY_WRITE, ptr, sizeof(*ptr)) ?		\
 		__put_user(x, ptr) :				\
 		-EFAULT;					\
 })
 
+<<<<<<< HEAD
+=======
+#ifndef __put_user_fn
+
+>>>>>>> refs/remotes/origin/master
 static inline int __put_user_fn(size_t size, void __user *ptr, void *x)
 {
 	size = __copy_to_user(ptr, x, size);
 	return size ? -EFAULT : size;
 }
 
+<<<<<<< HEAD
+=======
+#define __put_user_fn(sz, u, k)	__put_user_fn(sz, u, k)
+
+#endif
+
+>>>>>>> refs/remotes/origin/master
 extern int __put_user_bad(void) __attribute__((noreturn));
 
 #define __get_user(x, ptr)					\
@@ -218,18 +243,33 @@ extern int __put_user_bad(void) __attribute__((noreturn));
 
 #define get_user(x, ptr)					\
 ({								\
+<<<<<<< HEAD
 	might_sleep();						\
+=======
+	might_fault();						\
+>>>>>>> refs/remotes/origin/master
 	access_ok(VERIFY_READ, ptr, sizeof(*ptr)) ?		\
 		__get_user(x, ptr) :				\
 		-EFAULT;					\
 })
 
+<<<<<<< HEAD
+=======
+#ifndef __get_user_fn
+>>>>>>> refs/remotes/origin/master
 static inline int __get_user_fn(size_t size, const void __user *ptr, void *x)
 {
 	size = __copy_from_user(x, ptr, size);
 	return size ? -EFAULT : size;
 }
 
+<<<<<<< HEAD
+=======
+#define __get_user_fn(sz, u, k)	__get_user_fn(sz, u, k)
+
+#endif
+
+>>>>>>> refs/remotes/origin/master
 extern int __get_user_bad(void) __attribute__((noreturn));
 
 #ifndef __copy_from_user_inatomic
@@ -243,7 +283,11 @@ extern int __get_user_bad(void) __attribute__((noreturn));
 static inline long copy_from_user(void *to,
 		const void __user * from, unsigned long n)
 {
+<<<<<<< HEAD
 	might_sleep();
+=======
+	might_fault();
+>>>>>>> refs/remotes/origin/master
 	if (access_ok(VERIFY_READ, from, n))
 		return __copy_from_user(to, from, n);
 	else
@@ -253,7 +297,11 @@ static inline long copy_from_user(void *to,
 static inline long copy_to_user(void __user *to,
 		const void *from, unsigned long n)
 {
+<<<<<<< HEAD
 	might_sleep();
+=======
+	might_fault();
+>>>>>>> refs/remotes/origin/master
 	if (access_ok(VERIFY_WRITE, to, n))
 		return __copy_to_user(to, from, n);
 	else
@@ -289,9 +337,26 @@ strncpy_from_user(char *dst, const char __user *src, long count)
  * Return 0 on exception, a value greater than N if too long
  */
 #ifndef __strnlen_user
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define __strnlen_user strnlen
 #endif
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define __strnlen_user(s, n) (strnlen((s), (n)) + 1)
+#endif
+
+/*
+ * Unlike strnlen, strnlen_user includes the nul terminator in
+ * its returned count. Callers should check for a returned value
+ * greater than N as an indication the string is too long.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline long strnlen_user(const char __user *src, long n)
 {
 	if (!access_ok(VERIFY_READ, src, 1))
@@ -319,7 +384,11 @@ __clear_user(void __user *to, unsigned long n)
 static inline __must_check unsigned long
 clear_user(void __user *to, unsigned long n)
 {
+<<<<<<< HEAD
 	might_sleep();
+=======
+	might_fault();
+>>>>>>> refs/remotes/origin/master
 	if (!access_ok(VERIFY_WRITE, to, n))
 		return n;
 

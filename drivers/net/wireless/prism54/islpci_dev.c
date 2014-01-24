@@ -18,6 +18,14 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/slab.h>
 
@@ -792,8 +800,18 @@ islpci_set_multicast_list(struct net_device *dev)
 static void islpci_ethtool_get_drvinfo(struct net_device *dev,
                                        struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct ethtool_ops islpci_ethtool_ops = {
@@ -803,7 +821,13 @@ static const struct ethtool_ops islpci_ethtool_ops = {
 static const struct net_device_ops islpci_netdev_ops = {
 	.ndo_open 		= islpci_open,
 	.ndo_stop		= islpci_close,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_do_ioctl		= prism54_ioctl,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ndo_start_xmit		= islpci_eth_transmit,
 	.ndo_tx_timeout		= islpci_eth_tx_timeout,
 	.ndo_set_mac_address 	= prism54_set_mac_address,
@@ -811,6 +835,19 @@ static const struct net_device_ops islpci_netdev_ops = {
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct device_type wlan_type = {
+	.name	= "wlan",
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct net_device *
 islpci_setup(struct pci_dev *pdev)
 {
@@ -821,9 +858,19 @@ islpci_setup(struct pci_dev *pdev)
 		return ndev;
 
 	pci_set_drvdata(pdev, ndev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(SET_NETDEV_DEV)
 	SET_NETDEV_DEV(ndev, &pdev->dev);
 #endif
+=======
+	SET_NETDEV_DEV(ndev, &pdev->dev);
+	SET_NETDEV_DEVTYPE(ndev, &wlan_type);
+>>>>>>> refs/remotes/origin/master
+=======
+	SET_NETDEV_DEV(ndev, &pdev->dev);
+	SET_NETDEV_DEVTYPE(ndev, &wlan_type);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* setup the structure members */
 	ndev->base_addr = pci_resource_start(pdev, 0);
@@ -837,7 +884,11 @@ islpci_setup(struct pci_dev *pdev)
 	/* ndev->set_multicast_list = &islpci_set_multicast_list; */
 	ndev->addr_len = ETH_ALEN;
 	/* Get a non-zero dummy MAC address for nameif. Jean II */
+<<<<<<< HEAD
 	memcpy(ndev->dev_addr, dummy_mac, 6);
+=======
+	memcpy(ndev->dev_addr, dummy_mac, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	ndev->watchdog_timeo = ISLPCI_TX_TIMEOUT;
 

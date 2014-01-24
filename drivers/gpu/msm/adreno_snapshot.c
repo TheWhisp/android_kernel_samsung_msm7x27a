@@ -17,6 +17,14 @@
 #include "adreno.h"
 #include "adreno_pm4types.h"
 #include "a2xx_reg.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "a3xx_reg.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "a3xx_reg.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Number of dwords of ringbuffer history to record */
 #define NUM_DWORDS_OF_RINGBUFFER_HISTORY 100
@@ -27,6 +35,18 @@
 
 #define SNAPSHOT_OBJ_TYPE_IB 0
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* Keep track of how many bytes are frozen after a snapshot and tell the user */
+static int snapshot_frozen_objsize;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Keep track of how many bytes are frozen after a snapshot and tell the user */
+static int snapshot_frozen_objsize;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct kgsl_snapshot_obj {
 	int type;
 	uint32_t gpuaddr;
@@ -104,6 +124,417 @@ static int find_object(int type, unsigned int gpuaddr, unsigned int ptbase)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/*
+ * This structure keeps track of type0 writes to VSC_PIPE_DATA_ADDRESS_x and
+ * VSC_PIPE_DATA_LENGTH_x. When a draw initator is called these registers
+ * point to buffers that we need to freeze for a snapshot
+ */
+
+static struct {
+	unsigned int base;
+	unsigned int size;
+} vsc_pipe[8];
+
+/*
+ * This is the cached value of type0 writes to the VSC_SIZE_ADDRESS which
+ * contains the buffer address of the visiblity stream size buffer during a
+ * binning pass
+ */
+
+static unsigned int vsc_size_address;
+
+/*
+ * This struct keeps track of type0 writes to VFD_FETCH_INSTR_0_X and
+ * VFD_FETCH_INSTR_1_X registers. When a draw initator is called the addresses
+ * and sizes in these registers point to VBOs that we need to freeze for a
+ * snapshot
+ */
+
+static struct {
+	unsigned int base;
+	unsigned int stride;
+} vbo[16];
+
+/*
+ * This is the cached value of type0 writes to VFD_INDEX_MAX.  This will be used
+ * to calculate the size of the VBOs when the draw initator is called
+ */
+
+static unsigned int vfd_index_max;
+
+/*
+ * This is the cached value of type0 writes to VFD_CONTROL_0 which tells us how
+ * many VBOs are active when the draw initator is called
+ */
+
+static unsigned int vfd_control_0;
+
+/*
+ * Cached value of type0 writes to SP_VS_PVT_MEM_ADDR and SP_FS_PVT_MEM_ADDR.
+ * This is a buffer that contains private stack information for the shader
+ */
+
+static unsigned int sp_vs_pvt_mem_addr;
+static unsigned int sp_fs_pvt_mem_addr;
+
+/*
+ * Each load state block has two possible types.  Each type has a different
+ * number of dwords per unit.  Use this handy lookup table to make sure
+ * we dump the right amount of data from the indirect buffer
+ */
+
+static int load_state_unit_sizes[7][2] = {
+	{ 2, 4 },
+	{ 0, 1 },
+	{ 2, 4 },
+	{ 0, 1 },
+	{ 8, 2 },
+	{ 8, 2 },
+	{ 8, 2 },
+};
+
+static void ib_parse_load_state(struct kgsl_device *device, unsigned int *pkt,
+	unsigned int ptbase)
+{
+	unsigned int block, source, type;
+
+	/*
+	 * The object here is to find indirect shaders i.e - shaders loaded from
+	 * GPU memory instead of directly in the command.  These should be added
+	 * to the list of memory objects to dump. So look at the load state
+	 * if the block is indirect (source = 4). If so then add the memory
+	 * address to the list.  The size of the object differs depending on the
+	 * type per the load_state_unit_sizes array above.
+	 */
+
+	if (type3_pkt_size(pkt[0]) < 2)
+		return;
+
+	/*
+	 * pkt[1] 18:16 - source
+	 * pkt[1] 21:19 - state block
+	 * pkt[1] 31:22 - size in units
+	 * pkt[2] 0:1 - type
+	 * pkt[2] 31:2 - GPU memory address
+	 */
+
+	block = (pkt[1] >> 19) & 0x07;
+	source = (pkt[1] >> 16) & 0x07;
+	type = pkt[2] & 0x03;
+
+	if (source == 4) {
+		int unitsize, ret;
+
+		if (type == 0)
+			unitsize = load_state_unit_sizes[block][0];
+		else
+			unitsize = load_state_unit_sizes[block][1];
+
+		/* Freeze the GPU buffer containing the shader */
+
+		ret = kgsl_snapshot_get_object(device, ptbase,
+				pkt[2] & 0xFFFFFFFC,
+				(((pkt[1] >> 22) & 0x03FF) * unitsize) << 2,
+				SNAPSHOT_GPU_OBJECT_SHADER);
+		snapshot_frozen_objsize += ret;
+	}
+}
+
+/*
+ * This opcode sets the base addresses for the visibilty stream buffer and the
+ * visiblity stream size buffer.
+ */
+
+static void ib_parse_set_bin_data(struct kgsl_device *device, unsigned int *pkt,
+	unsigned int ptbase)
+{
+	int ret;
+
+	if (type3_pkt_size(pkt[0]) < 2)
+		return;
+
+	/* Visiblity stream buffer */
+	ret = kgsl_snapshot_get_object(device, ptbase, pkt[1], 0,
+			SNAPSHOT_GPU_OBJECT_GENERIC);
+	snapshot_frozen_objsize += ret;
+
+	/* visiblity stream size buffer (fixed size 8 dwords) */
+	ret = kgsl_snapshot_get_object(device, ptbase, pkt[2], 32,
+			SNAPSHOT_GPU_OBJECT_GENERIC);
+	snapshot_frozen_objsize += ret;
+}
+
+/*
+ * This opcode writes to GPU memory - if the buffer is written to, there is a
+ * good chance that it would be valuable to capture in the snapshot, so mark all
+ * buffers that are written to as frozen
+ */
+
+static void ib_parse_mem_write(struct kgsl_device *device, unsigned int *pkt,
+	unsigned int ptbase)
+{
+	int ret;
+
+	if (type3_pkt_size(pkt[0]) < 1)
+		return;
+
+	/*
+	 * The address is where the data in the rest of this packet is written
+	 * to, but since that might be an offset into the larger buffer we need
+	 * to get the whole thing. Pass a size of 0 kgsl_snapshot_get_object to
+	 * capture the entire buffer.
+	 */
+
+	ret = kgsl_snapshot_get_object(device, ptbase, pkt[1] & 0xFFFFFFFC, 0,
+		SNAPSHOT_GPU_OBJECT_GENERIC);
+
+	snapshot_frozen_objsize += ret;
+}
+
+/*
+ * The DRAW_INDX opcode sends a draw initator which starts a draw operation in
+ * the GPU, so this is the point where all the registers and buffers become
+ * "valid".  The DRAW_INDX may also have an index buffer pointer that should be
+ * frozen with the others
+ */
+
+static void ib_parse_draw_indx(struct kgsl_device *device, unsigned int *pkt,
+	unsigned int ptbase)
+{
+	int ret, i;
+
+	if (type3_pkt_size(pkt[0]) < 3)
+		return;
+
+	/*  DRAW_IDX may have a index buffer pointer */
+
+	if (type3_pkt_size(pkt[0]) > 3) {
+		ret = kgsl_snapshot_get_object(device, ptbase, pkt[4], pkt[5],
+			SNAPSHOT_GPU_OBJECT_GENERIC);
+		snapshot_frozen_objsize += ret;
+	}
+
+	/*
+	 * All of the type0 writes are valid at a draw initiator, so freeze
+	 * the various buffers that we are tracking
+	 */
+
+	/* First up the visiblity stream buffer */
+
+	for (i = 0; i < ARRAY_SIZE(vsc_pipe); i++) {
+		if (vsc_pipe[i].base != 0 && vsc_pipe[i].size != 0) {
+			ret = kgsl_snapshot_get_object(device, ptbase,
+				vsc_pipe[i].base, vsc_pipe[i].size,
+				SNAPSHOT_GPU_OBJECT_GENERIC);
+			snapshot_frozen_objsize += ret;
+		}
+	}
+
+	/* Next the visibility stream size buffer */
+
+	if (vsc_size_address) {
+		ret = kgsl_snapshot_get_object(device, ptbase,
+				vsc_size_address, 32,
+				SNAPSHOT_GPU_OBJECT_GENERIC);
+		snapshot_frozen_objsize += ret;
+	}
+
+	/* Next private shader buffer memory */
+	if (sp_vs_pvt_mem_addr) {
+		ret = kgsl_snapshot_get_object(device, ptbase,
+				sp_vs_pvt_mem_addr, 8192,
+				SNAPSHOT_GPU_OBJECT_GENERIC);
+
+		snapshot_frozen_objsize += ret;
+	}
+
+	if (sp_fs_pvt_mem_addr) {
+		ret = kgsl_snapshot_get_object(device, ptbase,
+				sp_fs_pvt_mem_addr, 8192,
+				SNAPSHOT_GPU_OBJECT_GENERIC);
+		snapshot_frozen_objsize += ret;
+	}
+
+	/* Finally: VBOs */
+
+	/* The number of active VBOs is stored in VFD_CONTROL_O[31:27] */
+	for (i = 0; i < (vfd_control_0) >> 27; i++) {
+		int size;
+
+		/*
+		 * The size of the VBO is the stride stored in
+		 * VFD_FETCH_INSTR_0_X.BUFSTRIDE * VFD_INDEX_MAX. The base
+		 * is stored in VFD_FETCH_INSTR_1_X
+		 */
+
+		if (vbo[i].base != 0) {
+			size = vbo[i].stride * vfd_index_max;
+
+			ret = kgsl_snapshot_get_object(device, ptbase,
+				vbo[i].base,
+				0, SNAPSHOT_GPU_OBJECT_GENERIC);
+			snapshot_frozen_objsize += ret;
+		}
+	}
+}
+
+/*
+ * Parse all the type3 opcode packets that may contain important information,
+ * such as additional GPU buffers to grab or a draw initator
+ */
+
+static void ib_parse_type3(struct kgsl_device *device, unsigned int *ptr,
+	unsigned int ptbase)
+{
+	switch (cp_type3_opcode(*ptr)) {
+	case CP_LOAD_STATE:
+		ib_parse_load_state(device, ptr, ptbase);
+		break;
+	case CP_SET_BIN_DATA:
+		ib_parse_set_bin_data(device, ptr, ptbase);
+		break;
+	case CP_MEM_WRITE:
+		ib_parse_mem_write(device, ptr, ptbase);
+		break;
+	case CP_DRAW_INDX:
+		ib_parse_draw_indx(device, ptr, ptbase);
+		break;
+	}
+}
+
+/*
+ * Parse type0 packets found in the stream.  Some of the registers that are
+ * written are clues for GPU buffers that we need to freeze.  Register writes
+ * are considred valid when a draw initator is called, so just cache the values
+ * here and freeze them when a CP_DRAW_INDX is seen.  This protects against
+ * needlessly caching buffers that won't be used during a draw call
+ */
+
+static void ib_parse_type0(struct kgsl_device *device, unsigned int *ptr,
+	unsigned int ptbase)
+{
+	int size = type0_pkt_size(*ptr);
+	int offset = type0_pkt_offset(*ptr);
+	int i;
+
+	for (i = 0; i < size; i++, offset++) {
+
+		/* Visiblity stream buffer */
+
+		if (offset >= A3XX_VSC_PIPE_DATA_ADDRESS_0 &&
+			offset <= A3XX_VSC_PIPE_DATA_LENGTH_7) {
+			int index = offset - A3XX_VSC_PIPE_DATA_ADDRESS_0;
+
+			/* Each bank of address and length registers are
+			 * interleaved with an empty register:
+			 *
+			 * address 0
+			 * length 0
+			 * empty
+			 * address 1
+			 * length 1
+			 * empty
+			 * ...
+			 */
+
+			if ((index % 3) == 0)
+				vsc_pipe[index / 3].base = ptr[i + 1];
+			else if ((index % 3) == 1)
+				vsc_pipe[index / 3].size = ptr[i + 1];
+		} else if ((offset >= A3XX_VFD_FETCH_INSTR_0_0) &&
+			(offset <= A3XX_VFD_FETCH_INSTR_1_F)) {
+			int index = offset - A3XX_VFD_FETCH_INSTR_0_0;
+
+			/*
+			 * FETCH_INSTR_0_X and FETCH_INSTR_1_X banks are
+			 * interleaved as above but without the empty register
+			 * in between
+			 */
+
+			if ((index % 2) == 0)
+				vbo[index >> 1].stride =
+					(ptr[i + 1] >> 7) & 0x1FF;
+			else
+				vbo[index >> 1].base = ptr[i + 1];
+		} else {
+			/*
+			 * Cache various support registers for calculating
+			 * buffer sizes
+			 */
+
+			switch (offset) {
+			case A3XX_VFD_CONTROL_0:
+				vfd_control_0 = ptr[i + 1];
+				break;
+			case A3XX_VFD_INDEX_MAX:
+				vfd_index_max = ptr[i + 1];
+				break;
+			case A3XX_VSC_SIZE_ADDRESS:
+				vsc_size_address = ptr[i + 1];
+				break;
+			case A3XX_SP_VS_PVT_MEM_ADDR_REG:
+				sp_vs_pvt_mem_addr = ptr[i + 1];
+				break;
+			case A3XX_SP_FS_PVT_MEM_ADDR_REG:
+				sp_fs_pvt_mem_addr = ptr[i + 1];
+				break;
+			}
+		}
+	}
+}
+
+/* Add an IB as a GPU object, but first, parse it to find more goodies within */
+
+static void ib_add_gpu_object(struct kgsl_device *device, unsigned int ptbase,
+		unsigned int gpuaddr, unsigned int dwords)
+{
+	int i, ret, rem = dwords;
+	unsigned int *src = (unsigned int *) adreno_convertaddr(device, ptbase,
+		gpuaddr, dwords << 2);
+
+	if (src == NULL)
+		return;
+
+	for (i = 0; rem != 0; rem--, i++) {
+		int pktsize;
+
+		if (!pkt_is_type0(src[i]) && !pkt_is_type3(src[i]))
+			continue;
+
+		pktsize = type3_pkt_size(src[i]);
+
+		if ((pktsize + 1) > rem)
+			break;
+
+		if (pkt_is_type3(src[i])) {
+			if (adreno_cmd_is_ib(src[i]))
+				ib_add_gpu_object(device, ptbase,
+					src[i + 1], src[i + 2]);
+			else
+				ib_parse_type3(device, &src[i], ptbase);
+		} else if (pkt_is_type0(src[i])) {
+			ib_parse_type0(device, &src[i], ptbase);
+		}
+
+		i += pktsize;
+		rem -= pktsize;
+	}
+
+	ret = kgsl_snapshot_get_object(device, ptbase, gpuaddr, dwords << 2,
+		SNAPSHOT_GPU_OBJECT_IB);
+
+	snapshot_frozen_objsize += ret;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Snapshot the istore memory */
 static int snapshot_istore(struct kgsl_device *device, void *snapshot,
 	int remain, void *priv)
@@ -113,7 +544,15 @@ static int snapshot_istore(struct kgsl_device *device, void *snapshot,
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
 	int count, i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	count = adreno_dev->istore_size * ADRENO_ISTORE_WORDS;
+=======
+	count = adreno_dev->istore_size * adreno_dev->instruction_size;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	count = adreno_dev->istore_size * adreno_dev->instruction_size;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (remain < (count * 4) + sizeof(*header)) {
 		KGSL_DRV_ERR(device,
@@ -137,6 +576,8 @@ static int snapshot_rb(struct kgsl_device *device, void *snapshot,
 	unsigned int *data = snapshot + sizeof(*header);
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
 	struct adreno_ringbuffer *rb = &adreno_dev->ringbuffer;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int rbbase, ptbase, rptr, *rbptr;
 	int start, stop, index;
 	int numitems, size;
@@ -147,10 +588,25 @@ static int snapshot_rb(struct kgsl_device *device, void *snapshot,
 
 	/* Get the physical address of the MMU pagetable */
 	ptbase = kgsl_mmu_get_current_ptbase(device);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	unsigned int ptbase, rptr, *rbptr, ibbase;
+	int index, size, i;
+	int parse_ibs = 0, ib_parse_start;
+
+	/* Get the physical address of the MMU pagetable */
+	ptbase = kgsl_mmu_get_current_ptbase(&device->mmu);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Get the current read pointers for the RB */
 	kgsl_regread(device, REG_CP_RB_RPTR, &rptr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* start the dump at the rptr minus some history */
 	start = (int) rptr - NUM_DWORDS_OF_RINGBUFFER_HISTORY;
 	if (start < 0)
@@ -232,12 +688,107 @@ static int snapshot_rb(struct kgsl_device *device, void *snapshot,
 	}
 
 	index = start;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* Address of the last processed IB */
+	kgsl_regread(device, REG_CP_IB1_BASE, &ibbase);
+
+	/*
+	 * Figure out the window of ringbuffer data to dump.  First we need to
+	 * find where the last processed IB ws submitted.  Start walking back
+	 * from the rptr
+	 */
+
+	index = rptr;
+	rbptr = rb->buffer_desc.hostptr;
+
+	do {
+		index--;
+
+		if (index < 0) {
+			index = rb->sizedwords - 3;
+
+			/* We wrapped without finding what we wanted */
+			if (index < rb->wptr) {
+				index = rb->wptr;
+				break;
+			}
+		}
+
+		if (adreno_cmd_is_ib(rbptr[index]) &&
+			rbptr[index + 1] == ibbase)
+			break;
+	} while (index != rb->wptr);
+
+	/*
+	 * index points at the last submitted IB. We can only trust that the
+	 * memory between the context switch and the hanging IB is valid, so
+	 * the next step is to find the context switch before the submission
+	 */
+
+	while (index != rb->wptr) {
+		index--;
+
+		if (index < 0) {
+			index = rb->sizedwords - 2;
+
+			/*
+			 * Wrapped without finding the context switch. This is
+			 * harmless - we should still have enough data to dump a
+			 * valid state
+			 */
+
+			if (index < rb->wptr) {
+				index = rb->wptr;
+				break;
+			}
+		}
+
+		/* Break if the current packet is a context switch identifier */
+		if ((rbptr[index] == cp_nop_packet(1)) &&
+			(rbptr[index + 1] == KGSL_CONTEXT_TO_MEM_IDENTIFIER))
+			break;
+	}
+
+	/*
+	 * Index represents the start of the window of interest.  We will try
+	 * to dump all buffers between here and the rptr
+	 */
+
+	ib_parse_start = index;
+
+	/*
+	 * Dump the entire ringbuffer - the parser can choose how much of it to
+	 * process
+	 */
+
+	size = (rb->sizedwords << 2);
+
+	if (remain < size + sizeof(*header)) {
+		KGSL_DRV_ERR(device,
+			"snapshot: Not enough memory for the rb section");
+		return 0;
+	}
+
+	/* Write the sub-header for the section */
+	header->start = rb->wptr;
+	header->end = rb->wptr;
+	header->wptr = rb->wptr;
+	header->rbsize = rb->sizedwords;
+	header->count = rb->sizedwords;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Loop through the RB, copying the data and looking for indirect
 	 * buffers and MMU pagetable changes
 	 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (index != rb->wptr) {
 		*data = rbptr[index];
 
@@ -265,6 +816,77 @@ static int snapshot_rb(struct kgsl_device *device, void *snapshot,
 
 	while (index != stop) {
 		*data = rbptr[index];
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	index = rb->wptr;
+	for (i = 0; i < rb->sizedwords; i++) {
+		*data = rbptr[index];
+
+		/*
+		 * Sometimes the rptr is located in the middle of a packet.
+		 * try to adust for that by modifying the rptr to match a
+		 * packet boundary. Unfortunately for us, it is hard to tell
+		 * which dwords are legitimate type0 header and which are just
+		 * random data so only do the adjustments for type3 packets
+		 */
+
+		if (pkt_is_type3(rbptr[index])) {
+			unsigned int pktsize =
+				type3_pkt_size(rbptr[index]);
+			if (index +  pktsize > rptr)
+				rptr = (index + pktsize) %
+					rb->sizedwords;
+		}
+
+		/*
+		 * Only parse IBs between the start and the rptr or the next
+		 * context switch, whichever comes first
+		 */
+
+		if (index == ib_parse_start)
+			parse_ibs = 1;
+		else if (index == rptr || adreno_rb_ctxtswitch(&rbptr[index]))
+			parse_ibs = 0;
+
+		if (parse_ibs && adreno_cmd_is_ib(rbptr[index])) {
+			unsigned int ibaddr = rbptr[index + 1];
+			unsigned int ibsize = rbptr[index + 2];
+
+			/*
+			 * This will return non NULL if the IB happens to be
+			 * part of the context memory (i.e - context switch
+			 * command buffers)
+			 */
+
+			struct kgsl_memdesc *memdesc =
+				adreno_find_ctxtmem(device, ptbase, ibaddr,
+					ibsize);
+
+			/* IOMMU uses a NOP IB placed in setsate memory */
+			if (NULL == memdesc)
+				if (kgsl_gpuaddr_in_memdesc(
+						&device->mmu.setstate_memory,
+						ibaddr, ibsize))
+					memdesc = &device->mmu.setstate_memory;
+			/*
+			 * The IB from CP_IB1_BASE and the IBs for legacy
+			 * context switch go into the snapshot all
+			 * others get marked at GPU objects
+			 */
+
+			if (ibaddr == ibbase || memdesc != NULL)
+				push_object(device, SNAPSHOT_OBJ_TYPE_IB,
+					ptbase, ibaddr, ibsize);
+			else
+				ib_add_gpu_object(device, ptbase, ibaddr,
+					ibsize);
+		}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		index = index + 1;
 
 		if (index == rb->sizedwords)
@@ -299,6 +921,8 @@ static int snapshot_ib(struct kgsl_device *device, void *snapshot,
 	header->size = obj->dwords;
 
 	/* Write the contents of the ib */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < obj->dwords; i++) {
 		*dst = *src;
 		/* If another IB is discovered, then push it on the list too */
@@ -309,6 +933,26 @@ static int snapshot_ib(struct kgsl_device *device, void *snapshot,
 
 		src++;
 		dst++;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	for (i = 0; i < obj->dwords; i++, src++, dst++) {
+		*dst = *src;
+
+		if (pkt_is_type3(*src)) {
+			if ((obj->dwords - i) < type3_pkt_size(*src) + 1)
+				continue;
+
+			if (adreno_cmd_is_ib(*src))
+				push_object(device, SNAPSHOT_OBJ_TYPE_IB,
+					obj->ptbase, src[1], src[2]);
+			else
+				ib_parse_type3(device, src, obj->ptbase);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return (obj->dwords << 2) + sizeof(*header);
@@ -354,8 +998,30 @@ void *adreno_snapshot(struct kgsl_device *device, void *snapshot, int *remain,
 	/* Reset the list of objects */
 	objbufptr = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Get the physical address of the MMU pagetable */
 	ptbase = kgsl_mmu_get_current_ptbase(device);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	snapshot_frozen_objsize = 0;
+
+	/* Clear the caches for the visibilty stream and VBO parsing */
+
+	vfd_control_0 = 0;
+	vfd_index_max = 0;
+	vsc_size_address = 0;
+
+	memset(vsc_pipe, 0, sizeof(vsc_pipe));
+	memset(vbo, 0, sizeof(vbo));
+
+	/* Get the physical address of the MMU pagetable */
+	ptbase = kgsl_mmu_get_current_ptbase(&device->mmu);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Dump the ringbuffer */
 	snapshot = kgsl_snapshot_add_section(device, KGSL_SNAPSHOT_SECTION_RB,
@@ -425,5 +1091,18 @@ void *adreno_snapshot(struct kgsl_device *device, void *snapshot, int *remain,
 		snapshot = adreno_dev->gpudev->snapshot(adreno_dev, snapshot,
 			remain, hang);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (snapshot_frozen_objsize)
+		KGSL_DRV_ERR(device, "GPU snapshot froze %dKb of GPU buffers\n",
+			snapshot_frozen_objsize / 1024);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return snapshot;
 }

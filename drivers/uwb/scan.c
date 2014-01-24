@@ -36,6 +36,14 @@
 #include <linux/device.h>
 #include <linux/err.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/master
 #include "uwb-internal.h"
 
 

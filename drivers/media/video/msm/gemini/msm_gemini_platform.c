@@ -11,15 +11,36 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/clk.h>
 #include <mach/clk.h>
 #include <linux/io.h>
 #include <linux/android_pmem.h>
 #include <mach/camera.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
 
 #include "msm_gemini_platform.h"
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <mach/iommu_domains.h>
+
+#include "msm_gemini_platform.h"
+#include "msm_gemini_sync.h"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "msm_gemini_common.h"
 #include "msm_gemini_hw.h"
 
@@ -46,7 +67,15 @@ uint32_t msm_gemini_platform_v2p(int fd, uint32_t len, struct file **file_p,
 	unsigned long size;
 	int rc;
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*ionhandle = ion_import_fd(gemini_client, fd);
+=======
+	*ionhandle = ion_import_dma_buf(gemini_client, fd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*ionhandle = ion_import_dma_buf(gemini_client, fd);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR_OR_NULL(*ionhandle))
 		return 0;
 
@@ -80,6 +109,29 @@ error1:
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct msm_cam_clk_info gemini_8x_clk_info[] = {
+	{"core_clk", 228571000},
+	{"iface_clk", -1},
+};
+
+static struct msm_cam_clk_info gemini_7x_clk_info[] = {
+	{"core_clk", 153600000},
+	{"iface_clk", -1},
+};
+
+static struct msm_cam_clk_info gemini_imem_clk_info[] = {
+	{"mem_clk", -1},
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int msm_gemini_platform_init(struct platform_device *pdev,
 	struct resource **mem,
 	void **base,
@@ -91,6 +143,16 @@ int msm_gemini_platform_init(struct platform_device *pdev,
 	int gemini_irq;
 	struct resource *gemini_mem, *gemini_io, *gemini_irq_res;
 	void *gemini_base;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct msm_gemini_device *pgmn_dev =
+		(struct msm_gemini_device *) context;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_gemini_device *pgmn_dev =
+		(struct msm_gemini_device *) context;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	gemini_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!gemini_mem) {
@@ -119,10 +181,56 @@ int msm_gemini_platform_init(struct platform_device *pdev,
 		goto fail1;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = msm_camio_jpeg_clk_enable();
 	if (rc) {
 		GMN_PR_ERR("%s: clk failed rc = %d\n", __func__, rc);
 		goto fail2;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	pgmn_dev->hw_version = GEMINI_8X60;
+	rc = msm_cam_clk_enable(&pgmn_dev->pdev->dev, gemini_8x_clk_info,
+	 pgmn_dev->gemini_clk, ARRAY_SIZE(gemini_8x_clk_info), 1);
+	if (rc < 0) {
+		pgmn_dev->hw_version = GEMINI_7X;
+		rc = msm_cam_clk_enable(&pgmn_dev->pdev->dev,
+			gemini_7x_clk_info, pgmn_dev->gemini_clk,
+			ARRAY_SIZE(gemini_7x_clk_info), 1);
+		if (rc < 0) {
+			GMN_PR_ERR("%s: clk failed rc = %d\n", __func__, rc);
+			goto fail2;
+		}
+	} else {
+		rc = msm_cam_clk_enable(&pgmn_dev->pdev->dev,
+				gemini_imem_clk_info, &pgmn_dev->gemini_clk[2],
+				ARRAY_SIZE(gemini_imem_clk_info), 1);
+		if (!rc)
+			pgmn_dev->hw_version = GEMINI_8960;
+	}
+
+	if (pgmn_dev->hw_version != GEMINI_7X) {
+		if (pgmn_dev->gemini_fs == NULL) {
+			pgmn_dev->gemini_fs =
+				regulator_get(&pgmn_dev->pdev->dev, "vdd");
+			if (IS_ERR(pgmn_dev->gemini_fs)) {
+				pr_err("%s: Regulator FS_ijpeg get failed %ld\n",
+					__func__, PTR_ERR(pgmn_dev->gemini_fs));
+				pgmn_dev->gemini_fs = NULL;
+				goto gemini_fs_failed;
+			} else if (regulator_enable(pgmn_dev->gemini_fs)) {
+				pr_err("%s: Regulator FS_ijpeg enable failed\n",
+								__func__);
+				regulator_put(pgmn_dev->gemini_fs);
+				pgmn_dev->gemini_fs = NULL;
+				goto gemini_fs_failed;
+			}
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	msm_gemini_hw_init(gemini_base, resource_size(gemini_mem));
@@ -146,7 +254,31 @@ int msm_gemini_platform_init(struct platform_device *pdev,
 	return rc;
 
 fail3:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_camio_jpeg_clk_disable();
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (pgmn_dev->hw_version != GEMINI_7X) {
+		regulator_disable(pgmn_dev->gemini_fs);
+		regulator_put(pgmn_dev->gemini_fs);
+		pgmn_dev->gemini_fs = NULL;
+	}
+gemini_fs_failed:
+	if (pgmn_dev->hw_version == GEMINI_8960)
+		msm_cam_clk_enable(&pgmn_dev->pdev->dev, gemini_imem_clk_info,
+		 &pgmn_dev->gemini_clk[2], ARRAY_SIZE(gemini_imem_clk_info), 0);
+	if (pgmn_dev->hw_version != GEMINI_7X)
+		msm_cam_clk_enable(&pgmn_dev->pdev->dev, gemini_8x_clk_info,
+		pgmn_dev->gemini_clk, ARRAY_SIZE(gemini_8x_clk_info), 0);
+	else
+		msm_cam_clk_enable(&pgmn_dev->pdev->dev, gemini_7x_clk_info,
+		pgmn_dev->gemini_clk, ARRAY_SIZE(gemini_7x_clk_info), 0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 fail2:
 	iounmap(gemini_base);
 fail1:
@@ -158,10 +290,41 @@ fail1:
 int msm_gemini_platform_release(struct resource *mem, void *base, int irq,
 	void *context)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int result;
 
 	free_irq(irq, context);
 	result = msm_camio_jpeg_clk_disable();
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int result = 0;
+	struct msm_gemini_device *pgmn_dev =
+		(struct msm_gemini_device *) context;
+
+	free_irq(irq, context);
+
+	if (pgmn_dev->hw_version != GEMINI_7X) {
+		regulator_disable(pgmn_dev->gemini_fs);
+		regulator_put(pgmn_dev->gemini_fs);
+		pgmn_dev->gemini_fs = NULL;
+	}
+
+	if (pgmn_dev->hw_version == GEMINI_8960)
+		msm_cam_clk_enable(&pgmn_dev->pdev->dev, gemini_imem_clk_info,
+		 &pgmn_dev->gemini_clk[2], ARRAY_SIZE(gemini_imem_clk_info), 0);
+	if (pgmn_dev->hw_version != GEMINI_7X)
+		msm_cam_clk_enable(&pgmn_dev->pdev->dev, gemini_8x_clk_info,
+		pgmn_dev->gemini_clk, ARRAY_SIZE(gemini_8x_clk_info), 0);
+	else
+		msm_cam_clk_enable(&pgmn_dev->pdev->dev, gemini_7x_clk_info,
+		pgmn_dev->gemini_clk, ARRAY_SIZE(gemini_7x_clk_info), 0);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	iounmap(base);
 	release_mem_region(mem->start, resource_size(mem));
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION

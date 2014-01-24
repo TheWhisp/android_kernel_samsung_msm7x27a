@@ -66,6 +66,7 @@ static void setup_apic_flat_routing(void)
 #endif
 }
 
+<<<<<<< HEAD
 static void default_vector_allocation_domain(int cpu, struct cpumask *retmask)
 {
 	/*
@@ -81,6 +82,8 @@ static void default_vector_allocation_domain(int cpu, struct cpumask *retmask)
 	cpumask_bits(retmask)[0] = APIC_ALL_CPUS;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* should be called last. */
 static int probe_default(void)
 {
@@ -92,6 +95,14 @@ static struct apic apic_default = {
 	.name				= "default",
 	.probe				= probe_default,
 	.acpi_madt_oem_check		= NULL,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/master
 	.apic_id_registered		= default_apic_id_registered,
 
 	.irq_delivery_mode		= dest_LowestPrio,
@@ -104,7 +115,11 @@ static struct apic apic_default = {
 	.check_apicid_used		= default_check_apicid_used,
 	.check_apicid_present		= default_check_apicid_present,
 
+<<<<<<< HEAD
 	.vector_allocation_domain	= default_vector_allocation_domain,
+=======
+	.vector_allocation_domain	= flat_vector_allocation_domain,
+>>>>>>> refs/remotes/origin/master
 	.init_apic_ldr			= default_init_apic_ldr,
 
 	.ioapic_phys_id_map		= default_ioapic_phys_id_map,
@@ -122,8 +137,12 @@ static struct apic apic_default = {
 	.set_apic_id			= NULL,
 	.apic_id_mask			= 0x0F << 24,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= default_cpu_mask_to_apicid,
 	.cpu_mask_to_apicid_and		= default_cpu_mask_to_apicid_and,
+=======
+	.cpu_mask_to_apicid_and		= flat_cpu_mask_to_apicid_and,
+>>>>>>> refs/remotes/origin/master
 
 	.send_IPI_mask			= default_send_IPI_mask_logical,
 	.send_IPI_mask_allbutself	= default_send_IPI_mask_allbutself_logical,
@@ -141,6 +160,10 @@ static struct apic apic_default = {
 
 	.read				= native_apic_mem_read,
 	.write				= native_apic_mem_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_mem_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_apic_icr_read,
 	.icr_write			= native_apic_icr_write,
 	.wait_icr_idle			= native_apic_wait_icr_idle,
@@ -206,6 +229,12 @@ void __init default_setup_apic_routing(void)
 
 	if (apic->setup_apic_routing)
 		apic->setup_apic_routing();
+<<<<<<< HEAD
+=======
+
+	if (x86_platform.apic_post_init)
+		x86_platform.apic_post_init();
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init generic_apic_probe(void)

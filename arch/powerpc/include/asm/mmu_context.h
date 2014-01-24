@@ -38,7 +38,11 @@ extern void drop_cop(unsigned long acop, struct mm_struct *mm);
 
 /*
  * switch_mm is the entry point called from the architecture independent
+<<<<<<< HEAD
  * code in kernel/sched.c
+=======
+ * code in kernel/sched/core.c
+>>>>>>> refs/remotes/origin/master
  */
 static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
 			     struct task_struct *tsk)

@@ -291,13 +291,21 @@ static int __init charlcd_probe(struct platform_device *pdev)
 	lcd->virtbase = ioremap(lcd->phybase, lcd->physize);
 	if (!lcd->virtbase) {
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto out_no_remap;
+=======
+		goto out_no_memregion;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	lcd->irq = platform_get_irq(pdev, 0);
 	/* If no IRQ is supplied, we'll survive without it */
 	if (lcd->irq >= 0) {
+<<<<<<< HEAD
 		if (request_irq(lcd->irq, charlcd_interrupt, IRQF_DISABLED,
+=======
+		if (request_irq(lcd->irq, charlcd_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 				DRIVERNAME, lcd)) {
 			ret = -EIO;
 			goto out_no_irq;
@@ -320,8 +328,11 @@ static int __init charlcd_probe(struct platform_device *pdev)
 
 out_no_irq:
 	iounmap(lcd->virtbase);
+<<<<<<< HEAD
 out_no_remap:
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 out_no_memregion:
 	release_mem_region(lcd->phybase, SZ_4K);
 out_no_resource:
@@ -337,7 +348,10 @@ static int __exit charlcd_remove(struct platform_device *pdev)
 		free_irq(lcd->irq, lcd);
 		iounmap(lcd->virtbase);
 		release_mem_region(lcd->phybase, lcd->physize);
+<<<<<<< HEAD
 		platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(lcd);
 	}
 
@@ -378,6 +392,7 @@ static struct platform_driver charlcd_driver = {
 	.remove = __exit_p(charlcd_remove),
 };
 
+<<<<<<< HEAD
 static int __init charlcd_init(void)
 {
 	return platform_driver_probe(&charlcd_driver, charlcd_probe);
@@ -390,6 +405,9 @@ static void __exit charlcd_exit(void)
 
 module_init(charlcd_init);
 module_exit(charlcd_exit);
+=======
+module_platform_driver_probe(charlcd_driver, charlcd_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Linus Walleij <triad@df.lth.se>");
 MODULE_DESCRIPTION("ARM Character LCD Driver");

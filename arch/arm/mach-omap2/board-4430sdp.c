@@ -20,28 +20,53 @@
 #include <linux/usb/otg.h>
 #include <linux/spi/spi.h>
 #include <linux/i2c/twl.h>
+<<<<<<< HEAD
+=======
+#include <linux/mfd/twl6040.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/gpio_keys.h>
 #include <linux/regulator/machine.h>
 #include <linux/regulator/fixed.h>
 #include <linux/leds.h>
 #include <linux/leds_pwm.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <mach/omap4-common.h>
+=======
+#include <linux/platform_data/omap4-keypad.h>
+
+#include <mach/hardware.h>
+#include <asm/hardware/gic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
 #include <plat/board.h>
+<<<<<<< HEAD
 #include <plat/common.h>
+=======
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/usb.h>
 #include <plat/mmc.h>
 #include <plat/omap4-keypad.h>
 #include <video/omapdss.h>
+<<<<<<< HEAD
 
 #include "mux.h"
 #include "hsmmc.h"
 #include "timer-gp.h"
+=======
+#include <video/omap-panel-nokia-dsi.h>
+#include <video/omap-panel-picodlp.h>
+#include <linux/wl12xx.h>
+#include <linux/platform_data/omap-abe-twl6040.h>
+
+#include "mux.h"
+#include "hsmmc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "control.h"
 #include "common-board-devices.h"
 
@@ -53,6 +78,14 @@
 #define HDMI_GPIO_CT_CP_HPD 60 /* HPD mode enable/disable */
 #define HDMI_GPIO_LS_OE 41 /* Level shifter for HDMI */
 #define HDMI_GPIO_HPD  63 /* Hotplug detect */
+<<<<<<< HEAD
+=======
+#define DISPLAY_SEL_GPIO	59	/* LCD2/PicoDLP switch */
+#define DLP_POWER_ON_GPIO	40
+
+#define GPIO_WIFI_PMENA		54
+#define GPIO_WIFI_IRQ		53
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const int sdp4430_keymap[] = {
 	KEY(0, 0, KEY_E),
@@ -127,6 +160,67 @@ static const int sdp4430_keymap[] = {
 	KEY(7, 6, KEY_OK),
 	KEY(7, 7, KEY_DOWN),
 };
+<<<<<<< HEAD
+=======
+static struct omap_device_pad keypad_pads[] = {
+	{	.name   = "kpd_col1.kpd_col1",
+		.enable = OMAP_WAKEUP_EN | OMAP_MUX_MODE1,
+	},
+	{	.name   = "kpd_col1.kpd_col1",
+		.enable = OMAP_WAKEUP_EN | OMAP_MUX_MODE1,
+	},
+	{	.name   = "kpd_col2.kpd_col2",
+		.enable = OMAP_WAKEUP_EN | OMAP_MUX_MODE1,
+	},
+	{	.name   = "kpd_col3.kpd_col3",
+		.enable = OMAP_WAKEUP_EN | OMAP_MUX_MODE1,
+	},
+	{	.name   = "kpd_col4.kpd_col4",
+		.enable = OMAP_WAKEUP_EN | OMAP_MUX_MODE1,
+	},
+	{	.name   = "kpd_col5.kpd_col5",
+		.enable = OMAP_WAKEUP_EN | OMAP_MUX_MODE1,
+	},
+	{	.name   = "gpmc_a23.kpd_col7",
+		.enable = OMAP_WAKEUP_EN | OMAP_MUX_MODE1,
+	},
+	{	.name   = "gpmc_a22.kpd_col6",
+		.enable = OMAP_WAKEUP_EN | OMAP_MUX_MODE1,
+	},
+	{	.name   = "kpd_row0.kpd_row0",
+		.enable = OMAP_PULL_ENA | OMAP_PULL_UP | OMAP_WAKEUP_EN |
+			OMAP_MUX_MODE1 | OMAP_INPUT_EN,
+	},
+	{	.name   = "kpd_row1.kpd_row1",
+		.enable = OMAP_PULL_ENA | OMAP_PULL_UP | OMAP_WAKEUP_EN |
+			OMAP_MUX_MODE1 | OMAP_INPUT_EN,
+	},
+	{	.name   = "kpd_row2.kpd_row2",
+		.enable = OMAP_PULL_ENA | OMAP_PULL_UP | OMAP_WAKEUP_EN |
+			OMAP_MUX_MODE1 | OMAP_INPUT_EN,
+	},
+	{	.name   = "kpd_row3.kpd_row3",
+		.enable = OMAP_PULL_ENA | OMAP_PULL_UP | OMAP_WAKEUP_EN |
+			OMAP_MUX_MODE1 | OMAP_INPUT_EN,
+	},
+	{	.name   = "kpd_row4.kpd_row4",
+		.enable = OMAP_PULL_ENA | OMAP_PULL_UP | OMAP_WAKEUP_EN |
+			OMAP_MUX_MODE1 | OMAP_INPUT_EN,
+	},
+	{	.name   = "kpd_row5.kpd_row5",
+		.enable = OMAP_PULL_ENA | OMAP_PULL_UP | OMAP_WAKEUP_EN |
+			OMAP_MUX_MODE1 | OMAP_INPUT_EN,
+	},
+	{	.name   = "gpmc_a18.kpd_row6",
+		.enable = OMAP_PULL_ENA | OMAP_PULL_UP | OMAP_WAKEUP_EN |
+			OMAP_MUX_MODE1 | OMAP_INPUT_EN,
+	},
+	{	.name   = "gpmc_a19.kpd_row7",
+		.enable = OMAP_PULL_ENA | OMAP_PULL_UP | OMAP_WAKEUP_EN |
+			OMAP_MUX_MODE1 | OMAP_INPUT_EN,
+	},
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct matrix_keymap_data sdp4430_keymap_data = {
 	.keymap			= sdp4430_keymap,
@@ -138,6 +232,16 @@ static struct omap4_keypad_platform_data sdp4430_keypad_data = {
 	.rows			= 8,
 	.cols			= 8,
 };
+<<<<<<< HEAD
+=======
+
+static struct omap_board_data keypad_data = {
+	.id	    		= 1,
+	.pads	 		= keypad_pads,
+	.pads_cnt       	= ARRAY_SIZE(keypad_pads),
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct gpio_led sdp4430_gpio_leds[] = {
 	{
 		.name	= "omap4:green:debug0",
@@ -250,7 +354,14 @@ static struct spi_board_info sdp4430_spi_board_info[] __initdata = {
 		.bus_num                = 1,
 		.chip_select            = 0,
 		.max_speed_hz           = 24000000,
+<<<<<<< HEAD
 		.irq                    = ETH_KS8851_IRQ,
+=======
+		/*
+		 * .irq is set to gpio_to_irq(ETH_KS8851_IRQ)
+		 * in omap_4430sdp_init
+		 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -273,11 +384,14 @@ static int __init omap_ethernet_init(void)
 	return status;
 }
 
+<<<<<<< HEAD
 static struct platform_device sdp4430_lcd_device = {
 	.name		= "sdp4430_lcd",
 	.id		= -1,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct regulator_consumer_supply sdp4430_vbat_supply[] = {
 	REGULATOR_SUPPLY("vddvibl", "twl6040-vibra"),
 	REGULATOR_SUPPLY("vddvibr", "twl6040-vibra"),
@@ -306,6 +420,7 @@ static struct platform_device sdp4430_vbat = {
 	},
 };
 
+<<<<<<< HEAD
 static struct platform_device *sdp4430_devices[] __initdata = {
 	&sdp4430_lcd_device,
 	&sdp4430_gpio_keys_device,
@@ -330,6 +445,48 @@ static void __init omap_4430sdp_init_early(void)
 	omap2_gp_clockevent_set_gptimer(1);
 #endif
 }
+=======
+static struct platform_device sdp4430_dmic_codec = {
+	.name	= "dmic-codec",
+	.id	= -1,
+};
+
+static struct omap_abe_twl6040_data sdp4430_abe_audio_data = {
+	.card_name = "SDP4430",
+	.has_hs		= ABE_TWL6040_LEFT | ABE_TWL6040_RIGHT,
+	.has_hf		= ABE_TWL6040_LEFT | ABE_TWL6040_RIGHT,
+	.has_ep		= 1,
+	.has_aux	= ABE_TWL6040_LEFT | ABE_TWL6040_RIGHT,
+	.has_vibra	= ABE_TWL6040_LEFT | ABE_TWL6040_RIGHT,
+
+	.has_dmic	= 1,
+	.has_hsmic	= 1,
+	.has_mainmic	= 1,
+	.has_submic	= 1,
+	.has_afm	= ABE_TWL6040_LEFT | ABE_TWL6040_RIGHT,
+
+	.jack_detection = 1,
+	/* MCLK input is 38.4MHz */
+	.mclk_freq	= 38400000,
+};
+
+static struct platform_device sdp4430_abe_audio = {
+	.name		= "omap-abe-twl6040",
+	.id		= -1,
+	.dev = {
+		.platform_data = &sdp4430_abe_audio_data,
+	},
+};
+
+static struct platform_device *sdp4430_devices[] __initdata = {
+	&sdp4430_gpio_keys_device,
+	&sdp4430_leds_gpio,
+	&sdp4430_leds_pwm,
+	&sdp4430_vbat,
+	&sdp4430_dmic_codec,
+	&sdp4430_abe_audio,
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct omap_musb_board_data musb_board_data = {
 	.interface_type		= MUSB_INTERFACE_UTMI,
@@ -350,27 +507,81 @@ static struct omap2_hsmmc_info mmc[] = {
 	{
 		.mmc		= 1,
 		.caps		= MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA,
+<<<<<<< HEAD
 		.gpio_wp	= -EINVAL,
 	},
+=======
+		.gpio_cd	= -EINVAL,
+		.gpio_wp	= -EINVAL,
+	},
+	{
+		.mmc		= 5,
+		.caps		= MMC_CAP_4_BIT_DATA | MMC_CAP_POWER_OFF_CARD,
+		.pm_caps	= MMC_PM_KEEP_POWER,
+		.gpio_cd	= -EINVAL,
+		.gpio_wp	= -EINVAL,
+		.ocr_mask	= MMC_VDD_165_195,
+		.nonremovable	= true,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{}	/* Terminator */
 };
 
 static struct regulator_consumer_supply sdp4430_vaux_supply[] = {
+<<<<<<< HEAD
 	{
 		.supply = "vmmc",
 		.dev_name = "omap_hsmmc.1",
+=======
+	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.1"),
+};
+
+static struct regulator_consumer_supply omap4_sdp4430_vmmc5_supply = {
+	.supply = "vmmc",
+	.dev_name = "omap_hsmmc.4",
+};
+
+static struct regulator_init_data sdp4430_vmmc5 = {
+	.constraints = {
+		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
+	},
+	.num_consumer_supplies = 1,
+	.consumer_supplies = &omap4_sdp4430_vmmc5_supply,
+};
+
+static struct fixed_voltage_config sdp4430_vwlan = {
+	.supply_name		= "vwl1271",
+	.microvolts		= 1800000, /* 1.8V */
+	.gpio			= GPIO_WIFI_PMENA,
+	.startup_delay		= 70000, /* 70msec */
+	.enable_high		= 1,
+	.enabled_at_boot	= 0,
+	.init_data		= &sdp4430_vmmc5,
+};
+
+static struct platform_device omap_vwlan_device = {
+	.name		= "reg-fixed-voltage",
+	.id		= 1,
+	.dev = {
+		.platform_data = &sdp4430_vwlan,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
 static int omap4_twl6030_hsmmc_late_init(struct device *dev)
 {
+<<<<<<< HEAD
 	int ret = 0;
+=======
+	int irq = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct platform_device *pdev = container_of(dev,
 				struct platform_device, dev);
 	struct omap_mmc_platform_data *pdata = dev->platform_data;
 
 	/* Setting MMC1 Card detect Irq */
 	if (pdev->id == 0) {
+<<<<<<< HEAD
 		ret = twl6030_mmc_card_detect_config();
 		if (ret)
 			pr_err("Failed configuring MMC1 card detect\n");
@@ -379,6 +590,17 @@ static int omap4_twl6030_hsmmc_late_init(struct device *dev)
 		pdata->slots[0].card_detect = twl6030_mmc_card_detect;
 	}
 	return ret;
+=======
+		irq = twl6030_mmc_card_detect_config();
+		if (irq < 0) {
+			pr_err("Failed configuring MMC1 card detect\n");
+			return irq;
+		}
+		pdata->slots[0].card_detect_irq = irq;
+		pdata->slots[0].card_detect = twl6030_mmc_card_detect;
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static __init void omap4_twl6030_hsmmc_set_late_init(struct device *dev)
@@ -398,9 +620,15 @@ static int __init omap4_twl6030_hsmmc_init(struct omap2_hsmmc_info *controllers)
 {
 	struct omap2_hsmmc_info *c;
 
+<<<<<<< HEAD
 	omap2_hsmmc_init(controllers);
 	for (c = controllers; c->mmc; c++)
 		omap4_twl6030_hsmmc_set_late_init(c->dev);
+=======
+	omap_hsmmc_init(controllers);
+	for (c = controllers; c->mmc; c++)
+		omap4_twl6030_hsmmc_set_late_init(&c->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -416,7 +644,11 @@ static struct regulator_init_data sdp4430_vaux1 = {
 					| REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
+<<<<<<< HEAD
 	.num_consumer_supplies  = 1,
+=======
+	.num_consumer_supplies  = ARRAY_SIZE(sdp4430_vaux_supply),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.consumer_supplies      = sdp4430_vaux_supply,
 };
 
@@ -433,7 +665,11 @@ static struct regulator_init_data sdp4430_vusim = {
 	},
 };
 
+<<<<<<< HEAD
 static struct twl4030_codec_data twl6040_codec = {
+=======
+static struct twl6040_codec_data twl6040_codec = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* single-step ramp for headset and handsfree */
 	.hs_left_step	= 0x0f,
 	.hs_right_step	= 0x0f,
@@ -441,7 +677,11 @@ static struct twl4030_codec_data twl6040_codec = {
 	.hf_right_step	= 0x1d,
 };
 
+<<<<<<< HEAD
 static struct twl4030_vibra_data twl6040_vibra = {
+=======
+static struct twl6040_vibra_data twl6040_vibra = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.vibldrv_res = 8,
 	.vibrdrv_res = 3,
 	.viblmotor_res = 10,
@@ -450,16 +690,26 @@ static struct twl4030_vibra_data twl6040_vibra = {
 	.vddvibr_uV = 0,	/* fixed volt supply - VBAT */
 };
 
+<<<<<<< HEAD
 static struct twl4030_audio_data twl6040_audio = {
 	.codec		= &twl6040_codec,
 	.vibra		= &twl6040_vibra,
 	.audpwron_gpio	= 127,
 	.naudint_irq	= OMAP44XX_IRQ_SYS_2N,
+=======
+static struct twl6040_platform_data twl6040_data = {
+	.codec		= &twl6040_codec,
+	.vibra		= &twl6040_vibra,
+	.audpwron_gpio	= 127,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.irq_base	= TWL6040_CODEC_IRQ_BASE,
 };
 
 static struct twl4030_platform_data sdp4430_twldata = {
+<<<<<<< HEAD
 	.audio		= &twl6040_audio,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Regulators */
 	.vusim		= &sdp4430_vusim,
 	.vaux1		= &sdp4430_vaux1,
@@ -490,7 +740,12 @@ static int __init omap4_i2c_init(void)
 			TWL_COMMON_REGULATOR_VCXIO |
 			TWL_COMMON_REGULATOR_VUSB |
 			TWL_COMMON_REGULATOR_CLK32KG);
+<<<<<<< HEAD
 	omap4_pmic_init("twl6030", &sdp4430_twldata);
+=======
+	omap4_pmic_init("twl6030", &sdp4430_twldata,
+			&twl6040_data, OMAP44XX_IRQ_SYS_2N);
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap_register_i2c_bus(2, 400, NULL, 0);
 	omap_register_i2c_bus(3, 400, sdp4430_i2c_3_boardinfo,
 				ARRAY_SIZE(sdp4430_i2c_3_boardinfo));
@@ -510,6 +765,7 @@ static void __init omap_sfh7741prox_init(void)
 			__func__, OMAP4_SFH7741_ENABLE_GPIO, error);
 }
 
+<<<<<<< HEAD
 static void sdp4430_hdmi_mux_init(void)
 {
 	omap_mux_init_signal("hdmi_cec",
@@ -520,6 +776,8 @@ static void sdp4430_hdmi_mux_init(void)
 			OMAP_PIN_INPUT_PULLUP);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct gpio sdp4430_hdmi_gpios[] = {
 	{ HDMI_GPIO_CT_CP_HPD, GPIOF_OUT_INIT_HIGH, "hdmi_gpio_ct_cp_hpd" },
 	{ HDMI_GPIO_LS_OE,	GPIOF_OUT_INIT_HIGH,	"hdmi_gpio_ls_oe" },
@@ -543,6 +801,122 @@ static void sdp4430_panel_disable_hdmi(struct omap_dss_device *dssdev)
 	gpio_free_array(sdp4430_hdmi_gpios, ARRAY_SIZE(sdp4430_hdmi_gpios));
 }
 
+<<<<<<< HEAD
+=======
+static struct nokia_dsi_panel_data dsi1_panel = {
+		.name		= "taal",
+		.reset_gpio	= 102,
+		.use_ext_te	= false,
+		.ext_te_gpio	= 101,
+		.esd_interval	= 0,
+};
+
+static struct omap_dss_device sdp4430_lcd_device = {
+	.name			= "lcd",
+	.driver_name		= "taal",
+	.type			= OMAP_DISPLAY_TYPE_DSI,
+	.data			= &dsi1_panel,
+	.phy.dsi		= {
+		.clk_lane	= 1,
+		.clk_pol	= 0,
+		.data1_lane	= 2,
+		.data1_pol	= 0,
+		.data2_lane	= 3,
+		.data2_pol	= 0,
+
+		.module		= 0,
+	},
+
+	.clocks = {
+		.dispc = {
+			.channel = {
+				/* Logic Clock = 172.8 MHz */
+				.lck_div	= 1,
+				/* Pixel Clock = 34.56 MHz */
+				.pck_div	= 5,
+				.lcd_clk_src	= OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC,
+			},
+			.dispc_fclk_src	= OMAP_DSS_CLK_SRC_FCK,
+		},
+
+		.dsi = {
+			.regn		= 16,	/* Fint = 2.4 MHz */
+			.regm		= 180,	/* DDR Clock = 216 MHz */
+			.regm_dispc	= 5,	/* PLL1_CLK1 = 172.8 MHz */
+			.regm_dsi	= 5,	/* PLL1_CLK2 = 172.8 MHz */
+
+			.lp_clk_div	= 10,	/* LP Clock = 8.64 MHz */
+			.dsi_fclk_src	= OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DSI,
+		},
+	},
+	.channel		= OMAP_DSS_CHANNEL_LCD,
+};
+
+static struct nokia_dsi_panel_data dsi2_panel = {
+		.name		= "taal",
+		.reset_gpio	= 104,
+		.use_ext_te	= false,
+		.ext_te_gpio	= 103,
+		.esd_interval	= 0,
+};
+
+static struct omap_dss_device sdp4430_lcd2_device = {
+	.name			= "lcd2",
+	.driver_name		= "taal",
+	.type			= OMAP_DISPLAY_TYPE_DSI,
+	.data			= &dsi2_panel,
+	.phy.dsi		= {
+		.clk_lane	= 1,
+		.clk_pol	= 0,
+		.data1_lane	= 2,
+		.data1_pol	= 0,
+		.data2_lane	= 3,
+		.data2_pol	= 0,
+
+		.module		= 1,
+	},
+
+	.clocks = {
+		.dispc = {
+			.channel = {
+				/* Logic Clock = 172.8 MHz */
+				.lck_div	= 1,
+				/* Pixel Clock = 34.56 MHz */
+				.pck_div	= 5,
+				.lcd_clk_src	= OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DISPC,
+			},
+			.dispc_fclk_src	= OMAP_DSS_CLK_SRC_FCK,
+		},
+
+		.dsi = {
+			.regn		= 16,	/* Fint = 2.4 MHz */
+			.regm		= 180,	/* DDR Clock = 216 MHz */
+			.regm_dispc	= 5,	/* PLL1_CLK1 = 172.8 MHz */
+			.regm_dsi	= 5,	/* PLL1_CLK2 = 172.8 MHz */
+
+			.lp_clk_div	= 10,	/* LP Clock = 8.64 MHz */
+			.dsi_fclk_src	= OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DSI,
+		},
+	},
+	.channel		= OMAP_DSS_CHANNEL_LCD2,
+};
+
+static void sdp4430_lcd_init(void)
+{
+	int r;
+
+	r = gpio_request_one(dsi1_panel.reset_gpio, GPIOF_DIR_OUT,
+		"lcd1_reset_gpio");
+	if (r)
+		pr_err("%s: Could not get lcd1_reset_gpio\n", __func__);
+
+	r = gpio_request_one(dsi2_panel.reset_gpio, GPIOF_DIR_OUT,
+		"lcd2_reset_gpio");
+	if (r)
+		pr_err("%s: Could not get lcd2_reset_gpio\n", __func__);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct omap_dss_hdmi_data sdp4430_hdmi_data = {
 	.hpd_gpio = HDMI_GPIO_HPD,
 };
@@ -557,13 +931,70 @@ static struct omap_dss_device sdp4430_hdmi_device = {
 	.data = &sdp4430_hdmi_data,
 };
 
+<<<<<<< HEAD
 static struct omap_dss_device *sdp4430_dss_devices[] = {
 	&sdp4430_hdmi_device,
+=======
+static struct picodlp_panel_data sdp4430_picodlp_pdata = {
+	.picodlp_adapter_id	= 2,
+	.emu_done_gpio		= 44,
+	.pwrgood_gpio		= 45,
+};
+
+static void sdp4430_picodlp_init(void)
+{
+	int r;
+	const struct gpio picodlp_gpios[] = {
+		{DLP_POWER_ON_GPIO, GPIOF_OUT_INIT_LOW,
+			"DLP POWER ON"},
+		{sdp4430_picodlp_pdata.emu_done_gpio, GPIOF_IN,
+			"DLP EMU DONE"},
+		{sdp4430_picodlp_pdata.pwrgood_gpio, GPIOF_OUT_INIT_LOW,
+			"DLP PWRGOOD"},
+	};
+
+	r = gpio_request_array(picodlp_gpios, ARRAY_SIZE(picodlp_gpios));
+	if (r)
+		pr_err("Cannot request PicoDLP GPIOs, error %d\n", r);
+}
+
+static int sdp4430_panel_enable_picodlp(struct omap_dss_device *dssdev)
+{
+	gpio_set_value(DISPLAY_SEL_GPIO, 0);
+	gpio_set_value(DLP_POWER_ON_GPIO, 1);
+
+	return 0;
+}
+
+static void sdp4430_panel_disable_picodlp(struct omap_dss_device *dssdev)
+{
+	gpio_set_value(DLP_POWER_ON_GPIO, 0);
+	gpio_set_value(DISPLAY_SEL_GPIO, 1);
+}
+
+static struct omap_dss_device sdp4430_picodlp_device = {
+	.name			= "picodlp",
+	.driver_name		= "picodlp_panel",
+	.type			= OMAP_DISPLAY_TYPE_DPI,
+	.phy.dpi.data_lines	= 24,
+	.channel		= OMAP_DSS_CHANNEL_LCD2,
+	.platform_enable	= sdp4430_panel_enable_picodlp,
+	.platform_disable	= sdp4430_panel_disable_picodlp,
+	.data			= &sdp4430_picodlp_pdata,
+};
+
+static struct omap_dss_device *sdp4430_dss_devices[] = {
+	&sdp4430_lcd_device,
+	&sdp4430_lcd2_device,
+	&sdp4430_hdmi_device,
+	&sdp4430_picodlp_device,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct omap_dss_board_info sdp4430_dss_data = {
 	.num_devices	= ARRAY_SIZE(sdp4430_dss_devices),
 	.devices	= sdp4430_dss_devices,
+<<<<<<< HEAD
 	.default_device	= &sdp4430_hdmi_device,
 };
 
@@ -571,6 +1002,32 @@ void omap_4430sdp_display_init(void)
 {
 	sdp4430_hdmi_mux_init();
 	omap_display_init(&sdp4430_dss_data);
+=======
+	.default_device	= &sdp4430_lcd_device,
+};
+
+static void __init omap_4430sdp_display_init(void)
+{
+	int r;
+
+	/* Enable LCD2 by default (instead of Pico DLP) */
+	r = gpio_request_one(DISPLAY_SEL_GPIO, GPIOF_OUT_INIT_HIGH,
+			"display_sel");
+	if (r)
+		pr_err("%s: Could not get display_sel GPIO\n", __func__);
+
+	sdp4430_lcd_init();
+	sdp4430_picodlp_init();
+	omap_display_init(&sdp4430_dss_data);
+	/*
+	 * OMAP4460SDP/Blaze and OMAP4430 ES2.3 SDP/Blaze boards and
+	 * later have external pull up on the HDMI I2C lines
+	 */
+	if (cpu_is_omap446x() || omap_rev() > OMAP4430_REV_ES2_2)
+		omap_hdmi_init(OMAP_HDMI_SDA_SCL_EXTERNAL_PULLUP);
+	else
+		omap_hdmi_init(0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	omap_mux_init_gpio(HDMI_GPIO_LS_OE, OMAP_PIN_OUTPUT);
 	omap_mux_init_gpio(HDMI_GPIO_CT_CP_HPD, OMAP_PIN_OUTPUT);
@@ -583,6 +1040,7 @@ static struct omap_board_mux board_mux[] __initdata = {
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
 
+<<<<<<< HEAD
 static struct omap_device_pad serial2_pads[] __initdata = {
 	OMAP_MUX_STATIC("uart2_cts.uart2_cts",
 			 OMAP_PIN_INPUT_PULLUP | OMAP_MUX_MODE0),
@@ -652,6 +1110,51 @@ static inline void board_serial_init(void)
 	omap_serial_init();
 }
  #endif
+=======
+#else
+#define board_mux	NULL
+ #endif
+
+static void __init omap4_sdp4430_wifi_mux_init(void)
+{
+	omap_mux_init_gpio(GPIO_WIFI_IRQ, OMAP_PIN_INPUT |
+				OMAP_PIN_OFF_WAKEUPENABLE);
+	omap_mux_init_gpio(GPIO_WIFI_PMENA, OMAP_PIN_OUTPUT);
+
+	omap_mux_init_signal("sdmmc5_cmd.sdmmc5_cmd",
+				OMAP_MUX_MODE0 | OMAP_PIN_INPUT_PULLUP);
+	omap_mux_init_signal("sdmmc5_clk.sdmmc5_clk",
+				OMAP_MUX_MODE0 | OMAP_PIN_INPUT_PULLUP);
+	omap_mux_init_signal("sdmmc5_dat0.sdmmc5_dat0",
+				OMAP_MUX_MODE0 | OMAP_PIN_INPUT_PULLUP);
+	omap_mux_init_signal("sdmmc5_dat1.sdmmc5_dat1",
+				OMAP_MUX_MODE0 | OMAP_PIN_INPUT_PULLUP);
+	omap_mux_init_signal("sdmmc5_dat2.sdmmc5_dat2",
+				OMAP_MUX_MODE0 | OMAP_PIN_INPUT_PULLUP);
+	omap_mux_init_signal("sdmmc5_dat3.sdmmc5_dat3",
+				OMAP_MUX_MODE0 | OMAP_PIN_INPUT_PULLUP);
+
+}
+
+static struct wl12xx_platform_data omap4_sdp4430_wlan_data __initdata = {
+	.board_ref_clock = WL12XX_REFCLOCK_26,
+	.board_tcxo_clock = WL12XX_TCXOCLOCK_26,
+};
+
+static void __init omap4_sdp4430_wifi_init(void)
+{
+	int ret;
+
+	omap4_sdp4430_wifi_mux_init();
+	omap4_sdp4430_wlan_data.irq = gpio_to_irq(GPIO_WIFI_IRQ);
+	ret = wl12xx_set_platform_data(&omap4_sdp4430_wlan_data);
+	if (ret)
+		pr_err("Error setting wl12xx data: %d\n", ret);
+	ret = platform_device_register(&omap_vwlan_device);
+	if (ret)
+		pr_err("Error registering wl12xx device: %d\n", ret);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __init omap_4430sdp_init(void)
 {
@@ -662,6 +1165,7 @@ static void __init omap_4430sdp_init(void)
 		package = OMAP_PACKAGE_CBL;
 	omap4_mux_init(board_mux, NULL, package);
 
+<<<<<<< HEAD
 	omap_board_config = sdp4430_config;
 	omap_board_config_size = ARRAY_SIZE(sdp4430_config);
 
@@ -669,6 +1173,14 @@ static void __init omap_4430sdp_init(void)
 	omap_sfh7741prox_init();
 	platform_add_devices(sdp4430_devices, ARRAY_SIZE(sdp4430_devices));
 	board_serial_init();
+=======
+	omap4_i2c_init();
+	omap_sfh7741prox_init();
+	platform_add_devices(sdp4430_devices, ARRAY_SIZE(sdp4430_devices));
+	omap_serial_init();
+	omap_sdrc_init(NULL, NULL);
+	omap4_sdp4430_wifi_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap4_twl6030_hsmmc_init(mmc);
 
 	usb_musb_init(&musb_board_data);
@@ -682,13 +1194,18 @@ static void __init omap_4430sdp_init(void)
 				ARRAY_SIZE(sdp4430_spi_board_info));
 	}
 
+<<<<<<< HEAD
 	status = omap4_keyboard_init(&sdp4430_keypad_data);
+=======
+	status = omap4_keyboard_init(&sdp4430_keypad_data, &keypad_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (status)
 		pr_err("Keypad initialization failed: %d\n", status);
 
 	omap_4430sdp_display_init();
 }
 
+<<<<<<< HEAD
 static void __init omap_4430sdp_map_io(void)
 {
 	omap2_set_globals_443x();
@@ -704,4 +1221,17 @@ MACHINE_START(OMAP_4430SDP, "OMAP4430 4430SDP board")
 	.init_irq	= gic_init_irq,
 	.init_machine	= omap_4430sdp_init,
 	.timer		= &omap_timer,
+=======
+MACHINE_START(OMAP_4430SDP, "OMAP4430 4430SDP board")
+	/* Maintainer: Santosh Shilimkar - Texas Instruments Inc */
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap4_map_io,
+	.init_early	= omap4430_init_early,
+	.init_irq	= gic_init_irq,
+	.handle_irq	= gic_handle_irq,
+	.init_machine	= omap_4430sdp_init,
+	.timer		= &omap4_timer,
+	.restart	= omap_prcm_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

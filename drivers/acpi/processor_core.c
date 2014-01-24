@@ -7,6 +7,14 @@
  *	Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>
  *	- Added _PDC for platforms with Intel CPUs
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dmi.h>
 #include <linux/slab.h>
 
@@ -27,7 +35,11 @@ static int __init set_no_mwait(const struct dmi_system_id *id)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct dmi_system_id __initdata processor_idle_dmi_table[] = {
+=======
+static struct dmi_system_id processor_idle_dmi_table[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	{
 	set_no_mwait, "Extensa 5220", {
 	DMI_MATCH(DMI_BIOS_VENDOR, "Phoenix Technologies LTD"),
@@ -157,6 +169,7 @@ static int map_mat_entry(acpi_handle handle, int type, u32 acpi_id)
 	}
 
 exit:
+<<<<<<< HEAD
 	if (buffer.pointer)
 		kfree(buffer.pointer);
 	return apic_id;
@@ -168,10 +181,32 @@ int acpi_get_cpuid(acpi_handle handle, int type, u32 acpi_id)
 	int i;
 #endif
 	int apic_id = -1;
+=======
+	kfree(buffer.pointer);
+	return apic_id;
+}
+
+int acpi_get_apicid(acpi_handle handle, int type, u32 acpi_id)
+{
+	int apic_id;
+>>>>>>> refs/remotes/origin/master
 
 	apic_id = map_mat_entry(handle, type, acpi_id);
 	if (apic_id == -1)
 		apic_id = map_madt_entry(type, acpi_id);
+<<<<<<< HEAD
+=======
+
+	return apic_id;
+}
+
+int acpi_map_cpuid(int apic_id, u32 acpi_id)
+{
+#ifdef CONFIG_SMP
+	int i;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	if (apic_id == -1) {
 		/*
 		 * On UP processor, there is no _MAT or MADT table.
@@ -211,6 +246,18 @@ int acpi_get_cpuid(acpi_handle handle, int type, u32 acpi_id)
 #endif
 	return -1;
 }
+<<<<<<< HEAD
+=======
+
+int acpi_get_cpuid(acpi_handle handle, int type, u32 acpi_id)
+{
+	int apic_id;
+
+	apic_id = acpi_get_apicid(handle, type, acpi_id);
+
+	return acpi_map_cpuid(apic_id, acpi_id);
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(acpi_get_cpuid);
 
 static bool __init processor_physically_present(acpi_handle handle)
@@ -253,7 +300,11 @@ static bool __init processor_physically_present(acpi_handle handle)
 	return true;
 }
 
+<<<<<<< HEAD
 static void __cpuinit acpi_set_pdc_bits(u32 *buf)
+=======
+static void acpi_set_pdc_bits(u32 *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	buf[0] = ACPI_PDC_REVISION_ID;
 	buf[1] = 1;
@@ -265,7 +316,11 @@ static void __cpuinit acpi_set_pdc_bits(u32 *buf)
 	arch_acpi_set_pdc_bits(buf);
 }
 
+<<<<<<< HEAD
 static struct acpi_object_list *__cpuinit acpi_processor_alloc_pdc(void)
+=======
+static struct acpi_object_list *acpi_processor_alloc_pdc(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_object_list *obj_list;
 	union acpi_object *obj;
@@ -308,7 +363,11 @@ static struct acpi_object_list *__cpuinit acpi_processor_alloc_pdc(void)
  * _PDC is required for a BIOS-OS handshake for most of the newer
  * ACPI processor features.
  */
+<<<<<<< HEAD
 static int __cpuinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 acpi_processor_eval_pdc(acpi_handle handle, struct acpi_object_list *pdc_in)
 {
 	acpi_status status = AE_OK;
@@ -336,7 +395,11 @@ acpi_processor_eval_pdc(acpi_handle handle, struct acpi_object_list *pdc_in)
 	return status;
 }
 
+<<<<<<< HEAD
 void __cpuinit acpi_processor_set_pdc(acpi_handle handle)
+=======
+void acpi_processor_set_pdc(acpi_handle handle)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_object_list *obj_list;
 

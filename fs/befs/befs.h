@@ -20,8 +20,13 @@ typedef u64 befs_blocknr_t;
  */
 
 typedef struct befs_mount_options {
+<<<<<<< HEAD
 	gid_t gid;
 	uid_t uid;
+=======
+	kgid_t gid;
+	kuid_t uid;
+>>>>>>> refs/remotes/origin/master
 	int use_gid;
 	int use_uid;
 	int debug;

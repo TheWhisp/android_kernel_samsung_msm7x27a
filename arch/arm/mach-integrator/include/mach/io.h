@@ -20,8 +20,11 @@
 #ifndef __ASM_ARM_ARCH_IO_H
 #define __ASM_ARM_ARCH_IO_H
 
+<<<<<<< HEAD
 #define IO_SPACE_LIMIT 0xffff
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * WARNING: this has to mirror definitions in platform.h
  */
@@ -31,6 +34,9 @@
 #define PCI_IO_VADDR            0xee000000
 
 #define __io(a)			((void __iomem *)(PCI_IO_VADDR + (a)))
+<<<<<<< HEAD
 #define __mem_pci(a)		(a)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

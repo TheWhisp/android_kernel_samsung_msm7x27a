@@ -25,7 +25,11 @@
 #include <linux/mfd/wm831x/regulator.h>
 #include <linux/mfd/wm831x/pdata.h>
 
+<<<<<<< HEAD
 #define WM831X_LDO_MAX_NAME 6
+=======
+#define WM831X_LDO_MAX_NAME 9
+>>>>>>> refs/remotes/origin/master
 
 #define WM831X_LDO_CONTROL       0
 #define WM831X_LDO_ON_CONTROL    1
@@ -36,6 +40,10 @@
 
 struct wm831x_ldo {
 	char name[WM831X_LDO_MAX_NAME];
+<<<<<<< HEAD
+=======
+	char supply_name[WM831X_LDO_MAX_NAME];
+>>>>>>> refs/remotes/origin/master
 	struct regulator_desc desc;
 	int base;
 	struct wm831x *wm831x;
@@ -46,6 +54,7 @@ struct wm831x_ldo {
  * Shared
  */
 
+<<<<<<< HEAD
 static int wm831x_ldo_is_enabled(struct regulator_dev *rdev)
 {
 	struct wm831x_ldo *ldo = rdev_get_drvdata(rdev);
@@ -81,6 +90,8 @@ static int wm831x_ldo_disable(struct regulator_dev *rdev)
 	return wm831x_set_bits(wm831x, WM831X_LDO_ENABLE, mask, 0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t wm831x_ldo_uv_irq(int irq, void *data)
 {
 	struct wm831x_ldo *ldo = data;
@@ -96,6 +107,7 @@ static irqreturn_t wm831x_ldo_uv_irq(int irq, void *data)
  * General purpose LDOs
  */
 
+<<<<<<< HEAD
 #define WM831X_GP_LDO_SELECTOR_LOW 0xe
 #define WM831X_GP_LDO_MAX_SELECTOR 0x1f
 
@@ -149,11 +161,18 @@ static int wm831x_gp_ldo_set_voltage(struct regulator_dev *rdev,
 	return wm831x_gp_ldo_set_voltage_int(rdev, reg, min_uV, max_uV,
 					     selector);
 }
+=======
+static const struct regulator_linear_range wm831x_gp_ldo_ranges[] = {
+	REGULATOR_LINEAR_RANGE(900000, 0, 14, 50000),
+	REGULATOR_LINEAR_RANGE(1700000, 15, 31, 100000),
+};
+>>>>>>> refs/remotes/origin/master
 
 static int wm831x_gp_ldo_set_suspend_voltage(struct regulator_dev *rdev,
 					     int uV)
 {
 	struct wm831x_ldo *ldo = rdev_get_drvdata(rdev);
+<<<<<<< HEAD
 	int reg = ldo->base + WM831X_LDO_SLEEP_CONTROL;
 	unsigned int selector;
 
@@ -174,6 +193,16 @@ static int wm831x_gp_ldo_get_voltage_sel(struct regulator_dev *rdev)
 	ret &= WM831X_LDO1_ON_VSEL_MASK;
 
 	return ret;
+=======
+	struct wm831x *wm831x = ldo->wm831x;
+	int sel, reg = ldo->base + WM831X_LDO_SLEEP_CONTROL;
+
+	sel = regulator_map_voltage_linear_range(rdev, uV, uV);
+	if (sel < 0)
+		return sel;
+
+	return wm831x_set_bits(wm831x, reg, WM831X_LDO1_ON_VSEL_MASK, sel);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int wm831x_gp_ldo_get_mode(struct regulator_dev *rdev)
@@ -269,6 +298,11 @@ static int wm831x_gp_ldo_get_status(struct regulator_dev *rdev)
 
 	/* Is it reporting under voltage? */
 	ret = wm831x_reg_read(wm831x, WM831X_LDO_UV_STATUS);
+<<<<<<< HEAD
+=======
+	if (ret < 0)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	if (ret & mask)
 		return REGULATOR_STATUS_ERROR;
 
@@ -292,14 +326,22 @@ static unsigned int wm831x_gp_ldo_get_optimum_mode(struct regulator_dev *rdev,
 
 
 static struct regulator_ops wm831x_gp_ldo_ops = {
+<<<<<<< HEAD
 	.list_voltage = wm831x_gp_ldo_list_voltage,
 	.get_voltage_sel = wm831x_gp_ldo_get_voltage_sel,
 	.set_voltage = wm831x_gp_ldo_set_voltage,
+=======
+	.list_voltage = regulator_list_voltage_linear_range,
+	.map_voltage = regulator_map_voltage_linear_range,
+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+>>>>>>> refs/remotes/origin/master
 	.set_suspend_voltage = wm831x_gp_ldo_set_suspend_voltage,
 	.get_mode = wm831x_gp_ldo_get_mode,
 	.set_mode = wm831x_gp_ldo_set_mode,
 	.get_status = wm831x_gp_ldo_get_status,
 	.get_optimum_mode = wm831x_gp_ldo_get_optimum_mode,
+<<<<<<< HEAD
 
 	.is_enabled = wm831x_ldo_is_enabled,
 	.enable = wm831x_ldo_enable,
@@ -310,17 +352,59 @@ static __devinit int wm831x_gp_ldo_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
 	struct wm831x_pdata *pdata = wm831x->dev->platform_data;
+<<<<<<< HEAD
 	int id = pdev->id % ARRAY_SIZE(pdata->ldo);
+=======
+	int id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_bypass = regulator_get_bypass_regmap,
+	.set_bypass = regulator_set_bypass_regmap,
+
+	.is_enabled = regulator_is_enabled_regmap,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+};
+
+static int wm831x_gp_ldo_probe(struct platform_device *pdev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+	struct wm831x_pdata *pdata = dev_get_platdata(wm831x->dev);
+	struct regulator_config config = { };
+	int id;
+>>>>>>> refs/remotes/origin/master
 	struct wm831x_ldo *ldo;
 	struct resource *res;
 	int ret, irq;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (pdata && pdata->wm831x_num)
+		id = (pdata->wm831x_num * 10) + 1;
+	else
+		id = 0;
+	id = pdev->id - id;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_dbg(&pdev->dev, "Probing LDO%d\n", id + 1);
 
 	if (pdata == NULL || pdata->ldo[id] == NULL)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	ldo = kzalloc(sizeof(struct wm831x_ldo), GFP_KERNEL);
+=======
+	ldo = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_ldo), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&pdev->dev, "Probing LDO%d\n", id + 1);
+
+	ldo = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_ldo), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (ldo == NULL) {
 		dev_err(&pdev->dev, "Unable to allocate private data\n");
 		return -ENOMEM;
@@ -328,9 +412,15 @@ static __devinit int wm831x_gp_ldo_probe(struct platform_device *pdev)
 
 	ldo->wm831x = wm831x;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
 	if (res == NULL) {
 		dev_err(&pdev->dev, "No I/O resource\n");
+=======
+	res = platform_get_resource(pdev, IORESOURCE_REG, 0);
+	if (res == NULL) {
+		dev_err(&pdev->dev, "No REG resource\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err;
 	}
@@ -338,6 +428,7 @@ static __devinit int wm831x_gp_ldo_probe(struct platform_device *pdev)
 
 	snprintf(ldo->name, sizeof(ldo->name), "LDO%d", id + 1);
 	ldo->desc.name = ldo->name;
+<<<<<<< HEAD
 	ldo->desc.id = id;
 	ldo->desc.type = REGULATOR_VOLTAGE;
 	ldo->desc.n_voltages = WM831X_GP_LDO_MAX_SELECTOR + 1;
@@ -345,7 +436,40 @@ static __devinit int wm831x_gp_ldo_probe(struct platform_device *pdev)
 	ldo->desc.owner = THIS_MODULE;
 
 	ldo->regulator = regulator_register(&ldo->desc, &pdev->dev,
+<<<<<<< HEAD
 					     pdata->ldo[id], ldo);
+=======
+					     pdata->ldo[id], ldo, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	snprintf(ldo->supply_name, sizeof(ldo->supply_name),
+		 "LDO%dVDD", id + 1);
+	ldo->desc.supply_name = ldo->supply_name;
+
+	ldo->desc.id = id;
+	ldo->desc.type = REGULATOR_VOLTAGE;
+	ldo->desc.n_voltages = 32;
+	ldo->desc.ops = &wm831x_gp_ldo_ops;
+	ldo->desc.owner = THIS_MODULE;
+	ldo->desc.vsel_reg = ldo->base + WM831X_LDO_ON_CONTROL;
+	ldo->desc.vsel_mask = WM831X_LDO1_ON_VSEL_MASK;
+	ldo->desc.enable_reg = WM831X_LDO_ENABLE;
+	ldo->desc.enable_mask = 1 << id;
+	ldo->desc.bypass_reg = ldo->base;
+	ldo->desc.bypass_mask = WM831X_LDO1_SWI;
+	ldo->desc.linear_ranges = wm831x_gp_ldo_ranges;
+	ldo->desc.n_linear_ranges = ARRAY_SIZE(wm831x_gp_ldo_ranges);
+
+	config.dev = pdev->dev.parent;
+	if (pdata)
+		config.init_data = pdata->ldo[id];
+	config.driver_data = ldo;
+	config.regmap = wm831x->regmap;
+
+	ldo->regulator = devm_regulator_register(&pdev->dev, &ldo->desc,
+						 &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(ldo->regulator)) {
 		ret = PTR_ERR(ldo->regulator);
 		dev_err(wm831x->dev, "Failed to register LDO%d: %d\n",
@@ -353,6 +477,7 @@ static __devinit int wm831x_gp_ldo_probe(struct platform_device *pdev)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	irq = platform_get_irq_byname(pdev, "UV");
 	ret = request_threaded_irq(irq, NULL, wm831x_ldo_uv_irq,
 				   IRQF_TRIGGER_RISING, ldo->name,
@@ -361,16 +486,31 @@ static __devinit int wm831x_gp_ldo_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to request UV IRQ %d: %d\n",
 			irq, ret);
 		goto err_regulator;
+=======
+	irq = wm831x_irq(wm831x, platform_get_irq_byname(pdev, "UV"));
+	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+					wm831x_ldo_uv_irq,
+					IRQF_TRIGGER_RISING, ldo->name,
+					ldo);
+	if (ret != 0) {
+		dev_err(&pdev->dev, "Failed to request UV IRQ %d: %d\n",
+			irq, ret);
+		goto err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, ldo);
 
 	return 0;
 
+<<<<<<< HEAD
 err_regulator:
 	regulator_unregister(ldo->regulator);
 err:
+<<<<<<< HEAD
 	kfree(ldo);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -382,7 +522,10 @@ static __devexit int wm831x_gp_ldo_remove(struct platform_device *pdev)
 
 	free_irq(platform_get_irq_byname(pdev, "UV"), ldo);
 	regulator_unregister(ldo->regulator);
+<<<<<<< HEAD
 	kfree(ldo);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -390,6 +533,14 @@ static __devexit int wm831x_gp_ldo_remove(struct platform_device *pdev)
 static struct platform_driver wm831x_gp_ldo_driver = {
 	.probe = wm831x_gp_ldo_probe,
 	.remove = __devexit_p(wm831x_gp_ldo_remove),
+=======
+err:
+	return ret;
+}
+
+static struct platform_driver wm831x_gp_ldo_driver = {
+	.probe = wm831x_gp_ldo_probe,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "wm831x-ldo",
 		.owner	= THIS_MODULE,
@@ -400,6 +551,7 @@ static struct platform_driver wm831x_gp_ldo_driver = {
  * Analogue LDOs
  */
 
+<<<<<<< HEAD
 
 #define WM831X_ALDO_SELECTOR_LOW 0xc
 #define WM831X_ALDO_MAX_SELECTOR 0x1f
@@ -453,11 +605,18 @@ static int wm831x_aldo_set_voltage(struct regulator_dev *rdev,
 	return wm831x_aldo_set_voltage_int(rdev, reg, min_uV, max_uV,
 					   selector);
 }
+=======
+static const struct regulator_linear_range wm831x_aldo_ranges[] = {
+	REGULATOR_LINEAR_RANGE(1000000, 0, 12, 50000),
+	REGULATOR_LINEAR_RANGE(1700000, 13, 31, 100000),
+};
+>>>>>>> refs/remotes/origin/master
 
 static int wm831x_aldo_set_suspend_voltage(struct regulator_dev *rdev,
 					     int uV)
 {
 	struct wm831x_ldo *ldo = rdev_get_drvdata(rdev);
+<<<<<<< HEAD
 	int reg = ldo->base + WM831X_LDO_SLEEP_CONTROL;
 	unsigned int selector;
 
@@ -478,6 +637,16 @@ static int wm831x_aldo_get_voltage_sel(struct regulator_dev *rdev)
 	ret &= WM831X_LDO7_ON_VSEL_MASK;
 
 	return ret;
+=======
+	struct wm831x *wm831x = ldo->wm831x;
+	int sel, reg = ldo->base + WM831X_LDO_SLEEP_CONTROL;
+
+	sel = regulator_map_voltage_linear_range(rdev, uV, uV);
+	if (sel < 0)
+		return sel;
+
+	return wm831x_set_bits(wm831x, reg, WM831X_LDO7_ON_VSEL_MASK, sel);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int wm831x_aldo_get_mode(struct regulator_dev *rdev)
@@ -502,22 +671,44 @@ static int wm831x_aldo_set_mode(struct regulator_dev *rdev,
 {
 	struct wm831x_ldo *ldo = rdev_get_drvdata(rdev);
 	struct wm831x *wm831x = ldo->wm831x;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ctrl_reg = ldo->base + WM831X_LDO_CONTROL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int on_reg = ldo->base + WM831X_LDO_ON_CONTROL;
 	int ret;
 
 
 	switch (mode) {
 	case REGULATOR_MODE_NORMAL:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = wm831x_set_bits(wm831x, on_reg,
 				      WM831X_LDO7_ON_MODE, 0);
+=======
+		ret = wm831x_set_bits(wm831x, on_reg, WM831X_LDO7_ON_MODE, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = wm831x_set_bits(wm831x, on_reg, WM831X_LDO7_ON_MODE, 0);
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			return ret;
 		break;
 
 	case REGULATOR_MODE_IDLE:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = wm831x_set_bits(wm831x, ctrl_reg,
 				      WM831X_LDO7_ON_MODE,
+=======
+		ret = wm831x_set_bits(wm831x, on_reg, WM831X_LDO7_ON_MODE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = wm831x_set_bits(wm831x, on_reg, WM831X_LDO7_ON_MODE,
+>>>>>>> refs/remotes/origin/master
 				      WM831X_LDO7_ON_MODE);
 		if (ret < 0)
 			return ret;
@@ -546,6 +737,11 @@ static int wm831x_aldo_get_status(struct regulator_dev *rdev)
 
 	/* Is it reporting under voltage? */
 	ret = wm831x_reg_read(wm831x, WM831X_LDO_UV_STATUS);
+<<<<<<< HEAD
+=======
+	if (ret < 0)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	if (ret & mask)
 		return REGULATOR_STATUS_ERROR;
 
@@ -557,13 +753,21 @@ static int wm831x_aldo_get_status(struct regulator_dev *rdev)
 }
 
 static struct regulator_ops wm831x_aldo_ops = {
+<<<<<<< HEAD
 	.list_voltage = wm831x_aldo_list_voltage,
 	.get_voltage_sel = wm831x_aldo_get_voltage_sel,
 	.set_voltage = wm831x_aldo_set_voltage,
+=======
+	.list_voltage = regulator_list_voltage_linear_range,
+	.map_voltage = regulator_map_voltage_linear_range,
+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+>>>>>>> refs/remotes/origin/master
 	.set_suspend_voltage = wm831x_aldo_set_suspend_voltage,
 	.get_mode = wm831x_aldo_get_mode,
 	.set_mode = wm831x_aldo_set_mode,
 	.get_status = wm831x_aldo_get_status,
+<<<<<<< HEAD
 
 	.is_enabled = wm831x_ldo_is_enabled,
 	.enable = wm831x_ldo_enable,
@@ -574,17 +778,59 @@ static __devinit int wm831x_aldo_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
 	struct wm831x_pdata *pdata = wm831x->dev->platform_data;
+<<<<<<< HEAD
 	int id = pdev->id % ARRAY_SIZE(pdata->ldo);
+=======
+	int id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.set_bypass = regulator_set_bypass_regmap,
+	.get_bypass = regulator_get_bypass_regmap,
+
+	.is_enabled = regulator_is_enabled_regmap,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+};
+
+static int wm831x_aldo_probe(struct platform_device *pdev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+	struct wm831x_pdata *pdata = dev_get_platdata(wm831x->dev);
+	struct regulator_config config = { };
+	int id;
+>>>>>>> refs/remotes/origin/master
 	struct wm831x_ldo *ldo;
 	struct resource *res;
 	int ret, irq;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (pdata && pdata->wm831x_num)
+		id = (pdata->wm831x_num * 10) + 1;
+	else
+		id = 0;
+	id = pdev->id - id;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_dbg(&pdev->dev, "Probing LDO%d\n", id + 1);
 
 	if (pdata == NULL || pdata->ldo[id] == NULL)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	ldo = kzalloc(sizeof(struct wm831x_ldo), GFP_KERNEL);
+=======
+	ldo = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_ldo), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&pdev->dev, "Probing LDO%d\n", id + 1);
+
+	ldo = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_ldo), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (ldo == NULL) {
 		dev_err(&pdev->dev, "Unable to allocate private data\n");
 		return -ENOMEM;
@@ -592,9 +838,15 @@ static __devinit int wm831x_aldo_probe(struct platform_device *pdev)
 
 	ldo->wm831x = wm831x;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
 	if (res == NULL) {
 		dev_err(&pdev->dev, "No I/O resource\n");
+=======
+	res = platform_get_resource(pdev, IORESOURCE_REG, 0);
+	if (res == NULL) {
+		dev_err(&pdev->dev, "No REG resource\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err;
 	}
@@ -602,6 +854,7 @@ static __devinit int wm831x_aldo_probe(struct platform_device *pdev)
 
 	snprintf(ldo->name, sizeof(ldo->name), "LDO%d", id + 1);
 	ldo->desc.name = ldo->name;
+<<<<<<< HEAD
 	ldo->desc.id = id;
 	ldo->desc.type = REGULATOR_VOLTAGE;
 	ldo->desc.n_voltages = WM831X_ALDO_MAX_SELECTOR + 1;
@@ -609,7 +862,40 @@ static __devinit int wm831x_aldo_probe(struct platform_device *pdev)
 	ldo->desc.owner = THIS_MODULE;
 
 	ldo->regulator = regulator_register(&ldo->desc, &pdev->dev,
+<<<<<<< HEAD
 					     pdata->ldo[id], ldo);
+=======
+					     pdata->ldo[id], ldo, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	snprintf(ldo->supply_name, sizeof(ldo->supply_name),
+		 "LDO%dVDD", id + 1);
+	ldo->desc.supply_name = ldo->supply_name;
+
+	ldo->desc.id = id;
+	ldo->desc.type = REGULATOR_VOLTAGE;
+	ldo->desc.n_voltages = 32;
+	ldo->desc.linear_ranges = wm831x_aldo_ranges;
+	ldo->desc.n_linear_ranges = ARRAY_SIZE(wm831x_aldo_ranges);
+	ldo->desc.ops = &wm831x_aldo_ops;
+	ldo->desc.owner = THIS_MODULE;
+	ldo->desc.vsel_reg = ldo->base + WM831X_LDO_ON_CONTROL;
+	ldo->desc.vsel_mask = WM831X_LDO7_ON_VSEL_MASK;
+	ldo->desc.enable_reg = WM831X_LDO_ENABLE;
+	ldo->desc.enable_mask = 1 << id;
+	ldo->desc.bypass_reg = ldo->base;
+	ldo->desc.bypass_mask = WM831X_LDO7_SWI;
+
+	config.dev = pdev->dev.parent;
+	if (pdata)
+		config.init_data = pdata->ldo[id];
+	config.driver_data = ldo;
+	config.regmap = wm831x->regmap;
+
+	ldo->regulator = devm_regulator_register(&pdev->dev, &ldo->desc,
+						 &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(ldo->regulator)) {
 		ret = PTR_ERR(ldo->regulator);
 		dev_err(wm831x->dev, "Failed to register LDO%d: %d\n",
@@ -617,6 +903,7 @@ static __devinit int wm831x_aldo_probe(struct platform_device *pdev)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	irq = platform_get_irq_byname(pdev, "UV");
 	ret = request_threaded_irq(irq, NULL, wm831x_ldo_uv_irq,
 				   IRQF_TRIGGER_RISING, ldo->name, ldo);
@@ -624,16 +911,30 @@ static __devinit int wm831x_aldo_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to request UV IRQ %d: %d\n",
 			irq, ret);
 		goto err_regulator;
+=======
+	irq = wm831x_irq(wm831x, platform_get_irq_byname(pdev, "UV"));
+	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+					wm831x_ldo_uv_irq,
+					IRQF_TRIGGER_RISING, ldo->name, ldo);
+	if (ret != 0) {
+		dev_err(&pdev->dev, "Failed to request UV IRQ %d: %d\n",
+			irq, ret);
+		goto err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, ldo);
 
 	return 0;
 
+<<<<<<< HEAD
 err_regulator:
 	regulator_unregister(ldo->regulator);
 err:
+<<<<<<< HEAD
 	kfree(ldo);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -643,7 +944,10 @@ static __devexit int wm831x_aldo_remove(struct platform_device *pdev)
 
 	free_irq(platform_get_irq_byname(pdev, "UV"), ldo);
 	regulator_unregister(ldo->regulator);
+<<<<<<< HEAD
 	kfree(ldo);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -651,6 +955,14 @@ static __devexit int wm831x_aldo_remove(struct platform_device *pdev)
 static struct platform_driver wm831x_aldo_driver = {
 	.probe = wm831x_aldo_probe,
 	.remove = __devexit_p(wm831x_aldo_remove),
+=======
+err:
+	return ret;
+}
+
+static struct platform_driver wm831x_aldo_driver = {
+	.probe = wm831x_aldo_probe,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "wm831x-aldo",
 		.owner	= THIS_MODULE,
@@ -663,6 +975,7 @@ static struct platform_driver wm831x_aldo_driver = {
 
 #define WM831X_ALIVE_LDO_MAX_SELECTOR 0xf
 
+<<<<<<< HEAD
 static int wm831x_alive_ldo_list_voltage(struct regulator_dev *rdev,
 				      unsigned int selector)
 {
@@ -705,10 +1018,13 @@ static int wm831x_alive_ldo_set_voltage(struct regulator_dev *rdev,
 						selector);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm831x_alive_ldo_set_suspend_voltage(struct regulator_dev *rdev,
 					     int uV)
 {
 	struct wm831x_ldo *ldo = rdev_get_drvdata(rdev);
+<<<<<<< HEAD
 	int reg = ldo->base + WM831X_ALIVE_LDO_SLEEP_CONTROL;
 	unsigned selector;
 
@@ -729,6 +1045,16 @@ static int wm831x_alive_ldo_get_voltage_sel(struct regulator_dev *rdev)
 	ret &= WM831X_LDO11_ON_VSEL_MASK;
 
 	return ret;
+=======
+	struct wm831x *wm831x = ldo->wm831x;
+	int sel, reg = ldo->base + WM831X_ALIVE_LDO_SLEEP_CONTROL;
+
+	sel = regulator_map_voltage_linear(rdev, uV, uV);
+	if (sel < 0)
+		return sel;
+
+	return wm831x_set_bits(wm831x, reg, WM831X_LDO11_ON_VSEL_MASK, sel);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wm831x_alive_ldo_get_status(struct regulator_dev *rdev)
@@ -749,6 +1075,7 @@ static int wm831x_alive_ldo_get_status(struct regulator_dev *rdev)
 }
 
 static struct regulator_ops wm831x_alive_ldo_ops = {
+<<<<<<< HEAD
 	.list_voltage = wm831x_alive_ldo_list_voltage,
 	.get_voltage_sel = wm831x_alive_ldo_get_voltage_sel,
 	.set_voltage = wm831x_alive_ldo_set_voltage,
@@ -764,17 +1091,64 @@ static __devinit int wm831x_alive_ldo_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
 	struct wm831x_pdata *pdata = wm831x->dev->platform_data;
+<<<<<<< HEAD
 	int id = pdev->id % ARRAY_SIZE(pdata->ldo);
+=======
+	int id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.list_voltage = regulator_list_voltage_linear,
+	.map_voltage = regulator_map_voltage_linear,
+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+	.set_suspend_voltage = wm831x_alive_ldo_set_suspend_voltage,
+	.get_status = wm831x_alive_ldo_get_status,
+
+	.is_enabled = regulator_is_enabled_regmap,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+};
+
+static int wm831x_alive_ldo_probe(struct platform_device *pdev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+	struct wm831x_pdata *pdata = dev_get_platdata(wm831x->dev);
+	struct regulator_config config = { };
+	int id;
+>>>>>>> refs/remotes/origin/master
 	struct wm831x_ldo *ldo;
 	struct resource *res;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (pdata && pdata->wm831x_num)
+		id = (pdata->wm831x_num * 10) + 1;
+	else
+		id = 0;
+	id = pdev->id - id;
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_dbg(&pdev->dev, "Probing LDO%d\n", id + 1);
 
 	if (pdata == NULL || pdata->ldo[id] == NULL)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	ldo = kzalloc(sizeof(struct wm831x_ldo), GFP_KERNEL);
+=======
+	ldo = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_ldo), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&pdev->dev, "Probing LDO%d\n", id + 1);
+
+	ldo = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_ldo), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (ldo == NULL) {
 		dev_err(&pdev->dev, "Unable to allocate private data\n");
 		return -ENOMEM;
@@ -782,9 +1156,15 @@ static __devinit int wm831x_alive_ldo_probe(struct platform_device *pdev)
 
 	ldo->wm831x = wm831x;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
 	if (res == NULL) {
 		dev_err(&pdev->dev, "No I/O resource\n");
+=======
+	res = platform_get_resource(pdev, IORESOURCE_REG, 0);
+	if (res == NULL) {
+		dev_err(&pdev->dev, "No REG resource\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err;
 	}
@@ -792,14 +1172,45 @@ static __devinit int wm831x_alive_ldo_probe(struct platform_device *pdev)
 
 	snprintf(ldo->name, sizeof(ldo->name), "LDO%d", id + 1);
 	ldo->desc.name = ldo->name;
+<<<<<<< HEAD
+=======
+
+	snprintf(ldo->supply_name, sizeof(ldo->supply_name),
+		 "LDO%dVDD", id + 1);
+	ldo->desc.supply_name = ldo->supply_name;
+
+>>>>>>> refs/remotes/origin/master
 	ldo->desc.id = id;
 	ldo->desc.type = REGULATOR_VOLTAGE;
 	ldo->desc.n_voltages = WM831X_ALIVE_LDO_MAX_SELECTOR + 1;
 	ldo->desc.ops = &wm831x_alive_ldo_ops;
 	ldo->desc.owner = THIS_MODULE;
+<<<<<<< HEAD
 
 	ldo->regulator = regulator_register(&ldo->desc, &pdev->dev,
+<<<<<<< HEAD
 					     pdata->ldo[id], ldo);
+=======
+					     pdata->ldo[id], ldo, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ldo->desc.vsel_reg = ldo->base + WM831X_ALIVE_LDO_ON_CONTROL;
+	ldo->desc.vsel_mask = WM831X_LDO11_ON_VSEL_MASK;
+	ldo->desc.enable_reg = WM831X_LDO_ENABLE;
+	ldo->desc.enable_mask = 1 << id;
+	ldo->desc.min_uV = 800000;
+	ldo->desc.uV_step = 50000;
+	ldo->desc.enable_time = 1000;
+
+	config.dev = pdev->dev.parent;
+	if (pdata)
+		config.init_data = pdata->ldo[id];
+	config.driver_data = ldo;
+	config.regmap = wm831x->regmap;
+
+	ldo->regulator = devm_regulator_register(&pdev->dev, &ldo->desc,
+						 &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(ldo->regulator)) {
 		ret = PTR_ERR(ldo->regulator);
 		dev_err(wm831x->dev, "Failed to register LDO%d: %d\n",
@@ -812,7 +1223,11 @@ static __devinit int wm831x_alive_ldo_probe(struct platform_device *pdev)
 	return 0;
 
 err:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(ldo);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -821,7 +1236,10 @@ static __devexit int wm831x_alive_ldo_remove(struct platform_device *pdev)
 	struct wm831x_ldo *ldo = platform_get_drvdata(pdev);
 
 	regulator_unregister(ldo->regulator);
+<<<<<<< HEAD
 	kfree(ldo);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -829,6 +1247,13 @@ static __devexit int wm831x_alive_ldo_remove(struct platform_device *pdev)
 static struct platform_driver wm831x_alive_ldo_driver = {
 	.probe = wm831x_alive_ldo_probe,
 	.remove = __devexit_p(wm831x_alive_ldo_remove),
+=======
+	return ret;
+}
+
+static struct platform_driver wm831x_alive_ldo_driver = {
+	.probe = wm831x_alive_ldo_probe,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "wm831x-alive-ldo",
 		.owner	= THIS_MODULE,

@@ -198,12 +198,19 @@ struct ov9640_reg {
 
 struct ov9640_priv {
 	struct v4l2_subdev		subdev;
+<<<<<<< HEAD
 
 	int				model;
 	int				revision;
 
 	bool				flag_vflip;
 	bool				flag_hflip;
+=======
+	struct v4l2_ctrl_handler	hdl;
+
+	int				model;
+	int				revision;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif	/* __DRIVERS_MEDIA_VIDEO_OV9640_H__ */

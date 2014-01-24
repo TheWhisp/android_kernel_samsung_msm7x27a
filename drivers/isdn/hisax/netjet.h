@@ -6,13 +6,29 @@
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
  *              by Matt Henderson,
  *                 Traverse Technologies P/L www.traverse.com.au
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/master
 #define bytein(addr) inb(addr)
 
 #define NETJET_CTRL	0x00
@@ -67,4 +83,10 @@ void netjet_fill_dma(struct BCState *bcs);
 void netjet_interrupt(int intno, void *dev_id);
 void inittiger(struct IsdnCardState *cs);
 void release_io_netjet(struct IsdnCardState *cs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

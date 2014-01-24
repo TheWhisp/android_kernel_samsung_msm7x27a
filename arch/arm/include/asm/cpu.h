@@ -15,8 +15,13 @@
 
 struct cpuinfo_arm {
 	struct cpu	cpu;
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	struct task_struct *idle;
+=======
+	u32		cpuid;
+#ifdef CONFIG_SMP
+>>>>>>> refs/remotes/origin/master
 	unsigned int	loops_per_jiffy;
 #endif
 };

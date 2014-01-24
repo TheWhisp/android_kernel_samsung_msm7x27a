@@ -25,9 +25,20 @@
 #include <linux/io.h>
 #include <linux/delay.h>
 #include <linux/lcd.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/board-ams-delta.h>
 #include <mach/hardware.h>
+=======
+#include <linux/gpio.h>
+
+#include <mach/hardware.h>
+#include <mach/board-ams-delta.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "omapfb.h"
 
@@ -98,29 +109,83 @@ static struct lcd_ops ams_delta_lcd_ops = {
 
 /* omapfb panel section */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ams_delta_panel_init(struct lcd_panel *panel,
 		struct omapfb_device *fbdev)
 {
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct gpio _gpios[] = {
+	{
+		.gpio	= AMS_DELTA_GPIO_PIN_LCD_VBLEN,
+		.flags	= GPIOF_OUT_INIT_LOW,
+		.label	= "lcd_vblen",
+	},
+	{
+		.gpio	= AMS_DELTA_GPIO_PIN_LCD_NDISP,
+		.flags	= GPIOF_OUT_INIT_LOW,
+		.label	= "lcd_ndisp",
+	},
+};
+
+static int ams_delta_panel_init(struct lcd_panel *panel,
+		struct omapfb_device *fbdev)
+{
+	return gpio_request_array(_gpios, ARRAY_SIZE(_gpios));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ams_delta_panel_cleanup(struct lcd_panel *panel)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	gpio_free_array(_gpios, ARRAY_SIZE(_gpios));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_free_array(_gpios, ARRAY_SIZE(_gpios));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ams_delta_panel_enable(struct lcd_panel *panel)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ams_delta_latch2_write(AMS_DELTA_LATCH2_LCD_NDISP,
 			AMS_DELTA_LATCH2_LCD_NDISP);
 	ams_delta_latch2_write(AMS_DELTA_LATCH2_LCD_VBLEN,
 			AMS_DELTA_LATCH2_LCD_VBLEN);
+=======
+	gpio_set_value(AMS_DELTA_GPIO_PIN_LCD_NDISP, 1);
+	gpio_set_value(AMS_DELTA_GPIO_PIN_LCD_VBLEN, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_set_value(AMS_DELTA_GPIO_PIN_LCD_NDISP, 1);
+	gpio_set_value(AMS_DELTA_GPIO_PIN_LCD_VBLEN, 1);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void ams_delta_panel_disable(struct lcd_panel *panel)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ams_delta_latch2_write(AMS_DELTA_LATCH2_LCD_VBLEN, 0);
 	ams_delta_latch2_write(AMS_DELTA_LATCH2_LCD_NDISP, 0);
+=======
+	gpio_set_value(AMS_DELTA_GPIO_PIN_LCD_VBLEN, 0);
+	gpio_set_value(AMS_DELTA_GPIO_PIN_LCD_NDISP, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_set_value(AMS_DELTA_GPIO_PIN_LCD_VBLEN, 0);
+	gpio_set_value(AMS_DELTA_GPIO_PIN_LCD_NDISP, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long ams_delta_panel_get_caps(struct lcd_panel *panel)
@@ -198,7 +263,15 @@ static int ams_delta_panel_resume(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_driver ams_delta_panel_driver = {
+=======
+static struct platform_driver ams_delta_panel_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver ams_delta_panel_driver = {
+>>>>>>> refs/remotes/origin/master
 	.probe		= ams_delta_panel_probe,
 	.remove		= ams_delta_panel_remove,
 	.suspend	= ams_delta_panel_suspend,
@@ -209,6 +282,8 @@ struct platform_driver ams_delta_panel_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init ams_delta_panel_drv_init(void)
 {
 	return platform_driver_register(&ams_delta_panel_driver);
@@ -221,3 +296,9 @@ static void __exit ams_delta_panel_drv_cleanup(void)
 
 module_init(ams_delta_panel_drv_init);
 module_exit(ams_delta_panel_drv_cleanup);
+=======
+module_platform_driver(ams_delta_panel_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(ams_delta_panel_driver);
+>>>>>>> refs/remotes/origin/master

@@ -8,7 +8,10 @@
 #include <linux/kthread.h>
 #include <linux/random.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 
 #include <asm/cacheflush.h>
@@ -68,7 +71,11 @@ static int print_split(struct split_state *s)
 			s->gpg++;
 			i += GPS/PAGE_SIZE;
 		} else if (level == PG_LEVEL_2M) {
+<<<<<<< HEAD
 			if (!(pte_val(*pte) & _PAGE_PSE)) {
+=======
+			if ((pte_val(*pte) & _PAGE_PRESENT) && !(pte_val(*pte) & _PAGE_PSE)) {
+>>>>>>> refs/remotes/origin/master
 				printk(KERN_ERR
 					"%lx level %d but not PSE %Lx\n",
 					addr, level, (u64)pte_val(*pte));
@@ -123,12 +130,24 @@ static int pageattr_test(void)
 	if (print)
 		printk(KERN_INFO "CPA self-test:\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bm = vmalloc((max_pfn_mapped + 7) / 8);
+=======
+	bm = vzalloc((max_pfn_mapped + 7) / 8);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bm = vzalloc((max_pfn_mapped + 7) / 8);
+>>>>>>> refs/remotes/origin/master
 	if (!bm) {
 		printk(KERN_ERR "CPA Cannot vmalloc bitmap\n");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(bm, 0, (max_pfn_mapped + 7) / 8);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	failed += print_split(&sa);
 	srandom32(100);
@@ -138,6 +157,16 @@ static int pageattr_test(void)
 
 		addr[i] = (unsigned long)__va(pfn << PAGE_SHIFT);
 		len[i] = random32() % 100;
+=======
+
+	failed += print_split(&sa);
+
+	for (i = 0; i < NTEST; i++) {
+		unsigned long pfn = prandom_u32() % max_pfn_mapped;
+
+		addr[i] = (unsigned long)__va(pfn << PAGE_SHIFT);
+		len[i] = prandom_u32() % 100;
+>>>>>>> refs/remotes/origin/master
 		len[i] = min_t(unsigned long, len[i], max_pfn_mapped - pfn - 1);
 
 		if (len[i] == 0)

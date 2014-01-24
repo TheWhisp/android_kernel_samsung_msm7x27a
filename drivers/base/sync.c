@@ -15,6 +15,14 @@
  */
 
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/file.h>
 #include <linux/fs.h>
 #include <linux/kernel.h>
@@ -64,6 +72,14 @@ struct sync_timeline *sync_timeline_create(const struct sync_timeline_ops *ops,
 
 	return obj;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_timeline_create);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_timeline_create);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void sync_timeline_free(struct sync_timeline *obj)
 {
@@ -94,6 +110,14 @@ void sync_timeline_destroy(struct sync_timeline *obj)
 	else
 		sync_timeline_signal(obj);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_timeline_destroy);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_timeline_destroy);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void sync_timeline_add_pt(struct sync_timeline *obj, struct sync_pt *pt)
 {
@@ -152,6 +176,14 @@ void sync_timeline_signal(struct sync_timeline *obj)
 		sync_fence_signal_pt(pt);
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_timeline_signal);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_timeline_signal);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct sync_pt *sync_pt_create(struct sync_timeline *parent, int size)
 {
@@ -169,6 +201,14 @@ struct sync_pt *sync_pt_create(struct sync_timeline *parent, int size)
 
 	return pt;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_pt_create);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_pt_create);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void sync_pt_free(struct sync_pt *pt)
 {
@@ -179,6 +219,14 @@ void sync_pt_free(struct sync_pt *pt)
 
 	kfree(pt);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_pt_free);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_pt_free);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* call with pt->parent->active_list_lock held */
 static int _sync_pt_has_signaled(struct sync_pt *pt)
@@ -284,6 +332,14 @@ struct sync_fence *sync_fence_create(const char *name, struct sync_pt *pt)
 
 	return fence;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_fence_create);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_fence_create);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int sync_fence_copy_pts(struct sync_fence *dst, struct sync_fence *src)
 {
@@ -331,16 +387,40 @@ err:
 	fput(file);
 	return NULL;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_fence_fdget);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_fence_fdget);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void sync_fence_put(struct sync_fence *fence)
 {
 	fput(fence->file);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_fence_put);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_fence_put);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void sync_fence_install(struct sync_fence *fence, int fd)
 {
 	fd_install(fd, fence->file);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_fence_install);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_fence_install);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int sync_fence_get_status(struct sync_fence *fence)
 {
@@ -388,6 +468,14 @@ err:
 	kfree(fence);
 	return NULL;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_fence_merge);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_fence_merge);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void sync_fence_signal_pt(struct sync_pt *pt)
 {
@@ -421,15 +509,27 @@ static void sync_fence_signal_pt(struct sync_pt *pt)
 				container_of(pos, struct sync_fence_waiter,
 					     waiter_list);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			waiter->callback(fence, waiter->callback_data);
 			list_del(pos);
 			kfree(waiter);
+=======
+			list_del(pos);
+			waiter->callback(fence, waiter);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			list_del(pos);
+			waiter->callback(fence, waiter);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		wake_up(&fence->wq);
 	}
 }
 
 int sync_fence_wait_async(struct sync_fence *fence,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  void (*callback)(struct sync_fence *, void *data),
 			  void *callback_data)
 {
@@ -448,6 +548,21 @@ int sync_fence_wait_async(struct sync_fence *fence,
 
 	if (fence->status) {
 		kfree(waiter);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			  struct sync_fence_waiter *waiter)
+{
+	unsigned long flags;
+	int err = 0;
+
+	spin_lock_irqsave(&fence->waiter_list_lock, flags);
+
+	if (fence->status) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		err = fence->status;
 		goto out;
 	}
@@ -458,6 +573,45 @@ out:
 
 	return err;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+EXPORT_SYMBOL(sync_fence_wait_async);
+
+int sync_fence_cancel_async(struct sync_fence *fence,
+			     struct sync_fence_waiter *waiter)
+{
+	struct list_head *pos;
+	struct list_head *n;
+	unsigned long flags;
+	int ret = -ENOENT;
+
+	spin_lock_irqsave(&fence->waiter_list_lock, flags);
+	/*
+	 * Make sure waiter is still in waiter_list because it is possible for
+	 * the waiter to be removed from the list while the callback is still
+	 * pending.
+	 */
+	list_for_each_safe(pos, n, &fence->waiter_list_head) {
+		struct sync_fence_waiter *list_waiter =
+			container_of(pos, struct sync_fence_waiter,
+				     waiter_list);
+		if (list_waiter == waiter) {
+			list_del(pos);
+			ret = 0;
+			break;
+		}
+	}
+	spin_unlock_irqrestore(&fence->waiter_list_lock, flags);
+	return ret;
+}
+EXPORT_SYMBOL(sync_fence_cancel_async);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int sync_fence_wait(struct sync_fence *fence, long timeout)
 {
@@ -483,6 +637,14 @@ int sync_fence_wait(struct sync_fence *fence, long timeout)
 
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(sync_fence_wait);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sync_fence_wait);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int sync_fence_release(struct inode *inode, struct file *file)
 {
@@ -568,7 +730,15 @@ err_put_fd:
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int sync_fill_pt_info(struct sync_pt *pt, void *data, int size)
+=======
+static int sync_fill_pt_info(struct sync_pt *pt, void *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int sync_fill_pt_info(struct sync_pt *pt, void *data, int size)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct sync_pt_info *info = data;
 	int ret;
@@ -596,7 +766,13 @@ int sync_fill_pt_info(struct sync_pt *pt, void *data, int size)
 	return info->len;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static long sync_fence_ioctl_fence_info(struct sync_fence *fence,
 					unsigned long arg)
 {
@@ -740,8 +916,16 @@ static void sync_print_fence(struct seq_file *s, struct sync_fence *fence)
 			container_of(pos, struct sync_fence_waiter,
 				     waiter_list);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		seq_printf(s, "waiter %pF %p\n", waiter->callback,
 			   waiter->callback_data);
+=======
+		seq_printf(s, "waiter %pF\n", waiter->callback);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		seq_printf(s, "waiter %pF\n", waiter->callback);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	spin_unlock_irqrestore(&fence->waiter_list_lock, flags);
 }

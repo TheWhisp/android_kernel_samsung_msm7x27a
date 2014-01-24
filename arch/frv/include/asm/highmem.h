@@ -76,15 +76,26 @@ extern struct page *kmap_atomic_to_page(void *ptr);
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 #define __kmap_atomic_primary(type, paddr, ampr)						\
+=======
+#define __kmap_atomic_primary(cached, paddr, ampr)						\
+>>>>>>> refs/remotes/origin/master
 ({												\
 	unsigned long damlr, dampr;								\
 												\
 	dampr = paddr | xAMPRx_L | xAMPRx_M | xAMPRx_S | xAMPRx_SS_16Kb | xAMPRx_V;		\
 												\
+<<<<<<< HEAD
 	if (type != __KM_CACHE)									\
 		asm volatile("movgs %0,dampr"#ampr :: "r"(dampr) : "memory");			\
 	else											\
+=======
+	if (!cached)										\
+		asm volatile("movgs %0,dampr"#ampr :: "r"(dampr) : "memory");			\
+	else											\
+		/* cache flush page attachment point */						\
+>>>>>>> refs/remotes/origin/master
 		asm volatile("movgs %0,iampr"#ampr"\n"						\
 			     "movgs %0,dampr"#ampr"\n"						\
 			     :: "r"(dampr) : "memory"						\
@@ -112,13 +123,18 @@ extern struct page *kmap_atomic_to_page(void *ptr);
 	(void *) damlr;										  \
 })
 
+<<<<<<< HEAD
 static inline void *kmap_atomic_primary(struct page *page, enum km_type type)
+=======
+static inline void *kmap_atomic_primary(struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long paddr;
 
 	pagefault_disable();
 	paddr = page_to_phys(page);
 
+<<<<<<< HEAD
 	switch (type) {
         case 0:		return __kmap_atomic_primary(0, paddr, 2);
         case 1:		return __kmap_atomic_primary(1, paddr, 3);
@@ -135,6 +151,15 @@ static inline void *kmap_atomic_primary(struct page *page, enum km_type type)
 do {									\
 	asm volatile("movgs gr0,dampr"#ampr"\n" ::: "memory");		\
 	if (type == __KM_CACHE)						\
+=======
+        return __kmap_atomic_primary(1, paddr, 2);
+}
+
+#define __kunmap_atomic_primary(cached, ampr)				\
+do {									\
+	asm volatile("movgs gr0,dampr"#ampr"\n" ::: "memory");		\
+	if (cached)							\
+>>>>>>> refs/remotes/origin/master
 		asm volatile("movgs gr0,iampr"#ampr"\n" ::: "memory");	\
 } while(0)
 
@@ -143,6 +168,7 @@ do {									\
 	asm volatile("tlbpr %0,gr0,#4,#1" : : "r"(vaddr) : "memory");	\
 } while(0)
 
+<<<<<<< HEAD
 static inline void kunmap_atomic_primary(void *kvaddr, enum km_type type)
 {
 	switch (type) {
@@ -157,7 +183,20 @@ static inline void kunmap_atomic_primary(void *kvaddr, enum km_type type)
 	pagefault_enable();
 }
 
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page);
+=======
+void *kmap_atomic(struct page *page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void kunmap_atomic_primary(void *kvaddr)
+{
+        __kunmap_atomic_primary(1, 2);
+	pagefault_enable();
+}
+
+void *kmap_atomic(struct page *page);
+>>>>>>> refs/remotes/origin/master
 void __kunmap_atomic(void *kvaddr);
 
 #endif /* !__ASSEMBLY__ */

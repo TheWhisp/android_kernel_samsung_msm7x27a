@@ -17,10 +17,25 @@
  */
 
 #include <net/ipv6.h>
+<<<<<<< HEAD
 #include <linux/sunrpc/clnt.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#include <linux/export.h>
+
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sunrpc/addr.h>
+#include <linux/sunrpc/msg_prot.h>
+#include <linux/slab.h>
+#include <linux/export.h>
+
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 
 static size_t rpc_ntop6_noscopeid(const struct sockaddr *sap,
 				  char *buf, const int buflen)
@@ -90,7 +105,15 @@ static size_t rpc_ntop6(const struct sockaddr *sap,
 	return len;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else	/* !(defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)) */
+=======
+#else	/* !IS_ENABLED(CONFIG_IPV6) */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else	/* !IS_ENABLED(CONFIG_IPV6) */
+>>>>>>> refs/remotes/origin/master
 
 static size_t rpc_ntop6_noscopeid(const struct sockaddr *sap,
 				  char *buf, const int buflen)
@@ -104,7 +127,15 @@ static size_t rpc_ntop6(const struct sockaddr *sap,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif	/* !(defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)) */
+=======
+#endif	/* !IS_ENABLED(CONFIG_IPV6) */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif	/* !IS_ENABLED(CONFIG_IPV6) */
+>>>>>>> refs/remotes/origin/master
 
 static int rpc_ntop4(const struct sockaddr *sap,
 		     char *buf, const size_t buflen)
@@ -154,9 +185,22 @@ static size_t rpc_pton4(const char *buf, const size_t buflen,
 	return sizeof(struct sockaddr_in);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 static int rpc_parse_scope_id(const char *buf, const size_t buflen,
 			      const char *delim, struct sockaddr_in6 *sin6)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if IS_ENABLED(CONFIG_IPV6)
+static int rpc_parse_scope_id(struct net *net, const char *buf,
+			      const size_t buflen, const char *delim,
+			      struct sockaddr_in6 *sin6)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	char *p;
 	size_t len;
@@ -176,7 +220,15 @@ static int rpc_parse_scope_id(const char *buf, const size_t buflen,
 		unsigned long scope_id = 0;
 		struct net_device *dev;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev = dev_get_by_name(&init_net, p);
+=======
+		dev = dev_get_by_name(net, p);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev = dev_get_by_name(net, p);
+>>>>>>> refs/remotes/origin/master
 		if (dev != NULL) {
 			scope_id = dev->ifindex;
 			dev_put(dev);
@@ -196,7 +248,15 @@ static int rpc_parse_scope_id(const char *buf, const size_t buflen,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static size_t rpc_pton6(const char *buf, const size_t buflen,
+=======
+static size_t rpc_pton6(struct net *net, const char *buf, const size_t buflen,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static size_t rpc_pton6(struct net *net, const char *buf, const size_t buflen,
+>>>>>>> refs/remotes/origin/master
 			struct sockaddr *sap, const size_t salen)
 {
 	struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)sap;
@@ -212,14 +272,30 @@ static size_t rpc_pton6(const char *buf, const size_t buflen,
 	if (in6_pton(buf, buflen, addr, IPV6_SCOPE_DELIMITER, &delim) == 0)
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!rpc_parse_scope_id(buf, buflen, delim, sin6))
+=======
+	if (!rpc_parse_scope_id(net, buf, buflen, delim, sin6))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!rpc_parse_scope_id(net, buf, buflen, delim, sin6))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	sin6->sin6_family = AF_INET6;
 	return sizeof(struct sockaddr_in6);
 }
 #else
+<<<<<<< HEAD
+<<<<<<< HEAD
 static size_t rpc_pton6(const char *buf, const size_t buflen,
+=======
+static size_t rpc_pton6(struct net *net, const char *buf, const size_t buflen,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static size_t rpc_pton6(struct net *net, const char *buf, const size_t buflen,
+>>>>>>> refs/remotes/origin/master
 			struct sockaddr *sap, const size_t salen)
 {
 	return 0;
@@ -228,6 +304,14 @@ static size_t rpc_pton6(const char *buf, const size_t buflen,
 
 /**
  * rpc_pton - Construct a sockaddr in @sap
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @net: applicable network namespace
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @net: applicable network namespace
+>>>>>>> refs/remotes/origin/master
  * @buf: C string containing presentation format IP address
  * @buflen: length of presentation address in bytes
  * @sap: buffer into which to plant socket address
@@ -240,14 +324,30 @@ static size_t rpc_pton6(const char *buf, const size_t buflen,
  * socket address, if successful.  Returns zero if an error
  * occurred.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 size_t rpc_pton(const char *buf, const size_t buflen,
+=======
+size_t rpc_pton(struct net *net, const char *buf, const size_t buflen,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+size_t rpc_pton(struct net *net, const char *buf, const size_t buflen,
+>>>>>>> refs/remotes/origin/master
 		struct sockaddr *sap, const size_t salen)
 {
 	unsigned int i;
 
 	for (i = 0; i < buflen; i++)
 		if (buf[i] == ':')
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return rpc_pton6(buf, buflen, sap, salen);
+=======
+			return rpc_pton6(net, buf, buflen, sap, salen);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return rpc_pton6(net, buf, buflen, sap, salen);
+>>>>>>> refs/remotes/origin/master
 	return rpc_pton4(buf, buflen, sap, salen);
 }
 EXPORT_SYMBOL_GPL(rpc_pton);
@@ -255,12 +355,28 @@ EXPORT_SYMBOL_GPL(rpc_pton);
 /**
  * rpc_sockaddr2uaddr - Construct a universal address string from @sap.
  * @sap: socket address
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @gfp_flags: allocation mode
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @gfp_flags: allocation mode
+>>>>>>> refs/remotes/origin/master
  *
  * Returns a %NUL-terminated string in dynamically allocated memory;
  * otherwise NULL is returned if an error occurred.  Caller must
  * free the returned string.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 char *rpc_sockaddr2uaddr(const struct sockaddr *sap)
+=======
+char *rpc_sockaddr2uaddr(const struct sockaddr *sap, gfp_t gfp_flags)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+char *rpc_sockaddr2uaddr(const struct sockaddr *sap, gfp_t gfp_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	char portbuf[RPCBIND_MAXUADDRPLEN];
 	char addrbuf[RPCBIND_MAXUADDRLEN];
@@ -288,12 +404,27 @@ char *rpc_sockaddr2uaddr(const struct sockaddr *sap)
 	if (strlcat(addrbuf, portbuf, sizeof(addrbuf)) > sizeof(addrbuf))
 		return NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return kstrdup(addrbuf, GFP_KERNEL);
 }
 EXPORT_SYMBOL_GPL(rpc_sockaddr2uaddr);
 
 /**
  * rpc_uaddr2sockaddr - convert a universal address to a socket address.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	return kstrdup(addrbuf, gfp_flags);
+}
+
+/**
+ * rpc_uaddr2sockaddr - convert a universal address to a socket address.
+ * @net: applicable network namespace
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @uaddr: C string containing universal address to convert
  * @uaddr_len: length of universal address string
  * @sap: buffer into which to plant socket address
@@ -305,8 +436,20 @@ EXPORT_SYMBOL_GPL(rpc_sockaddr2uaddr);
  * Returns the size of the socket address if successful; otherwise
  * zero is returned.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 size_t rpc_uaddr2sockaddr(const char *uaddr, const size_t uaddr_len,
 			  struct sockaddr *sap, const size_t salen)
+=======
+size_t rpc_uaddr2sockaddr(struct net *net, const char *uaddr,
+			  const size_t uaddr_len, struct sockaddr *sap,
+			  const size_t salen)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+size_t rpc_uaddr2sockaddr(struct net *net, const char *uaddr,
+			  const size_t uaddr_len, struct sockaddr *sap,
+			  const size_t salen)
+>>>>>>> refs/remotes/origin/master
 {
 	char *c, buf[RPCBIND_MAXUADDRLEN + sizeof('\0')];
 	unsigned long portlo, porthi;
@@ -338,7 +481,15 @@ size_t rpc_uaddr2sockaddr(const char *uaddr, const size_t uaddr_len,
 	port = (unsigned short)((porthi << 8) | portlo);
 
 	*c = '\0';
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rpc_pton(buf, strlen(buf), sap, salen) == 0)
+=======
+	if (rpc_pton(net, buf, strlen(buf), sap, salen) == 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rpc_pton(net, buf, strlen(buf), sap, salen) == 0)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	switch (sap->sa_family) {

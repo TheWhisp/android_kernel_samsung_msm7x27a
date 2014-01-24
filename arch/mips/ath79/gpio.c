@@ -1,9 +1,18 @@
 /*
  *  Atheros AR71XX/AR724X/AR913X GPIO API support
  *
+<<<<<<< HEAD
  *  Copyright (C) 2008-2010 Gabor Juhos <juhosg@openwrt.org>
  *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
  *
+=======
+ *  Copyright (C) 2010-2011 Jaiganesh Narayanan <jnarayanan@atheros.com>
+ *  Copyright (C) 2008-2011 Gabor Juhos <juhosg@openwrt.org>
+ *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
+ *
+ *  Parts of this file are based on Atheros' 2.6.15/2.6.31 BSP
+ *
+>>>>>>> refs/remotes/origin/master
  *  This program is free software; you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License version 2 as published
  *  by the Free Software Foundation.
@@ -89,6 +98,7 @@ static int ath79_gpio_direction_output(struct gpio_chip *chip,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct gpio_chip ath79_gpio_chip = {
 	.label			= "ath79",
 	.get			= ath79_gpio_get_value,
@@ -99,12 +109,16 @@ static struct gpio_chip ath79_gpio_chip = {
 };
 
 void ath79_gpio_function_enable(u32 mask)
+=======
+static int ar934x_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *base = ath79_gpio_base;
 	unsigned long flags;
 
 	spin_lock_irqsave(&ath79_gpio_lock, flags);
 
+<<<<<<< HEAD
 	__raw_writel(__raw_readl(base + AR71XX_GPIO_REG_FUNC) | mask,
 		     base + AR71XX_GPIO_REG_FUNC);
 	/* flush write */
@@ -114,50 +128,152 @@ void ath79_gpio_function_enable(u32 mask)
 }
 
 void ath79_gpio_function_disable(u32 mask)
+=======
+	__raw_writel(__raw_readl(base + AR71XX_GPIO_REG_OE) | (1 << offset),
+		     base + AR71XX_GPIO_REG_OE);
+
+	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
+
+	return 0;
+}
+
+static int ar934x_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
+					int value)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *base = ath79_gpio_base;
 	unsigned long flags;
 
 	spin_lock_irqsave(&ath79_gpio_lock, flags);
 
+<<<<<<< HEAD
 	__raw_writel(__raw_readl(base + AR71XX_GPIO_REG_FUNC) & ~mask,
 		     base + AR71XX_GPIO_REG_FUNC);
 	/* flush write */
 	__raw_readl(base + AR71XX_GPIO_REG_FUNC);
 
 	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
+=======
+	if (value)
+		__raw_writel(1 << offset, base + AR71XX_GPIO_REG_SET);
+	else
+		__raw_writel(1 << offset, base + AR71XX_GPIO_REG_CLEAR);
+
+	__raw_writel(__raw_readl(base + AR71XX_GPIO_REG_OE) & ~(1 << offset),
+		     base + AR71XX_GPIO_REG_OE);
+
+	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
+
+	return 0;
+}
+
+static struct gpio_chip ath79_gpio_chip = {
+	.label			= "ath79",
+	.get			= ath79_gpio_get_value,
+	.set			= ath79_gpio_set_value,
+	.direction_input	= ath79_gpio_direction_input,
+	.direction_output	= ath79_gpio_direction_output,
+	.base			= 0,
+};
+
+static void __iomem *ath79_gpio_get_function_reg(void)
+{
+	u32 reg = 0;
+
+	if (soc_is_ar71xx() ||
+	    soc_is_ar724x() ||
+	    soc_is_ar913x() ||
+	    soc_is_ar933x())
+		reg = AR71XX_GPIO_REG_FUNC;
+	else if (soc_is_ar934x())
+		reg = AR934X_GPIO_REG_FUNC;
+	else
+		BUG();
+
+	return ath79_gpio_base + reg;
+>>>>>>> refs/remotes/origin/master
 }
 
 void ath79_gpio_function_setup(u32 set, u32 clear)
 {
+<<<<<<< HEAD
 	void __iomem *base = ath79_gpio_base;
+=======
+	void __iomem *reg = ath79_gpio_get_function_reg();
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&ath79_gpio_lock, flags);
 
+<<<<<<< HEAD
 	__raw_writel((__raw_readl(base + AR71XX_GPIO_REG_FUNC) & ~clear) | set,
 		     base + AR71XX_GPIO_REG_FUNC);
 	/* flush write */
 	__raw_readl(base + AR71XX_GPIO_REG_FUNC);
+=======
+	__raw_writel((__raw_readl(reg) & ~clear) | set, reg);
+	/* flush write */
+	__raw_readl(reg);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
 }
 
+<<<<<<< HEAD
+=======
+void ath79_gpio_function_enable(u32 mask)
+{
+	ath79_gpio_function_setup(mask, 0);
+}
+
+void ath79_gpio_function_disable(u32 mask)
+{
+	ath79_gpio_function_setup(0, mask);
+}
+
+>>>>>>> refs/remotes/origin/master
 void __init ath79_gpio_init(void)
 {
 	int err;
 
 	if (soc_is_ar71xx())
 		ath79_gpio_count = AR71XX_GPIO_COUNT;
+<<<<<<< HEAD
 	else if (soc_is_ar724x())
 		ath79_gpio_count = AR724X_GPIO_COUNT;
 	else if (soc_is_ar913x())
 		ath79_gpio_count = AR913X_GPIO_COUNT;
+<<<<<<< HEAD
+=======
+	else if (soc_is_ar933x())
+		ath79_gpio_count = AR933X_GPIO_COUNT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (soc_is_ar7240())
+		ath79_gpio_count = AR7240_GPIO_COUNT;
+	else if (soc_is_ar7241() || soc_is_ar7242())
+		ath79_gpio_count = AR7241_GPIO_COUNT;
+	else if (soc_is_ar913x())
+		ath79_gpio_count = AR913X_GPIO_COUNT;
+	else if (soc_is_ar933x())
+		ath79_gpio_count = AR933X_GPIO_COUNT;
+	else if (soc_is_ar934x())
+		ath79_gpio_count = AR934X_GPIO_COUNT;
+	else if (soc_is_qca955x())
+		ath79_gpio_count = QCA955X_GPIO_COUNT;
+>>>>>>> refs/remotes/origin/master
 	else
 		BUG();
 
 	ath79_gpio_base = ioremap_nocache(AR71XX_GPIO_BASE, AR71XX_GPIO_SIZE);
 	ath79_gpio_chip.ngpio = ath79_gpio_count;
+<<<<<<< HEAD
+=======
+	if (soc_is_ar934x() || soc_is_qca955x()) {
+		ath79_gpio_chip.direction_input = ar934x_gpio_direction_input;
+		ath79_gpio_chip.direction_output = ar934x_gpio_direction_output;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	err = gpiochip_add(&ath79_gpio_chip);
 	if (err)

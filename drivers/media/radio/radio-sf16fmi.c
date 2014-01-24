@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* SF16-FMI and SF16-FMP radio driver for Linux radio support
+=======
+/* SF16-FMI, SF16-FMP and SF16-FMD radio driver for Linux radio support
+>>>>>>> refs/remotes/origin/master
  * heavily based on rtrack driver...
  * (c) 1997 M. Kirkwood
  * (c) 1998 Petr Vandrovec, vandrove@vc.cvut.cz
@@ -11,12 +15,22 @@
  *
  *  Frequency control is done digitally -- ie out(port,encodefreq(95.8));
  *  No volume control - only mute/unmute - you have to use line volume
+<<<<<<< HEAD
  *  control on SB-part of SF16-FMI/SF16-FMP
+=======
+ *  control on SB-part of SF16-FMI/SF16-FMP/SF16-FMD
+>>>>>>> refs/remotes/origin/master
  *
  * Converted to V4L2 API by Mauro Carvalho Chehab <mchehab@infradead.org>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>	/* __setup			*/
 #include <linux/module.h>	/* Modules 			*/
 #include <linux/init.h>		/* Initdata			*/
@@ -28,20 +42,39 @@
 #include <linux/io.h>		/* outb, outb_p			*/
 #include <media/v4l2-device.h>
 #include <media/v4l2-ioctl.h>
+<<<<<<< HEAD
 
 MODULE_AUTHOR("Petr Vandrovec, vandrove@vc.cvut.cz and M. Kirkwood");
 MODULE_DESCRIPTION("A driver for the SF16-FMI and SF16-FMP radio.");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_VERSION("0.0.3");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <media/v4l2-ctrls.h>
+#include <media/v4l2-event.h>
+#include "lm7000.h"
+
+MODULE_AUTHOR("Petr Vandrovec, vandrove@vc.cvut.cz and M. Kirkwood");
+MODULE_DESCRIPTION("A driver for the SF16-FMI, SF16-FMP and SF16-FMD radio.");
+MODULE_LICENSE("GPL");
+MODULE_VERSION("0.0.3");
+>>>>>>> refs/remotes/origin/master
 
 static int io = -1;
 static int radio_nr = -1;
 
 module_param(io, int, 0);
+<<<<<<< HEAD
 MODULE_PARM_DESC(io, "I/O address of the SF16-FMI or SF16-FMP card (0x284 or 0x384)");
 module_param(radio_nr, int, 0);
 
+<<<<<<< HEAD
 #define RADIO_VERSION KERNEL_VERSION(0, 0, 2)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct fmi
 {
 	struct v4l2_device v4l2_dev;
@@ -49,6 +82,19 @@ struct fmi
 	int io;
 	bool mute;
 	unsigned long curfreq; /* freq in kHz */
+=======
+MODULE_PARM_DESC(io, "I/O address of the SF16-FMI/SF16-FMP/SF16-FMD card (0x284 or 0x384)");
+module_param(radio_nr, int, 0);
+
+struct fmi
+{
+	struct v4l2_device v4l2_dev;
+	struct v4l2_ctrl_handler hdl;
+	struct video_device vdev;
+	int io;
+	bool mute;
+	u32 curfreq; /* freq in kHz */
+>>>>>>> refs/remotes/origin/master
 	struct mutex lock;
 };
 
@@ -56,6 +102,7 @@ static struct fmi fmi_card;
 static struct pnp_dev *dev;
 bool pnp_attached;
 
+<<<<<<< HEAD
 /* freq is in 1/16 kHz to internal number, hw precision is 50 kHz */
 /* It is only useful to give freq in interval of 800 (=0.05Mhz),
  * other bits will be truncated, e.g 92.7400016 -> 92.7, but
@@ -81,6 +128,35 @@ static void outbits(int bits, unsigned int data, int io)
 		}
 		data >>= 1;
 	}
+=======
+#define RSF16_MINFREQ (87U * 16000)
+#define RSF16_MAXFREQ (108U * 16000)
+
+#define FMI_BIT_TUN_CE		(1 << 0)
+#define FMI_BIT_TUN_CLK		(1 << 1)
+#define FMI_BIT_TUN_DATA	(1 << 2)
+#define FMI_BIT_VOL_SW		(1 << 3)
+#define FMI_BIT_TUN_STRQ	(1 << 4)
+
+static void fmi_set_pins(void *handle, u8 pins)
+{
+	struct fmi *fmi = handle;
+	u8 bits = FMI_BIT_TUN_STRQ;
+
+	if (!fmi->mute)
+		bits |= FMI_BIT_VOL_SW;
+
+	if (pins & LM7000_DATA)
+		bits |= FMI_BIT_TUN_DATA;
+	if (pins & LM7000_CLK)
+		bits |= FMI_BIT_TUN_CLK;
+	if (pins & LM7000_CE)
+		bits |= FMI_BIT_TUN_CE;
+
+	mutex_lock(&fmi->lock);
+	outb_p(bits, fmi->io);
+	mutex_unlock(&fmi->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void fmi_mute(struct fmi *fmi)
@@ -97,6 +173,7 @@ static inline void fmi_unmute(struct fmi *fmi)
 	mutex_unlock(&fmi->lock);
 }
 
+<<<<<<< HEAD
 static inline int fmi_setfreq(struct fmi *fmi, unsigned long freq)
 {
 	mutex_lock(&fmi->lock);
@@ -111,6 +188,8 @@ static inline int fmi_setfreq(struct fmi *fmi, unsigned long freq)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int fmi_getsigstr(struct fmi *fmi)
 {
 	int val;
@@ -128,14 +207,35 @@ static inline int fmi_getsigstr(struct fmi *fmi)
 	return (res & 2) ? 0 : 0xFFFF;
 }
 
+<<<<<<< HEAD
+=======
+static void fmi_set_freq(struct fmi *fmi)
+{
+	fmi->curfreq = clamp(fmi->curfreq, RSF16_MINFREQ, RSF16_MAXFREQ);
+	/* rounding in steps of 800 to match the freq
+	   that will be used */
+	lm7000_set_freq((fmi->curfreq / 800) * 800, fmi, fmi_set_pins);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int vidioc_querycap(struct file *file, void  *priv,
 					struct v4l2_capability *v)
 {
 	strlcpy(v->driver, "radio-sf16fmi", sizeof(v->driver));
+<<<<<<< HEAD
 	strlcpy(v->card, "SF16-FMx radio", sizeof(v->card));
 	strlcpy(v->bus_info, "ISA", sizeof(v->bus_info));
+<<<<<<< HEAD
 	v->version = RADIO_VERSION;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	v->capabilities = V4L2_CAP_TUNER | V4L2_CAP_RADIO;
+=======
+	strlcpy(v->card, "SF16-FMI/FMP/FMD radio", sizeof(v->card));
+	strlcpy(v->bus_info, "ISA:radio-sf16fmi", sizeof(v->bus_info));
+	v->device_caps = V4L2_CAP_TUNER | V4L2_CAP_RADIO;
+	v->capabilities = v->device_caps | V4L2_CAP_DEVICE_CAPS;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -159,24 +259,39 @@ static int vidioc_g_tuner(struct file *file, void *priv,
 }
 
 static int vidioc_s_tuner(struct file *file, void *priv,
+<<<<<<< HEAD
 					struct v4l2_tuner *v)
+=======
+					const struct v4l2_tuner *v)
+>>>>>>> refs/remotes/origin/master
 {
 	return v->index ? -EINVAL : 0;
 }
 
 static int vidioc_s_frequency(struct file *file, void *priv,
+<<<<<<< HEAD
 					struct v4l2_frequency *f)
+=======
+					const struct v4l2_frequency *f)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fmi *fmi = video_drvdata(file);
 
 	if (f->tuner != 0 || f->type != V4L2_TUNER_RADIO)
 		return -EINVAL;
+<<<<<<< HEAD
 	if (f->frequency < RSF16_MINFREQ ||
 			f->frequency > RSF16_MAXFREQ)
 		return -EINVAL;
 	/* rounding in steps of 800 to match the freq
 	   that will be used */
 	fmi_setfreq(fmi, (f->frequency / 800) * 800);
+=======
+
+	fmi->curfreq = f->frequency;
+	fmi_set_freq(fmi);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -192,6 +307,7 @@ static int vidioc_g_frequency(struct file *file, void *priv,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int vidioc_queryctrl(struct file *file, void *priv,
 					struct v4l2_queryctrl *qc)
 {
@@ -227,11 +343,25 @@ static int vidioc_s_ctrl(struct file *file, void *priv,
 		else
 			fmi_unmute(fmi);
 		fmi->mute = ctrl->value;
+=======
+static int fmi_s_ctrl(struct v4l2_ctrl *ctrl)
+{
+	struct fmi *fmi = container_of(ctrl->handler, struct fmi, hdl);
+
+	switch (ctrl->id) {
+	case V4L2_CID_AUDIO_MUTE:
+		if (ctrl->val)
+			fmi_mute(fmi);
+		else
+			fmi_unmute(fmi);
+		fmi->mute = ctrl->val;
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int vidioc_g_input(struct file *filp, void *priv, unsigned int *i)
 {
 	*i = 0;
@@ -260,6 +390,17 @@ static int vidioc_s_audio(struct file *file, void *priv,
 
 static const struct v4l2_file_operations fmi_fops = {
 	.owner		= THIS_MODULE,
+=======
+static const struct v4l2_ctrl_ops fmi_ctrl_ops = {
+	.s_ctrl = fmi_s_ctrl,
+};
+
+static const struct v4l2_file_operations fmi_fops = {
+	.owner		= THIS_MODULE,
+	.open		= v4l2_fh_open,
+	.release	= v4l2_fh_release,
+	.poll		= v4l2_ctrl_poll,
+>>>>>>> refs/remotes/origin/master
 	.unlocked_ioctl	= video_ioctl2,
 };
 
@@ -267,6 +408,7 @@ static const struct v4l2_ioctl_ops fmi_ioctl_ops = {
 	.vidioc_querycap    = vidioc_querycap,
 	.vidioc_g_tuner     = vidioc_g_tuner,
 	.vidioc_s_tuner     = vidioc_s_tuner,
+<<<<<<< HEAD
 	.vidioc_g_audio     = vidioc_g_audio,
 	.vidioc_s_audio     = vidioc_s_audio,
 	.vidioc_g_input     = vidioc_g_input,
@@ -282,6 +424,23 @@ static const struct v4l2_ioctl_ops fmi_ioctl_ops = {
 static struct isapnp_device_id id_table[] __devinitdata = {
 	{	ISAPNP_ANY_ID, ISAPNP_ANY_ID,
 		ISAPNP_VENDOR('M','F','R'), ISAPNP_FUNCTION(0xad10), 0},
+=======
+	.vidioc_g_frequency = vidioc_g_frequency,
+	.vidioc_s_frequency = vidioc_s_frequency,
+	.vidioc_log_status  = v4l2_ctrl_log_status,
+	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
+	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
+};
+
+/* ladis: this is my card. does any other types exist? */
+static struct isapnp_device_id id_table[] = {
+		/* SF16-FMI */
+	{	ISAPNP_ANY_ID, ISAPNP_ANY_ID,
+		ISAPNP_VENDOR('M','F','R'), ISAPNP_FUNCTION(0xad10), 0},
+		/* SF16-FMD */
+	{	ISAPNP_ANY_ID, ISAPNP_ANY_ID,
+		ISAPNP_VENDOR('M','F','R'), ISAPNP_FUNCTION(0xad12), 0},
+>>>>>>> refs/remotes/origin/master
 	{	ISAPNP_CARD_END, },
 };
 
@@ -321,6 +480,10 @@ static int __init fmi_init(void)
 {
 	struct fmi *fmi = &fmi_card;
 	struct v4l2_device *v4l2_dev = &fmi->v4l2_dev;
+<<<<<<< HEAD
+=======
+	struct v4l2_ctrl_handler *hdl = &fmi->hdl;
+>>>>>>> refs/remotes/origin/master
 	int res, i;
 	int probe_ports[] = { 0, 0x284, 0x384 };
 
@@ -373,19 +536,48 @@ static int __init fmi_init(void)
 		return res;
 	}
 
+<<<<<<< HEAD
+=======
+	v4l2_ctrl_handler_init(hdl, 1);
+	v4l2_ctrl_new_std(hdl, &fmi_ctrl_ops,
+			V4L2_CID_AUDIO_MUTE, 0, 1, 1, 1);
+	v4l2_dev->ctrl_handler = hdl;
+	if (hdl->error) {
+		res = hdl->error;
+		v4l2_err(v4l2_dev, "Could not register controls\n");
+		v4l2_ctrl_handler_free(hdl);
+		v4l2_device_unregister(v4l2_dev);
+		return res;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	strlcpy(fmi->vdev.name, v4l2_dev->name, sizeof(fmi->vdev.name));
 	fmi->vdev.v4l2_dev = v4l2_dev;
 	fmi->vdev.fops = &fmi_fops;
 	fmi->vdev.ioctl_ops = &fmi_ioctl_ops;
 	fmi->vdev.release = video_device_release_empty;
+<<<<<<< HEAD
+=======
+	set_bit(V4L2_FL_USE_FH_PRIO, &fmi->vdev.flags);
+>>>>>>> refs/remotes/origin/master
 	video_set_drvdata(&fmi->vdev, fmi);
 
 	mutex_init(&fmi->lock);
 
+<<<<<<< HEAD
 	/* mute card - prevents noisy bootups */
 	fmi_mute(fmi);
 
 	if (video_register_device(&fmi->vdev, VFL_TYPE_RADIO, radio_nr) < 0) {
+=======
+	/* mute card and set default frequency */
+	fmi->mute = 1;
+	fmi->curfreq = RSF16_MINFREQ;
+	fmi_set_freq(fmi);
+
+	if (video_register_device(&fmi->vdev, VFL_TYPE_RADIO, radio_nr) < 0) {
+		v4l2_ctrl_handler_free(hdl);
+>>>>>>> refs/remotes/origin/master
 		v4l2_device_unregister(v4l2_dev);
 		release_region(fmi->io, 2);
 		if (pnp_attached)
@@ -401,6 +593,10 @@ static void __exit fmi_exit(void)
 {
 	struct fmi *fmi = &fmi_card;
 
+<<<<<<< HEAD
+=======
+	v4l2_ctrl_handler_free(&fmi->hdl);
+>>>>>>> refs/remotes/origin/master
 	video_unregister_device(&fmi->vdev);
 	v4l2_device_unregister(&fmi->v4l2_dev);
 	release_region(fmi->io, 2);

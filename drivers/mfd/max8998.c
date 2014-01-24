@@ -20,12 +20,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/i2c.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pm_runtime.h>
 #include <linux/mutex.h>
 #include <linux/mfd/core.h>
@@ -34,15 +43,33 @@
 
 #define RTC_I2C_ADDR		(0x0c >> 1)
 
+<<<<<<< HEAD
 static struct mfd_cell max8998_devs[] = {
+=======
+static const struct mfd_cell max8998_devs[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "max8998-pmic",
 	}, {
 		.name = "max8998-rtc",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	}, {
+		.name = "max8998-battery",
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
 static struct mfd_cell lp3974_devs[] = {
+=======
+	}, {
+		.name = "max8998-battery",
+	},
+};
+
+static const struct mfd_cell lp3974_devs[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "lp3974-pmic",
 	}, {
@@ -126,6 +153,7 @@ int max8998_update_reg(struct i2c_client *i2c, u8 reg, u8 val, u8 mask)
 }
 EXPORT_SYMBOL(max8998_update_reg);
 
+<<<<<<< HEAD
 static int max8998_i2c_probe(struct i2c_client *i2c,
 			    const struct i2c_device_id *id)
 {
@@ -137,11 +165,88 @@ static int max8998_i2c_probe(struct i2c_client *i2c,
 	if (max8998 == NULL)
 		return -ENOMEM;
 
+=======
+#ifdef CONFIG_OF
+static struct of_device_id max8998_dt_match[] = {
+	{ .compatible = "maxim,max8998", .data = (void *)TYPE_MAX8998 },
+	{ .compatible = "national,lp3974", .data = (void *)TYPE_LP3974 },
+	{ .compatible = "ti,lp3974", .data = (void *)TYPE_LP3974 },
+	{},
+};
+MODULE_DEVICE_TABLE(of, max8998_dt_match);
+#endif
+
+/*
+ * Only the common platform data elements for max8998 are parsed here from the
+ * device tree. Other sub-modules of max8998 such as pmic, rtc and others have
+ * to parse their own platform data elements from device tree.
+ *
+ * The max8998 platform data structure is instantiated here and the drivers for
+ * the sub-modules need not instantiate another instance while parsing their
+ * platform data.
+ */
+static struct max8998_platform_data *max8998_i2c_parse_dt_pdata(
+							struct device *dev)
+{
+	struct max8998_platform_data *pd;
+
+	pd = devm_kzalloc(dev, sizeof(*pd), GFP_KERNEL);
+	if (!pd)
+		return ERR_PTR(-ENOMEM);
+
+	pd->ono = irq_of_parse_and_map(dev->of_node, 1);
+
+	/*
+	 * ToDo: the 'wakeup' member in the platform data is more of a linux
+	 * specfic information. Hence, there is no binding for that yet and
+	 * not parsed here.
+	 */
+	return pd;
+}
+
+static inline int max8998_i2c_get_driver_data(struct i2c_client *i2c,
+						const struct i2c_device_id *id)
+{
+	if (IS_ENABLED(CONFIG_OF) && i2c->dev.of_node) {
+		const struct of_device_id *match;
+		match = of_match_node(max8998_dt_match, i2c->dev.of_node);
+		return (int)match->data;
+	}
+
+	return (int)id->driver_data;
+}
+
+static int max8998_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+{
+	struct max8998_platform_data *pdata = dev_get_platdata(&i2c->dev);
+	struct max8998_dev *max8998;
+	int ret = 0;
+
+	max8998 = devm_kzalloc(&i2c->dev, sizeof(struct max8998_dev),
+				GFP_KERNEL);
+	if (max8998 == NULL)
+		return -ENOMEM;
+
+	if (IS_ENABLED(CONFIG_OF) && i2c->dev.of_node) {
+		pdata = max8998_i2c_parse_dt_pdata(&i2c->dev);
+		if (IS_ERR(pdata)) {
+			ret = PTR_ERR(pdata);
+			goto err;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	i2c_set_clientdata(i2c, max8998);
 	max8998->dev = &i2c->dev;
 	max8998->i2c = i2c;
 	max8998->irq = i2c->irq;
+<<<<<<< HEAD
 	max8998->type = id->driver_data;
+=======
+	max8998->type = max8998_i2c_get_driver_data(i2c, id);
+	max8998->pdata = pdata;
+>>>>>>> refs/remotes/origin/master
 	if (pdata) {
 		max8998->ono = pdata->ono;
 		max8998->irq_base = pdata->irq_base;
@@ -156,6 +261,7 @@ static int max8998_i2c_probe(struct i2c_client *i2c,
 
 	pm_runtime_set_active(max8998->dev);
 
+<<<<<<< HEAD
 	switch (id->driver_data) {
 	case TYPE_LP3974:
 		ret = mfd_add_devices(max8998->dev, -1,
@@ -166,6 +272,18 @@ static int max8998_i2c_probe(struct i2c_client *i2c,
 		ret = mfd_add_devices(max8998->dev, -1,
 				max8998_devs, ARRAY_SIZE(max8998_devs),
 				NULL, 0);
+=======
+	switch (max8998->type) {
+	case TYPE_LP3974:
+		ret = mfd_add_devices(max8998->dev, -1,
+				      lp3974_devs, ARRAY_SIZE(lp3974_devs),
+				      NULL, 0, NULL);
+		break;
+	case TYPE_MAX8998:
+		ret = mfd_add_devices(max8998->dev, -1,
+				      max8998_devs, ARRAY_SIZE(max8998_devs),
+				      NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		ret = -EINVAL;
@@ -174,13 +292,26 @@ static int max8998_i2c_probe(struct i2c_client *i2c,
 	if (ret < 0)
 		goto err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	device_init_wakeup(max8998->dev, max8998->wakeup);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	device_init_wakeup(max8998->dev, max8998->wakeup);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 
 err:
 	mfd_remove_devices(max8998->dev);
 	max8998_irq_exit(max8998);
 	i2c_unregister_device(max8998->rtc);
+<<<<<<< HEAD
 	kfree(max8998);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -191,7 +322,10 @@ static int max8998_i2c_remove(struct i2c_client *i2c)
 	mfd_remove_devices(max8998->dev);
 	max8998_irq_exit(max8998);
 	i2c_unregister_device(max8998->rtc);
+<<<<<<< HEAD
 	kfree(max8998);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -208,7 +342,15 @@ static int max8998_suspend(struct device *dev)
 	struct i2c_client *i2c = container_of(dev, struct i2c_client, dev);
 	struct max8998_dev *max8998 = i2c_get_clientdata(i2c);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (max8998->wakeup)
+=======
+	if (device_may_wakeup(dev))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (device_may_wakeup(dev))
+>>>>>>> refs/remotes/origin/master
 		irq_set_irq_wake(max8998->irq, 1);
 	return 0;
 }
@@ -218,7 +360,15 @@ static int max8998_resume(struct device *dev)
 	struct i2c_client *i2c = container_of(dev, struct i2c_client, dev);
 	struct max8998_dev *max8998 = i2c_get_clientdata(i2c);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (max8998->wakeup)
+=======
+	if (device_may_wakeup(dev))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (device_may_wakeup(dev))
+>>>>>>> refs/remotes/origin/master
 		irq_set_irq_wake(max8998->irq, 0);
 	/*
 	 * In LP3974, if IRQ registers are not "read & clear"
@@ -310,6 +460,10 @@ static struct i2c_driver max8998_i2c_driver = {
 		   .name = "max8998",
 		   .owner = THIS_MODULE,
 		   .pm = &max8998_pm,
+<<<<<<< HEAD
+=======
+		   .of_match_table = of_match_ptr(max8998_dt_match),
+>>>>>>> refs/remotes/origin/master
 	},
 	.probe = max8998_i2c_probe,
 	.remove = max8998_i2c_remove,

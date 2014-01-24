@@ -17,6 +17,7 @@
 
 #include <linux/types.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/machdep.h>
 #include <asm/MC68328.h>
@@ -24,6 +25,18 @@
 /***************************************************************************/
 
 void m68328_timer_gettod(int *year, int *mon, int *day, int *hour, int *min, int *sec);
+=======
+#include <linux/rtc.h>
+#include <asm/machdep.h>
+#include <asm/MC68328.h>
+#if defined(CONFIG_PILOT) || defined(CONFIG_INIT_LCD)
+#include "bootlogo.h"
+#endif
+
+/***************************************************************************/
+
+int m68328_hwclk(int set, struct rtc_time *t);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /***************************************************************************/
 
@@ -45,7 +58,11 @@ void config_BSP(char *command, int len)
   printk(KERN_INFO "68328 support Kenneth Albanowski <kjahds@kjshds.com>\n");
   printk(KERN_INFO "68328/Pilot support Bernhard Kuhn <kuhn@lpr.e-technik.tu-muenchen.de>\n");
 
+<<<<<<< HEAD
   mach_gettod = m68328_timer_gettod;
+=======
+  mach_hwclk = m68328_hwclk;
+>>>>>>> refs/remotes/origin/cm-10.0
   mach_reset = m68328_reset;
 }
 

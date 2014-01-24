@@ -19,9 +19,16 @@
 #include <linux/delay.h>
 #include <linux/seq_file.h>
 #include <linux/of_platform.h>
+<<<<<<< HEAD
 #include <linux/memblock.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -52,6 +59,7 @@ extern int uli_exclude_device(struct pci_controller *hose,
 static int mpc86xx_exclude_device(struct pci_controller *hose,
 				   u_char bus, u_char devfn)
 {
+<<<<<<< HEAD
 	struct device_node* node;	
 	struct resource rsrc;
 
@@ -61,6 +69,10 @@ static int mpc86xx_exclude_device(struct pci_controller *hose,
 	if ((rsrc.start & 0xfffff) == 0x8000) {
 		return uli_exclude_device(hose, bus, devfn);
 	}
+=======
+	if (hose->dn == fsl_pci_primary)
+		return uli_exclude_device(hose, bus, devfn);
+>>>>>>> refs/remotes/origin/master
 
 	return PCIBIOS_SUCCESSFUL;
 }
@@ -70,16 +82,20 @@ static int mpc86xx_exclude_device(struct pci_controller *hose,
 static void __init
 mpc86xx_hpcn_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 	struct pci_controller *hose;
 #endif
 	dma_addr_t max = 0xffffffff;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ppc_md.progress)
 		ppc_md.progress("mpc86xx_hpcn_setup_arch()", 0);
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 	for_each_compatible_node(np, "pci", "fsl,mpc8641-pcie") {
 		struct resource rsrc;
 		of_address_to_resource(np, 0, &rsrc);
@@ -94,6 +110,9 @@ mpc86xx_hpcn_setup_arch(void)
 
 	ppc_md.pci_exclude_device = mpc86xx_exclude_device;
 
+=======
+	ppc_md.pci_exclude_device = mpc86xx_exclude_device;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	printk("MPC86xx HPCN board from Freescale Semiconductor\n");
@@ -102,6 +121,7 @@ mpc86xx_hpcn_setup_arch(void)
 	mpc86xx_smp_init();
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_SWIOTLB
 	if (memblock_end_of_DRAM() > max) {
 		ppc_swiotlb_enable = 1;
@@ -109,6 +129,11 @@ mpc86xx_hpcn_setup_arch(void)
 		ppc_md.pci_dma_dev_setup = pci_dma_dev_setup_swiotlb;
 	}
 #endif
+=======
+	fsl_pci_assign_primary();
+
+	swiotlb_detect_4g();
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -161,8 +186,18 @@ mpc86xx_time_init(void)
 
 static __initdata struct of_device_id of_bus_ids[] = {
 	{ .compatible = "simple-bus", },
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ .compatible = "fsl,rapidio-delta", },
+=======
+	{ .compatible = "fsl,srio", },
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ .compatible = "gianfar", },
+=======
+	{ .compatible = "fsl,srio", },
+	{ .compatible = "gianfar", },
+	{ .compatible = "fsl,mpc8641-pcie", },
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 
@@ -172,7 +207,11 @@ static int __init declare_of_platform_devices(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 machine_device_initcall(mpc86xx_hpcn, declare_of_platform_devices);
+=======
+machine_arch_initcall(mpc86xx_hpcn, declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/master
 machine_arch_initcall(mpc86xx_hpcn, swiotlb_setup_bus_notifier);
 
 define_machine(mpc86xx_hpcn) {

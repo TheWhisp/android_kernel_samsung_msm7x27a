@@ -24,6 +24,10 @@
 #define _DVBVERSION_H_
 
 #define DVB_API_VERSION 5
+<<<<<<< HEAD
 #define DVB_API_VERSION_MINOR 3
+=======
+#define DVB_API_VERSION_MINOR 5
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /*_DVBVERSION_H_*/

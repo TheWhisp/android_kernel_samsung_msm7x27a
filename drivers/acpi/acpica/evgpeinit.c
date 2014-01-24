@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +56,15 @@
 
 #define _COMPONENT          ACPI_EVENTS
 ACPI_MODULE_NAME("evgpeinit")
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/master
 /*
  * Note: History of _PRW support in ACPICA
  *
@@ -86,6 +102,12 @@ acpi_status acpi_ev_gpe_initialize(void)
 
 	ACPI_FUNCTION_TRACE(ev_gpe_initialize);
 
+<<<<<<< HEAD
+=======
+	ACPI_DEBUG_PRINT_RAW((ACPI_DB_INIT,
+			      "Initializing General Purpose Events (GPEs):\n"));
+
+>>>>>>> refs/remotes/origin/master
 	status = acpi_ut_acquire_mutex(ACPI_MTX_NAMESPACE);
 	if (ACPI_FAILURE(status)) {
 		return_ACPI_STATUS(status);
@@ -122,7 +144,10 @@ acpi_status acpi_ev_gpe_initialize(void)
 		/* GPE block 0 exists (has both length and address > 0) */
 
 		register_count0 = (u16)(acpi_gbl_FADT.gpe0_block_length / 2);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		gpe_number_max =
 		    (register_count0 * ACPI_GPE_REGISTER_WIDTH) - 1;
 
@@ -201,6 +226,7 @@ acpi_status acpi_ev_gpe_initialize(void)
 		goto cleanup;
 	}
 
+<<<<<<< HEAD
 	/* Check for Max GPE number out-of-range */
 
 	if (gpe_number_max > ACPI_GPE_MAX) {
@@ -212,6 +238,9 @@ acpi_status acpi_ev_gpe_initialize(void)
 	}
 
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 	return_ACPI_STATUS(AE_OK);
 }
@@ -360,14 +389,26 @@ acpi_ev_match_gpe_method(acpi_handle obj_handle,
 	 */
 	switch (name[1]) {
 	case 'L':
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		type = ACPI_GPE_LEVEL_TRIGGERED;
 		break;
 
 	case 'E':
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		type = ACPI_GPE_EDGE_TRIGGERED;
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		/* Unknown method type, just ignore it */
 
 		ACPI_DEBUG_PRINT((ACPI_DB_LOAD,
@@ -440,3 +481,13 @@ acpi_ev_match_gpe_method(acpi_handle obj_handle,
 			  name, gpe_number));
 	return_ACPI_STATUS(AE_OK);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master

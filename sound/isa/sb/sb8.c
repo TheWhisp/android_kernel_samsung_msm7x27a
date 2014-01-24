@@ -23,7 +23,15 @@
 #include <linux/err.h>
 #include <linux/isa.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/sb.h>
 #include <sound/opl3.h>
@@ -36,7 +44,15 @@ MODULE_SUPPORTED_DEVICE("{{Creative Labs,SB 1.0/SB 2.0/SB Pro}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/master
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* 0x220,0x240,0x260 */
 static int irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* 5,7,9,10 */
 static int dma8[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 1,3 */
@@ -79,7 +95,11 @@ static void snd_sb8_free(struct snd_card *card)
 	release_and_free_resource(acard->fm_res);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_sb8_match(struct device *pdev, unsigned int dev)
+=======
+static int snd_sb8_match(struct device *pdev, unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!enable[dev])
 		return 0;
@@ -94,7 +114,11 @@ static int __devinit snd_sb8_match(struct device *pdev, unsigned int dev)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_sb8_probe(struct device *pdev, unsigned int dev)
+=======
+static int snd_sb8_probe(struct device *pdev, unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_sb *chip;
 	struct snd_card *card;
@@ -205,10 +229,16 @@ static int __devinit snd_sb8_probe(struct device *pdev, unsigned int dev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_sb8_remove(struct device *pdev, unsigned int dev)
 {
 	snd_card_free(dev_get_drvdata(pdev));
 	dev_set_drvdata(pdev, NULL);
+=======
+static int snd_sb8_remove(struct device *pdev, unsigned int dev)
+{
+	snd_card_free(dev_get_drvdata(pdev));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -244,7 +274,11 @@ static int snd_sb8_resume(struct device *dev, unsigned int n)
 static struct isa_driver snd_sb8_driver = {
 	.match		= snd_sb8_match,
 	.probe		= snd_sb8_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_sb8_remove),
+=======
+	.remove		= snd_sb8_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= snd_sb8_suspend,
 	.resume		= snd_sb8_resume,

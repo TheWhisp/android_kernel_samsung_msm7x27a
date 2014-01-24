@@ -40,7 +40,12 @@
 #include <linux/input/mt.h>
 #include "../input-compat.h"
 
+<<<<<<< HEAD
 static int uinput_dev_event(struct input_dev *dev, unsigned int type, unsigned int code, int value)
+=======
+static int uinput_dev_event(struct input_dev *dev,
+			    unsigned int type, unsigned int code, int value)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uinput_device	*udev = input_get_drvdata(dev);
 
@@ -56,10 +61,18 @@ static int uinput_dev_event(struct input_dev *dev, unsigned int type, unsigned i
 }
 
 /* Atomically allocate an ID for the given request. Returns 0 on success. */
+<<<<<<< HEAD
 static int uinput_request_alloc_id(struct uinput_device *udev, struct uinput_request *request)
 {
 	int id;
 	int err = -1;
+=======
+static bool uinput_request_alloc_id(struct uinput_device *udev,
+				    struct uinput_request *request)
+{
+	unsigned int id;
+	bool reserved = false;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&udev->requests_lock);
 
@@ -67,12 +80,17 @@ static int uinput_request_alloc_id(struct uinput_device *udev, struct uinput_req
 		if (!udev->requests[id]) {
 			request->id = id;
 			udev->requests[id] = request;
+<<<<<<< HEAD
 			err = 0;
+=======
+			reserved = true;
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
 
 	spin_unlock(&udev->requests_lock);
+<<<<<<< HEAD
 	return err;
 }
 
@@ -80,11 +98,22 @@ static struct uinput_request *uinput_request_find(struct uinput_device *udev, in
 {
 	/* Find an input request, by ID. Returns NULL if the ID isn't valid. */
 	if (id >= UINPUT_NUM_REQUESTS || id < 0)
+=======
+	return reserved;
+}
+
+static struct uinput_request *uinput_request_find(struct uinput_device *udev,
+						  unsigned int id)
+{
+	/* Find an input request, by ID. Returns NULL if the ID isn't valid. */
+	if (id >= UINPUT_NUM_REQUESTS)
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	return udev->requests[id];
 }
 
+<<<<<<< HEAD
 static inline int uinput_request_reserve_slot(struct uinput_device *udev, struct uinput_request *request)
 {
 	/* Allocate slot. If none are available right away, wait. */
@@ -93,6 +122,18 @@ static inline int uinput_request_reserve_slot(struct uinput_device *udev, struct
 }
 
 static void uinput_request_done(struct uinput_device *udev, struct uinput_request *request)
+=======
+static int uinput_request_reserve_slot(struct uinput_device *udev,
+				       struct uinput_request *request)
+{
+	/* Allocate slot. If none are available right away, wait. */
+	return wait_event_interruptible(udev->requests_waitq,
+					uinput_request_alloc_id(udev, request));
+}
+
+static void uinput_request_done(struct uinput_device *udev,
+				struct uinput_request *request)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Mark slot as available */
 	udev->requests[request->id] = NULL;
@@ -101,6 +142,7 @@ static void uinput_request_done(struct uinput_device *udev, struct uinput_reques
 	complete(&request->done);
 }
 
+<<<<<<< HEAD
 static int uinput_request_submit(struct uinput_device *udev, struct uinput_request *request)
 {
 	int retval;
@@ -109,6 +151,13 @@ static int uinput_request_submit(struct uinput_device *udev, struct uinput_reque
 	if (retval)
 		return retval;
 
+=======
+static int uinput_request_send(struct uinput_device *udev,
+			       struct uinput_request *request)
+{
+	int retval;
+
+>>>>>>> refs/remotes/origin/master
 	retval = mutex_lock_interruptible(&udev->mutex);
 	if (retval)
 		return retval;
@@ -118,7 +167,16 @@ static int uinput_request_submit(struct uinput_device *udev, struct uinput_reque
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/* Tell our userspace app about this new request by queueing an input event */
+=======
+	init_completion(&request->done);
+
+	/*
+	 * Tell our userspace application about this new request
+	 * by queueing an input event.
+	 */
+>>>>>>> refs/remotes/origin/master
 	uinput_dev_event(udev->dev, EV_UINPUT, request->code, request->id);
 
  out:
@@ -126,8 +184,32 @@ static int uinput_request_submit(struct uinput_device *udev, struct uinput_reque
 	return retval;
 }
 
+<<<<<<< HEAD
 /*
  * Fail all ouitstanding requests so handlers don't wait for the userspace
+=======
+static int uinput_request_submit(struct uinput_device *udev,
+				 struct uinput_request *request)
+{
+	int error;
+
+	error = uinput_request_reserve_slot(udev, request);
+	if (error)
+		return error;
+
+	error = uinput_request_send(udev, request);
+	if (error) {
+		uinput_request_done(udev, request);
+		return error;
+	}
+
+	wait_for_completion(&request->done);
+	return request->retval;
+}
+
+/*
+ * Fail all outstanding requests so handlers don't wait for the userspace
+>>>>>>> refs/remotes/origin/master
  * to finish processing them.
  */
 static void uinput_flush_requests(struct uinput_device *udev)
@@ -163,11 +245,20 @@ static int uinput_dev_playback(struct input_dev *dev, int effect_id, int value)
 	return uinput_dev_event(dev, EV_FF, effect_id, value);
 }
 
+<<<<<<< HEAD
 static int uinput_dev_upload_effect(struct input_dev *dev, struct ff_effect *effect, struct ff_effect *old)
 {
 	struct uinput_device *udev = input_get_drvdata(dev);
 	struct uinput_request request;
 	int retval;
+=======
+static int uinput_dev_upload_effect(struct input_dev *dev,
+				    struct ff_effect *effect,
+				    struct ff_effect *old)
+{
+	struct uinput_device *udev = input_get_drvdata(dev);
+	struct uinput_request request;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * uinput driver does not currently support periodic effects with
@@ -180,12 +271,16 @@ static int uinput_dev_upload_effect(struct input_dev *dev, struct ff_effect *eff
 			effect->u.periodic.waveform == FF_CUSTOM)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	request.id = -1;
 	init_completion(&request.done);
+=======
+>>>>>>> refs/remotes/origin/master
 	request.code = UI_FF_UPLOAD;
 	request.u.upload.effect = effect;
 	request.u.upload.old = old;
 
+<<<<<<< HEAD
 	retval = uinput_request_submit(udev, &request);
 	if (!retval) {
 		wait_for_completion(&request.done);
@@ -193,17 +288,24 @@ static int uinput_dev_upload_effect(struct input_dev *dev, struct ff_effect *eff
 	}
 
 	return retval;
+=======
+	return uinput_request_submit(udev, &request);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int uinput_dev_erase_effect(struct input_dev *dev, int effect_id)
 {
 	struct uinput_device *udev = input_get_drvdata(dev);
 	struct uinput_request request;
+<<<<<<< HEAD
 	int retval;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!test_bit(EV_FF, dev->evbit))
 		return -ENOSYS;
 
+<<<<<<< HEAD
 	request.id = -1;
 	init_completion(&request.done);
 	request.code = UI_FF_ERASE;
@@ -216,6 +318,12 @@ static int uinput_dev_erase_effect(struct input_dev *dev, int effect_id)
 	}
 
 	return retval;
+=======
+	request.code = UI_FF_ERASE;
+	request.u.effect_id = effect_id;
+
+	return uinput_request_submit(udev, &request);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void uinput_destroy_device(struct uinput_device *udev)
@@ -347,7 +455,12 @@ static int uinput_allocate_device(struct uinput_device *udev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int uinput_setup_device(struct uinput_device *udev, const char __user *buffer, size_t count)
+=======
+static int uinput_setup_device(struct uinput_device *udev,
+			       const char __user *buffer, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uinput_user_dev	*user_dev;
 	struct input_dev	*dev;
@@ -405,7 +518,11 @@ static int uinput_setup_device(struct uinput_device *udev, const char __user *bu
 			goto exit;
 		if (test_bit(ABS_MT_SLOT, dev->absbit)) {
 			int nslot = input_abs_get_max(dev, ABS_MT_SLOT) + 1;
+<<<<<<< HEAD
 			input_mt_init_slots(dev, nslot);
+=======
+			input_mt_init_slots(dev, nslot, 0);
+>>>>>>> refs/remotes/origin/master
 		} else if (test_bit(ABS_MT_POSITION_X, dev->absbit)) {
 			input_set_events_per_packet(dev, 60);
 		}
@@ -419,6 +536,7 @@ static int uinput_setup_device(struct uinput_device *udev, const char __user *bu
 	return retval;
 }
 
+<<<<<<< HEAD
 static inline ssize_t uinput_inject_event(struct uinput_device *udev, const char __user *buffer, size_t count)
 {
 	struct input_event ev;
@@ -435,16 +553,56 @@ static inline ssize_t uinput_inject_event(struct uinput_device *udev, const char
 }
 
 static ssize_t uinput_write(struct file *file, const char __user *buffer, size_t count, loff_t *ppos)
+=======
+static ssize_t uinput_inject_events(struct uinput_device *udev,
+				    const char __user *buffer, size_t count)
+{
+	struct input_event ev;
+	size_t bytes = 0;
+
+	if (count != 0 && count < input_event_size())
+		return -EINVAL;
+
+	while (bytes + input_event_size() <= count) {
+		/*
+		 * Note that even if some events were fetched successfully
+		 * we are still going to return EFAULT instead of partial
+		 * count to let userspace know that it got it's buffers
+		 * all wrong.
+		 */
+		if (input_event_from_user(buffer + bytes, &ev))
+			return -EFAULT;
+
+		input_event(udev->dev, ev.type, ev.code, ev.value);
+		bytes += input_event_size();
+	}
+
+	return bytes;
+}
+
+static ssize_t uinput_write(struct file *file, const char __user *buffer,
+			    size_t count, loff_t *ppos)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uinput_device *udev = file->private_data;
 	int retval;
 
+<<<<<<< HEAD
+=======
+	if (count == 0)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	retval = mutex_lock_interruptible(&udev->mutex);
 	if (retval)
 		return retval;
 
 	retval = udev->state == UIST_CREATED ?
+<<<<<<< HEAD
 			uinput_inject_event(udev, buffer, count) :
+=======
+			uinput_inject_events(udev, buffer, count) :
+>>>>>>> refs/remotes/origin/master
 			uinput_setup_device(udev, buffer, count);
 
 	mutex_unlock(&udev->mutex);
@@ -452,6 +610,7 @@ static ssize_t uinput_write(struct file *file, const char __user *buffer, size_t
 	return retval;
 }
 
+<<<<<<< HEAD
 static ssize_t uinput_read(struct file *file, char __user *buffer, size_t count, loff_t *ppos)
 {
 	struct uinput_device *udev = file->private_data;
@@ -488,6 +647,76 @@ static ssize_t uinput_read(struct file *file, char __user *buffer, size_t count,
 
  out:
 	mutex_unlock(&udev->mutex);
+=======
+static bool uinput_fetch_next_event(struct uinput_device *udev,
+				    struct input_event *event)
+{
+	bool have_event;
+
+	spin_lock_irq(&udev->dev->event_lock);
+
+	have_event = udev->head != udev->tail;
+	if (have_event) {
+		*event = udev->buff[udev->tail];
+		udev->tail = (udev->tail + 1) % UINPUT_BUFFER_SIZE;
+	}
+
+	spin_unlock_irq(&udev->dev->event_lock);
+
+	return have_event;
+}
+
+static ssize_t uinput_events_to_user(struct uinput_device *udev,
+				     char __user *buffer, size_t count)
+{
+	struct input_event event;
+	size_t read = 0;
+
+	while (read + input_event_size() <= count &&
+	       uinput_fetch_next_event(udev, &event)) {
+
+		if (input_event_to_user(buffer + read, &event))
+			return -EFAULT;
+
+		read += input_event_size();
+	}
+
+	return read;
+}
+
+static ssize_t uinput_read(struct file *file, char __user *buffer,
+			   size_t count, loff_t *ppos)
+{
+	struct uinput_device *udev = file->private_data;
+	ssize_t retval;
+
+	if (count != 0 && count < input_event_size())
+		return -EINVAL;
+
+	do {
+		retval = mutex_lock_interruptible(&udev->mutex);
+		if (retval)
+			return retval;
+
+		if (udev->state != UIST_CREATED)
+			retval = -ENODEV;
+		else if (udev->head == udev->tail &&
+			 (file->f_flags & O_NONBLOCK))
+			retval = -EAGAIN;
+		else
+			retval = uinput_events_to_user(udev, buffer, count);
+
+		mutex_unlock(&udev->mutex);
+
+		if (retval || count == 0)
+			break;
+
+		if (!(file->f_flags & O_NONBLOCK))
+			retval = wait_event_interruptible(udev->waitq,
+						  udev->head != udev->tail ||
+						  udev->state != UIST_CREATED);
+	} while (retval == 0);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -516,8 +745,13 @@ static int uinput_release(struct inode *inode, struct file *file)
 
 #ifdef CONFIG_COMPAT
 struct uinput_ff_upload_compat {
+<<<<<<< HEAD
 	int			request_id;
 	int			retval;
+=======
+	__u32			request_id;
+	__s32			retval;
+>>>>>>> refs/remotes/origin/master
 	struct ff_effect_compat	effect;
 	struct ff_effect_compat	old;
 };
@@ -703,7 +937,12 @@ static long uinput_ioctl_handler(struct file *file, unsigned int cmd,
 				break;
 
 			req = uinput_request_find(udev, ff_up.request_id);
+<<<<<<< HEAD
 			if (!req || req->code != UI_FF_UPLOAD || !req->u.upload.effect) {
+=======
+			if (!req || req->code != UI_FF_UPLOAD ||
+			    !req->u.upload.effect) {
+>>>>>>> refs/remotes/origin/master
 				retval = -EINVAL;
 				break;
 			}
@@ -786,7 +1025,12 @@ static long uinput_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 }
 
 #ifdef CONFIG_COMPAT
+<<<<<<< HEAD
 static long uinput_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+=======
+static long uinput_compat_ioctl(struct file *file,
+				unsigned int cmd, unsigned long arg)
+>>>>>>> refs/remotes/origin/master
 {
 	return uinput_ioctl_handler(file, cmd, arg, compat_ptr(arg));
 }
@@ -831,4 +1075,7 @@ MODULE_VERSION("0.3");
 
 module_init(uinput_init);
 module_exit(uinput_exit);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

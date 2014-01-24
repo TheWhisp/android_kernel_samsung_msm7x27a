@@ -29,7 +29,15 @@
 #include <linux/module.h>
 
 #include <asm/bootinfo.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/bootinfo-vme.h>
+#include <asm/byteorder.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/setup.h>
 #include <asm/irq.h>
@@ -44,7 +52,11 @@ static MK48T08ptr_t volatile rtc = (MK48T08ptr_t)MVME_RTC_BASE;
 
 static void mvme16x_get_model(char *model);
 extern void mvme16x_sched_init(irq_handler_t handler);
+<<<<<<< HEAD
 extern unsigned long mvme16x_gettimeoffset (void);
+=======
+extern u32 mvme16x_gettimeoffset(void);
+>>>>>>> refs/remotes/origin/master
 extern int mvme16x_hwclk (int, struct rtc_time *);
 extern int mvme16x_set_clock_mmss (unsigned long);
 extern void mvme16x_reset (void);
@@ -61,9 +73,16 @@ unsigned short mvme16x_config;
 EXPORT_SYMBOL(mvme16x_config);
 
 
+<<<<<<< HEAD
 int mvme16x_parse_bootinfo(const struct bi_record *bi)
 {
 	if (bi->tag == BI_VME_TYPE || bi->tag == BI_VME_BRDINFO)
+=======
+int __init mvme16x_parse_bootinfo(const struct bi_record *bi)
+{
+	uint16_t tag = be16_to_cpu(bi->tag);
+	if (tag == BI_VME_TYPE || tag == BI_VME_BRDINFO)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	else
 		return 1;
@@ -88,15 +107,25 @@ static void mvme16x_get_model(char *model)
     suf[3] = '\0';
     suf[0] = suf[1] ? '-' : '\0';
 
+<<<<<<< HEAD
     sprintf(model, "Motorola MVME%x%s", p->brdno, suf);
+=======
+    sprintf(model, "Motorola MVME%x%s", be16_to_cpu(p->brdno), suf);
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static void mvme16x_get_hardware_list(struct seq_file *m)
 {
+<<<<<<< HEAD
     p_bdid p = &mvme_bdid;
 
     if (p->brdno == 0x0162 || p->brdno == 0x0172)
+=======
+    uint16_t brdno = be16_to_cpu(mvme_bdid.brdno);
+
+    if (brdno == 0x0162 || brdno == 0x0172)
+>>>>>>> refs/remotes/origin/master
     {
 	unsigned char rev = *(unsigned char *)MVME162_VERSION_REG;
 
@@ -117,23 +146,205 @@ static void mvme16x_get_hardware_list(struct seq_file *m)
 
 static void __init mvme16x_init_IRQ (void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	m68k_setup_user_interrupt(VEC_USER, 192, NULL);
+=======
+	m68k_setup_user_interrupt(VEC_USER, 192);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	m68k_setup_user_interrupt(VEC_USER, 192);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define pcc2chip	((volatile u_char *)0xfff42000)
 #define PccSCCMICR	0x1d
 #define PccSCCTICR	0x1e
 #define PccSCCRICR	0x1f
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define PccTPIACKR	0x25
+
+#ifdef CONFIG_EARLY_PRINTK
+
+/**** cd2401 registers ****/
+#define CD2401_ADDR	(0xfff45000)
+
+#define CyGFRCR         (0x81)
+#define CyCCR		(0x13)
+#define      CyCLR_CHAN		(0x40)
+#define      CyINIT_CHAN	(0x20)
+#define      CyCHIP_RESET	(0x10)
+#define      CyENB_XMTR		(0x08)
+#define      CyDIS_XMTR		(0x04)
+#define      CyENB_RCVR		(0x02)
+#define      CyDIS_RCVR		(0x01)
+#define CyCAR		(0xee)
+#define CyIER		(0x11)
+#define      CyMdmCh		(0x80)
+#define      CyRxExc		(0x20)
+#define      CyRxData		(0x08)
+#define      CyTxMpty		(0x02)
+#define      CyTxRdy		(0x01)
+#define CyLICR		(0x26)
+#define CyRISR		(0x89)
+#define      CyTIMEOUT		(0x80)
+#define      CySPECHAR		(0x70)
+#define      CyOVERRUN		(0x08)
+#define      CyPARITY		(0x04)
+#define      CyFRAME		(0x02)
+#define      CyBREAK		(0x01)
+#define CyREOIR		(0x84)
+#define CyTEOIR		(0x85)
+#define CyMEOIR		(0x86)
+#define      CyNOTRANS		(0x08)
+#define CyRFOC		(0x30)
+#define CyRDR		(0xf8)
+#define CyTDR		(0xf8)
+#define CyMISR		(0x8b)
+#define CyRISR		(0x89)
+#define CyTISR		(0x8a)
+#define CyMSVR1		(0xde)
+#define CyMSVR2		(0xdf)
+#define      CyDSR		(0x80)
+#define      CyDCD		(0x40)
+#define      CyCTS		(0x20)
+#define      CyDTR		(0x02)
+#define      CyRTS		(0x01)
+#define CyRTPRL		(0x25)
+#define CyRTPRH		(0x24)
+#define CyCOR1		(0x10)
+#define      CyPARITY_NONE	(0x00)
+#define      CyPARITY_E		(0x40)
+#define      CyPARITY_O		(0xC0)
+#define      Cy_5_BITS		(0x04)
+#define      Cy_6_BITS		(0x05)
+#define      Cy_7_BITS		(0x06)
+#define      Cy_8_BITS		(0x07)
+#define CyCOR2		(0x17)
+#define      CyETC		(0x20)
+#define      CyCtsAE		(0x02)
+#define CyCOR3		(0x16)
+#define      Cy_1_STOP		(0x02)
+#define      Cy_2_STOP		(0x04)
+#define CyCOR4		(0x15)
+#define      CyREC_FIFO		(0x0F)  /* Receive FIFO threshold */
+#define CyCOR5		(0x14)
+#define CyCOR6		(0x18)
+#define CyCOR7		(0x07)
+#define CyRBPR		(0xcb)
+#define CyRCOR		(0xc8)
+#define CyTBPR		(0xc3)
+#define CyTCOR		(0xc0)
+#define CySCHR1		(0x1f)
+#define CySCHR2 	(0x1e)
+#define CyTPR		(0xda)
+#define CyPILR1		(0xe3)
+#define CyPILR2		(0xe0)
+#define CyPILR3		(0xe1)
+#define CyCMR		(0x1b)
+#define      CyASYNC		(0x02)
+#define CyLICR          (0x26)
+#define CyLIVR          (0x09)
+#define CySCRL		(0x23)
+#define CySCRH		(0x22)
+#define CyTFTC		(0x80)
+
+static void cons_write(struct console *co, const char *str, unsigned count)
+{
+	volatile unsigned char *base_addr = (u_char *)CD2401_ADDR;
+	volatile u_char sink;
+	u_char ier;
+	int port;
+	u_char do_lf = 0;
+	int i = 0;
+
+	/* Ensure transmitter is enabled! */
+
+	port = 0;
+	base_addr[CyCAR] = (u_char)port;
+	while (base_addr[CyCCR])
+		;
+	base_addr[CyCCR] = CyENB_XMTR;
+
+	ier = base_addr[CyIER];
+	base_addr[CyIER] = CyTxMpty;
+
+	while (1) {
+		if (pcc2chip[PccSCCTICR] & 0x20)
+		{
+			/* We have a Tx int. Acknowledge it */
+			sink = pcc2chip[PccTPIACKR];
+			if ((base_addr[CyLICR] >> 2) == port) {
+				if (i == count) {
+					/* Last char of string is now output */
+					base_addr[CyTEOIR] = CyNOTRANS;
+					break;
+				}
+				if (do_lf) {
+					base_addr[CyTDR] = '\n';
+					str++;
+					i++;
+					do_lf = 0;
+				}
+				else if (*str == '\n') {
+					base_addr[CyTDR] = '\r';
+					do_lf = 1;
+				}
+				else {
+					base_addr[CyTDR] = *str++;
+					i++;
+				}
+				base_addr[CyTEOIR] = 0;
+			}
+			else
+				base_addr[CyTEOIR] = CyNOTRANS;
+		}
+	}
+
+	base_addr[CyIER] = ier;
+}
+
+static struct console cons_info =
+{
+	.name	= "sercon",
+	.write	= cons_write,
+	.flags	= CON_PRINTBUFFER | CON_BOOT,
+	.index	= -1,
+};
+
+static void __init mvme16x_early_console(void)
+{
+	register_console(&cons_info);
+
+	printk(KERN_INFO "MVME16x: early console registered\n");
+}
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void __init config_mvme16x(void)
 {
     p_bdid p = &mvme_bdid;
     char id[40];
+<<<<<<< HEAD
+=======
+    uint16_t brdno = be16_to_cpu(p->brdno);
+>>>>>>> refs/remotes/origin/master
 
     mach_max_dma_address = 0xffffffff;
     mach_sched_init      = mvme16x_sched_init;
     mach_init_IRQ        = mvme16x_init_IRQ;
+<<<<<<< HEAD
     mach_gettimeoffset   = mvme16x_gettimeoffset;
+=======
+    arch_gettimeoffset   = mvme16x_gettimeoffset;
+>>>>>>> refs/remotes/origin/master
     mach_hwclk           = mvme16x_hwclk;
     mach_set_clock_mmss	 = mvme16x_set_clock_mmss;
     mach_reset		 = mvme16x_reset;
@@ -150,18 +361,30 @@ void __init config_mvme16x(void)
     }
     /* Board type is only set by newer versions of vmelilo/tftplilo */
     if (vme_brdtype == 0)
+<<<<<<< HEAD
 	vme_brdtype = p->brdno;
+=======
+	vme_brdtype = brdno;
+>>>>>>> refs/remotes/origin/master
 
     mvme16x_get_model(id);
     printk ("\nBRD_ID: %s   BUG %x.%x %02x/%02x/%02x\n", id, p->rev>>4,
 					p->rev&0xf, p->yr, p->mth, p->day);
+<<<<<<< HEAD
     if (p->brdno == 0x0162 || p->brdno == 0x172)
+=======
+    if (brdno == 0x0162 || brdno == 0x172)
+>>>>>>> refs/remotes/origin/master
     {
 	unsigned char rev = *(unsigned char *)MVME162_VERSION_REG;
 
 	mvme16x_config = rev | MVME16x_CONFIG_GOT_SCCA;
 
+<<<<<<< HEAD
 	printk ("MVME%x Hardware status:\n", p->brdno);
+=======
+	printk ("MVME%x Hardware status:\n", brdno);
+>>>>>>> refs/remotes/origin/master
 	printk ("    CPU Type           68%s040\n",
 			rev & MVME16x_CONFIG_GOT_FPU ? "" : "LC");
 	printk ("    CPU clock          %dMHz\n",
@@ -183,17 +406,38 @@ void __init config_mvme16x(void)
 	pcc2chip[PccSCCMICR] = 0x10;
 	pcc2chip[PccSCCTICR] = 0x10;
 	pcc2chip[PccSCCRICR] = 0x10;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_EARLY_PRINTK
+	mvme16x_early_console();
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_EARLY_PRINTK
+	mvme16x_early_console();
+#endif
+>>>>>>> refs/remotes/origin/master
     }
 }
 
 static irqreturn_t mvme16x_abort_int (int irq, void *dev_id)
 {
+<<<<<<< HEAD
 	p_bdid p = &mvme_bdid;
 	unsigned long *new = (unsigned long *)vectors;
 	unsigned long *old = (unsigned long *)0xffe00000;
 	volatile unsigned char uc, *ucp;
 
 	if (p->brdno == 0x0162 || p->brdno == 0x172)
+=======
+	unsigned long *new = (unsigned long *)vectors;
+	unsigned long *old = (unsigned long *)0xffe00000;
+	volatile unsigned char uc, *ucp;
+	uint16_t brdno = be16_to_cpu(mvme_bdid.brdno);
+
+	if (brdno == 0x0162 || brdno == 0x172)
+>>>>>>> refs/remotes/origin/master
 	{
 		ucp = (volatile unsigned char *)0xfff42043;
 		uc = *ucp | 8;
@@ -207,7 +451,11 @@ static irqreturn_t mvme16x_abort_int (int irq, void *dev_id)
 	*(new+9) = *(old+9);		/* Trace */
 	*(new+47) = *(old+47);		/* Trap #15 */
 
+<<<<<<< HEAD
 	if (p->brdno == 0x0162 || p->brdno == 0x172)
+=======
+	if (brdno == 0x0162 || brdno == 0x172)
+>>>>>>> refs/remotes/origin/master
 		*(new+0x5e) = *(old+0x5e);	/* ABORT switch */
 	else
 		*(new+0x6e) = *(old+0x6e);	/* ABORT switch */
@@ -222,7 +470,11 @@ static irqreturn_t mvme16x_timer_int (int irq, void *dev_id)
 
 void mvme16x_sched_init (irq_handler_t timer_routine)
 {
+<<<<<<< HEAD
     p_bdid p = &mvme_bdid;
+=======
+    uint16_t brdno = be16_to_cpu(mvme_bdid.brdno);
+>>>>>>> refs/remotes/origin/master
     int irq;
 
     tick_handler = timer_routine;
@@ -235,7 +487,11 @@ void mvme16x_sched_init (irq_handler_t timer_routine)
 				"timer", mvme16x_timer_int))
 	panic ("Couldn't register timer int");
 
+<<<<<<< HEAD
     if (p->brdno == 0x0162 || p->brdno == 0x172)
+=======
+    if (brdno == 0x0162 || brdno == 0x172)
+>>>>>>> refs/remotes/origin/master
 	irq = MVME162_IRQ_ABORT;
     else
         irq = MVME167_IRQ_ABORT;
@@ -246,9 +502,15 @@ void mvme16x_sched_init (irq_handler_t timer_routine)
 
 
 /* This is always executed with interrupts disabled.  */
+<<<<<<< HEAD
 unsigned long mvme16x_gettimeoffset (void)
 {
     return (*(volatile unsigned long *)0xfff42008);
+=======
+u32 mvme16x_gettimeoffset(void)
+{
+    return (*(volatile u32 *)0xfff42008) * 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 int bcd2int (unsigned char b)

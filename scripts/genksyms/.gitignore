@@ -1,4 +1,17 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 keywords.c
 lex.c
 parse.[ch]
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+*.hash.c
+*.lex.c
+*.tab.c
+*.tab.h
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 genksyms

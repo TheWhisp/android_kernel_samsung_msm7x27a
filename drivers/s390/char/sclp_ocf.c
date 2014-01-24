@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/sclp_ocf.c
+=======
+>>>>>>> refs/remotes/origin/master
  *    SCLP OCF communication parameters sysfs interface
  *
  *    Copyright IBM Corp. 2011

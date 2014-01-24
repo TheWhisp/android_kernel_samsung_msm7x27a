@@ -57,6 +57,10 @@
 #define MAX1363_SCAN_MASK			0x60
 #define MAX1363_SE_DE_MASK			0x01
 
+<<<<<<< HEAD
+=======
+#define MAX1363_MAX_CHANNELS 25
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct max1363_mode - scan mode information
  * @conf:	The corresponding value of the configuration register
@@ -64,7 +68,11 @@
  */
 struct max1363_mode {
 	int8_t		conf;
+<<<<<<< HEAD
 	long		modemask;
+=======
+	DECLARE_BITMAP(modemask, MAX1363_MAX_CHANNELS);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* This must be maintained along side the max1363_mode_table in max1363_core */
@@ -145,21 +153,38 @@ struct max1363_state {
 };
 
 const struct max1363_mode
+<<<<<<< HEAD
 *max1363_match_mode(u32 mask, const struct max1363_chip_info *ci);
+=======
+*max1363_match_mode(const unsigned long *mask,
+		    const struct max1363_chip_info *ci);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int max1363_set_scan_mode(struct max1363_state *st);
 
 #ifdef CONFIG_MAX1363_RING_BUFFER
+<<<<<<< HEAD
 
 int max1363_single_channel_from_ring(long mask, struct max1363_state *st);
+=======
+int max1363_update_scan_mode(struct iio_dev *indio_dev,
+			     const unsigned long *scan_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 int max1363_register_ring_funcs_and_init(struct iio_dev *indio_dev);
 void max1363_ring_cleanup(struct iio_dev *indio_dev);
 
 #else /* CONFIG_MAX1363_RING_BUFFER */
+<<<<<<< HEAD
 
 int max1363_single_channel_from_ring(long mask, struct max1363_state *st)
 {
 	return -EINVAL;
+=======
+int max1363_update_scan_mode(struct iio_dev *indio_dev,
+			     const long *scan_mask)
+{
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline int

@@ -9,6 +9,14 @@
 
 #include <linux/netdevice.h>
 #include <linux/firmware.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/nl80211.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/nl80211.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Should be terminated by a NULL entry */
 struct lbs_fw_table {
@@ -18,6 +26,13 @@ struct lbs_fw_table {
 };
 
 struct lbs_private;
+<<<<<<< HEAD
+=======
+typedef void (*lbs_fw_cb)(struct lbs_private *priv, int ret,
+		const struct firmware *helper, const struct firmware *mainfw);
+
+struct lbs_private;
+>>>>>>> refs/remotes/origin/master
 struct sk_buff;
 struct net_device;
 struct cmd_ds_command;
@@ -43,10 +58,31 @@ int lbs_start_card(struct lbs_private *priv);
 void lbs_stop_card(struct lbs_private *priv);
 void lbs_host_to_card_done(struct lbs_private *priv);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int lbs_start_iface(struct lbs_private *priv);
+int lbs_stop_iface(struct lbs_private *priv);
+int lbs_set_iface_type(struct lbs_private *priv, enum nl80211_iftype type);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int lbs_rtap_supported(struct lbs_private *priv);
 
 int lbs_set_mac_address(struct net_device *dev, void *addr);
 void lbs_set_multicast_list(struct net_device *dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void lbs_update_mcast(struct lbs_private *priv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void lbs_update_mcast(struct lbs_private *priv);
+>>>>>>> refs/remotes/origin/master
 
 int lbs_suspend(struct lbs_private *priv);
 int lbs_resume(struct lbs_private *priv);
@@ -60,10 +96,21 @@ int lbs_exit_auto_deep_sleep(struct lbs_private *priv);
 u32 lbs_fw_index_to_data_rate(u8 index);
 u8 lbs_data_rate_to_fw_index(u32 rate);
 
+<<<<<<< HEAD
 int lbs_get_firmware(struct device *dev, const char *user_helper,
 			const char *user_mainfw, u32 card_model,
 			const struct lbs_fw_table *fw_table,
 			const struct firmware **helper,
 			const struct firmware **mainfw);
+=======
+int lbs_get_firmware(struct device *dev, u32 card_model,
+			const struct lbs_fw_table *fw_table,
+			const struct firmware **helper,
+			const struct firmware **mainfw);
+int lbs_get_firmware_async(struct lbs_private *priv, struct device *device,
+			   u32 card_model, const struct lbs_fw_table *fw_table,
+			   lbs_fw_cb callback);
+void lbs_wait_for_firmware_load(struct lbs_private *priv);
+>>>>>>> refs/remotes/origin/master
 
 #endif

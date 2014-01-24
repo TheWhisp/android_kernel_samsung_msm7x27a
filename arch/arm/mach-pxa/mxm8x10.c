@@ -24,11 +24,19 @@
 #include <linux/gpio.h>
 #include <linux/i2c/pxa-i2c.h>
 
+<<<<<<< HEAD
 #include <plat/pxa3xx_nand.h>
 
 #include <mach/pxafb.h>
 #include <mach/mmc.h>
 #include <mach/ohci.h>
+=======
+#include <linux/platform_data/mtd-nand-pxa3xx.h>
+
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/pxa320.h>
 
 #include <mach/mxm8x10.h>
@@ -389,10 +397,24 @@ static struct mtd_partition mxm_8x10_nand_partitions[] = {
 };
 
 static struct pxa3xx_nand_platform_data mxm_8x10_nand_info = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.enable_arbiter = 1,
 	.keep_config = 1,
 	.parts = mxm_8x10_nand_partitions,
 	.nr_parts = ARRAY_SIZE(mxm_8x10_nand_partitions)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.enable_arbiter	= 1,
+	.keep_config	= 1,
+	.num_cs		= 1,
+	.parts[0]	= mxm_8x10_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(mxm_8x10_nand_partitions)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init mxm_8x10_nand_init(void)
@@ -416,8 +438,18 @@ static struct resource dm9k_resources[] = {
 	       .flags = IORESOURCE_MEM
 	},
 	[2] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	       .start = gpio_to_irq(mfp_to_gpio(MFP_PIN_GPIO9)),
 	       .end = gpio_to_irq(mfp_to_gpio(MFP_PIN_GPIO9)),
+=======
+	       .start = PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO9)),
+	       .end = PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO9)),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       .start = PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO9)),
+	       .end = PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO9)),
+>>>>>>> refs/remotes/origin/master
 	       .flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE
 	}
 };

@@ -41,6 +41,14 @@ static const struct key_entry topstar_keymap[] = {
 	{ KE_KEY, 0x8c, { KEY_MEDIA } },
 
 	/* Known non hotkey events don't handled or that we don't care yet */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	{ KE_IGNORE, 0x82, }, /* backlight event */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ KE_IGNORE, 0x82, }, /* backlight event */
+>>>>>>> refs/remotes/origin/master
 	{ KE_IGNORE, 0x8e, },
 	{ KE_IGNORE, 0x8f, },
 	{ KE_IGNORE, 0x90, },
@@ -79,6 +87,7 @@ static void acpi_topstar_notify(struct acpi_device *device, u32 event)
 static int acpi_topstar_fncx_switch(struct acpi_device *device, bool state)
 {
 	acpi_status status;
+<<<<<<< HEAD
 	union acpi_object fncx_params[1] = {
 		{ .type = ACPI_TYPE_INTEGER }
 	};
@@ -86,6 +95,11 @@ static int acpi_topstar_fncx_switch(struct acpi_device *device, bool state)
 
 	fncx_params[0].integer.value = state ? 0x86 : 0x87;
 	status = acpi_evaluate_object(device->handle, "FNCX", &fncx_arg_list, NULL);
+=======
+
+	status = acpi_execute_simple_method(device->handle, "FNCX",
+						state ? 0x86 : 0x87);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		pr_err("Unable to switch FNCX notifications\n");
 		return -ENODEV;
@@ -100,10 +114,15 @@ static int acpi_topstar_init_hkey(struct topstar_hkey *hkey)
 	int error;
 
 	input = input_allocate_device();
+<<<<<<< HEAD
 	if (!input) {
 		pr_err("Unable to allocate input device\n");
 		return -ENOMEM;
 	}
+=======
+	if (!input)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	input->name = "Topstar Laptop extra buttons";
 	input->phys = "topstar/input0";
@@ -156,7 +175,11 @@ add_err:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int acpi_topstar_remove(struct acpi_device *device, int type)
+=======
+static int acpi_topstar_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct topstar_hkey *tps_hkey = acpi_driver_data(device);
 
@@ -185,6 +208,7 @@ static struct acpi_driver acpi_topstar_driver = {
 		.notify = acpi_topstar_notify,
 	},
 };
+<<<<<<< HEAD
 
 static int __init topstar_laptop_init(void)
 {
@@ -206,6 +230,9 @@ static void __exit topstar_laptop_exit(void)
 
 module_init(topstar_laptop_init);
 module_exit(topstar_laptop_exit);
+=======
+module_acpi_driver(acpi_topstar_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Herton Ronaldo Krzesinski");
 MODULE_DESCRIPTION("Topstar Laptop ACPI Extras driver");

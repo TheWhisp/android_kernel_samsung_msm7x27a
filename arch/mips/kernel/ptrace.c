@@ -15,16 +15,32 @@
  * binaries.
  */
 #include <linux/compiler.h>
+<<<<<<< HEAD
+=======
+#include <linux/context_tracking.h>
+#include <linux/elf.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/mm.h>
 #include <linux/errno.h>
 #include <linux/ptrace.h>
+<<<<<<< HEAD
 #include <linux/smp.h>
 #include <linux/user.h>
 #include <linux/security.h>
 #include <linux/audit.h>
 #include <linux/seccomp.h>
+=======
+#include <linux/regset.h>
+#include <linux/smp.h>
+#include <linux/user.h>
+#include <linux/security.h>
+#include <linux/tracehook.h>
+#include <linux/audit.h>
+#include <linux/seccomp.h>
+#include <linux/ftrace.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/byteorder.h>
 #include <asm/cpu.h>
@@ -34,11 +50,24 @@
 #include <asm/mipsmtregs.h>
 #include <asm/pgtable.h>
 #include <asm/page.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/syscall.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/bootinfo.h>
 #include <asm/reg.h>
 
+<<<<<<< HEAD
+=======
+#define CREATE_TRACE_POINTS
+#include <trace/events/syscalls.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Called by kernel/ptrace.c when detaching..
  *
@@ -51,7 +80,11 @@ void ptrace_disable(struct task_struct *child)
 }
 
 /*
+<<<<<<< HEAD
  * Read a general register set.  We always use the 64-bit format, even
+=======
+ * Read a general register set.	 We always use the 64-bit format, even
+>>>>>>> refs/remotes/origin/master
  * for 32-bit kernels and for 32-bit processes on a 64-bit kernel.
  * Registers are sign extended to fill the available space.
  */
@@ -255,6 +288,136 @@ int ptrace_set_watch_regs(struct task_struct *child,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/* regset get/set implementations */
+
+static int gpr_get(struct task_struct *target,
+		   const struct user_regset *regset,
+		   unsigned int pos, unsigned int count,
+		   void *kbuf, void __user *ubuf)
+{
+	struct pt_regs *regs = task_pt_regs(target);
+
+	return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+				   regs, 0, sizeof(*regs));
+}
+
+static int gpr_set(struct task_struct *target,
+		   const struct user_regset *regset,
+		   unsigned int pos, unsigned int count,
+		   const void *kbuf, const void __user *ubuf)
+{
+	struct pt_regs newregs;
+	int ret;
+
+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+				 &newregs,
+				 0, sizeof(newregs));
+	if (ret)
+		return ret;
+
+	*task_pt_regs(target) = newregs;
+
+	return 0;
+}
+
+static int fpr_get(struct task_struct *target,
+		   const struct user_regset *regset,
+		   unsigned int pos, unsigned int count,
+		   void *kbuf, void __user *ubuf)
+{
+	return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+				   &target->thread.fpu,
+				   0, sizeof(elf_fpregset_t));
+	/* XXX fcr31  */
+}
+
+static int fpr_set(struct task_struct *target,
+		   const struct user_regset *regset,
+		   unsigned int pos, unsigned int count,
+		   const void *kbuf, const void __user *ubuf)
+{
+	return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+				  &target->thread.fpu,
+				  0, sizeof(elf_fpregset_t));
+	/* XXX fcr31  */
+}
+
+enum mips_regset {
+	REGSET_GPR,
+	REGSET_FPR,
+};
+
+static const struct user_regset mips_regsets[] = {
+	[REGSET_GPR] = {
+		.core_note_type	= NT_PRSTATUS,
+		.n		= ELF_NGREG,
+		.size		= sizeof(unsigned int),
+		.align		= sizeof(unsigned int),
+		.get		= gpr_get,
+		.set		= gpr_set,
+	},
+	[REGSET_FPR] = {
+		.core_note_type	= NT_PRFPREG,
+		.n		= ELF_NFPREG,
+		.size		= sizeof(elf_fpreg_t),
+		.align		= sizeof(elf_fpreg_t),
+		.get		= fpr_get,
+		.set		= fpr_set,
+	},
+};
+
+static const struct user_regset_view user_mips_view = {
+	.name		= "mips",
+	.e_machine	= ELF_ARCH,
+	.ei_osabi	= ELF_OSABI,
+	.regsets	= mips_regsets,
+	.n		= ARRAY_SIZE(mips_regsets),
+};
+
+static const struct user_regset mips64_regsets[] = {
+	[REGSET_GPR] = {
+		.core_note_type	= NT_PRSTATUS,
+		.n		= ELF_NGREG,
+		.size		= sizeof(unsigned long),
+		.align		= sizeof(unsigned long),
+		.get		= gpr_get,
+		.set		= gpr_set,
+	},
+	[REGSET_FPR] = {
+		.core_note_type	= NT_PRFPREG,
+		.n		= ELF_NFPREG,
+		.size		= sizeof(elf_fpreg_t),
+		.align		= sizeof(elf_fpreg_t),
+		.get		= fpr_get,
+		.set		= fpr_set,
+	},
+};
+
+static const struct user_regset_view user_mips64_view = {
+	.name		= "mips",
+	.e_machine	= ELF_ARCH,
+	.ei_osabi	= ELF_OSABI,
+	.regsets	= mips64_regsets,
+	.n		= ARRAY_SIZE(mips_regsets),
+};
+
+const struct user_regset_view *task_user_regset_view(struct task_struct *task)
+{
+#ifdef CONFIG_32BIT
+	return &user_mips_view;
+#endif
+
+#ifdef CONFIG_MIPS32_O32
+		if (test_thread_flag(TIF_32BIT_REGS))
+			return &user_mips_view;
+#endif
+
+	return &user_mips64_view;
+}
+
+>>>>>>> refs/remotes/origin/master
 long arch_ptrace(struct task_struct *child, long request,
 		 unsigned long addr, unsigned long data)
 {
@@ -327,7 +490,11 @@ long arch_ptrace(struct task_struct *child, long request,
 		case FPC_CSR:
 			tmp = child->thread.fpu.fcr31;
 			break;
+<<<<<<< HEAD
 		case FPC_EIR: {	/* implementation / version register */
+=======
+		case FPC_EIR: { /* implementation / version register */
+>>>>>>> refs/remotes/origin/master
 			unsigned int flags;
 #ifdef CONFIG_MIPS_MT_SMTC
 			unsigned long irqflags;
@@ -517,6 +684,7 @@ long arch_ptrace(struct task_struct *child, long request,
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline int audit_arch(void)
 {
 	int arch = EM_MIPS;
@@ -529,12 +697,15 @@ static inline int audit_arch(void)
 	return arch;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Notification of system call entry/exit
  * - triggered by current->work.syscall_trace
  */
 asmlinkage void syscall_trace_enter(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	/* do the secure computing check first */
 	secure_computing(regs->regs[2]);
 
@@ -560,10 +731,35 @@ asmlinkage void syscall_trace_enter(struct pt_regs *regs)
 	}
 
 out:
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_entry(audit_arch(), regs->regs[2],
 				    regs->regs[4], regs->regs[5],
 				    regs->regs[6], regs->regs[7]);
+=======
+	audit_syscall_entry(audit_arch(), regs->regs[2],
+			    regs->regs[4], regs->regs[5],
+			    regs->regs[6], regs->regs[7]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	long ret = 0;
+	user_exit();
+
+	/* do the secure computing check first */
+	secure_computing_strict(regs->regs[2]);
+
+	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+	    tracehook_report_syscall_entry(regs))
+		ret = -1;
+
+	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+		trace_sys_enter(regs, regs->regs[2]);
+
+	audit_syscall_entry(__syscall_get_arch(),
+			    regs->regs[2],
+			    regs->regs[4], regs->regs[5],
+			    regs->regs[6], regs->regs[7]);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -572,9 +768,14 @@ out:
  */
 asmlinkage void syscall_trace_leave(struct pt_regs *regs)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_exit(AUDITSC_RESULT(regs->regs[7]),
 		                   -regs->regs[2]);
+=======
+	audit_syscall_exit(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!(current->ptrace & PT_PTRACED))
 		return;
@@ -596,4 +797,22 @@ asmlinkage void syscall_trace_leave(struct pt_regs *regs)
 		send_sig(current->exit_code, current, 1);
 		current->exit_code = 0;
 	}
+=======
+        /*
+	 * We may come here right after calling schedule_user()
+	 * or do_notify_resume(), in which case we can be in RCU
+	 * user mode.
+	 */
+	user_exit();
+
+	audit_syscall_exit(regs);
+
+	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+		trace_sys_exit(regs, regs->regs[2]);
+
+	if (test_thread_flag(TIF_SYSCALL_TRACE))
+		tracehook_report_syscall_exit(regs, 0);
+
+	user_enter();
+>>>>>>> refs/remotes/origin/master
 }

@@ -5,7 +5,13 @@
  * Copyright (C) 1998  Jakub Jelinek    (jj@ultra.linux.cz)
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/linkage.h>
 #include <linux/ptrace.h>
@@ -26,8 +32,16 @@
 
 #include <asm/ptrace.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/io.h>
 #include <asm/iommu.h>
@@ -700,6 +714,7 @@ void __irq_entry handler_irq(int pil, struct pt_regs *regs)
 	set_irq_regs(old_regs);
 }
 
+<<<<<<< HEAD
 void do_softirq(void)
 {
 	unsigned long flags;
@@ -724,6 +739,21 @@ void do_softirq(void)
 	}
 
 	local_irq_restore(flags);
+=======
+void do_softirq_own_stack(void)
+{
+	void *orig_sp, *sp = softirq_stack[smp_processor_id()];
+
+	sp += THREAD_SIZE - 192 - STACK_BIAS;
+
+	__asm__ __volatile__("mov %%sp, %0\n\t"
+			     "mov %1, %%sp"
+			     : "=&r" (orig_sp)
+			     : "r" (sp));
+	__do_softirq();
+	__asm__ __volatile__("mov %0, %%sp"
+			     : : "r" (orig_sp));
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_HOTPLUG_CPU
@@ -801,7 +831,11 @@ static void kill_prom_timer(void)
 	prom_limit0 = prom_timers->limit0;
 	prom_limit1 = prom_timers->limit1;
 
+<<<<<<< HEAD
 	/* Just as in sun4c/sun4m PROM uses timer which ticks at IRQ 14.
+=======
+	/* Just as in sun4c PROM uses timer which ticks at IRQ 14.
+>>>>>>> refs/remotes/origin/master
 	 * We turn both off here just to be paranoid.
 	 */
 	prom_timers->limit0 = 0;
@@ -837,7 +871,12 @@ void notrace init_irqwork_curcpu(void)
  * Therefore you cannot make any OBP calls, not even prom_printf,
  * from these two routines.
  */
+<<<<<<< HEAD
 static void __cpuinit notrace register_one_mondo(unsigned long paddr, unsigned long type, unsigned long qmask)
+=======
+static void notrace register_one_mondo(unsigned long paddr, unsigned long type,
+				       unsigned long qmask)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long num_entries = (qmask + 1) / 64;
 	unsigned long status;
@@ -850,7 +889,11 @@ static void __cpuinit notrace register_one_mondo(unsigned long paddr, unsigned l
 	}
 }
 
+<<<<<<< HEAD
 void __cpuinit notrace sun4v_register_mondo_queues(int this_cpu)
+=======
+void notrace sun4v_register_mondo_queues(int this_cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct trap_per_cpu *tb = &trap_block[this_cpu];
 

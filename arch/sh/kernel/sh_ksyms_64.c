@@ -32,8 +32,11 @@ EXPORT_SYMBOL(__get_user_asm_b);
 EXPORT_SYMBOL(__get_user_asm_w);
 EXPORT_SYMBOL(__get_user_asm_l);
 EXPORT_SYMBOL(__get_user_asm_q);
+<<<<<<< HEAD
 EXPORT_SYMBOL(__strnlen_user);
 EXPORT_SYMBOL(__strncpy_from_user);
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(__clear_user);
 EXPORT_SYMBOL(copy_page);
 EXPORT_SYMBOL(__copy_user);

@@ -128,8 +128,13 @@ static struct resource sh_eth0_resources[] = {
 };
 
 static struct platform_device sh_eth0_device = {
+<<<<<<< HEAD
 	.name = "sh-eth",
 	.id	= 0,
+=======
+	.name = "sh771x-ether",
+	.id = 0,
+>>>>>>> refs/remotes/origin/master
 	.dev = {
 		.platform_data = PHY_ID,
 	},
@@ -151,8 +156,13 @@ static struct resource sh_eth1_resources[] = {
 };
 
 static struct platform_device sh_eth1_device = {
+<<<<<<< HEAD
 	.name = "sh-eth",
 	.id	= 1,
+=======
+	.name = "sh771x-ether",
+	.id = 1,
+>>>>>>> refs/remotes/origin/master
 	.dev = {
 		.platform_data = PHY_ID,
 	},
@@ -184,6 +194,7 @@ device_initcall(se_devices_setup);
 static struct sh_machine_vector mv_se __initmv = {
 	.mv_name		= "SolutionEngine",
 	.mv_setup		= smsc_setup,
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_SH4)
 	.mv_nr_irqs		= 48,
 #elif defined(CONFIG_CPU_SUBTYPE_SH7708)
@@ -195,5 +206,7 @@ static struct sh_machine_vector mv_se __initmv = {
 #elif defined(CONFIG_CPU_SUBTYPE_SH7710) || defined(CONFIG_CPU_SUBTYPE_SH7712)
 	.mv_nr_irqs             = 104,
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	.mv_init_irq		= init_se_IRQ,
 };

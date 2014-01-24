@@ -123,7 +123,23 @@ static int charm_panic_prep(struct notifier_block *this,
 		pm8xxx_stay_on();
 
 	charm_disable_irqs();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	gpio_set_value(AP2MDM_ERRFATAL, 1);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#if defined (CONFIG_MSM_8X60_FUSION_GPIO_GLITCH)
+	gpio_set_value(AP2MDM_ERRFATAL, 0);
+	mdelay(1);
+	gpio_set_value(AP2MDM_ERRFATAL, 1);
+#else
+	gpio_set_value(AP2MDM_ERRFATAL, 1);
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gpio_set_value(AP2MDM_WAKEUP, 1);
 	for (i = CHARM_MODEM_TIMEOUT; i > 0; i -= CHARM_MODEM_DELTA) {
 		pet_watchdog();
@@ -329,7 +345,21 @@ static int __init charm_modem_probe(struct platform_device *pdev)
 	gpio_request(AP2MDM_WAKEUP, "AP2MDM_WAKEUP");
 
 	gpio_direction_output(AP2MDM_STATUS, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	gpio_direction_output(AP2MDM_ERRFATAL, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#if defined (CONFIG_MSM_8X60_FUSION_GPIO_GLITCH)
+	gpio_direction_output(AP2MDM_ERRFATAL, 1);
+#else
+	gpio_direction_output(AP2MDM_ERRFATAL, 0);
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	gpio_direction_output(AP2MDM_WAKEUP, 0);
 	gpio_direction_input(MDM2AP_STATUS);
 	gpio_direction_input(MDM2AP_ERRFATAL);

@@ -12,11 +12,26 @@
  */
 
 #include <linux/device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/string.h>
 #include <linux/slab.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
 #include <asm/gpio.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/gpio.h>
+#include <linux/string.h>
+#include <linux/slab.h>
+#include <linux/platform_device.h>
+#include <linux/export.h>
+#include <linux/io.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/hardware/scoop.h>
 
 /* PCMCIA to Scoop linkage
@@ -175,7 +190,11 @@ static int scoop_resume(struct platform_device *dev)
 #define scoop_resume	NULL
 #endif
 
+<<<<<<< HEAD
 static int __devinit scoop_probe(struct platform_device *pdev)
+=======
+static int scoop_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct scoop_dev *devptr;
 	struct scoop_config *inf;
@@ -193,7 +212,15 @@ static int __devinit scoop_probe(struct platform_device *pdev)
 	spin_lock_init(&devptr->scoop_lock);
 
 	inf = pdev->dev.platform_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	devptr->base = ioremap(mem->start, mem->end - mem->start + 1);
+=======
+	devptr->base = ioremap(mem->start, resource_size(mem));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	devptr->base = ioremap(mem->start, resource_size(mem));
+>>>>>>> refs/remotes/origin/master
 
 	if (!devptr->base) {
 		ret = -ENOMEM;
@@ -242,7 +269,11 @@ err_ioremap:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit scoop_remove(struct platform_device *pdev)
+=======
+static int scoop_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct scoop_dev *sdev = platform_get_drvdata(pdev);
 	int ret;
@@ -267,7 +298,11 @@ static int __devexit scoop_remove(struct platform_device *pdev)
 
 static struct platform_driver scoop_driver = {
 	.probe		= scoop_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(scoop_remove),
+=======
+	.remove		= scoop_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= scoop_suspend,
 	.resume		= scoop_resume,
 	.driver		= {

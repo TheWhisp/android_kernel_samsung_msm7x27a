@@ -8,14 +8,26 @@
  * for more details.
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/kallsyms.h>
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+#include <linux/kernel.h>
+#include <linux/kallsyms.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/debug_locks.h>
 
 #include <asm/exceptions.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/unwind.h>
 
 void trap_init(void)
@@ -27,7 +39,11 @@ static unsigned long kstack_depth_to_print;	/* 0 == entire stack */
 
 static int __init kstack_setup(char *s)
 {
+<<<<<<< HEAD
 	return !strict_strtoul(s, 0, &kstack_depth_to_print);
+=======
+	return !kstrtoul(s, 0, &kstack_depth_to_print);
+>>>>>>> refs/remotes/origin/master
 }
 __setup("kstack=", kstack_setup);
 
@@ -67,9 +83,13 @@ void show_stack(struct task_struct *task, unsigned long *sp)
 	}
 	print_hex_dump(KERN_INFO, "", DUMP_PREFIX_ADDRESS, 32, 4, (void *)fp,
 		       words_to_show << 2, 0);
+<<<<<<< HEAD
 	printk(KERN_INFO "\n\n");
 
 	pr_info("Call Trace:\n");
+=======
+	pr_info("\n\nCall Trace:\n");
+>>>>>>> refs/remotes/origin/master
 	microblaze_unwind(task, NULL);
 	pr_info("\n");
 
@@ -78,9 +98,12 @@ void show_stack(struct task_struct *task, unsigned long *sp)
 
 	debug_show_held_locks(task);
 }
+<<<<<<< HEAD
 
 void dump_stack(void)
 {
 	show_stack(NULL, NULL);
 }
 EXPORT_SYMBOL(dump_stack);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -267,9 +267,15 @@ enum {
 #define DM_DEV_SET_GEOMETRY	_IOWR(DM_IOCTL, DM_DEV_SET_GEOMETRY_CMD, struct dm_ioctl)
 
 #define DM_VERSION_MAJOR	4
+<<<<<<< HEAD
 #define DM_VERSION_MINOR	20
 #define DM_VERSION_PATCHLEVEL	0
 #define DM_VERSION_EXTRA	"-ioctl (2011-02-02)"
+=======
+#define DM_VERSION_MINOR	22
+#define DM_VERSION_PATCHLEVEL	0
+#define DM_VERSION_EXTRA	"-ioctl (2011-10-19)"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Status bits */
 #define DM_READONLY_FLAG	(1 << 0) /* In/Out */

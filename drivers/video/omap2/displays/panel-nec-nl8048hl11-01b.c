@@ -163,6 +163,7 @@ static void nec_8048_panel_remove(struct omap_dss_device *dssdev)
 	kfree(necd);
 }
 
+<<<<<<< HEAD
 static int nec_8048_panel_enable(struct omap_dss_device *dssdev)
 {
 	int r = 0;
@@ -173,40 +174,119 @@ static int nec_8048_panel_enable(struct omap_dss_device *dssdev)
 		r = dssdev->platform_enable(dssdev);
 		if (r)
 			return r;
+=======
+static int nec_8048_panel_power_on(struct omap_dss_device *dssdev)
+{
+	int r;
+	struct nec_8048_data *necd = dev_get_drvdata(&dssdev->dev);
+	struct backlight_device *bl = necd->bl;
+
+	if (dssdev->state == OMAP_DSS_DISPLAY_ACTIVE)
+		return 0;
+
+	r = omapdss_dpi_display_enable(dssdev);
+	if (r)
+		goto err0;
+
+	if (dssdev->platform_enable) {
+		r = dssdev->platform_enable(dssdev);
+		if (r)
+			goto err1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	r = nec_8048_bl_update_status(bl);
 	if (r < 0)
 		dev_err(&dssdev->dev, "failed to set lcd brightness\n");
 
+<<<<<<< HEAD
 	r = omapdss_dpi_display_enable(dssdev);
 
 	return r;
 }
 
 static void nec_8048_panel_disable(struct omap_dss_device *dssdev)
+=======
+	return 0;
+err1:
+	omapdss_dpi_display_disable(dssdev);
+err0:
+	return r;
+}
+
+static void nec_8048_panel_power_off(struct omap_dss_device *dssdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct nec_8048_data *necd = dev_get_drvdata(&dssdev->dev);
 	struct backlight_device *bl = necd->bl;
 
+<<<<<<< HEAD
 	omapdss_dpi_display_disable(dssdev);
+=======
+	if (dssdev->state != OMAP_DSS_DISPLAY_ACTIVE)
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	bl->props.brightness = 0;
 	nec_8048_bl_update_status(bl);
 
 	if (dssdev->platform_disable)
 		dssdev->platform_disable(dssdev);
+<<<<<<< HEAD
+=======
+
+	omapdss_dpi_display_disable(dssdev);
+}
+
+static int nec_8048_panel_enable(struct omap_dss_device *dssdev)
+{
+	int r;
+
+	r = nec_8048_panel_power_on(dssdev);
+	if (r)
+		return r;
+
+	dssdev->state = OMAP_DSS_DISPLAY_ACTIVE;
+
+	return 0;
+}
+
+static void nec_8048_panel_disable(struct omap_dss_device *dssdev)
+{
+	nec_8048_panel_power_off(dssdev);
+
+	dssdev->state = OMAP_DSS_DISPLAY_DISABLED;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int nec_8048_panel_suspend(struct omap_dss_device *dssdev)
 {
+<<<<<<< HEAD
 	nec_8048_panel_disable(dssdev);
+=======
+	nec_8048_panel_power_off(dssdev);
+
+	dssdev->state = OMAP_DSS_DISPLAY_SUSPENDED;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int nec_8048_panel_resume(struct omap_dss_device *dssdev)
 {
+<<<<<<< HEAD
 	return nec_8048_panel_enable(dssdev);
+=======
+	int r;
+
+	r = nec_8048_panel_power_on(dssdev);
+	if (r)
+		return r;
+
+	dssdev->state = OMAP_DSS_DISPLAY_ACTIVE;
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int nec_8048_recommended_bpp(struct omap_dss_device *dssdev)
@@ -303,11 +383,15 @@ static struct spi_driver nec_8048_spi_driver = {
 	.resume		= nec_8048_spi_resume,
 	.driver		= {
 		.name	= "nec_8048_spi",
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static int __init nec_8048_lcd_init(void)
 {
 	return spi_register_driver(&nec_8048_spi_driver);
@@ -320,6 +404,10 @@ static void __exit nec_8048_lcd_exit(void)
 
 module_init(nec_8048_lcd_init);
 module_exit(nec_8048_lcd_exit);
+=======
+module_spi_driver(nec_8048_spi_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_AUTHOR("Erik Gilling <konkers@android.com>");
 MODULE_DESCRIPTION("NEC-nl8048hl11-01b Driver");
 MODULE_LICENSE("GPL");

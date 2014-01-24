@@ -1,11 +1,19 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/cio/idset.c
  *
  *    Copyright IBM Corp. 2007
+=======
+ *    Copyright IBM Corp. 2007, 2012
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Peter Oberparleiter <peter.oberparleiter@de.ibm.com>
  */
 
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/bitmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include "idset.h"
 #include "css.h"
@@ -18,7 +26,11 @@ struct idset {
 
 static inline unsigned long bitmap_size(int num_ssid, int num_id)
 {
+<<<<<<< HEAD
 	return __BITOPS_WORDS(num_ssid * num_id) * sizeof(unsigned long);
+=======
+	return BITS_TO_LONGS(num_ssid * num_id) * sizeof(unsigned long);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct idset *idset_new(int num_ssid, int num_id)
@@ -91,6 +103,17 @@ void idset_sch_del(struct idset *set, struct subchannel_id schid)
 	idset_del(set, schid.ssid, schid.sch_no);
 }
 
+<<<<<<< HEAD
+=======
+/* Clear ids starting from @schid up to end of subchannel set. */
+void idset_sch_del_subseq(struct idset *set, struct subchannel_id schid)
+{
+	int pos = schid.ssid * set->num_id + schid.sch_no;
+
+	bitmap_clear(set->bitmap, pos, set->num_id - schid.sch_no);
+}
+
+>>>>>>> refs/remotes/origin/master
 int idset_sch_contains(struct idset *set, struct subchannel_id schid)
 {
 	return idset_contains(set, schid.ssid, schid.sch_no);
@@ -113,20 +136,30 @@ int idset_sch_get_first(struct idset *set, struct subchannel_id *schid)
 
 int idset_is_empty(struct idset *set)
 {
+<<<<<<< HEAD
 	int bitnum;
 
 	bitnum = find_first_bit(set->bitmap, set->num_ssid * set->num_id);
 	if (bitnum >= set->num_ssid * set->num_id)
 		return 1;
 	return 0;
+=======
+	return bitmap_empty(set->bitmap, set->num_ssid * set->num_id);
+>>>>>>> refs/remotes/origin/master
 }
 
 void idset_add_set(struct idset *to, struct idset *from)
 {
+<<<<<<< HEAD
 	unsigned long i, len;
 
 	len = min(__BITOPS_WORDS(to->num_ssid * to->num_id),
 		  __BITOPS_WORDS(from->num_ssid * from->num_id));
 	for (i = 0; i < len ; i++)
 		to->bitmap[i] |= from->bitmap[i];
+=======
+	int len = min(to->num_ssid * to->num_id, from->num_ssid * from->num_id);
+
+	bitmap_or(to->bitmap, to->bitmap, from->bitmap, len);
+>>>>>>> refs/remotes/origin/master
 }

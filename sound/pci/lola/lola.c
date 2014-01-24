@@ -20,7 +20,15 @@
 
 #include <linux/kernel.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
@@ -35,7 +43,15 @@
 /* Standard options */
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for Digigram Lola driver.");
@@ -445,7 +461,11 @@ static void lola_reset_setups(struct lola *chip)
 	lola_setup_all_analog_gains(chip, PLAY, false); /* output, update */
 }
 
+<<<<<<< HEAD
 static int __devinit lola_parse_tree(struct lola *chip)
+=======
+static int lola_parse_tree(struct lola *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int val;
 	int nid, err;
@@ -463,7 +483,11 @@ static int __devinit lola_parse_tree(struct lola *chip)
 
 	err = lola_read_param(chip, 1, LOLA_PAR_FUNCTION_TYPE, &val);
 	if (err < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR SFX "Can't read FUNCTION_TYPE for 0x%x\n", nid);
+=======
+		printk(KERN_ERR SFX "Can't read FUNCTION_TYPE\n");
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	if (val != 1) {
@@ -568,8 +592,13 @@ static int lola_dev_free(struct snd_device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit lola_create(struct snd_card *card, struct pci_dev *pci,
 				 int dev, struct lola **rchip)
+=======
+static int lola_create(struct snd_card *card, struct pci_dev *pci,
+		       int dev, struct lola **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lola *chip;
 	int err;
@@ -648,7 +677,15 @@ static int __devinit lola_create(struct snd_card *card, struct pci_dev *pci,
 		goto errout;
 
 	if (request_irq(pci->irq, lola_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			DRVNAME, chip)) {
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR SFX "unable to grab IRQ %d\n", pci->irq);
 		err = -EBUSY;
 		goto errout;
@@ -702,8 +739,13 @@ static int __devinit lola_create(struct snd_card *card, struct pci_dev *pci,
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit lola_probe(struct pci_dev *pci,
 				const struct pci_device_id *pci_id)
+=======
+static int lola_probe(struct pci_dev *pci,
+		      const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -756,10 +798,16 @@ out_free:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit lola_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
 	pci_set_drvdata(pci, NULL);
+=======
+static void lola_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+>>>>>>> refs/remotes/origin/master
 }
 
 /* PCI IDs */
@@ -770,8 +818,13 @@ static DEFINE_PCI_DEVICE_TABLE(lola_ids) = {
 MODULE_DEVICE_TABLE(pci, lola_ids);
 
 /* pci_driver definition */
+<<<<<<< HEAD
 static struct pci_driver driver = {
+<<<<<<< HEAD
 	.name = DRVNAME,
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = lola_ids,
 	.probe = lola_probe,
 	.remove = __devexit_p(lola_remove),
@@ -789,3 +842,13 @@ static void __exit alsa_card_lola_exit(void)
 
 module_init(alsa_card_lola_init)
 module_exit(alsa_card_lola_exit)
+=======
+static struct pci_driver lola_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = lola_ids,
+	.probe = lola_probe,
+	.remove = lola_remove,
+};
+
+module_pci_driver(lola_driver);
+>>>>>>> refs/remotes/origin/master

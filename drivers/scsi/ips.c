@@ -326,10 +326,16 @@ static void ips_scmd_buf_write(struct scsi_cmnd * scmd, void *data,
 static void ips_scmd_buf_read(struct scsi_cmnd * scmd, void *data,
 			      unsigned int count);
 
+<<<<<<< HEAD
 static int ips_proc_info(struct Scsi_Host *, char *, char **, off_t, int, int);
 static int ips_host_info(ips_ha_t *, char *, off_t, int);
 static void copy_mem_info(IPS_INFOSTR *, char *, int);
 static int copy_info(IPS_INFOSTR *, char *, ...);
+=======
+static int ips_write_info(struct Scsi_Host *, char *, int);
+static int ips_show_info(struct seq_file *, struct Scsi_Host *);
+static int ips_host_info(ips_ha_t *, struct seq_file *);
+>>>>>>> refs/remotes/origin/master
 static int ips_abort_init(ips_ha_t * ha, int index);
 static int ips_init_phase2(int index);
 
@@ -367,13 +373,22 @@ static struct scsi_host_template ips_driver_template = {
 	.eh_abort_handler	= ips_eh_abort,
 	.eh_host_reset_handler	= ips_eh_reset,
 	.proc_name		= "ips",
+<<<<<<< HEAD
 	.proc_info		= ips_proc_info,
+=======
+	.show_info		= ips_show_info,
+	.write_info		= ips_write_info,
+>>>>>>> refs/remotes/origin/master
 	.slave_configure	= ips_slave_configure,
 	.bios_param		= ips_biosparam,
 	.this_id		= -1,
 	.sg_tablesize		= IPS_MAX_SG,
 	.cmd_per_lun		= 3,
 	.use_clustering		= ENABLE_CLUSTERING,
+<<<<<<< HEAD
+=======
+	.no_write_same		= 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -389,14 +404,23 @@ MODULE_DEVICE_TABLE( pci, ips_pci_table );
 
 static char ips_hot_plug_name[] = "ips";
 
+<<<<<<< HEAD
 static int __devinit  ips_insert_device(struct pci_dev *pci_dev, const struct pci_device_id *ent);
 static void __devexit ips_remove_device(struct pci_dev *pci_dev);
+=======
+static int  ips_insert_device(struct pci_dev *pci_dev, const struct pci_device_id *ent);
+static void ips_remove_device(struct pci_dev *pci_dev);
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_driver ips_pci_driver = {
 	.name		= ips_hot_plug_name,
 	.id_table	= ips_pci_table,
 	.probe		= ips_insert_device,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ips_remove_device),
+=======
+	.remove		= ips_remove_device,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -1433,6 +1457,7 @@ ips_info(struct Scsi_Host *SH)
 	return (bp);
 }
 
+<<<<<<< HEAD
 /****************************************************************************/
 /*                                                                          */
 /* Routine Name: ips_proc_info                                              */
@@ -1452,6 +1477,14 @@ ips_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_t offset,
 
 	METHOD_TRACE("ips_proc_info", 1);
 
+=======
+static int
+ips_write_info(struct Scsi_Host *host, char *buffer, int length)
+{
+	int i;
+	ips_ha_t *ha = NULL;
+
+>>>>>>> refs/remotes/origin/master
 	/* Find our host structure */
 	for (i = 0; i < ips_next_controller; i++) {
 		if (ips_sh[i]) {
@@ -1465,6 +1498,7 @@ ips_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_t offset,
 	if (!ha)
 		return (-EINVAL);
 
+<<<<<<< HEAD
 	if (func) {
 		/* write */
 		return (0);
@@ -1477,6 +1511,31 @@ ips_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_t offset,
 
 		return (ret);
 	}
+=======
+	return 0;
+}
+
+static int
+ips_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	int i;
+	ips_ha_t *ha = NULL;
+
+	/* Find our host structure */
+	for (i = 0; i < ips_next_controller; i++) {
+		if (ips_sh[i]) {
+			if (ips_sh[i] == host) {
+				ha = (ips_ha_t *) ips_sh[i]->hostdata;
+				break;
+			}
+		}
+	}
+
+	if (!ha)
+		return (-EINVAL);
+
+	return ips_host_info(ha, m);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1511,6 +1570,8 @@ static int ips_is_passthru(struct scsi_cmnd *SC)
                 /* kmap_atomic() ensures addressability of the user buffer.*/
                 /* local_irq_save() protects the KM_IRQ0 address slot.     */
                 local_irq_save(flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
                 buffer = kmap_atomic(sg_page(sg), KM_IRQ0) + sg->offset;
                 if (buffer && buffer[0] == 'C' && buffer[1] == 'O' &&
                     buffer[2] == 'P' && buffer[3] == 'P') {
@@ -1519,6 +1580,21 @@ static int ips_is_passthru(struct scsi_cmnd *SC)
                         return 1;
                 }
                 kunmap_atomic(buffer - sg->offset, KM_IRQ0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+                buffer = kmap_atomic(sg_page(sg)) + sg->offset;
+                if (buffer && buffer[0] == 'C' && buffer[1] == 'O' &&
+                    buffer[2] == 'P' && buffer[3] == 'P') {
+                        kunmap_atomic(buffer - sg->offset);
+                        local_irq_restore(flags);
+                        return 1;
+                }
+                kunmap_atomic(buffer - sg->offset);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
                 local_irq_restore(flags);
 	}
 	return 0;
@@ -2035,6 +2111,7 @@ ips_cleanup_passthru(ips_ha_t * ha, ips_scb_t * scb)
 /*                                                                          */
 /****************************************************************************/
 static int
+<<<<<<< HEAD
 ips_host_info(ips_ha_t * ha, char *ptr, off_t offset, int len)
 {
 	IPS_INFOSTR info;
@@ -2072,12 +2149,44 @@ ips_host_info(ips_ha_t * ha, char *ptr, off_t offset, int len)
 	}
 
 	copy_info(&info, "\tIRQ number                        : %d\n", ha->pcidev->irq);
+=======
+ips_host_info(ips_ha_t *ha, struct seq_file *m)
+{
+	METHOD_TRACE("ips_host_info", 1);
+
+	seq_printf(m, "\nIBM ServeRAID General Information:\n\n");
+
+	if ((le32_to_cpu(ha->nvram->signature) == IPS_NVRAM_P5_SIG) &&
+	    (le16_to_cpu(ha->nvram->adapter_type) != 0))
+		seq_printf(m, "\tController Type                   : %s\n",
+			  ips_adapter_name[ha->ad_type - 1]);
+	else
+		seq_printf(m,
+			  "\tController Type                   : Unknown\n");
+
+	if (ha->io_addr)
+		seq_printf(m,
+			  "\tIO region                         : 0x%x (%d bytes)\n",
+			  ha->io_addr, ha->io_len);
+
+	if (ha->mem_addr) {
+		seq_printf(m,
+			  "\tMemory region                     : 0x%x (%d bytes)\n",
+			  ha->mem_addr, ha->mem_len);
+		seq_printf(m,
+			  "\tShared memory address             : 0x%lx\n",
+			  (unsigned long)ha->mem_ptr);
+	}
+
+	seq_printf(m, "\tIRQ number                        : %d\n", ha->pcidev->irq);
+>>>>>>> refs/remotes/origin/master
 
     /* For the Next 3 lines Check for Binary 0 at the end and don't include it if it's there. */
     /* That keeps everything happy for "text" operations on the proc file.                    */
 
 	if (le32_to_cpu(ha->nvram->signature) == IPS_NVRAM_P5_SIG) {
 	if (ha->nvram->bios_low[3] == 0) {
+<<<<<<< HEAD
             copy_info(&info,
 			          "\tBIOS Version                      : %c%c%c%c%c%c%c\n",
 			          ha->nvram->bios_high[0], ha->nvram->bios_high[1],
@@ -2092,11 +2201,28 @@ ips_host_info(ips_ha_t * ha, char *ptr, off_t offset, int len)
 			          ha->nvram->bios_high[2], ha->nvram->bios_high[3],
 			          ha->nvram->bios_low[0], ha->nvram->bios_low[1],
 			          ha->nvram->bios_low[2], ha->nvram->bios_low[3]);
+=======
+		seq_printf(m,
+			  "\tBIOS Version                      : %c%c%c%c%c%c%c\n",
+			  ha->nvram->bios_high[0], ha->nvram->bios_high[1],
+			  ha->nvram->bios_high[2], ha->nvram->bios_high[3],
+			  ha->nvram->bios_low[0], ha->nvram->bios_low[1],
+			  ha->nvram->bios_low[2]);
+
+        } else {
+		seq_printf(m,
+			  "\tBIOS Version                      : %c%c%c%c%c%c%c%c\n",
+			  ha->nvram->bios_high[0], ha->nvram->bios_high[1],
+			  ha->nvram->bios_high[2], ha->nvram->bios_high[3],
+			  ha->nvram->bios_low[0], ha->nvram->bios_low[1],
+			  ha->nvram->bios_low[2], ha->nvram->bios_low[3]);
+>>>>>>> refs/remotes/origin/master
         }
 
     }
 
     if (ha->enq->CodeBlkVersion[7] == 0) {
+<<<<<<< HEAD
         copy_info(&info,
 		          "\tFirmware Version                  : %c%c%c%c%c%c%c\n",
 		          ha->enq->CodeBlkVersion[0], ha->enq->CodeBlkVersion[1],
@@ -2212,6 +2338,61 @@ copy_info(IPS_INFOSTR * info, char *fmt, ...)
 	copy_mem_info(info, buf, len);
 
 	return (len);
+=======
+        seq_printf(m,
+		  "\tFirmware Version                  : %c%c%c%c%c%c%c\n",
+		  ha->enq->CodeBlkVersion[0], ha->enq->CodeBlkVersion[1],
+		  ha->enq->CodeBlkVersion[2], ha->enq->CodeBlkVersion[3],
+		  ha->enq->CodeBlkVersion[4], ha->enq->CodeBlkVersion[5],
+		  ha->enq->CodeBlkVersion[6]);
+    } else {
+	seq_printf(m,
+		  "\tFirmware Version                  : %c%c%c%c%c%c%c%c\n",
+		  ha->enq->CodeBlkVersion[0], ha->enq->CodeBlkVersion[1],
+		  ha->enq->CodeBlkVersion[2], ha->enq->CodeBlkVersion[3],
+		  ha->enq->CodeBlkVersion[4], ha->enq->CodeBlkVersion[5],
+		  ha->enq->CodeBlkVersion[6], ha->enq->CodeBlkVersion[7]);
+    }
+
+    if (ha->enq->BootBlkVersion[7] == 0) {
+        seq_printf(m,
+		  "\tBoot Block Version                : %c%c%c%c%c%c%c\n",
+		  ha->enq->BootBlkVersion[0], ha->enq->BootBlkVersion[1],
+		  ha->enq->BootBlkVersion[2], ha->enq->BootBlkVersion[3],
+		  ha->enq->BootBlkVersion[4], ha->enq->BootBlkVersion[5],
+		  ha->enq->BootBlkVersion[6]);
+    } else {
+        seq_printf(m,
+		  "\tBoot Block Version                : %c%c%c%c%c%c%c%c\n",
+		  ha->enq->BootBlkVersion[0], ha->enq->BootBlkVersion[1],
+		  ha->enq->BootBlkVersion[2], ha->enq->BootBlkVersion[3],
+		  ha->enq->BootBlkVersion[4], ha->enq->BootBlkVersion[5],
+		  ha->enq->BootBlkVersion[6], ha->enq->BootBlkVersion[7]);
+    }
+
+	seq_printf(m, "\tDriver Version                    : %s%s\n",
+		  IPS_VERSION_HIGH, IPS_VERSION_LOW);
+
+	seq_printf(m, "\tDriver Build                      : %d\n",
+		  IPS_BUILD_IDENT);
+
+	seq_printf(m, "\tMax Physical Devices              : %d\n",
+		  ha->enq->ucMaxPhysicalDevices);
+	seq_printf(m, "\tMax Active Commands               : %d\n",
+		  ha->max_cmds);
+	seq_printf(m, "\tCurrent Queued Commands           : %d\n",
+		  ha->scb_waitlist.count);
+	seq_printf(m, "\tCurrent Active Commands           : %d\n",
+		  ha->scb_activelist.count - ha->num_ioctl);
+	seq_printf(m, "\tCurrent Queued PT Commands        : %d\n",
+		  ha->copp_waitlist.count);
+	seq_printf(m, "\tCurrent Active PT Commands        : %d\n",
+		  ha->num_ioctl);
+
+	seq_printf(m, "\n");
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /****************************************************************************/
@@ -4494,7 +4675,15 @@ ips_init_scb(ips_ha_t * ha, ips_scb_t * scb)
 /*                                                                          */
 /*   Initialize a CCB to default values                                     */
 /*                                                                          */
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* ASSUMED to be callled from within a lock                                 */
+=======
+/* ASSUMED to be called from within a lock                                 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* ASSUMED to be called from within a lock                                 */
+>>>>>>> refs/remotes/origin/master
 /*                                                                          */
 /****************************************************************************/
 static ips_scb_t *
@@ -6837,7 +7026,11 @@ err_out_sh:
 /*   Routine Description:                                                    */
 /*     Remove one Adapter ( Hot Plugging )                                   */
 /*---------------------------------------------------------------------------*/
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 ips_remove_device(struct pci_dev *pci_dev)
 {
 	struct Scsi_Host *sh = pci_get_drvdata(pci_dev);
@@ -6898,7 +7091,11 @@ module_exit(ips_module_exit);
 /*   Return Value:                                                           */
 /*     0 if Successful, else non-zero                                        */
 /*---------------------------------------------------------------------------*/
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 ips_insert_device(struct pci_dev *pci_dev, const struct pci_device_id *ent)
 {
 	int index = -1;

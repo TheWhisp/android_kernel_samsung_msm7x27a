@@ -32,7 +32,11 @@
 #include <sound/control.h>
 #include <sound/info.h>
 #include <sound/asoundef.h>
+<<<<<<< HEAD
 #include <sound/cs46xx.h>
+=======
+#include "cs46xx.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "cs46xx_lib.h"
 #include "dsp_spos.h"
@@ -287,7 +291,11 @@ void  cs46xx_dsp_spos_destroy (struct snd_cs46xx * chip)
 		if (ins->scbs[i].deleted) continue;
 
 		cs46xx_dsp_proc_free_scb_desc ( (ins->scbs + i) );
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 		kfree(ins->scbs[i].data);
 #endif
 	}
@@ -1019,7 +1027,11 @@ cs46xx_dsp_create_scb (struct snd_cs46xx *chip, char * name, u32 * scb_data, u32
 {
 	struct dsp_scb_descriptor * desc;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	/* copy the data for resume */
 	scb_data = kmemdup(scb_data, SCB_BYTES, GFP_KERNEL);
 	if (!scb_data)
@@ -1032,7 +1044,11 @@ cs46xx_dsp_create_scb (struct snd_cs46xx *chip, char * name, u32 * scb_data, u32
 		_dsp_create_scb(chip,scb_data,dest);
 	} else {
 		snd_printk(KERN_ERR "dsp_spos: failed to map SCB\n");
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 		kfree(scb_data);
 #endif
 	}
@@ -1937,7 +1953,11 @@ int cs46xx_dsp_set_iec958_volume (struct snd_cs46xx * chip, u16 left, u16 right)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 int cs46xx_dsp_resume(struct snd_cs46xx * chip)
 {
 	struct dsp_spos_instance * ins = chip->dsp_spos_instance;

@@ -27,17 +27,40 @@
 #include "cifs_debug.h"
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * cifs_ucs2_bytes - how long will a string be after conversion?
  * @ucs - pointer to input string
  * @maxbytes - don't go past this many bytes of input string
  * @codepage - destination codepage
  *
  * Walk a ucs2le string and return the number of bytes that the string will
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * cifs_utf16_bytes - how long will a string be after conversion?
+ * @utf16 - pointer to input string
+ * @maxbytes - don't go past this many bytes of input string
+ * @codepage - destination codepage
+ *
+ * Walk a utf16le string and return the number of bytes that the string will
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * be after being converted to the given charset, not including any null
  * termination required. Don't walk past maxbytes in the source buffer.
  */
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 cifs_ucs2_bytes(const __le16 *from, int maxbytes,
+=======
+cifs_utf16_bytes(const __le16 *from, int maxbytes,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+cifs_utf16_bytes(const __le16 *from, int maxbytes,
+>>>>>>> refs/remotes/origin/master
 		const struct nls_table *codepage)
 {
 	int i;
@@ -122,7 +145,15 @@ cp_convert:
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * cifs_from_ucs2 - convert utf16le string to local charset
+=======
+ * cifs_from_utf16 - convert utf16le string to local charset
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * cifs_from_utf16 - convert utf16le string to local charset
+>>>>>>> refs/remotes/origin/master
  * @to - destination buffer
  * @from - source buffer
  * @tolen - destination buffer size (in bytes)
@@ -130,7 +161,15 @@ cp_convert:
  * @codepage - codepage to which characters should be converted
  * @mapchar - should characters be remapped according to the mapchars option?
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Convert a little-endian ucs2le string (as sent by the server) to a string
+=======
+ * Convert a little-endian utf16le string (as sent by the server) to a string
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Convert a little-endian utf16le string (as sent by the server) to a string
+>>>>>>> refs/remotes/origin/master
  * in the provided codepage. The tolen and fromlen parameters are to ensure
  * that the code doesn't walk off of the end of the buffer (which is always
  * a danger if the alignment of the source buffer is off). The destination
@@ -139,12 +178,28 @@ cp_convert:
  * null terminator).
  *
  * Note that some windows versions actually send multiword UTF-16 characters
+<<<<<<< HEAD
+<<<<<<< HEAD
  * instead of straight UCS-2. The linux nls routines however aren't able to
+=======
+ * instead of straight UTF16-2. The linux nls routines however aren't able to
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * instead of straight UTF16-2. The linux nls routines however aren't able to
+>>>>>>> refs/remotes/origin/master
  * deal with those characters properly. In the event that we get some of
  * those characters, they won't be translated properly.
  */
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 cifs_from_ucs2(char *to, const __le16 *from, int tolen, int fromlen,
+=======
+cifs_from_utf16(char *to, const __le16 *from, int tolen, int fromlen,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+cifs_from_utf16(char *to, const __le16 *from, int tolen, int fromlen,
+>>>>>>> refs/remotes/origin/master
 		 const struct nls_table *codepage, bool mapchar)
 {
 	int i, charlen, safelen;
@@ -190,24 +245,100 @@ cifs_from_ucs2(char *to, const __le16 *from, int tolen, int fromlen,
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * NAME:	cifs_strtoUCS()
+=======
+ * NAME:	cifs_strtoUTF16()
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * NAME:	cifs_strtoUTF16()
+>>>>>>> refs/remotes/origin/master
  *
  * FUNCTION:	Convert character string to unicode string
  *
  */
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 cifs_strtoUCS(__le16 *to, const char *from, int len,
+=======
+cifs_strtoUTF16(__le16 *to, const char *from, int len,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+cifs_strtoUTF16(__le16 *to, const char *from, int len,
+>>>>>>> refs/remotes/origin/master
 	      const struct nls_table *codepage)
 {
 	int charlen;
 	int i;
 	wchar_t wchar_to; /* needed to quiet sparse */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* special case for utf8 to handle no plane0 chars */
+	if (!strcmp(codepage->charset, "utf8")) {
+		/*
+		 * convert utf8 -> utf16, we assume we have enough space
+		 * as caller should have assumed conversion does not overflow
+		 * in destination len is length in wchar_t units (16bits)
+		 */
+		i  = utf8s_to_utf16s(from, len, UTF16_LITTLE_ENDIAN,
+				       (wchar_t *) to, len);
+
+		/* if success terminate and exit */
+		if (i >= 0)
+			goto success;
+		/*
+		 * if fails fall back to UCS encoding as this
+		 * function should not return negative values
+		 * currently can fail only if source contains
+		 * invalid encoded characters
+		 */
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; len && *from; i++, from += charlen, len -= charlen) {
 		charlen = codepage->char2uni(from, len, &wchar_to);
 		if (charlen < 1) {
 			cERROR(1, "strtoUCS: char2uni of 0x%x returned %d",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* special case for utf8 to handle no plane0 chars */
+	if (!strcmp(codepage->charset, "utf8")) {
+		/*
+		 * convert utf8 -> utf16, we assume we have enough space
+		 * as caller should have assumed conversion does not overflow
+		 * in destination len is length in wchar_t units (16bits)
+		 */
+		i  = utf8s_to_utf16s(from, len, UTF16_LITTLE_ENDIAN,
+				       (wchar_t *) to, len);
+
+		/* if success terminate and exit */
+		if (i >= 0)
+			goto success;
+		/*
+		 * if fails fall back to UCS encoding as this
+		 * function should not return negative values
+		 * currently can fail only if source contains
+		 * invalid encoded characters
+		 */
+	}
+
+	for (i = 0; len && *from; i++, from += charlen, len -= charlen) {
+		charlen = codepage->char2uni(from, len, &wchar_to);
+		if (charlen < 1) {
+<<<<<<< HEAD
+			cERROR(1, "strtoUTF16: char2uni of 0x%x returned %d",
+>>>>>>> refs/remotes/origin/cm-10.0
 				*from, charlen);
+=======
+			cifs_dbg(VFS, "strtoUTF16: char2uni of 0x%x returned %d\n",
+				 *from, charlen);
+>>>>>>> refs/remotes/origin/master
 			/* A question mark */
 			wchar_to = 0x003f;
 			charlen = 1;
@@ -215,12 +346,34 @@ cifs_strtoUCS(__le16 *to, const char *from, int len,
 		put_unaligned_le16(wchar_to, &to[i]);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+success:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+success:
+>>>>>>> refs/remotes/origin/master
+=======
+success:
+>>>>>>> refs/remotes/origin/cm-11.0
 	put_unaligned_le16(0, &to[i]);
 	return i;
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * cifs_strndup_from_ucs - copy a string from wire format to the local codepage
+=======
+ * cifs_strndup_from_utf16 - copy a string from wire format to the local
+ * codepage
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * cifs_strndup_from_utf16 - copy a string from wire format to the local
+ * codepage
+>>>>>>> refs/remotes/origin/master
  * @src - source string
  * @maxlen - don't walk past this many bytes in the source string
  * @is_unicode - is this a unicode string?
@@ -231,19 +384,45 @@ cifs_strtoUCS(__le16 *to, const char *from, int len,
  * error.
  */
 char *
+<<<<<<< HEAD
+<<<<<<< HEAD
 cifs_strndup_from_ucs(const char *src, const int maxlen, const bool is_unicode,
 	     const struct nls_table *codepage)
+=======
+cifs_strndup_from_utf16(const char *src, const int maxlen,
+			const bool is_unicode, const struct nls_table *codepage)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+cifs_strndup_from_utf16(const char *src, const int maxlen,
+			const bool is_unicode, const struct nls_table *codepage)
+>>>>>>> refs/remotes/origin/master
 {
 	int len;
 	char *dst;
 
 	if (is_unicode) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		len = cifs_ucs2_bytes((__le16 *) src, maxlen, codepage);
+=======
+		len = cifs_utf16_bytes((__le16 *) src, maxlen, codepage);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		len = cifs_utf16_bytes((__le16 *) src, maxlen, codepage);
+>>>>>>> refs/remotes/origin/master
 		len += nls_nullsize(codepage);
 		dst = kmalloc(len, GFP_KERNEL);
 		if (!dst)
 			return NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		cifs_from_ucs2(dst, (__le16 *) src, len, maxlen, codepage,
+=======
+		cifs_from_utf16(dst, (__le16 *) src, len, maxlen, codepage,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cifs_from_utf16(dst, (__le16 *) src, len, maxlen, codepage,
+>>>>>>> refs/remotes/origin/master
 			       false);
 	} else {
 		len = strnlen(src, maxlen);
@@ -264,7 +443,15 @@ cifs_strndup_from_ucs(const char *src, const int maxlen, const bool is_unicode,
  * names are little endian 16 bit Unicode on the wire
  */
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 cifsConvertToUCS(__le16 *target, const char *source, int srclen,
+=======
+cifsConvertToUTF16(__le16 *target, const char *source, int srclen,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+cifsConvertToUTF16(__le16 *target, const char *source, int srclen,
+>>>>>>> refs/remotes/origin/master
 		 const struct nls_table *cp, int mapChars)
 {
 	int i, j, charlen;
@@ -273,7 +460,15 @@ cifsConvertToUCS(__le16 *target, const char *source, int srclen,
 	wchar_t tmp;
 
 	if (!mapChars)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return cifs_strtoUCS(target, source, PATH_MAX, cp);
+=======
+		return cifs_strtoUTF16(target, source, PATH_MAX, cp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return cifs_strtoUTF16(target, source, PATH_MAX, cp);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0, j = 0; i < srclen; j++) {
 		src_char = source[i];
@@ -281,7 +476,15 @@ cifsConvertToUCS(__le16 *target, const char *source, int srclen,
 		switch (src_char) {
 		case 0:
 			put_unaligned(0, &target[j]);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			goto ctoUCS_out;
+=======
+			goto ctoUTF16_out;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto ctoUTF16_out;
+>>>>>>> refs/remotes/origin/master
 		case ':':
 			dst_char = cpu_to_le16(UNI_COLON);
 			break;
@@ -326,7 +529,84 @@ cifsConvertToUCS(__le16 *target, const char *source, int srclen,
 		put_unaligned(dst_char, &target[j]);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 ctoUCS_out:
 	return i;
+=======
+ctoUTF16_out:
+	return j;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ctoUTF16_out:
+	return j;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
+=======
+ctoUTF16_out:
+	return j;
+}
+
+#ifdef CONFIG_CIFS_SMB2
+/*
+ * cifs_local_to_utf16_bytes - how long will a string be after conversion?
+ * @from - pointer to input string
+ * @maxbytes - don't go past this many bytes of input string
+ * @codepage - source codepage
+ *
+ * Walk a string and return the number of bytes that the string will
+ * be after being converted to the given charset, not including any null
+ * termination required. Don't walk past maxbytes in the source buffer.
+ */
+
+static int
+cifs_local_to_utf16_bytes(const char *from, int len,
+			  const struct nls_table *codepage)
+{
+	int charlen;
+	int i;
+	wchar_t wchar_to;
+
+	for (i = 0; len && *from; i++, from += charlen, len -= charlen) {
+		charlen = codepage->char2uni(from, len, &wchar_to);
+		/* Failed conversion defaults to a question mark */
+		if (charlen < 1)
+			charlen = 1;
+	}
+	return 2 * i; /* UTF16 characters are two bytes */
+}
+
+/*
+ * cifs_strndup_to_utf16 - copy a string to wire format from the local codepage
+ * @src - source string
+ * @maxlen - don't walk past this many bytes in the source string
+ * @utf16_len - the length of the allocated string in bytes (including null)
+ * @cp - source codepage
+ * @remap - map special chars
+ *
+ * Take a string convert it from the local codepage to UTF16 and
+ * put it in a new buffer. Returns a pointer to the new string or NULL on
+ * error.
+ */
+__le16 *
+cifs_strndup_to_utf16(const char *src, const int maxlen, int *utf16_len,
+		      const struct nls_table *cp, int remap)
+{
+	int len;
+	__le16 *dst;
+
+	len = cifs_local_to_utf16_bytes(src, maxlen, cp);
+	len += 2; /* NULL */
+	dst = kmalloc(len, GFP_KERNEL);
+	if (!dst) {
+		*utf16_len = 0;
+		return NULL;
+	}
+	cifsConvertToUTF16(dst, src, strlen(src), cp, remap);
+	*utf16_len = len;
+	return dst;
+}
+#endif /* CONFIG_CIFS_SMB2 */
+>>>>>>> refs/remotes/origin/master

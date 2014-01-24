@@ -25,6 +25,14 @@
 #include <linux/firmware.h>
 #include <linux/vmalloc.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <sound/core.h>
 #include "mixart.h"
@@ -537,7 +545,11 @@ static int mixart_dsp_load(struct mixart_mgr* mgr, int index, const struct firmw
 
 		if ((err = snd_card_register(chip->card)) < 0)
 			return err;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	snd_printdd("miXart firmware downloaded and successfully set up\n");
 
@@ -545,6 +557,7 @@ static int mixart_dsp_load(struct mixart_mgr* mgr, int index, const struct firmw
 }
 
 
+<<<<<<< HEAD
 #if defined(CONFIG_FW_LOADER) || defined(CONFIG_FW_LOADER_MODULE)
 #if !defined(CONFIG_USE_MIXARTLOADER) && !defined(CONFIG_SND_MIXART) /* built-in kernel */
 #define SND_MIXART_FW_LOADER	/* use the standard firmware loader */
@@ -553,6 +566,8 @@ static int mixart_dsp_load(struct mixart_mgr* mgr, int index, const struct firmw
 
 #ifdef SND_MIXART_FW_LOADER
 
+=======
+>>>>>>> refs/remotes/origin/master
 int snd_mixart_setup_firmware(struct mixart_mgr *mgr)
 {
 	static char *fw_files[3] = {
@@ -582,6 +597,7 @@ int snd_mixart_setup_firmware(struct mixart_mgr *mgr)
 MODULE_FIRMWARE("mixart/miXart8.xlx");
 MODULE_FIRMWARE("mixart/miXart8.elf");
 MODULE_FIRMWARE("mixart/miXart8AES.xlx");
+<<<<<<< HEAD
 
 #else /* old style firmware loading */
 
@@ -650,3 +666,5 @@ int snd_mixart_setup_firmware(struct mixart_mgr *mgr)
 }
 
 #endif /* SND_MIXART_FW_LOADER */
+=======
+>>>>>>> refs/remotes/origin/master

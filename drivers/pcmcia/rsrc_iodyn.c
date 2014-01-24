@@ -135,7 +135,15 @@ static int iodyn_find_io(struct pcmcia_socket *s, unsigned int attr,
 		try = res->end + 1;
 		if ((*base == 0) || (*base == try)) {
 			if (adjust_resource(s->io[i].res, res->start,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					res->end - res->start + num + 1))
+=======
+					    resource_size(res) + num))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    resource_size(res) + num))
+>>>>>>> refs/remotes/origin/master
 				continue;
 			*base = try;
 			s->io[i].InUse += num;
@@ -147,8 +155,18 @@ static int iodyn_find_io(struct pcmcia_socket *s, unsigned int attr,
 		try = res->start - num;
 		if ((*base == 0) || (*base == try)) {
 			if (adjust_resource(s->io[i].res,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					res->start - num,
 					res->end - res->start + num + 1))
+=======
+					    res->start - num,
+					    resource_size(res) + num))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    res->start - num,
+					    resource_size(res) + num))
+>>>>>>> refs/remotes/origin/master
 				continue;
 			*base = try;
 			s->io[i].InUse += num;

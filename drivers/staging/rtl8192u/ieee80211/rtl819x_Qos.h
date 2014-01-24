@@ -81,8 +81,12 @@ typedef	union _QOS_CTRL_FIELD{
 	u16	shortData;
 
 	// WMM spec
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		UP:3;
 		u8		usRsvd1:1;
 		u8		EOSP:1;
@@ -92,8 +96,12 @@ typedef	union _QOS_CTRL_FIELD{
 	}WMM;
 
 	// 802.11e: QoS data type frame sent by non-AP QSTAs.
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		TID:4;
 		u8		bIsQsize:1;// 0: BIT[8:15] is TXOP Duration Requested, 1: BIT[8:15] is Queue Size.
 		u8		AckPolicy:2;
@@ -102,8 +110,12 @@ typedef	union _QOS_CTRL_FIELD{
 	}BySta;
 
 	// 802.11e: QoS data, QoS Null, and QoS Data+CF-Ack frames sent by HC.
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		TID:4;
 		u8		EOSP:1;
 		u8		AckPolicy:2;
@@ -112,8 +124,12 @@ typedef	union _QOS_CTRL_FIELD{
 	}ByHc_Data;
 
 	// 802.11e: QoS (+) CF-Poll frames sent by HC.
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		TID:4;
 		u8		EOSP:1;
 		u8		AckPolicy:2;
@@ -133,14 +149,22 @@ typedef	union _QOS_CTRL_FIELD{
 typedef	union _QOS_INFO_FIELD{
 	u8	charData;
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		ucParameterSetCount:4;
 		u8		ucReserved:4;
 	}WMM;
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		//Ref WMM_Specification_1-1.pdf, 2006-06-13 Isaiah
 		u8		ucAC_VO_UAPSD:1;
 		u8		ucAC_VI_UAPSD:1;
@@ -152,16 +176,24 @@ typedef	union _QOS_INFO_FIELD{
 
 	}ByWmmPsSta;
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		//Ref WMM_Specification_1-1.pdf, 2006-06-13 Isaiah
 		u8		ucParameterSetCount:4;
 		u8		ucReserved:3;
 		u8		ucApUapsd:1;
 	}ByWmmPsAp;
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		ucAC3_UAPSD:1;
 		u8		ucAC2_UAPSD:1;
 		u8		ucAC1_UAPSD:1;
@@ -171,8 +203,12 @@ typedef	union _QOS_INFO_FIELD{
 		u8		ucMoreDataAck:1;
 	} By11eSta;
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		ucParameterSetCount:4;
 		u8		ucQAck:1;
 		u8		ucQueueReq:1;
@@ -180,16 +216,24 @@ typedef	union _QOS_INFO_FIELD{
 		u8		ucReserved:1;
 	} By11eAp;
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		ucReserved1:4;
 		u8		ucQAck:1;
 		u8		ucReserved2:2;
 		u8		ucMoreDataAck:1;
 	} ByWmmsaSta;
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		ucReserved1:4;
 		u8		ucQAck:1;
 		u8		ucQueueReq:1;
@@ -197,8 +241,12 @@ typedef	union _QOS_INFO_FIELD{
 		u8		ucReserved2:1;
 	} ByWmmsaAp;
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		ucAC3_UAPSD:1;
 		u8		ucAC2_UAPSD:1;
 		u8		ucAC1_UAPSD:1;
@@ -208,8 +256,12 @@ typedef	union _QOS_INFO_FIELD{
 		u8		ucMoreDataAck:1;
 	} ByAllSta;
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8		ucParameterSetCount:4;
 		u8		ucQAck:1;
 		u8		ucQueueReq:1;
@@ -246,8 +298,12 @@ typedef u32 AC_CODING;
 typedef	union _ACI_AIFSN{
 	u8	charData;
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8	AIFSN:4;
 		u8	ACM:1;
 		u8	ACI:2;
@@ -261,8 +317,12 @@ typedef	union _ACI_AIFSN{
 //
 typedef	union _ECW{
 	u8	charData;
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u8	ECWmin:4;
 		u8	ECWmax:4;
 	}f;	// Field
@@ -276,8 +336,12 @@ typedef	union _AC_PARAM{
 	u32	longData;
 	u8	charData[4];
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		ACI_AIFSN	AciAifsn;
 		ECW		Ecw;
 		u16		TXOPLimit;
@@ -336,8 +400,12 @@ typedef union _QOS_TSINFO{
 typedef union _TSPEC_BODY{
 	u8		charData[55];
 
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		QOS_TSINFO	TSInfo;	//u8	TSInfo[3];
 		u16	NominalMSDUsize;
 		u16	MaxMSDUsize;
@@ -412,14 +480,24 @@ typedef union _QOS_TCLAS{
 
 	struct _TYPE_GENERAL{
 		u8		Priority;
+<<<<<<< HEAD
 		u8 		ClassifierType;
 		u8 		Mask;
+=======
+		u8		ClassifierType;
+		u8		Mask;
+>>>>>>> refs/remotes/origin/master
 	} TYPE_GENERAL;
 
 	struct _TYPE0_ETH{
 		u8		Priority;
+<<<<<<< HEAD
 		u8 		ClassifierType;
 		u8 		Mask;
+=======
+		u8		ClassifierType;
+		u8		Mask;
+>>>>>>> refs/remotes/origin/master
 		u8		SrcAddr[6];
 		u8		DstAddr[6];
 		u16		Type;
@@ -427,9 +505,15 @@ typedef union _QOS_TCLAS{
 
 	struct _TYPE1_IPV4{
 		u8		Priority;
+<<<<<<< HEAD
 		u8 		ClassifierType;
 		u8 		Mask;
 		u8 		Version;
+=======
+		u8		ClassifierType;
+		u8		Mask;
+		u8		Version;
+>>>>>>> refs/remotes/origin/master
 		u8		SrcIP[4];
 		u8		DstIP[4];
 		u16		SrcPort;
@@ -441,9 +525,15 @@ typedef union _QOS_TCLAS{
 
 	struct _TYPE1_IPV6{
 		u8		Priority;
+<<<<<<< HEAD
 		u8 		ClassifierType;
 		u8 		Mask;
 		u8 		Version;
+=======
+		u8		ClassifierType;
+		u8		Mask;
+		u8		Version;
+>>>>>>> refs/remotes/origin/master
 		u8		SrcIP[16];
 		u8		DstIP[16];
 		u16		SrcPort;
@@ -453,8 +543,13 @@ typedef union _QOS_TCLAS{
 
 	struct _TYPE2_8021Q{
 		u8		Priority;
+<<<<<<< HEAD
 		u8 		ClassifierType;
 		u8 		Mask;
+=======
+		u8		ClassifierType;
+		u8		Mask;
+>>>>>>> refs/remotes/origin/master
 		u16		TagType;
 	} TYPE2_8021Q;
 } QOS_TCLAS, *PQOS_TCLAS;
@@ -481,7 +576,11 @@ typedef struct _QOS_TSTREAM{
 //	"Qos control field" and "Qos info field"
 //typedef struct _QOS_UAPSD{
 //	u8			bTriggerEnable[4];
+<<<<<<< HEAD
 //	u8 			MaxSPLength;
+=======
+//	u8			MaxSPLength;
+>>>>>>> refs/remotes/origin/master
 //	u8			HighestBufAC;
 //} QOS_UAPSD, *PQOS_APSD;
 
@@ -489,7 +588,11 @@ typedef struct _QOS_TSTREAM{
 //      802.11 Management frame Status Code field
 //----------------------------------------------------------------------------
 typedef struct _OCTET_STRING{
+<<<<<<< HEAD
 	u8        	*Octet;
+=======
+	u8		*Octet;
+>>>>>>> refs/remotes/origin/master
 	u16             Length;
 }OCTET_STRING, *POCTET_STRING;
 
@@ -500,7 +603,11 @@ typedef struct _OCTET_STRING{
 typedef struct _STA_QOS{
 	//DECLARE_RT_OBJECT(STA_QOS);
 	u8				WMMIEBuf[MAX_WMMELE_LENGTH];
+<<<<<<< HEAD
 	u8*				WMMIE;
+=======
+	u8				*WMMIE;
+>>>>>>> refs/remotes/origin/master
 
 	// Part 1. Self QoS Mode.
 	QOS_MODE			QosCapability; //QoS Capability, 2006-06-14 Isaiah
@@ -512,10 +619,17 @@ typedef struct _STA_QOS{
 	AC_UAPSD			Curr4acUapsd;
 	u8				bInServicePeriod;
 	u8				MaxSPLength;
+<<<<<<< HEAD
 	int 				NumBcnBeforeTrigger;
 
 	// Part 2. EDCA Parameter (perAC)
 	u8 *				pWMMInfoEle;
+=======
+	int				NumBcnBeforeTrigger;
+
+	// Part 2. EDCA Parameter (perAC)
+	u8				*pWMMInfoEle;
+>>>>>>> refs/remotes/origin/master
 	u8				WMMParamEle[WMM_PARAM_ELEMENT_SIZE];
 	u8				WMMPELength;
 
@@ -523,7 +637,11 @@ typedef struct _STA_QOS{
 	//2 ToDo: remove the Qos Info Field and replace it by the above WMM Info element.
 	// By Bruce, 2008-01-30.
 	// Part 2. EDCA Parameter (perAC)
+<<<<<<< HEAD
 	QOS_INFO_FIELD			QosInfoField_STA; 	// Maintained by STA
+=======
+	QOS_INFO_FIELD			QosInfoField_STA;	// Maintained by STA
+>>>>>>> refs/remotes/origin/master
 	QOS_INFO_FIELD			QosInfoField_AP;	// Retrieved from AP
 
 	AC_PARAM			CurAcParameters[4];
@@ -554,12 +672,21 @@ typedef struct _BSS_QOS{
 	QOS_MODE		bdQoSMode;
 
 	u8			bdWMMIEBuf[MAX_WMMELE_LENGTH];
+<<<<<<< HEAD
 	u8*		bdWMMIE;
 
 	QOS_ELE_SUBTYPE		EleSubType;
 
 	u8 *			pWMMInfoEle;
 	u8 *			pWMMParamEle;
+=======
+	u8		*bdWMMIE;
+
+	QOS_ELE_SUBTYPE		EleSubType;
+
+	u8			*pWMMInfoEle;
+	u8			*pWMMParamEle;
+>>>>>>> refs/remotes/origin/master
 
 	QOS_INFO_FIELD		QosInfoField;
 	AC_PARAM		AcParameter[4];

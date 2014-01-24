@@ -19,7 +19,10 @@
  *
  */
 
+<<<<<<< HEAD
 #define SNDRV_MAIN_OBJECT_FILE
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <sound/core.h>
 
@@ -38,4 +41,12 @@ static int __init alsa_sound_last_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 __initcall(alsa_sound_last_init);
+=======
+late_initcall_sync(alsa_sound_last_init);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+late_initcall_sync(alsa_sound_last_init);
+>>>>>>> refs/remotes/origin/master

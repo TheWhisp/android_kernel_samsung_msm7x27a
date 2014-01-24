@@ -1,5 +1,9 @@
 /* (C) 1999-2001 Paul `Rusty' Russell
  * (C) 2002-2004 Netfilter Core Team <coreteam@netfilter.org>
+<<<<<<< HEAD
+=======
+ * (C) 2005-2012 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -34,7 +38,15 @@
 
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PROC_FS
+=======
+#ifdef CONFIG_NF_CONNTRACK_PROCFS
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_NF_CONNTRACK_PROCFS
+>>>>>>> refs/remotes/origin/master
 int
 print_tuple(struct seq_file *s, const struct nf_conntrack_tuple *tuple,
             const struct nf_conntrack_l3proto *l3proto,
@@ -366,7 +378,11 @@ static int nf_conntrack_standalone_init_proc(struct net *net)
 {
 	struct proc_dir_entry *pde;
 
+<<<<<<< HEAD
 	pde = proc_net_fops_create(net, "nf_conntrack", 0440, &ct_file_ops);
+=======
+	pde = proc_create("nf_conntrack", 0440, net->proc_net, &ct_file_ops);
+>>>>>>> refs/remotes/origin/master
 	if (!pde)
 		goto out_nf_conntrack;
 
@@ -377,7 +393,11 @@ static int nf_conntrack_standalone_init_proc(struct net *net)
 	return 0;
 
 out_stat_nf_conntrack:
+<<<<<<< HEAD
 	proc_net_remove(net, "nf_conntrack");
+=======
+	remove_proc_entry("nf_conntrack", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 out_nf_conntrack:
 	return -ENOMEM;
 }
@@ -385,7 +405,11 @@ out_nf_conntrack:
 static void nf_conntrack_standalone_fini_proc(struct net *net)
 {
 	remove_proc_entry("nf_conntrack", net->proc_net_stat);
+<<<<<<< HEAD
 	proc_net_remove(net, "nf_conntrack");
+=======
+	remove_proc_entry("nf_conntrack", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static int nf_conntrack_standalone_init_proc(struct net *net)
@@ -396,7 +420,15 @@ static int nf_conntrack_standalone_init_proc(struct net *net)
 static void nf_conntrack_standalone_fini_proc(struct net *net)
 {
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_PROC_FS */
+=======
+#endif /* CONFIG_NF_CONNTRACK_PROCFS */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_NF_CONNTRACK_PROCFS */
+>>>>>>> refs/remotes/origin/master
 
 /* Sysctl support */
 
@@ -407,7 +439,11 @@ static int log_invalid_proto_max = 255;
 
 static struct ctl_table_header *nf_ct_netfilter_header;
 
+<<<<<<< HEAD
 static ctl_table nf_ct_sysctl_table[] = {
+=======
+static struct ctl_table nf_ct_sysctl_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "nf_conntrack_max",
 		.data		= &nf_conntrack_max,
@@ -457,7 +493,11 @@ static ctl_table nf_ct_sysctl_table[] = {
 
 #define NET_NF_CONNTRACK_MAX 2089
 
+<<<<<<< HEAD
 static ctl_table nf_ct_netfilter_table[] = {
+=======
+static struct ctl_table nf_ct_netfilter_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "nf_conntrack_max",
 		.data		= &nf_conntrack_max,
@@ -468,15 +508,19 @@ static ctl_table nf_ct_netfilter_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static struct ctl_path nf_ct_path[] = {
 	{ .procname = "net", },
 	{ }
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int nf_conntrack_standalone_init_sysctl(struct net *net)
 {
 	struct ctl_table *table;
 
+<<<<<<< HEAD
 	if (net_eq(net, &init_net)) {
 		nf_ct_netfilter_header =
 		       register_sysctl_paths(nf_ct_path, nf_ct_netfilter_table);
@@ -484,6 +528,8 @@ static int nf_conntrack_standalone_init_sysctl(struct net *net)
 			goto out;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	table = kmemdup(nf_ct_sysctl_table, sizeof(nf_ct_sysctl_table),
 			GFP_KERNEL);
 	if (!table)
@@ -494,8 +540,16 @@ static int nf_conntrack_standalone_init_sysctl(struct net *net)
 	table[3].data = &net->ct.sysctl_checksum;
 	table[4].data = &net->ct.sysctl_log_invalid;
 
+<<<<<<< HEAD
 	net->ct.sysctl_header = register_net_sysctl_table(net,
 					nf_net_netfilter_sysctl_path, table);
+=======
+	/* Don't export sysctls to unprivileged users */
+	if (net->user_ns != &init_user_ns)
+		table[0].procname = NULL;
+
+	net->ct.sysctl_header = register_net_sysctl(net, "net/netfilter", table);
+>>>>>>> refs/remotes/origin/master
 	if (!net->ct.sysctl_header)
 		goto out_unregister_netfilter;
 
@@ -504,10 +558,13 @@ static int nf_conntrack_standalone_init_sysctl(struct net *net)
 out_unregister_netfilter:
 	kfree(table);
 out_kmemdup:
+<<<<<<< HEAD
 	if (net_eq(net, &init_net))
 		unregister_sysctl_table(nf_ct_netfilter_header);
 out:
 	printk(KERN_ERR "nf_conntrack: can't register to sysctl.\n");
+=======
+>>>>>>> refs/remotes/origin/master
 	return -ENOMEM;
 }
 
@@ -515,8 +572,11 @@ static void nf_conntrack_standalone_fini_sysctl(struct net *net)
 {
 	struct ctl_table *table;
 
+<<<<<<< HEAD
 	if (net_eq(net, &init_net))
 		unregister_sysctl_table(nf_ct_netfilter_header);
+=======
+>>>>>>> refs/remotes/origin/master
 	table = net->ct.sysctl_header->ctl_table_arg;
 	unregister_net_sysctl_table(net->ct.sysctl_header);
 	kfree(table);
@@ -532,6 +592,7 @@ static void nf_conntrack_standalone_fini_sysctl(struct net *net)
 }
 #endif /* CONFIG_SYSCTL */
 
+<<<<<<< HEAD
 static int nf_conntrack_net_init(struct net *net)
 {
 	int ret;
@@ -542,21 +603,44 @@ static int nf_conntrack_net_init(struct net *net)
 	ret = nf_conntrack_standalone_init_proc(net);
 	if (ret < 0)
 		goto out_proc;
+=======
+static int nf_conntrack_pernet_init(struct net *net)
+{
+	int ret;
+
+	ret = nf_conntrack_init_net(net);
+	if (ret < 0)
+		goto out_init;
+
+	ret = nf_conntrack_standalone_init_proc(net);
+	if (ret < 0)
+		goto out_proc;
+
+>>>>>>> refs/remotes/origin/master
 	net->ct.sysctl_checksum = 1;
 	net->ct.sysctl_log_invalid = 0;
 	ret = nf_conntrack_standalone_init_sysctl(net);
 	if (ret < 0)
 		goto out_sysctl;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out_sysctl:
 	nf_conntrack_standalone_fini_proc(net);
 out_proc:
+<<<<<<< HEAD
 	nf_conntrack_cleanup(net);
+=======
+	nf_conntrack_cleanup_net(net);
+>>>>>>> refs/remotes/origin/master
 out_init:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void nf_conntrack_net_exit(struct net *net)
 {
 	nf_conntrack_standalone_fini_sysctl(net);
@@ -567,16 +651,73 @@ static void nf_conntrack_net_exit(struct net *net)
 static struct pernet_operations nf_conntrack_net_ops = {
 	.init = nf_conntrack_net_init,
 	.exit = nf_conntrack_net_exit,
+=======
+static void nf_conntrack_pernet_exit(struct list_head *net_exit_list)
+{
+	struct net *net;
+
+	list_for_each_entry(net, net_exit_list, exit_list) {
+		nf_conntrack_standalone_fini_sysctl(net);
+		nf_conntrack_standalone_fini_proc(net);
+	}
+	nf_conntrack_cleanup_net_list(net_exit_list);
+}
+
+static struct pernet_operations nf_conntrack_net_ops = {
+	.init		= nf_conntrack_pernet_init,
+	.exit_batch	= nf_conntrack_pernet_exit,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init nf_conntrack_standalone_init(void)
 {
+<<<<<<< HEAD
 	return register_pernet_subsys(&nf_conntrack_net_ops);
+=======
+	int ret = nf_conntrack_init_start();
+	if (ret < 0)
+		goto out_start;
+
+#ifdef CONFIG_SYSCTL
+	nf_ct_netfilter_header =
+		register_net_sysctl(&init_net, "net", nf_ct_netfilter_table);
+	if (!nf_ct_netfilter_header) {
+		pr_err("nf_conntrack: can't register to sysctl.\n");
+		ret = -ENOMEM;
+		goto out_sysctl;
+	}
+#endif
+
+	ret = register_pernet_subsys(&nf_conntrack_net_ops);
+	if (ret < 0)
+		goto out_pernet;
+
+	nf_conntrack_init_end();
+	return 0;
+
+out_pernet:
+#ifdef CONFIG_SYSCTL
+	unregister_net_sysctl_table(nf_ct_netfilter_header);
+out_sysctl:
+#endif
+	nf_conntrack_cleanup_end();
+out_start:
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit nf_conntrack_standalone_fini(void)
 {
+<<<<<<< HEAD
 	unregister_pernet_subsys(&nf_conntrack_net_ops);
+=======
+	nf_conntrack_cleanup_start();
+	unregister_pernet_subsys(&nf_conntrack_net_ops);
+#ifdef CONFIG_SYSCTL
+	unregister_net_sysctl_table(nf_ct_netfilter_header);
+#endif
+	nf_conntrack_cleanup_end();
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(nf_conntrack_standalone_init);

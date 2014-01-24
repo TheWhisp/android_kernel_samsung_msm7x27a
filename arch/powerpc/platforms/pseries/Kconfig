@@ -1,7 +1,19 @@
 config PPC_PSERIES
 	depends on PPC64 && PPC_BOOK3S
 	bool "IBM pSeries & new (POWER5-based) iSeries"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	select MPIC
+=======
+	select HAVE_PCSPKR_PLATFORM
+	select MPIC
+	select OF_DYNAMIC
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select HAVE_PCSPKR_PLATFORM
+	select MPIC
+	select OF_DYNAMIC
+>>>>>>> refs/remotes/origin/master
 	select PCI_MSI
 	select PPC_XICS
 	select PPC_ICP_NATIVE
@@ -14,6 +26,17 @@ config PPC_PSERIES
 	select PPC_UDBG_16550
 	select PPC_NATIVE
 	select PPC_PCI_CHOICE if EXPERT
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select ZLIB_DEFLATE
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ZLIB_DEFLATE
+	select PPC_DOORBELL
+	select HAVE_CONTEXT_TRACKING
+	select HOTPLUG_CPU if SMP
+>>>>>>> refs/remotes/origin/master
 	default y
 
 config PPC_SPLPAR
@@ -26,11 +49,20 @@ config PPC_SPLPAR
 	  processors, that is, which share physical processors between
 	  two or more partitions.
 
+<<<<<<< HEAD
 config EEH
+<<<<<<< HEAD
 	bool "PCI Extended Error Handling (EEH)" if EXPERT
 	depends on PPC_PSERIES && PCI
 	default y if !EXPERT
+=======
+	bool
+	depends on PPC_PSERIES && PCI
+	default y
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 config PSERIES_MSI
        bool
        depends on PCI_MSI && EEH
@@ -64,13 +96,25 @@ config IO_EVENT_IRQ
 
 	  This option will only enable the IO event platform code. You
 	  will still need to enable or compile the actual drivers
+<<<<<<< HEAD
 	  that use this infrastruture to handle IO event interrupts.
+=======
+	  that use this infrastructure to handle IO event interrupts.
+>>>>>>> refs/remotes/origin/master
 
 	  Say Y if you are unsure.
 
 config LPARCFG
 	bool "LPAR Configuration Data"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	depends on PPC_PSERIES || PPC_ISERIES
+=======
+	depends on PPC_PSERIES
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on PPC_PSERIES
+>>>>>>> refs/remotes/origin/master
 	help
 	Provide system capacity information via human readable
 	<key word>=<value> pairs through a /proc/ppc64/lparcfg interface.
@@ -118,3 +162,21 @@ config DTL
 	  which are accessible through a debugfs file.
 
 	  Say N if you are unsure.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+config PSERIES_IDLE
+	bool "Cpuidle driver for pSeries platforms"
+	depends on CPU_IDLE
+	depends on PPC_PSERIES
+	default y
+	help
+	  Select this option to enable processor idle state management
+	  through cpuidle subsystem.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

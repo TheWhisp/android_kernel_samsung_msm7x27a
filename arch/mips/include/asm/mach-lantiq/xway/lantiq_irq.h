@@ -17,6 +17,7 @@
 #define INT_NUM_IM4_IRL0	(INT_NUM_IRQ0 + 128)
 #define INT_NUM_IM_OFFSET	(INT_NUM_IM1_IRL0 - INT_NUM_IM0_IRL0)
 
+<<<<<<< HEAD
 #define LTQ_ASC_TIR(x)		(INT_NUM_IM3_IRL0 + (x * 8))
 #define LTQ_ASC_RIR(x)		(INT_NUM_IM3_IRL0 + (x * 8) + 1)
 #define LTQ_ASC_EIR(x)		(INT_NUM_IM3_IRL0 + (x * 8) + 2)
@@ -62,5 +63,12 @@
 #define LTQ_PPE_MBOX_INT	(INT_NUM_IM2_IRL0 + 24)
 
 #define INT_NUM_IM4_IRL14	(INT_NUM_IM4_IRL0 + 14)
+=======
+#define LTQ_DMA_CH0_INT		(INT_NUM_IM2_IRL0)
+
+#define MIPS_CPU_TIMER_IRQ	7
+
+#define MAX_IM			5
+>>>>>>> refs/remotes/origin/master
 
 #endif

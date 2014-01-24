@@ -27,9 +27,16 @@
 #ifndef __NOUVEAU_FBCON_H__
 #define __NOUVEAU_FBCON_H__
 
+<<<<<<< HEAD
 #include "drm_fb_helper.h"
 
 #include "nouveau_fb.h"
+=======
+#include <drm/drm_fb_helper.h>
+
+#include "nouveau_display.h"
+
+>>>>>>> refs/remotes/origin/master
 struct nouveau_fbdev {
 	struct drm_fb_helper helper;
 	struct nouveau_framebuffer nouveau_fb;

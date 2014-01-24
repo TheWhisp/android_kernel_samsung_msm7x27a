@@ -12,6 +12,14 @@
 #include <linux/notifier.h>
 #include <linux/slab.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/device.h>
 #include <linux/interrupt.h>
@@ -20,6 +28,10 @@
 #include <linux/seq_file.h>
 #include <linux/uaccess.h>
 #include <linux/mfd/core.h>
+<<<<<<< HEAD
+=======
+#include <linux/mfd/ab3100.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mfd/abx500.h>
 
 /* These are the only registers inside AB3100 used in this main file */
@@ -480,12 +492,18 @@ struct ab3100_get_set_reg_priv {
 	bool mode;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ab3100_get_set_reg_open_file(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t ab3100_get_set_reg(struct file *file,
 				  const char __user *user_buf,
 				  size_t count, loff_t *ppos)
@@ -495,7 +513,11 @@ static ssize_t ab3100_get_set_reg(struct file *file,
 	char buf[32];
 	ssize_t buf_size;
 	int regp;
+<<<<<<< HEAD
 	unsigned long user_reg;
+=======
+	u8 user_reg;
+>>>>>>> refs/remotes/origin/master
 	int err;
 	int i = 0;
 
@@ -518,21 +540,32 @@ static ssize_t ab3100_get_set_reg(struct file *file,
 	/*
 	 * Advance pointer to end of string then terminate
 	 * the register string. This is needed to satisfy
+<<<<<<< HEAD
 	 * the strict_strtoul() function.
+=======
+	 * the kstrtou8() function.
+>>>>>>> refs/remotes/origin/master
 	 */
 	while ((i < buf_size) && (buf[i] != ' '))
 		i++;
 	buf[i] = '\0';
 
+<<<<<<< HEAD
 	err = strict_strtoul(&buf[regp], 16, &user_reg);
 	if (err)
 		return err;
 	if (user_reg > 0xff)
 		return -EINVAL;
+=======
+	err = kstrtou8(&buf[regp], 16, &user_reg);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	/* Either we read or we write a register here */
 	if (!priv->mode) {
 		/* Reading */
+<<<<<<< HEAD
 		u8 reg = (u8) user_reg;
 		u8 regvalue;
 
@@ -546,6 +579,18 @@ static ssize_t ab3100_get_set_reg(struct file *file,
 		unsigned long user_value;
 		u8 reg = (u8) user_reg;
 		u8 value;
+=======
+		u8 regvalue;
+
+		ab3100_get_register_interruptible(ab3100, user_reg, &regvalue);
+
+		dev_info(ab3100->dev,
+			 "debug read AB3100 reg[0x%02x]: 0x%02x\n",
+			 user_reg, regvalue);
+	} else {
+		int valp;
+		u8 user_value;
+>>>>>>> refs/remotes/origin/master
 		u8 regvalue;
 
 		/*
@@ -561,6 +606,7 @@ static ssize_t ab3100_get_set_reg(struct file *file,
 			i++;
 		buf[i] = '\0';
 
+<<<<<<< HEAD
 		err = strict_strtoul(&buf[valp], 16, &user_value);
 		if (err)
 			return err;
@@ -570,17 +616,37 @@ static ssize_t ab3100_get_set_reg(struct file *file,
 		value = (u8) user_value;
 		ab3100_set_register_interruptible(ab3100, reg, value);
 		ab3100_get_register_interruptible(ab3100, reg, &regvalue);
+=======
+		err = kstrtou8(&buf[valp], 16, &user_value);
+		if (err)
+			return err;
+
+		ab3100_set_register_interruptible(ab3100, user_reg, user_value);
+		ab3100_get_register_interruptible(ab3100, user_reg, &regvalue);
+>>>>>>> refs/remotes/origin/master
 
 		dev_info(ab3100->dev,
 			 "debug write reg[0x%02x] with 0x%02x, "
 			 "after readback: 0x%02x\n",
+<<<<<<< HEAD
 			 reg, value, regvalue);
+=======
+			 user_reg, user_value, regvalue);
+>>>>>>> refs/remotes/origin/master
 	}
 	return buf_size;
 }
 
 static const struct file_operations ab3100_get_set_reg_fops = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ab3100_get_set_reg_open_file,
+=======
+	.open = simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open = simple_open,
+>>>>>>> refs/remotes/origin/master
 	.write = ab3100_get_set_reg,
 	.llseek = noop_llseek,
 };
@@ -665,8 +731,12 @@ struct ab3100_init_setting {
 	u8 setting;
 };
 
+<<<<<<< HEAD
 static const struct ab3100_init_setting __devinitconst
 ab3100_init_settings[] = {
+=======
+static const struct ab3100_init_setting ab3100_init_settings[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.abreg = AB3100_MCA,
 		.setting = 0x01
@@ -712,7 +782,11 @@ ab3100_init_settings[] = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit ab3100_setup(struct ab3100 *ab3100)
+=======
+static int ab3100_setup(struct ab3100 *ab3100)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = 0;
 	int i;
@@ -758,6 +832,10 @@ static struct mfd_cell ab3100_devs[] = {
 	},
 	{
 		.name = "ab3100-regulators",
+<<<<<<< HEAD
+=======
+		.of_compatible = "stericsson,ab3100-regulators",
+>>>>>>> refs/remotes/origin/master
 		.id = -1,
 	},
 	{
@@ -807,7 +885,15 @@ struct ab_family_id {
 	char	*name;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct ab_family_id ids[] __devinitdata = {
+=======
+static const struct ab_family_id ids[] __devinitconst = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct ab_family_id ids[] = {
+>>>>>>> refs/remotes/origin/master
 	/* AB3100 */
 	{
 		.id = 0xc0,
@@ -861,16 +947,28 @@ static const struct ab_family_id ids[] __devinitdata = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit ab3100_probe(struct i2c_client *client,
+=======
+static int ab3100_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				  const struct i2c_device_id *id)
 {
 	struct ab3100 *ab3100;
 	struct ab3100_platform_data *ab3100_plf_data =
+<<<<<<< HEAD
 		client->dev.platform_data;
 	int err;
 	int i;
 
 	ab3100 = kzalloc(sizeof(struct ab3100), GFP_KERNEL);
+=======
+		dev_get_platdata(&client->dev);
+	int err;
+	int i;
+
+	ab3100 = devm_kzalloc(&client->dev, sizeof(struct ab3100), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ab3100) {
 		dev_err(&client->dev, "could not allocate AB3100 device\n");
 		return -ENOMEM;
@@ -924,7 +1022,11 @@ static int __devinit ab3100_probe(struct i2c_client *client,
 
 	/* Attach a second dummy i2c_client to the test register address */
 	ab3100->testreg_client = i2c_new_dummy(client->adapter,
+<<<<<<< HEAD
 						     client->addr + 1);
+=======
+					       client->addr + 1);
+>>>>>>> refs/remotes/origin/master
 	if (!ab3100->testreg_client) {
 		err = -ENOMEM;
 		goto exit_no_testreg_client;
@@ -934,8 +1036,17 @@ static int __devinit ab3100_probe(struct i2c_client *client,
 	if (err)
 		goto exit_no_setup;
 
+<<<<<<< HEAD
 	err = request_threaded_irq(client->irq, NULL, ab3100_irq_handler,
 				IRQF_ONESHOT, "ab3100-core", ab3100);
+<<<<<<< HEAD
+=======
+	err = devm_request_threaded_irq(&client->dev,
+					client->irq, NULL, ab3100_irq_handler,
+					IRQF_ONESHOT, "ab3100-core", ab3100);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err)
 		goto exit_no_irq;
 
@@ -950,7 +1061,11 @@ static int __devinit ab3100_probe(struct i2c_client *client,
 	}
 
 	err = mfd_add_devices(&client->dev, 0, ab3100_devs,
+<<<<<<< HEAD
 		ARRAY_SIZE(ab3100_devs), NULL, 0);
+=======
+			      ARRAY_SIZE(ab3100_devs), NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	ab3100_setup_debugfs(ab3100);
 
@@ -962,16 +1077,24 @@ static int __devinit ab3100_probe(struct i2c_client *client,
 	i2c_unregister_device(ab3100->testreg_client);
  exit_no_testreg_client:
  exit_no_detect:
+<<<<<<< HEAD
 	kfree(ab3100);
 	return err;
 }
 
 static int __devexit ab3100_remove(struct i2c_client *client)
+=======
+	return err;
+}
+
+static int ab3100_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ab3100 *ab3100 = i2c_get_clientdata(client);
 
 	/* Unregister subdevices */
 	mfd_remove_devices(&client->dev);
+<<<<<<< HEAD
 
 	ab3100_remove_debugfs();
 	i2c_unregister_device(ab3100->testreg_client);
@@ -982,6 +1105,10 @@ static int __devexit ab3100_remove(struct i2c_client *client)
 	 */
 	free_irq(client->irq, ab3100);
 	kfree(ab3100);
+=======
+	ab3100_remove_debugfs();
+	i2c_unregister_device(ab3100->testreg_client);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -998,7 +1125,11 @@ static struct i2c_driver ab3100_driver = {
 	},
 	.id_table	= ab3100_id,
 	.probe		= ab3100_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ab3100_remove),
+=======
+	.remove		= ab3100_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ab3100_i2c_init(void)

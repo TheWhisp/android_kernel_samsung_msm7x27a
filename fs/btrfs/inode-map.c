@@ -78,10 +78,15 @@ again:
 			    btrfs_transaction_in_commit(fs_info)) {
 				leaf = path->nodes[0];
 
+<<<<<<< HEAD
 				if (btrfs_header_nritems(leaf) == 0) {
 					WARN_ON(1);
 					break;
 				}
+=======
+				if (WARN_ON(btrfs_header_nritems(leaf) == 0))
+					break;
+>>>>>>> refs/remotes/origin/master
 
 				/*
 				 * Save the key so we can advances forward
@@ -178,7 +183,15 @@ static void start_caching(struct btrfs_root *root)
 
 	tsk = kthread_run(caching_kthread, root, "btrfs-ino-cache-%llu\n",
 			  root->root_key.objectid);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(IS_ERR(tsk));
+=======
+	BUG_ON(IS_ERR(tsk)); /* -ENOMEM */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(IS_ERR(tsk)); /* -ENOMEM */
+>>>>>>> refs/remotes/origin/master
 }
 
 int btrfs_find_free_ino(struct btrfs_root *root, u64 *objectid)
@@ -237,7 +250,11 @@ again:
 		start_caching(root);
 
 		if (objectid <= root->cache_progress ||
+<<<<<<< HEAD
 		    objectid > root->highest_objectid)
+=======
+		    objectid >= root->highest_objectid)
+>>>>>>> refs/remotes/origin/master
 			__btrfs_add_free_space(ctl, objectid, 1);
 		else
 			__btrfs_add_free_space(pinned, objectid, 1);
@@ -271,7 +288,15 @@ void btrfs_unpin_free_ino(struct btrfs_root *root)
 			break;
 
 		info = rb_entry(n, struct btrfs_free_space, offset_index);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		BUG_ON(info->bitmap);
+=======
+		BUG_ON(info->bitmap); /* Logic error */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BUG_ON(info->bitmap); /* Logic error */
+>>>>>>> refs/remotes/origin/master
 
 		if (info->offset > root->cache_progress)
 			goto free;
@@ -398,6 +423,16 @@ int btrfs_save_ino_cache(struct btrfs_root *root,
 	struct btrfs_free_space_ctl *ctl = root->free_ino_ctl;
 	struct btrfs_path *path;
 	struct inode *inode;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct btrfs_block_rsv *rsv;
+	u64 num_bytes;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct btrfs_block_rsv *rsv;
+	u64 num_bytes;
+>>>>>>> refs/remotes/origin/master
 	u64 alloc_hint = 0;
 	int ret;
 	int prealloc;
@@ -410,8 +445,12 @@ int btrfs_save_ino_cache(struct btrfs_root *root,
 		return 0;
 
 	/* Don't save inode cache if we are deleting this root */
+<<<<<<< HEAD
 	if (btrfs_root_refs(&root->root_item) == 0 &&
 	    root != root->fs_info->tree_root)
+=======
+	if (btrfs_root_refs(&root->root_item) == 0)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (!btrfs_test_opt(root, INODE_MAP_CACHE))
@@ -421,6 +460,8 @@ int btrfs_save_ino_cache(struct btrfs_root *root,
 	if (!path)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 again:
 	inode = lookup_free_ino_inode(root, path);
 	if (IS_ERR(inode) && PTR_ERR(inode) != -ENOENT) {
@@ -430,22 +471,101 @@ again:
 
 	if (IS_ERR(inode)) {
 		BUG_ON(retry);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rsv = trans->block_rsv;
+	trans->block_rsv = &root->fs_info->trans_block_rsv;
+
+	num_bytes = trans->bytes_reserved;
+	/*
+	 * 1 item for inode item insertion if need
+<<<<<<< HEAD
+	 * 3 items for inode item update (in the worst case)
+	 * 1 item for free space object
+	 * 3 items for pre-allocation
+	 */
+	trans->bytes_reserved = btrfs_calc_trans_metadata_size(root, 8);
+	ret = btrfs_block_rsv_add_noflush(root, trans->block_rsv,
+					  trans->bytes_reserved);
+=======
+	 * 4 items for inode item update (in the worst case)
+	 * 1 items for slack space if we need do truncation
+	 * 1 item for free space object
+	 * 3 items for pre-allocation
+	 */
+	trans->bytes_reserved = btrfs_calc_trans_metadata_size(root, 10);
+	ret = btrfs_block_rsv_add(root, trans->block_rsv,
+				  trans->bytes_reserved,
+				  BTRFS_RESERVE_NO_FLUSH);
+>>>>>>> refs/remotes/origin/master
+	if (ret)
+		goto out;
+	trace_btrfs_space_reservation(root->fs_info, "ino_cache",
+				      trans->transid, trans->bytes_reserved, 1);
+again:
+	inode = lookup_free_ino_inode(root, path);
+	if (IS_ERR(inode) && (PTR_ERR(inode) != -ENOENT || retry)) {
+		ret = PTR_ERR(inode);
+		goto out_release;
+	}
+
+	if (IS_ERR(inode)) {
+		BUG_ON(retry); /* Logic error */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		retry = true;
 
 		ret = create_free_ino_inode(root, trans, path);
 		if (ret)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			goto out;
+=======
+			goto out_release;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto out_release;
+>>>>>>> refs/remotes/origin/master
 		goto again;
 	}
 
 	BTRFS_I(inode)->generation = 0;
 	ret = btrfs_update_inode(trans, root, inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON(ret);
 
 	if (i_size_read(inode) > 0) {
 		ret = btrfs_truncate_free_space_cache(root, trans, path, inode);
 		if (ret)
 			goto out_put;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (ret) {
+		btrfs_abort_transaction(trans, root, ret);
+		goto out_put;
+	}
+
+	if (i_size_read(inode) > 0) {
+<<<<<<< HEAD
+		ret = btrfs_truncate_free_space_cache(root, trans, path, inode);
+		if (ret) {
+			btrfs_abort_transaction(trans, root, ret);
+			goto out_put;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = btrfs_truncate_free_space_cache(root, trans, inode);
+		if (ret) {
+			if (ret != -ENOSPC)
+				btrfs_abort_transaction(trans, root, ret);
+			goto out_put;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock(&root->cache_lock);
@@ -465,12 +585,22 @@ again:
 	/* Just to make sure we have enough space */
 	prealloc += 8 * PAGE_CACHE_SIZE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = btrfs_check_data_free_space(inode, prealloc);
+=======
+	ret = btrfs_delalloc_reserve_space(inode, prealloc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = btrfs_delalloc_reserve_space(inode, prealloc);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto out_put;
 
 	ret = btrfs_prealloc_file_range_trans(inode, trans, 0, 0, prealloc,
 					      prealloc, prealloc, &alloc_hint);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret)
 		goto out_put;
 	btrfs_free_reserved_data_space(inode, prealloc);
@@ -480,6 +610,33 @@ out_put:
 out:
 	if (ret == 0)
 		ret = btrfs_write_out_ino_cache(root, trans, path);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (ret) {
+		btrfs_delalloc_release_space(inode, prealloc);
+		goto out_put;
+	}
+	btrfs_free_reserved_data_space(inode, prealloc);
+
+<<<<<<< HEAD
+	ret = btrfs_write_out_ino_cache(root, trans, path);
+=======
+	ret = btrfs_write_out_ino_cache(root, trans, path, inode);
+>>>>>>> refs/remotes/origin/master
+out_put:
+	iput(inode);
+out_release:
+	trace_btrfs_space_reservation(root->fs_info, "ino_cache",
+				      trans->transid, trans->bytes_reserved, 0);
+	btrfs_block_rsv_release(root, trans->block_rsv, trans->bytes_reserved);
+out:
+	trans->block_rsv = rsv;
+	trans->bytes_reserved = num_bytes;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	btrfs_free_path(path);
 	return ret;
@@ -504,7 +661,15 @@ static int btrfs_find_highest_objectid(struct btrfs_root *root, u64 *objectid)
 	ret = btrfs_search_slot(NULL, root, &search_key, path, 0, 0);
 	if (ret < 0)
 		goto error;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(ret == 0);
+=======
+	BUG_ON(ret == 0); /* Corruption */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(ret == 0); /* Corruption */
+>>>>>>> refs/remotes/origin/master
 	if (path->slots[0] > 0) {
 		slot = path->slots[0] - 1;
 		l = path->nodes[0];

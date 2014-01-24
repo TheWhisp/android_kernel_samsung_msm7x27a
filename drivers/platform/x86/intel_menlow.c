@@ -156,19 +156,29 @@ static struct thermal_cooling_device_ops memory_cooling_ops = {
 static int intel_menlow_memory_add(struct acpi_device *device)
 {
 	int result = -ENODEV;
+<<<<<<< HEAD
 	acpi_status status = AE_OK;
 	acpi_handle dummy;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct thermal_cooling_device *cdev;
 
 	if (!device)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	status = acpi_get_handle(device->handle, MEMORY_GET_BANDWIDTH, &dummy);
 	if (ACPI_FAILURE(status))
 		goto end;
 
 	status = acpi_get_handle(device->handle, MEMORY_SET_BANDWIDTH, &dummy);
 	if (ACPI_FAILURE(status))
+=======
+	if (!acpi_has_method(device->handle, MEMORY_GET_BANDWIDTH))
+		goto end;
+
+	if (!acpi_has_method(device->handle, MEMORY_SET_BANDWIDTH))
+>>>>>>> refs/remotes/origin/master
 		goto end;
 
 	cdev = thermal_cooling_device_register("Memory controller", device,
@@ -200,7 +210,11 @@ static int intel_menlow_memory_add(struct acpi_device *device)
 
 }
 
+<<<<<<< HEAD
 static int intel_menlow_memory_remove(struct acpi_device *device, int type)
+=======
+static int intel_menlow_memory_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct thermal_cooling_device *cdev = acpi_driver_data(device);
 
@@ -389,7 +403,15 @@ static ssize_t bios_enabled_show(struct device *dev,
 	return sprintf(buf, "%s\n", bios_enabled ? "enabled" : "disabled");
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int intel_menlow_add_one_attribute(char *name, int mode, void *show,
+=======
+static int intel_menlow_add_one_attribute(char *name, umode_t mode, void *show,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int intel_menlow_add_one_attribute(char *name, umode_t mode, void *show,
+>>>>>>> refs/remotes/origin/master
 					  void *store, struct device *dev,
 					  acpi_handle handle)
 {
@@ -477,6 +499,16 @@ static acpi_status intel_menlow_register_sensor(acpi_handle handle, u32 lvl,
 		return AE_ERROR;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	return AE_OK;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return AE_OK;
+
+>>>>>>> refs/remotes/origin/master
  aux1_not_found:
 	if (status == AE_NOT_FOUND)
 		return AE_OK;

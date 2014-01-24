@@ -13,11 +13,17 @@
 #ifndef __ASM_ARCH_GPIO_H
 #define __ASM_ARCH_GPIO_H __FILE__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define gpio_get_value	__gpio_get_value
 #define gpio_set_value	__gpio_set_value
 #define gpio_cansleep	__gpio_cansleep
 #define gpio_to_irq	__gpio_to_irq
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* GPIO bank sizes */
 
 #define S5P6440_GPIO_A_NR	(6)
@@ -134,6 +140,12 @@ enum s5p6450_gpio_number {
 
 #define ARCH_NR_GPIOS		(S5P64X0_GPIO_END + CONFIG_SAMSUNG_GPIO_EXTRA)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/gpio.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_ARCH_GPIO_H */

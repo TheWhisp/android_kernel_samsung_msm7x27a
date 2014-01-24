@@ -41,6 +41,8 @@ static int      pas_irq;
 static int      pas_sb_base;
 DEFINE_SPINLOCK(pas_lock);
 #ifndef CONFIG_PAS_JOYSTICK
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int	joystick;
 #else
 static int 	joystick = 1;
@@ -54,6 +56,26 @@ static int 	symphony;
 static int	broken_bus_clock = 1;
 #else
 static int	broken_bus_clock;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static bool	joystick;
+#else
+static bool 	joystick = 1;
+#endif
+#ifdef SYMPHONY_PAS
+static bool 	symphony = 1;
+#else
+static bool 	symphony;
+#endif
+#ifdef BROKEN_BUS_CLOCK
+static bool	broken_bus_clock = 1;
+#else
+static bool	broken_bus_clock;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static struct address_info cfg;
@@ -333,6 +355,14 @@ static void __init attach_pas_card(struct address_info *hw_config)
 		{
 			char            temp[100];
 
+<<<<<<< HEAD
+=======
+			if (pas_model < 0 ||
+			    pas_model >= ARRAY_SIZE(pas_model_names)) {
+				printk(KERN_ERR "pas2 unrecognized model.\n");
+				return;
+			}
+>>>>>>> refs/remotes/origin/master
 			sprintf(temp,
 			    "%s rev %d", pas_model_names[(int) pas_model],
 				    pas_read(0x2789));

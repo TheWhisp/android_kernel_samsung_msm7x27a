@@ -39,10 +39,26 @@
 
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/ropes.h>
 #include <asm/mckinley.h>	/* for proc_mckinley_root */
 #include <asm/runway.h>		/* for proc_runway_root */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/page.h>		/* for PAGE0 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/page.h>		/* for PAGE0 */
+>>>>>>> refs/remotes/origin/master
 #include <asm/pdc.h>		/* for PDC_MODEL_* */
 #include <asm/pdcpat.h>		/* for is_pdc_pat() */
 #include <asm/parisc-device.h>
@@ -573,7 +589,11 @@ sba_io_pdir_entry(u64 *pdir_ptr, space_t sid, unsigned long vba,
 
 	mtsp(sid,1);
 	asm("lci 0(%%sr1, %1), %0" : "=r" (ci) : "r" (vba));
+<<<<<<< HEAD
 	pa |= (ci >> 12) & 0xff;  /* move CI (8 bits) into lowest byte */
+=======
+	pa |= (ci >> PAGE_SHIFT) & 0xff;  /* move CI (8 bits) into lowest byte */
+>>>>>>> refs/remotes/origin/master
 
 	pa |= SBA_PDIR_VALID_BIT;	/* set "valid" bit */
 	*pdir_ptr = cpu_to_le64(pa);	/* swap and store into I/O Pdir */
@@ -668,7 +688,15 @@ sba_mark_invalid(struct ioc *ioc, dma_addr_t iova, size_t byte_cnt)
  * @dev: instance of PCI owned by the driver that's asking
  * @mask:  number of address bits this PCI device can handle
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static int sba_dma_supported( struct device *dev, u64 mask)
 {
@@ -680,7 +708,15 @@ static int sba_dma_supported( struct device *dev, u64 mask)
 		return(0);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Documentation/PCI/PCI-DMA-mapping.txt tells drivers to try 64-bit
+=======
+	/* Documentation/DMA-API-HOWTO.txt tells drivers to try 64-bit
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Documentation/DMA-API-HOWTO.txt tells drivers to try 64-bit
+>>>>>>> refs/remotes/origin/master
 	 * first, then fall back to 32-bit if that fails.
 	 * We are just "encouraging" 32-bit DMA masks here since we can
 	 * never allow IOMMU bypass unless we add special support for ZX1.
@@ -706,7 +742,15 @@ static int sba_dma_supported( struct device *dev, u64 mask)
  * @size:  number of bytes to map in driver buffer.
  * @direction:  R/W or both.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static dma_addr_t
 sba_map_single(struct device *dev, void *addr, size_t size,
@@ -785,7 +829,15 @@ sba_map_single(struct device *dev, void *addr, size_t size,
  * @size:  number of bytes mapped in driver buffer.
  * @direction:  R/W or both.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static void
 sba_unmap_single(struct device *dev, dma_addr_t iova, size_t size,
@@ -861,7 +913,15 @@ sba_unmap_single(struct device *dev, dma_addr_t iova, size_t size,
  * @size:  number of bytes mapped in driver buffer.
  * @dma_handle:  IOVA of new buffer.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static void *sba_alloc_consistent(struct device *hwdev, size_t size,
 					dma_addr_t *dma_handle, gfp_t gfp)
@@ -892,7 +952,15 @@ static void *sba_alloc_consistent(struct device *hwdev, size_t size,
  * @vaddr:  virtual address IOVA of "consistent" buffer.
  * @dma_handler:  IO virtual address of "consistent" buffer.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static void
 sba_free_consistent(struct device *hwdev, size_t size, void *vaddr,
@@ -927,7 +995,15 @@ int dump_run_sg = 0;
  * @nents:  number of entries in list
  * @direction:  R/W or both.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static int
 sba_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
@@ -1011,7 +1087,15 @@ sba_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
  * @nents:  number of entries in list
  * @direction:  R/W or both.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static void 
 sba_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,
@@ -1374,7 +1458,11 @@ static void
 sba_ioc_init(struct parisc_device *sba, struct ioc *ioc, int ioc_num)
 {
 	u32 iova_space_size, iova_space_mask;
+<<<<<<< HEAD
 	unsigned int pdir_size, iov_order;
+=======
+	unsigned int pdir_size, iov_order, tcnfg;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	** Determine IOVA Space size from memory size.
@@ -1466,8 +1554,24 @@ sba_ioc_init(struct parisc_device *sba, struct ioc *ioc, int ioc_num)
 	WRITE_REG(ioc->ibase | 1, ioc->ioc_hpa+IOC_IBASE);
 	WRITE_REG(ioc->imask, ioc->ioc_hpa+IOC_IMASK);
 
+<<<<<<< HEAD
 	/* Set I/O PDIR Page size to 4K */
 	WRITE_REG(0, ioc->ioc_hpa+IOC_TCNFG);
+=======
+	/* Set I/O PDIR Page size to system page size */
+	switch (PAGE_SHIFT) {
+		case 12: tcnfg = 0; break;	/*  4K */
+		case 13: tcnfg = 1; break;	/*  8K */
+		case 14: tcnfg = 2; break;	/* 16K */
+		case 16: tcnfg = 3; break;	/* 64K */
+		default:
+			panic(__FILE__ "Unsupported system page size %d",
+				1 << PAGE_SHIFT);
+			break;
+	}
+	/* Set I/O PDIR Page size to PAGE_SIZE (4k/16k/...) */
+	WRITE_REG(tcnfg, ioc->ioc_hpa+IOC_TCNFG);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	** Clear I/O TLB of any possible entries.

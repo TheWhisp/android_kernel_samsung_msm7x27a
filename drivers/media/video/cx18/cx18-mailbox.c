@@ -196,7 +196,11 @@ static void cx18_mdl_send_to_videobuf(struct cx18_stream *s,
 	}
 
 	/* If we've filled the buffer as per the callers res then dispatch it */
+<<<<<<< HEAD
 	if (vb_buf->bytes_used >= (vb_buf->vb.width * vb_buf->vb.height * 2)) {
+=======
+	if (vb_buf->bytes_used >= s->vb_bytes_per_frame) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dispatch = 1;
 		vb_buf->bytes_used = 0;
 	}

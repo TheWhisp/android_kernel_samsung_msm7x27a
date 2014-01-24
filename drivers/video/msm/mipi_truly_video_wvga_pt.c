@@ -38,10 +38,20 @@ static int __init mipi_video_truly_wvga_pt_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_FB_MSM_MIPI_PANEL_DETECT
 	if (msm_fb_detect_client("mipi_video_truly_wvga"))
 		return 0;
 #endif
+=======
+	if (msm_fb_detect_client("mipi_video_truly_wvga"))
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (msm_fb_detect_client("mipi_video_truly_wvga"))
+		return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pinfo.xres = 480;
 	pinfo.yres = 800;

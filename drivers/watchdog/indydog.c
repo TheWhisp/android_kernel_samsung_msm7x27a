@@ -12,6 +12,16 @@
  *	based on softdog.c by Alan Cox <alan@lxorguk.ukuu.org.uk>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -26,6 +36,8 @@
 #include <linux/uaccess.h>
 #include <asm/sgi/mc.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX "indydog: "
 static unsigned long indydog_alive;
 static spinlock_t indydog_lock;
@@ -34,6 +46,20 @@ static spinlock_t indydog_lock;
 
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static unsigned long indydog_alive;
+static DEFINE_SPINLOCK(indydog_lock);
+
+#define WATCHDOG_TIMEOUT 30		/* 30 sec default timeout */
+
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -60,7 +86,15 @@ static void indydog_stop(void)
 	sgimc->cpuctrl0 = mc_ctrl0;
 	spin_unlock(&indydog_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Stopped watchdog timer.\n");
+=======
+	pr_info("Stopped watchdog timer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Stopped watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void indydog_ping(void)
@@ -83,7 +117,15 @@ static int indydog_open(struct inode *inode, struct file *file)
 	indydog_start();
 	indydog_ping();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Started watchdog timer.\n");
+=======
+	pr_info("Started watchdog timer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Started watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 
 	return nonseekable_open(inode, file);
 }
@@ -178,32 +220,68 @@ static struct notifier_block indydog_notifier = {
 	.notifier_call = indydog_notify_sys,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char banner[] __initdata =
 	KERN_INFO PFX "Hardware Watchdog Timer for SGI IP22: 0.3\n";
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init watchdog_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&indydog_lock);
 
 	ret = register_reboot_notifier(&indydog_notifier);
 	if (ret) {
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", ret);
+=======
+	ret = register_reboot_notifier(&indydog_notifier);
+	if (ret) {
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = register_reboot_notifier(&indydog_notifier);
+	if (ret) {
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	ret = misc_register(&indydog_miscdev);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 							WATCHDOG_MINOR, ret);
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+>>>>>>> refs/remotes/origin/master
 		unregister_reboot_notifier(&indydog_notifier);
 		return ret;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(banner);
+=======
+	pr_info("Hardware Watchdog Timer for SGI IP22: 0.3\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Hardware Watchdog Timer for SGI IP22: 0.3\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -220,4 +298,7 @@ module_exit(watchdog_exit);
 MODULE_AUTHOR("Guido Guenther <agx@sigxcpu.org>");
 MODULE_DESCRIPTION("Hardware Watchdog Device for SGI IP22");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

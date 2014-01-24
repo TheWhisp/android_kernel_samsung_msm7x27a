@@ -41,14 +41,30 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_SERIAL_SUNSU_CONSOLE) && defined(CONFIG_MAGIC_SYSRQ)
 #define SUPPORT_SYSRQ
 #endif
 
 #include <linux/serial_core.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "suncore.h"
+=======
+#include <linux/sunserialcore.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sunserialcore.h>
+>>>>>>> refs/remotes/origin/master
 
 /* We are on a NS PC87303 clocked with 24.0 MHz, which results
  * in a UART clock of 1.8462 MHz.
@@ -58,10 +74,23 @@
 enum su_type { SU_PORT_NONE, SU_PORT_MS, SU_PORT_KBD, SU_PORT_PORT };
 static char *su_typev[] = { "su(???)", "su(mouse)", "su(kbd)", "su(serial)" };
 
+<<<<<<< HEAD
 /*
  * Here we define the default xmit fifo size used for each type of UART.
  */
 static const struct serial_uart_config uart_config[PORT_MAX_8250+1] = {
+=======
+struct serial_uart_config {
+	char	*name;
+	int	dfl_xmit_fifo_size;
+	int	flags;
+};
+
+/*
+ * Here we define the default xmit fifo size used for each type of UART.
+ */
+static const struct serial_uart_config uart_config[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "unknown",	1,	0 },
 	{ "8250",	1,	0 },
 	{ "16450",	1,	0 },
@@ -309,10 +338,17 @@ static void sunsu_enable_ms(struct uart_port *port)
 	spin_unlock_irqrestore(&up->port.lock, flags);
 }
 
+<<<<<<< HEAD
 static struct tty_struct *
 receive_chars(struct uart_sunsu_port *up, unsigned char *status)
 {
 	struct tty_struct *tty = up->port.state->port.tty;
+=======
+static void
+receive_chars(struct uart_sunsu_port *up, unsigned char *status)
+{
+	struct tty_port *port = &up->port.state->port;
+>>>>>>> refs/remotes/origin/master
 	unsigned char ch, flag;
 	int max_count = 256;
 	int saw_console_brk = 0;
@@ -370,22 +406,33 @@ receive_chars(struct uart_sunsu_port *up, unsigned char *status)
 		if (uart_handle_sysrq_char(&up->port, ch))
 			goto ignore_char;
 		if ((*status & up->port.ignore_status_mask) == 0)
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, ch, flag);
+=======
+			tty_insert_flip_char(port, ch, flag);
+>>>>>>> refs/remotes/origin/master
 		if (*status & UART_LSR_OE)
 			/*
 			 * Overrun is special, since it's reported
 			 * immediately, and doesn't affect the current
 			 * character.
 			 */
+<<<<<<< HEAD
 			 tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+=======
+			 tty_insert_flip_char(port, 0, TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 	ignore_char:
 		*status = serial_inp(up, UART_LSR);
 	} while ((*status & UART_LSR_DR) && (max_count-- > 0));
 
 	if (saw_console_brk)
 		sun_do_break();
+<<<<<<< HEAD
 
 	return tty;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void transmit_chars(struct uart_sunsu_port *up)
@@ -454,20 +501,30 @@ static irqreturn_t sunsu_serial_interrupt(int irq, void *dev_id)
 	spin_lock_irqsave(&up->port.lock, flags);
 
 	do {
+<<<<<<< HEAD
 		struct tty_struct *tty;
 
 		status = serial_inp(up, UART_LSR);
 		tty = NULL;
 		if (status & UART_LSR_DR)
 			tty = receive_chars(up, &status);
+=======
+		status = serial_inp(up, UART_LSR);
+		if (status & UART_LSR_DR)
+			receive_chars(up, &status);
+>>>>>>> refs/remotes/origin/master
 		check_modem_status(up);
 		if (status & UART_LSR_THRE)
 			transmit_chars(up);
 
 		spin_unlock_irqrestore(&up->port.lock, flags);
 
+<<<<<<< HEAD
 		if (tty)
 			tty_flip_buffer_push(tty);
+=======
+		tty_flip_buffer_push(&up->port.state->port);
+>>>>>>> refs/remotes/origin/master
 
 		spin_lock_irqsave(&up->port.lock, flags);
 
@@ -522,7 +579,11 @@ static void receive_kbd_ms_chars(struct uart_sunsu_port *up, int is_break)
 				serio_interrupt(&up->serio, ch, 0);
 #endif
 				break;
+<<<<<<< HEAD
 			};
+=======
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	} while (serial_in(up, UART_LSR) & UART_LSR_DR);
 }
@@ -1180,7 +1241,11 @@ static struct uart_driver sunsu_reg = {
 	.major			= TTY_MAJOR,
 };
 
+<<<<<<< HEAD
 static int __devinit sunsu_kbd_ms_init(struct uart_sunsu_port *up)
+=======
+static int sunsu_kbd_ms_init(struct uart_sunsu_port *up)
+>>>>>>> refs/remotes/origin/master
 {
 	int quot, baud;
 #ifdef CONFIG_SERIO
@@ -1381,7 +1446,11 @@ static inline struct console *SUNSU_CONSOLE(void)
 #define sunsu_serial_console_init()	do { } while (0)
 #endif
 
+<<<<<<< HEAD
 static enum su_type __devinit su_get_type(struct device_node *dp)
+=======
+static enum su_type su_get_type(struct device_node *dp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *ap = of_find_node_by_path("/aliases");
 
@@ -1402,7 +1471,11 @@ static enum su_type __devinit su_get_type(struct device_node *dp)
 	return SU_PORT_PORT;
 }
 
+<<<<<<< HEAD
 static int __devinit su_probe(struct platform_device *op)
+=======
+static int su_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	struct uart_sunsu_port *up;
@@ -1430,7 +1503,15 @@ static int __devinit su_probe(struct platform_device *op)
 
 	rp = &op->resource[0];
 	up->port.mapbase = rp->start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	up->reg_size = (rp->end - rp->start) + 1;
+=======
+	up->reg_size = resource_size(rp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	up->reg_size = resource_size(rp);
+>>>>>>> refs/remotes/origin/master
 	up->port.membase = of_ioremap(rp, 0, up->reg_size, "su");
 	if (!up->port.membase) {
 		if (type != SU_PORT_PORT)
@@ -1454,7 +1535,13 @@ static int __devinit su_probe(struct platform_device *op)
 			kfree(up);
 			return err;
 		}
+<<<<<<< HEAD
 		dev_set_drvdata(&op->dev, up);
+=======
+		platform_set_drvdata(op, up);
+>>>>>>> refs/remotes/origin/master
+
+		nr_inst++;
 
 		nr_inst++;
 
@@ -1483,7 +1570,11 @@ static int __devinit su_probe(struct platform_device *op)
 	if (err)
 		goto out_unmap;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, up);
+=======
+	platform_set_drvdata(op, up);
+>>>>>>> refs/remotes/origin/master
 
 	nr_inst++;
 
@@ -1494,9 +1585,15 @@ out_unmap:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit su_remove(struct platform_device *op)
 {
 	struct uart_sunsu_port *up = dev_get_drvdata(&op->dev);
+=======
+static int su_remove(struct platform_device *op)
+{
+	struct uart_sunsu_port *up = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	bool kbdms = false;
 
 	if (up->su_type == SU_PORT_MS ||
@@ -1516,8 +1613,11 @@ static int __devexit su_remove(struct platform_device *op)
 	if (kbdms)
 		kfree(up);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1547,7 +1647,11 @@ static struct platform_driver su_driver = {
 		.of_match_table = su_match,
 	},
 	.probe		= su_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(su_remove),
+=======
+	.remove		= su_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init sunsu_init(void)
@@ -1592,6 +1696,10 @@ static int __init sunsu_init(void)
 
 static void __exit sunsu_exit(void)
 {
+<<<<<<< HEAD
+=======
+	platform_driver_unregister(&su_driver);
+>>>>>>> refs/remotes/origin/master
 	if (sunsu_reg.nr)
 		sunserial_unregister_minors(&sunsu_reg, sunsu_reg.nr);
 }

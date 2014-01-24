@@ -47,7 +47,11 @@ static int nfsd_acceptable(void *expv, struct dentry *dentry)
 		tdentry = parent;
 	}
 	if (tdentry != exp->ex_path.dentry)
+<<<<<<< HEAD
 		dprintk("nfsd_acceptable failed at %p %s\n", tdentry, tdentry->d_name.name);
+=======
+		dprintk("nfsd_acceptable failed at %p %pd\n", tdentry, tdentry);
+>>>>>>> refs/remotes/origin/master
 	rv = (tdentry == exp->ex_path.dentry);
 	dput(tdentry);
 	return rv;
@@ -59,6 +63,8 @@ static int nfsd_acceptable(void *expv, struct dentry *dentry)
  * the write call).
  */
 static inline __be32
+<<<<<<< HEAD
+<<<<<<< HEAD
 nfsd_mode_check(struct svc_rqst *rqstp, umode_t mode, int type)
 {
 	/* Type can be negative when creating hardlinks - not to a dir */
@@ -81,6 +87,32 @@ nfsd_mode_check(struct svc_rqst *rqstp, umode_t mode, int type)
 			return nfserr_notdir;
 	}
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+nfsd_mode_check(struct svc_rqst *rqstp, umode_t mode, umode_t requested)
+{
+	mode &= S_IFMT;
+
+	if (requested == 0) /* the caller doesn't care */
+		return nfs_ok;
+	if (mode == requested)
+		return nfs_ok;
+	/*
+	 * v4 has an error more specific than err_notdir which we should
+	 * return in preference to err_notdir:
+	 */
+	if (rqstp->rq_vers == 4 && mode == S_IFLNK)
+		return nfserr_symlink;
+	if (requested == S_IFDIR)
+		return nfserr_notdir;
+	if (mode == S_IFDIR)
+		return nfserr_isdir;
+	return nfserr_inval;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static __be32 nfsd_setuser_and_check_port(struct svc_rqst *rqstp,
@@ -256,8 +288,13 @@ static __be32 nfsd_set_fh_dentry(struct svc_rqst *rqstp, struct svc_fh *fhp)
 
 	if (S_ISDIR(dentry->d_inode->i_mode) &&
 			(dentry->d_flags & DCACHE_DISCONNECTED)) {
+<<<<<<< HEAD
 		printk("nfsd: find_fh_dentry returned a DISCONNECTED directory: %s/%s\n",
 				dentry->d_parent->d_name.name, dentry->d_name.name);
+=======
+		printk("nfsd: find_fh_dentry returned a DISCONNECTED directory: %pd2\n",
+				dentry);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	fhp->fh_dentry = dentry;
@@ -296,7 +333,15 @@ out:
  * include/linux/nfsd/nfsd.h.
  */
 __be32
+<<<<<<< HEAD
+<<<<<<< HEAD
 fh_verify(struct svc_rqst *rqstp, struct svc_fh *fhp, int type, int access)
+=======
+fh_verify(struct svc_rqst *rqstp, struct svc_fh *fhp, umode_t type, int access)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+fh_verify(struct svc_rqst *rqstp, struct svc_fh *fhp, umode_t type, int access)
+>>>>>>> refs/remotes/origin/master
 {
 	struct svc_export *exp;
 	struct dentry	*dentry;
@@ -364,10 +409,16 @@ skip_pseudoflavor_check:
 	error = nfsd_permission(rqstp, exp, dentry, access);
 
 	if (error) {
+<<<<<<< HEAD
 		dprintk("fh_verify: %s/%s permission failure, "
 			"acc=%x, error=%d\n",
 			dentry->d_parent->d_name.name,
 			dentry->d_name.name,
+=======
+		dprintk("fh_verify: %pd2 permission failure, "
+			"acc=%x, error=%d\n",
+			dentry,
+>>>>>>> refs/remotes/origin/master
 			access, ntohl(error));
 	}
 out:
@@ -517,6 +568,7 @@ fh_compose(struct svc_fh *fhp, struct svc_export *exp, struct dentry *dentry,
 	 */
 
 	struct inode * inode = dentry->d_inode;
+<<<<<<< HEAD
 	struct dentry *parent = dentry->d_parent;
 	__u32 *datap;
 	dev_t ex_dev = exp_sb(exp)->s_dev;
@@ -525,6 +577,15 @@ fh_compose(struct svc_fh *fhp, struct svc_export *exp, struct dentry *dentry,
 		MAJOR(ex_dev), MINOR(ex_dev),
 		(long) exp->ex_path.dentry->d_inode->i_ino,
 		parent->d_name.name, dentry->d_name.name,
+=======
+	__u32 *datap;
+	dev_t ex_dev = exp_sb(exp)->s_dev;
+
+	dprintk("nfsd: fh_compose(exp %02x:%02x/%ld %pd2, ino=%ld)\n",
+		MAJOR(ex_dev), MINOR(ex_dev),
+		(long) exp->ex_path.dentry->d_inode->i_ino,
+		dentry,
+>>>>>>> refs/remotes/origin/master
 		(inode ? inode->i_ino : 0));
 
 	/* Choose filehandle version and fsid type based on
@@ -537,6 +598,7 @@ fh_compose(struct svc_fh *fhp, struct svc_export *exp, struct dentry *dentry,
 		fh_put(ref_fh);
 
 	if (fhp->fh_locked || fhp->fh_dentry) {
+<<<<<<< HEAD
 		printk(KERN_ERR "fh_compose: fh %s/%s not initialized!\n",
 		       parent->d_name.name, dentry->d_name.name);
 	}
@@ -544,6 +606,15 @@ fh_compose(struct svc_fh *fhp, struct svc_export *exp, struct dentry *dentry,
 		printk(KERN_ERR "fh_compose: called with maxsize %d! %s/%s\n",
 		       fhp->fh_maxsize,
 		       parent->d_name.name, dentry->d_name.name);
+=======
+		printk(KERN_ERR "fh_compose: fh %pd2 not initialized!\n",
+		       dentry);
+	}
+	if (fhp->fh_maxsize < NFS_FHSIZE)
+		printk(KERN_ERR "fh_compose: called with maxsize %d! %pd2\n",
+		       fhp->fh_maxsize,
+		       dentry);
+>>>>>>> refs/remotes/origin/master
 
 	fhp->fh_dentry = dget(dentry); /* our internal copy */
 	fhp->fh_export = exp;
@@ -575,7 +646,11 @@ fh_compose(struct svc_fh *fhp, struct svc_export *exp, struct dentry *dentry,
 
 		if (inode)
 			_fh_update(fhp, exp, dentry);
+<<<<<<< HEAD
 		if (fhp->fh_handle.fh_fileid_type == 255) {
+=======
+		if (fhp->fh_handle.fh_fileid_type == FILEID_INVALID) {
+>>>>>>> refs/remotes/origin/master
 			fh_put(fhp);
 			return nfserr_opnotsupp;
 		}
@@ -603,6 +678,7 @@ fh_update(struct svc_fh *fhp)
 		_fh_update_old(dentry, fhp->fh_export, &fhp->fh_handle);
 	} else {
 		if (fhp->fh_handle.fh_fileid_type != FILEID_ROOT)
+<<<<<<< HEAD
 			goto out;
 
 		_fh_update(fhp, fhp->fh_export, dentry);
@@ -619,6 +695,22 @@ out_negative:
 	printk(KERN_ERR "fh_update: %s/%s still negative!\n",
 		dentry->d_parent->d_name.name, dentry->d_name.name);
 	goto out;
+=======
+			return 0;
+
+		_fh_update(fhp, fhp->fh_export, dentry);
+		if (fhp->fh_handle.fh_fileid_type == FILEID_INVALID)
+			return nfserr_opnotsupp;
+	}
+	return 0;
+out_bad:
+	printk(KERN_ERR "fh_update: fh not verified!\n");
+	return nfserr_serverfault;
+out_negative:
+	printk(KERN_ERR "fh_update: %pd2 still negative!\n",
+		dentry);
+	return nfserr_serverfault;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -638,8 +730,14 @@ fh_put(struct svc_fh *fhp)
 		fhp->fh_post_saved = 0;
 #endif
 	}
+<<<<<<< HEAD
 	if (exp) {
 		cache_put(&exp->h, &svc_export_cache);
+=======
+	fh_drop_write(fhp);
+	if (exp) {
+		exp_put(exp);
+>>>>>>> refs/remotes/origin/master
 		fhp->fh_export = NULL;
 	}
 	return;

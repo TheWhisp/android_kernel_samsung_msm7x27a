@@ -2,7 +2,13 @@
 #define _ASM_SCORE_BITOPS_H
 
 #include <asm/byteorder.h> /* swab32 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h> /* save_flags */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * clear_bit() doesn't provide any barrier for the compiler.

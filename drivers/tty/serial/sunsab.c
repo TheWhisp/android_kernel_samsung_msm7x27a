@@ -37,14 +37,32 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_SERIAL_SUNSAB_CONSOLE) && defined(CONFIG_MAGIC_SYSRQ)
 #define SUPPORT_SYSRQ
 #endif
 
 #include <linux/serial_core.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "suncore.h"
+=======
+#include <linux/sunserialcore.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sunserialcore.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "sunsab.h"
 
 struct uart_sunsab_port {
@@ -106,11 +124,19 @@ static __inline__ void sunsab_cec_wait(struct uart_sunsab_port *up)
 		udelay(1);
 }
 
+<<<<<<< HEAD
 static struct tty_struct *
 receive_chars(struct uart_sunsab_port *up,
 	      union sab82532_irq_status *stat)
 {
 	struct tty_struct *tty = NULL;
+=======
+static struct tty_port *
+receive_chars(struct uart_sunsab_port *up,
+	      union sab82532_irq_status *stat)
+{
+	struct tty_port *port = NULL;
+>>>>>>> refs/remotes/origin/master
 	unsigned char buf[32];
 	int saw_console_brk = 0;
 	int free_fifo = 0;
@@ -118,7 +144,11 @@ receive_chars(struct uart_sunsab_port *up,
 	int i;
 
 	if (up->port.state != NULL)		/* Unopened serial console */
+<<<<<<< HEAD
 		tty = up->port.state->port.tty;
+=======
+		port = &up->port.state->port;
+>>>>>>> refs/remotes/origin/master
 
 	/* Read number of BYTES (Character + Status) available. */
 	if (stat->sreg.isr0 & SAB82532_ISR0_RPF) {
@@ -135,7 +165,11 @@ receive_chars(struct uart_sunsab_port *up,
 	if (stat->sreg.isr0 & SAB82532_ISR0_TIME) {
 		sunsab_cec_wait(up);
 		writeb(SAB82532_CMDR_RFRD, &up->regs->w.cmdr);
+<<<<<<< HEAD
 		return tty;
+=======
+		return port;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (stat->sreg.isr0 & SAB82532_ISR0_RFO)
@@ -159,11 +193,14 @@ receive_chars(struct uart_sunsab_port *up,
 	for (i = 0; i < count; i++) {
 		unsigned char ch = buf[i], flag;
 
+<<<<<<< HEAD
 		if (tty == NULL) {
 			uart_handle_sysrq_char(&up->port, ch);
 			continue;
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		flag = TTY_NORMAL;
 		up->port.icount.rx++;
 
@@ -207,20 +244,34 @@ receive_chars(struct uart_sunsab_port *up,
 				flag = TTY_FRAME;
 		}
 
+<<<<<<< HEAD
 		if (uart_handle_sysrq_char(&up->port, ch))
+=======
+		if (uart_handle_sysrq_char(&up->port, ch) || !port)
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		if ((stat->sreg.isr0 & (up->port.ignore_status_mask & 0xff)) == 0 &&
 		    (stat->sreg.isr1 & ((up->port.ignore_status_mask >> 8) & 0xff)) == 0)
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, ch, flag);
 		if (stat->sreg.isr0 & SAB82532_ISR0_RFO)
 			tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+=======
+			tty_insert_flip_char(port, ch, flag);
+		if (stat->sreg.isr0 & SAB82532_ISR0_RFO)
+			tty_insert_flip_char(port, 0, TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (saw_console_brk)
 		sun_do_break();
 
+<<<<<<< HEAD
 	return tty;
+=======
+	return port;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sunsab_stop_tx(struct uart_port *);
@@ -303,7 +354,11 @@ static void check_status(struct uart_sunsab_port *up,
 static irqreturn_t sunsab_interrupt(int irq, void *dev_id)
 {
 	struct uart_sunsab_port *up = dev_id;
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+	struct tty_port *port = NULL;
+>>>>>>> refs/remotes/origin/master
 	union sab82532_irq_status status;
 	unsigned long flags;
 	unsigned char gis;
@@ -317,12 +372,19 @@ static irqreturn_t sunsab_interrupt(int irq, void *dev_id)
 	if (gis & 2)
 		status.sreg.isr1 = readb(&up->regs->r.isr1);
 
+<<<<<<< HEAD
 	tty = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (status.stat) {
 		if ((status.sreg.isr0 & (SAB82532_ISR0_TCD | SAB82532_ISR0_TIME |
 					 SAB82532_ISR0_RFO | SAB82532_ISR0_RPF)) ||
 		    (status.sreg.isr1 & SAB82532_ISR1_BRK))
+<<<<<<< HEAD
 			tty = receive_chars(up, &status);
+=======
+			port = receive_chars(up, &status);
+>>>>>>> refs/remotes/origin/master
 		if ((status.sreg.isr0 & SAB82532_ISR0_CDSC) ||
 		    (status.sreg.isr1 & SAB82532_ISR1_CSC))
 			check_status(up, &status);
@@ -332,8 +394,13 @@ static irqreturn_t sunsab_interrupt(int irq, void *dev_id)
 
 	spin_unlock_irqrestore(&up->port.lock, flags);
 
+<<<<<<< HEAD
 	if (tty)
 		tty_flip_buffer_push(tty);
+=======
+	if (port)
+		tty_flip_buffer_push(port);
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
@@ -899,7 +966,11 @@ static int sunsab_console_setup(struct console *con, char *options)
 	case B115200: baud = 115200; break;
 	case B230400: baud = 230400; break;
 	case B460800: baud = 460800; break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Temporary fix.
@@ -953,7 +1024,11 @@ static inline struct console *SUNSAB_CONSOLE(void)
 #define sunsab_console_init()	do { } while (0)
 #endif
 
+<<<<<<< HEAD
 static int __devinit sunsab_init_one(struct uart_sunsab_port *up,
+=======
+static int sunsab_init_one(struct uart_sunsab_port *up,
+>>>>>>> refs/remotes/origin/master
 				     struct platform_device *op,
 				     unsigned long offset,
 				     int line)
@@ -1006,7 +1081,11 @@ static int __devinit sunsab_init_one(struct uart_sunsab_port *up,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit sab_probe(struct platform_device *op)
+=======
+static int sab_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	static int inst;
 	struct uart_sunsab_port *up;
@@ -1042,7 +1121,11 @@ static int __devinit sab_probe(struct platform_device *op)
 	if (err)
 		goto out3;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, &up[0]);
+=======
+	platform_set_drvdata(op, &up[0]);
+>>>>>>> refs/remotes/origin/master
 
 	inst++;
 
@@ -1062,9 +1145,15 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit sab_remove(struct platform_device *op)
 {
 	struct uart_sunsab_port *up = dev_get_drvdata(&op->dev);
+=======
+static int sab_remove(struct platform_device *op)
+{
+	struct uart_sunsab_port *up = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 
 	uart_remove_one_port(&sunsab_reg, &up[1].port);
 	uart_remove_one_port(&sunsab_reg, &up[0].port);
@@ -1075,8 +1164,11 @@ static int __devexit sab_remove(struct platform_device *op)
 		   up[0].port.membase,
 		   sizeof(union sab82532_async_regs));
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1099,7 +1191,11 @@ static struct platform_driver sab_driver = {
 		.of_match_table = sab_match,
 	},
 	.probe		= sab_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(sab_remove),
+=======
+	.remove		= sab_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init sunsab_init(void)

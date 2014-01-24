@@ -35,7 +35,11 @@
 
 #include <linux/elf.h>
 
+<<<<<<< HEAD
 static int load_som_binary(struct linux_binprm * bprm, struct pt_regs * regs);
+=======
+static int load_som_binary(struct linux_binprm * bprm);
+>>>>>>> refs/remotes/origin/master
 static int load_som_library(struct file *);
 
 /*
@@ -147,10 +151,20 @@ static int map_som_binary(struct file *file,
 	code_size = SOM_PAGEALIGN(hpuxhdr->exec_tsize);
 	current->mm->start_code = code_start;
 	current->mm->end_code = code_start + code_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	down_write(&current->mm->mmap_sem);
 	retval = do_mmap(file, code_start, code_size, prot,
 			flags, SOM_PAGESTART(hpuxhdr->exec_tfile));
 	up_write(&current->mm->mmap_sem);
+=======
+	retval = vm_mmap(file, code_start, code_size, prot,
+			flags, SOM_PAGESTART(hpuxhdr->exec_tfile));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = vm_mmap(file, code_start, code_size, prot,
+			flags, SOM_PAGESTART(hpuxhdr->exec_tfile));
+>>>>>>> refs/remotes/origin/master
 	if (retval < 0 && retval > -1024)
 		goto out;
 
@@ -158,20 +172,42 @@ static int map_som_binary(struct file *file,
 	data_size = SOM_PAGEALIGN(hpuxhdr->exec_dsize);
 	current->mm->start_data = data_start;
 	current->mm->end_data = bss_start = data_start + data_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	down_write(&current->mm->mmap_sem);
 	retval = do_mmap(file, data_start, data_size,
 			prot | PROT_WRITE, flags,
 			SOM_PAGESTART(hpuxhdr->exec_dfile));
 	up_write(&current->mm->mmap_sem);
+=======
+	retval = vm_mmap(file, data_start, data_size,
+			prot | PROT_WRITE, flags,
+			SOM_PAGESTART(hpuxhdr->exec_dfile));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = vm_mmap(file, data_start, data_size,
+			prot | PROT_WRITE, flags,
+			SOM_PAGESTART(hpuxhdr->exec_dfile));
+>>>>>>> refs/remotes/origin/master
 	if (retval < 0 && retval > -1024)
 		goto out;
 
 	som_brk = bss_start + SOM_PAGEALIGN(hpuxhdr->exec_bsize);
 	current->mm->start_brk = current->mm->brk = som_brk;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	down_write(&current->mm->mmap_sem);
 	retval = do_mmap(NULL, bss_start, som_brk - bss_start,
 			prot | PROT_WRITE, MAP_FIXED | MAP_PRIVATE, 0);
 	up_write(&current->mm->mmap_sem);
+=======
+	retval = vm_mmap(NULL, bss_start, som_brk - bss_start,
+			prot | PROT_WRITE, MAP_FIXED | MAP_PRIVATE, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = vm_mmap(NULL, bss_start, som_brk - bss_start,
+			prot | PROT_WRITE, MAP_FIXED | MAP_PRIVATE, 0);
+>>>>>>> refs/remotes/origin/master
 	if (retval > 0 || retval < -1024)
 		retval = 0;
 out:
@@ -186,13 +222,21 @@ out:
  */
 
 static int
+<<<<<<< HEAD
 load_som_binary(struct linux_binprm * bprm, struct pt_regs * regs)
+=======
+load_som_binary(struct linux_binprm * bprm)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 	unsigned int size;
 	unsigned long som_entry;
 	struct som_hdr *som_ex;
 	struct som_exec_auxhdr *hpuxhdr;
+<<<<<<< HEAD
+=======
+	struct pt_regs *regs = current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 
 	/* Get the exec-header */
 	som_ex = (struct som_hdr *) bprm->buf;
@@ -225,7 +269,13 @@ load_som_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 		goto out_free;
 
 	/* OK, This is the point of no return */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	current->flags &= ~PF_FORKNOEXEC;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	current->personality = PER_HPUX;
 	setup_new_exec(bprm);
 
@@ -289,7 +339,17 @@ static int load_som_library(struct file *f)
 
 static int __init init_som_binfmt(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return register_binfmt(&som_format);
+=======
+	register_binfmt(&som_format);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	register_binfmt(&som_format);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit exit_som_binfmt(void)

@@ -443,7 +443,11 @@ static struct crypto_alg aes_alg = {
 		.cipher = {
 			.cia_min_keysize	=	AES_MIN_KEY_SIZE,
 			.cia_max_keysize	=	AES_MAX_KEY_SIZE,
+<<<<<<< HEAD
 			.cia_setkey		= 	aes_set_key,
+=======
+			.cia_setkey		=	aes_set_key,
+>>>>>>> refs/remotes/origin/master
 			.cia_encrypt		=	aes_encrypt,
 			.cia_decrypt		=	aes_decrypt
 		}
@@ -466,4 +470,7 @@ module_exit(aes_fini);
 
 MODULE_DESCRIPTION("Rijndael (AES) Cipher Algorithm");
 MODULE_LICENSE("Dual BSD/GPL");
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

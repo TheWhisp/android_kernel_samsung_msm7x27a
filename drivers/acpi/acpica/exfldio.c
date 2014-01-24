@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,8 +62,12 @@ ACPI_MODULE_NAME("exfldio")
 /* Local prototypes */
 static acpi_status
 acpi_ex_field_datum_io(union acpi_operand_object *obj_desc,
+<<<<<<< HEAD
 		       u32 field_datum_byte_offset,
 		       u64 *value, u32 read_write);
+=======
+		       u32 field_datum_byte_offset, u64 *value, u32 read_write);
+>>>>>>> refs/remotes/origin/master
 
 static u8
 acpi_ex_register_overflow(union acpi_operand_object *obj_desc, u64 value);
@@ -86,6 +98,14 @@ acpi_ex_setup_region(union acpi_operand_object *obj_desc,
 {
 	acpi_status status = AE_OK;
 	union acpi_operand_object *rgn_desc;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8 space_id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 space_id;
+>>>>>>> refs/remotes/origin/master
 
 	ACPI_FUNCTION_TRACE_U32(ex_setup_region, field_datum_byte_offset);
 
@@ -101,6 +121,26 @@ acpi_ex_setup_region(union acpi_operand_object *obj_desc,
 		return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	space_id = rgn_desc->region.space_id;
+
+	/* Validate the Space ID */
+
+	if (!acpi_is_valid_space_id(space_id)) {
+		ACPI_ERROR((AE_INFO,
+			    "Invalid/unknown Address Space ID: 0x%2.2X",
+			    space_id));
+		return_ACPI_STATUS(AE_AML_INVALID_SPACE_ID);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If the Region Address and Length have not been previously evaluated,
 	 * evaluate them now and save the results.
@@ -112,6 +152,7 @@ acpi_ex_setup_region(union acpi_operand_object *obj_desc,
 		}
 	}
 
+<<<<<<< HEAD
 	/* Exit if Address/Length have been disallowed by the host OS */
 
 	if (rgn_desc->common.flags & AOPOBJ_INVALID) {
@@ -119,11 +160,26 @@ acpi_ex_setup_region(union acpi_operand_object *obj_desc,
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Exit now for SMBus or IPMI address space, it has a non-linear
 	 * address space and the request cannot be directly validated
 	 */
 	if (rgn_desc->region.space_id == ACPI_ADR_SPACE_SMBUS ||
 	    rgn_desc->region.space_id == ACPI_ADR_SPACE_IPMI) {
+=======
+=======
+	/*
+>>>>>>> refs/remotes/origin/master
+	 * Exit now for SMBus, GSBus or IPMI address space, it has a non-linear
+	 * address space and the request cannot be directly validated
+	 */
+	if (space_id == ACPI_ADR_SPACE_SMBUS ||
+	    space_id == ACPI_ADR_SPACE_GSBUS ||
+	    space_id == ACPI_ADR_SPACE_IPMI) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* SMBus or IPMI has a non-linear address space */
 
@@ -142,7 +198,11 @@ acpi_ex_setup_region(union acpi_operand_object *obj_desc,
 #endif
 
 	/*
+<<<<<<< HEAD
 	 * Validate the request.  The entire request from the byte offset for a
+=======
+	 * Validate the request. The entire request from the byte offset for a
+>>>>>>> refs/remotes/origin/master
 	 * length of one field datum (access width) must fit within the region.
 	 * (Region length is specified in bytes)
 	 */
@@ -170,7 +230,11 @@ acpi_ex_setup_region(union acpi_operand_object *obj_desc,
 		    obj_desc->common_field.access_byte_width) {
 			/*
 			 * This is the case where the access_type (acc_word, etc.) is wider
+<<<<<<< HEAD
 			 * than the region itself.  For example, a region of length one
+=======
+			 * than the region itself. For example, a region of length one
+>>>>>>> refs/remotes/origin/master
 			 * byte, and a field with Dword access specified.
 			 */
 			ACPI_ERROR((AE_INFO,
@@ -209,9 +273,15 @@ acpi_ex_setup_region(union acpi_operand_object *obj_desc,
  * PARAMETERS:  obj_desc                - Field to be read
  *              field_datum_byte_offset - Byte offset of this datum within the
  *                                        parent field
+<<<<<<< HEAD
  *              Value                   - Where to store value (must at least
  *                                        64 bits)
  *              Function                - Read or Write flag plus other region-
+=======
+ *              value                   - Where to store value (must at least
+ *                                        64 bits)
+ *              function                - Read or Write flag plus other region-
+>>>>>>> refs/remotes/origin/master
  *                                        dependent flags
  *
  * RETURN:      Status
@@ -271,11 +341,26 @@ acpi_ex_access_region(union acpi_operand_object *obj_desc,
 
 	/* Invoke the appropriate address_space/op_region handler */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	status =
 	    acpi_ev_address_space_dispatch(rgn_desc, function, region_offset,
 					   ACPI_MUL_8(obj_desc->common_field.
 						      access_byte_width),
 					   value);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	status = acpi_ev_address_space_dispatch(rgn_desc, obj_desc,
+						function, region_offset,
+						ACPI_MUL_8(obj_desc->
+							   common_field.
+							   access_byte_width),
+						value);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ACPI_FAILURE(status)) {
 		if (status == AE_NOT_IMPLEMENTED) {
@@ -301,13 +386,21 @@ acpi_ex_access_region(union acpi_operand_object *obj_desc,
  * FUNCTION:    acpi_ex_register_overflow
  *
  * PARAMETERS:  obj_desc                - Register(Field) to be written
+<<<<<<< HEAD
  *              Value                   - Value to be stored
+=======
+ *              value                   - Value to be stored
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      TRUE if value overflows the field, FALSE otherwise
  *
  * DESCRIPTION: Check if a value is out of range of the field being written.
  *              Used to check if the values written to Index and Bank registers
+<<<<<<< HEAD
  *              are out of range.  Normally, the value is simply truncated
+=======
+ *              are out of range. Normally, the value is simply truncated
+>>>>>>> refs/remotes/origin/master
  *              to fit the field, but this case is most likely a serious
  *              coding error in the ASL.
  *
@@ -316,6 +409,13 @@ acpi_ex_access_region(union acpi_operand_object *obj_desc,
 static u8
 acpi_ex_register_overflow(union acpi_operand_object *obj_desc, u64 value)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ACPI_FUNCTION_NAME(ex_register_overflow);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (obj_desc->common_field.bit_length >= ACPI_INTEGER_BIT_SIZE) {
 		/*
@@ -330,6 +430,20 @@ acpi_ex_register_overflow(union acpi_operand_object *obj_desc, u64 value)
 		 * The Value is larger than the maximum value that can fit into
 		 * the register.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ACPI_ERROR((AE_INFO,
+			    "Index value 0x%8.8X%8.8X overflows field width 0x%X",
+			    ACPI_FORMAT_UINT64(value),
+			    obj_desc->common_field.bit_length));
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return (TRUE);
 	}
 
@@ -345,12 +459,20 @@ acpi_ex_register_overflow(union acpi_operand_object *obj_desc, u64 value)
  * PARAMETERS:  obj_desc                - Field to be read
  *              field_datum_byte_offset - Byte offset of this datum within the
  *                                        parent field
+<<<<<<< HEAD
  *              Value                   - Where to store value (must be 64 bits)
+=======
+ *              value                   - Where to store value (must be 64 bits)
+>>>>>>> refs/remotes/origin/master
  *              read_write              - Read or Write flag
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: Read or Write a single datum of a field.  The field_type is
+=======
+ * DESCRIPTION: Read or Write a single datum of a field. The field_type is
+>>>>>>> refs/remotes/origin/master
  *              demultiplexed here to handle the different types of fields
  *              (buffer_field, region_field, index_field, bank_field)
  *
@@ -428,7 +550,10 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj_desc,
 		break;
 
 	case ACPI_TYPE_LOCAL_BANK_FIELD:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Ensure that the bank_value is not beyond the capacity of
 		 * the register
@@ -470,7 +595,10 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj_desc,
 		break;
 
 	case ACPI_TYPE_LOCAL_INDEX_FIELD:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Ensure that the index_value is not beyond the capacity of
 		 * the register
@@ -554,7 +682,11 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj_desc,
  * FUNCTION:    acpi_ex_write_with_update_rule
  *
  * PARAMETERS:  obj_desc                - Field to be written
+<<<<<<< HEAD
  *              Mask                    - bitmask within field datum
+=======
+ *              mask                    - bitmask within field datum
+>>>>>>> refs/remotes/origin/master
  *              field_value             - Value to write
  *              field_datum_byte_offset - Offset of datum within field
  *
@@ -658,7 +790,11 @@ acpi_ex_write_with_update_rule(union acpi_operand_object *obj_desc,
  * FUNCTION:    acpi_ex_extract_from_field
  *
  * PARAMETERS:  obj_desc            - Field to be read
+<<<<<<< HEAD
  *              Buffer              - Where to store the field data
+=======
+ *              buffer              - Where to store the field data
+>>>>>>> refs/remotes/origin/master
  *              buffer_length       - Length of Buffer
  *
  * RETURN:      Status
@@ -815,7 +951,11 @@ acpi_ex_extract_from_field(union acpi_operand_object *obj_desc,
  * FUNCTION:    acpi_ex_insert_into_field
  *
  * PARAMETERS:  obj_desc            - Field to be written
+<<<<<<< HEAD
  *              Buffer              - Data to be written
+=======
+ *              buffer              - Data to be written
+>>>>>>> refs/remotes/origin/master
  *              buffer_length       - Length of Buffer
  *
  * RETURN:      Status
@@ -852,7 +992,11 @@ acpi_ex_insert_into_field(union acpi_operand_object *obj_desc,
 	    ACPI_ROUND_BITS_UP_TO_BYTES(obj_desc->common_field.bit_length);
 	/*
 	 * We must have a buffer that is at least as long as the field
+<<<<<<< HEAD
 	 * we are writing to.  This is because individual fields are
+=======
+	 * we are writing to. This is because individual fields are
+>>>>>>> refs/remotes/origin/master
 	 * indivisible and partial writes are not supported -- as per
 	 * the ACPI specification.
 	 */
@@ -867,7 +1011,11 @@ acpi_ex_insert_into_field(union acpi_operand_object *obj_desc,
 
 		/*
 		 * Copy the original data to the new buffer, starting
+<<<<<<< HEAD
 		 * at Byte zero.  All unused (upper) bytes of the
+=======
+		 * at Byte zero. All unused (upper) bytes of the
+>>>>>>> refs/remotes/origin/master
 		 * buffer will be 0.
 		 */
 		ACPI_MEMCPY((char *)new_buffer, (char *)buffer, buffer_length);
@@ -986,7 +1134,11 @@ acpi_ex_insert_into_field(union acpi_operand_object *obj_desc,
 						mask, merged_datum,
 						field_offset);
 
+<<<<<<< HEAD
       exit:
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	/* Free temporary buffer if we used one */
 
 	if (new_buffer) {

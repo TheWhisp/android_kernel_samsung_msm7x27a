@@ -1,13 +1,38 @@
 00-INDEX
 	- this file.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+LSM.txt
+	- description of the Linux Security Module framework.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+LSM.txt
+	- description of the Linux Security Module framework.
+>>>>>>> refs/remotes/origin/master
 SELinux.txt
 	- how to get started with the SELinux security enhancement.
 Smack.txt
 	- documentation on the Smack Linux Security Module.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+Yama.txt
+	- documentation on the Yama Linux Security Module.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+Yama.txt
+	- documentation on the Yama Linux Security Module.
+>>>>>>> refs/remotes/origin/master
 apparmor.txt
 	- documentation on the AppArmor security extension.
 credentials.txt
 	- documentation about credentials in Linux.
+<<<<<<< HEAD
+=======
+keys-ecryptfs.txt
+	- description of the encryption keys for the ecryptfs filesystem.
+>>>>>>> refs/remotes/origin/master
 keys-request-key.txt
 	- description of the kernel key request service.
 keys-trusted-encrypted.txt
@@ -16,3 +41,8 @@ keys.txt
 	- description of the kernel key retention service.
 tomoyo.txt
 	- documentation on the TOMOYO Linux Security Module.
+<<<<<<< HEAD
+=======
+IMA-templates.txt
+	- documentation on the template management mechanism for IMA.
+>>>>>>> refs/remotes/origin/master

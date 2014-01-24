@@ -41,6 +41,10 @@ static const char *sas_phye_str[] = {
 	[1] = "PHYE_OOB_DONE",
 	[2] = "PHYE_OOB_ERROR",
 	[3] = "PHYE_SPINUP_HOLD",
+<<<<<<< HEAD
+=======
+	[4] = "PHYE_RESUME_TIMEOUT",
+>>>>>>> refs/remotes/origin/master
 };
 
 void sas_dprint_porte(int phyid, enum port_event pe)

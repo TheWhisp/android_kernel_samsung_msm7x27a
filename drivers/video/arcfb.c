@@ -79,7 +79,11 @@ struct arcfb_par {
 	spinlock_t lock;
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo arcfb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo arcfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id =		"arcfb",
 	.type =		FB_TYPE_PACKED_PIXELS,
 	.visual =	FB_VISUAL_MONO01,
@@ -89,7 +93,11 @@ static struct fb_fix_screeninfo arcfb_fix __devinitdata = {
 	.accel =	FB_ACCEL_NONE,
 };
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo arcfb_var __devinitdata = {
+=======
+static struct fb_var_screeninfo arcfb_var = {
+>>>>>>> refs/remotes/origin/master
 	.xres		= 128,
 	.yres		= 64,
 	.xres_virtual	= 128,
@@ -336,8 +344,13 @@ static void arcfb_lcd_update_horiz(struct arcfb_par *par, unsigned int left,
 }
 
 /*
+<<<<<<< HEAD
  * here we start the process of spliting out the fb update into
  * individual blocks of pixels. we end up spliting into 64x64 blocks
+=======
+ * here we start the process of splitting out the fb update into
+ * individual blocks of pixels. we end up splitting into 64x64 blocks
+>>>>>>> refs/remotes/origin/master
  * and finally down to 64x8 pages.
  */
 static void arcfb_lcd_update(struct arcfb_par *par, unsigned int dx,
@@ -502,7 +515,11 @@ static struct fb_ops arcfb_ops = {
 	.fb_ioctl 	= arcfb_ioctl,
 };
 
+<<<<<<< HEAD
 static int __devinit arcfb_probe(struct platform_device *dev)
+=======
+static int arcfb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	int retval = -ENOMEM;
@@ -552,12 +569,21 @@ static int __devinit arcfb_probe(struct platform_device *dev)
 				"arcfb", info)) {
 			printk(KERN_INFO
 				"arcfb: Failed req IRQ %d\n", par->irq);
+<<<<<<< HEAD
 			goto err1;
 		}
 	}
 	printk(KERN_INFO
 	       "fb%d: Arc frame buffer device, using %dK of video memory\n",
 	       info->node, videomemorysize >> 10);
+=======
+			retval = -EBUSY;
+			goto err1;
+		}
+	}
+	fb_info(info, "Arc frame buffer device, using %dK of video memory\n",
+		videomemorysize >> 10);
+>>>>>>> refs/remotes/origin/master
 
 	/* this inits the lcd but doesn't clear dirty pixels */
 	for (i = 0; i < num_cols * num_rows; i++) {
@@ -571,8 +597,12 @@ static int __devinit arcfb_probe(struct platform_device *dev)
 	/* if we were told to splash the screen, we just clear it */
 	if (!nosplash) {
 		for (i = 0; i < num_cols * num_rows; i++) {
+<<<<<<< HEAD
 			printk(KERN_INFO "fb%d: splashing lcd %d\n",
 				info->node, i);
+=======
+			fb_info(info, "splashing lcd %d\n", i);
+>>>>>>> refs/remotes/origin/master
 			ks108_set_start_line(par, i, 0);
 			ks108_clear_lcd(par, i);
 		}
@@ -586,7 +616,11 @@ err:
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devexit arcfb_remove(struct platform_device *dev)
+=======
+static int arcfb_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = platform_get_drvdata(dev);
 
@@ -600,7 +634,11 @@ static int __devexit arcfb_remove(struct platform_device *dev)
 
 static struct platform_driver arcfb_driver = {
 	.probe	= arcfb_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(arcfb_remove),
+=======
+	.remove = arcfb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= "arcfb",
 	},

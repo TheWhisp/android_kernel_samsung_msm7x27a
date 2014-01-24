@@ -15,6 +15,14 @@
  * OEM RAPI CLIENT Driver source file
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/err.h>
@@ -23,6 +31,14 @@
 #include <linux/debugfs.h>
 #include <linux/uaccess.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/msm_rpcrouter.h>
 #include <mach/oem_rapi_client.h>
 

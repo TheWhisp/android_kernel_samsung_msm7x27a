@@ -45,14 +45,31 @@ enum cipher rt2x00crypto_key_to_cipher(struct ieee80211_key_conf *key)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void rt2x00crypto_create_tx_descriptor(struct queue_entry *entry,
 				       struct txentry_desc *txdesc)
 {
 	struct rt2x00_dev *rt2x00dev = entry->queue->rt2x00dev;
 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(entry->skb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void rt2x00crypto_create_tx_descriptor(struct rt2x00_dev *rt2x00dev,
+				       struct sk_buff *skb,
+				       struct txentry_desc *txdesc)
+{
+	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ieee80211_key_conf *hw_key = tx_info->control.hw_key;
 
 	if (!test_bit(CAPABILITY_HW_CRYPTO, &rt2x00dev->cap_flags) || !hw_key)
+=======
+	struct ieee80211_key_conf *hw_key = tx_info->control.hw_key;
+
+	if (!rt2x00_has_cap_hw_crypto(rt2x00dev) || !hw_key)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	__set_bit(ENTRY_TXD_ENCRYPT, &txdesc->flags);
@@ -80,7 +97,11 @@ unsigned int rt2x00crypto_tx_overhead(struct rt2x00_dev *rt2x00dev,
 	struct ieee80211_key_conf *key = tx_info->control.hw_key;
 	unsigned int overhead = 0;
 
+<<<<<<< HEAD
 	if (!test_bit(CAPABILITY_HW_CRYPTO, &rt2x00dev->cap_flags) || !key)
+=======
+	if (!rt2x00_has_cap_hw_crypto(rt2x00dev) || !key)
+>>>>>>> refs/remotes/origin/master
 		return overhead;
 
 	/*

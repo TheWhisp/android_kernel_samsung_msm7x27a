@@ -8,11 +8,23 @@
 #include <signal.h>
 #include <time.h>
 #include <sys/time.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "kern_util.h"
 #include "os.h"
 #include "process.h"
 #include "user.h"
+=======
+#include "kern_util.h"
+#include "os.h"
+#include "internal.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <kern_util.h>
+#include <os.h>
+#include "internal.h"
+>>>>>>> refs/remotes/origin/master
 
 int set_interval(void)
 {
@@ -81,7 +93,11 @@ long long os_nsecs(void)
 	return timeval_to_ns(&tv);
 }
 
+<<<<<<< HEAD
 #ifdef UML_CONFIG_NO_HZ
+=======
+#ifdef UML_CONFIG_NO_HZ_COMMON
+>>>>>>> refs/remotes/origin/master
 static int after_sleep_interval(struct timespec *ts)
 {
 	return 0;
@@ -89,7 +105,11 @@ static int after_sleep_interval(struct timespec *ts)
 
 static void deliver_alarm(void)
 {
+<<<<<<< HEAD
 	alarm_handler(SIGVTALRM, NULL);
+=======
+	alarm_handler(SIGVTALRM, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long long sleep_time(unsigned long long nsecs)
@@ -116,7 +136,11 @@ static void deliver_alarm(void)
 	skew += this_tick - last_tick;
 
 	while (skew >= one_tick) {
+<<<<<<< HEAD
 		alarm_handler(SIGVTALRM, NULL);
+=======
+		alarm_handler(SIGVTALRM, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 		skew -= one_tick;
 	}
 

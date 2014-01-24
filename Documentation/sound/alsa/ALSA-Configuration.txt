@@ -616,7 +616,11 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
 
     As default, snd-dummy drivers doesn't allocate the real buffers
     but either ignores read/write or mmap a single dummy page to all
+<<<<<<< HEAD
     buffer pages, in order to save the resouces.  If your apps need
+=======
+    buffer pages, in order to save the resources.  If your apps need
+>>>>>>> refs/remotes/origin/master
     the read/ written buffer data to be consistent, pass fake_buffer=0
     option.
 
@@ -860,7 +864,23 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
 
     [Multiple options for each card instance]
     model	- force the model name
+<<<<<<< HEAD
+<<<<<<< HEAD
     position_fix - Fix DMA pointer (0 = auto, 1 = use LPIB, 2 = POSBUF)
+=======
+    position_fix - Fix DMA pointer (0 = auto, 1 = use LPIB, 2 = POSBUF,
+    		   3 = VIACOMBO, 4 = COMBO)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    position_fix - Fix DMA pointer
+		  -1 = system default: choose appropriate one per controller
+			hardware
+		  0 = auto: falls back to LPIB when POSBUF doesn't work
+		  1 = use LPIB
+		  2 = POSBUF: use position buffer
+		  3 = VIACOMBO: VIA-specific workaround for capture
+		  4 = COMBO: use LPIB for playback, auto for capture stream
+>>>>>>> refs/remotes/origin/master
     probe_mask  - Bitmask to probe codecs (default = -1, meaning all slots)
     		  When the bit 8 (0x100) is set, the lower 8 bits are used
 		  as the "fixed" codec slots; i.e. the driver probes the
@@ -874,8 +894,12 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
     		setup before initializing the codecs.  This option is
 		available only when CONFIG_SND_HDA_PATCH_LOADER=y is set.
 		See HD-Audio.txt for details.
+<<<<<<< HEAD
     beep_mode	- Selects the beep registration mode (0=off, 1=on, 2=
 		dynamic registration via mute switch on/off); the default
+=======
+    beep_mode	- Selects the beep registration mode (0=off, 1=on); default
+>>>>>>> refs/remotes/origin/master
 		value is set via CONFIG_SND_HDA_INPUT_BEEP_MODE kconfig.
     
     [Single (global) options]
@@ -886,6 +910,21 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
 		disable)
     power_save_controller - Reset HD-audio controller in power-saving mode
 		(default = on)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+    align_buffer_size - Force rounding of buffer/period sizes to multiples
+    		      of 128 bytes. This is more efficient in terms of memory
+		      access but isn't required by the HDA spec and prevents
+		      users from specifying exact period/buffer sizes.
+		      (default = on)
+    snoop	- Enable/disable snooping (default = on)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
     This module supports multiple cards and autoprobe.
     
@@ -899,7 +938,11 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
     models depending on the codec chip.  The list of available models
     is found in HD-Audio-Models.txt
 
+<<<<<<< HEAD
     The model name "genric" is treated as a special case.  When this
+=======
+    The model name "generic" is treated as a special case.  When this
+>>>>>>> refs/remotes/origin/master
     model is given, the driver uses the generic codec parser without
     "codec-patch".  It's sometimes good for testing and debugging.
 
@@ -919,6 +962,20 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
 	    (Usually SD_LPIB register is more accurate than the
 	    position buffer.)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	    position_fix=3 is specific to VIA devices.  The position
+	    of the capture stream is checked from both LPIB and POSBUF
+	    values.  position_fix=4 is a combination mode, using LPIB
+	    for playback and POSBUF for capture.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     NB: If you get many "azx_get_response timeout" messages at
     loading, it's likely a problem of interrupts (e.g. ACPI irq
     routing).  Try to boot with options like "pci=noacpi".  Also, you
@@ -1533,7 +1590,11 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
 
     Module for sound cards based on the C-Media CMI8786/8787/8788 chip:
     * Asound A-8788
+<<<<<<< HEAD
     * Asus Xonar DG
+=======
+    * Asus Xonar DG/DGX
+>>>>>>> refs/remotes/origin/master
     * AuzenTech X-Meridian
     * AuzenTech X-Meridian 2G
     * Bgears b-Enspirer
@@ -1582,7 +1643,15 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
 
     Module supports autoprobe a chip.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
     Note: the driver may have problems regarding endianess.
+=======
+    Note: the driver may have problems regarding endianness.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Note: the driver may have problems regarding endianness.
+>>>>>>> refs/remotes/origin/master
 
     The power-management is supported.
 
@@ -1888,7 +1957,10 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
     vid             - Vendor ID for the device (optional)
     pid             - Product ID for the device (optional)
     nrpacks	    - Max. number of packets per URB (default: 8)
+<<<<<<< HEAD
     async_unlink    - Use async unlink mode (default: yes)
+=======
+>>>>>>> refs/remotes/origin/master
     device_setup    - Device specific magic number (optional)
                     - Influence depends on the device
                     - Default: 0x0000 
@@ -1900,8 +1972,11 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
     NB: nrpacks parameter can be modified dynamically via sysfs.
         Don't put the value over 20.  Changing via sysfs has no sanity
 	check.
+<<<<<<< HEAD
     NB: async_unlink=0 would cause Oops.  It remains just for
         debugging purpose (if any).
+=======
+>>>>>>> refs/remotes/origin/master
     NB: ignore_ctl_error=1 may help when you get an error at accessing
         the mixer element such as URB error -22.  This happens on some
         buggy USB device or the controller.
@@ -2032,7 +2107,15 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
     Install the necessary firmware files in alsa-firmware package.
     When no hotplug fw loader is available, you need to load the
     firmware via vxloader utility in alsa-tools package.  To invoke
+<<<<<<< HEAD
+<<<<<<< HEAD
     vxloader automatically, add the following to /etc/modprobe.conf
+=======
+    vxloader automatically, add the following to /etc/modprobe.d/alsa.conf
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    vxloader automatically, add the following to /etc/modprobe.d/alsa.conf
+>>>>>>> refs/remotes/origin/master
 
 	install snd-vx222 /sbin/modprobe --first-time -i snd-vx222 && /usr/bin/vxloader
 
@@ -2156,10 +2239,23 @@ corresponds to the card index of ALSA.  Usually, define this
 as the same card module.
 
 An example configuration for a single emu10k1 card is like below:
+<<<<<<< HEAD
+<<<<<<< HEAD
 ----- /etc/modprobe.conf
 alias snd-card-0 snd-emu10k1
 alias sound-slot-0 snd-emu10k1
 ----- /etc/modprobe.conf
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+----- /etc/modprobe.d/alsa.conf
+alias snd-card-0 snd-emu10k1
+alias sound-slot-0 snd-emu10k1
+----- /etc/modprobe.d/alsa.conf
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 The available number of auto-loaded sound cards depends on the module
 option "cards_limit" of snd module.  As default it's set to 1.
@@ -2172,7 +2268,15 @@ cards is kept consistent.
 
 An example configuration for two sound cards is like below:
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ----- /etc/modprobe.conf
+=======
+----- /etc/modprobe.d/alsa.conf
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+----- /etc/modprobe.d/alsa.conf
+>>>>>>> refs/remotes/origin/master
 # ALSA portion
 options snd cards_limit=2
 alias snd-card-0 snd-interwave
@@ -2182,7 +2286,15 @@ options snd-ens1371 index=1
 # OSS/Free portion
 alias sound-slot-0 snd-interwave
 alias sound-slot-1 snd-ens1371
+<<<<<<< HEAD
+<<<<<<< HEAD
 ----- /etc/modprobe.conf
+=======
+----- /etc/modprobe.d/alsa.conf
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+----- /etc/modprobe.d/alsa.conf
+>>>>>>> refs/remotes/origin/master
 
 In this example, the interwave card is always loaded as the first card
 (index 0) and ens1371 as the second (index 1).

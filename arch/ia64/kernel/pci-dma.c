@@ -12,9 +12,19 @@
 #include <asm/machvec.h>
 #include <linux/dma-mapping.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #ifdef CONFIG_DMAR
+=======
+
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/kernel.h>
 
@@ -33,6 +43,11 @@ int force_iommu __read_mostly;
 #endif
 
 int iommu_pass_through;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int iommu_group_mf;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Dummy device used for NULL arguments (normally ISA). Better would
    be probably a smaller DMA mask, but this is bug-to-bug compatible
@@ -42,6 +57,8 @@ struct device fallback_dev = {
 	.coherent_dma_mask = DMA_BIT_MASK(32),
 	.dma_mask = &fallback_dev.coherent_dma_mask,
 };
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern struct dma_map_ops intel_dma_ops;
 

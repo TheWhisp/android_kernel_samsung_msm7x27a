@@ -37,8 +37,16 @@
 #include <linux/list.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pid_namespace.h>
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/poll.h>
 #include <asm/uaccess.h>
 
@@ -267,6 +275,15 @@ static int coda_psdev_open(struct inode * inode, struct file * file)
 	struct venus_comm *vcp;
 	int idx, err;
 
+<<<<<<< HEAD
+=======
+	if (task_active_pid_ns(current) != &init_pid_ns)
+		return -EINVAL;
+
+	if (current_user_ns() != &init_user_ns)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	idx = iminor(inode);
 	if (idx < 0 || idx >= MAX_CODADEVS)
 		return -ENODEV;

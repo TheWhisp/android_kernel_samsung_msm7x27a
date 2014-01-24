@@ -11,6 +11,10 @@
 #include <asm/mach-types.h>
 
 		.section        ".start", "ax"
+<<<<<<< HEAD
+=======
+		.arch	armv4
+>>>>>>> refs/remotes/origin/master
 
 __SA1100_start:
 

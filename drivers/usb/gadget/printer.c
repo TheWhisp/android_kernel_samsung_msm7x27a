@@ -8,6 +8,8 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,6 +19,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>
@@ -31,7 +37,10 @@
 #include <linux/timer.h>
 #include <linux/list.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/utsname.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/moduleparam.h>
 #include <linux/fs.h>
@@ -43,16 +52,27 @@
 #include <asm/byteorder.h>
 #include <linux/io.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/uaccess.h>
 #include <asm/unaligned.h>
 
 #include <linux/usb/ch9.h>
+<<<<<<< HEAD
+=======
+#include <linux/usb/composite.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb/gadget.h>
 #include <linux/usb/g_printer.h>
 
 #include "gadget_chips.h"
 
+<<<<<<< HEAD
 
 /*
  * Kbuild is not very cooperative with respect to linking separately
@@ -66,6 +86,9 @@
 #include "epautoconf.c"
 
 /*-------------------------------------------------------------------------*/
+=======
+USB_GADGET_COMPOSITE_OPTIONS();
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_DESC		"Printer Gadget"
 #define DRIVER_VERSION		"2007 OCT 06"
@@ -85,12 +108,22 @@ struct printer_dev {
 	/* lock buffer lists during read/write calls */
 	struct mutex		lock_printer_io;
 	struct usb_gadget	*gadget;
+<<<<<<< HEAD
 	struct usb_request	*req;		/* for control responses */
 	u8			config;
 	s8			interface;
 	struct usb_ep		*in_ep, *out_ep;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor
 				*in, *out;
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s8			interface;
+	struct usb_ep		*in_ep, *out_ep;
+
+>>>>>>> refs/remotes/origin/master
 	struct list_head	rx_reqs;	/* List of free RX structs */
 	struct list_head	rx_reqs_active;	/* List of Active RX xfers */
 	struct list_head	rx_buffers;	/* List of completed xfers */
@@ -111,6 +144,10 @@ struct printer_dev {
 	struct device		*pdev;
 	u8			printer_cdev_open;
 	wait_queue_head_t	wait;
+<<<<<<< HEAD
+=======
+	struct usb_function	function;
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct printer_dev usb_printer_gadget;
@@ -131,6 +168,7 @@ static struct printer_dev usb_printer_gadget;
  * parameters are in UTF-8 (superset of ASCII's 7 bit characters).
  */
 
+<<<<<<< HEAD
 static ushort idVendor;
 module_param(idVendor, ushort, S_IRUGO);
 MODULE_PARM_DESC(idVendor, "USB Vendor ID");
@@ -153,6 +191,9 @@ MODULE_PARM_DESC(iProduct, "USB Product string");
 
 static char *iSerialNum;
 module_param(iSerialNum, charp, S_IRUGO);
+=======
+module_param_named(iSerialNum, coverwrite.serial_number, charp, S_IRUGO);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(iSerialNum, "1");
 
 static char *iPNPstring;
@@ -165,6 +206,7 @@ module_param(qlen, uint, S_IRUGO|S_IWUSR);
 
 #define QLEN	qlen
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_DUALSPEED
 #define DEVSPEED	USB_SPEED_HIGH
 #else   /* full speed (low speed doesn't do bulk) */
@@ -206,23 +248,33 @@ module_param(qlen, uint, S_IRUGO|S_IWUSR);
  * also optional class-specific notification interrupt transfer.
  */
 
+=======
+/*-------------------------------------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 /*
  * DESCRIPTORS ... most are static, but strings and (full) configuration
  * descriptors are built on demand.
  */
 
+<<<<<<< HEAD
 #define STRING_MANUFACTURER		1
 #define STRING_PRODUCT			2
 #define STRING_SERIALNUM		3
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* holds our biggest descriptor */
 #define USB_DESC_BUFSIZE		256
 #define USB_BUFSIZE			8192
 
+<<<<<<< HEAD
 /* This device advertises one configuration. */
 #define DEV_CONFIG_VALUE		1
 #define	PRINTER_INTERFACE		0
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_device_descriptor device_desc = {
 	.bLength =		sizeof device_desc,
 	.bDescriptorType =	USB_DT_DEVICE,
@@ -232,6 +284,7 @@ static struct usb_device_descriptor device_desc = {
 	.bDeviceProtocol =	0,
 	.idVendor =		cpu_to_le16(PRINTER_VENDOR_NUM),
 	.idProduct =		cpu_to_le16(PRINTER_PRODUCT_NUM),
+<<<<<<< HEAD
 	.iManufacturer =	STRING_MANUFACTURER,
 	.iProduct =		STRING_PRODUCT,
 	.iSerialNumber =	STRING_SERIALNUM,
@@ -260,6 +313,14 @@ static struct usb_interface_descriptor intf_desc = {
 	.bLength =		sizeof intf_desc,
 	.bDescriptorType =	USB_DT_INTERFACE,
 	.bInterfaceNumber =	PRINTER_INTERFACE,
+=======
+	.bNumConfigurations =	1
+};
+
+static struct usb_interface_descriptor intf_desc = {
+	.bLength =		sizeof intf_desc,
+	.bDescriptorType =	USB_DT_INTERFACE,
+>>>>>>> refs/remotes/origin/master
 	.bNumEndpoints =	2,
 	.bInterfaceClass =	USB_CLASS_PRINTER,
 	.bInterfaceSubClass =	1,	/* Printer Sub-Class */
@@ -281,16 +342,23 @@ static struct usb_endpoint_descriptor fs_ep_out_desc = {
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK
 };
 
+<<<<<<< HEAD
 static const struct usb_descriptor_header *fs_printer_function [11] = {
 	(struct usb_descriptor_header *) &otg_desc,
+=======
+static struct usb_descriptor_header *fs_printer_function[] = {
+>>>>>>> refs/remotes/origin/master
 	(struct usb_descriptor_header *) &intf_desc,
 	(struct usb_descriptor_header *) &fs_ep_in_desc,
 	(struct usb_descriptor_header *) &fs_ep_out_desc,
 	NULL
 };
 
+<<<<<<< HEAD
 #ifdef	CONFIG_USB_GADGET_DUALSPEED
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * usb 2.0 devices need to expose both high speed and full speed
  * descriptors, unless they only run at full speed.
@@ -318,14 +386,19 @@ static struct usb_qualifier_descriptor dev_qualifier = {
 	.bNumConfigurations =	1
 };
 
+<<<<<<< HEAD
 static const struct usb_descriptor_header *hs_printer_function [11] = {
 	(struct usb_descriptor_header *) &otg_desc,
+=======
+static struct usb_descriptor_header *hs_printer_function[] = {
+>>>>>>> refs/remotes/origin/master
 	(struct usb_descriptor_header *) &intf_desc,
 	(struct usb_descriptor_header *) &hs_ep_in_desc,
 	(struct usb_descriptor_header *) &hs_ep_out_desc,
 	NULL
 };
 
+<<<<<<< HEAD
 /* maxpacket and other transfer characteristics vary by speed. */
 #define ep_desc(g, hs, fs) (((g)->speed == USB_SPEED_HIGH)?(hs):(fs))
 
@@ -335,12 +408,30 @@ static const struct usb_descriptor_header *hs_printer_function [11] = {
 #define ep_desc(g, hs, fs) (((void)(g)), (fs))
 
 #endif	/* !CONFIG_USB_GADGET_DUALSPEED */
+=======
+static struct usb_otg_descriptor otg_descriptor = {
+	.bLength =              sizeof otg_descriptor,
+	.bDescriptorType =      USB_DT_OTG,
+	.bmAttributes =         USB_OTG_SRP,
+};
+
+static const struct usb_descriptor_header *otg_desc[] = {
+	(struct usb_descriptor_header *) &otg_descriptor,
+	NULL,
+};
+
+/* maxpacket and other transfer characteristics vary by speed. */
+#define ep_desc(g, hs, fs) (((g)->speed == USB_SPEED_HIGH)?(hs):(fs))
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
 /* descriptors that are built on-demand */
 
+<<<<<<< HEAD
 static char				manufacturer [50];
+=======
+>>>>>>> refs/remotes/origin/master
 static char				product_desc [40] = DRIVER_DESC;
 static char				serial_num [40] = "1";
 static char				pnp_string [1024] =
@@ -348,6 +439,7 @@ static char				pnp_string [1024] =
 
 /* static strings, in UTF-8 */
 static struct usb_string		strings [] = {
+<<<<<<< HEAD
 	{ STRING_MANUFACTURER,	manufacturer, },
 	{ STRING_PRODUCT,	product_desc, },
 	{ STRING_SERIALNUM,	serial_num, },
@@ -355,10 +447,27 @@ static struct usb_string		strings [] = {
 };
 
 static struct usb_gadget_strings	stringtab = {
+=======
+	[USB_GADGET_MANUFACTURER_IDX].s = "",
+	[USB_GADGET_PRODUCT_IDX].s = product_desc,
+	[USB_GADGET_SERIAL_IDX].s =	serial_num,
+	{  }		/* end of list */
+};
+
+static struct usb_gadget_strings	stringtab_dev = {
+>>>>>>> refs/remotes/origin/master
 	.language	= 0x0409,	/* en-us */
 	.strings	= strings,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_gadget_strings *dev_strings[] = {
+	&stringtab_dev,
+	NULL,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 static struct usb_request *
@@ -795,12 +904,33 @@ printer_write(struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 printer_fsync(struct file *fd, int datasync)
 {
 	struct printer_dev	*dev = fd->private_data;
 	unsigned long		flags;
 	int			tx_list_empty;
 
+=======
+printer_fsync(struct file *fd, loff_t start, loff_t end, int datasync)
+{
+	struct printer_dev	*dev = fd->private_data;
+	struct inode *inode = fd->f_path.dentry->d_inode;
+=======
+printer_fsync(struct file *fd, loff_t start, loff_t end, int datasync)
+{
+	struct printer_dev	*dev = fd->private_data;
+	struct inode *inode = file_inode(fd);
+>>>>>>> refs/remotes/origin/master
+	unsigned long		flags;
+	int			tx_list_empty;
+
+	mutex_lock(&inode->i_mutex);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&dev->lock, flags);
 	tx_list_empty = (likely(list_empty(&dev->tx_reqs)));
 	spin_unlock_irqrestore(&dev->lock, flags);
@@ -810,6 +940,14 @@ printer_fsync(struct file *fd, int datasync)
 		wait_event_interruptible(dev->tx_flush_wait,
 				(likely(list_empty(&dev->tx_reqs_active))));
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -895,6 +1033,8 @@ set_printer_interface(struct printer_dev *dev)
 {
 	int			result = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev->in = ep_desc(dev->gadget, &hs_ep_in_desc, &fs_ep_in_desc);
 	dev->in_ep->driver_data = dev;
 
@@ -902,12 +1042,35 @@ set_printer_interface(struct printer_dev *dev)
 	dev->out_ep->driver_data = dev;
 
 	result = usb_ep_enable(dev->in_ep, dev->in);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	dev->in_ep->desc = ep_desc(dev->gadget, &hs_ep_in_desc, &fs_ep_in_desc);
+	dev->in_ep->driver_data = dev;
+
+	dev->out_ep->desc = ep_desc(dev->gadget, &hs_ep_out_desc,
+				    &fs_ep_out_desc);
+	dev->out_ep->driver_data = dev;
+
+	result = usb_ep_enable(dev->in_ep);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (result != 0) {
 		DBG(dev, "enable %s --> %d\n", dev->in_ep->name, result);
 		goto done;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	result = usb_ep_enable(dev->out_ep, dev->out);
+=======
+	result = usb_ep_enable(dev->out_ep);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	result = usb_ep_enable(dev->out_ep);
+>>>>>>> refs/remotes/origin/master
 	if (result != 0) {
 		DBG(dev, "enable %s --> %d\n", dev->in_ep->name, result);
 		goto done;
@@ -918,8 +1081,18 @@ done:
 	if (result != 0) {
 		(void) usb_ep_disable(dev->in_ep);
 		(void) usb_ep_disable(dev->out_ep);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev->in = NULL;
 		dev->out = NULL;
+=======
+		dev->in_ep->desc = NULL;
+		dev->out_ep->desc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev->in_ep->desc = NULL;
+		dev->out_ep->desc = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* caller is responsible for cleanup on error */
@@ -933,12 +1106,27 @@ static void printer_reset_interface(struct printer_dev *dev)
 
 	DBG(dev, "%s\n", __func__);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev->in)
 		usb_ep_disable(dev->in_ep);
 
 	if (dev->out)
 		usb_ep_disable(dev->out_ep);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (dev->in_ep->desc)
+		usb_ep_disable(dev->in_ep);
+
+	if (dev->out_ep->desc)
+		usb_ep_disable(dev->out_ep);
+
+	dev->in_ep->desc = NULL;
+	dev->out_ep->desc = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->interface = -1;
 }
 
@@ -966,12 +1154,16 @@ printer_set_config(struct printer_dev *dev, unsigned number)
 		usb_gadget_vbus_draw(dev->gadget,
 				dev->gadget->is_otg ? 8 : 100);
 	} else {
+<<<<<<< HEAD
 		char *speed;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		unsigned power;
 
 		power = 2 * config_desc.bMaxPower;
 		usb_gadget_vbus_draw(dev->gadget, power);
 
+<<<<<<< HEAD
 		switch (gadget->speed) {
 		case USB_SPEED_FULL:	speed = "full"; break;
 #ifdef CONFIG_USB_GADGET_DUALSPEED
@@ -983,6 +1175,12 @@ printer_set_config(struct printer_dev *dev, unsigned number)
 		dev->config = number;
 		INFO(dev, "%s speed config #%d: %d mA, %s\n",
 				speed, number, power, driver_desc);
+=======
+		dev->config = number;
+		INFO(dev, "%s config #%d: %d mA, %s\n",
+		     usb_speed_string(gadget->speed),
+		     number, power, driver_desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return result;
 }
@@ -1026,10 +1224,18 @@ config_buf(enum usb_device_speed speed, u8 *buf, u8 type, unsigned index,
 /* Change our operational Interface. */
 static int
 set_interface(struct printer_dev *dev, unsigned number)
+=======
+	dev->interface = -1;
+}
+
+/* Change our operational Interface. */
+static int set_interface(struct printer_dev *dev, unsigned number)
+>>>>>>> refs/remotes/origin/master
 {
 	int			result = 0;
 
 	/* Free the current interface */
+<<<<<<< HEAD
 	switch (dev->interface) {
 	case PRINTER_INTERFACE:
 		printer_reset_interface(dev);
@@ -1049,6 +1255,15 @@ set_interface(struct printer_dev *dev, unsigned number)
 		result = -EINVAL;
 		/* FALL THROUGH */
 	}
+=======
+	printer_reset_interface(dev);
+
+	result = set_printer_interface(dev);
+	if (result)
+		printer_reset_interface(dev);
+	else
+		dev->interface = number;
+>>>>>>> refs/remotes/origin/master
 
 	if (!result)
 		INFO(dev, "Using interface %x\n", number);
@@ -1056,6 +1271,7 @@ set_interface(struct printer_dev *dev, unsigned number)
 	return result;
 }
 
+<<<<<<< HEAD
 static void printer_setup_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	if (req->status || req->actual != req->length)
@@ -1064,6 +1280,8 @@ static void printer_setup_complete(struct usb_ep *ep, struct usb_request *req)
 				req->status, req->actual, req->length);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void printer_soft_reset(struct printer_dev *dev)
 {
 	struct usb_request	*req;
@@ -1104,9 +1322,21 @@ static void printer_soft_reset(struct printer_dev *dev)
 		list_add(&req->list, &dev->tx_reqs);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (usb_ep_enable(dev->in_ep, dev->in))
 		DBG(dev, "Failed to enable USB in_ep\n");
 	if (usb_ep_enable(dev->out_ep, dev->out))
+=======
+	if (usb_ep_enable(dev->in_ep))
+		DBG(dev, "Failed to enable USB in_ep\n");
+	if (usb_ep_enable(dev->out_ep))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (usb_ep_enable(dev->in_ep))
+		DBG(dev, "Failed to enable USB in_ep\n");
+	if (usb_ep_enable(dev->out_ep))
+>>>>>>> refs/remotes/origin/master
 		DBG(dev, "Failed to enable USB out_ep\n");
 
 	wake_up_interruptible(&dev->rx_wait);
@@ -1120,11 +1350,20 @@ static void printer_soft_reset(struct printer_dev *dev)
  * The setup() callback implements all the ep0 functionality that's not
  * handled lower down.
  */
+<<<<<<< HEAD
 static int
 printer_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 {
 	struct printer_dev	*dev = get_gadget_data(gadget);
 	struct usb_request	*req = dev->req;
+=======
+static int printer_func_setup(struct usb_function *f,
+		const struct usb_ctrlrequest *ctrl)
+{
+	struct printer_dev *dev = container_of(f, struct printer_dev, function);
+	struct usb_composite_dev *cdev = f->config->cdev;
+	struct usb_request	*req = cdev->req;
+>>>>>>> refs/remotes/origin/master
 	int			value = -EOPNOTSUPP;
 	u16			wIndex = le16_to_cpu(ctrl->wIndex);
 	u16			wValue = le16_to_cpu(ctrl->wValue);
@@ -1133,6 +1372,7 @@ printer_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 	DBG(dev, "ctrl req%02x.%02x v%04x i%04x l%d\n",
 		ctrl->bRequestType, ctrl->bRequest, wValue, wIndex, wLength);
 
+<<<<<<< HEAD
 	req->complete = printer_setup_complete;
 
 	switch (ctrl->bRequestType&USB_TYPE_MASK) {
@@ -1146,20 +1386,40 @@ printer_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 			switch (wValue >> 8) {
 
 			case USB_DT_DEVICE:
+<<<<<<< HEAD
+=======
+				device_desc.bMaxPacketSize0 =
+					gadget->ep0->maxpacket;
+>>>>>>> refs/remotes/origin/cm-10.0
 				value = min(wLength, (u16) sizeof device_desc);
 				memcpy(req->buf, &device_desc, value);
 				break;
 #ifdef CONFIG_USB_GADGET_DUALSPEED
 			case USB_DT_DEVICE_QUALIFIER:
+<<<<<<< HEAD
 				if (!gadget->is_dualspeed)
 					break;
+=======
+				if (!gadget_is_dualspeed(gadget))
+					break;
+				/*
+				 * assumes ep0 uses the same value for both
+				 * speeds
+				 */
+				dev_qualifier.bMaxPacketSize0 =
+					gadget->ep0->maxpacket;
+>>>>>>> refs/remotes/origin/cm-10.0
 				value = min(wLength,
 						(u16) sizeof dev_qualifier);
 				memcpy(req->buf, &dev_qualifier, value);
 				break;
 
 			case USB_DT_OTHER_SPEED_CONFIG:
+<<<<<<< HEAD
 				if (!gadget->is_dualspeed)
+=======
+				if (!gadget_is_dualspeed(gadget))
+>>>>>>> refs/remotes/origin/cm-10.0
 					break;
 				/* FALLTHROUGH */
 #endif /* CONFIG_USB_GADGET_DUALSPEED */
@@ -1221,11 +1481,18 @@ printer_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 		}
 		break;
 
+=======
+	switch (ctrl->bRequestType&USB_TYPE_MASK) {
+>>>>>>> refs/remotes/origin/master
 	case USB_TYPE_CLASS:
 		switch (ctrl->bRequest) {
 		case 0: /* Get the IEEE-1284 PNP String */
 			/* Only one printer interface is supported. */
+<<<<<<< HEAD
 			if ((wIndex>>8) != PRINTER_INTERFACE)
+=======
+			if ((wIndex>>8) != dev->interface)
+>>>>>>> refs/remotes/origin/master
 				break;
 
 			value = (pnp_string[0]<<8)|pnp_string[1];
@@ -1236,7 +1503,11 @@ printer_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 
 		case 1: /* Get Port Status */
 			/* Only one printer interface is supported. */
+<<<<<<< HEAD
 			if (wIndex != PRINTER_INTERFACE)
+=======
+			if (wIndex != dev->interface)
+>>>>>>> refs/remotes/origin/master
 				break;
 
 			*(u8 *)req->buf = dev->printer_status;
@@ -1245,7 +1516,11 @@ printer_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 
 		case 2: /* Soft Reset */
 			/* Only one printer interface is supported. */
+<<<<<<< HEAD
 			if (wIndex != PRINTER_INTERFACE)
+=======
+			if (wIndex != dev->interface)
+>>>>>>> refs/remotes/origin/master
 				break;
 
 			printer_soft_reset(dev);
@@ -1266,6 +1541,7 @@ unknown:
 			wValue, wIndex, wLength);
 		break;
 	}
+<<<<<<< HEAD
 
 	/* respond with data transfer before status phase? */
 	if (value >= 0) {
@@ -1287,11 +1563,83 @@ static void
 printer_disconnect(struct usb_gadget *gadget)
 {
 	struct printer_dev	*dev = get_gadget_data(gadget);
+=======
+	/* host either stalls (value < 0) or reports success */
+	return value;
+}
+
+static int __init printer_func_bind(struct usb_configuration *c,
+		struct usb_function *f)
+{
+	struct printer_dev *dev = container_of(f, struct printer_dev, function);
+	struct usb_composite_dev *cdev = c->cdev;
+	struct usb_ep *in_ep;
+	struct usb_ep *out_ep = NULL;
+	int id;
+	int ret;
+
+	id = usb_interface_id(c, f);
+	if (id < 0)
+		return id;
+	intf_desc.bInterfaceNumber = id;
+
+	/* all we really need is bulk IN/OUT */
+	in_ep = usb_ep_autoconfig(cdev->gadget, &fs_ep_in_desc);
+	if (!in_ep) {
+autoconf_fail:
+		dev_err(&cdev->gadget->dev, "can't autoconfigure on %s\n",
+			cdev->gadget->name);
+		return -ENODEV;
+	}
+	in_ep->driver_data = in_ep;	/* claim */
+
+	out_ep = usb_ep_autoconfig(cdev->gadget, &fs_ep_out_desc);
+	if (!out_ep)
+		goto autoconf_fail;
+	out_ep->driver_data = out_ep;	/* claim */
+
+	/* assumes that all endpoints are dual-speed */
+	hs_ep_in_desc.bEndpointAddress = fs_ep_in_desc.bEndpointAddress;
+	hs_ep_out_desc.bEndpointAddress = fs_ep_out_desc.bEndpointAddress;
+
+	ret = usb_assign_descriptors(f, fs_printer_function,
+			hs_printer_function, NULL);
+	if (ret)
+		return ret;
+
+	dev->in_ep = in_ep;
+	dev->out_ep = out_ep;
+	return 0;
+}
+
+static void printer_func_unbind(struct usb_configuration *c,
+		struct usb_function *f)
+{
+	usb_free_all_descriptors(f);
+}
+
+static int printer_func_set_alt(struct usb_function *f,
+		unsigned intf, unsigned alt)
+{
+	struct printer_dev *dev = container_of(f, struct printer_dev, function);
+	int ret = -ENOTSUPP;
+
+	if (!alt)
+		ret = set_interface(dev, intf);
+
+	return ret;
+}
+
+static void printer_func_disable(struct usb_function *f)
+{
+	struct printer_dev *dev = container_of(f, struct printer_dev, function);
+>>>>>>> refs/remotes/origin/master
 	unsigned long		flags;
 
 	DBG(dev, "%s\n", __func__);
 
 	spin_lock_irqsave(&dev->lock, flags);
+<<<<<<< HEAD
 
 	printer_reset_interface(dev);
 
@@ -1304,6 +1652,18 @@ printer_unbind(struct usb_gadget *gadget)
 	struct printer_dev	*dev = get_gadget_data(gadget);
 	struct usb_request	*req;
 
+=======
+	printer_reset_interface(dev);
+	spin_unlock_irqrestore(&dev->lock, flags);
+}
+
+static void printer_cfg_unbind(struct usb_configuration *c)
+{
+	struct printer_dev	*dev;
+	struct usb_request	*req;
+
+	dev = &usb_printer_gadget;
+>>>>>>> refs/remotes/origin/master
 
 	DBG(dev, "%s\n", __func__);
 
@@ -1341,6 +1701,7 @@ printer_unbind(struct usb_gadget *gadget)
 		list_del(&req->list);
 		printer_req_free(dev->out_ep, req);
 	}
+<<<<<<< HEAD
 
 	if (dev->req) {
 		printer_req_free(gadget->ep0, dev->req);
@@ -1357,12 +1718,45 @@ printer_bind(struct usb_gadget *gadget)
 	struct usb_ep		*in_ep, *out_ep;
 	int			status = -ENOMEM;
 	int			gcnum;
+=======
+}
+
+static struct usb_configuration printer_cfg_driver = {
+	.label			= "printer",
+	.unbind			= printer_cfg_unbind,
+	.bConfigurationValue	= 1,
+	.bmAttributes		= USB_CONFIG_ATT_ONE | USB_CONFIG_ATT_SELFPOWER,
+};
+
+static int __init printer_bind_config(struct usb_configuration *c)
+{
+	struct usb_gadget	*gadget = c->cdev->gadget;
+	struct printer_dev	*dev;
+	int			status = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	size_t			len;
 	u32			i;
 	struct usb_request	*req;
 
+<<<<<<< HEAD
 	dev = &usb_printer_gadget;
 
+=======
+	usb_ep_autoconfig_reset(gadget);
+
+	dev = &usb_printer_gadget;
+
+	dev->function.name = shortname;
+	dev->function.bind = printer_func_bind;
+	dev->function.setup = printer_func_setup;
+	dev->function.unbind = printer_func_unbind;
+	dev->function.set_alt = printer_func_set_alt;
+	dev->function.disable = printer_func_disable;
+
+	status = usb_add_function(c, &dev->function);
+	if (status)
+		return status;
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the sysfs files for the printer gadget. */
 	dev->pdev = device_create(usb_gadget_class, NULL, g_printer_devno,
@@ -1384,6 +1778,7 @@ printer_bind(struct usb_gadget *gadget)
 		goto fail;
 	}
 
+<<<<<<< HEAD
 	gcnum = usb_gadget_controller_number(gadget);
 	if (gcnum >= 0) {
 		device_desc.bcdDevice = cpu_to_le16(0x0200 + gcnum);
@@ -1424,6 +1819,8 @@ printer_bind(struct usb_gadget *gadget)
 	if (iSerialNum)
 		strlcpy(serial_num, iSerialNum, sizeof serial_num);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (iPNPstring)
 		strlcpy(&pnp_string[2], iPNPstring, (sizeof pnp_string)-2);
 
@@ -1431,6 +1828,7 @@ printer_bind(struct usb_gadget *gadget)
 	pnp_string[0] = (len >> 8) & 0xFF;
 	pnp_string[1] = len & 0xFF;
 
+<<<<<<< HEAD
 	/* all we really need is bulk IN/OUT */
 	usb_ep_autoconfig_reset(gadget);
 	in_ep = usb_ep_autoconfig(gadget, &fs_ep_in_desc);
@@ -1448,20 +1846,35 @@ autoconf_fail:
 	out_ep->driver_data = out_ep;	/* claim */
 
 #ifdef	CONFIG_USB_GADGET_DUALSPEED
+<<<<<<< HEAD
 	/* assumes ep0 uses the same value for both speeds ... */
 	dev_qualifier.bMaxPacketSize0 = device_desc.bMaxPacketSize0;
 
 	/* and that all endpoints are dual-speed */
+=======
+	/* assumes that all endpoints are dual-speed */
+>>>>>>> refs/remotes/origin/cm-10.0
 	hs_ep_in_desc.bEndpointAddress = fs_ep_in_desc.bEndpointAddress;
 	hs_ep_out_desc.bEndpointAddress = fs_ep_out_desc.bEndpointAddress;
 #endif	/* DUALSPEED */
 
+<<<<<<< HEAD
 	device_desc.bMaxPacketSize0 = gadget->ep0->maxpacket;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_gadget_set_selfpowered(gadget);
 
 	if (gadget->is_otg) {
 		otg_desc.bmAttributes |= USB_OTG_HNP,
 		config_desc.bmAttributes |= USB_CONFIG_ATT_WAKEUP;
+=======
+	usb_gadget_set_selfpowered(gadget);
+
+	if (gadget->is_otg) {
+		otg_descriptor.bmAttributes |= USB_OTG_HNP;
+		printer_cfg_driver.descriptors = otg_desc;
+		printer_cfg_driver.bmAttributes |= USB_CONFIG_ATT_WAKEUP;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock_init(&dev->lock);
@@ -1475,7 +1888,10 @@ autoconf_fail:
 	init_waitqueue_head(&dev->tx_wait);
 	init_waitqueue_head(&dev->tx_flush_wait);
 
+<<<<<<< HEAD
 	dev->config = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->interface = -1;
 	dev->printer_cdev_open = 0;
 	dev->printer_status = PRINTER_NOT_ERROR;
@@ -1483,6 +1899,7 @@ autoconf_fail:
 	dev->current_rx_bytes = 0;
 	dev->current_rx_buf = NULL;
 
+<<<<<<< HEAD
 	dev->in_ep = in_ep;
 	dev->out_ep = out_ep;
 
@@ -1494,6 +1911,8 @@ autoconf_fail:
 		goto fail;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < QLEN; i++) {
 		req = printer_req_alloc(dev->in_ep, USB_BUFSIZE, GFP_KERNEL);
 		if (!req) {
@@ -1522,6 +1941,7 @@ autoconf_fail:
 		list_add(&req->list, &dev->rx_reqs);
 	}
 
+<<<<<<< HEAD
 	dev->req->complete = printer_setup_complete;
 
 	/* finish hookup to lower layer ... */
@@ -1543,7 +1963,11 @@ fail:
 /*-------------------------------------------------------------------------*/
 
 static struct usb_gadget_driver printer_driver = {
+<<<<<<< HEAD
 	.speed		= DEVSPEED,
+=======
+	.max_speed	= DEVSPEED,
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.function	= (char *) driver_desc,
 	.unbind		= printer_unbind,
@@ -1561,6 +1985,51 @@ MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_AUTHOR("Craig Nadler");
 MODULE_LICENSE("GPL");
 
+=======
+	/* finish hookup to lower layer ... */
+	dev->gadget = gadget;
+
+	INFO(dev, "%s, version: " DRIVER_VERSION "\n", driver_desc);
+	return 0;
+
+fail:
+	printer_cfg_unbind(c);
+	return status;
+}
+
+static int printer_unbind(struct usb_composite_dev *cdev)
+{
+	return 0;
+}
+
+static int __init printer_bind(struct usb_composite_dev *cdev)
+{
+	int ret;
+
+	ret = usb_string_ids_tab(cdev, strings);
+	if (ret < 0)
+		return ret;
+	device_desc.iManufacturer = strings[USB_GADGET_MANUFACTURER_IDX].id;
+	device_desc.iProduct = strings[USB_GADGET_PRODUCT_IDX].id;
+	device_desc.iSerialNumber = strings[USB_GADGET_SERIAL_IDX].id;
+
+	ret = usb_add_config(cdev, &printer_cfg_driver, printer_bind_config);
+	if (ret)
+		return ret;
+	usb_composite_overwrite_options(cdev, &coverwrite);
+	return ret;
+}
+
+static __refdata struct usb_composite_driver printer_driver = {
+	.name           = shortname,
+	.dev            = &device_desc,
+	.strings        = dev_strings,
+	.max_speed      = USB_SPEED_HIGH,
+	.bind		= printer_bind,
+	.unbind		= printer_unbind,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int __init
 init(void)
 {
@@ -1569,23 +2038,39 @@ init(void)
 	usb_gadget_class = class_create(THIS_MODULE, "usb_printer_gadget");
 	if (IS_ERR(usb_gadget_class)) {
 		status = PTR_ERR(usb_gadget_class);
+<<<<<<< HEAD
 		ERROR(dev, "unable to create usb_gadget class %d\n", status);
+=======
+		pr_err("unable to create usb_gadget class %d\n", status);
+>>>>>>> refs/remotes/origin/master
 		return status;
 	}
 
 	status = alloc_chrdev_region(&g_printer_devno, 0, 1,
 			"USB printer gadget");
 	if (status) {
+<<<<<<< HEAD
 		ERROR(dev, "alloc_chrdev_region %d\n", status);
+=======
+		pr_err("alloc_chrdev_region %d\n", status);
+>>>>>>> refs/remotes/origin/master
 		class_destroy(usb_gadget_class);
 		return status;
 	}
 
+<<<<<<< HEAD
 	status = usb_gadget_probe_driver(&printer_driver, printer_bind);
 	if (status) {
 		class_destroy(usb_gadget_class);
 		unregister_chrdev_region(g_printer_devno, 1);
 		DBG(dev, "usb_gadget_probe_driver %x\n", status);
+=======
+	status = usb_composite_probe(&printer_driver);
+	if (status) {
+		class_destroy(usb_gadget_class);
+		unregister_chrdev_region(g_printer_devno, 1);
+		pr_err("usb_gadget_probe_driver %x\n", status);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return status;
@@ -1595,6 +2080,7 @@ module_init(init);
 static void __exit
 cleanup(void)
 {
+<<<<<<< HEAD
 	int status;
 
 	mutex_lock(&usb_printer_gadget.lock_printer_io);
@@ -1602,8 +2088,19 @@ cleanup(void)
 	if (status)
 		ERROR(dev, "usb_gadget_unregister_driver %x\n", status);
 
+=======
+	mutex_lock(&usb_printer_gadget.lock_printer_io);
+	usb_composite_unregister(&printer_driver);
+>>>>>>> refs/remotes/origin/master
 	unregister_chrdev_region(g_printer_devno, 1);
 	class_destroy(usb_gadget_class);
 	mutex_unlock(&usb_printer_gadget.lock_printer_io);
 }
 module_exit(cleanup);
+<<<<<<< HEAD
+=======
+
+MODULE_DESCRIPTION(DRIVER_DESC);
+MODULE_AUTHOR("Craig Nadler");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

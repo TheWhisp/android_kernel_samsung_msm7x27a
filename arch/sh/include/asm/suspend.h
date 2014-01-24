@@ -14,9 +14,15 @@ struct swsusp_arch_regs {
 void sh_mobile_call_standby(unsigned long mode);
 
 #ifdef CONFIG_CPU_IDLE
+<<<<<<< HEAD
 void sh_mobile_setup_cpuidle(void);
 #else
 static inline void sh_mobile_setup_cpuidle(void) {}
+=======
+int sh_mobile_setup_cpuidle(void);
+#else
+static inline int sh_mobile_setup_cpuidle(void) { return 0; }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* notifier chains for pre/post sleep hooks */

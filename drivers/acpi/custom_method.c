@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * debugfs.c - ACPI debugfs interface to userspace.
+=======
+ * custom_method.c - debugfs interface for customizing ACPI control method
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/init.h>
@@ -66,7 +70,11 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
 		buf = NULL;
 		if (ACPI_FAILURE(status))
 			return -EINVAL;
+<<<<<<< HEAD
 		add_taint(TAINT_OVERRIDDEN_ACPI_TABLE);
+=======
+		add_taint(TAINT_OVERRIDDEN_ACPI_TABLE, LOCKDEP_NOW_UNRELIABLE);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return count;

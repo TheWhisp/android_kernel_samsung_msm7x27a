@@ -105,7 +105,15 @@ drop:
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 static int tunnel64_rcv(struct sk_buff *skb)
 {
 	struct xfrm_tunnel *handler;
@@ -134,7 +142,15 @@ static void tunnel4_err(struct sk_buff *skb, u32 info)
 			break;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 static void tunnel64_err(struct sk_buff *skb, u32 info)
 {
 	struct xfrm_tunnel *handler;
@@ -152,7 +168,15 @@ static const struct net_protocol tunnel4_protocol = {
 	.netns_ok	=	1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 static const struct net_protocol tunnel64_protocol = {
 	.handler	=	tunnel64_rcv,
 	.err_handler	=	tunnel64_err,
@@ -164,12 +188,27 @@ static const struct net_protocol tunnel64_protocol = {
 static int __init tunnel4_init(void)
 {
 	if (inet_add_protocol(&tunnel4_protocol, IPPROTO_IPIP)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "tunnel4 init: can't add protocol\n");
 		return -EAGAIN;
 	}
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 	if (inet_add_protocol(&tunnel64_protocol, IPPROTO_IPV6)) {
 		printk(KERN_ERR "tunnel64 init: can't add protocol\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_err("%s: can't add protocol\n", __func__);
+		return -EAGAIN;
+	}
+#if IS_ENABLED(CONFIG_IPV6)
+	if (inet_add_protocol(&tunnel64_protocol, IPPROTO_IPV6)) {
+		pr_err("tunnel64 init: can't add protocol\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		inet_del_protocol(&tunnel4_protocol, IPPROTO_IPIP);
 		return -EAGAIN;
 	}
@@ -179,12 +218,27 @@ static int __init tunnel4_init(void)
 
 static void __exit tunnel4_fini(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 	if (inet_del_protocol(&tunnel64_protocol, IPPROTO_IPV6))
 		printk(KERN_ERR "tunnel64 close: can't remove protocol\n");
 #endif
 	if (inet_del_protocol(&tunnel4_protocol, IPPROTO_IPIP))
 		printk(KERN_ERR "tunnel4 close: can't remove protocol\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if IS_ENABLED(CONFIG_IPV6)
+	if (inet_del_protocol(&tunnel64_protocol, IPPROTO_IPV6))
+		pr_err("tunnel64 close: can't remove protocol\n");
+#endif
+	if (inet_del_protocol(&tunnel4_protocol, IPPROTO_IPIP))
+		pr_err("tunnel4 close: can't remove protocol\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(tunnel4_init);

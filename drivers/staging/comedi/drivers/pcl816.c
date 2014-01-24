@@ -32,24 +32,46 @@ Configuration Options:
 
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <linux/ioport.h>
 #include <linux/mc146818rtc.h>
 #include <linux/gfp.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 
 #include "8253.h"
 
 #define DEBUG(x) x
 
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+#include <linux/gfp.h>
+#include <linux/delay.h>
+#include <linux/io.h>
+#include <linux/interrupt.h>
+#include <asm/dma.h>
+
+#include "comedi_fc.h"
+#include "8253.h"
+
+>>>>>>> refs/remotes/origin/master
 /* boards constants */
 /* IO space len */
 #define PCLx1x_RANGE 16
 
+<<<<<<< HEAD
 /* #define outb(x,y)  printk("OUTB(%x, 200+%d)\n", x,y-0x200); outb(x,y) */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* INTEL 8254 counters */
 #define PCL816_CTR0 4
 #define PCL816_CTR1 5
@@ -80,6 +102,7 @@ Configuration Options:
 #define INT_TYPE_AI1_DMA 2
 #define INT_TYPE_AI3_INT 4
 #define INT_TYPE_AI3_DMA 5
+<<<<<<< HEAD
 #ifdef unused
 #define INT_TYPE_AI1_DMA_RTC 9
 #define INT_TYPE_AI3_DMA_RTC 10
@@ -101,6 +124,22 @@ static const struct comedi_lrange range_pcl816 = { 8, {
 						       UNI_RANGE(2.5),
 						       UNI_RANGE(1.25),
 						       }
+=======
+
+#define MAGIC_DMA_WORD 0x5a5a
+
+static const struct comedi_lrange range_pcl816 = {
+	8, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(2.5),
+		BIP_RANGE(1.25),
+		UNI_RANGE(10),
+		UNI_RANGE(5),
+		UNI_RANGE(2.5),
+		UNI_RANGE(1.25)
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 struct pcl816_board {
@@ -124,6 +163,7 @@ struct pcl816_board {
 	int i8254_osc_base;	/*  1/frequency of on board oscilator in ns */
 };
 
+<<<<<<< HEAD
 static const struct pcl816_board boardtypes[] = {
 	{"pcl816", 8, 16, 10000, 1, 16, 16, &range_pcl816,
 	 &range_pcl816, PCLx1x_RANGE,
@@ -154,8 +194,13 @@ static int pcl816_attach(struct comedi_device *dev,
 static int pcl816_detach(struct comedi_device *dev);
 
 #ifdef unused
+<<<<<<< HEAD
 static int RTC_lock = 0;	/* RTC lock */
 static int RTC_timer_lock = 0;	/* RTC int lock */
+=======
+static int RTC_lock;	/* RTC lock */
+static int RTC_timer_lock;	/* RTC int lock */
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static struct comedi_driver driver_pcl816 = {
@@ -190,23 +235,35 @@ struct pcl816_private {
 	unsigned int rtc_iosize;
 	unsigned int rtc_irq;
 #endif
+=======
+struct pcl816_private {
+
+	unsigned int dma;	/*  used DMA, 0=don't use DMA */
+>>>>>>> refs/remotes/origin/master
 	unsigned long dmabuf[2];	/*  pointers to begin of DMA buffers */
 	unsigned int dmapages[2];	/*  len of DMA buffers in PAGE_SIZEs */
 	unsigned int hwdmaptr[2];	/*  hardware address of DMA buffers */
 	unsigned int hwdmasize[2];	/*  len of DMA buffers in Bytes */
 	unsigned int dmasamplsize;	/*  size in samples hwdmasize[0]/2 */
+<<<<<<< HEAD
 	unsigned int last_top_dma;	/*  DMA pointer in last RTC int */
+=======
+>>>>>>> refs/remotes/origin/master
 	int next_dma_buf;	/*  which DMA buffer will be used next round */
 	long dma_runs_to_end;	/*  how many we must permorm DMA transfer to end of record */
 	unsigned long last_dma_run;	/*  how many bytes we must transfer on last DMA page */
 
 	unsigned int ai_scans;	/*  len of scanlist */
 	unsigned char ai_neverending;	/*  if=1, then we do neverending record (you must use cancel()) */
+<<<<<<< HEAD
 	int irq_free;		/*  1=have allocated IRQ */
 	int irq_blocked;	/*  1=IRQ now uses any subdev */
 #ifdef unused
 	int rtc_irq_blocked;	/*  1=we now do AI with DMA&RTC */
 #endif
+=======
+	int irq_blocked;	/*  1=IRQ now uses any subdev */
+>>>>>>> refs/remotes/origin/master
 	int irq_was_now_closed;	/*  when IRQ finish, there's stored int816_mode for last interrupt */
 	int int816_mode;	/*  who now uses IRQ - 1=AI1 int, 2=AI1 dma, 3=AI3 int, 4AI3 dma */
 	struct comedi_subdevice *last_int_sub;	/*  ptr to subdevice which now finish */
@@ -216,11 +273,14 @@ struct pcl816_private {
 	unsigned int ai_act_chanlist_pos;	/*  actual position in MUX list */
 	unsigned int ai_n_chan;		/*  how many channels per scan */
 	unsigned int ai_poll_ptr;	/*  how many sampes transfer poll */
+<<<<<<< HEAD
 	struct comedi_subdevice *sub_ai;	/*  ptr to AI subdevice */
 #ifdef unused
 	struct timer_list rtc_irq_timer;	/*  timer for RTC sanity check */
 	unsigned long rtc_freq;	/*  RTC int freq */
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -236,9 +296,12 @@ static int pcl816_ai_cancel(struct comedi_device *dev,
 			    struct comedi_subdevice *s);
 static void start_pacer(struct comedi_device *dev, int mode,
 			unsigned int divisor1, unsigned int divisor2);
+<<<<<<< HEAD
 #ifdef unused
 static int set_rtc_irq_bit(unsigned char bit);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int pcl816_ai_cmdtest(struct comedi_device *dev,
 			     struct comedi_subdevice *s,
@@ -256,7 +319,10 @@ static int pcl816_ai_insn_read(struct comedi_device *dev,
 	int n;
 	int timeout;
 
+<<<<<<< HEAD
 	DPRINTK("mode 0 analog input\n");
+=======
+>>>>>>> refs/remotes/origin/master
 	/*  software trigger, DMA and INT off */
 	outb(0, dev->iobase + PCL816_CONTROL);
 	/*  clear INT (conversion end) flag */
@@ -307,8 +373,14 @@ static int pcl816_ai_insn_read(struct comedi_device *dev,
 static irqreturn_t interrupt_pcl816_ai_mode13_int(int irq, void *d)
 {
 	struct comedi_device *dev = d;
+<<<<<<< HEAD
 	struct comedi_subdevice *s = dev->subdevices + 0;
 	int low, hi;
+=======
+	struct pcl816_private *devpriv = dev->private;
+	struct comedi_subdevice *s = dev->read_subdev;
+	unsigned char low, hi;
+>>>>>>> refs/remotes/origin/master
 	int timeout = 50;	/* wait max 50us */
 
 	while (timeout--) {
@@ -360,9 +432,17 @@ static irqreturn_t interrupt_pcl816_ai_mode13_int(int irq, void *d)
    analog input dma mode 1 & 3, 816 cards
 */
 static void transfer_from_dma_buf(struct comedi_device *dev,
+<<<<<<< HEAD
 				  struct comedi_subdevice *s, short *ptr,
 				  unsigned int bufptr, unsigned int len)
 {
+=======
+				  struct comedi_subdevice *s,
+				  unsigned short *ptr,
+				  unsigned int bufptr, unsigned int len)
+{
+	struct pcl816_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	s->async->events = 0;
@@ -398,10 +478,18 @@ static void transfer_from_dma_buf(struct comedi_device *dev,
 static irqreturn_t interrupt_pcl816_ai_mode13_dma(int irq, void *d)
 {
 	struct comedi_device *dev = d;
+<<<<<<< HEAD
 	struct comedi_subdevice *s = dev->subdevices + 0;
 	int len, bufptr, this_dma_buf;
 	unsigned long dma_flags;
 	short *ptr;
+=======
+	struct pcl816_private *devpriv = dev->private;
+	struct comedi_subdevice *s = dev->read_subdev;
+	int len, bufptr, this_dma_buf;
+	unsigned long dma_flags;
+	unsigned short *ptr;
+>>>>>>> refs/remotes/origin/master
 
 	disable_dma(devpriv->dma);
 	this_dma_buf = devpriv->next_dma_buf;
@@ -429,7 +517,11 @@ static irqreturn_t interrupt_pcl816_ai_mode13_dma(int irq, void *d)
 	devpriv->dma_runs_to_end--;
 	outb(0, dev->iobase + PCL816_CLRINT);	/* clear INT request */
 
+<<<<<<< HEAD
 	ptr = (short *)devpriv->dmabuf[this_dma_buf];
+=======
+	ptr = (unsigned short *)devpriv->dmabuf[this_dma_buf];
+>>>>>>> refs/remotes/origin/master
 
 	len = (devpriv->hwdmasize[0] >> 1) - devpriv->ai_poll_ptr;
 	bufptr = devpriv->ai_poll_ptr;
@@ -446,7 +538,11 @@ static irqreturn_t interrupt_pcl816_ai_mode13_dma(int irq, void *d)
 static irqreturn_t interrupt_pcl816(int irq, void *d)
 {
 	struct comedi_device *dev = d;
+<<<<<<< HEAD
 	DPRINTK("<I>");
+=======
+	struct pcl816_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev->attached) {
 		comedi_error(dev, "premature interrupt");
@@ -463,8 +559,12 @@ static irqreturn_t interrupt_pcl816(int irq, void *d)
 	}
 
 	outb(0, dev->iobase + PCL816_CLRINT);	/* clear INT request */
+<<<<<<< HEAD
 	if ((!dev->irq) | (!devpriv->irq_free) | (!devpriv->irq_blocked) |
 	    (!devpriv->int816_mode)) {
+=======
+	if (!dev->irq || !devpriv->irq_blocked || !devpriv->int816_mode) {
+>>>>>>> refs/remotes/origin/master
 		if (devpriv->irq_was_now_closed) {
 			devpriv->irq_was_now_closed = 0;
 			/*  comedi_error(dev,"last IRQ.."); */
@@ -479,6 +579,7 @@ static irqreturn_t interrupt_pcl816(int irq, void *d)
 
 /*
 ==============================================================================
+<<<<<<< HEAD
    COMMAND MODE
 */
 static void pcl816_cmdtest_out(int e, struct comedi_cmd *cmd)
@@ -495,10 +596,13 @@ static void pcl816_cmdtest_out(int e, struct comedi_cmd *cmd)
 
 /*
 ==============================================================================
+=======
+>>>>>>> refs/remotes/origin/master
 */
 static int pcl816_ai_cmdtest(struct comedi_device *dev,
 			     struct comedi_subdevice *s, struct comedi_cmd *cmd)
 {
+<<<<<<< HEAD
 	int err = 0;
 	int tmp, divisor1 = 0, divisor2 = 0;
 
@@ -531,10 +635,24 @@ static int pcl816_ai_cmdtest(struct comedi_device *dev,
 	cmd->stop_src &= TRIG_COUNT | TRIG_NONE;
 	if (!cmd->stop_src || tmp != cmd->stop_src)
 		err++;
+=======
+	const struct pcl816_board *board = comedi_board(dev);
+	int err = 0;
+	int tmp, divisor1 = 0, divisor2 = 0;
+
+	/* Step 1 : check if triggers are trivially valid */
+
+	err |= cfc_check_trigger_src(&cmd->start_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_begin_src, TRIG_FOLLOW);
+	err |= cfc_check_trigger_src(&cmd->convert_src, TRIG_EXT | TRIG_TIMER);
+	err |= cfc_check_trigger_src(&cmd->scan_end_src, TRIG_COUNT);
+	err |= cfc_check_trigger_src(&cmd->stop_src, TRIG_COUNT | TRIG_NONE);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 1;
 
+<<<<<<< HEAD
 
 	/*
 	 * step 2: make sure trigger sources
@@ -563,11 +681,20 @@ static int pcl816_ai_cmdtest(struct comedi_device *dev,
 
 	if (cmd->stop_src != TRIG_NONE && cmd->stop_src != TRIG_COUNT)
 		err++;
+=======
+	/* Step 2a : make sure trigger sources are unique */
+
+	err |= cfc_check_trigger_is_unique(cmd->convert_src);
+	err |= cfc_check_trigger_is_unique(cmd->stop_src);
+
+	/* Step 2b : and mutually compatible */
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 2;
 
 
+<<<<<<< HEAD
 	/* step 3: make sure arguments are trivially compatible */
 	if (cmd->start_arg != 0) {
 		cmd->start_arg = 0;
@@ -605,6 +732,25 @@ static int pcl816_ai_cmdtest(struct comedi_device *dev,
 			err++;
 		}
 	}
+=======
+	/* Step 3: check if arguments are trivially valid */
+
+	err |= cfc_check_trigger_arg_is(&cmd->start_arg, 0);
+	err |= cfc_check_trigger_arg_is(&cmd->scan_begin_arg, 0);
+
+	if (cmd->convert_src == TRIG_TIMER)
+		err |= cfc_check_trigger_arg_min(&cmd->convert_arg,
+						 board->ai_ns_min);
+	else	/* TRIG_EXT */
+		err |= cfc_check_trigger_arg_is(&cmd->convert_arg, 0);
+
+	err |= cfc_check_trigger_arg_is(&cmd->scan_end_arg, cmd->chanlist_len);
+
+	if (cmd->stop_src == TRIG_COUNT)
+		err |= cfc_check_trigger_arg_min(&cmd->stop_arg, 1);
+	else	/* TRIG_NONE */
+		err |= cfc_check_trigger_arg_is(&cmd->stop_arg, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 3;
@@ -613,12 +759,20 @@ static int pcl816_ai_cmdtest(struct comedi_device *dev,
 	/* step 4: fix up any arguments */
 	if (cmd->convert_src == TRIG_TIMER) {
 		tmp = cmd->convert_arg;
+<<<<<<< HEAD
 		i8253_cascade_ns_to_timer(this_board->i8254_osc_base,
 					  &divisor1, &divisor2,
 					  &cmd->convert_arg,
 					  cmd->flags & TRIG_ROUND_MASK);
 		if (cmd->convert_arg < this_board->ai_ns_min)
 			cmd->convert_arg = this_board->ai_ns_min;
+=======
+		i8253_cascade_ns_to_timer(board->i8254_osc_base,
+					  &divisor1, &divisor2,
+					  &cmd->convert_arg, cmd->flags);
+		if (cmd->convert_arg < board->ai_ns_min)
+			cmd->convert_arg = board->ai_ns_min;
+>>>>>>> refs/remotes/origin/master
 		if (tmp != cmd->convert_arg)
 			err++;
 	}
@@ -640,6 +794,11 @@ static int pcl816_ai_cmdtest(struct comedi_device *dev,
 
 static int pcl816_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	const struct pcl816_board *board = comedi_board(dev);
+	struct pcl816_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned int divisor1 = 0, divisor2 = 0, dma_flags, bytes, dmairq;
 	struct comedi_cmd *cmd = &s->async->cmd;
 	unsigned int seglen;
@@ -657,12 +816,21 @@ static int pcl816_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 		return -EBUSY;
 
 	if (cmd->convert_src == TRIG_TIMER) {
+<<<<<<< HEAD
 		if (cmd->convert_arg < this_board->ai_ns_min)
 			cmd->convert_arg = this_board->ai_ns_min;
 
 		i8253_cascade_ns_to_timer(this_board->i8254_osc_base, &divisor1,
 					  &divisor2, &cmd->convert_arg,
 					  cmd->flags & TRIG_ROUND_MASK);
+=======
+		if (cmd->convert_arg < board->ai_ns_min)
+			cmd->convert_arg = board->ai_ns_min;
+
+		i8253_cascade_ns_to_timer(board->i8254_osc_base,
+					  &divisor1, &divisor2,
+					  &cmd->convert_arg, cmd->flags);
+>>>>>>> refs/remotes/origin/master
 
 		/*  PCL816 crash if any divisor is set to 1 */
 		if (divisor1 == 1) {
@@ -698,6 +866,7 @@ static int pcl816_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 		devpriv->ai_neverending = 1;
 	}
 
+<<<<<<< HEAD
 	/*  don't we want wake up every scan? */
 	if ((cmd->flags & TRIG_WAKE_EOS)) {
 		printk(KERN_INFO
@@ -707,6 +876,8 @@ static int pcl816_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 		/*       devpriv->dma=0; // DMA is useless for this situation */
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (devpriv->dma) {
 		bytes = devpriv->hwdmasize[0];
 		if (!devpriv->ai_neverending) {
@@ -762,12 +933,19 @@ static int pcl816_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 		break;
 	}
 
+<<<<<<< HEAD
 	DPRINTK("pcl816 END: pcl812_ai_cmd()\n");
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int pcl816_ai_poll(struct comedi_device *dev, struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	struct pcl816_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	unsigned int top1, top2, i;
 
@@ -797,7 +975,12 @@ static int pcl816_ai_poll(struct comedi_device *dev, struct comedi_subdevice *s)
 	}
 
 	transfer_from_dma_buf(dev, s,
+<<<<<<< HEAD
 			      (short *)devpriv->dmabuf[devpriv->next_dma_buf],
+=======
+			      (unsigned short *)devpriv->dmabuf[devpriv->
+								next_dma_buf],
+>>>>>>> refs/remotes/origin/master
 			      devpriv->ai_poll_ptr, top2);
 
 	devpriv->ai_poll_ptr = top1;	/*  new buffer position */
@@ -813,6 +996,7 @@ static int pcl816_ai_poll(struct comedi_device *dev, struct comedi_subdevice *s)
 static int pcl816_ai_cancel(struct comedi_device *dev,
 			    struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
 /* DEBUG(printk("pcl816_ai_cancel()\n");) */
 
 	if (devpriv->irq_blocked > 0) {
@@ -823,6 +1007,12 @@ static int pcl816_ai_cancel(struct comedi_device *dev,
 			set_rtc_irq_bit(0);	/*  stop RTC */
 			del_timer(&devpriv->rtc_irq_timer);
 #endif
+=======
+	struct pcl816_private *devpriv = dev->private;
+
+	if (devpriv->irq_blocked > 0) {
+		switch (devpriv->int816_mode) {
+>>>>>>> refs/remotes/origin/master
 		case INT_TYPE_AI1_DMA:
 		case INT_TYPE_AI3_DMA:
 			disable_dma(devpriv->dma);
@@ -853,9 +1043,13 @@ static int pcl816_ai_cancel(struct comedi_device *dev,
 			break;
 		}
 	}
+<<<<<<< HEAD
 
 	DEBUG(printk("comedi: pcl816_ai_cancel() successful\n");)
 	    return 0;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -922,8 +1116,13 @@ start_pacer(struct comedi_device *dev, int mode, unsigned int divisor1,
 	udelay(1);
 
 	if (mode == 1) {
+<<<<<<< HEAD
 		DPRINTK("mode %d, divisor1 %d, divisor2 %d\n", mode, divisor1,
 			divisor2);
+=======
+		dev_dbg(dev->class_dev, "mode %d, divisor1 %d, divisor2 %d\n",
+			mode, divisor1, divisor2);
+>>>>>>> refs/remotes/origin/master
 		outb(divisor2 & 0xff, dev->iobase + PCL816_CTR2);
 		outb((divisor2 >> 8) & 0xff, dev->iobase + PCL816_CTR2);
 		outb(divisor1 & 0xff, dev->iobase + PCL816_CTR1);
@@ -936,7 +1135,11 @@ start_pacer(struct comedi_device *dev, int mode, unsigned int divisor1,
 
 /*
 ==============================================================================
+<<<<<<< HEAD
  Check if channel list from user is builded correctly
+=======
+ Check if channel list from user is built correctly
+>>>>>>> refs/remotes/origin/master
  If it's ok, then return non-zero length of repeated segment of channel list
 */
 static int
@@ -957,11 +1160,14 @@ check_channel_list(struct comedi_device *dev,
 		/*  first channel is every time ok */
 		chansegment[0] = chanlist[0];
 		for (i = 1, seglen = 1; i < chanlen; i++, seglen++) {
+<<<<<<< HEAD
 			/*  build part of chanlist */
 			DEBUG(printk(KERN_INFO "%d. %d %d\n", i,
 				     CR_CHAN(chanlist[i]),
 				     CR_RANGE(chanlist[i]));)
 
+=======
+>>>>>>> refs/remotes/origin/master
 			/*  we detect loop, this must by finish */
 			    if (chanlist[0] == chanlist[i])
 				break;
@@ -969,12 +1175,19 @@ check_channel_list(struct comedi_device *dev,
 			    (CR_CHAN(chansegment[i - 1]) + 1) % chanlen;
 			if (nowmustbechan != CR_CHAN(chanlist[i])) {
 				/*  channel list isn't continuous :-( */
+<<<<<<< HEAD
 				printk(KERN_WARNING
 				       "comedi%d: pcl816: channel list must "
 				       "be continuous! chanlist[%i]=%d but "
 				       "must be %d or %d!\n", dev->minor,
 				       i, CR_CHAN(chanlist[i]), nowmustbechan,
 				       CR_CHAN(chanlist[0]));
+=======
+				dev_dbg(dev->class_dev,
+					"channel list must be continuous! chanlist[%i]=%d but must be %d or %d!\n",
+					i, CR_CHAN(chanlist[i]), nowmustbechan,
+					CR_CHAN(chanlist[0]));
+>>>>>>> refs/remotes/origin/master
 				return 0;
 			}
 			/*  well, this is next correct channel in list */
@@ -983,6 +1196,7 @@ check_channel_list(struct comedi_device *dev,
 
 		/*  check whole chanlist */
 		for (i = 0, segpos = 0; i < chanlen; i++) {
+<<<<<<< HEAD
 			DEBUG(printk("%d %d=%d %d\n",
 				     CR_CHAN(chansegment[i % seglen]),
 				     CR_RANGE(chansegment[i % seglen]),
@@ -999,6 +1213,17 @@ check_channel_list(struct comedi_device *dev,
 				       CR_CHAN(chanlist[i % seglen]),
 				       CR_RANGE(chanlist[i % seglen]),
 				       CR_AREF(chansegment[i % seglen]));
+=======
+			    if (chanlist[i] != chansegment[i % seglen]) {
+				dev_dbg(dev->class_dev,
+					"bad channel or range number! chanlist[%i]=%d,%d,%d and not %d,%d,%d!\n",
+					i, CR_CHAN(chansegment[i]),
+					CR_RANGE(chansegment[i]),
+					CR_AREF(chansegment[i]),
+					CR_CHAN(chanlist[i % seglen]),
+					CR_RANGE(chanlist[i % seglen]),
+					CR_AREF(chansegment[i % seglen]));
+>>>>>>> refs/remotes/origin/master
 				return 0;	/*  chan/gain list is strange */
 			}
 		}
@@ -1018,6 +1243,10 @@ setup_channel_list(struct comedi_device *dev,
 		   struct comedi_subdevice *s, unsigned int *chanlist,
 		   unsigned int seglen)
 {
+<<<<<<< HEAD
+=======
+	struct pcl816_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 
 	devpriv->ai_act_chanlist_len = seglen;
@@ -1037,6 +1266,7 @@ setup_channel_list(struct comedi_device *dev,
 	     dev->iobase + PCL816_MUX);
 }
 
+<<<<<<< HEAD
 #ifdef unused
 /*
 ==============================================================================
@@ -1119,10 +1349,19 @@ static int pcl816_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	int ret;
 	unsigned long iobase;
 	unsigned int irq, dma;
+=======
+static int pcl816_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+{
+	const struct pcl816_board *board = comedi_board(dev);
+	struct pcl816_private *devpriv;
+	int ret;
+	unsigned int dma;
+>>>>>>> refs/remotes/origin/master
 	unsigned long pages;
 	/* int i; */
 	struct comedi_subdevice *s;
 
+<<<<<<< HEAD
 	/* claim our I/O space */
 	iobase = it->options[0];
 	printk("comedi%d: pcl816:  board=%s, ioport=0x%03lx", dev->minor,
@@ -1223,10 +1462,43 @@ no_rtc:
 		goto no_dma;	/* if we haven't IRQ, we can't use DMA */
 
 	if (this_board->DMAbits != 0) {	/* board support DMA */
+=======
+	ret = comedi_request_region(dev, it->options[0], board->io_range);
+	if (ret)
+		return ret;
+
+	if (pcl816_check(dev->iobase)) {
+		dev_err(dev->class_dev, "I can't detect board. FAIL!\n");
+		return -EIO;
+	}
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	if ((1 << it->options[1]) & board->IRQbits) {
+		ret = request_irq(it->options[1], interrupt_pcl816, 0,
+				  dev->board_name, dev);
+		if (ret == 0)
+			dev->irq = it->options[1];
+	}
+
+	devpriv->irq_blocked = 0;	/* number of subdevice which use IRQ */
+	devpriv->int816_mode = 0;	/* mode of irq */
+
+	/* grab our DMA */
+	dma = 0;
+	devpriv->dma = dma;
+	if (!dev->irq)
+		goto no_dma;	/* if we haven't IRQ, we can't use DMA */
+
+	if (board->DMAbits != 0) {	/* board support DMA */
+>>>>>>> refs/remotes/origin/master
 		dma = it->options[2];
 		if (dma < 1)
 			goto no_dma;	/* DMA disabled */
 
+<<<<<<< HEAD
 		if (((1 << dma) & this_board->DMAbits) == 0) {
 			printk(", DMA is out of allowed range, FAIL!\n");
 			return -EINVAL;	/* Bad DMA */
@@ -1235,16 +1507,35 @@ no_rtc:
 		if (ret) {
 			printk(KERN_ERR
 			       ", unable to allocate DMA %u, FAIL!\n", dma);
+=======
+		if (((1 << dma) & board->DMAbits) == 0) {
+			dev_err(dev->class_dev,
+				"DMA is out of allowed range, FAIL!\n");
+			return -EINVAL;	/* Bad DMA */
+		}
+		ret = request_dma(dma, dev->board_name);
+		if (ret) {
+			dev_err(dev->class_dev,
+				"unable to allocate DMA %u, FAIL!\n", dma);
+>>>>>>> refs/remotes/origin/master
 			return -EBUSY;	/* DMA isn't free */
 		}
 
 		devpriv->dma = dma;
+<<<<<<< HEAD
 		printk(KERN_INFO ", dma=%u", dma);
+=======
+>>>>>>> refs/remotes/origin/master
 		pages = 2;	/* we need 16KB */
 		devpriv->dmabuf[0] = __get_dma_pages(GFP_KERNEL, pages);
 
 		if (!devpriv->dmabuf[0]) {
+<<<<<<< HEAD
 			printk(", unable to allocate DMA buffer, FAIL!\n");
+=======
+			dev_err(dev->class_dev,
+				"unable to allocate DMA buffer, FAIL!\n");
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * maybe experiment with try_to_free_pages()
 			 * will help ....
@@ -1254,6 +1545,7 @@ no_rtc:
 		devpriv->dmapages[0] = pages;
 		devpriv->hwdmaptr[0] = virt_to_bus((void *)devpriv->dmabuf[0]);
 		devpriv->hwdmasize[0] = (1 << pages) * PAGE_SIZE;
+<<<<<<< HEAD
 		/* printk("%d %d %ld, ",devpriv->dmapages[0],devpriv->hwdmasize[0],PAGE_SIZE); */
 
 		if (devpriv->dma_rtc == 0) {	/*  we must do duble buff :-( */
@@ -1269,10 +1561,23 @@ no_rtc:
 			    virt_to_bus((void *)devpriv->dmabuf[1]);
 			devpriv->hwdmasize[1] = (1 << pages) * PAGE_SIZE;
 		}
+=======
+
+		devpriv->dmabuf[1] = __get_dma_pages(GFP_KERNEL, pages);
+		if (!devpriv->dmabuf[1]) {
+			dev_err(dev->class_dev,
+				"unable to allocate DMA buffer, FAIL!\n");
+			return -EBUSY;
+		}
+		devpriv->dmapages[1] = pages;
+		devpriv->hwdmaptr[1] = virt_to_bus((void *)devpriv->dmabuf[1]);
+		devpriv->hwdmasize[1] = (1 << pages) * PAGE_SIZE;
+>>>>>>> refs/remotes/origin/master
 	}
 
 no_dma:
 
+<<<<<<< HEAD
 /*  if (this_board->n_aochan > 0)
     subdevs[1] = COMEDI_SUBD_AO;
   if (this_board->n_dichan > 0)
@@ -1302,6 +1607,37 @@ no_dma:
 		s->do_cmd = pcl816_ai_cmd;
 		s->poll = pcl816_ai_poll;
 		s->insn_read = pcl816_ai_insn_read;
+=======
+/*  if (board->n_aochan > 0)
+    subdevs[1] = COMEDI_SUBD_AO;
+  if (board->n_dichan > 0)
+    subdevs[2] = COMEDI_SUBD_DI;
+  if (board->n_dochan > 0)
+    subdevs[3] = COMEDI_SUBD_DO;
+*/
+
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+	if (board->n_aichan > 0) {
+		s->type = COMEDI_SUBD_AI;
+		s->subdev_flags = SDF_CMD_READ | SDF_DIFF;
+		s->n_chan = board->n_aichan;
+		s->maxdata = board->ai_maxdata;
+		s->range_table = board->ai_range_type;
+		s->insn_read = pcl816_ai_insn_read;
+		if (dev->irq) {
+			dev->read_subdev = s;
+			s->subdev_flags |= SDF_CMD_READ;
+			s->len_chanlist = board->ai_chanlist;
+			s->do_cmdtest = pcl816_ai_cmdtest;
+			s->do_cmd = pcl816_ai_cmd;
+			s->poll = pcl816_ai_poll;
+			s->cancel = pcl816_ai_cancel;
+		}
+>>>>>>> refs/remotes/origin/master
 	} else {
 		s->type = COMEDI_SUBD_UNUSED;
 	}
@@ -1309,31 +1645,51 @@ no_dma:
 #if 0
 case COMEDI_SUBD_AO:
 	s->subdev_flags = SDF_WRITABLE | SDF_GROUND;
+<<<<<<< HEAD
 	s->n_chan = this_board->n_aochan;
 	s->maxdata = this_board->ao_maxdata;
 	s->len_chanlist = this_board->ao_chanlist;
 	s->range_table = this_board->ao_range_type;
+=======
+	s->n_chan = board->n_aochan;
+	s->maxdata = board->ao_maxdata;
+	s->len_chanlist = board->ao_chanlist;
+	s->range_table = board->ao_range_type;
+>>>>>>> refs/remotes/origin/master
 	break;
 
 case COMEDI_SUBD_DI:
 	s->subdev_flags = SDF_READABLE;
+<<<<<<< HEAD
 	s->n_chan = this_board->n_dichan;
 	s->maxdata = 1;
 	s->len_chanlist = this_board->n_dichan;
+=======
+	s->n_chan = board->n_dichan;
+	s->maxdata = 1;
+	s->len_chanlist = board->n_dichan;
+>>>>>>> refs/remotes/origin/master
 	s->range_table = &range_digital;
 	break;
 
 case COMEDI_SUBD_DO:
 	s->subdev_flags = SDF_WRITABLE;
+<<<<<<< HEAD
 	s->n_chan = this_board->n_dochan;
 	s->maxdata = 1;
 	s->len_chanlist = this_board->n_dochan;
+=======
+	s->n_chan = board->n_dochan;
+	s->maxdata = 1;
+	s->len_chanlist = board->n_dochan;
+>>>>>>> refs/remotes/origin/master
 	s->range_table = &range_digital;
 	break;
 #endif
 
 	pcl816_reset(dev);
 
+<<<<<<< HEAD
 	printk("\n");
 
 	return 0;
@@ -1354,6 +1710,60 @@ static int pcl816_detach(struct comedi_device *dev)
 	return 0;
 }
 
+=======
+	return 0;
+}
+
+static void pcl816_detach(struct comedi_device *dev)
+{
+	struct pcl816_private *devpriv = dev->private;
+
+	if (dev->private) {
+		pcl816_ai_cancel(dev, dev->read_subdev);
+		pcl816_reset(dev);
+		if (devpriv->dma)
+			free_dma(devpriv->dma);
+		if (devpriv->dmabuf[0])
+			free_pages(devpriv->dmabuf[0], devpriv->dmapages[0]);
+		if (devpriv->dmabuf[1])
+			free_pages(devpriv->dmabuf[1], devpriv->dmapages[1]);
+	}
+	comedi_legacy_detach(dev);
+}
+
+static const struct pcl816_board boardtypes[] = {
+	{"pcl816", 8, 16, 10000, 1, 16, 16, &range_pcl816,
+	 &range_pcl816, PCLx1x_RANGE,
+	 0x00fc,		/*  IRQ mask */
+	 0x0a,			/*  DMA mask */
+	 0xffff,		/*  16-bit card */
+	 0xffff,		/*  D/A maxdata */
+	 1024,
+	 1,			/*  ao chan list */
+	 I8254_OSC_BASE_10MHZ},
+	{"pcl814b", 8, 16, 10000, 1, 16, 16, &range_pcl816,
+	 &range_pcl816, PCLx1x_RANGE,
+	 0x00fc,
+	 0x0a,
+	 0x3fff,		/* 14 bit card */
+	 0x3fff,
+	 1024,
+	 1,
+	 I8254_OSC_BASE_10MHZ},
+};
+
+static struct comedi_driver pcl816_driver = {
+	.driver_name	= "pcl816",
+	.module		= THIS_MODULE,
+	.attach		= pcl816_attach,
+	.detach		= pcl816_detach,
+	.board_name	= &boardtypes[0].name,
+	.num_names	= ARRAY_SIZE(boardtypes),
+	.offset		= sizeof(struct pcl816_board),
+};
+module_comedi_driver(pcl816_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");
 MODULE_LICENSE("GPL");

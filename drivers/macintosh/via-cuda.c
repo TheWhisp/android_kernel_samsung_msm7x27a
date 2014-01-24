@@ -26,7 +26,13 @@
 #include <asm/mac_via.h>
 #endif
 #include <asm/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 
 static volatile unsigned char __iomem *via;
@@ -260,7 +266,11 @@ cuda_probe(void)
     } while (0)
 
 static int
+<<<<<<< HEAD
 cuda_init_via(void)
+=======
+__init cuda_init_via(void)
+>>>>>>> refs/remotes/origin/master
 {
     out_8(&via[DIRB], (in_8(&via[DIRB]) | TACK | TIP) & ~TREQ);	/* TACK & TIP out */
     out_8(&via[B], in_8(&via[B]) | TACK | TIP);			/* negate them */

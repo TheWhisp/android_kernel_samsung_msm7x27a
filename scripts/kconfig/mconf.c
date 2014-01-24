@@ -15,17 +15,34 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <unistd.h>
 #include <locale.h>
 
 #define LKC_DIRECT_LINK
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <signal.h>
+#include <unistd.h>
+#include <locale.h>
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "lkc.h"
 #include "lxdialog/dialog.h"
 
 static const char mconf_readme[] = N_(
 "Overview\n"
 "--------\n"
+<<<<<<< HEAD
 "This interface let you select features and parameters for the build.\n"
+=======
+"This interface lets you select features and parameters for the build.\n"
+>>>>>>> refs/remotes/origin/master
 "Features can either be built-in, modularized, or ignored. Parameters\n"
 "must be entered in as decimal or hexadecimal numbers or text.\n"
 "\n"
@@ -39,16 +56,27 @@ static const char mconf_readme[] = N_(
 "\n"
 "To change any of these features, highlight it with the cursor\n"
 "keys and press <Y> to build it in, <M> to make it a module or\n"
+<<<<<<< HEAD
 "<N> to removed it.  You may also press the <Space Bar> to cycle\n"
 "through the available options (ie. Y->N->M->Y).\n"
+=======
+"<N> to remove it.  You may also press the <Space Bar> to cycle\n"
+"through the available options (i.e. Y->N->M->Y).\n"
+>>>>>>> refs/remotes/origin/master
 "\n"
 "Some additional keyboard hints:\n"
 "\n"
 "Menus\n"
 "----------\n"
+<<<<<<< HEAD
 "o  Use the Up/Down arrow keys (cursor keys) to highlight the item\n"
 "   you wish to change or submenu wish to select and press <Enter>.\n"
 "   Submenus are designated by \"--->\".\n"
+=======
+"o  Use the Up/Down arrow keys (cursor keys) to highlight the item you\n"
+"   wish to change or the submenu you wish to select and press <Enter>.\n"
+"   Submenus are designated by \"--->\", empty ones by \"----\".\n"
+>>>>>>> refs/remotes/origin/master
 "\n"
 "   Shortcut: Press the option's highlighted letter (hotkey).\n"
 "             Pressing a hotkey more than once will sequence\n"
@@ -65,7 +93,11 @@ static const char mconf_readme[] = N_(
 "             there is a delayed response which you may find annoying.\n"
 "\n"
 "   Also, the <TAB> and cursor keys will cycle between <Select>,\n"
+<<<<<<< HEAD
 "   <Exit> and <Help>.\n"
+=======
+"   <Exit>, <Help>, <Save>, and <Load>.\n"
+>>>>>>> refs/remotes/origin/master
 "\n"
 "o  To get help with an item, use the cursor keys to highlight <Help>\n"
 "   and press <ENTER>.\n"
@@ -105,10 +137,17 @@ static const char mconf_readme[] = N_(
 "Text Box    (Help Window)\n"
 "--------\n"
 "o  Use the cursor keys to scroll up/down/left/right.  The VI editor\n"
+<<<<<<< HEAD
 "   keys h,j,k,l function here as do <SPACE BAR> and <B> for those\n"
 "   who are familiar with less and lynx.\n"
 "\n"
 "o  Press <E>, <X>, <Enter> or <Esc><Esc> to exit.\n"
+=======
+"   keys h,j,k,l function here as do <u>, <d>, <SPACE BAR> and <B> for\n"
+"   those who are familiar with less and lynx.\n"
+"\n"
+"o  Press <E>, <X>, <q>, <Enter> or <Esc><Esc> to exit.\n"
+>>>>>>> refs/remotes/origin/master
 "\n"
 "\n"
 "Alternate Configuration Files\n"
@@ -117,6 +156,7 @@ static const char mconf_readme[] = N_(
 "those who, for various reasons, find it necessary to switch\n"
 "between different configurations.\n"
 "\n"
+<<<<<<< HEAD
 "At the end of the main menu you will find two options.  One is\n"
 "for saving the current configuration to a file of your choosing.\n"
 "The other option is for loading a previously saved alternate\n"
@@ -134,6 +174,23 @@ static const char mconf_readme[] = N_(
 "$TERM variable set to point to a xterm definition which supports color.\n"
 "Otherwise, Menuconfig will look rather bad.  Menuconfig will not\n"
 "display correctly in a RXVT window because rxvt displays only one\n"
+=======
+"The <Save> button will let you save the current configuration to\n"
+"a file of your choosing.  Use the <Load> button to load a previously\n"
+"saved alternate configuration.\n"
+"\n"
+"Even if you don't use alternate configuration files, but you find\n"
+"during a Menuconfig session that you have completely messed up your\n"
+"settings, you may use the <Load> button to restore your previously\n"
+"saved settings from \".config\" without restarting Menuconfig.\n"
+"\n"
+"Other information\n"
+"-----------------\n"
+"If you use Menuconfig in an XTERM window, make sure you have your\n"
+"$TERM variable set to point to an xterm definition which supports\n"
+"color.  Otherwise, Menuconfig will look rather bad.  Menuconfig will\n"
+"not display correctly in an RXVT window because rxvt displays only one\n"
+>>>>>>> refs/remotes/origin/master
 "intensity of color, bright.\n"
 "\n"
 "Menuconfig will display larger menus on screens or xterms which are\n"
@@ -148,8 +205,13 @@ static const char mconf_readme[] = N_(
 "\n"
 "Optional personality available\n"
 "------------------------------\n"
+<<<<<<< HEAD
 "If you prefer to have all of the options listed in a single menu, rather\n"
 "than the default multimenu hierarchy, run the menuconfig with\n"
+=======
+"If you prefer to have all of the options listed in a single menu,\n"
+"rather than the default multimenu hierarchy, run the menuconfig with\n"
+>>>>>>> refs/remotes/origin/master
 "MENUCONFIG_MODE environment variable set to single_menu. Example:\n"
 "\n"
 "make MENUCONFIG_MODE=single_menu menuconfig\n"
@@ -172,11 +234,19 @@ static const char mconf_readme[] = N_(
 " mono       => selects colors suitable for monochrome displays\n"
 " blackbg    => selects a color scheme with black background\n"
 " classic    => theme with blue background. The classic look\n"
+<<<<<<< HEAD
 " bluetitle  => a LCD friendly version of classic. (default)\n"
 "\n"),
 menu_instructions[] = N_(
 	"Arrow keys navigate the menu.  "
 	"<Enter> selects submenus --->.  "
+=======
+" bluetitle  => an LCD friendly version of classic. (default)\n"
+"\n"),
+menu_instructions[] = N_(
+	"Arrow keys navigate the menu.  "
+	"<Enter> selects submenus ---> (or empty submenus ----).  "
+>>>>>>> refs/remotes/origin/master
 	"Highlighted letters are hotkeys.  "
 	"Pressing <Y> includes, <N> excludes, <M> modularizes features.  "
 	"Press <Esc><Esc> to exit, <?> for Help, </> for Search.  "
@@ -236,6 +306,7 @@ search_help[] = N_(
 	"Result:\n"
 	"-----------------------------------------------------------------\n"
 	"Symbol: FOO [=m]\n"
+<<<<<<< HEAD
 	"Prompt: Foo bus is used to drive the bar HW\n"
 	"Defined at drivers/pci/Kconfig:47\n"
 	"Depends on: X86_LOCAL_APIC && X86_IO_APIC || IA64\n"
@@ -259,6 +330,38 @@ search_help[] = N_(
 	"o The 'Selects:' line tell what symbol will be automatically\n"
 	"  selected if this symbol is selected (y or m)\n"
 	"o The 'Selected by' line tell what symbol has selected this symbol\n"
+=======
+	"Type  : tristate\n"
+	"Prompt: Foo bus is used to drive the bar HW\n"
+	"  Location:\n"
+	"    -> Bus options (PCI, PCMCIA, EISA, ISA)\n"
+	"      -> PCI support (PCI [=y])\n"
+	"(1)     -> PCI access mode (<choice> [=y])\n"
+	"  Defined at drivers/pci/Kconfig:47\n"
+	"  Depends on: X86_LOCAL_APIC && X86_IO_APIC || IA64\n"
+	"  Selects: LIBCRC32\n"
+	"  Selected by: BAR [=n]\n"
+	"-----------------------------------------------------------------\n"
+	"o The line 'Type:' shows the type of the configuration option for\n"
+	"  this symbol (boolean, tristate, string, ...)\n"
+	"o The line 'Prompt:' shows the text used in the menu structure for\n"
+	"  this symbol\n"
+	"o The 'Defined at' line tells at what file / line number the symbol\n"
+	"  is defined\n"
+	"o The 'Depends on:' line tells what symbols need to be defined for\n"
+	"  this symbol to be visible in the menu (selectable)\n"
+	"o The 'Location:' lines tells where in the menu structure this symbol\n"
+	"  is located\n"
+	"    A location followed by a [=y] indicates that this is a\n"
+	"    selectable menu item - and the current value is displayed inside\n"
+	"    brackets.\n"
+	"    Press the key in the (#) prefix to jump directly to that\n"
+	"    location. You will be returned to the current search results\n"
+	"    after exiting this new menu.\n"
+	"o The 'Selects:' line tells what symbols will be automatically\n"
+	"  selected if this symbol is selected (y or m)\n"
+	"o The 'Selected by' line tells what symbol has selected this symbol\n"
+>>>>>>> refs/remotes/origin/master
 	"\n"
 	"Only relevant lines are shown.\n"
 	"\n\n"
@@ -273,12 +376,28 @@ static struct menu *current_menu;
 static int child_count;
 static int single_menu_mode;
 static int show_all_options;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int saved_x, saved_y;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void conf(struct menu *menu);
+=======
+static int save_and_exit;
+
+static void conf(struct menu *menu, struct menu *active_menu);
+>>>>>>> refs/remotes/origin/master
 static void conf_choice(struct menu *menu);
 static void conf_string(struct menu *menu);
 static void conf_load(void);
 static void conf_save(void);
+<<<<<<< HEAD
+=======
+static int show_textbox_ext(const char *title, char *text, int r, int c,
+			    int *keys, int *vscroll, int *hscroll,
+			    update_text_fn update_text, void *data);
+>>>>>>> refs/remotes/origin/master
 static void show_textbox(const char *title, const char *text, int r, int c);
 static void show_helptext(const char *title, const char *text);
 static void show_help(struct menu *menu);
@@ -300,11 +419,92 @@ static void set_config_filename(const char *config_filename)
 		filename[sizeof(filename)-1] = '\0';
 }
 
+<<<<<<< HEAD
+=======
+struct subtitle_part {
+	struct list_head entries;
+	const char *text;
+};
+static LIST_HEAD(trail);
+
+static struct subtitle_list *subtitles;
+static void set_subtitle(void)
+{
+	struct subtitle_part *sp;
+	struct subtitle_list *pos, *tmp;
+
+	for (pos = subtitles; pos != NULL; pos = tmp) {
+		tmp = pos->next;
+		free(pos);
+	}
+
+	subtitles = NULL;
+	list_for_each_entry(sp, &trail, entries) {
+		if (sp->text) {
+			if (pos) {
+				pos->next = xcalloc(sizeof(*pos), 1);
+				pos = pos->next;
+			} else {
+				subtitles = pos = xcalloc(sizeof(*pos), 1);
+			}
+			pos->text = sp->text;
+		}
+	}
+
+	set_dialog_subtitles(subtitles);
+}
+
+static void reset_subtitle(void)
+{
+	struct subtitle_list *pos, *tmp;
+
+	for (pos = subtitles; pos != NULL; pos = tmp) {
+		tmp = pos->next;
+		free(pos);
+	}
+	subtitles = NULL;
+	set_dialog_subtitles(subtitles);
+}
+
+struct search_data {
+	struct list_head *head;
+	struct menu **targets;
+	int *keys;
+};
+
+static void update_text(char *buf, size_t start, size_t end, void *_data)
+{
+	struct search_data *data = _data;
+	struct jump_key *pos;
+	int k = 0;
+
+	list_for_each_entry(pos, data->head, entries) {
+		if (pos->offset >= start && pos->offset < end) {
+			char header[4];
+
+			if (k < JUMP_NB) {
+				int key = '0' + (pos->index % JUMP_NB) + 1;
+
+				sprintf(header, "(%c)", key);
+				data->keys[k] = key;
+				data->targets[k] = pos->target;
+				k++;
+			} else {
+				sprintf(header, "   ");
+			}
+
+			memcpy(buf + pos->offset, header, sizeof(header) - 1);
+		}
+	}
+	data->keys[k] = 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 static void search_conf(void)
 {
 	struct symbol **sym_arr;
 	struct gstr res;
+<<<<<<< HEAD
 	char *dialog_input;
 	int dres;
 again:
@@ -312,6 +512,23 @@ again:
 	dres = dialog_inputbox(_("Search Configuration Parameter"),
 			      _("Enter " CONFIG_ " (sub)string to search for "
 				"(with or without \"" CONFIG_ "\")"),
+=======
+	struct gstr title;
+	char *dialog_input;
+	int dres, vscroll = 0, hscroll = 0;
+	bool again;
+	struct gstr sttext;
+	struct subtitle_part stpart;
+
+	title = str_new();
+	str_printf( &title, _("Enter (sub)string or regexp to search for "
+			      "(with or without \"%s\")"), CONFIG_);
+
+again:
+	dialog_clear();
+	dres = dialog_inputbox(_("Search Configuration Parameter"),
+			      str_get(&title),
+>>>>>>> refs/remotes/origin/master
 			      10, 75, "");
 	switch (dres) {
 	case 0:
@@ -320,6 +537,10 @@ again:
 		show_helptext(_("Search Configuration"), search_help);
 		goto again;
 	default:
+<<<<<<< HEAD
+=======
+		str_free(&title);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -328,11 +549,51 @@ again:
 	if (strncasecmp(dialog_input_result, CONFIG_, strlen(CONFIG_)) == 0)
 		dialog_input += strlen(CONFIG_);
 
+<<<<<<< HEAD
 	sym_arr = sym_re_search(dialog_input);
 	res = get_relations_str(sym_arr);
 	free(sym_arr);
 	show_textbox(_("Search Results"), str_get(&res), 0, 0);
 	str_free(&res);
+=======
+	sttext = str_new();
+	str_printf(&sttext, "Search (%s)", dialog_input_result);
+	stpart.text = str_get(&sttext);
+	list_add_tail(&stpart.entries, &trail);
+
+	sym_arr = sym_re_search(dialog_input);
+	do {
+		LIST_HEAD(head);
+		struct menu *targets[JUMP_NB];
+		int keys[JUMP_NB + 1], i;
+		struct search_data data = {
+			.head = &head,
+			.targets = targets,
+			.keys = keys,
+		};
+		struct jump_key *pos, *tmp;
+
+		res = get_relations_str(sym_arr, &head);
+		set_subtitle();
+		dres = show_textbox_ext(_("Search Results"), (char *)
+					str_get(&res), 0, 0, keys, &vscroll,
+					&hscroll, &update_text, (void *)
+					&data);
+		again = false;
+		for (i = 0; i < JUMP_NB && keys[i]; i++)
+			if (dres == keys[i]) {
+				conf(targets[i]->parent, targets[i]);
+				again = true;
+			}
+		str_free(&res);
+		list_for_each_entry_safe(pos, tmp, &head, entries)
+			free(pos);
+	} while (again);
+	free(sym_arr);
+	str_free(&title);
+	list_del(trail.prev);
+	str_free(&sttext);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void build_conf(struct menu *menu)
@@ -369,8 +630,14 @@ static void build_conf(struct menu *menu)
 						  menu->data ? "-->" : "++>",
 						  indent + 1, ' ', prompt);
 				} else
+<<<<<<< HEAD
 					item_make("   %*c%s  --->", indent + 1, ' ', prompt);
 
+=======
+					item_make("   %*c%s  %s",
+						  indent + 1, ' ', prompt,
+						  menu_is_empty(menu) ? "----" : "--->");
+>>>>>>> refs/remotes/origin/master
 				item_set_tag('m');
 				item_set_data(menu);
 				if (single_menu_mode && menu->data)
@@ -501,7 +768,11 @@ static void build_conf(struct menu *menu)
 			  (sym_has_value(sym) || !sym_is_changable(sym)) ?
 			  "" : _(" (NEW)"));
 		if (menu->prompt->type == P_MENU) {
+<<<<<<< HEAD
 			item_add_str("  --->");
+=======
+			item_add_str("  %s", menu_is_empty(menu) ? "----" : "--->");
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 	}
@@ -513,6 +784,7 @@ conf_childs:
 	indent -= doint;
 }
 
+<<<<<<< HEAD
 static void conf(struct menu *menu)
 {
 	struct menu *submenu;
@@ -522,12 +794,30 @@ static void conf(struct menu *menu)
 	int res;
 	int s_scroll = 0;
 
+=======
+static void conf(struct menu *menu, struct menu *active_menu)
+{
+	struct menu *submenu;
+	const char *prompt = menu_get_prompt(menu);
+	struct subtitle_part stpart;
+	struct symbol *sym;
+	int res;
+	int s_scroll = 0;
+
+	if (menu != &rootmenu)
+		stpart.text = menu_get_prompt(menu);
+	else
+		stpart.text = NULL;
+	list_add_tail(&stpart.entries, &trail);
+
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		item_reset();
 		current_menu = menu;
 		build_conf(menu);
 		if (!child_count)
 			break;
+<<<<<<< HEAD
 		if (menu == &rootmenu) {
 			item_make("--- ");
 			item_set_tag(':');
@@ -536,17 +826,29 @@ static void conf(struct menu *menu)
 			item_make(_("    Save an Alternate Configuration File"));
 			item_set_tag('S');
 		}
+=======
+		set_subtitle();
+>>>>>>> refs/remotes/origin/master
 		dialog_clear();
 		res = dialog_menu(prompt ? _(prompt) : _("Main Menu"),
 				  _(menu_instructions),
 				  active_menu, &s_scroll);
 		if (res == 1 || res == KEY_ESC || res == -ERRDISPLAYTOOSMALL)
 			break;
+<<<<<<< HEAD
 		if (!item_activate_selected())
 			continue;
 		if (!item_tag())
 			continue;
 
+=======
+		if (item_count() != 0) {
+			if (!item_activate_selected())
+				continue;
+			if (!item_tag())
+				continue;
+		}
+>>>>>>> refs/remotes/origin/master
 		submenu = item_data();
 		active_menu = item_data();
 		if (submenu)
@@ -561,32 +863,60 @@ static void conf(struct menu *menu)
 				if (single_menu_mode)
 					submenu->data = (void *) (long) !submenu->data;
 				else
+<<<<<<< HEAD
 					conf(submenu);
+=======
+					conf(submenu, NULL);
+>>>>>>> refs/remotes/origin/master
 				break;
 			case 't':
 				if (sym_is_choice(sym) && sym_get_tristate_value(sym) == yes)
 					conf_choice(submenu);
 				else if (submenu->prompt->type == P_MENU)
+<<<<<<< HEAD
 					conf(submenu);
+=======
+					conf(submenu, NULL);
+>>>>>>> refs/remotes/origin/master
 				break;
 			case 's':
 				conf_string(submenu);
 				break;
+<<<<<<< HEAD
 			case 'L':
 				conf_load();
 				break;
 			case 'S':
 				conf_save();
 				break;
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case 2:
 			if (sym)
 				show_help(submenu);
+<<<<<<< HEAD
 			else
 				show_helptext(_("README"), _(mconf_readme));
 			break;
 		case 3:
+=======
+			else {
+				reset_subtitle();
+				show_helptext(_("README"), _(mconf_readme));
+			}
+			break;
+		case 3:
+			reset_subtitle();
+			conf_save();
+			break;
+		case 4:
+			reset_subtitle();
+			conf_load();
+			break;
+		case 5:
+>>>>>>> refs/remotes/origin/master
 			if (item_is_tag('t')) {
 				if (sym_set_tristate_value(sym, yes))
 					break;
@@ -594,6 +924,7 @@ static void conf(struct menu *menu)
 					show_textbox(NULL, setmod_text, 6, 74);
 			}
 			break;
+<<<<<<< HEAD
 		case 4:
 			if (item_is_tag('t'))
 				sym_set_tristate_value(sym, no);
@@ -612,16 +943,56 @@ static void conf(struct menu *menu)
 			search_conf();
 			break;
 		case 8:
+=======
+		case 6:
+			if (item_is_tag('t'))
+				sym_set_tristate_value(sym, no);
+			break;
+		case 7:
+			if (item_is_tag('t'))
+				sym_set_tristate_value(sym, mod);
+			break;
+		case 8:
+			if (item_is_tag('t'))
+				sym_toggle_tristate_value(sym);
+			else if (item_is_tag('m'))
+				conf(submenu, NULL);
+			break;
+		case 9:
+			search_conf();
+			break;
+		case 10:
+>>>>>>> refs/remotes/origin/master
 			show_all_options = !show_all_options;
 			break;
 		}
 	}
+<<<<<<< HEAD
 }
 
 static void show_textbox(const char *title, const char *text, int r, int c)
 {
 	dialog_clear();
 	dialog_textbox(title, text, r, c);
+=======
+
+	list_del(trail.prev);
+}
+
+static int show_textbox_ext(const char *title, char *text, int r, int c, int
+			    *keys, int *vscroll, int *hscroll, update_text_fn
+			    update_text, void *data)
+{
+	dialog_clear();
+	return dialog_textbox(title, text, r, c, keys, vscroll, hscroll,
+			      update_text, data);
+}
+
+static void show_textbox(const char *title, const char *text, int r, int c)
+{
+	show_textbox_ext(title, (char *) text, r, c, (int []) {0}, NULL, NULL,
+			 NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void show_helptext(const char *title, const char *text)
@@ -629,6 +1000,20 @@ static void show_helptext(const char *title, const char *text)
 	show_textbox(title, text, 0, 0);
 }
 
+<<<<<<< HEAD
+=======
+static void conf_message_callback(const char *fmt, va_list ap)
+{
+	char buf[PATH_MAX+1];
+
+	vsnprintf(buf, sizeof(buf), fmt, ap);
+	if (save_and_exit)
+		printf("%s", buf);
+	else
+		show_textbox(NULL, buf, 6, 60);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void show_help(struct menu *menu)
 {
 	struct gstr help = str_new();
@@ -671,7 +1056,13 @@ static void conf_choice(struct menu *menu)
 		dialog_clear();
 		res = dialog_checklist(prompt ? _(prompt) : _("Main Menu"),
 					_(radiolist_instructions),
+<<<<<<< HEAD
 					 15, 70, 6);
+=======
+					MENUBOX_HEIGTH_MIN,
+					MENUBOX_WIDTH_MIN,
+					CHECKLIST_HEIGTH_MIN);
+>>>>>>> refs/remotes/origin/master
 		selected = item_activate_selected();
 		switch (res) {
 		case 0:
@@ -793,9 +1184,78 @@ static void conf_save(void)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int main(int ac, char **av)
 {
 	int saved_x, saved_y;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int handle_exit(void)
+{
+	int res;
+
+<<<<<<< HEAD
+	dialog_clear();
+	if (conf_get_changed())
+		res = dialog_yesno(NULL,
+				   _("Do you wish to save your new configuration ?\n"
+				     "<ESC><ESC> to continue."),
+=======
+	save_and_exit = 1;
+	reset_subtitle();
+	dialog_clear();
+	if (conf_get_changed())
+		res = dialog_yesno(NULL,
+				   _("Do you wish to save your new configuration?\n"
+				     "(Press <ESC><ESC> to continue kernel configuration.)"),
+>>>>>>> refs/remotes/origin/master
+				   6, 60);
+	else
+		res = -1;
+
+	end_dialog(saved_x, saved_y);
+
+	switch (res) {
+	case 0:
+		if (conf_write(filename)) {
+			fprintf(stderr, _("\n\n"
+					  "Error while writing of the configuration.\n"
+					  "Your configuration changes were NOT saved."
+					  "\n\n"));
+			return 1;
+		}
+		/* fall through */
+	case -1:
+		printf(_("\n\n"
+			 "*** End of the configuration.\n"
+			 "*** Execute 'make' to start the build or try 'make help'."
+			 "\n\n"));
+		res = 0;
+		break;
+	default:
+		fprintf(stderr, _("\n\n"
+				  "Your configuration changes were NOT saved."
+				  "\n\n"));
+		if (res != KEY_ESC)
+			res = 0;
+	}
+
+	return res;
+}
+
+static void sig_handler(int signo)
+{
+	exit(handle_exit());
+}
+
+int main(int ac, char **av)
+{
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	char *mode;
 	int res;
 
@@ -803,6 +1263,16 @@ int main(int ac, char **av)
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	signal(SIGINT, sig_handler);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	signal(SIGINT, sig_handler);
+
+>>>>>>> refs/remotes/origin/master
 	conf_parse(av[1]);
 	conf_read(NULL);
 
@@ -812,9 +1282,12 @@ int main(int ac, char **av)
 			single_menu_mode = 1;
 	}
 
+<<<<<<< HEAD
 	initscr();
 
 	getyx(stdscr, saved_y, saved_x);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (init_dialog(NULL)) {
 		fprintf(stderr, N_("Your display is too small to run Menuconfig!\n"));
 		fprintf(stderr, N_("It must be at least 19 lines by 80 columns.\n"));
@@ -822,8 +1295,10 @@ int main(int ac, char **av)
 	}
 
 	set_config_filename(conf_get_configname());
+<<<<<<< HEAD
 	do {
 		conf(&rootmenu);
+<<<<<<< HEAD
 		dialog_clear();
 		if (conf_get_changed())
 			res = dialog_yesno(NULL,
@@ -858,5 +1333,19 @@ int main(int ac, char **av)
 	}
 
 	return 0;
+=======
+=======
+	conf_set_message_callback(conf_message_callback);
+	do {
+		conf(&rootmenu, NULL);
+>>>>>>> refs/remotes/origin/master
+		res = handle_exit();
+	} while (res == KEY_ESC);
+
+	return res;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 

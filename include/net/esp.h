@@ -3,6 +3,7 @@
 
 #include <linux/skbuff.h>
 
+<<<<<<< HEAD
 struct crypto_aead;
 
 struct esp_data {
@@ -15,6 +16,8 @@ struct esp_data {
 
 extern void *pskb_put(struct sk_buff *skb, struct sk_buff *tail, int len);
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct ip_esp_hdr;
 
 static inline struct ip_esp_hdr *ip_esp_hdr(const struct sk_buff *skb)

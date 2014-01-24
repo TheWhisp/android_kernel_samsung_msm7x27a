@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * PMC-Sierra SPC 8001 SAS/SATA based host adapters driver
+=======
+ * PMC-Sierra PM8001/8081/8088/8089 SAS/SATA based host adapters driver
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (c) 2008-2009 USI Co., Ltd.
  * All rights reserved.
@@ -68,7 +72,11 @@ static void pm8001_tag_clear(struct pm8001_hba_info *pm8001_ha, u32 tag)
 	clear_bit(tag, bitmap);
 }
 
+<<<<<<< HEAD
 static void pm8001_tag_free(struct pm8001_hba_info *pm8001_ha, u32 tag)
+=======
+void pm8001_tag_free(struct pm8001_hba_info *pm8001_ha, u32 tag)
+>>>>>>> refs/remotes/origin/master
 {
 	pm8001_tag_clear(pm8001_ha, tag);
 }
@@ -166,6 +174,14 @@ int pm8001_phy_control(struct asd_sas_phy *sas_phy, enum phy_func func,
 	struct pm8001_hba_info *pm8001_ha = NULL;
 	struct sas_phy_linkrates *rates;
 	DECLARE_COMPLETION_ONSTACK(completion);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	pm8001_ha = sas_phy->ha->lldd_ha;
 	pm8001_ha->phy[phy_id].enable_completion = &completion;
 	switch (func) {
@@ -209,6 +225,48 @@ int pm8001_phy_control(struct asd_sas_phy *sas_phy, enum phy_func func,
 	case PHY_FUNC_DISABLE:
 		PM8001_CHIP_DISP->phy_stop_req(pm8001_ha, phy_id);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case PHY_FUNC_GET_EVENTS:
+		spin_lock_irqsave(&pm8001_ha->lock, flags);
+		if (-1 == pm8001_bar4_shift(pm8001_ha,
+					(phy_id < 4) ? 0x30000 : 0x40000)) {
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			return -EINVAL;
+=======
+	case PHY_FUNC_GET_EVENTS:
+		spin_lock_irqsave(&pm8001_ha->lock, flags);
+		if (pm8001_ha->chip_id == chip_8001) {
+			if (-1 == pm8001_bar4_shift(pm8001_ha,
+					(phy_id < 4) ? 0x30000 : 0x40000)) {
+				spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+				return -EINVAL;
+			}
+>>>>>>> refs/remotes/origin/master
+		}
+		{
+			struct sas_phy *phy = sas_phy->phy;
+			uint32_t *qp = (uint32_t *)(((char *)
+				pm8001_ha->io_mem[2].memvirtaddr)
+				+ 0x1034 + (0x4000 * (phy_id & 3)));
+
+			phy->invalid_dword_count = qp[0];
+			phy->running_disparity_error_count = qp[1];
+			phy->loss_of_dword_sync_count = qp[3];
+			phy->phy_reset_problem_count = qp[4];
+		}
+<<<<<<< HEAD
+		pm8001_bar4_shift(pm8001_ha, 0);
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pm8001_ha->chip_id == chip_8001)
+			pm8001_bar4_shift(pm8001_ha, 0);
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	default:
 		rc = -EOPNOTSUPP;
 	}
@@ -216,6 +274,8 @@ int pm8001_phy_control(struct asd_sas_phy *sas_phy, enum phy_func func,
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int pm8001_slave_alloc(struct scsi_device *scsi_dev)
 {
 	struct domain_device *dev = sdev_to_domain_dev(scsi_dev);
@@ -230,6 +290,10 @@ int pm8001_slave_alloc(struct scsi_device *scsi_dev)
 	return sas_slave_alloc(scsi_dev);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
   * pm8001_scan_start - we should enable all HBA phys by sending the phy_start
   * command to HBA.
@@ -241,19 +305,43 @@ void pm8001_scan_start(struct Scsi_Host *shost)
 	struct pm8001_hba_info *pm8001_ha;
 	struct sas_ha_struct *sha = SHOST_TO_SAS_HA(shost);
 	pm8001_ha = sha->lldd_ha;
+<<<<<<< HEAD
 	PM8001_CHIP_DISP->sas_re_init_req(pm8001_ha);
+=======
+	/* SAS_RE_INITIALIZATION not available in SPCv/ve */
+	if (pm8001_ha->chip_id == chip_8001)
+		PM8001_CHIP_DISP->sas_re_init_req(pm8001_ha);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < pm8001_ha->chip->n_phy; ++i)
 		PM8001_CHIP_DISP->phy_start_req(pm8001_ha, i);
 }
 
 int pm8001_scan_finished(struct Scsi_Host *shost, unsigned long time)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct sas_ha_struct *ha = SHOST_TO_SAS_HA(shost);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sas_ha_struct *ha = SHOST_TO_SAS_HA(shost);
+
+>>>>>>> refs/remotes/origin/master
 	/* give the phy enabling interrupt event time to come in (1s
 	* is empirically about all it takes) */
 	if (time < HZ)
 		return 0;
 	/* Wait for discovery to finish */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	scsi_flush_work(shost);
+=======
+	sas_drain_work(ha);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sas_drain_work(ha);
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -314,6 +402,8 @@ static int pm8001_task_prep_ssp(struct pm8001_hba_info *pm8001_ha,
 {
 	return PM8001_CHIP_DISP->ssp_io_req(pm8001_ha, ccb);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 int pm8001_slave_configure(struct scsi_device *sdev)
 {
 	struct domain_device *dev = sdev_to_domain_dev(sdev);
@@ -330,6 +420,12 @@ int pm8001_slave_configure(struct scsi_device *sdev)
 	}
 	return 0;
 }
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
  /* Find the local port id that's attached to this device */
 static int sas_find_local_port_id(struct domain_device *dev)
 {
@@ -357,7 +453,11 @@ static int sas_find_local_port_id(struct domain_device *dev)
   * @tmf: the task management IU
   */
 #define DEV_IS_GONE(pm8001_dev)	\
+<<<<<<< HEAD
 	((!pm8001_dev || (pm8001_dev->dev_type == NO_DEVICE)))
+=======
+	((!pm8001_dev || (pm8001_dev->dev_type == SAS_PHY_UNUSED)))
+>>>>>>> refs/remotes/origin/master
 static int pm8001_task_exec(struct sas_task *task, const int num,
 	gfp_t gfp_flags, int is_tmf, struct pm8001_tmf_task *tmf)
 {
@@ -369,13 +469,25 @@ static int pm8001_task_exec(struct sas_task *task, const int num,
 	struct pm8001_ccb_info *ccb;
 	u32 tag = 0xdeadbeef, rc, n_elem = 0;
 	u32 n = num;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags = 0, flags_libsas = 0;
+=======
+	unsigned long flags = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev->port) {
 		struct task_status_struct *tsm = &t->task_status;
 		tsm->resp = SAS_TASK_UNDELIVERED;
 		tsm->stat = SAS_PHY_DOWN;
+<<<<<<< HEAD
 		if (dev->dev_type != SATA_DEV)
+=======
+		if (dev->dev_type != SAS_SATA_DEV)
+>>>>>>> refs/remotes/origin/master
 			t->task_done(t);
 		return 0;
 	}
@@ -385,6 +497,8 @@ static int pm8001_task_exec(struct sas_task *task, const int num,
 	do {
 		dev = t->dev;
 		pm8001_dev = dev->lldd_dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (DEV_IS_GONE(pm8001_dev)) {
 			if (pm8001_dev) {
 				PM8001_IO_DBG(pm8001_ha,
@@ -400,17 +514,33 @@ static int pm8001_task_exec(struct sas_task *task, const int num,
 		}
 		port = &pm8001_ha->port[sas_find_local_port_id(dev)];
 		if (!port->port_attached) {
+=======
+		port = &pm8001_ha->port[sas_find_local_port_id(dev)];
+		if (DEV_IS_GONE(pm8001_dev) || !port->port_attached) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		port = &pm8001_ha->port[sas_find_local_port_id(dev)];
+		if (DEV_IS_GONE(pm8001_dev) || !port->port_attached) {
+>>>>>>> refs/remotes/origin/master
 			if (sas_protocol_ata(t->task_proto)) {
 				struct task_status_struct *ts = &t->task_status;
 				ts->resp = SAS_TASK_UNDELIVERED;
 				ts->stat = SAS_PHY_DOWN;
 
 				spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 				spin_unlock_irqrestore(dev->sata_dev.ap->lock,
 						flags_libsas);
 				t->task_done(t);
 				spin_lock_irqsave(dev->sata_dev.ap->lock,
 					flags_libsas);
+=======
+				t->task_done(t);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				t->task_done(t);
+>>>>>>> refs/remotes/origin/master
 				spin_lock_irqsave(&pm8001_ha->lock, flags);
 				if (n > 1)
 					t = list_entry(t->list.next,
@@ -464,7 +594,10 @@ static int pm8001_task_exec(struct sas_task *task, const int num,
 			break;
 		case SAS_PROTOCOL_SATA:
 		case SAS_PROTOCOL_STP:
+<<<<<<< HEAD
 		case SAS_PROTOCOL_SATA | SAS_PROTOCOL_STP:
+=======
+>>>>>>> refs/remotes/origin/master
 			rc = pm8001_task_prep_ata(pm8001_ha, ccb);
 			break;
 		default:
@@ -558,6 +691,14 @@ void pm8001_ccb_task_free(struct pm8001_hba_info *pm8001_ha,
 	task->lldd_task = NULL;
 	ccb->task = NULL;
 	ccb->ccb_tag = 0xFFFFFFFF;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ccb->open_retry = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ccb->open_retry = 0;
+>>>>>>> refs/remotes/origin/master
 	pm8001_ccb_free(pm8001_ha, ccb_idx);
 }
 
@@ -569,7 +710,11 @@ struct pm8001_device *pm8001_alloc_dev(struct pm8001_hba_info *pm8001_ha)
 {
 	u32 dev;
 	for (dev = 0; dev < PM8001_MAX_DEVICES; dev++) {
+<<<<<<< HEAD
 		if (pm8001_ha->devices[dev].dev_type == NO_DEVICE) {
+=======
+		if (pm8001_ha->devices[dev].dev_type == SAS_PHY_UNUSED) {
+>>>>>>> refs/remotes/origin/master
 			pm8001_ha->devices[dev].id = dev;
 			return &pm8001_ha->devices[dev];
 		}
@@ -581,13 +726,38 @@ struct pm8001_device *pm8001_alloc_dev(struct pm8001_hba_info *pm8001_ha)
 	}
 	return NULL;
 }
+<<<<<<< HEAD
+=======
+/**
+  * pm8001_find_dev - find a matching pm8001_device
+  * @pm8001_ha: our hba card information
+  */
+struct pm8001_device *pm8001_find_dev(struct pm8001_hba_info *pm8001_ha,
+					u32 device_id)
+{
+	u32 dev;
+	for (dev = 0; dev < PM8001_MAX_DEVICES; dev++) {
+		if (pm8001_ha->devices[dev].device_id == device_id)
+			return &pm8001_ha->devices[dev];
+	}
+	if (dev == PM8001_MAX_DEVICES) {
+		PM8001_FAIL_DBG(pm8001_ha, pm8001_printk("NO MATCHING "
+				"DEVICE FOUND !!!\n"));
+	}
+	return NULL;
+}
+>>>>>>> refs/remotes/origin/master
 
 static void pm8001_free_dev(struct pm8001_device *pm8001_dev)
 {
 	u32 id = pm8001_dev->id;
 	memset(pm8001_dev, 0, sizeof(*pm8001_dev));
 	pm8001_dev->id = id;
+<<<<<<< HEAD
 	pm8001_dev->dev_type = NO_DEVICE;
+=======
+	pm8001_dev->dev_type = SAS_PHY_UNUSED;
+>>>>>>> refs/remotes/origin/master
 	pm8001_dev->device_id = PM8001_MAX_DEVICES;
 	pm8001_dev->sas_device = NULL;
 }
@@ -645,19 +815,41 @@ static int pm8001_dev_found_notify(struct domain_device *dev)
 			res = -1;
 		}
 	} else {
+<<<<<<< HEAD
 		if (dev->dev_type == SATA_DEV) {
+=======
+		if (dev->dev_type == SAS_SATA_DEV) {
+>>>>>>> refs/remotes/origin/master
 			pm8001_device->attached_phy =
 				dev->rphy->identify.phy_identifier;
 				flag = 1; /* directly sata*/
 		}
 	} /*register this device to HBA*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 	PM8001_DISC_DBG(pm8001_ha, pm8001_printk("Found device \n"));
+=======
+	PM8001_DISC_DBG(pm8001_ha, pm8001_printk("Found device\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 	PM8001_CHIP_DISP->reg_dev_req(pm8001_ha, pm8001_device, flag);
 	spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 	wait_for_completion(&completion);
 	if (dev->dev_type == SAS_END_DEV)
 		msleep(50);
+<<<<<<< HEAD
 	pm8001_ha->flags |= PM8001F_RUN_TIME ;
+=======
+	pm8001_ha->flags = PM8001F_RUN_TIME;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PM8001_DISC_DBG(pm8001_ha, pm8001_printk("Found device\n"));
+	PM8001_CHIP_DISP->reg_dev_req(pm8001_ha, pm8001_device, flag);
+	spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+	wait_for_completion(&completion);
+	if (dev->dev_type == SAS_END_DEVICE)
+		msleep(50);
+	pm8001_ha->flags = PM8001F_RUN_TIME;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 found_out:
 	spin_unlock_irqrestore(&pm8001_ha->lock, flags);
@@ -669,6 +861,8 @@ int pm8001_dev_found(struct domain_device *dev)
 	return pm8001_dev_found_notify(dev);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
   * pm8001_alloc_task - allocate a task structure for TMF
   */
@@ -693,11 +887,20 @@ static void pm8001_free_task(struct sas_task *task)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void pm8001_task_done(struct sas_task *task)
 {
 	if (!del_timer(&task->timer))
 		return;
 	complete(&task->completion);
+=======
+void pm8001_task_done(struct sas_task *task)
+{
+	if (!del_timer(&task->slow_task->timer))
+		return;
+	complete(&task->slow_task->completion);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pm8001_tmf_timedout(unsigned long data)
@@ -705,7 +908,11 @@ static void pm8001_tmf_timedout(unsigned long data)
 	struct sas_task *task = (struct sas_task *)data;
 
 	task->task_state_flags |= SAS_TASK_STATE_ABORTED;
+<<<<<<< HEAD
 	complete(&task->completion);
+=======
+	complete(&task->slow_task->completion);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define PM8001_TASK_TIMEOUT 20
@@ -726,9 +933,21 @@ static int pm8001_exec_internal_tmf_task(struct domain_device *dev,
 	int res, retry;
 	struct sas_task *task = NULL;
 	struct pm8001_hba_info *pm8001_ha = pm8001_find_ha_by_dev(dev);
+<<<<<<< HEAD
 
 	for (retry = 0; retry < 3; retry++) {
+<<<<<<< HEAD
 		task = pm8001_alloc_task();
+=======
+		task = sas_alloc_task(GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pm8001_device *pm8001_dev = dev->lldd_dev;
+	DECLARE_COMPLETION_ONSTACK(completion_setstate);
+
+	for (retry = 0; retry < 3; retry++) {
+		task = sas_alloc_slow_task(GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (!task)
 			return -ENOMEM;
 
@@ -736,21 +955,42 @@ static int pm8001_exec_internal_tmf_task(struct domain_device *dev,
 		task->task_proto = dev->tproto;
 		memcpy(&task->ssp_task, parameter, para_len);
 		task->task_done = pm8001_task_done;
+<<<<<<< HEAD
 		task->timer.data = (unsigned long)task;
 		task->timer.function = pm8001_tmf_timedout;
 		task->timer.expires = jiffies + PM8001_TASK_TIMEOUT*HZ;
 		add_timer(&task->timer);
+=======
+		task->slow_task->timer.data = (unsigned long)task;
+		task->slow_task->timer.function = pm8001_tmf_timedout;
+		task->slow_task->timer.expires = jiffies + PM8001_TASK_TIMEOUT*HZ;
+		add_timer(&task->slow_task->timer);
+>>>>>>> refs/remotes/origin/master
 
 		res = pm8001_task_exec(task, 1, GFP_KERNEL, 1, tmf);
 
 		if (res) {
+<<<<<<< HEAD
 			del_timer(&task->timer);
+=======
+			del_timer(&task->slow_task->timer);
+>>>>>>> refs/remotes/origin/master
 			PM8001_FAIL_DBG(pm8001_ha,
 				pm8001_printk("Executing internal task "
 				"failed\n"));
 			goto ex_err;
 		}
+<<<<<<< HEAD
 		wait_for_completion(&task->completion);
+=======
+		wait_for_completion(&task->slow_task->completion);
+		if (pm8001_ha->chip_id != chip_8001) {
+			pm8001_dev->setds_completion = &completion_setstate;
+				PM8001_CHIP_DISP->set_dev_state_req(pm8001_ha,
+					pm8001_dev, 0x01);
+			wait_for_completion(&completion_setstate);
+		}
+>>>>>>> refs/remotes/origin/master
 		res = -TMF_RESP_FUNC_FAILED;
 		/* Even TMF timed out, return direct. */
 		if ((task->task_state_flags & SAS_TASK_STATE_ABORTED)) {
@@ -789,14 +1029,30 @@ static int pm8001_exec_internal_tmf_task(struct domain_device *dev,
 				SAS_ADDR(dev->sas_addr),
 				task->task_status.resp,
 				task->task_status.stat));
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pm8001_free_task(task);
+=======
+			sas_free_task(task);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sas_free_task(task);
+>>>>>>> refs/remotes/origin/master
 			task = NULL;
 		}
 	}
 ex_err:
 	BUG_ON(retry == 3 && task != NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (task != NULL)
 		pm8001_free_task(task);
+=======
+	sas_free_task(task);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sas_free_task(task);
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -811,17 +1067,32 @@ pm8001_exec_internal_task_abort(struct pm8001_hba_info *pm8001_ha,
 	struct sas_task *task = NULL;
 
 	for (retry = 0; retry < 3; retry++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		task = pm8001_alloc_task();
+=======
+		task = sas_alloc_task(GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		task = sas_alloc_slow_task(GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (!task)
 			return -ENOMEM;
 
 		task->dev = dev;
 		task->task_proto = dev->tproto;
 		task->task_done = pm8001_task_done;
+<<<<<<< HEAD
 		task->timer.data = (unsigned long)task;
 		task->timer.function = pm8001_tmf_timedout;
 		task->timer.expires = jiffies + PM8001_TASK_TIMEOUT * HZ;
 		add_timer(&task->timer);
+=======
+		task->slow_task->timer.data = (unsigned long)task;
+		task->slow_task->timer.function = pm8001_tmf_timedout;
+		task->slow_task->timer.expires = jiffies + PM8001_TASK_TIMEOUT * HZ;
+		add_timer(&task->slow_task->timer);
+>>>>>>> refs/remotes/origin/master
 
 		res = pm8001_tag_alloc(pm8001_ha, &ccb_tag);
 		if (res)
@@ -835,13 +1106,21 @@ pm8001_exec_internal_task_abort(struct pm8001_hba_info *pm8001_ha,
 			pm8001_dev, flag, task_tag, ccb_tag);
 
 		if (res) {
+<<<<<<< HEAD
 			del_timer(&task->timer);
+=======
+			del_timer(&task->slow_task->timer);
+>>>>>>> refs/remotes/origin/master
 			PM8001_FAIL_DBG(pm8001_ha,
 				pm8001_printk("Executing internal task "
 				"failed\n"));
 			goto ex_err;
 		}
+<<<<<<< HEAD
 		wait_for_completion(&task->completion);
+=======
+		wait_for_completion(&task->slow_task->completion);
+>>>>>>> refs/remotes/origin/master
 		res = TMF_RESP_FUNC_FAILED;
 		/* Even TMF timed out, return direct. */
 		if ((task->task_state_flags & SAS_TASK_STATE_ABORTED)) {
@@ -864,14 +1143,30 @@ pm8001_exec_internal_task_abort(struct pm8001_hba_info *pm8001_ha,
 				SAS_ADDR(dev->sas_addr),
 				task->task_status.resp,
 				task->task_status.stat));
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pm8001_free_task(task);
+=======
+			sas_free_task(task);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sas_free_task(task);
+>>>>>>> refs/remotes/origin/master
 			task = NULL;
 		}
 	}
 ex_err:
 	BUG_ON(retry == 3 && task != NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (task != NULL)
 		pm8001_free_task(task);
+=======
+	sas_free_task(task);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sas_free_task(task);
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -928,6 +1223,90 @@ static int pm8001_issue_ssp_tmf(struct domain_device *dev,
 		tmf);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* retry commands by ha, by task and/or by device */
+void pm8001_open_reject_retry(
+	struct pm8001_hba_info *pm8001_ha,
+	struct sas_task *task_to_close,
+	struct pm8001_device *device_to_close)
+{
+	int i;
+	unsigned long flags;
+
+	if (pm8001_ha == NULL)
+		return;
+
+	spin_lock_irqsave(&pm8001_ha->lock, flags);
+
+	for (i = 0; i < PM8001_MAX_CCB; i++) {
+		struct sas_task *task;
+		struct task_status_struct *ts;
+		struct pm8001_device *pm8001_dev;
+		unsigned long flags1;
+		u32 tag;
+		struct pm8001_ccb_info *ccb = &pm8001_ha->ccb_info[i];
+
+		pm8001_dev = ccb->device;
+<<<<<<< HEAD
+		if (!pm8001_dev || (pm8001_dev->dev_type == NO_DEVICE))
+=======
+		if (!pm8001_dev || (pm8001_dev->dev_type == SAS_PHY_UNUSED))
+>>>>>>> refs/remotes/origin/master
+			continue;
+		if (!device_to_close) {
+			uintptr_t d = (uintptr_t)pm8001_dev
+					- (uintptr_t)&pm8001_ha->devices;
+			if (((d % sizeof(*pm8001_dev)) != 0)
+			 || ((d / sizeof(*pm8001_dev)) >= PM8001_MAX_DEVICES))
+				continue;
+		} else if (pm8001_dev != device_to_close)
+			continue;
+		tag = ccb->ccb_tag;
+		if (!tag || (tag == 0xFFFFFFFF))
+			continue;
+		task = ccb->task;
+		if (!task || !task->task_done)
+			continue;
+		if (task_to_close && (task != task_to_close))
+			continue;
+		ts = &task->task_status;
+		ts->resp = SAS_TASK_COMPLETE;
+		/* Force the midlayer to retry */
+		ts->stat = SAS_OPEN_REJECT;
+		ts->open_rej_reason = SAS_OREJ_RSVD_RETRY;
+		if (pm8001_dev)
+			pm8001_dev->running_req--;
+		spin_lock_irqsave(&task->task_state_lock, flags1);
+		task->task_state_flags &= ~SAS_TASK_STATE_PENDING;
+		task->task_state_flags &= ~SAS_TASK_AT_INITIATOR;
+		task->task_state_flags |= SAS_TASK_STATE_DONE;
+		if (unlikely((task->task_state_flags
+				& SAS_TASK_STATE_ABORTED))) {
+			spin_unlock_irqrestore(&task->task_state_lock,
+				flags1);
+			pm8001_ccb_task_free(pm8001_ha, task, ccb, tag);
+		} else {
+			spin_unlock_irqrestore(&task->task_state_lock,
+				flags1);
+			pm8001_ccb_task_free(pm8001_ha, task, ccb, tag);
+			mb();/* in order to force CPU ordering */
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			task->task_done(task);
+			spin_lock_irqsave(&pm8001_ha->lock, flags);
+		}
+	}
+
+	spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
   * Standard mandates link reset for ATA  (type 0) and hard reset for
   * SSP (type 1) , only for RECOVERY
@@ -938,17 +1317,40 @@ int pm8001_I_T_nexus_reset(struct domain_device *dev)
 	struct pm8001_device *pm8001_dev;
 	struct pm8001_hba_info *pm8001_ha;
 	struct sas_phy *phy;
+<<<<<<< HEAD
 	if (!dev || !dev->lldd_dev)
 		return -1;
 
 	pm8001_dev = dev->lldd_dev;
 	pm8001_ha = pm8001_find_ha_by_dev(dev);
+<<<<<<< HEAD
 	phy = sas_find_local_phy(dev);
 
 	if (dev_is_sata(dev)) {
 		DECLARE_COMPLETION_ONSTACK(completion_setstate);
 		if (scsi_is_sas_phy_local(phy))
 			return 0;
+=======
+=======
+
+	if (!dev || !dev->lldd_dev)
+		return -ENODEV;
+
+	pm8001_dev = dev->lldd_dev;
+	pm8001_ha = pm8001_find_ha_by_dev(dev);
+>>>>>>> refs/remotes/origin/master
+	phy = sas_get_local_phy(dev);
+
+	if (dev_is_sata(dev)) {
+		DECLARE_COMPLETION_ONSTACK(completion_setstate);
+		if (scsi_is_sas_phy_local(phy)) {
+			rc = 0;
+			goto out;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = sas_phy_reset(phy, 1);
 		msleep(2000);
 		rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev ,
@@ -957,15 +1359,104 @@ int pm8001_I_T_nexus_reset(struct domain_device *dev)
 		rc = PM8001_CHIP_DISP->set_dev_state_req(pm8001_ha,
 			pm8001_dev, 0x01);
 		wait_for_completion(&completion_setstate);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else{
 	rc = sas_phy_reset(phy, 1);
 	msleep(2000);
 	}
 	PM8001_EH_DBG(pm8001_ha, pm8001_printk(" for device[%x]:rc=%d\n",
 		pm8001_dev->device_id, rc));
+=======
+	} else {
+=======
+	} else {
+		rc = sas_phy_reset(phy, 1);
+		msleep(2000);
+	}
+	PM8001_EH_DBG(pm8001_ha, pm8001_printk(" for device[%x]:rc=%d\n",
+		pm8001_dev->device_id, rc));
+ out:
+	sas_put_local_phy(phy);
 	return rc;
 }
 
+/*
+* This function handle the IT_NEXUS_XXX event or completion
+* status code for SSP/SATA/SMP I/O request.
+*/
+int pm8001_I_T_nexus_event_handler(struct domain_device *dev)
+{
+	int rc = TMF_RESP_FUNC_FAILED;
+	struct pm8001_device *pm8001_dev;
+	struct pm8001_hba_info *pm8001_ha;
+	struct sas_phy *phy;
+	u32 device_id = 0;
+
+	if (!dev || !dev->lldd_dev)
+		return -1;
+
+	pm8001_dev = dev->lldd_dev;
+	device_id = pm8001_dev->device_id;
+	pm8001_ha = pm8001_find_ha_by_dev(dev);
+
+	PM8001_EH_DBG(pm8001_ha,
+			pm8001_printk("I_T_Nexus handler invoked !!"));
+
+	phy = sas_get_local_phy(dev);
+
+	if (dev_is_sata(dev)) {
+		DECLARE_COMPLETION_ONSTACK(completion_setstate);
+		if (scsi_is_sas_phy_local(phy)) {
+			rc = 0;
+			goto out;
+		}
+		/* send internal ssp/sata/smp abort command to FW */
+		rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev ,
+							dev, 1, 0);
+		msleep(100);
+
+		/* deregister the target device */
+		pm8001_dev_gone_notify(dev);
+		msleep(200);
+
+		/*send phy reset to hard reset target */
+		rc = sas_phy_reset(phy, 1);
+		msleep(2000);
+		pm8001_dev->setds_completion = &completion_setstate;
+
+		wait_for_completion(&completion_setstate);
+	} else {
+		/* send internal ssp/sata/smp abort command to FW */
+		rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev ,
+							dev, 1, 0);
+		msleep(100);
+
+		/* deregister the target device */
+		pm8001_dev_gone_notify(dev);
+		msleep(200);
+
+		/*send phy reset to hard reset target */
+>>>>>>> refs/remotes/origin/master
+		rc = sas_phy_reset(phy, 1);
+		msleep(2000);
+	}
+	PM8001_EH_DBG(pm8001_ha, pm8001_printk(" for device[%x]:rc=%d\n",
+		pm8001_dev->device_id, rc));
+<<<<<<< HEAD
+ out:
+	sas_put_local_phy(phy);
+>>>>>>> refs/remotes/origin/cm-10.0
+	return rc;
+}
+
+=======
+out:
+	sas_put_local_phy(phy);
+
+	return rc;
+}
+>>>>>>> refs/remotes/origin/master
 /* mandatory SAM-3, the task reset the specified LUN*/
 int pm8001_lu_reset(struct domain_device *dev, u8 *lun)
 {
@@ -973,14 +1464,34 @@ int pm8001_lu_reset(struct domain_device *dev, u8 *lun)
 	struct pm8001_tmf_task tmf_task;
 	struct pm8001_device *pm8001_dev = dev->lldd_dev;
 	struct pm8001_hba_info *pm8001_ha = pm8001_find_ha_by_dev(dev);
+<<<<<<< HEAD
 	if (dev_is_sata(dev)) {
+<<<<<<< HEAD
 		struct sas_phy *phy = sas_find_local_phy(dev);
 		rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev ,
 			dev, 1, 0);
 		rc = sas_phy_reset(phy, 1);
+=======
+=======
+	DECLARE_COMPLETION_ONSTACK(completion_setstate);
+	if (dev_is_sata(dev)) {
+>>>>>>> refs/remotes/origin/master
+		struct sas_phy *phy = sas_get_local_phy(dev);
+		rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev ,
+			dev, 1, 0);
+		rc = sas_phy_reset(phy, 1);
+		sas_put_local_phy(phy);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = PM8001_CHIP_DISP->set_dev_state_req(pm8001_ha,
 			pm8001_dev, 0x01);
 		msleep(2000);
+=======
+		pm8001_dev->setds_completion = &completion_setstate;
+		rc = PM8001_CHIP_DISP->set_dev_state_req(pm8001_ha,
+			pm8001_dev, 0x01);
+		wait_for_completion(&completion_setstate);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		tmf_task.tmf = TMF_LU_RESET;
 		rc = pm8001_issue_ssp_tmf(dev, lun, &tmf_task);
@@ -1026,13 +1537,31 @@ int pm8001_query_task(struct sas_task *task)
 		/* The task is still in Lun, release it then */
 		case TMF_RESP_FUNC_SUCC:
 			PM8001_EH_DBG(pm8001_ha,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				pm8001_printk("The task is still in Lun \n"));
+=======
+				pm8001_printk("The task is still in Lun\n"));
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pm8001_printk("The task is still in Lun\n"));
+			break;
+>>>>>>> refs/remotes/origin/master
 		/* The task is not in Lun or failed, reset the phy */
 		case TMF_RESP_FUNC_FAILED:
 		case TMF_RESP_FUNC_COMPLETE:
 			PM8001_EH_DBG(pm8001_ha,
 			pm8001_printk("The task is not in Lun or failed,"
+<<<<<<< HEAD
+<<<<<<< HEAD
 			" reset the phy \n"));
+=======
+			" reset the phy\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			" reset the phy\n"));
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}

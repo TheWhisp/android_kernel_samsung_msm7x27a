@@ -14,8 +14,13 @@
 #ifndef __OSD_SEC_H__
 #define __OSD_SEC_H__
 
+<<<<<<< HEAD
 #include "osd_protocol.h"
 #include "osd_types.h"
+=======
+#include <scsi/osd_protocol.h>
+#include <scsi/osd_types.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Contains types and constants of osd capabilities and security

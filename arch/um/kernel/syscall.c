@@ -3,6 +3,7 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "linux/file.h"
 #include "linux/fs.h"
 #include "linux/mm.h"
@@ -37,6 +38,18 @@ long sys_vfork(void)
 	current->thread.forking = 0;
 	return ret;
 }
+=======
+#include <linux/file.h>
+#include <linux/fs.h>
+#include <linux/mm.h>
+#include <linux/sched.h>
+#include <linux/utsname.h>
+#include <linux/syscalls.h>
+#include <asm/current.h>
+#include <asm/mman.h>
+#include <asm/uaccess.h>
+#include <asm/unistd.h>
+>>>>>>> refs/remotes/origin/master
 
 long old_mmap(unsigned long addr, unsigned long len,
 	      unsigned long prot, unsigned long flags,
@@ -50,6 +63,7 @@ long old_mmap(unsigned long addr, unsigned long len,
  out:
 	return err;
 }
+<<<<<<< HEAD
 
 int kernel_execve(const char *filename,
 		  const char *const argv[],
@@ -66,3 +80,5 @@ int kernel_execve(const char *filename,
 
 	return ret;
 }
+=======
+>>>>>>> refs/remotes/origin/master

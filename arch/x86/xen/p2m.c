@@ -22,7 +22,11 @@
  *
  * P2M_PER_PAGE depends on the architecture, as a mfn is always
  * unsigned long (8 bytes on 64-bit, 4 bytes on 32), leading to
+<<<<<<< HEAD
  * 512 and 1024 entries respectively. 
+=======
+ * 512 and 1024 entries respectively.
+>>>>>>> refs/remotes/origin/master
  *
  * In short, these structures contain the Machine Frame Number (MFN) of the PFN.
  *
@@ -139,11 +143,19 @@
  *      /    | ~0, ~0, ....  |
  *     |     \---------------/
  *     |
+<<<<<<< HEAD
  *     p2m_missing             p2m_missing
  * /------------------\     /------------\
  * | [p2m_mid_missing]+---->| ~0, ~0, ~0 |
  * | [p2m_mid_missing]+---->| ..., ~0    |
  * \------------------/     \------------/
+=======
+ *   p2m_mid_missing           p2m_missing
+ * /-----------------\     /------------\
+ * | [p2m_missing]   +---->| ~0, ~0, ~0 |
+ * | [p2m_missing]   +---->| ..., ~0    |
+ * \-----------------/     \------------/
+>>>>>>> refs/remotes/origin/master
  *
  * where ~0 is INVALID_P2M_ENTRY. IDENTITY is (PFN | IDENTITY_BIT)
  */
@@ -161,7 +173,20 @@
 #include <asm/xen/page.h>
 #include <asm/xen/hypercall.h>
 #include <asm/xen/hypervisor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <xen/grant_table.h>
+
+#include "multicalls.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <xen/balloon.h>
+#include <xen/grant_table.h>
+
+#include "multicalls.h"
+>>>>>>> refs/remotes/origin/master
 #include "xen-ops.h"
 
 static void __init m2p_override_init(void);
@@ -192,6 +217,24 @@ RESERVE_BRK(p2m_mid_mfn, PAGE_SIZE * (MAX_DOMAIN_PAGES / (P2M_PER_PAGE * P2M_MID
  * boundary violation will require three middle nodes. */
 RESERVE_BRK(p2m_mid_identity, PAGE_SIZE * 2 * 3);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* When we populate back during bootup, the amount of pages can vary. The
+ * max we have is seen is 395979, but that does not mean it can't be more.
+ * But some machines can have 3GB I/O holes even. So lets reserve enough
+ * for 4GB of I/O and E820 holes. */
+RESERVE_BRK(p2m_populated, PMD_SIZE * 4);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* When we populate back during bootup, the amount of pages can vary. The
+ * max we have is seen is 395979, but that does not mean it can't be more.
+ * Some machines can have 3GB I/O holes even. With early_can_reuse_p2m_middle
+ * it can re-use Xen provided mfn_list array, so we only need to allocate at
+ * most three P2M top nodes. */
+RESERVE_BRK(p2m_populated, PAGE_SIZE * 3);
+
+>>>>>>> refs/remotes/origin/master
 static inline unsigned p2m_top_index(unsigned long pfn)
 {
 	BUG_ON(pfn >= MAX_P2M_PFN);
@@ -387,7 +430,89 @@ void __init xen_build_dynamic_phys_to_machine(void)
 
 	m2p_override_init();
 }
+<<<<<<< HEAD
 
+=======
+#ifdef CONFIG_X86_64
+#include <linux/bootmem.h>
+unsigned long __init xen_revector_p2m_tree(void)
+{
+	unsigned long va_start;
+	unsigned long va_end;
+	unsigned long pfn;
+	unsigned long pfn_free = 0;
+	unsigned long *mfn_list = NULL;
+	unsigned long size;
+
+	va_start = xen_start_info->mfn_list;
+	/*We copy in increments of P2M_PER_PAGE * sizeof(unsigned long),
+	 * so make sure it is rounded up to that */
+	size = PAGE_ALIGN(xen_start_info->nr_pages * sizeof(unsigned long));
+	va_end = va_start + size;
+
+	/* If we were revectored already, don't do it again. */
+	if (va_start <= __START_KERNEL_map && va_start >= __PAGE_OFFSET)
+		return 0;
+
+	mfn_list = alloc_bootmem_align(size, PAGE_SIZE);
+	if (!mfn_list) {
+		pr_warn("Could not allocate space for a new P2M tree!\n");
+		return xen_start_info->mfn_list;
+	}
+	/* Fill it out with INVALID_P2M_ENTRY value */
+	memset(mfn_list, 0xFF, size);
+
+	for (pfn = 0; pfn < ALIGN(MAX_DOMAIN_PAGES, P2M_PER_PAGE); pfn += P2M_PER_PAGE) {
+		unsigned topidx = p2m_top_index(pfn);
+		unsigned mididx;
+		unsigned long *mid_p;
+
+		if (!p2m_top[topidx])
+			continue;
+
+		if (p2m_top[topidx] == p2m_mid_missing)
+			continue;
+
+		mididx = p2m_mid_index(pfn);
+		mid_p = p2m_top[topidx][mididx];
+		if (!mid_p)
+			continue;
+		if ((mid_p == p2m_missing) || (mid_p == p2m_identity))
+			continue;
+
+		if ((unsigned long)mid_p == INVALID_P2M_ENTRY)
+			continue;
+
+		/* The old va. Rebase it on mfn_list */
+		if (mid_p >= (unsigned long *)va_start && mid_p <= (unsigned long *)va_end) {
+			unsigned long *new;
+
+			if (pfn_free  > (size / sizeof(unsigned long))) {
+				WARN(1, "Only allocated for %ld pages, but we want %ld!\n",
+				     size / sizeof(unsigned long), pfn_free);
+				return 0;
+			}
+			new = &mfn_list[pfn_free];
+
+			copy_page(new, mid_p);
+			p2m_top[topidx][mididx] = &mfn_list[pfn_free];
+			p2m_top_mfn_p[topidx][mididx] = virt_to_mfn(&mfn_list[pfn_free]);
+
+			pfn_free += P2M_PER_PAGE;
+
+		}
+		/* This should be the leafs allocated for identity from _brk. */
+	}
+	return (unsigned long)mfn_list;
+
+}
+#else
+unsigned long __init xen_revector_p2m_tree(void)
+{
+	return 0;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 unsigned long get_phys_to_machine(unsigned long pfn)
 {
 	unsigned topidx, mididx, idx;
@@ -421,7 +546,11 @@ static void free_p2m_page(void *p)
 	free_page((unsigned long)p);
 }
 
+<<<<<<< HEAD
 /* 
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * Fully allocate the p2m structure for a given pfn.  We need to check
  * that both the top and mid levels are allocated, and make sure the
  * parallel mfn tree is kept in sync.  We may race with other cpus, so
@@ -497,16 +626,28 @@ static bool alloc_p2m(unsigned long pfn)
 	return true;
 }
 
+<<<<<<< HEAD
 static bool __init __early_alloc_p2m(unsigned long pfn)
 {
 	unsigned topidx, mididx, idx;
+=======
+static bool __init early_alloc_p2m_middle(unsigned long pfn, bool check_boundary)
+{
+	unsigned topidx, mididx, idx;
+	unsigned long *p2m;
+	unsigned long *mid_mfn_p;
+>>>>>>> refs/remotes/origin/master
 
 	topidx = p2m_top_index(pfn);
 	mididx = p2m_mid_index(pfn);
 	idx = p2m_index(pfn);
 
 	/* Pfff.. No boundary cross-over, lets get out. */
+<<<<<<< HEAD
 	if (!idx)
+=======
+	if (!idx && check_boundary)
+>>>>>>> refs/remotes/origin/master
 		return false;
 
 	WARN(p2m_top[topidx][mididx] == p2m_identity,
@@ -520,6 +661,7 @@ static bool __init __early_alloc_p2m(unsigned long pfn)
 		return false;
 
 	/* Boundary cross-over for the edges: */
+<<<<<<< HEAD
 	if (idx) {
 		unsigned long *p2m = extend_brk(PAGE_SIZE, PAGE_SIZE);
 		unsigned long *mid_mfn_p;
@@ -538,6 +680,155 @@ static bool __init __early_alloc_p2m(unsigned long pfn)
 
 	}
 	return idx != 0;
+=======
+	p2m = extend_brk(PAGE_SIZE, PAGE_SIZE);
+
+	p2m_init(p2m);
+
+	p2m_top[topidx][mididx] = p2m;
+
+	/* For save/restore we need to MFN of the P2M saved */
+
+	mid_mfn_p = p2m_top_mfn_p[topidx];
+	WARN(mid_mfn_p[mididx] != virt_to_mfn(p2m_missing),
+		"P2M_TOP_P[%d][%d] != MFN of p2m_missing!\n",
+		topidx, mididx);
+	mid_mfn_p[mididx] = virt_to_mfn(p2m);
+
+	return true;
+}
+
+static bool __init early_alloc_p2m(unsigned long pfn)
+{
+	unsigned topidx = p2m_top_index(pfn);
+	unsigned long *mid_mfn_p;
+	unsigned long **mid;
+
+	mid = p2m_top[topidx];
+	mid_mfn_p = p2m_top_mfn_p[topidx];
+	if (mid == p2m_mid_missing) {
+		mid = extend_brk(PAGE_SIZE, PAGE_SIZE);
+
+		p2m_mid_init(mid);
+
+		p2m_top[topidx] = mid;
+
+		BUG_ON(mid_mfn_p != p2m_mid_missing_mfn);
+	}
+	/* And the save/restore P2M tables.. */
+	if (mid_mfn_p == p2m_mid_missing_mfn) {
+		mid_mfn_p = extend_brk(PAGE_SIZE, PAGE_SIZE);
+		p2m_mid_mfn_init(mid_mfn_p);
+
+		p2m_top_mfn_p[topidx] = mid_mfn_p;
+		p2m_top_mfn[topidx] = virt_to_mfn(mid_mfn_p);
+		/* Note: we don't set mid_mfn_p[midix] here,
+		 * look in early_alloc_p2m_middle */
+	}
+	return true;
+}
+
+/*
+ * Skim over the P2M tree looking at pages that are either filled with
+ * INVALID_P2M_ENTRY or with 1:1 PFNs. If found, re-use that page and
+ * replace the P2M leaf with a p2m_missing or p2m_identity.
+ * Stick the old page in the new P2M tree location.
+ */
+bool __init early_can_reuse_p2m_middle(unsigned long set_pfn, unsigned long set_mfn)
+{
+	unsigned topidx;
+	unsigned mididx;
+	unsigned ident_pfns;
+	unsigned inv_pfns;
+	unsigned long *p2m;
+	unsigned long *mid_mfn_p;
+	unsigned idx;
+	unsigned long pfn;
+
+	/* We only look when this entails a P2M middle layer */
+	if (p2m_index(set_pfn))
+		return false;
+
+	for (pfn = 0; pfn < MAX_DOMAIN_PAGES; pfn += P2M_PER_PAGE) {
+		topidx = p2m_top_index(pfn);
+
+		if (!p2m_top[topidx])
+			continue;
+
+		if (p2m_top[topidx] == p2m_mid_missing)
+			continue;
+
+		mididx = p2m_mid_index(pfn);
+		p2m = p2m_top[topidx][mididx];
+		if (!p2m)
+			continue;
+
+		if ((p2m == p2m_missing) || (p2m == p2m_identity))
+			continue;
+
+		if ((unsigned long)p2m == INVALID_P2M_ENTRY)
+			continue;
+
+		ident_pfns = 0;
+		inv_pfns = 0;
+		for (idx = 0; idx < P2M_PER_PAGE; idx++) {
+			/* IDENTITY_PFNs are 1:1 */
+			if (p2m[idx] == IDENTITY_FRAME(pfn + idx))
+				ident_pfns++;
+			else if (p2m[idx] == INVALID_P2M_ENTRY)
+				inv_pfns++;
+			else
+				break;
+		}
+		if ((ident_pfns == P2M_PER_PAGE) || (inv_pfns == P2M_PER_PAGE))
+			goto found;
+	}
+	return false;
+found:
+	/* Found one, replace old with p2m_identity or p2m_missing */
+	p2m_top[topidx][mididx] = (ident_pfns ? p2m_identity : p2m_missing);
+	/* And the other for save/restore.. */
+	mid_mfn_p = p2m_top_mfn_p[topidx];
+	/* NOTE: Even if it is a p2m_identity it should still be point to
+	 * a page filled with INVALID_P2M_ENTRY entries. */
+	mid_mfn_p[mididx] = virt_to_mfn(p2m_missing);
+
+	/* Reset where we want to stick the old page in. */
+	topidx = p2m_top_index(set_pfn);
+	mididx = p2m_mid_index(set_pfn);
+
+	/* This shouldn't happen */
+	if (WARN_ON(p2m_top[topidx] == p2m_mid_missing))
+		early_alloc_p2m(set_pfn);
+
+	if (WARN_ON(p2m_top[topidx][mididx] != p2m_missing))
+		return false;
+
+	p2m_init(p2m);
+	p2m_top[topidx][mididx] = p2m;
+	mid_mfn_p = p2m_top_mfn_p[topidx];
+	mid_mfn_p[mididx] = virt_to_mfn(p2m);
+
+	return true;
+}
+bool __init early_set_phys_to_machine(unsigned long pfn, unsigned long mfn)
+{
+	if (unlikely(!__set_phys_to_machine(pfn, mfn)))  {
+		if (!early_alloc_p2m(pfn))
+			return false;
+
+		if (early_can_reuse_p2m_middle(pfn, mfn))
+			return __set_phys_to_machine(pfn, mfn);
+
+		if (!early_alloc_p2m_middle(pfn, false /* boundary crossover OK!*/))
+			return false;
+
+		if (!__set_phys_to_machine(pfn, mfn))
+			return false;
+	}
+
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 unsigned long __init set_phys_range_identity(unsigned long pfn_s,
 				      unsigned long pfn_e)
@@ -557,6 +848,7 @@ unsigned long __init set_phys_range_identity(unsigned long pfn_s,
 		pfn < ALIGN(pfn_e, (P2M_MID_PER_PAGE * P2M_PER_PAGE));
 		pfn += P2M_MID_PER_PAGE * P2M_PER_PAGE)
 	{
+<<<<<<< HEAD
 		unsigned topidx = p2m_top_index(pfn);
 		unsigned long *mid_mfn_p;
 		unsigned long **mid;
@@ -586,6 +878,13 @@ unsigned long __init set_phys_range_identity(unsigned long pfn_s,
 
 	__early_alloc_p2m(pfn_s);
 	__early_alloc_p2m(pfn_e);
+=======
+		WARN_ON(!early_alloc_p2m(pfn));
+	}
+
+	early_alloc_p2m_middle(pfn_s, true);
+	early_alloc_p2m_middle(pfn_e, true);
+>>>>>>> refs/remotes/origin/master
 
 	for (pfn = pfn_s; pfn < pfn_e; pfn++)
 		if (!__set_phys_to_machine(pfn, IDENTITY_FRAME(pfn)))
@@ -604,10 +903,17 @@ bool __set_phys_to_machine(unsigned long pfn, unsigned long mfn)
 {
 	unsigned topidx, mididx, idx;
 
+<<<<<<< HEAD
 	if (unlikely(xen_feature(XENFEAT_auto_translated_physmap))) {
 		BUG_ON(pfn != mfn && mfn != INVALID_P2M_ENTRY);
 		return true;
 	}
+=======
+	/* don't track P2M changes in autotranslate guests */
+	if (unlikely(xen_feature(XENFEAT_auto_translated_physmap)))
+		return true;
+
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(pfn >= MAX_P2M_PFN)) {
 		BUG_ON(mfn != INVALID_P2M_ENTRY);
 		return true;
@@ -676,14 +982,31 @@ static unsigned long mfn_hash(unsigned long mfn)
 }
 
 /* Add an MFN override for a particular page */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int m2p_add_override(unsigned long mfn, struct page *page, bool clear_pte)
+=======
+int m2p_add_override(unsigned long mfn, struct page *page,
+		struct gnttab_map_grant_ref *kmap_op)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int m2p_add_override(unsigned long mfn, struct page *page,
+		struct gnttab_map_grant_ref *kmap_op)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	unsigned long pfn;
 	unsigned long uninitialized_var(address);
 	unsigned level;
 	pte_t *ptep = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pfn = page_to_pfn(page);
 	if (!PageHighMem(page)) {
@@ -693,16 +1016,48 @@ int m2p_add_override(unsigned long mfn, struct page *page, bool clear_pte)
 					"m2p_add_override: pfn %lx not mapped", pfn))
 			return -EINVAL;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	page->private = mfn;
+=======
+	WARN_ON(PagePrivate(page));
+	SetPagePrivate(page);
+	set_page_private(page, mfn);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(PagePrivate(page));
+	SetPagePrivate(page);
+	set_page_private(page, mfn);
+>>>>>>> refs/remotes/origin/master
 	page->index = pfn_to_mfn(pfn);
 
 	if (unlikely(!set_phys_to_machine(pfn, FOREIGN_FRAME(mfn))))
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (clear_pte && !PageHighMem(page))
 		/* Just zap old mapping for now */
 		pte_clear(&init_mm, address, ptep);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (kmap_op != NULL) {
+		if (!PageHighMem(page)) {
+			struct multicall_space mcs =
+				xen_mc_entry(sizeof(*kmap_op));
+
+			MULTI_grant_table_op(mcs.mc,
+					GNTTABOP_map_grant_ref, kmap_op, 1);
+
+			xen_mc_issue(PARAVIRT_LAZY_MMU);
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&m2p_override_lock, flags);
 	list_add(&page->lru,  &m2p_overrides[mfn_hash(mfn)]);
 	spin_unlock_irqrestore(&m2p_override_lock, flags);
@@ -721,14 +1076,39 @@ int m2p_add_override(unsigned long mfn, struct page *page, bool clear_pte)
 	 * frontend pages while they are being shared with the backend,
 	 * because mfn_to_pfn (that ends up being called by GUPF) will
 	 * return the backend pfn rather than the frontend pfn. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
 	if (ret == 0 && get_phys_to_machine(pfn) == mfn)
+=======
+	pfn = mfn_to_pfn_no_overrides(mfn);
+	if (get_phys_to_machine(pfn) == mfn)
+>>>>>>> refs/remotes/origin/master
+=======
+	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
+	if (ret == 0 && get_phys_to_machine(pfn) == mfn)
+>>>>>>> refs/remotes/origin/cm-11.0
 		set_phys_to_machine(pfn, FOREIGN_FRAME(mfn));
 
 	return 0;
 }
 EXPORT_SYMBOL_GPL(m2p_add_override);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 int m2p_remove_override(struct page *page, bool clear_pte)
+=======
+int m2p_remove_override(struct page *page,
+		struct gnttab_map_grant_ref *kmap_op)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int m2p_remove_override(struct page *page,
+		struct gnttab_map_grant_ref *kmap_op)
+>>>>>>> refs/remotes/origin/master
+=======
+int m2p_remove_override(struct page *page,
+		struct gnttab_map_grant_ref *kmap_op)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long flags;
 	unsigned long mfn;
@@ -736,7 +1116,14 @@ int m2p_remove_override(struct page *page, bool clear_pte)
 	unsigned long uninitialized_var(address);
 	unsigned level;
 	pte_t *ptep = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pfn = page_to_pfn(page);
 	mfn = get_phys_to_machine(pfn);
@@ -755,6 +1142,8 @@ int m2p_remove_override(struct page *page, bool clear_pte)
 	spin_lock_irqsave(&m2p_override_lock, flags);
 	list_del(&page->lru);
 	spin_unlock_irqrestore(&m2p_override_lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set_phys_to_machine(pfn, page->index);
 
 	if (clear_pte && !PageHighMem(page))
@@ -762,6 +1151,99 @@ int m2p_remove_override(struct page *page, bool clear_pte)
 				pfn_pte(pfn, PAGE_KERNEL));
 		/* No tlb flush necessary because the caller already
 		 * left the pte unmapped. */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	WARN_ON(!PagePrivate(page));
+	ClearPagePrivate(page);
+
+	set_phys_to_machine(pfn, page->index);
+	if (kmap_op != NULL) {
+		if (!PageHighMem(page)) {
+			struct multicall_space mcs;
+<<<<<<< HEAD
+			struct gnttab_unmap_grant_ref *unmap_op;
+=======
+			struct gnttab_unmap_and_replace *unmap_op;
+			struct page *scratch_page = get_balloon_scratch_page();
+			unsigned long scratch_page_address = (unsigned long)
+				__va(page_to_pfn(scratch_page) << PAGE_SHIFT);
+>>>>>>> refs/remotes/origin/master
+
+			/*
+			 * It might be that we queued all the m2p grant table
+			 * hypercalls in a multicall, then m2p_remove_override
+			 * get called before the multicall has actually been
+			 * issued. In this case handle is going to -1 because
+			 * it hasn't been modified yet.
+			 */
+			if (kmap_op->handle == -1)
+				xen_mc_flush();
+			/*
+			 * Now if kmap_op->handle is negative it means that the
+			 * hypercall actually returned an error.
+			 */
+			if (kmap_op->handle == GNTST_general_error) {
+				printk(KERN_WARNING "m2p_remove_override: "
+						"pfn %lx mfn %lx, failed to modify kernel mappings",
+						pfn, mfn);
+<<<<<<< HEAD
+				return -1;
+			}
+
+			mcs = xen_mc_entry(
+					sizeof(struct gnttab_unmap_grant_ref));
+			unmap_op = mcs.args;
+			unmap_op->host_addr = kmap_op->host_addr;
+			unmap_op->handle = kmap_op->handle;
+			unmap_op->dev_bus_addr = 0;
+
+			MULTI_grant_table_op(mcs.mc,
+					GNTTABOP_unmap_grant_ref, unmap_op, 1);
+
+			xen_mc_issue(PARAVIRT_LAZY_MMU);
+
+			set_pte_at(&init_mm, address, ptep,
+					pfn_pte(pfn, PAGE_KERNEL));
+			__flush_tlb_single(address);
+			kmap_op->host_addr = 0;
+<<<<<<< HEAD
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				put_balloon_scratch_page();
+				return -1;
+			}
+
+			xen_mc_batch();
+
+			mcs = __xen_mc_entry(
+					sizeof(struct gnttab_unmap_and_replace));
+			unmap_op = mcs.args;
+			unmap_op->host_addr = kmap_op->host_addr;
+			unmap_op->new_addr = scratch_page_address;
+			unmap_op->handle = kmap_op->handle;
+
+			MULTI_grant_table_op(mcs.mc,
+					GNTTABOP_unmap_and_replace, unmap_op, 1);
+
+			mcs = __xen_mc_entry(0);
+			MULTI_update_va_mapping(mcs.mc, scratch_page_address,
+					pfn_pte(page_to_pfn(scratch_page),
+					PAGE_KERNEL_RO), 0);
+
+			xen_mc_issue(PARAVIRT_LAZY_MMU);
+
+			kmap_op->host_addr = 0;
+			put_balloon_scratch_page();
+		}
+	}
+>>>>>>> refs/remotes/origin/master
+=======
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* p2m(m2p(mfn)) == FOREIGN_FRAME(mfn): the mfn is already present
 	 * somewhere in this domain, even before being added to the
@@ -774,8 +1256,18 @@ int m2p_remove_override(struct page *page, bool clear_pte)
 	 * the original pfn causes mfn_to_pfn(mfn) to return the frontend
 	 * pfn again. */
 	mfn &= ~FOREIGN_FRAME_BIT;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
 	if (ret == 0 && get_phys_to_machine(pfn) == FOREIGN_FRAME(mfn) &&
+=======
+	pfn = mfn_to_pfn_no_overrides(mfn);
+	if (get_phys_to_machine(pfn) == FOREIGN_FRAME(mfn) &&
+>>>>>>> refs/remotes/origin/master
+=======
+	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
+	if (ret == 0 && get_phys_to_machine(pfn) == FOREIGN_FRAME(mfn) &&
+>>>>>>> refs/remotes/origin/cm-11.0
 			m2p_find_override(mfn) == NULL)
 		set_phys_to_machine(pfn, mfn);
 
@@ -794,7 +1286,15 @@ struct page *m2p_find_override(unsigned long mfn)
 	spin_lock_irqsave(&m2p_override_lock, flags);
 
 	list_for_each_entry(p, bucket, lru) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (p->private == mfn) {
+=======
+		if (page_private(p) == mfn) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (page_private(p) == mfn) {
+>>>>>>> refs/remotes/origin/master
 			ret = p;
 			break;
 		}
@@ -818,6 +1318,8 @@ unsigned long m2p_find_override_pfn(unsigned long mfn, unsigned long pfn)
 EXPORT_SYMBOL_GPL(m2p_find_override_pfn);
 
 #ifdef CONFIG_XEN_DEBUG_FS
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 int p2m_dump_show(struct seq_file *m, void *v)
 {
@@ -825,10 +1327,37 @@ int p2m_dump_show(struct seq_file *m, void *v)
 						"entry", "abnormal" };
 	static const char * const type_name[] = { "identity", "missing",
 						"pfn", "abnormal"};
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/debugfs.h>
+#include "debugfs.h"
+static int p2m_dump_show(struct seq_file *m, void *v)
+{
+	static const char * const level_name[] = { "top", "middle",
+						"entry", "abnormal", "error"};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define TYPE_IDENTITY 0
 #define TYPE_MISSING 1
 #define TYPE_PFN 2
 #define TYPE_UNKNOWN 3
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	static const char * const type_name[] = {
+				[TYPE_IDENTITY] = "identity",
+				[TYPE_MISSING] = "missing",
+				[TYPE_PFN] = "pfn",
+				[TYPE_UNKNOWN] = "abnormal"};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long pfn, prev_pfn_type = 0, prev_pfn_level = 0;
 	unsigned int uninitialized_var(prev_level);
 	unsigned int uninitialized_var(prev_type);
@@ -892,4 +1421,42 @@ int p2m_dump_show(struct seq_file *m, void *v)
 #undef TYPE_PFN
 #undef TYPE_UNKNOWN
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static int p2m_dump_open(struct inode *inode, struct file *filp)
+{
+	return single_open(filp, p2m_dump_show, NULL);
+}
+
+static const struct file_operations p2m_dump_fops = {
+	.open		= p2m_dump_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+static struct dentry *d_mmu_debug;
+
+static int __init xen_p2m_debugfs(void)
+{
+	struct dentry *d_xen = xen_init_debugfs();
+
+	if (d_xen == NULL)
+		return -ENOMEM;
+
+	d_mmu_debug = debugfs_create_dir("mmu", d_xen);
+
+	debugfs_create_file("p2m", 0600, d_mmu_debug, NULL, &p2m_dump_fops);
+	return 0;
+}
+fs_initcall(xen_p2m_debugfs);
+#endif /* CONFIG_XEN_DEBUG_FS */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

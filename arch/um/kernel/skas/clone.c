@@ -7,11 +7,21 @@
 #include <sched.h>
 #include <asm/unistd.h>
 #include <sys/time.h>
+<<<<<<< HEAD
 #include "as-layout.h"
+<<<<<<< HEAD
 #include "kern_constants.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ptrace_user.h"
 #include "stub-data.h"
 #include "sysdep/stub.h"
+=======
+#include <as-layout.h>
+#include <ptrace_user.h>
+#include <stub-data.h>
+#include <sysdep/stub.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is in a separate file because it needs to be compiled with any

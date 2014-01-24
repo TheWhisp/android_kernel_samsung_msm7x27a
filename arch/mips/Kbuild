@@ -17,3 +17,10 @@ obj- := $(platform-)
 obj-y += kernel/
 obj-y += mm/
 obj-y += math-emu/
+<<<<<<< HEAD
+=======
+
+ifdef CONFIG_KVM
+obj-y += kvm/
+endif
+>>>>>>> refs/remotes/origin/master

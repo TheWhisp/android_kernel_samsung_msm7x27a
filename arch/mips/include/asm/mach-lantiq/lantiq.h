@@ -9,6 +9,11 @@
 #define _LANTIQ_H__
 
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/device.h>
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/master
 
 /* generic reg access functions */
 #define ltq_r32(reg)		__raw_readl(reg)
@@ -21,6 +26,7 @@
 /* register access macros for EBU and CGU */
 #define ltq_ebu_w32(x, y)	ltq_w32((x), ltq_ebu_membase + (y))
 #define ltq_ebu_r32(x)		ltq_r32(ltq_ebu_membase + (x))
+<<<<<<< HEAD
 #define ltq_cgu_w32(x, y)	ltq_w32((x), ltq_cgu_membase + (y))
 #define ltq_cgu_r32(x)		ltq_r32(ltq_cgu_membase + (x))
 
@@ -40,6 +46,11 @@ extern unsigned int ltq_get_soc_type(void);
 #define CLOCK_266M	266666666
 #define CLOCK_333M	333333333
 #define CLOCK_400M	400000000
+=======
+#define ltq_ebu_w32_mask(x, y, z) \
+	ltq_w32_mask(x, y, ltq_ebu_membase + (z))
+extern __iomem void *ltq_ebu_membase;
+>>>>>>> refs/remotes/origin/master
 
 /* spinlock all ebu i/o */
 extern spinlock_t ebu_lock;
@@ -48,16 +59,36 @@ extern spinlock_t ebu_lock;
 extern void ltq_disable_irq(struct irq_data *data);
 extern void ltq_mask_and_ack_irq(struct irq_data *data);
 extern void ltq_enable_irq(struct irq_data *data);
+<<<<<<< HEAD
 
 /* find out what caused the last cpu reset */
 extern int ltq_reset_cause(void);
 #define LTQ_RST_CAUSE_WDTRST	0x20
+=======
+extern int ltq_eiu_get_irq(int exin);
+
+/* clock handling */
+extern int clk_activate(struct clk *clk);
+extern void clk_deactivate(struct clk *clk);
+extern struct clk *clk_get_cpu(void);
+extern struct clk *clk_get_fpi(void);
+extern struct clk *clk_get_io(void);
+extern struct clk *clk_get_ppe(void);
+
+/* find out what bootsource we have */
+extern unsigned char ltq_boot_select(void);
+/* find out what caused the last cpu reset */
+extern int ltq_reset_cause(void);
+>>>>>>> refs/remotes/origin/master
 
 #define IOPORT_RESOURCE_START	0x10000000
 #define IOPORT_RESOURCE_END	0xffffffff
 #define IOMEM_RESOURCE_START	0x10000000
 #define IOMEM_RESOURCE_END	0xffffffff
+<<<<<<< HEAD
 #define LTQ_FLASH_START		0x10000000
 #define LTQ_FLASH_MAX		0x04000000
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

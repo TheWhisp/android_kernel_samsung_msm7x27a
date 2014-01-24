@@ -283,5 +283,10 @@ enum {
 	SHDMA_SLAVE_RIIC8_RX,
 	SHDMA_SLAVE_RIIC9_TX,
 	SHDMA_SLAVE_RIIC9_RX,
+<<<<<<< HEAD
+=======
+	SHDMA_SLAVE_RSPI_TX,
+	SHDMA_SLAVE_RSPI_RX,
+>>>>>>> refs/remotes/origin/master
 };
 #endif /* __ASM_SH7757_H__ */

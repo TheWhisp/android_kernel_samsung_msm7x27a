@@ -15,8 +15,14 @@ There are three components to pagemap:
     * Bits 0-54  page frame number (PFN) if present
     * Bits 0-4   swap type if swapped
     * Bits 5-54  swap offset if swapped
+<<<<<<< HEAD
     * Bits 55-60 page shift (page size = 1<<page shift)
     * Bit  61    reserved for future use
+=======
+    * Bit  55    pte is soft-dirty (see Documentation/vm/soft-dirty.txt)
+    * Bits 56-60 zero
+    * Bit  61    page is file-page or shared-anon
+>>>>>>> refs/remotes/origin/master
     * Bit  62    page swapped
     * Bit  63    page present
 
@@ -60,6 +66,14 @@ There are three components to pagemap:
     19. HWPOISON
     20. NOPAGE
     21. KSM
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    22. THP
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    22. THP
+>>>>>>> refs/remotes/origin/master
 
 Short descriptions to the page flags:
 
@@ -97,6 +111,18 @@ Short descriptions to the page flags:
 21. KSM
     identical memory pages dynamically shared between one or more processes
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+22. THP
+    contiguous pages which construct transparent hugepages
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+22. THP
+    contiguous pages which construct transparent hugepages
+
+>>>>>>> refs/remotes/origin/master
     [IO related page flags]
  1. ERROR     IO error occurred
  3. UPTODATE  page has up-to-date data
@@ -143,5 +169,9 @@ once.
 Other notes:
 
 Reading from any of the files will return -EINVAL if you are not starting
+<<<<<<< HEAD
 the read on an 8-byte boundary (e.g., if you seeked an odd number of bytes
+=======
+the read on an 8-byte boundary (e.g., if you sought an odd number of bytes
+>>>>>>> refs/remotes/origin/master
 into the file), or if the size of the read is not a multiple of 8 bytes.

@@ -125,6 +125,7 @@ static void nlmclnt_setlockargs(struct nlm_rqst *req, struct file_lock *fl)
 {
 	struct nlm_args	*argp = &req->a_args;
 	struct nlm_lock	*lock = &argp->lock;
+<<<<<<< HEAD
 
 	nlmclnt_next_cookie(&argp->cookie);
 	memcpy(&lock->fh, NFS_FH(fl->fl_file->f_path.dentry->d_inode), sizeof(struct nfs_fh));
@@ -133,6 +134,17 @@ static void nlmclnt_setlockargs(struct nlm_rqst *req, struct file_lock *fl)
 	lock->oh.len  = snprintf(req->a_owner, sizeof(req->a_owner), "%u@%s",
 				(unsigned int)fl->fl_u.nfs_fl.owner->pid,
 				utsname()->nodename);
+=======
+	char *nodename = req->a_host->h_rpcclnt->cl_nodename;
+
+	nlmclnt_next_cookie(&argp->cookie);
+	memcpy(&lock->fh, NFS_FH(file_inode(fl->fl_file)), sizeof(struct nfs_fh));
+	lock->caller  = nodename;
+	lock->oh.data = req->a_owner;
+	lock->oh.len  = snprintf(req->a_owner, sizeof(req->a_owner), "%u@%s",
+				(unsigned int)fl->fl_u.nfs_fl.owner->pid,
+				nodename);
+>>>>>>> refs/remotes/origin/master
 	lock->svid = fl->fl_u.nfs_fl.owner->pid;
 	lock->fl.fl_start = fl->fl_start;
 	lock->fl.fl_end = fl->fl_end;
@@ -141,7 +153,11 @@ static void nlmclnt_setlockargs(struct nlm_rqst *req, struct file_lock *fl)
 
 static void nlmclnt_release_lockargs(struct nlm_rqst *req)
 {
+<<<<<<< HEAD
 	BUG_ON(req->a_args.lock.fl.fl_ops != NULL);
+=======
+	WARN_ON_ONCE(req->a_args.lock.fl.fl_ops != NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -156,12 +172,23 @@ int nlmclnt_proc(struct nlm_host *host, int cmd, struct file_lock *fl)
 	struct nlm_rqst		*call;
 	int			status;
 
+<<<<<<< HEAD
 	nlm_get_host(host);
+=======
+>>>>>>> refs/remotes/origin/master
 	call = nlm_alloc_call(host);
 	if (call == NULL)
 		return -ENOMEM;
 
 	nlmclnt_locks_init_private(fl, host);
+<<<<<<< HEAD
+=======
+	if (!fl->fl_u.nfs_fl.owner) {
+		/* lockowner allocation has failed */
+		nlmclnt_release_call(call);
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 	/* Set up the argument struct */
 	nlmclnt_setlockargs(call, fl);
 
@@ -185,9 +212,12 @@ EXPORT_SYMBOL_GPL(nlmclnt_proc);
 
 /*
  * Allocate an NLM RPC call struct
+<<<<<<< HEAD
  *
  * Note: the caller must hold a reference to host. In case of failure,
  * this reference will be released.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct nlm_rqst *nlm_alloc_call(struct nlm_host *host)
 {
@@ -199,7 +229,11 @@ struct nlm_rqst *nlm_alloc_call(struct nlm_host *host)
 			atomic_set(&call->a_count, 1);
 			locks_init_lock(&call->a_args.lock.fl);
 			locks_init_lock(&call->a_res.lock.fl);
+<<<<<<< HEAD
 			call->a_host = host;
+=======
+			call->a_host = nlm_get_host(host);
+>>>>>>> refs/remotes/origin/master
 			return call;
 		}
 		if (signalled())
@@ -207,7 +241,10 @@ struct nlm_rqst *nlm_alloc_call(struct nlm_host *host)
 		printk("nlm_alloc_call: failed, waiting for memory\n");
 		schedule_timeout_interruptible(5*HZ);
 	}
+<<<<<<< HEAD
 	nlmclnt_release_host(host);
+=======
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -302,7 +339,17 @@ nlmclnt_call(struct rpc_cred *cred, struct nlm_rqst *req, u32 proc)
 				/* We appear to be out of the grace period */
 				wake_up_all(&host->h_gracewait);
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dprintk("lockd: server returns status %d\n", resp->status);
+=======
+			dprintk("lockd: server returns status %d\n",
+				ntohl(resp->status));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dprintk("lockd: server returns status %d\n",
+				ntohl(resp->status));
+>>>>>>> refs/remotes/origin/master
 			return 0;	/* Okay, call complete */
 		}
 
@@ -464,7 +511,10 @@ static const struct file_lock_operations nlmclnt_lock_ops = {
 
 static void nlmclnt_locks_init_private(struct file_lock *fl, struct nlm_host *host)
 {
+<<<<<<< HEAD
 	BUG_ON(fl->fl_ops != NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	fl->fl_u.nfs_fl.state = 0;
 	fl->fl_u.nfs_fl.owner = nlm_find_lockowner(host, fl->fl_owner);
 	INIT_LIST_HEAD(&fl->fl_u.nfs_fl.list);
@@ -615,17 +665,28 @@ out_unlock:
  * RECLAIM: Try to reclaim a lock
  */
 int
+<<<<<<< HEAD
 nlmclnt_reclaim(struct nlm_host *host, struct file_lock *fl)
 {
 	struct nlm_rqst reqst, *req;
 	int		status;
 
 	req = &reqst;
+=======
+nlmclnt_reclaim(struct nlm_host *host, struct file_lock *fl,
+		struct nlm_rqst *req)
+{
+	int		status;
+
+>>>>>>> refs/remotes/origin/master
 	memset(req, 0, sizeof(*req));
 	locks_init_lock(&req->a_args.lock.fl);
 	locks_init_lock(&req->a_res.lock.fl);
 	req->a_host  = host;
+<<<<<<< HEAD
 	req->a_flags = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Set up the argument struct */
 	nlmclnt_setlockargs(req, fl);
@@ -690,7 +751,17 @@ nlmclnt_unlock(struct nlm_rqst *req, struct file_lock *fl)
 		goto out;
 
 	if (resp->status != nlm_lck_denied_nolocks)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk("lockd: unexpected unlock status: %d\n", resp->status);
+=======
+		printk("lockd: unexpected unlock status: %d\n",
+			ntohl(resp->status));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk("lockd: unexpected unlock status: %d\n",
+			ntohl(resp->status));
+>>>>>>> refs/remotes/origin/master
 	/* What to do now? I'm out of my depth... */
 	status = -ENOLCK;
 out:
@@ -748,7 +819,11 @@ static int nlmclnt_cancel(struct nlm_host *host, int block, struct file_lock *fl
 	dprintk("lockd: blocking lock attempt was interrupted by a signal.\n"
 		"       Attempting to cancel lock.\n");
 
+<<<<<<< HEAD
 	req = nlm_alloc_call(nlm_get_host(host));
+=======
+	req = nlm_alloc_call(host);
+>>>>>>> refs/remotes/origin/master
 	if (!req)
 		return -ENOMEM;
 	req->a_flags = RPC_TASK_ASYNC;
@@ -843,6 +918,16 @@ nlm_stat_to_errno(__be32 status)
 		return -ENOLCK;
 #endif
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_NOTICE "lockd: unexpected server status %d\n", status);
+=======
+	printk(KERN_NOTICE "lockd: unexpected server status %d\n",
+		 ntohl(status));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_NOTICE "lockd: unexpected server status %d\n",
+		 ntohl(status));
+>>>>>>> refs/remotes/origin/master
 	return -ENOLCK;
 }

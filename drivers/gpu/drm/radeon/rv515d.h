@@ -205,6 +205,7 @@
 			 REG_SET(PACKET3_IT_OPCODE, (op)) |		\
 			 REG_SET(PACKET3_COUNT, (n)))
 
+<<<<<<< HEAD
 #define	PACKET_TYPE0	0
 #define	PACKET_TYPE1	1
 #define	PACKET_TYPE2	2
@@ -216,6 +217,8 @@
 #define CP_PACKET0_GET_ONE_REG_WR(h) (((h) >> 15) & 1)
 #define CP_PACKET3_GET_OPCODE(h) (((h) >> 8) & 0xFF)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Registers */
 #define R_0000F0_RBBM_SOFT_RESET                     0x0000F0
 #define   S_0000F0_SOFT_RESET_CP(x)                    (((x) & 0x1) << 0)

@@ -2,6 +2,10 @@
  * H.323 connection tracking helper
  *
  * Copyright (c) 2006 Jing Min Zhao <zhaojingmin@users.sourceforge.net>
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2006-2012 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  *
  * This source code is licensed under General Public License version 2.
  *
@@ -42,19 +46,35 @@ static int gkrouted_only __read_mostly = 1;
 module_param(gkrouted_only, int, 0600);
 MODULE_PARM_DESC(gkrouted_only, "only accept calls from gatekeeper");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int callforward_filter __read_mostly = 1;
+=======
+static bool callforward_filter __read_mostly = true;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool callforward_filter __read_mostly = true;
+>>>>>>> refs/remotes/origin/master
 module_param(callforward_filter, bool, 0600);
 MODULE_PARM_DESC(callforward_filter, "only create call forwarding expectations "
 				     "if both endpoints are on different sides "
 				     "(determined by routing information)");
 
 /* Hooks for NAT */
+<<<<<<< HEAD
 int (*set_h245_addr_hook) (struct sk_buff *skb,
+=======
+int (*set_h245_addr_hook) (struct sk_buff *skb, unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 			   unsigned char **data, int dataoff,
 			   H245_TransportAddress *taddr,
 			   union nf_inet_addr *addr, __be16 port)
 			   __read_mostly;
+<<<<<<< HEAD
 int (*set_h225_addr_hook) (struct sk_buff *skb,
+=======
+int (*set_h225_addr_hook) (struct sk_buff *skb, unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 			   unsigned char **data, int dataoff,
 			   TransportAddress *taddr,
 			   union nf_inet_addr *addr, __be16 port)
@@ -62,16 +82,28 @@ int (*set_h225_addr_hook) (struct sk_buff *skb,
 int (*set_sig_addr_hook) (struct sk_buff *skb,
 			  struct nf_conn *ct,
 			  enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 			  unsigned char **data,
+=======
+			  unsigned int protoff, unsigned char **data,
+>>>>>>> refs/remotes/origin/master
 			  TransportAddress *taddr, int count) __read_mostly;
 int (*set_ras_addr_hook) (struct sk_buff *skb,
 			  struct nf_conn *ct,
 			  enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 			  unsigned char **data,
+=======
+			  unsigned int protoff, unsigned char **data,
+>>>>>>> refs/remotes/origin/master
 			  TransportAddress *taddr, int count) __read_mostly;
 int (*nat_rtp_rtcp_hook) (struct sk_buff *skb,
 			  struct nf_conn *ct,
 			  enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+			  unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 			  unsigned char **data, int dataoff,
 			  H245_TransportAddress *taddr,
 			  __be16 port, __be16 rtp_port,
@@ -80,24 +112,40 @@ int (*nat_rtp_rtcp_hook) (struct sk_buff *skb,
 int (*nat_t120_hook) (struct sk_buff *skb,
 		      struct nf_conn *ct,
 		      enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		      unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		      unsigned char **data, int dataoff,
 		      H245_TransportAddress *taddr, __be16 port,
 		      struct nf_conntrack_expect *exp) __read_mostly;
 int (*nat_h245_hook) (struct sk_buff *skb,
 		      struct nf_conn *ct,
 		      enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		      unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		      unsigned char **data, int dataoff,
 		      TransportAddress *taddr, __be16 port,
 		      struct nf_conntrack_expect *exp) __read_mostly;
 int (*nat_callforwarding_hook) (struct sk_buff *skb,
 				struct nf_conn *ct,
 				enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+				unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 				unsigned char **data, int dataoff,
 				TransportAddress *taddr, __be16 port,
 				struct nf_conntrack_expect *exp) __read_mostly;
 int (*nat_q931_hook) (struct sk_buff *skb,
 		      struct nf_conn *ct,
 		      enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		      unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		      unsigned char **data, TransportAddress *taddr, int idx,
 		      __be16 port, struct nf_conntrack_expect *exp)
 		      __read_mostly;
@@ -114,7 +162,11 @@ static int get_tpkt_data(struct sk_buff *skb, unsigned int protoff,
 			 struct nf_conn *ct, enum ip_conntrack_info ctinfo,
 			 unsigned char **data, int *datalen, int *dataoff)
 {
+<<<<<<< HEAD
 	struct nf_ct_h323_master *info = &nfct_help(ct)->help.ct_h323_info;
+=======
+	struct nf_ct_h323_master *info = nfct_help_data(ct);
+>>>>>>> refs/remotes/origin/master
 	int dir = CTINFO2DIR(ctinfo);
 	const struct tcphdr *th;
 	struct tcphdr _tcph;
@@ -251,6 +303,10 @@ static int get_h245_addr(struct nf_conn *ct, const unsigned char *data,
 /****************************************************************************/
 static int expect_rtp_rtcp(struct sk_buff *skb, struct nf_conn *ct,
 			   enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+			   unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 			   unsigned char **data, int dataoff,
 			   H245_TransportAddress *taddr)
 {
@@ -270,9 +326,14 @@ static int expect_rtp_rtcp(struct sk_buff *skb, struct nf_conn *ct,
 		return 0;
 
 	/* RTP port is even */
+<<<<<<< HEAD
 	port &= htons(~1);
 	rtp_port = port;
 	rtcp_port = htons(ntohs(port) + 1);
+=======
+	rtp_port = port & ~htons(1);
+	rtcp_port = port | htons(1);
+>>>>>>> refs/remotes/origin/master
 
 	/* Create expect for RTP */
 	if ((rtp_exp = nf_ct_expect_alloc(ct)) == NULL)
@@ -296,9 +357,16 @@ static int expect_rtp_rtcp(struct sk_buff *skb, struct nf_conn *ct,
 		   &ct->tuplehash[!dir].tuple.dst.u3,
 		   sizeof(ct->tuplehash[dir].tuple.src.u3)) &&
 		   (nat_rtp_rtcp = rcu_dereference(nat_rtp_rtcp_hook)) &&
+<<<<<<< HEAD
 		   ct->status & IPS_NAT_MASK) {
 		/* NAT needed */
 		ret = nat_rtp_rtcp(skb, ct, ctinfo, data, dataoff,
+=======
+		   nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+		   ct->status & IPS_NAT_MASK) {
+		/* NAT needed */
+		ret = nat_rtp_rtcp(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				   taddr, port, rtp_port, rtp_exp, rtcp_exp);
 	} else {		/* Conntrack only */
 		if (nf_ct_expect_related(rtp_exp) == 0) {
@@ -325,6 +393,10 @@ static int expect_rtp_rtcp(struct sk_buff *skb, struct nf_conn *ct,
 static int expect_t120(struct sk_buff *skb,
 		       struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		       unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		       unsigned char **data, int dataoff,
 		       H245_TransportAddress *taddr)
 {
@@ -354,9 +426,16 @@ static int expect_t120(struct sk_buff *skb,
 		   &ct->tuplehash[!dir].tuple.dst.u3,
 		   sizeof(ct->tuplehash[dir].tuple.src.u3)) &&
 	    (nat_t120 = rcu_dereference(nat_t120_hook)) &&
+<<<<<<< HEAD
 	    ct->status & IPS_NAT_MASK) {
 		/* NAT needed */
 		ret = nat_t120(skb, ct, ctinfo, data, dataoff, taddr,
+=======
+	    nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK) {
+		/* NAT needed */
+		ret = nat_t120(skb, ct, ctinfo, protoff, data, dataoff, taddr,
+>>>>>>> refs/remotes/origin/master
 			       port, exp);
 	} else {		/* Conntrack only */
 		if (nf_ct_expect_related(exp) == 0) {
@@ -375,6 +454,10 @@ static int expect_t120(struct sk_buff *skb,
 static int process_h245_channel(struct sk_buff *skb,
 				struct nf_conn *ct,
 				enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+				unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 				unsigned char **data, int dataoff,
 				H2250LogicalChannelParameters *channel)
 {
@@ -382,7 +465,11 @@ static int process_h245_channel(struct sk_buff *skb,
 
 	if (channel->options & eH2250LogicalChannelParameters_mediaChannel) {
 		/* RTP */
+<<<<<<< HEAD
 		ret = expect_rtp_rtcp(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = expect_rtp_rtcp(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				      &channel->mediaChannel);
 		if (ret < 0)
 			return -1;
@@ -391,7 +478,11 @@ static int process_h245_channel(struct sk_buff *skb,
 	if (channel->
 	    options & eH2250LogicalChannelParameters_mediaControlChannel) {
 		/* RTCP */
+<<<<<<< HEAD
 		ret = expect_rtp_rtcp(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = expect_rtp_rtcp(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				      &channel->mediaControlChannel);
 		if (ret < 0)
 			return -1;
@@ -403,6 +494,10 @@ static int process_h245_channel(struct sk_buff *skb,
 /****************************************************************************/
 static int process_olc(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		       unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		       unsigned char **data, int dataoff,
 		       OpenLogicalChannel *olc)
 {
@@ -413,7 +508,12 @@ static int process_olc(struct sk_buff *skb, struct nf_conn *ct,
 	if (olc->forwardLogicalChannelParameters.multiplexParameters.choice ==
 	    eOpenLogicalChannel_forwardLogicalChannelParameters_multiplexParameters_h2250LogicalChannelParameters)
 	{
+<<<<<<< HEAD
 		ret = process_h245_channel(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = process_h245_channel(skb, ct, ctinfo,
+					   protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					   &olc->
 					   forwardLogicalChannelParameters.
 					   multiplexParameters.
@@ -431,7 +531,12 @@ static int process_olc(struct sk_buff *skb, struct nf_conn *ct,
 		eOpenLogicalChannel_reverseLogicalChannelParameters_multiplexParameters_h2250LogicalChannelParameters))
 	{
 		ret =
+<<<<<<< HEAD
 		    process_h245_channel(skb, ct, ctinfo, data, dataoff,
+=======
+		    process_h245_channel(skb, ct, ctinfo,
+					 protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					 &olc->
 					 reverseLogicalChannelParameters.
 					 multiplexParameters.
@@ -449,7 +554,11 @@ static int process_olc(struct sk_buff *skb, struct nf_conn *ct,
 	    t120.choice == eDataProtocolCapability_separateLANStack &&
 	    olc->separateStack.networkAddress.choice ==
 	    eNetworkAccessParameters_networkAddress_localAreaAddress) {
+<<<<<<< HEAD
 		ret = expect_t120(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = expect_t120(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				  &olc->separateStack.networkAddress.
 				  localAreaAddress);
 		if (ret < 0)
@@ -462,7 +571,11 @@ static int process_olc(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_olca(struct sk_buff *skb, struct nf_conn *ct,
 			enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 			unsigned char **data, int dataoff,
+=======
+			unsigned int protoff, unsigned char **data, int dataoff,
+>>>>>>> refs/remotes/origin/master
 			OpenLogicalChannelAck *olca)
 {
 	H2250LogicalChannelAckParameters *ack;
@@ -478,7 +591,12 @@ static int process_olca(struct sk_buff *skb, struct nf_conn *ct,
 		choice ==
 		eOpenLogicalChannelAck_reverseLogicalChannelParameters_multiplexParameters_h2250LogicalChannelParameters))
 	{
+<<<<<<< HEAD
 		ret = process_h245_channel(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = process_h245_channel(skb, ct, ctinfo,
+					   protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					   &olca->
 					   reverseLogicalChannelParameters.
 					   multiplexParameters.
@@ -497,7 +615,12 @@ static int process_olca(struct sk_buff *skb, struct nf_conn *ct,
 		if (ack->options &
 		    eH2250LogicalChannelAckParameters_mediaChannel) {
 			/* RTP */
+<<<<<<< HEAD
 			ret = expect_rtp_rtcp(skb, ct, ctinfo, data, dataoff,
+=======
+			ret = expect_rtp_rtcp(skb, ct, ctinfo,
+					      protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					      &ack->mediaChannel);
 			if (ret < 0)
 				return -1;
@@ -506,7 +629,12 @@ static int process_olca(struct sk_buff *skb, struct nf_conn *ct,
 		if (ack->options &
 		    eH2250LogicalChannelAckParameters_mediaControlChannel) {
 			/* RTCP */
+<<<<<<< HEAD
 			ret = expect_rtp_rtcp(skb, ct, ctinfo, data, dataoff,
+=======
+			ret = expect_rtp_rtcp(skb, ct, ctinfo,
+					      protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					      &ack->mediaControlChannel);
 			if (ret < 0)
 				return -1;
@@ -516,7 +644,11 @@ static int process_olca(struct sk_buff *skb, struct nf_conn *ct,
 	if ((olca->options & eOpenLogicalChannelAck_separateStack) &&
 		olca->separateStack.networkAddress.choice ==
 		eNetworkAccessParameters_networkAddress_localAreaAddress) {
+<<<<<<< HEAD
 		ret = expect_t120(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = expect_t120(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				  &olca->separateStack.networkAddress.
 				  localAreaAddress);
 		if (ret < 0)
@@ -529,14 +661,23 @@ static int process_olca(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_h245(struct sk_buff *skb, struct nf_conn *ct,
 			enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 			unsigned char **data, int dataoff,
+=======
+			unsigned int protoff, unsigned char **data, int dataoff,
+>>>>>>> refs/remotes/origin/master
 			MultimediaSystemControlMessage *mscm)
 {
 	switch (mscm->choice) {
 	case eMultimediaSystemControlMessage_request:
 		if (mscm->request.choice ==
 		    eRequestMessage_openLogicalChannel) {
+<<<<<<< HEAD
 			return process_olc(skb, ct, ctinfo, data, dataoff,
+=======
+			return process_olc(skb, ct, ctinfo,
+					   protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					   &mscm->request.openLogicalChannel);
 		}
 		pr_debug("nf_ct_h323: H.245 Request %d\n",
@@ -545,7 +686,12 @@ static int process_h245(struct sk_buff *skb, struct nf_conn *ct,
 	case eMultimediaSystemControlMessage_response:
 		if (mscm->response.choice ==
 		    eResponseMessage_openLogicalChannelAck) {
+<<<<<<< HEAD
 			return process_olca(skb, ct, ctinfo, data, dataoff,
+=======
+			return process_olca(skb, ct, ctinfo,
+					    protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					    &mscm->response.
 					    openLogicalChannelAck);
 		}
@@ -596,7 +742,12 @@ static int h245_help(struct sk_buff *skb, unsigned int protoff,
 		}
 
 		/* Process H.245 signal */
+<<<<<<< HEAD
 		if (process_h245(skb, ct, ctinfo, &data, dataoff, &mscm) < 0)
+=======
+		if (process_h245(skb, ct, ctinfo, protoff,
+				 &data, dataoff, &mscm) < 0)
+>>>>>>> refs/remotes/origin/master
 			goto drop;
 	}
 
@@ -605,8 +756,12 @@ static int h245_help(struct sk_buff *skb, unsigned int protoff,
 
       drop:
 	spin_unlock_bh(&nf_h323_lock);
+<<<<<<< HEAD
 	if (net_ratelimit())
 		pr_info("nf_ct_h245: packet dropped\n");
+=======
+	nf_ct_helper_log(skb, ct, "cannot process H.245 message");
+>>>>>>> refs/remotes/origin/master
 	return NF_DROP;
 }
 
@@ -619,6 +774,10 @@ static const struct nf_conntrack_expect_policy h245_exp_policy = {
 static struct nf_conntrack_helper nf_conntrack_helper_h245 __read_mostly = {
 	.name			= "H.245",
 	.me			= THIS_MODULE,
+<<<<<<< HEAD
+=======
+	.data_len		= sizeof(struct nf_ct_h323_master),
+>>>>>>> refs/remotes/origin/master
 	.tuple.src.l3num	= AF_UNSPEC,
 	.tuple.dst.protonum	= IPPROTO_UDP,
 	.help			= h245_help,
@@ -660,7 +819,11 @@ int get_h225_addr(struct nf_conn *ct, unsigned char *data,
 /****************************************************************************/
 static int expect_h245(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 		       unsigned char **data, int dataoff,
+=======
+		       unsigned int protoff, unsigned char **data, int dataoff,
+>>>>>>> refs/remotes/origin/master
 		       TransportAddress *taddr)
 {
 	int dir = CTINFO2DIR(ctinfo);
@@ -689,9 +852,16 @@ static int expect_h245(struct sk_buff *skb, struct nf_conn *ct,
 		   &ct->tuplehash[!dir].tuple.dst.u3,
 		   sizeof(ct->tuplehash[dir].tuple.src.u3)) &&
 	    (nat_h245 = rcu_dereference(nat_h245_hook)) &&
+<<<<<<< HEAD
 	    ct->status & IPS_NAT_MASK) {
 		/* NAT needed */
 		ret = nat_h245(skb, ct, ctinfo, data, dataoff, taddr,
+=======
+	    nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK) {
+		/* NAT needed */
+		ret = nat_h245(skb, ct, ctinfo, protoff, data, dataoff, taddr,
+>>>>>>> refs/remotes/origin/master
 			       port, exp);
 	} else {		/* Conntrack only */
 		if (nf_ct_expect_related(exp) == 0) {
@@ -734,7 +904,12 @@ static int callforward_do_filter(const union nf_inet_addr *src,
 				   flowi4_to_flowi(&fl1), false)) {
 			if (!afinfo->route(&init_net, (struct dst_entry **)&rt2,
 					   flowi4_to_flowi(&fl2), false)) {
+<<<<<<< HEAD
 				if (rt1->rt_gateway == rt2->rt_gateway &&
+=======
+				if (rt_nexthop(rt1, fl1.daddr) ==
+				    rt_nexthop(rt2, fl2.daddr) &&
+>>>>>>> refs/remotes/origin/master
 				    rt1->dst.dev  == rt2->dst.dev)
 					ret = 1;
 				dst_release(&rt2->dst);
@@ -743,23 +918,49 @@ static int callforward_do_filter(const union nf_inet_addr *src,
 		}
 		break;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NF_CONNTRACK_IPV6) || \
     defined(CONFIG_NF_CONNTRACK_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_NF_CONNTRACK_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_NF_CONNTRACK_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6: {
 		struct flowi6 fl1, fl2;
 		struct rt6_info *rt1, *rt2;
 
 		memset(&fl1, 0, sizeof(fl1));
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&fl1.daddr, &src->in6);
 
 		memset(&fl2, 0, sizeof(fl2));
 		ipv6_addr_copy(&fl2.daddr, &dst->in6);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		fl1.daddr = src->in6;
+
+		memset(&fl2, 0, sizeof(fl2));
+		fl2.daddr = dst->in6;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!afinfo->route(&init_net, (struct dst_entry **)&rt1,
 				   flowi6_to_flowi(&fl1), false)) {
 			if (!afinfo->route(&init_net, (struct dst_entry **)&rt2,
 					   flowi6_to_flowi(&fl2), false)) {
+<<<<<<< HEAD
 				if (!memcmp(&rt1->rt6i_gateway, &rt2->rt6i_gateway,
 					    sizeof(rt1->rt6i_gateway)) &&
+=======
+				if (ipv6_addr_equal(rt6_nexthop(rt1),
+						    rt6_nexthop(rt2)) &&
+>>>>>>> refs/remotes/origin/master
 				    rt1->dst.dev == rt2->dst.dev)
 					ret = 1;
 				dst_release(&rt2->dst);
@@ -778,6 +979,10 @@ static int callforward_do_filter(const union nf_inet_addr *src,
 static int expect_callforwarding(struct sk_buff *skb,
 				 struct nf_conn *ct,
 				 enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+				 unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 				 unsigned char **data, int dataoff,
 				 TransportAddress *taddr)
 {
@@ -813,9 +1018,17 @@ static int expect_callforwarding(struct sk_buff *skb,
 		   &ct->tuplehash[!dir].tuple.dst.u3,
 		   sizeof(ct->tuplehash[dir].tuple.src.u3)) &&
 	    (nat_callforwarding = rcu_dereference(nat_callforwarding_hook)) &&
+<<<<<<< HEAD
 	    ct->status & IPS_NAT_MASK) {
 		/* Need NAT */
 		ret = nat_callforwarding(skb, ct, ctinfo, data, dataoff,
+=======
+	    nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK) {
+		/* Need NAT */
+		ret = nat_callforwarding(skb, ct, ctinfo,
+					 protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					 taddr, port, exp);
 	} else {		/* Conntrack only */
 		if (nf_ct_expect_related(exp) == 0) {
@@ -833,6 +1046,10 @@ static int expect_callforwarding(struct sk_buff *skb,
 /****************************************************************************/
 static int process_setup(struct sk_buff *skb, struct nf_conn *ct,
 			 enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+			 unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 			 unsigned char **data, int dataoff,
 			 Setup_UUIE *setup)
 {
@@ -846,7 +1063,11 @@ static int process_setup(struct sk_buff *skb, struct nf_conn *ct,
 	pr_debug("nf_ct_q931: Setup\n");
 
 	if (setup->options & eSetup_UUIE_h245Address) {
+<<<<<<< HEAD
 		ret = expect_h245(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = expect_h245(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				  &setup->h245Address);
 		if (ret < 0)
 			return -1;
@@ -854,14 +1075,23 @@ static int process_setup(struct sk_buff *skb, struct nf_conn *ct,
 
 	set_h225_addr = rcu_dereference(set_h225_addr_hook);
 	if ((setup->options & eSetup_UUIE_destCallSignalAddress) &&
+<<<<<<< HEAD
 	    (set_h225_addr) && ct->status & IPS_NAT_MASK &&
+=======
+	    (set_h225_addr) && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK &&
+>>>>>>> refs/remotes/origin/master
 	    get_h225_addr(ct, *data, &setup->destCallSignalAddress,
 			  &addr, &port) &&
 	    memcmp(&addr, &ct->tuplehash[!dir].tuple.src.u3, sizeof(addr))) {
 		pr_debug("nf_ct_q931: set destCallSignalAddress %pI6:%hu->%pI6:%hu\n",
 			 &addr, ntohs(port), &ct->tuplehash[!dir].tuple.src.u3,
 			 ntohs(ct->tuplehash[!dir].tuple.src.u.tcp.port));
+<<<<<<< HEAD
 		ret = set_h225_addr(skb, data, dataoff,
+=======
+		ret = set_h225_addr(skb, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				    &setup->destCallSignalAddress,
 				    &ct->tuplehash[!dir].tuple.src.u3,
 				    ct->tuplehash[!dir].tuple.src.u.tcp.port);
@@ -870,14 +1100,23 @@ static int process_setup(struct sk_buff *skb, struct nf_conn *ct,
 	}
 
 	if ((setup->options & eSetup_UUIE_sourceCallSignalAddress) &&
+<<<<<<< HEAD
 	    (set_h225_addr) && ct->status & IPS_NAT_MASK &&
+=======
+	    (set_h225_addr) && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK &&
+>>>>>>> refs/remotes/origin/master
 	    get_h225_addr(ct, *data, &setup->sourceCallSignalAddress,
 			  &addr, &port) &&
 	    memcmp(&addr, &ct->tuplehash[!dir].tuple.dst.u3, sizeof(addr))) {
 		pr_debug("nf_ct_q931: set sourceCallSignalAddress %pI6:%hu->%pI6:%hu\n",
 			 &addr, ntohs(port), &ct->tuplehash[!dir].tuple.dst.u3,
 			 ntohs(ct->tuplehash[!dir].tuple.dst.u.tcp.port));
+<<<<<<< HEAD
 		ret = set_h225_addr(skb, data, dataoff,
+=======
+		ret = set_h225_addr(skb, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				    &setup->sourceCallSignalAddress,
 				    &ct->tuplehash[!dir].tuple.dst.u3,
 				    ct->tuplehash[!dir].tuple.dst.u.tcp.port);
@@ -887,7 +1126,12 @@ static int process_setup(struct sk_buff *skb, struct nf_conn *ct,
 
 	if (setup->options & eSetup_UUIE_fastStart) {
 		for (i = 0; i < setup->fastStart.count; i++) {
+<<<<<<< HEAD
 			ret = process_olc(skb, ct, ctinfo, data, dataoff,
+=======
+			ret = process_olc(skb, ct, ctinfo,
+					  protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					  &setup->fastStart.item[i]);
 			if (ret < 0)
 				return -1;
@@ -901,6 +1145,10 @@ static int process_setup(struct sk_buff *skb, struct nf_conn *ct,
 static int process_callproceeding(struct sk_buff *skb,
 				  struct nf_conn *ct,
 				  enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+				  unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 				  unsigned char **data, int dataoff,
 				  CallProceeding_UUIE *callproc)
 {
@@ -910,7 +1158,11 @@ static int process_callproceeding(struct sk_buff *skb,
 	pr_debug("nf_ct_q931: CallProceeding\n");
 
 	if (callproc->options & eCallProceeding_UUIE_h245Address) {
+<<<<<<< HEAD
 		ret = expect_h245(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = expect_h245(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				  &callproc->h245Address);
 		if (ret < 0)
 			return -1;
@@ -918,7 +1170,12 @@ static int process_callproceeding(struct sk_buff *skb,
 
 	if (callproc->options & eCallProceeding_UUIE_fastStart) {
 		for (i = 0; i < callproc->fastStart.count; i++) {
+<<<<<<< HEAD
 			ret = process_olc(skb, ct, ctinfo, data, dataoff,
+=======
+			ret = process_olc(skb, ct, ctinfo,
+					  protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					  &callproc->fastStart.item[i]);
 			if (ret < 0)
 				return -1;
@@ -931,6 +1188,10 @@ static int process_callproceeding(struct sk_buff *skb,
 /****************************************************************************/
 static int process_connect(struct sk_buff *skb, struct nf_conn *ct,
 			   enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+			   unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 			   unsigned char **data, int dataoff,
 			   Connect_UUIE *connect)
 {
@@ -940,7 +1201,11 @@ static int process_connect(struct sk_buff *skb, struct nf_conn *ct,
 	pr_debug("nf_ct_q931: Connect\n");
 
 	if (connect->options & eConnect_UUIE_h245Address) {
+<<<<<<< HEAD
 		ret = expect_h245(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = expect_h245(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				  &connect->h245Address);
 		if (ret < 0)
 			return -1;
@@ -948,7 +1213,12 @@ static int process_connect(struct sk_buff *skb, struct nf_conn *ct,
 
 	if (connect->options & eConnect_UUIE_fastStart) {
 		for (i = 0; i < connect->fastStart.count; i++) {
+<<<<<<< HEAD
 			ret = process_olc(skb, ct, ctinfo, data, dataoff,
+=======
+			ret = process_olc(skb, ct, ctinfo,
+					  protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					  &connect->fastStart.item[i]);
 			if (ret < 0)
 				return -1;
@@ -961,6 +1231,10 @@ static int process_connect(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_alerting(struct sk_buff *skb, struct nf_conn *ct,
 			    enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+			    unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 			    unsigned char **data, int dataoff,
 			    Alerting_UUIE *alert)
 {
@@ -970,7 +1244,11 @@ static int process_alerting(struct sk_buff *skb, struct nf_conn *ct,
 	pr_debug("nf_ct_q931: Alerting\n");
 
 	if (alert->options & eAlerting_UUIE_h245Address) {
+<<<<<<< HEAD
 		ret = expect_h245(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = expect_h245(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				  &alert->h245Address);
 		if (ret < 0)
 			return -1;
@@ -978,7 +1256,12 @@ static int process_alerting(struct sk_buff *skb, struct nf_conn *ct,
 
 	if (alert->options & eAlerting_UUIE_fastStart) {
 		for (i = 0; i < alert->fastStart.count; i++) {
+<<<<<<< HEAD
 			ret = process_olc(skb, ct, ctinfo, data, dataoff,
+=======
+			ret = process_olc(skb, ct, ctinfo,
+					  protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					  &alert->fastStart.item[i]);
 			if (ret < 0)
 				return -1;
@@ -991,6 +1274,10 @@ static int process_alerting(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_facility(struct sk_buff *skb, struct nf_conn *ct,
 			    enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+			    unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 			    unsigned char **data, int dataoff,
 			    Facility_UUIE *facility)
 {
@@ -1001,15 +1288,24 @@ static int process_facility(struct sk_buff *skb, struct nf_conn *ct,
 
 	if (facility->reason.choice == eFacilityReason_callForwarded) {
 		if (facility->options & eFacility_UUIE_alternativeAddress)
+<<<<<<< HEAD
 			return expect_callforwarding(skb, ct, ctinfo, data,
 						     dataoff,
+=======
+			return expect_callforwarding(skb, ct, ctinfo,
+						     protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 						     &facility->
 						     alternativeAddress);
 		return 0;
 	}
 
 	if (facility->options & eFacility_UUIE_h245Address) {
+<<<<<<< HEAD
 		ret = expect_h245(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = expect_h245(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				  &facility->h245Address);
 		if (ret < 0)
 			return -1;
@@ -1017,7 +1313,12 @@ static int process_facility(struct sk_buff *skb, struct nf_conn *ct,
 
 	if (facility->options & eFacility_UUIE_fastStart) {
 		for (i = 0; i < facility->fastStart.count; i++) {
+<<<<<<< HEAD
 			ret = process_olc(skb, ct, ctinfo, data, dataoff,
+=======
+			ret = process_olc(skb, ct, ctinfo,
+					  protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					  &facility->fastStart.item[i]);
 			if (ret < 0)
 				return -1;
@@ -1030,6 +1331,10 @@ static int process_facility(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_progress(struct sk_buff *skb, struct nf_conn *ct,
 			    enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+			    unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 			    unsigned char **data, int dataoff,
 			    Progress_UUIE *progress)
 {
@@ -1039,7 +1344,11 @@ static int process_progress(struct sk_buff *skb, struct nf_conn *ct,
 	pr_debug("nf_ct_q931: Progress\n");
 
 	if (progress->options & eProgress_UUIE_h245Address) {
+<<<<<<< HEAD
 		ret = expect_h245(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = expect_h245(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				  &progress->h245Address);
 		if (ret < 0)
 			return -1;
@@ -1047,7 +1356,12 @@ static int process_progress(struct sk_buff *skb, struct nf_conn *ct,
 
 	if (progress->options & eProgress_UUIE_fastStart) {
 		for (i = 0; i < progress->fastStart.count; i++) {
+<<<<<<< HEAD
 			ret = process_olc(skb, ct, ctinfo, data, dataoff,
+=======
+			ret = process_olc(skb, ct, ctinfo,
+					  protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					  &progress->fastStart.item[i]);
 			if (ret < 0)
 				return -1;
@@ -1060,7 +1374,12 @@ static int process_progress(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_q931(struct sk_buff *skb, struct nf_conn *ct,
 			enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 			unsigned char **data, int dataoff, Q931 *q931)
+=======
+			unsigned int protoff, unsigned char **data, int dataoff,
+			Q931 *q931)
+>>>>>>> refs/remotes/origin/master
 {
 	H323_UU_PDU *pdu = &q931->UUIE.h323_uu_pdu;
 	int i;
@@ -1068,15 +1387,25 @@ static int process_q931(struct sk_buff *skb, struct nf_conn *ct,
 
 	switch (pdu->h323_message_body.choice) {
 	case eH323_UU_PDU_h323_message_body_setup:
+<<<<<<< HEAD
 		ret = process_setup(skb, ct, ctinfo, data, dataoff,
 				    &pdu->h323_message_body.setup);
 		break;
 	case eH323_UU_PDU_h323_message_body_callProceeding:
 		ret = process_callproceeding(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = process_setup(skb, ct, ctinfo, protoff, data, dataoff,
+				    &pdu->h323_message_body.setup);
+		break;
+	case eH323_UU_PDU_h323_message_body_callProceeding:
+		ret = process_callproceeding(skb, ct, ctinfo,
+					     protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					     &pdu->h323_message_body.
 					     callProceeding);
 		break;
 	case eH323_UU_PDU_h323_message_body_connect:
+<<<<<<< HEAD
 		ret = process_connect(skb, ct, ctinfo, data, dataoff,
 				      &pdu->h323_message_body.connect);
 		break;
@@ -1090,6 +1419,21 @@ static int process_q931(struct sk_buff *skb, struct nf_conn *ct,
 		break;
 	case eH323_UU_PDU_h323_message_body_progress:
 		ret = process_progress(skb, ct, ctinfo, data, dataoff,
+=======
+		ret = process_connect(skb, ct, ctinfo, protoff, data, dataoff,
+				      &pdu->h323_message_body.connect);
+		break;
+	case eH323_UU_PDU_h323_message_body_alerting:
+		ret = process_alerting(skb, ct, ctinfo, protoff, data, dataoff,
+				       &pdu->h323_message_body.alerting);
+		break;
+	case eH323_UU_PDU_h323_message_body_facility:
+		ret = process_facility(skb, ct, ctinfo, protoff, data, dataoff,
+				       &pdu->h323_message_body.facility);
+		break;
+	case eH323_UU_PDU_h323_message_body_progress:
+		ret = process_progress(skb, ct, ctinfo, protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 				       &pdu->h323_message_body.progress);
 		break;
 	default:
@@ -1103,7 +1447,12 @@ static int process_q931(struct sk_buff *skb, struct nf_conn *ct,
 
 	if (pdu->options & eH323_UU_PDU_h245Control) {
 		for (i = 0; i < pdu->h245Control.count; i++) {
+<<<<<<< HEAD
 			ret = process_h245(skb, ct, ctinfo, data, dataoff,
+=======
+			ret = process_h245(skb, ct, ctinfo,
+					   protoff, data, dataoff,
+>>>>>>> refs/remotes/origin/master
 					   &pdu->h245Control.item[i]);
 			if (ret < 0)
 				return -1;
@@ -1148,7 +1497,12 @@ static int q931_help(struct sk_buff *skb, unsigned int protoff,
 		}
 
 		/* Process Q.931 signal */
+<<<<<<< HEAD
 		if (process_q931(skb, ct, ctinfo, &data, dataoff, &q931) < 0)
+=======
+		if (process_q931(skb, ct, ctinfo, protoff,
+				 &data, dataoff, &q931) < 0)
+>>>>>>> refs/remotes/origin/master
 			goto drop;
 	}
 
@@ -1157,8 +1511,12 @@ static int q931_help(struct sk_buff *skb, unsigned int protoff,
 
       drop:
 	spin_unlock_bh(&nf_h323_lock);
+<<<<<<< HEAD
 	if (net_ratelimit())
 		pr_info("nf_ct_q931: packet dropped\n");
+=======
+	nf_ct_helper_log(skb, ct, "cannot process Q.931 message");
+>>>>>>> refs/remotes/origin/master
 	return NF_DROP;
 }
 
@@ -1173,6 +1531,10 @@ static struct nf_conntrack_helper nf_conntrack_helper_q931[] __read_mostly = {
 	{
 		.name			= "Q.931",
 		.me			= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.data_len		= sizeof(struct nf_ct_h323_master),
+>>>>>>> refs/remotes/origin/master
 		.tuple.src.l3num	= AF_INET,
 		.tuple.src.u.tcp.port	= cpu_to_be16(Q931_PORT),
 		.tuple.dst.protonum	= IPPROTO_TCP,
@@ -1231,7 +1593,11 @@ static struct nf_conntrack_expect *find_expect(struct nf_conn *ct,
 
 /****************************************************************************/
 static int set_expect_timeout(struct nf_conntrack_expect *exp,
+<<<<<<< HEAD
 			      unsigned timeout)
+=======
+			      unsigned int timeout)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!exp || !del_timer(&exp->timeout))
 		return 0;
@@ -1245,10 +1611,17 @@ static int set_expect_timeout(struct nf_conntrack_expect *exp,
 /****************************************************************************/
 static int expect_q931(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 		       unsigned char **data,
 		       TransportAddress *taddr, int count)
 {
 	struct nf_ct_h323_master *info = &nfct_help(ct)->help.ct_h323_info;
+=======
+		       unsigned int protoff, unsigned char **data,
+		       TransportAddress *taddr, int count)
+{
+	struct nf_ct_h323_master *info = nfct_help_data(ct);
+>>>>>>> refs/remotes/origin/master
 	int dir = CTINFO2DIR(ctinfo);
 	int ret = 0;
 	int i;
@@ -1280,8 +1653,15 @@ static int expect_q931(struct sk_buff *skb, struct nf_conn *ct,
 	exp->flags = NF_CT_EXPECT_PERMANENT;	/* Accept multiple calls */
 
 	nat_q931 = rcu_dereference(nat_q931_hook);
+<<<<<<< HEAD
 	if (nat_q931 && ct->status & IPS_NAT_MASK) {	/* Need NAT */
 		ret = nat_q931(skb, ct, ctinfo, data, taddr, i, port, exp);
+=======
+	if (nat_q931 && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK) {	/* Need NAT */
+		ret = nat_q931(skb, ct, ctinfo, protoff, data,
+			       taddr, i, port, exp);
+>>>>>>> refs/remotes/origin/master
 	} else {		/* Conntrack only */
 		if (nf_ct_expect_related(exp) == 0) {
 			pr_debug("nf_ct_ras: expect Q.931 ");
@@ -1301,6 +1681,10 @@ static int expect_q931(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_grq(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		       unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		       unsigned char **data, GatekeeperRequest *grq)
 {
 	typeof(set_ras_addr_hook) set_ras_addr;
@@ -1308,8 +1692,14 @@ static int process_grq(struct sk_buff *skb, struct nf_conn *ct,
 	pr_debug("nf_ct_ras: GRQ\n");
 
 	set_ras_addr = rcu_dereference(set_ras_addr_hook);
+<<<<<<< HEAD
 	if (set_ras_addr && ct->status & IPS_NAT_MASK)	/* NATed */
 		return set_ras_addr(skb, ct, ctinfo, data,
+=======
+	if (set_ras_addr && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK)	/* NATed */
+		return set_ras_addr(skb, ct, ctinfo, protoff, data,
+>>>>>>> refs/remotes/origin/master
 				    &grq->rasAddress, 1);
 	return 0;
 }
@@ -1317,6 +1707,10 @@ static int process_grq(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_gcf(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		       unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		       unsigned char **data, GatekeeperConfirm *gcf)
 {
 	int dir = CTINFO2DIR(ctinfo);
@@ -1361,23 +1755,40 @@ static int process_gcf(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_rrq(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 		       unsigned char **data, RegistrationRequest *rrq)
 {
 	struct nf_ct_h323_master *info = &nfct_help(ct)->help.ct_h323_info;
+=======
+		       unsigned int protoff,
+		       unsigned char **data, RegistrationRequest *rrq)
+{
+	struct nf_ct_h323_master *info = nfct_help_data(ct);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	typeof(set_ras_addr_hook) set_ras_addr;
 
 	pr_debug("nf_ct_ras: RRQ\n");
 
+<<<<<<< HEAD
 	ret = expect_q931(skb, ct, ctinfo, data,
+=======
+	ret = expect_q931(skb, ct, ctinfo, protoff, data,
+>>>>>>> refs/remotes/origin/master
 			  rrq->callSignalAddress.item,
 			  rrq->callSignalAddress.count);
 	if (ret < 0)
 		return -1;
 
 	set_ras_addr = rcu_dereference(set_ras_addr_hook);
+<<<<<<< HEAD
 	if (set_ras_addr && ct->status & IPS_NAT_MASK) {
 		ret = set_ras_addr(skb, ct, ctinfo, data,
+=======
+	if (set_ras_addr && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK) {
+		ret = set_ras_addr(skb, ct, ctinfo, protoff, data,
+>>>>>>> refs/remotes/origin/master
 				   rrq->rasAddress.item,
 				   rrq->rasAddress.count);
 		if (ret < 0)
@@ -1396,9 +1807,16 @@ static int process_rrq(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_rcf(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 		       unsigned char **data, RegistrationConfirm *rcf)
 {
 	struct nf_ct_h323_master *info = &nfct_help(ct)->help.ct_h323_info;
+=======
+		       unsigned int protoff,
+		       unsigned char **data, RegistrationConfirm *rcf)
+{
+	struct nf_ct_h323_master *info = nfct_help_data(ct);
+>>>>>>> refs/remotes/origin/master
 	int dir = CTINFO2DIR(ctinfo);
 	int ret;
 	struct nf_conntrack_expect *exp;
@@ -1407,8 +1825,14 @@ static int process_rcf(struct sk_buff *skb, struct nf_conn *ct,
 	pr_debug("nf_ct_ras: RCF\n");
 
 	set_sig_addr = rcu_dereference(set_sig_addr_hook);
+<<<<<<< HEAD
 	if (set_sig_addr && ct->status & IPS_NAT_MASK) {
 		ret = set_sig_addr(skb, ct, ctinfo, data,
+=======
+	if (set_sig_addr && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK) {
+		ret = set_sig_addr(skb, ct, ctinfo, protoff, data,
+>>>>>>> refs/remotes/origin/master
 					rcf->callSignalAddress.item,
 					rcf->callSignalAddress.count);
 		if (ret < 0)
@@ -1445,9 +1869,16 @@ static int process_rcf(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_urq(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 		       unsigned char **data, UnregistrationRequest *urq)
 {
 	struct nf_ct_h323_master *info = &nfct_help(ct)->help.ct_h323_info;
+=======
+		       unsigned int protoff,
+		       unsigned char **data, UnregistrationRequest *urq)
+{
+	struct nf_ct_h323_master *info = nfct_help_data(ct);
+>>>>>>> refs/remotes/origin/master
 	int dir = CTINFO2DIR(ctinfo);
 	int ret;
 	typeof(set_sig_addr_hook) set_sig_addr;
@@ -1455,8 +1886,14 @@ static int process_urq(struct sk_buff *skb, struct nf_conn *ct,
 	pr_debug("nf_ct_ras: URQ\n");
 
 	set_sig_addr = rcu_dereference(set_sig_addr_hook);
+<<<<<<< HEAD
 	if (set_sig_addr && ct->status & IPS_NAT_MASK) {
 		ret = set_sig_addr(skb, ct, ctinfo, data,
+=======
+	if (set_sig_addr && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK) {
+		ret = set_sig_addr(skb, ct, ctinfo, protoff, data,
+>>>>>>> refs/remotes/origin/master
 				   urq->callSignalAddress.item,
 				   urq->callSignalAddress.count);
 		if (ret < 0)
@@ -1477,9 +1914,16 @@ static int process_urq(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_arq(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
 		       unsigned char **data, AdmissionRequest *arq)
 {
 	const struct nf_ct_h323_master *info = &nfct_help(ct)->help.ct_h323_info;
+=======
+		       unsigned int protoff,
+		       unsigned char **data, AdmissionRequest *arq)
+{
+	const struct nf_ct_h323_master *info = nfct_help_data(ct);
+>>>>>>> refs/remotes/origin/master
 	int dir = CTINFO2DIR(ctinfo);
 	__be16 port;
 	union nf_inet_addr addr;
@@ -1493,9 +1937,16 @@ static int process_arq(struct sk_buff *skb, struct nf_conn *ct,
 			  &addr, &port) &&
 	    !memcmp(&addr, &ct->tuplehash[dir].tuple.src.u3, sizeof(addr)) &&
 	    port == info->sig_port[dir] &&
+<<<<<<< HEAD
 	    set_h225_addr && ct->status & IPS_NAT_MASK) {
 		/* Answering ARQ */
 		return set_h225_addr(skb, data, 0,
+=======
+	    nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    set_h225_addr && ct->status & IPS_NAT_MASK) {
+		/* Answering ARQ */
+		return set_h225_addr(skb, protoff, data, 0,
+>>>>>>> refs/remotes/origin/master
 				     &arq->destCallSignalAddress,
 				     &ct->tuplehash[!dir].tuple.dst.u3,
 				     info->sig_port[!dir]);
@@ -1505,9 +1956,16 @@ static int process_arq(struct sk_buff *skb, struct nf_conn *ct,
 	    get_h225_addr(ct, *data, &arq->srcCallSignalAddress,
 			  &addr, &port) &&
 	    !memcmp(&addr, &ct->tuplehash[dir].tuple.src.u3, sizeof(addr)) &&
+<<<<<<< HEAD
 	    set_h225_addr && ct->status & IPS_NAT_MASK) {
 		/* Calling ARQ */
 		return set_h225_addr(skb, data, 0,
+=======
+	    set_h225_addr && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK) {
+		/* Calling ARQ */
+		return set_h225_addr(skb, protoff, data, 0,
+>>>>>>> refs/remotes/origin/master
 				     &arq->srcCallSignalAddress,
 				     &ct->tuplehash[!dir].tuple.dst.u3,
 				     port);
@@ -1519,6 +1977,10 @@ static int process_arq(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_acf(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		       unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		       unsigned char **data, AdmissionConfirm *acf)
 {
 	int dir = CTINFO2DIR(ctinfo);
@@ -1537,8 +1999,14 @@ static int process_acf(struct sk_buff *skb, struct nf_conn *ct,
 	if (!memcmp(&addr, &ct->tuplehash[dir].tuple.dst.u3, sizeof(addr))) {
 		/* Answering ACF */
 		set_sig_addr = rcu_dereference(set_sig_addr_hook);
+<<<<<<< HEAD
 		if (set_sig_addr && ct->status & IPS_NAT_MASK)
 			return set_sig_addr(skb, ct, ctinfo, data,
+=======
+		if (set_sig_addr && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+		    ct->status & IPS_NAT_MASK)
+			return set_sig_addr(skb, ct, ctinfo, protoff, data,
+>>>>>>> refs/remotes/origin/master
 					    &acf->destCallSignalAddress, 1);
 		return 0;
 	}
@@ -1566,6 +2034,10 @@ static int process_acf(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_lrq(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		       unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		       unsigned char **data, LocationRequest *lrq)
 {
 	typeof(set_ras_addr_hook) set_ras_addr;
@@ -1573,8 +2045,14 @@ static int process_lrq(struct sk_buff *skb, struct nf_conn *ct,
 	pr_debug("nf_ct_ras: LRQ\n");
 
 	set_ras_addr = rcu_dereference(set_ras_addr_hook);
+<<<<<<< HEAD
 	if (set_ras_addr && ct->status & IPS_NAT_MASK)
 		return set_ras_addr(skb, ct, ctinfo, data,
+=======
+	if (set_ras_addr && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK)
+		return set_ras_addr(skb, ct, ctinfo, protoff, data,
+>>>>>>> refs/remotes/origin/master
 				    &lrq->replyAddress, 1);
 	return 0;
 }
@@ -1582,6 +2060,10 @@ static int process_lrq(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_lcf(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		       unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		       unsigned char **data, LocationConfirm *lcf)
 {
 	int dir = CTINFO2DIR(ctinfo);
@@ -1621,6 +2103,10 @@ static int process_lcf(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_irr(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		       unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		       unsigned char **data, InfoRequestResponse *irr)
 {
 	int ret;
@@ -1630,16 +2116,28 @@ static int process_irr(struct sk_buff *skb, struct nf_conn *ct,
 	pr_debug("nf_ct_ras: IRR\n");
 
 	set_ras_addr = rcu_dereference(set_ras_addr_hook);
+<<<<<<< HEAD
 	if (set_ras_addr && ct->status & IPS_NAT_MASK) {
 		ret = set_ras_addr(skb, ct, ctinfo, data,
+=======
+	if (set_ras_addr && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK) {
+		ret = set_ras_addr(skb, ct, ctinfo, protoff, data,
+>>>>>>> refs/remotes/origin/master
 				   &irr->rasAddress, 1);
 		if (ret < 0)
 			return -1;
 	}
 
 	set_sig_addr = rcu_dereference(set_sig_addr_hook);
+<<<<<<< HEAD
 	if (set_sig_addr && ct->status & IPS_NAT_MASK) {
 		ret = set_sig_addr(skb, ct, ctinfo, data,
+=======
+	if (set_sig_addr && nf_ct_l3num(ct) == NFPROTO_IPV4 &&
+	    ct->status & IPS_NAT_MASK) {
+		ret = set_sig_addr(skb, ct, ctinfo, protoff, data,
+>>>>>>> refs/remotes/origin/master
 					irr->callSignalAddress.item,
 					irr->callSignalAddress.count);
 		if (ret < 0)
@@ -1652,10 +2150,15 @@ static int process_irr(struct sk_buff *skb, struct nf_conn *ct,
 /****************************************************************************/
 static int process_ras(struct sk_buff *skb, struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		       unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		       unsigned char **data, RasMessage *ras)
 {
 	switch (ras->choice) {
 	case eRasMessage_gatekeeperRequest:
+<<<<<<< HEAD
 		return process_grq(skb, ct, ctinfo, data,
 				   &ras->gatekeeperRequest);
 	case eRasMessage_gatekeeperConfirm:
@@ -1684,6 +2187,36 @@ static int process_ras(struct sk_buff *skb, struct nf_conn *ct,
 				   &ras->locationConfirm);
 	case eRasMessage_infoRequestResponse:
 		return process_irr(skb, ct, ctinfo, data,
+=======
+		return process_grq(skb, ct, ctinfo, protoff, data,
+				   &ras->gatekeeperRequest);
+	case eRasMessage_gatekeeperConfirm:
+		return process_gcf(skb, ct, ctinfo, protoff, data,
+				   &ras->gatekeeperConfirm);
+	case eRasMessage_registrationRequest:
+		return process_rrq(skb, ct, ctinfo, protoff, data,
+				   &ras->registrationRequest);
+	case eRasMessage_registrationConfirm:
+		return process_rcf(skb, ct, ctinfo, protoff, data,
+				   &ras->registrationConfirm);
+	case eRasMessage_unregistrationRequest:
+		return process_urq(skb, ct, ctinfo, protoff, data,
+				   &ras->unregistrationRequest);
+	case eRasMessage_admissionRequest:
+		return process_arq(skb, ct, ctinfo, protoff, data,
+				   &ras->admissionRequest);
+	case eRasMessage_admissionConfirm:
+		return process_acf(skb, ct, ctinfo, protoff, data,
+				   &ras->admissionConfirm);
+	case eRasMessage_locationRequest:
+		return process_lrq(skb, ct, ctinfo, protoff, data,
+				   &ras->locationRequest);
+	case eRasMessage_locationConfirm:
+		return process_lcf(skb, ct, ctinfo, protoff, data,
+				   &ras->locationConfirm);
+	case eRasMessage_infoRequestResponse:
+		return process_irr(skb, ct, ctinfo, protoff, data,
+>>>>>>> refs/remotes/origin/master
 				   &ras->infoRequestResponse);
 	default:
 		pr_debug("nf_ct_ras: RAS message %d\n", ras->choice);
@@ -1723,7 +2256,11 @@ static int ras_help(struct sk_buff *skb, unsigned int protoff,
 	}
 
 	/* Process RAS message */
+<<<<<<< HEAD
 	if (process_ras(skb, ct, ctinfo, &data, &ras) < 0)
+=======
+	if (process_ras(skb, ct, ctinfo, protoff, &data, &ras) < 0)
+>>>>>>> refs/remotes/origin/master
 		goto drop;
 
       accept:
@@ -1732,8 +2269,12 @@ static int ras_help(struct sk_buff *skb, unsigned int protoff,
 
       drop:
 	spin_unlock_bh(&nf_h323_lock);
+<<<<<<< HEAD
 	if (net_ratelimit())
 		pr_info("nf_ct_ras: packet dropped\n");
+=======
+	nf_ct_helper_log(skb, ct, "cannot process RAS message");
+>>>>>>> refs/remotes/origin/master
 	return NF_DROP;
 }
 
@@ -1747,6 +2288,10 @@ static struct nf_conntrack_helper nf_conntrack_helper_ras[] __read_mostly = {
 	{
 		.name			= "RAS",
 		.me			= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.data_len		= sizeof(struct nf_ct_h323_master),
+>>>>>>> refs/remotes/origin/master
 		.tuple.src.l3num	= AF_INET,
 		.tuple.src.u.udp.port	= cpu_to_be16(RAS_PORT),
 		.tuple.dst.protonum	= IPPROTO_UDP,
@@ -1756,6 +2301,10 @@ static struct nf_conntrack_helper nf_conntrack_helper_ras[] __read_mostly = {
 	{
 		.name			= "RAS",
 		.me			= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.data_len		= sizeof(struct nf_ct_h323_master),
+>>>>>>> refs/remotes/origin/master
 		.tuple.src.l3num	= AF_INET6,
 		.tuple.src.u.udp.port	= cpu_to_be16(RAS_PORT),
 		.tuple.dst.protonum	= IPPROTO_UDP,
@@ -1834,4 +2383,10 @@ MODULE_AUTHOR("Jing Min Zhao <zhaojingmin@users.sourceforge.net>");
 MODULE_DESCRIPTION("H.323 connection tracking helper");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("ip_conntrack_h323");
+<<<<<<< HEAD
 MODULE_ALIAS_NFCT_HELPER("h323");
+=======
+MODULE_ALIAS_NFCT_HELPER("RAS");
+MODULE_ALIAS_NFCT_HELPER("Q.931");
+MODULE_ALIAS_NFCT_HELPER("H.245");
+>>>>>>> refs/remotes/origin/master

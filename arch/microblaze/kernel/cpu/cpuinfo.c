@@ -34,6 +34,22 @@ const struct cpu_ver_key cpu_ver_lookup[] = {
 	{"8.00.a", 0x12},
 	{"8.00.b", 0x13},
 	{"8.10.a", 0x14},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	{"8.20.a", 0x15},
+	{"8.20.b", 0x16},
+	{"8.30.a", 0x17},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"8.20.a", 0x15},
+	{"8.20.b", 0x16},
+	{"8.30.a", 0x17},
+	{"8.40.a", 0x18},
+	{"8.40.b", 0x19},
+	{"9.0", 0x1b},
+	{"9.1", 0x1d},
+>>>>>>> refs/remotes/origin/master
 	{NULL, 0},
 };
 
@@ -54,6 +70,12 @@ const struct family_string_key family_string_lookup[] = {
 	{"virtex6", 0xe},
 	/* FIXME There is no key code defined for spartan2 */
 	{"spartan2", 0xf0},
+<<<<<<< HEAD
+=======
+	{"kintex7", 0x10},
+	{"artix7", 0x11},
+	{"zynq7000", 0x12},
+>>>>>>> refs/remotes/origin/master
 	{NULL, 0},
 };
 
@@ -65,6 +87,7 @@ void __init setup_cpuinfo(void)
 
 	cpu = (struct device_node *) of_find_node_by_type(NULL, "cpu");
 	if (!cpu)
+<<<<<<< HEAD
 		printk(KERN_ERR "You don't have cpu!!!\n");
 
 	printk(KERN_INFO "%s: initialising\n", __func__);
@@ -73,19 +96,49 @@ void __init setup_cpuinfo(void)
 	case 0:
 		printk(KERN_WARNING
 			"%s: No PVR support. Using static CPU info from FDT\n",
+=======
+		pr_err("You don't have cpu!!!\n");
+
+	pr_info("%s: initialising\n", __func__);
+
+	switch (cpu_has_pvr()) {
+	case 0:
+		pr_warn("%s: No PVR support. Using static CPU info from FDT\n",
+>>>>>>> refs/remotes/origin/master
 			__func__);
 		set_cpuinfo_static(&cpuinfo, cpu);
 		break;
 /* FIXME I found weird behavior with MB 7.00.a/b 7.10.a
  * please do not use FULL PVR with MMU */
 	case 1:
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Using full CPU PVR support\n",
+=======
+		pr_info("%s: Using full CPU PVR support\n",
+>>>>>>> refs/remotes/origin/master
 			__func__);
 		set_cpuinfo_static(&cpuinfo, cpu);
 		set_cpuinfo_pvr_full(&cpuinfo, cpu);
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: Unsupported PVR setting\n", __func__);
 		set_cpuinfo_static(&cpuinfo, cpu);
 	}
+<<<<<<< HEAD
+=======
+
+	if (cpuinfo.mmu_privins)
+		printk(KERN_WARNING "%s: Stream instructions enabled"
+			" - USERSPACE CAN LOCK THIS KERNEL!\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("%s: Unsupported PVR setting\n", __func__);
+		set_cpuinfo_static(&cpuinfo, cpu);
+	}
+
+	if (cpuinfo.mmu_privins)
+		pr_warn("%s: Stream instructions enabled"
+			" - USERSPACE CAN LOCK THIS KERNEL!\n", __func__);
+>>>>>>> refs/remotes/origin/master
 }

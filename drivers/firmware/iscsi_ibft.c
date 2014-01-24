@@ -433,11 +433,25 @@ static int __init ibft_check_device(void)
  * Helper routiners to check to determine if the entry is valid
  * in the proper iBFT structure.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t ibft_check_nic_for(void *data, int type)
 {
 	struct ibft_kobject *entry = data;
 	struct ibft_nic *nic = entry->nic;
 	mode_t rc = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static umode_t ibft_check_nic_for(void *data, int type)
+{
+	struct ibft_kobject *entry = data;
+	struct ibft_nic *nic = entry->nic;
+	umode_t rc = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (type) {
 	case ISCSI_BOOT_ETH_INDEX:
@@ -488,11 +502,25 @@ static mode_t ibft_check_nic_for(void *data, int type)
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t __init ibft_check_tgt_for(void *data, int type)
 {
 	struct ibft_kobject *entry = data;
 	struct ibft_tgt *tgt = entry->tgt;
 	mode_t rc = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static umode_t __init ibft_check_tgt_for(void *data, int type)
+{
+	struct ibft_kobject *entry = data;
+	struct ibft_tgt *tgt = entry->tgt;
+	umode_t rc = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (type) {
 	case ISCSI_BOOT_TGT_INDEX:
@@ -524,11 +552,25 @@ static mode_t __init ibft_check_tgt_for(void *data, int type)
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t __init ibft_check_initiator_for(void *data, int type)
 {
 	struct ibft_kobject *entry = data;
 	struct ibft_initiator *init = entry->initiator;
 	mode_t rc = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static umode_t __init ibft_check_initiator_for(void *data, int type)
+{
+	struct ibft_kobject *entry = data;
+	struct ibft_initiator *init = entry->initiator;
+	umode_t rc = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (type) {
 	case ISCSI_BOOT_INI_INDEX:
@@ -566,6 +608,20 @@ static mode_t __init ibft_check_initiator_for(void *data, int type)
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void ibft_kobj_release(void *data)
+{
+	kfree(data);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Helper function for ibft_register_kobjects.
  */
@@ -595,7 +651,17 @@ static int __init ibft_create_kobject(struct acpi_table_ibft *header,
 		boot_kobj = iscsi_boot_create_initiator(boot_kset, hdr->index,
 						ibft_kobj,
 						ibft_attr_show_initiator,
+<<<<<<< HEAD
+<<<<<<< HEAD
 						ibft_check_initiator_for);
+=======
+						ibft_check_initiator_for,
+						ibft_kobj_release);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						ibft_check_initiator_for,
+						ibft_kobj_release);
+>>>>>>> refs/remotes/origin/master
 		if (!boot_kobj) {
 			rc = -ENOMEM;
 			goto free_ibft_obj;
@@ -610,7 +676,17 @@ static int __init ibft_create_kobject(struct acpi_table_ibft *header,
 		boot_kobj = iscsi_boot_create_ethernet(boot_kset, hdr->index,
 						       ibft_kobj,
 						       ibft_attr_show_nic,
+<<<<<<< HEAD
+<<<<<<< HEAD
 						       ibft_check_nic_for);
+=======
+						       ibft_check_nic_for,
+						       ibft_kobj_release);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       ibft_check_nic_for,
+						       ibft_kobj_release);
+>>>>>>> refs/remotes/origin/master
 		if (!boot_kobj) {
 			rc = -ENOMEM;
 			goto free_ibft_obj;
@@ -625,7 +701,17 @@ static int __init ibft_create_kobject(struct acpi_table_ibft *header,
 		boot_kobj = iscsi_boot_create_target(boot_kset, hdr->index,
 						     ibft_kobj,
 						     ibft_attr_show_target,
+<<<<<<< HEAD
+<<<<<<< HEAD
 						     ibft_check_tgt_for);
+=======
+						     ibft_check_tgt_for,
+						     ibft_kobj_release);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						     ibft_check_tgt_for,
+						     ibft_kobj_release);
+>>>>>>> refs/remotes/origin/master
 		if (!boot_kobj) {
 			rc = -ENOMEM;
 			goto free_ibft_obj;

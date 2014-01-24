@@ -7,6 +7,7 @@
  * support a subset of instructions, and does not try to hide pipeline
  * effects like branch delay slots.
  *
+<<<<<<< HEAD
  * Copyright (C) 2004, 2005, 2006, 2008  Thiemo Seufer
  * Copyright (C) 2005, 2007  Maciej W. Rozycki
  * Copyright (C) 2006  Ralf Baechle (ralf@linux-mips.org)
@@ -21,6 +22,14 @@
 #include <asm/bugs.h>
 #include <asm/uasm.h>
 
+=======
+ * Copyright (C) 2004, 2005, 2006, 2008	 Thiemo Seufer
+ * Copyright (C) 2005, 2007  Maciej W. Rozycki
+ * Copyright (C) 2006  Ralf Baechle (ralf@linux-mips.org)
+ * Copyright (C) 2012, 2013  MIPS Technologies, Inc.  All rights reserved.
+ */
+
+>>>>>>> refs/remotes/origin/master
 enum fields {
 	RS = 0x001,
 	RT = 0x002,
@@ -37,10 +46,13 @@ enum fields {
 
 #define OP_MASK		0x3f
 #define OP_SH		26
+<<<<<<< HEAD
 #define RS_MASK		0x1f
 #define RS_SH		21
 #define RT_MASK		0x1f
 #define RT_SH		16
+=======
+>>>>>>> refs/remotes/origin/master
 #define RD_MASK		0x1f
 #define RD_SH		11
 #define RE_MASK		0x1f
@@ -53,6 +65,7 @@ enum fields {
 #define FUNC_SH		0
 #define SET_MASK	0x7
 #define SET_SH		0
+<<<<<<< HEAD
 #define SCIMM_MASK	0xfffff
 #define SCIMM_SH	6
 
@@ -70,6 +83,22 @@ enum opcode {
 	insn_tlbr, insn_tlbwi, insn_tlbwr, insn_xor, insn_xori,
 	insn_dins, insn_dinsm, insn_syscall, insn_bbit0, insn_bbit1,
 	insn_lwx, insn_ldx
+=======
+
+enum opcode {
+	insn_invalid,
+	insn_addiu, insn_addu, insn_and, insn_andi, insn_bbit0, insn_bbit1,
+	insn_beq, insn_beql, insn_bgez, insn_bgezl, insn_bltz, insn_bltzl,
+	insn_bne, insn_cache, insn_daddiu, insn_daddu, insn_dins, insn_dinsm,
+	insn_dmfc0, insn_dmtc0, insn_drotr, insn_drotr32, insn_dsll,
+	insn_dsll32, insn_dsra, insn_dsrl, insn_dsrl32, insn_dsubu, insn_eret,
+	insn_ext, insn_ins, insn_j, insn_jal, insn_jr, insn_ld, insn_ldx,
+	insn_ll, insn_lld, insn_lui, insn_lw, insn_lwx, insn_mfc0, insn_mtc0,
+	insn_or, insn_ori, insn_pref, insn_rfe, insn_rotr, insn_sc, insn_scd,
+	insn_sd, insn_sll, insn_sra, insn_srl, insn_subu, insn_sw,
+	insn_syscall, insn_tlbp, insn_tlbr, insn_tlbwi, insn_tlbwr, insn_xor,
+	insn_xori,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct insn {
@@ -78,6 +107,7 @@ struct insn {
 	enum fields fields;
 };
 
+<<<<<<< HEAD
 /* This macro sets the non-variable bits of an instruction. */
 #define M(a, b, c, d, e, f)					\
 	((a) << OP_SH						\
@@ -155,34 +185,53 @@ static struct insn insn_table[] __uasminitdata = {
 #undef M
 
 static inline __uasminit u32 build_rs(u32 arg)
+=======
+static inline u32 build_rs(u32 arg)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN(arg & ~RS_MASK, KERN_WARNING "Micro-assembler field overflow\n");
 
 	return (arg & RS_MASK) << RS_SH;
 }
 
+<<<<<<< HEAD
 static inline __uasminit u32 build_rt(u32 arg)
+=======
+static inline u32 build_rt(u32 arg)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN(arg & ~RT_MASK, KERN_WARNING "Micro-assembler field overflow\n");
 
 	return (arg & RT_MASK) << RT_SH;
 }
 
+<<<<<<< HEAD
 static inline __uasminit u32 build_rd(u32 arg)
+=======
+static inline u32 build_rd(u32 arg)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN(arg & ~RD_MASK, KERN_WARNING "Micro-assembler field overflow\n");
 
 	return (arg & RD_MASK) << RD_SH;
 }
 
+<<<<<<< HEAD
 static inline __uasminit u32 build_re(u32 arg)
+=======
+static inline u32 build_re(u32 arg)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN(arg & ~RE_MASK, KERN_WARNING "Micro-assembler field overflow\n");
 
 	return (arg & RE_MASK) << RE_SH;
 }
 
+<<<<<<< HEAD
 static inline __uasminit u32 build_simm(s32 arg)
+=======
+static inline u32 build_simm(s32 arg)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN(arg > 0x7fff || arg < -0x8000,
 	     KERN_WARNING "Micro-assembler field overflow\n");
@@ -190,13 +239,18 @@ static inline __uasminit u32 build_simm(s32 arg)
 	return arg & 0xffff;
 }
 
+<<<<<<< HEAD
 static inline __uasminit u32 build_uimm(u32 arg)
+=======
+static inline u32 build_uimm(u32 arg)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN(arg & ~IMM_MASK, KERN_WARNING "Micro-assembler field overflow\n");
 
 	return arg & IMM_MASK;
 }
 
+<<<<<<< HEAD
 static inline __uasminit u32 build_bimm(s32 arg)
 {
 	WARN(arg > 0x1ffff || arg < -0x20000,
@@ -216,6 +270,9 @@ static inline __uasminit u32 build_jimm(u32 arg)
 }
 
 static inline __uasminit u32 build_scimm(u32 arg)
+=======
+static inline u32 build_scimm(u32 arg)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN(arg & ~SCIMM_MASK,
 	     KERN_WARNING "Micro-assembler field overflow\n");
@@ -223,20 +280,29 @@ static inline __uasminit u32 build_scimm(u32 arg)
 	return (arg & SCIMM_MASK) << SCIMM_SH;
 }
 
+<<<<<<< HEAD
 static inline __uasminit u32 build_func(u32 arg)
+=======
+static inline u32 build_func(u32 arg)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN(arg & ~FUNC_MASK, KERN_WARNING "Micro-assembler field overflow\n");
 
 	return arg & FUNC_MASK;
 }
 
+<<<<<<< HEAD
 static inline __uasminit u32 build_set(u32 arg)
+=======
+static inline u32 build_set(u32 arg)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN(arg & ~SET_MASK, KERN_WARNING "Micro-assembler field overflow\n");
 
 	return arg & SET_MASK;
 }
 
+<<<<<<< HEAD
 /*
  * The order of opcode arguments is implicitly left to right,
  * starting with RS and ending with FUNC or IMM.
@@ -286,6 +352,9 @@ static void __uasminit build_insn(u32 **buf, enum opcode opc, ...)
 	**buf = op;
 	(*buf)++;
 }
+=======
+static void build_insn(u32 **buf, enum opcode opc, ...);
+>>>>>>> refs/remotes/origin/master
 
 #define I_u1u2u3(op)					\
 Ip_u1u2u3(op)						\
@@ -343,6 +412,16 @@ Ip_u2u1msbu3(op)					\
 }							\
 UASM_EXPORT_SYMBOL(uasm_i##op);
 
+<<<<<<< HEAD
+=======
+#define I_u2u1msbdu3(op)				\
+Ip_u2u1msbu3(op)					\
+{							\
+	build_insn(buf, insn##op, b, a, d-1, c);	\
+}							\
+UASM_EXPORT_SYMBOL(uasm_i##op);
+
+>>>>>>> refs/remotes/origin/master
 #define I_u1u2(op)					\
 Ip_u1u2(op)						\
 {							\
@@ -396,6 +475,11 @@ I_u2u1u3(_drotr)
 I_u2u1u3(_drotr32)
 I_u3u1u2(_dsubu)
 I_0(_eret)
+<<<<<<< HEAD
+=======
+I_u2u1msbdu3(_ext)
+I_u2u1msbu3(_ins)
+>>>>>>> refs/remotes/origin/master
 I_u1(_j)
 I_u1(_jal)
 I_u1(_jr)
@@ -434,7 +518,11 @@ I_u3u1u2(_ldx)
 
 #ifdef CONFIG_CPU_CAVIUM_OCTEON
 #include <asm/octeon/octeon.h>
+<<<<<<< HEAD
 void __uasminit uasm_i_pref(u32 **buf, unsigned int a, signed int b,
+=======
+void ISAFUNC(uasm_i_pref)(u32 **buf, unsigned int a, signed int b,
+>>>>>>> refs/remotes/origin/master
 			    unsigned int c)
 {
 	if (OCTEON_IS_MODEL(OCTEON_CN63XX_PASS1_X) && a <= 24 && a != 5)
@@ -446,21 +534,35 @@ void __uasminit uasm_i_pref(u32 **buf, unsigned int a, signed int b,
 	else
 		build_insn(buf, insn_pref, c, a, b);
 }
+<<<<<<< HEAD
 UASM_EXPORT_SYMBOL(uasm_i_pref);
+=======
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_i_pref));
+>>>>>>> refs/remotes/origin/master
 #else
 I_u2s3u1(_pref)
 #endif
 
 /* Handle labels. */
+<<<<<<< HEAD
 void __uasminit uasm_build_label(struct uasm_label **lab, u32 *addr, int lid)
+=======
+void ISAFUNC(uasm_build_label)(struct uasm_label **lab, u32 *addr, int lid)
+>>>>>>> refs/remotes/origin/master
 {
 	(*lab)->addr = addr;
 	(*lab)->lab = lid;
 	(*lab)++;
 }
+<<<<<<< HEAD
 UASM_EXPORT_SYMBOL(uasm_build_label);
 
 int __uasminit uasm_in_compat_space_p(long addr)
+=======
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_build_label));
+
+int ISAFUNC(uasm_in_compat_space_p)(long addr)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Is this address in 32bit compat space? */
 #ifdef CONFIG_64BIT
@@ -469,9 +571,15 @@ int __uasminit uasm_in_compat_space_p(long addr)
 	return 1;
 #endif
 }
+<<<<<<< HEAD
 UASM_EXPORT_SYMBOL(uasm_in_compat_space_p);
 
 static int __uasminit uasm_rel_highest(long val)
+=======
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_in_compat_space_p));
+
+static int uasm_rel_highest(long val)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_64BIT
 	return ((((val + 0x800080008000L) >> 48) & 0xffff) ^ 0x8000) - 0x8000;
@@ -480,7 +588,11 @@ static int __uasminit uasm_rel_highest(long val)
 #endif
 }
 
+<<<<<<< HEAD
 static int __uasminit uasm_rel_higher(long val)
+=======
+static int uasm_rel_higher(long val)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_64BIT
 	return ((((val + 0x80008000L) >> 32) & 0xffff) ^ 0x8000) - 0x8000;
@@ -489,6 +601,7 @@ static int __uasminit uasm_rel_higher(long val)
 #endif
 }
 
+<<<<<<< HEAD
 int __uasminit uasm_rel_hi(long val)
 {
 	return ((((val + 0x8000L) >> 16) & 0xffff) ^ 0x8000) - 0x8000;
@@ -533,12 +646,61 @@ UASM_EXPORT_SYMBOL(UASM_i_LA);
 /* Handle relocations. */
 void __uasminit
 uasm_r_mips_pc16(struct uasm_reloc **rel, u32 *addr, int lid)
+=======
+int ISAFUNC(uasm_rel_hi)(long val)
+{
+	return ((((val + 0x8000L) >> 16) & 0xffff) ^ 0x8000) - 0x8000;
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_rel_hi));
+
+int ISAFUNC(uasm_rel_lo)(long val)
+{
+	return ((val & 0xffff) ^ 0x8000) - 0x8000;
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_rel_lo));
+
+void ISAFUNC(UASM_i_LA_mostly)(u32 **buf, unsigned int rs, long addr)
+{
+	if (!ISAFUNC(uasm_in_compat_space_p)(addr)) {
+		ISAFUNC(uasm_i_lui)(buf, rs, uasm_rel_highest(addr));
+		if (uasm_rel_higher(addr))
+			ISAFUNC(uasm_i_daddiu)(buf, rs, rs, uasm_rel_higher(addr));
+		if (ISAFUNC(uasm_rel_hi(addr))) {
+			ISAFUNC(uasm_i_dsll)(buf, rs, rs, 16);
+			ISAFUNC(uasm_i_daddiu)(buf, rs, rs,
+					ISAFUNC(uasm_rel_hi)(addr));
+			ISAFUNC(uasm_i_dsll)(buf, rs, rs, 16);
+		} else
+			ISAFUNC(uasm_i_dsll32)(buf, rs, rs, 0);
+	} else
+		ISAFUNC(uasm_i_lui)(buf, rs, ISAFUNC(uasm_rel_hi(addr)));
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(UASM_i_LA_mostly));
+
+void ISAFUNC(UASM_i_LA)(u32 **buf, unsigned int rs, long addr)
+{
+	ISAFUNC(UASM_i_LA_mostly)(buf, rs, addr);
+	if (ISAFUNC(uasm_rel_lo(addr))) {
+		if (!ISAFUNC(uasm_in_compat_space_p)(addr))
+			ISAFUNC(uasm_i_daddiu)(buf, rs, rs,
+					ISAFUNC(uasm_rel_lo(addr)));
+		else
+			ISAFUNC(uasm_i_addiu)(buf, rs, rs,
+					ISAFUNC(uasm_rel_lo(addr)));
+	}
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(UASM_i_LA));
+
+/* Handle relocations. */
+void ISAFUNC(uasm_r_mips_pc16)(struct uasm_reloc **rel, u32 *addr, int lid)
+>>>>>>> refs/remotes/origin/master
 {
 	(*rel)->addr = addr;
 	(*rel)->type = R_MIPS_PC16;
 	(*rel)->lab = lid;
 	(*rel)++;
 }
+<<<<<<< HEAD
 UASM_EXPORT_SYMBOL(uasm_r_mips_pc16);
 
 static inline void __uasminit
@@ -560,6 +722,15 @@ __resolve_relocs(struct uasm_reloc *rel, struct uasm_label *lab)
 
 void __uasminit
 uasm_resolve_relocs(struct uasm_reloc *rel, struct uasm_label *lab)
+=======
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_r_mips_pc16));
+
+static inline void __resolve_relocs(struct uasm_reloc *rel,
+				    struct uasm_label *lab);
+
+void ISAFUNC(uasm_resolve_relocs)(struct uasm_reloc *rel,
+				  struct uasm_label *lab)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uasm_label *l;
 
@@ -568,40 +739,70 @@ uasm_resolve_relocs(struct uasm_reloc *rel, struct uasm_label *lab)
 			if (rel->lab == l->lab)
 				__resolve_relocs(rel, l);
 }
+<<<<<<< HEAD
 UASM_EXPORT_SYMBOL(uasm_resolve_relocs);
 
 void __uasminit
 uasm_move_relocs(struct uasm_reloc *rel, u32 *first, u32 *end, long off)
+=======
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_resolve_relocs));
+
+void ISAFUNC(uasm_move_relocs)(struct uasm_reloc *rel, u32 *first, u32 *end,
+			       long off)
+>>>>>>> refs/remotes/origin/master
 {
 	for (; rel->lab != UASM_LABEL_INVALID; rel++)
 		if (rel->addr >= first && rel->addr < end)
 			rel->addr += off;
 }
+<<<<<<< HEAD
 UASM_EXPORT_SYMBOL(uasm_move_relocs);
 
 void __uasminit
 uasm_move_labels(struct uasm_label *lab, u32 *first, u32 *end, long off)
+=======
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_move_relocs));
+
+void ISAFUNC(uasm_move_labels)(struct uasm_label *lab, u32 *first, u32 *end,
+			       long off)
+>>>>>>> refs/remotes/origin/master
 {
 	for (; lab->lab != UASM_LABEL_INVALID; lab++)
 		if (lab->addr >= first && lab->addr < end)
 			lab->addr += off;
 }
+<<<<<<< HEAD
 UASM_EXPORT_SYMBOL(uasm_move_labels);
 
 void __uasminit
 uasm_copy_handler(struct uasm_reloc *rel, struct uasm_label *lab, u32 *first,
 		  u32 *end, u32 *target)
+=======
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_move_labels));
+
+void ISAFUNC(uasm_copy_handler)(struct uasm_reloc *rel, struct uasm_label *lab,
+				u32 *first, u32 *end, u32 *target)
+>>>>>>> refs/remotes/origin/master
 {
 	long off = (long)(target - first);
 
 	memcpy(target, first, (end - first) * sizeof(u32));
 
+<<<<<<< HEAD
 	uasm_move_relocs(rel, first, end, off);
 	uasm_move_labels(lab, first, end, off);
 }
 UASM_EXPORT_SYMBOL(uasm_copy_handler);
 
 int __uasminit uasm_insn_has_bdelay(struct uasm_reloc *rel, u32 *addr)
+=======
+	ISAFUNC(uasm_move_relocs(rel, first, end, off));
+	ISAFUNC(uasm_move_labels(lab, first, end, off));
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_copy_handler));
+
+int ISAFUNC(uasm_insn_has_bdelay)(struct uasm_reloc *rel, u32 *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	for (; rel->lab != UASM_LABEL_INVALID; rel++) {
 		if (rel->addr == addr
@@ -612,6 +813,7 @@ int __uasminit uasm_insn_has_bdelay(struct uasm_reloc *rel, u32 *addr)
 
 	return 0;
 }
+<<<<<<< HEAD
 UASM_EXPORT_SYMBOL(uasm_insn_has_bdelay);
 
 /* Convenience functions for labeled branches. */
@@ -697,3 +899,86 @@ uasm_il_bbit1(u32 **p, struct uasm_reloc **r, unsigned int reg,
 	uasm_i_bbit1(p, reg, bit, 0);
 }
 UASM_EXPORT_SYMBOL(uasm_il_bbit1);
+=======
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_insn_has_bdelay));
+
+/* Convenience functions for labeled branches. */
+void ISAFUNC(uasm_il_bltz)(u32 **p, struct uasm_reloc **r, unsigned int reg,
+			   int lid)
+{
+	uasm_r_mips_pc16(r, *p, lid);
+	ISAFUNC(uasm_i_bltz)(p, reg, 0);
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_il_bltz));
+
+void ISAFUNC(uasm_il_b)(u32 **p, struct uasm_reloc **r, int lid)
+{
+	uasm_r_mips_pc16(r, *p, lid);
+	ISAFUNC(uasm_i_b)(p, 0);
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_il_b));
+
+void ISAFUNC(uasm_il_beqz)(u32 **p, struct uasm_reloc **r, unsigned int reg,
+			   int lid)
+{
+	uasm_r_mips_pc16(r, *p, lid);
+	ISAFUNC(uasm_i_beqz)(p, reg, 0);
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_il_beqz));
+
+void ISAFUNC(uasm_il_beqzl)(u32 **p, struct uasm_reloc **r, unsigned int reg,
+			    int lid)
+{
+	uasm_r_mips_pc16(r, *p, lid);
+	ISAFUNC(uasm_i_beqzl)(p, reg, 0);
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_il_beqzl));
+
+void ISAFUNC(uasm_il_bne)(u32 **p, struct uasm_reloc **r, unsigned int reg1,
+			  unsigned int reg2, int lid)
+{
+	uasm_r_mips_pc16(r, *p, lid);
+	ISAFUNC(uasm_i_bne)(p, reg1, reg2, 0);
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_il_bne));
+
+void ISAFUNC(uasm_il_bnez)(u32 **p, struct uasm_reloc **r, unsigned int reg,
+			   int lid)
+{
+	uasm_r_mips_pc16(r, *p, lid);
+	ISAFUNC(uasm_i_bnez)(p, reg, 0);
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_il_bnez));
+
+void ISAFUNC(uasm_il_bgezl)(u32 **p, struct uasm_reloc **r, unsigned int reg,
+			    int lid)
+{
+	uasm_r_mips_pc16(r, *p, lid);
+	ISAFUNC(uasm_i_bgezl)(p, reg, 0);
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_il_bgezl));
+
+void ISAFUNC(uasm_il_bgez)(u32 **p, struct uasm_reloc **r, unsigned int reg,
+			   int lid)
+{
+	uasm_r_mips_pc16(r, *p, lid);
+	ISAFUNC(uasm_i_bgez)(p, reg, 0);
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_il_bgez));
+
+void ISAFUNC(uasm_il_bbit0)(u32 **p, struct uasm_reloc **r, unsigned int reg,
+			    unsigned int bit, int lid)
+{
+	uasm_r_mips_pc16(r, *p, lid);
+	ISAFUNC(uasm_i_bbit0)(p, reg, bit, 0);
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_il_bbit0));
+
+void ISAFUNC(uasm_il_bbit1)(u32 **p, struct uasm_reloc **r, unsigned int reg,
+			    unsigned int bit, int lid)
+{
+	uasm_r_mips_pc16(r, *p, lid);
+	ISAFUNC(uasm_i_bbit1)(p, reg, bit, 0);
+}
+UASM_EXPORT_SYMBOL(ISAFUNC(uasm_il_bbit1));
+>>>>>>> refs/remotes/origin/master

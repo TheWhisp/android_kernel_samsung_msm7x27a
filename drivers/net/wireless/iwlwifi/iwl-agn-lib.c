@@ -2,7 +2,11 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
  * Copyright(c) 2008 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2008 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -35,6 +39,7 @@
 #include "iwl-dev.h"
 #include "iwl-core.h"
 #include "iwl-io.h"
+<<<<<<< HEAD
 #include "iwl-helpers.h"
 #include "iwl-agn-hw.h"
 #include "iwl-agn.h"
@@ -498,6 +503,12 @@ void iwlagn_setup_deferred_work(struct iwl_priv *priv)
 	 * still keep for future use if needed
 	 */
 }
+=======
+#include "iwl-agn-hw.h"
+#include "iwl-agn.h"
+#include "iwl-trans.h"
+#include "iwl-shared.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int iwlagn_hw_valid_rtc_data_addr(u32 addr)
 {
@@ -535,11 +546,16 @@ int iwlagn_send_tx_power(struct iwl_priv *priv)
 	tx_power_cmd.flags = IWLAGN_TX_POWER_NO_CLOSED;
 	tx_power_cmd.srv_chan_lmt = IWLAGN_TX_POWER_AUTO;
 
+<<<<<<< HEAD
 	if (IWL_UCODE_API(priv->ucode_ver) == 1)
+=======
+	if (IWL_UCODE_API(priv->fw->ucode_ver) == 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 		tx_ant_cfg_cmd = REPLY_TX_POWER_DBM_CMD_V1;
 	else
 		tx_ant_cfg_cmd = REPLY_TX_POWER_DBM_CMD;
 
+<<<<<<< HEAD
 	return iwl_send_cmd_pdu(priv, tx_ant_cfg_cmd, sizeof(tx_power_cmd),
 				&tx_power_cmd);
 }
@@ -1447,6 +1463,115 @@ int iwlagn_request_scan(struct iwl_priv *priv, struct ieee80211_vif *vif)
 	}
 
 	return ret;
+=======
+	return iwl_dvm_send_cmd_pdu(priv, tx_ant_cfg_cmd, CMD_SYNC,
+			sizeof(tx_power_cmd), &tx_power_cmd);
+}
+
+void iwlagn_temperature(struct iwl_priv *priv)
+{
+	lockdep_assert_held(&priv->statistics.lock);
+
+	/* store temperature from correct statistics (in Celsius) */
+	priv->temperature = le32_to_cpu(priv->statistics.common.temperature);
+	iwl_tt_handler(priv);
+}
+
+u16 iwl_eeprom_calib_version(struct iwl_shared *shrd)
+{
+	struct iwl_eeprom_calib_hdr *hdr;
+
+	hdr = (struct iwl_eeprom_calib_hdr *)iwl_eeprom_query_addr(shrd,
+							EEPROM_CALIB_ALL);
+	return hdr->version;
+
+}
+
+/*
+ * EEPROM
+ */
+static u32 eeprom_indirect_address(const struct iwl_shared *shrd, u32 address)
+{
+	u16 offset = 0;
+
+	if ((address & INDIRECT_ADDRESS) == 0)
+		return address;
+
+	switch (address & INDIRECT_TYPE_MSK) {
+	case INDIRECT_HOST:
+		offset = iwl_eeprom_query16(shrd, EEPROM_LINK_HOST);
+		break;
+	case INDIRECT_GENERAL:
+		offset = iwl_eeprom_query16(shrd, EEPROM_LINK_GENERAL);
+		break;
+	case INDIRECT_REGULATORY:
+		offset = iwl_eeprom_query16(shrd, EEPROM_LINK_REGULATORY);
+		break;
+	case INDIRECT_TXP_LIMIT:
+		offset = iwl_eeprom_query16(shrd, EEPROM_LINK_TXP_LIMIT);
+		break;
+	case INDIRECT_TXP_LIMIT_SIZE:
+		offset = iwl_eeprom_query16(shrd, EEPROM_LINK_TXP_LIMIT_SIZE);
+		break;
+	case INDIRECT_CALIBRATION:
+		offset = iwl_eeprom_query16(shrd, EEPROM_LINK_CALIBRATION);
+		break;
+	case INDIRECT_PROCESS_ADJST:
+		offset = iwl_eeprom_query16(shrd, EEPROM_LINK_PROCESS_ADJST);
+		break;
+	case INDIRECT_OTHERS:
+		offset = iwl_eeprom_query16(shrd, EEPROM_LINK_OTHERS);
+		break;
+	default:
+		IWL_ERR(shrd->trans, "illegal indirect type: 0x%X\n",
+		address & INDIRECT_TYPE_MSK);
+		break;
+	}
+
+	/* translate the offset from words to byte */
+	return (address & ADDRESS_MSK) + (offset << 1);
+}
+
+const u8 *iwl_eeprom_query_addr(const struct iwl_shared *shrd, size_t offset)
+{
+	u32 address = eeprom_indirect_address(shrd, offset);
+	BUG_ON(address >= shrd->cfg->base_params->eeprom_size);
+	return &shrd->eeprom[address];
+}
+
+struct iwl_mod_params iwlagn_mod_params = {
+	.amsdu_size_8K = 1,
+	.restart_fw = 1,
+	.plcp_check = true,
+	.bt_coex_active = true,
+	.no_sleep_autoadjust = true,
+	.power_level = IWL_POWER_INDEX_1,
+	.bt_ch_announce = true,
+	.wanted_ucode_alternative = 1,
+	.auto_agg = true,
+	/* the rest are 0 by default */
+};
+
+int iwlagn_hwrate_to_mac80211_idx(u32 rate_n_flags, enum ieee80211_band band)
+{
+	int idx = 0;
+	int band_offset = 0;
+
+	/* HT rate format: mac80211 wants an MCS number, which is just LSB */
+	if (rate_n_flags & RATE_MCS_HT_MSK) {
+		idx = (rate_n_flags & 0xff);
+		return idx;
+	/* Legacy rate format, search for match in table */
+	} else {
+		if (band == IEEE80211_BAND_5GHZ)
+			band_offset = IWL_FIRST_OFDM_RATE;
+		for (idx = band_offset; idx < IWL_RATE_COUNT_LEGACY; idx++)
+			if (iwl_rates[idx].plcp == (rate_n_flags & 0xFF))
+				return idx - band_offset;
+	}
+
+	return -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int iwlagn_manage_ibss_station(struct iwl_priv *priv,
@@ -1462,6 +1587,7 @@ int iwlagn_manage_ibss_station(struct iwl_priv *priv,
 				  vif->bss_conf.bssid);
 }
 
+<<<<<<< HEAD
 void iwl_free_tfds_in_queue(struct iwl_priv *priv,
 			    int sta_id, int tid, int freed)
 {
@@ -1508,6 +1634,8 @@ int iwlagn_wait_tx_queue_empty(struct iwl_priv *priv)
 
 #define IWL_TX_QUEUE_MSK	0xfffff
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * iwlagn_txfifo_flush: send REPLY_TXFIFO_FLUSH command to uCode
  *
@@ -1528,28 +1656,55 @@ int iwlagn_txfifo_flush(struct iwl_priv *priv, u16 flush_control)
 	might_sleep();
 
 	memset(&flush_cmd, 0, sizeof(flush_cmd));
+<<<<<<< HEAD
 	flush_cmd.fifo_control = IWL_TX_FIFO_VO_MSK | IWL_TX_FIFO_VI_MSK |
 				 IWL_TX_FIFO_BE_MSK | IWL_TX_FIFO_BK_MSK;
 	if (priv->cfg->sku & IWL_SKU_N)
+=======
+	if (flush_control & BIT(IWL_RXON_CTX_BSS))
+		flush_cmd.fifo_control = IWL_SCD_VO_MSK | IWL_SCD_VI_MSK |
+				 IWL_SCD_BE_MSK | IWL_SCD_BK_MSK |
+				 IWL_SCD_MGMT_MSK;
+	if ((flush_control & BIT(IWL_RXON_CTX_PAN)) &&
+	    (priv->shrd->valid_contexts != BIT(IWL_RXON_CTX_BSS)))
+		flush_cmd.fifo_control |= IWL_PAN_SCD_VO_MSK |
+				IWL_PAN_SCD_VI_MSK | IWL_PAN_SCD_BE_MSK |
+				IWL_PAN_SCD_BK_MSK | IWL_PAN_SCD_MGMT_MSK |
+				IWL_PAN_SCD_MULTICAST_MSK;
+
+	if (hw_params(priv).sku & EEPROM_SKU_CAP_11N_ENABLE)
+>>>>>>> refs/remotes/origin/cm-10.0
 		flush_cmd.fifo_control |= IWL_AGG_TX_QUEUE_MSK;
 
 	IWL_DEBUG_INFO(priv, "fifo queue control: 0X%x\n",
 		       flush_cmd.fifo_control);
 	flush_cmd.flush_control = cpu_to_le16(flush_control);
 
+<<<<<<< HEAD
 	return iwl_send_cmd(priv, &cmd);
+=======
+	return iwl_dvm_send_cmd(priv, &cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void iwlagn_dev_txfifo_flush(struct iwl_priv *priv, u16 flush_control)
 {
 	mutex_lock(&priv->mutex);
 	ieee80211_stop_queues(priv->hw);
+<<<<<<< HEAD
 	if (priv->cfg->ops->lib->txfifo_flush(priv, IWL_DROP_ALL)) {
+=======
+	if (iwlagn_txfifo_flush(priv, IWL_DROP_ALL)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		IWL_ERR(priv, "flush request fail\n");
 		goto done;
 	}
 	IWL_DEBUG_INFO(priv, "wait transmit/flush all frames\n");
+<<<<<<< HEAD
 	iwlagn_wait_tx_queue_empty(priv);
+=======
+	iwl_trans_wait_tx_queue_empty(trans(priv));
+>>>>>>> refs/remotes/origin/cm-10.0
 done:
 	ieee80211_wake_queues(priv->hw);
 	mutex_unlock(&priv->mutex);
@@ -1672,15 +1827,26 @@ void iwlagn_send_advance_bt_config(struct iwl_priv *priv)
 	BUILD_BUG_ON(sizeof(iwlagn_def_3w_lookup) !=
 			sizeof(basic.bt3_lookup_table));
 
+<<<<<<< HEAD
 	if (priv->cfg->bt_params) {
 		if (priv->cfg->bt_params->bt_session_2) {
 			bt_cmd_2000.prio_boost = cpu_to_le32(
 				priv->cfg->bt_params->bt_prio_boost);
+=======
+	if (cfg(priv)->bt_params) {
+		if (cfg(priv)->bt_params->bt_session_2) {
+			bt_cmd_2000.prio_boost = cpu_to_le32(
+				cfg(priv)->bt_params->bt_prio_boost);
+>>>>>>> refs/remotes/origin/cm-10.0
 			bt_cmd_2000.tx_prio_boost = 0;
 			bt_cmd_2000.rx_prio_boost = 0;
 		} else {
 			bt_cmd_6000.prio_boost =
+<<<<<<< HEAD
 				priv->cfg->bt_params->bt_prio_boost;
+=======
+				cfg(priv)->bt_params->bt_prio_boost;
+>>>>>>> refs/remotes/origin/cm-10.0
 			bt_cmd_6000.tx_prio_boost = 0;
 			bt_cmd_6000.rx_prio_boost = 0;
 		}
@@ -1699,11 +1865,17 @@ void iwlagn_send_advance_bt_config(struct iwl_priv *priv)
 	 * (might be in monitor mode), or the interface is in
 	 * IBSS mode (no proper uCode support for coex then).
 	 */
+<<<<<<< HEAD
 	if (!bt_coex_active || priv->iw_mode == NL80211_IFTYPE_ADHOC) {
+=======
+	if (!iwlagn_mod_params.bt_coex_active ||
+	    priv->iw_mode == NL80211_IFTYPE_ADHOC) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		basic.flags = IWLAGN_BT_FLAG_COEX_MODE_DISABLED;
 	} else {
 		basic.flags = IWLAGN_BT_FLAG_COEX_MODE_3W <<
 					IWLAGN_BT_FLAG_COEX_MODE_SHIFT;
+<<<<<<< HEAD
 		if (priv->cfg->bt_params &&
 		    priv->cfg->bt_params->bt_sco_disable)
 			basic.flags |= IWLAGN_BT_FLAG_SYNC_2_BT_DISABLE;
@@ -1711,6 +1883,17 @@ void iwlagn_send_advance_bt_config(struct iwl_priv *priv)
 		if (priv->bt_ch_announce)
 			basic.flags |= IWLAGN_BT_FLAG_CHANNEL_INHIBITION;
 		IWL_DEBUG_INFO(priv, "BT coex flag: 0X%x\n", basic.flags);
+=======
+
+		if (!priv->bt_enable_pspoll)
+			basic.flags |= IWLAGN_BT_FLAG_SYNC_2_BT_DISABLE;
+		else
+			basic.flags &= ~IWLAGN_BT_FLAG_SYNC_2_BT_DISABLE;
+
+		if (priv->bt_ch_announce)
+			basic.flags |= IWLAGN_BT_FLAG_CHANNEL_INHIBITION;
+		IWL_DEBUG_COEX(priv, "BT coex flag: 0X%x\n", basic.flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	priv->bt_enable_flag = basic.flags;
 	if (priv->bt_full_concurrent)
@@ -1720,11 +1903,16 @@ void iwlagn_send_advance_bt_config(struct iwl_priv *priv)
 		memcpy(basic.bt3_lookup_table, iwlagn_def_3w_lookup,
 			sizeof(iwlagn_def_3w_lookup));
 
+<<<<<<< HEAD
 	IWL_DEBUG_INFO(priv, "BT coex %s in %s mode\n",
+=======
+	IWL_DEBUG_COEX(priv, "BT coex %s in %s mode\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       basic.flags ? "active" : "disabled",
 		       priv->bt_full_concurrent ?
 		       "full concurrency" : "3-wire");
 
+<<<<<<< HEAD
 	if (priv->cfg->bt_params->bt_session_2) {
 		memcpy(&bt_cmd_2000.basic, &basic,
 			sizeof(basic));
@@ -1735,12 +1923,105 @@ void iwlagn_send_advance_bt_config(struct iwl_priv *priv)
 			sizeof(basic));
 		ret = iwl_send_cmd_pdu(priv, REPLY_BT_CONFIG,
 			sizeof(bt_cmd_6000), &bt_cmd_6000);
+=======
+	if (cfg(priv)->bt_params->bt_session_2) {
+		memcpy(&bt_cmd_2000.basic, &basic,
+			sizeof(basic));
+		ret = iwl_dvm_send_cmd_pdu(priv, REPLY_BT_CONFIG,
+			CMD_SYNC, sizeof(bt_cmd_2000), &bt_cmd_2000);
+	} else {
+		memcpy(&bt_cmd_6000.basic, &basic,
+			sizeof(basic));
+		ret = iwl_dvm_send_cmd_pdu(priv, REPLY_BT_CONFIG,
+			CMD_SYNC, sizeof(bt_cmd_6000), &bt_cmd_6000);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (ret)
 		IWL_ERR(priv, "failed to send BT Coex Config\n");
 
 }
 
+<<<<<<< HEAD
+=======
+void iwlagn_bt_adjust_rssi_monitor(struct iwl_priv *priv, bool rssi_ena)
+{
+	struct iwl_rxon_context *ctx, *found_ctx = NULL;
+	bool found_ap = false;
+
+	lockdep_assert_held(&priv->mutex);
+
+	/* Check whether AP or GO mode is active. */
+	if (rssi_ena) {
+		for_each_context(priv, ctx) {
+			if (ctx->vif && ctx->vif->type == NL80211_IFTYPE_AP &&
+			    iwl_is_associated_ctx(ctx)) {
+				found_ap = true;
+				break;
+			}
+		}
+	}
+
+	/*
+	 * If disable was received or If GO/AP mode, disable RSSI
+	 * measurements.
+	 */
+	if (!rssi_ena || found_ap) {
+		if (priv->cur_rssi_ctx) {
+			ctx = priv->cur_rssi_ctx;
+			ieee80211_disable_rssi_reports(ctx->vif);
+			priv->cur_rssi_ctx = NULL;
+		}
+		return;
+	}
+
+	/*
+	 * If rssi measurements need to be enabled, consider all cases now.
+	 * Figure out how many contexts are active.
+	 */
+	for_each_context(priv, ctx) {
+		if (ctx->vif && ctx->vif->type == NL80211_IFTYPE_STATION &&
+		    iwl_is_associated_ctx(ctx)) {
+			found_ctx = ctx;
+			break;
+		}
+	}
+
+	/*
+	 * rssi monitor already enabled for the correct interface...nothing
+	 * to do.
+	 */
+	if (found_ctx == priv->cur_rssi_ctx)
+		return;
+
+	/*
+	 * Figure out if rssi monitor is currently enabled, and needs
+	 * to be changed. If rssi monitor is already enabled, disable
+	 * it first else just enable rssi measurements on the
+	 * interface found above.
+	 */
+	if (priv->cur_rssi_ctx) {
+		ctx = priv->cur_rssi_ctx;
+		if (ctx->vif)
+			ieee80211_disable_rssi_reports(ctx->vif);
+	}
+
+	priv->cur_rssi_ctx = found_ctx;
+
+	if (!found_ctx)
+		return;
+
+	ieee80211_enable_rssi_reports(found_ctx->vif,
+			IWLAGN_BT_PSP_MIN_RSSI_THRESHOLD,
+			IWLAGN_BT_PSP_MAX_RSSI_THRESHOLD);
+}
+
+static bool iwlagn_bt_traffic_is_sco(struct iwl_bt_uart_msg *uart_msg)
+{
+	return BT_UART_MSG_FRAME3SCOESCO_MSK & uart_msg->frame3 >>
+			BT_UART_MSG_FRAME3SCOESCO_POS;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void iwlagn_bt_traffic_change_work(struct work_struct *work)
 {
 	struct iwl_priv *priv =
@@ -1758,7 +2039,11 @@ static void iwlagn_bt_traffic_change_work(struct work_struct *work)
 	 * coex profile notifications. Ignore that since only bad consequence
 	 * can be not matching debug print with actual state.
 	 */
+<<<<<<< HEAD
 	IWL_DEBUG_INFO(priv, "BT traffic load changes: %d\n",
+=======
+	IWL_DEBUG_COEX(priv, "BT traffic load changes: %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       priv->bt_traffic_load);
 
 	switch (priv->bt_traffic_load) {
@@ -1793,23 +2078,60 @@ static void iwlagn_bt_traffic_change_work(struct work_struct *work)
 	if (test_bit(STATUS_SCAN_HW, &priv->status))
 		goto out;
 
+<<<<<<< HEAD
 	if (priv->cfg->ops->lib->update_chain_flags)
 		priv->cfg->ops->lib->update_chain_flags(priv);
 
 	if (smps_request != -1) {
+=======
+	iwl_update_chain_flags(priv);
+
+	if (smps_request != -1) {
+		priv->current_ht_config.smps = smps_request;
+>>>>>>> refs/remotes/origin/cm-10.0
 		for_each_context(priv, ctx) {
 			if (ctx->vif && ctx->vif->type == NL80211_IFTYPE_STATION)
 				ieee80211_request_smps(ctx->vif, smps_request);
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	/*
+	 * Dynamic PS poll related functionality. Adjust RSSI measurements if
+	 * necessary.
+	 */
+	iwlagn_bt_coex_rssi_monitor(priv);
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	mutex_unlock(&priv->mutex);
+}
+
+<<<<<<< HEAD
+static void iwlagn_print_uartmsg(struct iwl_priv *priv,
+				struct iwl_bt_uart_msg *uart_msg)
+{
+	IWL_DEBUG_NOTIF(priv, "Message Type = 0x%X, SSN = 0x%X, "
+=======
+/*
+ * If BT sco traffic, and RSSI monitor is enabled, move measurements to the
+ * correct interface or disable it if this is the last interface to be
+ * removed.
+ */
+void iwlagn_bt_coex_rssi_monitor(struct iwl_priv *priv)
+{
+	if (priv->bt_is_sco &&
+	    priv->bt_traffic_load == IWL_BT_COEX_TRAFFIC_LOAD_CONTINUOUS)
+		iwlagn_bt_adjust_rssi_monitor(priv, true);
+	else
+		iwlagn_bt_adjust_rssi_monitor(priv, false);
 }
 
 static void iwlagn_print_uartmsg(struct iwl_priv *priv,
 				struct iwl_bt_uart_msg *uart_msg)
 {
-	IWL_DEBUG_NOTIF(priv, "Message Type = 0x%X, SSN = 0x%X, "
+	IWL_DEBUG_COEX(priv, "Message Type = 0x%X, SSN = 0x%X, "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"Update Req = 0x%X",
 		(BT_UART_MSG_FRAME1MSGTYPE_MSK & uart_msg->frame1) >>
 			BT_UART_MSG_FRAME1MSGTYPE_POS,
@@ -1818,7 +2140,11 @@ static void iwlagn_print_uartmsg(struct iwl_priv *priv,
 		(BT_UART_MSG_FRAME1UPDATEREQ_MSK & uart_msg->frame1) >>
 			BT_UART_MSG_FRAME1UPDATEREQ_POS);
 
+<<<<<<< HEAD
 	IWL_DEBUG_NOTIF(priv, "Open connections = 0x%X, Traffic load = 0x%X, "
+=======
+	IWL_DEBUG_COEX(priv, "Open connections = 0x%X, Traffic load = 0x%X, "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"Chl_SeqN = 0x%X, In band = 0x%X",
 		(BT_UART_MSG_FRAME2OPENCONNECTIONS_MSK & uart_msg->frame2) >>
 			BT_UART_MSG_FRAME2OPENCONNECTIONS_POS,
@@ -1829,7 +2155,11 @@ static void iwlagn_print_uartmsg(struct iwl_priv *priv,
 		(BT_UART_MSG_FRAME2INBAND_MSK & uart_msg->frame2) >>
 			BT_UART_MSG_FRAME2INBAND_POS);
 
+<<<<<<< HEAD
 	IWL_DEBUG_NOTIF(priv, "SCO/eSCO = 0x%X, Sniff = 0x%X, A2DP = 0x%X, "
+=======
+	IWL_DEBUG_COEX(priv, "SCO/eSCO = 0x%X, Sniff = 0x%X, A2DP = 0x%X, "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"ACL = 0x%X, Master = 0x%X, OBEX = 0x%X",
 		(BT_UART_MSG_FRAME3SCOESCO_MSK & uart_msg->frame3) >>
 			BT_UART_MSG_FRAME3SCOESCO_POS,
@@ -1844,11 +2174,19 @@ static void iwlagn_print_uartmsg(struct iwl_priv *priv,
 		(BT_UART_MSG_FRAME3OBEX_MSK & uart_msg->frame3) >>
 			BT_UART_MSG_FRAME3OBEX_POS);
 
+<<<<<<< HEAD
 	IWL_DEBUG_NOTIF(priv, "Idle duration = 0x%X",
 		(BT_UART_MSG_FRAME4IDLEDURATION_MSK & uart_msg->frame4) >>
 			BT_UART_MSG_FRAME4IDLEDURATION_POS);
 
 	IWL_DEBUG_NOTIF(priv, "Tx Activity = 0x%X, Rx Activity = 0x%X, "
+=======
+	IWL_DEBUG_COEX(priv, "Idle duration = 0x%X",
+		(BT_UART_MSG_FRAME4IDLEDURATION_MSK & uart_msg->frame4) >>
+			BT_UART_MSG_FRAME4IDLEDURATION_POS);
+
+	IWL_DEBUG_COEX(priv, "Tx Activity = 0x%X, Rx Activity = 0x%X, "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"eSCO Retransmissions = 0x%X",
 		(BT_UART_MSG_FRAME5TXACTIVITY_MSK & uart_msg->frame5) >>
 			BT_UART_MSG_FRAME5TXACTIVITY_POS,
@@ -1857,13 +2195,21 @@ static void iwlagn_print_uartmsg(struct iwl_priv *priv,
 		(BT_UART_MSG_FRAME5ESCORETRANSMIT_MSK & uart_msg->frame5) >>
 			BT_UART_MSG_FRAME5ESCORETRANSMIT_POS);
 
+<<<<<<< HEAD
 	IWL_DEBUG_NOTIF(priv, "Sniff Interval = 0x%X, Discoverable = 0x%X",
+=======
+	IWL_DEBUG_COEX(priv, "Sniff Interval = 0x%X, Discoverable = 0x%X",
+>>>>>>> refs/remotes/origin/cm-10.0
 		(BT_UART_MSG_FRAME6SNIFFINTERVAL_MSK & uart_msg->frame6) >>
 			BT_UART_MSG_FRAME6SNIFFINTERVAL_POS,
 		(BT_UART_MSG_FRAME6DISCOVERABLE_MSK & uart_msg->frame6) >>
 			BT_UART_MSG_FRAME6DISCOVERABLE_POS);
 
+<<<<<<< HEAD
 	IWL_DEBUG_NOTIF(priv, "Sniff Activity = 0x%X, Page = "
+=======
+	IWL_DEBUG_COEX(priv, "Sniff Activity = 0x%X, Page = "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"0x%X, Inquiry = 0x%X, Connectable = 0x%X",
 		(BT_UART_MSG_FRAME7SNIFFACTIVITY_MSK & uart_msg->frame7) >>
 			BT_UART_MSG_FRAME7SNIFFACTIVITY_POS,
@@ -1900,16 +2246,26 @@ static void iwlagn_set_kill_msk(struct iwl_priv *priv,
 	}
 }
 
+<<<<<<< HEAD
 void iwlagn_bt_coex_profile_notif(struct iwl_priv *priv,
 					     struct iwl_rx_mem_buffer *rxb)
 {
 	unsigned long flags;
 	struct iwl_rx_packet *pkt = rxb_addr(rxb);
 	struct iwl_bt_coex_profile_notif *coex = &pkt->u.bt_coex_profile_notif;
+=======
+int iwlagn_bt_coex_profile_notif(struct iwl_priv *priv,
+				  struct iwl_rx_cmd_buffer *rxb,
+				  struct iwl_device_cmd *cmd)
+{
+	struct iwl_rx_packet *pkt = rxb_addr(rxb);
+	struct iwl_bt_coex_profile_notif *coex = (void *)pkt->data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iwl_bt_uart_msg *uart_msg = &coex->last_bt_uart_msg;
 
 	if (priv->bt_enable_flag == IWLAGN_BT_FLAG_COEX_MODE_DISABLED) {
 		/* bt coex disabled */
+<<<<<<< HEAD
 		return;
 	}
 
@@ -1917,10 +2273,24 @@ void iwlagn_bt_coex_profile_notif(struct iwl_priv *priv,
 	IWL_DEBUG_NOTIF(priv, "    status: %d\n", coex->bt_status);
 	IWL_DEBUG_NOTIF(priv, "    traffic load: %d\n", coex->bt_traffic_load);
 	IWL_DEBUG_NOTIF(priv, "    CI compliance: %d\n",
+=======
+		return 0;
+	}
+
+	IWL_DEBUG_COEX(priv, "BT Coex notification:\n");
+	IWL_DEBUG_COEX(priv, "    status: %d\n", coex->bt_status);
+	IWL_DEBUG_COEX(priv, "    traffic load: %d\n", coex->bt_traffic_load);
+	IWL_DEBUG_COEX(priv, "    CI compliance: %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			coex->bt_ci_compliance);
 	iwlagn_print_uartmsg(priv, uart_msg);
 
 	priv->last_bt_traffic_load = priv->bt_traffic_load;
+<<<<<<< HEAD
+=======
+	priv->bt_is_sco = iwlagn_bt_traffic_is_sco(uart_msg);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (priv->iw_mode != NL80211_IFTYPE_ADHOC) {
 		if (priv->bt_status != coex->bt_status ||
 		    priv->last_bt_traffic_load != coex->bt_traffic_load) {
@@ -1947,22 +2317,33 @@ void iwlagn_bt_coex_profile_notif(struct iwl_priv *priv,
 
 	/* FIXME: based on notification, adjust the prio_boost */
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&priv->lock, flags);
 	priv->bt_ci_compliance = coex->bt_ci_compliance;
 	spin_unlock_irqrestore(&priv->lock, flags);
+=======
+	priv->bt_ci_compliance = coex->bt_ci_compliance;
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void iwlagn_bt_rx_handler_setup(struct iwl_priv *priv)
 {
+<<<<<<< HEAD
 	iwlagn_rx_handler_setup(priv);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	priv->rx_handlers[REPLY_BT_COEX_PROFILE_NOTIF] =
 		iwlagn_bt_coex_profile_notif;
 }
 
 void iwlagn_bt_setup_deferred_work(struct iwl_priv *priv)
 {
+<<<<<<< HEAD
 	iwlagn_setup_deferred_work(priv);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	INIT_WORK(&priv->bt_traffic_change_work,
 		  iwlagn_bt_traffic_change_work);
 }
@@ -1995,8 +2376,13 @@ static bool is_single_rx_stream(struct iwl_priv *priv)
  */
 static int iwl_get_active_rx_chain_count(struct iwl_priv *priv)
 {
+<<<<<<< HEAD
 	if (priv->cfg->bt_params &&
 	    priv->cfg->bt_params->advanced_bt_coexist &&
+=======
+	if (cfg(priv)->bt_params &&
+	    cfg(priv)->bt_params->advanced_bt_coexist &&
+>>>>>>> refs/remotes/origin/cm-10.0
 	    (priv->bt_full_concurrent ||
 	     priv->bt_traffic_load >= IWL_BT_COEX_TRAFFIC_LOAD_HIGH)) {
 		/*
@@ -2053,7 +2439,11 @@ static u8 iwl_count_chain_bitmap(u32 chain_bitmap)
 void iwlagn_set_rxon_chain(struct iwl_priv *priv, struct iwl_rxon_context *ctx)
 {
 	bool is_single = is_single_rx_stream(priv);
+<<<<<<< HEAD
 	bool is_cam = !test_bit(STATUS_POWER_PMI, &priv->status);
+=======
+	bool is_cam = !test_bit(STATUS_POWER_PMI, &priv->shrd->status);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 idle_rx_cnt, active_rx_cnt, valid_rx_cnt;
 	u32 active_chains;
 	u16 rx_chain;
@@ -2065,10 +2455,17 @@ void iwlagn_set_rxon_chain(struct iwl_priv *priv, struct iwl_rxon_context *ctx)
 	if (priv->chain_noise_data.active_chains)
 		active_chains = priv->chain_noise_data.active_chains;
 	else
+<<<<<<< HEAD
 		active_chains = priv->hw_params.valid_rx_ant;
 
 	if (priv->cfg->bt_params &&
 	    priv->cfg->bt_params->advanced_bt_coexist &&
+=======
+		active_chains = hw_params(priv).valid_rx_ant;
+
+	if (cfg(priv)->bt_params &&
+	    cfg(priv)->bt_params->advanced_bt_coexist &&
+>>>>>>> refs/remotes/origin/cm-10.0
 	    (priv->bt_full_concurrent ||
 	     priv->bt_traffic_load >= IWL_BT_COEX_TRAFFIC_LOAD_HIGH)) {
 		/*
@@ -2130,6 +2527,7 @@ u8 iwl_toggle_tx_ant(struct iwl_priv *priv, u8 ant, u8 valid)
 	return ant;
 }
 
+<<<<<<< HEAD
 static const char *get_csr_string(int cmd)
 {
 	switch (cmd) {
@@ -2393,4 +2791,399 @@ void iwlagn_stop_device(struct iwl_priv *priv)
 
 	/* Stop the device, and put it in low power state */
 	iwl_apm_stop(priv);
+=======
+#ifdef CONFIG_PM_SLEEP
+static void iwlagn_convert_p1k(u16 *p1k, __le16 *out)
+{
+	int i;
+
+	for (i = 0; i < IWLAGN_P1K_SIZE; i++)
+		out[i] = cpu_to_le16(p1k[i]);
+}
+
+struct wowlan_key_data {
+	struct iwl_rxon_context *ctx;
+	struct iwlagn_wowlan_rsc_tsc_params_cmd *rsc_tsc;
+	struct iwlagn_wowlan_tkip_params_cmd *tkip;
+	const u8 *bssid;
+	bool error, use_rsc_tsc, use_tkip;
+};
+
+
+static void iwlagn_wowlan_program_keys(struct ieee80211_hw *hw,
+			       struct ieee80211_vif *vif,
+			       struct ieee80211_sta *sta,
+			       struct ieee80211_key_conf *key,
+			       void *_data)
+{
+	struct iwl_priv *priv = IWL_MAC80211_GET_DVM(hw);
+	struct wowlan_key_data *data = _data;
+	struct iwl_rxon_context *ctx = data->ctx;
+	struct aes_sc *aes_sc, *aes_tx_sc = NULL;
+	struct tkip_sc *tkip_sc, *tkip_tx_sc = NULL;
+	struct iwlagn_p1k_cache *rx_p1ks;
+	u8 *rx_mic_key;
+	struct ieee80211_key_seq seq;
+	u32 cur_rx_iv32 = 0;
+	u16 p1k[IWLAGN_P1K_SIZE];
+	int ret, i;
+
+	mutex_lock(&priv->mutex);
+
+	if ((key->cipher == WLAN_CIPHER_SUITE_WEP40 ||
+	     key->cipher == WLAN_CIPHER_SUITE_WEP104) &&
+	     !sta && !ctx->key_mapping_keys)
+		ret = iwl_set_default_wep_key(priv, ctx, key);
+	else
+		ret = iwl_set_dynamic_key(priv, ctx, key, sta);
+
+	if (ret) {
+		IWL_ERR(priv, "Error setting key during suspend!\n");
+		data->error = true;
+	}
+
+	switch (key->cipher) {
+	case WLAN_CIPHER_SUITE_TKIP:
+		if (sta) {
+			tkip_sc = data->rsc_tsc->all_tsc_rsc.tkip.unicast_rsc;
+			tkip_tx_sc = &data->rsc_tsc->all_tsc_rsc.tkip.tsc;
+
+			rx_p1ks = data->tkip->rx_uni;
+
+			ieee80211_get_key_tx_seq(key, &seq);
+			tkip_tx_sc->iv16 = cpu_to_le16(seq.tkip.iv16);
+			tkip_tx_sc->iv32 = cpu_to_le32(seq.tkip.iv32);
+
+			ieee80211_get_tkip_p1k_iv(key, seq.tkip.iv32, p1k);
+			iwlagn_convert_p1k(p1k, data->tkip->tx.p1k);
+
+			memcpy(data->tkip->mic_keys.tx,
+			       &key->key[NL80211_TKIP_DATA_OFFSET_TX_MIC_KEY],
+			       IWLAGN_MIC_KEY_SIZE);
+
+			rx_mic_key = data->tkip->mic_keys.rx_unicast;
+		} else {
+			tkip_sc =
+				data->rsc_tsc->all_tsc_rsc.tkip.multicast_rsc;
+			rx_p1ks = data->tkip->rx_multi;
+			rx_mic_key = data->tkip->mic_keys.rx_mcast;
+		}
+
+		/*
+		 * For non-QoS this relies on the fact that both the uCode and
+		 * mac80211 use TID 0 (as they need to to avoid replay attacks)
+		 * for checking the IV in the frames.
+		 */
+		for (i = 0; i < IWLAGN_NUM_RSC; i++) {
+			ieee80211_get_key_rx_seq(key, i, &seq);
+			tkip_sc[i].iv16 = cpu_to_le16(seq.tkip.iv16);
+			tkip_sc[i].iv32 = cpu_to_le32(seq.tkip.iv32);
+			/* wrapping isn't allowed, AP must rekey */
+			if (seq.tkip.iv32 > cur_rx_iv32)
+				cur_rx_iv32 = seq.tkip.iv32;
+		}
+
+		ieee80211_get_tkip_rx_p1k(key, data->bssid, cur_rx_iv32, p1k);
+		iwlagn_convert_p1k(p1k, rx_p1ks[0].p1k);
+		ieee80211_get_tkip_rx_p1k(key, data->bssid,
+					  cur_rx_iv32 + 1, p1k);
+		iwlagn_convert_p1k(p1k, rx_p1ks[1].p1k);
+
+		memcpy(rx_mic_key,
+		       &key->key[NL80211_TKIP_DATA_OFFSET_RX_MIC_KEY],
+		       IWLAGN_MIC_KEY_SIZE);
+
+		data->use_tkip = true;
+		data->use_rsc_tsc = true;
+		break;
+	case WLAN_CIPHER_SUITE_CCMP:
+		if (sta) {
+			u8 *pn = seq.ccmp.pn;
+
+			aes_sc = data->rsc_tsc->all_tsc_rsc.aes.unicast_rsc;
+			aes_tx_sc = &data->rsc_tsc->all_tsc_rsc.aes.tsc;
+
+			ieee80211_get_key_tx_seq(key, &seq);
+			aes_tx_sc->pn = cpu_to_le64(
+					(u64)pn[5] |
+					((u64)pn[4] << 8) |
+					((u64)pn[3] << 16) |
+					((u64)pn[2] << 24) |
+					((u64)pn[1] << 32) |
+					((u64)pn[0] << 40));
+		} else
+			aes_sc = data->rsc_tsc->all_tsc_rsc.aes.multicast_rsc;
+
+		/*
+		 * For non-QoS this relies on the fact that both the uCode and
+		 * mac80211 use TID 0 for checking the IV in the frames.
+		 */
+		for (i = 0; i < IWLAGN_NUM_RSC; i++) {
+			u8 *pn = seq.ccmp.pn;
+
+			ieee80211_get_key_rx_seq(key, i, &seq);
+			aes_sc->pn = cpu_to_le64(
+					(u64)pn[5] |
+					((u64)pn[4] << 8) |
+					((u64)pn[3] << 16) |
+					((u64)pn[2] << 24) |
+					((u64)pn[1] << 32) |
+					((u64)pn[0] << 40));
+		}
+		data->use_rsc_tsc = true;
+		break;
+	}
+
+	mutex_unlock(&priv->mutex);
+}
+
+int iwlagn_send_patterns(struct iwl_priv *priv,
+			struct cfg80211_wowlan *wowlan)
+{
+	struct iwlagn_wowlan_patterns_cmd *pattern_cmd;
+	struct iwl_host_cmd cmd = {
+		.id = REPLY_WOWLAN_PATTERNS,
+		.dataflags[0] = IWL_HCMD_DFL_NOCOPY,
+		.flags = CMD_SYNC,
+	};
+	int i, err;
+
+	if (!wowlan->n_patterns)
+		return 0;
+
+	cmd.len[0] = sizeof(*pattern_cmd) +
+		wowlan->n_patterns * sizeof(struct iwlagn_wowlan_pattern);
+
+	pattern_cmd = kmalloc(cmd.len[0], GFP_KERNEL);
+	if (!pattern_cmd)
+		return -ENOMEM;
+
+	pattern_cmd->n_patterns = cpu_to_le32(wowlan->n_patterns);
+
+	for (i = 0; i < wowlan->n_patterns; i++) {
+		int mask_len = DIV_ROUND_UP(wowlan->patterns[i].pattern_len, 8);
+
+		memcpy(&pattern_cmd->patterns[i].mask,
+			wowlan->patterns[i].mask, mask_len);
+		memcpy(&pattern_cmd->patterns[i].pattern,
+			wowlan->patterns[i].pattern,
+			wowlan->patterns[i].pattern_len);
+		pattern_cmd->patterns[i].mask_size = mask_len;
+		pattern_cmd->patterns[i].pattern_size =
+			wowlan->patterns[i].pattern_len;
+	}
+
+	cmd.data[0] = pattern_cmd;
+	err = iwl_dvm_send_cmd(priv, &cmd);
+	kfree(pattern_cmd);
+	return err;
+}
+
+int iwlagn_suspend(struct iwl_priv *priv, struct cfg80211_wowlan *wowlan)
+{
+	struct iwlagn_wowlan_wakeup_filter_cmd wakeup_filter_cmd;
+	struct iwl_rxon_cmd rxon;
+	struct iwl_rxon_context *ctx = &priv->contexts[IWL_RXON_CTX_BSS];
+	struct iwlagn_wowlan_kek_kck_material_cmd kek_kck_cmd;
+	struct iwlagn_wowlan_tkip_params_cmd tkip_cmd = {};
+	struct iwlagn_d3_config_cmd d3_cfg_cmd = {};
+	struct wowlan_key_data key_data = {
+		.ctx = ctx,
+		.bssid = ctx->active.bssid_addr,
+		.use_rsc_tsc = false,
+		.tkip = &tkip_cmd,
+		.use_tkip = false,
+	};
+	int ret, i;
+	u16 seq;
+
+	key_data.rsc_tsc = kzalloc(sizeof(*key_data.rsc_tsc), GFP_KERNEL);
+	if (!key_data.rsc_tsc)
+		return -ENOMEM;
+
+	memset(&wakeup_filter_cmd, 0, sizeof(wakeup_filter_cmd));
+
+	/*
+	 * We know the last used seqno, and the uCode expects to know that
+	 * one, it will increment before TX.
+	 */
+	seq = le16_to_cpu(priv->last_seq_ctl) & IEEE80211_SCTL_SEQ;
+	wakeup_filter_cmd.non_qos_seq = cpu_to_le16(seq);
+
+	/*
+	 * For QoS counters, we store the one to use next, so subtract 0x10
+	 * since the uCode will add 0x10 before using the value.
+	 */
+	for (i = 0; i < IWL_MAX_TID_COUNT; i++) {
+		seq = priv->tid_data[IWL_AP_ID][i].seq_number;
+		seq -= 0x10;
+		wakeup_filter_cmd.qos_seq[i] = cpu_to_le16(seq);
+	}
+
+	if (wowlan->disconnect)
+		wakeup_filter_cmd.enabled |=
+			cpu_to_le32(IWLAGN_WOWLAN_WAKEUP_BEACON_MISS |
+				    IWLAGN_WOWLAN_WAKEUP_LINK_CHANGE);
+	if (wowlan->magic_pkt)
+		wakeup_filter_cmd.enabled |=
+			cpu_to_le32(IWLAGN_WOWLAN_WAKEUP_MAGIC_PACKET);
+	if (wowlan->gtk_rekey_failure)
+		wakeup_filter_cmd.enabled |=
+			cpu_to_le32(IWLAGN_WOWLAN_WAKEUP_GTK_REKEY_FAIL);
+	if (wowlan->eap_identity_req)
+		wakeup_filter_cmd.enabled |=
+			cpu_to_le32(IWLAGN_WOWLAN_WAKEUP_EAP_IDENT_REQ);
+	if (wowlan->four_way_handshake)
+		wakeup_filter_cmd.enabled |=
+			cpu_to_le32(IWLAGN_WOWLAN_WAKEUP_4WAY_HANDSHAKE);
+	if (wowlan->n_patterns)
+		wakeup_filter_cmd.enabled |=
+			cpu_to_le32(IWLAGN_WOWLAN_WAKEUP_PATTERN_MATCH);
+
+	if (wowlan->rfkill_release)
+		d3_cfg_cmd.wakeup_flags |=
+			cpu_to_le32(IWLAGN_D3_WAKEUP_RFKILL);
+
+	iwl_scan_cancel_timeout(priv, 200);
+
+	memcpy(&rxon, &ctx->active, sizeof(rxon));
+
+	priv->ucode_loaded = false;
+	iwl_trans_stop_device(trans(priv));
+
+	priv->wowlan = true;
+
+	ret = iwl_load_ucode_wait_alive(priv, IWL_UCODE_WOWLAN);
+	if (ret)
+		goto out;
+
+	/* now configure WoWLAN ucode */
+	ret = iwl_alive_start(priv);
+	if (ret)
+		goto out;
+
+	memcpy(&ctx->staging, &rxon, sizeof(rxon));
+	ret = iwlagn_commit_rxon(priv, ctx);
+	if (ret)
+		goto out;
+
+	ret = iwl_power_update_mode(priv, true);
+	if (ret)
+		goto out;
+
+	if (!iwlagn_mod_params.sw_crypto) {
+		/* mark all keys clear */
+		priv->ucode_key_table = 0;
+		ctx->key_mapping_keys = 0;
+
+		/*
+		 * This needs to be unlocked due to lock ordering
+		 * constraints. Since we're in the suspend path
+		 * that isn't really a problem though.
+		 */
+		mutex_unlock(&priv->mutex);
+		ieee80211_iter_keys(priv->hw, ctx->vif,
+				    iwlagn_wowlan_program_keys,
+				    &key_data);
+		mutex_lock(&priv->mutex);
+		if (key_data.error) {
+			ret = -EIO;
+			goto out;
+		}
+
+		if (key_data.use_rsc_tsc) {
+			struct iwl_host_cmd rsc_tsc_cmd = {
+				.id = REPLY_WOWLAN_TSC_RSC_PARAMS,
+				.flags = CMD_SYNC,
+				.data[0] = key_data.rsc_tsc,
+				.dataflags[0] = IWL_HCMD_DFL_NOCOPY,
+				.len[0] = sizeof(*key_data.rsc_tsc),
+			};
+
+			ret = iwl_dvm_send_cmd(priv, &rsc_tsc_cmd);
+			if (ret)
+				goto out;
+		}
+
+		if (key_data.use_tkip) {
+			ret = iwl_dvm_send_cmd_pdu(priv,
+						 REPLY_WOWLAN_TKIP_PARAMS,
+						 CMD_SYNC, sizeof(tkip_cmd),
+						 &tkip_cmd);
+			if (ret)
+				goto out;
+		}
+
+		if (priv->have_rekey_data) {
+			memset(&kek_kck_cmd, 0, sizeof(kek_kck_cmd));
+			memcpy(kek_kck_cmd.kck, priv->kck, NL80211_KCK_LEN);
+			kek_kck_cmd.kck_len = cpu_to_le16(NL80211_KCK_LEN);
+			memcpy(kek_kck_cmd.kek, priv->kek, NL80211_KEK_LEN);
+			kek_kck_cmd.kek_len = cpu_to_le16(NL80211_KEK_LEN);
+			kek_kck_cmd.replay_ctr = priv->replay_ctr;
+
+			ret = iwl_dvm_send_cmd_pdu(priv,
+						 REPLY_WOWLAN_KEK_KCK_MATERIAL,
+						 CMD_SYNC, sizeof(kek_kck_cmd),
+						 &kek_kck_cmd);
+			if (ret)
+				goto out;
+		}
+	}
+
+	ret = iwl_dvm_send_cmd_pdu(priv, REPLY_D3_CONFIG, CMD_SYNC,
+				     sizeof(d3_cfg_cmd), &d3_cfg_cmd);
+	if (ret)
+		goto out;
+
+	ret = iwl_dvm_send_cmd_pdu(priv, REPLY_WOWLAN_WAKEUP_FILTER,
+				 CMD_SYNC, sizeof(wakeup_filter_cmd),
+				 &wakeup_filter_cmd);
+	if (ret)
+		goto out;
+
+	ret = iwlagn_send_patterns(priv, wowlan);
+ out:
+	kfree(key_data.rsc_tsc);
+	return ret;
+}
+#endif
+
+int iwl_dvm_send_cmd(struct iwl_priv *priv, struct iwl_host_cmd *cmd)
+{
+	if (iwl_is_rfkill(priv) || iwl_is_ctkill(priv)) {
+		IWL_WARN(priv, "Not sending command - %s KILL\n",
+			 iwl_is_rfkill(priv) ? "RF" : "CT");
+		return -EIO;
+	}
+
+	/*
+	 * Synchronous commands from this op-mode must hold
+	 * the mutex, this ensures we don't try to send two
+	 * (or more) synchronous commands at a time.
+	 */
+	if (cmd->flags & CMD_SYNC)
+		lockdep_assert_held(&priv->mutex);
+
+	if (priv->ucode_owner == IWL_OWNERSHIP_TM &&
+	    !(cmd->flags & CMD_ON_DEMAND)) {
+		IWL_DEBUG_HC(priv, "tm own the uCode, no regular hcmd send\n");
+		return -EIO;
+	}
+
+	return iwl_trans_send_cmd(trans(priv), cmd);
+}
+
+int iwl_dvm_send_cmd_pdu(struct iwl_priv *priv, u8 id,
+			 u32 flags, u16 len, const void *data)
+{
+	struct iwl_host_cmd cmd = {
+		.id = id,
+		.len = { len, },
+		.data = { data, },
+		.flags = flags,
+	};
+
+	return iwl_dvm_send_cmd(priv, &cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

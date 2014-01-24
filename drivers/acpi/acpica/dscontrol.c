@@ -6,7 +6,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +64,11 @@ ACPI_MODULE_NAME("dscontrol")
  * FUNCTION:    acpi_ds_exec_begin_control_op
  *
  * PARAMETERS:  walk_list       - The list that owns the walk stack
+<<<<<<< HEAD
  *              Op              - The control Op
+=======
+ *              op              - The control Op
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -78,7 +90,10 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *walk_state,
 
 	switch (op->common.aml_opcode) {
 	case AML_WHILE_OP:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * If this is an additional iteration of a while loop, continue.
 		 * There is no need to allocate a new control state.
@@ -99,7 +114,10 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *walk_state,
 		/*lint -fallthrough */
 
 	case AML_IF_OP:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * IF/WHILE: Create a new control state to manage these
 		 * constructs. We need to manage these as a stack, in order
@@ -142,6 +160,10 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *walk_state,
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -153,7 +175,11 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *walk_state,
  * FUNCTION:    acpi_ds_exec_end_control_op
  *
  * PARAMETERS:  walk_list       - The list that owns the walk stack
+<<<<<<< HEAD
  *              Op              - The control Op
+=======
+ *              op              - The control Op
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -280,7 +306,11 @@ acpi_ds_exec_end_control_op(struct acpi_walk_state * walk_state,
 
 			/*
 			 * Get the return value and save as the last result
+<<<<<<< HEAD
 			 * value.  This is the only place where walk_state->return_desc
+=======
+			 * value. This is the only place where walk_state->return_desc
+>>>>>>> refs/remotes/origin/master
 			 * is set to anything other than zero!
 			 */
 			walk_state->return_desc = walk_state->operands[0];
@@ -344,6 +374,10 @@ acpi_ds_exec_end_control_op(struct acpi_walk_state * walk_state,
 	case AML_NOOP_OP:
 
 		/* Just do nothing! */
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case AML_BREAK_POINT_OP:

@@ -70,6 +70,7 @@ void amon_cpu_start(int cpu,
 	launch->sp = sp;
 	launch->a0 = a0;
 
+<<<<<<< HEAD
 	smp_wmb();              /* Target must see parameters before go */
 	launch->flags |= LAUNCH_FGO;
 	smp_wmb();              /* Target must see go before we poll  */
@@ -77,5 +78,14 @@ void amon_cpu_start(int cpu,
 	while ((launch->flags & LAUNCH_FGONE) == 0)
 		;
 	smp_rmb();      /* Target will be updating flags soon */
+=======
+	smp_wmb();		/* Target must see parameters before go */
+	launch->flags |= LAUNCH_FGO;
+	smp_wmb();		/* Target must see go before we poll  */
+
+	while ((launch->flags & LAUNCH_FGONE) == 0)
+		;
+	smp_rmb();	/* Target will be updating flags soon */
+>>>>>>> refs/remotes/origin/master
 	pr_debug("launch: cpu%d gone!\n", cpu);
 }

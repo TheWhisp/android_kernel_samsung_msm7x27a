@@ -6,7 +6,10 @@
 #include <linux/usb.h>
 #include <linux/module.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/timer.h>
 #include <linux/ctype.h>
@@ -119,15 +122,24 @@ static int usb_internal_control_msg(struct usb_device *usb_dev,
  * This function sends a simple control message to a specified endpoint and
  * waits for the message to complete, or timeout.
  *
+<<<<<<< HEAD
  * If successful, it returns the number of bytes transferred, otherwise a
  * negative error number.
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * Don't use this function from within an interrupt context, like a bottom half
  * handler.  If you need an asynchronous message, or need to send a message
  * from within interrupt context, use usb_submit_urb().
  * If a thread in your driver uses this call, make sure your disconnect()
  * method can wait for it to complete.  Since you don't have a handle on the
  * URB used, you can't cancel the request.
+<<<<<<< HEAD
+=======
+ *
+ * Return: If successful, the number of bytes transferred. Otherwise, a negative
+ * error number.
+>>>>>>> refs/remotes/origin/master
  */
 int usb_control_msg(struct usb_device *dev, unsigned int pipe, __u8 request,
 		    __u8 requesttype, __u16 value, __u16 index, void *data,
@@ -146,8 +158,11 @@ int usb_control_msg(struct usb_device *dev, unsigned int pipe, __u8 request,
 	dr->wIndex = cpu_to_le16(index);
 	dr->wLength = cpu_to_le16(size);
 
+<<<<<<< HEAD
 	/* dbg("usb_control_msg"); */
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = usb_internal_control_msg(dev, pipe, dr, data, size, timeout);
 
 	kfree(dr);
@@ -172,15 +187,25 @@ EXPORT_SYMBOL_GPL(usb_control_msg);
  * This function sends a simple interrupt message to a specified endpoint and
  * waits for the message to complete, or timeout.
  *
+<<<<<<< HEAD
  * If successful, it returns 0, otherwise a negative error number.  The number
  * of actual bytes transferred will be stored in the actual_length paramater.
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * Don't use this function from within an interrupt context, like a bottom half
  * handler.  If you need an asynchronous message, or need to send a message
  * from within interrupt context, use usb_submit_urb() If a thread in your
  * driver uses this call, make sure your disconnect() method can wait for it to
  * complete.  Since you don't have a handle on the URB used, you can't cancel
  * the request.
+<<<<<<< HEAD
+=======
+ *
+ * Return:
+ * If successful, 0. Otherwise a negative error number. The number of actual
+ * bytes transferred will be stored in the @actual_length paramater.
+>>>>>>> refs/remotes/origin/master
  */
 int usb_interrupt_msg(struct usb_device *usb_dev, unsigned int pipe,
 		      void *data, int len, int *actual_length, int timeout)
@@ -205,9 +230,12 @@ EXPORT_SYMBOL_GPL(usb_interrupt_msg);
  * This function sends a simple bulk message to a specified endpoint
  * and waits for the message to complete, or timeout.
  *
+<<<<<<< HEAD
  * If successful, it returns 0, otherwise a negative error number.  The number
  * of actual bytes transferred will be stored in the actual_length paramater.
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * Don't use this function from within an interrupt context, like a bottom half
  * handler.  If you need an asynchronous message, or need to send a message
  * from within interrupt context, use usb_submit_urb() If a thread in your
@@ -219,6 +247,14 @@ EXPORT_SYMBOL_GPL(usb_interrupt_msg);
  * users are forced to abuse this routine by using it to submit URBs for
  * interrupt endpoints.  We will take the liberty of creating an interrupt URB
  * (with the default interval) if the target is an interrupt endpoint.
+<<<<<<< HEAD
+=======
+ *
+ * Return:
+ * If successful, 0. Otherwise a negative error number. The number of actual
+ * bytes transferred will be stored in the @actual_length parameter.
+ *
+>>>>>>> refs/remotes/origin/master
  */
 int usb_bulk_msg(struct usb_device *usb_dev, unsigned int pipe,
 		 void *data, int len, int *actual_length, int timeout)
@@ -254,7 +290,11 @@ static void sg_clean(struct usb_sg_request *io)
 {
 	if (io->urbs) {
 		while (io->entries--)
+<<<<<<< HEAD
 			usb_free_urb(io->urbs [io->entries]);
+=======
+			usb_free_urb(io->urbs[io->entries]);
+>>>>>>> refs/remotes/origin/master
 		kfree(io->urbs);
 		io->urbs = NULL;
 	}
@@ -302,10 +342,17 @@ static void sg_complete(struct urb *urb)
 		 */
 		spin_unlock(&io->lock);
 		for (i = 0, found = 0; i < io->entries; i++) {
+<<<<<<< HEAD
 			if (!io->urbs [i] || !io->urbs [i]->dev)
 				continue;
 			if (found) {
 				retval = usb_unlink_urb(io->urbs [i]);
+=======
+			if (!io->urbs[i] || !io->urbs[i]->dev)
+				continue;
+			if (found) {
+				retval = usb_unlink_urb(io->urbs[i]);
+>>>>>>> refs/remotes/origin/master
 				if (retval != -EINPROGRESS &&
 				    retval != -ENODEV &&
 				    retval != -EBUSY &&
@@ -313,7 +360,11 @@ static void sg_complete(struct urb *urb)
 					dev_err(&io->dev->dev,
 						"%s, unlink --> %d\n",
 						__func__, retval);
+<<<<<<< HEAD
 			} else if (urb == io->urbs [i])
+=======
+			} else if (urb == io->urbs[i])
+>>>>>>> refs/remotes/origin/master
 				found = 1;
 		}
 		spin_lock(&io->lock);
@@ -343,9 +394,15 @@ static void sg_complete(struct urb *urb)
  * 	send every byte identified in the list.
  * @mem_flags: SLAB_* flags affecting memory allocations in this call
  *
+<<<<<<< HEAD
  * Returns zero for success, else a negative errno value.  This initializes a
  * scatter/gather request, allocating resources such as I/O mappings and urb
  * memory (except maybe memory used by USB controller drivers).
+=======
+ * This initializes a scatter/gather request, allocating resources such as
+ * I/O mappings and urb memory (except maybe memory used by USB controller
+ * drivers).
+>>>>>>> refs/remotes/origin/master
  *
  * The request must be issued using usb_sg_wait(), which waits for the I/O to
  * complete (or to be canceled) and then cleans up all resources allocated by
@@ -353,6 +410,11 @@ static void sg_complete(struct urb *urb)
  *
  * The request may be canceled with usb_sg_cancel(), either before or after
  * usb_sg_wait() is called.
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero for success, else a negative errno value.
+>>>>>>> refs/remotes/origin/master
  */
 int usb_sg_init(struct usb_sg_request *io, struct usb_device *dev,
 		unsigned pipe, unsigned	period, struct scatterlist *sg,
@@ -381,7 +443,11 @@ int usb_sg_init(struct usb_sg_request *io, struct usb_device *dev,
 	}
 
 	/* initialize all the urbs we'll use */
+<<<<<<< HEAD
 	io->urbs = kmalloc(io->entries * sizeof *io->urbs, mem_flags);
+=======
+	io->urbs = kmalloc(io->entries * sizeof(*io->urbs), mem_flags);
+>>>>>>> refs/remotes/origin/master
 	if (!io->urbs)
 		goto nomem;
 
@@ -435,7 +501,15 @@ int usb_sg_init(struct usb_sg_request *io, struct usb_device *dev,
 
 			len = sg->length;
 			if (length) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				len = min_t(unsigned, len, length);
+=======
+				len = min_t(size_t, len, length);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				len = min_t(size_t, len, length);
+>>>>>>> refs/remotes/origin/master
 				length -= len;
 				if (length == 0)
 					io->entries = i + 1;
@@ -513,9 +587,15 @@ void usb_sg_wait(struct usb_sg_request *io)
 		int retval;
 
 		io->urbs[i]->dev = io->dev;
+<<<<<<< HEAD
 		retval = usb_submit_urb(io->urbs [i], GFP_ATOMIC);
 
 		/* after we submit, let completions or cancelations fire;
+=======
+		retval = usb_submit_urb(io->urbs[i], GFP_ATOMIC);
+
+		/* after we submit, let completions or cancellations fire;
+>>>>>>> refs/remotes/origin/master
 		 * we handshake using io->status.
 		 */
 		spin_unlock_irq(&io->lock);
@@ -588,9 +668,15 @@ void usb_sg_cancel(struct usb_sg_request *io)
 		for (i = 0; i < io->entries; i++) {
 			int retval;
 
+<<<<<<< HEAD
 			if (!io->urbs [i]->dev)
 				continue;
 			retval = usb_unlink_urb(io->urbs [i]);
+=======
+			if (!io->urbs[i]->dev)
+				continue;
+			retval = usb_unlink_urb(io->urbs[i]);
+>>>>>>> refs/remotes/origin/master
 			if (retval != -EINPROGRESS
 					&& retval != -ENODEV
 					&& retval != -EBUSY
@@ -625,7 +711,11 @@ EXPORT_SYMBOL_GPL(usb_sg_cancel);
  *
  * This call is synchronous, and may not be used in an interrupt context.
  *
+<<<<<<< HEAD
  * Returns the number of bytes received on success, or else the status code
+=======
+ * Return: The number of bytes received on success, or else the status code
+>>>>>>> refs/remotes/origin/master
  * returned by the underlying usb_control_msg() call.
  */
 int usb_get_descriptor(struct usb_device *dev, unsigned char type,
@@ -673,7 +763,11 @@ EXPORT_SYMBOL_GPL(usb_get_descriptor);
  *
  * This call is synchronous, and may not be used in an interrupt context.
  *
+<<<<<<< HEAD
  * Returns the number of bytes received on success, or else the status code
+=======
+ * Return: The number of bytes received on success, or else the status code
+>>>>>>> refs/remotes/origin/master
  * returned by the underlying usb_control_msg() call.
  */
 static int usb_get_string(struct usb_device *dev, unsigned short langid,
@@ -807,7 +901,11 @@ static int usb_get_langid(struct usb_device *dev, unsigned char *tbuf)
  *
  * This call is synchronous, and may not be used in an interrupt context.
  *
+<<<<<<< HEAD
  * Returns length of the string (>= 0) or usb_control_msg status (< 0).
+=======
+ * Return: length of the string (>= 0) or usb_control_msg status (< 0).
+>>>>>>> refs/remotes/origin/master
  */
 int usb_string(struct usb_device *dev, int index, char *buf, size_t size)
 {
@@ -855,8 +953,13 @@ EXPORT_SYMBOL_GPL(usb_string);
  * @udev: the device whose string descriptor is being read
  * @index: the descriptor index
  *
+<<<<<<< HEAD
  * Returns a pointer to a kmalloc'ed buffer containing the descriptor string,
  * or NULL if the index is 0 or the string could not be read.
+=======
+ * Return: A pointer to a kmalloc'ed buffer containing the descriptor string,
+ * or %NULL if the index is 0 or the string could not be read.
+>>>>>>> refs/remotes/origin/master
  */
 char *usb_cache_string(struct usb_device *udev, int index)
 {
@@ -896,7 +999,11 @@ char *usb_cache_string(struct usb_device *udev, int index)
  *
  * This call is synchronous, and may not be used in an interrupt context.
  *
+<<<<<<< HEAD
  * Returns the number of bytes received on success, or else the status code
+=======
+ * Return: The number of bytes received on success, or else the status code
+>>>>>>> refs/remotes/origin/master
  * returned by the underlying usb_control_msg() call.
  */
 int usb_get_device_descriptor(struct usb_device *dev, unsigned int size)
@@ -936,13 +1043,22 @@ int usb_get_device_descriptor(struct usb_device *dev, unsigned int size)
  *
  * This call is synchronous, and may not be used in an interrupt context.
  *
+<<<<<<< HEAD
  * Returns the number of bytes received on success, or else the status code
  * returned by the underlying usb_control_msg() call.
+=======
+ * Returns 0 and the status value in *@data (in host byte order) on success,
+ * or else the status code from the underlying usb_control_msg() call.
+>>>>>>> refs/remotes/origin/master
  */
 int usb_get_status(struct usb_device *dev, int type, int target, void *data)
 {
 	int ret;
+<<<<<<< HEAD
 	u16 *status = kmalloc(sizeof(*status), GFP_KERNEL);
+=======
+	__le16 *status = kmalloc(sizeof(*status), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 
 	if (!status)
 		return -ENOMEM;
@@ -951,7 +1067,16 @@ int usb_get_status(struct usb_device *dev, int type, int target, void *data)
 		USB_REQ_GET_STATUS, USB_DIR_IN | type, 0, target, status,
 		sizeof(*status), USB_CTRL_GET_TIMEOUT);
 
+<<<<<<< HEAD
 	*(u16 *)data = *status;
+=======
+	if (ret == 2) {
+		*(u16 *) data = le16_to_cpu(*status);
+		ret = 0;
+	} else if (ret >= 0) {
+		ret = -EIO;
+	}
+>>>>>>> refs/remotes/origin/master
 	kfree(status);
 	return ret;
 }
@@ -977,7 +1102,11 @@ EXPORT_SYMBOL_GPL(usb_get_status);
  *
  * This call is synchronous, and may not be used in an interrupt context.
  *
+<<<<<<< HEAD
  * Returns zero on success, or else the status code returned by the
+=======
+ * Return: Zero on success, or else the status code returned by the
+>>>>>>> refs/remotes/origin/master
  * underlying usb_control_msg() call.
  */
 int usb_clear_halt(struct usb_device *dev, int pipe)
@@ -1174,6 +1303,15 @@ void usb_disable_device(struct usb_device *dev, int skip_ep0)
 			put_device(&dev->actconfig->interface[i]->dev);
 			dev->actconfig->interface[i] = NULL;
 		}
+<<<<<<< HEAD
+=======
+
+		if (dev->usb2_hw_lpm_enabled == 1)
+			usb_set_usb2_hardware_lpm(dev, 0);
+		usb_unlocked_disable_lpm(dev);
+		usb_disable_ltm(dev);
+
+>>>>>>> refs/remotes/origin/master
 		dev->actconfig = NULL;
 		if (dev->state == USB_STATE_CONFIGURED)
 			usb_set_device_state(dev, USB_STATE_ADDRESS);
@@ -1272,7 +1410,11 @@ void usb_enable_interface(struct usb_device *dev,
  * endpoints in that interface; all such urbs must first be completed
  * (perhaps forced by unlinking).
  *
+<<<<<<< HEAD
  * Returns zero on success, or else the status code returned by the
+=======
+ * Return: Zero on success, or else the status code returned by the
+>>>>>>> refs/remotes/origin/master
  * underlying usb_control_msg() call.
  */
 int usb_set_interface(struct usb_device *dev, int interface, int alternate)
@@ -1308,10 +1450,25 @@ int usb_set_interface(struct usb_device *dev, int interface, int alternate)
 	 * Remove the current alt setting and add the new alt setting.
 	 */
 	mutex_lock(hcd->bandwidth_mutex);
+<<<<<<< HEAD
+=======
+	/* Disable LPM, and re-enable it once the new alt setting is installed,
+	 * so that the xHCI driver can recalculate the U1/U2 timeouts.
+	 */
+	if (usb_disable_lpm(dev)) {
+		dev_err(&iface->dev, "%s Failed to disable LPM\n.", __func__);
+		mutex_unlock(hcd->bandwidth_mutex);
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 	ret = usb_hcd_alloc_bandwidth(dev, NULL, iface->cur_altsetting, alt);
 	if (ret < 0) {
 		dev_info(&dev->dev, "Not enough bandwidth for altsetting %d\n",
 				alternate);
+<<<<<<< HEAD
+=======
+		usb_enable_lpm(dev);
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(hcd->bandwidth_mutex);
 		return ret;
 	}
@@ -1334,6 +1491,10 @@ int usb_set_interface(struct usb_device *dev, int interface, int alternate)
 	} else if (ret < 0) {
 		/* Re-instate the old alt setting */
 		usb_hcd_alloc_bandwidth(dev, NULL, alt, iface->cur_altsetting);
+<<<<<<< HEAD
+=======
+		usb_enable_lpm(dev);
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(hcd->bandwidth_mutex);
 		return ret;
 	}
@@ -1354,6 +1515,12 @@ int usb_set_interface(struct usb_device *dev, int interface, int alternate)
 
 	iface->cur_altsetting = alt;
 
+<<<<<<< HEAD
+=======
+	/* Now that the interface is installed, re-enable LPM. */
+	usb_unlocked_enable_lpm(dev);
+
+>>>>>>> refs/remotes/origin/master
 	/* If the interface only has one altsetting and the device didn't
 	 * accept the request, we attempt to carry out the equivalent action
 	 * by manually clearing the HALT feature for each endpoint in the
@@ -1413,7 +1580,11 @@ EXPORT_SYMBOL_GPL(usb_set_interface);
  *
  * The caller must own the device lock.
  *
+<<<<<<< HEAD
  * Returns zero on success, else a negative error code.
+=======
+ * Return: Zero on success, else a negative error code.
+>>>>>>> refs/remotes/origin/master
  */
 int usb_reset_configuration(struct usb_device *dev)
 {
@@ -1437,6 +1608,17 @@ int usb_reset_configuration(struct usb_device *dev)
 	config = dev->actconfig;
 	retval = 0;
 	mutex_lock(hcd->bandwidth_mutex);
+<<<<<<< HEAD
+=======
+	/* Disable LPM, and re-enable it once the configuration is reset, so
+	 * that the xHCI driver can recalculate the U1/U2 timeouts.
+	 */
+	if (usb_disable_lpm(dev)) {
+		dev_err(&dev->dev, "%s Failed to disable LPM\n.", __func__);
+		mutex_unlock(hcd->bandwidth_mutex);
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 	/* Make sure we have enough bandwidth for each alternate setting 0 */
 	for (i = 0; i < config->desc.bNumInterfaces; i++) {
 		struct usb_interface *intf = config->interface[i];
@@ -1465,6 +1647,10 @@ reset_old_alts:
 				usb_hcd_alloc_bandwidth(dev, NULL,
 						alt, intf->cur_altsetting);
 		}
+<<<<<<< HEAD
+=======
+		usb_enable_lpm(dev);
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(hcd->bandwidth_mutex);
 		return retval;
 	}
@@ -1502,6 +1688,11 @@ reset_old_alts:
 			create_intf_ep_devs(intf);
 		}
 	}
+<<<<<<< HEAD
+=======
+	/* Now that the interfaces are installed, re-enable LPM. */
+	usb_unlocked_enable_lpm(dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL_GPL(usb_reset_configuration);
@@ -1516,7 +1707,10 @@ static void usb_release_interface(struct device *dev)
 	kfree(intf);
 }
 
+<<<<<<< HEAD
 #ifdef	CONFIG_HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
 static int usb_if_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
 	struct usb_device *usb_dev;
@@ -1535,7 +1729,11 @@ static int usb_if_uevent(struct device *dev, struct kobj_uevent_env *env)
 
 	if (add_uevent_var(env,
 		   "MODALIAS=usb:"
+<<<<<<< HEAD
 		   "v%04Xp%04Xd%04Xdc%02Xdsc%02Xdp%02Xic%02Xisc%02Xip%02X",
+=======
+		   "v%04Xp%04Xd%04Xdc%02Xdsc%02Xdp%02Xic%02Xisc%02Xip%02Xin%02X",
+>>>>>>> refs/remotes/origin/master
 		   le16_to_cpu(usb_dev->descriptor.idVendor),
 		   le16_to_cpu(usb_dev->descriptor.idProduct),
 		   le16_to_cpu(usb_dev->descriptor.bcdDevice),
@@ -1544,12 +1742,18 @@ static int usb_if_uevent(struct device *dev, struct kobj_uevent_env *env)
 		   usb_dev->descriptor.bDeviceProtocol,
 		   alt->desc.bInterfaceClass,
 		   alt->desc.bInterfaceSubClass,
+<<<<<<< HEAD
 		   alt->desc.bInterfaceProtocol))
+=======
+		   alt->desc.bInterfaceProtocol,
+		   alt->desc.bInterfaceNumber))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 #else
 
 static int usb_if_uevent(struct device *dev, struct kobj_uevent_env *env)
@@ -1558,6 +1762,8 @@ static int usb_if_uevent(struct device *dev, struct kobj_uevent_env *env)
 }
 #endif	/* CONFIG_HOTPLUG */
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct device_type usb_if_device_type = {
 	.name =		"usb_interface",
 	.release =	usb_release_interface,
@@ -1735,7 +1941,11 @@ free_interfaces:
 			}
 		}
 
+<<<<<<< HEAD
 		i = dev->bus_mA - cp->desc.bMaxPower * 2;
+=======
+		i = dev->bus_mA - usb_get_max_power(dev, cp);
+>>>>>>> refs/remotes/origin/master
 		if (i < 0)
 			dev_warn(&dev->dev, "new config #%d exceeds power "
 					"limit by %dmA\n",
@@ -1763,16 +1973,43 @@ free_interfaces:
 	 * this call fails, the device state is unchanged.
 	 */
 	mutex_lock(hcd->bandwidth_mutex);
+<<<<<<< HEAD
 	ret = usb_hcd_alloc_bandwidth(dev, cp, NULL, NULL);
 	if (ret < 0) {
+=======
+	/* Disable LPM, and re-enable it once the new configuration is
+	 * installed, so that the xHCI driver can recalculate the U1/U2
+	 * timeouts.
+	 */
+	if (dev->actconfig && usb_disable_lpm(dev)) {
+		dev_err(&dev->dev, "%s Failed to disable LPM\n.", __func__);
+		mutex_unlock(hcd->bandwidth_mutex);
+		ret = -ENOMEM;
+		goto free_interfaces;
+	}
+<<<<<<< HEAD
+	ret = usb_hcd_alloc_bandwidth(dev, cp, NULL, NULL);
+	if (ret < 0) {
+		if (dev->actconfig)
+			usb_enable_lpm(dev);
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(hcd->bandwidth_mutex);
 		usb_autosuspend_device(dev);
 		goto free_interfaces;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev->actconfig = cp;
 	if (cp)
 		usb_notify_config_device(dev);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Initialize the new interface structures and the
 	 * hc/hcd/usbcore interface/endpoint state.
@@ -1851,6 +2088,14 @@ free_interfaces:
 			!(dev->quirks & USB_QUIRK_CONFIG_INTF_STRINGS))
 		cp->string = usb_cache_string(dev, cp->desc.iConfiguration);
 
+<<<<<<< HEAD
+=======
+	/* Now that the interfaces are installed, re-enable LPM. */
+	usb_unlocked_enable_lpm(dev);
+	/* Enable LTM if it was turned off by usb_disable_device. */
+	usb_enable_ltm(dev);
+
+>>>>>>> refs/remotes/origin/master
 	/* Now that all the interfaces are set up, register them
 	 * to trigger binding of drivers to interfaces.  probe()
 	 * routines may install different altsettings and may
@@ -1938,7 +2183,11 @@ static void cancel_async_set_config(struct usb_device *udev)
  * routine gets around the normal restrictions by using a work thread to
  * submit the change-config request.
  *
+<<<<<<< HEAD
  * Returns 0 if the request was successfully queued, error code otherwise.
+=======
+ * Return: 0 if the request was successfully queued, error code otherwise.
+>>>>>>> refs/remotes/origin/master
  * The caller has no way to know whether the queued request will eventually
  * succeed.
  */

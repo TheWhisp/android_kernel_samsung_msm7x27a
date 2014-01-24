@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -104,8 +112,13 @@ acpi_ns_walk_namespace(acpi_object_type type,
 		       acpi_handle start_object,
 		       u32 max_depth,
 		       u32 flags,
+<<<<<<< HEAD
 		       acpi_walk_callback pre_order_visit,
 		       acpi_walk_callback post_order_visit,
+=======
+		       acpi_walk_callback descending_callback,
+		       acpi_walk_callback ascending_callback,
+>>>>>>> refs/remotes/origin/master
 		       void *context, void **return_value);
 
 struct acpi_namespace_node *acpi_ns_get_next_node(struct acpi_namespace_node
@@ -167,6 +180,32 @@ void acpi_ns_delete_children(struct acpi_namespace_node *parent);
 int acpi_ns_compare_names(char *name1, char *name2);
 
 /*
+<<<<<<< HEAD
+=======
+ * nsconvert - Dynamic object conversion routines
+ */
+acpi_status
+acpi_ns_convert_to_integer(union acpi_operand_object *original_object,
+			   union acpi_operand_object **return_object);
+
+acpi_status
+acpi_ns_convert_to_string(union acpi_operand_object *original_object,
+			  union acpi_operand_object **return_object);
+
+acpi_status
+acpi_ns_convert_to_buffer(union acpi_operand_object *original_object,
+			  union acpi_operand_object **return_object);
+
+acpi_status
+acpi_ns_convert_to_unicode(union acpi_operand_object *original_object,
+			   union acpi_operand_object **return_object);
+
+acpi_status
+acpi_ns_convert_to_resource(union acpi_operand_object *original_object,
+			    union acpi_operand_object **return_object);
+
+/*
+>>>>>>> refs/remotes/origin/master
  * nsdump - Namespace dump/print utilities
  */
 #ifdef	ACPI_FUTURE_USAGE
@@ -190,6 +229,15 @@ acpi_ns_dump_objects(acpi_object_type type,
 		     u8 display_type,
 		     u32 max_depth,
 		     acpi_owner_id owner_id, acpi_handle start_handle);
+<<<<<<< HEAD
+=======
+
+void
+acpi_ns_dump_object_paths(acpi_object_type type,
+			  u8 display_type,
+			  u32 max_depth,
+			  acpi_owner_id owner_id, acpi_handle start_handle);
+>>>>>>> refs/remotes/origin/master
 #endif				/* ACPI_FUTURE_USAGE */
 
 /*
@@ -200,6 +248,7 @@ acpi_status acpi_ns_evaluate(struct acpi_evaluate_info *info);
 void acpi_ns_exec_module_code_list(void);
 
 /*
+<<<<<<< HEAD
  * nspredef - Support for predefined/reserved names
  */
 acpi_status
@@ -217,6 +266,44 @@ acpi_ns_check_parameter_count(char *pathname,
 			      struct acpi_namespace_node *node,
 			      u32 user_param_count,
 			      const union acpi_predefined_info *info);
+=======
+ * nsarguments - Argument count/type checking for predefined/reserved names
+ */
+void
+acpi_ns_check_argument_count(char *pathname,
+			     struct acpi_namespace_node *node,
+			     u32 user_param_count,
+			     const union acpi_predefined_info *info);
+
+void
+acpi_ns_check_acpi_compliance(char *pathname,
+			      struct acpi_namespace_node *node,
+			      const union acpi_predefined_info *predefined);
+
+void acpi_ns_check_argument_types(struct acpi_evaluate_info *info);
+
+/*
+ * nspredef - Return value checking for predefined/reserved names
+ */
+acpi_status
+acpi_ns_check_return_value(struct acpi_namespace_node *node,
+			   struct acpi_evaluate_info *info,
+			   u32 user_param_count,
+			   acpi_status return_status,
+			   union acpi_operand_object **return_object);
+
+acpi_status
+acpi_ns_check_object_type(struct acpi_evaluate_info *info,
+			  union acpi_operand_object **return_object_ptr,
+			  u32 expected_btypes, u32 package_index);
+
+/*
+ * nsprepkg - Validation of predefined name packages
+ */
+acpi_status
+acpi_ns_check_package(struct acpi_evaluate_info *info,
+		      union acpi_operand_object **return_object_ptr);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * nsnames - Name and Scope manipulation
@@ -277,23 +364,46 @@ acpi_ns_get_attached_data(struct acpi_namespace_node *node,
  * predefined methods/objects
  */
 acpi_status
+<<<<<<< HEAD
 acpi_ns_repair_object(struct acpi_predefined_data *data,
+=======
+acpi_ns_simple_repair(struct acpi_evaluate_info *info,
+>>>>>>> refs/remotes/origin/master
 		      u32 expected_btypes,
 		      u32 package_index,
 		      union acpi_operand_object **return_object_ptr);
 
 acpi_status
+<<<<<<< HEAD
+<<<<<<< HEAD
 acpi_ns_repair_package_list(struct acpi_predefined_data *data,
 			    union acpi_operand_object **obj_desc_ptr);
+=======
+acpi_ns_wrap_with_package(struct acpi_predefined_data *data,
+			  union acpi_operand_object *original_object,
+			  union acpi_operand_object **obj_desc_ptr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 acpi_status
 acpi_ns_repair_null_element(struct acpi_predefined_data *data,
+=======
+acpi_ns_wrap_with_package(struct acpi_evaluate_info *info,
+			  union acpi_operand_object *original_object,
+			  union acpi_operand_object **obj_desc_ptr);
+
+acpi_status
+acpi_ns_repair_null_element(struct acpi_evaluate_info *info,
+>>>>>>> refs/remotes/origin/master
 			    u32 expected_btypes,
 			    u32 package_index,
 			    union acpi_operand_object **return_object_ptr);
 
 void
+<<<<<<< HEAD
 acpi_ns_remove_null_elements(struct acpi_predefined_data *data,
+=======
+acpi_ns_remove_null_elements(struct acpi_evaluate_info *info,
+>>>>>>> refs/remotes/origin/master
 			     u8 package_type,
 			     union acpi_operand_object *obj_desc);
 
@@ -302,7 +412,11 @@ acpi_ns_remove_null_elements(struct acpi_predefined_data *data,
  * predefined methods/objects
  */
 acpi_status
+<<<<<<< HEAD
 acpi_ns_complex_repairs(struct acpi_predefined_data *data,
+=======
+acpi_ns_complex_repairs(struct acpi_evaluate_info *info,
+>>>>>>> refs/remotes/origin/master
 			struct acpi_namespace_node *node,
 			acpi_status validate_status,
 			union acpi_operand_object **return_object_ptr);
@@ -332,8 +446,11 @@ acpi_ns_install_node(struct acpi_walk_state *walk_state,
 /*
  * nsutils - Utility functions
  */
+<<<<<<< HEAD
 u8 acpi_ns_valid_root_prefix(char prefix);
 
+=======
+>>>>>>> refs/remotes/origin/master
 acpi_object_type acpi_ns_get_type(struct acpi_namespace_node *node);
 
 u32 acpi_ns_local(acpi_object_type type);

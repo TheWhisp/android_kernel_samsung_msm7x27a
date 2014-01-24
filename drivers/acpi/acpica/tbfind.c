@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,7 +60,11 @@ ACPI_MODULE_NAME("tbfind")
  *
  * FUNCTION:    acpi_tb_find_table
  *
+<<<<<<< HEAD
  * PARAMETERS:  Signature           - String with ACPI table signature
+=======
+ * PARAMETERS:  signature           - String with ACPI table signature
+>>>>>>> refs/remotes/origin/master
  *              oem_id              - String with the table OEM ID
  *              oem_table_id        - String with the OEM Table ID
  *              table_index         - Where the table index is returned
@@ -77,7 +89,11 @@ acpi_tb_find_table(char *signature,
 	/* Normalize the input strings */
 
 	ACPI_MEMSET(&header, 0, sizeof(struct acpi_table_header));
+<<<<<<< HEAD
 	ACPI_STRNCPY(header.signature, signature, ACPI_NAME_SIZE);
+=======
+	ACPI_MOVE_NAME(header.signature, signature);
+>>>>>>> refs/remotes/origin/master
 	ACPI_STRNCPY(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
 	ACPI_STRNCPY(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
 

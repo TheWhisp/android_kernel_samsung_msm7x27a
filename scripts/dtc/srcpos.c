@@ -24,6 +24,18 @@
 #include "dtc.h"
 #include "srcpos.h"
 
+<<<<<<< HEAD
+=======
+/* A node in our list of directories to search for source/include files */
+struct search_path {
+	struct search_path *next;	/* next node in list, NULL for end */
+	const char *dirname;		/* name of directory to search */
+};
+
+/* This is the list of directories that we search for source files */
+static struct search_path *search_path_head, **search_path_tail;
+
+>>>>>>> refs/remotes/origin/master
 
 static char *dirname(const char *path)
 {
@@ -40,12 +52,81 @@ static char *dirname(const char *path)
 	return NULL;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+FILE *depfile; /* = NULL */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+FILE *depfile; /* = NULL */
+>>>>>>> refs/remotes/origin/master
 struct srcfile_state *current_srcfile; /* = NULL */
 
 /* Detect infinite include recursion. */
 #define MAX_SRCFILE_DEPTH     (100)
 static int srcfile_depth; /* = 0 */
 
+<<<<<<< HEAD
+=======
+
+/**
+ * Try to open a file in a given directory.
+ *
+ * If the filename is an absolute path, then dirname is ignored. If it is a
+ * relative path, then we look in that directory for the file.
+ *
+ * @param dirname	Directory to look in, or NULL for none
+ * @param fname		Filename to look for
+ * @param fp		Set to NULL if file did not open
+ * @return allocated filename on success (caller must free), NULL on failure
+ */
+static char *try_open(const char *dirname, const char *fname, FILE **fp)
+{
+	char *fullname;
+
+	if (!dirname || fname[0] == '/')
+		fullname = xstrdup(fname);
+	else
+		fullname = join_path(dirname, fname);
+
+	*fp = fopen(fullname, "r");
+	if (!*fp) {
+		free(fullname);
+		fullname = NULL;
+	}
+
+	return fullname;
+}
+
+/**
+ * Open a file for read access
+ *
+ * If it is a relative filename, we search the full search path for it.
+ *
+ * @param fname	Filename to open
+ * @param fp	Returns pointer to opened FILE, or NULL on failure
+ * @return pointer to allocated filename, which caller must free
+ */
+static char *fopen_any_on_path(const char *fname, FILE **fp)
+{
+	const char *cur_dir = NULL;
+	struct search_path *node;
+	char *fullname;
+
+	/* Try current directory first */
+	assert(fp);
+	if (current_srcfile)
+		cur_dir = current_srcfile->dir;
+	fullname = try_open(cur_dir, fname, fp);
+
+	/* Failing that, try each search path in turn */
+	for (node = search_path_head; !*fp && node; node = node->next)
+		fullname = try_open(node->dirname, fname, fp);
+
+	return fullname;
+}
+
+>>>>>>> refs/remotes/origin/master
 FILE *srcfile_relative_open(const char *fname, char **fullnamep)
 {
 	FILE *f;
@@ -55,6 +136,7 @@ FILE *srcfile_relative_open(const char *fname, char **fullnamep)
 		f = stdin;
 		fullname = xstrdup("<stdin>");
 	} else {
+<<<<<<< HEAD
 		if (!current_srcfile || !current_srcfile->dir
 		    || (fname[0] == '/'))
 			fullname = xstrdup(fname);
@@ -62,11 +144,26 @@ FILE *srcfile_relative_open(const char *fname, char **fullnamep)
 			fullname = join_path(current_srcfile->dir, fname);
 
 		f = fopen(fullname, "r");
+=======
+		fullname = fopen_any_on_path(fname, &f);
+>>>>>>> refs/remotes/origin/master
 		if (!f)
 			die("Couldn't open \"%s\": %s\n", fname,
 			    strerror(errno));
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (depfile)
+		fprintf(depfile, " %s", fullname);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (depfile)
+		fprintf(depfile, " %s", fullname);
+
+>>>>>>> refs/remotes/origin/master
 	if (fullnamep)
 		*fullnamep = fullname;
 	else
@@ -115,6 +212,26 @@ int srcfile_pop(void)
 	return current_srcfile ? 1 : 0;
 }
 
+<<<<<<< HEAD
+=======
+void srcfile_add_search_path(const char *dirname)
+{
+	struct search_path *node;
+
+	/* Create the node */
+	node = xmalloc(sizeof(*node));
+	node->next = NULL;
+	node->dirname = xstrdup(dirname);
+
+	/* Add to the end of our list */
+	if (search_path_tail)
+		*search_path_tail = node;
+	else
+		search_path_head = node;
+	search_path_tail = &node->next;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The empty source position.
  */
@@ -246,3 +363,12 @@ srcpos_warn(struct srcpos *pos, char const *fmt, ...)
 
 	va_end(va);
 }
+<<<<<<< HEAD
+=======
+
+void srcpos_set_line(char *f, int l)
+{
+	current_srcfile->name = f;
+	current_srcfile->lineno = l;
+}
+>>>>>>> refs/remotes/origin/master

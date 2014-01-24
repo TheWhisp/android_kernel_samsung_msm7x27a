@@ -1,6 +1,7 @@
 #ifndef _ASM_X86_EMERGENCY_RESTART_H
 #define _ASM_X86_EMERGENCY_RESTART_H
 
+<<<<<<< HEAD
 enum reboot_type {
 	BOOT_TRIPLE = 't',
 	BOOT_KBD = 'k',
@@ -15,6 +16,8 @@ enum reboot_type {
 
 extern enum reboot_type reboot_type;
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern void machine_emergency_restart(void);
 
 #endif /* _ASM_X86_EMERGENCY_RESTART_H */

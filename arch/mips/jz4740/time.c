@@ -3,7 +3,11 @@
  *  JZ4740 platform time support
  *
  *  This program is free software; you can redistribute it and/or modify it
+<<<<<<< HEAD
  *  under  the terms of the GNU General  Public License as published by the
+=======
+ *  under  the terms of the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  *  Free Software Foundation;  either version 2 of the License, or (at your
  *  option) any later version.
  *
@@ -20,10 +24,17 @@
 #include <linux/clockchips.h>
 
 #include <asm/mach-jz4740/irq.h>
+<<<<<<< HEAD
 #include <asm/time.h>
 
 #include "clock.h"
 #include "timer.h"
+=======
+#include <asm/mach-jz4740/timer.h>
+#include <asm/time.h>
+
+#include "clock.h"
+>>>>>>> refs/remotes/origin/master
 
 #define TIMER_CLOCKEVENT 0
 #define TIMER_CLOCKSOURCE 1

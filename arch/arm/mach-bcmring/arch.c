@@ -49,7 +49,33 @@ HW_DECLARE_SPINLOCK(gpio)
 #endif
 
 /* sysctl */
+<<<<<<< HEAD
 int bcmring_arch_warm_reboot;	/* do a warm reboot on hard reset */
+=======
+static int bcmring_arch_warm_reboot;	/* do a warm reboot on hard reset */
+
+static void bcmring_restart(char mode, const char *cmd)
+{
+	printk("arch_reset:%c %x\n", mode, bcmring_arch_warm_reboot);
+
+	if (mode == 'h') {
+		/* Reboot configured in proc entry */
+		if (bcmring_arch_warm_reboot) {
+			printk("warm reset\n");
+			/* Issue Warm reset (do not reset ethernet switch, keep alive) */
+			chipcHw_reset(chipcHw_REG_SOFT_RESET_CHIP_WARM);
+		} else {
+			/* Force reset of everything */
+			printk("force reset\n");
+			chipcHw_reset(chipcHw_REG_SOFT_RESET_CHIP_SOFT);
+		}
+	} else {
+		/* Force reset of everything */
+		printk("force reset\n");
+		chipcHw_reset(chipcHw_REG_SOFT_RESET_CHIP_SOFT);
+	}
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct ctl_table_header *bcmring_sysctl_header;
 
@@ -136,8 +162,13 @@ static void __init bcmring_init_machine(void)
 *
 *****************************************************************************/
 
+<<<<<<< HEAD
 static void __init bcmring_fixup(struct machine_desc *desc,
      struct tag *t, char **cmdline, struct meminfo *mi) {
+=======
+static void __init bcmring_fixup(struct tag *t, char **cmdline,
+	struct meminfo *mi) {
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_BLK_DEV_INITRD
 	printk(KERN_NOTICE "bcmring_fixup\n");
 	t->hdr.tag = ATAG_CORE;
@@ -172,5 +203,10 @@ MACHINE_START(BCMRING, "BCMRING")
 	.init_early = bcmring_init_early,
 	.init_irq = bcmring_init_irq,
 	.timer = &bcmring_timer,
+<<<<<<< HEAD
 	.init_machine = bcmring_init_machine
+=======
+	.init_machine = bcmring_init_machine,
+	.restart = bcmring_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

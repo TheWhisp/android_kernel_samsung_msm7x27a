@@ -24,6 +24,22 @@ struct clk_lookup {
 	struct clk		*clk;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define CLKDEV_INIT(d, n, c)	\
+	{			\
+		.dev_id = d,	\
+		.con_id = n,	\
+		.clk = c,	\
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct clk_lookup *clkdev_alloc(struct clk *clk, const char *con_id,
 	const char *dev_fmt, ...);
 
@@ -33,4 +49,10 @@ void clkdev_drop(struct clk_lookup *cl);
 void clkdev_add_table(struct clk_lookup *, size_t);
 int clk_add_alias(const char *, const char *, char *, struct device *);
 
+<<<<<<< HEAD
+=======
+int clk_register_clkdev(struct clk *, const char *, const char *, ...);
+int clk_register_clkdevs(struct clk *, struct clk_lookup *, size_t);
+
+>>>>>>> refs/remotes/origin/master
 #endif

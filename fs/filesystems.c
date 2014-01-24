@@ -74,7 +74,13 @@ int register_filesystem(struct file_system_type * fs)
 	BUG_ON(strchr(fs->name, '.'));
 	if (fs->next)
 		return -EBUSY;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&fs->fs_supers);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	write_lock(&file_systems_lock);
 	p = find_filesystem(fs->name, strlen(fs->name));
 	if (*p)
@@ -125,7 +131,11 @@ EXPORT_SYMBOL(unregister_filesystem);
 static int fs_index(const char __user * __name)
 {
 	struct file_system_type * tmp;
+<<<<<<< HEAD
 	char * name;
+=======
+	struct filename *name;
+>>>>>>> refs/remotes/origin/master
 	int err, index;
 
 	name = getname(__name);
@@ -136,7 +146,11 @@ static int fs_index(const char __user * __name)
 	err = -EINVAL;
 	read_lock(&file_systems_lock);
 	for (tmp=file_systems, index=0 ; tmp ; tmp=tmp->next, index++) {
+<<<<<<< HEAD
 		if (strcmp(tmp->name,name) == 0) {
+=======
+		if (strcmp(tmp->name, name->name) == 0) {
+>>>>>>> refs/remotes/origin/master
 			err = index;
 			break;
 		}
@@ -274,7 +288,11 @@ struct file_system_type *get_fs_type(const char *name)
 	int len = dot ? dot - name : strlen(name);
 
 	fs = __get_fs_type(name, len);
+<<<<<<< HEAD
 	if (!fs && (request_module("%.*s", len, name) == 0))
+=======
+	if (!fs && (request_module("fs-%.*s", len, name) == 0))
+>>>>>>> refs/remotes/origin/master
 		fs = __get_fs_type(name, len);
 
 	if (dot && fs && !(fs->fs_flags & FS_HAS_SUBTYPE)) {

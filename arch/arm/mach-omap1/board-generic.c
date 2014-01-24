@@ -12,7 +12,15 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -22,6 +30,8 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <plat/mux.h>
 #include <plat/usb.h>
@@ -33,6 +43,19 @@ static void __init omap_generic_init_irq(void)
 	omap1_init_common_hw();
 	omap_init_irq();
 }
+=======
+#include <plat/mux.h>
+#include <plat/usb.h>
+#include <plat/board.h>
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/mux.h>
+
+#include <mach/usb.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 /* assume no Mini-AB port */
 
@@ -57,9 +80,12 @@ static struct omap_usb_config generic1610_usb_config __initdata = {
 };
 #endif
 
+<<<<<<< HEAD
 static struct omap_board_config_kernel generic_config[] __initdata = {
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init omap_generic_init(void)
 {
 #ifdef CONFIG_ARCH_OMAP15XX
@@ -81,12 +107,17 @@ static void __init omap_generic_init(void)
 	}
 #endif
 
+<<<<<<< HEAD
 	omap_board_config = generic_config;
 	omap_board_config_size = ARRAY_SIZE(generic_config);
+=======
+>>>>>>> refs/remotes/origin/master
 	omap_serial_init();
 	omap_register_i2c_bus(1, 100, NULL, 0);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __init omap_generic_map_io(void)
 {
 	omap1_map_common_io();
@@ -100,4 +131,26 @@ MACHINE_START(OMAP_GENERIC, "Generic OMAP1510/1610/1710")
 	.init_irq	= omap_generic_init_irq,
 	.init_machine	= omap_generic_init,
 	.timer		= &omap_timer,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+MACHINE_START(OMAP_GENERIC, "Generic OMAP1510/1610/1710")
+	/* Maintainer: Tony Lindgren <tony@atomide.com> */
+	.atag_offset	= 0x100,
+	.map_io		= omap16xx_map_io,
+	.init_early	= omap1_init_early,
+<<<<<<< HEAD
+	.reserve	= omap_reserve,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= omap_generic_init,
+	.timer		= &omap1_timer,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_irq	= omap1_init_irq,
+	.init_machine	= omap_generic_init,
+	.init_late	= omap1_init_late,
+	.init_time	= omap1_timer_init,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

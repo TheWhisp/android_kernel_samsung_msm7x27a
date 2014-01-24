@@ -369,6 +369,7 @@ static struct serio_driver sunkbd_drv = {
 	.disconnect	= sunkbd_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for insering/removing us as a module.
  */
@@ -385,3 +386,6 @@ static void __exit sunkbd_exit(void)
 
 module_init(sunkbd_init);
 module_exit(sunkbd_exit);
+=======
+module_serio_driver(sunkbd_drv);
+>>>>>>> refs/remotes/origin/master

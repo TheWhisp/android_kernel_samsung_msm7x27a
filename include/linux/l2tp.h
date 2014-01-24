@@ -3,13 +3,19 @@
  *
  * Author: James Chapman <jchapman@katalix.com>
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_L2TP_H_
 #define _LINUX_L2TP_H_
 
 #include <linux/types.h>
+<<<<<<< HEAD
 #ifdef __KERNEL__
 #include <linux/socket.h>
+=======
+#include <linux/socket.h>
+#ifdef __KERNEL__
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/in.h>
 #else
 #include <netinet/in.h>
@@ -26,14 +32,23 @@
 #define __SOCK_SIZE__	16		/* sizeof(struct sockaddr)	*/
 struct sockaddr_l2tpip {
 	/* The first fields must match struct sockaddr_in */
+<<<<<<< HEAD
 	sa_family_t	l2tp_family;	/* AF_INET */
+=======
+	__kernel_sa_family_t l2tp_family; /* AF_INET */
+>>>>>>> refs/remotes/origin/cm-10.0
 	__be16		l2tp_unused;	/* INET port number (unused) */
 	struct in_addr	l2tp_addr;	/* Internet address */
 
 	__u32		l2tp_conn_id;	/* Connection ID of tunnel */
 
 	/* Pad to size of `struct sockaddr'. */
+<<<<<<< HEAD
 	unsigned char	__pad[sizeof(struct sockaddr) - sizeof(sa_family_t) -
+=======
+	unsigned char	__pad[sizeof(struct sockaddr) -
+			      sizeof(__kernel_sa_family_t) -
+>>>>>>> refs/remotes/origin/cm-10.0
 			      sizeof(__be16) - sizeof(struct in_addr) -
 			      sizeof(__u32)];
 };
@@ -159,5 +174,13 @@ enum l2tp_seqmode {
  */
 #define L2TP_GENL_NAME		"l2tp"
 #define L2TP_GENL_VERSION	0x1
+=======
+#ifndef _LINUX_L2TP_H_
+#define _LINUX_L2TP_H_
+
+#include <linux/in.h>
+#include <linux/in6.h>
+#include <uapi/linux/l2tp.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif

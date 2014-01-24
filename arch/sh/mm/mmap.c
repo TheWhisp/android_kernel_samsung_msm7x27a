@@ -30,6 +30,7 @@ static inline unsigned long COLOUR_ALIGN(unsigned long addr,
 	return base + off;
 }
 
+<<<<<<< HEAD
 static inline unsigned long COLOUR_ALIGN_DOWN(unsigned long addr,
 					      unsigned long pgoff)
 {
@@ -42,13 +43,20 @@ static inline unsigned long COLOUR_ALIGN_DOWN(unsigned long addr,
 	return base - off;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
 	unsigned long len, unsigned long pgoff, unsigned long flags)
 {
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct *vma;
+<<<<<<< HEAD
 	unsigned long start_addr;
 	int do_colour_align;
+=======
+	int do_colour_align;
+	struct vm_unmapped_area_info info;
+>>>>>>> refs/remotes/origin/master
 
 	if (flags & MAP_FIXED) {
 		/* We do not accept a shared mapping if it would violate
@@ -79,6 +87,7 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
 			return addr;
 	}
 
+<<<<<<< HEAD
 	if (len > mm->cached_hole_size) {
 		start_addr = addr = mm->free_area_cache;
 	} else {
@@ -120,6 +129,15 @@ full_search:
 		if (do_colour_align)
 			addr = COLOUR_ALIGN(addr, pgoff);
 	}
+=======
+	info.flags = 0;
+	info.length = len;
+	info.low_limit = TASK_UNMAPPED_BASE;
+	info.high_limit = TASK_SIZE;
+	info.align_mask = do_colour_align ? (PAGE_MASK & shm_align_mask) : 0;
+	info.align_offset = pgoff << PAGE_SHIFT;
+	return vm_unmapped_area(&info);
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned long
@@ -131,6 +149,10 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 	struct mm_struct *mm = current->mm;
 	unsigned long addr = addr0;
 	int do_colour_align;
+<<<<<<< HEAD
+=======
+	struct vm_unmapped_area_info info;
+>>>>>>> refs/remotes/origin/master
 
 	if (flags & MAP_FIXED) {
 		/* We do not accept a shared mapping if it would violate
@@ -162,6 +184,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 			return addr;
 	}
 
+<<<<<<< HEAD
 	/* check if free_area_cache is useful for us */
 	if (len <= mm->cached_hole_size) {
 	        mm->cached_hole_size = 0;
@@ -215,12 +238,23 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 	} while (likely(len < vma->vm_start));
 
 bottomup:
+=======
+	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
+	info.length = len;
+	info.low_limit = PAGE_SIZE;
+	info.high_limit = mm->mmap_base;
+	info.align_mask = do_colour_align ? (PAGE_MASK & shm_align_mask) : 0;
+	info.align_offset = pgoff << PAGE_SHIFT;
+	addr = vm_unmapped_area(&info);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * A failed mmap() very likely causes application failure,
 	 * so fall back to the bottom-up function here. This scenario
 	 * can happen with large stack limits and large mmap()
 	 * allocations.
 	 */
+<<<<<<< HEAD
 	mm->cached_hole_size = ~0UL;
 	mm->free_area_cache = TASK_UNMAPPED_BASE;
 	addr = arch_get_unmapped_area(filp, addr0, len, pgoff, flags);
@@ -229,6 +263,15 @@ bottomup:
 	 */
 	mm->free_area_cache = mm->mmap_base;
 	mm->cached_hole_size = ~0UL;
+=======
+	if (addr & ~PAGE_MASK) {
+		VM_BUG_ON(addr != -ENOMEM);
+		info.flags = 0;
+		info.low_limit = TASK_UNMAPPED_BASE;
+		info.high_limit = TASK_SIZE;
+		addr = vm_unmapped_area(&info);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return addr;
 }
@@ -238,7 +281,11 @@ bottomup:
  * You really shouldn't be using read() or write() on /dev/mem.  This
  * might go away in the future.
  */
+<<<<<<< HEAD
 int valid_phys_addr_range(unsigned long addr, size_t count)
+=======
+int valid_phys_addr_range(phys_addr_t addr, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	if (addr < __MEMORY_START)
 		return 0;

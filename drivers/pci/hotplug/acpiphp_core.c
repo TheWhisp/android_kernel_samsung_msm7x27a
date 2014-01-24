@@ -31,27 +31,49 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "acpiphp: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 
 #include <linux/kernel.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/pci-acpi.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci_hotplug.h>
 #include <linux/slab.h>
 #include <linux/smp.h>
 #include "acpiphp.h"
 
+<<<<<<< HEAD
 #define MY_NAME	"acpiphp"
 
 /* name size which is used for entries in pcihpfs */
 #define SLOT_NAME_SIZE  21              /* {_SUN} */
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 int acpiphp_debug;
 
 /* local variables */
 static int num_slots;
+=======
+/* name size which is used for entries in pcihpfs */
+#define SLOT_NAME_SIZE  21              /* {_SUN} */
+
+bool acpiphp_disabled;
+
+/* local variables */
+>>>>>>> refs/remotes/origin/master
 static struct acpiphp_attention_info *attention_info;
 
 #define DRIVER_VERSION	"0.5"
@@ -61,8 +83,13 @@ static struct acpiphp_attention_info *attention_info;
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_PARM_DESC(debug, "Debugging mode enabled or not");
 module_param(debug, bool, 0644);
+=======
+MODULE_PARM_DESC(disable, "disable acpiphp driver");
+module_param_named(disable, acpiphp_disabled, bool, 0444);
+>>>>>>> refs/remotes/origin/master
 
 /* export the attention callback registration methods */
 EXPORT_SYMBOL_GPL(acpiphp_register_attention);
@@ -112,7 +139,11 @@ int acpiphp_register_attention(struct acpiphp_attention_info *info)
  * @info: must match the pointer used to register
  *
  * Description: This is used to un-register a hardware specific acpi
+<<<<<<< HEAD
  * driver that manipulates the attention LED.  The pointer to the 
+=======
+ * driver that manipulates the attention LED.  The pointer to the
+>>>>>>> refs/remotes/origin/master
  * info struct must be the same as the one used to set it.
  */
 int acpiphp_unregister_attention(struct acpiphp_attention_info *info)
@@ -137,7 +168,11 @@ static int enable_slot(struct hotplug_slot *hotplug_slot)
 {
 	struct slot *slot = hotplug_slot->private;
 
+<<<<<<< HEAD
 	dbg("%s - physical_slot = %s\n", __func__, slot_name(slot));
+=======
+	pr_debug("%s - physical_slot = %s\n", __func__, slot_name(slot));
+>>>>>>> refs/remotes/origin/master
 
 	/* enable the specified slot */
 	return acpiphp_enable_slot(slot->acpi_slot);
@@ -153,6 +188,7 @@ static int enable_slot(struct hotplug_slot *hotplug_slot)
 static int disable_slot(struct hotplug_slot *hotplug_slot)
 {
 	struct slot *slot = hotplug_slot->private;
+<<<<<<< HEAD
 	int retval;
 
 	dbg("%s - physical_slot = %s\n", __func__, slot_name(slot));
@@ -162,6 +198,13 @@ static int disable_slot(struct hotplug_slot *hotplug_slot)
 	if (!retval)
 		retval = acpiphp_eject_slot(slot->acpi_slot);
 	return retval;
+=======
+
+	pr_debug("%s - physical_slot = %s\n", __func__, slot_name(slot));
+
+	/* disable the specified slot */
+	return acpiphp_disable_and_eject_slot(slot->acpi_slot);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -174,20 +217,35 @@ static int disable_slot(struct hotplug_slot *hotplug_slot)
  * was registered with us.  This allows hardware specific
  * ACPI implementations to blink the light for us.
  */
+<<<<<<< HEAD
  static int set_attention_status(struct hotplug_slot *hotplug_slot, u8 status)
  {
 	int retval = -ENODEV;
 
 	dbg("%s - physical_slot = %s\n", __func__, hotplug_slot_name(hotplug_slot));
  
+=======
+static int set_attention_status(struct hotplug_slot *hotplug_slot, u8 status)
+{
+	int retval = -ENODEV;
+
+	pr_debug("%s - physical_slot = %s\n", __func__,
+		hotplug_slot_name(hotplug_slot));
+
+>>>>>>> refs/remotes/origin/master
 	if (attention_info && try_module_get(attention_info->owner)) {
 		retval = attention_info->set_attn(hotplug_slot, status);
 		module_put(attention_info->owner);
 	} else
 		attention_info = NULL;
 	return retval;
+<<<<<<< HEAD
  }
  
+=======
+}
+
+>>>>>>> refs/remotes/origin/master
 
 /**
  * get_power_status - get power status of a slot
@@ -201,7 +259,11 @@ static int get_power_status(struct hotplug_slot *hotplug_slot, u8 *value)
 {
 	struct slot *slot = hotplug_slot->private;
 
+<<<<<<< HEAD
 	dbg("%s - physical_slot = %s\n", __func__, slot_name(slot));
+=======
+	pr_debug("%s - physical_slot = %s\n", __func__, slot_name(slot));
+>>>>>>> refs/remotes/origin/master
 
 	*value = acpiphp_get_power_status(slot->acpi_slot);
 
@@ -223,7 +285,12 @@ static int get_attention_status(struct hotplug_slot *hotplug_slot, u8 *value)
 {
 	int retval = -EINVAL;
 
+<<<<<<< HEAD
 	dbg("%s - physical_slot = %s\n", __func__, hotplug_slot_name(hotplug_slot));
+=======
+	pr_debug("%s - physical_slot = %s\n", __func__,
+		hotplug_slot_name(hotplug_slot));
+>>>>>>> refs/remotes/origin/master
 
 	if (attention_info && try_module_get(attention_info->owner)) {
 		retval = attention_info->get_attn(hotplug_slot, value);
@@ -246,7 +313,11 @@ static int get_latch_status(struct hotplug_slot *hotplug_slot, u8 *value)
 {
 	struct slot *slot = hotplug_slot->private;
 
+<<<<<<< HEAD
 	dbg("%s - physical_slot = %s\n", __func__, slot_name(slot));
+=======
+	pr_debug("%s - physical_slot = %s\n", __func__, slot_name(slot));
+>>>>>>> refs/remotes/origin/master
 
 	*value = acpiphp_get_latch_status(slot->acpi_slot);
 
@@ -266,13 +337,18 @@ static int get_adapter_status(struct hotplug_slot *hotplug_slot, u8 *value)
 {
 	struct slot *slot = hotplug_slot->private;
 
+<<<<<<< HEAD
 	dbg("%s - physical_slot = %s\n", __func__, slot_name(slot));
+=======
+	pr_debug("%s - physical_slot = %s\n", __func__, slot_name(slot));
+>>>>>>> refs/remotes/origin/master
 
 	*value = acpiphp_get_adapter_status(slot->acpi_slot);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __init init_acpi(void)
 {
 	int retval;
@@ -292,6 +368,8 @@ static int __init init_acpi(void)
 	return retval;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * release_slot - free up the memory used by a slot
  * @hotplug_slot: slot to free
@@ -300,14 +378,23 @@ static void release_slot(struct hotplug_slot *hotplug_slot)
 {
 	struct slot *slot = hotplug_slot->private;
 
+<<<<<<< HEAD
 	dbg("%s - physical_slot = %s\n", __func__, slot_name(slot));
+=======
+	pr_debug("%s - physical_slot = %s\n", __func__, slot_name(slot));
+>>>>>>> refs/remotes/origin/master
 
 	kfree(slot->hotplug_slot);
 	kfree(slot);
 }
 
 /* callback routine to initialize 'struct slot' for each slot */
+<<<<<<< HEAD
 int acpiphp_register_hotplug_slot(struct acpiphp_slot *acpiphp_slot)
+=======
+int acpiphp_register_hotplug_slot(struct acpiphp_slot *acpiphp_slot,
+				  unsigned int sun)
+>>>>>>> refs/remotes/origin/master
 {
 	struct slot *slot;
 	int retval = -ENOMEM;
@@ -334,6 +421,7 @@ int acpiphp_register_hotplug_slot(struct acpiphp_slot *acpiphp_slot)
 	slot->hotplug_slot->info->adapter_status = acpiphp_get_adapter_status(slot->acpi_slot);
 
 	acpiphp_slot->slot = slot;
+<<<<<<< HEAD
 	snprintf(name, SLOT_NAME_SIZE, "%llu", slot->acpi_slot->sun);
 
 	retval = pci_hp_register(slot->hotplug_slot,
@@ -348,6 +436,21 @@ int acpiphp_register_hotplug_slot(struct acpiphp_slot *acpiphp_slot)
  	}
 
 	info("Slot [%s] registered\n", slot_name(slot));
+=======
+	slot->sun = sun;
+	snprintf(name, SLOT_NAME_SIZE, "%u", sun);
+
+	retval = pci_hp_register(slot->hotplug_slot, acpiphp_slot->bus,
+				 acpiphp_slot->device, name);
+	if (retval == -EBUSY)
+		goto error_hpslot;
+	if (retval) {
+		pr_err("pci_hp_register failed with error %d\n", retval);
+		goto error_hpslot;
+	}
+
+	pr_info("Slot [%s] registered\n", slot_name(slot));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 error_hpslot:
@@ -364,6 +467,7 @@ void acpiphp_unregister_hotplug_slot(struct acpiphp_slot *acpiphp_slot)
 	struct slot *slot = acpiphp_slot->slot;
 	int retval = 0;
 
+<<<<<<< HEAD
 	info("Slot [%s] unregistered\n", slot_name(slot));
 
 	retval = pci_hp_deregister(slot->hotplug_slot);
@@ -397,3 +501,19 @@ static void __exit acpiphp_exit(void)
 
 module_init(acpiphp_init);
 module_exit(acpiphp_exit);
+=======
+	pr_info("Slot [%s] unregistered\n", slot_name(slot));
+
+	retval = pci_hp_deregister(slot->hotplug_slot);
+	if (retval)
+		pr_err("pci_hp_deregister failed with error %d\n", retval);
+}
+
+
+void __init acpiphp_init(void)
+{
+	pr_info(DRIVER_DESC " version: " DRIVER_VERSION "%s\n",
+		acpiphp_disabled ? ", disabled by user; please report a bug"
+				 : "");
+}
+>>>>>>> refs/remotes/origin/master

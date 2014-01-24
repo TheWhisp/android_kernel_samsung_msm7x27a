@@ -26,8 +26,18 @@
 #include <mach/board.h>
 
 #include "devices.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "gpio_hw.h"
 #include "footswitch.h"
+=======
+#include "footswitch.h"
+#include "acpuclock.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "footswitch.h"
+#include "acpuclock.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/mach/flash.h>
 
@@ -35,6 +45,16 @@
 #include <mach/msm_hsusb.h>
 #include <mach/usbdiag.h>
 #include <mach/rpc_hsusb.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "irq.h"
+#include "pm.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "irq.h"
+#include "pm.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct resource resources_uart1[] = {
 	{
@@ -43,8 +63,18 @@ static struct resource resources_uart1[] = {
 		.flags	= IORESOURCE_IRQ,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= MSM_UART1_PHYS,
 		.end	= MSM_UART1_PHYS + MSM_UART1_SIZE - 1,
+=======
+		.start	= MSM7XXX_UART1_PHYS,
+		.end	= MSM7XXX_UART1_PHYS + MSM7XXX_UART1_SIZE - 1,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= MSM7XXX_UART1_PHYS,
+		.end	= MSM7XXX_UART1_PHYS + MSM7XXX_UART1_SIZE - 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags	= IORESOURCE_MEM,
 	},
 };
@@ -56,8 +86,18 @@ static struct resource resources_uart2[] = {
 		.flags	= IORESOURCE_IRQ,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= MSM_UART2_PHYS,
 		.end	= MSM_UART2_PHYS + MSM_UART2_SIZE - 1,
+=======
+		.start	= MSM7XXX_UART2_PHYS,
+		.end	= MSM7XXX_UART2_PHYS + MSM7XXX_UART2_SIZE - 1,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= MSM7XXX_UART2_PHYS,
+		.end	= MSM7XXX_UART2_PHYS + MSM7XXX_UART2_SIZE - 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.flags	= IORESOURCE_MEM,
 	},
 };
@@ -76,6 +116,30 @@ struct platform_device msm_device_uart2 = {
 	.resource	= resources_uart2,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct resource resources_adsp[] = {
+	{
+		.start  = INT_ADSP_A9_A11,
+		.end    = INT_ADSP_A9_A11,
+		.flags  = IORESOURCE_IRQ,
+	},
+};
+
+struct platform_device msm_adsp_device = {
+	.name           = "msm_adsp",
+	.id             = -1,
+	.num_resources  = ARRAY_SIZE(resources_adsp),
+	.resource       = resources_adsp,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_UART1DM_PHYS      0xA0200000
 #define MSM_UART2DM_PHYS      0xA0300000
 static struct resource msm_uart1_dm_resources[] = {
@@ -400,6 +464,40 @@ struct platform_device msm_device_dmov = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct msm_pm_irq_calls msm7x27_pm_irq_calls = {
+	.irq_pending = msm_irq_pending,
+	.idle_sleep_allowed = msm_irq_idle_sleep_allowed,
+	.enter_sleep1 = msm_irq_enter_sleep1,
+	.enter_sleep2 = msm_irq_enter_sleep2,
+	.exit_sleep1 = msm_irq_exit_sleep1,
+	.exit_sleep2 = msm_irq_exit_sleep2,
+	.exit_sleep3 = msm_irq_exit_sleep3,
+};
+
+void __init msm_pm_register_irqs(void)
+{
+	msm_pm_set_irq_extns(&msm7x27_pm_irq_calls);
+}
+
+static struct acpuclk_pdata msm7x27_acpuclk_pdata = {
+	.max_speed_delta_khz = 400000,
+};
+
+struct platform_device msm7x27_device_acpuclk = {
+	.name		= "acpuclk-7627",
+	.id		= -1,
+	.dev.platform_data = &msm7x27_acpuclk_pdata,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_SDC1_BASE         0xA0400000
 #define MSM_SDC2_BASE         0xA0500000
 #define MSM_SDC3_BASE         0xA0600000
@@ -822,7 +920,17 @@ static struct kgsl_device_platform_data kgsl_3d0_pdata = {
 	.init_level = 0,
 	.num_levels = 1,
 	.set_grp_async = NULL,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.idle_timeout = HZ/5,
+=======
+	.idle_timeout = HZ,
+	.strtstp_sleepwake = true,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.idle_timeout = HZ,
+	.strtstp_sleepwake = true,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.clk_map = KGSL_CLK_CORE | KGSL_CLK_IFACE | KGSL_CLK_MEM,
 };
 
@@ -837,7 +945,15 @@ struct platform_device msm_kgsl_3d0 = {
 };
 
 struct platform_device *msm_footswitch_devices[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	FS_PCOM(FS_GFX3D,  "fs_gfx3d"),
+=======
+	FS_PCOM(FS_GFX3D,  "vdd", "kgsl-3d0.0"),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	FS_PCOM(FS_GFX3D,  "vdd", "kgsl-3d0.0"),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 unsigned msm_num_footswitch_devices = ARRAY_SIZE(msm_footswitch_devices);
 

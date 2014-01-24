@@ -26,6 +26,10 @@ EXPORT_SYMBOL(csum_partial_copy_generic);
 EXPORT_SYMBOL(__get_user_1);
 EXPORT_SYMBOL(__get_user_2);
 EXPORT_SYMBOL(__get_user_4);
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(__get_user_8);
+>>>>>>> refs/remotes/origin/master
 
 EXPORT_SYMBOL(__put_user_1);
 EXPORT_SYMBOL(__put_user_2);
@@ -36,3 +40,13 @@ EXPORT_SYMBOL(strstr);
 
 EXPORT_SYMBOL(csum_partial);
 EXPORT_SYMBOL(empty_zero_page);
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_PREEMPT
+EXPORT_SYMBOL(___preempt_schedule);
+#ifdef CONFIG_CONTEXT_TRACKING
+EXPORT_SYMBOL(___preempt_schedule_context);
+#endif
+#endif
+>>>>>>> refs/remotes/origin/master

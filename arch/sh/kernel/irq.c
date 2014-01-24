@@ -149,13 +149,19 @@ void irq_ctx_exit(int cpu)
 	hardirq_ctx[cpu] = NULL;
 }
 
+<<<<<<< HEAD
 asmlinkage void do_softirq(void)
 {
 	unsigned long flags;
+=======
+void do_softirq_own_stack(void)
+{
+>>>>>>> refs/remotes/origin/master
 	struct thread_info *curctx;
 	union irq_ctx *irqctx;
 	u32 *isp;
 
+<<<<<<< HEAD
 	if (in_interrupt())
 		return;
 
@@ -190,6 +196,28 @@ asmlinkage void do_softirq(void)
 	}
 
 	local_irq_restore(flags);
+=======
+	curctx = current_thread_info();
+	irqctx = softirq_ctx[smp_processor_id()];
+	irqctx->tinfo.task = curctx->task;
+	irqctx->tinfo.previous_sp = current_stack_pointer;
+
+	/* build the stack frame on the softirq stack */
+	isp = (u32 *)((char *)irqctx + sizeof(*irqctx));
+
+	__asm__ __volatile__ (
+		"mov	r15, r9		\n"
+		"jsr	@%0		\n"
+		/* switch to the softirq stack */
+		" mov	%1, r15		\n"
+		/* restore the thread stack */
+		"mov	r9, r15		\n"
+		: /* no outputs */
+		: "r" (__do_softirq), "r" (isp)
+		: "memory", "r0", "r1", "r2", "r3", "r4",
+		  "r5", "r6", "r7", "r8", "r9", "r15", "t", "pr"
+	);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static inline void handle_one_irq(unsigned int irq)
@@ -231,6 +259,7 @@ void __init init_IRQ(void)
 	irq_ctx_init(smp_processor_id());
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_SPARSE_IRQ
 int __init arch_probe_nr_irqs(void)
 {
@@ -239,6 +268,8 @@ int __init arch_probe_nr_irqs(void)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HOTPLUG_CPU
 static void route_irq(struct irq_data *data, unsigned int irq, unsigned int cpu)
 {

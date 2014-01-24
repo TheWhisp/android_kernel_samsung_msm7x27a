@@ -29,10 +29,23 @@ trace_seq_init(struct trace_seq *s)
  * Currently only defined when tracing is enabled.
  */
 #ifdef CONFIG_TRACING
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int trace_seq_printf(struct trace_seq *s, const char *fmt, ...)
 	__attribute__ ((format (printf, 2, 3)));
 extern int trace_seq_vprintf(struct trace_seq *s, const char *fmt, va_list args)
 	__attribute__ ((format (printf, 2, 0)));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern __printf(2, 3)
+int trace_seq_printf(struct trace_seq *s, const char *fmt, ...);
+extern __printf(2, 0)
+int trace_seq_vprintf(struct trace_seq *s, const char *fmt, va_list args);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int
 trace_seq_bprintf(struct trace_seq *s, const char *fmt, const u32 *binary);
 extern int trace_print_seq(struct seq_file *m, struct trace_seq *s);
@@ -44,7 +57,15 @@ extern int trace_seq_putmem(struct trace_seq *s, const void *mem, size_t len);
 extern int trace_seq_putmem_hex(struct trace_seq *s, const void *mem,
 				size_t len);
 extern void *trace_seq_reserve(struct trace_seq *s, size_t len);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int trace_seq_path(struct trace_seq *s, struct path *path);
+=======
+extern int trace_seq_path(struct trace_seq *s, const struct path *path);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int trace_seq_path(struct trace_seq *s, const struct path *path);
+>>>>>>> refs/remotes/origin/master
 
 #else /* CONFIG_TRACING */
 static inline int trace_seq_printf(struct trace_seq *s, const char *fmt, ...)
@@ -88,7 +109,15 @@ static inline void *trace_seq_reserve(struct trace_seq *s, size_t len)
 {
 	return NULL;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int trace_seq_path(struct trace_seq *s, struct path *path)
+=======
+static inline int trace_seq_path(struct trace_seq *s, const struct path *path)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int trace_seq_path(struct trace_seq *s, const struct path *path)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }

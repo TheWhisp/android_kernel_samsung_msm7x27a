@@ -17,7 +17,15 @@
 #include <linux/errno.h>
 #include <linux/err.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 
 #include <mach/hardware.h>
@@ -30,8 +38,18 @@
 #include <plat/pll.h>
 #include <plat/s5p-clock.h>
 #include <plat/clock-clksrc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/s5p6440.h>
 #include <plat/s5p6450.h>
+=======
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 struct clksrc_clk clk_mout_apll = {
 	.clk	= {
@@ -73,7 +91,15 @@ static const u32 clock_table[][3] = {
 	{L2 * 1000, (3 << ARM_DIV_RATIO_SHIFT), (0 << S5P64X0_CLKDIV0_HCLK_SHIFT)},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long s5p64x0_armclk_get_rate(struct clk *clk)
+=======
+static unsigned long s5p64x0_armclk_get_rate(struct clk *clk)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned long s5p64x0_armclk_get_rate(struct clk *clk)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long rate = clk_get_rate(clk->parent);
 	u32 clkdiv;
@@ -84,7 +110,17 @@ unsigned long s5p64x0_armclk_get_rate(struct clk *clk)
 	return rate / (clkdiv + 1);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long s5p64x0_armclk_round_rate(struct clk *clk, unsigned long rate)
+=======
+static unsigned long s5p64x0_armclk_round_rate(struct clk *clk,
+					       unsigned long rate)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned long s5p64x0_armclk_round_rate(struct clk *clk,
+					       unsigned long rate)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 iter;
 
@@ -96,7 +132,15 @@ unsigned long s5p64x0_armclk_round_rate(struct clk *clk, unsigned long rate)
 	return clock_table[ARRAY_SIZE(clock_table) - 1][0];
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int s5p64x0_armclk_set_rate(struct clk *clk, unsigned long rate)
+=======
+static int s5p64x0_armclk_set_rate(struct clk *clk, unsigned long rate)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int s5p64x0_armclk_set_rate(struct clk *clk, unsigned long rate)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 round_tmp;
 	u32 iter;
@@ -148,7 +192,15 @@ int s5p64x0_armclk_set_rate(struct clk *clk, unsigned long rate)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct clk_ops s5p64x0_clkarm_ops = {
+=======
+static struct clk_ops s5p64x0_clkarm_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct clk_ops s5p64x0_clkarm_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_rate	= s5p64x0_armclk_get_rate,
 	.set_rate	= s5p64x0_armclk_set_rate,
 	.round_rate	= s5p64x0_armclk_round_rate,
@@ -173,7 +225,15 @@ struct clksrc_clk clk_dout_mpll = {
 	.reg_div	= { .reg = S5P64X0_CLK_DIV0, .shift = 4, .size = 1 },
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct clk *clkset_hclk_low_list[] = {
+=======
+static struct clk *clkset_hclk_low_list[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct clk *clkset_hclk_low_list[] = {
+>>>>>>> refs/remotes/origin/master
 	&clk_mout_apll.clk,
 	&clk_mout_mpll.clk,
 };

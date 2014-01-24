@@ -31,9 +31,14 @@
  *    Eric Anholt <anholt@FreeBSD.org>
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "mga_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/mga_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "mga_drv.h"
 
 u32 mga_get_vblank_counter(struct drm_device *dev, int crtc)
@@ -170,5 +175,9 @@ void mga_driver_irq_uninstall(struct drm_device *dev)
 	/* Disable *all* interrupts */
 	MGA_WRITE(MGA_IEN, 0);
 
+<<<<<<< HEAD
 	dev->irq_enabled = 0;
+=======
+	dev->irq_enabled = false;
+>>>>>>> refs/remotes/origin/master
 }

@@ -131,12 +131,20 @@ static irqreturn_t i2c_pca_pf_handler(int this_irq, void *dev_id)
 }
 
 
+<<<<<<< HEAD
 static int __devinit i2c_pca_pf_probe(struct platform_device *pdev)
+=======
+static int i2c_pca_pf_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct i2c_pca_pf_data *i2c;
 	struct resource *res;
 	struct i2c_pca9564_pf_platform_data *platform_data =
+<<<<<<< HEAD
 				pdev->dev.platform_data;
+=======
+				dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	int irq;
 
@@ -171,7 +179,11 @@ static int __devinit i2c_pca_pf_probe(struct platform_device *pdev)
 	i2c->io_size = resource_size(res);
 	i2c->irq = irq;
 
+<<<<<<< HEAD
 	i2c->adap.nr = pdev->id >= 0 ? pdev->id : 0;
+=======
+	i2c->adap.nr = pdev->id;
+>>>>>>> refs/remotes/origin/master
 	i2c->adap.owner = THIS_MODULE;
 	snprintf(i2c->adap.name, sizeof(i2c->adap.name),
 		 "PCA9564/PCA9665 at 0x%08lx",
@@ -257,10 +269,16 @@ e_print:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit i2c_pca_pf_remove(struct platform_device *pdev)
 {
 	struct i2c_pca_pf_data *i2c = platform_get_drvdata(pdev);
 	platform_set_drvdata(pdev, NULL);
+=======
+static int i2c_pca_pf_remove(struct platform_device *pdev)
+{
+	struct i2c_pca_pf_data *i2c = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	i2c_del_adapter(&i2c->adap);
 
@@ -279,13 +297,19 @@ static int __devexit i2c_pca_pf_remove(struct platform_device *pdev)
 
 static struct platform_driver i2c_pca_pf_driver = {
 	.probe = i2c_pca_pf_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(i2c_pca_pf_remove),
+=======
+	.remove = i2c_pca_pf_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "i2c-pca-platform",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init i2c_pca_pf_init(void)
 {
 	return platform_driver_register(&i2c_pca_pf_driver);
@@ -295,11 +319,23 @@ static void __exit i2c_pca_pf_exit(void)
 {
 	platform_driver_unregister(&i2c_pca_pf_driver);
 }
+=======
+module_platform_driver(i2c_pca_pf_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(i2c_pca_pf_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Wolfram Sang <w.sang@pengutronix.de>");
 MODULE_DESCRIPTION("I2C-PCA9564/PCA9665 platform driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(i2c_pca_pf_init);
 module_exit(i2c_pca_pf_exit);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -27,6 +27,16 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/list.h>
 #include <linux/jhash.h>
@@ -219,15 +229,24 @@ EXPORT_SYMBOL(p9_error_init);
 int p9_errstr2errno(char *errstr, int len)
 {
 	int errno;
+<<<<<<< HEAD
 	struct hlist_node *p;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct errormap *c;
 	int bucket;
 
 	errno = 0;
+<<<<<<< HEAD
 	p = NULL;
 	c = NULL;
 	bucket = jhash(errstr, len, 0) % ERRHASHSZ;
 	hlist_for_each_entry(c, p, &hash_errmap[bucket], list) {
+=======
+	c = NULL;
+	bucket = jhash(errstr, len, 0) % ERRHASHSZ;
+	hlist_for_each_entry(c, &hash_errmap[bucket], list) {
+>>>>>>> refs/remotes/origin/master
 		if (c->namelen == len && !memcmp(c->name, errstr, len)) {
 			errno = c->val;
 			break;
@@ -237,8 +256,18 @@ int p9_errstr2errno(char *errstr, int len)
 	if (errno == 0) {
 		/* TODO: if error isn't found, add it dynamically */
 		errstr[len] = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: server reported unknown error %s\n",
 			__func__, errstr);
+=======
+		pr_err("%s: server reported unknown error %s\n",
+		       __func__, errstr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: server reported unknown error %s\n",
+		       __func__, errstr);
+>>>>>>> refs/remotes/origin/master
 		errno = ESERVERFAULT;
 	}
 

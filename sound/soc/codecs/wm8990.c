@@ -17,7 +17,14 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -31,15 +38,38 @@
 
 /* codec private data */
 struct wm8990_priv {
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 	unsigned int sysclk;
 	unsigned int pcmclk;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * wm8990 register cache.  Note that register 0 is not included in the
  * cache.
  */
+=======
+static int wm8990_volatile_register(struct snd_soc_codec *codec,
+				    unsigned int reg)
+=======
+static bool wm8990_volatile_register(struct device *dev, unsigned int reg)
+>>>>>>> refs/remotes/origin/master
+{
+	switch (reg) {
+	case WM8990_RESET:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static const u16 wm8990_reg[] = {
 	0x8990,     /* R0  - Reset */
 	0x0000,     /* R1  - Power Management (1) */
@@ -105,6 +135,71 @@ static const u16 wm8990_reg[] = {
 	0x0031,     /* R61 - PLL2 */
 	0x0026,     /* R62 - PLL3 */
 	0x0000,	    /* R63 - Driver internal */
+=======
+static const struct reg_default wm8990_reg_defaults[] = {
+	{  1, 0x0000 },     /* R1  - Power Management (1) */
+	{  2, 0x6000 },     /* R2  - Power Management (2) */
+	{  3, 0x0000 },     /* R3  - Power Management (3) */
+	{  4, 0x4050 },     /* R4  - Audio Interface (1) */
+	{  5, 0x4000 },     /* R5  - Audio Interface (2) */
+	{  6, 0x01C8 },     /* R6  - Clocking (1) */
+	{  7, 0x0000 },     /* R7  - Clocking (2) */
+	{  8, 0x0040 },     /* R8  - Audio Interface (3) */
+	{  9, 0x0040 },     /* R9  - Audio Interface (4) */
+	{ 10, 0x0004 },     /* R10 - DAC CTRL */
+	{ 11, 0x00C0 },     /* R11 - Left DAC Digital Volume */
+	{ 12, 0x00C0 },     /* R12 - Right DAC Digital Volume */
+	{ 13, 0x0000 },     /* R13 - Digital Side Tone */
+	{ 14, 0x0100 },     /* R14 - ADC CTRL */
+	{ 15, 0x00C0 },     /* R15 - Left ADC Digital Volume */
+	{ 16, 0x00C0 },     /* R16 - Right ADC Digital Volume */
+
+	{ 18, 0x0000 },     /* R18 - GPIO CTRL 1 */
+	{ 19, 0x1000 },     /* R19 - GPIO1 & GPIO2 */
+	{ 20, 0x1010 },     /* R20 - GPIO3 & GPIO4 */
+	{ 21, 0x1010 },     /* R21 - GPIO5 & GPIO6 */
+	{ 22, 0x8000 },     /* R22 - GPIOCTRL 2 */
+	{ 23, 0x0800 },     /* R23 - GPIO_POL */
+	{ 24, 0x008B },     /* R24 - Left Line Input 1&2 Volume */
+	{ 25, 0x008B },     /* R25 - Left Line Input 3&4 Volume */
+	{ 26, 0x008B },     /* R26 - Right Line Input 1&2 Volume */
+	{ 27, 0x008B },     /* R27 - Right Line Input 3&4 Volume */
+	{ 28, 0x0000 },     /* R28 - Left Output Volume */
+	{ 29, 0x0000 },     /* R29 - Right Output Volume */
+	{ 30, 0x0066 },     /* R30 - Line Outputs Volume */
+	{ 31, 0x0022 },     /* R31 - Out3/4 Volume */
+	{ 32, 0x0079 },     /* R32 - Left OPGA Volume */
+	{ 33, 0x0079 },     /* R33 - Right OPGA Volume */
+	{ 34, 0x0003 },     /* R34 - Speaker Volume */
+	{ 35, 0x0003 },     /* R35 - ClassD1 */
+
+	{ 37, 0x0100 },     /* R37 - ClassD3 */
+	{ 38, 0x0079 },     /* R38 - ClassD4 */
+	{ 39, 0x0000 },     /* R39 - Input Mixer1 */
+	{ 40, 0x0000 },     /* R40 - Input Mixer2 */
+	{ 41, 0x0000 },     /* R41 - Input Mixer3 */
+	{ 42, 0x0000 },     /* R42 - Input Mixer4 */
+	{ 43, 0x0000 },     /* R43 - Input Mixer5 */
+	{ 44, 0x0000 },     /* R44 - Input Mixer6 */
+	{ 45, 0x0000 },     /* R45 - Output Mixer1 */
+	{ 46, 0x0000 },     /* R46 - Output Mixer2 */
+	{ 47, 0x0000 },     /* R47 - Output Mixer3 */
+	{ 48, 0x0000 },     /* R48 - Output Mixer4 */
+	{ 49, 0x0000 },     /* R49 - Output Mixer5 */
+	{ 50, 0x0000 },     /* R50 - Output Mixer6 */
+	{ 51, 0x0180 },     /* R51 - Out3/4 Mixer */
+	{ 52, 0x0000 },     /* R52 - Line Mixer1 */
+	{ 53, 0x0000 },     /* R53 - Line Mixer2 */
+	{ 54, 0x0000 },     /* R54 - Speaker Mixer */
+	{ 55, 0x0000 },     /* R55 - Additional Control */
+	{ 56, 0x0000 },     /* R56 - AntiPOP1 */
+	{ 57, 0x0000 },     /* R57 - AntiPOP2 */
+	{ 58, 0x0000 },     /* R58 - MICBIAS */
+
+	{ 60, 0x0008 },     /* R60 - PLL1 */
+	{ 61, 0x0031 },     /* R61 - PLL2 */
+	{ 62, 0x0026 },     /* R62 - PLL3 */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define wm8990_reset(c) snd_soc_write(c, WM8990_RESET, 0)
@@ -145,6 +240,7 @@ static int wm899x_outpga_put_volsw_vu(struct snd_kcontrol *kcontrol,
 }
 
 #define SOC_WM899X_OUTPGA_SINGLE_R_TLV(xname, reg, shift, max, invert,\
+<<<<<<< HEAD
 	 tlv_array) {\
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
@@ -153,6 +249,11 @@ static int wm899x_outpga_put_volsw_vu(struct snd_kcontrol *kcontrol,
 	.info = snd_soc_info_volsw, \
 	.get = snd_soc_get_volsw, .put = wm899x_outpga_put_volsw_vu, \
 	.private_value = SOC_SINGLE_VALUE(reg, shift, max, invert) }
+=======
+	tlv_array) \
+	SOC_SINGLE_EXT_TLV(xname, reg, shift, max, invert, \
+		snd_soc_get_volsw, wm899x_outpga_put_volsw_vu, tlv_array)
+>>>>>>> refs/remotes/origin/master
 
 
 static const char *wm8990_digital_sidetone[] =
@@ -375,6 +476,7 @@ SOC_SINGLE("RIN34 Mute Switch", WM8990_RIGHT_LINE_INPUT_3_4_VOLUME,
  * _DAPM_ Controls
  */
 
+<<<<<<< HEAD
 static int inmixer_event(struct snd_soc_dapm_widget *w,
 	struct snd_kcontrol *kcontrol, int event)
 {
@@ -394,13 +496,19 @@ static int inmixer_event(struct snd_soc_dapm_widget *w,
 		(1 << WM8990_AINRMUX_PWR_BIT))) {
 		reg |= WM8990_AINR_ENA;
 	} else {
+<<<<<<< HEAD
 		reg &= ~WM8990_AINL_ENA;
+=======
+		reg &= ~WM8990_AINR_ENA;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	snd_soc_write(w->codec, WM8990_POWER_MANAGEMENT_2, reg);
 
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int outmixer_event(struct snd_soc_dapm_widget *w,
 	struct snd_kcontrol *kcontrol, int event)
 {
@@ -655,6 +763,14 @@ SND_SOC_DAPM_INPUT("RIN1"),
 SND_SOC_DAPM_INPUT("RIN2"),
 SND_SOC_DAPM_INPUT("Internal ADC Source"),
 
+<<<<<<< HEAD
+=======
+SND_SOC_DAPM_SUPPLY("INL", WM8990_POWER_MANAGEMENT_2, WM8990_AINL_ENA_BIT, 0,
+		    NULL, 0),
+SND_SOC_DAPM_SUPPLY("INR", WM8990_POWER_MANAGEMENT_2, WM8990_AINR_ENA_BIT, 0,
+		    NULL, 0),
+
+>>>>>>> refs/remotes/origin/master
 /* DACs */
 SND_SOC_DAPM_ADC("Left ADC", "Left Capture", WM8990_POWER_MANAGEMENT_2,
 	WM8990_ADCL_ENA_BIT, 0),
@@ -676,6 +792,7 @@ SND_SOC_DAPM_MIXER("RIN34 PGA", WM8990_POWER_MANAGEMENT_2, WM8990_RIN34_ENA_BIT,
 	ARRAY_SIZE(wm8990_dapm_rin34_pga_controls)),
 
 /* INMIXL */
+<<<<<<< HEAD
 SND_SOC_DAPM_MIXER_E("INMIXL", WM8990_INTDRIVBITS, WM8990_INMIXL_PWR_BIT, 0,
 	&wm8990_dapm_inmixl_controls[0],
 	ARRAY_SIZE(wm8990_dapm_inmixl_controls),
@@ -696,6 +813,22 @@ SND_SOC_DAPM_MIXER_E("INMIXR", WM8990_INTDRIVBITS, WM8990_INMIXR_PWR_BIT, 0,
 SND_SOC_DAPM_MUX_E("AINRMUX", WM8990_INTDRIVBITS, WM8990_AINRMUX_PWR_BIT, 0,
 	&wm8990_dapm_ainrmux_controls, inmixer_event,
 	SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+=======
+SND_SOC_DAPM_MIXER("INMIXL", SND_SOC_NOPM, 0, 0,
+	&wm8990_dapm_inmixl_controls[0],
+	ARRAY_SIZE(wm8990_dapm_inmixl_controls)),
+
+/* AINLMUX */
+SND_SOC_DAPM_MUX("AINLMUX", SND_SOC_NOPM, 0, 0, &wm8990_dapm_ainlmux_controls),
+
+/* INMIXR */
+SND_SOC_DAPM_MIXER("INMIXR", SND_SOC_NOPM, 0, 0,
+	&wm8990_dapm_inmixr_controls[0],
+	ARRAY_SIZE(wm8990_dapm_inmixr_controls)),
+
+/* AINRMUX */
+SND_SOC_DAPM_MUX("AINRMUX", SND_SOC_NOPM, 0, 0, &wm8990_dapm_ainrmux_controls),
+>>>>>>> refs/remotes/origin/master
 
 /* Output Side */
 /* DACs */
@@ -769,8 +902,18 @@ SND_SOC_DAPM_PGA("ROPGA", WM8990_POWER_MANAGEMENT_3, WM8990_ROPGA_ENA_BIT, 0,
 	NULL, 0),
 
 /* MICBIAS */
+<<<<<<< HEAD
+<<<<<<< HEAD
 SND_SOC_DAPM_MICBIAS("MICBIAS", WM8990_POWER_MANAGEMENT_1,
 	WM8990_MICBIAS_ENA_BIT, 0),
+=======
+SND_SOC_DAPM_SUPPLY("MICBIAS", WM8990_POWER_MANAGEMENT_1,
+		    WM8990_MICBIAS_ENA_BIT, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+SND_SOC_DAPM_SUPPLY("MICBIAS", WM8990_POWER_MANAGEMENT_1,
+		    WM8990_MICBIAS_ENA_BIT, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/master
 
 SND_SOC_DAPM_OUTPUT("LON"),
 SND_SOC_DAPM_OUTPUT("LOP"),
@@ -786,7 +929,11 @@ SND_SOC_DAPM_OUTPUT("RON"),
 SND_SOC_DAPM_OUTPUT("Internal DAC Sink"),
 };
 
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route wm8990_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 	/* Make DACs turn on when playing even if not mixed into any outputs */
 	{"Internal DAC Sink", NULL, "Left DAC"},
 	{"Internal DAC Sink", NULL, "Right DAC"},
@@ -795,6 +942,14 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"Left ADC", NULL, "Internal ADC Source"},
 	{"Right ADC", NULL, "Internal ADC Source"},
 
+<<<<<<< HEAD
+=======
+	{"AINLMUX", NULL, "INL"},
+	{"INMIXL", NULL, "INL"},
+	{"AINRMUX", NULL, "INR"},
+	{"INMIXR", NULL, "INR"},
+
+>>>>>>> refs/remotes/origin/master
 	/* Input Side */
 	/* LIN12 PGA */
 	{"LIN12 PGA", "LIN1 Switch", "LIN1"},
@@ -911,6 +1066,7 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"RON", NULL, "RONMIX"},
 };
 
+<<<<<<< HEAD
 static int wm8990_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -923,6 +1079,8 @@ static int wm8990_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* PLL divisors */
 struct _pll_div {
 	u32 div2;
@@ -974,7 +1132,13 @@ static void pll_factors(struct _pll_div *pll_div, unsigned int target,
 static int wm8990_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
 		int source, unsigned int freq_in, unsigned int freq_out)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 reg;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct snd_soc_codec *codec = codec_dai->codec;
 	struct _pll_div pll_div;
 
@@ -982,6 +1146,8 @@ static int wm8990_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
 		pll_factors(&pll_div, freq_out * 4, freq_in);
 
 		/* Turn on PLL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		reg = snd_soc_read(codec, WM8990_POWER_MANAGEMENT_2);
 		reg |= WM8990_PLL_ENA;
 		snd_soc_write(codec, WM8990_POWER_MANAGEMENT_2, reg);
@@ -989,6 +1155,19 @@ static int wm8990_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
 		/* sysclk comes from PLL */
 		reg = snd_soc_read(codec, WM8990_CLOCKING_2);
 		snd_soc_write(codec, WM8990_CLOCKING_2, reg | WM8990_SYSCLK_SRC);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		snd_soc_update_bits(codec, WM8990_POWER_MANAGEMENT_2,
+				    WM8990_PLL_ENA, WM8990_PLL_ENA);
+
+		/* sysclk comes from PLL */
+		snd_soc_update_bits(codec, WM8990_CLOCKING_2,
+				    WM8990_SYSCLK_SRC, WM8990_SYSCLK_SRC);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* set up N , fractional mode and pre-divisor if necessary */
 		snd_soc_write(codec, WM8990_PLL1, pll_div.n | WM8990_SDM |
@@ -996,10 +1175,22 @@ static int wm8990_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
 		snd_soc_write(codec, WM8990_PLL2, (u8)(pll_div.k>>8));
 		snd_soc_write(codec, WM8990_PLL3, (u8)(pll_div.k & 0xFF));
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* Turn on PLL */
 		reg = snd_soc_read(codec, WM8990_POWER_MANAGEMENT_2);
 		reg &= ~WM8990_PLL_ENA;
 		snd_soc_write(codec, WM8990_POWER_MANAGEMENT_2, reg);
+=======
+		/* Turn off PLL */
+		snd_soc_update_bits(codec, WM8990_POWER_MANAGEMENT_2,
+				    WM8990_PLL_ENA, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Turn off PLL */
+		snd_soc_update_bits(codec, WM8990_POWER_MANAGEMENT_2,
+				    WM8990_PLL_ENA, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -1077,6 +1268,8 @@ static int wm8990_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
 		int div_id, int div)
 {
 	struct snd_soc_codec *codec = codec_dai->codec;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 reg;
 
 	switch (div_id) {
@@ -1099,6 +1292,30 @@ static int wm8990_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
 		reg = snd_soc_read(codec, WM8990_CLOCKING_1) &
 			~WM8990_BCLK_DIV_MASK;
 		snd_soc_write(codec, WM8990_CLOCKING_1, reg | div);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	switch (div_id) {
+	case WM8990_MCLK_DIV:
+		snd_soc_update_bits(codec, WM8990_CLOCKING_2,
+				    WM8990_MCLK_DIV_MASK, div);
+		break;
+	case WM8990_DACCLK_DIV:
+		snd_soc_update_bits(codec, WM8990_CLOCKING_2,
+				    WM8990_DAC_CLKDIV_MASK, div);
+		break;
+	case WM8990_ADCCLK_DIV:
+		snd_soc_update_bits(codec, WM8990_CLOCKING_2,
+				    WM8990_ADC_CLKDIV_MASK, div);
+		break;
+	case WM8990_BCLK_DIV:
+		snd_soc_update_bits(codec, WM8990_CLOCKING_1,
+				    WM8990_BCLK_DIV_MASK, div);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
@@ -1114,8 +1331,12 @@ static int wm8990_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	u16 audio1 = snd_soc_read(codec, WM8990_AUDIO_INTERFACE_1);
 
 	audio1 &= ~WM8990_AIF_WL_MASK;
@@ -1156,7 +1377,16 @@ static int wm8990_mute(struct snd_soc_dai *dai, int mute)
 static int wm8990_set_bias_level(struct snd_soc_codec *codec,
 	enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 val;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wm8990_priv *wm8990 = snd_soc_codec_get_drvdata(codec);
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
@@ -1164,13 +1394,39 @@ static int wm8990_set_bias_level(struct snd_soc_codec *codec,
 
 	case SND_SOC_BIAS_PREPARE:
 		/* VMID=2*50k */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		val = snd_soc_read(codec, WM8990_POWER_MANAGEMENT_1) &
 			~WM8990_VMID_MODE_MASK;
 		snd_soc_write(codec, WM8990_POWER_MANAGEMENT_1, val | 0x2);
+=======
+		snd_soc_update_bits(codec, WM8990_POWER_MANAGEMENT_1,
+				    WM8990_VMID_MODE_MASK, 0x2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_update_bits(codec, WM8990_POWER_MANAGEMENT_1,
+				    WM8990_VMID_MODE_MASK, 0x2);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case SND_SOC_BIAS_STANDBY:
 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			ret = snd_soc_cache_sync(codec);
+=======
+			ret = regcache_sync(wm8990->regmap);
+>>>>>>> refs/remotes/origin/master
+			if (ret < 0) {
+				dev_err(codec->dev, "Failed to sync cache: %d\n", ret);
+				return ret;
+			}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* Enable all output discharge bits */
 			snd_soc_write(codec, WM8990_ANTIPOP1, WM8990_DIS_LLINE |
 				WM8990_DIS_RLINE | WM8990_DIS_OUT3 |
@@ -1225,9 +1481,19 @@ static int wm8990_set_bias_level(struct snd_soc_codec *codec,
 		}
 
 		/* VMID=2*250k */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		val = snd_soc_read(codec, WM8990_POWER_MANAGEMENT_1) &
 			~WM8990_VMID_MODE_MASK;
 		snd_soc_write(codec, WM8990_POWER_MANAGEMENT_1, val | 0x4);
+=======
+		snd_soc_update_bits(codec, WM8990_POWER_MANAGEMENT_1,
+				    WM8990_VMID_MODE_MASK, 0x4);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_update_bits(codec, WM8990_POWER_MANAGEMENT_1,
+				    WM8990_VMID_MODE_MASK, 0x4);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case SND_SOC_BIAS_OFF:
@@ -1241,8 +1507,18 @@ static int wm8990_set_bias_level(struct snd_soc_codec *codec,
 			WM8990_BUFIOEN);
 
 		/* mute DAC */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		val = snd_soc_read(codec, WM8990_DAC_CTRL);
 		snd_soc_write(codec, WM8990_DAC_CTRL, val | WM8990_DAC_MUTE);
+=======
+		snd_soc_update_bits(codec, WM8990_DAC_CTRL,
+				    WM8990_DAC_MUTE, WM8990_DAC_MUTE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_update_bits(codec, WM8990_DAC_CTRL,
+				    WM8990_DAC_MUTE, WM8990_DAC_MUTE);
+>>>>>>> refs/remotes/origin/master
 
 		/* Enable any disabled outputs */
 		snd_soc_write(codec, WM8990_POWER_MANAGEMENT_1, 0x1f03);
@@ -1263,6 +1539,16 @@ static int wm8990_set_bias_level(struct snd_soc_codec *codec,
 
 		/* disable POBCTRL, SOFT_ST and BUFDCOPEN */
 		snd_soc_write(codec, WM8990_ANTIPOP2, 0x0);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+		regcache_mark_dirty(wm8990->regmap);
+>>>>>>> refs/remotes/origin/master
+=======
+
+		codec->cache_sync = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 
@@ -1284,7 +1570,15 @@ static int wm8990_set_bias_level(struct snd_soc_codec *codec,
  * 1. ADC/DAC on Primary Interface
  * 2. ADC on Primary Interface/DAC on secondary
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8990_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8990_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8990_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= wm8990_hw_params,
 	.digital_mute	= wm8990_mute,
 	.set_fmt	= wm8990_set_dai_fmt,
@@ -1311,7 +1605,15 @@ static struct snd_soc_dai_driver wm8990_dai = {
 	.ops = &wm8990_dai_ops,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8990_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8990_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8990_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm8990_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -1319,6 +1621,8 @@ static int wm8990_suspend(struct snd_soc_codec *codec, pm_message_t state)
 
 static int wm8990_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 	u8 data[2];
 	u16 *cache = codec->reg_cache;
@@ -1332,6 +1636,10 @@ static int wm8990_resume(struct snd_soc_codec *codec)
 		codec->hw_write(codec->control_data, data, 2);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wm8990_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 	return 0;
 }
@@ -1343,9 +1651,17 @@ static int wm8990_resume(struct snd_soc_codec *codec)
 static int wm8990_probe(struct snd_soc_codec *codec)
 {
 	int ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 reg;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
+=======
+
+	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		printk(KERN_ERR "wm8990: failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -1356,6 +1672,8 @@ static int wm8990_probe(struct snd_soc_codec *codec)
 	/* charge output caps */
 	wm8990_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reg = snd_soc_read(codec, WM8990_AUDIO_INTERFACE_4);
 	snd_soc_write(codec, WM8990_AUDIO_INTERFACE_4, reg | WM8990_ALRCGPIO1);
 
@@ -1365,14 +1683,36 @@ static int wm8990_probe(struct snd_soc_codec *codec)
 
 	reg = snd_soc_read(codec, WM8990_POWER_MANAGEMENT_2);
 	snd_soc_write(codec, WM8990_POWER_MANAGEMENT_2, reg | WM8990_OPCLK_ENA);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	snd_soc_update_bits(codec, WM8990_AUDIO_INTERFACE_4,
+			    WM8990_ALRCGPIO1, WM8990_ALRCGPIO1);
+
+	snd_soc_update_bits(codec, WM8990_GPIO1_GPIO2,
+			    WM8990_GPIO1_SEL_MASK, 1);
+
+	snd_soc_update_bits(codec, WM8990_POWER_MANAGEMENT_2,
+			    WM8990_OPCLK_ENA, WM8990_OPCLK_ENA);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	snd_soc_write(codec, WM8990_LEFT_OUTPUT_VOLUME, 0x50 | (1<<8));
 	snd_soc_write(codec, WM8990_RIGHT_OUTPUT_VOLUME, 0x50 | (1<<8));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8990_snd_controls,
+=======
+	snd_soc_add_codec_controls(codec, wm8990_snd_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 				ARRAY_SIZE(wm8990_snd_controls));
 	wm8990_add_widgets(codec);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1389,19 +1729,52 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8990 = {
 	.suspend =	wm8990_suspend,
 	.resume =	wm8990_resume,
 	.set_bias_level = wm8990_set_bias_level,
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8990_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8990_reg,
+<<<<<<< HEAD
+=======
+	.volatile_register = wm8990_volatile_register,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static __devinit int wm8990_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+	.controls =	wm8990_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8990_snd_controls),
+	.dapm_widgets = wm8990_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8990_dapm_widgets),
+	.dapm_routes =	wm8990_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8990_dapm_routes),
+};
+
+static const struct regmap_config wm8990_regmap = {
+	.reg_bits = 8,
+	.val_bits = 16,
+
+	.max_register = WM8990_PLL3,
+	.volatile_reg = wm8990_volatile_register,
+	.reg_defaults = wm8990_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8990_reg_defaults),
+	.cache_type = REGCACHE_RBTREE,
+};
+
+static int wm8990_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8990_priv *wm8990;
 	int ret;
 
+<<<<<<< HEAD
 	wm8990 = kzalloc(sizeof(struct wm8990_priv), GFP_KERNEL);
+=======
+	wm8990 = devm_kzalloc(&i2c->dev, sizeof(struct wm8990_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (wm8990 == NULL)
 		return -ENOMEM;
 
@@ -1409,6 +1782,7 @@ static __devinit int wm8990_i2c_probe(struct i2c_client *i2c,
 
 	ret = snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm8990, &wm8990_dai, 1);
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8990);
 	return ret;
@@ -1418,6 +1792,16 @@ static __devexit int wm8990_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
 	kfree(i2c_get_clientdata(client));
+=======
+
+	return ret;
+}
+
+static int wm8990_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1429,7 +1813,12 @@ MODULE_DEVICE_TABLE(i2c, wm8990_i2c_id);
 
 static struct i2c_driver wm8990_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8990-codec",
+=======
+		.name = "wm8990",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm8990_i2c_probe,
@@ -1459,6 +1848,17 @@ static void __exit wm8990_exit(void)
 #endif
 }
 module_exit(wm8990_exit);
+=======
+		.name = "wm8990",
+		.owner = THIS_MODULE,
+	},
+	.probe =    wm8990_i2c_probe,
+	.remove =   wm8990_i2c_remove,
+	.id_table = wm8990_i2c_id,
+};
+
+module_i2c_driver(wm8990_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC WM8990 driver");
 MODULE_AUTHOR("Liam Girdwood");

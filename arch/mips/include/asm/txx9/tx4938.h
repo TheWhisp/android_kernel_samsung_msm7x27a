@@ -16,11 +16,19 @@
 #include <asm/txx9/tx4927.h>
 
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
 #define TX4938_REG_BASE	0xffffffffff1f0000UL /* == TX4937_REG_BASE */
 #else
 #define TX4938_REG_BASE	0xff1f0000UL /* == TX4937_REG_BASE */
 #endif
 #define TX4938_REG_SIZE	0x00010000 /* == TX4937_REG_SIZE */
+=======
+#define TX4938_REG_BASE 0xffffffffff1f0000UL /* == TX4937_REG_BASE */
+#else
+#define TX4938_REG_BASE 0xff1f0000UL /* == TX4937_REG_BASE */
+#endif
+#define TX4938_REG_SIZE 0x00010000 /* == TX4937_REG_SIZE */
+>>>>>>> refs/remotes/origin/master
 
 /* NDFMC, SRAMC, PCIC1, SPIC: TX4938 only */
 #define TX4938_NDFMC_REG	(TX4938_REG_BASE + 0x5000)
@@ -72,16 +80,28 @@ struct tx4938_ccfg_reg {
 #define TX4938_NUM_IR_DMA	4
 #define TX4938_IR_DMA(ch, n)	((ch ? 27 : 10) + (n)) /* 10-13, 27-30 */
 #define TX4938_IR_PIO	14
+<<<<<<< HEAD
 #define TX4938_IR_PDMAC	15
 #define TX4938_IR_PCIC	16
 #define TX4938_NUM_IR_TMR	3
 #define TX4938_IR_TMR(n)	(17 + (n))
 #define TX4938_IR_NDFMC	21
+=======
+#define TX4938_IR_PDMAC 15
+#define TX4938_IR_PCIC	16
+#define TX4938_NUM_IR_TMR	3
+#define TX4938_IR_TMR(n)	(17 + (n))
+#define TX4938_IR_NDFMC 21
+>>>>>>> refs/remotes/origin/master
 #define TX4938_IR_PCIERR	22
 #define TX4938_IR_PCIPME	23
 #define TX4938_IR_ACLC	24
 #define TX4938_IR_ACLCPME	25
+<<<<<<< HEAD
 #define TX4938_IR_PCIC1	26
+=======
+#define TX4938_IR_PCIC1 26
+>>>>>>> refs/remotes/origin/master
 #define TX4938_IR_SPI	31
 #define TX4938_NUM_IR	32
 /* multiplex */
@@ -105,10 +125,17 @@ struct tx4938_ccfg_reg {
 #define TX4938_CCFG_PCI1_66	0x00200000
 #define TX4938_CCFG_DIVMODE_MASK	0x001e0000
 #define TX4938_CCFG_DIVMODE_2	(0x4 << 17)
+<<<<<<< HEAD
 #define TX4938_CCFG_DIVMODE_2_5	(0xf << 17)
 #define TX4938_CCFG_DIVMODE_3	(0x5 << 17)
 #define TX4938_CCFG_DIVMODE_4	(0x6 << 17)
 #define TX4938_CCFG_DIVMODE_4_5	(0xd << 17)
+=======
+#define TX4938_CCFG_DIVMODE_2_5 (0xf << 17)
+#define TX4938_CCFG_DIVMODE_3	(0x5 << 17)
+#define TX4938_CCFG_DIVMODE_4	(0x6 << 17)
+#define TX4938_CCFG_DIVMODE_4_5 (0xd << 17)
+>>>>>>> refs/remotes/origin/master
 #define TX4938_CCFG_DIVMODE_8	(0x0 << 17)
 #define TX4938_CCFG_DIVMODE_10	(0xb << 17)
 #define TX4938_CCFG_DIVMODE_12	(0x1 << 17)
@@ -116,7 +143,11 @@ struct tx4938_ccfg_reg {
 #define TX4938_CCFG_DIVMODE_18	(0x9 << 17)
 #define TX4938_CCFG_BEOW	0x00010000
 #define TX4938_CCFG_WR	0x00008000
+<<<<<<< HEAD
 #define TX4938_CCFG_TOE	0x00004000
+=======
+#define TX4938_CCFG_TOE 0x00004000
+>>>>>>> refs/remotes/origin/master
 #define TX4938_CCFG_PCIARB	0x00002000
 #define TX4938_CCFG_PCIDIVMODE_MASK	0x00001c00
 #define TX4938_CCFG_PCIDIVMODE_4	(0x1 << 10)
@@ -141,10 +172,17 @@ struct tx4938_ccfg_reg {
 #define TX4938_PCFG_SPI_SEL	0x0800000000000000ULL
 #define TX4938_PCFG_NDF_SEL	0x0400000000000000ULL
 #define TX4938_PCFG_SDCLKDLY_MASK	0x30000000
+<<<<<<< HEAD
 #define TX4938_PCFG_SDCLKDLY(d)	((d)<<28)
 #define TX4938_PCFG_SYSCLKEN	0x08000000
 #define TX4938_PCFG_SDCLKEN_ALL	0x07800000
 #define TX4938_PCFG_SDCLKEN(ch)	(0x00800000<<(ch))
+=======
+#define TX4938_PCFG_SDCLKDLY(d) ((d)<<28)
+#define TX4938_PCFG_SYSCLKEN	0x08000000
+#define TX4938_PCFG_SDCLKEN_ALL 0x07800000
+#define TX4938_PCFG_SDCLKEN(ch) (0x00800000<<(ch))
+>>>>>>> refs/remotes/origin/master
 #define TX4938_PCFG_PCICLKEN_ALL	0x003f0000
 #define TX4938_PCFG_PCICLKEN(ch)	(0x00010000<<(ch))
 #define TX4938_PCFG_SEL2	0x00000200
@@ -230,8 +268,13 @@ struct tx4938_ccfg_reg {
 #define TX4938_DMA_CCR_XFSZ_2W	TX4938_DMA_CCR_XFSZ(3)
 #define TX4938_DMA_CCR_XFSZ_4W	TX4938_DMA_CCR_XFSZ(4)
 #define TX4938_DMA_CCR_XFSZ_8W	TX4938_DMA_CCR_XFSZ(5)
+<<<<<<< HEAD
 #define TX4938_DMA_CCR_XFSZ_16W	TX4938_DMA_CCR_XFSZ(6)
 #define TX4938_DMA_CCR_XFSZ_32W	TX4938_DMA_CCR_XFSZ(7)
+=======
+#define TX4938_DMA_CCR_XFSZ_16W TX4938_DMA_CCR_XFSZ(6)
+#define TX4938_DMA_CCR_XFSZ_32W TX4938_DMA_CCR_XFSZ(7)
+>>>>>>> refs/remotes/origin/master
 #define TX4938_DMA_CCR_MEMIO	0x00000002
 #define TX4938_DMA_CCR_SNGAD	0x00000001
 
@@ -263,9 +306,15 @@ struct tx4938_ccfg_reg {
 #define TX4938_REV_PCODE()	\
 	((__u32)__raw_readq(&tx4938_ccfgptr->crir) >> 16)
 
+<<<<<<< HEAD
 #define tx4938_ccfg_clear(bits)	tx4927_ccfg_clear(bits)
 #define tx4938_ccfg_set(bits)	tx4927_ccfg_set(bits)
 #define tx4938_ccfg_change(change, new)	tx4927_ccfg_change(change, new)
+=======
+#define tx4938_ccfg_clear(bits) tx4927_ccfg_clear(bits)
+#define tx4938_ccfg_set(bits)	tx4927_ccfg_set(bits)
+#define tx4938_ccfg_change(change, new) tx4927_ccfg_change(change, new)
+>>>>>>> refs/remotes/origin/master
 
 #define TX4938_SDRAMC_CR(ch)	TX4927_SDRAMC_CR(ch)
 #define TX4938_SDRAMC_BA(ch)	TX4927_SDRAMC_BA(ch)

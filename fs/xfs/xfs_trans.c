@@ -18,6 +18,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
@@ -42,10 +43,28 @@
 #include "xfs_trans_space.h"
 #include "xfs_inode_item.h"
 #include "xfs_trace.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_extent_busy.h"
+#include "xfs_quota.h"
+#include "xfs_trans.h"
+#include "xfs_trans_priv.h"
+#include "xfs_log.h"
+#include "xfs_trace.h"
+#include "xfs_error.h"
+>>>>>>> refs/remotes/origin/master
 
 kmem_zone_t	*xfs_trans_zone;
 kmem_zone_t	*xfs_log_item_desc_zone;
 
+<<<<<<< HEAD
 
 /*
  * Various log reservation values.
@@ -531,6 +550,8 @@ xfs_calc_clear_agi_bucket_reservation(
 	return mp->m_sb.sb_sectsize + 128;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialize the precomputed transaction reservation values
  * in the mount structure.
@@ -539,6 +560,7 @@ void
 xfs_trans_init(
 	struct xfs_mount	*mp)
 {
+<<<<<<< HEAD
 	struct xfs_trans_reservations *resp = &mp->m_reservations;
 
 	resp->tr_write = xfs_calc_write_reservation(mp);
@@ -562,6 +584,9 @@ xfs_trans_init(
 	resp->tr_growrtalloc = xfs_calc_growrtalloc_reservation(mp);
 	resp->tr_growrtzero = xfs_calc_growrtzero_reservation(mp);
 	resp->tr_growrtfree = xfs_calc_growrtfree_reservation(mp);
+=======
+	xfs_trans_resv_calc(mp, M_RES(mp));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -577,14 +602,24 @@ xfs_trans_alloc(
 	xfs_mount_t	*mp,
 	uint		type)
 {
+<<<<<<< HEAD
 	xfs_wait_for_freeze(mp, SB_FREEZE_TRANS);
 	return _xfs_trans_alloc(mp, type, KM_SLEEP);
+=======
+	xfs_trans_t     *tp;
+
+	sb_start_intwrite(mp->m_super);
+	tp = _xfs_trans_alloc(mp, type, KM_SLEEP);
+	tp->t_flags |= XFS_TRANS_FREEZE_PROT;
+	return tp;
+>>>>>>> refs/remotes/origin/master
 }
 
 xfs_trans_t *
 _xfs_trans_alloc(
 	xfs_mount_t	*mp,
 	uint		type,
+<<<<<<< HEAD
 	uint		memflags)
 {
 	xfs_trans_t	*tp;
@@ -593,6 +628,17 @@ _xfs_trans_alloc(
 
 	tp = kmem_zone_zalloc(xfs_trans_zone, memflags);
 	tp->t_magic = XFS_TRANS_MAGIC;
+=======
+	xfs_km_flags_t	memflags)
+{
+	xfs_trans_t	*tp;
+
+	WARN_ON(mp->m_super->s_writers.frozen == SB_FREEZE_COMPLETE);
+	atomic_inc(&mp->m_active_trans);
+
+	tp = kmem_zone_zalloc(xfs_trans_zone, memflags);
+	tp->t_magic = XFS_TRANS_HEADER_MAGIC;
+>>>>>>> refs/remotes/origin/master
 	tp->t_type = type;
 	tp->t_mountp = mp;
 	INIT_LIST_HEAD(&tp->t_items);
@@ -608,10 +654,19 @@ STATIC void
 xfs_trans_free(
 	struct xfs_trans	*tp)
 {
+<<<<<<< HEAD
 	xfs_alloc_busy_sort(&tp->t_busy);
 	xfs_alloc_busy_clear(tp->t_mountp, &tp->t_busy, false);
 
 	atomic_dec(&tp->t_mountp->m_active_trans);
+=======
+	xfs_extent_busy_sort(&tp->t_busy);
+	xfs_extent_busy_clear(tp->t_mountp, &tp->t_busy, false);
+
+	atomic_dec(&tp->t_mountp->m_active_trans);
+	if (tp->t_flags & XFS_TRANS_FREEZE_PROT)
+		sb_end_intwrite(tp->t_mountp->m_super);
+>>>>>>> refs/remotes/origin/master
 	xfs_trans_free_dqinfo(tp);
 	kmem_zone_free(xfs_trans_zone, tp);
 }
@@ -635,7 +690,11 @@ xfs_trans_dup(
 	/*
 	 * Initialize the new transaction structure.
 	 */
+<<<<<<< HEAD
 	ntp->t_magic = XFS_TRANS_MAGIC;
+=======
+	ntp->t_magic = XFS_TRANS_HEADER_MAGIC;
+>>>>>>> refs/remotes/origin/master
 	ntp->t_type = tp->t_type;
 	ntp->t_mountp = tp->t_mountp;
 	INIT_LIST_HEAD(&ntp->t_items);
@@ -644,7 +703,15 @@ xfs_trans_dup(
 	ASSERT(tp->t_flags & XFS_TRANS_PERM_LOG_RES);
 	ASSERT(tp->t_ticket != NULL);
 
+<<<<<<< HEAD
 	ntp->t_flags = XFS_TRANS_PERM_LOG_RES | (tp->t_flags & XFS_TRANS_RESERVE);
+=======
+	ntp->t_flags = XFS_TRANS_PERM_LOG_RES |
+		       (tp->t_flags & XFS_TRANS_RESERVE) |
+		       (tp->t_flags & XFS_TRANS_FREEZE_PROT);
+	/* We gave our writer reference to the new transaction */
+	tp->t_flags &= ~XFS_TRANS_FREEZE_PROT;
+>>>>>>> refs/remotes/origin/master
 	ntp->t_ticket = xfs_log_ticket_get(tp->t_ticket);
 	ntp->t_blk_res = tp->t_blk_res - tp->t_blk_res_used;
 	tp->t_blk_res = tp->t_blk_res_used;
@@ -674,6 +741,7 @@ xfs_trans_dup(
  */
 int
 xfs_trans_reserve(
+<<<<<<< HEAD
 	xfs_trans_t	*tp,
 	uint		blocks,
 	uint		logspace,
@@ -681,7 +749,17 @@ xfs_trans_reserve(
 	uint		flags,
 	uint		logcount)
 {
+<<<<<<< HEAD
 	int		log_flags;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct xfs_trans	*tp,
+	struct xfs_trans_res	*resp,
+	uint			blocks,
+	uint			rtextents)
+{
+>>>>>>> refs/remotes/origin/master
 	int		error = 0;
 	int		rsvd = (tp->t_flags & XFS_TRANS_RESERVE) != 0;
 
@@ -706,7 +784,9 @@ xfs_trans_reserve(
 	/*
 	 * Reserve the log space needed for this transaction.
 	 */
+<<<<<<< HEAD
 	if (logspace > 0) {
+<<<<<<< HEAD
 		ASSERT((tp->t_log_res == 0) || (tp->t_log_res == logspace));
 		ASSERT((tp->t_log_count == 0) ||
 			(tp->t_log_count == logcount));
@@ -725,8 +805,63 @@ xfs_trans_reserve(
 		if (error) {
 			goto undo_blocks;
 		}
+=======
+		bool	permanent = false;
+
+		ASSERT(tp->t_log_res == 0 || tp->t_log_res == logspace);
+		ASSERT(tp->t_log_count == 0 || tp->t_log_count == logcount);
+
+		if (flags & XFS_TRANS_PERM_LOG_RES) {
+=======
+	if (resp->tr_logres > 0) {
+		bool	permanent = false;
+
+		ASSERT(tp->t_log_res == 0 ||
+		       tp->t_log_res == resp->tr_logres);
+		ASSERT(tp->t_log_count == 0 ||
+		       tp->t_log_count == resp->tr_logcount);
+
+		if (resp->tr_logflags & XFS_TRANS_PERM_LOG_RES) {
+>>>>>>> refs/remotes/origin/master
+			tp->t_flags |= XFS_TRANS_PERM_LOG_RES;
+			permanent = true;
+		} else {
+			ASSERT(tp->t_ticket == NULL);
+			ASSERT(!(tp->t_flags & XFS_TRANS_PERM_LOG_RES));
+		}
+
+		if (tp->t_ticket != NULL) {
+<<<<<<< HEAD
+			ASSERT(flags & XFS_TRANS_PERM_LOG_RES);
+			error = xfs_log_regrant(tp->t_mountp, tp->t_ticket);
+		} else {
+			error = xfs_log_reserve(tp->t_mountp, logspace,
+						logcount, &tp->t_ticket,
+						XFS_TRANSACTION, permanent,
+						tp->t_type);
+=======
+			ASSERT(resp->tr_logflags & XFS_TRANS_PERM_LOG_RES);
+			error = xfs_log_regrant(tp->t_mountp, tp->t_ticket);
+		} else {
+			error = xfs_log_reserve(tp->t_mountp,
+						resp->tr_logres,
+						resp->tr_logcount,
+						&tp->t_ticket, XFS_TRANSACTION,
+						permanent, tp->t_type);
+>>>>>>> refs/remotes/origin/master
+		}
+
+		if (error)
+			goto undo_blocks;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		tp->t_log_res = logspace;
 		tp->t_log_count = logcount;
+=======
+		tp->t_log_res = resp->tr_logres;
+		tp->t_log_count = resp->tr_logcount;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -751,8 +886,20 @@ xfs_trans_reserve(
 	 * reservations which have already been performed.
 	 */
 undo_log:
+<<<<<<< HEAD
 	if (logspace > 0) {
+<<<<<<< HEAD
+=======
+		int		log_flags;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (flags & XFS_TRANS_PERM_LOG_RES) {
+=======
+	if (resp->tr_logres > 0) {
+		int		log_flags;
+
+		if (resp->tr_logflags & XFS_TRANS_PERM_LOG_RES) {
+>>>>>>> refs/remotes/origin/master
 			log_flags = XFS_LOG_REL_PERM_RESERV;
 		} else {
 			log_flags = 0;
@@ -1151,14 +1298,30 @@ xfs_trans_add_item(
 {
 	struct xfs_log_item_desc *lidp;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(lip->li_mountp = tp->t_mountp);
 	ASSERT(lip->li_ailp = tp->t_mountp->m_ail);
+=======
+	ASSERT(lip->li_mountp == tp->t_mountp);
+	ASSERT(lip->li_ailp == tp->t_mountp->m_ail);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(lip->li_mountp == tp->t_mountp);
+	ASSERT(lip->li_ailp == tp->t_mountp->m_ail);
+>>>>>>> refs/remotes/origin/master
 
 	lidp = kmem_zone_zalloc(xfs_log_item_desc_zone, KM_SLEEP | KM_NOFS);
 
 	lidp->lid_item = lip;
 	lidp->lid_flags = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lidp->lid_size = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_add_tail(&lidp->lid_trans, &tp->t_items);
 
 	lip->li_desc = lidp;
@@ -1201,6 +1364,7 @@ xfs_trans_free_items(
 		lip->li_desc = NULL;
 
 		if (commit_lsn != NULLCOMMITLSN)
+<<<<<<< HEAD
 			IOP_COMMITTING(lip, commit_lsn);
 		if (flags & XFS_TRANS_ABORT)
 			lip->li_flags |= XFS_LI_ABORTED;
@@ -1210,6 +1374,7 @@ xfs_trans_free_items(
 	}
 }
 
+<<<<<<< HEAD
 /*
  * Unlock the items associated with a transaction.
  *
@@ -1423,6 +1588,19 @@ xfs_trans_committed(
 	xfs_trans_free(tp);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			lip->li_ops->iop_committing(lip, commit_lsn);
+		if (flags & XFS_TRANS_ABORT)
+			lip->li_flags |= XFS_LI_ABORTED;
+		lip->li_ops->iop_unlock(lip);
+
+		xfs_trans_free_item_desc(lidp);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void
 xfs_log_item_batch_insert(
 	struct xfs_ail		*ailp,
@@ -1437,8 +1615,16 @@ xfs_log_item_batch_insert(
 	/* xfs_trans_ail_update_bulk drops ailp->xa_lock */
 	xfs_trans_ail_update_bulk(ailp, cur, log_items, nr_items, commit_lsn);
 
+<<<<<<< HEAD
 	for (i = 0; i < nr_items; i++)
 		IOP_UNPIN(log_items[i], 0);
+=======
+	for (i = 0; i < nr_items; i++) {
+		struct xfs_log_item *lip = log_items[i];
+
+		lip->li_ops->iop_unpin(lip, 0);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1448,11 +1634,19 @@ xfs_log_item_batch_insert(
  *
  * If we are called with the aborted flag set, it is because a log write during
  * a CIL checkpoint commit has failed. In this case, all the items in the
+<<<<<<< HEAD
  * checkpoint have already gone through IOP_COMMITED and IOP_UNLOCK, which
  * means that checkpoint commit abort handling is treated exactly the same
  * as an iclog write error even though we haven't started any IO yet. Hence in
  * this case all we need to do is IOP_COMMITTED processing, followed by an
  * IOP_UNPIN(aborted) call.
+=======
+ * checkpoint have already gone through iop_commited and iop_unlock, which
+ * means that checkpoint commit abort handling is treated exactly the same
+ * as an iclog write error even though we haven't started any IO yet. Hence in
+ * this case all we need to do is iop_committed processing, followed by an
+ * iop_unpin(aborted) call.
+>>>>>>> refs/remotes/origin/master
  *
  * The AIL cursor is used to optimise the insert process. If commit_lsn is not
  * at the end of the AIL, the insert cursor avoids the need to walk
@@ -1485,7 +1679,11 @@ xfs_trans_committed_bulk(
 
 		if (aborted)
 			lip->li_flags |= XFS_LI_ABORTED;
+<<<<<<< HEAD
 		item_lsn = IOP_COMMITTED(lip, commit_lsn);
+=======
+		item_lsn = lip->li_ops->iop_committed(lip, commit_lsn);
+>>>>>>> refs/remotes/origin/master
 
 		/* item_lsn of -1 means the item needs no further processing */
 		if (XFS_LSN_CMP(item_lsn, (xfs_lsn_t)-1) == 0)
@@ -1497,7 +1695,11 @@ xfs_trans_committed_bulk(
 		 */
 		if (aborted) {
 			ASSERT(XFS_FORCED_SHUTDOWN(ailp->xa_mount));
+<<<<<<< HEAD
 			IOP_UNPIN(lip, 1);
+=======
+			lip->li_ops->iop_unpin(lip, 1);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -1515,7 +1717,11 @@ xfs_trans_committed_bulk(
 				xfs_trans_ail_update(ailp, lip, item_lsn);
 			else
 				spin_unlock(&ailp->xa_lock);
+<<<<<<< HEAD
 			IOP_UNPIN(lip, 0);
+=======
+			lip->li_ops->iop_unpin(lip, 0);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -1538,6 +1744,8 @@ xfs_trans_committed_bulk(
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Called from the trans_commit code when we notice that the filesystem is in
  * the middle of a forced shutdown.
  *
@@ -1793,6 +2001,12 @@ xfs_trans_commit_cil(
  * xfs_trans_commit
  *
  * Commit the given transaction to the log a/synchronously.
+=======
+ * Commit the given transaction to the log.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Commit the given transaction to the log.
+>>>>>>> refs/remotes/origin/master
  *
  * XFS disk error handling mechanism is not based on a typical
  * transaction abort mechanism. Logically after the filesystem
@@ -1804,10 +2018,22 @@ xfs_trans_commit_cil(
  * Do not reference the transaction structure after this call.
  */
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 _xfs_trans_commit(
 	struct xfs_trans	*tp,
 	uint			flags,
 	int			*log_flushed)
+=======
+xfs_trans_commit(
+	struct xfs_trans	*tp,
+	uint			flags)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+xfs_trans_commit(
+	struct xfs_trans	*tp,
+	uint			flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xfs_mount	*mp = tp->t_mountp;
 	xfs_lsn_t		commit_lsn = -1;
@@ -1848,17 +2074,37 @@ _xfs_trans_commit(
 		xfs_trans_apply_sb_deltas(tp);
 	xfs_trans_apply_dquot_deltas(tp);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (mp->m_flags & XFS_MOUNT_DELAYLOG)
 		error = xfs_trans_commit_cil(mp, tp, &commit_lsn, flags);
 	else
 		error = xfs_trans_commit_iclog(mp, tp, &commit_lsn, flags);
 
+=======
+	error = xfs_log_commit_cil(mp, tp, &commit_lsn, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = xfs_log_commit_cil(mp, tp, &commit_lsn, flags);
+>>>>>>> refs/remotes/origin/master
 	if (error == ENOMEM) {
 		xfs_force_shutdown(mp, SHUTDOWN_LOG_IO_ERROR);
 		error = XFS_ERROR(EIO);
 		goto out_unreserve;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
+	xfs_trans_free(tp);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
+	xfs_trans_free(tp);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If the transaction needs to be synchronous, then force the
 	 * log out now and wait for it.
@@ -1866,7 +2112,15 @@ _xfs_trans_commit(
 	if (sync) {
 		if (!error) {
 			error = _xfs_log_force_lsn(mp, commit_lsn,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				      XFS_LOG_SYNC, log_flushed);
+=======
+				      XFS_LOG_SYNC, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      XFS_LOG_SYNC, NULL);
+>>>>>>> refs/remotes/origin/master
 		}
 		XFS_STATS_INC(xs_trans_sync);
 	} else {
@@ -1969,7 +2223,11 @@ xfs_trans_roll(
 	struct xfs_inode	*dp)
 {
 	struct xfs_trans	*trans;
+<<<<<<< HEAD
 	unsigned int		logres, count;
+=======
+	struct xfs_trans_res	tres;
+>>>>>>> refs/remotes/origin/master
 	int			error;
 
 	/*
@@ -1981,8 +2239,13 @@ xfs_trans_roll(
 	/*
 	 * Copy the critical parameters from one trans to the next.
 	 */
+<<<<<<< HEAD
 	logres = trans->t_log_res;
 	count = trans->t_log_count;
+=======
+	tres.tr_logres = trans->t_log_res;
+	tres.tr_logcount = trans->t_log_count;
+>>>>>>> refs/remotes/origin/master
 	*tpp = xfs_trans_dup(trans);
 
 	/*
@@ -2013,14 +2276,27 @@ xfs_trans_roll(
 	 * across this call, or that anything that is locked be logged in
 	 * the prior and the next transactions.
 	 */
+<<<<<<< HEAD
 	error = xfs_trans_reserve(trans, 0, logres, 0,
 				  XFS_TRANS_PERM_LOG_RES, count);
+=======
+	tres.tr_logflags = XFS_TRANS_PERM_LOG_RES;
+	error = xfs_trans_reserve(trans, &tres, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *  Ensure that the inode is in the new transaction and locked.
 	 */
 	if (error)
 		return error;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_trans_ijoin(trans, dp);
+=======
+	xfs_trans_ijoin(trans, dp, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xfs_trans_ijoin(trans, dp, 0);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

@@ -199,12 +199,20 @@ int snd_pcm_plugin_free(struct snd_pcm_plugin *plugin)
 snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t drv_frames)
 {
 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
+<<<<<<< HEAD
 	int stream = snd_pcm_plug_stream(plug);
+=======
+	int stream;
+>>>>>>> refs/remotes/origin/master
 
 	if (snd_BUG_ON(!plug))
 		return -ENXIO;
 	if (drv_frames == 0)
 		return 0;
+<<<<<<< HEAD
+=======
+	stream = snd_pcm_plug_stream(plug);
+>>>>>>> refs/remotes/origin/master
 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		plugin = snd_pcm_plug_last(plug);
 		while (plugin && drv_frames > 0) {
@@ -230,13 +238,21 @@ snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pc
 {
 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
 	snd_pcm_sframes_t frames;
+<<<<<<< HEAD
 	int stream = snd_pcm_plug_stream(plug);
+=======
+	int stream;
+>>>>>>> refs/remotes/origin/master
 	
 	if (snd_BUG_ON(!plug))
 		return -ENXIO;
 	if (clt_frames == 0)
 		return 0;
 	frames = clt_frames;
+<<<<<<< HEAD
+=======
+	stream = snd_pcm_plug_stream(plug);
+>>>>>>> refs/remotes/origin/master
 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		plugin = snd_pcm_plug_first(plug);
 		while (plugin && frames > 0) {

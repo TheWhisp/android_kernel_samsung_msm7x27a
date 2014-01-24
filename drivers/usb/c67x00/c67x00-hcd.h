@@ -45,7 +45,11 @@
 /*
  * The current implementation switches between _STD (default) and _ISO (when
  * isochronous transfers are scheduled), in order to optimize the throughput
+<<<<<<< HEAD
  * in normal cicrumstances, but also provide good isochronous behaviour.
+=======
+ * in normal circumstances, but also provide good isochronous behaviour.
+>>>>>>> refs/remotes/origin/master
  *
  * Bandwidth is described in bit time so with a 12MHz USB clock and 1ms
  * frames; there are 12000 bit times per frame.

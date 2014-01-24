@@ -8,7 +8,10 @@
 
 #include <linux/kernel.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ioport.h>
 
 #include <lantiq_soc.h>
@@ -41,7 +44,11 @@ void ltq_pmu_enable(unsigned int module)
 	do {} while (--err && (ltq_pmu_r32(LTQ_PMU_PWDSR) & module));
 
 	if (!err)
+<<<<<<< HEAD
 		panic("activating PMU module failed!\n");
+=======
+		panic("activating PMU module failed!");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(ltq_pmu_enable);
 
@@ -54,16 +61,28 @@ EXPORT_SYMBOL(ltq_pmu_disable);
 int __init ltq_pmu_init(void)
 {
 	if (insert_resource(&iomem_resource, &ltq_pmu_resource) < 0)
+<<<<<<< HEAD
 		panic("Failed to insert pmu memory\n");
 
 	if (request_mem_region(ltq_pmu_resource.start,
 			resource_size(&ltq_pmu_resource), "pmu") < 0)
 		panic("Failed to request pmu memory\n");
+=======
+		panic("Failed to insert pmu memory");
+
+	if (request_mem_region(ltq_pmu_resource.start,
+			resource_size(&ltq_pmu_resource), "pmu") < 0)
+		panic("Failed to request pmu memory");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ltq_pmu_membase = ioremap_nocache(ltq_pmu_resource.start,
 				resource_size(&ltq_pmu_resource));
 	if (!ltq_pmu_membase)
+<<<<<<< HEAD
 		panic("Failed to remap pmu memory\n");
+=======
+		panic("Failed to remap pmu memory");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

@@ -15,6 +15,10 @@
 
 .text
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 
 #define R1	%rax
@@ -49,10 +53,15 @@
 #define R11	%r11
 
 #define prologue(FUNC,KEY,B128,B192,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11) \
+<<<<<<< HEAD
 	.global	FUNC;			\
 	.type	FUNC,@function;		\
 	.align	8;			\
 FUNC:	movq	r1,r2;			\
+=======
+	ENTRY(FUNC);			\
+	movq	r1,r2;			\
+>>>>>>> refs/remotes/origin/master
 	movq	r3,r4;			\
 	leaq	KEY+48(r8),r9;		\
 	movq	r10,r11;		\
@@ -71,14 +80,23 @@ FUNC:	movq	r1,r2;			\
 	je	B192;			\
 	leaq	32(r9),r9;
 
+<<<<<<< HEAD
 #define epilogue(r1,r2,r3,r4,r5,r6,r7,r8,r9) \
+=======
+#define epilogue(FUNC,r1,r2,r3,r4,r5,r6,r7,r8,r9) \
+>>>>>>> refs/remotes/origin/master
 	movq	r1,r2;			\
 	movq	r3,r4;			\
 	movl	r5 ## E,(r9);		\
 	movl	r6 ## E,4(r9);		\
 	movl	r7 ## E,8(r9);		\
 	movl	r8 ## E,12(r9);		\
+<<<<<<< HEAD
 	ret;
+=======
+	ret;				\
+	ENDPROC(FUNC);
+>>>>>>> refs/remotes/origin/master
 
 #define round(TAB,OFFSET,r1,r2,r3,r4,r5,r6,r7,r8,ra,rb,rc,rd) \
 	movzbl	r2 ## H,r5 ## E;	\
@@ -133,7 +151,11 @@ FUNC:	movq	r1,r2;			\
 #define entry(FUNC,KEY,B128,B192) \
 	prologue(FUNC,KEY,B128,B192,R2,R8,R7,R9,R1,R3,R4,R6,R10,R5,R11)
 
+<<<<<<< HEAD
 #define return epilogue(R8,R2,R9,R7,R5,R6,R3,R4,R11)
+=======
+#define return(FUNC) epilogue(FUNC,R8,R2,R9,R7,R5,R6,R3,R4,R11)
+>>>>>>> refs/remotes/origin/master
 
 #define encrypt_round(TAB,OFFSET) \
 	round(TAB,OFFSET,R1,R2,R3,R4,R5,R6,R7,R10,R5,R6,R3,R4) \
@@ -151,12 +173,21 @@ FUNC:	movq	r1,r2;			\
 
 /* void aes_enc_blk(stuct crypto_tfm *tfm, u8 *out, const u8 *in) */
 
+<<<<<<< HEAD
 	entry(aes_enc_blk,0,enc128,enc192)
 	encrypt_round(crypto_ft_tab,-96)
 	encrypt_round(crypto_ft_tab,-80)
 enc192:	encrypt_round(crypto_ft_tab,-64)
 	encrypt_round(crypto_ft_tab,-48)
 enc128:	encrypt_round(crypto_ft_tab,-32)
+=======
+	entry(aes_enc_blk,0,.Le128,.Le192)
+	encrypt_round(crypto_ft_tab,-96)
+	encrypt_round(crypto_ft_tab,-80)
+.Le192:	encrypt_round(crypto_ft_tab,-64)
+	encrypt_round(crypto_ft_tab,-48)
+.Le128:	encrypt_round(crypto_ft_tab,-32)
+>>>>>>> refs/remotes/origin/master
 	encrypt_round(crypto_ft_tab,-16)
 	encrypt_round(crypto_ft_tab,  0)
 	encrypt_round(crypto_ft_tab, 16)
@@ -166,6 +197,7 @@ enc128:	encrypt_round(crypto_ft_tab,-32)
 	encrypt_round(crypto_ft_tab, 80)
 	encrypt_round(crypto_ft_tab, 96)
 	encrypt_final(crypto_fl_tab,112)
+<<<<<<< HEAD
 	return
 
 /* void aes_dec_blk(struct crypto_tfm *tfm, u8 *out, const u8 *in) */
@@ -176,6 +208,18 @@ enc128:	encrypt_round(crypto_ft_tab,-32)
 dec192:	decrypt_round(crypto_it_tab,-64)
 	decrypt_round(crypto_it_tab,-48)
 dec128:	decrypt_round(crypto_it_tab,-32)
+=======
+	return(aes_enc_blk)
+
+/* void aes_dec_blk(struct crypto_tfm *tfm, u8 *out, const u8 *in) */
+
+	entry(aes_dec_blk,240,.Ld128,.Ld192)
+	decrypt_round(crypto_it_tab,-96)
+	decrypt_round(crypto_it_tab,-80)
+.Ld192:	decrypt_round(crypto_it_tab,-64)
+	decrypt_round(crypto_it_tab,-48)
+.Ld128:	decrypt_round(crypto_it_tab,-32)
+>>>>>>> refs/remotes/origin/master
 	decrypt_round(crypto_it_tab,-16)
 	decrypt_round(crypto_it_tab,  0)
 	decrypt_round(crypto_it_tab, 16)
@@ -185,4 +229,8 @@ dec128:	decrypt_round(crypto_it_tab,-32)
 	decrypt_round(crypto_it_tab, 80)
 	decrypt_round(crypto_it_tab, 96)
 	decrypt_final(crypto_il_tab,112)
+<<<<<<< HEAD
 	return
+=======
+	return(aes_dec_blk)
+>>>>>>> refs/remotes/origin/master

@@ -23,7 +23,15 @@ OUTPUT_ARCH(sh)
 ENTRY(_start)
 SECTIONS
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	. = PAGE_OFFSET + MEMORY_OFFSET + CONFIG_ZERO_PAGE_OFFSET;
+=======
+	. = PAGE_OFFSET + MEMORY_OFFSET + PHYSICAL_OFFSET + CONFIG_ZERO_PAGE_OFFSET;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	. = PAGE_OFFSET + MEMORY_OFFSET + PHYSICAL_OFFSET + CONFIG_ZERO_PAGE_OFFSET;
+>>>>>>> refs/remotes/origin/master
 
 	_text = .;		/* Text and read-only data */
 
@@ -78,7 +86,10 @@ SECTIONS
 	. = ALIGN(PAGE_SIZE);
 	__init_end = .;
 	BSS_SECTION(0, PAGE_SIZE, 4)
+<<<<<<< HEAD
 	_ebss = .;			/* uClinux MTD sucks */
+=======
+>>>>>>> refs/remotes/origin/master
 	_end = . ;
 
 	STABS_DEBUG

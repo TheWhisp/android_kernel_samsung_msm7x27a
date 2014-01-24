@@ -669,16 +669,26 @@ static int lgs8gxx_write(struct dvb_frontend *fe, const u8 buf[], int len)
 	return lgs8gxx_write_reg(priv, buf[0], buf[1]);
 }
 
+<<<<<<< HEAD
 static int lgs8gxx_set_fe(struct dvb_frontend *fe,
 			  struct dvb_frontend_parameters *fe_params)
 {
+=======
+static int lgs8gxx_set_fe(struct dvb_frontend *fe)
+{
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct lgs8gxx_state *priv = fe->demodulator_priv;
 
 	dprintk("%s\n", __func__);
 
 	/* set frequency */
 	if (fe->ops.tuner_ops.set_params) {
+<<<<<<< HEAD
 		fe->ops.tuner_ops.set_params(fe, fe_params);
+=======
+		fe->ops.tuner_ops.set_params(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (fe->ops.i2c_gate_ctrl)
 			fe->ops.i2c_gate_ctrl(fe, 0);
 	}
@@ -691,9 +701,15 @@ static int lgs8gxx_set_fe(struct dvb_frontend *fe,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int lgs8gxx_get_fe(struct dvb_frontend *fe,
 			  struct dvb_frontend_parameters *fe_params)
 {
+=======
+static int lgs8gxx_get_fe(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *fe_params = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	dprintk("%s\n", __func__);
 
 	/* TODO: get real readings from device */
@@ -701,6 +717,7 @@ static int lgs8gxx_get_fe(struct dvb_frontend *fe,
 	fe_params->inversion = INVERSION_OFF;
 
 	/* bandwidth */
+<<<<<<< HEAD
 	fe_params->u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
 
 	fe_params->u.ofdm.code_rate_HP = FEC_AUTO;
@@ -716,6 +733,23 @@ static int lgs8gxx_get_fe(struct dvb_frontend *fe,
 
 	/* hierarchy */
 	fe_params->u.ofdm.hierarchy_information = HIERARCHY_NONE;
+=======
+	fe_params->bandwidth_hz = 8000000;
+
+	fe_params->code_rate_HP = FEC_AUTO;
+	fe_params->code_rate_LP = FEC_AUTO;
+
+	fe_params->modulation = QAM_AUTO;
+
+	/* transmission mode */
+	fe_params->transmission_mode = TRANSMISSION_MODE_AUTO;
+
+	/* guard interval */
+	fe_params->guard_interval = GUARD_INTERVAL_AUTO;
+
+	/* hierarchy */
+	fe_params->hierarchy = HIERARCHY_NONE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -994,9 +1028,15 @@ static int lgs8gxx_i2c_gate_ctrl(struct dvb_frontend *fe, int enable)
 }
 
 static struct dvb_frontend_ops lgs8gxx_ops = {
+<<<<<<< HEAD
 	.info = {
 		.name = "Legend Silicon LGS8913/LGS8GXX DMB-TH",
 		.type = FE_OFDM,
+=======
+	.delsys = { SYS_DMBTH },
+	.info = {
+		.name = "Legend Silicon LGS8913/LGS8GXX DMB-TH",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min = 474000000,
 		.frequency_max = 858000000,
 		.frequency_stepsize = 10000,

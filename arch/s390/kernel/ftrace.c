@@ -15,12 +15,16 @@
 #include <linux/kprobes.h>
 #include <trace/syscall.h>
 #include <asm/asm-offsets.h>
+<<<<<<< HEAD
 
 #ifdef CONFIG_64BIT
 #define MCOUNT_OFFSET_RET 12
 #else
 #define MCOUNT_OFFSET_RET 22
 #endif
+=======
+#include "entry.h"
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DYNAMIC_FTRACE
 
@@ -155,6 +159,7 @@ unsigned long __kprobes prepare_ftrace_return(unsigned long parent,
 
 	if (unlikely(atomic_read(&current->tracing_graph_pause)))
 		goto out;
+<<<<<<< HEAD
 	if (ftrace_push_return_trace(parent, ip, &trace.depth, 0) == -EBUSY)
 		goto out;
 	trace.func = (ip & PSW_ADDR_INSN) - MCOUNT_OFFSET_RET;
@@ -163,6 +168,16 @@ unsigned long __kprobes prepare_ftrace_return(unsigned long parent,
 		current->curr_ret_stack--;
 		goto out;
 	}
+=======
+	ip = (ip & PSW_ADDR_INSN) - MCOUNT_INSN_SIZE;
+	trace.func = ip;
+	trace.depth = current->curr_ret_stack + 1;
+	/* Only trace if the calling function expects to. */
+	if (!ftrace_graph_entry(&trace))
+		goto out;
+	if (ftrace_push_return_trace(parent, ip, &trace.depth, 0) == -EBUSY)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	parent = (unsigned long) return_to_handler;
 out:
 	return parent;
@@ -182,7 +197,11 @@ int ftrace_enable_ftrace_graph_caller(void)
 
 	offset = ((void *) prepare_ftrace_return -
 		  (void *) ftrace_graph_caller) / 2;
+<<<<<<< HEAD
 	return probe_kernel_write(ftrace_graph_caller + 2,
+=======
+	return probe_kernel_write((void *) ftrace_graph_caller + 2,
+>>>>>>> refs/remotes/origin/master
 				  &offset, sizeof(offset));
 }
 
@@ -190,7 +209,11 @@ int ftrace_disable_ftrace_graph_caller(void)
 {
 	static unsigned short offset = 0x0002;
 
+<<<<<<< HEAD
 	return probe_kernel_write(ftrace_graph_caller + 2,
+=======
+	return probe_kernel_write((void *) ftrace_graph_caller + 2,
+>>>>>>> refs/remotes/origin/master
 				  &offset, sizeof(offset));
 }
 

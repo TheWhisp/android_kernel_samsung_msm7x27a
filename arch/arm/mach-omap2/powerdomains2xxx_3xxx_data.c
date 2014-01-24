@@ -1,7 +1,15 @@
 /*
  * OMAP2/3 common powerdomain definitions
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2007-2008 Texas Instruments, Inc.
+=======
+ * Copyright (C) 2007-2008, 2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2007-2008, 2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2007-2011 Nokia Corporation
  *
  * Paul Walmsley, Jouni Högander
@@ -12,6 +20,8 @@
  */
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * To Do List
  * -> Move the Sleep/Wakeup dependencies from Power Domain framework to
  *    Clock Domain Framework
@@ -26,6 +36,10 @@
  */
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * The names for the DSP/IVA2 powerdomains are confusing.
  *
  * Most OMAP chips have an on-board DSP.
@@ -59,8 +73,14 @@
 struct powerdomain gfx_omap2_pwrdm = {
 	.name		  = "gfx_pwrdm",
 	.prcm_offs	  = GFX_MOD,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP24XX |
 					   CHIP_IS_OMAP3430ES1),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_RET,
 	.banks		  = 1,
@@ -70,11 +90,29 @@ struct powerdomain gfx_omap2_pwrdm = {
 	.pwrsts_mem_on	  = {
 		[0] = PWRSTS_ON,  /* MEMONSTATE */
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.voltdm           = { .name = "core" },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 struct powerdomain wkup_omap2_pwrdm = {
 	.name		= "wkup_pwrdm",
 	.prcm_offs	= WKUP_MOD,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	= OMAP_CHIP_INIT(CHIP_IS_OMAP24XX | CHIP_IS_OMAP3430),
 	.pwrsts		= PWRSTS_ON,
+=======
+	.pwrsts		= PWRSTS_ON,
+	.voltdm         = { .name = "wakeup" },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pwrsts		= PWRSTS_ON,
+	.voltdm		= { .name = "wakeup" },
+>>>>>>> refs/remotes/origin/master
 };

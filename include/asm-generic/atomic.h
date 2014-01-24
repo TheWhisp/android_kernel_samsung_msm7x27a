@@ -1,5 +1,17 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Generic C implementation of atomic counter operations
+=======
+ * Generic C implementation of atomic counter operations. Usable on
+ * UP systems only. Do not include in machine independent code.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Generic C implementation of atomic counter operations. Usable on
+ * UP systems only. Do not include in machine independent code.
+ *
+>>>>>>> refs/remotes/origin/master
  * Originally implemented for MN10300.
  *
  * Copyright (C) 2007 Red Hat, Inc. All Rights Reserved.
@@ -13,8 +25,25 @@
 #ifndef __ASM_GENERIC_ATOMIC_H
 #define __ASM_GENERIC_ATOMIC_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 #error not SMP safe
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/cmpxchg.h>
+
+#ifdef CONFIG_SMP
+/* Force people to define core atomics */
+# if !defined(atomic_add_return) || !defined(atomic_sub_return) || \
+     !defined(atomic_clear_mask) || !defined(atomic_set_mask)
+#  error "SMP requires a little arch-specific magic"
+# endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -32,7 +61,19 @@
  *
  * Atomically reads the value of @v.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define atomic_read(v)	(*(volatile int *)&(v)->counter)
+=======
+#ifndef atomic_read
+#define atomic_read(v)	(*(volatile int *)&(v)->counter)
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef atomic_read
+#define atomic_read(v)	(*(volatile int *)&(v)->counter)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /**
  * atomic_set - set atomic variable
@@ -44,7 +85,13 @@
 #define atomic_set(v, i) (((v)->counter) = (i))
 
 #include <linux/irqflags.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * atomic_add_return - add integer to atomic variable
@@ -53,6 +100,14 @@
  *
  * Atomically adds @i to @v and returns the result
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifndef atomic_add_return
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef atomic_add_return
+>>>>>>> refs/remotes/origin/master
 static inline int atomic_add_return(int i, atomic_t *v)
 {
 	unsigned long flags;
@@ -66,6 +121,14 @@ static inline int atomic_add_return(int i, atomic_t *v)
 
 	return temp;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /**
  * atomic_sub_return - subtract integer from atomic variable
@@ -74,6 +137,14 @@ static inline int atomic_add_return(int i, atomic_t *v)
  *
  * Atomically subtracts @i from @v and returns the result
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifndef atomic_sub_return
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef atomic_sub_return
+>>>>>>> refs/remotes/origin/master
 static inline int atomic_sub_return(int i, atomic_t *v)
 {
 	unsigned long flags;
@@ -87,6 +158,14 @@ static inline int atomic_sub_return(int i, atomic_t *v)
 
 	return temp;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static inline int atomic_add_negative(int i, atomic_t *v)
 {
@@ -117,38 +196,108 @@ static inline void atomic_dec(atomic_t *v)
 #define atomic_inc_return(v)		atomic_add_return(1, (v))
 
 #define atomic_sub_and_test(i, v)	(atomic_sub_return((i), (v)) == 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define atomic_dec_and_test(v)		(atomic_sub_return(1, (v)) == 0)
 #define atomic_inc_and_test(v)		(atomic_add_return(1, (v)) == 0)
+=======
+#define atomic_dec_and_test(v)		(atomic_dec_return(v) == 0)
+#define atomic_inc_and_test(v)		(atomic_inc_return(v) == 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define atomic_dec_and_test(v)		(atomic_dec_return(v) == 0)
+#define atomic_inc_and_test(v)		(atomic_inc_return(v) == 0)
+>>>>>>> refs/remotes/origin/master
 
 #define atomic_xchg(ptr, v)		(xchg(&(ptr)->counter, (v)))
 #define atomic_cmpxchg(v, old, new)	(cmpxchg(&((v)->counter), (old), (new)))
 
+<<<<<<< HEAD
 #define cmpxchg_local(ptr, o, n)				  	       \
 	((__typeof__(*(ptr)))__cmpxchg_local_generic((ptr), (unsigned long)(o),\
 			(unsigned long)(n), sizeof(*(ptr))))
 
 #define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
 
+<<<<<<< HEAD
 static inline int atomic_add_unless(atomic_t *v, int a, int u)
+=======
+static inline int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/master
 {
   int c, old;
   c = atomic_read(v);
   while (c != u && (old = atomic_cmpxchg(v, c, c + a)) != c)
     c = old;
+<<<<<<< HEAD
+<<<<<<< HEAD
   return c != u;
 }
 
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
 
 static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+  return c;
+}
+
+/**
+ * atomic_clear_mask - Atomically clear bits in atomic variable
+ * @mask: Mask of the bits to be cleared
+ * @v: pointer of type atomic_t
+ *
+ * Atomically clears the bits set in @mask from @v
+ */
+#ifndef atomic_clear_mask
+static inline void atomic_clear_mask(unsigned long mask, atomic_t *v)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
 	mask = ~mask;
 	raw_local_irq_save(flags); /* Don't trace it in a irqsoff handler */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*addr &= mask;
 	raw_local_irq_restore(flags);
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	v->counter &= mask;
+	raw_local_irq_restore(flags);
+}
+#endif
+
+/**
+ * atomic_set_mask - Atomically set bits in atomic variable
+ * @mask: Mask of the bits to be set
+ * @v: pointer of type atomic_t
+ *
+ * Atomically sets the bits set in @mask in @v
+ */
+#ifndef atomic_set_mask
+static inline void atomic_set_mask(unsigned int mask, atomic_t *v)
+{
+	unsigned long flags;
+
+	raw_local_irq_save(flags); /* Don't trace it in a irqsoff handler */
+	v->counter |= mask;
+	raw_local_irq_restore(flags);
+}
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Assume that atomic operations are already serializing */
 #define smp_mb__before_atomic_dec()	barrier()
@@ -156,7 +305,13 @@ static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
 #define smp_mb__before_atomic_inc()	barrier()
 #define smp_mb__after_atomic_inc()	barrier()
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __KERNEL__ */
 #endif /* __ASM_GENERIC_ATOMIC_H */

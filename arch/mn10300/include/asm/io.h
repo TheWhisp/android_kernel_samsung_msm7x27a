@@ -14,6 +14,10 @@
 #include <asm/page.h> /* I/O is all done through memory accesses */
 #include <asm/cpu-regs.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+=======
+#include <asm-generic/pci_iomap.h>
+>>>>>>> refs/remotes/origin/master
 
 #define mmiowb() do {} while (0)
 
@@ -229,7 +233,13 @@ static inline void outsl(unsigned long addr, const void *buffer, int count)
 
 /* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
 struct pci_dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
 {
 }
@@ -251,6 +261,8 @@ static inline void *phys_to_virt(unsigned long address)
 /*
  * Change "struct page" to physical address.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void *__ioremap(unsigned long offset, unsigned long size,
 			      unsigned long flags)
 {
@@ -260,6 +272,23 @@ static inline void *__ioremap(unsigned long offset, unsigned long size,
 static inline void *ioremap(unsigned long offset, unsigned long size)
 {
 	return (void *) offset;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void __iomem *__ioremap(unsigned long offset, unsigned long size,
+				      unsigned long flags)
+{
+	return (void __iomem *) offset;
+}
+
+static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
+{
+<<<<<<< HEAD
+	return (void __iomem *) offset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (void __iomem *)(offset & ~0x20000000);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -267,14 +296,34 @@ static inline void *ioremap(unsigned long offset, unsigned long size)
  * area.  it's useful if some control registers are in such an area and write
  * combining or read caching is not desirable:
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void *ioremap_nocache(unsigned long offset, unsigned long size)
 {
 	return (void *) (offset | 0x20000000);
+=======
+static inline void __iomem *ioremap_nocache(unsigned long offset, unsigned long size)
+{
+	return (void __iomem *) (offset | 0x20000000);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void __iomem *ioremap_nocache(unsigned long offset, unsigned long size)
+{
+	return (void __iomem *) (offset | 0x20000000);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define ioremap_wc ioremap_nocache
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void iounmap(void *addr)
+=======
+static inline void iounmap(void __iomem *addr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void iounmap(void __iomem *addr)
+>>>>>>> refs/remotes/origin/master
 {
 }
 

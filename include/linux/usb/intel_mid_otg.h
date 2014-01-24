@@ -104,11 +104,19 @@ struct iotg_ulpi_access_ops {
 /*
  * the Intel MID (Langwell/Penwell) otg transceiver driver needs to interact
  * with device and host drivers to implement the USB OTG related feature. More
+<<<<<<< HEAD
  * function members are added based on otg_transceiver data structure for this
  * purpose.
  */
 struct intel_mid_otg_xceiv {
 	struct otg_transceiver	otg;
+=======
+ * function members are added based on usb_phy data structure for this
+ * purpose.
+ */
+struct intel_mid_otg_xceiv {
+	struct usb_phy		otg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct otg_hsm		hsm;
 
 	/* base address */
@@ -147,7 +155,11 @@ struct intel_mid_otg_xceiv {
 
 };
 static inline
+<<<<<<< HEAD
 struct intel_mid_otg_xceiv *otg_to_mid_xceiv(struct otg_transceiver *otg)
+=======
+struct intel_mid_otg_xceiv *otg_to_mid_xceiv(struct usb_phy *otg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return container_of(otg, struct intel_mid_otg_xceiv, otg);
 }

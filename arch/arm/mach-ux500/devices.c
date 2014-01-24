@@ -11,8 +11,14 @@
 #include <linux/io.h>
 #include <linux/amba/bus.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/setup.h>
+=======
+#include "setup.h"
+
+#include "db8500-regs.h"
+>>>>>>> refs/remotes/origin/master
 
 void __init amba_add_devices(struct amba_device *devs[], int num)
 {

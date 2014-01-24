@@ -81,6 +81,13 @@ struct cmtp_session {
 
 	char name[BTNAMSIZ];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	atomic_t terminate;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct task_struct *task;
 
 	wait_queue_head_t wait;

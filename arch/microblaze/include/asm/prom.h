@@ -11,6 +11,7 @@
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #include <linux/of.h>	/* linux/of.h gets to determine #include ordering */
 
@@ -21,11 +22,16 @@
 
 #include <linux/types.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define HAVE_ARCH_DEVTREE_FIXUPS
 
 /* Other Prototypes */
+<<<<<<< HEAD
 extern int early_uartlite_console(void);
 extern int early_uart16550_console(void);
 
@@ -43,6 +49,23 @@ extern struct device_node *pci_busdev_to_OF_node(struct pci_bus *bus,
 extern struct device_node *pci_device_to_OF_node(struct pci_dev *dev);
 extern void pci_create_OF_bus_map(void);
 #endif
+=======
+=======
+#ifndef _ASM_MICROBLAZE_PROM_H
+#define _ASM_MICROBLAZE_PROM_H
+
+#include <linux/of.h>
+
+/* Other Prototypes */
+>>>>>>> refs/remotes/origin/master
+enum early_consoles {
+	UARTLITE = 1,
+	UART16550 = 2,
+};
+
+extern int of_early_console(void *version);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * OF address retreival & translation
@@ -74,5 +97,7 @@ struct device_node *of_get_cpu_node(int cpu, unsigned int *thread);
 #include <linux/of_fdt.h>
 #include <linux/of_irq.h>
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_MICROBLAZE_PROM_H */

@@ -15,6 +15,14 @@
 #include <linux/init.h>
 #include <linux/highmem.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/master
 #include <plat/cache-feroceon-l2.h>
 
 /*

@@ -18,7 +18,15 @@
  *
  * Copyright (C) IBM Corporation, 2004
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Max Asb�ck <amax@us.ibm.com>
+=======
+ * Author: Max Asböck <amax@us.ibm.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Max Asböck <amax@us.ibm.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This driver is based on code originally written by Pete Reynolds
  * and others.
@@ -62,7 +70,11 @@ module_param(ibmasm_debug, int , S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(ibmasm_debug, " Set debug mode on or off");
 
 
+<<<<<<< HEAD
 static int __devinit ibmasm_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+=======
+static int ibmasm_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	int result;
 	struct service_processor *sp;
@@ -153,7 +165,10 @@ error_ioremap:
 error_heartbeat:
 	ibmasm_event_buffer_exit(sp);
 error_eventbuffer:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(sp);
 error_kmalloc:
         pci_release_regions(pdev);
@@ -163,9 +178,15 @@ error_resources:
 	return result;
 }
 
+<<<<<<< HEAD
 static void __devexit ibmasm_remove_one(struct pci_dev *pdev)
 {
 	struct service_processor *sp = (struct service_processor *)pci_get_drvdata(pdev);
+=======
+static void ibmasm_remove_one(struct pci_dev *pdev)
+{
+	struct service_processor *sp = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	dbg("Unregistering UART\n");
 	ibmasm_unregister_uart(sp);
@@ -182,7 +203,10 @@ static void __devexit ibmasm_remove_one(struct pci_dev *pdev)
 	ibmasm_free_remote_input_dev(sp);
 	iounmap(sp->base_address);
 	ibmasm_event_buffer_exit(sp);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(sp);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
@@ -198,7 +222,11 @@ static struct pci_driver ibmasm_driver = {
 	.name		= DRIVER_NAME,
 	.id_table	= ibmasm_pci_table,
 	.probe		= ibmasm_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ibmasm_remove_one),
+=======
+	.remove		= ibmasm_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __exit ibmasm_exit (void)
@@ -211,6 +239,8 @@ static void __exit ibmasm_exit (void)
 
 static int __init ibmasm_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int result;
 
 	result = ibmasmfs_register();
@@ -223,6 +253,24 @@ static int __init ibmasm_init(void)
 		ibmasmfs_unregister();
 		return result;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int result = pci_register_driver(&ibmasm_driver);
+	if (result)
+		return result;
+
+	result = ibmasmfs_register();
+	if (result) {
+		pci_unregister_driver(&ibmasm_driver);
+		err("Failed to register ibmasmfs file system");
+		return result;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ibmasm_register_panic_notifier();
 	info(DRIVER_DESC " version " DRIVER_VERSION " loaded");
 	return 0;

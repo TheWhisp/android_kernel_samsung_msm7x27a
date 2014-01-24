@@ -33,11 +33,23 @@
 #include <linux/nfs4_mount.h>
 #include <linux/syscalls.h>
 #include <linux/ctype.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/dirent.h>
 #include <linux/fsnotify.h>
 #include <linux/highuid.h>
 #include <linux/nfsd/syscall.h>
+=======
+#include <linux/dirent.h>
+#include <linux/fsnotify.h>
+#include <linux/highuid.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dirent.h>
+#include <linux/fsnotify.h>
+#include <linux/highuid.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/personality.h>
 #include <linux/rwsem.h>
 #include <linux/tsacct_kern.h>
@@ -46,10 +58,17 @@
 #include <linux/signal.h>
 #include <linux/poll.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
 #include <linux/eventpoll.h>
 #include <linux/fs_struct.h>
 #include <linux/slab.h>
 #include <linux/pagemap.h>
+=======
+#include <linux/fs_struct.h>
+#include <linux/slab.h>
+#include <linux/pagemap.h>
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 #include <asm/mmu_context.h>
@@ -70,8 +89,11 @@ int compat_printk(const char *fmt, ...)
 	return ret;
 }
 
+<<<<<<< HEAD
 #include "read_write.h"
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Not all architectures have sys_utime, so implement this in terms
  * of sys_utimes.
@@ -132,6 +154,8 @@ asmlinkage long compat_sys_utimes(const char __user *filename, struct compat_tim
 
 static int cp_compat_stat(struct kstat *stat, struct compat_stat __user *ubuf)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	compat_ino_t ino = stat->ino;
 	typeof(ubuf->st_uid) uid = 0;
 	typeof(ubuf->st_gid) gid = 0;
@@ -167,6 +191,47 @@ static int cp_compat_stat(struct kstat *stat, struct compat_stat __user *ubuf)
 	err |= __put_user(stat->blksize, &ubuf->st_blksize);
 	err |= __put_user(stat->blocks, &ubuf->st_blocks);
 	return err;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct compat_stat tmp;
+
+	if (!old_valid_dev(stat->dev) || !old_valid_dev(stat->rdev))
+		return -EOVERFLOW;
+
+	memset(&tmp, 0, sizeof(tmp));
+	tmp.st_dev = old_encode_dev(stat->dev);
+	tmp.st_ino = stat->ino;
+	if (sizeof(tmp.st_ino) < sizeof(stat->ino) && tmp.st_ino != stat->ino)
+		return -EOVERFLOW;
+	tmp.st_mode = stat->mode;
+	tmp.st_nlink = stat->nlink;
+	if (tmp.st_nlink != stat->nlink)
+		return -EOVERFLOW;
+<<<<<<< HEAD
+	SET_UID(tmp.st_uid, stat->uid);
+	SET_GID(tmp.st_gid, stat->gid);
+=======
+	SET_UID(tmp.st_uid, from_kuid_munged(current_user_ns(), stat->uid));
+	SET_GID(tmp.st_gid, from_kgid_munged(current_user_ns(), stat->gid));
+>>>>>>> refs/remotes/origin/master
+	tmp.st_rdev = old_encode_dev(stat->rdev);
+	if ((u64) stat->size > MAX_NON_LFS)
+		return -EOVERFLOW;
+	tmp.st_size = stat->size;
+	tmp.st_atime = stat->atime.tv_sec;
+	tmp.st_atime_nsec = stat->atime.tv_nsec;
+	tmp.st_mtime = stat->mtime.tv_sec;
+	tmp.st_mtime_nsec = stat->mtime.tv_nsec;
+	tmp.st_ctime = stat->ctime.tv_sec;
+	tmp.st_ctime_nsec = stat->ctime.tv_nsec;
+	tmp.st_blocks = stat->blocks;
+	tmp.st_blksize = stat->blksize;
+	return copy_to_user(ubuf, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 asmlinkage long compat_sys_newstat(const char __user * filename,
@@ -247,11 +312,21 @@ static int put_compat_statfs(struct compat_statfs __user *ubuf, struct kstatfs *
 	    __put_user(kbuf->f_fsid.val[0], &ubuf->f_fsid.val[0]) ||
 	    __put_user(kbuf->f_fsid.val[1], &ubuf->f_fsid.val[1]) ||
 	    __put_user(kbuf->f_frsize, &ubuf->f_frsize) ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    __put_user(0, &ubuf->f_spare[0]) || 
 	    __put_user(0, &ubuf->f_spare[1]) || 
 	    __put_user(0, &ubuf->f_spare[2]) || 
 	    __put_user(0, &ubuf->f_spare[3]) || 
 	    __put_user(0, &ubuf->f_spare[4]))
+=======
+	    __put_user(kbuf->f_flags, &ubuf->f_flags) ||
+	    __clear_user(ubuf->f_spare, sizeof(ubuf->f_spare)))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    __put_user(kbuf->f_flags, &ubuf->f_flags) ||
+	    __clear_user(ubuf->f_spare, sizeof(ubuf->f_spare)))
+>>>>>>> refs/remotes/origin/master
 		return -EFAULT;
 	return 0;
 }
@@ -346,6 +421,8 @@ asmlinkage long compat_sys_fstatfs64(unsigned int fd, compat_size_t sz, struct c
  */
 asmlinkage long compat_sys_ustat(unsigned dev, struct compat_ustat __user *u)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct super_block *sb;
 	struct compat_ustat tmp;
 	struct kstatfs sbuf;
@@ -356,6 +433,16 @@ asmlinkage long compat_sys_ustat(unsigned dev, struct compat_ustat __user *u)
 		return -EINVAL;
 	err = statfs_by_dentry(sb->s_root, &sbuf);
 	drop_super(sb);
+=======
+	struct compat_ustat tmp;
+	struct kstatfs sbuf;
+	int err = vfs_ustat(new_decode_dev(dev), &sbuf);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct compat_ustat tmp;
+	struct kstatfs sbuf;
+	int err = vfs_ustat(new_decode_dev(dev), &sbuf);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -550,7 +637,15 @@ out:
 ssize_t compat_rw_copy_check_uvector(int type,
 		const struct compat_iovec __user *uvector, unsigned long nr_segs,
 		unsigned long fast_segs, struct iovec *fast_pointer,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct iovec **ret_pointer)
+=======
+		struct iovec **ret_pointer, int check_access)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct iovec **ret_pointer)
+>>>>>>> refs/remotes/origin/master
 {
 	compat_ssize_t tot_len;
 	struct iovec *iov = *ret_pointer = fast_pointer;
@@ -601,7 +696,17 @@ ssize_t compat_rw_copy_check_uvector(int type,
 		}
 		if (len < 0)	/* size_t not fitting in compat_ssize_t .. */
 			goto out;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!access_ok(vrfy_dir(type), compat_ptr(buf), len)) {
+=======
+		if (check_access &&
+		    !access_ok(vrfy_dir(type), compat_ptr(buf), len)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (type >= 0 &&
+		    !access_ok(vrfy_dir(type), compat_ptr(buf), len)) {
+>>>>>>> refs/remotes/origin/master
 			ret = -EFAULT;
 			goto out;
 		}
@@ -797,16 +902,26 @@ asmlinkage long compat_sys_mount(const char __user * dev_name,
 	char *kernel_type;
 	unsigned long data_page;
 	char *kernel_dev;
+<<<<<<< HEAD
 	char *dir_page;
+=======
+	struct filename *dir;
+>>>>>>> refs/remotes/origin/master
 	int retval;
 
 	retval = copy_mount_string(type, &kernel_type);
 	if (retval < 0)
 		goto out;
 
+<<<<<<< HEAD
 	dir_page = getname(dir_name);
 	retval = PTR_ERR(dir_page);
 	if (IS_ERR(dir_page))
+=======
+	dir = getname(dir_name);
+	retval = PTR_ERR(dir);
+	if (IS_ERR(dir))
+>>>>>>> refs/remotes/origin/master
 		goto out1;
 
 	retval = copy_mount_string(dev_name, &kernel_dev);
@@ -828,7 +943,11 @@ asmlinkage long compat_sys_mount(const char __user * dev_name,
 		}
 	}
 
+<<<<<<< HEAD
 	retval = do_mount(kernel_dev, dir_page, kernel_type,
+=======
+	retval = do_mount(kernel_dev, dir->name, kernel_type,
+>>>>>>> refs/remotes/origin/master
 			flags, (void*)data_page);
 
  out4:
@@ -836,7 +955,11 @@ asmlinkage long compat_sys_mount(const char __user * dev_name,
  out3:
 	kfree(kernel_dev);
  out2:
+<<<<<<< HEAD
 	putname(dir_page);
+=======
+	putname(dir);
+>>>>>>> refs/remotes/origin/master
  out1:
 	kfree(kernel_type);
  out:
@@ -851,6 +974,10 @@ struct compat_old_linux_dirent {
 };
 
 struct compat_readdir_callback {
+<<<<<<< HEAD
+=======
+	struct dir_context ctx;
+>>>>>>> refs/remotes/origin/master
 	struct compat_old_linux_dirent __user *dirent;
 	int result;
 };
@@ -891,6 +1018,7 @@ asmlinkage long compat_sys_old_readdir(unsigned int fd,
 	struct compat_old_linux_dirent __user *dirent, unsigned int count)
 {
 	int error;
+<<<<<<< HEAD
 	struct file *file;
 	struct compat_readdir_callback buf;
 
@@ -908,6 +1036,22 @@ asmlinkage long compat_sys_old_readdir(unsigned int fd,
 
 	fput(file);
 out:
+=======
+	struct fd f = fdget(fd);
+	struct compat_readdir_callback buf = {
+		.ctx.actor = compat_fillonedir,
+		.dirent = dirent
+	};
+
+	if (!f.file)
+		return -EBADF;
+
+	error = iterate_dir(f.file, &buf.ctx);
+	if (buf.result)
+		error = buf.result;
+
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -919,6 +1063,10 @@ struct compat_linux_dirent {
 };
 
 struct compat_getdents_callback {
+<<<<<<< HEAD
+=======
+	struct dir_context ctx;
+>>>>>>> refs/remotes/origin/master
 	struct compat_linux_dirent __user *current_dir;
 	struct compat_linux_dirent __user *previous;
 	int count;
@@ -971,6 +1119,7 @@ efault:
 asmlinkage long compat_sys_getdents(unsigned int fd,
 		struct compat_linux_dirent __user *dirent, unsigned int count)
 {
+<<<<<<< HEAD
 	struct file * file;
 	struct compat_linux_dirent __user * lastdirent;
 	struct compat_getdents_callback buf;
@@ -991,23 +1140,54 @@ asmlinkage long compat_sys_getdents(unsigned int fd,
 	buf.error = 0;
 
 	error = vfs_readdir(file, compat_filldir, &buf);
+=======
+	struct fd f;
+	struct compat_linux_dirent __user * lastdirent;
+	struct compat_getdents_callback buf = {
+		.ctx.actor = compat_filldir,
+		.current_dir = dirent,
+		.count = count
+	};
+	int error;
+
+	if (!access_ok(VERIFY_WRITE, dirent, count))
+		return -EFAULT;
+
+	f = fdget(fd);
+	if (!f.file)
+		return -EBADF;
+
+	error = iterate_dir(f.file, &buf.ctx);
+>>>>>>> refs/remotes/origin/master
 	if (error >= 0)
 		error = buf.error;
 	lastdirent = buf.previous;
 	if (lastdirent) {
+<<<<<<< HEAD
 		if (put_user(file->f_pos, &lastdirent->d_off))
+=======
+		if (put_user(buf.ctx.pos, &lastdirent->d_off))
+>>>>>>> refs/remotes/origin/master
 			error = -EFAULT;
 		else
 			error = count - buf.count;
 	}
+<<<<<<< HEAD
 	fput(file);
 out:
+=======
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
 #ifndef __ARCH_OMIT_COMPAT_SYS_GETDENTS64
 
 struct compat_getdents_callback64 {
+<<<<<<< HEAD
+=======
+	struct dir_context ctx;
+>>>>>>> refs/remotes/origin/master
 	struct linux_dirent64 __user *current_dir;
 	struct linux_dirent64 __user *previous;
 	int count;
@@ -1059,6 +1239,7 @@ efault:
 asmlinkage long compat_sys_getdents64(unsigned int fd,
 		struct linux_dirent64 __user * dirent, unsigned int count)
 {
+<<<<<<< HEAD
 	struct file * file;
 	struct linux_dirent64 __user * lastdirent;
 	struct compat_getdents_callback64 buf;
@@ -1079,22 +1260,50 @@ asmlinkage long compat_sys_getdents64(unsigned int fd,
 	buf.error = 0;
 
 	error = vfs_readdir(file, compat_filldir64, &buf);
+=======
+	struct fd f;
+	struct linux_dirent64 __user * lastdirent;
+	struct compat_getdents_callback64 buf = {
+		.ctx.actor = compat_filldir64,
+		.current_dir = dirent,
+		.count = count
+	};
+	int error;
+
+	if (!access_ok(VERIFY_WRITE, dirent, count))
+		return -EFAULT;
+
+	f = fdget(fd);
+	if (!f.file)
+		return -EBADF;
+
+	error = iterate_dir(f.file, &buf.ctx);
+>>>>>>> refs/remotes/origin/master
 	if (error >= 0)
 		error = buf.error;
 	lastdirent = buf.previous;
 	if (lastdirent) {
+<<<<<<< HEAD
 		typeof(lastdirent->d_off) d_off = file->f_pos;
+=======
+		typeof(lastdirent->d_off) d_off = buf.ctx.pos;
+>>>>>>> refs/remotes/origin/master
 		if (__put_user_unaligned(d_off, &lastdirent->d_off))
 			error = -EFAULT;
 		else
 			error = count - buf.count;
 	}
+<<<<<<< HEAD
 	fput(file);
 out:
+=======
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 #endif /* ! __ARCH_OMIT_COMPAT_SYS_GETDENTS64 */
 
+<<<<<<< HEAD
 static ssize_t compat_do_readv_writev(int type, struct file *file,
 			       const struct compat_iovec __user *uvector,
 			       unsigned long nr_segs, loff_t *pos)
@@ -1111,7 +1320,15 @@ static ssize_t compat_do_readv_writev(int type, struct file *file,
 		goto out;
 
 	ret = compat_rw_copy_check_uvector(type, uvector, nr_segs,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					       UIO_FASTIOV, iovstack, &iov);
+=======
+					       UIO_FASTIOV, iovstack, &iov, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       UIO_FASTIOV, iovstack, &iov, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret <= 0)
 		goto out;
 
@@ -1189,10 +1406,16 @@ compat_sys_readv(unsigned long fd, const struct compat_iovec __user *vec,
 }
 
 asmlinkage ssize_t
+<<<<<<< HEAD
 compat_sys_preadv(unsigned long fd, const struct compat_iovec __user *vec,
 		  unsigned long vlen, u32 pos_low, u32 pos_high)
 {
 	loff_t pos = ((loff_t)pos_high << 32) | pos_low;
+=======
+compat_sys_preadv64(unsigned long fd, const struct compat_iovec __user *vec,
+		    unsigned long vlen, loff_t pos)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct file *file;
 	int fput_needed;
 	ssize_t ret;
@@ -1209,6 +1432,17 @@ compat_sys_preadv(unsigned long fd, const struct compat_iovec __user *vec,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+asmlinkage ssize_t
+compat_sys_preadv(unsigned long fd, const struct compat_iovec __user *vec,
+		  unsigned long vlen, u32 pos_low, u32 pos_high)
+{
+	loff_t pos = ((loff_t)pos_high << 32) | pos_low;
+	return compat_sys_preadv64(fd, vec, vlen, pos);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static size_t compat_writev(struct file *file,
 			    const struct compat_iovec __user *vec,
 			    unsigned long vlen, loff_t *pos)
@@ -1251,10 +1485,16 @@ compat_sys_writev(unsigned long fd, const struct compat_iovec __user *vec,
 }
 
 asmlinkage ssize_t
+<<<<<<< HEAD
 compat_sys_pwritev(unsigned long fd, const struct compat_iovec __user *vec,
 		   unsigned long vlen, u32 pos_low, u32 pos_high)
 {
 	loff_t pos = ((loff_t)pos_high << 32) | pos_low;
+=======
+compat_sys_pwritev64(unsigned long fd, const struct compat_iovec __user *vec,
+		     unsigned long vlen, loff_t pos)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct file *file;
 	int fput_needed;
 	ssize_t ret;
@@ -1271,6 +1511,17 @@ compat_sys_pwritev(unsigned long fd, const struct compat_iovec __user *vec,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+asmlinkage ssize_t
+compat_sys_pwritev(unsigned long fd, const struct compat_iovec __user *vec,
+		   unsigned long vlen, u32 pos_low, u32 pos_high)
+{
+	loff_t pos = ((loff_t)pos_high << 32) | pos_low;
+	return compat_sys_pwritev64(fd, vec, vlen, pos);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 asmlinkage long
 compat_sys_vmsplice(int fd, const struct compat_iovec __user *iov32,
 		    unsigned int nr_segs, unsigned int flags)
@@ -1291,12 +1542,22 @@ compat_sys_vmsplice(int fd, const struct compat_iovec __user *iov32,
 	return sys_vmsplice(fd, iov, nr_segs, flags);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Exactly like fs/open.c:sys_open(), except that it doesn't set the
  * O_LARGEFILE flag.
  */
+<<<<<<< HEAD
 asmlinkage long
+<<<<<<< HEAD
 compat_sys_open(const char __user *filename, int flags, int mode)
+=======
+compat_sys_open(const char __user *filename, int flags, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+COMPAT_SYSCALL_DEFINE3(open, const char __user *, filename, int, flags, umode_t, mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return do_sys_open(AT_FDCWD, filename, flags, mode);
 }
@@ -1305,8 +1566,16 @@ compat_sys_open(const char __user *filename, int flags, int mode)
  * Exactly like fs/open.c:sys_openat(), except that it doesn't set the
  * O_LARGEFILE flag.
  */
+<<<<<<< HEAD
 asmlinkage long
+<<<<<<< HEAD
 compat_sys_openat(unsigned int dfd, const char __user *filename, int flags, int mode)
+=======
+compat_sys_openat(unsigned int dfd, const char __user *filename, int flags, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+COMPAT_SYSCALL_DEFINE4(openat, int, dfd, const char __user *, filename, int, flags, umode_t, mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return do_sys_open(dfd, filename, flags, mode);
 }
@@ -1555,7 +1824,10 @@ asmlinkage long compat_sys_old_select(struct compat_sel_arg_struct __user *arg)
 				 compat_ptr(a.exp), compat_ptr(a.tvp));
 }
 
+<<<<<<< HEAD
 #ifdef HAVE_SET_RESTORE_SIGMASK
+=======
+>>>>>>> refs/remotes/origin/master
 static long do_compat_pselect(int n, compat_ulong_t __user *inp,
 	compat_ulong_t __user *outp, compat_ulong_t __user *exp,
 	struct compat_timespec __user *tsp, compat_sigset_t __user *sigmask,
@@ -1678,8 +1950,10 @@ asmlinkage long compat_sys_ppoll(struct pollfd __user *ufds,
 
 	return ret;
 }
+<<<<<<< HEAD
 #endif /* HAVE_SET_RESTORE_SIGMASK */
 
+<<<<<<< HEAD
 #if (defined(CONFIG_NFSD) || defined(CONFIG_NFSD_MODULE)) && !defined(CONFIG_NFSD_DEPRECATED)
 /* Stuff for NFS server syscalls... */
 struct compat_nfsctl_svc {
@@ -1931,6 +2205,8 @@ long asmlinkage compat_sys_nfsservctl(int cmd, void *notused, void *notused2)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_EPOLL
 
 #ifdef HAVE_SET_RESTORE_SIGMASK
@@ -2051,15 +2327,22 @@ asmlinkage long compat_sys_timerfd_gettime(int ufd,
 }
 
 #endif /* CONFIG_TIMERFD */
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_FHANDLE
 /*
  * Exactly like fs/open.c:sys_open_by_handle_at(), except that it
  * doesn't set the O_LARGEFILE flag.
  */
+<<<<<<< HEAD
 asmlinkage long
 compat_sys_open_by_handle_at(int mountdirfd,
 			     struct file_handle __user *handle, int flags)
+=======
+COMPAT_SYSCALL_DEFINE3(open_by_handle_at, int, mountdirfd,
+			     struct file_handle __user *, handle, int, flags)
+>>>>>>> refs/remotes/origin/master
 {
 	return do_handle_open(mountdirfd, handle, flags);
 }

@@ -1,7 +1,19 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * MPC8536 DS Device Tree Source
  *
  * Copyright 2008-2009 Freescale Semiconductor, Inc.
+=======
+ * MPC8536DS Device Tree Source (36-bit address map)
+ *
+ * Copyright 2008-2009, 2011 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * MPC8536DS Device Tree Source (36-bit address map)
+ *
+ * Copyright 2008-2009, 2011 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -9,11 +21,21 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /dts-v1/;
+=======
+/include/ "fsl/mpc8536si-pre.dtsi"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/include/ "fsl/mpc8536si-pre.dtsi"
+>>>>>>> refs/remotes/origin/master
 
 / {
 	model = "fsl,mpc8536ds";
 	compatible = "fsl,mpc8536ds";
+<<<<<<< HEAD
+<<<<<<< HEAD
 	#address-cells = <2>;
 	#size-cells = <2>;
 
@@ -27,6 +49,10 @@
 		pci2 = &pci2;
 		pci3 = &pci3;
 	};
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cpus {
 		#cpus = <1>;
@@ -45,6 +71,8 @@
 		reg = <0 0 0 0>;	// Filled by U-Boot
 	};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	soc@fffe00000 {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -343,10 +371,41 @@
 	pci0: pci@fffe08000 {
 		compatible = "fsl,mpc8540-pci";
 		device_type = "pci";
+=======
+	lbc: localbus@ffe05000 {
+=======
+	lbc: localbus@fffe05000 {
+>>>>>>> refs/remotes/origin/master
+		reg = <0xf 0xffe05000 0 0x1000>;
+
+		ranges = <0x0 0x0 0xf 0xe8000000 0x08000000
+			  0x2 0x0 0xf 0xffa00000 0x00040000
+			  0x3 0x0 0xf 0xffdf0000 0x00008000>;
+	};
+
+	board_soc: soc: soc@fffe00000 {
+		ranges = <0x0 0xf 0xffe00000 0x100000>;
+	};
+
+<<<<<<< HEAD
+	pci0: pci@ffe08000 {
+=======
+	pci0: pci@fffe08000 {
+>>>>>>> refs/remotes/origin/master
+		reg = <0xf 0xffe08000 0 0x1000>;
+		ranges = <0x02000000 0 0xf0000000 0xc 0x00000000 0 0x10000000
+			  0x01000000 0 0x00000000 0xf 0xffc00000 0 0x00010000>;
+		clock-frequency = <66666666>;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
 		interrupt-map = <
 
 			/* IDSEL 0x11 J17 Slot 1 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			0x8800 0 0 1 &mpic 1 1
 			0x8800 0 0 2 &mpic 2 1
 			0x8800 0 0 3 &mpic 3 1
@@ -390,6 +449,28 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			0x8800 0 0 1 &mpic 1 1 0 0
+			0x8800 0 0 2 &mpic 2 1 0 0
+			0x8800 0 0 3 &mpic 3 1 0 0
+			0x8800 0 0 4 &mpic 4 1 0 0>;
+	};
+
+<<<<<<< HEAD
+	pci1: pcie@ffe09000 {
+=======
+	pci1: pcie@fffe09000 {
+>>>>>>> refs/remotes/origin/master
+		reg = <0xf 0xffe09000 0 0x1000>;
+		ranges = <0x02000000 0 0xf8000000 0xc 0x18000000 0 0x08000000
+			  0x01000000 0 0x00000000 0xf 0xffc20000 0 0x00010000>;
+		pcie@0 {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ranges = <0x02000000 0 0xf8000000
 				  0x02000000 0 0xf8000000
 				  0 0x08000000
@@ -401,6 +482,8 @@
 	};
 
 	pci2: pcie@fffe0a000 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		compatible = "fsl,mpc8548-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
@@ -426,6 +509,17 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		reg = <0xf 0xffe0a000 0 0x1000>;
+		ranges = <0x02000000 0 0xf8000000 0xc 0x10000000 0 0x08000000
+			  0x01000000 0 0x00000000 0xf 0xffc10000 0 0x00010000>;
+		pcie@0 {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ranges = <0x02000000 0 0xf8000000
 				  0x02000000 0 0xf8000000
 				  0 0x08000000
@@ -437,6 +531,8 @@
 	};
 
 	pci3: pcie@fffe0b000 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		compatible = "fsl,mpc8548-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
@@ -463,6 +559,17 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		reg = <0xf 0xffe0b000 0 0x1000>;
+		ranges = <0x02000000 0 0xe0000000 0xc 0x20000000 0 0x20000000
+			  0x01000000 0 0x00000000 0xf 0xffc30000 0 0x00010000>;
+		pcie@0 {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ranges = <0x02000000 0 0xe0000000
 				  0x02000000 0 0xe0000000
 				  0 0x20000000
@@ -473,3 +580,15 @@
 		};
 	};
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+/include/ "fsl/mpc8536si-post.dtsi"
+/include/ "mpc8536ds.dtsi"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/include/ "fsl/mpc8536si-post.dtsi"
+/include/ "mpc8536ds.dtsi"
+>>>>>>> refs/remotes/origin/master

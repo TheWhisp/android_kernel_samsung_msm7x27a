@@ -85,6 +85,7 @@ static struct dentry *get_next_positive_subdir(struct dentry *prev,
 {
 	struct autofs_sb_info *sbi = autofs4_sbi(root->d_sb);
 	struct list_head *next;
+<<<<<<< HEAD
 	struct dentry *p, *q;
 
 	spin_lock(&sbi->lookup_lock);
@@ -104,6 +105,23 @@ again:
 start:
 	if (next == &root->d_subdirs) {
 		spin_unlock(&p->d_lock);
+=======
+	struct dentry *q;
+
+	spin_lock(&sbi->lookup_lock);
+	spin_lock(&root->d_lock);
+
+	if (prev)
+		next = prev->d_u.d_child.next;
+	else {
+		prev = dget_dlock(root);
+		next = prev->d_subdirs.next;
+	}
+
+cont:
+	if (next == &root->d_subdirs) {
+		spin_unlock(&root->d_lock);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&sbi->lookup_lock);
 		dput(prev);
 		return NULL;
@@ -112,15 +130,31 @@ start:
 	q = list_entry(next, struct dentry, d_u.d_child);
 
 	spin_lock_nested(&q->d_lock, DENTRY_D_LOCK_NESTED);
+<<<<<<< HEAD
 	/* Negative dentry - try next */
 	if (!simple_positive(q)) {
 		spin_unlock(&p->d_lock);
+<<<<<<< HEAD
+=======
+		lock_set_subclass(&q->d_lock.dep_map, 0, _RET_IP_);
+>>>>>>> refs/remotes/origin/cm-10.0
 		p = q;
 		goto again;
 	}
 	dget_dlock(q);
 	spin_unlock(&q->d_lock);
 	spin_unlock(&p->d_lock);
+=======
+	/* Already gone or negative dentry (under construction) - try next */
+	if (!d_count(q) || !simple_positive(q)) {
+		spin_unlock(&q->d_lock);
+		next = q->d_u.d_child.next;
+		goto cont;
+	}
+	dget_dlock(q);
+	spin_unlock(&q->d_lock);
+	spin_unlock(&root->d_lock);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&sbi->lookup_lock);
 
 	dput(prev);
@@ -177,6 +211,14 @@ again:
 	/* Negative dentry - try next */
 	if (!simple_positive(ret)) {
 		spin_unlock(&p->d_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		lock_set_subclass(&ret->d_lock.dep_map, 0, _RET_IP_);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		lock_set_subclass(&ret->d_lock.dep_map, 0, _RET_IP_);
+>>>>>>> refs/remotes/origin/master
 		p = ret;
 		goto again;
 	}
@@ -270,7 +312,11 @@ static int autofs4_tree_busy(struct vfsmount *mnt,
 			else
 				ino_count++;
 
+<<<<<<< HEAD
 			if (p->d_count > ino_count) {
+=======
+			if (d_count(p) > ino_count) {
+>>>>>>> refs/remotes/origin/master
 				top_ino->last_used = jiffies;
 				dput(p);
 				return 1;
@@ -393,11 +439,14 @@ struct dentry *autofs4_expire_indirect(struct super_block *sb,
 			DPRINTK("checking mountpoint %p %.*s",
 				dentry, (int)dentry->d_name.len, dentry->d_name.name);
 
+<<<<<<< HEAD
 			/* Path walk currently on this dentry? */
 			ino_count = atomic_read(&ino->count) + 2;
 			if (dentry->d_count > ino_count)
 				goto next;
 
+=======
+>>>>>>> refs/remotes/origin/master
 			/* Can we umount this guy */
 			if (autofs4_mount_busy(mnt, dentry))
 				goto next;
@@ -417,7 +466,11 @@ struct dentry *autofs4_expire_indirect(struct super_block *sb,
 		if (!exp_leaves) {
 			/* Path walk currently on this dentry? */
 			ino_count = atomic_read(&ino->count) + 1;
+<<<<<<< HEAD
 			if (dentry->d_count > ino_count)
+=======
+			if (d_count(dentry) > ino_count)
+>>>>>>> refs/remotes/origin/master
 				goto next;
 
 			if (!autofs4_tree_busy(mnt, dentry, timeout, do_now)) {
@@ -431,7 +484,11 @@ struct dentry *autofs4_expire_indirect(struct super_block *sb,
 		} else {
 			/* Path walk currently on this dentry? */
 			ino_count = atomic_read(&ino->count) + 1;
+<<<<<<< HEAD
 			if (dentry->d_count > ino_count)
+=======
+			if (d_count(dentry) > ino_count)
+>>>>>>> refs/remotes/origin/master
 				goto next;
 
 			expired = autofs4_check_leaves(mnt, dentry, timeout, do_now);
@@ -547,6 +604,7 @@ int autofs4_do_expire_multi(struct super_block *sb, struct vfsmount *mnt,
 
 		spin_lock(&sbi->fs_lock);
 		ino->flags &= ~AUTOFS_INF_EXPIRING;
+<<<<<<< HEAD
 		spin_lock(&dentry->d_lock);
 		if (!ret) {
 			if ((IS_ROOT(dentry) ||
@@ -556,6 +614,8 @@ int autofs4_do_expire_multi(struct super_block *sb, struct vfsmount *mnt,
 				__managed_dentry_set_automount(dentry);
 		}
 		spin_unlock(&dentry->d_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 		complete_all(&ino->expire_complete);
 		spin_unlock(&sbi->fs_lock);
 		dput(dentry);

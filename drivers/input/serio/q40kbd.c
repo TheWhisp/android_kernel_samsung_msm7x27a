@@ -44,6 +44,8 @@
 #include <asm/irq.h>
 #include <asm/q40ints.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
 MODULE_DESCRIPTION("Q40 PS/2 keyboard controller driver");
 MODULE_LICENSE("GPL");
@@ -64,6 +66,38 @@ static irqreturn_t q40kbd_interrupt(int irq, void *dev_id)
 	master_outb(-1, KEYBOARD_UNLOCK_REG);
 
 	spin_unlock_irqrestore(&q40kbd_lock, flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define DRV_NAME	"q40kbd"
+
+MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
+MODULE_DESCRIPTION("Q40 PS/2 keyboard controller driver");
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:" DRV_NAME);
+
+struct q40kbd {
+	struct serio *port;
+	spinlock_t lock;
+};
+
+static irqreturn_t q40kbd_interrupt(int irq, void *dev_id)
+{
+	struct q40kbd *q40kbd = dev_id;
+	unsigned long flags;
+
+	spin_lock_irqsave(&q40kbd->lock, flags);
+
+	if (Q40_IRQ_KEYB_MASK & master_inb(INTERRUPT_REG))
+		serio_interrupt(q40kbd->port, master_inb(KEYCODE_REG), 0);
+
+	master_outb(-1, KEYBOARD_UNLOCK_REG);
+
+	spin_unlock_irqrestore(&q40kbd->lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
@@ -72,17 +106,49 @@ static irqreturn_t q40kbd_interrupt(int irq, void *dev_id)
  * q40kbd_flush() flushes all data that may be in the keyboard buffers
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void q40kbd_flush(void)
+=======
+static void q40kbd_flush(struct q40kbd *q40kbd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void q40kbd_flush(struct q40kbd *q40kbd)
+>>>>>>> refs/remotes/origin/master
 {
 	int maxread = 100;
 	unsigned long flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&q40kbd_lock, flags);
+=======
+	spin_lock_irqsave(&q40kbd->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&q40kbd->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	while (maxread-- && (Q40_IRQ_KEYB_MASK & master_inb(INTERRUPT_REG)))
 		master_inb(KEYCODE_REG);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&q40kbd_lock, flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_unlock_irqrestore(&q40kbd->lock, flags);
+}
+
+static void q40kbd_stop(void)
+{
+	master_outb(0, KEY_IRQ_ENABLE_REG);
+	master_outb(-1, KEYBOARD_UNLOCK_REG);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -92,12 +158,24 @@ static void q40kbd_flush(void)
 
 static int q40kbd_open(struct serio *port)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	q40kbd_flush();
 
 	if (request_irq(Q40_IRQ_KEYBOARD, q40kbd_interrupt, 0, "q40kbd", NULL)) {
 		printk(KERN_ERR "q40kbd.c: Can't get irq %d.\n", Q40_IRQ_KEYBOARD);
 		return -EBUSY;
 	}
+=======
+	struct q40kbd *q40kbd = port->port_data;
+
+	q40kbd_flush(q40kbd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct q40kbd *q40kbd = port->port_data;
+
+	q40kbd_flush(q40kbd);
+>>>>>>> refs/remotes/origin/master
 
 	/* off we go */
 	master_outb(-1, KEYBOARD_UNLOCK_REG);
@@ -108,6 +186,8 @@ static int q40kbd_open(struct serio *port)
 
 static void q40kbd_close(struct serio *port)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	master_outb(0, KEY_IRQ_ENABLE_REG);
 	master_outb(-1, KEYBOARD_UNLOCK_REG);
 	free_irq(Q40_IRQ_KEYBOARD, NULL);
@@ -138,6 +218,87 @@ static int __devexit q40kbd_remove(struct platform_device *dev)
 {
 	serio_unregister_port(q40kbd_port);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct q40kbd *q40kbd = port->port_data;
+
+	q40kbd_stop();
+	q40kbd_flush(q40kbd);
+}
+
+<<<<<<< HEAD
+static int __devinit q40kbd_probe(struct platform_device *pdev)
+=======
+static int q40kbd_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
+{
+	struct q40kbd *q40kbd;
+	struct serio *port;
+	int error;
+
+	q40kbd = kzalloc(sizeof(struct q40kbd), GFP_KERNEL);
+	port = kzalloc(sizeof(struct serio), GFP_KERNEL);
+	if (!q40kbd || !port) {
+		error = -ENOMEM;
+		goto err_free_mem;
+	}
+
+	q40kbd->port = port;
+	spin_lock_init(&q40kbd->lock);
+
+	port->id.type = SERIO_8042;
+	port->open = q40kbd_open;
+	port->close = q40kbd_close;
+	port->port_data = q40kbd;
+	port->dev.parent = &pdev->dev;
+	strlcpy(port->name, "Q40 Kbd Port", sizeof(port->name));
+	strlcpy(port->phys, "Q40", sizeof(port->phys));
+
+	q40kbd_stop();
+
+	error = request_irq(Q40_IRQ_KEYBOARD, q40kbd_interrupt, 0,
+			    DRV_NAME, q40kbd);
+	if (error) {
+		dev_err(&pdev->dev, "Can't get irq %d.\n", Q40_IRQ_KEYBOARD);
+		goto err_free_mem;
+	}
+
+	serio_register_port(q40kbd->port);
+
+	platform_set_drvdata(pdev, q40kbd);
+	printk(KERN_INFO "serio: Q40 kbd registered\n");
+
+	return 0;
+
+err_free_mem:
+	kfree(port);
+	kfree(q40kbd);
+	return error;
+}
+
+<<<<<<< HEAD
+static int __devexit q40kbd_remove(struct platform_device *pdev)
+=======
+static int q40kbd_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
+{
+	struct q40kbd *q40kbd = platform_get_drvdata(pdev);
+
+	/*
+	 * q40kbd_close() will be called as part of unregistering
+	 * and will ensure that IRQ is turned off, so it is safe
+	 * to unregister port first and free IRQ later.
+	 */
+	serio_unregister_port(q40kbd->port);
+	free_irq(Q40_IRQ_KEYBOARD, q40kbd);
+	kfree(q40kbd);
+
+<<<<<<< HEAD
+	platform_set_drvdata(pdev, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -146,12 +307,17 @@ static struct platform_driver q40kbd_driver = {
 		.name	= "q40kbd",
 		.owner	= THIS_MODULE,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.probe		= q40kbd_probe,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.remove		= __devexit_p(q40kbd_remove),
 };
 
 static int __init q40kbd_init(void)
 {
+<<<<<<< HEAD
 	int error;
 
 	if (!MACH_IS_Q40)
@@ -176,13 +342,25 @@ static int __init q40kbd_init(void)
  err_unregister_driver:
 	platform_driver_unregister(&q40kbd_driver);
 	return error;
+=======
+	return platform_driver_probe(&q40kbd_driver, q40kbd_probe);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __exit q40kbd_exit(void)
 {
+<<<<<<< HEAD
 	platform_device_unregister(q40kbd_device);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_driver_unregister(&q40kbd_driver);
 }
 
 module_init(q40kbd_init);
 module_exit(q40kbd_exit);
+=======
+	.remove		= q40kbd_remove,
+};
+
+module_platform_driver_probe(q40kbd_driver, q40kbd_probe);
+>>>>>>> refs/remotes/origin/master

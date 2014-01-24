@@ -16,13 +16,65 @@
 #include <linux/fs.h>
 #include <linux/mount.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/xattr.h>
 #include <asm/uaccess.h>
 #include "hfsplus_fs.h"
 
+<<<<<<< HEAD
+=======
+=======
+#include <asm/uaccess.h>
+#include "hfsplus_fs.h"
+
+>>>>>>> refs/remotes/origin/master
+/*
+ * "Blessing" an HFS+ filesystem writes metadata to the superblock informing
+ * the platform firmware which file to boot from
+ */
+static int hfsplus_ioctl_bless(struct file *file, int __user *user_flags)
+{
+	struct dentry *dentry = file->f_path.dentry;
+	struct inode *inode = dentry->d_inode;
+	struct hfsplus_sb_info *sbi = HFSPLUS_SB(inode->i_sb);
+	struct hfsplus_vh *vh = sbi->s_vhdr;
+	struct hfsplus_vh *bvh = sbi->s_backup_vhdr;
+	u32 cnid = (unsigned long)dentry->d_fsdata;
+
+	if (!capable(CAP_SYS_ADMIN))
+		return -EPERM;
+
+	mutex_lock(&sbi->vh_mutex);
+
+	/* Directory containing the bootable system */
+	vh->finder_info[0] = bvh->finder_info[0] =
+		cpu_to_be32(parent_ino(dentry));
+
+	/*
+	 * Bootloader. Just using the inode here breaks in the case of
+	 * hard links - the firmware wants the ID of the hard link file,
+	 * but the inode points at the indirect inode
+	 */
+	vh->finder_info[1] = bvh->finder_info[1] = cpu_to_be32(cnid);
+
+	/* Per spec, the OS X system folder - same as finder_info[0] here */
+	vh->finder_info[5] = bvh->finder_info[5] =
+		cpu_to_be32(parent_ino(dentry));
+
+	mutex_unlock(&sbi->vh_mutex);
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static int hfsplus_ioctl_getflags(struct file *file, int __user *user_flags)
 {
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+static int hfsplus_ioctl_getflags(struct file *file, int __user *user_flags)
+{
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
 	unsigned int flags = 0;
 
@@ -38,12 +90,24 @@ static int hfsplus_ioctl_getflags(struct file *file, int __user *user_flags)
 
 static int hfsplus_ioctl_setflags(struct file *file, int __user *user_flags)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
 	unsigned int flags;
 	int err = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = mnt_want_write(file->f_path.mnt);
+=======
+	err = mnt_want_write_file(file);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mnt_want_write_file(file);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 
@@ -94,7 +158,15 @@ static int hfsplus_ioctl_setflags(struct file *file, int __user *user_flags)
 out_unlock_inode:
 	mutex_unlock(&inode->i_mutex);
 out_drop_write:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mnt_drop_write(file->f_path.mnt);
+=======
+	mnt_drop_write_file(file);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mnt_drop_write_file(file);
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }
@@ -108,10 +180,21 @@ long hfsplus_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		return hfsplus_ioctl_getflags(file, argp);
 	case HFSPLUS_IOC_EXT2_SETFLAGS:
 		return hfsplus_ioctl_setflags(file, argp);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case HFSPLUS_IOC_BLESS:
+		return hfsplus_ioctl_bless(file, argp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case HFSPLUS_IOC_BLESS:
+		return hfsplus_ioctl_bless(file, argp);
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -ENOTTY;
 	}
 }
+<<<<<<< HEAD
 
 int hfsplus_setxattr(struct dentry *dentry, const char *name,
 		     const void *value, size_t size, int flags)
@@ -219,3 +302,5 @@ ssize_t hfsplus_listxattr(struct dentry *dentry, char *buffer, size_t size)
 
 	return HFSPLUS_ATTRLIST_SIZE;
 }
+=======
+>>>>>>> refs/remotes/origin/master

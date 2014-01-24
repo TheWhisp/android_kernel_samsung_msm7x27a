@@ -107,7 +107,11 @@ enum osd_attributes_mode {
  *		int exponent: 04;
  *	}
  */
+<<<<<<< HEAD
 typedef __be32 __bitwise osd_cdb_offset;
+=======
+typedef __be32 osd_cdb_offset;
+>>>>>>> refs/remotes/origin/master
 
 enum {
 	OSD_OFFSET_UNUSED = 0xFFFFFFFF,

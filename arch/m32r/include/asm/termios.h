@@ -1,6 +1,7 @@
 #ifndef _M32R_TERMIOS_H
 #define _M32R_TERMIOS_H
 
+<<<<<<< HEAD
 #include <asm/termbits.h>
 #include <asm/ioctls.h>
 
@@ -41,6 +42,10 @@ struct termio {
 
 #ifdef __KERNEL__
 #include <linux/module.h>
+=======
+#include <linux/module.h>
+#include <uapi/asm/termios.h>
+>>>>>>> refs/remotes/origin/master
 
 /*	intr=^C		quit=^\		erase=del	kill=^U
 	eof=^D		vtime=\0	vmin=\1		sxtc=\0
@@ -86,6 +91,9 @@ struct termio {
 #define user_termios_to_kernel_termios_1(k, u) copy_from_user(k, u, sizeof(struct termios))
 #define kernel_termios_to_user_termios_1(u, k) copy_to_user(u, k, sizeof(struct termios))
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _M32R_TERMIOS_H */

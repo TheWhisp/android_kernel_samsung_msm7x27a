@@ -4,7 +4,15 @@
  *
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -18,6 +26,8 @@
 #include "isdnl1.h"
 #include <linux/interrupt.h>
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define KDEBUG_DEF
 #include "kdebug.h"
 */
@@ -27,6 +37,22 @@
 
 static void
 dummyf(struct IsdnCardState *cs, u_char * data, int size)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+  #define KDEBUG_DEF
+  #include "kdebug.h"
+*/
+
+#define byteout(addr, val) outb(val, addr)
+#define bytein(addr) inb(addr)
+
+static void
+dummyf(struct IsdnCardState *cs, u_char *data, int size)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	printk(KERN_WARNING "HiSax: hfcd dummy fifo called\n");
 }
@@ -37,7 +63,15 @@ ReadReg(struct IsdnCardState *cs, int data, u_char reg)
 	register u_char ret;
 
 	if (data) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (cs->hw.hfcD.cip != reg) { 
+=======
+		if (cs->hw.hfcD.cip != reg) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (cs->hw.hfcD.cip != reg) {
+>>>>>>> refs/remotes/origin/master
 			cs->hw.hfcD.cip = reg;
 			byteout(cs->hw.hfcD.addr | 1, reg);
 		}
@@ -54,7 +88,15 @@ ReadReg(struct IsdnCardState *cs, int data, u_char reg)
 static inline void
 WriteReg(struct IsdnCardState *cs, int data, u_char reg, u_char value)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cs->hw.hfcD.cip != reg) { 
+=======
+	if (cs->hw.hfcD.cip != reg) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cs->hw.hfcD.cip != reg) {
+>>>>>>> refs/remotes/origin/master
 		cs->hw.hfcD.cip = reg;
 		byteout(cs->hw.hfcD.addr | 1, reg);
 	}
@@ -71,7 +113,15 @@ WriteReg(struct IsdnCardState *cs, int data, u_char reg, u_char value)
 static u_char
 readreghfcd(struct IsdnCardState *cs, u_char offset)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return(ReadReg(cs, HFCD_DATA, offset));
+=======
+	return (ReadReg(cs, HFCD_DATA, offset));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (ReadReg(cs, HFCD_DATA, offset));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -103,7 +153,15 @@ WaitNoBusy(struct IsdnCardState *cs)
 		udelay(1);
 		to--;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!to) 
+=======
+	if (!to)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!to)
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "HiSax: WaitNoBusy timeout\n");
 	return (to);
 }
@@ -114,6 +172,8 @@ SelFiFo(struct IsdnCardState *cs, u_char FiFo)
 	u_char cip;
 
 	if (cs->hw.hfcD.fifo == FiFo)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return(1);
 	switch(FiFo) {
 		case 0: cip = HFCB_FIFO | HFCB_Z1 | HFCB_SEND | HFCB_B1;
@@ -131,12 +191,44 @@ SelFiFo(struct IsdnCardState *cs, u_char FiFo)
 		default:
 			debugl1(cs, "SelFiFo Error");
 			return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		return (1);
+	switch (FiFo) {
+	case 0: cip = HFCB_FIFO | HFCB_Z1 | HFCB_SEND | HFCB_B1;
+		break;
+	case 1: cip = HFCB_FIFO | HFCB_Z1 | HFCB_REC | HFCB_B1;
+		break;
+	case 2: cip = HFCB_FIFO | HFCB_Z1 | HFCB_SEND | HFCB_B2;
+		break;
+	case 3: cip = HFCB_FIFO | HFCB_Z1 | HFCB_REC | HFCB_B2;
+		break;
+	case 4: cip = HFCD_FIFO | HFCD_Z1 | HFCD_SEND;
+		break;
+	case 5: cip = HFCD_FIFO | HFCD_Z1 | HFCD_REC;
+		break;
+	default:
+		debugl1(cs, "SelFiFo Error");
+		return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	cs->hw.hfcD.fifo = FiFo;
 	WaitNoBusy(cs);
 	cs->BC_Write_Reg(cs, HFCD_DATA, cip, 0);
 	WaitForBusy(cs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return(2);
+=======
+	return (2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (2);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -188,7 +280,15 @@ static struct sk_buff
 	int idx;
 	int chksum;
 	u_char stat, cip;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if ((cs->debug & L1_DEB_HSCX) && !(cs->debug & L1_DEB_HSCX_FIFO))
 		debugl1(cs, "hfc_empty_fifo");
 	idx = 0;
@@ -252,7 +352,15 @@ static struct sk_buff
 	WaitForBusy(cs);
 	WaitNoBusy(cs);
 	stat = ReadReg(cs, HFCD_DATA, HFCB_FIFO | HFCB_F2_INC |
+<<<<<<< HEAD
+<<<<<<< HEAD
 		HFCB_REC | HFCB_CHANNEL(bcs->channel));
+=======
+		       HFCB_REC | HFCB_CHANNEL(bcs->channel));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       HFCB_REC | HFCB_CHANNEL(bcs->channel));
+>>>>>>> refs/remotes/origin/master
 	WaitForBusy(cs);
 	return (skb);
 }
@@ -269,7 +377,15 @@ hfc_fill_fifo(struct BCState *bcs)
 		return;
 	if (bcs->tx_skb->len <= 0)
 		return;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SelFiFo(cs, HFCB_SEND | HFCB_CHANNEL(bcs->channel)); 
+=======
+	SelFiFo(cs, HFCB_SEND | HFCB_CHANNEL(bcs->channel));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SelFiFo(cs, HFCB_SEND | HFCB_CHANNEL(bcs->channel));
+>>>>>>> refs/remotes/origin/master
 	cip = HFCB_FIFO | HFCB_F1 | HFCB_SEND | HFCB_CHANNEL(bcs->channel);
 	WaitNoBusy(cs);
 	bcs->hw.hfc.f1 = ReadReg(cs, HFCD_DATA, cip);
@@ -278,7 +394,15 @@ hfc_fill_fifo(struct BCState *bcs)
 	WaitNoBusy(cs);
 	bcs->hw.hfc.f2 = ReadReg(cs, HFCD_DATA, cip);
 	bcs->hw.hfc.send[bcs->hw.hfc.f1] = ReadZReg(cs, HFCB_FIFO | HFCB_Z1 | HFCB_SEND | HFCB_CHANNEL(bcs->channel));
+<<<<<<< HEAD
+<<<<<<< HEAD
  	if (cs->debug & L1_DEB_HSCX)
+=======
+	if (cs->debug & L1_DEB_HSCX)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cs->debug & L1_DEB_HSCX)
+>>>>>>> refs/remotes/origin/master
 		debugl1(cs, "hfc_fill_fifo %d f1(%d) f2(%d) z1(%x)",
 			bcs->channel, bcs->hw.hfc.f1, bcs->hw.hfc.f2,
 			bcs->hw.hfc.send[bcs->hw.hfc.f1]);
@@ -316,8 +440,18 @@ hfc_fill_fifo(struct BCState *bcs)
 		printk(KERN_WARNING "HFC S FIFO channel %d BUSY Error\n", bcs->channel);
 	} else {
 		bcs->tx_cnt -= bcs->tx_skb->len;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (test_bit(FLG_LLI_L1WAKEUP,&bcs->st->lli.flag) &&
 			(PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+=======
+		if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+		    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+		    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+>>>>>>> refs/remotes/origin/master
 			u_long	flags;
 			spin_lock_irqsave(&bcs->aclock, flags);
 			bcs->ackcnt += bcs->tx_skb->len;
@@ -339,12 +473,28 @@ static void
 hfc_send_data(struct BCState *bcs)
 {
 	struct IsdnCardState *cs = bcs->cs;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (!test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
 		hfc_fill_fifo(bcs);
 		test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
 	} else
+<<<<<<< HEAD
+<<<<<<< HEAD
 		debugl1(cs,"send_data %d blocked", bcs->channel);
+=======
+		debugl1(cs, "send_data %d blocked", bcs->channel);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		debugl1(cs, "send_data %d blocked", bcs->channel);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -356,10 +506,23 @@ main_rec_2bds0(struct BCState *bcs)
 	int receive, count = 5;
 	struct sk_buff *skb;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
     Begin:
 	count--;
 	if (test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
 		debugl1(cs,"rec_data %d blocked", bcs->channel);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+Begin:
+	count--;
+	if (test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
+		debugl1(cs, "rec_data %d blocked", bcs->channel);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	SelFiFo(cs, HFCB_REC | HFCB_CHANNEL(bcs->channel));
@@ -386,10 +549,23 @@ main_rec_2bds0(struct BCState *bcs)
 			skb_queue_tail(&bcs->rqueue, skb);
 			schedule_event(bcs, B_RCVBUFREADY);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rcnt = f1 -f2;
 		if (rcnt<0)
 			rcnt += 32;
 		if (rcnt>1)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		rcnt = f1 - f2;
+		if (rcnt < 0)
+			rcnt += 32;
+		if (rcnt > 1)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			receive = 1;
 		else
 			receive = 0;
@@ -397,7 +573,15 @@ main_rec_2bds0(struct BCState *bcs)
 		receive = 0;
 	test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
 	if (count && receive)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto Begin;	
+=======
+		goto Begin;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto Begin;
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
@@ -412,6 +596,8 @@ mode_2bs0(struct BCState *bcs, int mode, int bc)
 	bcs->mode = mode;
 	bcs->channel = bc;
 	switch (mode) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case (L1_MODE_NULL):
 			if (bc) {
 				cs->hw.hfcD.conn |= 0x18;
@@ -443,6 +629,44 @@ mode_2bs0(struct BCState *bcs, int mode, int bc)
 				cs->hw.hfcD.sctrl |= SCTRL_B1_ENA;
 			}
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case (L1_MODE_NULL):
+		if (bc) {
+			cs->hw.hfcD.conn |= 0x18;
+			cs->hw.hfcD.sctrl &= ~SCTRL_B2_ENA;
+		} else {
+			cs->hw.hfcD.conn |= 0x3;
+			cs->hw.hfcD.sctrl &= ~SCTRL_B1_ENA;
+		}
+		break;
+	case (L1_MODE_TRANS):
+		if (bc) {
+			cs->hw.hfcD.ctmt |= 2;
+			cs->hw.hfcD.conn &= ~0x18;
+			cs->hw.hfcD.sctrl |= SCTRL_B2_ENA;
+		} else {
+			cs->hw.hfcD.ctmt |= 1;
+			cs->hw.hfcD.conn &= ~0x3;
+			cs->hw.hfcD.sctrl |= SCTRL_B1_ENA;
+		}
+		break;
+	case (L1_MODE_HDLC):
+		if (bc) {
+			cs->hw.hfcD.ctmt &= ~2;
+			cs->hw.hfcD.conn &= ~0x18;
+			cs->hw.hfcD.sctrl |= SCTRL_B2_ENA;
+		} else {
+			cs->hw.hfcD.ctmt &= ~1;
+			cs->hw.hfcD.conn &= ~0x3;
+			cs->hw.hfcD.sctrl |= SCTRL_B1_ENA;
+		}
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	WriteReg(cs, HFCD_DATA, HFCD_SCTRL, cs->hw.hfcD.sctrl);
 	WriteReg(cs, HFCD_DATA, HFCD_CTMT, cs->hw.hfcD.ctmt);
@@ -457,6 +681,8 @@ hfc_l2l1(struct PStack *st, int pr, void *arg)
 	u_long flags;
 
 	switch (pr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			spin_lock_irqsave(&bcs->cs->lock, flags);
 			if (bcs->tx_skb) {
@@ -504,6 +730,60 @@ hfc_l2l1(struct PStack *st, int pr, void *arg)
 			spin_unlock_irqrestore(&bcs->cs->lock, flags);
 			st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case (PH_DATA | REQUEST):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		if (bcs->tx_skb) {
+			skb_queue_tail(&bcs->squeue, skb);
+		} else {
+			bcs->tx_skb = skb;
+//				test_and_set_bit(BC_FLG_BUSY, &bcs->Flag);
+			bcs->cs->BC_Send_Data(bcs);
+		}
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		break;
+	case (PH_PULL | INDICATION):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		if (bcs->tx_skb) {
+			printk(KERN_WARNING "hfc_l2l1: this shouldn't happen\n");
+		} else {
+//				test_and_set_bit(BC_FLG_BUSY, &bcs->Flag);
+			bcs->tx_skb = skb;
+			bcs->cs->BC_Send_Data(bcs);
+		}
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		break;
+	case (PH_PULL | REQUEST):
+		if (!bcs->tx_skb) {
+			test_and_clear_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+			st->l1.l1l2(st, PH_PULL | CONFIRM, NULL);
+		} else
+			test_and_set_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+		break;
+	case (PH_ACTIVATE | REQUEST):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		test_and_set_bit(BC_FLG_ACTIV, &bcs->Flag);
+		mode_2bs0(bcs, st->l1.mode, st->l1.bc);
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		l1_msg_b(st, pr, arg);
+		break;
+	case (PH_DEACTIVATE | REQUEST):
+		l1_msg_b(st, pr, arg);
+		break;
+	case (PH_DEACTIVATE | CONFIRM):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		test_and_clear_bit(BC_FLG_ACTIV, &bcs->Flag);
+		test_and_clear_bit(BC_FLG_BUSY, &bcs->Flag);
+		mode_2bs0(bcs, 0, st->l1.bc);
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -558,6 +838,8 @@ hfcd_bh(struct work_struct *work)
 
 	if (test_and_clear_bit(D_L1STATECHANGE, &cs->event)) {
 		switch (cs->dc.hfcd.ph_state) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			case (0):
 				l1_msg(cs, HW_RESET | INDICATION, NULL);
 				break;
@@ -575,6 +857,30 @@ hfcd_bh(struct work_struct *work)
 				break;
 			default:
 				break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		case (0):
+			l1_msg(cs, HW_RESET | INDICATION, NULL);
+			break;
+		case (3):
+			l1_msg(cs, HW_DEACTIVATE | INDICATION, NULL);
+			break;
+		case (8):
+			l1_msg(cs, HW_RSYNC | INDICATION, NULL);
+			break;
+		case (6):
+			l1_msg(cs, HW_INFO2 | INDICATION, NULL);
+			break;
+		case (7):
+			l1_msg(cs, HW_INFO4_P8 | INDICATION, NULL);
+			break;
+		default:
+			break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (test_and_clear_bit(D_RCVBUFREADY, &cs->event))
@@ -591,12 +897,28 @@ int receive_dmsg(struct IsdnCardState *cs)
 	int rcnt, z1, z2;
 	u_char stat, cip, f1, f2;
 	int chksum;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int count=5;
+=======
+	int count = 5;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int count = 5;
+>>>>>>> refs/remotes/origin/master
 	u_char *ptr;
 
 	if (test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
 		debugl1(cs, "rec_dmsg blocked");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return(1);
+=======
+		return (1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (1);
+>>>>>>> refs/remotes/origin/master
 	}
 	SelFiFo(cs, 4 | HFCD_REC);
 	cip = HFCD_FIFO | HFCD_F1 | HFCD_REC;
@@ -682,8 +1004,18 @@ int receive_dmsg(struct IsdnCardState *cs)
 		f2 = cs->readisac(cs, cip) & 0xf;
 	}
 	test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return(1);
 } 
+=======
+	return (1);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (1);
+}
+>>>>>>> refs/remotes/origin/master
 
 static void
 hfc_fill_dfifo(struct IsdnCardState *cs)
@@ -750,6 +1082,8 @@ hfc_fill_dfifo(struct IsdnCardState *cs)
 	return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static 
 struct BCState *Sel_BCS(struct IsdnCardState *cs, int channel)
 {
@@ -759,14 +1093,42 @@ struct BCState *Sel_BCS(struct IsdnCardState *cs, int channel)
 		return(&cs->bcs[1]);
 	else
 		return(NULL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static
+struct BCState *Sel_BCS(struct IsdnCardState *cs, int channel)
+{
+	if (cs->bcs[0].mode && (cs->bcs[0].channel == channel))
+		return (&cs->bcs[0]);
+	else if (cs->bcs[1].mode && (cs->bcs[1].channel == channel))
+		return (&cs->bcs[1]);
+	else
+		return (NULL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void
 hfc2bds0_interrupt(struct IsdnCardState *cs, u_char val)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
        	u_char exval;
        	struct BCState *bcs;
 	int count=15;
+=======
+	u_char exval;
+	struct BCState *bcs;
+	int count = 15;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u_char exval;
+	struct BCState *bcs;
+	int count = 15;
+>>>>>>> refs/remotes/origin/master
 
 	if (cs->debug & L1_DEB_ISAC)
 		debugl1(cs, "HFCD irq %x %s", val,
@@ -789,6 +1151,8 @@ hfc2bds0_interrupt(struct IsdnCardState *cs, u_char val)
 		}
 		if (cs->hw.hfcD.int_s1 & 0x18) {
 			exval = val;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			val =  cs->hw.hfcD.int_s1;
 			cs->hw.hfcD.int_s1 = exval;
 		}	
@@ -808,6 +1172,32 @@ hfc2bds0_interrupt(struct IsdnCardState *cs, u_char val)
 		}
 		if (val & 0x01) {
 			if (!(bcs=Sel_BCS(cs, 0))) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			val = cs->hw.hfcD.int_s1;
+			cs->hw.hfcD.int_s1 = exval;
+		}
+		if (val & 0x08) {
+			if (!(bcs = Sel_BCS(cs, 0))) {
+				if (cs->debug)
+					debugl1(cs, "hfcd spurious 0x08 IRQ");
+			} else
+				main_rec_2bds0(bcs);
+		}
+		if (val & 0x10) {
+			if (!(bcs = Sel_BCS(cs, 1))) {
+				if (cs->debug)
+					debugl1(cs, "hfcd spurious 0x10 IRQ");
+			} else
+				main_rec_2bds0(bcs);
+		}
+		if (val & 0x01) {
+			if (!(bcs = Sel_BCS(cs, 0))) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				if (cs->debug)
 					debugl1(cs, "hfcd spurious 0x01 IRQ");
 			} else {
@@ -816,14 +1206,30 @@ hfc2bds0_interrupt(struct IsdnCardState *cs, u_char val)
 						hfc_fill_fifo(bcs);
 						test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
 					} else
+<<<<<<< HEAD
+<<<<<<< HEAD
 						debugl1(cs,"fill_data %d blocked", bcs->channel);
+=======
+						debugl1(cs, "fill_data %d blocked", bcs->channel);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						debugl1(cs, "fill_data %d blocked", bcs->channel);
+>>>>>>> refs/remotes/origin/master
 				} else {
 					if ((bcs->tx_skb = skb_dequeue(&bcs->squeue))) {
 						if (!test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
 							hfc_fill_fifo(bcs);
 							test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
 						} else
+<<<<<<< HEAD
+<<<<<<< HEAD
 							debugl1(cs,"fill_data %d blocked", bcs->channel);
+=======
+							debugl1(cs, "fill_data %d blocked", bcs->channel);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+							debugl1(cs, "fill_data %d blocked", bcs->channel);
+>>>>>>> refs/remotes/origin/master
 					} else {
 						schedule_event(bcs, B_XMTBUFREADY);
 					}
@@ -831,7 +1237,15 @@ hfc2bds0_interrupt(struct IsdnCardState *cs, u_char val)
 			}
 		}
 		if (val & 0x02) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (!(bcs=Sel_BCS(cs, 1))) {
+=======
+			if (!(bcs = Sel_BCS(cs, 1))) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!(bcs = Sel_BCS(cs, 1))) {
+>>>>>>> refs/remotes/origin/master
 				if (cs->debug)
 					debugl1(cs, "hfcd spurious 0x02 IRQ");
 			} else {
@@ -840,14 +1254,30 @@ hfc2bds0_interrupt(struct IsdnCardState *cs, u_char val)
 						hfc_fill_fifo(bcs);
 						test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
 					} else
+<<<<<<< HEAD
+<<<<<<< HEAD
 						debugl1(cs,"fill_data %d blocked", bcs->channel);
+=======
+						debugl1(cs, "fill_data %d blocked", bcs->channel);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						debugl1(cs, "fill_data %d blocked", bcs->channel);
+>>>>>>> refs/remotes/origin/master
 				} else {
 					if ((bcs->tx_skb = skb_dequeue(&bcs->squeue))) {
 						if (!test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
 							hfc_fill_fifo(bcs);
 							test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
 						} else
+<<<<<<< HEAD
+<<<<<<< HEAD
 							debugl1(cs,"fill_data %d blocked", bcs->channel);
+=======
+							debugl1(cs, "fill_data %d blocked", bcs->channel);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+							debugl1(cs, "fill_data %d blocked", bcs->channel);
+>>>>>>> refs/remotes/origin/master
 					} else {
 						schedule_event(bcs, B_XMTBUFREADY);
 					}
@@ -888,7 +1318,15 @@ hfc2bds0_interrupt(struct IsdnCardState *cs, u_char val)
 			} else
 				schedule_event(cs, D_XMTBUFREADY);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
       afterXPR:
+=======
+	afterXPR:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	afterXPR:
+>>>>>>> refs/remotes/origin/master
 		if (cs->hw.hfcD.int_s1 && count--) {
 			val = cs->hw.hfcD.int_s1;
 			cs->hw.hfcD.int_s1 = 0;
@@ -905,6 +1343,8 @@ HFCD_l1hw(struct PStack *st, int pr, void *arg)
 	struct IsdnCardState *cs = (struct IsdnCardState *) st->l1.hardware;
 	struct sk_buff *skb = arg;
 	u_long flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
 	switch (pr) {
 		case (PH_DATA | REQUEST):
@@ -948,17 +1388,49 @@ HFCD_l1hw(struct PStack *st, int pr, void *arg)
 				LogFrame(cs, skb->data, skb->len);
 			if (cs->debug & DEB_DLOG_VERBOSE)
 				dlogframe(cs, skb, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	switch (pr) {
+	case (PH_DATA | REQUEST):
+		if (cs->debug & DEB_DLOG_HEX)
+			LogFrame(cs, skb->data, skb->len);
+		if (cs->debug & DEB_DLOG_VERBOSE)
+			dlogframe(cs, skb, 0);
+		spin_lock_irqsave(&cs->lock, flags);
+		if (cs->tx_skb) {
+			skb_queue_tail(&cs->sq, skb);
+#ifdef L2FRAME_DEBUG		/* psa */
+			if (cs->debug & L1_DEB_LAPD)
+				Logl2Frame(cs, skb, "PH_DATA Queued", 0);
+#endif
+		} else {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			cs->tx_skb = skb;
 			cs->tx_cnt = 0;
 #ifdef L2FRAME_DEBUG		/* psa */
 			if (cs->debug & L1_DEB_LAPD)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				Logl2Frame(cs, skb, "PH_DATA_PULLED", 0);
+=======
+				Logl2Frame(cs, skb, "PH_DATA", 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				Logl2Frame(cs, skb, "PH_DATA", 0);
+>>>>>>> refs/remotes/origin/master
 #endif
 			if (!test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
 				hfc_fill_dfifo(cs);
 				test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
 			} else
 				debugl1(cs, "hfc_fill_dfifo blocked");
+<<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&cs->lock, flags);
 			break;
 		case (PH_PULL | REQUEST):
@@ -1004,6 +1476,86 @@ HFCD_l1hw(struct PStack *st, int pr, void *arg)
 			if (cs->debug & L1_DEB_WARN)
 				debugl1(cs, "hfcd_l1hw unknown pr %4x", pr);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+		}
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (PH_PULL | INDICATION):
+		spin_lock_irqsave(&cs->lock, flags);
+		if (cs->tx_skb) {
+			if (cs->debug & L1_DEB_WARN)
+				debugl1(cs, " l2l1 tx_skb exist this shouldn't happen");
+			skb_queue_tail(&cs->sq, skb);
+			spin_unlock_irqrestore(&cs->lock, flags);
+			break;
+		}
+		if (cs->debug & DEB_DLOG_HEX)
+			LogFrame(cs, skb->data, skb->len);
+		if (cs->debug & DEB_DLOG_VERBOSE)
+			dlogframe(cs, skb, 0);
+		cs->tx_skb = skb;
+		cs->tx_cnt = 0;
+#ifdef L2FRAME_DEBUG		/* psa */
+		if (cs->debug & L1_DEB_LAPD)
+			Logl2Frame(cs, skb, "PH_DATA_PULLED", 0);
+#endif
+		if (!test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
+			hfc_fill_dfifo(cs);
+			test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
+		} else
+			debugl1(cs, "hfc_fill_dfifo blocked");
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (PH_PULL | REQUEST):
+#ifdef L2FRAME_DEBUG		/* psa */
+		if (cs->debug & L1_DEB_LAPD)
+			debugl1(cs, "-> PH_REQUEST_PULL");
+#endif
+		if (!cs->tx_skb) {
+			test_and_clear_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+			st->l1.l1l2(st, PH_PULL | CONFIRM, NULL);
+		} else
+			test_and_set_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+		break;
+	case (HW_RESET | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		cs->writeisac(cs, HFCD_STATES, HFCD_LOAD_STATE | 3); /* HFC ST 3 */
+		udelay(6);
+		cs->writeisac(cs, HFCD_STATES, 3); /* HFC ST 2 */
+		cs->hw.hfcD.mst_m |= HFCD_MASTER;
+		cs->writeisac(cs, HFCD_MST_MODE, cs->hw.hfcD.mst_m);
+		cs->writeisac(cs, HFCD_STATES, HFCD_ACTIVATE | HFCD_DO_ACTION);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		l1_msg(cs, HW_POWERUP | CONFIRM, NULL);
+		break;
+	case (HW_ENABLE | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		cs->writeisac(cs, HFCD_STATES, HFCD_ACTIVATE | HFCD_DO_ACTION);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (HW_DEACTIVATE | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		cs->hw.hfcD.mst_m &= ~HFCD_MASTER;
+		cs->writeisac(cs, HFCD_MST_MODE, cs->hw.hfcD.mst_m);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (HW_INFO3 | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		cs->hw.hfcD.mst_m |= HFCD_MASTER;
+		cs->writeisac(cs, HFCD_MST_MODE, cs->hw.hfcD.mst_m);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	default:
+		if (cs->debug & L1_DEB_WARN)
+			debugl1(cs, "hfcd_l1hw unknown pr %4x", pr);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1027,11 +1579,25 @@ static unsigned int
 	if (!(send = kmalloc(cnt * sizeof(unsigned int), GFP_ATOMIC))) {
 		printk(KERN_WARNING
 		       "HiSax: No memory for hfcd.send\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return(NULL);
 	}
 	for (i = 0; i < cnt; i++)
 		send[i] = 0x1fff;
 	return(send);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		return (NULL);
+	}
+	for (i = 0; i < cnt; i++)
+		send[i] = 0x1fff;
+	return (send);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void

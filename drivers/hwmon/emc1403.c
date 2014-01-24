@@ -21,7 +21,10 @@
  *
  * TODO
  *	-	cache alarm and critical limit registers
+<<<<<<< HEAD
  *	-	add emc1404 support
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>
@@ -33,16 +36,36 @@
 #include <linux/err.h>
 #include <linux/sysfs.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 #define THERMAL_PID_REG		0xfd
 #define THERMAL_SMSC_ID_REG	0xfe
 #define THERMAL_REVISION_REG	0xff
 
 struct thermal_data {
+<<<<<<< HEAD
 	struct device *hwmon_dev;
 	struct mutex mutex;
+<<<<<<< HEAD
 	/* Cache the hyst value so we don't keep re-reading it. In theory
 	   we could cache it forever as nobody else should be writing it. */
+=======
+=======
+	struct i2c_client *client;
+	const struct attribute_group *groups[3];
+	struct mutex mutex;
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Cache the hyst value so we don't keep re-reading it. In theory
+	 * we could cache it forever as nobody else should be writing it.
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 cached_hyst;
 	unsigned long hyst_valid;
 };
@@ -50,10 +73,18 @@ struct thermal_data {
 static ssize_t show_temp(struct device *dev,
 			struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct sensor_device_attribute *sda = to_sensor_dev_attr(attr);
 	int retval = i2c_smbus_read_byte_data(client, sda->index);
 
+=======
+	struct sensor_device_attribute *sda = to_sensor_dev_attr(attr);
+	struct thermal_data *data = dev_get_drvdata(dev);
+	int retval;
+
+	retval = i2c_smbus_read_byte_data(data->client, sda->index);
+>>>>>>> refs/remotes/origin/master
 	if (retval < 0)
 		return retval;
 	return sprintf(buf, "%d000\n", retval);
@@ -62,6 +93,7 @@ static ssize_t show_temp(struct device *dev,
 static ssize_t show_bit(struct device *dev,
 			struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct sensor_device_attribute_2 *sda = to_sensor_dev_attr_2(attr);
 	int retval = i2c_smbus_read_byte_data(client, sda->nr);
@@ -70,19 +102,43 @@ static ssize_t show_bit(struct device *dev,
 		return retval;
 	retval &= sda->index;
 	return sprintf(buf, "%d\n", retval ? 1 : 0);
+=======
+	struct sensor_device_attribute_2 *sda = to_sensor_dev_attr_2(attr);
+	struct thermal_data *data = dev_get_drvdata(dev);
+	int retval;
+
+	retval = i2c_smbus_read_byte_data(data->client, sda->nr);
+	if (retval < 0)
+		return retval;
+	return sprintf(buf, "%d\n", !!(retval & sda->index));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_temp(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct sensor_device_attribute *sda = to_sensor_dev_attr(attr);
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	unsigned long val;
 	int retval;
 
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val))
+=======
+	if (kstrtoul(buf, 10, &val))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	retval = i2c_smbus_write_byte_data(client, sda->index,
+=======
+	struct thermal_data *data = dev_get_drvdata(dev);
+	unsigned long val;
+	int retval;
+
+	if (kstrtoul(buf, 10, &val))
+		return -EINVAL;
+	retval = i2c_smbus_write_byte_data(data->client, sda->index,
+>>>>>>> refs/remotes/origin/master
 					DIV_ROUND_CLOSEST(val, 1000));
 	if (retval < 0)
 		return retval;
@@ -92,13 +148,27 @@ static ssize_t store_temp(struct device *dev,
 static ssize_t store_bit(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct thermal_data *data = i2c_get_clientdata(client);
 	struct sensor_device_attribute_2 *sda = to_sensor_dev_attr_2(attr);
 	unsigned long val;
 	int retval;
 
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val))
+=======
+	if (kstrtoul(buf, 10, &val))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sensor_device_attribute_2 *sda = to_sensor_dev_attr_2(attr);
+	struct thermal_data *data = dev_get_drvdata(dev);
+	struct i2c_client *client = data->client;
+	unsigned long val;
+	int retval;
+
+	if (kstrtoul(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->mutex);
@@ -121,9 +191,15 @@ fail:
 static ssize_t show_hyst(struct device *dev,
 			struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct thermal_data *data = i2c_get_clientdata(client);
 	struct sensor_device_attribute *sda = to_sensor_dev_attr(attr);
+=======
+	struct sensor_device_attribute *sda = to_sensor_dev_attr(attr);
+	struct thermal_data *data = dev_get_drvdata(dev);
+	struct i2c_client *client = data->client;
+>>>>>>> refs/remotes/origin/master
 	int retval;
 	int hyst;
 
@@ -144,14 +220,28 @@ static ssize_t show_hyst(struct device *dev,
 static ssize_t store_hyst(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct thermal_data *data = i2c_get_clientdata(client);
 	struct sensor_device_attribute *sda = to_sensor_dev_attr(attr);
+=======
+	struct sensor_device_attribute *sda = to_sensor_dev_attr(attr);
+	struct thermal_data *data = dev_get_drvdata(dev);
+	struct i2c_client *client = data->client;
+>>>>>>> refs/remotes/origin/master
 	int retval;
 	int hyst;
 	unsigned long val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val))
+=======
+	if (kstrtoul(buf, 10, &val))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtoul(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->mutex);
@@ -229,10 +319,33 @@ static SENSOR_DEVICE_ATTR_2(temp3_crit_alarm, S_IRUGO,
 static SENSOR_DEVICE_ATTR(temp3_crit_hyst, S_IRUGO | S_IWUSR,
 	show_hyst, store_hyst, 0x1A);
 
+<<<<<<< HEAD
 static SENSOR_DEVICE_ATTR_2(power_state, S_IRUGO | S_IWUSR,
 	show_bit, store_bit, 0x03, 0x40);
 
 static struct attribute *mid_att_thermal[] = {
+=======
+static SENSOR_DEVICE_ATTR(temp4_min, S_IRUGO | S_IWUSR,
+	show_temp, store_temp, 0x2D);
+static SENSOR_DEVICE_ATTR(temp4_max, S_IRUGO | S_IWUSR,
+	show_temp, store_temp, 0x2C);
+static SENSOR_DEVICE_ATTR(temp4_crit, S_IRUGO | S_IWUSR,
+	show_temp, store_temp, 0x30);
+static SENSOR_DEVICE_ATTR(temp4_input, S_IRUGO, show_temp, NULL, 0x2A);
+static SENSOR_DEVICE_ATTR_2(temp4_min_alarm, S_IRUGO,
+	show_bit, NULL, 0x36, 0x08);
+static SENSOR_DEVICE_ATTR_2(temp4_max_alarm, S_IRUGO,
+	show_bit, NULL, 0x35, 0x08);
+static SENSOR_DEVICE_ATTR_2(temp4_crit_alarm, S_IRUGO,
+	show_bit, NULL, 0x37, 0x08);
+static SENSOR_DEVICE_ATTR(temp4_crit_hyst, S_IRUGO | S_IWUSR,
+	show_hyst, store_hyst, 0x30);
+
+static SENSOR_DEVICE_ATTR_2(power_state, S_IRUGO | S_IWUSR,
+	show_bit, store_bit, 0x03, 0x40);
+
+static struct attribute *emc1403_attrs[] = {
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_temp1_min.dev_attr.attr,
 	&sensor_dev_attr_temp1_max.dev_attr.attr,
 	&sensor_dev_attr_temp1_crit.dev_attr.attr,
@@ -261,8 +374,29 @@ static struct attribute *mid_att_thermal[] = {
 	NULL
 };
 
+<<<<<<< HEAD
 static const struct attribute_group m_thermal_gr = {
 	.attrs = mid_att_thermal
+=======
+static const struct attribute_group emc1403_group = {
+	.attrs = emc1403_attrs,
+};
+
+static struct attribute *emc1404_attrs[] = {
+	&sensor_dev_attr_temp4_min.dev_attr.attr,
+	&sensor_dev_attr_temp4_max.dev_attr.attr,
+	&sensor_dev_attr_temp4_crit.dev_attr.attr,
+	&sensor_dev_attr_temp4_input.dev_attr.attr,
+	&sensor_dev_attr_temp4_min_alarm.dev_attr.attr,
+	&sensor_dev_attr_temp4_max_alarm.dev_attr.attr,
+	&sensor_dev_attr_temp4_crit_alarm.dev_attr.attr,
+	&sensor_dev_attr_temp4_crit_hyst.dev_attr.attr,
+	NULL
+};
+
+static const struct attribute_group emc1404_group = {
+	.attrs = emc1404_attrs,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int emc1403_detect(struct i2c_client *client,
@@ -283,8 +417,24 @@ static int emc1403_detect(struct i2c_client *client,
 	case 0x23:
 		strlcpy(info->type, "emc1423", I2C_NAME_SIZE);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Note: 0x25 is the 1404 which is very similar and this
 	   driver could be extended */
+=======
+	/*
+	 * Note: 0x25 is the 1404 which is very similar and this
+	 * driver could be extended
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case 0x25:
+		strlcpy(info->type, "emc1404", I2C_NAME_SIZE);
+		break;
+	case 0x27:
+		strlcpy(info->type, "emc1424", I2C_NAME_SIZE);
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -ENODEV;
 	}
@@ -299,6 +449,7 @@ static int emc1403_detect(struct i2c_client *client,
 static int emc1403_probe(struct i2c_client *client,
 			const struct i2c_device_id *id)
 {
+<<<<<<< HEAD
 	int res;
 	struct thermal_data *data;
 
@@ -340,6 +491,31 @@ static int emc1403_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &m_thermal_gr);
 	kfree(data);
+=======
+	struct thermal_data *data;
+	struct device *hwmon_dev;
+
+	data = devm_kzalloc(&client->dev, sizeof(struct thermal_data),
+			    GFP_KERNEL);
+	if (data == NULL)
+		return -ENOMEM;
+
+	data->client = client;
+	mutex_init(&data->mutex);
+	data->hyst_valid = jiffies - 1;		/* Expired */
+
+	data->groups[0] = &emc1403_group;
+	if (id->driver_data)
+		data->groups[1] = &emc1404_group;
+
+	hwmon_dev = hwmon_device_register_with_groups(&client->dev,
+						      client->name, data,
+						      data->groups);
+	if (IS_ERR(hwmon_dev))
+		return PTR_ERR(hwmon_dev);
+
+	dev_info(&client->dev, "%s Thermal chip found\n", id->name);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -349,7 +525,13 @@ static const unsigned short emc1403_address_list[] = {
 
 static const struct i2c_device_id emc1403_idtable[] = {
 	{ "emc1403", 0 },
+<<<<<<< HEAD
 	{ "emc1423", 0 },
+=======
+	{ "emc1404", 1 },
+	{ "emc1423", 0 },
+	{ "emc1424", 1 },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, emc1403_idtable);
@@ -361,11 +543,16 @@ static struct i2c_driver sensor_emc1403 = {
 	},
 	.detect = emc1403_detect,
 	.probe = emc1403_probe,
+<<<<<<< HEAD
 	.remove = emc1403_remove,
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table = emc1403_idtable,
 	.address_list = emc1403_address_list,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensor_emc1403_init(void)
 {
 	return i2c_add_driver(&sensor_emc1403);
@@ -378,6 +565,12 @@ static void  __exit sensor_emc1403_exit(void)
 
 module_init(sensor_emc1403_init);
 module_exit(sensor_emc1403_exit);
+=======
+module_i2c_driver(sensor_emc1403);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(sensor_emc1403);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kalhan Trisal <kalhan.trisal@intel.com");
 MODULE_DESCRIPTION("emc1403 Thermal Driver");

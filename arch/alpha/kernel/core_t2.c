@@ -21,6 +21,14 @@
 
 #include <asm/ptrace.h>
 #include <asm/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/mce.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/mce.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "proto.h"
 #include "pci_impl.h"

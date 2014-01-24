@@ -38,7 +38,10 @@ struct mt2131_priv {
 	struct i2c_adapter   *i2c;
 
 	u32 frequency;
+<<<<<<< HEAD
 	u32 bandwidth;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif /* __MT2131_PRIV_H__ */

@@ -41,9 +41,13 @@ END(boot_args)
         .import fault_vector_11,code    /* IVA parisc 1.1 32 bit */
 	.import	$global$		/* forward declaration */
 #endif /*!CONFIG_64BIT*/
+<<<<<<< HEAD
 	.export _stext,data		/* Kernel want it this way! */
 _stext:
 ENTRY(stext)
+=======
+ENTRY(parisc_kernel_start)
+>>>>>>> refs/remotes/origin/master
 	.proc
 	.callinfo
 
@@ -195,6 +199,21 @@ common_stext:
 	ldw             MEM_PDC_HI(%r0),%r6
 	depd            %r6, 31, 32, %r3        /* move to upper word */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mfctl		%cr30,%r6		/* PCX-W2 firmware bug */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mfctl		%cr30,%r6		/* PCX-W2 firmware bug */
+
+>>>>>>> refs/remotes/origin/master
+=======
+	mfctl		%cr30,%r6		/* PCX-W2 firmware bug */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ldo             PDC_PSW(%r0),%arg0              /* 21 */
 	ldo             PDC_PSW_SET_DEFAULTS(%r0),%arg1 /* 2 */
 	ldo             PDC_PSW_WIDE_BIT(%r0),%arg2     /* 2 */
@@ -203,6 +222,21 @@ common_stext:
 	copy            %r0,%arg3
 
 stext_pdc_ret:
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mtctl		%r6,%cr30		/* restore task thread info */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtctl		%r6,%cr30		/* restore task thread info */
+
+>>>>>>> refs/remotes/origin/master
+=======
+	mtctl		%r6,%cr30		/* restore task thread info */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* restore rfi target address*/
 	ldd             TI_TASK-THREAD_SZ_ALGN(%sp), %r10
 	tophys_r1       %r10
@@ -343,7 +377,11 @@ smp_slave_stext:
 	.procend
 #endif /* CONFIG_SMP */
 
+<<<<<<< HEAD
 ENDPROC(stext)
+=======
+ENDPROC(parisc_kernel_start)
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_64BIT
 	.section .data..read_mostly

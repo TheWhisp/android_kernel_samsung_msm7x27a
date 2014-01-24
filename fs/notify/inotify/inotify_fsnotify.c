@@ -34,6 +34,7 @@
 #include "inotify.h"
 
 /*
+<<<<<<< HEAD
  * Check if 2 events contain the same information.  We do not compare private data
  * but at this moment that isn't a problem for any know fsnotify listeners.
  */
@@ -65,12 +66,31 @@ static bool event_compare(struct fsnotify_event *old, struct fsnotify_event *new
 			return true;
 		};
 	}
+=======
+ * Check if 2 events contain the same information.
+ */
+static bool event_compare(struct fsnotify_event *old_fsn,
+			  struct fsnotify_event *new_fsn)
+{
+	struct inotify_event_info *old, *new;
+
+	if (old_fsn->mask & FS_IN_IGNORED)
+		return false;
+	old = INOTIFY_E(old_fsn);
+	new = INOTIFY_E(new_fsn);
+	if ((old_fsn->mask == new_fsn->mask) &&
+	    (old_fsn->inode == new_fsn->inode) &&
+	    (old->name_len == new->name_len) &&
+	    (!old->name_len || !strcmp(old->name, new->name)))
+		return true;
+>>>>>>> refs/remotes/origin/master
 	return false;
 }
 
 static struct fsnotify_event *inotify_merge(struct list_head *list,
 					    struct fsnotify_event *event)
 {
+<<<<<<< HEAD
 	struct fsnotify_event_holder *last_holder;
 	struct fsnotify_event *last_event;
 
@@ -127,11 +147,76 @@ static int inotify_handle_event(struct fsnotify_group *group,
 		if (!IS_ERR(added_event))
 			fsnotify_put_event(added_event);
 		else
+=======
+	struct fsnotify_event *last_event;
+
+	last_event = list_entry(list->prev, struct fsnotify_event, list);
+	if (!event_compare(last_event, event))
+		return NULL;
+	return last_event;
+}
+
+int inotify_handle_event(struct fsnotify_group *group,
+			 struct inode *inode,
+			 struct fsnotify_mark *inode_mark,
+			 struct fsnotify_mark *vfsmount_mark,
+			 u32 mask, void *data, int data_type,
+			 const unsigned char *file_name)
+{
+	struct inotify_inode_mark *i_mark;
+	struct inotify_event_info *event;
+	struct fsnotify_event *added_event;
+	struct fsnotify_event *fsn_event;
+	int ret = 0;
+	int len = 0;
+	int alloc_len = sizeof(struct inotify_event_info);
+
+	BUG_ON(vfsmount_mark);
+
+	if ((inode_mark->mask & FS_EXCL_UNLINK) &&
+	    (data_type == FSNOTIFY_EVENT_PATH)) {
+		struct path *path = data;
+
+		if (d_unlinked(path->dentry))
+			return 0;
+	}
+	if (file_name) {
+		len = strlen(file_name);
+		alloc_len += len + 1;
+	}
+
+	pr_debug("%s: group=%p inode=%p mask=%x\n", __func__, group, inode,
+		 mask);
+
+	i_mark = container_of(inode_mark, struct inotify_inode_mark,
+			      fsn_mark);
+
+	event = kmalloc(alloc_len, GFP_KERNEL);
+	if (unlikely(!event))
+		return -ENOMEM;
+
+	fsn_event = &event->fse;
+	fsnotify_init_event(fsn_event, inode, mask);
+	event->wd = i_mark->wd;
+	event->name_len = len;
+	if (len)
+		strcpy(event->name, file_name);
+
+	added_event = fsnotify_add_notify_event(group, fsn_event, inotify_merge);
+	if (added_event) {
+		/* Our event wasn't used in the end. Free it. */
+		fsnotify_destroy_event(group, fsn_event);
+		if (IS_ERR(added_event))
+>>>>>>> refs/remotes/origin/master
 			ret = PTR_ERR(added_event);
 	}
 
 	if (inode_mark->mask & IN_ONESHOT)
+<<<<<<< HEAD
 		fsnotify_destroy_mark(inode_mark);
+=======
+		fsnotify_destroy_mark(inode_mark, group);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -141,6 +226,7 @@ static void inotify_freeing_mark(struct fsnotify_mark *fsn_mark, struct fsnotify
 	inotify_ignored_and_remove_idr(fsn_mark, group);
 }
 
+<<<<<<< HEAD
 static bool inotify_should_send_event(struct fsnotify_group *group, struct inode *inode,
 				      struct fsnotify_mark *inode_mark,
 				      struct fsnotify_mark *vfsmount_mark,
@@ -157,6 +243,8 @@ static bool inotify_should_send_event(struct fsnotify_group *group, struct inode
 	return true;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This is NEVER supposed to be called.  Inotify marks should either have been
  * removed from the idr when the watch was removed or in the
@@ -196,12 +284,16 @@ static void inotify_free_group_priv(struct fsnotify_group *group)
 {
 	/* ideally the idr is empty and we won't hit the BUG in the callback */
 	idr_for_each(&group->inotify_data.idr, idr_callback, group);
+<<<<<<< HEAD
 	idr_remove_all(&group->inotify_data.idr);
+=======
+>>>>>>> refs/remotes/origin/master
 	idr_destroy(&group->inotify_data.idr);
 	atomic_dec(&group->inotify_data.user->inotify_devs);
 	free_uid(group->inotify_data.user);
 }
 
+<<<<<<< HEAD
 void inotify_free_event_priv(struct fsnotify_event_private_data *fsn_event_priv)
 {
 	struct inotify_event_private_data *event_priv;
@@ -211,12 +303,22 @@ void inotify_free_event_priv(struct fsnotify_event_private_data *fsn_event_priv)
 				  fsnotify_event_priv_data);
 
 	kmem_cache_free(event_priv_cachep, event_priv);
+=======
+static void inotify_free_event(struct fsnotify_event *fsn_event)
+{
+	kfree(INOTIFY_E(fsn_event));
+>>>>>>> refs/remotes/origin/master
 }
 
 const struct fsnotify_ops inotify_fsnotify_ops = {
 	.handle_event = inotify_handle_event,
+<<<<<<< HEAD
 	.should_send_event = inotify_should_send_event,
 	.free_group_priv = inotify_free_group_priv,
 	.free_event_priv = inotify_free_event_priv,
+=======
+	.free_group_priv = inotify_free_group_priv,
+	.free_event = inotify_free_event,
+>>>>>>> refs/remotes/origin/master
 	.freeing_mark = inotify_freeing_mark,
 };

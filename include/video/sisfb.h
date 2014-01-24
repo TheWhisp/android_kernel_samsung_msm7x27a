@@ -17,6 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_SISFB_H_
 #define _LINUX_SISFB_H_
@@ -208,6 +209,14 @@ struct sis_memreq {
 #ifdef __KERNEL__
 
 #include <linux/pci.h>
+=======
+#ifndef _LINUX_SISFB_H_
+#define _LINUX_SISFB_H_
+
+
+#include <linux/pci.h>
+#include <uapi/video/sisfb.h>
+>>>>>>> refs/remotes/origin/master
 
 #define	UNKNOWN_VGA  0
 #define	SIS_300_VGA  1
@@ -220,5 +229,8 @@ extern void sis_malloc_new(struct pci_dev *pdev, struct sis_memreq *req);
 extern void sis_free(u32 base);
 extern void sis_free_new(struct pci_dev *pdev, u32 base);
 #endif
+<<<<<<< HEAD
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

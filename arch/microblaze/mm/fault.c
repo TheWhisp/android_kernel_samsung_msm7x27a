@@ -32,8 +32,15 @@
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/mmu.h>
+<<<<<<< HEAD
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mmu_context.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/uaccess.h>
 #include <asm/exceptions.h>
 
@@ -93,13 +100,21 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
 	int code = SEGV_MAPERR;
 	int is_write = error_code & ESR_S;
 	int fault;
+<<<<<<< HEAD
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+>>>>>>> refs/remotes/origin/master
 
 	regs->ear = address;
 	regs->esr = error_code;
 
 	/* On a kernel SLB miss we can only check for a valid exception entry */
 	if (unlikely(kernel_mode(regs) && (address >= TASK_SIZE))) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "kernel task_size exceed");
+=======
+		pr_warn("kernel task_size exceed");
+>>>>>>> refs/remotes/origin/master
 		_exception(SIGSEGV, regs, code, address);
 	}
 
@@ -113,13 +128,25 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
 
 		/* in_atomic() in user mode is really bad,
 		   as is current->mm == NULL. */
+<<<<<<< HEAD
 		printk(KERN_EMERG "Page fault in user mode with "
 		       "in_atomic(), mm = %p\n", mm);
 		printk(KERN_EMERG "r15 = %lx  MSR = %lx\n",
+=======
+		pr_emerg("Page fault in user mode with in_atomic(), mm = %p\n",
+									mm);
+		pr_emerg("r15 = %lx  MSR = %lx\n",
+>>>>>>> refs/remotes/origin/master
 		       regs->r15, regs->msr);
 		die("Weird page fault", regs, SIGSEGV);
 	}
 
+<<<<<<< HEAD
+=======
+	if (user_mode(regs))
+		flags |= FAULT_FLAG_USER;
+
+>>>>>>> refs/remotes/origin/master
 	/* When running in the kernel we expect faults to occur only to
 	 * addresses in user space.  All other faults represent errors in the
 	 * kernel and should generate an OOPS.  Unfortunately, in the case of an
@@ -139,6 +166,10 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
 		if (kernel_mode(regs) && !search_exception_tables(regs->pc))
 			goto bad_area_nosemaphore;
 
+<<<<<<< HEAD
+=======
+retry:
+>>>>>>> refs/remotes/origin/master
 		down_read(&mm->mmap_sem);
 	}
 
@@ -197,6 +228,10 @@ good_area:
 	if (unlikely(is_write)) {
 		if (unlikely(!(vma->vm_flags & VM_WRITE)))
 			goto bad_area;
+<<<<<<< HEAD
+=======
+		flags |= FAULT_FLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 	/* a read */
 	} else {
 		/* protection fault */
@@ -211,7 +246,15 @@ good_area:
 	 * make sure we exit gracefully rather than endlessly redo
 	 * the fault.
 	 */
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, is_write ? FAULT_FLAG_WRITE : 0);
+=======
+	fault = handle_mm_fault(mm, vma, address, flags);
+
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
@@ -219,11 +262,36 @@ good_area:
 			goto do_sigbus;
 		BUG();
 	}
+<<<<<<< HEAD
 	if (unlikely(fault & VM_FAULT_MAJOR))
 		current->maj_flt++;
 	else
 		current->min_flt++;
 	up_read(&mm->mmap_sem);
+=======
+
+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+		if (unlikely(fault & VM_FAULT_MAJOR))
+			current->maj_flt++;
+		else
+			current->min_flt++;
+		if (fault & VM_FAULT_RETRY) {
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+			flags |= FAULT_FLAG_TRIED;
+
+			/*
+			 * No need to up_read(&mm->mmap_sem) as we would
+			 * have already released it in __lock_page_or_retry
+			 * in mm/filemap.c.
+			 */
+
+			goto retry;
+		}
+	}
+
+	up_read(&mm->mmap_sem);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * keep track of tlb+htab misses that are good addrs but
 	 * just need pte's created via handle_mm_fault()

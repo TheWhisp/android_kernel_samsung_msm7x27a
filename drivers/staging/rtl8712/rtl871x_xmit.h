@@ -1,3 +1,37 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/******************************************************************************
+ *
+ * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of version 2 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ * Modifications for inclusion into the Linux staging tree are
+ * Copyright(c) 2010 Larry Finger. All rights reserved.
+ *
+ * Contact information:
+ * WLAN FAE <wlanfae@realtek.com>
+ * Larry Finger <Larry.Finger@lwfinger.net>
+ *
+ ******************************************************************************/
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _RTL871X_XMIT_H_
 #define _RTL871X_XMIT_H_
 
@@ -5,8 +39,30 @@
 #include "drv_types.h"
 #include "xmit_osdep.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_XMITBUF_SZ	(2048)
 #define NR_XMITBUFF	(4)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_R8712_TX_AGGR
+#define MAX_XMITBUF_SZ  (16384)
+#else
+#define MAX_XMITBUF_SZ  (2048)
+#endif
+
+#define NR_XMITBUFF     (4)
+
+#ifdef CONFIG_R8712_TX_AGGR
+#define AGGR_NR_HIGH_BOUND      (4) /*(8) */
+#define AGGR_NR_LOW_BOUND       (2)
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define XMITBUF_ALIGN_SZ 512
 #define TX_GUARD_BAND		5
 #define MAX_NUMBLKS		(1)
@@ -68,9 +124,21 @@ struct pkt_attrib {
 
 	u16	seqnum;
 	u16	ether_type;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32	pktlen;		/* the original 802.3 pkt raw_data len
 				 * (not include ether_hdr data) */
 	u32	last_txcmdsz;
+=======
+	u16	pktlen;		/* the original 802.3 pkt raw_data len
+				 * (not include ether_hdr data) */
+	u16	last_txcmdsz;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16	pktlen;		/* the original 802.3 pkt raw_data len
+				 * (not include ether_hdr data) */
+	u16	last_txcmdsz;
+>>>>>>> refs/remotes/origin/master
 
 	u8	pkt_hdrlen;	/*the original 802.3 pkt header len*/
 	u8	hdrlen;		/*the WLAN Header Len*/
@@ -83,7 +151,11 @@ struct pkt_attrib {
 
 	u8	priority;
 	u8	encrypt;	/* when 0 indicate no encrypt. when non-zero,
+<<<<<<< HEAD
 				 * indicate the encrypt algorith*/
+=======
+				 * indicate the encrypt algorithm*/
+>>>>>>> refs/remotes/origin/master
 	u8	iv_len;
 	u8	icv_len;
 	unsigned char iv[8];
@@ -110,7 +182,19 @@ struct xmit_buf {
 
 	u8 *pallocated_buf;
 	u8 *pbuf;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct urb *pxmit_urb[8];
+=======
+	void *priv_data;
+	struct urb *pxmit_urb[8];
+	u32 aggr_nr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *priv_data;
+	struct urb *pxmit_urb[8];
+	u32 aggr_nr;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct xmit_frame {
@@ -164,8 +248,14 @@ struct	hw_txqueue {
 
 struct	xmit_priv {
 	spinlock_t lock;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct semaphore xmit_sema;
 	struct semaphore terminate_xmitthread_sema;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct  __queue	be_pending;
 	struct  __queue	bk_pending;
 	struct  __queue	vi_pending;
@@ -195,9 +285,23 @@ struct	xmit_priv {
 	uint	tx_drop;
 	struct hw_xmit *hwxmits;
 	u8	hwxmit_entry;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct semaphore tx_retevt;/*all tx return event;*/
 	u8	txirp_cnt;
 	struct tasklet_struct xmit_tasklet;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u8	txirp_cnt;
+	struct tasklet_struct xmit_tasklet;
+	_workitem xmit_pipe4_reset_wi;
+	_workitem xmit_pipe6_reset_wi;
+	_workitem xmit_piped_reset_wi;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*per AC pending irp*/
 	int beq_cnt;
 	int bkq_cnt;
@@ -255,6 +359,18 @@ int r8712_xmit_enqueue(struct _adapter *padapter,
 int r8712_xmit_direct(struct _adapter *padapter, struct xmit_frame *pxmitframe);
 void r8712_xmit_bh(void *priv);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void xmitframe_xmitbuf_attach(struct xmit_frame *pxmitframe,
+			struct xmit_buf *pxmitbuf);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void xmitframe_xmitbuf_attach(struct xmit_frame *pxmitframe,
+			struct xmit_buf *pxmitbuf);
+
+>>>>>>> refs/remotes/origin/master
 #include "rtl8712_xmit.h"
 
 #endif	/*_RTL871X_XMIT_H_*/

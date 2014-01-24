@@ -14,6 +14,8 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/cpumask.h>
 #include <linux/interrupt.h>
 #include <linux/smp.h>
@@ -532,17 +534,37 @@ handle_associated_event(struct cpu_hw_events *cpuc,
 }
 
 #include "perf_event_mipsxx.c"
+=======
+#include <linux/perf_event.h>
+
+#include <asm/stacktrace.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/perf_event.h>
+
+#include <asm/stacktrace.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Callchain handling code. */
 
 /*
  * Leave userspace callchain empty for now. When we find a way to trace
+<<<<<<< HEAD
+<<<<<<< HEAD
  * the user stack callchains, we add here.
  */
 void perf_callchain_user(struct perf_callchain_entry *entry,
 		    struct pt_regs *regs)
 {
 }
+=======
+ * the user stack callchains, we will add it here.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * the user stack callchains, we will add it here.
+ */
+>>>>>>> refs/remotes/origin/master
 
 static void save_raw_perf_callchain(struct perf_callchain_entry *entry,
 	unsigned long reg29)

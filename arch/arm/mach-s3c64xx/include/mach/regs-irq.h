@@ -15,6 +15,9 @@
 #ifndef __ASM_ARCH_REGS_IRQ_H
 #define __ASM_ARCH_REGS_IRQ_H __FILE__
 
+<<<<<<< HEAD
 #include <asm/hardware/vic.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_ARCH_6400_REGS_IRQ_H */

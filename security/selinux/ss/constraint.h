@@ -48,6 +48,10 @@ struct constraint_expr {
 	u32 op;			/* operator */
 
 	struct ebitmap names;	/* names */
+<<<<<<< HEAD
+=======
+	struct type_set *type_names;
+>>>>>>> refs/remotes/origin/master
 
 	struct constraint_expr *next;   /* next expression */
 };

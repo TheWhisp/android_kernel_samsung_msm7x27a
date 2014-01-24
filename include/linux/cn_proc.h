@@ -14,6 +14,7 @@
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+<<<<<<< HEAD
 
 #ifndef CN_PROC_H
 #define CN_PROC_H
@@ -53,6 +54,11 @@ struct proc_event {
 		PROC_EVENT_UID  = 0x00000004,
 		PROC_EVENT_GID  = 0x00000040,
 		PROC_EVENT_SID  = 0x00000080,
+<<<<<<< HEAD
+=======
+		PROC_EVENT_PTRACE = 0x00000100,
+		PROC_EVENT_COMM = 0x00000200,
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* "next" should be 0x00000400 */
 		/* "last" is the last process event: exit */
 		PROC_EVENT_EXIT = 0x80000000
@@ -95,6 +101,22 @@ struct proc_event {
 			__kernel_pid_t process_tgid;
 		} sid;
 
+<<<<<<< HEAD
+=======
+		struct ptrace_proc_event {
+			__kernel_pid_t process_pid;
+			__kernel_pid_t process_tgid;
+			__kernel_pid_t tracer_pid;
+			__kernel_pid_t tracer_tgid;
+		} ptrace;
+
+		struct comm_proc_event {
+			__kernel_pid_t process_pid;
+			__kernel_pid_t process_tgid;
+			char           comm[16];
+		} comm;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct exit_proc_event {
 			__kernel_pid_t process_pid;
 			__kernel_pid_t process_tgid;
@@ -104,11 +126,29 @@ struct proc_event {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef CN_PROC_H
+#define CN_PROC_H
+
+#include <uapi/linux/cn_proc.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PROC_EVENTS
 void proc_fork_connector(struct task_struct *task);
 void proc_exec_connector(struct task_struct *task);
 void proc_id_connector(struct task_struct *task, int which_id);
 void proc_sid_connector(struct task_struct *task);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void proc_ptrace_connector(struct task_struct *task, int which_id);
+void proc_comm_connector(struct task_struct *task);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void proc_ptrace_connector(struct task_struct *task, int which_id);
+void proc_comm_connector(struct task_struct *task);
+void proc_coredump_connector(struct task_struct *task);
+>>>>>>> refs/remotes/origin/master
 void proc_exit_connector(struct task_struct *task);
 #else
 static inline void proc_fork_connector(struct task_struct *task)
@@ -124,8 +164,30 @@ static inline void proc_id_connector(struct task_struct *task,
 static inline void proc_sid_connector(struct task_struct *task)
 {}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void proc_comm_connector(struct task_struct *task)
+{}
+
+static inline void proc_ptrace_connector(struct task_struct *task,
+					 int ptrace_id)
+{}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void proc_exit_connector(struct task_struct *task)
 {}
 #endif	/* CONFIG_PROC_EVENTS */
 #endif	/* __KERNEL__ */
+=======
+static inline void proc_coredump_connector(struct task_struct *task)
+{}
+
+static inline void proc_exit_connector(struct task_struct *task)
+{}
+#endif	/* CONFIG_PROC_EVENTS */
+>>>>>>> refs/remotes/origin/master
 #endif	/* CN_PROC_H */

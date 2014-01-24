@@ -58,6 +58,7 @@ void ehca_tasklet_eq(unsigned long data);
 void ehca_process_eq(struct ehca_shca *shca, int is_irq);
 
 struct ehca_cpu_comp_task {
+<<<<<<< HEAD
 	wait_queue_head_t wait_queue;
 	struct list_head cq_list;
 	struct task_struct *task;
@@ -67,6 +68,17 @@ struct ehca_cpu_comp_task {
 
 struct ehca_comp_pool {
 	struct ehca_cpu_comp_task *cpu_comp_tasks;
+=======
+	struct list_head cq_list;
+	spinlock_t task_lock;
+	int cq_jobs;
+	int active;
+};
+
+struct ehca_comp_pool {
+	struct ehca_cpu_comp_task __percpu *cpu_comp_tasks;
+	struct task_struct * __percpu *cpu_comp_threads;
+>>>>>>> refs/remotes/origin/master
 	int last_cpu;
 	spinlock_t last_cpu_lock;
 };

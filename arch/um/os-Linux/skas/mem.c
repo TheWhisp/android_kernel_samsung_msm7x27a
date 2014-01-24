@@ -8,8 +8,12 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/mman.h>
+<<<<<<< HEAD
 #include "init.h"
+<<<<<<< HEAD
 #include "kern_constants.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "as-layout.h"
 #include "mm_id.h"
 #include "os.h"
@@ -17,9 +21,24 @@
 #include "ptrace_user.h"
 #include "registers.h"
 #include "skas.h"
+<<<<<<< HEAD
 #include "user.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "sysdep/ptrace.h"
 #include "sysdep/stub.h"
+=======
+#include <init.h>
+#include <as-layout.h>
+#include <mm_id.h>
+#include <os.h>
+#include <proc_mm.h>
+#include <ptrace_user.h>
+#include <registers.h>
+#include <skas.h>
+#include <sysdep/ptrace.h>
+#include <sysdep/stub.h>
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned long batch_syscall_stub, __syscall_stub_start;
 
@@ -39,7 +58,15 @@ static unsigned long syscall_regs[MAX_REG_NR];
 
 static int __init init_syscall_regs(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	get_safe_registers(syscall_regs);
+=======
+	get_safe_registers(syscall_regs, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	get_safe_registers(syscall_regs, NULL);
+>>>>>>> refs/remotes/origin/master
 	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
 		((unsigned long) &batch_syscall_stub -
 		 (unsigned long) &__syscall_stub_start);
@@ -50,10 +77,13 @@ __initcall(init_syscall_regs);
 
 extern int proc_mm;
 
+<<<<<<< HEAD
 int single_count = 0;
 int multi_count = 0;
 int multi_op_count = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
 {
 	int n, i;
@@ -66,8 +96,11 @@ static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
 		/* FIXME: Need to look up userspace_pid by cpu */
 		pid = userspace_pid[0];
 
+<<<<<<< HEAD
 	multi_count++;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	n = ptrace_setregs(pid, syscall_regs);
 	if (n < 0) {
 		printk(UM_KERN_ERR "Registers - \n");
@@ -128,9 +161,12 @@ long run_syscall_stub(struct mm_id * mm_idp, int syscall,
 {
 	unsigned long *stack = check_init_stack(mm_idp, *addr);
 
+<<<<<<< HEAD
 	if (done && *addr == NULL)
 		single_count++;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	*stack += sizeof(long);
 	stack += *stack / sizeof(long);
 
@@ -143,7 +179,10 @@ long run_syscall_stub(struct mm_id * mm_idp, int syscall,
 	*stack++ = args[5];
 	*stack++ = expected;
 	*stack = 0;
+<<<<<<< HEAD
 	multi_op_count++;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!done && ((((unsigned long) stack) & ~UM_KERN_PAGE_MASK) <
 		     UM_KERN_PAGE_SIZE - 10 * sizeof(long))) {

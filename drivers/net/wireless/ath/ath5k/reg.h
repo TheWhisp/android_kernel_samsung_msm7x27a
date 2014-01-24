@@ -72,7 +72,15 @@
 #define	AR5K_CFG_SWRD		0x00000004	/* Byte-swap RX descriptor */
 #define	AR5K_CFG_SWRB		0x00000008	/* Byte-swap RX buffer */
 #define	AR5K_CFG_SWRG		0x00000010	/* Byte-swap Register access */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_CFG_IBSS		0x00000020 	/* 0-BSS, 1-IBSS [5211+] */
+=======
+#define AR5K_CFG_IBSS		0x00000020	/* 0-BSS, 1-IBSS [5211+] */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_CFG_IBSS		0x00000020	/* 0-BSS, 1-IBSS [5211+] */
+>>>>>>> refs/remotes/origin/master
 #define AR5K_CFG_PHY_OK		0x00000100	/* [5211+] */
 #define AR5K_CFG_EEBS		0x00000200	/* EEPROM is busy */
 #define	AR5K_CFG_CLKGD		0x00000400	/* Clock gated (Disable dynamic clock) */
@@ -170,7 +178,15 @@
 #define AR5K_TXCFG_SDMAMR_S		0
 #define AR5K_TXCFG_B_MODE		0x00000008	/* Set b mode for 5111 (enable 2111) */
 #define AR5K_TXCFG_TXFSTP		0x00000008	/* TX DMA full Stop [5210] */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_TXCFG_TXFULL		0x000003f0	/* TX Triger level mask */
+=======
+#define AR5K_TXCFG_TXFULL		0x000003f0	/* TX Trigger level mask */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_TXCFG_TXFULL		0x000003f0	/* TX Trigger level mask */
+>>>>>>> refs/remotes/origin/master
 #define AR5K_TXCFG_TXFULL_S		4
 #define AR5K_TXCFG_TXFULL_0B		0x00000000
 #define AR5K_TXCFG_TXFULL_64B		0x00000010
@@ -280,19 +296,52 @@
  * 5211/5212 we have one primary and 4 secondary registers.
  * So we have AR5K_ISR for 5210 and AR5K_PISR /SISRx for 5211/5212.
  * Most of these bits are common for all chipsets.
+<<<<<<< HEAD
+<<<<<<< HEAD
  */
 #define AR5K_ISR		0x001c			/* Register Address [5210] */
 #define AR5K_PISR		0x0080			/* Register Address [5211+] */
 #define AR5K_ISR_RXOK		0x00000001	/* Frame successfuly received */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * NOTE: On 5211+ TXOK, TXDESC, TXERR, TXEOL and TXURN contain
+ * the logical OR from per-queue interrupt bits found on SISR registers
+ * (see below).
+ */
+#define AR5K_ISR		0x001c			/* Register Address [5210] */
+#define AR5K_PISR		0x0080			/* Register Address [5211+] */
+#define AR5K_ISR_RXOK		0x00000001	/* Frame successfully received */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR5K_ISR_RXDESC		0x00000002	/* RX descriptor request */
 #define AR5K_ISR_RXERR		0x00000004	/* Receive error */
 #define AR5K_ISR_RXNOFRM	0x00000008	/* No frame received (receive timeout) */
 #define AR5K_ISR_RXEOL		0x00000010	/* Empty RX descriptor */
 #define AR5K_ISR_RXORN		0x00000020	/* Receive FIFO overrun */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_ISR_TXOK		0x00000040	/* Frame successfuly transmited */
 #define AR5K_ISR_TXDESC		0x00000080	/* TX descriptor request */
 #define AR5K_ISR_TXERR		0x00000100	/* Transmit error */
 #define AR5K_ISR_TXNOFRM	0x00000200	/* No frame transmited (transmit timeout) */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define AR5K_ISR_TXOK		0x00000040	/* Frame successfully transmitted */
+#define AR5K_ISR_TXDESC		0x00000080	/* TX descriptor request */
+#define AR5K_ISR_TXERR		0x00000100	/* Transmit error */
+#define AR5K_ISR_TXNOFRM	0x00000200	/* No frame transmitted (transmit timeout)
+						 * NOTE: We don't have per-queue info for this
+						 * one, but we can enable it per-queue through
+						 * TXNOFRM_QCU field on TXNOFRM register */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR5K_ISR_TXEOL		0x00000400	/* Empty TX descriptor */
 #define AR5K_ISR_TXURN		0x00000800	/* Transmit FIFO underrun */
 #define AR5K_ISR_MIB		0x00001000	/* Update MIB counters */
@@ -302,6 +351,8 @@
 #define AR5K_ISR_SWBA		0x00010000	/* Software beacon alert */
 #define AR5K_ISR_BRSSI		0x00020000	/* Beacon rssi below threshold (?) */
 #define AR5K_ISR_BMISS		0x00040000	/* Beacon missed */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_ISR_HIUERR		0x00080000	/* Host Interface Unit error [5211+] */
 #define AR5K_ISR_BNR		0x00100000 	/* Beacon not ready [5211+] */
 #define AR5K_ISR_MCABT		0x00100000	/* Master Cycle Abort [5210] */
@@ -312,11 +363,45 @@
 #define AR5K_ISR_TIM		0x00800000	/* [5211+] */
 #define AR5K_ISR_BCNMISC	0x00800000	/* 'or' of TIM, CAB_END, DTIM_SYNC, BCN_TIMEOUT,
 						CAB_TIMEOUT and DTIM bits from SISR2 [5212+] */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define AR5K_ISR_HIUERR		0x00080000	/* Host Interface Unit error [5211+]
+						 * 'or' of MCABT, SSERR, DPERR from SISR2 */
+#define AR5K_ISR_BNR		0x00100000	/* Beacon not ready [5211+] */
+#define AR5K_ISR_MCABT		0x00100000	/* Master Cycle Abort [5210] */
+#define AR5K_ISR_RXCHIRP	0x00200000	/* CHIRP Received [5212+] */
+#define AR5K_ISR_SSERR		0x00200000	/* Signaled System Error [5210] */
+#define AR5K_ISR_DPERR		0x00400000	/* Bus parity error [5210] */
+#define AR5K_ISR_RXDOPPLER	0x00400000	/* Doppler chirp received [5212+] */
+#define AR5K_ISR_TIM		0x00800000	/* [5211+] */
+#define AR5K_ISR_BCNMISC	0x00800000	/* Misc beacon related interrupt
+						 * 'or' of TIM, CAB_END, DTIM_SYNC, BCN_TIMEOUT,
+						 * CAB_TIMEOUT and DTIM bits from SISR2 [5212+] */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR5K_ISR_GPIO		0x01000000	/* GPIO (rf kill) */
 #define AR5K_ISR_QCBRORN	0x02000000	/* QCU CBR overrun [5211+] */
 #define AR5K_ISR_QCBRURN	0x04000000	/* QCU CBR underrun [5211+] */
 #define AR5K_ISR_QTRIG		0x08000000	/* QCU scheduling trigger [5211+] */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define	AR5K_ISR_BITS_FROM_SISRS	(AR5K_ISR_TXOK | AR5K_ISR_TXDESC |\
+					AR5K_ISR_TXERR | AR5K_ISR_TXEOL |\
+					AR5K_ISR_TXURN | AR5K_ISR_HIUERR |\
+					AR5K_ISR_BCNMISC | AR5K_ISR_QCBRORN |\
+					AR5K_ISR_QCBRURN | AR5K_ISR_QTRIG)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Secondary status registers [5211+] (0 - 4)
  *
@@ -347,7 +432,15 @@
 #define	AR5K_SISR2_BCN_TIMEOUT	0x08000000	/* Beacon Timeout [5212+] */
 #define	AR5K_SISR2_CAB_TIMEOUT	0x10000000	/* CAB Timeout [5212+] */
 #define	AR5K_SISR2_DTIM		0x20000000	/* [5212+] */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define	AR5K_SISR2_TSFOOR	0x80000000	/* TSF OOR (?) */
+=======
+#define	AR5K_SISR2_TSFOOR	0x80000000	/* TSF Out of range */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	AR5K_SISR2_TSFOOR	0x80000000	/* TSF Out of range */
+>>>>>>> refs/remotes/origin/master
 
 #define AR5K_SISR3		0x0090			/* Register Address [5211+] */
 #define AR5K_SISR3_QCBRORN	0x000003ff	/* Mask for QCBRORN */
@@ -377,16 +470,37 @@
  */
 #define	AR5K_IMR		0x0020			/* Register Address [5210] */
 #define AR5K_PIMR		0x00a0			/* Register Address [5211+] */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_IMR_RXOK		0x00000001	/* Frame successfuly received*/
+=======
+#define AR5K_IMR_RXOK		0x00000001	/* Frame successfully received*/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_IMR_RXOK		0x00000001	/* Frame successfully received*/
+>>>>>>> refs/remotes/origin/master
 #define AR5K_IMR_RXDESC		0x00000002	/* RX descriptor request*/
 #define AR5K_IMR_RXERR		0x00000004	/* Receive error*/
 #define AR5K_IMR_RXNOFRM	0x00000008	/* No frame received (receive timeout)*/
 #define AR5K_IMR_RXEOL		0x00000010	/* Empty RX descriptor*/
 #define AR5K_IMR_RXORN		0x00000020	/* Receive FIFO overrun*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_IMR_TXOK		0x00000040	/* Frame successfuly transmited*/
 #define AR5K_IMR_TXDESC		0x00000080	/* TX descriptor request*/
 #define AR5K_IMR_TXERR		0x00000100	/* Transmit error*/
 #define AR5K_IMR_TXNOFRM	0x00000200	/* No frame transmited (transmit timeout)*/
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define AR5K_IMR_TXOK		0x00000040	/* Frame successfully transmitted*/
+#define AR5K_IMR_TXDESC		0x00000080	/* TX descriptor request*/
+#define AR5K_IMR_TXERR		0x00000100	/* Transmit error*/
+#define AR5K_IMR_TXNOFRM	0x00000200	/* No frame transmitted (transmit timeout)*/
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR5K_IMR_TXEOL		0x00000400	/* Empty TX descriptor*/
 #define AR5K_IMR_TXURN		0x00000800	/* Transmit FIFO underrun*/
 #define AR5K_IMR_MIB		0x00001000	/* Update MIB counters*/
@@ -397,7 +511,15 @@
 #define AR5K_IMR_BRSSI		0x00020000	/* Beacon rssi below threshold (?) */
 #define AR5K_IMR_BMISS		0x00040000	/* Beacon missed*/
 #define AR5K_IMR_HIUERR		0x00080000	/* Host Interface Unit error [5211+] */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_IMR_BNR		0x00100000 	/* Beacon not ready [5211+] */
+=======
+#define AR5K_IMR_BNR		0x00100000	/* Beacon not ready [5211+] */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_IMR_BNR		0x00100000	/* Beacon not ready [5211+] */
+>>>>>>> refs/remotes/origin/master
 #define AR5K_IMR_MCABT		0x00100000	/* Master Cycle Abort [5210] */
 #define AR5K_IMR_RXCHIRP	0x00200000	/* CHIRP Received [5212+]*/
 #define AR5K_IMR_SSERR		0x00200000	/* Signaled System Error [5210] */
@@ -601,7 +723,15 @@
  * QCU misc registers
  */
 #define AR5K_QCU_MISC_BASE		0x09c0			/* Register Address -Queue0 MISC */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define	AR5K_QCU_MISC_FRSHED_M		0x0000000f	/* Frame sheduling mask */
+=======
+#define	AR5K_QCU_MISC_FRSHED_M		0x0000000f	/* Frame scheduling mask */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	AR5K_QCU_MISC_FRSHED_M		0x0000000f	/* Frame scheduling mask */
+>>>>>>> refs/remotes/origin/master
 #define	AR5K_QCU_MISC_FRSHED_ASAP		0	/* ASAP */
 #define	AR5K_QCU_MISC_FRSHED_CBR		1	/* Constant Bit Rate */
 #define	AR5K_QCU_MISC_FRSHED_DBA_GT		2	/* DMA Beacon alert gated */
@@ -653,13 +783,29 @@
  * registers [5211+]
  *
  * These registers control the various characteristics of each queue
+<<<<<<< HEAD
+<<<<<<< HEAD
  * for 802.11e (WME) combatibility so they go together with
+=======
+ * for 802.11e (WME) compatibility so they go together with
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * for 802.11e (WME) compatibility so they go together with
+>>>>>>> refs/remotes/origin/master
  * QCU registers in pairs. For each queue we have a QCU mask register,
  * (0x1000 - 0x102c), a local-IFS settings register (0x1040 - 0x106c),
  * a retry limit register (0x1080 - 0x10ac), a channel time register
  * (0x10c0 - 0x10ec), a misc-settings register (0x1100 - 0x112c) and
  * a sequence number register (0x1140 - 0x116c). It seems that "global"
+<<<<<<< HEAD
+<<<<<<< HEAD
  * registers here afect all queues (see use of DCU_GBL_IFS_SLOT in ar5k).
+=======
+ * registers here affect all queues (see use of DCU_GBL_IFS_SLOT in ar5k).
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * registers here affect all queues (see use of DCU_GBL_IFS_SLOT in ar5k).
+>>>>>>> refs/remotes/origin/master
  * We use the same macros here for easier register access.
  *
  */
@@ -779,7 +925,15 @@
  * and it's used for generating pseudo-random
  * number sequences.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * (If i understand corectly, random numbers are
+=======
+ * (If i understand correctly, random numbers are
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * (If i understand correctly, random numbers are
+>>>>>>> refs/remotes/origin/master
  * used for idle sensing -multiplied with cwmin/max etc-)
  */
 #define AR5K_DCU_GBL_IFS_MISC			0x10f0			/* Register Address */
@@ -1007,7 +1161,15 @@
 #define	AR5K_PCIE_WAEN	0x407c
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * PCI-E Serializer/Desirializer
+=======
+ * PCI-E Serializer/Deserializer
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * PCI-E Serializer/Deserializer
+>>>>>>> refs/remotes/origin/master
  * registers
  */
 #define	AR5K_PCIE_SERDES	0x4080
@@ -1227,7 +1389,15 @@
 					AR5K_USEC_5210 : AR5K_USEC_5211)
 #define AR5K_USEC_1			0x0000007f	/* clock cycles for 1us */
 #define AR5K_USEC_1_S			0
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_USEC_32			0x00003f80	/* clock cycles for 1us while on 32Mhz clock */
+=======
+#define AR5K_USEC_32			0x00003f80	/* clock cycles for 1us while on 32MHz clock */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_USEC_32			0x00003f80	/* clock cycles for 1us while on 32MHz clock */
+>>>>>>> refs/remotes/origin/master
 #define AR5K_USEC_32_S			7
 #define AR5K_USEC_TX_LATENCY_5211	0x007fc000
 #define AR5K_USEC_TX_LATENCY_5211_S	14
@@ -1328,6 +1498,8 @@
 #define AR5K_RX_FILTER_5211	0x803c			/* Register Address [5211+] */
 #define AR5K_RX_FILTER		(ah->ah_version == AR5K_AR5210 ? \
 				AR5K_RX_FILTER_5210 : AR5K_RX_FILTER_5211)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define	AR5K_RX_FILTER_UCAST 	0x00000001	/* Don't filter unicast frames */
 #define	AR5K_RX_FILTER_MCAST 	0x00000002	/* Don't filter multicast frames */
 #define	AR5K_RX_FILTER_BCAST 	0x00000004	/* Don't filter broadcast frames */
@@ -1338,6 +1510,23 @@
 #define	AR5K_RX_FILTER_PROBEREQ 0x00000080	/* Don't filter probe requests [5212+] */
 #define	AR5K_RX_FILTER_PHYERR_5212	0x00000100	/* Don't filter phy errors [5212+] */
 #define	AR5K_RX_FILTER_RADARERR_5212 	0x00000200	/* Don't filter phy radar errors [5212+] */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define	AR5K_RX_FILTER_UCAST	0x00000001	/* Don't filter unicast frames */
+#define	AR5K_RX_FILTER_MCAST	0x00000002	/* Don't filter multicast frames */
+#define	AR5K_RX_FILTER_BCAST	0x00000004	/* Don't filter broadcast frames */
+#define	AR5K_RX_FILTER_CONTROL	0x00000008	/* Don't filter control frames */
+#define	AR5K_RX_FILTER_BEACON	0x00000010	/* Don't filter beacon frames */
+#define	AR5K_RX_FILTER_PROM	0x00000020	/* Set promiscuous mode */
+#define	AR5K_RX_FILTER_XRPOLL	0x00000040	/* Don't filter XR poll frame [5212+] */
+#define	AR5K_RX_FILTER_PROBEREQ 0x00000080	/* Don't filter probe requests [5212+] */
+#define	AR5K_RX_FILTER_PHYERR_5212	0x00000100	/* Don't filter phy errors [5212+] */
+#define	AR5K_RX_FILTER_RADARERR_5212	0x00000200	/* Don't filter phy radar errors [5212+] */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR5K_RX_FILTER_PHYERR_5211	0x00000040	/* [5211] */
 #define AR5K_RX_FILTER_RADARERR_5211	0x00000080	/* [5211] */
 #define AR5K_RX_FILTER_PHYERR  \
@@ -1461,7 +1650,15 @@
  * ADDAC test register [5211+]
  */
 #define AR5K_ADDAC_TEST			0x8054			/* Register Address */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_ADDAC_TEST_TXCONT 		0x00000001	/* Test continuous tx */
+=======
+#define AR5K_ADDAC_TEST_TXCONT		0x00000001	/* Test continuous tx */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_ADDAC_TEST_TXCONT		0x00000001	/* Test continuous tx */
+>>>>>>> refs/remotes/origin/master
 #define AR5K_ADDAC_TEST_TST_MODE	0x00000002	/* Test mode */
 #define AR5K_ADDAC_TEST_LOOP_EN		0x00000004	/* Enable loop */
 #define AR5K_ADDAC_TEST_LOOP_LEN	0x00000008	/* Loop length (field) */
@@ -1632,7 +1829,15 @@
 #define AR5K_SLEEP0_NEXT_DTIM		0x0007ffff	/* Mask for next DTIM (?) */
 #define AR5K_SLEEP0_NEXT_DTIM_S		0
 #define AR5K_SLEEP0_ASSUME_DTIM		0x00080000	/* Assume DTIM */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_SLEEP0_ENH_SLEEP_EN	0x00100000	/* Enable enchanced sleep control */
+=======
+#define AR5K_SLEEP0_ENH_SLEEP_EN	0x00100000	/* Enable enhanced sleep control */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_SLEEP0_ENH_SLEEP_EN	0x00100000	/* Enable enhanced sleep control */
+>>>>>>> refs/remotes/origin/master
 #define AR5K_SLEEP0_CABTO		0xff000000	/* Mask for CAB Time Out */
 #define AR5K_SLEEP0_CABTO_S		24
 
@@ -1657,7 +1862,15 @@
 /*
  * TX power control (TPC) register
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * XXX: PCDAC steps (0.5dbm) or DBM ?
+=======
+ * XXX: PCDAC steps (0.5dBm) or dBm ?
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * XXX: PCDAC steps (0.5dBm) or dBm ?
+>>>>>>> refs/remotes/origin/master
  *
  */
 #define AR5K_TXPC			0x80e8			/* Register Address */
@@ -1673,7 +1886,15 @@
 /*
  * Profile count registers
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * These registers can be cleared and freezed with ATH5K_MIBC, but they do not
+=======
+ * These registers can be cleared and frozen with ATH5K_MIBC, but they do not
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * These registers can be cleared and frozen with ATH5K_MIBC, but they do not
+>>>>>>> refs/remotes/origin/master
  * generate a MIB interrupt.
  * Instead of overflowing, they shift by one bit to the right. All registers
  * shift together, i.e. when one reaches the max, all shift at the same time by
@@ -1838,7 +2059,15 @@
 #define AR5K_PHY_TST2_TRIG_SEL		0x00000007	/* Trigger select (?)*/
 #define AR5K_PHY_TST2_TRIG		0x00000010	/* Trigger (?) */
 #define AR5K_PHY_TST2_CBUS_MODE		0x00000060	/* Cardbus mode (?) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_PHY_TST2_CLK32		0x00000400	/* CLK_OUT is CLK32 (32Khz external) */
+=======
+#define AR5K_PHY_TST2_CLK32		0x00000400	/* CLK_OUT is CLK32 (32kHz external) */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_PHY_TST2_CLK32		0x00000400	/* CLK_OUT is CLK32 (32kHz external) */
+>>>>>>> refs/remotes/origin/master
 #define AR5K_PHY_TST2_CHANCOR_DUMP_EN	0x00000800	/* Enable Chancor dump (?) */
 #define AR5K_PHY_TST2_EVEN_CHANCOR_DUMP	0x00001000	/* Even Chancor dump (?) */
 #define AR5K_PHY_TST2_RFSILENT_EN	0x00002000	/* Enable RFSILENT */
@@ -2002,7 +2231,15 @@
 #define	AR5K_PHY_AGCCTL_OFDM_DIV_DIS	0x00000008	/* Disable antenna diversity on OFDM modes */
 #define	AR5K_PHY_AGCCTL_NF_EN		0x00008000	/* Enable nf calibration to happen (?) */
 #define	AR5K_PHY_AGCTL_FLTR_CAL		0x00010000	/* Allow filter calibration (?) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define	AR5K_PHY_AGCCTL_NF_NOUPDATE	0x00020000	/* Don't update nf automaticaly */
+=======
+#define	AR5K_PHY_AGCCTL_NF_NOUPDATE	0x00020000	/* Don't update nf automatically */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	AR5K_PHY_AGCCTL_NF_NOUPDATE	0x00020000	/* Don't update nf automatically */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * PHY noise floor status register (CCA = Clear Channel Assessment)
@@ -2038,7 +2275,15 @@
 #define AR5K_PHY_WEAK_OFDM_HIGH_THR_M2_S	24
 
 /* Low thresholds */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_PHY_WEAK_OFDM_LOW_THR 		0x986c
+=======
+#define AR5K_PHY_WEAK_OFDM_LOW_THR		0x986c
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_PHY_WEAK_OFDM_LOW_THR		0x986c
+>>>>>>> refs/remotes/origin/master
 #define AR5K_PHY_WEAK_OFDM_LOW_THR_SELFCOR_EN	0x00000001
 #define AR5K_PHY_WEAK_OFDM_LOW_THR_M2_COUNT	0x00003f00
 #define AR5K_PHY_WEAK_OFDM_LOW_THR_M2_COUNT_S	8
@@ -2089,7 +2334,15 @@
  *
  * It's obvious from the code that 0x989c is the buffer register but
  * for the other special registers that we write to after sending each
+<<<<<<< HEAD
+<<<<<<< HEAD
  * packet, i have no idea. So i'll name them BUFFER_CONTROL_X registers
+=======
+ * packet, i have no idea. So I'll name them BUFFER_CONTROL_X registers
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * packet, i have no idea. So I'll name them BUFFER_CONTROL_X registers
+>>>>>>> refs/remotes/origin/master
  * for now. It's interesting that they are also used for some other operations.
  */
 
@@ -2259,12 +2512,28 @@
 #define	AR5K_PHY_FRAME_CTL_ILLLEN_ERR	0x08000000	/* Illegal length */
 #define	AR5K_PHY_FRAME_CTL_SERVICE_ERR	0x20000000
 #define	AR5K_PHY_FRAME_CTL_TXURN_ERR	0x40000000	/* TX underrun */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_PHY_FRAME_CTL_INI		AR5K_PHY_FRAME_CTL_SERVICE_ERR | \
 			AR5K_PHY_FRAME_CTL_TXURN_ERR | \
 			AR5K_PHY_FRAME_CTL_ILLLEN_ERR | \
 			AR5K_PHY_FRAME_CTL_ILLRATE_ERR | \
 			AR5K_PHY_FRAME_CTL_PARITY_ERR | \
 			AR5K_PHY_FRAME_CTL_TIMING_ERR
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define AR5K_PHY_FRAME_CTL_INI	\
+			(AR5K_PHY_FRAME_CTL_SERVICE_ERR | \
+			 AR5K_PHY_FRAME_CTL_TXURN_ERR | \
+			 AR5K_PHY_FRAME_CTL_ILLLEN_ERR | \
+			 AR5K_PHY_FRAME_CTL_ILLRATE_ERR | \
+			 AR5K_PHY_FRAME_CTL_PARITY_ERR | \
+			 AR5K_PHY_FRAME_CTL_TIMING_ERR)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * PHY Tx Power adjustment register [5212A+]
@@ -2281,22 +2550,54 @@
 #define	AR5K_PHY_RADAR			0x9954
 #define	AR5K_PHY_RADAR_ENABLE		0x00000001
 #define	AR5K_PHY_RADAR_DISABLE		0x00000000
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_PHY_RADAR_INBANDTHR    	0x0000003e	/* Inband threshold
+=======
+#define AR5K_PHY_RADAR_INBANDTHR	0x0000003e	/* Inband threshold
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_PHY_RADAR_INBANDTHR	0x0000003e	/* Inband threshold
+>>>>>>> refs/remotes/origin/master
 							5-bits, units unknown {0..31}
 							(? MHz ?) */
 #define AR5K_PHY_RADAR_INBANDTHR_S	1
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_PHY_RADAR_PRSSI_THR    	0x00000fc0	/* Pulse RSSI/SNR threshold
+=======
+#define AR5K_PHY_RADAR_PRSSI_THR	0x00000fc0	/* Pulse RSSI/SNR threshold
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_PHY_RADAR_PRSSI_THR	0x00000fc0	/* Pulse RSSI/SNR threshold
+>>>>>>> refs/remotes/origin/master
 							6-bits, dBm range {0..63}
 							in dBm units. */
 #define AR5K_PHY_RADAR_PRSSI_THR_S	6
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_PHY_RADAR_PHEIGHT_THR   	0x0003f000	/* Pulse height threshold
+=======
+#define AR5K_PHY_RADAR_PHEIGHT_THR	0x0003f000	/* Pulse height threshold
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_PHY_RADAR_PHEIGHT_THR	0x0003f000	/* Pulse height threshold
+>>>>>>> refs/remotes/origin/master
 							6-bits, dBm range {0..63}
 							in dBm units. */
 #define AR5K_PHY_RADAR_PHEIGHT_THR_S	12
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR5K_PHY_RADAR_RSSI_THR    	0x00fc0000	/* Radar RSSI/SNR threshold.
+=======
+#define AR5K_PHY_RADAR_RSSI_THR		0x00fc0000	/* Radar RSSI/SNR threshold.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR5K_PHY_RADAR_RSSI_THR		0x00fc0000	/* Radar RSSI/SNR threshold.
+>>>>>>> refs/remotes/origin/master
 							6-bits, dBm range {0..63}
 							in dBm units. */
 #define AR5K_PHY_RADAR_RSSI_THR_S	18
@@ -2339,7 +2640,15 @@
 #define AR5K_PHY_RESTART_DIV_GC_S	18
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * RF Bus access request register (for synth-oly channel switching)
+=======
+ * RF Bus access request register (for synth-only channel switching)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * RF Bus access request register (for synth-only channel switching)
+>>>>>>> refs/remotes/origin/master
  */
 #define AR5K_PHY_RFBUS_REQ		0x997C
 #define AR5K_PHY_RFBUS_REQ_REQUEST	0x00000001
@@ -2381,7 +2690,15 @@
  */
 #define	AR5K_BB_GAIN_BASE		0x9b00	/* BaseBand Amplifier Gain table base address */
 #define AR5K_BB_GAIN(_n)		(AR5K_BB_GAIN_BASE + ((_n) << 2))
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define	AR5K_RF_GAIN_BASE		0x9a00	/* RF Amplrifier Gain table base address */
+=======
+#define	AR5K_RF_GAIN_BASE		0x9a00	/* RF Amplifier Gain table base address */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	AR5K_RF_GAIN_BASE		0x9a00	/* RF Amplifier Gain table base address */
+>>>>>>> refs/remotes/origin/master
 #define AR5K_RF_GAIN(_n)		(AR5K_RF_GAIN_BASE + ((_n) << 2))
 
 /*

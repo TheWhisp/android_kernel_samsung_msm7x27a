@@ -1,9 +1,21 @@
 /*
  * Broadcom AMBA Interconnect definitions.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,10 +33,22 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: aidmp.h 277737 2011-08-16 17:54:59Z $
  */
 
 
+=======
+ * $Id: aidmp.h 241182 2011-02-17 21:50:03Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: aidmp.h 241182 2011-02-17 21:50:03Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef	_AIDMP_H
 #define	_AIDMP_H
 
@@ -191,7 +215,15 @@ typedef volatile struct _aidmp {
 	uint32	errlogflags;	
 	uint32	PAD[56];
 	uint32	intstatus;	
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint32	PAD[127];
+=======
+	uint32	PAD[255];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32	PAD[255];
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32	config;		
 	uint32	PAD[63];
 	uint32	itcr;		
@@ -312,7 +344,13 @@ typedef volatile struct _aidmp {
 #define	AI_RESETCTRL		0x800
 #define	AI_RESETSTATUS		0x804
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define	AI_IOCTRLWIDTH		0x700
 #define	AI_IOSTATUSWIDTH	0x704
 

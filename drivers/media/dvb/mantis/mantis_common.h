@@ -21,6 +21,10 @@
 #ifndef __MANTIS_COMMON_H
 #define __MANTIS_COMMON_H
 
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 #include <linux/workqueue.h>
 
@@ -122,11 +126,16 @@ struct mantis_pci {
 	unsigned int		num;
 
 	/*	RISC Core		*/
+<<<<<<< HEAD
 	u32			finished_block;
 	u32			last_block;
 	u32			line_bytes;
 	u32			line_count;
 	u32			risc_pos;
+=======
+	u32			busy_block;
+	u32			last_block;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8			*buf_cpu;
 	dma_addr_t		buf_dma;
 	u32			*risc_cpu;

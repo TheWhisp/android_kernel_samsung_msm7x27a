@@ -81,10 +81,13 @@ void rxrpc_UDP_error_report(struct sock *sk)
 			_net("I/F MTU %u", mtu);
 		}
 
+<<<<<<< HEAD
 		/* ip_rt_frag_needed() may have eaten the info */
 		if (mtu == 0)
 			mtu = ntohs(icmp_hdr(skb)->un.frag.mtu);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (mtu == 0) {
 			/* they didn't give us a size, estimate one */
 			if (mtu > 1500) {

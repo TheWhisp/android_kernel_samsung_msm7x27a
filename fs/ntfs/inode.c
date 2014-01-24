@@ -28,6 +28,10 @@
 #include <linux/quotaops.h>
 #include <linux/slab.h>
 #include <linux/log2.h>
+<<<<<<< HEAD
+=======
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "aops.h"
 #include "attrib.h"
@@ -54,7 +58,11 @@
  *
  * Return 1 if the attributes match and 0 if not.
  *
+<<<<<<< HEAD
  * NOTE: This function runs with the inode->i_lock spin lock held so it is not
+=======
+ * NOTE: This function runs with the inode_hash_lock spin lock held so it is not
+>>>>>>> refs/remotes/origin/master
  * allowed to sleep.
  */
 int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
@@ -335,7 +343,13 @@ struct inode *ntfs_alloc_big_inode(struct super_block *sb)
 static void ntfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(ntfs_big_inode_cache, NTFS_I(inode));
 }
 
@@ -612,7 +626,15 @@ static int ntfs_read_locked_inode(struct inode *vi)
 	 * might be tricky due to vfs interactions. Need to think about this
 	 * some more when implementing the unlink command.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vi->i_nlink = le16_to_cpu(m->link_count);
+=======
+	set_nlink(vi, le16_to_cpu(m->link_count));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(vi, le16_to_cpu(m->link_count));
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * FIXME: Reparse points can have the directory bit set even though
 	 * they would be S_IFLNK. Need to deal with this further below when we
@@ -634,7 +656,15 @@ static int ntfs_read_locked_inode(struct inode *vi)
 		vi->i_mode &= ~vol->dmask;
 		/* Things break without this kludge! */
 		if (vi->i_nlink > 1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			vi->i_nlink = 1;
+=======
+			set_nlink(vi, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			set_nlink(vi, 1);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		vi->i_mode |= S_IFREG;
 		/* Apply the file permissions mask set in the mount options. */
@@ -1242,7 +1272,15 @@ static int ntfs_read_locked_attr_inode(struct inode *base_vi, struct inode *vi)
 	vi->i_version	= base_vi->i_version;
 	vi->i_uid	= base_vi->i_uid;
 	vi->i_gid	= base_vi->i_gid;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vi->i_nlink	= base_vi->i_nlink;
+=======
+	set_nlink(vi, base_vi->i_nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(vi, base_vi->i_nlink);
+>>>>>>> refs/remotes/origin/master
 	vi->i_mtime	= base_vi->i_mtime;
 	vi->i_ctime	= base_vi->i_ctime;
 	vi->i_atime	= base_vi->i_atime;
@@ -1508,7 +1546,15 @@ static int ntfs_read_locked_index_inode(struct inode *base_vi, struct inode *vi)
 	vi->i_version	= base_vi->i_version;
 	vi->i_uid	= base_vi->i_uid;
 	vi->i_gid	= base_vi->i_gid;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vi->i_nlink	= base_vi->i_nlink;
+=======
+	set_nlink(vi, base_vi->i_nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(vi, base_vi->i_nlink);
+>>>>>>> refs/remotes/origin/master
 	vi->i_mtime	= base_vi->i_mtime;
 	vi->i_ctime	= base_vi->i_ctime;
 	vi->i_atime	= base_vi->i_atime;
@@ -2125,7 +2171,12 @@ int ntfs_read_inode_mount(struct inode *vi)
 			 * ntfs_read_inode() will have set up the default ones.
 			 */
 			/* Set uid and gid to root. */
+<<<<<<< HEAD
 			vi->i_uid = vi->i_gid = 0;
+=======
+			vi->i_uid = GLOBAL_ROOT_UID;
+			vi->i_gid = GLOBAL_ROOT_GID;
+>>>>>>> refs/remotes/origin/master
 			/* Regular file. No access for anyone. */
 			vi->i_mode = S_IFREG;
 			/* No VFS initiated operations allowed for $MFT. */
@@ -2259,7 +2310,11 @@ void ntfs_evict_big_inode(struct inode *vi)
 	ntfs_inode *ni = NTFS_I(vi);
 
 	truncate_inode_pages(&vi->i_data, 0);
+<<<<<<< HEAD
 	end_writeback(vi);
+=======
+	clear_inode(vi);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef NTFS_RW
 	if (NInoDirty(ni)) {
@@ -2301,6 +2356,8 @@ void ntfs_evict_big_inode(struct inode *vi)
 /**
  * ntfs_show_options - show mount options in /proc/mounts
  * @sf:		seq_file in which to write our mount options
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @mnt:	vfs mount whose mount options to display
  *
  * Called by the VFS once for each mounted ntfs volume when someone reads
@@ -2311,10 +2368,31 @@ void ntfs_evict_big_inode(struct inode *vi)
 int ntfs_show_options(struct seq_file *sf, struct vfsmount *mnt)
 {
 	ntfs_volume *vol = NTFS_SB(mnt->mnt_sb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @root:	root of the mounted tree whose mount options to display
+ *
+ * Called by the VFS once for each mounted ntfs volume when someone reads
+ * /proc/mounts in order to display the NTFS specific mount options of each
+ * mount. The mount options of fs specified by @root are written to the seq file
+ * @sf and success is returned.
+ */
+int ntfs_show_options(struct seq_file *sf, struct dentry *root)
+{
+	ntfs_volume *vol = NTFS_SB(root->d_sb);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 
 	seq_printf(sf, ",uid=%i", vol->uid);
 	seq_printf(sf, ",gid=%i", vol->gid);
+=======
+	int i;
+
+	seq_printf(sf, ",uid=%i", from_kuid_munged(&init_user_ns, vol->uid));
+	seq_printf(sf, ",gid=%i", from_kgid_munged(&init_user_ns, vol->gid));
+>>>>>>> refs/remotes/origin/master
 	if (vol->fmask == vol->dmask)
 		seq_printf(sf, ",umask=0%o", vol->fmask);
 	else {
@@ -2357,12 +2435,20 @@ static const char *es = "  Leaving inconsistent metadata.  Unmount and run "
  *
  * Returns 0 on success or -errno on error.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Called with ->i_mutex held.  In all but one case ->i_alloc_sem is held for
  * writing.  The only case in the kernel where ->i_alloc_sem is not held is
  * mm/filemap.c::generic_file_buffered_write() where vmtruncate() is called
  * with the current i_size as the offset.  The analogous place in NTFS is in
  * fs/ntfs/file.c::ntfs_file_buffered_write() where we call vmtruncate() again
  * without holding ->i_alloc_sem.
+=======
+ * Called with ->i_mutex held.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Called with ->i_mutex held.
+>>>>>>> refs/remotes/origin/master
  */
 int ntfs_truncate(struct inode *vi)
 {
@@ -2871,9 +2957,17 @@ conv_err_out:
  *
  * See ntfs_truncate() description above for details.
  */
+<<<<<<< HEAD
 void ntfs_truncate_vfs(struct inode *vi) {
 	ntfs_truncate(vi);
 }
+=======
+#ifdef NTFS_RW
+void ntfs_truncate_vfs(struct inode *vi) {
+	ntfs_truncate(vi);
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ntfs_setattr - called from notify_change() when an attribute is being changed
@@ -2887,8 +2981,16 @@ void ntfs_truncate_vfs(struct inode *vi) {
  * We also abort all changes of user, group, and mode as we do not implement
  * the NTFS ACLs yet.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Called with ->i_mutex held.  For the ATTR_SIZE (i.e. ->truncate) case, also
  * called with ->i_alloc_sem held for writing.
+=======
+ * Called with ->i_mutex held.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Called with ->i_mutex held.
+>>>>>>> refs/remotes/origin/master
  */
 int ntfs_setattr(struct dentry *dentry, struct iattr *attr)
 {
@@ -2920,8 +3022,15 @@ int ntfs_setattr(struct dentry *dentry, struct iattr *attr)
 						NInoCompressed(ni) ?
 						"compressed" : "encrypted");
 				err = -EOPNOTSUPP;
+<<<<<<< HEAD
 			} else
 				err = vmtruncate(vi, attr->ia_size);
+=======
+			} else {
+				truncate_setsize(vi, attr->ia_size);
+				ntfs_truncate_vfs(vi);
+			}
+>>>>>>> refs/remotes/origin/master
 			if (err || ia_valid == ATTR_SIZE)
 				goto out;
 		} else {

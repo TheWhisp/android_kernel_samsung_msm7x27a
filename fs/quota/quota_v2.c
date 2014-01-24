@@ -196,7 +196,11 @@ static void v2r0_mem2diskdqb(void *dp, struct dquot *dquot)
 	struct v2r0_disk_dqblk *d = dp;
 	struct mem_dqblk *m = &dquot->dq_dqb;
 	struct qtree_mem_dqinfo *info =
+<<<<<<< HEAD
 			sb_dqinfo(dquot->dq_sb, dquot->dq_type)->dqi_priv;
+=======
+			sb_dqinfo(dquot->dq_sb, dquot->dq_id.type)->dqi_priv;
+>>>>>>> refs/remotes/origin/master
 
 	d->dqb_ihardlimit = cpu_to_le32(m->dqb_ihardlimit);
 	d->dqb_isoftlimit = cpu_to_le32(m->dqb_isoftlimit);
@@ -206,7 +210,11 @@ static void v2r0_mem2diskdqb(void *dp, struct dquot *dquot)
 	d->dqb_bsoftlimit = cpu_to_le32(v2_stoqb(m->dqb_bsoftlimit));
 	d->dqb_curspace = cpu_to_le64(m->dqb_curspace);
 	d->dqb_btime = cpu_to_le64(m->dqb_btime);
+<<<<<<< HEAD
 	d->dqb_id = cpu_to_le32(dquot->dq_id);
+=======
+	d->dqb_id = cpu_to_le32(from_kqid(&init_user_ns, dquot->dq_id));
+>>>>>>> refs/remotes/origin/master
 	if (qtree_entry_unused(info, dp))
 		d->dqb_itime = cpu_to_le64(1);
 }
@@ -215,11 +223,21 @@ static int v2r0_is_id(void *dp, struct dquot *dquot)
 {
 	struct v2r0_disk_dqblk *d = dp;
 	struct qtree_mem_dqinfo *info =
+<<<<<<< HEAD
 			sb_dqinfo(dquot->dq_sb, dquot->dq_type)->dqi_priv;
 
 	if (qtree_entry_unused(info, dp))
 		return 0;
 	return le32_to_cpu(d->dqb_id) == dquot->dq_id;
+=======
+			sb_dqinfo(dquot->dq_sb, dquot->dq_id.type)->dqi_priv;
+
+	if (qtree_entry_unused(info, dp))
+		return 0;
+	return qid_eq(make_kqid(&init_user_ns, dquot->dq_id.type,
+				le32_to_cpu(d->dqb_id)),
+		      dquot->dq_id);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void v2r1_disk2memdqb(struct dquot *dquot, void *dp)
@@ -247,7 +265,11 @@ static void v2r1_mem2diskdqb(void *dp, struct dquot *dquot)
 	struct v2r1_disk_dqblk *d = dp;
 	struct mem_dqblk *m = &dquot->dq_dqb;
 	struct qtree_mem_dqinfo *info =
+<<<<<<< HEAD
 			sb_dqinfo(dquot->dq_sb, dquot->dq_type)->dqi_priv;
+=======
+			sb_dqinfo(dquot->dq_sb, dquot->dq_id.type)->dqi_priv;
+>>>>>>> refs/remotes/origin/master
 
 	d->dqb_ihardlimit = cpu_to_le64(m->dqb_ihardlimit);
 	d->dqb_isoftlimit = cpu_to_le64(m->dqb_isoftlimit);
@@ -257,7 +279,11 @@ static void v2r1_mem2diskdqb(void *dp, struct dquot *dquot)
 	d->dqb_bsoftlimit = cpu_to_le64(v2_stoqb(m->dqb_bsoftlimit));
 	d->dqb_curspace = cpu_to_le64(m->dqb_curspace);
 	d->dqb_btime = cpu_to_le64(m->dqb_btime);
+<<<<<<< HEAD
 	d->dqb_id = cpu_to_le32(dquot->dq_id);
+=======
+	d->dqb_id = cpu_to_le32(from_kqid(&init_user_ns, dquot->dq_id));
+>>>>>>> refs/remotes/origin/master
 	if (qtree_entry_unused(info, dp))
 		d->dqb_itime = cpu_to_le64(1);
 }
@@ -266,26 +292,48 @@ static int v2r1_is_id(void *dp, struct dquot *dquot)
 {
 	struct v2r1_disk_dqblk *d = dp;
 	struct qtree_mem_dqinfo *info =
+<<<<<<< HEAD
 			sb_dqinfo(dquot->dq_sb, dquot->dq_type)->dqi_priv;
 
 	if (qtree_entry_unused(info, dp))
 		return 0;
 	return le32_to_cpu(d->dqb_id) == dquot->dq_id;
+=======
+			sb_dqinfo(dquot->dq_sb, dquot->dq_id.type)->dqi_priv;
+
+	if (qtree_entry_unused(info, dp))
+		return 0;
+	return qid_eq(make_kqid(&init_user_ns, dquot->dq_id.type,
+				le32_to_cpu(d->dqb_id)),
+		      dquot->dq_id);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int v2_read_dquot(struct dquot *dquot)
 {
+<<<<<<< HEAD
 	return qtree_read_dquot(sb_dqinfo(dquot->dq_sb, dquot->dq_type)->dqi_priv, dquot);
+=======
+	return qtree_read_dquot(sb_dqinfo(dquot->dq_sb, dquot->dq_id.type)->dqi_priv, dquot);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int v2_write_dquot(struct dquot *dquot)
 {
+<<<<<<< HEAD
 	return qtree_write_dquot(sb_dqinfo(dquot->dq_sb, dquot->dq_type)->dqi_priv, dquot);
+=======
+	return qtree_write_dquot(sb_dqinfo(dquot->dq_sb, dquot->dq_id.type)->dqi_priv, dquot);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int v2_release_dquot(struct dquot *dquot)
 {
+<<<<<<< HEAD
 	return qtree_release_dquot(sb_dqinfo(dquot->dq_sb, dquot->dq_type)->dqi_priv, dquot);
+=======
+	return qtree_release_dquot(sb_dqinfo(dquot->dq_sb, dquot->dq_id.type)->dqi_priv, dquot);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int v2_free_file_info(struct super_block *sb, int type)

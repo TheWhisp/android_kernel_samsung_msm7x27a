@@ -3,11 +3,19 @@
 #
 
 menu "PCMCIA character devices"
+<<<<<<< HEAD
 	depends on HOTPLUG && PCMCIA!=n
 
 config SYNCLINK_CS
 	tristate "SyncLink PC Card support"
 	depends on PCMCIA
+=======
+	depends on PCMCIA!=n
+
+config SYNCLINK_CS
+	tristate "SyncLink PC Card support"
+	depends on PCMCIA && TTY
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enable support for the SyncLink PC Card serial adapter, running
 	  asynchronous and HDLC communications up to 512Kbps. The port is
@@ -45,7 +53,11 @@ config CARDMAN_4040
 
 config IPWIRELESS
 	tristate "IPWireless 3G UMTS PCMCIA card support"
+<<<<<<< HEAD
 	depends on PCMCIA && NETDEVICES
+=======
+	depends on PCMCIA && NETDEVICES && TTY
+>>>>>>> refs/remotes/origin/master
 	select PPP
 	help
 	  This is a driver for 3G UMTS PCMCIA card from IPWireless company. In

@@ -8,6 +8,8 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,6 +20,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 
@@ -121,8 +127,13 @@
 /*
  * * EPn Setting 0 (EPn_SET0, offset = 020H+(n-1)*30H, n=1~15 )
  * */
+<<<<<<< HEAD
 #define FUSB300_EPSET0_CLRSEQNUM	(1 << 2)
 #define FUSB300_EPSET0_EPn_TX0BYTE	(1 << 1)
+=======
+#define FUSB300_EPSET0_STL_CLR		(1 << 3)
+#define FUSB300_EPSET0_CLRSEQNUM	(1 << 2)
+>>>>>>> refs/remotes/origin/master
 #define FUSB300_EPSET0_STL		(1 << 0)
 
 /*
@@ -660,7 +671,10 @@ struct fusb300_ep {
 
 	unsigned char		epnum;
 	unsigned char		type;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*desc;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct fusb300 {
@@ -684,4 +698,9 @@ struct fusb300 {
 	u8			reenum;		/* if re-enumeration */
 };
 
+<<<<<<< HEAD
+=======
+#define to_fusb300(g)		(container_of((g), struct fusb300, gadget))
+
+>>>>>>> refs/remotes/origin/master
 #endif

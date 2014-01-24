@@ -1,7 +1,15 @@
 /******************************************************************************
 
     AudioScience HPI driver
+<<<<<<< HEAD
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -30,7 +38,13 @@ HPI Operating System Specific macros for Linux Kernel driver
 #define HPI_BUILD_KERNEL_MODE
 
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioctl.h>
 #include <linux/kernel.h>
 #include <linux/string.h>
@@ -38,6 +52,14 @@ HPI Operating System Specific macros for Linux Kernel driver
 #include <linux/firmware.h>
 #include <linux/interrupt.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/mutex.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mutex.h>
+>>>>>>> refs/remotes/origin/master
 
 #define HPI_NO_OS_FILE_OPS
 
@@ -148,6 +170,8 @@ static inline void cond_unlock(struct hpios_spinlock *l)
 #define hpios_alistlock_lock(obj) spin_lock(&((obj)->list_lock.lock))
 #define hpios_alistlock_unlock(obj) spin_unlock(&((obj)->list_lock.lock))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct hpi_adapter {
 	/* mutex prevents contention for one card
 	   between multiple user programs (via ioctl) */
@@ -162,6 +186,25 @@ struct hpi_adapter {
 	size_t buffer_size;
 	struct pci_dev *pci;
 	void __iomem *ap_remapped_mem_base[HPI_MAX_ADAPTER_MEM_SPACES];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct snd_card;
+
+/** pci drvdata points to an instance of this struct */
+struct hpi_adapter {
+	struct hpi_adapter_obj *adapter;
+	struct snd_card *snd_card;
+
+	/* mutex prevents contention for one card
+	   between multiple user programs (via ioctl) */
+	struct mutex mutex;
+	char *p_buffer;
+	size_t buffer_size;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

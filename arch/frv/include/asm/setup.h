@@ -8,6 +8,7 @@
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_SETUP_H
 #define _ASM_SETUP_H
@@ -17,6 +18,14 @@
 #ifdef __KERNEL__
 
 #include <linux/init.h>
+=======
+#ifndef _ASM_SETUP_H
+#define _ASM_SETUP_H
+
+
+#include <linux/init.h>
+#include <uapi/asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
@@ -26,6 +35,9 @@ extern unsigned long __initdata num_mappedpages;
 
 #endif /* !__ASSEMBLY__ */
 
+<<<<<<< HEAD
 #endif  /*  __KERNEL__  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_SETUP_H */

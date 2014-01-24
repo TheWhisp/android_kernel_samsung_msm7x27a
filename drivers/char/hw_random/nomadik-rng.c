@@ -51,11 +51,23 @@ static int nmk_rng_probe(struct amba_device *dev, const struct amba_id *id)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	clk_enable(rng_clk);
 
 	ret = amba_request_regions(dev, dev->dev.init_name);
 	if (ret)
+<<<<<<< HEAD
 		return ret;
+=======
+		goto out_clk;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(rng_clk);
+
+	ret = amba_request_regions(dev, dev->dev.init_name);
+	if (ret)
+		goto out_clk;
+>>>>>>> refs/remotes/origin/master
 	ret = -ENOMEM;
 	base = ioremap(dev->res.start, resource_size(&dev->res));
 	if (!base)
@@ -70,6 +82,14 @@ out_unmap:
 	iounmap(base);
 out_release:
 	amba_release_regions(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+out_clk:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_clk:
+>>>>>>> refs/remotes/origin/master
 	clk_disable(rng_clk);
 	clk_put(rng_clk);
 	return ret;
@@ -94,6 +114,16 @@ static struct amba_id nmk_rng_ids[] = {
 	{0, 0},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(amba, nmk_rng_ids);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(amba, nmk_rng_ids);
+
+>>>>>>> refs/remotes/origin/master
 static struct amba_driver nmk_rng_driver = {
 	.drv = {
 		.owner = THIS_MODULE,
@@ -104,6 +134,8 @@ static struct amba_driver nmk_rng_driver = {
 	.id_table = nmk_rng_ids,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init nmk_rng_init(void)
 {
 	return amba_driver_register(&nmk_rng_driver);
@@ -116,5 +148,11 @@ static void __devexit nmk_rng_exit(void)
 
 module_init(nmk_rng_init);
 module_exit(nmk_rng_exit);
+=======
+module_amba_driver(nmk_rng_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_amba_driver(nmk_rng_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

@@ -10,7 +10,13 @@
  * for more details.
  */
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Instructions on SH are generally fixed at 16-bits, however, SH-2A

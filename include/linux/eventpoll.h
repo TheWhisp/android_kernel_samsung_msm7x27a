@@ -10,6 +10,7 @@
  *  Davide Libenzi <davidel@xmailserver.org>
  *
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_EVENTPOLL_H
 #define _LINUX_EVENTPOLL_H
@@ -50,6 +51,13 @@ struct epoll_event {
 } EPOLL_PACKED;
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_EVENTPOLL_H
+#define _LINUX_EVENTPOLL_H
+
+#include <uapi/linux/eventpoll.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* Forward declarations to avoid compiler errors */
 struct file;
@@ -103,7 +111,11 @@ static inline void eventpoll_release(struct file *file) {}
 
 #endif
 
+<<<<<<< HEAD
 #endif /* #ifdef __KERNEL__ */
 
 #endif /* #ifndef _LINUX_EVENTPOLL_H */
 
+=======
+#endif /* #ifndef _LINUX_EVENTPOLL_H */
+>>>>>>> refs/remotes/origin/master

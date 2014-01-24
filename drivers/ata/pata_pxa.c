@@ -32,7 +32,11 @@
 #include <scsi/scsi_host.h>
 
 #include <mach/pxa2xx-regs.h>
+<<<<<<< HEAD
 #include <mach/pata_pxa.h>
+=======
+#include <linux/platform_data/ata-pxa.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/dma.h>
 
 #define DRV_NAME	"pata_pxa"
@@ -229,7 +233,11 @@ static void pxa_ata_dma_irq(int dma, void *port)
 		complete(&pd->dma_done);
 }
 
+<<<<<<< HEAD
 static int __devinit pxa_ata_probe(struct platform_device *pdev)
+=======
+static int pxa_ata_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ata_host *host;
 	struct ata_port *ap;
@@ -238,7 +246,11 @@ static int __devinit pxa_ata_probe(struct platform_device *pdev)
 	struct resource *ctl_res;
 	struct resource *dma_res;
 	struct resource *irq_res;
+<<<<<<< HEAD
 	struct pata_pxa_pdata *pdata = pdev->dev.platform_data;
+=======
+	struct pata_pxa_pdata *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	/*
@@ -369,9 +381,15 @@ static int __devinit pxa_ata_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit pxa_ata_remove(struct platform_device *pdev)
 {
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+static int pxa_ata_remove(struct platform_device *pdev)
+{
+	struct ata_host *host = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct pata_pxa_data *data = host->ports[0]->private_data;
 
 	pxa_free_dma(data->dma_channel);
@@ -383,13 +401,19 @@ static int __devexit pxa_ata_remove(struct platform_device *pdev)
 
 static struct platform_driver pxa_ata_driver = {
 	.probe		= pxa_ata_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pxa_ata_remove),
+=======
+	.remove		= pxa_ata_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name		= DRV_NAME,
 		.owner		= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init pxa_ata_init(void)
 {
 	return platform_driver_register(&pxa_ata_driver);
@@ -402,6 +426,12 @@ static void __exit pxa_ata_exit(void)
 
 module_init(pxa_ata_init);
 module_exit(pxa_ata_exit);
+=======
+module_platform_driver(pxa_ata_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(pxa_ata_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Marek Vasut <marek.vasut@gmail.com>");
 MODULE_DESCRIPTION("DMA-capable driver for PATA on PXA CPU");

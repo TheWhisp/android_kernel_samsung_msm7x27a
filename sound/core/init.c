@@ -21,12 +21,36 @@
 
 #include <linux/init.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+<<<<<<< HEAD
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/file.h>
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/ctype.h>
 #include <linux/pm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <sound/core.h>
 #include <sound/control.h>
 #include <sound/info.h>
@@ -44,7 +68,12 @@ static LIST_HEAD(shutdown_files);
 
 static const struct file_operations snd_shutdown_f_ops;
 
+<<<<<<< HEAD
 static unsigned int snd_cards_lock;	/* locked for registering/using */
+=======
+/* locked for registering/using */
+static DECLARE_BITMAP(snd_cards_lock, SNDRV_CARDS);
+>>>>>>> refs/remotes/origin/master
 struct snd_card *snd_cards[SNDRV_CARDS];
 EXPORT_SYMBOL(snd_cards);
 
@@ -63,7 +92,11 @@ static int module_slot_match(struct module *module, int idx)
 #ifdef MODULE
 	const char *s1, *s2;
 
+<<<<<<< HEAD
 	if (!module || !module->name || !slots[idx])
+=======
+	if (!module || !*module->name || !slots[idx])
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	s1 = module->name;
@@ -142,7 +175,11 @@ static inline int init_info_for_card(struct snd_card *card)
  *  space for the driver to use freely.  The allocated struct is stored
  *  in the given card_ret pointer.
  *
+<<<<<<< HEAD
  *  Returns zero if successful or a negative error code.
+=======
+ *  Return: Zero if successful or a negative error code.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_card_create(int idx, const char *xid,
 		    struct module *module, int extra_size,
@@ -165,29 +202,56 @@ int snd_card_create(int idx, const char *xid,
 	err = 0;
 	mutex_lock(&snd_card_mutex);
 	if (idx < 0) {
+<<<<<<< HEAD
 		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++)
 			/* idx == -1 == 0xffff means: take any free slot */
 			if (~snd_cards_lock & idx & 1<<idx2) {
+=======
+		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++) {
+			/* idx == -1 == 0xffff means: take any free slot */
+			if (idx2 < sizeof(int) && !(idx & (1U << idx2)))
+				continue;
+			if (!test_bit(idx2, snd_cards_lock)) {
+>>>>>>> refs/remotes/origin/master
 				if (module_slot_match(module, idx2)) {
 					idx = idx2;
 					break;
 				}
 			}
+<<<<<<< HEAD
 	}
 	if (idx < 0) {
 		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++)
 			/* idx == -1 == 0xffff means: take any free slot */
 			if (~snd_cards_lock & idx & 1<<idx2) {
+=======
+		}
+	}
+	if (idx < 0) {
+		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++) {
+			/* idx == -1 == 0xffff means: take any free slot */
+			if (idx2 < sizeof(int) && !(idx & (1U << idx2)))
+				continue;
+			if (!test_bit(idx2, snd_cards_lock)) {
+>>>>>>> refs/remotes/origin/master
 				if (!slots[idx2] || !*slots[idx2]) {
 					idx = idx2;
 					break;
 				}
 			}
+<<<<<<< HEAD
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	if (idx < 0)
 		err = -ENODEV;
 	else if (idx < snd_ecards_limit) {
+<<<<<<< HEAD
 		if (snd_cards_lock & (1 << idx))
+=======
+		if (test_bit(idx, snd_cards_lock))
+>>>>>>> refs/remotes/origin/master
 			err = -EBUSY;	/* invalid */
 	} else if (idx >= SNDRV_CARDS)
 		err = -ENODEV;
@@ -197,7 +261,11 @@ int snd_card_create(int idx, const char *xid,
 			 idx, snd_ecards_limit - 1, err);
 		goto __error;
 	}
+<<<<<<< HEAD
 	snd_cards_lock |= 1 << idx;		/* lock it */
+=======
+	set_bit(idx, snd_cards_lock);		/* lock it */
+>>>>>>> refs/remotes/origin/master
 	if (idx >= snd_ecards_limit)
 		snd_ecards_limit = idx + 1; /* increase the limit */
 	mutex_unlock(&snd_card_mutex);
@@ -247,7 +315,11 @@ int snd_card_locked(int card)
 	int locked;
 
 	mutex_lock(&snd_card_mutex);
+<<<<<<< HEAD
 	locked = snd_cards_lock & (1 << card);
+=======
+	locked = test_bit(card, snd_cards_lock);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&snd_card_mutex);
 	return locked;
 }
@@ -335,7 +407,11 @@ static const struct file_operations snd_shutdown_f_ops =
  *
  *  Disconnects all APIs from the file-operations (user space).
  *
+<<<<<<< HEAD
  *  Returns zero, otherwise a negative error code.
+=======
+ *  Return: Zero, otherwise a negative error code.
+>>>>>>> refs/remotes/origin/master
  *
  *  Note: The current implementation replaces all active file->f_op with special
  *        dummy file operations (they do nothing except release).
@@ -359,7 +435,11 @@ int snd_card_disconnect(struct snd_card *card)
 	/* phase 1: disable fops (user space) operations for ALSA API */
 	mutex_lock(&snd_card_mutex);
 	snd_cards[card->number] = NULL;
+<<<<<<< HEAD
 	snd_cards_lock &= ~(1 << card->number);
+=======
+	clear_bit(card->number, snd_cards_lock);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&snd_card_mutex);
 	
 	/* phase 2: replace file->f_op with special dummy operations */
@@ -413,7 +493,11 @@ EXPORT_SYMBOL(snd_card_disconnect);
  *  devices automatically.  That is, you don't have to release the devices
  *  by yourself.
  *
+<<<<<<< HEAD
  *  Returns zero. Frees all associated devices and frees the control
+=======
+ *  Return: Zero. Frees all associated devices and frees the control
+>>>>>>> refs/remotes/origin/master
  *  interface associated to given soundcard.
  */
 static int snd_card_do_free(struct snd_card *card)
@@ -495,6 +579,8 @@ int snd_card_free(struct snd_card *card)
 
 EXPORT_SYMBOL(snd_card_free);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void snd_card_set_id_no_lock(struct snd_card *card, const char *nid)
 {
 	int i, len, idx_flag = 0, loops = SNDRV_CARDS;
@@ -563,6 +649,161 @@ static void snd_card_set_id_no_lock(struct snd_card *card, const char *nid)
 			idx_flag++;
 		}
 	}
+=======
+/* retrieve the last word of shortname or longname */
+static const char *retrieve_id_from_card_name(const char *name)
+{
+	const char *spos = name;
+
+	while (*name) {
+		if (isspace(*name) && isalnum(name[1]))
+			spos = name + 1;
+		name++;
+	}
+	return spos;
+}
+
+/* return true if the given id string doesn't conflict any other card ids */
+static bool card_id_ok(struct snd_card *card, const char *id)
+{
+	int i;
+	if (!snd_info_check_reserved_words(id))
+		return false;
+	for (i = 0; i < snd_ecards_limit; i++) {
+		if (snd_cards[i] && snd_cards[i] != card &&
+		    !strcmp(snd_cards[i]->id, id))
+			return false;
+	}
+	return true;
+}
+
+/* copy to card->id only with valid letters from nid */
+static void copy_valid_id_string(struct snd_card *card, const char *src,
+				 const char *nid)
+{
+	char *id = card->id;
+
+	while (*nid && !isalnum(*nid))
+		nid++;
+	if (isdigit(*nid))
+		*id++ = isalpha(*src) ? *src : 'D';
+	while (*nid && (size_t)(id - card->id) < sizeof(card->id) - 1) {
+		if (isalnum(*nid))
+			*id++ = *nid;
+		nid++;
+	}
+	*id = 0;
+}
+
+/* Set card->id from the given string
+ * If the string conflicts with other ids, add a suffix to make it unique.
+ */
+static void snd_card_set_id_no_lock(struct snd_card *card, const char *src,
+				    const char *nid)
+{
+	int len, loops;
+	bool is_default = false;
+=======
+static void snd_card_set_id_no_lock(struct snd_card *card, const char *nid)
+{
+	int i, len, idx_flag = 0, loops = SNDRV_CARDS;
+	const char *spos, *src;
+>>>>>>> refs/remotes/origin/cm-11.0
+	char *id;
+	
+	if (nid == NULL) {
+		id = card->shortname;
+		spos = src = id;
+		while (*id != '\0') {
+			if (*id == ' ')
+				spos = id + 1;
+			id++;
+		}
+	} else {
+		spos = src = nid;
+	}
+	id = card->id;
+	while (*spos != '\0' && !isalnum(*spos))
+		spos++;
+	if (isdigit(*spos))
+		*id++ = isalpha(src[0]) ? src[0] : 'D';
+	while (*spos != '\0' && (size_t)(id - card->id) < sizeof(card->id) - 1) {
+		if (isalnum(*spos))
+			*id++ = *spos;
+		spos++;
+	}
+	*id = '\0';
+
+	id = card->id;
+	
+	if (*id == '\0')
+		strcpy(id, "Default");
+
+<<<<<<< HEAD
+	len = strlen(id);
+	for (loops = 0; loops < SNDRV_CARDS; loops++) {
+		char *spos;
+		char sfxstr[5]; /* "_012" */
+		int sfxlen;
+
+		if (card_id_ok(card, id))
+			return; /* OK */
+
+		/* Add _XYZ suffix */
+		sprintf(sfxstr, "_%X", loops + 1);
+		sfxlen = strlen(sfxstr);
+		if (len + sfxlen >= sizeof(card->id))
+			spos = id + sizeof(card->id) - sfxlen - 1;
+		else
+			spos = id + len;
+		strcpy(spos, sfxstr);
+	}
+	/* fallback to the default id */
+	if (!is_default) {
+		*id = 0;
+		goto again;
+	}
+	/* last resort... */
+	snd_printk(KERN_ERR "unable to set card id (%s)\n", id);
+	if (card->proc_root->name)
+		strlcpy(card->id, card->proc_root->name, sizeof(card->id));
+>>>>>>> refs/remotes/origin/master
+=======
+	while (1) {
+	      	if (loops-- == 0) {
+			snd_printk(KERN_ERR "unable to set card id (%s)\n", id);
+      			strcpy(card->id, card->proc_root->name);
+      			return;
+      		}
+	      	if (!snd_info_check_reserved_words(id))
+      			goto __change;
+		for (i = 0; i < snd_ecards_limit; i++) {
+			if (snd_cards[i] && !strcmp(snd_cards[i]->id, id))
+				goto __change;
+		}
+		break;
+
+	      __change:
+		len = strlen(id);
+		if (idx_flag) {
+			if (id[len-1] != '9')
+				id[len-1]++;
+			else
+				id[len-1] = 'A';
+		} else if ((size_t)len <= sizeof(card->id) - 3) {
+			strcat(id, "_1");
+			idx_flag++;
+		} else {
+			spos = id + len - 2;
+			if ((size_t)len <= sizeof(card->id) - 2)
+				spos++;
+			*(char *)spos++ = '_';
+			*(char *)spos++ = '1';
+			*(char *)spos++ = '\0';
+			idx_flag++;
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -579,7 +820,15 @@ void snd_card_set_id(struct snd_card *card, const char *nid)
 	if (card->id[0] != '\0')
 		return;
 	mutex_lock(&snd_card_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_card_set_id_no_lock(card, nid);
+=======
+	snd_card_set_id_no_lock(card, nid, nid);
+>>>>>>> refs/remotes/origin/master
+=======
+	snd_card_set_id_no_lock(card, nid);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&snd_card_mutex);
 }
 EXPORT_SYMBOL(snd_card_set_id);
@@ -611,6 +860,8 @@ card_id_store_attr(struct device *dev, struct device_attribute *attr,
 	memcpy(buf1, buf, copy);
 	buf1[copy] = '\0';
 	mutex_lock(&snd_card_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!snd_info_check_reserved_words(buf1)) {
 	     __exist:
 		mutex_unlock(&snd_card_mutex);
@@ -627,6 +878,30 @@ card_id_store_attr(struct device *dev, struct device_attribute *attr,
 	strcpy(card->id, buf1);
 	snd_info_card_id_change(card);
 __ok:
+=======
+	if (!card_id_ok(NULL, buf1)) {
+=======
+	if (!snd_info_check_reserved_words(buf1)) {
+	     __exist:
+>>>>>>> refs/remotes/origin/cm-11.0
+		mutex_unlock(&snd_card_mutex);
+		return -EEXIST;
+	}
+	for (idx = 0; idx < snd_ecards_limit; idx++) {
+		if (snd_cards[idx] && !strcmp(snd_cards[idx]->id, buf1)) {
+			if (card == snd_cards[idx])
+				goto __ok;
+			else
+				goto __exist;
+		}
+	}
+	strcpy(card->id, buf1);
+	snd_info_card_id_change(card);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+__ok:
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&snd_card_mutex);
 
 	return count;
@@ -655,7 +930,11 @@ static struct device_attribute card_number_attrs =
  *  external accesses.  Thus, you should call this function at the end
  *  of the initialization of the card.
  *
+<<<<<<< HEAD
  *  Returns zero otherwise a negative error code if the registration failed.
+=======
+ *  Return: Zero otherwise a negative error code if the registration failed.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_card_register(struct snd_card *card)
 {
@@ -680,7 +959,26 @@ int snd_card_register(struct snd_card *card)
 		mutex_unlock(&snd_card_mutex);
 		return 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_card_set_id_no_lock(card, card->id[0] == '\0' ? NULL : card->id);
+=======
+	if (*card->id) {
+		/* make a unique id name from the given string */
+		char tmpid[sizeof(card->id)];
+		memcpy(tmpid, card->id, sizeof(card->id));
+		snd_card_set_id_no_lock(card, tmpid, tmpid);
+	} else {
+		/* create an id from either shortname or longname */
+		const char *src;
+		src = *card->shortname ? card->shortname : card->longname;
+		snd_card_set_id_no_lock(card, src,
+					retrieve_id_from_card_name(src));
+	}
+>>>>>>> refs/remotes/origin/master
+=======
+	snd_card_set_id_no_lock(card, card->id[0] == '\0' ? NULL : card->id);
+>>>>>>> refs/remotes/origin/cm-11.0
 	snd_cards[card->number] = card;
 	mutex_unlock(&snd_card_mutex);
 	init_info_for_card(card);
@@ -816,7 +1114,11 @@ int __exit snd_card_info_done(void)
  *  This function adds the component id string to the supported list.
  *  The component can be referred from the alsa-lib.
  *
+<<<<<<< HEAD
  *  Returns zero otherwise a negative error code.
+=======
+ *  Return: Zero otherwise a negative error code.
+>>>>>>> refs/remotes/origin/master
  */
   
 int snd_component_add(struct snd_card *card, const char *component)
@@ -850,7 +1152,11 @@ EXPORT_SYMBOL(snd_component_add);
  *  This linked-list is used to keep tracking the connection state,
  *  and to avoid the release of busy resources by hotplug.
  *
+<<<<<<< HEAD
  *  Returns zero or a negative error code.
+=======
+ *  Return: zero or a negative error code.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_card_file_add(struct snd_card *card, struct file *file)
 {
@@ -887,7 +1193,11 @@ EXPORT_SYMBOL(snd_card_file_add);
  *  called beforehand, it processes the pending release of
  *  resources.
  *
+<<<<<<< HEAD
  *  Returns zero or a negative error code.
+=======
+ *  Return: Zero or a negative error code.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_card_file_remove(struct snd_card *card, struct file *file)
 {
@@ -926,6 +1236,11 @@ EXPORT_SYMBOL(snd_card_file_remove);
  *
  *  Waits until the power-state is changed.
  *
+<<<<<<< HEAD
+=======
+ *  Return: Zero if successful, or a negative error code.
+ *
+>>>>>>> refs/remotes/origin/master
  *  Note: the power lock must be active before call.
  */
 int snd_power_wait(struct snd_card *card, unsigned int power_state)

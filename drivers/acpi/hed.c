@@ -61,7 +61,11 @@ static void acpi_hed_notify(struct acpi_device *device, u32 event)
 	blocking_notifier_call_chain(&acpi_hed_notify_list, 0, NULL);
 }
 
+<<<<<<< HEAD
 static int __devinit acpi_hed_add(struct acpi_device *device)
+=======
+static int acpi_hed_add(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Only one hardware error device */
 	if (hed_handle)
@@ -70,7 +74,11 @@ static int __devinit acpi_hed_add(struct acpi_device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit acpi_hed_remove(struct acpi_device *device, int type)
+=======
+static int acpi_hed_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	hed_handle = NULL;
 	return 0;
@@ -86,6 +94,7 @@ static struct acpi_driver acpi_hed_driver = {
 		.notify = acpi_hed_notify,
 	},
 };
+<<<<<<< HEAD
 
 static int __init acpi_hed_init(void)
 {
@@ -105,6 +114,9 @@ static void __exit acpi_hed_exit(void)
 
 module_init(acpi_hed_init);
 module_exit(acpi_hed_exit);
+=======
+module_acpi_driver(acpi_hed_driver);
+>>>>>>> refs/remotes/origin/master
 
 ACPI_MODULE_NAME("hed");
 MODULE_AUTHOR("Huang Ying");

@@ -43,7 +43,15 @@
 #include <asm/mman.h>
 #include <asm/types.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/vgtod.h>
 #include <asm/sys_ia32.h>
 
@@ -71,8 +79,13 @@ static int cp_stat64(struct stat64 __user *ubuf, struct kstat *stat)
 {
 	typeof(ubuf->st_uid) uid = 0;
 	typeof(ubuf->st_gid) gid = 0;
+<<<<<<< HEAD
 	SET_UID(uid, stat->uid);
 	SET_GID(gid, stat->gid);
+=======
+	SET_UID(uid, from_kuid_munged(current_user_ns(), stat->uid));
+	SET_GID(gid, from_kgid_munged(current_user_ns(), stat->gid));
+>>>>>>> refs/remotes/origin/master
 	if (!access_ok(VERIFY_WRITE, ubuf, sizeof(struct stat64)) ||
 	    __put_user(huge_encode_dev(stat->dev), &ubuf->st_dev) ||
 	    __put_user(stat->ino, &ubuf->__st_ino) ||
@@ -166,6 +179,7 @@ asmlinkage long sys32_mmap(struct mmap_arg_struct32 __user *arg)
 			       a.offset>>PAGE_SHIFT);
 }
 
+<<<<<<< HEAD
 asmlinkage long sys32_mprotect(unsigned long start, size_t len,
 			       unsigned long prot)
 {
@@ -287,6 +301,7 @@ asmlinkage long sys32_sigaction(int sig, struct old_sigaction32 __user *act,
 	return ret;
 }
 
+<<<<<<< HEAD
 asmlinkage long sys32_rt_sigprocmask(int how, compat_sigset_t __user *set,
 				     compat_sigset_t __user *oset,
 				     unsigned int sigsetsize)
@@ -327,17 +342,23 @@ asmlinkage long sys32_rt_sigprocmask(int how, compat_sigset_t __user *set,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 asmlinkage long sys32_alarm(unsigned int seconds)
 {
 	return alarm_setitimer(seconds);
 }
 
 asmlinkage long sys32_waitpid(compat_pid_t pid, unsigned int *stat_addr,
+=======
+asmlinkage long sys32_waitpid(compat_pid_t pid, unsigned int __user *stat_addr,
+>>>>>>> refs/remotes/origin/master
 			      int options)
 {
 	return compat_sys_wait4(pid, stat_addr, options, NULL);
 }
 
+<<<<<<< HEAD
 /* 32-bit timeval and related flotsam.  */
 
 asmlinkage long sys32_sysfs(int option, u32 arg1, u32 arg2)
@@ -399,6 +420,8 @@ asmlinkage long sys32_rt_sigqueueinfo(int pid, int sig,
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* warning: next two assume little endian */
 asmlinkage long sys32_pread(unsigned int fd, char __user *ubuf, u32 count,
 			    u32 poslo, u32 poshi)
@@ -415,6 +438,7 @@ asmlinkage long sys32_pwrite(unsigned int fd, const char __user *ubuf,
 }
 
 
+<<<<<<< HEAD
 asmlinkage long sys32_personality(unsigned long personality)
 {
 	int ret;
@@ -474,10 +498,13 @@ asmlinkage long sys32_clone(unsigned int clone_flags, unsigned int newsp,
 	return do_fork(clone_flags, newsp, regs, 0, parent_tid, child_tid);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Some system calls that need sign extended arguments. This could be
  * done by a generic wrapper.
  */
+<<<<<<< HEAD
 long sys32_lseek(unsigned int fd, int offset, unsigned int whence)
 {
 	return sys_lseek(fd, offset, whence);
@@ -488,6 +515,8 @@ long sys32_kill(int pid, int sig)
 	return sys_kill(pid, sig);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 long sys32_fadvise64_64(int fd, __u32 offset_low, __u32 offset_high,
 			__u32 len_low, __u32 len_high, int advice)
 {
@@ -511,12 +540,15 @@ long sys32_vm86_warning(void)
 	return -ENOSYS;
 }
 
+<<<<<<< HEAD
 long sys32_lookup_dcookie(u32 addr_low, u32 addr_high,
 			  char __user *buf, size_t len)
 {
 	return sys_lookup_dcookie(((u64)addr_high << 32) | addr_low, buf, len);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage ssize_t sys32_readahead(int fd, unsigned off_lo, unsigned off_hi,
 				   size_t count)
 {
@@ -545,6 +577,7 @@ asmlinkage long sys32_fallocate(int fd, int mode, unsigned offset_lo,
 	return sys_fallocate(fd, mode, ((u64)offset_hi << 32) | offset_lo,
 			     ((u64)len_hi << 32) | len_lo);
 }
+<<<<<<< HEAD
 
 asmlinkage long sys32_fanotify_mark(int fanotify_fd, unsigned int flags,
 				    u32 mask_lo, u32 mask_hi,
@@ -554,3 +587,5 @@ asmlinkage long sys32_fanotify_mark(int fanotify_fd, unsigned int flags,
 				 ((u64)mask_hi << 32) | mask_lo,
 				 fd, pathname);
 }
+=======
+>>>>>>> refs/remotes/origin/master

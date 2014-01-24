@@ -43,6 +43,18 @@ struct ocfs2_inode_info
 	/* protects extended attribute changes on this inode */
 	struct rw_semaphore		ip_xattr_sem;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* Number of outstanding AIO's which are not page aligned */
+	atomic_t			ip_unaligned_aio;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Number of outstanding AIO's which are not page aligned */
+	atomic_t			ip_unaligned_aio;
+
+>>>>>>> refs/remotes/origin/master
 	/* These fields are protected by ip_lock */
 	spinlock_t			ip_lock;
 	u32				ip_open_count;
@@ -144,8 +156,11 @@ void ocfs2_refresh_inode(struct inode *inode,
 int ocfs2_mark_inode_dirty(handle_t *handle,
 			   struct inode *inode,
 			   struct buffer_head *bh);
+<<<<<<< HEAD
 int ocfs2_aio_read(struct file *file, struct kiocb *req, struct iocb *iocb);
 int ocfs2_aio_write(struct file *file, struct kiocb *req, struct iocb *iocb);
+=======
+>>>>>>> refs/remotes/origin/master
 struct buffer_head *ocfs2_bread(struct inode *inode,
 				int block, int *err, int reada);
 

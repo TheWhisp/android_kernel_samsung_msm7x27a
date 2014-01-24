@@ -18,6 +18,14 @@ struct msm_serial_hslite_platform_data {
 	unsigned config_gpio;
 	unsigned uart_tx_gpio;
 	unsigned uart_rx_gpio;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int line;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int line;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #endif

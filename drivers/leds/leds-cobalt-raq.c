@@ -24,6 +24,14 @@
 #include <linux/platform_device.h>
 #include <linux/spinlock.h>
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #define LED_WEB		0x04
 #define LED_POWER_OFF	0x08
@@ -75,7 +83,11 @@ static struct led_classdev raq_power_off_led = {
 	.default_trigger	= "power-off",
 };
 
+<<<<<<< HEAD
 static int __devinit cobalt_raq_led_probe(struct platform_device *pdev)
+=======
+static int cobalt_raq_led_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	int retval;
@@ -84,13 +96,21 @@ static int __devinit cobalt_raq_led_probe(struct platform_device *pdev)
 	if (!res)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	led_port = ioremap(res->start, resource_size(res));
+=======
+	led_port = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+>>>>>>> refs/remotes/origin/master
 	if (!led_port)
 		return -ENOMEM;
 
 	retval = led_classdev_register(&pdev->dev, &raq_power_off_led);
 	if (retval)
+<<<<<<< HEAD
 		goto err_iounmap;
+=======
+		goto err_null;
+>>>>>>> refs/remotes/origin/master
 
 	retval = led_classdev_register(&pdev->dev, &raq_web_led);
 	if (retval)
@@ -101,29 +121,46 @@ static int __devinit cobalt_raq_led_probe(struct platform_device *pdev)
 err_unregister:
 	led_classdev_unregister(&raq_power_off_led);
 
+<<<<<<< HEAD
 err_iounmap:
 	iounmap(led_port);
+=======
+err_null:
+>>>>>>> refs/remotes/origin/master
 	led_port = NULL;
 
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devexit cobalt_raq_led_remove(struct platform_device *pdev)
+=======
+static int cobalt_raq_led_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	led_classdev_unregister(&raq_power_off_led);
 	led_classdev_unregister(&raq_web_led);
 
+<<<<<<< HEAD
 	if (led_port) {
 		iounmap(led_port);
 		led_port = NULL;
 	}
+=======
+	if (led_port)
+		led_port = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver cobalt_raq_led_driver = {
 	.probe	= cobalt_raq_led_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(cobalt_raq_led_remove),
+=======
+	.remove	= cobalt_raq_led_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name	= "cobalt-raq-leds",
 		.owner	= THIS_MODULE,

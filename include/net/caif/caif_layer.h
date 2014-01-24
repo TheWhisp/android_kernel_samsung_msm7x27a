@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland / sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -121,9 +125,17 @@ enum caif_direction {
  * @transmit:	Packet transmit funciton.
  * @ctrlcmd:	Used for control signalling upwards in the stack.
  * @modemcmd:	Used for control signaling downwards in the stack.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @prio:	Priority of this layer.
  * @id:		The identity of this layer
  * @type:	The type of this layer
+=======
+ * @id:		The identity of this layer
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @id:		The identity of this layer
+>>>>>>> refs/remotes/origin/master
  * @name:	Name of the layer.
  *
  *  This structure defines the layered structure in CAIF.
@@ -230,9 +242,17 @@ struct cflayer {
 	 */
 	int (*modemcmd) (struct cflayer *layr, enum caif_modemcmd ctrl);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned short prio;
 	unsigned int id;
 	unsigned int type;
+=======
+	unsigned int id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int id;
+>>>>>>> refs/remotes/origin/master
 	char name[CAIF_LAYER_NAME_SZ];
 };
 

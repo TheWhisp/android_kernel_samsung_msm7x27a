@@ -23,6 +23,14 @@
 #include <linux/spinlock.h>
 #include <linux/virtio.h>
 #include <linux/virtio_rng.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct virtqueue *vq;
 static unsigned int data_avail;
@@ -46,7 +54,15 @@ static void register_buffer(u8 *buf, size_t size)
 	sg_init_one(&sg, buf, size);
 
 	/* There should always be room for one buffer. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (virtqueue_add_buf(vq, &sg, 0, 1, buf) < 0)
+=======
+	if (virtqueue_add_buf(vq, &sg, 0, 1, buf, GFP_KERNEL) < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (virtqueue_add_inbuf(vq, &sg, 1, buf, GFP_KERNEL) < 0)
+>>>>>>> refs/remotes/origin/master
 		BUG();
 
 	virtqueue_kick(vq);
@@ -54,6 +70,10 @@ static void register_buffer(u8 *buf, size_t size)
 
 static int virtio_read(struct hwrng *rng, void *buf, size_t size, bool wait)
 {
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!busy) {
 		busy = true;
@@ -64,7 +84,13 @@ static int virtio_read(struct hwrng *rng, void *buf, size_t size, bool wait)
 	if (!wait)
 		return 0;
 
+<<<<<<< HEAD
 	wait_for_completion(&have_data);
+=======
+	ret = wait_for_completion_killable(&have_data);
+	if (ret < 0)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	busy = false;
 
@@ -84,7 +110,11 @@ static struct hwrng virtio_hwrng = {
 	.read		= virtio_read,
 };
 
+<<<<<<< HEAD
 static int virtrng_probe(struct virtio_device *vdev)
+=======
+static int probe_common(struct virtio_device *vdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -110,14 +140,50 @@ static int virtrng_probe(struct virtio_device *vdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit virtrng_remove(struct virtio_device *vdev)
 {
 	vdev->config->reset(vdev);
+=======
+static void remove_common(struct virtio_device *vdev)
+{
+	vdev->config->reset(vdev);
+	busy = false;
+>>>>>>> refs/remotes/origin/master
 	hwrng_unregister(&virtio_hwrng);
 	vdev->config->del_vqs(vdev);
 	vq = NULL;
+<<<<<<< HEAD
 }
 
+<<<<<<< HEAD
+=======
+static int virtrng_probe(struct virtio_device *vdev)
+{
+	return probe_common(vdev);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+}
+
+static void virtrng_remove(struct virtio_device *vdev)
+{
+	remove_common(vdev);
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int virtrng_freeze(struct virtio_device *vdev)
+{
+	remove_common(vdev);
+	return 0;
+}
+
+static int virtrng_restore(struct virtio_device *vdev)
+{
+	return probe_common(vdev);
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct virtio_device_id id_table[] = {
 	{ VIRTIO_ID_RNG, VIRTIO_DEV_ANY_ID },
 	{ 0 },
@@ -128,6 +194,7 @@ static struct virtio_driver virtio_rng_driver = {
 	.driver.owner =	THIS_MODULE,
 	.id_table =	id_table,
 	.probe =	virtrng_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(virtrng_remove),
 };
 
@@ -143,6 +210,16 @@ static void __exit fini(void)
 module_init(init);
 module_exit(fini);
 
+=======
+	.remove =	virtrng_remove,
+#ifdef CONFIG_PM_SLEEP
+	.freeze =	virtrng_freeze,
+	.restore =	virtrng_restore,
+#endif
+};
+
+module_virtio_driver(virtio_rng_driver);
+>>>>>>> refs/remotes/origin/master
 MODULE_DEVICE_TABLE(virtio, id_table);
 MODULE_DESCRIPTION("Virtio random number driver");
 MODULE_LICENSE("GPL");

@@ -102,7 +102,15 @@
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
 #include <linux/gameport.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <linux/input.h>
 
@@ -113,7 +121,11 @@
 #include <sound/initval.h>
 
 #ifdef CONFIG_SND_ES1968_RADIO
+<<<<<<< HEAD
 #include <sound/tea575x-tuner.h>
+=======
+#include <media/tea575x.h>
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define CARD_NAME "ESS Maestro1/2"
@@ -132,7 +144,15 @@ MODULE_SUPPORTED_DEVICE("{{ESS,Maestro 2e},"
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 1-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+>>>>>>> refs/remotes/origin/master
 static int total_bufsize[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1024 };
 static int pcm_substreams_p[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 4 };
 static int pcm_substreams_c[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1 };
@@ -140,8 +160,20 @@ static int clock[SNDRV_CARDS];
 static int use_pm[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2};
 static int enable_mpu[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2};
 #ifdef SUPPORT_JOYSTICK
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int joystick[SNDRV_CARDS];
 #endif
+=======
+static bool joystick[SNDRV_CARDS];
+#endif
+static int radio_nr[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = -1};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool joystick[SNDRV_CARDS];
+#endif
+static int radio_nr[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = -1};
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for " CARD_NAME " soundcard.");
@@ -165,6 +197,18 @@ MODULE_PARM_DESC(enable_mpu, "Enable MPU401.  (0 = off, 1 = on, 2 = auto)");
 module_param_array(joystick, bool, NULL, 0444);
 MODULE_PARM_DESC(joystick, "Enable joystick.");
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+module_param_array(radio_nr, int, NULL, 0444);
+MODULE_PARM_DESC(radio_nr, "Radio device numbers");
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param_array(radio_nr, int, NULL, 0444);
+MODULE_PARM_DESC(radio_nr, "Radio device numbers");
+
+>>>>>>> refs/remotes/origin/master
 
 
 #define NR_APUS			64
@@ -487,7 +531,11 @@ struct esschan {
 	/* linked list */
 	struct list_head list;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	u16 wc_map[4];
 #endif
 };
@@ -540,7 +588,11 @@ struct es1968 {
 	struct list_head substream_list;
 	spinlock_t substream_lock;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	u16 apu_map[NR_APUS][NR_APU_REGS];
 #endif
 
@@ -554,12 +606,28 @@ struct es1968 {
 #else
 	struct snd_kcontrol *master_switch; /* for h/w volume control */
 	struct snd_kcontrol *master_volume;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t ac97_lock;
 	struct tasklet_struct hwvol_tq;
 #endif
 
 #ifdef CONFIG_SND_ES1968_RADIO
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#endif
+	struct work_struct hwvol_work;
+
+#ifdef CONFIG_SND_ES1968_RADIO
+	struct v4l2_device v4l2_dev;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_tea575x tea;
+=======
+	struct snd_tea575x tea;
+	unsigned int tea575x_tuner;
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 
@@ -646,29 +714,49 @@ static int snd_es1968_ac97_wait_poll(struct es1968 *chip)
 static void snd_es1968_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short val)
 {
 	struct es1968 *chip = ac97->private_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SND_ES1968_INPUT
 	unsigned long flags;
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	snd_es1968_ac97_wait(chip);
 
 	/* Write the bus */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SND_ES1968_INPUT
 	spin_lock_irqsave(&chip->ac97_lock, flags);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	outw(val, chip->io_port + ESM_AC97_DATA);
 	/*msleep(1);*/
 	outb(reg, chip->io_port + ESM_AC97_INDEX);
 	/*msleep(1);*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SND_ES1968_INPUT
 	spin_unlock_irqrestore(&chip->ac97_lock, flags);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned short snd_es1968_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
 {
 	u16 data = 0;
 	struct es1968 *chip = ac97->private_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SND_ES1968_INPUT
 	unsigned long flags;
 #endif
@@ -678,6 +766,16 @@ static unsigned short snd_es1968_ac97_read(struct snd_ac97 *ac97, unsigned short
 #ifndef CONFIG_SND_ES1968_INPUT
 	spin_lock_irqsave(&chip->ac97_lock, flags);
 #endif
+=======
+
+	snd_es1968_ac97_wait(chip);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	snd_es1968_ac97_wait(chip);
+
+>>>>>>> refs/remotes/origin/master
 	outb(reg | 0x80, chip->io_port + ESM_AC97_INDEX);
 	/*msleep(1);*/
 
@@ -685,9 +783,15 @@ static unsigned short snd_es1968_ac97_read(struct snd_ac97 *ac97, unsigned short
 		data = inw(chip->io_port + ESM_AC97_DATA);
 		/*msleep(1);*/
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SND_ES1968_INPUT
 	spin_unlock_irqrestore(&chip->ac97_lock, flags);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return data;
 }
@@ -720,7 +824,11 @@ static void __apu_set_register(struct es1968 *chip, u16 channel, u8 reg, u16 dat
 {
 	if (snd_BUG_ON(channel >= NR_APUS))
 		return;
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	chip->apu_map[channel][reg] = data;
 #endif
 	reg |= (channel << 4);
@@ -1007,7 +1115,11 @@ static void snd_es1968_program_wavecache(struct es1968 *chip, struct esschan *es
 	/* set the wavecache control reg */
 	wave_set_register(chip, es->apu[channel] << 3, tmpval);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	es->wc_map[channel] = tmpval;
 #endif
 }
@@ -1435,7 +1547,11 @@ static void snd_es1968_free_dmabuf(struct es1968 *chip)
 
 	if (! chip->dma.area)
 		return;
+<<<<<<< HEAD
 	snd_dma_reserve_buf(&chip->dma, snd_dma_pci_buf_id(chip->pci));
+=======
+	snd_dma_free_pages(&chip->dma);
+>>>>>>> refs/remotes/origin/master
 	while ((p = chip->buf_list.next) != &chip->buf_list) {
 		struct esm_memory *chunk = list_entry(p, struct esm_memory, list);
 		list_del(p);
@@ -1443,7 +1559,11 @@ static void snd_es1968_free_dmabuf(struct es1968 *chip)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_es1968_init_dmabuf(struct es1968 *chip)
 {
 	int err;
@@ -1451,6 +1571,7 @@ snd_es1968_init_dmabuf(struct es1968 *chip)
 
 	chip->dma.dev.type = SNDRV_DMA_TYPE_DEV;
 	chip->dma.dev.dev = snd_dma_pci_data(chip->pci);
+<<<<<<< HEAD
 	if (! snd_dma_get_reserved_buf(&chip->dma, snd_dma_pci_buf_id(chip->pci))) {
 		err = snd_dma_alloc_pages_fallback(SNDRV_DMA_TYPE_DEV,
 						   snd_dma_pci_data(chip->pci),
@@ -1465,6 +1586,20 @@ snd_es1968_init_dmabuf(struct es1968 *chip)
 			snd_printk(KERN_ERR "es1968: DMA buffer beyond 256MB.\n");
 			return -ENOMEM;
 		}
+=======
+	err = snd_dma_alloc_pages_fallback(SNDRV_DMA_TYPE_DEV,
+					   snd_dma_pci_data(chip->pci),
+					   chip->total_bufsize, &chip->dma);
+	if (err < 0 || ! chip->dma.area) {
+		snd_printk(KERN_ERR "es1968: can't allocate dma pages for size %d\n",
+			   chip->total_bufsize);
+		return -ENOMEM;
+	}
+	if ((chip->dma.addr + chip->dma.bytes - 1) & ~((1 << 28) - 1)) {
+		snd_dma_free_pages(&chip->dma);
+		snd_printk(KERN_ERR "es1968: DMA buffer beyond 256MB.\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	INIT_LIST_HEAD(&chip->buf_list);
@@ -1718,7 +1853,11 @@ static struct snd_pcm_ops snd_es1968_capture_ops = {
  */
 #define CLOCK_MEASURE_BUFSIZE	16768	/* enough large for a single shot */
 
+<<<<<<< HEAD
 static void __devinit es1968_measure_clock(struct es1968 *chip)
+=======
+static void es1968_measure_clock(struct es1968 *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, apu;
 	unsigned int pa, offset, t;
@@ -1820,7 +1959,11 @@ static void snd_es1968_pcm_free(struct snd_pcm *pcm)
 	esm->pcm = NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_es1968_pcm(struct es1968 *chip, int device)
 {
 	struct snd_pcm *pcm;
@@ -1904,6 +2047,8 @@ static void snd_es1968_update_pcm(struct es1968 *chip, struct esschan *es)
    (without wrap around) in response to volume button presses and then
    generating an interrupt. The pair of counters is stored in bits 1-3 and 5-7
    of a byte wide register. The meaning of bits 0 and 4 is unknown. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void es1968_update_hw_volume(unsigned long private_data)
 {
 	struct es1968 *chip = (struct es1968 *) private_data;
@@ -1911,6 +2056,17 @@ static void es1968_update_hw_volume(unsigned long private_data)
 #ifndef CONFIG_SND_ES1968_INPUT
 	unsigned long flags;
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void es1968_update_hw_volume(struct work_struct *work)
+{
+	struct es1968 *chip = container_of(work, struct es1968, hwvol_work);
+	int x, val;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Figure out which volume control button was pushed,
 	   based on differences from the default register
@@ -1929,18 +2085,32 @@ static void es1968_update_hw_volume(unsigned long private_data)
 	if (! chip->master_switch || ! chip->master_volume)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* FIXME: we can't call snd_ac97_* functions since here is in tasklet. */
 	spin_lock_irqsave(&chip->ac97_lock, flags);
 	val = chip->ac97->regs[AC97_MASTER];
+=======
+	val = snd_ac97_read(chip->ac97, AC97_MASTER);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	val = snd_ac97_read(chip->ac97, AC97_MASTER);
+>>>>>>> refs/remotes/origin/master
 	switch (x) {
 	case 0x88:
 		/* mute */
 		val ^= 0x8000;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		chip->ac97->regs[AC97_MASTER] = val;
 		outw(val, chip->io_port + ESM_AC97_DATA);
 		outb(AC97_MASTER, chip->io_port + ESM_AC97_INDEX);
 		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
 			       &chip->master_switch->id);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 0xaa:
 		/* volume up */
@@ -1948,11 +2118,17 @@ static void es1968_update_hw_volume(unsigned long private_data)
 			val--;
 		if ((val & 0x7f00) > 0)
 			val -= 0x0100;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		chip->ac97->regs[AC97_MASTER] = val;
 		outw(val, chip->io_port + ESM_AC97_DATA);
 		outb(AC97_MASTER, chip->io_port + ESM_AC97_INDEX);
 		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
 			       &chip->master_volume->id);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 0x66:
 		/* volume down */
@@ -1960,6 +2136,8 @@ static void es1968_update_hw_volume(unsigned long private_data)
 			val++;
 		if ((val & 0x7f00) < 0x1f00)
 			val += 0x0100;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		chip->ac97->regs[AC97_MASTER] = val;
 		outw(val, chip->io_port + ESM_AC97_DATA);
 		outb(AC97_MASTER, chip->io_port + ESM_AC97_INDEX);
@@ -1968,6 +2146,18 @@ static void es1968_update_hw_volume(unsigned long private_data)
 		break;
 	}
 	spin_unlock_irqrestore(&chip->ac97_lock, flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		break;
+	}
+	if (snd_ac97_update(chip->ac97, AC97_MASTER, val))
+		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
+			       &chip->master_volume->id);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 	if (!chip->input_dev)
 		return;
@@ -2013,11 +2203,19 @@ static irqreturn_t snd_es1968_interrupt(int irq, void *dev_id)
 	outw(inw(chip->io_port + 4) & 1, chip->io_port + 4);
 
 	if (event & ESM_HWVOL_IRQ)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SND_ES1968_INPUT
 		es1968_update_hw_volume((unsigned long)chip);
 #else
 		tasklet_schedule(&chip->hwvol_tq); /* we'll do this later */
 #endif
+=======
+		schedule_work(&chip->hwvol_work);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		schedule_work(&chip->hwvol_work);
+>>>>>>> refs/remotes/origin/master
 
 	/* else ack 'em all, i imagine */
 	outb(0xFF, chip->io_port + 0x1A);
@@ -2052,7 +2250,11 @@ static irqreturn_t snd_es1968_interrupt(int irq, void *dev_id)
  *  Mixer stuff
  */
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_es1968_mixer(struct es1968 *chip)
 {
 	struct snd_ac97_bus *pbus;
@@ -2327,7 +2529,11 @@ static void snd_es1968_chip_init(struct es1968 *chip)
 	outb(0x88, iobase+0x1f);
 
 	/* it appears some maestros (dell 7500) only work if these are set,
+<<<<<<< HEAD
 	   regardless of wether we use the assp or not. */
+=======
+	   regardless of whether we use the assp or not. */
+>>>>>>> refs/remotes/origin/master
 
 	outb(0, iobase + ASSP_CONTROL_B);
 	outb(3, iobase + ASSP_CONTROL_A);	/* M: Reserved bits... */
@@ -2413,6 +2619,7 @@ static void snd_es1968_start_irq(struct es1968 *chip)
 	outw(w, chip->io_port + ESM_PORT_HOST_IRQ);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 /*
  * PM support
@@ -2420,12 +2627,30 @@ static void snd_es1968_start_irq(struct es1968 *chip)
 static int es1968_suspend(struct pci_dev *pci, pm_message_t state)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+#ifdef CONFIG_PM_SLEEP
+/*
+ * PM support
+ */
+static int es1968_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct es1968 *chip = card->private_data;
 
 	if (! chip->do_pm)
 		return 0;
 
 	chip->in_suspend = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cancel_work_sync(&chip->hwvol_work);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cancel_work_sync(&chip->hwvol_work);
+>>>>>>> refs/remotes/origin/master
 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
 	snd_pcm_suspend_all(chip->pcm);
 	snd_ac97_suspend(chip->ac97);
@@ -2433,6 +2658,7 @@ static int es1968_suspend(struct pci_dev *pci, pm_message_t state)
 
 	pci_disable_device(pci);
 	pci_save_state(pci);
+<<<<<<< HEAD
 	pci_set_power_state(pci, pci_choose_state(pci, state));
 	return 0;
 }
@@ -2440,6 +2666,16 @@ static int es1968_suspend(struct pci_dev *pci, pm_message_t state)
 static int es1968_resume(struct pci_dev *pci)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+	pci_set_power_state(pci, PCI_D3hot);
+	return 0;
+}
+
+static int es1968_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct es1968 *chip = card->private_data;
 	struct esschan *es;
 
@@ -2489,11 +2725,24 @@ static int es1968_resume(struct pci_dev *pci)
 	chip->in_suspend = 0;
 	return 0;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_PM */
 
 #ifdef SUPPORT_JOYSTICK
 #define JOYSTICK_ADDR	0x200
 static int __devinit snd_es1968_create_gameport(struct es1968 *chip, int dev)
+=======
+
+static SIMPLE_DEV_PM_OPS(es1968_pm, es1968_suspend, es1968_resume);
+#define ES1968_PM_OPS	&es1968_pm
+#else
+#define ES1968_PM_OPS	NULL
+#endif /* CONFIG_PM_SLEEP */
+
+#ifdef SUPPORT_JOYSTICK
+#define JOYSTICK_ADDR	0x200
+static int snd_es1968_create_gameport(struct es1968 *chip, int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gameport *gp;
 	struct resource *r;
@@ -2544,7 +2793,11 @@ static inline void snd_es1968_free_gameport(struct es1968 *chip) { }
 #endif
 
 #ifdef CONFIG_SND_ES1968_INPUT
+<<<<<<< HEAD
 static int __devinit snd_es1968_input_register(struct es1968 *chip)
+=======
+static int snd_es1968_input_register(struct es1968 *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *input_dev;
 	int err;
@@ -2585,15 +2838,34 @@ static int __devinit snd_es1968_input_register(struct es1968 *chip)
 				bits 1=unmask write to given bit */
 #define IO_DIR		8      /* direction register offset from GPIO_DATA
 				bits 0/1=read/write direction */
+<<<<<<< HEAD
 /* mask bits for GPIO lines */
 #define STR_DATA	0x0040 /* GPIO6 */
 #define STR_CLK		0x0080 /* GPIO7 */
 #define STR_WREN	0x0100 /* GPIO8 */
 #define STR_MOST	0x0200 /* GPIO9 */
+=======
+
+/* GPIO to TEA575x maps */
+struct snd_es1968_tea575x_gpio {
+	u8 data, clk, wren, most;
+	char *name;
+};
+
+static struct snd_es1968_tea575x_gpio snd_es1968_tea575x_gpios[] = {
+	{ .data = 6, .clk = 7, .wren = 8, .most = 9, .name = "SF64-PCE2" },
+	{ .data = 7, .clk = 8, .wren = 6, .most = 10, .name = "M56VAP" },
+};
+
+#define get_tea575x_gpio(chip) \
+	(&snd_es1968_tea575x_gpios[(chip)->tea575x_tuner])
+
+>>>>>>> refs/remotes/origin/master
 
 static void snd_es1968_tea575x_set_pins(struct snd_tea575x *tea, u8 pins)
 {
 	struct es1968 *chip = tea->private_data;
+<<<<<<< HEAD
 	unsigned long io = chip->io_port + GPIO_DATA;
 	u16 val = 0;
 
@@ -2602,16 +2874,39 @@ static void snd_es1968_tea575x_set_pins(struct snd_tea575x *tea, u8 pins)
 	val |= (pins & TEA575X_WREN) ? STR_WREN : 0;
 
 	outw(val, io);
+=======
+	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
+	u16 val = 0;
+
+	val |= (pins & TEA575X_DATA) ? (1 << gpio.data) : 0;
+	val |= (pins & TEA575X_CLK)  ? (1 << gpio.clk)  : 0;
+	val |= (pins & TEA575X_WREN) ? (1 << gpio.wren) : 0;
+
+	outw(val, chip->io_port + GPIO_DATA);
+>>>>>>> refs/remotes/origin/master
 }
 
 static u8 snd_es1968_tea575x_get_pins(struct snd_tea575x *tea)
 {
 	struct es1968 *chip = tea->private_data;
+<<<<<<< HEAD
 	unsigned long io = chip->io_port + GPIO_DATA;
 	u16 val = inw(io);
 
 	return  (val & STR_DATA) ? TEA575X_DATA : 0 |
 		(val & STR_MOST) ? TEA575X_MOST : 0;
+=======
+	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
+	u16 val = inw(chip->io_port + GPIO_DATA);
+	u8 ret = 0;
+
+	if (val & (1 << gpio.data))
+		ret |= TEA575X_DATA;
+	if (val & (1 << gpio.most))
+		ret |= TEA575X_MOST;
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void snd_es1968_tea575x_set_direction(struct snd_tea575x *tea, bool output)
@@ -2619,6 +2914,7 @@ static void snd_es1968_tea575x_set_direction(struct snd_tea575x *tea, bool outpu
 	struct es1968 *chip = tea->private_data;
 	unsigned long io = chip->io_port + GPIO_DATA;
 	u16 odir = inw(io + IO_DIR);
+<<<<<<< HEAD
 
 	if (output) {
 		outw(~(STR_DATA | STR_CLK | STR_WREN), io + IO_MASK);
@@ -2626,6 +2922,20 @@ static void snd_es1968_tea575x_set_direction(struct snd_tea575x *tea, bool outpu
 	} else {
 		outw(~(STR_CLK | STR_WREN | STR_DATA | STR_MOST), io + IO_MASK);
 		outw((odir & ~(STR_DATA | STR_MOST)) | STR_CLK | STR_WREN, io + IO_DIR);
+=======
+	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
+
+	if (output) {
+		outw(~((1 << gpio.data) | (1 << gpio.clk) | (1 << gpio.wren)),
+			io + IO_MASK);
+		outw(odir | (1 << gpio.data) | (1 << gpio.clk) | (1 << gpio.wren),
+			io + IO_DIR);
+	} else {
+		outw(~((1 << gpio.clk) | (1 << gpio.wren) | (1 << gpio.data) | (1 << gpio.most)),
+			io + IO_MASK);
+		outw((odir & ~((1 << gpio.data) | (1 << gpio.most)))
+			| (1 << gpio.clk) | (1 << gpio.wren), io + IO_DIR);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2638,6 +2948,14 @@ static struct snd_tea575x_ops snd_es1968_tea_ops = {
 
 static int snd_es1968_free(struct es1968 *chip)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cancel_work_sync(&chip->hwvol_work);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cancel_work_sync(&chip->hwvol_work);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SND_ES1968_INPUT
 	if (chip->input_dev)
 		input_unregister_device(chip->input_dev);
@@ -2652,6 +2970,14 @@ static int snd_es1968_free(struct es1968 *chip)
 
 #ifdef CONFIG_SND_ES1968_RADIO
 	snd_tea575x_exit(&chip->tea);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	v4l2_device_unregister(&chip->v4l2_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	v4l2_device_unregister(&chip->v4l2_dev);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	if (chip->irq >= 0)
@@ -2674,13 +3000,18 @@ struct ess_device_list {
 	unsigned short vendor;	/* subsystem vendor id */
 };
 
+<<<<<<< HEAD
 static struct ess_device_list pm_whitelist[] __devinitdata = {
+=======
+static struct ess_device_list pm_whitelist[] = {
+>>>>>>> refs/remotes/origin/master
 	{ TYPE_MAESTRO2E, 0x0e11 },	/* Compaq Armada */
 	{ TYPE_MAESTRO2E, 0x1028 },
 	{ TYPE_MAESTRO2E, 0x103c },
 	{ TYPE_MAESTRO2E, 0x1179 },
 	{ TYPE_MAESTRO2E, 0x14c0 },	/* HP omnibook 4150 */
 	{ TYPE_MAESTRO2E, 0x1558 },
+<<<<<<< HEAD
 };
 
 static struct ess_device_list mpu_blacklist[] __devinitdata = {
@@ -2694,7 +3025,30 @@ static int __devinit snd_es1968_create(struct snd_card *card,
 				       int capt_streams,
 				       int chip_type,
 				       int do_pm,
+<<<<<<< HEAD
+=======
+				       int radio_nr,
+>>>>>>> refs/remotes/origin/cm-10.0
 				       struct es1968 **chip_ret)
+=======
+	{ TYPE_MAESTRO2E, 0x125d },	/* a PCI card, e.g. Terratec DMX */
+	{ TYPE_MAESTRO2, 0x125d },	/* a PCI card, e.g. SF64-PCE2 */
+};
+
+static struct ess_device_list mpu_blacklist[] = {
+	{ TYPE_MAESTRO2, 0x125d },
+};
+
+static int snd_es1968_create(struct snd_card *card,
+			     struct pci_dev *pci,
+			     int total_bufsize,
+			     int play_streams,
+			     int capt_streams,
+			     int chip_type,
+			     int do_pm,
+			     int radio_nr,
+			     struct es1968 **chip_ret)
+>>>>>>> refs/remotes/origin/master
 {
 	static struct snd_device_ops ops = {
 		.dev_free =	snd_es1968_dev_free,
@@ -2728,10 +3082,18 @@ static int __devinit snd_es1968_create(struct snd_card *card,
 	INIT_LIST_HEAD(&chip->buf_list);
 	INIT_LIST_HEAD(&chip->substream_list);
 	mutex_init(&chip->memory_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SND_ES1968_INPUT
 	spin_lock_init(&chip->ac97_lock);
 	tasklet_init(&chip->hwvol_tq, es1968_update_hw_volume, (unsigned long)chip);
 #endif
+=======
+	INIT_WORK(&chip->hwvol_work, es1968_update_hw_volume);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_WORK(&chip->hwvol_work, es1968_update_hw_volume);
+>>>>>>> refs/remotes/origin/master
 	chip->card = card;
 	chip->pci = pci;
 	chip->irq = -1;
@@ -2746,7 +3108,15 @@ static int __devinit snd_es1968_create(struct snd_card *card,
 	}
 	chip->io_port = pci_resource_start(pci, 0);
 	if (request_irq(pci->irq, snd_es1968_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"ESS Maestro", chip)) {
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		snd_es1968_free(chip);
 		return -EBUSY;
@@ -2793,12 +3163,45 @@ static int __devinit snd_es1968_create(struct snd_card *card,
 	snd_card_set_dev(card, &pci->dev);
 
 #ifdef CONFIG_SND_ES1968_RADIO
+<<<<<<< HEAD
+<<<<<<< HEAD
 	chip->tea.private_data = chip;
+=======
+=======
+	/* don't play with GPIOs on laptops */
+	if (chip->pci->subsystem_vendor != 0x125d)
+		goto no_radio;
+>>>>>>> refs/remotes/origin/master
+	err = v4l2_device_register(&pci->dev, &chip->v4l2_dev);
+	if (err < 0) {
+		snd_es1968_free(chip);
+		return err;
+	}
+	chip->tea.v4l2_dev = &chip->v4l2_dev;
+	chip->tea.private_data = chip;
+	chip->tea.radio_nr = radio_nr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	chip->tea.ops = &snd_es1968_tea_ops;
 	strlcpy(chip->tea.card, "SF64-PCE2", sizeof(chip->tea.card));
 	sprintf(chip->tea.bus_info, "PCI:%s", pci_name(pci));
 	if (!snd_tea575x_init(&chip->tea))
 		printk(KERN_INFO "es1968: detected TEA575x radio\n");
+=======
+	chip->tea.ops = &snd_es1968_tea_ops;
+	sprintf(chip->tea.bus_info, "PCI:%s", pci_name(pci));
+	for (i = 0; i < ARRAY_SIZE(snd_es1968_tea575x_gpios); i++) {
+		chip->tea575x_tuner = i;
+		if (!snd_tea575x_init(&chip->tea, THIS_MODULE)) {
+			snd_printk(KERN_INFO "es1968: detected TEA575x radio type %s\n",
+				   get_tea575x_gpio(chip)->name);
+			strlcpy(chip->tea.card, get_tea575x_gpio(chip)->name,
+				sizeof(chip->tea.card));
+			break;
+		}
+	}
+no_radio:
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	*chip_ret = chip;
@@ -2809,8 +3212,13 @@ static int __devinit snd_es1968_create(struct snd_card *card,
 
 /*
  */
+<<<<<<< HEAD
 static int __devinit snd_es1968_probe(struct pci_dev *pci,
 				      const struct pci_device_id *pci_id)
+=======
+static int snd_es1968_probe(struct pci_dev *pci,
+			    const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -2839,6 +3247,14 @@ static int __devinit snd_es1968_probe(struct pci_dev *pci,
 				     pcm_substreams_c[dev],
 				     pci_id->driver_data,
 				     use_pm[dev],
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				     radio_nr[dev],
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     radio_nr[dev],
+>>>>>>> refs/remotes/origin/master
 				     &chip)) < 0) {
 		snd_card_free(card);
 		return err;
@@ -2885,8 +3301,20 @@ static int __devinit snd_es1968_probe(struct pci_dev *pci,
 	if (enable_mpu[dev]) {
 		if ((err = snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
 					       chip->io_port + ESM_MPU401_PORT,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					       MPU401_INFO_INTEGRATED,
 					       chip->irq, 0, &chip->rmidi)) < 0) {
+=======
+					       MPU401_INFO_INTEGRATED |
+					       MPU401_INFO_IRQ_HOOK,
+					       -1, &chip->rmidi)) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       MPU401_INFO_INTEGRATED |
+					       MPU401_INFO_IRQ_HOOK,
+					       -1, &chip->rmidi)) < 0) {
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_WARNING "es1968: skipping MPU-401 MIDI support..\n");
 		}
 	}
@@ -2918,6 +3346,7 @@ static int __devinit snd_es1968_probe(struct pci_dev *pci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_es1968_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -2925,7 +3354,11 @@ static void __devexit snd_es1968_remove(struct pci_dev *pci)
 }
 
 static struct pci_driver driver = {
+<<<<<<< HEAD
 	.name = "ES1968 (ESS Maestro)",
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = snd_es1968_ids,
 	.probe = snd_es1968_probe,
 	.remove = __devexit_p(snd_es1968_remove),
@@ -2947,3 +3380,21 @@ static void __exit alsa_card_es1968_exit(void)
 
 module_init(alsa_card_es1968_init)
 module_exit(alsa_card_es1968_exit)
+=======
+static void snd_es1968_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+static struct pci_driver es1968_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_es1968_ids,
+	.probe = snd_es1968_probe,
+	.remove = snd_es1968_remove,
+	.driver = {
+		.pm = ES1968_PM_OPS,
+	},
+};
+
+module_pci_driver(es1968_driver);
+>>>>>>> refs/remotes/origin/master

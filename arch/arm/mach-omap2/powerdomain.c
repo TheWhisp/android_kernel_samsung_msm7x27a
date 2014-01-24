@@ -1,7 +1,15 @@
 /*
  * OMAP powerdomain control
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2007-2008 Texas Instruments, Inc.
+=======
+ * Copyright (C) 2007-2008, 2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2007-2008, 2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2007-2011 Nokia Corporation
  *
  * Written by Paul Walmsley
@@ -19,6 +27,10 @@
 #include <linux/list.h>
 #include <linux/errno.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/spinlock.h>
+>>>>>>> refs/remotes/origin/master
 #include <trace/events/power.h>
 
 #include "cm2xxx_3xxx.h"
@@ -28,11 +40,19 @@
 #include "prm44xx.h"
 
 #include <asm/cpu.h>
+<<<<<<< HEAD
 #include <plat/cpu.h>
 #include "powerdomain.h"
 #include "clockdomain.h"
 #include <plat/prcm.h>
 
+=======
+
+#include "powerdomain.h"
+#include "clockdomain.h"
+
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 #include "pm.h"
 
 #define PWRDM_TRACE_STATES_FLAG	(1<<31)
@@ -42,6 +62,18 @@ enum {
 	PWRDM_STATE_PREV,
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * Types of sleep_switch used internally in omap_set_pwrdm_state()
+ * and its associated static functions
+ *
+ * XXX Better documentation is needed here
+ */
+#define ALREADYACTIVE_SWITCH		0
+#define FORCEWAKEUP_SWITCH		1
+#define LOWPOWERSTATE_SWITCH		2
+>>>>>>> refs/remotes/origin/master
 
 /* pwrdm_list contains all registered struct powerdomains */
 static LIST_HEAD(pwrdm_list);
@@ -77,13 +109,27 @@ static struct powerdomain *_pwrdm_lookup(const char *name)
 static int _pwrdm_register(struct powerdomain *pwrdm)
 {
 	int i;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct voltagedomain *voltdm;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct voltagedomain *voltdm;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pwrdm || !pwrdm->name)
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!omap_chip_is(pwrdm->omap_chip))
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cpu_is_omap44xx() &&
 	    pwrdm->prcm_partition == OMAP4430_INVALID_PRCM_PARTITION) {
 		pr_err("powerdomain: %s: missing OMAP4 PRCM partition ID\n",
@@ -94,6 +140,32 @@ static int _pwrdm_register(struct powerdomain *pwrdm)
 	if (_pwrdm_lookup(pwrdm->name))
 		return -EEXIST;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+	if (arch_pwrdm && arch_pwrdm->pwrdm_has_voltdm)
+		if (!arch_pwrdm->pwrdm_has_voltdm())
+			goto skip_voltdm;
+
+>>>>>>> refs/remotes/origin/master
+	voltdm = voltdm_lookup(pwrdm->voltdm.name);
+	if (!voltdm) {
+		pr_err("powerdomain: %s: voltagedomain %s does not exist\n",
+		       pwrdm->name, pwrdm->voltdm.name);
+		return -EINVAL;
+	}
+	pwrdm->voltdm.ptr = voltdm;
+	INIT_LIST_HEAD(&pwrdm->voltdm_node);
+	voltdm_add_pwrdm(voltdm, pwrdm);
+<<<<<<< HEAD
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+skip_voltdm:
+	spin_lock_init(&pwrdm->_lock);
+
+>>>>>>> refs/remotes/origin/master
 	list_add(&pwrdm->node, &pwrdm_list);
 
 	/* Initialize the powerdomain's state counter */
@@ -104,7 +176,12 @@ static int _pwrdm_register(struct powerdomain *pwrdm)
 	for (i = 0; i < pwrdm->banks; i++)
 		pwrdm->ret_mem_off_counter[i] = 0;
 
+<<<<<<< HEAD
 	pwrdm_wait_transition(pwrdm);
+=======
+	if (arch_pwrdm && arch_pwrdm->pwrdm_wait_transition)
+		arch_pwrdm->pwrdm_wait_transition(pwrdm);
+>>>>>>> refs/remotes/origin/master
 	pwrdm->state = pwrdm_read_pwrst(pwrdm);
 	pwrdm->state_counter[pwrdm->state] = 1;
 
@@ -135,7 +212,11 @@ static void _update_logic_membank_counters(struct powerdomain *pwrdm)
 static int _pwrdm_state_switch(struct powerdomain *pwrdm, int flag)
 {
 
+<<<<<<< HEAD
 	int prev, state, trace_state = 0;
+=======
+	int prev, next, state, trace_state = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (pwrdm == NULL)
 		return -EINVAL;
@@ -156,9 +237,16 @@ static int _pwrdm_state_switch(struct powerdomain *pwrdm, int flag)
 		 * If the power domain did not hit the desired state,
 		 * generate a trace event with both the desired and hit states
 		 */
+<<<<<<< HEAD
 		if (state != prev) {
 			trace_state = (PWRDM_TRACE_STATES_FLAG |
 				       ((state & OMAP_POWERSTATE_MASK) << 8) |
+=======
+		next = pwrdm_read_next_pwrst(pwrdm);
+		if (next != prev) {
+			trace_state = (PWRDM_TRACE_STATES_FLAG |
+				       ((next & OMAP_POWERSTATE_MASK) << 8) |
+>>>>>>> refs/remotes/origin/master
 				       ((prev & OMAP_POWERSTATE_MASK) << 0));
 			trace_power_domain_target(pwrdm->name, trace_state,
 						  smp_processor_id());
@@ -191,9 +279,11 @@ static int _pwrdm_post_transition_cb(struct powerdomain *pwrdm, void *unused)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Public functions */
 
 /**
+<<<<<<< HEAD
  * pwrdm_init - set up the powerdomain layer
  * @pwrdm_list: array of struct powerdomain pointers to register
  * @custom_funcs: func pointers for arch specific implementations
@@ -217,6 +307,181 @@ void pwrdm_init(struct powerdomain **pwrdm_list, struct pwrdm_ops *custom_funcs)
 		for (p = pwrdm_list; *p; p++)
 			_pwrdm_register(*p);
 	}
+=======
+=======
+/**
+ * _pwrdm_save_clkdm_state_and_activate - prepare for power state change
+ * @pwrdm: struct powerdomain * to operate on
+ * @curr_pwrst: current power state of @pwrdm
+ * @pwrst: power state to switch to
+ * @hwsup: ptr to a bool to return whether the clkdm is hardware-supervised
+ *
+ * Determine whether the powerdomain needs to be turned on before
+ * attempting to switch power states.  Called by
+ * omap_set_pwrdm_state().  NOTE that if the powerdomain contains
+ * multiple clockdomains, this code assumes that the first clockdomain
+ * supports software-supervised wakeup mode - potentially a problem.
+ * Returns the power state switch mode currently in use (see the
+ * "Types of sleep_switch" comment above).
+ */
+static u8 _pwrdm_save_clkdm_state_and_activate(struct powerdomain *pwrdm,
+					       u8 curr_pwrst, u8 pwrst,
+					       bool *hwsup)
+{
+	u8 sleep_switch;
+
+	if (curr_pwrst < PWRDM_POWER_ON) {
+		if (curr_pwrst > pwrst &&
+		    pwrdm->flags & PWRDM_HAS_LOWPOWERSTATECHANGE &&
+		    arch_pwrdm->pwrdm_set_lowpwrstchange) {
+			sleep_switch = LOWPOWERSTATE_SWITCH;
+		} else {
+			*hwsup = clkdm_in_hwsup(pwrdm->pwrdm_clkdms[0]);
+			clkdm_wakeup_nolock(pwrdm->pwrdm_clkdms[0]);
+			sleep_switch = FORCEWAKEUP_SWITCH;
+		}
+	} else {
+		sleep_switch = ALREADYACTIVE_SWITCH;
+	}
+
+	return sleep_switch;
+}
+
+/**
+ * _pwrdm_restore_clkdm_state - restore the clkdm hwsup state after pwrst change
+ * @pwrdm: struct powerdomain * to operate on
+ * @sleep_switch: return value from _pwrdm_save_clkdm_state_and_activate()
+ * @hwsup: should @pwrdm's first clockdomain be set to hardware-supervised mode?
+ *
+ * Restore the clockdomain state perturbed by
+ * _pwrdm_save_clkdm_state_and_activate(), and call the power state
+ * bookkeeping code.  Called by omap_set_pwrdm_state().  NOTE that if
+ * the powerdomain contains multiple clockdomains, this assumes that
+ * the first associated clockdomain supports either
+ * hardware-supervised idle control in the register, or
+ * software-supervised sleep.  No return value.
+ */
+static void _pwrdm_restore_clkdm_state(struct powerdomain *pwrdm,
+				       u8 sleep_switch, bool hwsup)
+{
+	switch (sleep_switch) {
+	case FORCEWAKEUP_SWITCH:
+		if (hwsup)
+			clkdm_allow_idle_nolock(pwrdm->pwrdm_clkdms[0]);
+		else
+			clkdm_sleep_nolock(pwrdm->pwrdm_clkdms[0]);
+		break;
+	case LOWPOWERSTATE_SWITCH:
+		if (pwrdm->flags & PWRDM_HAS_LOWPOWERSTATECHANGE &&
+		    arch_pwrdm->pwrdm_set_lowpwrstchange)
+			arch_pwrdm->pwrdm_set_lowpwrstchange(pwrdm);
+		pwrdm_state_switch_nolock(pwrdm);
+		break;
+	}
+}
+
+/* Public functions */
+
+/**
+>>>>>>> refs/remotes/origin/master
+ * pwrdm_register_platform_funcs - register powerdomain implementation fns
+ * @po: func pointers for arch specific implementations
+ *
+ * Register the list of function pointers used to implement the
+ * powerdomain functions on different OMAP SoCs.  Should be called
+ * before any other pwrdm_register*() function.  Returns -EINVAL if
+ * @po is null, -EEXIST if platform functions have already been
+ * registered, or 0 upon success.
+ */
+int pwrdm_register_platform_funcs(struct pwrdm_ops *po)
+{
+	if (!po)
+		return -EINVAL;
+
+	if (arch_pwrdm)
+		return -EEXIST;
+
+	arch_pwrdm = po;
+
+	return 0;
+}
+
+/**
+ * pwrdm_register_pwrdms - register SoC powerdomains
+ * @ps: pointer to an array of struct powerdomain to register
+ *
+ * Register the powerdomains available on a particular OMAP SoC.  Must
+ * be called after pwrdm_register_platform_funcs().  May be called
+ * multiple times.  Returns -EACCES if called before
+ * pwrdm_register_platform_funcs(); -EINVAL if the argument @ps is
+ * null; or 0 upon success.
+ */
+int pwrdm_register_pwrdms(struct powerdomain **ps)
+{
+	struct powerdomain **p = NULL;
+
+	if (!arch_pwrdm)
+		return -EEXIST;
+
+	if (!ps)
+		return -EINVAL;
+
+	for (p = ps; *p; p++)
+		_pwrdm_register(*p);
+
+	return 0;
+}
+
+/**
+ * pwrdm_complete_init - set up the powerdomain layer
+ *
+ * Do whatever is necessary to initialize registered powerdomains and
+ * powerdomain code.  Currently, this programs the next power state
+ * for each powerdomain to ON.  This prevents powerdomains from
+ * unexpectedly losing context or entering high wakeup latency modes
+ * with non-power-management-enabled kernels.  Must be called after
+ * pwrdm_register_pwrdms().  Returns -EACCES if called before
+ * pwrdm_register_pwrdms(), or 0 upon success.
+ */
+int pwrdm_complete_init(void)
+{
+	struct powerdomain *temp_p;
+
+	if (list_empty(&pwrdm_list))
+		return -EACCES;
+
+	list_for_each_entry(temp_p, &pwrdm_list, node)
+		pwrdm_set_next_pwrst(temp_p, PWRDM_POWER_ON);
+
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+/**
+ * pwrdm_lock - acquire a Linux spinlock on a powerdomain
+ * @pwrdm: struct powerdomain * to lock
+ *
+ * Acquire the powerdomain spinlock on @pwrdm.  No return value.
+ */
+void pwrdm_lock(struct powerdomain *pwrdm)
+	__acquires(&pwrdm->_lock)
+{
+	spin_lock_irqsave(&pwrdm->_lock, pwrdm->_lock_flags);
+}
+
+/**
+ * pwrdm_unlock - release a Linux spinlock on a powerdomain
+ * @pwrdm: struct powerdomain * to unlock
+ *
+ * Release the powerdomain spinlock on @pwrdm.  No return value.
+ */
+void pwrdm_unlock(struct powerdomain *pwrdm)
+	__releases(&pwrdm->_lock)
+{
+	spin_unlock_irqrestore(&pwrdm->_lock, pwrdm->_lock_flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -284,8 +549,13 @@ int pwrdm_add_clkdm(struct powerdomain *pwrdm, struct clockdomain *clkdm)
 	if (!pwrdm || !clkdm)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	pr_debug("powerdomain: associating clockdomain %s with powerdomain "
 		 "%s\n", clkdm->name, pwrdm->name);
+=======
+	pr_debug("powerdomain: %s: associating clockdomain %s\n",
+		 pwrdm->name, clkdm->name);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < PWRDM_MAX_CLKDMS; i++) {
 		if (!pwrdm->pwrdm_clkdms[i])
@@ -299,8 +569,13 @@ int pwrdm_add_clkdm(struct powerdomain *pwrdm, struct clockdomain *clkdm)
 	}
 
 	if (i == PWRDM_MAX_CLKDMS) {
+<<<<<<< HEAD
 		pr_debug("powerdomain: increase PWRDM_MAX_CLKDMS for "
 			 "pwrdm %s clkdm %s\n", pwrdm->name, clkdm->name);
+=======
+		pr_debug("powerdomain: %s: increase PWRDM_MAX_CLKDMS for clkdm %s\n",
+			 pwrdm->name, clkdm->name);
+>>>>>>> refs/remotes/origin/master
 		WARN_ON(1);
 		ret = -ENOMEM;
 		goto pac_exit;
@@ -332,16 +607,26 @@ int pwrdm_del_clkdm(struct powerdomain *pwrdm, struct clockdomain *clkdm)
 	if (!pwrdm || !clkdm)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	pr_debug("powerdomain: dissociating clockdomain %s from powerdomain "
 		 "%s\n", clkdm->name, pwrdm->name);
+=======
+	pr_debug("powerdomain: %s: dissociating clockdomain %s\n",
+		 pwrdm->name, clkdm->name);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < PWRDM_MAX_CLKDMS; i++)
 		if (pwrdm->pwrdm_clkdms[i] == clkdm)
 			break;
 
 	if (i == PWRDM_MAX_CLKDMS) {
+<<<<<<< HEAD
 		pr_debug("powerdomain: clkdm %s not associated with pwrdm "
 			 "%s ?!\n", clkdm->name, pwrdm->name);
+=======
+		pr_debug("powerdomain: %s: clkdm %s not associated?!\n",
+			 pwrdm->name, clkdm->name);
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOENT;
 		goto pdc_exit;
 	}
@@ -383,6 +668,27 @@ int pwrdm_for_each_clkdm(struct powerdomain *pwrdm,
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * pwrdm_get_voltdm - return a ptr to the voltdm that this pwrdm resides in
+ * @pwrdm: struct powerdomain *
+ *
+ * Return a pointer to the struct voltageomain that the specified powerdomain
+ * @pwrdm exists in.
+ */
+struct voltagedomain *pwrdm_get_voltdm(struct powerdomain *pwrdm)
+{
+	return pwrdm->voltdm.ptr;
+}
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * pwrdm_get_mem_bank_count - get number of memory banks in this powerdomain
  * @pwrdm: struct powerdomain *
  *
@@ -418,7 +724,11 @@ int pwrdm_set_next_pwrst(struct powerdomain *pwrdm, u8 pwrst)
 	if (!(pwrdm->pwrsts & (1 << pwrst)))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	pr_debug("powerdomain: setting next powerstate for %s to %0x\n",
+=======
+	pr_debug("powerdomain: %s: setting next powerstate to %0x\n",
+>>>>>>> refs/remotes/origin/master
 		 pwrdm->name, pwrst);
 
 	if (arch_pwrdm && arch_pwrdm->pwrdm_set_next_pwrst) {
@@ -459,7 +769,12 @@ int pwrdm_read_next_pwrst(struct powerdomain *pwrdm)
  *
  * Return the powerdomain @pwrdm's current power state.	Returns -EINVAL
  * if the powerdomain pointer is null or returns the current power state
+<<<<<<< HEAD
  * upon success.
+=======
+ * upon success. Note that if the power domain only supports the ON state
+ * then just return ON as the current state.
+>>>>>>> refs/remotes/origin/master
  */
 int pwrdm_read_pwrst(struct powerdomain *pwrdm)
 {
@@ -468,6 +783,12 @@ int pwrdm_read_pwrst(struct powerdomain *pwrdm)
 	if (!pwrdm)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (pwrdm->pwrsts == PWRSTS_ON)
+		return PWRDM_POWER_ON;
+
+>>>>>>> refs/remotes/origin/master
 	if (arch_pwrdm && arch_pwrdm->pwrdm_read_pwrst)
 		ret = arch_pwrdm->pwrdm_read_pwrst(pwrdm);
 
@@ -516,7 +837,11 @@ int pwrdm_set_logic_retst(struct powerdomain *pwrdm, u8 pwrst)
 	if (!(pwrdm->pwrsts_logic_ret & (1 << pwrst)))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	pr_debug("powerdomain: setting next logic powerstate for %s to %0x\n",
+=======
+	pr_debug("powerdomain: %s: setting next logic powerstate to %0x\n",
+>>>>>>> refs/remotes/origin/master
 		 pwrdm->name, pwrst);
 
 	if (arch_pwrdm && arch_pwrdm->pwrdm_set_logic_retst)
@@ -553,8 +878,13 @@ int pwrdm_set_mem_onst(struct powerdomain *pwrdm, u8 bank, u8 pwrst)
 	if (!(pwrdm->pwrsts_mem_on[bank] & (1 << pwrst)))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	pr_debug("powerdomain: setting next memory powerstate for domain %s "
 		 "bank %0x while pwrdm-ON to %0x\n", pwrdm->name, bank, pwrst);
+=======
+	pr_debug("powerdomain: %s: setting next memory powerstate for bank %0x while pwrdm-ON to %0x\n",
+		 pwrdm->name, bank, pwrst);
+>>>>>>> refs/remotes/origin/master
 
 	if (arch_pwrdm && arch_pwrdm->pwrdm_set_mem_onst)
 		ret = arch_pwrdm->pwrdm_set_mem_onst(pwrdm, bank, pwrst);
@@ -591,8 +921,13 @@ int pwrdm_set_mem_retst(struct powerdomain *pwrdm, u8 bank, u8 pwrst)
 	if (!(pwrdm->pwrsts_mem_ret[bank] & (1 << pwrst)))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	pr_debug("powerdomain: setting next memory powerstate for domain %s "
 		 "bank %0x while pwrdm-RET to %0x\n", pwrdm->name, bank, pwrst);
+=======
+	pr_debug("powerdomain: %s: setting next memory powerstate for bank %0x while pwrdm-RET to %0x\n",
+		 pwrdm->name, bank, pwrst);
+>>>>>>> refs/remotes/origin/master
 
 	if (arch_pwrdm && arch_pwrdm->pwrdm_set_mem_retst)
 		ret = arch_pwrdm->pwrdm_set_mem_retst(pwrdm, bank, pwrst);
@@ -770,7 +1105,11 @@ int pwrdm_clear_all_prev_pwrst(struct powerdomain *pwrdm)
 	 * warn & fail if it is not ON.
 	 */
 
+<<<<<<< HEAD
 	pr_debug("powerdomain: clearing previous power state reg for %s\n",
+=======
+	pr_debug("powerdomain: %s: clearing previous power state reg\n",
+>>>>>>> refs/remotes/origin/master
 		 pwrdm->name);
 
 	if (arch_pwrdm && arch_pwrdm->pwrdm_clear_all_prev_pwrst)
@@ -800,8 +1139,12 @@ int pwrdm_enable_hdwr_sar(struct powerdomain *pwrdm)
 	if (!(pwrdm->flags & PWRDM_HAS_HDWR_SAR))
 		return ret;
 
+<<<<<<< HEAD
 	pr_debug("powerdomain: %s: setting SAVEANDRESTORE bit\n",
 		 pwrdm->name);
+=======
+	pr_debug("powerdomain: %s: setting SAVEANDRESTORE bit\n", pwrdm->name);
+>>>>>>> refs/remotes/origin/master
 
 	if (arch_pwrdm && arch_pwrdm->pwrdm_enable_hdwr_sar)
 		ret = arch_pwrdm->pwrdm_enable_hdwr_sar(pwrdm);
@@ -830,8 +1173,12 @@ int pwrdm_disable_hdwr_sar(struct powerdomain *pwrdm)
 	if (!(pwrdm->flags & PWRDM_HAS_HDWR_SAR))
 		return ret;
 
+<<<<<<< HEAD
 	pr_debug("powerdomain: %s: clearing SAVEANDRESTORE bit\n",
 		 pwrdm->name);
+=======
+	pr_debug("powerdomain: %s: clearing SAVEANDRESTORE bit\n", pwrdm->name);
+>>>>>>> refs/remotes/origin/master
 
 	if (arch_pwrdm && arch_pwrdm->pwrdm_disable_hdwr_sar)
 		ret = arch_pwrdm->pwrdm_disable_hdwr_sar(pwrdm);
@@ -851,6 +1198,7 @@ bool pwrdm_has_hdwr_sar(struct powerdomain *pwrdm)
 	return (pwrdm && pwrdm->flags & PWRDM_HAS_HDWR_SAR) ? 1 : 0;
 }
 
+<<<<<<< HEAD
 /**
  * pwrdm_set_lowpwrstchange - Request a low power state change
  * @pwrdm: struct powerdomain *
@@ -876,10 +1224,34 @@ int pwrdm_set_lowpwrstchange(struct powerdomain *pwrdm)
 
 	if (arch_pwrdm && arch_pwrdm->pwrdm_set_lowpwrstchange)
 		ret = arch_pwrdm->pwrdm_set_lowpwrstchange(pwrdm);
+=======
+int pwrdm_state_switch_nolock(struct powerdomain *pwrdm)
+{
+	int ret;
+
+	if (!pwrdm || !arch_pwrdm)
+		return -EINVAL;
+
+	ret = arch_pwrdm->pwrdm_wait_transition(pwrdm);
+	if (!ret)
+		ret = _pwrdm_state_switch(pwrdm, PWRDM_STATE_NOW);
 
 	return ret;
 }
 
+int __deprecated pwrdm_state_switch(struct powerdomain *pwrdm)
+{
+	int ret;
+
+	pwrdm_lock(pwrdm);
+	ret = pwrdm_state_switch_nolock(pwrdm);
+	pwrdm_unlock(pwrdm);
+>>>>>>> refs/remotes/origin/master
+
+	return ret;
+}
+
+<<<<<<< HEAD
 /**
  * pwrdm_wait_transition - wait for powerdomain power transition to finish
  * @pwrdm: struct powerdomain * to wait for
@@ -905,7 +1277,17 @@ int pwrdm_wait_transition(struct powerdomain *pwrdm)
 
 int pwrdm_state_switch(struct powerdomain *pwrdm)
 {
+<<<<<<< HEAD
 	return _pwrdm_state_switch(pwrdm, PWRDM_STATE_NOW);
+=======
+	int ret;
+
+	ret = pwrdm_wait_transition(pwrdm);
+	if (!ret)
+		ret = _pwrdm_state_switch(pwrdm, PWRDM_STATE_NOW);
+
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int pwrdm_clkdm_state_switch(struct clockdomain *clkdm)
@@ -928,6 +1310,83 @@ int pwrdm_post_transition(void)
 {
 	pwrdm_for_each(_pwrdm_post_transition_cb, NULL);
 	return 0;
+=======
+int pwrdm_pre_transition(struct powerdomain *pwrdm)
+{
+	if (pwrdm)
+		_pwrdm_pre_transition_cb(pwrdm, NULL);
+	else
+		pwrdm_for_each(_pwrdm_pre_transition_cb, NULL);
+
+	return 0;
+}
+
+int pwrdm_post_transition(struct powerdomain *pwrdm)
+{
+	if (pwrdm)
+		_pwrdm_post_transition_cb(pwrdm, NULL);
+	else
+		pwrdm_for_each(_pwrdm_post_transition_cb, NULL);
+
+	return 0;
+}
+
+/**
+ * omap_set_pwrdm_state - change a powerdomain's current power state
+ * @pwrdm: struct powerdomain * to change the power state of
+ * @pwrst: power state to change to
+ *
+ * Change the current hardware power state of the powerdomain
+ * represented by @pwrdm to the power state represented by @pwrst.
+ * Returns -EINVAL if @pwrdm is null or invalid or if the
+ * powerdomain's current power state could not be read, or returns 0
+ * upon success or if @pwrdm does not support @pwrst or any
+ * lower-power state.  XXX Should not return 0 if the @pwrdm does not
+ * support @pwrst or any lower-power state: this should be an error.
+ */
+int omap_set_pwrdm_state(struct powerdomain *pwrdm, u8 pwrst)
+{
+	u8 next_pwrst, sleep_switch;
+	int curr_pwrst;
+	int ret = 0;
+	bool hwsup = false;
+
+	if (!pwrdm || IS_ERR(pwrdm))
+		return -EINVAL;
+
+	while (!(pwrdm->pwrsts & (1 << pwrst))) {
+		if (pwrst == PWRDM_POWER_OFF)
+			return ret;
+		pwrst--;
+	}
+
+	pwrdm_lock(pwrdm);
+
+	curr_pwrst = pwrdm_read_pwrst(pwrdm);
+	if (curr_pwrst < 0) {
+		ret = -EINVAL;
+		goto osps_out;
+	}
+
+	next_pwrst = pwrdm_read_next_pwrst(pwrdm);
+	if (curr_pwrst == pwrst && next_pwrst == pwrst)
+		goto osps_out;
+
+	sleep_switch = _pwrdm_save_clkdm_state_and_activate(pwrdm, curr_pwrst,
+							    pwrst, &hwsup);
+
+	ret = pwrdm_set_next_pwrst(pwrdm, pwrst);
+	if (ret)
+		pr_err("%s: unable to set power state of powerdomain: %s\n",
+		       __func__, pwrdm->name);
+
+	_pwrdm_restore_clkdm_state(pwrdm, sleep_switch, hwsup);
+
+osps_out:
+	pwrdm_unlock(pwrdm);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -935,16 +1394,37 @@ int pwrdm_post_transition(void)
  * @pwrdm: struct powerdomain * to wait for
  *
  * Context loss count is the sum of powerdomain off-mode counter, the
+<<<<<<< HEAD
+<<<<<<< HEAD
  * logic off counter and the per-bank memory off counter.  Returns 0
  * (and WARNs) upon error, otherwise, returns the context loss count.
  */
 u32 pwrdm_get_context_loss_count(struct powerdomain *pwrdm)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * logic off counter and the per-bank memory off counter.  Returns negative
+ * (and WARNs) upon error, otherwise, returns the context loss count.
+ */
+int pwrdm_get_context_loss_count(struct powerdomain *pwrdm)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int i, count;
 
 	if (!pwrdm) {
 		WARN(1, "powerdomain: %s: pwrdm is null\n", __func__);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	count = pwrdm->state_counter[PWRDM_POWER_OFF];
@@ -953,7 +1433,23 @@ u32 pwrdm_get_context_loss_count(struct powerdomain *pwrdm)
 	for (i = 0; i < pwrdm->banks; i++)
 		count += pwrdm->ret_mem_off_counter[i];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("powerdomain: %s: context loss count = %u\n",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Context loss count has to be a non-negative value. Clear the sign
+	 * bit to get a value range from 0 to INT_MAX.
+	 */
+	count &= INT_MAX;
+
+	pr_debug("powerdomain: %s: context loss count = %d\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 pwrdm->name, count);
 
 	return count;
@@ -975,7 +1471,11 @@ bool pwrdm_can_ever_lose_context(struct powerdomain *pwrdm)
 {
 	int i;
 
+<<<<<<< HEAD
 	if (IS_ERR_OR_NULL(pwrdm)) {
+=======
+	if (!pwrdm) {
+>>>>>>> refs/remotes/origin/master
 		pr_debug("powerdomain: %s: invalid powerdomain pointer\n",
 			 __func__);
 		return 1;

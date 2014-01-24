@@ -202,6 +202,7 @@ static struct serio_driver mtouch_drv = {
 	.disconnect	= mtouch_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -218,3 +219,6 @@ static void __exit mtouch_exit(void)
 
 module_init(mtouch_init);
 module_exit(mtouch_exit);
+=======
+module_serio_driver(mtouch_drv);
+>>>>>>> refs/remotes/origin/master

@@ -463,7 +463,11 @@ int spi_read_flash_id(struct scsi_cmnd *srb, struct rtsx_chip *chip)
 	}
 
 	if (len) {
+<<<<<<< HEAD
 		buf = (u8 *)kmalloc(len, GFP_KERNEL);
+=======
+		buf = kmalloc(len, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!buf)
 			TRACE_RET(chip, STATUS_ERROR);
 

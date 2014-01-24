@@ -187,12 +187,16 @@
 
 #include <linux/dmaengine.h>
 #include <mach/dma.h>
+<<<<<<< HEAD
 
 struct imx_pcm_dma_params {
 	int dma;
 	unsigned long dma_addr;
 	int burstsize;
 };
+=======
+#include "imx-pcm.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct imx_ssi {
 	struct platform_device *ac97_dev;
@@ -218,6 +222,7 @@ struct imx_ssi {
 	struct platform_device *soc_platform_pdev_fiq;
 };
 
+<<<<<<< HEAD
 struct snd_soc_platform *imx_ssi_fiq_init(struct platform_device *pdev,
 		struct imx_ssi *ssi);
 void imx_ssi_fiq_exit(struct platform_device *pdev, struct imx_ssi *ssi);
@@ -233,4 +238,6 @@ void imx_pcm_free(struct snd_pcm *pcm);
  */
 #define IMX_SSI_DMABUF_SIZE	(64 * 1024)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _IMX_SSI_H */

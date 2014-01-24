@@ -22,6 +22,10 @@
 #include <linux/compat.h>
 #include <linux/delay.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/firewire.h>
 #include <linux/firewire-cdev.h>
@@ -44,16 +48,38 @@
 #include <linux/wait.h>
 #include <linux/workqueue.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "core.h"
 
 /*
  * ABI version history is documented in linux/firewire-cdev.h.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define FW_CDEV_KERNEL_VERSION			4
 #define FW_CDEV_VERSION_EVENT_REQUEST2		4
 #define FW_CDEV_VERSION_ALLOCATE_REGION_END	4
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define FW_CDEV_KERNEL_VERSION			5
+#define FW_CDEV_VERSION_EVENT_REQUEST2		4
+#define FW_CDEV_VERSION_ALLOCATE_REGION_END	4
+#define FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW	5
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct client {
 	u32 version;
@@ -71,6 +97,10 @@ struct client {
 	u64 iso_closure;
 	struct fw_iso_buffer buffer;
 	unsigned long vm_start;
+<<<<<<< HEAD
+=======
+	bool buffer_is_mapped;
+>>>>>>> refs/remotes/origin/master
 
 	struct list_head phy_receiver_link;
 	u64 phy_receiver_closure;
@@ -388,10 +418,19 @@ static void queue_bus_reset_event(struct client *client)
 	struct bus_reset_event *e;
 
 	e = kzalloc(sizeof(*e), GFP_KERNEL);
+<<<<<<< HEAD
 	if (e == NULL) {
+<<<<<<< HEAD
 		fw_notify("Out of memory when allocating event\n");
+=======
+		fw_notice(client->device->card, "out of memory when allocating event\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
+=======
+	if (e == NULL)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	fill_bus_reset_event(&e->reset, client);
 
@@ -438,6 +477,14 @@ union ioctl_arg {
 	struct fw_cdev_send_phy_packet		send_phy_packet;
 	struct fw_cdev_receive_phy_packets	receive_phy_packets;
 	struct fw_cdev_set_iso_channels		set_iso_channels;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct fw_cdev_flush_iso		flush_iso;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fw_cdev_flush_iso		flush_iso;
+>>>>>>> refs/remotes/origin/master
 };
 
 static int ioctl_get_info(struct client *client, union ioctl_arg *arg)
@@ -485,6 +532,7 @@ static int ioctl_get_info(struct client *client, union ioctl_arg *arg)
 static int add_client_resource(struct client *client,
 			       struct client_resource *resource, gfp_t gfp_mask)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 	int ret;
 
@@ -506,6 +554,30 @@ static int add_client_resource(struct client *client,
 
 	if (ret == -EAGAIN)
 		goto retry;
+=======
+	bool preload = !!(gfp_mask & __GFP_WAIT);
+	unsigned long flags;
+	int ret;
+
+	if (preload)
+		idr_preload(gfp_mask);
+	spin_lock_irqsave(&client->lock, flags);
+
+	if (client->in_shutdown)
+		ret = -ECANCELED;
+	else
+		ret = idr_alloc(&client->resource_idr, resource, 0, 0,
+				GFP_NOWAIT);
+	if (ret >= 0) {
+		resource->handle = ret;
+		client_get(client);
+		schedule_if_iso_resource(resource);
+	}
+
+	spin_unlock_irqrestore(&client->lock, flags);
+	if (preload)
+		idr_preload_end();
+>>>>>>> refs/remotes/origin/master
 
 	return ret < 0 ? ret : 0;
 }
@@ -690,10 +762,20 @@ static void handle_request(struct fw_card *card, struct fw_request *request,
 
 	r = kmalloc(sizeof(*r), GFP_ATOMIC);
 	e = kmalloc(sizeof(*e), GFP_ATOMIC);
+<<<<<<< HEAD
 	if (r == NULL || e == NULL) {
+<<<<<<< HEAD
 		fw_notify("Out of memory when allocating event\n");
+=======
+		fw_notice(card, "out of memory when allocating event\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto failed;
 	}
+=======
+	if (r == NULL || e == NULL)
+		goto failed;
+
+>>>>>>> refs/remotes/origin/master
 	r->card    = card;
 	r->request = request;
 	r->data    = payload;
@@ -927,10 +1009,20 @@ static void iso_callback(struct fw_iso_context *context, u32 cycle,
 	struct iso_interrupt_event *e;
 
 	e = kmalloc(sizeof(*e) + header_length, GFP_ATOMIC);
+<<<<<<< HEAD
 	if (e == NULL) {
+<<<<<<< HEAD
 		fw_notify("Out of memory when allocating event\n");
+=======
+		fw_notice(context->card, "out of memory when allocating event\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
+=======
+	if (e == NULL)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	e->interrupt.type      = FW_CDEV_EVENT_ISO_INTERRUPT;
 	e->interrupt.closure   = client->iso_closure;
 	e->interrupt.cycle     = cycle;
@@ -947,10 +1039,20 @@ static void iso_mc_callback(struct fw_iso_context *context,
 	struct iso_interrupt_mc_event *e;
 
 	e = kmalloc(sizeof(*e), GFP_ATOMIC);
+<<<<<<< HEAD
 	if (e == NULL) {
+<<<<<<< HEAD
 		fw_notify("Out of memory when allocating event\n");
+=======
+		fw_notice(context->card, "out of memory when allocating event\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
+=======
+	if (e == NULL)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	e->interrupt.type      = FW_CDEV_EVENT_ISO_INTERRUPT_MULTICHANNEL;
 	e->interrupt.closure   = client->iso_closure;
 	e->interrupt.completed = fw_iso_buffer_lookup(&client->buffer,
@@ -959,11 +1061,26 @@ static void iso_mc_callback(struct fw_iso_context *context,
 		    sizeof(e->interrupt), NULL, 0);
 }
 
+<<<<<<< HEAD
+=======
+static enum dma_data_direction iso_dma_direction(struct fw_iso_context *context)
+{
+		if (context->type == FW_ISO_CONTEXT_TRANSMIT)
+			return DMA_TO_DEVICE;
+		else
+			return DMA_FROM_DEVICE;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
 {
 	struct fw_cdev_create_iso_context *a = &arg->create_iso_context;
 	struct fw_iso_context *context;
 	fw_iso_callback_t cb;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	BUILD_BUG_ON(FW_CDEV_ISO_CONTEXT_TRANSMIT != FW_ISO_CONTEXT_TRANSMIT ||
 		     FW_CDEV_ISO_CONTEXT_RECEIVE  != FW_ISO_CONTEXT_RECEIVE  ||
@@ -998,14 +1115,47 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
 			a->channel, a->speed, a->header_size, cb, client);
 	if (IS_ERR(context))
 		return PTR_ERR(context);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
+		context->drop_overflow_headers = true;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
+		context->drop_overflow_headers = true;
+>>>>>>> refs/remotes/origin/master
+=======
+	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
+		context->drop_overflow_headers = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* We only support one context at this time. */
 	spin_lock_irq(&client->lock);
 	if (client->iso_context != NULL) {
 		spin_unlock_irq(&client->lock);
 		fw_iso_context_destroy(context);
+<<<<<<< HEAD
 		return -EBUSY;
 	}
+=======
+
+		return -EBUSY;
+	}
+	if (!client->buffer_is_mapped) {
+		ret = fw_iso_buffer_map_dma(&client->buffer,
+					    client->device->card,
+					    iso_dma_direction(context));
+		if (ret < 0) {
+			spin_unlock_irq(&client->lock);
+			fw_iso_context_destroy(context);
+
+			return ret;
+		}
+		client->buffer_is_mapped = true;
+	}
+>>>>>>> refs/remotes/origin/master
 	client->iso_closure = a->closure;
 	client->iso_context = context;
 	spin_unlock_irq(&client->lock);
@@ -1168,6 +1318,25 @@ static int ioctl_stop_iso(struct client *client, union ioctl_arg *arg)
 	return fw_iso_context_stop(client->iso_context);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int ioctl_flush_iso(struct client *client, union ioctl_arg *arg)
+{
+	struct fw_cdev_flush_iso *a = &arg->flush_iso;
+
+	if (client->iso_context == NULL || a->handle != 0)
+		return -EINVAL;
+
+	return fw_iso_context_flush_completions(client->iso_context);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ioctl_get_cycle_timer2(struct client *client, union ioctl_arg *arg)
 {
 	struct fw_cdev_get_cycle_timer2 *a = &arg->get_cycle_timer2;
@@ -1331,8 +1500,12 @@ static int init_iso_resource(struct client *client,
 	int ret;
 
 	if ((request->channels == 0 && request->bandwidth == 0) ||
+<<<<<<< HEAD
 	    request->bandwidth > BANDWIDTH_AVAILABLE_INITIAL ||
 	    request->bandwidth < 0)
+=======
+	    request->bandwidth > BANDWIDTH_AVAILABLE_INITIAL)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	r  = kmalloc(sizeof(*r), GFP_KERNEL);
@@ -1547,10 +1720,20 @@ void fw_cdev_handle_phy_packet(struct fw_card *card, struct fw_packet *p)
 
 	list_for_each_entry(client, &card->phy_receiver_list, phy_receiver_link) {
 		e = kmalloc(sizeof(*e) + 8, GFP_ATOMIC);
+<<<<<<< HEAD
 		if (e == NULL) {
+<<<<<<< HEAD
 			fw_notify("Out of memory when allocating event\n");
+=======
+			fw_notice(card, "out of memory when allocating event\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
+=======
+		if (e == NULL)
+			break;
+
+>>>>>>> refs/remotes/origin/master
 		e->phy_packet.closure	= client->phy_receiver_closure;
 		e->phy_packet.type	= FW_CDEV_EVENT_PHY_PACKET_RECEIVED;
 		e->phy_packet.rcode	= RCODE_COMPLETE;
@@ -1589,6 +1772,14 @@ static int (* const ioctl_handlers[])(struct client *, union ioctl_arg *) = {
 	[0x15] = ioctl_send_phy_packet,
 	[0x16] = ioctl_receive_phy_packets,
 	[0x17] = ioctl_set_iso_channels,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	[0x18] = ioctl_flush_iso,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[0x18] = ioctl_flush_iso,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int dispatch_ioctl(struct client *client,
@@ -1640,7 +1831,10 @@ static long fw_device_op_compat_ioctl(struct file *file,
 static int fw_device_op_mmap(struct file *file, struct vm_area_struct *vma)
 {
 	struct client *client = file->private_data;
+<<<<<<< HEAD
 	enum dma_data_direction direction;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long size;
 	int page_count, ret;
 
@@ -1663,6 +1857,7 @@ static int fw_device_op_mmap(struct file *file, struct vm_area_struct *vma)
 	if (size & ~PAGE_MASK)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (vma->vm_flags & VM_WRITE)
 		direction = DMA_TO_DEVICE;
 	else
@@ -1677,6 +1872,30 @@ static int fw_device_op_mmap(struct file *file, struct vm_area_struct *vma)
 	if (ret < 0)
 		fw_iso_buffer_destroy(&client->buffer, client->device->card);
 
+=======
+	ret = fw_iso_buffer_alloc(&client->buffer, page_count);
+	if (ret < 0)
+		return ret;
+
+	spin_lock_irq(&client->lock);
+	if (client->iso_context) {
+		ret = fw_iso_buffer_map_dma(&client->buffer,
+				client->device->card,
+				iso_dma_direction(client->iso_context));
+		client->buffer_is_mapped = (ret == 0);
+	}
+	spin_unlock_irq(&client->lock);
+	if (ret < 0)
+		goto fail;
+
+	ret = fw_iso_buffer_map_vma(&client->buffer, vma);
+	if (ret < 0)
+		goto fail;
+
+	return 0;
+ fail:
+	fw_iso_buffer_destroy(&client->buffer, client->device->card);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1737,7 +1956,10 @@ static int fw_device_op_release(struct inode *inode, struct file *file)
 	wait_event(client->tx_flush_wait, !has_outbound_transactions(client));
 
 	idr_for_each(&client->resource_idr, shutdown_resource, client);
+<<<<<<< HEAD
 	idr_remove_all(&client->resource_idr);
+=======
+>>>>>>> refs/remotes/origin/master
 	idr_destroy(&client->resource_idr);
 
 	list_for_each_entry_safe(event, next_event, &client->event_list, link)

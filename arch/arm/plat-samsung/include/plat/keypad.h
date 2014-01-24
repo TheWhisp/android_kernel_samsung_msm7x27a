@@ -13,6 +13,8 @@
 #ifndef __PLAT_SAMSUNG_KEYPAD_H
 #define __PLAT_SAMSUNG_KEYPAD_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/input/matrix_keypad.h>
 
 #define SAMSUNG_MAX_ROWS	8
@@ -39,6 +41,12 @@ struct samsung_keypad_platdata {
 
 	void (*cfg_gpio)(unsigned int rows, unsigned int cols);
 };
+=======
+#include <linux/input/samsung-keypad.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/input/samsung-keypad.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * samsung_keypad_set_platdata - Set platform data for Samsung Keypad device.

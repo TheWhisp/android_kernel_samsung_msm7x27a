@@ -1,21 +1,44 @@
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/smp.h>
 #include <linux/time.h>
 #include <linux/clockchips.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/i8253.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/sni.h>
 #include <asm/time.h>
 #include <asm-generic/rtc.h>
 
+<<<<<<< HEAD
 #define SNI_CLOCK_TICK_RATE     3686400
 #define SNI_COUNTER2_DIV        64
 #define SNI_COUNTER0_DIV        ((SNI_CLOCK_TICK_RATE / SNI_COUNTER2_DIV) / HZ)
 
 static void a20r_set_mode(enum clock_event_mode mode,
                           struct clock_event_device *evt)
+=======
+#define SNI_CLOCK_TICK_RATE	3686400
+#define SNI_COUNTER2_DIV	64
+#define SNI_COUNTER0_DIV	((SNI_CLOCK_TICK_RATE / SNI_COUNTER2_DIV) / HZ)
+
+static void a20r_set_mode(enum clock_event_mode mode,
+			  struct clock_event_device *evt)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (mode) {
 	case CLOCK_EVT_MODE_PERIODIC:
@@ -33,6 +56,7 @@ static void a20r_set_mode(enum clock_event_mode mode,
 		*(volatile u8 *)(A20R_PT_CLOCK_BASE +  8) = SNI_COUNTER2_DIV >> 8;
 		wmb();
 
+<<<<<<< HEAD
                 break;
         case CLOCK_EVT_MODE_ONESHOT:
         case CLOCK_EVT_MODE_UNUSED:
@@ -41,6 +65,16 @@ static void a20r_set_mode(enum clock_event_mode mode,
         case CLOCK_EVT_MODE_RESUME:
                 break;
         }
+=======
+		break;
+	case CLOCK_EVT_MODE_ONESHOT:
+	case CLOCK_EVT_MODE_UNUSED:
+	case CLOCK_EVT_MODE_SHUTDOWN:
+		break;
+	case CLOCK_EVT_MODE_RESUME:
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct clock_event_device a20r_clockevent_device = {
@@ -68,7 +102,15 @@ static irqreturn_t a20r_interrupt(int irq, void *dev_id)
 
 static struct irqaction a20r_irqaction = {
 	.handler	= a20r_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_PERCPU | IRQF_TIMER,
+=======
+	.flags		= IRQF_PERCPU | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= IRQF_PERCPU | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 	.name		= "a20r-timer",
 };
 
@@ -82,15 +124,25 @@ static void __init sni_a20r_timer_setup(void)
 	struct irqaction *action = &a20r_irqaction;
 	unsigned int cpu = smp_processor_id();
 
+<<<<<<< HEAD
 	cd->cpumask             = cpumask_of(cpu);
+=======
+	cd->cpumask		= cpumask_of(cpu);
+>>>>>>> refs/remotes/origin/master
 	clockevents_register_device(cd);
 	action->dev_id = cd;
 	setup_irq(SNI_A20R_IRQ_TIMER, &a20r_irqaction);
 }
 
+<<<<<<< HEAD
 #define SNI_8254_TICK_RATE        1193182UL
 
 #define SNI_8254_TCSAMP_COUNTER   ((SNI_8254_TICK_RATE / HZ) + 255)
+=======
+#define SNI_8254_TICK_RATE	  1193182UL
+
+#define SNI_8254_TCSAMP_COUNTER	  ((SNI_8254_TICK_RATE / HZ) + 255)
+>>>>>>> refs/remotes/origin/master
 
 static __init unsigned long dosample(void)
 {

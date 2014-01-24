@@ -229,6 +229,12 @@ struct adsp_info {
 
 	void *handle;
 	void *cb_handle;
+<<<<<<< HEAD
+=======
+
+	/* Interrupt value */
+	int int_adsp;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define ADSP_STATE_DISABLED   0

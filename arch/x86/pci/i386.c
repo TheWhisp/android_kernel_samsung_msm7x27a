@@ -26,6 +26,14 @@
 
 #include <linux/types.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/init.h>
 #include <linux/ioport.h>
@@ -38,6 +46,123 @@
 #include <asm/io_apic.h>
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * This list of dynamic mappings is for temporarily maintaining
+ * original BIOS BAR addresses for possible reinstatement.
+ */
+struct pcibios_fwaddrmap {
+	struct list_head list;
+	struct pci_dev *dev;
+	resource_size_t fw_addr[DEVICE_COUNT_RESOURCE];
+};
+
+static LIST_HEAD(pcibios_fwaddrmappings);
+static DEFINE_SPINLOCK(pcibios_fwaddrmap_lock);
+<<<<<<< HEAD
+=======
+static bool pcibios_fw_addr_done;
+>>>>>>> refs/remotes/origin/master
+
+/* Must be called with 'pcibios_fwaddrmap_lock' lock held. */
+static struct pcibios_fwaddrmap *pcibios_fwaddrmap_lookup(struct pci_dev *dev)
+{
+	struct pcibios_fwaddrmap *map;
+
+<<<<<<< HEAD
+	WARN_ON(!spin_is_locked(&pcibios_fwaddrmap_lock));
+=======
+	WARN_ON_SMP(!spin_is_locked(&pcibios_fwaddrmap_lock));
+>>>>>>> refs/remotes/origin/master
+
+	list_for_each_entry(map, &pcibios_fwaddrmappings, list)
+		if (map->dev == dev)
+			return map;
+
+	return NULL;
+}
+
+static void
+pcibios_save_fw_addr(struct pci_dev *dev, int idx, resource_size_t fw_addr)
+{
+	unsigned long flags;
+	struct pcibios_fwaddrmap *map;
+
+<<<<<<< HEAD
+=======
+	if (pcibios_fw_addr_done)
+		return;
+
+>>>>>>> refs/remotes/origin/master
+	spin_lock_irqsave(&pcibios_fwaddrmap_lock, flags);
+	map = pcibios_fwaddrmap_lookup(dev);
+	if (!map) {
+		spin_unlock_irqrestore(&pcibios_fwaddrmap_lock, flags);
+		map = kzalloc(sizeof(*map), GFP_KERNEL);
+		if (!map)
+			return;
+
+		map->dev = pci_dev_get(dev);
+		map->fw_addr[idx] = fw_addr;
+		INIT_LIST_HEAD(&map->list);
+
+		spin_lock_irqsave(&pcibios_fwaddrmap_lock, flags);
+		list_add_tail(&map->list, &pcibios_fwaddrmappings);
+	} else
+		map->fw_addr[idx] = fw_addr;
+	spin_unlock_irqrestore(&pcibios_fwaddrmap_lock, flags);
+}
+
+resource_size_t pcibios_retrieve_fw_addr(struct pci_dev *dev, int idx)
+{
+	unsigned long flags;
+	struct pcibios_fwaddrmap *map;
+	resource_size_t fw_addr = 0;
+
+<<<<<<< HEAD
+=======
+	if (pcibios_fw_addr_done)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
+	spin_lock_irqsave(&pcibios_fwaddrmap_lock, flags);
+	map = pcibios_fwaddrmap_lookup(dev);
+	if (map)
+		fw_addr = map->fw_addr[idx];
+	spin_unlock_irqrestore(&pcibios_fwaddrmap_lock, flags);
+
+	return fw_addr;
+}
+
+<<<<<<< HEAD
+static void pcibios_fw_addr_list_del(void)
+=======
+static void __init pcibios_fw_addr_list_del(void)
+>>>>>>> refs/remotes/origin/master
+{
+	unsigned long flags;
+	struct pcibios_fwaddrmap *entry, *next;
+
+	spin_lock_irqsave(&pcibios_fwaddrmap_lock, flags);
+	list_for_each_entry_safe(entry, next, &pcibios_fwaddrmappings, list) {
+		list_del(&entry->list);
+		pci_dev_put(entry->dev);
+		kfree(entry);
+	}
+	spin_unlock_irqrestore(&pcibios_fwaddrmap_lock, flags);
+<<<<<<< HEAD
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcibios_fw_addr_done = true;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int
 skip_isa_ioresource_align(struct pci_dev *dev) {
 
@@ -111,6 +236,7 @@ EXPORT_SYMBOL(pcibios_align_resource);
  *	    as well.
  */
 
+<<<<<<< HEAD
 static void __init pcibios_allocate_bus_resources(struct list_head *bus_list)
 {
 	struct pci_bus *bus;
@@ -143,14 +269,56 @@ static void __init pcibios_allocate_bus_resources(struct list_head *bus_list)
 	}
 }
 
+=======
+static void pcibios_allocate_bridge_resources(struct pci_dev *dev)
+{
+	int idx;
+	struct resource *r;
+
+	for (idx = PCI_BRIDGE_RESOURCES; idx < PCI_NUM_RESOURCES; idx++) {
+		r = &dev->resource[idx];
+		if (!r->flags)
+			continue;
+		if (r->parent)	/* Already allocated */
+			continue;
+		if (!r->start || pci_claim_resource(dev, idx) < 0) {
+			/*
+			 * Something is wrong with the region.
+			 * Invalidate the resource to prevent
+			 * child resource allocations in this
+			 * range.
+			 */
+			r->start = r->end = 0;
+			r->flags = 0;
+		}
+	}
+}
+
+static void pcibios_allocate_bus_resources(struct pci_bus *bus)
+{
+	struct pci_bus *child;
+
+	/* Depth-First Search on bus tree */
+	if (bus->self)
+		pcibios_allocate_bridge_resources(bus->self);
+	list_for_each_entry(child, &bus->children, node)
+		pcibios_allocate_bus_resources(child);
+}
+
+>>>>>>> refs/remotes/origin/master
 struct pci_check_idx_range {
 	int start;
 	int end;
 };
 
+<<<<<<< HEAD
 static void __init pcibios_allocate_resources(int pass)
 {
 	struct pci_dev *dev = NULL;
+=======
+static void pcibios_allocate_dev_resources(struct pci_dev *dev, int pass)
+{
+>>>>>>> refs/remotes/origin/master
 	int idx, disabled, i;
 	u16 command;
 	struct resource *r;
@@ -162,6 +330,7 @@ static void __init pcibios_allocate_resources(int pass)
 #endif
 	};
 
+<<<<<<< HEAD
 	for_each_pci_dev(dev) {
 		pci_read_config_word(dev, PCI_COMMAND, &command);
 		for (i = 0; i < ARRAY_SIZE(idx_range); i++)
@@ -170,6 +339,15 @@ static void __init pcibios_allocate_resources(int pass)
 			if (r->parent)		/* Already allocated */
 				continue;
 			if (!r->start)		/* Address not assigned at all */
+=======
+	pci_read_config_word(dev, PCI_COMMAND, &command);
+	for (i = 0; i < ARRAY_SIZE(idx_range); i++)
+		for (idx = idx_range[i].start; idx <= idx_range[i].end; idx++) {
+			r = &dev->resource[idx];
+			if (r->parent)	/* Already allocated */
+				continue;
+			if (!r->start)	/* Address not assigned at all */
+>>>>>>> refs/remotes/origin/master
 				continue;
 			if (r->flags & IORESOURCE_IO)
 				disabled = !(command & PCI_COMMAND_IO);
@@ -181,12 +359,23 @@ static void __init pcibios_allocate_resources(int pass)
 					idx, r, disabled, pass);
 				if (pci_claim_resource(dev, idx) < 0) {
 					/* We'll assign a new address later */
+<<<<<<< HEAD
+<<<<<<< HEAD
 					dev->fw_addr[idx] = r->start;
+=======
+					pcibios_save_fw_addr(dev,
+							idx, r->start);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					pcibios_save_fw_addr(dev,
+							idx, r->start);
+>>>>>>> refs/remotes/origin/master
 					r->end -= r->start;
 					r->start = 0;
 				}
 			}
 		}
+<<<<<<< HEAD
 		if (!pass) {
 			r = &dev->resource[PCI_ROM_RESOURCE];
 			if (r->flags & IORESOURCE_ROM_ENABLE) {
@@ -200,10 +389,24 @@ static void __init pcibios_allocate_resources(int pass)
 				pci_write_config_dword(dev, dev->rom_base_reg,
 						reg & ~PCI_ROM_ADDRESS_ENABLE);
 			}
+=======
+	if (!pass) {
+		r = &dev->resource[PCI_ROM_RESOURCE];
+		if (r->flags & IORESOURCE_ROM_ENABLE) {
+			/* Turn the ROM off, leave the resource region,
+			 * but keep it unregistered. */
+			u32 reg;
+			dev_dbg(&dev->dev, "disabling ROM %pR\n", r);
+			r->flags &= ~IORESOURCE_ROM_ENABLE;
+			pci_read_config_dword(dev, dev->rom_base_reg, &reg);
+			pci_write_config_dword(dev, dev->rom_base_reg,
+						reg & ~PCI_ROM_ADDRESS_ENABLE);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
 
+<<<<<<< HEAD
 static int __init pcibios_assign_resources(void)
 {
 	struct pci_dev *dev = NULL;
@@ -227,16 +430,109 @@ static int __init pcibios_assign_resources(void)
 	}
 
 	pci_assign_unassigned_resources();
+<<<<<<< HEAD
+=======
+	pcibios_fw_addr_list_del();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void pcibios_allocate_resources(struct pci_bus *bus, int pass)
+{
+	struct pci_dev *dev;
+	struct pci_bus *child;
+
+	list_for_each_entry(dev, &bus->devices, bus_list) {
+		pcibios_allocate_dev_resources(dev, pass);
+
+		child = dev->subordinate;
+		if (child)
+			pcibios_allocate_resources(child, pass);
+	}
+}
+
+static void pcibios_allocate_dev_rom_resource(struct pci_dev *dev)
+{
+	struct resource *r;
+
+	/*
+	 * Try to use BIOS settings for ROMs, otherwise let
+	 * pci_assign_unassigned_resources() allocate the new
+	 * addresses.
+	 */
+	r = &dev->resource[PCI_ROM_RESOURCE];
+	if (!r->flags || !r->start)
+		return;
+	if (r->parent) /* Already allocated */
+		return;
+
+	if (pci_claim_resource(dev, PCI_ROM_RESOURCE) < 0) {
+		r->end -= r->start;
+		r->start = 0;
+	}
+}
+static void pcibios_allocate_rom_resources(struct pci_bus *bus)
+{
+	struct pci_dev *dev;
+	struct pci_bus *child;
+
+	list_for_each_entry(dev, &bus->devices, bus_list) {
+		pcibios_allocate_dev_rom_resource(dev);
+
+		child = dev->subordinate;
+		if (child)
+			pcibios_allocate_rom_resources(child);
+	}
+}
+
+static int __init pcibios_assign_resources(void)
+{
+	struct pci_bus *bus;
+
+	if (!(pci_probe & PCI_ASSIGN_ROMS))
+		list_for_each_entry(bus, &pci_root_buses, node)
+			pcibios_allocate_rom_resources(bus);
+
+	pci_assign_unassigned_resources();
+	pcibios_fw_addr_list_del();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 void __init pcibios_resource_survey(void)
 {
 	DBG("PCI: Allocating resources\n");
 	pcibios_allocate_bus_resources(&pci_root_buses);
 	pcibios_allocate_resources(0);
 	pcibios_allocate_resources(1);
+=======
+void pcibios_resource_survey_bus(struct pci_bus *bus)
+{
+	dev_printk(KERN_DEBUG, &bus->dev, "Allocating resources\n");
+
+	pcibios_allocate_bus_resources(bus);
+
+	pcibios_allocate_resources(bus, 0);
+	pcibios_allocate_resources(bus, 1);
+
+	if (!(pci_probe & PCI_ASSIGN_ROMS))
+		pcibios_allocate_rom_resources(bus);
+}
+
+void __init pcibios_resource_survey(void)
+{
+	struct pci_bus *bus;
+
+	DBG("PCI: Allocating resources\n");
+
+	list_for_each_entry(bus, &pci_root_buses, node)
+		pcibios_allocate_bus_resources(bus);
+
+	list_for_each_entry(bus, &pci_root_buses, node)
+		pcibios_allocate_resources(bus, 0);
+	list_for_each_entry(bus, &pci_root_buses, node)
+		pcibios_allocate_resources(bus, 1);
+>>>>>>> refs/remotes/origin/master
 
 	e820_reserve_resources_late();
 	/*
@@ -253,6 +549,8 @@ void __init pcibios_resource_survey(void)
  */
 fs_initcall(pcibios_assign_resources);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  *  If we set up a device for bus mastering, we need to check the latency
  *  timer as certain crappy BIOSes forget to set it properly.
@@ -273,6 +571,10 @@ void pcibios_set_master(struct pci_dev *dev)
 	pci_write_config_byte(dev, PCI_LATENCY_TIMER, lat);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct vm_operations_struct pci_mmap_ops = {
 	.access = generic_access_phys,
 };

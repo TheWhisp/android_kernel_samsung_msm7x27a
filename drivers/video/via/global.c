@@ -35,6 +35,16 @@ int viafb_LCD_ON ;
 int viafb_LCD2_ON;
 int viafb_SAMM_ON;
 int viafb_dual_fb;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+unsigned int viafb_second_xres = 640;
+unsigned int viafb_second_yres = 480;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int viafb_second_xres = 640;
+unsigned int viafb_second_yres = 480;
+>>>>>>> refs/remotes/origin/master
 int viafb_hotplug_Xres = 640;
 int viafb_hotplug_Yres = 480;
 int viafb_hotplug_bpp = 32;

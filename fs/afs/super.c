@@ -24,6 +24,11 @@
 #include <linux/parser.h>
 #include <linux/statfs.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/nsproxy.h>
+#include <net/net_namespace.h>
+>>>>>>> refs/remotes/origin/master
 #include "internal.h"
 
 #define AFS_FS_MAGIC 0x6B414653 /* 'kAFS' */
@@ -43,6 +48,10 @@ struct file_system_type afs_fs_type = {
 	.kill_sb	= afs_kill_super,
 	.fs_flags	= 0,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("afs");
+>>>>>>> refs/remotes/origin/master
 
 static const struct super_operations afs_super_ops = {
 	.statfs		= afs_statfs,
@@ -123,6 +132,14 @@ void __exit afs_fs_exit(void)
 		BUG();
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(afs_inode_cachep);
 	_leave("");
 }
@@ -301,7 +318,13 @@ static int afs_fill_super(struct super_block *sb,
 {
 	struct afs_super_info *as = sb->s_fs_info;
 	struct afs_fid fid;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct dentry *root = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct inode *inode = NULL;
 	int ret;
 
@@ -327,18 +350,38 @@ static int afs_fill_super(struct super_block *sb,
 		set_bit(AFS_VNODE_AUTOCELL, &AFS_FS_I(inode)->flags);
 
 	ret = -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	root = d_alloc_root(inode);
 	if (!root)
 		goto error;
 
 	sb->s_d_op = &afs_fs_dentry_operations;
 	sb->s_root = root;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	sb->s_root = d_make_root(inode);
+	if (!sb->s_root)
+		goto error;
+
+	sb->s_d_op = &afs_fs_dentry_operations;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	_leave(" = 0");
 	return 0;
 
 error:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iput(inode);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	_leave(" = %d", ret);
 	return ret;
 }
@@ -361,6 +404,13 @@ static struct dentry *afs_mount(struct file_system_type *fs_type,
 
 	memset(&params, 0, sizeof(params));
 
+<<<<<<< HEAD
+=======
+	ret = -EINVAL;
+	if (current->nsproxy->net_ns != &init_net)
+		goto error;
+
+>>>>>>> refs/remotes/origin/master
 	/* parse the options and device name */
 	if (options) {
 		ret = afs_parse_options(&params, options, &dev_name);
@@ -398,7 +448,11 @@ static struct dentry *afs_mount(struct file_system_type *fs_type,
 	as->volume = vol;
 
 	/* allocate a deviceless superblock */
+<<<<<<< HEAD
 	sb = sget(fs_type, afs_test_super, afs_set_super, as);
+=======
+	sb = sget(fs_type, afs_test_super, afs_set_super, flags, as);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(sb)) {
 		ret = PTR_ERR(sb);
 		afs_put_volume(vol);
@@ -409,7 +463,10 @@ static struct dentry *afs_mount(struct file_system_type *fs_type,
 	if (!sb->s_root) {
 		/* initial superblock/root creation */
 		_debug("create");
+<<<<<<< HEAD
 		sb->s_flags = flags;
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = afs_fill_super(sb, &params);
 		if (ret < 0) {
 			deactivate_locked_super(sb);
@@ -495,7 +552,13 @@ static void afs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 	struct afs_vnode *vnode = AFS_FS_I(inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(afs_inode_cachep, vnode);
 }
 

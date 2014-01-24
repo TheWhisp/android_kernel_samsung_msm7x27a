@@ -109,7 +109,15 @@ this interface. (see http://tom.ist-im-web.de/download/pktcdvd )
 
 For a description of the sysfs interface look into the file:
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   Documentation/ABI/testing/sysfs-block-pktcdvd
+=======
+  Documentation/ABI/testing/sysfs-class-pktcdvd
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Documentation/ABI/testing/sysfs-class-pktcdvd
+>>>>>>> refs/remotes/origin/master
 
 
 Using the pktcdvd debugfs interface

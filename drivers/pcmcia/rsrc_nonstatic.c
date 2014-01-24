@@ -369,12 +369,21 @@ static int do_validate_mem(struct pcmcia_socket *s,
 		}
 	}
 
+<<<<<<< HEAD
 	free_region(res2);
 	free_region(res1);
 
 	dev_dbg(&s->dev, "cs: memory probe 0x%06lx-0x%06lx: %p %p %u %u %u",
 		base, base+size-1, res1, res2, ret, info1, info2);
 
+=======
+	dev_dbg(&s->dev, "cs: memory probe 0x%06lx-0x%06lx: %p %p %u %u %u",
+		base, base+size-1, res1, res2, ret, info1, info2);
+
+	free_region(res2);
+	free_region(res1);
+
+>>>>>>> refs/remotes/origin/master
 	if ((ret) || (info1 != info2) || (info1 == 0))
 		return -EINVAL;
 
@@ -770,7 +779,15 @@ static int nonstatic_find_io(struct pcmcia_socket *s, unsigned int attr,
 							res->end + num);
 			if (!ret) {
 				ret = adjust_resource(s->io[i].res, res->start,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					       res->end - res->start + num + 1);
+=======
+						      resource_size(res) + num);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						      resource_size(res) + num);
+>>>>>>> refs/remotes/origin/master
 				if (ret)
 					continue;
 				*base = try;
@@ -788,8 +805,18 @@ static int nonstatic_find_io(struct pcmcia_socket *s, unsigned int attr,
 							res->end);
 			if (!ret) {
 				ret = adjust_resource(s->io[i].res,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					       res->start - num,
 					       res->end - res->start + num + 1);
+=======
+						      res->start - num,
+						      resource_size(res) + num);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						      res->start - num,
+						      resource_size(res) + num);
+>>>>>>> refs/remotes/origin/master
 				if (ret)
 					continue;
 				*base = try;
@@ -1199,7 +1226,11 @@ static const struct attribute_group rsrc_attributes = {
 	.attrs = pccard_rsrc_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit pccard_sysfs_add_rsrc(struct device *dev,
+=======
+static int pccard_sysfs_add_rsrc(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 					   struct class_interface *class_intf)
 {
 	struct pcmcia_socket *s = dev_get_drvdata(dev);
@@ -1209,7 +1240,11 @@ static int __devinit pccard_sysfs_add_rsrc(struct device *dev,
 	return sysfs_create_group(&dev->kobj, &rsrc_attributes);
 }
 
+<<<<<<< HEAD
 static void __devexit pccard_sysfs_remove_rsrc(struct device *dev,
+=======
+static void pccard_sysfs_remove_rsrc(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 					       struct class_interface *class_intf)
 {
 	struct pcmcia_socket *s = dev_get_drvdata(dev);
@@ -1222,7 +1257,11 @@ static void __devexit pccard_sysfs_remove_rsrc(struct device *dev,
 static struct class_interface pccard_rsrc_interface __refdata = {
 	.class = &pcmcia_socket_class,
 	.add_dev = &pccard_sysfs_add_rsrc,
+<<<<<<< HEAD
 	.remove_dev = __devexit_p(&pccard_sysfs_remove_rsrc),
+=======
+	.remove_dev = &pccard_sysfs_remove_rsrc,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init nonstatic_sysfs_init(void)

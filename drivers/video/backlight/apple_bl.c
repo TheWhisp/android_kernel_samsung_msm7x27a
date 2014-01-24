@@ -16,6 +16,11 @@
  *  get at the firmware code in order to figure out what it's actually doing.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -24,6 +29,15 @@
 #include <linux/io.h>
 #include <linux/pci.h>
 #include <linux/acpi.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <linux/apple_bl.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct backlight_device *apple_backlight_device;
 
@@ -38,8 +52,11 @@ struct hw_data {
 
 static const struct hw_data *hw_data;
 
+<<<<<<< HEAD
 #define DRIVER "apple_backlight: "
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Module parameters. */
 static int debug;
 module_param_named(debug, debug, int, 0644);
@@ -59,8 +76,12 @@ static int intel_chipset_send_intensity(struct backlight_device *bd)
 	int intensity = bd->props.brightness;
 
 	if (debug)
+<<<<<<< HEAD
 		printk(KERN_DEBUG DRIVER "setting brightness to %d\n",
 		       intensity);
+=======
+		pr_debug("setting brightness to %d\n", intensity);
+>>>>>>> refs/remotes/origin/master
 
 	intel_chipset_set_brightness(intensity);
 	return 0;
@@ -75,8 +96,12 @@ static int intel_chipset_get_intensity(struct backlight_device *bd)
 	intensity = inb(0xb3) >> 4;
 
 	if (debug)
+<<<<<<< HEAD
 		printk(KERN_DEBUG DRIVER "read brightness of %d\n",
 		       intensity);
+=======
+		pr_debug("read brightness of %d\n", intensity);
+>>>>>>> refs/remotes/origin/master
 
 	return intensity;
 }
@@ -106,8 +131,12 @@ static int nvidia_chipset_send_intensity(struct backlight_device *bd)
 	int intensity = bd->props.brightness;
 
 	if (debug)
+<<<<<<< HEAD
 		printk(KERN_DEBUG DRIVER "setting brightness to %d\n",
 		       intensity);
+=======
+		pr_debug("setting brightness to %d\n", intensity);
+>>>>>>> refs/remotes/origin/master
 
 	nvidia_chipset_set_brightness(intensity);
 	return 0;
@@ -122,8 +151,12 @@ static int nvidia_chipset_get_intensity(struct backlight_device *bd)
 	intensity = inb(0x52f) >> 4;
 
 	if (debug)
+<<<<<<< HEAD
 		printk(KERN_DEBUG DRIVER "read brightness of %d\n",
 		       intensity);
+=======
+		pr_debug("read brightness of %d\n", intensity);
+>>>>>>> refs/remotes/origin/master
 
 	return intensity;
 }
@@ -139,7 +172,11 @@ static const struct hw_data nvidia_chipset_data = {
 	.set_brightness = nvidia_chipset_set_brightness,
 };
 
+<<<<<<< HEAD
 static int __devinit apple_bl_add(struct acpi_device *dev)
+=======
+static int apple_bl_add(struct acpi_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct backlight_properties props;
 	struct pci_dev *host;
@@ -148,7 +185,11 @@ static int __devinit apple_bl_add(struct acpi_device *dev)
 	host = pci_get_bus_and_slot(0, 0);
 
 	if (!host) {
+<<<<<<< HEAD
 		printk(KERN_ERR DRIVER "unable to find PCI host\n");
+=======
+		pr_err("unable to find PCI host\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -160,7 +201,11 @@ static int __devinit apple_bl_add(struct acpi_device *dev)
 	pci_dev_put(host);
 
 	if (!hw_data) {
+<<<<<<< HEAD
 		printk(KERN_ERR DRIVER "unknown hardware\n");
+=======
+		pr_err("unknown hardware\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -198,7 +243,11 @@ static int __devinit apple_bl_add(struct acpi_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit apple_bl_remove(struct acpi_device *dev, int type)
+=======
+static int apple_bl_remove(struct acpi_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	backlight_device_unregister(apple_backlight_device);
 
@@ -221,14 +270,52 @@ static struct acpi_driver apple_bl_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init apple_bl_init(void)
 {
 	return acpi_bus_register_driver(&apple_bl_driver);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static atomic_t apple_bl_registered = ATOMIC_INIT(0);
+
+int apple_bl_register(void)
+{
+	if (atomic_xchg(&apple_bl_registered, 1) == 0)
+		return acpi_bus_register_driver(&apple_bl_driver);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(apple_bl_register);
+
+void apple_bl_unregister(void)
+{
+	if (atomic_xchg(&apple_bl_registered, 0) == 1)
+		acpi_bus_unregister_driver(&apple_bl_driver);
+}
+EXPORT_SYMBOL_GPL(apple_bl_unregister);
+
+static int __init apple_bl_init(void)
+{
+	return apple_bl_register();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit apple_bl_exit(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	acpi_bus_unregister_driver(&apple_bl_driver);
+=======
+	apple_bl_unregister();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	apple_bl_unregister();
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(apple_bl_init);

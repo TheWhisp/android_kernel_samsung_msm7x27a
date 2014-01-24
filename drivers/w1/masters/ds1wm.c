@@ -13,6 +13,10 @@
 
 #include <linux/module.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/irq.h>
 #include <linux/pm.h>
 #include <linux/platform_device.h>
@@ -254,17 +258,29 @@ static int ds1wm_find_divisor(int gclk)
 static void ds1wm_up(struct ds1wm_data *ds1wm_data)
 {
 	int divisor;
+<<<<<<< HEAD
 	struct ds1wm_driver_data *plat = ds1wm_data->pdev->dev.platform_data;
+=======
+	struct device *dev = &ds1wm_data->pdev->dev;
+	struct ds1wm_driver_data *plat = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (ds1wm_data->cell->enable)
 		ds1wm_data->cell->enable(ds1wm_data->pdev);
 
 	divisor = ds1wm_find_divisor(plat->clock_rate);
+<<<<<<< HEAD
 	dev_dbg(&ds1wm_data->pdev->dev,
 		"found divisor 0x%x for clock %d\n", divisor, plat->clock_rate);
 	if (divisor == 0) {
 		dev_err(&ds1wm_data->pdev->dev,
 			"no suitable divisor for %dHz clock\n",
+=======
+	dev_dbg(dev, "found divisor 0x%x for clock %d\n",
+		divisor, plat->clock_rate);
+	if (divisor == 0) {
+		dev_err(dev, "no suitable divisor for %dHz clock\n",
+>>>>>>> refs/remotes/origin/master
 			plat->clock_rate);
 		return;
 	}
@@ -334,7 +350,13 @@ static void ds1wm_search(void *data, struct w1_master *master_dev,
 			return;
 		}
 
+<<<<<<< HEAD
 		if (ds1wm_reset(ds1wm_data)) {
+=======
+		mutex_lock(&master_dev->bus_mutex);
+		if (ds1wm_reset(ds1wm_data)) {
+			mutex_unlock(&master_dev->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 			dev_dbg(&ds1wm_data->pdev->dev,
 				"pass: %d reset error (or no slaves)\n", pass);
 			break;
@@ -347,7 +369,11 @@ static void ds1wm_search(void *data, struct w1_master *master_dev,
 			"pass: %d entering ASM\n", pass);
 		ds1wm_write_register(ds1wm_data, DS1WM_CMD, DS1WM_CMD_SRA);
 		dev_dbg(&ds1wm_data->pdev->dev,
+<<<<<<< HEAD
 			"pass: %d begining nibble loop\n", pass);
+=======
+			"pass: %d beginning nibble loop\n", pass);
+>>>>>>> refs/remotes/origin/master
 
 		r_prime = 0;
 		d = 0;
@@ -387,6 +413,10 @@ static void ds1wm_search(void *data, struct w1_master *master_dev,
 
 		}
 		if (ds1wm_data->read_error) {
+<<<<<<< HEAD
+=======
+			mutex_unlock(&master_dev->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 			dev_err(&ds1wm_data->pdev->dev,
 				"pass: %d read error, retrying\n", pass);
 			break;
@@ -400,6 +430,10 @@ static void ds1wm_search(void *data, struct w1_master *master_dev,
 		dev_dbg(&ds1wm_data->pdev->dev,
 			"pass: %d resetting bus\n", pass);
 		ds1wm_reset(ds1wm_data);
+<<<<<<< HEAD
+=======
+		mutex_unlock(&master_dev->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 		if ((r_prime & ((u64)1 << 63)) && (d & ((u64)1 << 63))) {
 			dev_err(&ds1wm_data->pdev->dev,
 				"pass: %d bus error, retrying\n", pass);
@@ -455,13 +489,18 @@ static int ds1wm_probe(struct platform_device *pdev)
 	if (!pdev)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	ds1wm_data = kzalloc(sizeof(*ds1wm_data), GFP_KERNEL);
+=======
+	ds1wm_data = devm_kzalloc(&pdev->dev, sizeof(*ds1wm_data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ds1wm_data)
 		return -ENOMEM;
 
 	platform_set_drvdata(pdev, ds1wm_data);
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res) {
 		ret = -ENXIO;
 		goto err0;
@@ -471,12 +510,21 @@ static int ds1wm_probe(struct platform_device *pdev)
 		ret = -ENOMEM;
 		goto err0;
 	}
+=======
+	if (!res)
+		return -ENXIO;
+	ds1wm_data->map = devm_ioremap(&pdev->dev, res->start,
+				       resource_size(res));
+	if (!ds1wm_data->map)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* calculate bus shift from mem resource */
 	ds1wm_data->bus_shift = resource_size(res) >> 3;
 
 	ds1wm_data->pdev = pdev;
 	ds1wm_data->cell = mfd_get_cell(pdev);
+<<<<<<< HEAD
 	if (!ds1wm_data->cell) {
 		ret = -ENODEV;
 		goto err1;
@@ -492,6 +540,17 @@ static int ds1wm_probe(struct platform_device *pdev)
 		ret = -ENXIO;
 		goto err1;
 	}
+=======
+	if (!ds1wm_data->cell)
+		return -ENODEV;
+	plat = dev_get_platdata(&pdev->dev);
+	if (!plat)
+		return -ENODEV;
+
+	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+	if (!res)
+		return -ENXIO;
+>>>>>>> refs/remotes/origin/master
 	ds1wm_data->irq = res->start;
 	ds1wm_data->int_en_reg_none = (plat->active_high ? DS1WM_INTEN_IAS : 0);
 	ds1wm_data->reset_recover_delay = plat->reset_recover_delay;
@@ -501,10 +560,17 @@ static int ds1wm_probe(struct platform_device *pdev)
 	if (res->flags & IORESOURCE_IRQ_LOWEDGE)
 		irq_set_irq_type(ds1wm_data->irq, IRQ_TYPE_EDGE_FALLING);
 
+<<<<<<< HEAD
 	ret = request_irq(ds1wm_data->irq, ds1wm_isr,
 			IRQF_DISABLED | IRQF_SHARED, "ds1wm", ds1wm_data);
 	if (ret)
 		goto err1;
+=======
+	ret = devm_request_irq(&pdev->dev, ds1wm_data->irq, ds1wm_isr,
+			IRQF_SHARED, "ds1wm", ds1wm_data);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	ds1wm_up(ds1wm_data);
 
@@ -512,6 +578,7 @@ static int ds1wm_probe(struct platform_device *pdev)
 
 	ret = w1_add_master_device(&ds1wm_master);
 	if (ret)
+<<<<<<< HEAD
 		goto err2;
 
 	return 0;
@@ -523,6 +590,14 @@ err1:
 	iounmap(ds1wm_data->map);
 err0:
 	kfree(ds1wm_data);
+=======
+		goto err;
+
+	return 0;
+
+err:
+	ds1wm_down(ds1wm_data);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -556,9 +631,12 @@ static int ds1wm_remove(struct platform_device *pdev)
 
 	w1_remove_master_device(&ds1wm_master);
 	ds1wm_down(ds1wm_data);
+<<<<<<< HEAD
 	free_irq(ds1wm_data->irq, ds1wm_data);
 	iounmap(ds1wm_data->map);
 	kfree(ds1wm_data);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

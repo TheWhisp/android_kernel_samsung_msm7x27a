@@ -19,6 +19,10 @@
 #include <linux/rtc.h>
 #include <linux/slab.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Clock and Power control register offsets
@@ -196,6 +200,7 @@ static const struct rtc_class_ops lpc32xx_rtc_ops = {
 	.alarm_irq_enable	= lpc32xx_rtc_alarm_irq_enable,
 };
 
+<<<<<<< HEAD
 static int __devinit lpc32xx_rtc_probe(struct platform_device *pdev)
 {
 	struct resource *res;
@@ -210,6 +215,15 @@ static int __devinit lpc32xx_rtc_probe(struct platform_device *pdev)
 		return -ENOENT;
 	}
 
+=======
+static int lpc32xx_rtc_probe(struct platform_device *pdev)
+{
+	struct resource *res;
+	struct lpc32xx_rtc *rtc;
+	int rtcirq;
+	u32 tmp;
+
+>>>>>>> refs/remotes/origin/master
 	rtcirq = platform_get_irq(pdev, 0);
 	if (rtcirq < 0 || rtcirq >= NR_IRQS) {
 		dev_warn(&pdev->dev, "Can't get interrupt resource\n");
@@ -223,6 +237,7 @@ static int __devinit lpc32xx_rtc_probe(struct platform_device *pdev)
 	}
 	rtc->irq = rtcirq;
 
+<<<<<<< HEAD
 	size = resource_size(res);
 
 	if (!devm_request_mem_region(&pdev->dev, res->start, size,
@@ -236,6 +251,12 @@ static int __devinit lpc32xx_rtc_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Can't map memory\n");
 		return -ENOMEM;
 	}
+=======
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	rtc->rtc_base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(rtc->rtc_base))
+		return PTR_ERR(rtc->rtc_base);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&rtc->lock);
 
@@ -272,11 +293,18 @@ static int __devinit lpc32xx_rtc_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, rtc);
 
+<<<<<<< HEAD
 	rtc->rtc = rtc_device_register(RTC_NAME, &pdev->dev, &lpc32xx_rtc_ops,
 		THIS_MODULE);
 	if (IS_ERR(rtc->rtc)) {
 		dev_err(&pdev->dev, "Can't get RTC\n");
 		platform_set_drvdata(pdev, NULL);
+=======
+	rtc->rtc = devm_rtc_device_register(&pdev->dev, RTC_NAME,
+					&lpc32xx_rtc_ops, THIS_MODULE);
+	if (IS_ERR(rtc->rtc)) {
+		dev_err(&pdev->dev, "Can't get RTC\n");
+>>>>>>> refs/remotes/origin/master
 		return PTR_ERR(rtc->rtc);
 	}
 
@@ -287,7 +315,15 @@ static int __devinit lpc32xx_rtc_probe(struct platform_device *pdev)
 	if (rtc->irq >= 0) {
 		if (devm_request_irq(&pdev->dev, rtc->irq,
 				     lpc32xx_rtc_alarm_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				     IRQF_DISABLED, pdev->name, rtc) < 0) {
+=======
+				     0, pdev->name, rtc) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     0, pdev->name, rtc) < 0) {
+>>>>>>> refs/remotes/origin/master
 			dev_warn(&pdev->dev, "Can't request interrupt.\n");
 			rtc->irq = -1;
 		} else {
@@ -298,16 +334,23 @@ static int __devinit lpc32xx_rtc_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit lpc32xx_rtc_remove(struct platform_device *pdev)
+=======
+static int lpc32xx_rtc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lpc32xx_rtc *rtc = platform_get_drvdata(pdev);
 
 	if (rtc->irq >= 0)
 		device_init_wakeup(&pdev->dev, 0);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	rtc_device_unregister(rtc->rtc);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -386,6 +429,7 @@ static const struct dev_pm_ops lpc32xx_rtc_pm_ops = {
 #define LPC32XX_RTC_PM_OPS NULL
 #endif
 
+<<<<<<< HEAD
 static struct platform_driver lpc32xx_rtc_driver = {
 	.probe		= lpc32xx_rtc_probe,
 	.remove		= __devexit_p(lpc32xx_rtc_remove),
@@ -396,6 +440,7 @@ static struct platform_driver lpc32xx_rtc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init lpc32xx_rtc_init(void)
 {
 	return platform_driver_register(&lpc32xx_rtc_driver);
@@ -407,6 +452,31 @@ static void __exit lpc32xx_rtc_exit(void)
 	platform_driver_unregister(&lpc32xx_rtc_driver);
 }
 module_exit(lpc32xx_rtc_exit);
+=======
+module_platform_driver(lpc32xx_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id lpc32xx_rtc_match[] = {
+	{ .compatible = "nxp,lpc3220-rtc" },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, lpc32xx_rtc_match);
+#endif
+
+static struct platform_driver lpc32xx_rtc_driver = {
+	.probe		= lpc32xx_rtc_probe,
+	.remove		= lpc32xx_rtc_remove,
+	.driver = {
+		.name	= RTC_NAME,
+		.owner	= THIS_MODULE,
+		.pm	= LPC32XX_RTC_PM_OPS,
+		.of_match_table = of_match_ptr(lpc32xx_rtc_match),
+	},
+};
+
+module_platform_driver(lpc32xx_rtc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kevin Wells <wellsk40@gmail.com");
 MODULE_DESCRIPTION("RTC driver for the LPC32xx SoC");

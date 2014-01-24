@@ -101,6 +101,10 @@ unsigned int aac_response_normal(struct aac_queue * q)
 			 */
 			*(__le32 *)hwfib->data = cpu_to_le32(ST_OK);
 			hwfib->header.XferState |= cpu_to_le32(AdapterProcessed);
+<<<<<<< HEAD
+=======
+			fib->flags |= FIB_CONTEXT_FLAG_FASTRESP;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		FIB_COUNTER_INCREMENT(aac_config.FibRecved);
@@ -121,7 +125,11 @@ unsigned int aac_response_normal(struct aac_queue * q)
 			 *	NOTE:  we cannot touch the fib after this
 			 *	    call, because it may have been deallocated.
 			 */
+<<<<<<< HEAD
 			fib->flags = 0;
+=======
+			fib->flags &= FIB_CONTEXT_FLAG_FASTRESP;
+>>>>>>> refs/remotes/origin/master
 			fib->callback(fib->callback_data, fib);
 		} else {
 			unsigned long flagv;
@@ -367,6 +375,10 @@ unsigned int aac_intr_normal(struct aac_dev *dev, u32 index,
 			 */
 			*(__le32 *)hwfib->data = cpu_to_le32(ST_OK);
 			hwfib->header.XferState |= cpu_to_le32(AdapterProcessed);
+<<<<<<< HEAD
+=======
+			fib->flags |= FIB_CONTEXT_FLAG_FASTRESP;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		FIB_COUNTER_INCREMENT(aac_config.FibRecved);
@@ -387,7 +399,11 @@ unsigned int aac_intr_normal(struct aac_dev *dev, u32 index,
 			 *	NOTE:  we cannot touch the fib after this
 			 *	    call, because it may have been deallocated.
 			 */
+<<<<<<< HEAD
 			fib->flags = 0;
+=======
+			fib->flags &= FIB_CONTEXT_FLAG_FASTRESP;
+>>>>>>> refs/remotes/origin/master
 			fib->callback(fib->callback_data, fib);
 		} else {
 			unsigned long flagv;

@@ -21,13 +21,31 @@
 #include <linux/cpu.h>
 #include <linux/interrupt.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/processor.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu_context.h>
 #include <asm/smp.h>
 #include <asm/cacheflush.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 int __cpu_number_map[NR_CPUS];		/* Map physical to logical */
 int __cpu_logical_map[NR_CPUS];		/* Map logical to physical */
@@ -37,7 +55,11 @@ struct plat_smp_ops *mp_ops = NULL;
 /* State of each CPU */
 DEFINE_PER_CPU(int, cpu_state) = { 0 };
 
+<<<<<<< HEAD
 void __cpuinit register_smp_ops(struct plat_smp_ops *ops)
+=======
+void register_smp_ops(struct plat_smp_ops *ops)
+>>>>>>> refs/remotes/origin/master
 {
 	if (mp_ops)
 		printk(KERN_WARNING "Overriding previously set SMP ops\n");
@@ -45,7 +67,11 @@ void __cpuinit register_smp_ops(struct plat_smp_ops *ops)
 	mp_ops = ops;
 }
 
+<<<<<<< HEAD
 static inline void __cpuinit smp_store_cpu_info(unsigned int cpu)
+=======
+static inline void smp_store_cpu_info(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sh_cpuinfo *c = cpu_data + cpu;
 
@@ -63,7 +89,15 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 	mp_ops->prepare_cpus(max_cpus);
 
 #ifndef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
+<<<<<<< HEAD
 	init_cpu_present(&cpu_possible_map);
+=======
+	init_cpu_present(cpu_possible_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_cpu_present(cpu_possible_mask);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -123,7 +157,10 @@ void native_play_dead(void)
 int __cpu_disable(void)
 {
 	unsigned int cpu = smp_processor_id();
+<<<<<<< HEAD
 	struct task_struct *p;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = mp_ops->cpu_disable(cpu);
@@ -153,11 +190,15 @@ int __cpu_disable(void)
 	flush_cache_all();
 	local_flush_tlb_all();
 
+<<<<<<< HEAD
 	read_lock(&tasklist_lock);
 	for_each_process(p)
 		if (p->mm)
 			cpumask_clear_cpu(cpu, mm_cpumask(p->mm));
 	read_unlock(&tasklist_lock);
+=======
+	clear_tasks_mm_cpumask(cpu);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -179,7 +220,11 @@ void native_play_dead(void)
 }
 #endif
 
+<<<<<<< HEAD
 asmlinkage void __cpuinit start_secondary(void)
+=======
+asmlinkage void start_secondary(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = smp_processor_id();
 	struct mm_struct *mm = &init_mm;
@@ -208,7 +253,11 @@ asmlinkage void __cpuinit start_secondary(void)
 	set_cpu_online(cpu, true);
 	per_cpu(cpu_state, cpu) = CPU_ONLINE;
 
+<<<<<<< HEAD
 	cpu_idle();
+=======
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 }
 
 extern struct {
@@ -220,6 +269,7 @@ extern struct {
 	void *thread_info;
 } stack_start;
 
+<<<<<<< HEAD
 int __cpuinit __cpu_up(unsigned int cpu)
 {
 	struct task_struct *tsk;
@@ -236,6 +286,12 @@ int __cpuinit __cpu_up(unsigned int cpu)
 		cpu_data[cpu].idle = tsk;
 	}
 
+=======
+int __cpu_up(unsigned int cpu, struct task_struct *tsk)
+{
+	unsigned long timeout;
+
+>>>>>>> refs/remotes/origin/master
 	per_cpu(cpu_state, cpu) = CPU_UP_PREPARE;
 
 	/* Fill in data in head.S for secondary cpus */

@@ -11,13 +11,21 @@
  *
  */
 #include <linux/linkage.h>
+<<<<<<< HEAD
+=======
+#include <linux/kern_levels.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/assembler.h>
 
 		.text
 		.align
 
 .Liosl_warning:
+<<<<<<< HEAD
 		.ascii	"<4>insl/outsl not implemented, called from %08lX\0"
+=======
+		.ascii	KERN_WARNING "insl/outsl not implemented, called from %08lX\0"
+>>>>>>> refs/remotes/origin/master
 		.align
 
 /*

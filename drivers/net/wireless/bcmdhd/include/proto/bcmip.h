@@ -1,7 +1,19 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,10 +33,22 @@
  *
  * Fundamental constants relating to IP Protocol
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: bcmip.h 277737 2011-08-16 17:54:59Z $
  */
 
 
+=======
+ * $Id: bcmip.h 290206 2011-10-17 19:13:51Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: bcmip.h 290206 2011-10-17 19:13:51Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef _bcmip_h_
 #define _bcmip_h_
 
@@ -47,8 +71,21 @@
 	((((uint8 *)(ip_body))[IP_VER_OFFSET] & IP_VER_MASK) >> IP_VER_SHIFT)
 
 #define IP_PROT_ICMP		0x1	
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IP_PROT_TCP		0x6	
 #define IP_PROT_UDP		0x11	
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define IP_PROT_IGMP		0x2	
+#define IP_PROT_TCP		0x6	
+#define IP_PROT_UDP		0x11	
+#define IP_PROT_ICMP6		0x3a	
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 #define IPV4_VER_HL_OFFSET	0	
@@ -149,6 +186,70 @@ BWL_PRE_PACKED_STRUCT struct ipv4_hdr {
 	 IP_VER(ip_body) == IP_VER_6 ? IPV6_TRAFFIC_CLASS(ip_body) : 0)
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define IPV6_EXTHDR_HOP		0
+#define IPV6_EXTHDR_ROUTING	43
+#define IPV6_EXTHDR_FRAGMENT	44
+#define IPV6_EXTHDR_AUTH	51
+#define IPV6_EXTHDR_NONE	59
+#define IPV6_EXTHDR_DEST	60
+
+#define IPV6_EXTHDR(prot)	(((prot) == IPV6_EXTHDR_HOP) || \
+	                         ((prot) == IPV6_EXTHDR_ROUTING) || \
+	                         ((prot) == IPV6_EXTHDR_FRAGMENT) || \
+	                         ((prot) == IPV6_EXTHDR_AUTH) || \
+	                         ((prot) == IPV6_EXTHDR_NONE) || \
+	                         ((prot) == IPV6_EXTHDR_DEST))
+
+#define IPV6_MIN_HLEN 		40
+
+#define IPV6_EXTHDR_LEN(eh)	((((struct ipv6_exthdr *)(eh))->hdrlen + 1) << 3)
+
+BWL_PRE_PACKED_STRUCT struct ipv6_exthdr {
+	uint8	nexthdr;
+	uint8	hdrlen;
+} BWL_POST_PACKED_STRUCT;
+
+BWL_PRE_PACKED_STRUCT struct ipv6_exthdr_frag {
+	uint8	nexthdr;
+	uint8	rsvd;
+	uint16	frag_off;
+	uint32	ident;
+} BWL_POST_PACKED_STRUCT;
+
+static INLINE int32
+ipv6_exthdr_len(uint8 *h, uint8 *proto)
+{
+	uint16 len = 0, hlen;
+	struct ipv6_exthdr *eh = (struct ipv6_exthdr *)h;
+
+	while (IPV6_EXTHDR(eh->nexthdr)) {
+		if (eh->nexthdr == IPV6_EXTHDR_NONE)
+			return -1;
+		else if (eh->nexthdr == IPV6_EXTHDR_FRAGMENT)
+			hlen = 8;
+		else if (eh->nexthdr == IPV6_EXTHDR_AUTH)
+			hlen = (eh->hdrlen + 2) << 2;
+		else
+			hlen = IPV6_EXTHDR_LEN(eh);
+
+		len += hlen;
+		eh = (struct ipv6_exthdr *)(h + len);
+	}
+
+	*proto = eh->nexthdr;
+	return len;
+}
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <packed_section_end.h>
 
 #endif	

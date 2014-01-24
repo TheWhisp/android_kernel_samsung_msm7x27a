@@ -15,8 +15,16 @@
 #include <linux/slab.h>
 #include <linux/statfs.h>
 #include <linux/string.h>
+<<<<<<< HEAD
 
 
+=======
+#include <linux/nsproxy.h>
+#include <net/net_namespace.h>
+
+
+#include <linux/ceph/ceph_features.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ceph/libceph.h>
 #include <linux/ceph/debugfs.h>
 #include <linux/ceph/decode.h>
@@ -25,6 +33,25 @@
 #include "crypto.h"
 
 
+<<<<<<< HEAD
+=======
+/*
+ * Module compatibility interface.  For now it doesn't do anything,
+ * but its existence signals a certain level of functionality.
+ *
+ * The data buffer is used to pass information both to and from
+ * libceph.  The return value indicates whether libceph determines
+ * it is compatible with the caller (from another kernel module),
+ * given the provided data.
+ *
+ * The data pointer can be null.
+ */
+bool libceph_compatible(void *data)
+{
+	return true;
+}
+EXPORT_SYMBOL(libceph_compatible);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * find filename portion of a path (/foo/bar/baz -> baz)
@@ -83,10 +110,21 @@ int ceph_check_fsid(struct ceph_client *client, struct ceph_fsid *fsid)
 			return -1;
 		}
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_info("client%lld fsid %pU\n", ceph_client_id(client), fsid);
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		memcpy(&client->fsid, fsid, sizeof(*fsid));
 		ceph_debugfs_client_init(client);
 		client->have_fsid = true;
+=======
+		memcpy(&client->fsid, fsid, sizeof(*fsid));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memcpy(&client->fsid, fsid, sizeof(*fsid));
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -203,7 +241,19 @@ enum {
 	Opt_ip,
 	Opt_last_string,
 	/* string args above */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	Opt_noshare,
+=======
+	Opt_share,
+	Opt_noshare,
+	Opt_crc,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Opt_share,
+	Opt_noshare,
+	Opt_crc,
+>>>>>>> refs/remotes/origin/master
 	Opt_nocrc,
 };
 
@@ -219,7 +269,19 @@ static match_table_t opt_tokens = {
 	{Opt_key, "key=%s"},
 	{Opt_ip, "ip=%s"},
 	/* string args above */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{Opt_noshare, "noshare"},
+=======
+	{Opt_share, "share"},
+	{Opt_noshare, "noshare"},
+	{Opt_crc, "crc"},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{Opt_share, "share"},
+	{Opt_noshare, "noshare"},
+	{Opt_crc, "crc"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_nocrc, "nocrc"},
 	{-1, NULL}
 };
@@ -232,6 +294,14 @@ void ceph_destroy_options(struct ceph_options *opt)
 		ceph_crypto_key_destroy(opt->key);
 		kfree(opt->key);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	kfree(opt->mon_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(opt->mon_addr);
+>>>>>>> refs/remotes/origin/master
 	kfree(opt);
 }
 EXPORT_SYMBOL(ceph_destroy_options);
@@ -278,19 +348,46 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ceph_parse_options(struct ceph_options **popt, char *options,
 		       const char *dev_name, const char *dev_name_end,
 		       int (*parse_extra_token)(char *c, void *private),
 		       void *private)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct ceph_options *
+ceph_parse_options(char *options, const char *dev_name,
+			const char *dev_name_end,
+			int (*parse_extra_token)(char *c, void *private),
+			void *private)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_options *opt;
 	const char *c;
 	int err = -ENOMEM;
 	substring_t argstr[MAX_OPT_ARGS];
 
+<<<<<<< HEAD
 	opt = kzalloc(sizeof(*opt), GFP_KERNEL);
 	if (!opt)
+<<<<<<< HEAD
 		return err;
+=======
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (current->nsproxy->net_ns != &init_net)
+		return ERR_PTR(-EINVAL);
+
+	opt = kzalloc(sizeof(*opt), GFP_KERNEL);
+	if (!opt)
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/master
 	opt->mon_addr = kcalloc(CEPH_MAX_MON, sizeof(*opt->mon_addr),
 				GFP_KERNEL);
 	if (!opt->mon_addr)
@@ -301,7 +398,16 @@ int ceph_parse_options(struct ceph_options **popt, char *options,
 
 	/* start with defaults */
 	opt->flags = CEPH_OPT_DEFAULT;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	opt->osd_timeout = CEPH_OSD_TIMEOUT_DEFAULT;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	opt->osd_keepalive_timeout = CEPH_OSD_KEEPALIVE_DEFAULT;
 	opt->mount_timeout = CEPH_MOUNT_TIMEOUT_DEFAULT; /* seconds */
 	opt->osd_idle_ttl = CEPH_OSD_IDLE_TTL_DEFAULT;   /* seconds */
@@ -387,7 +493,19 @@ int ceph_parse_options(struct ceph_options **popt, char *options,
 
 			/* misc */
 		case Opt_osdtimeout:
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			opt->osd_timeout = intval;
+=======
+			pr_warning("ignoring deprecated osdtimeout option\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warning("ignoring deprecated osdtimeout option\n");
+>>>>>>> refs/remotes/origin/master
+=======
+			pr_warning("ignoring deprecated osdtimeout option\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		case Opt_osdkeepalivetimeout:
 			opt->osd_keepalive_timeout = intval;
@@ -399,10 +517,34 @@ int ceph_parse_options(struct ceph_options **popt, char *options,
 			opt->mount_timeout = intval;
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		case Opt_share:
+			opt->flags &= ~CEPH_OPT_NOSHARE;
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case Opt_share:
+			opt->flags &= ~CEPH_OPT_NOSHARE;
+			break;
+>>>>>>> refs/remotes/origin/master
 		case Opt_noshare:
 			opt->flags |= CEPH_OPT_NOSHARE;
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		case Opt_crc:
+			opt->flags &= ~CEPH_OPT_NOCRC;
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case Opt_crc:
+			opt->flags &= ~CEPH_OPT_NOCRC;
+			break;
+>>>>>>> refs/remotes/origin/master
 		case Opt_nocrc:
 			opt->flags |= CEPH_OPT_NOCRC;
 			break;
@@ -413,12 +555,26 @@ int ceph_parse_options(struct ceph_options **popt, char *options,
 	}
 
 	/* success */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*popt = opt;
 	return 0;
 
 out:
 	ceph_destroy_options(opt);
 	return err;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	return opt;
+
+out:
+	ceph_destroy_options(opt);
+	return ERR_PTR(err);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(ceph_parse_options);
 
@@ -431,9 +587,27 @@ EXPORT_SYMBOL(ceph_client_id);
 /*
  * create a fresh client instance
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private)
 {
 	struct ceph_client *client;
+=======
+struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private,
+				       unsigned supported_features,
+				       unsigned required_features)
+{
+	struct ceph_client *client;
+	struct ceph_entity_addr *myaddr = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private,
+				       unsigned int supported_features,
+				       unsigned int required_features)
+{
+	struct ceph_client *client;
+	struct ceph_entity_addr *myaddr = NULL;
+>>>>>>> refs/remotes/origin/master
 	int err = -ENOMEM;
 
 	client = kzalloc(sizeof(*client), GFP_KERNEL);
@@ -448,10 +622,37 @@ struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private)
 	client->auth_err = 0;
 
 	client->extra_mon_dispatch = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	client->supported_features = CEPH_FEATURE_SUPPORTED_DEFAULT;
 	client->required_features = CEPH_FEATURE_REQUIRED_DEFAULT;
 
 	client->msgr = NULL;
+=======
+	client->supported_features = CEPH_FEATURE_SUPPORTED_DEFAULT |
+		supported_features;
+	client->required_features = CEPH_FEATURE_REQUIRED_DEFAULT |
+=======
+	client->supported_features = CEPH_FEATURES_SUPPORTED_DEFAULT |
+		supported_features;
+	client->required_features = CEPH_FEATURES_REQUIRED_DEFAULT |
+>>>>>>> refs/remotes/origin/master
+		required_features;
+
+	/* msgr */
+	if (ceph_test_opt(client, MYIP))
+		myaddr = &client->options->my_addr;
+	ceph_messenger_init(&client->msgr, myaddr,
+		client->supported_features,
+		client->required_features,
+		ceph_test_opt(client, NOCRC));
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* subsystems */
 	err = ceph_monc_init(&client->monc, client);
@@ -475,6 +676,9 @@ void ceph_destroy_client(struct ceph_client *client)
 {
 	dout("destroy_client %p\n", client);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* unmount */
 	ceph_osdc_stop(&client->osdc);
 
@@ -485,13 +689,41 @@ void ceph_destroy_client(struct ceph_client *client)
 	 */
 	ceph_msgr_flush();
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	atomic_set(&client->msgr.stopping, 1);
+
+	/* unmount */
+	ceph_osdc_stop(&client->osdc);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	atomic_set(&client->msgr.stopping, 1);
+
+	/* unmount */
+	ceph_osdc_stop(&client->osdc);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	ceph_monc_stop(&client->monc);
 
 	ceph_debugfs_client_cleanup(client);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (client->msgr)
 		ceph_messenger_destroy(client->msgr);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ceph_destroy_options(client->options);
 
 	kfree(client);
@@ -513,6 +745,8 @@ static int have_mon_and_osd_map(struct ceph_client *client)
  */
 int __ceph_open_session(struct ceph_client *client, unsigned long started)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_entity_addr *myaddr = NULL;
 	int err;
 	unsigned long timeout = client->options->mount_timeout * HZ;
@@ -531,6 +765,16 @@ int __ceph_open_session(struct ceph_client *client, unsigned long started)
 		client->msgr->nocrc = ceph_test_opt(client, NOCRC);
 	}
 
+=======
+	int err;
+	unsigned long timeout = client->options->mount_timeout * HZ;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err;
+	unsigned long timeout = client->options->mount_timeout * HZ;
+
+>>>>>>> refs/remotes/origin/master
 	/* open session, and wait for mon and osd maps */
 	err = ceph_monc_open_session(&client->monc);
 	if (err < 0)
@@ -589,6 +833,7 @@ static int __init init_ceph_lib(void)
 	if (ret < 0)
 		goto out_crypto;
 
+<<<<<<< HEAD
 	pr_info("loaded (mon/osd proto %d/%d, osdmap %d/%d %d/%d)\n",
 		CEPH_MONC_PROTOCOL, CEPH_OSDC_PROTOCOL,
 		CEPH_OSDMAP_VERSION, CEPH_OSDMAP_VERSION_EXT,
@@ -596,6 +841,19 @@ static int __init init_ceph_lib(void)
 
 	return 0;
 
+=======
+	ret = ceph_osdc_setup();
+	if (ret < 0)
+		goto out_msgr;
+
+	pr_info("loaded (mon/osd proto %d/%d)\n",
+		CEPH_MONC_PROTOCOL, CEPH_OSDC_PROTOCOL);
+
+	return 0;
+
+out_msgr:
+	ceph_msgr_exit();
+>>>>>>> refs/remotes/origin/master
 out_crypto:
 	ceph_crypto_shutdown();
 out_debugfs:
@@ -607,6 +865,10 @@ out:
 static void __exit exit_ceph_lib(void)
 {
 	dout("exit_ceph_lib\n");
+<<<<<<< HEAD
+=======
+	ceph_osdc_cleanup();
+>>>>>>> refs/remotes/origin/master
 	ceph_msgr_exit();
 	ceph_crypto_shutdown();
 	ceph_debugfs_cleanup();

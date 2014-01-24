@@ -31,7 +31,11 @@
 #include <sound/core.h>
 #include <sound/control.h>
 #include <sound/info.h>
+<<<<<<< HEAD
 #include <sound/cs46xx.h>
+=======
+#include "cs46xx.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "cs46xx_lib.h"
 #include "dsp_spos.h"
@@ -203,7 +207,11 @@ void cs46xx_dsp_remove_scb (struct snd_cs46xx *chip, struct dsp_scb_descriptor *
 	remove_symbol (chip,scb->scb_symbol);
 
 	ins->scbs[scb->index].deleted = 1;
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	kfree(ins->scbs[scb->index].data);
 	ins->scbs[scb->index].data = NULL;
 #endif

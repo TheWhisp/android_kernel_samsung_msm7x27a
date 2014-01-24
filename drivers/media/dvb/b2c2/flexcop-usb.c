@@ -583,6 +583,7 @@ static struct usb_driver flexcop_usb_driver = {
 	.id_table	= flexcop_usb_table,
 };
 
+<<<<<<< HEAD
 /* module stuff */
 static int __init flexcop_usb_module_init(void)
 {
@@ -602,6 +603,9 @@ static void __exit flexcop_usb_module_exit(void)
 
 module_init(flexcop_usb_module_init);
 module_exit(flexcop_usb_module_exit);
+=======
+module_usb_driver(flexcop_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_NAME);

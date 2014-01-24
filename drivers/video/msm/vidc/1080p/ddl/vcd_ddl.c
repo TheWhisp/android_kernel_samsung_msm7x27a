@@ -471,12 +471,24 @@ u32 ddl_encode_frame(u32 *ddl_handle,
 	struct ddl_encoder_data *encoder =
 		&ddl->codec_data.encoder;
 	u32 vcd_status = VCD_S_SUCCESS;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	struct vcd_transc *transc;
 	transc = (struct vcd_transc *)(ddl->client_data);
 	DDL_MSG_LOW("%s: transc = 0x%x, in_use = %u",
 				 __func__, (u32)ddl->client_data, transc->in_use);
 
+=======
+	struct vcd_transc *transc;
+	transc = (struct vcd_transc *)(ddl->client_data);
+	DDL_MSG_LOW("%s: transc = 0x%x", __func__, (u32)ddl->client_data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vcd_transc *transc;
+	transc = (struct vcd_transc *)(ddl->client_data);
+	DDL_MSG_LOW("%s: transc = 0x%x", __func__, (u32)ddl->client_data);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (encoder->slice_delivery_info.enable) {
 		return ddl_encode_frame_batch(ddl_handle,
 					input_frame,

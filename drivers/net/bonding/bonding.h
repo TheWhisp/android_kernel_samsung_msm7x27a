@@ -18,9 +18,28 @@
 #include <linux/timer.h>
 #include <linux/proc_fs.h>
 #include <linux/if_bonding.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/cpumask.h>
 #include <linux/in6.h>
 #include <linux/netpoll.h>
+=======
+#include <linux/etherdevice.h>
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/cpumask.h>
+#include <linux/in6.h>
+#include <linux/netpoll.h>
+#include <linux/inetdevice.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/master
 #include "bond_3ad.h"
 #include "bond_alb.h"
 
@@ -33,6 +52,11 @@
 
 #define BOND_MAX_ARP_TARGETS	16
 
+<<<<<<< HEAD
+=======
+#define BOND_DEFAULT_MIIMON	100
+
+>>>>>>> refs/remotes/origin/master
 #define IS_UP(dev)					   \
 	      ((((dev)->flags & IFF_UP) == IFF_UP)	&& \
 	       netif_running(dev)			&& \
@@ -53,9 +77,28 @@
 		 ((mode) == BOND_MODE_TLB)          ||	\
 		 ((mode) == BOND_MODE_ALB))
 
+<<<<<<< HEAD
 #define TX_QUEUE_OVERRIDE(mode)				\
 			(((mode) == BOND_MODE_ACTIVEBACKUP) ||	\
 			 ((mode) == BOND_MODE_ROUNDROBIN))
+=======
+#define BOND_NO_USES_ARP(mode)				\
+		(((mode) == BOND_MODE_8023AD)	||	\
+		 ((mode) == BOND_MODE_TLB)	||	\
+		 ((mode) == BOND_MODE_ALB))
+
+#define TX_QUEUE_OVERRIDE(mode)				\
+			(((mode) == BOND_MODE_ACTIVEBACKUP) ||	\
+			 ((mode) == BOND_MODE_ROUNDROBIN))
+
+#define BOND_MODE_IS_LB(mode)			\
+		(((mode) == BOND_MODE_TLB) ||	\
+		 ((mode) == BOND_MODE_ALB))
+
+#define IS_IP_TARGET_UNUSABLE_ADDRESS(a)	\
+	((htonl(INADDR_BROADCAST) == a) ||	\
+	 ipv4_is_zeronet(a))
+>>>>>>> refs/remotes/origin/master
 /*
  * Less bad way to call ioctl from within the kernel; this needs to be
  * done some other way to get the call out of interrupt context.
@@ -69,6 +112,7 @@
 	set_fs(fs);			\
 	res; })
 
+<<<<<<< HEAD
 /**
  * bond_for_each_slave_from - iterate the slaves list from a starting point
  * @bond:	the bond holding this list.
@@ -109,6 +153,40 @@
 #define bond_for_each_slave(bond, pos, cnt)	\
 		bond_for_each_slave_from(bond, pos, cnt, (bond)->first_slave)
 
+=======
+/* slave list primitives */
+#define bond_slave_list(bond) (&(bond)->dev->adj_list.lower)
+
+#define bond_has_slaves(bond) !list_empty(bond_slave_list(bond))
+
+/* IMPORTANT: bond_first/last_slave can return NULL in case of an empty list */
+#define bond_first_slave(bond) \
+	(bond_has_slaves(bond) ? \
+		netdev_adjacent_get_private(bond_slave_list(bond)->next) : \
+		NULL)
+#define bond_last_slave(bond) \
+	(bond_has_slaves(bond) ? \
+		netdev_adjacent_get_private(bond_slave_list(bond)->prev) : \
+		NULL)
+
+#define bond_is_first_slave(bond, pos) (pos == bond_first_slave(bond))
+#define bond_is_last_slave(bond, pos) (pos == bond_last_slave(bond))
+
+/**
+ * bond_for_each_slave - iterate over all slaves
+ * @bond:	the bond holding this list
+ * @pos:	current slave
+ * @iter:	list_head * iterator
+ *
+ * Caller must hold bond->lock
+ */
+#define bond_for_each_slave(bond, pos, iter) \
+	netdev_for_each_lower_private((bond)->dev, pos, iter)
+
+/* Caller must have rcu_read_lock */
+#define bond_for_each_slave_rcu(bond, pos, iter) \
+	netdev_for_each_lower_private_rcu((bond)->dev, pos, iter)
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_NET_POLL_CONTROLLER
 extern atomic_t netpoll_block_tx;
@@ -142,11 +220,23 @@ struct bond_params {
 	u8 num_peer_notif;
 	int arp_interval;
 	int arp_validate;
+<<<<<<< HEAD
+=======
+	int arp_all_targets;
+>>>>>>> refs/remotes/origin/master
 	int use_carrier;
 	int fail_over_mac;
 	int updelay;
 	int downdelay;
 	int lacp_fast;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned int min_links;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int min_links;
+>>>>>>> refs/remotes/origin/master
 	int ad_select;
 	char primary[IFNAMSIZ];
 	int primary_reselect;
@@ -154,6 +244,11 @@ struct bond_params {
 	int tx_queues;
 	int all_slaves_active;
 	int resend_igmp;
+<<<<<<< HEAD
+=======
+	int lp_interval;
+	int packets_per_slave;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct bond_parm_tbl {
@@ -163,9 +258,13 @@ struct bond_parm_tbl {
 
 #define BOND_MAX_MODENAME_LEN 20
 
+<<<<<<< HEAD
 struct vlan_entry {
 	struct list_head vlan_list;
+<<<<<<< HEAD
 	__be32 vlan_ip;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned short vlan_id;
 };
 
@@ -173,10 +272,18 @@ struct slave {
 	struct net_device *dev; /* first - useful for panic debug */
 	struct slave *next;
 	struct slave *prev;
+=======
+struct slave {
+	struct net_device *dev; /* first - useful for panic debug */
+>>>>>>> refs/remotes/origin/master
 	struct bonding *bond; /* our master */
 	int    delay;
 	unsigned long jiffies;
 	unsigned long last_arp_rx;
+<<<<<<< HEAD
+=======
+	unsigned long target_last_arp_rx[BOND_MAX_ARP_TARGETS];
+>>>>>>> refs/remotes/origin/master
 	s8     link;    /* one of BOND_LINK_XXXX */
 	s8     new_link;
 	u8     backup:1,   /* indicates backup slave. Value corresponds with
@@ -211,36 +318,68 @@ struct slave {
  */
 struct bonding {
 	struct   net_device *dev; /* first - useful for panic debug */
+<<<<<<< HEAD
 	struct   slave *first_slave;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct   slave *curr_active_slave;
 	struct   slave *current_arp_slave;
 	struct   slave *primary_slave;
 	bool     force_primary;
 	s32      slave_cnt; /* never change this value outside the attach/detach wrappers */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void     (*recv_probe)(struct sk_buff *, struct bonding *,
 			       struct slave *);
 	rwlock_t lock;
 	rwlock_t curr_slave_lock;
 	s8       kill_timers;
+=======
+	int     (*recv_probe)(struct sk_buff *, struct bonding *,
+			       struct slave *);
+	rwlock_t lock;
+	rwlock_t curr_slave_lock;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8	 send_peer_notif;
 	s8	 setup_by_slave;
 	s8       igmp_retrans;
+=======
+	int     (*recv_probe)(const struct sk_buff *, struct bonding *,
+			      struct slave *);
+	rwlock_t lock;
+	rwlock_t curr_slave_lock;
+	u8	 send_peer_notif;
+	u8       igmp_retrans;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PROC_FS
 	struct   proc_dir_entry *proc_entry;
 	char     proc_file_name[IFNAMSIZ];
 #endif /* CONFIG_PROC_FS */
 	struct   list_head bond_list;
+<<<<<<< HEAD
 	struct   netdev_hw_addr_list mc_list;
 	int      (*xmit_hash_policy)(struct sk_buff *, int);
+<<<<<<< HEAD
 	__be32   master_ip;
 	u16      flags;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16      rr_tx_counter;
 	struct   ad_bond_info ad_info;
 	struct   alb_bond_info alb_info;
 	struct   bond_params params;
 	struct   list_head vlan_list;
+<<<<<<< HEAD
 	struct   vlan_group *vlgrp;
 	struct   packet_type arp_mon_pt;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32      rr_tx_counter;
+	struct   ad_bond_info ad_info;
+	struct   alb_bond_info alb_info;
+	struct   bond_params params;
+>>>>>>> refs/remotes/origin/master
 	struct   workqueue_struct *wq;
 	struct   delayed_work mii_work;
 	struct   delayed_work arp_work;
@@ -248,14 +387,35 @@ struct bonding {
 	struct   delayed_work ad_work;
 	struct   delayed_work mcast_work;
 #ifdef CONFIG_DEBUG_FS
+<<<<<<< HEAD
 	/* debugging suport via debugfs */
+=======
+	/* debugging support via debugfs */
+>>>>>>> refs/remotes/origin/master
 	struct	 dentry *debug_dir;
 #endif /* CONFIG_DEBUG_FS */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static inline bool bond_vlan_used(struct bonding *bond)
+{
+	return !list_empty(&bond->vlan_list);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define bond_slave_get_rcu(dev) \
 	((struct slave *) rcu_dereference(dev->rx_handler_data))
 
+=======
+#define bond_slave_get_rcu(dev) \
+	((struct slave *) rcu_dereference(dev->rx_handler_data))
+
+#define bond_slave_get_rtnl(dev) \
+	((struct slave *) rtnl_dereference(dev->rx_handler_data))
+
+>>>>>>> refs/remotes/origin/master
 /**
  * Returns NULL if the net_device does not belong to any of the bond's slaves
  *
@@ -264,6 +424,7 @@ struct bonding {
 static inline struct slave *bond_get_slave_by_dev(struct bonding *bond,
 						  struct net_device *slave_dev)
 {
+<<<<<<< HEAD
 	struct slave *slave = NULL;
 	int i;
 
@@ -274,21 +435,34 @@ static inline struct slave *bond_get_slave_by_dev(struct bonding *bond,
 	}
 
 	return NULL;
+=======
+	return netdev_lower_dev_get_private(bond->dev, slave_dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct bonding *bond_get_bond_by_slave(struct slave *slave)
 {
+<<<<<<< HEAD
 	if (!slave || !slave->dev->master) {
 		return NULL;
 	}
 
 	return netdev_priv(slave->dev->master);
+=======
+	if (!slave || !slave->bond)
+		return NULL;
+	return slave->bond;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline bool bond_is_lb(const struct bonding *bond)
 {
+<<<<<<< HEAD
 	return (bond->params.mode == BOND_MODE_TLB ||
 		bond->params.mode == BOND_MODE_ALB);
+=======
+	return BOND_MODE_IS_LB(bond->params.mode);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void bond_set_active_slave(struct slave *slave)
@@ -319,6 +493,12 @@ static inline bool bond_is_active_slave(struct slave *slave)
 #define BOND_FOM_ACTIVE			1
 #define BOND_FOM_FOLLOW			2
 
+<<<<<<< HEAD
+=======
+#define BOND_ARP_TARGETS_ANY		0
+#define BOND_ARP_TARGETS_ALL		1
+
+>>>>>>> refs/remotes/origin/master
 #define BOND_ARP_VALIDATE_NONE		0
 #define BOND_ARP_VALIDATE_ACTIVE	(1 << BOND_STATE_ACTIVE)
 #define BOND_ARP_VALIDATE_BACKUP	(1 << BOND_STATE_BACKUP)
@@ -331,11 +511,39 @@ static inline int slave_do_arp_validate(struct bonding *bond,
 	return bond->params.arp_validate & (1 << bond_slave_state(slave));
 }
 
+<<<<<<< HEAD
 static inline unsigned long slave_last_rx(struct bonding *bond,
 					struct slave *slave)
 {
 	if (slave_do_arp_validate(bond, slave))
 		return slave->last_arp_rx;
+=======
+/* Get the oldest arp which we've received on this slave for bond's
+ * arp_targets.
+ */
+static inline unsigned long slave_oldest_target_arp_rx(struct bonding *bond,
+						       struct slave *slave)
+{
+	int i = 1;
+	unsigned long ret = slave->target_last_arp_rx[0];
+
+	for (; (i < BOND_MAX_ARP_TARGETS) && bond->params.arp_targets[i]; i++)
+		if (time_before(slave->target_last_arp_rx[i], ret))
+			ret = slave->target_last_arp_rx[i];
+
+	return ret;
+}
+
+static inline unsigned long slave_last_rx(struct bonding *bond,
+					struct slave *slave)
+{
+	if (slave_do_arp_validate(bond, slave)) {
+		if (bond->params.arp_all_targets == BOND_ARP_TARGETS_ALL)
+			return slave_oldest_target_arp_rx(bond, slave);
+		else
+			return slave->last_arp_rx;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return slave->dev->last_rx;
 }
@@ -358,10 +566,16 @@ static inline void bond_netpoll_send_skb(const struct slave *slave,
 
 static inline void bond_set_slave_inactive_flags(struct slave *slave)
 {
+<<<<<<< HEAD
 	struct bonding *bond = netdev_priv(slave->dev->master);
 	if (!bond_is_lb(bond))
 		bond_set_backup_slave(slave);
 	if (!bond->params.all_slaves_active)
+=======
+	if (!bond_is_lb(slave->bond))
+		bond_set_backup_slave(slave);
+	if (!slave->bond->params.all_slaves_active)
+>>>>>>> refs/remotes/origin/master
 		slave->inactive = 1;
 }
 
@@ -376,20 +590,73 @@ static inline bool bond_is_slave_inactive(struct slave *slave)
 	return slave->inactive;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct vlan_entry *bond_next_vlan(struct bonding *bond, struct vlan_entry *curr);
 int bond_dev_queue_xmit(struct bonding *bond, struct sk_buff *skb, struct net_device *slave_dev);
 int bond_create(struct net *net, const char *name);
 int bond_create_sysfs(void);
 void bond_destroy_sysfs(void);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline __be32 bond_confirm_addr(struct net_device *dev, __be32 dst, __be32 local)
+{
+	struct in_device *in_dev;
+	__be32 addr = 0;
+
+	rcu_read_lock();
+	in_dev = __in_dev_get_rcu(dev);
+
+	if (in_dev)
+		addr = inet_confirm_addr(in_dev, dst, local, RT_SCOPE_HOST);
+
+	rcu_read_unlock();
+	return addr;
+}
+
+<<<<<<< HEAD
+struct bond_net;
+
+struct vlan_entry *bond_next_vlan(struct bonding *bond, struct vlan_entry *curr);
+int bond_dev_queue_xmit(struct bonding *bond, struct sk_buff *skb, struct net_device *slave_dev);
+int bond_create(struct net *net, const char *name);
+int bond_create_sysfs(struct bond_net *net);
+void bond_destroy_sysfs(struct bond_net *net);
+>>>>>>> refs/remotes/origin/cm-10.0
 void bond_prepare_sysfs_group(struct bonding *bond);
 int bond_create_slave_symlinks(struct net_device *master, struct net_device *slave);
 void bond_destroy_slave_symlinks(struct net_device *master, struct net_device *slave);
+=======
+static inline bool slave_can_tx(struct slave *slave)
+{
+	if (IS_UP(slave->dev) && slave->link == BOND_LINK_UP &&
+	    bond_is_active_slave(slave))
+		return true;
+	else
+		return false;
+}
+
+struct bond_net;
+
+int bond_arp_rcv(const struct sk_buff *skb, struct bonding *bond, struct slave *slave);
+int bond_dev_queue_xmit(struct bonding *bond, struct sk_buff *skb, struct net_device *slave_dev);
+void bond_xmit_slave_id(struct bonding *bond, struct sk_buff *skb, int slave_id);
+int bond_create(struct net *net, const char *name);
+int bond_create_sysfs(struct bond_net *net);
+void bond_destroy_sysfs(struct bond_net *net);
+void bond_prepare_sysfs_group(struct bonding *bond);
+>>>>>>> refs/remotes/origin/master
 int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev);
 int bond_release(struct net_device *bond_dev, struct net_device *slave_dev);
 void bond_mii_monitor(struct work_struct *);
 void bond_loadbalance_arp_mon(struct work_struct *);
 void bond_activebackup_arp_mon(struct work_struct *);
+<<<<<<< HEAD
 void bond_set_mode_ops(struct bonding *bond, int mode);
+=======
+int bond_xmit_hash(struct bonding *bond, struct sk_buff *skb, int count);
+>>>>>>> refs/remotes/origin/master
 int bond_parse_parm(const char *mode_arg, const struct bond_parm_tbl *tbl);
 void bond_select_active_slave(struct bonding *bond);
 void bond_change_active_slave(struct bonding *bond, struct slave *new_active);
@@ -399,6 +666,17 @@ void bond_debug_register(struct bonding *bond);
 void bond_debug_unregister(struct bonding *bond);
 void bond_debug_reregister(struct bonding *bond);
 const char *bond_mode_name(int mode);
+<<<<<<< HEAD
+=======
+void bond_setup(struct net_device *bond_dev);
+unsigned int bond_get_num_tx_queues(void);
+int bond_netlink_init(void);
+void bond_netlink_fini(void);
+int bond_option_mode_set(struct bonding *bond, int mode);
+int bond_option_active_slave_set(struct bonding *bond, struct net_device *slave_dev);
+struct net_device *bond_option_active_slave_get_rcu(struct bonding *bond);
+struct net_device *bond_option_active_slave_get(struct bonding *bond);
+>>>>>>> refs/remotes/origin/master
 
 struct bond_net {
 	struct net *		net;	/* Associated network namespace */
@@ -406,6 +684,14 @@ struct bond_net {
 #ifdef CONFIG_PROC_FS
 	struct proc_dir_entry *	proc_dir;
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct class_attribute	class_attr_bonding_masters;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct class_attribute	class_attr_bonding_masters;
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_PROC_FS
@@ -431,6 +717,74 @@ static inline void bond_destroy_proc_dir(struct bond_net *bn)
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static inline struct slave *bond_slave_has_mac(struct bonding *bond,
+					       const u8 *mac)
+{
+	int i = 0;
+	struct slave *tmp;
+
+	bond_for_each_slave(bond, tmp, i)
+		if (!compare_ether_addr_64bits(mac, tmp->dev->dev_addr))
+<<<<<<< HEAD
+=======
+static inline struct slave *bond_slave_has_mac(struct bonding *bond,
+					       const u8 *mac)
+{
+	struct list_head *iter;
+	struct slave *tmp;
+
+	bond_for_each_slave(bond, tmp, iter)
+		if (ether_addr_equal_64bits(mac, tmp->dev->dev_addr))
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			return tmp;
+
+	return NULL;
+}
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* Caller must hold rcu_read_lock() for read */
+static inline struct slave *bond_slave_has_mac_rcu(struct bonding *bond,
+					       const u8 *mac)
+{
+	struct list_head *iter;
+	struct slave *tmp;
+
+	bond_for_each_slave_rcu(bond, tmp, iter)
+		if (ether_addr_equal_64bits(mac, tmp->dev->dev_addr))
+			return tmp;
+
+	return NULL;
+}
+
+/* Check if the ip is present in arp ip list, or first free slot if ip == 0
+ * Returns -1 if not found, index if found
+ */
+static inline int bond_get_targets_ip(__be32 *targets, __be32 ip)
+{
+	int i;
+
+	for (i = 0; i < BOND_MAX_ARP_TARGETS; i++)
+		if (targets[i] == ip)
+			return i;
+		else if (targets[i] == 0)
+			break;
+
+	return -1;
+}
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* exported from bond_main.c */
 extern int bond_net_id;
@@ -438,8 +792,18 @@ extern const struct bond_parm_tbl bond_lacp_tbl[];
 extern const struct bond_parm_tbl bond_mode_tbl[];
 extern const struct bond_parm_tbl xmit_hashtype_tbl[];
 extern const struct bond_parm_tbl arp_validate_tbl[];
+<<<<<<< HEAD
+=======
+extern const struct bond_parm_tbl arp_all_targets_tbl[];
+>>>>>>> refs/remotes/origin/master
 extern const struct bond_parm_tbl fail_over_mac_tbl[];
 extern const struct bond_parm_tbl pri_reselect_tbl[];
 extern struct bond_parm_tbl ad_select_tbl[];
 
+<<<<<<< HEAD
+=======
+/* exported from bond_netlink.c */
+extern struct rtnl_link_ops bond_link_ops;
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_BONDING_H */

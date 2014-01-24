@@ -6,6 +6,7 @@
  * Redistribution of this file is permitted under the terms of the GNU 
  * Public License (GPL)
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_SERIAL_H
 #define _LINUX_SERIAL_H
@@ -14,6 +15,14 @@
 
 #ifdef __KERNEL__
 #include <asm/page.h>
+=======
+#ifndef _LINUX_SERIAL_H
+#define _LINUX_SERIAL_H
+
+#include <asm/page.h>
+#include <uapi/linux/serial.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Counters of the input lines (CTS, DSR, RI, CD) interrupts
@@ -30,6 +39,7 @@ struct async_icount {
  */
 #define SERIAL_XMIT_SIZE PAGE_SIZE
 
+<<<<<<< HEAD
 #endif
 
 struct serial_struct {
@@ -152,8 +162,13 @@ struct serial_uart_config {
 #define ASYNC_AUTOPROBE		(1U << ASYNCB_AUTOPROBE)
 
 #define ASYNC_FLAGS		((1U << (ASYNCB_LAST_USER + 1)) - 1)
+<<<<<<< HEAD
 #define ASYNC_USR_MASK		(ASYNC_SPD_HI|ASYNC_SPD_VHI| \
 		ASYNC_CALLOUT_NOHUP|ASYNC_SPD_SHI|ASYNC_LOW_LATENCY)
+=======
+#define ASYNC_USR_MASK		(ASYNC_SPD_MASK|ASYNC_CALLOUT_NOHUP| \
+		ASYNC_LOW_LATENCY)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ASYNC_SPD_CUST		(ASYNC_SPD_HI|ASYNC_SPD_VHI)
 #define ASYNC_SPD_WARP		(ASYNC_SPD_HI|ASYNC_SPD_SHI)
 #define ASYNC_SPD_MASK		(ASYNC_SPD_HI|ASYNC_SPD_VHI|ASYNC_SPD_SHI)
@@ -207,12 +222,24 @@ struct serial_icounter_struct {
 
 struct serial_rs485 {
 	__u32	flags;			/* RS485 feature flags */
+<<<<<<< HEAD
 #define SER_RS485_ENABLED		(1 << 0)
 #define SER_RS485_RTS_ON_SEND		(1 << 1)
 #define SER_RS485_RTS_AFTER_SEND	(1 << 2)
 #define SER_RS485_RTS_BEFORE_SEND	(1 << 3)
 	__u32	delay_rts_before_send;	/* Milliseconds */
 	__u32	delay_rts_after_send;	/* Milliseconds */
+=======
+#define SER_RS485_ENABLED		(1 << 0)	/* If enabled */
+#define SER_RS485_RTS_ON_SEND		(1 << 1)	/* Logical level for
+							   RTS pin when
+							   sending */
+#define SER_RS485_RTS_AFTER_SEND	(1 << 2)	/* Logical level for
+							   RTS pin after sent*/
+#define SER_RS485_RX_DURING_TX		(1 << 4)
+	__u32	delay_rts_before_send;	/* Delay before send (milliseconds) */
+	__u32	delay_rts_after_send;	/* Delay after send (milliseconds) */
+>>>>>>> refs/remotes/origin/cm-10.0
 	__u32	padding[5];		/* Memory is cheap, new structs
 					   are a royal PITA .. */
 };
@@ -221,4 +248,8 @@ struct serial_rs485 {
 #include <linux/compiler.h>
 
 #endif /* __KERNEL__ */
+=======
+#include <linux/compiler.h>
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_SERIAL_H */

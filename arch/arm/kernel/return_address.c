@@ -8,7 +8,15 @@
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ftrace.h>
 
 #if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND)
@@ -26,7 +34,11 @@ static int save_return_addr(struct stackframe *frame, void *d)
 	struct return_address_data *data = d;
 
 	if (!data->level) {
+<<<<<<< HEAD
 		data->addr = (void *)frame->lr;
+=======
+		data->addr = (void *)frame->pc;
+>>>>>>> refs/remotes/origin/master
 
 		return 1;
 	} else {
@@ -41,7 +53,12 @@ void *return_address(unsigned int level)
 	struct stackframe frame;
 	register unsigned long current_sp asm ("sp");
 
+<<<<<<< HEAD
 	data.level = level + 1;
+=======
+	data.level = level + 2;
+	data.addr = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	frame.fp = (unsigned long)__builtin_frame_address(0);
 	frame.sp = current_sp;

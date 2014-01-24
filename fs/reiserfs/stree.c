@@ -51,7 +51,15 @@
 #include <linux/time.h>
 #include <linux/string.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/buffer_head.h>
 #include <linux/quotaops.h>
 
@@ -524,14 +532,24 @@ static int is_tree_node(struct buffer_head *bh, int level)
  * the caller (search_by_key) will perform other schedule-unsafe
  * operations just after calling this function.
  *
+<<<<<<< HEAD
  * @return true if we have unlocked
  */
 static bool search_by_key_reada(struct super_block *s,
+=======
+ * @return depth of lock to be restored after read completes
+ */
+static int search_by_key_reada(struct super_block *s,
+>>>>>>> refs/remotes/origin/master
 				struct buffer_head **bh,
 				b_blocknr_t *b, int num)
 {
 	int i, j;
+<<<<<<< HEAD
 	bool unlocked = false;
+=======
+	int depth = -1;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < num; i++) {
 		bh[i] = sb_getblk(s, b[i]);
@@ -549,15 +567,24 @@ static bool search_by_key_reada(struct super_block *s,
 		 * you have to make sure the prepared bit isn't set on this buffer
 		 */
 		if (!buffer_uptodate(bh[j])) {
+<<<<<<< HEAD
 			if (!unlocked) {
 				reiserfs_write_unlock(s);
 				unlocked = true;
 			}
+=======
+			if (depth == -1)
+				depth = reiserfs_write_unlock_nested(s);
+>>>>>>> refs/remotes/origin/master
 			ll_rw_block(READA, 1, bh + j);
 		}
 		brelse(bh[j]);
 	}
+<<<<<<< HEAD
 	return unlocked;
+=======
+	return depth;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**************************************************************************
@@ -645,6 +672,7 @@ int search_by_key(struct super_block *sb, const struct cpu_key *key,	/* Key to s
 		   have a pointer to it. */
 		if ((bh = last_element->pe_buffer =
 		     sb_getblk(sb, block_number))) {
+<<<<<<< HEAD
 			bool unlocked = false;
 
 			if (!buffer_uptodate(bh) && reada_count > 1)
@@ -665,6 +693,28 @@ int search_by_key(struct super_block *sb, const struct cpu_key *key,	/* Key to s
 
 			if (unlocked)
 				reiserfs_write_lock(sb);
+=======
+
+			/*
+			 * We'll need to drop the lock if we encounter any
+			 * buffers that need to be read. If all of them are
+			 * already up to date, we don't need to drop the lock.
+			 */
+			int depth = -1;
+
+			if (!buffer_uptodate(bh) && reada_count > 1)
+				depth = search_by_key_reada(sb, reada_bh,
+						    reada_blocks, reada_count);
+
+			if (!buffer_uptodate(bh) && depth == -1)
+				depth = reiserfs_write_unlock_nested(sb);
+
+			ll_rw_block(READ, 1, &bh);
+			wait_on_buffer(bh);
+
+			if (depth != -1)
+				reiserfs_write_lock_nested(sb, depth);
+>>>>>>> refs/remotes/origin/master
 			if (!buffer_uptodate(bh))
 				goto io_error;
 		} else {
@@ -1059,9 +1109,13 @@ static char prepare_for_delete_or_cut(struct reiserfs_transaction_handle *th, st
 			reiserfs_free_block(th, inode, block, 1);
 		    }
 
+<<<<<<< HEAD
 		    reiserfs_write_unlock(sb);
 		    cond_resched();
 		    reiserfs_write_lock(sb);
+=======
+		    reiserfs_cond_resched(sb);
+>>>>>>> refs/remotes/origin/master
 
 		    if (item_moved (&s_ih, path))  {
 			need_re_search = 1;
@@ -1190,6 +1244,10 @@ int reiserfs_delete_item(struct reiserfs_transaction_handle *th,
 	struct item_head *q_ih;
 	int quota_cut_bytes;
 	int ret_value, del_size, removed;
+<<<<<<< HEAD
+=======
+	int depth;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_REISERFS_CHECK
 	char mode;
@@ -1284,12 +1342,28 @@ int reiserfs_delete_item(struct reiserfs_transaction_handle *th,
 		 ** -clm
 		 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		data = kmap_atomic(un_bh->b_page, KM_USER0);
+=======
+		data = kmap_atomic(un_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		data = kmap_atomic(un_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 		off = ((le_ih_k_offset(&s_ih) - 1) & (PAGE_CACHE_SIZE - 1));
 		memcpy(data + off,
 		       B_I_PITEM(PATH_PLAST_BUFFER(path), &s_ih),
 		       ret_value);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(data, KM_USER0);
+=======
+		kunmap_atomic(data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(data);
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Perform balancing after all resources have been collected at once. */
 	do_balance(&s_del_balance, NULL, NULL, M_DELETE);
@@ -1299,7 +1373,13 @@ int reiserfs_delete_item(struct reiserfs_transaction_handle *th,
 		       "reiserquota delete_item(): freeing %u, id=%u type=%c",
 		       quota_cut_bytes, inode->i_uid, head2type(&s_ih));
 #endif
+<<<<<<< HEAD
 	dquot_free_space_nodirty(inode, quota_cut_bytes);
+=======
+	depth = reiserfs_write_unlock_nested(inode->i_sb);
+	dquot_free_space_nodirty(inode, quota_cut_bytes);
+	reiserfs_write_lock_nested(inode->i_sb, depth);
+>>>>>>> refs/remotes/origin/master
 
 	/* Return deleted body length */
 	return ret_value;
@@ -1325,6 +1405,10 @@ int reiserfs_delete_item(struct reiserfs_transaction_handle *th,
 void reiserfs_delete_solid_item(struct reiserfs_transaction_handle *th,
 				struct inode *inode, struct reiserfs_key *key)
 {
+<<<<<<< HEAD
+=======
+	struct super_block *sb = th->t_super;
+>>>>>>> refs/remotes/origin/master
 	struct tree_balance tb;
 	INITIALIZE_PATH(path);
 	int item_len = 0;
@@ -1377,14 +1461,25 @@ void reiserfs_delete_solid_item(struct reiserfs_transaction_handle *th,
 		if (retval == CARRY_ON) {
 			do_balance(&tb, NULL, NULL, M_DELETE);
 			if (inode) {	/* Should we count quota for item? (we don't count quotas for save-links) */
+<<<<<<< HEAD
+=======
+				int depth;
+>>>>>>> refs/remotes/origin/master
 #ifdef REISERQUOTA_DEBUG
 				reiserfs_debug(th->t_super, REISERFS_DEBUG_CODE,
 					       "reiserquota delete_solid_item(): freeing %u id=%u type=%c",
 					       quota_cut_bytes, inode->i_uid,
 					       key2type(key));
 #endif
+<<<<<<< HEAD
 				dquot_free_space_nodirty(inode,
 							 quota_cut_bytes);
+=======
+				depth = reiserfs_write_unlock_nested(sb);
+				dquot_free_space_nodirty(inode,
+							 quota_cut_bytes);
+				reiserfs_write_lock_nested(sb, depth);
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		}
@@ -1561,6 +1656,10 @@ int reiserfs_cut_from_item(struct reiserfs_transaction_handle *th,
 	int retval2 = -1;
 	int quota_cut_bytes;
 	loff_t tail_pos = 0;
+<<<<<<< HEAD
+=======
+	int depth;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!th->t_trans_id);
 
@@ -1733,7 +1832,13 @@ int reiserfs_cut_from_item(struct reiserfs_transaction_handle *th,
 		       "reiserquota cut_from_item(): freeing %u id=%u type=%c",
 		       quota_cut_bytes, inode->i_uid, '?');
 #endif
+<<<<<<< HEAD
 	dquot_free_space_nodirty(inode, quota_cut_bytes);
+=======
+	depth = reiserfs_write_unlock_nested(sb);
+	dquot_free_space_nodirty(inode, quota_cut_bytes);
+	reiserfs_write_lock_nested(sb, depth);
+>>>>>>> refs/remotes/origin/master
 	return ret_value;
 }
 
@@ -1953,9 +2058,17 @@ int reiserfs_paste_into_item(struct reiserfs_transaction_handle *th, struct tree
 			     const char *body,	/* Pointer to the bytes to paste.    */
 			     int pasted_size)
 {				/* Size of pasted bytes.             */
+<<<<<<< HEAD
 	struct tree_balance s_paste_balance;
 	int retval;
 	int fs_gen;
+=======
+	struct super_block *sb = inode->i_sb;
+	struct tree_balance s_paste_balance;
+	int retval;
+	int fs_gen;
+	int depth;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!th->t_trans_id);
 
@@ -1968,9 +2081,21 @@ int reiserfs_paste_into_item(struct reiserfs_transaction_handle *th, struct tree
 		       key2type(&(key->on_disk_key)));
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reiserfs_write_unlock(inode->i_sb);
 	retval = dquot_alloc_space_nodirty(inode, pasted_size);
 	reiserfs_write_lock(inode->i_sb);
+=======
+	depth = reiserfs_write_unlock_nested(sb);
+	retval = dquot_alloc_space_nodirty(inode, pasted_size);
+	reiserfs_write_lock_nested(sb, depth);
+>>>>>>> refs/remotes/origin/master
+=======
+	reiserfs_write_unlock(inode->i_sb);
+	retval = dquot_alloc_space_nodirty(inode, pasted_size);
+	reiserfs_write_lock(inode->i_sb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (retval) {
 		pathrelse(search_path);
 		return retval;
@@ -2027,7 +2152,13 @@ int reiserfs_paste_into_item(struct reiserfs_transaction_handle *th, struct tree
 		       pasted_size, inode->i_uid,
 		       key2type(&(key->on_disk_key)));
 #endif
+<<<<<<< HEAD
 	dquot_free_space_nodirty(inode, pasted_size);
+=======
+	depth = reiserfs_write_unlock_nested(sb);
+	dquot_free_space_nodirty(inode, pasted_size);
+	reiserfs_write_lock_nested(sb, depth);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -2050,6 +2181,10 @@ int reiserfs_insert_item(struct reiserfs_transaction_handle *th,
 	BUG_ON(!th->t_trans_id);
 
 	if (inode) {		/* Do we count quotas for item? */
+<<<<<<< HEAD
+=======
+		int depth;
+>>>>>>> refs/remotes/origin/master
 		fs_gen = get_generation(inode->i_sb);
 		quota_bytes = ih_item_len(ih);
 
@@ -2063,11 +2198,25 @@ int reiserfs_insert_item(struct reiserfs_transaction_handle *th,
 			       "reiserquota insert_item(): allocating %u id=%u type=%c",
 			       quota_bytes, inode->i_uid, head2type(ih));
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		reiserfs_write_unlock(inode->i_sb);
 		/* We can't dirty inode here. It would be immediately written but
 		 * appropriate stat item isn't inserted yet... */
 		retval = dquot_alloc_space_nodirty(inode, quota_bytes);
 		reiserfs_write_lock(inode->i_sb);
+<<<<<<< HEAD
+=======
+		/* We can't dirty inode here. It would be immediately written but
+		 * appropriate stat item isn't inserted yet... */
+		depth = reiserfs_write_unlock_nested(inode->i_sb);
+		retval = dquot_alloc_space_nodirty(inode, quota_bytes);
+		reiserfs_write_lock_nested(inode->i_sb, depth);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (retval) {
 			pathrelse(path);
 			return retval;
@@ -2118,7 +2267,15 @@ int reiserfs_insert_item(struct reiserfs_transaction_handle *th,
 		       "reiserquota insert_item(): freeing %u id=%u type=%c",
 		       quota_bytes, inode->i_uid, head2type(ih));
 #endif
+<<<<<<< HEAD
 	if (inode)
 		dquot_free_space_nodirty(inode, quota_bytes);
+=======
+	if (inode) {
+		int depth = reiserfs_write_unlock_nested(inode->i_sb);
+		dquot_free_space_nodirty(inode, quota_bytes);
+		reiserfs_write_lock_nested(inode->i_sb, depth);
+	}
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }

@@ -4,7 +4,15 @@
  *
  * Author       Roland Klabunde
  * Copyright    by Roland Klabunde   <R.Klabunde@Berkom.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -23,6 +31,8 @@
 int
 JadeVersion(struct IsdnCardState *cs, char *s)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
     int ver;
     int to = 50;
     cs->BC_Write_Reg(cs, -1, 0x50, 0x19);
@@ -43,12 +53,41 @@ JadeVersion(struct IsdnCardState *cs, char *s)
     ver = cs->BC_Read_Reg(cs, -1, 0x60);
     printk(KERN_INFO "%s JADE version: %d\n", s, ver);
     return (1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ver;
+	int to = 50;
+	cs->BC_Write_Reg(cs, -1, 0x50, 0x19);
+	while (to) {
+		udelay(1);
+		ver = cs->BC_Read_Reg(cs, -1, 0x60);
+		to--;
+		if (ver)
+			break;
+		if (!to) {
+			printk(KERN_INFO "%s JADE version not obtainable\n", s);
+			return (0);
+		}
+	}
+	/* Wait for the JADE */
+	udelay(10);
+	/* Read version */
+	ver = cs->BC_Read_Reg(cs, -1, 0x60);
+	printk(KERN_INFO "%s JADE version: %d\n", s, ver);
+	return (1);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Write to indirect accessible jade register set */
 static void
 jade_write_indirect(struct IsdnCardState *cs, u_char reg, u_char value)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
     int to = 50;
     u_char ret;
 
@@ -70,6 +109,34 @@ jade_write_indirect(struct IsdnCardState *cs, u_char reg, u_char value)
 	    return;
 	}
     }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int to = 50;
+	u_char ret;
+
+	/* Write the data */
+	cs->BC_Write_Reg(cs, -1, COMM_JADE + 1, value);
+	/* Say JADE we wanna write indirect reg 'reg' */
+	cs->BC_Write_Reg(cs, -1, COMM_JADE, reg);
+	to = 50;
+	/* Wait for RDY goes high */
+	while (to) {
+		udelay(1);
+		ret = cs->BC_Read_Reg(cs, -1, COMM_JADE);
+		to--;
+		if (ret & 1)
+			/* Got acknowledge */
+			break;
+		if (!to) {
+			printk(KERN_INFO "Can not see ready bit from JADE DSP (reg=0x%X, value=0x%X)\n", reg, value);
+			return;
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -77,6 +144,8 @@ jade_write_indirect(struct IsdnCardState *cs, u_char reg, u_char value)
 static void
 modejade(struct BCState *bcs, int mode, int bc)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
     struct IsdnCardState *cs = bcs->cs;
     int jade = bcs->hw.hscx.hscx;
 
@@ -109,10 +178,55 @@ modejade(struct BCState *bcs, int mode, int bc)
 	cs->BC_Write_Reg(cs, jade, jade_HDLC_TSAR, 0x04);
     }
     switch (mode) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct IsdnCardState *cs = bcs->cs;
+	int jade = bcs->hw.hscx.hscx;
+
+	if (cs->debug & L1_DEB_HSCX) {
+<<<<<<< HEAD
+		char tmp[40];
+		sprintf(tmp, "jade %c mode %d ichan %d",
+			'A' + jade, mode, bc);
+		debugl1(cs, tmp);
+=======
+		debugl1(cs, "jade %c mode %d ichan %d", 'A' + jade, mode, bc);
+>>>>>>> refs/remotes/origin/master
+	}
+	bcs->mode = mode;
+	bcs->channel = bc;
+
+	cs->BC_Write_Reg(cs, jade, jade_HDLC_MODE, (mode == L1_MODE_TRANS ? jadeMODE_TMO : 0x00));
+	cs->BC_Write_Reg(cs, jade, jade_HDLC_CCR0, (jadeCCR0_PU | jadeCCR0_ITF));
+	cs->BC_Write_Reg(cs, jade, jade_HDLC_CCR1, 0x00);
+
+	jade_write_indirect(cs, jade_HDLC1SERRXPATH, 0x08);
+	jade_write_indirect(cs, jade_HDLC2SERRXPATH, 0x08);
+	jade_write_indirect(cs, jade_HDLC1SERTXPATH, 0x00);
+	jade_write_indirect(cs, jade_HDLC2SERTXPATH, 0x00);
+
+	cs->BC_Write_Reg(cs, jade, jade_HDLC_XCCR, 0x07);
+	cs->BC_Write_Reg(cs, jade, jade_HDLC_RCCR, 0x07);
+
+	if (bc == 0) {
+		cs->BC_Write_Reg(cs, jade, jade_HDLC_TSAX, 0x00);
+		cs->BC_Write_Reg(cs, jade, jade_HDLC_TSAR, 0x00);
+	} else {
+		cs->BC_Write_Reg(cs, jade, jade_HDLC_TSAX, 0x04);
+		cs->BC_Write_Reg(cs, jade, jade_HDLC_TSAR, 0x04);
+	}
+	switch (mode) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case (L1_MODE_NULL):
 		cs->BC_Write_Reg(cs, jade, jade_HDLC_MODE, jadeMODE_TMO);
 		break;
 	case (L1_MODE_TRANS):
+<<<<<<< HEAD
+<<<<<<< HEAD
 		cs->BC_Write_Reg(cs, jade, jade_HDLC_MODE, (jadeMODE_TMO|jadeMODE_RAC|jadeMODE_XAC));
 		break;
 	case (L1_MODE_HDLC):
@@ -128,16 +242,52 @@ modejade(struct BCState *bcs, int mode, int bc)
     else
 	/* Mask ints */
 	cs->BC_Write_Reg(cs, jade, jade_HDLC_IMR, 0x00);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		cs->BC_Write_Reg(cs, jade, jade_HDLC_MODE, (jadeMODE_TMO | jadeMODE_RAC | jadeMODE_XAC));
+		break;
+	case (L1_MODE_HDLC):
+		cs->BC_Write_Reg(cs, jade, jade_HDLC_MODE, (jadeMODE_RAC | jadeMODE_XAC));
+		break;
+	}
+	if (mode) {
+		cs->BC_Write_Reg(cs, jade, jade_HDLC_RCMD, (jadeRCMD_RRES | jadeRCMD_RMC));
+		cs->BC_Write_Reg(cs, jade, jade_HDLC_XCMD, jadeXCMD_XRES);
+		/* Unmask ints */
+		cs->BC_Write_Reg(cs, jade, jade_HDLC_IMR, 0xF8);
+	}
+	else
+		/* Mask ints */
+		cs->BC_Write_Reg(cs, jade, jade_HDLC_IMR, 0x00);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 jade_l2l1(struct PStack *st, int pr, void *arg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
     struct BCState *bcs = st->l1.bcs;
     struct sk_buff *skb = arg;
     u_long flags;
 
     switch (pr) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct BCState *bcs = st->l1.bcs;
+	struct sk_buff *skb = arg;
+	u_long flags;
+
+	switch (pr) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		spin_lock_irqsave(&bcs->cs->lock, flags);
 		if (bcs->tx_skb) {
@@ -164,10 +314,23 @@ jade_l2l1(struct PStack *st, int pr, void *arg)
 		break;
 	case (PH_PULL | REQUEST):
 		if (!bcs->tx_skb) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    test_and_clear_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
 		    st->l1.l1l2(st, PH_PULL | CONFIRM, NULL);
 		} else
 		    test_and_set_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			test_and_clear_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+			st->l1.l1l2(st, PH_PULL | CONFIRM, NULL);
+		} else
+			test_and_set_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case (PH_ACTIVATE | REQUEST):
 		spin_lock_irqsave(&bcs->cs->lock, flags);
@@ -187,12 +350,22 @@ jade_l2l1(struct PStack *st, int pr, void *arg)
 		spin_unlock_irqrestore(&bcs->cs->lock, flags);
 		st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
     }
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 close_jadestate(struct BCState *bcs)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
     modejade(bcs, 0, bcs->channel);
     if (test_and_clear_bit(BC_FLG_INIT, &bcs->Flag)) {
 	kfree(bcs->hw.hscx.rcvbuf);
@@ -207,6 +380,27 @@ close_jadestate(struct BCState *bcs)
 		test_and_clear_bit(BC_FLG_BUSY, &bcs->Flag);
 	}
     }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	modejade(bcs, 0, bcs->channel);
+	if (test_and_clear_bit(BC_FLG_INIT, &bcs->Flag)) {
+		kfree(bcs->hw.hscx.rcvbuf);
+		bcs->hw.hscx.rcvbuf = NULL;
+		kfree(bcs->blog);
+		bcs->blog = NULL;
+		skb_queue_purge(&bcs->rqueue);
+		skb_queue_purge(&bcs->squeue);
+		if (bcs->tx_skb) {
+			dev_kfree_skb_any(bcs->tx_skb);
+			bcs->tx_skb = NULL;
+			test_and_clear_bit(BC_FLG_BUSY, &bcs->Flag);
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -221,7 +415,15 @@ open_jadestate(struct IsdnCardState *cs, struct BCState *bcs)
 		}
 		if (!(bcs->blog = kmalloc(MAX_BLOG_SPACE, GFP_ATOMIC))) {
 			printk(KERN_WARNING
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"HiSax: No memory for bcs->blog\n");
+=======
+			       "HiSax: No memory for bcs->blog\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "HiSax: No memory for bcs->blog\n");
+>>>>>>> refs/remotes/origin/master
 			test_and_clear_bit(BC_FLG_INIT, &bcs->Flag);
 			kfree(bcs->hw.hscx.rcvbuf);
 			bcs->hw.hscx.rcvbuf = NULL;
@@ -257,12 +459,16 @@ void
 clear_pending_jade_ints(struct IsdnCardState *cs)
 {
 	int val;
+<<<<<<< HEAD
 	char tmp[64];
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cs->BC_Write_Reg(cs, 0, jade_HDLC_IMR, 0x00);
 	cs->BC_Write_Reg(cs, 1, jade_HDLC_IMR, 0x00);
 
 	val = cs->BC_Read_Reg(cs, 1, jade_HDLC_ISR);
+<<<<<<< HEAD
 	sprintf(tmp, "jade B ISTA %x", val);
 	debugl1(cs, tmp);
 	val = cs->BC_Read_Reg(cs, 0, jade_HDLC_ISR);
@@ -274,6 +480,15 @@ clear_pending_jade_ints(struct IsdnCardState *cs)
 	val = cs->BC_Read_Reg(cs, 0, jade_HDLC_STAR);
 	sprintf(tmp, "jade A STAR %x", val);
 	debugl1(cs, tmp);
+=======
+	debugl1(cs, "jade B ISTA %x", val);
+	val = cs->BC_Read_Reg(cs, 0, jade_HDLC_ISR);
+	debugl1(cs, "jade A ISTA %x", val);
+	val = cs->BC_Read_Reg(cs, 1, jade_HDLC_STAR);
+	debugl1(cs, "jade B STAR %x", val);
+	val = cs->BC_Read_Reg(cs, 0, jade_HDLC_STAR);
+	debugl1(cs, "jade A STAR %x", val);
+>>>>>>> refs/remotes/origin/master
 	/* Unmask ints */
 	cs->BC_Write_Reg(cs, 0, jade_HDLC_IMR, 0xF8);
 	cs->BC_Write_Reg(cs, 1, jade_HDLC_IMR, 0xF8);
@@ -303,6 +518,8 @@ initjade(struct IsdnCardState *cs)
 	cs->BC_Write_Reg(cs, 0, jade_HDLC_IMR,  0x00);
 	cs->BC_Write_Reg(cs, 1, jade_HDLC_IMR,  0x00);
 	/* Setup host access to hdlc controller */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	jade_write_indirect(cs, jade_HDLCCNTRACCESS, (jadeINDIRECT_HAH1|jadeINDIRECT_HAH2));
 	/* Unmask HDLC int (don't forget DSP int later on)*/
 	cs->BC_Write_Reg(cs, -1,jade_INT, (jadeINT_HDLC1|jadeINT_HDLC2));
@@ -312,3 +529,18 @@ initjade(struct IsdnCardState *cs)
 	modejade(cs->bcs + 1, 0, 0);
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	jade_write_indirect(cs, jade_HDLCCNTRACCESS, (jadeINDIRECT_HAH1 | jadeINDIRECT_HAH2));
+	/* Unmask HDLC int (don't forget DSP int later on)*/
+	cs->BC_Write_Reg(cs, -1, jade_INT, (jadeINT_HDLC1 | jadeINT_HDLC2));
+
+	/* once again TRANSPARENT */
+	modejade(cs->bcs, 0, 0);
+	modejade(cs->bcs + 1, 0, 0);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -304,6 +304,8 @@ plt_target (struct plt_entry *plt)
 
 #endif /* !USE_BRL */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void *
 module_alloc (unsigned long size)
 {
@@ -312,6 +314,10 @@ module_alloc (unsigned long size)
 	return vmalloc(size);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void
 module_free (struct module *mod, void *module_region)
 {
@@ -853,6 +859,8 @@ apply_relocate_add (Elf64_Shdr *sechdrs, const char *strtab, unsigned int symind
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int
 apply_relocate (Elf64_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 		unsigned int relsec, struct module *mod)
@@ -861,6 +869,10 @@ apply_relocate (Elf64_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 	return -ENOEXEC;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Modules contain a single unwind table which covers both the core and the init text
  * sections but since the two are not contiguous, we need to split this table up such that

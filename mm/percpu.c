@@ -67,6 +67,14 @@
 #include <linux/spinlock.h>
 #include <linux/vmalloc.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/kmemleak.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kmemleak.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/cacheflush.h>
 #include <asm/sections.h>
@@ -273,11 +281,25 @@ static void __maybe_unused pcpu_next_pop(struct pcpu_chunk *chunk,
 	     (rs) = (re) + 1, pcpu_next_pop((chunk), &(rs), &(re), (end)))
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * pcpu_mem_alloc - allocate memory
  * @size: bytes to allocate
  *
  * Allocate @size bytes.  If @size is smaller than PAGE_SIZE,
  * kzalloc() is used; otherwise, vmalloc() is used.  The returned
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * pcpu_mem_zalloc - allocate memory
+ * @size: bytes to allocate
+ *
+ * Allocate @size bytes.  If @size is smaller than PAGE_SIZE,
+ * kzalloc() is used; otherwise, vzalloc() is used.  The returned
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * memory is always zeroed.
  *
  * CONTEXT:
@@ -286,7 +308,15 @@ static void __maybe_unused pcpu_next_pop(struct pcpu_chunk *chunk,
  * RETURNS:
  * Pointer to the allocated area on success, NULL on failure.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void *pcpu_mem_alloc(size_t size)
+=======
+static void *pcpu_mem_zalloc(size_t size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void *pcpu_mem_zalloc(size_t size)
+>>>>>>> refs/remotes/origin/master
 {
 	if (WARN_ON_ONCE(!slab_is_available()))
 		return NULL;
@@ -302,7 +332,15 @@ static void *pcpu_mem_alloc(size_t size)
  * @ptr: memory to free
  * @size: size of the area
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Free @ptr.  @ptr should have been allocated using pcpu_mem_alloc().
+=======
+ * Free @ptr.  @ptr should have been allocated using pcpu_mem_zalloc().
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Free @ptr.  @ptr should have been allocated using pcpu_mem_zalloc().
+>>>>>>> refs/remotes/origin/master
  */
 static void pcpu_mem_free(void *ptr, size_t size)
 {
@@ -384,7 +422,15 @@ static int pcpu_extend_area_map(struct pcpu_chunk *chunk, int new_alloc)
 	size_t old_size = 0, new_size = new_alloc * sizeof(new[0]);
 	unsigned long flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	new = pcpu_mem_alloc(new_size);
+=======
+	new = pcpu_mem_zalloc(new_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	new = pcpu_mem_zalloc(new_size);
+>>>>>>> refs/remotes/origin/master
 	if (!new)
 		return -ENOMEM;
 
@@ -604,11 +650,26 @@ static struct pcpu_chunk *pcpu_alloc_chunk(void)
 {
 	struct pcpu_chunk *chunk;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	chunk = pcpu_mem_alloc(pcpu_chunk_struct_size);
 	if (!chunk)
 		return NULL;
 
 	chunk->map = pcpu_mem_alloc(PCPU_DFL_MAP_ALLOC * sizeof(chunk->map[0]));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	chunk = pcpu_mem_zalloc(pcpu_chunk_struct_size);
+	if (!chunk)
+		return NULL;
+
+	chunk->map = pcpu_mem_zalloc(PCPU_DFL_MAP_ALLOC *
+						sizeof(chunk->map[0]));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!chunk->map) {
 		kfree(chunk);
 		return NULL;
@@ -629,7 +690,11 @@ static void pcpu_free_chunk(struct pcpu_chunk *chunk)
 	if (!chunk)
 		return;
 	pcpu_mem_free(chunk->map, chunk->map_alloc * sizeof(chunk->map[0]));
+<<<<<<< HEAD
 	kfree(chunk);
+=======
+	pcpu_mem_free(chunk, pcpu_chunk_struct_size);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -709,6 +774,14 @@ static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved)
 	const char *err;
 	int slot, off, new_alloc;
 	unsigned long flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	void __percpu *ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __percpu *ptr;
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(!size || size > PCPU_MIN_UNIT_SIZE || align > PAGE_SIZE)) {
 		WARN(true, "illegal size (%zu) or align (%zu) for "
@@ -801,7 +874,19 @@ area_found:
 	mutex_unlock(&pcpu_alloc_mutex);
 
 	/* return address relative to base address */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return __addr_to_pcpu_ptr(chunk->base_addr + off);
+=======
+	ptr = __addr_to_pcpu_ptr(chunk->base_addr + off);
+	kmemleak_alloc_percpu(ptr, size);
+	return ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ptr = __addr_to_pcpu_ptr(chunk->base_addr + off);
+	kmemleak_alloc_percpu(ptr, size);
+	return ptr;
+>>>>>>> refs/remotes/origin/master
 
 fail_unlock:
 	spin_unlock_irqrestore(&pcpu_lock, flags);
@@ -915,6 +1000,16 @@ void free_percpu(void __percpu *ptr)
 	if (!ptr)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	kmemleak_free_percpu(ptr);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kmemleak_free_percpu(ptr);
+
+>>>>>>> refs/remotes/origin/master
 	addr = __pcpu_ptr_to_addr(ptr);
 
 	spin_lock_irqsave(&pcpu_lock, flags);
@@ -977,6 +1072,26 @@ bool is_kernel_percpu_address(unsigned long addr)
  * address.  The caller is responsible for ensuring @addr stays valid
  * until this function finishes.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * percpu allocator has special setup for the first chunk, which currently
+ * supports either embedding in linear address space or vmalloc mapping,
+ * and, from the second one, the backing allocator (currently either vm or
+ * km) provides translation.
+ *
+ * The addr can be tranlated simply without checking if it falls into the
+ * first chunk. But the current code reflects better how percpu allocator
+ * actually works, and the verification can discover both bugs in percpu
+ * allocator itself and per_cpu_ptr_to_phys() callers. So we keep current
+ * code.
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * RETURNS:
  * The physical address for @addr.
  */
@@ -1045,7 +1160,11 @@ struct pcpu_alloc_info * __init pcpu_alloc_alloc_info(int nr_groups,
 			  __alignof__(ai->groups[0].cpu_map[0]));
 	ai_size = base_size + nr_units * sizeof(ai->groups[0].cpu_map[0]);
 
+<<<<<<< HEAD
 	ptr = alloc_bootmem_nopanic(PFN_ALIGN(ai_size));
+=======
+	ptr = memblock_virt_alloc_nopanic(PFN_ALIGN(ai_size), 0);
+>>>>>>> refs/remotes/origin/master
 	if (!ptr)
 		return NULL;
 	ai = ptr;
@@ -1070,7 +1189,11 @@ struct pcpu_alloc_info * __init pcpu_alloc_alloc_info(int nr_groups,
  */
 void __init pcpu_free_alloc_info(struct pcpu_alloc_info *ai)
 {
+<<<<<<< HEAD
 	free_bootmem(__pa(ai), ai->__ai_size);
+=======
+	memblock_free_early(__pa(ai), ai->__ai_size);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1114,6 +1237,8 @@ static void pcpu_dump_alloc_info(const char *lvl,
 		for (alloc_end += gi->nr_units / upa;
 		     alloc < alloc_end; alloc++) {
 			if (!(alloc % apl)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				printk("\n");
 				printk("%spcpu-alloc: ", lvl);
 			}
@@ -1128,6 +1253,27 @@ static void pcpu_dump_alloc_info(const char *lvl,
 		}
 	}
 	printk("\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				printk(KERN_CONT "\n");
+				printk("%spcpu-alloc: ", lvl);
+			}
+			printk(KERN_CONT "[%0*d] ", group_width, group);
+
+			for (unit_end += upa; unit < unit_end; unit++)
+				if (gi->cpu_map[unit] != NR_CPUS)
+					printk(KERN_CONT "%0*d ", cpu_width,
+					       gi->cpu_map[unit]);
+				else
+					printk(KERN_CONT "%s ", empty_str);
+		}
+	}
+	printk(KERN_CONT "\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1228,10 +1374,19 @@ int __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
 	PCPU_SETUP_BUG_ON(pcpu_verify_alloc_info(ai) < 0);
 
 	/* process group information and build config tables accordingly */
+<<<<<<< HEAD
 	group_offsets = alloc_bootmem(ai->nr_groups * sizeof(group_offsets[0]));
 	group_sizes = alloc_bootmem(ai->nr_groups * sizeof(group_sizes[0]));
 	unit_map = alloc_bootmem(nr_cpu_ids * sizeof(unit_map[0]));
 	unit_off = alloc_bootmem(nr_cpu_ids * sizeof(unit_off[0]));
+=======
+	group_offsets = memblock_virt_alloc(ai->nr_groups *
+					     sizeof(group_offsets[0]), 0);
+	group_sizes = memblock_virt_alloc(ai->nr_groups *
+					   sizeof(group_sizes[0]), 0);
+	unit_map = memblock_virt_alloc(nr_cpu_ids * sizeof(unit_map[0]), 0);
+	unit_off = memblock_virt_alloc(nr_cpu_ids * sizeof(unit_off[0]), 0);
+>>>>>>> refs/remotes/origin/master
 
 	for (cpu = 0; cpu < nr_cpu_ids; cpu++)
 		unit_map[cpu] = UINT_MAX;
@@ -1293,7 +1448,12 @@ int __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
 	 * empty chunks.
 	 */
 	pcpu_nr_slots = __pcpu_size_to_slot(pcpu_unit_size) + 2;
+<<<<<<< HEAD
 	pcpu_slot = alloc_bootmem(pcpu_nr_slots * sizeof(pcpu_slot[0]));
+=======
+	pcpu_slot = memblock_virt_alloc(
+			pcpu_nr_slots * sizeof(pcpu_slot[0]), 0);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < pcpu_nr_slots; i++)
 		INIT_LIST_HEAD(&pcpu_slot[i]);
 
@@ -1304,7 +1464,11 @@ int __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
 	 * covers static area + reserved area (mostly used for module
 	 * static percpu allocation).
 	 */
+<<<<<<< HEAD
 	schunk = alloc_bootmem(pcpu_chunk_struct_size);
+=======
+	schunk = memblock_virt_alloc(pcpu_chunk_struct_size, 0);
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&schunk->list);
 	schunk->base_addr = base_addr;
 	schunk->map = smap;
@@ -1328,7 +1492,11 @@ int __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
 
 	/* init dynamic chunk if necessary */
 	if (dyn_size) {
+<<<<<<< HEAD
 		dchunk = alloc_bootmem(pcpu_chunk_struct_size);
+=======
+		dchunk = memblock_virt_alloc(pcpu_chunk_struct_size, 0);
+>>>>>>> refs/remotes/origin/master
 		INIT_LIST_HEAD(&dchunk->list);
 		dchunk->base_addr = base_addr;
 		dchunk->map = dmap;
@@ -1352,7 +1520,11 @@ int __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
 
 #ifdef CONFIG_SMP
 
+<<<<<<< HEAD
 const char *pcpu_fc_names[PCPU_FC_NR] __initdata = {
+=======
+const char * const pcpu_fc_names[PCPU_FC_NR] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	[PCPU_FC_AUTO]	= "auto",
 	[PCPU_FC_EMBED]	= "embed",
 	[PCPU_FC_PAGE]	= "page",
@@ -1362,6 +1534,12 @@ enum pcpu_fc pcpu_chosen_fc __initdata = PCPU_FC_AUTO;
 
 static int __init percpu_alloc_setup(char *str)
 {
+<<<<<<< HEAD
+=======
+	if (!str)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (0)
 		/* nada */;
 #ifdef CONFIG_NEED_PER_CPU_EMBED_FIRST_CHUNK
@@ -1605,7 +1783,11 @@ int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
 	size_sum = ai->static_size + ai->reserved_size + ai->dyn_size;
 	areas_size = PFN_ALIGN(ai->nr_groups * sizeof(void *));
 
+<<<<<<< HEAD
 	areas = alloc_bootmem_nopanic(areas_size);
+=======
+	areas = memblock_virt_alloc_nopanic(areas_size, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!areas) {
 		rc = -ENOMEM;
 		goto out_free;
@@ -1627,6 +1809,16 @@ int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
 			rc = -ENOMEM;
 			goto out_free_areas;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		/* kmemleak tracks the percpu allocations separately */
+		kmemleak_free(ptr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* kmemleak tracks the percpu allocations separately */
+		kmemleak_free(ptr);
+>>>>>>> refs/remotes/origin/master
 		areas[group] = ptr;
 
 		base = min(ptr, base);
@@ -1663,10 +1855,17 @@ int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
 	max_distance += ai->unit_size;
 
 	/* warn if maximum distance is further than 75% of vmalloc space */
+<<<<<<< HEAD
 	if (max_distance > (VMALLOC_END - VMALLOC_START) * 3 / 4) {
 		pr_warning("PERCPU: max_distance=0x%zx too large for vmalloc "
 			   "space 0x%lx\n", max_distance,
 			   (unsigned long)(VMALLOC_END - VMALLOC_START));
+=======
+	if (max_distance > VMALLOC_TOTAL * 3 / 4) {
+		pr_warning("PERCPU: max_distance=0x%zx too large for vmalloc "
+			   "space 0x%lx\n", max_distance,
+			   VMALLOC_TOTAL);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK
 		/* and fail if we have fallback */
 		rc = -EINVAL;
@@ -1683,12 +1882,22 @@ int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
 
 out_free_areas:
 	for (group = 0; group < ai->nr_groups; group++)
+<<<<<<< HEAD
 		free_fn(areas[group],
 			ai->groups[group].nr_units * ai->unit_size);
 out_free:
 	pcpu_free_alloc_info(ai);
 	if (areas)
 		free_bootmem(__pa(areas), areas_size);
+=======
+		if (areas[group])
+			free_fn(areas[group],
+				ai->groups[group].nr_units * ai->unit_size);
+out_free:
+	pcpu_free_alloc_info(ai);
+	if (areas)
+		memblock_free_early(__pa(areas), areas_size);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 #endif /* BUILD_EMBED_FIRST_CHUNK */
@@ -1736,7 +1945,11 @@ int __init pcpu_page_first_chunk(size_t reserved_size,
 	/* unaligned allocations can't be freed, round up to page size */
 	pages_size = PFN_ALIGN(unit_pages * num_possible_cpus() *
 			       sizeof(pages[0]));
+<<<<<<< HEAD
 	pages = alloc_bootmem(pages_size);
+=======
+	pages = memblock_virt_alloc(pages_size, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* allocate pages */
 	j = 0;
@@ -1751,6 +1964,16 @@ int __init pcpu_page_first_chunk(size_t reserved_size,
 					   "for cpu%u\n", psize_str, cpu);
 				goto enomem;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			/* kmemleak tracks the percpu allocations separately */
+			kmemleak_free(ptr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* kmemleak tracks the percpu allocations separately */
+			kmemleak_free(ptr);
+>>>>>>> refs/remotes/origin/master
 			pages[j++] = virt_to_page(ptr);
 		}
 
@@ -1797,7 +2020,11 @@ enomem:
 		free_fn(page_address(pages[j]), PAGE_SIZE);
 	rc = -ENOMEM;
 out_free_ar:
+<<<<<<< HEAD
 	free_bootmem(__pa(pages), pages_size);
+=======
+	memblock_free_early(__pa(pages), pages_size);
+>>>>>>> refs/remotes/origin/master
 	pcpu_free_alloc_info(ai);
 	return rc;
 }
@@ -1822,12 +2049,21 @@ EXPORT_SYMBOL(__per_cpu_offset);
 static void * __init pcpu_dfl_fc_alloc(unsigned int cpu, size_t size,
 				       size_t align)
 {
+<<<<<<< HEAD
 	return __alloc_bootmem_nopanic(size, align, __pa(MAX_DMA_ADDRESS));
+=======
+	return  memblock_virt_alloc_from_nopanic(
+			size, align, __pa(MAX_DMA_ADDRESS));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init pcpu_dfl_fc_free(void *ptr, size_t size)
 {
+<<<<<<< HEAD
 	free_bootmem(__pa(ptr), size);
+=======
+	memblock_free_early(__pa(ptr), size);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init setup_per_cpu_areas(void)
@@ -1870,9 +2106,24 @@ void __init setup_per_cpu_areas(void)
 	void *fc;
 
 	ai = pcpu_alloc_alloc_info(1, 1);
+<<<<<<< HEAD
 	fc = __alloc_bootmem(unit_size, PAGE_SIZE, __pa(MAX_DMA_ADDRESS));
 	if (!ai || !fc)
 		panic("Failed to allocate memory for percpu areas.");
+<<<<<<< HEAD
+=======
+	/* kmemleak tracks the percpu allocations separately */
+	kmemleak_free(fc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fc = memblock_virt_alloc_from_nopanic(unit_size,
+					      PAGE_SIZE,
+					      __pa(MAX_DMA_ADDRESS));
+	if (!ai || !fc)
+		panic("Failed to allocate memory for percpu areas.");
+	/* kmemleak tracks the percpu allocations separately */
+	kmemleak_free(fc);
+>>>>>>> refs/remotes/origin/master
 
 	ai->dyn_size = unit_size;
 	ai->unit_size = unit_size;
@@ -1907,7 +2158,15 @@ void __init percpu_init_late(void)
 
 		BUILD_BUG_ON(size > PAGE_SIZE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		map = pcpu_mem_alloc(size);
+=======
+		map = pcpu_mem_zalloc(size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		map = pcpu_mem_zalloc(size);
+>>>>>>> refs/remotes/origin/master
 		BUG_ON(!map);
 
 		spin_lock_irqsave(&pcpu_lock, flags);

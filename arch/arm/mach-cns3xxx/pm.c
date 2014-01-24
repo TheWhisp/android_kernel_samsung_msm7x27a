@@ -10,10 +10,24 @@
 #include <linux/module.h>
 #include <linux/io.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <mach/system.h>
 #include <mach/cns3xxx.h>
 #include <mach/pm.h>
+=======
+#include <linux/atomic.h>
+#include <mach/cns3xxx.h>
+#include <mach/pm.h>
+#include "core.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include "cns3xxx.h"
+#include "pm.h"
+#include "core.h"
+>>>>>>> refs/remotes/origin/master
 
 void cns3xxx_pwr_clk_en(unsigned int block)
 {
@@ -89,7 +103,15 @@ void cns3xxx_pwr_soft_rst(unsigned int block)
 }
 EXPORT_SYMBOL(cns3xxx_pwr_soft_rst);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void arch_reset(char mode, const char *cmd)
+=======
+void cns3xxx_restart(char mode, const char *cmd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void cns3xxx_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * To reset, we hit the on-board reset register

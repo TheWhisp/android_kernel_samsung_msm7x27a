@@ -119,27 +119,40 @@ struct thread_struct {
 
 /*
  * do necessary setup to start up a newly executed thread
+<<<<<<< HEAD
  * - need to discard the frame stacked by the kernel thread invoking the execve
  *   syscall (see RESTORE_ALL macro)
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static inline void start_thread(struct pt_regs *regs,
 				unsigned long new_pc, unsigned long new_sp)
 {
+<<<<<<< HEAD
 	struct thread_info *ti = current_thread_info();
 	struct pt_regs *frame0;
+<<<<<<< HEAD
 	set_fs(USER_DS);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	frame0 = thread_info_to_uregs(ti);
 	frame0->epsw = EPSW_nSL | EPSW_IE | EPSW_IM;
 	frame0->pc = new_pc;
 	frame0->sp = new_sp;
 	ti->frame = frame0;
+=======
+	regs->epsw = EPSW_nSL | EPSW_IE | EPSW_IM;
+	regs->pc = new_pc;
+	regs->sp = new_sp;
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /* Free all resources held by a thread. */
 extern void release_thread(struct task_struct *);
 
+<<<<<<< HEAD
 /* Prepare to copy thread state - unlazy all lazy status */
 extern void prepare_to_copy(struct task_struct *tsk);
 
@@ -148,6 +161,8 @@ extern void prepare_to_copy(struct task_struct *tsk);
  */
 extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Return saved PC of a blocked thread.
  */

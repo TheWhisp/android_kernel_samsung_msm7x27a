@@ -51,12 +51,20 @@ static const struct hc_driver ehci_octeon_hc_driver = {
 	 * generic hardware linkage
 	 */
 	.irq			= ehci_irq,
+<<<<<<< HEAD
 	.flags			= HCD_MEMORY | HCD_USB2,
+=======
+	.flags			= HCD_MEMORY | HCD_USB2 | HCD_BH,
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * basic lifecycle operations
 	 */
+<<<<<<< HEAD
 	.reset			= ehci_init,
+=======
+	.reset			= ehci_setup,
+>>>>>>> refs/remotes/origin/master
 	.start			= ehci_run,
 	.stop			= ehci_stop,
 	.shutdown		= ehci_shutdown,
@@ -116,15 +124,27 @@ static int ehci_octeon_drv_probe(struct platform_device *pdev)
 	 * We can DMA from anywhere. But the descriptors must be in
 	 * the lower 4GB.
 	 */
+<<<<<<< HEAD
 	pdev->dev.coherent_dma_mask = DMA_BIT_MASK(32);
 	pdev->dev.dma_mask = &ehci_octeon_dma_mask;
+=======
+	pdev->dev.dma_mask = &ehci_octeon_dma_mask;
+	ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	hcd = usb_create_hcd(&ehci_octeon_hc_driver, &pdev->dev, "octeon");
 	if (!hcd)
 		return -ENOMEM;
 
 	hcd->rsrc_start = res_mem->start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hcd->rsrc_len = res_mem->end - res_mem->start + 1;
+=======
+	hcd->rsrc_len = resource_size(res_mem);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len,
 				OCTEON_EHCI_HCD_NAME)) {
@@ -140,6 +160,16 @@ static int ehci_octeon_drv_probe(struct platform_device *pdev)
 		goto err2;
 	}
 
+=======
+	hcd->rsrc_len = resource_size(res_mem);
+
+	hcd->regs = devm_ioremap_resource(&pdev->dev, res_mem);
+	if (IS_ERR(hcd->regs)) {
+		ret = PTR_ERR(hcd->regs);
+		goto err1;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ehci_octeon_start();
 
 	ehci = hcd_to_ehci(hcd);
@@ -150,12 +180,19 @@ static int ehci_octeon_drv_probe(struct platform_device *pdev)
 #endif
 
 	ehci->caps = hcd->regs;
+<<<<<<< HEAD
 	ehci->regs = hcd->regs +
 		HC_LENGTH(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
 	/* cache this readonly data; minimize chip reads */
 	ehci->hcs_params = ehci_readl(ehci, &ehci->caps->hcs_params);
 
+<<<<<<< HEAD
 	ret = usb_add_hcd(hcd, irq, IRQF_DISABLED | IRQF_SHARED);
+=======
+	ehci_reset(ehci);
+
+	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_dbg(&pdev->dev, "failed to add hcd with err %d\n", ret);
 		goto err3;
@@ -173,6 +210,22 @@ err3:
 	iounmap(hcd->regs);
 err2:
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
+=======
+
+	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
+	if (ret) {
+		dev_dbg(&pdev->dev, "failed to add hcd with err %d\n", ret);
+		goto err2;
+	}
+	device_wakeup_enable(hcd->self.controller);
+
+	platform_set_drvdata(pdev, hcd);
+
+	return 0;
+err2:
+	ehci_octeon_stop();
+
+>>>>>>> refs/remotes/origin/master
 err1:
 	usb_put_hcd(hcd);
 	return ret;
@@ -185,12 +238,17 @@ static int ehci_octeon_drv_remove(struct platform_device *pdev)
 	usb_remove_hcd(hcd);
 
 	ehci_octeon_stop();
+<<<<<<< HEAD
 	iounmap(hcd->regs);
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 	usb_put_hcd(hcd);
 
 	platform_set_drvdata(pdev, NULL);
 
+=======
+	usb_put_hcd(hcd);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

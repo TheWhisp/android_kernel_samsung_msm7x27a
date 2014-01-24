@@ -84,7 +84,11 @@ static const char * const s3_names[] = {"S3 Unknown", "S3 Trio32", "S3 Trio64", 
 			"S3 Virge/VX", "S3 Virge/DX", "S3 Virge/GX",
 			"S3 Virge/GX2", "S3 Virge/GX2+", "",
 			"S3 Trio3D/1X", "S3 Trio3D/2X", "S3 Trio3D/2X",
+<<<<<<< HEAD
 			"S3 Trio3D"};
+=======
+			"S3 Trio3D", "S3 Virge/MX"};
+>>>>>>> refs/remotes/origin/master
 
 #define CHIP_UNKNOWN		0x00
 #define CHIP_732_TRIO32		0x01
@@ -105,6 +109,10 @@ static const char * const s3_names[] = {"S3 Unknown", "S3 Trio32", "S3 Trio64", 
 #define CHIP_362_TRIO3D_2X	0x11
 #define CHIP_368_TRIO3D_2X	0x12
 #define CHIP_365_TRIO3D		0x13
+<<<<<<< HEAD
+=======
+#define CHIP_260_VIRGE_MX	0x14
+>>>>>>> refs/remotes/origin/master
 
 #define CHIP_XXX_TRIO		0x80
 #define CHIP_XXX_TRIO64V2_DXGX	0x81
@@ -152,10 +160,17 @@ static const struct svga_timing_regs s3_timing_regs     = {
 /* Module parameters */
 
 
+<<<<<<< HEAD
 static char *mode_option __devinitdata;
 
 #ifdef CONFIG_MTRR
 static int mtrr __devinitdata = 1;
+=======
+static char *mode_option;
+
+#ifdef CONFIG_MTRR
+static int mtrr = 1;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int fasttext = 1;
@@ -254,7 +269,11 @@ static int s3fb_ddc_getsda(void *data)
 	return !!(s3fb_ddc_read(par) & DDC_SDA_IN);
 }
 
+<<<<<<< HEAD
 static int __devinit s3fb_setup_ddc_bus(struct fb_info *info)
+=======
+static int s3fb_setup_ddc_bus(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3fb_info *par = info->par;
 
@@ -280,7 +299,12 @@ static int __devinit s3fb_setup_ddc_bus(struct fb_info *info)
 	 */
 /*	vga_wseq(par->state.vgabase, 0x08, 0x06); - not needed, already unlocked */
 	if (par->chip == CHIP_357_VIRGE_GX2 ||
+<<<<<<< HEAD
 	    par->chip == CHIP_359_VIRGE_GX2P)
+=======
+	    par->chip == CHIP_359_VIRGE_GX2P ||
+	    par->chip == CHIP_260_VIRGE_MX)
+>>>>>>> refs/remotes/origin/master
 		svga_wseq_mask(par->state.vgabase, 0x0d, 0x01, 0x03);
 	else
 		svga_wseq_mask(par->state.vgabase, 0x0d, 0x00, 0x03);
@@ -304,8 +328,13 @@ static void s3fb_settile_fast(struct fb_info *info, struct fb_tilemap *map)
 
 	if ((map->width != 8) || (map->height != 16) ||
 	    (map->depth != 1) || (map->length != 256)) {
+<<<<<<< HEAD
 	    	printk(KERN_ERR "fb%d: unsupported font parameters: width %d, height %d, depth %d, length %d\n",
 			info->node, map->width, map->height, map->depth, map->length);
+=======
+		fb_err(info, "unsupported font parameters: width %d, height %d, depth %d, length %d\n",
+		       map->width, map->height, map->depth, map->length);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -474,7 +503,11 @@ static void s3_set_pixclock(struct fb_info *info, u32 pixclock)
 	rv = svga_compute_pll((par->chip == CHIP_365_TRIO3D) ? &s3_trio3d_pll : &s3_pll,
 			      1000000000 / pixclock, &m, &n, &r, info->node);
 	if (rv < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: cannot set requested pixclock, keeping old value\n", info->node);
+=======
+		fb_err(info, "cannot set requested pixclock, keeping old value\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -487,7 +520,12 @@ static void s3_set_pixclock(struct fb_info *info, u32 pixclock)
 	    par->chip == CHIP_359_VIRGE_GX2P ||
 	    par->chip == CHIP_360_TRIO3D_1X ||
 	    par->chip == CHIP_362_TRIO3D_2X ||
+<<<<<<< HEAD
 	    par->chip == CHIP_368_TRIO3D_2X) {
+=======
+	    par->chip == CHIP_368_TRIO3D_2X ||
+	    par->chip == CHIP_260_VIRGE_MX) {
+>>>>>>> refs/remotes/origin/master
 		vga_wseq(par->state.vgabase, 0x12, (n - 2) | ((r & 3) << 6));	/* n and two bits of r */
 		vga_wseq(par->state.vgabase, 0x29, r >> 2); /* remaining highest bit of r */
 	} else
@@ -566,7 +604,11 @@ static int s3fb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 		rv = -EINVAL;
 
 	if (rv < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: unsupported mode requested\n", info->node);
+=======
+		fb_err(info, "unsupported mode requested\n");
+>>>>>>> refs/remotes/origin/master
 		return rv;
 	}
 
@@ -584,22 +626,35 @@ static int s3fb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 	/* Check whether have enough memory */
 	mem = ((var->bits_per_pixel * var->xres_virtual) >> 3) * var->yres_virtual;
 	if (mem > info->screen_size) {
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: not enough framebuffer memory (%d kB requested , %d kB available)\n",
 			info->node, mem >> 10, (unsigned int) (info->screen_size >> 10));
+=======
+		fb_err(info, "not enough framebuffer memory (%d kB requested , %u kB available)\n",
+		       mem >> 10, (unsigned int) (info->screen_size >> 10));
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	rv = svga_check_timings (&s3_timing_regs, var, info->node);
 	if (rv < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: invalid timings requested\n", info->node);
+=======
+		fb_err(info, "invalid timings requested\n");
+>>>>>>> refs/remotes/origin/master
 		return rv;
 	}
 
 	rv = svga_compute_pll(&s3_pll, PICOS2KHZ(var->pixclock), &m, &n, &r,
 				info->node);
 	if (rv < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: invalid pixclock value requested\n",
 			info->node);
+=======
+		fb_err(info, "invalid pixclock value requested\n");
+>>>>>>> refs/remotes/origin/master
 		return rv;
 	}
 
@@ -683,14 +738,23 @@ static int s3fb_set_par(struct fb_info *info)
 
 
 	/* Set the offset register */
+<<<<<<< HEAD
 	pr_debug("fb%d: offset register       : %d\n", info->node, offset_value);
+=======
+	fb_dbg(info, "offset register       : %d\n", offset_value);
+>>>>>>> refs/remotes/origin/master
 	svga_wcrt_multi(par->state.vgabase, s3_offset_regs, offset_value);
 
 	if (par->chip != CHIP_357_VIRGE_GX2 &&
 	    par->chip != CHIP_359_VIRGE_GX2P &&
 	    par->chip != CHIP_360_TRIO3D_1X &&
 	    par->chip != CHIP_362_TRIO3D_2X &&
+<<<<<<< HEAD
 	    par->chip != CHIP_368_TRIO3D_2X) {
+=======
+	    par->chip != CHIP_368_TRIO3D_2X &&
+	    par->chip != CHIP_260_VIRGE_MX) {
+>>>>>>> refs/remotes/origin/master
 		vga_wcrt(par->state.vgabase, 0x54, 0x18); /* M parameter */
 		vga_wcrt(par->state.vgabase, 0x60, 0xff); /* N parameter */
 		vga_wcrt(par->state.vgabase, 0x61, 0xff); /* L parameter */
@@ -727,7 +791,15 @@ static int s3fb_set_par(struct fb_info *info)
 	if (par->chip == CHIP_988_VIRGE_VX) {
 		vga_wcrt(par->state.vgabase, 0x50, 0x00);
 		vga_wcrt(par->state.vgabase, 0x67, 0x50);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+		msleep(10); /* screen remains blank sometimes without this */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msleep(10); /* screen remains blank sometimes without this */
+>>>>>>> refs/remotes/origin/master
 		vga_wcrt(par->state.vgabase, 0x63, (mode <= 2) ? 0x90 : 0x09);
 		vga_wcrt(par->state.vgabase, 0x66, 0x90);
 	}
@@ -739,7 +811,12 @@ static int s3fb_set_par(struct fb_info *info)
 	    par->chip == CHIP_368_TRIO3D_2X ||
 	    par->chip == CHIP_365_TRIO3D    ||
 	    par->chip == CHIP_375_VIRGE_DX  ||
+<<<<<<< HEAD
 	    par->chip == CHIP_385_VIRGE_GX) {
+=======
+	    par->chip == CHIP_385_VIRGE_GX  ||
+	    par->chip == CHIP_260_VIRGE_MX) {
+>>>>>>> refs/remotes/origin/master
 		dbytes = info->var.xres * ((bpp+7)/8);
 		vga_wcrt(par->state.vgabase, 0x91, (dbytes + 7) / 8);
 		vga_wcrt(par->state.vgabase, 0x90, (((dbytes + 7) / 8) >> 8) | 0x80);
@@ -751,7 +828,12 @@ static int s3fb_set_par(struct fb_info *info)
 	    par->chip == CHIP_359_VIRGE_GX2P ||
 	    par->chip == CHIP_360_TRIO3D_1X ||
 	    par->chip == CHIP_362_TRIO3D_2X ||
+<<<<<<< HEAD
 	    par->chip == CHIP_368_TRIO3D_2X)
+=======
+	    par->chip == CHIP_368_TRIO3D_2X ||
+	    par->chip == CHIP_260_VIRGE_MX)
+>>>>>>> refs/remotes/origin/master
 		vga_wcrt(par->state.vgabase, 0x34, 0x00);
 	else	/* enable Data Transfer Position Control (DTPC) */
 		vga_wcrt(par->state.vgabase, 0x34, 0x10);
@@ -763,7 +845,11 @@ static int s3fb_set_par(struct fb_info *info)
 	/* Set mode-specific register values */
 	switch (mode) {
 	case 0:
+<<<<<<< HEAD
 		pr_debug("fb%d: text mode\n", info->node);
+=======
+		fb_dbg(info, "text mode\n");
+>>>>>>> refs/remotes/origin/master
 		svga_set_textmode_vga_regs(par->state.vgabase);
 
 		/* Set additional registers like in 8-bit mode */
@@ -774,12 +860,20 @@ static int s3fb_set_par(struct fb_info *info)
 		svga_wcrt_mask(par->state.vgabase, 0x3A, 0x00, 0x30);
 
 		if (fasttext) {
+<<<<<<< HEAD
 			pr_debug("fb%d: high speed text mode set\n", info->node);
+=======
+			fb_dbg(info, "high speed text mode set\n");
+>>>>>>> refs/remotes/origin/master
 			svga_wcrt_mask(par->state.vgabase, 0x31, 0x40, 0x40);
 		}
 		break;
 	case 1:
+<<<<<<< HEAD
 		pr_debug("fb%d: 4 bit pseudocolor\n", info->node);
+=======
+		fb_dbg(info, "4 bit pseudocolor\n");
+>>>>>>> refs/remotes/origin/master
 		vga_wgfx(par->state.vgabase, VGA_GFX_MODE, 0x40);
 
 		/* Set additional registers like in 8-bit mode */
@@ -790,7 +884,11 @@ static int s3fb_set_par(struct fb_info *info)
 		svga_wcrt_mask(par->state.vgabase, 0x3A, 0x00, 0x30);
 		break;
 	case 2:
+<<<<<<< HEAD
 		pr_debug("fb%d: 4 bit pseudocolor, planar\n", info->node);
+=======
+		fb_dbg(info, "4 bit pseudocolor, planar\n");
+>>>>>>> refs/remotes/origin/master
 
 		/* Set additional registers like in 8-bit mode */
 		svga_wcrt_mask(par->state.vgabase, 0x50, 0x00, 0x30);
@@ -800,14 +898,23 @@ static int s3fb_set_par(struct fb_info *info)
 		svga_wcrt_mask(par->state.vgabase, 0x3A, 0x00, 0x30);
 		break;
 	case 3:
+<<<<<<< HEAD
 		pr_debug("fb%d: 8 bit pseudocolor\n", info->node);
+=======
+		fb_dbg(info, "8 bit pseudocolor\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x50, 0x00, 0x30);
 		if (info->var.pixclock > 20000 ||
 		    par->chip == CHIP_357_VIRGE_GX2 ||
 		    par->chip == CHIP_359_VIRGE_GX2P ||
 		    par->chip == CHIP_360_TRIO3D_1X ||
 		    par->chip == CHIP_362_TRIO3D_2X ||
+<<<<<<< HEAD
 		    par->chip == CHIP_368_TRIO3D_2X)
+=======
+		    par->chip == CHIP_368_TRIO3D_2X ||
+		    par->chip == CHIP_260_VIRGE_MX)
+>>>>>>> refs/remotes/origin/master
 			svga_wcrt_mask(par->state.vgabase, 0x67, 0x00, 0xF0);
 		else {
 			svga_wcrt_mask(par->state.vgabase, 0x67, 0x10, 0xF0);
@@ -815,7 +922,11 @@ static int s3fb_set_par(struct fb_info *info)
 		}
 		break;
 	case 4:
+<<<<<<< HEAD
 		pr_debug("fb%d: 5/5/5 truecolor\n", info->node);
+=======
+		fb_dbg(info, "5/5/5 truecolor\n");
+>>>>>>> refs/remotes/origin/master
 		if (par->chip == CHIP_988_VIRGE_VX) {
 			if (info->var.pixclock > 20000)
 				svga_wcrt_mask(par->state.vgabase, 0x67, 0x20, 0xF0);
@@ -837,12 +948,21 @@ static int s3fb_set_par(struct fb_info *info)
 			    par->chip != CHIP_359_VIRGE_GX2P &&
 			    par->chip != CHIP_360_TRIO3D_1X &&
 			    par->chip != CHIP_362_TRIO3D_2X &&
+<<<<<<< HEAD
 			    par->chip != CHIP_368_TRIO3D_2X)
+=======
+			    par->chip != CHIP_368_TRIO3D_2X &&
+			    par->chip != CHIP_260_VIRGE_MX)
+>>>>>>> refs/remotes/origin/master
 				hmul = 2;
 		}
 		break;
 	case 5:
+<<<<<<< HEAD
 		pr_debug("fb%d: 5/6/5 truecolor\n", info->node);
+=======
+		fb_dbg(info, "5/6/5 truecolor\n");
+>>>>>>> refs/remotes/origin/master
 		if (par->chip == CHIP_988_VIRGE_VX) {
 			if (info->var.pixclock > 20000)
 				svga_wcrt_mask(par->state.vgabase, 0x67, 0x40, 0xF0);
@@ -864,22 +984,39 @@ static int s3fb_set_par(struct fb_info *info)
 			    par->chip != CHIP_359_VIRGE_GX2P &&
 			    par->chip != CHIP_360_TRIO3D_1X &&
 			    par->chip != CHIP_362_TRIO3D_2X &&
+<<<<<<< HEAD
 			    par->chip != CHIP_368_TRIO3D_2X)
+=======
+			    par->chip != CHIP_368_TRIO3D_2X &&
+			    par->chip != CHIP_260_VIRGE_MX)
+>>>>>>> refs/remotes/origin/master
 				hmul = 2;
 		}
 		break;
 	case 6:
 		/* VIRGE VX case */
+<<<<<<< HEAD
 		pr_debug("fb%d: 8/8/8 truecolor\n", info->node);
 		svga_wcrt_mask(par->state.vgabase, 0x67, 0xD0, 0xF0);
 		break;
 	case 7:
 		pr_debug("fb%d: 8/8/8/8 truecolor\n", info->node);
+=======
+		fb_dbg(info, "8/8/8 truecolor\n");
+		svga_wcrt_mask(par->state.vgabase, 0x67, 0xD0, 0xF0);
+		break;
+	case 7:
+		fb_dbg(info, "8/8/8/8 truecolor\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x50, 0x30, 0x30);
 		svga_wcrt_mask(par->state.vgabase, 0x67, 0xD0, 0xF0);
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: unsupported mode - bug\n", info->node);
+=======
+		fb_err(info, "unsupported mode - bug\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -901,7 +1038,17 @@ static int s3fb_set_par(struct fb_info *info)
 
 	/* Set Data Transfer Position */
 	hsstart = ((info->var.xres + info->var.right_margin) * hmul) / 8;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	value = clamp((htotal + hsstart + 1) / 2, hsstart + 4, htotal + 1);
+=======
+	/* + 2 is needed for Virge/VX, does no harm on other cards */
+	value = clamp((htotal + hsstart + 1) / 2 + 2, hsstart + 4, htotal + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* + 2 is needed for Virge/VX, does no harm on other cards */
+	value = clamp((htotal + hsstart + 1) / 2 + 2, hsstart + 4, htotal + 1);
+>>>>>>> refs/remotes/origin/master
 	svga_wcrt_multi(par->state.vgabase, s3_dtpc_regs, value);
 
 	memset_io(info->screen_base, 0x00, screen_size);
@@ -981,27 +1128,47 @@ static int s3fb_blank(int blank_mode, struct fb_info *info)
 
 	switch (blank_mode) {
 	case FB_BLANK_UNBLANK:
+<<<<<<< HEAD
 		pr_debug("fb%d: unblank\n", info->node);
+=======
+		fb_dbg(info, "unblank\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x56, 0x00, 0x06);
 		svga_wseq_mask(par->state.vgabase, 0x01, 0x00, 0x20);
 		break;
 	case FB_BLANK_NORMAL:
+<<<<<<< HEAD
 		pr_debug("fb%d: blank\n", info->node);
+=======
+		fb_dbg(info, "blank\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x56, 0x00, 0x06);
 		svga_wseq_mask(par->state.vgabase, 0x01, 0x20, 0x20);
 		break;
 	case FB_BLANK_HSYNC_SUSPEND:
+<<<<<<< HEAD
 		pr_debug("fb%d: hsync\n", info->node);
+=======
+		fb_dbg(info, "hsync\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x56, 0x02, 0x06);
 		svga_wseq_mask(par->state.vgabase, 0x01, 0x20, 0x20);
 		break;
 	case FB_BLANK_VSYNC_SUSPEND:
+<<<<<<< HEAD
 		pr_debug("fb%d: vsync\n", info->node);
+=======
+		fb_dbg(info, "vsync\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x56, 0x04, 0x06);
 		svga_wseq_mask(par->state.vgabase, 0x01, 0x20, 0x20);
 		break;
 	case FB_BLANK_POWERDOWN:
+<<<<<<< HEAD
 		pr_debug("fb%d: sync down\n", info->node);
+=======
+		fb_dbg(info, "sync down\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x56, 0x06, 0x06);
 		svga_wseq_mask(par->state.vgabase, 0x01, 0x20, 0x20);
 		break;
@@ -1019,12 +1186,28 @@ static int s3fb_pan_display(struct fb_var_screeninfo *var, struct fb_info *info)
 	unsigned int offset;
 
 	/* Calculate the offset */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (var->bits_per_pixel == 0) {
 		offset = (var->yoffset / 16) * (var->xres_virtual / 2) + (var->xoffset / 2);
 		offset = offset >> 2;
 	} else {
 		offset = (var->yoffset * info->fix.line_length) +
 			 (var->xoffset * var->bits_per_pixel / 8);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (info->var.bits_per_pixel == 0) {
+		offset = (var->yoffset / 16) * (info->var.xres_virtual / 2)
+		       + (var->xoffset / 2);
+		offset = offset >> 2;
+	} else {
+		offset = (var->yoffset * info->fix.line_length) +
+			 (var->xoffset * info->var.bits_per_pixel / 8);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		offset = offset >> 2;
 	}
 
@@ -1055,7 +1238,11 @@ static struct fb_ops s3fb_ops = {
 
 /* ------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int __devinit s3_identification(struct s3fb_info *par)
+=======
+static int s3_identification(struct s3fb_info *par)
+>>>>>>> refs/remotes/origin/master
 {
 	int chip = par->chip;
 
@@ -1111,7 +1298,11 @@ static int __devinit s3_identification(struct s3fb_info *par)
 
 /* PCI probe */
 
+<<<<<<< HEAD
 static int __devinit s3_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int s3_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_bus_region bus_reg;
 	struct resource vga_res;
@@ -1206,7 +1397,12 @@ static int __devinit s3_pci_probe(struct pci_dev *dev, const struct pci_device_i
 			break;
 		}
 	} else if (par->chip == CHIP_357_VIRGE_GX2 ||
+<<<<<<< HEAD
 		   par->chip == CHIP_359_VIRGE_GX2P) {
+=======
+		   par->chip == CHIP_359_VIRGE_GX2P ||
+		   par->chip == CHIP_260_VIRGE_MX) {
+>>>>>>> refs/remotes/origin/master
 		switch ((regval & 0xC0) >> 6) {
 		case 1: /* 4MB */
 			info->screen_size = 4 << 20;
@@ -1215,6 +1411,40 @@ static int __devinit s3_pci_probe(struct pci_dev *dev, const struct pci_device_i
 			info->screen_size = 2 << 20;
 			break;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	} else if (par->chip == CHIP_988_VIRGE_VX) {
+		switch ((regval & 0x60) >> 5) {
+		case 0: /* 2MB */
+			info->screen_size = 2 << 20;
+			break;
+		case 1: /* 4MB */
+			info->screen_size = 4 << 20;
+			break;
+		case 2: /* 6MB */
+			info->screen_size = 6 << 20;
+			break;
+		case 3: /* 8MB */
+			info->screen_size = 8 << 20;
+			break;
+		}
+		/* off-screen memory */
+		regval = vga_rcrt(par->state.vgabase, 0x37);
+		switch ((regval & 0x60) >> 5) {
+		case 1: /* 4MB */
+			info->screen_size -= 4 << 20;
+			break;
+		case 2: /* 2MB */
+			info->screen_size -= 2 << 20;
+			break;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else
 		info->screen_size = s3_memsizes[regval >> 5] << 10;
 	info->fix.smem_len = info->screen_size;
@@ -1299,6 +1529,7 @@ static int __devinit s3_pci_probe(struct pci_dev *dev, const struct pci_device_i
 			(info->var.bits_per_pixel * info->var.xres_virtual);
 	if (info->var.yres_virtual < info->var.yres) {
 		dev_err(info->device, "virtual vertical size smaller than real\n");
+<<<<<<< HEAD
 		goto err_find_mode;
 	}
 
@@ -1307,6 +1538,9 @@ static int __devinit s3_pci_probe(struct pci_dev *dev, const struct pci_device_i
 			(info->var.bits_per_pixel * info->var.xres_virtual);
 	if (info->var.yres_virtual < info->var.yres) {
 		dev_err(info->device, "virtual vertical size smaller than real\n");
+=======
+		rc = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		goto err_find_mode;
 	}
 
@@ -1322,6 +1556,7 @@ static int __devinit s3_pci_probe(struct pci_dev *dev, const struct pci_device_i
 		goto err_reg_fb;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s on %s, %d MB RAM, %d MHz MCLK\n", info->node, info->fix.id,
 		 pci_name(dev), info->fix.smem_len >> 20, (par->mclk_freq + 500) / 1000);
 
@@ -1329,6 +1564,18 @@ static int __devinit s3_pci_probe(struct pci_dev *dev, const struct pci_device_i
 		printk(KERN_INFO "fb%d: unknown chip, CR2D=%x, CR2E=%x, CRT2F=%x, CRT30=%x\n",
 			info->node, vga_rcrt(par->state.vgabase, 0x2d), vga_rcrt(par->state.vgabase, 0x2e),
 			vga_rcrt(par->state.vgabase, 0x2f), vga_rcrt(par->state.vgabase, 0x30));
+=======
+	fb_info(info, "%s on %s, %d MB RAM, %d MHz MCLK\n",
+		info->fix.id, pci_name(dev),
+		info->fix.smem_len >> 20, (par->mclk_freq + 500) / 1000);
+
+	if (par->chip == CHIP_UNKNOWN)
+		fb_info(info, "unknown chip, CR2D=%x, CR2E=%x, CRT2F=%x, CRT30=%x\n",
+			vga_rcrt(par->state.vgabase, 0x2d),
+			vga_rcrt(par->state.vgabase, 0x2e),
+			vga_rcrt(par->state.vgabase, 0x2f),
+			vga_rcrt(par->state.vgabase, 0x30));
+>>>>>>> refs/remotes/origin/master
 
 	/* Record a reference to the driver data */
 	pci_set_drvdata(dev, info);
@@ -1366,7 +1613,11 @@ err_enable_device:
 
 /* PCI remove */
 
+<<<<<<< HEAD
 static void __devexit s3_pci_remove(struct pci_dev *dev)
+=======
+static void s3_pci_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(dev);
 	struct s3fb_info __maybe_unused *par = info->par;
@@ -1394,7 +1645,10 @@ static void __devexit s3_pci_remove(struct pci_dev *dev)
 		pci_release_regions(dev);
 /*		pci_disable_device(dev); */
 
+<<<<<<< HEAD
 		pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		framebuffer_release(info);
 	}
 }
@@ -1472,7 +1726,11 @@ static int s3_pci_resume(struct pci_dev* dev)
 
 /* List of boards that we are trying to support */
 
+<<<<<<< HEAD
 static struct pci_device_id s3_devices[] __devinitdata = {
+=======
+static struct pci_device_id s3_devices[] = {
+>>>>>>> refs/remotes/origin/master
 	{PCI_DEVICE(PCI_VENDOR_ID_S3, 0x8810), .driver_data = CHIP_XXX_TRIO},
 	{PCI_DEVICE(PCI_VENDOR_ID_S3, 0x8811), .driver_data = CHIP_XXX_TRIO},
 	{PCI_DEVICE(PCI_VENDOR_ID_S3, 0x8812), .driver_data = CHIP_M65_AURORA64VP},
@@ -1488,6 +1746,10 @@ static struct pci_device_id s3_devices[] __devinitdata = {
 	{PCI_DEVICE(PCI_VENDOR_ID_S3, 0x8A12), .driver_data = CHIP_359_VIRGE_GX2P},
 	{PCI_DEVICE(PCI_VENDOR_ID_S3, 0x8A13), .driver_data = CHIP_36X_TRIO3D_1X_2X},
 	{PCI_DEVICE(PCI_VENDOR_ID_S3, 0x8904), .driver_data = CHIP_365_TRIO3D},
+<<<<<<< HEAD
+=======
+	{PCI_DEVICE(PCI_VENDOR_ID_S3, 0x8C01), .driver_data = CHIP_260_VIRGE_MX},
+>>>>>>> refs/remotes/origin/master
 
 	{0, 0, 0, 0, 0, 0, 0}
 };
@@ -1499,12 +1761,24 @@ static struct pci_driver s3fb_pci_driver = {
 	.name		= "s3fb",
 	.id_table	= s3_devices,
 	.probe		= s3_pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(s3_pci_remove),
+=======
+	.remove		= s3_pci_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= s3_pci_suspend,
 	.resume		= s3_pci_resume,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Parse user speficied options */
+=======
+/* Parse user specified options */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Parse user specified options */
+>>>>>>> refs/remotes/origin/master
 
 #ifndef MODULE
 static int  __init s3fb_setup(char *options)

@@ -32,13 +32,29 @@ enum nfs4_callback_opnum {
 	OP_CB_WANTS_CANCELLED = 12,
 	OP_CB_NOTIFY_LOCK   = 13,
 	OP_CB_NOTIFY_DEVICEID = 14,
+<<<<<<< HEAD
+=======
+/* Callback operations new to NFSv4.2 */
+	OP_CB_OFFLOAD = 15,
+>>>>>>> refs/remotes/origin/master
 	OP_CB_ILLEGAL = 10044,
 };
 
 struct cb_process_state {
 	__be32			drc_status;
 	struct nfs_client	*clp;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int			slotid;
+=======
+	u32			slotid;
+	struct net		*net;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32			slotid;
+	u32			minorversion;
+	struct net		*net;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct cb_compound_hdr_arg {
@@ -141,7 +157,11 @@ extern __be32 nfs4_callback_recallany(struct cb_recallanyargs *args,
 
 struct cb_recallslotargs {
 	struct sockaddr	*crsa_addr;
+<<<<<<< HEAD
 	uint32_t	crsa_target_max_slots;
+=======
+	uint32_t	crsa_target_highest_slotid;
+>>>>>>> refs/remotes/origin/master
 };
 extern __be32 nfs4_callback_recallslot(struct cb_recallslotargs *args,
 					 void *dummy,
@@ -162,12 +182,23 @@ struct cb_layoutrecallargs {
 	};
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned nfs4_callback_layoutrecall(
+=======
+extern __be32 nfs4_callback_layoutrecall(
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct cb_layoutrecallargs *args,
 	void *dummy, struct cb_process_state *cps);
 
 extern void nfs4_check_drain_bc_complete(struct nfs4_session *ses);
 
+=======
+extern __be32 nfs4_callback_layoutrecall(
+	struct cb_layoutrecallargs *args,
+	void *dummy, struct cb_process_state *cps);
+
+>>>>>>> refs/remotes/origin/master
 struct cb_devicenotifyitem {
 	uint32_t		cbd_notify_type;
 	uint32_t		cbd_layout_type;
@@ -191,9 +222,15 @@ extern __be32 nfs4_callback_getattr(struct cb_getattrargs *args,
 				    struct cb_process_state *cps);
 extern __be32 nfs4_callback_recall(struct cb_recallargs *args, void *dummy,
 				   struct cb_process_state *cps);
+<<<<<<< HEAD
 #ifdef CONFIG_NFS_V4
 extern int nfs_callback_up(u32 minorversion, struct rpc_xprt *xprt);
 extern void nfs_callback_down(int minorversion);
+=======
+#if IS_ENABLED(CONFIG_NFS_V4)
+extern int nfs_callback_up(u32 minorversion, struct rpc_xprt *xprt);
+extern void nfs_callback_down(int minorversion, struct net *net);
+>>>>>>> refs/remotes/origin/master
 extern int nfs4_validate_delegation_stateid(struct nfs_delegation *delegation,
 					    const nfs4_stateid *stateid);
 extern int nfs4_set_callback_sessionid(struct nfs_client *clp);
@@ -208,6 +245,9 @@ extern int nfs4_set_callback_sessionid(struct nfs_client *clp);
 
 extern unsigned int nfs_callback_set_tcpport;
 extern unsigned short nfs_callback_tcpport;
+<<<<<<< HEAD
 extern unsigned short nfs_callback_tcpport6;
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __LINUX_FS_NFS_CALLBACK_H */

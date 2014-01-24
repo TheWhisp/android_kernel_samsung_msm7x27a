@@ -12,7 +12,15 @@
 #include <linux/linkage.h>
 #include <linux/pagemap.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_BLOCK
 
@@ -34,6 +42,12 @@ enum bh_state_bits {
 	BH_Write_EIO,	/* I/O error on write */
 	BH_Unwritten,	/* Buffer is allocated on disk but not written */
 	BH_Quiet,	/* Buffer Error Prinks to be quiet */
+<<<<<<< HEAD
+=======
+	BH_Meta,	/* Buffer contains metadata */
+	BH_Prio,	/* Buffer should be submitted with REQ_PRIO */
+	BH_Defer_Completion, /* Defer AIO completion to workqueue */
+>>>>>>> refs/remotes/origin/master
 
 	BH_PrivateStart,/* not a state bit, but the first bit available
 			 * for private allocation by other entities
@@ -124,9 +138,17 @@ BUFFER_FNS(Delay, delay)
 BUFFER_FNS(Boundary, boundary)
 BUFFER_FNS(Write_EIO, write_io_error)
 BUFFER_FNS(Unwritten, unwritten)
+<<<<<<< HEAD
 
 #define bh_offset(bh)		((unsigned long)(bh)->b_data & ~PAGE_MASK)
 #define touch_buffer(bh)	mark_page_accessed(bh->b_page)
+=======
+BUFFER_FNS(Meta, meta)
+BUFFER_FNS(Prio, prio)
+BUFFER_FNS(Defer_Completion, defer_completion)
+
+#define bh_offset(bh)		((unsigned long)(bh)->b_data & ~PAGE_MASK)
+>>>>>>> refs/remotes/origin/master
 
 /* If we *know* page->private refers to buffer_heads */
 #define page_buffers(page)					\
@@ -136,12 +158,22 @@ BUFFER_FNS(Unwritten, unwritten)
 	})
 #define page_has_buffers(page)	PagePrivate(page)
 
+<<<<<<< HEAD
+=======
+void buffer_check_dirty_writeback(struct page *page,
+				     bool *dirty, bool *writeback);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Declarations
  */
 
 void mark_buffer_dirty(struct buffer_head *bh);
 void init_buffer(struct buffer_head *, bh_end_io_t *, void *);
+<<<<<<< HEAD
+=======
+void touch_buffer(struct buffer_head *bh);
+>>>>>>> refs/remotes/origin/master
 void set_bh_page(struct buffer_head *bh,
 		struct page *page, unsigned long offset);
 int try_to_free_buffers(struct page *);
@@ -181,6 +213,10 @@ void ll_rw_block(int, int, struct buffer_head * bh[]);
 int sync_dirty_buffer(struct buffer_head *bh);
 int __sync_dirty_buffer(struct buffer_head *bh, int rw);
 void write_dirty_buffer(struct buffer_head *bh, int rw);
+<<<<<<< HEAD
+=======
+int _submit_bh(int rw, struct buffer_head *bh, unsigned long bio_flags);
+>>>>>>> refs/remotes/origin/master
 int submit_bh(int, struct buffer_head *);
 void write_boundary_block(struct block_device *bdev,
 			sector_t bblock, unsigned blocksize);
@@ -193,7 +229,12 @@ extern int buffer_heads_over_limit;
  * Generic address_space_operations implementations for buffer_head-backed
  * address_spaces.
  */
+<<<<<<< HEAD
 void block_invalidatepage(struct page *page, unsigned long offset);
+=======
+void block_invalidatepage(struct page *page, unsigned int offset,
+			  unsigned int length);
+>>>>>>> refs/remotes/origin/master
 int block_write_full_page(struct page *page, get_block_t *get_block,
 				struct writeback_control *wbc);
 int block_write_full_page_endio(struct page *page, get_block_t *get_block,

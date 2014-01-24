@@ -5,7 +5,15 @@
  *  changes by Thomas Schoebel-Theuer
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/time.h>
 #include <linux/mm.h>
 #include <linux/string.h>
@@ -13,6 +21,15 @@
 #include <linux/fsnotify.h>
 #include <linux/fcntl.h>
 #include <linux/security.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/evm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/evm.h>
+#include <linux/ima.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * inode_change_ok - check if attribute changes to an inode are allowed
@@ -46,15 +63,27 @@ int inode_change_ok(const struct inode *inode, struct iattr *attr)
 
 	/* Make sure a caller can chown. */
 	if ((ia_valid & ATTR_UID) &&
+<<<<<<< HEAD
 	    (current_fsuid() != inode->i_uid ||
 	     attr->ia_uid != inode->i_uid) && !capable(CAP_CHOWN))
+=======
+	    (!uid_eq(current_fsuid(), inode->i_uid) ||
+	     !uid_eq(attr->ia_uid, inode->i_uid)) &&
+	    !inode_capable(inode, CAP_CHOWN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	/* Make sure caller can chgrp. */
 	if ((ia_valid & ATTR_GID) &&
+<<<<<<< HEAD
 	    (current_fsuid() != inode->i_uid ||
 	    (!in_group_p(attr->ia_gid) && attr->ia_gid != inode->i_gid)) &&
 	    !capable(CAP_CHOWN))
+=======
+	    (!uid_eq(current_fsuid(), inode->i_uid) ||
+	    (!in_group_p(attr->ia_gid) && !gid_eq(attr->ia_gid, inode->i_gid))) &&
+	    !inode_capable(inode, CAP_CHOWN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	/* Make sure a caller can chmod. */
@@ -63,7 +92,12 @@ int inode_change_ok(const struct inode *inode, struct iattr *attr)
 			return -EPERM;
 		/* Also check the setgid bit! */
 		if (!in_group_p((ia_valid & ATTR_GID) ? attr->ia_gid :
+<<<<<<< HEAD
 				inode->i_gid) && !capable(CAP_FSETID))
+=======
+				inode->i_gid) &&
+		    !inode_capable(inode, CAP_FSETID))
+>>>>>>> refs/remotes/origin/master
 			attr->ia_mode &= ~S_ISGID;
 	}
 
@@ -155,28 +189,88 @@ void setattr_copy(struct inode *inode, const struct iattr *attr)
 	if (ia_valid & ATTR_MODE) {
 		umode_t mode = attr->ia_mode;
 
+<<<<<<< HEAD
 		if (!in_group_p(inode->i_gid) && !capable(CAP_FSETID))
+=======
+		if (!in_group_p(inode->i_gid) &&
+		    !inode_capable(inode, CAP_FSETID))
+>>>>>>> refs/remotes/origin/master
 			mode &= ~S_ISGID;
 		inode->i_mode = mode;
 	}
 }
 EXPORT_SYMBOL(setattr_copy);
 
+<<<<<<< HEAD
 int notify_change(struct dentry * dentry, struct iattr * attr)
 {
 	struct inode *inode = dentry->d_inode;
+<<<<<<< HEAD
 	mode_t mode = inode->i_mode;
+=======
+	umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ * notify_change - modify attributes of a filesytem object
+ * @dentry:	object affected
+ * @iattr:	new attributes
+ * @delegated_inode: returns inode, if the inode is delegated
+ *
+ * The caller must hold the i_mutex on the affected object.
+ *
+ * If notify_change discovers a delegation in need of breaking,
+ * it will return -EWOULDBLOCK and return a reference to the inode in
+ * delegated_inode.  The caller should then break the delegation and
+ * retry.  Because breaking a delegation may take a long time, the
+ * caller should drop the i_mutex before doing so.
+ *
+ * Alternatively, a caller may pass NULL for delegated_inode.  This may
+ * be appropriate for callers that expect the underlying filesystem not
+ * to be NFS exported.  Also, passing NULL is fine for callers holding
+ * the file open for write, as there can be no conflicting delegation in
+ * that case.
+ */
+int notify_change(struct dentry * dentry, struct iattr * attr, struct inode **delegated_inode)
+{
+	struct inode *inode = dentry->d_inode;
+	umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/master
 	int error;
 	struct timespec now;
 	unsigned int ia_valid = attr->ia_valid;
 
+<<<<<<< HEAD
+=======
+	WARN_ON_ONCE(!mutex_is_locked(&inode->i_mutex));
+
+>>>>>>> refs/remotes/origin/master
 	if (ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID | ATTR_TIMES_SET)) {
 		if (IS_IMMUTABLE(inode) || IS_APPEND(inode))
 			return -EPERM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ia_valid & ATTR_MODE)) {
 		mode_t amode = attr->ia_mode;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if ((ia_valid & ATTR_SIZE) && IS_I_VERSION(inode)) {
+		if (attr->ia_size != inode->i_size)
+			inode_inc_iversion(inode);
+	}
+
+	if ((ia_valid & ATTR_MODE)) {
+		umode_t amode = attr->ia_mode;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Flag setting protected by i_mutex */
 		if (is_sxid(amode))
 			inode->i_flags &= ~S_NOSEC;
@@ -231,22 +325,50 @@ int notify_change(struct dentry * dentry, struct iattr * attr)
 	error = security_inode_setattr(dentry, attr);
 	if (error)
 		return error;
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 	if (ia_valid & ATTR_SIZE)
 		down_write(&dentry->d_inode->i_alloc_sem);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = try_break_deleg(inode, delegated_inode);
+	if (error)
+		return error;
+
+>>>>>>> refs/remotes/origin/master
 	if (inode->i_op->setattr)
 		error = inode->i_op->setattr(dentry, attr);
 	else
 		error = simple_setattr(dentry, attr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ia_valid & ATTR_SIZE)
 		up_write(&dentry->d_inode->i_alloc_sem);
 
 	if (!error)
 		fsnotify_change(dentry, ia_valid);
+=======
+	if (!error) {
+		fsnotify_change(dentry, ia_valid);
+		evm_inode_post_setattr(dentry, ia_valid);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return error;
 }
 
+=======
+	if (!error) {
+		fsnotify_change(dentry, ia_valid);
+		ima_inode_post_setattr(dentry);
+		evm_inode_post_setattr(dentry, ia_valid);
+	}
+
+	return error;
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(notify_change);

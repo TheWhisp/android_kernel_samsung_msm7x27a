@@ -2,7 +2,15 @@
  * Sonics Silicon Backplane
  * Broadcom ChipCommon Power Management Unit driver
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2009, Michael Buesch <mb@bu3sch.de>
+=======
+ * Copyright 2009, Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2009, Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
  * Copyright 2007, Broadcom Corporation
  *
  * Licensed under the GNU/GPL. See COPYING for details.
@@ -12,6 +20,20 @@
 #include <linux/ssb/ssb_regs.h>
 #include <linux/ssb/ssb_driver_chipcommon.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#ifdef CONFIG_BCM47XX
+#include <asm/mach-bcm47xx/nvram.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#ifdef CONFIG_BCM47XX
+#include <bcm47xx_nvram.h>
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #include "ssb_private.h"
 
@@ -91,10 +113,16 @@ static void ssb_pmu0_pllinit_r0(struct ssb_chipcommon *cc,
 	u32 pmuctl, tmp, pllctl;
 	unsigned int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((bus->chip_id == 0x5354) && !crystalfreq) {
 		/* The 5354 crystal freq is 25MHz */
 		crystalfreq = 25000;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (crystalfreq)
 		e = pmu0_plltab_find_entry(crystalfreq);
 	if (!e)
@@ -110,8 +138,13 @@ static void ssb_pmu0_pllinit_r0(struct ssb_chipcommon *cc,
 		return;
 	}
 
+<<<<<<< HEAD
 	ssb_printk(KERN_INFO PFX "Programming PLL to %u.%03u MHz\n",
 		   (crystalfreq / 1000), (crystalfreq % 1000));
+=======
+	ssb_info("Programming PLL to %u.%03u MHz\n",
+		 crystalfreq / 1000, crystalfreq % 1000);
+>>>>>>> refs/remotes/origin/master
 
 	/* First turn the PLL off. */
 	switch (bus->chip_id) {
@@ -138,7 +171,11 @@ static void ssb_pmu0_pllinit_r0(struct ssb_chipcommon *cc,
 	}
 	tmp = chipco_read32(cc, SSB_CHIPCO_CLKCTLST);
 	if (tmp & SSB_CHIPCO_CLKCTLST_HAVEHT)
+<<<<<<< HEAD
 		ssb_printk(KERN_EMERG PFX "Failed to turn the PLL off!\n");
+=======
+		ssb_emerg("Failed to turn the PLL off!\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* Set PDIV in PLL control 0. */
 	pllctl = ssb_chipco_pll_read(cc, SSB_PMU0_PLLCTL0);
@@ -249,8 +286,13 @@ static void ssb_pmu1_pllinit_r0(struct ssb_chipcommon *cc,
 		return;
 	}
 
+<<<<<<< HEAD
 	ssb_printk(KERN_INFO PFX "Programming PLL to %u.%03u MHz\n",
 		   (crystalfreq / 1000), (crystalfreq % 1000));
+=======
+	ssb_info("Programming PLL to %u.%03u MHz\n",
+		 crystalfreq / 1000, crystalfreq % 1000);
+>>>>>>> refs/remotes/origin/master
 
 	/* First turn the PLL off. */
 	switch (bus->chip_id) {
@@ -275,7 +317,11 @@ static void ssb_pmu1_pllinit_r0(struct ssb_chipcommon *cc,
 	}
 	tmp = chipco_read32(cc, SSB_CHIPCO_CLKCTLST);
 	if (tmp & SSB_CHIPCO_CLKCTLST_HAVEHT)
+<<<<<<< HEAD
 		ssb_printk(KERN_EMERG PFX "Failed to turn the PLL off!\n");
+=======
+		ssb_emerg("Failed to turn the PLL off!\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* Set p1div and p2div. */
 	pllctl = ssb_chipco_pll_read(cc, SSB_PMU1_PLLCTL0);
@@ -320,7 +366,23 @@ static void ssb_pmu_pll_init(struct ssb_chipcommon *cc)
 	u32 crystalfreq = 0; /* in kHz. 0 = keep default freq. */
 
 	if (bus->bustype == SSB_BUSTYPE_SSB) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* TODO: The user may override the crystal frequency. */
+=======
+#ifdef CONFIG_BCM47XX
+		char buf[20];
+		if (nvram_getenv("xtalfreq", buf, sizeof(buf)) >= 0)
+			crystalfreq = simple_strtoul(buf, NULL, 0);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_BCM47XX
+		char buf[20];
+		if (bcm47xx_nvram_getenv("xtalfreq", buf, sizeof(buf)) >= 0)
+			crystalfreq = simple_strtoul(buf, NULL, 0);
+#endif
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (bus->chip_id) {
@@ -329,7 +391,21 @@ static void ssb_pmu_pll_init(struct ssb_chipcommon *cc)
 		ssb_pmu1_pllinit_r0(cc, crystalfreq);
 		break;
 	case 0x4328:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case 0x5354:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ssb_pmu0_pllinit_r0(cc, crystalfreq);
+		break;
+	case 0x5354:
+		if (crystalfreq == 0)
+			crystalfreq = 25000;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ssb_pmu0_pllinit_r0(cc, crystalfreq);
 		break;
 	case 0x4322:
@@ -338,10 +414,18 @@ static void ssb_pmu_pll_init(struct ssb_chipcommon *cc)
 			chipco_write32(cc, SSB_CHIPCO_PLLCTL_DATA, 0x380005C0);
 		}
 		break;
+<<<<<<< HEAD
 	default:
 		ssb_printk(KERN_ERR PFX
 			   "ERROR: PLL init unknown for device %04X\n",
 			   bus->chip_id);
+=======
+	case 43222:
+		break;
+	default:
+		ssb_err("ERROR: PLL init unknown for device %04X\n",
+			bus->chip_id);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -417,15 +501,31 @@ static void ssb_pmu_resources_init(struct ssb_chipcommon *cc)
 	u32 min_msk = 0, max_msk = 0;
 	unsigned int i;
 	const struct pmu_res_updown_tab_entry *updown_tab = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int updown_tab_size;
 	const struct pmu_res_depend_tab_entry *depend_tab = NULL;
 	unsigned int depend_tab_size;
+=======
+	unsigned int updown_tab_size = 0;
+	const struct pmu_res_depend_tab_entry *depend_tab = NULL;
+	unsigned int depend_tab_size = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int updown_tab_size = 0;
+	const struct pmu_res_depend_tab_entry *depend_tab = NULL;
+	unsigned int depend_tab_size = 0;
+>>>>>>> refs/remotes/origin/master
 
 	switch (bus->chip_id) {
 	case 0x4312:
 		 min_msk = 0xCBB;
 		 break;
 	case 0x4322:
+<<<<<<< HEAD
+=======
+	case 43222:
+>>>>>>> refs/remotes/origin/master
 		/* We keep the default settings:
 		 * min_msk = 0xCBB
 		 * max_msk = 0x7FFFF
@@ -461,9 +561,14 @@ static void ssb_pmu_resources_init(struct ssb_chipcommon *cc)
 		max_msk = 0xFFFFF;
 		break;
 	default:
+<<<<<<< HEAD
 		ssb_printk(KERN_ERR PFX
 			   "ERROR: PMU resource config unknown for device %04X\n",
 			   bus->chip_id);
+=======
+		ssb_err("ERROR: PMU resource config unknown for device %04X\n",
+			bus->chip_id);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (updown_tab) {
@@ -515,8 +620,13 @@ void ssb_pmu_init(struct ssb_chipcommon *cc)
 	pmucap = chipco_read32(cc, SSB_CHIPCO_PMU_CAP);
 	cc->pmu.rev = (pmucap & SSB_CHIPCO_PMU_CAP_REVISION);
 
+<<<<<<< HEAD
 	ssb_dprintk(KERN_DEBUG PFX "Found rev %u PMU (capabilities 0x%08X)\n",
 		    cc->pmu.rev, pmucap);
+=======
+	ssb_dbg("Found rev %u PMU (capabilities 0x%08X)\n",
+		cc->pmu.rev, pmucap);
+>>>>>>> refs/remotes/origin/master
 
 	if (cc->pmu.rev == 1)
 		chipco_mask32(cc, SSB_CHIPCO_PMU_CTL,
@@ -606,3 +716,136 @@ void ssb_pmu_set_ldo_paref(struct ssb_chipcommon *cc, bool on)
 
 EXPORT_SYMBOL(ssb_pmu_set_ldo_voltage);
 EXPORT_SYMBOL(ssb_pmu_set_ldo_paref);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+
+static u32 ssb_pmu_get_alp_clock_clk0(struct ssb_chipcommon *cc)
+{
+	u32 crystalfreq;
+	const struct pmu0_plltab_entry *e = NULL;
+
+	crystalfreq = chipco_read32(cc, SSB_CHIPCO_PMU_CTL) &
+		      SSB_CHIPCO_PMU_CTL_XTALFREQ >> SSB_CHIPCO_PMU_CTL_XTALFREQ_SHIFT;
+	e = pmu0_plltab_find_entry(crystalfreq);
+	BUG_ON(!e);
+	return e->freq * 1000;
+}
+
+u32 ssb_pmu_get_alp_clock(struct ssb_chipcommon *cc)
+{
+	struct ssb_bus *bus = cc->dev->bus;
+
+	switch (bus->chip_id) {
+	case 0x5354:
+		ssb_pmu_get_alp_clock_clk0(cc);
+	default:
+		ssb_err("ERROR: PMU alp clock unknown for device %04X\n",
+			bus->chip_id);
+		return 0;
+	}
+}
+>>>>>>> refs/remotes/origin/master
+
+u32 ssb_pmu_get_cpu_clock(struct ssb_chipcommon *cc)
+{
+	struct ssb_bus *bus = cc->dev->bus;
+
+	switch (bus->chip_id) {
+	case 0x5354:
+		/* 5354 chip uses a non programmable PLL of frequency 240MHz */
+		return 240000000;
+	default:
+<<<<<<< HEAD
+		ssb_printk(KERN_ERR PFX
+			   "ERROR: PMU cpu clock unknown for device %04X\n",
+			   bus->chip_id);
+=======
+		ssb_err("ERROR: PMU cpu clock unknown for device %04X\n",
+			bus->chip_id);
+>>>>>>> refs/remotes/origin/master
+		return 0;
+	}
+}
+
+u32 ssb_pmu_get_controlclock(struct ssb_chipcommon *cc)
+{
+	struct ssb_bus *bus = cc->dev->bus;
+
+	switch (bus->chip_id) {
+	case 0x5354:
+		return 120000000;
+	default:
+<<<<<<< HEAD
+		ssb_printk(KERN_ERR PFX
+			   "ERROR: PMU controlclock unknown for device %04X\n",
+			   bus->chip_id);
+=======
+		ssb_err("ERROR: PMU controlclock unknown for device %04X\n",
+			bus->chip_id);
+>>>>>>> refs/remotes/origin/master
+		return 0;
+	}
+}
+
+void ssb_pmu_spuravoid_pllupdate(struct ssb_chipcommon *cc, int spuravoid)
+{
+	u32 pmu_ctl = 0;
+
+	switch (cc->dev->bus->chip_id) {
+	case 0x4322:
+		ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL0, 0x11100070);
+		ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL1, 0x1014140a);
+		ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL5, 0x88888854);
+		if (spuravoid == 1)
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL2, 0x05201828);
+		else
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL2, 0x05001828);
+		pmu_ctl = SSB_CHIPCO_PMU_CTL_PLL_UPD;
+		break;
+	case 43222:
+<<<<<<< HEAD
+<<<<<<< HEAD
+		/* TODO: BCM43222 requires updating PLLs too */
+		return;
+=======
+		if (spuravoid == 1) {
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL0, 0x11500008);
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL1, 0x0C000C06);
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL2, 0x0F600a08);
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL3, 0x00000000);
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL4, 0x2001E920);
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL5, 0x88888815);
+		} else {
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL0, 0x11100008);
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL1, 0x0c000c06);
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL2, 0x03000a08);
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL3, 0x00000000);
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL4, 0x200005c0);
+			ssb_chipco_pll_write(cc, SSB_PMU1_PLLCTL5, 0x88888855);
+		}
+		pmu_ctl = SSB_CHIPCO_PMU_CTL_PLL_UPD;
+		break;
+>>>>>>> refs/remotes/origin/master
+=======
+		/* TODO: BCM43222 requires updating PLLs too */
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
+	default:
+		ssb_printk(KERN_ERR PFX
+			   "Unknown spuravoidance settings for chip 0x%04X, not changing PLL\n",
+			   cc->dev->bus->chip_id);
+		return;
+	}
+
+	chipco_set32(cc, SSB_CHIPCO_PMU_CTL, pmu_ctl);
+}
+EXPORT_SYMBOL_GPL(ssb_pmu_spuravoid_pllupdate);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

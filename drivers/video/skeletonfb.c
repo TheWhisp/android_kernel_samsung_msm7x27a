@@ -63,7 +63,11 @@
 /*
  * Driver data
  */
+<<<<<<< HEAD
 static char *mode_option __devinitdata;
+=======
+static char *mode_option;
+>>>>>>> refs/remotes/origin/master
 
 /*
  *  If your driver supports multiple boards, you should make the  
@@ -84,7 +88,11 @@ struct xxx_par;
  * if we don't use modedb. If we do use modedb see xxxfb_init how to use it
  * to get a fb_var_screeninfo. Otherwise define a default var as well. 
  */
+<<<<<<< HEAD
 static struct fb_fix_screeninfo xxxfb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo xxxfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id =		"FB's name", 
 	.type =		FB_TYPE_PACKED_PIXELS,
 	.visual =	FB_VISUAL_PSEUDOCOLOR,
@@ -678,8 +686,12 @@ static struct fb_ops xxxfb_ops = {
      */
 
 /* static int __init xxfb_probe (struct platform_device *pdev) -- for platform devs */
+<<<<<<< HEAD
 static int __devinit xxxfb_probe(struct pci_dev *dev,
 			      const struct pci_device_id *ent)
+=======
+static int xxxfb_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
     struct fb_info *info;
     struct xxx_par *par;
@@ -705,9 +717,13 @@ static int __devinit xxxfb_probe(struct pci_dev *dev,
      */
     info->screen_base = framebuffer_virtual_memory;
     info->fbops = &xxxfb_ops;
+<<<<<<< HEAD
     info->fix = xxxfb_fix; /* this will be the only time xxxfb_fix will be
 			    * used, so mark it as __devinitdata
 			    */
+=======
+    info->fix = xxxfb_fix;
+>>>>>>> refs/remotes/origin/master
     info->pseudo_palette = pseudo_palette; /* The pseudopalette is an
 					    * 16-member array
 					    */
@@ -827,8 +843,12 @@ static int __devinit xxxfb_probe(struct pci_dev *dev,
 	fb_dealloc_cmap(&info->cmap);
 	return -EINVAL;
     }
+<<<<<<< HEAD
     printk(KERN_INFO "fb%d: %s frame buffer device\n", info->node,
 	   info->fix.id);
+=======
+    fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
     pci_set_drvdata(dev, info); /* or platform_set_drvdata(pdev, info) */
     return 0;
 }
@@ -836,8 +856,13 @@ static int __devinit xxxfb_probe(struct pci_dev *dev,
     /*
      *  Cleanup
      */
+<<<<<<< HEAD
 /* static void __devexit xxxfb_remove(struct platform_device *pdev) */
 static void __devexit xxxfb_remove(struct pci_dev *dev)
+=======
+/* static void xxxfb_remove(struct platform_device *pdev) */
+static void xxxfb_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(dev);
 	/* or platform_get_drvdata(pdev); */
@@ -899,7 +924,11 @@ static struct pci_driver xxxfb_driver = {
 	.name =		"xxxfb",
 	.id_table =	xxxfb_id_table,
 	.probe =	xxxfb_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(xxxfb_remove),
+=======
+	.remove =	xxxfb_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend =      xxxfb_suspend, /* optional but recommended */
 	.resume =       xxxfb_resume,  /* optional but recommended */
 };
@@ -989,7 +1018,15 @@ static struct platform_device *xxxfb_device;
  */
 int __init xxxfb_setup(char *options)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
     /* Parse user speficied options (`video=xxxfb:') */
+=======
+    /* Parse user specified options (`video=xxxfb:') */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    /* Parse user specified options (`video=xxxfb:') */
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* MODULE */
 
@@ -1036,6 +1073,10 @@ static void __exit xxxfb_exit(void)
      */
 
 module_init(xxxfb_init);
+<<<<<<< HEAD
 module_exit(xxxfb_remove);
+=======
+module_exit(xxxfb_exit);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

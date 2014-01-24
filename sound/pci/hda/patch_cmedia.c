@@ -22,12 +22,29 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include "hda_codec.h"
 #include "hda_local.h"
+=======
+#include <linux/slab.h>
+#include <linux/pci.h>
+#include <linux/module.h>
+#include <sound/core.h>
+#include "hda_codec.h"
+#include "hda_local.h"
+#include "hda_auto_parser.h"
+#include "hda_jack.h"
+#include "hda_generic.h"
+
+>>>>>>> refs/remotes/origin/master
 #define NUM_PINS	11
 
 
@@ -43,6 +60,13 @@ enum {
 };
 
 struct cmi_spec {
+<<<<<<< HEAD
+=======
+	struct hda_gen_spec gen;
+
+	/* below are only for static models */
+
+>>>>>>> refs/remotes/origin/master
 	int board_config;
 	unsigned int no_line_in: 1;	/* no line-in (5-jack) */
 	unsigned int front_panel: 1;	/* has front-panel 2-jack */
@@ -327,7 +351,19 @@ static int cmi9880_build_controls(struct hda_codec *codec)
 			return err;
 	}
 	if (spec->multiout.dig_out_nid) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = snd_hda_create_spdif_out_ctls(codec, spec->multiout.dig_out_nid);
+=======
+		err = snd_hda_create_spdif_out_ctls(codec,
+						    spec->multiout.dig_out_nid,
+						    spec->multiout.dig_out_nid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = snd_hda_create_spdif_out_ctls(codec,
+						    spec->multiout.dig_out_nid,
+						    spec->multiout.dig_out_nid);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			return err;
 		err = snd_hda_create_spdif_share_sw(codec,
@@ -352,6 +388,7 @@ static int cmi9880_build_controls(struct hda_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* fill in the multi_dac_nids table, which will decide
    which audio widget to use for each channel */
 static int cmi9880_fill_multi_dac_nids(struct hda_codec *codec, const struct auto_pin_cfg *cfg)
@@ -396,12 +433,19 @@ static int cmi9880_fill_multi_init(struct hda_codec *codec, const struct auto_pi
 {
 	struct cmi_spec *spec = codec->spec;
 	hda_nid_t nid;
+<<<<<<< HEAD
 	int i, j, k, len;
+=======
+	int i, j, k;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* clear the table, only one c-media dac assumed here */
 	memset(spec->multi_init, 0, sizeof(spec->multi_init));
 	for (j = 0, i = 0; i < cfg->line_outs; i++) {
+<<<<<<< HEAD
 		hda_nid_t conn[4];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		nid = cfg->line_out_pins[i];
 		/* set as output */
 		spec->multi_init[j].nid = nid;
@@ -414,18 +458,27 @@ static int cmi9880_fill_multi_init(struct hda_codec *codec, const struct auto_pi
 			spec->multi_init[j].verb = AC_VERB_SET_CONNECT_SEL;
 			spec->multi_init[j].param = 0;
 			/* find the index in connect list */
+<<<<<<< HEAD
 			len = snd_hda_get_connections(codec, nid, conn, 4);
 			for (k = 0; k < len; k++)
 				if (conn[k] == spec->dac_nids[i]) {
 					spec->multi_init[j].param = k;
 					break;
 				}
+=======
+			k = snd_hda_get_conn_index(codec, nid,
+						   spec->dac_nids[i], 0);
+			if (k >= 0)
+				spec->multi_init[j].param = k;
+>>>>>>> refs/remotes/origin/cm-10.0
 			j++;
 		}
 	}
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int cmi9880_init(struct hda_codec *codec)
 {
 	struct cmi_spec *spec = codec->spec;
@@ -631,6 +684,39 @@ static const struct hda_codec_ops cmi9880_patch_ops = {
 	.free = cmi9880_free,
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * stuff for auto-parser
+ */
+static const struct hda_codec_ops cmi_auto_patch_ops = {
+	.build_controls = snd_hda_gen_build_controls,
+	.build_pcms = snd_hda_gen_build_pcms,
+	.init = snd_hda_gen_init,
+	.free = snd_hda_gen_free,
+	.unsol_event = snd_hda_jack_unsol_event,
+};
+
+static int cmi_parse_auto_config(struct hda_codec *codec)
+{
+	struct cmi_spec *spec = codec->spec;
+	struct auto_pin_cfg *cfg = &spec->gen.autocfg;
+	int err;
+
+	snd_hda_gen_spec_init(&spec->gen);
+
+	err = snd_hda_parse_pin_defcfg(codec, cfg, NULL, 0);
+	if (err < 0)
+		return err;
+	err = snd_hda_gen_parse_auto_config(codec, cfg);
+	if (err < 0)
+		return err;
+
+	codec->patch_ops = cmi_auto_patch_ops;
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int patch_cmi9880(struct hda_codec *codec)
 {
 	struct cmi_spec *spec;
@@ -649,6 +735,18 @@ static int patch_cmi9880(struct hda_codec *codec)
 		spec->board_config = CMI_AUTO; /* try everything */
 	}
 
+<<<<<<< HEAD
+=======
+	if (spec->board_config == CMI_AUTO) {
+		int err = cmi_parse_auto_config(codec);
+		if (err < 0) {
+			snd_hda_gen_free(codec);
+			return err;
+		}
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* copy default DAC NIDs */
 	memcpy(spec->dac_nids, cmi9880_dac_nids, sizeof(spec->dac_nids));
 	spec->num_dacs = 4;
@@ -677,12 +775,17 @@ static int patch_cmi9880(struct hda_codec *codec)
 		}
 		break;
 	case CMI_ALLOUT:
+<<<<<<< HEAD
+=======
+	default:
+>>>>>>> refs/remotes/origin/master
 		spec->front_panel = 1;
 		spec->multiout.max_channels = 8;
 		spec->no_line_in = 1;
 		spec->input_mux = &cmi9880_no_line_mux;
 		spec->multiout.dig_out_nid = CMI_DIG_OUT_NID;
 		break;
+<<<<<<< HEAD
 	case CMI_AUTO:
 		{
 		unsigned int port_e, port_f, port_g, port_h;
@@ -730,6 +833,8 @@ static int patch_cmi9880(struct hda_codec *codec)
 			snd_printd("patch_cmedia: cannot detect association in defcfg\n");
 		break;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spec->multiout.num_dacs = spec->num_dacs;

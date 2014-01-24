@@ -50,7 +50,17 @@ struct ad7414_data {
 /* REG: (0.25C/bit, two's complement) << 6 */
 static inline int ad7414_temp_from_reg(s16 reg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* use integer division instead of equivalent right shift to
+=======
+	/*
+	 * use integer division instead of equivalent right shift to
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * use integer division instead of equivalent right shift to
+>>>>>>> refs/remotes/origin/master
 	 * guarantee arithmetic shift and preserve the sign
 	 */
 	return ((int)reg / 64) * 250;
@@ -58,10 +68,22 @@ static inline int ad7414_temp_from_reg(s16 reg)
 
 static inline int ad7414_read(struct i2c_client *client, u8 reg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (reg == AD7414_REG_TEMP) {
 		int value = i2c_smbus_read_word_data(client, reg);
 		return (value < 0) ? value : swab16(value);
 	} else
+=======
+	if (reg == AD7414_REG_TEMP)
+		return i2c_smbus_read_word_swapped(client, reg);
+	else
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (reg == AD7414_REG_TEMP)
+		return i2c_smbus_read_word_swapped(client, reg);
+	else
+>>>>>>> refs/remotes/origin/master
 		return i2c_smbus_read_byte_data(client, reg);
 }
 
@@ -131,9 +153,25 @@ static ssize_t set_max_min(struct device *dev,
 	struct ad7414_data *data = i2c_get_clientdata(client);
 	int index = to_sensor_dev_attr(attr)->index;
 	u8 reg = AD7414_REG_LIMIT[index];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	long temp = simple_strtol(buf, NULL, 10);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	long temp;
+	int ret = kstrtol(buf, 10, &temp);
+
+	if (ret < 0)
+		return ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	temp = SENSORS_LIMIT(temp, -40000, 85000);
+=======
+
+	temp = clamp_val(temp, -40000, 85000);
+>>>>>>> refs/remotes/origin/master
 	temp = (temp + (temp < 0 ? -500 : 500)) / 1000;
 
 	mutex_lock(&data->lock);
@@ -181,6 +219,7 @@ static int ad7414_probe(struct i2c_client *client,
 	int err;
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA |
+<<<<<<< HEAD
 				     I2C_FUNC_SMBUS_READ_WORD_DATA)) {
 		err = -EOPNOTSUPP;
 		goto exit;
@@ -191,6 +230,15 @@ static int ad7414_probe(struct i2c_client *client,
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+				     I2C_FUNC_SMBUS_READ_WORD_DATA))
+		return -EOPNOTSUPP;
+
+	data = devm_kzalloc(&client->dev, sizeof(struct ad7414_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->lock);
@@ -210,7 +258,11 @@ static int ad7414_probe(struct i2c_client *client,
 	/* Register sysfs hooks */
 	err = sysfs_create_group(&client->dev.kobj, &ad7414_group);
 	if (err)
+<<<<<<< HEAD
 		goto exit_free;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -222,6 +274,7 @@ static int ad7414_probe(struct i2c_client *client,
 
 exit_remove:
 	sysfs_remove_group(&client->dev.kobj, &ad7414_group);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
 exit:
@@ -229,12 +282,21 @@ exit:
 }
 
 static int __devexit ad7414_remove(struct i2c_client *client)
+=======
+	return err;
+}
+
+static int ad7414_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ad7414_data *data = i2c_get_clientdata(client);
 
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &ad7414_group);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -249,10 +311,12 @@ static struct i2c_driver ad7414_driver = {
 		.name	= "ad7414",
 	},
 	.probe	= ad7414_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(ad7414_remove),
 	.id_table = ad7414_id,
 };
 
+<<<<<<< HEAD
 static int __init ad7414_init(void)
 {
 	return i2c_add_driver(&ad7414_driver);
@@ -264,6 +328,16 @@ static void __exit ad7414_exit(void)
 	i2c_del_driver(&ad7414_driver);
 }
 module_exit(ad7414_exit);
+=======
+module_i2c_driver(ad7414_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= ad7414_remove,
+	.id_table = ad7414_id,
+};
+
+module_i2c_driver(ad7414_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Stefan Roese <sr at denx.de>, "
 	      "Frank Edelhaeuser <frank.edelhaeuser at spansion.com>");

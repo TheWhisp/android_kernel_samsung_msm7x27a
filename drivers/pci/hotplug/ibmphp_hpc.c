@@ -258,7 +258,11 @@ static u8 i2c_ctrl_write (struct controller *ctlr_ptr, void __iomem *WPGBbar, u8
 {
 	u8 rc;
 	void __iomem *wpg_addr;	// base addr + offset
+<<<<<<< HEAD
 	unsigned long wpg_data;	// data to/from WPG LOHI format 
+=======
+	unsigned long wpg_data;	// data to/from WPG LOHI format
+>>>>>>> refs/remotes/origin/master
 	unsigned long ultemp;
 	unsigned long data;	// actual data HILO format
 	int i;
@@ -351,7 +355,11 @@ static u8 i2c_ctrl_write (struct controller *ctlr_ptr, void __iomem *WPGBbar, u8
 }
 
 //------------------------------------------------------------
+<<<<<<< HEAD
 //  Read from ISA type HPC 
+=======
+//  Read from ISA type HPC
+>>>>>>> refs/remotes/origin/master
 //------------------------------------------------------------
 static u8 isa_ctrl_read (struct controller *ctlr_ptr, u8 offset)
 {
@@ -372,7 +380,11 @@ static void isa_ctrl_write (struct controller *ctlr_ptr, u8 offset, u8 data)
 {
 	u16 start_address;
 	u16 port_address;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	start_address = ctlr_ptr->u.isa_ctlr.io_start;
 	port_address = start_address + (u16) offset;
 	outb (data, port_address);
@@ -656,11 +668,19 @@ int ibmphp_hpc_readslot (struct slot * pslot, u8 cmd, u8 * pstatus)
 	//--------------------------------------------------------------------
 	// cleanup
 	//--------------------------------------------------------------------
+<<<<<<< HEAD
 	
 	// remove physical to logical address mapping
 	if ((ctlr_ptr->ctlr_type == 2) || (ctlr_ptr->ctlr_type == 4))
 		iounmap (wpg_bbar);
 	
+=======
+
+	// remove physical to logical address mapping
+	if ((ctlr_ptr->ctlr_type == 2) || (ctlr_ptr->ctlr_type == 4))
+		iounmap (wpg_bbar);
+
+>>>>>>> refs/remotes/origin/master
 	free_hpc_access ();
 
 	debug_polling ("%s - Exit rc[%d]\n", __func__, rc);
@@ -835,7 +855,11 @@ static int poll_hpc(void *data)
 		down (&semOperations);
 
 		switch (poll_state) {
+<<<<<<< HEAD
 		case POLL_LATCH_REGISTER: 
+=======
+		case POLL_LATCH_REGISTER:
+>>>>>>> refs/remotes/origin/master
 			oldlatchlow = curlatchlow;
 			ctrl_count = 0x00;
 			list_for_each (pslotlist, &ibmphp_slot_head) {
@@ -892,16 +916,26 @@ static int poll_hpc(void *data)
 
 			if (kthread_should_stop())
 				goto out_sleep;
+<<<<<<< HEAD
 			
 			down (&semOperations);
 			
+=======
+
+			down (&semOperations);
+
+>>>>>>> refs/remotes/origin/master
 			if (poll_count >= POLL_LATCH_CNT) {
 				poll_count = 0;
 				poll_state = POLL_SLOTS;
 			} else
 				poll_state = POLL_LATCH_REGISTER;
 			break;
+<<<<<<< HEAD
 		}	
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 		/* give up the hardware semaphore */
 		up (&semOperations);
 		/* sleep for a short time just for good measure */
@@ -958,7 +992,11 @@ static int process_changeinstatus (struct slot *pslot, struct slot *poldslot)
 	// bit 5 - HPC_SLOT_PWRGD
 	if ((pslot->status & 0x20) != (poldslot->status & 0x20))
 		// OFF -> ON: ignore, ON -> OFF: disable slot
+<<<<<<< HEAD
 		if ((poldslot->status & 0x20) && (SLOT_CONNECT (poldslot->status) == HPC_SLOT_CONNECTED) && (SLOT_PRESENT (poldslot->status))) 
+=======
+		if ((poldslot->status & 0x20) && (SLOT_CONNECT (poldslot->status) == HPC_SLOT_CONNECTED) && (SLOT_PRESENT (poldslot->status)))
+>>>>>>> refs/remotes/origin/master
 			disable = 1;
 
 	// bit 6 - HPC_SLOT_BUS_SPEED
@@ -980,7 +1018,11 @@ static int process_changeinstatus (struct slot *pslot, struct slot *poldslot)
 					pslot->status &= ~HPC_SLOT_POWER;
 			}
 		}
+<<<<<<< HEAD
 		// CLOSE -> OPEN 
+=======
+		// CLOSE -> OPEN
+>>>>>>> refs/remotes/origin/master
 		else if ((SLOT_PWRGD (poldslot->status) == HPC_SLOT_PWRGD_GOOD)
 			&& (SLOT_CONNECT (poldslot->status) == HPC_SLOT_CONNECTED) && (SLOT_PRESENT (poldslot->status))) {
 			disable = 1;
@@ -1075,7 +1117,11 @@ void __exit ibmphp_hpc_stop_poll_thread (void)
 	debug ("before locking operations \n");
 	ibmphp_lock_operations ();
 	debug ("after locking operations \n");
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	// wait for poll thread to exit
 	debug ("before sem_exit down \n");
 	down (&sem_exit);

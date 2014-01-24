@@ -21,7 +21,10 @@
 
 #include <plat/cpu.h>
 #include <plat/pm.h>
+<<<<<<< HEAD
 #include <plat/regs-timer.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/regs-irq.h>
 #include <mach/regs-clock.h>
@@ -77,6 +80,7 @@ static struct sleep_save s5pv210_core_save[] = {
 	/* Clock ETC */
 	SAVE_ITEM(S5P_CLK_OUT),
 	SAVE_ITEM(S5P_MDNIE_SEL),
+<<<<<<< HEAD
 
 	/* PWM Register */
 	SAVE_ITEM(S3C2410_TCFG0),
@@ -88,7 +92,16 @@ static struct sleep_save s5pv210_core_save[] = {
 	SAVE_ITEM(S3C2410_TCNTO(0)),
 };
 
+<<<<<<< HEAD
 void s5pv210_cpu_suspend(void)
+=======
+static int s5pv210_cpu_suspend(unsigned long arg)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+static int s5pv210_cpu_suspend(unsigned long arg)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long tmp;
 
@@ -104,8 +117,13 @@ void s5pv210_cpu_suspend(void)
 	    "mcr p15, 0, %0, c7, c10, 4\n\t"
 	    "wfi" : : "r" (tmp));
 
+<<<<<<< HEAD
 	/* we should never get past here */
 	panic("sleep resumed to originator?");
+=======
+	pr_info("Failed to suspend the system\n");
+	return 1; /* Aborting suspend */
+>>>>>>> refs/remotes/origin/master
 }
 
 static void s5pv210_pm_prepare(void)
@@ -133,7 +151,15 @@ static void s5pv210_pm_prepare(void)
 	s3c_pm_do_save(s5pv210_core_save, ARRAY_SIZE(s5pv210_core_save));
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int s5pv210_pm_add(struct sys_device *sysdev)
+=======
+static int s5pv210_pm_add(struct device *dev, struct subsys_interface *sif)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int s5pv210_pm_add(struct device *dev, struct subsys_interface *sif)
+>>>>>>> refs/remotes/origin/master
 {
 	pm_cpu_prep = s5pv210_pm_prepare;
 	pm_cpu_sleep = s5pv210_cpu_suspend;
@@ -141,13 +167,34 @@ static int s5pv210_pm_add(struct sys_device *sysdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct sysdev_driver s5pv210_pm_driver = {
 	.add		= s5pv210_pm_add,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct subsys_interface s5pv210_pm_interface = {
+	.name		= "s5pv210_pm",
+	.subsys		= &s5pv210_subsys,
+	.add_dev	= s5pv210_pm_add,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static __init int s5pv210_pm_drvinit(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return sysdev_driver_register(&s5pv210_sysclass, &s5pv210_pm_driver);
+=======
+	return subsys_interface_register(&s5pv210_pm_interface);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return subsys_interface_register(&s5pv210_pm_interface);
+>>>>>>> refs/remotes/origin/master
 }
 arch_initcall(s5pv210_pm_drvinit);
 

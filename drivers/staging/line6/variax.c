@@ -12,6 +12,7 @@
 #include <linux/slab.h>
 
 #include "audio.h"
+<<<<<<< HEAD
 #include "control.h"
 #include "driver.h"
 #include "variax.h"
@@ -21,10 +22,16 @@
 #define VARIAX_SYSEX_ACTIVATE 0x2a
 #define VARIAX_MODEL_HEADER_LENGTH 7
 #define VARIAX_MODEL_MESSAGE_LENGTH 199
+=======
+#include "driver.h"
+#include "variax.h"
+
+>>>>>>> refs/remotes/origin/master
 #define VARIAX_OFFSET_ACTIVATE 7
 
 /*
 	This message is sent by the device during initialization and identifies
+<<<<<<< HEAD
 	the connected guitar model.
 */
 static const char variax_init_model[] = {
@@ -34,6 +41,8 @@ static const char variax_init_model[] = {
 
 /*
 	This message is sent by the device during initialization and identifies
+=======
+>>>>>>> refs/remotes/origin/master
 	the connected guitar version.
 */
 static const char variax_init_version[] = {
@@ -53,6 +62,7 @@ static const char variax_activate[] = {
 	0xf7
 };
 
+<<<<<<< HEAD
 static const char variax_request_bank[] = {
 	0xf0, 0x00, 0x01, 0x0c, 0x07, 0x00, 0x6d, 0xf7
 };
@@ -71,10 +81,14 @@ static const char variax_request_model2[] = {
 
 /* forward declarations: */
 static int variax_create_files2(struct device *dev);
+=======
+/* forward declarations: */
+>>>>>>> refs/remotes/origin/master
 static void variax_startup2(unsigned long data);
 static void variax_startup4(unsigned long data);
 static void variax_startup5(unsigned long data);
 
+<<<<<<< HEAD
 /*
 	Decode data transmitted by workbench.
 */
@@ -90,6 +104,8 @@ static void variax_decode(const unsigned char *raw_data, unsigned char *data,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void variax_activate_async(struct usb_line6_variax *variax, int a)
 {
 	variax->buffer_activate[VARIAX_OFFSET_ACTIVATE] = a;
@@ -155,6 +171,7 @@ static void variax_startup5(unsigned long data)
 {
 	struct usb_line6_variax *variax = (struct usb_line6_variax *)data;
 	CHECK_STARTUP_PROGRESS(variax->startup_progress,
+<<<<<<< HEAD
 			       VARIAX_STARTUP_DUMPREQ);
 
 	/* current model dump: */
@@ -166,26 +183,38 @@ static void variax_startup5(unsigned long data)
 static void variax_startup6(struct usb_line6_variax *variax)
 {
 	CHECK_STARTUP_PROGRESS(variax->startup_progress,
+=======
+>>>>>>> refs/remotes/origin/master
 			       VARIAX_STARTUP_WORKQUEUE);
 
 	/* schedule work for global work queue: */
 	schedule_work(&variax->startup_work);
 }
 
+<<<<<<< HEAD
 static void variax_startup7(struct work_struct *work)
 {
 	struct usb_line6_variax *variax =
 	    container_of(work, struct usb_line6_variax, startup_work);
 	struct usb_line6 *line6 = &variax->line6;
+=======
+static void variax_startup6(struct work_struct *work)
+{
+	struct usb_line6_variax *variax =
+	    container_of(work, struct usb_line6_variax, startup_work);
+>>>>>>> refs/remotes/origin/master
 
 	CHECK_STARTUP_PROGRESS(variax->startup_progress, VARIAX_STARTUP_SETUP);
 
 	/* ALSA audio interface: */
 	line6_register_audio(&variax->line6);
+<<<<<<< HEAD
 
 	/* device files: */
 	line6_variax_create_files(0, 0, line6->ifcdev);
 	variax_create_files2(line6->ifcdev);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -196,6 +225,7 @@ void line6_variax_process_message(struct usb_line6_variax *variax)
 	const unsigned char *buf = variax->line6.buffer_message;
 
 	switch (buf[0]) {
+<<<<<<< HEAD
 	case LINE6_PARAM_CHANGE | LINE6_CHANNEL_HOST:
 		switch (buf[1]) {
 		case VARIAXMIDI_volume:
@@ -215,11 +245,14 @@ void line6_variax_process_message(struct usb_line6_variax *variax)
 					 VARIAX_DUMP_PASS1);
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	case LINE6_RESET:
 		dev_info(variax->line6.ifcdev, "VARIAX reset\n");
 		break;
 
 	case LINE6_SYSEX_BEGIN:
+<<<<<<< HEAD
 		if (memcmp(buf + 1, variax_request_model1 + 1,
 			   VARIAX_MODEL_HEADER_LENGTH - 1) == 0) {
 			if (variax->line6.message_length ==
@@ -280,12 +313,17 @@ void line6_variax_process_message(struct usb_line6_variax *variax)
 			       sizeof(variax->guitar));
 		} else if (memcmp(buf + 1, variax_init_version + 1,
 				  sizeof(variax_init_version) - 1) == 0) {
+=======
+		if (memcmp(buf + 1, variax_init_version + 1,
+			   sizeof(variax_init_version) - 1) == 0) {
+>>>>>>> refs/remotes/origin/master
 			variax_startup3(variax);
 		} else if (memcmp(buf + 1, variax_init_done + 1,
 				  sizeof(variax_init_done) - 1) == 0) {
 			/* notify of complete initialization: */
 			variax_startup4((unsigned long)variax);
 		}
+<<<<<<< HEAD
 
 		break;
 
@@ -567,11 +605,20 @@ static DEVICE_ATTR(raw2, S_IWUSR, line6_nop_read, variax_set_raw2);
 #endif
 
 /*
+=======
+		break;
+	}
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
 	Variax destructor.
 */
 static void variax_destruct(struct usb_interface *interface)
 {
 	struct usb_line6_variax *variax = usb_get_intfdata(interface);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_line6 *line6;
 
 	if (variax == NULL)
@@ -580,20 +627,35 @@ static void variax_destruct(struct usb_interface *interface)
 	if (line6 == NULL)
 		return;
 	line6_cleanup_audio(line6);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (variax == NULL)
+		return;
+	line6_cleanup_audio(&variax->line6);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	del_timer(&variax->startup_timer1);
 	del_timer(&variax->startup_timer2);
 	cancel_work_sync(&variax->startup_work);
 
+<<<<<<< HEAD
 	/* free dump request data: */
 	line6_dumpreq_destructbuf(&variax->dumpreq, 2);
 	line6_dumpreq_destructbuf(&variax->dumpreq, 1);
 	line6_dumpreq_destruct(&variax->dumpreq);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(variax->buffer_activate);
 }
 
 /*
+<<<<<<< HEAD
 	Create sysfs entries.
 */
 static int variax_create_files2(struct device *dev)
@@ -615,6 +677,8 @@ static int variax_create_files2(struct device *dev)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
 	 Try to init workbench device.
 */
 static int variax_try_init(struct usb_interface *interface,
@@ -624,12 +688,17 @@ static int variax_try_init(struct usb_interface *interface,
 
 	init_timer(&variax->startup_timer1);
 	init_timer(&variax->startup_timer2);
+<<<<<<< HEAD
 	INIT_WORK(&variax->startup_work, variax_startup7);
+=======
+	INIT_WORK(&variax->startup_work, variax_startup6);
+>>>>>>> refs/remotes/origin/master
 
 	if ((interface == NULL) || (variax == NULL))
 		return -ENODEV;
 
 	/* initialize USB buffers: */
+<<<<<<< HEAD
 	err = line6_dumpreq_init(&variax->dumpreq, variax_request_model1,
 				 sizeof(variax_request_model1));
 
@@ -654,6 +723,8 @@ static int variax_try_init(struct usb_interface *interface,
 		return err;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	variax->buffer_activate = kmemdup(variax_activate,
 					  sizeof(variax_activate), GFP_KERNEL);
 
@@ -696,6 +767,7 @@ int line6_variax_init(struct usb_interface *interface,
 */
 void line6_variax_disconnect(struct usb_interface *interface)
 {
+<<<<<<< HEAD
 	struct device *dev;
 
 	if (interface == NULL)
@@ -718,6 +790,10 @@ void line6_variax_disconnect(struct usb_interface *interface)
 		device_remove_file(dev, &dev_attr_raw2);
 #endif
 	}
+=======
+	if (interface == NULL)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	variax_destruct(interface);
 }

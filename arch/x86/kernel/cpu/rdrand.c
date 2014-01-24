@@ -31,6 +31,7 @@ static int __init x86_rdrand_setup(char *s)
 }
 __setup("nordrand", x86_rdrand_setup);
 
+<<<<<<< HEAD
 /* We can't use arch_get_random_long() here since alternatives haven't run */
 static inline int rdrand_long(unsigned long *v)
 {
@@ -45,6 +46,8 @@ static inline int rdrand_long(unsigned long *v)
 	return ok;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Force a reseed cycle; we are architecturally guaranteed a reseed
  * after no more than 512 128-bit chunks of random data.  This also
@@ -52,7 +55,11 @@ static inline int rdrand_long(unsigned long *v)
  */
 #define RESEED_LOOP ((512*128)/sizeof(unsigned long))
 
+<<<<<<< HEAD
 void __cpuinit x86_init_rdrand(struct cpuinfo_x86 *c)
+=======
+void x86_init_rdrand(struct cpuinfo_x86 *c)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_ARCH_RANDOM
 	unsigned long tmp;

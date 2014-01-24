@@ -2,6 +2,8 @@
 # Generic HWSPINLOCK framework
 #
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config HWSPINLOCK
 	tristate "Generic Hardware Spinlock framework"
 	depends on ARCH_OMAP4
@@ -16,8 +18,49 @@ config HWSPINLOCK
 config HWSPINLOCK_OMAP
 	tristate "OMAP Hardware Spinlock device"
 	depends on HWSPINLOCK && ARCH_OMAP4
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+# HWSPINLOCK always gets selected by whoever wants it.
+config HWSPINLOCK
+	tristate
+
+menu "Hardware Spinlock drivers"
+
+config HWSPINLOCK_OMAP
+	tristate "OMAP Hardware Spinlock device"
+<<<<<<< HEAD
+	depends on ARCH_OMAP4
+	select HWSPINLOCK
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ARCH_OMAP4 || SOC_OMAP5
+	select HWSPINLOCK
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say y here to support the OMAP Hardware Spinlock device (firstly
 	  introduced in OMAP4).
 
 	  If unsure, say N.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+config HSEM_U8500
+	tristate "STE Hardware Semaphore functionality"
+	depends on ARCH_U8500
+	select HWSPINLOCK
+	help
+	  Say y here to support the STE Hardware Semaphore functionality, which
+	  provides a synchronisation mechanism for the various processor on the
+	  SoC.
+
+	  If unsure, say N.
+
+endmenu
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

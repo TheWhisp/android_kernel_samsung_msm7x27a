@@ -25,7 +25,12 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+#include <asm/sched_clock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hardware/arm_timer.h>
 
 static long __init sp804_get_clock_rate(const char *name)
@@ -41,26 +46,107 @@ static long __init sp804_get_clock_rate(const char *name)
 		return PTR_ERR(clk);
 	}
 
+<<<<<<< HEAD
 	err = clk_enable(clk);
 	if (err) {
 		pr_err("sp804: %s clock failed to enable: %d\n", name, err);
+=======
+	err = clk_prepare(clk);
+	if (err) {
+		pr_err("sp804: %s clock failed to prepare: %d\n", name, err);
+=======
+#include <linux/of.h>
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/sched_clock.h>
+
+#include <asm/hardware/arm_timer.h>
+#include <asm/hardware/timer-sp.h>
+
+static long __init sp804_get_clock_rate(struct clk *clk)
+{
+	long rate;
+	int err;
+
+	err = clk_prepare(clk);
+	if (err) {
+		pr_err("sp804: clock failed to prepare: %d\n", err);
+>>>>>>> refs/remotes/origin/master
+		clk_put(clk);
+		return err;
+	}
+
+	err = clk_enable(clk);
+	if (err) {
+<<<<<<< HEAD
+		pr_err("sp804: %s clock failed to enable: %d\n", name, err);
+		clk_unprepare(clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("sp804: clock failed to enable: %d\n", err);
+		clk_unprepare(clk);
+>>>>>>> refs/remotes/origin/master
 		clk_put(clk);
 		return err;
 	}
 
 	rate = clk_get_rate(clk);
 	if (rate < 0) {
+<<<<<<< HEAD
 		pr_err("sp804: %s clock failed to get rate: %ld\n", name, rate);
 		clk_disable(clk);
+<<<<<<< HEAD
+=======
+		clk_unprepare(clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("sp804: clock failed to get rate: %ld\n", rate);
+		clk_disable(clk);
+		clk_unprepare(clk);
+>>>>>>> refs/remotes/origin/master
 		clk_put(clk);
 	}
 
 	return rate;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __init sp804_clocksource_init(void __iomem *base, const char *name)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void __iomem *sched_clock_base;
+
+static u32 sp804_read(void)
+{
+	return ~readl_relaxed(sched_clock_base + TIMER_VALUE);
+}
+
+void __init __sp804_clocksource_and_sched_clock_init(void __iomem *base,
+						     const char *name,
+<<<<<<< HEAD
+						     int use_sched_clock)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	long rate = sp804_get_clock_rate(name);
+=======
+						     struct clk *clk,
+						     int use_sched_clock)
+{
+	long rate;
+
+	if (!clk) {
+		clk = clk_get_sys("sp804", name);
+		if (IS_ERR(clk)) {
+			pr_err("sp804: clock not found: %d\n",
+			       (int)PTR_ERR(clk));
+			return;
+		}
+	}
+
+	rate = sp804_get_clock_rate(clk);
+>>>>>>> refs/remotes/origin/master
 
 	if (rate < 0)
 		return;
@@ -74,6 +160,20 @@ void __init sp804_clocksource_init(void __iomem *base, const char *name)
 
 	clocksource_mmio_init(base + TIMER_VALUE, name,
 		rate, 200, 32, clocksource_mmio_readl_down);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (use_sched_clock) {
+		sched_clock_base = base;
+		setup_sched_clock(sp804_read, 32, rate);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -134,32 +234,66 @@ static int sp804_set_next_event(unsigned long next,
 }
 
 static struct clock_event_device sp804_clockevent = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.shift		= 32,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.features       = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
 	.set_mode	= sp804_set_mode,
 	.set_next_event	= sp804_set_next_event,
 	.rating		= 300,
 	.cpumask	= cpu_all_mask,
+=======
+	.features       = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT |
+		CLOCK_EVT_FEAT_DYNIRQ,
+	.set_mode	= sp804_set_mode,
+	.set_next_event	= sp804_set_next_event,
+	.rating		= 300,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct irqaction sp804_timer_irq = {
 	.name		= "timer",
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL,
+=======
+	.flags		= IRQF_TIMER | IRQF_IRQPOLL,
+>>>>>>> refs/remotes/origin/master
 	.handler	= sp804_timer_interrupt,
 	.dev_id		= &sp804_clockevent,
 };
 
+<<<<<<< HEAD
 void __init sp804_clockevents_init(void __iomem *base, unsigned int irq,
 	const char *name)
 {
 	struct clock_event_device *evt = &sp804_clockevent;
 	long rate = sp804_get_clock_rate(name);
 
+=======
+void __init __sp804_clockevents_init(void __iomem *base, unsigned int irq, struct clk *clk, const char *name)
+{
+	struct clock_event_device *evt = &sp804_clockevent;
+	long rate;
+
+	if (!clk)
+		clk = clk_get_sys("sp804", name);
+	if (IS_ERR(clk)) {
+		pr_err("sp804: %s clock not found: %d\n", name,
+			(int)PTR_ERR(clk));
+		return;
+	}
+
+	rate = sp804_get_clock_rate(clk);
+>>>>>>> refs/remotes/origin/master
 	if (rate < 0)
 		return;
 
 	clkevt_base = base;
 	clkevt_reload = DIV_ROUND_CLOSEST(rate, HZ);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	evt->name = name;
 	evt->irq = irq;
@@ -169,4 +303,112 @@ void __init sp804_clockevents_init(void __iomem *base, unsigned int irq,
 
 	setup_irq(irq, &sp804_timer_irq);
 	clockevents_register_device(evt);
+=======
+	evt->name = name;
+	evt->irq = irq;
+
+	setup_irq(irq, &sp804_timer_irq);
+	clockevents_config_and_register(evt, rate, 0xf, 0xffffffff);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
+=======
+	evt->name = name;
+	evt->irq = irq;
+	evt->cpumask = cpu_possible_mask;
+
+	writel(0, base + TIMER_CTRL);
+
+	setup_irq(irq, &sp804_timer_irq);
+	clockevents_config_and_register(evt, rate, 0xf, 0xffffffff);
+}
+
+static void __init sp804_of_init(struct device_node *np)
+{
+	static bool initialized = false;
+	void __iomem *base;
+	int irq;
+	u32 irq_num = 0;
+	struct clk *clk1, *clk2;
+	const char *name = of_get_property(np, "compatible", NULL);
+
+	base = of_iomap(np, 0);
+	if (WARN_ON(!base))
+		return;
+
+	/* Ensure timers are disabled */
+	writel(0, base + TIMER_CTRL);
+	writel(0, base + TIMER_2_BASE + TIMER_CTRL);
+
+	if (initialized || !of_device_is_available(np))
+		goto err;
+
+	clk1 = of_clk_get(np, 0);
+	if (IS_ERR(clk1))
+		clk1 = NULL;
+
+	/* Get the 2nd clock if the timer has 2 timer clocks */
+	if (of_count_phandle_with_args(np, "clocks", "#clock-cells") == 3) {
+		clk2 = of_clk_get(np, 1);
+		if (IS_ERR(clk2)) {
+			pr_err("sp804: %s clock not found: %d\n", np->name,
+				(int)PTR_ERR(clk2));
+			goto err;
+		}
+	} else
+		clk2 = clk1;
+
+	irq = irq_of_parse_and_map(np, 0);
+	if (irq <= 0)
+		goto err;
+
+	of_property_read_u32(np, "arm,sp804-has-irq", &irq_num);
+	if (irq_num == 2) {
+		__sp804_clockevents_init(base + TIMER_2_BASE, irq, clk2, name);
+		__sp804_clocksource_and_sched_clock_init(base, name, clk1, 1);
+	} else {
+		__sp804_clockevents_init(base, irq, clk1 , name);
+		__sp804_clocksource_and_sched_clock_init(base + TIMER_2_BASE,
+							 name, clk2, 1);
+	}
+	initialized = true;
+
+	return;
+err:
+	iounmap(base);
+}
+CLOCKSOURCE_OF_DECLARE(sp804, "arm,sp804", sp804_of_init);
+
+static void __init integrator_cp_of_init(struct device_node *np)
+{
+	static int init_count = 0;
+	void __iomem *base;
+	int irq;
+	const char *name = of_get_property(np, "compatible", NULL);
+
+	base = of_iomap(np, 0);
+	if (WARN_ON(!base))
+		return;
+
+	/* Ensure timer is disabled */
+	writel(0, base + TIMER_CTRL);
+
+	if (init_count == 2 || !of_device_is_available(np))
+		goto err;
+
+	if (!init_count)
+		sp804_clocksource_init(base, name);
+	else {
+		irq = irq_of_parse_and_map(np, 0);
+		if (irq <= 0)
+			goto err;
+
+		sp804_clockevents_init(base, irq, name);
+	}
+
+	init_count++;
+	return;
+err:
+	iounmap(base);
+}
+CLOCKSOURCE_OF_DECLARE(intcp, "arm,integrator-cp-timer", integrator_cp_of_init);
+>>>>>>> refs/remotes/origin/master

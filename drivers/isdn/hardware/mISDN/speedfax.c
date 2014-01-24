@@ -22,6 +22,14 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/pci.h>
@@ -146,10 +154,23 @@ Start_ISAR:
 		goto Start_ISAR;
 	if (cnt < irqloops)
 		pr_debug("%s: %d irqloops cpu%d\n", sf->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			irqloops - cnt, smp_processor_id());
 	if (irqloops && !cnt)
 		pr_notice("%s: %d IRQ LOOP cpu%d\n", sf->name,
 			irqloops, smp_processor_id());
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			 irqloops - cnt, smp_processor_id());
+	if (irqloops && !cnt)
+		pr_notice("%s: %d IRQ LOOP cpu%d\n", sf->name,
+			  irqloops, smp_processor_id());
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&sf->lock);
 	return IRQ_HANDLED;
 }
@@ -223,7 +244,11 @@ channel_ctrl(struct sfax_hw  *sf, struct mISDN_ctrl_req *cq)
 
 	switch (cq->op) {
 	case MISDN_CTRL_GETOP:
+<<<<<<< HEAD
 		cq->op = MISDN_CTRL_LOOP;
+=======
+		cq->op = MISDN_CTRL_LOOP | MISDN_CTRL_L1_TIMER3;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MISDN_CTRL_LOOP:
 		/* cq->channel: 0 disable, 1 B1 loop 2 B2 loop, 3 both */
@@ -233,6 +258,12 @@ channel_ctrl(struct sfax_hw  *sf, struct mISDN_ctrl_req *cq)
 		}
 		ret = sf->isac.ctrl(&sf->isac, HW_TESTLOOP, cq->channel);
 		break;
+<<<<<<< HEAD
+=======
+	case MISDN_CTRL_L1_TIMER3:
+		ret = sf->isac.ctrl(&sf->isac, HW_TIMER3_VALUE, cq->p1);
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		pr_info("%s: unknown Op %x\n", sf->name, cq->op);
 		ret = -EINVAL;
@@ -265,7 +296,15 @@ sfax_dctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 		break;
 	case CLOSE_CHANNEL:
 		pr_debug("%s: dev(%d) close from %p\n", sf->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dch->dev.id, __builtin_return_address(0));
+=======
+			 dch->dev.id, __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 dch->dev.id, __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/master
 		module_put(THIS_MODULE);
 		break;
 	case CONTROL_CHANNEL:
@@ -278,7 +317,11 @@ sfax_dctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 init_card(struct sfax_hw *sf)
 {
 	int	ret, cnt = 3;
@@ -305,10 +348,23 @@ init_card(struct sfax_hw *sf)
 		msleep_interruptible(10);
 		if (debug & DEBUG_HW)
 			pr_notice("%s: IRQ %d count %d\n", sf->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				sf->irq, sf->irqcnt);
 		if (!sf->irqcnt) {
 			pr_info("%s: IRQ(%d) got no requests during init %d\n",
 			       sf->name, sf->irq, 3 - cnt);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				  sf->irq, sf->irqcnt);
+		if (!sf->irqcnt) {
+			pr_info("%s: IRQ(%d) got no requests during init %d\n",
+				sf->name, sf->irq, 3 - cnt);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else
 			return 0;
 	}
@@ -317,14 +373,26 @@ init_card(struct sfax_hw *sf)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 setup_speedfax(struct sfax_hw *sf)
 {
 	u_long flags;
 
 	if (!request_region(sf->cfg, 256, sf->name)) {
 		pr_info("mISDN: %s config port %x-%x already in use\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       sf->name, sf->cfg, sf->cfg + 255);
+=======
+			sf->name, sf->cfg, sf->cfg + 255);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sf->name, sf->cfg, sf->cfg + 255);
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 	outb(0xff, sf->cfg);
@@ -367,7 +435,11 @@ release_card(struct sfax_hw *card) {
 	sfax_cnt--;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 setup_instance(struct sfax_hw *card)
 {
 	const struct firmware *firmware;
@@ -395,7 +467,15 @@ setup_instance(struct sfax_hw *card)
 	}
 	if (debug & DEBUG_HW)
 		pr_notice("%s: got firmware %zu bytes\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			card->name, firmware->size);
+=======
+			  card->name, firmware->size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  card->name, firmware->size);
+>>>>>>> refs/remotes/origin/master
 
 	mISDNisac_init(&card->isac, card);
 
@@ -405,7 +485,15 @@ setup_instance(struct sfax_hw *card)
 	for (i = 0; i < 2; i++) {
 		set_channelmap(i + 1, card->isac.dch.dev.channelmap);
 		list_add(&card->isar.ch[i].bch.ch.list,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			&card->isac.dch.dev.bchannels);
+=======
+			 &card->isac.dch.dev.bchannels);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 &card->isac.dch.dev.bchannels);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	err = setup_speedfax(card);
@@ -415,7 +503,15 @@ setup_instance(struct sfax_hw *card)
 	if (err)
 		goto error;
 	err = mISDN_register_device(&card->isac.dch.dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		&card->pdev->dev, card->name);
+=======
+				    &card->pdev->dev, card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    &card->pdev->dev, card->name);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto error;
 	err = init_card(card);
@@ -447,7 +543,11 @@ error_fw:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 sfaxpci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	int err = -ENOMEM;
@@ -465,7 +565,15 @@ sfaxpci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 
 	pr_notice("mISDN: Speedfax found adapter %s at %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(char *)ent->driver_data, pci_name(pdev));
+=======
+		  (char *)ent->driver_data, pci_name(pdev));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  (char *)ent->driver_data, pci_name(pdev));
+>>>>>>> refs/remotes/origin/master
 
 	card->cfg = pci_resource_start(pdev, 0);
 	card->irq = pdev->irq;
@@ -476,7 +584,11 @@ sfaxpci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 sfax_remove_pci(struct pci_dev *pdev)
 {
 	struct sfax_hw	*card = pci_get_drvdata(pdev);
@@ -487,7 +599,11 @@ sfax_remove_pci(struct pci_dev *pdev)
 		pr_debug("%s: drvdata already removed\n", __func__);
 }
 
+<<<<<<< HEAD
 static struct pci_device_id sfaxpci_ids[] __devinitdata = {
+=======
+static struct pci_device_id sfaxpci_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VENDOR_ID_TIGERJET, PCI_DEVICE_ID_TIGERJET_100,
 	  PCI_SUBVENDOR_SPEEDFAX_PYRAMID, PCI_SUB_ID_SEDLBAUER,
 	  0, 0, (unsigned long) "Pyramid Speedfax + PCI"
@@ -503,7 +619,11 @@ MODULE_DEVICE_TABLE(pci, sfaxpci_ids);
 static struct pci_driver sfaxpci_driver = {
 	.name = "speedfax+ pci",
 	.probe = sfaxpci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(sfax_remove_pci),
+=======
+	.remove = sfax_remove_pci,
+>>>>>>> refs/remotes/origin/master
 	.id_table = sfaxpci_ids,
 };
 
@@ -513,7 +633,15 @@ Speedfax_init(void)
 	int err;
 
 	pr_notice("Sedlbauer Speedfax+ Driver Rev. %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		SPEEDFAX_REV);
+=======
+		  SPEEDFAX_REV);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  SPEEDFAX_REV);
+>>>>>>> refs/remotes/origin/master
 	err = pci_register_driver(&sfaxpci_driver);
 	return err;
 }

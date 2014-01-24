@@ -9,7 +9,11 @@ Supported chips:
                http://pdfserv.maxim-ic.com/en/ds/MAX1619.pdf
 
 Authors:
+<<<<<<< HEAD
         Alexey Fisher <fishor@mail.ru>,
+=======
+        Oleksij Rempel <bug-track@fisher-privat.net>,
+>>>>>>> refs/remotes/origin/master
         Jean Delvare <khali@linux-fr.org>
 
 Description

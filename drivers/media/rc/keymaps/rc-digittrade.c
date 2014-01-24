@@ -19,6 +19,14 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Digittrade DVB-T USB Stick remote controller. */
 /* Imported from af9015.h.

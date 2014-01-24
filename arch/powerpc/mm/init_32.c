@@ -32,6 +32,16 @@
 #include <linux/pagemap.h>
 #include <linux/memblock.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+#include <linux/hugetlb.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+#include <linux/hugetlb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pgalloc.h>
 #include <asm/prom.h>
@@ -43,14 +53,26 @@
 #include <asm/btext.h>
 #include <asm/tlb.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/hugetlb.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/hugetlb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "mmu_decl.h"
 
 #if defined(CONFIG_KERNEL_START_BOOL) || defined(CONFIG_LOWMEM_SIZE_BOOL)
 /* The amount of lowmem must be within 0xF0000000 - KERNELBASE. */
 #if (CONFIG_LOWMEM_SIZE > (0xF0000000 - PAGE_OFFSET))
+<<<<<<< HEAD
 #error "You must adjust CONFIG_LOWMEM_SIZE or CONFIG_START_KERNEL"
+=======
+#error "You must adjust CONFIG_LOWMEM_SIZE or CONFIG_KERNEL_START"
+>>>>>>> refs/remotes/origin/master
 #endif
 #endif
 #define MAX_LOW_MEM	CONFIG_LOWMEM_SIZE
@@ -62,6 +84,22 @@ phys_addr_t memstart_addr = (phys_addr_t)~0ull;
 EXPORT_SYMBOL(memstart_addr);
 phys_addr_t kernstart_addr;
 EXPORT_SYMBOL(kernstart_addr);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#ifdef CONFIG_RELOCATABLE_PPC32
+/* Used in __va()/__pa() */
+long long virt_phys_offset;
+EXPORT_SYMBOL(virt_phys_offset);
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 phys_addr_t lowmem_end_addr;
 
 int boot_mapsize;
@@ -123,10 +161,28 @@ void __init MMU_init(void)
 	/* parse args from command line */
 	MMU_setup();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (memblock.memory.cnt > 1) {
 #ifndef CONFIG_WII
 		memblock.memory.cnt = 1;
 		memblock_analyze();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Reserve gigantic pages for hugetlb.  This MUST occur before
+	 * lowmem_end_addr is initialized below.
+	 */
+	reserve_hugetlb_gpages();
+
+	if (memblock.memory.cnt > 1) {
+#ifndef CONFIG_WII
+		memblock_enforce_memory_limit(memblock.memory.regions[0].size);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "Only using first contiguous memory region");
 #else
 		wii_memory_fixups();
@@ -149,7 +205,13 @@ void __init MMU_init(void)
 #ifndef CONFIG_HIGHMEM
 		total_memory = total_lowmem;
 		memblock_enforce_memory_limit(total_lowmem);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		memblock_analyze();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_HIGHMEM */
 	}
 
@@ -191,6 +253,8 @@ void __init *early_get_page(void)
 		return __va(memblock_alloc(PAGE_SIZE, PAGE_SIZE));
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Free up now-unused memory */
 static void free_sec(unsigned long start, unsigned long end, const char *name)
 {
@@ -223,6 +287,10 @@ void free_initmem(void)
 #undef FREESEC
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_8xx /* No 8xx specific .c file to put that in ... */
 void setup_initial_memory_limit(phys_addr_t first_memblock_base,
 				phys_addr_t first_memblock_size)
@@ -232,7 +300,17 @@ void setup_initial_memory_limit(phys_addr_t first_memblock_base,
 	 */
 	BUG_ON(first_memblock_base != 0);
 
+<<<<<<< HEAD
 	/* 8xx can only access 8MB at the moment */
 	memblock_set_current_limit(min_t(u64, first_memblock_size, 0x00800000));
+=======
+#ifdef CONFIG_PIN_TLB
+	/* 8xx can only access 24MB at the moment */
+	memblock_set_current_limit(min_t(u64, first_memblock_size, 0x01800000));
+#else
+	/* 8xx can only access 8MB at the moment */
+	memblock_set_current_limit(min_t(u64, first_memblock_size, 0x00800000));
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_8xx */

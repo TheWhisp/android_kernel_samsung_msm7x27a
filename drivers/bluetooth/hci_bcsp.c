@@ -49,8 +49,18 @@
 
 #define VERSION "0.3"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int txcrc = 1;
 static int hciextn = 1;
+=======
+static bool txcrc = 1;
+static bool hciextn = 1;
+>>>>>>> refs/remotes/origin/master
+=======
+static int txcrc = 1;
+static int hciextn = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define BCSP_TXWINSIZE	4
 
@@ -522,7 +532,11 @@ static void bcsp_complete_rx_pkt(struct hci_uart *hu)
 				memcpy(skb_push(bcsp->rx_skb, HCI_EVENT_HDR_SIZE), &hdr, HCI_EVENT_HDR_SIZE);
 				bt_cb(bcsp->rx_skb)->pkt_type = HCI_EVENT_PKT;
 
+<<<<<<< HEAD
 				hci_recv_frame(bcsp->rx_skb);
+=======
+				hci_recv_frame(hu->hdev, bcsp->rx_skb);
+>>>>>>> refs/remotes/origin/master
 			} else {
 				BT_ERR ("Packet for unknown channel (%u %s)",
 					bcsp->rx_skb->data[1] & 0x0f,
@@ -536,7 +550,11 @@ static void bcsp_complete_rx_pkt(struct hci_uart *hu)
 		/* Pull out BCSP hdr */
 		skb_pull(bcsp->rx_skb, 4);
 
+<<<<<<< HEAD
 		hci_recv_frame(bcsp->rx_skb);
+=======
+		hci_recv_frame(hu->hdev, bcsp->rx_skb);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	bcsp->rx_state = BCSP_W4_PKT_DELIMITER;
@@ -552,7 +570,11 @@ static u16 bscp_get_crc(struct bcsp_struct *bcsp)
 static int bcsp_recv(struct hci_uart *hu, void *data, int count)
 {
 	struct bcsp_struct *bcsp = hu->priv;
+<<<<<<< HEAD
 	register unsigned char *ptr;
+=======
+	unsigned char *ptr;
+>>>>>>> refs/remotes/origin/master
 
 	BT_DBG("hu %p count %d rx_state %d rx_count %ld", 
 		hu, count, bcsp->rx_state, bcsp->rx_count);
@@ -655,7 +677,10 @@ static int bcsp_recv(struct hci_uart *hu, void *data, int count)
 					bcsp->rx_count = 0;
 					return 0;
 				}
+<<<<<<< HEAD
 				bcsp->rx_skb->dev = (void *) hu->hdev;
+=======
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 			break;
@@ -692,7 +717,15 @@ static int bcsp_open(struct hci_uart *hu)
 
 	BT_DBG("hu %p", hu);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bcsp = kzalloc(sizeof(*bcsp), GFP_ATOMIC);
+=======
+	bcsp = kzalloc(sizeof(*bcsp), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
+=======
+	bcsp = kzalloc(sizeof(*bcsp), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!bcsp)
 		return -ENOMEM;
 

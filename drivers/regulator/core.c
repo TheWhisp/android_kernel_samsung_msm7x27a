@@ -13,29 +13,80 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define pr_fmt(fmt) "%s: " fmt, __func__
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/debugfs.h>
 #include <linux/device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/async.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/async.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/mutex.h>
 #include <linux/suspend.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
 #include <linux/uaccess.h>
 #include <linux/regulator/consumer.h>
 #include <linux/regulator/driver.h>
 #include <linux/regulator/machine.h>
+=======
+#include <linux/of.h>
+#include <linux/seq_file.h>
+#include <linux/uaccess.h>
+=======
+#include <linux/gpio.h>
+#include <linux/of.h>
+<<<<<<< HEAD
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/seq_file.h>
+#include <linux/uaccess.h>
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/regulator/of_regulator.h>
+#include <linux/regulator/consumer.h>
+#include <linux/regulator/driver.h>
+#include <linux/regulator/machine.h>
+#include <linux/module.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/regulator.h>
 
 #include "dummy.h"
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+#define rdev_crit(rdev, fmt, ...)					\
+	pr_crit("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "internal.h"
+
+#define rdev_crit(rdev, fmt, ...)					\
+	pr_crit("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 #define rdev_err(rdev, fmt, ...)					\
 	pr_err("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
 #define rdev_warn(rdev, fmt, ...)					\
@@ -48,13 +99,28 @@
 static DEFINE_MUTEX(regulator_list_mutex);
 static LIST_HEAD(regulator_list);
 static LIST_HEAD(regulator_map_list);
+<<<<<<< HEAD
 static bool has_full_constraints;
 static bool board_wants_dummy_regulator;
 static int suppress_info_printing;
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_FS
 static struct dentry *debugfs_root;
 #endif
+=======
+static struct dentry *debugfs_root;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static LIST_HEAD(regulator_ena_gpio_list);
+static LIST_HEAD(regulator_supply_alias_list);
+static bool has_full_constraints;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+static struct dentry *debugfs_root;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * struct regulator_map
@@ -69,6 +135,7 @@ struct regulator_map {
 };
 
 /*
+<<<<<<< HEAD
  * struct regulator
  *
  * One for each consumer device.
@@ -83,11 +150,47 @@ struct regulator {
 	char *supply_name;
 	struct device_attribute dev_attr;
 	struct regulator_dev *rdev;
+<<<<<<< HEAD
 };
 
 static int _regulator_is_enabled(struct regulator_dev *rdev);
 static int _regulator_disable(struct regulator_dev *rdev,
 		struct regulator_dev **supply_rdev_ptr);
+=======
+	struct dentry *debugfs;
+=======
+ * struct regulator_enable_gpio
+ *
+ * Management for shared enable GPIO pin
+ */
+struct regulator_enable_gpio {
+	struct list_head list;
+	int gpio;
+	u32 enable_count;	/* a number of enabled shared GPIO */
+	u32 request_count;	/* a number of requested shared GPIO */
+	unsigned int ena_gpio_invert:1;
+};
+
+/*
+ * struct regulator_supply_alias
+ *
+ * Used to map lookups for a supply onto an alternative device.
+ */
+struct regulator_supply_alias {
+	struct list_head list;
+	struct device *src_dev;
+	const char *src_supply;
+	struct device *alias_dev;
+	const char *alias_supply;
+>>>>>>> refs/remotes/origin/master
+};
+
+static int _regulator_is_enabled(struct regulator_dev *rdev);
+static int _regulator_disable(struct regulator_dev *rdev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int _regulator_get_voltage(struct regulator_dev *rdev);
 static int _regulator_get_current_limit(struct regulator_dev *rdev);
 static unsigned int _regulator_get_mode(struct regulator_dev *rdev);
@@ -95,6 +198,18 @@ static void _notifier_call_chain(struct regulator_dev *rdev,
 				  unsigned long event, void *data);
 static int _regulator_do_set_voltage(struct regulator_dev *rdev,
 				     int min_uV, int max_uV);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static struct regulator *create_regulator(struct regulator_dev *rdev,
+					  struct device *dev,
+					  const char *supply_name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct regulator *create_regulator(struct regulator_dev *rdev,
+					  struct device *dev,
+					  const char *supply_name);
+>>>>>>> refs/remotes/origin/master
 
 static const char *rdev_get_name(struct regulator_dev *rdev)
 {
@@ -106,6 +221,7 @@ static const char *rdev_get_name(struct regulator_dev *rdev)
 		return "";
 }
 
+<<<<<<< HEAD
 /* gets the regulator for a given consumer device */
 static struct regulator *get_device_regulator(struct device *dev)
 {
@@ -128,6 +244,61 @@ static struct regulator *get_device_regulator(struct device *dev)
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+=======
+static bool have_full_constraints(void)
+{
+	return has_full_constraints || of_have_populated_dt();
+}
+
+>>>>>>> refs/remotes/origin/master
+/**
+ * of_get_regulator - get a regulator device node based on supply name
+ * @dev: Device pointer for the consumer (of regulator) device
+ * @supply: regulator supply name
+ *
+ * Extract the regulator device node corresponding to the supply name.
+<<<<<<< HEAD
+ * retruns the device node corresponding to the regulator if found, else
+=======
+ * returns the device node corresponding to the regulator if found, else
+>>>>>>> refs/remotes/origin/master
+ * returns NULL.
+ */
+static struct device_node *of_get_regulator(struct device *dev, const char *supply)
+{
+	struct device_node *regnode = NULL;
+	char prop_name[32]; /* 32 is max size of property name */
+
+	dev_dbg(dev, "Looking up %s-supply from device tree\n", supply);
+
+	snprintf(prop_name, 32, "%s-supply", supply);
+	regnode = of_parse_phandle(dev->of_node, prop_name, 0);
+
+	if (!regnode) {
+		dev_dbg(dev, "Looking up %s property in node %s failed",
+				prop_name, dev->of_node->full_name);
+		return NULL;
+	}
+	return regnode;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int _regulator_can_change_status(struct regulator_dev *rdev)
+{
+	if (!rdev->constraints)
+		return 0;
+
+	if (rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_STATUS)
+		return 1;
+	else
+		return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Platform voltage constraint check */
 static int regulator_check_voltage(struct regulator_dev *rdev,
 				   int *min_uV, int *max_uV)
@@ -143,6 +314,10 @@ static int regulator_check_voltage(struct regulator_dev *rdev,
 		return -EPERM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* check if requested voltage range actually overlaps the constraints */
 	if (*max_uV < rdev->constraints->min_uV ||
 	    *min_uV > rdev->constraints->max_uV) {
@@ -152,13 +327,32 @@ static int regulator_check_voltage(struct regulator_dev *rdev,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (*max_uV > rdev->constraints->max_uV)
 		*max_uV = rdev->constraints->max_uV;
 	if (*min_uV < rdev->constraints->min_uV)
 		*min_uV = rdev->constraints->min_uV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (*min_uV > *max_uV)
 		return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (*min_uV > *max_uV) {
+		rdev_err(rdev, "unsupportable voltage range: %d-%duV\n",
+			 *min_uV, *max_uV);
+		return -EINVAL;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -170,6 +364,19 @@ static int regulator_check_consumers(struct regulator_dev *rdev,
 				     int *min_uV, int *max_uV)
 {
 	struct regulator *regulator;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int init_min_uV = *min_uV;
+	int init_max_uV = *max_uV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	int init_min_uV = *min_uV;
+	int init_max_uV = *max_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	list_for_each_entry(regulator, &rdev->consumer_list, list) {
 		/*
@@ -179,14 +386,41 @@ static int regulator_check_consumers(struct regulator_dev *rdev,
 		if (!regulator->min_uV && !regulator->max_uV)
 			continue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (init_max_uV < regulator->min_uV
+		    || init_min_uV > regulator->max_uV)
+			rdev_err(rdev, "requested voltage range [%d, %d] does "
+				"not fit within previously voted range: "
+				"[%d, %d]\n", init_min_uV, init_max_uV,
+				regulator->min_uV, regulator->max_uV);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (*max_uV > regulator->max_uV)
 			*max_uV = regulator->max_uV;
 		if (*min_uV < regulator->min_uV)
 			*min_uV = regulator->min_uV;
 	}
 
+<<<<<<< HEAD
 	if (*min_uV > *max_uV)
 		return -EINVAL;
+=======
+	if (*min_uV > *max_uV) {
+		rdev_err(rdev, "Restricting voltage, %u-%uuV\n",
+			*min_uV, *max_uV);
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -211,8 +445,22 @@ static int regulator_check_current_limit(struct regulator_dev *rdev,
 	if (*min_uA < rdev->constraints->min_uA)
 		*min_uA = rdev->constraints->min_uA;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (*min_uA > *max_uA)
 		return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (*min_uA > *max_uA) {
+		rdev_err(rdev, "unsupportable current range: %d-%duA\n",
+			 *min_uA, *max_uA);
+		return -EINVAL;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -227,6 +475,14 @@ static int regulator_mode_constrain(struct regulator_dev *rdev, int *mode)
 	case REGULATOR_MODE_STANDBY:
 		break;
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		rdev_err(rdev, "invalid mode %x specified\n", *mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rdev_err(rdev, "invalid mode %x specified\n", *mode);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -255,16 +511,39 @@ static int regulator_mode_constrain(struct regulator_dev *rdev, int *mode)
 static int regulator_check_drms(struct regulator_dev *rdev)
 {
 	if (!rdev->constraints) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 		rdev_err(rdev, "no constraints\n");
 		return -ENODEV;
 	}
 	if (!(rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_DRMS)) {
 		rdev_err(rdev, "operation not allowed\n");
+<<<<<<< HEAD
+=======
+		rdev_dbg(rdev, "no constraints\n");
+		return -ENODEV;
+	}
+	if (!(rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_DRMS)) {
+		rdev_dbg(rdev, "operation not allowed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+		rdev_dbg(rdev, "no constraints\n");
+		return -ENODEV;
+	}
+	if (!(rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_DRMS)) {
+		rdev_dbg(rdev, "operation not allowed\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -EPERM;
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 static ssize_t device_requested_uA_show(struct device *dev,
 			     struct device_attribute *attr, char *buf)
 {
@@ -277,6 +556,8 @@ static ssize_t device_requested_uA_show(struct device *dev,
 	return sprintf(buf, "%d\n", regulator->uA_load);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t regulator_uV_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
 {
@@ -300,13 +581,22 @@ static ssize_t regulator_uA_show(struct device *dev,
 }
 static DEVICE_ATTR(microamps, 0444, regulator_uA_show, NULL);
 
+<<<<<<< HEAD
 static ssize_t regulator_name_show(struct device *dev,
 			     struct device_attribute *attr, char *buf)
+=======
+static ssize_t name_show(struct device *dev, struct device_attribute *attr,
+			 char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct regulator_dev *rdev = dev_get_drvdata(dev);
 
 	return sprintf(buf, "%s\n", rdev_get_name(rdev));
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(name);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t regulator_print_opmode(char *buf, int mode)
 {
@@ -389,6 +679,15 @@ static ssize_t regulator_status_show(struct device *dev,
 	case REGULATOR_STATUS_STANDBY:
 		label = "standby";
 		break;
+<<<<<<< HEAD
+=======
+	case REGULATOR_STATUS_BYPASS:
+		label = "bypass";
+		break;
+	case REGULATOR_STATUS_UNDEFINED:
+		label = "undefined";
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -ERANGE;
 	}
@@ -460,15 +759,27 @@ static ssize_t regulator_total_uA_show(struct device *dev,
 }
 static DEVICE_ATTR(requested_microamps, 0444, regulator_total_uA_show, NULL);
 
+<<<<<<< HEAD
 static ssize_t regulator_num_users_show(struct device *dev,
 				      struct device_attribute *attr, char *buf)
+=======
+static ssize_t num_users_show(struct device *dev, struct device_attribute *attr,
+			      char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct regulator_dev *rdev = dev_get_drvdata(dev);
 	return sprintf(buf, "%d\n", rdev->use_count);
 }
+<<<<<<< HEAD
 
 static ssize_t regulator_type_show(struct device *dev,
 				  struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(num_users);
+
+static ssize_t type_show(struct device *dev, struct device_attribute *attr,
+			 char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct regulator_dev *rdev = dev_get_drvdata(dev);
 
@@ -480,6 +791,10 @@ static ssize_t regulator_type_show(struct device *dev,
 	}
 	return sprintf(buf, "unknown\n");
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(type);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t regulator_suspend_mem_uV_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -577,17 +892,51 @@ static ssize_t regulator_suspend_standby_state_show(struct device *dev,
 static DEVICE_ATTR(suspend_standby_state, 0444,
 		regulator_suspend_standby_state_show, NULL);
 
+<<<<<<< HEAD
+=======
+static ssize_t regulator_bypass_show(struct device *dev,
+				     struct device_attribute *attr, char *buf)
+{
+	struct regulator_dev *rdev = dev_get_drvdata(dev);
+	const char *report;
+	bool bypass;
+	int ret;
+
+	ret = rdev->desc->ops->get_bypass(rdev, &bypass);
+
+	if (ret != 0)
+		report = "unknown";
+	else if (bypass)
+		report = "enabled";
+	else
+		report = "disabled";
+
+	return sprintf(buf, "%s\n", report);
+}
+static DEVICE_ATTR(bypass, 0444,
+		   regulator_bypass_show, NULL);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are the only attributes are present for all regulators.
  * Other attributes are a function of regulator functionality.
  */
+<<<<<<< HEAD
 static struct device_attribute regulator_dev_attrs[] = {
 	__ATTR(name, 0444, regulator_name_show, NULL),
 	__ATTR(num_users, 0444, regulator_num_users_show, NULL),
 	__ATTR(type, 0444, regulator_type_show, NULL),
 	__ATTR_NULL,
 };
+=======
+static struct attribute *regulator_dev_attrs[] = {
+	&dev_attr_name.attr,
+	&dev_attr_num_users.attr,
+	&dev_attr_type.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(regulator_dev);
+>>>>>>> refs/remotes/origin/master
 
 static void regulator_dev_release(struct device *dev)
 {
@@ -598,9 +947,11 @@ static void regulator_dev_release(struct device *dev)
 static struct class regulator_class = {
 	.name = "regulator",
 	.dev_release = regulator_dev_release,
+<<<<<<< HEAD
 	.dev_attrs = regulator_dev_attrs,
 };
 
+<<<<<<< HEAD
 static int regulator_check_voltage_update(struct regulator_dev *rdev)
 {
 	if (!rdev->constraints)
@@ -675,13 +1026,28 @@ static int update_voltage_prev(struct regulator_dev *rdev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.dev_groups = regulator_dev_groups,
+};
+
+>>>>>>> refs/remotes/origin/master
 /* Calculate the new optimum regulator operating mode based on the new total
  * consumer load. All locks held by caller */
 static void drms_uA_update(struct regulator_dev *rdev)
 {
 	struct regulator *sibling;
 	int current_uA = 0, output_uV, input_uV, err;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int regulator_curr_mode, mode;
+=======
+	unsigned int mode;
+>>>>>>> refs/remotes/origin/master
+=======
+	unsigned int regulator_curr_mode, mode;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	err = regulator_check_drms(rdev);
 	if (err < 0 || !rdev->desc->ops->get_optimum_mode ||
@@ -698,7 +1064,11 @@ static void drms_uA_update(struct regulator_dev *rdev)
 	/* get input voltage */
 	input_uV = 0;
 	if (rdev->supply)
+<<<<<<< HEAD
 		input_uV = _regulator_get_voltage(rdev);
+=======
+		input_uV = regulator_get_voltage(rdev->supply);
+>>>>>>> refs/remotes/origin/master
 	if (input_uV <= 0)
 		input_uV = rdev->constraints->input_uV;
 	if (input_uV <= 0)
@@ -714,6 +1084,10 @@ static void drms_uA_update(struct regulator_dev *rdev)
 
 	/* check the new mode is allowed */
 	err = regulator_mode_constrain(rdev, &mode);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* return if the same mode is requested */
 	if (rdev->desc->ops->get_mode) {
 		regulator_curr_mode = rdev->desc->ops->get_mode(rdev);
@@ -722,6 +1096,11 @@ static void drms_uA_update(struct regulator_dev *rdev)
 	} else
 		return;
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (err == 0)
 		rdev->desc->ops->set_mode(rdev, mode);
 }
@@ -730,6 +1109,7 @@ static int suspend_set_state(struct regulator_dev *rdev,
 	struct regulator_state *rstate)
 {
 	int ret = 0;
+<<<<<<< HEAD
 	bool can_set_state;
 
 	can_set_state = rdev->desc->ops->set_suspend_enable &&
@@ -741,6 +1121,16 @@ static int suspend_set_state(struct regulator_dev *rdev,
 	 */
 	if (!rstate->enabled && !rstate->disabled) {
 		if (can_set_state)
+=======
+
+	/* If we have no suspend mode configration don't set anything;
+	 * only warn if the driver implements set_suspend_voltage or
+	 * set_suspend_mode callback.
+	 */
+	if (!rstate->enabled && !rstate->disabled) {
+		if (rdev->desc->ops->set_suspend_voltage ||
+		    rdev->desc->ops->set_suspend_mode)
+>>>>>>> refs/remotes/origin/master
 			rdev_warn(rdev, "No configuration\n");
 		return 0;
 	}
@@ -750,6 +1140,7 @@ static int suspend_set_state(struct regulator_dev *rdev,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (!can_set_state) {
 		rdev_err(rdev, "no way to set suspend state\n");
 		return -EINVAL;
@@ -759,6 +1150,15 @@ static int suspend_set_state(struct regulator_dev *rdev,
 		ret = rdev->desc->ops->set_suspend_enable(rdev);
 	else
 		ret = rdev->desc->ops->set_suspend_disable(rdev);
+=======
+	if (rstate->enabled && rdev->desc->ops->set_suspend_enable)
+		ret = rdev->desc->ops->set_suspend_enable(rdev);
+	else if (rstate->disabled && rdev->desc->ops->set_suspend_disable)
+		ret = rdev->desc->ops->set_suspend_disable(rdev);
+	else /* OK if set_suspend_enable or set_suspend_disable is NULL */
+		ret = 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		rdev_err(rdev, "failed to enabled/disable\n");
 		return ret;
@@ -857,7 +1257,25 @@ static void print_constraints(struct regulator_dev *rdev)
 	if (constraints->valid_modes_mask & REGULATOR_MODE_STANDBY)
 		count += sprintf(buf + count, "standby");
 
+<<<<<<< HEAD
 	rdev_info(rdev, "%s\n", buf);
+<<<<<<< HEAD
+=======
+=======
+	if (!count)
+		sprintf(buf, "no parameters");
+
+	rdev_info(rdev, "%s\n", buf);
+>>>>>>> refs/remotes/origin/master
+
+	if ((constraints->min_uV != constraints->max_uV) &&
+	    !(constraints->valid_ops_mask & REGULATOR_CHANGE_VOLTAGE))
+		rdev_warn(rdev,
+			  "Voltage range but no REGULATOR_CHANGE_VOLTAGE\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int machine_constraints_voltage(struct regulator_dev *rdev,
@@ -875,7 +1293,13 @@ static int machine_constraints_voltage(struct regulator_dev *rdev,
 		if (ret < 0) {
 			rdev_err(rdev, "failed to apply %duV constraint\n",
 				 rdev->constraints->min_uV);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			rdev->constraints = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return ret;
 		}
 	}
@@ -927,7 +1351,13 @@ static int machine_constraints_voltage(struct regulator_dev *rdev,
 
 		/* final: [min_uV..max_uV] valid iff constraints valid */
 		if (max_uV < min_uV) {
+<<<<<<< HEAD
 			rdev_err(rdev, "unsupportable voltage constraints\n");
+=======
+			rdev_err(rdev,
+				 "unsupportable voltage constraints %u-%uuV\n",
+				 min_uV, max_uV);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 
@@ -947,6 +1377,39 @@ static int machine_constraints_voltage(struct regulator_dev *rdev,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int machine_constraints_current(struct regulator_dev *rdev,
+	struct regulation_constraints *constraints)
+{
+	struct regulator_ops *ops = rdev->desc->ops;
+	int ret;
+
+	if (!constraints->min_uA && !constraints->max_uA)
+		return 0;
+
+	if (constraints->min_uA > constraints->max_uA) {
+		rdev_err(rdev, "Invalid current constraints\n");
+		return -EINVAL;
+	}
+
+	if (!ops->set_current_limit || !ops->get_current_limit) {
+		rdev_warn(rdev, "Operation of current configuration missing\n");
+		return 0;
+	}
+
+	/* Set regulator current in constraints range */
+	ret = ops->set_current_limit(rdev, constraints->min_uA,
+			constraints->max_uA);
+	if (ret < 0) {
+		rdev_err(rdev, "Failed to set current constraint, %d\n", ret);
+		return ret;
+	}
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * set_machine_constraints - sets regulator constraints
  * @rdev: regulator source
@@ -964,8 +1427,23 @@ static int set_machine_constraints(struct regulator_dev *rdev,
 	int ret = 0;
 	struct regulator_ops *ops = rdev->desc->ops;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rdev->constraints = kmemdup(constraints, sizeof(*constraints),
 				    GFP_KERNEL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (constraints)
+		rdev->constraints = kmemdup(constraints, sizeof(*constraints),
+					    GFP_KERNEL);
+	else
+		rdev->constraints = kzalloc(sizeof(*constraints),
+					    GFP_KERNEL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!rdev->constraints)
 		return -ENOMEM;
 
@@ -973,17 +1451,43 @@ static int set_machine_constraints(struct regulator_dev *rdev,
 	if (ret != 0)
 		goto out;
 
+<<<<<<< HEAD
 	/* do we need to setup our suspend state */
+<<<<<<< HEAD
 	if (constraints->initial_state) {
 		ret = suspend_prepare(rdev, rdev->constraints->initial_state);
 		if (ret < 0) {
 			rdev_err(rdev, "failed to set suspend state\n");
 			rdev->constraints = NULL;
+=======
+=======
+	ret = machine_constraints_current(rdev, rdev->constraints);
+	if (ret != 0)
+		goto out;
+
+	/* do we need to setup our suspend state */
+>>>>>>> refs/remotes/origin/master
+	if (rdev->constraints->initial_state) {
+		ret = suspend_prepare(rdev, rdev->constraints->initial_state);
+		if (ret < 0) {
+			rdev_err(rdev, "failed to set suspend state\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (constraints->initial_mode) {
+=======
+	if (rdev->constraints->initial_mode) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rdev->constraints->initial_mode) {
+>>>>>>> refs/remotes/origin/master
 		if (!ops->set_mode) {
 			rdev_err(rdev, "no set_mode operation\n");
 			ret = -EINVAL;
@@ -1005,14 +1509,48 @@ static int set_machine_constraints(struct regulator_dev *rdev,
 		ret = ops->enable(rdev);
 		if (ret < 0) {
 			rdev_err(rdev, "failed to enable\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 			rdev->constraints = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 	}
 
+<<<<<<< HEAD
 	if (!suppress_info_printing)
 		print_constraints(rdev);
+<<<<<<< HEAD
 out:
+=======
+=======
+	if ((rdev->constraints->ramp_delay || rdev->constraints->ramp_disable)
+		&& ops->set_ramp_delay) {
+		ret = ops->set_ramp_delay(rdev, rdev->constraints->ramp_delay);
+		if (ret < 0) {
+			rdev_err(rdev, "failed to set ramp_delay\n");
+			goto out;
+		}
+	}
+
+<<<<<<< HEAD
+	print_constraints(rdev);
+>>>>>>> refs/remotes/origin/master
+=======
+	if (!suppress_info_printing)
+		print_constraints(rdev);
+>>>>>>> refs/remotes/origin/cm-11.0
+	return 0;
+out:
+	kfree(rdev->constraints);
+	rdev->constraints = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1026,6 +1564,8 @@ out:
  * core if it's child is enabled.
  */
 static int set_supply(struct regulator_dev *rdev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct regulator_dev *supply_rdev)
 {
 	int err;
@@ -1041,12 +1581,51 @@ static int set_supply(struct regulator_dev *rdev,
 	list_add(&rdev->slist, &supply_rdev->supply_list);
 out:
 	return err;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		      struct regulator_dev *supply_rdev)
+{
+	int err;
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+	if (!suppress_info_printing)
+		rdev_info(rdev, "supplied by %s\n", rdev_get_name(supply_rdev));
+=======
+	rdev_info(rdev, "supplied by %s\n", rdev_get_name(supply_rdev));
+>>>>>>> refs/remotes/origin/master
+=======
+	if (!suppress_info_printing)
+		rdev_info(rdev, "supplied by %s\n", rdev_get_name(supply_rdev));
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	rdev->supply = create_regulator(supply_rdev, &rdev->dev, "SUPPLY");
+	if (rdev->supply == NULL) {
+		err = -ENOMEM;
+		return err;
+	}
+<<<<<<< HEAD
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	supply_rdev->open_count++;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * set_consumer_device_supply - Bind a regulator to a symbolic supply
  * @rdev:         regulator source
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @consumer_dev: device the supply applies to
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @consumer_dev_name: dev_name() string for device supply applies to
  * @supply:       symbolic name for supply
  *
@@ -1054,22 +1633,41 @@ out:
  * sources to symbolic names for supplies for use by devices.  Devices
  * should use these symbolic names to request regulators, avoiding the
  * need to provide board-specific regulator names as platform data.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Only one of consumer_dev and consumer_dev_name may be specified.
  */
 static int set_consumer_device_supply(struct regulator_dev *rdev,
 	struct device *consumer_dev, const char *consumer_dev_name,
 	const char *supply)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ */
+static int set_consumer_device_supply(struct regulator_dev *rdev,
+				      const char *consumer_dev_name,
+				      const char *supply)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct regulator_map *node;
 	int has_dev;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (consumer_dev && consumer_dev_name)
 		return -EINVAL;
 
 	if (!consumer_dev_name && consumer_dev)
 		consumer_dev_name = dev_name(consumer_dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (supply == NULL)
 		return -EINVAL;
 
@@ -1089,11 +1687,26 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
 		if (strcmp(node->supply, supply) != 0)
 			continue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(consumer_dev, "%s/%s is '%s' supply; fail %s/%s\n",
 			dev_name(&node->regulator->dev),
 			node->regulator->desc->name,
 			supply,
 			dev_name(&rdev->dev), rdev_get_name(rdev));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_debug("%s: %s/%s is '%s' supply; fail %s/%s\n",
+			 consumer_dev_name,
+			 dev_name(&node->regulator->dev),
+			 node->regulator->desc->name,
+			 supply,
+			 dev_name(&rdev->dev), rdev_get_name(rdev));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
@@ -1129,7 +1742,15 @@ static void unset_regulator_supplies(struct regulator_dev *rdev)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define REG_STR_SIZE	32
+=======
+#define REG_STR_SIZE	64
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define REG_STR_SIZE	64
+>>>>>>> refs/remotes/origin/master
 
 static struct regulator *create_regulator(struct regulator_dev *rdev,
 					  struct device *dev,
@@ -1148,9 +1769,16 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
 	list_add(&regulator->list, &rdev->consumer_list);
 
 	if (dev) {
+<<<<<<< HEAD
 		/* create a 'requested_microamps_name' sysfs entry */
+<<<<<<< HEAD
 		size = scnprintf(buf, REG_STR_SIZE, "microamps_requested_%s",
 			supply_name);
+=======
+		size = scnprintf(buf, REG_STR_SIZE,
+				 "microamps_requested_%s-%s",
+				 dev_name(dev), supply_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (size >= REG_STR_SIZE)
 			goto overflow_err;
 
@@ -1177,15 +1805,60 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
 		regulator->supply_name = kstrdup(buf, GFP_KERNEL);
 		if (regulator->supply_name == NULL)
 			goto attr_err;
+=======
+		regulator->dev = dev;
+
+		/* Add a link to the device sysfs entry */
+		size = scnprintf(buf, REG_STR_SIZE, "%s-%s",
+				 dev->kobj.name, supply_name);
+		if (size >= REG_STR_SIZE)
+			goto overflow_err;
+
+		regulator->supply_name = kstrdup(buf, GFP_KERNEL);
+		if (regulator->supply_name == NULL)
+			goto overflow_err;
+>>>>>>> refs/remotes/origin/master
 
 		err = sysfs_create_link(&rdev->dev.kobj, &dev->kobj,
 					buf);
 		if (err) {
 			rdev_warn(rdev, "could not add device link %s err %d\n",
 				  dev->kobj.name, err);
+<<<<<<< HEAD
 			goto link_name_err;
 		}
+<<<<<<< HEAD
 	}
+=======
+	} else {
+		regulator->supply_name = kstrdup(supply_name, GFP_KERNEL);
+		if (regulator->supply_name == NULL)
+			goto attr_err;
+=======
+			/* non-fatal */
+		}
+	} else {
+		regulator->supply_name = kstrdup(supply_name, GFP_KERNEL);
+		if (regulator->supply_name == NULL)
+			goto overflow_err;
+>>>>>>> refs/remotes/origin/master
+	}
+
+	regulator->debugfs = debugfs_create_dir(regulator->supply_name,
+						rdev->debugfs);
+	if (!regulator->debugfs) {
+		rdev_warn(rdev, "Failed to create debugfs directory\n");
+	} else {
+		debugfs_create_u32("uA_load", 0444, regulator->debugfs,
+				   &regulator->uA_load);
+		debugfs_create_u32("min_uV", 0444, regulator->debugfs,
+				   &regulator->min_uV);
+		debugfs_create_u32("max_uV", 0444, regulator->debugfs,
+				   &regulator->max_uV);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&rdev->mutex);
 	return regulator;
 link_name_err:
@@ -1194,6 +1867,19 @@ attr_err:
 	device_remove_file(regulator->dev, &regulator->dev_attr);
 attr_name_err:
 	kfree(regulator->dev_attr.attr.name);
+=======
+	/*
+	 * Check now if the regulator is an always on regulator - if
+	 * it is then we don't need to do nearly so much work for
+	 * enable/disable calls.
+	 */
+	if (!_regulator_can_change_status(rdev) &&
+	    _regulator_is_enabled(rdev))
+		regulator->always_on = true;
+
+	mutex_unlock(&rdev->mutex);
+	return regulator;
+>>>>>>> refs/remotes/origin/master
 overflow_err:
 	list_del(&regulator->list);
 	kfree(regulator);
@@ -1203,24 +1889,152 @@ overflow_err:
 
 static int _regulator_get_enable_time(struct regulator_dev *rdev)
 {
+<<<<<<< HEAD
 	if (!rdev->desc->ops->enable_time)
 		return 0;
 	return rdev->desc->ops->enable_time(rdev);
 }
 
+<<<<<<< HEAD
+=======
+static struct regulator_dev *regulator_dev_lookup(struct device *dev,
+							 const char *supply)
+{
+	struct regulator_dev *r;
+	struct device_node *node;
+=======
+	if (rdev->constraints && rdev->constraints->enable_time)
+		return rdev->constraints->enable_time;
+	if (!rdev->desc->ops->enable_time)
+		return rdev->desc->enable_time;
+	return rdev->desc->ops->enable_time(rdev);
+}
+
+static struct regulator_supply_alias *regulator_find_supply_alias(
+		struct device *dev, const char *supply)
+{
+	struct regulator_supply_alias *map;
+
+	list_for_each_entry(map, &regulator_supply_alias_list, list)
+		if (map->src_dev == dev && strcmp(map->src_supply, supply) == 0)
+			return map;
+
+	return NULL;
+}
+
+static void regulator_supply_alias(struct device **dev, const char **supply)
+{
+	struct regulator_supply_alias *map;
+
+	map = regulator_find_supply_alias(*dev, *supply);
+	if (map) {
+		dev_dbg(*dev, "Mapping supply %s to %s,%s\n",
+				*supply, map->alias_supply,
+				dev_name(map->alias_dev));
+		*dev = map->alias_dev;
+		*supply = map->alias_supply;
+	}
+}
+
+static struct regulator_dev *regulator_dev_lookup(struct device *dev,
+						  const char *supply,
+						  int *ret)
+{
+	struct regulator_dev *r;
+	struct device_node *node;
+	struct regulator_map *map;
+	const char *devname = NULL;
+
+	regulator_supply_alias(&dev, &supply);
+>>>>>>> refs/remotes/origin/master
+
+	/* first do a dt based lookup */
+	if (dev && dev->of_node) {
+		node = of_get_regulator(dev, supply);
+<<<<<<< HEAD
+		if (node)
+=======
+		if (node) {
+>>>>>>> refs/remotes/origin/master
+			list_for_each_entry(r, &regulator_list, list)
+				if (r->dev.parent &&
+					node == r->dev.of_node)
+					return r;
+<<<<<<< HEAD
+	}
+
+	/* if not found, try doing it non-dt way */
+=======
+		} else {
+			/*
+			 * If we couldn't even get the node then it's
+			 * not just that the device didn't register
+			 * yet, there's no node and we'll never
+			 * succeed.
+			 */
+			*ret = -ENODEV;
+		}
+	}
+
+	/* if not found, try doing it non-dt way */
+	if (dev)
+		devname = dev_name(dev);
+
+>>>>>>> refs/remotes/origin/master
+	list_for_each_entry(r, &regulator_list, list)
+		if (strcmp(rdev_get_name(r), supply) == 0)
+			return r;
+
+<<<<<<< HEAD
+	return NULL;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Internal regulator request function */
 static struct regulator *_regulator_get(struct device *dev, const char *id,
 					int exclusive)
 {
 	struct regulator_dev *rdev;
 	struct regulator_map *map;
+<<<<<<< HEAD
 	struct regulator *regulator = ERR_PTR(-ENODEV);
+=======
+	struct regulator *regulator = ERR_PTR(-EPROBE_DEFER);
+>>>>>>> refs/remotes/origin/cm-10.0
 	const char *devname = NULL;
 	int ret;
 
 	if (id == NULL) {
 		pr_err("get() with no identifier\n");
 		return regulator;
+=======
+	list_for_each_entry(map, &regulator_map_list, list) {
+		/* If the mapping has a device set up it must match */
+		if (map->dev_name &&
+		    (!devname || strcmp(map->dev_name, devname)))
+			continue;
+
+		if (strcmp(map->supply, supply) == 0)
+			return map->regulator;
+	}
+
+
+	return NULL;
+}
+
+/* Internal regulator request function */
+static struct regulator *_regulator_get(struct device *dev, const char *id,
+					bool exclusive, bool allow_dummy)
+{
+	struct regulator_dev *rdev;
+	struct regulator *regulator = ERR_PTR(-EPROBE_DEFER);
+	const char *devname = NULL;
+	int ret = -EPROBE_DEFER;
+
+	if (id == NULL) {
+		pr_err("get() with no identifier\n");
+		return ERR_PTR(-EINVAL);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (dev)
@@ -1228,6 +2042,14 @@ static struct regulator *_regulator_get(struct device *dev, const char *id,
 
 	mutex_lock(&regulator_list_mutex);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	rdev = regulator_dev_lookup(dev, id);
+	if (rdev)
+		goto found;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_for_each_entry(map, &regulator_map_list, list) {
 		/* If the mapping has a device set up it must match */
 		if (map->dev_name &&
@@ -1259,6 +2081,38 @@ static struct regulator *_regulator_get(struct device *dev, const char *id,
 		goto found;
 	}
 #endif
+=======
+	rdev = regulator_dev_lookup(dev, id, &ret);
+	if (rdev)
+		goto found;
+
+	regulator = ERR_PTR(ret);
+
+	/*
+	 * If we have return value from dev_lookup fail, we do not expect to
+	 * succeed, so, quit with appropriate error value
+	 */
+	if (ret && ret != -ENODEV) {
+		goto out;
+	}
+
+	if (!devname)
+		devname = "deviceless";
+
+	/*
+	 * Assume that a regulator is physically present and enabled
+	 * even if it isn't hooked up and just provide a dummy.
+	 */
+	if (have_full_constraints() && allow_dummy) {
+		pr_warn("%s supply %s not found, using dummy regulator\n",
+			devname, id);
+
+		rdev = dummy_regulator_rdev;
+		goto found;
+	} else {
+		dev_err(dev, "dummy supplies not allowed\n");
+	}
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&regulator_list_mutex);
 	return regulator;
@@ -1281,6 +2135,14 @@ found:
 	if (regulator == NULL) {
 		regulator = ERR_PTR(-ENOMEM);
 		module_put(rdev->owner);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rdev->open_count++;
@@ -1315,10 +2177,54 @@ out:
  */
 struct regulator *regulator_get(struct device *dev, const char *id)
 {
+<<<<<<< HEAD
 	return _regulator_get(dev, id, 0);
 }
 EXPORT_SYMBOL_GPL(regulator_get);
 
+<<<<<<< HEAD
+=======
+static void devm_regulator_release(struct device *dev, void *res)
+{
+	regulator_put(*(struct regulator **)res);
+}
+
+/**
+ * devm_regulator_get - Resource managed regulator_get()
+ * @dev: device for regulator "consumer"
+ * @id: Supply name or regulator ID.
+ *
+ * Managed regulator_get(). Regulators returned from this function are
+ * automatically regulator_put() on driver detach. See regulator_get() for more
+ * information.
+ */
+struct regulator *devm_regulator_get(struct device *dev, const char *id)
+{
+	struct regulator **ptr, *regulator;
+
+	ptr = devres_alloc(devm_regulator_release, sizeof(*ptr), GFP_KERNEL);
+	if (!ptr)
+		return ERR_PTR(-ENOMEM);
+
+	regulator = regulator_get(dev, id);
+	if (!IS_ERR(regulator)) {
+		*ptr = regulator;
+		devres_add(dev, ptr);
+	} else {
+		devres_free(ptr);
+	}
+
+	return regulator;
+}
+EXPORT_SYMBOL_GPL(devm_regulator_get);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return _regulator_get(dev, id, false, true);
+}
+EXPORT_SYMBOL_GPL(regulator_get);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * regulator_get_exclusive - obtain exclusive access to a regulator.
  * @dev: device for regulator "consumer"
@@ -1342,9 +2248,105 @@ EXPORT_SYMBOL_GPL(regulator_get);
  */
 struct regulator *regulator_get_exclusive(struct device *dev, const char *id)
 {
+<<<<<<< HEAD
 	return _regulator_get(dev, id, 1);
+=======
+	return _regulator_get(dev, id, true, false);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(regulator_get_exclusive);
+
+/**
+<<<<<<< HEAD
+ * regulator_put - "free" the regulator source
+ * @regulator: regulator source
+ *
+ * Note: drivers must ensure that all regulator_enable calls made on this
+ * regulator source are balanced by regulator_disable calls prior to calling
+ * this function.
+ */
+void regulator_put(struct regulator *regulator)
+=======
+ * regulator_get_optional - obtain optional access to a regulator.
+ * @dev: device for regulator "consumer"
+ * @id: Supply name or regulator ID.
+ *
+ * Returns a struct regulator corresponding to the regulator producer,
+ * or IS_ERR() condition containing errno.  Other consumers will be
+ * unable to obtain this reference is held and the use count for the
+ * regulator will be initialised to reflect the current state of the
+ * regulator.
+ *
+ * This is intended for use by consumers for devices which can have
+ * some supplies unconnected in normal use, such as some MMC devices.
+ * It can allow the regulator core to provide stub supplies for other
+ * supplies requested using normal regulator_get() calls without
+ * disrupting the operation of drivers that can handle absent
+ * supplies.
+ *
+ * Use of supply names configured via regulator_set_device_supply() is
+ * strongly encouraged.  It is recommended that the supply name used
+ * should match the name used for the supply and/or the relevant
+ * device pins in the datasheet.
+ */
+struct regulator *regulator_get_optional(struct device *dev, const char *id)
+{
+	return _regulator_get(dev, id, false, false);
+}
+EXPORT_SYMBOL_GPL(regulator_get_optional);
+
+/* Locks held by regulator_put() */
+static void _regulator_put(struct regulator *regulator)
+>>>>>>> refs/remotes/origin/master
+{
+	struct regulator_dev *rdev;
+
+	if (regulator == NULL || IS_ERR(regulator))
+		return;
+
+<<<<<<< HEAD
+	mutex_lock(&regulator_list_mutex);
+	rdev = regulator->rdev;
+
+<<<<<<< HEAD
+	/* remove any sysfs entries */
+	if (regulator->dev) {
+		sysfs_remove_link(&rdev->dev.kobj, regulator->supply_name);
+		kfree(regulator->supply_name);
+		device_remove_file(regulator->dev, &regulator->dev_attr);
+		kfree(regulator->dev_attr.attr.name);
+	}
+=======
+	debugfs_remove_recursive(regulator->debugfs);
+
+	/* remove any sysfs entries */
+	if (regulator->dev) {
+		sysfs_remove_link(&rdev->dev.kobj, regulator->supply_name);
+		device_remove_file(regulator->dev, &regulator->dev_attr);
+		kfree(regulator->dev_attr.attr.name);
+	}
+	kfree(regulator->supply_name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rdev = regulator->rdev;
+
+	debugfs_remove_recursive(regulator->debugfs);
+
+	/* remove any sysfs entries */
+	if (regulator->dev)
+		sysfs_remove_link(&rdev->dev.kobj, regulator->supply_name);
+	kfree(regulator->supply_name);
+>>>>>>> refs/remotes/origin/master
+	list_del(&regulator->list);
+	kfree(regulator);
+
+	rdev->open_count--;
+	rdev->exclusive = 0;
+
+	module_put(rdev->owner);
+<<<<<<< HEAD
+=======
+}
 
 /**
  * regulator_put - "free" the regulator source
@@ -1356,32 +2358,48 @@ EXPORT_SYMBOL_GPL(regulator_get_exclusive);
  */
 void regulator_put(struct regulator *regulator)
 {
-	struct regulator_dev *rdev;
-
-	if (regulator == NULL || IS_ERR(regulator))
-		return;
-
 	mutex_lock(&regulator_list_mutex);
-	rdev = regulator->rdev;
-
-	/* remove any sysfs entries */
-	if (regulator->dev) {
-		sysfs_remove_link(&rdev->dev.kobj, regulator->supply_name);
-		kfree(regulator->supply_name);
-		device_remove_file(regulator->dev, &regulator->dev_attr);
-		kfree(regulator->dev_attr.attr.name);
-	}
-	list_del(&regulator->list);
-	kfree(regulator);
-
-	rdev->open_count--;
-	rdev->exclusive = 0;
-
-	module_put(rdev->owner);
+	_regulator_put(regulator);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&regulator_list_mutex);
 }
 EXPORT_SYMBOL_GPL(regulator_put);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int devm_regulator_match(struct device *dev, void *res, void *data)
+{
+	struct regulator **r = res;
+	if (!r || !*r) {
+		WARN_ON(!r || !*r);
+		return 0;
+	}
+	return *r == data;
+}
+
+/**
+ * devm_regulator_put - Resource managed regulator_put()
+ * @regulator: regulator to free
+ *
+ * Deallocate a regulator allocated with devm_regulator_get(). Normally
+ * this function will not need to be called and the resource management
+ * code will ensure that the resource is freed.
+ */
+void devm_regulator_put(struct regulator *regulator)
+{
+	int rc;
+
+	rc = devres_destroy(regulator->dev, devm_regulator_release,
+			    devm_regulator_match, regulator);
+	if (rc == 0)
+		regulator_put(regulator);
+	else
+		WARN_ON(rc);
+}
+EXPORT_SYMBOL_GPL(devm_regulator_put);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int _regulator_can_change_status(struct regulator_dev *rdev)
 {
 	if (!rdev->constraints)
@@ -1398,6 +2416,7 @@ static int _regulator_enable(struct regulator_dev *rdev)
 {
 	int ret, delay;
 
+<<<<<<< HEAD
 	if (rdev->use_count == 0) {
 		/* do we need to enable the supply regulator first */
 		if (rdev->supply) {
@@ -1411,6 +2430,314 @@ static int _regulator_enable(struct regulator_dev *rdev)
 		}
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ * regulator_register_supply_alias - Provide device alias for supply lookup
+ *
+ * @dev: device that will be given as the regulator "consumer"
+ * @id: Supply name or regulator ID
+ * @alias_dev: device that should be used to lookup the supply
+ * @alias_id: Supply name or regulator ID that should be used to lookup the
+ * supply
+ *
+ * All lookups for id on dev will instead be conducted for alias_id on
+ * alias_dev.
+ */
+int regulator_register_supply_alias(struct device *dev, const char *id,
+				    struct device *alias_dev,
+				    const char *alias_id)
+{
+	struct regulator_supply_alias *map;
+
+	map = regulator_find_supply_alias(dev, id);
+	if (map)
+		return -EEXIST;
+
+	map = kzalloc(sizeof(struct regulator_supply_alias), GFP_KERNEL);
+	if (!map)
+		return -ENOMEM;
+
+	map->src_dev = dev;
+	map->src_supply = id;
+	map->alias_dev = alias_dev;
+	map->alias_supply = alias_id;
+
+	list_add(&map->list, &regulator_supply_alias_list);
+
+	pr_info("Adding alias for supply %s,%s -> %s,%s\n",
+		id, dev_name(dev), alias_id, dev_name(alias_dev));
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(regulator_register_supply_alias);
+
+/**
+ * regulator_unregister_supply_alias - Remove device alias
+ *
+ * @dev: device that will be given as the regulator "consumer"
+ * @id: Supply name or regulator ID
+ *
+ * Remove a lookup alias if one exists for id on dev.
+ */
+void regulator_unregister_supply_alias(struct device *dev, const char *id)
+{
+	struct regulator_supply_alias *map;
+
+	map = regulator_find_supply_alias(dev, id);
+	if (map) {
+		list_del(&map->list);
+		kfree(map);
+	}
+}
+EXPORT_SYMBOL_GPL(regulator_unregister_supply_alias);
+
+/**
+ * regulator_bulk_register_supply_alias - register multiple aliases
+ *
+ * @dev: device that will be given as the regulator "consumer"
+ * @id: List of supply names or regulator IDs
+ * @alias_dev: device that should be used to lookup the supply
+ * @alias_id: List of supply names or regulator IDs that should be used to
+ * lookup the supply
+ * @num_id: Number of aliases to register
+ *
+ * @return 0 on success, an errno on failure.
+ *
+ * This helper function allows drivers to register several supply
+ * aliases in one operation.  If any of the aliases cannot be
+ * registered any aliases that were registered will be removed
+ * before returning to the caller.
+ */
+int regulator_bulk_register_supply_alias(struct device *dev, const char **id,
+					 struct device *alias_dev,
+					 const char **alias_id,
+					 int num_id)
+{
+	int i;
+	int ret;
+
+	for (i = 0; i < num_id; ++i) {
+		ret = regulator_register_supply_alias(dev, id[i], alias_dev,
+						      alias_id[i]);
+		if (ret < 0)
+			goto err;
+	}
+
+	return 0;
+
+err:
+	dev_err(dev,
+		"Failed to create supply alias %s,%s -> %s,%s\n",
+		id[i], dev_name(dev), alias_id[i], dev_name(alias_dev));
+
+	while (--i >= 0)
+		regulator_unregister_supply_alias(dev, id[i]);
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(regulator_bulk_register_supply_alias);
+
+/**
+ * regulator_bulk_unregister_supply_alias - unregister multiple aliases
+ *
+ * @dev: device that will be given as the regulator "consumer"
+ * @id: List of supply names or regulator IDs
+ * @num_id: Number of aliases to unregister
+ *
+ * This helper function allows drivers to unregister several supply
+ * aliases in one operation.
+ */
+void regulator_bulk_unregister_supply_alias(struct device *dev,
+					    const char **id,
+					    int num_id)
+{
+	int i;
+
+	for (i = 0; i < num_id; ++i)
+		regulator_unregister_supply_alias(dev, id[i]);
+}
+EXPORT_SYMBOL_GPL(regulator_bulk_unregister_supply_alias);
+
+
+/* Manage enable GPIO list. Same GPIO pin can be shared among regulators */
+static int regulator_ena_gpio_request(struct regulator_dev *rdev,
+				const struct regulator_config *config)
+{
+	struct regulator_enable_gpio *pin;
+	int ret;
+
+	list_for_each_entry(pin, &regulator_ena_gpio_list, list) {
+		if (pin->gpio == config->ena_gpio) {
+			rdev_dbg(rdev, "GPIO %d is already used\n",
+				config->ena_gpio);
+			goto update_ena_gpio_to_rdev;
+		}
+	}
+
+	ret = gpio_request_one(config->ena_gpio,
+				GPIOF_DIR_OUT | config->ena_gpio_flags,
+				rdev_get_name(rdev));
+	if (ret)
+		return ret;
+
+	pin = kzalloc(sizeof(struct regulator_enable_gpio), GFP_KERNEL);
+	if (pin == NULL) {
+		gpio_free(config->ena_gpio);
+		return -ENOMEM;
+	}
+
+	pin->gpio = config->ena_gpio;
+	pin->ena_gpio_invert = config->ena_gpio_invert;
+	list_add(&pin->list, &regulator_ena_gpio_list);
+
+update_ena_gpio_to_rdev:
+	pin->request_count++;
+	rdev->ena_pin = pin;
+	return 0;
+}
+
+static void regulator_ena_gpio_free(struct regulator_dev *rdev)
+{
+	struct regulator_enable_gpio *pin, *n;
+
+	if (!rdev->ena_pin)
+		return;
+
+	/* Free the GPIO only in case of no use */
+	list_for_each_entry_safe(pin, n, &regulator_ena_gpio_list, list) {
+		if (pin->gpio == rdev->ena_pin->gpio) {
+			if (pin->request_count <= 1) {
+				pin->request_count = 0;
+				gpio_free(pin->gpio);
+				list_del(&pin->list);
+				kfree(pin);
+			} else {
+				pin->request_count--;
+			}
+		}
+	}
+}
+
+/**
+ * regulator_ena_gpio_ctrl - balance enable_count of each GPIO and actual GPIO pin control
+ * @rdev: regulator_dev structure
+ * @enable: enable GPIO at initial use?
+ *
+ * GPIO is enabled in case of initial use. (enable_count is 0)
+ * GPIO is disabled when it is not shared any more. (enable_count <= 1)
+ */
+static int regulator_ena_gpio_ctrl(struct regulator_dev *rdev, bool enable)
+{
+	struct regulator_enable_gpio *pin = rdev->ena_pin;
+
+	if (!pin)
+		return -EINVAL;
+
+	if (enable) {
+		/* Enable GPIO at initial use */
+		if (pin->enable_count == 0)
+			gpio_set_value_cansleep(pin->gpio,
+						!pin->ena_gpio_invert);
+
+		pin->enable_count++;
+	} else {
+		if (pin->enable_count > 1) {
+			pin->enable_count--;
+			return 0;
+		}
+
+		/* Disable GPIO if not used */
+		if (pin->enable_count <= 1) {
+			gpio_set_value_cansleep(pin->gpio,
+						pin->ena_gpio_invert);
+			pin->enable_count = 0;
+		}
+	}
+
+	return 0;
+}
+
+static int _regulator_do_enable(struct regulator_dev *rdev)
+{
+	int ret, delay;
+
+	/* Query before enabling in case configuration dependent.  */
+	ret = _regulator_get_enable_time(rdev);
+	if (ret >= 0) {
+		delay = ret;
+	} else {
+		rdev_warn(rdev, "enable_time() failed: %d\n", ret);
+		delay = 0;
+	}
+
+	trace_regulator_enable(rdev_get_name(rdev));
+
+	if (rdev->ena_pin) {
+		ret = regulator_ena_gpio_ctrl(rdev, true);
+		if (ret < 0)
+			return ret;
+		rdev->ena_gpio_state = 1;
+	} else if (rdev->desc->ops->enable) {
+		ret = rdev->desc->ops->enable(rdev);
+		if (ret < 0)
+			return ret;
+	} else {
+		return -EINVAL;
+	}
+
+	/* Allow the regulator to ramp; it would be useful to extend
+	 * this for bulk operations so that the regulators can ramp
+	 * together.  */
+	trace_regulator_enable_delay(rdev_get_name(rdev));
+
+	/*
+	 * Delay for the requested amount of time as per the guidelines in:
+	 *
+	 *     Documentation/timers/timers-howto.txt
+	 *
+	 * The assumption here is that regulators will never be enabled in
+	 * atomic context and therefore sleeping functions can be used.
+	 */
+	if (delay) {
+		unsigned int ms = delay / 1000;
+		unsigned int us = delay % 1000;
+
+		if (ms > 0) {
+			/*
+			 * For small enough values, handle super-millisecond
+			 * delays in the usleep_range() call below.
+			 */
+			if (ms < 20)
+				us += ms * 1000;
+			else
+				msleep(ms);
+		}
+
+		/*
+		 * Give the scheduler some room to coalesce with any other
+		 * wakeup sources. For delays shorter than 10 us, don't even
+		 * bother setting up high-resolution timers and just busy-
+		 * loop.
+		 */
+		if (us >= 10)
+			usleep_range(us, us + 100);
+		else
+			udelay(us);
+	}
+
+	trace_regulator_enable_complete(rdev_get_name(rdev));
+
+	return 0;
+}
+
+/* locks held by regulator_enable() */
+static int _regulator_enable(struct regulator_dev *rdev)
+{
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	/* check voltage and requested load before enabling */
 	if (rdev->constraints &&
 	    (rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_DRMS))
@@ -1423,6 +2750,7 @@ static int _regulator_enable(struct regulator_dev *rdev)
 			if (!_regulator_can_change_status(rdev))
 				return -EPERM;
 
+<<<<<<< HEAD
 			if (!rdev->desc->ops->enable)
 				return -EINVAL;
 
@@ -1457,6 +2785,12 @@ static int _regulator_enable(struct regulator_dev *rdev)
 
 			trace_regulator_enable_complete(rdev_get_name(rdev));
 
+=======
+			ret = _regulator_do_enable(rdev);
+			if (ret < 0)
+				return ret;
+
+>>>>>>> refs/remotes/origin/master
 		} else if (ret < 0) {
 			rdev_err(rdev, "is_enabled() failed: %d\n", ret);
 			return ret;
@@ -1485,6 +2819,8 @@ int regulator_enable(struct regulator *regulator)
 	struct regulator_dev *rdev = regulator->rdev;
 	int ret = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&rdev->mutex);
 
 	if (!regulator_check_voltage_update(rdev)) {
@@ -1514,16 +2850,93 @@ int regulator_enable(struct regulator *regulator)
 
 out:
 	mutex_unlock(&rdev->mutex);
+=======
+=======
+	if (regulator->always_on)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
+	if (rdev->supply) {
+		ret = regulator_enable(rdev->supply);
+		if (ret != 0)
+			return ret;
+	}
+
+	mutex_lock(&rdev->mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+	ret = _regulator_enable(rdev);
+	if (ret == 0)
+		regulator->enabled++;
+
+=======
+	ret = _regulator_enable(rdev);
+>>>>>>> refs/remotes/origin/master
+=======
+
+	ret = _regulator_enable(rdev);
+	if (ret == 0)
+		regulator->enabled++;
+
+>>>>>>> refs/remotes/origin/cm-11.0
+	mutex_unlock(&rdev->mutex);
+
+	if (ret != 0 && rdev->supply)
+		regulator_disable(rdev->supply);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL_GPL(regulator_enable);
 
+<<<<<<< HEAD
 /* locks held by regulator_disable() */
+<<<<<<< HEAD
 static int _regulator_disable(struct regulator_dev *rdev,
 		struct regulator_dev **supply_rdev_ptr)
 {
 	int ret = 0;
 	*supply_rdev_ptr = NULL;
+=======
+static int _regulator_disable(struct regulator_dev *rdev)
+{
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int _regulator_do_disable(struct regulator_dev *rdev)
+{
+	int ret;
+
+	trace_regulator_disable(rdev_get_name(rdev));
+
+	if (rdev->ena_pin) {
+		ret = regulator_ena_gpio_ctrl(rdev, false);
+		if (ret < 0)
+			return ret;
+		rdev->ena_gpio_state = 0;
+
+	} else if (rdev->desc->ops->disable) {
+		ret = rdev->desc->ops->disable(rdev);
+		if (ret != 0)
+			return ret;
+	}
+
+	trace_regulator_disable_complete(rdev_get_name(rdev));
+
+	_notifier_call_chain(rdev, REGULATOR_EVENT_DISABLE,
+			     NULL);
+	return 0;
+}
+
+/* locks held by regulator_disable() */
+static int _regulator_disable(struct regulator_dev *rdev)
+{
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (WARN(rdev->use_count <= 0,
 		 "unbalanced disables for %s\n", rdev_get_name(rdev)))
@@ -1534,15 +2947,21 @@ static int _regulator_disable(struct regulator_dev *rdev,
 	    (rdev->constraints && !rdev->constraints->always_on)) {
 
 		/* we are last user */
+<<<<<<< HEAD
 		if (_regulator_can_change_status(rdev) &&
 		    rdev->desc->ops->disable) {
 			trace_regulator_disable(rdev_get_name(rdev));
 
 			ret = rdev->desc->ops->disable(rdev);
+=======
+		if (_regulator_can_change_status(rdev)) {
+			ret = _regulator_do_disable(rdev);
+>>>>>>> refs/remotes/origin/master
 			if (ret < 0) {
 				rdev_err(rdev, "failed to disable\n");
 				return ret;
 			}
+<<<<<<< HEAD
 
 			trace_regulator_disable_complete(rdev_get_name(rdev));
 
@@ -1550,9 +2969,16 @@ static int _regulator_disable(struct regulator_dev *rdev,
 					     NULL);
 		}
 
+<<<<<<< HEAD
 		/* decrease our supplies ref count and disable if required */
 		*supply_rdev_ptr = rdev->supply;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+
+>>>>>>> refs/remotes/origin/master
 		rdev->use_count = 0;
 	} else if (rdev->use_count > 1) {
 
@@ -1563,6 +2989,14 @@ static int _regulator_disable(struct regulator_dev *rdev,
 
 		rdev->use_count--;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1581,6 +3015,8 @@ static int _regulator_disable(struct regulator_dev *rdev,
 int regulator_disable(struct regulator *regulator)
 {
 	struct regulator_dev *rdev = regulator->rdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct regulator_dev *supply_rdev = NULL;
 	int ret = 0;
 
@@ -1605,14 +3041,51 @@ out:
 		_regulator_disable(rdev, &supply_rdev);
 		mutex_unlock(&rdev->mutex);
 	}
+=======
+	int ret = 0;
+
+	mutex_lock(&rdev->mutex);
+	ret = _regulator_disable(rdev);
+	if (ret == 0)
+		regulator->enabled--;
+=======
+	int ret = 0;
+
+	if (regulator->always_on)
+		return 0;
+
+	mutex_lock(&rdev->mutex);
+	ret = _regulator_disable(rdev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+	if (ret == 0)
+		regulator->enabled--;
+>>>>>>> refs/remotes/origin/cm-11.0
+	mutex_unlock(&rdev->mutex);
+
+	if (ret == 0 && rdev->supply)
+		regulator_disable(rdev->supply);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 EXPORT_SYMBOL_GPL(regulator_disable);
 
 /* locks held by regulator_force_disable() */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int _regulator_force_disable(struct regulator_dev *rdev,
 		struct regulator_dev **supply_rdev_ptr)
+=======
+static int _regulator_force_disable(struct regulator_dev *rdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int _regulator_force_disable(struct regulator_dev *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 
@@ -1629,10 +3102,16 @@ static int _regulator_force_disable(struct regulator_dev *rdev,
 			REGULATOR_EVENT_DISABLE, NULL);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* decrease our supplies ref count and disable if required */
 	*supply_rdev_ptr = rdev->supply;
 
 	rdev->use_count = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1648,23 +3127,136 @@ static int _regulator_force_disable(struct regulator_dev *rdev,
 int regulator_force_disable(struct regulator *regulator)
 {
 	struct regulator_dev *rdev = regulator->rdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct regulator_dev *supply_rdev = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	mutex_lock(&rdev->mutex);
 	regulator->uA_load = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = _regulator_force_disable(rdev, &supply_rdev);
 	mutex_unlock(&rdev->mutex);
 
 	if (supply_rdev)
 		regulator_disable(get_device_regulator(rdev_get_dev(supply_rdev)));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = _regulator_force_disable(regulator->rdev);
+	mutex_unlock(&rdev->mutex);
+
+	if (rdev->supply)
+		while (rdev->open_count--)
+			regulator_disable(rdev->supply);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 EXPORT_SYMBOL_GPL(regulator_force_disable);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void regulator_disable_work(struct work_struct *work)
+{
+	struct regulator_dev *rdev = container_of(work, struct regulator_dev,
+						  disable_work.work);
+	int count, i, ret;
+
+	mutex_lock(&rdev->mutex);
+
+	BUG_ON(!rdev->deferred_disables);
+
+	count = rdev->deferred_disables;
+	rdev->deferred_disables = 0;
+
+	for (i = 0; i < count; i++) {
+		ret = _regulator_disable(rdev);
+		if (ret != 0)
+			rdev_err(rdev, "Deferred disable failed: %d\n", ret);
+	}
+
+	mutex_unlock(&rdev->mutex);
+
+	if (rdev->supply) {
+		for (i = 0; i < count; i++) {
+			ret = regulator_disable(rdev->supply);
+			if (ret != 0) {
+				rdev_err(rdev,
+					 "Supply disable failed: %d\n", ret);
+			}
+		}
+	}
+}
+
+/**
+ * regulator_disable_deferred - disable regulator output with delay
+ * @regulator: regulator source
+ * @ms: miliseconds until the regulator is disabled
+ *
+ * Execute regulator_disable() on the regulator after a delay.  This
+ * is intended for use with devices that require some time to quiesce.
+ *
+ * NOTE: this will only disable the regulator output if no other consumer
+ * devices have it enabled, the regulator device supports disabling and
+ * machine constraints permit this operation.
+ */
+int regulator_disable_deferred(struct regulator *regulator, int ms)
+{
+	struct regulator_dev *rdev = regulator->rdev;
+	int ret;
+
+<<<<<<< HEAD
+=======
+	if (regulator->always_on)
+		return 0;
+
+	if (!ms)
+		return regulator_disable(regulator);
+
+>>>>>>> refs/remotes/origin/master
+	mutex_lock(&rdev->mutex);
+	rdev->deferred_disables++;
+	mutex_unlock(&rdev->mutex);
+
+<<<<<<< HEAD
+	ret = schedule_delayed_work(&rdev->disable_work,
+				    msecs_to_jiffies(ms));
+=======
+	ret = queue_delayed_work(system_power_efficient_wq,
+				 &rdev->disable_work,
+				 msecs_to_jiffies(ms));
+>>>>>>> refs/remotes/origin/master
+	if (ret < 0)
+		return ret;
+	else
+		return 0;
+}
+EXPORT_SYMBOL_GPL(regulator_disable_deferred);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static int _regulator_is_enabled(struct regulator_dev *rdev)
 {
+=======
+static int _regulator_is_enabled(struct regulator_dev *rdev)
+{
+	/* A GPIO control always takes precedence */
+	if (rdev->ena_pin)
+		return rdev->ena_gpio_state;
+
+>>>>>>> refs/remotes/origin/master
 	/* If we don't know then assume that the regulator is always on */
 	if (!rdev->desc->ops->is_enabled)
 		return 1;
@@ -1688,6 +3280,12 @@ int regulator_is_enabled(struct regulator *regulator)
 {
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (regulator->always_on)
+		return 1;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&regulator->rdev->mutex);
 	ret = _regulator_is_enabled(regulator->rdev);
 	mutex_unlock(&regulator->rdev->mutex);
@@ -1697,6 +3295,37 @@ int regulator_is_enabled(struct regulator *regulator)
 EXPORT_SYMBOL_GPL(regulator_is_enabled);
 
 /**
+<<<<<<< HEAD
+=======
+ * regulator_can_change_voltage - check if regulator can change voltage
+ * @regulator: regulator source
+ *
+ * Returns positive if the regulator driver backing the source/client
+ * can change its voltage, false otherwise. Usefull for detecting fixed
+ * or dummy regulators and disabling voltage change logic in the client
+ * driver.
+ */
+int regulator_can_change_voltage(struct regulator *regulator)
+{
+	struct regulator_dev	*rdev = regulator->rdev;
+
+	if (rdev->constraints &&
+	    (rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_VOLTAGE)) {
+		if (rdev->desc->n_voltages - rdev->desc->linear_min_sel > 1)
+			return 1;
+
+		if (rdev->desc->continuous_voltage_range &&
+		    rdev->constraints->min_uV && rdev->constraints->max_uV &&
+		    rdev->constraints->min_uV != rdev->constraints->max_uV)
+			return 1;
+	}
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(regulator_can_change_voltage);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * regulator_count_voltages - count regulator_list_voltage() selectors
  * @regulator: regulator source
  *
@@ -1728,6 +3357,12 @@ int regulator_list_voltage(struct regulator *regulator, unsigned selector)
 	struct regulator_ops	*ops = rdev->desc->ops;
 	int			ret;
 
+<<<<<<< HEAD
+=======
+	if (rdev->desc->fixed_uV && rdev->desc->n_voltages == 1 && !selector)
+		return rdev->desc->fixed_uV;
+
+>>>>>>> refs/remotes/origin/master
 	if (!ops->list_voltage || selector >= rdev->desc->n_voltages)
 		return -EINVAL;
 
@@ -1747,6 +3382,24 @@ int regulator_list_voltage(struct regulator *regulator, unsigned selector)
 EXPORT_SYMBOL_GPL(regulator_list_voltage);
 
 /**
+<<<<<<< HEAD
+=======
+ * regulator_get_linear_step - return the voltage step size between VSEL values
+ * @regulator: regulator source
+ *
+ * Returns the voltage step size between VSEL values for linear
+ * regulators, or return 0 if the regulator isn't a linear regulator.
+ */
+unsigned int regulator_get_linear_step(struct regulator *regulator)
+{
+	struct regulator_dev *rdev = regulator->rdev;
+
+	return rdev->desc->uV_step;
+}
+EXPORT_SYMBOL_GPL(regulator_get_linear_step);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * regulator_is_supported_voltage - check if a voltage range can be supported
  *
  * @regulator: Regulator to check.
@@ -1758,8 +3411,28 @@ EXPORT_SYMBOL_GPL(regulator_list_voltage);
 int regulator_is_supported_voltage(struct regulator *regulator,
 				   int min_uV, int max_uV)
 {
+<<<<<<< HEAD
 	int i, voltages, ret;
 
+=======
+	struct regulator_dev *rdev = regulator->rdev;
+	int i, voltages, ret;
+
+	/* If we can't change voltage check the current voltage */
+	if (!(rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_VOLTAGE)) {
+		ret = regulator_get_voltage(regulator);
+		if (ret >= 0)
+			return (min_uV <= ret && ret <= max_uV);
+		else
+			return ret;
+	}
+
+	/* Any voltage within constrains range is fine? */
+	if (rdev->desc->continuous_voltage_range)
+		return min_uV >= rdev->constraints->min_uV &&
+				max_uV <= rdev->constraints->max_uV;
+
+>>>>>>> refs/remotes/origin/master
 	ret = regulator_count_voltages(regulator);
 	if (ret < 0)
 		return ret;
@@ -1774,23 +3447,53 @@ int regulator_is_supported_voltage(struct regulator *regulator,
 
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(regulator_is_supported_voltage);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(regulator_is_supported_voltage);
+>>>>>>> refs/remotes/origin/master
 
 static int _regulator_do_set_voltage(struct regulator_dev *rdev,
 				     int min_uV, int max_uV)
 {
 	int ret;
 	int delay = 0;
+<<<<<<< HEAD
 	unsigned int selector;
+=======
+	int best_val = 0;
+	unsigned int selector;
+	int old_selector = -1;
+>>>>>>> refs/remotes/origin/master
 
 	trace_regulator_set_voltage(rdev_get_name(rdev), min_uV, max_uV);
 
 	min_uV += rdev->constraints->uV_offset;
 	max_uV += rdev->constraints->uV_offset;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * If we can't obtain the old selector there is not enough
+	 * info to call set_voltage_time_sel().
+	 */
+	if (_regulator_is_enabled(rdev) &&
+	    rdev->desc->ops->set_voltage_time_sel &&
+	    rdev->desc->ops->get_voltage_sel) {
+		old_selector = rdev->desc->ops->get_voltage_sel(rdev);
+		if (old_selector < 0)
+			return old_selector;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (rdev->desc->ops->set_voltage) {
 		ret = rdev->desc->ops->set_voltage(rdev, min_uV, max_uV,
 						   &selector);
 
+<<<<<<< HEAD
 		if (rdev->desc->ops->list_voltage)
 			selector = rdev->desc->ops->list_voltage(rdev,
 								 selector);
@@ -1828,8 +3531,17 @@ static int _regulator_do_set_voltage(struct regulator_dev *rdev,
 			if (ret < 0)
 				return ret;
 			old_selector = ret;
+<<<<<<< HEAD
 			delay = rdev->desc->ops->set_voltage_time_sel(rdev,
 						old_selector, selector);
+=======
+			ret = rdev->desc->ops->set_voltage_time_sel(rdev,
+						old_selector, selector);
+			if (ret < 0)
+				rdev_warn(rdev, "set_voltage_time_sel() failed: %d\n", ret);
+			else
+				delay = ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		if (best_val != INT_MAX) {
@@ -1855,6 +3567,76 @@ static int _regulator_do_set_voltage(struct regulator_dev *rdev,
 				     NULL);
 
 	trace_regulator_set_voltage_complete(rdev_get_name(rdev), selector);
+=======
+		if (ret >= 0) {
+			if (rdev->desc->ops->list_voltage)
+				best_val = rdev->desc->ops->list_voltage(rdev,
+									 selector);
+			else
+				best_val = _regulator_get_voltage(rdev);
+		}
+
+	} else if (rdev->desc->ops->set_voltage_sel) {
+		if (rdev->desc->ops->map_voltage) {
+			ret = rdev->desc->ops->map_voltage(rdev, min_uV,
+							   max_uV);
+		} else {
+			if (rdev->desc->ops->list_voltage ==
+			    regulator_list_voltage_linear)
+				ret = regulator_map_voltage_linear(rdev,
+								min_uV, max_uV);
+			else
+				ret = regulator_map_voltage_iterate(rdev,
+								min_uV, max_uV);
+		}
+
+		if (ret >= 0) {
+			best_val = rdev->desc->ops->list_voltage(rdev, ret);
+			if (min_uV <= best_val && max_uV >= best_val) {
+				selector = ret;
+				if (old_selector == selector)
+					ret = 0;
+				else
+					ret = rdev->desc->ops->set_voltage_sel(
+								rdev, ret);
+			} else {
+				ret = -EINVAL;
+			}
+		}
+	} else {
+		ret = -EINVAL;
+	}
+
+	/* Call set_voltage_time_sel if successfully obtained old_selector */
+	if (ret == 0 && !rdev->constraints->ramp_disable && old_selector >= 0
+		&& old_selector != selector) {
+
+		delay = rdev->desc->ops->set_voltage_time_sel(rdev,
+						old_selector, selector);
+		if (delay < 0) {
+			rdev_warn(rdev, "set_voltage_time_sel() failed: %d\n",
+				  delay);
+			delay = 0;
+		}
+
+		/* Insert any necessary delays */
+		if (delay >= 1000) {
+			mdelay(delay / 1000);
+			udelay(delay % 1000);
+		} else if (delay) {
+			udelay(delay);
+		}
+	}
+
+	if (ret == 0 && best_val >= 0) {
+		unsigned long data = best_val;
+
+		_notifier_call_chain(rdev, REGULATOR_EVENT_VOLTAGE_CHANGE,
+				     (void *)data);
+	}
+
+	trace_regulator_set_voltage_complete(rdev_get_name(rdev), best_val);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -1880,7 +3662,20 @@ static int _regulator_do_set_voltage(struct regulator_dev *rdev,
 int regulator_set_voltage(struct regulator *regulator, int min_uV, int max_uV)
 {
 	struct regulator_dev *rdev = regulator->rdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int prev_min_uV, prev_max_uV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int prev_min_uV, prev_max_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ret = 0;
+=======
+	int ret = 0;
+	int old_min_uV, old_max_uV;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&rdev->mutex);
 
@@ -1902,19 +3697,68 @@ int regulator_set_voltage(struct regulator *regulator, int min_uV, int max_uV)
 	ret = regulator_check_voltage(rdev, &min_uV, &max_uV);
 	if (ret < 0)
 		goto out;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 	if (regulator->enabled) {
 		ret = update_voltage(regulator, min_uV, max_uV);
 		if (ret)
 			goto out;
 	}
+=======
+	prev_min_uV = regulator->min_uV;
+	prev_max_uV = regulator->max_uV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	prev_min_uV = regulator->min_uV;
+	prev_max_uV = regulator->max_uV;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	regulator->min_uV = min_uV;
 	regulator->max_uV = max_uV;
 
+<<<<<<< HEAD
+=======
+	ret = regulator_check_consumers(rdev, &min_uV, &max_uV);
+	if (ret < 0) {
+		regulator->min_uV = prev_min_uV;
+		regulator->max_uV = prev_max_uV;
+		goto out;
+	}
+
+	ret = _regulator_do_set_voltage(rdev, min_uV, max_uV);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	mutex_unlock(&rdev->mutex);
 	return ret;
+=======
+	
+	/* restore original values in case of error */
+	old_min_uV = regulator->min_uV;
+	old_max_uV = regulator->max_uV;
+	regulator->min_uV = min_uV;
+	regulator->max_uV = max_uV;
+
+	ret = regulator_check_consumers(rdev, &min_uV, &max_uV);
+	if (ret < 0)
+		goto out2;
+
+	ret = _regulator_do_set_voltage(rdev, min_uV, max_uV);
+	if (ret < 0)
+		goto out2;
+	
+out:
+	mutex_unlock(&rdev->mutex);
+	return ret;
+out2:
+	regulator->min_uV = old_min_uV;
+	regulator->max_uV = old_max_uV;
+	mutex_unlock(&rdev->mutex);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(regulator_set_voltage);
 
@@ -1964,6 +3808,49 @@ int regulator_set_voltage_time(struct regulator *regulator,
 EXPORT_SYMBOL_GPL(regulator_set_voltage_time);
 
 /**
+<<<<<<< HEAD
+=======
+ * regulator_set_voltage_time_sel - get raise/fall time
+ * @rdev: regulator source device
+ * @old_selector: selector for starting voltage
+ * @new_selector: selector for target voltage
+ *
+ * Provided with the starting and target voltage selectors, this function
+ * returns time in microseconds required to rise or fall to this new voltage
+ *
+ * Drivers providing ramp_delay in regulation_constraints can use this as their
+ * set_voltage_time_sel() operation.
+ */
+int regulator_set_voltage_time_sel(struct regulator_dev *rdev,
+				   unsigned int old_selector,
+				   unsigned int new_selector)
+{
+	unsigned int ramp_delay = 0;
+	int old_volt, new_volt;
+
+	if (rdev->constraints->ramp_delay)
+		ramp_delay = rdev->constraints->ramp_delay;
+	else if (rdev->desc->ramp_delay)
+		ramp_delay = rdev->desc->ramp_delay;
+
+	if (ramp_delay == 0) {
+		rdev_warn(rdev, "ramp_delay not set\n");
+		return 0;
+	}
+
+	/* sanity check */
+	if (!rdev->desc->ops->list_voltage)
+		return -EINVAL;
+
+	old_volt = rdev->desc->ops->list_voltage(rdev, old_selector);
+	new_volt = rdev->desc->ops->list_voltage(rdev, new_selector);
+
+	return DIV_ROUND_UP(abs(new_volt - old_volt), ramp_delay);
+}
+EXPORT_SYMBOL_GPL(regulator_set_voltage_time_sel);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * regulator_sync_voltage - re-apply last regulator output voltage
  * @regulator: regulator source
  *
@@ -2021,6 +3908,13 @@ static int _regulator_get_voltage(struct regulator_dev *rdev)
 		ret = rdev->desc->ops->list_voltage(rdev, sel);
 	} else if (rdev->desc->ops->get_voltage) {
 		ret = rdev->desc->ops->get_voltage(rdev);
+<<<<<<< HEAD
+=======
+	} else if (rdev->desc->ops->list_voltage) {
+		ret = rdev->desc->ops->list_voltage(rdev, 0);
+	} else if (rdev->desc->fixed_uV && (rdev->desc->n_voltages == 1)) {
+		ret = rdev->desc->fixed_uV;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		return -EINVAL;
 	}
@@ -2056,7 +3950,11 @@ EXPORT_SYMBOL_GPL(regulator_get_voltage);
 /**
  * regulator_set_current_limit - set regulator output current limit
  * @regulator: regulator source
+<<<<<<< HEAD
  * @min_uA: Minimuum supported current in uA
+=======
+ * @min_uA: Minimum supported current in uA
+>>>>>>> refs/remotes/origin/master
  * @max_uA: Maximum supported current in uA
  *
  * Sets current sink to the desired output current. This can be set during
@@ -2234,9 +4132,33 @@ int regulator_set_optimum_mode(struct regulator *regulator, int uA_load)
 {
 	struct regulator_dev *rdev = regulator->rdev;
 	struct regulator *consumer;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret, output_uV, input_uV, total_uA_load = 0;
 	unsigned int mode;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ret, output_uV, input_uV = 0, total_uA_load = 0;
+	unsigned int mode;
+
+	if (rdev->supply)
+		input_uV = regulator_get_voltage(rdev->supply);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	int ret, output_uV, input_uV = 0, total_uA_load = 0;
+	unsigned int mode;
+
+	if (rdev->supply)
+		input_uV = regulator_get_voltage(rdev->supply);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&rdev->mutex);
 
 	/*
@@ -2259,6 +4181,12 @@ int regulator_set_optimum_mode(struct regulator *regulator, int uA_load)
 	 */
 	ret = -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (!rdev->desc->ops->set_mode)
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	/* get output voltage */
 	output_uV = _regulator_get_voltage(rdev);
 	if (output_uV <= 0) {
@@ -2266,10 +4194,22 @@ int regulator_set_optimum_mode(struct regulator *regulator, int uA_load)
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* get input voltage */
 	input_uV = 0;
 	if (rdev->supply)
 		input_uV = _regulator_get_voltage(rdev->supply);
+=======
+	/* No supply? Use constraint voltage */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* No supply? Use constraint voltage */
+>>>>>>> refs/remotes/origin/master
+=======
+	/* No supply? Use constraint voltage */
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (input_uV <= 0)
 		input_uV = rdev->constraints->input_uV;
 	if (input_uV <= 0) {
@@ -2304,6 +4244,62 @@ out:
 EXPORT_SYMBOL_GPL(regulator_set_optimum_mode);
 
 /**
+<<<<<<< HEAD
+=======
+ * regulator_allow_bypass - allow the regulator to go into bypass mode
+ *
+ * @regulator: Regulator to configure
+ * @enable: enable or disable bypass mode
+ *
+ * Allow the regulator to go into bypass mode if all other consumers
+ * for the regulator also enable bypass mode and the machine
+ * constraints allow this.  Bypass mode means that the regulator is
+ * simply passing the input directly to the output with no regulation.
+ */
+int regulator_allow_bypass(struct regulator *regulator, bool enable)
+{
+	struct regulator_dev *rdev = regulator->rdev;
+	int ret = 0;
+
+	if (!rdev->desc->ops->set_bypass)
+		return 0;
+
+	if (rdev->constraints &&
+	    !(rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_BYPASS))
+		return 0;
+
+	mutex_lock(&rdev->mutex);
+
+	if (enable && !regulator->bypass) {
+		rdev->bypass_count++;
+
+		if (rdev->bypass_count == rdev->open_count) {
+			ret = rdev->desc->ops->set_bypass(rdev, enable);
+			if (ret != 0)
+				rdev->bypass_count--;
+		}
+
+	} else if (!enable && regulator->bypass) {
+		rdev->bypass_count--;
+
+		if (rdev->bypass_count != rdev->open_count) {
+			ret = rdev->desc->ops->set_bypass(rdev, enable);
+			if (ret != 0)
+				rdev->bypass_count++;
+		}
+	}
+
+	if (ret == 0)
+		regulator->bypass = enable;
+
+	mutex_unlock(&rdev->mutex);
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(regulator_allow_bypass);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * regulator_register_notifier - register regulator event notifier
  * @regulator: regulator source
  * @nb: notifier block
@@ -2339,6 +4335,8 @@ EXPORT_SYMBOL_GPL(regulator_unregister_notifier);
 static void _notifier_call_chain(struct regulator_dev *rdev,
 				  unsigned long event, void *data)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct regulator_dev *_rdev;
 
 	/* call rdev chain first */
@@ -2350,6 +4348,14 @@ static void _notifier_call_chain(struct regulator_dev *rdev,
 		_notifier_call_chain(_rdev, event, data);
 		mutex_unlock(&_rdev->mutex);
 	}
+=======
+	/* call rdev chain first */
+	blocking_notifier_call_chain(&rdev->notifier, event, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* call rdev chain first */
+	blocking_notifier_call_chain(&rdev->notifier, event, data);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2376,6 +4382,7 @@ int regulator_bulk_get(struct device *dev, int num_consumers,
 		consumers[i].consumer = NULL;
 
 	for (i = 0; i < num_consumers; i++) {
+<<<<<<< HEAD
 		consumers[i].consumer = regulator_get(dev,
 						      consumers[i].supply);
 		if (IS_ERR(consumers[i].consumer)) {
@@ -2390,7 +4397,11 @@ int regulator_bulk_get(struct device *dev, int num_consumers,
 	return 0;
 
 err:
+<<<<<<< HEAD
 	for (i = 0; i < num_consumers && consumers[i].consumer; i++)
+=======
+	while (--i >= 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		regulator_put(consumers[i].consumer);
 
 	return ret;
@@ -2398,6 +4409,78 @@ err:
 EXPORT_SYMBOL_GPL(regulator_bulk_get);
 
 /**
+<<<<<<< HEAD
+=======
+ * devm_regulator_bulk_get - managed get multiple regulator consumers
+ *
+ * @dev:           Device to supply
+ * @num_consumers: Number of consumers to register
+ * @consumers:     Configuration of consumers; clients are stored here.
+ *
+ * @return 0 on success, an errno on failure.
+ *
+ * This helper function allows drivers to get several regulator
+ * consumers in one operation with management, the regulators will
+ * automatically be freed when the device is unbound.  If any of the
+ * regulators cannot be acquired then any regulators that were
+ * allocated will be freed before returning to the caller.
+ */
+int devm_regulator_bulk_get(struct device *dev, int num_consumers,
+			    struct regulator_bulk_data *consumers)
+{
+	int i;
+	int ret;
+
+	for (i = 0; i < num_consumers; i++)
+		consumers[i].consumer = NULL;
+
+	for (i = 0; i < num_consumers; i++) {
+		consumers[i].consumer = devm_regulator_get(dev,
+							   consumers[i].supply);
+=======
+		consumers[i].consumer = regulator_get(dev,
+						      consumers[i].supply);
+>>>>>>> refs/remotes/origin/master
+		if (IS_ERR(consumers[i].consumer)) {
+			ret = PTR_ERR(consumers[i].consumer);
+			dev_err(dev, "Failed to get supply '%s': %d\n",
+				consumers[i].supply, ret);
+			consumers[i].consumer = NULL;
+			goto err;
+		}
+	}
+
+	return 0;
+
+err:
+<<<<<<< HEAD
+	for (i = 0; i < num_consumers && consumers[i].consumer; i++)
+		devm_regulator_put(consumers[i].consumer);
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(devm_regulator_bulk_get);
+=======
+	while (--i >= 0)
+		regulator_put(consumers[i].consumer);
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(regulator_bulk_get);
+>>>>>>> refs/remotes/origin/master
+
+static void regulator_bulk_enable_async(void *data, async_cookie_t cookie)
+{
+	struct regulator_bulk_data *bulk = data;
+
+	bulk->ret = regulator_enable(bulk->consumer);
+}
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * regulator_bulk_enable - enable multiple regulator consumers
  *
  * @num_consumers: Number of consumers
@@ -2412,6 +4495,8 @@ EXPORT_SYMBOL_GPL(regulator_bulk_get);
 int regulator_bulk_enable(int num_consumers,
 			  struct regulator_bulk_data *consumers)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 	int ret;
 
@@ -2419,18 +4504,106 @@ int regulator_bulk_enable(int num_consumers,
 		ret = regulator_enable(consumers[i].consumer);
 		if (ret != 0)
 			goto err;
+=======
+	LIST_HEAD(async_domain);
+	int i;
+	int ret = 0;
+
+	for (i = 0; i < num_consumers; i++)
+		async_schedule_domain(regulator_bulk_enable_async,
+				      &consumers[i], &async_domain);
+=======
+	ASYNC_DOMAIN_EXCLUSIVE(async_domain);
+	int i;
+	int ret = 0;
+
+	for (i = 0; i < num_consumers; i++) {
+		if (consumers[i].consumer->always_on)
+			consumers[i].ret = 0;
+		else
+			async_schedule_domain(regulator_bulk_enable_async,
+					      &consumers[i], &async_domain);
+	}
+>>>>>>> refs/remotes/origin/master
+
+	async_synchronize_full_domain(&async_domain);
+
+	/* If any consumer failed we need to unwind any that succeeded */
+	for (i = 0; i < num_consumers; i++) {
+		if (consumers[i].ret != 0) {
+			ret = consumers[i].ret;
+			goto err;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
 err:
+<<<<<<< HEAD
 	pr_err("Failed to enable %s: %d\n", consumers[i].supply, ret);
+<<<<<<< HEAD
 	for (--i; i >= 0; --i)
+=======
+	while (--i >= 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		regulator_disable(consumers[i].consumer);
 
 	return ret;
 }
 EXPORT_SYMBOL_GPL(regulator_bulk_enable);
+
+/**
+ * regulator_bulk_set_voltage - set voltage for multiple regulator consumers
+ *
+ * @num_consumers: Number of consumers
+ * @consumers:     Consumer data; clients are stored here.
+ * @return         0 on success, an errno on failure
+ *
+ * This convenience API allows the voted voltage ranges of multiple regulator
+ * clients to be set in a single API call. If any consumers cannot have their
+ * voltages set, this function returns WITHOUT withdrawing votes for any
+ * consumers that have already been set.
+ */
+int regulator_bulk_set_voltage(int num_consumers,
+			       struct regulator_bulk_data *consumers)
+{
+	int i;
+	int rc;
+
+	for (i = 0; i < num_consumers; i++) {
+		if (!consumers[i].min_uV && !consumers[i].max_uV)
+			continue;
+		rc = regulator_set_voltage(consumers[i].consumer,
+				consumers[i].min_uV,
+				consumers[i].max_uV);
+		if (rc)
+			goto err;
+	}
+
+	return 0;
+
+err:
+	pr_err("Failed to set voltage for %s: %d\n", consumers[i].supply, rc);
+	return rc;
+}
+EXPORT_SYMBOL_GPL(regulator_bulk_set_voltage);
+=======
+	for (i = 0; i < num_consumers; i++) {
+		if (consumers[i].ret < 0)
+			pr_err("Failed to enable %s: %d\n", consumers[i].supply,
+			       consumers[i].ret);
+		else
+			regulator_disable(consumers[i].consumer);
+	}
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(regulator_bulk_enable);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * regulator_bulk_set_voltage - set voltage for multiple regulator consumers
@@ -2476,17 +4649,37 @@ EXPORT_SYMBOL_GPL(regulator_bulk_set_voltage);
  * @return         0 on success, an errno on failure
  *
  * This convenience API allows consumers to disable multiple regulator
+<<<<<<< HEAD
+<<<<<<< HEAD
  * clients in a single API call.  If any consumers cannot be enabled
  * then any others that were disabled will be disabled again prior to
+=======
+ * clients in a single API call.  If any consumers cannot be disabled
+ * then any others that were disabled will be enabled again prior to
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * clients in a single API call.  If any consumers cannot be disabled
+ * then any others that were disabled will be enabled again prior to
+>>>>>>> refs/remotes/origin/master
  * return.
  */
 int regulator_bulk_disable(int num_consumers,
 			   struct regulator_bulk_data *consumers)
 {
 	int i;
+<<<<<<< HEAD
 	int ret;
 
+<<<<<<< HEAD
 	for (i = 0; i < num_consumers; i++) {
+=======
+	for (i = num_consumers - 1; i >= 0; --i) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret, r;
+
+	for (i = num_consumers - 1; i >= 0; --i) {
+>>>>>>> refs/remotes/origin/master
 		ret = regulator_disable(consumers[i].consumer);
 		if (ret != 0)
 			goto err;
@@ -2496,14 +4689,73 @@ int regulator_bulk_disable(int num_consumers,
 
 err:
 	pr_err("Failed to disable %s: %d\n", consumers[i].supply, ret);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (--i; i >= 0; --i)
+=======
+	for (++i; i < num_consumers; ++i)
+>>>>>>> refs/remotes/origin/cm-10.0
 		regulator_enable(consumers[i].consumer);
+=======
+	for (++i; i < num_consumers; ++i) {
+		r = regulator_enable(consumers[i].consumer);
+		if (r != 0)
+			pr_err("Failed to reename %s: %d\n",
+			       consumers[i].supply, r);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 EXPORT_SYMBOL_GPL(regulator_bulk_disable);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * regulator_bulk_force_disable - force disable multiple regulator consumers
+ *
+ * @num_consumers: Number of consumers
+ * @consumers:     Consumer data; clients are stored here.
+ * @return         0 on success, an errno on failure
+ *
+ * This convenience API allows consumers to forcibly disable multiple regulator
+ * clients in a single API call.
+ * NOTE: This should be used for situations when device damage will
+ * likely occur if the regulators are not disabled (e.g. over temp).
+ * Although regulator_force_disable function call for some consumers can
+ * return error numbers, the function is called for all consumers.
+ */
+int regulator_bulk_force_disable(int num_consumers,
+			   struct regulator_bulk_data *consumers)
+{
+	int i;
+	int ret;
+
+	for (i = 0; i < num_consumers; i++)
+		consumers[i].ret =
+			    regulator_force_disable(consumers[i].consumer);
+
+	for (i = 0; i < num_consumers; i++) {
+		if (consumers[i].ret != 0) {
+			ret = consumers[i].ret;
+			goto out;
+		}
+	}
+
+	return 0;
+out:
+	return ret;
+}
+EXPORT_SYMBOL_GPL(regulator_bulk_force_disable);
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * regulator_bulk_free - free multiple regulator consumers
  *
  * @num_consumers: Number of consumers
@@ -2559,10 +4811,17 @@ int regulator_mode_to_status(unsigned int mode)
 		return REGULATOR_STATUS_NORMAL;
 	case REGULATOR_MODE_IDLE:
 		return REGULATOR_STATUS_IDLE;
+<<<<<<< HEAD
 	case REGULATOR_STATUS_STANDBY:
 		return REGULATOR_STATUS_STANDBY;
 	default:
 		return 0;
+=======
+	case REGULATOR_MODE_STANDBY:
+		return REGULATOR_STATUS_STANDBY;
+	default:
+		return REGULATOR_STATUS_UNDEFINED;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL_GPL(regulator_mode_to_status);
@@ -2578,7 +4837,19 @@ static int add_regulator_attributes(struct regulator_dev *rdev)
 	int			status = 0;
 
 	/* some attributes need specific methods to be displayed */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->get_voltage || ops->get_voltage_sel) {
+=======
+	if ((ops->get_voltage && ops->get_voltage(rdev) >= 0) ||
+	    (ops->get_voltage_sel && ops->get_voltage_sel(rdev) >= 0)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->get_voltage && ops->get_voltage(rdev) >= 0) ||
+	    (ops->get_voltage_sel && ops->get_voltage_sel(rdev) >= 0) ||
+	    (ops->list_voltage && ops->list_voltage(rdev, 0) >= 0) ||
+		(rdev->desc->fixed_uV && (rdev->desc->n_voltages == 1))) {
+>>>>>>> refs/remotes/origin/master
 		status = device_create_file(dev, &dev_attr_microvolts);
 		if (status < 0)
 			return status;
@@ -2593,7 +4864,11 @@ static int add_regulator_attributes(struct regulator_dev *rdev)
 		if (status < 0)
 			return status;
 	}
+<<<<<<< HEAD
 	if (ops->is_enabled) {
+=======
+	if (rdev->ena_pin || ops->is_enabled) {
+>>>>>>> refs/remotes/origin/master
 		status = device_create_file(dev, &dev_attr_state);
 		if (status < 0)
 			return status;
@@ -2603,6 +4878,14 @@ static int add_regulator_attributes(struct regulator_dev *rdev)
 		if (status < 0)
 			return status;
 	}
+<<<<<<< HEAD
+=======
+	if (ops->get_bypass) {
+		status = device_create_file(dev, &dev_attr_bypass);
+		if (status < 0)
+			return status;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* some attributes are type-specific */
 	if (rdev->desc->type == REGULATOR_CURRENT) {
@@ -2636,10 +4919,13 @@ static int add_regulator_attributes(struct regulator_dev *rdev)
 			return status;
 	}
 
+<<<<<<< HEAD
 	/* suspend mode constraints need multiple supporting methods */
 	if (!(ops->set_suspend_enable && ops->set_suspend_disable))
 		return status;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	status = device_create_file(dev, &dev_attr_suspend_standby_state);
 	if (status < 0)
 		return status;
@@ -2683,6 +4969,10 @@ static int add_regulator_attributes(struct regulator_dev *rdev)
 	return status;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DEBUG_FS
 
 #define MAX_DEBUG_BUF_LEN 50
@@ -2919,6 +5209,7 @@ static const struct file_operations reg_consumers_fops = {
 	.release	= single_release,
 };
 
+<<<<<<< HEAD
 static void rdev_init_debugfs(struct regulator_dev *rdev)
 {
 	struct dentry *err_ptr = NULL;
@@ -2937,12 +5228,42 @@ static void rdev_init_debugfs(struct regulator_dev *rdev)
 		rdev_warn(rdev, "Failed to create debugfs directory\n");
 		rdev->debugfs = NULL;
 		goto error;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void rdev_init_debugfs(struct regulator_dev *rdev)
+{
+	struct dentry *err_ptr = NULL;
+	struct regulator *reg;
+	struct regulator_ops *reg_ops;
+	mode_t mode;
+
+	if (IS_ERR(rdev) || rdev == NULL ||
+		IS_ERR(debugfs_root) || debugfs_root == NULL) {
+		pr_err("Error-Bad Function Input\n");
+		goto error;
+	}
+
+	rdev->debugfs = debugfs_create_dir(rdev_get_name(rdev), debugfs_root);
+	if (IS_ERR(rdev->debugfs) || !rdev->debugfs) {
+		rdev_warn(rdev, "Failed to create debugfs directory\n");
+<<<<<<< HEAD
+		return;
+>>>>>>> refs/remotes/origin/master
+=======
+		rdev->debugfs = NULL;
+		goto error;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	debugfs_create_u32("use_count", 0444, rdev->debugfs,
 			   &rdev->use_count);
 	debugfs_create_u32("open_count", 0444, rdev->debugfs,
 			   &rdev->open_count);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	debugfs_create_file("consumers", 0444, rdev->debugfs, rdev,
 			    &reg_consumers_fops);
 
@@ -3033,28 +5354,78 @@ static inline void rdev_init_debugfs(struct regulator_dev *rdev)
 	return;
 }
 #endif
+<<<<<<< HEAD
+=======
+	debugfs_create_u32("bypass_count", 0444, rdev->debugfs,
+			   &rdev->bypass_count);
+}
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * regulator_register - register regulator
  * @regulator_desc: regulator to register
+<<<<<<< HEAD
  * @dev: struct device for the regulator
  * @init_data: platform provided init data, passed through by driver
  * @driver_data: private regulator data
+<<<<<<< HEAD
+=======
+ * @of_node: OpenFirmware node to parse for device tree bindings (may be
+ *           NULL).
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Called by regulator drivers to register a regulator.
  * Returns 0 on success.
  */
 struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 	struct device *dev, const struct regulator_init_data *init_data,
+<<<<<<< HEAD
 	void *driver_data)
 {
 	static atomic_t regulator_no = ATOMIC_INIT(0);
 	struct regulator_dev *rdev;
 	int ret, i;
+=======
+	void *driver_data, struct device_node *of_node)
+{
+	const struct regulation_constraints *constraints = NULL;
+	static atomic_t regulator_no = ATOMIC_INIT(0);
+	struct regulator_dev *rdev;
+	int ret, i;
+	const char *supply = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (regulator_desc == NULL)
 		return ERR_PTR(-EINVAL);
 
+=======
+ * @config: runtime configuration for regulator
+ *
+ * Called by regulator drivers to register a regulator.
+ * Returns a valid pointer to struct regulator_dev on success
+ * or an ERR_PTR() on error.
+ */
+struct regulator_dev *
+regulator_register(const struct regulator_desc *regulator_desc,
+		   const struct regulator_config *config)
+{
+	const struct regulation_constraints *constraints = NULL;
+	const struct regulator_init_data *init_data;
+	static atomic_t regulator_no = ATOMIC_INIT(0);
+	struct regulator_dev *rdev;
+	struct device *dev;
+	int ret, i;
+	const char *supply = NULL;
+
+	if (regulator_desc == NULL || config == NULL)
+		return ERR_PTR(-EINVAL);
+
+	dev = config->dev;
+	WARN_ON(!dev);
+
+>>>>>>> refs/remotes/origin/master
 	if (regulator_desc->name == NULL || regulator_desc->ops == NULL)
 		return ERR_PTR(-EINVAL);
 
@@ -3062,9 +5433,15 @@ struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 	    regulator_desc->type != REGULATOR_CURRENT)
 		return ERR_PTR(-EINVAL);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!init_data)
 		return ERR_PTR(-EINVAL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Only one of each should be implemented */
 	WARN_ON(regulator_desc->ops->get_voltage &&
 		regulator_desc->ops->get_voltage_sel);
@@ -3081,6 +5458,11 @@ struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 		return ERR_PTR(-EINVAL);
 	}
 
+<<<<<<< HEAD
+=======
+	init_data = config->init_data;
+
+>>>>>>> refs/remotes/origin/master
 	rdev = kzalloc(sizeof(struct regulator_dev), GFP_KERNEL);
 	if (rdev == NULL)
 		return ERR_PTR(-ENOMEM);
@@ -3088,10 +5470,12 @@ struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 	mutex_lock(&regulator_list_mutex);
 
 	mutex_init(&rdev->mutex);
+<<<<<<< HEAD
 	rdev->reg_data = driver_data;
 	rdev->owner = regulator_desc->owner;
 	rdev->desc = regulator_desc;
 	INIT_LIST_HEAD(&rdev->consumer_list);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&rdev->supply_list);
 	INIT_LIST_HEAD(&rdev->list);
 	INIT_LIST_HEAD(&rdev->slist);
@@ -3099,6 +5483,29 @@ struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 
 	/* preform any regulator specific init */
 	if (init_data->regulator_init) {
+=======
+=======
+	rdev->reg_data = config->driver_data;
+	rdev->owner = regulator_desc->owner;
+	rdev->desc = regulator_desc;
+	if (config->regmap)
+		rdev->regmap = config->regmap;
+	else if (dev_get_regmap(dev, NULL))
+		rdev->regmap = dev_get_regmap(dev, NULL);
+	else if (dev->parent)
+		rdev->regmap = dev_get_regmap(dev->parent, NULL);
+	INIT_LIST_HEAD(&rdev->consumer_list);
+>>>>>>> refs/remotes/origin/master
+	INIT_LIST_HEAD(&rdev->list);
+	BLOCKING_INIT_NOTIFIER_HEAD(&rdev->notifier);
+	INIT_DELAYED_WORK(&rdev->disable_work, regulator_disable_work);
+
+	/* preform any regulator specific init */
+	if (init_data && init_data->regulator_init) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = init_data->regulator_init(rdev->reg_data);
 		if (ret < 0)
 			goto clean;
@@ -3106,6 +5513,14 @@ struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 
 	/* register with sysfs */
 	rdev->dev.class = &regulator_class;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	rdev->dev.of_node = of_node;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rdev->dev.of_node = config->of_node;
+>>>>>>> refs/remotes/origin/master
 	rdev->dev.parent = dev;
 	dev_set_name(&rdev->dev, "regulator.%d",
 		     atomic_inc_return(&regulator_no) - 1);
@@ -3117,8 +5532,37 @@ struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 
 	dev_set_drvdata(&rdev->dev, rdev);
 
+<<<<<<< HEAD
 	/* set regulator constraints */
+<<<<<<< HEAD
 	ret = set_machine_constraints(rdev, &init_data->constraints);
+=======
+=======
+	if (config->ena_gpio && gpio_is_valid(config->ena_gpio)) {
+		ret = regulator_ena_gpio_request(rdev, config);
+		if (ret != 0) {
+			rdev_err(rdev, "Failed to request enable GPIO%d: %d\n",
+				 config->ena_gpio, ret);
+			goto wash;
+		}
+
+		if (config->ena_gpio_flags & GPIOF_OUT_INIT_HIGH)
+			rdev->ena_gpio_state = 1;
+
+		if (config->ena_gpio_invert)
+			rdev->ena_gpio_state = !rdev->ena_gpio_state;
+	}
+
+	/* set regulator constraints */
+>>>>>>> refs/remotes/origin/master
+	if (init_data)
+		constraints = &init_data->constraints;
+
+	ret = set_machine_constraints(rdev, constraints);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto scrub;
 
@@ -3127,6 +5571,8 @@ struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 	if (ret < 0)
 		goto scrub;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (init_data->supply_regulator) {
 		struct regulator_dev *r;
 		int found = 0;
@@ -3143,12 +5589,46 @@ struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 			dev_err(dev, "Failed to find supply %s\n",
 				init_data->supply_regulator);
 			ret = -ENODEV;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (init_data && init_data->supply_regulator)
+		supply = init_data->supply_regulator;
+	else if (regulator_desc->supply_name)
+		supply = regulator_desc->supply_name;
+
+	if (supply) {
+		struct regulator_dev *r;
+
+<<<<<<< HEAD
+		r = regulator_dev_lookup(dev, supply);
+
+		if (!r) {
+			dev_err(dev, "Failed to find supply %s\n", supply);
+			ret = -EPROBE_DEFER;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		r = regulator_dev_lookup(dev, supply, &ret);
+
+		if (ret == -ENODEV) {
+			/*
+			 * No supply was specified for this regulator and
+			 * there will never be one.
+			 */
+			ret = 0;
+			goto add_dev;
+		} else if (!r) {
+			dev_err(dev, "Failed to find supply %s\n", supply);
+			ret = -EPROBE_DEFER;
+>>>>>>> refs/remotes/origin/master
 			goto scrub;
 		}
 
 		ret = set_supply(rdev, r);
 		if (ret < 0)
 			goto scrub;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	/* add consumers devices */
@@ -3161,20 +5641,91 @@ struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 			dev_err(dev, "Failed to set supply %s\n",
 				init_data->consumer_supplies[i].supply);
 			goto unset_supplies;
+=======
+
+		/* Enable supply if rail is enabled */
+		if (rdev->desc->ops->is_enabled &&
+				rdev->desc->ops->is_enabled(rdev)) {
+=======
+
+		/* Enable supply if rail is enabled */
+		if (_regulator_is_enabled(rdev)) {
+>>>>>>> refs/remotes/origin/master
+			ret = regulator_enable(rdev->supply);
+			if (ret < 0)
+				goto scrub;
+		}
+	}
+
+<<<<<<< HEAD
+=======
+add_dev:
+>>>>>>> refs/remotes/origin/master
+	/* add consumers devices */
+	if (init_data) {
+		for (i = 0; i < init_data->num_consumer_supplies; i++) {
+			ret = set_consumer_device_supply(rdev,
+				init_data->consumer_supplies[i].dev_name,
+				init_data->consumer_supplies[i].supply);
+			if (ret < 0) {
+				dev_err(dev, "Failed to set supply %s\n",
+					init_data->consumer_supplies[i].supply);
+				goto unset_supplies;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	list_add(&rdev->list, &regulator_list);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 out:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&regulator_list_mutex);
 	rdev_init_debugfs(rdev);
 	return rdev;
 
+<<<<<<< HEAD
+=======
+=======
+	rdev_init_debugfs(rdev);
+>>>>>>> refs/remotes/origin/master
+=======
+	mutex_unlock(&regulator_list_mutex);
+	rdev_init_debugfs(rdev);
+	return rdev;
+
+>>>>>>> refs/remotes/origin/cm-11.0
+out:
+	mutex_unlock(&regulator_list_mutex);
+	return rdev;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 unset_supplies:
 	unset_regulator_supplies(rdev);
 
 scrub:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	kfree(rdev->constraints);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rdev->supply)
+		_regulator_put(rdev->supply);
+	regulator_ena_gpio_free(rdev);
+	kfree(rdev->constraints);
+wash:
+>>>>>>> refs/remotes/origin/master
 	device_unregister(&rdev->dev);
 	/* device core frees rdev */
 	rdev = ERR_PTR(ret);
@@ -3198,6 +5749,8 @@ void regulator_unregister(struct regulator_dev *rdev)
 	if (rdev == NULL)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&regulator_list_mutex);
 #ifdef CONFIG_DEBUG_FS
 	debugfs_remove_recursive(rdev->debugfs);
@@ -3209,6 +5762,33 @@ void regulator_unregister(struct regulator_dev *rdev)
 		sysfs_remove_link(&rdev->dev.kobj, "supply");
 	device_unregister(&rdev->dev);
 	kfree(rdev->constraints);
+=======
+	if (rdev->supply)
+		regulator_put(rdev->supply);
+	mutex_lock(&regulator_list_mutex);
+	debugfs_remove_recursive(rdev->debugfs);
+	flush_work_sync(&rdev->disable_work.work);
+=======
+	if (rdev->supply) {
+		while (rdev->use_count--)
+			regulator_disable(rdev->supply);
+		regulator_put(rdev->supply);
+	}
+	mutex_lock(&regulator_list_mutex);
+	debugfs_remove_recursive(rdev->debugfs);
+	flush_work(&rdev->disable_work.work);
+>>>>>>> refs/remotes/origin/master
+	WARN_ON(rdev->open_count);
+	unset_regulator_supplies(rdev);
+	list_del(&rdev->list);
+	kfree(rdev->constraints);
+<<<<<<< HEAD
+	device_unregister(&rdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	regulator_ena_gpio_free(rdev);
+	device_unregister(&rdev->dev);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&regulator_list_mutex);
 }
 EXPORT_SYMBOL_GPL(regulator_unregister);
@@ -3269,11 +5849,19 @@ int regulator_suspend_finish(void)
 			if (error)
 				ret = error;
 		} else {
+<<<<<<< HEAD
 			if (!has_full_constraints)
 				goto unlock;
 			if (!ops->disable)
 				goto unlock;
 			if (ops->is_enabled && !ops->is_enabled(rdev))
+=======
+			if (!have_full_constraints())
+				goto unlock;
+			if (!ops->disable)
+				goto unlock;
+			if (!_regulator_is_enabled(rdev))
+>>>>>>> refs/remotes/origin/master
 				goto unlock;
 
 			error = ops->disable(rdev);
@@ -3306,6 +5894,7 @@ void regulator_has_full_constraints(void)
 EXPORT_SYMBOL_GPL(regulator_has_full_constraints);
 
 /**
+<<<<<<< HEAD
  * regulator_use_dummy_regulator - Provide a dummy regulator when none is found
  *
  * Calling this function will cause the regulator API to provide a
@@ -3338,6 +5927,11 @@ void regulator_suppress_info_printing(void)
 EXPORT_SYMBOL_GPL(regulator_suppress_info_printing);
 
 /**
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * rdev_get_drvdata - get rdev regulator driver data
  * @rdev: regulator
  *
@@ -3396,12 +5990,62 @@ void *regulator_get_init_drvdata(struct regulator_init_data *reg_init_data)
 }
 EXPORT_SYMBOL_GPL(regulator_get_init_drvdata);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_DEBUG_FS
+static ssize_t supply_map_read_file(struct file *file, char __user *user_buf,
+				    size_t count, loff_t *ppos)
+{
+	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+	ssize_t len, ret = 0;
+	struct regulator_map *map;
+
+	if (!buf)
+		return -ENOMEM;
+
+	list_for_each_entry(map, &regulator_map_list, list) {
+		len = snprintf(buf + ret, PAGE_SIZE - ret,
+			       "%s -> %s.%s\n",
+			       rdev_get_name(map->regulator), map->dev_name,
+			       map->supply);
+		if (len >= 0)
+			ret += len;
+		if (ret > PAGE_SIZE) {
+			ret = PAGE_SIZE;
+			break;
+		}
+	}
+
+	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
+
+	kfree(buf);
+
+	return ret;
+}
+#endif
+
+static const struct file_operations supply_map_fops = {
+#ifdef CONFIG_DEBUG_FS
+	.read = supply_map_read_file,
+	.llseek = default_llseek,
+#endif
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init regulator_init(void)
 {
 	int ret;
 
 	ret = class_register(&regulator_class);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_FS
 	debugfs_root = debugfs_create_dir("regulator", NULL);
 	if (IS_ERR(debugfs_root) || !debugfs_root) {
@@ -3409,6 +6053,19 @@ static int __init regulator_init(void)
 		debugfs_root = NULL;
 	}
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	debugfs_root = debugfs_create_dir("regulator", NULL);
+	if (!debugfs_root)
+		pr_warn("regulator: Failed to create debugfs directory\n");
+
+	debugfs_create_file("supply_map", 0444, debugfs_root, NULL,
+			    &supply_map_fops);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	regulator_dummy_init();
 
@@ -3425,6 +6082,18 @@ static int __init regulator_init_complete(void)
 	struct regulation_constraints *c;
 	int enabled, ret;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Since DT doesn't provide an idiomatic mechanism for
+	 * enabling full constraints and since it's much more natural
+	 * with DT to provide them just assume that a DT enabled
+	 * system has full constraints.
+	 */
+	if (of_have_populated_dt())
+		has_full_constraints = true;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&regulator_list_mutex);
 
 	/* If we have a full configuration then disable any regulators
@@ -3452,11 +6121,21 @@ static int __init regulator_init_complete(void)
 		if (!enabled)
 			goto unlock;
 
+<<<<<<< HEAD
 		if (has_full_constraints) {
 			/* We log since this may kill the system if it
 			 * goes wrong. */
 			if (!suppress_info_printing)
 				rdev_info(rdev, "disabling\n");
+<<<<<<< HEAD
+=======
+		if (have_full_constraints()) {
+			/* We log since this may kill the system if it
+			 * goes wrong. */
+			rdev_info(rdev, "disabling\n");
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = ops->disable(rdev);
 			if (ret != 0) {
 				rdev_err(rdev, "couldn't disable: %d\n", ret);
@@ -3467,9 +6146,19 @@ static int __init regulator_init_complete(void)
 			 * so warn even if we aren't going to do
 			 * anything here.
 			 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (!suppress_info_printing)
 				rdev_warn(rdev, "incomplete constraints, "
 						"leaving on\n");
+=======
+			rdev_warn(rdev, "incomplete constraints, leaving on\n");
+>>>>>>> refs/remotes/origin/master
+=======
+			if (!suppress_info_printing)
+				rdev_warn(rdev, "incomplete constraints, "
+						"leaving on\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 unlock:

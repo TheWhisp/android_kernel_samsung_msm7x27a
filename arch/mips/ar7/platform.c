@@ -202,8 +202,16 @@ static struct resource physmap_flash_resource = {
 	.end	= 0x107fffff,
 };
 
+<<<<<<< HEAD
 static struct physmap_flash_data physmap_flash_data = {
 	.width	= 2,
+=======
+static const char *ar7_probe_types[] = { "ar7part", NULL };
+
+static struct physmap_flash_data physmap_flash_data = {
+	.width	= 2,
+	.part_probe_types = ar7_probe_types,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device physmap_flash = {
@@ -229,7 +237,15 @@ static struct resource cpmac_low_res[] = {
 		.name	= "irq",
 		.flags	= IORESOURCE_IRQ,
 		.start	= 27,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.end 	= 27,
+=======
+		.end	= 27,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.end	= 27,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -310,10 +326,17 @@ static void __init cpmac_get_mac(int instance, unsigned char *dev_addr)
 					&dev_addr[4], &dev_addr[5]) != 6) {
 			pr_warning("cannot parse mac address, "
 					"using random address\n");
+<<<<<<< HEAD
 			random_ether_addr(dev_addr);
 		}
 	} else
 		random_ether_addr(dev_addr);
+=======
+			eth_random_addr(dev_addr);
+		}
+	} else
+		eth_random_addr(dev_addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*****************************************************************************
@@ -462,6 +485,56 @@ static struct gpio_led fb_fon_leds[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct gpio_led gt701_leds[] = {
+	{
+		.name			= "inet:green",
+		.gpio			= 13,
+		.active_low		= 1,
+	},
+	{
+		.name			= "usb",
+		.gpio			= 12,
+		.active_low		= 1,
+	},
+	{
+		.name			= "inet:red",
+		.gpio			= 9,
+		.active_low		= 1,
+	},
+	{
+		.name			= "power:red",
+		.gpio			= 7,
+		.active_low		= 1,
+	},
+	{
+		.name			= "power:green",
+		.gpio			= 8,
+		.active_low		= 1,
+		.default_trigger	= "default-on",
+	},
+<<<<<<< HEAD
+        {
+                .name                   = "ethernet",
+                .gpio                   = 10,
+                .active_low             = 1,
+        },
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{
+		.name			= "ethernet",
+		.gpio			= 10,
+		.active_low		= 1,
+	},
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct gpio_led_platform_data ar7_led_data;
 
 static struct platform_device ar7_gpio_leds = {
@@ -475,7 +548,11 @@ static void __init detect_leds(void)
 {
 	char *prid, *usb_prod;
 
+<<<<<<< HEAD
 	/* Default LEDs	*/
+=======
+	/* Default LEDs */
+>>>>>>> refs/remotes/origin/master
 	ar7_led_data.num_leds = ARRAY_SIZE(default_leds);
 	ar7_led_data.leds = default_leds;
 
@@ -503,6 +580,18 @@ static void __init detect_leds(void)
 	} else if (strstr(prid, "CYWM") || strstr(prid, "CYWL")) {
 		ar7_led_data.num_leds = ARRAY_SIZE(titan_leds);
 		ar7_led_data.leds = titan_leds;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	} else if (strstr(prid, "GT701")) {
+		ar7_led_data.num_leds = ARRAY_SIZE(gt701_leds);
+		ar7_led_data.leds = gt701_leds;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (strstr(prid, "GT701")) {
+		ar7_led_data.num_leds = ARRAY_SIZE(gt701_leds);
+		ar7_led_data.leds = gt701_leds;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -536,7 +625,15 @@ static int __init ar7_register_uarts(void)
 
 	bus_clk = clk_get(NULL, "bus");
 	if (IS_ERR(bus_clk))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		panic("unable to get bus clk\n");
+=======
+		panic("unable to get bus clk");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		panic("unable to get bus clk");
+>>>>>>> refs/remotes/origin/master
 
 	uart_port.type		= PORT_AR7;
 	uart_port.uartclk	= clk_get_rate(bus_clk) / 2;

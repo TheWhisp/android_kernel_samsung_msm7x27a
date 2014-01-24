@@ -17,9 +17,16 @@
 #define MIPS4K_ICACHE_REFILL_WAR	0
 #define MIPS_CACHE_SYNC_WAR		0
 #define TX49XX_ICACHE_INDEX_INV_WAR	0
+<<<<<<< HEAD
 #define RM9000_CDEX_SMP_WAR		0
+=======
+>>>>>>> refs/remotes/origin/master
 #define ICACHE_REFILLS_WORKAROUND_WAR	0
 #define R10000_LLSC_WAR			0
 #define MIPS34K_MISSED_ITLB_WAR		0
 
+<<<<<<< HEAD
 #endif /* __ASM_MIPS_MACH_PNX8550_WAR_H */
+=======
+#endif /* __ASM_MIPS_MACH_PNX833X_WAR_H */
+>>>>>>> refs/remotes/origin/master

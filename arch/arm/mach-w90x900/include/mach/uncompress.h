@@ -24,8 +24,11 @@
 #include <mach/map.h>
 #include <linux/serial_reg.h>
 
+<<<<<<< HEAD
 #define arch_decomp_wdog()
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define TX_DONE	(UART_LSR_TEMT | UART_LSR_THRE)
 static volatile u32 * const uart_base = (u32 *)UART0_PA;
 

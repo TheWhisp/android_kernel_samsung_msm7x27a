@@ -158,6 +158,7 @@
 #define OMAP_MPUIO(nr)		(OMAP_MAX_GPIO_LINES + (nr))
 #define OMAP_GPIO_IS_MPUIO(nr)	((nr) >= OMAP_MAX_GPIO_LINES)
 
+<<<<<<< HEAD
 #define OMAP_GPIO_IRQ(nr)	(OMAP_GPIO_IS_MPUIO(nr) ? \
 				 IH_MPUIO_BASE + ((nr) & 0x0f) : \
 				 IH_GPIO_BASE + (nr))
@@ -169,26 +170,73 @@
 #define METHOD_GPIO_24XX	5
 #define METHOD_GPIO_44XX	6
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct omap_gpio_dev_attr {
 	int bank_width;		/* GPIO bank width */
 	bool dbck_flag;		/* dbck required or not - True for OMAP3&4 */
 };
 
+<<<<<<< HEAD
+=======
+struct omap_gpio_reg_offs {
+	u16 revision;
+	u16 direction;
+	u16 datain;
+	u16 dataout;
+	u16 set_dataout;
+	u16 clr_dataout;
+	u16 irqstatus;
+	u16 irqstatus2;
+	u16 irqenable;
+	u16 irqenable2;
+	u16 set_irqenable;
+	u16 clr_irqenable;
+	u16 debounce;
+	u16 debounce_en;
+	u16 ctrl;
+	u16 wkup_en;
+	u16 leveldetect0;
+	u16 leveldetect1;
+	u16 risingdetect;
+	u16 fallingdetect;
+	u16 irqctrl;
+	u16 edgectrl1;
+	u16 edgectrl2;
+	u16 pinctrl;
+
+	bool irqenable_inv;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct omap_gpio_platform_data {
 	u16 virtual_irq_start;
 	int bank_type;
 	int bank_width;		/* GPIO bank width */
 	int bank_stride;	/* Only needed for omap1 MPUIO */
 	bool dbck_flag;		/* dbck required or not - True for OMAP3&4 */
+<<<<<<< HEAD
 };
 
 /* TODO: Analyze removing gpio_bank_count usage from driver code */
 extern int gpio_bank_count;
+=======
+	bool loses_context;	/* whether the bank would ever lose context */
+	bool is_mpuio;		/* whether the bank is of type MPUIO */
+	u32 non_wakeup_gpios;
+
+	struct omap_gpio_reg_offs *regs;
+
+	/* Return context loss count due to PM states changing */
+	int (*get_context_loss_count)(struct device *dev);
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern void omap2_gpio_prepare_for_idle(int off_mode);
 extern void omap2_gpio_resume_after_idle(void);
 extern void omap_set_gpio_debounce(int gpio, int enable);
 extern void omap_set_gpio_debounce_time(int gpio, int enable);
+<<<<<<< HEAD
 extern void omap_gpio_save_context(void);
 extern void omap_gpio_restore_context(void);
 /*-------------------------------------------------------------------------*/
@@ -196,12 +244,21 @@ extern void omap_gpio_restore_context(void);
 /* Wrappers for "new style" GPIO calls, using the new infrastructure
  * which lets us plug in FPGA, I2C, and other implementations.
  * *
+=======
+/*-------------------------------------------------------------------------*/
+
+/*
+ * Wrappers for "new style" GPIO calls, using the new infrastructure
+ * which lets us plug in FPGA, I2C, and other implementations.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * The original OMAP-specific calls should eventually be removed.
  */
 
 #include <linux/errno.h>
 #include <asm-generic/gpio.h>
 
+<<<<<<< HEAD
 static inline int gpio_get_value(unsigned gpio)
 {
 	return __gpio_get_value(gpio);
@@ -239,4 +296,6 @@ static inline int irq_to_gpio(unsigned irq)
 	return -EIO;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

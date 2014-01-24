@@ -16,11 +16,23 @@
 
 #include <linux/clk.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/mod_devicetable.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mod_devicetable.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/resource.h>
 #include <linux/regulator/consumer.h>
 
+<<<<<<< HEAD
 #define AMBA_NR_IRQS	2
+=======
+#define AMBA_NR_IRQS	9
+>>>>>>> refs/remotes/origin/master
 #define AMBA_CID	0xb105f00d
 
 struct clk;
@@ -29,18 +41,30 @@ struct amba_device {
 	struct device		dev;
 	struct resource		res;
 	struct clk		*pclk;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct regulator	*vcore;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u64			dma_mask;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		periphid;
 	unsigned int		irq[AMBA_NR_IRQS];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct amba_id {
 	unsigned int		id;
 	unsigned int		mask;
 	void			*data;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct amba_driver {
 	struct device_driver	drv;
 	int			(*probe)(struct amba_device *, const struct amba_id *);
@@ -65,7 +89,38 @@ extern struct bus_type amba_bustype;
 
 int amba_driver_register(struct amba_driver *);
 void amba_driver_unregister(struct amba_driver *);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct amba_device *amba_device_alloc(const char *, resource_size_t, size_t);
+void amba_device_put(struct amba_device *);
+int amba_device_add(struct amba_device *, struct resource *);
+>>>>>>> refs/remotes/origin/cm-10.0
 int amba_device_register(struct amba_device *, struct resource *);
+=======
+struct amba_device *amba_device_alloc(const char *, resource_size_t, size_t);
+void amba_device_put(struct amba_device *);
+int amba_device_add(struct amba_device *, struct resource *);
+int amba_device_register(struct amba_device *, struct resource *);
+struct amba_device *amba_apb_device_add(struct device *parent, const char *name,
+					resource_size_t base, size_t size,
+					int irq1, int irq2, void *pdata,
+					unsigned int periphid);
+struct amba_device *amba_ahb_device_add(struct device *parent, const char *name,
+					resource_size_t base, size_t size,
+					int irq1, int irq2, void *pdata,
+					unsigned int periphid);
+struct amba_device *
+amba_apb_device_add_res(struct device *parent, const char *name,
+			resource_size_t base, size_t size, int irq1,
+			int irq2, void *pdata, unsigned int periphid,
+			struct resource *resbase);
+struct amba_device *
+amba_ahb_device_add_res(struct device *parent, const char *name,
+			resource_size_t base, size_t size, int irq1,
+			int irq2, void *pdata, unsigned int periphid,
+			struct resource *resbase);
+>>>>>>> refs/remotes/origin/master
 void amba_device_unregister(struct amba_device *);
 struct amba_device *amba_find_device(const char *, struct device *, unsigned int, unsigned int);
 int amba_request_regions(struct amba_device *, const char *);
@@ -77,12 +132,18 @@ void amba_release_regions(struct amba_device *);
 #define amba_pclk_disable(d)	\
 	do { if (!IS_ERR((d)->pclk)) clk_disable((d)->pclk); } while (0)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define amba_vcore_enable(d)	\
 	(IS_ERR((d)->vcore) ? 0 : regulator_enable((d)->vcore))
 
 #define amba_vcore_disable(d)	\
 	do { if (!IS_ERR((d)->vcore)) regulator_disable((d)->vcore); } while (0)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Some drivers don't use the struct amba_device */
 #define AMBA_CONFIG_BITS(a) (((a) >> 24) & 0xff)
 #define AMBA_REV_BITS(a) (((a) >> 20) & 0x0f)
@@ -94,4 +155,58 @@ void amba_release_regions(struct amba_device *);
 #define amba_manf(d)	AMBA_MANF_BITS((d)->periphid)
 #define amba_part(d)	AMBA_PART_BITS((d)->periphid)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define __AMBA_DEV(busid, data, mask)				\
+	{							\
+		.coherent_dma_mask = mask,			\
+		.init_name = busid,				\
+		.platform_data = data,				\
+	}
+
+/*
+ * APB devices do not themselves have the ability to address memory,
+ * so DMA masks should be zero (much like USB peripheral devices.)
+ * The DMA controller DMA masks should be used instead (much like
+ * USB host controllers in conventional PCs.)
+ */
+#define AMBA_APB_DEVICE(name, busid, id, base, irqs, data)	\
+struct amba_device name##_device = {				\
+	.dev = __AMBA_DEV(busid, data, 0),			\
+	.res = DEFINE_RES_MEM(base, SZ_4K),			\
+	.irq = irqs,						\
+	.periphid = id,						\
+}
+
+/*
+ * AHB devices are DMA capable, so set their DMA masks
+ */
+#define AMBA_AHB_DEVICE(name, busid, id, base, irqs, data)	\
+struct amba_device name##_device = {				\
+	.dev = __AMBA_DEV(busid, data, ~0ULL),			\
+	.res = DEFINE_RES_MEM(base, SZ_4K),			\
+<<<<<<< HEAD
+	.dma_mask = ~0ULL,					\
+=======
+>>>>>>> refs/remotes/origin/master
+	.irq = irqs,						\
+	.periphid = id,						\
+}
+
+/*
+ * module_amba_driver() - Helper macro for drivers that don't do anything
+ * special in module init/exit.  This eliminates a lot of boilerplate.  Each
+ * module may only use this macro once, and calling it replaces module_init()
+ * and module_exit()
+ */
+#define module_amba_driver(__amba_drv) \
+	module_driver(__amba_drv, amba_driver_register, amba_driver_unregister)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

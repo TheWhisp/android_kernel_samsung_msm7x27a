@@ -44,6 +44,10 @@ ipt_mangle_out(struct sk_buff *skb, const struct net_device *out)
 	u_int8_t tos;
 	__be32 saddr, daddr;
 	u_int32_t mark;
+<<<<<<< HEAD
+=======
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	/* root is playing with raw sockets. */
 	if (skb->len < sizeof(struct iphdr) ||
@@ -66,9 +70,17 @@ ipt_mangle_out(struct sk_buff *skb, const struct net_device *out)
 		if (iph->saddr != saddr ||
 		    iph->daddr != daddr ||
 		    skb->mark != mark ||
+<<<<<<< HEAD
 		    iph->tos != tos)
 			if (ip_route_me_harder(skb, RTN_UNSPEC))
 				ret = NF_DROP;
+=======
+		    iph->tos != tos) {
+			err = ip_route_me_harder(skb, RTN_UNSPEC);
+			if (err < 0)
+				ret = NF_DROP_ERR(err);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -76,12 +88,17 @@ ipt_mangle_out(struct sk_buff *skb, const struct net_device *out)
 
 /* The work comes in here from netfilter.c. */
 static unsigned int
+<<<<<<< HEAD
 iptable_mangle_hook(unsigned int hook,
+=======
+iptable_mangle_hook(const struct nf_hook_ops *ops,
+>>>>>>> refs/remotes/origin/master
 		     struct sk_buff *skb,
 		     const struct net_device *in,
 		     const struct net_device *out,
 		     int (*okfn)(struct sk_buff *))
 {
+<<<<<<< HEAD
 	if (hook == NF_INET_LOCAL_OUT)
 		return ipt_mangle_out(skb, out);
 	if (hook == NF_INET_POST_ROUTING)
@@ -89,6 +106,15 @@ iptable_mangle_hook(unsigned int hook,
 				    dev_net(out)->ipv4.iptable_mangle);
 	/* PREROUTING/INPUT/FORWARD: */
 	return ipt_do_table(skb, hook, in, out,
+=======
+	if (ops->hooknum == NF_INET_LOCAL_OUT)
+		return ipt_mangle_out(skb, out);
+	if (ops->hooknum == NF_INET_POST_ROUTING)
+		return ipt_do_table(skb, ops->hooknum, in, out,
+				    dev_net(out)->ipv4.iptable_mangle);
+	/* PREROUTING/INPUT/FORWARD: */
+	return ipt_do_table(skb, ops->hooknum, in, out,
+>>>>>>> refs/remotes/origin/master
 			    dev_net(in)->ipv4.iptable_mangle);
 }
 
@@ -104,9 +130,13 @@ static int __net_init iptable_mangle_net_init(struct net *net)
 	net->ipv4.iptable_mangle =
 		ipt_register_table(net, &packet_mangler, repl);
 	kfree(repl);
+<<<<<<< HEAD
 	if (IS_ERR(net->ipv4.iptable_mangle))
 		return PTR_ERR(net->ipv4.iptable_mangle);
 	return 0;
+=======
+	return PTR_ERR_OR_ZERO(net->ipv4.iptable_mangle);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __net_exit iptable_mangle_net_exit(struct net *net)
@@ -131,6 +161,7 @@ static int __init iptable_mangle_init(void)
 	mangle_ops = xt_hook_link(&packet_mangler, iptable_mangle_hook);
 	if (IS_ERR(mangle_ops)) {
 		ret = PTR_ERR(mangle_ops);
+<<<<<<< HEAD
 		goto cleanup_table;
 	}
 
@@ -139,6 +170,12 @@ static int __init iptable_mangle_init(void)
  cleanup_table:
 	unregister_pernet_subsys(&iptable_mangle_net_ops);
 	return ret;
+=======
+		unregister_pernet_subsys(&iptable_mangle_net_ops);
+	}
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit iptable_mangle_fini(void)

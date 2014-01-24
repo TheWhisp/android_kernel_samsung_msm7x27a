@@ -35,7 +35,13 @@
 #include <linux/interrupt.h>
 #include <linux/mutex.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/amigahw.h>
 #include <asm/amigaints.h>
 
@@ -108,6 +114,18 @@ static int __init amijoy_init(void)
 	int i, j;
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!MACH_IS_AMIGA)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!MACH_IS_AMIGA)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 2; i++) {
 		if (!amijoy[i])
 			continue;

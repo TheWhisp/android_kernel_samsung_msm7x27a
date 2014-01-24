@@ -30,7 +30,12 @@
 #include <linux/io.h>
 #include <asm/unaligned.h>
 
+<<<<<<< HEAD
 #define pr_devinit(fmt, args...) ({ static const __devinitconst char __fmt[] = fmt; printk(__fmt, ## args); })
+=======
+#define pr_devinit(fmt, args...) \
+		({ static const char __fmt[] = fmt; printk(__fmt, ## args); })
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_NAME "bfin-async-flash"
 
@@ -41,7 +46,13 @@ struct async_state {
 	uint32_t flash_ambctl0, flash_ambctl1;
 	uint32_t save_ambctl0, save_ambctl1;
 	unsigned long irq_flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct mtd_partition *parts;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void switch_to_flash(struct async_state *state)
@@ -122,12 +133,22 @@ static void bfin_flash_copy_to(struct map_info *map, unsigned long to, const voi
 	switch_back(state);
 }
 
+<<<<<<< HEAD
 static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
 
 static int __devinit bfin_flash_probe(struct platform_device *pdev)
 {
 	int ret;
 	struct physmap_flash_data *pdata = pdev->dev.platform_data;
+=======
+static const char * const part_probe_types[] = {
+	"cmdlinepart", "RedBoot", NULL };
+
+static int bfin_flash_probe(struct platform_device *pdev)
+{
+	int ret;
+	struct physmap_flash_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct resource *memory = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	struct resource *flash_ambctl = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 	struct async_state *state;
@@ -142,7 +163,15 @@ static int __devinit bfin_flash_probe(struct platform_device *pdev)
 	state->map.write      = bfin_flash_write;
 	state->map.copy_to    = bfin_flash_copy_to;
 	state->map.bankwidth  = pdata->width;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	state->map.size       = memory->end - memory->start + 1;
+=======
+	state->map.size       = resource_size(memory);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	state->map.size       = resource_size(memory);
+>>>>>>> refs/remotes/origin/master
 	state->map.virt       = (void __iomem *)memory->start;
 	state->map.phys       = memory->start;
 	state->map.map_priv_1 = (unsigned long)state;
@@ -165,6 +194,8 @@ static int __devinit bfin_flash_probe(struct platform_device *pdev)
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = parse_mtd_partitions(state->mtd, part_probe_types, &pdata->parts, 0);
 	if (ret > 0) {
 		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using commandline partition definition\n");
@@ -177,18 +208,36 @@ static int __devinit bfin_flash_probe(struct platform_device *pdev)
 		pr_devinit(KERN_NOTICE DRIVER_NAME ": no partition info available, registering whole flash at once\n");
 		mtd_device_register(state->mtd, NULL, 0);
 	}
+=======
+	mtd_device_parse_register(state->mtd, part_probe_types, NULL,
+				  pdata->parts, pdata->nr_parts);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_device_parse_register(state->mtd, part_probe_types, NULL,
+				  pdata->parts, pdata->nr_parts);
+>>>>>>> refs/remotes/origin/master
 
 	platform_set_drvdata(pdev, state);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit bfin_flash_remove(struct platform_device *pdev)
+=======
+static int bfin_flash_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct async_state *state = platform_get_drvdata(pdev);
 	gpio_free(state->enet_flash_pin);
 	mtd_device_unregister(state->mtd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(state->parts);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	map_destroy(state->mtd);
 	kfree(state);
 	return 0;
@@ -196,12 +245,18 @@ static int __devexit bfin_flash_remove(struct platform_device *pdev)
 
 static struct platform_driver bfin_flash_driver = {
 	.probe		= bfin_flash_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(bfin_flash_remove),
+=======
+	.remove		= bfin_flash_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= DRIVER_NAME,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init bfin_flash_init(void)
 {
 	return platform_driver_register(&bfin_flash_driver);
@@ -213,6 +268,12 @@ static void __exit bfin_flash_exit(void)
 	platform_driver_unregister(&bfin_flash_driver);
 }
 module_exit(bfin_flash_exit);
+=======
+module_platform_driver(bfin_flash_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(bfin_flash_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("MTD map driver for Blackfins with flash/ethernet on same async bank");

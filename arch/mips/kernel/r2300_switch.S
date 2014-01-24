@@ -15,7 +15,10 @@
 #include <asm/fpregdef.h>
 #include <asm/mipsregs.h>
 #include <asm/asm-offsets.h>
+<<<<<<< HEAD
 #include <asm/page.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/regdef.h>
 #include <asm/stackframe.h>
 #include <asm/thread_info.h>
@@ -43,7 +46,11 @@
 
 /*
  * task_struct *resume(task_struct *prev, task_struct *next,
+<<<<<<< HEAD
  *                     struct thread_info *next_ti) )
+=======
+ *		       struct thread_info *next_ti, int usedfpu)
+>>>>>>> refs/remotes/origin/master
  */
 LEAF(resume)
 	mfc0	t1, CP0_STATUS
@@ -51,6 +58,7 @@ LEAF(resume)
 	cpu_save_nonscratch a0
 	sw	ra, THREAD_REG31(a0)
 
+<<<<<<< HEAD
 	/*
 	 * check if we need to save FPU registers
 	 */
@@ -63,6 +71,11 @@ LEAF(resume)
 
 	and	t0, t0, t1
 	sw	t0, TI_FLAGS(t3)
+=======
+	beqz	a3, 1f
+
+	PTR_L	t3, TASK_THREAD_INFO(a0)
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * clear saved user stack CU1 bit
@@ -75,6 +88,16 @@ LEAF(resume)
 	fpu_save_single a0, t0			# clobbers t0
 
 1:
+<<<<<<< HEAD
+=======
+
+#if defined(CONFIG_CC_STACKPROTECTOR) && !defined(CONFIG_SMP)
+	PTR_LA	t8, __stack_chk_guard
+	LONG_L	t9, TASK_STACK_CANARY(a1)
+	LONG_S	t9, 0(t8)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The order of restoring the registers takes care of the race
 	 * updating $28, $29 and kernelsp without disabling ints.

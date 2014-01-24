@@ -1,1 +1,10 @@
+<<<<<<< HEAD
 include include/asm-generic/Kbuild.asm
+=======
+
+generic-y += barrier.h
+generic-y += clkdev.h
+generic-y += exec.h
+generic-y += trace_clock.h
+generic-y += preempt.h
+>>>>>>> refs/remotes/origin/master

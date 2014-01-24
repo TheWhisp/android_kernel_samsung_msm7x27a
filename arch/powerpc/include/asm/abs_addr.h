@@ -17,7 +17,10 @@
 #include <asm/types.h>
 #include <asm/page.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
 #include <asm/firmware.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct mschunks_map {
         unsigned long num_chunks;
@@ -46,6 +49,7 @@ static inline unsigned long addr_to_chunk(unsigned long addr)
 
 static inline unsigned long phys_to_abs(unsigned long pa)
 {
+<<<<<<< HEAD
 	unsigned long chunk;
 
 	/* This is a no-op on non-iSeries */
@@ -58,12 +62,16 @@ static inline unsigned long phys_to_abs(unsigned long pa)
 		chunk = mschunks_map.mapping[chunk];
 
 	return chunk_to_addr(chunk) + (pa & MSCHUNKS_OFFSET_MASK);
+=======
+	return pa;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Convenience macros */
 #define virt_to_abs(va) phys_to_abs(__pa(va))
 #define abs_to_virt(aa) __va(aa)
 
+<<<<<<< HEAD
 /*
  * Converts Virtual Address to Real Address for
  * Legacy iSeries Hypervisor calls
@@ -71,5 +79,7 @@ static inline unsigned long phys_to_abs(unsigned long pa)
 #define iseries_hv_addr(virtaddr)	\
 	(0x8000000000000000UL | virt_to_abs(virtaddr))
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __KERNEL__ */
 #endif /* _ASM_POWERPC_ABS_ADDR_H */

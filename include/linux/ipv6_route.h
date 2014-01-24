@@ -9,6 +9,7 @@
  *      as published by the Free Software Foundation; either version
  *      2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_IPV6_ROUTE_H
 #define _LINUX_IPV6_ROUTE_H
@@ -60,3 +61,13 @@ struct in6_rtmsg {
 #define RTMSG_DELROUTE		0x22
 
 #endif
+=======
+#ifndef _LINUX_IPV6_ROUTE_H
+#define _LINUX_IPV6_ROUTE_H
+
+#include <uapi/linux/ipv6_route.h>
+
+#define IPV6_EXTRACT_PREF(flag)	(((flag) & RTF_PREF_MASK) >> 27)
+#define IPV6_DECODE_PREF(pref)	((pref) ^ 2)	/* 1:low,2:med,3:high */
+#endif
+>>>>>>> refs/remotes/origin/master

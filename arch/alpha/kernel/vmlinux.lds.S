@@ -2,6 +2,14 @@
 #include <asm/thread_info.h>
 #include <asm/cache.h>
 #include <asm/page.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 OUTPUT_FORMAT("elf64-alpha")
 OUTPUT_ARCH(alpha)
@@ -25,6 +33,14 @@ SECTIONS
 		*(.fixup)
 		*(.gnu.warning)
 	} :kernel
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	swapper_pg_dir = SWAPPER_PGD;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	swapper_pg_dir = SWAPPER_PGD;
+>>>>>>> refs/remotes/origin/master
 	_etext = .;	/* End of text section */
 
 	NOTES :kernel :note

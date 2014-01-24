@@ -24,6 +24,14 @@
  */
 
 #include <linux/pci.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci_hotplug.h>
 
 static struct hpp_type0 pci_default_type0 = {
@@ -95,17 +103,23 @@ static void program_hpp_type1(struct pci_dev *dev, struct hpp_type1 *hpp)
 static void program_hpp_type2(struct pci_dev *dev, struct hpp_type2 *hpp)
 {
 	int pos;
+<<<<<<< HEAD
 	u16 reg16;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 reg32;
 
 	if (!hpp)
 		return;
 
+<<<<<<< HEAD
 	/* Find PCI Express capability */
 	pos = pci_pcie_cap(dev);
 	if (!pos)
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hpp->revision > 1) {
 		dev_warn(&dev->dev, "PCIe settings rev %d not supported\n",
 			 hpp->revision);
@@ -113,6 +127,7 @@ static void program_hpp_type2(struct pci_dev *dev, struct hpp_type2 *hpp)
 	}
 
 	/* Initialize Device Control Register */
+<<<<<<< HEAD
 	pci_read_config_word(dev, pos + PCI_EXP_DEVCTL, &reg16);
 	reg16 = (reg16 & hpp->pci_exp_devctl_and) | hpp->pci_exp_devctl_or;
 	pci_write_config_word(dev, pos + PCI_EXP_DEVCTL, reg16);
@@ -124,6 +139,15 @@ static void program_hpp_type2(struct pci_dev *dev, struct hpp_type2 *hpp)
 			| hpp->pci_exp_lnkctl_or;
 		pci_write_config_word(dev, pos + PCI_EXP_LNKCTL, reg16);
 	}
+=======
+	pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL,
+			~hpp->pci_exp_devctl_and, hpp->pci_exp_devctl_or);
+
+	/* Initialize Link Control Register */
+	if (dev->subordinate)
+		pcie_capability_clear_and_set_word(dev, PCI_EXP_LNKCTL,
+			~hpp->pci_exp_lnkctl_and, hpp->pci_exp_lnkctl_or);
+>>>>>>> refs/remotes/origin/master
 
 	/* Find Advanced Error Reporting Enhanced Capability */
 	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
@@ -158,6 +182,8 @@ static void program_hpp_type2(struct pci_dev *dev, struct hpp_type2 *hpp)
 	 */
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Program PCIE MaxPayload setting on device: ensure parent maxpayload <= device */
 static int pci_set_payload(struct pci_dev *dev)
 {
@@ -199,6 +225,10 @@ static int pci_set_payload(struct pci_dev *dev)
        return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void pci_configure_slot(struct pci_dev *dev)
 {
 	struct pci_dev *cdev;
@@ -210,9 +240,20 @@ void pci_configure_slot(struct pci_dev *dev)
 			(dev->class >> 8) == PCI_CLASS_BRIDGE_PCI)))
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
        ret = pci_set_payload(dev);
        if (ret)
                dev_warn(&dev->dev, "could not set device max payload\n");
+=======
+	if (dev->bus && dev->bus->self)
+		pcie_bus_configure_settings(dev->bus,
+					    dev->bus->self->pcie_mpss);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->bus)
+		pcie_bus_configure_settings(dev->bus);
+>>>>>>> refs/remotes/origin/master
 
 	memset(&hpp, 0, sizeof(hpp));
 	ret = pci_get_hp_params(dev, &hpp);

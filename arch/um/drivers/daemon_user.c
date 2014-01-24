@@ -14,10 +14,19 @@
 #include <sys/time.h>
 #include <sys/un.h>
 #include "daemon.h"
+<<<<<<< HEAD
 #include "net_user.h"
 #include "os.h"
 #include "um_malloc.h"
+<<<<<<< HEAD
 #include "user.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net_user.h>
+#include <os.h>
+#include <um_malloc.h>
+>>>>>>> refs/remotes/origin/master
 
 enum request_type { REQ_NEW_CONTROL };
 

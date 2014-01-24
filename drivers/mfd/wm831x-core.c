@@ -18,12 +18,28 @@
 #include <linux/delay.h>
 #include <linux/mfd/core.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mfd/wm831x/core.h>
 #include <linux/mfd/wm831x/pdata.h>
 #include <linux/mfd/wm831x/irq.h>
 #include <linux/mfd/wm831x/auxadc.h>
 #include <linux/mfd/wm831x/otp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/mfd/wm831x/pmu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mfd/wm831x/pmu.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mfd/wm831x/regulator.h>
 
 /* Current settings - values are 2*2^(reg_val/4) microamps.  These are
@@ -160,6 +176,8 @@ int wm831x_reg_unlock(struct wm831x *wm831x)
 }
 EXPORT_SYMBOL_GPL(wm831x_reg_unlock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm831x_read(struct wm831x *wm831x, unsigned short reg,
 		       int bytes, void *dest)
 {
@@ -181,6 +199,357 @@ static int wm831x_read(struct wm831x *wm831x, unsigned short reg,
 	}
 
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static bool wm831x_reg_readable(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM831X_RESET_ID:
+	case WM831X_REVISION:
+	case WM831X_PARENT_ID:
+	case WM831X_SYSVDD_CONTROL:
+	case WM831X_THERMAL_MONITORING:
+	case WM831X_POWER_STATE:
+	case WM831X_WATCHDOG:
+	case WM831X_ON_PIN_CONTROL:
+	case WM831X_RESET_CONTROL:
+	case WM831X_CONTROL_INTERFACE:
+	case WM831X_SECURITY_KEY:
+	case WM831X_SOFTWARE_SCRATCH:
+	case WM831X_OTP_CONTROL:
+	case WM831X_GPIO_LEVEL:
+	case WM831X_SYSTEM_STATUS:
+	case WM831X_ON_SOURCE:
+	case WM831X_OFF_SOURCE:
+	case WM831X_SYSTEM_INTERRUPTS:
+	case WM831X_INTERRUPT_STATUS_1:
+	case WM831X_INTERRUPT_STATUS_2:
+	case WM831X_INTERRUPT_STATUS_3:
+	case WM831X_INTERRUPT_STATUS_4:
+	case WM831X_INTERRUPT_STATUS_5:
+	case WM831X_IRQ_CONFIG:
+	case WM831X_SYSTEM_INTERRUPTS_MASK:
+	case WM831X_INTERRUPT_STATUS_1_MASK:
+	case WM831X_INTERRUPT_STATUS_2_MASK:
+	case WM831X_INTERRUPT_STATUS_3_MASK:
+	case WM831X_INTERRUPT_STATUS_4_MASK:
+	case WM831X_INTERRUPT_STATUS_5_MASK:
+	case WM831X_RTC_WRITE_COUNTER:
+	case WM831X_RTC_TIME_1:
+	case WM831X_RTC_TIME_2:
+	case WM831X_RTC_ALARM_1:
+	case WM831X_RTC_ALARM_2:
+	case WM831X_RTC_CONTROL:
+	case WM831X_RTC_TRIM:
+	case WM831X_TOUCH_CONTROL_1:
+	case WM831X_TOUCH_CONTROL_2:
+	case WM831X_TOUCH_DATA_X:
+	case WM831X_TOUCH_DATA_Y:
+	case WM831X_TOUCH_DATA_Z:
+	case WM831X_AUXADC_DATA:
+	case WM831X_AUXADC_CONTROL:
+	case WM831X_AUXADC_SOURCE:
+	case WM831X_COMPARATOR_CONTROL:
+	case WM831X_COMPARATOR_1:
+	case WM831X_COMPARATOR_2:
+	case WM831X_COMPARATOR_3:
+	case WM831X_COMPARATOR_4:
+	case WM831X_GPIO1_CONTROL:
+	case WM831X_GPIO2_CONTROL:
+	case WM831X_GPIO3_CONTROL:
+	case WM831X_GPIO4_CONTROL:
+	case WM831X_GPIO5_CONTROL:
+	case WM831X_GPIO6_CONTROL:
+	case WM831X_GPIO7_CONTROL:
+	case WM831X_GPIO8_CONTROL:
+	case WM831X_GPIO9_CONTROL:
+	case WM831X_GPIO10_CONTROL:
+	case WM831X_GPIO11_CONTROL:
+	case WM831X_GPIO12_CONTROL:
+	case WM831X_GPIO13_CONTROL:
+	case WM831X_GPIO14_CONTROL:
+	case WM831X_GPIO15_CONTROL:
+	case WM831X_GPIO16_CONTROL:
+	case WM831X_CHARGER_CONTROL_1:
+	case WM831X_CHARGER_CONTROL_2:
+	case WM831X_CHARGER_STATUS:
+	case WM831X_BACKUP_CHARGER_CONTROL:
+	case WM831X_STATUS_LED_1:
+	case WM831X_STATUS_LED_2:
+	case WM831X_CURRENT_SINK_1:
+	case WM831X_CURRENT_SINK_2:
+	case WM831X_DCDC_ENABLE:
+	case WM831X_LDO_ENABLE:
+	case WM831X_DCDC_STATUS:
+	case WM831X_LDO_STATUS:
+	case WM831X_DCDC_UV_STATUS:
+	case WM831X_LDO_UV_STATUS:
+	case WM831X_DC1_CONTROL_1:
+	case WM831X_DC1_CONTROL_2:
+	case WM831X_DC1_ON_CONFIG:
+	case WM831X_DC1_SLEEP_CONTROL:
+	case WM831X_DC1_DVS_CONTROL:
+	case WM831X_DC2_CONTROL_1:
+	case WM831X_DC2_CONTROL_2:
+	case WM831X_DC2_ON_CONFIG:
+	case WM831X_DC2_SLEEP_CONTROL:
+	case WM831X_DC2_DVS_CONTROL:
+	case WM831X_DC3_CONTROL_1:
+	case WM831X_DC3_CONTROL_2:
+	case WM831X_DC3_ON_CONFIG:
+	case WM831X_DC3_SLEEP_CONTROL:
+	case WM831X_DC4_CONTROL:
+	case WM831X_DC4_SLEEP_CONTROL:
+	case WM831X_EPE1_CONTROL:
+	case WM831X_EPE2_CONTROL:
+	case WM831X_LDO1_CONTROL:
+	case WM831X_LDO1_ON_CONTROL:
+	case WM831X_LDO1_SLEEP_CONTROL:
+	case WM831X_LDO2_CONTROL:
+	case WM831X_LDO2_ON_CONTROL:
+	case WM831X_LDO2_SLEEP_CONTROL:
+	case WM831X_LDO3_CONTROL:
+	case WM831X_LDO3_ON_CONTROL:
+	case WM831X_LDO3_SLEEP_CONTROL:
+	case WM831X_LDO4_CONTROL:
+	case WM831X_LDO4_ON_CONTROL:
+	case WM831X_LDO4_SLEEP_CONTROL:
+	case WM831X_LDO5_CONTROL:
+	case WM831X_LDO5_ON_CONTROL:
+	case WM831X_LDO5_SLEEP_CONTROL:
+	case WM831X_LDO6_CONTROL:
+	case WM831X_LDO6_ON_CONTROL:
+	case WM831X_LDO6_SLEEP_CONTROL:
+	case WM831X_LDO7_CONTROL:
+	case WM831X_LDO7_ON_CONTROL:
+	case WM831X_LDO7_SLEEP_CONTROL:
+	case WM831X_LDO8_CONTROL:
+	case WM831X_LDO8_ON_CONTROL:
+	case WM831X_LDO8_SLEEP_CONTROL:
+	case WM831X_LDO9_CONTROL:
+	case WM831X_LDO9_ON_CONTROL:
+	case WM831X_LDO9_SLEEP_CONTROL:
+	case WM831X_LDO10_CONTROL:
+	case WM831X_LDO10_ON_CONTROL:
+	case WM831X_LDO10_SLEEP_CONTROL:
+	case WM831X_LDO11_ON_CONTROL:
+	case WM831X_LDO11_SLEEP_CONTROL:
+	case WM831X_POWER_GOOD_SOURCE_1:
+	case WM831X_POWER_GOOD_SOURCE_2:
+	case WM831X_CLOCK_CONTROL_1:
+	case WM831X_CLOCK_CONTROL_2:
+	case WM831X_FLL_CONTROL_1:
+	case WM831X_FLL_CONTROL_2:
+	case WM831X_FLL_CONTROL_3:
+	case WM831X_FLL_CONTROL_4:
+	case WM831X_FLL_CONTROL_5:
+	case WM831X_UNIQUE_ID_1:
+	case WM831X_UNIQUE_ID_2:
+	case WM831X_UNIQUE_ID_3:
+	case WM831X_UNIQUE_ID_4:
+	case WM831X_UNIQUE_ID_5:
+	case WM831X_UNIQUE_ID_6:
+	case WM831X_UNIQUE_ID_7:
+	case WM831X_UNIQUE_ID_8:
+	case WM831X_FACTORY_OTP_ID:
+	case WM831X_FACTORY_OTP_1:
+	case WM831X_FACTORY_OTP_2:
+	case WM831X_FACTORY_OTP_3:
+	case WM831X_FACTORY_OTP_4:
+	case WM831X_FACTORY_OTP_5:
+	case WM831X_CUSTOMER_OTP_ID:
+	case WM831X_DC1_OTP_CONTROL:
+	case WM831X_DC2_OTP_CONTROL:
+	case WM831X_DC3_OTP_CONTROL:
+	case WM831X_LDO1_2_OTP_CONTROL:
+	case WM831X_LDO3_4_OTP_CONTROL:
+	case WM831X_LDO5_6_OTP_CONTROL:
+	case WM831X_LDO7_8_OTP_CONTROL:
+	case WM831X_LDO9_10_OTP_CONTROL:
+	case WM831X_LDO11_EPE_CONTROL:
+	case WM831X_GPIO1_OTP_CONTROL:
+	case WM831X_GPIO2_OTP_CONTROL:
+	case WM831X_GPIO3_OTP_CONTROL:
+	case WM831X_GPIO4_OTP_CONTROL:
+	case WM831X_GPIO5_OTP_CONTROL:
+	case WM831X_GPIO6_OTP_CONTROL:
+	case WM831X_DBE_CHECK_DATA:
+		return true;
+	default:
+		return false;
+	}
+}
+
+static bool wm831x_reg_writeable(struct device *dev, unsigned int reg)
+{
+	struct wm831x *wm831x = dev_get_drvdata(dev);
+
+	if (wm831x_reg_locked(wm831x, reg))
+		return false;
+
+	switch (reg) {
+	case WM831X_SYSVDD_CONTROL:
+	case WM831X_THERMAL_MONITORING:
+	case WM831X_POWER_STATE:
+	case WM831X_WATCHDOG:
+	case WM831X_ON_PIN_CONTROL:
+	case WM831X_RESET_CONTROL:
+	case WM831X_CONTROL_INTERFACE:
+	case WM831X_SECURITY_KEY:
+	case WM831X_SOFTWARE_SCRATCH:
+	case WM831X_OTP_CONTROL:
+	case WM831X_GPIO_LEVEL:
+	case WM831X_INTERRUPT_STATUS_1:
+	case WM831X_INTERRUPT_STATUS_2:
+	case WM831X_INTERRUPT_STATUS_3:
+	case WM831X_INTERRUPT_STATUS_4:
+	case WM831X_INTERRUPT_STATUS_5:
+	case WM831X_IRQ_CONFIG:
+	case WM831X_SYSTEM_INTERRUPTS_MASK:
+	case WM831X_INTERRUPT_STATUS_1_MASK:
+	case WM831X_INTERRUPT_STATUS_2_MASK:
+	case WM831X_INTERRUPT_STATUS_3_MASK:
+	case WM831X_INTERRUPT_STATUS_4_MASK:
+	case WM831X_INTERRUPT_STATUS_5_MASK:
+	case WM831X_RTC_TIME_1:
+	case WM831X_RTC_TIME_2:
+	case WM831X_RTC_ALARM_1:
+	case WM831X_RTC_ALARM_2:
+	case WM831X_RTC_CONTROL:
+	case WM831X_RTC_TRIM:
+	case WM831X_TOUCH_CONTROL_1:
+	case WM831X_TOUCH_CONTROL_2:
+	case WM831X_AUXADC_CONTROL:
+	case WM831X_AUXADC_SOURCE:
+	case WM831X_COMPARATOR_CONTROL:
+	case WM831X_COMPARATOR_1:
+	case WM831X_COMPARATOR_2:
+	case WM831X_COMPARATOR_3:
+	case WM831X_COMPARATOR_4:
+	case WM831X_GPIO1_CONTROL:
+	case WM831X_GPIO2_CONTROL:
+	case WM831X_GPIO3_CONTROL:
+	case WM831X_GPIO4_CONTROL:
+	case WM831X_GPIO5_CONTROL:
+	case WM831X_GPIO6_CONTROL:
+	case WM831X_GPIO7_CONTROL:
+	case WM831X_GPIO8_CONTROL:
+	case WM831X_GPIO9_CONTROL:
+	case WM831X_GPIO10_CONTROL:
+	case WM831X_GPIO11_CONTROL:
+	case WM831X_GPIO12_CONTROL:
+	case WM831X_GPIO13_CONTROL:
+	case WM831X_GPIO14_CONTROL:
+	case WM831X_GPIO15_CONTROL:
+	case WM831X_GPIO16_CONTROL:
+	case WM831X_CHARGER_CONTROL_1:
+	case WM831X_CHARGER_CONTROL_2:
+	case WM831X_CHARGER_STATUS:
+	case WM831X_BACKUP_CHARGER_CONTROL:
+	case WM831X_STATUS_LED_1:
+	case WM831X_STATUS_LED_2:
+	case WM831X_CURRENT_SINK_1:
+	case WM831X_CURRENT_SINK_2:
+	case WM831X_DCDC_ENABLE:
+	case WM831X_LDO_ENABLE:
+	case WM831X_DC1_CONTROL_1:
+	case WM831X_DC1_CONTROL_2:
+	case WM831X_DC1_ON_CONFIG:
+	case WM831X_DC1_SLEEP_CONTROL:
+	case WM831X_DC1_DVS_CONTROL:
+	case WM831X_DC2_CONTROL_1:
+	case WM831X_DC2_CONTROL_2:
+	case WM831X_DC2_ON_CONFIG:
+	case WM831X_DC2_SLEEP_CONTROL:
+	case WM831X_DC2_DVS_CONTROL:
+	case WM831X_DC3_CONTROL_1:
+	case WM831X_DC3_CONTROL_2:
+	case WM831X_DC3_ON_CONFIG:
+	case WM831X_DC3_SLEEP_CONTROL:
+	case WM831X_DC4_CONTROL:
+	case WM831X_DC4_SLEEP_CONTROL:
+	case WM831X_EPE1_CONTROL:
+	case WM831X_EPE2_CONTROL:
+	case WM831X_LDO1_CONTROL:
+	case WM831X_LDO1_ON_CONTROL:
+	case WM831X_LDO1_SLEEP_CONTROL:
+	case WM831X_LDO2_CONTROL:
+	case WM831X_LDO2_ON_CONTROL:
+	case WM831X_LDO2_SLEEP_CONTROL:
+	case WM831X_LDO3_CONTROL:
+	case WM831X_LDO3_ON_CONTROL:
+	case WM831X_LDO3_SLEEP_CONTROL:
+	case WM831X_LDO4_CONTROL:
+	case WM831X_LDO4_ON_CONTROL:
+	case WM831X_LDO4_SLEEP_CONTROL:
+	case WM831X_LDO5_CONTROL:
+	case WM831X_LDO5_ON_CONTROL:
+	case WM831X_LDO5_SLEEP_CONTROL:
+	case WM831X_LDO6_CONTROL:
+	case WM831X_LDO6_ON_CONTROL:
+	case WM831X_LDO6_SLEEP_CONTROL:
+	case WM831X_LDO7_CONTROL:
+	case WM831X_LDO7_ON_CONTROL:
+	case WM831X_LDO7_SLEEP_CONTROL:
+	case WM831X_LDO8_CONTROL:
+	case WM831X_LDO8_ON_CONTROL:
+	case WM831X_LDO8_SLEEP_CONTROL:
+	case WM831X_LDO9_CONTROL:
+	case WM831X_LDO9_ON_CONTROL:
+	case WM831X_LDO9_SLEEP_CONTROL:
+	case WM831X_LDO10_CONTROL:
+	case WM831X_LDO10_ON_CONTROL:
+	case WM831X_LDO10_SLEEP_CONTROL:
+	case WM831X_LDO11_ON_CONTROL:
+	case WM831X_LDO11_SLEEP_CONTROL:
+	case WM831X_POWER_GOOD_SOURCE_1:
+	case WM831X_POWER_GOOD_SOURCE_2:
+	case WM831X_CLOCK_CONTROL_1:
+	case WM831X_CLOCK_CONTROL_2:
+	case WM831X_FLL_CONTROL_1:
+	case WM831X_FLL_CONTROL_2:
+	case WM831X_FLL_CONTROL_3:
+	case WM831X_FLL_CONTROL_4:
+	case WM831X_FLL_CONTROL_5:
+		return true;
+	default:
+		return false;
+	}
+}
+
+static bool wm831x_reg_volatile(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM831X_SYSTEM_STATUS:
+	case WM831X_ON_SOURCE:
+	case WM831X_OFF_SOURCE:
+	case WM831X_GPIO_LEVEL:
+	case WM831X_SYSTEM_INTERRUPTS:
+	case WM831X_INTERRUPT_STATUS_1:
+	case WM831X_INTERRUPT_STATUS_2:
+	case WM831X_INTERRUPT_STATUS_3:
+	case WM831X_INTERRUPT_STATUS_4:
+	case WM831X_INTERRUPT_STATUS_5:
+	case WM831X_RTC_TIME_1:
+	case WM831X_RTC_TIME_2:
+	case WM831X_TOUCH_DATA_X:
+	case WM831X_TOUCH_DATA_Y:
+	case WM831X_TOUCH_DATA_Z:
+	case WM831X_AUXADC_DATA:
+	case WM831X_CHARGER_STATUS:
+	case WM831X_DCDC_STATUS:
+	case WM831X_LDO_STATUS:
+	case WM831X_DCDC_UV_STATUS:
+	case WM831X_LDO_UV_STATUS:
+		return true;
+	default:
+		return false;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -191,6 +560,8 @@ static int wm831x_read(struct wm831x *wm831x, unsigned short reg,
  */
 int wm831x_reg_read(struct wm831x *wm831x, unsigned short reg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned short val;
 	int ret;
 
@@ -199,6 +570,17 @@ int wm831x_reg_read(struct wm831x *wm831x, unsigned short reg)
 	ret = wm831x_read(wm831x, reg, 2, &val);
 
 	mutex_unlock(&wm831x->io_lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned int val;
+	int ret;
+
+	ret = regmap_read(wm831x->regmap, reg, &val);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ret < 0)
 		return ret;
@@ -218,6 +600,8 @@ EXPORT_SYMBOL_GPL(wm831x_reg_read);
 int wm831x_bulk_read(struct wm831x *wm831x, unsigned short reg,
 		     int count, u16 *buf)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	mutex_lock(&wm831x->io_lock);
@@ -227,6 +611,12 @@ int wm831x_bulk_read(struct wm831x *wm831x, unsigned short reg,
 	mutex_unlock(&wm831x->io_lock);
 
 	return ret;
+=======
+	return regmap_bulk_read(wm831x->regmap, reg, buf, count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return regmap_bulk_read(wm831x->regmap, reg, buf, count);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(wm831x_bulk_read);
 
@@ -234,7 +624,15 @@ static int wm831x_write(struct wm831x *wm831x, unsigned short reg,
 			int bytes, void *src)
 {
 	u16 *buf = src;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
+=======
+	int i, ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, ret;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(bytes % 2);
 	BUG_ON(bytes <= 0);
@@ -245,11 +643,26 @@ static int wm831x_write(struct wm831x *wm831x, unsigned short reg,
 
 		dev_vdbg(wm831x->dev, "Write %04x to R%d(0x%x)\n",
 			 buf[i], reg + i, reg + i);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		buf[i] = cpu_to_be16(buf[i]);
 	}
 
 	return wm831x->write_dev(wm831x, reg, bytes, src);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ret = regmap_write(wm831x->regmap, reg + i, buf[i]);
+		if (ret != 0)
+			return ret;
+	}
+
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -286,6 +699,8 @@ int wm831x_set_bits(struct wm831x *wm831x, unsigned short reg,
 		    unsigned short mask, unsigned short val)
 {
 	int ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 r;
 
 	mutex_lock(&wm831x->io_lock);
@@ -300,12 +715,29 @@ int wm831x_set_bits(struct wm831x *wm831x, unsigned short reg,
 	ret = wm831x_write(wm831x, reg, 2, &r);
 
 out:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	mutex_lock(&wm831x->io_lock);
+
+	if (!wm831x_reg_locked(wm831x, reg))
+		ret = regmap_update_bits(wm831x->regmap, reg, mask, val);
+	else
+		ret = -EPERM;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&wm831x->io_lock);
 
 	return ret;
 }
 EXPORT_SYMBOL_GPL(wm831x_set_bits);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * wm831x_auxadc_read: Read a value from the WM831x AUXADC
  *
@@ -446,11 +878,19 @@ int wm831x_auxadc_read_uv(struct wm831x *wm831x, enum wm831x_auxadc input)
 }
 EXPORT_SYMBOL_GPL(wm831x_auxadc_read_uv);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource wm831x_dcdc1_resources[] = {
 	{
 		.start = WM831X_DC1_CONTROL_1,
 		.end   = WM831X_DC1_DVS_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -471,7 +911,11 @@ static struct resource wm831x_dcdc2_resources[] = {
 	{
 		.start = WM831X_DC2_CONTROL_1,
 		.end   = WM831X_DC2_DVS_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -491,7 +935,11 @@ static struct resource wm831x_dcdc3_resources[] = {
 	{
 		.start = WM831X_DC3_CONTROL_1,
 		.end   = WM831X_DC3_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -505,7 +953,11 @@ static struct resource wm831x_dcdc4_resources[] = {
 	{
 		.start = WM831X_DC4_CONTROL,
 		.end   = WM831X_DC4_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -519,7 +971,11 @@ static struct resource wm8320_dcdc4_buck_resources[] = {
 	{
 		.start = WM831X_DC4_CONTROL,
 		.end   = WM832X_DC4_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -541,7 +997,11 @@ static struct resource wm831x_isink1_resources[] = {
 	{
 		.start = WM831X_CURRENT_SINK_1,
 		.end   = WM831X_CURRENT_SINK_1,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.start = WM831X_IRQ_CS1,
@@ -554,7 +1014,11 @@ static struct resource wm831x_isink2_resources[] = {
 	{
 		.start = WM831X_CURRENT_SINK_2,
 		.end   = WM831X_CURRENT_SINK_2,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.start = WM831X_IRQ_CS2,
@@ -567,7 +1031,11 @@ static struct resource wm831x_ldo1_resources[] = {
 	{
 		.start = WM831X_LDO1_CONTROL,
 		.end   = WM831X_LDO1_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -581,7 +1049,11 @@ static struct resource wm831x_ldo2_resources[] = {
 	{
 		.start = WM831X_LDO2_CONTROL,
 		.end   = WM831X_LDO2_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -595,7 +1067,11 @@ static struct resource wm831x_ldo3_resources[] = {
 	{
 		.start = WM831X_LDO3_CONTROL,
 		.end   = WM831X_LDO3_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -609,7 +1085,11 @@ static struct resource wm831x_ldo4_resources[] = {
 	{
 		.start = WM831X_LDO4_CONTROL,
 		.end   = WM831X_LDO4_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -623,7 +1103,11 @@ static struct resource wm831x_ldo5_resources[] = {
 	{
 		.start = WM831X_LDO5_CONTROL,
 		.end   = WM831X_LDO5_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -637,7 +1121,11 @@ static struct resource wm831x_ldo6_resources[] = {
 	{
 		.start = WM831X_LDO6_CONTROL,
 		.end   = WM831X_LDO6_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -651,7 +1139,11 @@ static struct resource wm831x_ldo7_resources[] = {
 	{
 		.start = WM831X_LDO7_CONTROL,
 		.end   = WM831X_LDO7_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -665,7 +1157,11 @@ static struct resource wm831x_ldo8_resources[] = {
 	{
 		.start = WM831X_LDO8_CONTROL,
 		.end   = WM831X_LDO8_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -679,7 +1175,11 @@ static struct resource wm831x_ldo9_resources[] = {
 	{
 		.start = WM831X_LDO9_CONTROL,
 		.end   = WM831X_LDO9_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -693,7 +1193,11 @@ static struct resource wm831x_ldo10_resources[] = {
 	{
 		.start = WM831X_LDO10_CONTROL,
 		.end   = WM831X_LDO10_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name  = "UV",
@@ -707,7 +1211,11 @@ static struct resource wm831x_ldo11_resources[] = {
 	{
 		.start = WM831X_LDO11_ON_CONTROL,
 		.end   = WM831X_LDO11_SLEEP_CONTROL,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -808,7 +1316,11 @@ static struct resource wm831x_status1_resources[] = {
 	{
 		.start = WM831X_STATUS_LED_1,
 		.end   = WM831X_STATUS_LED_1,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -816,7 +1328,11 @@ static struct resource wm831x_status2_resources[] = {
 	{
 		.start = WM831X_STATUS_LED_2,
 		.end   = WM831X_STATUS_LED_2,
+<<<<<<< HEAD
 		.flags = IORESOURCE_IO,
+=======
+		.flags = IORESOURCE_REG,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -843,7 +1359,11 @@ static struct resource wm831x_wdt_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell wm8310_devs[] = {
+=======
+static const struct mfd_cell wm8310_devs[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "wm831x-backup",
 	},
@@ -872,6 +1392,18 @@ static struct mfd_cell wm8310_devs[] = {
 		.resources = wm831x_dcdc4_resources,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.name = "wm831x-clk",
+	},
+	{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name = "wm831x-clk",
+	},
+	{
+>>>>>>> refs/remotes/origin/master
 		.name = "wm831x-epe",
 		.id = 1,
 	},
@@ -976,11 +1508,17 @@ static struct mfd_cell wm8310_devs[] = {
 		.resources = wm831x_power_resources,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm831x-rtc",
 		.num_resources = ARRAY_SIZE(wm831x_rtc_resources),
 		.resources = wm831x_rtc_resources,
 	},
 	{
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "wm831x-status",
 		.id = 1,
 		.num_resources = ARRAY_SIZE(wm831x_status1_resources),
@@ -999,7 +1537,11 @@ static struct mfd_cell wm8310_devs[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell wm8311_devs[] = {
+=======
+static const struct mfd_cell wm8311_devs[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "wm831x-backup",
 	},
@@ -1028,6 +1570,18 @@ static struct mfd_cell wm8311_devs[] = {
 		.resources = wm831x_dcdc4_resources,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.name = "wm831x-clk",
+	},
+	{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name = "wm831x-clk",
+	},
+	{
+>>>>>>> refs/remotes/origin/master
 		.name = "wm831x-epe",
 		.id = 1,
 	},
@@ -1108,11 +1662,17 @@ static struct mfd_cell wm8311_devs[] = {
 		.resources = wm831x_power_resources,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm831x-rtc",
 		.num_resources = ARRAY_SIZE(wm831x_rtc_resources),
 		.resources = wm831x_rtc_resources,
 	},
 	{
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "wm831x-status",
 		.id = 1,
 		.num_resources = ARRAY_SIZE(wm831x_status1_resources),
@@ -1125,18 +1685,28 @@ static struct mfd_cell wm8311_devs[] = {
 		.resources = wm831x_status2_resources,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm831x-touch",
 		.num_resources = ARRAY_SIZE(wm831x_touch_resources),
 		.resources = wm831x_touch_resources,
 	},
 	{
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "wm831x-watchdog",
 		.num_resources = ARRAY_SIZE(wm831x_wdt_resources),
 		.resources = wm831x_wdt_resources,
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell wm8312_devs[] = {
+=======
+static const struct mfd_cell wm8312_devs[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "wm831x-backup",
 	},
@@ -1165,6 +1735,18 @@ static struct mfd_cell wm8312_devs[] = {
 		.resources = wm831x_dcdc4_resources,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.name = "wm831x-clk",
+	},
+	{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name = "wm831x-clk",
+	},
+	{
+>>>>>>> refs/remotes/origin/master
 		.name = "wm831x-epe",
 		.id = 1,
 	},
@@ -1269,11 +1851,17 @@ static struct mfd_cell wm8312_devs[] = {
 		.resources = wm831x_power_resources,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm831x-rtc",
 		.num_resources = ARRAY_SIZE(wm831x_rtc_resources),
 		.resources = wm831x_rtc_resources,
 	},
 	{
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "wm831x-status",
 		.id = 1,
 		.num_resources = ARRAY_SIZE(wm831x_status1_resources),
@@ -1286,18 +1874,28 @@ static struct mfd_cell wm8312_devs[] = {
 		.resources = wm831x_status2_resources,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm831x-touch",
 		.num_resources = ARRAY_SIZE(wm831x_touch_resources),
 		.resources = wm831x_touch_resources,
 	},
 	{
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "wm831x-watchdog",
 		.num_resources = ARRAY_SIZE(wm831x_wdt_resources),
 		.resources = wm831x_wdt_resources,
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell wm8320_devs[] = {
+=======
+static const struct mfd_cell wm8320_devs[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "wm831x-backup",
 	},
@@ -1326,6 +1924,18 @@ static struct mfd_cell wm8320_devs[] = {
 		.resources = wm8320_dcdc4_buck_resources,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.name = "wm831x-clk",
+	},
+	{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name = "wm831x-clk",
+	},
+	{
+>>>>>>> refs/remotes/origin/master
 		.name = "wm831x-gpio",
 		.num_resources = ARRAY_SIZE(wm831x_gpio_resources),
 		.resources = wm831x_gpio_resources,
@@ -1405,11 +2015,17 @@ static struct mfd_cell wm8320_devs[] = {
 		.resources = wm831x_on_resources,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm831x-rtc",
 		.num_resources = ARRAY_SIZE(wm831x_rtc_resources),
 		.resources = wm831x_rtc_resources,
 	},
 	{
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "wm831x-status",
 		.id = 1,
 		.num_resources = ARRAY_SIZE(wm831x_status1_resources),
@@ -1428,27 +2044,99 @@ static struct mfd_cell wm8320_devs[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static struct mfd_cell touch_devs[] = {
+=======
+static const struct mfd_cell touch_devs[] = {
+>>>>>>> refs/remotes/origin/master
+	{
+		.name = "wm831x-touch",
+		.num_resources = ARRAY_SIZE(wm831x_touch_resources),
+		.resources = wm831x_touch_resources,
+	},
+};
+
+<<<<<<< HEAD
+static struct mfd_cell rtc_devs[] = {
+=======
+static const struct mfd_cell rtc_devs[] = {
+>>>>>>> refs/remotes/origin/master
+	{
+		.name = "wm831x-rtc",
+		.num_resources = ARRAY_SIZE(wm831x_rtc_resources),
+		.resources = wm831x_rtc_resources,
+	},
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct mfd_cell backlight_devs[] = {
+=======
+static const struct mfd_cell backlight_devs[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "wm831x-backlight",
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct regmap_config wm831x_regmap_config = {
+	.reg_bits = 16,
+	.val_bits = 16,
+
+	.cache_type = REGCACHE_RBTREE,
+
+	.max_register = WM831X_DBE_CHECK_DATA,
+	.readable_reg = wm831x_reg_readable,
+	.writeable_reg = wm831x_reg_writeable,
+	.volatile_reg = wm831x_reg_volatile,
+};
+EXPORT_SYMBOL_GPL(wm831x_regmap_config);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Instantiate the generic non-control parts of the device.
  */
 int wm831x_device_init(struct wm831x *wm831x, unsigned long id, int irq)
 {
+<<<<<<< HEAD
 	struct wm831x_pdata *pdata = wm831x->dev->platform_data;
+<<<<<<< HEAD
 	int rev;
+=======
+	int rev, wm831x_num;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wm831x_pdata *pdata = dev_get_platdata(wm831x->dev);
+	int rev, wm831x_num;
+>>>>>>> refs/remotes/origin/master
 	enum wm831x_parent parent;
 	int ret, i;
 
 	mutex_init(&wm831x->io_lock);
 	mutex_init(&wm831x->key_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&wm831x->auxadc_lock);
 	init_completion(&wm831x->auxadc_done);
 	dev_set_drvdata(wm831x->dev, wm831x);
+=======
+	dev_set_drvdata(wm831x->dev, wm831x);
+	wm831x->soft_shutdown = pdata->soft_shutdown;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_set_drvdata(wm831x->dev, wm831x);
+	wm831x->soft_shutdown = pdata->soft_shutdown;
+>>>>>>> refs/remotes/origin/master
 
 	ret = wm831x_reg_read(wm831x, WM831X_PARENT_ID);
 	if (ret < 0) {
@@ -1592,10 +2280,27 @@ int wm831x_device_init(struct wm831x *wm831x, unsigned long id, int irq)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Multiply by 10 as we have many subdevices of the same type */
+	if (pdata && pdata->wm831x_num)
+		wm831x_num = pdata->wm831x_num * 10;
+	else
+		wm831x_num = -1;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = wm831x_irq_init(wm831x, irq);
 	if (ret != 0)
 		goto err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (wm831x->irq_base) {
 		ret = request_threaded_irq(wm831x->irq_base +
 					   WM831X_IRQ_AUXADC_DATA,
@@ -1605,16 +2310,28 @@ int wm831x_device_init(struct wm831x *wm831x, unsigned long id, int irq)
 			dev_err(wm831x->dev, "AUXADC IRQ request failed: %d\n",
 				ret);
 	}
+=======
+	wm831x_auxadc_init(wm831x);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm831x_auxadc_init(wm831x);
+>>>>>>> refs/remotes/origin/master
 
 	/* The core device is up, instantiate the subdevices. */
 	switch (parent) {
 	case WM8310:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = mfd_add_devices(wm831x->dev, -1,
+=======
+		ret = mfd_add_devices(wm831x->dev, wm831x_num,
+>>>>>>> refs/remotes/origin/cm-10.0
 				      wm8310_devs, ARRAY_SIZE(wm8310_devs),
 				      NULL, wm831x->irq_base);
 		break;
 
 	case WM8311:
+<<<<<<< HEAD
 		ret = mfd_add_devices(wm831x->dev, -1,
 				      wm8311_devs, ARRAY_SIZE(wm8311_devs),
 				      NULL, wm831x->irq_base);
@@ -1624,15 +2341,67 @@ int wm831x_device_init(struct wm831x *wm831x, unsigned long id, int irq)
 		ret = mfd_add_devices(wm831x->dev, -1,
 				      wm8312_devs, ARRAY_SIZE(wm8312_devs),
 				      NULL, wm831x->irq_base);
+=======
+		ret = mfd_add_devices(wm831x->dev, wm831x_num,
+				      wm8311_devs, ARRAY_SIZE(wm8311_devs),
+				      NULL, wm831x->irq_base);
+		if (!pdata || !pdata->disable_touch)
+			mfd_add_devices(wm831x->dev, wm831x_num,
+					touch_devs, ARRAY_SIZE(touch_devs),
+					NULL, wm831x->irq_base);
+=======
+		ret = mfd_add_devices(wm831x->dev, wm831x_num,
+				      wm8310_devs, ARRAY_SIZE(wm8310_devs),
+				      NULL, 0, NULL);
+		break;
+
+	case WM8311:
+		ret = mfd_add_devices(wm831x->dev, wm831x_num,
+				      wm8311_devs, ARRAY_SIZE(wm8311_devs),
+				      NULL, 0, NULL);
+		if (!pdata || !pdata->disable_touch)
+			mfd_add_devices(wm831x->dev, wm831x_num,
+					touch_devs, ARRAY_SIZE(touch_devs),
+					NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
+		break;
+
+	case WM8312:
+		ret = mfd_add_devices(wm831x->dev, wm831x_num,
+				      wm8312_devs, ARRAY_SIZE(wm8312_devs),
+<<<<<<< HEAD
+				      NULL, wm831x->irq_base);
+		if (!pdata || !pdata->disable_touch)
+			mfd_add_devices(wm831x->dev, wm831x_num,
+					touch_devs, ARRAY_SIZE(touch_devs),
+					NULL, wm831x->irq_base);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      NULL, 0, NULL);
+		if (!pdata || !pdata->disable_touch)
+			mfd_add_devices(wm831x->dev, wm831x_num,
+					touch_devs, ARRAY_SIZE(touch_devs),
+					NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case WM8320:
 	case WM8321:
 	case WM8325:
 	case WM8326:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = mfd_add_devices(wm831x->dev, -1,
+=======
+		ret = mfd_add_devices(wm831x->dev, wm831x_num,
+>>>>>>> refs/remotes/origin/cm-10.0
 				      wm8320_devs, ARRAY_SIZE(wm8320_devs),
 				      NULL, wm831x->irq_base);
+=======
+		ret = mfd_add_devices(wm831x->dev, wm831x_num,
+				      wm8320_devs, ARRAY_SIZE(wm8320_devs),
+				      NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -1645,11 +2414,50 @@ int wm831x_device_init(struct wm831x *wm831x, unsigned long id, int irq)
 		goto err_irq;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (pdata && pdata->backlight) {
 		/* Treat errors as non-critical */
 		ret = mfd_add_devices(wm831x->dev, -1, backlight_devs,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* The RTC can only be used if the 32.768kHz crystal is
+	 * enabled; this can't be controlled by software at runtime.
+	 */
+	ret = wm831x_reg_read(wm831x, WM831X_CLOCK_CONTROL_2);
+	if (ret < 0) {
+		dev_err(wm831x->dev, "Failed to read clock status: %d\n", ret);
+		goto err_irq;
+	}
+
+	if (ret & WM831X_XTAL_ENA) {
+		ret = mfd_add_devices(wm831x->dev, wm831x_num,
+				      rtc_devs, ARRAY_SIZE(rtc_devs),
+<<<<<<< HEAD
+				      NULL, wm831x->irq_base);
+=======
+				      NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
+		if (ret != 0) {
+			dev_err(wm831x->dev, "Failed to add RTC: %d\n", ret);
+			goto err_irq;
+		}
+	} else {
+		dev_info(wm831x->dev, "32.768kHz clock disabled, no RTC\n");
+	}
+
+	if (pdata && pdata->backlight) {
+		/* Treat errors as non-critical */
+		ret = mfd_add_devices(wm831x->dev, wm831x_num, backlight_devs,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 				      ARRAY_SIZE(backlight_devs), NULL,
 				      wm831x->irq_base);
+=======
+				      ARRAY_SIZE(backlight_devs), NULL,
+				      0, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			dev_err(wm831x->dev, "Failed to add backlight: %d\n",
 				ret);
@@ -1671,7 +2479,13 @@ err_irq:
 	wm831x_irq_exit(wm831x);
 err:
 	mfd_remove_devices(wm831x->dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(wm831x);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1679,10 +2493,18 @@ void wm831x_device_exit(struct wm831x *wm831x)
 {
 	wm831x_otp_exit(wm831x);
 	mfd_remove_devices(wm831x->dev);
+<<<<<<< HEAD
 	if (wm831x->irq_base)
 		free_irq(wm831x->irq_base + WM831X_IRQ_AUXADC_DATA, wm831x);
 	wm831x_irq_exit(wm831x);
+<<<<<<< HEAD
 	kfree(wm831x);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_irq(wm831x_irq(wm831x, WM831X_IRQ_AUXADC_DATA), wm831x);
+	wm831x_irq_exit(wm831x);
+>>>>>>> refs/remotes/origin/master
 }
 
 int wm831x_device_suspend(struct wm831x *wm831x)
@@ -1721,6 +2543,24 @@ int wm831x_device_suspend(struct wm831x *wm831x)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void wm831x_device_shutdown(struct wm831x *wm831x)
+{
+	if (wm831x->soft_shutdown) {
+		dev_info(wm831x->dev, "Initiating shutdown...\n");
+		wm831x_set_bits(wm831x, WM831X_POWER_STATE, WM831X_CHIP_ON, 0);
+	}
+}
+EXPORT_SYMBOL_GPL(wm831x_device_shutdown);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("Core support for the WM831X AudioPlus PMIC");
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Mark Brown");

@@ -10,7 +10,11 @@
 #ifndef __ETHER_H
 #define __ETHER_H
 
+<<<<<<< HEAD
 #include "quicc_simple.h"
+=======
+#include <asm/quicc_simple.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * transmit BD's

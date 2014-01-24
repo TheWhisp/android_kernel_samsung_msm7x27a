@@ -37,7 +37,11 @@ struct nvram_header {
 
 extern int nvram_getenv(char *name, char *val, size_t val_len);
 
+<<<<<<< HEAD
 static inline void nvram_parse_macaddr(char *buf, u8 *macaddr)
+=======
+static inline void nvram_parse_macaddr(char *buf, u8 macaddr[6])
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (strchr(buf, ':'))
 		sscanf(buf, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &macaddr[0],

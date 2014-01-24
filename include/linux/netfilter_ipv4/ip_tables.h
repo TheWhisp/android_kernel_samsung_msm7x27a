@@ -11,15 +11,22 @@
  * 	flags are stored in host byte order (of course).
  * 	Port numbers are stored in HOST byte order.
  */
+<<<<<<< HEAD
 
 #ifndef _IPTABLES_H
 #define _IPTABLES_H
 
 #ifdef __KERNEL__
+=======
+#ifndef _IPTABLES_H
+#define _IPTABLES_H
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/if.h>
 #include <linux/in.h>
 #include <linux/ip.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #endif
 #include <linux/types.h>
 #include <linux/compiler.h>
@@ -81,12 +88,21 @@ struct ipt_ip {
 	unsigned char iniface_mask[IFNAMSIZ], outiface_mask[IFNAMSIZ];
 
 	/* Protocol, 0 = ANY */
+<<<<<<< HEAD
 	u_int16_t proto;
 
 	/* Flags word */
 	u_int8_t flags;
 	/* Inverse flags */
 	u_int8_t invflags;
+=======
+	__u16 proto;
+
+	/* Flags word */
+	__u8 flags;
+	/* Inverse flags */
+	__u8 invflags;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Values for "flag" field in struct ipt_ip (general ip structure). */
@@ -114,9 +130,15 @@ struct ipt_entry {
 	unsigned int nfcache;
 
 	/* Size of ipt_entry + matches */
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	/* Size of ipt_entry + matches + target */
 	u_int16_t next_offset;
+=======
+	__u16 target_offset;
+	/* Size of ipt_entry + matches + target */
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Back pointer */
 	unsigned int comefrom;
@@ -149,9 +171,15 @@ struct ipt_entry {
 
 /* ICMP matching stuff */
 struct ipt_icmp {
+<<<<<<< HEAD
 	u_int8_t type;				/* type to match */
 	u_int8_t code[2];			/* range of code */
 	u_int8_t invflags;			/* Inverse flags */
+=======
+	__u8 type;				/* type to match */
+	__u8 code[2];				/* range of code */
+	__u8 invflags;				/* Inverse flags */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Values for "inv" field for struct ipt_icmp. */
@@ -235,6 +263,12 @@ ipt_get_target(struct ipt_entry *e)
 #ifdef __KERNEL__
 
 #include <linux/init.h>
+=======
+
+#include <linux/init.h>
+#include <uapi/linux/netfilter_ipv4/ip_tables.h>
+
+>>>>>>> refs/remotes/origin/master
 extern void ipt_init(void) __init;
 
 extern struct xt_table *ipt_register_table(struct net *net,
@@ -288,8 +322,18 @@ extern unsigned int ipt_do_table(struct sk_buff *skb,
 struct compat_ipt_entry {
 	struct ipt_ip ip;
 	compat_uint_t nfcache;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	u_int16_t next_offset;
+=======
+	__u16 target_offset;
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u16 target_offset;
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/master
 	compat_uint_t comefrom;
 	struct compat_xt_counters counters;
 	unsigned char elems[0];
@@ -303,5 +347,8 @@ compat_ipt_get_target(struct compat_ipt_entry *e)
 }
 
 #endif /* CONFIG_COMPAT */
+<<<<<<< HEAD
 #endif /*__KERNEL__*/
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _IPTABLES_H */

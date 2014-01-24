@@ -943,42 +943,61 @@ static void des3_ede_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
 	d[1] = cpu_to_le32(L);
 }
 
+<<<<<<< HEAD
 static struct crypto_alg des_alg = {
+=======
+static struct crypto_alg des_algs[2] = { {
+>>>>>>> refs/remotes/origin/master
 	.cra_name		=	"des",
 	.cra_flags		=	CRYPTO_ALG_TYPE_CIPHER,
 	.cra_blocksize		=	DES_BLOCK_SIZE,
 	.cra_ctxsize		=	sizeof(struct des_ctx),
 	.cra_module		=	THIS_MODULE,
 	.cra_alignmask		=	3,
+<<<<<<< HEAD
 	.cra_list		=	LIST_HEAD_INIT(des_alg.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u			=	{ .cipher = {
 	.cia_min_keysize	=	DES_KEY_SIZE,
 	.cia_max_keysize	=	DES_KEY_SIZE,
 	.cia_setkey		=	des_setkey,
 	.cia_encrypt		=	des_encrypt,
 	.cia_decrypt		=	des_decrypt } }
+<<<<<<< HEAD
 };
 
 static struct crypto_alg des3_ede_alg = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.cra_name		=	"des3_ede",
 	.cra_flags		=	CRYPTO_ALG_TYPE_CIPHER,
 	.cra_blocksize		=	DES3_EDE_BLOCK_SIZE,
 	.cra_ctxsize		=	sizeof(struct des3_ede_ctx),
 	.cra_module		=	THIS_MODULE,
 	.cra_alignmask		=	3,
+<<<<<<< HEAD
 	.cra_list		=	LIST_HEAD_INIT(des3_ede_alg.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u			=	{ .cipher = {
 	.cia_min_keysize	=	DES3_EDE_KEY_SIZE,
 	.cia_max_keysize	=	DES3_EDE_KEY_SIZE,
 	.cia_setkey		=	des3_ede_setkey,
 	.cia_encrypt		=	des3_ede_encrypt,
 	.cia_decrypt		=	des3_ede_decrypt } }
+<<<<<<< HEAD
 };
+=======
+} };
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("des3_ede");
 
 static int __init des_generic_mod_init(void)
 {
+<<<<<<< HEAD
 	int ret = 0;
 
 	ret = crypto_register_alg(&des_alg);
@@ -990,12 +1009,19 @@ static int __init des_generic_mod_init(void)
 		crypto_unregister_alg(&des_alg);
 out:
 	return ret;
+=======
+	return crypto_register_algs(des_algs, ARRAY_SIZE(des_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit des_generic_mod_fini(void)
 {
+<<<<<<< HEAD
 	crypto_unregister_alg(&des3_ede_alg);
 	crypto_unregister_alg(&des_alg);
+=======
+	crypto_unregister_algs(des_algs, ARRAY_SIZE(des_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(des_generic_mod_init);

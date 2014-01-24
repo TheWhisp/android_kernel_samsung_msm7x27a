@@ -19,17 +19,31 @@
 #include <linux/slab.h>
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/workqueue.h>
 #include <linux/clk.h>
 #include <linux/wakelock.h>
+=======
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/msm_iomap.h>
 
 #include "peripheral-loader.h"
 #include "scm-pas.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PROXY_VOTE_TIMEOUT		10000
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define RIVA_PMU_A2XB_CFG		0xB8
 #define RIVA_PMU_A2XB_CFG_EN		BIT(0)
 
@@ -84,6 +98,8 @@ struct riva_data {
 	void __iomem *base;
 	unsigned long start_addr;
 	struct clk *xo;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bool use_cxo;
 	struct delayed_work work;
 	struct regulator *pll_supply;
@@ -109,6 +125,39 @@ static int pil_riva_make_proxy_votes(struct device *dev)
 		}
 	}
 	schedule_delayed_work(&drv->work, msecs_to_jiffies(PROXY_VOTE_TIMEOUT));
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct regulator *pll_supply;
+	struct pil_device *pil;
+};
+
+static bool cxo_is_needed(struct riva_data *drv)
+{
+	u32 reg = readl_relaxed(drv->base + RIVA_PMU_CFG);
+	return (reg & RIVA_PMU_CFG_IRIS_XO_MODE)
+		!= RIVA_PMU_CFG_IRIS_XO_MODE_48;
+}
+
+static int pil_riva_make_proxy_vote(struct pil_desc *pil)
+{
+	struct riva_data *drv = dev_get_drvdata(pil->dev);
+	int ret;
+
+	ret = regulator_enable(drv->pll_supply);
+	if (ret) {
+		dev_err(pil->dev, "failed to enable pll supply\n");
+		goto err;
+	}
+	ret = clk_prepare_enable(drv->xo);
+	if (ret) {
+		dev_err(pil->dev, "failed to enable xo\n");
+		goto err_clk;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 err_clk:
 	regulator_disable(drv->pll_supply);
@@ -116,6 +165,8 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void pil_riva_remove_proxy_votes(struct work_struct *work)
 {
 	struct riva_data *drv = container_of(work, struct riva_data, work.work);
@@ -134,6 +185,18 @@ static void pil_riva_remove_proxy_votes_now(struct device *dev)
 static int nop_verify_blob(struct pil_desc *pil, u32 phy_addr, size_t size)
 {
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void pil_riva_remove_proxy_vote(struct pil_desc *pil)
+{
+	struct riva_data *drv = dev_get_drvdata(pil->dev);
+	regulator_disable(drv->pll_supply);
+	clk_disable_unprepare(drv->xo);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int pil_riva_init_image(struct pil_desc *pil, const u8 *metadata,
@@ -145,6 +208,8 @@ static int pil_riva_init_image(struct pil_desc *pil, const u8 *metadata,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static bool cxo_is_needed(struct riva_data *drv)
 {
 	u32 reg = readl_relaxed(drv->base + RIVA_PMU_CFG);
@@ -152,22 +217,38 @@ static bool cxo_is_needed(struct riva_data *drv)
 		!= RIVA_PMU_CFG_IRIS_XO_MODE_48;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pil_riva_reset(struct pil_desc *pil)
 {
 	u32 reg, sel;
 	struct riva_data *drv = dev_get_drvdata(pil->dev);
 	void __iomem *base = drv->base;
 	unsigned long start_addr = drv->start_addr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	ret = clk_prepare_enable(drv->xo);
 	if (ret)
 		return ret;
+=======
+	bool use_cxo = cxo_is_needed(drv);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool use_cxo = cxo_is_needed(drv);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Enable A2XB bridge */
 	reg = readl_relaxed(base + RIVA_PMU_A2XB_CFG);
 	reg |= RIVA_PMU_A2XB_CFG_EN;
 	writel_relaxed(reg, base + RIVA_PMU_A2XB_CFG);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	drv->use_cxo = cxo_is_needed(drv);
 	ret = pil_riva_make_proxy_votes(pil->dev);
 	if (ret) {
@@ -178,12 +259,24 @@ static int pil_riva_reset(struct pil_desc *pil)
 		return ret;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Program PLL 13 to 960 MHz */
 	reg = readl_relaxed(RIVA_PLL_MODE);
 	reg &= ~(PLL_MODE_BYPASSNL | PLL_MODE_OUTCTRL | PLL_MODE_RESET_N);
 	writel_relaxed(reg, RIVA_PLL_MODE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (drv->use_cxo)
+=======
+	if (use_cxo)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (use_cxo)
+>>>>>>> refs/remotes/origin/cm-11.0
 		writel_relaxed(0x40000C00 | 50, RIVA_PLL_L_VAL);
 	else
 		writel_relaxed(0x40000C00 | 40, RIVA_PLL_L_VAL);
@@ -193,7 +286,15 @@ static int pil_riva_reset(struct pil_desc *pil)
 
 	reg = readl_relaxed(RIVA_PLL_MODE);
 	reg &= ~(PLL_MODE_REF_XO_SEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reg |= drv->use_cxo ? PLL_MODE_REF_XO_SEL_CXO : PLL_MODE_REF_XO_SEL_RF;
+=======
+	reg |= use_cxo ? PLL_MODE_REF_XO_SEL_CXO : PLL_MODE_REF_XO_SEL_RF;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reg |= use_cxo ? PLL_MODE_REF_XO_SEL_CXO : PLL_MODE_REF_XO_SEL_RF;
+>>>>>>> refs/remotes/origin/cm-11.0
 	writel_relaxed(reg, RIVA_PLL_MODE);
 
 	/* Enable PLL 13 */
@@ -258,7 +359,13 @@ static int pil_riva_reset(struct pil_desc *pil)
 	/* Take cCPU out of reset */
 	reg |= RIVA_PMU_OVRD_VAL_CCPU_RESET;
 	writel_relaxed(reg, base + RIVA_PMU_OVRD_VAL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable_unprepare(drv->xo);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -267,11 +374,19 @@ static int pil_riva_shutdown(struct pil_desc *pil)
 {
 	struct riva_data *drv = dev_get_drvdata(pil->dev);
 	u32 reg;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	ret = clk_prepare_enable(drv->xo);
 	if (ret)
 		return ret;
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Put cCPU and cCPU clock into reset */
 	reg = readl_relaxed(drv->base + RIVA_PMU_OVRD_VAL);
 	reg &= ~(RIVA_PMU_OVRD_VAL_CCPU_RESET | RIVA_PMU_OVRD_VAL_CCPU_CLK);
@@ -290,17 +405,36 @@ static int pil_riva_shutdown(struct pil_desc *pil)
 	writel_relaxed(0, RIVA_RESET);
 	mb();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable_unprepare(drv->xo);
 	pil_riva_remove_proxy_votes_now(pil->dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static struct pil_reset_ops pil_riva_ops = {
 	.init_image = pil_riva_init_image,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.verify_blob = nop_verify_blob,
 	.auth_and_reset = pil_riva_reset,
 	.shutdown = pil_riva_shutdown,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	.auth_and_reset = pil_riva_reset,
+	.shutdown = pil_riva_shutdown,
+	.proxy_vote = pil_riva_make_proxy_vote,
+	.proxy_unvote = pil_riva_remove_proxy_vote,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int pil_riva_init_image_trusted(struct pil_desc *pil,
@@ -311,6 +445,8 @@ static int pil_riva_init_image_trusted(struct pil_desc *pil,
 
 static int pil_riva_reset_trusted(struct pil_desc *pil)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct riva_data *drv = dev_get_drvdata(pil->dev);
 	int ret;
 
@@ -323,10 +459,18 @@ static int pil_riva_reset_trusted(struct pil_desc *pil)
 		ret = pas_auth_and_reset(PAS_RIVA);
 	clk_disable_unprepare(drv->xo);
 	return ret;
+=======
+	return pas_auth_and_reset(PAS_RIVA);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return pas_auth_and_reset(PAS_RIVA);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int pil_riva_shutdown_trusted(struct pil_desc *pil)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 	struct riva_data *drv = dev_get_drvdata(pil->dev);
 
@@ -338,13 +482,32 @@ static int pil_riva_shutdown_trusted(struct pil_desc *pil)
 	clk_disable_unprepare(drv->xo);
 
 	return ret;
+=======
+	return pas_shutdown(PAS_RIVA);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return pas_shutdown(PAS_RIVA);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct pil_reset_ops pil_riva_ops_trusted = {
 	.init_image = pil_riva_init_image_trusted,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.verify_blob = nop_verify_blob,
 	.auth_and_reset = pil_riva_reset_trusted,
 	.shutdown = pil_riva_shutdown_trusted,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	.auth_and_reset = pil_riva_reset_trusted,
+	.shutdown = pil_riva_shutdown_trusted,
+	.proxy_vote = pil_riva_make_proxy_vote,
+	.proxy_unvote = pil_riva_remove_proxy_vote,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __devinit pil_riva_probe(struct platform_device *pdev)
@@ -371,11 +534,21 @@ static int __devinit pil_riva_probe(struct platform_device *pdev)
 	if (!desc)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	drv->pll_supply = regulator_get(&pdev->dev, "pll_vdd");
+=======
+	drv->pll_supply = devm_regulator_get(&pdev->dev, "pll_vdd");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	drv->pll_supply = devm_regulator_get(&pdev->dev, "pll_vdd");
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(drv->pll_supply)) {
 		dev_err(&pdev->dev, "failed to get pll supply\n");
 		return PTR_ERR(drv->pll_supply);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = regulator_set_voltage(drv->pll_supply, 1800000, 1800000);
 	if (ret) {
 		dev_err(&pdev->dev, "failed to set pll supply voltage\n");
@@ -386,10 +559,41 @@ static int __devinit pil_riva_probe(struct platform_device *pdev)
 	if (ret < 0) {
 		dev_err(&pdev->dev, "failed to set pll supply optimum mode\n");
 		goto err;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (regulator_count_voltages(drv->pll_supply) > 0) {
+		ret = regulator_set_voltage(drv->pll_supply, 1800000, 1800000);
+		if (ret) {
+			dev_err(&pdev->dev,
+				"failed to set pll supply voltage\n");
+			return ret;
+		}
+
+		ret = regulator_set_optimum_mode(drv->pll_supply, 100000);
+		if (ret < 0) {
+			dev_err(&pdev->dev,
+				"failed to set pll supply optimum mode\n");
+			return ret;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	desc->name = "wcnss";
 	desc->dev = &pdev->dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	desc->owner = THIS_MODULE;
+	desc->proxy_timeout = 10000;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	desc->owner = THIS_MODULE;
+	desc->proxy_timeout = 10000;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pas_supported(PAS_RIVA) > 0) {
 		desc->ops = &pil_riva_ops_trusted;
@@ -399,6 +603,8 @@ static int __devinit pil_riva_probe(struct platform_device *pdev)
 		dev_info(&pdev->dev, "using non-secure boot\n");
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	drv->xo = clk_get(&pdev->dev, "cxo");
 	if (IS_ERR(drv->xo)) {
 		ret = PTR_ERR(drv->xo);
@@ -418,15 +624,38 @@ err_register:
 err:
 	regulator_put(drv->pll_supply);
 	return ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	drv->xo = devm_clk_get(&pdev->dev, "cxo");
+	if (IS_ERR(drv->xo))
+		return PTR_ERR(drv->xo);
+
+	drv->pil = msm_pil_register(desc);
+	if (IS_ERR(drv->pil))
+		return PTR_ERR(drv->pil);
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int __devexit pil_riva_remove(struct platform_device *pdev)
 {
 	struct riva_data *drv = platform_get_drvdata(pdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	flush_delayed_work_sync(&drv->work);
 	wake_lock_destroy(&drv->wlock);
 	clk_put(drv->xo);
 	regulator_put(drv->pll_supply);
+=======
+	msm_pil_unregister(drv->pil);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_pil_unregister(drv->pil);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

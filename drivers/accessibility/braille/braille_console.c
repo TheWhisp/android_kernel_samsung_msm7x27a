@@ -44,7 +44,15 @@ MODULE_LICENSE("GPL");
  */
 
 /* Emit various sounds */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int sound;
+=======
+static bool sound;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool sound;
+>>>>>>> refs/remotes/origin/master
 module_param(sound, bool, 0);
 MODULE_PARM_DESC(sound, "emit sounds");
 
@@ -244,6 +252,8 @@ static int keyboard_notifier_call(struct notifier_block *blk,
 
 			switch (val) {
 			case KVAL(K_CAPS):
+<<<<<<< HEAD
+<<<<<<< HEAD
 				on_off = vc_kbd_led(kbd_table + fg_console,
 						VC_CAPSLOCK);
 				break;
@@ -254,6 +264,20 @@ static int keyboard_notifier_call(struct notifier_block *blk,
 			case KVAL(K_HOLD):
 				on_off = vc_kbd_led(kbd_table + fg_console,
 						VC_SCROLLOCK);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				on_off = vt_get_leds(fg_console, VC_CAPSLOCK);
+				break;
+			case KVAL(K_NUM):
+				on_off = vt_get_leds(fg_console, VC_NUMLOCK);
+				break;
+			case KVAL(K_HOLD):
+				on_off = vt_get_leds(fg_console, VC_SCROLLOCK);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 			if (on_off == 1)
@@ -362,6 +386,12 @@ int braille_register_console(struct console *console, int index,
 		char *console_options, char *braille_options)
 {
 	int ret;
+<<<<<<< HEAD
+=======
+
+	if (!(console->flags & CON_BRL))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	if (!console_options)
 		/* Only support VisioBraille for now */
 		console_options = "57600o8";
@@ -377,15 +407,28 @@ int braille_register_console(struct console *console, int index,
 	braille_co = console;
 	register_keyboard_notifier(&keyboard_notifier_block);
 	register_vt_notifier(&vt_notifier_block);
+<<<<<<< HEAD
 	return 0;
+=======
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 int braille_unregister_console(struct console *console)
 {
 	if (braille_co != console)
 		return -EINVAL;
+<<<<<<< HEAD
 	unregister_keyboard_notifier(&keyboard_notifier_block);
 	unregister_vt_notifier(&vt_notifier_block);
 	braille_co = NULL;
 	return 0;
+=======
+	if (!(console->flags & CON_BRL))
+		return 0;
+	unregister_keyboard_notifier(&keyboard_notifier_block);
+	unregister_vt_notifier(&vt_notifier_block);
+	braille_co = NULL;
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }

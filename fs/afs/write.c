@@ -14,6 +14,10 @@
 #include <linux/pagemap.h>
 #include <linux/writeback.h>
 #include <linux/pagevec.h>
+<<<<<<< HEAD
+=======
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 #include "internal.h"
 
 static int afs_write_back_from_locked_page(struct afs_writeback *wb,
@@ -120,7 +124,11 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
 		    struct page **pagep, void **fsdata)
 {
 	struct afs_writeback *candidate, *wb;
+<<<<<<< HEAD
 	struct afs_vnode *vnode = AFS_FS_I(file->f_dentry->d_inode);
+=======
+	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	struct page *page;
 	struct key *key = file->private_data;
 	unsigned from = pos & (PAGE_CACHE_SIZE - 1);
@@ -245,7 +253,11 @@ int afs_write_end(struct file *file, struct address_space *mapping,
 		  loff_t pos, unsigned len, unsigned copied,
 		  struct page *page, void *fsdata)
 {
+<<<<<<< HEAD
 	struct afs_vnode *vnode = AFS_FS_I(file->f_dentry->d_inode);
+=======
+	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	loff_t i_size, maybe_i_size;
 
 	_enter("{%x:%u},{%lx}",
@@ -627,8 +639,12 @@ void afs_pages_written_back(struct afs_vnode *vnode, struct afs_call *call)
 ssize_t afs_file_write(struct kiocb *iocb, const struct iovec *iov,
 		       unsigned long nr_segs, loff_t pos)
 {
+<<<<<<< HEAD
 	struct dentry *dentry = iocb->ki_filp->f_path.dentry;
 	struct afs_vnode *vnode = AFS_FS_I(dentry->d_inode);
+=======
+	struct afs_vnode *vnode = AFS_FS_I(file_inode(iocb->ki_filp));
+>>>>>>> refs/remotes/origin/master
 	ssize_t result;
 	size_t count = iov_length(iov, nr_segs);
 
@@ -681,9 +697,22 @@ int afs_writeback_all(struct afs_vnode *vnode)
  * - the return status from this call provides a reliable indication of
  *   whether any write errors occurred for this process.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int afs_fsync(struct file *file, int datasync)
 {
 	struct dentry *dentry = file->f_path.dentry;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int afs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+{
+	struct dentry *dentry = file->f_path.dentry;
+	struct inode *inode = file->f_mapping->host;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct afs_writeback *wb, *xwb;
 	struct afs_vnode *vnode = AFS_FS_I(dentry->d_inode);
 	int ret;
@@ -692,12 +721,39 @@ int afs_fsync(struct file *file, int datasync)
 	       vnode->fid.vid, vnode->fid.vnode, dentry->d_name.name,
 	       datasync);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (ret)
+		return ret;
+	mutex_lock(&inode->i_mutex);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* use a writeback record as a marker in the queue - when this reaches
 	 * the front of the queue, all the outstanding writes are either
 	 * completed or rejected */
 	wb = kzalloc(sizeof(*wb), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!wb)
 		return -ENOMEM;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!wb) {
+		ret = -ENOMEM;
+		goto out;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wb->vnode = vnode;
 	wb->first = 0;
 	wb->last = -1;
@@ -720,7 +776,15 @@ int afs_fsync(struct file *file, int datasync)
 	if (ret < 0) {
 		afs_put_writeback(wb);
 		_leave(" = %d [wb]", ret);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return ret;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* wait for the preceding writes to actually complete */
@@ -729,6 +793,16 @@ int afs_fsync(struct file *file, int datasync)
 				       vnode->writebacks.next == &wb->link);
 	afs_put_writeback(wb);
 	_leave(" = %d", ret);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+out:
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 

@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -26,6 +34,14 @@
 #include <linux/pmic8058-xoadc.h>
 #include <linux/slab.h>
 #include <linux/semaphore.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <mach/dal.h>
 
@@ -41,6 +57,18 @@
 
 #define MSM_ADC_DALRC_CONV_TIMEOUT	(5 * HZ)  /* 5 seconds */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define MSM_8x25_ADC_DEV_ID		0
+#define MSM_8x25_CHAN_ID		16
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSM_8x25_ADC_DEV_ID		0
+#define MSM_8x25_CHAN_ID		16
+
+>>>>>>> refs/remotes/origin/cm-11.0
 enum dal_error {
 	DAL_ERROR_INVALID_DEVICE_IDX = 1,
 	DAL_ERROR_INVALID_CHANNEL_IDX,
@@ -1171,6 +1199,8 @@ static int __devinit msm_rpc_adc_device_init(struct platform_device *pdev)
 			goto dev_init_err;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* DAL device lookup */
 		rc = msm_adc_getinputproperties(msm_adc, adc_dev->name,
 								&target);
@@ -1183,6 +1213,33 @@ static int __devinit msm_rpc_adc_device_init(struct platform_device *pdev)
 		adc_dev->transl.dal_dev_idx = target.dal.dev_idx;
 		adc_dev->transl.hwmon_dev_idx = i;
 		adc_dev->nchans = target.dal.chan_idx;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (!pdata->target_hw == MSM_8x25) {
+			/* DAL device lookup */
+			rc = msm_adc_getinputproperties(msm_adc, adc_dev->name,
+								&target);
+			if (rc) {
+				dev_err(&pdev->dev, "No such DAL device[%s]\n",
+							adc_dev->name);
+				goto dev_init_err;
+			}
+
+			adc_dev->transl.dal_dev_idx = target.dal.dev_idx;
+			adc_dev->nchans = target.dal.chan_idx;
+		} else {
+			/* On targets prior to MSM7x30 the remote driver has
+			   only the channel list and no device id. */
+			adc_dev->transl.dal_dev_idx = MSM_8x25_ADC_DEV_ID;
+			adc_dev->nchans = MSM_8x25_CHAN_ID;
+		}
+
+		adc_dev->transl.hwmon_dev_idx = i;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		adc_dev->transl.hwmon_start = hwmon_cntr;
 		adc_dev->transl.hwmon_end = hwmon_cntr + adc_dev->nchans - 1;
 		hwmon_cntr += adc_dev->nchans;
@@ -1380,7 +1437,15 @@ static struct platform_driver msm_adc_rpcrouter_remote_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_adc_probe(struct platform_device *pdev)
+=======
+static int __devinit msm_adc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __devinit msm_adc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct msm_adc_platform_data *pdata = pdev->dev.platform_data;
 	struct msm_adc_drv *msm_adc;

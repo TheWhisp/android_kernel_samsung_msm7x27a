@@ -30,6 +30,7 @@
 
 #include "../codecs/ad1836.h"
 
+<<<<<<< HEAD
 #include "bf5xx-tdm-pcm.h"
 #include "bf5xx-tdm.h"
 
@@ -40,6 +41,7 @@ static int bf5xx_ad1836_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+<<<<<<< HEAD
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 	unsigned int channel_map[] = {0, 4, 1, 5, 2, 6, 3, 7};
 	int ret = 0;
@@ -54,6 +56,19 @@ static int bf5xx_ad1836_hw_params(struct snd_pcm_substream *substream,
 		SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
 	if (ret < 0)
 		return ret;
+=======
+	unsigned int channel_map[] = {0, 4, 1, 5, 2, 6, 3, 7};
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_soc_card bf5xx_ad1836;
+
+static int bf5xx_ad1836_init(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+	unsigned int channel_map[] = {0, 4, 1, 5, 2, 6, 3, 7};
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* set cpu DAI channel mapping */
 	ret = snd_soc_dai_set_channel_map(cpu_dai, ARRAY_SIZE(channel_map),
@@ -61,6 +76,7 @@ static int bf5xx_ad1836_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -68,6 +84,12 @@ static struct snd_soc_ops bf5xx_ad1836_ops = {
 	.hw_params = bf5xx_ad1836_hw_params,
 };
 
+<<<<<<< HEAD
+=======
+#define BF5XX_AD1836_DAIFMT (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_IF | \
+				SND_SOC_DAIFMT_CBM_CFM)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct snd_soc_dai_link bf5xx_ad1836_dai[] = {
 	{
 		.name = "ad1836",
@@ -77,6 +99,10 @@ static struct snd_soc_dai_link bf5xx_ad1836_dai[] = {
 		.platform_name = "bfin-tdm-pcm-audio",
 		.codec_name = "spi0.4",
 		.ops = &bf5xx_ad1836_ops,
+<<<<<<< HEAD
+=======
+		.dai_fmt = BF5XX_AD1836_DAIFMT,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	{
 		.name = "ad1836",
@@ -86,11 +112,39 @@ static struct snd_soc_dai_link bf5xx_ad1836_dai[] = {
 		.platform_name = "bfin-tdm-pcm-audio",
 		.codec_name = "spi0.4",
 		.ops = &bf5xx_ad1836_ops,
+<<<<<<< HEAD
+=======
+		.dai_fmt = BF5XX_AD1836_DAIFMT,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
+=======
+	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0xFF, 0xFF, 8, 32);
+	if (ret < 0)
+		return ret;
+
+	return 0;
+}
+
+#define BF5XX_AD1836_DAIFMT (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_IF | \
+				SND_SOC_DAIFMT_CBM_CFM)
+
+static struct snd_soc_dai_link bf5xx_ad1836_dai = {
+	.name = "ad1836",
+	.stream_name = "AD1836",
+	.codec_dai_name = "ad1836-hifi",
+	.platform_name = "bfin-i2s-pcm-audio",
+	.dai_fmt = BF5XX_AD1836_DAIFMT,
+	.init = bf5xx_ad1836_init,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct snd_soc_card bf5xx_ad1836 = {
 	.name = "bfin-ad1836",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = &bf5xx_ad1836_dai[CONFIG_SND_BF5XX_SPORT_NUM],
 	.num_links = 1,
 };
@@ -121,6 +175,54 @@ static void __exit bf5xx_ad1836_exit(void)
 
 module_init(bf5xx_ad1836_init);
 module_exit(bf5xx_ad1836_exit);
+=======
+	.owner = THIS_MODULE,
+	.dai_link = &bf5xx_ad1836_dai,
+	.num_links = 1,
+};
+
+static int bf5xx_ad1836_driver_probe(struct platform_device *pdev)
+{
+	struct snd_soc_card *card = &bf5xx_ad1836;
+	const char **link_name;
+	int ret;
+
+	link_name = pdev->dev.platform_data;
+	if (!link_name) {
+		dev_err(&pdev->dev, "No platform data supplied\n");
+		return -EINVAL;
+	}
+	bf5xx_ad1836_dai.cpu_dai_name = link_name[0];
+	bf5xx_ad1836_dai.codec_name = link_name[1];
+
+	card->dev = &pdev->dev;
+	platform_set_drvdata(pdev, card);
+
+	ret = snd_soc_register_card(card);
+	if (ret)
+		dev_err(&pdev->dev, "Failed to register card\n");
+	return ret;
+}
+
+static int bf5xx_ad1836_driver_remove(struct platform_device *pdev)
+{
+	struct snd_soc_card *card = platform_get_drvdata(pdev);
+
+	snd_soc_unregister_card(card);
+	return 0;
+}
+
+static struct platform_driver bf5xx_ad1836_driver = {
+	.driver = {
+		.name = "bfin-snd-ad1836",
+		.owner = THIS_MODULE,
+		.pm = &snd_soc_pm_ops,
+	},
+	.probe = bf5xx_ad1836_driver_probe,
+	.remove = bf5xx_ad1836_driver_remove,
+};
+module_platform_driver(bf5xx_ad1836_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Barry Song");

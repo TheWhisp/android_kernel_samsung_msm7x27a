@@ -48,6 +48,23 @@ enum pm8921_usb_debounce_time {
 	PM_USB_DEBOUNCE_80P5MS,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+enum pm8921_chg_led_src_config {
+	LED_SRC_GND,
+	LED_SRC_VPH_PWR,
+	LED_SRC_5V,
+	LED_SRC_MIN_VPH_5V,
+	LED_SRC_BYPASS,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  * struct pm8921_charger_platform_data -
  * @safety_time:	max charging time in minutes incl. fast and trkl
@@ -59,6 +76,14 @@ enum pm8921_usb_debounce_time {
  * @min_voltage:	the voltage (mV) where charging method switches from
  *			trickle to fast. This is also the minimum voltage the
  *			system operates at
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @uvd_thresh_voltage:	the USB falling UVD threshold (mV) (PM8917 only)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @uvd_thresh_voltage:	the USB falling UVD threshold (mV) (PM8917 only)
+>>>>>>> refs/remotes/origin/cm-11.0
  * @resume_voltage_delta:	the (mV) drop to wait for before resume charging
  *				after the battery has been fully charged
  * @term_current:	the charger current (mA) at which EOC happens
@@ -100,6 +125,20 @@ enum pm8921_usb_debounce_time {
  *			VBAT_THERM goes below 35% of VREF_THERM, if low the
  *			battery will be considered hot when VBAT_THERM goes
  *			below 25% of VREF_THERM. Hardware defaults to low.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ * @rconn_mohm:		resistance in milliOhm from the vbat sense to ground
+ *			with the battery terminals shorted. This indicates
+ *			resistance of the pads, connectors, battery terminals
+ *			and rsense.
+ * @led_src_config:	Power source for anode of charger indicator LED.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 struct pm8921_charger_platform_data {
 	struct pm8xxx_charger_core_data	charger_cdata;
@@ -108,6 +147,14 @@ struct pm8921_charger_platform_data {
 	unsigned int			update_time;
 	unsigned int			max_voltage;
 	unsigned int			min_voltage;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned int			uvd_thresh_voltage;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int			uvd_thresh_voltage;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int			resume_voltage_delta;
 	unsigned int			term_current;
 	int				cool_temp;
@@ -131,6 +178,16 @@ struct pm8921_charger_platform_data {
 	int				thermal_levels;
 	enum pm8921_chg_cold_thr	cold_thr;
 	enum pm8921_chg_hot_thr		hot_thr;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int				rconn_mohm;
+	enum pm8921_chg_led_src_config	led_src_config;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int				rconn_mohm;
+	enum pm8921_chg_led_src_config	led_src_config;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum pm8921_charger_source {
@@ -286,6 +343,19 @@ static inline int pm8921_is_battery_present(void)
 {
 	return -ENXIO;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static inline int pm8917_set_under_voltage_detection_threshold(int mv)
+{
+	return -ENXIO;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int pm8921_disable_input_current_limit(bool disable)
 {
 	return -ENXIO;

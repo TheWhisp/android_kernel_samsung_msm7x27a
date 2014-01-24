@@ -34,8 +34,16 @@
 #include <linux/hugetlb.h>
 #include <linux/syscalls.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kdebug.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgalloc.h>
 #include <asm/sections.h>
 #include <asm/traps.h>
@@ -54,7 +62,15 @@ static noinline void force_sig_info_fault(const char *type, int si_signo,
 	if (unlikely(tsk->pid < 2)) {
 		panic("Signal %d (code %d) at %#lx sent to %s!",
 		      si_signo, si_code & 0xffff, address,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		      tsk->pid ? "init" : "the idle task");
+=======
+		      is_idle_task(tsk) ? "the idle task" : "init");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      is_idle_task(tsk) ? "the idle task" : "init");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	info.si_signo = si_signo;
@@ -71,9 +87,16 @@ static noinline void force_sig_info_fault(const char *type, int si_signo,
  * Synthesize the fault a PL0 process would get by doing a word-load of
  * an unaligned address or a high kernel address.
  */
+<<<<<<< HEAD
 SYSCALL_DEFINE2(cmpxchg_badaddr, unsigned long, address,
 		struct pt_regs *, regs)
 {
+=======
+SYSCALL_DEFINE1(cmpxchg_badaddr, unsigned long, address)
+{
+	struct pt_regs *regs = current_pt_regs();
+
+>>>>>>> refs/remotes/origin/master
 	if (address >= PAGE_OFFSET)
 		force_sig_info_fault("atomic segfault", SIGSEGV, SEGV_MAPERR,
 				     address, INT_DTLB_MISS, current, regs);
@@ -122,16 +145,30 @@ static inline pmd_t *vmalloc_sync_one(pgd_t *pgd, unsigned long address)
 	pmd_k = pmd_offset(pud_k, address);
 	if (!pmd_present(*pmd_k))
 		return NULL;
+<<<<<<< HEAD
 	if (!pmd_present(*pmd)) {
 		set_pmd(pmd, *pmd_k);
 		arch_flush_lazy_mmu_mode();
 	} else
+=======
+	if (!pmd_present(*pmd))
+		set_pmd(pmd, *pmd_k);
+	else
+>>>>>>> refs/remotes/origin/master
 		BUG_ON(pmd_ptfn(*pmd) != pmd_ptfn(*pmd_k));
 	return pmd_k;
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Handle a fault on the vmalloc or module mapping area
+=======
+ * Handle a fault on the vmalloc area.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Handle a fault on the vmalloc area.
+>>>>>>> refs/remotes/origin/master
  */
 static inline int vmalloc_fault(pgd_t *pgd, unsigned long address)
 {
@@ -149,8 +186,11 @@ static inline int vmalloc_fault(pgd_t *pgd, unsigned long address)
 	pmd_k = vmalloc_sync_one(pgd, address);
 	if (!pmd_k)
 		return -1;
+<<<<<<< HEAD
 	if (pmd_huge(*pmd_k))
 		return 0;   /* support TILE huge_vmap() API */
+=======
+>>>>>>> refs/remotes/origin/master
 	pte_k = pte_offset_kernel(pmd_k, address);
 	if (!pte_present(*pte_k))
 		return -1;
@@ -188,7 +228,11 @@ static pgd_t *get_current_pgd(void)
 	HV_Context ctx = hv_inquire_context();
 	unsigned long pgd_pfn = ctx.page_table >> PAGE_SHIFT;
 	struct page *pgd_page = pfn_to_page(pgd_pfn);
+<<<<<<< HEAD
 	BUG_ON(PageHighMem(pgd_page));   /* oops, HIGHPTE? */
+=======
+	BUG_ON(PageHighMem(pgd_page));
+>>>>>>> refs/remotes/origin/master
 	return (pgd_t *) __va(ctx.page_table);
 }
 
@@ -204,9 +248,26 @@ static pgd_t *get_current_pgd(void)
  * interrupt or a critical region, and must do as little as possible.
  * Similarly, we can't use atomic ops here, since we may be handling a
  * fault caused by an atomic op access.
+<<<<<<< HEAD
+<<<<<<< HEAD
  */
 static int handle_migrating_pte(pgd_t *pgd, int fault_num,
 				unsigned long address,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * If we find a migrating PTE while we're in an NMI context, and we're
+ * at a PC that has a registered exception handler, we don't wait,
+ * since this thread may (e.g.) have been interrupted while migrating
+ * its own stack, which would then cause us to self-deadlock.
+ */
+static int handle_migrating_pte(pgd_t *pgd, int fault_num,
+				unsigned long address, unsigned long pc,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				int is_kernel_mode, int write)
 {
 	pud_t *pud;
@@ -228,6 +289,16 @@ static int handle_migrating_pte(pgd_t *pgd, int fault_num,
 		pte_offset_kernel(pmd, address);
 	pteval = *pte;
 	if (pte_migrating(pteval)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (in_nmi() && search_exception_tables(pc))
+			return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (in_nmi() && search_exception_tables(pc))
+			return 0;
+>>>>>>> refs/remotes/origin/master
 		wait_for_migration(pte);
 		return 1;
 	}
@@ -267,12 +338,22 @@ static int handle_page_fault(struct pt_regs *regs,
 	int si_code;
 	int is_kernel_mode;
 	pgd_t *pgd;
+<<<<<<< HEAD
+=======
+	unsigned int flags;
+>>>>>>> refs/remotes/origin/master
 
 	/* on TILE, protection faults are always writes */
 	if (!is_page_fault)
 		write = 1;
 
+<<<<<<< HEAD
 	is_kernel_mode = (EX1_PL(regs->ex1) != USER_PL);
+=======
+	flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+
+	is_kernel_mode = !user_mode(regs);
+>>>>>>> refs/remotes/origin/master
 
 	tsk = validate_current();
 
@@ -301,7 +382,15 @@ static int handle_page_fault(struct pt_regs *regs,
 	 * rather than trying to patch up the existing PTE.
 	 */
 	pgd = get_current_pgd();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (handle_migrating_pte(pgd, fault_num, address,
+=======
+	if (handle_migrating_pte(pgd, fault_num, address, regs->pc,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (handle_migrating_pte(pgd, fault_num, address, regs->pc,
+>>>>>>> refs/remotes/origin/master
 				 is_kernel_mode, write))
 		return 1;
 
@@ -336,9 +425,24 @@ static int handle_page_fault(struct pt_regs *regs,
 	/*
 	 * If we're trying to touch user-space addresses, we must
 	 * be either at PL0, or else with interrupts enabled in the
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * kernel, so either way we can re-enable interrupts here.
 	 */
 	local_irq_enable();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * kernel, so either way we can re-enable interrupts here
+	 * unless we are doing atomic access to user space with
+	 * interrupts disabled.
+	 */
+	if (!(regs->flags & PT_FLAGS_DISABLE_IRQ))
+		local_irq_enable();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mm = tsk->mm;
 
@@ -351,6 +455,12 @@ static int handle_page_fault(struct pt_regs *regs,
 		goto bad_area_nosemaphore;
 	}
 
+<<<<<<< HEAD
+=======
+	if (!is_kernel_mode)
+		flags |= FAULT_FLAG_USER;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * When running in the kernel we expect faults to occur only to
 	 * addresses in user space.  All other faults represent errors in the
@@ -373,6 +483,11 @@ static int handle_page_fault(struct pt_regs *regs,
 			vma = NULL;  /* happy compiler */
 			goto bad_area_nosemaphore;
 		}
+<<<<<<< HEAD
+=======
+
+retry:
+>>>>>>> refs/remotes/origin/master
 		down_read(&mm->mmap_sem);
 	}
 
@@ -409,18 +524,33 @@ good_area:
 #endif
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
+=======
+		flags |= FAULT_FLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (!is_page_fault || !(vma->vm_flags & VM_READ))
 			goto bad_area;
 	}
 
+<<<<<<< HEAD
  survive:
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If for any reason at all we couldn't handle the fault,
 	 * make sure we exit gracefully rather than endlessly redo
 	 * the fault.
 	 */
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, write);
+=======
+	fault = handle_mm_fault(mm, vma, address, flags);
+
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
@@ -428,6 +558,7 @@ good_area:
 			goto do_sigbus;
 		BUG();
 	}
+<<<<<<< HEAD
 	if (fault & VM_FAULT_MAJOR)
 		tsk->maj_flt++;
 	else
@@ -440,12 +571,36 @@ good_area:
 	 */
 	switch (fault_num) {
 #if CHIP_HAS_TILE_DMA()
+=======
+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+		if (fault & VM_FAULT_MAJOR)
+			tsk->maj_flt++;
+		else
+			tsk->min_flt++;
+		if (fault & VM_FAULT_RETRY) {
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+			flags |= FAULT_FLAG_TRIED;
+
+			 /*
+			  * No need to up_read(&mm->mmap_sem) as we would
+			  * have already released it in __lock_page_or_retry
+			  * in mm/filemap.c.
+			  */
+			goto retry;
+		}
+	}
+
+#if CHIP_HAS_TILE_DMA()
+	/* If this was a DMA TLB fault, restart the DMA engine. */
+	switch (fault_num) {
+>>>>>>> refs/remotes/origin/master
 	case INT_DMATLB_MISS:
 	case INT_DMATLB_MISS_DWNCL:
 	case INT_DMATLB_ACCESS:
 	case INT_DMATLB_ACCESS_DWNCL:
 		__insn_mtspr(SPR_DMA_CTR, SPR_DMA_CTR__REQUEST_MASK);
 		break;
+<<<<<<< HEAD
 #endif
 #if CHIP_HAS_SN_PROC()
 	case INT_SNITLB_MISS:
@@ -455,6 +610,8 @@ good_area:
 			     ~SPR_SNCTL__FRZPROC_MASK);
 		break;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -515,7 +672,15 @@ no_context:
 
 	if (unlikely(tsk->pid < 2)) {
 		panic("Kernel page fault running %s!",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		      tsk->pid ? "init" : "the idle task");
+=======
+		      is_idle_task(tsk) ? "the idle task" : "init");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      is_idle_task(tsk) ? "the idle task" : "init");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -535,6 +700,7 @@ no_context:
  */
 out_of_memory:
 	up_read(&mm->mmap_sem);
+<<<<<<< HEAD
 	if (is_global_init(tsk)) {
 		yield();
 		down_read(&mm->mmap_sem);
@@ -544,6 +710,12 @@ out_of_memory:
 	if (!is_kernel_mode)
 		do_group_exit(SIGKILL);
 	goto no_context;
+=======
+	if (is_kernel_mode)
+		goto no_context;
+	pagefault_out_of_memory();
+	return 0;
+>>>>>>> refs/remotes/origin/master
 
 do_sigbus:
 	up_read(&mm->mmap_sem);
@@ -666,7 +838,15 @@ struct intvec_state do_page_fault_ics(struct pt_regs *regs, int fault_num,
 	 */
 	if (fault_num == INT_DTLB_ACCESS)
 		write = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (handle_migrating_pte(pgd, fault_num, address, 1, write))
+=======
+	if (handle_migrating_pte(pgd, fault_num, address, pc, 1, write))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (handle_migrating_pte(pgd, fault_num, address, pc, 1, write))
+>>>>>>> refs/remotes/origin/master
 		return state;
 
 	/* Return zero so that we continue on with normal fault handling. */
@@ -689,8 +869,65 @@ void do_page_fault(struct pt_regs *regs, int fault_num,
 {
 	int is_page_fault;
 
+<<<<<<< HEAD
 	/* This case should have been handled by do_page_fault_ics(). */
 	BUG_ON(write & ~1);
+=======
+#ifdef CONFIG_KPROBES
+	/*
+	 * This is to notify the fault handler of the kprobes.  The
+	 * exception code is redundant as it is also carried in REGS,
+	 * but we pass it anyhow.
+	 */
+	if (notify_die(DIE_PAGE_FAULT, "page fault", regs, -1,
+		       regs->faultnum, SIGSEGV) == NOTIFY_STOP)
+		return;
+#endif
+
+#ifdef __tilegx__
+	/*
+	 * We don't need early do_page_fault_ics() support, since unlike
+	 * Pro we don't need to worry about unlocking the atomic locks.
+	 * There is only one current case in GX where we touch any memory
+	 * under ICS other than our own kernel stack, and we handle that
+	 * here.  (If we crash due to trying to touch our own stack,
+	 * we're in too much trouble for C code to help out anyway.)
+	 */
+	if (write & ~1) {
+		unsigned long pc = write & ~1;
+		if (pc >= (unsigned long) __start_unalign_asm_code &&
+		    pc < (unsigned long) __end_unalign_asm_code) {
+			struct thread_info *ti = current_thread_info();
+			/*
+			 * Our EX_CONTEXT is still what it was from the
+			 * initial unalign exception, but now we've faulted
+			 * on the JIT page.  We would like to complete the
+			 * page fault however is appropriate, and then retry
+			 * the instruction that caused the unalign exception.
+			 * Our state has been "corrupted" by setting the low
+			 * bit in "sp", and stashing r0..r3 in the
+			 * thread_info area, so we revert all of that, then
+			 * continue as if this were a normal page fault.
+			 */
+			regs->sp &= ~1UL;
+			regs->regs[0] = ti->unalign_jit_tmp[0];
+			regs->regs[1] = ti->unalign_jit_tmp[1];
+			regs->regs[2] = ti->unalign_jit_tmp[2];
+			regs->regs[3] = ti->unalign_jit_tmp[3];
+			write &= 1;
+		} else {
+			pr_alert("%s/%d: ICS set at page fault at %#lx: %#lx\n",
+				 current->comm, current->pid, pc, address);
+			show_regs(regs);
+			do_group_exit(SIGKILL);
+			return;
+		}
+	}
+#else
+	/* This case should have been handled by do_page_fault_ics(). */
+	BUG_ON(write & ~1);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #if CHIP_HAS_TILE_DMA()
 	/*
@@ -719,10 +956,13 @@ void do_page_fault(struct pt_regs *regs, int fault_num,
 	case INT_DMATLB_MISS:
 	case INT_DMATLB_MISS_DWNCL:
 #endif
+<<<<<<< HEAD
 #if CHIP_HAS_SN_PROC()
 	case INT_SNITLB_MISS:
 	case INT_SNITLB_MISS_DWNCL:
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		is_page_fault = 1;
 		break;
 
@@ -738,8 +978,13 @@ void do_page_fault(struct pt_regs *regs, int fault_num,
 		panic("Bad fault number %d in do_page_fault", fault_num);
 	}
 
+<<<<<<< HEAD
 #if CHIP_HAS_TILE_DMA() || CHIP_HAS_SN_PROC()
 	if (EX1_PL(regs->ex1) != USER_PL) {
+=======
+#if CHIP_HAS_TILE_DMA()
+	if (!user_mode(regs)) {
+>>>>>>> refs/remotes/origin/master
 		struct async_tlb *async;
 		switch (fault_num) {
 #if CHIP_HAS_TILE_DMA()
@@ -750,12 +995,15 @@ void do_page_fault(struct pt_regs *regs, int fault_num,
 			async = &current->thread.dma_async_tlb;
 			break;
 #endif
+<<<<<<< HEAD
 #if CHIP_HAS_SN_PROC()
 		case INT_SNITLB_MISS:
 		case INT_SNITLB_MISS_DWNCL:
 			async = &current->thread.sn_async_tlb;
 			break;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		default:
 			async = NULL;
 		}
@@ -788,6 +1036,7 @@ void do_page_fault(struct pt_regs *regs, int fault_num,
 }
 
 
+<<<<<<< HEAD
 #if CHIP_HAS_TILE_DMA() || CHIP_HAS_SN_PROC()
 /*
  * Check an async_tlb structure to see if a deferred fault is waiting,
@@ -796,6 +1045,24 @@ void do_page_fault(struct pt_regs *regs, int fault_num,
 static void handle_async_page_fault(struct pt_regs *regs,
 				    struct async_tlb *async)
 {
+=======
+#if CHIP_HAS_TILE_DMA()
+/*
+ * This routine effectively re-issues asynchronous page faults
+ * when we are returning to user space.
+ */
+void do_async_page_fault(struct pt_regs *regs)
+{
+	struct async_tlb *async = &current->thread.dma_async_tlb;
+
+	/*
+	 * Clear thread flag early.  If we re-interrupt while processing
+	 * code here, we will reset it and recall this routine before
+	 * returning to user space.
+	 */
+	clear_thread_flag(TIF_ASYNC_TLB);
+
+>>>>>>> refs/remotes/origin/master
 	if (async->fault_num) {
 		/*
 		 * Clear async->fault_num before calling the page-fault
@@ -809,6 +1076,7 @@ static void handle_async_page_fault(struct pt_regs *regs,
 				  async->address, async->is_write);
 	}
 }
+<<<<<<< HEAD
 
 /*
  * This routine effectively re-issues asynchronous page faults
@@ -831,13 +1099,21 @@ void do_async_page_fault(struct pt_regs *regs)
 #endif
 }
 #endif /* CHIP_HAS_TILE_DMA() || CHIP_HAS_SN_PROC() */
+=======
+#endif /* CHIP_HAS_TILE_DMA() */
+>>>>>>> refs/remotes/origin/master
 
 
 void vmalloc_sync_all(void)
 {
 #ifdef __tilegx__
 	/* Currently all L1 kernel pmd's are static and shared. */
+<<<<<<< HEAD
 	BUG_ON(pgd_index(VMALLOC_END) != pgd_index(VMALLOC_START));
+=======
+	BUILD_BUG_ON(pgd_index(VMALLOC_END - PAGE_SIZE) !=
+		     pgd_index(VMALLOC_START));
+>>>>>>> refs/remotes/origin/master
 #else
 	/*
 	 * Note that races in the updates of insync and start aren't

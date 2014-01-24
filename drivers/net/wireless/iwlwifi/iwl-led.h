@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2003 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2003 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -36,6 +40,7 @@ struct iwl_priv;
 #define IWL_LED_ACTIVITY       (0<<1)
 #define IWL_LED_LINK           (1<<1)
 
+<<<<<<< HEAD
 /*
  * LED mode
  *    IWL_LED_DEFAULT:  use device default
@@ -50,6 +55,8 @@ enum iwl_led_mode {
 	IWL_LED_BLINK,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void iwlagn_led_enable(struct iwl_priv *priv);
 void iwl_leds_init(struct iwl_priv *priv);
 void iwl_leds_exit(struct iwl_priv *priv);

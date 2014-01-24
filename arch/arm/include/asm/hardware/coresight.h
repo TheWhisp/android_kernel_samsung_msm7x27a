@@ -17,17 +17,58 @@
 #define TRACER_ACCESSED_BIT	0
 #define TRACER_RUNNING_BIT	1
 #define TRACER_CYCLE_ACC_BIT	2
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define TRACER_TRACE_DATA_BIT	3
+<<<<<<< HEAD
+=======
+#define TRACER_TIMESTAMP_BIT	4
+#define TRACER_BRANCHOUTPUT_BIT	5
+#define TRACER_RETURN_STACK_BIT	6
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TRACER_ACCESSED		BIT(TRACER_ACCESSED_BIT)
 #define TRACER_RUNNING		BIT(TRACER_RUNNING_BIT)
 #define TRACER_CYCLE_ACC	BIT(TRACER_CYCLE_ACC_BIT)
 #define TRACER_TRACE_DATA	BIT(TRACER_TRACE_DATA_BIT)
+<<<<<<< HEAD
+=======
+#define TRACER_TIMESTAMP	BIT(TRACER_TIMESTAMP_BIT)
+#define TRACER_BRANCHOUTPUT	BIT(TRACER_BRANCHOUTPUT_BIT)
+#define TRACER_RETURN_STACK	BIT(TRACER_RETURN_STACK_BIT)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define TRACER_TIMEOUT 10000
 
 #define etm_writel(t, id, v, x) \
 	(__raw_writel((v), (t)->etm_regs[(id)] + (x)))
 #define etm_readl(t, id, x) (__raw_readl((t)->etm_regs[(id)] + (x)))
+=======
+=======
+#define TRACER_TRACE_DATA_BIT	3
+#define TRACER_TIMESTAMP_BIT	4
+#define TRACER_BRANCHOUTPUT_BIT	5
+#define TRACER_RETURN_STACK_BIT	6
+>>>>>>> refs/remotes/origin/cm-11.0
+#define TRACER_ACCESSED		BIT(TRACER_ACCESSED_BIT)
+#define TRACER_RUNNING		BIT(TRACER_RUNNING_BIT)
+#define TRACER_CYCLE_ACC	BIT(TRACER_CYCLE_ACC_BIT)
+#define TRACER_TRACE_DATA	BIT(TRACER_TRACE_DATA_BIT)
+#define TRACER_TIMESTAMP	BIT(TRACER_TIMESTAMP_BIT)
+#define TRACER_BRANCHOUTPUT	BIT(TRACER_BRANCHOUTPUT_BIT)
+#define TRACER_RETURN_STACK	BIT(TRACER_RETURN_STACK_BIT)
+
+#define TRACER_TIMEOUT 10000
+
+<<<<<<< HEAD
+#define etm_writel(t, v, x) \
+	(writel_relaxed((v), (t)->etm_regs + (x)))
+#define etm_readl(t, x) (readl_relaxed((t)->etm_regs + (x)))
+>>>>>>> refs/remotes/origin/master
+=======
+#define etm_writel(t, id, v, x) \
+	(__raw_writel((v), (t)->etm_regs[(id)] + (x)))
+#define etm_readl(t, id, x) (__raw_readl((t)->etm_regs[(id)] + (x)))
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* CoreSight Management Registers */
 #define CSMR_LOCKACCESS 0xfb0
@@ -38,14 +79,30 @@
 /* CoreSight Component Registers */
 #define CSCR_CLASS	0xff4
 
+<<<<<<< HEAD
 #define UNLOCK_MAGIC	0xc5acce55
+=======
+#define CS_LAR_KEY	0xc5acce55
+>>>>>>> refs/remotes/origin/master
 
 /* ETM control register, "ETM Architecture", 3.3.1 */
 #define ETMR_CTRL		0
 #define ETMCTRL_POWERDOWN	1
 #define ETMCTRL_PROGRAM		(1 << 10)
 #define ETMCTRL_PORTSEL		(1 << 11)
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define ETMCTRL_DO_CONTEXTID	(3 << 14)
+=======
+#define ETMCTRL_CONTEXTIDSIZE(x) (((x) & 3) << 14)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ETMCTRL_DO_CONTEXTID	(3 << 14)
+>>>>>>> refs/remotes/origin/master
+=======
+#define ETMCTRL_CONTEXTIDSIZE(x) (((x) & 3) << 14)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ETMCTRL_PORTMASK1	(7 << 4)
 #define ETMCTRL_PORTMASK2	(1 << 21)
 #define ETMCTRL_PORTMASK	(ETMCTRL_PORTMASK1 | ETMCTRL_PORTMASK2)
@@ -57,9 +114,33 @@
 #define ETMCTRL_DATA_DO_BOTH	(ETMCTRL_DATA_DO_DATA | ETMCTRL_DATA_DO_ADDR)
 #define ETMCTRL_BRANCH_OUTPUT	(1 << 8)
 #define ETMCTRL_CYCLEACCURATE	(1 << 12)
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /* ETM configuration code register */
 #define ETMR_CONFCODE		(0x04)
+=======
+#define ETMCTRL_TIMESTAMP_EN	(1 << 28)
+#define ETMCTRL_RETURN_STACK_EN	(1 << 29)
+
+/* ETM configuration code register */
+#define ETMR_CONFCODE		(0x04)
+#define ETMCCR_ETMIDR_PRESENT	BIT(31)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* ETM configuration code register */
+#define ETMR_CONFCODE		(0x04)
+>>>>>>> refs/remotes/origin/master
+=======
+#define ETMCTRL_TIMESTAMP_EN	(1 << 28)
+#define ETMCTRL_RETURN_STACK_EN	(1 << 29)
+
+/* ETM configuration code register */
+#define ETMR_CONFCODE		(0x04)
+#define ETMCCR_ETMIDR_PRESENT	BIT(31)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* ETM trace start/stop resource control register */
 #define ETMR_TRACESSCTRL	(0x18)
@@ -115,6 +196,10 @@
 #define ETMR_TRACEENCTRL	0x24
 #define ETMTE_INCLEXCL		BIT(24)
 #define ETMR_TRACEENEVT		0x20
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ETMR_VIEWDATAEVT	0x30
 #define ETMR_VIEWDATACTRL1	0x34
@@ -122,11 +207,38 @@
 #define ETMR_VIEWDATACTRL3	0x3c
 #define ETMVDC3_EXCLONLY	BIT(16)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define ETMCTRL_OPTS		(ETMCTRL_DO_CPRT | \
 				ETMCTRL_BRANCH_OUTPUT | \
 				ETMCTRL_DO_CONTEXTID)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define ETMCTRL_OPTS		(ETMCTRL_DO_CPRT)
+
+#define ETMR_ID			0x1e4
+#define ETMIDR_VERSION(x)	(((x) >> 4) & 0xff)
+#define ETMIDR_VERSION_3_1	0x21
+#define ETMIDR_VERSION_PFT_1_0	0x30
+
+#define ETMR_CCE		0x1e8
+#define ETMCCER_RETURN_STACK_IMPLEMENTED	BIT(23)
+#define ETMCCER_TIMESTAMPING_IMPLEMENTED	BIT(22)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define ETMR_TRACEIDR		0x200
+=======
+#define ETMCTRL_OPTS		(ETMCTRL_DO_CPRT | \
+				ETMCTRL_DATA_DO_ADDR | \
+				ETMCTRL_BRANCH_OUTPUT | \
+				ETMCTRL_DO_CONTEXTID)
+>>>>>>> refs/remotes/origin/master
+=======
+
+#define ETMR_TRACEIDR		0x200
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* ETM management registers, "ETM Architecture", 3.5.24 */
 #define ETMMR_OSLAR	0x300
@@ -150,6 +262,10 @@
 #define ETBFF_TRIGIN		BIT(8)
 #define ETBFF_TRIGEVT		BIT(9)
 #define ETBFF_TRIGFL		BIT(10)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define ETBFF_STOPFL		BIT(12)
 
 #define etb_writel(t, v, x) \
@@ -160,10 +276,27 @@
 	do { etm_writel((t), (id), 0, CSMR_LOCKACCESS); } while (0)
 #define etm_unlock(t, id) \
 	do { etm_writel((t), (id), UNLOCK_MAGIC, CSMR_LOCKACCESS); } while (0)
+<<<<<<< HEAD
 
 #define etb_lock(t) do { etb_writel((t), 0, CSMR_LOCKACCESS); } while (0)
 #define etb_unlock(t) \
 	do { etb_writel((t), UNLOCK_MAGIC, CSMR_LOCKACCESS); } while (0)
+=======
+
+#define etb_writel(t, v, x) \
+	(writel_relaxed((v), (t)->etb_regs + (x)))
+#define etb_readl(t, x) (readl_relaxed((t)->etb_regs + (x)))
+
+#define etm_lock(t) do { etm_writel((t), 0, CSMR_LOCKACCESS); } while (0)
+#define etm_unlock(t) \
+	do { etm_writel((t), CS_LAR_KEY, CSMR_LOCKACCESS); } while (0)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+#define etb_lock(t) do { etb_writel((t), 0, CSMR_LOCKACCESS); } while (0)
+#define etb_unlock(t) \
+	do { etb_writel((t), CS_LAR_KEY, CSMR_LOCKACCESS); } while (0)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_HARDWARE_CORESIGHT_H */
 

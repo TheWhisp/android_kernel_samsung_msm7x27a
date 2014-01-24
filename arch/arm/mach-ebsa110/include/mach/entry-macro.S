@@ -12,16 +12,28 @@
 
 #define IRQ_STAT		0xff000000	/* read */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.macro	disable_fiq
 	.endm
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.macro  get_irqnr_preamble, base, tmp
 	mov	\base, #IRQ_STAT
 	.endm
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.macro  arch_ret_to_user, tmp1, tmp2
 	.endm
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.macro	get_irqnr_and_base, irqnr, stat, base, tmp
 	ldrb	\stat, [\base]			@ get interrupts
 	mov	\irqnr, #0

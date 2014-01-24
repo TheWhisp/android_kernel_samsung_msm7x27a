@@ -26,11 +26,17 @@
  *
  */
 
+<<<<<<< HEAD
 
 #ifndef __TTYPE_H__
 #define __TTYPE_H__
 
 
+=======
+#ifndef __TTYPE_H__
+#define __TTYPE_H__
+
+>>>>>>> refs/remotes/origin/master
 /******* Common definitions and typedefs ***********************************/
 
 #ifndef TxInSleep
@@ -56,16 +62,28 @@
 // an 8-byte-aligned 8 byte long structure
 // which is NOT really a floating point number.
 typedef union tagUQuadWord {
+<<<<<<< HEAD
     struct {
         unsigned int dwLowDword;
         unsigned int dwHighDword;
     } u;
     double      DoNotUseThisField;
+=======
+	struct {
+		unsigned int dwLowDword;
+		unsigned int dwHighDword;
+	} u;
+	double      DoNotUseThisField;
+>>>>>>> refs/remotes/origin/master
 } UQuadWord;
 typedef UQuadWord       QWORD;          // 64-bit
 
 /****** Common pointer types ***********************************************/
 
+<<<<<<< HEAD
 typedef QWORD *          PQWORD;
+=======
+typedef QWORD *PQWORD;
+>>>>>>> refs/remotes/origin/master
 
 #endif // __TTYPE_H__

@@ -32,6 +32,67 @@
 
 	__HEAD
 ENTRY(startup_32)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_EFI_STUB
+	jmp	preferred_addr
+
+	.balign	0x10
+	/*
+	 * We don't need the return address, so set up the stack so
+	 * efi_main() can find its arugments.
+	 */
+	add	$0x4, %esp
+
+=======
+#ifdef CONFIG_EFI_STUB
+	jmp	preferred_addr
+
+	/*
+	 * We don't need the return address, so set up the stack so
+	 * efi_main() can find its arguments.
+	 */
+ENTRY(efi_pe_entry)
+	add	$0x4, %esp
+
+	call	make_boot_params
+	cmpl	$0, %eax
+	je	1f
+	movl	0x4(%esp), %esi
+	movl	(%esp), %ecx
+	pushl	%eax
+	pushl	%esi
+	pushl	%ecx
+	sub	$0x4, %esp
+
+ENTRY(efi_stub_entry)
+	add	$0x4, %esp
+>>>>>>> refs/remotes/origin/master
+	call	efi_main
+	cmpl	$0, %eax
+	movl	%eax, %esi
+	jne	2f
+1:
+	/* EFI init failed, so hang. */
+	hlt
+	jmp	1b
+2:
+	call	3f
+3:
+	popl	%eax
+	subl	$3b, %eax
+	subl	BP_pref_address(%esi), %eax
+	add	BP_code32_start(%esi), %eax
+	leal	preferred_addr(%eax), %eax
+	jmp	*%eax
+
+preferred_addr:
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cld
 	/*
 	 * Test KEEP_SEGMENTS flag to see if the bootloader is asking
@@ -75,9 +136,17 @@ ENTRY(startup_32)
 	addl    %eax, %ebx
 	notl	%eax
 	andl    %eax, %ebx
+<<<<<<< HEAD
 #else
 	movl	$LOAD_PHYSICAL_ADDR, %ebx
 #endif
+=======
+	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
+	jge	1f
+#endif
+	movl	$LOAD_PHYSICAL_ADDR, %ebx
+1:
+>>>>>>> refs/remotes/origin/master
 
 	/* Target address to relocate to for decompression */
 	addl	$z_extract_offset, %ebx
@@ -139,8 +208,14 @@ relocated:
 /*
  * Do the decompression, and jump to the new kernel..
  */
+<<<<<<< HEAD
 	leal	z_extract_offset_negative(%ebx), %ebp
 				/* push arguments for decompress_kernel: */
+=======
+				/* push arguments for decompress_kernel: */
+	pushl	$z_output_len	/* decompressed length */
+	leal	z_extract_offset_negative(%ebx), %ebp
+>>>>>>> refs/remotes/origin/master
 	pushl	%ebp		/* output address */
 	pushl	$z_input_len	/* input_len */
 	leal	input_data(%ebx), %eax
@@ -148,6 +223,7 @@ relocated:
 	leal	boot_heap(%ebx), %eax
 	pushl	%eax		/* heap area */
 	pushl	%esi		/* real mode pointer */
+<<<<<<< HEAD
 	call	decompress_kernel
 	addl	$20, %esp
 
@@ -176,12 +252,20 @@ relocated:
 	jmp	1b
 2:
 #endif
+=======
+	call	decompress_kernel /* returns kernel location in %eax */
+	addl	$24, %esp
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Jump to the decompressed kernel.
  */
 	xorl	%ebx, %ebx
+<<<<<<< HEAD
 	jmp	*%ebp
+=======
+	jmp	*%eax
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Stack and heap for uncompression

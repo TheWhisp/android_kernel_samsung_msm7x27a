@@ -24,7 +24,15 @@
 #ifndef _LINUX_NTFS_INODE_H
 #define _LINUX_NTFS_INODE_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/fs.h>
 #include <linux/list.h>
@@ -298,7 +306,15 @@ extern void ntfs_clear_extent_inode(ntfs_inode *ni);
 
 extern int ntfs_read_inode_mount(struct inode *vi);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int ntfs_show_options(struct seq_file *sf, struct vfsmount *mnt);
+=======
+extern int ntfs_show_options(struct seq_file *sf, struct dentry *root);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int ntfs_show_options(struct seq_file *sf, struct dentry *root);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef NTFS_RW
 
@@ -316,6 +332,13 @@ static inline void ntfs_commit_inode(struct inode *vi)
 	return;
 }
 
+<<<<<<< HEAD
+=======
+#else
+
+static inline void ntfs_truncate_vfs(struct inode *vi) {}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* NTFS_RW */
 
 #endif /* _LINUX_NTFS_INODE_H */

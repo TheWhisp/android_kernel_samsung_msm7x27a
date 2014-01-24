@@ -12,8 +12,13 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #define MOUSEDEV_MINOR_BASE	32
+<<<<<<< HEAD
 #define MOUSEDEV_MINORS		32
 #define MOUSEDEV_MIX		31
+=======
+#define MOUSEDEV_MINORS		31
+#define MOUSEDEV_MIX		63
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/sched.h>
 #include <linux/slab.h>
@@ -24,10 +29,15 @@
 #include <linux/random.h>
 #include <linux/major.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #ifdef CONFIG_INPUT_MOUSEDEV_PSAUX
 #include <linux/miscdevice.h>
 #endif
+=======
+#include <linux/cdev.h>
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
 MODULE_DESCRIPTION("Mouse (ExplorerPS/2) device interfaces");
@@ -61,17 +71,29 @@ struct mousedev_hw_data {
 
 struct mousedev {
 	int open;
+<<<<<<< HEAD
 	int minor;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct input_handle handle;
 	wait_queue_head_t wait;
 	struct list_head client_list;
 	spinlock_t client_lock; /* protects client_list */
 	struct mutex mutex;
 	struct device dev;
+<<<<<<< HEAD
 	bool exist;
 
 	struct list_head mixdev_node;
 	int mixdev_open;
+=======
+	struct cdev cdev;
+	bool exist;
+	bool is_mixdev;
+
+	struct list_head mixdev_node;
+	bool opened_by_mixdev;
+>>>>>>> refs/remotes/origin/master
 
 	struct mousedev_hw_data packet;
 	unsigned int pkt_count;
@@ -114,10 +136,13 @@ struct mousedev_client {
 static unsigned char mousedev_imps_seq[] = { 0xf3, 200, 0xf3, 100, 0xf3, 80 };
 static unsigned char mousedev_imex_seq[] = { 0xf3, 200, 0xf3, 200, 0xf3, 80 };
 
+<<<<<<< HEAD
 static struct input_handler mousedev_handler;
 
 static struct mousedev *mousedev_table[MOUSEDEV_MINORS];
 static DEFINE_MUTEX(mousedev_table_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mousedev *mousedev_mix;
 static LIST_HEAD(mousedev_mix_list);
 
@@ -433,7 +458,11 @@ static int mousedev_open_device(struct mousedev *mousedev)
 	if (retval)
 		return retval;
 
+<<<<<<< HEAD
 	if (mousedev->minor == MOUSEDEV_MIX)
+=======
+	if (mousedev->is_mixdev)
+>>>>>>> refs/remotes/origin/master
 		mixdev_open_devices();
 	else if (!mousedev->exist)
 		retval = -ENODEV;
@@ -451,7 +480,11 @@ static void mousedev_close_device(struct mousedev *mousedev)
 {
 	mutex_lock(&mousedev->mutex);
 
+<<<<<<< HEAD
 	if (mousedev->minor == MOUSEDEV_MIX)
+=======
+	if (mousedev->is_mixdev)
+>>>>>>> refs/remotes/origin/master
 		mixdev_close_devices();
 	else if (mousedev->exist && !--mousedev->open)
 		input_close_device(&mousedev->handle);
@@ -472,11 +505,19 @@ static void mixdev_open_devices(void)
 		return;
 
 	list_for_each_entry(mousedev, &mousedev_mix_list, mixdev_node) {
+<<<<<<< HEAD
 		if (!mousedev->mixdev_open) {
 			if (mousedev_open_device(mousedev))
 				continue;
 
 			mousedev->mixdev_open = 1;
+=======
+		if (!mousedev->opened_by_mixdev) {
+			if (mousedev_open_device(mousedev))
+				continue;
+
+			mousedev->opened_by_mixdev = true;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -494,8 +535,13 @@ static void mixdev_close_devices(void)
 		return;
 
 	list_for_each_entry(mousedev, &mousedev_mix_list, mixdev_node) {
+<<<<<<< HEAD
 		if (mousedev->mixdev_open) {
 			mousedev->mixdev_open = 0;
+=======
+		if (mousedev->opened_by_mixdev) {
+			mousedev->opened_by_mixdev = false;
+>>>>>>> refs/remotes/origin/master
 			mousedev_close_device(mousedev);
 		}
 	}
@@ -528,7 +574,10 @@ static int mousedev_release(struct inode *inode, struct file *file)
 	kfree(client);
 
 	mousedev_close_device(mousedev);
+<<<<<<< HEAD
 	put_device(&mousedev->dev);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -538,6 +587,7 @@ static int mousedev_open(struct inode *inode, struct file *file)
 	struct mousedev_client *client;
 	struct mousedev *mousedev;
 	int error;
+<<<<<<< HEAD
 	int i;
 
 #ifdef CONFIG_INPUT_MOUSEDEV_PSAUX
@@ -568,6 +618,19 @@ static int mousedev_open(struct inode *inode, struct file *file)
 		error = -ENOMEM;
 		goto err_put_mousedev;
 	}
+=======
+
+#ifdef CONFIG_INPUT_MOUSEDEV_PSAUX
+	if (imajor(inode) == MISC_MAJOR)
+		mousedev = mousedev_mix;
+	else
+#endif
+		mousedev = container_of(inode->i_cdev, struct mousedev, cdev);
+
+	client = kzalloc(sizeof(struct mousedev_client), GFP_KERNEL);
+	if (!client)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&client->packet_lock);
 	client->pos_x = xres / 2;
@@ -580,13 +643,21 @@ static int mousedev_open(struct inode *inode, struct file *file)
 		goto err_free_client;
 
 	file->private_data = client;
+<<<<<<< HEAD
+=======
+	nonseekable_open(inode, file);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  err_free_client:
 	mousedev_detach_client(mousedev, client);
 	kfree(client);
+<<<<<<< HEAD
  err_put_mousedev:
 	put_device(&mousedev->dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -786,6 +857,7 @@ static unsigned int mousedev_poll(struct file *file, poll_table *wait)
 }
 
 static const struct file_operations mousedev_fops = {
+<<<<<<< HEAD
 	.owner =	THIS_MODULE,
 	.read =		mousedev_read,
 	.write =	mousedev_write,
@@ -809,6 +881,18 @@ static void mousedev_remove_chrdev(struct mousedev *mousedev)
 	mutex_unlock(&mousedev_table_mutex);
 }
 
+=======
+	.owner		= THIS_MODULE,
+	.read		= mousedev_read,
+	.write		= mousedev_write,
+	.poll		= mousedev_poll,
+	.open		= mousedev_open,
+	.release	= mousedev_release,
+	.fasync		= mousedev_fasync,
+	.llseek		= noop_llseek,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Mark device non-existent. This disables writes, ioctls and
  * prevents new users from opening the device. Already posted
@@ -843,13 +927,19 @@ static void mousedev_cleanup(struct mousedev *mousedev)
 
 	mousedev_mark_dead(mousedev);
 	mousedev_hangup(mousedev);
+<<<<<<< HEAD
 	mousedev_remove_chrdev(mousedev);
+=======
+
+	cdev_del(&mousedev->cdev);
+>>>>>>> refs/remotes/origin/master
 
 	/* mousedev is marked dead so no one else accesses mousedev->open */
 	if (mousedev->open)
 		input_close_device(handle);
 }
 
+<<<<<<< HEAD
 static struct mousedev *mousedev_create(struct input_dev *dev,
 					struct input_handler *handler,
 					int minor)
@@ -861,6 +951,44 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
 	if (!mousedev) {
 		error = -ENOMEM;
 		goto err_out;
+=======
+static int mousedev_reserve_minor(bool mixdev)
+{
+	int minor;
+
+	if (mixdev) {
+		minor = input_get_new_minor(MOUSEDEV_MIX, 1, false);
+		if (minor < 0)
+			pr_err("failed to reserve mixdev minor: %d\n", minor);
+	} else {
+		minor = input_get_new_minor(MOUSEDEV_MINOR_BASE,
+					    MOUSEDEV_MINORS, true);
+		if (minor < 0)
+			pr_err("failed to reserve new minor: %d\n", minor);
+	}
+
+	return minor;
+}
+
+static struct mousedev *mousedev_create(struct input_dev *dev,
+					struct input_handler *handler,
+					bool mixdev)
+{
+	struct mousedev *mousedev;
+	int minor;
+	int error;
+
+	minor = mousedev_reserve_minor(mixdev);
+	if (minor < 0) {
+		error = minor;
+		goto err_out;
+	}
+
+	mousedev = kzalloc(sizeof(struct mousedev), GFP_KERNEL);
+	if (!mousedev) {
+		error = -ENOMEM;
+		goto err_free_minor;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	INIT_LIST_HEAD(&mousedev->client_list);
@@ -868,6 +996,7 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
 	spin_lock_init(&mousedev->client_lock);
 	mutex_init(&mousedev->mutex);
 	lockdep_set_subclass(&mousedev->mutex,
+<<<<<<< HEAD
 			     minor == MOUSEDEV_MIX ? SINGLE_DEPTH_NESTING : 0);
 	init_waitqueue_head(&mousedev->wait);
 
@@ -878,6 +1007,23 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
 
 	mousedev->minor = minor;
 	mousedev->exist = true;
+=======
+			     mixdev ? SINGLE_DEPTH_NESTING : 0);
+	init_waitqueue_head(&mousedev->wait);
+
+	if (mixdev) {
+		dev_set_name(&mousedev->dev, "mice");
+	} else {
+		int dev_no = minor;
+		/* Normalize device number if it falls into legacy range */
+		if (dev_no < MOUSEDEV_MINOR_BASE + MOUSEDEV_MINORS)
+			dev_no -= MOUSEDEV_MINOR_BASE;
+		dev_set_name(&mousedev->dev, "mouse%d", dev_no);
+	}
+
+	mousedev->exist = true;
+	mousedev->is_mixdev = mixdev;
+>>>>>>> refs/remotes/origin/master
 	mousedev->handle.dev = input_get_device(dev);
 	mousedev->handle.name = dev_name(&mousedev->dev);
 	mousedev->handle.handler = handler;
@@ -886,17 +1032,31 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
 	mousedev->dev.class = &input_class;
 	if (dev)
 		mousedev->dev.parent = &dev->dev;
+<<<<<<< HEAD
 	mousedev->dev.devt = MKDEV(INPUT_MAJOR, MOUSEDEV_MINOR_BASE + minor);
 	mousedev->dev.release = mousedev_free;
 	device_initialize(&mousedev->dev);
 
 	if (minor != MOUSEDEV_MIX) {
+=======
+	mousedev->dev.devt = MKDEV(INPUT_MAJOR, minor);
+	mousedev->dev.release = mousedev_free;
+	device_initialize(&mousedev->dev);
+
+	if (!mixdev) {
+>>>>>>> refs/remotes/origin/master
 		error = input_register_handle(&mousedev->handle);
 		if (error)
 			goto err_free_mousedev;
 	}
 
+<<<<<<< HEAD
 	error = mousedev_install_chrdev(mousedev);
+=======
+	cdev_init(&mousedev->cdev, &mousedev_fops);
+	mousedev->cdev.kobj.parent = &mousedev->dev.kobj;
+	error = cdev_add(&mousedev->cdev, mousedev->dev.devt, 1);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		goto err_unregister_handle;
 
@@ -909,10 +1069,19 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
  err_cleanup_mousedev:
 	mousedev_cleanup(mousedev);
  err_unregister_handle:
+<<<<<<< HEAD
 	if (minor != MOUSEDEV_MIX)
 		input_unregister_handle(&mousedev->handle);
  err_free_mousedev:
 	put_device(&mousedev->dev);
+=======
+	if (!mixdev)
+		input_unregister_handle(&mousedev->handle);
+ err_free_mousedev:
+	put_device(&mousedev->dev);
+ err_free_minor:
+	input_free_minor(minor);
+>>>>>>> refs/remotes/origin/master
  err_out:
 	return ERR_PTR(error);
 }
@@ -921,7 +1090,12 @@ static void mousedev_destroy(struct mousedev *mousedev)
 {
 	device_del(&mousedev->dev);
 	mousedev_cleanup(mousedev);
+<<<<<<< HEAD
 	if (mousedev->minor != MOUSEDEV_MIX)
+=======
+	input_free_minor(MINOR(mousedev->dev.devt));
+	if (!mousedev->is_mixdev)
+>>>>>>> refs/remotes/origin/master
 		input_unregister_handle(&mousedev->handle);
 	put_device(&mousedev->dev);
 }
@@ -939,7 +1113,11 @@ static int mixdev_add_device(struct mousedev *mousedev)
 		if (retval)
 			goto out;
 
+<<<<<<< HEAD
 		mousedev->mixdev_open = 1;
+=======
+		mousedev->opened_by_mixdev = true;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	get_device(&mousedev->dev);
@@ -954,8 +1132,13 @@ static void mixdev_remove_device(struct mousedev *mousedev)
 {
 	mutex_lock(&mousedev_mix->mutex);
 
+<<<<<<< HEAD
 	if (mousedev->mixdev_open) {
 		mousedev->mixdev_open = 0;
+=======
+	if (mousedev->opened_by_mixdev) {
+		mousedev->opened_by_mixdev = false;
+>>>>>>> refs/remotes/origin/master
 		mousedev_close_device(mousedev);
 	}
 
@@ -970,6 +1153,7 @@ static int mousedev_connect(struct input_handler *handler,
 			    const struct input_device_id *id)
 {
 	struct mousedev *mousedev;
+<<<<<<< HEAD
 	int minor;
 	int error;
 
@@ -983,6 +1167,11 @@ static int mousedev_connect(struct input_handler *handler,
 	}
 
 	mousedev = mousedev_create(dev, handler, minor);
+=======
+	int error;
+
+	mousedev = mousedev_create(dev, handler, false);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(mousedev))
 		return PTR_ERR(mousedev);
 
@@ -1055,6 +1244,7 @@ static const struct input_device_id mousedev_ids[] = {
 MODULE_DEVICE_TABLE(input, mousedev_ids);
 
 static struct input_handler mousedev_handler = {
+<<<<<<< HEAD
 	.event =	mousedev_event,
 	.connect =	mousedev_connect,
 	.disconnect =	mousedev_disconnect,
@@ -1069,13 +1259,59 @@ static struct miscdevice psaux_mouse = {
 	PSMOUSE_MINOR, "psaux", &mousedev_fops
 };
 static int psaux_registered;
+=======
+	.event		= mousedev_event,
+	.connect	= mousedev_connect,
+	.disconnect	= mousedev_disconnect,
+	.legacy_minors	= true,
+	.minor		= MOUSEDEV_MINOR_BASE,
+	.name		= "mousedev",
+	.id_table	= mousedev_ids,
+};
+
+#ifdef CONFIG_INPUT_MOUSEDEV_PSAUX
+#include <linux/miscdevice.h>
+
+static struct miscdevice psaux_mouse = {
+	.minor	= PSMOUSE_MINOR,
+	.name	= "psaux",
+	.fops	= &mousedev_fops,
+};
+
+static bool psaux_registered;
+
+static void __init mousedev_psaux_register(void)
+{
+	int error;
+
+	error = misc_register(&psaux_mouse);
+	if (error)
+		pr_warn("could not register psaux device, error: %d\n",
+			   error);
+	else
+		psaux_registered = true;
+}
+
+static void __exit mousedev_psaux_unregister(void)
+{
+	if (psaux_registered)
+		misc_deregister(&psaux_mouse);
+}
+#else
+static inline void mousedev_psaux_register(void) { }
+static inline void mousedev_psaux_unregister(void) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int __init mousedev_init(void)
 {
 	int error;
 
+<<<<<<< HEAD
 	mousedev_mix = mousedev_create(NULL, &mousedev_handler, MOUSEDEV_MIX);
+=======
+	mousedev_mix = mousedev_create(NULL, &mousedev_handler, true);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(mousedev_mix))
 		return PTR_ERR(mousedev_mix);
 
@@ -1085,6 +1321,7 @@ static int __init mousedev_init(void)
 		return error;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_INPUT_MOUSEDEV_PSAUX
 	error = misc_register(&psaux_mouse);
 	if (error)
@@ -1093,6 +1330,9 @@ static int __init mousedev_init(void)
 	else
 		psaux_registered = 1;
 #endif
+=======
+	mousedev_psaux_register();
+>>>>>>> refs/remotes/origin/master
 
 	pr_info("PS/2 mouse device common for all mice\n");
 
@@ -1101,10 +1341,14 @@ static int __init mousedev_init(void)
 
 static void __exit mousedev_exit(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_INPUT_MOUSEDEV_PSAUX
 	if (psaux_registered)
 		misc_deregister(&psaux_mouse);
 #endif
+=======
+	mousedev_psaux_unregister();
+>>>>>>> refs/remotes/origin/master
 	input_unregister_handler(&mousedev_handler);
 	mousedev_destroy(mousedev_mix);
 }

@@ -4,9 +4,21 @@
 #include <linux/module.h>
 #include <linux/isdn/capilli.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DBG(format, arg...) do { \
 printk(KERN_DEBUG "%s: " format "\n" , __func__ , ## arg); \
 } while (0)
+=======
+#define DBG(format, arg...) do {					\
+		printk(KERN_DEBUG "%s: " format "\n" , __func__ , ## arg); \
+	} while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DBG(format, arg...) do {					\
+		printk(KERN_DEBUG "%s: " format "\n" , __func__ , ## arg); \
+	} while (0)
+>>>>>>> refs/remotes/origin/master
 
 struct capilib_msgidqueue {
 	struct capilib_msgidqueue *next;
@@ -28,7 +40,15 @@ struct capilib_ncci {
 // ---------------------------------------------------------------------------
 // NCCI Handling
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void mq_init(struct capilib_ncci * np)
+=======
+static inline void mq_init(struct capilib_ncci *np)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void mq_init(struct capilib_ncci *np)
+>>>>>>> refs/remotes/origin/master
 {
 	u_int i;
 	np->msgidqueue = NULL;
@@ -42,7 +62,15 @@ static inline void mq_init(struct capilib_ncci * np)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int mq_enqueue(struct capilib_ncci * np, u16 msgid)
+=======
+static inline int mq_enqueue(struct capilib_ncci *np, u16 msgid)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int mq_enqueue(struct capilib_ncci *np, u16 msgid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct capilib_msgidqueue *mq;
 	if ((mq = np->msgidfree) == NULL)
@@ -59,7 +87,15 @@ static inline int mq_enqueue(struct capilib_ncci * np, u16 msgid)
 	return 1;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int mq_dequeue(struct capilib_ncci * np, u16 msgid)
+=======
+static inline int mq_dequeue(struct capilib_ncci *np, u16 msgid)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int mq_dequeue(struct capilib_ncci *np, u16 msgid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct capilib_msgidqueue **pp;
 	for (pp = &np->msgidqueue; *pp; pp = &(*pp)->next) {
@@ -165,7 +201,15 @@ u16 capilib_data_b3_req(struct list_head *head, u16 applid, u32 ncci, u16 msgid)
 			continue;
 		if (np->ncci != ncci)
 			continue;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		if (mq_enqueue(np, msgid) == 0)
 			return CAPI_SENDQUEUEFULL;
 
@@ -188,7 +232,15 @@ void capilib_data_b3_conf(struct list_head *head, u16 applid, u32 ncci, u16 msgi
 			continue;
 		if (np->ncci != ncci)
 			continue;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		if (mq_dequeue(np, msgid) == 0) {
 			printk(KERN_ERR "kcapi: msgid %hu ncci 0x%x not on queue\n",
 			       msgid, ncci);

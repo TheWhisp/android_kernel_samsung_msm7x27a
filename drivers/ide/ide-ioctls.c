@@ -2,6 +2,14 @@
  * IDE ioctls handling.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/hdreg.h>
 #include <linux/ide.h>
 #include <linux/slab.h>
@@ -140,8 +148,13 @@ static int ide_cmd_ioctl(ide_drive_t *drive, unsigned long arg)
 	if (args[0] == ATA_CMD_SMART) {
 		tf->nsect = args[3];
 		tf->lbal  = args[1];
+<<<<<<< HEAD
 		tf->lbam  = 0x4f;
 		tf->lbah  = 0xc2;
+=======
+		tf->lbam  = ATA_SMART_LBAM_PASS;
+		tf->lbah  = ATA_SMART_LBAH_PASS;
+>>>>>>> refs/remotes/origin/master
 		cmd.valid.out.tf = IDE_VALID_OUT_TF;
 		cmd.valid.in.tf  = IDE_VALID_NSECT;
 	} else {

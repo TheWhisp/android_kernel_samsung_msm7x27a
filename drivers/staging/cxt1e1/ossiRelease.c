@@ -1,7 +1,13 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * $Id: ossiRelease.c,v 1.2 2008/05/08 20:14:03 rdobbs PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*-----------------------------------------------------------------------------
  * ossiRelease.c -
  *
@@ -26,6 +32,8 @@
  * One Stop Systems, Inc.  Escondido, California  U.S.A.
  *
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.2 $
  * Last changed on $Date: 2008/05/08 20:14:03 $
@@ -34,6 +42,14 @@
  */
 
 
+=======
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+
+>>>>>>> refs/remotes/origin/master
 char pmcc4_OSSI_release[] = "$Release: PMCC4_3_1B,  Copyright (c) 2008 One Stop Systems$";
 
 /***  End-of-File  ***/

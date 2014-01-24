@@ -36,8 +36,18 @@
 #define rdsdebug(fmt, args...) pr_debug("%s(): " fmt, __func__ , ##args)
 #else
 /* sigh, pr_debug() causes unused variable warnings */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void __attribute__ ((format (printf, 1, 2)))
 rdsdebug(char *fmt, ...)
+=======
+static inline __printf(1, 2)
+void rdsdebug(char *fmt, ...)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline __printf(1, 2)
+void rdsdebug(char *fmt, ...)
+>>>>>>> refs/remotes/origin/master
 {
 }
 #endif
@@ -625,8 +635,18 @@ void rds_for_each_conn_info(struct socket *sock, unsigned int len,
 			  struct rds_info_lengths *lens,
 			  int (*visitor)(struct rds_connection *, void *),
 			  size_t item_len);
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __rds_conn_error(struct rds_connection *conn, const char *, ...)
 				__attribute__ ((format (printf, 2, 3)));
+=======
+__printf(2, 3)
+void __rds_conn_error(struct rds_connection *conn, const char *, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+__printf(2, 3)
+void __rds_conn_error(struct rds_connection *conn, const char *, ...);
+>>>>>>> refs/remotes/origin/master
 #define rds_conn_error(conn, fmt...) \
 	__rds_conn_error(conn, KERN_WARNING "RDS: " fmt)
 
@@ -704,7 +724,15 @@ void rds_inc_init(struct rds_incoming *inc, struct rds_connection *conn,
 		  __be32 saddr);
 void rds_inc_put(struct rds_incoming *inc);
 void rds_recv_incoming(struct rds_connection *conn, __be32 saddr, __be32 daddr,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       struct rds_incoming *inc, gfp_t gfp, enum km_type km);
+=======
+		       struct rds_incoming *inc, gfp_t gfp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       struct rds_incoming *inc, gfp_t gfp);
+>>>>>>> refs/remotes/origin/master
 int rds_recvmsg(struct kiocb *iocb, struct socket *sock, struct msghdr *msg,
 		size_t size, int msg_flags);
 void rds_clear_recv_queue(struct rds_sock *rs);
@@ -749,7 +777,11 @@ void rds_atomic_send_complete(struct rds_message *rm, int wc_status);
 int rds_cmsg_atomic(struct rds_sock *rs, struct rds_message *rm,
 		    struct cmsghdr *cmsg);
 
+<<<<<<< HEAD
 extern void __rds_put_mr_final(struct rds_mr *mr);
+=======
+void __rds_put_mr_final(struct rds_mr *mr);
+>>>>>>> refs/remotes/origin/master
 static inline void rds_mr_put(struct rds_mr *mr)
 {
 	if (atomic_dec_and_test(&mr->r_refcount))

@@ -119,9 +119,21 @@ ad1848_port_info;
 static struct address_info cfg;
 static int nr_ad1848_devs;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int deskpro_xl;
 static int deskpro_m;
 static int soundpro;
+=======
+static bool deskpro_xl;
+static bool deskpro_m;
+static bool soundpro;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool deskpro_xl;
+static bool deskpro_m;
+static bool soundpro;
+>>>>>>> refs/remotes/origin/master
 
 static volatile signed char irq2dev[17] = {
 	-1, -1, -1, -1, -1, -1, -1, -1,
@@ -177,7 +189,15 @@ static struct {
 #ifdef CONFIG_PNP
 static int isapnp	= 1;
 static int isapnpjump;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int reverse;
+=======
+static bool reverse;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool reverse;
+>>>>>>> refs/remotes/origin/master
 
 static int audio_activated;
 #else
@@ -458,7 +478,15 @@ static int ad1848_set_recmask(ad1848_info * devc, int mask)
 	return mask;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void change_bits(ad1848_info * devc, unsigned char *regval,
+=======
+static void oss_change_bits(ad1848_info *devc, unsigned char *regval,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void oss_change_bits(ad1848_info *devc, unsigned char *regval,
+>>>>>>> refs/remotes/origin/master
 			unsigned char *muteval, int dev, int chn, int newval)
 {
 	unsigned char mask;
@@ -516,10 +544,23 @@ static void ad1848_mixer_set_channel(ad1848_info *devc, int dev, int value, int 
 
 	if (muteregoffs != regoffs) {
 		muteval = ad_read(devc, muteregoffs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		change_bits(devc, &val, &muteval, dev, channel, value);
 	}
 	else
 		change_bits(devc, &val, &val, dev, channel, value);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		oss_change_bits(devc, &val, &muteval, dev, channel, value);
+	}
+	else
+		oss_change_bits(devc, &val, &val, dev, channel, value);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&devc->lock,flags);
 	ad_write(devc, regoffs, val);
@@ -2864,7 +2905,11 @@ static struct {
 	{NULL}
 };
 
+<<<<<<< HEAD
 static struct isapnp_device_id id_table[] __devinitdata = {
+=======
+static struct isapnp_device_id id_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{	ISAPNP_VENDOR('C','M','I'), ISAPNP_DEVICE(0x0001),
 		ISAPNP_VENDOR('@','@','@'), ISAPNP_FUNCTION(0x0001), 0 },
         {       ISAPNP_ANY_ID, ISAPNP_ANY_ID,

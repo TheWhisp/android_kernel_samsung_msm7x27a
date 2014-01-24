@@ -425,6 +425,7 @@ __fls (unsigned long x)
 
 #include <asm-generic/bitops/fls64.h>
 
+<<<<<<< HEAD
 /*
  * ffs: find first bit set. This is defined the same way as the libc and
  * compiler builtin ffs routines, therefore differs in spirit from the above
@@ -432,6 +433,9 @@ __fls (unsigned long x)
  * bit number + 1.  ffs(0) is defined to return zero.
  */
 #define ffs(x)	__builtin_ffs(x)
+=======
+#include <asm-generic/bitops/builtin-ffs.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * hweightN: returns the hamming weight (i.e. the number
@@ -458,8 +462,16 @@ static __inline__ unsigned long __arch_hweight64(unsigned long x)
 
 #include <asm-generic/bitops/le.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define ext2_set_bit_atomic(l,n,a)	test_and_set_bit(n,a)
 #define ext2_clear_bit_atomic(l,n,a)	test_and_clear_bit(n,a)
+=======
+#include <asm-generic/bitops/ext2-atomic-setbit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/bitops/ext2-atomic-setbit.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm-generic/bitops/sched.h>
 

@@ -26,6 +26,18 @@
 #include <linux/ptrace.h>
 #include <linux/unistd.h>
 #include <linux/hardirq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/io.h>
 #include <asm/uaccess.h>
@@ -43,6 +55,7 @@ unsigned long thread_saved_pc(struct task_struct *tsk)
 	return tsk->thread.lr;
 }
 
+<<<<<<< HEAD
 /*
  * Powermanagement idle function, if any..
  */
@@ -82,6 +95,14 @@ void cpu_idle (void)
 {
 	/* endless idle loop with no priority at all */
 	while (1) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-11.0
 		while (!need_resched()) {
 			void (*idle)(void) = pm_idle;
 
@@ -90,12 +111,25 @@ void cpu_idle (void)
 
 			idle();
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		rcu_idle_exit();
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
+=======
+void (*pm_power_off)(void) = NULL;
+EXPORT_SYMBOL(pm_power_off);
+
+>>>>>>> refs/remotes/origin/master
 void machine_restart(char *__unused)
 {
 #if defined(CONFIG_PLAT_MAPPI3)
@@ -119,6 +153,7 @@ void machine_power_off(void)
 	/* M32R_FIXME */
 }
 
+<<<<<<< HEAD
 static int __init idle_setup (char *str)
 {
 	if (!strncmp(str, "poll", 4)) {
@@ -137,6 +172,13 @@ __setup("idle=", idle_setup);
 void show_regs(struct pt_regs * regs)
 {
 	printk("\n");
+=======
+void show_regs(struct pt_regs * regs)
+{
+	printk("\n");
+	show_regs_print_info(KERN_DEFAULT);
+
+>>>>>>> refs/remotes/origin/master
 	printk("BPC[%08lx]:PSW[%08lx]:LR [%08lx]:FP [%08lx]\n", \
 	  regs->bpc, regs->psw, regs->lr, regs->fp);
 	printk("BBPC[%08lx]:BBPSW[%08lx]:SPU[%08lx]:SPI[%08lx]\n", \
@@ -164,6 +206,7 @@ void show_regs(struct pt_regs * regs)
 }
 
 /*
+<<<<<<< HEAD
  * Create a kernel thread
  */
 
@@ -199,6 +242,8 @@ int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Free current thread data structures etc..
  */
 void exit_thread(void)
@@ -226,6 +271,7 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fpu)
 }
 
 int copy_thread(unsigned long clone_flags, unsigned long spu,
+<<<<<<< HEAD
 	unsigned long unused, struct task_struct *tsk, struct pt_regs *regs)
 {
 	struct pt_regs *childregs = task_pt_regs(tsk);
@@ -239,10 +285,34 @@ int copy_thread(unsigned long clone_flags, unsigned long spu,
 	regs->r0 = tsk->pid;
 	tsk->thread.sp = (unsigned long)childregs;
 	tsk->thread.lr = (unsigned long)ret_from_fork;
+=======
+	unsigned long arg, struct task_struct *tsk)
+{
+	struct pt_regs *childregs = task_pt_regs(tsk);
+	extern void ret_from_fork(void);
+	extern void ret_from_kernel_thread(void);
+
+	if (unlikely(tsk->flags & PF_KTHREAD)) {
+		memset(childregs, 0, sizeof(struct pt_regs));
+		childregs->psw = M32R_PSW_BIE;
+		childregs->r1 = spu;	/* fn */
+		childregs->r0 = arg;
+		tsk->thread.lr = (unsigned long)ret_from_kernel_thread;
+	} else {
+		/* Copy registers */
+		*childregs = *current_pt_regs();
+		if (spu)
+			childregs->spu = spu;
+		childregs->r0 = 0;	/* Child gets zero as return value */
+		tsk->thread.lr = (unsigned long)ret_from_fork;
+	}
+	tsk->thread.sp = (unsigned long)childregs;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 asmlinkage int sys_fork(unsigned long r0, unsigned long r1, unsigned long r2,
 	unsigned long r3, unsigned long r4, unsigned long r5, unsigned long r6,
 	struct pt_regs regs)
@@ -308,6 +378,8 @@ out:
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * These bracket the sleeping functions..
  */

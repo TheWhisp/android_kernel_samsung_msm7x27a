@@ -39,7 +39,11 @@
 
 #define IRQ_IPI_SMP_FUNCTION	3
 #define IRQ_IPI_SMP_RESCHEDULE	4
+<<<<<<< HEAD
 #define IRQ_MSGRING		6
+=======
+#define IRQ_FMN			5
+>>>>>>> refs/remotes/origin/master
 #define IRQ_TIMER		7
 
 #endif

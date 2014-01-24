@@ -25,8 +25,11 @@
 struct ds1286_priv {
 	struct rtc_device *rtc;
 	u32 __iomem *rtcregs;
+<<<<<<< HEAD
 	size_t size;
 	unsigned long baseaddr;
+=======
+>>>>>>> refs/remotes/origin/master
 	spinlock_t lock;
 };
 
@@ -270,7 +273,10 @@ static int ds1286_set_time(struct device *dev, struct rtc_time *tm)
 static int ds1286_read_alarm(struct device *dev, struct rtc_wkalrm *alm)
 {
 	struct ds1286_priv *priv = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	unsigned char cmd;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	/*
@@ -281,7 +287,11 @@ static int ds1286_read_alarm(struct device *dev, struct rtc_wkalrm *alm)
 	alm->time.tm_min = ds1286_rtc_read(priv, RTC_MINUTES_ALARM) & 0x7f;
 	alm->time.tm_hour = ds1286_rtc_read(priv, RTC_HOURS_ALARM)  & 0x1f;
 	alm->time.tm_wday = ds1286_rtc_read(priv, RTC_DAY_ALARM)    & 0x07;
+<<<<<<< HEAD
 	cmd = ds1286_rtc_read(priv, RTC_CMD);
+=======
+	ds1286_rtc_read(priv, RTC_CMD);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&priv->lock, flags);
 
 	alm->time.tm_min = bcd2bin(alm->time.tm_min);
@@ -329,21 +339,33 @@ static const struct rtc_class_ops ds1286_ops = {
 	.alarm_irq_enable = ds1286_alarm_irq_enable,
 };
 
+<<<<<<< HEAD
 static int __devinit ds1286_probe(struct platform_device *pdev)
+=======
+static int ds1286_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtc;
 	struct resource *res;
 	struct ds1286_priv *priv;
+<<<<<<< HEAD
 	int ret = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
+<<<<<<< HEAD
 	priv = kzalloc(sizeof(struct ds1286_priv), GFP_KERNEL);
 	if (!priv)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	priv->size = res->end - res->start + 1;
+=======
+	priv->size = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!request_mem_region(res->start, priv->size, pdev->name)) {
 		ret = -EBUSY;
 		goto out;
@@ -385,6 +407,24 @@ static int __devexit ds1286_remove(struct platform_device *pdev)
 	release_mem_region(priv->baseaddr, priv->size);
 	kfree(priv);
 	return 0;
+=======
+	priv = devm_kzalloc(&pdev->dev, sizeof(struct ds1286_priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	priv->rtcregs = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(priv->rtcregs))
+		return PTR_ERR(priv->rtcregs);
+
+	spin_lock_init(&priv->lock);
+	platform_set_drvdata(pdev, priv);
+	rtc = devm_rtc_device_register(&pdev->dev, "ds1286", &ds1286_ops,
+					THIS_MODULE);
+	if (IS_ERR(rtc))
+		return PTR_ERR(rtc);
+	priv->rtc = rtc;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver ds1286_platform_driver = {
@@ -393,9 +433,11 @@ static struct platform_driver ds1286_platform_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= ds1286_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ds1286_remove),
 };
 
+<<<<<<< HEAD
 static int __init ds1286_init(void)
 {
 	return platform_driver_register(&ds1286_platform_driver);
@@ -405,12 +447,26 @@ static void __exit ds1286_exit(void)
 {
 	platform_driver_unregister(&ds1286_platform_driver);
 }
+=======
+module_platform_driver(ds1286_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_platform_driver(ds1286_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Thomas Bogendoerfer <tsbogend@alpha.franken.de>");
 MODULE_DESCRIPTION("DS1286 RTC driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 MODULE_ALIAS("platform:rtc-ds1286");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(ds1286_init);
 module_exit(ds1286_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

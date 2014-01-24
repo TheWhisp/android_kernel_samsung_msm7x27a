@@ -1,6 +1,14 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -530,6 +538,7 @@
 	SET_BITS_OFFSET_LE(__pdesc+28, 0, 32, __val)
 
 #define CLEAR_PCI_TX_DESC_CONTENT(__pdesc, _size)	\
+<<<<<<< HEAD
 do {							\
 	if (_size > TX_DESC_NEXT_DESC_OFFSET)		\
 		memset(__pdesc, 0, TX_DESC_NEXT_DESC_OFFSET);	\
@@ -537,12 +546,19 @@ do {							\
 		memset(__pdesc, 0, _size);	\
 } while (0);
 
+<<<<<<< HEAD
 #define RX_HAL_IS_CCK_RATE(_pdesc)\
 	(_pdesc->rxmcs == DESC92C_RATE1M ||		\
 	 _pdesc->rxmcs == DESC92C_RATE2M ||		\
 	 _pdesc->rxmcs == DESC92C_RATE5_5M ||		\
 	 _pdesc->rxmcs == DESC92C_RATE11M)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(__pdesc, 0, min_t(size_t, _size, TX_DESC_NEXT_DESC_OFFSET))
+
+>>>>>>> refs/remotes/origin/master
 struct rx_fwinfo_92c {
 	u8 gain_trsw[4];
 	u8 pwdb_all;
@@ -724,6 +740,10 @@ struct rx_desc_92c {
 void rtl92ce_tx_fill_desc(struct ieee80211_hw *hw,
 			  struct ieee80211_hdr *hdr,
 			  u8 *pdesc, struct ieee80211_tx_info *info,
+<<<<<<< HEAD
+=======
+			  struct ieee80211_sta *sta,
+>>>>>>> refs/remotes/origin/master
 			  struct sk_buff *skb, u8 hw_queue,
 			  struct rtl_tcb_desc *ptcb_desc);
 bool rtl92ce_rx_query_desc(struct ieee80211_hw *hw,

@@ -67,7 +67,10 @@
 #define NAMEI_RA_CHUNKS  2
 #define NAMEI_RA_BLOCKS  4
 #define NAMEI_RA_SIZE        (NAMEI_RA_CHUNKS * NAMEI_RA_BLOCKS)
+<<<<<<< HEAD
 #define NAMEI_RA_INDEX(c,b)  (((c) * NAMEI_RA_BLOCKS) + (b))
+=======
+>>>>>>> refs/remotes/origin/master
 
 static unsigned char ocfs2_filetype_table[] = {
 	DT_UNKNOWN, DT_REG, DT_DIR, DT_CHR, DT_BLK, DT_FIFO, DT_SOCK, DT_LNK
@@ -1184,8 +1187,16 @@ static int __ocfs2_delete_entry(handle_t *handle, struct inode *dir,
 			if (pde)
 				le16_add_cpu(&pde->rec_len,
 						le16_to_cpu(de->rec_len));
+<<<<<<< HEAD
+<<<<<<< HEAD
 			else
 				de->inode = 0;
+=======
+			de->inode = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			de->inode = 0;
+>>>>>>> refs/remotes/origin/master
 			dir->i_version++;
 			ocfs2_journal_dirty(handle, bh);
 			goto bail;
@@ -1763,11 +1774,18 @@ bail:
 
 static int ocfs2_dir_foreach_blk_id(struct inode *inode,
 				    u64 *f_version,
+<<<<<<< HEAD
 				    loff_t *f_pos, void *priv,
 				    filldir_t filldir, int *filldir_err)
 {
 	int ret, i, filldir_ret;
 	unsigned long offset = *f_pos;
+=======
+				    struct dir_context *ctx)
+{
+	int ret, i;
+	unsigned long offset = ctx->pos;
+>>>>>>> refs/remotes/origin/master
 	struct buffer_head *di_bh = NULL;
 	struct ocfs2_dinode *di;
 	struct ocfs2_inline_data *data;
@@ -1783,8 +1801,12 @@ static int ocfs2_dir_foreach_blk_id(struct inode *inode,
 	di = (struct ocfs2_dinode *)di_bh->b_data;
 	data = &di->id2.i_data;
 
+<<<<<<< HEAD
 	while (*f_pos < i_size_read(inode)) {
 revalidate:
+=======
+	while (ctx->pos < i_size_read(inode)) {
+>>>>>>> refs/remotes/origin/master
 		/* If the dir block has changed since the last call to
 		 * readdir(2), then we might be pointing to an invalid
 		 * dirent right now.  Scan from the start of the block
@@ -1804,6 +1826,7 @@ revalidate:
 					break;
 				i += le16_to_cpu(de->rec_len);
 			}
+<<<<<<< HEAD
 			*f_pos = offset = i;
 			*f_version = inode->i_version;
 		}
@@ -1824,11 +1847,26 @@ revalidate:
 			 * during the copy operation.
 			 */
 			u64 version = *f_version;
+=======
+			ctx->pos = offset = i;
+			*f_version = inode->i_version;
+		}
+
+		de = (struct ocfs2_dir_entry *) (data->id_data + ctx->pos);
+		if (!ocfs2_check_dir_entry(inode, de, di_bh, ctx->pos)) {
+			/* On error, skip the f_pos to the end. */
+			ctx->pos = i_size_read(inode);
+			break;
+		}
+		offset += le16_to_cpu(de->rec_len);
+		if (le64_to_cpu(de->inode)) {
+>>>>>>> refs/remotes/origin/master
 			unsigned char d_type = DT_UNKNOWN;
 
 			if (de->file_type < OCFS2_FT_MAX)
 				d_type = ocfs2_filetype_table[de->file_type];
 
+<<<<<<< HEAD
 			filldir_ret = filldir(priv, de->name,
 					      de->name_len,
 					      *f_pos,
@@ -1848,6 +1886,16 @@ revalidate:
 out:
 	brelse(di_bh);
 
+=======
+			if (!dir_emit(ctx, de->name, de->name_len,
+				      le64_to_cpu(de->inode), d_type))
+				goto out;
+		}
+		ctx->pos += le16_to_cpu(de->rec_len);
+	}
+out:
+	brelse(di_bh);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1857,16 +1905,25 @@ out:
  */
 static int ocfs2_dir_foreach_blk_el(struct inode *inode,
 				    u64 *f_version,
+<<<<<<< HEAD
 				    loff_t *f_pos, void *priv,
 				    filldir_t filldir, int *filldir_err)
 {
 	int error = 0;
 	unsigned long offset, blk, last_ra_blk = 0;
 	int i, stored;
+=======
+				    struct dir_context *ctx,
+				    bool persist)
+{
+	unsigned long offset, blk, last_ra_blk = 0;
+	int i;
+>>>>>>> refs/remotes/origin/master
 	struct buffer_head * bh, * tmp;
 	struct ocfs2_dir_entry * de;
 	struct super_block * sb = inode->i_sb;
 	unsigned int ra_sectors = 16;
+<<<<<<< HEAD
 
 	stored = 0;
 	bh = NULL;
@@ -1878,6 +1935,19 @@ static int ocfs2_dir_foreach_blk_el(struct inode *inode,
 		if (ocfs2_read_dir_block(inode, blk, &bh, 0)) {
 			/* Skip the corrupt dirblock and keep trying */
 			*f_pos += sb->s_blocksize - offset;
+=======
+	int stored = 0;
+
+	bh = NULL;
+
+	offset = ctx->pos & (sb->s_blocksize - 1);
+
+	while (ctx->pos < i_size_read(inode)) {
+		blk = ctx->pos >> sb->s_blocksize_bits;
+		if (ocfs2_read_dir_block(inode, blk, &bh, 0)) {
+			/* Skip the corrupt dirblock and keep trying */
+			ctx->pos += sb->s_blocksize - offset;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -1899,7 +1969,10 @@ static int ocfs2_dir_foreach_blk_el(struct inode *inode,
 			ra_sectors = 8;
 		}
 
+<<<<<<< HEAD
 revalidate:
+=======
+>>>>>>> refs/remotes/origin/master
 		/* If the dir block has changed since the last call to
 		 * readdir(2), then we might be pointing to an invalid
 		 * dirent right now.  Scan from the start of the block
@@ -1919,17 +1992,26 @@ revalidate:
 				i += le16_to_cpu(de->rec_len);
 			}
 			offset = i;
+<<<<<<< HEAD
 			*f_pos = ((*f_pos) & ~(sb->s_blocksize - 1))
+=======
+			ctx->pos = (ctx->pos & ~(sb->s_blocksize - 1))
+>>>>>>> refs/remotes/origin/master
 				| offset;
 			*f_version = inode->i_version;
 		}
 
+<<<<<<< HEAD
 		while (!error && *f_pos < i_size_read(inode)
+=======
+		while (ctx->pos < i_size_read(inode)
+>>>>>>> refs/remotes/origin/master
 		       && offset < sb->s_blocksize) {
 			de = (struct ocfs2_dir_entry *) (bh->b_data + offset);
 			if (!ocfs2_check_dir_entry(inode, de, bh, offset)) {
 				/* On error, skip the f_pos to the
 				   next block. */
+<<<<<<< HEAD
 				*f_pos = ((*f_pos) | (sb->s_blocksize - 1)) + 1;
 				brelse(bh);
 				goto out;
@@ -1944,10 +2026,18 @@ revalidate:
 				 * during the copy operation.
 				 */
 				unsigned long version = *f_version;
+=======
+				ctx->pos = (ctx->pos | (sb->s_blocksize - 1)) + 1;
+				brelse(bh);
+				continue;
+			}
+			if (le64_to_cpu(de->inode)) {
+>>>>>>> refs/remotes/origin/master
 				unsigned char d_type = DT_UNKNOWN;
 
 				if (de->file_type < OCFS2_FT_MAX)
 					d_type = ocfs2_filetype_table[de->file_type];
+<<<<<<< HEAD
 				error = filldir(priv, de->name,
 						de->name_len,
 						*f_pos,
@@ -1963,10 +2053,24 @@ revalidate:
 				stored ++;
 			}
 			*f_pos += le16_to_cpu(de->rec_len);
+=======
+				if (!dir_emit(ctx, de->name,
+						de->name_len,
+						le64_to_cpu(de->inode),
+						d_type)) {
+					brelse(bh);
+					return 0;
+				}
+				stored++;
+			}
+			offset += le16_to_cpu(de->rec_len);
+			ctx->pos += le16_to_cpu(de->rec_len);
+>>>>>>> refs/remotes/origin/master
 		}
 		offset = 0;
 		brelse(bh);
 		bh = NULL;
+<<<<<<< HEAD
 	}
 
 	stored = 0;
@@ -1984,12 +2088,28 @@ static int ocfs2_dir_foreach_blk(struct inode *inode, u64 *f_version,
 
 	return ocfs2_dir_foreach_blk_el(inode, f_version, f_pos, priv, filldir,
 					filldir_err);
+=======
+		if (!persist && stored)
+			break;
+	}
+	return 0;
+}
+
+static int ocfs2_dir_foreach_blk(struct inode *inode, u64 *f_version,
+				 struct dir_context *ctx,
+				 bool persist)
+{
+	if (OCFS2_I(inode)->ip_dyn_features & OCFS2_INLINE_DATA_FL)
+		return ocfs2_dir_foreach_blk_id(inode, f_version, ctx);
+	return ocfs2_dir_foreach_blk_el(inode, f_version, ctx, persist);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * This is intended to be called from inside other kernel functions,
  * so we fake some arguments.
  */
+<<<<<<< HEAD
 int ocfs2_dir_foreach(struct inode *inode, loff_t *f_pos, void *priv,
 		      filldir_t filldir)
 {
@@ -2006,6 +2126,12 @@ int ocfs2_dir_foreach(struct inode *inode, loff_t *f_pos, void *priv,
 	if (ret > 0)
 		ret = -EIO;
 
+=======
+int ocfs2_dir_foreach(struct inode *inode, struct dir_context *ctx)
+{
+	u64 version = inode->i_version;
+	ocfs2_dir_foreach_blk(inode, &version, ctx, true);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2013,15 +2139,26 @@ int ocfs2_dir_foreach(struct inode *inode, loff_t *f_pos, void *priv,
  * ocfs2_readdir()
  *
  */
+<<<<<<< HEAD
 int ocfs2_readdir(struct file * filp, void * dirent, filldir_t filldir)
 {
 	int error = 0;
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+int ocfs2_readdir(struct file *file, struct dir_context *ctx)
+{
+	int error = 0;
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	int lock_level = 0;
 
 	trace_ocfs2_readdir((unsigned long long)OCFS2_I(inode)->ip_blkno);
 
+<<<<<<< HEAD
 	error = ocfs2_inode_lock_atime(inode, filp->f_vfsmnt, &lock_level);
+=======
+	error = ocfs2_inode_lock_atime(inode, file->f_path.mnt, &lock_level);
+>>>>>>> refs/remotes/origin/master
 	if (lock_level && error >= 0) {
 		/* We release EX lock which used to update atime
 		 * and get PR lock again to reduce contention
@@ -2037,8 +2174,12 @@ int ocfs2_readdir(struct file * filp, void * dirent, filldir_t filldir)
 		goto bail_nolock;
 	}
 
+<<<<<<< HEAD
 	error = ocfs2_dir_foreach_blk(inode, &filp->f_version, &filp->f_pos,
 				      dirent, filldir, NULL);
+=======
+	error = ocfs2_dir_foreach_blk(inode, &file->f_version, ctx, false);
+>>>>>>> refs/remotes/origin/master
 
 	ocfs2_inode_unlock(inode, lock_level);
 	if (error)
@@ -2122,6 +2263,10 @@ bail:
 }
 
 struct ocfs2_empty_dir_priv {
+<<<<<<< HEAD
+=======
+	struct dir_context ctx;
+>>>>>>> refs/remotes/origin/master
 	unsigned seen_dot;
 	unsigned seen_dot_dot;
 	unsigned seen_other;
@@ -2206,10 +2351,16 @@ out:
 int ocfs2_empty_dir(struct inode *inode)
 {
 	int ret;
+<<<<<<< HEAD
 	loff_t start = 0;
 	struct ocfs2_empty_dir_priv priv;
 
 	memset(&priv, 0, sizeof(priv));
+=======
+	struct ocfs2_empty_dir_priv priv = {
+		.ctx.actor = ocfs2_empty_dir_filldir,
+	};
+>>>>>>> refs/remotes/origin/master
 
 	if (ocfs2_dir_indexed(inode)) {
 		ret = ocfs2_empty_dir_dx(inode, &priv);
@@ -2221,7 +2372,11 @@ int ocfs2_empty_dir(struct inode *inode)
 		 */
 	}
 
+<<<<<<< HEAD
 	ret = ocfs2_dir_foreach(inode, &start, &priv, ocfs2_empty_dir_filldir);
+=======
+	ret = ocfs2_dir_foreach(inode, &priv.ctx);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		mlog_errno(ret);
 
@@ -2292,7 +2447,15 @@ static int ocfs2_fill_new_dir_id(struct ocfs2_super *osb,
 	ocfs2_journal_dirty(handle, di_bh);
 
 	i_size_write(inode, size);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 2;
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/master
 	inode->i_blocks = ocfs2_inode_sector_count(inode);
 
 	ret = ocfs2_mark_inode_dirty(handle, inode, di_bh);
@@ -2354,7 +2517,15 @@ static int ocfs2_fill_new_dir_el(struct ocfs2_super *osb,
 	ocfs2_journal_dirty(handle, new_bh);
 
 	i_size_write(inode, inode->i_sb->s_blocksize);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 2;
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/master
 	inode->i_blocks = ocfs2_inode_sector_count(inode);
 	status = ocfs2_mark_inode_dirty(handle, inode, fe_bh);
 	if (status < 0) {
@@ -2404,7 +2575,11 @@ static int ocfs2_dx_dir_attach_index(struct ocfs2_super *osb,
 
 	dx_root_bh = sb_getblk(osb->sb, dr_blkno);
 	if (dx_root_bh == NULL) {
+<<<<<<< HEAD
 		ret = -EIO;
+=======
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	ocfs2_set_new_buffer_uptodate(INODE_CACHE(dir), dx_root_bh);
@@ -2477,7 +2652,11 @@ static int ocfs2_dx_dir_format_cluster(struct ocfs2_super *osb,
 	for (i = 0; i < num_dx_leaves; i++) {
 		bh = sb_getblk(osb->sb, start_blk + i);
 		if (bh == NULL) {
+<<<<<<< HEAD
 			ret = -EIO;
+=======
+			ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 		dx_leaves[i] = bh;
@@ -2984,7 +3163,11 @@ static int ocfs2_expand_inline_dir(struct inode *dir, struct buffer_head *di_bh,
 	blkno = ocfs2_clusters_to_blocks(dir->i_sb, bit_off);
 	dirdata_bh = sb_getblk(sb, blkno);
 	if (!dirdata_bh) {
+<<<<<<< HEAD
 		ret = -EIO;
+=======
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		mlog_errno(ret);
 		goto out_commit;
 	}
@@ -3214,7 +3397,11 @@ static int ocfs2_do_extend_dir(struct super_block *sb,
 
 	*new_bh = sb_getblk(sb, p_blkno);
 	if (!*new_bh) {
+<<<<<<< HEAD
 		status = -EIO;
+=======
+		status = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		mlog_errno(status);
 		goto bail;
 	}
@@ -3339,7 +3526,11 @@ static int ocfs2_extend_dir(struct ocfs2_super *osb,
 		if (ocfs2_dir_resv_allowed(osb))
 			data_ac->ac_resv = &OCFS2_I(dir)->ip_la_data_resv;
 
+<<<<<<< HEAD
 		credits = ocfs2_calc_extend_credits(sb, el, 1);
+=======
+		credits = ocfs2_calc_extend_credits(sb, el);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		spin_unlock(&OCFS2_I(dir)->ip_lock);
 		credits = OCFS2_SIMPLE_DIR_EXTEND_CREDITS;
@@ -3771,7 +3962,11 @@ static int ocfs2_dx_dir_rebalance_credits(struct ocfs2_super *osb,
 {
 	int credits = ocfs2_clusters_to_blocks(osb->sb, 2);
 
+<<<<<<< HEAD
 	credits += ocfs2_calc_extend_credits(osb->sb, &dx_root->dr_list, 1);
+=======
+	credits += ocfs2_calc_extend_credits(osb->sb, &dx_root->dr_list);
+>>>>>>> refs/remotes/origin/master
 	credits += ocfs2_quota_trans_credits(osb->sb);
 	return credits;
 }

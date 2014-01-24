@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/tape_3590.c
+=======
+>>>>>>> refs/remotes/origin/master
  *    tape device discipline for 3590 tapes.
  *
  *    Copyright IBM Corp. 2001, 2009
@@ -670,6 +673,7 @@ tape_3590_schedule_work(struct tape_device *device, enum tape_op op)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_S390_TAPE_BLOCK
 /*
  * Tape Block READ
@@ -756,6 +760,8 @@ tape_3590_check_locate(struct tape_device *device, struct tape_request *request)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void tape_3590_med_state_set(struct tape_device *device,
 				    struct tape_3590_med_sense *sense)
 {
@@ -1423,6 +1429,7 @@ tape_3590_unit_check(struct tape_device *device, struct tape_request *request,
 {
 	struct tape_3590_sense *sense;
 
+<<<<<<< HEAD
 #ifdef CONFIG_S390_TAPE_BLOCK
 	if (request->op == TO_BLOCK) {
 		/*
@@ -1437,6 +1444,8 @@ tape_3590_unit_check(struct tape_device *device, struct tape_request *request,
 	}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	sense = (struct tape_3590_sense *) irb->ecw;
 
 	DBF_EVENT(6, "Unit Check: RQC = %x\n", sense->rc_rqc);
@@ -1729,11 +1738,14 @@ static struct tape_discipline tape_discipline_3590 = {
 	.irq = tape_3590_irq,
 	.read_block = tape_std_read_block,
 	.write_block = tape_std_write_block,
+<<<<<<< HEAD
 #ifdef CONFIG_S390_TAPE_BLOCK
 	.bread = tape_3590_bread,
 	.free_bread = tape_3590_free_bread,
 	.check_locate = tape_3590_check_locate,
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	.ioctl_fn = tape_3590_ioctl,
 	.mtop_array = tape_3590_mtop
 };
@@ -1762,6 +1774,14 @@ static struct ccw_driver tape_3590_driver = {
 	.set_offline = tape_generic_offline,
 	.set_online = tape_3590_online,
 	.freeze = tape_generic_pm_suspend,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.int_class = IOINT_TAP,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.int_class = IRQIO_TAP,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*

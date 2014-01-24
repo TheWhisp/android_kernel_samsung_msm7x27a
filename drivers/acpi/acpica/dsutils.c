@@ -5,7 +5,15 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +69,11 @@ ACPI_MODULE_NAME("dsutils")
  *
  * RETURN:      None.
  *
+<<<<<<< HEAD
  * DESCRIPTION: Clear and remove a reference on an implicit return value.  Used
+=======
+ * DESCRIPTION: Clear and remove a reference on an implicit return value. Used
+>>>>>>> refs/remotes/origin/master
  *              to delete "stale" return values (if enabled, the return value
  *              from every operator is saved at least momentarily, in case the
  *              parent method exits.)
@@ -107,7 +119,11 @@ void acpi_ds_clear_implicit_return(struct acpi_walk_state *walk_state)
  *
  * DESCRIPTION: Implements the optional "implicit return".  We save the result
  *              of every ASL operator and control method invocation in case the
+<<<<<<< HEAD
  *              parent method exit.  Before storing a new return value, we
+=======
+ *              parent method exit. Before storing a new return value, we
+>>>>>>> refs/remotes/origin/master
  *              delete the previous return value.
  *
  ******************************************************************************/
@@ -157,7 +173,11 @@ acpi_ds_do_implicit_return(union acpi_operand_object *return_desc,
  *
  * FUNCTION:    acpi_ds_is_result_used
  *
+<<<<<<< HEAD
  * PARAMETERS:  Op                  - Current Op
+=======
+ * PARAMETERS:  op                  - Current Op
+>>>>>>> refs/remotes/origin/master
  *              walk_state          - Current State
  *
  * RETURN:      TRUE if result is used, FALSE otherwise
@@ -198,7 +218,11 @@ acpi_ds_is_result_used(union acpi_parse_object * op,
 	 *
 	 * If there is no parent, or the parent is a scope_op, we are executing
 	 * at the method level. An executing method typically has no parent,
+<<<<<<< HEAD
 	 * since each method is parsed separately.  A method invoked externally
+=======
+	 * since each method is parsed separately. A method invoked externally
+>>>>>>> refs/remotes/origin/master
 	 * via execute_control_method has a scope_op as the parent.
 	 */
 	if ((!op->common.parent) ||
@@ -223,7 +247,11 @@ acpi_ds_is_result_used(union acpi_parse_object * op,
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Decide what to do with the result based on the parent.  If
+=======
+	 * Decide what to do with the result based on the parent. If
+>>>>>>> refs/remotes/origin/master
 	 * the parent opcode will not use the result, delete the object.
 	 * Otherwise leave it as is, it will be deleted when it is used
 	 * as an operand later.
@@ -240,7 +268,10 @@ acpi_ds_is_result_used(union acpi_parse_object * op,
 
 		case AML_IF_OP:
 		case AML_WHILE_OP:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * If we are executing the predicate AND this is the predicate op,
 			 * we will use the return value
@@ -254,7 +285,13 @@ acpi_ds_is_result_used(union acpi_parse_object * op,
 			break;
 
 		default:
+<<<<<<< HEAD
 			/* Ignore other control opcodes */
+=======
+
+			/* Ignore other control opcodes */
+
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -263,10 +300,16 @@ acpi_ds_is_result_used(union acpi_parse_object * op,
 		goto result_not_used;
 
 	case AML_CLASS_CREATE:
+<<<<<<< HEAD
 
 		/*
 		 * These opcodes allow term_arg(s) as operands and therefore
 		 * the operands can be method calls.  The result is used.
+=======
+		/*
+		 * These opcodes allow term_arg(s) as operands and therefore
+		 * the operands can be method calls. The result is used.
+>>>>>>> refs/remotes/origin/master
 		 */
 		goto result_used;
 
@@ -284,7 +327,11 @@ acpi_ds_is_result_used(union acpi_parse_object * op,
 			AML_BANK_FIELD_OP)) {
 			/*
 			 * These opcodes allow term_arg(s) as operands and therefore
+<<<<<<< HEAD
 			 * the operands can be method calls.  The result is used.
+=======
+			 * the operands can be method calls. The result is used.
+>>>>>>> refs/remotes/origin/master
 			 */
 			goto result_used;
 		}
@@ -292,7 +339,10 @@ acpi_ds_is_result_used(union acpi_parse_object * op,
 		goto result_not_used;
 
 	default:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * In all other cases. the parent will actually use the return
 		 * object, so keep it.
@@ -300,7 +350,11 @@ acpi_ds_is_result_used(union acpi_parse_object * op,
 		goto result_used;
 	}
 
+<<<<<<< HEAD
       result_used:
+=======
+result_used:
+>>>>>>> refs/remotes/origin/master
 	ACPI_DEBUG_PRINT((ACPI_DB_DISPATCH,
 			  "Result of [%s] used by Parent [%s] Op=%p\n",
 			  acpi_ps_get_opcode_name(op->common.aml_opcode),
@@ -309,7 +363,11 @@ acpi_ds_is_result_used(union acpi_parse_object * op,
 
 	return_UINT8(TRUE);
 
+<<<<<<< HEAD
       result_not_used:
+=======
+result_not_used:
+>>>>>>> refs/remotes/origin/master
 	ACPI_DEBUG_PRINT((ACPI_DB_DISPATCH,
 			  "Result of [%s] not used by Parent [%s] Op=%p\n",
 			  acpi_ps_get_opcode_name(op->common.aml_opcode),
@@ -323,15 +381,25 @@ acpi_ds_is_result_used(union acpi_parse_object * op,
  *
  * FUNCTION:    acpi_ds_delete_result_if_not_used
  *
+<<<<<<< HEAD
  * PARAMETERS:  Op              - Current parse Op
+=======
+ * PARAMETERS:  op              - Current parse Op
+>>>>>>> refs/remotes/origin/master
  *              result_obj      - Result of the operation
  *              walk_state      - Current state
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: Used after interpretation of an opcode.  If there is an internal
  *              result descriptor, check if the parent opcode will actually use
  *              this result.  If not, delete the result now so that it will
+=======
+ * DESCRIPTION: Used after interpretation of an opcode. If there is an internal
+ *              result descriptor, check if the parent opcode will actually use
+ *              this result. If not, delete the result now so that it will
+>>>>>>> refs/remotes/origin/master
  *              not become orphaned.
  *
  ******************************************************************************/
@@ -376,7 +444,11 @@ acpi_ds_delete_result_if_not_used(union acpi_parse_object *op,
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: Resolve all operands to their values.  Used to prepare
+=======
+ * DESCRIPTION: Resolve all operands to their values. Used to prepare
+>>>>>>> refs/remotes/origin/master
  *              arguments to a control method invocation (a call from one
  *              method to another.)
  *
@@ -391,7 +463,11 @@ acpi_status acpi_ds_resolve_operands(struct acpi_walk_state *walk_state)
 
 	/*
 	 * Attempt to resolve each of the valid operands
+<<<<<<< HEAD
 	 * Method arguments are passed by reference, not by value.  This means
+=======
+	 * Method arguments are passed by reference, not by value. This means
+>>>>>>> refs/remotes/origin/master
 	 * that the actual objects are passed, not copies of the objects.
 	 */
 	for (i = 0; i < walk_state->num_operands; i++) {
@@ -445,13 +521,21 @@ void acpi_ds_clear_operands(struct acpi_walk_state *walk_state)
  * FUNCTION:    acpi_ds_create_operand
  *
  * PARAMETERS:  walk_state      - Current walk state
+<<<<<<< HEAD
  *              Arg             - Parse object for the argument
+=======
+ *              arg             - Parse object for the argument
+>>>>>>> refs/remotes/origin/master
  *              arg_index       - Which argument (zero based)
  *
  * RETURN:      Status
  *
  * DESCRIPTION: Translate a parse tree object that is an argument to an AML
+<<<<<<< HEAD
  *              opcode to the equivalent interpreter object.  This may include
+=======
+ *              opcode to the equivalent interpreter object. This may include
+>>>>>>> refs/remotes/origin/master
  *              looking up a name or entering a new name into the internal
  *              namespace.
  *
@@ -496,9 +580,15 @@ acpi_ds_create_operand(struct acpi_walk_state *walk_state,
 		/*
 		 * Special handling for buffer_field declarations. This is a deferred
 		 * opcode that unfortunately defines the field name as the last
+<<<<<<< HEAD
 		 * parameter instead of the first.  We get here when we are performing
 		 * the deferred execution, so the actual name of the field is already
 		 * in the namespace.  We don't want to attempt to look it up again
+=======
+		 * parameter instead of the first. We get here when we are performing
+		 * the deferred execution, so the actual name of the field is already
+		 * in the namespace. We don't want to attempt to look it up again
+>>>>>>> refs/remotes/origin/master
 		 * because we may be executing in a different scope than where the
 		 * actual opcode exists.
 		 */
@@ -560,7 +650,12 @@ acpi_ds_create_operand(struct acpi_walk_state *walk_state,
 					 * indicate this to the interpreter, set the
 					 * object to the root
 					 */
+<<<<<<< HEAD
 					obj_desc = ACPI_CAST_PTR(union
+=======
+					obj_desc =
+					    ACPI_CAST_PTR(union
+>>>>>>> refs/remotes/origin/master
 								 acpi_operand_object,
 								 acpi_gbl_root_node);
 					status = AE_OK;
@@ -604,8 +699,13 @@ acpi_ds_create_operand(struct acpi_walk_state *walk_state,
 			/*
 			 * If the name is null, this means that this is an
 			 * optional result parameter that was not specified
+<<<<<<< HEAD
 			 * in the original ASL.  Create a Zero Constant for a
 			 * placeholder.  (Store to a constant is a Noop.)
+=======
+			 * in the original ASL. Create a Zero Constant for a
+			 * placeholder. (Store to a constant is a Noop.)
+>>>>>>> refs/remotes/origin/master
 			 */
 			opcode = AML_ZERO_OP;	/* Has no arguments! */
 
@@ -752,7 +852,11 @@ acpi_ds_create_operands(struct acpi_walk_state *walk_state,
 
 	return_ACPI_STATUS(status);
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We must undo everything done above; meaning that we must
 	 * pop everything off of the operand stack and delete those
@@ -851,7 +955,11 @@ acpi_status acpi_ds_evaluate_name_path(struct acpi_walk_state *walk_state)
 		goto exit;
 	}
 
+<<<<<<< HEAD
       push_result:
+=======
+push_result:
+>>>>>>> refs/remotes/origin/master
 
 	walk_state->result_obj = new_obj_desc;
 
@@ -863,7 +971,11 @@ acpi_status acpi_ds_evaluate_name_path(struct acpi_walk_state *walk_state)
 		op->common.flags |= ACPI_PARSEOP_IN_STACK;
 	}
 
+<<<<<<< HEAD
       exit:
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 
 	return_ACPI_STATUS(status);
 }

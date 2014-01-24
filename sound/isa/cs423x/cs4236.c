@@ -23,7 +23,15 @@
 #include <linux/err.h>
 #include <linux/isa.h>
 #include <linux/pnp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/wss.h>
 #include <sound/mpu401.h>
@@ -74,9 +82,21 @@ MODULE_ALIAS("snd_cs4232");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this card */
 #ifdef CONFIG_PNP
 static int isapnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this card */
+#ifdef CONFIG_PNP
+static bool isapnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this card */
+#ifdef CONFIG_PNP
+static bool isapnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+>>>>>>> refs/remotes/origin/master
 #endif
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
 static long cport[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
@@ -251,7 +271,11 @@ static struct pnp_card_device_id snd_cs423x_pnpids[] = {
 MODULE_DEVICE_TABLE(pnp_card, snd_cs423x_pnpids);
 
 /* WSS initialization */
+<<<<<<< HEAD
 static int __devinit snd_cs423x_pnp_init_wss(int dev, struct pnp_dev *pdev)
+=======
+static int snd_cs423x_pnp_init_wss(int dev, struct pnp_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (pnp_activate_dev(pdev) < 0) {
 		printk(KERN_ERR IDENT " WSS PnP configure failed for WSS (out of resources?)\n");
@@ -272,7 +296,11 @@ static int __devinit snd_cs423x_pnp_init_wss(int dev, struct pnp_dev *pdev)
 }
 
 /* CTRL initialization */
+<<<<<<< HEAD
 static int __devinit snd_cs423x_pnp_init_ctrl(int dev, struct pnp_dev *pdev)
+=======
+static int snd_cs423x_pnp_init_ctrl(int dev, struct pnp_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (pnp_activate_dev(pdev) < 0) {
 		printk(KERN_ERR IDENT " CTRL PnP configure failed for WSS (out of resources?)\n");
@@ -284,7 +312,11 @@ static int __devinit snd_cs423x_pnp_init_ctrl(int dev, struct pnp_dev *pdev)
 }
 
 /* MPU initialization */
+<<<<<<< HEAD
 static int __devinit snd_cs423x_pnp_init_mpu(int dev, struct pnp_dev *pdev)
+=======
+static int snd_cs423x_pnp_init_mpu(int dev, struct pnp_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (pnp_activate_dev(pdev) < 0) {
 		printk(KERN_ERR IDENT " MPU401 PnP configure failed for WSS (out of resources?)\n");
@@ -303,9 +335,15 @@ static int __devinit snd_cs423x_pnp_init_mpu(int dev, struct pnp_dev *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_card_cs423x_pnp(int dev, struct snd_card_cs4236 *acard,
 					 struct pnp_dev *pdev,
 					 struct pnp_dev *cdev)
+=======
+static int snd_card_cs423x_pnp(int dev, struct snd_card_cs4236 *acard,
+			       struct pnp_dev *pdev,
+			       struct pnp_dev *cdev)
+>>>>>>> refs/remotes/origin/master
 {
 	acard->wss = pdev;
 	if (snd_cs423x_pnp_init_wss(dev, acard->wss) < 0)
@@ -317,9 +355,15 @@ static int __devinit snd_card_cs423x_pnp(int dev, struct snd_card_cs4236 *acard,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_card_cs423x_pnpc(int dev, struct snd_card_cs4236 *acard,
 					  struct pnp_card_link *card,
 					  const struct pnp_card_device_id *id)
+=======
+static int snd_card_cs423x_pnpc(int dev, struct snd_card_cs4236 *acard,
+				struct pnp_card_link *card,
+				const struct pnp_card_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	acard->wss = pnp_request_card_device(card, id->devs[0].id, NULL);
 	if (acard->wss == NULL)
@@ -378,7 +422,11 @@ static int snd_cs423x_card_new(int dev, struct snd_card **cardp)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cs423x_probe(struct snd_card *card, int dev)
+=======
+static int snd_cs423x_probe(struct snd_card *card, int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card_cs4236 *acard;
 	struct snd_pcm *pcm;
@@ -449,16 +497,29 @@ static int __devinit snd_cs423x_probe(struct snd_card *card, int dev)
 			mpu_irq[dev] = -1;
 		if (snd_mpu401_uart_new(card, 0, MPU401_HW_CS4232,
 					mpu_port[dev], 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					mpu_irq[dev],
 					mpu_irq[dev] >= 0 ? IRQF_DISABLED : 0, NULL) < 0)
+=======
+					mpu_irq[dev], NULL) < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					mpu_irq[dev], NULL) < 0)
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_WARNING IDENT ": MPU401 not detected\n");
 	}
 
 	return snd_card_register(card);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cs423x_isa_match(struct device *pdev,
 					  unsigned int dev)
+=======
+static int snd_cs423x_isa_match(struct device *pdev,
+				unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!enable[dev] || is_isapnp_selected(dev))
 		return 0;
@@ -482,8 +543,13 @@ static int __devinit snd_cs423x_isa_match(struct device *pdev,
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cs423x_isa_probe(struct device *pdev,
 					  unsigned int dev)
+=======
+static int snd_cs423x_isa_probe(struct device *pdev,
+				unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	int err;
@@ -501,11 +567,18 @@ static int __devinit snd_cs423x_isa_probe(struct device *pdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_cs423x_isa_remove(struct device *pdev,
 					   unsigned int dev)
 {
 	snd_card_free(dev_get_drvdata(pdev));
 	dev_set_drvdata(pdev, NULL);
+=======
+static int snd_cs423x_isa_remove(struct device *pdev,
+				 unsigned int dev)
+{
+	snd_card_free(dev_get_drvdata(pdev));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -541,7 +614,11 @@ static int snd_cs423x_isa_resume(struct device *dev, unsigned int n)
 static struct isa_driver cs423x_isa_driver = {
 	.match		= snd_cs423x_isa_match,
 	.probe		= snd_cs423x_isa_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_cs423x_isa_remove),
+=======
+	.remove		= snd_cs423x_isa_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= snd_cs423x_isa_suspend,
 	.resume		= snd_cs423x_isa_resume,
@@ -553,8 +630,13 @@ static struct isa_driver cs423x_isa_driver = {
 
 
 #ifdef CONFIG_PNP
+<<<<<<< HEAD
 static int __devinit snd_cs423x_pnpbios_detect(struct pnp_dev *pdev,
 					       const struct pnp_device_id *id)
+=======
+static int snd_cs423x_pnpbios_detect(struct pnp_dev *pdev,
+				     const struct pnp_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	int err;
@@ -598,10 +680,16 @@ static int __devinit snd_cs423x_pnpbios_detect(struct pnp_dev *pdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_cs423x_pnp_remove(struct pnp_dev *pdev)
 {
 	snd_card_free(pnp_get_drvdata(pdev));
 	pnp_set_drvdata(pdev, NULL);
+=======
+static void snd_cs423x_pnp_remove(struct pnp_dev *pdev)
+{
+	snd_card_free(pnp_get_drvdata(pdev));
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_PM
@@ -620,15 +708,24 @@ static struct pnp_driver cs423x_pnp_driver = {
 	.name = "cs423x-pnpbios",
 	.id_table = snd_cs423x_pnpbiosids,
 	.probe = snd_cs423x_pnpbios_detect,
+<<<<<<< HEAD
 	.remove = __devexit_p(snd_cs423x_pnp_remove),
+=======
+	.remove = snd_cs423x_pnp_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= snd_cs423x_pnp_suspend,
 	.resume		= snd_cs423x_pnp_resume,
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit snd_cs423x_pnpc_detect(struct pnp_card_link *pcard,
 					    const struct pnp_card_device_id *pid)
+=======
+static int snd_cs423x_pnpc_detect(struct pnp_card_link *pcard,
+				  const struct pnp_card_device_id *pid)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -660,7 +757,11 @@ static int __devinit snd_cs423x_pnpc_detect(struct pnp_card_link *pcard,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_cs423x_pnpc_remove(struct pnp_card_link * pcard)
+=======
+static void snd_cs423x_pnpc_remove(struct pnp_card_link *pcard)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_card_free(pnp_get_card_drvdata(pcard));
 	pnp_set_card_drvdata(pcard, NULL);
@@ -683,7 +784,11 @@ static struct pnp_card_driver cs423x_pnpc_driver = {
 	.name = CS423X_ISAPNP_DRIVER,
 	.id_table = snd_cs423x_pnpids,
 	.probe = snd_cs423x_pnpc_detect,
+<<<<<<< HEAD
 	.remove = __devexit_p(snd_cs423x_pnpc_remove),
+=======
+	.remove = snd_cs423x_pnpc_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= snd_cs423x_pnpc_suspend,
 	.resume		= snd_cs423x_pnpc_resume,

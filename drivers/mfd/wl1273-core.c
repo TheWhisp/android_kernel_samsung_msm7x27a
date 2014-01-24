@@ -22,6 +22,14 @@
 
 #include <linux/mfd/wl1273-core.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_DESC "WL1273 FM Radio Core"
 
@@ -171,20 +179,33 @@ static int wl1273_fm_set_volume(struct wl1273_core *core, unsigned int volume)
 
 static int wl1273_core_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	struct wl1273_core *core = i2c_get_clientdata(client);
 
 	dev_dbg(&client->dev, "%s\n", __func__);
 
 	mfd_remove_devices(&client->dev);
 	kfree(core);
+=======
+	dev_dbg(&client->dev, "%s\n", __func__);
+
+	mfd_remove_devices(&client->dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit wl1273_core_probe(struct i2c_client *client,
 				       const struct i2c_device_id *id)
 {
 	struct wl1273_fm_platform_data *pdata = client->dev.platform_data;
+=======
+static int wl1273_core_probe(struct i2c_client *client,
+				       const struct i2c_device_id *id)
+{
+	struct wl1273_fm_platform_data *pdata = dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct wl1273_core *core;
 	struct mfd_cell *cell;
 	int children = 0;
@@ -202,7 +223,11 @@ static int __devinit wl1273_core_probe(struct i2c_client *client,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	core = kzalloc(sizeof(*core), GFP_KERNEL);
+=======
+	core = devm_kzalloc(&client->dev, sizeof(*core), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!core)
 		return -ENOMEM;
 
@@ -240,7 +265,11 @@ static int __devinit wl1273_core_probe(struct i2c_client *client,
 		__func__, children);
 
 	r = mfd_add_devices(&client->dev, -1, core->cells,
+<<<<<<< HEAD
 			    children, NULL, 0);
+=======
+			    children, NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (r)
 		goto err;
 
@@ -248,7 +277,10 @@ static int __devinit wl1273_core_probe(struct i2c_client *client,
 
 err:
 	pdata->free_resources();
+<<<<<<< HEAD
 	kfree(core);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&client->dev, "%s\n", __func__);
 
@@ -261,7 +293,11 @@ static struct i2c_driver wl1273_core_driver = {
 	},
 	.probe = wl1273_core_probe,
 	.id_table = wl1273_driver_id_table,
+<<<<<<< HEAD
 	.remove = __devexit_p(wl1273_core_remove),
+=======
+	.remove = wl1273_core_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init wl1273_core_init(void)

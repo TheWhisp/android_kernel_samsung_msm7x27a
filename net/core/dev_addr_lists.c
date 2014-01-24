@@ -13,20 +13,63 @@
 
 #include <linux/netdevice.h>
 #include <linux/rtnetlink.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/list.h>
 #include <linux/proc_fs.h>
+=======
+#include <linux/export.h>
+#include <linux/list.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * General list handling functions
  */
 
+<<<<<<< HEAD
 static int __hw_addr_add_ex(struct netdev_hw_addr_list *list,
 			    unsigned char *addr, int addr_len,
 			    unsigned char addr_type, bool global)
+=======
+static int __hw_addr_create_ex(struct netdev_hw_addr_list *list,
+			       const unsigned char *addr, int addr_len,
+			       unsigned char addr_type, bool global,
+			       bool sync)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netdev_hw_addr *ha;
 	int alloc_size;
 
+<<<<<<< HEAD
+=======
+	alloc_size = sizeof(*ha);
+	if (alloc_size < L1_CACHE_BYTES)
+		alloc_size = L1_CACHE_BYTES;
+	ha = kmalloc(alloc_size, GFP_ATOMIC);
+	if (!ha)
+		return -ENOMEM;
+	memcpy(ha->addr, addr, addr_len);
+	ha->type = addr_type;
+	ha->refcount = 1;
+	ha->global_use = global;
+	ha->synced = sync;
+	ha->sync_cnt = 0;
+	list_add_tail_rcu(&ha->list, &list->list);
+	list->count++;
+
+	return 0;
+}
+
+static int __hw_addr_add_ex(struct netdev_hw_addr_list *list,
+			    const unsigned char *addr, int addr_len,
+			    unsigned char addr_type, bool global, bool sync)
+{
+	struct netdev_hw_addr *ha;
+
+>>>>>>> refs/remotes/origin/master
 	if (addr_len > MAX_ADDR_LEN)
 		return -EINVAL;
 
@@ -40,11 +83,21 @@ static int __hw_addr_add_ex(struct netdev_hw_addr_list *list,
 				else
 					ha->global_use = true;
 			}
+<<<<<<< HEAD
+=======
+			if (sync) {
+				if (ha->synced)
+					return -EEXIST;
+				else
+					ha->synced = true;
+			}
+>>>>>>> refs/remotes/origin/master
 			ha->refcount++;
 			return 0;
 		}
 	}
 
+<<<<<<< HEAD
 
 	alloc_size = sizeof(*ha);
 	if (alloc_size < L1_CACHE_BYTES)
@@ -71,11 +124,52 @@ static int __hw_addr_add(struct netdev_hw_addr_list *list, unsigned char *addr,
 static int __hw_addr_del_ex(struct netdev_hw_addr_list *list,
 			    unsigned char *addr, int addr_len,
 			    unsigned char addr_type, bool global)
+=======
+	return __hw_addr_create_ex(list, addr, addr_len, addr_type, global,
+				   sync);
+}
+
+static int __hw_addr_add(struct netdev_hw_addr_list *list,
+			 const unsigned char *addr, int addr_len,
+			 unsigned char addr_type)
+{
+	return __hw_addr_add_ex(list, addr, addr_len, addr_type, false, false);
+}
+
+static int __hw_addr_del_entry(struct netdev_hw_addr_list *list,
+			       struct netdev_hw_addr *ha, bool global,
+			       bool sync)
+{
+	if (global && !ha->global_use)
+		return -ENOENT;
+
+	if (sync && !ha->synced)
+		return -ENOENT;
+
+	if (global)
+		ha->global_use = false;
+
+	if (sync)
+		ha->synced = false;
+
+	if (--ha->refcount)
+		return 0;
+	list_del_rcu(&ha->list);
+	kfree_rcu(ha, rcu_head);
+	list->count--;
+	return 0;
+}
+
+static int __hw_addr_del_ex(struct netdev_hw_addr_list *list,
+			    const unsigned char *addr, int addr_len,
+			    unsigned char addr_type, bool global, bool sync)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netdev_hw_addr *ha;
 
 	list_for_each_entry(ha, &list->list, list) {
 		if (!memcmp(ha->addr, addr, addr_len) &&
+<<<<<<< HEAD
 		    (ha->type == addr_type || !addr_type)) {
 			if (global) {
 				if (!ha->global_use)
@@ -90,14 +184,80 @@ static int __hw_addr_del_ex(struct netdev_hw_addr_list *list,
 			list->count--;
 			return 0;
 		}
+=======
+		    (ha->type == addr_type || !addr_type))
+			return __hw_addr_del_entry(list, ha, global, sync);
+>>>>>>> refs/remotes/origin/master
 	}
 	return -ENOENT;
 }
 
+<<<<<<< HEAD
 static int __hw_addr_del(struct netdev_hw_addr_list *list, unsigned char *addr,
 			 int addr_len, unsigned char addr_type)
 {
 	return __hw_addr_del_ex(list, addr, addr_len, addr_type, false);
+=======
+static int __hw_addr_del(struct netdev_hw_addr_list *list,
+			 const unsigned char *addr, int addr_len,
+			 unsigned char addr_type)
+{
+	return __hw_addr_del_ex(list, addr, addr_len, addr_type, false, false);
+}
+
+static int __hw_addr_sync_one(struct netdev_hw_addr_list *to_list,
+			       struct netdev_hw_addr *ha,
+			       int addr_len)
+{
+	int err;
+
+	err = __hw_addr_add_ex(to_list, ha->addr, addr_len, ha->type,
+			       false, true);
+	if (err && err != -EEXIST)
+		return err;
+
+	if (!err) {
+		ha->sync_cnt++;
+		ha->refcount++;
+	}
+
+	return 0;
+}
+
+static void __hw_addr_unsync_one(struct netdev_hw_addr_list *to_list,
+				 struct netdev_hw_addr_list *from_list,
+				 struct netdev_hw_addr *ha,
+				 int addr_len)
+{
+	int err;
+
+	err = __hw_addr_del_ex(to_list, ha->addr, addr_len, ha->type,
+			       false, true);
+	if (err)
+		return;
+	ha->sync_cnt--;
+	/* address on from list is not marked synced */
+	__hw_addr_del_entry(from_list, ha, false, false);
+}
+
+static int __hw_addr_sync_multiple(struct netdev_hw_addr_list *to_list,
+				   struct netdev_hw_addr_list *from_list,
+				   int addr_len)
+{
+	int err = 0;
+	struct netdev_hw_addr *ha, *tmp;
+
+	list_for_each_entry_safe(ha, tmp, &from_list->list, list) {
+		if (ha->sync_cnt == ha->refcount) {
+			__hw_addr_unsync_one(to_list, from_list, ha, addr_len);
+		} else {
+			err = __hw_addr_sync_one(to_list, ha, addr_len);
+			if (err)
+				break;
+		}
+	}
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 int __hw_addr_add_multiple(struct netdev_hw_addr_list *to_list,
@@ -141,6 +301,14 @@ void __hw_addr_del_multiple(struct netdev_hw_addr_list *to_list,
 }
 EXPORT_SYMBOL(__hw_addr_del_multiple);
 
+<<<<<<< HEAD
+=======
+/* This function only works where there is a strict 1-1 relationship
+ * between source and destionation of they synch. If you ever need to
+ * sync addresses to more then 1 destination, you need to use
+ * __hw_addr_sync_multiple().
+ */
+>>>>>>> refs/remotes/origin/master
 int __hw_addr_sync(struct netdev_hw_addr_list *to_list,
 		   struct netdev_hw_addr_list *from_list,
 		   int addr_len)
@@ -149,6 +317,7 @@ int __hw_addr_sync(struct netdev_hw_addr_list *to_list,
 	struct netdev_hw_addr *ha, *tmp;
 
 	list_for_each_entry_safe(ha, tmp, &from_list->list, list) {
+<<<<<<< HEAD
 		if (!ha->synced) {
 			err = __hw_addr_add(to_list, ha->addr,
 					    addr_len, ha->type);
@@ -160,6 +329,14 @@ int __hw_addr_sync(struct netdev_hw_addr_list *to_list,
 			__hw_addr_del(to_list, ha->addr, addr_len, ha->type);
 			__hw_addr_del(from_list, ha->addr, addr_len, ha->type);
 		}
+=======
+		if (!ha->sync_cnt) {
+			err = __hw_addr_sync_one(to_list, ha, addr_len);
+			if (err)
+				break;
+		} else if (ha->refcount == 1)
+			__hw_addr_unsync_one(to_list, from_list, ha, addr_len);
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -172,6 +349,7 @@ void __hw_addr_unsync(struct netdev_hw_addr_list *to_list,
 	struct netdev_hw_addr *ha, *tmp;
 
 	list_for_each_entry_safe(ha, tmp, &from_list->list, list) {
+<<<<<<< HEAD
 		if (ha->synced) {
 			__hw_addr_del(to_list, ha->addr,
 				      addr_len, ha->type);
@@ -179,6 +357,10 @@ void __hw_addr_unsync(struct netdev_hw_addr_list *to_list,
 			__hw_addr_del(from_list, ha->addr,
 				      addr_len, ha->type);
 		}
+=======
+		if (ha->sync_cnt)
+			__hw_addr_unsync_one(to_list, from_list, ha, addr_len);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(__hw_addr_unsync);
@@ -268,7 +450,11 @@ EXPORT_SYMBOL(dev_addr_init);
  *
  *	The caller must hold the rtnl_mutex.
  */
+<<<<<<< HEAD
 int dev_addr_add(struct net_device *dev, unsigned char *addr,
+=======
+int dev_addr_add(struct net_device *dev, const unsigned char *addr,
+>>>>>>> refs/remotes/origin/master
 		 unsigned char addr_type)
 {
 	int err;
@@ -293,7 +479,11 @@ EXPORT_SYMBOL(dev_addr_add);
  *
  *	The caller must hold the rtnl_mutex.
  */
+<<<<<<< HEAD
 int dev_addr_del(struct net_device *dev, unsigned char *addr,
+=======
+int dev_addr_del(struct net_device *dev, const unsigned char *addr,
+>>>>>>> refs/remotes/origin/master
 		 unsigned char addr_type)
 {
 	int err;
@@ -377,6 +567,37 @@ EXPORT_SYMBOL(dev_addr_del_multiple);
  */
 
 /**
+<<<<<<< HEAD
+=======
+ *	dev_uc_add_excl - Add a global secondary unicast address
+ *	@dev: device
+ *	@addr: address to add
+ */
+int dev_uc_add_excl(struct net_device *dev, const unsigned char *addr)
+{
+	struct netdev_hw_addr *ha;
+	int err;
+
+	netif_addr_lock_bh(dev);
+	list_for_each_entry(ha, &dev->uc.list, list) {
+		if (!memcmp(ha->addr, addr, dev->addr_len) &&
+		    ha->type == NETDEV_HW_ADDR_T_UNICAST) {
+			err = -EEXIST;
+			goto out;
+		}
+	}
+	err = __hw_addr_create_ex(&dev->uc, addr, dev->addr_len,
+				  NETDEV_HW_ADDR_T_UNICAST, true, false);
+	if (!err)
+		__dev_set_rx_mode(dev);
+out:
+	netif_addr_unlock_bh(dev);
+	return err;
+}
+EXPORT_SYMBOL(dev_uc_add_excl);
+
+/**
+>>>>>>> refs/remotes/origin/master
  *	dev_uc_add - Add a secondary unicast address
  *	@dev: device
  *	@addr: address to add
@@ -384,7 +605,11 @@ EXPORT_SYMBOL(dev_addr_del_multiple);
  *	Add a secondary unicast address to the device or increase
  *	the reference count if it already exists.
  */
+<<<<<<< HEAD
 int dev_uc_add(struct net_device *dev, unsigned char *addr)
+=======
+int dev_uc_add(struct net_device *dev, const unsigned char *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -406,7 +631,11 @@ EXPORT_SYMBOL(dev_uc_add);
  *	Release reference to a secondary unicast address and remove it
  *	from the device if the reference count drops to zero.
  */
+<<<<<<< HEAD
 int dev_uc_del(struct net_device *dev, unsigned char *addr)
+=======
+int dev_uc_del(struct net_device *dev, const unsigned char *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -427,10 +656,22 @@ EXPORT_SYMBOL(dev_uc_del);
  *
  *	Add newly added addresses to the destination device and release
  *	addresses that have no users left. The source device must be
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	locked by netif_tx_lock_bh.
+=======
+ *	locked by netif_addr_lock_bh.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *	This function is intended to be called from the dev->set_rx_mode
  *	function of layered software devices.
+=======
+ *	locked by netif_addr_lock_bh.
+ *
+ *	This function is intended to be called from the dev->set_rx_mode
+ *	function of layered software devices.  This function assumes that
+ *	addresses will only ever be synced to the @to devices and no other.
+>>>>>>> refs/remotes/origin/master
  */
 int dev_uc_sync(struct net_device *to, struct net_device *from)
 {
@@ -439,14 +680,63 @@ int dev_uc_sync(struct net_device *to, struct net_device *from)
 	if (to->addr_len != from->addr_len)
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	netif_addr_lock_bh(to);
 	err = __hw_addr_sync(&to->uc, &from->uc, to->addr_len);
 	if (!err)
 		__dev_set_rx_mode(to);
 	netif_addr_unlock_bh(to);
+=======
+	netif_addr_lock_nested(to);
+	err = __hw_addr_sync(&to->uc, &from->uc, to->addr_len);
+	if (!err)
+		__dev_set_rx_mode(to);
+	netif_addr_unlock(to);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 EXPORT_SYMBOL(dev_uc_sync);
+=======
+	netif_addr_lock_nested(to);
+	err = __hw_addr_sync(&to->uc, &from->uc, to->addr_len);
+	if (!err)
+		__dev_set_rx_mode(to);
+	netif_addr_unlock(to);
+	return err;
+}
+EXPORT_SYMBOL(dev_uc_sync);
+
+/**
+ *	dev_uc_sync_multiple - Synchronize device's unicast list to another
+ *	device, but allow for multiple calls to sync to multiple devices.
+ *	@to: destination device
+ *	@from: source device
+ *
+ *	Add newly added addresses to the destination device and release
+ *	addresses that have been deleted from the source. The source device
+ *	must be locked by netif_addr_lock_bh.
+ *
+ *	This function is intended to be called from the dev->set_rx_mode
+ *	function of layered software devices.  It allows for a single source
+ *	device to be synced to multiple destination devices.
+ */
+int dev_uc_sync_multiple(struct net_device *to, struct net_device *from)
+{
+	int err = 0;
+
+	if (to->addr_len != from->addr_len)
+		return -EINVAL;
+
+	netif_addr_lock_nested(to);
+	err = __hw_addr_sync_multiple(&to->uc, &from->uc, to->addr_len);
+	if (!err)
+		__dev_set_rx_mode(to);
+	netif_addr_unlock(to);
+	return err;
+}
+EXPORT_SYMBOL(dev_uc_sync_multiple);
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	dev_uc_unsync - Remove synchronized addresses from the destination device
@@ -463,7 +753,15 @@ void dev_uc_unsync(struct net_device *to, struct net_device *from)
 		return;
 
 	netif_addr_lock_bh(from);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	netif_addr_lock(to);
+=======
+	netif_addr_lock_nested(to);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netif_addr_lock_nested(to);
+>>>>>>> refs/remotes/origin/master
 	__hw_addr_unsync(&to->uc, &from->uc, to->addr_len);
 	__dev_set_rx_mode(to);
 	netif_addr_unlock(to);
@@ -501,14 +799,50 @@ EXPORT_SYMBOL(dev_uc_init);
  * Multicast list handling functions
  */
 
+<<<<<<< HEAD
 static int __dev_mc_add(struct net_device *dev, unsigned char *addr,
+=======
+/**
+ *	dev_mc_add_excl - Add a global secondary multicast address
+ *	@dev: device
+ *	@addr: address to add
+ */
+int dev_mc_add_excl(struct net_device *dev, const unsigned char *addr)
+{
+	struct netdev_hw_addr *ha;
+	int err;
+
+	netif_addr_lock_bh(dev);
+	list_for_each_entry(ha, &dev->mc.list, list) {
+		if (!memcmp(ha->addr, addr, dev->addr_len) &&
+		    ha->type == NETDEV_HW_ADDR_T_MULTICAST) {
+			err = -EEXIST;
+			goto out;
+		}
+	}
+	err = __hw_addr_create_ex(&dev->mc, addr, dev->addr_len,
+				  NETDEV_HW_ADDR_T_MULTICAST, true, false);
+	if (!err)
+		__dev_set_rx_mode(dev);
+out:
+	netif_addr_unlock_bh(dev);
+	return err;
+}
+EXPORT_SYMBOL(dev_mc_add_excl);
+
+static int __dev_mc_add(struct net_device *dev, const unsigned char *addr,
+>>>>>>> refs/remotes/origin/master
 			bool global)
 {
 	int err;
 
 	netif_addr_lock_bh(dev);
 	err = __hw_addr_add_ex(&dev->mc, addr, dev->addr_len,
+<<<<<<< HEAD
 			       NETDEV_HW_ADDR_T_MULTICAST, global);
+=======
+			       NETDEV_HW_ADDR_T_MULTICAST, global, false);
+>>>>>>> refs/remotes/origin/master
 	if (!err)
 		__dev_set_rx_mode(dev);
 	netif_addr_unlock_bh(dev);
@@ -522,7 +856,11 @@ static int __dev_mc_add(struct net_device *dev, unsigned char *addr,
  *	Add a multicast address to the device or increase
  *	the reference count if it already exists.
  */
+<<<<<<< HEAD
 int dev_mc_add(struct net_device *dev, unsigned char *addr)
+=======
+int dev_mc_add(struct net_device *dev, const unsigned char *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	return __dev_mc_add(dev, addr, false);
 }
@@ -535,20 +873,32 @@ EXPORT_SYMBOL(dev_mc_add);
  *
  *	Add a global multicast address to the device.
  */
+<<<<<<< HEAD
 int dev_mc_add_global(struct net_device *dev, unsigned char *addr)
+=======
+int dev_mc_add_global(struct net_device *dev, const unsigned char *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	return __dev_mc_add(dev, addr, true);
 }
 EXPORT_SYMBOL(dev_mc_add_global);
 
+<<<<<<< HEAD
 static int __dev_mc_del(struct net_device *dev, unsigned char *addr,
+=======
+static int __dev_mc_del(struct net_device *dev, const unsigned char *addr,
+>>>>>>> refs/remotes/origin/master
 			bool global)
 {
 	int err;
 
 	netif_addr_lock_bh(dev);
 	err = __hw_addr_del_ex(&dev->mc, addr, dev->addr_len,
+<<<<<<< HEAD
 			       NETDEV_HW_ADDR_T_MULTICAST, global);
+=======
+			       NETDEV_HW_ADDR_T_MULTICAST, global, false);
+>>>>>>> refs/remotes/origin/master
 	if (!err)
 		__dev_set_rx_mode(dev);
 	netif_addr_unlock_bh(dev);
@@ -563,7 +913,11 @@ static int __dev_mc_del(struct net_device *dev, unsigned char *addr,
  *	Release reference to a multicast address and remove it
  *	from the device if the reference count drops to zero.
  */
+<<<<<<< HEAD
 int dev_mc_del(struct net_device *dev, unsigned char *addr)
+=======
+int dev_mc_del(struct net_device *dev, const unsigned char *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	return __dev_mc_del(dev, addr, false);
 }
@@ -577,23 +931,44 @@ EXPORT_SYMBOL(dev_mc_del);
  *	Release reference to a multicast address and remove it
  *	from the device if the reference count drops to zero.
  */
+<<<<<<< HEAD
 int dev_mc_del_global(struct net_device *dev, unsigned char *addr)
+=======
+int dev_mc_del_global(struct net_device *dev, const unsigned char *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	return __dev_mc_del(dev, addr, true);
 }
 EXPORT_SYMBOL(dev_mc_del_global);
 
 /**
+<<<<<<< HEAD
  *	dev_mc_sync - Synchronize device's unicast list to another device
+=======
+ *	dev_mc_sync - Synchronize device's multicast list to another device
+>>>>>>> refs/remotes/origin/master
  *	@to: destination device
  *	@from: source device
  *
  *	Add newly added addresses to the destination device and release
  *	addresses that have no users left. The source device must be
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	locked by netif_tx_lock_bh.
  *
  *	This function is intended to be called from the dev->set_multicast_list
  *	or dev->set_rx_mode function of layered software devices.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *	locked by netif_addr_lock_bh.
+ *
+ *	This function is intended to be called from the ndo_set_rx_mode
+ *	function of layered software devices.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 int dev_mc_sync(struct net_device *to, struct net_device *from)
 {
@@ -602,14 +977,63 @@ int dev_mc_sync(struct net_device *to, struct net_device *from)
 	if (to->addr_len != from->addr_len)
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	netif_addr_lock_bh(to);
 	err = __hw_addr_sync(&to->mc, &from->mc, to->addr_len);
 	if (!err)
 		__dev_set_rx_mode(to);
 	netif_addr_unlock_bh(to);
+=======
+	netif_addr_lock_nested(to);
+	err = __hw_addr_sync(&to->mc, &from->mc, to->addr_len);
+	if (!err)
+		__dev_set_rx_mode(to);
+	netif_addr_unlock(to);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 EXPORT_SYMBOL(dev_mc_sync);
+=======
+	netif_addr_lock_nested(to);
+	err = __hw_addr_sync(&to->mc, &from->mc, to->addr_len);
+	if (!err)
+		__dev_set_rx_mode(to);
+	netif_addr_unlock(to);
+	return err;
+}
+EXPORT_SYMBOL(dev_mc_sync);
+
+/**
+ *	dev_mc_sync_multiple - Synchronize device's multicast list to another
+ *	device, but allow for multiple calls to sync to multiple devices.
+ *	@to: destination device
+ *	@from: source device
+ *
+ *	Add newly added addresses to the destination device and release
+ *	addresses that have no users left. The source device must be
+ *	locked by netif_addr_lock_bh.
+ *
+ *	This function is intended to be called from the ndo_set_rx_mode
+ *	function of layered software devices.  It allows for a single
+ *	source device to be synced to multiple destination devices.
+ */
+int dev_mc_sync_multiple(struct net_device *to, struct net_device *from)
+{
+	int err = 0;
+
+	if (to->addr_len != from->addr_len)
+		return -EINVAL;
+
+	netif_addr_lock_nested(to);
+	err = __hw_addr_sync_multiple(&to->mc, &from->mc, to->addr_len);
+	if (!err)
+		__dev_set_rx_mode(to);
+	netif_addr_unlock(to);
+	return err;
+}
+EXPORT_SYMBOL(dev_mc_sync_multiple);
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	dev_mc_unsync - Remove synchronized addresses from the destination device
@@ -626,7 +1050,15 @@ void dev_mc_unsync(struct net_device *to, struct net_device *from)
 		return;
 
 	netif_addr_lock_bh(from);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	netif_addr_lock(to);
+=======
+	netif_addr_lock_nested(to);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netif_addr_lock_nested(to);
+>>>>>>> refs/remotes/origin/master
 	__hw_addr_unsync(&to->mc, &from->mc, to->addr_len);
 	__dev_set_rx_mode(to);
 	netif_addr_unlock(to);
@@ -659,6 +1091,7 @@ void dev_mc_init(struct net_device *dev)
 	__hw_addr_init(&dev->mc);
 }
 EXPORT_SYMBOL(dev_mc_init);
+<<<<<<< HEAD
 
 #ifdef CONFIG_PROC_FS
 #include <linux/seq_file.h>
@@ -732,3 +1165,5 @@ void __init dev_mcast_init(void)
 	register_pernet_subsys(&dev_mc_net_ops);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master

@@ -101,6 +101,14 @@ static const char * scsi_debug_version_date = "20100324";
 #define DEF_LBPU 0
 #define DEF_LBPWS 0
 #define DEF_LBPWS10 0
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define DEF_LBPRZ 1
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DEF_LBPRZ 1
+>>>>>>> refs/remotes/origin/master
 #define DEF_LOWEST_ALIGNED 0
 #define DEF_NO_LUN_0   0
 #define DEF_NUM_PARTS   0
@@ -108,6 +116,10 @@ static const char * scsi_debug_version_date = "20100324";
 #define DEF_OPT_BLKS 64
 #define DEF_PHYSBLK_EXP 0
 #define DEF_PTYPE   0
+<<<<<<< HEAD
+=======
+#define DEF_REMOVABLE false
+>>>>>>> refs/remotes/origin/master
 #define DEF_SCSI_LEVEL   5    /* INQUIRY, byte2 [5->SPC-3] */
 #define DEF_SECTOR_SIZE 512
 #define DEF_UNMAP_ALIGNMENT 0
@@ -126,6 +138,14 @@ static const char * scsi_debug_version_date = "20100324";
 #define SCSI_DEBUG_OPT_TRANSPORT_ERR   16
 #define SCSI_DEBUG_OPT_DIF_ERR   32
 #define SCSI_DEBUG_OPT_DIX_ERR   64
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define SCSI_DEBUG_OPT_MAC_TIMEOUT  128
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SCSI_DEBUG_OPT_MAC_TIMEOUT  128
+>>>>>>> refs/remotes/origin/master
 /* When "every_nth" > 0 then modulo "every_nth" commands:
  *   - a no response is simulated if SCSI_DEBUG_OPT_TIMEOUT is set
  *   - a RECOVERED_ERROR is simulated on successful read and write
@@ -166,7 +186,11 @@ static int scsi_debug_dix = DEF_DIX;
 static int scsi_debug_dsense = DEF_D_SENSE;
 static int scsi_debug_every_nth = DEF_EVERY_NTH;
 static int scsi_debug_fake_rw = DEF_FAKE_RW;
+<<<<<<< HEAD
 static int scsi_debug_guard = DEF_GUARD;
+=======
+static unsigned int scsi_debug_guard = DEF_GUARD;
+>>>>>>> refs/remotes/origin/master
 static int scsi_debug_lowest_aligned = DEF_LOWEST_ALIGNED;
 static int scsi_debug_max_luns = DEF_MAX_LUNS;
 static int scsi_debug_max_queue = SCSI_DEBUG_CANQUEUE;
@@ -185,16 +209,31 @@ static int scsi_debug_vpd_use_hostno = DEF_VPD_USE_HOSTNO;
 static unsigned int scsi_debug_lbpu = DEF_LBPU;
 static unsigned int scsi_debug_lbpws = DEF_LBPWS;
 static unsigned int scsi_debug_lbpws10 = DEF_LBPWS10;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static unsigned int scsi_debug_lbprz = DEF_LBPRZ;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int scsi_debug_lbprz = DEF_LBPRZ;
+>>>>>>> refs/remotes/origin/master
 static unsigned int scsi_debug_unmap_alignment = DEF_UNMAP_ALIGNMENT;
 static unsigned int scsi_debug_unmap_granularity = DEF_UNMAP_GRANULARITY;
 static unsigned int scsi_debug_unmap_max_blocks = DEF_UNMAP_MAX_BLOCKS;
 static unsigned int scsi_debug_unmap_max_desc = DEF_UNMAP_MAX_DESC;
 static unsigned int scsi_debug_write_same_length = DEF_WRITESAME_LENGTH;
+<<<<<<< HEAD
+=======
+static bool scsi_debug_removable = DEF_REMOVABLE;
+>>>>>>> refs/remotes/origin/master
 
 static int scsi_debug_cmnd_count = 0;
 
 #define DEV_READONLY(TGT)      (0)
+<<<<<<< HEAD
 #define DEV_REMOVEABLE(TGT)    (0)
+=======
+>>>>>>> refs/remotes/origin/master
 
 static unsigned int sdebug_store_sectors;
 static sector_t sdebug_capacity;	/* in sectors */
@@ -254,7 +293,11 @@ struct sdebug_queued_cmd {
 static struct sdebug_queued_cmd queued_arr[SCSI_DEBUG_CANQUEUE];
 
 static unsigned char * fake_storep;	/* ramdisk storage */
+<<<<<<< HEAD
 static unsigned char *dif_storep;	/* protection info */
+=======
+static struct sd_dif_tuple *dif_storep;	/* protection info */
+>>>>>>> refs/remotes/origin/master
 static void *map_storep;		/* provisioning map */
 
 static unsigned long map_size;
@@ -273,11 +316,14 @@ static char sdebug_proc_name[] = "scsi_debug";
 
 static struct bus_type pseudo_lld_bus;
 
+<<<<<<< HEAD
 static inline sector_t dif_offset(sector_t sector)
 {
 	return sector << 3;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct device_driver sdebug_driverfs_driver = {
 	.name 		= sdebug_proc_name,
 	.bus		= &pseudo_lld_bus,
@@ -294,6 +340,23 @@ static unsigned char ctrl_m_pg[] = {0xa, 10, 2, 0, 0, 0, 0, 0,
 static unsigned char iec_m_pg[] = {0x1c, 0xa, 0x08, 0, 0, 0, 0, 0,
 			           0, 0, 0x0, 0x0};
 
+<<<<<<< HEAD
+=======
+static void *fake_store(unsigned long long lba)
+{
+	lba = do_div(lba, sdebug_store_sectors);
+
+	return fake_storep + lba * scsi_debug_sector_size;
+}
+
+static struct sd_dif_tuple *dif_store(sector_t sector)
+{
+	sector = do_div(sector, sdebug_store_sectors);
+
+	return dif_storep + sector;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int sdebug_add_adapter(void);
 static void sdebug_remove_adapter(void);
 
@@ -435,10 +498,14 @@ static int fill_from_dev_buffer(struct scsi_cmnd *scp, unsigned char *arr,
 
 	act_len = sg_copy_from_buffer(sdb->table.sgl, sdb->table.nents,
 				      arr, arr_len);
+<<<<<<< HEAD
 	if (sdb->resid)
 		sdb->resid -= act_len;
 	else
 		sdb->resid = scsi_bufflen(scp) - act_len;
+=======
+	sdb->resid = scsi_bufflen(scp) - act_len;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -774,10 +841,23 @@ static int inquiry_evpd_b1(unsigned char *arr)
 	return 0x3c;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Thin provisioning VPD page (SBC-3) */
 static int inquiry_evpd_b2(unsigned char *arr)
 {
 	memset(arr, 0, 0x8);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* Logical block provisioning VPD page (SBC-3) */
+static int inquiry_evpd_b2(unsigned char *arr)
+{
+	memset(arr, 0, 0x4);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	arr[0] = 0;			/* threshold exponent */
 
 	if (scsi_debug_lbpu)
@@ -789,7 +869,20 @@ static int inquiry_evpd_b2(unsigned char *arr)
 	if (scsi_debug_lbpws10)
 		arr[1] |= 1 << 5;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return 0x8;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (scsi_debug_lbprz)
+		arr[1] |= 1 << 2;
+
+	return 0x4;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #define SDEBUG_LONG_INQ_SZ 96
@@ -913,7 +1006,11 @@ static int resp_inquiry(struct scsi_cmnd * scp, int target,
 		return ret;
 	}
 	/* drops through here for a standard inquiry */
+<<<<<<< HEAD
 	arr[1] = DEV_REMOVEABLE(target) ? 0x80 : 0;	/* Removable disk */
+=======
+	arr[1] = scsi_debug_removable ? 0x80 : 0;	/* Removable disk */
+>>>>>>> refs/remotes/origin/master
 	arr[2] = scsi_debug_scsi_level;
 	arr[3] = 2;    /* response_data_format==2 */
 	arr[4] = SDEBUG_LONG_INQ_SZ - 5;
@@ -1070,8 +1167,22 @@ static int resp_readcap16(struct scsi_cmnd * scp,
 	arr[13] = scsi_debug_physblk_exp & 0xf;
 	arr[14] = (scsi_debug_lowest_aligned >> 8) & 0x3f;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (scsi_debug_lbp())
 		arr[14] |= 0x80; /* LBPME */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (scsi_debug_lbp()) {
+		arr[14] |= 0x80; /* LBPME */
+		if (scsi_debug_lbprz)
+			arr[14] |= 0x40; /* LBPRZ */
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	arr[15] = scsi_debug_lowest_aligned & 0xff;
 
@@ -1202,7 +1313,11 @@ static int resp_format_pg(unsigned char * p, int pcontrol, int target)
 	p[11] = sdebug_sectors_per & 0xff;
 	p[12] = (scsi_debug_sector_size >> 8) & 0xff;
 	p[13] = scsi_debug_sector_size & 0xff;
+<<<<<<< HEAD
 	if (DEV_REMOVEABLE(target))
+=======
+	if (scsi_debug_removable)
+>>>>>>> refs/remotes/origin/master
 		p[20] |= 0x20; /* should agree with INQUIRY */
 	if (1 == pcontrol)
 		memset(p + 2, 0, sizeof(format_pg) - 2);
@@ -1683,28 +1798,69 @@ static int check_device_access_params(struct sdebug_dev_info *devi,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/* Returns number of bytes copied or -1 if error. */
+>>>>>>> refs/remotes/origin/master
 static int do_device_access(struct scsi_cmnd *scmd,
 			    struct sdebug_dev_info *devi,
 			    unsigned long long lba, unsigned int num, int write)
 {
 	int ret;
 	unsigned long long block, rest = 0;
+<<<<<<< HEAD
 	int (*func)(struct scsi_cmnd *, unsigned char *, int);
 
 	func = write ? fetch_to_dev_buffer : fill_from_dev_buffer;
+=======
+	struct scsi_data_buffer *sdb;
+	enum dma_data_direction dir;
+	size_t (*func)(struct scatterlist *, unsigned int, void *, size_t,
+		       off_t);
+
+	if (write) {
+		sdb = scsi_out(scmd);
+		dir = DMA_TO_DEVICE;
+		func = sg_pcopy_to_buffer;
+	} else {
+		sdb = scsi_in(scmd);
+		dir = DMA_FROM_DEVICE;
+		func = sg_pcopy_from_buffer;
+	}
+
+	if (!sdb->length)
+		return 0;
+	if (!(scsi_bidi_cmnd(scmd) || scmd->sc_data_direction == dir))
+		return -1;
+>>>>>>> refs/remotes/origin/master
 
 	block = do_div(lba, sdebug_store_sectors);
 	if (block + num > sdebug_store_sectors)
 		rest = block + num - sdebug_store_sectors;
 
+<<<<<<< HEAD
 	ret = func(scmd, fake_storep + (block * scsi_debug_sector_size),
 		   (num - rest) * scsi_debug_sector_size);
 	if (!ret && rest)
 		ret = func(scmd, fake_storep, rest * scsi_debug_sector_size);
+=======
+	ret = func(sdb->table.sgl, sdb->table.nents,
+		   fake_storep + (block * scsi_debug_sector_size),
+		   (num - rest) * scsi_debug_sector_size, 0);
+	if (ret != (num - rest) * scsi_debug_sector_size)
+		return ret;
+
+	if (rest) {
+		ret += func(sdb->table.sgl, sdb->table.nents,
+			    fake_storep, rest * scsi_debug_sector_size,
+			    (num - rest) * scsi_debug_sector_size);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int prot_verify_read(struct scsi_cmnd *SCpnt, sector_t start_sec,
 			    unsigned int sectors, u32 ei_lba)
 {
@@ -1778,7 +1934,11 @@ static int prot_verify_read(struct scsi_cmnd *SCpnt, sector_t start_sec,
 	scsi_for_each_prot_sg(SCpnt, psgl, scsi_prot_sg_count(SCpnt), i) {
 		int len = min(psgl->length, resid);
 
+<<<<<<< HEAD
 		paddr = kmap_atomic(sg_page(psgl), KM_IRQ0) + psgl->offset;
+=======
+		paddr = kmap_atomic(sg_page(psgl)) + psgl->offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 		memcpy(paddr, dif_storep + dif_offset(sector), len);
 
 		sector += len >> 3;
@@ -1788,9 +1948,121 @@ static int prot_verify_read(struct scsi_cmnd *SCpnt, sector_t start_sec,
 			sector = do_div(tmp_sec, sdebug_store_sectors);
 		}
 		resid -= len;
+<<<<<<< HEAD
 		kunmap_atomic(paddr, KM_IRQ0);
+=======
+		kunmap_atomic(paddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
+=======
+static __be16 dif_compute_csum(const void *buf, int len)
+{
+	__be16 csum;
+
+	if (scsi_debug_guard)
+		csum = (__force __be16)ip_compute_csum(buf, len);
+	else
+		csum = cpu_to_be16(crc_t10dif(buf, len));
+
+	return csum;
+}
+
+static int dif_verify(struct sd_dif_tuple *sdt, const void *data,
+		      sector_t sector, u32 ei_lba)
+{
+	__be16 csum = dif_compute_csum(data, scsi_debug_sector_size);
+
+	if (sdt->guard_tag != csum) {
+		pr_err("%s: GUARD check failed on sector %lu rcvd 0x%04x, data 0x%04x\n",
+			__func__,
+			(unsigned long)sector,
+			be16_to_cpu(sdt->guard_tag),
+			be16_to_cpu(csum));
+		return 0x01;
+	}
+	if (scsi_debug_dif == SD_DIF_TYPE1_PROTECTION &&
+	    be32_to_cpu(sdt->ref_tag) != (sector & 0xffffffff)) {
+		pr_err("%s: REF check failed on sector %lu\n",
+			__func__, (unsigned long)sector);
+		return 0x03;
+	}
+	if (scsi_debug_dif == SD_DIF_TYPE2_PROTECTION &&
+	    be32_to_cpu(sdt->ref_tag) != ei_lba) {
+		pr_err("%s: REF check failed on sector %lu\n",
+			__func__, (unsigned long)sector);
+			dif_errors++;
+		return 0x03;
+	}
+	return 0;
+}
+
+static void dif_copy_prot(struct scsi_cmnd *SCpnt, sector_t sector,
+			  unsigned int sectors, bool read)
+{
+	unsigned int i, resid;
+	struct scatterlist *psgl;
+	void *paddr;
+	const void *dif_store_end = dif_storep + sdebug_store_sectors;
+
+	/* Bytes of protection data to copy into sgl */
+	resid = sectors * sizeof(*dif_storep);
+
+	scsi_for_each_prot_sg(SCpnt, psgl, scsi_prot_sg_count(SCpnt), i) {
+		int len = min(psgl->length, resid);
+		void *start = dif_store(sector);
+		int rest = 0;
+
+		if (dif_store_end < start + len)
+			rest = start + len - dif_store_end;
+
+		paddr = kmap_atomic(sg_page(psgl)) + psgl->offset;
+
+		if (read)
+			memcpy(paddr, start, len - rest);
+		else
+			memcpy(start, paddr, len - rest);
+
+		if (rest) {
+			if (read)
+				memcpy(paddr + len - rest, dif_storep, rest);
+			else
+				memcpy(dif_storep, paddr + len - rest, rest);
+		}
+
+		sector += len / sizeof(*dif_storep);
+		resid -= len;
+		kunmap_atomic(paddr);
+	}
+}
+
+static int prot_verify_read(struct scsi_cmnd *SCpnt, sector_t start_sec,
+			    unsigned int sectors, u32 ei_lba)
+{
+	unsigned int i;
+	struct sd_dif_tuple *sdt;
+	sector_t sector;
+
+	for (i = 0; i < sectors; i++) {
+		int ret;
+
+		sector = start_sec + i;
+		sdt = dif_store(sector);
+
+		if (sdt->app_tag == cpu_to_be16(0xffff))
+			continue;
+
+		ret = dif_verify(sdt, fake_store(sector), sector, ei_lba);
+		if (ret) {
+			dif_errors++;
+			return ret;
+		}
+
+		ei_lba++;
+	}
+
+	dif_copy_prot(SCpnt, start_sec, sectors, true);
+>>>>>>> refs/remotes/origin/master
 	dix_reads++;
 
 	return 0;
@@ -1839,7 +2111,16 @@ static int resp_read(struct scsi_cmnd *SCpnt, unsigned long long lba,
 	read_lock_irqsave(&atomic_rw, iflags);
 	ret = do_device_access(SCpnt, devip, lba, num, 0);
 	read_unlock_irqrestore(&atomic_rw, iflags);
+<<<<<<< HEAD
 	return ret;
+=======
+	if (ret == -1)
+		return DID_ERROR << 16;
+
+	scsi_in(SCpnt)->resid = scsi_bufflen(SCpnt) - ret;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void dump_sector(unsigned char *buf, int len)
@@ -1868,6 +2149,7 @@ static int prot_verify_write(struct scsi_cmnd *SCpnt, sector_t start_sec,
 {
 	int i, j, ret;
 	struct sd_dif_tuple *sdt;
+<<<<<<< HEAD
 	struct scatterlist *dsgl = scsi_sglist(SCpnt);
 	struct scatterlist *psgl = scsi_prot_sglist(SCpnt);
 	void *daddr, *paddr;
@@ -1877,34 +2159,74 @@ static int prot_verify_write(struct scsi_cmnd *SCpnt, sector_t start_sec,
 	unsigned short csum;
 
 	sector = do_div(tmp_sec, sdebug_store_sectors);
+=======
+	struct scatterlist *dsgl;
+	struct scatterlist *psgl = scsi_prot_sglist(SCpnt);
+	void *daddr, *paddr;
+	sector_t sector = start_sec;
+	int ppage_offset;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(scsi_sg_count(SCpnt) == 0);
 	BUG_ON(scsi_prot_sg_count(SCpnt) == 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	paddr = kmap_atomic(sg_page(psgl), KM_IRQ1) + psgl->offset;
+=======
+	paddr = kmap_atomic(sg_page(psgl)) + psgl->offset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ppage_offset = 0;
 
 	/* For each data page */
 	scsi_for_each_sg(SCpnt, dsgl, scsi_sg_count(SCpnt), i) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		daddr = kmap_atomic(sg_page(dsgl), KM_IRQ0) + dsgl->offset;
+=======
+		daddr = kmap_atomic(sg_page(dsgl)) + dsgl->offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* For each sector-sized chunk in data page */
 		for (j = 0 ; j < dsgl->length ; j += scsi_debug_sector_size) {
+=======
+		daddr = kmap_atomic(sg_page(dsgl)) + dsgl->offset;
+		paddr = kmap_atomic(sg_page(psgl)) + psgl->offset;
+
+		/* For each sector-sized chunk in data page */
+		for (j = 0; j < dsgl->length; j += scsi_debug_sector_size) {
+>>>>>>> refs/remotes/origin/master
 
 			/* If we're at the end of the current
 			 * protection page advance to the next one
 			 */
 			if (ppage_offset >= psgl->length) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				kunmap_atomic(paddr, KM_IRQ1);
 				psgl = sg_next(psgl);
 				BUG_ON(psgl == NULL);
 				paddr = kmap_atomic(sg_page(psgl), KM_IRQ1)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				kunmap_atomic(paddr);
+				psgl = sg_next(psgl);
+				BUG_ON(psgl == NULL);
+				paddr = kmap_atomic(sg_page(psgl))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					+ psgl->offset;
 				ppage_offset = 0;
 			}
 
 			sdt = paddr + ppage_offset;
 
+<<<<<<< HEAD
 			switch (scsi_debug_guard) {
 			case 1:
 				csum = ip_compute_csum(daddr,
@@ -1971,19 +2293,50 @@ static int prot_verify_write(struct scsi_cmnd *SCpnt, sector_t start_sec,
 			ppage_offset += sizeof(struct sd_dif_tuple);
 		}
 
+<<<<<<< HEAD
 		kunmap_atomic(daddr, KM_IRQ0);
 	}
 
 	kunmap_atomic(paddr, KM_IRQ1);
+=======
+		kunmap_atomic(daddr);
+	}
 
+	kunmap_atomic(paddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+
+=======
+			ret = dif_verify(sdt, daddr + j, sector, ei_lba);
+			if (ret) {
+				dump_sector(daddr + j, scsi_debug_sector_size);
+				goto out;
+			}
+
+			sector++;
+			ei_lba++;
+			ppage_offset += sizeof(struct sd_dif_tuple);
+		}
+
+		kunmap_atomic(paddr);
+		kunmap_atomic(daddr);
+	}
+
+	dif_copy_prot(SCpnt, start_sec, sectors, false);
+>>>>>>> refs/remotes/origin/master
 	dix_writes++;
 
 	return 0;
 
 out:
 	dif_errors++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(daddr, KM_IRQ0);
 	kunmap_atomic(paddr, KM_IRQ1);
+=======
+	kunmap_atomic(daddr);
+	kunmap_atomic(paddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -2005,6 +2358,52 @@ static unsigned int map_state(sector_t lba, unsigned int *num)
 		next = find_next_bit(map_storep, map_size, block);
 
 	end = next * granularity - scsi_debug_unmap_alignment;
+=======
+	kunmap_atomic(paddr);
+	kunmap_atomic(daddr);
+	return ret;
+}
+
+static unsigned long lba_to_map_index(sector_t lba)
+{
+	if (scsi_debug_unmap_alignment) {
+		lba += scsi_debug_unmap_granularity -
+			scsi_debug_unmap_alignment;
+	}
+	do_div(lba, scsi_debug_unmap_granularity);
+
+	return lba;
+}
+
+static sector_t map_index_to_lba(unsigned long index)
+{
+	sector_t lba = index * scsi_debug_unmap_granularity;
+
+	if (scsi_debug_unmap_alignment) {
+		lba -= scsi_debug_unmap_granularity -
+			scsi_debug_unmap_alignment;
+	}
+
+	return lba;
+}
+
+static unsigned int map_state(sector_t lba, unsigned int *num)
+{
+	sector_t end;
+	unsigned int mapped;
+	unsigned long index;
+	unsigned long next;
+
+	index = lba_to_map_index(lba);
+	mapped = test_bit(index, map_storep);
+
+	if (mapped)
+		next = find_next_zero_bit(map_storep, map_size, index);
+	else
+		next = find_next_bit(map_storep, map_size, index);
+
+	end = min_t(sector_t, sdebug_store_sectors,  map_index_to_lba(next));
+>>>>>>> refs/remotes/origin/master
 	*num = end - lba;
 
 	return mapped;
@@ -2012,6 +2411,7 @@ static unsigned int map_state(sector_t lba, unsigned int *num)
 
 static void map_region(sector_t lba, unsigned int len)
 {
+<<<<<<< HEAD
 	unsigned int granularity, alignment;
 	sector_t end = lba + len;
 
@@ -2028,11 +2428,23 @@ static void map_region(sector_t lba, unsigned int len)
 			set_bit(block, map_storep);
 
 		lba += granularity - rem;
+=======
+	sector_t end = lba + len;
+
+	while (lba < end) {
+		unsigned long index = lba_to_map_index(lba);
+
+		if (index < map_size)
+			set_bit(index, map_storep);
+
+		lba = map_index_to_lba(index + 1);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static void unmap_region(sector_t lba, unsigned int len)
 {
+<<<<<<< HEAD
 	unsigned int granularity, alignment;
 	sector_t end = lba + len;
 
@@ -2045,11 +2457,48 @@ static void unmap_region(sector_t lba, unsigned int len)
 		block = lba + alignment;
 		rem = do_div(block, granularity);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (rem == 0 && lba + granularity <= end &&
 		    block < map_size)
 			clear_bit(block, map_storep);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (rem == 0 && lba + granularity < end && block < map_size) {
+			clear_bit(block, map_storep);
+			if (scsi_debug_lbprz)
+				memset(fake_storep +
+				       block * scsi_debug_sector_size, 0,
+				       scsi_debug_sector_size);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		lba += granularity - rem;
+=======
+	sector_t end = lba + len;
+
+	while (lba < end) {
+		unsigned long index = lba_to_map_index(lba);
+
+		if (lba == map_index_to_lba(index) &&
+		    lba + scsi_debug_unmap_granularity <= end &&
+		    index < map_size) {
+			clear_bit(index, map_storep);
+			if (scsi_debug_lbprz) {
+				memset(fake_storep +
+				       lba * scsi_debug_sector_size, 0,
+				       scsi_debug_sector_size *
+				       scsi_debug_unmap_granularity);
+			}
+			if (dif_storep) {
+				memset(dif_storep + lba, 0xff,
+				       sizeof(*dif_storep) *
+				       scsi_debug_unmap_granularity);
+			}
+		}
+		lba = map_index_to_lba(index + 1);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2076,7 +2525,11 @@ static int resp_write(struct scsi_cmnd *SCpnt, unsigned long long lba,
 
 	write_lock_irqsave(&atomic_rw, iflags);
 	ret = do_device_access(SCpnt, devip, lba, num, 1);
+<<<<<<< HEAD
 	if (scsi_debug_unmap_granularity)
+=======
+	if (scsi_debug_lbp())
+>>>>>>> refs/remotes/origin/master
 		map_region(lba, num);
 	write_unlock_irqrestore(&atomic_rw, iflags);
 	if (-1 == ret)
@@ -2109,7 +2562,11 @@ static int resp_write_same(struct scsi_cmnd *scmd, unsigned long long lba,
 
 	write_lock_irqsave(&atomic_rw, iflags);
 
+<<<<<<< HEAD
 	if (unmap && scsi_debug_unmap_granularity) {
+=======
+	if (unmap && scsi_debug_lbp()) {
+>>>>>>> refs/remotes/origin/master
 		unmap_region(lba, num);
 		goto out;
 	}
@@ -2133,7 +2590,11 @@ static int resp_write_same(struct scsi_cmnd *scmd, unsigned long long lba,
 		       fake_storep + (lba * scsi_debug_sector_size),
 		       scsi_debug_sector_size);
 
+<<<<<<< HEAD
 	if (scsi_debug_unmap_granularity)
+=======
+	if (scsi_debug_lbp())
+>>>>>>> refs/remotes/origin/master
 		map_region(lba, num);
 out:
 	write_unlock_irqrestore(&atomic_rw, iflags);
@@ -2220,7 +2681,15 @@ static int resp_get_lba_status(struct scsi_cmnd * scmd,
 	mapped = map_state(lba, &num);
 
 	memset(arr, 0, SDEBUG_GET_LBA_STATUS_LEN);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	put_unaligned_be32(16, &arr[0]);	/* Parameter Data Length */
+=======
+	put_unaligned_be32(20, &arr[0]);	/* Parameter Data Length */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	put_unaligned_be32(20, &arr[0]);	/* Parameter Data Length */
+>>>>>>> refs/remotes/origin/master
 	put_unaligned_be64(lba, &arr[8]);	/* LBA */
 	put_unaligned_be32(num, &arr[16]);	/* Number of blocks */
 	arr[20] = !mapped;			/* mapped = 0, unmapped = 1 */
@@ -2303,7 +2772,15 @@ static int resp_xdwriteread(struct scsi_cmnd *scp, unsigned long long lba,
 
 	offset = 0;
 	for_each_sg(sdb->table.sgl, sg, sdb->table.nents, i) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = (unsigned char *)kmap_atomic(sg_page(sg), KM_USER0);
+=======
+		kaddr = (unsigned char *)kmap_atomic(sg_page(sg));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kaddr = (unsigned char *)kmap_atomic(sg_page(sg));
+>>>>>>> refs/remotes/origin/master
 		if (!kaddr)
 			goto out;
 
@@ -2311,7 +2788,15 @@ static int resp_xdwriteread(struct scsi_cmnd *scp, unsigned long long lba,
 			*(kaddr + sg->offset + j) ^= *(buf + offset + j);
 
 		offset += sg->length;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	}
 	ret = 0;
 out:
@@ -2649,8 +3134,13 @@ static void __init sdebug_build_parts(unsigned char *ramp,
 			       / sdebug_sectors_per;
 		pp->end_sector = (end_sec % sdebug_sectors_per) + 1;
 
+<<<<<<< HEAD
 		pp->start_sect = start_sec;
 		pp->nr_sects = end_sec - start_sec + 1;
+=======
+		pp->start_sect = cpu_to_le32(start_sec);
+		pp->nr_sects = cpu_to_le32(end_sec - start_sec + 1);
+>>>>>>> refs/remotes/origin/master
 		pp->sys_ind = 0x83;	/* plain Linux partition */
 	}
 }
@@ -2726,10 +3216,22 @@ module_param_named(dix, scsi_debug_dix, int, S_IRUGO);
 module_param_named(dsense, scsi_debug_dsense, int, S_IRUGO | S_IWUSR);
 module_param_named(every_nth, scsi_debug_every_nth, int, S_IRUGO | S_IWUSR);
 module_param_named(fake_rw, scsi_debug_fake_rw, int, S_IRUGO | S_IWUSR);
+<<<<<<< HEAD
 module_param_named(guard, scsi_debug_guard, int, S_IRUGO);
 module_param_named(lbpu, scsi_debug_lbpu, int, S_IRUGO);
 module_param_named(lbpws, scsi_debug_lbpws, int, S_IRUGO);
 module_param_named(lbpws10, scsi_debug_lbpws10, int, S_IRUGO);
+<<<<<<< HEAD
+=======
+module_param_named(lbprz, scsi_debug_lbprz, int, S_IRUGO);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param_named(guard, scsi_debug_guard, uint, S_IRUGO);
+module_param_named(lbpu, scsi_debug_lbpu, int, S_IRUGO);
+module_param_named(lbpws, scsi_debug_lbpws, int, S_IRUGO);
+module_param_named(lbpws10, scsi_debug_lbpws10, int, S_IRUGO);
+module_param_named(lbprz, scsi_debug_lbprz, int, S_IRUGO);
+>>>>>>> refs/remotes/origin/master
 module_param_named(lowest_aligned, scsi_debug_lowest_aligned, int, S_IRUGO);
 module_param_named(max_luns, scsi_debug_max_luns, int, S_IRUGO | S_IWUSR);
 module_param_named(max_queue, scsi_debug_max_queue, int, S_IRUGO | S_IWUSR);
@@ -2741,6 +3243,10 @@ module_param_named(opt_blks, scsi_debug_opt_blks, int, S_IRUGO);
 module_param_named(opts, scsi_debug_opts, int, S_IRUGO | S_IWUSR);
 module_param_named(physblk_exp, scsi_debug_physblk_exp, int, S_IRUGO);
 module_param_named(ptype, scsi_debug_ptype, int, S_IRUGO | S_IWUSR);
+<<<<<<< HEAD
+=======
+module_param_named(removable, scsi_debug_removable, bool, S_IRUGO | S_IWUSR);
+>>>>>>> refs/remotes/origin/master
 module_param_named(scsi_level, scsi_debug_scsi_level, int, S_IRUGO);
 module_param_named(sector_size, scsi_debug_sector_size, int, S_IRUGO);
 module_param_named(unmap_alignment, scsi_debug_unmap_alignment, int, S_IRUGO);
@@ -2771,6 +3277,14 @@ MODULE_PARM_DESC(guard, "protection checksum: 0=crc, 1=ip (def=0)");
 MODULE_PARM_DESC(lbpu, "enable LBP, support UNMAP command (def=0)");
 MODULE_PARM_DESC(lbpws, "enable LBP, support WRITE SAME(16) with UNMAP bit (def=0)");
 MODULE_PARM_DESC(lbpws10, "enable LBP, support WRITE SAME(10) with UNMAP bit (def=0)");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_PARM_DESC(lbprz, "unmapped blocks return 0 on read (def=1)");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_PARM_DESC(lbprz, "unmapped blocks return 0 on read (def=1)");
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(lowest_aligned, "lowest aligned lba (def=0)");
 MODULE_PARM_DESC(max_luns, "number of LUNs per target to simulate(def=1)");
 MODULE_PARM_DESC(max_queue, "max number of queued commands (1 to 255(def))");
@@ -2782,6 +3296,10 @@ MODULE_PARM_DESC(opt_blks, "optimal transfer length in block (def=64)");
 MODULE_PARM_DESC(opts, "1->noise, 2->medium_err, 4->timeout, 8->recovered_err... (def=0)");
 MODULE_PARM_DESC(physblk_exp, "physical block exponent (def=0)");
 MODULE_PARM_DESC(ptype, "SCSI peripheral type(def=0[disk])");
+<<<<<<< HEAD
+=======
+MODULE_PARM_DESC(removable, "claim to have removable media (def=0)");
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(scsi_level, "SCSI level to simulate(def=5[SPC-3])");
 MODULE_PARM_DESC(sector_size, "logical block size in bytes (def=512)");
 MODULE_PARM_DESC(unmap_alignment, "lowest aligned thin provisioning lba (def=0)");
@@ -2806,6 +3324,7 @@ static const char * scsi_debug_info(struct Scsi_Host * shp)
 /* scsi_debug_proc_info
  * Used if the driver currently has no own support for /proc/scsi
  */
+<<<<<<< HEAD
 static int scsi_debug_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_t offset,
 				int length, int inout)
 {
@@ -2831,6 +3350,29 @@ static int scsi_debug_proc_info(struct Scsi_Host *host, char *buffer, char **sta
 	}
 	begin = 0;
 	pos = len = sprintf(buffer, "scsi_debug adapter driver, version "
+=======
+static int scsi_debug_write_info(struct Scsi_Host *host, char *buffer, int length)
+{
+	char arr[16];
+	int opts;
+	int minLen = length > 15 ? 15 : length;
+
+	if (!capable(CAP_SYS_ADMIN) || !capable(CAP_SYS_RAWIO))
+		return -EACCES;
+	memcpy(arr, buffer, minLen);
+	arr[minLen] = '\0';
+	if (1 != sscanf(arr, "%d", &opts))
+		return -EINVAL;
+	scsi_debug_opts = opts;
+	if (scsi_debug_every_nth != 0)
+		scsi_debug_cmnd_count = 0;
+	return length;
+}
+
+static int scsi_debug_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	seq_printf(m, "scsi_debug adapter driver, version "
+>>>>>>> refs/remotes/origin/master
 	    "%s [%s]\n"
 	    "num_tgts=%d, shared (ram) size=%d MB, opts=0x%x, "
 	    "every_nth=%d(curr:%d)\n"
@@ -2845,6 +3387,7 @@ static int scsi_debug_proc_info(struct Scsi_Host *host, char *buffer, char **sta
 	    scsi_debug_sector_size, sdebug_cylinders_per, sdebug_heads,
 	    sdebug_sectors_per, num_aborts, num_dev_resets, num_bus_resets,
 	    num_host_resets, dix_reads, dix_writes, dif_errors);
+<<<<<<< HEAD
 	if (pos < offset) {
 		len = 0;
 		begin = pos;
@@ -2854,6 +3397,9 @@ static int scsi_debug_proc_info(struct Scsi_Host *host, char *buffer, char **sta
 	if (len > length)
 		len = length;
 	return len;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t sdebug_delay_show(struct device_driver * ddp, char * buf)
@@ -3164,7 +3710,11 @@ DRIVER_ATTR(dif, S_IRUGO, sdebug_dif_show, NULL);
 
 static ssize_t sdebug_guard_show(struct device_driver *ddp, char *buf)
 {
+<<<<<<< HEAD
 	return scnprintf(buf, PAGE_SIZE, "%d\n", scsi_debug_guard);
+=======
+	return scnprintf(buf, PAGE_SIZE, "%u\n", scsi_debug_guard);
+>>>>>>> refs/remotes/origin/master
 }
 DRIVER_ATTR(guard, S_IRUGO, sdebug_guard_show, NULL);
 
@@ -3191,6 +3741,28 @@ static ssize_t sdebug_map_show(struct device_driver *ddp, char *buf)
 }
 DRIVER_ATTR(map, S_IRUGO, sdebug_map_show, NULL);
 
+<<<<<<< HEAD
+=======
+static ssize_t sdebug_removable_show(struct device_driver *ddp,
+				     char *buf)
+{
+	return scnprintf(buf, PAGE_SIZE, "%d\n", scsi_debug_removable ? 1 : 0);
+}
+static ssize_t sdebug_removable_store(struct device_driver *ddp,
+				      const char *buf, size_t count)
+{
+	int n;
+
+	if ((count > 0) && (1 == sscanf(buf, "%d", &n)) && (n >= 0)) {
+		scsi_debug_removable = (n > 0);
+		return count;
+	}
+	return -EINVAL;
+}
+DRIVER_ATTR(removable, S_IRUGO | S_IWUSR, sdebug_removable_show,
+	    sdebug_removable_store);
+
+>>>>>>> refs/remotes/origin/master
 
 /* Note: The following function creates attribute files in the
    /sys/bus/pseudo/drivers/scsi_debug directory. The advantage of these
@@ -3216,6 +3788,10 @@ static int do_create_driverfs_files(void)
 	ret |= driver_create_file(&sdebug_driverfs_driver, &driver_attr_num_tgts);
 	ret |= driver_create_file(&sdebug_driverfs_driver, &driver_attr_ptype);
 	ret |= driver_create_file(&sdebug_driverfs_driver, &driver_attr_opts);
+<<<<<<< HEAD
+=======
+	ret |= driver_create_file(&sdebug_driverfs_driver, &driver_attr_removable);
+>>>>>>> refs/remotes/origin/master
 	ret |= driver_create_file(&sdebug_driverfs_driver, &driver_attr_scsi_level);
 	ret |= driver_create_file(&sdebug_driverfs_driver, &driver_attr_virtual_gb);
 	ret |= driver_create_file(&sdebug_driverfs_driver, &driver_attr_vpd_use_hostno);
@@ -3241,6 +3817,10 @@ static void do_remove_driverfs_files(void)
 	driver_remove_file(&sdebug_driverfs_driver, &driver_attr_scsi_level);
 	driver_remove_file(&sdebug_driverfs_driver, &driver_attr_opts);
 	driver_remove_file(&sdebug_driverfs_driver, &driver_attr_ptype);
+<<<<<<< HEAD
+=======
+	driver_remove_file(&sdebug_driverfs_driver, &driver_attr_removable);
+>>>>>>> refs/remotes/origin/master
 	driver_remove_file(&sdebug_driverfs_driver, &driver_attr_num_tgts);
 	driver_remove_file(&sdebug_driverfs_driver, &driver_attr_num_parts);
 	driver_remove_file(&sdebug_driverfs_driver, &driver_attr_no_uld);
@@ -3343,7 +3923,11 @@ static int __init scsi_debug_init(void)
 	if (scsi_debug_num_parts > 0)
 		sdebug_build_parts(fake_storep, sz);
 
+<<<<<<< HEAD
 	if (scsi_debug_dif) {
+=======
+	if (scsi_debug_dix) {
+>>>>>>> refs/remotes/origin/master
 		int dif_size;
 
 		dif_size = sdebug_store_sectors * sizeof(struct sd_dif_tuple);
@@ -3363,8 +3947,11 @@ static int __init scsi_debug_init(void)
 
 	/* Logical Block Provisioning */
 	if (scsi_debug_lbp()) {
+<<<<<<< HEAD
 		unsigned int map_bytes;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		scsi_debug_unmap_max_blocks =
 			clamp(scsi_debug_unmap_max_blocks, 0U, 0xffffffffU);
 
@@ -3375,16 +3962,28 @@ static int __init scsi_debug_init(void)
 			clamp(scsi_debug_unmap_granularity, 1U, 0xffffffffU);
 
 		if (scsi_debug_unmap_alignment &&
+<<<<<<< HEAD
 		    scsi_debug_unmap_granularity < scsi_debug_unmap_alignment) {
 			printk(KERN_ERR
 			       "%s: ERR: unmap_granularity < unmap_alignment\n",
+=======
+		    scsi_debug_unmap_granularity <=
+		    scsi_debug_unmap_alignment) {
+			printk(KERN_ERR
+			       "%s: ERR: unmap_granularity <= unmap_alignment\n",
+>>>>>>> refs/remotes/origin/master
 			       __func__);
 			return -EINVAL;
 		}
 
+<<<<<<< HEAD
 		map_size = (sdebug_store_sectors / scsi_debug_unmap_granularity);
 		map_bytes = map_size >> 3;
 		map_storep = vmalloc(map_bytes);
+=======
+		map_size = lba_to_map_index(sdebug_store_sectors - 1) + 1;
+		map_storep = vmalloc(BITS_TO_LONGS(map_size) * sizeof(long));
+>>>>>>> refs/remotes/origin/master
 
 		printk(KERN_INFO "scsi_debug_init: %lu provisioning blocks\n",
 		       map_size);
@@ -3395,7 +3994,11 @@ static int __init scsi_debug_init(void)
 			goto free_vm;
 		}
 
+<<<<<<< HEAD
 		memset(map_storep, 0x0, map_bytes);
+=======
+		bitmap_zero(map_storep, map_size);
+>>>>>>> refs/remotes/origin/master
 
 		/* Map first 1KB for partition table */
 		if (scsi_debug_num_parts)
@@ -3615,6 +4218,18 @@ int scsi_debug_queuecommand_lck(struct scsi_cmnd *SCpnt, done_funct_t done)
 			scsi_debug_every_nth = -1;
 		if (SCSI_DEBUG_OPT_TIMEOUT & scsi_debug_opts)
 			return 0; /* ignore command causing timeout */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		else if (SCSI_DEBUG_OPT_MAC_TIMEOUT & scsi_debug_opts &&
+			 scsi_medium_access_command(SCpnt))
+			return 0; /* time out reads and writes */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		else if (SCSI_DEBUG_OPT_MAC_TIMEOUT & scsi_debug_opts &&
+			 scsi_medium_access_command(SCpnt))
+			return 0; /* time out reads and writes */
+>>>>>>> refs/remotes/origin/master
 		else if (SCSI_DEBUG_OPT_RECOVERED_ERR & scsi_debug_opts)
 			inj_recovered = 1; /* to reads and writes below */
 		else if (SCSI_DEBUG_OPT_TRANSPORT_ERR & scsi_debug_opts)
@@ -3916,7 +4531,12 @@ write:
 static DEF_SCSI_QCMD(scsi_debug_queuecommand)
 
 static struct scsi_host_template sdebug_driver_template = {
+<<<<<<< HEAD
 	.proc_info =		scsi_debug_proc_info,
+=======
+	.show_info =		scsi_debug_show_info,
+	.write_info =		scsi_debug_write_info,
+>>>>>>> refs/remotes/origin/master
 	.proc_name =		sdebug_proc_name,
 	.name =			"SCSI DEBUG",
 	.info =			scsi_debug_info,

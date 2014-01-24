@@ -19,7 +19,19 @@
 #define __ASM_ARCH_MSM_HSUSB_H
 
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
+=======
+#include <linux/pm_qos.h>
+#include <linux/usb/ch9.h>
+#include <linux/usb/gadget.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+#include <linux/usb/ch9.h>
+#include <linux/usb/gadget.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define PHY_TYPE_MASK		0x0F
 #define PHY_TYPE_MODE		0xF0
@@ -60,6 +72,30 @@
 #define phy_id_state_c(ints)	(phy_id_state((ints)) == PHY_ID_C)
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/*
+ * The following are bit fields describing the usb_request.udc_priv word.
+ * These bit fields are set by function drivers that wish to queue
+ * usb_requests with sps/bam parameters.
+ */
+#define MSM_PIPE_ID_MASK		(0x1F)
+#define MSM_TX_PIPE_ID_OFS		(16)
+#define MSM_SPS_MODE			BIT(5)
+#define MSM_IS_FINITE_TRANSFER		BIT(6)
+#define MSM_PRODUCER			BIT(7)
+#define MSM_DISABLE_WB			BIT(8)
+#define MSM_ETD_IOC			BIT(9)
+#define MSM_INTERNAL_MEM		BIT(10)
+#define MSM_VENDOR_ID			BIT(16)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* used to detect the OTG Mode */
 enum otg_mode {
 	OTG_ID = 0,   		/* ID pin detection */
@@ -121,6 +157,14 @@ struct msm_hsusb_gadget_platform_data {
 
 	int self_powered;
 	int is_phy_status_timer_on;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool prop_chg;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool prop_chg;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_otg_platform_data {
@@ -174,7 +218,15 @@ struct msm_otg_platform_data {
 	int (*init_vddcx)(int init);
 	int (*chg_connect_type)(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct pm_qos_request_list pm_qos_req_dma;
+=======
+	struct pm_qos_request pm_qos_req_dma;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pm_qos_request pm_qos_req_dma;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_usb_host_platform_data {
@@ -186,4 +238,17 @@ struct msm_usb_host_platform_data {
 	struct clk *ebi1_clk;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int msm_ep_config(struct usb_ep *ep);
+int msm_ep_unconfig(struct usb_ep *ep);
+int msm_data_fifo_config(struct usb_ep *ep, u32 addr, u32 size);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

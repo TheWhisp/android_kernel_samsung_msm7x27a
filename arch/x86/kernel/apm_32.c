@@ -201,6 +201,11 @@
  *    http://www.microsoft.com/whdc/archive/amp_12.mspx]
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "apm: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 
 #include <linux/poll.h>
@@ -229,11 +234,26 @@
 #include <linux/jiffies.h>
 #include <linux/acpi.h>
 #include <linux/syscore_ops.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/system.h>
 #include <asm/uaccess.h>
 #include <asm/desc.h>
 #include <asm/i8253.h>
+=======
+#include <linux/i8253.h>
+
+#include <asm/uaccess.h>
+#include <asm/desc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/i8253.h>
+#include <linux/cpuidle.h>
+
+#include <asm/uaccess.h>
+#include <asm/desc.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/olpc.h>
 #include <asm/paravirt.h>
 #include <asm/reboot.h>
@@ -249,8 +269,14 @@ extern int (*console_blank_hook)(int);
 #define	APM_MINOR_DEV	134
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/Config.help for the configuration options.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Various options can be changed at boot time as follows:
  * (We allow underscores for compatibility with the modules code)
  *	apm=on/off			enable/disable APM
@@ -361,30 +387,67 @@ struct apm_user {
  * idle percentage above which bios idle calls are done
  */
 #ifdef CONFIG_APM_CPU_IDLE
+<<<<<<< HEAD
 #warning deprecated CONFIG_APM_CPU_IDLE will be deleted in 2012
+=======
+>>>>>>> refs/remotes/origin/master
 #define DEFAULT_IDLE_THRESHOLD	95
 #else
 #define DEFAULT_IDLE_THRESHOLD	100
 #endif
 #define DEFAULT_IDLE_PERIOD	(100 / 3)
 
+<<<<<<< HEAD
 /*
  * Local variables
  */
 static struct {
+=======
+static int apm_cpu_idle(struct cpuidle_device *dev,
+			struct cpuidle_driver *drv, int index);
+
+static struct cpuidle_driver apm_idle_driver = {
+	.name = "apm_idle",
+	.owner = THIS_MODULE,
+	.states = {
+		{ /* entry 0 is for polling */ },
+		{ /* entry 1 is for APM idle */
+			.name = "APM",
+			.desc = "APM idle",
+			.flags = CPUIDLE_FLAG_TIME_VALID,
+			.exit_latency = 250,	/* WAG */
+			.target_residency = 500,	/* WAG */
+			.enter = &apm_cpu_idle
+		},
+	},
+	.state_count = 2,
+};
+
+static struct cpuidle_device apm_cpuidle_device;
+
+/*
+ * Local variables
+ */
+__visible struct {
+>>>>>>> refs/remotes/origin/master
 	unsigned long	offset;
 	unsigned short	segment;
 } apm_bios_entry;
 static int clock_slowed;
 static int idle_threshold __read_mostly = DEFAULT_IDLE_THRESHOLD;
 static int idle_period __read_mostly = DEFAULT_IDLE_PERIOD;
+<<<<<<< HEAD
 static int set_pm_idle;
+=======
+>>>>>>> refs/remotes/origin/master
 static int suspends_pending;
 static int standbys_pending;
 static int ignore_sys_suspend;
 static int ignore_normal_resume;
 static int bounce_interval __read_mostly = DEFAULT_BOUNCE_INTERVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug __read_mostly;
 static int smp __read_mostly;
 static int apm_disabled = -1;
@@ -400,6 +463,28 @@ static int allow_ints = 1;
 static int allow_ints;
 #endif
 static int broken_psr;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static bool debug __read_mostly;
+static bool smp __read_mostly;
+static int apm_disabled = -1;
+#ifdef CONFIG_SMP
+static bool power_off;
+#else
+static bool power_off = 1;
+#endif
+static bool realmode_power_off;
+#ifdef CONFIG_APM_ALLOW_INTS
+static bool allow_ints = 1;
+#else
+static bool allow_ints;
+#endif
+static bool broken_psr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static DECLARE_WAIT_QUEUE_HEAD(apm_waitqueue);
 static DECLARE_WAIT_QUEUE_HEAD(apm_suspend_waitqueue);
@@ -488,11 +573,19 @@ static void apm_error(char *str, int err)
 		if (error_table[i].key == err)
 			break;
 	if (i < ERROR_COUNT)
+<<<<<<< HEAD
 		printk(KERN_NOTICE "apm: %s: %s\n", str, error_table[i].msg);
 	else if (err < 0)
 		printk(KERN_NOTICE "apm: %s: linux error code %i\n", str, err);
 	else
 		printk(KERN_NOTICE "apm: %s: unknown error code %#2.2x\n",
+=======
+		pr_notice("%s: %s\n", str, error_table[i].msg);
+	else if (err < 0)
+		pr_notice("%s: linux error code %i\n", str, err);
+	else
+		pr_notice("%s: unknown error code %#2.2x\n",
+>>>>>>> refs/remotes/origin/master
 		       str, err);
 }
 
@@ -885,8 +978,11 @@ static void apm_do_busy(void)
 #define IDLE_CALC_LIMIT	(HZ * 100)
 #define IDLE_LEAKY_MAX	16
 
+<<<<<<< HEAD
 static void (*original_pm_idle)(void) __read_mostly;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * apm_cpu_idle		-	cpu idling for APM capable Linux
  *
@@ -895,16 +991,26 @@ static void (*original_pm_idle)(void) __read_mostly;
  * Furthermore it calls the system default idle routine.
  */
 
+<<<<<<< HEAD
 static void apm_cpu_idle(void)
+=======
+static int apm_cpu_idle(struct cpuidle_device *dev,
+	struct cpuidle_driver *drv, int index)
+>>>>>>> refs/remotes/origin/master
 {
 	static int use_apm_idle; /* = 0 */
 	static unsigned int last_jiffies; /* = 0 */
 	static unsigned int last_stime; /* = 0 */
+<<<<<<< HEAD
+=======
+	cputime_t stime;
+>>>>>>> refs/remotes/origin/master
 
 	int apm_idle_done = 0;
 	unsigned int jiffies_since_last_check = jiffies - last_jiffies;
 	unsigned int bucket;
 
+<<<<<<< HEAD
 	WARN_ONCE(1, "deprecated apm_cpu_idle will be deleted in 2012");
 recalc:
 	if (jiffies_since_last_check > IDLE_CALC_LIMIT) {
@@ -915,15 +1021,33 @@ recalc:
 		unsigned int idle_percentage;
 
 		idle_percentage = current->stime - last_stime;
+=======
+recalc:
+	task_cputime(current, NULL, &stime);
+	if (jiffies_since_last_check > IDLE_CALC_LIMIT) {
+		use_apm_idle = 0;
+	} else if (jiffies_since_last_check > idle_period) {
+		unsigned int idle_percentage;
+
+		idle_percentage = stime - last_stime;
+>>>>>>> refs/remotes/origin/master
 		idle_percentage *= 100;
 		idle_percentage /= jiffies_since_last_check;
 		use_apm_idle = (idle_percentage > idle_threshold);
 		if (apm_info.forbid_idle)
 			use_apm_idle = 0;
+<<<<<<< HEAD
 		last_jiffies = jiffies;
 		last_stime = current->stime;
 	}
 
+=======
+	}
+
+	last_jiffies = jiffies;
+	last_stime = stime;
+
+>>>>>>> refs/remotes/origin/master
 	bucket = IDLE_LEAKY_MAX;
 
 	while (!need_resched()) {
@@ -951,10 +1075,14 @@ recalc:
 				break;
 			}
 		}
+<<<<<<< HEAD
 		if (original_pm_idle)
 			original_pm_idle();
 		else
 			default_idle();
+=======
+		default_idle();
+>>>>>>> refs/remotes/origin/master
 		local_irq_disable();
 		jiffies_since_last_check = jiffies - last_jiffies;
 		if (jiffies_since_last_check > idle_period)
@@ -964,7 +1092,11 @@ recalc:
 	if (apm_idle_done)
 		apm_do_busy();
 
+<<<<<<< HEAD
 	local_irq_enable();
+=======
+	return index;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1187,7 +1319,11 @@ static void queue_event(apm_event_t event, struct apm_user *sender)
 			static int notified;
 
 			if (notified++ == 0)
+<<<<<<< HEAD
 			    printk(KERN_ERR "apm: an event queue overflowed\n");
+=======
+				pr_err("an event queue overflowed\n");
+>>>>>>> refs/remotes/origin/master
 			if (++as->event_tail >= APM_MAX_EVENTS)
 				as->event_tail = 0;
 		}
@@ -1220,11 +1356,25 @@ static void reinit_timer(void)
 
 	raw_spin_lock_irqsave(&i8253_lock, flags);
 	/* set the clock to HZ */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	outb_pit(0x34, PIT_MODE);		/* binary, mode 2, LSB/MSB, ch 0 */
 	udelay(10);
 	outb_pit(LATCH & 0xff, PIT_CH0);	/* LSB */
 	udelay(10);
 	outb_pit(LATCH >> 8, PIT_CH0);	/* MSB */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	outb_p(0x34, PIT_MODE);		/* binary, mode 2, LSB/MSB, ch 0 */
+	udelay(10);
+	outb_p(LATCH & 0xff, PIT_CH0);	/* LSB */
+	udelay(10);
+	outb_p(LATCH >> 8, PIT_CH0);	/* MSB */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	udelay(10);
 	raw_spin_unlock_irqrestore(&i8253_lock, flags);
 #endif
@@ -1236,8 +1386,16 @@ static int suspend(int vetoable)
 	struct apm_user	*as;
 
 	dpm_suspend_start(PMSG_SUSPEND);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	dpm_suspend_noirq(PMSG_SUSPEND);
+=======
+	dpm_suspend_end(PMSG_SUSPEND);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dpm_suspend_end(PMSG_SUSPEND);
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_disable();
 	syscore_suspend();
@@ -1261,9 +1419,21 @@ static int suspend(int vetoable)
 	syscore_resume();
 	local_irq_enable();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dpm_resume_noirq(PMSG_RESUME);
 
 	dpm_resume_end(PMSG_RESUME);
+=======
+	dpm_resume_start(PMSG_RESUME);
+	dpm_resume_end(PMSG_RESUME);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dpm_resume_start(PMSG_RESUME);
+	dpm_resume_end(PMSG_RESUME);
+
+>>>>>>> refs/remotes/origin/master
 	queue_event(APM_NORMAL_RESUME, NULL);
 	spin_lock(&user_list_lock);
 	for (as = user_list; as != NULL; as = as->next) {
@@ -1279,7 +1449,15 @@ static void standby(void)
 {
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dpm_suspend_noirq(PMSG_SUSPEND);
+=======
+	dpm_suspend_end(PMSG_SUSPEND);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dpm_suspend_end(PMSG_SUSPEND);
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_disable();
 	syscore_suspend();
@@ -1293,7 +1471,15 @@ static void standby(void)
 	syscore_resume();
 	local_irq_enable();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dpm_resume_noirq(PMSG_RESUME);
+=======
+	dpm_resume_start(PMSG_RESUME);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dpm_resume_start(PMSG_RESUME);
+>>>>>>> refs/remotes/origin/master
 }
 
 static apm_event_t get_event(void)
@@ -1451,7 +1637,11 @@ static void apm_mainloop(void)
 static int check_apm_user(struct apm_user *as, const char *func)
 {
 	if (as == NULL || as->magic != APM_BIOS_MAGIC) {
+<<<<<<< HEAD
 		printk(KERN_ERR "apm: %s passed bad filp\n", func);
+=======
+		pr_err("%s passed bad filp\n", func);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 	return 0;
@@ -1590,7 +1780,11 @@ static int do_release(struct inode *inode, struct file *filp)
 		     as1 = as1->next)
 			;
 		if (as1 == NULL)
+<<<<<<< HEAD
 			printk(KERN_ERR "apm: filp not in user list\n");
+=======
+			pr_err("filp not in user list\n");
+>>>>>>> refs/remotes/origin/master
 		else
 			as1->next = as->next;
 	}
@@ -1604,11 +1798,17 @@ static int do_open(struct inode *inode, struct file *filp)
 	struct apm_user *as;
 
 	as = kmalloc(sizeof(*as), GFP_KERNEL);
+<<<<<<< HEAD
 	if (as == NULL) {
 		printk(KERN_ERR "apm: cannot allocate struct of size %d bytes\n",
 		       sizeof(*as));
 		return -ENOMEM;
 	}
+=======
+	if (as == NULL)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	as->magic = APM_BIOS_MAGIC;
 	as->event_tail = as->event_head = 0;
 	as->suspends_pending = as->standbys_pending = 0;
@@ -2317,16 +2517,28 @@ static int __init apm_init(void)
 	}
 
 	if (apm_info.disabled) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "apm: disabled on user request.\n");
 		return -ENODEV;
 	}
 	if ((num_online_cpus() > 1) && !power_off && !smp) {
 		printk(KERN_NOTICE "apm: disabled - APM is not SMP safe.\n");
+=======
+		pr_notice("disabled on user request.\n");
+		return -ENODEV;
+	}
+	if ((num_online_cpus() > 1) && !power_off && !smp) {
+		pr_notice("disabled - APM is not SMP safe.\n");
+>>>>>>> refs/remotes/origin/master
 		apm_info.disabled = 1;
 		return -ENODEV;
 	}
 	if (!acpi_disabled) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "apm: overridden by ACPI.\n");
+=======
+		pr_notice("overridden by ACPI.\n");
+>>>>>>> refs/remotes/origin/master
 		apm_info.disabled = 1;
 		return -ENODEV;
 	}
@@ -2360,8 +2572,12 @@ static int __init apm_init(void)
 
 	kapmd_task = kthread_create(apm, NULL, "kapmd");
 	if (IS_ERR(kapmd_task)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "apm: disabled - Unable to start kernel "
 				"thread.\n");
+=======
+		pr_err("disabled - Unable to start kernel thread\n");
+>>>>>>> refs/remotes/origin/master
 		err = PTR_ERR(kapmd_task);
 		kapmd_task = NULL;
 		remove_proc_entry("apm", NULL);
@@ -2386,9 +2602,15 @@ static int __init apm_init(void)
 	if (HZ != 100)
 		idle_period = (idle_period * HZ) / 100;
 	if (idle_threshold < 100) {
+<<<<<<< HEAD
 		original_pm_idle = pm_idle;
 		pm_idle  = apm_cpu_idle;
 		set_pm_idle = 1;
+=======
+		if (!cpuidle_register_driver(&apm_idle_driver))
+			if (cpuidle_register_device(&apm_cpuidle_device))
+				cpuidle_unregister_driver(&apm_idle_driver);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -2398,6 +2620,7 @@ static void __exit apm_exit(void)
 {
 	int error;
 
+<<<<<<< HEAD
 	if (set_pm_idle) {
 		pm_idle = original_pm_idle;
 		/*
@@ -2407,6 +2630,11 @@ static void __exit apm_exit(void)
 		 */
 		cpu_idle_wait();
 	}
+=======
+	cpuidle_unregister_device(&apm_cpuidle_device);
+	cpuidle_unregister_driver(&apm_idle_driver);
+
+>>>>>>> refs/remotes/origin/master
 	if (((apm_info.bios.flags & APM_BIOS_DISENGAGED) == 0)
 	    && (apm_info.connection_version > 0x0100)) {
 		error = apm_engage_power_management(APM_DEVICE_ALL, 0);

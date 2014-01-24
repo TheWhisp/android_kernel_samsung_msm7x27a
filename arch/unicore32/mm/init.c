@@ -20,11 +20,27 @@
 #include <linux/memblock.h>
 #include <linux/sort.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/sections.h>
 #include <asm/setup.h>
 #include <asm/sizes.h>
 #include <asm/tlb.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/memblock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/memblock.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/map.h>
 
 #include "mm.h"
@@ -64,6 +80,21 @@ void show_mem(unsigned int filter)
 	printk(KERN_DEFAULT "Mem-info:\n");
 	show_free_areas(filter);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for_each_bank(i, mi) {
 		struct membank *bank = &mi->bank[i];
 		unsigned int pfn1, pfn2;
@@ -244,7 +275,13 @@ void __init uc32_memblock_init(struct meminfo *mi)
 	sort(&meminfo.bank, meminfo.nr_banks, sizeof(meminfo.bank[0]),
 		meminfo_cmp, NULL);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_init();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < mi->nr_banks; i++)
 		memblock_add(mi->bank[i].start, mi->bank[i].size);
 
@@ -263,7 +300,15 @@ void __init uc32_memblock_init(struct meminfo *mi)
 
 	uc32_mm_memblock_reserve();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_analyze();
+=======
+	memblock_allow_resize();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_allow_resize();
+>>>>>>> refs/remotes/origin/master
 	memblock_dump_all();
 }
 
@@ -312,6 +357,7 @@ void __init bootmem_init(void)
 	max_pfn = max_high - PHYS_PFN_OFFSET;
 }
 
+<<<<<<< HEAD
 static inline int free_area(unsigned long pfn, unsigned long end, char *s)
 {
 	unsigned int pages = 0, size = (end - pfn) << (PAGE_SHIFT - 10);
@@ -330,6 +376,8 @@ static inline int free_area(unsigned long pfn, unsigned long end, char *s)
 	return pages;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void
 free_memmap(unsigned long start_pfn, unsigned long end_pfn)
 {
@@ -397,6 +445,7 @@ static void __init free_unused_memmap(struct meminfo *mi)
  */
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	unsigned long reserved_pages, free_pages;
 	struct memblock_region *reg;
 	int i;
@@ -450,6 +499,16 @@ void __init mem_init(void)
 		reserved_pages << (PAGE_SHIFT-10),
 		totalhigh_pages << (PAGE_SHIFT-10));
 
+=======
+	max_mapnr   = pfn_to_page(max_pfn + PHYS_PFN_OFFSET) - mem_map;
+
+	free_unused_memmap(&meminfo);
+
+	/* this will put all unused low memory onto the freelists */
+	free_all_bootmem();
+
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_NOTICE "Virtual kernel memory layout:\n"
 		"    vector  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
 		"    vmalloc : 0x%08lx - 0x%08lx   (%4ld MB)\n"
@@ -478,7 +537,11 @@ void __init mem_init(void)
 	BUILD_BUG_ON(TASK_SIZE				> MODULES_VADDR);
 	BUG_ON(TASK_SIZE				> MODULES_VADDR);
 
+<<<<<<< HEAD
 	if (PAGE_SIZE >= 16384 && num_physpages <= 128) {
+=======
+	if (PAGE_SIZE >= 16384 && get_num_physpages() <= 128) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * On a machine this small we won't get
 		 * anywhere without overcommit, so turn
@@ -490,9 +553,13 @@ void __init mem_init(void)
 
 void free_initmem(void)
 {
+<<<<<<< HEAD
 	totalram_pages += free_area(__phys_to_pfn(__pa(__init_begin)),
 				    __phys_to_pfn(__pa(__init_end)),
 				    "init");
+=======
+	free_initmem_default(-1);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_BLK_DEV_INITRD
@@ -502,9 +569,13 @@ static int keep_initrd;
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
 	if (!keep_initrd)
+<<<<<<< HEAD
 		totalram_pages += free_area(__phys_to_pfn(__pa(start)),
 					    __phys_to_pfn(__pa(end)),
 					    "initrd");
+=======
+		free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init keepinitrd_setup(char *__unused)

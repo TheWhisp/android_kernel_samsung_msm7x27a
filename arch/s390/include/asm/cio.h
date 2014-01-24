@@ -1,7 +1,10 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/cio.h
  *  include/asm-s390x/cio.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * Common interface for I/O on S/390
  */
 #ifndef _ASM_S390_CIO_H_
@@ -10,10 +13,17 @@
 #include <linux/spinlock.h>
 #include <asm/types.h>
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 
 #define LPM_ANYPATH 0xff
 #define __MAX_CSSID 0
+=======
+#define LPM_ANYPATH 0xff
+#define __MAX_CSSID 0
+#define __MAX_SUBCHANNEL 65535
+#define __MAX_SSID 3
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/scsw.h>
 
@@ -85,6 +95,21 @@ struct erw {
 } __attribute__ ((packed));
 
 /**
+<<<<<<< HEAD
+=======
+ * struct erw_eadm - EADM Subchannel extended report word
+ * @b: aob error
+ * @r: arsb error
+ */
+struct erw_eadm {
+	__u32 : 16;
+	__u32 b : 1;
+	__u32 r : 1;
+	__u32  : 14;
+} __packed;
+
+/**
+>>>>>>> refs/remotes/origin/master
  * struct sublog - subchannel logout area
  * @res0: reserved
  * @esf: extended status flags
@@ -175,9 +200,28 @@ struct esw3 {
 } __attribute__ ((packed));
 
 /**
+<<<<<<< HEAD
  * struct irb - interruption response block
  * @scsw: subchannel status word
  * @esw: extened status word, 4 formats
+=======
+ * struct esw_eadm - EADM Subchannel Extended Status Word (ESW)
+ * @sublog: subchannel logout
+ * @erw: extended report word
+ */
+struct esw_eadm {
+	__u32 sublog;
+	struct erw_eadm erw;
+	__u32 : 32;
+	__u32 : 32;
+	__u32 : 32;
+} __packed;
+
+/**
+ * struct irb - interruption response block
+ * @scsw: subchannel status word
+ * @esw: extened status word
+>>>>>>> refs/remotes/origin/master
  * @ecw: extended control word
  *
  * The irb that is handed to the device driver when an interrupt occurs. For
@@ -196,6 +240,10 @@ struct irb {
 		struct esw1 esw1;
 		struct esw2 esw2;
 		struct esw3 esw3;
+<<<<<<< HEAD
+=======
+		struct esw_eadm eadm;
+>>>>>>> refs/remotes/origin/master
 	} esw;
 	__u8   ecw[32];
 } __attribute__ ((packed,aligned(4)));
@@ -273,8 +321,12 @@ static inline int ccw_dev_id_is_equal(struct ccw_dev_id *dev_id1,
 	return 0;
 }
 
+<<<<<<< HEAD
 extern void wait_cons_dev(void);
 
+=======
+void channel_subsystem_reinit(void);
+>>>>>>> refs/remotes/origin/master
 extern void css_schedule_reprobe(void);
 
 extern void reipl_ccw_dev(struct ccw_dev_id *id);
@@ -291,5 +343,8 @@ int chsc_sstpc(void *page, unsigned int op, u16 ctrl);
 int chsc_sstpi(void *page, void *result, size_t size);
 
 #endif
+<<<<<<< HEAD
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

@@ -4,8 +4,18 @@
 #define __DIVA_PRI_HOST_TEST_DSPS_H__
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
    DSP registers on maestra pri
    */
+=======
+  DSP registers on maestra pri
+*/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  DSP registers on maestra pri
+*/
+>>>>>>> refs/remotes/origin/master
 #define DSP1_PORT       (0x00)
 #define DSP2_PORT       (0x8)
 #define DSP3_PORT       (0x800)
@@ -39,9 +49,22 @@
 #define DSP_ADR_OFFS    0x80
 
 /*------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
 		Dsp related definitions
   ------------------------------------------------------------------ */
 #define DSP_SIGNATURE_PROBE_WORD 0x5a5a
 #define dsp_make_address_ex(pm,address) ((word)((pm) ? (address) : (address) + 0x4000))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+  Dsp related definitions
+  ------------------------------------------------------------------ */
+#define DSP_SIGNATURE_PROBE_WORD 0x5a5a
+#define dsp_make_address_ex(pm, address) ((word)((pm) ? (address) : (address) + 0x4000))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

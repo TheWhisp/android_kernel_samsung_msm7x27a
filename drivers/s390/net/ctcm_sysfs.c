@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  * drivers/s390/net/ctcm_sysfs.c
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright IBM Corp. 2007, 2007
  * Authors:	Peter Tiedemann (ptiedem@de.ibm.com)
  *
@@ -13,6 +16,10 @@
 #define KMSG_COMPONENT "ctcm"
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
+<<<<<<< HEAD
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sysfs.h>
 #include <linux/slab.h>
 #include "ctcm_main.h"
@@ -108,10 +115,19 @@ static void ctcm_print_statistics(struct ctcm_priv *priv)
 }
 
 static ssize_t stats_show(struct device *dev,
+<<<<<<< HEAD
 				struct device_attribute *attr, char *buf)
 {
 	struct ctcm_priv *priv = dev_get_drvdata(dev);
 	if (!priv)
+=======
+			  struct device_attribute *attr, char *buf)
+{
+	struct ccwgroup_device *gdev = to_ccwgroupdev(dev);
+	struct ctcm_priv *priv = dev_get_drvdata(dev);
+
+	if (!priv || gdev->state != CCWGROUP_ONLINE)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	ctcm_print_statistics(priv);
 	return sprintf(buf, "0\n");
@@ -159,7 +175,15 @@ static ssize_t ctcm_proto_store(struct device *dev,
 	return count;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 const char *ctcm_type[] = {
+=======
+static const char *ctcm_type[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char *ctcm_type[] = {
+>>>>>>> refs/remotes/origin/master
 	"not a channel",
 	"CTC/A",
 	"FICON channel",
@@ -190,12 +214,17 @@ static struct attribute *ctcm_attr[] = {
 	&dev_attr_protocol.attr,
 	&dev_attr_type.attr,
 	&dev_attr_buffer.attr,
+<<<<<<< HEAD
+=======
+	&dev_attr_stats.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
 static struct attribute_group ctcm_attr_group = {
 	.attrs = ctcm_attr,
 };
+<<<<<<< HEAD
 
 int ctcm_add_attributes(struct device *dev)
 {
@@ -221,3 +250,9 @@ void ctcm_remove_files(struct device *dev)
 	sysfs_remove_group(&dev->kobj, &ctcm_attr_group);
 }
 
+=======
+const struct attribute_group *ctcm_attr_groups[] = {
+	&ctcm_attr_group,
+	NULL,
+};
+>>>>>>> refs/remotes/origin/master

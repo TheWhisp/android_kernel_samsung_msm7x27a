@@ -17,9 +17,21 @@
 #include "br_private_stp.h"
 
 /* since time values in bpdu are in jiffies and then scaled (1/256)
+<<<<<<< HEAD
+<<<<<<< HEAD
  * before sending, make sure that is at least one.
  */
 #define MESSAGE_AGE_INCR	((HZ < 256) ? 1 : (HZ/256))
+=======
+ * before sending, make sure that is at least one STP tick.
+ */
+#define MESSAGE_AGE_INCR	((HZ / 256) + 1)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * before sending, make sure that is at least one STP tick.
+ */
+#define MESSAGE_AGE_INCR	((HZ / 256) + 1)
+>>>>>>> refs/remotes/origin/master
 
 static const char *const br_port_state_names[] = {
 	[BR_STATE_DISABLED] = "disabled",
@@ -31,8 +43,17 @@ static const char *const br_port_state_names[] = {
 
 void br_log_state(const struct net_bridge_port *p)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	br_info(p->br, "port %u(%s) entering %s state\n",
+=======
+	br_info(p->br, "port %u(%s) entered %s state\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		(unsigned) p->port_no, p->dev->name,
+=======
+	br_info(p->br, "port %u(%s) entered %s state\n",
+		(unsigned int) p->port_no, p->dev->name,
+>>>>>>> refs/remotes/origin/master
 		br_port_state_names[p->state]);
 }
 
@@ -100,6 +121,24 @@ static int br_should_become_root_port(const struct net_bridge_port *p,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void br_root_port_block(const struct net_bridge *br,
+			       struct net_bridge_port *p)
+{
+
+	br_notice(br, "port %u(%s) tried to become root port (blocked)",
+		  (unsigned int) p->port_no, p->dev->name);
+
+	p->state = BR_STATE_LISTENING;
+	br_log_state(p);
+	br_ifinfo_notify(RTM_NEWLINK, p);
+
+	if (br->forward_delay > 0)
+		mod_timer(&p->forward_delay_timer, jiffies + br->forward_delay);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* called under bridge lock */
 static void br_root_selection(struct net_bridge *br)
 {
@@ -107,9 +146,22 @@ static void br_root_selection(struct net_bridge *br)
 	u16 root_port = 0;
 
 	list_for_each_entry(p, &br->port_list, list) {
+<<<<<<< HEAD
 		if (br_should_become_root_port(p, root_port))
 			root_port = p->port_no;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!br_should_become_root_port(p, root_port))
+			continue;
+
+		if (p->flags & BR_ROOT_BLOCK)
+			br_root_port_block(br, p);
+		else
+			root_port = p->port_no;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	br->root_port = root_port;
@@ -145,7 +197,13 @@ void br_transmit_config(struct net_bridge_port *p)
 	struct br_config_bpdu bpdu;
 	struct net_bridge *br;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (timer_pending(&p->hold_timer)) {
 		p->config_pending = 1;
 		return;
@@ -181,21 +239,47 @@ void br_transmit_config(struct net_bridge_port *p)
 }
 
 /* called under bridge lock */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void br_record_config_information(struct net_bridge_port *p,
 						const struct br_config_bpdu *bpdu)
+=======
+static void br_record_config_information(struct net_bridge_port *p,
+					 const struct br_config_bpdu *bpdu)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void br_record_config_information(struct net_bridge_port *p,
+					 const struct br_config_bpdu *bpdu)
+>>>>>>> refs/remotes/origin/master
 {
 	p->designated_root = bpdu->root;
 	p->designated_cost = bpdu->root_path_cost;
 	p->designated_bridge = bpdu->bridge_id;
 	p->designated_port = bpdu->port_id;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	p->designated_age = jiffies + bpdu->message_age;
+=======
+	p->designated_age = jiffies - bpdu->message_age;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p->designated_age = jiffies - bpdu->message_age;
+>>>>>>> refs/remotes/origin/master
 
 	mod_timer(&p->message_age_timer, jiffies
 		  + (bpdu->max_age - bpdu->message_age));
 }
 
 /* called under bridge lock */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void br_record_config_timeout_values(struct net_bridge *br,
+=======
+static void br_record_config_timeout_values(struct net_bridge *br,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void br_record_config_timeout_values(struct net_bridge *br,
+>>>>>>> refs/remotes/origin/master
 					    const struct br_config_bpdu *bpdu)
 {
 	br->max_age = bpdu->max_age;
@@ -207,7 +291,18 @@ static inline void br_record_config_timeout_values(struct net_bridge *br,
 /* called under bridge lock */
 void br_transmit_tcn(struct net_bridge *br)
 {
+<<<<<<< HEAD
 	br_send_tcn_bpdu(br_get_port(br, br->root_port));
+=======
+	struct net_bridge_port *p;
+
+	p = br_get_port(br, br->root_port);
+	if (p)
+		br_send_tcn_bpdu(p);
+	else
+		br_notice(br, "root port %u not found for topology notice\n",
+			  br->root_port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* called under bridge lock */
@@ -254,7 +349,17 @@ static void br_designated_port_selection(struct net_bridge *br)
 }
 
 /* called under bridge lock */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int br_supersedes_port_info(struct net_bridge_port *p, struct br_config_bpdu *bpdu)
+=======
+static int br_supersedes_port_info(const struct net_bridge_port *p,
+				   const struct br_config_bpdu *bpdu)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int br_supersedes_port_info(const struct net_bridge_port *p,
+				   const struct br_config_bpdu *bpdu)
+>>>>>>> refs/remotes/origin/master
 {
 	int t;
 
@@ -285,7 +390,15 @@ static int br_supersedes_port_info(struct net_bridge_port *p, struct br_config_b
 }
 
 /* called under bridge lock */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void br_topology_change_acknowledged(struct net_bridge *br)
+=======
+static void br_topology_change_acknowledged(struct net_bridge *br)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void br_topology_change_acknowledged(struct net_bridge *br)
+>>>>>>> refs/remotes/origin/master
 {
 	br->topology_change_detected = 0;
 	del_timer(&br->tcn_timer);
@@ -327,7 +440,15 @@ void br_config_bpdu_generation(struct net_bridge *br)
 }
 
 /* called under bridge lock */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void br_reply(struct net_bridge_port *p)
+=======
+static void br_reply(struct net_bridge_port *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void br_reply(struct net_bridge_port *p)
+>>>>>>> refs/remotes/origin/master
 {
 	br_transmit_config(p);
 }
@@ -363,6 +484,16 @@ static void br_make_blocking(struct net_bridge_port *p)
 
 		p->state = BR_STATE_BLOCKING;
 		br_log_state(p);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		br_ifinfo_notify(RTM_NEWLINK, p);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		br_ifinfo_notify(RTM_NEWLINK, p);
+
+>>>>>>> refs/remotes/origin/master
 		del_timer(&p->forward_delay_timer);
 	}
 }
@@ -379,15 +510,33 @@ static void br_make_forwarding(struct net_bridge_port *p)
 		p->state = BR_STATE_FORWARDING;
 		br_topology_change_detection(br);
 		del_timer(&p->forward_delay_timer);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 	else if (br->stp_enabled == BR_KERNEL_STP)
+=======
+	} else if (br->stp_enabled == BR_KERNEL_STP)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (br->stp_enabled == BR_KERNEL_STP)
+>>>>>>> refs/remotes/origin/master
 		p->state = BR_STATE_LISTENING;
 	else
 		p->state = BR_STATE_LEARNING;
 
 	br_multicast_enable_port(p);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	br_log_state(p);
+=======
+	br_log_state(p);
+	br_ifinfo_notify(RTM_NEWLINK, p);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	br_log_state(p);
+	br_ifinfo_notify(RTM_NEWLINK, p);
+>>>>>>> refs/remotes/origin/master
 
 	if (br->forward_delay != 0)
 		mod_timer(&p->forward_delay_timer, jiffies + br->forward_delay);
@@ -399,14 +548,22 @@ void br_port_state_selection(struct net_bridge *br)
 	struct net_bridge_port *p;
 	unsigned int liveports = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Don't change port states if userspace is handling STP */
 	if (br->stp_enabled == BR_USER_STP)
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(p, &br->port_list, list) {
 		if (p->state == BR_STATE_DISABLED)
 			continue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (p->port_no == br->root_port) {
 			p->config_pending = 0;
 			p->topology_change_ack = 0;
@@ -418,6 +575,27 @@ void br_port_state_selection(struct net_bridge *br)
 			p->config_pending = 0;
 			p->topology_change_ack = 0;
 			br_make_blocking(p);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/* Don't change port states if userspace is handling STP */
+		if (br->stp_enabled != BR_USER_STP) {
+			if (p->port_no == br->root_port) {
+				p->config_pending = 0;
+				p->topology_change_ack = 0;
+				br_make_forwarding(p);
+			} else if (br_is_designated_port(p)) {
+				del_timer(&p->message_age_timer);
+				br_make_forwarding(p);
+			} else {
+				p->config_pending = 0;
+				p->topology_change_ack = 0;
+				br_make_blocking(p);
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (p->state == BR_STATE_FORWARDING)
@@ -431,14 +609,32 @@ void br_port_state_selection(struct net_bridge *br)
 }
 
 /* called under bridge lock */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void br_topology_change_acknowledge(struct net_bridge_port *p)
+=======
+static void br_topology_change_acknowledge(struct net_bridge_port *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void br_topology_change_acknowledge(struct net_bridge_port *p)
+>>>>>>> refs/remotes/origin/master
 {
 	p->topology_change_ack = 1;
 	br_transmit_config(p);
 }
 
 /* called under bridge lock */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void br_received_config_bpdu(struct net_bridge_port *p, struct br_config_bpdu *bpdu)
+=======
+void br_received_config_bpdu(struct net_bridge_port *p,
+			     const struct br_config_bpdu *bpdu)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void br_received_config_bpdu(struct net_bridge_port *p,
+			     const struct br_config_bpdu *bpdu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_bridge *br;
 	int was_root;
@@ -478,7 +674,11 @@ void br_received_tcn_bpdu(struct net_bridge_port *p)
 {
 	if (br_is_designated_port(p)) {
 		br_info(p->br, "port %u(%s) received tcn bpdu\n",
+<<<<<<< HEAD
 			(unsigned) p->port_no, p->dev->name);
+=======
+			(unsigned int) p->port_no, p->dev->name);
+>>>>>>> refs/remotes/origin/master
 
 		br_topology_change_detection(p->br);
 		br_topology_change_acknowledge(p);

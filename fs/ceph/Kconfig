@@ -1,6 +1,11 @@
 config CEPH_FS
+<<<<<<< HEAD
         tristate "Ceph distributed file system (EXPERIMENTAL)"
 	depends on INET && EXPERIMENTAL
+=======
+	tristate "Ceph distributed file system"
+	depends on INET
+>>>>>>> refs/remotes/origin/master
 	select CEPH_LIB
 	select LIBCRC32C
 	select CRYPTO_AES
@@ -16,3 +21,15 @@ config CEPH_FS
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
+=======
+if CEPH_FS
+config CEPH_FSCACHE
+	bool "Enable Ceph client caching support"
+	depends on CEPH_FS=m && FSCACHE || CEPH_FS=y && FSCACHE=y
+	help
+	  Choose Y here to enable persistent, read-only local
+	  caching support for Ceph clients using FS-Cache
+
+endif
+>>>>>>> refs/remotes/origin/master

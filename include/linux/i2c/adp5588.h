@@ -157,6 +157,10 @@ struct i2c_client; /* forward declaration */
 
 struct adp5588_gpio_platform_data {
 	int gpio_start;		/* GPIO Chip base # */
+<<<<<<< HEAD
+=======
+	const char *const *names;
+>>>>>>> refs/remotes/origin/master
 	unsigned irq_base;	/* interrupt base # */
 	unsigned pullup_dis_mask; /* Pull-Up Disable Mask */
 	int	(*setup)(struct i2c_client *client,

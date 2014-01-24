@@ -17,10 +17,24 @@
 #include <linux/highmem.h>
 #include <linux/memstick.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #define DRIVER_NAME "jmb38x_ms"
 
 static int no_dma;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/module.h>
+
+#define DRIVER_NAME "jmb38x_ms"
+
+static bool no_dma;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(no_dma, bool, 0644);
 
 enum {
@@ -324,7 +338,15 @@ static int jmb38x_ms_transfer_data(struct jmb38x_ms_host *host)
 			p_cnt = min(p_cnt, length);
 
 			local_irq_save(flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			buf = kmap_atomic(pg, KM_BIO_SRC_IRQ) + p_off;
+=======
+			buf = kmap_atomic(pg) + p_off;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			buf = kmap_atomic(pg) + p_off;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			buf = host->req->data + host->block_pos;
 			p_cnt = host->req->data_len - host->block_pos;
@@ -340,7 +362,15 @@ static int jmb38x_ms_transfer_data(struct jmb38x_ms_host *host)
 				 : jmb38x_ms_read_reg_data(host, buf, p_cnt);
 
 		if (host->req->long_data) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(buf - p_off, KM_BIO_SRC_IRQ);
+=======
+			kunmap_atomic(buf - p_off);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(buf - p_off);
+>>>>>>> refs/remotes/origin/master
 			local_irq_restore(flags);
 		}
 
@@ -1045,6 +1075,7 @@ static struct pci_driver jmb38x_ms_driver = {
 	.resume = jmb38x_ms_resume
 };
 
+<<<<<<< HEAD
 static int __init jmb38x_ms_init(void)
 {
 	return pci_register_driver(&jmb38x_ms_driver);
@@ -1054,11 +1085,17 @@ static void __exit jmb38x_ms_exit(void)
 {
 	pci_unregister_driver(&jmb38x_ms_driver);
 }
+=======
+module_pci_driver(jmb38x_ms_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alex Dubov");
 MODULE_DESCRIPTION("JMicron jmb38x MemoryStick driver");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, jmb38x_ms_id_tbl);
+<<<<<<< HEAD
 
 module_init(jmb38x_ms_init);
 module_exit(jmb38x_ms_exit);
+=======
+>>>>>>> refs/remotes/origin/master

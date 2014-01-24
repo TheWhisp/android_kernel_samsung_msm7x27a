@@ -36,6 +36,14 @@
 #include <linux/delay.h>
 #include <linux/kfifo.h>
 #include <linux/scatterlist.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/tcp.h>
 #include <scsi/scsi_cmnd.h>
 #include <scsi/scsi_device.h>
@@ -134,7 +142,15 @@ static void iscsi_tcp_segment_map(struct iscsi_segment *segment, int recv)
 
 	if (recv) {
 		segment->atomic_mapped = true;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		segment->sg_mapped = kmap_atomic(sg_page(sg), KM_SOFTIRQ0);
+=======
+		segment->sg_mapped = kmap_atomic(sg_page(sg));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		segment->sg_mapped = kmap_atomic(sg_page(sg));
+>>>>>>> refs/remotes/origin/master
 	} else {
 		segment->atomic_mapped = false;
 		/* the xmit path can sleep with the page mapped so use kmap */
@@ -148,7 +164,15 @@ void iscsi_tcp_segment_unmap(struct iscsi_segment *segment)
 {
 	if (segment->sg_mapped) {
 		if (segment->atomic_mapped)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(segment->sg_mapped, KM_SOFTIRQ0);
+=======
+			kunmap_atomic(segment->sg_mapped);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(segment->sg_mapped);
+>>>>>>> refs/remotes/origin/master
 		else
 			kunmap(sg_page(segment->sg));
 		segment->sg_mapped = NULL;
@@ -557,7 +581,11 @@ static int iscsi_tcp_r2t_rsp(struct iscsi_conn *conn, struct iscsi_task *task)
 	if (!rc) {
 		iscsi_conn_printk(KERN_ERR, conn, "Could not allocate R2T. "
 				  "Target has sent more R2Ts than it "
+<<<<<<< HEAD
 				  "negotiated for or driver has has leaked.\n");
+=======
+				  "negotiated for or driver has leaked.\n");
+>>>>>>> refs/remotes/origin/master
 		return ISCSI_ERR_PROTO;
 	}
 
@@ -905,7 +933,10 @@ int iscsi_tcp_recv_skb(struct iscsi_conn *conn, struct sk_buff *skb,
 			ISCSI_DBG_TCP(conn, "no more data avail. Consumed %d\n",
 				      consumed);
 			*status = ISCSI_TCP_SKB_DONE;
+<<<<<<< HEAD
 			skb_abort_seq_read(&seq);
+=======
+>>>>>>> refs/remotes/origin/master
 			goto skb_done;
 		}
 		BUG_ON(segment->copied >= segment->size);
@@ -1169,6 +1200,33 @@ void iscsi_tcp_r2tpool_free(struct iscsi_session *session)
 }
 EXPORT_SYMBOL_GPL(iscsi_tcp_r2tpool_free);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int iscsi_tcp_set_max_r2t(struct iscsi_conn *conn, char *buf)
+{
+	struct iscsi_session *session = conn->session;
+	unsigned short r2ts = 0;
+
+	sscanf(buf, "%hu", &r2ts);
+	if (session->max_r2t == r2ts)
+		return 0;
+
+	if (!r2ts || !is_power_of_2(r2ts))
+		return -EINVAL;
+
+	session->max_r2t = r2ts;
+	iscsi_tcp_r2tpool_free(session);
+	return iscsi_tcp_r2tpool_alloc(session);
+}
+EXPORT_SYMBOL_GPL(iscsi_tcp_set_max_r2t);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void iscsi_tcp_conn_get_stats(struct iscsi_cls_conn *cls_conn,
 			      struct iscsi_stats *stats)
 {

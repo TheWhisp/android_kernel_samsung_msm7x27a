@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+#include <linux/kbuild.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <asm/thread_info.h>
 
@@ -7,11 +11,14 @@
  * and format the required data.
  */
 
+<<<<<<< HEAD
 #define DEFINE(sym, val) \
 	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
 
 #define BLANK() asm volatile("\n->" : : )
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if !defined(CONFIG_ETRAX_ARCH_V10) && !defined(CONFIG_ETRAX_ARCH_V32)
 #error One of ARCH v10 and ARCH v32 must be true!
 #endif

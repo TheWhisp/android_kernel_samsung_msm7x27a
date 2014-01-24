@@ -6,7 +6,13 @@
 #ifndef _SPARC_AUXIO_H
 #define _SPARC_AUXIO_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/vaddrs.h>
 
 /* This register is an unsigned char in IO space.  It does two things.

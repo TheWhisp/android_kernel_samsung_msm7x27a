@@ -142,6 +142,14 @@
  */
 #define CIFS_SESS_KEY_SIZE (16)
 
+<<<<<<< HEAD
+=======
+/*
+ * Size of the smb3 signing key
+ */
+#define SMB3_SIGN_KEY_SIZE (16)
+
+>>>>>>> refs/remotes/origin/master
 #define CIFS_CLIENT_CHALLENGE_SIZE (8)
 #define CIFS_SERVER_CHALLENGE_SIZE (8)
 #define CIFS_HMAC_MD5_HASH_SIZE (16)
@@ -277,7 +285,10 @@
 #define CIFS_NO_HANDLE        0xFFFF
 
 #define NO_CHANGE_64          0xFFFFFFFFFFFFFFFFULL
+<<<<<<< HEAD
 #define NO_CHANGE_32          0xFFFFFFFFUL
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* IPC$ in ASCII */
 #define CIFS_IPC_RESOURCE "\x49\x50\x43\x24"
@@ -424,7 +435,11 @@ struct smb_hdr {
 	__u16 Tid;
 	__le16 Pid;
 	__u16 Uid;
+<<<<<<< HEAD
 	__u16 Mid;
+=======
+	__le16 Mid;
+>>>>>>> refs/remotes/origin/master
 	__u8 WordCount;
 } __attribute__((packed));
 
@@ -532,7 +547,11 @@ typedef struct lanman_neg_rsp {
 #define READ_RAW_ENABLE 1
 #define WRITE_RAW_ENABLE 2
 #define RAW_ENABLE (READ_RAW_ENABLE | WRITE_RAW_ENABLE)
+<<<<<<< HEAD
 
+=======
+#define SMB1_CLIENT_GUID_SIZE (16)
+>>>>>>> refs/remotes/origin/master
 typedef struct negotiate_rsp {
 	struct smb_hdr hdr;	/* wct = 17 */
 	__le16 DialectIndex; /* 0xFFFF = no dialect acceptable */
@@ -554,7 +573,11 @@ typedef struct negotiate_rsp {
 		/* followed by 16 bytes of server GUID */
 		/* then security blob if cap_extended_security negotiated */
 		struct {
+<<<<<<< HEAD
 			unsigned char GUID[16];
+=======
+			unsigned char GUID[SMB1_CLIENT_GUID_SIZE];
+>>>>>>> refs/remotes/origin/master
 			unsigned char SecurityBlob[1];
 		} __attribute__((packed)) extended_response;
 	} __attribute__((packed)) u;
@@ -693,7 +716,17 @@ struct ntlmssp2_name {
 } __attribute__((packed));
 
 struct ntlmv2_resp {
+<<<<<<< HEAD
 	char ntlmv2_hash[CIFS_ENCPWD_SIZE];
+=======
+	union {
+	    char ntlmv2_hash[CIFS_ENCPWD_SIZE];
+	    struct {
+		__u8 reserved[8];
+		__u8 key[CIFS_SERVER_CHALLENGE_SIZE];
+	    } __attribute__((packed)) challenge;
+	} __attribute__((packed));
+>>>>>>> refs/remotes/origin/master
 	__le32 blob_signature;
 	__u32  reserved;
 	__le64  time;
@@ -1089,9 +1122,17 @@ typedef struct smb_com_read_rsp {
 	__le16 DataLengthHigh;
 	__u64 Reserved2;
 	__u16 ByteCount;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__u8 Pad;		/* BB check for whether padded to DWORD
 				   boundary and optimum performance here */
 	char Data[1];
+=======
+	/* read response data immediately follows */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* read response data immediately follows */
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed)) READ_RSP;
 
 typedef struct locking_andx_range {
@@ -1318,6 +1359,17 @@ typedef struct smb_com_ntransact_rsp {
 	/* parms and data follow */
 } __attribute__((packed)) NTRANSACT_RSP;
 
+<<<<<<< HEAD
+=======
+/* See MS-SMB 2.2.7.2.1.1 */
+struct srv_copychunk {
+	__le64 SourceOffset;
+	__le64 DestinationOffset;
+	__le32 CopyLength;
+	__u32  Reserved;
+} __packed;
+
+>>>>>>> refs/remotes/origin/master
 typedef struct smb_com_transaction_ioctl_req {
 	struct smb_hdr hdr;	/* wct = 23 */
 	__u8 MaxSetupCount;
@@ -1342,6 +1394,38 @@ typedef struct smb_com_transaction_ioctl_req {
 	__u8 Data[1];
 } __attribute__((packed)) TRANSACT_IOCTL_REQ;
 
+<<<<<<< HEAD
+=======
+typedef struct smb_com_transaction_compr_ioctl_req {
+	struct smb_hdr hdr;	/* wct = 23 */
+	__u8 MaxSetupCount;
+	__u16 Reserved;
+	__le32 TotalParameterCount;
+	__le32 TotalDataCount;
+	__le32 MaxParameterCount;
+	__le32 MaxDataCount;
+	__le32 ParameterCount;
+	__le32 ParameterOffset;
+	__le32 DataCount;
+	__le32 DataOffset;
+	__u8 SetupCount; /* four setup words follow subcommand */
+	/* SNIA spec incorrectly included spurious pad here */
+	__le16 SubCommand; /* 2 = IOCTL/FSCTL */
+	__le32 FunctionCode;
+	__u16 Fid;
+	__u8 IsFsctl;  /* 1 = File System Control 0 = device control (IOCTL) */
+	__u8 IsRootFlag; /* 1 = apply command to root of share (must be DFS) */
+	__le16 ByteCount;
+	__u8 Pad[3];
+	__le16 compression_state;  /* See below for valid flags */
+} __attribute__((packed)) TRANSACT_COMPR_IOCTL_REQ;
+
+/* compression state flags */
+#define COMPRESSION_FORMAT_NONE		0x0000
+#define COMPRESSION_FORMAT_DEFAULT	0x0001
+#define COMPRESSION_FORMAT_LZNT1	0x0002
+
+>>>>>>> refs/remotes/origin/master
 typedef struct smb_com_transaction_ioctl_rsp {
 	struct smb_hdr hdr;	/* wct = 19 */
 	__u8 Reserved[3];
@@ -1481,6 +1565,7 @@ struct file_notify_information {
 	__u8  FileName[0];
 } __attribute__((packed));
 
+<<<<<<< HEAD
 struct reparse_data {
 	__u32	ReparseTag;
 	__u16	ReparseDataLength;
@@ -1490,6 +1575,33 @@ struct reparse_data {
 	__u16	TargetNameOffset;
 	__u16	TargetNameLen;
 	char	LinkNamesBuf[1];
+=======
+/* For IO_REPARSE_TAG_SYMLINK */
+struct reparse_symlink_data {
+	__le32	ReparseTag;
+	__le16	ReparseDataLength;
+	__u16	Reserved;
+	__le16	SubstituteNameOffset;
+	__le16	SubstituteNameLength;
+	__le16	PrintNameOffset;
+	__le16	PrintNameLength;
+	__le32	Flags;
+	char	PathBuffer[0];
+} __attribute__((packed));
+
+/* For IO_REPARSE_TAG_NFS */
+#define NFS_SPECFILE_LNK	0x00000000014B4E4C
+#define NFS_SPECFILE_CHR	0x0000000000524843
+#define NFS_SPECFILE_BLK	0x00000000004B4C42
+#define NFS_SPECFILE_FIFO	0x000000004F464946
+#define NFS_SPECFILE_SOCK	0x000000004B434F53
+struct reparse_posix_data {
+	__le32	ReparseTag;
+	__le16	ReparseDataLength;
+	__u16	Reserved;
+	__le64	InodeType; /* LNK, FIFO, CHR etc. */
+	char	PathBuffer[0];
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 struct cifs_quota_data {
@@ -1913,6 +2025,19 @@ typedef struct whoami_rsp_data { /* Query level 0x202 */
 
 /* SETFSInfo Levels */
 #define SMB_SET_CIFS_UNIX_INFO    0x200
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* level 0x203 is defined above in list of QFS info levels */
+/* #define SMB_REQUEST_TRANSPORT_ENCRYPTION 0x203 */
+
+/* Level 0x200 request structure follows */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct smb_com_transaction2_setfsi_req {
 	struct smb_hdr hdr;	/* wct = 15 */
 	__le16 TotalParameterCount;
@@ -1940,13 +2065,55 @@ typedef struct smb_com_transaction2_setfsi_req {
 	__le64 ClientUnixCap;   /* Data end */
 } __attribute__((packed)) TRANSACTION2_SETFSI_REQ;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* level 0x203 request structure follows */
+typedef struct smb_com_transaction2_setfs_enc_req {
+	struct smb_hdr hdr;	/* wct = 15 */
+	__le16 TotalParameterCount;
+	__le16 TotalDataCount;
+	__le16 MaxParameterCount;
+	__le16 MaxDataCount;
+	__u8 MaxSetupCount;
+	__u8 Reserved;
+	__le16 Flags;
+	__le32 Timeout;
+	__u16 Reserved2;
+	__le16 ParameterCount;	/* 4 */
+	__le16 ParameterOffset;
+	__le16 DataCount;	/* 12 */
+	__le16 DataOffset;
+	__u8 SetupCount;	/* one */
+	__u8 Reserved3;
+	__le16 SubCommand;	/* TRANS2_SET_FS_INFORMATION */
+	__le16 ByteCount;
+	__u8 Pad;
+	__u16  Reserved4;	/* Parameters start. */
+	__le16 InformationLevel;/* Parameters end. */
+	/* NTLMSSP Blob, Data start. */
+} __attribute__((packed)) TRANSACTION2_SETFSI_ENC_REQ;
+
+/* response for setfsinfo levels 0x200 and 0x203 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct smb_com_transaction2_setfsi_rsp {
 	struct smb_hdr hdr;	/* wct = 10 */
 	struct trans2_resp t2;
 	__u16 ByteCount;
 } __attribute__((packed)) TRANSACTION2_SETFSI_RSP;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct smb_com_transaction2_get_dfs_refer_req {
 	struct smb_hdr hdr;	/* wct = 15 */
 	__le16 TotalParameterCount;
@@ -2098,6 +2265,8 @@ typedef struct {
 #define CIFS_UNIX_PROXY_CAP             0x00000400 /* Proxy cap: 0xACE ioctl and
 						      QFS PROXY call */
 #ifdef CONFIG_CIFS_POSIX
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Can not set pathnames cap yet until we send new posix create SMB since
    otherwise server can treat such handles opened with older ntcreatex
    (by a new client which knows how to send posix path ops)
@@ -2105,6 +2274,20 @@ typedef struct {
    We can add back in POSIX_PATH_OPS cap when Posix Create/Mkdir finished */
 /* #define CIFS_UNIX_CAP_MASK              0x000000fb */
 #define CIFS_UNIX_CAP_MASK              0x000000db
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* presumably don't need the 0x20 POSIX_PATH_OPS_CAP since we never send
+   LockingX instead of posix locking call on unix sess (and we do not expect
+   LockingX to use different (ie Windows) semantics than posix locking on
+   the same session (if WINE needs to do this later, we can add this cap
+   back in later */
+/* #define CIFS_UNIX_CAP_MASK              0x000000fb */
+#define CIFS_UNIX_CAP_MASK              0x000003db
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define CIFS_UNIX_CAP_MASK              0x00000013
 #endif /* CONFIG_CIFS_POSIX */
@@ -2159,6 +2342,12 @@ typedef struct {
 	__le32 DeviceCharacteristics;
 } __attribute__((packed)) FILE_SYSTEM_DEVICE_INFO; /* device info level 0x104 */
 
+<<<<<<< HEAD
+=======
+/* minimum includes first three fields, and empty FS Name */
+#define MIN_FS_ATTR_INFO_SIZE 12
+
+>>>>>>> refs/remotes/origin/master
 typedef struct {
 	__le32 Attributes;
 	__le32 MaxPathNameComponentLength;
@@ -2182,7 +2371,11 @@ typedef struct { /* data block encoding of response to level 263 QPathInfo */
 	__u8 DeletePending;
 	__u8 Directory;
 	__u16 Pad2;
+<<<<<<< HEAD
 	__u64 IndexNumber;
+=======
+	__le64 IndexNumber;
+>>>>>>> refs/remotes/origin/master
 	__le32 EASize;
 	__le32 AccessFlags;
 	__u64 IndexNumber1;
@@ -2611,6 +2804,7 @@ typedef struct file_xattr_info {
 } __attribute__((packed)) FILE_XATTR_INFO; /* extended attribute info
 					      level 0x205 */
 
+<<<<<<< HEAD
 
 /* flags for chattr command */
 #define EXT_SECURE_DELETE		0x00000001 /* EXT3_SECRM_FL */
@@ -2631,6 +2825,9 @@ typedef struct file_xattr_info {
 
 #define EXT_SET_MASK			0x000300FF
 #define EXT_GET_MASK			0x0003DFFF
+=======
+/* flags for lsattr and chflags commands removed arein uapi/linux/fs.h */
+>>>>>>> refs/remotes/origin/master
 
 typedef struct file_chattr_info {
 	__le64	mask; /* list of all possible attribute bits */

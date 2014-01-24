@@ -13,6 +13,9 @@
  */
 
 #include <linux/ftrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/uaccess.h>
 
 #include <asm/cacheflush.h>
@@ -20,6 +23,27 @@
 
 #ifdef CONFIG_THUMB2_KERNEL
 #define	NOP		0xeb04f85d	/* pop.w {lr} */
+=======
+#include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/uaccess.h>
+
+#include <asm/cacheflush.h>
+#include <asm/opcodes.h>
+#include <asm/ftrace.h>
+
+#include "insn.h"
+
+#ifdef CONFIG_THUMB2_KERNEL
+#define	NOP		0xf85deb04	/* pop.w {lr} */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define	NOP		0xe8bd4000	/* pop {lr} */
 #endif
@@ -60,6 +84,9 @@ static unsigned long adjust_address(struct dyn_ftrace *rec, unsigned long addr)
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_THUMB2_KERNEL
 static unsigned long ftrace_gen_branch(unsigned long pc, unsigned long addr,
 				       bool link)
@@ -130,6 +157,71 @@ static int ftrace_modify_code(unsigned long pc, unsigned long old,
 
 	if (replaced != old)
 		return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int ftrace_arch_code_modify_prepare(void)
+{
+	set_kernel_text_rw();
+	set_all_modules_text_rw();
+	return 0;
+}
+
+int ftrace_arch_code_modify_post_process(void)
+{
+	set_all_modules_text_ro();
+	set_kernel_text_ro();
+	return 0;
+}
+
+int ftrace_arch_code_modify_prepare(void)
+{
+	set_kernel_text_rw();
+	set_all_modules_text_rw();
+	return 0;
+}
+
+int ftrace_arch_code_modify_post_process(void)
+{
+	set_all_modules_text_ro();
+	set_kernel_text_ro();
+	return 0;
+}
+
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
+{
+	return arm_gen_branch_link(pc, addr);
+}
+
+static int ftrace_modify_code(unsigned long pc, unsigned long old,
+			      unsigned long new, bool validate)
+{
+	unsigned long replaced;
+
+	if (IS_ENABLED(CONFIG_THUMB2_KERNEL)) {
+		old = __opcode_to_mem_thumb32(old);
+		new = __opcode_to_mem_thumb32(new);
+	} else {
+		old = __opcode_to_mem_arm(old);
+		new = __opcode_to_mem_arm(new);
+	}
+
+	if (validate) {
+		if (probe_kernel_read(&replaced, (void *)pc, MCOUNT_INSN_SIZE))
+			return -EFAULT;
+
+		if (replaced != old)
+			return -EINVAL;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (probe_kernel_write((void *)pc, &new, MCOUNT_INSN_SIZE))
 		return -EPERM;
@@ -141,23 +233,55 @@ static int ftrace_modify_code(unsigned long pc, unsigned long old,
 
 int ftrace_update_ftrace_func(ftrace_func_t func)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long pc, old;
+=======
+	unsigned long pc;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long pc;
+>>>>>>> refs/remotes/origin/master
 	unsigned long new;
 	int ret;
 
 	pc = (unsigned long)&ftrace_call;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(&old, &ftrace_call, MCOUNT_INSN_SIZE);
 	new = ftrace_call_replace(pc, (unsigned long)func);
 
 	ret = ftrace_modify_code(pc, old, new);
+=======
+	new = ftrace_call_replace(pc, (unsigned long)func);
+
+	ret = ftrace_modify_code(pc, 0, new, false);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	new = ftrace_call_replace(pc, (unsigned long)func);
+
+	ret = ftrace_modify_code(pc, 0, new, false);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_OLD_MCOUNT
 	if (!ret) {
 		pc = (unsigned long)&ftrace_call_old;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		memcpy(&old, &ftrace_call_old, MCOUNT_INSN_SIZE);
 		new = ftrace_call_replace(pc, (unsigned long)func);
 
 		ret = ftrace_modify_code(pc, old, new);
+=======
+		new = ftrace_call_replace(pc, (unsigned long)func);
+
+		ret = ftrace_modify_code(pc, 0, new, false);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		new = ftrace_call_replace(pc, (unsigned long)func);
+
+		ret = ftrace_modify_code(pc, 0, new, false);
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -172,7 +296,15 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
 	old = ftrace_nop_replace(rec);
 	new = ftrace_call_replace(ip, adjust_address(rec, addr));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return ftrace_modify_code(rec->ip, old, new);
+=======
+	return ftrace_modify_code(rec->ip, old, new, true);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ftrace_modify_code(rec->ip, old, new, true);
+>>>>>>> refs/remotes/origin/master
 }
 
 int ftrace_make_nop(struct module *mod,
@@ -185,7 +317,15 @@ int ftrace_make_nop(struct module *mod,
 
 	old = ftrace_call_replace(ip, adjust_address(rec, addr));
 	new = ftrace_nop_replace(rec);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = ftrace_modify_code(ip, old, new);
+=======
+	ret = ftrace_modify_code(ip, old, new, true);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = ftrace_modify_code(ip, old, new, true);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_OLD_MCOUNT
 	if (ret == -EINVAL && addr == MCOUNT_ADDR) {
@@ -193,7 +333,15 @@ int ftrace_make_nop(struct module *mod,
 
 		old = ftrace_call_replace(ip, adjust_address(rec, addr));
 		new = ftrace_nop_replace(rec);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = ftrace_modify_code(ip, old, new);
+=======
+		ret = ftrace_modify_code(ip, old, new, true);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = ftrace_modify_code(ip, old, new, true);
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -223,6 +371,7 @@ void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr,
 	old = *parent;
 	*parent = return_hooker;
 
+<<<<<<< HEAD
 	err = ftrace_push_return_trace(old, self_addr, &trace.depth,
 				       frame_pointer);
 	if (err == -EBUSY) {
@@ -236,6 +385,22 @@ void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr,
 	if (!ftrace_graph_entry(&trace)) {
 		current->curr_ret_stack--;
 		*parent = old;
+=======
+	trace.func = self_addr;
+	trace.depth = current->curr_ret_stack + 1;
+
+	/* Only trace if the calling function expects to */
+	if (!ftrace_graph_entry(&trace)) {
+		*parent = old;
+		return;
+	}
+
+	err = ftrace_push_return_trace(old, self_addr, &trace.depth,
+				       frame_pointer);
+	if (err == -EBUSY) {
+		*parent = old;
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -249,12 +414,28 @@ static int __ftrace_modify_caller(unsigned long *callsite,
 {
 	unsigned long caller_fn = (unsigned long) func;
 	unsigned long pc = (unsigned long) callsite;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long branch = ftrace_gen_branch(pc, caller_fn, false);
+=======
+	unsigned long branch = arm_gen_branch(pc, caller_fn);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long branch = arm_gen_branch(pc, caller_fn);
+>>>>>>> refs/remotes/origin/master
 	unsigned long nop = 0xe1a00000;	/* mov r0, r0 */
 	unsigned long old = enable ? nop : branch;
 	unsigned long new = enable ? branch : nop;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return ftrace_modify_code(pc, old, new);
+=======
+	return ftrace_modify_code(pc, old, new, true);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ftrace_modify_code(pc, old, new, true);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ftrace_modify_graph_caller(bool enable)

@@ -24,6 +24,7 @@
 #include <linux/platform_device.h>
 #include <linux/clk.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 #include <linux/rfkill-gpio.h>
 
@@ -45,6 +46,25 @@ struct rfkill_gpio_data {
 	char					*shutdown_name;
 	enum rfkill_gpio_clk_state		pwr_clk_enabled;
 	struct clk				*pwr_clk;
+=======
+#include <linux/acpi.h>
+#include <linux/gpio/consumer.h>
+
+#include <linux/rfkill-gpio.h>
+
+struct rfkill_gpio_data {
+	const char		*name;
+	enum rfkill_type	type;
+	struct gpio_desc	*reset_gpio;
+	struct gpio_desc	*shutdown_gpio;
+
+	struct rfkill		*rfkill_dev;
+	char			*reset_name;
+	char			*shutdown_name;
+	struct clk		*clk;
+
+	bool			clk_enabled;
+>>>>>>> refs/remotes/origin/master
 };
 
 static int rfkill_gpio_set_power(void *data, bool blocked)
@@ -52,6 +72,7 @@ static int rfkill_gpio_set_power(void *data, bool blocked)
 	struct rfkill_gpio_data *rfkill = data;
 
 	if (blocked) {
+<<<<<<< HEAD
 		if (gpio_is_valid(rfkill->pdata->shutdown_gpio))
 			gpio_direction_output(rfkill->pdata->shutdown_gpio, 0);
 		if (gpio_is_valid(rfkill->pdata->reset_gpio))
@@ -69,6 +90,20 @@ static int rfkill_gpio_set_power(void *data, bool blocked)
 
 	if (rfkill->pwr_clk)
 		PWR_CLK_SET(rfkill, blocked);
+=======
+		gpiod_set_value(rfkill->shutdown_gpio, 0);
+		gpiod_set_value(rfkill->reset_gpio, 0);
+		if (!IS_ERR(rfkill->clk) && rfkill->clk_enabled)
+			clk_disable(rfkill->clk);
+	} else {
+		if (!IS_ERR(rfkill->clk) && !rfkill->clk_enabled)
+			clk_enable(rfkill->clk);
+		gpiod_set_value(rfkill->reset_gpio, 1);
+		gpiod_set_value(rfkill->shutdown_gpio, 1);
+	}
+
+	rfkill->clk_enabled = blocked;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -77,6 +112,7 @@ static const struct rfkill_ops rfkill_gpio_ops = {
 	.set_block = rfkill_gpio_set_power,
 };
 
+<<<<<<< HEAD
 static int rfkill_gpio_probe(struct platform_device *pdev)
 {
 	struct rfkill_gpio_data *rfkill;
@@ -101,6 +137,17 @@ static int rfkill_gpio_probe(struct platform_device *pdev)
 	if (!rfkill)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	if (pdata->gpio_runtime_setup) {
+		ret = pdata->gpio_runtime_setup(pdev);
+		if (ret) {
+			pr_warn("%s: can't set up gpio\n", __func__);
+			goto fail_alloc;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	rfkill->pdata = pdata;
 
 	len = strlen(pdata->name);
@@ -177,12 +224,123 @@ fail_alloc:
 	kfree(rfkill);
 
 	return ret;
+=======
+static int rfkill_gpio_acpi_probe(struct device *dev,
+				  struct rfkill_gpio_data *rfkill)
+{
+	const struct acpi_device_id *id;
+
+	id = acpi_match_device(dev->driver->acpi_match_table, dev);
+	if (!id)
+		return -ENODEV;
+
+	rfkill->name = dev_name(dev);
+	rfkill->type = (unsigned)id->driver_data;
+
+	return 0;
+}
+
+static int rfkill_gpio_probe(struct platform_device *pdev)
+{
+	struct rfkill_gpio_platform_data *pdata = pdev->dev.platform_data;
+	struct rfkill_gpio_data *rfkill;
+	const char *clk_name = NULL;
+	struct gpio_desc *gpio;
+	int ret;
+	int len;
+
+	rfkill = devm_kzalloc(&pdev->dev, sizeof(*rfkill), GFP_KERNEL);
+	if (!rfkill)
+		return -ENOMEM;
+
+	if (ACPI_HANDLE(&pdev->dev)) {
+		ret = rfkill_gpio_acpi_probe(&pdev->dev, rfkill);
+		if (ret)
+			return ret;
+	} else if (pdata) {
+		clk_name = pdata->power_clk_name;
+		rfkill->name = pdata->name;
+		rfkill->type = pdata->type;
+	} else {
+		return -ENODEV;
+	}
+
+	len = strlen(rfkill->name);
+	rfkill->reset_name = devm_kzalloc(&pdev->dev, len + 7, GFP_KERNEL);
+	if (!rfkill->reset_name)
+		return -ENOMEM;
+
+	rfkill->shutdown_name = devm_kzalloc(&pdev->dev, len + 10, GFP_KERNEL);
+	if (!rfkill->shutdown_name)
+		return -ENOMEM;
+
+	snprintf(rfkill->reset_name, len + 6 , "%s_reset", rfkill->name);
+	snprintf(rfkill->shutdown_name, len + 9, "%s_shutdown", rfkill->name);
+
+	rfkill->clk = devm_clk_get(&pdev->dev, clk_name);
+
+	gpio = devm_gpiod_get_index(&pdev->dev, rfkill->reset_name, 0);
+	if (!IS_ERR(gpio)) {
+		ret = gpiod_direction_output(gpio, 0);
+		if (ret)
+			return ret;
+		rfkill->reset_gpio = gpio;
+	}
+
+	gpio = devm_gpiod_get_index(&pdev->dev, rfkill->shutdown_name, 1);
+	if (!IS_ERR(gpio)) {
+		ret = gpiod_direction_output(gpio, 0);
+		if (ret)
+			return ret;
+		rfkill->shutdown_gpio = gpio;
+	}
+
+	/* Make sure at-least one of the GPIO is defined and that
+	 * a name is specified for this instance
+	 */
+	if ((!rfkill->reset_gpio && !rfkill->shutdown_gpio) || !rfkill->name) {
+		dev_err(&pdev->dev, "invalid platform data\n");
+		return -EINVAL;
+	}
+
+	if (pdata && pdata->gpio_runtime_setup) {
+		ret = pdata->gpio_runtime_setup(pdev);
+		if (ret) {
+			dev_err(&pdev->dev, "can't set up gpio\n");
+			return ret;
+		}
+	}
+
+	rfkill->rfkill_dev = rfkill_alloc(rfkill->name, &pdev->dev,
+					  rfkill->type, &rfkill_gpio_ops,
+					  rfkill);
+	if (!rfkill->rfkill_dev)
+		return -ENOMEM;
+
+	ret = rfkill_register(rfkill->rfkill_dev);
+	if (ret < 0)
+		return ret;
+
+	platform_set_drvdata(pdev, rfkill);
+
+	dev_info(&pdev->dev, "%s device registered.\n", rfkill->name);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int rfkill_gpio_remove(struct platform_device *pdev)
 {
 	struct rfkill_gpio_data *rfkill = platform_get_drvdata(pdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	struct rfkill_gpio_platform_data *pdata = pdev->dev.platform_data;
+
+	if (pdata->gpio_runtime_close)
+		pdata->gpio_runtime_close(pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	rfkill_unregister(rfkill->rfkill_dev);
 	rfkill_destroy(rfkill->rfkill_dev);
 	if (gpio_is_valid(rfkill->pdata->shutdown_gpio))
@@ -196,10 +354,19 @@ static int rfkill_gpio_remove(struct platform_device *pdev)
 	kfree(rfkill->shutdown_name);
 	kfree(rfkill->reset_name);
 	kfree(rfkill);
+=======
+	struct rfkill_gpio_platform_data *pdata = pdev->dev.platform_data;
+
+	if (pdata && pdata->gpio_runtime_close)
+		pdata->gpio_runtime_close(pdev);
+	rfkill_unregister(rfkill->rfkill_dev);
+	rfkill_destroy(rfkill->rfkill_dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver rfkill_gpio_driver = {
 	.probe = rfkill_gpio_probe,
 	.remove = __devexit_p(rfkill_gpio_remove),
@@ -209,6 +376,7 @@ static struct platform_driver rfkill_gpio_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init rfkill_gpio_init(void)
 {
 	return platform_driver_register(&rfkill_gpio_driver);
@@ -221,6 +389,27 @@ static void __exit rfkill_gpio_exit(void)
 
 module_init(rfkill_gpio_init);
 module_exit(rfkill_gpio_exit);
+=======
+module_platform_driver(rfkill_gpio_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct acpi_device_id rfkill_acpi_match[] = {
+	{ "BCM4752", RFKILL_TYPE_GPS },
+	{ },
+};
+
+static struct platform_driver rfkill_gpio_driver = {
+	.probe = rfkill_gpio_probe,
+	.remove = rfkill_gpio_remove,
+	.driver = {
+		.name = "rfkill_gpio",
+		.owner = THIS_MODULE,
+		.acpi_match_table = ACPI_PTR(rfkill_acpi_match),
+	},
+};
+
+module_platform_driver(rfkill_gpio_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("gpio rfkill");
 MODULE_AUTHOR("NVIDIA");

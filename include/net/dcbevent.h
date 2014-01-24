@@ -24,8 +24,42 @@ enum dcbevent_notif_type {
 	DCB_APP_EVENT = 1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int register_dcbevent_notifier(struct notifier_block *nb);
 extern int unregister_dcbevent_notifier(struct notifier_block *nb);
 extern int call_dcbevent_notifiers(unsigned long val, void *v);
+=======
+#ifdef CONFIG_DCB
+extern int register_dcbevent_notifier(struct notifier_block *nb);
+extern int unregister_dcbevent_notifier(struct notifier_block *nb);
+extern int call_dcbevent_notifiers(unsigned long val, void *v);
+=======
+#ifdef CONFIG_DCB
+int register_dcbevent_notifier(struct notifier_block *nb);
+int unregister_dcbevent_notifier(struct notifier_block *nb);
+int call_dcbevent_notifiers(unsigned long val, void *v);
+>>>>>>> refs/remotes/origin/master
+#else
+static inline int
+register_dcbevent_notifier(struct notifier_block *nb)
+{
+	return 0;
+}
+
+static inline int unregister_dcbevent_notifier(struct notifier_block *nb)
+{
+	return 0;
+}
+
+static inline int call_dcbevent_notifiers(unsigned long val, void *v)
+{
+	return 0;
+}
+#endif /* CONFIG_DCB */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

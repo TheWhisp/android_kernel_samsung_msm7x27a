@@ -32,8 +32,14 @@
 #include "squashfs_fs_sb.h"
 #include "squashfs.h"
 #include "decompressor.h"
+<<<<<<< HEAD
 
 static void *zlib_init(struct squashfs_sb_info *dummy, void *buff, int len)
+=======
+#include "page_actor.h"
+
+static void *zlib_init(struct squashfs_sb_info *dummy, void *buff)
+>>>>>>> refs/remotes/origin/master
 {
 	z_stream *stream = kmalloc(sizeof(z_stream), GFP_KERNEL);
 	if (stream == NULL)
@@ -61,6 +67,7 @@ static void zlib_free(void *strm)
 }
 
 
+<<<<<<< HEAD
 static int zlib_uncompress(struct squashfs_sb_info *msblk, void **buffer,
 	struct buffer_head **bh, int b, int offset, int length, int srclength,
 	int pages)
@@ -72,33 +79,59 @@ static int zlib_uncompress(struct squashfs_sb_info *msblk, void **buffer,
 	mutex_lock(&msblk->read_data_mutex);
 
 	stream->avail_out = 0;
+=======
+static int zlib_uncompress(struct squashfs_sb_info *msblk, void *strm,
+	struct buffer_head **bh, int b, int offset, int length,
+	struct squashfs_page_actor *output)
+{
+	int zlib_err, zlib_init = 0, k = 0;
+	z_stream *stream = strm;
+
+	stream->avail_out = PAGE_CACHE_SIZE;
+	stream->next_out = squashfs_first_page(output);
+>>>>>>> refs/remotes/origin/master
 	stream->avail_in = 0;
 
 	do {
 		if (stream->avail_in == 0 && k < b) {
 			int avail = min(length, msblk->devblksize - offset);
 			length -= avail;
+<<<<<<< HEAD
 			wait_on_buffer(bh[k]);
 			if (!buffer_uptodate(bh[k]))
 				goto release_mutex;
 
+=======
+>>>>>>> refs/remotes/origin/master
 			stream->next_in = bh[k]->b_data + offset;
 			stream->avail_in = avail;
 			offset = 0;
 		}
 
+<<<<<<< HEAD
 		if (stream->avail_out == 0 && page < pages) {
 			stream->next_out = buffer[page++];
 			stream->avail_out = PAGE_CACHE_SIZE;
+=======
+		if (stream->avail_out == 0) {
+			stream->next_out = squashfs_next_page(output);
+			if (stream->next_out != NULL)
+				stream->avail_out = PAGE_CACHE_SIZE;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (!zlib_init) {
 			zlib_err = zlib_inflateInit(stream);
 			if (zlib_err != Z_OK) {
+<<<<<<< HEAD
 				ERROR("zlib_inflateInit returned unexpected "
 					"result 0x%x, srclength %d\n",
 					zlib_err, srclength);
 				goto release_mutex;
+=======
+				squashfs_finish_page(output);
+				goto out;
+>>>>>>> refs/remotes/origin/master
 			}
 			zlib_init = 1;
 		}
@@ -109,6 +142,7 @@ static int zlib_uncompress(struct squashfs_sb_info *msblk, void **buffer,
 			put_bh(bh[k++]);
 	} while (zlib_err == Z_OK);
 
+<<<<<<< HEAD
 	if (zlib_err != Z_STREAM_END) {
 		ERROR("zlib_inflate error, data probably corrupt\n");
 		goto release_mutex;
@@ -132,6 +166,23 @@ static int zlib_uncompress(struct squashfs_sb_info *msblk, void **buffer,
 release_mutex:
 	mutex_unlock(&msblk->read_data_mutex);
 
+=======
+	squashfs_finish_page(output);
+
+	if (zlib_err != Z_STREAM_END)
+		goto out;
+
+	zlib_err = zlib_inflateEnd(stream);
+	if (zlib_err != Z_OK)
+		goto out;
+
+	if (k < b)
+		goto out;
+
+	return stream->total_out;
+
+out:
+>>>>>>> refs/remotes/origin/master
 	for (; k < b; k++)
 		put_bh(bh[k]);
 

@@ -101,6 +101,14 @@ ENTRY(cpu_arm720_set_pte_ext)
  * Params  : r0 = address to jump to
  * Notes   : This sets up everything for a reset
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_arm720_reset)
 		mov	ip, #0
 		mcr	p15, 0, ip, c7, c7, 0		@ invalidate cache
@@ -112,8 +120,18 @@ ENTRY(cpu_arm720_reset)
 		bic	ip, ip, #0x2100			@ ..v....s........
 		mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 		mov	pc, r0
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_arm720_reset)
+		.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__CPUINIT
+=======
+ENDPROC(cpu_arm720_reset)
+		.popsection
+>>>>>>> refs/remotes/origin/master
 
 	.type	__arm710_setup, #function
 __arm710_setup:
@@ -169,6 +187,8 @@ arm720_crval:
 	crval	clear=0x00002f3f, mmuset=0x0000213d, ucset=0x00000130
 
 		__INITDATA
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * Purpose : Function pointers used to access above functions - all calls
@@ -209,6 +229,22 @@ cpu_arm710_name:
 cpu_arm720_name:
 		.asciz	"ARM720T"
 		.size	cpu_arm720_name, . - cpu_arm720_name
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions arm720, dabort=v4t_late_abort, pabort=legacy_pabort
+
+		.section ".rodata"
+
+	string	cpu_arch_name, "armv4t"
+	string	cpu_elf_name, "v4"
+	string	cpu_arm710_name, "ARM710T"
+	string	cpu_arm720_name, "ARM720T"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		.align
 
@@ -218,10 +254,24 @@ cpu_arm720_name:
 	
 		.section ".proc.info.init", #alloc, #execinstr
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.type	__arm710_proc_info, #object
 __arm710_proc_info:
 		.long	0x41807100				@ cpu_val
 		.long	0xffffff00				@ cpu_mask
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+.macro arm720_proc_info name:req, cpu_val:req, cpu_mask:req, cpu_name:req, cpu_flush:req
+		.type	__\name\()_proc_info,#object
+__\name\()_proc_info:
+		.long	\cpu_val
+		.long	\cpu_mask
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.long   PMD_TYPE_SECT | \
 			PMD_SECT_BUFFERABLE | \
 			PMD_SECT_CACHEABLE | \
@@ -232,15 +282,28 @@ __arm710_proc_info:
 			PMD_BIT4 | \
 			PMD_SECT_AP_WRITE | \
 			PMD_SECT_AP_READ
+<<<<<<< HEAD
+<<<<<<< HEAD
 		b	__arm710_setup				@ cpu_flush
 		.long	cpu_arch_name				@ arch_name
 		.long	cpu_elf_name				@ elf_name
 		.long	HWCAP_SWP | HWCAP_HALF | HWCAP_THUMB	@ elf_hwcap
 		.long	cpu_arm710_name				@ name
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		b	\cpu_flush				@ cpu_flush
+		.long	cpu_arch_name				@ arch_name
+		.long	cpu_elf_name				@ elf_name
+		.long	HWCAP_SWP | HWCAP_HALF | HWCAP_THUMB	@ elf_hwcap
+		.long	\cpu_name
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		.long	arm720_processor_functions
 		.long	v4_tlb_fns
 		.long	v4wt_user_fns
 		.long	v4_cache_fns
+<<<<<<< HEAD
 		.size	__arm710_proc_info, . - __arm710_proc_info
 
 		.type	__arm720_proc_info, #object
@@ -262,8 +325,23 @@ __arm720_proc_info:
 		.long	cpu_elf_name				@ elf_name
 		.long	HWCAP_SWP | HWCAP_HALF | HWCAP_THUMB	@ elf_hwcap
 		.long	cpu_arm720_name				@ name
+=======
+>>>>>>> refs/remotes/origin/master
 		.long	arm720_processor_functions
 		.long	v4_tlb_fns
 		.long	v4wt_user_fns
 		.long	v4_cache_fns
+<<<<<<< HEAD
 		.size	__arm720_proc_info, . - __arm720_proc_info
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.size	__\name\()_proc_info, . - __\name\()_proc_info
+.endm
+
+	arm720_proc_info arm710, 0x41807100, 0xffffff00, cpu_arm710_name, __arm710_setup
+	arm720_proc_info arm720, 0x41807200, 0xffffff00, cpu_arm720_name, __arm720_setup
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -29,6 +29,7 @@
 #endif
 
 /**
+<<<<<<< HEAD
  * __ffs - find first set bit in word
  * @word: The word to search
  *
@@ -40,6 +41,8 @@ static inline unsigned long __ffs(unsigned long word)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * ffz - find first zero bit in word
  * @word: The word to search
  *
@@ -50,6 +53,7 @@ static inline unsigned long ffz(unsigned long word)
 	return __builtin_ctzl(~word);
 }
 
+<<<<<<< HEAD
 /**
  * __fls - find last set bit in word
  * @word: The word to search
@@ -77,11 +81,19 @@ static inline int ffs(int x)
 	return __builtin_ffs(x);
 }
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int fls64(__u64 w)
 {
 	return (sizeof(__u64) * 8) - __builtin_clzll(w);
 }
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * fls - find last set bit in word
  * @x: the word to search
@@ -95,7 +107,20 @@ static inline int fls64(__u64 w)
  */
 static inline int fls(int x)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return fls64((unsigned int) x);
+=======
+	return (sizeof(int) * 8) - __builtin_clz(x);
+}
+
+static inline int fls64(__u64 w)
+{
+	return (sizeof(__u64) * 8) - __builtin_clzll(w);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return fls64((unsigned int) x);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline unsigned int __arch_hweight32(unsigned int w)
@@ -118,6 +143,12 @@ static inline unsigned long __arch_hweight64(__u64 w)
 	return __builtin_popcountll(w);
 }
 
+<<<<<<< HEAD
+=======
+#include <asm-generic/bitops/builtin-__ffs.h>
+#include <asm-generic/bitops/builtin-__fls.h>
+#include <asm-generic/bitops/builtin-ffs.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/bitops/const_hweight.h>
 #include <asm-generic/bitops/lock.h>
 #include <asm-generic/bitops/find.h>

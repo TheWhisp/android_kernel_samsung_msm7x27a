@@ -46,7 +46,11 @@ static inline int exofs_add_nondir(struct dentry *dentry, struct inode *inode)
 }
 
 static struct dentry *exofs_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				   struct nameidata *nd)
+=======
+				   unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	ino_t ino;
@@ -55,6 +59,8 @@ static struct dentry *exofs_lookup(struct inode *dir, struct dentry *dentry,
 		return ERR_PTR(-ENAMETOOLONG);
 
 	ino = exofs_inode_by_name(dir, dentry);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode = NULL;
 	if (ino) {
 		inode = exofs_iget(dir->i_sb, ino);
@@ -65,7 +71,20 @@ static struct dentry *exofs_lookup(struct inode *dir, struct dentry *dentry,
 }
 
 static int exofs_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	inode = ino ? exofs_iget(dir->i_sb, ino) : NULL;
+	return d_splice_alias(inode, dentry);
+}
+
+static int exofs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 			 struct nameidata *nd)
+=======
+			 bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = exofs_new_inode(dir, mode);
 	int err = PTR_ERR(inode);
@@ -79,7 +98,15 @@ static int exofs_create(struct inode *dir, struct dentry *dentry, int mode,
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int exofs_mknod(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int exofs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int exofs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 		       dev_t rdev)
 {
 	struct inode *inode;
@@ -148,9 +175,15 @@ static int exofs_link(struct dentry *old_dentry, struct inode *dir,
 {
 	struct inode *inode = old_dentry->d_inode;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (inode->i_nlink >= EXOFS_LINK_MAX)
 		return -EMLINK;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	inode->i_ctime = CURRENT_TIME;
 	inode_inc_link_count(inode);
 	ihold(inode);
@@ -158,6 +191,8 @@ static int exofs_link(struct dentry *old_dentry, struct inode *dir,
 	return exofs_add_nondir(dentry, inode);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int exofs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 {
 	struct inode *inode;
@@ -165,6 +200,17 @@ static int exofs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 
 	if (dir->i_nlink >= EXOFS_LINK_MAX)
 		goto out;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int exofs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+{
+	struct inode *inode;
+	int err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	inode_inc_link_count(dir);
 
@@ -280,11 +326,17 @@ static int exofs_rename(struct inode *old_dir, struct dentry *old_dentry,
 		if (err)
 			goto out_dir;
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (dir_de) {
 			err = -EMLINK;
 			if (new_dir->i_nlink >= EXOFS_LINK_MAX)
 				goto out_dir;
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		err = exofs_add_link(new_dentry, old_inode);
 		if (err)
 			goto out_dir;

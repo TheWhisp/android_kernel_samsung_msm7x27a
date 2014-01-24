@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * include/asm-mips/mach-au1x00/au1xxx_ide.h  version 01.30.00   Aug. 02 2005
+=======
+ * include/asm-mips/mach-au1x00/au1xxx_ide.h  version 01.30.00  Aug. 02 2005
+>>>>>>> refs/remotes/origin/master
  *
  * BRIEF MODULE DESCRIPTION
  * AMD Alchemy Au1xxx IDE interface routines over the Static Bus
@@ -27,14 +31,24 @@
  * 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * Note: for more information, please refer "AMD Alchemy Au1200/Au1550 IDE
+<<<<<<< HEAD
  *       Interface and Linux Device Driver" Application Note.
+=======
+ *	 Interface and Linux Device Driver" Application Note.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifdef CONFIG_BLK_DEV_IDE_AU1XXX_MDMA2_DBDMA
 #define DMA_WAIT_TIMEOUT	100
+<<<<<<< HEAD
 #define NUM_DESCRIPTORS 	PRD_ENTRIES
 #else /* CONFIG_BLK_DEV_IDE_AU1XXX_PIO_DBDMA */
 #define NUM_DESCRIPTORS 	2
+=======
+#define NUM_DESCRIPTORS		PRD_ENTRIES
+#else /* CONFIG_BLK_DEV_IDE_AU1XXX_PIO_DBDMA */
+#define NUM_DESCRIPTORS		2
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifndef AU1XXX_ATA_RQSIZE
@@ -58,6 +72,14 @@ typedef struct {
 #endif
 	int			irq;
 	u32			regbase;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int			ddma_id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			ddma_id;
+>>>>>>> refs/remotes/origin/master
 } _auide_hwif;
 
 /******************************************************************************/
@@ -83,8 +105,13 @@ typedef struct {
 #define TWP_MASK		(0x3F << 14)
 #define TCSW_MASK		(0x0F << 10)
 #define TPM_MASK		(0x0F << 6)
+<<<<<<< HEAD
 #define TA_MASK 		(0x3F << 0)
 #define TS_MASK 		(1 << 8)
+=======
+#define TA_MASK			(0x3F << 0)
+#define TS_MASK			(1 << 8)
+>>>>>>> refs/remotes/origin/master
 
 /* Timing parameters PIO mode 0 */
 #define SBC_IDE_PIO0_TCSOE	(0x04 << 29)
@@ -95,7 +122,11 @@ typedef struct {
 #define SBC_IDE_PIO0_TWP	(0x10 << 14)
 #define SBC_IDE_PIO0_TCSW	(0x04 << 10)
 #define SBC_IDE_PIO0_TPM	(0x00 << 6)
+<<<<<<< HEAD
 #define SBC_IDE_PIO0_TA 	(0x15 << 0)
+=======
+#define SBC_IDE_PIO0_TA		(0x15 << 0)
+>>>>>>> refs/remotes/origin/master
 /* Timing parameters PIO mode 1 */
 #define SBC_IDE_PIO1_TCSOE	(0x03 << 29)
 #define SBC_IDE_PIO1_TOECS	(0x01 << 26)
@@ -105,7 +136,11 @@ typedef struct {
 #define SBC_IDE_PIO1_TWP	(0x08 << 14)
 #define SBC_IDE_PIO1_TCSW	(0x03 << 10)
 #define SBC_IDE_PIO1_TPM	(0x00 << 6)
+<<<<<<< HEAD
 #define SBC_IDE_PIO1_TA 	(0x0B << 0)
+=======
+#define SBC_IDE_PIO1_TA		(0x0B << 0)
+>>>>>>> refs/remotes/origin/master
 /* Timing parameters PIO mode 2 */
 #define SBC_IDE_PIO2_TCSOE	(0x05 << 29)
 #define SBC_IDE_PIO2_TOECS	(0x01 << 26)
@@ -115,7 +150,11 @@ typedef struct {
 #define SBC_IDE_PIO2_TWP	(0x1F << 14)
 #define SBC_IDE_PIO2_TCSW	(0x05 << 10)
 #define SBC_IDE_PIO2_TPM	(0x00 << 6)
+<<<<<<< HEAD
 #define SBC_IDE_PIO2_TA 	(0x22 << 0)
+=======
+#define SBC_IDE_PIO2_TA		(0x22 << 0)
+>>>>>>> refs/remotes/origin/master
 /* Timing parameters PIO mode 3 */
 #define SBC_IDE_PIO3_TCSOE	(0x05 << 29)
 #define SBC_IDE_PIO3_TOECS	(0x01 << 26)
@@ -125,7 +164,11 @@ typedef struct {
 #define SBC_IDE_PIO3_TWP	(0x15 << 14)
 #define SBC_IDE_PIO3_TCSW	(0x05 << 10)
 #define SBC_IDE_PIO3_TPM	(0x00 << 6)
+<<<<<<< HEAD
 #define SBC_IDE_PIO3_TA 	(0x1A << 0)
+=======
+#define SBC_IDE_PIO3_TA		(0x1A << 0)
+>>>>>>> refs/remotes/origin/master
 /* Timing parameters PIO mode 4 */
 #define SBC_IDE_PIO4_TCSOE	(0x04 << 29)
 #define SBC_IDE_PIO4_TOECS	(0x01 << 26)
@@ -135,7 +178,11 @@ typedef struct {
 #define SBC_IDE_PIO4_TWP	(0x0D << 14)
 #define SBC_IDE_PIO4_TCSW	(0x03 << 10)
 #define SBC_IDE_PIO4_TPM	(0x00 << 6)
+<<<<<<< HEAD
 #define SBC_IDE_PIO4_TA 	(0x12 << 0)
+=======
+#define SBC_IDE_PIO4_TA		(0x12 << 0)
+>>>>>>> refs/remotes/origin/master
 /* Timing parameters MDMA mode 0 */
 #define SBC_IDE_MDMA0_TCSOE	(0x03 << 29)
 #define SBC_IDE_MDMA0_TOECS	(0x01 << 26)

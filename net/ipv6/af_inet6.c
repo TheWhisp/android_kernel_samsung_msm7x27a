@@ -18,6 +18,10 @@
  *      2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "IPv6: " fmt
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/capability.h>
@@ -48,20 +52,35 @@
 #include <net/udp.h>
 #include <net/udplite.h>
 #include <net/tcp.h>
+<<<<<<< HEAD
 #include <net/ipip.h>
+<<<<<<< HEAD
 #include <net/ping.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/ping.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/protocol.h>
 #include <net/inet_common.h>
 #include <net/route.h>
 #include <net/transp_v6.h>
 #include <net/ip6_route.h>
 #include <net/addrconf.h>
+<<<<<<< HEAD
+=======
+#include <net/ndisc.h>
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_IPV6_TUNNEL
 #include <net/ip6_tunnel.h>
 #endif
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mroute6.h>
 
 #ifdef CONFIG_ANDROID_PARANOID_NETWORK
@@ -78,6 +97,13 @@ static inline int current_has_network(void)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+#include <linux/mroute6.h>
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 MODULE_AUTHOR("Cast of dozens");
 MODULE_DESCRIPTION("IPv6 protocol stack for Linux");
 MODULE_LICENSE("GPL");
@@ -93,7 +119,11 @@ struct ipv6_params ipv6_defaults = {
 	.autoconf = 1,
 };
 
+<<<<<<< HEAD
 static int disable_ipv6_mod = 0;
+=======
+static int disable_ipv6_mod;
+>>>>>>> refs/remotes/origin/master
 
 module_param_named(disable, disable_ipv6_mod, int, 0444);
 MODULE_PARM_DESC(disable, "Disable IPv6 module such that it is non-functional");
@@ -124,6 +154,10 @@ static int inet6_create(struct net *net, struct socket *sock, int protocol,
 	int try_loading_module = 0;
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!current_has_network())
 		return -EACCES;
 
@@ -132,6 +166,8 @@ static int inet6_create(struct net *net, struct socket *sock, int protocol,
 	    !inet_ehash_secret)
 		build_ehash_secret();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Look for the requested type/protocol pair. */
 lookup_protocol:
 	err = -ESOCKTNOSUPPORT;
@@ -178,7 +214,12 @@ lookup_protocol:
 	}
 
 	err = -EPERM;
+<<<<<<< HEAD
 	if (sock->type == SOCK_RAW && !kern && !capable(CAP_NET_RAW))
+=======
+	if (sock->type == SOCK_RAW && !kern &&
+	    !ns_capable(net->user_ns, CAP_NET_RAW))
+>>>>>>> refs/remotes/origin/master
 		goto out_rcu_unlock;
 
 	sock->ops = answer->ops;
@@ -199,7 +240,11 @@ lookup_protocol:
 	err = 0;
 	sk->sk_no_check = answer_no_check;
 	if (INET_PROTOSW_REUSE & answer_flags)
+<<<<<<< HEAD
 		sk->sk_reuse = 1;
+=======
+		sk->sk_reuse = SK_CAN_REUSE;
+>>>>>>> refs/remotes/origin/master
 
 	inet = inet_sk(sk);
 	inet->is_icsk = (INET_PROTOSW_ICSK & answer_flags) != 0;
@@ -232,6 +277,14 @@ lookup_protocol:
 	inet->mc_ttl	= 1;
 	inet->mc_index	= 0;
 	inet->mc_list	= NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	inet->rcv_tos	= 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inet->rcv_tos	= 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (ipv4_config.no_pmtu_disc)
 		inet->pmtudisc = IP_PMTUDISC_DONT;
@@ -274,7 +327,11 @@ out_rcu_unlock:
 /* bind for INET6 API */
 int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 {
+<<<<<<< HEAD
 	struct sockaddr_in6 *addr=(struct sockaddr_in6 *)uaddr;
+=======
+	struct sockaddr_in6 *addr = (struct sockaddr_in6 *)uaddr;
+>>>>>>> refs/remotes/origin/master
 	struct sock *sk = sock->sk;
 	struct inet_sock *inet = inet_sk(sk);
 	struct ipv6_pinfo *np = inet6_sk(sk);
@@ -299,7 +356,11 @@ int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 		return -EINVAL;
 
 	snum = ntohs(addr->sin6_port);
+<<<<<<< HEAD
 	if (snum && snum < PROT_SOCK && !capable(CAP_NET_BIND_SERVICE))
+=======
+	if (snum && snum < PROT_SOCK && !ns_capable(net->user_ns, CAP_NET_BIND_SERVICE))
+>>>>>>> refs/remotes/origin/master
 		return -EACCES;
 
 	lock_sock(sk);
@@ -339,7 +400,11 @@ int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 			struct net_device *dev = NULL;
 
 			rcu_read_lock();
+<<<<<<< HEAD
 			if (addr_type & IPV6_ADDR_LINKLOCAL) {
+=======
+			if (__ipv6_addr_needs_scope_id(addr_type)) {
+>>>>>>> refs/remotes/origin/master
 				if (addr_len >= sizeof(struct sockaddr_in6) &&
 				    addr->sin6_scope_id) {
 					/* Override any existing binding, if another one
@@ -365,7 +430,15 @@ int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 			 */
 			v4addr = LOOPBACK4_IPV6;
 			if (!(addr_type & IPV6_ADDR_MULTICAST))	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (!inet->transparent &&
+=======
+				if (!(inet->freebind || inet->transparent) &&
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (!(inet->freebind || inet->transparent) &&
+>>>>>>> refs/remotes/origin/master
 				    !ipv6_chk_addr(net, &addr->sin6_addr,
 						   dev, 0)) {
 					err = -EADDRNOTAVAIL;
@@ -379,10 +452,24 @@ int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 	inet->inet_rcv_saddr = v4addr;
 	inet->inet_saddr = v4addr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&np->rcv_saddr, &addr->sin6_addr);
 
 	if (!(addr_type & IPV6_ADDR_MULTICAST))
 		ipv6_addr_copy(&np->saddr, &addr->sin6_addr);
+=======
+	np->rcv_saddr = addr->sin6_addr;
+
+	if (!(addr_type & IPV6_ADDR_MULTICAST))
+		np->saddr = addr->sin6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sk->sk_v6_rcv_saddr = addr->sin6_addr;
+
+	if (!(addr_type & IPV6_ADDR_MULTICAST))
+		np->saddr = addr->sin6_addr;
+>>>>>>> refs/remotes/origin/master
 
 	/* Make sure we are allowed to bind here. */
 	if (sk->sk_prot->get_port(sk, snum)) {
@@ -408,7 +495,10 @@ out_unlock:
 	rcu_read_unlock();
 	goto out;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(inet6_bind);
 
 int inet6_release(struct socket *sock)
@@ -426,7 +516,10 @@ int inet6_release(struct socket *sock)
 
 	return inet_release(sock);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(inet6_release);
 
 void inet6_destroy_sock(struct sock *sk)
@@ -437,10 +530,19 @@ void inet6_destroy_sock(struct sock *sk)
 
 	/* Release rx options */
 
+<<<<<<< HEAD
 	if ((skb = xchg(&np->pktoptions, NULL)) != NULL)
 		kfree_skb(skb);
 
 	if ((skb = xchg(&np->rxpmtu, NULL)) != NULL)
+=======
+	skb = xchg(&np->pktoptions, NULL);
+	if (skb != NULL)
+		kfree_skb(skb);
+
+	skb = xchg(&np->rxpmtu, NULL);
+	if (skb != NULL)
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 
 	/* Free flowlabels */
@@ -448,10 +550,17 @@ void inet6_destroy_sock(struct sock *sk)
 
 	/* Free tx options */
 
+<<<<<<< HEAD
 	if ((opt = xchg(&np->opt, NULL)) != NULL)
 		sock_kfree_s(sk, opt, opt->tot_len);
 }
 
+=======
+	opt = xchg(&np->opt, NULL);
+	if (opt != NULL)
+		sock_kfree_s(sk, opt, opt->tot_len);
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(inet6_destroy_sock);
 
 /*
@@ -461,7 +570,11 @@ EXPORT_SYMBOL_GPL(inet6_destroy_sock);
 int inet6_getname(struct socket *sock, struct sockaddr *uaddr,
 		 int *uaddr_len, int peer)
 {
+<<<<<<< HEAD
 	struct sockaddr_in6 *sin=(struct sockaddr_in6 *)uaddr;
+=======
+	struct sockaddr_in6 *sin = (struct sockaddr_in6 *)uaddr;
+>>>>>>> refs/remotes/origin/master
 	struct sock *sk = sock->sk;
 	struct inet_sock *inet = inet_sk(sk);
 	struct ipv6_pinfo *np = inet6_sk(sk);
@@ -476,14 +589,25 @@ int inet6_getname(struct socket *sock, struct sockaddr *uaddr,
 		    peer == 1)
 			return -ENOTCONN;
 		sin->sin6_port = inet->inet_dport;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&sin->sin6_addr, &np->daddr);
+=======
+		sin->sin6_addr = np->daddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (np->sndflow)
 			sin->sin6_flowinfo = np->flow_label;
 	} else {
 		if (ipv6_addr_any(&np->rcv_saddr))
+<<<<<<< HEAD
 			ipv6_addr_copy(&sin->sin6_addr, &np->saddr);
 		else
 			ipv6_addr_copy(&sin->sin6_addr, &np->rcv_saddr);
+=======
+			sin->sin6_addr = np->saddr;
+		else
+			sin->sin6_addr = np->rcv_saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		sin->sin6_port = inet->inet_sport;
 	}
@@ -506,17 +630,52 @@ int inet6_killaddr_ioctl(struct net *net, void __user *arg) {
 		return -EFAULT;
 
 	sin6.sin6_family = AF_INET6;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&sin6.sin6_addr, &ireq.ifr6_addr);
+=======
+	sin6.sin6_addr = ireq.ifr6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return tcp_nuke_addr(net, (struct sockaddr *) &sin6);
 }
 
+=======
+		sin->sin6_addr = sk->sk_v6_daddr;
+		if (np->sndflow)
+			sin->sin6_flowinfo = np->flow_label;
+	} else {
+		if (ipv6_addr_any(&sk->sk_v6_rcv_saddr))
+			sin->sin6_addr = np->saddr;
+		else
+			sin->sin6_addr = sk->sk_v6_rcv_saddr;
+
+		sin->sin6_port = inet->inet_sport;
+	}
+	sin->sin6_scope_id = ipv6_iface_scope_id(&sin->sin6_addr,
+						 sk->sk_bound_dev_if);
+	*uaddr_len = sizeof(*sin);
+	return 0;
+}
+EXPORT_SYMBOL(inet6_getname);
+
+>>>>>>> refs/remotes/origin/master
+=======
+	sin6.sin6_addr = ireq.ifr6_addr;
+	return tcp_nuke_addr(net, (struct sockaddr *) &sin6);
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 int inet6_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 {
 	struct sock *sk = sock->sk;
 	struct net *net = sock_net(sk);
 
+<<<<<<< HEAD
 	switch(cmd)
 	{
+=======
+	switch (cmd) {
+>>>>>>> refs/remotes/origin/master
 	case SIOCGSTAMP:
 		return sock_get_timestamp(sk, (struct timeval __user *)arg);
 
@@ -534,8 +693,16 @@ int inet6_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 		return addrconf_del_ifaddr(net, (void __user *) arg);
 	case SIOCSIFDSTADDR:
 		return addrconf_set_dstaddr(net, (void __user *) arg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case SIOCKILLADDR:
 		return inet6_killaddr_ioctl(net, (void __user *) arg);
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	case SIOCKILLADDR:
+		return inet6_killaddr_ioctl(net, (void __user *) arg);
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		if (!sk->sk_prot->ioctl)
 			return -ENOIOCTLCMD;
@@ -544,7 +711,10 @@ int inet6_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 	/*NOTREACHED*/
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(inet6_ioctl);
 
 const struct proto_ops inet6_stream_ops = {
@@ -650,6 +820,7 @@ out:
 	return ret;
 
 out_permanent:
+<<<<<<< HEAD
 	printk(KERN_ERR "Attempt to override permanent protocol %d.\n",
 	       protocol);
 	goto out;
@@ -661,14 +832,28 @@ out_illegal:
 	goto out;
 }
 
+=======
+	pr_err("Attempt to override permanent protocol %d\n", protocol);
+	goto out;
+
+out_illegal:
+	pr_err("Ignoring attempt to register invalid socket type %d\n",
+	       p->type);
+	goto out;
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(inet6_register_protosw);
 
 void
 inet6_unregister_protosw(struct inet_protosw *p)
 {
 	if (INET_PROTOSW_PERMANENT & p->flags) {
+<<<<<<< HEAD
 		printk(KERN_ERR
 		       "Attempt to unregister permanent protocol %d.\n",
+=======
+		pr_err("Attempt to unregister permanent protocol %d\n",
+>>>>>>> refs/remotes/origin/master
 		       p->protocol);
 	} else {
 		spin_lock_bh(&inetsw6_lock);
@@ -678,7 +863,10 @@ inet6_unregister_protosw(struct inet_protosw *p)
 		synchronize_net();
 	}
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(inet6_unregister_protosw);
 
 int inet6_sk_rebuild_header(struct sock *sk)
@@ -695,8 +883,18 @@ int inet6_sk_rebuild_header(struct sock *sk)
 
 		memset(&fl6, 0, sizeof(fl6));
 		fl6.flowi6_proto = sk->sk_protocol;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&fl6.daddr, &np->daddr);
 		ipv6_addr_copy(&fl6.saddr, &np->saddr);
+=======
+		fl6.daddr = np->daddr;
+		fl6.saddr = np->saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		fl6.daddr = sk->sk_v6_daddr;
+		fl6.saddr = np->saddr;
+>>>>>>> refs/remotes/origin/master
 		fl6.flowlabel = np->flow_label;
 		fl6.flowi6_oif = sk->sk_bound_dev_if;
 		fl6.flowi6_mark = sk->sk_mark;
@@ -718,6 +916,7 @@ int inet6_sk_rebuild_header(struct sock *sk)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 EXPORT_SYMBOL_GPL(inet6_sk_rebuild_header);
 
@@ -725,6 +924,14 @@ int ipv6_opt_accepted(struct sock *sk, struct sk_buff *skb)
 {
 	struct ipv6_pinfo *np = inet6_sk(sk);
 	struct inet6_skb_parm *opt = IP6CB(skb);
+=======
+EXPORT_SYMBOL_GPL(inet6_sk_rebuild_header);
+
+bool ipv6_opt_accepted(const struct sock *sk, const struct sk_buff *skb)
+{
+	const struct ipv6_pinfo *np = inet6_sk(sk);
+	const struct inet6_skb_parm *opt = IP6CB(skb);
+>>>>>>> refs/remotes/origin/master
 
 	if (np->rxopt.all) {
 		if ((opt->hop && (np->rxopt.bits.hopopts ||
@@ -736,6 +943,7 @@ int ipv6_opt_accepted(struct sock *sk, struct sk_buff *skb)
 		     np->rxopt.bits.osrcrt)) ||
 		    ((opt->dst1 || opt->dst0) &&
 		     (np->rxopt.bits.dstopts || np->rxopt.bits.odstopts)))
+<<<<<<< HEAD
 			return 1;
 	}
 	return 0;
@@ -804,7 +1012,12 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static struct sk_buff *ipv6_gso_segment(struct sk_buff *skb, u32 features)
+=======
+static struct sk_buff *ipv6_gso_segment(struct sk_buff *skb,
+	netdev_features_t features)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct sk_buff *segs = ERR_PTR(-EINVAL);
 	struct ipv6hdr *ipv6h;
@@ -910,6 +1123,10 @@ static struct sk_buff **ipv6_gro_receive(struct sk_buff **head,
 		skb_reset_transport_header(skb);
 		__skb_push(skb, skb_gro_offset(skb));
 
+<<<<<<< HEAD
+=======
+		ops = rcu_dereference(inet6_protos[proto]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!ops || !ops->gro_receive)
 			goto out_unlock;
 
@@ -988,6 +1205,17 @@ static struct packet_type ipv6_packet_type __read_mostly = {
 	.gso_segment = ipv6_gso_segment,
 	.gro_receive = ipv6_gro_receive,
 	.gro_complete = ipv6_gro_complete,
+=======
+			return true;
+	}
+	return false;
+}
+EXPORT_SYMBOL_GPL(ipv6_opt_accepted);
+
+static struct packet_type ipv6_packet_type __read_mostly = {
+	.type = cpu_to_be16(ETH_P_IPV6),
+	.func = ipv6_rcv,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ipv6_packet_init(void)
@@ -1003,6 +1231,11 @@ static void ipv6_packet_cleanup(void)
 
 static int __net_init ipv6_init_mibs(struct net *net)
 {
+<<<<<<< HEAD
+=======
+	int i;
+
+>>>>>>> refs/remotes/origin/master
 	if (snmp_mib_init((void __percpu **)net->mib.udp_stats_in6,
 			  sizeof(struct udp_mib),
 			  __alignof__(struct udp_mib)) < 0)
@@ -1015,13 +1248,40 @@ static int __net_init ipv6_init_mibs(struct net *net)
 			  sizeof(struct ipstats_mib),
 			  __alignof__(struct ipstats_mib)) < 0)
 		goto err_ip_mib;
+<<<<<<< HEAD
+=======
+
+	for_each_possible_cpu(i) {
+		struct ipstats_mib *af_inet6_stats;
+		af_inet6_stats = per_cpu_ptr(net->mib.ipv6_statistics[0], i);
+		u64_stats_init(&af_inet6_stats->syncp);
+#if SNMP_ARRAY_SZ == 2
+		af_inet6_stats = per_cpu_ptr(net->mib.ipv6_statistics[1], i);
+		u64_stats_init(&af_inet6_stats->syncp);
+#endif
+	}
+
+
+>>>>>>> refs/remotes/origin/master
 	if (snmp_mib_init((void __percpu **)net->mib.icmpv6_statistics,
 			  sizeof(struct icmpv6_mib),
 			  __alignof__(struct icmpv6_mib)) < 0)
 		goto err_icmp_mib;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (snmp_mib_init((void __percpu **)net->mib.icmpv6msg_statistics,
 			  sizeof(struct icmpv6msg_mib),
 			  __alignof__(struct icmpv6msg_mib)) < 0)
+=======
+	net->mib.icmpv6msg_statistics = kzalloc(sizeof(struct icmpv6msg_mib),
+						GFP_KERNEL);
+	if (!net->mib.icmpv6msg_statistics)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	net->mib.icmpv6msg_statistics = kzalloc(sizeof(struct icmpv6msg_mib),
+						GFP_KERNEL);
+	if (!net->mib.icmpv6msg_statistics)
+>>>>>>> refs/remotes/origin/master
 		goto err_icmpmsg_mib;
 	return 0;
 
@@ -1042,7 +1302,15 @@ static void ipv6_cleanup_mibs(struct net *net)
 	snmp_mib_free((void __percpu **)net->mib.udplite_stats_in6);
 	snmp_mib_free((void __percpu **)net->mib.ipv6_statistics);
 	snmp_mib_free((void __percpu **)net->mib.icmpv6_statistics);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snmp_mib_free((void __percpu **)net->mib.icmpv6msg_statistics);
+=======
+	kfree(net->mib.icmpv6msg_statistics);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(net->mib.icmpv6msg_statistics);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __net_init inet6_net_init(struct net *net)
@@ -1051,6 +1319,10 @@ static int __net_init inet6_net_init(struct net *net)
 
 	net->ipv6.sysctl.bindv6only = 0;
 	net->ipv6.sysctl.icmpv6_time = 1*HZ;
+<<<<<<< HEAD
+=======
+	atomic_set(&net->ipv6.rt_genid, 0);
+>>>>>>> refs/remotes/origin/master
 
 	err = ipv6_init_mibs(net);
 	if (err)
@@ -1094,6 +1366,7 @@ static struct pernet_operations inet6_net_ops = {
 	.exit = inet6_net_exit,
 };
 
+<<<<<<< HEAD
 static int __init inet6_init(void)
 {
 	struct sk_buff *dummy_skb;
@@ -1113,8 +1386,38 @@ static int __init inet6_init(void)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	initialize_hashidentrnd();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct ipv6_stub ipv6_stub_impl = {
+	.ipv6_sock_mc_join = ipv6_sock_mc_join,
+	.ipv6_sock_mc_drop = ipv6_sock_mc_drop,
+	.ipv6_dst_lookup = ip6_dst_lookup,
+	.udpv6_encap_enable = udpv6_encap_enable,
+	.ndisc_send_na = ndisc_send_na,
+	.nd_tbl	= &nd_tbl,
+};
+
+static int __init inet6_init(void)
+{
+	struct list_head *r;
+	int err = 0;
+
+	BUILD_BUG_ON(sizeof(struct inet6_skb_parm) > FIELD_SIZEOF(struct sk_buff, cb));
+
+	/* Register the socket-side information for inet6_create.  */
+	for (r = &inetsw6[0]; r < &inetsw6[SOCK_MAX]; ++r)
+		INIT_LIST_HEAD(r);
+
+	if (disable_ipv6_mod) {
+		pr_info("Loaded, but administratively disabled, reboot required to enable\n");
+		goto out;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	err = proto_register(&tcpv6_prot, 1);
 	if (err)
 		goto out;
@@ -1131,9 +1434,18 @@ static int __init inet6_init(void)
 	if (err)
 		goto out_unregister_udplite_proto;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = proto_register(&pingv6_prot, 1);
 	if (err)
 		goto out_unregister_ping_proto;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = proto_register(&pingv6_prot, 1);
+	if (err)
+		goto out_unregister_ping_proto;
+>>>>>>> refs/remotes/origin/master
 
 	/* We MUST register RAW sockets before we create the ICMP6,
 	 * IGMP6, or NDISC control sockets.
@@ -1149,11 +1461,19 @@ static int __init inet6_init(void)
 	if (err)
 		goto out_sock_register_fail;
 
+<<<<<<< HEAD
 #ifdef CONFIG_SYSCTL
 	err = ipv6_static_sysctl_register();
 	if (err)
 		goto static_sysctl_fail;
 #endif
+<<<<<<< HEAD
+=======
+	tcpv6_prot.sysctl_mem = init_net.ipv4.sysctl_tcp_mem;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *	ipngwg API draft makes clear that the correct semantics
 	 *	for TCP and UDP is to consider one TCP and UDP instance
@@ -1176,6 +1496,12 @@ static int __init inet6_init(void)
 	err = igmp6_init();
 	if (err)
 		goto igmp_fail;
+<<<<<<< HEAD
+=======
+
+	ipv6_stub = &ipv6_stub_impl;
+
+>>>>>>> refs/remotes/origin/master
 	err = ipv6_netfilter_init();
 	if (err)
 		goto netfilter_fail;
@@ -1194,6 +1520,12 @@ static int __init inet6_init(void)
 	err = ip6_route_init();
 	if (err)
 		goto ip6_route_fail;
+<<<<<<< HEAD
+=======
+	err = ndisc_late_init();
+	if (err)
+		goto ndisc_late_fail;
+>>>>>>> refs/remotes/origin/master
 	err = ip6_flowlabel_init();
 	if (err)
 		goto ip6_flowlabel_fail;
@@ -1227,10 +1559,19 @@ static int __init inet6_init(void)
 	if (err)
 		goto ipv6_packet_fail;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	err = pingv6_init();
 	if (err)
 		goto pingv6_fail;
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SYSCTL
 	err = ipv6_sysctl_register();
 	if (err)
@@ -1241,10 +1582,20 @@ out:
 
 #ifdef CONFIG_SYSCTL
 sysctl_fail:
+<<<<<<< HEAD
 	ipv6_packet_cleanup();
 #endif
+<<<<<<< HEAD
 pingv6_fail:
 	pingv6_exit();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pingv6_exit();
+#endif
+pingv6_fail:
+	ipv6_packet_cleanup();
+>>>>>>> refs/remotes/origin/master
 ipv6_packet_fail:
 	tcpv6_exit();
 tcpv6_fail:
@@ -1260,6 +1611,11 @@ ipv6_exthdrs_fail:
 addrconf_fail:
 	ip6_flowlabel_cleanup();
 ip6_flowlabel_fail:
+<<<<<<< HEAD
+=======
+	ndisc_late_cleanup();
+ndisc_late_fail:
+>>>>>>> refs/remotes/origin/master
 	ip6_route_cleanup();
 ip6_route_fail:
 #ifdef CONFIG_PROC_FS
@@ -1284,16 +1640,27 @@ ipmr_fail:
 icmp_fail:
 	unregister_pernet_subsys(&inet6_net_ops);
 register_pernet_fail:
+<<<<<<< HEAD
 #ifdef CONFIG_SYSCTL
 	ipv6_static_sysctl_unregister();
 static_sysctl_fail:
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	sock_unregister(PF_INET6);
 	rtnl_unregister_all(PF_INET6);
 out_sock_register_fail:
 	rawv6_exit();
+<<<<<<< HEAD
+<<<<<<< HEAD
 out_unregister_ping_proto:
 	proto_unregister(&pingv6_prot);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_unregister_ping_proto:
+	proto_unregister(&pingv6_prot);
+>>>>>>> refs/remotes/origin/master
 out_unregister_raw_proto:
 	proto_unregister(&rawv6_prot);
 out_unregister_udplite_proto:
@@ -1306,6 +1673,7 @@ out_unregister_tcp_proto:
 }
 module_init(inet6_init);
 
+<<<<<<< HEAD
 static void __exit inet6_exit(void)
 {
 	if (disable_ipv6_mod)
@@ -1358,4 +1726,6 @@ static void __exit inet6_exit(void)
 }
 module_exit(inet6_exit);
 
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS_NETPROTO(PF_INET6);

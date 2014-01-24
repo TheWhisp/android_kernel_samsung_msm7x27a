@@ -9,6 +9,8 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,15 +20,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/kernel.h>
+=======
+ */
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/etherdevice.h>
 #include <linux/crc32.h>
 #include <linux/slab.h>
 
 #include "u_ether.h"
+<<<<<<< HEAD
+=======
+#include "u_ether_configfs.h"
+#include "u_eem.h"
+>>>>>>> refs/remotes/origin/master
 
 #define EEM_HLEN 2
 
@@ -35,6 +50,8 @@
  * Ethernet link.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct eem_ep_descs {
 	struct usb_endpoint_descriptor	*in;
 	struct usb_endpoint_descriptor	*out;
@@ -46,6 +63,16 @@ struct f_eem {
 
 	struct eem_ep_descs		fs;
 	struct eem_ep_descs		hs;
+=======
+struct f_eem {
+	struct gether			port;
+	u8				ctrl_id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct f_eem {
+	struct gether			port;
+	u8				ctrl_id;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct f_eem *func_to_eem(struct usb_function *f)
@@ -57,7 +84,11 @@ static inline struct f_eem *func_to_eem(struct usb_function *f)
 
 /* interface descriptor: */
 
+<<<<<<< HEAD
 static struct usb_interface_descriptor eem_intf __initdata = {
+=======
+static struct usb_interface_descriptor eem_intf = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		sizeof eem_intf,
 	.bDescriptorType =	USB_DT_INTERFACE,
 
@@ -71,7 +102,11 @@ static struct usb_interface_descriptor eem_intf __initdata = {
 
 /* full speed support: */
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor eem_fs_in_desc __initdata = {
+=======
+static struct usb_endpoint_descriptor eem_fs_in_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -79,7 +114,11 @@ static struct usb_endpoint_descriptor eem_fs_in_desc __initdata = {
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 };
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor eem_fs_out_desc __initdata = {
+=======
+static struct usb_endpoint_descriptor eem_fs_out_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -87,7 +126,11 @@ static struct usb_endpoint_descriptor eem_fs_out_desc __initdata = {
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 };
 
+<<<<<<< HEAD
 static struct usb_descriptor_header *eem_fs_function[] __initdata = {
+=======
+static struct usb_descriptor_header *eem_fs_function[] = {
+>>>>>>> refs/remotes/origin/master
 	/* CDC EEM control descriptors */
 	(struct usb_descriptor_header *) &eem_intf,
 	(struct usb_descriptor_header *) &eem_fs_in_desc,
@@ -97,7 +140,11 @@ static struct usb_descriptor_header *eem_fs_function[] __initdata = {
 
 /* high speed support: */
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor eem_hs_in_desc __initdata = {
+=======
+static struct usb_endpoint_descriptor eem_hs_in_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -106,7 +153,11 @@ static struct usb_endpoint_descriptor eem_hs_in_desc __initdata = {
 	.wMaxPacketSize =	cpu_to_le16(512),
 };
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor eem_hs_out_desc __initdata = {
+=======
+static struct usb_endpoint_descriptor eem_hs_out_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -115,7 +166,11 @@ static struct usb_endpoint_descriptor eem_hs_out_desc __initdata = {
 	.wMaxPacketSize =	cpu_to_le16(512),
 };
 
+<<<<<<< HEAD
 static struct usb_descriptor_header *eem_hs_function[] __initdata = {
+=======
+static struct usb_descriptor_header *eem_hs_function[] = {
+>>>>>>> refs/remotes/origin/master
 	/* CDC EEM control descriptors */
 	(struct usb_descriptor_header *) &eem_intf,
 	(struct usb_descriptor_header *) &eem_hs_in_desc,
@@ -123,6 +178,69 @@ static struct usb_descriptor_header *eem_hs_function[] __initdata = {
 	NULL,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* super speed support: */
+
+static struct usb_endpoint_descriptor eem_ss_in_desc __initdata = {
+=======
+/* super speed support: */
+
+static struct usb_endpoint_descriptor eem_ss_in_desc = {
+>>>>>>> refs/remotes/origin/master
+	.bLength =		USB_DT_ENDPOINT_SIZE,
+	.bDescriptorType =	USB_DT_ENDPOINT,
+
+	.bEndpointAddress =	USB_DIR_IN,
+	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
+	.wMaxPacketSize =	cpu_to_le16(1024),
+};
+
+<<<<<<< HEAD
+static struct usb_endpoint_descriptor eem_ss_out_desc __initdata = {
+=======
+static struct usb_endpoint_descriptor eem_ss_out_desc = {
+>>>>>>> refs/remotes/origin/master
+	.bLength =		USB_DT_ENDPOINT_SIZE,
+	.bDescriptorType =	USB_DT_ENDPOINT,
+
+	.bEndpointAddress =	USB_DIR_OUT,
+	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
+	.wMaxPacketSize =	cpu_to_le16(1024),
+};
+
+<<<<<<< HEAD
+static struct usb_ss_ep_comp_descriptor eem_ss_bulk_comp_desc __initdata = {
+=======
+static struct usb_ss_ep_comp_descriptor eem_ss_bulk_comp_desc = {
+>>>>>>> refs/remotes/origin/master
+	.bLength =		sizeof eem_ss_bulk_comp_desc,
+	.bDescriptorType =	USB_DT_SS_ENDPOINT_COMP,
+
+	/* the following 2 values can be tweaked if necessary */
+	/* .bMaxBurst =		0, */
+	/* .bmAttributes =	0, */
+};
+
+<<<<<<< HEAD
+static struct usb_descriptor_header *eem_ss_function[] __initdata = {
+=======
+static struct usb_descriptor_header *eem_ss_function[] = {
+>>>>>>> refs/remotes/origin/master
+	/* CDC EEM control descriptors */
+	(struct usb_descriptor_header *) &eem_intf,
+	(struct usb_descriptor_header *) &eem_ss_in_desc,
+	(struct usb_descriptor_header *) &eem_ss_bulk_comp_desc,
+	(struct usb_descriptor_header *) &eem_ss_out_desc,
+	(struct usb_descriptor_header *) &eem_ss_bulk_comp_desc,
+	NULL,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* string descriptors: */
 
 static struct usb_string eem_string_defs[] = {
@@ -176,12 +294,31 @@ static int eem_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			gether_disconnect(&eem->port);
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!eem->port.in) {
 			DBG(cdev, "init eem\n");
 			eem->port.in = ep_choose(cdev->gadget,
 					eem->hs.in, eem->fs.in);
 			eem->port.out = ep_choose(cdev->gadget,
 					eem->hs.out, eem->fs.out);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (!eem->port.in_ep->desc || !eem->port.out_ep->desc) {
+			DBG(cdev, "init eem\n");
+			if (config_ep_by_speed(cdev->gadget, f,
+					       eem->port.in_ep) ||
+			    config_ep_by_speed(cdev->gadget, f,
+					       eem->port.out_ep)) {
+				eem->port.in_ep->desc = NULL;
+				eem->port.out_ep->desc = NULL;
+				goto fail;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* zlps should not occur because zero-length EEM packets
@@ -216,6 +353,7 @@ static void eem_disable(struct usb_function *f)
 
 /* EEM function driver setup/binding */
 
+<<<<<<< HEAD
 static int __init
 eem_bind(struct usb_configuration *c, struct usb_function *f)
 {
@@ -224,6 +362,42 @@ eem_bind(struct usb_configuration *c, struct usb_function *f)
 	int			status;
 	struct usb_ep		*ep;
 
+=======
+static int eem_bind(struct usb_configuration *c, struct usb_function *f)
+{
+	struct usb_composite_dev *cdev = c->cdev;
+	struct f_eem		*eem = func_to_eem(f);
+	struct usb_string	*us;
+	int			status;
+	struct usb_ep		*ep;
+
+	struct f_eem_opts	*eem_opts;
+
+	eem_opts = container_of(f->fi, struct f_eem_opts, func_inst);
+	/*
+	 * in drivers/usb/gadget/configfs.c:configfs_composite_bind()
+	 * configurations are bound in sequence with list_for_each_entry,
+	 * in each configuration its functions are bound in sequence
+	 * with list_for_each_entry, so we assume no race condition
+	 * with regard to eem_opts->bound access
+	 */
+	if (!eem_opts->bound) {
+		mutex_lock(&eem_opts->lock);
+		gether_set_gadget(eem_opts->net, cdev->gadget);
+		status = gether_register_netdev(eem_opts->net);
+		mutex_unlock(&eem_opts->lock);
+		if (status)
+			return status;
+		eem_opts->bound = true;
+	}
+
+	us = usb_gstrings_attach(cdev, eem_strings,
+				 ARRAY_SIZE(eem_string_defs));
+	if (IS_ERR(us))
+		return PTR_ERR(us);
+	eem_intf.iInterface = us[0].id;
+
+>>>>>>> refs/remotes/origin/master
 	/* allocate instance-specific interface IDs */
 	status = usb_interface_id(c, f);
 	if (status < 0)
@@ -248,20 +422,27 @@ eem_bind(struct usb_configuration *c, struct usb_function *f)
 
 	status = -ENOMEM;
 
+<<<<<<< HEAD
 	/* copy descriptors, and track endpoint copies */
 	f->descriptors = usb_copy_descriptors(eem_fs_function);
 	if (!f->descriptors)
 		goto fail;
 
+<<<<<<< HEAD
 	eem->fs.in = usb_find_endpoint(eem_fs_function,
 			f->descriptors, &eem_fs_in_desc);
 	eem->fs.out = usb_find_endpoint(eem_fs_function,
 			f->descriptors, &eem_fs_out_desc);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* support all relevant hardware speeds... we expect that when
 	 * hardware is dual speed, all bulk-capable endpoints work at
 	 * both speeds
 	 */
+<<<<<<< HEAD
 	if (gadget_is_dualspeed(c->cdev->gadget)) {
 		eem_hs_in_desc.bEndpointAddress =
 				eem_fs_in_desc.bEndpointAddress;
@@ -272,6 +453,7 @@ eem_bind(struct usb_configuration *c, struct usb_function *f)
 		f->hs_descriptors = usb_copy_descriptors(eem_hs_function);
 		if (!f->hs_descriptors)
 			goto fail;
+<<<<<<< HEAD
 
 		eem->hs.in = usb_find_endpoint(eem_hs_function,
 				f->hs_descriptors, &eem_hs_in_desc);
@@ -280,18 +462,70 @@ eem_bind(struct usb_configuration *c, struct usb_function *f)
 	}
 
 	DBG(cdev, "CDC Ethernet (EEM): %s speed IN/%s OUT/%s\n",
+=======
+	}
+
+	if (gadget_is_superspeed(c->cdev->gadget)) {
+		eem_ss_in_desc.bEndpointAddress =
+				eem_fs_in_desc.bEndpointAddress;
+		eem_ss_out_desc.bEndpointAddress =
+				eem_fs_out_desc.bEndpointAddress;
+
+		/* copy descriptors, and track endpoint copies */
+		f->ss_descriptors = usb_copy_descriptors(eem_ss_function);
+		if (!f->ss_descriptors)
+			goto fail;
+	}
+
+	DBG(cdev, "CDC Ethernet (EEM): %s speed IN/%s OUT/%s\n",
+			gadget_is_superspeed(c->cdev->gadget) ? "super" :
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	eem_hs_in_desc.bEndpointAddress = eem_fs_in_desc.bEndpointAddress;
+	eem_hs_out_desc.bEndpointAddress = eem_fs_out_desc.bEndpointAddress;
+
+	eem_ss_in_desc.bEndpointAddress = eem_fs_in_desc.bEndpointAddress;
+	eem_ss_out_desc.bEndpointAddress = eem_fs_out_desc.bEndpointAddress;
+
+	status = usb_assign_descriptors(f, eem_fs_function, eem_hs_function,
+			eem_ss_function);
+	if (status)
+		goto fail;
+
+	DBG(cdev, "CDC Ethernet (EEM): %s speed IN/%s OUT/%s\n",
+			gadget_is_superspeed(c->cdev->gadget) ? "super" :
+>>>>>>> refs/remotes/origin/master
 			gadget_is_dualspeed(c->cdev->gadget) ? "dual" : "full",
 			eem->port.in_ep->name, eem->port.out_ep->name);
 	return 0;
 
 fail:
+<<<<<<< HEAD
 	if (f->descriptors)
 		usb_free_descriptors(f->descriptors);
+<<<<<<< HEAD
 
 	/* we might as well release our claims on endpoints */
 	if (eem->port.out)
 		eem->port.out_ep->driver_data = NULL;
 	if (eem->port.in)
+=======
+	if (f->hs_descriptors)
+		usb_free_descriptors(f->hs_descriptors);
+
+	if (eem->port.out_ep)
+		eem->port.out_ep->driver_data = NULL;
+	if (eem->port.in_ep)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_free_all_descriptors(f);
+	if (eem->port.out_ep)
+		eem->port.out_ep->driver_data = NULL;
+	if (eem->port.in_ep)
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		eem->port.in_ep->driver_data = NULL;
 
 	ERROR(cdev, "%s: can't bind, err %d\n", f->name, status);
@@ -299,6 +533,7 @@ fail:
 	return status;
 }
 
+<<<<<<< HEAD
 static void
 eem_unbind(struct usb_configuration *c, struct usb_function *f)
 {
@@ -306,12 +541,19 @@ eem_unbind(struct usb_configuration *c, struct usb_function *f)
 
 	DBG(c->cdev, "eem unbind\n");
 
+<<<<<<< HEAD
+=======
+	if (gadget_is_superspeed(c->cdev->gadget))
+		usb_free_descriptors(f->ss_descriptors);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (gadget_is_dualspeed(c->cdev->gadget))
 		usb_free_descriptors(f->hs_descriptors);
 	usb_free_descriptors(f->descriptors);
 	kfree(eem);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void eem_cmd_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct sk_buff *skb = (struct sk_buff *)req->context;
@@ -512,6 +754,7 @@ error:
 	return status;
 }
 
+<<<<<<< HEAD
 /**
  * eem_bind_config - add CDC Ethernet (EEM) network link to a configuration
  * @c: the configuration to support the network link
@@ -547,19 +790,141 @@ int __init eem_bind_config(struct usb_configuration *c)
 
 	eem->port.func.name = "cdc_eem";
 	eem->port.func.strings = eem_strings;
+=======
+static inline struct f_eem_opts *to_f_eem_opts(struct config_item *item)
+{
+	return container_of(to_config_group(item), struct f_eem_opts,
+			    func_inst.group);
+}
+
+/* f_eem_item_ops */
+USB_ETHERNET_CONFIGFS_ITEM(eem);
+
+/* f_eem_opts_dev_addr */
+USB_ETHERNET_CONFIGFS_ITEM_ATTR_DEV_ADDR(eem);
+
+/* f_eem_opts_host_addr */
+USB_ETHERNET_CONFIGFS_ITEM_ATTR_HOST_ADDR(eem);
+
+/* f_eem_opts_qmult */
+USB_ETHERNET_CONFIGFS_ITEM_ATTR_QMULT(eem);
+
+/* f_eem_opts_ifname */
+USB_ETHERNET_CONFIGFS_ITEM_ATTR_IFNAME(eem);
+
+static struct configfs_attribute *eem_attrs[] = {
+	&f_eem_opts_dev_addr.attr,
+	&f_eem_opts_host_addr.attr,
+	&f_eem_opts_qmult.attr,
+	&f_eem_opts_ifname.attr,
+	NULL,
+};
+
+static struct config_item_type eem_func_type = {
+	.ct_item_ops	= &eem_item_ops,
+	.ct_attrs	= eem_attrs,
+	.ct_owner	= THIS_MODULE,
+};
+
+static void eem_free_inst(struct usb_function_instance *f)
+{
+	struct f_eem_opts *opts;
+
+	opts = container_of(f, struct f_eem_opts, func_inst);
+	if (opts->bound)
+		gether_cleanup(netdev_priv(opts->net));
+	else
+		free_netdev(opts->net);
+	kfree(opts);
+}
+
+static struct usb_function_instance *eem_alloc_inst(void)
+{
+	struct f_eem_opts *opts;
+
+	opts = kzalloc(sizeof(*opts), GFP_KERNEL);
+	if (!opts)
+		return ERR_PTR(-ENOMEM);
+	mutex_init(&opts->lock);
+	opts->func_inst.free_func_inst = eem_free_inst;
+	opts->net = gether_setup_default();
+	if (IS_ERR(opts->net)) {
+		struct net_device *net = opts->net;
+		kfree(opts);
+		return ERR_CAST(net);
+	}
+
+	config_group_init_type_name(&opts->func_inst.group, "", &eem_func_type);
+
+	return &opts->func_inst;
+}
+
+static void eem_free(struct usb_function *f)
+{
+	struct f_eem *eem;
+	struct f_eem_opts *opts;
+
+	eem = func_to_eem(f);
+	opts = container_of(f->fi, struct f_eem_opts, func_inst);
+	kfree(eem);
+	mutex_lock(&opts->lock);
+	opts->refcnt--;
+	mutex_unlock(&opts->lock);
+}
+
+static void eem_unbind(struct usb_configuration *c, struct usb_function *f)
+{
+	DBG(c->cdev, "eem unbind\n");
+
+	usb_free_all_descriptors(f);
+}
+
+static struct usb_function *eem_alloc(struct usb_function_instance *fi)
+{
+	struct f_eem	*eem;
+	struct f_eem_opts *opts;
+
+	/* allocate and initialize one new instance */
+	eem = kzalloc(sizeof(*eem), GFP_KERNEL);
+	if (!eem)
+		return ERR_PTR(-ENOMEM);
+
+	opts = container_of(fi, struct f_eem_opts, func_inst);
+	mutex_lock(&opts->lock);
+	opts->refcnt++;
+
+	eem->port.ioport = netdev_priv(opts->net);
+	mutex_unlock(&opts->lock);
+	eem->port.cdc_filter = DEFAULT_FILTER;
+
+	eem->port.func.name = "cdc_eem";
+>>>>>>> refs/remotes/origin/master
 	/* descriptors are per-instance copies */
 	eem->port.func.bind = eem_bind;
 	eem->port.func.unbind = eem_unbind;
 	eem->port.func.set_alt = eem_set_alt;
 	eem->port.func.setup = eem_setup;
 	eem->port.func.disable = eem_disable;
+<<<<<<< HEAD
+=======
+	eem->port.func.free_func = eem_free;
+>>>>>>> refs/remotes/origin/master
 	eem->port.wrap = eem_wrap;
 	eem->port.unwrap = eem_unwrap;
 	eem->port.header_len = EEM_HLEN;
 
+<<<<<<< HEAD
 	status = usb_add_function(c, &eem->port.func);
 	if (status)
 		kfree(eem);
 	return status;
 }
 
+=======
+	return &eem->port.func;
+}
+
+DECLARE_USB_FUNCTION_INIT(eem, eem_alloc_inst, eem_alloc);
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("David Brownell");
+>>>>>>> refs/remotes/origin/master

@@ -6,7 +6,11 @@
  *
  * Copyright (C) 2009--2010 Nokia Corporation.
  *
+<<<<<<< HEAD
  * Contact: Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
+=======
+ * Contact: Sakari Ailus <sakari.ailus@iki.fi>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,16 +30,47 @@
 #ifndef V4L2_FH_H
 #define V4L2_FH_H
 
+<<<<<<< HEAD
 #include <linux/list.h>
 
 struct video_device;
+<<<<<<< HEAD
 struct v4l2_events;
+=======
+struct v4l2_ctrl_handler;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/fs.h>
+#include <linux/list.h>
+#include <linux/videodev2.h>
+
+struct video_device;
+struct v4l2_ctrl_handler;
+>>>>>>> refs/remotes/origin/master
 
 struct v4l2_fh {
 	struct list_head	list;
 	struct video_device	*vdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct v4l2_events      *events; /* events, pending and subscribed */
 	enum v4l2_priority	prio;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct v4l2_ctrl_handler *ctrl_handler;
+	enum v4l2_priority	prio;
+
+	/* Events */
+	wait_queue_head_t	wait;
+	struct list_head	subscribed; /* Subscribed events */
+	struct list_head	available; /* Dequeueable event */
+	unsigned int		navailable;
+	u32			sequence;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -44,7 +79,15 @@ struct v4l2_fh {
  * from driver's v4l2_file_operations->open() handler if the driver
  * uses v4l2_fh.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int v4l2_fh_init(struct v4l2_fh *fh, struct video_device *vdev);
+=======
+void v4l2_fh_init(struct v4l2_fh *fh, struct video_device *vdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void v4l2_fh_init(struct v4l2_fh *fh, struct video_device *vdev);
+>>>>>>> refs/remotes/origin/master
 /*
  * Add the fh to the list of file handles on a video_device. The file
  * handle must be initialised first.

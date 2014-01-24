@@ -24,11 +24,15 @@
 
 static inline unsigned int get_irq_flags(struct resource *res)
 {
+<<<<<<< HEAD
 	unsigned int flags = IRQF_SAMPLE_RANDOM | IRQF_SHARED;
 
 	flags |= res->flags & IRQF_TRIGGER_MASK;
 
 	return flags;
+=======
+	return IRQF_SHARED | (res->flags & IRQF_TRIGGER_MASK);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct device *dev;
@@ -39,8 +43,23 @@ static struct timer_list supply_timer;
 static struct timer_list polling_timer;
 static int polling;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct otg_transceiver *transceiver;
 static struct notifier_block otg_nb;
+=======
+#ifdef CONFIG_USB_OTG_UTILS
+=======
+#if IS_ENABLED(CONFIG_USB_PHY)
+>>>>>>> refs/remotes/origin/master
+static struct usb_phy *transceiver;
+static struct notifier_block otg_nb;
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct regulator *ac_draw;
 
 enum {
@@ -131,13 +150,21 @@ static void update_charger(void)
 			regulator_set_current_limit(ac_draw, max_uA, max_uA);
 			if (!regulator_enabled) {
 				dev_dbg(dev, "charger on (AC)\n");
+<<<<<<< HEAD
 				regulator_enable(ac_draw);
+=======
+				WARN_ON(regulator_enable(ac_draw));
+>>>>>>> refs/remotes/origin/master
 				regulator_enabled = 1;
 			}
 		} else {
 			if (regulator_enabled) {
 				dev_dbg(dev, "charger off\n");
+<<<<<<< HEAD
 				regulator_disable(ac_draw);
+=======
+				WARN_ON(regulator_disable(ac_draw));
+>>>>>>> refs/remotes/origin/master
 				regulator_enabled = 0;
 			}
 		}
@@ -219,7 +246,11 @@ static void polling_timer_func(unsigned long unused)
 		  jiffies + msecs_to_jiffies(pdata->polling_interval));
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG_UTILS
+=======
+#if IS_ENABLED(CONFIG_USB_PHY)
+>>>>>>> refs/remotes/origin/master
 static int otg_is_usb_online(void)
 {
 	return (transceiver->last_event == USB_EVENT_VBUS ||
@@ -282,6 +313,15 @@ static int pda_power_probe(struct platform_device *pdev)
 			goto init_failed;
 	}
 
+<<<<<<< HEAD
+=======
+	ac_draw = regulator_get(dev, "ac_draw");
+	if (IS_ERR(ac_draw)) {
+		dev_dbg(dev, "couldn't get ac_draw regulator\n");
+		ac_draw = NULL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	update_status();
 	update_charger();
 
@@ -310,6 +350,7 @@ static int pda_power_probe(struct platform_device *pdev)
 		pda_psy_usb.num_supplicants = pdata->num_supplicants;
 	}
 
+<<<<<<< HEAD
 	ac_draw = regulator_get(dev, "ac_draw");
 	if (IS_ERR(ac_draw)) {
 		dev_dbg(dev, "couldn't get ac_draw regulator\n");
@@ -317,13 +358,33 @@ static int pda_power_probe(struct platform_device *pdev)
 		ret = PTR_ERR(ac_draw);
 	}
 
+<<<<<<< HEAD
 	transceiver = otg_get_transceiver();
+=======
+#ifdef CONFIG_USB_OTG_UTILS
+	transceiver = usb_get_transceiver();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (transceiver && !pdata->is_usb_online) {
 		pdata->is_usb_online = otg_is_usb_online;
 	}
 	if (transceiver && !pdata->is_ac_online) {
 		pdata->is_ac_online = otg_is_ac_online;
 	}
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_USB_PHY)
+	transceiver = usb_get_phy(USB_PHY_TYPE_USB2);
+	if (!IS_ERR_OR_NULL(transceiver)) {
+		if (!pdata->is_usb_online)
+			pdata->is_usb_online = otg_is_usb_online;
+		if (!pdata->is_ac_online)
+			pdata->is_ac_online = otg_is_ac_online;
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->is_ac_online) {
 		ret = power_supply_register(&pdev->dev, &pda_psy_ac);
@@ -367,15 +428,37 @@ static int pda_power_probe(struct platform_device *pdev)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (transceiver && pdata->use_otg_notifier) {
 		otg_nb.notifier_call = otg_handle_notification;
 		ret = otg_register_notifier(transceiver, &otg_nb);
+=======
+#ifdef CONFIG_USB_OTG_UTILS
+	if (transceiver && pdata->use_otg_notifier) {
+		otg_nb.notifier_call = otg_handle_notification;
+		ret = usb_register_notifier(transceiver, &otg_nb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_USB_PHY)
+	if (!IS_ERR_OR_NULL(transceiver) && pdata->use_otg_notifier) {
+		otg_nb.notifier_call = otg_handle_notification;
+		ret = usb_register_notifier(transceiver, &otg_nb);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			dev_err(dev, "failure to register otg notifier\n");
 			goto otg_reg_notifier_failed;
 		}
 		polling = 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	if (polling) {
 		dev_dbg(dev, "will poll for status\n");
@@ -389,17 +472,46 @@ static int pda_power_probe(struct platform_device *pdev)
 
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 otg_reg_notifier_failed:
 	if (pdata->is_usb_online && usb_irq)
 		free_irq(usb_irq->start, &pda_psy_usb);
+=======
+#ifdef CONFIG_USB_OTG_UTILS
+=======
+#if IS_ENABLED(CONFIG_USB_PHY)
+>>>>>>> refs/remotes/origin/master
+otg_reg_notifier_failed:
+	if (pdata->is_usb_online && usb_irq)
+		free_irq(usb_irq->start, &pda_psy_usb);
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 usb_irq_failed:
 	if (pdata->is_usb_online)
 		power_supply_unregister(&pda_psy_usb);
 usb_supply_failed:
 	if (pdata->is_ac_online && ac_irq)
 		free_irq(ac_irq->start, &pda_psy_ac);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (transceiver)
 		otg_put_transceiver(transceiver);
+=======
+#ifdef CONFIG_USB_OTG_UTILS
+	if (transceiver)
+		usb_put_transceiver(transceiver);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_USB_PHY)
+	if (!IS_ERR_OR_NULL(transceiver))
+		usb_put_phy(transceiver);
+#endif
+>>>>>>> refs/remotes/origin/master
 ac_irq_failed:
 	if (pdata->is_ac_online)
 		power_supply_unregister(&pda_psy_ac);
@@ -431,9 +543,19 @@ static int pda_power_remove(struct platform_device *pdev)
 		power_supply_unregister(&pda_psy_usb);
 	if (pdata->is_ac_online)
 		power_supply_unregister(&pda_psy_ac);
+<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG_UTILS
 	if (transceiver)
+<<<<<<< HEAD
 		otg_put_transceiver(transceiver);
+=======
+		usb_put_transceiver(transceiver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_USB_PHY)
+	if (!IS_ERR_OR_NULL(transceiver))
+		usb_put_phy(transceiver);
+>>>>>>> refs/remotes/origin/master
 #endif
 	if (ac_draw) {
 		regulator_put(ac_draw);
@@ -487,8 +609,14 @@ static int pda_power_resume(struct platform_device *pdev)
 #define pda_power_resume NULL
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("platform:pda-power");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver pda_power_pdrv = {
 	.driver = {
 		.name = "pda-power",
@@ -499,6 +627,8 @@ static struct platform_driver pda_power_pdrv = {
 	.resume = pda_power_resume,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init pda_power_init(void)
 {
 	return platform_driver_register(&pda_power_pdrv);
@@ -513,3 +643,15 @@ module_init(pda_power_init);
 module_exit(pda_power_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Anton Vorontsov <cbou@mail.ru>");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+module_platform_driver(pda_power_pdrv);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Anton Vorontsov <cbou@mail.ru>");
+MODULE_ALIAS("platform:pda-power");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

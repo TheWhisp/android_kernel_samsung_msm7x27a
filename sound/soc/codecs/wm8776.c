@@ -1,7 +1,11 @@
 /*
  * wm8776.c  --  WM8776 ALSA SoC Audio driver
  *
+<<<<<<< HEAD
  * Copyright 2009 Wolfson Microelectronics plc
+=======
+ * Copyright 2009-12 Wolfson Microelectronics plc
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
  *
@@ -18,7 +22,16 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_device.h>
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
 #include <sound/core.h>
@@ -30,6 +43,18 @@
 
 #include "wm8776.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum wm8776_chip_type {
+	WM8775 = 1,
+	WM8776,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 /* codec private data */
 struct wm8776_priv {
 	enum snd_soc_control_type control_type;
@@ -44,6 +69,50 @@ static const u16 wm8776_reg[WM8776_CACHEREGNUM] = {
 	0xa6, 0x01, 0x01
 };
 
+=======
+/* codec private data */
+struct wm8776_priv {
+	struct regmap *regmap;
+	int sysclk[2];
+};
+
+static const struct reg_default wm8776_reg_defaults[] = {
+	{  0, 0x79 },
+	{  1, 0x79 },
+	{  2, 0x79 },
+	{  3, 0xff },
+	{  4, 0xff },
+	{  5, 0xff },
+	{  6, 0x00 },
+	{  7, 0x90 },
+	{  8, 0x00 },
+	{  9, 0x00 },
+	{ 10, 0x22 },
+	{ 11, 0x22 },
+	{ 12, 0x22 },
+	{ 13, 0x08 },
+	{ 14, 0xcf },
+	{ 15, 0xcf },
+	{ 16, 0x7b },
+	{ 17, 0x00 },
+	{ 18, 0x32 },
+	{ 19, 0x00 },
+	{ 20, 0xa6 },
+	{ 21, 0x01 },
+	{ 22, 0x01 },
+};
+
+static bool wm8776_volatile(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8776_RESET:
+		return true;
+	default:
+		return false;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int wm8776_reset(struct snd_soc_codec *codec)
 {
 	return snd_soc_write(codec, WM8776_RESET, 0);
@@ -215,8 +284,14 @@ static int wm8776_hw_params(struct snd_pcm_substream *substream,
 	int ratio_shift, master;
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iface = 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (dai->driver->id) {
 	case WM8776_DAI_DAC:
 		iface_reg = WM8776_DACIFCTRL;
@@ -232,6 +307,8 @@ static int wm8776_hw_params(struct snd_pcm_substream *substream,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Set word length */
 	switch (params_format(params)) {
@@ -246,6 +323,31 @@ static int wm8776_hw_params(struct snd_pcm_substream *substream,
 	case SNDRV_PCM_FORMAT_S32_LE:
 		iface |= 0x30;
 		break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Set word length */
+	switch (snd_pcm_format_width(params_format(params))) {
+	case 16:
+		iface = 0;
+		break;
+	case 20:
+		iface = 0x10;
+		break;
+	case 24:
+		iface = 0x20;
+		break;
+	case 32:
+		iface = 0x30;
+		break;
+	default:
+		dev_err(codec->dev, "Unsupported sample size: %i\n",
+			snd_pcm_format_width(params_format(params)));
+		return -EINVAL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Only need to set MCLK/LRCLK ratio if we're master */
@@ -289,7 +391,12 @@ static int wm8776_set_sysclk(struct snd_soc_dai *dai,
 	struct snd_soc_codec *codec = dai->codec;
 	struct wm8776_priv *wm8776 = snd_soc_codec_get_drvdata(codec);
 
+<<<<<<< HEAD
 	BUG_ON(dai->driver->id >= ARRAY_SIZE(wm8776->sysclk));
+=======
+	if (WARN_ON(dai->driver->id >= ARRAY_SIZE(wm8776->sysclk)))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	wm8776->sysclk[dai->driver->id] = freq;
 
@@ -299,6 +406,11 @@ static int wm8776_set_sysclk(struct snd_soc_dai *dai,
 static int wm8776_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
+=======
+	struct wm8776_priv *wm8776 = snd_soc_codec_get_drvdata(codec);
+
+>>>>>>> refs/remotes/origin/master
 	switch (level) {
 	case SND_SOC_BIAS_ON:
 		break;
@@ -306,6 +418,16 @@ static int wm8776_set_bias_level(struct snd_soc_codec *codec,
 		break;
 	case SND_SOC_BIAS_STANDBY:
 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			snd_soc_cache_sync(codec);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			regcache_sync(wm8776->regmap);
+
+>>>>>>> refs/remotes/origin/master
 			/* Disable the global powerdown; DAPM does the rest */
 			snd_soc_update_bits(codec, WM8776_PWRDOWN, 1, 0);
 		}
@@ -320,6 +442,8 @@ static int wm8776_set_bias_level(struct snd_soc_codec *codec,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define WM8776_RATES (SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
 		      SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
 		      SNDRV_PCM_RATE_96000)
@@ -329,13 +453,32 @@ static int wm8776_set_bias_level(struct snd_soc_codec *codec,
 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
 static struct snd_soc_dai_ops wm8776_dac_ops = {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define WM8776_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+
+static const struct snd_soc_dai_ops wm8776_dac_ops = {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.digital_mute	= wm8776_mute,
 	.hw_params      = wm8776_hw_params,
 	.set_fmt        = wm8776_set_fmt,
 	.set_sysclk     = wm8776_set_sysclk,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8776_adc_ops = {
+=======
+static const struct snd_soc_dai_ops wm8776_adc_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8776_adc_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params      = wm8776_hw_params,
 	.set_fmt        = wm8776_set_fmt,
 	.set_sysclk     = wm8776_set_sysclk,
@@ -349,7 +492,19 @@ static struct snd_soc_dai_driver wm8776_dai[] = {
 			.stream_name = "Playback",
 			.channels_min = 2,
 			.channels_max = 2,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.rates = WM8776_RATES,
+=======
+			.rates = SNDRV_PCM_RATE_CONTINUOUS,
+			.rate_min = 32000,
+			.rate_max = 192000,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.rates = SNDRV_PCM_RATE_CONTINUOUS,
+			.rate_min = 32000,
+			.rate_max = 192000,
+>>>>>>> refs/remotes/origin/master
 			.formats = WM8776_FORMATS,
 		},
 		.ops = &wm8776_dac_ops,
@@ -361,7 +516,19 @@ static struct snd_soc_dai_driver wm8776_dai[] = {
 			.stream_name = "Capture",
 			.channels_min = 2,
 			.channels_max = 2,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.rates = WM8776_RATES,
+=======
+			.rates = SNDRV_PCM_RATE_CONTINUOUS,
+			.rate_min = 32000,
+			.rate_max = 96000,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.rates = SNDRV_PCM_RATE_CONTINUOUS,
+			.rate_min = 32000,
+			.rate_max = 96000,
+>>>>>>> refs/remotes/origin/master
 			.formats = WM8776_FORMATS,
 		},
 		.ops = &wm8776_adc_ops,
@@ -369,7 +536,15 @@ static struct snd_soc_dai_driver wm8776_dai[] = {
 };
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8776_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8776_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8776_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm8776_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
@@ -378,6 +553,8 @@ static int wm8776_suspend(struct snd_soc_codec *codec, pm_message_t state)
 
 static int wm8776_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 	u8 data[2];
 	u16 *cache = codec->reg_cache;
@@ -393,6 +570,12 @@ static int wm8776_resume(struct snd_soc_codec *codec)
 
 	wm8776_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+=======
+	wm8776_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8776_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #else
@@ -402,11 +585,20 @@ static int wm8776_resume(struct snd_soc_codec *codec)
 
 static int wm8776_probe(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	struct wm8776_priv *wm8776 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret = 0;
 
 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8776->control_type);
+=======
+	int ret = 0;
+
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -425,12 +617,18 @@ static int wm8776_probe(struct snd_soc_codec *codec)
 	snd_soc_update_bits(codec, WM8776_HPRVOL, 0x100, 0x100);
 	snd_soc_update_bits(codec, WM8776_DACRVOL, 0x100, 0x100);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8776_snd_controls,
 			     ARRAY_SIZE(wm8776_snd_controls));
 	snd_soc_dapm_new_controls(dapm, wm8776_dapm_widgets,
 				  ARRAY_SIZE(wm8776_dapm_widgets));
 	snd_soc_dapm_add_routes(dapm, routes, ARRAY_SIZE(routes));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -447,42 +645,121 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8776 = {
 	.suspend = 	wm8776_suspend,
 	.resume =	wm8776_resume,
 	.set_bias_level = wm8776_set_bias_level,
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8776_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8776_reg,
+<<<<<<< HEAD
+};
+
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	.controls = wm8776_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8776_snd_controls),
+	.dapm_widgets = wm8776_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8776_dapm_widgets),
+	.dapm_routes = routes,
+	.num_dapm_routes = ARRAY_SIZE(routes),
+};
+
+static const struct of_device_id wm8776_of_match[] = {
+	{ .compatible = "wlf,wm8776", },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, wm8776_of_match);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+#if defined(CONFIG_SPI_MASTER)
+static int __devinit wm8776_spi_probe(struct spi_device *spi)
+=======
+static const struct regmap_config wm8776_regmap = {
+	.reg_bits = 7,
+	.val_bits = 9,
+	.max_register = WM8776_RESET,
+
+	.reg_defaults = wm8776_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8776_reg_defaults),
+	.cache_type = REGCACHE_RBTREE,
+
+	.volatile_reg = wm8776_volatile,
 };
 
 #if defined(CONFIG_SPI_MASTER)
-static int __devinit wm8776_spi_probe(struct spi_device *spi)
+static int wm8776_spi_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8776_priv *wm8776;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8776 = kzalloc(sizeof(struct wm8776_priv), GFP_KERNEL);
+=======
+	wm8776 = devm_kzalloc(&spi->dev, sizeof(struct wm8776_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (wm8776 == NULL)
 		return -ENOMEM;
 
 	wm8776->control_type = SND_SOC_SPI;
+=======
+	wm8776 = devm_kzalloc(&spi->dev, sizeof(struct wm8776_priv),
+			      GFP_KERNEL);
+	if (wm8776 == NULL)
+		return -ENOMEM;
+
+	wm8776->regmap = devm_regmap_init_spi(spi, &wm8776_regmap);
+	if (IS_ERR(wm8776->regmap))
+		return PTR_ERR(wm8776->regmap);
+
+>>>>>>> refs/remotes/origin/master
 	spi_set_drvdata(spi, wm8776);
 
 	ret = snd_soc_register_codec(&spi->dev,
 			&soc_codec_dev_wm8776, wm8776_dai, ARRAY_SIZE(wm8776_dai));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8776);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit wm8776_spi_remove(struct spi_device *spi)
 {
 	snd_soc_unregister_codec(&spi->dev);
+<<<<<<< HEAD
 	kfree(spi_get_drvdata(spi));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return ret;
+}
+
+static int wm8776_spi_remove(struct spi_device *spi)
+{
+	snd_soc_unregister_codec(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct spi_driver wm8776_spi_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name	= "wm8776-codec",
 		.owner	= THIS_MODULE,
+=======
+		.name	= "wm8776",
+		.owner	= THIS_MODULE,
+		.of_match_table = wm8776_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe		= wm8776_spi_probe,
 	.remove		= __devexit_p(wm8776_spi_remove),
@@ -492,11 +769,31 @@ static struct spi_driver wm8776_spi_driver = {
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static __devinit int wm8776_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+		.name	= "wm8776",
+		.owner	= THIS_MODULE,
+		.of_match_table = wm8776_of_match,
+	},
+	.probe		= wm8776_spi_probe,
+	.remove		= wm8776_spi_remove,
+};
+#endif /* CONFIG_SPI_MASTER */
+
+#if IS_ENABLED(CONFIG_I2C)
+static int wm8776_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8776_priv *wm8776;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8776 = kzalloc(sizeof(struct wm8776_priv), GFP_KERNEL);
+=======
+	wm8776 = devm_kzalloc(&i2c->dev, sizeof(struct wm8776_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (wm8776 == NULL)
 		return -ENOMEM;
 
@@ -505,31 +802,85 @@ static __devinit int wm8776_i2c_probe(struct i2c_client *i2c,
 
 	ret =  snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm8776, wm8776_dai, ARRAY_SIZE(wm8776_dai));
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8776);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int wm8776_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
+<<<<<<< HEAD
 	kfree(i2c_get_clientdata(client));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8776 = devm_kzalloc(&i2c->dev, sizeof(struct wm8776_priv),
+			      GFP_KERNEL);
+	if (wm8776 == NULL)
+		return -ENOMEM;
+
+	wm8776->regmap = devm_regmap_init_i2c(i2c, &wm8776_regmap);
+	if (IS_ERR(wm8776->regmap))
+		return PTR_ERR(wm8776->regmap);
+
+	i2c_set_clientdata(i2c, wm8776);
+
+	ret =  snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_wm8776, wm8776_dai, ARRAY_SIZE(wm8776_dai));
+
+	return ret;
+}
+
+static int wm8776_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static const struct i2c_device_id wm8776_i2c_id[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ "wm8776", 0 },
+=======
+	{ "wm8775", WM8775 },
+	{ "wm8776", WM8776 },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "wm8775", WM8775 },
+	{ "wm8776", WM8776 },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, wm8776_i2c_id);
 
 static struct i2c_driver wm8776_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8776-codec",
 		.owner = THIS_MODULE,
+=======
+		.name = "wm8776",
+		.owner = THIS_MODULE,
+		.of_match_table = wm8776_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe =    wm8776_i2c_probe,
 	.remove =   __devexit_p(wm8776_i2c_remove),
+=======
+		.name = "wm8776",
+		.owner = THIS_MODULE,
+		.of_match_table = wm8776_of_match,
+	},
+	.probe =    wm8776_i2c_probe,
+	.remove =   wm8776_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = wm8776_i2c_id,
 };
 #endif
@@ -537,7 +888,11 @@ static struct i2c_driver wm8776_i2c_driver = {
 static int __init wm8776_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	ret = i2c_add_driver(&wm8776_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register wm8776 I2C driver: %d\n",
@@ -557,7 +912,11 @@ module_init(wm8776_modinit);
 
 static void __exit wm8776_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	i2c_del_driver(&wm8776_i2c_driver);
 #endif
 #if defined(CONFIG_SPI_MASTER)

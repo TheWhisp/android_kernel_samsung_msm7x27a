@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2003 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2003 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -31,6 +35,7 @@
 #ifndef __iwl_dev_h__
 #define __iwl_dev_h__
 
+<<<<<<< HEAD
 #include <linux/pci.h> /* for struct pci_device_id */
 #include <linux/kernel.h>
 #include <linux/wait.h>
@@ -41,12 +46,30 @@
 #include "iwl-csr.h"
 #include "iwl-prph.h"
 #include "iwl-fh.h"
+=======
+#include <linux/interrupt.h>
+#include <linux/kernel.h>
+#include <linux/wait.h>
+#include <linux/leds.h>
+#include <linux/slab.h>
+#include <linux/mutex.h>
+
+#include "iwl-eeprom.h"
+#include "iwl-csr.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "iwl-debug.h"
 #include "iwl-agn-hw.h"
 #include "iwl-led.h"
 #include "iwl-power.h"
 #include "iwl-agn-rs.h"
 #include "iwl-agn-tt.h"
+<<<<<<< HEAD
+=======
+#include "iwl-trans.h"
+#include "iwl-shared.h"
+#include "iwl-op-mode.h"
+#include "iwl-notif-wait.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct iwl_tx_queue;
 
@@ -57,11 +80,18 @@ struct iwl_tx_queue;
 
 /* Default noise level to report when noise measurement is not available.
  *   This may be because we're:
+<<<<<<< HEAD
  *   1)  Not associated (4965, no beacon statistics being sent to driver)
  *   2)  Scanning (noise measurement does not apply to associated channel)
  *   3)  Receiving CCK (3945 delivers noise info only for OFDM frames)
  * Use default noise value of -127 ... this is below the range of measurable
  *   Rx dBm for either 3945 or 4965, so it can indicate "unmeasurable" to user.
+=======
+ *   1)  Not associated  no beacon statistics being sent to driver)
+ *   2)  Scanning (noise measurement does not apply to associated channel)
+ * Use default noise value of -127 ... this is below the range of measurable
+ *   Rx dBm for all agn devices, so it can indicate "unmeasurable" to user.
+>>>>>>> refs/remotes/origin/cm-10.0
  *   Also, -127 works better than 0 when averaging frames with/without
  *   noise info (e.g. averaging might be done in app); measured dBm values are
  *   always negative ... using a negative value as the default keeps all
@@ -85,6 +115,7 @@ struct iwl_tx_queue;
 #define	DEFAULT_SHORT_RETRY_LIMIT 7U
 #define	DEFAULT_LONG_RETRY_LIMIT  4U
 
+<<<<<<< HEAD
 struct iwl_rx_mem_buffer {
 	dma_addr_t page_dma;
 	struct page *page;
@@ -188,6 +219,8 @@ struct iwl_tx_queue {
 	u8 swq_id;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IWL_NUM_SCAN_RATES         (2)
 
 /*
@@ -217,6 +250,7 @@ struct iwl_channel_info {
 	u8 ht40_extension_channel; /* HT_IE_EXT_CHANNEL_* */
 };
 
+<<<<<<< HEAD
 #define IWL_TX_FIFO_BK		0	/* shared */
 #define IWL_TX_FIFO_BE		1
 #define IWL_TX_FIFO_VI		2	/* shared */
@@ -231,6 +265,18 @@ struct iwl_channel_info {
  * Set the minimum to accommodate the 4 standard TX queues, 1 command
  * queue, 2 (unused) HCCA queues, and 4 HT queues (one for each AC) */
 #define IWL_MIN_NUM_QUEUES	10
+=======
+/*
+ * Minimum number of queues. MAX_NUM is defined in hw specific files.
+ * Set the minimum to accommodate
+ *  - 4 standard TX queues
+ *  - the command queue
+ *  - 4 PAN TX queues
+ *  - the PAN multicast queue, and
+ *  - the AUX (TX during scan dwell) queue.
+ */
+#define IWL_MIN_NUM_QUEUES	11
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Command queue depends on iPAN support.
@@ -238,6 +284,7 @@ struct iwl_channel_info {
 #define IWL_DEFAULT_CMD_QUEUE_NUM	4
 #define IWL_IPAN_CMD_QUEUE_NUM		9
 
+<<<<<<< HEAD
 /*
  * This queue number is required for proper operation
  * because the ucode will stop/start the scheduler as
@@ -245,11 +292,14 @@ struct iwl_channel_info {
  */
 #define IWL_IPAN_MCAST_QUEUE		8
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IEEE80211_DATA_LEN              2304
 #define IEEE80211_4ADDR_LEN             30
 #define IEEE80211_HLEN                  (IEEE80211_4ADDR_LEN)
 #define IEEE80211_FRAME_LEN             (IEEE80211_DATA_LEN + IEEE80211_HLEN)
 
+<<<<<<< HEAD
 
 #define SEQ_TO_SN(seq) (((seq) & IEEE80211_SCTL_SEQ) >> 4)
 #define SN_TO_SEQ(ssn) (((ssn) << 4) & IEEE80211_SCTL_SEQ)
@@ -306,10 +356,13 @@ struct iwl_host_cmd {
 	u8 id;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SUP_RATE_11A_MAX_NUM_CHANNELS  8
 #define SUP_RATE_11B_MAX_NUM_CHANNELS  4
 #define SUP_RATE_11G_MAX_NUM_CHANNELS  12
 
+<<<<<<< HEAD
 /**
  * struct iwl_rx_queue - Rx queue
  * @bd: driver's pointer to buffer of receive buffer descriptors (rbd)
@@ -392,6 +445,13 @@ struct iwl_hw_key {
 	u8 key[32];
 };
 
+=======
+#define IWL_SUPPORTED_RATES_IE_LEN         8
+
+#define IWL_INVALID_RATE     0xFF
+#define IWL_INVALID_VALUE    -1
+
+>>>>>>> refs/remotes/origin/cm-10.0
 union iwl_ht_rate_supp {
 	u16 rates;
 	struct {
@@ -434,6 +494,72 @@ struct iwl_qos_info {
 	struct iwl_qosparam_cmd def_qos_parm;
 };
 
+<<<<<<< HEAD
+=======
+/**
+ * enum iwl_agg_state
+ *
+ * The state machine of the BA agreement establishment / tear down.
+ * These states relate to a specific RA / TID.
+ *
+ * @IWL_AGG_OFF: aggregation is not used
+ * @IWL_AGG_ON: aggregation session is up
+ * @IWL_EMPTYING_HW_QUEUE_ADDBA: establishing a BA session - waiting for the
+ *	HW queue to be empty from packets for this RA /TID.
+ * @IWL_EMPTYING_HW_QUEUE_DELBA: tearing down a BA session - waiting for the
+ *	HW queue to be empty from packets for this RA /TID.
+ */
+enum iwl_agg_state {
+	IWL_AGG_OFF = 0,
+	IWL_AGG_ON,
+	IWL_EMPTYING_HW_QUEUE_ADDBA,
+	IWL_EMPTYING_HW_QUEUE_DELBA,
+};
+
+/**
+ * struct iwl_ht_agg - aggregation state machine
+
+ * This structs holds the states for the BA agreement establishment and tear
+ * down. It also holds the state during the BA session itself. This struct is
+ * duplicated for each RA / TID.
+
+ * @rate_n_flags: Rate at which Tx was attempted. Holds the data between the
+ *	Tx response (REPLY_TX), and the block ack notification
+ *	(REPLY_COMPRESSED_BA).
+ * @state: state of the BA agreement establishment / tear down.
+ * @txq_id: Tx queue used by the BA session - used by the transport layer.
+ *	Needed by the upper layer for debugfs only.
+ * @ssn: the first packet to be sent in AGG HW queue in Tx AGG start flow, or
+ *	the first packet to be sent in legacy HW queue in Tx AGG stop flow.
+ *	Basically when next_reclaimed reaches ssn, we can tell mac80211 that
+ *	we are ready to finish the Tx AGG stop / start flow.
+ * @wait_for_ba: Expect block-ack before next Tx reply
+ */
+struct iwl_ht_agg {
+	u32 rate_n_flags;
+	enum iwl_agg_state state;
+	u16 txq_id;
+	u16 ssn;
+	bool wait_for_ba;
+};
+
+/**
+ * struct iwl_tid_data - one for each RA / TID
+
+ * This structs holds the states for each RA / TID.
+
+ * @seq_number: the next WiFi sequence number to use
+ * @next_reclaimed: the WiFi sequence number of the next packet to be acked.
+ *	This is basically (last acked packet++).
+ * @agg: aggregation state machine
+ */
+struct iwl_tid_data {
+	u16 seq_number;
+	u16 next_reclaimed;
+	struct iwl_ht_agg agg;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Structure should be accessed with sta_lock held. When station addition
  * is in progress (IWL_STA_UCODE_INPROGRESS) it is possible to access only
@@ -442,6 +568,7 @@ struct iwl_qos_info {
  */
 struct iwl_station_entry {
 	struct iwl_addsta_cmd sta;
+<<<<<<< HEAD
 	struct iwl_tid_data tid[MAX_TID_COUNT];
 	u8 used, ctxid;
 	struct iwl_hw_key keyinfo;
@@ -453,6 +580,12 @@ struct iwl_station_priv_common {
 	u8 sta_id;
 };
 
+=======
+	u8 used, ctxid;
+	struct iwl_link_quality_cmd *lq;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * iwl_station_priv: Driver's private station information
  *
@@ -461,12 +594,20 @@ struct iwl_station_priv_common {
  * space.
  */
 struct iwl_station_priv {
+<<<<<<< HEAD
 	struct iwl_station_priv_common common;
+=======
+	struct iwl_rxon_context *ctx;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iwl_lq_sta lq_sta;
 	atomic_t pending_frames;
 	bool client;
 	bool asleep;
 	u8 max_agg_bufsize;
+<<<<<<< HEAD
+=======
+	u8 sta_id;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -480,6 +621,7 @@ struct iwl_vif_priv {
 	u8 ibss_bssid_sta_id;
 };
 
+<<<<<<< HEAD
 /* one for each uCode image (inst/data, boot/init/runtime) */
 struct fw_desc {
 	void *v_addr;		/* access by driver */
@@ -599,6 +741,10 @@ struct iwl_tlv_ucode_header {
 struct iwl_sensitivity_ranges {
 	u16 min_nrg_cck;
 	u16 max_nrg_cck;
+=======
+struct iwl_sensitivity_ranges {
+	u16 min_nrg_cck;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	u16 nrg_th_cck;
 	u16 nrg_th_ofdm;
@@ -628,6 +774,7 @@ struct iwl_sensitivity_ranges {
 #define CELSIUS_TO_KELVIN(x) ((x)+273)
 
 
+<<<<<<< HEAD
 /**
  * struct iwl_hw_params
  * @max_txq_num: Max # Tx queues supported
@@ -679,6 +826,8 @@ struct iwl_hw_params {
 };
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /******************************************************************************
  *
  * Functions implemented in core module which are forward declared here
@@ -694,6 +843,7 @@ struct iwl_hw_params {
  ****************************************************************************/
 extern void iwl_update_chain_flags(struct iwl_priv *priv);
 extern const u8 iwl_bcast_addr[ETH_ALEN];
+<<<<<<< HEAD
 extern int iwl_rxq_stop(struct iwl_priv *priv);
 extern void iwl_txq_ctx_stop(struct iwl_priv *priv);
 extern int iwl_queue_space(const struct iwl_queue *q);
@@ -716,15 +866,20 @@ struct iwl_dma_ptr {
 	void *addr;
 	size_t size;
 };
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define IWL_OPERATION_MODE_AUTO     0
 #define IWL_OPERATION_MODE_HT_ONLY  1
 #define IWL_OPERATION_MODE_MIXED    2
 #define IWL_OPERATION_MODE_20MHZ    3
 
+<<<<<<< HEAD
 #define IWL_TX_CRC_SIZE 4
 #define IWL_TX_DELIMITER_SIZE 4
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TX_POWER_IWL_ILLEGAL_VOLTAGE -10000
 
 /* Sensitivity and chain noise calibration */
@@ -775,6 +930,7 @@ enum iwlagn_chain_noise_state {
 	IWL_CHAIN_NOISE_DONE,
 };
 
+<<<<<<< HEAD
 
 /*
  * enum iwl_calib
@@ -798,6 +954,8 @@ struct iwl_calib_result {
 	size_t buf_len;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Sensitivity calib data */
 struct iwl_sensitivity_data {
 	u32 auto_corr_ofdm;
@@ -845,12 +1003,15 @@ struct iwl_chain_noise_data {
 	u8 state;
 };
 
+<<<<<<< HEAD
 #define	EEPROM_SEM_TIMEOUT 10		/* milliseconds */
 #define EEPROM_SEM_RETRY_LIMIT 1000	/* number of attempts (not time) */
 
 #define IWL_TRAFFIC_ENTRIES	(256)
 #define IWL_TRAFFIC_ENTRY_SIZE  (64)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 enum {
 	MEASUREMENT_READY = (1 << 0),
 	MEASUREMENT_ACTIVE = (1 << 1),
@@ -873,6 +1034,7 @@ enum iwl_access_mode {
 	IWL_OTP_ACCESS_RELATIVE,
 };
 
+<<<<<<< HEAD
 /**
  * enum iwl_pa_type - Power Amplifier type
  * @IWL_PA_SYSTEM:  based on uCode configuration
@@ -899,6 +1061,8 @@ struct isr_statistics {
 	u32 unhandled;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* reply_tx_statistics (for _agn devices) */
 struct reply_tx_error_statistics {
 	u32 pp_delay;
@@ -985,7 +1149,11 @@ struct traffic_stats {
  * schedule the timer to wake up every UCODE_TRACE_PERIOD milliseconds
  * to perform continuous uCode event logging operation if enabled
  */
+<<<<<<< HEAD
 #define UCODE_TRACE_PERIOD (100)
+=======
+#define UCODE_TRACE_PERIOD (10)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * iwl_event_log: current uCode event log position
@@ -1008,6 +1176,7 @@ struct iwl_event_log {
 };
 
 /*
+<<<<<<< HEAD
  * host interrupt timeout value
  * used with setting interrupt coalescing timer
  * the CSR_INT_COALESCING is an 8 bit register in 32-usec unit
@@ -1023,6 +1192,8 @@ struct iwl_event_log {
 #define IWL_HOST_INT_CALIB_TIMEOUT_MIN	(0x0)
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * This is the threshold value of plcp error rate per 100mSecs.  It is
  * used to set and check for the validity of plcp_delta.
  */
@@ -1071,6 +1242,7 @@ struct iwl_force_reset {
  */
 #define IWLAGN_EXT_BEACON_TIME_POS	22
 
+<<<<<<< HEAD
 /**
  * struct iwl_notification_wait - notification wait entry
  * @list: list head for global list
@@ -1114,6 +1286,11 @@ struct iwl_rxon_context {
 	const u8 *ac_to_queue;
 	u8 mcast_queue;
 
+=======
+struct iwl_rxon_context {
+	struct ieee80211_vif *vif;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * We could use the vif to indicate active, but we
 	 * also need it to be active during disabling when
@@ -1152,44 +1329,116 @@ struct iwl_rxon_context {
 
 	__le32 station_flags;
 
+<<<<<<< HEAD
+=======
+	int beacon_int;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct {
 		bool non_gf_sta_present;
 		u8 protection;
 		bool enabled, is_40mhz;
 		u8 extension_chan_offset;
 	} ht;
+<<<<<<< HEAD
 
 	bool last_tx_rejected;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum iwl_scan_type {
 	IWL_SCAN_NORMAL,
 	IWL_SCAN_RADIO_RESET,
+<<<<<<< HEAD
 	IWL_SCAN_OFFCH_TX,
 };
 
 #ifdef CONFIG_IWLWIFI_DEVICE_SVTOOL
 struct iwl_testmode_trace {
+=======
+	IWL_SCAN_ROC,
+};
+
+#ifdef CONFIG_IWLWIFI_DEVICE_TESTMODE
+struct iwl_testmode_trace {
+	u32 buff_size;
+	u32 total_size;
+	u32 num_chunks;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 *cpu_addr;
 	u8 *trace_addr;
 	dma_addr_t dma_addr;
 	bool trace_enabled;
 };
+<<<<<<< HEAD
 #endif
 struct iwl_priv {
 
+=======
+struct iwl_testmode_mem {
+	u32 buff_size;
+	u32 num_chunks;
+	u8 *buff_addr;
+	bool read_in_progress;
+};
+#endif
+
+struct iwl_wipan_noa_data {
+	struct rcu_head rcu_head;
+	u32 length;
+	u8 data[];
+};
+
+#define IWL_OP_MODE_GET_DVM(_iwl_op_mode) \
+	((struct iwl_priv *) ((_iwl_op_mode)->op_mode_specific))
+
+#define IWL_MAC80211_GET_DVM(_hw) \
+	((struct iwl_priv *) ((struct iwl_op_mode *) \
+	(_hw)->priv)->op_mode_specific)
+
+struct iwl_priv {
+
+	/*data shared among all the driver's layers */
+	struct iwl_shared *shrd;
+	const struct iwl_fw *fw;
+	unsigned long status;
+
+	spinlock_t sta_lock;
+	struct mutex mutex;
+
+	unsigned long transport_queue_stop;
+	bool passive_no_rx;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* ieee device used by generic ieee processing code */
 	struct ieee80211_hw *hw;
 	struct ieee80211_channel *ieee_channels;
 	struct ieee80211_rate *ieee_rates;
+<<<<<<< HEAD
 	struct iwl_cfg *cfg;
+=======
+
+	struct list_head calib_results;
+
+	struct workqueue_struct *workqueue;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	enum ieee80211_band band;
 
 	void (*pre_rx_handler)(struct iwl_priv *priv,
+<<<<<<< HEAD
 			       struct iwl_rx_mem_buffer *rxb);
 	void (*rx_handlers[REPLY_MAX])(struct iwl_priv *priv,
 				       struct iwl_rx_mem_buffer *rxb);
+=======
+			       struct iwl_rx_cmd_buffer *rxb);
+	int (*rx_handlers[REPLY_MAX])(struct iwl_priv *priv,
+				       struct iwl_rx_cmd_buffer *rxb,
+				       struct iwl_device_cmd *cmd);
+
+	struct iwl_notif_wait_data notif_wait;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct ieee80211_supported_band bands[IEEE80211_NUM_BANDS];
 
@@ -1197,6 +1446,13 @@ struct iwl_priv {
 	struct iwl_spectrum_notification measure_report;
 	u8 measurement_status;
 
+<<<<<<< HEAD
+=======
+#define IWL_OWNERSHIP_DRIVER	0
+#define IWL_OWNERSHIP_TM	1
+	u8 ucode_owner;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* ucode beacon time */
 	u32 ucode_beacon_time;
 	int missed_beacon_threshold;
@@ -1207,24 +1463,45 @@ struct iwl_priv {
 	/* jiffies when last recovery from statistics was performed */
 	unsigned long rx_statistics_jiffies;
 
+<<<<<<< HEAD
+=======
+	/*counters */
+	u32 rx_handlers_stats[REPLY_MAX];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* force reset */
 	struct iwl_force_reset force_reset[IWL_MAX_FORCE_RESET];
 
 	/* firmware reload counter and timestamp */
 	unsigned long reload_jiffies;
 	int reload_count;
+<<<<<<< HEAD
+=======
+	bool ucode_loaded;
+	bool init_ucode_run;		/* Don't run init uCode again */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* we allocate array of iwl_channel_info for NIC's valid channels.
 	 *    Access via channel # using indirect index array */
 	struct iwl_channel_info *channel_info;	/* channel info array */
 	u8 channel_count;	/* # of channels */
 
+<<<<<<< HEAD
 	/* thermal calibration */
 	s32 temperature;	/* degrees Kelvin */
 	s32 last_temperature;
 
 	/* init calibration results */
 	struct iwl_calib_result calib_results[IWL_CALIB_MAX];
+=======
+	u8 plcp_delta_threshold;
+
+	/* thermal calibration */
+	s32 temperature;	/* Celsius */
+	s32 last_temperature;
+
+	struct iwl_wipan_noa_data __rcu *noa_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Scan related variables */
 	unsigned long scan_start;
@@ -1237,6 +1514,7 @@ struct iwl_priv {
 	u8 scan_tx_ant[IEEE80211_NUM_BANDS];
 	u8 mgmt_tx_ant;
 
+<<<<<<< HEAD
 	/* spinlock */
 	spinlock_t lock;	/* protect general shared data */
 	spinlock_t hcmd_lock;	/* protect hcmd */
@@ -1255,11 +1533,14 @@ struct iwl_priv {
 	/* command queue number */
 	u8 cmd_queue;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* max number of station keys */
 	u8 sta_key_max_num;
 
 	bool new_scan_threshold_behaviour;
 
+<<<<<<< HEAD
 	/* EEPROM MAC addresses */
 	struct mac_address addresses[2];
 
@@ -1274,21 +1555,34 @@ struct iwl_priv {
 	u8 ucode_write_complete;	/* the image write is complete */
 	char firmware_name[25];
 
+=======
+	bool wowlan;
+
+	/* EEPROM MAC addresses */
+	struct mac_address addresses[2];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iwl_rxon_context contexts[NUM_IWL_RXON_CTX];
 
 	__le16 switch_channel;
 
+<<<<<<< HEAD
 	struct {
 		u32 error_event_table;
 		u32 log_event_table;
 	} device_pointers;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 active_rate;
 
 	u8 start_calib;
 	struct iwl_sensitivity_data sensitivity_data;
 	struct iwl_chain_noise_data chain_noise_data;
+<<<<<<< HEAD
 	bool enhance_sensitivity_table;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	__le16 sensitivity_tbl[HD_TABLE_SIZE];
 	__le16 enhance_sensitivity_tbl[ENHANCE_HD_TABLE_ENTRIES];
 
@@ -1297,6 +1591,7 @@ struct iwl_priv {
 	/* Rate scaling data */
 	u8 retry_rate;
 
+<<<<<<< HEAD
 	wait_queue_head_t wait_command_queue;
 
 	int activity_timer_active;
@@ -1312,17 +1607,25 @@ struct iwl_priv {
 
 	unsigned long status;
 
+=======
+	int activity_timer_active;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* counts mgmt, ctl, and data packets */
 	struct traffic_stats tx_stats;
 	struct traffic_stats rx_stats;
 
+<<<<<<< HEAD
 	/* counts interrupts */
 	struct isr_statistics isr_stats;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iwl_power_mgr power_data;
 	struct iwl_tt_mgmt thermal_throttle;
 
 	/* station table variables */
+<<<<<<< HEAD
 
 	/* Note: if lock and sta_lock are needed, lock must be acquired first */
 	spinlock_t sta_lock;
@@ -1335,10 +1638,19 @@ struct iwl_priv {
 	unsigned long queue_stopped[BITS_TO_LONGS(IWL_MAX_HW_QUEUES)];
 	/* for each AC */
 	atomic_t queue_stop_count[4];
+=======
+	int num_stations;
+	struct iwl_station_entry stations[IWLAGN_STATION_COUNT];
+	unsigned long ucode_key_table;
+	struct iwl_tid_data tid_data[IWLAGN_STATION_COUNT][IWL_MAX_TID_COUNT];
+
+	u8 mac80211_registered;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Indication if ieee80211_ops->open has been called */
 	u8 is_open;
 
+<<<<<<< HEAD
 	u8 mac80211_registered;
 
 	/* eeprom -- this is in the card's little endian byte order */
@@ -1346,6 +1658,8 @@ struct iwl_priv {
 	int    nvm_device_type;
 	struct iwl_eeprom_calib_info *calib_info;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	enum nl80211_iftype iw_mode;
 
 	/* Last Rx'd beacon timestamp */
@@ -1363,6 +1677,10 @@ struct iwl_priv {
 		struct statistics_bt_activity bt_activity;
 		__le32 num_bt_kills, accum_num_bt_kills;
 #endif
+<<<<<<< HEAD
+=======
+		spinlock_t lock;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} statistics;
 #ifdef CONFIG_IWLWIFI_DEBUGFS
 	struct {
@@ -1376,6 +1694,7 @@ struct iwl_priv {
 	} accum_stats, delta_stats, max_delta_stats;
 #endif
 
+<<<<<<< HEAD
 	struct {
 		/* INT ICT Table */
 		__le32 *ict_tbl;
@@ -1426,6 +1745,35 @@ struct iwl_priv {
 		int offchan_tx_timeout;
 		struct ieee80211_channel *offchan_tx_chan;
 	} _agn;
+=======
+	/*
+	 * reporting the number of tids has AGG on. 0 means
+	 * no AGGREGATION
+	 */
+	u8 agg_tids_count;
+
+	struct iwl_rx_phy_res last_phy_res;
+	bool last_phy_res_valid;
+
+	/*
+	 * chain noise reset and gain commands are the
+	 * two extra calibration commands follows the standard
+	 * phy calibration commands
+	 */
+	u8 phy_calib_chain_noise_reset_cmd;
+	u8 phy_calib_chain_noise_gain_cmd;
+
+	/* counts reply_tx error */
+	struct reply_tx_error_statistics reply_tx_stats;
+	struct reply_agg_tx_error_statistics reply_agg_tx_stats;
+
+	/* remain-on-channel offload support */
+	struct ieee80211_channel *hw_roc_channel;
+	struct delayed_work hw_roc_disable_work;
+	enum nl80211_channel_type hw_roc_chantype;
+	int hw_roc_duration;
+	bool hw_roc_setup, hw_roc_start_notified;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* bt coex */
 	u8 bt_enable_flag;
@@ -1442,6 +1790,7 @@ struct iwl_priv {
 	u16 dynamic_frag_thresh;
 	u8 bt_ci_compliance;
 	struct work_struct bt_traffic_change_work;
+<<<<<<< HEAD
 
 	struct iwl_hw_params hw_params;
 
@@ -1452,6 +1801,14 @@ struct iwl_priv {
 	struct work_struct restart;
 	struct work_struct scan_completed;
 	struct work_struct rx_replenish;
+=======
+	bool bt_enable_pspoll;
+	struct iwl_rxon_context *cur_rssi_ctx;
+	bool bt_is_sco;
+
+	struct work_struct restart;
+	struct work_struct scan_completed;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct work_struct abort_scan;
 
 	struct work_struct beacon_update;
@@ -1467,8 +1824,11 @@ struct iwl_priv {
 	struct work_struct bt_full_concurrency;
 	struct work_struct bt_runtime_config;
 
+<<<<<<< HEAD
 	struct tasklet_struct irq_tasklet;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct delayed_work scan_check;
 
 	/* TX Power */
@@ -1477,12 +1837,15 @@ struct iwl_priv {
 	s8 tx_power_lmt_in_half_dbm; /* max tx power in half-dBm format */
 	s8 tx_power_next;
 
+<<<<<<< HEAD
 
 #ifdef CONFIG_IWLWIFI_DEBUG
 	/* debugging info */
 	u32 debug_level; /* per device debugging will override global
 			    iwl_debug_level if set */
 #endif /* CONFIG_IWLWIFI_DEBUG */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_IWLWIFI_DEBUGFS
 	/* debugfs */
 	u16 tx_traffic_idx;
@@ -1492,6 +1855,10 @@ struct iwl_priv {
 	struct dentry *debugfs_dir;
 	u32 dbgfs_sram_offset, dbgfs_sram_len;
 	bool disable_ht40;
+<<<<<<< HEAD
+=======
+	void *wowlan_sram;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_IWLWIFI_DEBUGFS */
 
 	struct work_struct txpower_work;
@@ -1507,6 +1874,7 @@ struct iwl_priv {
 	struct led_classdev led;
 	unsigned long blink_on, blink_off;
 	bool led_registered;
+<<<<<<< HEAD
 #ifdef CONFIG_IWLWIFI_DEVICE_SVTOOL
 	struct iwl_testmode_trace testmode_trace;
 #endif
@@ -1555,6 +1923,23 @@ static inline struct ieee80211_hdr *iwl_tx_queue_get_hdr(struct iwl_priv *priv,
 				txb[idx].skb->data;
 	return NULL;
 }
+=======
+#ifdef CONFIG_IWLWIFI_DEVICE_TESTMODE
+	struct iwl_testmode_trace testmode_trace;
+	struct iwl_testmode_mem testmode_mem;
+	u32 tm_fixed_rate;
+#endif
+
+	/* WoWLAN GTK rekey data */
+	u8 kck[NL80211_KCK_LEN], kek[NL80211_KEK_LEN];
+	__le64 replay_ctr;
+	__le16 last_seq_ctl;
+	bool have_rekey_data;
+}; /*iwl_priv */
+
+extern struct kmem_cache *iwl_tx_cmd_pool;
+extern struct iwl_mod_params iwlagn_mod_params;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline struct iwl_rxon_context *
 iwl_rxon_ctx_from_vif(struct ieee80211_vif *vif)
@@ -1567,7 +1952,11 @@ iwl_rxon_ctx_from_vif(struct ieee80211_vif *vif)
 #define for_each_context(priv, ctx)				\
 	for (ctx = &priv->contexts[IWL_RXON_CTX_BSS];		\
 	     ctx < &priv->contexts[NUM_IWL_RXON_CTX]; ctx++)	\
+<<<<<<< HEAD
 		if (priv->valid_contexts & BIT(ctx->ctxid))
+=======
+		if (priv->shrd->valid_contexts & BIT(ctx->ctxid))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int iwl_is_associated_ctx(struct iwl_rxon_context *ctx)
 {
@@ -1621,6 +2010,7 @@ static inline int is_channel_ibss(const struct iwl_channel_info *ch)
 	return ((ch->flags & EEPROM_CHANNEL_IBSS)) ? 1 : 0;
 }
 
+<<<<<<< HEAD
 static inline void __iwl_free_pages(struct iwl_priv *priv, struct page *page)
 {
 	__free_pages(page, priv->hw_params.rx_page_order);
@@ -1630,4 +2020,6 @@ static inline void iwl_free_pages(struct iwl_priv *priv, unsigned long page)
 {
 	free_pages(page, priv->hw_params.rx_page_order);
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif				/* __iwl_dev_h__ */

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef __ASM_SPARC_GPIO_H
 #define __ASM_SPARC_GPIO_H
 
@@ -34,3 +35,9 @@ static inline int irq_to_gpio(unsigned int irq)
 #endif /* CONFIG_GPIOLIB */
 
 #endif /* __ASM_SPARC_GPIO_H */
+=======
+#ifndef __LINUX_GPIO_H
+#warning Include linux/gpio.h instead of asm/gpio.h
+#include <linux/gpio.h>
+#endif
+>>>>>>> refs/remotes/origin/master

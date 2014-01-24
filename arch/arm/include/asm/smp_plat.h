@@ -5,6 +5,12 @@
 #ifndef __ASMARM_SMP_PLAT_H
 #define __ASMARM_SMP_PLAT_H
 
+<<<<<<< HEAD
+=======
+#include <linux/cpumask.h>
+#include <linux/err.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/cputype.h>
 
 /*
@@ -23,6 +29,12 @@ static inline bool is_smp(void)
 }
 
 /* all SMP configurations have the extended CPUID registers */
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_MMU
+#define tlb_ops_need_broadcast()	0
+#else
+>>>>>>> refs/remotes/origin/master
 static inline int tlb_ops_need_broadcast(void)
 {
 	if (!is_smp())
@@ -30,6 +42,10 @@ static inline int tlb_ops_need_broadcast(void)
 
 	return ((read_cpuid_ext(CPUID_EXT_MMFR3) >> 12) & 0xf) < 2;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #if !defined(CONFIG_SMP) || __LINUX_ARM_ARCH__ >= 7
 #define cache_ops_need_broadcast()	0
@@ -43,4 +59,57 @@ static inline int cache_ops_need_broadcast(void)
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/*
+ * Logical CPU mapping.
+ */
+extern int __cpu_logical_map[];
+#define cpu_logical_map(cpu)	__cpu_logical_map[cpu]
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Logical CPU mapping.
+ */
+extern u32 __cpu_logical_map[];
+#define cpu_logical_map(cpu)	__cpu_logical_map[cpu]
+/*
+ * Retrieve logical cpu index corresponding to a given MPIDR[23:0]
+ *  - mpidr: MPIDR[23:0] to be used for the look-up
+ *
+ * Returns the cpu logical index or -EINVAL on look-up error
+ */
+static inline int get_logical_index(u32 mpidr)
+{
+	int cpu;
+	for (cpu = 0; cpu < nr_cpu_ids; cpu++)
+		if (cpu_logical_map(cpu) == mpidr)
+			return cpu;
+	return -EINVAL;
+}
+
+/*
+ * NOTE ! Assembly code relies on the following
+ * structure memory layout in order to carry out load
+ * multiple from its base address. For more
+ * information check arch/arm/kernel/sleep.S
+ */
+struct mpidr_hash {
+	u32	mask; /* used by sleep.S */
+	u32	shift_aff[3]; /* used by sleep.S */
+	u32	bits;
+};
+
+extern struct mpidr_hash mpidr_hash;
+
+static inline u32 mpidr_hash_size(void)
+{
+	return 1 << mpidr_hash.bits;
+}
+
+extern int platform_can_cpu_hotplug(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif

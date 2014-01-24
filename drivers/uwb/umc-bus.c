@@ -8,6 +8,14 @@
 #include <linux/kernel.h>
 #include <linux/sysfs.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/uwb/umc.h>
 #include <linux/pci.h>
 
@@ -62,7 +70,11 @@ int umc_controller_reset(struct umc_dev *umc)
 	struct device *parent = umc->dev.parent;
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (device_trylock(parent))
+=======
+	if (!device_trylock(parent))
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;
 	ret = device_for_each_child(parent, parent, umc_bus_pre_reset_helper);
 	if (ret >= 0)
@@ -84,7 +96,11 @@ int umc_match_pci_id(struct umc_driver *umc_drv, struct umc_dev *umc)
 	const struct pci_device_id *id_table = umc_drv->match_data;
 	struct pci_dev *pci;
 
+<<<<<<< HEAD
 	if (umc->dev.parent->bus != &pci_bus_type)
+=======
+	if (!dev_is_pci(umc->dev.parent))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	pci = to_pci_dev(umc->dev.parent);
@@ -200,6 +216,10 @@ static ssize_t capability_id_show(struct device *dev, struct device_attribute *a
 
 	return sprintf(buf, "0x%02x\n", umc->cap_id);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(capability_id);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t version_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
@@ -207,12 +227,23 @@ static ssize_t version_show(struct device *dev, struct device_attribute *attr, c
 
 	return sprintf(buf, "0x%04x\n", umc->version);
 }
+<<<<<<< HEAD
 
 static struct device_attribute umc_dev_attrs[] = {
 	__ATTR_RO(capability_id),
 	__ATTR_RO(version),
 	__ATTR_NULL,
 };
+=======
+static DEVICE_ATTR_RO(version);
+
+static struct attribute *umc_dev_attrs[] = {
+	&dev_attr_capability_id.attr,
+	&dev_attr_version.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(umc_dev);
+>>>>>>> refs/remotes/origin/master
 
 struct bus_type umc_bus_type = {
 	.name		= "umc",
@@ -221,7 +252,11 @@ struct bus_type umc_bus_type = {
 	.remove		= umc_device_remove,
 	.suspend        = umc_device_suspend,
 	.resume         = umc_device_resume,
+<<<<<<< HEAD
 	.dev_attrs	= umc_dev_attrs,
+=======
+	.dev_groups	= umc_dev_groups,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL_GPL(umc_bus_type);
 

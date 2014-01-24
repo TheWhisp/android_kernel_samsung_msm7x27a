@@ -14,11 +14,14 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+<<<<<<< HEAD
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
  */
 /*
 Driver: dt2815
@@ -56,6 +59,7 @@ Configuration options:
   [12] - Analog output 7 range configuration (same options)
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <linux/ioport.h>
@@ -67,11 +71,19 @@ static const struct comedi_lrange
 static const struct comedi_lrange
 	range_dt2815_ao_20_current = {1, {RANGE_mA(4, 20)} };
 
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+#include <linux/delay.h>
+
+>>>>>>> refs/remotes/origin/master
 #define DT2815_SIZE 2
 
 #define DT2815_DATA 0
 #define DT2815_STATUS 1
 
+<<<<<<< HEAD
 static int dt2815_attach(struct comedi_device *dev,
 			 struct comedi_devconfig *it);
 static int dt2815_detach(struct comedi_device *dev);
@@ -97,14 +109,19 @@ module_exit(driver_dt2815_cleanup_module);
 
 static void dt2815_free_resources(struct comedi_device *dev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct dt2815_private {
 
 	const struct comedi_lrange *range_type_list[8];
 	unsigned int ao_readback[8];
 };
 
+<<<<<<< HEAD
 #define devpriv ((struct dt2815_private *)dev->private)
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int dt2815_wait_for_status(struct comedi_device *dev, int status)
 {
 	int i;
@@ -120,6 +137,10 @@ static int dt2815_ao_insn_read(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct dt2815_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int chan = CR_CHAN(insn->chanspec);
 
@@ -132,6 +153,10 @@ static int dt2815_ao_insn_read(struct comedi_device *dev,
 static int dt2815_ao_insn(struct comedi_device *dev, struct comedi_subdevice *s,
 			  struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct dt2815_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int chan = CR_CHAN(insn->chanspec);
 	unsigned int status;
@@ -143,8 +168,14 @@ static int dt2815_ao_insn(struct comedi_device *dev, struct comedi_subdevice *s,
 
 		status = dt2815_wait_for_status(dev, 0x00);
 		if (status != 0) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "dt2815: failed to write low byte "
 			       "on %d reason %x\n", chan, status);
+=======
+			dev_dbg(dev->class_dev,
+				"failed to write low byte on %d reason %x\n",
+				chan, status);
+>>>>>>> refs/remotes/origin/master
 			return -EBUSY;
 		}
 
@@ -152,8 +183,14 @@ static int dt2815_ao_insn(struct comedi_device *dev, struct comedi_subdevice *s,
 
 		status = dt2815_wait_for_status(dev, 0x10);
 		if (status != 0x10) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "dt2815: failed to write high byte "
 			       "on %d reason %x\n", chan, status);
+=======
+			dev_dbg(dev->class_dev,
+				"failed to write high byte on %d reason %x\n",
+				chan, status);
+>>>>>>> refs/remotes/origin/master
 			return -EBUSY;
 		}
 		devpriv->ao_readback[chan] = data[i];
@@ -187,6 +224,7 @@ static int dt2815_ao_insn(struct comedi_device *dev, struct comedi_subdevice *s,
 
 static int dt2815_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 {
+<<<<<<< HEAD
 	struct comedi_subdevice *s;
 	int i;
 	const struct comedi_lrange *current_range_type, *voltage_range_type;
@@ -208,6 +246,27 @@ static int dt2815_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		return -ENOMEM;
 
 	s = dev->subdevices;
+=======
+	struct dt2815_private *devpriv;
+	struct comedi_subdevice *s;
+	int i;
+	const struct comedi_lrange *current_range_type, *voltage_range_type;
+	int ret;
+
+	ret = comedi_request_region(dev, it->options[0], DT2815_SIZE);
+	if (ret)
+		return ret;
+
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	/* ao subdevice */
 	s->type = COMEDI_SUBD_AO;
 	s->subdev_flags = SDF_WRITABLE;
@@ -218,7 +277,11 @@ static int dt2815_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	s->range_table_list = devpriv->range_type_list;
 
 	current_range_type = (it->options[3])
+<<<<<<< HEAD
 	    ? &range_dt2815_ao_20_current : &range_dt2815_ao_32_current;
+=======
+	    ? &range_4_20mA : &range_0_32mA;
+>>>>>>> refs/remotes/origin/master
 	voltage_range_type = (it->options[2])
 	    ? &range_bipolar5 : &range_unipolar5;
 	for (i = 0; i < 8; i++) {
@@ -238,12 +301,22 @@ static int dt2815_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 			unsigned int program;
 			program = (it->options[4] & 0x3) << 3 | 0x7;
 			outb(program, dev->iobase + DT2815_DATA);
+<<<<<<< HEAD
 			printk(KERN_INFO ", program: 0x%x (@t=%d)\n",
 			       program, i);
 			break;
 		} else if (status != 0x00) {
 			printk(KERN_WARNING "dt2815: unexpected status 0x%x "
 			       "(@t=%d)\n", status, i);
+=======
+			dev_dbg(dev->class_dev, "program: 0x%x (@t=%d)\n",
+				program, i);
+			break;
+		} else if (status != 0x00) {
+			dev_dbg(dev->class_dev,
+				"unexpected status 0x%x (@t=%d)\n",
+				status, i);
+>>>>>>> refs/remotes/origin/master
 			if (status & 0x60)
 				outb(0x00, dev->iobase + DT2815_STATUS);
 		}
@@ -252,6 +325,7 @@ static int dt2815_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void dt2815_free_resources(struct comedi_device *dev)
 {
 	if (dev->iobase)
@@ -266,6 +340,15 @@ static int dt2815_detach(struct comedi_device *dev)
 
 	return 0;
 }
+=======
+static struct comedi_driver dt2815_driver = {
+	.driver_name	= "dt2815",
+	.module		= THIS_MODULE,
+	.attach		= dt2815_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(dt2815_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

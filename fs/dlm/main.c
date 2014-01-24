@@ -17,6 +17,10 @@
 #include "user.h"
 #include "memory.h"
 #include "config.h"
+<<<<<<< HEAD
+=======
+#include "lowcomms.h"
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_dlm(void)
 {
@@ -78,6 +82,10 @@ static void __exit exit_dlm(void)
 	dlm_config_exit();
 	dlm_memory_exit();
 	dlm_lockspace_exit();
+<<<<<<< HEAD
+=======
+	dlm_lowcomms_exit();
+>>>>>>> refs/remotes/origin/master
 	dlm_unregister_debugfs();
 }
 

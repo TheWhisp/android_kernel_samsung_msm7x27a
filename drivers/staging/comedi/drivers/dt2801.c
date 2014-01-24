@@ -29,9 +29,15 @@ Configuration options:
   [5] - D/A 1 range (same choices)
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 #include <linux/delay.h>
 #include <linux/ioport.h>
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DT2801_TIMEOUT 1000
 
@@ -88,6 +94,7 @@ Configuration options:
 #define DT2801_STATUS		1
 #define DT2801_CMD		1
 
+<<<<<<< HEAD
 static int dt2801_attach(struct comedi_device *dev,
 			 struct comedi_devconfig *it);
 static int dt2801_detach(struct comedi_device *dev);
@@ -139,10 +146,31 @@ static const struct comedi_lrange range_dt2801_ai_pgl_bipolar = { 4, {
 								      (-0.02,
 								       0.02),
 								      }
+=======
+#if 0
+/* ignore 'defined but not used' warning */
+static const struct comedi_lrange range_dt2801_ai_pgh_bipolar = {
+	4, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(2.5),
+		BIP_RANGE(1.25)
+	}
+};
+#endif
+static const struct comedi_lrange range_dt2801_ai_pgl_bipolar = {
+	4, {
+		BIP_RANGE(10),
+		BIP_RANGE(1),
+		BIP_RANGE(0.1),
+		BIP_RANGE(0.02)
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 #if 0
 /* ignore 'defined but not used' warning */
+<<<<<<< HEAD
 static const struct comedi_lrange range_dt2801_ai_pgh_unipolar = { 4, {
 								       RANGE(0,
 									     10),
@@ -165,6 +193,24 @@ static const struct comedi_lrange range_dt2801_ai_pgl_unipolar = { 4, {
 								       RANGE(0,
 									     0.02),
 								       }
+=======
+static const struct comedi_lrange range_dt2801_ai_pgh_unipolar = {
+	4, {
+		UNI_RANGE(10),
+		UNI_RANGE(5),
+		UNI_RANGE(2.5),
+		UNI_RANGE(1.25)
+	}
+};
+#endif
+static const struct comedi_lrange range_dt2801_ai_pgl_unipolar = {
+	4, {
+		UNI_RANGE(10),
+		UNI_RANGE(1),
+		UNI_RANGE(0.1),
+		UNI_RANGE(0.02)
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 struct dt2801_board {
@@ -248,14 +294,18 @@ static const struct dt2801_board boardtypes[] = {
 	 .dabits = 12},
 };
 
+<<<<<<< HEAD
 #define boardtype (*(const struct dt2801_board *)dev->board_ptr)
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct dt2801_private {
 
 	const struct comedi_lrange *dac_range_types[2];
 	unsigned int ao_readback[2];
 };
 
+<<<<<<< HEAD
 #define devpriv ((struct dt2801_private *)dev->private)
 
 static int dt2801_ai_insn_read(struct comedi_device *dev,
@@ -274,6 +324,8 @@ static int dt2801_dio_insn_config(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
 				  struct comedi_insn *insn, unsigned int *data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* These are the low-level routines:
    writecommand: write a command to the board
    writedata: write data byte
@@ -303,7 +355,12 @@ static int dt2801_readdata(struct comedi_device *dev, int *data)
 
 static int dt2801_readdata2(struct comedi_device *dev, int *data)
 {
+<<<<<<< HEAD
 	int lb, hb;
+=======
+	int lb = 0;
+	int hb = 0;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = dt2801_readdata(dev, &lb);
@@ -331,6 +388,7 @@ static int dt2801_writedata(struct comedi_device *dev, unsigned int data)
 			outb_p(data & 0xff, dev->iobase + DT2801_DATA);
 			return 0;
 		}
+<<<<<<< HEAD
 #if 0
 		if (stat & DT_S_READY) {
 			printk
@@ -338,6 +396,8 @@ static int dt2801_writedata(struct comedi_device *dev, unsigned int data)
 			return -EIO;
 		}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	} while (--timeout > 0);
 
 	return -ETIME;
@@ -385,11 +445,19 @@ static int dt2801_writecmd(struct comedi_device *dev, int command)
 
 	stat = inb_p(dev->iobase + DT2801_STATUS);
 	if (stat & DT_S_COMPOSITE_ERROR) {
+<<<<<<< HEAD
 		printk
 		    ("dt2801: composite-error in dt2801_writecmd(), ignoring\n");
 	}
 	if (!(stat & DT_S_READY))
 		printk("dt2801: !ready in dt2801_writecmd(), ignoring\n");
+=======
+		dev_dbg(dev->class_dev,
+			"composite-error in %s, ignoring\n", __func__);
+	}
+	if (!(stat & DT_S_READY))
+		dev_dbg(dev->class_dev, "!ready in %s, ignoring\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	outb_p(command, dev->iobase + DT2801_CMD);
 
 	return 0;
@@ -401,17 +469,23 @@ static int dt2801_reset(struct comedi_device *dev)
 	unsigned int stat;
 	int timeout;
 
+<<<<<<< HEAD
 	DPRINTK("dt2801: resetting board...\n");
 	DPRINTK("fingerprint: 0x%02x 0x%02x\n", inb_p(dev->iobase),
 		inb_p(dev->iobase + 1));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* pull random data from data port */
 	inb_p(dev->iobase + DT2801_DATA);
 	inb_p(dev->iobase + DT2801_DATA);
 	inb_p(dev->iobase + DT2801_DATA);
 	inb_p(dev->iobase + DT2801_DATA);
 
+<<<<<<< HEAD
 	DPRINTK("dt2801: stop\n");
+=======
+>>>>>>> refs/remotes/origin/master
 	/* dt2801_writecmd(dev,DT_C_STOP); */
 	outb_p(DT_C_STOP, dev->iobase + DT2801_CMD);
 
@@ -424,12 +498,19 @@ static int dt2801_reset(struct comedi_device *dev)
 			break;
 	} while (timeout--);
 	if (!timeout)
+<<<<<<< HEAD
 		printk("dt2801: timeout 1 status=0x%02x\n", stat);
 
 	/* printk("dt2801: reading dummy\n"); */
 	/* dt2801_readdata(dev,&board_code); */
 
 	DPRINTK("dt2801: reset\n");
+=======
+		dev_dbg(dev->class_dev, "timeout 1 status=0x%02x\n", stat);
+
+	/* dt2801_readdata(dev,&board_code); */
+
+>>>>>>> refs/remotes/origin/master
 	outb_p(DT_C_RESET, dev->iobase + DT2801_CMD);
 	/* dt2801_writecmd(dev,DT_C_RESET); */
 
@@ -441,6 +522,7 @@ static int dt2801_reset(struct comedi_device *dev)
 			break;
 	} while (timeout--);
 	if (!timeout)
+<<<<<<< HEAD
 		printk("dt2801: timeout 2 status=0x%02x\n", stat);
 
 	DPRINTK("dt2801: reading code\n");
@@ -448,6 +530,12 @@ static int dt2801_reset(struct comedi_device *dev)
 
 	DPRINTK("dt2801: ok.  code=0x%02x\n", board_code);
 
+=======
+		dev_dbg(dev->class_dev, "timeout 2 status=0x%02x\n", stat);
+
+	dt2801_readdata(dev, &board_code);
+
+>>>>>>> refs/remotes/origin/master
 	return board_code;
 }
 
@@ -503,6 +591,115 @@ static const struct comedi_lrange *ai_range_lkup(int type, int opt)
 	return &range_unknown;
 }
 
+<<<<<<< HEAD
+=======
+static int dt2801_error(struct comedi_device *dev, int stat)
+{
+	if (stat < 0) {
+		if (stat == -ETIME)
+			dev_dbg(dev->class_dev, "timeout\n");
+		else
+			dev_dbg(dev->class_dev, "error %d\n", stat);
+		return stat;
+	}
+	dev_dbg(dev->class_dev, "error status 0x%02x, resetting...\n", stat);
+
+	dt2801_reset(dev);
+	dt2801_reset(dev);
+
+	return -EIO;
+}
+
+static int dt2801_ai_insn_read(struct comedi_device *dev,
+			       struct comedi_subdevice *s,
+			       struct comedi_insn *insn, unsigned int *data)
+{
+	int d;
+	int stat;
+	int i;
+
+	for (i = 0; i < insn->n; i++) {
+		stat = dt2801_writecmd(dev, DT_C_READ_ADIM);
+		dt2801_writedata(dev, CR_RANGE(insn->chanspec));
+		dt2801_writedata(dev, CR_CHAN(insn->chanspec));
+		stat = dt2801_readdata2(dev, &d);
+
+		if (stat != 0)
+			return dt2801_error(dev, stat);
+
+		data[i] = d;
+	}
+
+	return i;
+}
+
+static int dt2801_ao_insn_read(struct comedi_device *dev,
+			       struct comedi_subdevice *s,
+			       struct comedi_insn *insn, unsigned int *data)
+{
+	struct dt2801_private *devpriv = dev->private;
+
+	data[0] = devpriv->ao_readback[CR_CHAN(insn->chanspec)];
+
+	return 1;
+}
+
+static int dt2801_ao_insn_write(struct comedi_device *dev,
+				struct comedi_subdevice *s,
+				struct comedi_insn *insn, unsigned int *data)
+{
+	struct dt2801_private *devpriv = dev->private;
+
+	dt2801_writecmd(dev, DT_C_WRITE_DAIM);
+	dt2801_writedata(dev, CR_CHAN(insn->chanspec));
+	dt2801_writedata2(dev, data[0]);
+
+	devpriv->ao_readback[CR_CHAN(insn->chanspec)] = data[0];
+
+	return 1;
+}
+
+static int dt2801_dio_insn_bits(struct comedi_device *dev,
+				struct comedi_subdevice *s,
+				struct comedi_insn *insn,
+				unsigned int *data)
+{
+	int which = (s == &dev->subdevices[3]) ? 1 : 0;
+	unsigned int val = 0;
+
+	if (comedi_dio_update_state(s, data)) {
+		dt2801_writecmd(dev, DT_C_WRITE_DIG);
+		dt2801_writedata(dev, which);
+		dt2801_writedata(dev, s->state);
+	}
+
+	dt2801_writecmd(dev, DT_C_READ_DIG);
+	dt2801_writedata(dev, which);
+	dt2801_readdata(dev, &val);
+
+	data[1] = val;
+
+	return insn->n;
+}
+
+static int dt2801_dio_insn_config(struct comedi_device *dev,
+				  struct comedi_subdevice *s,
+				  struct comedi_insn *insn,
+				  unsigned int *data)
+{
+	int ret;
+
+	ret = comedi_dio_insn_config(dev, s, insn, data, 0xff);
+	if (ret)
+		return ret;
+
+	dt2801_writecmd(dev, s->io_bits ? DT_C_SET_DIGOUT : DT_C_SET_DIGIN);
+	dt2801_writedata(dev, (s == &dev->subdevices[3]) ? 1 : 0);
+
+	return insn->n;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
    options:
 	[0] - i/o base
@@ -514,18 +711,30 @@ static const struct comedi_lrange *ai_range_lkup(int type, int opt)
 */
 static int dt2801_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 {
+<<<<<<< HEAD
 	struct comedi_subdevice *s;
 	unsigned long iobase;
+=======
+	const struct dt2801_board *board = comedi_board(dev);
+	struct dt2801_private *devpriv;
+	struct comedi_subdevice *s;
+>>>>>>> refs/remotes/origin/master
 	int board_code, type;
 	int ret = 0;
 	int n_ai_chans;
 
+<<<<<<< HEAD
 	iobase = it->options[0];
 	if (!request_region(iobase, DT2801_IOSIZE, "dt2801")) {
 		comedi_error(dev, "I/O port conflict");
 		return -EIO;
 	}
 	dev->iobase = iobase;
+=======
+	ret = comedi_request_region(dev, it->options[0], DT2801_IOSIZE);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* do some checking */
 
@@ -539,12 +748,18 @@ static int dt2801_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		if (boardtypes[type].boardcode == board_code)
 			goto havetype;
 	}
+<<<<<<< HEAD
 	printk("dt2801: unrecognized board code=0x%02x, contact author\n",
 	       board_code);
+=======
+	dev_dbg(dev->class_dev,
+		"unrecognized board code=0x%02x, contact author\n", board_code);
+>>>>>>> refs/remotes/origin/master
 	type = 0;
 
 havetype:
 	dev->board_ptr = boardtypes + type;
+<<<<<<< HEAD
 	printk("dt2801: %s at port 0x%lx", boardtype.name, iobase);
 
 	n_ai_chans = probe_number_of_ai_chans(dev);
@@ -561,6 +776,23 @@ havetype:
 	dev->board_name = boardtype.name;
 
 	s = dev->subdevices + 0;
+=======
+	board = comedi_board(dev);
+
+	n_ai_chans = probe_number_of_ai_chans(dev);
+
+	ret = comedi_alloc_subdevices(dev, 4);
+	if (ret)
+		goto out;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	dev->board_name = board->name;
+
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	/* ai subdevice */
 	s->type = COMEDI_SUBD_AI;
 	s->subdev_flags = SDF_READABLE | SDF_GROUND;
@@ -568,6 +800,7 @@ havetype:
 	s->n_chan = n_ai_chans;
 #else
 	if (it->options[2])
+<<<<<<< HEAD
 		s->n_chan = boardtype.ad_chan;
 	else
 		s->n_chan = boardtype.ad_chan / 2;
@@ -577,18 +810,37 @@ havetype:
 	s->insn_read = dt2801_ai_insn_read;
 
 	s++;
+=======
+		s->n_chan = board->ad_chan;
+	else
+		s->n_chan = board->ad_chan / 2;
+#endif
+	s->maxdata = (1 << board->adbits) - 1;
+	s->range_table = ai_range_lkup(board->adrangetype, it->options[3]);
+	s->insn_read = dt2801_ai_insn_read;
+
+	s = &dev->subdevices[1];
+>>>>>>> refs/remotes/origin/master
 	/* ao subdevice */
 	s->type = COMEDI_SUBD_AO;
 	s->subdev_flags = SDF_WRITABLE;
 	s->n_chan = 2;
+<<<<<<< HEAD
 	s->maxdata = (1 << boardtype.dabits) - 1;
+=======
+	s->maxdata = (1 << board->dabits) - 1;
+>>>>>>> refs/remotes/origin/master
 	s->range_table_list = devpriv->dac_range_types;
 	devpriv->dac_range_types[0] = dac_range_lkup(it->options[4]);
 	devpriv->dac_range_types[1] = dac_range_lkup(it->options[5]);
 	s->insn_read = dt2801_ao_insn_read;
 	s->insn_write = dt2801_ao_insn_write;
 
+<<<<<<< HEAD
 	s++;
+=======
+	s = &dev->subdevices[2];
+>>>>>>> refs/remotes/origin/master
 	/* 1st digital subdevice */
 	s->type = COMEDI_SUBD_DIO;
 	s->subdev_flags = SDF_READABLE | SDF_WRITABLE;
@@ -598,7 +850,11 @@ havetype:
 	s->insn_bits = dt2801_dio_insn_bits;
 	s->insn_config = dt2801_dio_insn_config;
 
+<<<<<<< HEAD
 	s++;
+=======
+	s = &dev->subdevices[3];
+>>>>>>> refs/remotes/origin/master
 	/* 2nd digital subdevice */
 	s->type = COMEDI_SUBD_DIO;
 	s->subdev_flags = SDF_READABLE | SDF_WRITABLE;
@@ -610,6 +866,7 @@ havetype:
 
 	ret = 0;
 out:
+<<<<<<< HEAD
 	printk("\n");
 
 	return ret;
@@ -720,17 +977,46 @@ static int dt2801_dio_insn_config(struct comedi_device *dev,
 		which = 1;
 
 	/* configure */
+<<<<<<< HEAD
 	if (data[0]) {
 		s->io_bits = 0xff;
 		dt2801_writecmd(dev, DT_C_SET_DIGOUT);
 	} else {
 		s->io_bits = 0;
 		dt2801_writecmd(dev, DT_C_SET_DIGIN);
+=======
+	switch (data[0]) {
+	case INSN_CONFIG_DIO_OUTPUT:
+		s->io_bits = 0xff;
+		dt2801_writecmd(dev, DT_C_SET_DIGOUT);
+		break;
+	case INSN_CONFIG_DIO_INPUT:
+		s->io_bits = 0;
+		dt2801_writecmd(dev, DT_C_SET_DIGIN);
+		break;
+	case INSN_CONFIG_DIO_QUERY:
+		data[1] = s->io_bits ? COMEDI_OUTPUT : COMEDI_INPUT;
+		return insn->n;
+	default:
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	dt2801_writedata(dev, which);
 
 	return 1;
 }
+=======
+	return ret;
+}
+
+static struct comedi_driver dt2801_driver = {
+	.driver_name	= "dt2801",
+	.module		= THIS_MODULE,
+	.attach		= dt2801_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(dt2801_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

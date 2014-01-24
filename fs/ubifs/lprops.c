@@ -453,7 +453,11 @@ static void change_category(struct ubifs_info *c, struct ubifs_lprops *lprops)
 	int new_cat = ubifs_categorize_lprops(c, lprops);
 
 	if (old_cat == new_cat) {
+<<<<<<< HEAD
 		struct ubifs_lpt_heap *heap = &c->lpt_heap[new_cat - 1];
+=======
+		struct ubifs_lpt_heap *heap;
+>>>>>>> refs/remotes/origin/master
 
 		/* lprops on a heap now must be moved up or down */
 		if (new_cat < 1 || new_cat > LPROPS_HEAP_CNT)
@@ -510,7 +514,15 @@ static int is_lprops_dirty(struct ubifs_info *c, struct ubifs_lprops *lprops)
 	pnode = (struct ubifs_pnode *)container_of(lprops - pos,
 						   struct ubifs_pnode,
 						   lprops[0]);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return !test_bit(COW_ZNODE, &pnode->flags) &&
+=======
+	return !test_bit(COW_CNODE, &pnode->flags) &&
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return !test_bit(COW_CNODE, &pnode->flags) &&
+>>>>>>> refs/remotes/origin/master
 	       test_bit(DIRTY_CNODE, &pnode->flags);
 }
 
@@ -852,7 +864,13 @@ const struct ubifs_lprops *ubifs_fast_find_frdi_idx(struct ubifs_info *c)
 	return lprops;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
+=======
+/*
+ * Everything below is related to debugging.
+ */
+>>>>>>> refs/remotes/origin/master
 
 /**
  * dbg_check_cats - check category heaps and lists.
@@ -866,11 +884,20 @@ int dbg_check_cats(struct ubifs_info *c)
 	struct list_head *pos;
 	int i, cat;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & (UBIFS_CHK_GEN | UBIFS_CHK_LPROPS)))
+=======
+	if (!dbg_is_chk_gen(c) && !dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_gen(c) && !dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	list_for_each_entry(lprops, &c->empty_list, list) {
 		if (lprops->free != c->leb_size) {
+<<<<<<< HEAD
 			ubifs_err("non-empty LEB %d on empty list "
 				  "(free %d dirty %d flags %d)", lprops->lnum,
 				  lprops->free, lprops->dirty, lprops->flags);
@@ -880,6 +907,17 @@ int dbg_check_cats(struct ubifs_info *c)
 			ubifs_err("taken LEB %d on empty list "
 				  "(free %d dirty %d flags %d)", lprops->lnum,
 				  lprops->free, lprops->dirty, lprops->flags);
+=======
+			ubifs_err("non-empty LEB %d on empty list (free %d dirty %d flags %d)",
+				  lprops->lnum, lprops->free, lprops->dirty,
+				  lprops->flags);
+			return -EINVAL;
+		}
+		if (lprops->flags & LPROPS_TAKEN) {
+			ubifs_err("taken LEB %d on empty list (free %d dirty %d flags %d)",
+				  lprops->lnum, lprops->free, lprops->dirty,
+				  lprops->flags);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 	}
@@ -887,6 +925,7 @@ int dbg_check_cats(struct ubifs_info *c)
 	i = 0;
 	list_for_each_entry(lprops, &c->freeable_list, list) {
 		if (lprops->free + lprops->dirty != c->leb_size) {
+<<<<<<< HEAD
 			ubifs_err("non-freeable LEB %d on freeable list "
 				  "(free %d dirty %d flags %d)", lprops->lnum,
 				  lprops->free, lprops->dirty, lprops->flags);
@@ -896,6 +935,17 @@ int dbg_check_cats(struct ubifs_info *c)
 			ubifs_err("taken LEB %d on freeable list "
 				  "(free %d dirty %d flags %d)", lprops->lnum,
 				  lprops->free, lprops->dirty, lprops->flags);
+=======
+			ubifs_err("non-freeable LEB %d on freeable list (free %d dirty %d flags %d)",
+				  lprops->lnum, lprops->free, lprops->dirty,
+				  lprops->flags);
+			return -EINVAL;
+		}
+		if (lprops->flags & LPROPS_TAKEN) {
+			ubifs_err("taken LEB %d on freeable list (free %d dirty %d flags %d)",
+				  lprops->lnum, lprops->free, lprops->dirty,
+				  lprops->flags);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 		i += 1;
@@ -917,6 +967,7 @@ int dbg_check_cats(struct ubifs_info *c)
 
 	list_for_each_entry(lprops, &c->frdi_idx_list, list) {
 		if (lprops->free + lprops->dirty != c->leb_size) {
+<<<<<<< HEAD
 			ubifs_err("non-freeable LEB %d on frdi_idx list "
 				  "(free %d dirty %d flags %d)", lprops->lnum,
 				  lprops->free, lprops->dirty, lprops->flags);
@@ -932,6 +983,23 @@ int dbg_check_cats(struct ubifs_info *c)
 			ubifs_err("non-index LEB %d on frdi_idx list "
 				  "(free %d dirty %d flags %d)", lprops->lnum,
 				  lprops->free, lprops->dirty, lprops->flags);
+=======
+			ubifs_err("non-freeable LEB %d on frdi_idx list (free %d dirty %d flags %d)",
+				  lprops->lnum, lprops->free, lprops->dirty,
+				  lprops->flags);
+			return -EINVAL;
+		}
+		if (lprops->flags & LPROPS_TAKEN) {
+			ubifs_err("taken LEB %d on frdi_idx list (free %d dirty %d flags %d)",
+				  lprops->lnum, lprops->free, lprops->dirty,
+				  lprops->flags);
+			return -EINVAL;
+		}
+		if (!(lprops->flags & LPROPS_INDEX)) {
+			ubifs_err("non-index LEB %d on frdi_idx list (free %d dirty %d flags %d)",
+				  lprops->lnum, lprops->free, lprops->dirty,
+				  lprops->flags);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 	}
@@ -964,7 +1032,15 @@ void dbg_check_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap, int cat,
 {
 	int i = 0, j, err = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & (UBIFS_CHK_GEN | UBIFS_CHK_LPROPS)))
+=======
+	if (!dbg_is_chk_gen(c) && !dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_gen(c) && !dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	for (i = 0; i < heap->cnt; i++) {
@@ -986,9 +1062,15 @@ void dbg_check_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap, int cat,
 			goto out;
 		}
 		if (lprops != lp) {
+<<<<<<< HEAD
 			dbg_msg("lprops %zx lp %zx lprops->lnum %d lp->lnum %d",
 				(size_t)lprops, (size_t)lp, lprops->lnum,
 				lp->lnum);
+=======
+			ubifs_err("lprops %zx lp %zx lprops->lnum %d lp->lnum %d",
+				  (size_t)lprops, (size_t)lp, lprops->lnum,
+				  lp->lnum);
+>>>>>>> refs/remotes/origin/master
 			err = 4;
 			goto out;
 		}
@@ -1006,9 +1088,15 @@ void dbg_check_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap, int cat,
 	}
 out:
 	if (err) {
+<<<<<<< HEAD
 		dbg_msg("failed cat %d hpos %d err %d", cat, i, err);
 		dbg_dump_stack();
 		dbg_dump_heap(c, heap, cat);
+=======
+		ubifs_err("failed cat %d hpos %d err %d", cat, i, err);
+		dump_stack();
+		ubifs_dump_heap(c, heap, cat);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1115,8 +1203,13 @@ static int scan_check_cb(struct ubifs_info *c,
 	if (IS_ERR(sleb)) {
 		ret = PTR_ERR(sleb);
 		if (ret == -EUCLEAN) {
+<<<<<<< HEAD
 			dbg_dump_lprops(c);
 			dbg_dump_budg(c, &c->bi);
+=======
+			ubifs_dump_lprops(c);
+			ubifs_dump_budg(c, &c->bi);
+>>>>>>> refs/remotes/origin/master
 		}
 		goto out;
 	}
@@ -1157,8 +1250,13 @@ static int scan_check_cb(struct ubifs_info *c,
 
 	if (free > c->leb_size || free < 0 || dirty > c->leb_size ||
 	    dirty < 0) {
+<<<<<<< HEAD
 		ubifs_err("bad calculated accounting for LEB %d: "
 			  "free %d, dirty %d", lnum, free, dirty);
+=======
+		ubifs_err("bad calculated accounting for LEB %d: free %d, dirty %d",
+			  lnum, free, dirty);
+>>>>>>> refs/remotes/origin/master
 		goto out_destroy;
 	}
 
@@ -1204,8 +1302,12 @@ static int scan_check_cb(struct ubifs_info *c,
 			/* Free but not unmapped LEB, it's fine */
 			is_idx = 0;
 		else {
+<<<<<<< HEAD
 			ubifs_err("indexing node without indexing "
 				  "flag");
+=======
+			ubifs_err("indexing node without indexing flag");
+>>>>>>> refs/remotes/origin/master
 			goto out_print;
 		}
 	}
@@ -1240,10 +1342,16 @@ static int scan_check_cb(struct ubifs_info *c,
 	return LPT_SCAN_CONTINUE;
 
 out_print:
+<<<<<<< HEAD
 	ubifs_err("bad accounting of LEB %d: free %d, dirty %d flags %#x, "
 		  "should be free %d, dirty %d",
 		  lnum, lp->free, lp->dirty, lp->flags, free, dirty);
 	dbg_dump_leb(c, lnum);
+=======
+	ubifs_err("bad accounting of LEB %d: free %d, dirty %d flags %#x, should be free %d, dirty %d",
+		  lnum, lp->free, lp->dirty, lp->flags, free, dirty);
+	ubifs_dump_leb(c, lnum);
+>>>>>>> refs/remotes/origin/master
 out_destroy:
 	ubifs_scan_destroy(sleb);
 	ret = -EINVAL;
@@ -1268,7 +1376,15 @@ int dbg_check_lprops(struct ubifs_info *c)
 	int i, err;
 	struct ubifs_lp_stats lst;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/*
@@ -1294,12 +1410,19 @@ int dbg_check_lprops(struct ubifs_info *c)
 	    lst.total_dirty != c->lst.total_dirty ||
 	    lst.total_used != c->lst.total_used) {
 		ubifs_err("bad overall accounting");
+<<<<<<< HEAD
 		ubifs_err("calculated: empty_lebs %d, idx_lebs %d, "
 			  "total_free %lld, total_dirty %lld, total_used %lld",
 			  lst.empty_lebs, lst.idx_lebs, lst.total_free,
 			  lst.total_dirty, lst.total_used);
 		ubifs_err("read from lprops: empty_lebs %d, idx_lebs %d, "
 			  "total_free %lld, total_dirty %lld, total_used %lld",
+=======
+		ubifs_err("calculated: empty_lebs %d, idx_lebs %d, total_free %lld, total_dirty %lld, total_used %lld",
+			  lst.empty_lebs, lst.idx_lebs, lst.total_free,
+			  lst.total_dirty, lst.total_used);
+		ubifs_err("read from lprops: empty_lebs %d, idx_lebs %d, total_free %lld, total_dirty %lld, total_used %lld",
+>>>>>>> refs/remotes/origin/master
 			  c->lst.empty_lebs, c->lst.idx_lebs, c->lst.total_free,
 			  c->lst.total_dirty, c->lst.total_used);
 		err = -EINVAL;
@@ -1321,5 +1444,8 @@ int dbg_check_lprops(struct ubifs_info *c)
 out:
 	return err;
 }
+<<<<<<< HEAD
 
 #endif /* CONFIG_UBIFS_FS_DEBUG */
+=======
+>>>>>>> refs/remotes/origin/master

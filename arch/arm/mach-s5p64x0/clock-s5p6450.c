@@ -17,13 +17,24 @@
 #include <linux/errno.h>
 #include <linux/err.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 
 #include <mach/hardware.h>
 #include <mach/map.h>
 #include <mach/regs-clock.h>
+<<<<<<< HEAD
 #include <mach/s5p64x0-clock.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <plat/cpu-freq.h>
 #include <plat/clock.h>
@@ -31,12 +42,29 @@
 #include <plat/pll.h>
 #include <plat/s5p-clock.h>
 #include <plat/clock-clksrc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/s5p6450.h>
+=======
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include "clock.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct clksrc_clk clk_mout_dpll = {
 	.clk	= {
 		.name		= "mout_dpll",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	.sources	= &clk_src_dpll,
 	.reg_src	= { .reg = S5P64X0_CLK_SRC0, .shift = 5, .size = 1 },
@@ -96,7 +124,13 @@ static struct clk_ops s5p6450_epll_ops = {
 static struct clksrc_clk clk_dout_epll = {
 	.clk	= {
 		.name		= "dout_epll",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_mout_epll.clk,
 	},
 	.reg_div	= { .reg = S5P64X0_CLK_DIV1, .shift = 24, .size = 4 },
@@ -105,7 +139,13 @@ static struct clksrc_clk clk_dout_epll = {
 static struct clksrc_clk clk_mout_hclk_sel = {
 	.clk	= {
 		.name		= "mout_hclk_sel",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	.sources	= &clkset_hclk_low,
 	.reg_src	= { .reg = S5P64X0_OTHERS, .shift = 15, .size = 1 },
@@ -124,7 +164,13 @@ static struct clksrc_sources clkset_hclk = {
 static struct clksrc_clk clk_hclk = {
 	.clk	= {
 		.name		= "clk_hclk",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	.sources	= &clkset_hclk,
 	.reg_src	= { .reg = S5P64X0_OTHERS, .shift = 14, .size = 1 },
@@ -134,7 +180,13 @@ static struct clksrc_clk clk_hclk = {
 static struct clksrc_clk clk_pclk = {
 	.clk	= {
 		.name		= "clk_pclk",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_hclk.clk,
 	},
 	.reg_div = { .reg = S5P64X0_CLK_DIV0, .shift = 12, .size = 4 },
@@ -142,7 +194,13 @@ static struct clksrc_clk clk_pclk = {
 static struct clksrc_clk clk_dout_pwm_ratio0 = {
 	.clk	= {
 		.name		= "clk_dout_pwm_ratio0",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_mout_hclk_sel.clk,
 	},
 	.reg_div	= { .reg = S5P64X0_CLK_DIV3, .shift = 16, .size = 4 },
@@ -151,7 +209,13 @@ static struct clksrc_clk clk_dout_pwm_ratio0 = {
 static struct clksrc_clk clk_pclk_to_wdt_pwm = {
 	.clk	= {
 		.name		= "clk_pclk_to_wdt_pwm",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_dout_pwm_ratio0.clk,
 	},
 	.reg_div	= { .reg = S5P64X0_CLK_DIV3, .shift = 20, .size = 4 },
@@ -160,7 +224,13 @@ static struct clksrc_clk clk_pclk_to_wdt_pwm = {
 static struct clksrc_clk clk_hclk_low = {
 	.clk	= {
 		.name		= "clk_hclk_low",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	.sources	= &clkset_hclk_low,
 	.reg_src	= { .reg = S5P64X0_OTHERS, .shift = 6, .size = 1 },
@@ -170,7 +240,13 @@ static struct clksrc_clk clk_hclk_low = {
 static struct clksrc_clk clk_pclk_low = {
 	.clk	= {
 		.name		= "clk_pclk_low",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_hclk_low.clk,
 	},
 	.reg_div	= { .reg = S5P64X0_CLK_DIV3, .shift = 12, .size = 4 },
@@ -184,109 +260,230 @@ static struct clksrc_clk clk_pclk_low = {
 static struct clk init_clocks_off[] = {
 	{
 		.name		= "usbhost",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_hclk_low.clk,
 		.enable		= s5p64x0_hclk0_ctrl,
 		.ctrlbit	= (1 << 3),
 	}, {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name		= "pdma",
 		.id		= -1,
+=======
+		.name		= "dma",
+		.devname	= "dma-pl330",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name		= "dma",
+		.devname	= "dma-pl330",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_hclk_low.clk,
 		.enable		= s5p64x0_hclk0_ctrl,
 		.ctrlbit	= (1 << 12),
 	}, {
 		.name		= "hsmmc",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= 0,
+=======
+		.devname	= "s3c-sdhci.0",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "s3c-sdhci.0",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_hclk_low.clk,
 		.enable		= s5p64x0_hclk0_ctrl,
 		.ctrlbit	= (1 << 17),
 	}, {
 		.name		= "hsmmc",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= 1,
+=======
+		.devname	= "s3c-sdhci.1",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "s3c-sdhci.1",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_hclk_low.clk,
 		.enable		= s5p64x0_hclk0_ctrl,
 		.ctrlbit	= (1 << 18),
 	}, {
 		.name		= "hsmmc",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= 2,
+=======
+		.devname	= "s3c-sdhci.2",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "s3c-sdhci.2",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_hclk_low.clk,
 		.enable		= s5p64x0_hclk0_ctrl,
 		.ctrlbit	= (1 << 19),
 	}, {
 		.name		= "usbotg",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_hclk_low.clk,
 		.enable		= s5p64x0_hclk0_ctrl,
 		.ctrlbit	= (1 << 20),
 	}, {
 		.name		= "lcd",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_h,
 		.enable		= s5p64x0_hclk1_ctrl,
 		.ctrlbit	= (1 << 1),
 	}, {
 		.name		= "watchdog",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 5),
 	}, {
 		.name		= "rtc",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 6),
 	}, {
 		.name		= "adc",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 12),
 	}, {
 		.name		= "i2c",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= 0,
+=======
+		.devname	= "s3c2440-i2c.0",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "s3c2440-i2c.0",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 17),
 	}, {
 		.name		= "spi",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= 0,
+=======
+		.devname	= "s3c64xx-spi.0",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "s5p64x0-spi.0",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 21),
 	}, {
 		.name		= "spi",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= 1,
+=======
+		.devname	= "s3c64xx-spi.1",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "s5p64x0-spi.1",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 22),
 	}, {
+<<<<<<< HEAD
 		.name		= "iis",
+<<<<<<< HEAD
 		.id		= 0,
+=======
+		.devname	= "samsung-i2s.0",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 26),
 	}, {
 		.name		= "iis",
+<<<<<<< HEAD
 		.id		= 1,
+=======
+		.devname	= "samsung-i2s.1",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 15),
 	}, {
 		.name		= "iis",
+<<<<<<< HEAD
 		.id		= 2,
+=======
+		.devname	= "samsung-i2s.2",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 16),
 	}, {
 		.name		= "i2c",
+<<<<<<< HEAD
 		.id		= 1,
+=======
+		.devname	= "s3c2440-i2c.1",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name		= "i2c",
+		.devname	= "s3c2440-i2c.1",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 27),
 	}, {
 		.name		= "dmc0",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 30),
@@ -299,49 +496,105 @@ static struct clk init_clocks_off[] = {
 static struct clk init_clocks[] = {
 	{
 		.name		= "intc",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_hclk.clk,
 		.enable		= s5p64x0_hclk0_ctrl,
 		.ctrlbit	= (1 << 1),
 	}, {
 		.name		= "mem",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_hclk.clk,
 		.enable		= s5p64x0_hclk0_ctrl,
 		.ctrlbit	= (1 << 21),
 	}, {
 		.name		= "uart",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= 0,
+=======
+		.devname	= "s3c6400-uart.0",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "s3c6400-uart.0",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 1),
 	}, {
 		.name		= "uart",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= 1,
+=======
+		.devname	= "s3c6400-uart.1",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "s3c6400-uart.1",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 2),
 	}, {
 		.name		= "uart",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= 2,
+=======
+		.devname	= "s3c6400-uart.2",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "s3c6400-uart.2",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 3),
 	}, {
 		.name		= "uart",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= 3,
+=======
+		.devname	= "s3c6400-uart.3",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "s3c6400-uart.3",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 4),
 	}, {
 		.name		= "timers",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_to_wdt_pwm.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 7),
 	}, {
 		.name		= "gpio",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_pclk_low.clk,
 		.enable		= s5p64x0_pclk_ctrl,
 		.ctrlbit	= (1 << 18),
@@ -421,7 +674,14 @@ static struct clksrc_sources clkset_sclk_audio0 = {
 static struct clksrc_clk clk_sclk_audio0 = {
 	.clk		= {
 		.name		= "audio-bus",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.devname	= "samsung-i2s.0",
+>>>>>>> refs/remotes/origin/master
 		.enable		= s5p64x0_sclk_ctrl,
 		.ctrlbit	= (1 << 8),
 		.parent		= &clk_dout_epll.clk,
@@ -434,6 +694,8 @@ static struct clksrc_clk clk_sclk_audio0 = {
 static struct clksrc_clk clksrcs[] = {
 	{
 		.clk	= {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.name		= "sclk_mmc",
 			.id		= 0,
 			.ctrlbit	= (1 << 24),
@@ -496,6 +758,12 @@ static struct clksrc_clk clksrcs[] = {
 		.clk	= {
 			.name		= "sclk_fimc",
 			.id		= -1,
+=======
+			.name		= "sclk_fimc",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.name		= "sclk_fimc",
+>>>>>>> refs/remotes/origin/master
 			.ctrlbit	= (1 << 10),
 			.enable		= s5p64x0_sclk_ctrl,
 		},
@@ -505,7 +773,13 @@ static struct clksrc_clk clksrcs[] = {
 	}, {
 		.clk	= {
 			.name		= "aclk_mali",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.ctrlbit	= (1 << 2),
 			.enable		= s5p64x0_sclk1_ctrl,
 		},
@@ -515,7 +789,13 @@ static struct clksrc_clk clksrcs[] = {
 	}, {
 		.clk	= {
 			.name		= "sclk_2d",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.ctrlbit	= (1 << 12),
 			.enable		= s5p64x0_sclk_ctrl,
 		},
@@ -525,7 +805,13 @@ static struct clksrc_clk clksrcs[] = {
 	}, {
 		.clk	= {
 			.name		= "sclk_usi",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.ctrlbit	= (1 << 7),
 			.enable		= s5p64x0_sclk_ctrl,
 		},
@@ -535,7 +821,13 @@ static struct clksrc_clk clksrcs[] = {
 	}, {
 		.clk	= {
 			.name		= "sclk_camif",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.ctrlbit	= (1 << 6),
 			.enable		= s5p64x0_sclk_ctrl,
 		},
@@ -545,7 +837,13 @@ static struct clksrc_clk clksrcs[] = {
 	}, {
 		.clk	= {
 			.name		= "sclk_dispcon",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.ctrlbit	= (1 << 1),
 			.enable		= s5p64x0_sclk1_ctrl,
 		},
@@ -555,7 +853,13 @@ static struct clksrc_clk clksrcs[] = {
 	}, {
 		.clk	= {
 			.name		= "sclk_hsmmc44",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.ctrlbit	= (1 << 30),
 			.enable		= s5p64x0_sclk_ctrl,
 		},
@@ -565,6 +869,162 @@ static struct clksrc_clk clksrcs[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct clksrc_clk clk_sclk_mmc0 = {
+	.clk	= {
+		.name		= "sclk_mmc",
+		.devname	= "s3c-sdhci.0",
+		.ctrlbit	= (1 << 24),
+		.enable		= s5p64x0_sclk_ctrl,
+	},
+	.sources = &clkset_group2,
+	.reg_src = { .reg = S5P64X0_CLK_SRC0, .shift = 18, .size = 2 },
+	.reg_div = { .reg = S5P64X0_CLK_DIV1, .shift = 0, .size = 4 },
+};
+
+static struct clksrc_clk clk_sclk_mmc1 = {
+	.clk	= {
+		.name		= "sclk_mmc",
+		.devname	= "s3c-sdhci.1",
+		.ctrlbit	= (1 << 25),
+		.enable		= s5p64x0_sclk_ctrl,
+	},
+	.sources = &clkset_group2,
+	.reg_src = { .reg = S5P64X0_CLK_SRC0, .shift = 20, .size = 2 },
+	.reg_div = { .reg = S5P64X0_CLK_DIV1, .shift = 4, .size = 4 },
+};
+
+static struct clksrc_clk clk_sclk_mmc2 = {
+	.clk	= {
+		.name		= "sclk_mmc",
+		.devname	= "s3c-sdhci.2",
+		.ctrlbit	= (1 << 26),
+		.enable		= s5p64x0_sclk_ctrl,
+	},
+	.sources = &clkset_group2,
+	.reg_src = { .reg = S5P64X0_CLK_SRC0, .shift = 22, .size = 2 },
+	.reg_div = { .reg = S5P64X0_CLK_DIV1, .shift = 8, .size = 4 },
+};
+
+static struct clksrc_clk clk_sclk_uclk = {
+	.clk	= {
+		.name		= "uclk1",
+		.ctrlbit	= (1 << 5),
+		.enable		= s5p64x0_sclk_ctrl,
+	},
+	.sources = &clkset_uart,
+	.reg_src = { .reg = S5P64X0_CLK_SRC0, .shift = 13, .size = 1 },
+	.reg_div = { .reg = S5P64X0_CLK_DIV2, .shift = 16, .size = 4 },
+};
+
+static struct clksrc_clk clk_sclk_spi0 = {
+	.clk	= {
+		.name		= "sclk_spi",
+<<<<<<< HEAD
+		.devname	= "s3c64xx-spi.0",
+=======
+		.devname	= "s5p64x0-spi.0",
+>>>>>>> refs/remotes/origin/master
+		.ctrlbit	= (1 << 20),
+		.enable		= s5p64x0_sclk_ctrl,
+	},
+	.sources = &clkset_group2,
+	.reg_src = { .reg = S5P64X0_CLK_SRC0, .shift = 14, .size = 2 },
+	.reg_div = { .reg = S5P64X0_CLK_DIV2, .shift = 0, .size = 4 },
+};
+
+static struct clksrc_clk clk_sclk_spi1 = {
+	.clk	= {
+		.name		= "sclk_spi",
+<<<<<<< HEAD
+		.devname	= "s3c64xx-spi.1",
+=======
+		.devname	= "s5p64x0-spi.1",
+>>>>>>> refs/remotes/origin/master
+		.ctrlbit	= (1 << 21),
+		.enable		= s5p64x0_sclk_ctrl,
+	},
+	.sources = &clkset_group2,
+	.reg_src = { .reg = S5P64X0_CLK_SRC0, .shift = 16, .size = 2 },
+	.reg_div = { .reg = S5P64X0_CLK_DIV2, .shift = 4, .size = 4 },
+};
+
+<<<<<<< HEAD
+=======
+static struct clk clk_i2s0 = {
+	.name		= "iis",
+	.devname	= "samsung-i2s.0",
+	.parent		= &clk_pclk_low.clk,
+	.enable		= s5p64x0_pclk_ctrl,
+	.ctrlbit	= (1 << 26),
+};
+
+static struct clk clk_i2s1 = {
+	.name		= "iis",
+	.devname	= "samsung-i2s.1",
+	.parent		= &clk_pclk_low.clk,
+	.enable		= s5p64x0_pclk_ctrl,
+	.ctrlbit	= (1 << 15),
+};
+
+static struct clk clk_i2s2 = {
+	.name		= "iis",
+	.devname	= "samsung-i2s.2",
+	.parent		= &clk_pclk_low.clk,
+	.enable		= s5p64x0_pclk_ctrl,
+	.ctrlbit	= (1 << 16),
+};
+
+static struct clk *clk_cdev[] = {
+	&clk_i2s0,
+	&clk_i2s1,
+	&clk_i2s2,
+};
+
+>>>>>>> refs/remotes/origin/master
+static struct clksrc_clk *clksrc_cdev[] = {
+	&clk_sclk_uclk,
+	&clk_sclk_spi0,
+	&clk_sclk_spi1,
+	&clk_sclk_mmc0,
+	&clk_sclk_mmc1,
+	&clk_sclk_mmc2,
+<<<<<<< HEAD
+=======
+	&clk_sclk_audio0,
+>>>>>>> refs/remotes/origin/master
+};
+
+static struct clk_lookup s5p6450_clk_lookup[] = {
+	CLKDEV_INIT(NULL, "clk_uart_baud2", &clk_pclk_low.clk),
+	CLKDEV_INIT(NULL, "clk_uart_baud3", &clk_sclk_uclk.clk),
+	CLKDEV_INIT(NULL, "spi_busclk0", &clk_p),
+<<<<<<< HEAD
+	CLKDEV_INIT("s3c64xx-spi.0", "spi_busclk1", &clk_sclk_spi0.clk),
+	CLKDEV_INIT("s3c64xx-spi.1", "spi_busclk1", &clk_sclk_spi1.clk),
+	CLKDEV_INIT("s3c-sdhci.0", "mmc_busclk.2", &clk_sclk_mmc0.clk),
+	CLKDEV_INIT("s3c-sdhci.1", "mmc_busclk.2", &clk_sclk_mmc1.clk),
+	CLKDEV_INIT("s3c-sdhci.2", "mmc_busclk.2", &clk_sclk_mmc2.clk),
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CLKDEV_INIT("s5p64x0-spi.0", "spi_busclk1", &clk_sclk_spi0.clk),
+	CLKDEV_INIT("s5p64x0-spi.1", "spi_busclk1", &clk_sclk_spi1.clk),
+	CLKDEV_INIT("s3c-sdhci.0", "mmc_busclk.2", &clk_sclk_mmc0.clk),
+	CLKDEV_INIT("s3c-sdhci.1", "mmc_busclk.2", &clk_sclk_mmc1.clk),
+	CLKDEV_INIT("s3c-sdhci.2", "mmc_busclk.2", &clk_sclk_mmc2.clk),
+	CLKDEV_INIT("samsung-i2s.0", "i2s_opclk0", &clk_i2s0),
+	CLKDEV_INIT("samsung-i2s.0", "i2s_opclk1", &clk_sclk_audio0.clk),
+	CLKDEV_INIT("samsung-i2s.1", "i2s_opclk0", &clk_i2s1),
+	CLKDEV_INIT("samsung-i2s.2", "i2s_opclk0", &clk_i2s2),
+};
+
+>>>>>>> refs/remotes/origin/master
 /* Clock initialization code */
 static struct clksrc_clk *sysclks[] = {
 	&clk_mout_apll,
@@ -580,9 +1040,25 @@ static struct clksrc_clk *sysclks[] = {
 	&clk_pclk,
 	&clk_hclk_low,
 	&clk_pclk_low,
+<<<<<<< HEAD
 	&clk_sclk_audio0,
 };
 
+<<<<<<< HEAD
+=======
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
+static struct clk dummy_apb_pclk = {
+	.name		= "apb_pclk",
+	.id		= -1,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void __init_or_cpufreq s5p6450_setup_clocks(void)
 {
 	struct clk *xtal_clk;
@@ -652,15 +1128,43 @@ void __init_or_cpufreq s5p6450_setup_clocks(void)
 void __init s5p6450_register_clocks(void)
 {
 	int ptr;
+<<<<<<< HEAD
+=======
+	unsigned int cnt;
+>>>>>>> refs/remotes/origin/master
 
 	for (ptr = 0; ptr < ARRAY_SIZE(sysclks); ptr++)
 		s3c_register_clksrc(sysclks[ptr], 1);
 
+<<<<<<< HEAD
 	s3c_register_clksrc(clksrcs, ARRAY_SIZE(clksrcs));
 	s3c_register_clocks(init_clocks, ARRAY_SIZE(init_clocks));
+<<<<<<< HEAD
 
 	s3c_register_clocks(init_clocks_off, ARRAY_SIZE(init_clocks_off));
 	s3c_disable_clocks(init_clocks_off, ARRAY_SIZE(init_clocks_off));
+=======
+=======
+
+	s3c24xx_register_clocks(clk_cdev, ARRAY_SIZE(clk_cdev));
+	for (cnt = 0; cnt < ARRAY_SIZE(clk_cdev); cnt++)
+		s3c_disable_clocks(clk_cdev[cnt], 1);
+
+	s3c_register_clksrc(clksrcs, ARRAY_SIZE(clksrcs));
+	s3c_register_clocks(init_clocks, ARRAY_SIZE(init_clocks));
+>>>>>>> refs/remotes/origin/master
+	for (ptr = 0; ptr < ARRAY_SIZE(clksrc_cdev); ptr++)
+		s3c_register_clksrc(clksrc_cdev[ptr], 1);
+
+	s3c_register_clocks(init_clocks_off, ARRAY_SIZE(init_clocks_off));
+	s3c_disable_clocks(init_clocks_off, ARRAY_SIZE(init_clocks_off));
+	clkdev_add_table(s5p6450_clk_lookup, ARRAY_SIZE(s5p6450_clk_lookup));
+
+	s3c24xx_register_clock(&dummy_apb_pclk);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	s3c_pwmclk_init();
+=======
+>>>>>>> refs/remotes/origin/master
 }

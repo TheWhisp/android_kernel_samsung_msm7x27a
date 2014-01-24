@@ -71,6 +71,14 @@ struct msm_audio {
 	int close_ack;
 	int cmd_ack;
 	atomic_t start;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	atomic_t stop;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_t stop;
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_t out_count;
 	atomic_t in_count;
 	atomic_t out_needed;

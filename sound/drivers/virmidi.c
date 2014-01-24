@@ -45,7 +45,15 @@
 #include <linux/wait.h>
 #include <linux/err.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/seq_kernel.h>
 #include <sound/seq_virmidi.h>
@@ -63,7 +71,15 @@ MODULE_SUPPORTED_DEVICE("{{ALSA,Virtual rawmidi device}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 0};
+=======
+static bool enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 0};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 0};
+>>>>>>> refs/remotes/origin/master
 static int midi_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 4};
 
 module_param_array(index, int, NULL, 0444);
@@ -83,7 +99,11 @@ struct snd_card_virmidi {
 static struct platform_device *devices[SNDRV_CARDS];
 
 
+<<<<<<< HEAD
 static int __devinit snd_virmidi_probe(struct platform_device *devptr)
+=======
+static int snd_virmidi_probe(struct platform_device *devptr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct snd_card_virmidi *vmidi;
@@ -129,10 +149,16 @@ static int __devinit snd_virmidi_probe(struct platform_device *devptr)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_virmidi_remove(struct platform_device *devptr)
 {
 	snd_card_free(platform_get_drvdata(devptr));
 	platform_set_drvdata(devptr, NULL);
+=======
+static int snd_virmidi_remove(struct platform_device *devptr)
+{
+	snd_card_free(platform_get_drvdata(devptr));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -140,9 +166,16 @@ static int __devexit snd_virmidi_remove(struct platform_device *devptr)
 
 static struct platform_driver snd_virmidi_driver = {
 	.probe		= snd_virmidi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_virmidi_remove),
 	.driver		= {
 		.name	= SND_VIRMIDI_DRIVER
+=======
+	.remove		= snd_virmidi_remove,
+	.driver		= {
+		.name	= SND_VIRMIDI_DRIVER,
+		.owner	= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

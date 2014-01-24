@@ -1671,7 +1671,11 @@ static int irda_usb_probe(struct usb_interface *intf,
 
 	/* Is this really necessary? (no, except maybe for broken devices) */
 	if (usb_reset_configuration (dev) < 0) {
+<<<<<<< HEAD
 		err("reset_configuration failed");
+=======
+		dev_err(&intf->dev, "reset_configuration failed\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EIO;
 		goto err_out_3;
 	}
@@ -1914,6 +1918,8 @@ static struct usb_driver irda_driver = {
 #endif
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /************************* MODULE CALLBACKS *************************/
 /*
  * Deal with module insertion/removal
@@ -1949,6 +1955,14 @@ static void __exit usb_irda_cleanup(void)
 module_exit(usb_irda_cleanup);
 
 /*------------------------------------------------------------------*/
+=======
+module_usb_driver(irda_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(irda_driver);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Module parameters
  */

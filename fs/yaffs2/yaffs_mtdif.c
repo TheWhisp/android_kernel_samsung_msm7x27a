@@ -40,7 +40,15 @@ int nandmtd_erase_block(struct yaffs_dev *dev, int block_no)
 	ei.callback = NULL;
 	ei.priv = (u_long) dev;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = mtd->erase(mtd, &ei);
+=======
+	retval = mtd_erase(mtd, &ei);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = mtd_erase(mtd, &ei);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (retval == 0)
 		return YAFFS_OK;

@@ -53,19 +53,34 @@ static struct fb_fix_screeninfo tridentfb_fix = {
 /* defaults which are normally overriden by user values */
 
 /* video mode */
+<<<<<<< HEAD
 static char *mode_option __devinitdata = "640x480-8@60";
 static int bpp __devinitdata = 8;
 
 static int noaccel __devinitdata;
+=======
+static char *mode_option = "640x480-8@60";
+static int bpp = 8;
+
+static int noaccel;
+>>>>>>> refs/remotes/origin/master
 
 static int center;
 static int stretch;
 
+<<<<<<< HEAD
 static int fp __devinitdata;
 static int crt __devinitdata;
 
 static int memsize __devinitdata;
 static int memdiff __devinitdata;
+=======
+static int fp;
+static int crt;
+
+static int memsize;
+static int memdiff;
+>>>>>>> refs/remotes/origin/master
 static int nativex;
 
 module_param(mode_option, charp, 0);
@@ -637,7 +652,11 @@ static inline void crtc_unlock(struct tridentfb_par *par)
 }
 
 /*  Return flat panel's maximum x resolution */
+<<<<<<< HEAD
 static int __devinit get_nativex(struct tridentfb_par *par)
+=======
+static int get_nativex(struct tridentfb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	int x, y, tmp;
 
@@ -771,7 +790,11 @@ static void set_number_of_lines(struct tridentfb_par *par, int lines)
  * If we see that FP is active we assume we have one.
  * Otherwise we have a CRT display. User can override.
  */
+<<<<<<< HEAD
 static int __devinit is_flatpanel(struct tridentfb_par *par)
+=======
+static int is_flatpanel(struct tridentfb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	if (fp)
 		return 1;
@@ -781,7 +804,11 @@ static int __devinit is_flatpanel(struct tridentfb_par *par)
 }
 
 /* Try detecting the video memory size */
+<<<<<<< HEAD
 static unsigned int __devinit get_memsize(struct tridentfb_par *par)
+=======
+static unsigned int get_memsize(struct tridentfb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char tmp, tmp2;
 	unsigned int k;
@@ -987,8 +1014,18 @@ static int tridentfb_pan_display(struct fb_var_screeninfo *var,
 	unsigned int offset;
 
 	debug("enter\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	offset = (var->xoffset + (var->yoffset * var->xres_virtual))
 		* var->bits_per_pixel / 32;
+=======
+	offset = (var->xoffset + (var->yoffset * info->var.xres_virtual))
+		* info->var.bits_per_pixel / 32;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	offset = (var->xoffset + (var->yoffset * info->var.xres_virtual))
+		* info->var.bits_per_pixel / 32;
+>>>>>>> refs/remotes/origin/master
 	set_screen_start(par, offset);
 	debug("exit\n");
 	return 0;
@@ -1331,8 +1368,13 @@ static struct fb_ops tridentfb_ops = {
 	.fb_sync = tridentfb_sync,
 };
 
+<<<<<<< HEAD
 static int __devinit trident_pci_probe(struct pci_dev *dev,
 				       const struct pci_device_id *id)
+=======
+static int trident_pci_probe(struct pci_dev *dev,
+			     const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	unsigned char revision;
@@ -1543,7 +1585,11 @@ out_unmap1:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit trident_pci_remove(struct pci_dev *dev)
+=======
+static void trident_pci_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(dev);
 	struct tridentfb_par *par = info->par;
@@ -1553,7 +1599,10 @@ static void __devexit trident_pci_remove(struct pci_dev *dev)
 	iounmap(info->screen_base);
 	release_mem_region(tridentfb_fix.smem_start, tridentfb_fix.smem_len);
 	release_mem_region(tridentfb_fix.mmio_start, tridentfb_fix.mmio_len);
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(info->pixmap.addr);
 	fb_dealloc_cmap(&info->cmap);
 	framebuffer_release(info);
@@ -1591,7 +1640,11 @@ static struct pci_driver tridentfb_pci_driver = {
 	.name = "tridentfb",
 	.id_table = trident_devices,
 	.probe = trident_pci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(trident_pci_remove)
+=======
+	.remove = trident_pci_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*

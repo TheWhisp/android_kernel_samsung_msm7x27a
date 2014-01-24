@@ -56,7 +56,15 @@
  *
  * This function returns the inherited flags.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int inherit_flags(const struct inode *dir, int mode)
+=======
+static int inherit_flags(const struct inode *dir, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int inherit_flags(const struct inode *dir, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int flags;
 	const struct ubifs_inode *ui = ubifs_inode(dir);
@@ -86,7 +94,15 @@ static int inherit_flags(const struct inode *dir, int mode)
  * case of failure.
  */
 struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			      int mode)
+=======
+			      umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	struct ubifs_inode *ui;
@@ -102,7 +118,15 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
 	 * UBIFS has to fully control "clean <-> dirty" transitions of inodes
 	 * to make budgeting work.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_flags |= (S_NOCMTIME);
+=======
+	inode->i_flags |= S_NOCMTIME;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inode->i_flags |= S_NOCMTIME;
+>>>>>>> refs/remotes/origin/master
 
 	inode_init_owner(inode, dir, mode);
 	inode->i_mtime = inode->i_atime = inode->i_ctime =
@@ -170,11 +194,25 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
 	return inode;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
 
+<<<<<<< HEAD
 static int dbg_check_name(struct ubifs_dent_node *dent, struct qstr *nm)
 {
 	if (!(ubifs_chk_flags & UBIFS_CHK_GEN))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int dbg_check_name(const struct ubifs_info *c,
+			  const struct ubifs_dent_node *dent,
+			  const struct qstr *nm)
+{
+	if (!dbg_is_chk_gen(c))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	if (le16_to_cpu(dent->nlen) != nm->len)
 		return -EINVAL;
@@ -183,14 +221,23 @@ static int dbg_check_name(struct ubifs_dent_node *dent, struct qstr *nm)
 	return 0;
 }
 
+<<<<<<< HEAD
 #else
 
+<<<<<<< HEAD
 #define dbg_check_name(dent, nm) 0
+=======
+#define dbg_check_name(c, dent, nm) 0
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif
 
 static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
 				   struct nameidata *nd)
+=======
+static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+				   unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	union ubifs_key key;
@@ -198,8 +245,12 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
 	struct ubifs_dent_node *dent;
 	struct ubifs_info *c = dir->i_sb->s_fs_info;
 
+<<<<<<< HEAD
 	dbg_gen("'%.*s' in dir ino %lu",
 		dentry->d_name.len, dentry->d_name.name, dir->i_ino);
+=======
+	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
+>>>>>>> refs/remotes/origin/master
 
 	if (dentry->d_name.len > UBIFS_MAX_NLEN)
 		return ERR_PTR(-ENAMETOOLONG);
@@ -219,7 +270,15 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dbg_check_name(dent, &dentry->d_name)) {
+=======
+	if (dbg_check_name(c, dent, &dentry->d_name)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dbg_check_name(c, dent, &dentry->d_name)) {
+>>>>>>> refs/remotes/origin/master
 		err = -EINVAL;
 		goto out;
 	}
@@ -231,8 +290,13 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
 		 * checking.
 		 */
 		err = PTR_ERR(inode);
+<<<<<<< HEAD
 		ubifs_err("dead directory entry '%.*s', error %d",
 			  dentry->d_name.len, dentry->d_name.name, err);
+=======
+		ubifs_err("dead directory entry '%pd', error %d",
+			  dentry, err);
+>>>>>>> refs/remotes/origin/master
 		ubifs_ro_mode(c, err);
 		goto out;
 	}
@@ -251,8 +315,17 @@ out:
 	return ERR_PTR(err);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ubifs_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 			struct nameidata *nd)
+=======
+static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+			bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	struct ubifs_info *c = dir->i_sb->s_fs_info;
@@ -266,8 +339,17 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, int mode,
 	 * parent directory inode.
 	 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_gen("dent '%.*s', mode %#x in dir ino %lu",
+=======
+	dbg_gen("dent '%.*s', mode %#hx in dir ino %lu",
+>>>>>>> refs/remotes/origin/cm-10.0
 		dentry->d_name.len, dentry->d_name.name, mode, dir->i_ino);
+=======
+	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+		dentry, mode, dir->i_ino);
+>>>>>>> refs/remotes/origin/master
 
 	err = ubifs_budget_space(c, &req);
 	if (err)
@@ -352,6 +434,7 @@ static unsigned int vfs_dent_type(uint8_t type)
  * This means that UBIFS cannot support NFS which requires full
  * 'seekdir()'/'telldir()' support.
  */
+<<<<<<< HEAD
 static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
 {
 	int err, over = 0;
@@ -363,8 +446,27 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
 	struct ubifs_info *c = dir->i_sb->s_fs_info;
 
 	dbg_gen("dir ino %lu, f_pos %#llx", dir->i_ino, pos);
+<<<<<<< HEAD
 
 	if (pos > UBIFS_S_KEY_HASH_MASK || pos == 2)
+=======
+static int ubifs_readdir(struct file *file, struct dir_context *ctx)
+{
+	int err;
+	struct qstr nm;
+	union ubifs_key key;
+	struct ubifs_dent_node *dent;
+	struct inode *dir = file_inode(file);
+	struct ubifs_info *c = dir->i_sb->s_fs_info;
+
+	dbg_gen("dir ino %lu, f_pos %#llx", dir->i_ino, ctx->pos);
+
+	if (ctx->pos > UBIFS_S_KEY_HASH_MASK || ctx->pos == 2)
+>>>>>>> refs/remotes/origin/master
+=======
+
+	if (pos > UBIFS_S_KEY_HASH_MASK || pos == 2)
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * The directory was seek'ed to a senseless position or there
 		 * are no more entries.
@@ -390,6 +492,10 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
 	file->f_version = 1;
 
 	/* File positions 0 and 1 correspond to "." and ".." */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pos == 0) {
 		ubifs_assert(!file->private_data);
 		over = filldir(dirent, ".", 1, 0, dir->i_ino, DT_DIR);
@@ -403,6 +509,11 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
 		over = filldir(dirent, "..", 2, 1,
 			       parent_ino(file->f_path.dentry), DT_DIR);
 		if (over)
+=======
+	if (ctx->pos < 2) {
+		ubifs_assert(!file->private_data);
+		if (!dir_emit_dots(file, ctx))
+>>>>>>> refs/remotes/origin/master
 			return 0;
 
 		/* Find the first entry in TNC and save it */
@@ -414,7 +525,15 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
 			goto out;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		file->f_pos = pos = key_hash_flash(c, &dent->key);
+=======
+		ctx->pos = key_hash_flash(c, &dent->key);
+>>>>>>> refs/remotes/origin/master
+=======
+		file->f_pos = pos = key_hash_flash(c, &dent->key);
+>>>>>>> refs/remotes/origin/cm-11.0
 		file->private_data = dent;
 	}
 
@@ -422,16 +541,36 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
 	if (!dent) {
 		/*
 		 * The directory was seek'ed to and is now readdir'ed.
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * Find the entry corresponding to @pos or the closest one.
 		 */
 		dent_key_init_hash(c, &key, dir->i_ino, pos);
+=======
+		 * Find the entry corresponding to @ctx->pos or the closest one.
+		 */
+		dent_key_init_hash(c, &key, dir->i_ino, ctx->pos);
+>>>>>>> refs/remotes/origin/master
+=======
+		 * Find the entry corresponding to @pos or the closest one.
+		 */
+		dent_key_init_hash(c, &key, dir->i_ino, pos);
+>>>>>>> refs/remotes/origin/cm-11.0
 		nm.name = NULL;
 		dent = ubifs_tnc_next_ent(c, &key, &nm);
 		if (IS_ERR(dent)) {
 			err = PTR_ERR(dent);
 			goto out;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		file->f_pos = pos = key_hash_flash(c, &dent->key);
+=======
+		ctx->pos = key_hash_flash(c, &dent->key);
+>>>>>>> refs/remotes/origin/master
+=======
+		file->f_pos = pos = key_hash_flash(c, &dent->key);
+>>>>>>> refs/remotes/origin/cm-11.0
 		file->private_data = dent;
 	}
 
@@ -443,10 +582,19 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
 			     ubifs_inode(dir)->creat_sqnum);
 
 		nm.len = le16_to_cpu(dent->nlen);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		over = filldir(dirent, dent->name, nm.len, pos,
 			       le64_to_cpu(dent->inum),
 			       vfs_dent_type(dent->type));
 		if (over)
+=======
+		if (!dir_emit(ctx, dent->name, nm.len,
+			       le64_to_cpu(dent->inum),
+			       vfs_dent_type(dent->type)))
+>>>>>>> refs/remotes/origin/master
 			return 0;
 
 		/* Switch to the next entry */
@@ -459,6 +607,10 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
 		}
 
 		kfree(file->private_data);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		file->f_pos = pos = key_hash_flash(c, &dent->key);
 		file->private_data = dent;
 		cond_resched();
@@ -470,6 +622,14 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
 			 * invocation.
 			 */
 			return 0;
+<<<<<<< HEAD
+=======
+		ctx->pos = key_hash_flash(c, &dent->key);
+		file->private_data = dent;
+		cond_resched();
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 out:
@@ -481,6 +641,10 @@ out:
 	kfree(file->private_data);
 	file->private_data = NULL;
 	/* 2 is a special value indicating that there are no more direntries */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	file->f_pos = 2;
 	return 0;
 }
@@ -490,6 +654,12 @@ static loff_t ubifs_dir_llseek(struct file *file, loff_t offset, int origin)
 	return generic_file_llseek(file, offset, origin);
 }
 
+=======
+	ctx->pos = 2;
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Free saved readdir() state when the directory is closed */
 static int ubifs_dir_release(struct inode *dir, struct file *file)
 {
@@ -540,13 +710,26 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
 	 * changing the parent inode.
 	 */
 
+<<<<<<< HEAD
 	dbg_gen("dent '%.*s' to ino %lu (nlink %d) in dir ino %lu",
 		dentry->d_name.len, dentry->d_name.name, inode->i_ino,
+=======
+	dbg_gen("dent '%pd' to ino %lu (nlink %d) in dir ino %lu",
+		dentry, inode->i_ino,
+>>>>>>> refs/remotes/origin/master
 		inode->i_nlink, dir->i_ino);
 	ubifs_assert(mutex_is_locked(&dir->i_mutex));
 	ubifs_assert(mutex_is_locked(&inode->i_mutex));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = dbg_check_synced_i_size(inode);
+=======
+	err = dbg_check_synced_i_size(c, inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = dbg_check_synced_i_size(c, inode);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -588,6 +771,14 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
 	int sz_change = CALC_DENT_SIZE(dentry->d_name.len);
 	int err, budgeted = 1;
 	struct ubifs_budget_req req = { .mod_dent = 1, .dirtied_ino = 2 };
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned int saved_nlink = inode->i_nlink;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int saved_nlink = inode->i_nlink;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Budget request settings: deletion direntry, deletion inode (+1 for
@@ -596,12 +787,25 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
 	 * deletions.
 	 */
 
+<<<<<<< HEAD
 	dbg_gen("dent '%.*s' from ino %lu (nlink %d) in dir ino %lu",
 		dentry->d_name.len, dentry->d_name.name, inode->i_ino,
 		inode->i_nlink, dir->i_ino);
 	ubifs_assert(mutex_is_locked(&dir->i_mutex));
 	ubifs_assert(mutex_is_locked(&inode->i_mutex));
+<<<<<<< HEAD
 	err = dbg_check_synced_i_size(inode);
+=======
+	err = dbg_check_synced_i_size(c, inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_gen("dent '%pd' from ino %lu (nlink %d) in dir ino %lu",
+		dentry, inode->i_ino,
+		inode->i_nlink, dir->i_ino);
+	ubifs_assert(mutex_is_locked(&dir->i_mutex));
+	ubifs_assert(mutex_is_locked(&inode->i_mutex));
+	err = dbg_check_synced_i_size(c, inode);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -635,7 +839,15 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
 out_cancel:
 	dir->i_size += sz_change;
 	dir_ui->ui_size = dir->i_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inc_nlink(inode);
+=======
+	set_nlink(inode, saved_nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, saved_nlink);
+>>>>>>> refs/remotes/origin/master
 	unlock_2_inodes(dir, inode);
 	if (budgeted)
 		ubifs_release_budget(c, &req);
@@ -686,8 +898,13 @@ static int ubifs_rmdir(struct inode *dir, struct dentry *dentry)
 	 * because we have extra space reserved for deletions.
 	 */
 
+<<<<<<< HEAD
 	dbg_gen("directory '%.*s', ino %lu in dir ino %lu", dentry->d_name.len,
 		dentry->d_name.name, inode->i_ino, dir->i_ino);
+=======
+	dbg_gen("directory '%pd', ino %lu in dir ino %lu", dentry,
+		inode->i_ino, dir->i_ino);
+>>>>>>> refs/remotes/origin/master
 	ubifs_assert(mutex_is_locked(&dir->i_mutex));
 	ubifs_assert(mutex_is_locked(&inode->i_mutex));
 	err = check_dir_empty(c, dentry->d_inode);
@@ -726,15 +943,31 @@ out_cancel:
 	dir->i_size += sz_change;
 	dir_ui->ui_size = dir->i_size;
 	inc_nlink(dir);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inc_nlink(inode);
 	inc_nlink(inode);
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/master
 	unlock_2_inodes(dir, inode);
 	if (budgeted)
 		ubifs_release_budget(c, &req);
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	struct ubifs_inode *dir_ui = ubifs_inode(dir);
@@ -747,8 +980,17 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 	 * directory inode.
 	 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_gen("dent '%.*s', mode %#x in dir ino %lu",
+=======
+	dbg_gen("dent '%.*s', mode %#hx in dir ino %lu",
+>>>>>>> refs/remotes/origin/cm-10.0
 		dentry->d_name.len, dentry->d_name.name, mode, dir->i_ino);
+=======
+	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+		dentry, mode, dir->i_ino);
+>>>>>>> refs/remotes/origin/master
 
 	err = ubifs_budget_space(c, &req);
 	if (err)
@@ -791,7 +1033,15 @@ out_budg:
 }
 
 static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       int mode, dev_t rdev)
+=======
+		       umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	struct ubifs_inode *ui;
@@ -809,8 +1059,12 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
 	 * directory inode.
 	 */
 
+<<<<<<< HEAD
 	dbg_gen("dent '%.*s' in dir ino %lu",
 		dentry->d_name.len, dentry->d_name.name, dir->i_ino);
+=======
+	dbg_gen("dent '%pd' in dir ino %lu", dentry, dir->i_ino);
+>>>>>>> refs/remotes/origin/master
 
 	if (!new_valid_dev(rdev))
 		return -EINVAL;
@@ -884,8 +1138,13 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
 	 * directory inode.
 	 */
 
+<<<<<<< HEAD
 	dbg_gen("dent '%.*s', target '%s' in dir ino %lu", dentry->d_name.len,
 		dentry->d_name.name, symname, dir->i_ino);
+=======
+	dbg_gen("dent '%pd', target '%s' in dir ino %lu", dentry,
+		symname, dir->i_ino);
+>>>>>>> refs/remotes/origin/master
 
 	if (len > UBIFS_MAX_INO_DATA)
 		return -ENAMETOOLONG;
@@ -999,6 +1258,18 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
 			.dirtied_ino_d = ALIGN(old_inode_ui->data_len, 8) };
 	struct timespec time;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned int uninitialized_var(saved_nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int uninitialized_var(saved_nlink);
+>>>>>>> refs/remotes/origin/master
+=======
+	unsigned int uninitialized_var(saved_nlink);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Budget request settings: deletion direntry, new direntry, removing
@@ -1009,10 +1280,16 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
 	 * separately.
 	 */
 
+<<<<<<< HEAD
 	dbg_gen("dent '%.*s' ino %lu in dir ino %lu to dent '%.*s' in "
 		"dir ino %lu", old_dentry->d_name.len, old_dentry->d_name.name,
 		old_inode->i_ino, old_dir->i_ino, new_dentry->d_name.len,
 		new_dentry->d_name.name, new_dir->i_ino);
+=======
+	dbg_gen("dent '%pd' ino %lu in dir ino %lu to dent '%pd' in dir ino %lu",
+		old_dentry, old_inode->i_ino, old_dir->i_ino,
+		new_dentry, new_dir->i_ino);
+>>>>>>> refs/remotes/origin/master
 	ubifs_assert(mutex_is_locked(&old_dir->i_mutex));
 	ubifs_assert(mutex_is_locked(&new_dir->i_mutex));
 	if (unlink)
@@ -1081,6 +1358,8 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
 	if (unlink) {
 		/*
 		 * Directories cannot have hard-links, so if this is a
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * directory, decrement its @i_nlink twice because an empty
 		 * directory has @i_nlink 2.
 		 */
@@ -1088,6 +1367,21 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
 			drop_nlink(new_inode);
 		new_inode->i_ctime = time;
 		drop_nlink(new_inode);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		 * directory, just clear @i_nlink.
+		 */
+		saved_nlink = new_inode->i_nlink;
+		if (is_dir)
+			clear_nlink(new_inode);
+		else
+			drop_nlink(new_inode);
+		new_inode->i_ctime = time;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		new_dir->i_size += new_sz;
 		ubifs_inode(new_dir)->ui_size = new_dir->i_size;
@@ -1124,9 +1418,17 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
 
 out_cancel:
 	if (unlink) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (is_dir)
 			inc_nlink(new_inode);
 		inc_nlink(new_inode);
+=======
+		set_nlink(new_inode, saved_nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(new_inode, saved_nlink);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		new_dir->i_size -= new_sz;
 		ubifs_inode(new_dir)->ui_size = new_dir->i_size;
@@ -1157,6 +1459,7 @@ int ubifs_getattr(struct vfsmount *mnt, struct dentry *dentry,
 	struct ubifs_inode *ui = ubifs_inode(inode);
 
 	mutex_lock(&ui->ui_mutex);
+<<<<<<< HEAD
 	stat->dev = inode->i_sb->s_dev;
 	stat->ino = inode->i_ino;
 	stat->mode = inode->i_mode;
@@ -1167,6 +1470,9 @@ int ubifs_getattr(struct vfsmount *mnt, struct dentry *dentry,
 	stat->atime = inode->i_atime;
 	stat->mtime = inode->i_mtime;
 	stat->ctime = inode->i_ctime;
+=======
+	generic_fillattr(inode, stat);
+>>>>>>> refs/remotes/origin/master
 	stat->blksize = UBIFS_BLOCK_SIZE;
 	stat->size = ui->ui_size;
 
@@ -1209,11 +1515,15 @@ const struct inode_operations ubifs_dir_inode_operations = {
 	.rename      = ubifs_rename,
 	.setattr     = ubifs_setattr,
 	.getattr     = ubifs_getattr,
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_XATTR
+=======
+>>>>>>> refs/remotes/origin/master
 	.setxattr    = ubifs_setxattr,
 	.getxattr    = ubifs_getxattr,
 	.listxattr   = ubifs_listxattr,
 	.removexattr = ubifs_removexattr,
+<<<<<<< HEAD
 #endif
 };
 
@@ -1222,6 +1532,15 @@ const struct file_operations ubifs_dir_operations = {
 	.release        = ubifs_dir_release,
 	.read           = generic_read_dir,
 	.readdir        = ubifs_readdir,
+=======
+};
+
+const struct file_operations ubifs_dir_operations = {
+	.llseek         = generic_file_llseek,
+	.release        = ubifs_dir_release,
+	.read           = generic_read_dir,
+	.iterate        = ubifs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.fsync          = ubifs_fsync,
 	.unlocked_ioctl = ubifs_ioctl,
 #ifdef CONFIG_COMPAT

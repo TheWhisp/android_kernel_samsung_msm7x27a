@@ -43,7 +43,11 @@ void rds_tcp_state_change(struct sock *sk)
 	struct rds_connection *conn;
 	struct rds_tcp_connection *tc;
 
+<<<<<<< HEAD
 	read_lock_bh(&sk->sk_callback_lock);
+=======
+	read_lock(&sk->sk_callback_lock);
+>>>>>>> refs/remotes/origin/master
 	conn = sk->sk_user_data;
 	if (!conn) {
 		state_change = sk->sk_state_change;
@@ -68,7 +72,11 @@ void rds_tcp_state_change(struct sock *sk)
 			break;
 	}
 out:
+<<<<<<< HEAD
 	read_unlock_bh(&sk->sk_callback_lock);
+=======
+	read_unlock(&sk->sk_callback_lock);
+>>>>>>> refs/remotes/origin/master
 	state_change(sk);
 }
 

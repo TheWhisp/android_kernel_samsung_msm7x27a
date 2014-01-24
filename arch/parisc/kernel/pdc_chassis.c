@@ -30,11 +30,19 @@
 #endif
 
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/reboot.h>
 #include <linux/notifier.h>
 #include <linux/cache.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pdc_chassis.h>
 #include <asm/processor.h>
@@ -244,6 +252,7 @@ int pdc_chassis_send_status(int message)
 
 #ifdef CONFIG_PDC_CHASSIS_WARN
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 static int pdc_chassis_warn_pread(char *page, char **start, off_t off,
 		int count, int *eof, void *data)
 {
@@ -254,11 +263,20 @@ static int pdc_chassis_warn_pread(char *page, char **start, off_t off,
 
 	ret = pdc_chassis_warn(&warn);
 	if (ret != PDC_OK)
+=======
+static int pdc_chassis_warn_show(struct seq_file *m, void *v)
+{
+	unsigned long warn;
+	u32 warnreg;
+
+	if (pdc_chassis_warn(&warn) != PDC_OK)
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 
 	warnreg = (warn & 0xFFFFFFFF);
 
 	if ((warnreg >> 24) & 0xFF)
+<<<<<<< HEAD
 		out += sprintf(out, "Chassis component failure! (eg fan or PSU): 0x%.2x\n", ((warnreg >> 24) & 0xFF));
 
 	out += sprintf(out, "Battery: %s\n", (warnreg & 0x04) ? "Low!" : "OK");
@@ -276,6 +294,29 @@ static int pdc_chassis_warn_pread(char *page, char **start, off_t off,
 	return len;
 }
 
+=======
+		seq_printf(m, "Chassis component failure! (eg fan or PSU): 0x%.2x\n",
+			   (warnreg >> 24) & 0xFF);
+
+	seq_printf(m, "Battery: %s\n", (warnreg & 0x04) ? "Low!" : "OK");
+	seq_printf(m, "Temp low: %s\n", (warnreg & 0x02) ? "Exceeded!" : "OK");
+	seq_printf(m, "Temp mid: %s\n", (warnreg & 0x01) ? "Exceeded!" : "OK");
+	return 0;
+}
+
+static int pdc_chassis_warn_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, pdc_chassis_warn_show, NULL);
+}
+
+static const struct file_operations pdc_chassis_warn_fops = {
+	.open		= pdc_chassis_warn_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int __init pdc_chassis_create_procfs(void)
 {
 	unsigned long test;
@@ -290,8 +331,12 @@ static int __init pdc_chassis_create_procfs(void)
 
 	printk(KERN_INFO "Enabling PDC chassis warnings support v%s\n",
 			PDC_CHASSIS_VER);
+<<<<<<< HEAD
 	create_proc_read_entry("chassis", 0400, NULL, pdc_chassis_warn_pread,
 				NULL);
+=======
+	proc_create("chassis", 0400, NULL, &pdc_chassis_warn_fops);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

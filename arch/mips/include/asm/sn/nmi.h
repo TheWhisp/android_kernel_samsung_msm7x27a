@@ -19,7 +19,11 @@
  *
  * The master stores launch parameters in the launch structure
  * corresponding to a target processor that is in a slave loop, then sends
+<<<<<<< HEAD
  * an interrupt to the slave processor.  The slave calls the desired
+=======
+ * an interrupt to the slave processor.	 The slave calls the desired
+>>>>>>> refs/remotes/origin/master
  * function, followed by an optional rendezvous function, then returns to
  * the slave loop.  The master does not wait for the slaves before
  * returning.
@@ -31,7 +35,11 @@
 #define NMI_MAGIC		0x48414d4d455201
 #define NMI_SIZEOF		0x40
 
+<<<<<<< HEAD
 #define NMI_OFF_MAGIC		0x00	/* Struct offsets for assembly      */
+=======
+#define NMI_OFF_MAGIC		0x00	/* Struct offsets for assembly	    */
+>>>>>>> refs/remotes/origin/master
 #define NMI_OFF_FLAGS		0x08
 #define NMI_OFF_CALL		0x10
 #define NMI_OFF_CALLC		0x18
@@ -53,8 +61,13 @@
 typedef struct nmi_s {
 	volatile unsigned long	 magic;		/* Magic number */
 	volatile unsigned long	 flags;		/* Combination of flags above */
+<<<<<<< HEAD
 	volatile void *call_addr;	/* Routine for slave to call        */
 	volatile void *call_addr_c;	/* 1's complement of address        */
+=======
+	volatile void *call_addr;	/* Routine for slave to call	    */
+	volatile void *call_addr_c;	/* 1's complement of address	    */
+>>>>>>> refs/remotes/origin/master
 	volatile void *call_parm;	/* Single parm passed to call	    */
 	volatile unsigned long	 gmaster;	/* Flag true only on global master*/
 } nmi_t;

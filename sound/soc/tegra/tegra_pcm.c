@@ -2,7 +2,11 @@
  * tegra_pcm.c - Tegra PCM driver
  *
  * Author: Stephen Warren <swarren@nvidia.com>
+<<<<<<< HEAD
  * Copyright (C) 2010 - NVIDIA, Inc.
+=======
+ * Copyright (C) 2010,2012 - NVIDIA, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Based on code copyright/by:
  *
@@ -30,12 +34,16 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
+<<<<<<< HEAD
 
 #include "tegra_pcm.h"
 
@@ -50,6 +58,16 @@ static const struct snd_pcm_hardware tegra_pcm_hardware = {
 	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
 	.channels_min		= 2,
 	.channels_max		= 2,
+=======
+#include <sound/dmaengine_pcm.h>
+
+#include "tegra_pcm.h"
+
+static const struct snd_pcm_hardware tegra_pcm_hardware = {
+	.info			= SNDRV_PCM_INFO_MMAP |
+				  SNDRV_PCM_INFO_MMAP_VALID |
+				  SNDRV_PCM_INFO_INTERLEAVED,
+>>>>>>> refs/remotes/origin/master
 	.period_bytes_min	= 1024,
 	.period_bytes_max	= PAGE_SIZE,
 	.periods_min		= 2,
@@ -58,6 +76,7 @@ static const struct snd_pcm_hardware tegra_pcm_hardware = {
 	.fifo_size		= 4,
 };
 
+<<<<<<< HEAD
 static void tegra_pcm_queue_dma(struct tegra_runtime_data *prtd)
 {
 	struct snd_pcm_substream *substream = prtd->substream;
@@ -327,24 +346,41 @@ static void tegra_pcm_deallocate_dma_buffer(struct snd_pcm *pcm, int stream)
 
 static u64 tegra_dma_mask = DMA_BIT_MASK(32);
 
+<<<<<<< HEAD
 static int tegra_pcm_new(struct snd_card *card,
 				struct snd_soc_dai *dai, struct snd_pcm *pcm)
 {
+=======
+static int tegra_pcm_new(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_card *card = rtd->card->snd_card;
+	struct snd_pcm *pcm = rtd->pcm;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret = 0;
 
 	if (!card->dev->dma_mask)
 		card->dev->dma_mask = &tegra_dma_mask;
 	if (!card->dev->coherent_dma_mask)
+<<<<<<< HEAD
 		card->dev->coherent_dma_mask = 0xffffffff;
 
 	if (dai->driver->playback.channels_min) {
+=======
+		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
+
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = tegra_pcm_preallocate_dma_buffer(pcm,
 						SNDRV_PCM_STREAM_PLAYBACK);
 		if (ret)
 			goto err;
 	}
 
+<<<<<<< HEAD
 	if (dai->driver->capture.channels_min) {
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = tegra_pcm_preallocate_dma_buffer(pcm,
 						SNDRV_PCM_STREAM_CAPTURE);
 		if (ret)
@@ -365,7 +401,11 @@ static void tegra_pcm_free(struct snd_pcm *pcm)
 	tegra_pcm_deallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK);
 }
 
+<<<<<<< HEAD
 struct snd_soc_platform_driver tegra_pcm_platform = {
+=======
+static struct snd_soc_platform_driver tegra_pcm_platform = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ops		= &tegra_pcm_ops,
 	.pcm_new	= tegra_pcm_new,
 	.pcm_free	= tegra_pcm_free,
@@ -390,6 +430,7 @@ static struct platform_driver tegra_pcm_driver = {
 	.probe = tegra_pcm_platform_probe,
 	.remove = __devexit_p(tegra_pcm_platform_remove),
 };
+<<<<<<< HEAD
 
 static int __init snd_tegra_pcm_init(void)
 {
@@ -402,8 +443,35 @@ static void __exit snd_tegra_pcm_exit(void)
 	platform_driver_unregister(&tegra_pcm_driver);
 }
 module_exit(snd_tegra_pcm_exit);
+=======
+module_platform_driver(tegra_pcm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_dmaengine_pcm_config tegra_dmaengine_pcm_config = {
+	.pcm_hardware = &tegra_pcm_hardware,
+	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
+	.prealloc_buffer_size = PAGE_SIZE * 8,
+};
+
+int tegra_pcm_platform_register(struct device *dev)
+{
+	return snd_dmaengine_pcm_register(dev, &tegra_dmaengine_pcm_config,
+			SND_DMAENGINE_PCM_FLAG_NO_DT |
+			SND_DMAENGINE_PCM_FLAG_COMPAT);
+}
+EXPORT_SYMBOL_GPL(tegra_pcm_platform_register);
+
+void tegra_pcm_platform_unregister(struct device *dev)
+{
+	return snd_dmaengine_pcm_unregister(dev);
+}
+EXPORT_SYMBOL_GPL(tegra_pcm_platform_unregister);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
 MODULE_DESCRIPTION("Tegra PCM ASoC driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS("platform:" DRV_NAME);
+=======
+>>>>>>> refs/remotes/origin/master

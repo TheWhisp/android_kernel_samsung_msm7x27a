@@ -25,7 +25,15 @@
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
 #include <linux/tty_flip.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #define pr_init(fmt, args...) ({ static const __initconst char __fmt[] = fmt; printk(__fmt, ## args); })
 
@@ -62,9 +70,13 @@ static inline uint32_t bfin_write_emudat_chars(char a, char b, char c, char d)
 
 static struct tty_driver *bfin_jc_driver;
 static struct task_struct *bfin_jc_kthread;
+<<<<<<< HEAD
 static struct tty_struct * volatile bfin_jc_tty;
 static unsigned long bfin_jc_count;
 static DEFINE_MUTEX(bfin_jc_tty_mutex);
+=======
+static struct tty_port port;
+>>>>>>> refs/remotes/origin/master
 static volatile struct circ_buf bfin_jc_write_buf;
 
 static int
@@ -73,18 +85,32 @@ bfin_jc_emudat_manager(void *arg)
 	uint32_t inbound_len = 0, outbound_len = 0;
 
 	while (!kthread_should_stop()) {
+<<<<<<< HEAD
 		/* no one left to give data to, so sleep */
 		if (bfin_jc_tty == NULL && circ_empty(&bfin_jc_write_buf)) {
+=======
+		struct tty_struct *tty = tty_port_tty_get(&port);
+		/* no one left to give data to, so sleep */
+		if (tty == NULL && circ_empty(&bfin_jc_write_buf)) {
+>>>>>>> refs/remotes/origin/master
 			pr_debug("waiting for readers\n");
 			__set_current_state(TASK_UNINTERRUPTIBLE);
 			schedule();
 			__set_current_state(TASK_RUNNING);
+<<<<<<< HEAD
+=======
+			continue;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* no data available, so just chill */
 		if (!(bfin_read_DBGSTAT() & EMUDIF) && circ_empty(&bfin_jc_write_buf)) {
 			pr_debug("waiting for data (in_len = %i) (circ: %i %i)\n",
 				inbound_len, bfin_jc_write_buf.tail, bfin_jc_write_buf.head);
+<<<<<<< HEAD
+=======
+			tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 			if (inbound_len)
 				schedule();
 			else
@@ -94,6 +120,7 @@ bfin_jc_emudat_manager(void *arg)
 
 		/* if incoming data is ready, eat it */
 		if (bfin_read_DBGSTAT() & EMUDIF) {
+<<<<<<< HEAD
 			struct tty_struct *tty;
 			mutex_lock(&bfin_jc_tty_mutex);
 			tty = (struct tty_struct *)bfin_jc_tty;
@@ -111,6 +138,19 @@ bfin_jc_emudat_manager(void *arg)
 				}
 			}
 			mutex_unlock(&bfin_jc_tty_mutex);
+=======
+			uint32_t emudat = bfin_read_emudat();
+			if (inbound_len == 0) {
+				pr_debug("incoming length: 0x%08x\n", emudat);
+				inbound_len = emudat;
+			} else {
+				size_t num_chars = (4 <= inbound_len ? 4 : inbound_len);
+				pr_debug("  incoming data: 0x%08x (pushing %zu)\n", emudat, num_chars);
+				inbound_len -= num_chars;
+				tty_insert_flip_string(&port, (unsigned char *)&emudat, num_chars);
+				tty_flip_buffer_push(&port);
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* if outgoing data is ready, post it */
@@ -120,7 +160,10 @@ bfin_jc_emudat_manager(void *arg)
 				bfin_write_emudat(outbound_len);
 				pr_debug("outgoing length: 0x%08x\n", outbound_len);
 			} else {
+<<<<<<< HEAD
 				struct tty_struct *tty;
+=======
+>>>>>>> refs/remotes/origin/master
 				int tail = bfin_jc_write_buf.tail;
 				size_t ate = (4 <= outbound_len ? 4 : outbound_len);
 				uint32_t emudat =
@@ -132,6 +175,7 @@ bfin_jc_emudat_manager(void *arg)
 				);
 				bfin_jc_write_buf.tail += ate;
 				outbound_len -= ate;
+<<<<<<< HEAD
 				mutex_lock(&bfin_jc_tty_mutex);
 				tty = (struct tty_struct *)bfin_jc_tty;
 				if (tty)
@@ -140,6 +184,14 @@ bfin_jc_emudat_manager(void *arg)
 				pr_debug("  outgoing data: 0x%08x (pushing %zu)\n", emudat, ate);
 			}
 		}
+=======
+				if (tty)
+					tty_wakeup(tty);
+				pr_debug("  outgoing data: 0x%08x (pushing %zu)\n", emudat, ate);
+			}
+		}
+		tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	__set_current_state(TASK_RUNNING);
@@ -149,24 +201,46 @@ bfin_jc_emudat_manager(void *arg)
 static int
 bfin_jc_open(struct tty_struct *tty, struct file *filp)
 {
+<<<<<<< HEAD
 	mutex_lock(&bfin_jc_tty_mutex);
 	pr_debug("open %lu\n", bfin_jc_count);
 	++bfin_jc_count;
 	bfin_jc_tty = tty;
 	wake_up_process(bfin_jc_kthread);
 	mutex_unlock(&bfin_jc_tty_mutex);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&port.lock, flags);
+	port.count++;
+	spin_unlock_irqrestore(&port.lock, flags);
+	tty_port_tty_set(&port, tty);
+	wake_up_process(bfin_jc_kthread);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void
 bfin_jc_close(struct tty_struct *tty, struct file *filp)
 {
+<<<<<<< HEAD
 	mutex_lock(&bfin_jc_tty_mutex);
 	pr_debug("close %lu\n", bfin_jc_count);
 	if (--bfin_jc_count == 0)
 		bfin_jc_tty = NULL;
 	wake_up_process(bfin_jc_kthread);
 	mutex_unlock(&bfin_jc_tty_mutex);
+=======
+	unsigned long flags;
+	bool last;
+
+	spin_lock_irqsave(&port.lock, flags);
+	last = --port.count == 0;
+	spin_unlock_irqrestore(&port.lock, flags);
+	if (last)
+		tty_port_tty_set(&port, NULL);
+	wake_up_process(bfin_jc_kthread);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* XXX: we dont handle the put_char() case where we must handle count = 1 */
@@ -257,13 +331,25 @@ static int __init bfin_jc_init(void)
 	if (!bfin_jc_driver)
 		goto err_driver;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_jc_driver->owner        = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tty_port_init(&port);
+
+>>>>>>> refs/remotes/origin/master
 	bfin_jc_driver->driver_name  = DRV_NAME;
 	bfin_jc_driver->name         = DEV_NAME;
 	bfin_jc_driver->type         = TTY_DRIVER_TYPE_SERIAL;
 	bfin_jc_driver->subtype      = SERIAL_TYPE_NORMAL;
 	bfin_jc_driver->init_termios = tty_std_termios;
 	tty_set_operations(bfin_jc_driver, &bfin_jc_ops);
+<<<<<<< HEAD
+=======
+	tty_port_link_device(&port, bfin_jc_driver, 0);
+>>>>>>> refs/remotes/origin/master
 
 	ret = tty_register_driver(bfin_jc_driver);
 	if (ret)
@@ -274,6 +360,10 @@ static int __init bfin_jc_init(void)
 	return 0;
 
  err:
+<<<<<<< HEAD
+=======
+	tty_port_destroy(&port);
+>>>>>>> refs/remotes/origin/master
 	put_tty_driver(bfin_jc_driver);
  err_driver:
 	kfree(bfin_jc_write_buf.buf);
@@ -289,6 +379,10 @@ static void __exit bfin_jc_exit(void)
 	kfree(bfin_jc_write_buf.buf);
 	tty_unregister_driver(bfin_jc_driver);
 	put_tty_driver(bfin_jc_driver);
+<<<<<<< HEAD
+=======
+	tty_port_destroy(&port);
+>>>>>>> refs/remotes/origin/master
 }
 module_exit(bfin_jc_exit);
 
@@ -349,7 +443,11 @@ bfin_jc_early_write(struct console *co, const char *buf, unsigned int count)
 	bfin_jc_straight_buffer_write(buf, count);
 }
 
+<<<<<<< HEAD
 static struct __initdata console bfin_jc_early_console = {
+=======
+static struct console bfin_jc_early_console __initdata = {
+>>>>>>> refs/remotes/origin/master
 	.name   = "early_BFJC",
 	.write   = bfin_jc_early_write,
 	.flags   = CON_ANYTIME | CON_PRINTBUFFER,

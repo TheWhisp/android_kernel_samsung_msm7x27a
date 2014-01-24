@@ -63,8 +63,12 @@ MODULE_LICENSE("GPL");
 /*
  * PCI ID of the Intel ICH7 LPC Device within which the GPIO block lives.
  */
+<<<<<<< HEAD
 static const struct pci_device_id ich7_lpc_pci_id[] =
 {
+=======
+static DEFINE_PCI_DEVICE_TABLE(ich7_lpc_pci_id) = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_ICH7_0) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_ICH7_1) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_ICH7_30) },
@@ -79,7 +83,15 @@ static int __init ss4200_led_dmi_callback(const struct dmi_system_id *id)
 	return 1;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int __initdata nodetect;
+=======
+static bool __initdata nodetect;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool __initdata nodetect;
+>>>>>>> refs/remotes/origin/master
 module_param_named(nodetect, nodetect, bool, 0);
 MODULE_PARM_DESC(nodetect, "Skip DMI-based hardware detection");
 
@@ -92,7 +104,11 @@ MODULE_PARM_DESC(nodetect, "Skip DMI-based hardware detection");
  * detected as working, but in reality it is not) as low as
  * possible.
  */
+<<<<<<< HEAD
 static struct dmi_system_id __initdata nas_led_whitelist[] = {
+=======
+static struct dmi_system_id nas_led_whitelist[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.callback = ss4200_led_dmi_callback,
 		.ident = "Intel SS4200-E",
@@ -198,7 +214,11 @@ static void nasgpio_led_set_attr(struct led_classdev *led_cdev,
 	spin_unlock(&nasgpio_gpio_lock);
 }
 
+<<<<<<< HEAD
 u32 nasgpio_led_get_attr(struct led_classdev *led_cdev, u32 port)
+=======
+static u32 nasgpio_led_get_attr(struct led_classdev *led_cdev, u32 port)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nasgpio_led *led = led_classdev_to_nasgpio_led(led_cdev);
 	u32 gpio_in;
@@ -263,7 +283,11 @@ static int nasgpio_led_set_blink(struct led_classdev *led_cdev,
  * already taken care of this, but we will do so in a non destructive manner
  * so that we have what we need whether the BIOS did it or not.
  */
+<<<<<<< HEAD
 static int __devinit ich7_gpio_init(struct device *dev)
+=======
+static int ich7_gpio_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	u32 config_data = 0;
@@ -342,7 +366,11 @@ static void ich7_lpc_cleanup(struct device *dev)
  * so we can retrive the required operational information and prepare the GPIO.
  */
 static struct pci_dev *nas_gpio_pci_dev;
+<<<<<<< HEAD
 static int __devinit ich7_lpc_probe(struct pci_dev *dev,
+=======
+static int ich7_lpc_probe(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 				    const struct pci_device_id *id)
 {
 	int status;
@@ -459,7 +487,11 @@ static ssize_t nas_led_blink_store(struct device *dev,
 	struct led_classdev *led = dev_get_drvdata(dev);
 	unsigned long blink_state;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &blink_state);
+=======
+	ret = kstrtoul(buf, 10, &blink_state);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 

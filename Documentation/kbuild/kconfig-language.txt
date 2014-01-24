@@ -117,7 +117,15 @@ applicable everywhere (see syntax).
   This attribute is only applicable to menu blocks, if the condition is
   false, the menu block is not displayed to the user (the symbols
   contained there can still be selected by other symbols, though). It is
+<<<<<<< HEAD
+<<<<<<< HEAD
   similar to a conditional "prompt" attribude for individual menu
+=======
+  similar to a conditional "prompt" attribute for individual menu
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  similar to a conditional "prompt" attribute for individual menu
+>>>>>>> refs/remotes/origin/master
   entries. Default value of "visible" is true.
 
 - numerical ranges: "range" <symbol> <symbol> ["if" <expr>]
@@ -147,6 +155,10 @@ applicable everywhere (see syntax).
   - "modules"
     This declares the symbol to be used as the MODULES symbol, which
     enables the third modular state for all config symbols.
+<<<<<<< HEAD
+=======
+    At most one symbol may have the "modules" option set.
+>>>>>>> refs/remotes/origin/master
 
   - "env"=<value>
     This imports the environment variable into Kconfig. It behaves like
@@ -388,6 +400,7 @@ config FOO
 	depends on BAR && m
 
 limits FOO to module (=m) or disabled (=n).
+<<<<<<< HEAD
 
 Kconfig symbol existence
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -411,3 +424,5 @@ endif
 In case 1, the symbol FOO will always exist in the config file (given
 no other dependencies).  In case 2, the symbol FOO will only exist in
 the config file if BAR is enabled.
+=======
+>>>>>>> refs/remotes/origin/master

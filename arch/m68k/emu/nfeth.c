@@ -16,6 +16,14 @@
 
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <asm/natfeat.h>
 #include <asm/virtconvert.h>
@@ -38,7 +46,15 @@ enum {
 #define MAX_UNIT	8
 
 /* These identify the driver base version and may not be removed. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const char version[] __devinitdata =
+=======
+static const char version[] __devinitconst =
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char version[] =
+>>>>>>> refs/remotes/origin/master
 	KERN_INFO KBUILD_MODNAME ".c:v" DRV_VERSION " " DRV_RELDATE
 	" S.Opichal, M.Jurik, P.Stehlik\n"
 	KERN_INFO " http://aranym.org/\n";
@@ -194,7 +210,12 @@ static struct net_device * __init nfeth_probe(int unit)
 	char mac[ETH_ALEN], host_ip[32], local_ip[32];
 	int err;
 
+<<<<<<< HEAD
 	if (!nf_call(nfEtherID + XIF_GET_MAC, unit, mac, ETH_ALEN))
+=======
+	if (!nf_call(nfEtherID + XIF_GET_MAC, unit, virt_to_phys(mac),
+		     ETH_ALEN))
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	dev = alloc_etherdev(sizeof(struct nfeth_private));
@@ -204,7 +225,13 @@ static struct net_device * __init nfeth_probe(int unit)
 	dev->irq = nfEtherIRQ;
 	dev->netdev_ops = &nfeth_netdev_ops;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev->flags |= NETIF_F_NO_CSUM;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memcpy(dev->dev_addr, mac, ETH_ALEN);
 
 	priv = netdev_priv(dev);
@@ -217,9 +244,15 @@ static struct net_device * __init nfeth_probe(int unit)
 	}
 
 	nf_call(nfEtherID + XIF_GET_IPHOST, unit,
+<<<<<<< HEAD
 		host_ip, sizeof(host_ip));
 	nf_call(nfEtherID + XIF_GET_IPATARI, unit,
 		local_ip, sizeof(local_ip));
+=======
+		virt_to_phys(host_ip), sizeof(host_ip));
+	nf_call(nfEtherID + XIF_GET_IPATARI, unit,
+		virt_to_phys(local_ip), sizeof(local_ip));
+>>>>>>> refs/remotes/origin/master
 
 	netdev_info(dev, KBUILD_MODNAME " addr:%s (%s) HWaddr:%pM\n", host_ip,
 		    local_ip, mac);

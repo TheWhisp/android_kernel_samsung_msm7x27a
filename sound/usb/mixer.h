@@ -43,6 +43,10 @@ struct usb_mixer_elem_info {
 	unsigned int id;
 	unsigned int control;	/* CS or ICN (high byte) */
 	unsigned int cmask; /* channel mask bitmap: 0 = master */
+<<<<<<< HEAD
+=======
+	unsigned int idx_off; /* Control index offset */
+>>>>>>> refs/remotes/origin/master
 	unsigned int ch_readonly;
 	unsigned int master_readonly;
 	int channels;
@@ -68,4 +72,10 @@ int snd_usb_mixer_activate(struct usb_mixer_interface *mixer);
 int snd_usb_mixer_add_control(struct usb_mixer_interface *mixer,
 			      struct snd_kcontrol *kctl);
 
+<<<<<<< HEAD
+=======
+int snd_usb_mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+			  unsigned int size, unsigned int __user *_tlv);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __USBMIXER_H */

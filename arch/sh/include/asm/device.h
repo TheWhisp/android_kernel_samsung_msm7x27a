@@ -3,9 +3,22 @@
  *
  * This file is released under the GPLv2
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 struct dev_archdata {
 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifndef __ASM_SH_DEVICE_H
+#define __ASM_SH_DEVICE_H
+
+#include <asm-generic/device.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct platform_device;
 /* allocate contiguous memory chunk and fill in struct resource */
@@ -14,6 +27,8 @@ int platform_resource_setup_memory(struct platform_device *pdev,
 
 void plat_early_device_setup(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PDEV_ARCHDATA_FLAG_INIT 0
 #define PDEV_ARCHDATA_FLAG_IDLE 1
 #define PDEV_ARCHDATA_FLAG_SUSP 2
@@ -26,3 +41,9 @@ struct pdev_archdata {
 	struct mutex mutex;
 #endif
 };
+=======
+#endif /* __ASM_SH_DEVICE_H */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* __ASM_SH_DEVICE_H */
+>>>>>>> refs/remotes/origin/master

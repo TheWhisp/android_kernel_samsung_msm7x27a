@@ -27,7 +27,11 @@
 #include "softing_platform.h"
 
 static int softingcs_index;
+<<<<<<< HEAD
 static spinlock_t softingcs_index_lock;
+=======
+static DEFINE_SPINLOCK(softingcs_index_lock);
+>>>>>>> refs/remotes/origin/master
 
 static int softingcs_reset(struct platform_device *pdev, int v);
 static int softingcs_enable_irq(struct platform_device *pdev, int v);
@@ -159,7 +163,11 @@ MODULE_FIRMWARE(fw_dir "bcard2.bin");
 MODULE_FIRMWARE(fw_dir "ldcard2.bin");
 MODULE_FIRMWARE(fw_dir "cancrd2.bin");
 
+<<<<<<< HEAD
 static __devinit const struct softing_platform_data
+=======
+static const struct softing_platform_data
+>>>>>>> refs/remotes/origin/master
 *softingcs_find_platform_data(unsigned int manf, unsigned int prod)
 {
 	const struct softing_platform_data *lp;
@@ -193,8 +201,12 @@ static int softingcs_enable_irq(struct platform_device *pdev, int v)
 /*
  * pcmcia check
  */
+<<<<<<< HEAD
 static __devinit int softingcs_probe_config(struct pcmcia_device *pcmcia,
 		void *priv_data)
+=======
+static int softingcs_probe_config(struct pcmcia_device *pcmcia, void *priv_data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct softing_platform_data *pdat = priv_data;
 	struct resource *pres;
@@ -215,7 +227,11 @@ static __devinit int softingcs_probe_config(struct pcmcia_device *pcmcia,
 	return pcmcia_request_window(pcmcia, pres, memspeed);
 }
 
+<<<<<<< HEAD
 static __devexit void softingcs_remove(struct pcmcia_device *pcmcia)
+=======
+static void softingcs_remove(struct pcmcia_device *pcmcia)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_device *pdev = pcmcia->priv;
 
@@ -235,7 +251,11 @@ static void softingcs_pdev_release(struct device *dev)
 	kfree(pdev);
 }
 
+<<<<<<< HEAD
 static __devinit int softingcs_probe(struct pcmcia_device *pcmcia)
+=======
+static int softingcs_probe(struct pcmcia_device *pcmcia)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct platform_device *pdev;
@@ -338,6 +358,7 @@ static struct pcmcia_driver softingcs_driver = {
 	.name		= "softingcs",
 	.id_table	= softingcs_ids,
 	.probe		= softingcs_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(softingcs_remove),
 };
 
@@ -354,6 +375,12 @@ static void __exit softingcs_stop(void)
 
 module_init(softingcs_start);
 module_exit(softingcs_stop);
+=======
+	.remove		= softingcs_remove,
+};
+
+module_pcmcia_driver(softingcs_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("softing CANcard driver"
 		", links PCMCIA card to softing driver");

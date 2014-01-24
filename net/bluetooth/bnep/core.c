@@ -26,6 +26,10 @@
 */
 
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/interrupt.h>
 
 #include <linux/kernel.h>
@@ -52,13 +56,40 @@
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
 #include <net/bluetooth/l2cap.h>
+=======
+#include <linux/kthread.h>
+#include <linux/file.h>
+#include <linux/etherdevice.h>
+#include <asm/unaligned.h>
+
+#include <net/bluetooth/bluetooth.h>
+#include <net/bluetooth/l2cap.h>
+#include <net/bluetooth/hci_core.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "bnep.h"
 
 #define VERSION "1.3"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* As this feature is dummy for BNEP net device
+** disabling support */
+#undef CONFIG_BT_BNEP_MC_FILTER
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static bool compress_src = 1;
 static bool compress_dst = 1;
+=======
+
+<<<<<<< HEAD
+static bool compress_src = true;
+static bool compress_dst = true;
+>>>>>>> refs/remotes/origin/master
+=======
+static bool compress_src = 1;
+static bool compress_dst = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static LIST_HEAD(bnep_session_list);
 static DECLARE_RWSEM(bnep_session_sem);
@@ -66,6 +97,10 @@ static DECLARE_RWSEM(bnep_session_sem);
 static struct bnep_session *__bnep_get_session(u8 *dst)
 {
 	struct bnep_session *s;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct list_head *p;
 
 	BT_DBG("");
@@ -75,22 +110,50 @@ static struct bnep_session *__bnep_get_session(u8 *dst)
 		if (!compare_ether_addr(dst, s->eh.h_source))
 			return s;
 	}
+<<<<<<< HEAD
+=======
+
+	BT_DBG("");
+
+	list_for_each_entry(s, &bnep_session_list, list)
+		if (ether_addr_equal(dst, s->eh.h_source))
+			return s;
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return NULL;
 }
 
 static void __bnep_link_session(struct bnep_session *s)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* It's safe to call __module_get() here because sessions are added
 	   by the socket layer which has to hold the reference to this module.
 	 */
 	__module_get(THIS_MODULE);
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	list_add(&s->list, &bnep_session_list);
 }
 
 static void __bnep_unlink_session(struct bnep_session *s)
 {
 	list_del(&s->list);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	module_put(THIS_MODULE);
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	module_put(THIS_MODULE);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int bnep_send(struct bnep_session *s, void *data, size_t len)
@@ -207,8 +270,12 @@ static int bnep_ctrl_set_mcfilter(struct bnep_session *s, u8 *data, int len)
 			a2 = data;
 			data += ETH_ALEN;
 
+<<<<<<< HEAD
 			BT_DBG("mc filter %s -> %s",
 				batostr((void *) a1), batostr((void *) a2));
+=======
+			BT_DBG("mc filter %pMR -> %pMR", a1, a2);
+>>>>>>> refs/remotes/origin/master
 
 			/* Iterate from a1 to a2 */
 			set_bit(bnep_mc_hash(a1), (ulong *) &s->mc_filter);
@@ -314,7 +381,11 @@ static u8 __bnep_rx_hlen[] = {
 	ETH_ALEN + 2  /* BNEP_COMPRESSED_DST_ONLY */
 };
 
+<<<<<<< HEAD
 static inline int bnep_rx_frame(struct bnep_session *s, struct sk_buff *skb)
+=======
+static int bnep_rx_frame(struct bnep_session *s, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = s->dev;
 	struct sk_buff *nskb;
@@ -348,7 +419,11 @@ static inline int bnep_rx_frame(struct bnep_session *s, struct sk_buff *skb)
 	}
 
 	/* Strip 802.1p header */
+<<<<<<< HEAD
 	if (ntohs(s->eh.h_proto) == 0x8100) {
+=======
+	if (ntohs(s->eh.h_proto) == ETH_P_8021Q) {
+>>>>>>> refs/remotes/origin/master
 		if (!skb_pull(skb, 4))
 			goto badframe;
 		s->eh.h_proto = get_unaligned((__be16 *) (skb->data - 2));
@@ -412,7 +487,11 @@ static u8 __bnep_tx_types[] = {
 	BNEP_COMPRESSED
 };
 
+<<<<<<< HEAD
 static inline int bnep_tx_frame(struct bnep_session *s, struct sk_buff *skb)
+=======
+static int bnep_tx_frame(struct bnep_session *s, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ethhdr *eh = (void *) skb->data;
 	struct socket *sock = s->sock;
@@ -430,10 +509,17 @@ static inline int bnep_tx_frame(struct bnep_session *s, struct sk_buff *skb)
 	iv[il++] = (struct kvec) { &type, 1 };
 	len++;
 
+<<<<<<< HEAD
 	if (compress_src && !compare_ether_addr(eh->h_dest, s->eh.h_source))
 		type |= 0x01;
 
 	if (compress_dst && !compare_ether_addr(eh->h_source, s->eh.h_dest))
+=======
+	if (compress_src && ether_addr_equal(eh->h_dest, s->eh.h_source))
+		type |= 0x01;
+
+	if (compress_dst && ether_addr_equal(eh->h_source, s->eh.h_dest))
+>>>>>>> refs/remotes/origin/master
 		type |= 0x02;
 
 	if (type)
@@ -510,7 +596,15 @@ static int bnep_session(void *arg)
 
 		schedule();
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set_current_state(TASK_RUNNING);
+=======
+	__set_current_state(TASK_RUNNING);
+>>>>>>> refs/remotes/origin/master
+=======
+	set_current_state(TASK_RUNNING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	remove_wait_queue(sk_sleep(sk), &wait);
 
 	/* Cleanup session */
@@ -531,11 +625,19 @@ static int bnep_session(void *arg)
 
 	up_write(&bnep_session_sem);
 	free_netdev(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	module_put_and_exit(0);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static struct device *bnep_get_device(struct bnep_session *session)
 {
+<<<<<<< HEAD
 	bdaddr_t *src = &bt_sk(session->sock->sk)->src;
 	bdaddr_t *dst = &bt_sk(session->sock->sk)->dst;
 	struct hci_dev *hdev;
@@ -550,6 +652,15 @@ static struct device *bnep_get_device(struct bnep_session *session)
 	hci_dev_put(hdev);
 
 	return conn ? &conn->dev : NULL;
+=======
+	struct hci_conn *conn;
+
+	conn = l2cap_pi(session->sock->sk)->chan->conn->hcon;
+	if (!conn)
+		return NULL;
+
+	return &conn->dev;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct device_type bnep_type = {
@@ -565,8 +676,13 @@ int bnep_add_connection(struct bnep_connadd_req *req, struct socket *sock)
 
 	BT_DBG("");
 
+<<<<<<< HEAD
 	baswap((void *) dst, &bt_sk(sock->sk)->dst);
 	baswap((void *) src, &bt_sk(sock->sk)->src);
+=======
+	baswap((void *) dst, &l2cap_pi(sock->sk)->chan->dst);
+	baswap((void *) src, &l2cap_pi(sock->sk)->chan->src);
+>>>>>>> refs/remotes/origin/master
 
 	/* session struct allocated as private part of net_device */
 	dev = alloc_netdev(sizeof(struct bnep_session),
@@ -617,9 +733,23 @@ int bnep_add_connection(struct bnep_connadd_req *req, struct socket *sock)
 
 	__bnep_link_session(s);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	s->task = kthread_run(bnep_session, s, "kbnepd %s", dev->name);
 	if (IS_ERR(s->task)) {
 		/* Session thread start failed, gotta cleanup. */
+=======
+	__module_get(THIS_MODULE);
+	s->task = kthread_run(bnep_session, s, "kbnepd %s", dev->name);
+	if (IS_ERR(s->task)) {
+		/* Session thread start failed, gotta cleanup. */
+		module_put(THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
+=======
+	s->task = kthread_run(bnep_session, s, "kbnepd %s", dev->name);
+	if (IS_ERR(s->task)) {
+		/* Session thread start failed, gotta cleanup. */
+>>>>>>> refs/remotes/origin/cm-11.0
 		unregister_netdev(dev);
 		__bnep_unlink_session(s);
 		err = PTR_ERR(s->task);
@@ -668,17 +798,40 @@ static void __bnep_copy_ci(struct bnep_conninfo *ci, struct bnep_session *s)
 
 int bnep_get_connlist(struct bnep_connlist_req *req)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head *p;
+=======
+	struct bnep_session *s;
+>>>>>>> refs/remotes/origin/master
+=======
+	struct list_head *p;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int err = 0, n = 0;
 
 	down_read(&bnep_session_sem);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each(p, &bnep_session_list) {
 		struct bnep_session *s;
 		struct bnep_conninfo ci;
 
 		s = list_entry(p, struct bnep_session, list);
 
+=======
+	list_for_each_entry(s, &bnep_session_list, list) {
+		struct bnep_conninfo ci;
+
+>>>>>>> refs/remotes/origin/master
+=======
+	list_for_each(p, &bnep_session_list) {
+		struct bnep_session *s;
+		struct bnep_conninfo ci;
+
+		s = list_entry(p, struct bnep_session, list);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		__bnep_copy_ci(&ci, s);
 
 		if (copy_to_user(req->ci, &ci, sizeof(ci))) {

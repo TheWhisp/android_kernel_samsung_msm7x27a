@@ -1074,6 +1074,14 @@ static const struct oxygen_model model_xonar_st = {
 	.device_config = PLAYBACK_0_TO_I2S |
 			 PLAYBACK_1_TO_SPDIF |
 			 CAPTURE_0_FROM_I2S_2 |
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			 CAPTURE_1_FROM_SPDIF |
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 CAPTURE_1_FROM_SPDIF |
+>>>>>>> refs/remotes/origin/master
 			 AC97_FMIC_SWITCH,
 	.dac_channels_pcm = 2,
 	.dac_channels_mixer = 2,
@@ -1086,8 +1094,13 @@ static const struct oxygen_model model_xonar_st = {
 	.adc_i2s_format = OXYGEN_I2S_FORMAT_LJUST,
 };
 
+<<<<<<< HEAD
 int __devinit get_xonar_pcm179x_model(struct oxygen *chip,
 				      const struct pci_device_id *id)
+=======
+int get_xonar_pcm179x_model(struct oxygen *chip,
+			    const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (id->subdevice) {
 	case 0x8269:

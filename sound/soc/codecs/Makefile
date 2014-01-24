@@ -1,9 +1,20 @@
 snd-soc-88pm860x-objs := 88pm860x-codec.o
+<<<<<<< HEAD
+=======
+snd-soc-ab8500-codec-objs := ab8500-codec.o
+>>>>>>> refs/remotes/origin/master
 snd-soc-ac97-objs := ac97.o
 snd-soc-ad1836-objs := ad1836.o
 snd-soc-ad193x-objs := ad193x.o
 snd-soc-ad1980-objs := ad1980.o
 snd-soc-ad73311-objs := ad73311.o
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+snd-soc-adau1701-objs := adau1701.o
+snd-soc-adau1373-objs := adau1373.o
+snd-soc-adav80x-objs := adav80x.o
+>>>>>>> refs/remotes/origin/cm-10.0
 snd-soc-ads117x-objs := ads117x.o
 snd-soc-ak4104-objs := ak4104.o
 snd-soc-ak4535-objs := ak4535.o
@@ -12,23 +23,105 @@ snd-soc-ak4642-objs := ak4642.o
 snd-soc-ak4671-objs := ak4671.o
 snd-soc-cq93vc-objs := cq93vc.o
 snd-soc-cs42l51-objs := cs42l51.o
+<<<<<<< HEAD
+=======
+snd-soc-cs42l73-objs := cs42l73.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+snd-soc-adau1701-objs := adau1701.o
+snd-soc-adau1373-objs := adau1373.o
+snd-soc-adav80x-objs := adav80x.o
+snd-soc-ads117x-objs := ads117x.o
+snd-soc-ak4104-objs := ak4104.o
+snd-soc-ak4535-objs := ak4535.o
+snd-soc-ak4554-objs := ak4554.o
+snd-soc-ak4641-objs := ak4641.o
+snd-soc-ak4642-objs := ak4642.o
+snd-soc-ak4671-objs := ak4671.o
+snd-soc-ak5386-objs := ak5386.o
+snd-soc-arizona-objs := arizona.o
+snd-soc-cq93vc-objs := cq93vc.o
+snd-soc-cs42l51-objs := cs42l51.o
+snd-soc-cs42l52-objs := cs42l52.o
+snd-soc-cs42l73-objs := cs42l73.o
+>>>>>>> refs/remotes/origin/master
 snd-soc-cs4270-objs := cs4270.o
 snd-soc-cs4271-objs := cs4271.o
 snd-soc-cx20442-objs := cx20442.o
 snd-soc-da7210-objs := da7210.o
+<<<<<<< HEAD
 snd-soc-dfbmcs320-objs := dfbmcs320.o
 snd-soc-dmic-objs := dmic.o
+<<<<<<< HEAD
 snd-soc-l3-objs := l3.o
+=======
+snd-soc-jz4740-codec-objs := jz4740.o
+snd-soc-l3-objs := l3.o
+snd-soc-lm4857-objs := lm4857.o
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 snd-soc-max98088-objs := max98088.o
 snd-soc-max98095-objs := max98095.o
 snd-soc-max9850-objs := max9850.o
 snd-soc-pcm3008-objs := pcm3008.o
+<<<<<<< HEAD
 snd-soc-sgtl5000-objs := sgtl5000.o
 snd-soc-alc5623-objs := alc5623.o
 snd-soc-sn95031-objs := sn95031.o
 snd-soc-spdif-objs := spdif_transciever.o
 snd-soc-ssm2602-objs := ssm2602.o
+=======
+snd-soc-rt5631-objs := rt5631.o
+=======
+snd-soc-da7213-objs := da7213.o
+snd-soc-da732x-objs := da732x.o
+snd-soc-da9055-objs := da9055.o
+snd-soc-bt-sco-objs := bt-sco.o
+snd-soc-dmic-objs := dmic.o
+snd-soc-isabelle-objs := isabelle.o
+snd-soc-jz4740-codec-objs := jz4740.o
+snd-soc-l3-objs := l3.o
+snd-soc-lm4857-objs := lm4857.o
+snd-soc-lm49453-objs := lm49453.o
+snd-soc-max9768-objs := max9768.o
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+snd-soc-max98088-objs := max98088.o
+snd-soc-max98090-objs := max98090.o
+snd-soc-max98095-objs := max98095.o
+snd-soc-max9850-objs := max9850.o
+snd-soc-mc13783-objs := mc13783.o
+snd-soc-ml26124-objs := ml26124.o
+snd-soc-hdmi-codec-objs := hdmi.o
+snd-soc-pcm1681-objs := pcm1681.o
+snd-soc-pcm1792a-codec-objs := pcm1792a.o
+snd-soc-pcm3008-objs := pcm3008.o
+snd-soc-rt5631-objs := rt5631.o
+snd-soc-rt5640-objs := rt5640.o
+>>>>>>> refs/remotes/origin/master
+snd-soc-sgtl5000-objs := sgtl5000.o
+snd-soc-alc5623-objs := alc5623.o
+snd-soc-alc5632-objs := alc5632.o
+snd-soc-sigmadsp-objs := sigmadsp.o
+<<<<<<< HEAD
+snd-soc-sn95031-objs := sn95031.o
+snd-soc-spdif-objs := spdif_transciever.o
+snd-soc-ssm2602-objs := ssm2602.o
+snd-soc-sta32x-objs := sta32x.o
+>>>>>>> refs/remotes/origin/cm-10.0
 snd-soc-stac9766-objs := stac9766.o
+=======
+snd-soc-si476x-objs := si476x.o
+snd-soc-sn95031-objs := sn95031.o
+snd-soc-spdif-tx-objs := spdif_transmitter.o
+snd-soc-spdif-rx-objs := spdif_receiver.o
+snd-soc-ssm2518-objs := ssm2518.o
+snd-soc-ssm2602-objs := ssm2602.o
+snd-soc-sta32x-objs := sta32x.o
+snd-soc-sta529-objs := sta529.o
+snd-soc-stac9766-objs := stac9766.o
+snd-soc-tas5086-objs := tas5086.o
+>>>>>>> refs/remotes/origin/master
 snd-soc-tlv320aic23-objs := tlv320aic23.o
 snd-soc-tlv320aic26-objs := tlv320aic26.o
 snd-soc-tlv320aic3x-objs := tlv320aic3x.o
@@ -38,9 +131,38 @@ snd-soc-twl4030-objs := twl4030.o
 snd-soc-twl6040-objs := twl6040.o
 snd-soc-uda134x-objs := uda134x.o
 snd-soc-uda1380-objs := uda1380.o
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 snd-soc-wcd9310-objs := wcd9310.o wcd9310-tables.o
+=======
+snd-soc-wcd9304-objs := wcd9304.o wcd9304-tables.o
+snd-soc-wcd9310-objs := wcd9310.o wcd9310-tables.o
+snd-soc-cs8427-objs := cs8427.o
+snd-soc-wcd9320-objs := wcd9320.o wcd9320-tables.o
+>>>>>>> refs/remotes/origin/cm-11.0
 snd-soc-wl1273-objs := wl1273.o
 snd-soc-wm1250-ev1-objs := wm1250-ev1.o
+=======
+snd-soc-wcd9304-objs := wcd9304.o wcd9304-tables.o
+snd-soc-wcd9310-objs := wcd9310.o wcd9310-tables.o
+snd-soc-cs8427-objs := cs8427.o
+snd-soc-wcd9320-objs := wcd9320.o wcd9320-tables.o
+snd-soc-wl1273-objs := wl1273.o
+snd-soc-wm1250-ev1-objs := wm1250-ev1.o
+snd-soc-wm2000-objs := wm2000.o
+snd-soc-wm5100-objs := wm5100.o wm5100-tables.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+snd-soc-wl1273-objs := wl1273.o
+snd-soc-wm-adsp-objs := wm_adsp.o
+snd-soc-wm0010-objs := wm0010.o
+snd-soc-wm1250-ev1-objs := wm1250-ev1.o
+snd-soc-wm2000-objs := wm2000.o
+snd-soc-wm5100-objs := wm5100.o wm5100-tables.o
+snd-soc-wm5102-objs := wm5102.o
+snd-soc-wm5110-objs := wm5110.o
+>>>>>>> refs/remotes/origin/master
 snd-soc-wm8350-objs := wm8350.o
 snd-soc-wm8400-objs := wm8400.o
 snd-soc-wm8510-objs := wm8510.o
@@ -56,11 +178,27 @@ snd-soc-wm8750-objs := wm8750.o
 snd-soc-wm8753-objs := wm8753.o
 snd-soc-wm8770-objs := wm8770.o
 snd-soc-wm8776-objs := wm8776.o
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+snd-soc-wm8782-objs := wm8782.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+snd-soc-wm8782-objs := wm8782.o
+>>>>>>> refs/remotes/origin/master
 snd-soc-wm8804-objs := wm8804.o
 snd-soc-wm8900-objs := wm8900.o
 snd-soc-wm8903-objs := wm8903.o
 snd-soc-wm8904-objs := wm8904.o
+<<<<<<< HEAD
+<<<<<<< HEAD
 snd-soc-wm8915-objs := wm8915.o
+=======
+snd-soc-wm8996-objs := wm8996.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+snd-soc-wm8996-objs := wm8996.o
+>>>>>>> refs/remotes/origin/master
 snd-soc-wm8940-objs := wm8940.o
 snd-soc-wm8955-objs := wm8955.o
 snd-soc-wm8960-objs := wm8960.o
@@ -69,18 +207,43 @@ snd-soc-wm8962-objs := wm8962.o
 snd-soc-wm8971-objs := wm8971.o
 snd-soc-wm8974-objs := wm8974.o
 snd-soc-wm8978-objs := wm8978.o
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+snd-soc-wm8983-objs := wm8983.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+snd-soc-wm8983-objs := wm8983.o
+>>>>>>> refs/remotes/origin/master
 snd-soc-wm8985-objs := wm8985.o
 snd-soc-wm8988-objs := wm8988.o
 snd-soc-wm8990-objs := wm8990.o
 snd-soc-wm8991-objs := wm8991.o
 snd-soc-wm8993-objs := wm8993.o
+<<<<<<< HEAD
+<<<<<<< HEAD
 snd-soc-wm8994-objs := wm8994.o wm8994-tables.o wm8958-dsp2.o
 snd-soc-wm8995-objs := wm8995.o
 snd-soc-wm9081-objs := wm9081.o
+=======
+snd-soc-wm8994-objs := wm8994.o wm8958-dsp2.o
+snd-soc-wm8995-objs := wm8995.o
+snd-soc-wm9081-objs := wm9081.o
+snd-soc-wm9090-objs := wm9090.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+snd-soc-wm8994-objs := wm8994.o wm8958-dsp2.o
+snd-soc-wm8995-objs := wm8995.o
+snd-soc-wm8997-objs := wm8997.o
+snd-soc-wm9081-objs := wm9081.o
+snd-soc-wm9090-objs := wm9090.o
+>>>>>>> refs/remotes/origin/master
 snd-soc-wm9705-objs := wm9705.o
 snd-soc-wm9712-objs := wm9712.o
 snd-soc-wm9713-objs := wm9713.o
 snd-soc-wm-hubs-objs := wm_hubs.o
+<<<<<<< HEAD
+<<<<<<< HEAD
 snd-soc-jz4740-codec-objs := jz4740.o
 snd-soc-timpani-objs := timpani.o
 snd-soc-msm-stub-objs := msm_stub.o
@@ -90,13 +253,37 @@ snd-soc-max9877-objs := max9877.o
 snd-soc-tpa6130a2-objs := tpa6130a2.o
 snd-soc-wm2000-objs := wm2000.o
 snd-soc-wm9090-objs := wm9090.o
+=======
+
+snd-soc-timpani-objs := timpani.o
+snd-soc-msm-stub-objs := msm_stub.o
+# Amp
+snd-soc-max9877-objs := max9877.o
+snd-soc-tpa6130a2-objs := tpa6130a2.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 obj-$(CONFIG_SND_SOC_88PM860X)	+= snd-soc-88pm860x.o
+=======
+
+# Amp
+snd-soc-max9877-objs := max9877.o
+snd-soc-tpa6130a2-objs := tpa6130a2.o
+
+obj-$(CONFIG_SND_SOC_88PM860X)	+= snd-soc-88pm860x.o
+obj-$(CONFIG_SND_SOC_AB8500_CODEC)	+= snd-soc-ab8500-codec.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
 obj-$(CONFIG_SND_SOC_AD1836)	+= snd-soc-ad1836.o
 obj-$(CONFIG_SND_SOC_AD193X)	+= snd-soc-ad193x.o
 obj-$(CONFIG_SND_SOC_AD1980)	+= snd-soc-ad1980.o
 obj-$(CONFIG_SND_SOC_AD73311) += snd-soc-ad73311.o
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SND_SOC_ADAU1373)	+= snd-soc-adau1373.o
+obj-$(CONFIG_SND_SOC_ADAU1701)  += snd-soc-adau1701.o
+obj-$(CONFIG_SND_SOC_ADAV80X)  += snd-soc-adav80x.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_SND_SOC_ADS117X)	+= snd-soc-ads117x.o
 obj-$(CONFIG_SND_SOC_AK4104)	+= snd-soc-ak4104.o
 obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
@@ -104,37 +291,150 @@ obj-$(CONFIG_SND_SOC_AK4641)	+= snd-soc-ak4641.o
 obj-$(CONFIG_SND_SOC_AK4642)	+= snd-soc-ak4642.o
 obj-$(CONFIG_SND_SOC_AK4671)	+= snd-soc-ak4671.o
 obj-$(CONFIG_SND_SOC_ALC5623)    += snd-soc-alc5623.o
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
 obj-$(CONFIG_SND_SOC_CS42L51)	+= snd-soc-cs42l51.o
+=======
+obj-$(CONFIG_SND_SOC_ALC5632)	+= snd-soc-alc5632.o
+obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
+obj-$(CONFIG_SND_SOC_CS42L51)	+= snd-soc-cs42l51.o
+obj-$(CONFIG_SND_SOC_CS42L73)	+= snd-soc-cs42l73.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_SND_SOC_ADAU1373)	+= snd-soc-adau1373.o
+obj-$(CONFIG_SND_SOC_ADAU1701)  += snd-soc-adau1701.o
+obj-$(CONFIG_SND_SOC_ADAV80X)  += snd-soc-adav80x.o
+obj-$(CONFIG_SND_SOC_ADS117X)	+= snd-soc-ads117x.o
+obj-$(CONFIG_SND_SOC_AK4104)	+= snd-soc-ak4104.o
+obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
+obj-$(CONFIG_SND_SOC_AK4554)	+= snd-soc-ak4554.o
+obj-$(CONFIG_SND_SOC_AK4641)	+= snd-soc-ak4641.o
+obj-$(CONFIG_SND_SOC_AK4642)	+= snd-soc-ak4642.o
+obj-$(CONFIG_SND_SOC_AK4671)	+= snd-soc-ak4671.o
+obj-$(CONFIG_SND_SOC_AK5386)	+= snd-soc-ak5386.o
+obj-$(CONFIG_SND_SOC_ALC5623)    += snd-soc-alc5623.o
+obj-$(CONFIG_SND_SOC_ALC5632)	+= snd-soc-alc5632.o
+obj-$(CONFIG_SND_SOC_ARIZONA)	+= snd-soc-arizona.o
+obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
+obj-$(CONFIG_SND_SOC_CS42L51)	+= snd-soc-cs42l51.o
+obj-$(CONFIG_SND_SOC_CS42L52)	+= snd-soc-cs42l52.o
+obj-$(CONFIG_SND_SOC_CS42L73)	+= snd-soc-cs42l73.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
 obj-$(CONFIG_SND_SOC_CS4271)	+= snd-soc-cs4271.o
 obj-$(CONFIG_SND_SOC_CX20442)	+= snd-soc-cx20442.o
 obj-$(CONFIG_SND_SOC_DA7210)	+= snd-soc-da7210.o
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_DFBMCS320)	+= snd-soc-dfbmcs320.o
 obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
 obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SND_SOC_LM4857)	+= snd-soc-lm4857.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
 obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
 obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
 obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
 obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
 obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
 obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif.o
 obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
+=======
+obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
+obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
+obj-$(CONFIG_SND_SOC_SIGMADSP)	+= snd-soc-sigmadsp.o
+obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
+obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif.o
+obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
+obj-$(CONFIG_SND_SOC_STA32X)   += snd-soc-sta32x.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
 obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
 obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
 obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_TVL320AIC32X4)     += snd-soc-tlv320aic32x4.o
+=======
+obj-$(CONFIG_SND_SOC_TLV320AIC32X4)     += snd-soc-tlv320aic32x4.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_SND_SOC_DA7213)	+= snd-soc-da7213.o
+obj-$(CONFIG_SND_SOC_DA732X)	+= snd-soc-da732x.o
+obj-$(CONFIG_SND_SOC_DA9055)	+= snd-soc-da9055.o
+obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
+obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
+obj-$(CONFIG_SND_SOC_ISABELLE)	+= snd-soc-isabelle.o
+obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
+obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
+obj-$(CONFIG_SND_SOC_LM4857)	+= snd-soc-lm4857.o
+obj-$(CONFIG_SND_SOC_LM49453)   += snd-soc-lm49453.o
+obj-$(CONFIG_SND_SOC_MAX9768)	+= snd-soc-max9768.o
+obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
+obj-$(CONFIG_SND_SOC_MAX98090)	+= snd-soc-max98090.o
+obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
+obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
+obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
+obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
+obj-$(CONFIG_SND_SOC_HDMI_CODEC) += snd-soc-hdmi-codec.o
+obj-$(CONFIG_SND_SOC_PCM1681)	+= snd-soc-pcm1681.o
+obj-$(CONFIG_SND_SOC_PCM1792A)	+= snd-soc-pcm1792a-codec.o
+obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
+obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
+obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
+obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
+obj-$(CONFIG_SND_SOC_SIGMADSP)	+= snd-soc-sigmadsp.o
+obj-$(CONFIG_SND_SOC_SI476X)	+= snd-soc-si476x.o
+obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
+obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif-rx.o snd-soc-spdif-tx.o
+obj-$(CONFIG_SND_SOC_SSM2518)	+= snd-soc-ssm2518.o
+obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
+obj-$(CONFIG_SND_SOC_STA32X)   += snd-soc-sta32x.o
+obj-$(CONFIG_SND_SOC_STA529)   += snd-soc-sta529.o
+obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
+obj-$(CONFIG_SND_SOC_TAS5086)	+= snd-soc-tas5086.o
+obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
+obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
+obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
+obj-$(CONFIG_SND_SOC_TLV320AIC32X4)     += snd-soc-tlv320aic32x4.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SND_SOC_TLV320DAC33)	+= snd-soc-tlv320dac33.o
 obj-$(CONFIG_SND_SOC_TWL4030)	+= snd-soc-twl4030.o
 obj-$(CONFIG_SND_SOC_TWL6040)	+= snd-soc-twl6040.o
 obj-$(CONFIG_SND_SOC_UDA134X)	+= snd-soc-uda134x.o
 obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_WCD9310)	+= snd-soc-wcd9310.o
 obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
 obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+obj-$(CONFIG_SND_SOC_WCD9304)	+= snd-soc-wcd9304.o
+obj-$(CONFIG_SND_SOC_WCD9310)	+= snd-soc-wcd9310.o
+obj-$(CONFIG_SND_SOC_CS8427)	+= snd-soc-cs8427.o
+obj-$(CONFIG_SND_SOC_WCD9320)	+= snd-soc-wcd9320.o
+<<<<<<< HEAD
+obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
+obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
+obj-$(CONFIG_SND_SOC_WM2000)	+= snd-soc-wm2000.o
+obj-$(CONFIG_SND_SOC_WM5100)	+= snd-soc-wm5100.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
+obj-$(CONFIG_SND_SOC_WM0010)	+= snd-soc-wm0010.o
+obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
+obj-$(CONFIG_SND_SOC_WM2000)	+= snd-soc-wm2000.o
+obj-$(CONFIG_SND_SOC_WM5100)	+= snd-soc-wm5100.o
+obj-$(CONFIG_SND_SOC_WM5102)	+= snd-soc-wm5102.o
+obj-$(CONFIG_SND_SOC_WM5110)	+= snd-soc-wm5110.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SND_SOC_WM8350)	+= snd-soc-wm8350.o
 obj-$(CONFIG_SND_SOC_WM8400)	+= snd-soc-wm8400.o
 obj-$(CONFIG_SND_SOC_WM8510)	+= snd-soc-wm8510.o
@@ -150,11 +450,27 @@ obj-$(CONFIG_SND_SOC_WM8750)	+= snd-soc-wm8750.o
 obj-$(CONFIG_SND_SOC_WM8753)	+= snd-soc-wm8753.o
 obj-$(CONFIG_SND_SOC_WM8770)	+= snd-soc-wm8770.o
 obj-$(CONFIG_SND_SOC_WM8776)	+= snd-soc-wm8776.o
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SND_SOC_WM8782)	+= snd-soc-wm8782.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_SND_SOC_WM8782)	+= snd-soc-wm8782.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SND_SOC_WM8804)	+= snd-soc-wm8804.o
 obj-$(CONFIG_SND_SOC_WM8900)	+= snd-soc-wm8900.o
 obj-$(CONFIG_SND_SOC_WM8903)	+= snd-soc-wm8903.o
 obj-$(CONFIG_SND_SOC_WM8904)	+= snd-soc-wm8904.o
+<<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_WM8915)	+= snd-soc-wm8915.o
+=======
+obj-$(CONFIG_SND_SOC_WM8996)	+= snd-soc-wm8996.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_SND_SOC_WM8996)	+= snd-soc-wm8996.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SND_SOC_WM8940)	+= snd-soc-wm8940.o
 obj-$(CONFIG_SND_SOC_WM8955)	+= snd-soc-wm8955.o
 obj-$(CONFIG_SND_SOC_WM8960)	+= snd-soc-wm8960.o
@@ -163,6 +479,14 @@ obj-$(CONFIG_SND_SOC_WM8962)	+= snd-soc-wm8962.o
 obj-$(CONFIG_SND_SOC_WM8971)	+= snd-soc-wm8971.o
 obj-$(CONFIG_SND_SOC_WM8974)	+= snd-soc-wm8974.o
 obj-$(CONFIG_SND_SOC_WM8978)	+= snd-soc-wm8978.o
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SND_SOC_WM8983)	+= snd-soc-wm8983.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_SND_SOC_WM8983)	+= snd-soc-wm8983.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SND_SOC_WM8985)	+= snd-soc-wm8985.o
 obj-$(CONFIG_SND_SOC_WM8988)	+= snd-soc-wm8988.o
 obj-$(CONFIG_SND_SOC_WM8990)	+= snd-soc-wm8990.o
@@ -170,7 +494,12 @@ obj-$(CONFIG_SND_SOC_WM8991)	+= snd-soc-wm8991.o
 obj-$(CONFIG_SND_SOC_WM8993)	+= snd-soc-wm8993.o
 obj-$(CONFIG_SND_SOC_WM8994)	+= snd-soc-wm8994.o
 obj-$(CONFIG_SND_SOC_WM8995)	+= snd-soc-wm8995.o
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_WM9081)	+= snd-soc-wm9081.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SND_SOC_WM9090)	+= snd-soc-wm9090.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_SND_SOC_WM9705)	+= snd-soc-wm9705.o
 obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
 obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
@@ -178,8 +507,28 @@ obj-$(CONFIG_SND_SOC_WM_HUBS)	+= snd-soc-wm-hubs.o
 obj-$(CONFIG_SND_SOC_MSM_STUB)  += snd-soc-msm-stub.o
 
 # Amp
+<<<<<<< HEAD
 obj-$(CONFIG_SND_SOC_LM4857)	+= snd-soc-lm4857.o
 obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
 obj-$(CONFIG_SND_SOC_TPA6130A2)	+= snd-soc-tpa6130a2.o
 obj-$(CONFIG_SND_SOC_WM2000)	+= snd-soc-wm2000.o
 obj-$(CONFIG_SND_SOC_WM9090)	+= snd-soc-wm9090.o
+=======
+obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
+obj-$(CONFIG_SND_SOC_TPA6130A2)	+= snd-soc-tpa6130a2.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_SND_SOC_WM8997)	+= snd-soc-wm8997.o
+obj-$(CONFIG_SND_SOC_WM9081)	+= snd-soc-wm9081.o
+obj-$(CONFIG_SND_SOC_WM9090)	+= snd-soc-wm9090.o
+obj-$(CONFIG_SND_SOC_WM9705)	+= snd-soc-wm9705.o
+obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
+obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
+obj-$(CONFIG_SND_SOC_WM_ADSP)	+= snd-soc-wm-adsp.o
+obj-$(CONFIG_SND_SOC_WM_HUBS)	+= snd-soc-wm-hubs.o
+obj-$(CONFIG_SND_SOC_MSM_STUB)  += snd-soc-msm-stub.o
+
+# Amp
+obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
+obj-$(CONFIG_SND_SOC_TPA6130A2)	+= snd-soc-tpa6130a2.o
+>>>>>>> refs/remotes/origin/master

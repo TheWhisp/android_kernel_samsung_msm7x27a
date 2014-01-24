@@ -17,11 +17,28 @@
 
 #include <linux/irq.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct sys_device;
+=======
+struct device;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_PM
 
 extern __init int s3c_pm_init(void);
+<<<<<<< HEAD
+=======
+extern __init int s3c64xx_pm_init(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct device;
+
+#ifdef CONFIG_SAMSUNG_PM
+
+extern __init int s3c_pm_init(void);
+extern __init int s3c64xx_pm_init(void);
+>>>>>>> refs/remotes/origin/master
 
 #else
 
@@ -29,6 +46,20 @@ static inline int s3c_pm_init(void)
 {
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static inline int s3c64xx_pm_init(void)
+{
+	return 0;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* configuration for the IRQ mask over sleep */
@@ -42,7 +73,15 @@ extern unsigned long s3c_irqwake_eintallow;
 /* per-cpu sleep functions */
 
 extern void (*pm_cpu_prep)(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void (*pm_cpu_sleep)(void);
+=======
+extern int (*pm_cpu_sleep)(unsigned long);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int (*pm_cpu_sleep)(unsigned long);
+>>>>>>> refs/remotes/origin/master
 
 /* Flags for PM Control */
 
@@ -52,10 +91,20 @@ extern unsigned char pm_uart_udivslot;  /* true to save UART UDIVSLOT */
 
 /* from sleep.S */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int  s3c_cpu_save(unsigned long *saveblk, long);
 extern void s3c_cpu_resume(void);
 
 extern void s3c2410_cpu_suspend(void);
+=======
+extern void s3c_cpu_resume(void);
+
+extern int s3c2410_cpu_suspend(unsigned long);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int s3c2410_cpu_suspend(unsigned long);
+>>>>>>> refs/remotes/origin/master
 
 /* sleep save info */
 
@@ -101,6 +150,7 @@ extern void s3c_pm_do_save(struct sleep_save *ptr, int count);
 extern void s3c_pm_do_restore(struct sleep_save *ptr, int count);
 extern void s3c_pm_do_restore_core(struct sleep_save *ptr, int count);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 extern int s3c_irqext_wake(struct irq_data *data, unsigned int state);
 extern int s3c24xx_irq_suspend(void);
@@ -113,6 +163,18 @@ extern void s3c24xx_irq_resume(void);
 
 extern struct syscore_ops s3c24xx_irq_syscore_ops;
 
+=======
+#ifdef CONFIG_SAMSUNG_PM
+extern int s3c_irq_wake(struct irq_data *data, unsigned int state);
+extern int s3c_irqext_wake(struct irq_data *data, unsigned int state);
+extern void s3c_cpu_resume(void);
+#else
+#define s3c_irq_wake NULL
+#define s3c_irqext_wake NULL
+#define s3c_cpu_resume NULL
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /* PM debug functions */
 
 #ifdef CONFIG_SAMSUNG_PM_DEBUG
@@ -165,13 +227,25 @@ extern void s3c_pm_check_store(void);
  */
 extern void s3c_pm_configure_extint(void);
 
+<<<<<<< HEAD
 /**
+<<<<<<< HEAD
  * s3c_pm_restore_gpios() - restore the state of the gpios after sleep.
+=======
+ * samsung_pm_restore_gpios() - restore the state of the gpios after sleep.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_GPIO_SAMSUNG
+/**
+ * samsung_pm_restore_gpios() - restore the state of the gpios after sleep.
+>>>>>>> refs/remotes/origin/master
  *
  * Restore the state of the GPIO pins after sleep, which may involve ensuring
  * that we do not glitch the state of the pins from that the bootloader's
  * resume code has done.
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void s3c_pm_restore_gpios(void);
 
 /**
@@ -180,6 +254,25 @@ extern void s3c_pm_restore_gpios(void);
  * Save the GPIO states for resotration on resume. See s3c_pm_restore_gpios().
  */
 extern void s3c_pm_save_gpios(void);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern void samsung_pm_restore_gpios(void);
+
+/**
+ * samsung_pm_save_gpios() - save the state of the GPIOs for restoring after sleep.
+ *
+ * Save the GPIO states for resotration on resume. See samsung_pm_restore_gpios().
+ */
+extern void samsung_pm_save_gpios(void);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else
+static inline void samsung_pm_restore_gpios(void) {}
+static inline void samsung_pm_save_gpios(void) {}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 extern void s3c_pm_save_core(void);
 extern void s3c_pm_restore_core(void);

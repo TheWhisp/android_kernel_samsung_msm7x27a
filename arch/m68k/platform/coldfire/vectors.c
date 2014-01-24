@@ -33,6 +33,8 @@ asmlinkage void dbginterrupt_c(struct frame *fp)
 
 /***************************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern e_vector	*_ramvec;
 
 void set_evector(int vecnum, void (*handler)(void))
@@ -43,13 +45,25 @@ void set_evector(int vecnum, void (*handler)(void))
 
 /***************************************************************************/
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Assembler routines */
 asmlinkage void buserr(void);
 asmlinkage void trap(void);
 asmlinkage void system_call(void);
 asmlinkage void inthandler(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __init init_vectors(void)
+=======
+void __init trap_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init trap_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 

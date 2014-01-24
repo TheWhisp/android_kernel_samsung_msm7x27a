@@ -18,6 +18,7 @@
 #ifndef _LINUX_IN_H
 #define _LINUX_IN_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/socket.h>
 
@@ -111,6 +112,10 @@ struct in_addr {
 #define MCAST_LEAVE_SOURCE_GROUP	47
 #define MCAST_MSFILTER			48
 #define IP_MULTICAST_ALL		49
+<<<<<<< HEAD
+=======
+#define IP_UNICAST_IF			50
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MCAST_EXCLUDE	0
 #define MCAST_INCLUDE	1
@@ -182,7 +187,11 @@ struct in_pktinfo {
 /* Structure describing an Internet (IP) socket address. */
 #define __SOCK_SIZE__	16		/* sizeof(struct sockaddr)	*/
 struct sockaddr_in {
+<<<<<<< HEAD
   sa_family_t		sin_family;	/* Address family		*/
+=======
+  __kernel_sa_family_t	sin_family;	/* Address family		*/
+>>>>>>> refs/remotes/origin/cm-10.0
   __be16		sin_port;	/* Port number			*/
   struct in_addr	sin_addr;	/* Internet address		*/
 
@@ -251,6 +260,11 @@ struct sockaddr_in {
 #ifdef __KERNEL__
 
 #include <linux/errno.h>
+=======
+
+#include <linux/errno.h>
+#include <uapi/linux/in.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline int proto_ports_offset(int proto)
 {
@@ -331,6 +345,9 @@ static inline bool ipv4_is_test_198(__be32 addr)
 {
 	return (addr & htonl(0xfffe0000)) == htonl(0xc6120000);
 }
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_IN_H */

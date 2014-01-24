@@ -34,11 +34,19 @@ struct of_flash_list {
 
 struct of_flash {
 	struct mtd_info		*cmtd;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct mtd_partition	*parts;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int list_size; /* number of elements in of_flash_list */
 	struct of_flash_list	list[0];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define OF_FLASH_PARTS(info)	((info)->parts)
 static int parse_obsolete_partitions(struct platform_device *dev,
 				     struct of_flash *info,
@@ -86,6 +94,10 @@ static int parse_obsolete_partitions(struct platform_device *dev,
 	return nr_parts;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int of_flash_remove(struct platform_device *dev)
 {
 	struct of_flash *info;
@@ -101,11 +113,21 @@ static int of_flash_remove(struct platform_device *dev)
 		mtd_concat_destroy(info->cmtd);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (info->cmtd) {
 		if (OF_FLASH_PARTS(info))
 			kfree(OF_FLASH_PARTS(info));
 		mtd_device_unregister(info->cmtd);
 	}
+=======
+	if (info->cmtd)
+		mtd_device_unregister(info->cmtd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (info->cmtd)
+		mtd_device_unregister(info->cmtd);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < info->list_size; i++) {
 		if (info->list[i].mtd)
@@ -119,6 +141,7 @@ static int of_flash_remove(struct platform_device *dev)
 			kfree(info->list[i].res);
 		}
 	}
+<<<<<<< HEAD
 
 	kfree(info);
 
@@ -130,12 +153,28 @@ static int of_flash_remove(struct platform_device *dev)
  * describing the type of flash probe necessary. */
 static struct mtd_info * __devinit obsolete_probe(struct platform_device *dev,
 						  struct map_info *map)
+=======
+	return 0;
+}
+
+static const char * const rom_probe_types[] = {
+	"cfi_probe", "jedec_probe", "map_rom" };
+
+/* Helper function to handle probing of the obsolete "direct-mapped"
+ * compatible binding, which has an extra "probe-type" property
+ * describing the type of flash probe necessary. */
+static struct mtd_info *obsolete_probe(struct platform_device *dev,
+				       struct map_info *map)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = dev->dev.of_node;
 	const char *of_probe;
 	struct mtd_info *mtd;
+<<<<<<< HEAD
 	static const char *rom_probe_types[]
 		= { "cfi_probe", "jedec_probe", "map_rom"};
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	dev_warn(&dev->dev, "Device tree uses obsolete \"direct-mapped\" "
@@ -165,8 +204,20 @@ static struct mtd_info * __devinit obsolete_probe(struct platform_device *dev,
    specifies the list of partition probers to use. If none is given then the
    default is use. These take precedence over other device tree
    information. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot", NULL };
+=======
+static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot",
+					"ofpart", "ofoldpart", NULL };
+>>>>>>> refs/remotes/origin/cm-10.0
 static const char ** __devinit of_get_probes(struct device_node *dp)
+=======
+static const char * const part_probe_types_def[] = {
+	"cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
+
+static const char * const *of_get_probes(struct device_node *dp)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *cp;
 	int cplen;
@@ -195,16 +246,26 @@ static const char ** __devinit of_get_probes(struct device_node *dp)
 	return res;
 }
 
+<<<<<<< HEAD
 static void __devinit of_free_probes(const char **probes)
+=======
+static void of_free_probes(const char * const *probes)
+>>>>>>> refs/remotes/origin/master
 {
 	if (probes != part_probe_types_def)
 		kfree(probes);
 }
 
 static struct of_device_id of_flash_match[];
+<<<<<<< HEAD
 static int __devinit of_flash_probe(struct platform_device *dev)
 {
 	const char **part_probe_types;
+=======
+static int of_flash_probe(struct platform_device *dev)
+{
+	const char * const *part_probe_types;
+>>>>>>> refs/remotes/origin/master
 	const struct of_device_id *match;
 	struct device_node *dp = dev->dev.of_node;
 	struct resource res;
@@ -218,6 +279,16 @@ static int __devinit of_flash_probe(struct platform_device *dev)
 	int reg_tuple_size;
 	struct mtd_info **mtd_list = NULL;
 	resource_size_t res_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct mtd_part_parser_data ppdata;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mtd_part_parser_data ppdata;
+	bool map_indirect;
+	const char *mtd_name = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	match = of_match_device(of_flash_match, &dev->dev);
 	if (!match)
@@ -226,6 +297,11 @@ static int __devinit of_flash_probe(struct platform_device *dev)
 
 	reg_tuple_size = (of_n_addr_cells(dp) + of_n_size_cells(dp)) * sizeof(u32);
 
+<<<<<<< HEAD
+=======
+	of_property_read_string(dp, "linux,mtd-name", &mtd_name);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Get number of "reg" tuples. Scan for MTD devices on area's
 	 * described by each "reg" region. This makes it possible (including
@@ -241,9 +317,18 @@ static int __devinit of_flash_probe(struct platform_device *dev)
 	}
 	count /= reg_tuple_size;
 
+<<<<<<< HEAD
 	err = -ENOMEM;
 	info = kzalloc(sizeof(struct of_flash) +
 		       sizeof(struct of_flash_list) * count, GFP_KERNEL);
+=======
+	map_indirect = of_property_read_bool(dp, "no-unaligned-direct-access");
+
+	err = -ENOMEM;
+	info = devm_kzalloc(&dev->dev,
+			    sizeof(struct of_flash) +
+			    sizeof(struct of_flash_list) * count, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!info)
 		goto err_flash_remove;
 
@@ -280,10 +365,18 @@ static int __devinit of_flash_probe(struct platform_device *dev)
 			goto err_out;
 		}
 
+<<<<<<< HEAD
 		info->list[i].map.name = dev_name(&dev->dev);
 		info->list[i].map.phys = res.start;
 		info->list[i].map.size = res_size;
 		info->list[i].map.bankwidth = be32_to_cpup(width);
+=======
+		info->list[i].map.name = mtd_name ?: dev_name(&dev->dev);
+		info->list[i].map.phys = res.start;
+		info->list[i].map.size = res_size;
+		info->list[i].map.bankwidth = be32_to_cpup(width);
+		info->list[i].map.device_node = dp;
+>>>>>>> refs/remotes/origin/master
 
 		err = -ENOMEM;
 		info->list[i].map.virt = ioremap(info->list[i].map.phys,
@@ -296,6 +389,20 @@ static int __devinit of_flash_probe(struct platform_device *dev)
 
 		simple_map_init(&info->list[i].map);
 
+<<<<<<< HEAD
+=======
+		/*
+		 * On some platforms (e.g. MPC5200) a direct 1:1 mapping
+		 * may cause problems with JFFS2 usage, as the local bus (LPB)
+		 * doesn't support unaligned accesses as implemented in the
+		 * JFFS2 code via memcpy(). By setting NO_XIP, the
+		 * flash will not be exposed directly to the MTD users
+		 * (e.g. JFFS2) any more.
+		 */
+		if (map_indirect)
+			info->list[i].map.phys = NO_XIP;
+
+>>>>>>> refs/remotes/origin/master
 		if (probe_type) {
 			info->list[i].mtd = do_map_probe(probe_type,
 							 &info->list[i].map);
@@ -317,6 +424,10 @@ static int __devinit of_flash_probe(struct platform_device *dev)
 	}
 
 	err = 0;
+<<<<<<< HEAD
+=======
+	info->cmtd = NULL;
+>>>>>>> refs/remotes/origin/master
 	if (info->list_size == 1) {
 		info->cmtd = info->list[0].mtd;
 	} else if (info->list_size > 1) {
@@ -325,12 +436,14 @@ static int __devinit of_flash_probe(struct platform_device *dev)
 		 */
 		info->cmtd = mtd_concat_create(mtd_list, info->list_size,
 					       dev_name(&dev->dev));
+<<<<<<< HEAD
 		if (info->cmtd == NULL)
 			err = -ENXIO;
 	}
 	if (err)
 		goto err_out;
 
+<<<<<<< HEAD
 	part_probe_types = of_get_probes(dp);
 	err = parse_mtd_partitions(info->cmtd, part_probe_types,
 				   &info->parts, 0);
@@ -354,6 +467,26 @@ static int __devinit of_flash_probe(struct platform_device *dev)
 
 	mtd_device_register(info->cmtd, info->parts, err);
 
+=======
+=======
+	}
+	if (info->cmtd == NULL)
+		err = -ENXIO;
+
+	if (err)
+		goto err_out;
+
+>>>>>>> refs/remotes/origin/master
+	ppdata.of_node = dp;
+	part_probe_types = of_get_probes(dp);
+	mtd_device_parse_register(info->cmtd, part_probe_types, &ppdata,
+			NULL, 0);
+	of_free_probes(part_probe_types);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(mtd_list);
 
 	return 0;
@@ -404,6 +537,8 @@ static struct platform_driver of_flash_driver = {
 	.remove		= of_flash_remove,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init of_flash_init(void)
 {
 	return platform_driver_register(&of_flash_driver);
@@ -416,6 +551,12 @@ static void __exit of_flash_exit(void)
 
 module_init(of_flash_init);
 module_exit(of_flash_exit);
+=======
+module_platform_driver(of_flash_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(of_flash_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Vitaly Wool <vwool@ru.mvista.com>");

@@ -78,7 +78,17 @@ unsigned long lx_dsp_reg_read(struct lx6464es *chip, int port)
 	return ioread32(address);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data, u32 len)
+=======
+static void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data,
+			       u32 len)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data,
+			       u32 len)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 __iomem *address = lx_dsp_register(chip, port);
 	int i;
@@ -95,8 +105,18 @@ void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data)
 	iowrite32(data, address);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void lx_dsp_reg_writebuf(struct lx6464es *chip, int port, const u32 *data,
 			 u32 len)
+=======
+static void lx_dsp_reg_writebuf(struct lx6464es *chip, int port,
+				const u32 *data, u32 len)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void lx_dsp_reg_writebuf(struct lx6464es *chip, int port,
+				const u32 *data, u32 len)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 __iomem *address = lx_dsp_register(chip, port);
 	int i;
@@ -384,7 +404,11 @@ polling_successful:
 
 
 /* low-level dsp access */
+<<<<<<< HEAD
 int __devinit lx_dsp_get_version(struct lx6464es *chip, u32 *rdsp_version)
+=======
+int lx_dsp_get_version(struct lx6464es *chip, u32 *rdsp_version)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 ret;
 	unsigned long flags;
@@ -432,7 +456,15 @@ int lx_dsp_get_clock_frequency(struct lx6464es *chip, u32 *rfreq)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int lx_dsp_get_mac(struct lx6464es *chip, u8 *mac_address)
+=======
+int lx_dsp_get_mac(struct lx6464es *chip)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int lx_dsp_get_mac(struct lx6464es *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 macmsb, maclsb;
 
@@ -440,12 +472,27 @@ int lx_dsp_get_mac(struct lx6464es *chip, u8 *mac_address)
 	maclsb = lx_dsp_reg_read(chip, eReg_ADMACESLSB) & 0x00FFFFFF;
 
 	/* todo: endianess handling */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mac_address[5] = ((u8 *)(&maclsb))[0];
 	mac_address[4] = ((u8 *)(&maclsb))[1];
 	mac_address[3] = ((u8 *)(&maclsb))[2];
 	mac_address[2] = ((u8 *)(&macmsb))[0];
 	mac_address[1] = ((u8 *)(&macmsb))[1];
 	mac_address[0] = ((u8 *)(&macmsb))[2];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	chip->mac_address[5] = ((u8 *)(&maclsb))[0];
+	chip->mac_address[4] = ((u8 *)(&maclsb))[1];
+	chip->mac_address[3] = ((u8 *)(&maclsb))[2];
+	chip->mac_address[2] = ((u8 *)(&macmsb))[0];
+	chip->mac_address[1] = ((u8 *)(&macmsb))[1];
+	chip->mac_address[0] = ((u8 *)(&macmsb))[2];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1190,8 +1237,13 @@ static int lx_interrupt_request_new_buffer(struct lx6464es *chip,
 	unpack_pointer(buf, &buf_lo, &buf_hi);
 	err = lx_buffer_give(chip, 0, is_capture, period_bytes, buf_lo, buf_hi,
 			     &buffer_index);
+<<<<<<< HEAD
 	snd_printdd(LXP "interrupt: gave buffer index %x on %p (%d bytes)\n",
 		    buffer_index, (void *)buf, period_bytes);
+=======
+	snd_printdd(LXP "interrupt: gave buffer index %x on 0x%lx (%d bytes)\n",
+		    buffer_index, (unsigned long)buf, period_bytes);
+>>>>>>> refs/remotes/origin/master
 
 	lx_stream->frame_pos = next_pos;
 	spin_unlock_irqrestore(&chip->lock, flags);

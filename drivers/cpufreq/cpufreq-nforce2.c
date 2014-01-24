@@ -263,7 +263,10 @@ static int nforce2_target(struct cpufreq_policy *policy,
 
 	freqs.old = nforce2_get(policy->cpu);
 	freqs.new = target_fsb * fid * 100;
+<<<<<<< HEAD
 	freqs.cpu = 0;		/* Only one CPU on nForce2 platforms */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (freqs.old == freqs.new)
 		return 0;
@@ -271,7 +274,11 @@ static int nforce2_target(struct cpufreq_policy *policy,
 	pr_debug("Old CPU frequency %d kHz, new %d kHz\n",
 	       freqs.old, freqs.new);
 
+<<<<<<< HEAD
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
+=======
+	cpufreq_notify_transition(policy, &freqs, CPUFREQ_PRECHANGE);
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable IRQs */
 	/* local_irq_save(flags); */
@@ -286,7 +293,11 @@ static int nforce2_target(struct cpufreq_policy *policy,
 	/* Enable IRQs */
 	/* local_irq_restore(flags); */
 
+<<<<<<< HEAD
 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
+=======
+	cpufreq_notify_transition(policy, &freqs, CPUFREQ_POSTCHANGE);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -304,9 +315,13 @@ static int nforce2_verify(struct cpufreq_policy *policy)
 	if (policy->min < (fsb_pol_max * fid * 100))
 		policy->max = (fsb_pol_max + 1) * fid * 100;
 
+<<<<<<< HEAD
 	cpufreq_verify_within_limits(policy,
 				     policy->cpuinfo.min_freq,
 				     policy->cpuinfo.max_freq);
+=======
+	cpufreq_verify_within_cpu_limits(policy);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -360,12 +375,18 @@ static int nforce2_cpu_init(struct cpufreq_policy *policy)
 		min_fsb = NFORCE2_MIN_FSB;
 
 	/* cpuinfo and default policy values */
+<<<<<<< HEAD
 	policy->cpuinfo.min_freq = min_fsb * fid * 100;
 	policy->cpuinfo.max_freq = max_fsb * fid * 100;
 	policy->cpuinfo.transition_latency = CPUFREQ_ETERNAL;
 	policy->cur = nforce2_get(policy->cpu);
 	policy->min = policy->cpuinfo.min_freq;
 	policy->max = policy->cpuinfo.max_freq;
+=======
+	policy->min = policy->cpuinfo.min_freq = min_fsb * fid * 100;
+	policy->max = policy->cpuinfo.max_freq = max_fsb * fid * 100;
+	policy->cpuinfo.transition_latency = CPUFREQ_ETERNAL;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -382,9 +403,28 @@ static struct cpufreq_driver nforce2_driver = {
 	.get = nforce2_get,
 	.init = nforce2_cpu_init,
 	.exit = nforce2_cpu_exit,
+<<<<<<< HEAD
 	.owner = THIS_MODULE,
 };
 
+<<<<<<< HEAD
+=======
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
+#ifdef MODULE
+static DEFINE_PCI_DEVICE_TABLE(nforce2_ids) = {
+	{ PCI_VENDOR_ID_NVIDIA, PCI_DEVICE_ID_NVIDIA_NFORCE2 },
+	{}
+};
+MODULE_DEVICE_TABLE(pci, nforce2_ids);
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * nforce2_detect_chipset - detect the Southbridge which contains FSB PLL logic
  *

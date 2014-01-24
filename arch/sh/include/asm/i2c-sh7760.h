@@ -9,11 +9,17 @@
 
 #define SH7760_I2C0_MMIO	0xFE140000
 #define SH7760_I2C0_MMIOEND	0xFE14003B
+<<<<<<< HEAD
 #define SH7760_I2C0_IRQ		62
 
 #define SH7760_I2C1_MMIO	0xFE150000
 #define SH7760_I2C1_MMIOEND	0xFE15003B
 #define SH7760_I2C1_IRQ		63
+=======
+
+#define SH7760_I2C1_MMIO	0xFE150000
+#define SH7760_I2C1_MMIOEND	0xFE15003B
+>>>>>>> refs/remotes/origin/master
 
 struct sh7760_i2c_platdata {
 	unsigned int speed_khz;

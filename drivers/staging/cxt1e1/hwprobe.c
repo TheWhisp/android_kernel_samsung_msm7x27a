@@ -31,12 +31,15 @@
 #include "sbeproc.h"
 #endif
 
+<<<<<<< HEAD
 #ifdef SBE_INCLUDE_SYMBOLS
 #define STATIC
 #else
 #define STATIC  static
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern int  cxt1e1_log_level;
 extern int  error_flag;
 extern int  drvr_state;
@@ -50,7 +53,11 @@ struct s_hdw_info hdw_info[MAX_BOARDS];
 
 
 void        __init
+<<<<<<< HEAD
 show_two (hdw_info_t * hi, int brdno)
+=======
+show_two (hdw_info_t *hi, int brdno)
+>>>>>>> refs/remotes/origin/master
 {
     ci_t       *ci;
     struct pci_dev *pdev;
@@ -102,7 +109,11 @@ show_two (hdw_info_t * hi, int brdno)
 
 
 void        __init
+<<<<<<< HEAD
 hdw_sn_get (hdw_info_t * hi, int brdno)
+=======
+hdw_sn_get (hdw_info_t *hi, int brdno)
+>>>>>>> refs/remotes/origin/master
 {
     /* obtain hardware EEPROM information */
     long        addr;
@@ -163,7 +174,11 @@ prep_hdw_info (void)
         hi->pci_slot = 0xff;
         hi->pci_pin[0] = 0;
         hi->pci_pin[1] = 0;
+<<<<<<< HEAD
         hi->ndev = 0;
+=======
+        hi->ndev = NULL;
+>>>>>>> refs/remotes/origin/master
         hi->addr[0] = 0L;
         hi->addr[1] = 0L;
         hi->addr_mapped[0] = 0L;
@@ -221,8 +236,13 @@ cleanup_devs (void)
 }
 
 
+<<<<<<< HEAD
 STATIC int  __init
 c4_hdw_init (struct pci_dev * pdev, int found)
+=======
+static int  __init
+c4_hdw_init (struct pci_dev *pdev, int found)
+>>>>>>> refs/remotes/origin/master
 {
     hdw_info_t *hi;
     int         i;
@@ -315,7 +335,11 @@ c4hw_attach_all (void)
     if (!found)
     {
         pr_warning("No boards found\n");
+<<<<<<< HEAD
         return ENODEV;
+=======
+        return -ENODEV;
+>>>>>>> refs/remotes/origin/master
     }
     /* sanity check for consistent hardware found */
     for (i = 0, hi = hdw_info; i < MAX_BOARDS; i++, hi++)
@@ -324,7 +348,11 @@ c4hw_attach_all (void)
         {
             pr_warning("%s: something very wrong with pci_get_device\n",
                        hi->devname);
+<<<<<<< HEAD
             return EIO;
+=======
+            return -EIO;
+>>>>>>> refs/remotes/origin/master
         }
     }
     /* bring board's memory regions on/line */
@@ -334,12 +362,20 @@ c4hw_attach_all (void)
             break;
         for (j = 0; j < 2; j++)
         {
+<<<<<<< HEAD
             if (request_mem_region (hi->addr[j], hi->len[j], hi->devname) == 0)
+=======
+	    if (!request_mem_region (hi->addr[j], hi->len[j], hi->devname))
+>>>>>>> refs/remotes/origin/master
             {
                 pr_warning("%s: memory in use, addr=0x%lx, len=0x%lx ?\n",
                            hi->devname, hi->addr[j], hi->len[j]);
                 cleanup_ioremap ();
+<<<<<<< HEAD
                 return ENOMEM;
+=======
+                return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
             }
             hi->addr_mapped[j] = (unsigned long) ioremap (hi->addr[j], hi->len[j]);
             if (!hi->addr_mapped[j])
@@ -347,7 +383,11 @@ c4hw_attach_all (void)
                 pr_warning("%s: ioremap fails, addr=0x%lx, len=0x%lx ?\n",
                            hi->devname, hi->addr[j], hi->len[j]);
                 cleanup_ioremap ();
+<<<<<<< HEAD
                 return ENOMEM;
+=======
+                return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
             }
 #ifdef SBE_MAP_DEBUG
             pr_warning("%s: io remapped from phys %x to virt %x\n",
@@ -371,7 +411,11 @@ c4hw_attach_all (void)
                        hi->devname, i, hi->pci_slot);
             cleanup_devs ();
             cleanup_ioremap ();
+<<<<<<< HEAD
             return EIO;
+=======
+            return -EIO;
+>>>>>>> refs/remotes/origin/master
         }
         pci_set_master (hi->pdev[0]);
         pci_set_master (hi->pdev[1]);

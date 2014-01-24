@@ -22,7 +22,13 @@ enum {
 	RESET_SOC = 1,
 	RESET_SUBSYS_COUPLED,
 	RESET_SUBSYS_INDEPENDENT,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	RESET_SUBSYS_MIXED = 25,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	RESET_LEVEL_MAX
 };
 

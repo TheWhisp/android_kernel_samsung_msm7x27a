@@ -1,6 +1,14 @@
 /* Qualcomm Crypto Engine driver.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011 - 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011 - 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -42,6 +50,14 @@
 #define DST_INDEX_SG_CMD(index) (index & 0x3fff)
 #define ADM_DESC_LAST  (1 << 31)
 #define QCE_FIFO_SIZE  0x8000
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * CE HW device structure.
  * Each engine has an instance of the structure.
@@ -128,6 +144,14 @@ static int _probe_ce_engine(struct qce_device *pce_dev)
 {
 	unsigned int val;
 	unsigned int rev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	val = (uint32_t)(*((uint32_t *)pce_dev->ce_dm.buffer.version));
 	if (((val & 0xfffffff) != 0x0000043) &&
@@ -144,6 +168,36 @@ static int _probe_ce_engine(struct qce_device *pce_dev)
 				"Qualcomm Crypto 4.2 device found at 0x%x\n",
 				pce_dev->phy_iobase);
 		pce_dev->ce_dm.ce_block_size = 64;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+		/* Configure the crypto register to support 64byte CRCI if it
+		 * is not XPU protected and the HW version of device is greater
+		 * than 0x42.
+		 * Crypto config register returns a 0 when it is XPU protected.
+		 */
+
+		ret = readl_relaxed(pce_dev->iobase + CRYPTO_CONFIG_REG);
+		if (ret) {
+			val = BIT(CRYPTO_MASK_DOUT_INTR) |
+					BIT(CRYPTO_MASK_DIN_INTR) |
+					BIT(CRYPTO_MASK_OP_DONE_INTR) |
+					BIT(CRYPTO_MASK_ERR_INTR) |
+					(CRYPTO_REQ_SIZE_ENUM_64_BYTES <<
+						CRYPTO_REQ_SIZE) |
+					(CRYPTO_FIFO_ENUM_64_BYTES <<
+						CRYPTO_FIFO_THRESHOLD);
+
+			writel_relaxed(val, pce_dev->iobase +
+					CRYPTO_CONFIG_REG);
+		} /* end of if (ret) */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		if (rev == 0x40) {
 			dev_info(pce_dev->pdev,
@@ -152,12 +206,18 @@ static int _probe_ce_engine(struct qce_device *pce_dev)
 			pce_dev->ce_dm.ce_block_size = 16;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	* This is a temporary change - until Data Mover changes its
 	* configuration from 16 byte crci to 64 byte crci.
 	*/
 	if (cpu_is_msm9615())
 		pce_dev->ce_dm.ce_block_size = 16;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	dev_info(pce_dev->pdev,
 			"IO base 0x%x\n, ce_in channel %d     , "
@@ -170,6 +230,8 @@ static int _probe_ce_engine(struct qce_device *pce_dev)
 	return 0;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void config_ce_engine(struct qce_device *pce_dev)
 {
 	unsigned int val = 0;
@@ -188,6 +250,10 @@ static void config_ce_engine(struct qce_device *pce_dev)
 		writel_relaxed(val, pce_dev->iobase + CRYPTO_CONFIG_REG);
 	}
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void _check_probe_done_call_back(struct msm_dmov_cmd *cmd_ptr,
 		unsigned int result, struct msm_dmov_errdata *err)
@@ -221,9 +287,15 @@ static int _init_ce_engine(struct qce_device *pce_dev)
 	*/
 	mb();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Configure the CE Engine */
 	config_ce_engine(pce_dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Clear ACCESS_VIOL bit in CRYPTO_STATUS REGISTER
 	*/
@@ -2105,12 +2177,20 @@ int qce_aead_req(void *handle, struct qce_req *q_req)
 	uint32_t authsize = q_req->authsize;
 	uint32_t totallen_in, totallen_out, out_len;
 	uint32_t pad_len_in, pad_len_out;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t pad_mac_len_out, pad_ptx_len_out;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc = 0;
 	int ce_block_size;
 
 	ce_block_size = pce_dev->ce_dm.ce_block_size;
 	if (q_req->dir == QCE_ENCRYPT) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		q_req->cryptlen = areq->cryptlen;
 		totallen_in = q_req->cryptlen + areq->assoclen;
 		totallen_out = q_req->cryptlen + authsize + areq->assoclen;
@@ -2131,6 +2211,35 @@ int qce_aead_req(void *handle, struct qce_req *q_req)
 							areq->cryptlen;
 		pad_len_out = pad_len_in + authsize;
 		totallen_out += pad_len_out;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		uint32_t pad_mac_len_out;
+
+		q_req->cryptlen = areq->cryptlen;
+		totallen_in = q_req->cryptlen + areq->assoclen;
+		pad_len_in = ALIGN(totallen_in, ce_block_size) - totallen_in;
+
+		out_len = areq->cryptlen + authsize;
+		totallen_out = q_req->cryptlen + authsize + areq->assoclen;
+		pad_mac_len_out = ALIGN(authsize, ce_block_size) - authsize;
+		totallen_out += pad_mac_len_out;
+		pad_len_out = ALIGN(totallen_out, ce_block_size) -
+					totallen_out + pad_mac_len_out;
+
+	} else {
+		q_req->cryptlen = areq->cryptlen - authsize;
+		totallen_in = areq->cryptlen + areq->assoclen;
+		pad_len_in = ALIGN(totallen_in, ce_block_size) - totallen_in;
+
+		out_len = q_req->cryptlen;
+		totallen_out = totallen_in;
+		pad_len_out = ALIGN(totallen_out, ce_block_size) - totallen_out;
+		pad_len_out += authsize;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	_chain_buffer_in_init(pce_dev);
@@ -2509,7 +2618,15 @@ void *qce_open(struct platform_device *pdev, int *rc)
 	pce_dev->ce_clk = ce_clk;
 
 	/* Enable CE core clk */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*rc = clk_enable(pce_dev->ce_core_clk);
+=======
+	*rc = clk_prepare_enable(pce_dev->ce_core_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*rc = clk_prepare_enable(pce_dev->ce_core_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (*rc) {
 		if (pce_dev->ce_core_src_clk != NULL)
 			clk_put(pce_dev->ce_core_src_clk);
@@ -2518,9 +2635,21 @@ void *qce_open(struct platform_device *pdev, int *rc)
 		goto err;
 	} else {
 		/* Enable CE clk */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		*rc = clk_enable(pce_dev->ce_clk);
 		if (*rc) {
 			clk_disable(pce_dev->ce_core_clk);
+=======
+		*rc = clk_prepare_enable(pce_dev->ce_clk);
+		if (*rc) {
+			clk_disable_unprepare(pce_dev->ce_core_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*rc = clk_prepare_enable(pce_dev->ce_clk);
+		if (*rc) {
+			clk_disable_unprepare(pce_dev->ce_core_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (pce_dev->ce_core_src_clk != NULL)
 				clk_put(pce_dev->ce_core_src_clk);
 			clk_put(pce_dev->ce_core_clk);
@@ -2571,8 +2700,18 @@ int qce_close(void *handle)
 	if (pce_dev->coh_vmem)
 		dma_free_coherent(pce_dev->pdev, pce_dev->memsize,
 				pce_dev->coh_vmem, pce_dev->coh_pmem);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(pce_dev->ce_clk);
 	clk_disable(pce_dev->ce_core_clk);
+=======
+	clk_disable_unprepare(pce_dev->ce_clk);
+	clk_disable_unprepare(pce_dev->ce_core_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(pce_dev->ce_clk);
+	clk_disable_unprepare(pce_dev->ce_core_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pce_dev->ce_core_src_clk != NULL)
 		clk_put(pce_dev->ce_core_src_clk);
@@ -2609,4 +2748,12 @@ EXPORT_SYMBOL(qce_hw_support);
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Mona Hossain <mhossain@codeaurora.org>");
 MODULE_DESCRIPTION("Crypto Engine driver");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_VERSION("2.14");
+=======
+MODULE_VERSION("2.17");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_VERSION("2.17");
+>>>>>>> refs/remotes/origin/cm-11.0

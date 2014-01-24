@@ -42,7 +42,11 @@
 #include "scsi_logging.h"
 
 
+<<<<<<< HEAD
 static atomic_t scsi_host_next_hn;	/* host_no for next new host */
+=======
+static atomic_t scsi_host_next_hn = ATOMIC_INIT(0);	/* host_no for next new host */
+>>>>>>> refs/remotes/origin/master
 
 
 static void scsi_host_cls_release(struct device *dev)
@@ -218,6 +222,18 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
 
 	if (!shost->shost_gendev.parent)
 		shost->shost_gendev.parent = dev ? dev : &platform_bus;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!dma_dev)
+		dma_dev = shost->shost_gendev.parent;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dma_dev)
+		dma_dev = shost->shost_gendev.parent;
+
+>>>>>>> refs/remotes/origin/master
 	shost->dma_dev = dma_dev;
 
 	error = device_add(&shost->shost_gendev);
@@ -287,6 +303,18 @@ static void scsi_host_dev_release(struct device *dev)
 	struct Scsi_Host *shost = dev_to_shost(dev);
 	struct device *parent = dev->parent;
 	struct request_queue *q;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	void *queuedata;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *queuedata;
+>>>>>>> refs/remotes/origin/master
+=======
+	void *queuedata;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	scsi_proc_hostdir_rm(shost->hostt);
 
@@ -296,9 +324,27 @@ static void scsi_host_dev_release(struct device *dev)
 		destroy_workqueue(shost->work_q);
 	q = shost->uspace_req_q;
 	if (q) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kfree(q->queuedata);
 		q->queuedata = NULL;
 		scsi_free_queue(q);
+=======
+		queuedata = q->queuedata;
+		blk_cleanup_queue(q);
+		kfree(queuedata);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		queuedata = q->queuedata;
+		blk_cleanup_queue(q);
+		kfree(queuedata);
+>>>>>>> refs/remotes/origin/master
+=======
+		queuedata = q->queuedata;
+		blk_cleanup_queue(q);
+		kfree(queuedata);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	scsi_destroy_command_freelist(shost);
@@ -312,6 +358,15 @@ static void scsi_host_dev_release(struct device *dev)
 	kfree(shost);
 }
 
+<<<<<<< HEAD
+=======
+static unsigned int shost_eh_deadline;
+
+module_param_named(eh_deadline, shost_eh_deadline, uint, S_IRUGO|S_IWUSR);
+MODULE_PARM_DESC(eh_deadline,
+		 "SCSI EH timeout in seconds (should be between 1 and 2^32-1)");
+
+>>>>>>> refs/remotes/origin/master
 static struct device_type scsi_host_type = {
 	.name =		"scsi_host",
 	.release =	scsi_host_dev_release,
@@ -384,6 +439,11 @@ struct Scsi_Host *scsi_host_alloc(struct scsi_host_template *sht, int privsize)
 	shost->unchecked_isa_dma = sht->unchecked_isa_dma;
 	shost->use_clustering = sht->use_clustering;
 	shost->ordered_tag = sht->ordered_tag;
+<<<<<<< HEAD
+=======
+	shost->eh_deadline = shost_eh_deadline * HZ;
+	shost->no_write_same = sht->no_write_same;
+>>>>>>> refs/remotes/origin/master
 
 	if (sht->supported_mode == MODE_UNKNOWN)
 		/* means we didn't set it ... default to INITIATOR */
@@ -464,10 +524,17 @@ void scsi_unregister(struct Scsi_Host *shost)
 }
 EXPORT_SYMBOL(scsi_unregister);
 
+<<<<<<< HEAD
 static int __scsi_host_match(struct device *dev, void *data)
 {
 	struct Scsi_Host *p;
 	unsigned short *hostnum = (unsigned short *)data;
+=======
+static int __scsi_host_match(struct device *dev, const void *data)
+{
+	struct Scsi_Host *p;
+	const unsigned short *hostnum = data;
+>>>>>>> refs/remotes/origin/master
 
 	p = class_to_shost(dev);
 	return p->host_no == *hostnum;

@@ -27,6 +27,14 @@
 #include <linux/err.h>
 #include <linux/dca.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct class *dca_class;
 static struct idr dca_idr;
@@ -52,6 +60,7 @@ void dca_sysfs_remove_req(struct dca_provider *dca, int slot)
 int dca_sysfs_add_provider(struct dca_provider *dca, struct device *dev)
 {
 	struct device *cd;
+<<<<<<< HEAD
 	int err = 0;
 
 idr_try_again:
@@ -68,6 +77,21 @@ idr_try_again:
 	default:
 		return err;
 	}
+=======
+	int ret;
+
+	idr_preload(GFP_KERNEL);
+	spin_lock(&dca_idr_lock);
+
+	ret = idr_alloc(&dca_idr, dca, 0, 0, GFP_NOWAIT);
+	if (ret >= 0)
+		dca->id = ret;
+
+	spin_unlock(&dca_idr_lock);
+	idr_preload_end();
+	if (ret < 0)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	cd = device_create(dca_class, dev, MKDEV(0, 0), NULL, "dca%d", dca->id);
 	if (IS_ERR(cd)) {

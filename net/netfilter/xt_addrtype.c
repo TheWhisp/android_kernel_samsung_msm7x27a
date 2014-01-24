@@ -16,12 +16,24 @@
 #include <linux/ip.h>
 #include <net/route.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IP6_NF_IPTABLES) || defined(CONFIG_IP6_NF_IPTABLES_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
+>>>>>>> refs/remotes/origin/master
 #include <net/ipv6.h>
 #include <net/ip6_route.h>
 #include <net/ip6_fib.h>
 #endif
 
+<<<<<<< HEAD
+=======
+#include <linux/netfilter_ipv6.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/netfilter/xt_addrtype.h>
 #include <linux/netfilter/x_tables.h>
 
@@ -31,30 +43,68 @@ MODULE_DESCRIPTION("Xtables: address type match");
 MODULE_ALIAS("ipt_addrtype");
 MODULE_ALIAS("ip6t_addrtype");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IP6_NF_IPTABLES) || defined(CONFIG_IP6_NF_IPTABLES_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
+>>>>>>> refs/remotes/origin/cm-10.0
 static u32 match_lookup_rt6(struct net *net, const struct net_device *dev,
 			    const struct in6_addr *addr)
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
+static u32 match_lookup_rt6(struct net *net, const struct net_device *dev,
+			    const struct in6_addr *addr, u16 mask)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct nf_afinfo *afinfo;
 	struct flowi6 flow;
 	struct rt6_info *rt;
+<<<<<<< HEAD
 	u32 ret;
 	int route_err;
 
 	memset(&flow, 0, sizeof(flow));
+<<<<<<< HEAD
 	ipv6_addr_copy(&flow.daddr, addr);
+=======
+	flow.daddr = *addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 ret = 0;
+	int route_err;
+
+	memset(&flow, 0, sizeof(flow));
+	flow.daddr = *addr;
+>>>>>>> refs/remotes/origin/master
 	if (dev)
 		flow.flowi6_oif = dev->ifindex;
 
 	rcu_read_lock();
 
 	afinfo = nf_get_afinfo(NFPROTO_IPV6);
+<<<<<<< HEAD
 	if (afinfo != NULL)
 		route_err = afinfo->route(net, (struct dst_entry **)&rt,
 					flowi6_to_flowi(&flow), !!dev);
 	else
 		route_err = 1;
 
+=======
+	if (afinfo != NULL) {
+		const struct nf_ipv6_ops *v6ops;
+
+		if (dev && (mask & XT_ADDRTYPE_LOCAL)) {
+			v6ops = nf_get_ipv6_ops();
+			if (v6ops && v6ops->chk_addr(net, addr, dev, true))
+				ret = XT_ADDRTYPE_LOCAL;
+		}
+		route_err = afinfo->route(net, (struct dst_entry **)&rt,
+					  flowi6_to_flowi(&flow), false);
+	} else {
+		route_err = 1;
+	}
+>>>>>>> refs/remotes/origin/master
 	rcu_read_unlock();
 
 	if (route_err)
@@ -62,15 +112,23 @@ static u32 match_lookup_rt6(struct net *net, const struct net_device *dev,
 
 	if (rt->rt6i_flags & RTF_REJECT)
 		ret = XT_ADDRTYPE_UNREACHABLE;
+<<<<<<< HEAD
 	else
 		ret = 0;
 
 	if (rt->rt6i_flags & RTF_LOCAL)
+=======
+
+	if (dev == NULL && rt->rt6i_flags & RTF_LOCAL)
+>>>>>>> refs/remotes/origin/master
 		ret |= XT_ADDRTYPE_LOCAL;
 	if (rt->rt6i_flags & RTF_ANYCAST)
 		ret |= XT_ADDRTYPE_ANYCAST;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	dst_release(&rt->dst);
 	return ret;
 }
@@ -90,7 +148,11 @@ static bool match_type6(struct net *net, const struct net_device *dev,
 
 	if ((XT_ADDRTYPE_LOCAL | XT_ADDRTYPE_ANYCAST |
 	     XT_ADDRTYPE_UNREACHABLE) & mask)
+<<<<<<< HEAD
 		return !!(mask & match_lookup_rt6(net, dev, addr));
+=======
+		return !!(mask & match_lookup_rt6(net, dev, addr, mask));
+>>>>>>> refs/remotes/origin/master
 	return true;
 }
 
@@ -149,7 +211,15 @@ addrtype_mt_v1(const struct sk_buff *skb, struct xt_action_param *par)
 	else if (info->flags & XT_ADDRTYPE_LIMIT_IFACE_OUT)
 		dev = par->out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IP6_NF_IPTABLES) || defined(CONFIG_IP6_NF_IPTABLES_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
+>>>>>>> refs/remotes/origin/master
 	if (par->family == NFPROTO_IPV6)
 		return addrtype_mt6(net, dev, skb, info);
 #endif
@@ -190,14 +260,26 @@ static int addrtype_mt_checkentry_v1(const struct xt_mtchk_param *par)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IP6_NF_IPTABLES) || defined(CONFIG_IP6_NF_IPTABLES_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
+>>>>>>> refs/remotes/origin/master
 	if (par->family == NFPROTO_IPV6) {
 		if ((info->source | info->dest) & XT_ADDRTYPE_BLACKHOLE) {
 			pr_err("ipv6 BLACKHOLE matching not supported\n");
 			return -EINVAL;
 		}
 		if ((info->source | info->dest) >= XT_ADDRTYPE_PROHIBIT) {
+<<<<<<< HEAD
 			pr_err("ipv6 PROHIBT (THROW, NAT ..) matching not supported\n");
+=======
+			pr_err("ipv6 PROHIBIT (THROW, NAT ..) matching not supported\n");
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 		if ((info->source | info->dest) & XT_ADDRTYPE_BROADCAST) {

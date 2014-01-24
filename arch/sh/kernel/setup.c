@@ -172,7 +172,11 @@ disable:
 #endif
 }
 
+<<<<<<< HEAD
 void __cpuinit calibrate_delay(void)
+=======
+void calibrate_delay(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct clk *clk = clk_get(NULL, "cpu_clk");
 
@@ -211,13 +215,37 @@ void __init __add_active_range(unsigned int nid, unsigned long start_pfn,
 	}
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 *  We don't know which RAM region contains kernel data,
 	 *  so we try it repeatedly and let the resource manager
 	 *  test it.
+=======
+	 * We don't know which RAM region contains kernel data or
+	 * the reserved crashkernel region, so try it repeatedly
+	 * and let the resource manager test it.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * We don't know which RAM region contains kernel data or
+	 * the reserved crashkernel region, so try it repeatedly
+	 * and let the resource manager test it.
+>>>>>>> refs/remotes/origin/master
 	 */
 	request_resource(res, &code_resource);
 	request_resource(res, &data_resource);
 	request_resource(res, &bss_resource);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KEXEC
+	request_resource(res, &crashk_res);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_KEXEC
+	request_resource(res, &crashk_res);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Also make sure that there is a PMB mapping that covers this
@@ -227,7 +255,17 @@ void __init __add_active_range(unsigned int nid, unsigned long start_pfn,
 	pmb_bolt_mapping((unsigned long)__va(start), start, end - start,
 			 PAGE_KERNEL);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	add_active_range(nid, start_pfn, end_pfn);
+=======
+	memblock_set_node(PFN_PHYS(start_pfn),
+			  PFN_PHYS(end_pfn - start_pfn), nid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_set_node(PFN_PHYS(start_pfn), PFN_PHYS(end_pfn - start_pfn),
+			  &memblock.memory, nid);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init __weak plat_early_device_setup(void)
@@ -269,7 +307,11 @@ void __init setup_arch(char **cmdline_p)
 	data_resource.start = virt_to_phys(_etext);
 	data_resource.end = virt_to_phys(_edata)-1;
 	bss_resource.start = virt_to_phys(__bss_start);
+<<<<<<< HEAD
 	bss_resource.end = virt_to_phys(_ebss)-1;
+=======
+	bss_resource.end = virt_to_phys(__bss_stop)-1;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CMDLINE_OVERWRITE
 	strlcpy(command_line, CONFIG_CMDLINE, sizeof(command_line));

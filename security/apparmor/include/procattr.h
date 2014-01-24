@@ -21,6 +21,9 @@
 int aa_getprocattr(struct aa_profile *profile, char **string);
 int aa_setprocattr_changehat(char *args, size_t size, int test);
 int aa_setprocattr_changeprofile(char *fqname, bool onexec, int test);
+<<<<<<< HEAD
 int aa_setprocattr_permipc(char *fqname);
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __AA_PROCATTR_H */

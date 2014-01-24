@@ -11,7 +11,10 @@
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/kref.h>
@@ -83,7 +86,12 @@ static void yurex_control_callback(struct urb *urb)
 	int status = urb->status;
 
 	if (status) {
+<<<<<<< HEAD
 		err("%s - control failed: %d\n", __func__, status);
+=======
+		dev_err(&urb->dev->dev, "%s - control failed: %d\n",
+			__func__, status);
+>>>>>>> refs/remotes/origin/master
 		wake_up_interruptible(&dev->waitq);
 		return;
 	}
@@ -94,7 +102,11 @@ static void yurex_delete(struct kref *kref)
 {
 	struct usb_yurex *dev = to_yurex_dev(kref);
 
+<<<<<<< HEAD
 	dbg("yurex_delete");
+=======
+	dev_dbg(&dev->interface->dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	usb_put_dev(dev->udev);
 	if (dev->cntl_urb) {
@@ -137,8 +149,14 @@ static void yurex_interrupt(struct urb *urb)
 	case 0: /*success*/
 		break;
 	case -EOVERFLOW:
+<<<<<<< HEAD
 		err("%s - overflow with length %d, actual length is %d",
 		    __func__, YUREX_BUF_SIZE, dev->urb->actual_length);
+=======
+		dev_err(&dev->interface->dev,
+			"%s - overflow with length %d, actual length is %d\n",
+			__func__, YUREX_BUF_SIZE, dev->urb->actual_length);
+>>>>>>> refs/remotes/origin/master
 	case -ECONNRESET:
 	case -ENOENT:
 	case -ESHUTDOWN:
@@ -146,7 +164,12 @@ static void yurex_interrupt(struct urb *urb)
 		/* The device is terminated, clean up */
 		return;
 	default:
+<<<<<<< HEAD
 		err("%s - unknown status received: %d", __func__, status);
+=======
+		dev_err(&dev->interface->dev,
+			"%s - unknown status received: %d\n", __func__, status);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -162,16 +185,30 @@ static void yurex_interrupt(struct urb *urb)
 				if (i != 5)
 					dev->bbu <<= 8;
 			}
+<<<<<<< HEAD
 			dbg("%s count: %lld", __func__, dev->bbu);
+=======
+			dev_dbg(&dev->interface->dev, "%s count: %lld\n",
+				__func__, dev->bbu);
+>>>>>>> refs/remotes/origin/master
 			spin_unlock_irqrestore(&dev->lock, flags);
 
 			kill_fasync(&dev->async_queue, SIGIO, POLL_IN);
 		}
 		else
+<<<<<<< HEAD
 			dbg("data format error - no EOF");
 		break;
 	case CMD_ACK:
 		dbg("%s ack: %c", __func__, buf[1]);
+=======
+			dev_dbg(&dev->interface->dev,
+				"data format error - no EOF\n");
+		break;
+	case CMD_ACK:
+		dev_dbg(&dev->interface->dev, "%s ack: %c\n",
+			__func__, buf[1]);
+>>>>>>> refs/remotes/origin/master
 		wake_up_interruptible(&dev->waitq);
 		break;
 	}
@@ -179,7 +216,11 @@ static void yurex_interrupt(struct urb *urb)
 exit:
 	retval = usb_submit_urb(dev->urb, GFP_ATOMIC);
 	if (retval) {
+<<<<<<< HEAD
 		err("%s - usb_submit_urb failed: %d",
+=======
+		dev_err(&dev->interface->dev, "%s - usb_submit_urb failed: %d\n",
+>>>>>>> refs/remotes/origin/master
 			__func__, retval);
 	}
 }
@@ -196,7 +237,11 @@ static int yurex_probe(struct usb_interface *interface, const struct usb_device_
 	/* allocate memory for our device state and initialize it */
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 	if (!dev) {
+<<<<<<< HEAD
 		err("Out of memory");
+=======
+		dev_err(&interface->dev, "Out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 	kref_init(&dev->kref);
@@ -219,7 +264,11 @@ static int yurex_probe(struct usb_interface *interface, const struct usb_device_
 	}
 	if (!dev->int_in_endpointAddr) {
 		retval = -ENODEV;
+<<<<<<< HEAD
 		err("Could not find endpoints");
+=======
+		dev_err(&interface->dev, "Could not find endpoints\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -227,14 +276,22 @@ static int yurex_probe(struct usb_interface *interface, const struct usb_device_
 	/* allocate control URB */
 	dev->cntl_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!dev->cntl_urb) {
+<<<<<<< HEAD
 		err("Could not allocate control URB");
+=======
+		dev_err(&interface->dev, "Could not allocate control URB\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
 	/* allocate buffer for control req */
 	dev->cntl_req = kmalloc(YUREX_BUF_SIZE, GFP_KERNEL);
 	if (!dev->cntl_req) {
+<<<<<<< HEAD
 		err("Could not allocate cntl_req");
+=======
+		dev_err(&interface->dev, "Could not allocate cntl_req\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -243,7 +300,11 @@ static int yurex_probe(struct usb_interface *interface, const struct usb_device_
 					      GFP_KERNEL,
 					      &dev->cntl_urb->transfer_dma);
 	if (!dev->cntl_buffer) {
+<<<<<<< HEAD
 		err("Could not allocate cntl_buffer");
+=======
+		dev_err(&interface->dev, "Could not allocate cntl_buffer\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -265,7 +326,11 @@ static int yurex_probe(struct usb_interface *interface, const struct usb_device_
 	/* allocate interrupt URB */
 	dev->urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!dev->urb) {
+<<<<<<< HEAD
 		err("Could not allocate URB");
+=======
+		dev_err(&interface->dev, "Could not allocate URB\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -273,7 +338,11 @@ static int yurex_probe(struct usb_interface *interface, const struct usb_device_
 	dev->int_buffer = usb_alloc_coherent(dev->udev, YUREX_BUF_SIZE,
 					GFP_KERNEL, &dev->urb->transfer_dma);
 	if (!dev->int_buffer) {
+<<<<<<< HEAD
 		err("Could not allocate int_buffer");
+=======
+		dev_err(&interface->dev, "Could not allocate int_buffer\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -285,7 +354,11 @@ static int yurex_probe(struct usb_interface *interface, const struct usb_device_
 	dev->urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
 	if (usb_submit_urb(dev->urb, GFP_KERNEL)) {
 		retval = -EIO;
+<<<<<<< HEAD
 		err("Could not submitting URB");
+=======
+		dev_err(&interface->dev, "Could not submitting URB\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -295,7 +368,12 @@ static int yurex_probe(struct usb_interface *interface, const struct usb_device_
 	/* we can register the device now, as it is ready */
 	retval = usb_register_dev(interface, &yurex_class);
 	if (retval) {
+<<<<<<< HEAD
 		err("Not able to get a minor for this device.");
+=======
+		dev_err(&interface->dev,
+			"Not able to get a minor for this device.\n");
+>>>>>>> refs/remotes/origin/master
 		usb_set_intfdata(interface, NULL);
 		goto error;
 	}
@@ -368,8 +446,13 @@ static int yurex_open(struct inode *inode, struct file *file)
 
 	interface = usb_find_interface(&yurex_driver, subminor);
 	if (!interface) {
+<<<<<<< HEAD
 		err("%s - error, can't find device for minor %d",
 		    __func__, subminor);
+=======
+		printk(KERN_ERR "%s - error, can't find device for minor %d",
+		       __func__, subminor);
+>>>>>>> refs/remotes/origin/master
 		retval = -ENODEV;
 		goto exit;
 	}
@@ -400,8 +483,11 @@ static int yurex_release(struct inode *inode, struct file *file)
 	if (dev == NULL)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	yurex_fasync(-1, file, 0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* decrement the count on our device */
 	kref_put(&dev->kref, yurex_delete);
 	return 0;
@@ -459,7 +545,11 @@ static ssize_t yurex_write(struct file *file, const char *user_buffer, size_t co
 		goto error;
 
 	mutex_lock(&dev->io_mutex);
+<<<<<<< HEAD
 	if (!dev->interface) {		/* alreaday disconnected */
+=======
+	if (!dev->interface) {		/* already disconnected */
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&dev->io_mutex);
 		retval = -ENODEV;
 		goto error;
@@ -505,7 +595,12 @@ static ssize_t yurex_write(struct file *file, const char *user_buffer, size_t co
 
 	/* send the data as the control msg */
 	prepare_to_wait(&dev->waitq, &wait, TASK_INTERRUPTIBLE);
+<<<<<<< HEAD
 	dbg("%s - submit %c", __func__, dev->cntl_buffer[0]);
+=======
+	dev_dbg(&dev->interface->dev, "%s - submit %c\n", __func__,
+		dev->cntl_buffer[0]);
+>>>>>>> refs/remotes/origin/master
 	retval = usb_submit_urb(dev->cntl_urb, GFP_KERNEL);
 	if (retval >= 0)
 		timeout = schedule_timeout(YUREX_WRITE_TIMEOUT);
@@ -514,7 +609,13 @@ static ssize_t yurex_write(struct file *file, const char *user_buffer, size_t co
 	mutex_unlock(&dev->io_mutex);
 
 	if (retval < 0) {
+<<<<<<< HEAD
 		err("%s - failed to send bulk msg, error %d", __func__, retval);
+=======
+		dev_err(&dev->interface->dev,
+			"%s - failed to send bulk msg, error %d\n",
+			__func__, retval);
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 	if (set && timeout)
@@ -535,6 +636,8 @@ static const struct file_operations yurex_fops = {
 	.llseek =	default_llseek,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init usb_yurex_init(void)
 {
@@ -556,5 +659,11 @@ static void __exit usb_yurex_exit(void)
 
 module_init(usb_yurex_init);
 module_exit(usb_yurex_exit);
+=======
+module_usb_driver(yurex_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(yurex_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

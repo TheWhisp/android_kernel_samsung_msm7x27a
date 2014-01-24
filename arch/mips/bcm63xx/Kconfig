@@ -1,6 +1,7 @@
 menu "CPU support"
 	depends on BCM63XX
 
+<<<<<<< HEAD
 config BCM63XX_CPU_6338
 	bool "support 6338 CPU"
 	select HW_HAS_PCI
@@ -12,6 +13,22 @@ config BCM63XX_CPU_6345
 	bool "support 6345 CPU"
 	select USB_OHCI_BIG_ENDIAN_DESC
 	select USB_OHCI_BIG_ENDIAN_MMIO
+=======
+config BCM63XX_CPU_3368
+	bool "support 3368 CPU"
+	select HW_HAS_PCI
+
+config BCM63XX_CPU_6328
+	bool "support 6328 CPU"
+	select HW_HAS_PCI
+
+config BCM63XX_CPU_6338
+	bool "support 6338 CPU"
+	select HW_HAS_PCI
+
+config BCM63XX_CPU_6345
+	bool "support 6345 CPU"
+>>>>>>> refs/remotes/origin/master
 
 config BCM63XX_CPU_6348
 	bool "support 6348 CPU"
@@ -20,6 +37,23 @@ config BCM63XX_CPU_6348
 config BCM63XX_CPU_6358
 	bool "support 6358 CPU"
 	select HW_HAS_PCI
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+
+config BCM63XX_CPU_6362
+	bool "support 6362 CPU"
+	select HW_HAS_PCI
+>>>>>>> refs/remotes/origin/master
+
+config BCM63XX_CPU_6368
+	bool "support 6368 CPU"
+	select HW_HAS_PCI
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endmenu
 
 source "arch/mips/bcm63xx/boards/Kconfig"

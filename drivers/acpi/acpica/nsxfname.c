@@ -6,7 +6,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,6 +50,15 @@
  * POSSIBILITY OF SUCH DAMAGES.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXPORT_ACPI_INTERFACES
+
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "acnamesp.h"
@@ -52,24 +69,39 @@
 ACPI_MODULE_NAME("nsxfname")
 
 /* Local prototypes */
+<<<<<<< HEAD
 static char *acpi_ns_copy_device_id(struct acpica_device_id *dest,
 				    struct acpica_device_id *source,
+=======
+static char *acpi_ns_copy_device_id(struct acpi_pnp_device_id *dest,
+				    struct acpi_pnp_device_id *source,
+>>>>>>> refs/remotes/origin/master
 				    char *string_area);
 
 /******************************************************************************
  *
  * FUNCTION:    acpi_get_handle
  *
+<<<<<<< HEAD
  * PARAMETERS:  Parent          - Object to search under (search scope).
  *              Pathname        - Pointer to an asciiz string containing the
+=======
+ * PARAMETERS:  parent          - Object to search under (search scope).
+ *              pathname        - Pointer to an asciiz string containing the
+>>>>>>> refs/remotes/origin/master
  *                                name
  *              ret_handle      - Where the return handle is returned
  *
  * RETURN:      Status
  *
  * DESCRIPTION: This routine will search for a caller specified name in the
+<<<<<<< HEAD
  *              name space.  The caller can restrict the search region by
  *              specifying a non NULL parent.  The parent value is itself a
+=======
+ *              name space. The caller can restrict the search region by
+ *              specifying a non NULL parent. The parent value is itself a
+>>>>>>> refs/remotes/origin/master
  *              namespace handle.
  *
  ******************************************************************************/
@@ -106,7 +138,11 @@ acpi_get_handle(acpi_handle parent,
 	 *
 	 * Error for <null Parent + relative path>
 	 */
+<<<<<<< HEAD
 	if (acpi_ns_valid_root_prefix(pathname[0])) {
+=======
+	if (ACPI_IS_ROOT_PREFIX(pathname[0])) {
+>>>>>>> refs/remotes/origin/master
 
 		/* Pathname is fully qualified (starts with '\') */
 
@@ -141,14 +177,24 @@ ACPI_EXPORT_SYMBOL(acpi_get_handle)
  *
  * FUNCTION:    acpi_get_name
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handle          - Handle to be converted to a pathname
  *              name_type       - Full pathname or single segment
  *              Buffer          - Buffer for returned path
+=======
+ * PARAMETERS:  handle          - Handle to be converted to a pathname
+ *              name_type       - Full pathname or single segment
+ *              buffer          - Buffer for returned path
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Pointer to a string containing the fully qualified Name.
  *
  * DESCRIPTION: This routine returns the fully qualified name associated with
+<<<<<<< HEAD
  *              the Handle parameter.  This and the acpi_pathname_to_handle are
+=======
+ *              the Handle parameter. This and the acpi_pathname_to_handle are
+>>>>>>> refs/remotes/origin/master
  *              complementary functions.
  *
  ******************************************************************************/
@@ -157,6 +203,10 @@ acpi_get_name(acpi_handle handle, u32 name_type, struct acpi_buffer * buffer)
 {
 	acpi_status status;
 	struct acpi_namespace_node *node;
+<<<<<<< HEAD
+=======
+	char *node_name;
+>>>>>>> refs/remotes/origin/master
 
 	/* Parameter validation */
 
@@ -201,12 +251,21 @@ acpi_get_name(acpi_handle handle, u32 name_type, struct acpi_buffer * buffer)
 
 	/* Just copy the ACPI name from the Node and zero terminate it */
 
+<<<<<<< HEAD
 	ACPI_STRNCPY(buffer->pointer, acpi_ut_get_node_name(node),
 		     ACPI_NAME_SIZE);
 	((char *)buffer->pointer)[ACPI_NAME_SIZE] = 0;
 	status = AE_OK;
 
       unlock_and_exit:
+=======
+	node_name = acpi_ut_get_node_name(node);
+	ACPI_MOVE_NAME(buffer->pointer, node_name);
+	((char *)buffer->pointer)[ACPI_NAME_SIZE] = 0;
+	status = AE_OK;
+
+unlock_and_exit:
+>>>>>>> refs/remotes/origin/master
 
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 	return (status);
@@ -218,12 +277,18 @@ ACPI_EXPORT_SYMBOL(acpi_get_name)
  *
  * FUNCTION:    acpi_ns_copy_device_id
  *
+<<<<<<< HEAD
  * PARAMETERS:  Dest                - Pointer to the destination DEVICE_ID
  *              Source              - Pointer to the source DEVICE_ID
+=======
+ * PARAMETERS:  dest                - Pointer to the destination PNP_DEVICE_ID
+ *              source              - Pointer to the source PNP_DEVICE_ID
+>>>>>>> refs/remotes/origin/master
  *              string_area         - Pointer to where to copy the dest string
  *
  * RETURN:      Pointer to the next string area
  *
+<<<<<<< HEAD
  * DESCRIPTION: Copy a single DEVICE_ID, including the string data.
  *
  ******************************************************************************/
@@ -232,6 +297,17 @@ static char *acpi_ns_copy_device_id(struct acpica_device_id *dest,
 				    char *string_area)
 {
 	/* Create the destination DEVICE_ID */
+=======
+ * DESCRIPTION: Copy a single PNP_DEVICE_ID, including the string data.
+ *
+ ******************************************************************************/
+static char *acpi_ns_copy_device_id(struct acpi_pnp_device_id *dest,
+				    struct acpi_pnp_device_id *source,
+				    char *string_area)
+{
+
+	/* Create the destination PNP_DEVICE_ID */
+>>>>>>> refs/remotes/origin/master
 
 	dest->string = string_area;
 	dest->length = source->length;
@@ -246,7 +322,11 @@ static char *acpi_ns_copy_device_id(struct acpica_device_id *dest,
  *
  * FUNCTION:    acpi_get_object_info
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handle              - Object Handle
+=======
+ * PARAMETERS:  handle              - Object Handle
+>>>>>>> refs/remotes/origin/master
  *              return_buffer       - Where the info is returned
  *
  * RETURN:      Status
@@ -255,8 +335,13 @@ static char *acpi_ns_copy_device_id(struct acpica_device_id *dest,
  *              namespace node and possibly by running several standard
  *              control methods (Such as in the case of a device.)
  *
+<<<<<<< HEAD
  * For Device and Processor objects, run the Device _HID, _UID, _CID, _STA,
  * _ADR, _sx_w, and _sx_d methods.
+=======
+ * For Device and Processor objects, run the Device _HID, _UID, _CID, _SUB,
+ * _STA, _ADR, _sx_w, and _sx_d methods.
+>>>>>>> refs/remotes/origin/master
  *
  * Note: Allocates the return buffer, must be freed by the caller.
  *
@@ -268,9 +353,16 @@ acpi_get_object_info(acpi_handle handle,
 {
 	struct acpi_namespace_node *node;
 	struct acpi_device_info *info;
+<<<<<<< HEAD
 	struct acpica_device_id_list *cid_list = NULL;
 	struct acpica_device_id *hid = NULL;
 	struct acpica_device_id *uid = NULL;
+=======
+	struct acpi_pnp_device_id_list *cid_list = NULL;
+	struct acpi_pnp_device_id *hid = NULL;
+	struct acpi_pnp_device_id *uid = NULL;
+	struct acpi_pnp_device_id *sub = NULL;
+>>>>>>> refs/remotes/origin/master
 	char *next_id_string;
 	acpi_object_type type;
 	acpi_name name;
@@ -288,7 +380,11 @@ acpi_get_object_info(acpi_handle handle,
 
 	status = acpi_ut_acquire_mutex(ACPI_MTX_NAMESPACE);
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 		goto cleanup;
+=======
+		return (status);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	node = acpi_ns_validate_handle(handle);
@@ -315,7 +411,11 @@ acpi_get_object_info(acpi_handle handle,
 	if ((type == ACPI_TYPE_DEVICE) || (type == ACPI_TYPE_PROCESSOR)) {
 		/*
 		 * Get extra info for ACPI Device/Processor objects only:
+<<<<<<< HEAD
 		 * Run the Device _HID, _UID, and _CID methods.
+=======
+		 * Run the Device _HID, _UID, _SUB, and _CID methods.
+>>>>>>> refs/remotes/origin/master
 		 *
 		 * Note: none of these methods are required, so they may or may
 		 * not be present for this device. The Info->Valid bitfield is used
@@ -338,6 +438,17 @@ acpi_get_object_info(acpi_handle handle,
 			valid |= ACPI_VALID_UID;
 		}
 
+<<<<<<< HEAD
+=======
+		/* Execute the Device._SUB method */
+
+		status = acpi_ut_execute_SUB(node, &sub);
+		if (ACPI_SUCCESS(status)) {
+			info_size += sub->length;
+			valid |= ACPI_VALID_SUB;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		/* Execute the Device._CID method */
 
 		status = acpi_ut_execute_CID(node, &cid_list);
@@ -347,7 +458,11 @@ acpi_get_object_info(acpi_handle handle,
 
 			info_size +=
 			    (cid_list->list_size -
+<<<<<<< HEAD
 			     sizeof(struct acpica_device_id_list));
+=======
+			     sizeof(struct acpi_pnp_device_id_list));
+>>>>>>> refs/remotes/origin/master
 			valid |= ACPI_VALID_CID;
 		}
 	}
@@ -369,9 +484,20 @@ acpi_get_object_info(acpi_handle handle,
 		 * Get extra info for ACPI Device/Processor objects only:
 		 * Run the _STA, _ADR and, sx_w, and _sx_d methods.
 		 *
+<<<<<<< HEAD
 		 * Note: none of these methods are required, so they may or may
 		 * not be present for this device. The Info->Valid bitfield is used
 		 * to indicate which methods were found and run successfully.
+=======
+		 * Notes: none of these methods are required, so they may or may
+		 * not be present for this device. The Info->Valid bitfield is used
+		 * to indicate which methods were found and run successfully.
+		 *
+		 * For _STA, if the method does not exist, then (as per the ACPI
+		 * specification), the returned current_status flags will indicate
+		 * that the device is present/functional/enabled. Otherwise, the
+		 * current_status flags reflect the value returned from _STA.
+>>>>>>> refs/remotes/origin/master
 		 */
 
 		/* Execute the Device._STA method */
@@ -417,6 +543,7 @@ acpi_get_object_info(acpi_handle handle,
 	next_id_string = ACPI_CAST_PTR(char, info->compatible_id_list.ids);
 	if (cid_list) {
 
+<<<<<<< HEAD
 		/* Point past the CID DEVICE_ID array */
 
 		next_id_string +=
@@ -427,6 +554,19 @@ acpi_get_object_info(acpi_handle handle,
 	/*
 	 * Copy the HID, UID, and CIDs to the return buffer. The variable-length
 	 * strings are copied to the reserved area at the end of the buffer.
+=======
+		/* Point past the CID PNP_DEVICE_ID array */
+
+		next_id_string +=
+		    ((acpi_size) cid_list->count *
+		     sizeof(struct acpi_pnp_device_id));
+	}
+
+	/*
+	 * Copy the HID, UID, SUB, and CIDs to the return buffer.
+	 * The variable-length strings are copied to the reserved area
+	 * at the end of the buffer.
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * For HID and CID, check if the ID is a PCI Root Bridge.
 	 */
@@ -444,6 +584,14 @@ acpi_get_object_info(acpi_handle handle,
 							uid, next_id_string);
 	}
 
+<<<<<<< HEAD
+=======
+	if (sub) {
+		next_id_string = acpi_ns_copy_device_id(&info->subsystem_id,
+							sub, next_id_string);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (cid_list) {
 		info->compatible_id_list.count = cid_list->count;
 		info->compatible_id_list.list_size = cid_list->list_size;
@@ -473,13 +621,23 @@ acpi_get_object_info(acpi_handle handle,
 	*return_buffer = info;
 	status = AE_OK;
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	if (hid) {
 		ACPI_FREE(hid);
 	}
 	if (uid) {
 		ACPI_FREE(uid);
 	}
+<<<<<<< HEAD
+=======
+	if (sub) {
+		ACPI_FREE(sub);
+	}
+>>>>>>> refs/remotes/origin/master
 	if (cid_list) {
 		ACPI_FREE(cid_list);
 	}
@@ -492,7 +650,11 @@ ACPI_EXPORT_SYMBOL(acpi_get_object_info)
  *
  * FUNCTION:    acpi_install_method
  *
+<<<<<<< HEAD
  * PARAMETERS:  Buffer         - An ACPI table containing one control method
+=======
+ * PARAMETERS:  buffer         - An ACPI table containing one control method
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -520,14 +682,22 @@ acpi_status acpi_install_method(u8 *buffer)
 	/* Parameter validation */
 
 	if (!buffer) {
+<<<<<<< HEAD
 		return AE_BAD_PARAMETER;
+=======
+		return (AE_BAD_PARAMETER);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Table must be a DSDT or SSDT */
 
 	if (!ACPI_COMPARE_NAME(table->signature, ACPI_SIG_DSDT) &&
 	    !ACPI_COMPARE_NAME(table->signature, ACPI_SIG_SSDT)) {
+<<<<<<< HEAD
 		return AE_BAD_HEADER;
+=======
+		return (AE_BAD_HEADER);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* First AML opcode in the table must be a control method */
@@ -535,7 +705,11 @@ acpi_status acpi_install_method(u8 *buffer)
 	parser_state.aml = buffer + sizeof(struct acpi_table_header);
 	opcode = acpi_ps_peek_opcode(&parser_state);
 	if (opcode != AML_METHOD_OP) {
+<<<<<<< HEAD
 		return AE_BAD_PARAMETER;
+=======
+		return (AE_BAD_PARAMETER);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Extract method information from the raw AML */
@@ -553,13 +727,21 @@ acpi_status acpi_install_method(u8 *buffer)
 	 */
 	aml_buffer = ACPI_ALLOCATE(aml_length);
 	if (!aml_buffer) {
+<<<<<<< HEAD
 		return AE_NO_MEMORY;
+=======
+		return (AE_NO_MEMORY);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	method_obj = acpi_ut_create_internal_object(ACPI_TYPE_METHOD);
 	if (!method_obj) {
 		ACPI_FREE(aml_buffer);
+<<<<<<< HEAD
 		return AE_NO_MEMORY;
+=======
+		return (AE_NO_MEMORY);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Lock namespace for acpi_ns_lookup, we may be creating a new node */
@@ -625,12 +807,20 @@ acpi_status acpi_install_method(u8 *buffer)
 	/* Remove local reference to the method object */
 
 	acpi_ut_remove_reference(method_obj);
+<<<<<<< HEAD
 	return status;
+=======
+	return (status);
+>>>>>>> refs/remotes/origin/master
 
 error_exit:
 
 	ACPI_FREE(aml_buffer);
 	ACPI_FREE(method_obj);
+<<<<<<< HEAD
 	return status;
+=======
+	return (status);
+>>>>>>> refs/remotes/origin/master
 }
 ACPI_EXPORT_SYMBOL(acpi_install_method)

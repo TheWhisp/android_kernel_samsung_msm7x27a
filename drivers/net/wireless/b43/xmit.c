@@ -6,7 +6,15 @@
 
   Copyright (C) 2005 Martin Langer <martin-langer@gmx.de>
   Copyright (C) 2005 Stefano Brivio <stefano.brivio@polimi.it>
+<<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (C) 2005, 2006 Michael Buesch <mb@bu3sch.de>
+=======
+  Copyright (C) 2005, 2006 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Copyright (C) 2005, 2006 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
   Copyright (C) 2005 Danny van Dyk <kugelfang@gentoo.org>
   Copyright (C) 2005 Andreas Jaggi <andreas.jaggi@waterwave.ch>
 
@@ -175,6 +183,14 @@ void b43_generate_plcp_hdr(struct b43_plcp_hdr4 *plcp,
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* TODO: verify if needed for SSLPN or LCN  */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* TODO: verify if needed for SSLPN or LCN  */
+>>>>>>> refs/remotes/origin/master
 static u16 b43_generate_tx_phy_ctl1(struct b43_wldev *dev, u8 bitrate)
 {
 	const struct b43_phy *phy = &dev->phy;
@@ -256,6 +272,18 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 	unsigned int plcp_fragment_len;
 	u32 mac_ctl = 0;
 	u16 phy_ctl = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool fill_phy_ctl1 = (phy->type == B43_PHYTYPE_LP ||
+			      phy->type == B43_PHYTYPE_N ||
+			      phy->type == B43_PHYTYPE_HT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool fill_phy_ctl1 = (phy->type == B43_PHYTYPE_LP ||
+			      phy->type == B43_PHYTYPE_N ||
+			      phy->type == B43_PHYTYPE_HT);
+>>>>>>> refs/remotes/origin/master
 	u8 extra_ft = 0;
 	struct ieee80211_rate *txrate;
 	struct ieee80211_tx_rate *rates;
@@ -274,7 +302,11 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 	else
 		txhdr->phy_rate = b43_plcp_get_ratecode_cck(rate);
 	txhdr->mac_frame_ctl = wlhdr->frame_control;
+<<<<<<< HEAD
 	memcpy(txhdr->tx_receiver, wlhdr->addr1, 6);
+=======
+	memcpy(txhdr->tx_receiver, wlhdr->addr1, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	/* Calculate duration for fallback rate */
 	if ((rate_fb == rate) ||
@@ -286,7 +318,12 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 		txhdr->dur_fb = wlhdr->duration_id;
 	} else {
 		txhdr->dur_fb = ieee80211_generic_frame_duration(
+<<<<<<< HEAD
 			dev->wl->hw, info->control.vif, fragment_len, fbrate);
+=======
+			dev->wl->hw, info->control.vif, info->band,
+			fragment_len, fbrate);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	plcp_fragment_len = fragment_len + FCS_LEN;
@@ -323,8 +360,16 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 			/* we give the phase1key and iv16 here, the key is stored in
 			 * shm. With that the hardware can do phase 2 and encryption.
 			 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ieee80211_get_tkip_key(info->control.hw_key, skb_frag,
 					IEEE80211_TKIP_P1_KEY, (u8*)phase1key);
+=======
+			ieee80211_get_tkip_p1k(info->control.hw_key, skb_frag, phase1key);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ieee80211_get_tkip_p1k(info->control.hw_key, skb_frag, phase1key);
+>>>>>>> refs/remotes/origin/master
 			/* phase1key is in host endian. Copy to little-endian txhdr->iv. */
 			for (i = 0; i < 5; i++) {
 				txhdr->iv[i * 2 + 0] = phase1key[i];
@@ -338,12 +383,34 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 			memcpy(txhdr->iv, ((u8 *) wlhdr) + wlhdr_len, iv_len);
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (b43_is_old_txhdr_format(dev)) {
 		b43_generate_plcp_hdr((struct b43_plcp_hdr4 *)(&txhdr->old_format.plcp),
 				      plcp_fragment_len, rate);
 	} else {
 		b43_generate_plcp_hdr((struct b43_plcp_hdr4 *)(&txhdr->new_format.plcp),
 				      plcp_fragment_len, rate);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (dev->fw.hdr_format) {
+	case B43_FW_HDR_598:
+		b43_generate_plcp_hdr((struct b43_plcp_hdr4 *)(&txhdr->format_598.plcp),
+				      plcp_fragment_len, rate);
+		break;
+	case B43_FW_HDR_351:
+		b43_generate_plcp_hdr((struct b43_plcp_hdr4 *)(&txhdr->format_351.plcp),
+				      plcp_fragment_len, rate);
+		break;
+	case B43_FW_HDR_410:
+		b43_generate_plcp_hdr((struct b43_plcp_hdr4 *)(&txhdr->format_410.plcp),
+				      plcp_fragment_len, rate);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	b43_generate_plcp_hdr((struct b43_plcp_hdr4 *)(&txhdr->plcp_fb),
 			      plcp_fragment_len, rate_fb);
@@ -368,7 +435,11 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 	if (info->control.rates[0].flags & IEEE80211_TX_RC_USE_SHORT_PREAMBLE)
 		phy_ctl |= B43_TXH_PHY_SHORTPRMBL;
 
+<<<<<<< HEAD
 	switch (b43_ieee80211_antenna_sanitize(dev, info->antenna_sel_tx)) {
+=======
+	switch (b43_ieee80211_antenna_sanitize(dev, 0)) {
+>>>>>>> refs/remotes/origin/master
 	case 0: /* Default */
 		phy_ctl |= B43_TXH_PHY_ANT01AUTO;
 		break;
@@ -416,10 +487,23 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 	if ((rates[0].flags & IEEE80211_TX_RC_USE_RTS_CTS) ||
 	    (rates[0].flags & IEEE80211_TX_RC_USE_CTS_PROTECT)) {
 		unsigned int len;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct ieee80211_hdr *hdr;
 		int rts_rate, rts_rate_fb;
 		int rts_rate_ofdm, rts_rate_fb_ofdm;
 		struct b43_plcp_hdr6 *plcp;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		struct ieee80211_hdr *uninitialized_var(hdr);
+		int rts_rate, rts_rate_fb;
+		int rts_rate_ofdm, rts_rate_fb_ofdm;
+		struct b43_plcp_hdr6 *uninitialized_var(plcp);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ieee80211_rate *rts_cts_rate;
 
 		rts_cts_rate = ieee80211_get_rts_cts_rate(dev->wl->hw, info);
@@ -430,6 +514,8 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 		rts_rate_fb_ofdm = b43_is_ofdm_rate(rts_rate_fb);
 
 		if (rates[0].flags & IEEE80211_TX_RC_USE_CTS_PROTECT) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			struct ieee80211_cts *cts;
 
 			if (b43_is_old_txhdr_format(dev)) {
@@ -438,6 +524,28 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 			} else {
 				cts = (struct ieee80211_cts *)
 					(txhdr->new_format.rts_frame);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			struct ieee80211_cts *uninitialized_var(cts);
+
+			switch (dev->fw.hdr_format) {
+			case B43_FW_HDR_598:
+				cts = (struct ieee80211_cts *)
+					(txhdr->format_598.rts_frame);
+				break;
+			case B43_FW_HDR_351:
+				cts = (struct ieee80211_cts *)
+					(txhdr->format_351.rts_frame);
+				break;
+			case B43_FW_HDR_410:
+				cts = (struct ieee80211_cts *)
+					(txhdr->format_410.rts_frame);
+				break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			ieee80211_ctstoself_get(dev->wl->hw, info->control.vif,
 						fragment_data, fragment_len,
@@ -445,6 +553,8 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 			mac_ctl |= B43_TXH_MAC_SENDCTS;
 			len = sizeof(struct ieee80211_cts);
 		} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			struct ieee80211_rts *rts;
 
 			if (b43_is_old_txhdr_format(dev)) {
@@ -453,6 +563,28 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 			} else {
 				rts = (struct ieee80211_rts *)
 					(txhdr->new_format.rts_frame);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			struct ieee80211_rts *uninitialized_var(rts);
+
+			switch (dev->fw.hdr_format) {
+			case B43_FW_HDR_598:
+				rts = (struct ieee80211_rts *)
+					(txhdr->format_598.rts_frame);
+				break;
+			case B43_FW_HDR_351:
+				rts = (struct ieee80211_rts *)
+					(txhdr->format_351.rts_frame);
+				break;
+			case B43_FW_HDR_410:
+				rts = (struct ieee80211_rts *)
+					(txhdr->format_410.rts_frame);
+				break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			ieee80211_rts_get(dev->wl->hw, info->control.vif,
 					  fragment_data, fragment_len,
@@ -463,22 +595,64 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 		len += FCS_LEN;
 
 		/* Generate the PLCP headers for the RTS/CTS frame */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (b43_is_old_txhdr_format(dev))
 			plcp = &txhdr->old_format.rts_plcp;
 		else
 			plcp = &txhdr->new_format.rts_plcp;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		switch (dev->fw.hdr_format) {
+		case B43_FW_HDR_598:
+			plcp = &txhdr->format_598.rts_plcp;
+			break;
+		case B43_FW_HDR_351:
+			plcp = &txhdr->format_351.rts_plcp;
+			break;
+		case B43_FW_HDR_410:
+			plcp = &txhdr->format_410.rts_plcp;
+			break;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		b43_generate_plcp_hdr((struct b43_plcp_hdr4 *)plcp,
 				      len, rts_rate);
 		plcp = &txhdr->rts_plcp_fb;
 		b43_generate_plcp_hdr((struct b43_plcp_hdr4 *)plcp,
 				      len, rts_rate_fb);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (b43_is_old_txhdr_format(dev)) {
 			hdr = (struct ieee80211_hdr *)
 				(&txhdr->old_format.rts_frame);
 		} else {
 			hdr = (struct ieee80211_hdr *)
 				(&txhdr->new_format.rts_frame);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		switch (dev->fw.hdr_format) {
+		case B43_FW_HDR_598:
+			hdr = (struct ieee80211_hdr *)
+				(&txhdr->format_598.rts_frame);
+			break;
+		case B43_FW_HDR_351:
+			hdr = (struct ieee80211_hdr *)
+				(&txhdr->format_351.rts_frame);
+			break;
+		case B43_FW_HDR_410:
+			hdr = (struct ieee80211_hdr *)
+				(&txhdr->format_410.rts_frame);
+			break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		txhdr->rts_dur_fb = hdr->duration_id;
 
@@ -497,7 +671,15 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 			extra_ft |= B43_TXH_EFT_RTSFB_CCK;
 
 		if (rates[0].flags & IEEE80211_TX_RC_USE_RTS_CTS &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    phy->type == B43_PHYTYPE_N) {
+=======
+		    fill_phy_ctl1) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    fill_phy_ctl1) {
+>>>>>>> refs/remotes/origin/master
 			txhdr->phy_ctl1_rts = cpu_to_le16(
 				b43_generate_tx_phy_ctl1(dev, rts_rate));
 			txhdr->phy_ctl1_rts_fb = cpu_to_le16(
@@ -506,12 +688,34 @@ int b43_generate_txhdr(struct b43_wldev *dev,
 	}
 
 	/* Magic cookie */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (b43_is_old_txhdr_format(dev))
 		txhdr->old_format.cookie = cpu_to_le16(cookie);
 	else
 		txhdr->new_format.cookie = cpu_to_le16(cookie);
 
 	if (phy->type == B43_PHYTYPE_N) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (dev->fw.hdr_format) {
+	case B43_FW_HDR_598:
+		txhdr->format_598.cookie = cpu_to_le16(cookie);
+		break;
+	case B43_FW_HDR_351:
+		txhdr->format_351.cookie = cpu_to_le16(cookie);
+		break;
+	case B43_FW_HDR_410:
+		txhdr->format_410.cookie = cpu_to_le16(cookie);
+		break;
+	}
+
+	if (fill_phy_ctl1) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		txhdr->phy_ctl1 =
 			cpu_to_le16(b43_generate_tx_phy_ctl1(dev, rate));
 		txhdr->phy_ctl1_fb =
@@ -547,7 +751,15 @@ static s8 b43_rssi_postprocess(struct b43_wldev *dev,
 			else
 				tmp -= 3;
 		} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (dev->sdev->bus->sprom.
+=======
+			if (dev->dev->bus_sprom->
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (dev->dev->bus_sprom->
+>>>>>>> refs/remotes/origin/master
 			    boardflags_lo & B43_BFL_RSSI) {
 				if (in_rssi > 63)
 					in_rssi = 63;
@@ -612,20 +824,57 @@ void b43_rx(struct b43_wldev *dev, struct sk_buff *skb, const void *_rxhdr)
 	struct ieee80211_hdr *wlhdr;
 	const struct b43_rxhdr_fw4 *rxhdr = _rxhdr;
 	__le16 fctl;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 phystat0, phystat3, chanstat, mactime;
 	u32 macstat;
+=======
+	u16 phystat0, phystat3;
+	u16 uninitialized_var(chanstat), uninitialized_var(mactime);
+	u32 uninitialized_var(macstat);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 chanid;
 	u16 phytype;
 	int padding;
+=======
+	u16 phystat0, phystat3;
+	u16 uninitialized_var(chanstat), uninitialized_var(mactime);
+	u32 uninitialized_var(macstat);
+	u16 chanid;
+	u16 phytype;
+	int padding, rate_idx;
+>>>>>>> refs/remotes/origin/master
 
 	memset(&status, 0, sizeof(status));
 
 	/* Get metadata about the frame from the header. */
 	phystat0 = le16_to_cpu(rxhdr->phy_status0);
 	phystat3 = le16_to_cpu(rxhdr->phy_status3);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	macstat = le32_to_cpu(rxhdr->mac_status);
 	mactime = le16_to_cpu(rxhdr->mac_time);
 	chanstat = le16_to_cpu(rxhdr->channel);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (dev->fw.hdr_format) {
+	case B43_FW_HDR_598:
+		macstat = le32_to_cpu(rxhdr->format_598.mac_status);
+		mactime = le16_to_cpu(rxhdr->format_598.mac_time);
+		chanstat = le16_to_cpu(rxhdr->format_598.channel);
+		break;
+	case B43_FW_HDR_410:
+	case B43_FW_HDR_351:
+		macstat = le32_to_cpu(rxhdr->format_351.mac_status);
+		mactime = le16_to_cpu(rxhdr->format_351.mac_time);
+		chanstat = le16_to_cpu(rxhdr->format_351.channel);
+		break;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	phytype = chanstat & B43_RX_CHAN_PHYTYPE;
 
 	if (unlikely(macstat & B43_RX_MAC_FCSERR)) {
@@ -683,16 +932,48 @@ void b43_rx(struct b43_wldev *dev, struct sk_buff *skb, const void *_rxhdr)
 	}
 
 	/* Link quality statistics */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((chanstat & B43_RX_CHAN_PHYTYPE) == B43_PHYTYPE_N) {
 //		s8 rssi = max(rxhdr->power0, rxhdr->power1);
 		//TODO: Find out what the rssi value is (dBm or percentage?)
 		//      and also find out what the maximum possible value is.
 		//      Fill status.ssi and status.signal fields.
 	} else {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (chanstat & B43_RX_CHAN_PHYTYPE) {
+	case B43_PHYTYPE_HT:
+		/* TODO: is max the right choice? */
+		status.signal = max_t(__s8,
+			max(rxhdr->phy_ht_power0, rxhdr->phy_ht_power1),
+			rxhdr->phy_ht_power2);
+		break;
+	case B43_PHYTYPE_N:
+		/* Broadcom has code for min and avg, but always uses max */
+		if (rxhdr->power0 == 16 || rxhdr->power0 == 32)
+			status.signal = max(rxhdr->power1, rxhdr->power2);
+		else
+			status.signal = max(rxhdr->power0, rxhdr->power1);
+		break;
+	case B43_PHYTYPE_A:
+	case B43_PHYTYPE_B:
+	case B43_PHYTYPE_G:
+	case B43_PHYTYPE_LP:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		status.signal = b43_rssi_postprocess(dev, rxhdr->jssi,
 						  (phystat0 & B43_RX_PHYST0_OFDM),
 						  (phystat0 & B43_RX_PHYST0_GAINCTL),
 						  (phystat3 & B43_RX_PHYST3_TRSTATE));
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (phystat0 & B43_RX_PHYST0_OFDM)
@@ -701,11 +982,26 @@ void b43_rx(struct b43_wldev *dev, struct sk_buff *skb, const void *_rxhdr)
 	else
 		status.rate_idx = b43_plcp_get_bitrate_idx_cck(plcp);
 	if (unlikely(status.rate_idx == -1)) {
+=======
+		break;
+	}
+
+	if (phystat0 & B43_RX_PHYST0_OFDM)
+		rate_idx = b43_plcp_get_bitrate_idx_ofdm(plcp,
+						phytype == B43_PHYTYPE_A);
+	else
+		rate_idx = b43_plcp_get_bitrate_idx_cck(plcp);
+	if (unlikely(rate_idx == -1)) {
+>>>>>>> refs/remotes/origin/master
 		/* PLCP seems to be corrupted.
 		 * Drop the frame, if we are not interested in corrupted frames. */
 		if (!(dev->wl->filter_flags & FIF_PLCPFAIL))
 			goto drop;
 	}
+<<<<<<< HEAD
+=======
+	status.rate_idx = rate_idx;
+>>>>>>> refs/remotes/origin/master
 	status.antenna = !!(phystat0 & B43_RX_PHYST0_ANT);
 
 	/*
@@ -725,7 +1021,11 @@ void b43_rx(struct b43_wldev *dev, struct sk_buff *skb, const void *_rxhdr)
 		status.mactime += mactime;
 		if (low_mactime_now <= mactime)
 			status.mactime -= 0x10000;
+<<<<<<< HEAD
 		status.flag |= RX_FLAG_MACTIME_MPDU;
+=======
+		status.flag |= RX_FLAG_MACTIME_START;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	chanid = (chanstat & B43_RX_CHAN_ID) >> B43_RX_CHAN_ID_SHIFT;
@@ -745,6 +1045,14 @@ void b43_rx(struct b43_wldev *dev, struct sk_buff *skb, const void *_rxhdr)
 		break;
 	case B43_PHYTYPE_N:
 	case B43_PHYTYPE_LP:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case B43_PHYTYPE_HT:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case B43_PHYTYPE_HT:
+>>>>>>> refs/remotes/origin/master
 		/* chanid is the SHM channel cookie. Which is the plain
 		 * channel number in b43. */
 		if (chanstat & B43_RX_CHAN_5GHZ) {
@@ -768,7 +1076,13 @@ void b43_rx(struct b43_wldev *dev, struct sk_buff *skb, const void *_rxhdr)
 #endif
 	return;
 drop:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	b43dbg(dev->wl, "RX: Packet dropped\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_kfree_skb_any(skb);
 }
 
@@ -805,7 +1119,15 @@ bool b43_fill_txstatus_report(struct b43_wldev *dev,
 			      struct ieee80211_tx_info *report,
 			      const struct b43_txstatus *status)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bool frame_success = 1;
+=======
+	bool frame_success = true;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool frame_success = true;
+>>>>>>> refs/remotes/origin/master
 	int retry_limit;
 
 	/* preserve the confiured retry limit before clearing the status
@@ -821,7 +1143,15 @@ bool b43_fill_txstatus_report(struct b43_wldev *dev,
 		/* The frame was not ACKed... */
 		if (!(report->flags & IEEE80211_TX_CTL_NO_ACK)) {
 			/* ...but we expected an ACK. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			frame_success = 0;
+=======
+			frame_success = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			frame_success = false;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (status->frame_count == 0) {

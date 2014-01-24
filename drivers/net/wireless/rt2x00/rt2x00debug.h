@@ -65,6 +65,10 @@ struct rt2x00debug {
 	RT2X00DEBUGFS_REGISTER_ENTRY(eeprom, u16);
 	RT2X00DEBUGFS_REGISTER_ENTRY(bbp, u8);
 	RT2X00DEBUGFS_REGISTER_ENTRY(rf, u32);
+<<<<<<< HEAD
+=======
+	RT2X00DEBUGFS_REGISTER_ENTRY(rfcsr, u8);
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* RT2X00DEBUG_H */

@@ -895,7 +895,11 @@ static int ch_probe(struct device *dev)
 {
 	struct scsi_device *sd = to_scsi_device(dev);
 	struct device *class_dev;
+<<<<<<< HEAD
 	int minor, ret = -ENOMEM;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	scsi_changer *ch;
 
 	if (sd->type != TYPE_MEDIUM_CHANGER)
@@ -905,6 +909,7 @@ static int ch_probe(struct device *dev)
 	if (NULL == ch)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	if (!idr_pre_get(&ch_index_idr, GFP_KERNEL))
 		goto free_ch;
 
@@ -921,6 +926,21 @@ static int ch_probe(struct device *dev)
 	}
 
 	ch->minor = minor;
+=======
+	idr_preload(GFP_KERNEL);
+	spin_lock(&ch_index_lock);
+	ret = idr_alloc(&ch_index_idr, ch, 0, CH_MAX_DEVS + 1, GFP_NOWAIT);
+	spin_unlock(&ch_index_lock);
+	idr_preload_end();
+
+	if (ret < 0) {
+		if (ret == -ENOSPC)
+			ret = -ENODEV;
+		goto free_ch;
+	}
+
+	ch->minor = ret;
+>>>>>>> refs/remotes/origin/master
 	sprintf(ch->name,"ch%d",ch->minor);
 
 	class_dev = device_create(ch_sysfs_class, dev,
@@ -944,7 +964,11 @@ static int ch_probe(struct device *dev)
 
 	return 0;
 remove_idr:
+<<<<<<< HEAD
 	idr_remove(&ch_index_idr, minor);
+=======
+	idr_remove(&ch_index_idr, ch->minor);
+>>>>>>> refs/remotes/origin/master
 free_ch:
 	kfree(ch);
 	return ret;

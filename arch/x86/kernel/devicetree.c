@@ -2,7 +2,19 @@
  * Architecture specific OF callbacks.
  */
 #include <linux/bootmem.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/io.h>
+=======
+#include <linux/export.h>
+#include <linux/io.h>
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/io.h>
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/list.h>
 #include <linux/of.h>
@@ -16,12 +28,17 @@
 #include <linux/initrd.h>
 
 #include <asm/hpet.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/irq_controller.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/apic.h>
 #include <asm/pci_x86.h>
 
 __initdata u64 initial_dtb;
 char __initdata cmd_line[COMMAND_LINE_SIZE];
+<<<<<<< HEAD
 static LIST_HEAD(irq_domains);
 static DEFINE_RAW_SPINLOCK(big_irq_lock);
 
@@ -74,6 +91,11 @@ unsigned int irq_create_of_mapping(struct device_node *controller,
 }
 EXPORT_SYMBOL_GPL(irq_create_of_mapping);
 
+=======
+
+int __initdata of_ioapic;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned long pci_address_to_pio(phys_addr_t address)
 {
 	/*
@@ -84,6 +106,17 @@ unsigned long pci_address_to_pio(phys_addr_t address)
 }
 EXPORT_SYMBOL_GPL(pci_address_to_pio);
 
+=======
+#include <asm/apic.h>
+#include <asm/pci_x86.h>
+#include <asm/setup.h>
+
+__initdata u64 initial_dtb;
+char __initdata cmd_line[COMMAND_LINE_SIZE];
+
+int __initdata of_ioapic;
+
+>>>>>>> refs/remotes/origin/master
 void __init early_init_dt_scan_chosen_arch(unsigned long node)
 {
 	BUG();
@@ -99,6 +132,7 @@ void * __init early_init_dt_alloc_memory_arch(u64 size, u64 align)
 	return __alloc_bootmem(size, align, __pa(MAX_DMA_ADDRESS));
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_BLK_DEV_INITRD
 void __init early_init_dt_setup_initrd_arch(unsigned long start,
 					    unsigned long end)
@@ -109,6 +143,8 @@ void __init early_init_dt_setup_initrd_arch(unsigned long start,
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __init add_dtb(u64 data)
 {
 	initial_dtb = data + offsetof(struct setup_data, data);
@@ -134,9 +170,38 @@ static int __init add_bus_probe(void)
 module_init(add_bus_probe);
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+{
+	struct device_node *np;
+
+	for_each_node_by_type(np, "pci") {
+		const void *prop;
+		unsigned int bus_min;
+
+		prop = of_get_property(np, "bus-range", NULL);
+		if (!prop)
+			continue;
+		bus_min = be32_to_cpup(prop);
+		if (bus->number == bus_min)
+			return np;
+	}
+	return NULL;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static int x86_of_pci_irq_enable(struct pci_dev *dev)
 {
 	struct of_irq oirq;
+=======
+static int x86_of_pci_irq_enable(struct pci_dev *dev)
+{
+>>>>>>> refs/remotes/origin/master
 	u32 virq;
 	int ret;
 	u8 pin;
@@ -147,12 +212,16 @@ static int x86_of_pci_irq_enable(struct pci_dev *dev)
 	if (!pin)
 		return 0;
 
+<<<<<<< HEAD
 	ret = of_irq_map_pci(dev, &oirq);
 	if (ret)
 		return ret;
 
 	virq = irq_create_of_mapping(oirq.controller, oirq.specifier,
 			oirq.size);
+=======
+	virq = of_irq_parse_and_map_pci(dev, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	if (virq == 0)
 		return -EINVAL;
 	dev->irq = virq;
@@ -163,8 +232,10 @@ static void x86_of_pci_irq_disable(struct pci_dev *dev)
 {
 }
 
+<<<<<<< HEAD
 void __cpuinit x86_of_pci_init(void)
 {
+<<<<<<< HEAD
 	struct device_node *np;
 
 	pcibios_enable_irq = x86_of_pci_irq_enable;
@@ -209,6 +280,16 @@ void __cpuinit x86_of_pci_init(void)
 			pci_dev_put(dev);
 		}
 	}
+=======
+	pcibios_enable_irq = x86_of_pci_irq_enable;
+	pcibios_disable_irq = x86_of_pci_irq_disable;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void x86_of_pci_init(void)
+{
+	pcibios_enable_irq = x86_of_pci_irq_enable;
+	pcibios_disable_irq = x86_of_pci_irq_disable;
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -303,7 +384,11 @@ static void __init dtb_apic_setup(void)
 static void __init x86_flattree_get_config(void)
 {
 	u32 size, map_len;
+<<<<<<< HEAD
 	void *new_dtb;
+=======
+	struct boot_param_header *dt;
+>>>>>>> refs/remotes/origin/master
 
 	if (!initial_dtb)
 		return;
@@ -311,6 +396,7 @@ static void __init x86_flattree_get_config(void)
 	map_len = max(PAGE_SIZE - (initial_dtb & ~PAGE_MASK),
 			(u64)sizeof(struct boot_param_header));
 
+<<<<<<< HEAD
 	initial_boot_params = early_memremap(initial_dtb, map_len);
 	size = be32_to_cpu(initial_boot_params->totalsize);
 	if (map_len < size) {
@@ -329,6 +415,19 @@ static void __init x86_flattree_get_config(void)
 	of_scan_flat_dt(early_init_dt_scan_root, NULL);
 
 	unflatten_device_tree();
+=======
+	dt = early_memremap(initial_dtb, map_len);
+	size = be32_to_cpu(dt->totalsize);
+	if (map_len < size) {
+		early_iounmap(dt, map_len);
+		dt = early_memremap(initial_dtb, size);
+		map_len = size;
+	}
+
+	initial_boot_params = dt;
+	unflatten_and_copy_device_tree();
+	early_iounmap(dt, map_len);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static inline void x86_flattree_get_config(void) { }
@@ -377,6 +476,8 @@ static struct of_ioapic_type of_ioapic_type[] =
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ioapic_xlate(struct irq_domain *id, const u32 *intspec, u32 intsize,
 			u32 *out_hwirq, u32 *out_type)
 {
@@ -407,6 +508,89 @@ static int ioapic_xlate(struct irq_domain *id, const u32 *intspec, u32 intsize,
 	return io_apic_setup_irq_pin_once(*out_hwirq, cpu_to_node(0), &attr);
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int ioapic_xlate(struct irq_domain *domain,
+			struct device_node *controller,
+			const u32 *intspec, u32 intsize,
+			irq_hw_number_t *out_hwirq, u32 *out_type)
+{
+	struct io_apic_irq_attr attr;
+	struct of_ioapic_type *it;
+	u32 line, idx;
+	int rc;
+
+	if (WARN_ON(intsize < 2))
+		return -EINVAL;
+
+	line = intspec[0];
+
+	if (intspec[1] >= ARRAY_SIZE(of_ioapic_type))
+		return -EINVAL;
+
+	it = &of_ioapic_type[intspec[1]];
+
+	idx = (u32) domain->host_data;
+	set_io_apic_irq_attr(&attr, idx, line, it->trigger, it->polarity);
+
+	rc = io_apic_setup_irq_pin_once(irq_find_mapping(domain, line),
+					cpu_to_node(0), &attr);
+	if (rc)
+		return rc;
+
+	*out_hwirq = line;
+	*out_type = it->out_type;
+	return 0;
+}
+
+const struct irq_domain_ops ioapic_irq_domain_ops = {
+	.xlate = ioapic_xlate,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void dt_add_ioapic_domain(unsigned int ioapic_num,
+		struct device_node *np)
+{
+	struct irq_domain *id;
+	struct mp_ioapic_gsi *gsi_cfg;
+	int ret;
+	int num;
+
+	gsi_cfg = mp_ioapic_gsi_routing(ioapic_num);
+	num = gsi_cfg->gsi_end - gsi_cfg->gsi_base + 1;
+
+	id = irq_domain_add_linear(np, num, &ioapic_irq_domain_ops,
+			(void *)ioapic_num);
+	BUG_ON(!id);
+	if (gsi_cfg->gsi_base == 0) {
+		/*
+		 * The first NR_IRQS_LEGACY irq descs are allocated in
+		 * early_irq_init() and need just a mapping. The
+		 * remaining irqs need both. All of them are preallocated
+		 * and assigned so we can keep the 1:1 mapping which the ioapic
+		 * is having.
+		 */
+		irq_domain_associate_many(id, 0, 0, NR_IRQS_LEGACY);
+
+		if (num > NR_IRQS_LEGACY) {
+			ret = irq_create_strict_mappings(id, NR_IRQS_LEGACY,
+					NR_IRQS_LEGACY, num - NR_IRQS_LEGACY);
+			if (ret)
+				pr_err("Error creating mapping for the "
+						"remaining IRQs: %d\n", ret);
+		}
+		irq_set_default_host(id);
+	} else {
+		ret = irq_create_strict_mappings(id, gsi_cfg->gsi_base, 0, num);
+		if (ret)
+			pr_err("Error creating IRQ mapping: %d\n", ret);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static void __init ioapic_add_ofnode(struct device_node *np)
 {
 	struct resource r;
@@ -421,7 +605,9 @@ static void __init ioapic_add_ofnode(struct device_node *np)
 
 	for (i = 0; i < nr_ioapics; i++) {
 		if (r.start == mpc_ioapic_addr(i)) {
+<<<<<<< HEAD
 			struct irq_domain *id;
+<<<<<<< HEAD
 
 			id = kzalloc(sizeof(*id), GFP_KERNEL);
 			BUG_ON(!id);
@@ -429,6 +615,19 @@ static void __init ioapic_add_ofnode(struct device_node *np)
 			id->xlate = ioapic_xlate;
 			id->priv = (void *)i;
 			add_interrupt_host(id);
+=======
+			struct mp_ioapic_gsi *gsi_cfg;
+
+			gsi_cfg = mp_ioapic_gsi_routing(i);
+
+			id = irq_domain_add_legacy(np, 32, gsi_cfg->gsi_base, 0,
+						   &ioapic_irq_domain_ops,
+						   (void*)i);
+			BUG_ON(!id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dt_add_ioapic_domain(i, np);
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 	}

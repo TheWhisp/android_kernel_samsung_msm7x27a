@@ -34,7 +34,10 @@
 #include <linux/memblock.h>
 #include <linux/seq_file.h>
 #include <linux/console.h>
+<<<<<<< HEAD
 #include <linux/mca.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/root_dev.h>
 #include <linux/highmem.h>
 #include <linux/module.h>
@@ -50,6 +53,18 @@
 #include <asm/pci-direct.h>
 #include <linux/init_ohci1394_dma.h>
 #include <linux/kvm_para.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/dma-contiguous.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-contiguous.h>
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/dma-contiguous.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/errno.h>
 #include <linux/kernel.h>
@@ -68,12 +83,20 @@
 #include <linux/percpu.h>
 #include <linux/crash_dump.h>
 #include <linux/tboot.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <video/edid.h>
 
 #include <asm/mtrr.h>
 #include <asm/apic.h>
+<<<<<<< HEAD
 #include <asm/trampoline.h>
+=======
+#include <asm/realmode.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/e820.h>
 #include <asm/mpspec.h>
 #include <asm/setup.h>
@@ -81,7 +104,10 @@
 #include <asm/timer.h>
 #include <asm/i8259.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
 #include <asm/dmi.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io_apic.h>
 #include <asm/ist.h>
 #include <asm/setup_arch.h>
@@ -90,7 +116,13 @@
 #include <asm/processor.h>
 #include <asm/bugs.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/vsyscall.h>
 #include <asm/cpu.h>
 #include <asm/desc.h>
@@ -108,17 +140,28 @@
 #include <asm/topology.h>
 #include <asm/apicdef.h>
 #include <asm/amd_nb.h>
+<<<<<<< HEAD
 #ifdef CONFIG_X86_64
 #include <asm/numa_64.h>
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mce.h>
 #include <asm/alternative.h>
 #include <asm/prom.h>
 
 /*
+<<<<<<< HEAD
  * end_pfn only includes RAM, while max_pfn_mapped includes all e820 entries.
  * The direct mapping extends to max_pfn_mapped, so that we can directly access
  * apertures, ACPI and other tables without having to play with fixmaps.
+=======
+ * max_low_pfn_mapped: highest direct mapped pfn under 4GB
+ * max_pfn_mapped:     highest direct mapped pfn over 4GB
+ *
+ * The direct mapping only covers E820_RAM regions, so the ranges and gaps are
+ * represented by pfn_mapped
+>>>>>>> refs/remotes/origin/master
  */
 unsigned long max_low_pfn_mapped;
 unsigned long max_pfn_mapped;
@@ -143,11 +186,15 @@ int default_check_phys_apicid_present(int phys_apicid)
 }
 #endif
 
+<<<<<<< HEAD
 #ifndef CONFIG_DEBUG_BOOT_PARAMS
 struct boot_params __initdata boot_params;
 #else
 struct boot_params boot_params;
 #endif
+=======
+struct boot_params boot_params;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Machine setup..
@@ -176,6 +223,7 @@ static struct resource bss_resource = {
 
 #ifdef CONFIG_X86_32
 /* cpu data as detected by the assembly code in head.S */
+<<<<<<< HEAD
 struct cpuinfo_x86 new_cpu_data __cpuinitdata = {0, 0, 0, 0, -1, 1, 0, 0, -1};
 /* common cpu data for all cpus */
 struct cpuinfo_x86 boot_cpu_data __read_mostly = {0, 0, 0, 0, -1, 1, 0, 0, -1};
@@ -186,6 +234,16 @@ static void set_mca_bus(int x)
 	MCA_bus = x;
 #endif
 }
+=======
+struct cpuinfo_x86 new_cpu_data = {
+	.wp_works_ok = -1,
+};
+/* common cpu data for all cpus */
+struct cpuinfo_x86 boot_cpu_data __read_mostly = {
+	.wp_works_ok = -1,
+};
+EXPORT_SYMBOL(boot_cpu_data);
+>>>>>>> refs/remotes/origin/master
 
 unsigned int def_to_bigsmp;
 
@@ -214,9 +272,15 @@ EXPORT_SYMBOL(boot_cpu_data);
 
 
 #if !defined(CONFIG_X86_PAE) || defined(CONFIG_X86_64)
+<<<<<<< HEAD
 unsigned long mmu_cr4_features;
 #else
 unsigned long mmu_cr4_features = X86_CR4_PAE;
+=======
+__visible unsigned long mmu_cr4_features;
+#else
+__visible unsigned long mmu_cr4_features = X86_CR4_PAE;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* Boot loader ID and version as integers, for the benefit of proc_dointvec */
@@ -286,6 +350,7 @@ void * __init extend_brk(size_t size, size_t align)
 	return ret;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_64
 static void __init init_gbpages(void)
 {
@@ -298,6 +363,9 @@ static void __init init_gbpages(void)
 static inline void init_gbpages(void)
 {
 }
+=======
+#ifdef CONFIG_X86_32
+>>>>>>> refs/remotes/origin/master
 static void __init cleanup_highmap(void)
 {
 }
@@ -306,19 +374,54 @@ static void __init cleanup_highmap(void)
 static void __init reserve_brk(void)
 {
 	if (_brk_end > _brk_start)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		memblock_x86_reserve_range(__pa(_brk_start), __pa(_brk_end), "BRK");
+=======
+		memblock_reserve(__pa(_brk_start),
+				 __pa(_brk_end) - __pa(_brk_start));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memblock_reserve(__pa_symbol(_brk_start),
+				 _brk_end - _brk_start);
+>>>>>>> refs/remotes/origin/master
 
 	/* Mark brk area as locked down and no longer taking any
 	   new allocations */
 	_brk_start = 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_BLK_DEV_INITRD
 
+=======
+u64 relocated_ramdisk;
+
+#ifdef CONFIG_BLK_DEV_INITRD
+
+static u64 __init get_ramdisk_image(void)
+{
+	u64 ramdisk_image = boot_params.hdr.ramdisk_image;
+
+	ramdisk_image |= (u64)boot_params.ext_ramdisk_image << 32;
+
+	return ramdisk_image;
+}
+static u64 __init get_ramdisk_size(void)
+{
+	u64 ramdisk_size = boot_params.hdr.ramdisk_size;
+
+	ramdisk_size |= (u64)boot_params.ext_ramdisk_size << 32;
+
+	return ramdisk_size;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define MAX_MAP_CHUNK	(NR_FIX_BTMAPS << PAGE_SHIFT)
 static void __init relocate_initrd(void)
 {
 	/* Assume only end is not page aligned */
+<<<<<<< HEAD
 	u64 ramdisk_image = boot_params.hdr.ramdisk_image;
 	u64 ramdisk_size  = boot_params.hdr.ramdisk_size;
 	u64 area_size     = PAGE_ALIGN(ramdisk_size);
@@ -331,13 +434,21 @@ static void __init relocate_initrd(void)
 	ramdisk_here = memblock_find_in_range(0, end_of_lowmem, area_size,
 					 PAGE_SIZE);
 
+<<<<<<< HEAD
 	if (ramdisk_here == MEMBLOCK_ERROR)
+=======
+	if (!ramdisk_here)
+>>>>>>> refs/remotes/origin/cm-10.0
 		panic("Cannot find place for new RAMDISK of size %lld\n",
 			 ramdisk_size);
 
 	/* Note: this includes all the lowmem currently occupied by
 	   the initrd, we rely on that fact to keep the data intact. */
+<<<<<<< HEAD
 	memblock_x86_reserve_range(ramdisk_here, ramdisk_here + area_size, "NEW RAMDISK");
+=======
+	memblock_reserve(ramdisk_here, area_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 	initrd_start = ramdisk_here + PAGE_OFFSET;
 	initrd_end   = initrd_start + ramdisk_size;
 	printk(KERN_INFO "Allocated new RAMDISK: %08llx - %08llx\n",
@@ -356,6 +467,33 @@ static void __init relocate_initrd(void)
 	}
 
 	/* Copy the highmem portion of the initrd */
+=======
+	u64 ramdisk_image = get_ramdisk_image();
+	u64 ramdisk_size  = get_ramdisk_size();
+	u64 area_size     = PAGE_ALIGN(ramdisk_size);
+	unsigned long slop, clen, mapaddr;
+	char *p, *q;
+
+	/* We need to move the initrd down into directly mapped mem */
+	relocated_ramdisk = memblock_find_in_range(0, PFN_PHYS(max_pfn_mapped),
+						   area_size, PAGE_SIZE);
+
+	if (!relocated_ramdisk)
+		panic("Cannot find place for new RAMDISK of size %lld\n",
+		      ramdisk_size);
+
+	/* Note: this includes all the mem currently occupied by
+	   the initrd, we rely on that fact to keep the data intact. */
+	memblock_reserve(relocated_ramdisk, area_size);
+	initrd_start = relocated_ramdisk + PAGE_OFFSET;
+	initrd_end   = initrd_start + ramdisk_size;
+	printk(KERN_INFO "Allocated new RAMDISK: [mem %#010llx-%#010llx]\n",
+	       relocated_ramdisk, relocated_ramdisk + ramdisk_size - 1);
+
+	q = (char *)initrd_start;
+
+	/* Copy the initrd */
+>>>>>>> refs/remotes/origin/master
 	while (ramdisk_size) {
 		slop = ramdisk_image & ~PAGE_MASK;
 		clen = ramdisk_size;
@@ -369,6 +507,7 @@ static void __init relocate_initrd(void)
 		ramdisk_image += clen;
 		ramdisk_size  -= clen;
 	}
+<<<<<<< HEAD
 	/* high pages is not converted by early_res_to_bootmem */
 	ramdisk_image = boot_params.hdr.ramdisk_image;
 	ramdisk_size  = boot_params.hdr.ramdisk_size;
@@ -385,6 +524,37 @@ static void __init reserve_initrd(void)
 	u64 ramdisk_size  = boot_params.hdr.ramdisk_size;
 	u64 ramdisk_end   = PAGE_ALIGN(ramdisk_image + ramdisk_size);
 	u64 end_of_lowmem = max_low_pfn_mapped << PAGE_SHIFT;
+=======
+
+	ramdisk_image = get_ramdisk_image();
+	ramdisk_size  = get_ramdisk_size();
+	printk(KERN_INFO "Move RAMDISK from [mem %#010llx-%#010llx] to"
+		" [mem %#010llx-%#010llx]\n",
+		ramdisk_image, ramdisk_image + ramdisk_size - 1,
+		relocated_ramdisk, relocated_ramdisk + ramdisk_size - 1);
+}
+
+static void __init early_reserve_initrd(void)
+{
+	/* Assume only end is not page aligned */
+	u64 ramdisk_image = get_ramdisk_image();
+	u64 ramdisk_size  = get_ramdisk_size();
+	u64 ramdisk_end   = PAGE_ALIGN(ramdisk_image + ramdisk_size);
+
+	if (!boot_params.hdr.type_of_loader ||
+	    !ramdisk_image || !ramdisk_size)
+		return;		/* No initrd provided by bootloader */
+
+	memblock_reserve(ramdisk_image, ramdisk_end - ramdisk_image);
+}
+static void __init reserve_initrd(void)
+{
+	/* Assume only end is not page aligned */
+	u64 ramdisk_image = get_ramdisk_image();
+	u64 ramdisk_size  = get_ramdisk_size();
+	u64 ramdisk_end   = PAGE_ALIGN(ramdisk_image + ramdisk_size);
+	u64 mapped_size;
+>>>>>>> refs/remotes/origin/master
 
 	if (!boot_params.hdr.type_of_loader ||
 	    !ramdisk_image || !ramdisk_size)
@@ -392,8 +562,13 @@ static void __init reserve_initrd(void)
 
 	initrd_start = 0;
 
+<<<<<<< HEAD
 	if (ramdisk_size >= (end_of_lowmem>>1)) {
+<<<<<<< HEAD
 		memblock_x86_free_range(ramdisk_image, ramdisk_end);
+=======
+		memblock_free(ramdisk_image, ramdisk_end - ramdisk_image);
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "initrd too large to handle, "
 		       "disabling initrd\n");
 		return;
@@ -409,6 +584,20 @@ static void __init reserve_initrd(void)
 		 * don't need to reserve again, already reserved early
 		 * in i386_start_kernel
 		 */
+=======
+	mapped_size = memblock_mem_size(max_pfn_mapped);
+	if (ramdisk_size >= (mapped_size>>1))
+		panic("initrd too large to handle, "
+		       "disabling initrd (%lld needed, %lld available)\n",
+		       ramdisk_size, mapped_size>>1);
+
+	printk(KERN_INFO "RAMDISK: [mem %#010llx-%#010llx]\n", ramdisk_image,
+			ramdisk_end - 1);
+
+	if (pfn_range_is_mapped(PFN_DOWN(ramdisk_image),
+				PFN_DOWN(ramdisk_end))) {
+		/* All are mapped, easy case */
+>>>>>>> refs/remotes/origin/master
 		initrd_start = ramdisk_image + PAGE_OFFSET;
 		initrd_end = initrd_start + ramdisk_size;
 		return;
@@ -416,9 +605,22 @@ static void __init reserve_initrd(void)
 
 	relocate_initrd();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_x86_free_range(ramdisk_image, ramdisk_end);
+=======
+	memblock_free(ramdisk_image, ramdisk_end - ramdisk_image);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #else
+=======
+	memblock_free(ramdisk_image, ramdisk_end - ramdisk_image);
+}
+#else
+static void __init early_reserve_initrd(void)
+{
+}
+>>>>>>> refs/remotes/origin/master
 static void __init reserve_initrd(void)
 {
 }
@@ -427,6 +629,7 @@ static void __init reserve_initrd(void)
 static void __init parse_setup_data(void)
 {
 	struct setup_data *data;
+<<<<<<< HEAD
 	u64 pa_data;
 
 	if (boot_params.hdr.version < 0x0209)
@@ -434,11 +637,19 @@ static void __init parse_setup_data(void)
 	pa_data = boot_params.hdr.setup_data;
 	while (pa_data) {
 		u32 data_len, map_len;
+=======
+	u64 pa_data, pa_next;
+
+	pa_data = boot_params.hdr.setup_data;
+	while (pa_data) {
+		u32 data_len, map_len, data_type;
+>>>>>>> refs/remotes/origin/master
 
 		map_len = max(PAGE_SIZE - (pa_data & ~PAGE_MASK),
 			      (u64)sizeof(struct setup_data));
 		data = early_memremap(pa_data, map_len);
 		data_len = data->len + sizeof(struct setup_data);
+<<<<<<< HEAD
 		if (data_len > map_len) {
 			early_iounmap(data, map_len);
 			data = early_memremap(pa_data, data_len);
@@ -448,15 +659,34 @@ static void __init parse_setup_data(void)
 		switch (data->type) {
 		case SETUP_E820_EXT:
 			parse_e820_ext(data);
+=======
+		data_type = data->type;
+		pa_next = data->next;
+		early_iounmap(data, map_len);
+
+		switch (data_type) {
+		case SETUP_E820_EXT:
+			parse_e820_ext(pa_data, data_len);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case SETUP_DTB:
 			add_dtb(pa_data);
 			break;
+<<<<<<< HEAD
 		default:
 			break;
 		}
 		pa_data = data->next;
 		early_iounmap(data, map_len);
+=======
+		case SETUP_EFI:
+			parse_efi_setup(pa_data, data_len);
+			break;
+		default:
+			break;
+		}
+		pa_data = pa_next;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -466,8 +696,11 @@ static void __init e820_reserve_setup_data(void)
 	u64 pa_data;
 	int found = 0;
 
+<<<<<<< HEAD
 	if (boot_params.hdr.version < 0x0209)
 		return;
+=======
+>>>>>>> refs/remotes/origin/master
 	pa_data = boot_params.hdr.setup_data;
 	while (pa_data) {
 		data = early_memremap(pa_data, sizeof(*data));
@@ -490,15 +723,30 @@ static void __init memblock_x86_reserve_range_setup_data(void)
 {
 	struct setup_data *data;
 	u64 pa_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	char buf[32];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (boot_params.hdr.version < 0x0209)
 		return;
 	pa_data = boot_params.hdr.setup_data;
 	while (pa_data) {
 		data = early_memremap(pa_data, sizeof(*data));
+<<<<<<< HEAD
 		sprintf(buf, "setup data %x", data->type);
 		memblock_x86_reserve_range(pa_data, pa_data+sizeof(*data)+data->len, buf);
+=======
+		memblock_reserve(pa_data, sizeof(*data) + data->len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	pa_data = boot_params.hdr.setup_data;
+	while (pa_data) {
+		data = early_memremap(pa_data, sizeof(*data));
+		memblock_reserve(pa_data, sizeof(*data) + data->len);
+>>>>>>> refs/remotes/origin/master
 		pa_data = data->next;
 		early_iounmap(data, sizeof(*data));
 	}
@@ -510,6 +758,8 @@ static void __init memblock_x86_reserve_range_setup_data(void)
 
 #ifdef CONFIG_KEXEC
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long long get_total_mem(void)
 {
 	unsigned long long total;
@@ -519,6 +769,8 @@ static inline unsigned long long get_total_mem(void)
 	return total << PAGE_SHIFT;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Keep the crash kernel below this limit.  On 32 bits earlier kernels
  * would limit the kernel to the low 512 MiB due to mapping restrictions.
@@ -537,7 +789,11 @@ static void __init reserve_crashkernel(void)
 	unsigned long long crash_size, crash_base;
 	int ret;
 
+<<<<<<< HEAD
 	total_mem = get_total_mem();
+=======
+	total_mem = memblock_phys_mem_size();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = parse_crashkernel(boot_command_line, total_mem,
 			&crash_size, &crash_base);
@@ -548,16 +804,122 @@ static void __init reserve_crashkernel(void)
 	if (crash_base <= 0) {
 		const unsigned long long alignment = 16<<20;	/* 16M */
 
+=======
+/*
+ * Keep the crash kernel below this limit.  On 32 bits earlier kernels
+ * would limit the kernel to the low 512 MiB due to mapping restrictions.
+ * On 64bit, old kexec-tools need to under 896MiB.
+ */
+#ifdef CONFIG_X86_32
+# define CRASH_KERNEL_ADDR_LOW_MAX	(512 << 20)
+# define CRASH_KERNEL_ADDR_HIGH_MAX	(512 << 20)
+#else
+# define CRASH_KERNEL_ADDR_LOW_MAX	(896UL<<20)
+# define CRASH_KERNEL_ADDR_HIGH_MAX	MAXMEM
+#endif
+
+static void __init reserve_crashkernel_low(void)
+{
+#ifdef CONFIG_X86_64
+	const unsigned long long alignment = 16<<20;	/* 16M */
+	unsigned long long low_base = 0, low_size = 0;
+	unsigned long total_low_mem;
+	unsigned long long base;
+	bool auto_set = false;
+	int ret;
+
+	total_low_mem = memblock_mem_size(1UL<<(32-PAGE_SHIFT));
+	/* crashkernel=Y,low */
+	ret = parse_crashkernel_low(boot_command_line, total_low_mem,
+						&low_size, &base);
+	if (ret != 0) {
+		/*
+		 * two parts from lib/swiotlb.c:
+		 *	swiotlb size: user specified with swiotlb= or default.
+		 *	swiotlb overflow buffer: now is hardcoded to 32k.
+		 *		We round it to 8M for other buffers that
+		 *		may need to stay low too.
+		 */
+		low_size = swiotlb_size_or_default() + (8UL<<20);
+		auto_set = true;
+	} else {
+		/* passed with crashkernel=0,low ? */
+		if (!low_size)
+			return;
+	}
+
+	low_base = memblock_find_in_range(low_size, (1ULL<<32),
+					low_size, alignment);
+
+	if (!low_base) {
+		if (!auto_set)
+			pr_info("crashkernel low reservation failed - No suitable area found.\n");
+
+		return;
+	}
+
+	memblock_reserve(low_base, low_size);
+	pr_info("Reserving %ldMB of low memory at %ldMB for crashkernel (System low RAM: %ldMB)\n",
+			(unsigned long)(low_size >> 20),
+			(unsigned long)(low_base >> 20),
+			(unsigned long)(total_low_mem >> 20));
+	crashk_low_res.start = low_base;
+	crashk_low_res.end   = low_base + low_size - 1;
+	insert_resource(&iomem_resource, &crashk_low_res);
+#endif
+}
+
+static void __init reserve_crashkernel(void)
+{
+	const unsigned long long alignment = 16<<20;	/* 16M */
+	unsigned long long total_mem;
+	unsigned long long crash_size, crash_base;
+	bool high = false;
+	int ret;
+
+	total_mem = memblock_phys_mem_size();
+
+	/* crashkernel=XM */
+	ret = parse_crashkernel(boot_command_line, total_mem,
+			&crash_size, &crash_base);
+	if (ret != 0 || crash_size <= 0) {
+		/* crashkernel=X,high */
+		ret = parse_crashkernel_high(boot_command_line, total_mem,
+				&crash_size, &crash_base);
+		if (ret != 0 || crash_size <= 0)
+			return;
+		high = true;
+	}
+
+	/* 0 means: find the address automatically */
+	if (crash_base <= 0) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 *  kexec want bzImage is below CRASH_KERNEL_ADDR_MAX
 		 */
 		crash_base = memblock_find_in_range(alignment,
+<<<<<<< HEAD
 			       CRASH_KERNEL_ADDR_MAX, crash_size, alignment);
 
+<<<<<<< HEAD
 		if (crash_base == MEMBLOCK_ERROR) {
+=======
+		if (!crash_base) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			pr_info("crashkernel reservation failed - No suitable area found.\n");
 			return;
 		}
+=======
+					high ? CRASH_KERNEL_ADDR_HIGH_MAX :
+					       CRASH_KERNEL_ADDR_LOW_MAX,
+					crash_size, alignment);
+
+		if (!crash_base) {
+			pr_info("crashkernel reservation failed - No suitable area found.\n");
+			return;
+		}
+
+>>>>>>> refs/remotes/origin/master
 	} else {
 		unsigned long long start;
 
@@ -568,7 +930,15 @@ static void __init reserve_crashkernel(void)
 			return;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_x86_reserve_range(crash_base, crash_base + crash_size, "CRASH KERNEL");
+=======
+	memblock_reserve(crash_base, crash_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_reserve(crash_base, crash_size);
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "Reserving %ldMB of memory at %ldMB "
 			"for crashkernel (System RAM: %ldMB)\n",
@@ -579,6 +949,12 @@ static void __init reserve_crashkernel(void)
 	crashk_res.start = crash_base;
 	crashk_res.end   = crash_base + crash_size - 1;
 	insert_resource(&iomem_resource, &crashk_res);
+<<<<<<< HEAD
+=======
+
+	if (crash_base >= (1ULL<<32))
+		reserve_crashkernel_low();
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static void __init reserve_crashkernel(void)
@@ -626,17 +1002,38 @@ static __init void reserve_ibft_region(void)
 	addr = find_ibft_region(&size);
 
 	if (size)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		memblock_x86_reserve_range(addr, addr + size, "* ibft");
+=======
+		memblock_reserve(addr, size);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static unsigned reserve_low = CONFIG_X86_RESERVE_LOW << 10;
 
+<<<<<<< HEAD
+=======
+		memblock_reserve(addr, size);
+}
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static bool __init snb_gfx_workaround_needed(void)
 {
 #ifdef CONFIG_PCI
 	int i;
 	u16 vendor, devid;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static const u16 snb_ids[] = {
+=======
+	static const __initconst u16 snb_ids[] = {
+>>>>>>> refs/remotes/origin/master
+=======
+	static const u16 snb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 		0x0102,
 		0x0112,
 		0x0122,
@@ -669,7 +1066,15 @@ static bool __init snb_gfx_workaround_needed(void)
  */
 static void __init trim_snb_memory(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static const unsigned long bad_pages[] = {
+=======
+	static const __initconst unsigned long bad_pages[] = {
+>>>>>>> refs/remotes/origin/master
+=======
+	static const unsigned long bad_pages[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 		0x20050000,
 		0x20110000,
 		0x20130000,
@@ -688,7 +1093,15 @@ static void __init trim_snb_memory(void)
 	 * already been reserved.
 	 */
 	memblock_reserve(0, 1<<20);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < ARRAY_SIZE(bad_pages); i++) {
 		if (memblock_reserve(bad_pages[i], PAGE_SIZE))
 			printk(KERN_WARNING "failed to reserve 0x%08lx\n",
@@ -719,8 +1132,12 @@ static void __init trim_bios_range(void)
 	 * since some BIOSes are known to corrupt low memory.  See the
 	 * Kconfig help text for X86_RESERVE_LOW.
 	 */
+<<<<<<< HEAD
 	e820_update_range(0, ALIGN(reserve_low, PAGE_SIZE),
 			  E820_RAM, E820_RESERVED);
+=======
+	e820_update_range(0, PAGE_SIZE, E820_RAM, E820_RESERVED);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * special case: Some BIOSen report the PC BIOS
@@ -732,6 +1149,32 @@ static void __init trim_bios_range(void)
 	sanitize_e820_map(e820.map, ARRAY_SIZE(e820.map), &e820.nr_map);
 }
 
+<<<<<<< HEAD
+=======
+/* called before trim_bios_range() to spare extra sanitize */
+static void __init e820_add_kernel_range(void)
+{
+	u64 start = __pa_symbol(_text);
+	u64 size = __pa_symbol(_end) - start;
+
+	/*
+	 * Complain if .text .data and .bss are not marked as E820_RAM and
+	 * attempt to fix it by adding the range. We may have a confused BIOS,
+	 * or the user may have used memmap=exactmap or memmap=xxM$yyM to
+	 * exclude kernel range. If we really are running on top non-RAM,
+	 * we will crash later anyways.
+	 */
+	if (e820_all_mapped(start, start + size, E820_RAM))
+		return;
+
+	pr_warn(".text .data .bss are not marked as E820_RAM!\n");
+	e820_remove_range(start, size, E820_RAM, 0);
+	e820_add_region(start, size, E820_RAM);
+}
+
+static unsigned reserve_low = CONFIG_X86_RESERVE_LOW << 10;
+
+>>>>>>> refs/remotes/origin/master
 static int __init parse_reservelow(char *p)
 {
 	unsigned long long size;
@@ -754,6 +1197,28 @@ static int __init parse_reservelow(char *p)
 
 early_param("reservelow", parse_reservelow);
 
+<<<<<<< HEAD
+=======
+static void __init trim_low_memory_range(void)
+{
+	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
+}
+	
+/*
+ * Dump out kernel offset information on panic.
+ */
+static int
+dump_kernel_offset(struct notifier_block *self, unsigned long v, void *p)
+{
+	pr_emerg("Kernel Offset: 0x%lx from 0x%lx "
+		 "(relocation range: 0x%lx-0x%lx)\n",
+		 (unsigned long)&_text - __START_KERNEL, __START_KERNEL,
+		 __START_KERNEL_map, MODULES_VADDR-1);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Determine if we were loaded by an EFI loader.  If so, then we have also been
  * passed the efi memmap, systab, etc., so we should use these data structures
@@ -769,6 +1234,20 @@ early_param("reservelow", parse_reservelow);
 
 void __init setup_arch(char **cmdline_p)
 {
+<<<<<<< HEAD
+=======
+	memblock_reserve(__pa_symbol(_text),
+			 (unsigned long)__bss_stop - (unsigned long)_text);
+
+	early_reserve_initrd();
+
+	/*
+	 * At this point everything still needed from the boot loader
+	 * or BIOS or kernel text should be early reserved or marked not
+	 * RAM in e820. All other memory is free game.
+	 */
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_32
 	memcpy(&boot_cpu_data, &new_cpu_data, sizeof(new_cpu_data));
 	visws_early_detect();
@@ -806,7 +1285,10 @@ void __init setup_arch(char **cmdline_p)
 	apm_info.bios = boot_params.apm_bios_info;
 	ist_info = boot_params.ist_info;
 	if (boot_params.sys_desc_table.length != 0) {
+<<<<<<< HEAD
 		set_mca_bus(boot_params.sys_desc_table.table[3] & 0x2);
+=======
+>>>>>>> refs/remotes/origin/master
 		machine_id = boot_params.sys_desc_table.table[0];
 		machine_submodel_id = boot_params.sys_desc_table.table[1];
 		BIOS_revision = boot_params.sys_desc_table.table[2];
@@ -828,6 +1310,9 @@ void __init setup_arch(char **cmdline_p)
 #endif
 #ifdef CONFIG_EFI
 	if (!strncmp((char *)&boot_params.efi_info.efi_loader_signature,
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_X86_32
 		     "EL32",
 #else
@@ -837,6 +1322,28 @@ void __init setup_arch(char **cmdline_p)
 		efi_enabled = 1;
 		efi_memblock_x86_reserve_range();
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		     "EL32", 4)) {
+		set_bit(EFI_BOOT, &x86_efi_facility);
+	} else if (!strncmp((char *)&boot_params.efi_info.efi_loader_signature,
+		     "EL64", 4)) {
+		set_bit(EFI_BOOT, &x86_efi_facility);
+		set_bit(EFI_64BIT, &x86_efi_facility);
+	}
+
+	if (efi_enabled(EFI_BOOT))
+		efi_memblock_x86_reserve_range();
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	x86_init.oem.arch_setup();
@@ -844,8 +1351,11 @@ void __init setup_arch(char **cmdline_p)
 	iomem_resource.end = (1ULL << boot_cpu_data.x86_phys_bits) - 1;
 	setup_memory_map();
 	parse_setup_data();
+<<<<<<< HEAD
 	/* update the e820_saved too */
 	e820_reserve_setup_data();
+=======
+>>>>>>> refs/remotes/origin/master
 
 	copy_edd();
 
@@ -856,12 +1366,21 @@ void __init setup_arch(char **cmdline_p)
 	init_mm.end_data = (unsigned long) _edata;
 	init_mm.brk = _brk_end;
 
+<<<<<<< HEAD
 	code_resource.start = virt_to_phys(_text);
 	code_resource.end = virt_to_phys(_etext)-1;
 	data_resource.start = virt_to_phys(_etext);
 	data_resource.end = virt_to_phys(_edata)-1;
 	bss_resource.start = virt_to_phys(&__bss_start);
 	bss_resource.end = virt_to_phys(&__bss_stop)-1;
+=======
+	code_resource.start = __pa_symbol(_text);
+	code_resource.end = __pa_symbol(_etext)-1;
+	data_resource.start = __pa_symbol(_etext);
+	data_resource.end = __pa_symbol(_edata)-1;
+	bss_resource.start = __pa_symbol(__bss_start);
+	bss_resource.end = __pa_symbol(__bss_stop)-1;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CMDLINE_BOOL
 #ifdef CONFIG_CMDLINE_OVERRIDE
@@ -907,12 +1426,33 @@ void __init setup_arch(char **cmdline_p)
 		early_dump_pci_devices();
 #endif
 
+<<<<<<< HEAD
 	finish_e820_parsing();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (efi_enabled)
+=======
+	if (efi_enabled(EFI_BOOT))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (efi_enabled(EFI_BOOT))
+>>>>>>> refs/remotes/origin/cm-11.0
 		efi_init();
 
 	dmi_scan_machine();
+=======
+	/* update the e820_saved too */
+	e820_reserve_setup_data();
+	finish_e820_parsing();
+
+	if (efi_enabled(EFI_BOOT))
+		efi_init();
+
+	dmi_scan_machine();
+	dmi_memdev_walk();
+	dmi_set_dump_stack_arch_desc();
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * VMware detection requires dmi to be available, so this
@@ -927,6 +1467,10 @@ void __init setup_arch(char **cmdline_p)
 	insert_resource(&iomem_resource, &data_resource);
 	insert_resource(&iomem_resource, &bss_resource);
 
+<<<<<<< HEAD
+=======
+	e820_add_kernel_range();
+>>>>>>> refs/remotes/origin/master
 	trim_bios_range();
 #ifdef CONFIG_X86_32
 	if (ppro_with_ram_bug()) {
@@ -955,8 +1499,11 @@ void __init setup_arch(char **cmdline_p)
 	/* max_low_pfn get updated here */
 	find_low_pfn_range();
 #else
+<<<<<<< HEAD
 	num_physpages = max_pfn;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	check_x2apic();
 
 	/* How many end-of-memory variables you have, grandma! */
@@ -976,6 +1523,11 @@ void __init setup_arch(char **cmdline_p)
 
 	reserve_ibft_region();
 
+<<<<<<< HEAD
+=======
+	early_alloc_pgt_buf();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Need to conclude brk, before memblock_x86_fill()
 	 *  it could use memblock_find_in_range, could overlap with
@@ -985,14 +1537,30 @@ void __init setup_arch(char **cmdline_p)
 
 	cleanup_highmap();
 
+<<<<<<< HEAD
 	memblock.current_limit = get_max_mapped();
+=======
+	memblock_set_current_limit(ISA_END_ADDRESS);
+>>>>>>> refs/remotes/origin/master
 	memblock_x86_fill();
 
 	/*
 	 * The EFI specification says that boot service code won't be called
 	 * after ExitBootServices(). This is, in fact, a lie.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (efi_enabled)
+=======
+	if (efi_enabled(EFI_MEMMAP))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (efi_enabled(EFI_MEMMAP))
+>>>>>>> refs/remotes/origin/master
+=======
+	if (efi_enabled(EFI_MEMMAP))
+>>>>>>> refs/remotes/origin/cm-11.0
 		efi_reserve_boot_services();
 
 	/* preallocate 4k for mptable mpc */
@@ -1002,6 +1570,7 @@ void __init setup_arch(char **cmdline_p)
 	setup_bios_corruption_check();
 #endif
 
+<<<<<<< HEAD
 	printk(KERN_DEBUG "initial memory mapped : 0 - %08lx\n",
 			max_pfn_mapped<<PAGE_SHIFT);
 
@@ -1018,6 +1587,8 @@ void __init setup_arch(char **cmdline_p)
 #ifdef CONFIG_X86_64
 	if (max_pfn > max_low_pfn) {
 		int i;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < e820.nr_map; i++) {
 			struct e820entry *ei = &e820.map[i];
 
@@ -1030,6 +1601,26 @@ void __init setup_arch(char **cmdline_p)
 			max_pfn_mapped = init_memory_mapping(
 				ei->addr < 1UL << 32 ? 1UL << 32 : ei->addr,
 				ei->addr + ei->size);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		unsigned long start, end;
+		unsigned long start_pfn, end_pfn;
+
+		for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn,
+							 NULL) {
+
+			end = PFN_PHYS(end_pfn);
+			if (end <= (1UL<<32))
+				continue;
+
+			start = PFN_PHYS(start_pfn);
+			max_pfn_mapped = init_memory_mapping(
+						max((1UL<<32), start), end);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		/* can we preseve max_low_pfn ?*/
@@ -1037,6 +1628,34 @@ void __init setup_arch(char **cmdline_p)
 	}
 #endif
 	memblock.current_limit = get_max_mapped();
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dma_contiguous_reserve(0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_X86_32
+	printk(KERN_DEBUG "initial memory mapped: [mem 0x00000000-%#010lx]\n",
+			(max_pfn_mapped<<PAGE_SHIFT) - 1);
+#endif
+
+	reserve_real_mode();
+
+	trim_platform_memory_ranges();
+	trim_low_memory_range();
+
+	init_mem_mapping();
+
+	early_trap_pf_init();
+
+	setup_real_mode();
+
+	memblock_set_current_limit(get_max_low_mapped());
+	dma_contiguous_reserve(0);
+>>>>>>> refs/remotes/origin/master
+=======
+	dma_contiguous_reserve(0);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * NOTE: On x86-32, only from this point on, fixmaps are ready for use.
@@ -1051,7 +1670,13 @@ void __init setup_arch(char **cmdline_p)
 
 	reserve_initrd();
 
+<<<<<<< HEAD
 	reserve_crashkernel();
+=======
+#if defined(CONFIG_ACPI) && defined(CONFIG_BLK_DEV_INITRD)
+	acpi_initrd_override((void *)initrd_start, initrd_end - initrd_start);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	vsmp_init();
 
@@ -1065,6 +1690,7 @@ void __init setup_arch(char **cmdline_p)
 	early_acpi_boot_init();
 
 	initmem_init();
+<<<<<<< HEAD
 	memblock_find_dma_reserve();
 
 #ifdef CONFIG_KVM_CLOCK
@@ -1074,10 +1700,31 @@ void __init setup_arch(char **cmdline_p)
 	x86_init.paging.pagetable_setup_start(swapper_pg_dir);
 	paging_init();
 	x86_init.paging.pagetable_setup_done(swapper_pg_dir);
+=======
+
+	/*
+	 * Reserve memory for crash kernel after SRAT is parsed so that it
+	 * won't consume hotpluggable memory.
+	 */
+	reserve_crashkernel();
+
+	memblock_find_dma_reserve();
+
+#ifdef CONFIG_KVM_GUEST
+	kvmclock_init();
+#endif
+
+	x86_init.paging.pagetable_init();
+>>>>>>> refs/remotes/origin/master
 
 	if (boot_cpu_data.cpuid_level >= 0) {
 		/* A CPU has %cr4 if and only if it has CPUID */
 		mmu_cr4_features = read_cr4();
+<<<<<<< HEAD
+=======
+		if (trampoline_cr4_features)
+			*trampoline_cr4_features = mmu_cr4_features;
+>>>>>>> refs/remotes/origin/master
 	}
 
 #ifdef CONFIG_X86_32
@@ -1115,7 +1762,12 @@ void __init setup_arch(char **cmdline_p)
 	init_cpu_to_node();
 
 	init_apic_mappings();
+<<<<<<< HEAD
 	ioapic_and_gsi_init();
+=======
+	if (x86_io_apic_ops.init)
+		x86_io_apic_ops.init();
+>>>>>>> refs/remotes/origin/master
 
 	kvm_guest_init();
 
@@ -1128,7 +1780,19 @@ void __init setup_arch(char **cmdline_p)
 
 #ifdef CONFIG_VT
 #if defined(CONFIG_VGA_CONSOLE)
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!efi_enabled || (efi_mem_type(0xa0000) != EFI_CONVENTIONAL_MEMORY))
+=======
+	if (!efi_enabled(EFI_BOOT) || (efi_mem_type(0xa0000) != EFI_CONVENTIONAL_MEMORY))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!efi_enabled(EFI_BOOT) || (efi_mem_type(0xa0000) != EFI_CONVENTIONAL_MEMORY))
+>>>>>>> refs/remotes/origin/master
+=======
+	if (!efi_enabled(EFI_BOOT) || (efi_mem_type(0xa0000) != EFI_CONVENTIONAL_MEMORY))
+>>>>>>> refs/remotes/origin/cm-11.0
 		conswitchp = &vga_con;
 #elif defined(CONFIG_DUMMY_CONSOLE)
 	conswitchp = &dummy_con;
@@ -1138,9 +1802,55 @@ void __init setup_arch(char **cmdline_p)
 
 	x86_init.timers.wallclock_init();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mcheck_init();
 
 	arch_init_ideal_nops();
+=======
+	x86_platform.wallclock_init();
+
+	mcheck_init();
+
+	arch_init_ideal_nops();
+<<<<<<< HEAD
+=======
+	mcheck_init();
+
+	arch_init_ideal_nops();
+
+	register_refined_jiffies(CLOCK_TICK_RATE);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+#ifdef CONFIG_EFI
+	/* Once setup is done above, unmap the EFI memory map on
+	 * mismatched firmware/kernel archtectures since there is no
+	 * support for runtime services.
+	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+	if (efi_enabled(EFI_BOOT) &&
+	    IS_ENABLED(CONFIG_X86_64) != efi_enabled(EFI_64BIT)) {
+=======
+	if (efi_enabled(EFI_BOOT) && !efi_is_native()) {
+>>>>>>> refs/remotes/origin/master
+=======
+	if (efi_enabled(EFI_BOOT) &&
+	    IS_ENABLED(CONFIG_X86_64) != efi_enabled(EFI_64BIT)) {
+>>>>>>> refs/remotes/origin/cm-11.0
+		pr_info("efi: Setup done, disabling due to 32/64-bit mismatch\n");
+		efi_unmap_memmap();
+	}
+#endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_X86_32
@@ -1159,3 +1869,18 @@ void __init i386_reserve_resources(void)
 }
 
 #endif /* CONFIG_X86_32 */
+<<<<<<< HEAD
+=======
+
+static struct notifier_block kernel_offset_notifier = {
+	.notifier_call = dump_kernel_offset
+};
+
+static int __init register_kernel_offset_dumper(void)
+{
+	atomic_notifier_chain_register(&panic_notifier_list,
+					&kernel_offset_notifier);
+	return 0;
+}
+__initcall(register_kernel_offset_dumper);
+>>>>>>> refs/remotes/origin/master

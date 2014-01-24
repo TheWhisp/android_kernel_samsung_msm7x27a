@@ -20,6 +20,10 @@
 #include <linux/platform_device.h>
 #include <linux/bcd.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_VERSION		"1.0"
 
@@ -141,25 +145,45 @@ static const struct rtc_class_ops m48t35_ops = {
 	.set_time	= m48t35_set_time,
 };
 
+<<<<<<< HEAD
 static int __devinit m48t35_probe(struct platform_device *pdev)
 {
 	struct resource *res;
 	struct m48t35_priv *priv;
 	int ret = 0;
+=======
+static int m48t35_probe(struct platform_device *pdev)
+{
+	struct resource *res;
+	struct m48t35_priv *priv;
+>>>>>>> refs/remotes/origin/master
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
+<<<<<<< HEAD
 	priv = kzalloc(sizeof(struct m48t35_priv), GFP_KERNEL);
 	if (!priv)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	priv->size = res->end - res->start + 1;
+=======
+	priv->size = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv = devm_kzalloc(&pdev->dev, sizeof(struct m48t35_priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	priv->size = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * kludge: remove the #ifndef after ioc3 resource
 	 * conflicts are resolved
 	 */
 #ifndef CONFIG_SGI_IP27
+<<<<<<< HEAD
 	if (!request_mem_region(res->start, priv->size, pdev->name)) {
 		ret = -EBUSY;
 		goto out;
@@ -171,11 +195,22 @@ static int __devinit m48t35_probe(struct platform_device *pdev)
 		ret = -ENOMEM;
 		goto out;
 	}
+=======
+	if (!devm_request_mem_region(&pdev->dev, res->start, priv->size,
+				     pdev->name))
+		return -EBUSY;
+#endif
+	priv->baseaddr = res->start;
+	priv->reg = devm_ioremap(&pdev->dev, priv->baseaddr, priv->size);
+	if (!priv->reg)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&priv->lock);
 
 	platform_set_drvdata(pdev, priv);
 
+<<<<<<< HEAD
 	priv->rtc = rtc_device_register("m48t35", &pdev->dev,
 				  &m48t35_ops, THIS_MODULE);
 	if (IS_ERR(priv->rtc)) {
@@ -205,6 +240,11 @@ static int __devexit m48t35_remove(struct platform_device *pdev)
 #endif
 	kfree(priv);
 	return 0;
+=======
+	priv->rtc = devm_rtc_device_register(&pdev->dev, "m48t35",
+				  &m48t35_ops, THIS_MODULE);
+	return PTR_ERR_OR_ZERO(priv->rtc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver m48t35_platform_driver = {
@@ -213,9 +253,11 @@ static struct platform_driver m48t35_platform_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= m48t35_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(m48t35_remove),
 };
 
+<<<<<<< HEAD
 static int __init m48t35_init(void)
 {
 	return platform_driver_register(&m48t35_platform_driver);
@@ -225,12 +267,26 @@ static void __exit m48t35_exit(void)
 {
 	platform_driver_unregister(&m48t35_platform_driver);
 }
+=======
+module_platform_driver(m48t35_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_platform_driver(m48t35_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Thomas Bogendoerfer <tsbogend@alpha.franken.de>");
 MODULE_DESCRIPTION("M48T35 RTC driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 MODULE_ALIAS("platform:rtc-m48t35");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(m48t35_init);
 module_exit(m48t35_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

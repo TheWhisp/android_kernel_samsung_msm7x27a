@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,6 +26,14 @@
 #include <linux/types.h>	/* u32 */
 #include <linux/io.h>		/* ioread32() */
 #include <linux/bitops.h>	/* find_first_bit() */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "spsi.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "spsi.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Pipe mode */
 enum bam_pipe_mode {
@@ -39,6 +55,22 @@ enum bam_stream_mode {
 	BAM_STREAM_MODE_ENABLE = 1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* NWD written Type */
+enum bam_write_nwd {
+	BAM_WRITE_NWD_DISABLE = 0,
+	BAM_WRITE_NWD_ENABLE = 1,
+};
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Enable Type */
 enum bam_enable {
 	BAM_DISABLE = 0,
@@ -63,8 +95,21 @@ struct bam_pipe_parameters {
 	u32 pipe_irq_mask;
 	enum bam_pipe_dir dir;
 	enum bam_pipe_mode mode;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 desc_base;	/* Physical address of descriptor FIFO */
 	u32 desc_size;	/* Size (bytes) of descriptor FIFO */
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	enum bam_write_nwd write_nwd;
+	u32 desc_base;	/* Physical address of descriptor FIFO */
+	u32 desc_size;	/* Size (bytes) of descriptor FIFO */
+	u32 lock_group;	/* The lock group this pipe belongs to */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum bam_stream_mode stream_mode;
 	u32 ee;		/* BAM execution environment index */
 
@@ -157,10 +202,26 @@ void bam_exit(void *base, u32 ee);
  *
  * @mask - active pipes mask.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @return IRQ status
  *
  */
 u32 bam_check_irq_source(void *base, u32 ee, u32 mask);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ * @case - callback case.
+ *
+ * @return IRQ status
+ *
+ */
+u32 bam_check_irq_source(void *base, u32 ee, u32 mask,
+				enum sps_callback_case *cb_case);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /**
  * Initialize a BAM pipe

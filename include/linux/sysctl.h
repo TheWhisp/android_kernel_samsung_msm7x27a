@@ -18,6 +18,7 @@
  ****************************************************************
  ****************************************************************
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_SYSCTL_H
 #define _LINUX_SYSCTL_H
@@ -436,7 +437,11 @@ enum {
 	NET_IPV4_ROUTE_MAX_SIZE=5,
 	NET_IPV4_ROUTE_GC_MIN_INTERVAL=6,
 	NET_IPV4_ROUTE_GC_TIMEOUT=7,
+<<<<<<< HEAD
 	NET_IPV4_ROUTE_GC_INTERVAL=8,
+=======
+	NET_IPV4_ROUTE_GC_INTERVAL=8, /* obsolete since 2.6.38 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	NET_IPV4_ROUTE_REDIRECT_LOAD=9,
 	NET_IPV4_ROUTE_REDIRECT_NUMBER=10,
 	NET_IPV4_ROUTE_REDIRECT_SILENCE=11,
@@ -932,11 +937,28 @@ enum
 #ifdef __KERNEL__
 #include <linux/list.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
+=======
+#include <linux/wait.h>
+#include <linux/rbtree.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef _LINUX_SYSCTL_H
+#define _LINUX_SYSCTL_H
+
+#include <linux/list.h>
+#include <linux/rcupdate.h>
+#include <linux/wait.h>
+#include <linux/rbtree.h>
+#include <uapi/linux/sysctl.h>
+>>>>>>> refs/remotes/origin/master
 
 /* For the /proc/sys support */
 struct ctl_table;
 struct nsproxy;
 struct ctl_table_root;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 struct ctl_table_set {
 	struct list_head list;
@@ -960,6 +982,14 @@ extern struct ctl_table_header *__sysctl_head_next(struct nsproxy *namespaces,
 extern void sysctl_head_finish(struct ctl_table_header *prev);
 extern int sysctl_perm(struct ctl_table_root *root,
 		struct ctl_table *table, int op);
+=======
+struct ctl_table_header;
+struct ctl_dir;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct ctl_table_header;
+struct ctl_dir;
+>>>>>>> refs/remotes/origin/master
 
 typedef struct ctl_table ctl_table;
 
@@ -1012,20 +1042,62 @@ extern int proc_do_large_bitmap(struct ctl_table *, int,
  * cover common cases.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* Support for userspace poll() to watch for changes */
+struct ctl_table_poll {
+	atomic_t event;
+	wait_queue_head_t wait;
+};
+
+static inline void *proc_sys_poll_event(struct ctl_table_poll *poll)
+{
+	return (void *)(unsigned long)atomic_read(&poll->event);
+}
+
+#define __CTL_TABLE_POLL_INITIALIZER(name) {				\
+	.event = ATOMIC_INIT(0),					\
+	.wait = __WAIT_QUEUE_HEAD_INITIALIZER(name.wait) }
+
+#define DEFINE_CTL_TABLE_POLL(name)					\
+	struct ctl_table_poll name = __CTL_TABLE_POLL_INITIALIZER(name)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* A sysctl table is an array of struct ctl_table: */
 struct ctl_table 
 {
 	const char *procname;		/* Text ID for /proc/sys, or zero */
 	void *data;
 	int maxlen;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode;
 	struct ctl_table *child;
 	struct ctl_table *parent;	/* Automatically set */
 	proc_handler *proc_handler;	/* Callback for text formatting */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	umode_t mode;
+	struct ctl_table *child;	/* Deprecated */
+	proc_handler *proc_handler;	/* Callback for text formatting */
+	struct ctl_table_poll *poll;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void *extra1;
 	void *extra2;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct ctl_table_root {
 	struct list_head root_list;
 	struct ctl_table_set default_set;
@@ -1033,6 +1105,16 @@ struct ctl_table_root {
 					   struct nsproxy *namespaces);
 	int (*permissions)(struct ctl_table_root *root,
 			struct nsproxy *namespaces, struct ctl_table *table);
+=======
+struct ctl_node {
+	struct rb_node node;
+	struct ctl_table_header *header;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct ctl_node {
+	struct rb_node node;
+	struct ctl_table_header *header;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* struct ctl_table_header is used to maintain dynamic lists of
@@ -1042,9 +1124,21 @@ struct ctl_table_header
 	union {
 		struct {
 			struct ctl_table *ctl_table;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			struct list_head ctl_entry;
 			int used;
 			int count;
+=======
+			int used;
+			int count;
+			int nreg;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			int used;
+			int count;
+			int nreg;
+>>>>>>> refs/remotes/origin/master
 		};
 		struct rcu_head rcu;
 	};
@@ -1052,9 +1146,40 @@ struct ctl_table_header
 	struct ctl_table *ctl_table_arg;
 	struct ctl_table_root *root;
 	struct ctl_table_set *set;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ctl_table *attached_by;
 	struct ctl_table *attached_to;
 	struct ctl_table_header *parent;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct ctl_dir *parent;
+	struct ctl_node *node;
+};
+
+struct ctl_dir {
+	/* Header must be at the start of ctl_dir */
+	struct ctl_table_header header;
+	struct rb_root root;
+};
+
+struct ctl_table_set {
+	int (*is_seen)(struct ctl_table_set *);
+	struct ctl_dir dir;
+};
+
+struct ctl_table_root {
+	struct ctl_table_set default_set;
+	struct ctl_table_set *(*lookup)(struct ctl_table_root *root,
+					   struct nsproxy *namespaces);
+<<<<<<< HEAD
+	int (*permissions)(struct ctl_table_root *root,
+			struct nsproxy *namespaces, struct ctl_table *table);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*permissions)(struct ctl_table_header *head, struct ctl_table *table);
+>>>>>>> refs/remotes/origin/master
 };
 
 /* struct ctl_path describes where in the hierarchy a table is added */
@@ -1062,17 +1187,77 @@ struct ctl_path {
 	const char *procname;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void register_sysctl_root(struct ctl_table_root *root);
 struct ctl_table_header *__register_sysctl_paths(
 	struct ctl_table_root *root, struct nsproxy *namespaces,
 	const struct ctl_path *path, struct ctl_table *table);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_SYSCTL
+
+void proc_sys_poll_notify(struct ctl_table_poll *poll);
+
+extern void setup_sysctl_set(struct ctl_table_set *p,
+	struct ctl_table_root *root,
+	int (*is_seen)(struct ctl_table_set *));
+extern void retire_sysctl_set(struct ctl_table_set *set);
+
+void register_sysctl_root(struct ctl_table_root *root);
+struct ctl_table_header *__register_sysctl_table(
+	struct ctl_table_set *set,
+	const char *path, struct ctl_table *table);
+struct ctl_table_header *__register_sysctl_paths(
+	struct ctl_table_set *set,
+	const struct ctl_path *path, struct ctl_table *table);
+struct ctl_table_header *register_sysctl(const char *path, struct ctl_table *table);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct ctl_table_header *register_sysctl_table(struct ctl_table * table);
 struct ctl_table_header *register_sysctl_paths(const struct ctl_path *path,
 						struct ctl_table *table);
 
 void unregister_sysctl_table(struct ctl_table_header * table);
+<<<<<<< HEAD
+<<<<<<< HEAD
 int sysctl_check_table(struct nsproxy *namespaces, struct ctl_table *table);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+extern int sysctl_init(void);
+#else /* CONFIG_SYSCTL */
+static inline struct ctl_table_header *register_sysctl_table(struct ctl_table * table)
+{
+	return NULL;
+}
+
+static inline struct ctl_table_header *register_sysctl_paths(
+			const struct ctl_path *path, struct ctl_table *table)
+{
+	return NULL;
+}
+
+static inline void unregister_sysctl_table(struct ctl_table_header * table)
+{
+}
+
+static inline void setup_sysctl_set(struct ctl_table_set *p,
+	struct ctl_table_root *root,
+	int (*is_seen)(struct ctl_table_set *))
+{
+}
+
+#endif /* CONFIG_SYSCTL */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_SYSCTL_H */

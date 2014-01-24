@@ -9,6 +9,10 @@
 #include <linux/init.h>
 #include <linux/acpi.h>
 #include <linux/bitmap.h>
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/e820.h>
 #include <asm/pci_x86.h>
 
@@ -34,9 +38,18 @@ err:		*value = -1;
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	addr = pci_dev_base(seg, bus, devfn);
 	if (!addr)
 		goto err;
+=======
+	rcu_read_lock();
+	addr = pci_dev_base(seg, bus, devfn);
+	if (!addr) {
+		rcu_read_unlock();
+		goto err;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	switch (len) {
 	case 1:
@@ -49,6 +62,10 @@ err:		*value = -1;
 		*value = mmio_config_readl(addr + reg);
 		break;
 	}
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -62,9 +79,18 @@ static int pci_mmcfg_write(unsigned int seg, unsigned int bus,
 	if (unlikely((bus > 255) || (devfn > 255) || (reg > 4095)))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	addr = pci_dev_base(seg, bus, devfn);
 	if (!addr)
 		return -EINVAL;
+=======
+	rcu_read_lock();
+	addr = pci_dev_base(seg, bus, devfn);
+	if (!addr) {
+		rcu_read_unlock();
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	switch (len) {
 	case 1:
@@ -77,16 +103,32 @@ static int pci_mmcfg_write(unsigned int seg, unsigned int bus,
 		mmio_config_writel(addr + reg, value);
 		break;
 	}
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_raw_ops pci_mmcfg = {
+=======
+static const struct pci_raw_ops pci_mmcfg = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+const struct pci_raw_ops pci_mmcfg = {
+>>>>>>> refs/remotes/origin/master
 	.read =		pci_mmcfg_read,
 	.write =	pci_mmcfg_write,
 };
 
+<<<<<<< HEAD
 static void __iomem * __init mcfg_ioremap(struct pci_mmcfg_region *cfg)
+=======
+static void __iomem *mcfg_ioremap(struct pci_mmcfg_region *cfg)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *addr;
 	u64 start, size;
@@ -105,6 +147,7 @@ int __init pci_mmcfg_arch_init(void)
 {
 	struct pci_mmcfg_region *cfg;
 
+<<<<<<< HEAD
 	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
 		cfg->virt = mcfg_ioremap(cfg);
 		if (!cfg->virt) {
@@ -115,6 +158,16 @@ int __init pci_mmcfg_arch_init(void)
 		}
 	}
 	raw_pci_ext_ops = &pci_mmcfg;
+=======
+	list_for_each_entry(cfg, &pci_mmcfg_list, list)
+		if (pci_mmcfg_arch_map(cfg)) {
+			pci_mmcfg_arch_free();
+			return 0;
+		}
+
+	raw_pci_ext_ops = &pci_mmcfg;
+
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -122,10 +175,33 @@ void __init pci_mmcfg_arch_free(void)
 {
 	struct pci_mmcfg_region *cfg;
 
+<<<<<<< HEAD
 	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
 		if (cfg->virt) {
 			iounmap(cfg->virt + PCI_MMCFG_BUS_OFFSET(cfg->start_bus));
 			cfg->virt = NULL;
 		}
+=======
+	list_for_each_entry(cfg, &pci_mmcfg_list, list)
+		pci_mmcfg_arch_unmap(cfg);
+}
+
+int pci_mmcfg_arch_map(struct pci_mmcfg_region *cfg)
+{
+	cfg->virt = mcfg_ioremap(cfg);
+	if (!cfg->virt) {
+		pr_err(PREFIX "can't map MMCONFIG at %pR\n", &cfg->res);
+		return -ENOMEM;
+	}
+
+	return 0;
+}
+
+void pci_mmcfg_arch_unmap(struct pci_mmcfg_region *cfg)
+{
+	if (cfg && cfg->virt) {
+		iounmap(cfg->virt + PCI_MMCFG_BUS_OFFSET(cfg->start_bus));
+		cfg->virt = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 }

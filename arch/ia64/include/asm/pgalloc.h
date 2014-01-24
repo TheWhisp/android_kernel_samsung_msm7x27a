@@ -91,7 +91,14 @@ static inline pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long addr)
 	if (!pg)
 		return NULL;
 	page = virt_to_page(pg);
+<<<<<<< HEAD
 	pgtable_page_ctor(page);
+=======
+	if (!pgtable_page_ctor(page)) {
+		quicklist_free(0, NULL, pg);
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 	return page;
 }
 

@@ -1,7 +1,13 @@
 #ifndef _ASM_SH_HUGETLB_H
 #define _ASM_SH_HUGETLB_H
 
+<<<<<<< HEAD
 #include <asm/page.h>
+=======
+#include <asm/cacheflush.h>
+#include <asm/page.h>
+#include <asm-generic/hugetlb.h>
+>>>>>>> refs/remotes/origin/master
 
 
 static inline int is_hugepage_only_range(struct mm_struct *mm,
@@ -89,4 +95,12 @@ static inline void arch_release_hugepage(struct page *page)
 {
 }
 
+<<<<<<< HEAD
+=======
+static inline void arch_clear_hugepage_flags(struct page *page)
+{
+	clear_bit(PG_dcache_clean, &page->flags);
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_SH_HUGETLB_H */

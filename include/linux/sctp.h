@@ -53,7 +53,13 @@
 
 #include <linux/in.h>		/* We need in_addr.  */
 #include <linux/in6.h>		/* We need in6_addr.  */
+<<<<<<< HEAD
 
+=======
+#include <linux/skbuff.h>
+
+#include <uapi/linux/sctp.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Section 3.1.  SCTP Common Header Format */
 typedef struct sctphdr {
@@ -63,14 +69,20 @@ typedef struct sctphdr {
 	__le32 checksum;
 } __packed sctp_sctphdr_t;
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 #include <linux/skbuff.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct sctphdr *sctp_hdr(const struct sk_buff *skb)
 {
 	return (struct sctphdr *)skb_transport_header(skb);
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Section 3.2.  Chunk Field Descriptions. */
 typedef struct sctp_chunkhdr {

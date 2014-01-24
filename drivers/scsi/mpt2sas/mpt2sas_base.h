@@ -3,7 +3,11 @@
  * for access to MPT (Message Passing Technology) firmware.
  *
  * This code is based on drivers/scsi/mpt2sas/mpt2_base.h
+<<<<<<< HEAD
  * Copyright (C) 2007-2010  LSI Corporation
+=======
+ * Copyright (C) 2007-2013  LSI Corporation
+>>>>>>> refs/remotes/origin/master
  *  (mailto:DL-MPTFusionLinux@lsi.com)
  *
  * This program is free software; you can redistribute it and/or
@@ -69,11 +73,27 @@
 #define MPT2SAS_DRIVER_NAME		"mpt2sas"
 #define MPT2SAS_AUTHOR	"LSI Corporation <DL-MPTFusionLinux@lsi.com>"
 #define MPT2SAS_DESCRIPTION	"LSI MPT Fusion SAS 2.0 Device Driver"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MPT2SAS_DRIVER_VERSION		"08.100.00.02"
 #define MPT2SAS_MAJOR_VERSION		08
 #define MPT2SAS_MINOR_VERSION		100
 #define MPT2SAS_BUILD_VERSION		00
 #define MPT2SAS_RELEASE_VERSION		02
+=======
+#define MPT2SAS_DRIVER_VERSION		"12.100.00.00"
+#define MPT2SAS_MAJOR_VERSION		12
+#define MPT2SAS_MINOR_VERSION		100
+#define MPT2SAS_BUILD_VERSION		00
+#define MPT2SAS_RELEASE_VERSION		00
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPT2SAS_DRIVER_VERSION		"16.100.00.00"
+#define MPT2SAS_MAJOR_VERSION		16
+#define MPT2SAS_MINOR_VERSION		100
+#define MPT2SAS_BUILD_VERSION		00
+#define MPT2SAS_RELEASE_VERSION		00
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Set MPT2SAS_SG_DEPTH value based on user input.
@@ -157,12 +177,35 @@
 /*
  * Intel HBA branding
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define MPT2SAS_INTEL_RMS25JB080_BRANDING    \
+				"Intel(R) Integrated RAID Module RMS25JB080"
+#define MPT2SAS_INTEL_RMS25JB040_BRANDING    \
+				"Intel(R) Integrated RAID Module RMS25JB040"
+#define MPT2SAS_INTEL_RMS25KB080_BRANDING    \
+				"Intel(R) Integrated RAID Module RMS25KB080"
+#define MPT2SAS_INTEL_RMS25KB040_BRANDING    \
+				"Intel(R) Integrated RAID Module RMS25KB040"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPT2SAS_INTEL_RMS25LB040_BRANDING	\
+				"Intel(R) Integrated RAID Module RMS25LB040"
+#define MPT2SAS_INTEL_RMS25LB080_BRANDING	\
+				"Intel(R) Integrated RAID Module RMS25LB080"
+>>>>>>> refs/remotes/origin/master
 #define MPT2SAS_INTEL_RMS2LL080_BRANDING	\
 				"Intel Integrated RAID Module RMS2LL080"
 #define MPT2SAS_INTEL_RMS2LL040_BRANDING	\
 				"Intel Integrated RAID Module RMS2LL040"
 #define MPT2SAS_INTEL_RS25GB008_BRANDING       \
 				"Intel(R) RAID Controller RS25GB008"
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * Intel HBA SSDIDs
@@ -171,6 +214,34 @@
 #define MPT2SAS_INTEL_RMS2LL040_SSDID          0x350F
 #define MPT2SAS_INTEL_RS25GB008_SSDID          0x3000
 
+=======
+#define MPT2SAS_INTEL_RAMSDALE_BRANDING        \
+				"Intel 720 Series SSD"
+=======
+#define MPT2SAS_INTEL_SSD910_BRANDING          \
+				"Intel(R) SSD 910 Series"
+>>>>>>> refs/remotes/origin/master
+/*
+ * Intel HBA SSDIDs
+ */
+#define MPT2SAS_INTEL_RMS25JB080_SSDID         0x3516
+#define MPT2SAS_INTEL_RMS25JB040_SSDID         0x3517
+#define MPT2SAS_INTEL_RMS25KB080_SSDID         0x3518
+#define MPT2SAS_INTEL_RMS25KB040_SSDID         0x3519
+<<<<<<< HEAD
+#define MPT2SAS_INTEL_RMS2LL080_SSDID          0x350E
+#define MPT2SAS_INTEL_RMS2LL040_SSDID          0x350F
+#define MPT2SAS_INTEL_RS25GB008_SSDID          0x3000
+#define MPT2SAS_INTEL_RAMSDALE_SSDID           0x3700
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPT2SAS_INTEL_RMS25LB040_SSDID         0x351A
+#define MPT2SAS_INTEL_RMS25LB080_SSDID         0x351B
+#define MPT2SAS_INTEL_RMS2LL080_SSDID          0x350E
+#define MPT2SAS_INTEL_RMS2LL040_SSDID          0x350F
+#define MPT2SAS_INTEL_RS25GB008_SSDID          0x3000
+#define MPT2SAS_INTEL_SSD910_SSDID             0x3700
+>>>>>>> refs/remotes/origin/master
 
 /*
  * HP HBA branding
@@ -373,6 +444,14 @@ struct _sas_device {
  * @percent_complete: resync percent complete
  * @direct_io_enabled: Whether direct io to PDs are allowed or not
  * @stripe_exponent: X where 2powX is the stripe sz in blocks
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @block_exponent: X where 2powX is the block sz in bytes
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @block_exponent: X where 2powX is the block sz in bytes
+>>>>>>> refs/remotes/origin/master
  * @max_lba: Maximum number of LBA in the volume
  * @stripe_sz: Stripe Size of the volume
  * @device_info: Device info of the volume member disk
@@ -394,6 +473,14 @@ struct _raid_device {
 	u8	percent_complete;
 	u8	direct_io_enabled;
 	u8	stripe_exponent;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8	block_exponent;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8	block_exponent;
+>>>>>>> refs/remotes/origin/master
 	u64	max_lba;
 	u32	stripe_sz;
 	u32	device_info;
@@ -544,6 +631,37 @@ struct _tr_list {
 
 typedef void (*MPT_ADD_SGE)(void *paddr, u32 flags_length, dma_addr_t dma_addr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * struct adapter_reply_queue - the reply queue struct
+ * @ioc: per adapter object
+ * @msix_index: msix index into vector table
+ * @vector: irq vector
+ * @reply_post_host_index: head index in the pool where FW completes IO
+ * @reply_post_free: reply post base virt address
+ * @name: the name registered to request_irq()
+ * @busy: isr is actively processing replies on another cpu
+ * @list: this list
+*/
+struct adapter_reply_queue {
+	struct MPT2SAS_ADAPTER	*ioc;
+	u8			msix_index;
+	unsigned int		vector;
+	u32			reply_post_host_index;
+	Mpi2ReplyDescriptorsUnion_t *reply_post_free;
+	char			name[MPT_NAME_LENGTH];
+	atomic_t		busy;
+	struct list_head	list;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* IOC Facts and Port Facts converted from little endian to cpu */
 union mpi2_version_union {
 	MPI2_VERSION_STRUCT		Struct;
@@ -592,11 +710,39 @@ struct mpt2sas_port_facts {
 };
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * enum mutex_type - task management mutex type
+ * @TM_MUTEX_OFF: mutex is not required becuase calling function is acquiring it
+ * @TM_MUTEX_ON: mutex is required
+ */
+enum mutex_type {
+	TM_MUTEX_OFF = 0,
+	TM_MUTEX_ON = 1,
+};
+
+typedef void (*MPT2SAS_FLUSH_RUNNING_CMDS)(struct MPT2SAS_ADAPTER *ioc);
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * struct MPT2SAS_ADAPTER - per adapter struct
  * @list: ioc_list
  * @shost: shost object
  * @id: unique adapter id
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @pci_irq: irq number
+=======
+ * @cpu_count: number online cpus
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @cpu_count: number online cpus
+>>>>>>> refs/remotes/origin/master
  * @name: generic ioc string
  * @tmp_string: tmp string used for logging
  * @pdev: pci pdev object
@@ -623,9 +769,29 @@ struct mpt2sas_port_facts {
  * @ignore_loginfos: ignore loginfos during task management
  * @remove_host: flag for when driver unloads, to avoid sending dev resets
  * @pci_error_recovery: flag to prevent ioc access until slot reset completes
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @wait_for_port_enable_to_complete:
  * @msix_enable: flag indicating msix is enabled
  * @msix_vector_count: number msix vectors
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @wait_for_discovery_to_complete: flag set at driver load time when
+ *                                               waiting on reporting devices
+ * @is_driver_loading: flag set at driver load time
+ * @port_enable_failed: flag set when port enable has failed
+ * @start_scan: flag set from scan_start callback, cleared from _mpt2sas_fw_work
+ * @start_scan_failed: means port enable failed, return's the ioc_status
+ * @msix_enable: flag indicating msix is enabled
+ * @msix_vector_count: number msix vectors
+ * @cpu_msix_table: table for mapping cpus to msix index
+ * @cpu_msix_table_sz: table size
+ * @schedule_dead_ioc_flush_running_cmds: callback to flush pending commands
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @scsi_io_cb_idx: shost generated commands
  * @tm_cb_idx: task management commands
  * @scsih_cb_idx: scsih internal commands
@@ -664,6 +830,10 @@ struct mpt2sas_port_facts {
  * @io_missing_delay: time for IO completed by fw when PDR enabled
  * @device_missing_delay: time for device missing by fw when PDR enabled
  * @sas_id : used for setting volume target IDs
+<<<<<<< HEAD
+=======
+ * @blocking_handles: bitmask used to identify which devices need blocking
+>>>>>>> refs/remotes/origin/master
  * @pd_handles : bitmask for PD handles
  * @pd_handles_sz : size of pd_handle bitmask
  * @config_page_sz: config page size
@@ -716,7 +886,17 @@ struct mpt2sas_port_facts {
  * @reply_post_queue_depth: reply post queue depth
  * @reply_post_free: pool for reply post (64bit descriptor)
  * @reply_post_free_dma:
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @reply_post_free_dma_pool:
+=======
+ * @reply_queue_count: number of reply queue's
+ * @reply_queue_list: link list contaning the reply queue info
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @reply_queue_count: number of reply queue's
+ * @reply_queue_list: link list contaning the reply queue info
+>>>>>>> refs/remotes/origin/master
  * @reply_post_host_index: head index in the pool where FW completes IO
  * @delayed_tr_list: target reset link list
  * @delayed_tr_volume_list: volume target reset link list
@@ -725,7 +905,15 @@ struct MPT2SAS_ADAPTER {
 	struct list_head list;
 	struct Scsi_Host *shost;
 	u8		id;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32		pci_irq;
+=======
+	int		cpu_count;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		cpu_count;
+>>>>>>> refs/remotes/origin/master
 	char		name[MPT_NAME_LENGTH];
 	char		tmp_string[MPT_STRING_LENGTH];
 	struct pci_dev	*pdev;
@@ -751,6 +939,8 @@ struct MPT2SAS_ADAPTER {
 	 /* misc flags */
 	int		aen_event_read_flag;
 	u8		broadcast_aen_busy;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8		shost_recovery;
 
 	struct mutex	reset_in_progress_mutex;
@@ -758,15 +948,54 @@ struct MPT2SAS_ADAPTER {
 	spinlock_t 	ioc_reset_in_progress_lock;
 	u8		ioc_link_reset_in_progress;
 	int		ioc_reset_in_progress_status;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u16		broadcast_aen_pending;
+	u8		shost_recovery;
+
+	struct mutex	reset_in_progress_mutex;
+	spinlock_t 	ioc_reset_in_progress_lock;
+	u8		ioc_link_reset_in_progress;
+	u8		ioc_reset_in_progress_status;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	u8		ignore_loginfos;
 	u8		remove_host;
 	u8		pci_error_recovery;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8		wait_for_port_enable_to_complete;
 
 	u8		msix_enable;
 	u16		msix_vector_count;
 	u32		ioc_reset_count;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u8		wait_for_discovery_to_complete;
+	struct completion	port_enable_done;
+	u8		is_driver_loading;
+	u8		port_enable_failed;
+
+	u8		start_scan;
+	u16		start_scan_failed;
+
+	u8		msix_enable;
+	u16		msix_vector_count;
+	u8		*cpu_msix_table;
+	resource_size_t	**reply_post_host_index;
+	u16		cpu_msix_table_sz;
+	u32		ioc_reset_count;
+	MPT2SAS_FLUSH_RUNNING_CMDS schedule_dead_ioc_flush_running_cmds;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32             non_operational_loop;
+>>>>>>> refs/remotes/origin/master
 
 	/* internal commands, callback index */
 	u8		scsi_io_cb_idx;
@@ -775,11 +1004,27 @@ struct MPT2SAS_ADAPTER {
 	u8		scsih_cb_idx;
 	u8		ctl_cb_idx;
 	u8		base_cb_idx;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8		port_enable_cb_idx;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8		port_enable_cb_idx;
+>>>>>>> refs/remotes/origin/master
 	u8		config_cb_idx;
 	u8		tm_tr_cb_idx;
 	u8		tm_tr_volume_cb_idx;
 	u8		tm_sas_control_cb_idx;
 	struct _internal_cmd base_cmds;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct _internal_cmd port_enable_cmds;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct _internal_cmd port_enable_cmds;
+>>>>>>> refs/remotes/origin/master
 	struct _internal_cmd transport_cmds;
 	struct _internal_cmd scsih_cmds;
 	struct _internal_cmd tm_cmds;
@@ -820,7 +1065,11 @@ struct MPT2SAS_ADAPTER {
 	u8		io_missing_delay;
 	u16		device_missing_delay;
 	int		sas_id;
+<<<<<<< HEAD
 
+=======
+	void		*blocking_handles;
+>>>>>>> refs/remotes/origin/master
 	void		*pd_handles;
 	u16		pd_handles_sz;
 
@@ -896,7 +1145,17 @@ struct MPT2SAS_ADAPTER {
 	Mpi2ReplyDescriptorsUnion_t *reply_post_free;
 	dma_addr_t	reply_post_free_dma;
 	struct dma_pool *reply_post_free_dma_pool;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32		reply_post_host_index;
+=======
+	u8		reply_queue_count;
+	struct list_head reply_queue_list;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8		reply_queue_count;
+	struct list_head reply_queue_list;
+>>>>>>> refs/remotes/origin/master
 
 	struct list_head delayed_tr_list;
 	struct list_head delayed_tr_volume_list;
@@ -940,6 +1199,14 @@ void *mpt2sas_base_get_sense_buffer(struct MPT2SAS_ADAPTER *ioc, u16 smid);
 void mpt2sas_base_build_zero_len_sge(struct MPT2SAS_ADAPTER *ioc, void *paddr);
 __le32 mpt2sas_base_get_sense_buffer_dma(struct MPT2SAS_ADAPTER *ioc,
     u16 smid);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void mpt2sas_base_flush_reply_queues(struct MPT2SAS_ADAPTER *ioc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void mpt2sas_base_flush_reply_queues(struct MPT2SAS_ADAPTER *ioc);
+>>>>>>> refs/remotes/origin/master
 
 /* hi-priority queue */
 u16 mpt2sas_base_get_smid_hpr(struct MPT2SAS_ADAPTER *ioc, u8 cb_idx);
@@ -960,6 +1227,16 @@ void mpt2sas_base_release_callback_handler(u8 cb_idx);
 
 u8 mpt2sas_base_done(struct MPT2SAS_ADAPTER *ioc, u16 smid, u8 msix_index,
     u32 reply);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+u8 mpt2sas_port_enable_done(struct MPT2SAS_ADAPTER *ioc, u16 smid,
+	u8 msix_index,	u32 reply);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+u8 mpt2sas_port_enable_done(struct MPT2SAS_ADAPTER *ioc, u16 smid,
+	u8 msix_index,	u32 reply);
+>>>>>>> refs/remotes/origin/master
 void *mpt2sas_base_get_reply_virt_addr(struct MPT2SAS_ADAPTER *ioc, u32 phys_addr);
 
 u32 mpt2sas_base_get_iocstate(struct MPT2SAS_ADAPTER *ioc, int cooked);
@@ -974,16 +1251,45 @@ void mpt2sas_base_validate_event_type(struct MPT2SAS_ADAPTER *ioc, u32 *event_ty
 
 void mpt2sas_halt_firmware(struct MPT2SAS_ADAPTER *ioc);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int mpt2sas_port_enable(struct MPT2SAS_ADAPTER *ioc);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* scsih shared API */
 u8 mpt2sas_scsih_event_callback(struct MPT2SAS_ADAPTER *ioc, u8 msix_index,
     u32 reply);
 int mpt2sas_scsih_issue_tm(struct MPT2SAS_ADAPTER *ioc, u16 handle,
+<<<<<<< HEAD
     uint channel, uint id, uint lun, u8 type, u16 smid_task,
     ulong timeout, struct scsi_cmnd *scmd);
+=======
+	uint channel, uint id, uint lun, u8 type, u16 smid_task,
+	ulong timeout, unsigned long serial_number, enum mutex_type m_type);
+>>>>>>> refs/remotes/origin/cm-10.0
 void mpt2sas_scsih_set_tm_flag(struct MPT2SAS_ADAPTER *ioc, u16 handle);
 void mpt2sas_scsih_clear_tm_flag(struct MPT2SAS_ADAPTER *ioc, u16 handle);
 void mpt2sas_expander_remove(struct MPT2SAS_ADAPTER *ioc, u64 sas_address);
 void mpt2sas_device_remove(struct MPT2SAS_ADAPTER *ioc, u64 sas_address);
+=======
+void mpt2sas_base_update_missing_delay(struct MPT2SAS_ADAPTER *ioc,
+	u16 device_missing_delay, u8 io_missing_delay);
+
+int mpt2sas_port_enable(struct MPT2SAS_ADAPTER *ioc);
+
+/* scsih shared API */
+void mpt2sas_scsih_event_callback(struct MPT2SAS_ADAPTER *ioc, u8 msix_index,
+    u32 reply);
+int mpt2sas_scsih_issue_tm(struct MPT2SAS_ADAPTER *ioc, u16 handle,
+	uint channel, uint id, uint lun, u8 type, u16 smid_task,
+	ulong timeout, unsigned long serial_number, enum mutex_type m_type);
+void mpt2sas_scsih_set_tm_flag(struct MPT2SAS_ADAPTER *ioc, u16 handle);
+void mpt2sas_scsih_clear_tm_flag(struct MPT2SAS_ADAPTER *ioc, u16 handle);
+void mpt2sas_expander_remove(struct MPT2SAS_ADAPTER *ioc, u64 sas_address);
+void mpt2sas_device_remove_by_sas_address(struct MPT2SAS_ADAPTER *ioc,
+		u64 sas_address);
+>>>>>>> refs/remotes/origin/master
 struct _sas_node *mpt2sas_scsih_expander_find_by_handle(struct MPT2SAS_ADAPTER *ioc,
     u16 handle);
 struct _sas_node *mpt2sas_scsih_expander_find_by_sas_address(struct MPT2SAS_ADAPTER
@@ -991,6 +1297,16 @@ struct _sas_node *mpt2sas_scsih_expander_find_by_sas_address(struct MPT2SAS_ADAP
 struct _sas_device *mpt2sas_scsih_sas_device_find_by_sas_address(
     struct MPT2SAS_ADAPTER *ioc, u64 sas_address);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void mpt2sas_port_enable_complete(struct MPT2SAS_ADAPTER *ioc);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void mpt2sas_port_enable_complete(struct MPT2SAS_ADAPTER *ioc);
+
+>>>>>>> refs/remotes/origin/master
 void mpt2sas_scsih_reset_handler(struct MPT2SAS_ADAPTER *ioc, int reset_phase);
 
 /* config shared API */
@@ -1017,6 +1333,11 @@ int mpt2sas_config_get_iounit_pg1(struct MPT2SAS_ADAPTER *ioc, Mpi2ConfigReply_t
     *mpi_reply, Mpi2IOUnitPage1_t *config_page);
 int mpt2sas_config_set_iounit_pg1(struct MPT2SAS_ADAPTER *ioc, Mpi2ConfigReply_t
     *mpi_reply, Mpi2IOUnitPage1_t *config_page);
+<<<<<<< HEAD
+=======
+int mpt2sas_config_get_iounit_pg3(struct MPT2SAS_ADAPTER *ioc,
+	Mpi2ConfigReply_t *mpi_reply, Mpi2IOUnitPage3_t *config_page, u16 sz);
+>>>>>>> refs/remotes/origin/master
 int mpt2sas_config_get_sas_iounit_pg1(struct MPT2SAS_ADAPTER *ioc, Mpi2ConfigReply_t
     *mpi_reply, Mpi2SasIOUnitPage1_t *config_page, u16 sz);
 int mpt2sas_config_set_sas_iounit_pg1(struct MPT2SAS_ADAPTER *ioc,
@@ -1053,7 +1374,11 @@ void mpt2sas_ctl_exit(void);
 u8 mpt2sas_ctl_done(struct MPT2SAS_ADAPTER *ioc, u16 smid, u8 msix_index,
     u32 reply);
 void mpt2sas_ctl_reset_handler(struct MPT2SAS_ADAPTER *ioc, int reset_phase);
+<<<<<<< HEAD
 u8 mpt2sas_ctl_event_callback(struct MPT2SAS_ADAPTER *ioc, u8 msix_index,
+=======
+void mpt2sas_ctl_event_callback(struct MPT2SAS_ADAPTER *ioc, u8 msix_index,
+>>>>>>> refs/remotes/origin/master
     u32 reply);
 void mpt2sas_ctl_add_to_event_log(struct MPT2SAS_ADAPTER *ioc,
     Mpi2EventNotificationReply_t *mpi_reply);
@@ -1079,6 +1404,11 @@ extern struct scsi_transport_template *mpt2sas_transport_template;
 extern int scsi_internal_device_block(struct scsi_device *sdev);
 extern u8 mpt2sas_stm_zero_smid_handler(struct MPT2SAS_ADAPTER *ioc,
     u8 msix_index, u32 reply);
+<<<<<<< HEAD
 extern int scsi_internal_device_unblock(struct scsi_device *sdev);
+=======
+extern int scsi_internal_device_unblock(struct scsi_device *sdev,
+					enum scsi_device_state new_state);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* MPT2SAS_BASE_H_INCLUDED */

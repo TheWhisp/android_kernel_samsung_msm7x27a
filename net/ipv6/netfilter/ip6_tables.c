@@ -3,6 +3,10 @@
  *
  * Copyright (C) 1999 Paul `Rusty' Russell & Michael J. Neuling
  * Copyright (C) 2000-2005 Netfilter Core Team <coreteam@netfilter.org>
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2006-2010 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -78,6 +82,8 @@ EXPORT_SYMBOL_GPL(ip6t_alloc_initial_table);
 
    Hence the start of any table is given by get_table() below.  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Check for an extension */
 int
 ip6t_ext_hdr(u8 nexthdr)
@@ -91,6 +97,10 @@ ip6t_ext_hdr(u8 nexthdr)
 		(nexthdr == IPPROTO_DSTOPTS);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Returns whether matches rule or not. */
 /* Performance critical - called for every packet */
 static inline bool
@@ -146,7 +156,11 @@ ip6_packet_match(const struct sk_buff *skb,
 		int protohdr;
 		unsigned short _frag_off;
 
+<<<<<<< HEAD
 		protohdr = ipv6_find_hdr(skb, protoff, -1, &_frag_off);
+=======
+		protohdr = ipv6_find_hdr(skb, protoff, -1, &_frag_off, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (protohdr < 0) {
 			if (_frag_off == 0)
 				*hotdrop = true;
@@ -194,8 +208,12 @@ ip6_checkentry(const struct ip6t_ip6 *ipv6)
 static unsigned int
 ip6t_error(struct sk_buff *skb, const struct xt_action_param *par)
 {
+<<<<<<< HEAD
 	if (net_ratelimit())
 		pr_info("error: `%s'\n", (const char *)par->targinfo);
+=======
+	net_info_ratelimited("error: `%s'\n", (const char *)par->targinfo);
+>>>>>>> refs/remotes/origin/master
 
 	return NF_DROP;
 }
@@ -221,8 +239,12 @@ ip6t_get_target_c(const struct ip6t_entry *e)
 	return ip6t_get_target((struct ip6t_entry *)e);
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_NETFILTER_XT_TARGET_TRACE) || \
     defined(CONFIG_NETFILTER_XT_TARGET_TRACE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
+>>>>>>> refs/remotes/origin/master
 /* This cries for unification! */
 static const char *const hooknames[] = {
 	[NF_INET_PRE_ROUTING]		= "PREROUTING",
@@ -299,6 +321,10 @@ static void trace_packet(const struct sk_buff *skb,
 	const char *hookname, *chainname, *comment;
 	const struct ip6t_entry *iter;
 	unsigned int rulenum = 0;
+<<<<<<< HEAD
+=======
+	struct net *net = dev_net(in ? in : out);
+>>>>>>> refs/remotes/origin/master
 
 	table_base = private->entries[smp_processor_id()];
 	root = get_entry(table_base, private->hook_entry[hook]);
@@ -311,7 +337,11 @@ static void trace_packet(const struct sk_buff *skb,
 		    &chainname, &comment, &rulenum) != 0)
 			break;
 
+<<<<<<< HEAD
 	nf_log_packet(AF_INET6, hook, skb, in, out, &trace_loginfo,
+=======
+	nf_log_packet(net, AF_INET6, hook, skb, in, out, &trace_loginfo,
+>>>>>>> refs/remotes/origin/master
 		      "TRACE: %s:%s:%s:%u ",
 		      tablename, chainname, comment, rulenum);
 }
@@ -362,6 +392,14 @@ ip6t_do_table(struct sk_buff *skb,
 	local_bh_disable();
 	addend = xt_write_recseq_begin();
 	private = table->private;
+<<<<<<< HEAD
+=======
+	/*
+	 * Ensure we load private-> members after we've fetched the base
+	 * pointer.
+	 */
+	smp_read_barrier_depends();
+>>>>>>> refs/remotes/origin/master
 	cpu        = smp_processor_id();
 	table_base = private->entries[cpu];
 	jumpstack  = (struct ip6t_entry **)private->jumpstack[cpu];
@@ -375,6 +413,10 @@ ip6t_do_table(struct sk_buff *skb,
 		const struct xt_entry_match *ematch;
 
 		IP_NF_ASSERT(e);
+<<<<<<< HEAD
+=======
+		acpar.thoff = 0;
+>>>>>>> refs/remotes/origin/master
 		if (!ip6_packet_match(skb, indev, outdev, &e->ipv6,
 		    &acpar.thoff, &acpar.fragoff, &acpar.hotdrop)) {
  no_match:
@@ -394,8 +436,12 @@ ip6t_do_table(struct sk_buff *skb,
 		t = ip6t_get_target_c(e);
 		IP_NF_ASSERT(t->u.kernel.target);
 
+<<<<<<< HEAD
 #if defined(CONFIG_NETFILTER_XT_TARGET_TRACE) || \
     defined(CONFIG_NETFILTER_XT_TARGET_TRACE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
+>>>>>>> refs/remotes/origin/master
 		/* The packet is traced: log it */
 		if (unlikely(skb->nf_trace))
 			trace_packet(skb, hook, in, out,
@@ -409,7 +455,11 @@ ip6t_do_table(struct sk_buff *skb,
 			if (v < 0) {
 				/* Pop from stack? */
 				if (v != XT_RETURN) {
+<<<<<<< HEAD
 					verdict = (unsigned)(-v) - 1;
+=======
+					verdict = (unsigned int)(-v) - 1;
+>>>>>>> refs/remotes/origin/master
 					break;
 				}
 				if (*stackptr <= origptr)
@@ -1113,7 +1163,11 @@ static int get_info(struct net *net, void __user *user,
 #endif
 	t = try_then_request_module(xt_find_table_lock(net, AF_INET6, name),
 				    "ip6table_%s", name);
+<<<<<<< HEAD
 	if (t && !IS_ERR(t)) {
+=======
+	if (!IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		struct ip6t_getinfo info;
 		const struct xt_table_info *private = t->private;
 #ifdef CONFIG_COMPAT
@@ -1172,7 +1226,11 @@ get_entries(struct net *net, struct ip6t_get_entries __user *uptr,
 	}
 
 	t = xt_find_table_lock(net, AF_INET6, get.name);
+<<<<<<< HEAD
 	if (t && !IS_ERR(t)) {
+=======
+	if (!IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		struct xt_table_info *private = t->private;
 		duprintf("t->private->number = %u\n", private->number);
 		if (get.size == private->size)
@@ -1212,7 +1270,11 @@ __do_replace(struct net *net, const char *name, unsigned int valid_hooks,
 
 	t = try_then_request_module(xt_find_table_lock(net, AF_INET6, name),
 				    "ip6table_%s", name);
+<<<<<<< HEAD
 	if (!t || IS_ERR(t)) {
+=======
+	if (IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		ret = t ? PTR_ERR(t) : -ENOENT;
 		goto free_newinfo_counters_untrans;
 	}
@@ -1370,7 +1432,11 @@ do_add_counters(struct net *net, const void __user *user, unsigned int len,
 	}
 
 	t = xt_find_table_lock(net, AF_INET6, name);
+<<<<<<< HEAD
 	if (!t || IS_ERR(t)) {
+=======
+	if (IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		ret = t ? PTR_ERR(t) : -ENOENT;
 		goto free;
 	}
@@ -1869,7 +1935,11 @@ compat_do_ip6t_set_ctl(struct sock *sk, int cmd, void __user *user,
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {
@@ -1954,7 +2024,11 @@ compat_get_entries(struct net *net, struct compat_ip6t_get_entries __user *uptr,
 
 	xt_compat_lock(AF_INET6);
 	t = xt_find_table_lock(net, AF_INET6, get.name);
+<<<<<<< HEAD
 	if (t && !IS_ERR(t)) {
+=======
+	if (!IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		const struct xt_table_info *private = t->private;
 		struct xt_table_info info;
 		duprintf("t->private->number = %u\n", private->number);
@@ -1984,7 +2058,11 @@ compat_do_ip6t_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {
@@ -2006,7 +2084,11 @@ do_ip6t_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {
@@ -2031,7 +2113,11 @@ do_ip6t_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {
@@ -2286,6 +2372,7 @@ static void __exit ip6_tables_fini(void)
 	unregister_pernet_subsys(&ip6_tables_net_ops);
 }
 
+<<<<<<< HEAD
 /*
  * find the offset to specified header or the protocol number of last header
  * if target < 0. "last header" is transport protocol header, ESP, or
@@ -2368,8 +2455,16 @@ int ipv6_find_hdr(const struct sk_buff *skb, unsigned int *offset,
 EXPORT_SYMBOL(ip6t_register_table);
 EXPORT_SYMBOL(ip6t_unregister_table);
 EXPORT_SYMBOL(ip6t_do_table);
+<<<<<<< HEAD
 EXPORT_SYMBOL(ip6t_ext_hdr);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(ipv6_find_hdr);
+=======
+EXPORT_SYMBOL(ip6t_register_table);
+EXPORT_SYMBOL(ip6t_unregister_table);
+EXPORT_SYMBOL(ip6t_do_table);
+>>>>>>> refs/remotes/origin/master
 
 module_init(ip6_tables_init);
 module_exit(ip6_tables_fini);

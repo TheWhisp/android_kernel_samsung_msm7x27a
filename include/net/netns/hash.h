@@ -5,7 +5,11 @@
 
 struct net;
 
+<<<<<<< HEAD
 static inline unsigned net_hash_mix(struct net *net)
+=======
+static inline unsigned int net_hash_mix(struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_NET_NS
 	/*

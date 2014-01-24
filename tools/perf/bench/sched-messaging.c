@@ -267,7 +267,11 @@ static const char * const bench_sched_message_usage[] = {
 };
 
 int bench_sched_messaging(int argc, const char **argv,
+<<<<<<< HEAD
 		    const char *prefix __used)
+=======
+		    const char *prefix __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i, total_children;
 	struct timeval start, stop, diff;

@@ -271,7 +271,10 @@ static int taos_connect(struct serio *serio, struct serio_driver *drv)
  exit_close:
 	serio_close(serio);
  exit_kfree:
+<<<<<<< HEAD
 	serio_set_drvdata(serio, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(taos);
  exit:
 	return err;
@@ -285,7 +288,10 @@ static void taos_disconnect(struct serio *serio)
 		i2c_unregister_device(taos->client);
 	i2c_del_adapter(&taos->adapter);
 	serio_close(serio);
+<<<<<<< HEAD
 	serio_set_drvdata(serio, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(taos);
 
 	dev_info(&serio->dev, "Disconnected from TAOS EVM\n");

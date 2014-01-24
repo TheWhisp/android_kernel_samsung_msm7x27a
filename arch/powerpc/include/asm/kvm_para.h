@@ -16,12 +16,26 @@
  *
  * Authors: Hollis Blanchard <hollisb@us.ibm.com>
  */
+<<<<<<< HEAD
 
 #ifndef __POWERPC_KVM_PARA_H__
 #define __POWERPC_KVM_PARA_H__
 
 #include <linux/types.h>
 
+<<<<<<< HEAD
+=======
+/*
+ * Additions to this struct must only occur at the end, and should be
+ * accompanied by a KVM_MAGIC_FEAT flag to advertise that they are present
+ * (albeit not necessarily relevant to the current target hardware platform).
+ *
+ * Struct fields are always 32 or 64 bit aligned, depending on them being 32
+ * or 64 bit wide respectively.
+ *
+ * See Documentation/virtual/kvm/ppc-pv.txt
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 struct kvm_vcpu_arch_shared {
 	__u64 scratch1;
 	__u64 scratch2;
@@ -33,11 +47,42 @@ struct kvm_vcpu_arch_shared {
 	__u64 sprg3;
 	__u64 srr0;
 	__u64 srr1;
+<<<<<<< HEAD
 	__u64 dar;
+=======
+	__u64 dar;		/* dear on BookE */
+>>>>>>> refs/remotes/origin/cm-10.0
 	__u64 msr;
 	__u32 dsisr;
 	__u32 int_pending;	/* Tells the guest if we have an interrupt */
 	__u32 sr[16];
+<<<<<<< HEAD
+=======
+	__u32 mas0;
+	__u32 mas1;
+	__u64 mas7_3;
+	__u64 mas2;
+	__u32 mas4;
+	__u32 mas6;
+	__u32 esr;
+	__u32 pir;
+
+	/*
+	 * SPRG4-7 are user-readable, so we can only keep these consistent
+	 * between the shared area and the real registers when there's an
+	 * intervening exit to KVM.  This also applies to SPRG3 on some
+	 * chips.
+	 *
+	 * This suffices for access by guest userspace, since in PR-mode
+	 * KVM, an exit must occur when changing the guest's MSR[PR].
+	 * If the guest kernel writes to SPRG3-7 via the shared area, it
+	 * must also use the shared area for reading while in kernel space.
+	 */
+	__u64 sprg4;
+	__u64 sprg5;
+	__u64 sprg6;
+	__u64 sprg7;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define KVM_SC_MAGIC_R0		0x4b564d21 /* "KVM!" */
@@ -47,9 +92,22 @@ struct kvm_vcpu_arch_shared {
 
 #define KVM_FEATURE_MAGIC_PAGE	1
 
+<<<<<<< HEAD
 #define KVM_MAGIC_FEAT_SR	(1 << 0)
+=======
+#define KVM_MAGIC_FEAT_SR		(1 << 0)
+
+/* MASn, ESR, PIR, and high SPRGs */
+#define KVM_MAGIC_FEAT_MAS0_TO_SPRG7	(1 << 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
+=======
+#ifndef __POWERPC_KVM_PARA_H__
+#define __POWERPC_KVM_PARA_H__
+
+#include <uapi/asm/kvm_para.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_KVM_GUEST
 
@@ -84,7 +142,11 @@ static unsigned long kvm_hypercall(unsigned long *in,
 				   unsigned long *out,
 				   unsigned long nr)
 {
+<<<<<<< HEAD
 	return HC_EV_UNIMPLEMENTED;
+=======
+	return EV_UNIMPLEMENTED;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif
@@ -95,7 +157,11 @@ static inline long kvm_hypercall0_1(unsigned int nr, unsigned long *r2)
 	unsigned long out[8];
 	unsigned long r;
 
+<<<<<<< HEAD
 	r = kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	r = kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 	*r2 = out[0];
 
 	return r;
@@ -106,7 +172,11 @@ static inline long kvm_hypercall0(unsigned int nr)
 	unsigned long in[8];
 	unsigned long out[8];
 
+<<<<<<< HEAD
 	return kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	return kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long kvm_hypercall1(unsigned int nr, unsigned long p1)
@@ -115,7 +185,11 @@ static inline long kvm_hypercall1(unsigned int nr, unsigned long p1)
 	unsigned long out[8];
 
 	in[0] = p1;
+<<<<<<< HEAD
 	return kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	return kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
@@ -126,7 +200,11 @@ static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
 
 	in[0] = p1;
 	in[1] = p2;
+<<<<<<< HEAD
 	return kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	return kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long kvm_hypercall3(unsigned int nr, unsigned long p1,
@@ -138,7 +216,11 @@ static inline long kvm_hypercall3(unsigned int nr, unsigned long p1,
 	in[0] = p1;
 	in[1] = p2;
 	in[2] = p3;
+<<<<<<< HEAD
 	return kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	return kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
@@ -152,7 +234,11 @@ static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
 	in[1] = p2;
 	in[2] = p3;
 	in[3] = p4;
+<<<<<<< HEAD
 	return kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	return kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -169,6 +255,13 @@ static inline unsigned int kvm_arch_para_features(void)
 	return r;
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+static inline bool kvm_check_and_clear_guest_paused(void)
+{
+	return false;
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __POWERPC_KVM_PARA_H__ */

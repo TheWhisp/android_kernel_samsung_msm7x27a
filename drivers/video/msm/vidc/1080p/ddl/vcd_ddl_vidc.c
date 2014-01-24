@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -111,8 +119,16 @@ void ddl_vidc_channel_set(struct ddl_client_context *ddl)
 	u32 pix_cache_ctrl, ctxt_mem_offset, ctxt_mem_size;
 
 	if (ddl->decoding) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (vidc_msg_timing)
 			ddl_set_core_start_time(__func__, DEC_OP_TIME);
+=======
+		ddl_set_core_start_time(__func__, DEC_OP_TIME);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ddl_set_core_start_time(__func__, DEC_OP_TIME);
+>>>>>>> refs/remotes/origin/cm-11.0
 		vcd_codec = &(ddl->codec_data.decoder.codec.codec);
 		pix_cache_ctrl = (u32)dec_pix_cache;
 		ctxt_mem_offset = DDL_ADDR_OFFSET(ddl_context->dram_base_a,
@@ -197,11 +213,31 @@ void ddl_vidc_decode_init_codec(struct ddl_client_context *ddl)
 	struct vidc_1080p_dec_seq_start_param seq_start_param;
 	u32 seq_size;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (vidc_msg_timing)
 		ddl_set_core_start_time(__func__, DEC_OP_TIME);
 	vidc_1080p_set_decode_mpeg4_pp_filter(decoder->post_filter.post_filter);
 	vidc_sm_set_concealment_color(&ddl->shared_mem[ddl->command_channel],
 		DDL_CONCEALMENT_Y_COLOR, DDL_CONCEALMENT_C_COLOR);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	ddl_set_core_start_time(__func__, DEC_OP_TIME);
+	vidc_1080p_set_decode_mpeg4_pp_filter(decoder->post_filter.post_filter);
+	vidc_sm_set_concealment_color(&ddl->shared_mem[ddl->command_channel],
+		DDL_CONCEALMENT_Y_COLOR, DDL_CONCEALMENT_C_COLOR);
+
+	vidc_sm_set_error_concealment_config(
+		&ddl->shared_mem[ddl->command_channel],
+		VIDC_SM_ERR_CONCEALMENT_INTER_SLICE_MB_COPY,
+		VIDC_SM_ERR_CONCEALMENT_INTRA_SLICE_COLOR_CONCEALMENT,
+		VIDC_SM_ERR_CONCEALMENT_ENABLE);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ddl_vidc_metadata_enable(ddl);
 	vidc_sm_set_metadata_start_address(&ddl->shared_mem
 		[ddl->command_channel],
@@ -954,6 +990,14 @@ void ddl_vidc_encode_slice_batch_run(struct ddl_client_context *ddl)
 		ddl_update_core_start_time(__func__, ENC_SLICE_OP_TIME);
 		ddl_set_core_start_time(__func__, ENC_OP_TIME);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	encoder->num_slices_comp = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	encoder->num_slices_comp = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ddl_vidc_encode_set_batch_slice_info(ddl);
 	ddl_context->vidc_encode_slice_batch_start[ddl->command_channel] (
 			&enc_param);
@@ -987,8 +1031,16 @@ u32 ddl_vidc_decode_set_buffers(struct ddl_client_context *ddl)
 #ifdef DDL_BUF_LOG
 	ddl_list_buffers(ddl);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (vidc_msg_timing)
 		ddl_set_core_start_time(__func__, DEC_OP_TIME);
+=======
+	ddl_set_core_start_time(__func__, DEC_OP_TIME);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ddl_set_core_start_time(__func__, DEC_OP_TIME);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ddl_decoder_dpb_transact(decoder, NULL, DDL_DPB_OP_INIT);
 	if (ddl_decoder_dpb_init(ddl) == VCD_ERR_FAIL)
 		return VCD_ERR_FAIL;
@@ -1035,10 +1087,20 @@ void ddl_vidc_decode_frame_run(struct ddl_client_context *ddl)
 	struct ddl_mask *dpb_mask = &ddl->codec_data.decoder.dpb_mask;
 	struct vidc_1080p_dec_frame_start_param dec_param;
 	u32 dpb_addr_y[32], index;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (vidc_msg_timing) {
 		ddl_set_core_start_time(__func__, DEC_OP_TIME);
 		ddl_set_core_start_time(__func__, DEC_IP_TIME);
 	}
+=======
+	ddl_set_core_start_time(__func__, DEC_OP_TIME);
+	ddl_set_core_start_time(__func__, DEC_IP_TIME);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ddl_set_core_start_time(__func__, DEC_OP_TIME);
+	ddl_set_core_start_time(__func__, DEC_IP_TIME);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((!bit_stream->data_len) || (!bit_stream->physical)) {
 		ddl_vidc_decode_eos_run(ddl);
 		return;
@@ -1074,6 +1136,14 @@ void ddl_vidc_decode_frame_run(struct ddl_client_context *ddl)
 		decoder->flush_pending = false;
 	} else
 		dec_param.dpb_flush = false;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ddl_set_vidc_timeout(ddl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ddl_set_vidc_timeout(ddl);
+>>>>>>> refs/remotes/origin/cm-11.0
 	vidc_sm_set_frame_tag(&ddl->shared_mem[ddl->command_channel],
 		bit_stream->ip_frm_tag);
 	if (ddl_context->pix_cache_enable) {
@@ -1162,3 +1232,27 @@ void ddl_vidc_encode_eos_run(struct ddl_client_context *ddl)
 	ddl_context->vidc_encode_frame_start[ddl->command_channel](
 						&enc_param);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+int ddl_vidc_decode_get_avg_time(struct ddl_client_context *ddl)
+{
+	int avg_time = 0;
+	struct ddl_decoder_data *decoder = &(ddl->codec_data.decoder);
+	avg_time = decoder->avg_dec_time;
+	return avg_time;
+}
+
+void ddl_vidc_decode_reset_avg_time(struct ddl_client_context *ddl)
+{
+	struct ddl_decoder_data *decoder = &(ddl->codec_data.decoder);
+	decoder->avg_dec_time = 0;
+	decoder->dec_time_sum = 0;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

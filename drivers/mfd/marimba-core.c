@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,6 +32,14 @@
 #include <linux/mfd/marimba.h>
 #include <linux/slab.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MARIMBA_MODE				0x00
 
@@ -75,12 +91,32 @@ int marimba_read_bahama_ver(struct marimba *marimba)
 	rc = marimba_read_bit_mask(marimba, 0x00,  &bahama_version, 1, 0x1F);
 	if (rc < 0)
 		return rc;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pr_debug("%s: Bahama version: 0x%x\n", __func__, bahama_version);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: Bahama version: 0x%x\n", __func__, bahama_version);
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (bahama_version) {
 	case 0x08: /* varient of bahama v1 */
 	case 0x10:
 	case 0x00:
 		return BAHAMA_VER_1_0;
 	case 0x09: /* variant of bahama v2 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case 0x0a: /* variant of bahama v2.1 */
+	/* Falling through because initialization */
+	/* and configuration for 2.0 and 2.1 are same */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case 0x0a: /* variant of bahama v2.1 */
+	/* Falling through because initialization */
+	/* and configuration for 2.0 and 2.1 are same */
+>>>>>>> refs/remotes/origin/cm-11.0
 		return BAHAMA_VER_2_0;
 	default:
 		return BAHAMA_VER_UNSUPPORTED;
@@ -169,6 +205,20 @@ int marimba_write_bit_mask(struct marimba *marimba, u8 reg, u8 *value,
 	u8 mask_value[num_bytes];
 
 	marimba = &marimba_modules[marimba->mod_id];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (marimba == NULL) {
+		pr_err("%s: Unable to access Marimba core\n", __func__);
+		return -ENODEV;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&marimba->xfer_lock);
 
@@ -177,6 +227,21 @@ int marimba_write_bit_mask(struct marimba *marimba, u8 reg, u8 *value,
 					& ~mask) | (value[i] & mask);
 
 	msg = &marimba->xfer_msg[0];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (marimba->client == NULL) {
+		pr_err("%s: Unable to access the Marimba slave device.\n",
+								__func__);
+		return -ENODEV;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msg->addr = marimba->client->addr;
 	msg->flags = 0;
 	msg->len = num_bytes + 1;
@@ -748,7 +813,15 @@ static void marimba_init_reg(struct i2c_client *client, u8 driver_data)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int marimba_probe(struct i2c_client *client,
+=======
+static int __devinit marimba_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __devinit marimba_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/cm-11.0
 				const struct i2c_device_id *id)
 {
 	struct marimba_platform_data *pdata = client->dev.platform_data;
@@ -840,8 +913,16 @@ static int marimba_probe(struct i2c_client *client,
 			ssbi_adap = NULL;
 
 		if (!marimba->client) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(&marimba->client->dev,
 				"can't attach client %d\n", i);
+=======
+			pr_err("can't attach client %d\n", i);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("can't attach client %d\n", i);
+>>>>>>> refs/remotes/origin/cm-11.0
 			status = -ENOMEM;
 			goto fail;
 		}

@@ -145,6 +145,7 @@ static const struct address_space_operations romfs_aops = {
 /*
  * read the entries from a directory
  */
+<<<<<<< HEAD
 static int romfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 {
 	struct inode *i = filp->f_dentry->d_inode;
@@ -152,12 +153,24 @@ static int romfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	unsigned long offset, maxoff;
 	int j, ino, nextfh;
 	int stored = 0;
+=======
+static int romfs_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct inode *i = file_inode(file);
+	struct romfs_inode ri;
+	unsigned long offset, maxoff;
+	int j, ino, nextfh;
+>>>>>>> refs/remotes/origin/master
 	char fsname[ROMFS_MAXFN];	/* XXX dynamic? */
 	int ret;
 
 	maxoff = romfs_maxsize(i->i_sb);
 
+<<<<<<< HEAD
 	offset = filp->f_pos;
+=======
+	offset = ctx->pos;
+>>>>>>> refs/remotes/origin/master
 	if (!offset) {
 		offset = i->i_ino & ROMFH_MASK;
 		ret = romfs_dev_read(i->i_sb, offset, &ri, ROMFH_SIZE);
@@ -170,10 +183,17 @@ static int romfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	for (;;) {
 		if (!offset || offset >= maxoff) {
 			offset = maxoff;
+<<<<<<< HEAD
 			filp->f_pos = offset;
 			goto out;
 		}
 		filp->f_pos = offset;
+=======
+			ctx->pos = offset;
+			goto out;
+		}
+		ctx->pos = offset;
+>>>>>>> refs/remotes/origin/master
 
 		/* Fetch inode info */
 		ret = romfs_dev_read(i->i_sb, offset, &ri, ROMFH_SIZE);
@@ -194,6 +214,7 @@ static int romfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		nextfh = be32_to_cpu(ri.next);
 		if ((nextfh & ROMFH_TYPE) == ROMFH_HRD)
 			ino = be32_to_cpu(ri.spec);
+<<<<<<< HEAD
 		if (filldir(dirent, fsname, j, offset, ino,
 			    romfs_dtype_table[nextfh & ROMFH_TYPE]) < 0)
 			goto out;
@@ -204,13 +225,27 @@ static int romfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 
 out:
 	return stored;
+=======
+		if (!dir_emit(ctx, fsname, j, ino,
+			    romfs_dtype_table[nextfh & ROMFH_TYPE]))
+			goto out;
+
+		offset = nextfh & ROMFH_MASK;
+	}
+out:
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * look up an entry in a directory
  */
 static struct dentry *romfs_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				   struct nameidata *nd)
+=======
+				   unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long offset, maxoff;
 	struct inode *inode;
@@ -281,7 +316,11 @@ error:
 
 static const struct file_operations romfs_dir_operations = {
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= romfs_readdir,
+=======
+	.iterate	= romfs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.llseek		= default_llseek,
 };
 
@@ -337,7 +376,15 @@ static struct inode *romfs_iget(struct super_block *sb, unsigned long pos)
 	inode->i_metasize = (ROMFH_SIZE + nlen + 1 + ROMFH_PAD) & ROMFH_MASK;
 	inode->i_dataoffset = pos + inode->i_metasize;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	i->i_nlink = 1;		/* Hard to decide.. */
+=======
+	set_nlink(i, 1);		/* Hard to decide.. */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(i, 1);		/* Hard to decide.. */
+>>>>>>> refs/remotes/origin/master
 	i->i_size = be32_to_cpu(ri.size);
 	i->i_mtime.tv_sec = i->i_atime.tv_sec = i->i_ctime.tv_sec = 0;
 	i->i_mtime.tv_nsec = i->i_atime.tv_nsec = i->i_ctime.tv_nsec = 0;
@@ -403,7 +450,13 @@ static struct inode *romfs_alloc_inode(struct super_block *sb)
 static void romfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(romfs_inode_cachep, ROMFS_I(inode));
 }
 
@@ -539,6 +592,8 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
 	if (IS_ERR(root))
 		goto error;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root);
 	if (!sb->s_root)
 		goto error_i;
@@ -547,6 +602,19 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
 
 error_i:
 	iput(root);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	sb->s_root = d_make_root(root);
+	if (!sb->s_root)
+		goto error;
+
+	return 0;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 error:
 	return -EINVAL;
 error_rsb_inval:
@@ -602,6 +670,10 @@ static struct file_system_type romfs_fs_type = {
 	.kill_sb	= romfs_kill_sb,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("romfs");
+>>>>>>> refs/remotes/origin/master
 
 /*
  * inode storage initialiser
@@ -651,6 +723,14 @@ error_register:
 static void __exit exit_romfs_fs(void)
 {
 	unregister_filesystem(&romfs_fs_type);
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(romfs_inode_cachep);
 }
 

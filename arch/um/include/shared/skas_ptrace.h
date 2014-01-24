@@ -9,6 +9,10 @@
 #define PTRACE_FAULTINFO 52
 #define PTRACE_SWITCH_MM 55
 
+<<<<<<< HEAD
 #include "sysdep/skas_ptrace.h"
+=======
+#include <sysdep/skas_ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif

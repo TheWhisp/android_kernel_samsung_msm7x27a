@@ -14,21 +14,44 @@
 #include <linux/vmalloc.h>
 #include <linux/init.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/kmemleak.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/ip.h>
 #include <net/sock.h>
 #include <net/net_ratelimit.h>
+<<<<<<< HEAD
+
+static int zero = 0;
+static int ushort_max = USHRT_MAX;
 
 static int zero = 0;
 static int ushort_max = USHRT_MAX;
 
 #ifdef CONFIG_RPS
 static int rps_sock_flow_sysctl(ctl_table *table, int write,
+=======
+#include <net/busy_poll.h>
+#include <net/pkt_sched.h>
+
+static int zero = 0;
+static int one = 1;
+static int ushort_max = USHRT_MAX;
+
+#ifdef CONFIG_RPS
+static int rps_sock_flow_sysctl(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 				void __user *buffer, size_t *lenp, loff_t *ppos)
 {
 	unsigned int orig_size, size;
 	int ret, i;
+<<<<<<< HEAD
 	ctl_table tmp = {
+=======
+	struct ctl_table tmp = {
+>>>>>>> refs/remotes/origin/master
 		.data = &size,
 		.maxlen = sizeof(size),
 		.mode = table->mode
@@ -71,8 +94,24 @@ static int rps_sock_flow_sysctl(ctl_table *table, int write,
 
 		if (sock_table != orig_sock_table) {
 			rcu_assign_pointer(rps_sock_flow_table, sock_table);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			synchronize_rcu();
 			vfree(orig_sock_table);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			if (sock_table)
+				static_key_slow_inc(&rps_needed);
+			if (orig_sock_table) {
+				static_key_slow_dec(&rps_needed);
+				synchronize_rcu();
+				vfree(orig_sock_table);
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -82,6 +121,132 @@ static int rps_sock_flow_sysctl(ctl_table *table, int write,
 }
 #endif /* CONFIG_RPS */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NET_FLOW_LIMIT
+static DEFINE_MUTEX(flow_limit_update_mutex);
+
+static int flow_limit_cpu_sysctl(struct ctl_table *table, int write,
+				 void __user *buffer, size_t *lenp,
+				 loff_t *ppos)
+{
+	struct sd_flow_limit *cur;
+	struct softnet_data *sd;
+	cpumask_var_t mask;
+	int i, len, ret = 0;
+
+	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
+		return -ENOMEM;
+
+	if (write) {
+		ret = cpumask_parse_user(buffer, *lenp, mask);
+		if (ret)
+			goto done;
+
+		mutex_lock(&flow_limit_update_mutex);
+		len = sizeof(*cur) + netdev_flow_limit_table_len;
+		for_each_possible_cpu(i) {
+			sd = &per_cpu(softnet_data, i);
+			cur = rcu_dereference_protected(sd->flow_limit,
+				     lockdep_is_held(&flow_limit_update_mutex));
+			if (cur && !cpumask_test_cpu(i, mask)) {
+				RCU_INIT_POINTER(sd->flow_limit, NULL);
+				synchronize_rcu();
+				kfree(cur);
+			} else if (!cur && cpumask_test_cpu(i, mask)) {
+				cur = kzalloc(len, GFP_KERNEL);
+				if (!cur) {
+					/* not unwinding previous changes */
+					ret = -ENOMEM;
+					goto write_unlock;
+				}
+				cur->num_buckets = netdev_flow_limit_table_len;
+				rcu_assign_pointer(sd->flow_limit, cur);
+			}
+		}
+write_unlock:
+		mutex_unlock(&flow_limit_update_mutex);
+	} else {
+		char kbuf[128];
+
+		if (*ppos || !*lenp) {
+			*lenp = 0;
+			goto done;
+		}
+
+		cpumask_clear(mask);
+		rcu_read_lock();
+		for_each_possible_cpu(i) {
+			sd = &per_cpu(softnet_data, i);
+			if (rcu_dereference(sd->flow_limit))
+				cpumask_set_cpu(i, mask);
+		}
+		rcu_read_unlock();
+
+		len = min(sizeof(kbuf) - 1, *lenp);
+		len = cpumask_scnprintf(kbuf, len, mask);
+		if (!len) {
+			*lenp = 0;
+			goto done;
+		}
+		if (len < *lenp)
+			kbuf[len++] = '\n';
+		if (copy_to_user(buffer, kbuf, len)) {
+			ret = -EFAULT;
+			goto done;
+		}
+		*lenp = len;
+		*ppos += len;
+	}
+
+done:
+	free_cpumask_var(mask);
+	return ret;
+}
+
+static int flow_limit_table_len_sysctl(struct ctl_table *table, int write,
+				       void __user *buffer, size_t *lenp,
+				       loff_t *ppos)
+{
+	unsigned int old, *ptr;
+	int ret;
+
+	mutex_lock(&flow_limit_update_mutex);
+
+	ptr = table->data;
+	old = *ptr;
+	ret = proc_dointvec(table, write, buffer, lenp, ppos);
+	if (!ret && write && !is_power_of_2(*ptr)) {
+		*ptr = old;
+		ret = -EINVAL;
+	}
+
+	mutex_unlock(&flow_limit_update_mutex);
+	return ret;
+}
+#endif /* CONFIG_NET_FLOW_LIMIT */
+
+#ifdef CONFIG_NET_SCHED
+static int set_default_qdisc(struct ctl_table *table, int write,
+			     void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	char id[IFNAMSIZ];
+	struct ctl_table tbl = {
+		.data = id,
+		.maxlen = IFNAMSIZ,
+	};
+	int ret;
+
+	qdisc_get_default(id, IFNAMSIZ);
+
+	ret = proc_dostring(&tbl, write, buffer, lenp, ppos);
+	if (write && ret == 0)
+		ret = qdisc_set_default(id);
+	return ret;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct ctl_table net_core_table[] = {
 #ifdef CONFIG_NET
 	{
@@ -89,28 +254,48 @@ static struct ctl_table net_core_table[] = {
 		.data		= &sysctl_wmem_max,
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
+<<<<<<< HEAD
 		.proc_handler	= proc_dointvec
+=======
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &one,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.procname	= "rmem_max",
 		.data		= &sysctl_rmem_max,
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
+<<<<<<< HEAD
 		.proc_handler	= proc_dointvec
+=======
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &one,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.procname	= "wmem_default",
 		.data		= &sysctl_wmem_default,
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
+<<<<<<< HEAD
 		.proc_handler	= proc_dointvec
+=======
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &one,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.procname	= "rmem_default",
 		.data		= &sysctl_rmem_default,
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
+<<<<<<< HEAD
 		.proc_handler	= proc_dointvec
+=======
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &one,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.procname	= "dev_weight",
@@ -171,6 +356,47 @@ static struct ctl_table net_core_table[] = {
 		.proc_handler	= rps_sock_flow_sysctl
 	},
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NET_FLOW_LIMIT
+	{
+		.procname	= "flow_limit_cpu_bitmap",
+		.mode		= 0644,
+		.proc_handler	= flow_limit_cpu_sysctl
+	},
+	{
+		.procname	= "flow_limit_table_len",
+		.data		= &netdev_flow_limit_table_len,
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= flow_limit_table_len_sysctl
+	},
+#endif /* CONFIG_NET_FLOW_LIMIT */
+#ifdef CONFIG_NET_RX_BUSY_POLL
+	{
+		.procname	= "busy_poll",
+		.data		= &sysctl_net_busy_poll,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec
+	},
+	{
+		.procname	= "busy_read",
+		.data		= &sysctl_net_busy_read,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec
+	},
+#endif
+#ifdef CONFIG_NET_SCHED
+	{
+		.procname	= "default_qdisc",
+		.mode		= 0644,
+		.maxlen		= IFNAMSIZ,
+		.proc_handler	= set_default_qdisc
+	},
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_NET */
 	{
 		.procname	= "netdev_budget",
@@ -202,12 +428,15 @@ static struct ctl_table netns_core_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 __net_initdata struct ctl_path net_core_path[] = {
 	{ .procname = "net", },
 	{ .procname = "core", },
 	{ },
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static __net_init int sysctl_core_net_init(struct net *net)
 {
 	struct ctl_table *tbl;
@@ -221,10 +450,21 @@ static __net_init int sysctl_core_net_init(struct net *net)
 			goto err_dup;
 
 		tbl[0].data = &net->core.sysctl_somaxconn;
+<<<<<<< HEAD
 	}
 
 	net->core.sysctl_hdr = register_net_sysctl_table(net,
 			net_core_path, tbl);
+=======
+
+		/* Don't export any sysctls to unprivileged users */
+		if (net->user_ns != &init_user_ns) {
+			tbl[0].procname = NULL;
+		}
+	}
+
+	net->core.sysctl_hdr = register_net_sysctl(net, "net/core", tbl);
+>>>>>>> refs/remotes/origin/master
 	if (net->core.sysctl_hdr == NULL)
 		goto err_reg;
 
@@ -254,10 +494,14 @@ static __net_initdata struct pernet_operations sysctl_core_ops = {
 
 static __init int sysctl_core_init(void)
 {
+<<<<<<< HEAD
 	static struct ctl_table empty[1];
 
 	register_sysctl_paths(net_core_path, empty);
 	register_net_sysctl_rotable(net_core_path, net_core_table);
+=======
+	register_net_sysctl(&init_net, "net/core", net_core_table);
+>>>>>>> refs/remotes/origin/master
 	return register_pernet_subsys(&sysctl_core_ops);
 }
 

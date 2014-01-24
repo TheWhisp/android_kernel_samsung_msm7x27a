@@ -12,6 +12,7 @@
 #ifndef __PKTCDVD_H
 #define __PKTCDVD_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 /*
@@ -108,12 +109,18 @@ struct pkt_ctrl_command {
 #define PACKET_CTRL_CMD		_IOWR(PACKET_IOCTL_MAGIC, 1, struct pkt_ctrl_command)
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/blkdev.h>
 #include <linux/completion.h>
 #include <linux/cdrom.h>
 #include <linux/kobject.h>
 #include <linux/sysfs.h>
 #include <linux/mempool.h>
+<<<<<<< HEAD
+=======
+#include <uapi/linux/pktcdvd.h>
+>>>>>>> refs/remotes/origin/master
 
 /* default bio write queue congestion marks */
 #define PKT_WRITE_CONGESTION_ON    10000
@@ -297,6 +304,9 @@ struct pktcdvd_device
 	struct dentry		*dfs_f_info;	/* debugfs: info file */
 };
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __PKTCDVD_H */

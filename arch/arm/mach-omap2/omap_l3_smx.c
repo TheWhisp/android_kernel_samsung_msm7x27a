@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  /*
   * OMAP3XXX L3 Interconnect Driver
   *
@@ -21,6 +22,31 @@
   * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
   * USA
   */
+=======
+/*
+ * OMAP3XXX L3 Interconnect Driver
+ *
+ * Copyright (C) 2011 Texas Corporation
+ *	Felipe Balbi <balbi@ti.com>
+ *	Santosh Shilimkar <santosh.shilimkar@ti.com>
+ *	Sricharan <r.sricharan@ti.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/kernel.h>
 #include <linux/slab.h>
@@ -135,7 +161,11 @@ static char *omap3_l3_initiator_string(u8 initid)
 	}
 }
 
+<<<<<<< HEAD
 /**
+=======
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * omap3_l3_block_irq - handles a register block's irq
  * @l3: struct omap3_l3 *
  * @base: register block base address
@@ -150,6 +180,7 @@ static char *omap3_l3_initiator_string(u8 initid)
 static irqreturn_t omap3_l3_block_irq(struct omap3_l3 *l3,
 					u64 error, int error_addr)
 {
+<<<<<<< HEAD
 	u8                      code = omap3_l3_decode_error_code(error);
 	u8                      initid = omap3_l3_decode_initid(error);
 	u8                      multi = error & L3_ERROR_LOG_MULTI;
@@ -160,12 +191,24 @@ static irqreturn_t omap3_l3_block_irq(struct omap3_l3 *l3,
 			  omap3_l3_initiator_string(initid),
 			     multi ? "Multiple Errors" : "",
 						   address);
+=======
+	u8 code = omap3_l3_decode_error_code(error);
+	u8 initid = omap3_l3_decode_initid(error);
+	u8 multi = error & L3_ERROR_LOG_MULTI;
+	u32 address = omap3_l3_decode_addr(error_addr);
+
+	WARN(true, "%s seen by %s %s at address %x\n",
+			omap3_l3_code_string(code),
+			omap3_l3_initiator_string(initid),
+			multi ? "Multiple Errors" : "", address);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return IRQ_HANDLED;
 }
 
 static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
 {
+<<<<<<< HEAD
 	struct omap3_l3         *l3 = _l3;
 	u64                     status, clear;
 	u64                     error;
@@ -174,6 +217,16 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
 	void			__iomem *base;
 	int			int_type;
 	irqreturn_t             ret = IRQ_NONE;
+=======
+	struct omap3_l3 *l3 = _l3;
+	u64 status, clear;
+	u64 error;
+	u64 error_addr;
+	u64 err_source = 0;
+	void __iomem *base;
+	int int_type;
+	irqreturn_t ret = IRQ_NONE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int_type = irq == l3->app_irq ? L3_APPLICATION_ERROR : L3_DEBUG_ERROR;
 	if (!int_type) {
@@ -191,6 +244,7 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
 	}
 
 	/* identify the error source */
+<<<<<<< HEAD
 	for (err_source = 0; !(status & (1 << err_source)); err_source++)
 									;
 
@@ -199,6 +253,14 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
 	if (error) {
 		error_addr = omap3_l3_readll(base, L3_ERROR_LOG_ADDR);
 
+=======
+	err_source = __ffs(status);
+
+	base = l3->rt + omap3_l3_bases[int_type][err_source];
+	error = omap3_l3_readll(base, L3_ERROR_LOG);
+	if (error) {
+		error_addr = omap3_l3_readll(base, L3_ERROR_LOG_ADDR);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret |= omap3_l3_block_irq(l3, error, error_addr);
 	}
 
@@ -215,9 +277,15 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
 
 static int __init omap3_l3_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct omap3_l3         *l3;
 	struct resource         *res;
 	int                     ret;
+=======
+	struct omap3_l3 *l3;
+	struct resource *res;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	l3 = kzalloc(sizeof(*l3), GFP_KERNEL);
 	if (!l3)

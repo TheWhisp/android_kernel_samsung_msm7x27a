@@ -23,11 +23,20 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/common.h>
+=======
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/clock.h>
 #include <plat/sram.h>
 
 #include <plat/sdrc.h>
+=======
+#include "common.h"
+#include "clock.h"
+>>>>>>> refs/remotes/origin/master
 #include "sdrc.h"
 
 static struct omap_sdrc_params *sdrc_init_params_cs0, *sdrc_init_params_cs1;
@@ -115,8 +124,10 @@ int omap2_sdrc_get_params(unsigned long r,
 }
 
 
+<<<<<<< HEAD
 void __init omap2_set_globals_sdrc(struct omap_globals *omap2_globals)
 {
+<<<<<<< HEAD
 	/* Static mapping, never released */
 	if (omap2_globals->sdrc) {
 		omap2_sdrc_base = ioremap(omap2_globals->sdrc, SZ_64K);
@@ -126,6 +137,18 @@ void __init omap2_set_globals_sdrc(struct omap_globals *omap2_globals)
 		omap2_sms_base = ioremap(omap2_globals->sms, SZ_64K);
 		WARN_ON(!omap2_sms_base);
 	}
+=======
+	if (omap2_globals->sdrc)
+		omap2_sdrc_base = omap2_globals->sdrc;
+	if (omap2_globals->sms)
+		omap2_sms_base = omap2_globals->sms;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init omap2_set_globals_sdrc(void __iomem *sdrc, void __iomem *sms)
+{
+	omap2_sdrc_base = sdrc;
+	omap2_sms_base = sms;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -165,6 +188,7 @@ void __init omap2_sdrc_init(struct omap_sdrc_params *sdrc_cs0,
 	sdrc_write_reg(l, SDRC_POWER);
 	omap2_sms_save_context();
 }
+<<<<<<< HEAD
 
 void omap2_sms_write_rot_control(u32 val, unsigned ctx)
 {
@@ -181,3 +205,5 @@ void omap2_sms_write_rot_physical_ba(u32 val, unsigned ctx)
 	sms_write_reg(val, SMS_ROT_PHYSICAL_BA(ctx));
 }
 
+=======
+>>>>>>> refs/remotes/origin/master

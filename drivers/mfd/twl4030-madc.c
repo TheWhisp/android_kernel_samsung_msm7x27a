@@ -173,7 +173,11 @@ static int twl4030battery_temperature(int raw_volt)
 
 	volt = (raw_volt * TEMP_STEP_SIZE) / TEMP_PSR_R;
 	/* Getting and calculating the supply current in micro ampers */
+<<<<<<< HEAD
 	ret = twl_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE, &val,
+=======
+	ret = twl_i2c_read_u8(TWL_MODULE_MAIN_CHARGE, &val,
+>>>>>>> refs/remotes/origin/master
 		REG_BCICTL2);
 	if (ret < 0)
 		return ret;
@@ -196,7 +200,11 @@ static int twl4030battery_current(int raw_volt)
 	int ret;
 	u8 val;
 
+<<<<<<< HEAD
 	ret = twl_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE, &val,
+=======
+	ret = twl_i2c_read_u8(TWL_MODULE_MAIN_CHARGE, &val,
+>>>>>>> refs/remotes/origin/master
 		TWL4030_BCI_BCICTL1);
 	if (ret)
 		return ret;
@@ -211,12 +219,21 @@ static int twl4030battery_current(int raw_volt)
  * @reg_base - Base address of the first channel
  * @Channels - 16 bit bitmap. If the bit is set, channel value is read
  * @buf - The channel values are stored here. if read fails error
+<<<<<<< HEAD
+=======
+ * @raw - Return raw values without conversion
+>>>>>>> refs/remotes/origin/master
  * value is stored
  * Returns the number of successfully read channels.
  */
 static int twl4030_madc_read_channels(struct twl4030_madc_data *madc,
 				      u8 reg_base, unsigned
+<<<<<<< HEAD
 						long channels, int *buf)
+=======
+				      long channels, int *buf,
+				      bool raw)
+>>>>>>> refs/remotes/origin/master
 {
 	int count = 0, count_req = 0, i;
 	u8 reg;
@@ -230,6 +247,13 @@ static int twl4030_madc_read_channels(struct twl4030_madc_data *madc,
 			count_req++;
 			continue;
 		}
+<<<<<<< HEAD
+=======
+		if (raw) {
+			count++;
+			continue;
+		}
+>>>>>>> refs/remotes/origin/master
 		switch (i) {
 		case 10:
 			buf[i] = twl4030battery_current(buf[i]);
@@ -371,7 +395,11 @@ static irqreturn_t twl4030_madc_threaded_irq_handler(int irq, void *_madc)
 		method = &twl4030_conversion_methods[r->method];
 		/* Read results */
 		len = twl4030_madc_read_channels(madc, method->rbase,
+<<<<<<< HEAD
 						 r->channels, r->rbuf);
+=======
+						 r->channels, r->rbuf, r->raw);
+>>>>>>> refs/remotes/origin/master
 		/* Return results to caller */
 		if (r->func_cb != NULL) {
 			r->func_cb(len, r->channels, r->rbuf);
@@ -397,7 +425,11 @@ err_i2c:
 		method = &twl4030_conversion_methods[r->method];
 		/* Read results */
 		len = twl4030_madc_read_channels(madc, method->rbase,
+<<<<<<< HEAD
 						 r->channels, r->rbuf);
+=======
+						 r->channels, r->rbuf, r->raw);
+>>>>>>> refs/remotes/origin/master
 		/* Return results to caller */
 		if (r->func_cb != NULL) {
 			r->func_cb(len, r->channels, r->rbuf);
@@ -585,7 +617,11 @@ int twl4030_madc_conversion(struct twl4030_madc_request *req)
 		goto out;
 	}
 	ret = twl4030_madc_read_channels(twl4030_madc, method->rbase,
+<<<<<<< HEAD
 					 req->channels, req->rbuf);
+=======
+					 req->channels, req->rbuf, req->raw);
+>>>>>>> refs/remotes/origin/master
 	twl4030_madc->requests[req->method].active = 0;
 
 out:
@@ -635,7 +671,11 @@ static int twl4030_madc_set_current_generator(struct twl4030_madc_data *madc,
 	int ret;
 	u8 regval;
 
+<<<<<<< HEAD
 	ret = twl_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE,
+=======
+	ret = twl_i2c_read_u8(TWL_MODULE_MAIN_CHARGE,
+>>>>>>> refs/remotes/origin/master
 			      &regval, TWL4030_BCI_BCICTL1);
 	if (ret) {
 		dev_err(madc->dev, "unable to read BCICTL1 reg 0x%X",
@@ -646,7 +686,11 @@ static int twl4030_madc_set_current_generator(struct twl4030_madc_data *madc,
 		regval |= chan ? TWL4030_BCI_ITHEN : TWL4030_BCI_TYPEN;
 	else
 		regval &= chan ? ~TWL4030_BCI_ITHEN : ~TWL4030_BCI_TYPEN;
+<<<<<<< HEAD
 	ret = twl_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE,
+=======
+	ret = twl_i2c_write_u8(TWL_MODULE_MAIN_CHARGE,
+>>>>>>> refs/remotes/origin/master
 			       regval, TWL4030_BCI_BCICTL1);
 	if (ret) {
 		dev_err(madc->dev, "unable to write BCICTL1 reg 0x%X\n",
@@ -668,7 +712,11 @@ static int twl4030_madc_set_power(struct twl4030_madc_data *madc, int on)
 	u8 regval;
 	int ret;
 
+<<<<<<< HEAD
 	ret = twl_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE,
+=======
+	ret = twl_i2c_read_u8(TWL_MODULE_MAIN_CHARGE,
+>>>>>>> refs/remotes/origin/master
 			      &regval, TWL4030_MADC_CTRL1);
 	if (ret) {
 		dev_err(madc->dev, "unable to read madc ctrl1 reg 0x%X\n",
@@ -692,10 +740,17 @@ static int twl4030_madc_set_power(struct twl4030_madc_data *madc, int on)
 /*
  * Initialize MADC and request for threaded irq
  */
+<<<<<<< HEAD
 static int __devinit twl4030_madc_probe(struct platform_device *pdev)
 {
 	struct twl4030_madc_data *madc;
 	struct twl4030_madc_platform_data *pdata = pdev->dev.platform_data;
+=======
+static int twl4030_madc_probe(struct platform_device *pdev)
+{
+	struct twl4030_madc_data *madc;
+	struct twl4030_madc_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	u8 regval;
 
@@ -725,7 +780,11 @@ static int __devinit twl4030_madc_probe(struct platform_device *pdev)
 	if (ret < 0)
 		goto err_current_generator;
 
+<<<<<<< HEAD
 	ret = twl_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE,
+=======
+	ret = twl_i2c_read_u8(TWL_MODULE_MAIN_CHARGE,
+>>>>>>> refs/remotes/origin/master
 			      &regval, TWL4030_BCI_BCICTL1);
 	if (ret) {
 		dev_err(&pdev->dev, "unable to read reg BCI CTL1 0x%X\n",
@@ -733,7 +792,11 @@ static int __devinit twl4030_madc_probe(struct platform_device *pdev)
 		goto err_i2c;
 	}
 	regval |= TWL4030_BCI_MESBAT;
+<<<<<<< HEAD
 	ret = twl_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE,
+=======
+	ret = twl_i2c_write_u8(TWL_MODULE_MAIN_CHARGE,
+>>>>>>> refs/remotes/origin/master
 			       regval, TWL4030_BCI_BCICTL1);
 	if (ret) {
 		dev_err(&pdev->dev, "unable to write reg BCI Ctl1 0x%X\n",
@@ -769,12 +832,19 @@ static int __devinit twl4030_madc_probe(struct platform_device *pdev)
 				   IRQF_TRIGGER_RISING, "twl4030_madc", madc);
 	if (ret) {
 		dev_dbg(&pdev->dev, "could not request irq\n");
+<<<<<<< HEAD
 		goto err_irq;
 	}
 	twl4030_madc = madc;
 	return 0;
 err_irq:
 	platform_set_drvdata(pdev, NULL);
+=======
+		goto err_i2c;
+	}
+	twl4030_madc = madc;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 err_i2c:
 	twl4030_madc_set_current_generator(madc, 0, 0);
 err_current_generator:
@@ -785,12 +855,19 @@ err_power:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit twl4030_madc_remove(struct platform_device *pdev)
+=======
+static int twl4030_madc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct twl4030_madc_data *madc = platform_get_drvdata(pdev);
 
 	free_irq(platform_get_irq(pdev, 0), madc);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	twl4030_madc_set_current_generator(madc, 0, 0);
 	twl4030_madc_set_power(madc, 0);
 	kfree(madc);
@@ -800,13 +877,19 @@ static int __devexit twl4030_madc_remove(struct platform_device *pdev)
 
 static struct platform_driver twl4030_madc_driver = {
 	.probe = twl4030_madc_probe,
+<<<<<<< HEAD
 	.remove = __exit_p(twl4030_madc_remove),
+=======
+	.remove = twl4030_madc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		   .name = "twl4030_madc",
 		   .owner = THIS_MODULE,
 		   },
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init twl4030_madc_init(void)
 {
 	return platform_driver_register(&twl4030_madc_driver);
@@ -820,6 +903,12 @@ static void __exit twl4030_madc_exit(void)
 }
 
 module_exit(twl4030_madc_exit);
+=======
+module_platform_driver(twl4030_madc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(twl4030_madc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("TWL4030 ADC driver");
 MODULE_LICENSE("GPL");

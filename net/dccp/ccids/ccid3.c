@@ -38,7 +38,15 @@
 #include <asm/unaligned.h>
 
 #ifdef CONFIG_IP_DCCP_CCID3_DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ccid3_debug;
+=======
+static bool ccid3_debug;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool ccid3_debug;
+>>>>>>> refs/remotes/origin/master
 #define ccid3_pr_debug(format, a...)	DCCP_PR_DEBUG(ccid3_debug, format, ##a)
 #else
 #define ccid3_pr_debug(format, a...)
@@ -98,8 +106,18 @@ static void ccid3_update_send_interval(struct ccid3_hc_tx_sock *hc)
 {
 	hc->tx_t_ipi = scaled_div32(((u64)hc->tx_s) << 6, hc->tx_x);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	DCCP_BUG_ON(hc->tx_t_ipi == 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ccid3_pr_debug("t_ipi=%u, s=%u, X=%u\n", hc->tx_t_ipi,
 		       hc->tx_s, (unsigned)(hc->tx_x >> 6));
+=======
+	DCCP_BUG_ON(hc->tx_t_ipi == 0);
+	ccid3_pr_debug("t_ipi=%u, s=%u, X=%u\n", hc->tx_t_ipi,
+		       hc->tx_s, (unsigned int)(hc->tx_x >> 6));
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 ccid3_hc_tx_idle_rtt(struct ccid3_hc_tx_sock *hc, ktime_t now)
@@ -112,6 +130,10 @@ static u32 ccid3_hc_tx_idle_rtt(struct ccid3_hc_tx_sock *hc, ktime_t now)
 /**
  * ccid3_hc_tx_update_x  -  Update allowed sending rate X
  * @stamp: most recent time if available - can be left NULL.
+<<<<<<< HEAD
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This function tracks draft rfc3448bis, check there for latest details.
  *
  * Note: X and X_recv are both stored in units of 64 * bytes/second, to support
@@ -152,17 +174,31 @@ static void ccid3_hc_tx_update_x(struct sock *sk, ktime_t *stamp)
 
 	if (hc->tx_x != old_x) {
 		ccid3_pr_debug("X_prev=%u, X_now=%u, X_calc=%u, "
+<<<<<<< HEAD
 			       "X_recv=%u\n", (unsigned)(old_x >> 6),
 			       (unsigned)(hc->tx_x >> 6), hc->tx_x_calc,
 			       (unsigned)(hc->tx_x_recv >> 6));
+=======
+			       "X_recv=%u\n", (unsigned int)(old_x >> 6),
+			       (unsigned int)(hc->tx_x >> 6), hc->tx_x_calc,
+			       (unsigned int)(hc->tx_x_recv >> 6));
+>>>>>>> refs/remotes/origin/master
 
 		ccid3_update_send_interval(hc);
 	}
 }
 
+<<<<<<< HEAD
 /*
  *	Track the mean packet size `s' (cf. RFC 4342, 5.3 and  RFC 3448, 4.1)
  *	@len: DCCP packet payload size in bytes
+=======
+/**
+ *	ccid3_hc_tx_update_s - Track the mean packet size `s'
+ *	@len: DCCP packet payload size in bytes
+ *
+ *	cf. RFC 4342, 5.3 and  RFC 3448, 4.1
+>>>>>>> refs/remotes/origin/master
  */
 static inline void ccid3_hc_tx_update_s(struct ccid3_hc_tx_sock *hc, int len)
 {
@@ -236,8 +272,14 @@ static void ccid3_hc_tx_no_feedback_timer(unsigned long data)
 		 *
 		 *  Note that X_recv is scaled by 2^6 while X_calc is not
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		BUG_ON(hc->tx_p && !hc->tx_x_calc);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (hc->tx_x_calc > (hc->tx_x_recv >> 5))
 			hc->tx_x_recv =
 				max(hc->tx_x_recv / 2,
@@ -271,6 +313,10 @@ out:
 /**
  * ccid3_hc_tx_send_packet  -  Delay-based dequeueing of TX packets
  * @skb: next packet candidate to send on @sk
+<<<<<<< HEAD
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This function uses the convention of ccid_packet_dequeue_eval() and
  * returns a millisecond-delay value between 0 and t_mbi = 64000 msec.
  */
@@ -426,8 +472,13 @@ done_computing_x:
 			       "p=%u, X_calc=%u, X_recv=%u, X=%u\n",
 			       dccp_role(sk), sk, hc->tx_rtt, r_sample,
 			       hc->tx_s, hc->tx_p, hc->tx_x_calc,
+<<<<<<< HEAD
 			       (unsigned)(hc->tx_x_recv >> 6),
 			       (unsigned)(hc->tx_x >> 6));
+=======
+			       (unsigned int)(hc->tx_x_recv >> 6),
+			       (unsigned int)(hc->tx_x >> 6));
+>>>>>>> refs/remotes/origin/master
 
 	/* unschedule no feedback timer */
 	sk_stop_timer(sk, &hc->tx_no_feedback_timer);

@@ -4,7 +4,15 @@
  *
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -34,14 +42,30 @@
 static const char *Elsa_revision = "$Revision: 2.32.2.4 $";
 static const char *Elsa_Types[] =
 {"None", "PC", "PCC-8", "PCC-16", "PCF", "PCF-Pro",
+<<<<<<< HEAD
+<<<<<<< HEAD
  "PCMCIA", "QS 1000", "QS 3000", "Microlink PCI", "QS 3000 PCI", 
+=======
+ "PCMCIA", "QS 1000", "QS 3000", "Microlink PCI", "QS 3000 PCI",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ "PCMCIA", "QS 1000", "QS 3000", "Microlink PCI", "QS 3000 PCI",
+>>>>>>> refs/remotes/origin/master
  "PCMCIA-IPAC" };
 
 static const char *ITACVer[] =
 {"?0?", "?1?", "?2?", "?3?", "?4?", "V2.2",
  "B1", "A1"};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/master
 #define bytein(addr) inb(addr)
 
 #define ELSA_ISAC	0
@@ -113,6 +137,8 @@ static const char *ITACVer[] =
 
 #if ARCOFI_USE
 static struct arcofi_msg ARCOFI_XOP_F =
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{NULL,0,2,{0xa1,0x3f,0,0,0,0,0,0,0,0}}; /* Normal OP */
 static struct arcofi_msg ARCOFI_XOP_1 =
 	{&ARCOFI_XOP_F,0,2,{0xa1,0x31,0,0,0,0,0,0,0,0}}; /* PWR UP */
@@ -132,6 +158,32 @@ static struct arcofi_msg ARCOFI_VERSION =
 	{NULL,1,2,{0xa0,0,0,0,0,0,0,0,0,0}};
 static struct arcofi_msg ARCOFI_XOP_0 =
 	{NULL,0,2,{0xa1,0x30,0,0,0,0,0,0,0,0}}; /* PWR Down */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+{NULL,0,2,{0xa1,0x3f,0,0,0,0,0,0,0,0}}; /* Normal OP */
+static struct arcofi_msg ARCOFI_XOP_1 =
+{&ARCOFI_XOP_F,0,2,{0xa1,0x31,0,0,0,0,0,0,0,0}}; /* PWR UP */
+static struct arcofi_msg ARCOFI_SOP_F =
+{&ARCOFI_XOP_1,0,10,{0xa1,0x1f,0x00,0x50,0x10,0x00,0x00,0x80,0x02,0x12}};
+static struct arcofi_msg ARCOFI_COP_9 =
+{&ARCOFI_SOP_F,0,10,{0xa1,0x29,0x80,0xcb,0xe9,0x88,0x00,0xc8,0xd8,0x80}}; /* RX */
+static struct arcofi_msg ARCOFI_COP_8 =
+{&ARCOFI_COP_9,0,10,{0xa1,0x28,0x49,0x31,0x8,0x13,0x6e,0x88,0x2a,0x61}}; /* TX */
+static struct arcofi_msg ARCOFI_COP_7 =
+{&ARCOFI_COP_8,0,4,{0xa1,0x27,0x80,0x80,0,0,0,0,0,0}}; /* GZ */
+static struct arcofi_msg ARCOFI_COP_6 =
+{&ARCOFI_COP_7,0,6,{0xa1,0x26,0,0,0x82,0x7c,0,0,0,0}}; /* GRL GRH */
+static struct arcofi_msg ARCOFI_COP_5 =
+{&ARCOFI_COP_6,0,4,{0xa1,0x25,0xbb,0x4a,0,0,0,0,0,0}}; /* GTX */
+static struct arcofi_msg ARCOFI_VERSION =
+{NULL,1,2,{0xa0,0,0,0,0,0,0,0,0,0}};
+static struct arcofi_msg ARCOFI_XOP_0 =
+{NULL,0,2,{0xa1,0x30,0,0,0,0,0,0,0,0}}; /* PWR Down */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void set_arcofi(struct IsdnCardState *cs, int bc);
 
@@ -149,7 +201,15 @@ readreg(unsigned int ale, unsigned int adr, u_char off)
 }
 
 static inline void
+<<<<<<< HEAD
+<<<<<<< HEAD
 readfifo(unsigned int ale, unsigned int adr, u_char off, u_char * data, int size)
+=======
+readfifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+readfifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	byteout(ale, off);
 	insb(adr, data, size);
@@ -164,7 +224,15 @@ writereg(unsigned int ale, unsigned int adr, u_char off, u_char data)
 }
 
 static inline void
+<<<<<<< HEAD
+<<<<<<< HEAD
 writefifo(unsigned int ale, unsigned int adr, u_char off, u_char * data, int size)
+=======
+writefifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+writefifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	byteout(ale, off);
 	outsb(adr, data, size);
@@ -185,13 +253,29 @@ WriteISAC(struct IsdnCardState *cs, u_char offset, u_char value)
 }
 
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	readfifo(cs->hw.elsa.ale, cs->hw.elsa.isac, 0, data, size);
 }
 
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	writefifo(cs->hw.elsa.ale, cs->hw.elsa.isac, 0, data, size);
 }
@@ -199,23 +283,53 @@ WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 static u_char
 ReadISAC_IPAC(struct IsdnCardState *cs, u_char offset)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return (readreg(cs->hw.elsa.ale, cs->hw.elsa.isac, offset+0x80));
+=======
+	return (readreg(cs->hw.elsa.ale, cs->hw.elsa.isac, offset + 0x80));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (readreg(cs->hw.elsa.ale, cs->hw.elsa.isac, offset + 0x80));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 WriteISAC_IPAC(struct IsdnCardState *cs, u_char offset, u_char value)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writereg(cs->hw.elsa.ale, cs->hw.elsa.isac, offset|0x80, value);
 }
 
 static void
 ReadISACfifo_IPAC(struct IsdnCardState *cs, u_char * data, int size)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	writereg(cs->hw.elsa.ale, cs->hw.elsa.isac, offset | 0x80, value);
+}
+
+static void
+ReadISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	readfifo(cs->hw.elsa.ale, cs->hw.elsa.isac, 0x80, data, size);
 }
 
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char * data, int size)
+=======
+WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	writefifo(cs->hw.elsa.ale, cs->hw.elsa.isac, 0x80, data, size);
 }
@@ -267,6 +381,8 @@ TimerRun(struct IsdnCardState *cs)
  * fast interrupt HSCX stuff goes here
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define READHSCX(cs, nr, reg) readreg(cs->hw.elsa.ale, \
 		cs->hw.elsa.hscx, reg + (nr ? 0x40 : 0))
 #define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.elsa.ale, \
@@ -277,6 +393,23 @@ TimerRun(struct IsdnCardState *cs)
 
 #define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.elsa.ale, \
 		cs->hw.elsa.hscx, (nr ? 0x40 : 0), ptr, cnt)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define READHSCX(cs, nr, reg) readreg(cs->hw.elsa.ale,			\
+				      cs->hw.elsa.hscx, reg + (nr ? 0x40 : 0))
+#define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.elsa.ale,		\
+					      cs->hw.elsa.hscx, reg + (nr ? 0x40 : 0), data)
+
+#define READHSCXFIFO(cs, nr, ptr, cnt) readfifo(cs->hw.elsa.ale,	\
+						cs->hw.elsa.hscx, (nr ? 0x40 : 0), ptr, cnt)
+
+#define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.elsa.ale,	\
+						  cs->hw.elsa.hscx, (nr ? 0x40 : 0), ptr, cnt)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "hscx_irq.c"
 
@@ -286,11 +419,25 @@ elsa_interrupt(int intno, void *dev_id)
 	struct IsdnCardState *cs = dev_id;
 	u_long flags;
 	u_char val;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int icnt=5;
 
 	if ((cs->typ == ISDN_CTYPE_ELSA_PCMCIA) && (*cs->busy_flag == 1)) {
 	/* The card tends to generate interrupts while being removed
 	   causing us to just crash the kernel. bad. */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int icnt = 5;
+
+	if ((cs->typ == ISDN_CTYPE_ELSA_PCMCIA) && (*cs->busy_flag == 1)) {
+		/* The card tends to generate interrupts while being removed
+		   causing us to just crash the kernel. bad. */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "Elsa: card not available!\n");
 		return IRQ_NONE;
 	}
@@ -299,18 +446,42 @@ elsa_interrupt(int intno, void *dev_id)
 	if (cs->hw.elsa.MFlag) {
 		val = serial_inp(cs, UART_IIR);
 		if (!(val & UART_IIR_NO_INT)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			debugl1(cs,"IIR %02x", val);
+=======
+			debugl1(cs, "IIR %02x", val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			debugl1(cs, "IIR %02x", val);
+>>>>>>> refs/remotes/origin/master
 			rs_interrupt_elsa(cs);
 		}
 	}
 #endif
 	val = readreg(cs->hw.elsa.ale, cs->hw.elsa.hscx, HSCX_ISTA + 0x40);
+<<<<<<< HEAD
+<<<<<<< HEAD
       Start_HSCX:
+=======
+Start_HSCX:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+Start_HSCX:
+>>>>>>> refs/remotes/origin/master
 	if (val) {
 		hscx_int_main(cs, val);
 	}
 	val = readreg(cs->hw.elsa.ale, cs->hw.elsa.isac, ISAC_ISTA);
+<<<<<<< HEAD
+<<<<<<< HEAD
       Start_ISAC:
+=======
+Start_ISAC:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+Start_ISAC:
+>>>>>>> refs/remotes/origin/master
 	if (val) {
 		isac_interrupt(cs, val);
 	}
@@ -364,8 +535,18 @@ elsa_interrupt_ipac(int intno, void *dev_id)
 {
 	struct IsdnCardState *cs = dev_id;
 	u_long flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u_char ista,val;
 	int icnt=5;
+=======
+	u_char ista, val;
+	int icnt = 5;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u_char ista, val;
+	int icnt = 5;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&cs->lock, flags);
 	if (cs->subtyp == ELSA_QS1000PCI || cs->subtyp == ELSA_QS3000PCI) {
@@ -379,7 +560,15 @@ elsa_interrupt_ipac(int intno, void *dev_id)
 	if (cs->hw.elsa.MFlag) {
 		val = serial_inp(cs, UART_IIR);
 		if (!(val & UART_IIR_NO_INT)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			debugl1(cs,"IIR %02x", val);
+=======
+			debugl1(cs, "IIR %02x", val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			debugl1(cs, "IIR %02x", val);
+>>>>>>> refs/remotes/origin/master
 			rs_interrupt_elsa(cs);
 		}
 	}
@@ -444,6 +633,8 @@ release_io_elsa(struct IsdnCardState *cs)
 		writereg(cs->hw.elsa.ale, cs->hw.elsa.isac, IPAC_ATX, 0xff);
 		release_region(cs->hw.elsa.cfg, 0x80);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
  	if (cs->subtyp == ELSA_PCMCIA_IPAC) {
 		writereg(cs->hw.elsa.ale, cs->hw.elsa.isac, IPAC_ATX, 0xff);
  	}
@@ -451,6 +642,20 @@ release_io_elsa(struct IsdnCardState *cs)
 		(cs->subtyp == ELSA_QS3000) ||
 		(cs->subtyp == ELSA_PCF) ||
 		(cs->subtyp == ELSA_QS3000PCI)) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (cs->subtyp == ELSA_PCMCIA_IPAC) {
+		writereg(cs->hw.elsa.ale, cs->hw.elsa.isac, IPAC_ATX, 0xff);
+	}
+	if ((cs->subtyp == ELSA_PCFPRO) ||
+	    (cs->subtyp == ELSA_QS3000) ||
+	    (cs->subtyp == ELSA_PCF) ||
+	    (cs->subtyp == ELSA_QS3000PCI)) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bytecnt = 16;
 #if ARCOFI_USE
 		release_modem(cs);
@@ -521,15 +726,30 @@ check_arcofi(struct IsdnCardState *cs)
 	u_char *p;
 
 	if (!cs->dc.isac.mon_tx)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(cs->dc.isac.mon_tx=kmalloc(MAX_MON_FRAME, GFP_ATOMIC))) {
 			if (cs->debug & L1_DEB_WARN)
 				debugl1(cs, "ISAC MON TX out of buffers!");
 			return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (!(cs->dc.isac.mon_tx = kmalloc(MAX_MON_FRAME, GFP_ATOMIC))) {
+			if (cs->debug & L1_DEB_WARN)
+				debugl1(cs, "ISAC MON TX out of buffers!");
+			return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	cs->dc.isac.arcofi_bc = 0;
 	arcofi_fsm(cs, ARCOFI_START, &ARCOFI_VERSION);
 	interruptible_sleep_on(&cs->dc.isac.arcofi_wait);
 	if (!test_and_clear_bit(FLG_ARCOFI_ERROR, &cs->HW_Flags)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			debugl1(cs, "Arcofi response received %d bytes", cs->dc.isac.mon_rxp);
 			p = cs->dc.isac.mon_rx;
 			t = tmp;
@@ -557,10 +777,50 @@ check_arcofi(struct IsdnCardState *cs)
 			} else
 				debugl1(cs, "undefined Monitor response");
 			cs->dc.isac.mon_rxp = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		debugl1(cs, "Arcofi response received %d bytes", cs->dc.isac.mon_rxp);
+		p = cs->dc.isac.mon_rx;
+		t = tmp;
+		t += sprintf(tmp, "Arcofi data");
+		QuickHex(t, p, cs->dc.isac.mon_rxp);
+<<<<<<< HEAD
+		debugl1(cs, tmp);
+=======
+		debugl1(cs, "%s", tmp);
+>>>>>>> refs/remotes/origin/master
+		if ((cs->dc.isac.mon_rxp == 2) && (cs->dc.isac.mon_rx[0] == 0xa0)) {
+			switch (cs->dc.isac.mon_rx[1]) {
+			case 0x80:
+				debugl1(cs, "Arcofi 2160 detected");
+				arcofi_present = 1;
+				break;
+			case 0x82:
+				debugl1(cs, "Arcofi 2165 detected");
+				arcofi_present = 2;
+				break;
+			case 0x84:
+				debugl1(cs, "Arcofi 2163 detected");
+				arcofi_present = 3;
+				break;
+			default:
+				debugl1(cs, "unknown Arcofi response");
+				break;
+			}
+		} else
+			debugl1(cs, "undefined Monitor response");
+		cs->dc.isac.mon_rxp = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (cs->dc.isac.mon_tx) {
 		debugl1(cs, "Arcofi not detected");
 	}
 	if (arcofi_present) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (cs->subtyp==ELSA_QS1000) {
 			cs->subtyp = ELSA_QS3000;
 			printk(KERN_INFO
@@ -599,6 +859,51 @@ check_arcofi(struct IsdnCardState *cs)
 		return(1);
 	}
 	return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (cs->subtyp == ELSA_QS1000) {
+			cs->subtyp = ELSA_QS3000;
+			printk(KERN_INFO
+			       "Elsa: %s detected modem at 0x%lx\n",
+			       Elsa_Types[cs->subtyp],
+			       cs->hw.elsa.base + 8);
+			release_region(cs->hw.elsa.base, 8);
+			if (!request_region(cs->hw.elsa.base, 16, "elsa isdn modem")) {
+				printk(KERN_WARNING
+				       "HiSax: %s config port %lx-%lx already in use\n",
+				       Elsa_Types[cs->subtyp],
+				       cs->hw.elsa.base + 8,
+				       cs->hw.elsa.base + 16);
+			}
+		} else if (cs->subtyp == ELSA_PCC16) {
+			cs->subtyp = ELSA_PCF;
+			printk(KERN_INFO
+			       "Elsa: %s detected modem at 0x%lx\n",
+			       Elsa_Types[cs->subtyp],
+			       cs->hw.elsa.base + 8);
+			release_region(cs->hw.elsa.base, 8);
+			if (!request_region(cs->hw.elsa.base, 16, "elsa isdn modem")) {
+				printk(KERN_WARNING
+				       "HiSax: %s config port %lx-%lx already in use\n",
+				       Elsa_Types[cs->subtyp],
+				       cs->hw.elsa.base + 8,
+				       cs->hw.elsa.base + 16);
+			}
+		} else
+			printk(KERN_INFO
+			       "Elsa: %s detected modem at 0x%lx\n",
+			       Elsa_Types[cs->subtyp],
+			       cs->hw.elsa.base + 8);
+		arcofi_fsm(cs, ARCOFI_START, &ARCOFI_XOP_0);
+		interruptible_sleep_on(&cs->dc.isac.arcofi_wait);
+		return (1);
+	}
+	return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* ARCOFI_USE */
 
@@ -627,7 +932,15 @@ elsa_led_handler(struct IsdnCardState *cs)
 		cs->hw.elsa.ctrl_reg &= ~ELSA_LINE_LED;
 
 	if ((cs->subtyp == ELSA_QS1000PCI) ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(cs->subtyp == ELSA_QS3000PCI)) {
+=======
+	    (cs->subtyp == ELSA_QS3000PCI)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (cs->subtyp == ELSA_QS3000PCI)) {
+>>>>>>> refs/remotes/origin/master
 		u_char led = 0xff;
 		if (cs->hw.elsa.ctrl_reg & ELSA_LINE_LED)
 			led ^= ELSA_IPAC_LINE_LED;
@@ -650,6 +963,8 @@ Elsa_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	u_long flags;
 
 	switch (mt) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
 			reset_elsa(cs);
@@ -755,6 +1070,118 @@ Elsa_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 				modem_write_cmd(cs, msg, len);
 			}
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case CARD_RESET:
+		spin_lock_irqsave(&cs->lock, flags);
+		reset_elsa(cs);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		return (0);
+	case CARD_RELEASE:
+		release_io_elsa(cs);
+		return (0);
+	case CARD_INIT:
+		spin_lock_irqsave(&cs->lock, flags);
+		cs->debug |= L1_DEB_IPAC;
+		reset_elsa(cs);
+		inithscxisac(cs, 1);
+		if ((cs->subtyp == ELSA_QS1000) ||
+		    (cs->subtyp == ELSA_QS3000))
+		{
+			byteout(cs->hw.elsa.timer, 0);
+		}
+		if (cs->hw.elsa.trig)
+			byteout(cs->hw.elsa.trig, 0xff);
+		inithscxisac(cs, 2);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		return (0);
+	case CARD_TEST:
+		if ((cs->subtyp == ELSA_PCMCIA) ||
+		    (cs->subtyp == ELSA_PCMCIA_IPAC) ||
+		    (cs->subtyp == ELSA_QS1000PCI)) {
+			return (0);
+		} else if (cs->subtyp == ELSA_QS3000PCI) {
+			ret = 0;
+		} else {
+			spin_lock_irqsave(&cs->lock, flags);
+			cs->hw.elsa.counter = 0;
+			cs->hw.elsa.ctrl_reg |= ELSA_ENA_TIMER_INT;
+			cs->hw.elsa.status |= ELIRQF_TIMER_AKTIV;
+			byteout(cs->hw.elsa.ctrl, cs->hw.elsa.ctrl_reg);
+			byteout(cs->hw.elsa.timer, 0);
+			spin_unlock_irqrestore(&cs->lock, flags);
+			msleep(110);
+			spin_lock_irqsave(&cs->lock, flags);
+			cs->hw.elsa.ctrl_reg &= ~ELSA_ENA_TIMER_INT;
+			byteout(cs->hw.elsa.ctrl, cs->hw.elsa.ctrl_reg);
+			cs->hw.elsa.status &= ~ELIRQF_TIMER_AKTIV;
+			spin_unlock_irqrestore(&cs->lock, flags);
+			printk(KERN_INFO "Elsa: %d timer tics in 110 msek\n",
+			       cs->hw.elsa.counter);
+			if ((cs->hw.elsa.counter > 10) &&
+			    (cs->hw.elsa.counter < 16)) {
+				printk(KERN_INFO "Elsa: timer and irq OK\n");
+				ret = 0;
+			} else {
+				printk(KERN_WARNING
+				       "Elsa: timer tic problem (%d/12) maybe an IRQ(%d) conflict\n",
+				       cs->hw.elsa.counter, cs->irq);
+				ret = 1;
+			}
+		}
+#if ARCOFI_USE
+		if (check_arcofi(cs)) {
+			init_modem(cs);
+		}
+#endif
+		elsa_led_handler(cs);
+		return (ret);
+	case (MDL_REMOVE | REQUEST):
+		cs->hw.elsa.status &= 0;
+		break;
+	case (MDL_ASSIGN | REQUEST):
+		cs->hw.elsa.status |= ELSA_ASSIGN;
+		break;
+	case MDL_INFO_SETUP:
+		if ((long) arg)
+			cs->hw.elsa.status |= 0x0200;
+		else
+			cs->hw.elsa.status |= 0x0100;
+		break;
+	case MDL_INFO_CONN:
+		if ((long) arg)
+			cs->hw.elsa.status |= 0x2000;
+		else
+			cs->hw.elsa.status |= 0x1000;
+		break;
+	case MDL_INFO_REL:
+		if ((long) arg) {
+			cs->hw.elsa.status &= ~0x2000;
+			cs->hw.elsa.status &= ~0x0200;
+		} else {
+			cs->hw.elsa.status &= ~0x1000;
+			cs->hw.elsa.status &= ~0x0100;
+		}
+		break;
+#if ARCOFI_USE
+	case CARD_AUX_IND:
+		if (cs->hw.elsa.MFlag) {
+			int len;
+			u_char *msg;
+
+			if (!arg)
+				return (0);
+			msg = arg;
+			len = *msg;
+			msg++;
+			modem_write_cmd(cs, msg, len);
+		}
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	}
 	if (cs->typ == ISDN_CTYPE_ELSA) {
@@ -765,14 +1192,30 @@ Elsa_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 			cs->hw.elsa.status &= ~ELSA_BAD_PWR;
 	}
 	elsa_led_handler(cs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return(ret);
+=======
+	return (ret);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (ret);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned char
 probe_elsa_adr(unsigned int adr, int typ)
 {
 	int i, in1, in2, p16_1 = 0, p16_2 = 0, p8_1 = 0, p8_2 = 0, pc_1 = 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 pc_2 = 0, pfp_1 = 0, pfp_2 = 0;
+=======
+		pc_2 = 0, pfp_1 = 0, pfp_2 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pc_2 = 0, pfp_1 = 0, pfp_2 = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* In case of the elsa pcmcia card, this region is in use,
 	   reserved for us by the card manager. So we do not check it
@@ -822,7 +1265,15 @@ probe_elsa(struct IsdnCardState *cs)
 {
 	int i;
 	unsigned int CARD_portlist[] =
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{0x160, 0x170, 0x260, 0x360, 0};
+=======
+		{0x160, 0x170, 0x260, 0x360, 0};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		{0x160, 0x170, 0x260, 0x360, 0};
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; CARD_portlist[i]; i++) {
 		if ((cs->subtyp = probe_elsa_adr(CARD_portlist[i], cs->typ)))
@@ -831,8 +1282,12 @@ probe_elsa(struct IsdnCardState *cs)
 	return (CARD_portlist[i]);
 }
 
+<<<<<<< HEAD
 static int __devinit
 setup_elsa_isa(struct IsdnCard *card)
+=======
+static int setup_elsa_isa(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	u_char val;
@@ -867,6 +1322,8 @@ setup_elsa_isa(struct IsdnCard *card)
 	val = bytein(cs->hw.elsa.cfg);
 	if (cs->subtyp == ELSA_PC) {
 		const u_char CARD_IrqTab[8] =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		{7, 3, 5, 9, 0, 0, 0, 0};
 		cs->irq = CARD_IrqTab[(val & ELSA_IRQ_IDX_PC) >> 2];
 	} else if (cs->subtyp == ELSA_PCC8) {
@@ -876,6 +1333,22 @@ setup_elsa_isa(struct IsdnCard *card)
 	} else {
 		const u_char CARD_IrqTab[8] =
 		{15, 10, 15, 3, 11, 5, 11, 9};
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			{7, 3, 5, 9, 0, 0, 0, 0};
+		cs->irq = CARD_IrqTab[(val & ELSA_IRQ_IDX_PC) >> 2];
+	} else if (cs->subtyp == ELSA_PCC8) {
+		const u_char CARD_IrqTab[8] =
+			{7, 3, 5, 9, 0, 0, 0, 0};
+		cs->irq = CARD_IrqTab[(val & ELSA_IRQ_IDX_PCC8) >> 4];
+	} else {
+		const u_char CARD_IrqTab[8] =
+			{15, 10, 15, 3, 11, 5, 11, 9};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cs->irq = CARD_IrqTab[(val & ELSA_IRQ_IDX) >> 3];
 	}
 	val = bytein(cs->hw.elsa.ale) & ELSA_HW_RELEASE;
@@ -894,7 +1367,15 @@ setup_elsa_isa(struct IsdnCard *card)
 	val = bytein(cs->hw.elsa.ale) & ELSA_S0_POWER_BAD;
 	if (val) {
 		printk(KERN_WARNING
+<<<<<<< HEAD
+<<<<<<< HEAD
 		   "Elsa: Microlink S0 bus power bad\n");
+=======
+		       "Elsa: Microlink S0 bus power bad\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "Elsa: Microlink S0 bus power bad\n");
+>>>>>>> refs/remotes/origin/master
 		cs->hw.elsa.status |= ELSA_BAD_PWR;
 	}
 
@@ -902,28 +1383,53 @@ setup_elsa_isa(struct IsdnCard *card)
 }
 
 #ifdef __ISAPNP__
+<<<<<<< HEAD
 static struct isapnp_device_id elsa_ids[] __devinitdata = {
 	{ ISAPNP_VENDOR('E', 'L', 'S'), ISAPNP_FUNCTION(0x0133),
+<<<<<<< HEAD
 	  ISAPNP_VENDOR('E', 'L', 'S'), ISAPNP_FUNCTION(0x0133), 
 	  (unsigned long) "Elsa QS1000" },
 	{ ISAPNP_VENDOR('E', 'L', 'S'), ISAPNP_FUNCTION(0x0134),
 	  ISAPNP_VENDOR('E', 'L', 'S'), ISAPNP_FUNCTION(0x0134), 
+=======
+=======
+static struct isapnp_device_id elsa_ids[] = {
+	{ ISAPNP_VENDOR('E', 'L', 'S'), ISAPNP_FUNCTION(0x0133),
+>>>>>>> refs/remotes/origin/master
+	  ISAPNP_VENDOR('E', 'L', 'S'), ISAPNP_FUNCTION(0x0133),
+	  (unsigned long) "Elsa QS1000" },
+	{ ISAPNP_VENDOR('E', 'L', 'S'), ISAPNP_FUNCTION(0x0134),
+	  ISAPNP_VENDOR('E', 'L', 'S'), ISAPNP_FUNCTION(0x0134),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  (unsigned long) "Elsa QS3000" },
 	{ 0, }
 };
 
+<<<<<<< HEAD
 static struct isapnp_device_id *ipid __devinitdata = &elsa_ids[0];
 static struct pnp_card *pnp_c __devinitdata = NULL;
 #endif	/* __ISAPNP__ */
 
 static int __devinit
 setup_elsa_isapnp(struct IsdnCard *card)
+=======
+static struct isapnp_device_id *ipid = &elsa_ids[0];
+static struct pnp_card *pnp_c = NULL;
+#endif	/* __ISAPNP__ */
+
+static int setup_elsa_isapnp(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 
 #ifdef __ISAPNP__
 	if (!card->para[1] && isapnp_present()) {
 		struct pnp_dev *pnp_d;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		while(ipid->card_vendor) {
 			if ((pnp_c = pnp_find_card(ipid->card_vendor,
 				ipid->card_device, pnp_c))) {
@@ -940,15 +1446,50 @@ setup_elsa_isapnp(struct IsdnCard *card)
 						printk(KERN_WARNING "%s: pnp_activate_dev ret(%d)\n",
 							__func__, err);
 						return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		while (ipid->card_vendor) {
+			if ((pnp_c = pnp_find_card(ipid->card_vendor,
+						   ipid->card_device, pnp_c))) {
+				pnp_d = NULL;
+				if ((pnp_d = pnp_find_dev(pnp_c,
+							  ipid->vendor, ipid->function, pnp_d))) {
+					int err;
+
+					printk(KERN_INFO "HiSax: %s detected\n",
+					       (char *)ipid->driver_data);
+					pnp_disable_dev(pnp_d);
+					err = pnp_activate_dev(pnp_d);
+					if (err < 0) {
+						printk(KERN_WARNING "%s: pnp_activate_dev ret(%d)\n",
+						       __func__, err);
+						return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					}
 					card->para[1] = pnp_port_start(pnp_d, 0);
 					card->para[0] = pnp_irq(pnp_d, 0);
 
 					if (!card->para[0] || !card->para[1]) {
 						printk(KERN_ERR "Elsa PnP:some resources are missing %ld/%lx\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 							card->para[0], card->para[1]);
 						pnp_disable_dev(pnp_d);
 						return(0);
+=======
+						       card->para[0], card->para[1]);
+						pnp_disable_dev(pnp_d);
+						return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       card->para[0], card->para[1]);
+						pnp_disable_dev(pnp_d);
+						return (0);
+>>>>>>> refs/remotes/origin/master
 					}
 					if (ipid->function == ISAPNP_FUNCTION(0x133))
 						cs->subtyp = ELSA_QS1000;
@@ -957,6 +1498,8 @@ setup_elsa_isapnp(struct IsdnCard *card)
 					break;
 				} else {
 					printk(KERN_ERR "Elsa PnP: PnP error card found, no device\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 					return(0);
 				}
 			}
@@ -966,11 +1509,35 @@ setup_elsa_isapnp(struct IsdnCard *card)
 		if (!ipid->card_vendor) {
 			printk(KERN_INFO "Elsa PnP: no ISAPnP card found\n");
 			return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					return (0);
+				}
+			}
+			ipid++;
+			pnp_c = NULL;
+		}
+		if (!ipid->card_vendor) {
+			printk(KERN_INFO "Elsa PnP: no ISAPnP card found\n");
+			return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #endif	/* __ISAPNP__ */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (card->para[1] && card->para[0]) { 
+=======
+	if (card->para[1] && card->para[0]) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (card->para[1] && card->para[0]) {
+>>>>>>> refs/remotes/origin/master
 		cs->hw.elsa.base = card->para[1];
 		cs->irq = card->para[0];
 		if (!cs->subtyp)
@@ -994,8 +1561,12 @@ setup_elsa_isapnp(struct IsdnCard *card)
 	return (1);
 }
 
+<<<<<<< HEAD
 static void __devinit
 setup_elsa_pcmcia(struct IsdnCard *card)
+=======
+static void setup_elsa_pcmcia(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	u_char val;
@@ -1027,43 +1598,101 @@ setup_elsa_pcmcia(struct IsdnCard *card)
 }
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
+<<<<<<< HEAD
 static 	struct pci_dev *dev_qs1000 __devinitdata = NULL;
 static 	struct pci_dev *dev_qs3000 __devinitdata = NULL;
+=======
+static	struct pci_dev *dev_qs1000 __devinitdata = NULL;
+static	struct pci_dev *dev_qs3000 __devinitdata = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __devinit
 setup_elsa_pci(struct IsdnCard *card)
+=======
+static	struct pci_dev *dev_qs1000 = NULL;
+static	struct pci_dev *dev_qs3000 = NULL;
+
+static int setup_elsa_pci(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 
 	cs->subtyp = 0;
 	if ((dev_qs1000 = hisax_find_pci_device(PCI_VENDOR_ID_ELSA,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		PCI_DEVICE_ID_ELSA_MICROLINK, dev_qs1000))) {
 		if (pci_enable_device(dev_qs1000))
 			return(0);
+=======
+						PCI_DEVICE_ID_ELSA_MICROLINK, dev_qs1000))) {
+		if (pci_enable_device(dev_qs1000))
+			return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						PCI_DEVICE_ID_ELSA_MICROLINK, dev_qs1000))) {
+		if (pci_enable_device(dev_qs1000))
+			return (0);
+>>>>>>> refs/remotes/origin/master
 		cs->subtyp = ELSA_QS1000PCI;
 		cs->irq = dev_qs1000->irq;
 		cs->hw.elsa.cfg = pci_resource_start(dev_qs1000, 1);
 		cs->hw.elsa.base = pci_resource_start(dev_qs1000, 3);
 	} else if ((dev_qs3000 = hisax_find_pci_device(PCI_VENDOR_ID_ELSA,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		PCI_DEVICE_ID_ELSA_QS3000, dev_qs3000))) {
 		if (pci_enable_device(dev_qs3000))
 			return(0);
+=======
+						       PCI_DEVICE_ID_ELSA_QS3000, dev_qs3000))) {
+		if (pci_enable_device(dev_qs3000))
+			return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       PCI_DEVICE_ID_ELSA_QS3000, dev_qs3000))) {
+		if (pci_enable_device(dev_qs3000))
+			return (0);
+>>>>>>> refs/remotes/origin/master
 		cs->subtyp = ELSA_QS3000PCI;
 		cs->irq = dev_qs3000->irq;
 		cs->hw.elsa.cfg = pci_resource_start(dev_qs3000, 1);
 		cs->hw.elsa.base = pci_resource_start(dev_qs3000, 3);
 	} else {
 		printk(KERN_WARNING "Elsa: No PCI card found\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return(0);
 	}
 	if (!cs->irq) {
 		printk(KERN_WARNING "Elsa: No IRQ for PCI card found\n");
 		return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		return (0);
+	}
+	if (!cs->irq) {
+		printk(KERN_WARNING "Elsa: No IRQ for PCI card found\n");
+		return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!(cs->hw.elsa.base && cs->hw.elsa.cfg)) {
 		printk(KERN_WARNING "Elsa: No IO-Adr for PCI card found\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return(0);
+=======
+		return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (0);
+>>>>>>> refs/remotes/origin/master
 	}
 	if ((cs->hw.elsa.cfg & 0xff) || (cs->hw.elsa.base & 0xf)) {
 		printk(KERN_WARNING "Elsa: You may have a wrong PCI bios\n");
@@ -1071,8 +1700,18 @@ setup_elsa_pci(struct IsdnCard *card)
 		printk(KERN_WARNING "Elsa: Documentation/isdn/README.HiSax\n");
 	}
 	cs->hw.elsa.ale  = cs->hw.elsa.base;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cs->hw.elsa.isac = cs->hw.elsa.base +1;
 	cs->hw.elsa.hscx = cs->hw.elsa.base +1; 
+=======
+	cs->hw.elsa.isac = cs->hw.elsa.base + 1;
+	cs->hw.elsa.hscx = cs->hw.elsa.base + 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cs->hw.elsa.isac = cs->hw.elsa.base + 1;
+	cs->hw.elsa.hscx = cs->hw.elsa.base + 1;
+>>>>>>> refs/remotes/origin/master
 	test_and_set_bit(HW_IPAC, &cs->HW_Flags);
 	cs->hw.elsa.timer = 0;
 	cs->hw.elsa.trig  = 0;
@@ -1089,21 +1728,31 @@ setup_elsa_pci(struct IsdnCard *card)
 
 #else
 
+<<<<<<< HEAD
 static int __devinit
 setup_elsa_pci(struct IsdnCard *card)
+=======
+static int setup_elsa_pci(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	return (1);
 }
 #endif /* CONFIG_PCI */
 
+<<<<<<< HEAD
 static int __devinit
 setup_elsa_common(struct IsdnCard *card)
+=======
+static int setup_elsa_common(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	u_char val;
 	int bytecnt;
 
 	switch (cs->subtyp) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case ELSA_PC:
 		case ELSA_PCC8:
 		case ELSA_PCC16:
@@ -1125,6 +1774,34 @@ setup_elsa_common(struct IsdnCard *card)
 			printk(KERN_WARNING
 			       "Unknown ELSA subtype %d\n", cs->subtyp);
 			return (0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case ELSA_PC:
+	case ELSA_PCC8:
+	case ELSA_PCC16:
+	case ELSA_QS1000:
+	case ELSA_PCMCIA:
+	case ELSA_PCMCIA_IPAC:
+		bytecnt = 8;
+		break;
+	case ELSA_PCFPRO:
+	case ELSA_PCF:
+	case ELSA_QS3000:
+	case ELSA_QS3000PCI:
+		bytecnt = 16;
+		break;
+	case ELSA_QS1000PCI:
+		bytecnt = 2;
+		break;
+	default:
+		printk(KERN_WARNING
+		       "Unknown ELSA subtype %d\n", cs->subtyp);
+		return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	/* In case of the elsa pcmcia card, this region is in use,
 	   reserved for us by the card manager. So we do not check it
@@ -1140,8 +1817,18 @@ setup_elsa_common(struct IsdnCard *card)
 		if (!request_region(cs->hw.elsa.cfg, 0x80, "elsa isdn pci")) {
 			printk(KERN_WARNING
 			       "HiSax: ELSA pci port %x-%x already in use\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				cs->hw.elsa.cfg,
 				cs->hw.elsa.cfg + 0x80);
+=======
+			       cs->hw.elsa.cfg,
+			       cs->hw.elsa.cfg + 0x80);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       cs->hw.elsa.cfg,
+			       cs->hw.elsa.cfg + 0x80);
+>>>>>>> refs/remotes/origin/master
 			release_region(cs->hw.elsa.base, bytecnt);
 			return (0);
 		}
@@ -1166,7 +1853,15 @@ setup_elsa_common(struct IsdnCard *card)
 				return (0);
 			}
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		HZDELAY((HZ/100) + 1);	/* wait >=10 ms */
+=======
+		HZDELAY((HZ / 100) + 1);	/* wait >=10 ms */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		HZDELAY((HZ / 100) + 1);	/* wait >=10 ms */
+>>>>>>> refs/remotes/origin/master
 		if (TimerRun(cs)) {
 			printk(KERN_WARNING "Elsa: timer do not run down\n");
 			release_io_elsa(cs);
@@ -1195,7 +1890,15 @@ setup_elsa_common(struct IsdnCard *card)
 		ISACVersion(cs, "Elsa:");
 		if (HscxVersion(cs, "Elsa:")) {
 			printk(KERN_WARNING
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"Elsa: wrong HSCX versions check IO address\n");
+=======
+			       "Elsa: wrong HSCX versions check IO address\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "Elsa: wrong HSCX versions check IO address\n");
+>>>>>>> refs/remotes/origin/master
 			release_io_elsa(cs);
 			return (0);
 		}
@@ -1212,8 +1915,12 @@ setup_elsa_common(struct IsdnCard *card)
 	return (1);
 }
 
+<<<<<<< HEAD
 int __devinit
 setup_elsa(struct IsdnCard *card)
+=======
+int setup_elsa(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	struct IsdnCardState *cs = card->cs;
@@ -1244,7 +1951,15 @@ setup_elsa(struct IsdnCard *card)
 		if (!rc)
 			return (0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else 
+=======
+	} else
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else
+>>>>>>> refs/remotes/origin/master
 		return (0);
 
 	return setup_elsa_common(card);

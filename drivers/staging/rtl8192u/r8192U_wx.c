@@ -2,7 +2,11 @@
    This file contains wireless extension handlers.
 
    This is part of rtl8180 OpenSource driver.
+<<<<<<< HEAD
    Copyright (C) Andrea Merello 2004-2005  <andreamrl@tiscali.it>
+=======
+   Copyright (C) Andrea Merello 2004-2005  <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
    Released under the terms of GPL (General Public Licence)
 
    Parts of this driver are based on the GPL part
@@ -13,7 +17,11 @@
 
    Parts of this driver are based on the Intel Pro Wireless 2100 GPL driver.
 
+<<<<<<< HEAD
    We want to tanks the Authors of those projects and the Ndiswrapper
+=======
+   We want to thank the Authors of those projects and the Ndiswrapper
+>>>>>>> refs/remotes/origin/master
    project Authors.
 */
 
@@ -127,6 +135,7 @@ static int r8192_wx_get_power(struct net_device *dev,
 	return ieee80211_wx_get_power(priv->ieee80211,info,wrqu,extra);
 }
 
+<<<<<<< HEAD
 #ifdef JOHN_IOCTL
 u16 read_rtl8225(struct net_device *dev, u8 addr);
 void write_rtl8225(struct net_device *dev, u8 adr, u16 data);
@@ -277,6 +286,8 @@ static int r8192_wx_get_ap_status(struct net_device *dev,
 
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 static int r8192_wx_force_reset(struct net_device *dev,
 		struct iw_request_info *info,
 		union iwreq_data *wrqu, char *extra)
@@ -354,8 +365,12 @@ static int r8192_wx_set_mode(struct net_device *dev, struct iw_request_info *a,
 	return ret;
 }
 
+<<<<<<< HEAD
 struct  iw_range_with_scan_capa
 {
+=======
+struct  iw_range_with_scan_capa {
+>>>>>>> refs/remotes/origin/master
 	/* Informative stuff (to choose between different interface) */
 	__u32           throughput;     /* To give an idea... */
 	/* In theory this value should be the maximum benchmarked
@@ -381,7 +396,11 @@ static int rtl8180_wx_get_range(struct net_device *dev,
 				union iwreq_data *wrqu, char *extra)
 {
 	struct iw_range *range = (struct iw_range *)extra;
+<<<<<<< HEAD
 	struct iw_range_with_scan_capa* tmp = (struct iw_range_with_scan_capa*)range;
+=======
+	struct iw_range_with_scan_capa *tmp = (struct iw_range_with_scan_capa *)range;
+>>>>>>> refs/remotes/origin/master
 	struct r8192_priv *priv = ieee80211_priv(dev);
 	u16 val;
 	int i;
@@ -419,7 +438,11 @@ static int rtl8180_wx_get_range(struct net_device *dev,
 	range->max_qual.updated = 7; /* Updated all three */
 
 	range->avg_qual.qual = 92; /* > 8% missed beacons is 'bad' */
+<<<<<<< HEAD
 	/* TODO: Find real 'good' to 'bad' threshol value for RSSI */
+=======
+	/* TODO: Find real 'good' to 'bad' threshold value for RSSI */
+>>>>>>> refs/remotes/origin/master
 	range->avg_qual.level = 20 + -98;
 	range->avg_qual.noise = 0;
 	range->avg_qual.updated = 7; /* Updated all three */
@@ -484,7 +507,11 @@ static int r8192_wx_set_scan(struct net_device *dev, struct iw_request_info *a,
 			     union iwreq_data *wrqu, char *b)
 {
 	struct r8192_priv *priv = ieee80211_priv(dev);
+<<<<<<< HEAD
 	struct ieee80211_device* ieee = priv->ieee80211;
+=======
+	struct ieee80211_device *ieee = priv->ieee80211;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if(!priv->up) return -ENETDOWN;
@@ -493,7 +520,11 @@ static int r8192_wx_set_scan(struct net_device *dev, struct iw_request_info *a,
 		return -EAGAIN;
 	if (wrqu->data.flags & IW_SCAN_THIS_ESSID)
 	{
+<<<<<<< HEAD
 		struct iw_scan_req* req = (struct iw_scan_req*)b;
+=======
+		struct iw_scan_req *req = (struct iw_scan_req *)b;
+>>>>>>> refs/remotes/origin/master
 		if (req->essid_len)
 		{
 			//printk("==**&*&*&**===>scan set ssid:%s\n", req->essid);
@@ -710,6 +741,7 @@ static int r8192_wx_set_enc(struct net_device *dev,
 		#define CONF_WEP40  0x4
 		#define CONF_WEP104 0x14
 
+<<<<<<< HEAD
 		switch(wrqu->encoding.flags & IW_ENCODE_INDEX){
 			case 0: key_idx = ieee->tx_keyidx; break;
 			case 1:	key_idx = 0; break;
@@ -717,6 +749,15 @@ static int r8192_wx_set_enc(struct net_device *dev,
 			case 3:	key_idx = 2; break;
 			case 4:	key_idx	= 3; break;
 			default: break;
+=======
+		switch (wrqu->encoding.flags & IW_ENCODE_INDEX){
+		case 0: key_idx = ieee->tx_keyidx; break;
+		case 1:	key_idx = 0; break;
+		case 2:	key_idx = 1; break;
+		case 3:	key_idx = 2; break;
+		case 4:	key_idx	= 3; break;
+		default: break;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if(wrqu->encoding.length==0x5){
@@ -758,7 +799,11 @@ static int r8192_wx_set_scan_type(struct net_device *dev, struct iw_request_info
  iwreq_data *wrqu, char *p){
 
 	struct r8192_priv *priv = ieee80211_priv(dev);
+<<<<<<< HEAD
 	int *parms=(int*)p;
+=======
+	int *parms=(int *)p;
+>>>>>>> refs/remotes/origin/master
 	int mode=parms[0];
 
 	priv->ieee80211->active_scan = mode;
@@ -892,7 +937,11 @@ static int r8192_wx_set_enc_ext(struct net_device *dev,
 {
 	int ret=0;
 	struct r8192_priv *priv = ieee80211_priv(dev);
+<<<<<<< HEAD
 	struct ieee80211_device* ieee = priv->ieee80211;
+=======
+	struct ieee80211_device *ieee = priv->ieee80211;
+>>>>>>> refs/remotes/origin/master
 	//printk("===>%s()\n", __FUNCTION__);
 
 
@@ -923,7 +972,11 @@ static int r8192_wx_set_enc_ext(struct net_device *dev,
 			ieee->pairwise_key_type = alg;
 			EnableHWSecurityConfig8192(dev);
 		}
+<<<<<<< HEAD
 		memcpy((u8*)key, ext->key, 16); //we only get 16 bytes key.why? WB 2008.7.1
+=======
+		memcpy((u8 *)key, ext->key, 16); //we only get 16 bytes key.why? WB 2008.7.1
+>>>>>>> refs/remotes/origin/master
 
 		if ((alg & KEY_TYPE_WEP40) && (ieee->auth_mode !=2) )
 		{
@@ -953,7 +1006,11 @@ static int r8192_wx_set_enc_ext(struct net_device *dev,
 					4,//EntryNo
 					idx, //KeyIndex
 					alg,  //KeyType
+<<<<<<< HEAD
 					(u8*)ieee->ap_mac_addr, //MacAddr
+=======
+					(u8 *)ieee->ap_mac_addr, //MacAddr
+>>>>>>> refs/remotes/origin/master
 					0,              //DefaultKey
 					key);           //KeyContent
 		}
@@ -1021,7 +1078,11 @@ static int dummy(struct net_device *dev, struct iw_request_info *a,
 static iw_handler r8192_wx_handlers[] =
 {
 	NULL,                     /* SIOCSIWCOMMIT */
+<<<<<<< HEAD
 	r8192_wx_get_name,   	  /* SIOCGIWNAME */
+=======
+	r8192_wx_get_name,	  /* SIOCGIWNAME */
+>>>>>>> refs/remotes/origin/master
 	dummy,                    /* SIOCSIWNWID */
 	dummy,                    /* SIOCGIWNWID */
 	r8192_wx_set_freq,        /* SIOCSIWFREQ */
@@ -1040,14 +1101,22 @@ static iw_handler r8192_wx_handlers[] =
 	dummy,                    /* SIOCGIWSPY */
 	NULL,                     /* SIOCGIWTHRSPY */
 	NULL,                     /* SIOCWIWTHRSPY */
+<<<<<<< HEAD
 	r8192_wx_set_wap,      	  /* SIOCSIWAP */
+=======
+	r8192_wx_set_wap,	  /* SIOCSIWAP */
+>>>>>>> refs/remotes/origin/master
 	r8192_wx_get_wap,         /* SIOCGIWAP */
 #if (WIRELESS_EXT >= 18)
 	r8192_wx_set_mlme,                     /* MLME-- */
 #else
 	 NULL,
 #endif
+<<<<<<< HEAD
 	dummy,                     /* SIOCGIWAPLIST -- depricated */
+=======
+	dummy,                     /* SIOCGIWAPLIST -- deprecated */
+>>>>>>> refs/remotes/origin/master
 	r8192_wx_set_scan,        /* SIOCSIWSCAN */
 	r8192_wx_get_scan,        /* SIOCGIWSCAN */
 	r8192_wx_set_essid,       /* SIOCSIWESSID */
@@ -1071,6 +1140,7 @@ static iw_handler r8192_wx_handlers[] =
 	r8192_wx_set_power,                    /* SIOCSIWPOWER */
 	r8192_wx_get_power,                    /* SIOCGIWPOWER */
 	NULL,			/*---hole---*/
+<<<<<<< HEAD
 	NULL, 			/*---hole---*/
 	r8192_wx_set_gen_ie,//NULL, 			/* SIOCSIWGENIE */
 	NULL, 			/* SIOCSIWGENIE */
@@ -1080,14 +1150,30 @@ static iw_handler r8192_wx_handlers[] =
 	NULL,//r8192_wx_get_auth,//NULL, 			/* SIOCSIWAUTH */
 	r8192_wx_set_enc_ext, 			/* SIOCSIWENCODEEXT */
 	NULL,//r8192_wx_get_enc_ext,//NULL, 			/* SIOCSIWENCODEEXT */
+=======
+	NULL,			/*---hole---*/
+	r8192_wx_set_gen_ie,//NULL,			/* SIOCSIWGENIE */
+	NULL,			/* SIOCSIWGENIE */
+
+#if (WIRELESS_EXT >= 18)
+	r8192_wx_set_auth,//NULL,			/* SIOCSIWAUTH */
+	NULL,//r8192_wx_get_auth,//NULL,			/* SIOCSIWAUTH */
+	r8192_wx_set_enc_ext,			/* SIOCSIWENCODEEXT */
+	NULL,//r8192_wx_get_enc_ext,//NULL,			/* SIOCSIWENCODEEXT */
+>>>>>>> refs/remotes/origin/master
 #else
 	NULL,
 	NULL,
 	NULL,
 	NULL,
 #endif
+<<<<<<< HEAD
 	NULL, 			/* SIOCSIWPMKSA */
 	NULL, 			 /*---hole---*/
+=======
+	NULL,			/* SIOCSIWPMKSA */
+	NULL,			 /*---hole---*/
+>>>>>>> refs/remotes/origin/master
 
 };
 
@@ -1107,6 +1193,7 @@ static const struct iw_priv_args r8192_private_args[] = {
 	{
 		SIOCIWFIRSTPRIV + 0x2,
 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "rawtx"
+<<<<<<< HEAD
 	}
 #ifdef JOHN_IOCTL
 	,
@@ -1147,6 +1234,9 @@ static const struct iw_priv_args r8192_private_args[] = {
 
 #endif
 	,
+=======
+	},
+>>>>>>> refs/remotes/origin/master
 	{
 		SIOCIWFIRSTPRIV + 0x3,
 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "forcereset"
@@ -1164,6 +1254,7 @@ static iw_handler r8192_private_handler[] = {
 //	r8192_wx_set_monitor_type,
 	r8192_wx_set_scan_type,
 	r8192_wx_set_rawtx,
+<<<<<<< HEAD
 #ifdef JOHN_IOCTL
 	r8192_wx_read_regs,
 	r8192_wx_write_regs,
@@ -1173,6 +1264,8 @@ static iw_handler r8192_private_handler[] = {
 	r8192_wx_write_nicb,
 	r8192_wx_get_ap_status,
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	//r8192_wx_null,
 	r8192_wx_force_reset,
 };
@@ -1181,8 +1274,13 @@ static iw_handler r8192_private_handler[] = {
 struct iw_statistics *r8192_get_wireless_stats(struct net_device *dev)
 {
        struct r8192_priv *priv = ieee80211_priv(dev);
+<<<<<<< HEAD
 	struct ieee80211_device* ieee = priv->ieee80211;
 	struct iw_statistics* wstats = &priv->wstats;
+=======
+	struct ieee80211_device *ieee = priv->ieee80211;
+	struct iw_statistics *wstats = &priv->wstats;
+>>>>>>> refs/remotes/origin/master
 	int tmp_level = 0;
 	int tmp_qual = 0;
 	int tmp_noise = 0;
@@ -1211,9 +1309,15 @@ struct iw_statistics *r8192_get_wireless_stats(struct net_device *dev)
 
 struct iw_handler_def  r8192_wx_handlers_def={
 	.standard = r8192_wx_handlers,
+<<<<<<< HEAD
 	.num_standard = sizeof(r8192_wx_handlers) / sizeof(iw_handler),
 	.private = r8192_private_handler,
 	.num_private = sizeof(r8192_private_handler) / sizeof(iw_handler),
+=======
+	.num_standard = ARRAY_SIZE(r8192_wx_handlers),
+	.private = r8192_private_handler,
+	.num_private = ARRAY_SIZE(r8192_private_handler),
+>>>>>>> refs/remotes/origin/master
 	.num_private_args = sizeof(r8192_private_args) / sizeof(struct iw_priv_args),
 #if WIRELESS_EXT >= 17
 	.get_wireless_stats = r8192_get_wireless_stats,

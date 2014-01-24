@@ -107,10 +107,17 @@ static void __init rbtx4938_pci_setup(void)
 /* SPI support */
 
 /* chip select for SPI devices */
+<<<<<<< HEAD
 #define	SEEPROM1_CS	7	/* PIO7 */
 #define	SEEPROM2_CS	0	/* IOC */
 #define	SEEPROM3_CS	1	/* IOC */
 #define	SRTC_CS	2	/* IOC */
+=======
+#define SEEPROM1_CS	7	/* PIO7 */
+#define SEEPROM2_CS	0	/* IOC */
+#define SEEPROM3_CS	1	/* IOC */
+#define SRTC_CS 2	/* IOC */
+>>>>>>> refs/remotes/origin/master
 #define SPI_BUSNO	0
 
 static int __init rbtx4938_ethaddr_init(void)

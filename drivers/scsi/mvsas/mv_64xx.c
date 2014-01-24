@@ -33,7 +33,13 @@ static void mvs_64xx_detect_porttype(struct mvs_info *mvi, int i)
 	u32 reg;
 	struct mvs_phy *phy = &mvi->phy[i];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* TODO check & save device type */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	reg = mr32(MVS_GBL_PORT_TYPE);
 	phy->phy_type &= ~(PORT_TYPE_SAS | PORT_TYPE_SATA);
 	if (reg & MODE_SAS_SATA & (1 << i))
@@ -42,26 +48,51 @@ static void mvs_64xx_detect_porttype(struct mvs_info *mvi, int i)
 		phy->phy_type |= PORT_TYPE_SATA;
 }
 
+<<<<<<< HEAD
 static void __devinit mvs_64xx_enable_xmt(struct mvs_info *mvi, int phy_id)
+=======
+static void mvs_64xx_enable_xmt(struct mvs_info *mvi, int phy_id)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *regs = mvi->regs;
 	u32 tmp;
 
 	tmp = mr32(MVS_PCS);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (mvi->chip->n_phy <= 4)
+=======
+	if (mvi->chip->n_phy <= MVS_SOC_PORTS)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mvi->chip->n_phy <= MVS_SOC_PORTS)
+>>>>>>> refs/remotes/origin/master
 		tmp |= 1 << (phy_id + PCS_EN_PORT_XMT_SHIFT);
 	else
 		tmp |= 1 << (phy_id + PCS_EN_PORT_XMT_SHIFT2);
 	mw32(MVS_PCS, tmp);
 }
 
+<<<<<<< HEAD
 static void __devinit mvs_64xx_phy_hacks(struct mvs_info *mvi)
 {
 	void __iomem *regs = mvi->regs;
+<<<<<<< HEAD
+=======
+	int i;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void mvs_64xx_phy_hacks(struct mvs_info *mvi)
+{
+	void __iomem *regs = mvi->regs;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	mvs_phy_hacks(mvi);
 
 	if (!(mvi->flags & MVF_FLAG_SOC)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* TEST - for phy decoding error, adjust voltage levels */
 		mw32(MVS_P0_VSR_ADDR + 0, 0x8);
 		mw32(MVS_P0_VSR_DATA + 0, 0x2F0);
@@ -76,6 +107,18 @@ static void __devinit mvs_64xx_phy_hacks(struct mvs_info *mvi)
 		mw32(MVS_P0_VSR_DATA + 24, 0x2F0);
 	} else {
 		int i;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		for (i = 0; i < MVS_SOC_PORTS; i++) {
+			mvs_write_port_vsr_addr(mvi, i, VSR_PHY_MODE8);
+			mvs_write_port_vsr_data(mvi, i, 0x2F0);
+		}
+	} else {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* disable auto port detection */
 		mw32(MVS_GBL_PORT_TYPE, 0);
 		for (i = 0; i < mvi->chip->n_phy; i++) {
@@ -95,7 +138,15 @@ static void mvs_64xx_stp_reset(struct mvs_info *mvi, u32 phy_id)
 	u32 reg, tmp;
 
 	if (!(mvi->flags & MVF_FLAG_SOC)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (phy_id < 4)
+=======
+		if (phy_id < MVS_SOC_PORTS)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (phy_id < MVS_SOC_PORTS)
+>>>>>>> refs/remotes/origin/master
 			pci_read_config_dword(mvi->pdev, PCR_PHY_CTL, &reg);
 		else
 			pci_read_config_dword(mvi->pdev, PCR_PHY_CTL2, &reg);
@@ -104,6 +155,8 @@ static void mvs_64xx_stp_reset(struct mvs_info *mvi, u32 phy_id)
 		reg = mr32(MVS_PHY_CTL);
 
 	tmp = reg;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (phy_id < 4)
 		tmp |= (1U << phy_id) << PCTL_LINK_OFFS;
 	else
@@ -111,6 +164,20 @@ static void mvs_64xx_stp_reset(struct mvs_info *mvi, u32 phy_id)
 
 	if (!(mvi->flags & MVF_FLAG_SOC)) {
 		if (phy_id < 4) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (phy_id < MVS_SOC_PORTS)
+		tmp |= (1U << phy_id) << PCTL_LINK_OFFS;
+	else
+		tmp |= (1U << (phy_id - MVS_SOC_PORTS)) << PCTL_LINK_OFFS;
+
+	if (!(mvi->flags & MVF_FLAG_SOC)) {
+		if (phy_id < MVS_SOC_PORTS) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			pci_write_config_dword(mvi->pdev, PCR_PHY_CTL, tmp);
 			mdelay(10);
 			pci_write_config_dword(mvi->pdev, PCR_PHY_CTL, reg);
@@ -133,9 +200,21 @@ static void mvs_64xx_phy_reset(struct mvs_info *mvi, u32 phy_id, int hard)
 	tmp &= ~PHYEV_RDY_CH;
 	mvs_write_port_irq_stat(mvi, phy_id, tmp);
 	tmp = mvs_read_phy_ctl(mvi, phy_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (hard == 1)
 		tmp |= PHY_RST_HARD;
 	else if (hard == 0)
+=======
+	if (hard == MVS_HARD_RESET)
+		tmp |= PHY_RST_HARD;
+	else if (hard == MVS_SOFT_RESET)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (hard == MVS_HARD_RESET)
+		tmp |= PHY_RST_HARD;
+	else if (hard == MVS_SOFT_RESET)
+>>>>>>> refs/remotes/origin/master
 		tmp |= PHY_RST;
 	mvs_write_phy_ctl(mvi, phy_id, tmp);
 	if (hard) {
@@ -165,7 +244,11 @@ void mvs_64xx_clear_srs_irq(struct mvs_info *mvi, u8 reg_set, u8 clear_all)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit mvs_64xx_chip_reset(struct mvs_info *mvi)
+=======
+static int mvs_64xx_chip_reset(struct mvs_info *mvi)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *regs = mvi->regs;
 	u32 tmp;
@@ -259,7 +342,11 @@ static void mvs_64xx_phy_enable(struct mvs_info *mvi, u32 phy_id)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit mvs_64xx_init(struct mvs_info *mvi)
+=======
+static int mvs_64xx_init(struct mvs_info *mvi)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *regs = mvi->regs;
 	int i;
@@ -321,6 +408,20 @@ static int __devinit mvs_64xx_init(struct mvs_info *mvi)
 	/* init phys */
 	mvs_64xx_phy_hacks(mvi);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	tmp = mvs_cr32(mvi, CMD_PHY_MODE_21);
+	tmp &= 0x0000ffff;
+	tmp |= 0x00fa0000;
+	mvs_cw32(mvi, CMD_PHY_MODE_21, tmp);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* enable auto port detection */
 	mw32(MVS_GBL_PORT_TYPE, MODE_AUTO_DET_EN);
 
@@ -346,7 +447,15 @@ static int __devinit mvs_64xx_init(struct mvs_info *mvi)
 
 		mvs_64xx_enable_xmt(mvi, i);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mvs_64xx_phy_reset(mvi, i, 1);
+=======
+		mvs_64xx_phy_reset(mvi, i, MVS_HARD_RESET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mvs_64xx_phy_reset(mvi, i, MVS_HARD_RESET);
+>>>>>>> refs/remotes/origin/master
 		msleep(500);
 		mvs_64xx_detect_porttype(mvi, i);
 	}
@@ -377,6 +486,8 @@ static int __devinit mvs_64xx_init(struct mvs_info *mvi)
 		mvs_update_phyinfo(mvi, i, 1);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* FIXME: update wide port bitmaps */
 
 	/* little endian for open address and command table, etc. */
@@ -384,6 +495,12 @@ static int __devinit mvs_64xx_init(struct mvs_info *mvi)
 	 * it seems that ( from the spec ) turning on big-endian won't
 	 * do us any good on big-endian machines, need further confirmation
 	 */
+=======
+	/* little endian for open address and command table, etc. */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* little endian for open address and command table, etc. */
+>>>>>>> refs/remotes/origin/master
 	cctl = mr32(MVS_CTL);
 	cctl |= CCTL_ENDIAN_CMD;
 	cctl |= CCTL_ENDIAN_DATA;
@@ -394,6 +511,8 @@ static int __devinit mvs_64xx_init(struct mvs_info *mvi)
 	/* reset CMD queue */
 	tmp = mr32(MVS_PCS);
 	tmp |= PCS_CMD_RST;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mw32(MVS_PCS, tmp);
 	/* interrupt coalescing may cause missing HW interrput in some case,
 	 * and the max count is 0x1ff, while our max slot is 0x200,
@@ -403,6 +522,26 @@ static int __devinit mvs_64xx_init(struct mvs_info *mvi)
 	mw32(MVS_INT_COAL, tmp);
 
 	tmp = 0x100;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	tmp &= ~PCS_SELF_CLEAR;
+	mw32(MVS_PCS, tmp);
+	/*
+	 * the max count is 0x1ff, while our max slot is 0x200,
+	 * it will make count 0.
+	 */
+	tmp = 0;
+	if (MVS_CHIP_SLOT_SZ > 0x1ff)
+		mw32(MVS_INT_COAL, 0x1ff | COAL_EN);
+	else
+		mw32(MVS_INT_COAL, MVS_CHIP_SLOT_SZ | COAL_EN);
+
+	tmp = 0x10000 | interrupt_coalescing;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mw32(MVS_INT_COAL_TMOUT, tmp);
 
 	/* ladies and gentlemen, start your engines */
@@ -477,6 +616,8 @@ static irqreturn_t mvs_64xx_isr(struct mvs_info *mvi, int irq, u32 stat)
 
 	/* clear CMD_CMPLT ASAP */
 	mw32_f(MVS_INT_STAT, CINT_DONE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef MVS_USE_TASKLET
 	spin_lock(&mvi->lock);
 #endif
@@ -484,6 +625,18 @@ static irqreturn_t mvs_64xx_isr(struct mvs_info *mvi, int irq, u32 stat)
 #ifndef MVS_USE_TASKLET
 	spin_unlock(&mvi->lock);
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	spin_lock(&mvi->lock);
+	mvs_int_full(mvi);
+	spin_unlock(&mvi->lock);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -630,7 +783,13 @@ static void mvs_64xx_phy_work_around(struct mvs_info *mvi, int i)
 {
 	u32 tmp;
 	struct mvs_phy *phy = &mvi->phy[i];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* workaround for HW phy decoding error on 1.5g disk drive */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mvs_write_port_vsr_addr(mvi, i, VSR_PHY_MODE6);
 	tmp = mvs_read_port_vsr_data(mvi, i);
 	if (((phy->phy_status & PHY_NEG_SPP_PHYS_LINK_RATE_MASK) >>
@@ -661,7 +820,15 @@ void mvs_64xx_phy_set_link_rate(struct mvs_info *mvi, u32 phy_id,
 		tmp |= lrmax;
 	}
 	mvs_write_phy_ctl(mvi, phy_id, tmp);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mvs_64xx_phy_reset(mvi, phy_id, 1);
+=======
+	mvs_64xx_phy_reset(mvi, phy_id, MVS_HARD_RESET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mvs_64xx_phy_reset(mvi, phy_id, MVS_HARD_RESET);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mvs_64xx_clear_active_cmds(struct mvs_info *mvi)
@@ -744,11 +911,27 @@ int mvs_64xx_spi_waitdataready(struct mvs_info *mvi, u32 timeout)
 	return -1;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef DISABLE_HOTPLUG_DMA_FIX
 void mvs_64xx_fix_dma(dma_addr_t buf_dma, int buf_len, int from, void *prd)
 {
 	int i;
 	struct mvs_prd *buf_prd = prd;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void mvs_64xx_fix_dma(struct mvs_info *mvi, u32 phy_mask,
+				int buf_len, int from, void *prd)
+{
+	int i;
+	struct mvs_prd *buf_prd = prd;
+	dma_addr_t buf_dma = mvi->bulk_buffer_dma;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	buf_prd	+= from;
 	for (i = 0; i < MAX_SG_ENTRY - from; i++) {
 		buf_prd->addr = cpu_to_le64(buf_dma);
@@ -756,7 +939,38 @@ void mvs_64xx_fix_dma(dma_addr_t buf_dma, int buf_len, int from, void *prd)
 		++buf_prd;
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static void mvs_64xx_tune_interrupt(struct mvs_info *mvi, u32 time)
+{
+	void __iomem *regs = mvi->regs;
+	u32 tmp = 0;
+	/*
+	 * the max count is 0x1ff, while our max slot is 0x200,
+	 * it will make count 0.
+	 */
+	if (time == 0) {
+		mw32(MVS_INT_COAL, 0);
+		mw32(MVS_INT_COAL_TMOUT, 0x10000);
+	} else {
+		if (MVS_CHIP_SLOT_SZ > 0x1ff)
+			mw32(MVS_INT_COAL, 0x1ff|COAL_EN);
+		else
+			mw32(MVS_INT_COAL, MVS_CHIP_SLOT_SZ|COAL_EN);
+
+		tmp = 0x10000 | time;
+		mw32(MVS_INT_COAL_TMOUT, tmp);
+	}
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 const struct mvs_dispatch mvs_64xx_dispatch = {
 	"mv64xx",
@@ -780,7 +994,13 @@ const struct mvs_dispatch mvs_64xx_dispatch = {
 	mvs_write_port_irq_stat,
 	mvs_read_port_irq_mask,
 	mvs_write_port_irq_mask,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mvs_get_sas_addr,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mvs_64xx_command_active,
 	mvs_64xx_clear_srs_irq,
 	mvs_64xx_issue_stop,
@@ -808,8 +1028,20 @@ const struct mvs_dispatch mvs_64xx_dispatch = {
 	mvs_64xx_spi_buildcmd,
 	mvs_64xx_spi_issuecmd,
 	mvs_64xx_spi_waitdataready,
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef DISABLE_HOTPLUG_DMA_FIX
 	mvs_64xx_fix_dma,
 #endif
+=======
+	mvs_64xx_fix_dma,
+	mvs_64xx_tune_interrupt,
+	NULL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mvs_64xx_fix_dma,
+	mvs_64xx_tune_interrupt,
+	NULL,
+>>>>>>> refs/remotes/origin/master
 };
 

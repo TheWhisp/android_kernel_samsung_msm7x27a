@@ -14,9 +14,17 @@
 #include <xen/hvc-console.h>
 #include <asm/pci-direct.h>
 #include <asm/fixmap.h>
+<<<<<<< HEAD
 #include <asm/mrst.h>
 #include <asm/pgtable.h>
 #include <linux/usb/ehci_def.h>
+=======
+#include <asm/intel-mid.h>
+#include <asm/pgtable.h>
+#include <linux/usb/ehci_def.h>
+#include <linux/efi.h>
+#include <asm/efi.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Simple VGA output */
 #define VGABASE		(__ISA_IO_base + 0xb8000)
@@ -169,6 +177,7 @@ static struct console early_serial_console = {
 	.index =	-1,
 };
 
+<<<<<<< HEAD
 /* Direct interface for emergencies */
 static struct console *early_console = &early_vga_console;
 static int __initdata early_console_initialized;
@@ -188,6 +197,11 @@ asmlinkage void early_printk(const char *fmt, ...)
 static inline void early_console_register(struct console *con, int keep_early)
 {
 	if (early_console->index != -1) {
+=======
+static inline void early_console_register(struct console *con, int keep_early)
+{
+	if (con->index != -1) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_CRIT "ERROR: earlyprintk= %s already used\n",
 		       con->name);
 		return;
@@ -207,9 +221,14 @@ static int __init setup_early_printk(char *buf)
 	if (!buf)
 		return 0;
 
+<<<<<<< HEAD
 	if (early_console_initialized)
 		return 0;
 	early_console_initialized = 1;
+=======
+	if (early_console)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	keep = (strstr(buf, "keep") != NULL);
 
@@ -240,17 +259,41 @@ static int __init setup_early_printk(char *buf)
 		if (!strncmp(buf, "xen", 3))
 			early_console_register(&xenboot_console, keep);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_EARLY_PRINTK_MRST
+=======
+#ifdef CONFIG_EARLY_PRINTK_INTEL_MID
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_EARLY_PRINTK_INTEL_MID
+>>>>>>> refs/remotes/origin/master
 		if (!strncmp(buf, "mrst", 4)) {
 			mrst_early_console_init();
 			early_console_register(&early_mrst_console, keep);
 		}
 
 		if (!strncmp(buf, "hsu", 3)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			hsu_early_console_init();
+=======
+			hsu_early_console_init(buf + 3);
+>>>>>>> refs/remotes/origin/cm-10.0
 			early_console_register(&early_hsu_console, keep);
 		}
 #endif
+=======
+			hsu_early_console_init(buf + 3);
+			early_console_register(&early_hsu_console, keep);
+		}
+#endif
+#ifdef CONFIG_EARLY_PRINTK_EFI
+		if (!strncmp(buf, "efi", 3))
+			early_console_register(&early_efi_console, keep);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 		buf++;
 	}
 	return 0;

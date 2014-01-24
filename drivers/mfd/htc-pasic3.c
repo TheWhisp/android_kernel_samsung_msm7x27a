@@ -114,7 +114,11 @@ static struct resource ds1wm_resources[] __initdata = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell ds1wm_cell __initdata = {
+=======
+static const struct mfd_cell ds1wm_cell __initconst = {
+>>>>>>> refs/remotes/origin/master
 	.name          = "ds1wm",
 	.enable        = ds1wm_enable,
 	.disable       = ds1wm_disable,
@@ -126,7 +130,11 @@ static struct mfd_cell ds1wm_cell __initdata = {
 
 static int __init pasic3_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct pasic3_platform_data *pdata = pdev->dev.platform_data;
+=======
+	struct pasic3_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct device *dev = &pdev->dev;
 	struct pasic3_data *asic;
 	struct resource *r;
@@ -147,7 +155,11 @@ static int __init pasic3_probe(struct platform_device *pdev)
 	if (!request_mem_region(r->start, resource_size(r), "pasic3"))
 		return -EBUSY;
 
+<<<<<<< HEAD
 	asic = kzalloc(sizeof(struct pasic3_data), GFP_KERNEL);
+=======
+	asic = devm_kzalloc(dev, sizeof(struct pasic3_data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!asic)
 		return -ENOMEM;
 
@@ -156,7 +168,10 @@ static int __init pasic3_probe(struct platform_device *pdev)
 	asic->mapping = ioremap(r->start, resource_size(r));
 	if (!asic->mapping) {
 		dev_err(dev, "couldn't ioremap PASIC3\n");
+<<<<<<< HEAD
 		kfree(asic);
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -168,7 +183,11 @@ static int __init pasic3_probe(struct platform_device *pdev)
 		/* the first 5 PASIC3 registers control the DS1WM */
 		ds1wm_resources[0].end = (5 << asic->bus_shift) - 1;
 		ret = mfd_add_devices(&pdev->dev, pdev->id,
+<<<<<<< HEAD
 				&ds1wm_cell, 1, r, irq);
+=======
+				      &ds1wm_cell, 1, r, irq, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			dev_warn(dev, "failed to register DS1WM\n");
 	}
@@ -176,7 +195,12 @@ static int __init pasic3_probe(struct platform_device *pdev)
 	if (pdata && pdata->led_pdata) {
 		led_cell.platform_data = pdata->led_pdata;
 		led_cell.pdata_size = sizeof(struct pasic3_leds_machinfo);
+<<<<<<< HEAD
 		ret = mfd_add_devices(&pdev->dev, pdev->id, &led_cell, 1, r, 0);
+=======
+		ret = mfd_add_devices(&pdev->dev, pdev->id, &led_cell, 1, r,
+				      0, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			dev_warn(dev, "failed to register LED device\n");
 	}
@@ -194,7 +218,10 @@ static int pasic3_remove(struct platform_device *pdev)
 	iounmap(asic->mapping);
 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	release_mem_region(r->start, resource_size(r));
+<<<<<<< HEAD
 	kfree(asic);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -207,6 +234,7 @@ static struct platform_driver pasic3_driver = {
 	.remove		= pasic3_remove,
 };
 
+<<<<<<< HEAD
 static int __init pasic3_base_init(void)
 {
 	return platform_driver_probe(&pasic3_driver, pasic3_probe);
@@ -219,6 +247,9 @@ static void __exit pasic3_base_exit(void)
 
 module_init(pasic3_base_init);
 module_exit(pasic3_base_exit);
+=======
+module_platform_driver_probe(pasic3_driver, pasic3_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Philipp Zabel <philipp.zabel@gmail.com>");
 MODULE_DESCRIPTION("Core driver for HTC PASIC3");

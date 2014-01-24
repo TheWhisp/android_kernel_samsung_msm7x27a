@@ -25,6 +25,10 @@
 #define _LINUX_NTFS_VOLUME_H
 
 #include <linux/rwsem.h>
+<<<<<<< HEAD
+=======
+#include <linux/uidgid.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "types.h"
 #include "layout.h"
@@ -46,10 +50,22 @@ typedef struct {
 					   sized blocks on the device. */
 	/* Configuration provided by user at mount time. */
 	unsigned long flags;		/* Miscellaneous flags, see below. */
+<<<<<<< HEAD
 	uid_t uid;			/* uid that files will be mounted as. */
 	gid_t gid;			/* gid that files will be mounted as. */
+<<<<<<< HEAD
 	mode_t fmask;			/* The mask for file permissions. */
 	mode_t dmask;			/* The mask for directory
+=======
+	umode_t fmask;			/* The mask for file permissions. */
+	umode_t dmask;			/* The mask for directory
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kuid_t uid;			/* uid that files will be mounted as. */
+	kgid_t gid;			/* gid that files will be mounted as. */
+	umode_t fmask;			/* The mask for file permissions. */
+	umode_t dmask;			/* The mask for directory
+>>>>>>> refs/remotes/origin/master
 					   permissions. */
 	u8 mft_zone_multiplier;		/* Initial mft zone multiplier. */
 	u8 on_errors;			/* What to do on filesystem errors. */

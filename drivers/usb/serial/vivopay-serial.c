@@ -30,7 +30,10 @@ static struct usb_driver vivopay_serial_driver = {
 	.probe =		usb_serial_probe,
 	.disconnect =		usb_serial_disconnect,
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.no_dynamic_id =	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver vivopay_serial_device = {
@@ -39,6 +42,7 @@ static struct usb_serial_driver vivopay_serial_device = {
 		.name =		"vivopay-serial",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.usb_driver =		&vivopay_serial_driver,
 	.num_ports =		1,
 };
@@ -69,6 +73,16 @@ static void __exit vivopay_serial_exit(void)
 
 module_init(vivopay_serial_init);
 module_exit(vivopay_serial_exit);
+=======
+	.num_ports =		1,
+};
+
+static struct usb_serial_driver * const serial_drivers[] = {
+	&vivopay_serial_device, NULL
+};
+
+module_usb_serial_driver(vivopay_serial_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Forest Bond <forest.bond@outpostembedded.com>");
 MODULE_DESCRIPTION(DRIVER_DESC);

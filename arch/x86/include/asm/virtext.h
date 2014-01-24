@@ -16,7 +16,13 @@
 #define _ASM_X86_VIRTEX_H
 
 #include <asm/processor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/vmx.h>
 #include <asm/svm.h>

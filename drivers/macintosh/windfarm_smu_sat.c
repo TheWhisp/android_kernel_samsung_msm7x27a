@@ -20,7 +20,11 @@
 
 #include "windfarm.h"
 
+<<<<<<< HEAD
 #define VERSION "0.2"
+=======
+#define VERSION "1.0"
+>>>>>>> refs/remotes/origin/master
 
 #define DEBUG
 
@@ -34,11 +38,20 @@
 #define MAX_AGE		msecs_to_jiffies(800)
 
 struct wf_sat {
+<<<<<<< HEAD
 	int			nr;
 	atomic_t		refcnt;
 	struct mutex		mutex;
 	unsigned long		last_read; /* jiffies when cache last updated */
 	u8			cache[16];
+=======
+	struct kref		ref;
+	int			nr;
+	struct mutex		mutex;
+	unsigned long		last_read; /* jiffies when cache last updated */
+	u8			cache[16];
+	struct list_head	sensors;
+>>>>>>> refs/remotes/origin/master
 	struct i2c_client	*i2c;
 	struct device_node	*node;
 };
@@ -46,11 +59,20 @@ struct wf_sat {
 static struct wf_sat *sats[2];
 
 struct wf_sat_sensor {
+<<<<<<< HEAD
 	int		index;
 	int		index2;		/* used for power sensors */
 	int		shift;
 	struct wf_sat	*sat;
 	struct wf_sensor sens;
+=======
+	struct list_head	link;
+	int			index;
+	int			index2;		/* used for power sensors */
+	int			shift;
+	struct wf_sat		*sat;
+	struct wf_sensor 	sens;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define wf_to_sat(c)	container_of(c, struct wf_sat_sensor, sens)
@@ -142,7 +164,11 @@ static int wf_sat_read_cache(struct wf_sat *sat)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int wf_sat_get(struct wf_sensor *sr, s32 *value)
+=======
+static int wf_sat_sensor_get(struct wf_sensor *sr, s32 *value)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wf_sat_sensor *sens = wf_to_sat(sr);
 	struct wf_sat *sat = sens->sat;
@@ -175,11 +201,25 @@ static int wf_sat_get(struct wf_sensor *sr, s32 *value)
 	return err;
 }
 
+<<<<<<< HEAD
 static void wf_sat_release(struct wf_sensor *sr)
+=======
+static void wf_sat_release(struct kref *ref)
+{
+	struct wf_sat *sat = container_of(ref, struct wf_sat, ref);
+
+	if (sat->nr >= 0)
+		sats[sat->nr] = NULL;
+	kfree(sat);
+}
+
+static void wf_sat_sensor_release(struct wf_sensor *sr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wf_sat_sensor *sens = wf_to_sat(sr);
 	struct wf_sat *sat = sens->sat;
 
+<<<<<<< HEAD
 	if (atomic_dec_and_test(&sat->refcnt)) {
 		if (sat->nr >= 0)
 			sats[sat->nr] = NULL;
@@ -231,6 +271,22 @@ static int wf_sat_probe(struct i2c_client *client,
 			const struct i2c_device_id *id)
 {
 	struct device_node *dev = client->dev.platform_data;
+=======
+	kfree(sens);
+	kref_put(&sat->ref, wf_sat_release);
+}
+
+static struct wf_sensor_ops wf_sat_ops = {
+	.get_value	= wf_sat_sensor_get,
+	.release	= wf_sat_sensor_release,
+	.owner		= THIS_MODULE,
+};
+
+static int wf_sat_probe(struct i2c_client *client,
+			const struct i2c_device_id *id)
+{
+	struct device_node *dev = client->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 	struct wf_sat *sat;
 	struct wf_sat_sensor *sens;
 	const u32 *reg;
@@ -246,9 +302,16 @@ static int wf_sat_probe(struct i2c_client *client,
 		return -ENOMEM;
 	sat->nr = -1;
 	sat->node = of_node_get(dev);
+<<<<<<< HEAD
 	atomic_set(&sat->refcnt, 0);
 	mutex_init(&sat->mutex);
 	sat->i2c = client;
+=======
+	kref_init(&sat->ref);
+	mutex_init(&sat->mutex);
+	sat->i2c = client;
+	INIT_LIST_HEAD(&sat->sensors);
+>>>>>>> refs/remotes/origin/master
 	i2c_set_clientdata(client, sat);
 
 	vsens[0] = vsens[1] = -1;
@@ -310,6 +373,7 @@ static int wf_sat_probe(struct i2c_client *client,
 		sens->index2 = -1;
 		sens->shift = shift;
 		sens->sat = sat;
+<<<<<<< HEAD
 		atomic_inc(&sat->refcnt);
 		sens->sens.ops = &wf_sat_ops;
 		sens->sens.name = (char *) (sens + 1);
@@ -318,6 +382,17 @@ static int wf_sat_probe(struct i2c_client *client,
 		if (wf_register_sensor(&sens->sens)) {
 			atomic_dec(&sat->refcnt);
 			kfree(sens);
+=======
+		sens->sens.ops = &wf_sat_ops;
+		sens->sens.name = (char *) (sens + 1);
+		snprintf((char *)sens->sens.name, 16, "%s-%d", name, cpu);
+
+		if (wf_register_sensor(&sens->sens))
+			kfree(sens);
+		else {
+			list_add(&sens->link, &sat->sensors);
+			kref_get(&sat->ref);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -336,6 +411,7 @@ static int wf_sat_probe(struct i2c_client *client,
 		sens->index2 = isens[core];
 		sens->shift = 0;
 		sens->sat = sat;
+<<<<<<< HEAD
 		atomic_inc(&sat->refcnt);
 		sens->sens.ops = &wf_sat_ops;
 		sens->sens.name = (char *) (sens + 1);
@@ -344,6 +420,17 @@ static int wf_sat_probe(struct i2c_client *client,
 		if (wf_register_sensor(&sens->sens)) {
 			atomic_dec(&sat->refcnt);
 			kfree(sens);
+=======
+		sens->sens.ops = &wf_sat_ops;
+		sens->sens.name = (char *) (sens + 1);
+		snprintf((char *)sens->sens.name, 16, "cpu-power-%d", cpu);
+
+		if (wf_register_sensor(&sens->sens))
+			kfree(sens);
+		else {
+			list_add(&sens->link, &sat->sensors);
+			kref_get(&sat->ref);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -353,6 +440,7 @@ static int wf_sat_probe(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int wf_sat_attach(struct i2c_adapter *adapter)
 {
 	struct device_node *busnode, *dev = NULL;
@@ -376,24 +464,52 @@ static int wf_sat_remove(struct i2c_client *client)
 	/* XXX TODO */
 
 	sat->i2c = NULL;
+=======
+static int wf_sat_remove(struct i2c_client *client)
+{
+	struct wf_sat *sat = i2c_get_clientdata(client);
+	struct wf_sat_sensor *sens;
+
+	/* release sensors */
+	while(!list_empty(&sat->sensors)) {
+		sens = list_first_entry(&sat->sensors,
+					struct wf_sat_sensor, link);
+		list_del(&sens->link);
+		wf_unregister_sensor(&sens->sens);
+	}
+	sat->i2c = NULL;
+	kref_put(&sat->ref, wf_sat_release);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static const struct i2c_device_id wf_sat_id[] = {
+<<<<<<< HEAD
 	{ "wf_sat", 0 },
 	{ }
 };
+=======
+	{ "MAC,smu-sat", 0 },
+	{ }
+};
+MODULE_DEVICE_TABLE(i2c, wf_sat_id);
+>>>>>>> refs/remotes/origin/master
 
 static struct i2c_driver wf_sat_driver = {
 	.driver = {
 		.name		= "wf_smu_sat",
 	},
+<<<<<<< HEAD
 	.attach_adapter	= wf_sat_attach,
+=======
+>>>>>>> refs/remotes/origin/master
 	.probe		= wf_sat_probe,
 	.remove		= wf_sat_remove,
 	.id_table	= wf_sat_id,
 };
 
+<<<<<<< HEAD
 static int __init sat_sensors_init(void)
 {
 	return i2c_add_driver(&wf_sat_driver);
@@ -408,6 +524,9 @@ static void __exit sat_sensors_exit(void)
 
 module_init(sat_sensors_init);
 /*module_exit(sat_sensors_exit); Uncomment when cleanup is implemented */
+=======
+module_i2c_driver(wf_sat_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Paul Mackerras <paulus@samba.org>");
 MODULE_DESCRIPTION("SMU satellite sensors for PowerMac thermal control");

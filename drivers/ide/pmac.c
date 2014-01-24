@@ -28,6 +28,14 @@
 #include <linux/delay.h>
 #include <linux/ide.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/reboot.h>
 #include <linux/pci.h>
 #include <linux/adb.h>
@@ -415,8 +423,12 @@ static int pmac_ide_init_dma(ide_hwif_t *, const struct ide_port_info *);
 static void pmac_ide_apply_timings(ide_drive_t *drive)
 {
 	ide_hwif_t *hwif = drive->hwif;
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 
 	if (drive->dn & 1)
 		writel(pmif->timings[1], PMAC_IDE_REG(IDE_TIMING_CONFIG));
@@ -433,8 +445,12 @@ static void pmac_ide_apply_timings(ide_drive_t *drive)
 static void pmac_ide_kauai_apply_timings(ide_drive_t *drive)
 {
 	ide_hwif_t *hwif = drive->hwif;
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 
 	if (drive->dn & 1) {
 		writel(pmif->timings[1], PMAC_IDE_REG(IDE_KAUAI_PIO_CONFIG));
@@ -453,8 +469,12 @@ static void
 pmac_ide_do_update_timings(ide_drive_t *drive)
 {
 	ide_hwif_t *hwif = drive->hwif;
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 
 	if (pmif->kind == controller_sh_ata6 ||
 	    pmif->kind == controller_un_ata6 ||
@@ -499,8 +519,12 @@ static void pmac_write_devctl(ide_hwif_t *hwif, u8 ctl)
  */
 static void pmac_ide_set_pio_mode(ide_hwif_t *hwif, ide_drive_t *drive)
 {
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 	const u8 pio = drive->pio_mode - XFER_PIO_0;
 	struct ide_timing *tim = ide_timing_find_mode(XFER_PIO_0 + pio);
 	u32 *timings, t;
@@ -780,8 +804,12 @@ set_timings_mdma(ide_drive_t *drive, int intf_type, u32 *timings, u32 *timings2,
 
 static void pmac_ide_set_dma_mode(ide_hwif_t *hwif, ide_drive_t *drive)
 {
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	u32 *timings, *timings2, tl[2];
 	u8 unit = drive->dn & 1;
@@ -918,8 +946,12 @@ static int pmac_ide_do_resume(pmac_ide_hwif_t *pmif)
 
 static u8 pmac_ide_cable_detect(ide_hwif_t *hwif)
 {
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 	struct device_node *np = pmif->node;
 	const char *cable = of_get_property(np, "cable-type", NULL);
 	struct device_node *root = of_find_node_by_path("/");
@@ -950,8 +982,12 @@ static u8 pmac_ide_cable_detect(ide_hwif_t *hwif)
 static void pmac_ide_init_dev(ide_drive_t *drive)
 {
 	ide_hwif_t *hwif = drive->hwif;
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 
 	if (on_media_bay(pmif)) {
 		if (check_media_bay(pmif->mdev->media_bay) == MB_CD) {
@@ -1024,8 +1060,12 @@ static const struct ide_port_info pmac_port_info = {
  * Setup, register & probe an IDE channel driven by this driver, this is
  * called by one of the 2 probe functions (macio or PCI).
  */
+<<<<<<< HEAD
 static int __devinit pmac_ide_setup_device(pmac_ide_hwif_t *pmif,
 					   struct ide_hw *hw)
+=======
+static int pmac_ide_setup_device(pmac_ide_hwif_t *pmif, struct ide_hw *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = pmif->node;
 	const int *bidp;
@@ -1125,7 +1165,11 @@ static int __devinit pmac_ide_setup_device(pmac_ide_hwif_t *pmif,
 	return rc;
 }
 
+<<<<<<< HEAD
 static void __devinit pmac_ide_init_ports(struct ide_hw *hw, unsigned long base)
+=======
+static void pmac_ide_init_ports(struct ide_hw *hw, unsigned long base)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -1138,8 +1182,13 @@ static void __devinit pmac_ide_init_ports(struct ide_hw *hw, unsigned long base)
 /*
  * Attach to a macio probed interface
  */
+<<<<<<< HEAD
 static int __devinit
 pmac_ide_macio_attach(struct macio_dev *mdev, const struct of_device_id *match)
+=======
+static int pmac_ide_macio_attach(struct macio_dev *mdev,
+				 const struct of_device_id *match)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *base;
 	unsigned long regbase;
@@ -1228,8 +1277,12 @@ out_free_pmif:
 static int
 pmac_ide_macio_suspend(struct macio_dev *mdev, pm_message_t mesg)
 {
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(&mdev->ofdev.dev);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(&mdev->ofdev.dev);
+>>>>>>> refs/remotes/origin/master
 	int rc = 0;
 
 	if (mesg.event != mdev->ofdev.dev.power.power_state.event
@@ -1245,8 +1298,12 @@ pmac_ide_macio_suspend(struct macio_dev *mdev, pm_message_t mesg)
 static int
 pmac_ide_macio_resume(struct macio_dev *mdev)
 {
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(&mdev->ofdev.dev);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(&mdev->ofdev.dev);
+>>>>>>> refs/remotes/origin/master
 	int rc = 0;
 
 	if (mdev->ofdev.dev.power.power_state.event != PM_EVENT_ON) {
@@ -1261,8 +1318,13 @@ pmac_ide_macio_resume(struct macio_dev *mdev)
 /*
  * Attach to a PCI probed interface
  */
+<<<<<<< HEAD
 static int __devinit
 pmac_ide_pci_attach(struct pci_dev *pdev, const struct pci_device_id *id)
+=======
+static int pmac_ide_pci_attach(struct pci_dev *pdev,
+			       const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np;
 	pmac_ide_hwif_t *pmif;
@@ -1318,7 +1380,10 @@ pmac_ide_pci_attach(struct pci_dev *pdev, const struct pci_device_id *id)
 	rc = pmac_ide_setup_device(pmif, &hw);
 	if (rc != 0) {
 		/* The inteface is released to the common IDE layer */
+<<<<<<< HEAD
 		pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		iounmap(base);
 		pci_release_regions(pdev);
 		kfree(pmif);
@@ -1365,8 +1430,12 @@ pmac_ide_pci_resume(struct pci_dev *pdev)
 #ifdef CONFIG_PMAC_MEDIABAY
 static void pmac_ide_macio_mb_event(struct macio_dev* mdev, int mb_state)
 {
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(&mdev->ofdev.dev);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(&mdev->ofdev.dev);
+>>>>>>> refs/remotes/origin/master
 
 	switch(mb_state) {
 	case MB_CD:
@@ -1468,8 +1537,12 @@ out:
 static int pmac_ide_build_dmatable(ide_drive_t *drive, struct ide_cmd *cmd)
 {
 	ide_hwif_t *hwif = drive->hwif;
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 	struct dbdma_cmd *table;
 	volatile struct dbdma_regs __iomem *dma = pmif->dma_regs;
 	struct scatterlist *sg;
@@ -1546,8 +1619,12 @@ static int pmac_ide_build_dmatable(ide_drive_t *drive, struct ide_cmd *cmd)
 static int pmac_ide_dma_setup(ide_drive_t *drive, struct ide_cmd *cmd)
 {
 	ide_hwif_t *hwif = drive->hwif;
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 	u8 unit = drive->dn & 1, ata4 = (pmif->kind == controller_kl_ata4);
 	u8 write = !!(cmd->tf_flags & IDE_TFLAG_WRITE);
 
@@ -1572,8 +1649,12 @@ static void
 pmac_ide_dma_start(ide_drive_t *drive)
 {
 	ide_hwif_t *hwif = drive->hwif;
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 	volatile struct dbdma_regs __iomem *dma;
 
 	dma = pmif->dma_regs;
@@ -1590,8 +1671,12 @@ static int
 pmac_ide_dma_end (ide_drive_t *drive)
 {
 	ide_hwif_t *hwif = drive->hwif;
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 	volatile struct dbdma_regs __iomem *dma = pmif->dma_regs;
 	u32 dstat;
 
@@ -1615,8 +1700,12 @@ static int
 pmac_ide_dma_test_irq (ide_drive_t *drive)
 {
 	ide_hwif_t *hwif = drive->hwif;
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 	volatile struct dbdma_regs __iomem *dma = pmif->dma_regs;
 	unsigned long status, timeout;
 
@@ -1670,8 +1759,12 @@ static void
 pmac_ide_dma_lost_irq (ide_drive_t *drive)
 {
 	ide_hwif_t *hwif = drive->hwif;
+<<<<<<< HEAD
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 	volatile struct dbdma_regs __iomem *dma = pmif->dma_regs;
 	unsigned long status = readl(&dma->status);
 
@@ -1691,11 +1784,17 @@ static const struct ide_dma_ops pmac_dma_ops = {
  * Allocate the data structures needed for using DMA with an interface
  * and fill the proper list of functions pointers
  */
+<<<<<<< HEAD
 static int __devinit pmac_ide_init_dma(ide_hwif_t *hwif,
 				       const struct ide_port_info *d)
 {
 	pmac_ide_hwif_t *pmif =
 		(pmac_ide_hwif_t *)dev_get_drvdata(hwif->gendev.parent);
+=======
+static int pmac_ide_init_dma(ide_hwif_t *hwif, const struct ide_port_info *d)
+{
+	pmac_ide_hwif_t *pmif = dev_get_drvdata(hwif->gendev.parent);
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *dev = to_pci_dev(hwif->dev);
 
 	/* We won't need pci_dev if we switch to generic consistent

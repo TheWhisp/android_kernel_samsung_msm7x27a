@@ -1,6 +1,7 @@
 #ifndef _M68K_PTRACE_H
 #define _M68K_PTRACE_H
 
+<<<<<<< HEAD
 #define PT_D1	   0
 #define PT_D2	   1
 #define PT_D3	   2
@@ -77,6 +78,12 @@ struct switch_stack {
 
 #ifdef __KERNEL__
 
+=======
+#include <uapi/asm/ptrace.h>
+
+#ifndef __ASSEMBLY__
+
+>>>>>>> refs/remotes/origin/master
 #ifndef PS_S
 #define PS_S  (0x2000)
 #define PS_M  (0x1000)
@@ -85,7 +92,16 @@ struct switch_stack {
 #define user_mode(regs) (!((regs)->sr & PS_S))
 #define instruction_pointer(regs) ((regs)->pc)
 #define profile_pc(regs) instruction_pointer(regs)
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define current_pt_regs() \
+	(struct pt_regs *)((char *)current_thread_info() + THREAD_SIZE) - 1
+#define current_user_stack_pointer() rdusp()
+>>>>>>> refs/remotes/origin/master
 
 #define arch_has_single_step()	(1)
 
@@ -93,6 +109,9 @@ extern void show_regs(struct pt_regs *);
 #define arch_has_block_step()	(1)
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 #endif /* _M68K_PTRACE_H */

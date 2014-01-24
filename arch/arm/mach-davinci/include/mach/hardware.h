@@ -19,12 +19,22 @@
  * and the chip/board init code should then explicitly include
  * <chipname>.h
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DAVINCI_SYSTEM_MODULE_BASE        0x01C40000
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * I/O mapping
  */
 #define IO_PHYS				0x01c00000UL
+=======
+/*
+ * I/O mapping
+ */
+#define IO_PHYS				UL(0x01c00000)
+>>>>>>> refs/remotes/origin/master
 #define IO_OFFSET			0xfd000000 /* Virtual IO = 0xfec00000 */
 #define IO_SIZE				0x00400000
 #define IO_VIRT				(IO_PHYS + IO_OFFSET)
@@ -32,10 +42,16 @@
 #define __IO_ADDRESS(x)			((x) + IO_OFFSET)
 #define IO_ADDRESS(pa)			IOMEM(__IO_ADDRESS(pa))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __ASSEMBLER__
 #define IOMEM(x)                	x
 #else
 #define IOMEM(x)                	((void __force __iomem *)(x))
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_ARCH_HARDWARE_H */

@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -49,6 +57,52 @@ struct bridge {
 	struct bridge_ops ops;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/**
+ * timestamp_info: stores timestamp info for skb life cycle during data
+ * transfer for tethered rmnet/DUN.
+ * @created: stores timestamp at the time of creation of SKB.
+ * @rx_queued: stores timestamp when SKB queued to HW to receive
+ * data.
+ * @rx_done: stores timestamp when skb queued to h/w is completed.
+ * @rx_done_sent: stores timestamp when SKB is sent from gadget rmnet/DUN
+ * driver to bridge rmnet/DUN driver or vice versa.
+ * @tx_queued: stores timestamp when SKB is queued to send data.
+ *
+ * note that size of this struct shouldnt exceed 48bytes that's the max skb->cb
+ * holds.
+ */
+struct timestamp_info {
+	struct data_bridge	*dev;
+
+	unsigned int		created;
+	unsigned int		rx_queued;
+	unsigned int		rx_done;
+	unsigned int		rx_done_sent;
+	unsigned int		tx_queued;
+};
+
+/* Maximum timestamp message length */
+#define DBG_DATA_MSG	128UL
+
+/* Maximum timestamp messages */
+#define DBG_DATA_MAX	32UL
+
+/* timestamp buffer descriptor */
+struct timestamp_buf {
+	char		(buf[DBG_DATA_MAX])[DBG_DATA_MSG];   /* buffer */
+	unsigned	idx;   /* index */
+	rwlock_t	lck;   /* lock */
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_USB_QCOM_MDM_BRIDGE) ||	\
 	defined(CONFIG_USB_QCOM_MDM_BRIDGE_MODULE)
 
@@ -115,4 +169,12 @@ static inline int __maybe_unused data_bridge_unthrottle_rx(unsigned int id)
 }
 
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

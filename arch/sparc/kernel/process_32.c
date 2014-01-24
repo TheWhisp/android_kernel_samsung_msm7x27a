@@ -28,7 +28,13 @@
 #include <asm/auxio.h>
 #include <asm/oplib.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/pgalloc.h>
 #include <asm/pgtable.h>
@@ -38,13 +44,25 @@
 #include <asm/elf.h>
 #include <asm/prom.h>
 #include <asm/unistd.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 /* 
  * Power management idle function 
  * Set in pm platform drivers (apc.c and pmc.c)
  */
+<<<<<<< HEAD
 void (*pm_idle)(void);
 EXPORT_SYMBOL(pm_idle);
+=======
+void (*sparc_idle)(void);
+>>>>>>> refs/remotes/origin/master
 
 /* 
  * Power-off handler instantiation for pm.h compliance
@@ -65,6 +83,7 @@ extern void fpsave(unsigned long *, unsigned long *, void *, unsigned long *);
 struct task_struct *last_task_used_math = NULL;
 struct thread_info *current_set[NR_CPUS];
 
+<<<<<<< HEAD
 #ifndef CONFIG_SMP
 
 #define SUN4C_FAULT_HIGH 100
@@ -113,9 +132,13 @@ void cpu_idle(void)
 			while (!need_resched())
 				cpu_relax();
 		}
+<<<<<<< HEAD
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 		check_pgt_cache();
 	}
 }
@@ -138,15 +161,29 @@ void cpu_idle(void)
 			while (!need_resched())
 				cpu_relax();
 		}
+<<<<<<< HEAD
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 		check_pgt_cache();
 	}
 }
 
 #endif
 
+=======
+/* Idle loop support. */
+void arch_cpu_idle(void)
+{
+	if (sparc_idle)
+		(*sparc_idle)();
+	local_irq_enable();
+}
+
+>>>>>>> refs/remotes/origin/master
 /* XXX cli/sti -> local_irq_xxx here, check this works once SMP is fixed. */
 void machine_halt(void)
 {
@@ -183,6 +220,7 @@ void machine_power_off(void)
 	machine_halt();
 }
 
+<<<<<<< HEAD
 #if 0
 
 static DEFINE_SPINLOCK(sparc_backtrace_lock);
@@ -265,10 +303,17 @@ void show_stackframe(struct sparc_stackf *sf)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 void show_regs(struct pt_regs *r)
 {
 	struct reg_window32 *rw = (struct reg_window32 *) r->u_regs[14];
 
+<<<<<<< HEAD
+=======
+	show_regs_print_info(KERN_DEFAULT);
+
+>>>>>>> refs/remotes/origin/master
         printk("PSR: %08lx PC: %08lx NPC: %08lx Y: %08lx    %s\n",
 	       r->psr, r->pc, r->npc, r->y, print_tainted());
 	printk("PC: <%pS>\n", (void *) r->pc);
@@ -299,11 +344,21 @@ void show_stack(struct task_struct *tsk, unsigned long *_ksp)
 	struct reg_window32 *rw;
 	int count = 0;
 
+<<<<<<< HEAD
 	if (tsk != NULL)
 		task_base = (unsigned long) task_stack_page(tsk);
 	else
 		task_base = (unsigned long) current_thread_info();
 
+=======
+	if (!tsk)
+		tsk = current;
+
+	if (tsk == current && !_ksp)
+		__asm__ __volatile__("mov	%%fp, %0" : "=r" (_ksp));
+
+	task_base = (unsigned long) task_stack_page(tsk);
+>>>>>>> refs/remotes/origin/master
 	fp = (unsigned long) _ksp;
 	do {
 		/* Bogus frame pointer? */
@@ -319,6 +374,7 @@ void show_stack(struct task_struct *tsk, unsigned long *_ksp)
 	printk("\n");
 }
 
+<<<<<<< HEAD
 void dump_stack(void)
 {
 	unsigned long *ksp;
@@ -330,6 +386,8 @@ void dump_stack(void)
 
 EXPORT_SYMBOL(dump_stack);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Note: sparc64 has a pretty intricated thread_saved_pc, check it out.
  */
@@ -380,8 +438,16 @@ void flush_thread(void)
 #endif
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Now, this task is no longer a kernel thread. */
 	current->thread.current_ds = USER_DS;
+=======
+	/* This task is no longer a kernel thread. */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* This task is no longer a kernel thread. */
+>>>>>>> refs/remotes/origin/master
 	if (current->thread.flags & SPARC_FLAG_KTHREAD) {
 		current->thread.flags &= ~SPARC_FLAG_KTHREAD;
 
@@ -432,8 +498,12 @@ asmlinkage int sparc_do_fork(unsigned long clone_flags,
 	parent_tid_ptr = regs->u_regs[UREG_I2];
 	child_tid_ptr = regs->u_regs[UREG_I4];
 
+<<<<<<< HEAD
 	ret = do_fork(clone_flags, stack_start,
 		      regs, stack_size,
+=======
+	ret = do_fork(clone_flags, stack_start, stack_size,
+>>>>>>> refs/remotes/origin/master
 		      (int __user *) parent_tid_ptr,
 		      (int __user *) child_tid_ptr);
 
@@ -462,6 +532,7 @@ asmlinkage int sparc_do_fork(unsigned long clone_flags,
  * XXX See comment above sys_vfork in sparc64. todo.
  */
 extern void ret_from_fork(void);
+<<<<<<< HEAD
 
 int copy_thread(unsigned long clone_flags, unsigned long sp,
 		unsigned long unused,
@@ -469,6 +540,15 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 {
 	struct thread_info *ti = task_thread_info(p);
 	struct pt_regs *childregs;
+=======
+extern void ret_from_kernel_thread(void);
+
+int copy_thread(unsigned long clone_flags, unsigned long sp,
+		unsigned long arg, struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	struct pt_regs *childregs, *regs = current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 	char *new_stack;
 
 #ifndef CONFIG_SMP
@@ -479,6 +559,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 		put_psr(get_psr() | PSR_EF);
 		fpsave(&p->thread.float_regs[0], &p->thread.fsr,
 		       &p->thread.fpqueue[0], &p->thread.fpqdepth);
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 		clear_thread_flag(TIF_USEDFPU);
 #endif
@@ -495,6 +576,18 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 		new_stack -= STACKFRAME_SZ;
 	new_stack -= STACKFRAME_SZ + TRACEREG_SZ;
 	memcpy(new_stack, (char *)regs - STACKFRAME_SZ, STACKFRAME_SZ + TRACEREG_SZ);
+=======
+	}
+
+	/*
+	 *  p->thread_info         new_stack   childregs stack bottom
+	 *  !                      !           !             !
+	 *  V                      V (stk.fr.) V  (pt_regs)  V
+	 *  +----- - - - - - ------+===========+=============+
+	 */
+	new_stack = task_stack_page(p) + THREAD_SIZE;
+	new_stack -= STACKFRAME_SZ + TRACEREG_SZ;
+>>>>>>> refs/remotes/origin/master
 	childregs = (struct pt_regs *) (new_stack + STACKFRAME_SZ);
 
 	/*
@@ -505,10 +598,34 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 	 * Thus, kpsr|=PSR_PIL.
 	 */
 	ti->ksp = (unsigned long) new_stack;
+<<<<<<< HEAD
+=======
+	p->thread.kregs = childregs;
+
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		extern int nwindows;
+		unsigned long psr;
+		memset(new_stack, 0, STACKFRAME_SZ + TRACEREG_SZ);
+		p->thread.flags |= SPARC_FLAG_KTHREAD;
+		p->thread.current_ds = KERNEL_DS;
+		ti->kpc = (((unsigned long) ret_from_kernel_thread) - 0x8);
+		childregs->u_regs[UREG_G1] = sp; /* function */
+		childregs->u_regs[UREG_G2] = arg;
+		psr = childregs->psr = get_psr();
+		ti->kpsr = psr | PSR_PIL;
+		ti->kwim = 1 << (((psr & PSR_CWP) + 1) % nwindows);
+		return 0;
+	}
+	memcpy(new_stack, (char *)regs - STACKFRAME_SZ, STACKFRAME_SZ + TRACEREG_SZ);
+	childregs->u_regs[UREG_FP] = sp;
+	p->thread.flags &= ~SPARC_FLAG_KTHREAD;
+	p->thread.current_ds = USER_DS;
+>>>>>>> refs/remotes/origin/master
 	ti->kpc = (((unsigned long) ret_from_fork) - 0x8);
 	ti->kpsr = current->thread.fork_kpsr | PSR_PIL;
 	ti->kwim = current->thread.fork_kwim;
 
+<<<<<<< HEAD
 	if(regs->psr & PSR_PS) {
 		extern struct pt_regs fake_swapper_regs;
 
@@ -554,11 +671,45 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 
 			childregs->u_regs[UREG_FP] = (unsigned long)childstack;
 		}
+=======
+	if (sp != regs->u_regs[UREG_FP]) {
+		struct sparc_stackf __user *childstack;
+		struct sparc_stackf __user *parentstack;
+
+		/*
+		 * This is a clone() call with supplied user stack.
+		 * Set some valid stack frames to give to the child.
+		 */
+		childstack = (struct sparc_stackf __user *)
+			(sp & ~0xfUL);
+		parentstack = (struct sparc_stackf __user *)
+			regs->u_regs[UREG_FP];
+
+#if 0
+		printk("clone: parent stack:\n");
+		show_stackframe(parentstack);
+#endif
+
+		childstack = clone_stackframe(childstack, parentstack);
+		if (!childstack)
+			return -EFAULT;
+
+#if 0
+		printk("clone: child stack:\n");
+		show_stackframe(childstack);
+#endif
+
+		childregs->u_regs[UREG_FP] = (unsigned long)childstack;
+>>>>>>> refs/remotes/origin/master
 	}
 
 #ifdef CONFIG_SMP
 	/* FPU must be disabled on SMP. */
 	childregs->psr &= ~PSR_EF;
+<<<<<<< HEAD
+=======
+	clear_tsk_thread_flag(p, TIF_USEDFPU);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* Set the return value for the child. */
@@ -623,6 +774,7 @@ int dump_fpu (struct pt_regs * regs, elf_fpregset_t * fpregs)
 	return 1;
 }
 
+<<<<<<< HEAD
 /*
  * sparc_execve() executes a new program after the asm stub has set
  * things up for us.  This should basically do what I want it to.
@@ -686,6 +838,8 @@ pid_t kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 }
 EXPORT_SYMBOL(kernel_thread);
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long get_wchan(struct task_struct *task)
 {
 	unsigned long pc, fp, bias = 0;

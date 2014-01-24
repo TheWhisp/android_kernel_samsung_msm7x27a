@@ -8,8 +8,13 @@
 
 #define DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))
 
+<<<<<<< HEAD
 #define ALIGN(x,a)		__ALIGN_MASK(x,(typeof(x))(a)-1)
 #define __ALIGN_MASK(x,mask)	(((x)+(mask))&~(mask))
+=======
+#define PERF_ALIGN(x, a)	__PERF_ALIGN_MASK(x, (typeof(x))(a)-1)
+#define __PERF_ALIGN_MASK(x, mask)	(((x)+(mask))&~(mask))
+>>>>>>> refs/remotes/origin/master
 
 #ifndef offsetof
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
@@ -46,9 +51,28 @@
 	_min1 < _min2 ? _min1 : _min2; })
 #endif
 
+<<<<<<< HEAD
 #ifndef BUG_ON
 #define BUG_ON(cond) assert(!(cond))
 #endif
+=======
+#ifndef roundup
+#define roundup(x, y) (                                \
+{                                                      \
+	const typeof(y) __y = y;		       \
+	(((x) + (__y - 1)) / __y) * __y;	       \
+}                                                      \
+)
+#endif
+
+#ifndef BUG_ON
+#ifdef NDEBUG
+#define BUG_ON(cond) do { if (cond) {} } while (0)
+#else
+#define BUG_ON(cond) assert(!(cond))
+#endif
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Both need more care to handle endianness
@@ -108,4 +132,17 @@ int eprintf(int level,
 #define pr_debug3(fmt, ...) pr_debugN(3, pr_fmt(fmt), ##__VA_ARGS__)
 #define pr_debug4(fmt, ...) pr_debugN(4, pr_fmt(fmt), ##__VA_ARGS__)
 
+<<<<<<< HEAD
+=======
+/*
+ * This looks more complex than it should be. But we need to
+ * get the type for the ~ right in round_down (it needs to be
+ * as wide as the result!), and we want to evaluate the macro
+ * arguments just once each.
+ */
+#define __round_mask(x, y) ((__typeof__(x))((y)-1))
+#define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
+#define round_down(x, y) ((x) & ~__round_mask(x, y))
+
+>>>>>>> refs/remotes/origin/master
 #endif

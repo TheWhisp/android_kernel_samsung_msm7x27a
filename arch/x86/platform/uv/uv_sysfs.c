@@ -19,7 +19,15 @@
  *  Copyright (c) Russ Anderson
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uv/bios.h>
 #include <asm/uv/uv.h>
 

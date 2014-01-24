@@ -19,8 +19,11 @@
 #include <linux/interrupt.h>
 #include <linux/device.h>
 #include <linux/pcieport_if.h>
+<<<<<<< HEAD
 #include <linux/acpi.h>
 #include <linux/pci-acpi.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/pm_runtime.h>
 
 #include "../pci.h"
@@ -57,6 +60,7 @@ struct pcie_pme_service_data {
  */
 void pcie_pme_interrupt_enable(struct pci_dev *dev, bool enable)
 {
+<<<<<<< HEAD
 	int rtctl_pos;
 	u16 rtctl;
 
@@ -68,6 +72,14 @@ void pcie_pme_interrupt_enable(struct pci_dev *dev, bool enable)
 	else
 		rtctl &= ~PCI_EXP_RTCTL_PMEIE;
 	pci_write_config_word(dev, rtctl_pos, rtctl);
+=======
+	if (enable)
+		pcie_capability_set_word(dev, PCI_EXP_RTCTL,
+					 PCI_EXP_RTCTL_PMEIE);
+	else
+		pcie_capability_clear_word(dev, PCI_EXP_RTCTL,
+					   PCI_EXP_RTCTL_PMEIE);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -84,6 +96,18 @@ static bool pcie_pme_walk_bus(struct pci_bus *bus)
 	list_for_each_entry(dev, &bus->devices, bus_list) {
 		/* Skip PCIe devices in case we started from a root port. */
 		if (!pci_is_pcie(dev) && pci_check_pme_status(dev)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			if (dev->pme_poll)
+				dev->pme_poll = false;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (dev->pme_poll)
+				dev->pme_poll = false;
+
+>>>>>>> refs/remotes/origin/master
 			pci_wakeup_event(dev);
 			pm_request_resume(&dev->dev);
 			ret = true;
@@ -117,7 +141,11 @@ static bool pcie_pme_from_pci_bridge(struct pci_bus *bus, u8 devfn)
 	if (!dev)
 		return false;
 
+<<<<<<< HEAD
 	if (pci_is_pcie(dev) && dev->pcie_type == PCI_EXP_TYPE_PCI_BRIDGE) {
+=======
+	if (pci_is_pcie(dev) && pci_pcie_type(dev) == PCI_EXP_TYPE_PCI_BRIDGE) {
+>>>>>>> refs/remotes/origin/master
 		down_read(&pci_bus_sem);
 		if (pcie_pme_walk_bus(bus))
 			found = true;
@@ -142,6 +170,18 @@ static void pcie_pme_handle_request(struct pci_dev *port, u16 req_id)
 
 	/* First, check if the PME is from the root port itself. */
 	if (port->devfn == devfn && port->bus->number == busnr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (port->pme_poll)
+			port->pme_poll = false;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (port->pme_poll)
+			port->pme_poll = false;
+
+>>>>>>> refs/remotes/origin/master
 		if (pci_check_pme_status(port)) {
 			pm_request_resume(&port->dev);
 			found = true;
@@ -187,6 +227,18 @@ static void pcie_pme_handle_request(struct pci_dev *port, u16 req_id)
 		/* The device is there, but we have to check its PME status. */
 		found = pci_check_pme_status(dev);
 		if (found) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			if (dev->pme_poll)
+				dev->pme_poll = false;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (dev->pme_poll)
+				dev->pme_poll = false;
+
+>>>>>>> refs/remotes/origin/master
 			pci_wakeup_event(dev);
 			pm_request_resume(&dev->dev);
 		}
@@ -217,18 +269,27 @@ static void pcie_pme_work_fn(struct work_struct *work)
 	struct pcie_pme_service_data *data =
 			container_of(work, struct pcie_pme_service_data, work);
 	struct pci_dev *port = data->srv->port;
+<<<<<<< HEAD
 	int rtsta_pos;
 	u32 rtsta;
 
 	rtsta_pos = pci_pcie_cap(port) + PCI_EXP_RTSTA;
 
+=======
+	u32 rtsta;
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&data->lock);
 
 	for (;;) {
 		if (data->noirq)
 			break;
 
+<<<<<<< HEAD
 		pci_read_config_dword(port, rtsta_pos, &rtsta);
+=======
+		pcie_capability_read_dword(port, PCI_EXP_RTSTA, &rtsta);
+>>>>>>> refs/remotes/origin/master
 		if (rtsta & PCI_EXP_RTSTA_PME) {
 			/*
 			 * Clear PME status of the port.  If there are other
@@ -267,17 +328,25 @@ static irqreturn_t pcie_pme_irq(int irq, void *context)
 {
 	struct pci_dev *port;
 	struct pcie_pme_service_data *data;
+<<<<<<< HEAD
 	int rtsta_pos;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 rtsta;
 	unsigned long flags;
 
 	port = ((struct pcie_device *)context)->port;
 	data = get_service_data((struct pcie_device *)context);
 
+<<<<<<< HEAD
 	rtsta_pos = pci_pcie_cap(port) + PCI_EXP_RTSTA;
 
 	spin_lock_irqsave(&data->lock, flags);
 	pci_read_config_dword(port, rtsta_pos, &rtsta);
+=======
+	spin_lock_irqsave(&data->lock, flags);
+	pcie_capability_read_dword(port, PCI_EXP_RTSTA, &rtsta);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(rtsta & PCI_EXP_RTSTA_PME)) {
 		spin_unlock_irqrestore(&data->lock, flags);
@@ -326,13 +395,21 @@ static void pcie_pme_mark_devices(struct pci_dev *port)
 		struct pci_dev *dev;
 
 		/* Check if this is a root port event collector. */
+<<<<<<< HEAD
 		if (port->pcie_type != PCI_EXP_TYPE_RC_EC || !bus)
+=======
+		if (pci_pcie_type(port) != PCI_EXP_TYPE_RC_EC || !bus)
+>>>>>>> refs/remotes/origin/master
 			return;
 
 		down_read(&pci_bus_sem);
 		list_for_each_entry(dev, &bus->devices, bus_list)
 			if (pci_is_pcie(dev)
+<<<<<<< HEAD
 			    && dev->pcie_type == PCI_EXP_TYPE_RC_END)
+=======
+			    && pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END)
+>>>>>>> refs/remotes/origin/master
 				pcie_pme_set_native(dev, NULL);
 		up_read(&pci_bus_sem);
 	}
@@ -412,7 +489,11 @@ static int pcie_pme_resume(struct pcie_device *srv)
 
 /**
  * pcie_pme_remove - Prepare PCIe PME service device for removal.
+<<<<<<< HEAD
  * @srv - PCIe service device to resume.
+=======
+ * @srv - PCIe service device to remove.
+>>>>>>> refs/remotes/origin/master
  */
 static void pcie_pme_remove(struct pcie_device *srv)
 {
@@ -423,8 +504,13 @@ static void pcie_pme_remove(struct pcie_device *srv)
 
 static struct pcie_port_service_driver pcie_pme_driver = {
 	.name		= "pcie_pme",
+<<<<<<< HEAD
 	.port_type 	= PCI_EXP_TYPE_ROOT_PORT,
 	.service 	= PCIE_PORT_SERVICE_PME,
+=======
+	.port_type	= PCI_EXP_TYPE_ROOT_PORT,
+	.service	= PCIE_PORT_SERVICE_PME,
+>>>>>>> refs/remotes/origin/master
 
 	.probe		= pcie_pme_probe,
 	.suspend	= pcie_pme_suspend,

@@ -14,7 +14,20 @@ obj-$(CONFIG_MSM7X27A_AUDIO) += audio_aac_in.o audio_evrc_in.o audio_qcelp_in.o
 obj-y += audio_out.o audio_mp3.o audmgr.o audpp.o audrec.o audpreproc.o
 obj-y += audio_evrc.o audio_qcelp.o audio_amrnb.o audio_aac.o audio_amrnb_in.o
 obj-y += audio_wma.o audio_voicememo.o audio_pcm.o audio_amrwb.o audio_wmapro.o
+<<<<<<< HEAD
+<<<<<<< HEAD
 obj-y += snd.o snd_adie.o
 obj-$(CONFIG_ARCH_MSM7X27A) += audio_fm.o
 obj-$(CONFIG_ARCH_MSM7X27A) += audio_mvs.o
 obj-$(CONFIG_ARCH_MSM7X27A) += audio_lpa.o
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+obj-y += snd.o snd_cad.o snd_adie.o audio_acdb.o
+obj-$(CONFIG_ARCH_MSM7X27A) += audio_fm.o
+obj-$(CONFIG_ARCH_MSM7X27A) += audio_mvs.o
+obj-$(CONFIG_ARCH_MSM7X27A) += audio_lpa.o audio_ac3.o
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

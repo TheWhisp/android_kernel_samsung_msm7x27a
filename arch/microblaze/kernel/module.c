@@ -7,7 +7,11 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/moduleloader.h>
 #include <linux/kernel.h>
 #include <linux/elf.h>
@@ -18,6 +22,8 @@
 #include <asm/pgtable.h>
 #include <asm/cacheflush.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void *module_alloc(unsigned long size)
 {
 	void *ret;
@@ -49,6 +55,10 @@ int apply_relocate(Elf32_Shdr *sechdrs, const char *strtab,
 	return -ENOEXEC;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
 	unsigned int symindex, unsigned int relsec, struct module *module)
 {
@@ -131,7 +141,15 @@ int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
 			break;
 
 		case R_MICROBLAZE_64_NONE:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pr_debug("R_MICROBLAZE_NONE\n");
+=======
+			pr_debug("R_MICROBLAZE_64_NONE\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("R_MICROBLAZE_64_NONE\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case R_MICROBLAZE_NONE:
@@ -139,8 +157,12 @@ int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
 			break;
 
 		default:
+<<<<<<< HEAD
 			printk(KERN_ERR "module %s: "
 				"Unknown relocation: %u\n",
+=======
+			pr_err("module %s: Unknown relocation: %u\n",
+>>>>>>> refs/remotes/origin/master
 				module->name,
 				ELF32_R_TYPE(rela[i].r_info));
 			return -ENOEXEC;
@@ -155,7 +177,13 @@ int module_finalize(const Elf32_Ehdr *hdr, const Elf_Shdr *sechdrs,
 	flush_dcache();
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 void module_arch_cleanup(struct module *mod)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -9,14 +9,30 @@
 #include <linux/kprobes.h>
 #include <linux/init.h>
 #include <linux/kernel_stat.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <linux/acpi.h>
 #include <linux/io.h>
 #include <linux/delay.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/timer.h>
 #include <asm/hw_irq.h>
 #include <asm/pgtable.h>
@@ -43,6 +59,7 @@
  * (these are usually mapped into the 0x30-0xff vector range)
  */
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_32
 /*
  * Note that on a 486, we don't want to do a SIGFPE on an irq13
@@ -61,7 +78,11 @@ static irqreturn_t math_error_irq(int cpl, void *dev_id)
 	outb(0, 0xF0);
 	if (ignore_fpu_irq || !boot_cpu_data.hard_math)
 		return IRQ_NONE;
+<<<<<<< HEAD
 	math_error(get_irq_regs(), 0, 16);
+=======
+	math_error(get_irq_regs(), 0, X86_TRAP_MF);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return IRQ_HANDLED;
 }
 
@@ -76,6 +97,8 @@ static struct irqaction fpu_irq = {
 };
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * IRQ2 is cascade interrupt to second interrupt controller
  */
@@ -86,7 +109,11 @@ static struct irqaction irq2 = {
 };
 
 DEFINE_PER_CPU(vector_irq_t, vector_irq) = {
+<<<<<<< HEAD
 	[0 ... NR_VECTORS - 1] = -1,
+=======
+	[0 ... NR_VECTORS - 1] = VECTOR_UNDEFINED,
+>>>>>>> refs/remotes/origin/master
 };
 
 int vector_used_by_percpu_irq(unsigned int vector)
@@ -94,7 +121,11 @@ int vector_used_by_percpu_irq(unsigned int vector)
 	int cpu;
 
 	for_each_online_cpu(cpu) {
+<<<<<<< HEAD
 		if (per_cpu(vector_irq, cpu)[vector] != -1)
+=======
+		if (per_cpu(vector_irq, cpu)[vector] > VECTOR_UNDEFINED)
+>>>>>>> refs/remotes/origin/master
 			return 1;
 	}
 
@@ -172,6 +203,7 @@ static void __init smp_intr_init(void)
 	 */
 	alloc_intr_gate(RESCHEDULE_VECTOR, reschedule_interrupt);
 
+<<<<<<< HEAD
 	/* IPIs for invalidation */
 #define ALLOC_INVTLB_VEC(NR) \
 	alloc_intr_gate(INVALIDATE_TLB_VECTOR_START+NR, \
@@ -245,6 +277,8 @@ static void __init smp_intr_init(void)
 		break;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* IPI for generic function call */
 	alloc_intr_gate(CALL_FUNCTION_VECTOR, call_function_interrupt);
 
@@ -272,9 +306,15 @@ static void __init apic_intr_init(void)
 #ifdef CONFIG_X86_MCE_THRESHOLD
 	alloc_intr_gate(THRESHOLD_APIC_VECTOR, threshold_interrupt);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_X86_MCE) && defined(CONFIG_X86_LOCAL_APIC)
 	alloc_intr_gate(MCE_SELF_VECTOR, mce_self_interrupt);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_X86_64) || defined(CONFIG_X86_LOCAL_APIC)
 	/* self generated IPI for local APIC timer */
@@ -282,6 +322,13 @@ static void __init apic_intr_init(void)
 
 	/* IPI for X86 platform specific use */
 	alloc_intr_gate(X86_PLATFORM_IPI_VECTOR, x86_platform_ipi);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HAVE_KVM
+	/* IPI for KVM to deliver posted interrupt */
+	alloc_intr_gate(POSTED_INTR_VECTOR, kvm_posted_intr_ipi);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* IPI vectors for APIC spurious and error interrupts */
 	alloc_intr_gate(SPURIOUS_APIC_VECTOR, spurious_interrupt);
@@ -309,16 +356,30 @@ void __init native_init_IRQ(void)
 	 * us. (some of these will be overridden and become
 	 * 'special' SMP interrupts)
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = FIRST_EXTERNAL_VECTOR; i < NR_VECTORS; i++) {
 		/* IA32_SYSCALL_VECTOR could be used in trap_init already. */
 		if (!test_bit(i, used_vectors))
 			set_intr_gate(i, interrupt[i-FIRST_EXTERNAL_VECTOR]);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	i = FIRST_EXTERNAL_VECTOR;
+	for_each_clear_bit_from(i, used_vectors, NR_VECTORS) {
+		/* IA32_SYSCALL_VECTOR could be used in trap_init already. */
+		set_intr_gate(i, interrupt[i - FIRST_EXTERNAL_VECTOR]);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!acpi_ioapic && !of_ioapic)
 		setup_irq(2, &irq2);
 
 #ifdef CONFIG_X86_32
+<<<<<<< HEAD
 	/*
 	 * External FPU? Set up irq13 if so, for
 	 * original braindamaged IBM FERR coupling.
@@ -326,6 +387,8 @@ void __init native_init_IRQ(void)
 	if (boot_cpu_data.hard_math && !cpu_has_fpu)
 		setup_irq(FPU_IRQ, &fpu_irq);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	irq_ctx_init(smp_processor_id());
 #endif
 }

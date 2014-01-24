@@ -9,9 +9,11 @@
 #include <errno.h>
 #include <signal.h>
 #include <strings.h>
+<<<<<<< HEAD
 #include "as-layout.h"
 #include "kern_util.h"
 #include "os.h"
+<<<<<<< HEAD
 #include "process.h"
 #include "sysdep/barrier.h"
 #include "sysdep/sigcontext.h"
@@ -19,8 +21,20 @@
 
 /* Copied from linux/compiler-gcc.h since we can't include it directly */
 #define barrier() __asm__ __volatile__("": : :"memory")
+=======
+#include "sysdep/mcontext.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void (*sig_info[NSIG])(int, struct uml_pt_regs *) = {
+=======
+#include <as-layout.h>
+#include <kern_util.h>
+#include <os.h>
+#include <sysdep/mcontext.h>
+#include "internal.h"
+
+void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
+>>>>>>> refs/remotes/origin/master
 	[SIGTRAP]	= relay_signal,
 	[SIGFPE]	= relay_signal,
 	[SIGILL]	= relay_signal,
@@ -30,7 +44,15 @@ void (*sig_info[NSIG])(int, struct uml_pt_regs *) = {
 	[SIGIO]		= sigio_handler,
 	[SIGVTALRM]	= timer_handler };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void sig_handler_common(int sig, struct sigcontext *sc)
+=======
+static void sig_handler_common(int sig, mcontext_t *mc)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uml_pt_regs r;
 	int save_errno = errno;
@@ -38,15 +60,29 @@ static void sig_handler_common(int sig, struct sigcontext *sc)
 	r.is_user = 0;
 	if (sig == SIGSEGV) {
 		/* For segfaults, we want the data from the sigcontext. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		copy_sc(&r, sc);
 		GET_FAULTINFO_FROM_SC(r.faultinfo, sc);
+=======
+		get_regs_from_mc(&r, mc);
+		GET_FAULTINFO_FROM_MC(r.faultinfo, mc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		get_regs_from_mc(&r, mc);
+		GET_FAULTINFO_FROM_MC(r.faultinfo, mc);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* enable signals if sig isn't IRQ signal */
 	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGVTALRM))
 		unblock_signals();
 
+<<<<<<< HEAD
 	(*sig_info[sig])(sig, &r);
+=======
+	(*sig_info[sig])(sig, si, &r);
+>>>>>>> refs/remotes/origin/master
 
 	errno = save_errno;
 }
@@ -66,7 +102,15 @@ static void sig_handler_common(int sig, struct sigcontext *sc)
 static int signals_enabled;
 static unsigned int signals_pending;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void sig_handler(int sig, struct sigcontext *sc)
+=======
+void sig_handler(int sig, mcontext_t *mc)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
+>>>>>>> refs/remotes/origin/master
 {
 	int enabled;
 
@@ -78,23 +122,56 @@ void sig_handler(int sig, struct sigcontext *sc)
 
 	block_signals();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sig_handler_common(sig, sc);
+=======
+	sig_handler_common(sig, mc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sig_handler_common(sig, si, mc);
+>>>>>>> refs/remotes/origin/master
 
 	set_signals(enabled);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void real_alarm_handler(struct sigcontext *sc)
 {
 	struct uml_pt_regs regs;
 
 	if (sc != NULL)
 		copy_sc(&regs, sc);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void real_alarm_handler(mcontext_t *mc)
+{
+	struct uml_pt_regs regs;
+
+	if (mc != NULL)
+		get_regs_from_mc(&regs, mc);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	regs.is_user = 0;
 	unblock_signals();
 	timer_handler(SIGVTALRM, &regs);
 }
 
+<<<<<<< HEAD
 void alarm_handler(int sig, struct sigcontext *sc)
+=======
+void alarm_handler(int sig, mcontext_t *mc)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	regs.is_user = 0;
+	unblock_signals();
+	timer_handler(SIGVTALRM, NULL, &regs);
+}
+
+void alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
+>>>>>>> refs/remotes/origin/master
 {
 	int enabled;
 
@@ -106,14 +183,30 @@ void alarm_handler(int sig, struct sigcontext *sc)
 
 	block_signals();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	real_alarm_handler(sc);
+=======
+	real_alarm_handler(mc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	real_alarm_handler(mc);
+>>>>>>> refs/remotes/origin/master
 	set_signals(enabled);
 }
 
 void timer_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set_handler(SIGVTALRM, (__sighandler_t) alarm_handler,
 		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGWINCH, -1);
+=======
+	set_handler(SIGVTALRM);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_handler(SIGVTALRM);
+>>>>>>> refs/remotes/origin/master
 }
 
 void set_sigstack(void *sig_stack, int size)
@@ -126,10 +219,41 @@ void set_sigstack(void *sig_stack, int size)
 		panic("enabling signal stack failed, errno = %d\n", errno);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void (*handlers[_NSIG])(int sig, struct sigcontext *sc);
 
 void handle_signal(int sig, struct sigcontext *sc)
 {
+=======
+static void (*handlers[_NSIG])(int sig, mcontext_t *mc) = {
+=======
+static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
+>>>>>>> refs/remotes/origin/master
+	[SIGSEGV] = sig_handler,
+	[SIGBUS] = sig_handler,
+	[SIGILL] = sig_handler,
+	[SIGFPE] = sig_handler,
+	[SIGTRAP] = sig_handler,
+
+	[SIGIO] = sig_handler,
+	[SIGWINCH] = sig_handler,
+	[SIGVTALRM] = alarm_handler
+};
+
+
+<<<<<<< HEAD
+static void hard_handler(int sig, siginfo_t *info, void *p)
+{
+	struct ucontext *uc = p;
+	mcontext_t *mc = &uc->uc_mcontext;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void hard_handler(int sig, siginfo_t *si, void *p)
+{
+	struct ucontext *uc = p;
+	mcontext_t *mc = &uc->uc_mcontext;
+>>>>>>> refs/remotes/origin/master
 	unsigned long pending = 1UL << sig;
 
 	do {
@@ -155,7 +279,15 @@ void handle_signal(int sig, struct sigcontext *sc)
 		while ((sig = ffs(pending)) != 0){
 			sig--;
 			pending &= ~(1 << sig);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			(*handlers[sig])(sig, sc);
+=======
+			(*handlers[sig])(sig, mc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			(*handlers[sig])(sig, (struct siginfo *)si, mc);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/*
@@ -169,6 +301,8 @@ void handle_signal(int sig, struct sigcontext *sc)
 	} while (pending);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void hard_handler(int sig);
 
 void set_handler(int sig, void (*handler)(int), int flags, ...)
@@ -187,10 +321,42 @@ void set_handler(int sig, void (*handler)(int), int flags, ...)
 	while ((mask = va_arg(ap, int)) != -1)
 		sigaddset(&action.sa_mask, mask);
 	va_end(ap);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void set_handler(int sig)
+{
+	struct sigaction action;
+	int flags = SA_SIGINFO | SA_ONSTACK;
+	sigset_t sig_mask;
+
+	action.sa_sigaction = hard_handler;
+
+	/* block irq ones */
+	sigemptyset(&action.sa_mask);
+	sigaddset(&action.sa_mask, SIGVTALRM);
+	sigaddset(&action.sa_mask, SIGIO);
+	sigaddset(&action.sa_mask, SIGWINCH);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (sig == SIGSEGV)
 		flags |= SA_NODEFER;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (sigismember(&action.sa_mask, sig))
+		flags |= SA_RESTART; /* if it's an irq signal */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sigismember(&action.sa_mask, sig))
+		flags |= SA_RESTART; /* if it's an irq signal */
+
+>>>>>>> refs/remotes/origin/master
 	action.sa_flags = flags;
 	action.sa_restorer = NULL;
 	if (sigaction(sig, &action, NULL) < 0)
@@ -269,9 +435,18 @@ void unblock_signals(void)
 		 * Deal with SIGIO first because the alarm handler might
 		 * schedule, leaving the pending SIGIO stranded until we come
 		 * back here.
+<<<<<<< HEAD
 		 */
 		if (save_pending & SIGIO_MASK)
 			sig_handler_common(SIGIO, NULL);
+=======
+		 *
+		 * SIGIO's handler doesn't use siginfo or mcontext,
+		 * so they can be NULL.
+		 */
+		if (save_pending & SIGIO_MASK)
+			sig_handler_common(SIGIO, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 
 		if (save_pending & SIGVTALRM_MASK)
 			real_alarm_handler(NULL);
@@ -296,3 +471,14 @@ int set_signals(int enable)
 
 	return ret;
 }
+<<<<<<< HEAD
+=======
+
+int os_is_signal_stack(void)
+{
+	stack_t ss;
+	sigaltstack(NULL, &ss);
+
+	return ss.ss_flags & SS_ONSTACK;
+}
+>>>>>>> refs/remotes/origin/master

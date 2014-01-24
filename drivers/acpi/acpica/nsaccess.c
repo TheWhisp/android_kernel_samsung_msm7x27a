@@ -5,7 +5,15 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -110,11 +118,19 @@ acpi_status acpi_ns_root_initialize(void)
 		status = acpi_ns_lookup(NULL, init_val->name, init_val->type,
 					ACPI_IMODE_LOAD_PASS2,
 					ACPI_NS_NO_UPSEARCH, NULL, &new_node);
+<<<<<<< HEAD
 
 		if (ACPI_FAILURE(status) || (!new_node)) {	/* Must be on same line for code converter */
 			ACPI_EXCEPTION((AE_INFO, status,
 					"Could not create predefined name %s",
 					init_val->name));
+=======
+		if (ACPI_FAILURE(status)) {
+			ACPI_EXCEPTION((AE_INFO, status,
+					"Could not create predefined name %s",
+					init_val->name));
+			continue;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/*
@@ -151,13 +167,21 @@ acpi_status acpi_ns_root_initialize(void)
 			 */
 			switch (init_val->type) {
 			case ACPI_TYPE_METHOD:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 				obj_desc->method.param_count =
 				    (u8) ACPI_TO_INTEGER(val);
 				obj_desc->common.flags |= AOPOBJ_DATA_VALID;
 
 #if defined (ACPI_ASL_COMPILER)
 
+<<<<<<< HEAD
 				/* Save the parameter count for the i_aSL compiler */
+=======
+				/* Save the parameter count for the iASL compiler */
+>>>>>>> refs/remotes/origin/master
 
 				new_node->value = obj_desc->method.param_count;
 #else
@@ -179,8 +203,12 @@ acpi_status acpi_ns_root_initialize(void)
 
 				/* Build an object around the static string */
 
+<<<<<<< HEAD
 				obj_desc->string.length =
 				    (u32) ACPI_STRLEN(val);
+=======
+				obj_desc->string.length = (u32)ACPI_STRLEN(val);
+>>>>>>> refs/remotes/origin/master
 				obj_desc->string.pointer = val;
 				obj_desc->common.flags |= AOPOBJ_STATIC_POINTER;
 				break;
@@ -240,7 +268,11 @@ acpi_status acpi_ns_root_initialize(void)
 		}
 	}
 
+<<<<<<< HEAD
       unlock_and_exit:
+=======
+unlock_and_exit:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 
 	/* Save a handle to "_GPE", it is always present */
@@ -258,11 +290,19 @@ acpi_status acpi_ns_root_initialize(void)
  * FUNCTION:    acpi_ns_lookup
  *
  * PARAMETERS:  scope_info      - Current scope info block
+<<<<<<< HEAD
  *              Pathname        - Search pathname, in internal format
  *                                (as represented in the AML stream)
  *              Type            - Type associated with name
  *              interpreter_mode - IMODE_LOAD_PASS2 => add name if not found
  *              Flags           - Flags describing the search restrictions
+=======
+ *              pathname        - Search pathname, in internal format
+ *                                (as represented in the AML stream)
+ *              type            - Type associated with name
+ *              interpreter_mode - IMODE_LOAD_PASS2 => add name if not found
+ *              flags           - Flags describing the search restrictions
+>>>>>>> refs/remotes/origin/master
  *              walk_state      - Current state of the walk
  *              return_node     - Where the Node is placed (if found
  *                                or created successfully)
@@ -424,8 +464,14 @@ acpi_ns_lookup(union acpi_generic_state *scope_info,
 					/* Current scope has no parent scope */
 
 					ACPI_ERROR((AE_INFO,
+<<<<<<< HEAD
 						    "ACPI path has too many parent prefixes (^) "
 						    "- reached beyond root node"));
+=======
+						    "%s: Path has too many parent prefixes (^) "
+						    "- reached beyond root node",
+						    pathname));
+>>>>>>> refs/remotes/origin/master
 					return_ACPI_STATUS(AE_NOT_FOUND);
 				}
 			}

@@ -20,9 +20,15 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/sync.h>
 
@@ -201,8 +207,12 @@ out_err:
  */
 void bridge_msg_delete(struct msg_mgr *hmsg_mgr)
 {
+<<<<<<< HEAD
 	if (hmsg_mgr)
 		delete_msg_mgr(hmsg_mgr);
+=======
+	delete_msg_mgr(hmsg_mgr);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

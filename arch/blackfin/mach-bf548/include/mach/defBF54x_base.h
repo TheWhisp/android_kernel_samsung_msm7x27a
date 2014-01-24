@@ -1,7 +1,11 @@
 /*
  * Copyright 2007-2010 Analog Devices Inc.
  *
+<<<<<<< HEAD
  * Licensed under the ADI BSD license or the GPL-2 (or later)
+=======
+ * Licensed under the Clear BSD license or the GPL-2 (or later)
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _DEF_BF54X_H
@@ -2062,6 +2066,7 @@
 #define                  LOW_EVEN  0xff0000   /* Lower Limit for Even Bytes (Luma) */
 #define                 HIGH_EVEN  0xff000000 /* Upper Limit for Even Bytes (Luma) */
 
+<<<<<<< HEAD
 /* ************************************************ */
 /* The TWI bit masks fields are from the ADSP-BF538 */
 /* and they have not been verified as the final     */
@@ -2171,6 +2176,8 @@
 /* Bit maskes for TWIx_RCV_DATA16 */
 
 #define                 RCVDATA16  0xffff     /* Receive FIFO 16-Bit Data */
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* ******************************************* */
 /*     MULTI BIT MACRO ENUMERATIONS            */

@@ -7,7 +7,15 @@
  * License version 2.  This program is licensed "as is" without any
  * warranty of any kind, whether express or implied.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -19,8 +27,14 @@
 #include <linux/i2c.h>
 #include <net/dsa.h>
 #include <asm/mach-types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/leds.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/pci.h>
 #include <mach/orion5x.h>
@@ -132,15 +146,30 @@ static void __init rd88f5181l_ge_init(void)
 	orion5x_i2c_init();
 	orion5x_uart0_init();
 
+<<<<<<< HEAD
 	orion5x_setup_dev_boot_win(RD88F5181L_GE_NOR_BOOT_BASE,
 				   RD88F5181L_GE_NOR_BOOT_SIZE);
+=======
+	mvebu_mbus_add_window_by_id(ORION_MBUS_DEVBUS_BOOT_TARGET,
+				    ORION_MBUS_DEVBUS_BOOT_ATTR,
+				    RD88F5181L_GE_NOR_BOOT_BASE,
+				    RD88F5181L_GE_NOR_BOOT_SIZE);
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&rd88f5181l_ge_nor_boot_flash);
 
 	i2c_register_board_info(0, &rd88f5181l_ge_i2c_rtc, 1);
 }
 
 static int __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 rd88f5181l_ge_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+rd88f5181l_ge_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+rd88f5181l_ge_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 
@@ -162,7 +191,10 @@ rd88f5181l_ge_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 
 static struct hw_pci rd88f5181l_ge_pci __initdata = {
 	.nr_controllers	= 2,
+<<<<<<< HEAD
 	.swizzle	= pci_std_swizzle,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setup		= orion5x_pci_sys_setup,
 	.scan		= orion5x_pci_sys_scan_bus,
 	.map_irq	= rd88f5181l_ge_pci_map_irq,
@@ -181,11 +213,29 @@ subsys_initcall(rd88f5181l_ge_pci_init);
 
 MACHINE_START(RD88F5181L_GE, "Marvell Orion-VoIP GE Reference Design")
 	/* Maintainer: Lennert Buytenhek <buytenh@marvell.com> */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= rd88f5181l_ge_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
+<<<<<<< HEAD
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
+<<<<<<< HEAD
+=======
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= orion5x_timer_init,
+	.fixup		= tag_fixup_mem32,
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

@@ -13,6 +13,17 @@
 #include <linux/input/bu21013.h>
 #include <linux/slab.h>
 #include <linux/regulator/consumer.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/gpio.h>
+#include <linux/of.h>
+#include <linux/of_gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 #define PEN_DOWN_INTR	0
 #define MAX_FINGERS	2
@@ -147,11 +158,20 @@
 struct bu21013_ts_data {
 	struct i2c_client *client;
 	wait_queue_head_t wait;
+<<<<<<< HEAD
 	bool touch_stopped;
 	const struct bu21013_platform_device *chip;
 	struct input_dev *in_dev;
 	unsigned int intr_pin;
 	struct regulator *regulator;
+=======
+	const struct bu21013_platform_device *chip;
+	struct input_dev *in_dev;
+	struct regulator *regulator;
+	unsigned int irq;
+	unsigned int intr_pin;
+	bool touch_stopped;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -261,7 +281,11 @@ static irqreturn_t bu21013_gpio_irq(int irq, void *device_data)
 			return IRQ_NONE;
 		}
 
+<<<<<<< HEAD
 		data->intr_pin = data->chip->irq_read_val();
+=======
+		data->intr_pin = gpio_get_value(data->chip->touch_pin);
+>>>>>>> refs/remotes/origin/master
 		if (data->intr_pin == PEN_DOWN_INTR)
 			wait_event_timeout(data->wait, data->touch_stopped,
 					   msecs_to_jiffies(2));
@@ -417,10 +441,79 @@ static void bu21013_free_irq(struct bu21013_ts_data *bu21013_data)
 {
 	bu21013_data->touch_stopped = true;
 	wake_up(&bu21013_data->wait);
+<<<<<<< HEAD
 	free_irq(bu21013_data->chip->irq, bu21013_data);
 }
 
 /**
+=======
+	free_irq(bu21013_data->irq, bu21013_data);
+}
+
+/**
+ * bu21013_cs_disable() - deconfigures the touch panel controller
+ * @bu21013_data: device structure pointer
+ *
+ * This function is used to deconfigure the chip selection
+ * for touch panel controller.
+ */
+static void bu21013_cs_disable(struct bu21013_ts_data *bu21013_data)
+{
+	int error;
+
+	error = gpio_direction_output(bu21013_data->chip->cs_pin, 0);
+	if (error < 0)
+		dev_warn(&bu21013_data->client->dev,
+			 "%s: gpio direction failed, error: %d\n",
+			 __func__, error);
+	else
+		gpio_set_value(bu21013_data->chip->cs_pin, 0);
+
+	gpio_free(bu21013_data->chip->cs_pin);
+}
+
+#ifdef CONFIG_OF
+static const struct bu21013_platform_device *
+bu21013_parse_dt(struct device *dev)
+{
+	struct device_node *np = dev->of_node;
+	struct bu21013_platform_device *pdata;
+
+	if (!np) {
+		dev_err(dev, "no device tree or platform data\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return ERR_PTR(-ENOMEM);
+
+	pdata->y_flip = pdata->x_flip = false;
+
+	pdata->x_flip = of_property_read_bool(np, "rohm,flip-x");
+	pdata->y_flip = of_property_read_bool(np, "rohm,flip-y");
+
+	of_property_read_u32(np, "rohm,touch-max-x", &pdata->touch_x_max);
+	of_property_read_u32(np, "rohm,touch-max-y", &pdata->touch_y_max);
+
+	pdata->touch_pin = of_get_named_gpio(np, "touch-gpio", 0);
+	pdata->cs_pin = of_get_named_gpio(np, "reset-gpio", 0);
+
+	pdata->ext_clk = false;
+
+	return pdata;
+}
+#else
+static inline const struct bu21013_platform_device *
+bu21013_parse_dt(struct device *dev)
+{
+	dev_err(dev, "no platform data available\n");
+	return ERR_PTR(-EINVAL);
+}
+#endif
+
+/**
+>>>>>>> refs/remotes/origin/master
  * bu21013_probe() - initializes the i2c-client touchscreen driver
  * @client: i2c client structure pointer
  * @id: i2c device id pointer
@@ -428,6 +521,7 @@ static void bu21013_free_irq(struct bu21013_ts_data *bu21013_data)
  * This function used to initializes the i2c-client touchscreen
  * driver and returns integer.
  */
+<<<<<<< HEAD
 static int __devinit bu21013_probe(struct i2c_client *client,
 					const struct i2c_device_id *id)
 {
@@ -435,6 +529,15 @@ static int __devinit bu21013_probe(struct i2c_client *client,
 	struct input_dev *in_dev;
 	const struct bu21013_platform_device *pdata =
 					client->dev.platform_data;
+=======
+static int bu21013_probe(struct i2c_client *client,
+			 const struct i2c_device_id *id)
+{
+	const struct bu21013_platform_device *pdata =
+					dev_get_platdata(&client->dev);
+	struct bu21013_ts_data *bu21013_data;
+	struct input_dev *in_dev;
+>>>>>>> refs/remotes/origin/master
 	int error;
 
 	if (!i2c_check_functionality(client->adapter,
@@ -444,7 +547,17 @@ static int __devinit bu21013_probe(struct i2c_client *client,
 	}
 
 	if (!pdata) {
+<<<<<<< HEAD
 		dev_err(&client->dev, "platform data not defined\n");
+=======
+		pdata = bu21013_parse_dt(&client->dev);
+		if (IS_ERR(pdata))
+			return PTR_ERR(pdata);
+	}
+
+	if (!gpio_is_valid(pdata->touch_pin)) {
+		dev_err(&client->dev, "invalid touch_pin supplied\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -459,8 +572,14 @@ static int __devinit bu21013_probe(struct i2c_client *client,
 	bu21013_data->in_dev = in_dev;
 	bu21013_data->chip = pdata;
 	bu21013_data->client = client;
+<<<<<<< HEAD
 
 	bu21013_data->regulator = regulator_get(&client->dev, "V-TOUCH");
+=======
+	bu21013_data->irq = gpio_to_irq(pdata->touch_pin);
+
+	bu21013_data->regulator = regulator_get(&client->dev, "avdd");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(bu21013_data->regulator)) {
 		dev_err(&client->dev, "regulator_get failed\n");
 		error = PTR_ERR(bu21013_data->regulator);
@@ -477,12 +596,20 @@ static int __devinit bu21013_probe(struct i2c_client *client,
 	init_waitqueue_head(&bu21013_data->wait);
 
 	/* configure the gpio pins */
+<<<<<<< HEAD
 	if (pdata->cs_en) {
 		error = pdata->cs_en(pdata->cs_pin);
 		if (error < 0) {
 			dev_err(&client->dev, "chip init failed\n");
 			goto err_disable_regulator;
 		}
+=======
+	error = gpio_request_one(pdata->cs_pin, GPIOF_OUT_INIT_HIGH,
+				 "touchp_reset");
+	if (error < 0) {
+		dev_err(&client->dev, "Unable to request gpio reset_pin\n");
+		goto err_disable_regulator;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* configure the touch panel controller */
@@ -507,11 +634,21 @@ static int __devinit bu21013_probe(struct i2c_client *client,
 						pdata->touch_y_max, 0, 0);
 	input_set_drvdata(in_dev, bu21013_data);
 
+<<<<<<< HEAD
 	error = request_threaded_irq(pdata->irq, NULL, bu21013_gpio_irq,
 				     IRQF_TRIGGER_FALLING | IRQF_SHARED,
 				     DRIVER_TP, bu21013_data);
 	if (error) {
 		dev_err(&client->dev, "request irq %d failed\n", pdata->irq);
+=======
+	error = request_threaded_irq(bu21013_data->irq, NULL, bu21013_gpio_irq,
+				     IRQF_TRIGGER_FALLING | IRQF_SHARED |
+					IRQF_ONESHOT,
+				     DRIVER_TP, bu21013_data);
+	if (error) {
+		dev_err(&client->dev, "request irq %d failed\n",
+			bu21013_data->irq);
+>>>>>>> refs/remotes/origin/master
 		goto err_cs_disable;
 	}
 
@@ -529,7 +666,11 @@ static int __devinit bu21013_probe(struct i2c_client *client,
 err_free_irq:
 	bu21013_free_irq(bu21013_data);
 err_cs_disable:
+<<<<<<< HEAD
 	pdata->cs_dis(pdata->cs_pin);
+=======
+	bu21013_cs_disable(bu21013_data);
+>>>>>>> refs/remotes/origin/master
 err_disable_regulator:
 	regulator_disable(bu21013_data->regulator);
 err_put_regulator:
@@ -547,13 +688,21 @@ err_free_mem:
  * This function uses to remove the i2c-client
  * touchscreen driver and returns integer.
  */
+<<<<<<< HEAD
 static int __devexit bu21013_remove(struct i2c_client *client)
+=======
+static int bu21013_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bu21013_ts_data *bu21013_data = i2c_get_clientdata(client);
 
 	bu21013_free_irq(bu21013_data);
 
+<<<<<<< HEAD
 	bu21013_data->chip->cs_dis(bu21013_data->chip->cs_pin);
+=======
+	bu21013_cs_disable(bu21013_data);
+>>>>>>> refs/remotes/origin/master
 
 	input_unregister_device(bu21013_data->in_dev);
 
@@ -582,9 +731,15 @@ static int bu21013_suspend(struct device *dev)
 
 	bu21013_data->touch_stopped = true;
 	if (device_may_wakeup(&client->dev))
+<<<<<<< HEAD
 		enable_irq_wake(bu21013_data->chip->irq);
 	else
 		disable_irq(bu21013_data->chip->irq);
+=======
+		enable_irq_wake(bu21013_data->irq);
+	else
+		disable_irq(bu21013_data->irq);
+>>>>>>> refs/remotes/origin/master
 
 	regulator_disable(bu21013_data->regulator);
 
@@ -619,9 +774,15 @@ static int bu21013_resume(struct device *dev)
 	bu21013_data->touch_stopped = false;
 
 	if (device_may_wakeup(&client->dev))
+<<<<<<< HEAD
 		disable_irq_wake(bu21013_data->chip->irq);
 	else
 		enable_irq(bu21013_data->chip->irq);
+=======
+		disable_irq_wake(bu21013_data->irq);
+	else
+		enable_irq(bu21013_data->irq);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -647,10 +808,12 @@ static struct i2c_driver bu21013_driver = {
 #endif
 	},
 	.probe		=	bu21013_probe,
+<<<<<<< HEAD
 	.remove		=	__devexit_p(bu21013_remove),
 	.id_table	=	bu21013_id,
 };
 
+<<<<<<< HEAD
 /**
  * bu21013_init() - initializes the bu21013 touchscreen driver
  *
@@ -675,6 +838,16 @@ static void __exit bu21013_exit(void)
 
 module_init(bu21013_init);
 module_exit(bu21013_exit);
+=======
+module_i2c_driver(bu21013_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		=	bu21013_remove,
+	.id_table	=	bu21013_id,
+};
+
+module_i2c_driver(bu21013_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Naveen Kumar G <naveen.gaddipati@stericsson.com>");

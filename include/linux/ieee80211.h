@@ -16,6 +16,10 @@
 #define LINUX_IEEE80211_H
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/if_ether.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 
 /*
@@ -47,6 +51,10 @@
 #define IEEE80211_FCTL_MOREDATA		0x2000
 #define IEEE80211_FCTL_PROTECTED	0x4000
 #define IEEE80211_FCTL_ORDER		0x8000
+<<<<<<< HEAD
+=======
+#define IEEE80211_FCTL_CTL_EXT		0x0f00
+>>>>>>> refs/remotes/origin/master
 
 #define IEEE80211_SCTL_FRAG		0x000F
 #define IEEE80211_SCTL_SEQ		0xFFF0
@@ -54,6 +62,10 @@
 #define IEEE80211_FTYPE_MGMT		0x0000
 #define IEEE80211_FTYPE_CTL		0x0004
 #define IEEE80211_FTYPE_DATA		0x0008
+<<<<<<< HEAD
+=======
+#define IEEE80211_FTYPE_EXT		0x000c
+>>>>>>> refs/remotes/origin/master
 
 /* management */
 #define IEEE80211_STYPE_ASSOC_REQ	0x0000
@@ -70,6 +82,10 @@
 #define IEEE80211_STYPE_ACTION		0x00D0
 
 /* control */
+<<<<<<< HEAD
+=======
+#define IEEE80211_STYPE_CTL_EXT		0x0060
+>>>>>>> refs/remotes/origin/master
 #define IEEE80211_STYPE_BACK_REQ	0x0080
 #define IEEE80211_STYPE_BACK		0x0090
 #define IEEE80211_STYPE_PSPOLL		0x00A0
@@ -97,12 +113,59 @@
 #define IEEE80211_STYPE_QOS_CFPOLL		0x00E0
 #define IEEE80211_STYPE_QOS_CFACKPOLL		0x00F0
 
+<<<<<<< HEAD
+=======
+/* extension, added by 802.11ad */
+#define IEEE80211_STYPE_DMG_BEACON		0x0000
+
+/* control extension - for IEEE80211_FTYPE_CTL | IEEE80211_STYPE_CTL_EXT */
+#define IEEE80211_CTL_EXT_POLL		0x2000
+#define IEEE80211_CTL_EXT_SPR		0x3000
+#define IEEE80211_CTL_EXT_GRANT	0x4000
+#define IEEE80211_CTL_EXT_DMG_CTS	0x5000
+#define IEEE80211_CTL_EXT_DMG_DTS	0x6000
+#define IEEE80211_CTL_EXT_SSW		0x8000
+#define IEEE80211_CTL_EXT_SSW_FBACK	0x9000
+#define IEEE80211_CTL_EXT_SSW_ACK	0xa000
+
+
+#define IEEE80211_SN_MASK		((IEEE80211_SCTL_SEQ) >> 4)
+#define IEEE80211_MAX_SN		IEEE80211_SN_MASK
+#define IEEE80211_SN_MODULO		(IEEE80211_MAX_SN + 1)
+
+static inline int ieee80211_sn_less(u16 sn1, u16 sn2)
+{
+	return ((sn1 - sn2) & IEEE80211_SN_MASK) > (IEEE80211_SN_MODULO >> 1);
+}
+
+static inline u16 ieee80211_sn_add(u16 sn1, u16 sn2)
+{
+	return (sn1 + sn2) & IEEE80211_SN_MASK;
+}
+
+static inline u16 ieee80211_sn_inc(u16 sn)
+{
+	return ieee80211_sn_add(sn, 1);
+}
+
+static inline u16 ieee80211_sn_sub(u16 sn1, u16 sn2)
+{
+	return (sn1 - sn2) & IEEE80211_SN_MASK;
+}
+
+#define IEEE80211_SEQ_TO_SN(seq)	(((seq) & IEEE80211_SCTL_SEQ) >> 4)
+#define IEEE80211_SN_TO_SEQ(ssn)	(((ssn) << 4) & IEEE80211_SCTL_SEQ)
+>>>>>>> refs/remotes/origin/master
 
 /* miscellaneous IEEE 802.11 constants */
 #define IEEE80211_MAX_FRAG_THRESHOLD	2352
 #define IEEE80211_MAX_RTS_THRESHOLD	2353
 #define IEEE80211_MAX_AID		2007
 #define IEEE80211_MAX_TIM_LEN		251
+<<<<<<< HEAD
+=======
+#define IEEE80211_MAX_MESH_PEERINGS	63
+>>>>>>> refs/remotes/origin/master
 /* Maximum size for the MA-UNITDATA primitive, 802.11 standard section
    6.2.1.1.2.
 
@@ -116,9 +179,42 @@
 
 #define IEEE80211_MAX_MESH_ID_LEN	32
 
+<<<<<<< HEAD
 #define IEEE80211_QOS_CTL_LEN		2
+<<<<<<< HEAD
 #define IEEE80211_QOS_CTL_TID_MASK	0x000F
 #define IEEE80211_QOS_CTL_TAG1D_MASK	0x0007
+=======
+=======
+#define IEEE80211_NUM_TIDS		16
+
+#define IEEE80211_QOS_CTL_LEN		2
+>>>>>>> refs/remotes/origin/master
+/* 1d tag mask */
+#define IEEE80211_QOS_CTL_TAG1D_MASK		0x0007
+/* TID mask */
+#define IEEE80211_QOS_CTL_TID_MASK		0x000f
+/* EOSP */
+#define IEEE80211_QOS_CTL_EOSP			0x0010
+/* ACK policy */
+#define IEEE80211_QOS_CTL_ACK_POLICY_NORMAL	0x0000
+#define IEEE80211_QOS_CTL_ACK_POLICY_NOACK	0x0020
+#define IEEE80211_QOS_CTL_ACK_POLICY_NO_EXPL	0x0040
+#define IEEE80211_QOS_CTL_ACK_POLICY_BLOCKACK	0x0060
+#define IEEE80211_QOS_CTL_ACK_POLICY_MASK	0x0060
+/* A-MSDU 802.11n */
+#define IEEE80211_QOS_CTL_A_MSDU_PRESENT	0x0080
+/* Mesh Control 802.11s */
+#define IEEE80211_QOS_CTL_MESH_CONTROL_PRESENT  0x0100
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* Mesh Power Save Level */
+#define IEEE80211_QOS_CTL_MESH_PS_LEVEL		0x0200
+/* Mesh Receiver Service Period Initiated */
+#define IEEE80211_QOS_CTL_RSPI			0x0400
+>>>>>>> refs/remotes/origin/master
 
 /* U-APSD queue for WMM IEs sent by AP */
 #define IEEE80211_WMM_IE_AP_QOSINFO_UAPSD	(1<<7)
@@ -144,31 +240,57 @@
 struct ieee80211_hdr {
 	__le16 frame_control;
 	__le16 duration_id;
+<<<<<<< HEAD
 	u8 addr1[6];
 	u8 addr2[6];
 	u8 addr3[6];
 	__le16 seq_ctrl;
 	u8 addr4[6];
 } __attribute__ ((packed));
+=======
+	u8 addr1[ETH_ALEN];
+	u8 addr2[ETH_ALEN];
+	u8 addr3[ETH_ALEN];
+	__le16 seq_ctrl;
+	u8 addr4[ETH_ALEN];
+} __packed __aligned(2);
+>>>>>>> refs/remotes/origin/master
 
 struct ieee80211_hdr_3addr {
 	__le16 frame_control;
 	__le16 duration_id;
+<<<<<<< HEAD
 	u8 addr1[6];
 	u8 addr2[6];
 	u8 addr3[6];
 	__le16 seq_ctrl;
 } __attribute__ ((packed));
+=======
+	u8 addr1[ETH_ALEN];
+	u8 addr2[ETH_ALEN];
+	u8 addr3[ETH_ALEN];
+	__le16 seq_ctrl;
+} __packed __aligned(2);
+>>>>>>> refs/remotes/origin/master
 
 struct ieee80211_qos_hdr {
 	__le16 frame_control;
 	__le16 duration_id;
+<<<<<<< HEAD
 	u8 addr1[6];
 	u8 addr2[6];
 	u8 addr3[6];
 	__le16 seq_ctrl;
 	__le16 qos_ctrl;
 } __attribute__ ((packed));
+=======
+	u8 addr1[ETH_ALEN];
+	u8 addr2[ETH_ALEN];
+	u8 addr3[ETH_ALEN];
+	__le16 seq_ctrl;
+	__le16 qos_ctrl;
+} __packed __aligned(2);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ieee80211_has_tods - check if IEEE80211_FCTL_TODS is set
@@ -530,13 +652,37 @@ static inline int ieee80211_is_qos_nullfunc(__le16 fc)
 	       cpu_to_le16(IEEE80211_FTYPE_DATA | IEEE80211_STYPE_QOS_NULLFUNC);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * ieee80211_is_first_frag - check if IEEE80211_SCTL_FRAG is not set
+ * @seq_ctrl: frame sequence control bytes in little-endian byteorder
+ */
+static inline int ieee80211_is_first_frag(__le16 seq_ctrl)
+{
+	return (seq_ctrl & cpu_to_le16(IEEE80211_SCTL_FRAG)) == 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct ieee80211s_hdr {
 	u8 flags;
 	u8 ttl;
 	__le32 seqnum;
+<<<<<<< HEAD
 	u8 eaddr1[6];
 	u8 eaddr2[6];
 } __attribute__ ((packed));
+=======
+	u8 eaddr1[ETH_ALEN];
+	u8 eaddr2[ETH_ALEN];
+} __packed __aligned(2);
+>>>>>>> refs/remotes/origin/master
 
 /* Mesh flags */
 #define MESH_FLAGS_AE_A4 	0x1
@@ -545,6 +691,29 @@ struct ieee80211s_hdr {
 #define MESH_FLAGS_PS_DEEP	0x4
 
 /**
+<<<<<<< HEAD
+=======
+ * enum ieee80211_preq_flags - mesh PREQ element flags
+ *
+ * @IEEE80211_PREQ_PROACTIVE_PREP_FLAG: proactive PREP subfield
+ */
+enum ieee80211_preq_flags {
+	IEEE80211_PREQ_PROACTIVE_PREP_FLAG	= 1<<2,
+};
+
+/**
+ * enum ieee80211_preq_target_flags - mesh PREQ element per target flags
+ *
+ * @IEEE80211_PREQ_TO_FLAG: target only subfield
+ * @IEEE80211_PREQ_USN_FLAG: unknown target HWMP sequence number subfield
+ */
+enum ieee80211_preq_target_flags {
+	IEEE80211_PREQ_TO_FLAG	= 1<<0,
+	IEEE80211_PREQ_USN_FLAG	= 1<<2,
+};
+
+/**
+>>>>>>> refs/remotes/origin/master
  * struct ieee80211_quiet_ie
  *
  * This structure refers to "Quiet information element"
@@ -554,7 +723,11 @@ struct ieee80211_quiet_ie {
 	u8 period;
 	__le16 duration;
 	__le16 offset;
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct ieee80211_msrment_ie
@@ -566,7 +739,11 @@ struct ieee80211_msrment_ie {
 	u8 mode;
 	u8 type;
 	u8 request[0];
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct ieee80211_channel_sw_ie
@@ -577,7 +754,53 @@ struct ieee80211_channel_sw_ie {
 	u8 mode;
 	u8 new_ch_num;
 	u8 count;
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+
+/**
+ * struct ieee80211_ext_chansw_ie
+ *
+ * This structure represents the "Extended Channel Switch Announcement element"
+ */
+struct ieee80211_ext_chansw_ie {
+	u8 mode;
+	u8 new_operating_class;
+	u8 new_ch_num;
+	u8 count;
+} __packed;
+
+/**
+ * struct ieee80211_sec_chan_offs_ie - secondary channel offset IE
+ * @sec_chan_offs: secondary channel offset, uses IEEE80211_HT_PARAM_CHA_SEC_*
+ *	values here
+ * This structure represents the "Secondary Channel Offset element"
+ */
+struct ieee80211_sec_chan_offs_ie {
+	u8 sec_chan_offs;
+} __packed;
+
+/**
+ * struct ieee80211_mesh_chansw_params_ie - mesh channel switch parameters IE
+ *
+ * This structure represents the "Mesh Channel Switch Paramters element"
+ */
+struct ieee80211_mesh_chansw_params_ie {
+	u8 mesh_ttl;
+	u8 mesh_flags;
+	__le16 mesh_reason;
+	__le16 mesh_pre_value;
+} __packed;
+
+/**
+ * struct ieee80211_wide_bw_chansw_ie - wide bandwidth channel switch IE
+ */
+struct ieee80211_wide_bw_chansw_ie {
+	u8 new_channel_width;
+	u8 new_center_freq_seg0, new_center_freq_seg1;
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct ieee80211_tim
@@ -590,7 +813,11 @@ struct ieee80211_tim_ie {
 	u8 bitmap_ctrl;
 	/* variable size: 1 - 251 bytes */
 	u8 virtual_map[1];
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct ieee80211_meshconf_ie
@@ -605,7 +832,37 @@ struct ieee80211_meshconf_ie {
 	u8 meshconf_auth;
 	u8 meshconf_form;
 	u8 meshconf_cap;
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+
+/**
+ * enum mesh_config_capab_flags - Mesh Configuration IE capability field flags
+ *
+ * @IEEE80211_MESHCONF_CAPAB_ACCEPT_PLINKS: STA is willing to establish
+ *	additional mesh peerings with other mesh STAs
+ * @IEEE80211_MESHCONF_CAPAB_FORWARDING: the STA forwards MSDUs
+ * @IEEE80211_MESHCONF_CAPAB_TBTT_ADJUSTING: TBTT adjustment procedure
+ *	is ongoing
+ * @IEEE80211_MESHCONF_CAPAB_POWER_SAVE_LEVEL: STA is in deep sleep mode or has
+ *	neighbors in deep sleep mode
+ */
+enum mesh_config_capab_flags {
+	IEEE80211_MESHCONF_CAPAB_ACCEPT_PLINKS		= 0x01,
+	IEEE80211_MESHCONF_CAPAB_FORWARDING		= 0x08,
+	IEEE80211_MESHCONF_CAPAB_TBTT_ADJUSTING		= 0x20,
+	IEEE80211_MESHCONF_CAPAB_POWER_SAVE_LEVEL	= 0x40,
+};
+
+/**
+ * mesh channel switch parameters element's flag indicator
+ *
+ */
+#define WLAN_EID_CHAN_SWITCH_PARAM_TX_RESTRICT BIT(0)
+#define WLAN_EID_CHAN_SWITCH_PARAM_INITIATOR BIT(1)
+#define WLAN_EID_CHAN_SWITCH_PARAM_REASON BIT(2)
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct ieee80211_rann_ie
@@ -616,19 +873,76 @@ struct ieee80211_rann_ie {
 	u8 rann_flags;
 	u8 rann_hopcount;
 	u8 rann_ttl;
+<<<<<<< HEAD
 	u8 rann_addr[6];
 	u32 rann_seq;
+<<<<<<< HEAD
 	u32 rann_metric;
 } __attribute__ ((packed));
 
+=======
+	u32 rann_interval;
+	u32 rann_metric;
+} __attribute__ ((packed));
+=======
+	u8 rann_addr[ETH_ALEN];
+	__le32 rann_seq;
+	__le32 rann_interval;
+	__le32 rann_metric;
+} __packed;
+>>>>>>> refs/remotes/origin/master
+
+enum ieee80211_rann_flags {
+	RANN_FLAG_IS_GATE = 1 << 0,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum ieee80211_ht_chanwidth_values {
+	IEEE80211_HT_CHANWIDTH_20MHZ = 0,
+	IEEE80211_HT_CHANWIDTH_ANY = 1,
+};
+
+/**
+ * enum ieee80211_opmode_bits - VHT operating mode field bits
+ * @IEEE80211_OPMODE_NOTIF_CHANWIDTH_MASK: channel width mask
+ * @IEEE80211_OPMODE_NOTIF_CHANWIDTH_20MHZ: 20 MHz channel width
+ * @IEEE80211_OPMODE_NOTIF_CHANWIDTH_40MHZ: 40 MHz channel width
+ * @IEEE80211_OPMODE_NOTIF_CHANWIDTH_80MHZ: 80 MHz channel width
+ * @IEEE80211_OPMODE_NOTIF_CHANWIDTH_160MHZ: 160 MHz or 80+80 MHz channel width
+ * @IEEE80211_OPMODE_NOTIF_RX_NSS_MASK: number of spatial streams mask
+ *	(the NSS value is the value of this field + 1)
+ * @IEEE80211_OPMODE_NOTIF_RX_NSS_SHIFT: number of spatial streams shift
+ * @IEEE80211_OPMODE_NOTIF_RX_NSS_TYPE_BF: indicates streams in SU-MIMO PPDU
+ *	using a beamforming steering matrix
+ */
+enum ieee80211_vht_opmode_bits {
+	IEEE80211_OPMODE_NOTIF_CHANWIDTH_MASK	= 3,
+	IEEE80211_OPMODE_NOTIF_CHANWIDTH_20MHZ	= 0,
+	IEEE80211_OPMODE_NOTIF_CHANWIDTH_40MHZ	= 1,
+	IEEE80211_OPMODE_NOTIF_CHANWIDTH_80MHZ	= 2,
+	IEEE80211_OPMODE_NOTIF_CHANWIDTH_160MHZ	= 3,
+	IEEE80211_OPMODE_NOTIF_RX_NSS_MASK	= 0x70,
+	IEEE80211_OPMODE_NOTIF_RX_NSS_SHIFT	= 4,
+	IEEE80211_OPMODE_NOTIF_RX_NSS_TYPE_BF	= 0x80,
+};
+
+>>>>>>> refs/remotes/origin/master
 #define WLAN_SA_QUERY_TR_ID_LEN 2
 
 struct ieee80211_mgmt {
 	__le16 frame_control;
 	__le16 duration;
+<<<<<<< HEAD
 	u8 da[6];
 	u8 sa[6];
 	u8 bssid[6];
+=======
+	u8 da[ETH_ALEN];
+	u8 sa[ETH_ALEN];
+	u8 bssid[ETH_ALEN];
+>>>>>>> refs/remotes/origin/master
 	__le16 seq_ctrl;
 	union {
 		struct {
@@ -637,22 +951,34 @@ struct ieee80211_mgmt {
 			__le16 status_code;
 			/* possibly followed by Challenge text */
 			u8 variable[0];
+<<<<<<< HEAD
 		} __attribute__ ((packed)) auth;
 		struct {
 			__le16 reason_code;
 		} __attribute__ ((packed)) deauth;
+=======
+		} __packed auth;
+		struct {
+			__le16 reason_code;
+		} __packed deauth;
+>>>>>>> refs/remotes/origin/master
 		struct {
 			__le16 capab_info;
 			__le16 listen_interval;
 			/* followed by SSID and Supported rates */
 			u8 variable[0];
+<<<<<<< HEAD
 		} __attribute__ ((packed)) assoc_req;
+=======
+		} __packed assoc_req;
+>>>>>>> refs/remotes/origin/master
 		struct {
 			__le16 capab_info;
 			__le16 status_code;
 			__le16 aid;
 			/* followed by Supported rates */
 			u8 variable[0];
+<<<<<<< HEAD
 		} __attribute__ ((packed)) assoc_resp, reassoc_resp;
 		struct {
 			__le16 capab_info;
@@ -664,6 +990,19 @@ struct ieee80211_mgmt {
 		struct {
 			__le16 reason_code;
 		} __attribute__ ((packed)) disassoc;
+=======
+		} __packed assoc_resp, reassoc_resp;
+		struct {
+			__le16 capab_info;
+			__le16 listen_interval;
+			u8 current_ap[ETH_ALEN];
+			/* followed by SSID and Supported rates */
+			u8 variable[0];
+		} __packed reassoc_req;
+		struct {
+			__le16 reason_code;
+		} __packed disassoc;
+>>>>>>> refs/remotes/origin/master
 		struct {
 			__le64 timestamp;
 			__le16 beacon_int;
@@ -671,11 +1010,19 @@ struct ieee80211_mgmt {
 			/* followed by some of SSID, Supported rates,
 			 * FH Params, DS Params, CF Params, IBSS Params, TIM */
 			u8 variable[0];
+<<<<<<< HEAD
 		} __attribute__ ((packed)) beacon;
 		struct {
 			/* only variable items: SSID, Supported rates */
 			u8 variable[0];
 		} __attribute__ ((packed)) probe_req;
+=======
+		} __packed beacon;
+		struct {
+			/* only variable items: SSID, Supported rates */
+			u8 variable[0];
+		} __packed probe_req;
+>>>>>>> refs/remotes/origin/master
 		struct {
 			__le64 timestamp;
 			__le16 beacon_int;
@@ -683,7 +1030,11 @@ struct ieee80211_mgmt {
 			/* followed by some of SSID, Supported rates,
 			 * FH Params, DS Params, CF Params, IBSS Params */
 			u8 variable[0];
+<<<<<<< HEAD
 		} __attribute__ ((packed)) probe_resp;
+=======
+		} __packed probe_resp;
+>>>>>>> refs/remotes/origin/master
 		struct {
 			u8 category;
 			union {
@@ -692,6 +1043,7 @@ struct ieee80211_mgmt {
 					u8 dialog_token;
 					u8 status_code;
 					u8 variable[0];
+<<<<<<< HEAD
 				} __attribute__ ((packed)) wme_action;
 				struct{
 					u8 action_code;
@@ -699,32 +1051,58 @@ struct ieee80211_mgmt {
 					u8 length;
 					struct ieee80211_channel_sw_ie sw_elem;
 				} __attribute__((packed)) chan_switch;
+=======
+				} __packed wme_action;
+				struct{
+					u8 action_code;
+					u8 variable[0];
+				} __packed chan_switch;
+				struct{
+					u8 action_code;
+					struct ieee80211_ext_chansw_ie data;
+					u8 variable[0];
+				} __packed ext_chan_switch;
+>>>>>>> refs/remotes/origin/master
 				struct{
 					u8 action_code;
 					u8 dialog_token;
 					u8 element_id;
 					u8 length;
 					struct ieee80211_msrment_ie msr_elem;
+<<<<<<< HEAD
 				} __attribute__((packed)) measurement;
+=======
+				} __packed measurement;
+>>>>>>> refs/remotes/origin/master
 				struct{
 					u8 action_code;
 					u8 dialog_token;
 					__le16 capab;
 					__le16 timeout;
 					__le16 start_seq_num;
+<<<<<<< HEAD
 				} __attribute__((packed)) addba_req;
+=======
+				} __packed addba_req;
+>>>>>>> refs/remotes/origin/master
 				struct{
 					u8 action_code;
 					u8 dialog_token;
 					__le16 status;
 					__le16 capab;
 					__le16 timeout;
+<<<<<<< HEAD
 				} __attribute__((packed)) addba_resp;
+=======
+				} __packed addba_resp;
+>>>>>>> refs/remotes/origin/master
 				struct{
 					u8 action_code;
 					__le16 params;
 					__le16 reason_code;
+<<<<<<< HEAD
 				} __attribute__((packed)) delba;
+<<<<<<< HEAD
 				struct{
 					u8 action_code;
 					/* capab_info for open and confirm,
@@ -738,6 +1116,12 @@ struct ieee80211_mgmt {
 					 */
 					u8 variable[0];
 				} __attribute__((packed)) plink_action;
+=======
+				struct {
+					u8 action_code;
+					u8 variable[0];
+				} __attribute__((packed)) self_prot;
+>>>>>>> refs/remotes/origin/cm-10.0
 				struct{
 					u8 action_code;
 					u8 variable[0];
@@ -750,11 +1134,64 @@ struct ieee80211_mgmt {
 					u8 action;
 					u8 smps_control;
 				} __attribute__ ((packed)) ht_smps;
+<<<<<<< HEAD
+=======
+=======
+				} __packed delba;
+				struct {
+					u8 action_code;
+					u8 variable[0];
+				} __packed self_prot;
+				struct{
+					u8 action_code;
+					u8 variable[0];
+				} __packed mesh_action;
+				struct {
+					u8 action;
+					u8 trans_id[WLAN_SA_QUERY_TR_ID_LEN];
+				} __packed sa_query;
+				struct {
+					u8 action;
+					u8 smps_control;
+				} __packed ht_smps;
+				struct {
+					u8 action_code;
+					u8 chanwidth;
+				} __packed ht_notify_cw;
+>>>>>>> refs/remotes/origin/master
+				struct {
+					u8 action_code;
+					u8 dialog_token;
+					__le16 capability;
+					u8 variable[0];
+				} __packed tdls_discover_resp;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 			} u;
 		} __attribute__ ((packed)) action;
 	} u;
 } __attribute__ ((packed));
 
+<<<<<<< HEAD
+=======
+/* Supported Rates value encodings in 802.11n-2009 7.3.2.2 */
+#define BSS_MEMBERSHIP_SELECTOR_HT_PHY	127
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				struct {
+					u8 action_code;
+					u8 operating_mode;
+				} __packed vht_opmode_notif;
+			} u;
+		} __packed action;
+	} u;
+} __packed __aligned(2);
+
+/* Supported Rates value encodings in 802.11n-2009 7.3.2.2 */
+#define BSS_MEMBERSHIP_SELECTOR_HT_PHY	127
+
+>>>>>>> refs/remotes/origin/master
 /* mgmt header + 1 byte category code */
 #define IEEE80211_MIN_ACTION_SIZE offsetof(struct ieee80211_mgmt, u.action.u)
 
@@ -766,29 +1203,180 @@ struct ieee80211_mmie {
 	__le16 key_id;
 	u8 sequence_number[6];
 	u8 mic[8];
+<<<<<<< HEAD
 } __attribute__ ((packed));
 
+<<<<<<< HEAD
+=======
+=======
+} __packed;
+
+>>>>>>> refs/remotes/origin/master
+struct ieee80211_vendor_ie {
+	u8 element_id;
+	u8 len;
+	u8 oui[3];
+	u8 oui_type;
+} __packed;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Control frames */
 struct ieee80211_rts {
 	__le16 frame_control;
 	__le16 duration;
+<<<<<<< HEAD
 	u8 ra[6];
 	u8 ta[6];
 } __attribute__ ((packed));
+=======
+	u8 ra[ETH_ALEN];
+	u8 ta[ETH_ALEN];
+} __packed __aligned(2);
+>>>>>>> refs/remotes/origin/master
 
 struct ieee80211_cts {
 	__le16 frame_control;
 	__le16 duration;
+<<<<<<< HEAD
 	u8 ra[6];
 } __attribute__ ((packed));
+=======
+	u8 ra[ETH_ALEN];
+} __packed __aligned(2);
+>>>>>>> refs/remotes/origin/master
 
 struct ieee80211_pspoll {
 	__le16 frame_control;
 	__le16 aid;
+<<<<<<< HEAD
 	u8 bssid[6];
 	u8 ta[6];
 } __attribute__ ((packed));
 
+<<<<<<< HEAD
+=======
+=======
+	u8 bssid[ETH_ALEN];
+	u8 ta[ETH_ALEN];
+} __packed __aligned(2);
+
+>>>>>>> refs/remotes/origin/master
+/* TDLS */
+
+/* Link-id information element */
+struct ieee80211_tdls_lnkie {
+	u8 ie_type; /* Link Identifier IE */
+	u8 ie_len;
+<<<<<<< HEAD
+	u8 bssid[6];
+	u8 init_sta[6];
+	u8 resp_sta[6];
+} __packed;
+
+struct ieee80211_tdls_data {
+	u8 da[6];
+	u8 sa[6];
+=======
+	u8 bssid[ETH_ALEN];
+	u8 init_sta[ETH_ALEN];
+	u8 resp_sta[ETH_ALEN];
+} __packed;
+
+struct ieee80211_tdls_data {
+	u8 da[ETH_ALEN];
+	u8 sa[ETH_ALEN];
+>>>>>>> refs/remotes/origin/master
+	__be16 ether_type;
+	u8 payload_type;
+	u8 category;
+	u8 action_code;
+	union {
+		struct {
+			u8 dialog_token;
+			__le16 capability;
+			u8 variable[0];
+		} __packed setup_req;
+		struct {
+			__le16 status_code;
+			u8 dialog_token;
+			__le16 capability;
+			u8 variable[0];
+		} __packed setup_resp;
+		struct {
+			__le16 status_code;
+			u8 dialog_token;
+			u8 variable[0];
+		} __packed setup_cfm;
+		struct {
+			__le16 reason_code;
+			u8 variable[0];
+		} __packed teardown;
+		struct {
+			u8 dialog_token;
+			u8 variable[0];
+		} __packed discover_req;
+	} u;
+} __packed;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Peer-to-Peer IE attribute related definitions.
+ */
+/**
+ * enum ieee80211_p2p_attr_id - identifies type of peer-to-peer attribute.
+ */
+enum ieee80211_p2p_attr_id {
+	IEEE80211_P2P_ATTR_STATUS = 0,
+	IEEE80211_P2P_ATTR_MINOR_REASON,
+	IEEE80211_P2P_ATTR_CAPABILITY,
+	IEEE80211_P2P_ATTR_DEVICE_ID,
+	IEEE80211_P2P_ATTR_GO_INTENT,
+	IEEE80211_P2P_ATTR_GO_CONFIG_TIMEOUT,
+	IEEE80211_P2P_ATTR_LISTEN_CHANNEL,
+	IEEE80211_P2P_ATTR_GROUP_BSSID,
+	IEEE80211_P2P_ATTR_EXT_LISTEN_TIMING,
+	IEEE80211_P2P_ATTR_INTENDED_IFACE_ADDR,
+	IEEE80211_P2P_ATTR_MANAGABILITY,
+	IEEE80211_P2P_ATTR_CHANNEL_LIST,
+	IEEE80211_P2P_ATTR_ABSENCE_NOTICE,
+	IEEE80211_P2P_ATTR_DEVICE_INFO,
+	IEEE80211_P2P_ATTR_GROUP_INFO,
+	IEEE80211_P2P_ATTR_GROUP_ID,
+	IEEE80211_P2P_ATTR_INTERFACE,
+	IEEE80211_P2P_ATTR_OPER_CHANNEL,
+	IEEE80211_P2P_ATTR_INVITE_FLAGS,
+	/* 19 - 220: Reserved */
+	IEEE80211_P2P_ATTR_VENDOR_SPECIFIC = 221,
+
+	IEEE80211_P2P_ATTR_MAX
+};
+
+/* Notice of Absence attribute - described in P2P spec 4.1.14 */
+/* Typical max value used here */
+#define IEEE80211_P2P_NOA_DESC_MAX	4
+
+struct ieee80211_p2p_noa_desc {
+	u8 count;
+	__le32 duration;
+	__le32 interval;
+	__le32 start_time;
+} __packed;
+
+struct ieee80211_p2p_noa_attr {
+	u8 index;
+	u8 oppps_ctwindow;
+	struct ieee80211_p2p_noa_desc desc[IEEE80211_P2P_NOA_DESC_MAX];
+} __packed;
+
+#define IEEE80211_P2P_OPPPS_ENABLE_BIT		BIT(7)
+#define IEEE80211_P2P_OPPPS_CTWINDOW_MASK	0x7F
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct ieee80211_bar - HT Block Ack Request
  *
@@ -798,6 +1386,7 @@ struct ieee80211_pspoll {
 struct ieee80211_bar {
 	__le16 frame_control;
 	__le16 duration;
+<<<<<<< HEAD
 	__u8 ra[6];
 	__u8 ta[6];
 	__le16 control;
@@ -805,9 +1394,29 @@ struct ieee80211_bar {
 } __attribute__((packed));
 
 /* 802.11 BAR control masks */
+<<<<<<< HEAD
 #define IEEE80211_BAR_CTRL_ACK_POLICY_NORMAL     0x0000
 #define IEEE80211_BAR_CTRL_CBMTID_COMPRESSED_BA  0x0004
 
+=======
+=======
+	__u8 ra[ETH_ALEN];
+	__u8 ta[ETH_ALEN];
+	__le16 control;
+	__le16 start_seq_num;
+} __packed;
+
+/* 802.11 BAR control masks */
+>>>>>>> refs/remotes/origin/master
+#define IEEE80211_BAR_CTRL_ACK_POLICY_NORMAL	0x0000
+#define IEEE80211_BAR_CTRL_MULTI_TID		0x0002
+#define IEEE80211_BAR_CTRL_CBMTID_COMPRESSED_BA	0x0004
+#define IEEE80211_BAR_CTRL_TID_INFO_MASK	0xf000
+#define IEEE80211_BAR_CTRL_TID_INFO_SHIFT	12
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define IEEE80211_HT_MCS_MASK_LEN		10
 
@@ -825,7 +1434,11 @@ struct ieee80211_mcs_info {
 	__le16 rx_highest;
 	u8 tx_params;
 	u8 reserved[3];
+<<<<<<< HEAD
 } __attribute__((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /* 802.11n HT capability MSC set */
 #define IEEE80211_HT_MCS_RX_HIGHEST_MASK	0x3ff
@@ -864,7 +1477,11 @@ struct ieee80211_ht_cap {
 	__le16 extended_ht_cap_info;
 	__le32 tx_BF_cap_info;
 	u8 antenna_selection_info;
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /* 802.11n HT capabilities masks (for cap_info) */
 #define IEEE80211_HT_CAP_LDPC_CODING		0x0001
@@ -924,6 +1541,7 @@ enum ieee80211_min_mpdu_spacing {
 };
 
 /**
+<<<<<<< HEAD
  * struct ieee80211_ht_info - HT information
  *
  * This structure is the "HT information element" as
@@ -931,11 +1549,24 @@ enum ieee80211_min_mpdu_spacing {
  */
 struct ieee80211_ht_info {
 	u8 control_chan;
+=======
+ * struct ieee80211_ht_operation - HT operation IE
+ *
+ * This structure is the "HT operation element" as
+ * described in 802.11n-2009 7.3.2.57
+ */
+struct ieee80211_ht_operation {
+	u8 primary_chan;
+>>>>>>> refs/remotes/origin/master
 	u8 ht_param;
 	__le16 operation_mode;
 	__le16 stbc_param;
 	u8 basic_set[16];
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /* for ht_param */
 #define IEEE80211_HT_PARAM_CHA_SEC_OFFSET		0x03
@@ -944,8 +1575,11 @@ struct ieee80211_ht_info {
 #define		IEEE80211_HT_PARAM_CHA_SEC_BELOW	0x03
 #define IEEE80211_HT_PARAM_CHAN_WIDTH_ANY		0x04
 #define IEEE80211_HT_PARAM_RIFS_MODE			0x08
+<<<<<<< HEAD
 #define IEEE80211_HT_PARAM_SPSMP_SUPPORT		0x10
 #define IEEE80211_HT_PARAM_SERV_INTERVAL_GRAN		0xE0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* for operation_mode */
 #define IEEE80211_HT_OP_MODE_PROTECTION			0x0003
@@ -991,6 +1625,130 @@ struct ieee80211_ht_info {
 #define WLAN_HT_SMPS_CONTROL_STATIC	1
 #define WLAN_HT_SMPS_CONTROL_DYNAMIC	3
 
+<<<<<<< HEAD
+=======
+/**
+ * struct ieee80211_vht_mcs_info - VHT MCS information
+ * @rx_mcs_map: RX MCS map 2 bits for each stream, total 8 streams
+ * @rx_highest: Indicates highest long GI VHT PPDU data rate
+ *	STA can receive. Rate expressed in units of 1 Mbps.
+ *	If this field is 0 this value should not be used to
+ *	consider the highest RX data rate supported.
+ *	The top 3 bits of this field are reserved.
+ * @tx_mcs_map: TX MCS map 2 bits for each stream, total 8 streams
+ * @tx_highest: Indicates highest long GI VHT PPDU data rate
+ *	STA can transmit. Rate expressed in units of 1 Mbps.
+ *	If this field is 0 this value should not be used to
+ *	consider the highest TX data rate supported.
+ *	The top 3 bits of this field are reserved.
+ */
+struct ieee80211_vht_mcs_info {
+	__le16 rx_mcs_map;
+	__le16 rx_highest;
+	__le16 tx_mcs_map;
+	__le16 tx_highest;
+} __packed;
+
+/**
+ * enum ieee80211_vht_mcs_support - VHT MCS support definitions
+ * @IEEE80211_VHT_MCS_SUPPORT_0_7: MCSes 0-7 are supported for the
+ *	number of streams
+ * @IEEE80211_VHT_MCS_SUPPORT_0_8: MCSes 0-8 are supported
+ * @IEEE80211_VHT_MCS_SUPPORT_0_9: MCSes 0-9 are supported
+ * @IEEE80211_VHT_MCS_NOT_SUPPORTED: This number of streams isn't supported
+ *
+ * These definitions are used in each 2-bit subfield of the @rx_mcs_map
+ * and @tx_mcs_map fields of &struct ieee80211_vht_mcs_info, which are
+ * both split into 8 subfields by number of streams. These values indicate
+ * which MCSes are supported for the number of streams the value appears
+ * for.
+ */
+enum ieee80211_vht_mcs_support {
+	IEEE80211_VHT_MCS_SUPPORT_0_7	= 0,
+	IEEE80211_VHT_MCS_SUPPORT_0_8	= 1,
+	IEEE80211_VHT_MCS_SUPPORT_0_9	= 2,
+	IEEE80211_VHT_MCS_NOT_SUPPORTED	= 3,
+};
+
+/**
+ * struct ieee80211_vht_cap - VHT capabilities
+ *
+ * This structure is the "VHT capabilities element" as
+ * described in 802.11ac D3.0 8.4.2.160
+ * @vht_cap_info: VHT capability info
+ * @supp_mcs: VHT MCS supported rates
+ */
+struct ieee80211_vht_cap {
+	__le32 vht_cap_info;
+	struct ieee80211_vht_mcs_info supp_mcs;
+} __packed;
+
+/**
+ * enum ieee80211_vht_chanwidth - VHT channel width
+ * @IEEE80211_VHT_CHANWIDTH_USE_HT: use the HT operation IE to
+ *	determine the channel width (20 or 40 MHz)
+ * @IEEE80211_VHT_CHANWIDTH_80MHZ: 80 MHz bandwidth
+ * @IEEE80211_VHT_CHANWIDTH_160MHZ: 160 MHz bandwidth
+ * @IEEE80211_VHT_CHANWIDTH_80P80MHZ: 80+80 MHz bandwidth
+ */
+enum ieee80211_vht_chanwidth {
+	IEEE80211_VHT_CHANWIDTH_USE_HT		= 0,
+	IEEE80211_VHT_CHANWIDTH_80MHZ		= 1,
+	IEEE80211_VHT_CHANWIDTH_160MHZ		= 2,
+	IEEE80211_VHT_CHANWIDTH_80P80MHZ	= 3,
+};
+
+/**
+ * struct ieee80211_vht_operation - VHT operation IE
+ *
+ * This structure is the "VHT operation element" as
+ * described in 802.11ac D3.0 8.4.2.161
+ * @chan_width: Operating channel width
+ * @center_freq_seg1_idx: center freq segment 1 index
+ * @center_freq_seg2_idx: center freq segment 2 index
+ * @basic_mcs_set: VHT Basic MCS rate set
+ */
+struct ieee80211_vht_operation {
+	u8 chan_width;
+	u8 center_freq_seg1_idx;
+	u8 center_freq_seg2_idx;
+	__le16 basic_mcs_set;
+} __packed;
+
+
+/* 802.11ac VHT Capabilities */
+#define IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_3895			0x00000000
+#define IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_7991			0x00000001
+#define IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_11454			0x00000002
+#define IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ		0x00000004
+#define IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ	0x00000008
+#define IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK			0x0000000C
+#define IEEE80211_VHT_CAP_RXLDPC				0x00000010
+#define IEEE80211_VHT_CAP_SHORT_GI_80				0x00000020
+#define IEEE80211_VHT_CAP_SHORT_GI_160				0x00000040
+#define IEEE80211_VHT_CAP_TXSTBC				0x00000080
+#define IEEE80211_VHT_CAP_RXSTBC_1				0x00000100
+#define IEEE80211_VHT_CAP_RXSTBC_2				0x00000200
+#define IEEE80211_VHT_CAP_RXSTBC_3				0x00000300
+#define IEEE80211_VHT_CAP_RXSTBC_4				0x00000400
+#define IEEE80211_VHT_CAP_RXSTBC_MASK				0x00000700
+#define IEEE80211_VHT_CAP_SU_BEAMFORMER_CAPABLE			0x00000800
+#define IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE			0x00001000
+#define IEEE80211_VHT_CAP_BEAMFORMEE_STS_MAX			0x0000e000
+#define IEEE80211_VHT_CAP_SOUNDING_DIMENSIONS_MAX		0x00070000
+#define IEEE80211_VHT_CAP_MU_BEAMFORMER_CAPABLE			0x00080000
+#define IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE			0x00100000
+#define IEEE80211_VHT_CAP_VHT_TXOP_PS				0x00200000
+#define IEEE80211_VHT_CAP_HTC_VHT				0x00400000
+#define IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_SHIFT	23
+#define IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_MASK	\
+		(7 << IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_SHIFT)
+#define IEEE80211_VHT_CAP_VHT_LINK_ADAPTATION_VHT_UNSOL_MFB	0x08000000
+#define IEEE80211_VHT_CAP_VHT_LINK_ADAPTATION_VHT_MRQ_MFB	0x0c000000
+#define IEEE80211_VHT_CAP_RX_ANTENNA_PATTERN			0x10000000
+#define IEEE80211_VHT_CAP_TX_ANTENNA_PATTERN			0x20000000
+
+>>>>>>> refs/remotes/origin/master
 /* Authentication algorithms */
 #define WLAN_AUTH_OPEN 0
 #define WLAN_AUTH_SHARED_KEY 1
@@ -1022,7 +1780,31 @@ struct ieee80211_ht_info {
 #define WLAN_CAPABILITY_SPECTRUM_MGMT	(1<<8)
 #define WLAN_CAPABILITY_QOS		(1<<9)
 #define WLAN_CAPABILITY_SHORT_SLOT_TIME	(1<<10)
+<<<<<<< HEAD
 #define WLAN_CAPABILITY_DSSS_OFDM	(1<<13)
+=======
+#define WLAN_CAPABILITY_APSD		(1<<11)
+#define WLAN_CAPABILITY_RADIO_MEASURE	(1<<12)
+#define WLAN_CAPABILITY_DSSS_OFDM	(1<<13)
+#define WLAN_CAPABILITY_DEL_BACK	(1<<14)
+#define WLAN_CAPABILITY_IMM_BACK	(1<<15)
+
+/* DMG (60gHz) 802.11ad */
+/* type - bits 0..1 */
+#define WLAN_CAPABILITY_DMG_TYPE_MASK		(3<<0)
+#define WLAN_CAPABILITY_DMG_TYPE_IBSS		(1<<0) /* Tx by: STA */
+#define WLAN_CAPABILITY_DMG_TYPE_PBSS		(2<<0) /* Tx by: PCP */
+#define WLAN_CAPABILITY_DMG_TYPE_AP		(3<<0) /* Tx by: AP */
+
+#define WLAN_CAPABILITY_DMG_CBAP_ONLY		(1<<2)
+#define WLAN_CAPABILITY_DMG_CBAP_SOURCE		(1<<3)
+#define WLAN_CAPABILITY_DMG_PRIVACY		(1<<4)
+#define WLAN_CAPABILITY_DMG_ECPAC		(1<<5)
+
+#define WLAN_CAPABILITY_DMG_SPECTRUM_MGMT	(1<<8)
+#define WLAN_CAPABILITY_DMG_RADIO_MEASURE	(1<<12)
+
+>>>>>>> refs/remotes/origin/master
 /* measurement */
 #define IEEE80211_SPCT_MSR_RPRT_MODE_LATE	(1<<0)
 #define IEEE80211_SPCT_MSR_RPRT_MODE_INCAPABLE	(1<<1)
@@ -1032,7 +1814,10 @@ struct ieee80211_ht_info {
 #define IEEE80211_SPCT_MSR_RPRT_TYPE_CCA	1
 #define IEEE80211_SPCT_MSR_RPRT_TYPE_RPI	2
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* 802.11g ERP information element */
 #define WLAN_ERP_NON_ERP_PRESENT (1<<0)
 #define WLAN_ERP_USE_PROTECTION (1<<1)
@@ -1044,6 +1829,19 @@ enum {
 	WLAN_ERP_PREAMBLE_LONG = 1,
 };
 
+<<<<<<< HEAD
+=======
+/* Band ID, 802.11ad #8.4.1.45 */
+enum {
+	IEEE80211_BANDID_TV_WS = 0, /* TV white spaces */
+	IEEE80211_BANDID_SUB1  = 1, /* Sub-1 GHz (excluding TV white spaces) */
+	IEEE80211_BANDID_2G    = 2, /* 2.4 GHz */
+	IEEE80211_BANDID_3G    = 3, /* 3.6 GHz */
+	IEEE80211_BANDID_5G    = 4, /* 4.9 and 5 GHz */
+	IEEE80211_BANDID_60G   = 5, /* 60 GHz */
+};
+
+>>>>>>> refs/remotes/origin/master
 /* Status codes */
 enum ieee80211_statuscode {
 	WLAN_STATUS_SUCCESS = 0,
@@ -1095,6 +1893,20 @@ enum ieee80211_statuscode {
 	WLAN_STATUS_ANTI_CLOG_REQUIRED = 76,
 	WLAN_STATUS_FCG_NOT_SUPP = 78,
 	WLAN_STATUS_STA_NO_TBTT = 78,
+<<<<<<< HEAD
+=======
+	/* 802.11ad */
+	WLAN_STATUS_REJECTED_WITH_SUGGESTED_CHANGES = 39,
+	WLAN_STATUS_REJECTED_FOR_DELAY_PERIOD = 47,
+	WLAN_STATUS_REJECT_WITH_SCHEDULE = 83,
+	WLAN_STATUS_PENDING_ADMITTING_FST_SESSION = 86,
+	WLAN_STATUS_PERFORMING_FST_NOW = 87,
+	WLAN_STATUS_PENDING_GAP_IN_BA_WINDOW = 88,
+	WLAN_STATUS_REJECT_U_PID_SETTING = 89,
+	WLAN_STATUS_REJECT_DSE_BAND = 96,
+	WLAN_STATUS_DENIED_WITH_SUGGESTED_BAND_AND_CHANNEL = 99,
+	WLAN_STATUS_DENIED_DUE_TO_SPECTRUM_MANAGEMENT = 103,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -1178,16 +1990,32 @@ enum ieee80211_eid {
 	WLAN_EID_TS_DELAY = 43,
 	WLAN_EID_TCLAS_PROCESSING = 44,
 	WLAN_EID_QOS_CAPA = 46,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* 802.11z */
+	WLAN_EID_LINK_ID = 101,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 802.11z */
+	WLAN_EID_LINK_ID = 101,
+>>>>>>> refs/remotes/origin/master
 	/* 802.11s */
 	WLAN_EID_MESH_CONFIG = 113,
 	WLAN_EID_MESH_ID = 114,
 	WLAN_EID_LINK_METRIC_REPORT = 115,
 	WLAN_EID_CONGESTION_NOTIFICATION = 116,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Note that the Peer Link IE has been replaced with the similar
 	 * Peer Management IE.  We will keep the former definition until mesh
 	 * code is changed to comply with latest 802.11s drafts.
 	 */
 	WLAN_EID_PEER_LINK = 55,  /* no longer in 802.11s drafts */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	WLAN_EID_PEER_MGMT = 117,
 	WLAN_EID_CHAN_SWITCH_PARAM = 118,
 	WLAN_EID_MESH_AWAKE_WINDOW = 119,
@@ -1221,12 +2049,20 @@ enum ieee80211_eid {
 	WLAN_EID_EXT_SUPP_RATES = 50,
 
 	WLAN_EID_HT_CAPABILITY = 45,
+<<<<<<< HEAD
 	WLAN_EID_HT_INFORMATION = 61,
 
 	WLAN_EID_RSN = 48,
 	WLAN_EID_MMIE = 76,
 	WLAN_EID_WPA = 221,
 	WLAN_EID_GENERIC = 221,
+=======
+	WLAN_EID_HT_OPERATION = 61,
+	WLAN_EID_SECONDARY_CHANNEL_OFFSET = 62,
+
+	WLAN_EID_RSN = 48,
+	WLAN_EID_MMIE = 76,
+>>>>>>> refs/remotes/origin/master
 	WLAN_EID_VENDOR_SPECIFIC = 221,
 	WLAN_EID_QOS_PARAMETER = 222,
 
@@ -1254,6 +2090,53 @@ enum ieee80211_eid {
 	WLAN_EID_DSE_REGISTERED_LOCATION = 58,
 	WLAN_EID_SUPPORTED_REGULATORY_CLASSES = 59,
 	WLAN_EID_EXT_CHANSWITCH_ANN = 60,
+<<<<<<< HEAD
+=======
+
+	WLAN_EID_VHT_CAPABILITY = 191,
+	WLAN_EID_VHT_OPERATION = 192,
+	WLAN_EID_OPMODE_NOTIF = 199,
+	WLAN_EID_WIDE_BW_CHANNEL_SWITCH = 194,
+	WLAN_EID_CHANNEL_SWITCH_WRAPPER = 196,
+	WLAN_EID_EXTENDED_BSS_LOAD = 193,
+	WLAN_EID_VHT_TX_POWER_ENVELOPE = 195,
+	WLAN_EID_AID = 197,
+	WLAN_EID_QUIET_CHANNEL = 198,
+
+	/* 802.11ad */
+	WLAN_EID_NON_TX_BSSID_CAP =  83,
+	WLAN_EID_WAKEUP_SCHEDULE = 143,
+	WLAN_EID_EXT_SCHEDULE = 144,
+	WLAN_EID_STA_AVAILABILITY = 145,
+	WLAN_EID_DMG_TSPEC = 146,
+	WLAN_EID_DMG_AT = 147,
+	WLAN_EID_DMG_CAP = 148,
+	WLAN_EID_DMG_OPERATION = 151,
+	WLAN_EID_DMG_BSS_PARAM_CHANGE = 152,
+	WLAN_EID_DMG_BEAM_REFINEMENT = 153,
+	WLAN_EID_CHANNEL_MEASURE_FEEDBACK = 154,
+	WLAN_EID_AWAKE_WINDOW = 157,
+	WLAN_EID_MULTI_BAND = 158,
+	WLAN_EID_ADDBA_EXT = 159,
+	WLAN_EID_NEXT_PCP_LIST = 160,
+	WLAN_EID_PCP_HANDOVER = 161,
+	WLAN_EID_DMG_LINK_MARGIN = 162,
+	WLAN_EID_SWITCHING_STREAM = 163,
+	WLAN_EID_SESSION_TRANSITION = 164,
+	WLAN_EID_DYN_TONE_PAIRING_REPORT = 165,
+	WLAN_EID_CLUSTER_REPORT = 166,
+	WLAN_EID_RELAY_CAP = 167,
+	WLAN_EID_RELAY_XFER_PARAM_SET = 168,
+	WLAN_EID_BEAM_LINK_MAINT = 169,
+	WLAN_EID_MULTIPLE_MAC_ADDR = 170,
+	WLAN_EID_U_PID = 171,
+	WLAN_EID_DMG_LINK_ADAPT_ACK = 172,
+	WLAN_EID_QUIET_PERIOD_REQ = 175,
+	WLAN_EID_QUIET_PERIOD_RESP = 177,
+	WLAN_EID_EPAC_POLICY = 182,
+	WLAN_EID_CLISTER_TIME_OFF = 183,
+	WLAN_EID_ANTENNA_SECTOR_ID_PATTERN = 190,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Action category code */
@@ -1266,13 +2149,32 @@ enum ieee80211_category {
 	WLAN_CATEGORY_HT = 7,
 	WLAN_CATEGORY_SA_QUERY = 8,
 	WLAN_CATEGORY_PROTECTED_DUAL_OF_ACTION = 9,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	WLAN_CATEGORY_TDLS = 12,
+>>>>>>> refs/remotes/origin/cm-10.0
 	WLAN_CATEGORY_MESH_ACTION = 13,
 	WLAN_CATEGORY_MULTIHOP_ACTION = 14,
 	WLAN_CATEGORY_SELF_PROTECTED = 15,
 	WLAN_CATEGORY_WMM = 17,
+<<<<<<< HEAD
 	/* TODO: remove MESH_PATH_SEL after mesh is updated
 	 * to current 802.11s draft  */
 	WLAN_CATEGORY_MESH_PATH_SEL = 32,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WLAN_CATEGORY_TDLS = 12,
+	WLAN_CATEGORY_MESH_ACTION = 13,
+	WLAN_CATEGORY_MULTIHOP_ACTION = 14,
+	WLAN_CATEGORY_SELF_PROTECTED = 15,
+	WLAN_CATEGORY_DMG = 16,
+	WLAN_CATEGORY_WMM = 17,
+	WLAN_CATEGORY_FST = 18,
+	WLAN_CATEGORY_UNPROT_DMG = 20,
+	WLAN_CATEGORY_VHT = 21,
+>>>>>>> refs/remotes/origin/master
 	WLAN_CATEGORY_VENDOR_SPECIFIC_PROTECTED = 126,
 	WLAN_CATEGORY_VENDOR_SPECIFIC = 127,
 };
@@ -1298,6 +2200,47 @@ enum ieee80211_ht_actioncode {
 	WLAN_HT_ACTION_ASEL_IDX_FEEDBACK = 7,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+/* VHT action codes */
+enum ieee80211_vht_actioncode {
+	WLAN_VHT_ACTION_COMPRESSED_BF = 0,
+	WLAN_VHT_ACTION_GROUPID_MGMT = 1,
+	WLAN_VHT_ACTION_OPMODE_NOTIF = 2,
+};
+
+>>>>>>> refs/remotes/origin/master
+/* Self Protected Action codes */
+enum ieee80211_self_protected_actioncode {
+	WLAN_SP_RESERVED = 0,
+	WLAN_SP_MESH_PEERING_OPEN = 1,
+	WLAN_SP_MESH_PEERING_CONFIRM = 2,
+	WLAN_SP_MESH_PEERING_CLOSE = 3,
+	WLAN_SP_MGK_INFORM = 4,
+	WLAN_SP_MGK_ACK = 5,
+};
+
+/* Mesh action codes */
+enum ieee80211_mesh_actioncode {
+	WLAN_MESH_ACTION_LINK_METRIC_REPORT,
+	WLAN_MESH_ACTION_HWMP_PATH_SELECTION,
+	WLAN_MESH_ACTION_GATE_ANNOUNCEMENT,
+	WLAN_MESH_ACTION_CONGESTION_CONTROL_NOTIFICATION,
+	WLAN_MESH_ACTION_MCCA_SETUP_REQUEST,
+	WLAN_MESH_ACTION_MCCA_SETUP_REPLY,
+	WLAN_MESH_ACTION_MCCA_ADVERTISEMENT_REQUEST,
+	WLAN_MESH_ACTION_MCCA_ADVERTISEMENT,
+	WLAN_MESH_ACTION_MCCA_TEARDOWN,
+	WLAN_MESH_ACTION_TBTT_ADJUSTMENT_REQUEST,
+	WLAN_MESH_ACTION_TBTT_ADJUSTMENT_RESPONSE,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Security key length */
 enum ieee80211_key_len {
 	WLAN_KEY_LEN_WEP40 = 5,
@@ -1305,18 +2248,107 @@ enum ieee80211_key_len {
 	WLAN_KEY_LEN_CCMP = 16,
 	WLAN_KEY_LEN_TKIP = 32,
 	WLAN_KEY_LEN_AES_CMAC = 16,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	WLAN_KEY_LEN_WAPI_SMS4 = 32,
 };
 
+<<<<<<< HEAD
+=======
+/* Public action codes */
+enum ieee80211_pub_actioncode {
+=======
+=======
+	WLAN_KEY_LEN_WAPI_SMS4 = 32,
+>>>>>>> refs/remotes/origin/cm-11.0
+};
+
+#define IEEE80211_WEP_IV_LEN		4
+#define IEEE80211_WEP_ICV_LEN		4
+#define IEEE80211_CCMP_HDR_LEN		8
+#define IEEE80211_CCMP_MIC_LEN		8
+#define IEEE80211_CCMP_PN_LEN		6
+#define IEEE80211_TKIP_IV_LEN		8
+#define IEEE80211_TKIP_ICV_LEN		4
+#define IEEE80211_CMAC_PN_LEN		6
+
+/* Public action codes */
+enum ieee80211_pub_actioncode {
+	WLAN_PUB_ACTION_EXT_CHANSW_ANN = 4,
+>>>>>>> refs/remotes/origin/master
+	WLAN_PUB_ACTION_TDLS_DISCOVER_RES = 14,
+};
+
+/* TDLS action codes */
+enum ieee80211_tdls_actioncode {
+	WLAN_TDLS_SETUP_REQUEST = 0,
+	WLAN_TDLS_SETUP_RESPONSE = 1,
+	WLAN_TDLS_SETUP_CONFIRM = 2,
+	WLAN_TDLS_TEARDOWN = 3,
+	WLAN_TDLS_PEER_TRAFFIC_INDICATION = 4,
+	WLAN_TDLS_CHANNEL_SWITCH_REQUEST = 5,
+	WLAN_TDLS_CHANNEL_SWITCH_RESPONSE = 6,
+	WLAN_TDLS_PEER_PSM_REQUEST = 7,
+	WLAN_TDLS_PEER_PSM_RESPONSE = 8,
+	WLAN_TDLS_PEER_TRAFFIC_RESPONSE = 9,
+	WLAN_TDLS_DISCOVERY_REQUEST = 10,
+};
+
+<<<<<<< HEAD
+=======
+/* Interworking capabilities are set in 7th bit of 4th byte of the
+ * @WLAN_EID_EXT_CAPABILITY information element
+ */
+#define WLAN_EXT_CAPA4_INTERWORKING_ENABLED	BIT(7)
+
+>>>>>>> refs/remotes/origin/master
+/*
+ * TDLS capabililites to be enabled in the 5th byte of the
+ * @WLAN_EID_EXT_CAPABILITY information element
+ */
+#define WLAN_EXT_CAPA5_TDLS_ENABLED	BIT(5)
+#define WLAN_EXT_CAPA5_TDLS_PROHIBITED	BIT(6)
+
+<<<<<<< HEAD
+/* TDLS specific payload type in the LLC/SNAP header */
+#define WLAN_TDLS_SNAP_RFTYPE	0x2
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WLAN_EXT_CAPA8_OPMODE_NOTIF	BIT(6)
+
+/* TDLS specific payload type in the LLC/SNAP header */
+#define WLAN_TDLS_SNAP_RFTYPE	0x2
+
+/**
+ * enum - mesh synchronization method identifier
+ *
+ * @IEEE80211_SYNC_METHOD_NEIGHBOR_OFFSET: the default synchronization method
+ * @IEEE80211_SYNC_METHOD_VENDOR: a vendor specific synchronization method
+ *	that will be specified in a vendor specific information element
+ */
+enum {
+	IEEE80211_SYNC_METHOD_NEIGHBOR_OFFSET = 1,
+	IEEE80211_SYNC_METHOD_VENDOR = 255,
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * enum - mesh path selection protocol identifier
  *
  * @IEEE80211_PATH_PROTOCOL_HWMP: the default path selection protocol
  * @IEEE80211_PATH_PROTOCOL_VENDOR: a vendor specific protocol that will
+<<<<<<< HEAD
  * be specified in a vendor specific information element
  */
 enum {
 	IEEE80211_PATH_PROTOCOL_HWMP = 0,
+=======
+ *	be specified in a vendor specific information element
+ */
+enum {
+	IEEE80211_PATH_PROTOCOL_HWMP = 1,
+>>>>>>> refs/remotes/origin/master
 	IEEE80211_PATH_PROTOCOL_VENDOR = 255,
 };
 
@@ -1325,6 +2357,7 @@ enum {
  *
  * @IEEE80211_PATH_METRIC_AIRTIME: the default path selection metric
  * @IEEE80211_PATH_METRIC_VENDOR: a vendor specific metric that will be
+<<<<<<< HEAD
  * specified in a vendor specific information element
  */
 enum {
@@ -1332,6 +2365,37 @@ enum {
 	IEEE80211_PATH_METRIC_VENDOR = 255,
 };
 
+=======
+ *	specified in a vendor specific information element
+ */
+enum {
+	IEEE80211_PATH_METRIC_AIRTIME = 1,
+	IEEE80211_PATH_METRIC_VENDOR = 255,
+};
+
+/**
+ * enum ieee80211_root_mode_identifier - root mesh STA mode identifier
+ *
+ * These attribute are used by dot11MeshHWMPRootMode to set root mesh STA mode
+ *
+ * @IEEE80211_ROOTMODE_NO_ROOT: the mesh STA is not a root mesh STA (default)
+ * @IEEE80211_ROOTMODE_ROOT: the mesh STA is a root mesh STA if greater than
+ *	this value
+ * @IEEE80211_PROACTIVE_PREQ_NO_PREP: the mesh STA is a root mesh STA supports
+ *	the proactive PREQ with proactive PREP subfield set to 0
+ * @IEEE80211_PROACTIVE_PREQ_WITH_PREP: the mesh STA is a root mesh STA
+ *	supports the proactive PREQ with proactive PREP subfield set to 1
+ * @IEEE80211_PROACTIVE_RANN: the mesh STA is a root mesh STA supports
+ *	the proactive RANN
+ */
+enum ieee80211_root_mode_identifier {
+	IEEE80211_ROOTMODE_NO_ROOT = 0,
+	IEEE80211_ROOTMODE_ROOT = 1,
+	IEEE80211_PROACTIVE_PREQ_NO_PREP = 2,
+	IEEE80211_PROACTIVE_PREQ_WITH_PREP = 3,
+	IEEE80211_PROACTIVE_RANN = 4,
+};
+>>>>>>> refs/remotes/origin/master
 
 /*
  * IEEE 802.11-2007 7.3.2.9 Country information element
@@ -1389,14 +2453,24 @@ struct ieee80211_country_ie_triplet {
 			u8 first_channel;
 			u8 num_channels;
 			s8 max_power;
+<<<<<<< HEAD
 		} __attribute__ ((packed)) chans;
+=======
+		} __packed chans;
+>>>>>>> refs/remotes/origin/master
 		struct {
 			u8 reg_extension_id;
 			u8 reg_class;
 			u8 coverage_class;
+<<<<<<< HEAD
 		} __attribute__ ((packed)) ext;
 	};
 } __attribute__ ((packed));
+=======
+		} __packed ext;
+	};
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 enum ieee80211_timeout_interval_type {
 	WLAN_TIMEOUT_REASSOC_DEADLINE = 1 /* 802.11r */,
@@ -1404,6 +2478,19 @@ enum ieee80211_timeout_interval_type {
 	WLAN_TIMEOUT_ASSOC_COMEBACK = 3 /* 802.11w */,
 };
 
+<<<<<<< HEAD
+=======
+/**
+ * struct ieee80211_timeout_interval_ie - Timeout Interval element
+ * @type: type, see &enum ieee80211_timeout_interval_type
+ * @value: timeout interval value
+ */
+struct ieee80211_timeout_interval_ie {
+	u8 type;
+	__le32 value;
+} __packed;
+
+>>>>>>> refs/remotes/origin/master
 /* BACK action code */
 enum ieee80211_back_actioncode {
 	WLAN_ACTION_ADDBA_REQ = 0,
@@ -1424,9 +2511,15 @@ enum ieee80211_sa_query_action {
 };
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* A-MSDU 802.11n */
 #define IEEE80211_QOS_CONTROL_A_MSDU_PRESENT 0x0080
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* cipher suite selectors */
 #define WLAN_CIPHER_SUITE_USE_GROUP	0x000FAC00
 #define WLAN_CIPHER_SUITE_WEP40		0x000FAC01
@@ -1435,18 +2528,95 @@ enum ieee80211_sa_query_action {
 #define WLAN_CIPHER_SUITE_CCMP		0x000FAC04
 #define WLAN_CIPHER_SUITE_WEP104	0x000FAC05
 #define WLAN_CIPHER_SUITE_AES_CMAC	0x000FAC06
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define WLAN_CIPHER_SUITE_SMS4		0x00147201
+
+<<<<<<< HEAD
+=======
+#define WLAN_CIPHER_SUITE_SMS4		0x00147201
+
+>>>>>>> refs/remotes/origin/cm-10.0
+/* AKM suite selectors */
+#define WLAN_AKM_SUITE_8021X		0x000FAC01
+#define WLAN_AKM_SUITE_PSK		0x000FAC02
+#define WLAN_AKM_SUITE_SAE			0x000FAC08
+=======
+#define WLAN_CIPHER_SUITE_GCMP		0x000FAC08
+
 #define WLAN_CIPHER_SUITE_SMS4		0x00147201
 
 /* AKM suite selectors */
 #define WLAN_AKM_SUITE_8021X		0x000FAC01
 #define WLAN_AKM_SUITE_PSK		0x000FAC02
-#define WLAN_AKM_SUITE_SAE			0x000FAC08
+#define WLAN_AKM_SUITE_8021X_SHA256	0x000FAC05
+#define WLAN_AKM_SUITE_PSK_SHA256	0x000FAC06
+#define WLAN_AKM_SUITE_TDLS		0x000FAC07
+#define WLAN_AKM_SUITE_SAE		0x000FAC08
+>>>>>>> refs/remotes/origin/master
 #define WLAN_AKM_SUITE_FT_OVER_SAE	0x000FAC09
 
 #define WLAN_MAX_KEY_LEN		32
 
 #define WLAN_PMKID_LEN			16
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define WLAN_OUI_WFA			0x506f9a
+#define WLAN_OUI_TYPE_WFA_P2P		9
+=======
+#define WLAN_OUI_WFA			0x506f9a
+#define WLAN_OUI_TYPE_WFA_P2P		9
+#define WLAN_OUI_MICROSOFT		0x0050f2
+#define WLAN_OUI_TYPE_MICROSOFT_WPA	1
+#define WLAN_OUI_TYPE_MICROSOFT_WMM	2
+#define WLAN_OUI_TYPE_MICROSOFT_WPS	4
+>>>>>>> refs/remotes/origin/master
+
+/*
+ * WMM/802.11e Tspec Element
+ */
+#define IEEE80211_WMM_IE_TSPEC_TID_MASK		0x0F
+#define IEEE80211_WMM_IE_TSPEC_TID_SHIFT	1
+
+enum ieee80211_tspec_status_code {
+	IEEE80211_TSPEC_STATUS_ADMISS_ACCEPTED = 0,
+	IEEE80211_TSPEC_STATUS_ADDTS_INVAL_PARAMS = 0x1,
+};
+
+struct ieee80211_tspec_ie {
+	u8 element_id;
+	u8 len;
+	u8 oui[3];
+	u8 oui_type;
+	u8 oui_subtype;
+	u8 version;
+	__le16 tsinfo;
+	u8 tsinfo_resvd;
+	__le16 nominal_msdu;
+	__le16 max_msdu;
+	__le32 min_service_int;
+	__le32 max_service_int;
+	__le32 inactivity_int;
+	__le32 suspension_int;
+	__le32 service_start_time;
+	__le32 min_data_rate;
+	__le32 mean_data_rate;
+	__le32 peak_data_rate;
+	__le32 max_burst_size;
+	__le32 delay_bound;
+	__le32 min_phy_rate;
+	__le16 sba;
+	__le16 medium_time;
+} __packed;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ieee80211_get_qos_ctl - get pointer to qos control bytes
  * @hdr: the frame
@@ -1534,6 +2704,30 @@ static inline bool ieee80211_is_robust_mgmt_frame(struct ieee80211_hdr *hdr)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * ieee80211_is_public_action - check if frame is a public action frame
+ * @hdr: the frame
+ * @len: length of the frame
+ */
+static inline bool ieee80211_is_public_action(struct ieee80211_hdr *hdr,
+					      size_t len)
+{
+	struct ieee80211_mgmt *mgmt = (void *)hdr;
+
+	if (len < IEEE80211_MIN_ACTION_SIZE)
+		return false;
+	if (!ieee80211_is_action(hdr->frame_control))
+		return false;
+	return mgmt->u.action.category == WLAN_CATEGORY_PUBLIC;
+}
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
  * ieee80211_fhss_chan_to_freq - get channel frequency
  * @channel: the FHSS channel
  *
@@ -1564,6 +2758,8 @@ static inline int ieee80211_freq_to_fhss_chan(int freq)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * ieee80211_dsss_chan_to_freq - get channel center frequency
  * @channel: the DSSS channel
  *
@@ -1599,6 +2795,7 @@ static inline int ieee80211_freq_to_dsss_chan(int freq)
 		return -1;
 }
 
+<<<<<<< HEAD
 /* Convert IEEE802.11 HR DSSS channel to frequency (MHz) and back
  * Ref IEEE 802.11-2007 section 18.4.6.2
  *
@@ -1649,6 +2846,8 @@ static inline int ieee80211_freq_to_ofdm_chan(int s_freq, int freq)
 		return -1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ieee80211_tu_to_usec - convert time units (TU) to microseconds
  * @tu: the TUs
@@ -1664,7 +2863,11 @@ static inline unsigned long ieee80211_tu_to_usec(unsigned long tu)
  * @tim_len: length of the TIM IE
  * @aid: the AID to look for
  */
+<<<<<<< HEAD
 static inline bool ieee80211_check_tim(struct ieee80211_tim_ie *tim,
+=======
+static inline bool ieee80211_check_tim(const struct ieee80211_tim_ie *tim,
+>>>>>>> refs/remotes/origin/master
 				       u8 tim_len, u16 aid)
 {
 	u8 mask;
@@ -1688,4 +2891,11 @@ static inline bool ieee80211_check_tim(struct ieee80211_tim_ie *tim,
 	return !!(tim->virtual_map[index] & mask);
 }
 
+<<<<<<< HEAD
+=======
+/* convert time units */
+#define TU_TO_JIFFIES(x)	(usecs_to_jiffies((x) * 1024))
+#define TU_TO_EXP_TIME(x)	(jiffies + TU_TO_JIFFIES(x))
+
+>>>>>>> refs/remotes/origin/master
 #endif /* LINUX_IEEE80211_H */

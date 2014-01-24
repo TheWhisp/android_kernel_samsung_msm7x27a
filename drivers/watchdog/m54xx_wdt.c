@@ -16,6 +16,16 @@
  * warranty of any kind, whether express or implied.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -32,7 +42,15 @@
 #include <asm/m54xxsim.h>
 #include <asm/m54xxgpt.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/master
 static unsigned int heartbeat = 30;	/* (secs) Default is 0.5 minute */
 static unsigned long wdt_status;
 
@@ -44,17 +62,29 @@ static void wdt_enable(void)
 	unsigned int gms0;
 
 	/* preserve GPIO usage, if any */
+<<<<<<< HEAD
 	gms0 = __raw_readl(MCF_MBAR + MCF_GPT_GMS0);
+=======
+	gms0 = __raw_readl(MCF_GPT_GMS0);
+>>>>>>> refs/remotes/origin/master
 	if (gms0 & MCF_GPT_GMS_TMS_GPIO)
 		gms0 &= (MCF_GPT_GMS_TMS_GPIO | MCF_GPT_GMS_GPIO_MASK
 							| MCF_GPT_GMS_OD);
 	else
 		gms0 = MCF_GPT_GMS_TMS_GPIO | MCF_GPT_GMS_OD;
+<<<<<<< HEAD
 	__raw_writel(gms0, MCF_MBAR + MCF_GPT_GMS0);
 	__raw_writel(MCF_GPT_GCIR_PRE(heartbeat*(MCF_BUSCLK/0xffff)) |
 			MCF_GPT_GCIR_CNT(0xffff), MCF_MBAR + MCF_GPT_GCIR0);
 	gms0 |= MCF_GPT_GMS_OCPW(0xA5) | MCF_GPT_GMS_WDEN | MCF_GPT_GMS_CE;
 	__raw_writel(gms0, MCF_MBAR + MCF_GPT_GMS0);
+=======
+	__raw_writel(gms0, MCF_GPT_GMS0);
+	__raw_writel(MCF_GPT_GCIR_PRE(heartbeat*(MCF_BUSCLK/0xffff)) |
+			MCF_GPT_GCIR_CNT(0xffff), MCF_GPT_GCIR0);
+	gms0 |= MCF_GPT_GMS_OCPW(0xA5) | MCF_GPT_GMS_WDEN | MCF_GPT_GMS_CE;
+	__raw_writel(gms0, MCF_GPT_GMS0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wdt_disable(void)
@@ -62,18 +92,30 @@ static void wdt_disable(void)
 	unsigned int gms0;
 
 	/* disable watchdog */
+<<<<<<< HEAD
 	gms0 = __raw_readl(MCF_MBAR + MCF_GPT_GMS0);
 	gms0 &= ~(MCF_GPT_GMS_WDEN | MCF_GPT_GMS_CE);
 	__raw_writel(gms0, MCF_MBAR + MCF_GPT_GMS0);
+=======
+	gms0 = __raw_readl(MCF_GPT_GMS0);
+	gms0 &= ~(MCF_GPT_GMS_WDEN | MCF_GPT_GMS_CE);
+	__raw_writel(gms0, MCF_GPT_GMS0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wdt_keepalive(void)
 {
 	unsigned int gms0;
 
+<<<<<<< HEAD
 	gms0 = __raw_readl(MCF_MBAR + MCF_GPT_GMS0);
 	gms0 |= MCF_GPT_GMS_OCPW(0xA5);
 	__raw_writel(gms0, MCF_MBAR + MCF_GPT_GMS0);
+=======
+	gms0 = __raw_readl(MCF_GPT_GMS0);
+	gms0 |= MCF_GPT_GMS_OCPW(0xA5);
+	__raw_writel(gms0, MCF_GPT_GMS0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int m54xx_wdt_open(struct inode *inode, struct file *file)
@@ -166,8 +208,16 @@ static int m54xx_wdt_release(struct inode *inode, struct file *file)
 	if (test_bit(WDT_OK_TO_CLOSE, &wdt_status))
 		wdt_disable();
 	else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT "WATCHDOG: Device closed unexpectedly - "
 					"timer will not stop\n");
+=======
+		pr_crit("Device closed unexpectedly - timer will not stop\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Device closed unexpectedly - timer will not stop\n");
+>>>>>>> refs/remotes/origin/master
 		wdt_keepalive();
 	}
 	clear_bit(WDT_IN_USE, &wdt_status);
@@ -194,13 +244,27 @@ static struct miscdevice m54xx_wdt_miscdev = {
 
 static int __init m54xx_wdt_init(void)
 {
+<<<<<<< HEAD
 	if (!request_mem_region(MCF_MBAR + MCF_GPT_GCIR0, 4,
 						"Coldfire M54xx Watchdog")) {
+<<<<<<< HEAD
 		printk(KERN_WARNING
 				"Coldfire M54xx Watchdog : I/O region busy\n");
 		return -EBUSY;
 	}
 	printk(KERN_INFO "ColdFire watchdog driver is loaded.\n");
+=======
+=======
+	if (!request_mem_region(MCF_GPT_GCIR0, 4, "Coldfire M54xx Watchdog")) {
+>>>>>>> refs/remotes/origin/master
+		pr_warn("I/O region busy\n");
+		return -EBUSY;
+	}
+	pr_info("driver is loaded\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return misc_register(&m54xx_wdt_miscdev);
 }
@@ -208,7 +272,11 @@ static int __init m54xx_wdt_init(void)
 static void __exit m54xx_wdt_exit(void)
 {
 	misc_deregister(&m54xx_wdt_miscdev);
+<<<<<<< HEAD
 	release_mem_region(MCF_MBAR + MCF_GPT_GCIR0, 4);
+=======
+	release_mem_region(MCF_GPT_GCIR0, 4);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(m54xx_wdt_init);
@@ -220,8 +288,19 @@ MODULE_DESCRIPTION("Coldfire M54xx Watchdog");
 module_param(heartbeat, int, 0);
 MODULE_PARM_DESC(heartbeat, "Watchdog heartbeat in seconds (default 30s)");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started");
 
 MODULE_LICENSE("GPL");
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+module_param(nowayout, bool, 0);
+MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started");
+
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

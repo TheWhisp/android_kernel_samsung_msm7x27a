@@ -57,7 +57,11 @@ extern void smp_local_timer_interrupt(void);
 
 static unsigned long latch;
 
+<<<<<<< HEAD
 u32 arch_gettimeoffset(void)
+=======
+static u32 m32r_gettimeoffset(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long  elapsed_time = 0;  /* [us] */
 
@@ -165,6 +169,11 @@ void read_persistent_clock(struct timespec *ts)
 
 void __init time_init(void)
 {
+<<<<<<< HEAD
+=======
+	arch_gettimeoffset = m32r_gettimeoffset;
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_CHIP_M32102) || defined(CONFIG_CHIP_XNUX2) \
 	|| defined(CONFIG_CHIP_VDEC2) || defined(CONFIG_CHIP_M32700) \
 	|| defined(CONFIG_CHIP_OPSP) || defined(CONFIG_CHIP_M32104)

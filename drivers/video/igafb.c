@@ -360,9 +360,14 @@ static int __init iga_init(struct fb_info *info, struct iga_par *par)
 	if (register_framebuffer(info) < 0)
 		return 0;
 
+<<<<<<< HEAD
 	printk("fb%d: %s frame buffer device at 0x%08lx [%dMB VRAM]\n",
 	       info->node, info->fix.id, 
 	       par->frame_buffer_phys, info->fix.smem_len >> 20);
+=======
+	fb_info(info, "%s frame buffer device at 0x%08lx [%dMB VRAM]\n",
+		info->fix.id, par->frame_buffer_phys, info->fix.smem_len >> 20);
+>>>>>>> refs/remotes/origin/master
 
 	iga_blank_border(par); 
 	return 1;
@@ -428,7 +433,15 @@ static int __init igafb_init(void)
 	 *
 	 * IGS2000 has its I/O memory mapped and we want
 	 * to generate memory cycles on PCI, e.g. do ioremap(),
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * then readb/writeb() as in Documentation/IO-mapping.txt.
+=======
+	 * then readb/writeb() as in Documentation/io-mapping.txt.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * then readb/writeb() as in Documentation/io-mapping.txt.
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * IGS1682 is more traditional, it responds to PCI I/O
 	 * cycles, so we want to access it with inb()/outb().
@@ -571,7 +584,11 @@ static int __init igafb_setup(char *options)
 
 module_init(igafb_init);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 static struct pci_device_id igafb_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id igafb_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VENDOR_ID_INTERG, PCI_DEVICE_ID_INTERG_1682,
 	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{ }

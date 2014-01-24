@@ -667,12 +667,15 @@ static const struct mmc_host_ops cb710_mmc_host = {
 static int cb710_mmc_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct cb710_slot *slot = cb710_pdev_to_slot(pdev);
+<<<<<<< HEAD
 	struct mmc_host *mmc = cb710_slot_to_mmc(slot);
 	int err;
 
 	err = mmc_suspend_host(mmc);
 	if (err)
 		return err;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cb710_mmc_enable_irq(slot, 0, ~0);
 	return 0;
@@ -681,16 +684,26 @@ static int cb710_mmc_suspend(struct platform_device *pdev, pm_message_t state)
 static int cb710_mmc_resume(struct platform_device *pdev)
 {
 	struct cb710_slot *slot = cb710_pdev_to_slot(pdev);
+<<<<<<< HEAD
 	struct mmc_host *mmc = cb710_slot_to_mmc(slot);
 
 	cb710_mmc_enable_irq(slot, 0, ~0);
 
 	return mmc_resume_host(mmc);
+=======
+
+	cb710_mmc_enable_irq(slot, 0, ~0);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
 static int __devinit cb710_mmc_init(struct platform_device *pdev)
+=======
+static int cb710_mmc_init(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cb710_slot *slot = cb710_pdev_to_slot(pdev);
 	struct cb710_chip *chip = cb710_slot_to_chip(slot);
@@ -703,7 +716,11 @@ static int __devinit cb710_mmc_init(struct platform_device *pdev)
 	if (!mmc)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, mmc);
+=======
+	platform_set_drvdata(pdev, mmc);
+>>>>>>> refs/remotes/origin/master
 
 	/* harmless (maybe) magic */
 	pci_read_config_dword(chip->pdev, 0x48, &val);
@@ -746,7 +763,11 @@ err_free_mmc:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit cb710_mmc_exit(struct platform_device *pdev)
+=======
+static int cb710_mmc_exit(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cb710_slot *slot = cb710_pdev_to_slot(pdev);
 	struct mmc_host *mmc = cb710_slot_to_mmc(slot);
@@ -773,13 +794,19 @@ static int __devexit cb710_mmc_exit(struct platform_device *pdev)
 static struct platform_driver cb710_mmc_driver = {
 	.driver.name = "cb710-mmc",
 	.probe = cb710_mmc_init,
+<<<<<<< HEAD
 	.remove = __devexit_p(cb710_mmc_exit),
+=======
+	.remove = cb710_mmc_exit,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend = cb710_mmc_suspend,
 	.resume = cb710_mmc_resume,
 #endif
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init cb710_mmc_init_module(void)
 {
 	return platform_driver_register(&cb710_mmc_driver);
@@ -792,6 +819,12 @@ static void __exit cb710_mmc_cleanup_module(void)
 
 module_init(cb710_mmc_init_module);
 module_exit(cb710_mmc_cleanup_module);
+=======
+module_platform_driver(cb710_mmc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(cb710_mmc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michał Mirosław <mirq-linux@rere.qmqm.pl>");
 MODULE_DESCRIPTION("ENE CB710 memory card reader driver - MMC/SD part");

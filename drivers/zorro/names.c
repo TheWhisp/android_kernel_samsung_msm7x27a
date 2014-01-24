@@ -15,8 +15,11 @@
 #include <linux/zorro.h>
 
 
+<<<<<<< HEAD
 #ifdef CONFIG_ZORRO_NAMES
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct zorro_prod_info {
 	__u16 prod;
 	unsigned short seen;
@@ -69,7 +72,10 @@ void __init zorro_name_device(struct zorro_dev *dev)
 	} while (--i);
 
 	/* Couldn't find either the manufacturer nor the product */
+<<<<<<< HEAD
 	sprintf(name, "Zorro device %08x", dev->id);
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 
 	match_manuf: {
@@ -98,6 +104,7 @@ void __init zorro_name_device(struct zorro_dev *dev)
 		}
 	}
 }
+<<<<<<< HEAD
 
 #else
 
@@ -106,3 +113,5 @@ void __init zorro_name_device(struct zorro_dev *dev)
 }
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

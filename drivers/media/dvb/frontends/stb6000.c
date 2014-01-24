@@ -75,9 +75,15 @@ static int stb6000_sleep(struct dvb_frontend *fe)
 	return (ret == 1) ? 0 : ret;
 }
 
+<<<<<<< HEAD
 static int stb6000_set_params(struct dvb_frontend *fe,
 				struct dvb_frontend_parameters *params)
 {
+=======
+static int stb6000_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct stb6000_priv *priv = fe->tuner_priv;
 	unsigned int n, m;
 	int ret;
@@ -93,8 +99,13 @@ static int stb6000_set_params(struct dvb_frontend *fe,
 
 	dprintk("%s:\n", __func__);
 
+<<<<<<< HEAD
 	freq_mhz = params->frequency / 1000;
 	bandwidth = params->u.qpsk.symbol_rate / 1000000;
+=======
+	freq_mhz = p->frequency / 1000;
+	bandwidth = p->symbol_rate / 1000000;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (bandwidth > 31)
 		bandwidth = 31;

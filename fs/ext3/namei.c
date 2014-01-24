@@ -24,6 +24,8 @@
  *	Theodore Ts'o, 2002
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/pagemap.h>
 #include <linux/jbd.h>
@@ -37,6 +39,14 @@
 #include <linux/buffer_head.h>
 #include <linux/bio.h>
 
+=======
+#include <linux/quotaops.h>
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/quotaops.h>
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/master
 #include "namei.h"
 #include "xattr.h"
 #include "acl.h"
@@ -47,7 +57,10 @@
 #define NAMEI_RA_CHUNKS  2
 #define NAMEI_RA_BLOCKS  4
 #define NAMEI_RA_SIZE        (NAMEI_RA_CHUNKS * NAMEI_RA_BLOCKS)
+<<<<<<< HEAD
 #define NAMEI_RA_INDEX(c,b)  (((c) * NAMEI_RA_BLOCKS) + (b))
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct buffer_head *ext3_append(handle_t *handle,
 					struct inode *inode,
@@ -57,8 +70,12 @@ static struct buffer_head *ext3_append(handle_t *handle,
 
 	*block = inode->i_size >> inode->i_sb->s_blocksize_bits;
 
+<<<<<<< HEAD
 	bh = ext3_bread(handle, inode, *block, 1, err);
 	if (bh) {
+=======
+	if ((bh = ext3_dir_bread(handle, inode, *block, 1, err))) {
+>>>>>>> refs/remotes/origin/master
 		inode->i_size += inode->i_sb->s_blocksize;
 		EXT3_I(inode)->i_disksize = inode->i_size;
 		*err = ext3_journal_get_write_access(handle, bh);
@@ -287,7 +304,15 @@ static struct stats dx_show_leaf(struct dx_hash_info *hinfo, struct ext3_dir_ent
 				while (len--) printk("%c", *name++);
 				ext3fs_dirhash(de->name, de->name_len, &h);
 				printk(":%x.%u ", h.hash,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				       ((char *) de - base));
+=======
+				       (unsigned) ((char *) de - base));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       (unsigned) ((char *) de - base));
+>>>>>>> refs/remotes/origin/master
 			}
 			space += EXT3_DIR_REC_LEN(de->name_len);
 			names++;
@@ -350,8 +375,15 @@ dx_probe(struct qstr *entry, struct inode *dir,
 	u32 hash;
 
 	frame->bh = NULL;
+<<<<<<< HEAD
 	if (!(bh = ext3_bread (NULL,dir, 0, 0, err)))
 		goto fail;
+=======
+	if (!(bh = ext3_dir_bread(NULL, dir, 0, 0, err))) {
+		*err = ERR_BAD_DX_DIR;
+		goto fail;
+	}
+>>>>>>> refs/remotes/origin/master
 	root = (struct dx_root *) bh->b_data;
 	if (root->info.hash_version != DX_HASH_TEA &&
 	    root->info.hash_version != DX_HASH_HALF_MD4 &&
@@ -447,8 +479,15 @@ dx_probe(struct qstr *entry, struct inode *dir,
 		frame->entries = entries;
 		frame->at = at;
 		if (!indirect--) return frame;
+<<<<<<< HEAD
 		if (!(bh = ext3_bread (NULL,dir, dx_get_block(at), 0, err)))
 			goto fail2;
+=======
+		if (!(bh = ext3_dir_bread(NULL, dir, dx_get_block(at), 0, err))) {
+			*err = ERR_BAD_DX_DIR;
+			goto fail2;
+		}
+>>>>>>> refs/remotes/origin/master
 		at = entries = ((struct dx_node *) bh->b_data)->entries;
 		if (dx_get_limit(entries) != dx_node_limit (dir)) {
 			ext3_warning(dir->i_sb, __func__,
@@ -546,8 +585,13 @@ static int ext3_htree_next_block(struct inode *dir, __u32 hash,
 	 * block so no check is necessary
 	 */
 	while (num_frames--) {
+<<<<<<< HEAD
 		if (!(bh = ext3_bread(NULL, dir, dx_get_block(p->at),
 				      0, &err)))
+=======
+		if (!(bh = ext3_dir_bread(NULL, dir, dx_get_block(p->at),
+					  0, &err)))
+>>>>>>> refs/remotes/origin/master
 			return err; /* Failure */
 		p++;
 		brelse (p->bh);
@@ -570,10 +614,18 @@ static int htree_dirblock_to_tree(struct file *dir_file,
 {
 	struct buffer_head *bh;
 	struct ext3_dir_entry_2 *de, *top;
+<<<<<<< HEAD
 	int err, count = 0;
 
 	dxtrace(printk("In htree dirblock_to_tree: block %d\n", block));
 	if (!(bh = ext3_bread (NULL, dir, block, 0, &err)))
+=======
+	int err = 0, count = 0;
+
+	dxtrace(printk("In htree dirblock_to_tree: block %d\n", block));
+
+	if (!(bh = ext3_dir_bread(NULL, dir, block, 0, &err)))
+>>>>>>> refs/remotes/origin/master
 		return err;
 
 	de = (struct ext3_dir_entry_2 *) bh->b_data;
@@ -628,7 +680,11 @@ int ext3_htree_fill_tree(struct file *dir_file, __u32 start_hash,
 
 	dxtrace(printk("In htree_fill_tree, start hash: %x:%x\n", start_hash,
 		       start_minor_hash));
+<<<<<<< HEAD
 	dir = dir_file->f_path.dentry->d_inode;
+=======
+	dir = file_inode(dir_file);
+>>>>>>> refs/remotes/origin/master
 	if (!(EXT3_I(dir)->i_flags & EXT3_INDEX_FL)) {
 		hinfo.hash_version = EXT3_SB(dir->i_sb)->s_def_hash_version;
 		if (hinfo.hash_version <= DX_HASH_TEA)
@@ -642,7 +698,11 @@ int ext3_htree_fill_tree(struct file *dir_file, __u32 start_hash,
 	}
 	hinfo.hash = start_hash;
 	hinfo.minor_hash = 0;
+<<<<<<< HEAD
 	frame = dx_probe(NULL, dir_file->f_path.dentry->d_inode, &hinfo, frames, &err);
+=======
+	frame = dx_probe(NULL, file_inode(dir_file), &hinfo, frames, &err);
+>>>>>>> refs/remotes/origin/master
 	if (!frame)
 		return err;
 
@@ -917,8 +977,23 @@ restart:
 				num++;
 				bh = ext3_getblk(NULL, dir, b++, 0, &err);
 				bh_use[ra_max] = bh;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (bh)
 					ll_rw_block(READ_META, 1, &bh);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				if (bh && !bh_uptodate_or_lock(bh)) {
+					get_bh(bh);
+					bh->b_end_io = end_buffer_read_sync;
+					submit_bh(READ | REQ_META | REQ_PRIO,
+						  bh);
+				}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		if ((bh = bh_use[ra_ptr++]) == NULL)
@@ -980,7 +1055,11 @@ static struct buffer_head * ext3_dx_find_entry(struct inode *dir,
 		return NULL;
 	do {
 		block = dx_get_block(frame->at);
+<<<<<<< HEAD
 		if (!(bh = ext3_bread (NULL,dir, block, 0, err)))
+=======
+		if (!(bh = ext3_dir_bread (NULL, dir, block, 0, err)))
+>>>>>>> refs/remotes/origin/master
 			goto errout;
 
 		retval = search_dirblock(bh, dir, entry,
@@ -1010,12 +1089,24 @@ static struct buffer_head * ext3_dx_find_entry(struct inode *dir,
 
 	*err = -ENOENT;
 errout:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dxtrace(printk("%s not found\n", name));
+=======
+	dxtrace(printk("%s not found\n", entry->name));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dxtrace(printk("%s not found\n", entry->name));
+>>>>>>> refs/remotes/origin/master
 	dx_release (frames);
 	return NULL;
 }
 
+<<<<<<< HEAD
 static struct dentry *ext3_lookup(struct inode * dir, struct dentry *dentry, struct nameidata *nd)
+=======
+static struct dentry *ext3_lookup(struct inode * dir, struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode * inode;
 	struct ext3_dir_entry_2 * de;
@@ -1035,6 +1126,8 @@ static struct dentry *ext3_lookup(struct inode * dir, struct dentry *dentry, str
 			return ERR_PTR(-EIO);
 		}
 		inode = ext3_iget(dir->i_sb, ino);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (IS_ERR(inode)) {
 			if (PTR_ERR(inode) == -ESTALE) {
 				ext3_error(dir->i_sb, __func__,
@@ -1044,6 +1137,18 @@ static struct dentry *ext3_lookup(struct inode * dir, struct dentry *dentry, str
 			} else {
 				return ERR_CAST(inode);
 			}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (inode == ERR_PTR(-ESTALE)) {
+			ext3_error(dir->i_sb, __func__,
+					"deleted inode referenced: %lu",
+					ino);
+			return ERR_PTR(-EIO);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return d_splice_alias(inode, dentry);
@@ -1053,7 +1158,11 @@ static struct dentry *ext3_lookup(struct inode * dir, struct dentry *dentry, str
 struct dentry *ext3_get_parent(struct dentry *child)
 {
 	unsigned long ino;
+<<<<<<< HEAD
 	struct qstr dotdot = {.name = "..", .len = 2};
+=======
+	struct qstr dotdot = QSTR_INIT("..", 2);
+>>>>>>> refs/remotes/origin/master
 	struct ext3_dir_entry_2 * de;
 	struct buffer_head *bh;
 
@@ -1466,9 +1575,15 @@ static int ext3_add_entry (handle_t *handle, struct dentry *dentry,
 	}
 	blocks = dir->i_size >> sb->s_blocksize_bits;
 	for (block = 0; block < blocks; block++) {
+<<<<<<< HEAD
 		bh = ext3_bread(handle, dir, block, 0, &retval);
 		if(!bh)
 			return retval;
+=======
+		if (!(bh = ext3_dir_bread(handle, dir, block, 0, &retval)))
+			return retval;
+
+>>>>>>> refs/remotes/origin/master
 		retval = add_dirent_to_buf(handle, dentry, inode, NULL, bh);
 		if (retval != -ENOSPC)
 			return retval;
@@ -1508,7 +1623,11 @@ static int ext3_dx_add_entry(handle_t *handle, struct dentry *dentry,
 	entries = frame->entries;
 	at = frame->at;
 
+<<<<<<< HEAD
 	if (!(bh = ext3_bread(handle,dir, dx_get_block(frame->at), 0, &err)))
+=======
+	if (!(bh = ext3_dir_bread(handle, dir, dx_get_block(frame->at), 0, &err)))
+>>>>>>> refs/remotes/origin/master
 		goto cleanup;
 
 	BUFFER_TRACE(bh, "get_write_access");
@@ -1679,8 +1798,13 @@ static int ext3_add_nondir(handle_t *handle,
 	int err = ext3_add_entry(handle, dentry, inode);
 	if (!err) {
 		ext3_mark_inode_dirty(handle, inode);
+<<<<<<< HEAD
 		d_instantiate(dentry, inode);
 		unlock_new_inode(inode);
+=======
+		unlock_new_inode(inode);
+		d_instantiate(dentry, inode);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	drop_nlink(inode);
@@ -1697,8 +1821,17 @@ static int ext3_add_nondir(handle_t *handle,
  * If the create succeeds, we fill in the inode information
  * with d_instantiate().
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ext3_create (struct inode * dir, struct dentry * dentry, int mode,
+=======
+static int ext3_create (struct inode * dir, struct dentry * dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct nameidata *nd)
+=======
+static int ext3_create (struct inode * dir, struct dentry * dentry, umode_t mode,
+		bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	handle_t *handle;
 	struct inode * inode;
@@ -1731,7 +1864,15 @@ retry:
 }
 
 static int ext3_mknod (struct inode * dir, struct dentry *dentry,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			int mode, dev_t rdev)
+=======
+			umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	handle_t *handle;
 	struct inode *inode;
@@ -1767,7 +1908,53 @@ retry:
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ext3_mkdir(struct inode * dir, struct dentry * dentry, int mode)
+=======
+static int ext3_mkdir(struct inode * dir, struct dentry * dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ext3_tmpfile(struct inode *dir, struct dentry *dentry, umode_t mode)
+{
+	handle_t *handle;
+	struct inode *inode;
+	int err, retries = 0;
+
+	dquot_initialize(dir);
+
+retry:
+	handle = ext3_journal_start(dir, EXT3_MAXQUOTAS_INIT_BLOCKS(dir->i_sb) +
+			  4 + EXT3_XATTR_TRANS_BLOCKS);
+
+	if (IS_ERR(handle))
+		return PTR_ERR(handle);
+
+	inode = ext3_new_inode (handle, dir, NULL, mode);
+	err = PTR_ERR(inode);
+	if (!IS_ERR(inode)) {
+		inode->i_op = &ext3_file_inode_operations;
+		inode->i_fop = &ext3_file_operations;
+		ext3_set_aops(inode);
+		d_tmpfile(dentry, inode);
+		err = ext3_orphan_add(handle, inode);
+		if (err)
+			goto err_unlock_inode;
+		mark_inode_dirty(inode);
+		unlock_new_inode(inode);
+	}
+	ext3_journal_stop(handle);
+	if (err == -ENOSPC && ext3_should_retry_alloc(dir->i_sb, &retries))
+		goto retry;
+	return err;
+err_unlock_inode:
+	ext3_journal_stop(handle);
+	unlock_new_inode(inode);
+	return err;
+}
+
+static int ext3_mkdir(struct inode * dir, struct dentry * dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	handle_t *handle;
 	struct inode * inode;
@@ -1798,8 +1985,12 @@ retry:
 	inode->i_op = &ext3_dir_inode_operations;
 	inode->i_fop = &ext3_dir_operations;
 	inode->i_size = EXT3_I(inode)->i_disksize = inode->i_sb->s_blocksize;
+<<<<<<< HEAD
 	dir_block = ext3_bread (handle, inode, 0, 1, &err);
 	if (!dir_block)
+=======
+	if (!(dir_block = ext3_dir_bread(handle, inode, 0, 1, &err)))
+>>>>>>> refs/remotes/origin/master
 		goto out_clear_inode;
 
 	BUFFER_TRACE(dir_block, "get_write_access");
@@ -1820,7 +2011,15 @@ retry:
 	de->name_len = 2;
 	strcpy (de->name, "..");
 	ext3_set_de_type(dir->i_sb, de, S_IFDIR);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 2;
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/master
 	BUFFER_TRACE(dir_block, "call ext3_journal_dirty_metadata");
 	err = ext3_journal_dirty_metadata(handle, dir_block);
 	if (err)
@@ -1832,7 +2031,15 @@ retry:
 
 	if (err) {
 out_clear_inode:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 0;
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		unlock_new_inode(inode);
 		ext3_mark_inode_dirty(handle, inode);
 		iput (inode);
@@ -1844,8 +2051,13 @@ out_clear_inode:
 	if (err)
 		goto out_clear_inode;
 
+<<<<<<< HEAD
 	d_instantiate(dentry, inode);
 	unlock_new_inode(inode);
+=======
+	unlock_new_inode(inode);
+	d_instantiate(dentry, inode);
+>>>>>>> refs/remotes/origin/master
 out_stop:
 	brelse(dir_block);
 	ext3_journal_stop(handle);
@@ -1867,7 +2079,11 @@ static int empty_dir (struct inode * inode)
 
 	sb = inode->i_sb;
 	if (inode->i_size < EXT3_DIR_REC_LEN(1) + EXT3_DIR_REC_LEN(2) ||
+<<<<<<< HEAD
 	    !(bh = ext3_bread (NULL, inode, 0, 0, &err))) {
+=======
+	    !(bh = ext3_dir_bread(NULL, inode, 0, 0, &err))) {
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			ext3_error(inode->i_sb, __func__,
 				   "error %d reading directory #%lu offset 0",
@@ -1898,9 +2114,14 @@ static int empty_dir (struct inode * inode)
 			(void *) de >= (void *) (bh->b_data+sb->s_blocksize)) {
 			err = 0;
 			brelse (bh);
+<<<<<<< HEAD
 			bh = ext3_bread (NULL, inode,
 				offset >> EXT3_BLOCK_SIZE_BITS(sb), 0, &err);
 			if (!bh) {
+=======
+			if (!(bh = ext3_dir_bread (NULL, inode,
+				offset >> EXT3_BLOCK_SIZE_BITS(sb), 0, &err))) {
+>>>>>>> refs/remotes/origin/master
 				if (err)
 					ext3_error(sb, __func__,
 						   "error %d reading directory"
@@ -2141,6 +2362,14 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 	struct ext3_dir_entry_2 * de;
 	handle_t *handle;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_unlink_enter(dir, dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_unlink_enter(dir, dentry);
+>>>>>>> refs/remotes/origin/master
 	/* Initialize quotas before so that eventual writes go
 	 * in separate transaction */
 	dquot_initialize(dir);
@@ -2168,7 +2397,15 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 		ext3_warning (inode->i_sb, "ext3_unlink",
 			      "Deleting nonexistent file (%lu), %d",
 			      inode->i_ino, inode->i_nlink);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 1;
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/master
 	}
 	retval = ext3_delete_entry(handle, dir, de, bh);
 	if (retval)
@@ -2186,6 +2423,14 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 end_unlink:
 	ext3_journal_stop(handle);
 	brelse (bh);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_unlink_exit(dentry, retval);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_unlink_exit(dentry, retval);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -2269,7 +2514,15 @@ retry:
 			err = PTR_ERR(handle);
 			goto err_drop_inode;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inc_nlink(inode);
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/master
 		err = ext3_orphan_del(handle, inode);
 		if (err) {
 			ext3_journal_stop(handle);
@@ -2308,7 +2561,11 @@ static int ext3_link (struct dentry * old_dentry,
 
 retry:
 	handle = ext3_journal_start(dir, EXT3_DATA_TRANS_BLOCKS(dir->i_sb) +
+<<<<<<< HEAD
 					EXT3_INDEX_EXTRA_TRANS_BLOCKS);
+=======
+					EXT3_INDEX_EXTRA_TRANS_BLOCKS + 1);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(handle))
 		return PTR_ERR(handle);
 
@@ -2322,6 +2579,14 @@ retry:
 	err = ext3_add_entry(handle, dentry, inode);
 	if (!err) {
 		ext3_mark_inode_dirty(handle, inode);
+<<<<<<< HEAD
+=======
+		/* this can happen only for tmpfile being
+		 * linked the first time
+		 */
+		if (inode->i_nlink == 1)
+			ext3_orphan_del(handle, inode);
+>>>>>>> refs/remotes/origin/master
 		d_instantiate(dentry, inode);
 	} else {
 		drop_nlink(inode);
@@ -2394,7 +2659,11 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 				goto end_rename;
 		}
 		retval = -EIO;
+<<<<<<< HEAD
 		dir_bh = ext3_bread (handle, old_inode, 0, 0, &retval);
+=======
+		dir_bh = ext3_dir_bread(handle, old_inode, 0, 0, &retval);
+>>>>>>> refs/remotes/origin/master
 		if (!dir_bh)
 			goto end_rename;
 		if (le32_to_cpu(PARENT_INO(dir_bh->b_data)) != old_dir->i_ino)
@@ -2524,6 +2793,10 @@ const struct inode_operations ext3_dir_inode_operations = {
 	.mkdir		= ext3_mkdir,
 	.rmdir		= ext3_rmdir,
 	.mknod		= ext3_mknod,
+<<<<<<< HEAD
+=======
+	.tmpfile	= ext3_tmpfile,
+>>>>>>> refs/remotes/origin/master
 	.rename		= ext3_rename,
 	.setattr	= ext3_setattr,
 #ifdef CONFIG_EXT3_FS_XATTR
@@ -2532,7 +2805,15 @@ const struct inode_operations ext3_dir_inode_operations = {
 	.listxattr	= ext3_listxattr,
 	.removexattr	= generic_removexattr,
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.check_acl	= ext3_check_acl,
+=======
+	.get_acl	= ext3_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_acl	= ext3_get_acl,
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct inode_operations ext3_special_inode_operations = {
@@ -2543,5 +2824,13 @@ const struct inode_operations ext3_special_inode_operations = {
 	.listxattr	= ext3_listxattr,
 	.removexattr	= generic_removexattr,
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.check_acl	= ext3_check_acl,
+=======
+	.get_acl	= ext3_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_acl	= ext3_get_acl,
+>>>>>>> refs/remotes/origin/master
 };

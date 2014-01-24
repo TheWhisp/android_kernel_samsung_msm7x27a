@@ -1,7 +1,11 @@
 #ifndef __UM_FS_HOSTFS
 #define __UM_FS_HOSTFS
 
+<<<<<<< HEAD
 #include "os.h"
+=======
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are exactly the same definitions as in fs.h, but the names are
@@ -39,7 +43,15 @@
 
 struct hostfs_iattr {
 	unsigned int	ia_valid;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t		ia_mode;
+=======
+	unsigned short	ia_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned short	ia_mode;
+>>>>>>> refs/remotes/origin/master
 	uid_t		ia_uid;
 	gid_t		ia_gid;
 	loff_t		ia_size;
@@ -67,7 +79,17 @@ extern int access_file(char *path, int r, int w, int x);
 extern int open_file(char *path, int r, int w, int append);
 extern void *open_dir(char *path, int *err_out);
 extern char *read_dir(void *stream, unsigned long long *pos,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		      unsigned long long *ino_out, int *len_out);
+=======
+		      unsigned long long *ino_out, int *len_out,
+		      unsigned int *type_out);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      unsigned long long *ino_out, int *len_out,
+		      unsigned int *type_out);
+>>>>>>> refs/remotes/origin/master
 extern void close_file(void *stream);
 extern int replace_file(int oldfd, int fd);
 extern void close_dir(void *stream);

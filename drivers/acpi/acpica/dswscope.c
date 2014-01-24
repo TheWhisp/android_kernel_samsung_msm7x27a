@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,8 +93,13 @@ void acpi_ds_scope_stack_clear(struct acpi_walk_state *walk_state)
  *
  * FUNCTION:    acpi_ds_scope_stack_push
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node            - Name to be made current
  *              Type            - Type of frame being pushed
+=======
+ * PARAMETERS:  node            - Name to be made current
+ *              type            - Type of frame being pushed
+>>>>>>> refs/remotes/origin/master
  *              walk_state      - Current state
  *
  * RETURN:      Status

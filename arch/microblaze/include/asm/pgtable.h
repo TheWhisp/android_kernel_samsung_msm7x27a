@@ -13,9 +13,12 @@
 
 #include <asm/setup.h>
 
+<<<<<<< HEAD
 #define io_remap_pfn_range(vma, vaddr, pfn, size, prot)		\
 		remap_pfn_range(vma, vaddr, pfn, size, prot)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 extern int mem_init_done;
 #endif
@@ -94,8 +97,16 @@ static inline pte_t pte_mkspecial(pte_t pte)	{ return pte; }
 /* Start and end of the vmalloc area. */
 /* Make sure to map the vmalloc area above the pinned kernel memory area
    of 32Mb.  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define VMALLOC_START	(CONFIG_KERNEL_START + \
 				max(32 * 1024 * 1024UL, memory_size))
+=======
+#define VMALLOC_START	(CONFIG_KERNEL_START + CONFIG_LOWMEM_SIZE)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VMALLOC_START	(CONFIG_KERNEL_START + CONFIG_LOWMEM_SIZE)
+>>>>>>> refs/remotes/origin/master
 #define VMALLOC_END	ioremap_bot
 
 #endif /* __ASSEMBLY__ */
@@ -235,12 +246,15 @@ static inline pte_t pte_mkspecial(pte_t pte)	{ return pte; }
 #ifndef _PAGE_SHARED
 #define _PAGE_SHARED	0
 #endif
+<<<<<<< HEAD
 #ifndef _PAGE_HWWRITE
 #define _PAGE_HWWRITE	0
 #endif
 #ifndef _PAGE_HWEXEC
 #define _PAGE_HWEXEC	0
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _PAGE_EXEC
 #define _PAGE_EXEC	0
 #endif
@@ -543,8 +557,14 @@ extern unsigned long iopa(unsigned long addr);
 /* Needs to be defined here and not in linux/mm.h, as it is arch dependent */
 #define kern_addr_valid(addr)	(1)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define io_remap_page_range remap_page_range
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * No page table caches to initialise
  */

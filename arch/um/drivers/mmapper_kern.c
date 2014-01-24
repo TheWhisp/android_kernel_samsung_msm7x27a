@@ -18,7 +18,11 @@
 #include <linux/mm.h>
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include "mem_user.h"
+=======
+#include <mem_user.h>
+>>>>>>> refs/remotes/origin/master
 
 /* These are set in mmapper_init, which is called at boot time */
 static unsigned long mmapper_size;

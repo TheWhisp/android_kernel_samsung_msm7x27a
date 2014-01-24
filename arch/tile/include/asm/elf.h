@@ -30,7 +30,10 @@ typedef unsigned long elf_greg_t;
 #define ELF_NGREG (sizeof(struct pt_regs) / sizeof(elf_greg_t))
 typedef elf_greg_t elf_gregset_t[ELF_NGREG];
 
+<<<<<<< HEAD
 #define EM_TILE64  187
+=======
+>>>>>>> refs/remotes/origin/master
 #define EM_TILEPRO 188
 #define EM_TILEGX  191
 
@@ -44,7 +47,15 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
 #else
 #define ELF_CLASS	ELFCLASS32
 #endif
+<<<<<<< HEAD
 #define ELF_DATA	ELFDATA2LSB
+=======
+#ifdef __BIG_ENDIAN__
+#define ELF_DATA	ELFDATA2MSB
+#else
+#define ELF_DATA	ELFDATA2LSB
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * There seems to be a bug in how compat_binfmt_elf.c works: it
@@ -59,6 +70,10 @@ enum { ELF_ARCH = CHIP_ELF_TYPE() };
  */
 #define elf_check_arch(x)  \
 	((x)->e_ident[EI_CLASS] == ELF_CLASS && \
+<<<<<<< HEAD
+=======
+	 (x)->e_ident[EI_DATA] == ELF_DATA && \
+>>>>>>> refs/remotes/origin/master
 	 (x)->e_machine == CHIP_ELF_TYPE())
 
 /* The module loader only handles a few relocation types. */
@@ -127,6 +142,18 @@ extern int dump_task_regs(struct task_struct *, elf_gregset_t *);
 struct linux_binprm;
 extern int arch_setup_additional_pages(struct linux_binprm *bprm,
 				       int executable_stack);
+<<<<<<< HEAD
+=======
+#define ARCH_DLINFO \
+do { \
+	NEW_AUX_ENT(AT_SYSINFO_EHDR, VDSO_BASE); \
+} while (0)
+
+struct mm_struct;
+extern unsigned long arch_randomize_brk(struct mm_struct *mm);
+#define arch_randomize_brk arch_randomize_brk
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 
 #define COMPAT_ELF_PLATFORM "tilegx-m32"
@@ -143,6 +170,10 @@ extern int arch_setup_additional_pages(struct linux_binprm *bprm,
 #define compat_start_thread(regs, ip, usp) do { \
 		regs->pc = ptr_to_compat_reg((void *)(ip)); \
 		regs->sp = ptr_to_compat_reg((void *)(usp)); \
+<<<<<<< HEAD
+=======
+		single_step_execve();	\
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 
 /*
@@ -151,12 +182,20 @@ extern int arch_setup_additional_pages(struct linux_binprm *bprm,
 #undef SET_PERSONALITY
 #define SET_PERSONALITY(ex) \
 do { \
+<<<<<<< HEAD
 	current->personality = PER_LINUX; \
+=======
+	set_personality(PER_LINUX | (current->personality & (~PER_MASK))); \
+>>>>>>> refs/remotes/origin/master
 	current_thread_info()->status &= ~TS_COMPAT; \
 } while (0)
 #define COMPAT_SET_PERSONALITY(ex) \
 do { \
+<<<<<<< HEAD
 	current->personality = PER_LINUX_32BIT; \
+=======
+	set_personality(PER_LINUX | (current->personality & (~PER_MASK))); \
+>>>>>>> refs/remotes/origin/master
 	current_thread_info()->status |= TS_COMPAT; \
 } while (0)
 
@@ -164,4 +203,9 @@ do { \
 
 #endif /* CONFIG_COMPAT */
 
+<<<<<<< HEAD
+=======
+#define CORE_DUMP_USE_REGSET
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_TILE_ELF_H */

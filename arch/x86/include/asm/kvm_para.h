@@ -1,6 +1,7 @@
 #ifndef _ASM_X86_KVM_PARA_H
 #define _ASM_X86_KVM_PARA_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <asm/hyperv.h>
 
@@ -21,6 +22,10 @@
  */
 #define KVM_FEATURE_CLOCKSOURCE2        3
 #define KVM_FEATURE_ASYNC_PF		4
+<<<<<<< HEAD
+=======
+#define KVM_FEATURE_STEAL_TIME		5
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* The last 8 bits are used to indicate how to interpret the flags field
  * in pvclock structure. If no bits are set, all flags are ignored.
@@ -30,10 +35,29 @@
 #define MSR_KVM_WALL_CLOCK  0x11
 #define MSR_KVM_SYSTEM_TIME 0x12
 
+<<<<<<< HEAD
+=======
+#define KVM_MSR_ENABLED 1
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Custom MSRs falls in the range 0x4b564d00-0x4b564dff */
 #define MSR_KVM_WALL_CLOCK_NEW  0x4b564d00
 #define MSR_KVM_SYSTEM_TIME_NEW 0x4b564d01
 #define MSR_KVM_ASYNC_PF_EN 0x4b564d02
+<<<<<<< HEAD
+=======
+#define MSR_KVM_STEAL_TIME  0x4b564d03
+
+struct kvm_steal_time {
+	__u64 steal;
+	__u32 version;
+	__u32 flags;
+	__u32 pad[12];
+};
+
+#define KVM_STEAL_ALIGNMENT_BITS 5
+#define KVM_STEAL_VALID_BITS ((-1ULL << (KVM_STEAL_ALIGNMENT_BITS + 1)))
+#define KVM_STEAL_RESERVED_MASK (((1 << KVM_STEAL_ALIGNMENT_BITS) - 1 ) << 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define KVM_MAX_MMU_OP_BATCH           32
 
@@ -77,23 +101,46 @@ struct kvm_vcpu_pv_apf_data {
 
 #ifdef __KERNEL__
 #include <asm/processor.h>
+=======
+#include <asm/processor.h>
+#include <uapi/asm/kvm_para.h>
+>>>>>>> refs/remotes/origin/master
 
 extern void kvmclock_init(void);
 extern int kvm_register_clock(char *txt);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KVM_GUEST
+bool kvm_check_and_clear_guest_paused(void);
+#else
+static inline bool kvm_check_and_clear_guest_paused(void)
+{
+	return false;
+}
+#endif /* CONFIG_KVM_GUEST */
+>>>>>>> refs/remotes/origin/master
 
 /* This instruction is vmcall.  On non-VT architectures, it will generate a
  * trap that we will then rewrite to the appropriate instruction.
  */
 #define KVM_HYPERCALL ".byte 0x0f,0x01,0xc1"
 
+<<<<<<< HEAD
 /* For KVM hypercalls, a three-byte sequence of either the vmrun or the vmmrun
+=======
+/* For KVM hypercalls, a three-byte sequence of either the vmcall or the vmmcall
+>>>>>>> refs/remotes/origin/master
  * instruction.  The hypervisor may replace it with something else but only the
  * instructions are guaranteed to be supported.
  *
  * Up to four arguments may be passed in rbx, rcx, rdx, and rsi respectively.
  * The hypercall number should be placed in rax and the return value will be
+<<<<<<< HEAD
  * placed in rax.  No other registers will be clobbered unless explicited
+=======
+ * placed in rax.  No other registers will be clobbered unless explicitly
+>>>>>>> refs/remotes/origin/master
  * noted by the particular hypercall.
  */
 
@@ -151,11 +198,18 @@ static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline int kvm_para_available(void)
 {
 	unsigned int eax, ebx, ecx, edx;
 	char signature[13];
 
+<<<<<<< HEAD
+=======
+	if (boot_cpu_data.cpuid_level < 0)
+		return 0;	/* So we don't blow up on old processors */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	cpuid(KVM_CPUID_SIGNATURE, &eax, &ebx, &ecx, &edx);
 	memcpy(signature + 0, &ebx, 4);
 	memcpy(signature + 4, &ecx, 4);
@@ -164,10 +218,27 @@ static inline int kvm_para_available(void)
 
 	if (strcmp(signature, "KVMKVMKVM") == 0)
 		return 1;
+=======
+static inline uint32_t kvm_cpuid_base(void)
+{
+	if (boot_cpu_data.cpuid_level < 0)
+		return 0;	/* So we don't blow up on old processors */
+
+	if (cpu_has_hypervisor)
+		return hypervisor_cpuid_base("KVMKVMKVM\0\0\0", 0);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static inline bool kvm_para_available(void)
+{
+	return kvm_cpuid_base() != 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline unsigned int kvm_arch_para_features(void)
 {
 	return cpuid_eax(KVM_CPUID_FEATURES);
@@ -178,16 +249,54 @@ void __init kvm_guest_init(void);
 void kvm_async_pf_task_wait(u32 token);
 void kvm_async_pf_task_wake(u32 token);
 u32 kvm_read_and_reset_pf_reason(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern void kvm_disable_steal_time(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 #define kvm_guest_init() do { } while (0)
 #define kvm_async_pf_task_wait(T) do {} while(0)
 #define kvm_async_pf_task_wake(T) do {} while(0)
+=======
+extern void kvm_disable_steal_time(void);
+
+#ifdef CONFIG_PARAVIRT_SPINLOCKS
+void __init kvm_spinlock_init(void);
+#else /* !CONFIG_PARAVIRT_SPINLOCKS */
+static inline void kvm_spinlock_init(void)
+{
+}
+#endif /* CONFIG_PARAVIRT_SPINLOCKS */
+
+#else /* CONFIG_KVM_GUEST */
+#define kvm_guest_init() do {} while (0)
+#define kvm_async_pf_task_wait(T) do {} while(0)
+#define kvm_async_pf_task_wake(T) do {} while(0)
+
+>>>>>>> refs/remotes/origin/master
 static inline u32 kvm_read_and_reset_pf_reason(void)
 {
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static inline void kvm_disable_steal_time(void)
+{
+	return;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #endif /* __KERNEL__ */
 
+=======
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_KVM_PARA_H */

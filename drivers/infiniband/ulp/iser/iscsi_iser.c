@@ -5,6 +5,10 @@
  * Copyright (C) 2004 Alex Aizman
  * Copyright (C) 2005 Mike Christie
  * Copyright (c) 2005, 2006 Voltaire, Inc. All rights reserved.
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2013 Mellanox Technologies. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * maintained by openib-general@openib.org
  *
  * This software is available to you under a choice of one of two
@@ -57,6 +61,14 @@
 #include <linux/scatterlist.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/sock.h>
 
@@ -81,10 +93,17 @@ module_param_named(max_lun, iscsi_max_lun, uint, S_IRUGO);
 
 int iser_debug_level = 0;
 
+<<<<<<< HEAD
 MODULE_DESCRIPTION("iSER (iSCSI Extensions for RDMA) Datamover "
 		   "v" DRV_VER " (" DRV_DATE ")");
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_AUTHOR("Alex Nezhinsky, Dan Bar Dov, Or Gerlitz");
+=======
+MODULE_DESCRIPTION("iSER (iSCSI Extensions for RDMA) Datamover");
+MODULE_LICENSE("Dual BSD/GPL");
+MODULE_AUTHOR("Alex Nezhinsky, Dan Bar Dov, Or Gerlitz");
+MODULE_VERSION(DRV_VER);
+>>>>>>> refs/remotes/origin/master
 
 module_param_named(debug_level, iser_debug_level, int, 0644);
 MODULE_PARM_DESC(debug_level, "Enable debug tracing if > 0 (default:disabled)");
@@ -101,13 +120,38 @@ iscsi_iser_recv(struct iscsi_conn *conn,
 
 	/* verify PDU length */
 	datalen = ntoh24(hdr->dlength);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (datalen != rx_data_len) {
 		printk(KERN_ERR "iscsi_iser: datalen %d (hdr) != %d (IB) \n",
 		       datalen, rx_data_len);
+=======
+	if (datalen > rx_data_len || (datalen + 4) < rx_data_len) {
+		iser_err("wrong datalen %d (hdr), %d (IB)\n",
+			datalen, rx_data_len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (datalen > rx_data_len || (datalen + 4) < rx_data_len) {
+		iser_err("wrong datalen %d (hdr), %d (IB)\n",
+			datalen, rx_data_len);
+>>>>>>> refs/remotes/origin/master
 		rc = ISCSI_ERR_DATALEN;
 		goto error;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (datalen != rx_data_len)
+		iser_dbg("aligned datalen (%d) hdr, %d (IB)\n",
+			datalen, rx_data_len);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* read AHS */
 	ahslen = hdr->hlength * 4;
 
@@ -147,7 +191,13 @@ int iser_initialize_task_headers(struct iscsi_task *task,
 	tx_desc->tx_sg[0].length = ISER_HEADERS_LEN;
 	tx_desc->tx_sg[0].lkey   = device->mr->lkey;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iser_task->headers_initialized	= 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	iser_task->iser_conn		= iser_conn;
 	return 0;
 }
@@ -162,8 +212,16 @@ iscsi_iser_task_init(struct iscsi_task *task)
 {
 	struct iscsi_iser_task *iser_task = task->dd_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!iser_task->headers_initialized)
 		if (iser_initialize_task_headers(task, &iser_task->desc))
+=======
+	if (iser_initialize_task_headers(task, &iser_task->desc))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (iser_initialize_task_headers(task, &iser_task->desc))
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 
 	/* mgmt task */
@@ -274,6 +332,22 @@ iscsi_iser_task_xmit(struct iscsi_task *task)
 static void iscsi_iser_cleanup_task(struct iscsi_task *task)
 {
 	struct iscsi_iser_task *iser_task = task->dd_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct iser_tx_desc	*tx_desc = &iser_task->desc;
+
+	struct iscsi_iser_conn *iser_conn = task->conn->dd_data;
+	struct iser_device     *device    = iser_conn->ib_conn->device;
+
+	ib_dma_unmap_single(device->ib_device,
+		tx_desc->dma_addr, ISER_HEADERS_LEN, DMA_TO_DEVICE);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* mgmt tasks do not need special cleanup */
 	if (!task->sc)
@@ -336,6 +410,10 @@ iscsi_iser_conn_bind(struct iscsi_cls_session *cls_session,
 {
 	struct iscsi_conn *conn = cls_conn->dd_data;
 	struct iscsi_iser_conn *iser_conn;
+<<<<<<< HEAD
+=======
+	struct iscsi_session *session;
+>>>>>>> refs/remotes/origin/master
 	struct iser_conn *ib_conn;
 	struct iscsi_endpoint *ep;
 	int error;
@@ -354,14 +432,24 @@ iscsi_iser_conn_bind(struct iscsi_cls_session *cls_session,
 	}
 	ib_conn = ep->dd_data;
 
+<<<<<<< HEAD
 	if (iser_alloc_rx_descriptors(ib_conn))
+=======
+	session = conn->session;
+	if (iser_alloc_rx_descriptors(ib_conn, session))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	/* binds the iSER connection retrieved from the previously
 	 * connected ep_handle to the iSCSI layer connection. exchanges
 	 * connection pointers */
+<<<<<<< HEAD
 	iser_err("binding iscsi/iser conn %p %p to ib_conn %p\n",
 					conn, conn->dd_data, ib_conn);
+=======
+	iser_info("binding iscsi/iser conn %p %p to ib_conn %p\n",
+		  conn, conn->dd_data, ib_conn);
+>>>>>>> refs/remotes/origin/master
 	iser_conn = conn->dd_data;
 	ib_conn->iser_conn = iser_conn;
 	iser_conn->ib_conn  = ib_conn;
@@ -408,12 +496,20 @@ iscsi_iser_session_create(struct iscsi_endpoint *ep,
 	struct iscsi_cls_session *cls_session;
 	struct iscsi_session *session;
 	struct Scsi_Host *shost;
+<<<<<<< HEAD
 	struct iser_conn *ib_conn;
+=======
+	struct iser_conn *ib_conn = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	shost = iscsi_host_alloc(&iscsi_iser_sht, 0, 0);
 	if (!shost)
 		return NULL;
 	shost->transportt = iscsi_iser_scsi_transport;
+<<<<<<< HEAD
+=======
+	shost->cmd_per_lun = qdepth;
+>>>>>>> refs/remotes/origin/master
 	shost->max_lun = iscsi_max_lun;
 	shost->max_id = 0;
 	shost->max_channel = 0;
@@ -430,12 +526,23 @@ iscsi_iser_session_create(struct iscsi_endpoint *ep,
 			   ep ? ib_conn->device->ib_device->dma_device : NULL))
 		goto free_host;
 
+<<<<<<< HEAD
 	/*
 	 * we do not support setting can_queue cmd_per_lun from userspace yet
 	 * because we preallocate so many resources
 	 */
 	cls_session = iscsi_session_setup(&iscsi_iser_transport, shost,
 					  ISCSI_DEF_XMIT_CMDS_MAX, 0,
+=======
+	if (cmds_max > ISER_DEF_XMIT_CMDS_MAX) {
+		iser_info("cmds_max changed from %u to %u\n",
+			  cmds_max, ISER_DEF_XMIT_CMDS_MAX);
+		cmds_max = ISER_DEF_XMIT_CMDS_MAX;
+	}
+
+	cls_session = iscsi_session_setup(&iscsi_iser_transport, shost,
+					  cmds_max, 0,
+>>>>>>> refs/remotes/origin/master
 					  sizeof(struct iscsi_iser_task),
 					  initial_cmdsn, 0);
 	if (!cls_session)
@@ -465,28 +572,44 @@ iscsi_iser_set_param(struct iscsi_cls_conn *cls_conn,
 	case ISCSI_PARAM_HDRDGST_EN:
 		sscanf(buf, "%d", &value);
 		if (value) {
+<<<<<<< HEAD
 			printk(KERN_ERR "DataDigest wasn't negotiated to None");
+=======
+			iser_err("DataDigest wasn't negotiated to None");
+>>>>>>> refs/remotes/origin/master
 			return -EPROTO;
 		}
 		break;
 	case ISCSI_PARAM_DATADGST_EN:
 		sscanf(buf, "%d", &value);
 		if (value) {
+<<<<<<< HEAD
 			printk(KERN_ERR "DataDigest wasn't negotiated to None");
+=======
+			iser_err("DataDigest wasn't negotiated to None");
+>>>>>>> refs/remotes/origin/master
 			return -EPROTO;
 		}
 		break;
 	case ISCSI_PARAM_IFMARKER_EN:
 		sscanf(buf, "%d", &value);
 		if (value) {
+<<<<<<< HEAD
 			printk(KERN_ERR "IFMarker wasn't negotiated to No");
+=======
+			iser_err("IFMarker wasn't negotiated to No");
+>>>>>>> refs/remotes/origin/master
 			return -EPROTO;
 		}
 		break;
 	case ISCSI_PARAM_OFMARKER_EN:
 		sscanf(buf, "%d", &value);
 		if (value) {
+<<<<<<< HEAD
 			printk(KERN_ERR "OFMarker wasn't negotiated to No");
+=======
+			iser_err("OFMarker wasn't negotiated to No");
+>>>>>>> refs/remotes/origin/master
 			return -EPROTO;
 		}
 		break;
@@ -563,10 +686,16 @@ iscsi_iser_ep_connect(struct Scsi_Host *shost, struct sockaddr *dst_addr,
 
 	err = iser_connect(ib_conn, NULL, (struct sockaddr_in *)dst_addr,
 			   non_blocking);
+<<<<<<< HEAD
 	if (err) {
 		iscsi_destroy_endpoint(ep);
 		return ERR_PTR(err);
 	}
+=======
+	if (err)
+		return ERR_PTR(err);
+
+>>>>>>> refs/remotes/origin/master
 	return ep;
 }
 
@@ -587,7 +716,11 @@ iscsi_iser_ep_poll(struct iscsi_endpoint *ep, int timeout_ms)
 	     ib_conn->state == ISER_CONN_DOWN))
 		rc = -1;
 
+<<<<<<< HEAD
 	iser_err("ib conn %p rc = %d\n", ib_conn, rc);
+=======
+	iser_info("ib conn %p rc = %d\n", ib_conn, rc);
+>>>>>>> refs/remotes/origin/master
 
 	if (rc > 0)
 		return 1; /* success, this is the equivalent of POLLOUT */
@@ -614,13 +747,86 @@ iscsi_iser_ep_disconnect(struct iscsi_endpoint *ep)
 		iscsi_suspend_tx(ib_conn->iser_conn->iscsi_conn);
 
 
+<<<<<<< HEAD
 	iser_err("ib conn %p state %d\n",ib_conn, ib_conn->state);
 	iser_conn_terminate(ib_conn);
 }
 
+<<<<<<< HEAD
+=======
+=======
+	iser_info("ib conn %p state %d\n", ib_conn, ib_conn->state);
+	iser_conn_terminate(ib_conn);
+}
+
+>>>>>>> refs/remotes/origin/master
+static umode_t iser_attr_is_visible(int param_type, int param)
+{
+	switch (param_type) {
+	case ISCSI_HOST_PARAM:
+		switch (param) {
+		case ISCSI_HOST_PARAM_NETDEV_NAME:
+		case ISCSI_HOST_PARAM_HWADDRESS:
+		case ISCSI_HOST_PARAM_INITIATOR_NAME:
+			return S_IRUGO;
+		default:
+			return 0;
+		}
+	case ISCSI_PARAM:
+		switch (param) {
+		case ISCSI_PARAM_MAX_RECV_DLENGTH:
+		case ISCSI_PARAM_MAX_XMIT_DLENGTH:
+		case ISCSI_PARAM_HDRDGST_EN:
+		case ISCSI_PARAM_DATADGST_EN:
+		case ISCSI_PARAM_CONN_ADDRESS:
+		case ISCSI_PARAM_CONN_PORT:
+		case ISCSI_PARAM_EXP_STATSN:
+		case ISCSI_PARAM_PERSISTENT_ADDRESS:
+		case ISCSI_PARAM_PERSISTENT_PORT:
+		case ISCSI_PARAM_PING_TMO:
+		case ISCSI_PARAM_RECV_TMO:
+		case ISCSI_PARAM_INITIAL_R2T_EN:
+		case ISCSI_PARAM_MAX_R2T:
+		case ISCSI_PARAM_IMM_DATA_EN:
+		case ISCSI_PARAM_FIRST_BURST:
+		case ISCSI_PARAM_MAX_BURST:
+		case ISCSI_PARAM_PDU_INORDER_EN:
+		case ISCSI_PARAM_DATASEQ_INORDER_EN:
+		case ISCSI_PARAM_TARGET_NAME:
+		case ISCSI_PARAM_TPGT:
+		case ISCSI_PARAM_USERNAME:
+		case ISCSI_PARAM_PASSWORD:
+		case ISCSI_PARAM_USERNAME_IN:
+		case ISCSI_PARAM_PASSWORD_IN:
+		case ISCSI_PARAM_FAST_ABORT:
+		case ISCSI_PARAM_ABORT_TMO:
+		case ISCSI_PARAM_LU_RESET_TMO:
+		case ISCSI_PARAM_TGT_RESET_TMO:
+		case ISCSI_PARAM_IFACE_NAME:
+		case ISCSI_PARAM_INITIATOR_NAME:
+<<<<<<< HEAD
+=======
+		case ISCSI_PARAM_DISCOVERY_SESS:
+>>>>>>> refs/remotes/origin/master
+			return S_IRUGO;
+		default:
+			return 0;
+		}
+	}
+
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct scsi_host_template iscsi_iser_sht = {
 	.module                 = THIS_MODULE,
 	.name                   = "iSCSI Initiator over iSER, v." DRV_VER,
+=======
+static struct scsi_host_template iscsi_iser_sht = {
+	.module                 = THIS_MODULE,
+	.name                   = "iSCSI Initiator over iSER",
+>>>>>>> refs/remotes/origin/master
 	.queuecommand           = iscsi_queuecommand,
 	.change_queue_depth	= iscsi_change_queue_depth,
 	.sg_tablesize           = ISCSI_ISER_SG_TABLESIZE,
@@ -638,7 +844,9 @@ static struct scsi_host_template iscsi_iser_sht = {
 static struct iscsi_transport iscsi_iser_transport = {
 	.owner                  = THIS_MODULE,
 	.name                   = "iser",
+<<<<<<< HEAD
 	.caps                   = CAP_RECOVERY_L0 | CAP_MULTI_R2T,
+<<<<<<< HEAD
 	.param_mask		= ISCSI_MAX_RECV_DLENGTH |
 				  ISCSI_MAX_XMIT_DLENGTH |
 				  ISCSI_HDRDGST_EN |
@@ -665,6 +873,11 @@ static struct iscsi_transport iscsi_iser_transport = {
 	.host_param_mask	= ISCSI_HOST_HWADDRESS |
 				  ISCSI_HOST_NETDEV_NAME |
 				  ISCSI_HOST_INITIATOR_NAME,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.caps                   = CAP_RECOVERY_L0 | CAP_MULTI_R2T | CAP_TEXT_NEGO,
+>>>>>>> refs/remotes/origin/master
 	/* session management */
 	.create_session         = iscsi_iser_session_create,
 	.destroy_session        = iscsi_iser_session_destroy,
@@ -672,6 +885,14 @@ static struct iscsi_transport iscsi_iser_transport = {
 	.create_conn            = iscsi_iser_conn_create,
 	.bind_conn              = iscsi_iser_conn_bind,
 	.destroy_conn           = iscsi_iser_conn_destroy,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.attr_is_visible	= iser_attr_is_visible,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.attr_is_visible	= iser_attr_is_visible,
+>>>>>>> refs/remotes/origin/master
 	.set_param              = iscsi_iser_set_param,
 	.get_conn_param		= iscsi_conn_get_param,
 	.get_ep_param		= iscsi_iser_get_ep_param,
@@ -703,7 +924,11 @@ static int __init iser_init(void)
 	iser_dbg("Starting iSER datamover...\n");
 
 	if (iscsi_max_lun < 1) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Invalid max_lun value of %u\n", iscsi_max_lun);
+=======
+		iser_err("Invalid max_lun value of %u\n", iscsi_max_lun);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 

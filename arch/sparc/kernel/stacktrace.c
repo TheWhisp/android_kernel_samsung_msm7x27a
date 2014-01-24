@@ -2,7 +2,15 @@
 #include <linux/stacktrace.h>
 #include <linux/thread_info.h>
 #include <linux/ftrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/ptrace.h>
 #include <asm/stacktrace.h>
 

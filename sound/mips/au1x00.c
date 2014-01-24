@@ -38,6 +38,14 @@
 #include <linux/interrupt.h>
 #include <linux/init.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/pcm.h>
@@ -438,7 +446,11 @@ static struct snd_pcm_ops snd_card_au1000_capture_ops = {
 	.pointer		= snd_au1000_pointer,
 };
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_au1000_pcm_new(struct snd_au1000 *au1000)
 {
 	struct snd_pcm *pcm;
@@ -465,13 +477,29 @@ snd_au1000_pcm_new(struct snd_au1000 *au1000)
 
 	flags = claim_dma_lock();
 	if ((au1000->stream[PLAYBACK]->dma = request_au1000_dma(DMA_ID_AC97C_TX,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"AC97 TX", au1000_dma_interrupt, IRQF_DISABLED,
+=======
+			"AC97 TX", au1000_dma_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"AC97 TX", au1000_dma_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 			au1000->stream[PLAYBACK])) < 0) {
 		release_dma_lock(flags);
 		return -EBUSY;
 	}
 	if ((au1000->stream[CAPTURE]->dma = request_au1000_dma(DMA_ID_AC97C_RX,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"AC97 RX", au1000_dma_interrupt, IRQF_DISABLED,
+=======
+			"AC97 RX", au1000_dma_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"AC97 RX", au1000_dma_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 			au1000->stream[CAPTURE])) < 0){
 		release_dma_lock(flags);
 		return -EBUSY;
@@ -551,7 +579,11 @@ get the interrupt driven case to work efficiently */
 	spin_unlock(&au1000->ac97_lock);
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_au1000_ac97_new(struct snd_au1000 *au1000)
 {
 	int err;

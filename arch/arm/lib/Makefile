@@ -6,14 +6,31 @@
 
 lib-y		:= backtrace.o changebit.o csumipv6.o csumpartial.o   \
 		   csumpartialcopy.o csumpartialcopyuser.o clearbit.o \
+<<<<<<< HEAD
 		   delay.o findbit.o memchr.o memcpy.o		      \
 		   memmove.o memset.o memzero.o setbit.o              \
 		   strncpy_from_user.o strnlen_user.o                 \
 		   strchr.o strrchr.o                                 \
 		   testchangebit.o testclearbit.o testsetbit.o        \
 		   ashldi3.o ashrdi3.o lshrdi3.o muldi3.o             \
+<<<<<<< HEAD
 		   ucmpdi2.o lib1funcs.o div64.o sha1.o               \
 		   io-readsb.o io-writesb.o io-readsl.o io-writesl.o
+=======
+		   ucmpdi2.o lib1funcs.o div64.o                      \
+		   io-readsb.o io-writesb.o io-readsl.o io-writesl.o  \
+		   call_with_stack.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   delay.o delay-loop.o findbit.o memchr.o memcpy.o   \
+		   memmove.o memset.o memzero.o setbit.o              \
+		   strchr.o strrchr.o                                 \
+		   testchangebit.o testclearbit.o testsetbit.o        \
+		   ashldi3.o ashrdi3.o lshrdi3.o muldi3.o             \
+		   ucmpdi2.o lib1funcs.o div64.o                      \
+		   io-readsb.o io-writesb.o io-readsl.o io-writesl.o  \
+		   call_with_stack.o
+>>>>>>> refs/remotes/origin/master
 
 mmu-y	:= clear_user.o copy_page.o getuser.o putuser.o
 
@@ -41,7 +58,19 @@ else
 endif
 
 lib-$(CONFIG_ARCH_RPC)		+= ecard.o io-acorn.o floppydma.o
+<<<<<<< HEAD
 lib-$(CONFIG_ARCH_SHARK)	+= io-shark.o
 
 $(obj)/csumpartialcopy.o:	$(obj)/csumpartialcopygeneric.S
 $(obj)/csumpartialcopyuser.o:	$(obj)/csumpartialcopygeneric.S
+=======
+
+$(obj)/csumpartialcopy.o:	$(obj)/csumpartialcopygeneric.S
+$(obj)/csumpartialcopyuser.o:	$(obj)/csumpartialcopygeneric.S
+
+ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
+  NEON_FLAGS			:= -mfloat-abi=softfp -mfpu=neon
+  CFLAGS_xor-neon.o		+= $(NEON_FLAGS)
+  obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
+endif
+>>>>>>> refs/remotes/origin/master

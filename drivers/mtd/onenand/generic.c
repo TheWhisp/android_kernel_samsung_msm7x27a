@@ -30,11 +30,17 @@
  */
 #define DRIVER_NAME	"onenand-flash"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const char *part_probes[] = { "cmdlinepart", NULL,  };
 
 struct onenand_info {
 	struct mtd_info		mtd;
 	struct mtd_partition	*parts;
+=======
+struct onenand_info {
+	struct mtd_info		mtd;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct onenand_chip	onenand;
 };
 
@@ -42,6 +48,17 @@ static int __devinit generic_onenand_probe(struct platform_device *pdev)
 {
 	struct onenand_info *info;
 	struct onenand_platform_data *pdata = pdev->dev.platform_data;
+=======
+struct onenand_info {
+	struct mtd_info		mtd;
+	struct onenand_chip	onenand;
+};
+
+static int generic_onenand_probe(struct platform_device *pdev)
+{
+	struct onenand_info *info;
+	struct onenand_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct resource *res = pdev->resource;
 	unsigned long size = resource_size(res);
 	int err;
@@ -73,6 +90,8 @@ static int __devinit generic_onenand_probe(struct platform_device *pdev)
 		goto out_iounmap;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
 	if (err > 0)
 		mtd_device_register(&info->mtd, info->parts, err);
@@ -80,6 +99,16 @@ static int __devinit generic_onenand_probe(struct platform_device *pdev)
 		mtd_device_register(&info->mtd, pdata->parts, pdata->nr_parts);
 	else
 		err = mtd_device_register(&info->mtd, NULL, 0);
+=======
+	err = mtd_device_parse_register(&info->mtd, NULL, NULL,
+					pdata ? pdata->parts : NULL,
+					pdata ? pdata->nr_parts : 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mtd_device_parse_register(&info->mtd, NULL, NULL,
+					pdata ? pdata->parts : NULL,
+					pdata ? pdata->nr_parts : 0);
+>>>>>>> refs/remotes/origin/master
 
 	platform_set_drvdata(pdev, info);
 
@@ -95,16 +124,27 @@ out_free_info:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit generic_onenand_remove(struct platform_device *pdev)
+=======
+static int generic_onenand_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct onenand_info *info = platform_get_drvdata(pdev);
 	struct resource *res = pdev->resource;
 	unsigned long size = resource_size(res);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
 	if (info) {
+<<<<<<< HEAD
 		mtd_device_unregister(&info->mtd);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (info) {
+>>>>>>> refs/remotes/origin/master
 		onenand_release(&info->mtd);
 		release_mem_region(res->start, size);
 		iounmap(info->onenand.base);
@@ -120,9 +160,11 @@ static struct platform_driver generic_onenand_driver = {
 		.owner		= THIS_MODULE,
 	},
 	.probe		= generic_onenand_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(generic_onenand_remove),
 };
 
+<<<<<<< HEAD
 MODULE_ALIAS("platform:" DRIVER_NAME);
 
 static int __init generic_onenand_init(void)
@@ -137,7 +179,24 @@ static void __exit generic_onenand_exit(void)
 
 module_init(generic_onenand_init);
 module_exit(generic_onenand_exit);
+=======
+module_platform_driver(generic_onenand_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= generic_onenand_remove,
+};
+
+module_platform_driver(generic_onenand_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Kyungmin Park <kyungmin.park@samsung.com>");
 MODULE_DESCRIPTION("Glue layer for OneNAND flash on generic boards");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:" DRIVER_NAME);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:" DRIVER_NAME);
+>>>>>>> refs/remotes/origin/master

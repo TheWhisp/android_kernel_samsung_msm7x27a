@@ -11,6 +11,10 @@
 #include <linux/io.h>
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/pgtable.h>
 
@@ -232,8 +236,13 @@ static int s5p_sysmmu_probe(struct platform_device *pdev)
 			goto err_res;
 		}
 
+<<<<<<< HEAD
 		mem = request_mem_region(res->start,
 				((res->end) - (res->start)) + 1, pdev->name);
+=======
+		mem = request_mem_region(res->start, resource_size(res),
+					 pdev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!mem) {
 			dev_err(dev, "Failed to request the memory region of %s.\n",
 							sysmmu_ips_name[i]);
@@ -241,7 +250,11 @@ static int s5p_sysmmu_probe(struct platform_device *pdev)
 			goto err_res;
 		}
 
+<<<<<<< HEAD
 		sysmmusfrs[i] = ioremap(res->start, res->end - res->start + 1);
+=======
+		sysmmusfrs[i] = ioremap(res->start, resource_size(res));
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!sysmmusfrs[i]) {
 			dev_err(dev, "Failed to ioremap() for %s.\n",
 							sysmmu_ips_name[i]);

@@ -1,12 +1,16 @@
+<<<<<<< HEAD
 #ifndef _LINUX_MEMPOLICY_H
 #define _LINUX_MEMPOLICY_H 1
 
 #include <linux/errno.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * NUMA memory policies for Linux.
  * Copyright 2003,2004 Andi Kleen SuSE Labs
  */
+<<<<<<< HEAD
 
 /*
  * Both the MPOL_* mempolicy mode and the MPOL_F_* optional mode flags are
@@ -61,6 +65,11 @@ enum mpol_rebind_step {
 #define MPOL_F_REBINDING (1 << 2)	/* identify policies in rebinding */
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_MEMPOLICY_H
+#define _LINUX_MEMPOLICY_H 1
+
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mmzone.h>
 #include <linux/slab.h>
@@ -68,6 +77,10 @@ enum mpol_rebind_step {
 #include <linux/spinlock.h>
 #include <linux/nodemask.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
+=======
+#include <uapi/linux/mempolicy.h>
+>>>>>>> refs/remotes/origin/master
 
 struct mm_struct;
 
@@ -146,7 +159,10 @@ static inline struct mempolicy *mpol_dup(struct mempolicy *pol)
 }
 
 #define vma_policy(vma) ((vma)->vm_policy)
+<<<<<<< HEAD
 #define vma_set_policy(vma, pol) ((vma)->vm_policy = (pol))
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void mpol_get(struct mempolicy *pol)
 {
@@ -154,11 +170,25 @@ static inline void mpol_get(struct mempolicy *pol)
 		atomic_inc(&pol->refcnt);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int __mpol_equal(struct mempolicy *a, struct mempolicy *b);
 static inline int mpol_equal(struct mempolicy *a, struct mempolicy *b)
 {
 	if (a == b)
 		return 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern bool __mpol_equal(struct mempolicy *a, struct mempolicy *b);
+static inline bool mpol_equal(struct mempolicy *a, struct mempolicy *b)
+{
+	if (a == b)
+		return true;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return __mpol_equal(a, b);
 }
 
@@ -178,9 +208,20 @@ struct sp_node {
 
 struct shared_policy {
 	struct rb_root root;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct mutex mutex;
 };
 
+=======
+	spinlock_t lock;
+=======
+	struct mutex mutex;
+>>>>>>> refs/remotes/origin/cm-11.0
+};
+
+int vma_dup_policy(struct vm_area_struct *src, struct vm_area_struct *dst);
+>>>>>>> refs/remotes/origin/master
 void mpol_shared_policy_init(struct shared_policy *sp, struct mempolicy *mpol);
 int mpol_set_shared_policy(struct shared_policy *info,
 				struct vm_area_struct *vma,
@@ -191,6 +232,10 @@ struct mempolicy *mpol_shared_policy_lookup(struct shared_policy *sp,
 
 struct mempolicy *get_vma_policy(struct task_struct *tsk,
 		struct vm_area_struct *vma, unsigned long addr);
+<<<<<<< HEAD
+=======
+bool vma_policy_mof(struct task_struct *task, struct vm_area_struct *vma);
+>>>>>>> refs/remotes/origin/master
 
 extern void numa_default_policy(void);
 extern void numa_policy_init(void);
@@ -205,7 +250,11 @@ extern struct zonelist *huge_zonelist(struct vm_area_struct *vma,
 extern bool init_nodemask_of_mempolicy(nodemask_t *mask);
 extern bool mempolicy_nodemask_intersects(struct task_struct *tsk,
 				const nodemask_t *mask);
+<<<<<<< HEAD
 extern unsigned slab_node(struct mempolicy *policy);
+=======
+extern unsigned slab_node(void);
+>>>>>>> refs/remotes/origin/master
 
 extern enum zone_type policy_zone;
 
@@ -215,6 +264,7 @@ static inline void check_highest_zone(enum zone_type k)
 		policy_zone = k;
 }
 
+<<<<<<< HEAD
 int do_migrate_pages(struct mm_struct *mm,
 	const nodemask_t *from_nodes, const nodemask_t *to_nodes, int flags);
 
@@ -225,11 +275,26 @@ extern int mpol_parse_str(char *str, struct mempolicy **mpol, int no_context);
 
 extern int mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol,
 			int no_context);
+=======
+int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
+		     const nodemask_t *to, int flags);
+
+
+#ifdef CONFIG_TMPFS
+extern int mpol_parse_str(char *str, struct mempolicy **mpol);
+#endif
+
+extern void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol);
+>>>>>>> refs/remotes/origin/master
 
 /* Check if a vma is migratable */
 static inline int vma_migratable(struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 	if (vma->vm_flags & (VM_IO|VM_HUGETLB|VM_PFNMAP|VM_RESERVED))
+=======
+	if (vma->vm_flags & (VM_IO | VM_PFNMAP))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	/*
 	 * Migration allocates pages in the highest zone. If we cannot
@@ -243,13 +308,30 @@ static inline int vma_migratable(struct vm_area_struct *vma)
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
+extern int mpol_misplaced(struct page *, struct vm_area_struct *, unsigned long);
+
+>>>>>>> refs/remotes/origin/master
 #else
 
 struct mempolicy {};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int mpol_equal(struct mempolicy *a, struct mempolicy *b)
 {
 	return 1;
+=======
+static inline bool mpol_equal(struct mempolicy *a, struct mempolicy *b)
+{
+	return true;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline bool mpol_equal(struct mempolicy *a, struct mempolicy *b)
+{
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void mpol_put(struct mempolicy *p)
@@ -264,6 +346,7 @@ static inline void mpol_get(struct mempolicy *pol)
 {
 }
 
+<<<<<<< HEAD
 static inline struct mempolicy *mpol_dup(struct mempolicy *old)
 {
 	return NULL;
@@ -278,6 +361,10 @@ static inline int mpol_set_shared_policy(struct shared_policy *info,
 	return -EINVAL;
 }
 
+=======
+struct shared_policy {};
+
+>>>>>>> refs/remotes/origin/master
 static inline void mpol_shared_policy_init(struct shared_policy *sp,
 						struct mempolicy *mpol)
 {
@@ -287,6 +374,7 @@ static inline void mpol_free_shared_policy(struct shared_policy *p)
 {
 }
 
+<<<<<<< HEAD
 static inline struct mempolicy *
 mpol_shared_policy_lookup(struct shared_policy *sp, unsigned long idx)
 {
@@ -296,6 +384,16 @@ mpol_shared_policy_lookup(struct shared_policy *sp, unsigned long idx)
 #define vma_policy(vma) NULL
 #define vma_set_policy(vma, pol) do {} while(0)
 
+=======
+#define vma_policy(vma) NULL
+
+static inline int
+vma_dup_policy(struct vm_area_struct *src, struct vm_area_struct *dst)
+{
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void numa_policy_init(void)
 {
 }
@@ -314,10 +412,13 @@ static inline void mpol_rebind_mm(struct mm_struct *mm, nodemask_t *new)
 {
 }
 
+<<<<<<< HEAD
 static inline void mpol_fix_fork_child_flag(struct task_struct *p)
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct zonelist *huge_zonelist(struct vm_area_struct *vma,
 				unsigned long addr, gfp_t gfp_flags,
 				struct mempolicy **mpol, nodemask_t **nodemask)
@@ -332,6 +433,7 @@ static inline bool init_nodemask_of_mempolicy(nodemask_t *m)
 	return false;
 }
 
+<<<<<<< HEAD
 static inline bool mempolicy_nodemask_intersects(struct task_struct *tsk,
 			const nodemask_t *mask)
 {
@@ -341,6 +443,10 @@ static inline bool mempolicy_nodemask_intersects(struct task_struct *tsk,
 static inline int do_migrate_pages(struct mm_struct *mm,
 			const nodemask_t *from_nodes,
 			const nodemask_t *to_nodes, int flags)
+=======
+static inline int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
+				   const nodemask_t *to, int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -350,13 +456,18 @@ static inline void check_highest_zone(int k)
 }
 
 #ifdef CONFIG_TMPFS
+<<<<<<< HEAD
 static inline int mpol_parse_str(char *str, struct mempolicy **mpol,
 				int no_context)
+=======
+static inline int mpol_parse_str(char *str, struct mempolicy **mpol)
+>>>>>>> refs/remotes/origin/master
 {
 	return 1;	/* error */
 }
 #endif
 
+<<<<<<< HEAD
 static inline int mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol,
 				int no_context)
 {
@@ -366,4 +477,13 @@ static inline int mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol,
 #endif /* CONFIG_NUMA */
 #endif /* __KERNEL__ */
 
+=======
+static inline int mpol_misplaced(struct page *page, struct vm_area_struct *vma,
+				 unsigned long address)
+{
+	return -1; /* no node preference */
+}
+
+#endif /* CONFIG_NUMA */
+>>>>>>> refs/remotes/origin/master
 #endif

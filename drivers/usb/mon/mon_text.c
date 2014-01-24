@@ -9,6 +9,14 @@
 #include <linux/usb.h>
 #include <linux/slab.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <linux/debugfs.h>
 #include <linux/scatterlist.h>
@@ -670,6 +678,18 @@ int mon_text_add(struct mon_bus *mbus, const struct usb_bus *ubus)
 	int busnum = ubus? ubus->busnum: 0;
 	int rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (mon_dir == NULL)
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mon_dir == NULL)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (ubus != NULL) {
 		rc = snprintf(name, NAMESZ, "%dt", busnum);
 		if (rc <= 0 || rc >= NAMESZ)
@@ -740,12 +760,27 @@ int __init mon_text_init(void)
 
 	mondir = debugfs_create_dir("usbmon", usb_debug_root);
 	if (IS_ERR(mondir)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE TAG ": debugfs is not available\n");
 		return -ENODEV;
 	}
 	if (mondir == NULL) {
 		printk(KERN_NOTICE TAG ": unable to create usbmon directory\n");
 		return -ENODEV;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/* debugfs not available, but we can use usbmon without it */
+		return 0;
+	}
+	if (mondir == NULL) {
+		printk(KERN_NOTICE TAG ": unable to create usbmon directory\n");
+		return -ENOMEM;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	mon_dir = mondir;
 	return 0;

@@ -223,6 +223,7 @@ static int i8042_flush(void)
 {
 	unsigned long flags;
 	unsigned char data, str;
+<<<<<<< HEAD
 	int i = 0;
 
 	spin_lock_irqsave(&i8042_lock, flags);
@@ -233,11 +234,32 @@ static int i8042_flush(void)
 		i++;
 		dbg("%02x <- i8042 (flush, %s)\n",
 		    data, str & I8042_STR_AUXDATA ? "aux" : "kbd");
+=======
+	int count = 0;
+	int retval = 0;
+
+	spin_lock_irqsave(&i8042_lock, flags);
+
+	while ((str = i8042_read_status()) & I8042_STR_OBF) {
+		if (count++ < I8042_BUFFER_SIZE) {
+			udelay(50);
+			data = i8042_read_data();
+			dbg("%02x <- i8042 (flush, %s)\n",
+			    data, str & I8042_STR_AUXDATA ? "aux" : "kbd");
+		} else {
+			retval = -EIO;
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_unlock_irqrestore(&i8042_lock, flags);
 
+<<<<<<< HEAD
 	return i;
+=======
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -849,7 +871,11 @@ static int __init i8042_check_aux(void)
 
 static int i8042_controller_check(void)
 {
+<<<<<<< HEAD
 	if (i8042_flush() == I8042_BUFFER_SIZE) {
+=======
+	if (i8042_flush()) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("No controller found\n");
 		return -ENODEV;
 	}
@@ -991,7 +1017,15 @@ static int i8042_controller_init(void)
  * Reset the controller and reset CRT to the original value set by BIOS.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void i8042_controller_reset(void)
+=======
+static void i8042_controller_reset(bool force_reset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void i8042_controller_reset(bool force_reset)
+>>>>>>> refs/remotes/origin/master
 {
 	i8042_flush();
 
@@ -1016,7 +1050,15 @@ static void i8042_controller_reset(void)
  * Reset the controller if requested.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (i8042_reset)
+=======
+	if (i8042_reset || force_reset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (i8042_reset || force_reset)
+>>>>>>> refs/remotes/origin/master
 		i8042_controller_selftest();
 
 /*
@@ -1031,7 +1073,11 @@ static void i8042_controller_reset(void)
 /*
  * i8042_panic_blink() will turn the keyboard LEDs on or off and is called
  * when kernel panics. Flashing LEDs is useful for users running X who may
+<<<<<<< HEAD
  * not see the console and will help distingushing panics from "real"
+=======
+ * not see the console and will help distinguishing panics from "real"
+>>>>>>> refs/remotes/origin/master
  * lockups.
  *
  * Note that DELAY has a limit of 10ms so we will not get stuck here
@@ -1139,9 +1185,21 @@ static int i8042_controller_resume(bool force_reset)
  * upsetting it.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int i8042_pm_reset(struct device *dev)
 {
 	i8042_controller_reset();
+=======
+static int i8042_pm_suspend(struct device *dev)
+{
+	i8042_controller_reset(true);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int i8042_pm_suspend(struct device *dev)
+{
+	i8042_controller_reset(true);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1163,13 +1221,37 @@ static int i8042_pm_thaw(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int i8042_pm_reset(struct device *dev)
+{
+	i8042_controller_reset(false);
+
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int i8042_pm_restore(struct device *dev)
 {
 	return i8042_controller_resume(false);
 }
 
 static const struct dev_pm_ops i8042_pm_ops = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.suspend	= i8042_pm_reset,
+=======
+	.suspend	= i8042_pm_suspend,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.suspend	= i8042_pm_suspend,
+>>>>>>> refs/remotes/origin/master
 	.resume		= i8042_pm_resume,
 	.thaw		= i8042_pm_thaw,
 	.poweroff	= i8042_pm_reset,
@@ -1185,7 +1267,15 @@ static const struct dev_pm_ops i8042_pm_ops = {
 
 static void i8042_shutdown(struct platform_device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	i8042_controller_reset();
+=======
+	i8042_controller_reset(false);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i8042_controller_reset(false);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init i8042_create_kbd_port(void)
@@ -1277,7 +1367,11 @@ static void __init i8042_register_ports(void)
 	}
 }
 
+<<<<<<< HEAD
 static void __devexit i8042_unregister_ports(void)
+=======
+static void i8042_unregister_ports(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -1424,17 +1518,37 @@ static int __init i8042_probe(struct platform_device *dev)
  out_fail:
 	i8042_free_aux_ports();	/* in case KBD failed but AUX not */
 	i8042_free_irqs();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	i8042_controller_reset();
+=======
+	i8042_controller_reset(false);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i8042_controller_reset(false);
+>>>>>>> refs/remotes/origin/master
 	i8042_platform_device = NULL;
 
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit i8042_remove(struct platform_device *dev)
 {
 	i8042_unregister_ports();
 	i8042_free_irqs();
+<<<<<<< HEAD
 	i8042_controller_reset();
+=======
+	i8042_controller_reset(false);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int i8042_remove(struct platform_device *dev)
+{
+	i8042_unregister_ports();
+	i8042_free_irqs();
+	i8042_controller_reset(false);
+>>>>>>> refs/remotes/origin/master
 	i8042_platform_device = NULL;
 
 	return 0;
@@ -1448,7 +1562,11 @@ static struct platform_driver i8042_driver = {
 		.pm	= &i8042_pm_ops,
 #endif
 	},
+<<<<<<< HEAD
 	.remove		= __devexit_p(i8042_remove),
+=======
+	.remove		= i8042_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= i8042_shutdown,
 };
 

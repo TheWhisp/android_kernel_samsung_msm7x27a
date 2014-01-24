@@ -30,6 +30,7 @@
  *  with this program; if not, write to the Free Software Foundation, Inc.,
  *  675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_IPMI_H
 #define __LINUX_IPMI_H
@@ -220,10 +221,29 @@ struct kernel_ipmi_msg {
  * The in-kernel interface.
  */
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/proc_fs.h>
 
+=======
+=======
+#ifndef __LINUX_IPMI_H
+#define __LINUX_IPMI_H
+
+#include <uapi/linux/ipmi.h>
+
+#include <linux/list.h>
+>>>>>>> refs/remotes/origin/master
+#include <linux/proc_fs.h>
+
+struct module;
+struct device;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Opaque type for a IPMI message user.  One of these is needed to
    send and receive messages. */
 typedef struct ipmi_user *ipmi_user_t;
@@ -492,6 +512,7 @@ struct ipmi_smi_info {
 /* This is to get the private info of ipmi_smi_t */
 extern int ipmi_get_smi_info(int if_num, struct ipmi_smi_info *data);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 
@@ -732,4 +753,6 @@ struct ipmi_timing_parms {
 #define IPMICTL_GET_MAINTENANCE_MODE_CMD	_IOR(IPMI_IOC_MAGIC, 30, int)
 #define IPMICTL_SET_MAINTENANCE_MODE_CMD	_IOW(IPMI_IOC_MAGIC, 31, int)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_IPMI_H */

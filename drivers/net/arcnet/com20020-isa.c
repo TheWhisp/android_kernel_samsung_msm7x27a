@@ -34,6 +34,14 @@
 #include <linux/delay.h>
 #include <linux/netdevice.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bootmem.h>
 #include <linux/arcdevice.h>
 #include <linux/com20020.h>

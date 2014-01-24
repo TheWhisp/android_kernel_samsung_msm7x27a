@@ -8,6 +8,7 @@
 #ifndef __ASM_AVR32_PTRACE_H
 #define __ASM_AVR32_PTRACE_H
 
+<<<<<<< HEAD
 #define PTRACE_GETREGS		12
 #define PTRACE_SETREGS		13
 
@@ -121,6 +122,11 @@ struct pt_regs {
 };
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/ptrace.h>
+
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/ocd.h>
 
@@ -131,9 +137,17 @@ struct pt_regs {
 #define user_mode(regs)                 (((regs)->sr & MODE_MASK) == MODE_USER)
 #define instruction_pointer(regs)       ((regs)->pc)
 #define profile_pc(regs)                instruction_pointer(regs)
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 extern void show_regs (struct pt_regs *);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define user_stack_pointer(regs)	((regs)->sp)
+
+>>>>>>> refs/remotes/origin/master
 static __inline__ int valid_user_regs(struct pt_regs *regs)
 {
 	/*
@@ -152,8 +166,12 @@ static __inline__ int valid_user_regs(struct pt_regs *regs)
 }
 
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #endif /* ! __ASSEMBLY__ */
 
+=======
+#endif /* ! __ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_AVR32_PTRACE_H */

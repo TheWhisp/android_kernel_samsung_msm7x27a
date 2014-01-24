@@ -41,11 +41,15 @@
 #define RETRY_TIMES_THRD_H         2    // times
 #define RETRY_TIMES_THRD_L         1    // times
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*---------------------  Export Classes  ----------------------------*/
 
 /*---------------------  Export Variables  --------------------------*/
 
+<<<<<<< HEAD
 
 /*---------------------  Export Types  ------------------------------*/
 
@@ -91,5 +95,46 @@ DATARATEbyGetRateIdx(
     unsigned char byRate
     );
 
+=======
+/*---------------------  Export Types  ------------------------------*/
+
+/*---------------------  Export Functions  --------------------------*/
+
+void
+RATEvParseMaxRate(
+	void *pDeviceHandler,
+	PWLAN_IE_SUPP_RATES pItemRates,
+	PWLAN_IE_SUPP_RATES pItemExtRates,
+	bool bUpdateBasicRate,
+	unsigned short *pwMaxBasicRate,
+	unsigned short *pwMaxSuppRate,
+	unsigned short *pwSuppRate,
+	unsigned char *pbyTopCCKRate,
+	unsigned char *pbyTopOFDMRate
+);
+
+void
+RATEvTxRateFallBack(
+	void *pDeviceHandler,
+	PKnownNodeDB psNodeDBTable
+);
+
+unsigned char
+RATEuSetIE(
+	PWLAN_IE_SUPP_RATES pSrcRates,
+	PWLAN_IE_SUPP_RATES pDstRates,
+	unsigned int uRateLen
+);
+
+unsigned short
+wGetRateIdx(
+	unsigned char byRate
+);
+
+unsigned char
+DATARATEbyGetRateIdx(
+	unsigned char byRate
+);
+>>>>>>> refs/remotes/origin/master
 
 #endif //__DATARATE_H__

@@ -29,9 +29,15 @@
  */
 
 #include "vmwgfx_drv.h"
+<<<<<<< HEAD
 #include "ttm/ttm_module.h"
 #include "ttm/ttm_bo_driver.h"
 #include "ttm/ttm_placement.h"
+=======
+#include <drm/ttm/ttm_module.h>
+#include <drm/ttm/ttm_bo_driver.h>
+#include <drm/ttm/ttm_placement.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/idr.h>
 #include <linux/spinlock.h>
 #include <linux/kernel.h>
@@ -40,6 +46,16 @@ struct vmwgfx_gmrid_man {
 	spinlock_t lock;
 	struct ida gmr_ida;
 	uint32_t max_gmr_ids;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	uint32_t max_gmr_pages;
+	uint32_t used_gmr_pages;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t max_gmr_pages;
+	uint32_t used_gmr_pages;
+>>>>>>> refs/remotes/origin/master
 };
 
 static int vmw_gmrid_man_get_node(struct ttm_mem_type_manager *man,
@@ -49,11 +65,21 @@ static int vmw_gmrid_man_get_node(struct ttm_mem_type_manager *man,
 {
 	struct vmwgfx_gmrid_man *gman =
 		(struct vmwgfx_gmrid_man *)man->priv;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 	int id;
 
 	mem->mm_node = NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	do {
 		if (unlikely(ida_pre_get(&gman->gmr_ida, GFP_KERNEL) == 0))
 			return -ENOMEM;
@@ -69,13 +95,63 @@ static int vmw_gmrid_man_get_node(struct ttm_mem_type_manager *man,
 
 		spin_unlock(&gman->lock);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_lock(&gman->lock);
+
+	if (gman->max_gmr_pages > 0) {
+		gman->used_gmr_pages += bo->num_pages;
+		if (unlikely(gman->used_gmr_pages > gman->max_gmr_pages))
+			goto out_err_locked;
+	}
+
+	do {
+		spin_unlock(&gman->lock);
+		if (unlikely(ida_pre_get(&gman->gmr_ida, GFP_KERNEL) == 0)) {
+			ret = -ENOMEM;
+			goto out_err;
+		}
+		spin_lock(&gman->lock);
+
+		ret = ida_get_new(&gman->gmr_ida, &id);
+		if (unlikely(ret == 0 && id >= gman->max_gmr_ids)) {
+			ida_remove(&gman->gmr_ida, id);
+			ret = 0;
+			goto out_err_locked;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} while (ret == -EAGAIN);
 
 	if (likely(ret == 0)) {
 		mem->mm_node = gman;
 		mem->start = id;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		mem->num_pages = bo->num_pages;
+	} else
+		goto out_err_locked;
+
+	spin_unlock(&gman->lock);
+	return 0;
+
+out_err:
+	spin_lock(&gman->lock);
+out_err_locked:
+	gman->used_gmr_pages -= bo->num_pages;
+	spin_unlock(&gman->lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -88,6 +164,14 @@ static void vmw_gmrid_man_put_node(struct ttm_mem_type_manager *man,
 	if (mem->mm_node) {
 		spin_lock(&gman->lock);
 		ida_remove(&gman->gmr_ida, mem->start);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		gman->used_gmr_pages -= mem->num_pages;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		gman->used_gmr_pages -= mem->num_pages;
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&gman->lock);
 		mem->mm_node = NULL;
 	}
@@ -96,6 +180,16 @@ static void vmw_gmrid_man_put_node(struct ttm_mem_type_manager *man,
 static int vmw_gmrid_man_init(struct ttm_mem_type_manager *man,
 			      unsigned long p_size)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct vmw_private *dev_priv =
+		container_of(man->bdev, struct vmw_private, bdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vmw_private *dev_priv =
+		container_of(man->bdev, struct vmw_private, bdev);
+>>>>>>> refs/remotes/origin/master
 	struct vmwgfx_gmrid_man *gman =
 		kzalloc(sizeof(*gman), GFP_KERNEL);
 
@@ -103,6 +197,16 @@ static int vmw_gmrid_man_init(struct ttm_mem_type_manager *man,
 		return -ENOMEM;
 
 	spin_lock_init(&gman->lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	gman->max_gmr_pages = dev_priv->max_gmr_pages;
+	gman->used_gmr_pages = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gman->max_gmr_pages = dev_priv->max_gmr_pages;
+	gman->used_gmr_pages = 0;
+>>>>>>> refs/remotes/origin/master
 	ida_init(&gman->gmr_ida);
 	gman->max_gmr_ids = p_size;
 	man->priv = (void *) gman;

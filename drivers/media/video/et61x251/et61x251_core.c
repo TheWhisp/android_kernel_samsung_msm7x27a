@@ -18,6 +18,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.               *
  ***************************************************************************/
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/version.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
@@ -48,8 +54,12 @@
 #define ET61X251_MODULE_AUTHOR  "(C) 2006-2007 Luca Risolia"
 #define ET61X251_AUTHOR_EMAIL   "<luca.risolia@studio.unibo.it>"
 #define ET61X251_MODULE_LICENSE "GPL"
+<<<<<<< HEAD
 #define ET61X251_MODULE_VERSION "1:1.09"
 #define ET61X251_MODULE_VERSION_CODE  KERNEL_VERSION(1, 1, 9)
+=======
+#define ET61X251_MODULE_VERSION "1.1.10"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*****************************************************************************/
 
@@ -74,8 +84,13 @@ MODULE_PARM_DESC(video_nr,
 		 "\none and for every other camera."
 		 "\n");
 
+<<<<<<< HEAD
 static short force_munmap[] = {[0 ... ET61X251_MAX_DEVICES-1] =
 			       ET61X251_FORCE_MUNMAP};
+=======
+static bool force_munmap[] = {[0 ... ET61X251_MAX_DEVICES-1] =
+			      ET61X251_FORCE_MUNMAP};
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_array(force_munmap, bool, NULL, 0444);
 MODULE_PARM_DESC(force_munmap,
 		 "\n<0|1[,...]> Force the application to unmap previously"
@@ -1579,7 +1594,11 @@ et61x251_vidioc_querycap(struct et61x251_device* cam, void __user * arg)
 {
 	struct v4l2_capability cap = {
 		.driver = "et61x251",
+<<<<<<< HEAD
 		.version = ET61X251_MODULE_VERSION_CODE,
+=======
+		.version = LINUX_VERSION_CODE,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE |
 				V4L2_CAP_STREAMING,
 	};
@@ -2480,6 +2499,7 @@ static long et61x251_ioctl_v4l2(struct file *filp,
 	case VIDIOC_S_PARM:
 		return et61x251_vidioc_s_parm(cam, arg);
 
+<<<<<<< HEAD
 	case VIDIOC_G_STD:
 	case VIDIOC_S_STD:
 	case VIDIOC_QUERYSTD:
@@ -2490,6 +2510,10 @@ static long et61x251_ioctl_v4l2(struct file *filp,
 
 	default:
 		return -EINVAL;
+=======
+	default:
+		return -ENOTTY;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	}
 }
@@ -2686,6 +2710,7 @@ static struct usb_driver et61x251_usb_driver = {
 	.disconnect = et61x251_usb_disconnect,
 };
 
+<<<<<<< HEAD
 /*****************************************************************************/
 
 static int __init et61x251_module_init(void)
@@ -2710,3 +2735,6 @@ static void __exit et61x251_module_exit(void)
 
 module_init(et61x251_module_init);
 module_exit(et61x251_module_exit);
+=======
+module_usb_driver(et61x251_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

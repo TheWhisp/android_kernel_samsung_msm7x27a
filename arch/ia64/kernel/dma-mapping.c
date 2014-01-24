@@ -1,4 +1,12 @@
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Set this to 1 if there is a HW IOMMU in the system */
 int iommu_detected __read_mostly;

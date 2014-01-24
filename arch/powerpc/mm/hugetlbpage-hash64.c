@@ -14,18 +14,35 @@
 #include <asm/cacheflush.h>
 #include <asm/machdep.h>
 
+<<<<<<< HEAD
+=======
+extern long hpte_insert_repeating(unsigned long hash, unsigned long vpn,
+				  unsigned long pa, unsigned long rlags,
+				  unsigned long vflags, int psize, int ssize);
+
+>>>>>>> refs/remotes/origin/master
 int __hash_page_huge(unsigned long ea, unsigned long access, unsigned long vsid,
 		     pte_t *ptep, unsigned long trap, int local, int ssize,
 		     unsigned int shift, unsigned int mmu_psize)
 {
+<<<<<<< HEAD
 	unsigned long old_pte, new_pte;
 	unsigned long va, rflags, pa, sz;
+=======
+	unsigned long vpn;
+	unsigned long old_pte, new_pte;
+	unsigned long rflags, pa, sz;
+>>>>>>> refs/remotes/origin/master
 	long slot;
 
 	BUG_ON(shift != mmu_psize_defs[mmu_psize].shift);
 
 	/* Search the Linux page table for a match with va */
+<<<<<<< HEAD
 	va = hpt_va(ea, vsid, ssize);
+=======
+	vpn = hpt_vpn(ea, vsid, ssize);
+>>>>>>> refs/remotes/origin/master
 
 	/* At this point, we have a pte (old_pte) which can be used to build
 	 * or update an HPTE. There are 2 cases:
@@ -69,18 +86,28 @@ int __hash_page_huge(unsigned long ea, unsigned long access, unsigned long vsid,
 		/* There MIGHT be an HPTE for this pte */
 		unsigned long hash, slot;
 
+<<<<<<< HEAD
 		hash = hpt_hash(va, shift, ssize);
+=======
+		hash = hpt_hash(vpn, shift, ssize);
+>>>>>>> refs/remotes/origin/master
 		if (old_pte & _PAGE_F_SECOND)
 			hash = ~hash;
 		slot = (hash & htab_hash_mask) * HPTES_PER_GROUP;
 		slot += (old_pte & _PAGE_F_GIX) >> 12;
 
+<<<<<<< HEAD
 		if (ppc_md.hpte_updatepp(slot, rflags, va, mmu_psize,
 					 ssize, local) == -1)
+=======
+		if (ppc_md.hpte_updatepp(slot, rflags, vpn, mmu_psize,
+					 mmu_psize, ssize, local) == -1)
+>>>>>>> refs/remotes/origin/master
 			old_pte &= ~_PAGE_HPTEFLAGS;
 	}
 
 	if (likely(!(old_pte & _PAGE_HASHPTE))) {
+<<<<<<< HEAD
 		unsigned long hash = hpt_hash(va, shift, ssize);
 		unsigned long hpte_group;
 
@@ -90,6 +117,12 @@ repeat:
 		hpte_group = ((hash & htab_hash_mask) *
 			      HPTES_PER_GROUP) & ~0x7UL;
 
+=======
+		unsigned long hash = hpt_hash(vpn, shift, ssize);
+
+		pa = pte_pfn(__pte(old_pte)) << PAGE_SHIFT;
+
+>>>>>>> refs/remotes/origin/master
 		/* clear HPTE slot informations in new PTE */
 #ifdef CONFIG_PPC_64K_PAGES
 		new_pte = (new_pte & ~_PAGE_HPTEFLAGS) | _PAGE_HPTE_SUB0;
@@ -100,6 +133,7 @@ repeat:
 		rflags |= (new_pte & (_PAGE_WRITETHRU | _PAGE_NO_CACHE |
 				      _PAGE_COHERENT | _PAGE_GUARDED));
 
+<<<<<<< HEAD
 		/* Insert into the hash table, primary slot */
 		slot = ppc_md.hpte_insert(hpte_group, va, pa, rflags, 0,
 					  mmu_psize, ssize);
@@ -120,6 +154,10 @@ repeat:
 				goto repeat;
                         }
 		}
+=======
+		slot = hpte_insert_repeating(hash, vpn, pa, rflags, 0,
+					     mmu_psize, ssize);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Hypervisor failure. Restore old pte and return -1
@@ -128,7 +166,11 @@ repeat:
 		if (unlikely(slot == -2)) {
 			*ptep = __pte(old_pte);
 			hash_failure_debug(ea, access, vsid, trap, ssize,
+<<<<<<< HEAD
 					   mmu_psize, old_pte);
+=======
+					   mmu_psize, mmu_psize, old_pte);
+>>>>>>> refs/remotes/origin/master
 			return -1;
 		}
 

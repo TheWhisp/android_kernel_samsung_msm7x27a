@@ -61,7 +61,10 @@ struct mirror_set {
 	struct dm_region_hash *rh;
 	struct dm_kcopyd_client *kcopyd_client;
 	struct dm_io_client *io_client;
+<<<<<<< HEAD
 	mempool_t *read_record_pool;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* recovery */
 	region_t nr_regions;
@@ -83,6 +86,12 @@ struct mirror_set {
 	struct mirror mirror[0];
 };
 
+<<<<<<< HEAD
+=======
+DECLARE_DM_KCOPYD_THROTTLE_WITH_MODULE_PARM(raid1_resync_throttle,
+		"A percentage of time allocated for raid resynchronization");
+
+>>>>>>> refs/remotes/origin/master
 static void wakeup_mirrord(void *context)
 {
 	struct mirror_set *ms = context;
@@ -139,6 +148,7 @@ static void dispatch_bios(void *context, struct bio_list *bio_list)
 		queue_bio(ms, bio, WRITE);
 }
 
+<<<<<<< HEAD
 #define MIN_READ_RECORDS 20
 struct dm_raid1_read_record {
 	struct mirror *m;
@@ -147,6 +157,15 @@ struct dm_raid1_read_record {
 
 static struct kmem_cache *_dm_raid1_read_record_cache;
 
+=======
+struct dm_raid1_bio_record {
+	struct mirror *m;
+	/* if details->bi_bdev == NULL, details were not saved */
+	struct dm_bio_details details;
+	region_t write_region;
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Every mirror should look like this one.
  */
@@ -457,7 +476,11 @@ static void map_region(struct dm_io_region *io, struct mirror *m,
 {
 	io->bdev = m->dev->bdev;
 	io->sector = map_sector(m, bio);
+<<<<<<< HEAD
 	io->count = bio->bi_size >> 9;
+=======
+	io->count = bio_sectors(bio);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hold_bio(struct mirror_set *ms, struct bio *bio)
@@ -876,6 +899,7 @@ static struct mirror_set *alloc_context(unsigned int nr_mirrors,
 	atomic_set(&ms->suspend, 0);
 	atomic_set(&ms->default_mirror, DEFAULT_MIRROR);
 
+<<<<<<< HEAD
 	ms->read_record_pool = mempool_create_slab_pool(MIN_READ_RECORDS,
 						_dm_raid1_read_record_cache);
 
@@ -889,6 +913,11 @@ static struct mirror_set *alloc_context(unsigned int nr_mirrors,
 	if (IS_ERR(ms->io_client)) {
 		ti->error = "Error creating dm_io client";
 		mempool_destroy(ms->read_record_pool);
+=======
+	ms->io_client = dm_io_client_create();
+	if (IS_ERR(ms->io_client)) {
+		ti->error = "Error creating dm_io client";
+>>>>>>> refs/remotes/origin/master
 		kfree(ms);
  		return NULL;
 	}
@@ -900,7 +929,10 @@ static struct mirror_set *alloc_context(unsigned int nr_mirrors,
 	if (IS_ERR(ms->rh)) {
 		ti->error = "Error creating dirty region hash";
 		dm_io_client_destroy(ms->io_client);
+<<<<<<< HEAD
 		mempool_destroy(ms->read_record_pool);
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(ms);
 		return NULL;
 	}
@@ -916,7 +948,10 @@ static void free_context(struct mirror_set *ms, struct dm_target *ti,
 
 	dm_io_client_destroy(ms->io_client);
 	dm_region_hash_destroy(ms->rh);
+<<<<<<< HEAD
 	mempool_destroy(ms->read_record_pool);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(ms);
 }
 
@@ -924,8 +959,20 @@ static int get_mirror(struct mirror_set *ms, struct dm_target *ti,
 		      unsigned int mirror, char **argv)
 {
 	unsigned long long offset;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (sscanf(argv[1], "%llu", &offset) != 1) {
+=======
+	char dummy;
+
+	if (sscanf(argv[1], "%llu%c", &offset, &dummy) != 1) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dummy;
+
+	if (sscanf(argv[1], "%llu%c", &offset, &dummy) != 1) {
+>>>>>>> refs/remotes/origin/master
 		ti->error = "Invalid offset";
 		return -EINVAL;
 	}
@@ -953,13 +1000,29 @@ static struct dm_dirty_log *create_dirty_log(struct dm_target *ti,
 {
 	unsigned param_count;
 	struct dm_dirty_log *dl;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/master
 
 	if (argc < 2) {
 		ti->error = "Insufficient mirror log arguments";
 		return NULL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (sscanf(argv[1], "%u", &param_count) != 1) {
+=======
+	if (sscanf(argv[1], "%u%c", &param_count, &dummy) != 1) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sscanf(argv[1], "%u%c", &param_count, &dummy) != 1) {
+>>>>>>> refs/remotes/origin/master
 		ti->error = "Invalid mirror log argument count";
 		return NULL;
 	}
@@ -986,13 +1049,29 @@ static int parse_features(struct mirror_set *ms, unsigned argc, char **argv,
 {
 	unsigned num_features;
 	struct dm_target *ti = ms->ti;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/master
 
 	*args_used = 0;
 
 	if (!argc)
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (sscanf(argv[0], "%u", &num_features) != 1) {
+=======
+	if (sscanf(argv[0], "%u%c", &num_features, &dummy) != 1) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sscanf(argv[0], "%u%c", &num_features, &dummy) != 1) {
+>>>>>>> refs/remotes/origin/master
 		ti->error = "Invalid number of features";
 		return -EINVAL;
 	}
@@ -1036,6 +1115,14 @@ static int mirror_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	unsigned int nr_mirrors, m, args_used;
 	struct mirror_set *ms;
 	struct dm_dirty_log *dl;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/master
 
 	dl = create_dirty_log(ti, argc, argv, &args_used);
 	if (!dl)
@@ -1044,7 +1131,15 @@ static int mirror_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	argv += args_used;
 	argc -= args_used;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!argc || sscanf(argv[0], "%u", &nr_mirrors) != 1 ||
+=======
+	if (!argc || sscanf(argv[0], "%u%c", &nr_mirrors, &dummy) != 1 ||
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!argc || sscanf(argv[0], "%u%c", &nr_mirrors, &dummy) != 1 ||
+>>>>>>> refs/remotes/origin/master
 	    nr_mirrors < 2 || nr_mirrors > DM_KCOPYD_MAX_REGIONS + 1) {
 		ti->error = "Invalid number of mirrors";
 		dm_dirty_log_destroy(dl);
@@ -1077,12 +1172,34 @@ static int mirror_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	}
 
 	ti->private = ms;
+<<<<<<< HEAD
 	ti->split_io = dm_rh_get_region_size(ms->rh);
 	ti->num_flush_requests = 1;
 	ti->num_discard_requests = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ti->discard_zeroes_data_unsupported = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ti->discard_zeroes_data_unsupported = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ms->kmirrord_wq = alloc_workqueue("kmirrord",
 					  WQ_NON_REENTRANT | WQ_MEM_RECLAIM, 0);
+=======
+
+	r = dm_set_target_max_io_len(ti, dm_rh_get_region_size(ms->rh));
+	if (r)
+		goto err_free_context;
+
+	ti->num_flush_bios = 1;
+	ti->num_discard_bios = 1;
+	ti->per_bio_data_size = sizeof(struct dm_raid1_bio_record);
+	ti->discard_zeroes_data_unsupported = true;
+
+	ms->kmirrord_wq = alloc_workqueue("kmirrord", WQ_MEM_RECLAIM, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!ms->kmirrord_wq) {
 		DMERR("couldn't start kmirrord");
 		r = -ENOMEM;
@@ -1115,7 +1232,11 @@ static int mirror_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		goto err_destroy_wq;
 	}
 
+<<<<<<< HEAD
 	ms->kcopyd_client = dm_kcopyd_client_create();
+=======
+	ms->kcopyd_client = dm_kcopyd_client_create(&dm_kcopyd_throttle);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(ms->kcopyd_client)) {
 		r = PTR_ERR(ms->kcopyd_client);
 		goto err_destroy_wq;
@@ -1137,7 +1258,11 @@ static void mirror_dtr(struct dm_target *ti)
 
 	del_timer_sync(&ms->timer);
 	flush_workqueue(ms->kmirrord_wq);
+<<<<<<< HEAD
 	flush_work_sync(&ms->trigger_event);
+=======
+	flush_work(&ms->trigger_event);
+>>>>>>> refs/remotes/origin/master
 	dm_kcopyd_client_destroy(ms->kcopyd_client);
 	destroy_workqueue(ms->kmirrord_wq);
 	free_context(ms, ti, ms->nr_mirrors);
@@ -1146,18 +1271,34 @@ static void mirror_dtr(struct dm_target *ti)
 /*
  * Mirror mapping function
  */
+<<<<<<< HEAD
 static int mirror_map(struct dm_target *ti, struct bio *bio,
 		      union map_info *map_context)
+=======
+static int mirror_map(struct dm_target *ti, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	int r, rw = bio_rw(bio);
 	struct mirror *m;
 	struct mirror_set *ms = ti->private;
+<<<<<<< HEAD
 	struct dm_raid1_read_record *read_record = NULL;
 	struct dm_dirty_log *log = dm_rh_dirty_log(ms->rh);
 
 	if (rw == WRITE) {
 		/* Save region for mirror_end_io() handler */
 		map_context->ll = dm_rh_bio_to_region(ms->rh, bio);
+=======
+	struct dm_dirty_log *log = dm_rh_dirty_log(ms->rh);
+	struct dm_raid1_bio_record *bio_record =
+	  dm_per_bio_data(bio, sizeof(struct dm_raid1_bio_record));
+
+	bio_record->details.bi_bdev = NULL;
+
+	if (rw == WRITE) {
+		/* Save region for mirror_end_io() handler */
+		bio_record->write_region = dm_rh_bio_to_region(ms->rh, bio);
+>>>>>>> refs/remotes/origin/master
 		queue_bio(ms, bio, rw);
 		return DM_MAPIO_SUBMITTED;
 	}
@@ -1185,33 +1326,54 @@ static int mirror_map(struct dm_target *ti, struct bio *bio,
 	if (unlikely(!m))
 		return -EIO;
 
+<<<<<<< HEAD
 	read_record = mempool_alloc(ms->read_record_pool, GFP_NOIO);
 	if (likely(read_record)) {
 		dm_bio_record(&read_record->details, bio);
 		map_context->ptr = read_record;
 		read_record->m = m;
 	}
+=======
+	dm_bio_record(&bio_record->details, bio);
+	bio_record->m = m;
+>>>>>>> refs/remotes/origin/master
 
 	map_bio(m, bio);
 
 	return DM_MAPIO_REMAPPED;
 }
 
+<<<<<<< HEAD
 static int mirror_end_io(struct dm_target *ti, struct bio *bio,
 			 int error, union map_info *map_context)
+=======
+static int mirror_end_io(struct dm_target *ti, struct bio *bio, int error)
+>>>>>>> refs/remotes/origin/master
 {
 	int rw = bio_rw(bio);
 	struct mirror_set *ms = (struct mirror_set *) ti->private;
 	struct mirror *m = NULL;
 	struct dm_bio_details *bd = NULL;
+<<<<<<< HEAD
 	struct dm_raid1_read_record *read_record = map_context->ptr;
+=======
+	struct dm_raid1_bio_record *bio_record =
+	  dm_per_bio_data(bio, sizeof(struct dm_raid1_bio_record));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We need to dec pending if this was a write.
 	 */
 	if (rw == WRITE) {
 		if (!(bio->bi_rw & (REQ_FLUSH | REQ_DISCARD)))
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			dm_rh_dec(ms->rh, map_context->ll);
+=======
+			dm_rh_dec(ms->rh, bio_record->write_region);
+>>>>>>> refs/remotes/origin/master
 		return error;
 	}
 
@@ -1222,7 +1384,11 @@ static int mirror_end_io(struct dm_target *ti, struct bio *bio,
 		goto out;
 
 	if (unlikely(error)) {
+<<<<<<< HEAD
 		if (!read_record) {
+=======
+		if (!bio_record->details.bi_bdev) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * There wasn't enough memory to record necessary
 			 * information for a retry or there was no other
@@ -1232,7 +1398,11 @@ static int mirror_end_io(struct dm_target *ti, struct bio *bio,
 			return -EIO;
 		}
 
+<<<<<<< HEAD
 		m = read_record->m;
+=======
+		m = bio_record->m;
+>>>>>>> refs/remotes/origin/master
 
 		DMERR("Mirror read failed from %s. Trying alternative device.",
 		      m->dev->name);
@@ -1244,6 +1414,7 @@ static int mirror_end_io(struct dm_target *ti, struct bio *bio,
 		 * mirror.
 		 */
 		if (default_ok(m) || mirror_available(ms, bio)) {
+<<<<<<< HEAD
 			bd = &read_record->details;
 
 			dm_bio_restore(bd, bio);
@@ -1251,15 +1422,27 @@ static int mirror_end_io(struct dm_target *ti, struct bio *bio,
 			map_context->ptr = NULL;
 			queue_bio(ms, bio, rw);
 			return 1;
+=======
+			bd = &bio_record->details;
+
+			dm_bio_restore(bd, bio);
+			bio_record->details.bi_bdev = NULL;
+			queue_bio(ms, bio, rw);
+			return DM_ENDIO_INCOMPLETE;
+>>>>>>> refs/remotes/origin/master
 		}
 		DMERR("All replicated volumes dead, failing I/O");
 	}
 
 out:
+<<<<<<< HEAD
 	if (read_record) {
 		mempool_free(read_record, ms->read_record_pool);
 		map_context->ptr = NULL;
 	}
+=======
+	bio_record->details.bi_bdev = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 }
@@ -1357,8 +1540,18 @@ static char device_status_char(struct mirror *m)
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int mirror_status(struct dm_target *ti, status_type_t type,
 			 char *result, unsigned int maxlen)
+=======
+static void mirror_status(struct dm_target *ti, status_type_t type,
+			  unsigned status_flags, char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/master
+=======
+static void mirror_status(struct dm_target *ti, status_type_t type,
+			  char *result, unsigned int maxlen)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned int m, sz = 0;
 	struct mirror_set *ms = (struct mirror_set *) ti->private;
@@ -1393,8 +1586,14 @@ static int mirror_status(struct dm_target *ti, status_type_t type,
 		if (ms->features & DM_RAID1_HANDLE_ERRORS)
 			DMEMIT(" 1 handle_errors");
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int mirror_iterate_devices(struct dm_target *ti,
@@ -1413,7 +1612,11 @@ static int mirror_iterate_devices(struct dm_target *ti,
 
 static struct target_type mirror_target = {
 	.name	 = "mirror",
+<<<<<<< HEAD
 	.version = {1, 12, 1},
+=======
+	.version = {1, 13, 2},
+>>>>>>> refs/remotes/origin/master
 	.module	 = THIS_MODULE,
 	.ctr	 = mirror_ctr,
 	.dtr	 = mirror_dtr,
@@ -1430,6 +1633,7 @@ static int __init dm_mirror_init(void)
 {
 	int r;
 
+<<<<<<< HEAD
 	_dm_raid1_read_record_cache = KMEM_CACHE(dm_raid1_read_record, 0);
 	if (!_dm_raid1_read_record_cache) {
 		DMERR("Can't allocate dm_raid1_read_record cache");
@@ -1437,6 +1641,8 @@ static int __init dm_mirror_init(void)
 		goto bad_cache;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	r = dm_register_target(&mirror_target);
 	if (r < 0) {
 		DMERR("Failed to register mirror target");
@@ -1446,15 +1652,21 @@ static int __init dm_mirror_init(void)
 	return 0;
 
 bad_target:
+<<<<<<< HEAD
 	kmem_cache_destroy(_dm_raid1_read_record_cache);
 bad_cache:
+=======
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
 static void __exit dm_mirror_exit(void)
 {
 	dm_unregister_target(&mirror_target);
+<<<<<<< HEAD
 	kmem_cache_destroy(_dm_raid1_read_record_cache);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Module hooks */

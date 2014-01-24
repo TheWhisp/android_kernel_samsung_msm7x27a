@@ -47,6 +47,16 @@
 
 #define S5P64X0_PA_HSMMC(x)	(0xED800000 + ((x) * 0x100000))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define S5P64X0_PA_FB		0xEE000000
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define S5P64X0_PA_FB		0xEE000000
+
+>>>>>>> refs/remotes/origin/master
 #define S5P64X0_PA_I2S		0xF2000000
 #define S5P6450_PA_I2S1		0xF2800000
 #define S5P6450_PA_I2S2		0xF2900000
@@ -64,6 +74,18 @@
 #define S3C_PA_IIC1		S5P6440_PA_IIC1
 #define S3C_PA_RTC		S5P64X0_PA_RTC
 #define S3C_PA_WDT		S5P64X0_PA_WDT
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define S3C_PA_FB		S5P64X0_PA_FB
+#define S3C_PA_SPI0		S5P64X0_PA_SPI0
+#define S3C_PA_SPI1		S5P64X0_PA_SPI1
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define S3C_PA_FB		S5P64X0_PA_FB
+#define S3C_PA_SPI0		S5P64X0_PA_SPI0
+#define S3C_PA_SPI1		S5P64X0_PA_SPI1
+>>>>>>> refs/remotes/origin/master
 
 #define S5P_PA_CHIPID		S5P64X0_PA_CHIPID
 #define S5P_PA_SROMC		S5P64X0_PA_SROMC
@@ -71,6 +93,10 @@
 #define S5P_PA_TIMER		S5P64X0_PA_TIMER
 
 #define SAMSUNG_PA_ADC		S5P64X0_PA_ADC
+<<<<<<< HEAD
+=======
+#define SAMSUNG_PA_TIMER	S5P64X0_PA_TIMER
+>>>>>>> refs/remotes/origin/master
 
 /* UART */
 
@@ -85,5 +111,13 @@
 #define S5P_PA_UART5		S5P6450_PA_UART(5)
 
 #define S5P_SZ_UART		SZ_256
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define S3C_VA_UARTx(x)		(S3C_VA_UART + ((x) * S3C_UART_OFFSET))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define S3C_VA_UARTx(x)		(S3C_VA_UART + ((x) * S3C_UART_OFFSET))
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_ARCH_MAP_H */

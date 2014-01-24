@@ -62,7 +62,11 @@ static struct rtc_class_ops au1xtoy_rtc_ops = {
 	.set_time	= au1xtoy_rtc_set_time,
 };
 
+<<<<<<< HEAD
 static int __devinit au1xtoy_rtc_probe(struct platform_device *pdev)
+=======
+static int au1xtoy_rtc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtcdev;
 	unsigned long t;
@@ -101,7 +105,11 @@ static int __devinit au1xtoy_rtc_probe(struct platform_device *pdev)
 	while (au_readl(SYS_COUNTER_CNTRL) & SYS_CNTRL_C0S)
 		msleep(1);
 
+<<<<<<< HEAD
 	rtcdev = rtc_device_register("rtc-au1xxx", &pdev->dev,
+=======
+	rtcdev = devm_rtc_device_register(&pdev->dev, "rtc-au1xxx",
+>>>>>>> refs/remotes/origin/master
 				     &au1xtoy_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtcdev)) {
 		ret = PTR_ERR(rtcdev);
@@ -116,6 +124,7 @@ out_err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit au1xtoy_rtc_remove(struct platform_device *pdev)
 {
 	struct rtc_device *rtcdev = platform_get_drvdata(pdev);
@@ -126,11 +135,14 @@ static int __devexit au1xtoy_rtc_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver au1xrtc_driver = {
 	.driver		= {
 		.name	= "rtc-au1xxx",
 		.owner	= THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.remove		= __devexit_p(au1xtoy_rtc_remove),
 };
 
@@ -146,6 +158,11 @@ static void __exit au1xtoy_rtc_exit(void)
 
 module_init(au1xtoy_rtc_init);
 module_exit(au1xtoy_rtc_exit);
+=======
+};
+
+module_platform_driver_probe(au1xrtc_driver, au1xtoy_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Au1xxx TOY-counter-based RTC driver");
 MODULE_AUTHOR("Manuel Lauss <manuel.lauss@gmail.com>");

@@ -18,7 +18,11 @@
  * kernel or user mode? (CP0_STATUS)
  */
 #define KU_MASK 0x08
+<<<<<<< HEAD
 #define	KU_USER 0x08
+=======
+#define KU_USER 0x08
+>>>>>>> refs/remotes/origin/master
 #define KU_KERN 0x00
 
 #else
@@ -26,7 +30,11 @@
  * kernel or user mode?
  */
 #define KU_MASK 0x18
+<<<<<<< HEAD
 #define	KU_USER 0x10
+=======
+#define KU_USER 0x10
+>>>>>>> refs/remotes/origin/master
 #define KU_KERN 0x00
 
 #endif

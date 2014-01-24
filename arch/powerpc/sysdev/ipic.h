@@ -43,7 +43,15 @@ struct ipic {
 	volatile u32 __iomem	*regs;
 
 	/* The remapper for this IPIC */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct irq_host		*irqhost;
+=======
+	struct irq_domain		*irqhost;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_domain		*irqhost;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ipic_info {

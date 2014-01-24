@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  *  Copyright (c) 1999-2005 Petko Manolov (petkan@users.sourceforge.net)
+=======
+ *  Copyright (c) 1999-2013 Petko Manolov (petkan@nucleusys.com)
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -26,6 +30,12 @@
  *		v0.5.1	ethtool support added
  *		v0.5.5	rx socket buffers are in a pool and the their allocation
  *			is out of the interrupt routine.
+<<<<<<< HEAD
+=======
+ *		...
+ *		v0.9.3	simplified [get|set]_register(s), async update registers
+ *			logic revisited, receive skb_pool removed.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/sched.h>
@@ -45,8 +55,13 @@
 /*
  * Version Information
  */
+<<<<<<< HEAD
 #define DRIVER_VERSION "v0.6.14 (2006/09/27)"
 #define DRIVER_AUTHOR "Petko Manolov <petkan@users.sourceforge.net>"
+=======
+#define DRIVER_VERSION "v0.9.3 (2013/04/25)"
+#define DRIVER_AUTHOR "Petko Manolov <petkan@nucleusys.com>"
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_DESC "Pegasus/Pegasus II USB Ethernet driver"
 
 static const char driver_name[] = "pegasus";
@@ -55,8 +70,18 @@ static const char driver_name[] = "pegasus";
 #define	BMSR_MEDIA	(BMSR_10HALF | BMSR_10FULL | BMSR_100HALF | \
 			BMSR_100FULL | BMSR_ANEGCAPABLE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int loopback;
 static int mii_mode;
+=======
+static bool loopback;
+static bool mii_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool loopback;
+static bool mii_mode;
+>>>>>>> refs/remotes/origin/master
 static char *devid;
 
 static struct usb_eth_dev usb_dev_id[] = {
@@ -108,6 +133,7 @@ MODULE_PARM_DESC(msg_level, "Override default message level");
 MODULE_DEVICE_TABLE(usb, pegasus_ids);
 static const struct net_device_ops pegasus_netdev_ops;
 
+<<<<<<< HEAD
 static int update_eth_regs_async(pegasus_t *);
 /* Aargh!!! I _really_ hate such tweaks */
 static void ctrl_callback(struct urb *urb)
@@ -245,12 +271,51 @@ out:
 	remove_wait_queue(&pegasus->ctrl_wait, &wait);
 	kfree(buffer);
 
+=======
+/*****/
+
+static void async_ctrl_callback(struct urb *urb)
+{
+	struct usb_ctrlrequest *req = (struct usb_ctrlrequest *)urb->context;
+	int status = urb->status;
+
+	if (status < 0)
+		dev_dbg(&urb->dev->dev, "%s failed with %d", __func__, status);
+	kfree(req);
+	usb_free_urb(urb);
+}
+
+static int get_registers(pegasus_t *pegasus, __u16 indx, __u16 size, void *data)
+{
+	int ret;
+
+	ret = usb_control_msg(pegasus->usb, usb_rcvctrlpipe(pegasus->usb, 0),
+			      PEGASUS_REQ_GET_REGS, PEGASUS_REQT_READ, 0,
+			      indx, data, size, 1000);
+	if (ret < 0)
+		netif_dbg(pegasus, drv, pegasus->net,
+			  "%s returned %d\n", __func__, ret);
+	return ret;
+}
+
+static int set_registers(pegasus_t *pegasus, __u16 indx, __u16 size, void *data)
+{
+	int ret;
+
+	ret = usb_control_msg(pegasus->usb, usb_sndctrlpipe(pegasus->usb, 0),
+			      PEGASUS_REQ_SET_REGS, PEGASUS_REQT_WRITE, 0,
+			      indx, data, size, 100);
+	if (ret < 0)
+		netif_dbg(pegasus, drv, pegasus->net,
+			  "%s returned %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static int set_register(pegasus_t *pegasus, __u16 indx, __u8 data)
 {
 	int ret;
+<<<<<<< HEAD
 	char *tmp;
 	DECLARE_WAITQUEUE(wait, current);
 
@@ -296,11 +361,21 @@ out:
 	remove_wait_queue(&pegasus->ctrl_wait, &wait);
 	kfree(tmp);
 
+=======
+
+	ret = usb_control_msg(pegasus->usb, usb_sndctrlpipe(pegasus->usb, 0),
+			      PEGASUS_REQ_SET_REG, PEGASUS_REQT_WRITE, data,
+			      indx, &data, 1, 1000);
+	if (ret < 0)
+		netif_dbg(pegasus, drv, pegasus->net,
+			  "%s returned %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static int update_eth_regs_async(pegasus_t *pegasus)
 {
+<<<<<<< HEAD
 	int ret;
 
 	pegasus->dr.bRequestType = PEGASUS_REQT_WRITE;
@@ -327,10 +402,47 @@ static int update_eth_regs_async(pegasus_t *pegasus)
 
 /* Returns 0 on success, error on failure */
 static int read_mii_word(pegasus_t *pegasus, __u8 phy, __u8 indx, __u16 *regd)
+=======
+	int ret = -ENOMEM;
+	struct urb *async_urb;
+	struct usb_ctrlrequest *req;
+
+	req = kmalloc(sizeof(struct usb_ctrlrequest), GFP_ATOMIC);
+	if (req == NULL)
+		return ret;
+
+	async_urb = usb_alloc_urb(0, GFP_ATOMIC);
+	if (async_urb == NULL) {
+		kfree(req);
+		return ret;
+	}
+	req->bRequestType = PEGASUS_REQT_WRITE;
+	req->bRequest = PEGASUS_REQ_SET_REGS;
+	req->wValue = cpu_to_le16(0);
+	req->wIndex = cpu_to_le16(EthCtrl0);
+	req->wLength = cpu_to_le16(3);
+
+	usb_fill_control_urb(async_urb, pegasus->usb,
+			     usb_sndctrlpipe(pegasus->usb, 0), (void *)req,
+			     pegasus->eth_regs, 3, async_ctrl_callback, req);
+
+	ret = usb_submit_urb(async_urb, GFP_ATOMIC);
+	if (ret) {
+		if (ret == -ENODEV)
+			netif_device_detach(pegasus->net);
+		netif_err(pegasus, drv, pegasus->net,
+			  "%s returned %d\n", __func__, ret);
+	}
+	return ret;
+}
+
+static int __mii_op(pegasus_t *p, __u8 phy, __u8 indx, __u16 *regd, __u8 cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	__u8 data[4] = { phy, 0, 0, indx };
 	__le16 regdi;
+<<<<<<< HEAD
 	int ret;
 
 	set_register(pegasus, PhyCtrl, 0);
@@ -339,10 +451,25 @@ static int read_mii_word(pegasus_t *pegasus, __u8 phy, __u8 indx, __u16 *regd)
 	for (i = 0; i < REG_TIMEOUT; i++) {
 		ret = get_registers(pegasus, PhyCtrl, 1, data);
 		if (ret == -ESHUTDOWN)
+=======
+	int ret = -ETIMEDOUT;
+
+	if (cmd & PHY_WRITE) {
+		__le16 *t = (__le16 *) & data[1];
+		*t = cpu_to_le16(*regd);
+	}
+	set_register(p, PhyCtrl, 0);
+	set_registers(p, PhyAddr, sizeof(data), data);
+	set_register(p, PhyCtrl, (indx | cmd));
+	for (i = 0; i < REG_TIMEOUT; i++) {
+		ret = get_registers(p, PhyCtrl, 1, data);
+		if (ret < 0)
+>>>>>>> refs/remotes/origin/master
 			goto fail;
 		if (data[0] & PHY_DONE)
 			break;
 	}
+<<<<<<< HEAD
 
 	if (i >= REG_TIMEOUT)
 		goto fail;
@@ -355,6 +482,31 @@ fail:
 	netif_warn(pegasus, drv, pegasus->net, "%s failed\n", __func__);
 
 	return ret;
+=======
+	if (i >= REG_TIMEOUT)
+		goto fail;
+	if (cmd & PHY_READ) {
+		ret = get_registers(p, PhyData, 2, &regdi);
+		*regd = le16_to_cpu(regdi);
+		return ret;
+	}
+	return 0;
+fail:
+	netif_dbg(p, drv, p->net, "%s failed\n", __func__);
+	return ret;
+}
+
+/* Returns non-negative int on success, error on failure */
+static int read_mii_word(pegasus_t *pegasus, __u8 phy, __u8 indx, __u16 *regd)
+{
+	return __mii_op(pegasus, phy, indx, regd, PHY_READ);
+}
+
+/* Returns zero on success, error on failure */
+static int write_mii_word(pegasus_t *pegasus, __u8 phy, __u8 indx, __u16 *regd)
+{
+	return __mii_op(pegasus, phy, indx, regd, PHY_WRITE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mdio_read(struct net_device *dev, int phy_id, int loc)
@@ -366,6 +518,7 @@ static int mdio_read(struct net_device *dev, int phy_id, int loc)
 	return (int)res;
 }
 
+<<<<<<< HEAD
 static int write_mii_word(pegasus_t *pegasus, __u8 phy, __u8 indx, __u16 regd)
 {
 	int i;
@@ -400,6 +553,14 @@ static void mdio_write(struct net_device *dev, int phy_id, int loc, int val)
 	pegasus_t *pegasus = netdev_priv(dev);
 
 	write_mii_word(pegasus, phy_id, loc, val);
+=======
+static void mdio_write(struct net_device *dev, int phy_id, int loc, int val)
+{
+	pegasus_t *pegasus = netdev_priv(dev);
+	u16 data = val;
+
+	write_mii_word(pegasus, phy_id, loc, &data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int read_eprom_word(pegasus_t *pegasus, __u8 index, __u16 *retdata)
@@ -436,7 +597,10 @@ fail:
 static inline void enable_eprom_write(pegasus_t *pegasus)
 {
 	__u8 tmp;
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	get_registers(pegasus, EthCtrl2, 1, &tmp);
 	set_register(pegasus, EthCtrl2, tmp | EPROM_WR_ENABLE);
@@ -445,7 +609,10 @@ static inline void enable_eprom_write(pegasus_t *pegasus)
 static inline void disable_eprom_write(pegasus_t *pegasus)
 {
 	__u8 tmp;
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	get_registers(pegasus, EthCtrl2, 1, &tmp);
 	set_register(pegasus, EpromCtrl, 0);
@@ -517,7 +684,15 @@ static inline int reset_mac(pegasus_t *pegasus)
 	for (i = 0; i < REG_TIMEOUT; i++) {
 		get_registers(pegasus, EthCtrl1, 1, &data);
 		if (~data & 0x08) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (loopback & 1)
+=======
+			if (loopback)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (loopback)
+>>>>>>> refs/remotes/origin/master
 				break;
 			if (mii_mode && (pegasus->features & HAS_HOME_PNA))
 				set_register(pegasus, Gpio1, 0x34);
@@ -539,7 +714,12 @@ static inline int reset_mac(pegasus_t *pegasus)
 	if (usb_dev_id[pegasus->dev_index].vendor == VENDOR_ELCON) {
 		__u16 auxmode;
 		read_mii_word(pegasus, 3, 0x1b, &auxmode);
+<<<<<<< HEAD
 		write_mii_word(pegasus, 3, 0x1b, auxmode | 4);
+=======
+		auxmode |= 4;
+		write_mii_word(pegasus, 3, 0x1b, &auxmode);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -561,7 +741,15 @@ static int enable_net_traffic(struct net_device *dev, struct usb_device *usb)
 		data[1] |= 0x10;	/* set 100 Mbps */
 	if (mii_mode)
 		data[1] = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	data[2] = (loopback & 1) ? 0x09 : 0x01;
+=======
+	data[2] = loopback ? 0x09 : 0x01;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data[2] = loopback ? 0x09 : 0x01;
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(pegasus->eth_regs, data, sizeof(data));
 	ret = set_registers(pegasus, EthCtrl0, 3, data);
@@ -571,12 +759,18 @@ static int enable_net_traffic(struct net_device *dev, struct usb_device *usb)
 	    usb_dev_id[pegasus->dev_index].vendor == VENDOR_DLINK) {
 		u16 auxmode;
 		read_mii_word(pegasus, 0, 0x1b, &auxmode);
+<<<<<<< HEAD
 		write_mii_word(pegasus, 0, 0x1b, auxmode | 4);
+=======
+		auxmode |= 4;
+		write_mii_word(pegasus, 0, 0x1b, &auxmode);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static void fill_skb_pool(pegasus_t *pegasus)
 {
 	int i;
@@ -622,6 +816,8 @@ static inline struct sk_buff *pull_skb(pegasus_t * pegasus)
 	return NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void read_bulk_callback(struct urb *urb)
 {
 	pegasus_t *pegasus = urb->context;
@@ -706,9 +902,14 @@ static void read_bulk_callback(struct urb *urb)
 	if (pegasus->flags & PEGASUS_UNPLUG)
 		return;
 
+<<<<<<< HEAD
 	spin_lock(&pegasus->rx_pool_lock);
 	pegasus->rx_skb = pull_skb(pegasus);
 	spin_unlock(&pegasus->rx_pool_lock);
+=======
+	pegasus->rx_skb = __netdev_alloc_skb_ip_align(pegasus->net, PEGASUS_MTU,
+						      GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 
 	if (pegasus->rx_skb == NULL)
 		goto tl_sched;
@@ -736,24 +937,40 @@ tl_sched:
 static void rx_fixup(unsigned long data)
 {
 	pegasus_t *pegasus;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/master
 	int status;
 
 	pegasus = (pegasus_t *) data;
 	if (pegasus->flags & PEGASUS_UNPLUG)
 		return;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&pegasus->rx_pool_lock, flags);
 	fill_skb_pool(pegasus);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pegasus->flags & PEGASUS_RX_URB_FAIL)
 		if (pegasus->rx_skb)
 			goto try_again;
 	if (pegasus->rx_skb == NULL)
+<<<<<<< HEAD
 		pegasus->rx_skb = pull_skb(pegasus);
 	if (pegasus->rx_skb == NULL) {
 		netif_warn(pegasus, rx_err, pegasus->net, "low on memory\n");
 		tasklet_schedule(&pegasus->rx_tl);
 		goto done;
+=======
+		pegasus->rx_skb = __netdev_alloc_skb_ip_align(pegasus->net,
+							      PEGASUS_MTU,
+							      GFP_ATOMIC);
+	if (pegasus->rx_skb == NULL) {
+		netif_warn(pegasus, rx_err, pegasus->net, "low on memory\n");
+		tasklet_schedule(&pegasus->rx_tl);
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 	usb_fill_bulk_urb(pegasus->rx_urb, pegasus->usb,
 			  usb_rcvbulkpipe(pegasus->usb, 1),
@@ -769,8 +986,11 @@ try_again:
 	} else {
 		pegasus->flags &= ~PEGASUS_RX_URB_FAIL;
 	}
+<<<<<<< HEAD
 done:
 	spin_unlock_irqrestore(&pegasus->rx_pool_lock, flags);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void write_bulk_callback(struct urb *urb)
@@ -965,7 +1185,10 @@ static void free_all_urbs(pegasus_t *pegasus)
 	usb_free_urb(pegasus->intr_urb);
 	usb_free_urb(pegasus->tx_urb);
 	usb_free_urb(pegasus->rx_urb);
+<<<<<<< HEAD
 	usb_free_urb(pegasus->ctrl_urb);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void unlink_all_urbs(pegasus_t *pegasus)
@@ -973,11 +1196,15 @@ static void unlink_all_urbs(pegasus_t *pegasus)
 	usb_kill_urb(pegasus->intr_urb);
 	usb_kill_urb(pegasus->tx_urb);
 	usb_kill_urb(pegasus->rx_urb);
+<<<<<<< HEAD
 	usb_kill_urb(pegasus->ctrl_urb);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int alloc_urbs(pegasus_t *pegasus)
 {
+<<<<<<< HEAD
 	pegasus->ctrl_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!pegasus->ctrl_urb)
 		return 0;
@@ -985,27 +1212,46 @@ static int alloc_urbs(pegasus_t *pegasus)
 	if (!pegasus->rx_urb) {
 		usb_free_urb(pegasus->ctrl_urb);
 		return 0;
+=======
+	int res = -ENOMEM;
+
+	pegasus->rx_urb = usb_alloc_urb(0, GFP_KERNEL);
+	if (!pegasus->rx_urb) {
+		return res;
+>>>>>>> refs/remotes/origin/master
 	}
 	pegasus->tx_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!pegasus->tx_urb) {
 		usb_free_urb(pegasus->rx_urb);
+<<<<<<< HEAD
 		usb_free_urb(pegasus->ctrl_urb);
 		return 0;
+=======
+		return res;
+>>>>>>> refs/remotes/origin/master
 	}
 	pegasus->intr_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!pegasus->intr_urb) {
 		usb_free_urb(pegasus->tx_urb);
 		usb_free_urb(pegasus->rx_urb);
+<<<<<<< HEAD
 		usb_free_urb(pegasus->ctrl_urb);
 		return 0;
 	}
 
 	return 1;
+=======
+		return res;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pegasus_open(struct net_device *net)
 {
 	pegasus_t *pegasus = netdev_priv(net);
+<<<<<<< HEAD
 	int res;
 
 	if (pegasus->rx_skb == NULL)
@@ -1015,6 +1261,16 @@ static int pegasus_open(struct net_device *net)
 	 */
 	if (!pegasus->rx_skb)
 		return -ENOMEM;
+=======
+	int res=-ENOMEM;
+
+	if (pegasus->rx_skb == NULL)
+		pegasus->rx_skb = __netdev_alloc_skb_ip_align(pegasus->net,
+							      PEGASUS_MTU,
+							      GFP_KERNEL);
+	if (!pegasus->rx_skb)
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 
 	res = set_registers(pegasus, EthID, 6, net->dev_addr);
 
@@ -1040,13 +1296,21 @@ static int pegasus_open(struct net_device *net)
 		usb_kill_urb(pegasus->rx_urb);
 		goto exit;
 	}
+<<<<<<< HEAD
 	if ((res = enable_net_traffic(net, pegasus->usb))) {
+=======
+	res = enable_net_traffic(net, pegasus->usb);
+	if (res < 0) {
+>>>>>>> refs/remotes/origin/master
 		netif_dbg(pegasus, ifup, net,
 			  "can't enable_net_traffic() - %d\n", res);
 		res = -EIO;
 		usb_kill_urb(pegasus->rx_urb);
 		usb_kill_urb(pegasus->intr_urb);
+<<<<<<< HEAD
 		free_skb_pool(pegasus);
+=======
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 	set_carrier(net);
@@ -1074,8 +1338,14 @@ static void pegasus_get_drvinfo(struct net_device *dev,
 				struct ethtool_drvinfo *info)
 {
 	pegasus_t *pegasus = netdev_priv(dev);
+<<<<<<< HEAD
 	strncpy(info->driver, driver_name, sizeof(info->driver) - 1);
 	strncpy(info->version, DRIVER_VERSION, sizeof(info->version) - 1);
+=======
+
+	strlcpy(info->driver, driver_name, sizeof(info->driver));
+	strlcpy(info->version, DRIVER_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/master
 	usb_make_path(pegasus->usb, info->bus_info, sizeof(info->bus_info));
 }
 
@@ -1096,6 +1366,10 @@ pegasus_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
 {
 	pegasus_t	*pegasus = netdev_priv(dev);
 	u8		reg78 = 0x04;
+<<<<<<< HEAD
+=======
+	int		ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (wol->wolopts & ~WOL_SUPPORTED)
 		return -EINVAL;
@@ -1110,7 +1384,16 @@ pegasus_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
 	else
 		pegasus->eth_regs[0] &= ~0x10;
 	pegasus->wolopts = wol->wolopts;
+<<<<<<< HEAD
 	return set_register(pegasus, WakeupControl, reg78);
+=======
+
+	ret = set_register(pegasus, WakeupControl, reg78);
+	if (!ret)
+		ret = device_set_wakeup_enable(&pegasus->usb->dev,
+						wol->wolopts);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void pegasus_reset_wol(struct net_device *dev)
@@ -1190,7 +1473,11 @@ static int pegasus_ioctl(struct net_device *net, struct ifreq *rq, int cmd)
 	case SIOCDEVPRIVATE + 2:
 		if (!capable(CAP_NET_ADMIN))
 			return -EPERM;
+<<<<<<< HEAD
 		write_mii_word(pegasus, pegasus->phy, data[1] & 0x1f, data[2]);
+=======
+		write_mii_word(pegasus, pegasus->phy, data[1] & 0x1f, &data[2]);
+>>>>>>> refs/remotes/origin/master
 		res = 0;
 		break;
 	default:
@@ -1214,11 +1501,15 @@ static void pegasus_set_multicast(struct net_device *net)
 		pegasus->eth_regs[EthCtrl0] &= ~RX_MULTICAST;
 		pegasus->eth_regs[EthCtrl2] &= ~RX_PROMISCUOUS;
 	}
+<<<<<<< HEAD
 
 	pegasus->ctrl_urb->status = 0;
 
 	pegasus->flags |= ETH_REGS_CHANGE;
 	ctrl_callback(pegasus->ctrl_urb);
+=======
+	update_eth_regs_async(pegasus);
+>>>>>>> refs/remotes/origin/master
 }
 
 static __u8 mii_phy_probe(pegasus_t *pegasus)
@@ -1329,19 +1620,36 @@ static int pegasus_probe(struct usb_interface *intf,
 	}
 	pegasus_count++;
 
+<<<<<<< HEAD
 	usb_get_dev(dev);
 
 	net = alloc_etherdev(sizeof(struct pegasus));
+<<<<<<< HEAD
 	if (!net) {
 		dev_err(&intf->dev, "can't allocate %s\n", "device");
 		goto out;
 	}
+=======
+	if (!net)
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pegasus = netdev_priv(net);
 	pegasus->dev_index = dev_index;
 	init_waitqueue_head(&pegasus->ctrl_wait);
 
 	if (!alloc_urbs(pegasus)) {
+=======
+	net = alloc_etherdev(sizeof(struct pegasus));
+	if (!net)
+		goto out;
+
+	pegasus = netdev_priv(net);
+	pegasus->dev_index = dev_index;
+
+	res = alloc_urbs(pegasus);
+	if (res < 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&intf->dev, "can't allocate %s\n", "urbs");
 		goto out1;
 	}
@@ -1363,7 +1671,10 @@ static int pegasus_probe(struct usb_interface *intf,
 	pegasus->mii.mdio_write = mdio_write;
 	pegasus->mii.phy_id_mask = 0x1f;
 	pegasus->mii.reg_num_mask = 0x1f;
+<<<<<<< HEAD
 	spin_lock_init(&pegasus->rx_pool_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 	pegasus->msg_enable = netif_msg_init(msg_level, NETIF_MSG_DRV
 				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
 
@@ -1375,7 +1686,10 @@ static int pegasus_probe(struct usb_interface *intf,
 		goto out2;
 	}
 	set_ethernet_addr(pegasus);
+<<<<<<< HEAD
 	fill_skb_pool(pegasus);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pegasus->features & PEGASUS_II) {
 		dev_info(&intf->dev, "setup Pegasus II specific registers\n");
 		setup_pegasus_II(pegasus);
@@ -1393,23 +1707,35 @@ static int pegasus_probe(struct usb_interface *intf,
 	if (res)
 		goto out3;
 	queue_delayed_work(pegasus_workqueue, &pegasus->carrier_check,
+<<<<<<< HEAD
 				CARRIER_CHECK_DELAY);
 
 	dev_info(&intf->dev, "%s, %s, %pM\n",
 		 net->name,
 		 usb_dev_id[dev_index].name,
 		 net->dev_addr);
+=======
+			   CARRIER_CHECK_DELAY);
+	dev_info(&intf->dev, "%s, %s, %pM\n", net->name,
+		 usb_dev_id[dev_index].name, net->dev_addr);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out3:
 	usb_set_intfdata(intf, NULL);
+<<<<<<< HEAD
 	free_skb_pool(pegasus);
+=======
+>>>>>>> refs/remotes/origin/master
 out2:
 	free_all_urbs(pegasus);
 out1:
 	free_netdev(net);
 out:
+<<<<<<< HEAD
 	usb_put_dev(dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	pegasus_dec_workqueue();
 	return res;
 }
@@ -1427,10 +1753,15 @@ static void pegasus_disconnect(struct usb_interface *intf)
 	pegasus->flags |= PEGASUS_UNPLUG;
 	cancel_delayed_work(&pegasus->carrier_check);
 	unregister_netdev(pegasus->net);
+<<<<<<< HEAD
 	usb_put_dev(interface_to_usbdev(intf));
 	unlink_all_urbs(pegasus);
 	free_all_urbs(pegasus);
 	free_skb_pool(pegasus);
+=======
+	unlink_all_urbs(pegasus);
+	free_all_urbs(pegasus);
+>>>>>>> refs/remotes/origin/master
 	if (pegasus->rx_skb != NULL) {
 		dev_kfree_skb(pegasus->rx_skb);
 		pegasus->rx_skb = NULL;
@@ -1476,7 +1807,15 @@ static const struct net_device_ops pegasus_netdev_ops = {
 	.ndo_stop =			pegasus_close,
 	.ndo_do_ioctl =			pegasus_ioctl,
 	.ndo_start_xmit =		pegasus_start_xmit,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list =	pegasus_set_multicast,
+=======
+	.ndo_set_rx_mode =		pegasus_set_multicast,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode =		pegasus_set_multicast,
+>>>>>>> refs/remotes/origin/master
 	.ndo_get_stats =		pegasus_netdev_stats,
 	.ndo_tx_timeout =		pegasus_tx_timeout,
 	.ndo_change_mtu =		eth_change_mtu,
@@ -1491,6 +1830,10 @@ static struct usb_driver pegasus_driver = {
 	.id_table = pegasus_ids,
 	.suspend = pegasus_suspend,
 	.resume = pegasus_resume,
+<<<<<<< HEAD
+=======
+	.disable_hub_initiated_lpm = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init parse_id(char *id)

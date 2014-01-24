@@ -18,12 +18,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/io.h>
 #include <linux/sched.h>
+=======
+#include <linux/kernel.h>
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/sched_clock.h>
 #include <plat/sched_clock.h>
 
+<<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 static void __iomem *ctr;
 
@@ -48,11 +55,40 @@ static void notrace versatile_update_sched_clock(void)
 {
 	u32 cyc = readl(ctr);
 	update_sched_clock(&cd, cyc, (u32)~0);
+=======
+=======
+#include <linux/kernel.h>
+#include <linux/io.h>
+#include <linux/sched_clock.h>
+
+#include <plat/sched_clock.h>
+
+>>>>>>> refs/remotes/origin/master
+static void __iomem *ctr;
+
+static u32 notrace versatile_read_sched_clock(void)
+{
+	if (ctr)
+		return readl(ctr);
+
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init versatile_sched_clock_init(void __iomem *reg, unsigned long rate)
 {
 	ctr = reg;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	init_fixed_sched_clock(&cd, versatile_update_sched_clock,
 			       32, rate, SC_MULT, SC_SHIFT);
+=======
+	setup_sched_clock(versatile_read_sched_clock, 32, rate);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_sched_clock(versatile_read_sched_clock, 32, rate);
+>>>>>>> refs/remotes/origin/master
 }

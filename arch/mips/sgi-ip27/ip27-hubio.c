@@ -17,11 +17,19 @@
 static int force_fire_and_forget = 1;
 
 /**
+<<<<<<< HEAD
  * hub_pio_map  -  establish a HUB PIO mapping
  *
  * @hub:	hub to perform PIO mapping on
  * @widget:	widget ID to perform PIO mapping for
  * @xtalk_addr:	xtalk_address that needs to be mapped
+=======
+ * hub_pio_map	-  establish a HUB PIO mapping
+ *
+ * @hub:	hub to perform PIO mapping on
+ * @widget:	widget ID to perform PIO mapping for
+ * @xtalk_addr: xtalk_address that needs to be mapped
+>>>>>>> refs/remotes/origin/master
  * @size:	size of the PIO mapping
  *
  **/
@@ -78,8 +86,13 @@ unsigned long hub_pio_map(cnodeid_t cnode, xwidgetnum_t widget,
 /*
  * hub_setup_prb(nasid, prbnum, credits, conveyor)
  *
+<<<<<<< HEAD
  * 	Put a PRB into fire-and-forget mode if conveyor isn't set.  Otherwise,
  * 	put it into conveyor belt mode with the specified number of credits.
+=======
+ *	Put a PRB into fire-and-forget mode if conveyor isn't set.  Otherwise,
+ *	put it into conveyor belt mode with the specified number of credits.
+>>>>>>> refs/remotes/origin/master
  */
 static void hub_setup_prb(nasid_t nasid, int prbnum, int credits)
 {
@@ -125,12 +138,20 @@ static void hub_setup_prb(nasid_t nasid, int prbnum, int credits)
  * so we turn off access to all widgets for the duration of the function.
  *
  * XXX - This code should really check what kind of widget we're talking
+<<<<<<< HEAD
  * to.  Bridges can only handle three requests, but XG will do more.
+=======
+ * to.	Bridges can only handle three requests, but XG will do more.
+>>>>>>> refs/remotes/origin/master
  * How many can crossbow handle to widget 0?  We're assuming 1.
  *
  * XXX - There is a bug in the crossbow that link reset PIOs do not
  * return write responses.  The easiest solution to this problem is to
+<<<<<<< HEAD
  * leave widget 0 (xbow) in fire-and-forget mode at all times.  This
+=======
+ * leave widget 0 (xbow) in fire-and-forget mode at all times.	This
+>>>>>>> refs/remotes/origin/master
  * only affects pio's to xbow registers, which should be rare.
  **/
 static void hub_set_piomode(nasid_t nasid)
@@ -167,7 +188,11 @@ static void hub_set_piomode(nasid_t nasid)
 }
 
 /*
+<<<<<<< HEAD
  * hub_pio_init  -  PIO-related hub initialization
+=======
+ * hub_pio_init	 -  PIO-related hub initialization
+>>>>>>> refs/remotes/origin/master
  *
  * @hub:	hubinfo structure for our hub
  */

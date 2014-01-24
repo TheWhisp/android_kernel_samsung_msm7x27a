@@ -21,8 +21,11 @@
 #include <linux/ktime.h>
 #include <linux/trace_clock.h>
 
+<<<<<<< HEAD
 #include "trace.h"
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * trace_clock_local(): the simplest and least coherent tracing clock.
  *
@@ -44,6 +47,10 @@ u64 notrace trace_clock_local(void)
 
 	return clock;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(trace_clock_local);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * trace_clock(): 'between' trace clock. Not completely serialized,
@@ -58,6 +65,19 @@ u64 notrace trace_clock(void)
 	return local_clock();
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * trace_jiffy_clock(): Simply use jiffies as a clock counter.
+ */
+u64 notrace trace_clock_jiffies(void)
+{
+	u64 jiffy = jiffies - INITIAL_JIFFIES;
+
+	/* Return nsecs */
+	return (u64)jiffies_to_usecs(jiffy) * 1000ULL;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * trace_clock_global(): special globally coherent trace clock
@@ -86,7 +106,11 @@ u64 notrace trace_clock_global(void)
 	local_irq_save(flags);
 
 	this_cpu = raw_smp_processor_id();
+<<<<<<< HEAD
 	now = cpu_clock(this_cpu);
+=======
+	now = sched_clock_cpu(this_cpu);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If in an NMI context then dont risk lockups and return the
 	 * cpu_clock() time:
@@ -113,3 +137,24 @@ u64 notrace trace_clock_global(void)
 
 	return now;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static atomic64_t trace_counter;
+
+/*
+ * trace_clock_counter(): simply an atomic counter.
+ * Use the trace_counter "counter" for cases where you do not care
+ * about timings, but are interested in strict ordering.
+ */
+u64 notrace trace_clock_counter(void)
+{
+	return atomic64_add_return(1, &trace_counter);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

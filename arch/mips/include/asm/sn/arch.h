@@ -28,14 +28,22 @@ typedef u64	hubreg_t;
 #define INVALID_CNODEID		(cnodeid_t)-1
 #define INVALID_PNODEID		(pnodeid_t)-1
 #define INVALID_MODULE		(moduleid_t)-1
+<<<<<<< HEAD
 #define	INVALID_PARTID		(partid_t)-1
+=======
+#define INVALID_PARTID		(partid_t)-1
+>>>>>>> refs/remotes/origin/master
 
 extern nasid_t get_nasid(void);
 extern cnodeid_t get_cpu_cnode(cpuid_t);
 extern int get_cpu_slice(cpuid_t);
 
 /*
+<<<<<<< HEAD
  * NO ONE should access these arrays directly.  The only reason we refer to
+=======
+ * NO ONE should access these arrays directly.	The only reason we refer to
+>>>>>>> refs/remotes/origin/master
  * them here is to avoid the procedure call that would be required in the
  * macros below.  (Really want private data members here :-)
  */
@@ -44,12 +52,20 @@ extern nasid_t compact_to_nasid_node[MAX_COMPACT_NODES];
 
 /*
  * These macros are used by various parts of the kernel to convert
+<<<<<<< HEAD
  * between the three different kinds of node numbering.   At least some
+=======
+ * between the three different kinds of node numbering.	  At least some
+>>>>>>> refs/remotes/origin/master
  * of them may change to procedure calls in the future, but the macros
  * will continue to work.  Don't use the arrays above directly.
  */
 
+<<<<<<< HEAD
 #define	NASID_TO_REGION(nnode)	      	\
+=======
+#define NASID_TO_REGION(nnode)		\
+>>>>>>> refs/remotes/origin/master
     ((nnode) >> \
      (is_fine_dirmode() ? NASID_TO_FINEREG_SHFT : NASID_TO_COARSEREG_SHFT))
 

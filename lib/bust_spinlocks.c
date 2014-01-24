@@ -8,6 +8,10 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/printk.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/tty.h>
 #include <linux/wait.h>
@@ -28,5 +32,8 @@ void __attribute__((weak)) bust_spinlocks(int yes)
 			wake_up_klogd();
 	}
 }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master

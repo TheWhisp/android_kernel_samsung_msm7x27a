@@ -58,7 +58,11 @@ static void vortex_wt_setdsout(vortex_t * vortex, u32 wt, int en)
 	if (en)
 		temp |= (1 << (wt & 0x1f));
 	else
+<<<<<<< HEAD
 		temp &= (1 << ~(wt & 0x1f));
+=======
+		temp &= ~(1 << (wt & 0x1f));
+>>>>>>> refs/remotes/origin/master
 	hwwrite(vortex->mmio, WT_DSREG((wt >= 0x20) ? 1 : 0), temp);
 }
 
@@ -219,7 +223,10 @@ vortex_wt_SetReg(vortex_t * vortex, unsigned char reg, int wt,
 		*/
 		hwwrite(vortex->mmio, WT_RUN(wt), val);
 		return 0xc;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case 1:		/* param 0 */
 		/*
 		printk(KERN_DEBUG "vortex: WT SetReg(0x%x) = 0x%08x\n",
@@ -227,7 +234,10 @@ vortex_wt_SetReg(vortex_t * vortex, unsigned char reg, int wt,
 		*/
 		hwwrite(vortex->mmio, WT_PARM(wt, 0), val);
 		return 0xc;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case 2:		/* param 1 */
 		/*
 		printk(KERN_DEBUG "vortex: WT SetReg(0x%x) = 0x%08x\n",
@@ -235,7 +245,10 @@ vortex_wt_SetReg(vortex_t * vortex, unsigned char reg, int wt,
 		*/
 		hwwrite(vortex->mmio, WT_PARM(wt, 1), val);
 		return 0xc;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case 3:		/* param 2 */
 		/*
 		printk(KERN_DEBUG "vortex: WT SetReg(0x%x) = 0x%08x\n",
@@ -243,7 +256,10 @@ vortex_wt_SetReg(vortex_t * vortex, unsigned char reg, int wt,
 		*/
 		hwwrite(vortex->mmio, WT_PARM(wt, 2), val);
 		return 0xc;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case 4:		/* param 3 */
 		/*
 		printk(KERN_DEBUG "vortex: WT SetReg(0x%x) = 0x%08x\n",
@@ -251,7 +267,10 @@ vortex_wt_SetReg(vortex_t * vortex, unsigned char reg, int wt,
 		*/
 		hwwrite(vortex->mmio, WT_PARM(wt, 3), val);
 		return 0xc;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case 6:		/* mute */
 		/*
 		printk(KERN_DEBUG "vortex: WT SetReg(0x%x) = 0x%08x\n",
@@ -259,6 +278,7 @@ vortex_wt_SetReg(vortex_t * vortex, unsigned char reg, int wt,
 		*/
 		hwwrite(vortex->mmio, WT_MUTE(wt), val);
 		return 0xc;
+<<<<<<< HEAD
 		break;
 	case 0xb:
 		{		/* delay */
@@ -273,6 +293,19 @@ vortex_wt_SetReg(vortex_t * vortex, unsigned char reg, int wt,
 			return 0xc;
 		}
 		break;
+=======
+	case 0xb:
+			/* delay */
+		/*
+		printk(KERN_DEBUG "vortex: WT SetReg(0x%x) = 0x%08x\n",
+		       WT_DELAY(wt,0), (int)val);
+		*/
+		hwwrite(vortex->mmio, WT_DELAY(wt, 3), val);
+		hwwrite(vortex->mmio, WT_DELAY(wt, 2), val);
+		hwwrite(vortex->mmio, WT_DELAY(wt, 1), val);
+		hwwrite(vortex->mmio, WT_DELAY(wt, 0), val);
+		return 0xc;
+>>>>>>> refs/remotes/origin/master
 		/* Global WT block parameters */
 	case 5:		/* sramp */
 		ecx = WT_SRAMP(wt);
@@ -291,7 +324,10 @@ vortex_wt_SetReg(vortex_t * vortex, unsigned char reg, int wt,
 		break;
 	default:
 		return 0;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	/*
 	printk(KERN_DEBUG "vortex: WT SetReg(0x%x) = 0x%08x\n", ecx, (int)val);

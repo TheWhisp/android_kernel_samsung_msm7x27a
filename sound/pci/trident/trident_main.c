@@ -35,12 +35,24 @@
 #include <linux/vmalloc.h>
 #include <linux/gameport.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/info.h>
 #include <sound/control.h>
 #include <sound/tlv.h>
+<<<<<<< HEAD
 #include <sound/trident.h>
+=======
+#include "trident.h"
+>>>>>>> refs/remotes/origin/master
 #include <sound/asoundef.h>
 
 #include <asm/io.h>
@@ -2170,8 +2182,13 @@ static struct snd_pcm_ops snd_trident_spdif_7018_ops = {
   
   ---------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 int __devinit snd_trident_pcm(struct snd_trident * trident,
 			      int device, struct snd_pcm ** rpcm)
+=======
+int snd_trident_pcm(struct snd_trident *trident,
+		    int device, struct snd_pcm **rpcm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -2228,8 +2245,13 @@ int __devinit snd_trident_pcm(struct snd_trident * trident,
   
   ---------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 int __devinit snd_trident_foldback_pcm(struct snd_trident * trident,
 				       int device, struct snd_pcm ** rpcm)
+=======
+int snd_trident_foldback_pcm(struct snd_trident *trident,
+			     int device, struct snd_pcm **rpcm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *foldback;
 	int err;
@@ -2285,8 +2307,13 @@ int __devinit snd_trident_foldback_pcm(struct snd_trident * trident,
   
   ---------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 int __devinit snd_trident_spdif_pcm(struct snd_trident * trident,
 				    int device, struct snd_pcm ** rpcm)
+=======
+int snd_trident_spdif_pcm(struct snd_trident *trident,
+			  int device, struct snd_pcm **rpcm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *spdif;
 	int err;
@@ -2370,7 +2397,11 @@ static int snd_trident_spdif_control_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_spdif_control __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_spdif_control =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =         SNDRV_CTL_NAME_IEC958("",PLAYBACK,SWITCH),
@@ -2433,7 +2464,11 @@ static int snd_trident_spdif_default_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_spdif_default __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_spdif_default =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
 	.name =         SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT),
@@ -2466,7 +2501,11 @@ static int snd_trident_spdif_mask_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_spdif_mask __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_spdif_mask =
+>>>>>>> refs/remotes/origin/master
 {
 	.access =	SNDRV_CTL_ELEM_ACCESS_READ,
 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
@@ -2528,7 +2567,11 @@ static int snd_trident_spdif_stream_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_spdif_stream __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_spdif_stream =
+>>>>>>> refs/remotes/origin/master
 {
 	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_INACTIVE,
 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
@@ -2578,7 +2621,11 @@ static int snd_trident_ac97_control_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_ac97_rear_control __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_ac97_rear_control =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =         "Rear Path",
@@ -2636,7 +2683,11 @@ static int snd_trident_vol_control_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_vol_music_control __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_vol_music_control =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =         "Music Playback Volume",
@@ -2647,7 +2698,11 @@ static struct snd_kcontrol_new snd_trident_vol_music_control __devinitdata =
 	.tlv = { .p = db_scale_gvol },
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_vol_wave_control __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_vol_wave_control =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =         "Wave Playback Volume",
@@ -2714,7 +2769,11 @@ static int snd_trident_pcm_vol_control_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_pcm_vol_control __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_pcm_vol_control =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =         "PCM Front Playback Volume",
@@ -2778,7 +2837,11 @@ static int snd_trident_pcm_pan_control_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_pcm_pan_control __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_pcm_pan_control =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =         "PCM Pan Playback Control",
@@ -2835,7 +2898,11 @@ static int snd_trident_pcm_rvol_control_put(struct snd_kcontrol *kcontrol,
 
 static const DECLARE_TLV_DB_SCALE(db_scale_crvol, -3175, 25, 1);
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_pcm_rvol_control __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_pcm_rvol_control =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =         "PCM Reverb Playback Volume",
@@ -2891,7 +2958,11 @@ static int snd_trident_pcm_cvol_control_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_trident_pcm_cvol_control __devinitdata =
+=======
+static struct snd_kcontrol_new snd_trident_pcm_cvol_control =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =         "PCM Chorus Playback Volume",
@@ -2971,7 +3042,11 @@ static int snd_trident_pcm_mixer_free(struct snd_trident *trident, struct snd_tr
   
   ---------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit snd_trident_mixer(struct snd_trident * trident, int pcm_spdif_device)
+=======
+static int snd_trident_mixer(struct snd_trident *trident, int pcm_spdif_device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_ac97_template _ac97;
 	struct snd_card *card = trident->card;
@@ -3190,7 +3265,11 @@ static int snd_trident_gameport_open(struct gameport *gameport, int mode)
 	}
 }
 
+<<<<<<< HEAD
 int __devinit snd_trident_create_gameport(struct snd_trident *chip)
+=======
+int snd_trident_create_gameport(struct snd_trident *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gameport *gp;
 
@@ -3224,7 +3303,11 @@ static inline void snd_trident_free_gameport(struct snd_trident *chip)
 	}
 }
 #else
+<<<<<<< HEAD
 int __devinit snd_trident_create_gameport(struct snd_trident *chip) { return -ENOSYS; }
+=======
+int snd_trident_create_gameport(struct snd_trident *chip) { return -ENOSYS; }
+>>>>>>> refs/remotes/origin/master
 static inline void snd_trident_free_gameport(struct snd_trident *chip) { }
 #endif /* CONFIG_GAMEPORT */
 
@@ -3328,7 +3411,11 @@ static void snd_trident_proc_read(struct snd_info_entry *entry,
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit snd_trident_proc_init(struct snd_trident * trident)
+=======
+static void snd_trident_proc_init(struct snd_trident *trident)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 	const char *s = "trident";
@@ -3357,7 +3444,11 @@ static int snd_trident_dev_free(struct snd_device *device)
   
   ---------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit snd_trident_tlb_alloc(struct snd_trident *trident)
+=======
+static int snd_trident_tlb_alloc(struct snd_trident *trident)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -3538,7 +3629,11 @@ static int snd_trident_sis_init(struct snd_trident *trident)
   
   ---------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 int __devinit snd_trident_create(struct snd_card *card,
+=======
+int snd_trident_create(struct snd_card *card,
+>>>>>>> refs/remotes/origin/master
 		       struct pci_dev *pci,
 		       int pcm_streams,
 		       int pcm_spdif_device,
@@ -3598,7 +3693,15 @@ int __devinit snd_trident_create(struct snd_card *card,
 	trident->port = pci_resource_start(pci, 0);
 
 	if (request_irq(pci->irq, snd_trident_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"Trident Audio", trident)) {
+=======
+			KBUILD_MODNAME, trident)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, trident)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		snd_trident_free(trident);
 		return -EBUSY;
@@ -3918,10 +4021,18 @@ static void snd_trident_clear_voices(struct snd_trident * trident, unsigned shor
 	}
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 int snd_trident_suspend(struct pci_dev *pci, pm_message_t state)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int snd_trident_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct snd_trident *trident = card->private_data;
 
 	trident->in_suspend = 1;
@@ -3935,6 +4046,7 @@ int snd_trident_suspend(struct pci_dev *pci, pm_message_t state)
 
 	pci_disable_device(pci);
 	pci_save_state(pci);
+<<<<<<< HEAD
 	pci_set_power_state(pci, pci_choose_state(pci, state));
 	return 0;
 }
@@ -3942,6 +4054,16 @@ int snd_trident_suspend(struct pci_dev *pci, pm_message_t state)
 int snd_trident_resume(struct pci_dev *pci)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+	pci_set_power_state(pci, PCI_D3hot);
+	return 0;
+}
+
+static int snd_trident_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct snd_trident *trident = card->private_data;
 
 	pci_set_power_state(pci, PCI_D0);
@@ -3978,4 +4100,10 @@ int snd_trident_resume(struct pci_dev *pci)
 	trident->in_suspend = 0;
 	return 0;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_PM */
+=======
+
+SIMPLE_DEV_PM_OPS(snd_trident_pm, snd_trident_suspend, snd_trident_resume);
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master

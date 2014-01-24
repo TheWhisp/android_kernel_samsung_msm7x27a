@@ -13,7 +13,13 @@
 #include <linux/bitops.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -23,7 +29,10 @@
 #include <asm/hwrpb.h>
 #include <asm/tlbflush.h>
 #include <asm/vga.h>
+<<<<<<< HEAD
 #include <asm/rtc.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "proto.h"
 #include "err_impl.h"
@@ -318,8 +327,14 @@ marvel_init_irq(void)
 }
 
 static int 
+<<<<<<< HEAD
 marvel_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 {
+=======
+marvel_map_irq(const struct pci_dev *cdev, u8 slot, u8 pin)
+{
+	struct pci_dev *dev = (struct pci_dev *)cdev;
+>>>>>>> refs/remotes/origin/master
 	struct pci_controller *hose = dev->sysdata;
 	struct io7_port *io7_port = hose->sysdata;
 	struct io7 *io7 = io7_port->io7;
@@ -384,7 +399,17 @@ marvel_init_pci(void)
 
 	marvel_register_error_handlers();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_probe_only = 1;
+=======
+	/* Indicate that we trust the console to configure things properly */
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Indicate that we trust the console to configure things properly */
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/master
 	common_init_pci();
 	locate_and_init_vga(NULL);
 
@@ -399,6 +424,7 @@ marvel_init_rtc(void)
 	init_rtc_irq();
 }
 
+<<<<<<< HEAD
 struct marvel_rtc_time {
 	struct rtc_time *time;
 	int retval;
@@ -450,6 +476,8 @@ marvel_set_rtc_time(struct rtc_time *time)
 	return __set_rtc_time(time);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 marvel_smp_callin(void)
 {
@@ -491,8 +519,12 @@ struct alpha_machine_vector marvel_ev7_mv __initmv = {
 	.vector_name		= "MARVEL/EV7",
 	DO_EV7_MMU,
 	.rtc_port		= 0x70,
+<<<<<<< HEAD
 	.rtc_get_time		= marvel_get_rtc_time,
 	.rtc_set_time		= marvel_set_rtc_time,
+=======
+	.rtc_boot_cpu_only	= 1,
+>>>>>>> refs/remotes/origin/master
 	DO_MARVEL_IO,
 	.machine_check		= marvel_machine_check,
 	.max_isa_dma_address	= ALPHA_MAX_ISA_DMA_ADDRESS,

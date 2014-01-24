@@ -47,6 +47,14 @@
 #include <linux/ioport.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/rtnetlink.h>
 #include <linux/dma-mapping.h>
 #include <linux/gfp.h>
@@ -214,23 +222,37 @@ static int w83977af_open(int i, unsigned int iobase, unsigned int irq,
 	
 	/* Allocate memory if needed */
 	self->rx_buff.head =
+<<<<<<< HEAD
 		dma_alloc_coherent(NULL, self->rx_buff.truesize,
 				   &self->rx_buff_dma, GFP_KERNEL);
+=======
+		dma_zalloc_coherent(NULL, self->rx_buff.truesize,
+				    &self->rx_buff_dma, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (self->rx_buff.head == NULL) {
 		err = -ENOMEM;
 		goto err_out1;
 	}
 
+<<<<<<< HEAD
 	memset(self->rx_buff.head, 0, self->rx_buff.truesize);
 	
 	self->tx_buff.head =
 		dma_alloc_coherent(NULL, self->tx_buff.truesize,
 				   &self->tx_buff_dma, GFP_KERNEL);
+=======
+	self->tx_buff.head =
+		dma_zalloc_coherent(NULL, self->tx_buff.truesize,
+				    &self->tx_buff_dma, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (self->tx_buff.head == NULL) {
 		err = -ENOMEM;
 		goto err_out2;
 	}
+<<<<<<< HEAD
 	memset(self->tx_buff.head, 0, self->tx_buff.truesize);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	self->rx_buff.in_frame = FALSE;
 	self->rx_buff.state = OUTSIDE_FRAME;
@@ -676,7 +698,15 @@ static void w83977af_dma_xmit_complete(struct w83977af_ir *self)
 	switch_bank(iobase, SET0);
 	outb(inb(iobase+HCR) & ~HCR_EN_DMA, iobase+HCR);
 	
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check for underrrun! */
+=======
+	/* Check for underrun! */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Check for underrun! */
+>>>>>>> refs/remotes/origin/master
 	if (inb(iobase+AUDR) & AUDR_UNDR) {
 		IRDA_DEBUG(0, "%s(), Transmit underrun!\n", __func__ );
 		
@@ -1171,7 +1201,15 @@ static int w83977af_net_open(struct net_device *dev)
 	 * and clean up on failure.
 	 */
 	if (request_dma(self->io.dma, dev->name)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		free_irq(self->io.irq, self);
+=======
+		free_irq(self->io.irq, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		free_irq(self->io.irq, dev);
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;
 	}
 		

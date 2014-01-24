@@ -263,10 +263,17 @@ static struct stv0299_config opera1_stv0299_config = {
 
 static int opera1_frontend_attach(struct dvb_usb_adapter *d)
 {
+<<<<<<< HEAD
 	if ((d->fe =
 	     dvb_attach(stv0299_attach, &opera1_stv0299_config,
 			&d->dev->i2c_adap)) != NULL) {
 		d->fe->ops.set_voltage = opera1_set_voltage;
+=======
+	d->fe_adap[0].fe = dvb_attach(stv0299_attach, &opera1_stv0299_config,
+				      &d->dev->i2c_adap);
+	if ((d->fe_adap[0].fe) != NULL) {
+		d->fe_adap[0].fe->ops.set_voltage = opera1_set_voltage;
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	}
 	info("not attached stv0299");
@@ -276,7 +283,11 @@ static int opera1_frontend_attach(struct dvb_usb_adapter *d)
 static int opera1_tuner_attach(struct dvb_usb_adapter *adap)
 {
 	dvb_attach(
+<<<<<<< HEAD
 		dvb_pll_attach, adap->fe, 0xc0>>1,
+=======
+		dvb_pll_attach, adap->fe_adap[0].fe, 0xc0>>1,
+>>>>>>> refs/remotes/origin/cm-10.0
 		&adap->dev->i2c_adap, DVB_PLL_OPERA1
 	);
 	return 0;
@@ -516,6 +527,11 @@ static struct dvb_usb_device_properties opera1_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.frontend_attach = opera1_frontend_attach,
 			.streaming_ctrl = opera1_streaming_ctrl,
 			.tuner_attach = opera1_tuner_attach,
@@ -535,6 +551,10 @@ static struct dvb_usb_device_properties opera1_properties = {
 					}
 				}
 			},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 	.num_device_descs = 1,
@@ -571,6 +591,7 @@ static struct usb_driver opera1_driver = {
 	.id_table = opera1_table,
 };
 
+<<<<<<< HEAD
 static int __init opera1_module_init(void)
 {
 	int result = 0;
@@ -587,6 +608,9 @@ static void __exit opera1_module_exit(void)
 
 module_init(opera1_module_init);
 module_exit(opera1_module_exit);
+=======
+module_usb_driver(opera1_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Mario Hlawitschka (c) dh1pa@amsat.org");
 MODULE_AUTHOR("Marco Gittler (c) g.marco@freenet.de");

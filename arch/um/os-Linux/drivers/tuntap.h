@@ -6,7 +6,11 @@
 #ifndef __UM_TUNTAP_H
 #define __UM_TUNTAP_H
 
+<<<<<<< HEAD
 #include "net_user.h"
+=======
+#include <net_user.h>
+>>>>>>> refs/remotes/origin/master
 
 struct tuntap_data {
 	char *dev_name;

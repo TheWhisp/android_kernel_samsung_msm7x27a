@@ -25,7 +25,11 @@
 #define DRV_MODULE_VERSION	"1.0"
 #define DRV_MODULE_RELDATE	"June 25, 2007"
 
+<<<<<<< HEAD
 static char version[] __devinitdata =
+=======
+static char version[] =
+>>>>>>> refs/remotes/origin/master
 	DRV_MODULE_NAME ".c:v" DRV_MODULE_VERSION " (" DRV_MODULE_RELDATE ")\n";
 MODULE_AUTHOR("David S. Miller (davem@davemloft.net)");
 MODULE_DESCRIPTION("Sun LDOM virtual disk client driver");
@@ -592,7 +596,11 @@ static int generic_request(struct vdc_port *port, u8 op, void *buf, int len)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit vdc_alloc_tx_ring(struct vdc_port *port)
+=======
+static int vdc_alloc_tx_ring(struct vdc_port *port)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vio_dring_state *dr = &port->vio.drings[VIO_DRIVER_TX_RING];
 	unsigned long len, entry_size;
@@ -725,7 +733,11 @@ static struct vio_driver_ops vdc_vio_ops = {
 	.handshake_complete	= vdc_handshake_complete,
 };
 
+<<<<<<< HEAD
 static void __devinit print_version(void)
+=======
+static void print_version(void)
+>>>>>>> refs/remotes/origin/master
 {
 	static int version_printed;
 
@@ -733,8 +745,12 @@ static void __devinit print_version(void)
 		printk(KERN_INFO "%s", version);
 }
 
+<<<<<<< HEAD
 static int __devinit vdc_port_probe(struct vio_dev *vdev,
 				    const struct vio_device_id *id)
+=======
+static int vdc_port_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mdesc_handle *hp;
 	struct vdc_port *port;
@@ -839,10 +855,18 @@ static struct vio_driver vdc_port_driver = {
 	.id_table	= vdc_port_match,
 	.probe		= vdc_port_probe,
 	.remove		= vdc_port_remove,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.driver		= {
 		.name	= "vdc_port",
 		.owner	= THIS_MODULE,
 	}
+=======
+	.name		= "vdc_port",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name		= "vdc_port",
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init vdc_init(void)

@@ -12,12 +12,22 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sched.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 #include <linux/clockchips.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <asm/sched_clock.h>
+=======
+#include <linux/sched_clock.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * MBus bridge block registers.
@@ -60,6 +70,8 @@ static u32 ticks_per_jiffy;
  * Orion's sched_clock implementation. It has a resolution of
  * at least 7.5ns (133MHz TCLK).
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 
 unsigned long long notrace sched_clock(void)
@@ -78,6 +90,17 @@ static void notrace orion_update_sched_clock(void)
 static void __init setup_sched_clock(unsigned long tclk)
 {
 	init_sched_clock(&cd, orion_update_sched_clock, 32, tclk);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static u32 notrace orion_read_sched_clock(void)
+{
+	return ~readl(timer_base + TIMER0_VAL_OFF);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -171,7 +194,10 @@ orion_clkevt_mode(enum clock_event_mode mode, struct clock_event_device *dev)
 static struct clock_event_device orion_clkevt = {
 	.name		= "orion_tick",
 	.features	= CLOCK_EVT_FEAT_ONESHOT | CLOCK_EVT_FEAT_PERIODIC,
+<<<<<<< HEAD
 	.shift		= 32,
+=======
+>>>>>>> refs/remotes/origin/master
 	.rating		= 300,
 	.set_next_event	= orion_clkevt_next_event,
 	.set_mode	= orion_clkevt_mode,
@@ -195,6 +221,7 @@ static struct irqaction orion_timer_irq = {
 };
 
 void __init
+<<<<<<< HEAD
 orion_time_set_base(u32 _timer_base)
 {
 	timer_base = (void __iomem *)_timer_base;
@@ -202,6 +229,15 @@ orion_time_set_base(u32 _timer_base)
 
 void __init
 orion_time_init(u32 _bridge_base, u32 _bridge_timer1_clr_mask,
+=======
+orion_time_set_base(void __iomem *_timer_base)
+{
+	timer_base = _timer_base;
+}
+
+void __init
+orion_time_init(void __iomem *_bridge_base, u32 _bridge_timer1_clr_mask,
+>>>>>>> refs/remotes/origin/master
 		unsigned int irq, unsigned int tclk)
 {
 	u32 u;
@@ -209,7 +245,11 @@ orion_time_init(u32 _bridge_base, u32 _bridge_timer1_clr_mask,
 	/*
 	 * Set SoC-specific data.
 	 */
+<<<<<<< HEAD
 	bridge_base = (void __iomem *)_bridge_base;
+=======
+	bridge_base = _bridge_base;
+>>>>>>> refs/remotes/origin/master
 	bridge_timer1_clr_mask = _bridge_timer1_clr_mask;
 
 	ticks_per_jiffy = (tclk + HZ/2) / HZ;
@@ -217,7 +257,15 @@ orion_time_init(u32 _bridge_base, u32 _bridge_timer1_clr_mask,
 	/*
 	 * Set scale and timer for sched_clock.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	setup_sched_clock(tclk);
+=======
+	setup_sched_clock(orion_read_sched_clock, 32, tclk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_sched_clock(orion_read_sched_clock, 32, tclk);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Setup free-running clocksource timer (interrupts
@@ -236,9 +284,14 @@ orion_time_init(u32 _bridge_base, u32 _bridge_timer1_clr_mask,
 	 * Setup clockevent timer (interrupt-driven).
 	 */
 	setup_irq(irq, &orion_timer_irq);
+<<<<<<< HEAD
 	orion_clkevt.mult = div_sc(tclk, NSEC_PER_SEC, orion_clkevt.shift);
 	orion_clkevt.max_delta_ns = clockevent_delta2ns(0xfffffffe, &orion_clkevt);
 	orion_clkevt.min_delta_ns = clockevent_delta2ns(1, &orion_clkevt);
 	orion_clkevt.cpumask = cpumask_of(0);
 	clockevents_register_device(&orion_clkevt);
+=======
+	orion_clkevt.cpumask = cpumask_of(0);
+	clockevents_config_and_register(&orion_clkevt, tclk, 1, 0xfffffffe);
+>>>>>>> refs/remotes/origin/master
 }

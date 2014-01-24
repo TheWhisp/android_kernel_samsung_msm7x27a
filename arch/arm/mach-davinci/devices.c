@@ -13,6 +13,7 @@
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <mach/i2c.h>
@@ -23,6 +24,25 @@
 #include <mach/mmc.h>
 #include <mach/time.h>
 
+<<<<<<< HEAD
+=======
+#include "davinci.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/reboot.h>
+
+#include <mach/hardware.h>
+#include <linux/platform_data/i2c-davinci.h>
+#include <mach/irqs.h>
+#include <mach/cputype.h>
+#include <mach/mux.h>
+#include <linux/platform_data/mmc-davinci.h>
+#include <mach/time.h>
+#include <linux/platform_data/edma.h>
+
+
+#include "davinci.h"
+>>>>>>> refs/remotes/origin/master
 #include "clock.h"
 
 #define DAVINCI_I2C_BASE	     0x01C21000
@@ -33,8 +53,33 @@
 #define DM365_MMCSD0_BASE	     0x01D11000
 #define DM365_MMCSD1_BASE	     0x01D00000
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* System control register offsets */
 #define DM64XX_VDD3P3V_PWDN	0x48
+=======
+=======
+#define DAVINCI_DMA_MMCRXEVT	26
+#define DAVINCI_DMA_MMCTXEVT	27
+
+>>>>>>> refs/remotes/origin/master
+void __iomem  *davinci_sysmod_base;
+
+void davinci_map_sysmod(void)
+{
+	davinci_sysmod_base = ioremap_nocache(DAVINCI_SYSTEM_MODULE_BASE,
+					      0x800);
+	/*
+	 * Throw a bug since a lot of board initialization code depends
+	 * on system module availability. ioremap() failing this early
+	 * need careful looking into anyway.
+	 */
+	BUG_ON(!davinci_sysmod_base);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct resource i2c_resources[] = {
 	{
@@ -107,7 +152,11 @@ void __init davinci_init_ide(void)
 	platform_device_register(&ide_device);
 }
 
+<<<<<<< HEAD
 #if	defined(CONFIG_MMC_DAVINCI) || defined(CONFIG_MMC_DAVINCI_MODULE)
+=======
+#if IS_ENABLED(CONFIG_MMC_DAVINCI)
+>>>>>>> refs/remotes/origin/master
 
 static u64 mmcsd0_dma_mask = DMA_BIT_MASK(32);
 
@@ -138,7 +187,11 @@ static struct resource mmcsd0_resources[] = {
 };
 
 static struct platform_device davinci_mmcsd0_device = {
+<<<<<<< HEAD
 	.name = "davinci_mmc",
+=======
+	.name = "dm6441-mmc",
+>>>>>>> refs/remotes/origin/master
 	.id = 0,
 	.dev = {
 		.dma_mask = &mmcsd0_dma_mask,
@@ -175,7 +228,11 @@ static struct resource mmcsd1_resources[] = {
 };
 
 static struct platform_device davinci_mmcsd1_device = {
+<<<<<<< HEAD
 	.name = "davinci_mmc",
+=======
+	.name = "dm6441-mmc",
+>>>>>>> refs/remotes/origin/master
 	.id = 1,
 	.dev = {
 		.dma_mask = &mmcsd1_dma_mask,
@@ -212,17 +269,36 @@ void __init davinci_setup_mmc(int module, struct davinci_mmc_config *config)
 			davinci_cfg_reg(DM355_SD1_DATA2);
 			davinci_cfg_reg(DM355_SD1_DATA3);
 		} else if (cpu_is_davinci_dm365()) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			void __iomem *pupdctl1 =
 				IO_ADDRESS(DAVINCI_SYSTEM_MODULE_BASE + 0x7c);
 
 			/* Configure pull down control */
 			__raw_writel((__raw_readl(pupdctl1) & ~0xfc0),
 					pupdctl1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			/* Configure pull down control */
+			unsigned v;
+
+			v = __raw_readl(DAVINCI_SYSMOD_VIRT(SYSMOD_PUPDCTL1));
+			__raw_writel(v & ~0xfc0,
+					DAVINCI_SYSMOD_VIRT(SYSMOD_PUPDCTL1));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			mmcsd1_resources[0].start = DM365_MMCSD1_BASE;
 			mmcsd1_resources[0].end = DM365_MMCSD1_BASE +
 							SZ_4K - 1;
 			mmcsd1_resources[2].start = IRQ_DM365_SDIOINT1;
+<<<<<<< HEAD
+=======
+			davinci_mmcsd1_device.name = "da830-mmc";
+>>>>>>> refs/remotes/origin/master
 		} else
 			break;
 
@@ -244,13 +320,28 @@ void __init davinci_setup_mmc(int module, struct davinci_mmc_config *config)
 			mmcsd0_resources[0].end = DM365_MMCSD0_BASE +
 							SZ_4K - 1;
 			mmcsd0_resources[2].start = IRQ_DM365_SDIOINT0;
+<<<<<<< HEAD
 		} else if (cpu_is_davinci_dm644x()) {
 			/* REVISIT: should this be in board-init code? */
+<<<<<<< HEAD
 			void __iomem *base =
 				IO_ADDRESS(DAVINCI_SYSTEM_MODULE_BASE);
 
 			/* Power-on 3.3V IO cells */
 			__raw_writel(0, base + DM64XX_VDD3P3V_PWDN);
+=======
+			/* Power-on 3.3V IO cells */
+			__raw_writel(0,
+				DAVINCI_SYSMOD_VIRT(SYSMOD_VDD3P3VPWDN));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			davinci_mmcsd0_device.name = "da830-mmc";
+		} else if (cpu_is_davinci_dm644x()) {
+			/* REVISIT: should this be in board-init code? */
+			/* Power-on 3.3V IO cells */
+			__raw_writel(0,
+				DAVINCI_SYSMOD_VIRT(SYSMOD_VDD3P3VPWDN));
+>>>>>>> refs/remotes/origin/master
 			/*Set up the pull regiter for MMC */
 			davinci_cfg_reg(DM644X_MSTK);
 		}
@@ -291,11 +382,27 @@ struct platform_device davinci_wdt_device = {
 	.resource	= wdt_resources,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void davinci_restart(char mode, const char *cmd)
+=======
+void davinci_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
+{
+	davinci_watchdog_reset(&davinci_wdt_device);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void davinci_init_wdt(void)
 {
 	platform_device_register(&davinci_wdt_device);
 }
 
+<<<<<<< HEAD
 /*-------------------------------------------------------------------------*/
 
 static struct platform_device davinci_pcm_device = {
@@ -306,10 +413,28 @@ static struct platform_device davinci_pcm_device = {
 static void davinci_init_pcm(void)
 {
 	platform_device_register(&davinci_pcm_device);
+=======
+static struct platform_device davinci_gpio_device = {
+	.name	= "davinci_gpio",
+	.id	= -1,
+};
+
+int davinci_gpio_register(struct resource *res, int size, void *pdata)
+{
+	davinci_gpio_device.resource = res;
+	davinci_gpio_device.num_resources = size;
+	davinci_gpio_device.dev.platform_data = pdata;
+	return platform_device_register(&davinci_gpio_device);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
+=======
+/*-------------------------------------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 struct davinci_timer_instance davinci_timer_instance[2] = {
 	{
 		.base		= DAVINCI_TIMER0_BASE,
@@ -330,7 +455,10 @@ static int __init davinci_init_devices(void)
 	/* please keep these calls, and their implementations above,
 	 * in alphabetical order so they're easier to sort through.
 	 */
+<<<<<<< HEAD
 	davinci_init_pcm();
+=======
+>>>>>>> refs/remotes/origin/master
 	davinci_init_wdt();
 
 	return 0;

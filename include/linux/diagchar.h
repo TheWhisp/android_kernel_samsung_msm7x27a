@@ -19,6 +19,14 @@
 #define PKT_TYPE			8
 #define DEINIT_TYPE			16
 #define USER_SPACE_LOG_TYPE		32
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define DCI_DATA_TYPE			64
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DCI_DATA_TYPE			64
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USB_MODE			1
 #define MEMORY_DEVICE_MODE		2
 #define NO_LOGGING_MODE			3
@@ -35,6 +43,8 @@
 #define DIAG_IOCTL_SWITCH_LOGGING	7
 #define DIAG_IOCTL_GET_DELAYED_RSP_ID 	8
 #define DIAG_IOCTL_LSM_DEINIT		9
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /* Machine ID and corresponding PC Tools IDs */
 #define APQ8060_MACHINE_ID	86
@@ -55,6 +65,31 @@
 #define APQ8064_TOOLS_ID	4072
 #define MSM8930_TOOLS_ID	4072
 #define MSM8974_TOOLS_ID	4072
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define DIAG_IOCTL_DCI_INIT		20
+#define DIAG_IOCTL_DCI_DEINIT		21
+#define DIAG_IOCTL_DCI_SUPPORT		22
+#define DIAG_IOCTL_DCI_REG		23
+
+/* PC Tools IDs */
+#define APQ8060_TOOLS_ID	4062
+#define AO8960_TOOLS_ID		4064
+#define APQ8064_TOOLS_ID	4072
+#define MSM8625_TOOLS_ID	4075
+#define MSM8930_TOOLS_ID	4076
+#define MSM8630_TOOLS_ID	4077
+#define MSM8230_TOOLS_ID	4078
+#define APQ8030_TOOLS_ID	4079
+#define MSM8627_TOOLS_ID	4080
+#define MSM8227_TOOLS_ID	4081
+#define MSM8974_TOOLS_ID	4083
+#define MSM8625Q_TOOLS_ID	4086
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MSG_MASK_0			(0x00000001)
 #define MSG_MASK_1			(0x00000002)
@@ -113,7 +148,15 @@ the appropriate macros. */
 #define EVENT_LAST_ID			0x08AD
 
 #define MSG_SSID_0			0
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MSG_SSID_0_LAST			90
+=======
+#define MSG_SSID_0_LAST			91
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSG_SSID_0_LAST			91
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSG_SSID_1			500
 #define MSG_SSID_1_LAST			506
 #define MSG_SSID_2			1000
@@ -127,7 +170,15 @@ the appropriate macros. */
 #define MSG_SSID_6			4500
 #define MSG_SSID_6_LAST			4526
 #define MSG_SSID_7			4600
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MSG_SSID_7_LAST			4612
+=======
+#define MSG_SSID_7_LAST			4613
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSG_SSID_7_LAST			4613
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSG_SSID_8			5000
 #define MSG_SSID_8_LAST			5029
 #define MSG_SSID_9			5500
@@ -275,6 +326,14 @@ static const uint32_t msg_bld_masks_0[] = {
 	MSG_LVL_LOW|MSG_LVL_MED|MSG_LVL_HIGH|MSG_LVL_ERROR|MSG_LVL_FATAL,
 	MSG_LVL_LOW,
 	MSG_LVL_MED,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	MSG_LVL_LOW,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MSG_LVL_LOW,
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSG_LVL_LOW
 };
 
@@ -387,6 +446,14 @@ static const uint32_t msg_bld_masks_7[] = {
 	MSG_LVL_MED,
 	MSG_LVL_MED,
 	MSG_LVL_MED,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	MSG_LVL_LOW,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MSG_LVL_LOW,
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSG_LVL_LOW
 };
 

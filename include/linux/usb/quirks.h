@@ -19,8 +19,13 @@
 /* device can't handle its Configuration or Interface strings */
 #define USB_QUIRK_CONFIG_INTF_STRINGS	0x00000008
 
+<<<<<<< HEAD
 /*device will morph if reset, don't use reset for handling errors */
 #define USB_QUIRK_RESET_MORPHS		0x00000010
+=======
+/* device can't be reset(e.g morph devices), don't use reset */
+#define USB_QUIRK_RESET			0x00000010
+>>>>>>> refs/remotes/origin/master
 
 /* device has more interface descriptions than the bNumInterfaces count,
    and can't handle talking to these interfaces */
@@ -30,4 +35,17 @@
    descriptor */
 #define USB_QUIRK_DELAY_INIT		0x00000040
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define USB_QUIRK_OTG_PET		0x00000080
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#define USB_QUIRK_OTG_PET		0x00000080
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __LINUX_USB_QUIRKS_H */

@@ -1,6 +1,7 @@
 #ifndef _ASM_PARISC_SIGNAL_H
 #define _ASM_PARISC_SIGNAL_H
 
+<<<<<<< HEAD
 #define SIGHUP		 1
 #define SIGINT		 2
 #define SIGQUIT		 3
@@ -81,12 +82,16 @@
 #define SIGSTKSZ	8192
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/signal.h>
+>>>>>>> refs/remotes/origin/master
 
 #define _NSIG		64
 /* bits-per-word, where word apparently means 'long' not 'int' */
 #define _NSIG_BPW	BITS_PER_LONG
 #define _NSIG_WORDS	(_NSIG / _NSIG_BPW)
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #define SIG_BLOCK          0	/* for blocking signals */
@@ -124,6 +129,10 @@ typedef struct sigaltstack {
 
 #ifdef __KERNEL__
 
+=======
+# ifndef __ASSEMBLY__
+
+>>>>>>> refs/remotes/origin/master
 /* Most things should be clean enough to redefine this at will, if care
    is taken to make libc match.  */
 
@@ -134,11 +143,16 @@ typedef struct {
 	unsigned long sig[_NSIG_WORDS];
 } sigset_t;
 
+<<<<<<< HEAD
+=======
+#ifndef __KERNEL__
+>>>>>>> refs/remotes/origin/master
 struct sigaction {
 	__sighandler_t sa_handler;
 	unsigned long sa_flags;
 	sigset_t sa_mask;		/* mask last for extensibility */
 };
+<<<<<<< HEAD
 
 struct k_sigaction {
 	struct sigaction sa;
@@ -149,5 +163,11 @@ struct k_sigaction {
 #include <asm/sigcontext.h>
 
 #endif /* __KERNEL__ */
+=======
+#endif
+
+#include <asm/sigcontext.h>
+
+>>>>>>> refs/remotes/origin/master
 #endif /* !__ASSEMBLY */
 #endif /* _ASM_PARISC_SIGNAL_H */

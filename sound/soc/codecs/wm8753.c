@@ -1,7 +1,11 @@
 /*
  * wm8753.c  --  WM8753 ALSA Soc Audio driver
  *
+<<<<<<< HEAD
  * Copyright 2003 Wolfson Microelectronics PLC.
+=======
+ * Copyright 2003-11 Wolfson Microelectronics PLC.
+>>>>>>> refs/remotes/origin/master
  * Author: Liam Girdwood <lrg@slimlogic.co.uk>
  *
  *  This program is free software; you can redistribute  it and/or modify it
@@ -38,7 +42,17 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+#include <linux/of_device.h>
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_device.h>
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
 #include <sound/core.h>
@@ -65,6 +79,8 @@ static int wm8753_voice_write_dai_fmt(struct snd_soc_codec *codec,
  * We can't read the WM8753 register space when we
  * are using 2 wire for device control, so we cache them instead.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const u16 wm8753_reg[] = {
 	0x0000, 0x0008, 0x0000, 0x000a,
 	0x000a, 0x0033, 0x0000, 0x0007,
@@ -87,6 +103,93 @@ static const u16 wm8753_reg[] = {
 /* codec private data */
 struct wm8753_priv {
 	enum snd_soc_control_type control_type;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct reg_default wm8753_reg_defaults[] = {
+	{ 0x00, 0x0000 },
+	{ 0x01, 0x0008 },
+	{ 0x02, 0x0000 },
+	{ 0x03, 0x000a },
+	{ 0x04, 0x000a },
+	{ 0x05, 0x0033 },
+	{ 0x06, 0x0000 },
+	{ 0x07, 0x0007 },
+	{ 0x08, 0x00ff },
+	{ 0x09, 0x00ff },
+	{ 0x0a, 0x000f },
+	{ 0x0b, 0x000f },
+	{ 0x0c, 0x007b },
+	{ 0x0d, 0x0000 },
+	{ 0x0e, 0x0032 },
+	{ 0x0f, 0x0000 },
+	{ 0x10, 0x00c3 },
+	{ 0x11, 0x00c3 },
+	{ 0x12, 0x00c0 },
+	{ 0x13, 0x0000 },
+	{ 0x14, 0x0000 },
+	{ 0x15, 0x0000 },
+	{ 0x16, 0x0000 },
+	{ 0x17, 0x0000 },
+	{ 0x18, 0x0000 },
+	{ 0x19, 0x0000 },
+	{ 0x1a, 0x0000 },
+	{ 0x1b, 0x0000 },
+	{ 0x1c, 0x0000 },
+	{ 0x1d, 0x0000 },
+	{ 0x1e, 0x0000 },
+	{ 0x1f, 0x0000 },
+	{ 0x20, 0x0055 },
+	{ 0x21, 0x0005 },
+	{ 0x22, 0x0050 },
+	{ 0x23, 0x0055 },
+	{ 0x24, 0x0050 },
+	{ 0x25, 0x0055 },
+	{ 0x26, 0x0050 },
+	{ 0x27, 0x0055 },
+	{ 0x28, 0x0079 },
+	{ 0x29, 0x0079 },
+	{ 0x2a, 0x0079 },
+	{ 0x2b, 0x0079 },
+	{ 0x2c, 0x0079 },
+	{ 0x2d, 0x0000 },
+	{ 0x2e, 0x0000 },
+	{ 0x2f, 0x0000 },
+	{ 0x30, 0x0000 },
+	{ 0x31, 0x0097 },
+	{ 0x32, 0x0097 },
+	{ 0x33, 0x0000 },
+	{ 0x34, 0x0004 },
+	{ 0x35, 0x0000 },
+	{ 0x36, 0x0083 },
+	{ 0x37, 0x0024 },
+	{ 0x38, 0x01ba },
+	{ 0x39, 0x0000 },
+	{ 0x3a, 0x0083 },
+	{ 0x3b, 0x0024 },
+	{ 0x3c, 0x01ba },
+	{ 0x3d, 0x0000 },
+	{ 0x3e, 0x0000 },
+	{ 0x3f, 0x0000 },
+};
+
+static bool wm8753_volatile(struct device *dev, unsigned int reg)
+{
+	return reg == WM8753_RESET;
+}
+
+static bool wm8753_writeable(struct device *dev, unsigned int reg)
+{
+	return reg <= WM8753_ADCTL2;
+}
+
+/* codec private data */
+struct wm8753_priv {
+	struct regmap *regmap;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int sysclk;
 	unsigned int pcmclk;
 
@@ -485,7 +588,15 @@ SND_SOC_DAPM_INPUT("MIC2"),
 SND_SOC_DAPM_VMID("VREF"),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route wm8753_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route wm8753_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 	/* left mixer */
 	{"Left Mixer", "Left Playback Switch", "Left DAC"},
 	{"Left Mixer", "Voice Playback Switch", "Voice DAC"},
@@ -639,6 +750,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"ACOP", NULL, "ALC Mixer"},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8753_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -650,6 +763,10 @@ static int wm8753_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* PLL divisors */
 struct _pll_div {
 	u32 div2:1;
@@ -883,8 +1000,12 @@ static int wm8753_pcm_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params,
 				struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
 	u16 voice = snd_soc_read(codec, WM8753_PCM) & 0x01f3;
 	u16 srate = snd_soc_read(codec, WM8753_SRATE1) & 0x017f;
@@ -1113,8 +1234,12 @@ static int wm8753_i2s_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params,
 				struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
 	u16 srate = snd_soc_read(codec, WM8753_SRATE1) & 0x01c0;
 	u16 hifi = snd_soc_read(codec, WM8753_HIFI) & 0x01f3;
@@ -1325,7 +1450,15 @@ static int wm8753_set_bias_level(struct snd_soc_codec *codec,
  * 3. Voice disabled - HIFI over HIFI
  * 4. Voice disabled - HIFI over HIFI, uses voice DAI LRC for capture
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8753_dai_ops_hifi_mode = {
+=======
+static const struct snd_soc_dai_ops wm8753_dai_ops_hifi_mode = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8753_dai_ops_hifi_mode = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= wm8753_i2s_hw_params,
 	.digital_mute	= wm8753_mute,
 	.set_fmt	= wm8753_hifi_set_dai_fmt,
@@ -1334,7 +1467,15 @@ static struct snd_soc_dai_ops wm8753_dai_ops_hifi_mode = {
 	.set_sysclk	= wm8753_set_dai_sysclk,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8753_dai_ops_voice_mode = {
+=======
+static const struct snd_soc_dai_ops wm8753_dai_ops_voice_mode = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8753_dai_ops_voice_mode = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= wm8753_pcm_hw_params,
 	.digital_mute	= wm8753_mute,
 	.set_fmt	= wm8753_voice_set_dai_fmt,
@@ -1391,14 +1532,29 @@ static void wm8753_work(struct work_struct *work)
 	wm8753_set_bias_level(codec, dapm->bias_level);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8753_suspend(struct snd_soc_codec *codec, pm_message_t state)
 {
 	wm8753_set_bias_level(codec, SND_SOC_BIAS_OFF);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int wm8753_suspend(struct snd_soc_codec *codec)
+{
+	wm8753_set_bias_level(codec, SND_SOC_BIAS_OFF);
+	codec->cache_sync = 1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int wm8753_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 *reg_cache = codec->reg_cache;
 	int i;
 
@@ -1413,6 +1569,16 @@ static int wm8753_resume(struct snd_soc_codec *codec)
 
 		snd_soc_write(codec, i, reg_cache[i]);
 	}
+=======
+	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
+
+	regcache_sync(wm8753->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
+
+	regcache_sync(wm8753->regmap);
+>>>>>>> refs/remotes/origin/master
 
 	wm8753_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
@@ -1420,8 +1586,14 @@ static int wm8753_resume(struct snd_soc_codec *codec)
 	if (codec->dapm.suspend_bias_level == SND_SOC_BIAS_ON) {
 		wm8753_set_bias_level(codec, SND_SOC_BIAS_PREPARE);
 		codec->dapm.bias_level = SND_SOC_BIAS_ON;
+<<<<<<< HEAD
 		schedule_delayed_work(&codec->dapm.delayed_work,
 			msecs_to_jiffies(caps_charge));
+=======
+		queue_delayed_work(system_power_efficient_wq,
+				   &codec->dapm.delayed_work,
+				   msecs_to_jiffies(caps_charge));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -1434,7 +1606,17 @@ static int wm8753_probe(struct snd_soc_codec *codec)
 
 	INIT_DELAYED_WORK(&codec->dapm.delayed_work, wm8753_work);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8753->control_type);
+=======
+	codec->control_data = wm8753->regmap;
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	codec->control_data = wm8753->regmap;
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -1466,17 +1648,27 @@ static int wm8753_probe(struct snd_soc_codec *codec)
 	snd_soc_update_bits(codec, WM8753_LINVOL, 0x0100, 0x0100);
 	snd_soc_update_bits(codec, WM8753_RINVOL, 0x0100, 0x0100);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8753_snd_controls,
 			     ARRAY_SIZE(wm8753_snd_controls));
 	wm8753_add_widgets(codec);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /* power down chip */
 static int wm8753_remove(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	flush_delayed_work_sync(&codec->dapm.delayed_work);
+=======
+	flush_delayed_work(&codec->dapm.delayed_work);
+>>>>>>> refs/remotes/origin/master
 	wm8753_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
 	return 0;
@@ -1488,17 +1680,58 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8753 = {
 	.suspend =	wm8753_suspend,
 	.resume =	wm8753_resume,
 	.set_bias_level = wm8753_set_bias_level,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8753_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8753_reg,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	.controls = wm8753_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8753_snd_controls),
+	.dapm_widgets = wm8753_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8753_dapm_widgets),
+	.dapm_routes = wm8753_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8753_dapm_routes),
+};
+
+static const struct of_device_id wm8753_of_match[] = {
+	{ .compatible = "wlf,wm8753", },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, wm8753_of_match);
+
+static const struct regmap_config wm8753_regmap = {
+	.reg_bits = 7,
+	.val_bits = 9,
+
+	.max_register = WM8753_ADCTL2,
+	.writeable_reg = wm8753_writeable,
+	.volatile_reg = wm8753_volatile,
+
+	.cache_type = REGCACHE_RBTREE,
+	.reg_defaults = wm8753_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8753_reg_defaults),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #if defined(CONFIG_SPI_MASTER)
 static int __devinit wm8753_spi_probe(struct spi_device *spi)
+=======
+};
+
+#if defined(CONFIG_SPI_MASTER)
+static int wm8753_spi_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8753_priv *wm8753;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8753 = kzalloc(sizeof(struct wm8753_priv), GFP_KERNEL);
 	if (wm8753 == NULL)
 		return -ENOMEM;
@@ -1510,20 +1743,86 @@ static int __devinit wm8753_spi_probe(struct spi_device *spi)
 			&soc_codec_dev_wm8753, wm8753_dai, ARRAY_SIZE(wm8753_dai));
 	if (ret < 0)
 		kfree(wm8753);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	wm8753 = devm_kzalloc(&spi->dev, sizeof(struct wm8753_priv),
+			      GFP_KERNEL);
+	if (wm8753 == NULL)
+		return -ENOMEM;
+
+	spi_set_drvdata(spi, wm8753);
+
+<<<<<<< HEAD
+	wm8753->regmap = regmap_init_spi(spi, &wm8753_regmap);
+=======
+	wm8753->regmap = devm_regmap_init_spi(spi, &wm8753_regmap);
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(wm8753->regmap)) {
+		ret = PTR_ERR(wm8753->regmap);
+		dev_err(&spi->dev, "Failed to allocate register map: %d\n",
+			ret);
+<<<<<<< HEAD
+		goto err;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
+	}
+
+	ret = snd_soc_register_codec(&spi->dev, &soc_codec_dev_wm8753,
+				     wm8753_dai, ARRAY_SIZE(wm8753_dai));
+<<<<<<< HEAD
+	if (ret != 0) {
+		dev_err(&spi->dev, "Failed to register CODEC: %d\n", ret);
+		goto err_regmap;
+	}
+
+	return 0;
+
+err_regmap:
+	regmap_exit(wm8753->regmap);
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit wm8753_spi_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	snd_soc_unregister_codec(&spi->dev);
 	kfree(spi_get_drvdata(spi));
+=======
+	struct wm8753_priv *wm8753 = spi_get_drvdata(spi);
+
+	snd_soc_unregister_codec(&spi->dev);
+	regmap_exit(wm8753->regmap);
+	kfree(wm8753);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret != 0)
+		dev_err(&spi->dev, "Failed to register CODEC: %d\n", ret);
+
+	return ret;
+}
+
+static int wm8753_spi_remove(struct spi_device *spi)
+{
+	snd_soc_unregister_codec(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct spi_driver wm8753_spi_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name	= "wm8753-codec",
 		.owner	= THIS_MODULE,
+=======
+		.name	= "wm8753",
+		.owner	= THIS_MODULE,
+		.of_match_table = wm8753_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe		= wm8753_spi_probe,
 	.remove		= __devexit_p(wm8753_spi_remove),
@@ -1533,28 +1832,104 @@ static struct spi_driver wm8753_spi_driver = {
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static __devinit int wm8753_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+		.name	= "wm8753",
+		.owner	= THIS_MODULE,
+		.of_match_table = wm8753_of_match,
+	},
+	.probe		= wm8753_spi_probe,
+	.remove		= wm8753_spi_remove,
+};
+#endif /* CONFIG_SPI_MASTER */
+
+#if IS_ENABLED(CONFIG_I2C)
+static int wm8753_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8753_priv *wm8753;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8753 = kzalloc(sizeof(struct wm8753_priv), GFP_KERNEL);
+=======
+	wm8753 = devm_kzalloc(&i2c->dev, sizeof(struct wm8753_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8753 = devm_kzalloc(&i2c->dev, sizeof(struct wm8753_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (wm8753 == NULL)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, wm8753);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8753->control_type = SND_SOC_I2C;
 
 	ret =  snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm8753, wm8753_dai, ARRAY_SIZE(wm8753_dai));
 	if (ret < 0)
 		kfree(wm8753);
+=======
+
+	wm8753->regmap = regmap_init_i2c(i2c, &wm8753_regmap);
+=======
+
+	wm8753->regmap = devm_regmap_init_i2c(i2c, &wm8753_regmap);
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(wm8753->regmap)) {
+		ret = PTR_ERR(wm8753->regmap);
+		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+			ret);
+<<<<<<< HEAD
+		goto err;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
+	}
+
+	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_wm8753,
+				     wm8753_dai, ARRAY_SIZE(wm8753_dai));
+<<<<<<< HEAD
+	if (ret != 0) {
+		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+		goto err_regmap;
+	}
+
+	return 0;
+
+err_regmap:
+	regmap_exit(wm8753->regmap);
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int wm8753_i2c_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	snd_soc_unregister_codec(&client->dev);
 	kfree(i2c_get_clientdata(client));
+=======
+	struct wm8753_priv *wm8753 = i2c_get_clientdata(client);
+
+	snd_soc_unregister_codec(&client->dev);
+	regmap_exit(wm8753->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret != 0)
+		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+
+	return ret;
+}
+
+static int wm8753_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1566,11 +1941,26 @@ MODULE_DEVICE_TABLE(i2c, wm8753_i2c_id);
 
 static struct i2c_driver wm8753_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8753-codec",
 		.owner = THIS_MODULE,
+=======
+		.name = "wm8753",
+		.owner = THIS_MODULE,
+		.of_match_table = wm8753_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe =    wm8753_i2c_probe,
 	.remove =   __devexit_p(wm8753_i2c_remove),
+=======
+		.name = "wm8753",
+		.owner = THIS_MODULE,
+		.of_match_table = wm8753_of_match,
+	},
+	.probe =    wm8753_i2c_probe,
+	.remove =   wm8753_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = wm8753_i2c_id,
 };
 #endif
@@ -1578,7 +1968,11 @@ static struct i2c_driver wm8753_i2c_driver = {
 static int __init wm8753_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	ret = i2c_add_driver(&wm8753_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register wm8753 I2C driver: %d\n",
@@ -1598,7 +1992,11 @@ module_init(wm8753_modinit);
 
 static void __exit wm8753_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	i2c_del_driver(&wm8753_i2c_driver);
 #endif
 #if defined(CONFIG_SPI_MASTER)

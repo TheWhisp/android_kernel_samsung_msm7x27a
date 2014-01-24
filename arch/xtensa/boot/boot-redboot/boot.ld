@@ -31,6 +31,7 @@ SECTIONS
 
 	__reloc_end = . ;
 
+<<<<<<< HEAD
 	.initrd ALIGN(0x10) :
 	{
 		boot_initrd_start = . ;
@@ -41,6 +42,11 @@ SECTIONS
 	. = ALIGN(0x10);
 	__image_load = . ;
 	.image 0xd0001000: AT(__image_load)
+=======
+	. = ALIGN(0x10);
+	__image_load = . ;
+	.image 0xd0003000: AT(__image_load)
+>>>>>>> refs/remotes/origin/master
 	{
 		_image_start = .;
 		*(image)

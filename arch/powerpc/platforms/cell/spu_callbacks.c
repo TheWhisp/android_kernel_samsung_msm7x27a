@@ -5,7 +5,15 @@
 #undef DEBUG
 
 #include <linux/kallsyms.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/syscalls.h>
 
 #include <asm/spu.h>
@@ -60,6 +68,7 @@ long spu_sys_callback(struct spu_syscall_block *s)
 
 	syscall = spu_syscall_table[s->nr_ret];
 
+<<<<<<< HEAD
 #ifdef DEBUG
 	print_symbol(KERN_DEBUG "SPU-syscall %s:", (unsigned long)syscall);
 	printk("syscall%ld(%lx, %lx, %lx, %lx, %lx, %lx)\n",
@@ -67,6 +76,14 @@ long spu_sys_callback(struct spu_syscall_block *s)
 			s->parm[0], s->parm[1], s->parm[2],
 			s->parm[3], s->parm[4], s->parm[5]);
 #endif
+=======
+	pr_debug("SPU-syscall "
+		 "%pSR:syscall%lld(%llx, %llx, %llx, %llx, %llx, %llx)\n",
+		 syscall,
+		 s->nr_ret,
+		 s->parm[0], s->parm[1], s->parm[2],
+		 s->parm[3], s->parm[4], s->parm[5]);
+>>>>>>> refs/remotes/origin/master
 
 	return syscall(s->parm[0], s->parm[1], s->parm[2],
 		       s->parm[3], s->parm[4], s->parm[5]);

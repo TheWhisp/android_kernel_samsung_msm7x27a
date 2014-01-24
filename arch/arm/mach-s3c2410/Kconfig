@@ -2,6 +2,7 @@
 #
 # Licensed under GPLv2
 
+<<<<<<< HEAD
 config CPU_S3C2410
 	bool
 	depends on ARCH_S3C2410
@@ -45,6 +46,8 @@ config MACH_BAST_IDE
 	  Internal node for machines with an BAST style IDE
 	  interface
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 # cpu frequency scaling support
 
 config S3C2410_CPUFREQ
@@ -61,6 +64,7 @@ config S3C2410_PLLTABLE
 	help
 	  Select the PLL table for the S3C2410
 
+<<<<<<< HEAD
 menu "S3C2410 Machines"
 
 config ARCH_SMDK2410
@@ -179,3 +183,5 @@ config MACH_QT2410
 	   Say Y here if you are using the Armzone QT2410
 
 endmenu
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

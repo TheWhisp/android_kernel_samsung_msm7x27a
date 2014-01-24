@@ -6,7 +6,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +65,11 @@ ACPI_MODULE_NAME("dswexec")
 /*
  * Dispatch table for opcode classes
  */
+<<<<<<< HEAD
 static ACPI_EXECUTE_OP acpi_gbl_op_type_dispatch[] = {
+=======
+static acpi_execute_op acpi_gbl_op_type_dispatch[] = {
+>>>>>>> refs/remotes/origin/master
 	acpi_ex_opcode_0A_0T_1R,
 	acpi_ex_opcode_1A_0T_0R,
 	acpi_ex_opcode_1A_0T_1R,
@@ -149,7 +161,11 @@ acpi_ds_get_predicate_value(struct acpi_walk_state *walk_state,
 
 	/* Truncate the predicate to 32-bits if necessary */
 
+<<<<<<< HEAD
 	acpi_ex_truncate_for32bit_table(local_obj_desc);
+=======
+	(void)acpi_ex_truncate_for32bit_table(local_obj_desc);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Save the result of the predicate evaluation on
@@ -170,7 +186,11 @@ acpi_ds_get_predicate_value(struct acpi_walk_state *walk_state,
 
 	(void)acpi_ds_do_implicit_return(local_obj_desc, walk_state, TRUE);
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	ACPI_DEBUG_PRINT((ACPI_DB_EXEC, "Completed a predicate eval=%X Op=%p\n",
 			  walk_state->control_state->common.value,
@@ -204,7 +224,11 @@ acpi_ds_get_predicate_value(struct acpi_walk_state *walk_state,
  * RETURN:      Status
  *
  * DESCRIPTION: Descending callback used during the execution of control
+<<<<<<< HEAD
  *              methods.  This is where most operators and operands are
+=======
+ *              methods. This is where most operators and operands are
+>>>>>>> refs/remotes/origin/master
  *              dispatched to the interpreter.
  *
  ****************************************************************************/
@@ -297,7 +321,11 @@ acpi_ds_exec_begin_op(struct acpi_walk_state *walk_state,
 		if (walk_state->walk_type & ACPI_WALK_METHOD) {
 			/*
 			 * Found a named object declaration during method execution;
+<<<<<<< HEAD
 			 * we must enter this object into the namespace.  The created
+=======
+			 * we must enter this object into the namespace. The created
+>>>>>>> refs/remotes/origin/master
 			 * object is temporary and will be deleted upon completion of
 			 * the execution of this method.
 			 *
@@ -327,6 +355,10 @@ acpi_ds_exec_begin_op(struct acpi_walk_state *walk_state,
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -334,7 +366,11 @@ acpi_ds_exec_begin_op(struct acpi_walk_state *walk_state,
 
 	return_ACPI_STATUS(status);
 
+<<<<<<< HEAD
       error_exit:
+=======
+error_exit:
+>>>>>>> refs/remotes/origin/master
 	status = acpi_ds_method_error(status, walk_state);
 	return_ACPI_STATUS(status);
 }
@@ -348,7 +384,11 @@ acpi_ds_exec_begin_op(struct acpi_walk_state *walk_state,
  * RETURN:      Status
  *
  * DESCRIPTION: Ascending callback used during the execution of control
+<<<<<<< HEAD
  *              methods.  The only thing we really need to do here is to
+=======
+ *              methods. The only thing we really need to do here is to
+>>>>>>> refs/remotes/origin/master
  *              notice the beginning of IF, ELSE, and WHILE blocks.
  *
  ****************************************************************************/
@@ -432,7 +472,11 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
 		if (ACPI_SUCCESS(status)) {
 			/*
 			 * Dispatch the request to the appropriate interpreter handler
+<<<<<<< HEAD
 			 * routine.  There is one routine per opcode "type" based upon the
+=======
+			 * routine. There is one routine per opcode "type" based upon the
+>>>>>>> refs/remotes/origin/master
 			 * number of opcode arguments and return type.
 			 */
 			status =
@@ -488,7 +532,10 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
 			break;
 
 		case AML_TYPE_METHOD_CALL:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * If the method is referenced from within a package
 			 * declaration, it is not a invocation of the method, just
@@ -582,7 +629,10 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
 
 			switch (op->common.parent->common.aml_opcode) {
 			case AML_NAME_OP:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 				/*
 				 * Put the Node on the object stack (Contains the ACPI Name
 				 * of this object)
@@ -693,7 +743,11 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
 		default:
 
 			ACPI_ERROR((AE_INFO,
+<<<<<<< HEAD
 				    "Unimplemented opcode, class=0x%X type=0x%X Opcode=-0x%X Op=%p",
+=======
+				    "Unimplemented opcode, class=0x%X type=0x%X Opcode=0x%X Op=%p",
+>>>>>>> refs/remotes/origin/master
 				    op_class, op_type, op->common.aml_opcode,
 				    op));
 
@@ -706,7 +760,11 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
 	 * ACPI 2.0 support for 64-bit integers: Truncate numeric
 	 * result value if we are executing from a 32-bit ACPI table
 	 */
+<<<<<<< HEAD
 	acpi_ex_truncate_for32bit_table(walk_state->result_obj);
+=======
+	(void)acpi_ex_truncate_for32bit_table(walk_state->result_obj);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check if we just completed the evaluation of a
@@ -723,7 +781,11 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
 		walk_state->result_obj = NULL;
 	}
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	if (walk_state->result_obj) {
 

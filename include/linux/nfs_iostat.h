@@ -21,7 +21,15 @@
 #ifndef _LINUX_NFS_IOSTAT
 #define _LINUX_NFS_IOSTAT
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define NFS_IOSTAT_VERS		"1.0"
+=======
+#define NFS_IOSTAT_VERS		"1.1"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NFS_IOSTAT_VERS		"1.1"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * NFS byte counters

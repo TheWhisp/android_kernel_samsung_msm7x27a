@@ -43,12 +43,19 @@ static void xt_rateest_hash_insert(struct xt_rateest *est)
 struct xt_rateest *xt_rateest_lookup(const char *name)
 {
 	struct xt_rateest *est;
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int h;
 
 	h = xt_rateest_hash(name);
 	mutex_lock(&xt_rateest_mutex);
+<<<<<<< HEAD
 	hlist_for_each_entry(est, n, &rateest_hash[h], list) {
+=======
+	hlist_for_each_entry(est, &rateest_hash[h], list) {
+>>>>>>> refs/remotes/origin/master
 		if (strcmp(est->name, name) == 0) {
 			est->refcnt++;
 			mutex_unlock(&xt_rateest_mutex);
@@ -60,11 +67,17 @@ struct xt_rateest *xt_rateest_lookup(const char *name)
 }
 EXPORT_SYMBOL_GPL(xt_rateest_lookup);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void xt_rateest_free_rcu(struct rcu_head *head)
 {
 	kfree(container_of(head, struct xt_rateest, rcu));
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void xt_rateest_put(struct xt_rateest *est)
 {
 	mutex_lock(&xt_rateest_mutex);
@@ -75,7 +88,15 @@ void xt_rateest_put(struct xt_rateest *est)
 		 * gen_estimator est_timer() might access est->lock or bstats,
 		 * wait a RCU grace period before freeing 'est'
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		call_rcu(&est->rcu, xt_rateest_free_rcu);
+=======
+		kfree_rcu(est, rcu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_rcu(est, rcu);
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&xt_rateest_mutex);
 }
@@ -188,7 +209,13 @@ static int __init xt_rateest_tg_init(void)
 static void __exit xt_rateest_tg_fini(void)
 {
 	xt_unregister_target(&xt_rateest_tg_reg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_barrier(); /* Wait for completion of call_rcu()'s (xt_rateest_free_rcu) */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 

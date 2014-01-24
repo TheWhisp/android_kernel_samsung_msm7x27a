@@ -15,10 +15,20 @@
 #include <linux/dmi.h>
 #include <linux/pci.h>
 #include <video/vga.h>
+<<<<<<< HEAD
 
 static bool request_mem_succeeded = false;
 
 static struct fb_var_screeninfo efifb_defined __devinitdata = {
+=======
+#include <asm/sysfb.h>
+
+static bool request_mem_succeeded = false;
+
+static struct pci_dev *default_vga;
+
+static struct fb_var_screeninfo efifb_defined = {
+>>>>>>> refs/remotes/origin/master
 	.activate		= FB_ACTIVATE_NOW,
 	.height			= -1,
 	.width			= -1,
@@ -29,13 +39,18 @@ static struct fb_var_screeninfo efifb_defined __devinitdata = {
 	.vmode			= FB_VMODE_NONINTERLACED,
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo efifb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo efifb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id			= "EFI VGA",
 	.type			= FB_TYPE_PACKED_PIXELS,
 	.accel			= FB_ACCEL_NONE,
 	.visual			= FB_VISUAL_TRUECOLOR,
 };
 
+<<<<<<< HEAD
 enum {
 	M_I17,		/* 17-Inch iMac */
 	M_I20,		/* 20-Inch iMac */
@@ -253,6 +268,8 @@ static int set_system(const struct dmi_system_id *id)
 	return 1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int efifb_setcolreg(unsigned regno, unsigned red, unsigned green,
 			   unsigned blue, unsigned transp,
 			   struct fb_info *info)
@@ -286,6 +303,10 @@ static void efifb_destroy(struct fb_info *info)
 	if (request_mem_succeeded)
 		release_mem_region(info->apertures->ranges[0].base,
 				   info->apertures->ranges[0].size);
+<<<<<<< HEAD
+=======
+	fb_dealloc_cmap(&info->cmap);
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(info);
 }
 
@@ -298,6 +319,7 @@ static struct fb_ops efifb_ops = {
 	.fb_imageblit	= cfb_imageblit,
 };
 
+<<<<<<< HEAD
 static int __init efifb_setup(char *options)
 {
 	char *this_opt;
@@ -331,12 +353,102 @@ static int __init efifb_setup(char *options)
 }
 
 static int __init efifb_probe(struct platform_device *dev)
+=======
+struct pci_dev *vga_default_device(void)
+{
+	return default_vga;
+}
+
+EXPORT_SYMBOL_GPL(vga_default_device);
+
+void vga_set_default_device(struct pci_dev *pdev)
+{
+	default_vga = pdev;
+}
+
+static int efifb_setup(char *options)
+{
+	char *this_opt;
+	int i;
+	struct pci_dev *dev = NULL;
+
+	if (options && *options) {
+		while ((this_opt = strsep(&options, ",")) != NULL) {
+			if (!*this_opt) continue;
+
+			for (i = 0; i < M_UNKNOWN; i++) {
+				if (efifb_dmi_list[i].base != 0 &&
+				    !strcmp(this_opt, efifb_dmi_list[i].optname)) {
+					screen_info.lfb_base = efifb_dmi_list[i].base;
+					screen_info.lfb_linelength = efifb_dmi_list[i].stride;
+					screen_info.lfb_width = efifb_dmi_list[i].width;
+					screen_info.lfb_height = efifb_dmi_list[i].height;
+				}
+			}
+			if (!strncmp(this_opt, "base:", 5))
+				screen_info.lfb_base = simple_strtoul(this_opt+5, NULL, 0);
+			else if (!strncmp(this_opt, "stride:", 7))
+				screen_info.lfb_linelength = simple_strtoul(this_opt+7, NULL, 0) * 4;
+			else if (!strncmp(this_opt, "height:", 7))
+				screen_info.lfb_height = simple_strtoul(this_opt+7, NULL, 0);
+			else if (!strncmp(this_opt, "width:", 6))
+				screen_info.lfb_width = simple_strtoul(this_opt+6, NULL, 0);
+		}
+	}
+
+	for_each_pci_dev(dev) {
+		int i;
+
+		if ((dev->class >> 8) != PCI_CLASS_DISPLAY_VGA)
+			continue;
+
+		for (i=0; i < DEVICE_COUNT_RESOURCE; i++) {
+			resource_size_t start, end;
+
+			if (!(pci_resource_flags(dev, i) & IORESOURCE_MEM))
+				continue;
+
+			start = pci_resource_start(dev, i);
+			end  = pci_resource_end(dev, i);
+
+			if (!start || !end)
+				continue;
+
+			if (screen_info.lfb_base >= start &&
+			    (screen_info.lfb_base + screen_info.lfb_size) < end)
+				default_vga = dev;
+		}
+	}
+
+	return 0;
+}
+
+static int efifb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	int err;
 	unsigned int size_vmode;
 	unsigned int size_remap;
 	unsigned int size_total;
+<<<<<<< HEAD
+=======
+	char *option = NULL;
+
+	if (screen_info.orig_video_isVGA != VIDEO_TYPE_EFI)
+		return -ENODEV;
+
+	if (fb_get_options("efifb", &option))
+		return -ENODEV;
+	efifb_setup(option);
+
+	/* We don't get linelength from UGA Draw Protocol, only from
+	 * EFI Graphics Protocol.  So if it's not in DMI, and it's not
+	 * passed in from the user, we really can't use the framebuffer.
+	 */
+	if (!screen_info.lfb_linelength)
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	if (!screen_info.lfb_depth)
 		screen_info.lfb_depth = 32;
@@ -483,8 +595,12 @@ static int __init efifb_probe(struct platform_device *dev)
 		printk(KERN_ERR "efifb: cannot register framebuffer\n");
 		goto err_fb_dealoc;
 	}
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n",
 		info->node, info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_fb_dealoc:
@@ -500,6 +616,7 @@ err_release_mem:
 }
 
 static struct platform_driver efifb_driver = {
+<<<<<<< HEAD
 	.driver	= {
 		.name	= "efifb",
 	},
@@ -549,4 +666,14 @@ static int __init efifb_init(void)
 }
 module_init(efifb_init);
 
+=======
+	.driver = {
+		.name = "efi-framebuffer",
+		.owner = THIS_MODULE,
+	},
+	.probe = efifb_probe,
+};
+
+module_platform_driver(efifb_driver);
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

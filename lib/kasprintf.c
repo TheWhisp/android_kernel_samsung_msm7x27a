@@ -5,7 +5,15 @@
  */
 
 #include <stdarg.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/types.h>
 #include <linux/string.h>
@@ -21,7 +29,11 @@ char *kvasprintf(gfp_t gfp, const char *fmt, va_list ap)
 	len = vsnprintf(NULL, 0, fmt, aq);
 	va_end(aq);
 
+<<<<<<< HEAD
 	p = kmalloc(len+1, gfp);
+=======
+	p = kmalloc_track_caller(len+1, gfp);
+>>>>>>> refs/remotes/origin/master
 	if (!p)
 		return NULL;
 

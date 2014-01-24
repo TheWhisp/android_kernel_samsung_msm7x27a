@@ -11,7 +11,16 @@ Supported chips:
   Socket S1G2: Athlon (X2), Sempron (X2), Turion X2 (Ultra)
 * AMD Family 12h processors: "Llano" (E2/A4/A6/A8-Series)
 * AMD Family 14h processors: "Brazos" (C/E/G/Z-Series)
+<<<<<<< HEAD
+<<<<<<< HEAD
 * AMD Family 15h processors: "Bulldozer"
+=======
+* AMD Family 15h processors: "Bulldozer" (FX-Series), "Trinity"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+* AMD Family 15h processors: "Bulldozer" (FX-Series), "Trinity"
+* AMD Family 16h processors: "Kabini"
+>>>>>>> refs/remotes/origin/master
 
   Prefix: 'k10temp'
   Addresses scanned: PCI space

@@ -34,7 +34,11 @@
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/init.h>		/* for __init and __devinit */
+=======
+#include <linux/init.h>		/* for __init */
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/ioport.h>
 #include <linux/slab.h>
@@ -43,7 +47,13 @@
 #include <asm/pdc.h>
 #include <asm/pdcpat.h>
 #include <asm/page.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/ropes.h>
 #include <asm/hardware.h>	/* for register_parisc_driver() stuff */
@@ -190,8 +200,13 @@ lba_dump_res(struct resource *r, int d)
 
 static int lba_device_present(u8 bus, u8 dfn, struct lba_device *d)
 {
+<<<<<<< HEAD
 	u8 first_bus = d->hba.hba_bus->secondary;
 	u8 last_sub_bus = d->hba.hba_bus->subordinate;
+=======
+	u8 first_bus = d->hba.hba_bus->busn_res.start;
+	u8 last_sub_bus = d->hba.hba_bus->busn_res.end;
+>>>>>>> refs/remotes/origin/master
 
 	if ((bus < first_bus) ||
 	    (bus > last_sub_bus) ||
@@ -365,7 +380,11 @@ lba_rd_cfg(struct lba_device *d, u32 tok, u8 reg, u32 size)
 static int elroy_cfg_read(struct pci_bus *bus, unsigned int devfn, int pos, int size, u32 *data)
 {
 	struct lba_device *d = LBA_DEV(parisc_walk_tree(bus->bridge));
+<<<<<<< HEAD
 	u32 local_bus = (bus->parent == NULL) ? 0 : bus->secondary;
+=======
+	u32 local_bus = (bus->parent == NULL) ? 0 : bus->busn_res.start;
+>>>>>>> refs/remotes/origin/master
 	u32 tok = LBA_CFG_TOK(local_bus, devfn);
 	void __iomem *data_reg = d->hba.base_addr + LBA_PCI_CFG_DATA;
 
@@ -381,7 +400,11 @@ static int elroy_cfg_read(struct pci_bus *bus, unsigned int devfn, int pos, int 
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (LBA_SKIP_PROBE(d) && !lba_device_present(bus->secondary, devfn, d)) {
+=======
+	if (LBA_SKIP_PROBE(d) && !lba_device_present(bus->busn_res.start, devfn, d)) {
+>>>>>>> refs/remotes/origin/master
 		DBG_CFG("%s(%x+%2x) -> -1 (b)\n", __func__, tok, pos);
 		/* either don't want to look or know device isn't present. */
 		*data = ~0U;
@@ -432,7 +455,11 @@ lba_wr_cfg(struct lba_device *d, u32 tok, u8 reg, u32 data, u32 size)
 static int elroy_cfg_write(struct pci_bus *bus, unsigned int devfn, int pos, int size, u32 data)
 {
 	struct lba_device *d = LBA_DEV(parisc_walk_tree(bus->bridge));
+<<<<<<< HEAD
 	u32 local_bus = (bus->parent == NULL) ? 0 : bus->secondary;
+=======
+	u32 local_bus = (bus->parent == NULL) ? 0 : bus->busn_res.start;
+>>>>>>> refs/remotes/origin/master
 	u32 tok = LBA_CFG_TOK(local_bus,devfn);
 
 	if ((pos > 255) || (devfn > 255))
@@ -445,7 +472,11 @@ static int elroy_cfg_write(struct pci_bus *bus, unsigned int devfn, int pos, int
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (LBA_SKIP_PROBE(d) && (!lba_device_present(bus->secondary, devfn, d))) {
+=======
+	if (LBA_SKIP_PROBE(d) && (!lba_device_present(bus->busn_res.start, devfn, d))) {
+>>>>>>> refs/remotes/origin/master
 		DBG_CFG("%s(%x+%2x) = 0x%x (b)\n", __func__, tok, pos,data);
 		return 1; /* New Workaround */
 	}
@@ -482,7 +513,11 @@ static struct pci_ops elroy_cfg_ops = {
 static int mercury_cfg_read(struct pci_bus *bus, unsigned int devfn, int pos, int size, u32 *data)
 {
 	struct lba_device *d = LBA_DEV(parisc_walk_tree(bus->bridge));
+<<<<<<< HEAD
 	u32 local_bus = (bus->parent == NULL) ? 0 : bus->secondary;
+=======
+	u32 local_bus = (bus->parent == NULL) ? 0 : bus->busn_res.start;
+>>>>>>> refs/remotes/origin/master
 	u32 tok = LBA_CFG_TOK(local_bus, devfn);
 	void __iomem *data_reg = d->hba.base_addr + LBA_PCI_CFG_DATA;
 
@@ -515,7 +550,11 @@ static int mercury_cfg_write(struct pci_bus *bus, unsigned int devfn, int pos, i
 {
 	struct lba_device *d = LBA_DEV(parisc_walk_tree(bus->bridge));
 	void __iomem *data_reg = d->hba.base_addr + LBA_PCI_CFG_DATA;
+<<<<<<< HEAD
 	u32 local_bus = (bus->parent == NULL) ? 0 : bus->secondary;
+=======
+	u32 local_bus = (bus->parent == NULL) ? 0 : bus->busn_res.start;
+>>>>>>> refs/remotes/origin/master
 	u32 tok = LBA_CFG_TOK(local_bus,devfn);
 
 	if ((pos > 255) || (devfn > 255))
@@ -614,6 +653,57 @@ truncate_pat_collision(struct resource *root, struct resource *new)
 	return 0;	/* truncation successful */
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * extend_lmmio_len: extend lmmio range to maximum length
+ *
+ * This is needed at least on C8000 systems to get the ATI FireGL card
+ * working. On other systems we will currently not extend the lmmio space.
+ */
+static unsigned long
+extend_lmmio_len(unsigned long start, unsigned long end, unsigned long lba_len)
+{
+	struct resource *tmp;
+
+	pr_debug("LMMIO mismatch: PAT length = 0x%lx, MASK register = 0x%lx\n",
+		end - start, lba_len);
+
+	lba_len = min(lba_len+1, 256UL*1024*1024); /* limit to 256 MB */
+
+	pr_debug("LBA: lmmio_space [0x%lx-0x%lx] - original\n", start, end);
+
+	if (boot_cpu_data.cpu_type < mako) {
+		pr_info("LBA: Not a C8000 system - not extending LMMIO range.\n");
+		return end;
+	}
+
+	end += lba_len;
+	if (end < start) /* fix overflow */
+		end = -1ULL;
+
+	pr_debug("LBA: lmmio_space [0x%lx-0x%lx] - current\n", start, end);
+
+	/* first overlap */
+	for (tmp = iomem_resource.child; tmp; tmp = tmp->sibling) {
+		pr_debug("LBA: testing %pR\n", tmp);
+		if (tmp->start == start)
+			continue; /* ignore ourself */
+		if (tmp->end < start)
+			continue;
+		if (tmp->start > end)
+			continue;
+		if (end >= tmp->start)
+			end = tmp->start - 1;
+	}
+
+	pr_info("LBA: lmmio_space [0x%lx-0x%lx] - new\n", start, end);
+
+	/* return new end */
+	return end;
+}
+
+>>>>>>> refs/remotes/origin/master
 #else
 #define truncate_pat_collision(r,n)  (0)
 #endif
@@ -630,15 +720,28 @@ truncate_pat_collision(struct resource *root, struct resource *new)
 static void
 lba_fixup_bus(struct pci_bus *bus)
 {
+<<<<<<< HEAD
 	struct list_head *ln;
+=======
+	struct pci_dev *dev;
+>>>>>>> refs/remotes/origin/master
 #ifdef FBB_SUPPORT
 	u16 status;
 #endif
 	struct lba_device *ldev = LBA_DEV(parisc_walk_tree(bus->bridge));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int lba_portbase = HBA_PORT_BASE(ldev->hba.hba_num);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	DBG("lba_fixup_bus(0x%p) bus %d platform_data 0x%p\n",
 		bus, bus->secondary, bus->bridge->platform_data);
+=======
+
+	DBG("lba_fixup_bus(0x%p) bus %d platform_data 0x%p\n",
+		bus, (int)bus->busn_res.start, bus->bridge->platform_data);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	** Properly Setup MMIO resources for this bus.
@@ -653,7 +756,15 @@ lba_fixup_bus(struct pci_bus *bus)
 		}
 	} else {
 		/* Host-PCI Bridge */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int err, i;
+=======
+		int err;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int err;
+>>>>>>> refs/remotes/origin/master
 
 		DBG("lba_fixup_bus() %s [%lx/%lx]/%lx\n",
 			ldev->hba.io_space.name,
@@ -669,11 +780,19 @@ lba_fixup_bus(struct pci_bus *bus)
 			lba_dump_res(&ioport_resource, 2);
 			BUG();
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* advertize Host bridge resources to PCI bus */
 		bus->resource[0] = &(ldev->hba.io_space);
 		i = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (ldev->hba.elmmio_space.start) {
+=======
+
+		if (ldev->hba.elmmio_space.flags) {
+>>>>>>> refs/remotes/origin/master
 			err = request_resource(&iomem_resource,
 					&(ldev->hba.elmmio_space));
 			if (err < 0) {
@@ -685,6 +804,8 @@ lba_fixup_bus(struct pci_bus *bus)
 
 				/* lba_dump_res(&iomem_resource, 2); */
 				/* BUG(); */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			} else
 				bus->resource[i++] = &(ldev->hba.elmmio_space);
 		}
@@ -706,14 +827,33 @@ lba_fixup_bus(struct pci_bus *bus)
 					(long)ldev->hba.lmmio_space.start,
 					(long)ldev->hba.lmmio_space.end);
 		} else {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			}
+		}
+
+		if (ldev->hba.lmmio_space.flags) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			err = request_resource(&iomem_resource, &(ldev->hba.lmmio_space));
 			if (err < 0) {
 				printk(KERN_ERR "FAILED: lba_fixup_bus() request for "
 					"lmmio_space [%lx/%lx]\n",
 					(long)ldev->hba.lmmio_space.start,
 					(long)ldev->hba.lmmio_space.end);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			} else
 				bus->resource[i++] = &(ldev->hba.lmmio_space);
+=======
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 
 #ifdef CONFIG_64BIT
@@ -728,15 +868,26 @@ lba_fixup_bus(struct pci_bus *bus)
 				lba_dump_res(&iomem_resource, 2);
 				BUG();
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			bus->resource[i++] = &(ldev->hba.gmmio_space);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 #endif
 
 	}
 
+<<<<<<< HEAD
 	list_for_each(ln, &bus->devices) {
 		int i;
 		struct pci_dev *dev = pci_dev_b(ln);
+=======
+	list_for_each_entry(dev, &bus->devices, bus_list) {
+		int i;
+>>>>>>> refs/remotes/origin/master
 
 		DBG("lba_fixup_bus() %s\n", pci_name(dev));
 
@@ -748,6 +899,8 @@ lba_fixup_bus(struct pci_bus *bus)
 			if (!res->start)
 				continue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (res->flags & IORESOURCE_IO) {
 				DBG("lba_fixup_bus() I/O Ports [%lx/%lx] -> ",
 					res->start, res->end);
@@ -769,6 +922,10 @@ lba_fixup_bus(struct pci_bus *bus)
 					res->flags, res->start, res->end);
 			}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			** FIXME: this will result in whinging for devices
 			** that share expansion ROMs (think quad tulip), but
@@ -815,7 +972,11 @@ lba_fixup_bus(struct pci_bus *bus)
 	}
 
 	/* Lastly enable FBB/PERR/SERR on all devices too */
+<<<<<<< HEAD
 	list_for_each(ln, &bus->devices) {
+=======
+	list_for_each_entry(dev, &bus->devices, bus_list) {
+>>>>>>> refs/remotes/origin/master
 		(void) pci_read_config_word(dev, PCI_COMMAND, &status);
 		status |= PCI_COMMAND_PARITY | PCI_COMMAND_SERR | fbb_enable;
 		(void) pci_write_config_word(dev, PCI_COMMAND, status);
@@ -1034,11 +1195,27 @@ lba_pat_resources(struct parisc_device *pa_dev, struct lba_device *lba_dev)
 		case PAT_PBNUM:
 			lba_dev->hba.bus_num.start = p->start;
 			lba_dev->hba.bus_num.end   = p->end;
+<<<<<<< HEAD
+=======
+			lba_dev->hba.bus_num.flags = IORESOURCE_BUS;
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case PAT_LMMIO:
 			/* used to fix up pre-initialized MEM BARs */
+<<<<<<< HEAD
 			if (!lba_dev->hba.lmmio_space.start) {
+=======
+			if (!lba_dev->hba.lmmio_space.flags) {
+				unsigned long lba_len;
+
+				lba_len = ~READ_REG32(lba_dev->hba.base_addr
+						+ LBA_LMMIO_MASK);
+				if ((p->end - p->start) != lba_len)
+					p->end = extend_lmmio_len(p->start,
+						p->end, lba_len);
+
+>>>>>>> refs/remotes/origin/master
 				sprintf(lba_dev->hba.lmmio_name,
 						"PCI%02x LMMIO",
 						(int)lba_dev->hba.bus_num.start);
@@ -1046,7 +1223,11 @@ lba_pat_resources(struct parisc_device *pa_dev, struct lba_device *lba_dev)
 					io->start;
 				r = &lba_dev->hba.lmmio_space;
 				r->name = lba_dev->hba.lmmio_name;
+<<<<<<< HEAD
 			} else if (!lba_dev->hba.elmmio_space.start) {
+=======
+			} else if (!lba_dev->hba.elmmio_space.flags) {
+>>>>>>> refs/remotes/origin/master
 				sprintf(lba_dev->hba.elmmio_name,
 						"PCI%02x ELMMIO",
 						(int)lba_dev->hba.bus_num.start);
@@ -1141,6 +1322,10 @@ lba_legacy_resources(struct parisc_device *pa_dev, struct lba_device *lba_dev)
 	r->name = "LBA PCI Busses";
 	r->start = lba_num & 0xff;
 	r->end = (lba_num>>8) & 0xff;
+<<<<<<< HEAD
+=======
+	r->flags = IORESOURCE_BUS;
+>>>>>>> refs/remotes/origin/master
 
 	/* Set up local PCI Bus resources - we don't need them for
 	** Legacy boxes but it's nice to see in /proc/iomem.
@@ -1404,12 +1589,24 @@ static int __init
 lba_driver_probe(struct parisc_device *dev)
 {
 	struct lba_device *lba_dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	LIST_HEAD(resources);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	LIST_HEAD(resources);
+>>>>>>> refs/remotes/origin/master
 	struct pci_bus *lba_bus;
 	struct pci_ops *cfg_ops;
 	u32 func_class;
 	void *tmp_obj;
 	char *version;
 	void __iomem *addr = ioremap_nocache(dev->hpa.start, 4096);
+<<<<<<< HEAD
+=======
+	int max;
+>>>>>>> refs/remotes/origin/master
 
 	/* Read HW Rev First */
 	func_class = READ_REG32(addr + LBA_FCLASS);
@@ -1518,10 +1715,67 @@ lba_driver_probe(struct parisc_device *dev)
 	if (lba_dev->hba.bus_num.start < lba_next_bus)
 		lba_dev->hba.bus_num.start = lba_next_bus;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev->dev.platform_data = lba_dev;
 	lba_bus = lba_dev->hba.hba_bus =
 		pci_scan_bus_parented(&dev->dev, lba_dev->hba.bus_num.start,
 				cfg_ops, NULL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*   Overlaps with elmmio can (and should) fail here.
+	 *   We will prune (or ignore) the distributed range.
+	 *
+	 *   FIXME: SBA code should register all elmmio ranges first.
+	 *      that would take care of elmmio ranges routed
+	 *	to a different rope (already discovered) from
+	 *	getting registered *after* LBA code has already
+	 *	registered it's distributed lmmio range.
+	 */
+	if (truncate_pat_collision(&iomem_resource,
+				   &(lba_dev->hba.lmmio_space))) {
+		printk(KERN_WARNING "LBA: lmmio_space [%lx/%lx] duplicate!\n",
+				(long)lba_dev->hba.lmmio_space.start,
+				(long)lba_dev->hba.lmmio_space.end);
+		lba_dev->hba.lmmio_space.flags = 0;
+	}
+
+	pci_add_resource_offset(&resources, &lba_dev->hba.io_space,
+				HBA_PORT_BASE(lba_dev->hba.hba_num));
+<<<<<<< HEAD
+	if (lba_dev->hba.elmmio_space.start)
+=======
+	if (lba_dev->hba.elmmio_space.flags)
+>>>>>>> refs/remotes/origin/master
+		pci_add_resource_offset(&resources, &lba_dev->hba.elmmio_space,
+					lba_dev->hba.lmmio_space_offset);
+	if (lba_dev->hba.lmmio_space.flags)
+		pci_add_resource_offset(&resources, &lba_dev->hba.lmmio_space,
+					lba_dev->hba.lmmio_space_offset);
+	if (lba_dev->hba.gmmio_space.flags)
+		pci_add_resource(&resources, &lba_dev->hba.gmmio_space);
+
+<<<<<<< HEAD
+=======
+	pci_add_resource(&resources, &lba_dev->hba.bus_num);
+
+>>>>>>> refs/remotes/origin/master
+	dev->dev.platform_data = lba_dev;
+	lba_bus = lba_dev->hba.hba_bus =
+		pci_create_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
+				    cfg_ops, NULL, &resources);
+	if (!lba_bus) {
+		pci_free_resource_list(&resources);
+		return 0;
+	}
+
+<<<<<<< HEAD
+	lba_bus->subordinate = pci_scan_child_bus(lba_bus);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max = pci_scan_child_bus(lba_bus);
+>>>>>>> refs/remotes/origin/master
 
 	/* This is in lieu of calling pci_assign_unassigned_resources() */
 	if (is_pdc_pat()) {
@@ -1540,7 +1794,10 @@ lba_driver_probe(struct parisc_device *dev)
 		lba_dump_res(&lba_dev->hba.lmmio_space, 2);
 #endif
 	}
+<<<<<<< HEAD
 	pci_enable_bridges(lba_bus);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	** Once PCI register ops has walked the bus, access to config
@@ -1551,10 +1808,20 @@ lba_driver_probe(struct parisc_device *dev)
 		lba_dev->flags |= LBA_FLAG_SKIP_PROBE;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (lba_bus) {
 		lba_next_bus = lba_bus->subordinate + 1;
 		pci_bus_add_devices(lba_bus);
 	}
+=======
+	lba_next_bus = lba_bus->subordinate + 1;
+	pci_bus_add_devices(lba_bus);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lba_next_bus = max + 1;
+	pci_bus_add_devices(lba_bus);
+>>>>>>> refs/remotes/origin/master
 
 	/* Whew! Finally done! Tell services we got this one covered. */
 	return 0;

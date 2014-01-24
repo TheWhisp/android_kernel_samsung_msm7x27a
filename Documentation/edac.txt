@@ -232,6 +232,7 @@ EDAC control and attribute files.
 
 
 In 'mcX' directories are EDAC control and attribute files for
+<<<<<<< HEAD
 this 'X' instance of the memory controllers:
 
 
@@ -334,14 +335,33 @@ Sdram memory scrubbing rate:
 
 	Reading the file will return the actual scrubbing rate employed.
 
+<<<<<<< HEAD
 	If configuration fails or memory scrubbing is not implemented, the value
 	of the attribute file will be -1.
+=======
+	If configuration fails or memory scrubbing is not implemented, accessing
+	that attribute will fail.
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+this 'X' instance of the memory controllers.
+
+For a description of the sysfs API, please see:
+	Documentation/ABI/testing/sysfs/devices-edac
+>>>>>>> refs/remotes/origin/master
 
 
 ============================================================================
 'csrowX' DIRECTORIES
 
+<<<<<<< HEAD
+=======
+When CONFIG_EDAC_LEGACY_SYSFS is enabled, the sysfs will contain the
+csrowX directories. As this API doesn't work properly for Rambus, FB-DIMMs
+and modern Intel Memory Controllers, this is being deprecated in favor
+of dimmX directories.
+
+>>>>>>> refs/remotes/origin/master
 In the 'csrowX' directories are EDAC control and attribute files for
 this 'X' instance of csrow:
 
@@ -734,7 +754,11 @@ were done at i7core_edac driver. This chapter will cover those differences
    associated with a physical CPU socket.
 
    Each MC have 3 physical read channels, 3 physical write channels and
+<<<<<<< HEAD
    3 logic channels. The driver currenty sees it as just 3 channels.
+=======
+   3 logic channels. The driver currently sees it as just 3 channels.
+>>>>>>> refs/remotes/origin/master
    Each channel can have up to 3 DIMMs.
 
    The minimum known unity is DIMMs. There are no information about csrows.

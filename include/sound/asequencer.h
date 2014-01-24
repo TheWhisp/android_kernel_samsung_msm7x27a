@@ -22,6 +22,7 @@
 #ifndef __SOUND_ASEQUENCER_H
 #define __SOUND_ASEQUENCER_H
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 #include <linux/ioctl.h>
 #include <sound/asound.h>
@@ -310,6 +311,11 @@ struct snd_seq_event_bounce {
 };
 
 #ifdef __KERNEL__
+=======
+#include <linux/ioctl.h>
+#include <sound/asound.h>
+#include <uapi/sound/asequencer.h>
+>>>>>>> refs/remotes/origin/master
 
 /* helper macro */
 #define snd_seq_event_bounce_ext_data(ev) ((void*)((char *)(ev)->data.ext.ptr + sizeof(struct snd_seq_event_bounce)))
@@ -368,6 +374,7 @@ struct snd_seq_event_bounce {
 /* queue sync port */
 #define snd_seq_queue_sync_port(q)	((q) + 16)
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 	/* system information */
@@ -675,4 +682,6 @@ struct snd_seq_query_subs {
 #define SNDRV_SEQ_IOCTL_QUERY_NEXT_CLIENT	_IOWR('S', 0x51, struct snd_seq_client_info)
 #define SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT	_IOWR('S', 0x52, struct snd_seq_port_info)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __SOUND_ASEQUENCER_H */

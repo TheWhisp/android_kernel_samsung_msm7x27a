@@ -4,15 +4,33 @@
 /* Reiserfs block (de)allocator, bitmap-based. */
 
 #include <linux/time.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/buffer_head.h>
 #include <linux/kernel.h>
 #include <linux/pagemap.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs_sb.h>
 #include <linux/reiserfs_fs_i.h>
 #include <linux/quotaops.h>
+=======
+#include <linux/quotaops.h>
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/quotaops.h>
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 
 #define PREALLOCATION_SIZE 9
 
@@ -214,7 +232,15 @@ static int scan_bitmap_block(struct reiserfs_transaction_handle *th,
 					}
 					/* otherwise we clear all bit were set ... */
 					while (--i >= *beg)
+<<<<<<< HEAD
+<<<<<<< HEAD
 						reiserfs_test_and_clear_le_bit
+=======
+						reiserfs_clear_le_bit
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						reiserfs_clear_le_bit
+>>>>>>> refs/remotes/origin/master
 						    (i, bh->b_data);
 					reiserfs_restore_prepared_buffer(s, bh);
 					*beg = org;
@@ -424,8 +450,16 @@ static void _reiserfs_free_block(struct reiserfs_transaction_handle *th,
 	set_sb_free_blocks(rs, sb_free_blocks(rs) + 1);
 
 	journal_mark_dirty(th, s, sbh);
+<<<<<<< HEAD
 	if (for_unformatted)
 		dquot_free_block_nodirty(inode, 1);
+=======
+	if (for_unformatted) {
+		int depth = reiserfs_write_unlock_nested(s);
+		dquot_free_block_nodirty(inode, 1);
+		reiserfs_write_lock_nested(s, depth);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 void reiserfs_free_block(struct reiserfs_transaction_handle *th,
@@ -634,6 +668,105 @@ int reiserfs_parse_alloc_options(struct super_block *s, char *options)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void print_sep(struct seq_file *seq, int *first)
+{
+	if (!*first)
+		seq_puts(seq, ":");
+	else
+		*first = 0;
+}
+
+void show_alloc_options(struct seq_file *seq, struct super_block *s)
+{
+	int first = 1;
+
+	if (SB_ALLOC_OPTS(s) == ((1 << _ALLOC_skip_busy) |
+		(1 << _ALLOC_dirid_groups) | (1 << _ALLOC_packing_groups)))
+		return;
+
+	seq_puts(seq, ",alloc=");
+
+	if (TEST_OPTION(concentrating_formatted_nodes, s)) {
+		print_sep(seq, &first);
+		if (REISERFS_SB(s)->s_alloc_options.border != 10) {
+			seq_printf(seq, "concentrating_formatted_nodes=%d",
+				100 / REISERFS_SB(s)->s_alloc_options.border);
+		} else
+			seq_puts(seq, "concentrating_formatted_nodes");
+	}
+	if (TEST_OPTION(displacing_large_files, s)) {
+		print_sep(seq, &first);
+		if (REISERFS_SB(s)->s_alloc_options.large_file_size != 16) {
+			seq_printf(seq, "displacing_large_files=%lu",
+			    REISERFS_SB(s)->s_alloc_options.large_file_size);
+		} else
+			seq_puts(seq, "displacing_large_files");
+	}
+	if (TEST_OPTION(displacing_new_packing_localities, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "displacing_new_packing_localities");
+	}
+	if (TEST_OPTION(old_hashed_relocation, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "old_hashed_relocation");
+	}
+	if (TEST_OPTION(new_hashed_relocation, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "new_hashed_relocation");
+	}
+	if (TEST_OPTION(dirid_groups, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "dirid_groups");
+	}
+	if (TEST_OPTION(oid_groups, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "oid_groups");
+	}
+	if (TEST_OPTION(packing_groups, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "packing_groups");
+	}
+	if (TEST_OPTION(hashed_formatted_nodes, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "hashed_formatted_nodes");
+	}
+	if (TEST_OPTION(skip_busy, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "skip_busy");
+	}
+	if (TEST_OPTION(hundredth_slices, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "hundredth_slices");
+	}
+	if (TEST_OPTION(old_way, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "old_way");
+	}
+	if (TEST_OPTION(displace_based_on_dirid, s)) {
+		print_sep(seq, &first);
+		seq_puts(seq, "displace_based_on_dirid");
+	}
+	if (REISERFS_SB(s)->s_alloc_options.preallocmin != 0) {
+		print_sep(seq, &first);
+		seq_printf(seq, "preallocmin=%d",
+				REISERFS_SB(s)->s_alloc_options.preallocmin);
+	}
+	if (REISERFS_SB(s)->s_alloc_options.preallocsize != 17) {
+		print_sep(seq, &first);
+		seq_printf(seq, "preallocsize=%d",
+				REISERFS_SB(s)->s_alloc_options.preallocsize);
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void new_hashed_relocation(reiserfs_blocknr_hint_t * hint)
 {
 	char *hash_in;
@@ -1039,6 +1172,10 @@ static inline int blocknrs_and_prealloc_arrays_from_search_start
 	b_blocknr_t finish = SB_BLOCK_COUNT(s) - 1;
 	int passno = 0;
 	int nr_allocated = 0;
+<<<<<<< HEAD
+=======
+	int depth;
+>>>>>>> refs/remotes/origin/master
 
 	determine_prealloc_size(hint);
 	if (!hint->formatted_node) {
@@ -1048,10 +1185,20 @@ static inline int blocknrs_and_prealloc_arrays_from_search_start
 			       "reiserquota: allocating %d blocks id=%u",
 			       amount_needed, hint->inode->i_uid);
 #endif
+<<<<<<< HEAD
 		quota_ret =
 		    dquot_alloc_block_nodirty(hint->inode, amount_needed);
 		if (quota_ret)	/* Quota exceeded? */
 			return QUOTA_EXCEEDED;
+=======
+		depth = reiserfs_write_unlock_nested(s);
+		quota_ret =
+		    dquot_alloc_block_nodirty(hint->inode, amount_needed);
+		if (quota_ret) {	/* Quota exceeded? */
+			reiserfs_write_lock_nested(s, depth);
+			return QUOTA_EXCEEDED;
+		}
+>>>>>>> refs/remotes/origin/master
 		if (hint->preallocate && hint->prealloc_size) {
 #ifdef REISERQUOTA_DEBUG
 			reiserfs_debug(s, REISERFS_DEBUG_CODE,
@@ -1064,6 +1211,10 @@ static inline int blocknrs_and_prealloc_arrays_from_search_start
 				hint->preallocate = hint->prealloc_size = 0;
 		}
 		/* for unformatted nodes, force large allocations */
+<<<<<<< HEAD
+=======
+		reiserfs_write_lock_nested(s, depth);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	do {
@@ -1092,9 +1243,17 @@ static inline int blocknrs_and_prealloc_arrays_from_search_start
 					       hint->inode->i_uid);
 #endif
 				/* Free not allocated blocks */
+<<<<<<< HEAD
 				dquot_free_block_nodirty(hint->inode,
 					amount_needed + hint->prealloc_size -
 					nr_allocated);
+=======
+				depth = reiserfs_write_unlock_nested(s);
+				dquot_free_block_nodirty(hint->inode,
+					amount_needed + hint->prealloc_size -
+					nr_allocated);
+				reiserfs_write_lock_nested(s, depth);
+>>>>>>> refs/remotes/origin/master
 			}
 			while (nr_allocated--)
 				reiserfs_free_block(hint->th, hint->inode,
@@ -1125,10 +1284,19 @@ static inline int blocknrs_and_prealloc_arrays_from_search_start
 			       REISERFS_I(hint->inode)->i_prealloc_count,
 			       hint->inode->i_uid);
 #endif
+<<<<<<< HEAD
+=======
+
+		depth = reiserfs_write_unlock_nested(s);
+>>>>>>> refs/remotes/origin/master
 		dquot_free_block_nodirty(hint->inode, amount_needed +
 					 hint->prealloc_size - nr_allocated -
 					 REISERFS_I(hint->inode)->
 					 i_prealloc_count);
+<<<<<<< HEAD
+=======
+		reiserfs_write_lock_nested(s, depth);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return CARRY_ON;
@@ -1222,15 +1390,29 @@ void reiserfs_cache_bitmap_metadata(struct super_block *sb,
 	info->free_count = 0;
 
 	while (--cur >= (unsigned long *)bh->b_data) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int i;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* 0 and ~0 are special, we can optimize for them */
 		if (*cur == 0)
 			info->free_count += BITS_PER_LONG;
 		else if (*cur != ~0L)	/* A mix, investigate */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			for (i = BITS_PER_LONG - 1; i >= 0; i--)
 				if (!reiserfs_test_le_bit(i, cur))
 					info->free_count++;
+=======
+			info->free_count += BITS_PER_LONG - hweight_long(*cur);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			info->free_count += BITS_PER_LONG - hweight_long(*cur);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1249,18 +1431,30 @@ struct buffer_head *reiserfs_read_bitmap_block(struct super_block *sb,
 	else if (bitmap == 0)
 		block = (REISERFS_DISK_OFFSET_IN_BYTES >> sb->s_blocksize_bits) + 1;
 
+<<<<<<< HEAD
 	reiserfs_write_unlock(sb);
 	bh = sb_bread(sb, block);
 	reiserfs_write_lock(sb);
+=======
+	bh = sb_bread(sb, block);
+>>>>>>> refs/remotes/origin/master
 	if (bh == NULL)
 		reiserfs_warning(sb, "sh-2029: %s: bitmap block (#%u) "
 		                 "reading failed", __func__, block);
 	else {
 		if (buffer_locked(bh)) {
+<<<<<<< HEAD
 			PROC_INFO_INC(sb, scan_bitmap.wait);
 			reiserfs_write_unlock(sb);
 			__wait_on_buffer(bh);
 			reiserfs_write_lock(sb);
+=======
+			int depth;
+			PROC_INFO_INC(sb, scan_bitmap.wait);
+			depth = reiserfs_write_unlock_nested(sb);
+			__wait_on_buffer(bh);
+			reiserfs_write_lock_nested(sb, depth);
+>>>>>>> refs/remotes/origin/master
 		}
 		BUG_ON(!buffer_uptodate(bh));
 		BUG_ON(atomic_read(&bh->b_count) == 0);
@@ -1277,10 +1471,18 @@ int reiserfs_init_bitmap_cache(struct super_block *sb)
 	struct reiserfs_bitmap_info *bitmap;
 	unsigned int bmap_nr = reiserfs_bmap_count(sb);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Avoid lock recursion in fault case */
 	reiserfs_write_unlock(sb);
 	bitmap = vmalloc(sizeof(*bitmap) * bmap_nr);
 	reiserfs_write_lock(sb);
+=======
+	bitmap = vmalloc(sizeof(*bitmap) * bmap_nr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bitmap = vmalloc(sizeof(*bitmap) * bmap_nr);
+>>>>>>> refs/remotes/origin/master
 	if (bitmap == NULL)
 		return -ENOMEM;
 

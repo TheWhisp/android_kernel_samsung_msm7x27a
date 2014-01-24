@@ -169,7 +169,10 @@ static struct clk_ops dclk_ops = {
 
 struct clk s3c24xx_dclk0 = {
 	.name		= "dclk0",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ctrlbit	= S3C2410_DCLKCON_DCLK0EN,
 	.enable	        = s3c24xx_dclk_enable,
 	.ops		= &dclk_ops,
@@ -177,7 +180,10 @@ struct clk s3c24xx_dclk0 = {
 
 struct clk s3c24xx_dclk1 = {
 	.name		= "dclk1",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ctrlbit	= S3C2410_DCLKCON_DCLK1EN,
 	.enable		= s3c24xx_dclk_enable,
 	.ops		= &dclk_ops,
@@ -189,12 +195,18 @@ static struct clk_ops clkout_ops = {
 
 struct clk s3c24xx_clkout0 = {
 	.name		= "clkout0",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ops		= &clkout_ops,
 };
 
 struct clk s3c24xx_clkout1 = {
 	.name		= "clkout1",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ops		= &clkout_ops,
 };

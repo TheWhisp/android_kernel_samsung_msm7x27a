@@ -22,10 +22,22 @@ extern int sysctl_extfrag_handler(struct ctl_table *table, int write,
 extern int fragmentation_index(struct zone *zone, unsigned int order);
 extern unsigned long try_to_compact_pages(struct zonelist *zonelist,
 			int order, gfp_t gfp_mask, nodemask_t *mask,
+<<<<<<< HEAD
 			bool sync);
+<<<<<<< HEAD
 extern unsigned long compaction_suitable(struct zone *zone, int order);
 extern unsigned long compact_zone_order(struct zone *zone, int order,
 					gfp_t gfp_mask, bool sync);
+=======
+extern int compact_pgdat(pg_data_t *pgdat, int order);
+extern unsigned long compaction_suitable(struct zone *zone, int order);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			bool sync, bool *contended);
+extern void compact_pgdat(pg_data_t *pgdat, int order);
+extern void reset_isolation_suitable(pg_data_t *pgdat);
+extern unsigned long compaction_suitable(struct zone *zone, int order);
+>>>>>>> refs/remotes/origin/master
 
 /* Do not skip compaction more than 64 times */
 #define COMPACT_MAX_DEFER_SHIFT 6
@@ -35,24 +47,61 @@ extern unsigned long compact_zone_order(struct zone *zone, int order,
  * allocation success. 1 << compact_defer_limit compactions are skipped up
  * to a limit of 1 << COMPACT_MAX_DEFER_SHIFT
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void defer_compaction(struct zone *zone)
+=======
+static inline void defer_compaction(struct zone *zone, int order)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void defer_compaction(struct zone *zone, int order)
+>>>>>>> refs/remotes/origin/master
 {
 	zone->compact_considered = 0;
 	zone->compact_defer_shift++;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (order < zone->compact_order_failed)
+		zone->compact_order_failed = order;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (order < zone->compact_order_failed)
+		zone->compact_order_failed = order;
+
+>>>>>>> refs/remotes/origin/master
 	if (zone->compact_defer_shift > COMPACT_MAX_DEFER_SHIFT)
 		zone->compact_defer_shift = COMPACT_MAX_DEFER_SHIFT;
 }
 
 /* Returns true if compaction should be skipped this time */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline bool compaction_deferred(struct zone *zone)
 {
 	unsigned long defer_limit = 1UL << zone->compact_defer_shift;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline bool compaction_deferred(struct zone *zone, int order)
+{
+	unsigned long defer_limit = 1UL << zone->compact_defer_shift;
+
+	if (order < zone->compact_order_failed)
+		return false;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Avoid possible overflow */
 	if (++zone->compact_considered > defer_limit)
 		zone->compact_considered = defer_limit;
 
+<<<<<<< HEAD
 	return zone->compact_considered < (1UL << zone->compact_defer_shift);
 }
 
@@ -64,6 +113,7 @@ static inline unsigned long try_to_compact_pages(struct zonelist *zonelist,
 	return COMPACT_CONTINUE;
 }
 
+<<<<<<< HEAD
 static inline unsigned long compaction_suitable(struct zone *zone, int order)
 {
 	return COMPACT_SKIPPED;
@@ -71,10 +121,50 @@ static inline unsigned long compaction_suitable(struct zone *zone, int order)
 
 static inline unsigned long compact_zone_order(struct zone *zone, int order,
 					       gfp_t gfp_mask, bool sync)
+=======
+static inline int compact_pgdat(pg_data_t *pgdat, int order)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return zone->compact_considered < defer_limit;
+}
+
+/*
+ * Update defer tracking counters after successful compaction of given order,
+ * which means an allocation either succeeded (alloc_success == true) or is
+ * expected to succeed.
+ */
+static inline void compaction_defer_reset(struct zone *zone, int order,
+		bool alloc_success)
+{
+	if (alloc_success) {
+		zone->compact_considered = 0;
+		zone->compact_defer_shift = 0;
+	}
+	if (order >= zone->compact_order_failed)
+		zone->compact_order_failed = order + 1;
+}
+
+/* Returns true if restarting compaction after many failures */
+static inline bool compaction_restarting(struct zone *zone, int order)
+{
+	if (order < zone->compact_order_failed)
+		return false;
+
+	return zone->compact_defer_shift == COMPACT_MAX_DEFER_SHIFT &&
+		zone->compact_considered >= 1UL << zone->compact_defer_shift;
+}
+
+#else
+static inline unsigned long try_to_compact_pages(struct zonelist *zonelist,
+			int order, gfp_t gfp_mask, nodemask_t *nodemask,
+			bool sync, bool *contended)
+>>>>>>> refs/remotes/origin/master
 {
 	return COMPACT_CONTINUE;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void defer_compaction(struct zone *zone)
 {
 }
@@ -87,6 +177,34 @@ static inline bool compaction_deferred(struct zone *zone)
 static inline int compact_nodes(bool sync)
 {
 	return COMPACT_CONTINUE;
+=======
+=======
+static inline void compact_pgdat(pg_data_t *pgdat, int order)
+{
+}
+
+static inline void reset_isolation_suitable(pg_data_t *pgdat)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
+static inline unsigned long compaction_suitable(struct zone *zone, int order)
+{
+	return COMPACT_SKIPPED;
+}
+
+static inline void defer_compaction(struct zone *zone, int order)
+{
+}
+
+static inline bool compaction_deferred(struct zone *zone, int order)
+{
+<<<<<<< HEAD
+	return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* CONFIG_COMPACTION */

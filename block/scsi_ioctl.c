@@ -27,6 +27,10 @@
 #include <linux/ratelimit.h>
 #include <linux/slab.h>
 #include <linux/times.h>
+<<<<<<< HEAD
+=======
+#include <linux/uio.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #include <scsi/scsi.h>
@@ -285,7 +289,12 @@ static int sg_io(struct request_queue *q, struct gendisk *bd_disk,
 		struct sg_io_hdr *hdr, fmode_t mode)
 {
 	unsigned long start_time;
+<<<<<<< HEAD
 	int writing = 0, ret = 0;
+=======
+	ssize_t ret = 0;
+	int writing = 0;
+>>>>>>> refs/remotes/origin/master
 	struct request *rq;
 	char sense[SCSI_SENSE_BUFFERSIZE];
 	struct bio *bio;
@@ -320,6 +329,7 @@ static int sg_io(struct request_queue *q, struct gendisk *bd_disk,
 	}
 
 	if (hdr->iovec_count) {
+<<<<<<< HEAD
 		const int size = sizeof(struct sg_iovec) * hdr->iovec_count;
 		size_t iov_data_len;
 		struct sg_iovec *sg_iov;
@@ -351,6 +361,18 @@ static int sg_io(struct request_queue *q, struct gendisk *bd_disk,
 			}
 			iov_data_len += iov[i].iov_len;
 		}
+=======
+		size_t iov_data_len;
+		struct iovec *iov;
+
+		ret = rw_copy_check_uvector(-1, hdr->dxferp, hdr->iovec_count,
+					    0, NULL, &iov);
+		if (ret < 0)
+			goto out;
+
+		iov_data_len = ret;
+		ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 		/* SG_IO howto says that the shorter of the two wins */
 		if (hdr->dxfer_len < iov_data_len) {
@@ -360,9 +382,16 @@ static int sg_io(struct request_queue *q, struct gendisk *bd_disk,
 			iov_data_len = hdr->dxfer_len;
 		}
 
+<<<<<<< HEAD
 		ret = blk_rq_map_user_iov(q, rq, NULL, sg_iov, hdr->iovec_count,
 					  iov_data_len, GFP_KERNEL);
 		kfree(sg_iov);
+=======
+		ret = blk_rq_map_user_iov(q, rq, NULL, (struct sg_iovec *) iov,
+					  hdr->iovec_count,
+					  iov_data_len, GFP_KERNEL);
+		kfree(iov);
+>>>>>>> refs/remotes/origin/master
 	} else if (hdr->dxfer_len)
 		ret = blk_rq_map_user(q, rq, NULL, hdr->dxferp, hdr->dxfer_len,
 				      GFP_KERNEL);
@@ -566,7 +595,15 @@ int scsi_cmd_ioctl(struct request_queue *q, struct gendisk *bd_disk, fmode_t mod
 {
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!q || blk_get_queue(q))
+=======
+	if (!q)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!q)
+>>>>>>> refs/remotes/origin/master
 		return -ENXIO;
 
 	switch (cmd) {
@@ -687,7 +724,13 @@ int scsi_cmd_ioctl(struct request_queue *q, struct gendisk *bd_disk, fmode_t mod
 			err = -ENOTTY;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	blk_put_queue(q);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 EXPORT_SYMBOL(scsi_cmd_ioctl);
@@ -717,7 +760,15 @@ int scsi_verify_blk_ioctl(struct block_device *bd, unsigned int cmd)
 		 * and we do not want to spam dmesg about it.   CD-ROMs do
 		 * not have partitions, so we get here only for disks.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENOTTY;
+=======
+		return -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/master
 	default:
 		break;
 	}
@@ -729,7 +780,19 @@ int scsi_verify_blk_ioctl(struct block_device *bd, unsigned int cmd)
 	printk_ratelimited(KERN_WARNING
 			   "%s: sending ioctl %x to a partition!\n", current->comm, cmd);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return -ENOTTY;
+=======
+	return -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/master
+=======
+	return -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(scsi_verify_blk_ioctl);
 

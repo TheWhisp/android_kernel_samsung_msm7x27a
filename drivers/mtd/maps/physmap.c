@@ -27,8 +27,18 @@ struct physmap_flash_info {
 	struct mtd_info		*mtd[MAX_RESOURCES];
 	struct mtd_info		*cmtd;
 	struct map_info		map[MAX_RESOURCES];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int			nr_parts;
 	struct mtd_partition	*parts;
+=======
+	spinlock_t		vpp_lock;
+	int			vpp_refcnt;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t		vpp_lock;
+	int			vpp_refcnt;
+>>>>>>> refs/remotes/origin/master
 };
 
 static int physmap_flash_remove(struct platform_device *dev)
@@ -40,14 +50,25 @@ static int physmap_flash_remove(struct platform_device *dev)
 	info = platform_get_drvdata(dev);
 	if (info == NULL)
 		return 0;
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
 
 	physmap_data = dev->dev.platform_data;
 
 	if (info->cmtd) {
 		mtd_device_unregister(info->cmtd);
+<<<<<<< HEAD
 		if (info->nr_parts)
 			kfree(info->parts);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	physmap_data = dev_get_platdata(&dev->dev);
+
+	if (info->cmtd) {
+		mtd_device_unregister(info->cmtd);
+>>>>>>> refs/remotes/origin/master
 		if (info->cmtd != info->mtd[0])
 			mtd_concat_destroy(info->cmtd);
 	}
@@ -67,12 +88,44 @@ static void physmap_set_vpp(struct map_info *map, int state)
 {
 	struct platform_device *pdev;
 	struct physmap_flash_data *physmap_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct physmap_flash_info *info;
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pdev = (struct platform_device *)map->map_priv_1;
 	physmap_data = pdev->dev.platform_data;
 
+<<<<<<< HEAD
 	if (physmap_data->set_vpp)
 		physmap_data->set_vpp(pdev, state);
+=======
+=======
+	struct physmap_flash_info *info;
+	unsigned long flags;
+
+	pdev = (struct platform_device *)map->map_priv_1;
+	physmap_data = dev_get_platdata(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
+	if (!physmap_data->set_vpp)
+		return;
+
+	info = platform_get_drvdata(pdev);
+
+	spin_lock_irqsave(&info->vpp_lock, flags);
+	if (state) {
+		if (++info->vpp_refcnt == 1)    /* first nested 'on' */
+			physmap_data->set_vpp(pdev, 1);
+	} else {
+		if (--info->vpp_refcnt == 0)    /* last nested 'off' */
+			physmap_data->set_vpp(pdev, 0);
+	}
+	spin_unlock_irqrestore(&info->vpp_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static const char *rom_probe_types[] = {
@@ -83,17 +136,39 @@ static const char *rom_probe_types[] = {
 					NULL };
 static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", "afs",
 					  NULL };
+=======
+}
+
+static const char * const rom_probe_types[] = {
+	"cfi_probe", "jedec_probe", "qinfo_probe", "map_rom", NULL };
+
+static const char * const part_probe_types[] = {
+	"cmdlinepart", "RedBoot", "afs", NULL };
+>>>>>>> refs/remotes/origin/master
 
 static int physmap_flash_probe(struct platform_device *dev)
 {
 	struct physmap_flash_data *physmap_data;
 	struct physmap_flash_info *info;
+<<<<<<< HEAD
 	const char **probe_type;
+<<<<<<< HEAD
+=======
+	const char **part_types;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char * const *probe_type;
+	const char * const *part_types;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	int i;
 	int devices_found = 0;
 
+<<<<<<< HEAD
 	physmap_data = dev->dev.platform_data;
+=======
+	physmap_data = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (physmap_data == NULL)
 		return -ENODEV;
 
@@ -175,6 +250,8 @@ static int physmap_flash_probe(struct platform_device *dev)
 	if (err)
 		goto err_out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = parse_mtd_partitions(info->cmtd, part_probe_types,
 				   &info->parts, 0);
 	if (err > 0) {
@@ -192,6 +269,19 @@ static int physmap_flash_probe(struct platform_device *dev)
 
 	mtd_device_register(info->cmtd, NULL, 0);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_lock_init(&info->vpp_lock);
+
+	part_types = physmap_data->part_probe_types ? : part_probe_types;
+
+	mtd_device_parse_register(info->cmtd, part_types, NULL,
+				  physmap_data->parts, physmap_data->nr_parts);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_out:
@@ -206,9 +296,19 @@ static void physmap_flash_shutdown(struct platform_device *dev)
 	int i;
 
 	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (info->mtd[i]->suspend && info->mtd[i]->resume)
 			if (info->mtd[i]->suspend(info->mtd[i]) == 0)
 				info->mtd[i]->resume(info->mtd[i]);
+=======
+		if (mtd_suspend(info->mtd[i]) == 0)
+			mtd_resume(info->mtd[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (mtd_suspend(info->mtd[i]) == 0)
+			mtd_resume(info->mtd[i]);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 #define physmap_flash_shutdown NULL
@@ -245,6 +345,8 @@ static struct platform_device physmap_flash = {
 	.num_resources	= 1,
 	.resource	= &physmap_flash_resource,
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 void physmap_configure(unsigned long addr, unsigned long size,
 		int bankwidth, void (*set_vpp)(struct map_info *, int))
@@ -260,6 +362,10 @@ void physmap_set_partitions(struct mtd_partition *parts, int num_parts)
 	physmap_flash_data.nr_parts = num_parts;
 	physmap_flash_data.parts = parts;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int __init physmap_init(void)

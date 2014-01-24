@@ -14,7 +14,11 @@
 #include <linux/err.h>
 #include <linux/fs.h>
 
+<<<<<<< HEAD
 static int load_script(struct linux_binprm *bprm,struct pt_regs *regs)
+=======
+static int load_script(struct linux_binprm *bprm)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *i_arg, *i_name;
 	char *cp;
@@ -95,7 +99,11 @@ static int load_script(struct linux_binprm *bprm,struct pt_regs *regs)
 	retval = prepare_binprm(bprm);
 	if (retval < 0)
 		return retval;
+<<<<<<< HEAD
 	return search_binary_handler(bprm,regs);
+=======
+	return search_binary_handler(bprm);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct linux_binfmt script_format = {
@@ -105,7 +113,17 @@ static struct linux_binfmt script_format = {
 
 static int __init init_script_binfmt(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return register_binfmt(&script_format);
+=======
+	register_binfmt(&script_format);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	register_binfmt(&script_format);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit exit_script_binfmt(void)

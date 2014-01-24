@@ -18,14 +18,24 @@
  * hfs_lookup()
  */
 static struct dentry *hfs_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				 struct nameidata *nd)
+=======
+				 unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	hfs_cat_rec rec;
 	struct hfs_find_data fd;
 	struct inode *inode = NULL;
 	int res;
 
+<<<<<<< HEAD
 	hfs_find_init(HFS_SB(dir->i_sb)->cat_tree, &fd);
+=======
+	res = hfs_find_init(HFS_SB(dir->i_sb)->cat_tree, &fd);
+	if (res)
+		return ERR_PTR(res);
+>>>>>>> refs/remotes/origin/master
 	hfs_cat_build_key(dir->i_sb, fd.search_key, dir->i_ino, &dentry->d_name);
 	res = hfs_brec_read(&fd, &rec, sizeof(rec));
 	if (res) {
@@ -49,9 +59,15 @@ done:
 /*
  * hfs_readdir
  */
+<<<<<<< HEAD
 static int hfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 {
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+static int hfs_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct super_block *sb = inode->i_sb;
 	int len, err;
 	char strbuf[HFS_MAX_NAMELEN];
@@ -60,15 +76,25 @@ static int hfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	struct hfs_readdir_data *rd;
 	u16 type;
 
+<<<<<<< HEAD
 	if (filp->f_pos >= inode->i_size)
 		return 0;
 
 	hfs_find_init(HFS_SB(sb)->cat_tree, &fd);
+=======
+	if (ctx->pos >= inode->i_size)
+		return 0;
+
+	err = hfs_find_init(HFS_SB(sb)->cat_tree, &fd);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 	hfs_cat_build_key(sb, fd.search_key, inode->i_ino, NULL);
 	err = hfs_brec_find(&fd);
 	if (err)
 		goto out;
 
+<<<<<<< HEAD
 	switch ((u32)filp->f_pos) {
 	case 0:
 		/* This is completely artificial... */
@@ -77,6 +103,15 @@ static int hfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		filp->f_pos++;
 		/* fall through */
 	case 1:
+=======
+	if (ctx->pos == 0) {
+		/* This is completely artificial... */
+		if (!dir_emit_dot(file, ctx))
+			goto out;
+		ctx->pos = 1;
+	}
+	if (ctx->pos == 1) {
+>>>>>>> refs/remotes/origin/master
 		if (fd.entrylength > sizeof(entry) || fd.entrylength < 0) {
 			err = -EIO;
 			goto out;
@@ -84,11 +119,16 @@ static int hfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 
 		hfs_bnode_read(fd.bnode, &entry, fd.entryoffset, fd.entrylength);
 		if (entry.type != HFS_CDR_THD) {
+<<<<<<< HEAD
 			printk(KERN_ERR "hfs: bad catalog folder thread\n");
+=======
+			pr_err("bad catalog folder thread\n");
+>>>>>>> refs/remotes/origin/master
 			err = -EIO;
 			goto out;
 		}
 		//if (fd.entrylength < HFS_MIN_THREAD_SZ) {
+<<<<<<< HEAD
 		//	printk(KERN_ERR "hfs: truncated catalog thread\n");
 		//	err = -EIO;
 		//	goto out;
@@ -109,6 +149,26 @@ static int hfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	for (;;) {
 		if (be32_to_cpu(fd.key->cat.ParID) != inode->i_ino) {
 			printk(KERN_ERR "hfs: walked past end of dir\n");
+=======
+		//	pr_err("truncated catalog thread\n");
+		//	err = -EIO;
+		//	goto out;
+		//}
+		if (!dir_emit(ctx, "..", 2,
+			    be32_to_cpu(entry.thread.ParID), DT_DIR))
+			goto out;
+		ctx->pos = 2;
+	}
+	if (ctx->pos >= inode->i_size)
+		goto out;
+	err = hfs_brec_goto(&fd, ctx->pos - 1);
+	if (err)
+		goto out;
+
+	for (;;) {
+		if (be32_to_cpu(fd.key->cat.ParID) != inode->i_ino) {
+			pr_err("walked past end of dir\n");
+>>>>>>> refs/remotes/origin/master
 			err = -EIO;
 			goto out;
 		}
@@ -123,15 +183,24 @@ static int hfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		len = hfs_mac2asc(sb, strbuf, &fd.key->cat.CName);
 		if (type == HFS_CDR_DIR) {
 			if (fd.entrylength < sizeof(struct hfs_cat_dir)) {
+<<<<<<< HEAD
 				printk(KERN_ERR "hfs: small dir entry\n");
 				err = -EIO;
 				goto out;
 			}
 			if (filldir(dirent, strbuf, len, filp->f_pos,
+=======
+				pr_err("small dir entry\n");
+				err = -EIO;
+				goto out;
+			}
+			if (!dir_emit(ctx, strbuf, len,
+>>>>>>> refs/remotes/origin/master
 				    be32_to_cpu(entry.dir.DirID), DT_DIR))
 				break;
 		} else if (type == HFS_CDR_FIL) {
 			if (fd.entrylength < sizeof(struct hfs_cat_file)) {
+<<<<<<< HEAD
 				printk(KERN_ERR "hfs: small file entry\n");
 				err = -EIO;
 				goto out;
@@ -146,20 +215,45 @@ static int hfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		}
 		filp->f_pos++;
 		if (filp->f_pos >= inode->i_size)
+=======
+				pr_err("small file entry\n");
+				err = -EIO;
+				goto out;
+			}
+			if (!dir_emit(ctx, strbuf, len,
+				    be32_to_cpu(entry.file.FlNum), DT_REG))
+				break;
+		} else {
+			pr_err("bad catalog entry type %d\n", type);
+			err = -EIO;
+			goto out;
+		}
+		ctx->pos++;
+		if (ctx->pos >= inode->i_size)
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		err = hfs_brec_goto(&fd, 1);
 		if (err)
 			goto out;
 	}
+<<<<<<< HEAD
 	rd = filp->private_data;
+=======
+	rd = file->private_data;
+>>>>>>> refs/remotes/origin/master
 	if (!rd) {
 		rd = kmalloc(sizeof(struct hfs_readdir_data), GFP_KERNEL);
 		if (!rd) {
 			err = -ENOMEM;
 			goto out;
 		}
+<<<<<<< HEAD
 		filp->private_data = rd;
 		rd->file = filp;
+=======
+		file->private_data = rd;
+		rd->file = file;
+>>>>>>> refs/remotes/origin/master
 		list_add(&rd->list, &HFS_I(inode)->open_dir_list);
 	}
 	memcpy(&rd->key, &fd.key, sizeof(struct hfs_cat_key));
@@ -172,7 +266,13 @@ static int hfs_dir_release(struct inode *inode, struct file *file)
 {
 	struct hfs_readdir_data *rd = file->private_data;
 	if (rd) {
+<<<<<<< HEAD
 		list_del(&rd->list);
+=======
+		mutex_lock(&inode->i_mutex);
+		list_del(&rd->list);
+		mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 		kfree(rd);
 	}
 	return 0;
@@ -186,8 +286,17 @@ static int hfs_dir_release(struct inode *inode, struct file *file)
  * a directory and return a corresponding inode, given the inode for
  * the directory and the name (and its length) of the new file.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hfs_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int hfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		      struct nameidata *nd)
+=======
+static int hfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+		      bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	int res;
@@ -198,7 +307,15 @@ static int hfs_create(struct inode *dir, struct dentry *dentry, int mode,
 
 	res = hfs_cat_create(inode->i_ino, dir, &dentry->d_name, inode);
 	if (res) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 0;
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		hfs_delete_inode(inode);
 		iput(inode);
 		return res;
@@ -216,7 +333,15 @@ static int hfs_create(struct inode *dir, struct dentry *dentry, int mode,
  * in a directory, given the inode for the parent directory and the
  * name (and its length) of the new directory.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int hfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	int res;
@@ -227,7 +352,15 @@ static int hfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 
 	res = hfs_cat_create(inode->i_ino, dir, &dentry->d_name, inode);
 	if (res) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 0;
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		hfs_delete_inode(inode);
 		iput(inode);
 		return res;
@@ -300,7 +433,11 @@ static int hfs_rename(struct inode *old_dir, struct dentry *old_dentry,
 
 const struct file_operations hfs_dir_operations = {
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= hfs_readdir,
+=======
+	.iterate	= hfs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.llseek		= generic_file_llseek,
 	.release	= hfs_dir_release,
 };

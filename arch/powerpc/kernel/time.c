@@ -17,8 +17,16 @@
  *
  * TODO (not necessarily in this file):
  * - improve precision and reproducibility of timebase frequency
+<<<<<<< HEAD
+<<<<<<< HEAD
  * measurement at boot time. (for iSeries, we calibrate the timebase
  * against the Titan chip's clock.)
+=======
+ * measurement at boot time.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * measurement at boot time.
+>>>>>>> refs/remotes/origin/master
  * - for astronomical applications: add a new function to get
  * non ambiguous timestamps even around leap seconds. This needs
  * a new timestamp format and a good name.
@@ -33,7 +41,15 @@
  */
 
 #include <linux/errno.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/param.h>
@@ -70,15 +86,25 @@
 #include <asm/vdso_datapage.h>
 #include <asm/firmware.h>
 #include <asm/cputime.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 #include <asm/iseries/it_lp_queue.h>
 #include <asm/iseries/hv_call_xm.h>
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* powerpc clocksource/clockevent code */
 
 #include <linux/clockchips.h>
+<<<<<<< HEAD
 #include <linux/clocksource.h>
+=======
+#include <linux/timekeeper_internal.h>
+>>>>>>> refs/remotes/origin/master
 
 static cycle_t rtc_read(struct clocksource *);
 static struct clocksource clocksource_rtc = {
@@ -86,8 +112,14 @@ static struct clocksource clocksource_rtc = {
 	.rating       = 400,
 	.flags        = CLOCK_SOURCE_IS_CONTINUOUS,
 	.mask         = CLOCKSOURCE_MASK(64),
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.shift        = 22,
 	.mult         = 0,	/* To be filled in */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.read         = rtc_read,
 };
 
@@ -97,8 +129,14 @@ static struct clocksource clocksource_timebase = {
 	.rating       = 400,
 	.flags        = CLOCK_SOURCE_IS_CONTINUOUS,
 	.mask         = CLOCKSOURCE_MASK(64),
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.shift        = 22,
 	.mult         = 0,	/* To be filled in */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.read         = timebase_read,
 };
 
@@ -109,7 +147,9 @@ static int decrementer_set_next_event(unsigned long evt,
 static void decrementer_set_mode(enum clock_event_mode mode,
 				 struct clock_event_device *dev);
 
+<<<<<<< HEAD
 static struct clock_event_device decrementer_clockevent = {
+<<<<<<< HEAD
        .name           = "decrementer",
        .rating         = 200,
        .shift          = 0,	/* To be filled in */
@@ -134,6 +174,28 @@ static signed long __initdata iSeries_recal_tb;
 /* Forward declaration is only needed for iSereis compiles */
 static void __init clocksource_init(void);
 #endif
+=======
+=======
+struct clock_event_device decrementer_clockevent = {
+>>>>>>> refs/remotes/origin/master
+	.name           = "decrementer",
+	.rating         = 200,
+	.irq            = 0,
+	.set_next_event = decrementer_set_next_event,
+	.set_mode       = decrementer_set_mode,
+	.features       = CLOCK_EVT_FEAT_ONESHOT,
+};
+<<<<<<< HEAD
+
+DEFINE_PER_CPU(u64, decrementers_next_tb);
+static DEFINE_PER_CPU(struct clock_event_device, decrementers);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(decrementer_clockevent);
+
+DEFINE_PER_CPU(u64, decrementers_next_tb);
+static DEFINE_PER_CPU(struct clock_event_device, decrementers);
+>>>>>>> refs/remotes/origin/master
 
 #define XSEC_PER_SEC (1024*1024)
 
@@ -165,7 +227,11 @@ EXPORT_SYMBOL_GPL(ppc_proc_freq);
 unsigned long ppc_tb_freq;
 EXPORT_SYMBOL_GPL(ppc_tb_freq);
 
+<<<<<<< HEAD
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+>>>>>>> refs/remotes/origin/master
 /*
  * Factors for converting from cputime_t (timebase ticks) to
  * jiffies, microseconds, seconds, and clock_t (1/USER_HZ seconds).
@@ -232,6 +298,7 @@ static u64 scan_dispatch_log(u64 stop_tb)
 	if (!dtl)
 		return 0;
 
+<<<<<<< HEAD
 	if (i == vpa->dtl_idx)
 		return 0;
 	while (i < vpa->dtl_idx) {
@@ -244,11 +311,28 @@ static u64 scan_dispatch_log(u64 stop_tb)
 		if (i + N_DISPATCH_LOG < vpa->dtl_idx) {
 			/* buffer has overflowed */
 			i = vpa->dtl_idx - N_DISPATCH_LOG;
+=======
+	if (i == be64_to_cpu(vpa->dtl_idx))
+		return 0;
+	while (i < be64_to_cpu(vpa->dtl_idx)) {
+		dtb = be64_to_cpu(dtl->timebase);
+		tb_delta = be32_to_cpu(dtl->enqueue_to_dispatch_time) +
+			be32_to_cpu(dtl->ready_to_enqueue_time);
+		barrier();
+		if (i + N_DISPATCH_LOG < be64_to_cpu(vpa->dtl_idx)) {
+			/* buffer has overflowed */
+			i = be64_to_cpu(vpa->dtl_idx) - N_DISPATCH_LOG;
+>>>>>>> refs/remotes/origin/master
 			dtl = local_paca->dispatch_log + (i % N_DISPATCH_LOG);
 			continue;
 		}
 		if (dtb > stop_tb)
 			break;
+<<<<<<< HEAD
+=======
+		if (dtl_consumer)
+			dtl_consumer(dtl, i);
+>>>>>>> refs/remotes/origin/master
 		stolen += tb_delta;
 		++i;
 		++dtl;
@@ -269,7 +353,13 @@ void accumulate_stolen_time(void)
 	u64 sst, ust;
 
 	u8 save_soft_enabled = local_paca->soft_enabled;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 save_hard_enabled = local_paca->hard_enabled;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* We are called early in the exception entry, before
 	 * soft/hard_enabled are sync'ed to the expected state
@@ -278,7 +368,13 @@ void accumulate_stolen_time(void)
 	 * complain
 	 */
 	local_paca->soft_enabled = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_paca->hard_enabled = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sst = scan_dispatch_log(local_paca->starttime_user);
 	ust = scan_dispatch_log(local_paca->starttime);
@@ -287,14 +383,24 @@ void accumulate_stolen_time(void)
 	local_paca->stolen_time += ust + sst;
 
 	local_paca->soft_enabled = save_soft_enabled;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_paca->hard_enabled = save_hard_enabled;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u64 calculate_stolen_time(u64 stop_tb)
 {
 	u64 stolen = 0;
 
+<<<<<<< HEAD
 	if (get_paca()->dtl_ridx != get_paca()->lppaca_ptr->dtl_idx) {
+=======
+	if (get_paca()->dtl_ridx != be64_to_cpu(get_lppaca()->dtl_idx)) {
+>>>>>>> refs/remotes/origin/master
 		stolen = scan_dispatch_log(stop_tb);
 		get_paca()->system_time -= stolen;
 	}
@@ -316,6 +422,7 @@ static inline u64 calculate_stolen_time(u64 stop_tb)
  * Account time for a transition between system, hard irq
  * or soft irq state.
  */
+<<<<<<< HEAD
 void account_system_vtime(struct task_struct *tsk)
 {
 	u64 now, nowscaled, delta, deltascaled;
@@ -323,6 +430,16 @@ void account_system_vtime(struct task_struct *tsk)
 	u64 stolen, udelta, sys_scaled, user_scaled;
 
 	local_irq_save(flags);
+=======
+static u64 vtime_delta(struct task_struct *tsk,
+			u64 *sys_scaled, u64 *stolen)
+{
+	u64 now, nowscaled, deltascaled;
+	u64 udelta, delta, user_scaled;
+
+	WARN_ON_ONCE(!irqs_disabled());
+
+>>>>>>> refs/remotes/origin/master
 	now = mftb();
 	nowscaled = read_spurr(now);
 	get_paca()->system_time += now - get_paca()->starttime;
@@ -330,7 +447,11 @@ void account_system_vtime(struct task_struct *tsk)
 	deltascaled = nowscaled - get_paca()->startspurr;
 	get_paca()->startspurr = nowscaled;
 
+<<<<<<< HEAD
 	stolen = calculate_stolen_time(now);
+=======
+	*stolen = calculate_stolen_time(now);
+>>>>>>> refs/remotes/origin/master
 
 	delta = get_paca()->system_time;
 	get_paca()->system_time = 0;
@@ -347,6 +468,7 @@ void account_system_vtime(struct task_struct *tsk)
 	 * the user ticks get saved up in paca->user_time_scaled to be
 	 * used by account_process_tick.
 	 */
+<<<<<<< HEAD
 	sys_scaled = delta;
 	user_scaled = udelta;
 	if (deltascaled != delta + udelta) {
@@ -355,10 +477,21 @@ void account_system_vtime(struct task_struct *tsk)
 			user_scaled = deltascaled - sys_scaled;
 		} else {
 			sys_scaled = deltascaled;
+=======
+	*sys_scaled = delta;
+	user_scaled = udelta;
+	if (deltascaled != delta + udelta) {
+		if (udelta) {
+			*sys_scaled = deltascaled * delta / (delta + udelta);
+			user_scaled = deltascaled - *sys_scaled;
+		} else {
+			*sys_scaled = deltascaled;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	get_paca()->user_time_scaled += user_scaled;
 
+<<<<<<< HEAD
 	if (in_interrupt() || idle_task(smp_processor_id()) != tsk) {
 		account_system_time(tsk, 0, delta, sys_scaled);
 		if (stolen)
@@ -380,6 +513,40 @@ EXPORT_SYMBOL_GPL(account_system_vtime);
  * get_paca()->user_time_scaled is up to date.
  */
 void account_process_tick(struct task_struct *tsk, int user_tick)
+=======
+	return delta;
+}
+
+void vtime_account_system(struct task_struct *tsk)
+{
+	u64 delta, sys_scaled, stolen;
+
+	delta = vtime_delta(tsk, &sys_scaled, &stolen);
+	account_system_time(tsk, 0, delta, sys_scaled);
+	if (stolen)
+		account_steal_time(stolen);
+}
+EXPORT_SYMBOL_GPL(vtime_account_system);
+
+void vtime_account_idle(struct task_struct *tsk)
+{
+	u64 delta, sys_scaled, stolen;
+
+	delta = vtime_delta(tsk, &sys_scaled, &stolen);
+	account_idle_time(delta + stolen);
+}
+
+/*
+ * Transfer the user time accumulated in the paca
+ * by the exception entry and exit code to the generic
+ * process user time records.
+ * Must be called with interrupts disabled.
+ * Assumes that vtime_account_system/idle() has been called
+ * recently (i.e. since the last entry from usermode) so that
+ * get_paca()->user_time_scaled is up to date.
+ */
+void vtime_account_user(struct task_struct *tsk)
+>>>>>>> refs/remotes/origin/master
 {
 	cputime_t utime, utimescaled;
 
@@ -391,7 +558,11 @@ void account_process_tick(struct task_struct *tsk, int user_tick)
 	account_user_time(tsk, utime, utimescaled);
 }
 
+<<<<<<< HEAD
 #else /* ! CONFIG_VIRT_CPU_ACCOUNTING */
+=======
+#else /* ! CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
+>>>>>>> refs/remotes/origin/master
 #define calc_cputime_factors()
 #endif
 
@@ -436,6 +607,8 @@ unsigned long profile_pc(struct pt_regs *regs)
 EXPORT_SYMBOL(profile_pc);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 
 /* 
@@ -504,6 +677,10 @@ void __init iSeries_time_init_early(void)
 }
 #endif /* CONFIG_PPC_ISERIES */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_IRQ_WORK
 
 /*
@@ -560,6 +737,8 @@ void arch_irq_work_raise(void)
 #endif /* CONFIG_IRQ_WORK */
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * For iSeries shared processors, we have to let the hypervisor
  * set the hardware decrementer.  We set a virtual decrementer
  * in the lppaca and call the hypervisor if the virtual
@@ -570,14 +749,31 @@ void arch_irq_work_raise(void)
  */
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * timer_interrupt - gets called when the decrementer overflows,
  * with interrupts disabled.
  */
 void timer_interrupt(struct pt_regs * regs)
 {
 	struct pt_regs *old_regs;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct decrementer_clock *decrementer =  &__get_cpu_var(decrementers);
 	struct clock_event_device *evt = &decrementer->event;
+=======
+	u64 *next_tb = &__get_cpu_var(decrementers_next_tb);
+	struct clock_event_device *evt = &__get_cpu_var(decrementers);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 *next_tb = &__get_cpu_var(decrementers_next_tb);
+	struct clock_event_device *evt = &__get_cpu_var(decrementers);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u64 now;
 
 	/* Ensure a positive value is written to the decrementer, or else
@@ -586,13 +782,37 @@ void timer_interrupt(struct pt_regs * regs)
 	set_dec(DECREMENTER_MAX);
 
 	/* Some implementations of hotplug will get timer interrupts while
+<<<<<<< HEAD
 	 * offline, just ignore these
 	 */
 	if (!cpu_online(smp_processor_id()))
 		return;
 
+<<<<<<< HEAD
+=======
+=======
+	 * offline, just ignore these and we also need to set
+	 * decrementers_next_tb as MAX to make sure __check_irq_replay
+	 * don't replay timer interrupt when return, otherwise we'll trap
+	 * here infinitely :(
+	 */
+	if (!cpu_online(smp_processor_id())) {
+		*next_tb = ~(u64)0;
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
+	/* Conditionally hard-enable interrupts now that the DEC has been
+	 * bumped to its maximum value
+	 */
+	may_hard_irq_enable();
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	trace_timer_interrupt_entry(regs);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	__get_cpu_var(irq_stat).timer_irqs++;
 
 #if defined(CONFIG_PPC32) && defined(CONFIG_PMAC)
@@ -603,15 +823,35 @@ void timer_interrupt(struct pt_regs * regs)
 	old_regs = set_irq_regs(regs);
 	irq_enter();
 
+<<<<<<< HEAD
+=======
+	trace_timer_interrupt_entry(regs);
+
+>>>>>>> refs/remotes/origin/master
 	if (test_irq_work_pending()) {
 		clear_irq_work_pending();
 		irq_work_run();
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 	if (firmware_has_feature(FW_FEATURE_ISERIES))
 		get_lppaca()->int_dword.fields.decr_int = 0;
 #endif
+=======
+	now = get_tb_or_rtc();
+	if (now >= *next_tb) {
+		*next_tb = ~(u64)0;
+		if (evt->event_handler)
+			evt->event_handler(evt);
+	} else {
+		now = *next_tb - now;
+		if (now <= DECREMENTER_MAX)
+			set_dec((int)now);
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	now = get_tb_or_rtc();
 	if (now >= decrementer->next_tb) {
@@ -620,15 +860,35 @@ void timer_interrupt(struct pt_regs * regs)
 			evt->event_handler(evt);
 	} else {
 		now = decrementer->next_tb - now;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	now = get_tb_or_rtc();
+	if (now >= *next_tb) {
+		*next_tb = ~(u64)0;
+		if (evt->event_handler)
+			evt->event_handler(evt);
+	} else {
+		now = *next_tb - now;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (now <= DECREMENTER_MAX)
 			set_dec((int)now);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 	if (firmware_has_feature(FW_FEATURE_ISERIES) && hvlpevent_is_pending())
 		process_hvlpevents();
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC64
 	/* collect purr register values often, for accurate calculations */
 	if (firmware_has_feature(FW_FEATURE_SPLPAR)) {
@@ -637,10 +897,26 @@ void timer_interrupt(struct pt_regs * regs)
 	}
 #endif
 
+<<<<<<< HEAD
 	irq_exit();
 	set_irq_regs(old_regs);
 
 	trace_timer_interrupt_exit(regs);
+=======
+	trace_timer_interrupt_exit(regs);
+
+	irq_exit();
+	set_irq_regs(old_regs);
+}
+
+/*
+ * Hypervisor decrementer interrupts shouldn't occur but are sometimes
+ * left pending on exit from a KVM guest.  We don't need to do anything
+ * to clear them, as they are edge-triggered.
+ */
+void hdec_interrupt(struct pt_regs *regs)
+{
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_SUSPEND
@@ -650,9 +926,21 @@ static void generic_suspend_disable_irqs(void)
 	 * with suspending.
 	 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set_dec(0x7fffffff);
 	local_irq_disable();
 	set_dec(0x7fffffff);
+=======
+	set_dec(DECREMENTER_MAX);
+	local_irq_disable();
+	set_dec(DECREMENTER_MAX);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_dec(DECREMENTER_MAX);
+	local_irq_disable();
+	set_dec(DECREMENTER_MAX);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void generic_suspend_enable_irqs(void)
@@ -694,7 +982,11 @@ unsigned long long sched_clock(void)
 static int __init get_freq(char *name, int cells, unsigned long *val)
 {
 	struct device_node *cpu;
+<<<<<<< HEAD
 	const unsigned int *fp;
+=======
+	const __be32 *fp;
+>>>>>>> refs/remotes/origin/master
 	int found = 0;
 
 	/* The cpu node should have timebase and clock frequency properties */
@@ -713,7 +1005,10 @@ static int __init get_freq(char *name, int cells, unsigned long *val)
 	return found;
 }
 
+<<<<<<< HEAD
 /* should become __cpuinit when secondary_cpu_time_init also is */
+=======
+>>>>>>> refs/remotes/origin/master
 void start_cpu_decrementer(void)
 {
 #if defined(CONFIG_BOOKE) || defined(CONFIG_40x)
@@ -751,7 +1046,11 @@ int update_persistent_clock(struct timespec now)
 	struct rtc_time tm;
 
 	if (!ppc_md.set_rtc_time)
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	to_tm(now.tv_sec + 1 + timezone_offset, &tm);
 	tm.tm_year -= 1900;
@@ -811,7 +1110,11 @@ static cycle_t timebase_read(struct clocksource *cs)
 	return (cycle_t)get_tb();
 }
 
+<<<<<<< HEAD
 void update_vsyscall(struct timespec *wall_time, struct timespec *wtm,
+=======
+void update_vsyscall_old(struct timespec *wall_time, struct timespec *wtm,
+>>>>>>> refs/remotes/origin/master
 			struct clocksource *clock, u32 mult)
 {
 	u64 new_tb_to_xs, new_stamp_xsec;
@@ -824,9 +1127,19 @@ void update_vsyscall(struct timespec *wall_time, struct timespec *wtm,
 	++vdso_data->tb_update_count;
 	smp_mb();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* XXX this assumes clock->shift == 22 */
 	/* 4611686018 ~= 2^(20+64-22) / 1e9 */
 	new_tb_to_xs = (u64) mult * 4611686018ULL;
+=======
+	/* 19342813113834067 ~= 2^(20+64) / 1e9 */
+	new_tb_to_xs = (u64) mult * (19342813113834067ULL >> clock->shift);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 19342813113834067 ~= 2^(20+64) / 1e9 */
+	new_tb_to_xs = (u64) mult * (19342813113834067ULL >> clock->shift);
+>>>>>>> refs/remotes/origin/master
 	new_stamp_xsec = (u64) wall_time->tv_nsec * XSEC_PER_SEC;
 	do_div(new_stamp_xsec, 1000000000);
 	new_stamp_xsec += (u64) wall_time->tv_sec * XSEC_PER_SEC;
@@ -872,9 +1185,17 @@ static void __init clocksource_init(void)
 	else
 		clock = &clocksource_timebase;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clock->mult = clocksource_hz2mult(tb_ticks_per_sec, clock->shift);
 
 	if (clocksource_register(clock)) {
+=======
+	if (clocksource_register_hz(clock, tb_ticks_per_sec)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (clocksource_register_hz(clock, tb_ticks_per_sec)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "clocksource: %s is already registered\n",
 		       clock->name);
 		return;
@@ -884,6 +1205,10 @@ static void __init clocksource_init(void)
 	       clock->name, clock->mult, clock->shift);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void decrementer_check_overflow(void)
 {
 	u64 now = get_tb_or_rtc();
@@ -893,10 +1218,23 @@ void decrementer_check_overflow(void)
 		set_dec(1);
 }
 
+<<<<<<< HEAD
 static int decrementer_set_next_event(unsigned long evt,
 				      struct clock_event_device *dev)
 {
+<<<<<<< HEAD
 	__get_cpu_var(decrementers).next_tb = get_tb_or_rtc() + evt;
+=======
+	__get_cpu_var(decrementers_next_tb) = get_tb_or_rtc() + evt;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int decrementer_set_next_event(unsigned long evt,
+				      struct clock_event_device *dev)
+{
+	__get_cpu_var(decrementers_next_tb) = get_tb_or_rtc() + evt;
+>>>>>>> refs/remotes/origin/master
 	set_dec(evt);
 	return 0;
 }
@@ -908,6 +1246,8 @@ static void decrementer_set_mode(enum clock_event_mode mode,
 		decrementer_set_next_event(DECREMENTER_MAX, dev);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline uint64_t div_sc64(unsigned long ticks, unsigned long nsec,
 				int shift)
 {
@@ -936,6 +1276,16 @@ static void __init setup_clockevent_multiplier(unsigned long hz)
 static void register_decrementer_clockevent(int cpu)
 {
 	struct clock_event_device *dec = &per_cpu(decrementers, cpu).event;
+=======
+static void register_decrementer_clockevent(int cpu)
+{
+	struct clock_event_device *dec = &per_cpu(decrementers, cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void register_decrementer_clockevent(int cpu)
+{
+	struct clock_event_device *dec = &per_cpu(decrementers, cpu);
+>>>>>>> refs/remotes/origin/master
 
 	*dec = decrementer_clockevent;
 	dec->cpumask = cpumask_of(cpu);
@@ -950,7 +1300,17 @@ static void __init init_decrementer_clockevent(void)
 {
 	int cpu = smp_processor_id();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	setup_clockevent_multiplier(ppc_tb_freq);
+=======
+	clockevents_calc_mult_shift(&decrementer_clockevent, ppc_tb_freq, 4);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clockevents_calc_mult_shift(&decrementer_clockevent, ppc_tb_freq, 4);
+
+>>>>>>> refs/remotes/origin/master
 	decrementer_clockevent.max_delta_ns =
 		clockevent_delta2ns(DECREMENTER_MAX, &decrementer_clockevent);
 	decrementer_clockevent.min_delta_ns =
@@ -1018,10 +1378,23 @@ void __init time_init(void)
 	boot_tb = get_tb_or_rtc();
 
 	/* If platform provided a timezone (pmac), we correct the time */
+<<<<<<< HEAD
+<<<<<<< HEAD
         if (timezone_offset) {
 		sys_tz.tz_minuteswest = -timezone_offset / 60;
 		sys_tz.tz_dsttime = 0;
         }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (timezone_offset) {
+		sys_tz.tz_minuteswest = -timezone_offset / 60;
+		sys_tz.tz_dsttime = 0;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	vdso_data->tb_update_count = 0;
 	vdso_data->tb_ticks_per_sec = tb_ticks_per_sec;
@@ -1031,9 +1404,19 @@ void __init time_init(void)
 	 */
 	start_cpu_decrementer();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Register the clocksource, if we're not running on iSeries */
 	if (!firmware_has_feature(FW_FEATURE_ISERIES))
 		clocksource_init();
+=======
+	/* Register the clocksource */
+	clocksource_init();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Register the clocksource */
+	clocksource_init();
+>>>>>>> refs/remotes/origin/master
 
 	init_decrementer_clockevent();
 }
@@ -1168,10 +1551,15 @@ static int __init rtc_init(void)
 		return -ENODEV;
 
 	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
+<<<<<<< HEAD
 	if (IS_ERR(pdev))
 		return PTR_ERR(pdev);
 
 	return 0;
+=======
+
+	return PTR_ERR_OR_ZERO(pdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(rtc_init);

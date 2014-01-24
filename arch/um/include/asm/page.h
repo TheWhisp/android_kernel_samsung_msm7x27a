@@ -19,7 +19,15 @@
 struct page;
 
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <sysdep/vm-flags.h>
+=======
+#include <asm/vm-flags.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/vm-flags.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are used to make use of C type-checking..
@@ -99,7 +107,11 @@ extern unsigned long uml_physmem;
 
 #define __va_space (8*1024*1024)
 
+<<<<<<< HEAD
 #include "mem.h"
+=======
+#include <mem.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Cast to unsigned long before casting to void * to avoid a warning from
  * mmap_kmem about cutting a long long down to a void *.  Not sure that

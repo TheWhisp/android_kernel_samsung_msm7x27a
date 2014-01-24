@@ -117,6 +117,10 @@ int uwb_rc_beacon(struct uwb_rc *rc, int channel, unsigned bpst_offset)
 	int result;
 	struct device *dev = &rc->uwb_dev.dev;
 
+<<<<<<< HEAD
+=======
+	dev_dbg(dev, "%s: channel = %d\n", __func__, channel);
+>>>>>>> refs/remotes/origin/master
 	if (channel < 0)
 		channel = -1;
 	if (channel == -1)
@@ -184,7 +188,11 @@ out:
 
 /* Find a beacon by dev addr in the cache */
 static
+<<<<<<< HEAD
 struct uwb_beca_e *__uwb_beca_find_bymac(struct uwb_rc *rc, 
+=======
+struct uwb_beca_e *__uwb_beca_find_bymac(struct uwb_rc *rc,
+>>>>>>> refs/remotes/origin/master
 					 const struct uwb_mac_addr *mac_addr)
 {
 	struct uwb_beca_e *bce, *next;
@@ -515,6 +523,7 @@ int uwbd_evt_handle_rc_bp_slot_change(struct uwb_event *evt)
 	}
 	bpsc = container_of(evt->notif.rceb, struct uwb_rc_evt_bp_slot_change, rceb);
 
+<<<<<<< HEAD
 	mutex_lock(&rc->uwb_dev.mutex);
 	if (uwb_rc_evt_bp_slot_change_no_slot(bpsc)) {
 		dev_info(dev, "stopped beaconing: No free slots in BP\n");
@@ -522,6 +531,15 @@ int uwbd_evt_handle_rc_bp_slot_change(struct uwb_event *evt)
 	} else
 		rc->uwb_dev.beacon_slot = uwb_rc_evt_bp_slot_change_slot_num(bpsc);
 	mutex_unlock(&rc->uwb_dev.mutex);
+=======
+	if (uwb_rc_evt_bp_slot_change_no_slot(bpsc)) {
+		dev_err(dev, "stopped beaconing: No free slots in BP\n");
+		mutex_lock(&rc->uwb_dev.mutex);
+		rc->beaconing = -1;
+		mutex_unlock(&rc->uwb_dev.mutex);
+	} else
+		rc->uwb_dev.beacon_slot = uwb_rc_evt_bp_slot_change_slot_num(bpsc);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

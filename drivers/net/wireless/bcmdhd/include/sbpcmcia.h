@@ -1,9 +1,21 @@
 /*
  * BCM43XX Sonics SiliconBackplane PCMCIA core hardware definitions.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,10 +33,22 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: sbpcmcia.h 277737 2011-08-16 17:54:59Z $
  */
 
 
+=======
+ * $Id: sbpcmcia.h 326494 2012-04-09 13:29:57Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: sbpcmcia.h 326494 2012-04-09 13:29:57Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef	_SBPCMCIA_H
 #define	_SBPCMCIA_H
 

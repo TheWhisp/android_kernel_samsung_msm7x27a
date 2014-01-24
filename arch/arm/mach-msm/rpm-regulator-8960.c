@@ -1,5 +1,13 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -106,7 +114,15 @@ static struct vreg_set_points *all_set_points[] = {
 	&ncp_set_points,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define LDO(_id, _name, _name_pc, _ranges, _hpm_min_load) \
+=======
+#define LDO(_id, _name, _name_pc, _ranges, _hpm_min_load, _requires_cxo) \
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LDO(_id, _name, _name_pc, _ranges, _hpm_min_load, _requires_cxo) \
+>>>>>>> refs/remotes/origin/cm-11.0
 	[RPM_VREG_ID_PM8921_##_id] = { \
 		.req = { \
 			[0] = { .id = MSM_RPM_ID_PM8921_##_id##_0, }, \
@@ -119,6 +135,14 @@ static struct vreg_set_points *all_set_points[] = {
 		.id		 = RPM_VREG_ID_PM8921_##_id, \
 		.rdesc.name	 = _name, \
 		.rdesc_pc.name	 = _name_pc, \
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.requires_cxo	 = _requires_cxo, \
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.requires_cxo	 = _requires_cxo, \
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 #define SMPS(_id, _name, _name_pc, _ranges, _hpm_min_load) \
@@ -177,6 +201,8 @@ static struct vreg_set_points *all_set_points[] = {
 	}
 
 static struct vreg vregs[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	LDO(L1,   "8921_l1",   "8921_l1_pc",  nldo,     LDO_150),
 	LDO(L2,   "8921_l2",   "8921_l2_pc",  nldo,     LDO_150),
 	LDO(L3,   "8921_l3",   "8921_l3_pc",  pldo,     LDO_150),
@@ -203,6 +229,39 @@ static struct vreg vregs[] = {
 	LDO(L27,  "8921_l27",  NULL,          nldo1200, LDO_1200),
 	LDO(L28,  "8921_l28",  NULL,          nldo1200, LDO_1200),
 	LDO(L29,  "8921_l29",  "8921_l29_pc", pldo,     LDO_150),
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	LDO(L1,   "8921_l1",   "8921_l1_pc",  nldo,     LDO_150,  1),
+	LDO(L2,   "8921_l2",   "8921_l2_pc",  nldo,     LDO_150,  1),
+	LDO(L3,   "8921_l3",   "8921_l3_pc",  pldo,     LDO_150,  0),
+	LDO(L4,   "8921_l4",   "8921_l4_pc",  pldo,     LDO_50,   0),
+	LDO(L5,   "8921_l5",   "8921_l5_pc",  pldo,     LDO_300,  0),
+	LDO(L6,   "8921_l6",   "8921_l6_pc",  pldo,     LDO_600,  0),
+	LDO(L7,   "8921_l7",   "8921_l7_pc",  pldo,     LDO_150,  0),
+	LDO(L8,   "8921_l8",   "8921_l8_pc",  pldo,     LDO_300,  0),
+	LDO(L9,   "8921_l9",   "8921_l9_pc",  pldo,     LDO_300,  0),
+	LDO(L10,  "8921_l10",  "8921_l10_pc", pldo,     LDO_600,  0),
+	LDO(L11,  "8921_l11",  "8921_l11_pc", pldo,     LDO_150,  0),
+	LDO(L12,  "8921_l12",  "8921_l12_pc", nldo,     LDO_150,  1),
+	LDO(L14,  "8921_l14",  "8921_l14_pc", pldo,     LDO_50,   0),
+	LDO(L15,  "8921_l15",  "8921_l15_pc", pldo,     LDO_150,  0),
+	LDO(L16,  "8921_l16",  "8921_l16_pc", pldo,     LDO_300,  0),
+	LDO(L17,  "8921_l17",  "8921_l17_pc", pldo,     LDO_150,  0),
+	LDO(L18,  "8921_l18",  "8921_l18_pc", nldo,     LDO_150,  1),
+	LDO(L21,  "8921_l21",  "8921_l21_pc", pldo,     LDO_150,  0),
+	LDO(L22,  "8921_l22",  "8921_l22_pc", pldo,     LDO_150,  0),
+	LDO(L23,  "8921_l23",  "8921_l23_pc", pldo,     LDO_150,  0),
+	LDO(L24,  "8921_l24",  NULL,          nldo1200, LDO_1200, 0),
+	LDO(L25,  "8921_l25",  NULL,          nldo1200, LDO_1200, 0),
+	LDO(L26,  "8921_l26",  NULL,          nldo1200, LDO_1200, 0),
+	LDO(L27,  "8921_l27",  NULL,          nldo1200, LDO_1200, 0),
+	LDO(L28,  "8921_l28",  NULL,          nldo1200, LDO_1200, 0),
+	LDO(L29,  "8921_l29",  "8921_l29_pc", pldo,     LDO_150,  0),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	SMPS(S1,  "8921_s1",   "8921_s1_pc",  smps,     SMPS_1500),
 	SMPS(S2,  "8921_s2",   "8921_s2_pc",  smps,     SMPS_1500),

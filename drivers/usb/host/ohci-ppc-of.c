@@ -14,12 +14,21 @@
  */
 
 #include <linux/signal.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 
 #include <asm/prom.h>
 
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 ohci_ppc_of_start(struct usb_hcd *hcd)
 {
 	struct ohci_hcd	*ohci = hcd_to_ohci(hcd);
@@ -29,7 +38,12 @@ ohci_ppc_of_start(struct usb_hcd *hcd)
 		return ret;
 
 	if ((ret = ohci_run(ohci)) < 0) {
+<<<<<<< HEAD
 		err("can't start %s", ohci_to_hcd(ohci)->self.bus_name);
+=======
+		dev_err(hcd->self.controller, "can't start %s\n",
+			hcd->self.bus_name);
+>>>>>>> refs/remotes/origin/master
 		ohci_stop(hcd);
 		return ret;
 	}
@@ -80,7 +94,11 @@ static const struct hc_driver ohci_ppc_of_hc_driver = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit ohci_hcd_ppc_of_probe(struct platform_device *op)
+=======
+static int ohci_hcd_ppc_of_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dn = op->dev.of_node;
 	struct usb_hcd *hcd;
@@ -110,16 +128,29 @@ static int __devinit ohci_hcd_ppc_of_probe(struct platform_device *op)
 		return -ENOMEM;
 
 	hcd->rsrc_start = res.start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hcd->rsrc_len = res.end - res.start + 1;
+=======
+	hcd->rsrc_len = resource_size(&res);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len, hcd_name)) {
 		printk(KERN_ERR "%s: request_mem_region failed\n", __FILE__);
 		rv = -EBUSY;
+=======
+	hcd->rsrc_len = resource_size(&res);
+
+	hcd->regs = devm_ioremap_resource(&op->dev, &res);
+	if (IS_ERR(hcd->regs)) {
+		rv = PTR_ERR(hcd->regs);
+>>>>>>> refs/remotes/origin/master
 		goto err_rmr;
 	}
 
 	irq = irq_of_parse_and_map(dn, 0);
 	if (irq == NO_IRQ) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: irq_of_parse_and_map failed\n", __FILE__);
 		rv = -EBUSY;
 		goto err_irq;
@@ -130,6 +161,12 @@ static int __devinit ohci_hcd_ppc_of_probe(struct platform_device *op)
 		printk(KERN_ERR "%s: ioremap failed\n", __FILE__);
 		rv = -ENOMEM;
 		goto err_ioremap;
+=======
+		dev_err(&op->dev, "%s: irq_of_parse_and_map failed\n",
+			__FILE__);
+		rv = -EBUSY;
+		goto err_rmr;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ohci = hcd_to_ohci(hcd);
@@ -143,9 +180,21 @@ static int __devinit ohci_hcd_ppc_of_probe(struct platform_device *op)
 
 	ohci_hcd_init(ohci);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rv = usb_add_hcd(hcd, irq, IRQF_DISABLED);
+=======
+	rv = usb_add_hcd(hcd, irq, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rv == 0)
 		return 0;
+=======
+	rv = usb_add_hcd(hcd, irq, 0);
+	if (rv == 0) {
+		device_wakeup_enable(hcd->self.controller);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* by now, 440epx is known to show usb_23 erratum */
 	np = of_find_compatible_node(NULL, NULL, "ibm,usb-ehci-440epx");
@@ -171,11 +220,15 @@ static int __devinit ohci_hcd_ppc_of_probe(struct platform_device *op)
 			pr_debug("%s: cannot get ehci offset from fdt\n", __FILE__);
 	}
 
+<<<<<<< HEAD
 	iounmap(hcd->regs);
 err_ioremap:
 	irq_dispose_mapping(irq);
 err_irq:
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
+=======
+	irq_dispose_mapping(irq);
+>>>>>>> refs/remotes/origin/master
 err_rmr:
  	usb_put_hcd(hcd);
 
@@ -184,22 +237,31 @@ err_rmr:
 
 static int ohci_hcd_ppc_of_remove(struct platform_device *op)
 {
+<<<<<<< HEAD
 	struct usb_hcd *hcd = dev_get_drvdata(&op->dev);
 	dev_set_drvdata(&op->dev, NULL);
+=======
+	struct usb_hcd *hcd = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&op->dev, "stopping PPC-OF USB Controller\n");
 
 	usb_remove_hcd(hcd);
 
+<<<<<<< HEAD
 	iounmap(hcd->regs);
 	irq_dispose_mapping(hcd->irq);
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
+=======
+	irq_dispose_mapping(hcd->irq);
+>>>>>>> refs/remotes/origin/master
 
 	usb_put_hcd(hcd);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void ohci_hcd_ppc_of_shutdown(struct platform_device *op)
 {
 	struct usb_hcd *hcd = dev_get_drvdata(&op->dev);
@@ -209,6 +271,8 @@ static void ohci_hcd_ppc_of_shutdown(struct platform_device *op)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct of_device_id ohci_hcd_ppc_of_match[] = {
 #ifdef CONFIG_USB_OHCI_HCD_PPC_OF_BE
 	{
@@ -236,14 +300,22 @@ MODULE_DEVICE_TABLE(of, ohci_hcd_ppc_of_match);
 
 #if	!defined(CONFIG_USB_OHCI_HCD_PPC_OF_BE) && \
 	!defined(CONFIG_USB_OHCI_HCD_PPC_OF_LE)
+<<<<<<< HEAD
 #error "No endianess selected for ppc-of-ohci"
+=======
+#error "No endianness selected for ppc-of-ohci"
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
 static struct platform_driver ohci_hcd_ppc_of_driver = {
 	.probe		= ohci_hcd_ppc_of_probe,
 	.remove		= ohci_hcd_ppc_of_remove,
+<<<<<<< HEAD
 	.shutdown 	= ohci_hcd_ppc_of_shutdown,
+=======
+	.shutdown	= usb_hcd_platform_shutdown,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "ppc-of-ohci",
 		.owner = THIS_MODULE,

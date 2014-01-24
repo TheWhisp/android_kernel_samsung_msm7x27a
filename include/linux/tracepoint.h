@@ -17,7 +17,15 @@
 #include <linux/errno.h>
 #include <linux/types.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/jump_label.h>
+=======
+#include <linux/static_key.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/static_key.h>
+>>>>>>> refs/remotes/origin/master
 
 struct module;
 struct tracepoint;
@@ -29,7 +37,15 @@ struct tracepoint_func {
 
 struct tracepoint {
 	const char *name;		/* Tracepoint name */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct jump_label_key key;
+=======
+	struct static_key key;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct static_key key;
+>>>>>>> refs/remotes/origin/master
 	void (*regfunc)(void);
 	void (*unregfunc)(void);
 	struct tracepoint_func __rcu *funcs;
@@ -54,8 +70,29 @@ extern int tracepoint_probe_unregister_noupdate(const char *name, void *probe,
 						void *data);
 extern void tracepoint_probe_update_all(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct tracepoint_iter {
 	struct module *module;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_MODULES
+struct tp_module {
+	struct list_head list;
+	unsigned int num_tracepoints;
+	struct tracepoint * const *tracepoints_ptrs;
+};
+#endif /* CONFIG_MODULES */
+
+struct tracepoint_iter {
+#ifdef CONFIG_MODULES
+	struct tp_module *module;
+#endif /* CONFIG_MODULES */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tracepoint * const *tracepoint;
 };
 
@@ -63,8 +100,14 @@ extern void tracepoint_iter_start(struct tracepoint_iter *iter);
 extern void tracepoint_iter_next(struct tracepoint_iter *iter);
 extern void tracepoint_iter_stop(struct tracepoint_iter *iter);
 extern void tracepoint_iter_reset(struct tracepoint_iter *iter);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int tracepoint_get_iter_range(struct tracepoint * const **tracepoint,
 	struct tracepoint * const *begin, struct tracepoint * const *end);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * tracepoint_synchronize_unregister must be called between the last tracepoint
@@ -78,6 +121,8 @@ static inline void tracepoint_synchronize_unregister(void)
 
 #define PARAMS(args...) args
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_TRACEPOINTS
 extern
 void tracepoint_update_probe_range(struct tracepoint * const *begin,
@@ -89,6 +134,10 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
 { }
 #endif /* CONFIG_TRACEPOINTS */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_TRACEPOINT_H */
 
 /*
@@ -117,7 +166,15 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
  * as "(void *, void)". The DECLARE_TRACE_NOARGS() will pass in just
  * "void *data", where as the DECLARE_TRACE() will pass in "void *data, proto".
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define __DO_TRACE(tp, proto, args, cond)				\
+=======
+#define __DO_TRACE(tp, proto, args, cond, prercu, postrcu)		\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __DO_TRACE(tp, proto, args, cond, prercu, postrcu)		\
+>>>>>>> refs/remotes/origin/master
 	do {								\
 		struct tracepoint_func *it_func_ptr;			\
 		void *it_func;						\
@@ -125,6 +182,14 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
 									\
 		if (!(cond))						\
 			return;						\
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		prercu;							\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		prercu;							\
+>>>>>>> refs/remotes/origin/master
 		rcu_read_lock_sched_notrace();				\
 		it_func_ptr = rcu_dereference_sched((tp)->funcs);	\
 		if (it_func_ptr) {					\
@@ -135,23 +200,78 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
 			} while ((++it_func_ptr)->func);		\
 		}							\
 		rcu_read_unlock_sched_notrace();			\
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		postrcu;						\
+>>>>>>> refs/remotes/origin/cm-10.0
 	} while (0)
 
+=======
+		postrcu;						\
+	} while (0)
+
+#ifndef MODULE
+#define __DECLARE_TRACE_RCU(name, proto, args, cond, data_proto, data_args)	\
+	static inline void trace_##name##_rcuidle(proto)		\
+	{								\
+		if (static_key_false(&__tracepoint_##name.key))		\
+			__DO_TRACE(&__tracepoint_##name,		\
+				TP_PROTO(data_proto),			\
+				TP_ARGS(data_args),			\
+				TP_CONDITION(cond),			\
+				rcu_irq_enter(),			\
+				rcu_irq_exit());			\
+	}
+#else
+#define __DECLARE_TRACE_RCU(name, proto, args, cond, data_proto, data_args)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Make sure the alignment of the structure in the __tracepoints section will
  * not add unwanted padding between the beginning of the section and the
  * structure. Force alignment to the same alignment as the section start.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args)	\
 	extern struct tracepoint __tracepoint_##name;			\
 	static inline void trace_##name(proto)				\
 	{								\
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
+	extern struct tracepoint __tracepoint_##name;			\
+	static inline void trace_##name(proto)				\
+	{								\
+		if (static_key_false(&__tracepoint_##name.key))		\
+			__DO_TRACE(&__tracepoint_##name,		\
+				TP_PROTO(data_proto),			\
+				TP_ARGS(data_args),			\
+				TP_CONDITION(cond),,);			\
+	}								\
+<<<<<<< HEAD
+	static inline void trace_##name##_rcuidle(proto)		\
+	{								\
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (static_branch(&__tracepoint_##name.key))		\
 			__DO_TRACE(&__tracepoint_##name,		\
 				TP_PROTO(data_proto),			\
 				TP_ARGS(data_args),			\
+<<<<<<< HEAD
 				TP_CONDITION(cond));			\
+=======
+				TP_CONDITION(cond),			\
+				rcu_idle_exit(),			\
+				rcu_idle_enter());			\
+>>>>>>> refs/remotes/origin/cm-10.0
 	}								\
+=======
+	__DECLARE_TRACE_RCU(name, PARAMS(proto), PARAMS(args),		\
+		PARAMS(cond), PARAMS(data_proto), PARAMS(data_args))	\
+>>>>>>> refs/remotes/origin/master
 	static inline int						\
 	register_trace_##name(void (*probe)(data_proto), void *data)	\
 	{								\
@@ -179,7 +299,15 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
 	__attribute__((section("__tracepoints_strings"))) = #name;	 \
 	struct tracepoint __tracepoint_##name				 \
 	__attribute__((section("__tracepoints"))) =			 \
+<<<<<<< HEAD
+<<<<<<< HEAD
 		{ __tpstrtab_##name, JUMP_LABEL_INIT, reg, unreg, NULL };\
+=======
+		{ __tpstrtab_##name, STATIC_KEY_INIT_FALSE, reg, unreg, NULL };\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		{ __tpstrtab_##name, STATIC_KEY_INIT_FALSE, reg, unreg, NULL };\
+>>>>>>> refs/remotes/origin/master
 	static struct tracepoint * const __tracepoint_ptr_##name __used	 \
 	__attribute__((section("__tracepoints_ptrs"))) =		 \
 		&__tracepoint_##name;
@@ -193,9 +321,23 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
 	EXPORT_SYMBOL(__tracepoint_##name)
 
 #else /* !CONFIG_TRACEPOINTS */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args)	\
 	static inline void trace_##name(proto)				\
 	{ }								\
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
+	static inline void trace_##name(proto)				\
+	{ }								\
+	static inline void trace_##name##_rcuidle(proto)		\
+	{ }								\
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	static inline int						\
 	register_trace_##name(void (*probe)(data_proto),		\
 			      void *data)				\
@@ -248,6 +390,11 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
 
 #define TRACE_EVENT_FLAGS(event, flag)
 
+<<<<<<< HEAD
+=======
+#define TRACE_EVENT_PERF_PERM(event, expr...)
+
+>>>>>>> refs/remotes/origin/master
 #endif /* DECLARE_TRACE */
 
 #ifndef TRACE_EVENT
@@ -359,6 +506,11 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
 #define DECLARE_EVENT_CLASS(name, proto, args, tstruct, assign, print)
 #define DEFINE_EVENT(template, name, proto, args)		\
 	DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+<<<<<<< HEAD
+=======
+#define DEFINE_EVENT_FN(template, name, proto, args, reg, unreg)\
+	DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+>>>>>>> refs/remotes/origin/master
 #define DEFINE_EVENT_PRINT(template, name, proto, args, print)	\
 	DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
 #define DEFINE_EVENT_CONDITION(template, name, proto,		\
@@ -378,4 +530,9 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
 
 #define TRACE_EVENT_FLAGS(event, flag)
 
+<<<<<<< HEAD
+=======
+#define TRACE_EVENT_PERF_PERM(event, expr...)
+
+>>>>>>> refs/remotes/origin/master
 #endif /* ifdef TRACE_EVENT (see note above) */

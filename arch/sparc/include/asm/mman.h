@@ -1,6 +1,7 @@
 #ifndef __SPARC_MMAN_H__
 #define __SPARC_MMAN_H__
 
+<<<<<<< HEAD
 #include <asm-generic/mman-common.h>
 
 /* SunOS'ified... */
@@ -24,10 +25,17 @@
 #define MAP_HUGETLB	0x40000		/* create a huge page mapping */
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/mman.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 #define arch_mmap_check(addr,len,flags)	sparc_mmap_check(addr,len)
 int sparc_mmap_check(unsigned long addr, unsigned long len);
 #endif
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __SPARC_MMAN_H__ */

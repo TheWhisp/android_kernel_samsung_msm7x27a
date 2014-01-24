@@ -26,9 +26,18 @@
  * Date: Feb. 19, 2004
  *
  * Functions:
+<<<<<<< HEAD
  *      IFRFbWriteEmbeded      - Embeded write RF register via MAC
  *
  * Revision History:
+=======
+ *      IFRFbWriteEmbedded      - Embedded write RF register via MAC
+ *
+ * Revision History:
+ *	RF_VT3226: RobertYu:20051111, VT3226C0 and before
+ *	RF_VT3226D0: RobertYu:20051228
+ *	RF_VT3342A0: RobertYu:20060609
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -41,7 +50,10 @@
 
 static int          msglevel                =MSG_LEVEL_INFO;
 //static int          msglevel                =MSG_LEVEL_DEBUG;
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
+=======
+>>>>>>> refs/remotes/origin/master
 #define BY_AL2230_REG_LEN     23 //24bit
 #define CB_AL2230_INIT_SEQ    15
 #define AL2230_PWR_IDX_LEN    64
@@ -62,6 +74,7 @@ static int          msglevel                =MSG_LEVEL_INFO;
 #define VT3342_PWR_IDX_LEN    64
 //}}
 
+<<<<<<< HEAD
 /*---------------------  Static Classes  ----------------------------*/
 
 /*---------------------  Static Variables  --------------------------*/
@@ -70,6 +83,9 @@ static int          msglevel                =MSG_LEVEL_INFO;
 
 
 BYTE abyAL2230InitTable[CB_AL2230_INIT_SEQ][3] = {
+=======
+static u8 al2230_init_table[CB_AL2230_INIT_SEQ][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x03, 0xF7, 0x90},
     {0x03, 0x33, 0x31},
     {0x01, 0xB8, 0x02},
@@ -87,7 +103,11 @@ BYTE abyAL2230InitTable[CB_AL2230_INIT_SEQ][3] = {
     {0x00, 0x58, 0x0F}
     };
 
+<<<<<<< HEAD
 BYTE abyAL2230ChannelTable0[CB_MAX_CHANNEL_24G][3] = {
+=======
+static u8 al2230_channel_table0[CB_MAX_CHANNEL_24G][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x03, 0xF7, 0x90}, // channel = 1, Tf = 2412MHz
     {0x03, 0xF7, 0x90}, // channel = 2, Tf = 2417MHz
     {0x03, 0xE7, 0x90}, // channel = 3, Tf = 2422MHz
@@ -104,7 +124,11 @@ BYTE abyAL2230ChannelTable0[CB_MAX_CHANNEL_24G][3] = {
     {0x03, 0xE7, 0xC0}  // channel = 14, Tf = 2412M
     };
 
+<<<<<<< HEAD
 BYTE abyAL2230ChannelTable1[CB_MAX_CHANNEL_24G][3] = {
+=======
+static u8 al2230_channel_table1[CB_MAX_CHANNEL_24G][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x03, 0x33, 0x31}, // channel = 1, Tf = 2412MHz
     {0x0B, 0x33, 0x31}, // channel = 2, Tf = 2417MHz
     {0x03, 0x33, 0x31}, // channel = 3, Tf = 2422MHz
@@ -123,7 +147,11 @@ BYTE abyAL2230ChannelTable1[CB_MAX_CHANNEL_24G][3] = {
 
 // 40MHz reference frequency
 // Need to Pull PLLON(PE3) low when writing channel registers through 3-wire.
+<<<<<<< HEAD
 BYTE abyAL7230InitTable[CB_AL7230_INIT_SEQ][3] = {
+=======
+static u8 al7230_init_table[CB_AL7230_INIT_SEQ][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x20, 0x37, 0x90}, // Channel1 // Need modify for 11a
     {0x13, 0x33, 0x31}, // Channel1 // Need modify for 11a
     {0x84, 0x1F, 0xF2}, // Need modify for 11a: 451FE2
@@ -146,7 +174,11 @@ BYTE abyAL7230InitTable[CB_AL7230_INIT_SEQ][3] = {
     {0x1A, 0xBA, 0x8F} // Need modify for 11a: 12BACF
     };
 
+<<<<<<< HEAD
 BYTE abyAL7230InitTableAMode[CB_AL7230_INIT_SEQ][3] = {
+=======
+static u8 al7230_init_table_amode[CB_AL7230_INIT_SEQ][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x2F, 0xF5, 0x20}, // Channel184 // Need modify for 11b/g
     {0x00, 0x00, 0x01}, // Channel184 // Need modify for 11b/g
     {0x45, 0x1F, 0xE2}, // Need modify for 11b/g
@@ -165,7 +197,11 @@ BYTE abyAL7230InitTableAMode[CB_AL7230_INIT_SEQ][3] = {
     {0x12, 0xBA, 0xCF} // Need modify for 11b/g
     };
 
+<<<<<<< HEAD
 BYTE abyAL7230ChannelTable0[CB_MAX_CHANNEL][3] = {
+=======
+static u8 al7230_channel_table0[CB_MAX_CHANNEL][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x20, 0x37, 0x90}, // channel =  1, Tf = 2412MHz
     {0x20, 0x37, 0x90}, // channel =  2, Tf = 2417MHz
     {0x20, 0x37, 0x90}, // channel =  3, Tf = 2422MHz
@@ -231,7 +267,11 @@ BYTE abyAL7230ChannelTable0[CB_MAX_CHANNEL][3] = {
     {0x2F, 0xF6, 0x10} // channel = 165, Tf = 5825MHz (56)
     };
 
+<<<<<<< HEAD
 BYTE abyAL7230ChannelTable1[CB_MAX_CHANNEL][3] = {
+=======
+static u8 al7230_channel_table1[CB_MAX_CHANNEL][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x13, 0x33, 0x31}, // channel =  1, Tf = 2412MHz
     {0x1B, 0x33, 0x31}, // channel =  2, Tf = 2417MHz
     {0x03, 0x33, 0x31}, // channel =  3, Tf = 2422MHz
@@ -295,7 +335,11 @@ BYTE abyAL7230ChannelTable1[CB_MAX_CHANNEL][3] = {
     {0x02, 0xAA, 0xB1}  // channel = 165, Tf = 5825MHz (56)
     };
 
+<<<<<<< HEAD
 BYTE abyAL7230ChannelTable2[CB_MAX_CHANNEL][3] = {
+=======
+static u8 al7230_channel_table2[CB_MAX_CHANNEL][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x7F, 0xD7, 0x84}, // channel =  1, Tf = 2412MHz
     {0x7F, 0xD7, 0x84}, // channel =  2, Tf = 2417MHz
     {0x7F, 0xD7, 0x84}, // channel =  3, Tf = 2422MHz
@@ -360,7 +404,11 @@ BYTE abyAL7230ChannelTable2[CB_MAX_CHANNEL][3] = {
     };
 
 ///{{RobertYu:20051111
+<<<<<<< HEAD
 BYTE abyVT3226_InitTable[CB_VT3226_INIT_SEQ][3] = {
+=======
+static u8 at3226_init_table[CB_VT3226_INIT_SEQ][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x03, 0xFF, 0x80},
     {0x02, 0x82, 0xA1},
     {0x03, 0xC6, 0xA2},
@@ -374,7 +422,11 @@ BYTE abyVT3226_InitTable[CB_VT3226_INIT_SEQ][3] = {
     {0x02, 0x00, 0x2A}
     };
 
+<<<<<<< HEAD
 BYTE abyVT3226D0_InitTable[CB_VT3226_INIT_SEQ][3] = {
+=======
+static u8 at3226d0_init_table[CB_VT3226_INIT_SEQ][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x03, 0xFF, 0x80},
     {0x03, 0x02, 0x21}, //RobertYu:20060327
     {0x03, 0xC6, 0xA2},
@@ -388,8 +440,12 @@ BYTE abyVT3226D0_InitTable[CB_VT3226_INIT_SEQ][3] = {
     {0x02, 0x01, 0xAA}  //RobertYu:20060523
     };
 
+<<<<<<< HEAD
 
 BYTE abyVT3226_ChannelTable0[CB_MAX_CHANNEL_24G][3] = {
+=======
+static u8 vt3226_channel_table0[CB_MAX_CHANNEL_24G][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x01, 0x97, 0x83}, // channel = 1, Tf = 2412MHz
     {0x01, 0x97, 0x83}, // channel = 2, Tf = 2417MHz
     {0x01, 0x97, 0x93}, // channel = 3, Tf = 2422MHz
@@ -406,7 +462,11 @@ BYTE abyVT3226_ChannelTable0[CB_MAX_CHANNEL_24G][3] = {
     {0x03, 0x37, 0xC3}  // channel = 14, Tf = 2484MHz
     };
 
+<<<<<<< HEAD
 BYTE abyVT3226_ChannelTable1[CB_MAX_CHANNEL_24G][3] = {
+=======
+static u8 vt3226_channel_table1[CB_MAX_CHANNEL_24G][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x02, 0x66, 0x64}, // channel = 1, Tf = 2412MHz
     {0x03, 0x66, 0x64}, // channel = 2, Tf = 2417MHz
     {0x00, 0x66, 0x64}, // channel = 3, Tf = 2422MHz
@@ -424,9 +484,14 @@ BYTE abyVT3226_ChannelTable1[CB_MAX_CHANNEL_24G][3] = {
     };
 ///}}RobertYu
 
+<<<<<<< HEAD
 
 //{{RobertYu:20060502, TWIF 1.14, LO Current for 11b mode
 DWORD dwVT3226D0LoCurrentTable[CB_MAX_CHANNEL_24G] = {
+=======
+//{{RobertYu:20060502, TWIF 1.14, LO Current for 11b mode
+static const u32 vt3226d0_lo_current_table[CB_MAX_CHANNEL_24G] = {
+>>>>>>> refs/remotes/origin/master
     0x0135C600+(BY_VT3226_REG_LEN<<3)+IFREGCTL_REGW, // channel = 1, Tf = 2412MHz
     0x0135C600+(BY_VT3226_REG_LEN<<3)+IFREGCTL_REGW, // channel = 2, Tf = 2417MHz
     0x0235C600+(BY_VT3226_REG_LEN<<3)+IFREGCTL_REGW, // channel = 3, Tf = 2422MHz
@@ -444,9 +509,14 @@ DWORD dwVT3226D0LoCurrentTable[CB_MAX_CHANNEL_24G] = {
 };
 //}}
 
+<<<<<<< HEAD
 
 //{{RobertYu:20060609
 BYTE abyVT3342A0_InitTable[CB_VT3342_INIT_SEQ][3] = { // 11b/g mode
+=======
+//{{RobertYu:20060609
+static u8 vt3342a0_init_table[CB_VT3342_INIT_SEQ][3] = { /* 11b/g mode */
+>>>>>>> refs/remotes/origin/master
     {0x03, 0xFF, 0x80}, //update for mode//
     {0x02, 0x08, 0x81},
     {0x00, 0xC6, 0x02},
@@ -469,7 +539,11 @@ BYTE abyVT3342A0_InitTable[CB_VT3342_INIT_SEQ][3] = { // 11b/g mode
  // channel56, 5280MHz  0x00C402 for disable Frac
  // other channels 0x00C602
 
+<<<<<<< HEAD
 BYTE abyVT3342_ChannelTable0[CB_MAX_CHANNEL][3] = {
+=======
+static u8 vt3342_channel_table0[CB_MAX_CHANNEL][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x02, 0x05, 0x03}, // channel = 1, Tf = 2412MHz
     {0x01, 0x15, 0x03}, // channel = 2, Tf = 2417MHz
     {0x03, 0xC5, 0x03}, // channel = 3, Tf = 2422MHz
@@ -535,7 +609,11 @@ BYTE abyVT3342_ChannelTable0[CB_MAX_CHANNEL][3] = {
     {0x00, 0x06, 0x03}  // channel = 165, Tf = 5825MHz (56), TBD
     };
 
+<<<<<<< HEAD
 BYTE abyVT3342_ChannelTable1[CB_MAX_CHANNEL][3] = {
+=======
+static u8 vt3342_channel_table1[CB_MAX_CHANNEL][3] = {
+>>>>>>> refs/remotes/origin/master
     {0x01, 0x99, 0x94}, // channel = 1, Tf = 2412MHz
     {0x02, 0x44, 0x44}, // channel = 2, Tf = 2417MHz
     {0x02, 0xEE, 0xE4}, // channel = 3, Tf = 2422MHz
@@ -599,14 +677,21 @@ BYTE abyVT3342_ChannelTable1[CB_MAX_CHANNEL][3] = {
     {0x03, 0x00, 0x04}  // channel = 165, Tf = 5825MHz (56), TBD
     };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*+
  *
  * Power Table
  *
 -*/
 
+<<<<<<< HEAD
 const DWORD dwAL2230PowerTable[AL2230_PWR_IDX_LEN] = {
+=======
+static const u32 al2230_power_table[AL2230_PWR_IDX_LEN] = {
+>>>>>>> refs/remotes/origin/master
     0x04040900+(BY_AL2230_REG_LEN<<3)+IFREGCTL_REGW,
     0x04041900+(BY_AL2230_REG_LEN<<3)+IFREGCTL_REGW,
     0x04042900+(BY_AL2230_REG_LEN<<3)+IFREGCTL_REGW,
@@ -673,16 +758,23 @@ const DWORD dwAL2230PowerTable[AL2230_PWR_IDX_LEN] = {
     0x0407F900+(BY_AL2230_REG_LEN<<3)+IFREGCTL_REGW
     };
 
+<<<<<<< HEAD
 /*---------------------  Static Functions  --------------------------*/
 
 /*---------------------  Export Variables  --------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/master
 //{{ RobertYu:20050103, Channel 11a Number To Index
 // 4.9G => Ch 183, 184, 185, 187, 188, 189, 192, 196  (Value:15 ~ 22)
 // 5G => Ch 7, 8, 9, 11, 12, 16, 34, 36, 38, 40, 42, 44, 46, 48, 52, 56, 60, 64,
 // 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 149, 153, 157, 161, 165  (Value 23 ~ 56)
 
+<<<<<<< HEAD
 const BYTE RFaby11aChannelIndex[200] = {
+=======
+const u8 RFaby11aChannelIndex[200] = {
+>>>>>>> refs/remotes/origin/master
   // 1   2   3   4   5   6   7   8   9  10
     00, 00, 00, 00, 00, 00, 23, 24, 25, 00,  // 10
     26, 27, 00, 00, 00, 28, 00, 00, 00, 00,  // 20
@@ -708,10 +800,15 @@ const BYTE RFaby11aChannelIndex[200] = {
 };
 //}} RobertYu
 
+<<<<<<< HEAD
 /*---------------------  Export Functions  --------------------------*/
 
 /*
  * Description: Write to IF/RF, by embeded programming
+=======
+/*
+ * Description: Write to IF/RF, by embedded programming
+>>>>>>> refs/remotes/origin/master
  *
  * Parameters:
  *  In:
@@ -719,6 +816,7 @@ const BYTE RFaby11aChannelIndex[200] = {
  *  Out:
  *      none
  *
+<<<<<<< HEAD
  * Return Value: TRUE if succeeded; FALSE if failed.
  *
  */
@@ -742,6 +840,25 @@ BOOL IFRFbWriteEmbeded (PSDevice pDevice, DWORD dwData)
     return TRUE;
 }
 
+=======
+ * Return Value: true if succeeded; false if failed.
+ *
+ */
+int IFRFbWriteEmbedded(struct vnt_private *pDevice, u32 dwData)
+{
+	u8 pbyData[4];
+
+	pbyData[0] = (u8)dwData;
+	pbyData[1] = (u8)(dwData >> 8);
+	pbyData[2] = (u8)(dwData >> 16);
+	pbyData[3] = (u8)(dwData >> 24);
+
+	CONTROLnsRequestOut(pDevice,
+		MESSAGE_TYPE_WRITE_IFRF, 0, 0, 4, pbyData);
+
+	return true;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Description: Set Tx power
@@ -753,6 +870,7 @@ BOOL IFRFbWriteEmbeded (PSDevice pDevice, DWORD dwData)
  *  Out:
  *      none
  *
+<<<<<<< HEAD
  * Return Value: TRUE if succeeded; FALSE if failed.
  *
  */
@@ -800,6 +918,45 @@ BYTE    byPwr = pDevice->byCCKPwr;
 }
 
 
+=======
+ * Return Value: true if succeeded; false if failed.
+ *
+ */
+int RFbSetPower(struct vnt_private *priv, u32 rate, u32 channel)
+{
+	int ret = true;
+	u8 power = priv->byCCKPwr;
+
+	if (channel == 0)
+		return -EINVAL;
+
+	switch (rate) {
+	case RATE_1M:
+	case RATE_2M:
+	case RATE_5M:
+	case RATE_11M:
+		power = priv->abyCCKPwrTbl[channel-1];
+		break;
+	case RATE_6M:
+	case RATE_9M:
+	case RATE_18M:
+	case RATE_24M:
+	case RATE_36M:
+	case RATE_48M:
+	case RATE_54M:
+		if (channel > CB_MAX_CHANNEL_24G)
+			power = priv->abyOFDMAPwrTbl[channel-15];
+		else
+			power = priv->abyOFDMPwrTbl[channel-1];
+		break;
+	}
+
+	ret = RFbRawSetPower(priv, power, rate);
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Set Tx power
  *
@@ -810,6 +967,7 @@ BYTE    byPwr = pDevice->byCCKPwr;
  *  Out:
  *      none
  *
+<<<<<<< HEAD
  * Return Value: TRUE if succeeded; FALSE if failed.
  *
  */
@@ -940,6 +1098,152 @@ BOOL        bResult = TRUE;
             break;
     }
     return bResult;
+=======
+ * Return Value: true if succeeded; false if failed.
+ *
+ */
+
+int RFbRawSetPower(struct vnt_private *priv, u8 power, u32 rate)
+{
+	u32 power_setting = 0;
+	int ret = true;
+
+	if (priv->byCurPwr == power)
+		return true;
+
+	priv->byCurPwr = power;
+
+	switch (priv->byRFType) {
+	case RF_AL2230:
+		if (priv->byCurPwr >= AL2230_PWR_IDX_LEN)
+			return false;
+
+		ret &= IFRFbWriteEmbedded(priv,
+			al2230_power_table[priv->byCurPwr]);
+
+		if (rate <= RATE_11M)
+			ret &= IFRFbWriteEmbedded(priv, 0x0001b400 +
+				(BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
+		else
+			ret &= IFRFbWriteEmbedded(priv, 0x0005a400 +
+				(BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
+		break;
+	case RF_AL2230S:
+		if (priv->byCurPwr >= AL2230_PWR_IDX_LEN)
+			return false;
+
+		ret &= IFRFbWriteEmbedded(priv,
+			al2230_power_table[priv->byCurPwr]);
+
+		if (rate <= RATE_11M) {
+			ret &= IFRFbWriteEmbedded(priv, 0x040c1400 +
+				(BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
+			ret &= IFRFbWriteEmbedded(priv, 0x00299b00 +
+				(BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
+		} else {
+			ret &= IFRFbWriteEmbedded(priv, 0x0005a400 +
+				(BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
+			ret &= IFRFbWriteEmbedded(priv, 0x00099b00 +
+				(BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
+		}
+		break;
+
+	case RF_AIROHA7230:
+		if (rate <= RATE_11M)
+			ret &= IFRFbWriteEmbedded(priv, 0x111bb900 +
+				(BY_AL7230_REG_LEN << 3)+IFREGCTL_REGW);
+		else
+			ret &= IFRFbWriteEmbedded(priv, 0x221bb900 +
+				(BY_AL7230_REG_LEN << 3)+IFREGCTL_REGW);
+
+		if (priv->byCurPwr > AL7230_PWR_IDX_LEN)
+			return false;
+
+		/*
+		* 0x080F1B00 for 3 wire control TxGain(D10)
+		* and 0x31 as TX Gain value
+		*/
+		power_setting = 0x080c0b00 | ((priv->byCurPwr) << 12) |
+				(BY_AL7230_REG_LEN << 3) | IFREGCTL_REGW;
+
+		ret &= IFRFbWriteEmbedded(priv, power_setting);
+
+		break;
+
+	case RF_VT3226:
+		if (priv->byCurPwr >= VT3226_PWR_IDX_LEN)
+			return false;
+		power_setting = ((0x3f - priv->byCurPwr) << 20) | (0x17 << 8) |
+				(BY_VT3226_REG_LEN << 3) | IFREGCTL_REGW;
+
+		ret &= IFRFbWriteEmbedded(priv, power_setting);
+
+		break;
+	case RF_VT3226D0:
+		if (priv->byCurPwr >= VT3226_PWR_IDX_LEN)
+			return false;
+
+		if (rate <= RATE_11M) {
+			power_setting = ((0x3f-priv->byCurPwr) << 20) |
+				(0xe07 << 8) | (BY_VT3226_REG_LEN << 3) |
+						IFREGCTL_REGW;
+
+			ret &= IFRFbWriteEmbedded(priv, power_setting);
+			ret &= IFRFbWriteEmbedded(priv, 0x03c6a200 +
+					(BY_VT3226_REG_LEN<<3)+IFREGCTL_REGW);
+
+			if (priv->vnt_mgmt.eScanState != WMAC_NO_SCANNING) {
+				DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO
+				"RFbRawSetPower> 11B mode uCurrChannel[%d]\n",
+						priv->vnt_mgmt.uScanChannel);
+				ret &= IFRFbWriteEmbedded(priv,
+					vt3226d0_lo_current_table[priv->
+						vnt_mgmt.uScanChannel - 1]);
+			} else {
+				DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO
+				"RFbRawSetPower> 11B mode uCurrChannel[%d]\n",
+						priv->vnt_mgmt.uCurrChannel);
+				ret &= IFRFbWriteEmbedded(priv,
+					vt3226d0_lo_current_table[priv->
+						vnt_mgmt.uCurrChannel - 1]);
+			}
+
+			ret &= IFRFbWriteEmbedded(priv, 0x015C0800 +
+				(BY_VT3226_REG_LEN<<3)+IFREGCTL_REGW);
+		} else {
+			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO
+					"@@@@ RFbRawSetPower> 11G mode\n");
+
+			power_setting = ((0x3f-priv->byCurPwr) << 20) |
+				(0x7 << 8) | (BY_VT3226_REG_LEN << 3) |
+					IFREGCTL_REGW;
+
+			ret &= IFRFbWriteEmbedded(priv, power_setting);
+			ret &= IFRFbWriteEmbedded(priv, 0x00C6A200 +
+				(BY_VT3226_REG_LEN << 3) + IFREGCTL_REGW);
+			ret &= IFRFbWriteEmbedded(priv, 0x016BC600 +
+					(BY_VT3226_REG_LEN<<3)+IFREGCTL_REGW);
+			ret &= IFRFbWriteEmbedded(priv, 0x00900800 +
+					(BY_VT3226_REG_LEN<<3)+IFREGCTL_REGW);
+		}
+		break;
+
+	case RF_VT3342A0:
+		if (priv->byCurPwr >= VT3342_PWR_IDX_LEN)
+			return false;
+
+		power_setting =  ((0x3F-priv->byCurPwr) << 20) |
+			(0x27 << 8) | (BY_VT3342_REG_LEN << 3) |
+					IFREGCTL_REGW;
+
+		ret &= IFRFbWriteEmbedded(priv, power_setting);
+
+		break;
+	default:
+		break;
+	}
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*+
@@ -957,6 +1261,7 @@ BOOL        bResult = TRUE;
  * Return Value: none
  *
 -*/
+<<<<<<< HEAD
 void
 RFvRSSITodBm (
       PSDevice pDevice,
@@ -1152,3 +1457,152 @@ BOOL s_bVT3226D0_11bLoCurrentAdjust(
 }
 
 
+=======
+void RFvRSSITodBm(struct vnt_private *priv, u8 rssi, long *dbm)
+{
+	u8 idx = (((rssi & 0xc0) >> 6) & 0x03);
+	long b = (rssi & 0x3f);
+	long a = 0;
+	u8 airoharf[4] = {0, 18, 0, 40};
+
+	switch (priv->byRFType) {
+	case RF_AL2230:
+	case RF_AL2230S:
+	case RF_AIROHA7230:
+	case RF_VT3226:
+	case RF_VT3226D0:
+	case RF_VT3342A0:
+		a = airoharf[idx];
+		break;
+	default:
+		break;
+	}
+
+	*dbm = -1 * (a + b * 2);
+}
+
+void RFbRFTableDownload(struct vnt_private *priv)
+{
+	u16 length1 = 0, length2 = 0, length3 = 0;
+	u8 *addr1 = NULL, *addr2 = NULL, *addr3 = NULL;
+	u16 length, value;
+	u8 array[256];
+
+	switch (priv->byRFType) {
+	case RF_AL2230:
+	case RF_AL2230S:
+		length1 = CB_AL2230_INIT_SEQ * 3;
+		length2 = CB_MAX_CHANNEL_24G * 3;
+		length3 = CB_MAX_CHANNEL_24G * 3;
+		addr1 = &al2230_init_table[0][0];
+		addr2 = &al2230_channel_table0[0][0];
+		addr3 = &al2230_channel_table1[0][0];
+		break;
+	case RF_AIROHA7230:
+		length1 = CB_AL7230_INIT_SEQ * 3;
+		length2 = CB_MAX_CHANNEL * 3;
+		length3 = CB_MAX_CHANNEL * 3;
+		addr1 = &al7230_init_table[0][0];
+		addr2 = &al7230_channel_table0[0][0];
+		addr3 = &al7230_channel_table1[0][0];
+		break;
+	case RF_VT3226:
+		length1 = CB_VT3226_INIT_SEQ * 3;
+		length2 = CB_MAX_CHANNEL_24G * 3;
+		length3 = CB_MAX_CHANNEL_24G * 3;
+		addr1 = &at3226_init_table[0][0];
+		addr2 = &vt3226_channel_table0[0][0];
+		addr3 = &vt3226_channel_table1[0][0];
+		break;
+	case RF_VT3226D0:
+		length1 = CB_VT3226_INIT_SEQ * 3;
+		length2 = CB_MAX_CHANNEL_24G * 3;
+		length3 = CB_MAX_CHANNEL_24G * 3;
+		addr1 = &at3226d0_init_table[0][0];
+		addr2 = &vt3226_channel_table0[0][0];
+		addr3 = &vt3226_channel_table1[0][0];
+		break;
+	case RF_VT3342A0:
+		length1 = CB_VT3342_INIT_SEQ * 3;
+		length2 = CB_MAX_CHANNEL * 3;
+		length3 = CB_MAX_CHANNEL * 3;
+		addr1 = &vt3342a0_init_table[0][0];
+		addr2 = &vt3342_channel_table0[0][0];
+		addr3 = &vt3342_channel_table1[0][0];
+		break;
+	}
+
+	/* Init Table */
+	memcpy(array, addr1, length1);
+
+	CONTROLnsRequestOut(priv, MESSAGE_TYPE_WRITE, 0,
+		MESSAGE_REQUEST_RF_INIT, length1, array);
+
+	/* Channel Table 0 */
+	value = 0;
+	while (length2 > 0) {
+		if (length2 >= 64)
+			length = 64;
+		else
+			length = length2;
+
+		memcpy(array, addr2, length);
+
+		CONTROLnsRequestOut(priv, MESSAGE_TYPE_WRITE,
+			value, MESSAGE_REQUEST_RF_CH0, length, array);
+
+		length2 -= length;
+		value += length;
+		addr2 += length;
+	}
+
+	/* Channel table 1 */
+	value = 0;
+	while (length3 > 0) {
+		if (length3 >= 64)
+			length = 64;
+		else
+			length = length3;
+
+		memcpy(array, addr3, length);
+
+		CONTROLnsRequestOut(priv, MESSAGE_TYPE_WRITE,
+			value, MESSAGE_REQUEST_RF_CH1, length, array);
+
+		length3 -= length;
+		value += length;
+		addr3 += length;
+	}
+
+	if (priv->byRFType == RF_AIROHA7230) {
+		length1 = CB_AL7230_INIT_SEQ * 3;
+		length2 = CB_MAX_CHANNEL * 3;
+		addr1 = &(al7230_init_table_amode[0][0]);
+		addr2 = &(al7230_channel_table2[0][0]);
+
+		memcpy(array, addr1, length1);
+
+		/* Init Table 2 */
+		CONTROLnsRequestOut(priv, MESSAGE_TYPE_WRITE,
+			0, MESSAGE_REQUEST_RF_INIT2, length1, array);
+
+		/* Channel Table 0 */
+		value = 0;
+		while (length2 > 0) {
+			if (length2 >= 64)
+				length = 64;
+			else
+				length = length2;
+
+			memcpy(array, addr2, length);
+
+			CONTROLnsRequestOut(priv, MESSAGE_TYPE_WRITE,
+				value, MESSAGE_REQUEST_RF_CH2, length, array);
+
+			length2 -= length;
+			value += length;
+			addr2 += length;
+		}
+	}
+}
+>>>>>>> refs/remotes/origin/master

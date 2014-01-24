@@ -60,6 +60,10 @@
 #define cpu_has_mips64r2		0
 
 #define cpu_has_dsp			0
+<<<<<<< HEAD
+=======
+#define cpu_has_dsp2			0
+>>>>>>> refs/remotes/origin/master
 #define cpu_has_mipsmt			0
 
 /* #define cpu_has_nofpuex		? */

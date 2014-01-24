@@ -355,11 +355,20 @@ handle_t *ocfs2_start_trans(struct ocfs2_super *osb, int max_buffs)
 	if (journal_current_handle())
 		return jbd2_journal_start(journal, max_buffs);
 
+<<<<<<< HEAD
+=======
+	sb_start_intwrite(osb->sb);
+
+>>>>>>> refs/remotes/origin/master
 	down_read(&osb->journal->j_trans_barrier);
 
 	handle = jbd2_journal_start(journal, max_buffs);
 	if (IS_ERR(handle)) {
 		up_read(&osb->journal->j_trans_barrier);
+<<<<<<< HEAD
+=======
+		sb_end_intwrite(osb->sb);
+>>>>>>> refs/remotes/origin/master
 
 		mlog_errno(PTR_ERR(handle));
 
@@ -388,8 +397,15 @@ int ocfs2_commit_trans(struct ocfs2_super *osb,
 	if (ret < 0)
 		mlog_errno(ret);
 
+<<<<<<< HEAD
 	if (!nested)
 		up_read(&journal->j_trans_barrier);
+=======
+	if (!nested) {
+		up_read(&journal->j_trans_barrier);
+		sb_end_intwrite(osb->sb);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -450,6 +466,44 @@ bail:
 	return status;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * If we have fewer than thresh credits, extend by OCFS2_MAX_TRANS_DATA.
+ * If that fails, restart the transaction & regain write access for the
+ * buffer head which is used for metadata modifications.
+ * Taken from Ext4: extend_or_restart_transaction()
+ */
+int ocfs2_allocate_extend_trans(handle_t *handle, int thresh)
+{
+	int status, old_nblks;
+
+	BUG_ON(!handle);
+
+	old_nblks = handle->h_buffer_credits;
+	trace_ocfs2_allocate_extend_trans(old_nblks, thresh);
+
+	if (old_nblks < thresh)
+		return 0;
+
+	status = jbd2_journal_extend(handle, OCFS2_MAX_TRANS_DATA);
+	if (status < 0) {
+		mlog_errno(status);
+		goto bail;
+	}
+
+	if (status > 0) {
+		status = jbd2_journal_restart(handle, OCFS2_MAX_TRANS_DATA);
+		if (status < 0)
+			mlog_errno(status);
+	}
+
+bail:
+	return status;
+}
+
+
+>>>>>>> refs/remotes/origin/master
 struct ocfs2_triggers {
 	struct jbd2_buffer_trigger_type	ot_triggers;
 	int				ot_offset;
@@ -796,14 +850,24 @@ int ocfs2_journal_init(struct ocfs2_journal *journal, int *dirty)
 	inode_lock = 1;
 	di = (struct ocfs2_dinode *)bh->b_data;
 
+<<<<<<< HEAD
 	if (inode->i_size <  OCFS2_MIN_JOURNAL_SIZE) {
 		mlog(ML_ERROR, "Journal file size (%lld) is too small!\n",
 		     inode->i_size);
+=======
+	if (i_size_read(inode) <  OCFS2_MIN_JOURNAL_SIZE) {
+		mlog(ML_ERROR, "Journal file size (%lld) is too small!\n",
+		     i_size_read(inode));
+>>>>>>> refs/remotes/origin/master
 		status = -EINVAL;
 		goto done;
 	}
 
+<<<<<<< HEAD
 	trace_ocfs2_journal_init(inode->i_size,
+=======
+	trace_ocfs2_journal_init(i_size_read(inode),
+>>>>>>> refs/remotes/origin/master
 				 (unsigned long long)inode->i_blocks,
 				 OCFS2_I(inode)->ip_clusters);
 
@@ -1091,7 +1155,11 @@ static int ocfs2_force_read_journal(struct inode *inode)
 
 	memset(bhs, 0, sizeof(struct buffer_head *) * CONCURRENT_JOURNAL_FILL);
 
+<<<<<<< HEAD
 	num_blocks = ocfs2_blocks_for_bytes(inode->i_sb, inode->i_size);
+=======
+	num_blocks = ocfs2_blocks_for_bytes(inode->i_sb, i_size_read(inode));
+>>>>>>> refs/remotes/origin/master
 	v_blkno = 0;
 	while (v_blkno < num_blocks) {
 		status = ocfs2_extent_map_get_blocks(inode, v_blkno,
@@ -1229,11 +1297,16 @@ static void ocfs2_queue_recovery_completion(struct ocfs2_journal *journal,
 		/* Though we wish to avoid it, we are in fact safe in
 		 * skipping local alloc cleanup as fsck.ocfs2 is more
 		 * than capable of reclaiming unused space. */
+<<<<<<< HEAD
 		if (la_dinode)
 			kfree(la_dinode);
 
 		if (tl_dinode)
 			kfree(tl_dinode);
+=======
+		kfree(la_dinode);
+		kfree(tl_dinode);
+>>>>>>> refs/remotes/origin/master
 
 		if (qrec)
 			ocfs2_free_quota_recovery(qrec);
@@ -1403,8 +1476,12 @@ bail:
 
 	mutex_unlock(&osb->recovery_lock);
 
+<<<<<<< HEAD
 	if (rm_quota)
 		kfree(rm_quota);
+=======
+	kfree(rm_quota);
+>>>>>>> refs/remotes/origin/master
 
 	/* no one is callint kthread_stop() for us so the kthread() api
 	 * requires that we call do_exit().  And it isn't exported, but
@@ -1544,9 +1621,21 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
 	/* we need to run complete recovery for offline orphan slots */
 	ocfs2_replay_map_set_state(osb, REPLAY_NEEDED);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mlog(ML_NOTICE, "Recovering node %d from slot %d on device (%u,%u)\n",
 	     node_num, slot_num,
 	     MAJOR(osb->sb->s_dev), MINOR(osb->sb->s_dev));
+=======
+	printk(KERN_NOTICE "ocfs2: Begin replay journal (node %d, slot %d) on "\
+	       "device (%u,%u)\n", node_num, slot_num, MAJOR(osb->sb->s_dev),
+	       MINOR(osb->sb->s_dev));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_NOTICE "ocfs2: Begin replay journal (node %d, slot %d) on "\
+	       "device (%u,%u)\n", node_num, slot_num, MAJOR(osb->sb->s_dev),
+	       MINOR(osb->sb->s_dev));
+>>>>>>> refs/remotes/origin/master
 
 	OCFS2_I(inode)->ip_clusters = le32_to_cpu(fe->i_clusters);
 
@@ -1601,6 +1690,18 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
 
 	jbd2_journal_destroy(journal);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	printk(KERN_NOTICE "ocfs2: End replay journal (node %d, slot %d) on "\
+	       "device (%u,%u)\n", node_num, slot_num, MAJOR(osb->sb->s_dev),
+	       MINOR(osb->sb->s_dev));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_NOTICE "ocfs2: End replay journal (node %d, slot %d) on "\
+	       "device (%u,%u)\n", node_num, slot_num, MAJOR(osb->sb->s_dev),
+	       MINOR(osb->sb->s_dev));
+>>>>>>> refs/remotes/origin/master
 done:
 	/* drop the lock on this nodes journal */
 	if (got_lock)
@@ -1808,6 +1909,29 @@ static inline unsigned long ocfs2_orphan_scan_timeout(void)
  * every slot, queuing a recovery of the slot on the ocfs2_wq thread. This
  * is done to catch any orphans that are left over in orphan directories.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * It scans all slots, even ones that are in use. It does so to handle the
+ * case described below:
+ *
+ *   Node 1 has an inode it was using. The dentry went away due to memory
+ *   pressure.  Node 1 closes the inode, but it's on the free list. The node
+ *   has the open lock.
+ *   Node 2 unlinks the inode. It grabs the dentry lock to notify others,
+ *   but node 1 has no dentry and doesn't get the message. It trylocks the
+ *   open lock, sees that another node has a PR, and does nothing.
+ *   Later node 2 runs its orphan dir. It igets the inode, trylocks the
+ *   open lock, sees the PR still, and does nothing.
+ *   Basically, we have to trigger an orphan iput on node 1. The only way
+ *   for this to happen is if node 1 runs node 2's orphan dir.
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * ocfs2_queue_orphan_scan gets called every ORPHAN_SCAN_SCHEDULE_TIMEOUT
  * seconds.  It gets an EX lock on os_lockres and checks sequence number
  * stored in LVB. If the sequence number has changed, it means some other
@@ -1923,6 +2047,10 @@ void ocfs2_orphan_scan_start(struct ocfs2_super *osb)
 }
 
 struct ocfs2_orphan_filldir_priv {
+<<<<<<< HEAD
+=======
+	struct dir_context	ctx;
+>>>>>>> refs/remotes/origin/master
 	struct inode		*head;
 	struct ocfs2_super	*osb;
 };
@@ -1959,11 +2087,19 @@ static int ocfs2_queue_orphans(struct ocfs2_super *osb,
 {
 	int status;
 	struct inode *orphan_dir_inode = NULL;
+<<<<<<< HEAD
 	struct ocfs2_orphan_filldir_priv priv;
 	loff_t pos = 0;
 
 	priv.osb = osb;
 	priv.head = *head;
+=======
+	struct ocfs2_orphan_filldir_priv priv = {
+		.ctx.actor = ocfs2_orphan_filldir,
+		.osb = osb,
+		.head = *head
+	};
+>>>>>>> refs/remotes/origin/master
 
 	orphan_dir_inode = ocfs2_get_system_file_inode(osb,
 						       ORPHAN_DIR_SYSTEM_INODE,
@@ -1981,8 +2117,12 @@ static int ocfs2_queue_orphans(struct ocfs2_super *osb,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	status = ocfs2_dir_foreach(orphan_dir_inode, &pos, &priv,
 				   ocfs2_orphan_filldir);
+=======
+	status = ocfs2_dir_foreach(orphan_dir_inode, &priv.ctx);
+>>>>>>> refs/remotes/origin/master
 	if (status) {
 		mlog_errno(status);
 		goto out_cluster;

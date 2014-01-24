@@ -1,6 +1,7 @@
 #ifndef CCISS_IOCTLH
 #define CCISS_IOCTLH
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/ioctl.h>
 #include <linux/cciss_defs.h>
@@ -86,6 +87,10 @@ typedef struct _LogvolInfo_struct{
 #define CCISS_BIG_PASSTHRU _IOWR(CCISS_IOC_MAGIC, 18, BIG_IOCTL_Command_struct)
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/cciss_ioctl.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 
 /* 32 bit compatible ioctl structs */
@@ -111,5 +116,8 @@ typedef struct _BIG_IOCTL32_Command_struct {
 #define CCISS_BIG_PASSTHRU32 _IOWR(CCISS_IOC_MAGIC, 18, BIG_IOCTL32_Command_struct)
 
 #endif /* CONFIG_COMPAT */
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif  

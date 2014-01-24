@@ -50,6 +50,10 @@ config MMC_BLOCK_BOUNCE
 
 	  If unsure, say Y here.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config MMC_BLOCK_DEFERRED_RESUME
 	bool "Deferr MMC layer resume until I/O is requested"
 	depends on MMC_BLOCK
@@ -59,8 +63,16 @@ config MMC_BLOCK_DEFERRED_RESUME
 	  is requested. This will reduce overall resume latency and
 	  save power when theres an SD card inserted but not being used.
 
+<<<<<<< HEAD
 config SDIO_UART
 	tristate "SDIO UART/GPS class support"
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+config SDIO_UART
+	tristate "SDIO UART/GPS class support"
+	depends on TTY
+>>>>>>> refs/remotes/origin/master
 	help
 	  SDIO function driver for SDIO cards that implements the UART
 	  class, as well as the GPS class which appears like a UART.
@@ -76,3 +88,26 @@ config MMC_TEST
 
 	  This driver is only of interest to those developing or
 	  testing a host driver. Most people should say N here.
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+config MMC_BLOCK_TEST
+	tristate "MMC block test"
+	depends on MMC_BLOCK && IOSCHED_TEST
+	default m
+	help
+	  MMC block test can be used with test iosched to test the MMC block
+	  device.
+	  Currently used to test eMMC 4.5 features (packed commands, sanitize,
+	  BKOPs).
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

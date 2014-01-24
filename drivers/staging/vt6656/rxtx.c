@@ -52,7 +52,10 @@
 #include "card.h"
 #include "bssdb.h"
 #include "mac.h"
+<<<<<<< HEAD
 #include "baseband.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "michael.h"
 #include "tkip.h"
 #include "tcrc.h"
@@ -63,6 +66,7 @@
 #include "usbpipe.h"
 #include "iocmd.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 
 /*---------------------  Static Classes  ----------------------------*/
@@ -77,20 +81,36 @@ static int          msglevel                = MSG_LEVEL_INFO;
                                         //    packet size >= 256 -> direct send
 
 const WORD wTimeStampOff[2][MAX_RATE] = {
+=======
+static int          msglevel                = MSG_LEVEL_INFO;
+
+static const u16 wTimeStampOff[2][MAX_RATE] = {
+>>>>>>> refs/remotes/origin/master
         {384, 288, 226, 209, 54, 43, 37, 31, 28, 25, 24, 23}, // Long Preamble
         {384, 192, 130, 113, 54, 43, 37, 31, 28, 25, 24, 23}, // Short Preamble
     };
 
+<<<<<<< HEAD
 const WORD wFB_Opt0[2][5] = {
         {RATE_12M, RATE_18M, RATE_24M, RATE_36M, RATE_48M}, // fallback_rate0
         {RATE_12M, RATE_12M, RATE_18M, RATE_24M, RATE_36M}, // fallback_rate1
     };
 const WORD wFB_Opt1[2][5] = {
+=======
+static const u16 wFB_Opt0[2][5] = {
+        {RATE_12M, RATE_18M, RATE_24M, RATE_36M, RATE_48M}, // fallback_rate0
+        {RATE_12M, RATE_12M, RATE_18M, RATE_24M, RATE_36M}, // fallback_rate1
+    };
+static const u16 wFB_Opt1[2][5] = {
+>>>>>>> refs/remotes/origin/master
         {RATE_12M, RATE_18M, RATE_24M, RATE_24M, RATE_36M}, // fallback_rate0
         {RATE_6M , RATE_6M,  RATE_12M, RATE_12M, RATE_18M}, // fallback_rate1
     };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define RTSDUR_BB       0
 #define RTSDUR_BA       1
 #define RTSDUR_AA       2
@@ -106,6 +126,7 @@ const WORD wFB_Opt1[2][5] = {
 #define DATADUR_A_F0    12
 #define DATADUR_A_F1    13
 
+<<<<<<< HEAD
 /*---------------------  Static Functions  --------------------------*/
 
 static
@@ -444,6 +465,213 @@ s_vSWencryption (
     unsigned int   cbICVlen = 4;
     DWORD  dwICV = 0xFFFFFFFFL;
     PDWORD pdwICV;
+=======
+static void s_vSaveTxPktInfo(struct vnt_private *pDevice, u8 byPktNum,
+	u8 *pbyDestAddr, u16 wPktLength, u16 wFIFOCtl);
+
+static struct vnt_usb_send_context *s_vGetFreeContext(struct vnt_private *);
+
+static u16 s_vGenerateTxParameter(struct vnt_private *pDevice,
+	u8 byPktType, u16 wCurrentRate,	struct vnt_tx_buffer *tx_buffer,
+	struct vnt_mic_hdr **mic_hdr, u32 need_mic, u32 cbFrameSize,
+	int bNeedACK, u32 uDMAIdx, struct ethhdr *psEthHeader, bool need_rts);
+
+static void s_vGenerateMACHeader(struct vnt_private *pDevice,
+	u8 *pbyBufferAddr, u16 wDuration, struct ethhdr *psEthHeader,
+	int bNeedEncrypt, u16 wFragType, u32 uDMAIdx, u32 uFragIdx);
+
+static void s_vFillTxKey(struct vnt_private *pDevice,
+	struct vnt_tx_fifo_head *fifo_head, u8 *pbyIVHead,
+	PSKeyItem pTransmitKey, u8 *pbyHdrBuf, u16 wPayloadLen,
+	struct vnt_mic_hdr *mic_hdr);
+
+static void s_vSWencryption(struct vnt_private *pDevice,
+	PSKeyItem pTransmitKey, u8 *pbyPayloadHead, u16 wPayloadSize);
+
+static unsigned int s_uGetTxRsvTime(struct vnt_private *pDevice, u8 byPktType,
+	u32 cbFrameLength, u16 wRate, int bNeedAck);
+
+static u16 s_uGetRTSCTSRsvTime(struct vnt_private *priv,
+	u8 rsv_type, u8 pkt_type, u32 frame_lenght, u16 current_rate);
+
+static u16 s_vFillCTSHead(struct vnt_private *pDevice, u32 uDMAIdx,
+	u8 byPktType, union vnt_tx_data_head *head, u32 cbFrameLength,
+	int bNeedAck, u16 wCurrentRate, u8 byFBOption);
+
+static u16 s_vFillRTSHead(struct vnt_private *pDevice, u8 byPktType,
+	union vnt_tx_data_head *head, u32 cbFrameLength, int bNeedAck,
+	struct ethhdr *psEthHeader, u16 wCurrentRate, u8 byFBOption);
+
+static u16 s_uGetDataDuration(struct vnt_private *pDevice,
+	u8 byPktType, int bNeedAck);
+
+static u16 s_uGetRTSCTSDuration(struct vnt_private *pDevice,
+	u8 byDurType, u32 cbFrameLength, u8 byPktType, u16 wRate,
+	int bNeedAck, u8 byFBOption);
+
+static struct vnt_usb_send_context
+	*s_vGetFreeContext(struct vnt_private *priv)
+{
+	struct vnt_usb_send_context *context = NULL;
+	int ii;
+
+	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"GetFreeContext()\n");
+
+	for (ii = 0; ii < priv->cbTD; ii++) {
+		if (!priv->apTD[ii])
+			return NULL;
+
+		context = priv->apTD[ii];
+		if (context->bBoolInUse == false) {
+			context->bBoolInUse = true;
+			memset(context->Data, 0,
+					MAX_TOTAL_SIZE_WITH_ALL_HEADERS);
+			return context;
+		}
+	}
+
+	if (ii == priv->cbTD)
+		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"No Free Tx Context\n");
+
+	return NULL;
+}
+
+static void s_vSaveTxPktInfo(struct vnt_private *pDevice, u8 byPktNum,
+	u8 *pbyDestAddr, u16 wPktLength, u16 wFIFOCtl)
+{
+	struct net_device_stats *stats = &pDevice->stats;
+	struct vnt_tx_pkt_info *pkt_info = pDevice->pkt_info;
+
+	pkt_info[byPktNum].fifo_ctl = wFIFOCtl;
+	memcpy(pkt_info[byPktNum].dest_addr, pbyDestAddr, ETH_ALEN);
+
+	stats->tx_bytes += wPktLength;
+}
+
+static void s_vFillTxKey(struct vnt_private *pDevice,
+	struct vnt_tx_fifo_head *fifo_head, u8 *pbyIVHead,
+	PSKeyItem pTransmitKey, u8 *pbyHdrBuf, u16 wPayloadLen,
+	struct vnt_mic_hdr *mic_hdr)
+{
+	u8 *pbyBuf = (u8 *)&fifo_head->adwTxKey[0];
+	u32 *pdwIV = (u32 *)pbyIVHead;
+	u32 *pdwExtIV = (u32 *)((u8 *)pbyIVHead + 4);
+	struct ieee80211_hdr *pMACHeader = (struct ieee80211_hdr *)pbyHdrBuf;
+	u32 dwRevIVCounter;
+
+	/* Fill TXKEY */
+	if (pTransmitKey == NULL)
+		return;
+
+	dwRevIVCounter = cpu_to_le32(pDevice->dwIVCounter);
+	*pdwIV = pDevice->dwIVCounter;
+	pDevice->byKeyIndex = pTransmitKey->dwKeyIndex & 0xf;
+
+	switch (pTransmitKey->byCipherSuite) {
+	case KEY_CTL_WEP:
+		if (pTransmitKey->uKeyLength == WLAN_WEP232_KEYLEN) {
+			memcpy(pDevice->abyPRNG, (u8 *)&dwRevIVCounter, 3);
+			memcpy(pDevice->abyPRNG + 3, pTransmitKey->abyKey,
+						pTransmitKey->uKeyLength);
+		} else {
+			memcpy(pbyBuf, (u8 *)&dwRevIVCounter, 3);
+			memcpy(pbyBuf + 3, pTransmitKey->abyKey,
+						pTransmitKey->uKeyLength);
+			if (pTransmitKey->uKeyLength == WLAN_WEP40_KEYLEN) {
+				memcpy(pbyBuf+8, (u8 *)&dwRevIVCounter, 3);
+			memcpy(pbyBuf+11, pTransmitKey->abyKey,
+						pTransmitKey->uKeyLength);
+			}
+
+			memcpy(pDevice->abyPRNG, pbyBuf, 16);
+		}
+		/* Append IV after Mac Header */
+		*pdwIV &= WEP_IV_MASK;
+		*pdwIV |= (u32)pDevice->byKeyIndex << 30;
+		*pdwIV = cpu_to_le32(*pdwIV);
+
+		pDevice->dwIVCounter++;
+		if (pDevice->dwIVCounter > WEP_IV_MASK)
+			pDevice->dwIVCounter = 0;
+
+		break;
+	case KEY_CTL_TKIP:
+		pTransmitKey->wTSC15_0++;
+		if (pTransmitKey->wTSC15_0 == 0)
+			pTransmitKey->dwTSC47_16++;
+
+		TKIPvMixKey(pTransmitKey->abyKey, pDevice->abyCurrentNetAddr,
+			pTransmitKey->wTSC15_0, pTransmitKey->dwTSC47_16,
+							pDevice->abyPRNG);
+		memcpy(pbyBuf, pDevice->abyPRNG, 16);
+
+		/* Make IV */
+		memcpy(pdwIV, pDevice->abyPRNG, 3);
+
+		*(pbyIVHead+3) = (u8)(((pDevice->byKeyIndex << 6) &
+							0xc0) | 0x20);
+		/*  Append IV&ExtIV after Mac Header */
+		*pdwExtIV = cpu_to_le32(pTransmitKey->dwTSC47_16);
+
+		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO
+			"vFillTxKey()---- pdwExtIV: %x\n", *pdwExtIV);
+
+		break;
+	case KEY_CTL_CCMP:
+		pTransmitKey->wTSC15_0++;
+		if (pTransmitKey->wTSC15_0 == 0)
+			pTransmitKey->dwTSC47_16++;
+
+		memcpy(pbyBuf, pTransmitKey->abyKey, 16);
+
+		/* Make IV */
+		*pdwIV = 0;
+		*(pbyIVHead+3) = (u8)(((pDevice->byKeyIndex << 6) &
+							0xc0) | 0x20);
+
+		*pdwIV |= cpu_to_le16((u16)(pTransmitKey->wTSC15_0));
+
+		/* Append IV&ExtIV after Mac Header */
+		*pdwExtIV = cpu_to_le32(pTransmitKey->dwTSC47_16);
+
+		if (!mic_hdr)
+			return;
+
+		/* MICHDR0 */
+		mic_hdr->id = 0x59;
+		mic_hdr->payload_len = cpu_to_be16(wPayloadLen);
+		memcpy(mic_hdr->mic_addr2, pMACHeader->addr2, ETH_ALEN);
+
+		mic_hdr->tsc_47_16 = cpu_to_be32(pTransmitKey->dwTSC47_16);
+		mic_hdr->tsc_15_0 = cpu_to_be16(pTransmitKey->wTSC15_0);
+
+		/* MICHDR1 */
+		if (ieee80211_has_a4(pMACHeader->frame_control))
+			mic_hdr->hlen = cpu_to_be16(28);
+		else
+			mic_hdr->hlen = cpu_to_be16(22);
+
+		memcpy(mic_hdr->addr1, pMACHeader->addr1, ETH_ALEN);
+		memcpy(mic_hdr->addr2, pMACHeader->addr2, ETH_ALEN);
+
+		/* MICHDR2 */
+		memcpy(mic_hdr->addr3, pMACHeader->addr3, ETH_ALEN);
+		mic_hdr->frame_control = cpu_to_le16(pMACHeader->frame_control
+								& 0xc78f);
+		mic_hdr->seq_ctrl = cpu_to_le16(pMACHeader->seq_ctrl & 0xf);
+
+		if (ieee80211_has_a4(pMACHeader->frame_control))
+			memcpy(mic_hdr->addr4, pMACHeader->addr4, ETH_ALEN);
+	}
+}
+
+static void s_vSWencryption(struct vnt_private *pDevice,
+	PSKeyItem pTransmitKey, u8 *pbyPayloadHead, u16 wPayloadSize)
+{
+	u32 cbICVlen = 4;
+	u32 dwICV = 0xffffffff;
+	u32 *pdwICV;
+>>>>>>> refs/remotes/origin/master
 
     if (pTransmitKey == NULL)
         return;
@@ -452,7 +680,11 @@ s_vSWencryption (
         //=======================================================================
         // Append ICV after payload
         dwICV = CRCdwGetCrc32Ex(pbyPayloadHead, wPayloadSize, dwICV);//ICV(Payload)
+<<<<<<< HEAD
         pdwICV = (PDWORD)(pbyPayloadHead + wPayloadSize);
+=======
+        pdwICV = (u32 *)(pbyPayloadHead + wPayloadSize);
+>>>>>>> refs/remotes/origin/master
         // finally, we must invert dwCRC to get the correct answer
         *pdwICV = cpu_to_le32(~dwICV);
         // RC4 encryption
@@ -463,7 +695,11 @@ s_vSWencryption (
         //=======================================================================
         //Append ICV after payload
         dwICV = CRCdwGetCrc32Ex(pbyPayloadHead, wPayloadSize, dwICV);//ICV(Payload)
+<<<<<<< HEAD
         pdwICV = (PDWORD)(pbyPayloadHead + wPayloadSize);
+=======
+        pdwICV = (u32 *)(pbyPayloadHead + wPayloadSize);
+>>>>>>> refs/remotes/origin/master
         // finally, we must invert dwCRC to get the correct answer
         *pdwICV = cpu_to_le32(~dwICV);
         // RC4 encryption
@@ -473,14 +709,23 @@ s_vSWencryption (
     }
 }
 
+<<<<<<< HEAD
 
 
+=======
+static u16 vnt_time_stamp_off(struct vnt_private *priv, u16 rate)
+{
+	return cpu_to_le16(wTimeStampOff[priv->byPreambleType % 2]
+							[rate % MAX_RATE]);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*byPktType : PK_TYPE_11A     0
              PK_TYPE_11B     1
              PK_TYPE_11GB    2
              PK_TYPE_11GA    3
 */
+<<<<<<< HEAD
 static
 unsigned int
 s_uGetTxRsvTime (
@@ -1267,6 +1512,434 @@ s_vFillCTSHead (
 	       ETH_ALEN);
         }
     }
+=======
+static u32 s_uGetTxRsvTime(struct vnt_private *priv, u8 pkt_type,
+	u32 frame_length, u16 rate, int need_ack)
+{
+	u32 data_time, ack_time;
+
+	data_time = BBuGetFrameTime(priv->byPreambleType, pkt_type,
+							frame_length, rate);
+
+	if (pkt_type == PK_TYPE_11B)
+		ack_time = BBuGetFrameTime(priv->byPreambleType, pkt_type, 14,
+						(u16)priv->byTopCCKBasicRate);
+	else
+		ack_time = BBuGetFrameTime(priv->byPreambleType, pkt_type, 14,
+						(u16)priv->byTopOFDMBasicRate);
+
+	if (need_ack)
+		return data_time + priv->uSIFS + ack_time;
+
+	return data_time;
+}
+
+static u16 vnt_rxtx_rsvtime_le16(struct vnt_private *priv, u8 pkt_type,
+	u32 frame_length, u16 rate, int need_ack)
+{
+	return cpu_to_le16((u16)s_uGetTxRsvTime(priv, pkt_type,
+		frame_length, rate, need_ack));
+}
+
+//byFreqType: 0=>5GHZ 1=>2.4GHZ
+static u16 s_uGetRTSCTSRsvTime(struct vnt_private *priv,
+	u8 rsv_type, u8 pkt_type, u32 frame_lenght, u16 current_rate)
+{
+	u32 rrv_time, rts_time, cts_time, ack_time, data_time;
+
+	rrv_time = rts_time = cts_time = ack_time = data_time = 0;
+
+	data_time = BBuGetFrameTime(priv->byPreambleType, pkt_type,
+						frame_lenght, current_rate);
+
+	if (rsv_type == 0) {
+		rts_time = BBuGetFrameTime(priv->byPreambleType,
+			pkt_type, 20, priv->byTopCCKBasicRate);
+		cts_time = ack_time = BBuGetFrameTime(priv->byPreambleType,
+			pkt_type, 14, priv->byTopCCKBasicRate);
+	} else if (rsv_type == 1) {
+		rts_time = BBuGetFrameTime(priv->byPreambleType,
+			pkt_type, 20, priv->byTopCCKBasicRate);
+		cts_time = BBuGetFrameTime(priv->byPreambleType, pkt_type,
+			14, priv->byTopCCKBasicRate);
+		ack_time = BBuGetFrameTime(priv->byPreambleType, pkt_type,
+			14, priv->byTopOFDMBasicRate);
+	} else if (rsv_type == 2) {
+		rts_time = BBuGetFrameTime(priv->byPreambleType, pkt_type,
+			20, priv->byTopOFDMBasicRate);
+		cts_time = ack_time = BBuGetFrameTime(priv->byPreambleType,
+			pkt_type, 14, priv->byTopOFDMBasicRate);
+	} else if (rsv_type == 3) {
+		cts_time = BBuGetFrameTime(priv->byPreambleType, pkt_type,
+			14, priv->byTopCCKBasicRate);
+		ack_time = BBuGetFrameTime(priv->byPreambleType, pkt_type,
+			14, priv->byTopOFDMBasicRate);
+
+		rrv_time = cts_time + ack_time + data_time + 2 * priv->uSIFS;
+
+		return rrv_time;
+	}
+
+	rrv_time = rts_time + cts_time + ack_time + data_time + 3 * priv->uSIFS;
+
+	return cpu_to_le16((u16)rrv_time);
+}
+
+//byFreqType 0: 5GHz, 1:2.4Ghz
+static u16 s_uGetDataDuration(struct vnt_private *pDevice,
+					u8 byPktType, int bNeedAck)
+{
+	u32 uAckTime = 0;
+
+	if (bNeedAck) {
+		if (byPktType == PK_TYPE_11B)
+			uAckTime = BBuGetFrameTime(pDevice->byPreambleType,
+				byPktType, 14, pDevice->byTopCCKBasicRate);
+		else
+			uAckTime = BBuGetFrameTime(pDevice->byPreambleType,
+				byPktType, 14, pDevice->byTopOFDMBasicRate);
+		return cpu_to_le16((u16)(pDevice->uSIFS + uAckTime));
+	}
+
+	return 0;
+}
+
+//byFreqType: 0=>5GHZ 1=>2.4GHZ
+static u16 s_uGetRTSCTSDuration(struct vnt_private *pDevice, u8 byDurType,
+	u32 cbFrameLength, u8 byPktType, u16 wRate, int bNeedAck,
+	u8 byFBOption)
+{
+	u32 uCTSTime = 0, uDurTime = 0;
+
+	switch (byDurType) {
+	case RTSDUR_BB:
+	case RTSDUR_BA:
+	case RTSDUR_BA_F0:
+	case RTSDUR_BA_F1:
+		uCTSTime = BBuGetFrameTime(pDevice->byPreambleType, byPktType,
+			14, pDevice->byTopCCKBasicRate);
+		uDurTime = uCTSTime + 2 * pDevice->uSIFS +
+			s_uGetTxRsvTime(pDevice, byPktType,
+						cbFrameLength, wRate, bNeedAck);
+		break;
+
+	case RTSDUR_AA:
+	case RTSDUR_AA_F0:
+	case RTSDUR_AA_F1:
+		uCTSTime = BBuGetFrameTime(pDevice->byPreambleType, byPktType,
+			14, pDevice->byTopOFDMBasicRate);
+		uDurTime = uCTSTime + 2 * pDevice->uSIFS +
+			s_uGetTxRsvTime(pDevice, byPktType,
+						cbFrameLength, wRate, bNeedAck);
+		break;
+
+	case CTSDUR_BA:
+	case CTSDUR_BA_F0:
+	case CTSDUR_BA_F1:
+		uDurTime = pDevice->uSIFS + s_uGetTxRsvTime(pDevice,
+				byPktType, cbFrameLength, wRate, bNeedAck);
+		break;
+
+	default:
+		break;
+	}
+
+	return cpu_to_le16((u16)uDurTime);
+}
+
+static u16 vnt_rxtx_datahead_g(struct vnt_private *priv, u8 pkt_type, u16 rate,
+		struct vnt_tx_datahead_g *buf, u32 frame_len, int need_ack)
+{
+	/* Get SignalField,ServiceField,Length */
+	BBvCalculateParameter(priv, frame_len, rate, pkt_type, &buf->a);
+	BBvCalculateParameter(priv, frame_len, priv->byTopCCKBasicRate,
+							PK_TYPE_11B, &buf->b);
+
+	/* Get Duration and TimeStamp */
+	buf->wDuration_a = s_uGetDataDuration(priv, pkt_type, need_ack);
+	buf->wDuration_b = s_uGetDataDuration(priv, PK_TYPE_11B, need_ack);
+
+	buf->wTimeStampOff_a = vnt_time_stamp_off(priv, rate);
+	buf->wTimeStampOff_b = vnt_time_stamp_off(priv,
+					priv->byTopCCKBasicRate);
+
+	return buf->wDuration_a;
+}
+
+static u16 vnt_rxtx_datahead_g_fb(struct vnt_private *priv, u8 pkt_type,
+		u16 rate, struct vnt_tx_datahead_g_fb *buf,
+		u32 frame_len, int need_ack)
+{
+	/* Get SignalField,ServiceField,Length */
+	BBvCalculateParameter(priv, frame_len, rate, pkt_type, &buf->a);
+
+	BBvCalculateParameter(priv, frame_len, priv->byTopCCKBasicRate,
+						PK_TYPE_11B, &buf->b);
+
+	/* Get Duration and TimeStamp */
+	buf->wDuration_a = s_uGetDataDuration(priv, pkt_type, need_ack);
+	buf->wDuration_b = s_uGetDataDuration(priv, PK_TYPE_11B, need_ack);
+
+	buf->wDuration_a_f0 = s_uGetDataDuration(priv, pkt_type, need_ack);
+	buf->wDuration_a_f1 = s_uGetDataDuration(priv, pkt_type, need_ack);
+
+	buf->wTimeStampOff_a = vnt_time_stamp_off(priv, rate);
+	buf->wTimeStampOff_b = vnt_time_stamp_off(priv,
+						priv->byTopCCKBasicRate);
+
+	return buf->wDuration_a;
+}
+
+static u16 vnt_rxtx_datahead_a_fb(struct vnt_private *priv, u8 pkt_type,
+		u16 rate, struct vnt_tx_datahead_a_fb *buf,
+		u32 frame_len, int need_ack)
+{
+	/* Get SignalField,ServiceField,Length */
+	BBvCalculateParameter(priv, frame_len, rate, pkt_type, &buf->a);
+	/* Get Duration and TimeStampOff */
+	buf->wDuration = s_uGetDataDuration(priv, pkt_type, need_ack);
+
+	buf->wDuration_f0 = s_uGetDataDuration(priv, pkt_type, need_ack);
+	buf->wDuration_f1 = s_uGetDataDuration(priv, pkt_type, need_ack);
+
+	buf->wTimeStampOff = vnt_time_stamp_off(priv, rate);
+
+	return buf->wDuration;
+}
+
+static u16 vnt_rxtx_datahead_ab(struct vnt_private *priv, u8 pkt_type,
+		u16 rate, struct vnt_tx_datahead_ab *buf,
+		u32 frame_len, int need_ack)
+{
+	/* Get SignalField,ServiceField,Length */
+	BBvCalculateParameter(priv, frame_len, rate, pkt_type, &buf->ab);
+	/* Get Duration and TimeStampOff */
+	buf->wDuration = s_uGetDataDuration(priv, pkt_type, need_ack);
+
+	buf->wTimeStampOff = vnt_time_stamp_off(priv, rate);
+
+	return buf->wDuration;
+}
+
+static int vnt_fill_ieee80211_rts(struct vnt_private *priv,
+	struct ieee80211_rts *rts, struct ethhdr *eth_hdr,
+		u16 duration)
+{
+	rts->duration = duration;
+	rts->frame_control = TYPE_CTL_RTS;
+
+	if (priv->eOPMode == OP_MODE_ADHOC || priv->eOPMode == OP_MODE_AP)
+		memcpy(rts->ra, eth_hdr->h_dest, ETH_ALEN);
+	else
+		memcpy(rts->ra, priv->abyBSSID, ETH_ALEN);
+
+	if (priv->eOPMode == OP_MODE_AP)
+		memcpy(rts->ta, priv->abyBSSID, ETH_ALEN);
+	else
+		memcpy(rts->ta, eth_hdr->h_source, ETH_ALEN);
+
+	return 0;
+}
+
+static u16 vnt_rxtx_rts_g_head(struct vnt_private *priv,
+	struct vnt_rts_g *buf, struct ethhdr *eth_hdr,
+	u8 pkt_type, u32 frame_len, int need_ack,
+	u16 current_rate, u8 fb_option)
+{
+	u16 rts_frame_len = 20;
+
+	BBvCalculateParameter(priv, rts_frame_len, priv->byTopCCKBasicRate,
+		PK_TYPE_11B, &buf->b);
+	BBvCalculateParameter(priv, rts_frame_len,
+		priv->byTopOFDMBasicRate, pkt_type, &buf->a);
+
+	buf->wDuration_bb = s_uGetRTSCTSDuration(priv, RTSDUR_BB, frame_len,
+		PK_TYPE_11B, priv->byTopCCKBasicRate, need_ack, fb_option);
+	buf->wDuration_aa = s_uGetRTSCTSDuration(priv, RTSDUR_AA, frame_len,
+		pkt_type, current_rate, need_ack, fb_option);
+	buf->wDuration_ba = s_uGetRTSCTSDuration(priv, RTSDUR_BA, frame_len,
+		pkt_type, current_rate, need_ack, fb_option);
+
+	vnt_fill_ieee80211_rts(priv, &buf->data, eth_hdr, buf->wDuration_aa);
+
+	return vnt_rxtx_datahead_g(priv, pkt_type, current_rate,
+			&buf->data_head, frame_len, need_ack);
+}
+
+static u16 vnt_rxtx_rts_g_fb_head(struct vnt_private *priv,
+	struct vnt_rts_g_fb *buf, struct ethhdr *eth_hdr,
+	u8 pkt_type, u32 frame_len, int need_ack,
+	u16 current_rate, u8 fb_option)
+{
+	u16 rts_frame_len = 20;
+
+	BBvCalculateParameter(priv, rts_frame_len, priv->byTopCCKBasicRate,
+		PK_TYPE_11B, &buf->b);
+	BBvCalculateParameter(priv, rts_frame_len,
+		priv->byTopOFDMBasicRate, pkt_type, &buf->a);
+
+
+	buf->wDuration_bb = s_uGetRTSCTSDuration(priv, RTSDUR_BB, frame_len,
+		PK_TYPE_11B, priv->byTopCCKBasicRate, need_ack, fb_option);
+	buf->wDuration_aa = s_uGetRTSCTSDuration(priv, RTSDUR_AA, frame_len,
+		pkt_type, current_rate, need_ack, fb_option);
+	buf->wDuration_ba = s_uGetRTSCTSDuration(priv, RTSDUR_BA, frame_len,
+		pkt_type, current_rate, need_ack, fb_option);
+
+
+	buf->wRTSDuration_ba_f0 = s_uGetRTSCTSDuration(priv, RTSDUR_BA_F0,
+		frame_len, pkt_type, priv->tx_rate_fb0, need_ack, fb_option);
+	buf->wRTSDuration_aa_f0 = s_uGetRTSCTSDuration(priv, RTSDUR_AA_F0,
+		frame_len, pkt_type, priv->tx_rate_fb0, need_ack, fb_option);
+	buf->wRTSDuration_ba_f1 = s_uGetRTSCTSDuration(priv, RTSDUR_BA_F1,
+		frame_len, pkt_type, priv->tx_rate_fb1, need_ack, fb_option);
+	buf->wRTSDuration_aa_f1 = s_uGetRTSCTSDuration(priv, RTSDUR_AA_F1,
+		frame_len, pkt_type, priv->tx_rate_fb1, need_ack, fb_option);
+
+	vnt_fill_ieee80211_rts(priv, &buf->data, eth_hdr, buf->wDuration_aa);
+
+	return vnt_rxtx_datahead_g_fb(priv, pkt_type, current_rate,
+			&buf->data_head, frame_len, need_ack);
+}
+
+static u16 vnt_rxtx_rts_ab_head(struct vnt_private *priv,
+	struct vnt_rts_ab *buf, struct ethhdr *eth_hdr,
+	u8 pkt_type, u32 frame_len, int need_ack,
+	u16 current_rate, u8 fb_option)
+{
+	u16 rts_frame_len = 20;
+
+	BBvCalculateParameter(priv, rts_frame_len,
+		priv->byTopOFDMBasicRate, pkt_type, &buf->ab);
+
+	buf->wDuration = s_uGetRTSCTSDuration(priv, RTSDUR_AA, frame_len,
+		pkt_type, current_rate, need_ack, fb_option);
+
+	vnt_fill_ieee80211_rts(priv, &buf->data, eth_hdr, buf->wDuration);
+
+	return vnt_rxtx_datahead_ab(priv, pkt_type, current_rate,
+			&buf->data_head, frame_len, need_ack);
+}
+
+static u16 vnt_rxtx_rts_a_fb_head(struct vnt_private *priv,
+	struct vnt_rts_a_fb *buf, struct ethhdr *eth_hdr,
+	u8 pkt_type, u32 frame_len, int need_ack,
+	u16 current_rate, u8 fb_option)
+{
+	u16 rts_frame_len = 20;
+
+	BBvCalculateParameter(priv, rts_frame_len,
+		priv->byTopOFDMBasicRate, pkt_type, &buf->a);
+
+	buf->wDuration = s_uGetRTSCTSDuration(priv, RTSDUR_AA, frame_len,
+		pkt_type, current_rate, need_ack, fb_option);
+
+	buf->wRTSDuration_f0 = s_uGetRTSCTSDuration(priv, RTSDUR_AA_F0,
+		frame_len, pkt_type, priv->tx_rate_fb0, need_ack, fb_option);
+
+	buf->wRTSDuration_f1 = s_uGetRTSCTSDuration(priv, RTSDUR_AA_F1,
+		frame_len, pkt_type, priv->tx_rate_fb1, need_ack, fb_option);
+
+	vnt_fill_ieee80211_rts(priv, &buf->data, eth_hdr, buf->wDuration);
+
+	return vnt_rxtx_datahead_a_fb(priv, pkt_type, current_rate,
+			&buf->data_head, frame_len, need_ack);
+}
+
+static u16 s_vFillRTSHead(struct vnt_private *pDevice, u8 byPktType,
+	union vnt_tx_data_head *head, u32 cbFrameLength, int bNeedAck,
+	struct ethhdr *psEthHeader, u16 wCurrentRate, u8 byFBOption)
+{
+
+	if (!head)
+		return 0;
+
+	/* Note: So far RTSHead doesn't appear in ATIM
+	*	& Beacom DMA, so we don't need to take them
+	*	into account.
+	*	Otherwise, we need to modified codes for them.
+	*/
+	switch (byPktType) {
+	case PK_TYPE_11GB:
+	case PK_TYPE_11GA:
+		if (byFBOption == AUTO_FB_NONE)
+			return vnt_rxtx_rts_g_head(pDevice, &head->rts_g,
+				psEthHeader, byPktType, cbFrameLength,
+				bNeedAck, wCurrentRate, byFBOption);
+		else
+			return vnt_rxtx_rts_g_fb_head(pDevice, &head->rts_g_fb,
+				psEthHeader, byPktType, cbFrameLength,
+				bNeedAck, wCurrentRate, byFBOption);
+		break;
+	case PK_TYPE_11A:
+		if (byFBOption) {
+			return vnt_rxtx_rts_a_fb_head(pDevice, &head->rts_a_fb,
+				psEthHeader, byPktType, cbFrameLength,
+				bNeedAck, wCurrentRate, byFBOption);
+			break;
+		}
+	case PK_TYPE_11B:
+		return vnt_rxtx_rts_ab_head(pDevice, &head->rts_ab,
+			psEthHeader, byPktType, cbFrameLength,
+			bNeedAck, wCurrentRate, byFBOption);
+	}
+
+	return 0;
+}
+
+static u16 s_vFillCTSHead(struct vnt_private *pDevice, u32 uDMAIdx,
+	u8 byPktType, union vnt_tx_data_head *head, u32 cbFrameLength,
+	int bNeedAck, u16 wCurrentRate, u8 byFBOption)
+{
+	u32 uCTSFrameLen = 14;
+
+	if (!head)
+		return 0;
+
+	if (byFBOption != AUTO_FB_NONE) {
+		/* Auto Fall back */
+		struct vnt_cts_fb *pBuf = &head->cts_g_fb;
+		/* Get SignalField,ServiceField,Length */
+		BBvCalculateParameter(pDevice, uCTSFrameLen,
+			pDevice->byTopCCKBasicRate, PK_TYPE_11B, &pBuf->b);
+		pBuf->wDuration_ba = s_uGetRTSCTSDuration(pDevice, CTSDUR_BA,
+			cbFrameLength, byPktType,
+			wCurrentRate, bNeedAck, byFBOption);
+		/* Get CTSDuration_ba_f0 */
+		pBuf->wCTSDuration_ba_f0 = s_uGetRTSCTSDuration(pDevice,
+			CTSDUR_BA_F0, cbFrameLength, byPktType,
+			pDevice->tx_rate_fb0, bNeedAck, byFBOption);
+		/* Get CTSDuration_ba_f1 */
+		pBuf->wCTSDuration_ba_f1 = s_uGetRTSCTSDuration(pDevice,
+			CTSDUR_BA_F1, cbFrameLength, byPktType,
+			pDevice->tx_rate_fb1, bNeedAck, byFBOption);
+		/* Get CTS Frame body */
+		pBuf->data.duration = pBuf->wDuration_ba;
+		pBuf->data.frame_control = TYPE_CTL_CTS;
+		memcpy(pBuf->data.ra, pDevice->abyCurrentNetAddr, ETH_ALEN);
+
+		return vnt_rxtx_datahead_g_fb(pDevice, byPktType, wCurrentRate,
+				&pBuf->data_head, cbFrameLength, bNeedAck);
+	} else {
+		struct vnt_cts *pBuf = &head->cts_g;
+		/* Get SignalField,ServiceField,Length */
+		BBvCalculateParameter(pDevice, uCTSFrameLen,
+			pDevice->byTopCCKBasicRate, PK_TYPE_11B, &pBuf->b);
+		/* Get CTSDuration_ba */
+		pBuf->wDuration_ba = s_uGetRTSCTSDuration(pDevice,
+			CTSDUR_BA, cbFrameLength, byPktType,
+			wCurrentRate, bNeedAck, byFBOption);
+		/*Get CTS Frame body*/
+		pBuf->data.duration = pBuf->wDuration_ba;
+		pBuf->data.frame_control = TYPE_CTL_CTS;
+		memcpy(pBuf->data.ra, pDevice->abyCurrentNetAddr, ETH_ALEN);
+
+		return vnt_rxtx_datahead_g(pDevice, byPktType, wCurrentRate,
+				&pBuf->data_head, cbFrameLength, bNeedAck);
+        }
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*+
@@ -1292,6 +1965,7 @@ s_vFillCTSHead (
  *
 -*/
 
+<<<<<<< HEAD
 static
 void
 s_vGenerateTxParameter (
@@ -1475,10 +2149,209 @@ s_bPacketToWirelessUsb(
     } else {
         cb802_1_H_len = 0;
     }
+=======
+static u16 s_vGenerateTxParameter(struct vnt_private *pDevice,
+	u8 byPktType, u16 wCurrentRate,	struct vnt_tx_buffer *tx_buffer,
+	struct vnt_mic_hdr **mic_hdr, u32 need_mic, u32 cbFrameSize,
+	int bNeedACK, u32 uDMAIdx, struct ethhdr *psEthHeader, bool need_rts)
+{
+	struct vnt_tx_fifo_head *pFifoHead = &tx_buffer->fifo_head;
+	union vnt_tx_data_head *head = NULL;
+	u16 wFifoCtl;
+	u8 byFBOption = AUTO_FB_NONE;
+
+	pFifoHead->wReserved = wCurrentRate;
+	wFifoCtl = pFifoHead->wFIFOCtl;
+
+	if (wFifoCtl & FIFOCTL_AUTO_FB_0)
+		byFBOption = AUTO_FB_0;
+	else if (wFifoCtl & FIFOCTL_AUTO_FB_1)
+		byFBOption = AUTO_FB_1;
+
+	if (!pFifoHead)
+		return 0;
+
+	if (byPktType == PK_TYPE_11GB || byPktType == PK_TYPE_11GA) {
+		if (need_rts) {
+			struct vnt_rrv_time_rts *pBuf =
+					&tx_buffer->tx_head.tx_rts.rts;
+
+			pBuf->wRTSTxRrvTime_aa = s_uGetRTSCTSRsvTime(pDevice, 2,
+					byPktType, cbFrameSize, wCurrentRate);
+			pBuf->wRTSTxRrvTime_ba = s_uGetRTSCTSRsvTime(pDevice, 1,
+					byPktType, cbFrameSize, wCurrentRate);
+			pBuf->wRTSTxRrvTime_bb = s_uGetRTSCTSRsvTime(pDevice, 0,
+				byPktType, cbFrameSize, wCurrentRate);
+
+			pBuf->wTxRrvTime_a = vnt_rxtx_rsvtime_le16(pDevice,
+				byPktType, cbFrameSize, wCurrentRate, bNeedACK);
+			pBuf->wTxRrvTime_b = vnt_rxtx_rsvtime_le16(pDevice,
+					PK_TYPE_11B, cbFrameSize,
+					pDevice->byTopCCKBasicRate, bNeedACK);
+
+			if (need_mic) {
+				*mic_hdr = &tx_buffer->
+						tx_head.tx_rts.tx.mic.hdr;
+				head = &tx_buffer->tx_head.tx_rts.tx.mic.head;
+			} else {
+				head = &tx_buffer->tx_head.tx_rts.tx.head;
+			}
+
+			/* Fill RTS */
+			return s_vFillRTSHead(pDevice, byPktType, head,
+					cbFrameSize, bNeedACK, psEthHeader,
+						wCurrentRate, byFBOption);
+
+		} else {
+			struct vnt_rrv_time_cts *pBuf = &tx_buffer->
+							tx_head.tx_cts.cts;
+
+			pBuf->wTxRrvTime_a = vnt_rxtx_rsvtime_le16(pDevice,
+				byPktType, cbFrameSize, wCurrentRate, bNeedACK);
+			pBuf->wTxRrvTime_b = vnt_rxtx_rsvtime_le16(pDevice,
+				PK_TYPE_11B, cbFrameSize,
+					pDevice->byTopCCKBasicRate, bNeedACK);
+
+			pBuf->wCTSTxRrvTime_ba = s_uGetRTSCTSRsvTime(pDevice, 3,
+					byPktType, cbFrameSize, wCurrentRate);
+
+			if (need_mic) {
+				*mic_hdr = &tx_buffer->
+						tx_head.tx_cts.tx.mic.hdr;
+				head = &tx_buffer->tx_head.tx_cts.tx.mic.head;
+			} else {
+				head = &tx_buffer->tx_head.tx_cts.tx.head;
+			}
+
+			/* Fill CTS */
+			return s_vFillCTSHead(pDevice, uDMAIdx, byPktType,
+				head, cbFrameSize, bNeedACK, wCurrentRate,
+					byFBOption);
+		}
+	} else if (byPktType == PK_TYPE_11A) {
+		if (need_mic) {
+			*mic_hdr = &tx_buffer->tx_head.tx_ab.tx.mic.hdr;
+			head = &tx_buffer->tx_head.tx_ab.tx.mic.head;
+		} else {
+			head = &tx_buffer->tx_head.tx_ab.tx.head;
+		}
+
+		if (need_rts) {
+			struct vnt_rrv_time_ab *pBuf = &tx_buffer->
+							tx_head.tx_ab.ab;
+
+			pBuf->wRTSTxRrvTime = s_uGetRTSCTSRsvTime(pDevice, 2,
+				byPktType, cbFrameSize, wCurrentRate);
+
+			pBuf->wTxRrvTime = vnt_rxtx_rsvtime_le16(pDevice,
+				byPktType, cbFrameSize, wCurrentRate, bNeedACK);
+
+			/* Fill RTS */
+			return s_vFillRTSHead(pDevice, byPktType, head,
+				cbFrameSize, bNeedACK, psEthHeader,
+					wCurrentRate, byFBOption);
+		} else {
+			struct vnt_rrv_time_ab *pBuf = &tx_buffer->
+							tx_head.tx_ab.ab;
+
+			pBuf->wTxRrvTime = vnt_rxtx_rsvtime_le16(pDevice,
+				PK_TYPE_11A, cbFrameSize,
+					wCurrentRate, bNeedACK);
+
+			return vnt_rxtx_datahead_a_fb(pDevice, byPktType,
+				wCurrentRate, &head->data_head_a_fb,
+						cbFrameSize, bNeedACK);
+		}
+	} else if (byPktType == PK_TYPE_11B) {
+		if (need_mic) {
+			*mic_hdr = &tx_buffer->tx_head.tx_ab.tx.mic.hdr;
+			head = &tx_buffer->tx_head.tx_ab.tx.mic.head;
+		} else {
+			head = &tx_buffer->tx_head.tx_ab.tx.head;
+		}
+
+		if (need_rts) {
+			struct vnt_rrv_time_ab *pBuf = &tx_buffer->
+							tx_head.tx_ab.ab;
+
+			pBuf->wRTSTxRrvTime = s_uGetRTSCTSRsvTime(pDevice, 0,
+				byPktType, cbFrameSize, wCurrentRate);
+
+			pBuf->wTxRrvTime = vnt_rxtx_rsvtime_le16(pDevice,
+				PK_TYPE_11B, cbFrameSize, wCurrentRate,
+								bNeedACK);
+
+			/* Fill RTS */
+			return s_vFillRTSHead(pDevice, byPktType, head,
+				cbFrameSize,
+			bNeedACK, psEthHeader, wCurrentRate, byFBOption);
+		} else {
+			struct vnt_rrv_time_ab *pBuf = &tx_buffer->
+							tx_head.tx_ab.ab;
+
+			pBuf->wTxRrvTime = vnt_rxtx_rsvtime_le16(pDevice,
+				PK_TYPE_11B, cbFrameSize,
+					wCurrentRate, bNeedACK);
+
+			return vnt_rxtx_datahead_ab(pDevice, byPktType,
+				wCurrentRate, &head->data_head_ab,
+					cbFrameSize, bNeedACK);
+		}
+	}
+
+	return 0;
+}
+/*
+    u8 * pbyBuffer,//point to pTxBufHead
+    u16  wFragType,//00:Non-Frag, 01:Start, 02:Mid, 03:Last
+    unsigned int  cbFragmentSize,//Hdr+payoad+FCS
+*/
+
+static int s_bPacketToWirelessUsb(struct vnt_private *pDevice, u8 byPktType,
+	struct vnt_tx_buffer *tx_buffer, int bNeedEncryption,
+	u32 uSkbPacketLen, u32 uDMAIdx,	struct ethhdr *psEthHeader,
+	u8 *pPacket, PSKeyItem pTransmitKey, u32 uNodeIndex, u16 wCurrentRate,
+	u32 *pcbHeaderLen, u32 *pcbTotalLen)
+{
+	struct vnt_tx_fifo_head *pTxBufHead = &tx_buffer->fifo_head;
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	u32 cbFrameSize, cbFrameBodySize;
+	u32 cb802_1_H_len;
+	u32 cbIVlen = 0, cbICVlen = 0, cbMIClen = 0, cbMACHdLen = 0;
+	u32 cbFCSlen = 4, cbMICHDR = 0;
+	int bNeedACK;
+	bool bRTS = false;
+	u8 *pbyType, *pbyMacHdr, *pbyIVHead, *pbyPayloadHead, *pbyTxBufferAddr;
+	u8 abySNAP_RFC1042[ETH_ALEN] = {0xAA, 0xAA, 0x03, 0x00, 0x00, 0x00};
+	u8 abySNAP_Bridgetunnel[ETH_ALEN]
+		= {0xAA, 0xAA, 0x03, 0x00, 0x00, 0xF8};
+	u32 uDuration;
+	u32 cbHeaderLength = 0, uPadding = 0;
+	struct vnt_mic_hdr *pMICHDR;
+	u8 byFBOption = AUTO_FB_NONE, byFragType;
+	u16 wTxBufSize;
+	u32 dwMICKey0, dwMICKey1, dwMIC_Priority;
+	u32 *pdwMIC_L, *pdwMIC_R;
+	int bSoftWEP = false;
+
+	pMICHDR = NULL;
+
+	if (bNeedEncryption && pTransmitKey->pvKeyTable) {
+		if (((PSKeyTable)pTransmitKey->pvKeyTable)->bSoftWEP == true)
+			bSoftWEP = true; /* WEP 256 */
+	}
+
+	/* Get pkt type */
+	if (ntohs(psEthHeader->h_proto) > ETH_DATA_LEN)
+		cb802_1_H_len = 8;
+	else
+		cb802_1_H_len = 0;
+>>>>>>> refs/remotes/origin/master
 
     cbFrameBodySize = uSkbPacketLen - ETH_HLEN + cb802_1_H_len;
 
     //Set packet type
+<<<<<<< HEAD
     pTxBufHead->wFIFOCtl |= (WORD)(byPktType<<8);
 
     if (pDevice->dwDiagRefCount != 0) {
@@ -1538,6 +2411,61 @@ s_bPacketToWirelessUsb(
     }
 
     if (bSoftWEP != TRUE) {
+=======
+    pTxBufHead->wFIFOCtl |= (u16)(byPktType<<8);
+
+	if ((pDevice->eOPMode == OP_MODE_ADHOC) ||
+			(pDevice->eOPMode == OP_MODE_AP)) {
+		if (is_multicast_ether_addr(psEthHeader->h_dest)) {
+			bNeedACK = false;
+			pTxBufHead->wFIFOCtl =
+				pTxBufHead->wFIFOCtl & (~FIFOCTL_NEEDACK);
+		} else {
+			bNeedACK = true;
+			pTxBufHead->wFIFOCtl |= FIFOCTL_NEEDACK;
+		}
+	} else {
+		/* MSDUs in Infra mode always need ACK */
+		bNeedACK = true;
+		pTxBufHead->wFIFOCtl |= FIFOCTL_NEEDACK;
+	}
+
+    pTxBufHead->wTimeStamp = DEFAULT_MSDU_LIFETIME_RES_64us;
+
+    //Set FRAGCTL_MACHDCNT
+	cbMACHdLen = WLAN_HDR_ADDR3_LEN;
+
+    pTxBufHead->wFragCtl |= (u16)(cbMACHdLen << 10);
+
+    //Set FIFOCTL_GrpAckPolicy
+    if (pDevice->bGrpAckPolicy == true) {//0000 0100 0000 0000
+        pTxBufHead->wFIFOCtl |=	FIFOCTL_GRPACK;
+    }
+
+	/* Set Auto Fallback Ctl */
+	if (wCurrentRate >= RATE_18M) {
+		if (pDevice->byAutoFBCtrl == AUTO_FB_0) {
+			pTxBufHead->wFIFOCtl |= FIFOCTL_AUTO_FB_0;
+
+			pDevice->tx_rate_fb0 =
+				wFB_Opt0[FB_RATE0][wCurrentRate - RATE_18M];
+			pDevice->tx_rate_fb1 =
+				wFB_Opt0[FB_RATE1][wCurrentRate - RATE_18M];
+
+			byFBOption = AUTO_FB_0;
+		} else if (pDevice->byAutoFBCtrl == AUTO_FB_1) {
+			pTxBufHead->wFIFOCtl |= FIFOCTL_AUTO_FB_1;
+			pDevice->tx_rate_fb0 =
+				wFB_Opt1[FB_RATE0][wCurrentRate - RATE_18M];
+			pDevice->tx_rate_fb1 =
+				wFB_Opt1[FB_RATE1][wCurrentRate - RATE_18M];
+
+			byFBOption = AUTO_FB_1;
+		}
+	}
+
+    if (bSoftWEP != true) {
+>>>>>>> refs/remotes/origin/master
         if ((bNeedEncryption) && (pTransmitKey != NULL))  { //WEP enabled
             if (pTransmitKey->byCipherSuite == KEY_CTL_WEP) { //WEP40 or WEP104
                 pTxBufHead->wFragCtl |= FRAGCTL_LEGACY;
@@ -1552,7 +2480,10 @@ s_bPacketToWirelessUsb(
         }
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
     if ((bNeedEncryption) && (pTransmitKey != NULL))  {
         if (pTransmitKey->byCipherSuite == KEY_CTL_WEP) {
             cbIVlen = 4;
@@ -1566,9 +2497,15 @@ s_bPacketToWirelessUsb(
         if (pTransmitKey->byCipherSuite == KEY_CTL_CCMP) {
             cbIVlen = 8;//RSN Header
             cbICVlen = 8;//MIC
+<<<<<<< HEAD
             cbMICHDR = sizeof(SMICHDRHead);
         }
         if (bSoftWEP == FALSE) {
+=======
+	    cbMICHDR = sizeof(struct vnt_mic_hdr);
+        }
+        if (bSoftWEP == false) {
+>>>>>>> refs/remotes/origin/master
             //MAC Header should be padding 0 to DW alignment.
             uPadding = 4 - (cbMACHdLen%4);
             uPadding %= 4;
@@ -1577,6 +2514,7 @@ s_bPacketToWirelessUsb(
 
     cbFrameSize = cbMACHdLen + cbIVlen + (cbFrameBodySize + cbMIClen) + cbICVlen + cbFCSlen;
 
+<<<<<<< HEAD
     if ( (bNeedACK == FALSE) ||(cbFrameSize < pDevice->wRTSThreshold) ) {
         bRTS = FALSE;
     } else {
@@ -1621,11 +2559,43 @@ s_bPacketToWirelessUsb(
                 pvCTS = (PSCTS_FB) (pbyTxBufferAddr + wTxBufSize + sizeof(SRrvTime_gCTS) + cbMICHDR);
                 pvTxDataHd = (PSTxDataHead_g_FB) (pbyTxBufferAddr + wTxBufSize + sizeof(SRrvTime_gCTS) + cbMICHDR + sizeof(SCTS_FB));
                 cbHeaderLength = wTxBufSize + sizeof(SRrvTime_gCTS) + cbMICHDR + sizeof(SCTS_FB) + sizeof(STxDataHead_g_FB);
+=======
+    if ( (bNeedACK == false) ||(cbFrameSize < pDevice->wRTSThreshold) ) {
+        bRTS = false;
+    } else {
+        bRTS = true;
+        pTxBufHead->wFIFOCtl |= (FIFOCTL_RTS | FIFOCTL_LRETRY);
+    }
+
+    pbyTxBufferAddr = (u8 *) &(pTxBufHead->adwTxKey[0]);
+	wTxBufSize = sizeof(struct vnt_tx_fifo_head);
+
+    if (byPktType == PK_TYPE_11GB || byPktType == PK_TYPE_11GA) {//802.11g packet
+        if (byFBOption == AUTO_FB_NONE) {
+            if (bRTS == true) {//RTS_need
+		cbHeaderLength = wTxBufSize + sizeof(struct vnt_rrv_time_rts) +
+			cbMICHDR + sizeof(struct vnt_rts_g);
+            }
+            else { //RTS_needless
+		cbHeaderLength = wTxBufSize + sizeof(struct vnt_rrv_time_cts) +
+			cbMICHDR + sizeof(struct vnt_cts);
+            }
+        } else {
+            // Auto Fall Back
+            if (bRTS == true) {//RTS_need
+		cbHeaderLength = wTxBufSize + sizeof(struct vnt_rrv_time_rts) +
+			cbMICHDR + sizeof(struct vnt_rts_g_fb);
+            }
+            else if (bRTS == false) { //RTS_needless
+		cbHeaderLength = wTxBufSize + sizeof(struct vnt_rrv_time_cts) +
+				cbMICHDR + sizeof(struct vnt_cts_fb);
+>>>>>>> refs/remotes/origin/master
             }
         } // Auto Fall Back
     }
     else {//802.11a/b packet
         if (byFBOption == AUTO_FB_NONE) {
+<<<<<<< HEAD
             if (bRTS == TRUE) {//RTS_need
                 pvRrvTime = (PSRrvTime_ab) (pbyTxBufferAddr + wTxBufSize);
                 pMICHDR = (PSMICHDRHead) (pbyTxBufferAddr + wTxBufSize + sizeof(SRrvTime_ab));
@@ -1659,14 +2629,39 @@ s_bPacketToWirelessUsb(
                 pvCTS = NULL;
                 pvTxDataHd = (PSTxDataHead_a_FB) (pbyTxBufferAddr + wTxBufSize + sizeof(SRrvTime_ab) + cbMICHDR);
                 cbHeaderLength = wTxBufSize + sizeof(SRrvTime_ab) + cbMICHDR + sizeof(STxDataHead_a_FB);
+=======
+            if (bRTS == true) {//RTS_need
+		cbHeaderLength = wTxBufSize + sizeof(struct vnt_rrv_time_ab) +
+			cbMICHDR + sizeof(struct vnt_rts_ab);
+            }
+            else if (bRTS == false) { //RTS_needless, no MICHDR
+		cbHeaderLength = wTxBufSize + sizeof(struct vnt_rrv_time_ab) +
+				cbMICHDR + sizeof(struct vnt_tx_datahead_ab);
+            }
+        } else {
+            // Auto Fall Back
+            if (bRTS == true) {//RTS_need
+		cbHeaderLength = wTxBufSize + sizeof(struct vnt_rrv_time_ab) +
+			cbMICHDR + sizeof(struct vnt_rts_a_fb);
+            }
+            else if (bRTS == false) { //RTS_needless
+		cbHeaderLength = wTxBufSize + sizeof(struct vnt_rrv_time_ab) +
+			cbMICHDR + sizeof(struct vnt_tx_datahead_a_fb);
+>>>>>>> refs/remotes/origin/master
             }
         } // Auto Fall Back
     }
 
+<<<<<<< HEAD
     pbyMacHdr = (PBYTE)(pbyTxBufferAddr + cbHeaderLength);
     pbyIVHead = (PBYTE)(pbyMacHdr + cbMACHdLen + uPadding);
     pbyPayloadHead = (PBYTE)(pbyMacHdr + cbMACHdLen + uPadding + cbIVlen);
 
+=======
+    pbyMacHdr = (u8 *)(pbyTxBufferAddr + cbHeaderLength);
+    pbyIVHead = (u8 *)(pbyMacHdr + cbMACHdLen + uPadding);
+    pbyPayloadHead = (u8 *)(pbyMacHdr + cbMACHdLen + uPadding + cbIVlen);
+>>>>>>> refs/remotes/origin/master
 
     //=========================
     //    No Fragmentation
@@ -1676,6 +2671,7 @@ s_bPacketToWirelessUsb(
     //uDMAIdx = TYPE_AC0DMA;
     //pTxBufHead = (PSTxBufHead) &(pTxBufHead->adwTxKey[0]);
 
+<<<<<<< HEAD
 
     //Fill FIFO,RrvTime,RTS,and CTS
     s_vGenerateTxParameter(pDevice, byPktType, wCurrentRate,
@@ -1692,6 +2688,21 @@ s_bPacketToWirelessUsb(
         //Fill TXKEY
         s_vFillTxKey(pDevice, (PBYTE)(pTxBufHead->adwTxKey), pbyIVHead, pTransmitKey,
                          pbyMacHdr, (WORD)cbFrameBodySize, (PBYTE)pMICHDR);
+=======
+	/* Fill FIFO, RrvTime, RTS and CTS */
+	uDuration = s_vGenerateTxParameter(pDevice, byPktType, wCurrentRate,
+			tx_buffer, &pMICHDR, cbMICHDR,
+			cbFrameSize, bNeedACK, uDMAIdx, psEthHeader, bRTS);
+
+    // Generate TX MAC Header
+    s_vGenerateMACHeader(pDevice, pbyMacHdr, (u16)uDuration, psEthHeader, bNeedEncryption,
+                           byFragType, uDMAIdx, 0);
+
+    if (bNeedEncryption == true) {
+        //Fill TXKEY
+	s_vFillTxKey(pDevice, pTxBufHead, pbyIVHead, pTransmitKey,
+		pbyMacHdr, (u16)cbFrameBodySize, pMICHDR);
+>>>>>>> refs/remotes/origin/master
 
         if (pDevice->bEnableHostWEP) {
             pMgmt->sNodeDBTable[uNodeIndex].dwTSC47_16 = pTransmitKey->dwTSC47_16;
@@ -1699,6 +2710,7 @@ s_bPacketToWirelessUsb(
         }
     }
 
+<<<<<<< HEAD
     // 802.1H
     if (ntohs(psEthHeader->wType) > ETH_DATA_LEN) {
 	if (pDevice->dwDiagRefCount == 0) {
@@ -1718,6 +2730,21 @@ s_bPacketToWirelessUsb(
 
     }
 
+=======
+	/* 802.1H */
+	if (ntohs(psEthHeader->h_proto) > ETH_DATA_LEN) {
+		if ((psEthHeader->h_proto == cpu_to_be16(ETH_P_IPX)) ||
+			(psEthHeader->h_proto == cpu_to_le16(0xF380)))
+			memcpy((u8 *) (pbyPayloadHead),
+					abySNAP_Bridgetunnel, 6);
+		else
+			memcpy((u8 *) (pbyPayloadHead), &abySNAP_RFC1042[0], 6);
+
+		pbyType = (u8 *) (pbyPayloadHead + 6);
+
+		memcpy(pbyType, &(psEthHeader->h_proto), sizeof(u16));
+	}
+>>>>>>> refs/remotes/origin/master
 
     if (pPacket != NULL) {
         // Copy the Packet into a tx Buffer
@@ -1728,6 +2755,7 @@ s_bPacketToWirelessUsb(
 
     } else {
         // while bRelayPacketSend psEthHeader is point to header+payload
+<<<<<<< HEAD
         memcpy((pbyPayloadHead + cb802_1_H_len), ((PBYTE)psEthHeader) + ETH_HLEN, uSkbPacketLen - ETH_HLEN);
     }
 
@@ -1754,6 +2782,35 @@ s_bPacketToWirelessUsb(
         MIC_vAppend((PBYTE)&(psEthHeader->abyDstAddr[0]), 12);
         dwMIC_Priority = 0;
         MIC_vAppend((PBYTE)&dwMIC_Priority, 4);
+<<<<<<< HEAD
+=======
+        memcpy((pbyPayloadHead + cb802_1_H_len), ((u8 *)psEthHeader) + ETH_HLEN, uSkbPacketLen - ETH_HLEN);
+    }
+
+    if ((bNeedEncryption == true) && (pTransmitKey != NULL) && (pTransmitKey->byCipherSuite == KEY_CTL_TKIP)) {
+
+        ///////////////////////////////////////////////////////////////////
+
+	if (pDevice->vnt_mgmt.eAuthenMode == WMAC_AUTH_WPANONE) {
+		dwMICKey0 = *(u32 *)(&pTransmitKey->abyKey[16]);
+		dwMICKey1 = *(u32 *)(&pTransmitKey->abyKey[20]);
+	}
+        else if ((pTransmitKey->dwKeyIndex & AUTHENTICATOR_KEY) != 0) {
+            dwMICKey0 = *(u32 *)(&pTransmitKey->abyKey[16]);
+            dwMICKey1 = *(u32 *)(&pTransmitKey->abyKey[20]);
+        }
+        else {
+            dwMICKey0 = *(u32 *)(&pTransmitKey->abyKey[24]);
+            dwMICKey1 = *(u32 *)(&pTransmitKey->abyKey[28]);
+        }
+        // DO Software Michael
+        MIC_vInit(dwMICKey0, dwMICKey1);
+        MIC_vAppend((u8 *)&(psEthHeader->h_dest[0]), 12);
+        dwMIC_Priority = 0;
+        MIC_vAppend((u8 *)&dwMIC_Priority, 4);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"MIC KEY: %X, %X\n",
 		dwMICKey0, dwMICKey1);
 
@@ -1761,28 +2818,45 @@ s_bPacketToWirelessUsb(
 
         //DBG_PRN_GRP12(("Length:%d, %d\n", cbFrameBodySize, uFromHDtoPLDLength));
         //for (ii = 0; ii < cbFrameBodySize; ii++) {
+<<<<<<< HEAD
         //    DBG_PRN_GRP12(("%02x ", *((PBYTE)((pbyPayloadHead + cb802_1_H_len) + ii))));
+=======
+        //    DBG_PRN_GRP12(("%02x ", *((u8 *)((pbyPayloadHead + cb802_1_H_len) + ii))));
+>>>>>>> refs/remotes/origin/master
         //}
         //DBG_PRN_GRP12(("\n\n\n"));
 
         MIC_vAppend(pbyPayloadHead, cbFrameBodySize);
 
+<<<<<<< HEAD
         pdwMIC_L = (PDWORD)(pbyPayloadHead + cbFrameBodySize);
         pdwMIC_R = (PDWORD)(pbyPayloadHead + cbFrameBodySize + 4);
+=======
+        pdwMIC_L = (u32 *)(pbyPayloadHead + cbFrameBodySize);
+        pdwMIC_R = (u32 *)(pbyPayloadHead + cbFrameBodySize + 4);
+>>>>>>> refs/remotes/origin/master
 
         MIC_vGetMIC(pdwMIC_L, pdwMIC_R);
         MIC_vUnInit();
 
+<<<<<<< HEAD
         if (pDevice->bTxMICFail == TRUE) {
             *pdwMIC_L = 0;
             *pdwMIC_R = 0;
             pDevice->bTxMICFail = FALSE;
+=======
+        if (pDevice->bTxMICFail == true) {
+            *pdwMIC_L = 0;
+            *pdwMIC_R = 0;
+            pDevice->bTxMICFail = false;
+>>>>>>> refs/remotes/origin/master
         }
         //DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"uLength: %d, %d\n", uLength, cbFrameBodySize);
         //DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"cbReqCount:%d, %d, %d, %d\n", cbReqCount, cbHeaderLength, uPadding, cbIVlen);
         //DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"MIC:%lX, %lX\n", *pdwMIC_L, *pdwMIC_R);
     }
 
+<<<<<<< HEAD
 
     if (bSoftWEP == TRUE) {
 
@@ -1810,10 +2884,24 @@ s_bPacketToWirelessUsb(
     } else {
         cbFrameSize -= cbFCSlen;
     }
+=======
+    if (bSoftWEP == true) {
+
+        s_vSWencryption(pDevice, pTransmitKey, (pbyPayloadHead), (u16)(cbFrameBodySize + cbMIClen));
+
+    } else if (  ((pDevice->eEncryptionStatus == Ndis802_11Encryption1Enabled) && (bNeedEncryption == true))  ||
+          ((pDevice->eEncryptionStatus == Ndis802_11Encryption2Enabled) && (bNeedEncryption == true))   ||
+          ((pDevice->eEncryptionStatus == Ndis802_11Encryption3Enabled) && (bNeedEncryption == true))      ) {
+        cbFrameSize -= cbICVlen;
+    }
+
+        cbFrameSize -= cbFCSlen;
+>>>>>>> refs/remotes/origin/master
 
     *pcbHeaderLen = cbHeaderLength;
     *pcbTotalLen = cbHeaderLength + cbFrameSize ;
 
+<<<<<<< HEAD
 
     //Set FragCtl in TxBufferHead
     pTxBufHead->wFragCtl |= (WORD)byFragType;
@@ -1824,6 +2912,15 @@ s_bPacketToWirelessUsb(
 }
 
 
+=======
+    //Set FragCtl in TxBufferHead
+    pTxBufHead->wFragCtl |= (u16)byFragType;
+
+    return true;
+
+}
+
+>>>>>>> refs/remotes/origin/master
 /*+
  *
  * Description:
@@ -1831,7 +2928,11 @@ s_bPacketToWirelessUsb(
  *
  * Parameters:
  *  In:
+<<<<<<< HEAD
  *      pDevice         - Pointer to adpater
+=======
+ *      pDevice         - Pointer to adapter
+>>>>>>> refs/remotes/origin/master
  *      dwTxBufferAddr  - Transmit Buffer
  *      pPacket         - Packet from upper layer
  *      cbPacketSize    - Transmit Data Length
@@ -1843,6 +2944,7 @@ s_bPacketToWirelessUsb(
  *
 -*/
 
+<<<<<<< HEAD
 void
 s_vGenerateMACHeader (
      PSDevice         pDevice,
@@ -1896,10 +2998,52 @@ s_vGenerateMACHeader (
 		       &(pDevice->abyBSSID[0]),
 		       ETH_ALEN);
             pMACHeader->wFrameCtl |= FC_TODS;
+=======
+static void s_vGenerateMACHeader(struct vnt_private *pDevice,
+	u8 *pbyBufferAddr, u16 wDuration, struct ethhdr *psEthHeader,
+	int bNeedEncrypt, u16 wFragType, u32 uDMAIdx, u32 uFragIdx)
+{
+	struct ieee80211_hdr *pMACHeader = (struct ieee80211_hdr *)pbyBufferAddr;
+
+	pMACHeader->frame_control = TYPE_802_11_DATA;
+
+    if (pDevice->eOPMode == OP_MODE_AP) {
+	memcpy(&(pMACHeader->addr1[0]),
+	       &(psEthHeader->h_dest[0]),
+	       ETH_ALEN);
+	memcpy(&(pMACHeader->addr2[0]), &(pDevice->abyBSSID[0]), ETH_ALEN);
+	memcpy(&(pMACHeader->addr3[0]),
+	       &(psEthHeader->h_source[0]),
+	       ETH_ALEN);
+        pMACHeader->frame_control |= FC_FROMDS;
+    } else {
+	if (pDevice->eOPMode == OP_MODE_ADHOC) {
+		memcpy(&(pMACHeader->addr1[0]),
+		       &(psEthHeader->h_dest[0]),
+		       ETH_ALEN);
+		memcpy(&(pMACHeader->addr2[0]),
+		       &(psEthHeader->h_source[0]),
+		       ETH_ALEN);
+		memcpy(&(pMACHeader->addr3[0]),
+		       &(pDevice->abyBSSID[0]),
+		       ETH_ALEN);
+	} else {
+		memcpy(&(pMACHeader->addr3[0]),
+		       &(psEthHeader->h_dest[0]),
+		       ETH_ALEN);
+		memcpy(&(pMACHeader->addr2[0]),
+		       &(psEthHeader->h_source[0]),
+		       ETH_ALEN);
+		memcpy(&(pMACHeader->addr1[0]),
+		       &(pDevice->abyBSSID[0]),
+		       ETH_ALEN);
+            pMACHeader->frame_control |= FC_TODS;
+>>>>>>> refs/remotes/origin/master
         }
     }
 
     if (bNeedEncrypt)
+<<<<<<< HEAD
         pMACHeader->wFrameCtl |= cpu_to_le16((WORD)WLAN_SET_FC_ISWEP(1));
 
     pMACHeader->wDurationID = cpu_to_le16(wDuration);
@@ -1913,6 +3057,16 @@ s_vGenerateMACHeader (
 
     //Set FragNumber in Sequence Control
     pMACHeader->wSeqCtl |= cpu_to_le16((WORD)uFragIdx);
+=======
+        pMACHeader->frame_control |= cpu_to_le16((u16)WLAN_SET_FC_ISWEP(1));
+
+    pMACHeader->duration_id = cpu_to_le16(wDuration);
+
+    pMACHeader->seq_ctrl = cpu_to_le16(pDevice->wSeqCounter << 4);
+
+    //Set FragNumber in Sequence Control
+    pMACHeader->seq_ctrl |= cpu_to_le16((u16)uFragIdx);
+>>>>>>> refs/remotes/origin/master
 
     if ((wFragType == FRAGCTL_ENDFRAG) || (wFragType == FRAGCTL_NONFRAG)) {
         pDevice->wSeqCounter++;
@@ -1921,12 +3075,19 @@ s_vGenerateMACHeader (
     }
 
     if ((wFragType == FRAGCTL_STAFRAG) || (wFragType == FRAGCTL_MIDFRAG)) { //StartFrag or MidFrag
+<<<<<<< HEAD
         pMACHeader->wFrameCtl |= FC_MOREFRAG;
     }
 }
 
 
 
+=======
+        pMACHeader->frame_control |= FC_MOREFRAG;
+    }
+}
+
+>>>>>>> refs/remotes/origin/master
 /*+
  *
  * Description:
@@ -1940,6 +3101,7 @@ s_vGenerateMACHeader (
  *  Out:
  *      none
  *
+<<<<<<< HEAD
  * Return Value: CMD_STATUS_PENDING if MAC Tx resource available; otherwise FALSE
  *
 -*/
@@ -1981,18 +3143,52 @@ CMD_STATUS csMgmt_xmit(
 
 
     pContext = (PUSB_SEND_CONTEXT)s_vGetFreeContext(pDevice);
+=======
+ * Return Value: CMD_STATUS_PENDING if MAC Tx resource available; otherwise false
+ *
+-*/
+
+CMD_STATUS csMgmt_xmit(struct vnt_private *pDevice,
+	struct vnt_tx_mgmt *pPacket)
+{
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	struct vnt_tx_buffer *pTX_Buffer;
+	struct vnt_usb_send_context *pContext;
+	struct vnt_tx_fifo_head *pTxBufHead;
+	struct ieee80211_hdr *pMACHeader;
+	struct ethhdr sEthHeader;
+	u8 byPktType, *pbyTxBufferAddr;
+	struct vnt_mic_hdr *pMICHDR = NULL;
+	u32 uDuration, cbReqCount, cbHeaderSize, cbFrameBodySize, cbFrameSize;
+	int bNeedACK, bIsPSPOLL = false;
+	u32 cbIVlen = 0, cbICVlen = 0, cbMIClen = 0, cbFCSlen = 4;
+	u32 uPadding = 0;
+	u16 wTxBufSize;
+	u32 cbMacHdLen;
+	u16 wCurrentRate = RATE_1M;
+
+	pContext = s_vGetFreeContext(pDevice);
+>>>>>>> refs/remotes/origin/master
 
     if (NULL == pContext) {
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"ManagementSend TX...NO CONTEXT!\n");
         return CMD_STATUS_RESOURCES;
     }
 
+<<<<<<< HEAD
     pTX_Buffer = (PTX_BUFFER) (&pContext->Data[0]);
     pbyTxBufferAddr = (PBYTE)&(pTX_Buffer->adwTxKey[0]);
     cbFrameBodySize = pPacket->cbPayloadLen;
     pTxBufHead = (PSTxBufHead) pbyTxBufferAddr;
     wTxBufSize = sizeof(STxBufHead);
     memset(pTxBufHead, 0, wTxBufSize);
+=======
+	pTX_Buffer = (struct vnt_tx_buffer *)&pContext->Data[0];
+    cbFrameBodySize = pPacket->cbPayloadLen;
+	pTxBufHead = &pTX_Buffer->fifo_head;
+	pbyTxBufferAddr = (u8 *)&pTxBufHead->adwTxKey[0];
+	wTxBufSize = sizeof(struct vnt_tx_fifo_head);
+>>>>>>> refs/remotes/origin/master
 
     if (pDevice->byBBType == BB_TYPE_11A) {
         wCurrentRate = RATE_6M;
@@ -2013,7 +3209,10 @@ CMD_STATUS csMgmt_xmit(
     }
     pDevice->wCurrentRate = wCurrentRate;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
     //Set packet type
     if (byPktType == PK_TYPE_11A) {//0000 0000 0000 0000
         pTxBufHead->wFIFOCtl = 0;
@@ -2032,10 +3231,17 @@ CMD_STATUS csMgmt_xmit(
     pTxBufHead->wTimeStamp = cpu_to_le16(DEFAULT_MGN_LIFETIME_RES_64us);
 
     if (is_multicast_ether_addr(pPacket->p80211Header->sA3.abyAddr1)) {
+<<<<<<< HEAD
         bNeedACK = FALSE;
     }
     else {
         bNeedACK = TRUE;
+=======
+        bNeedACK = false;
+    }
+    else {
+        bNeedACK = true;
+>>>>>>> refs/remotes/origin/master
         pTxBufHead->wFIFOCtl |= FIFOCTL_NEEDACK;
     };
 
@@ -2047,7 +3253,11 @@ CMD_STATUS csMgmt_xmit(
         //pDevice->byPreambleType = PREAMBLE_LONG;
         // probe-response don't retry
         //if ((pPacket->p80211Header->sA4.wFrameCtl & TYPE_SUBTYPE_MASK) == TYPE_MGMT_PROBE_RSP) {
+<<<<<<< HEAD
         //     bNeedACK = FALSE;
+=======
+        //     bNeedACK = false;
+>>>>>>> refs/remotes/origin/master
         //     pTxBufHead->wFIFOCtl  &= (~FIFOCTL_NEEDACK);
         //}
     }
@@ -2055,19 +3265,30 @@ CMD_STATUS csMgmt_xmit(
     pTxBufHead->wFIFOCtl |= (FIFOCTL_GENINT | FIFOCTL_ISDMA0);
 
     if ((pPacket->p80211Header->sA4.wFrameCtl & TYPE_SUBTYPE_MASK) == TYPE_CTL_PSPOLL) {
+<<<<<<< HEAD
         bIsPSPOLL = TRUE;
+=======
+        bIsPSPOLL = true;
+>>>>>>> refs/remotes/origin/master
         cbMacHdLen = WLAN_HDR_ADDR2_LEN;
     } else {
         cbMacHdLen = WLAN_HDR_ADDR3_LEN;
     }
 
     //Set FRAGCTL_MACHDCNT
+<<<<<<< HEAD
     pTxBufHead->wFragCtl |= cpu_to_le16((WORD)(cbMacHdLen << 10));
+=======
+    pTxBufHead->wFragCtl |= cpu_to_le16((u16)(cbMacHdLen << 10));
+>>>>>>> refs/remotes/origin/master
 
     // Notes:
     // Although spec says MMPDU can be fragmented; In most case,
     // no one will send a MMPDU under fragmentation. With RTS may occur.
+<<<<<<< HEAD
     pDevice->bAES = FALSE;  //Set FRAGCTL_WEPTYP
+=======
+>>>>>>> refs/remotes/origin/master
 
     if (WLAN_GET_FC_ISWEP(pPacket->p80211Header->sA4.wFrameCtl) != 0) {
         if (pDevice->eEncryptionStatus == Ndis802_11Encryption1Enabled) {
@@ -2088,7 +3309,10 @@ CMD_STATUS csMgmt_xmit(
             cbIVlen = 8;//RSN Header
             cbICVlen = 8;//MIC
             pTxBufHead->wFragCtl |= FRAGCTL_AES;
+<<<<<<< HEAD
             pDevice->bAES = TRUE;
+=======
+>>>>>>> refs/remotes/origin/master
         }
         //MAC Header should be padding 0 to DW alignment.
         uPadding = 4 - (cbMacHdLen%4);
@@ -2098,13 +3322,18 @@ CMD_STATUS csMgmt_xmit(
     cbFrameSize = cbMacHdLen + cbFrameBodySize + cbIVlen + cbMIClen + cbICVlen + cbFCSlen;
 
     //Set FIFOCTL_GrpAckPolicy
+<<<<<<< HEAD
     if (pDevice->bGrpAckPolicy == TRUE) {//0000 0100 0000 0000
+=======
+    if (pDevice->bGrpAckPolicy == true) {//0000 0100 0000 0000
+>>>>>>> refs/remotes/origin/master
         pTxBufHead->wFIFOCtl |=	FIFOCTL_GRPACK;
     }
     //the rest of pTxBufHead->wFragCtl:FragTyp will be set later in s_vFillFragParameter()
 
     //Set RrvTime/RTS/CTS Buffer
     if (byPktType == PK_TYPE_11GB || byPktType == PK_TYPE_11GA) {//802.11g packet
+<<<<<<< HEAD
 
         pvRrvTime = (PSRrvTime_gCTS) (pbyTxBufferAddr + wTxBufSize);
         pMICHDR = NULL;
@@ -2129,11 +3358,26 @@ CMD_STATUS csMgmt_xmit(
 	   &(pPacket->p80211Header->sA3.abyAddr1[0]),
 	   ETH_ALEN);
     memcpy(&(sEthHeader.abySrcAddr[0]),
+=======
+	cbHeaderSize = wTxBufSize + sizeof(struct vnt_rrv_time_cts) +
+		sizeof(struct vnt_cts);
+    }
+    else { // 802.11a/b packet
+	cbHeaderSize = wTxBufSize + sizeof(struct vnt_rrv_time_ab) +
+		sizeof(struct vnt_tx_datahead_ab);
+    }
+
+    memcpy(&(sEthHeader.h_dest[0]),
+	   &(pPacket->p80211Header->sA3.abyAddr1[0]),
+	   ETH_ALEN);
+    memcpy(&(sEthHeader.h_source[0]),
+>>>>>>> refs/remotes/origin/master
 	   &(pPacket->p80211Header->sA3.abyAddr2[0]),
 	   ETH_ALEN);
     //=========================
     //    No Fragmentation
     //=========================
+<<<<<<< HEAD
     pTxBufHead->wFragCtl |= (WORD)FRAGCTL_NONFRAG;
 
 
@@ -2146,10 +3390,21 @@ CMD_STATUS csMgmt_xmit(
                                 0, 0, 1, AUTO_FB_NONE);
 
     pMACHeader = (PS802_11Header) (pbyTxBufferAddr + cbHeaderSize);
+=======
+    pTxBufHead->wFragCtl |= (u16)FRAGCTL_NONFRAG;
+
+	/* Fill FIFO,RrvTime,RTS,and CTS */
+	uDuration = s_vGenerateTxParameter(pDevice, byPktType, wCurrentRate,
+		pTX_Buffer, &pMICHDR, 0,
+		cbFrameSize, bNeedACK, TYPE_TXDMA0, &sEthHeader, false);
+
+    pMACHeader = (struct ieee80211_hdr *) (pbyTxBufferAddr + cbHeaderSize);
+>>>>>>> refs/remotes/origin/master
 
     cbReqCount = cbHeaderSize + cbMacHdLen + uPadding + cbIVlen + cbFrameBodySize;
 
     if (WLAN_GET_FC_ISWEP(pPacket->p80211Header->sA4.wFrameCtl) != 0) {
+<<<<<<< HEAD
         PBYTE           pbyIVHead;
         PBYTE           pbyPayloadHead;
         PBYTE           pbyBSSID;
@@ -2165,6 +3420,23 @@ CMD_STATUS csMgmt_xmit(
                 if (KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, PAIRWISE_KEY, &pTransmitKey) == FALSE) {
                     // get group key
                     if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, GROUP_KEY, &pTransmitKey) == TRUE) {
+=======
+        u8 *           pbyIVHead;
+        u8 *           pbyPayloadHead;
+        u8 *           pbyBSSID;
+        PSKeyItem       pTransmitKey = NULL;
+
+        pbyIVHead = (u8 *)(pbyTxBufferAddr + cbHeaderSize + cbMacHdLen + uPadding);
+        pbyPayloadHead = (u8 *)(pbyTxBufferAddr + cbHeaderSize + cbMacHdLen + uPadding + cbIVlen);
+        do {
+            if ((pDevice->eOPMode == OP_MODE_INFRASTRUCTURE) &&
+                (pDevice->bLinkPass == true)) {
+                pbyBSSID = pDevice->abyBSSID;
+                // get pairwise key
+                if (KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, PAIRWISE_KEY, &pTransmitKey) == false) {
+                    // get group key
+                    if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, GROUP_KEY, &pTransmitKey) == true) {
+>>>>>>> refs/remotes/origin/master
                         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Get GTK.\n");
                         break;
                     }
@@ -2175,12 +3447,17 @@ CMD_STATUS csMgmt_xmit(
             }
             // get group key
             pbyBSSID = pDevice->abyBroadcastAddr;
+<<<<<<< HEAD
             if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, GROUP_KEY, &pTransmitKey) == FALSE) {
+=======
+            if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, GROUP_KEY, &pTransmitKey) == false) {
+>>>>>>> refs/remotes/origin/master
                 pTransmitKey = NULL;
                 DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"KEY is NULL. OP Mode[%d]\n", pDevice->eOPMode);
             } else {
                 DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Get GTK.\n");
             }
+<<<<<<< HEAD
         } while(FALSE);
         //Fill TXKEY
         s_vFillTxKey(pDevice, (PBYTE)(pTxBufHead->adwTxKey), pbyIVHead, pTransmitKey,
@@ -2188,6 +3465,15 @@ CMD_STATUS csMgmt_xmit(
 
         memcpy(pMACHeader, pPacket->p80211Header, cbMacHdLen);
         memcpy(pbyPayloadHead, ((PBYTE)(pPacket->p80211Header) + cbMacHdLen),
+=======
+        } while(false);
+        //Fill TXKEY
+	s_vFillTxKey(pDevice, pTxBufHead, pbyIVHead, pTransmitKey,
+                     (u8 *)pMACHeader, (u16)cbFrameBodySize, NULL);
+
+        memcpy(pMACHeader, pPacket->p80211Header, cbMacHdLen);
+        memcpy(pbyPayloadHead, ((u8 *)(pPacket->p80211Header) + cbMacHdLen),
+>>>>>>> refs/remotes/origin/master
                  cbFrameBodySize);
     }
     else {
@@ -2195,13 +3481,18 @@ CMD_STATUS csMgmt_xmit(
         memcpy(pMACHeader, pPacket->p80211Header, pPacket->cbMPDULen);
     }
 
+<<<<<<< HEAD
     pMACHeader->wSeqCtl = cpu_to_le16(pDevice->wSeqCounter << 4);
+=======
+    pMACHeader->seq_ctrl = cpu_to_le16(pDevice->wSeqCounter << 4);
+>>>>>>> refs/remotes/origin/master
     pDevice->wSeqCounter++ ;
     if (pDevice->wSeqCounter > 0x0fff)
         pDevice->wSeqCounter = 0;
 
     if (bIsPSPOLL) {
         // The MAC will automatically replace the Duration-field of MAC header by Duration-field
+<<<<<<< HEAD
         // of  FIFO control header.
         // This will cause AID-field of PS-POLL packet be incorrect (Because PS-POLL's AID field is
         // in the same place of other packet's Duration-field).
@@ -2217,10 +3508,34 @@ CMD_STATUS csMgmt_xmit(
 
     pTX_Buffer->wTxByteCount = cpu_to_le16((WORD)(cbReqCount));
     pTX_Buffer->byPKTNO = (BYTE) (((wCurrentRate<<4) &0x00F0) | ((pDevice->wSeqCounter - 1) & 0x000F));
+=======
+        // of FIFO control header.
+        // This will cause AID-field of PS-POLL packet be incorrect (Because PS-POLL's AID field is
+        // in the same place of other packet's Duration-field).
+        // And it will cause Cisco-AP to issue Disassociation-packet
+	if (byPktType == PK_TYPE_11GB || byPktType == PK_TYPE_11GA) {
+		struct vnt_tx_datahead_g *data_head = &pTX_Buffer->tx_head.
+						tx_cts.tx.head.cts_g.data_head;
+		data_head->wDuration_a =
+			cpu_to_le16(pPacket->p80211Header->sA2.wDurationID);
+		data_head->wDuration_b =
+			cpu_to_le16(pPacket->p80211Header->sA2.wDurationID);
+	} else {
+		struct vnt_tx_datahead_ab *data_head = &pTX_Buffer->tx_head.
+					tx_ab.tx.head.data_head_ab;
+		data_head->wDuration =
+			cpu_to_le16(pPacket->p80211Header->sA2.wDurationID);
+	}
+    }
+
+    pTX_Buffer->wTxByteCount = cpu_to_le16((u16)(cbReqCount));
+    pTX_Buffer->byPKTNO = (u8) (((wCurrentRate<<4) &0x00F0) | ((pDevice->wSeqCounter - 1) & 0x000F));
+>>>>>>> refs/remotes/origin/master
     pTX_Buffer->byType = 0x00;
 
     pContext->pPacket = NULL;
     pContext->Type = CONTEXT_MGMT_PACKET;
+<<<<<<< HEAD
     pContext->uBufLen = (WORD)cbReqCount + 4;  //USB header
 
     if (WLAN_GET_FC_TODS(pMACHeader->wFrameCtl) == 0) {
@@ -2228,12 +3543,26 @@ CMD_STATUS csMgmt_xmit(
     }
     else {
         s_vSaveTxPktInfo(pDevice, (BYTE) (pTX_Buffer->byPKTNO & 0x0F), &(pMACHeader->abyAddr3[0]),(WORD)cbFrameSize,pTX_Buffer->wFIFOCtl);
+=======
+    pContext->uBufLen = (u16)cbReqCount + 4;  //USB header
+
+    if (WLAN_GET_FC_TODS(pMACHeader->frame_control) == 0) {
+	s_vSaveTxPktInfo(pDevice, (u8)(pTX_Buffer->byPKTNO & 0x0F),
+			&pMACHeader->addr1[0], (u16)cbFrameSize,
+			pTxBufHead->wFIFOCtl);
+    }
+    else {
+	s_vSaveTxPktInfo(pDevice, (u8)(pTX_Buffer->byPKTNO & 0x0F),
+			&pMACHeader->addr3[0], (u16)cbFrameSize,
+			pTxBufHead->wFIFOCtl);
+>>>>>>> refs/remotes/origin/master
     }
 
     PIPEnsSendBulkOut(pDevice,pContext);
     return CMD_STATUS_PENDING;
 }
 
+<<<<<<< HEAD
 
 CMD_STATUS
 csBeacon_xmit(
@@ -2258,11 +3587,29 @@ csBeacon_xmit(
 
 
     pContext = (PUSB_SEND_CONTEXT)s_vGetFreeContext(pDevice);
+=======
+CMD_STATUS csBeacon_xmit(struct vnt_private *pDevice,
+	struct vnt_tx_mgmt *pPacket)
+{
+	struct vnt_beacon_buffer *pTX_Buffer;
+	struct vnt_tx_short_buf_head *short_head;
+	u32 cbFrameSize = pPacket->cbMPDULen + WLAN_FCS_LEN;
+	u32 cbHeaderSize = 0;
+	struct ieee80211_hdr *pMACHeader;
+	u16 wCurrentRate;
+	u32 cbFrameBodySize;
+	u32 cbReqCount;
+	struct vnt_usb_send_context *pContext;
+	CMD_STATUS status;
+
+	pContext = s_vGetFreeContext(pDevice);
+>>>>>>> refs/remotes/origin/master
     if (NULL == pContext) {
         status = CMD_STATUS_RESOURCES;
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"ManagementSend TX...NO CONTEXT!\n");
         return status ;
     }
+<<<<<<< HEAD
     pTX_Buffer = (PBEACON_BUFFER) (&pContext->Data[0]);
     pbyTxBufferAddr = (PBYTE)&(pTX_Buffer->wFIFOCtl);
 
@@ -2313,17 +3660,75 @@ csBeacon_xmit(
 
     pTX_Buffer->wTxByteCount = (WORD)cbReqCount;
     pTX_Buffer->byPKTNO = (BYTE) (((wCurrentRate<<4) &0x00F0) | ((pDevice->wSeqCounter - 1) & 0x000F));
+=======
+
+	pTX_Buffer = (struct vnt_beacon_buffer *)&pContext->Data[0];
+	short_head = &pTX_Buffer->short_head;
+
+    cbFrameBodySize = pPacket->cbPayloadLen;
+
+	cbHeaderSize = sizeof(struct vnt_tx_short_buf_head);
+
+	if (pDevice->byBBType == BB_TYPE_11A) {
+		wCurrentRate = RATE_6M;
+
+		/* Get SignalField,ServiceField,Length */
+		BBvCalculateParameter(pDevice, cbFrameSize, wCurrentRate,
+			PK_TYPE_11A, &short_head->ab);
+
+		/* Get Duration and TimeStampOff */
+		short_head->duration = s_uGetDataDuration(pDevice,
+							PK_TYPE_11A, false);
+		short_head->time_stamp_off =
+				vnt_time_stamp_off(pDevice, wCurrentRate);
+	} else {
+		wCurrentRate = RATE_1M;
+		short_head->fifo_ctl |= FIFOCTL_11B;
+
+		/* Get SignalField,ServiceField,Length */
+		BBvCalculateParameter(pDevice, cbFrameSize, wCurrentRate,
+					PK_TYPE_11B, &short_head->ab);
+
+		/* Get Duration and TimeStampOff */
+		short_head->duration = s_uGetDataDuration(pDevice,
+						PK_TYPE_11B, false);
+		short_head->time_stamp_off =
+			vnt_time_stamp_off(pDevice, wCurrentRate);
+	}
+
+
+	/* Generate Beacon Header */
+	pMACHeader = &pTX_Buffer->hdr;
+
+	memcpy(pMACHeader, pPacket->p80211Header, pPacket->cbMPDULen);
+
+	pMACHeader->duration_id = 0;
+	pMACHeader->seq_ctrl = cpu_to_le16(pDevice->wSeqCounter << 4);
+	pDevice->wSeqCounter++;
+	if (pDevice->wSeqCounter > 0x0fff)
+		pDevice->wSeqCounter = 0;
+
+    cbReqCount = cbHeaderSize + WLAN_HDR_ADDR3_LEN + cbFrameBodySize;
+
+    pTX_Buffer->wTxByteCount = (u16)cbReqCount;
+    pTX_Buffer->byPKTNO = (u8) (((wCurrentRate<<4) &0x00F0) | ((pDevice->wSeqCounter - 1) & 0x000F));
+>>>>>>> refs/remotes/origin/master
     pTX_Buffer->byType = 0x01;
 
     pContext->pPacket = NULL;
     pContext->Type = CONTEXT_MGMT_PACKET;
+<<<<<<< HEAD
     pContext->uBufLen = (WORD)cbReqCount + 4;  //USB header
+=======
+    pContext->uBufLen = (u16)cbReqCount + 4;  //USB header
+>>>>>>> refs/remotes/origin/master
 
     PIPEnsSendBulkOut(pDevice,pContext);
     return CMD_STATUS_PENDING;
 
 }
 
+<<<<<<< HEAD
 
 
 
@@ -2378,6 +3783,41 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
 
 
     pvRrvTime = pMICHDR = pvRTS = pvCTS = pvTxDataHd = NULL;
+=======
+void vDMA0_tx_80211(struct vnt_private *pDevice, struct sk_buff *skb)
+{
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	struct vnt_tx_buffer *pTX_Buffer;
+	struct vnt_tx_fifo_head *pTxBufHead;
+	u8 byPktType;
+	u8 *pbyTxBufferAddr;
+	u32 uDuration, cbReqCount;
+	struct ieee80211_hdr *pMACHeader;
+	u32 cbHeaderSize, cbFrameBodySize;
+	int bNeedACK, bIsPSPOLL = false;
+	u32 cbFrameSize;
+	u32 cbIVlen = 0, cbICVlen = 0, cbMIClen = 0, cbFCSlen = 4;
+	u32 uPadding = 0;
+	u32 cbMICHDR = 0, uLength = 0;
+	u32 dwMICKey0, dwMICKey1;
+	u32 dwMIC_Priority;
+	u32 *pdwMIC_L, *pdwMIC_R;
+	u16 wTxBufSize;
+	u32 cbMacHdLen;
+	struct ethhdr sEthHeader;
+	struct vnt_mic_hdr *pMICHDR;
+	u32 wCurrentRate = RATE_1M;
+	PUWLAN_80211HDR  p80211Header;
+	u32 uNodeIndex = 0;
+	int bNodeExist = false;
+	SKeyItem STempKey;
+	PSKeyItem pTransmitKey = NULL;
+	u8 *pbyIVHead, *pbyPayloadHead, *pbyMacHdr;
+	u32 cbExtSuppRate = 0;
+	struct vnt_usb_send_context *pContext;
+
+	pMICHDR = NULL;
+>>>>>>> refs/remotes/origin/master
 
     if(skb->len <= WLAN_HDR_ADDR3_LEN) {
        cbFrameBodySize = 0;
@@ -2387,7 +3827,11 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
     }
     p80211Header = (PUWLAN_80211HDR)skb->data;
 
+<<<<<<< HEAD
     pContext = (PUSB_SEND_CONTEXT)s_vGetFreeContext(pDevice);
+=======
+	pContext = s_vGetFreeContext(pDevice);
+>>>>>>> refs/remotes/origin/master
 
     if (NULL == pContext) {
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"DMA0 TX...NO CONTEXT!\n");
@@ -2395,11 +3839,18 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
         return ;
     }
 
+<<<<<<< HEAD
     pTX_Buffer = (PTX_BUFFER)(&pContext->Data[0]);
     pbyTxBufferAddr = (PBYTE)(&pTX_Buffer->adwTxKey[0]);
     pTxBufHead = (PSTxBufHead) pbyTxBufferAddr;
     wTxBufSize = sizeof(STxBufHead);
     memset(pTxBufHead, 0, wTxBufSize);
+=======
+	pTX_Buffer = (struct vnt_tx_buffer *)&pContext->Data[0];
+	pTxBufHead = &pTX_Buffer->fifo_head;
+	pbyTxBufferAddr = (u8 *)&pTxBufHead->adwTxKey[0];
+	wTxBufSize = sizeof(struct vnt_tx_fifo_head);
+>>>>>>> refs/remotes/origin/master
 
     if (pDevice->byBBType == BB_TYPE_11A) {
         wCurrentRate = RATE_6M;
@@ -2439,18 +3890,32 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
     pTxBufHead->wTimeStamp = cpu_to_le16(DEFAULT_MGN_LIFETIME_RES_64us);
 
     if (is_multicast_ether_addr(p80211Header->sA3.abyAddr1)) {
+<<<<<<< HEAD
         bNeedACK = FALSE;
         if (pDevice->bEnableHostWEP) {
             uNodeIndex = 0;
             bNodeExist = TRUE;
+=======
+        bNeedACK = false;
+        if (pDevice->bEnableHostWEP) {
+            uNodeIndex = 0;
+            bNodeExist = true;
+>>>>>>> refs/remotes/origin/master
         }
     }
     else {
         if (pDevice->bEnableHostWEP) {
+<<<<<<< HEAD
             if (BSSbIsSTAInNodeDB(pDevice, (PBYTE)(p80211Header->sA3.abyAddr1), &uNodeIndex))
                 bNodeExist = TRUE;
         }
         bNeedACK = TRUE;
+=======
+            if (BSSbIsSTAInNodeDB(pDevice, (u8 *)(p80211Header->sA3.abyAddr1), &uNodeIndex))
+                bNodeExist = true;
+        }
+        bNeedACK = true;
+>>>>>>> refs/remotes/origin/master
         pTxBufHead->wFIFOCtl |= FIFOCTL_NEEDACK;
     };
 
@@ -2463,7 +3928,11 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
 
         // probe-response don't retry
         //if ((p80211Header->sA4.wFrameCtl & TYPE_SUBTYPE_MASK) == TYPE_MGMT_PROBE_RSP) {
+<<<<<<< HEAD
         //     bNeedACK = FALSE;
+=======
+        //     bNeedACK = false;
+>>>>>>> refs/remotes/origin/master
         //     pTxBufHead->wFIFOCtl  &= (~FIFOCTL_NEEDACK);
         //}
     }
@@ -2471,13 +3940,21 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
     pTxBufHead->wFIFOCtl |= (FIFOCTL_GENINT | FIFOCTL_ISDMA0);
 
     if ((p80211Header->sA4.wFrameCtl & TYPE_SUBTYPE_MASK) == TYPE_CTL_PSPOLL) {
+<<<<<<< HEAD
         bIsPSPOLL = TRUE;
+=======
+        bIsPSPOLL = true;
+>>>>>>> refs/remotes/origin/master
         cbMacHdLen = WLAN_HDR_ADDR2_LEN;
     } else {
         cbMacHdLen = WLAN_HDR_ADDR3_LEN;
     }
 
+<<<<<<< HEAD
     // hostapd deamon ext support rate patch
+=======
+    // hostapd daemon ext support rate patch
+>>>>>>> refs/remotes/origin/master
     if (WLAN_GET_FC_FSTYPE(p80211Header->sA4.wFrameCtl) == WLAN_FSTYPE_ASSOCRESP) {
 
         if (((PWLAN_IE_SUPP_RATES)pMgmt->abyCurrSuppRates)->len != 0) {
@@ -2493,15 +3970,23 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
          }
     }
 
+<<<<<<< HEAD
 
     //Set FRAGCTL_MACHDCNT
     pTxBufHead->wFragCtl |= cpu_to_le16((WORD)cbMacHdLen << 10);
+=======
+    //Set FRAGCTL_MACHDCNT
+    pTxBufHead->wFragCtl |= cpu_to_le16((u16)cbMacHdLen << 10);
+>>>>>>> refs/remotes/origin/master
 
     // Notes:
     // Although spec says MMPDU can be fragmented; In most case,
     // no one will send a MMPDU under fragmentation. With RTS may occur.
+<<<<<<< HEAD
     pDevice->bAES = FALSE;  //Set FRAGCTL_WEPTYP
 
+=======
+>>>>>>> refs/remotes/origin/master
 
     if (WLAN_GET_FC_ISWEP(p80211Header->sA4.wFrameCtl) != 0) {
         if (pDevice->eEncryptionStatus == Ndis802_11Encryption1Enabled) {
@@ -2521,9 +4006,14 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
         else if (pDevice->eEncryptionStatus == Ndis802_11Encryption3Enabled) {
             cbIVlen = 8;//RSN Header
             cbICVlen = 8;//MIC
+<<<<<<< HEAD
             cbMICHDR = sizeof(SMICHDRHead);
             pTxBufHead->wFragCtl |= FRAGCTL_AES;
             pDevice->bAES = TRUE;
+=======
+	    cbMICHDR = sizeof(struct vnt_mic_hdr);
+            pTxBufHead->wFragCtl |= FRAGCTL_AES;
+>>>>>>> refs/remotes/origin/master
         }
         //MAC Header should be padding 0 to DW alignment.
         uPadding = 4 - (cbMacHdLen%4);
@@ -2533,11 +4023,16 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
     cbFrameSize = cbMacHdLen + cbFrameBodySize + cbIVlen + cbMIClen + cbICVlen + cbFCSlen + cbExtSuppRate;
 
     //Set FIFOCTL_GrpAckPolicy
+<<<<<<< HEAD
     if (pDevice->bGrpAckPolicy == TRUE) {//0000 0100 0000 0000
+=======
+    if (pDevice->bGrpAckPolicy == true) {//0000 0100 0000 0000
+>>>>>>> refs/remotes/origin/master
         pTxBufHead->wFIFOCtl |=	FIFOCTL_GRPACK;
     }
     //the rest of pTxBufHead->wFragCtl:FragTyp will be set later in s_vFillFragParameter()
 
+<<<<<<< HEAD
 
     if (byPktType == PK_TYPE_11GB || byPktType == PK_TYPE_11GA) {//802.11g packet
 
@@ -2564,11 +4059,27 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
 	   &(p80211Header->sA3.abyAddr1[0]),
 	   ETH_ALEN);
     memcpy(&(sEthHeader.abySrcAddr[0]),
+=======
+    if (byPktType == PK_TYPE_11GB || byPktType == PK_TYPE_11GA) {//802.11g packet
+	cbHeaderSize = wTxBufSize + sizeof(struct vnt_rrv_time_cts) + cbMICHDR +
+		sizeof(struct vnt_cts);
+
+    }
+    else {//802.11a/b packet
+	cbHeaderSize = wTxBufSize + sizeof(struct vnt_rrv_time_ab) + cbMICHDR +
+					sizeof(struct vnt_tx_datahead_ab);
+    }
+    memcpy(&(sEthHeader.h_dest[0]),
+	   &(p80211Header->sA3.abyAddr1[0]),
+	   ETH_ALEN);
+    memcpy(&(sEthHeader.h_source[0]),
+>>>>>>> refs/remotes/origin/master
 	   &(p80211Header->sA3.abyAddr2[0]),
 	   ETH_ALEN);
     //=========================
     //    No Fragmentation
     //=========================
+<<<<<<< HEAD
     pTxBufHead->wFragCtl |= (WORD)FRAGCTL_NONFRAG;
 
 
@@ -2587,15 +4098,38 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
     pbyMacHdr = (PBYTE)(pbyTxBufferAddr + cbHeaderSize);
     pbyPayloadHead = (PBYTE)(pbyMacHdr + cbMacHdLen + uPadding + cbIVlen);
     pbyIVHead = (PBYTE)(pbyMacHdr + cbMacHdLen + uPadding);
+=======
+    pTxBufHead->wFragCtl |= (u16)FRAGCTL_NONFRAG;
+
+	/* Fill FIFO,RrvTime,RTS,and CTS */
+	uDuration = s_vGenerateTxParameter(pDevice, byPktType, wCurrentRate,
+		pTX_Buffer, &pMICHDR, cbMICHDR,
+		cbFrameSize, bNeedACK, TYPE_TXDMA0, &sEthHeader, false);
+
+	pMACHeader = (struct ieee80211_hdr *) (pbyTxBufferAddr + cbHeaderSize);
+
+    cbReqCount = cbHeaderSize + cbMacHdLen + uPadding + cbIVlen + (cbFrameBodySize + cbMIClen) + cbExtSuppRate;
+
+    pbyMacHdr = (u8 *)(pbyTxBufferAddr + cbHeaderSize);
+    pbyPayloadHead = (u8 *)(pbyMacHdr + cbMacHdLen + uPadding + cbIVlen);
+    pbyIVHead = (u8 *)(pbyMacHdr + cbMacHdLen + uPadding);
+>>>>>>> refs/remotes/origin/master
 
     // Copy the Packet into a tx Buffer
     memcpy(pbyMacHdr, skb->data, cbMacHdLen);
 
     // version set to 0, patch for hostapd deamon
+<<<<<<< HEAD
     pMACHeader->wFrameCtl &= cpu_to_le16(0xfffc);
     memcpy(pbyPayloadHead, (skb->data + cbMacHdLen), cbFrameBodySize);
 
     // replace support rate, patch for hostapd deamon( only support 11M)
+=======
+    pMACHeader->frame_control &= cpu_to_le16(0xfffc);
+    memcpy(pbyPayloadHead, (skb->data + cbMacHdLen), cbFrameBodySize);
+
+    // replace support rate, patch for hostapd daemon( only support 11M)
+>>>>>>> refs/remotes/origin/master
     if (WLAN_GET_FC_FSTYPE(p80211Header->sA4.wFrameCtl) == WLAN_FSTYPE_ASSOCRESP) {
         if (cbExtSuppRate != 0) {
             if (((PWLAN_IE_SUPP_RATES)pMgmt->abyCurrSuppRates)->len != 0)
@@ -2629,6 +4163,7 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
 
         if ((pTransmitKey != NULL) && (pTransmitKey->byCipherSuite == KEY_CTL_TKIP)) {
 
+<<<<<<< HEAD
             dwMICKey0 = *(PDWORD)(&pTransmitKey->abyKey[16]);
             dwMICKey1 = *(PDWORD)(&pTransmitKey->abyKey[20]);
 
@@ -2637,6 +4172,19 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
             MIC_vAppend((PBYTE)&(sEthHeader.abyDstAddr[0]), 12);
             dwMIC_Priority = 0;
             MIC_vAppend((PBYTE)&dwMIC_Priority, 4);
+<<<<<<< HEAD
+=======
+            dwMICKey0 = *(u32 *)(&pTransmitKey->abyKey[16]);
+            dwMICKey1 = *(u32 *)(&pTransmitKey->abyKey[20]);
+
+            // DO Software Michael
+            MIC_vInit(dwMICKey0, dwMICKey1);
+            MIC_vAppend((u8 *)&(sEthHeader.h_dest[0]), 12);
+            dwMIC_Priority = 0;
+            MIC_vAppend((u8 *)&dwMIC_Priority, 4);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"DMA0_tx_8021:MIC KEY:"\
 			" %X, %X\n", dwMICKey0, dwMICKey1);
 
@@ -2644,16 +4192,28 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
 
             MIC_vAppend((pbyTxBufferAddr + uLength), cbFrameBodySize);
 
+<<<<<<< HEAD
             pdwMIC_L = (PDWORD)(pbyTxBufferAddr + uLength + cbFrameBodySize);
             pdwMIC_R = (PDWORD)(pbyTxBufferAddr + uLength + cbFrameBodySize + 4);
+=======
+            pdwMIC_L = (u32 *)(pbyTxBufferAddr + uLength + cbFrameBodySize);
+            pdwMIC_R = (u32 *)(pbyTxBufferAddr + uLength + cbFrameBodySize + 4);
+>>>>>>> refs/remotes/origin/master
 
             MIC_vGetMIC(pdwMIC_L, pdwMIC_R);
             MIC_vUnInit();
 
+<<<<<<< HEAD
             if (pDevice->bTxMICFail == TRUE) {
                 *pdwMIC_L = 0;
                 *pdwMIC_R = 0;
                 pDevice->bTxMICFail = FALSE;
+=======
+            if (pDevice->bTxMICFail == true) {
+                *pdwMIC_L = 0;
+                *pdwMIC_R = 0;
+                pDevice->bTxMICFail = false;
+>>>>>>> refs/remotes/origin/master
             }
 
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"uLength: %d, %d\n", uLength, cbFrameBodySize);
@@ -2663,8 +4223,13 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
 
         }
 
+<<<<<<< HEAD
         s_vFillTxKey(pDevice, (PBYTE)(pTxBufHead->adwTxKey), pbyIVHead, pTransmitKey,
                      pbyMacHdr, (WORD)cbFrameBodySize, (PBYTE)pMICHDR);
+=======
+	s_vFillTxKey(pDevice, pTxBufHead, pbyIVHead, pTransmitKey,
+		pbyMacHdr, (u16)cbFrameBodySize, pMICHDR);
+>>>>>>> refs/remotes/origin/master
 
         if (pDevice->bEnableHostWEP) {
             pMgmt->sNodeDBTable[uNodeIndex].dwTSC47_16 = pTransmitKey->dwTSC47_16;
@@ -2672,22 +4237,34 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
         }
 
         if ((pDevice->byLocalID <= REV_ID_VT3253_A1)) {
+<<<<<<< HEAD
             s_vSWencryption(pDevice, pTransmitKey, pbyPayloadHead, (WORD)(cbFrameBodySize + cbMIClen));
         }
     }
 
     pMACHeader->wSeqCtl = cpu_to_le16(pDevice->wSeqCounter << 4);
+=======
+            s_vSWencryption(pDevice, pTransmitKey, pbyPayloadHead, (u16)(cbFrameBodySize + cbMIClen));
+        }
+    }
+
+    pMACHeader->seq_ctrl = cpu_to_le16(pDevice->wSeqCounter << 4);
+>>>>>>> refs/remotes/origin/master
     pDevice->wSeqCounter++ ;
     if (pDevice->wSeqCounter > 0x0fff)
         pDevice->wSeqCounter = 0;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
     if (bIsPSPOLL) {
         // The MAC will automatically replace the Duration-field of MAC header by Duration-field
         // of  FIFO control header.
         // This will cause AID-field of PS-POLL packet be incorrect (Because PS-POLL's AID field is
         // in the same place of other packet's Duration-field).
         // And it will cause Cisco-AP to issue Disassociation-packet
+<<<<<<< HEAD
         if (byPktType == PK_TYPE_11GB || byPktType == PK_TYPE_11GA) {
             ((PSTxDataHead_g)pvTxDataHd)->wDuration_a = cpu_to_le16(p80211Header->sA2.wDurationID);
             ((PSTxDataHead_g)pvTxDataHd)->wDuration_b = cpu_to_le16(p80211Header->sA2.wDurationID);
@@ -2698,10 +4275,30 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
 
     pTX_Buffer->wTxByteCount = cpu_to_le16((WORD)(cbReqCount));
     pTX_Buffer->byPKTNO = (BYTE) (((wCurrentRate<<4) &0x00F0) | ((pDevice->wSeqCounter - 1) & 0x000F));
+=======
+	if (byPktType == PK_TYPE_11GB || byPktType == PK_TYPE_11GA) {
+		struct vnt_tx_datahead_g *data_head = &pTX_Buffer->tx_head.
+						tx_cts.tx.head.cts_g.data_head;
+		data_head->wDuration_a =
+			cpu_to_le16(p80211Header->sA2.wDurationID);
+		data_head->wDuration_b =
+			cpu_to_le16(p80211Header->sA2.wDurationID);
+	} else {
+		struct vnt_tx_datahead_ab *data_head = &pTX_Buffer->tx_head.
+					tx_ab.tx.head.data_head_ab;
+		data_head->wDuration =
+			cpu_to_le16(p80211Header->sA2.wDurationID);
+	}
+    }
+
+    pTX_Buffer->wTxByteCount = cpu_to_le16((u16)(cbReqCount));
+    pTX_Buffer->byPKTNO = (u8) (((wCurrentRate<<4) &0x00F0) | ((pDevice->wSeqCounter - 1) & 0x000F));
+>>>>>>> refs/remotes/origin/master
     pTX_Buffer->byType = 0x00;
 
     pContext->pPacket = skb;
     pContext->Type = CONTEXT_MGMT_PACKET;
+<<<<<<< HEAD
     pContext->uBufLen = (WORD)cbReqCount + 4;  //USB header
 
     if (WLAN_GET_FC_TODS(pMACHeader->wFrameCtl) == 0) {
@@ -2709,15 +4306,31 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
     }
     else {
         s_vSaveTxPktInfo(pDevice, (BYTE) (pTX_Buffer->byPKTNO & 0x0F), &(pMACHeader->abyAddr3[0]),(WORD)cbFrameSize,pTX_Buffer->wFIFOCtl);
+=======
+    pContext->uBufLen = (u16)cbReqCount + 4;  //USB header
+
+    if (WLAN_GET_FC_TODS(pMACHeader->frame_control) == 0) {
+	s_vSaveTxPktInfo(pDevice, (u8)(pTX_Buffer->byPKTNO & 0x0F),
+			&pMACHeader->addr1[0], (u16)cbFrameSize,
+			pTxBufHead->wFIFOCtl);
+    }
+    else {
+	s_vSaveTxPktInfo(pDevice, (u8)(pTX_Buffer->byPKTNO & 0x0F),
+			&pMACHeader->addr3[0], (u16)cbFrameSize,
+			pTxBufHead->wFIFOCtl);
+>>>>>>> refs/remotes/origin/master
     }
     PIPEnsSendBulkOut(pDevice,pContext);
     return ;
 
 }
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 //TYPE_AC0DMA data tx
 /*
  * Description:
@@ -2733,6 +4346,7 @@ vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb) {
  * Return Value: NULL
  */
 
+<<<<<<< HEAD
 int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
 {
     PSMgmtObject    pMgmt = &(pDevice->sMgmtObj);
@@ -2757,6 +4371,32 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
     struct net_device_stats* pStats = &pDevice->stats;
      BOOL            bTxeapol_key = FALSE;
 
+=======
+int nsDMA_tx_packet(struct vnt_private *pDevice,
+	u32 uDMAIdx, struct sk_buff *skb)
+{
+	struct net_device_stats *pStats = &pDevice->stats;
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	struct vnt_tx_buffer *pTX_Buffer;
+	u32 BytesToWrite = 0, uHeaderLen = 0;
+	u32 uNodeIndex = 0;
+	u8 byMask[8] = {1, 2, 4, 8, 0x10, 0x20, 0x40, 0x80};
+	u16 wAID;
+	u8 byPktType;
+	int bNeedEncryption = false;
+	PSKeyItem pTransmitKey = NULL;
+	SKeyItem STempKey;
+	int ii;
+	int bTKIP_UseGTK = false;
+	int bNeedDeAuth = false;
+	u8 *pbyBSSID;
+	int bNodeExist = false;
+	struct vnt_usb_send_context *pContext;
+	bool fConvertedPacket;
+	u32 status;
+	u16 wKeepRate = pDevice->wCurrentRate;
+	int bTxeapol_key = false;
+>>>>>>> refs/remotes/origin/master
 
     if (pMgmt->eCurrMode == WMAC_MODE_ESS_AP) {
 
@@ -2765,9 +4405,15 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
             return 0;
         }
 
+<<<<<<< HEAD
 	if (is_multicast_ether_addr((PBYTE)(skb->data))) {
             uNodeIndex = 0;
             bNodeExist = TRUE;
+=======
+	if (is_multicast_ether_addr((u8 *)(skb->data))) {
+            uNodeIndex = 0;
+            bNodeExist = true;
+>>>>>>> refs/remotes/origin/master
             if (pMgmt->sNodeDBTable[0].bPSEnable) {
 
                 skb_queue_tail(&(pMgmt->sNodeDBTable[0].sTxPSQueue), skb);
@@ -2776,7 +4422,11 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
                 pMgmt->abyPSTxMap[0] |= byMask[0];
                 return 0;
             }
+<<<<<<< HEAD
             // muticast/broadcast data rate
+=======
+            // multicast/broadcast data rate
+>>>>>>> refs/remotes/origin/master
 
             if (pDevice->byBBType != BB_TYPE_11A)
                 pDevice->wCurrentRate = RATE_2M;
@@ -2787,7 +4437,11 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
 
         }else {
 
+<<<<<<< HEAD
             if (BSSbIsSTAInNodeDB(pDevice, (PBYTE)(skb->data), &uNodeIndex)) {
+=======
+            if (BSSbIsSTAInNodeDB(pDevice, (u8 *)(skb->data), &uNodeIndex)) {
+>>>>>>> refs/remotes/origin/master
 
                 if (pMgmt->sNodeDBTable[uNodeIndex].bPSEnable) {
 
@@ -2812,18 +4466,30 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
                 }else {
                     pDevice->byPreambleType = PREAMBLE_LONG;
                 }
+<<<<<<< HEAD
                 bNodeExist = TRUE;
             }
         }
 
         if (bNodeExist == FALSE) {
+=======
+                bNodeExist = true;
+            }
+        }
+
+        if (bNodeExist == false) {
+>>>>>>> refs/remotes/origin/master
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"Unknown STA not found in node DB \n");
             dev_kfree_skb_irq(skb);
             return 0;
         }
     }
 
+<<<<<<< HEAD
     pContext = (PUSB_SEND_CONTEXT)s_vGetFreeContext(pDevice);
+=======
+	pContext = s_vGetFreeContext(pDevice);
+>>>>>>> refs/remotes/origin/master
 
     if (pContext == NULL) {
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG" pContext == NULL\n");
@@ -2831,6 +4497,7 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
         return STATUS_RESOURCES;
     }
 
+<<<<<<< HEAD
     memcpy(pDevice->sTxEthHeader.abyDstAddr, (PBYTE)(skb->data), ETH_HLEN);
 
 //mike add:station mode check eapol-key challenge--->
@@ -2839,11 +4506,25 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
     BYTE  Packet_Type;           //802.1x Authentication
     BYTE  Descriptor_type;
     WORD Key_info;
+=======
+    memcpy(pDevice->sTxEthHeader.h_dest, (u8 *)(skb->data), ETH_HLEN);
+
+//mike add:station mode check eapol-key challenge--->
+{
+    u8  Protocol_Version;    //802.1x Authentication
+    u8  Packet_Type;           //802.1x Authentication
+    u8  Descriptor_type;
+    u16 Key_info;
+>>>>>>> refs/remotes/origin/master
 
     Protocol_Version = skb->data[ETH_HLEN];
     Packet_Type = skb->data[ETH_HLEN+1];
     Descriptor_type = skb->data[ETH_HLEN+1+1+2];
     Key_info = (skb->data[ETH_HLEN+1+1+2+1] << 8)|(skb->data[ETH_HLEN+1+1+2+2]);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pDevice->sTxEthHeader.wType == cpu_to_be16(ETH_P_PAE)) {
 		/* 802.1x OR eapol-key challenge frame transfer */
 		if (((Protocol_Version == 1) || (Protocol_Version == 2)) &&
@@ -2857,13 +4538,34 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
 			  }
 			  else {
                                pDevice->fWPA_Authened = TRUE;
+=======
+	if (pDevice->sTxEthHeader.h_proto == cpu_to_be16(ETH_P_PAE)) {
+		/* 802.1x OR eapol-key challenge frame transfer */
+		if (((Protocol_Version == 1) || (Protocol_Version == 2)) &&
+			(Packet_Type == 3)) {
+                        bTxeapol_key = true;
+                       if(!(Key_info & BIT3) &&  //WPA or RSN group-key challenge
+			   (Key_info & BIT8) && (Key_info & BIT9)) {    //send 2/2 key
+			  if(Descriptor_type==254) {
+                               pDevice->fWPA_Authened = true;
+			     PRINT_K("WPA ");
+			  }
+			  else {
+                               pDevice->fWPA_Authened = true;
+>>>>>>> refs/remotes/origin/master
 			     PRINT_K("WPA2(re-keying) ");
 			  }
 			  PRINT_K("Authentication completed!!\n");
                         }
+<<<<<<< HEAD
 		    else if((Key_info & BIT3) && (Descriptor_type==2) &&  //RSN pairse-key challenge
 			       (Key_info & BIT8) && (Key_info & BIT9)) {
 			  pDevice->fWPA_Authened = TRUE;
+=======
+		    else if((Key_info & BIT3) && (Descriptor_type==2) &&  //RSN pairwise-key challenge
+			       (Key_info & BIT8) && (Key_info & BIT9)) {
+			  pDevice->fWPA_Authened = true;
+>>>>>>> refs/remotes/origin/master
                             PRINT_K("WPA2 Authentication completed!!\n");
 		     }
              }
@@ -2871,18 +4573,30 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
 }
 //mike add:station mode check eapol-key challenge<---
 
+<<<<<<< HEAD
     if (pDevice->bEncryptionEnable == TRUE) {
         bNeedEncryption = TRUE;
+=======
+    if (pDevice->bEncryptionEnable == true) {
+        bNeedEncryption = true;
+>>>>>>> refs/remotes/origin/master
         // get Transmit key
         do {
             if ((pMgmt->eCurrMode == WMAC_MODE_ESS_STA) &&
                 (pMgmt->eCurrState == WMAC_STATE_ASSOC)) {
                 pbyBSSID = pDevice->abyBSSID;
                 // get pairwise key
+<<<<<<< HEAD
                 if (KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, PAIRWISE_KEY, &pTransmitKey) == FALSE) {
                     // get group key
                     if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, GROUP_KEY, &pTransmitKey) == TRUE) {
                         bTKIP_UseGTK = TRUE;
+=======
+                if (KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, PAIRWISE_KEY, &pTransmitKey) == false) {
+                    // get group key
+                    if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, GROUP_KEY, &pTransmitKey) == true) {
+                        bTKIP_UseGTK = true;
+>>>>>>> refs/remotes/origin/master
                         DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"Get GTK.\n");
                         break;
                     }
@@ -2891,20 +4605,33 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
                     break;
                 }
             }else if (pMgmt->eCurrMode == WMAC_MODE_IBSS_STA) {
+<<<<<<< HEAD
 
                 pbyBSSID = pDevice->sTxEthHeader.abyDstAddr;  //TO_DS = 0 and FROM_DS = 0 --> 802.11 MAC Address1
+=======
+	      /* TO_DS = 0 and FROM_DS = 0 --> 802.11 MAC Address1 */
+                pbyBSSID = pDevice->sTxEthHeader.h_dest;
+>>>>>>> refs/remotes/origin/master
                 DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"IBSS Serach Key: \n");
                 for (ii = 0; ii< 6; ii++)
                     DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"%x \n", *(pbyBSSID+ii));
                 DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"\n");
 
                 // get pairwise key
+<<<<<<< HEAD
                 if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, PAIRWISE_KEY, &pTransmitKey) == TRUE)
+=======
+                if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, PAIRWISE_KEY, &pTransmitKey) == true)
+>>>>>>> refs/remotes/origin/master
                     break;
             }
             // get group key
             pbyBSSID = pDevice->abyBroadcastAddr;
+<<<<<<< HEAD
             if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, GROUP_KEY, &pTransmitKey) == FALSE) {
+=======
+            if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, GROUP_KEY, &pTransmitKey) == false) {
+>>>>>>> refs/remotes/origin/master
                 pTransmitKey = NULL;
                 if (pMgmt->eCurrMode == WMAC_MODE_IBSS_STA) {
                     DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"IBSS and KEY is NULL. [%d]\n", pMgmt->eCurrMode);
@@ -2912,15 +4639,26 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
                 else
                     DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"NOT IBSS and KEY is NULL. [%d]\n", pMgmt->eCurrMode);
             } else {
+<<<<<<< HEAD
                 bTKIP_UseGTK = TRUE;
                 DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"Get GTK.\n");
             }
         } while(FALSE);
+=======
+                bTKIP_UseGTK = true;
+                DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"Get GTK.\n");
+            }
+        } while(false);
+>>>>>>> refs/remotes/origin/master
     }
 
     if (pDevice->bEnableHostWEP) {
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"acdma0: STA index %d\n", uNodeIndex);
+<<<<<<< HEAD
         if (pDevice->bEncryptionEnable == TRUE) {
+=======
+        if (pDevice->bEncryptionEnable == true) {
+>>>>>>> refs/remotes/origin/master
             pTransmitKey = &STempKey;
             pTransmitKey->byCipherSuite = pMgmt->sNodeDBTable[uNodeIndex].byCipherSuite;
             pTransmitKey->dwKeyIndex = pMgmt->sNodeDBTable[uNodeIndex].dwKeyIndex;
@@ -2934,14 +4672,22 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
          }
     }
 
+<<<<<<< HEAD
     byPktType = (BYTE)pDevice->byPacketType;
+=======
+    byPktType = (u8)pDevice->byPacketType;
+>>>>>>> refs/remotes/origin/master
 
     if (pDevice->bFixRate) {
         if (pDevice->byBBType == BB_TYPE_11B) {
             if (pDevice->uConnectionRate >= RATE_11M) {
                 pDevice->wCurrentRate = RATE_11M;
             } else {
+<<<<<<< HEAD
                 pDevice->wCurrentRate = (WORD)pDevice->uConnectionRate;
+=======
+                pDevice->wCurrentRate = (u16)pDevice->uConnectionRate;
+>>>>>>> refs/remotes/origin/master
             }
         } else {
             if ((pDevice->byBBType == BB_TYPE_11A) &&
@@ -2951,21 +4697,33 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
                 if (pDevice->uConnectionRate >= RATE_54M)
                     pDevice->wCurrentRate = RATE_54M;
                 else
+<<<<<<< HEAD
                     pDevice->wCurrentRate = (WORD)pDevice->uConnectionRate;
+=======
+                    pDevice->wCurrentRate = (u16)pDevice->uConnectionRate;
+>>>>>>> refs/remotes/origin/master
             }
         }
     }
     else {
         if (pDevice->eOPMode == OP_MODE_ADHOC) {
             // Adhoc Tx rate decided from node DB
+<<<<<<< HEAD
 	    if (is_multicast_ether_addr(pDevice->sTxEthHeader.abyDstAddr)) {
+=======
+	    if (is_multicast_ether_addr(pDevice->sTxEthHeader.h_dest)) {
+>>>>>>> refs/remotes/origin/master
                 // Multicast use highest data rate
                 pDevice->wCurrentRate = pMgmt->sNodeDBTable[0].wTxDataRate;
                 // preamble type
                 pDevice->byPreambleType = pDevice->byShortPreamble;
             }
             else {
+<<<<<<< HEAD
                 if(BSSbIsSTAInNodeDB(pDevice, &(pDevice->sTxEthHeader.abyDstAddr[0]), &uNodeIndex)) {
+=======
+                if (BSSbIsSTAInNodeDB(pDevice, &(pDevice->sTxEthHeader.h_dest[0]), &uNodeIndex)) {
+>>>>>>> refs/remotes/origin/master
                     pDevice->wCurrentRate = pMgmt->sNodeDBTable[uNodeIndex].wTxDataRate;
                     if (pMgmt->sNodeDBTable[uNodeIndex].bShortPreamble) {
                         pDevice->byPreambleType = pDevice->byShortPreamble;
@@ -2993,7 +4751,15 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
         }
     }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (pDevice->sTxEthHeader.wType == cpu_to_be16(ETH_P_PAE)) {
+=======
+	if (pDevice->sTxEthHeader.h_proto == cpu_to_be16(ETH_P_PAE)) {
+>>>>>>> refs/remotes/origin/master
+=======
+	if (pDevice->sTxEthHeader.wType == cpu_to_be16(ETH_P_PAE)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (pDevice->byBBType != BB_TYPE_11A) {
 			pDevice->wCurrentRate = RATE_1M;
 			pDevice->byACKRate = RATE_1M;
@@ -3019,38 +4785,67 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
         byPktType = PK_TYPE_11B;
     }
 
+<<<<<<< HEAD
     if (bNeedEncryption == TRUE) {
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"ntohs Pkt Type=%04x\n", ntohs(pDevice->sTxEthHeader.wType));
 	if ((pDevice->sTxEthHeader.wType) == cpu_to_be16(ETH_P_PAE)) {
 		bNeedEncryption = FALSE;
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Pkt Type=%04x\n", (pDevice->sTxEthHeader.wType));
+=======
+    if (bNeedEncryption == true) {
+        DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"ntohs Pkt Type=%04x\n", ntohs(pDevice->sTxEthHeader.h_proto));
+	if ((pDevice->sTxEthHeader.h_proto) == cpu_to_be16(ETH_P_PAE)) {
+		bNeedEncryption = false;
+            DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Pkt Type=%04x\n", (pDevice->sTxEthHeader.h_proto));
+>>>>>>> refs/remotes/origin/master
             if ((pMgmt->eCurrMode == WMAC_MODE_ESS_STA) && (pMgmt->eCurrState == WMAC_STATE_ASSOC)) {
                 if (pTransmitKey == NULL) {
                     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Don't Find TX KEY\n");
                 }
                 else {
+<<<<<<< HEAD
                     if (bTKIP_UseGTK == TRUE) {
+=======
+                    if (bTKIP_UseGTK == true) {
+>>>>>>> refs/remotes/origin/master
                         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"error: KEY is GTK!!~~\n");
                     }
                     else {
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Find PTK [%X]\n",
 				pTransmitKey->dwKeyIndex);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
                         bNeedEncryption = TRUE;
+=======
+                        bNeedEncryption = true;
+>>>>>>> refs/remotes/origin/master
                     }
                 }
             }
 
+<<<<<<< HEAD
             if (pDevice->byCntMeasure == 2) {
                 bNeedDeAuth = TRUE;
                 pDevice->s802_11Counter.TKIPCounterMeasuresInvoked++;
             }
 
+=======
+>>>>>>> refs/remotes/origin/master
             if (pDevice->bEnableHostWEP) {
                 if ((uNodeIndex != 0) &&
                     (pMgmt->sNodeDBTable[uNodeIndex].dwKeyIndex & PAIRWISE_KEY)) {
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Find PTK [%X]\n",
 				pTransmitKey->dwKeyIndex);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
                     bNeedEncryption = TRUE;
+=======
+                    bNeedEncryption = true;
+>>>>>>> refs/remotes/origin/master
                  }
              }
         }
@@ -3058,6 +4853,10 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
 
             if (pTransmitKey == NULL) {
                 DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"return no tx key\n");
+<<<<<<< HEAD
+=======
+		pContext->bBoolInUse = false;
+>>>>>>> refs/remotes/origin/master
                 dev_kfree_skb_irq(skb);
                 pStats->tx_dropped++;
                 return STATUS_FAILURE;
@@ -3065,25 +4864,44 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
         }
     }
 
+<<<<<<< HEAD
     fConvertedPacket = s_bPacketToWirelessUsb(pDevice, byPktType,
                         (PBYTE)(&pContext->Data[0]), bNeedEncryption,
                         skb->len, uDMAIdx, &pDevice->sTxEthHeader,
                         (PBYTE)skb->data, pTransmitKey, uNodeIndex,
+=======
+	pTX_Buffer = (struct vnt_tx_buffer *)&pContext->Data[0];
+
+    fConvertedPacket = s_bPacketToWirelessUsb(pDevice, byPktType,
+			pTX_Buffer, bNeedEncryption,
+                        skb->len, uDMAIdx, &pDevice->sTxEthHeader,
+                        (u8 *)skb->data, pTransmitKey, uNodeIndex,
+>>>>>>> refs/remotes/origin/master
                         pDevice->wCurrentRate,
                         &uHeaderLen, &BytesToWrite
                        );
 
+<<<<<<< HEAD
     if (fConvertedPacket == FALSE) {
         pContext->bBoolInUse = FALSE;
+=======
+    if (fConvertedPacket == false) {
+        pContext->bBoolInUse = false;
+>>>>>>> refs/remotes/origin/master
         dev_kfree_skb_irq(skb);
         return STATUS_FAILURE;
     }
 
+<<<<<<< HEAD
     if ( pDevice->bEnablePSMode == TRUE ) {
+=======
+    if ( pDevice->bEnablePSMode == true ) {
+>>>>>>> refs/remotes/origin/master
         if ( !pDevice->bPSModeTxBurst ) {
 		bScheduleCommand((void *) pDevice,
 				 WLAN_CMD_MAC_DISPOWERSAVING,
 				 NULL);
+<<<<<<< HEAD
             pDevice->bPSModeTxBurst = TRUE;
         }
     }
@@ -3108,6 +4926,34 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
 
   if(status!=STATUS_PENDING) {
      pContext->bBoolInUse = FALSE;
+=======
+            pDevice->bPSModeTxBurst = true;
+        }
+    }
+
+    pTX_Buffer->byPKTNO = (u8) (((pDevice->wCurrentRate<<4) &0x00F0) | ((pDevice->wSeqCounter - 1) & 0x000F));
+    pTX_Buffer->wTxByteCount = (u16)BytesToWrite;
+
+    pContext->pPacket = skb;
+    pContext->Type = CONTEXT_DATA_PACKET;
+    pContext->uBufLen = (u16)BytesToWrite + 4 ; //USB header
+
+    s_vSaveTxPktInfo(pDevice, (u8)(pTX_Buffer->byPKTNO & 0x0F),
+			&pContext->sEthHeader.h_dest[0],
+			(u16)(BytesToWrite-uHeaderLen),
+			pTX_Buffer->fifo_head.wFIFOCtl);
+
+    status = PIPEnsSendBulkOut(pDevice,pContext);
+
+    if (bNeedDeAuth == true) {
+        u16 wReason = WLAN_MGMT_REASON_MIC_FAILURE;
+
+	bScheduleCommand((void *) pDevice, WLAN_CMD_DEAUTH, (u8 *) &wReason);
+    }
+
+  if(status!=STATUS_PENDING) {
+     pContext->bBoolInUse = false;
+>>>>>>> refs/remotes/origin/master
     dev_kfree_skb_irq(skb);
     return STATUS_FAILURE;
   }
@@ -3116,8 +4962,11 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
 
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Description:
  *      Relay packet send (AC1DMA) from rx dpc.
@@ -3128,6 +4977,7 @@ int nsDMA_tx_packet(PSDevice pDevice, unsigned int uDMAIdx, struct sk_buff *skb)
  *      pPacket         - Pointer to rx packet
  *      cbPacketSize    - rx ethernet frame size
  *  Out:
+<<<<<<< HEAD
  *      TURE, FALSE
  *
  * Return Value: Return TRUE if packet is copy to dma1; otherwise FALSE
@@ -3171,6 +5021,43 @@ bRelayPacketSend (
         // get group key
         pbyBSSID = pDevice->abyBroadcastAddr;
         if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, GROUP_KEY, &pTransmitKey) == FALSE) {
+=======
+ *      TURE, false
+ *
+ * Return Value: Return true if packet is copy to dma1; otherwise false
+ */
+
+int bRelayPacketSend(struct vnt_private *pDevice, u8 *pbySkbData, u32 uDataLen,
+	u32 uNodeIndex)
+{
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	struct vnt_tx_buffer *pTX_Buffer;
+	u32 BytesToWrite = 0, uHeaderLen = 0;
+	u8 byPktType = PK_TYPE_11B;
+	int bNeedEncryption = false;
+	SKeyItem STempKey;
+	PSKeyItem pTransmitKey = NULL;
+	u8 *pbyBSSID;
+	struct vnt_usb_send_context *pContext;
+	u8 byPktTyp;
+	int fConvertedPacket;
+	u32 status;
+	u16 wKeepRate = pDevice->wCurrentRate;
+
+	pContext = s_vGetFreeContext(pDevice);
+
+    if (NULL == pContext) {
+        return false;
+    }
+
+    memcpy(pDevice->sTxEthHeader.h_dest, (u8 *)pbySkbData, ETH_HLEN);
+
+    if (pDevice->bEncryptionEnable == true) {
+        bNeedEncryption = true;
+        // get group key
+        pbyBSSID = pDevice->abyBroadcastAddr;
+        if(KeybGetTransmitKey(&(pDevice->sKey), pbyBSSID, GROUP_KEY, &pTransmitKey) == false) {
+>>>>>>> refs/remotes/origin/master
             pTransmitKey = NULL;
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_DEBUG"KEY is NULL. [%d]\n", pMgmt->eCurrMode);
         } else {
@@ -3194,18 +5081,30 @@ bRelayPacketSend (
     }
 
     if ( bNeedEncryption && (pTransmitKey == NULL) ) {
+<<<<<<< HEAD
         pContext->bBoolInUse = FALSE;
         return FALSE;
     }
 
     byPktTyp = (BYTE)pDevice->byPacketType;
+=======
+        pContext->bBoolInUse = false;
+        return false;
+    }
+
+    byPktTyp = (u8)pDevice->byPacketType;
+>>>>>>> refs/remotes/origin/master
 
     if (pDevice->bFixRate) {
         if (pDevice->byBBType == BB_TYPE_11B) {
             if (pDevice->uConnectionRate >= RATE_11M) {
                 pDevice->wCurrentRate = RATE_11M;
             } else {
+<<<<<<< HEAD
                 pDevice->wCurrentRate = (WORD)pDevice->uConnectionRate;
+=======
+                pDevice->wCurrentRate = (u16)pDevice->uConnectionRate;
+>>>>>>> refs/remotes/origin/master
             }
         } else {
             if ((pDevice->byBBType == BB_TYPE_11A) &&
@@ -3215,7 +5114,11 @@ bRelayPacketSend (
                 if (pDevice->uConnectionRate >= RATE_54M)
                     pDevice->wCurrentRate = RATE_54M;
                 else
+<<<<<<< HEAD
                     pDevice->wCurrentRate = (WORD)pDevice->uConnectionRate;
+=======
+                    pDevice->wCurrentRate = (u16)pDevice->uConnectionRate;
+>>>>>>> refs/remotes/origin/master
             }
         }
     }
@@ -3235,14 +5138,22 @@ bRelayPacketSend (
     // Convert the packet to an usb frame and copy into our buffer
     // and send the irp.
 
+<<<<<<< HEAD
     fConvertedPacket = s_bPacketToWirelessUsb(pDevice, byPktType,
                          (PBYTE)(&pContext->Data[0]), bNeedEncryption,
+=======
+	pTX_Buffer = (struct vnt_tx_buffer *)&pContext->Data[0];
+
+    fConvertedPacket = s_bPacketToWirelessUsb(pDevice, byPktType,
+			pTX_Buffer, bNeedEncryption,
+>>>>>>> refs/remotes/origin/master
                          uDataLen, TYPE_AC0DMA, &pDevice->sTxEthHeader,
                          pbySkbData, pTransmitKey, uNodeIndex,
                          pDevice->wCurrentRate,
                          &uHeaderLen, &BytesToWrite
                         );
 
+<<<<<<< HEAD
     if (fConvertedPacket == FALSE) {
         pContext->bBoolInUse = FALSE;
         return FALSE;
@@ -3261,5 +5172,27 @@ bRelayPacketSend (
     status = PIPEnsSendBulkOut(pDevice,pContext);
 
     return TRUE;
+=======
+    if (fConvertedPacket == false) {
+        pContext->bBoolInUse = false;
+        return false;
+    }
+
+    pTX_Buffer->byPKTNO = (u8) (((pDevice->wCurrentRate<<4) &0x00F0) | ((pDevice->wSeqCounter - 1) & 0x000F));
+    pTX_Buffer->wTxByteCount = (u16)BytesToWrite;
+
+    pContext->pPacket = NULL;
+    pContext->Type = CONTEXT_DATA_PACKET;
+    pContext->uBufLen = (u16)BytesToWrite + 4 ; //USB header
+
+    s_vSaveTxPktInfo(pDevice, (u8)(pTX_Buffer->byPKTNO & 0x0F),
+		&pContext->sEthHeader.h_dest[0],
+		(u16)(BytesToWrite - uHeaderLen),
+		pTX_Buffer->fifo_head.wFIFOCtl);
+
+    status = PIPEnsSendBulkOut(pDevice,pContext);
+
+    return true;
+>>>>>>> refs/remotes/origin/master
 }
 

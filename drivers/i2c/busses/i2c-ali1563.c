@@ -326,7 +326,11 @@ static u32 ali1563_func(struct i2c_adapter * a)
 }
 
 
+<<<<<<< HEAD
 static int __devinit ali1563_setup(struct pci_dev * dev)
+=======
+static int ali1563_setup(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 ctrl;
 
@@ -390,8 +394,13 @@ static struct i2c_adapter ali1563_adapter = {
 	.algo	= &ali1563_algorithm,
 };
 
+<<<<<<< HEAD
 static int __devinit ali1563_probe(struct pci_dev * dev,
 				const struct pci_device_id * id_table)
+=======
+static int ali1563_probe(struct pci_dev *dev,
+			 const struct pci_device_id *id_table)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 
@@ -411,13 +420,25 @@ exit:
 	return error;
 }
 
+<<<<<<< HEAD
 static void __devexit ali1563_remove(struct pci_dev * dev)
+=======
+static void ali1563_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	i2c_del_adapter(&ali1563_adapter);
 	ali1563_shutdown(dev);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id ali1563_id_table[] __devinitconst = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(ali1563_id_table) = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_PCI_DEVICE_TABLE(ali1563_id_table) = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M1563) },
 	{},
 };
@@ -428,6 +449,7 @@ static struct pci_driver ali1563_pci_driver = {
  	.name		= "ali1563_smbus",
 	.id_table	= ali1563_id_table,
  	.probe		= ali1563_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ali1563_remove),
 };
 
@@ -444,5 +466,11 @@ static void __exit ali1563_exit(void)
 }
 
 module_exit(ali1563_exit);
+=======
+	.remove		= ali1563_remove,
+};
+
+module_pci_driver(ali1563_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

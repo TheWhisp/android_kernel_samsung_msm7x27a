@@ -13,7 +13,17 @@
  *  2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+#include <linux/cache.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/cache.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/firmware.h>
 

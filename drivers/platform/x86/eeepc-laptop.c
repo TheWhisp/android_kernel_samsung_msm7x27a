@@ -190,6 +190,7 @@ struct eeepc_laptop {
  */
 static int write_acpi_int(acpi_handle handle, const char *method, int val)
 {
+<<<<<<< HEAD
 	struct acpi_object_list params;
 	union acpi_object in_obj;
 	acpi_status status;
@@ -200,6 +201,12 @@ static int write_acpi_int(acpi_handle handle, const char *method, int val)
 	in_obj.integer.value = val;
 
 	status = acpi_evaluate_object(handle, (char *)method, &params, NULL);
+=======
+	acpi_status status;
+
+	status = acpi_execute_simple_method(handle, (char *)method, val);
+
+>>>>>>> refs/remotes/origin/master
 	return (status == AE_OK ? 0 : -1);
 }
 
@@ -568,7 +575,15 @@ static int eeepc_led_init(struct eeepc_laptop *eeepc)
 
 static void eeepc_led_exit(struct eeepc_laptop *eeepc)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (eeepc->tpd_led.dev)
+=======
+	if (!IS_ERR_OR_NULL(eeepc->tpd_led.dev))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(eeepc->tpd_led.dev))
+>>>>>>> refs/remotes/origin/master
 		led_classdev_unregister(&eeepc->tpd_led);
 	if (eeepc->led_workqueue)
 		destroy_workqueue(eeepc->led_workqueue);
@@ -610,12 +625,20 @@ static void eeepc_rfkill_hotplug(struct eeepc_laptop *eeepc, acpi_handle handle)
 
 		if (!bus) {
 			pr_warn("Unable to find PCI bus 1?\n");
+<<<<<<< HEAD
 			goto out_unlock;
+=======
+			goto out_put_dev;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (pci_bus_read_config_dword(bus, 0, PCI_VENDOR_ID, &l)) {
 			pr_err("Unable to read PCI config space?\n");
+<<<<<<< HEAD
 			goto out_unlock;
+=======
+			goto out_put_dev;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		absent = (l == 0xffffffff);
@@ -627,7 +650,11 @@ static void eeepc_rfkill_hotplug(struct eeepc_laptop *eeepc, acpi_handle handle)
 				absent ? "absent" : "present");
 			pr_warn("skipped wireless hotplug as probably "
 				"inappropriate for this model\n");
+<<<<<<< HEAD
 			goto out_unlock;
+=======
+			goto out_put_dev;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (!blocked) {
@@ -635,7 +662,11 @@ static void eeepc_rfkill_hotplug(struct eeepc_laptop *eeepc, acpi_handle handle)
 			if (dev) {
 				/* Device already present */
 				pci_dev_put(dev);
+<<<<<<< HEAD
 				goto out_unlock;
+=======
+				goto out_put_dev;
+>>>>>>> refs/remotes/origin/master
 			}
 			dev = pci_scan_single_device(bus, 0);
 			if (dev) {
@@ -646,10 +677,23 @@ static void eeepc_rfkill_hotplug(struct eeepc_laptop *eeepc, acpi_handle handle)
 		} else {
 			dev = pci_get_slot(bus, 0);
 			if (dev) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				pci_remove_bus_device(dev);
+=======
+				pci_stop_and_remove_bus_device(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 				pci_dev_put(dev);
 			}
 		}
+=======
+				pci_stop_and_remove_bus_device(dev);
+				pci_dev_put(dev);
+			}
+		}
+out_put_dev:
+		pci_dev_put(port);
+>>>>>>> refs/remotes/origin/master
 	}
 
 out_unlock:
@@ -1005,7 +1049,11 @@ static int eeepc_get_fan_pwm(void)
 
 static void eeepc_set_fan_pwm(int value)
 {
+<<<<<<< HEAD
 	value = SENSORS_LIMIT(value, 0, 255);
+=======
+	value = clamp_val(value, 0, 255);
+>>>>>>> refs/remotes/origin/master
 	value = value * 100 / 255;
 	ec_write(EEEPC_EC_FAN_PWM, value);
 }
@@ -1207,10 +1255,15 @@ static int eeepc_input_init(struct eeepc_laptop *eeepc)
 	int error;
 
 	input = input_allocate_device();
+<<<<<<< HEAD
 	if (!input) {
 		pr_info("Unable to allocate input device\n");
 		return -ENOMEM;
 	}
+=======
+	if (!input)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	input->name = "Asus EeePC extra buttons";
 	input->phys = EEEPC_LAPTOP_FILE "/input0";
@@ -1251,6 +1304,23 @@ static void eeepc_input_exit(struct eeepc_laptop *eeepc)
 /*
  * ACPI driver
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void eeepc_input_notify(struct eeepc_laptop *eeepc, int event)
+{
+	if (!eeepc->inputdev)
+		return ;
+	if (!sparse_keymap_report_event(eeepc->inputdev, event, 1, true))
+		pr_info("Unknown key %x pressed\n", event);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void eeepc_acpi_notify(struct acpi_device *device, u32 event)
 {
 	struct eeepc_laptop *eeepc = acpi_driver_data(device);
@@ -1259,7 +1329,10 @@ static void eeepc_acpi_notify(struct acpi_device *device, u32 event)
 	if (event > ACPI_MAX_SYS_NOTIFY)
 		return;
 	count = eeepc->event_count[event % 128]++;
+<<<<<<< HEAD
 	acpi_bus_generate_proc_event(device, event, count);
+=======
+>>>>>>> refs/remotes/origin/master
 	acpi_bus_generate_netlink_event(device->pnp.device_class,
 					dev_name(&device->dev), event,
 					count);
@@ -1287,12 +1360,26 @@ static void eeepc_acpi_notify(struct acpi_device *device, u32 event)
 				* event will be desired value (or else ignored)
 				*/
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			sparse_keymap_report_event(eeepc->inputdev, event,
 						   1, true);
 		}
 	} else {
 		/* Everything else is a bona-fide keypress event */
 		sparse_keymap_report_event(eeepc->inputdev, event, 1, true);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			eeepc_input_notify(eeepc, event);
+		}
+	} else {
+		/* Everything else is a bona-fide keypress event */
+		eeepc_input_notify(eeepc, event);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1366,7 +1453,11 @@ static void cmsg_quirks(struct eeepc_laptop *eeepc)
 	cmsg_quirk(eeepc, CM_ASL_TPD, "TPD");
 }
 
+<<<<<<< HEAD
 static int __devinit eeepc_acpi_init(struct eeepc_laptop *eeepc)
+=======
+static int eeepc_acpi_init(struct eeepc_laptop *eeepc)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int init_flags;
 	int result;
@@ -1398,7 +1489,11 @@ static int __devinit eeepc_acpi_init(struct eeepc_laptop *eeepc)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit eeepc_enable_camera(struct eeepc_laptop *eeepc)
+=======
+static void eeepc_enable_camera(struct eeepc_laptop *eeepc)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * If the following call to set_acpi() fails, it's because there's no
@@ -1410,7 +1505,11 @@ static void __devinit eeepc_enable_camera(struct eeepc_laptop *eeepc)
 
 static bool eeepc_device_present;
 
+<<<<<<< HEAD
 static int __devinit eeepc_acpi_add(struct acpi_device *device)
+=======
+static int eeepc_acpi_add(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct eeepc_laptop *eeepc;
 	int result;
@@ -1492,7 +1591,11 @@ fail_platform:
 	return result;
 }
 
+<<<<<<< HEAD
 static int eeepc_acpi_remove(struct acpi_device *device, int type)
+=======
+static int eeepc_acpi_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct eeepc_laptop *eeepc = acpi_driver_data(device);
 

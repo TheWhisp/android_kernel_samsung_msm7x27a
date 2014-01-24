@@ -30,12 +30,15 @@
 #include <linux/moduleparam.h>
 #include <linux/kernel.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <asm/uaccess.h>
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/acpi.h>
 #include <linux/timer.h>
 #include <linux/jiffies.h>
@@ -67,11 +70,14 @@ static unsigned int cache_time = 1000;
 module_param(cache_time, uint, 0644);
 MODULE_PARM_DESC(cache_time, "cache time in milliseconds");
 
+<<<<<<< HEAD
 extern struct proc_dir_entry *acpi_lock_ac_dir(void);
 extern struct proc_dir_entry *acpi_lock_battery_dir(void);
 extern void acpi_unlock_ac_dir(struct proc_dir_entry *acpi_ac_dir);
 extern void acpi_unlock_battery_dir(struct proc_dir_entry *acpi_battery_dir);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define MAX_SBS_BAT			4
 #define ACPI_SBS_BLOCK_MAX		32
 
@@ -84,9 +90,12 @@ MODULE_DEVICE_TABLE(acpi, sbs_device_ids);
 struct acpi_battery {
 	struct power_supply bat;
 	struct acpi_sbs *sbs;
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	struct proc_dir_entry *proc_entry;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long update_time;
 	char name[8];
 	char manufacturer_name[ACPI_SBS_BLOCK_MAX];
@@ -112,16 +121,27 @@ struct acpi_battery {
 	u8 have_sysfs_alarm:1;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define to_acpi_battery(x) container_of(x, struct acpi_battery, bat);
+=======
+#define to_acpi_battery(x) container_of(x, struct acpi_battery, bat)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define to_acpi_battery(x) container_of(x, struct acpi_battery, bat)
+>>>>>>> refs/remotes/origin/master
 
 struct acpi_sbs {
 	struct power_supply charger;
 	struct acpi_device *device;
 	struct acpi_smb_hc *hc;
 	struct mutex lock;
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	struct proc_dir_entry *charger_entry;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	struct acpi_battery battery[MAX_SBS_BAT];
 	u8 batteries_supported:4;
 	u8 manager_present:1;
@@ -130,6 +150,18 @@ struct acpi_sbs {
 
 #define to_acpi_sbs(x) container_of(x, struct acpi_sbs, charger)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int acpi_sbs_remove(struct acpi_device *device, int type);
+static int acpi_battery_get_state(struct acpi_battery *battery);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int acpi_sbs_remove(struct acpi_device *device);
+static int acpi_battery_get_state(struct acpi_battery *battery);
+
+>>>>>>> refs/remotes/origin/master
 static inline int battery_scale(int log)
 {
 	int scale = 1;
@@ -195,6 +227,16 @@ static int acpi_sbs_battery_get_property(struct power_supply *psy,
 
 	if ((!battery->present) && psp != POWER_SUPPLY_PROP_PRESENT)
 		return -ENODEV;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	acpi_battery_get_state(battery);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	acpi_battery_get_state(battery);
+>>>>>>> refs/remotes/origin/master
 	switch (psp) {
 	case POWER_SUPPLY_PROP_STATUS:
 		if (battery->rate_now < 0)
@@ -225,11 +267,35 @@ static int acpi_sbs_battery_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_POWER_NOW:
 		val->intval = abs(battery->rate_now) *
 				acpi_battery_ipscale(battery) * 1000;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		val->intval *= (acpi_battery_mode(battery)) ?
+				(battery->voltage_now *
+				acpi_battery_vscale(battery) / 1000) : 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		val->intval *= (acpi_battery_mode(battery)) ?
+				(battery->voltage_now *
+				acpi_battery_vscale(battery) / 1000) : 1;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case POWER_SUPPLY_PROP_CURRENT_AVG:
 	case POWER_SUPPLY_PROP_POWER_AVG:
 		val->intval = abs(battery->rate_avg) *
 				acpi_battery_ipscale(battery) * 1000;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		val->intval *= (acpi_battery_mode(battery)) ?
+				(battery->voltage_now *
+				acpi_battery_vscale(battery) / 1000) : 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		val->intval *= (acpi_battery_mode(battery)) ?
+				(battery->voltage_now *
+				acpi_battery_vscale(battery) / 1000) : 1;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case POWER_SUPPLY_PROP_CAPACITY:
 		val->intval = battery->state_of_charge;
@@ -471,6 +537,7 @@ static struct device_attribute alarm_attr = {
 };
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
                               FS Interface (/proc/acpi)
    -------------------------------------------------------------------------- */
 
@@ -739,6 +806,8 @@ static const struct file_operations acpi_ac_state_fops = {
 #endif
 
 /* --------------------------------------------------------------------------
+=======
+>>>>>>> refs/remotes/origin/master
                                  Driver Interface
    -------------------------------------------------------------------------- */
 static int acpi_battery_read(struct acpi_battery *battery)
@@ -783,12 +852,15 @@ static int acpi_battery_add(struct acpi_sbs *sbs, int id)
 		return result;
 
 	sprintf(battery->name, ACPI_BATTERY_DIR_NAME, id);
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	acpi_sbs_add_fs(&battery->proc_entry, acpi_battery_dir,
 			battery->name, &acpi_battery_info_fops,
 			&acpi_battery_state_fops, &acpi_battery_alarm_fops,
 			battery);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	battery->bat.name = battery->name;
 	battery->bat.type = POWER_SUPPLY_TYPE_BATTERY;
 	if (!acpi_battery_mode(battery)) {
@@ -824,10 +896,13 @@ static void acpi_battery_remove(struct acpi_sbs *sbs, int id)
 			device_remove_file(battery->bat.dev, &alarm_attr);
 		power_supply_unregister(&battery->bat);
 	}
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	if (battery->proc_entry)
 		acpi_sbs_remove_fs(&battery->proc_entry, acpi_battery_dir);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int acpi_charger_add(struct acpi_sbs *sbs)
@@ -837,6 +912,7 @@ static int acpi_charger_add(struct acpi_sbs *sbs)
 	result = acpi_ac_get_present(sbs);
 	if (result)
 		goto end;
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	result = acpi_sbs_add_fs(&sbs->charger_entry, acpi_ac_dir,
 				 ACPI_AC_DIR_NAME, NULL,
@@ -844,6 +920,9 @@ static int acpi_charger_add(struct acpi_sbs *sbs)
 	if (result)
 		goto end;
 #endif
+=======
+
+>>>>>>> refs/remotes/origin/master
 	sbs->charger.name = "sbs-charger";
 	sbs->charger.type = POWER_SUPPLY_TYPE_MAINS;
 	sbs->charger.properties = sbs_ac_props;
@@ -861,10 +940,13 @@ static void acpi_charger_remove(struct acpi_sbs *sbs)
 {
 	if (sbs->charger.dev)
 		power_supply_unregister(&sbs->charger);
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	if (sbs->charger_entry)
 		acpi_sbs_remove_fs(&sbs->charger_entry, acpi_ac_dir);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void acpi_sbs_callback(void *context)
@@ -875,6 +957,7 @@ static void acpi_sbs_callback(void *context)
 	u8 saved_charger_state = sbs->charger_present;
 	u8 saved_battery_state;
 	acpi_ac_get_present(sbs);
+<<<<<<< HEAD
 	if (sbs->charger_present != saved_charger_state) {
 #ifdef CONFIG_ACPI_PROC_EVENT
 		acpi_bus_generate_proc_event4(ACPI_AC_CLASS, ACPI_AC_DIR_NAME,
@@ -883,6 +966,11 @@ static void acpi_sbs_callback(void *context)
 #endif
 		kobject_uevent(&sbs->charger.dev->kobj, KOBJ_CHANGE);
 	}
+=======
+	if (sbs->charger_present != saved_charger_state)
+		kobject_uevent(&sbs->charger.dev->kobj, KOBJ_CHANGE);
+
+>>>>>>> refs/remotes/origin/master
 	if (sbs->manager_present) {
 		for (id = 0; id < MAX_SBS_BAT; ++id) {
 			if (!(sbs->batteries_supported & (1 << id)))
@@ -892,19 +980,28 @@ static void acpi_sbs_callback(void *context)
 			acpi_battery_read(bat);
 			if (saved_battery_state == bat->present)
 				continue;
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROC_EVENT
 			acpi_bus_generate_proc_event4(ACPI_BATTERY_CLASS,
 						      bat->name,
 						      ACPI_SBS_NOTIFY_STATUS,
 						      bat->present);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 			kobject_uevent(&bat->bat.dev->kobj, KOBJ_CHANGE);
 		}
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int acpi_sbs_remove(struct acpi_device *device, int type);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int acpi_sbs_add(struct acpi_device *device)
 {
 	struct acpi_sbs *sbs;
@@ -940,11 +1037,19 @@ static int acpi_sbs_add(struct acpi_device *device)
 	acpi_smbus_register_callback(sbs->hc, acpi_sbs_callback, sbs);
       end:
 	if (result)
+<<<<<<< HEAD
 		acpi_sbs_remove(device, 0);
 	return result;
 }
 
 static int acpi_sbs_remove(struct acpi_device *device, int type)
+=======
+		acpi_sbs_remove(device);
+	return result;
+}
+
+static int acpi_sbs_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_sbs *sbs;
 	int id;
@@ -965,6 +1070,7 @@ static int acpi_sbs_remove(struct acpi_device *device, int type)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void acpi_sbs_rmdirs(void)
 {
 #ifdef CONFIG_ACPI_PROCFS_POWER
@@ -988,6 +1094,21 @@ static int acpi_sbs_resume(struct acpi_device *device)
 	acpi_sbs_callback(sbs);
 	return 0;
 }
+=======
+#ifdef CONFIG_PM_SLEEP
+static int acpi_sbs_resume(struct device *dev)
+{
+	struct acpi_sbs *sbs;
+	if (!dev)
+		return -EINVAL;
+	sbs = to_acpi_device(dev)->driver_data;
+	acpi_sbs_callback(sbs);
+	return 0;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(acpi_sbs_pm, NULL, acpi_sbs_resume);
+>>>>>>> refs/remotes/origin/master
 
 static struct acpi_driver acpi_sbs_driver = {
 	.name = "sbs",
@@ -996,8 +1117,13 @@ static struct acpi_driver acpi_sbs_driver = {
 	.ops = {
 		.add = acpi_sbs_add,
 		.remove = acpi_sbs_remove,
+<<<<<<< HEAD
 		.resume = acpi_sbs_resume,
 		},
+=======
+		},
+	.drv.pm = &acpi_sbs_pm,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init acpi_sbs_init(void)
@@ -1006,6 +1132,7 @@ static int __init acpi_sbs_init(void)
 
 	if (acpi_disabled)
 		return -ENODEV;
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	acpi_ac_dir = acpi_lock_ac_dir();
 	if (!acpi_ac_dir)
@@ -1021,13 +1148,23 @@ static int __init acpi_sbs_init(void)
 		acpi_sbs_rmdirs();
 		return -ENODEV;
 	}
+=======
+
+	result = acpi_bus_register_driver(&acpi_sbs_driver);
+	if (result < 0)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void __exit acpi_sbs_exit(void)
 {
 	acpi_bus_unregister_driver(&acpi_sbs_driver);
+<<<<<<< HEAD
 	acpi_sbs_rmdirs();
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 

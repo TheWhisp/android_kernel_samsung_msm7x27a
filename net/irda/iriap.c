@@ -303,9 +303,20 @@ static void iriap_disconnect_indication(void *instance, void *sap,
 {
 	struct iriap_cb *self;
 
+<<<<<<< HEAD
 	IRDA_DEBUG(4, "%s(), reason=%s\n", __func__, irlmp_reasons[reason]);
 
+<<<<<<< HEAD
 	self = (struct iriap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IRDA_DEBUG(4, "%s(), reason=%s [%d]\n", __func__,
+		   irlmp_reason_str(reason), reason);
+
+	self = instance;
+>>>>>>> refs/remotes/origin/master
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IAS_MAGIC, return;);
@@ -495,8 +506,16 @@ static void iriap_getvaluebyclass_confirm(struct iriap_cb *self,
 /*		case CS_ISO_8859_9: */
 /*		case CS_UNICODE: */
 		default:
+<<<<<<< HEAD
 			IRDA_DEBUG(0, "%s(), charset %s, not supported\n",
 				   __func__, ias_charset_types[charset]);
+=======
+			IRDA_DEBUG(0, "%s(), charset [%d] %s, not supported\n",
+				   __func__, charset,
+				   charset < ARRAY_SIZE(ias_charset_types) ?
+					ias_charset_types[charset] :
+					"(unknown)");
+>>>>>>> refs/remotes/origin/master
 
 			/* Aborting, close connection! */
 			iriap_disconnect_request(self);
@@ -759,7 +778,15 @@ static void iriap_connect_confirm(void *instance, void *sap,
 {
 	struct iriap_cb *self;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	self = (struct iriap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/master
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IAS_MAGIC, return;);
@@ -791,7 +818,15 @@ static void iriap_connect_indication(void *instance, void *sap,
 
 	IRDA_DEBUG(1, "%s()\n", __func__);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	self = (struct iriap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/master
 
 	IRDA_ASSERT(skb != NULL, return;);
 	IRDA_ASSERT(self != NULL, goto out;);
@@ -839,7 +874,15 @@ static int iriap_data_indication(void *instance, void *sap,
 
 	IRDA_DEBUG(3, "%s()\n", __func__);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	self = (struct iriap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/master
 
 	IRDA_ASSERT(skb != NULL, return 0;);
 	IRDA_ASSERT(self != NULL, goto out;);

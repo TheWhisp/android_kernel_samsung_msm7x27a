@@ -14,10 +14,13 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: ni_pcimio
@@ -29,14 +32,34 @@ Devices: [National Instruments] PCI-MIO-16XE-50 (ni_pcimio),
   PCI-MIO-16XE-10, PXI-6030E, PCI-MIO-16E-1, PCI-MIO-16E-4, PCI-6014, PCI-6040E,
   PXI-6040E, PCI-6030E, PCI-6031E, PCI-6032E, PCI-6033E, PCI-6071E, PCI-6023E,
   PCI-6024E, PCI-6025E, PXI-6025E, PCI-6034E, PCI-6035E, PCI-6052E,
+<<<<<<< HEAD
+<<<<<<< HEAD
   PCI-6110, PCI-6111, PCI-6220, PCI-6221, PCI-6224, PXI-6224, PCI-6225, PXI-6225,
   PCI-6229, PCI-6250, PCI-6251, PCIe-6251, PCI-6254, PCI-6259, PCIe-6259,
+=======
+  PCI-6110, PCI-6111, PCI-6220, PCI-6221, PCI-6224, PXI-6224,
+  PCI-6225, PXI-6225, PCI-6229, PCI-6250, PCI-6251, PCIe-6251, PXIe-6251,
+  PCI-6254, PCI-6259, PCIe-6259,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  PCI-6110, PCI-6111, PCI-6220, PCI-6221, PCI-6224, PXI-6224,
+  PCI-6225, PXI-6225, PCI-6229, PCI-6250, PCI-6251, PCIe-6251, PXIe-6251,
+  PCI-6254, PCI-6259, PCIe-6259,
+>>>>>>> refs/remotes/origin/master
   PCI-6280, PCI-6281, PXI-6281, PCI-6284, PCI-6289,
   PCI-6711, PXI-6711, PCI-6713, PXI-6713,
   PXI-6071E, PCI-6070E, PXI-6070E,
   PXI-6052E, PCI-6036E, PCI-6731, PCI-6733, PXI-6733,
   PCI-6143, PXI-6143
+<<<<<<< HEAD
+<<<<<<< HEAD
 Updated: Wed, 03 Dec 2008 10:51:47 +0000
+=======
+Updated: Mon, 09 Jan 2012 14:52:48 +0000
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+Updated: Mon, 09 Jan 2012 14:52:48 +0000
+>>>>>>> refs/remotes/origin/master
 
 These boards are almost identical to the AT-MIO E series, except that
 they use the PCI bus instead of ISA (i.e., AT).  See the notes for
@@ -109,16 +132,28 @@ Bugs:
 
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <asm/byteorder.h>
 #include <linux/delay.h>
+=======
+#include <linux/module.h>
+#include <linux/delay.h>
+
+#include "../comedidev.h"
+
+#include <asm/byteorder.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ni_stc.h"
 #include "mite.h"
 
+<<<<<<< HEAD
 /* #define PCI_DEBUG */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define PCIDMA
 
 #define PCIMIO 1
@@ -128,6 +163,7 @@ Bugs:
 
 #define DRV_NAME "ni_pcimio"
 
+<<<<<<< HEAD
 /* The following two tables must be in the same order */
 static DEFINE_PCI_DEVICE_TABLE(ni_pci_table) = {
 	{PCI_DEVICE(PCI_VENDOR_ID_NI, 0x0162)},
@@ -182,11 +218,17 @@ static DEFINE_PCI_DEVICE_TABLE(ni_pci_table) = {
 	{PCI_DEVICE(PCI_VENDOR_ID_NI, 0x717f)},
 	{PCI_DEVICE(PCI_VENDOR_ID_NI, 0x71bc)},
 	{PCI_DEVICE(PCI_VENDOR_ID_NI, 0x717d)},
+<<<<<<< HEAD
+=======
+	{PCI_DEVICE(PCI_VENDOR_ID_NI, 0x72e8)},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{0}
 };
 
 MODULE_DEVICE_TABLE(pci, ni_pci_table);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* These are not all the possible ao ranges for 628x boards.
  They can do OFFSET +- REFERENCE where OFFSET can be
  0V, 5V, APFI<0,1>, or AO<0...3> and RANGE can
@@ -194,6 +236,7 @@ MODULE_DEVICE_TABLE(pci, ni_pci_table);
  63 different possibilities.  An AO channel
  can not act as it's own OFFSET or REFERENCE.
 */
+<<<<<<< HEAD
 static const struct comedi_lrange range_ni_M_628x_ao = { 8, {
 							     RANGE(-10, 10),
 							     RANGE(-5, 5),
@@ -1021,7 +1064,15 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_625x_ao,
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1040,7 +1091,36 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_625x_ao,
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	 .ao_speed = 350,
+	 .num_p0_dio_channels = 8,
+	 .caldac = {caldac_none},
+	 .has_8255 = 0,
+	 },
+	{
+	 .device_id = 0x72e8,
+	 .name = "pxie-6251",
+	 .n_adchan = 16,
+	 .adbits = 16,
+	 .ai_fifo_depth = 4095,
+	 .gainlkup = ai_gain_628x,
+	 .ai_speed = 800,
+	 .n_aochan = 2,
+	 .aobits = 16,
+	 .ao_fifo_depth = 8191,
+	 .ao_range_table = &range_ni_M_625x_ao,
+	 .reg_type = ni_reg_625x,
+	 .ao_unipolar = 0,
+	 .ao_speed = 350,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1076,7 +1156,15 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_625x_ao,
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 32,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1095,7 +1183,15 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_625x_ao,
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 32,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1131,7 +1227,15 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_628x_ao,
 	 .reg_type = ni_reg_628x,
 	 .ao_unipolar = 1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1150,7 +1254,15 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_628x_ao,
 	 .reg_type = ni_reg_628x,
 	 .ao_unipolar = 1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1186,7 +1298,15 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_628x_ao,
 	 .reg_type = ni_reg_628x,
 	 .ao_unipolar = 1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 .ao_speed = 357,
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 .ao_speed = 350,
+>>>>>>> refs/remotes/origin/cm-11.0
 	 .num_p0_dio_channels = 32,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1280,6 +1400,922 @@ module_exit(driver_pcimio_cleanup_module);
 struct ni_private {
 NI_PRIVATE_COMMON};
 #define devpriv ((struct ni_private *)dev->private)
+=======
+static const struct comedi_lrange range_ni_M_628x_ao = {
+	8, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(2),
+		BIP_RANGE(1),
+		RANGE(-5, 15),
+		UNI_RANGE(10),
+		RANGE(3, 7),
+		RANGE(4, 6),
+		RANGE_ext(-1, 1)
+	}
+};
+
+static const struct comedi_lrange range_ni_M_625x_ao = {
+	3, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		RANGE_ext(-1, 1)
+	}
+};
+
+enum ni_pcimio_boardid {
+	BOARD_PCIMIO_16XE_50,
+	BOARD_PCIMIO_16XE_10,
+	BOARD_PCI6014,
+	BOARD_PXI6030E,
+	BOARD_PCIMIO_16E_1,
+	BOARD_PCIMIO_16E_4,
+	BOARD_PXI6040E,
+	BOARD_PCI6031E,
+	BOARD_PCI6032E,
+	BOARD_PCI6033E,
+	BOARD_PCI6071E,
+	BOARD_PCI6023E,
+	BOARD_PCI6024E,
+	BOARD_PCI6025E,
+	BOARD_PXI6025E,
+	BOARD_PCI6034E,
+	BOARD_PCI6035E,
+	BOARD_PCI6052E,
+	BOARD_PCI6110,
+	BOARD_PCI6111,
+	/* BOARD_PCI6115, */
+	/* BOARD_PXI6115, */
+	BOARD_PCI6711,
+	BOARD_PXI6711,
+	BOARD_PCI6713,
+	BOARD_PXI6713,
+	BOARD_PCI6731,
+	/* BOARD_PXI6731, */
+	BOARD_PCI6733,
+	BOARD_PXI6733,
+	BOARD_PXI6071E,
+	BOARD_PXI6070E,
+	BOARD_PXI6052E,
+	BOARD_PXI6031E,
+	BOARD_PCI6036E,
+	BOARD_PCI6220,
+	BOARD_PCI6221,
+	BOARD_PCI6221_37PIN,
+	BOARD_PCI6224,
+	BOARD_PXI6224,
+	BOARD_PCI6225,
+	BOARD_PXI6225,
+	BOARD_PCI6229,
+	BOARD_PCI6250,
+	BOARD_PCI6251,
+	BOARD_PCIE6251,
+	BOARD_PXIE6251,
+	BOARD_PCI6254,
+	BOARD_PCI6259,
+	BOARD_PCIE6259,
+	BOARD_PCI6280,
+	BOARD_PCI6281,
+	BOARD_PXI6281,
+	BOARD_PCI6284,
+	BOARD_PCI6289,
+	BOARD_PCI6143,
+	BOARD_PXI6143,
+};
+
+static const struct ni_board_struct ni_boards[] = {
+	[BOARD_PCIMIO_16XE_50] = {
+		.name		= "pci-mio-16xe-50",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 2048,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_8,
+		.ai_speed	= 50000,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 50000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { dac8800, dac8043 },
+	},
+	[BOARD_PCIMIO_16XE_10] = {
+		.name		= "pci-mio-16xe-10",	/*  aka pci-6030E */
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_14,
+		.ai_speed	= 10000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 2048,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 10000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { dac8800, dac8043, ad8522 },
+	},
+	[BOARD_PCI6014] = {
+		.name		= "pci-6014",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_4,
+		.ai_speed	= 5000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 100000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },
+	},
+	[BOARD_PXI6030E] = {
+		.name		= "pxi-6030e",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_14,
+		.ai_speed	= 10000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 2048,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 10000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { dac8800, dac8043, ad8522 },
+	},
+	[BOARD_PCIMIO_16E_1] = {
+		.name		= "pci-mio-16e-1",	/* aka pci-6070e */
+		.n_adchan	= 16,
+		.adbits		= 12,
+		.ai_fifo_depth	= 512,
+		.gainlkup	= ai_gain_16,
+		.ai_speed	= 800,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_fifo_depth	= 2048,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { mb88341 },
+	},
+	[BOARD_PCIMIO_16E_4] = {
+		.name		= "pci-mio-16e-4",	/* aka pci-6040e */
+		.n_adchan	= 16,
+		.adbits		= 12,
+		.ai_fifo_depth	= 512,
+		.gainlkup	= ai_gain_16,
+		/*
+		 * there have been reported problems with
+		 * full speed on this board
+		 */
+		.ai_speed	= 2000,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_fifo_depth	= 512,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },	/* doc says mb88341 */
+	},
+	[BOARD_PXI6040E] = {
+		.name		= "pxi-6040e",
+		.n_adchan	= 16,
+		.adbits		= 12,
+		.ai_fifo_depth	= 512,
+		.gainlkup	= ai_gain_16,
+		.ai_speed	= 2000,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_fifo_depth	= 512,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { mb88341 },
+	},
+	[BOARD_PCI6031E] = {
+		.name		= "pci-6031e",
+		.n_adchan	= 64,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_14,
+		.ai_speed	= 10000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 2048,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 10000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { dac8800, dac8043, ad8522 },
+	},
+	[BOARD_PCI6032E] = {
+		.name		= "pci-6032e",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_14,
+		.ai_speed	= 10000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { dac8800, dac8043, ad8522 },
+	},
+	[BOARD_PCI6033E] = {
+		.name		= "pci-6033e",
+		.n_adchan	= 64,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_14,
+		.ai_speed	= 10000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { dac8800, dac8043, ad8522 },
+	},
+	[BOARD_PCI6071E] = {
+		.name		= "pci-6071e",
+		.n_adchan	= 64,
+		.adbits		= 12,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_16,
+		.ai_speed	= 800,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_fifo_depth	= 2048,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },
+	},
+	[BOARD_PCI6023E] = {
+		.name		= "pci-6023e",
+		.n_adchan	= 16,
+		.adbits		= 12,
+		.ai_fifo_depth	= 512,
+		.gainlkup	= ai_gain_4,
+		.ai_speed	= 5000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },	/* manual is wrong */
+	},
+	[BOARD_PCI6024E] = {
+		.name		= "pci-6024e",
+		.n_adchan	= 16,
+		.adbits		= 12,
+		.ai_fifo_depth	= 512,
+		.gainlkup	= ai_gain_4,
+		.ai_speed	= 5000,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 100000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },	/* manual is wrong */
+	},
+	[BOARD_PCI6025E] = {
+		.name		= "pci-6025e",
+		.n_adchan	= 16,
+		.adbits		= 12,
+		.ai_fifo_depth	= 512,
+		.gainlkup	= ai_gain_4,
+		.ai_speed	= 5000,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 100000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },	/* manual is wrong */
+		.has_8255	= 1,
+	},
+	[BOARD_PXI6025E] = {
+		.name		= "pxi-6025e",
+		.n_adchan	= 16,
+		.adbits		= 12,
+		.ai_fifo_depth	= 512,
+		.gainlkup	= ai_gain_4,
+		.ai_speed	= 5000,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 100000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },	/* manual is wrong */
+		.has_8255	= 1,
+	},
+	[BOARD_PCI6034E] = {
+		.name		= "pci-6034e",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_4,
+		.ai_speed	= 5000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },
+	},
+	[BOARD_PCI6035E] = {
+		.name		= "pci-6035e",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_4,
+		.ai_speed	= 5000,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 100000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },
+	},
+	[BOARD_PCI6052E] = {
+		.name		= "pci-6052e",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_16,
+		.ai_speed	= 3000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_unipolar	= 1,
+		.ao_fifo_depth	= 2048,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_speed	= 3000,
+		.num_p0_dio_channels = 8,
+		/* manual is wrong */
+		.caldac		= { ad8804_debug, ad8804_debug, ad8522 },
+	},
+	[BOARD_PCI6110] = {
+		.name		= "pci-6110",
+		.n_adchan	= 4,
+		.adbits		= 12,
+		.ai_fifo_depth	= 8192,
+		.alwaysdither	= 0,
+		.gainlkup	= ai_gain_611x,
+		.ai_speed	= 200,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.reg_type	= ni_reg_611x,
+		.ao_range_table	= &range_bipolar10,
+		.ao_fifo_depth	= 2048,
+		.ao_speed	= 250,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804, ad8804 },
+	},
+	[BOARD_PCI6111] = {
+		.name		= "pci-6111",
+		.n_adchan	= 2,
+		.adbits		= 12,
+		.ai_fifo_depth	= 8192,
+		.gainlkup	= ai_gain_611x,
+		.ai_speed	= 200,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.reg_type	= ni_reg_611x,
+		.ao_range_table	= &range_bipolar10,
+		.ao_fifo_depth	= 2048,
+		.ao_speed	= 250,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804, ad8804 },
+	},
+#if 0
+	/* The 6115 boards probably need their own driver */
+	[BOARD_PCI6115] = {	/* .device_id = 0x2ed0, */
+		.name		= "pci-6115",
+		.n_adchan	= 4,
+		.adbits		= 12,
+		.ai_fifo_depth	= 8192,
+		.gainlkup	= ai_gain_611x,
+		.ai_speed	= 100,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_671x	= 1,
+		.ao_fifo_depth	= 2048,
+		.ao_speed	= 250,
+		.num_p0_dio_channels = 8,
+		.reg_611x	= 1,
+		/* XXX */
+		.caldac		= { ad8804_debug, ad8804_debug, ad8804_debug },
+	},
+#endif
+#if 0
+	[BOARD_PXI6115] = {	/* .device_id = ????, */
+		.name		= "pxi-6115",
+		.n_adchan	= 4,
+		.adbits		= 12,
+		.ai_fifo_depth	= 8192,
+		.gainlkup	= ai_gain_611x,
+		.ai_speed	= 100,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_671x	= 1,
+		.ao_fifo_depth	= 2048,
+		.ao_speed	= 250,
+		.reg_611x	= 1,
+		.num_p0_dio_channels = 8,
+		/* XXX */
+		.caldac		= { ad8804_debug, ad8804_debug, ad8804_debug },
+	},
+#endif
+	[BOARD_PCI6711] = {
+		.name = "pci-6711",
+		.n_aochan	= 4,
+		.aobits		= 12,
+		/* data sheet says 8192, but fifo really holds 16384 samples */
+		.ao_fifo_depth	= 16384,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.reg_type	= ni_reg_6711,
+		.caldac		= { ad8804_debug },
+	},
+	[BOARD_PXI6711] = {
+		.name		= "pxi-6711",
+		.n_aochan	= 4,
+		.aobits		= 12,
+		.ao_fifo_depth	= 16384,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.reg_type	= ni_reg_6711,
+		.caldac		= { ad8804_debug },
+	},
+	[BOARD_PCI6713] = {
+		.name		= "pci-6713",
+		.n_aochan	= 8,
+		.aobits		= 12,
+		.ao_fifo_depth	= 16384,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.reg_type	= ni_reg_6713,
+		.caldac		= { ad8804_debug, ad8804_debug },
+	},
+	[BOARD_PXI6713] = {
+		.name		= "pxi-6713",
+		.n_aochan	= 8,
+		.aobits		= 12,
+		.ao_fifo_depth	= 16384,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.reg_type	= ni_reg_6713,
+		.caldac		= { ad8804_debug, ad8804_debug },
+	},
+	[BOARD_PCI6731] = {
+		.name		= "pci-6731",
+		.n_aochan	= 4,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8192,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.reg_type	= ni_reg_6711,
+		.caldac		= { ad8804_debug },
+	},
+#if 0
+	[BOARD_PXI6731] = {	/* .device_id = ????, */
+		.name		= "pxi-6731",
+		.n_aochan	= 4,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8192,
+		.ao_range_table	= &range_bipolar10,
+		.num_p0_dio_channels = 8,
+		.reg_type	= ni_reg_6711,
+		.caldac		= { ad8804_debug },
+	},
+#endif
+	[BOARD_PCI6733] = {
+		.name		= "pci-6733",
+		.n_aochan	= 8,
+		.aobits		= 16,
+		.ao_fifo_depth	= 16384,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.reg_type	= ni_reg_6713,
+		.caldac		= { ad8804_debug, ad8804_debug },
+	},
+	[BOARD_PXI6733] = {
+		.name		= "pxi-6733",
+		.n_aochan	= 8,
+		.aobits		= 16,
+		.ao_fifo_depth	= 16384,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.reg_type	= ni_reg_6713,
+		.caldac		= { ad8804_debug, ad8804_debug },
+	},
+	[BOARD_PXI6071E] = {
+		.name		= "pxi-6071e",
+		.n_adchan	= 64,
+		.adbits		= 12,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_16,
+		.ai_speed	= 800,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_fifo_depth	= 2048,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },
+	},
+	[BOARD_PXI6070E] = {
+		.name		= "pxi-6070e",
+		.n_adchan	= 16,
+		.adbits		= 12,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_16,
+		.ai_speed	= 800,
+		.n_aochan	= 2,
+		.aobits		= 12,
+		.ao_fifo_depth	= 2048,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 1000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },
+	},
+	[BOARD_PXI6052E] = {
+		.name		= "pxi-6052e",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_16,
+		.ai_speed	= 3000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_unipolar	= 1,
+		.ao_fifo_depth	= 2048,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_speed	= 3000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { mb88341, mb88341, ad8522 },
+	},
+	[BOARD_PXI6031E] = {
+		.name		= "pxi-6031e",
+		.n_adchan	= 64,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_14,
+		.ai_speed	= 10000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 2048,
+		.ao_range_table	= &range_ni_E_ao_ext,
+		.ao_unipolar	= 1,
+		.ao_speed	= 10000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { dac8800, dac8043, ad8522 },
+	},
+	[BOARD_PCI6036E] = {
+		.name = "pci-6036e",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,
+		.alwaysdither	= 1,
+		.gainlkup	= ai_gain_4,
+		.ai_speed	= 5000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_range_table	= &range_bipolar10,
+		.ao_speed	= 100000,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug },
+	},
+	[BOARD_PCI6220] = {
+		.name		= "pci-6220",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 512,		/* FIXME: guess */
+		.gainlkup	= ai_gain_622x,
+		.ai_speed	= 4000,
+		.num_p0_dio_channels = 8,
+		.reg_type	= ni_reg_622x,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6221] = {
+		.name		= "pci-6221",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_622x,
+		.ai_speed	= 4000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_bipolar10,
+		.reg_type	= ni_reg_622x,
+		.ao_speed	= 1200,
+		.num_p0_dio_channels = 8,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6221_37PIN] = {
+		.name		= "pci-6221_37pin",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_622x,
+		.ai_speed	= 4000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_bipolar10,
+		.reg_type	= ni_reg_622x,
+		.ao_speed	= 1200,
+		.num_p0_dio_channels = 8,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6224] = {
+		.name		= "pci-6224",
+		.n_adchan	= 32,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_622x,
+		.ai_speed	= 4000,
+		.reg_type	= ni_reg_622x,
+		.num_p0_dio_channels = 32,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PXI6224] = {
+		.name		= "pxi-6224",
+		.n_adchan	= 32,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_622x,
+		.ai_speed	= 4000,
+		.reg_type	= ni_reg_622x,
+		.num_p0_dio_channels = 32,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6225] = {
+		.name		= "pci-6225",
+		.n_adchan	= 80,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_622x,
+		.ai_speed	= 4000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_bipolar10,
+		.reg_type	= ni_reg_622x,
+		.ao_speed	= 1200,
+		.num_p0_dio_channels = 32,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PXI6225] = {
+		.name		= "pxi-6225",
+		.n_adchan	= 80,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_622x,
+		.ai_speed	= 4000,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_bipolar10,
+		.reg_type	= ni_reg_622x,
+		.ao_speed	= 1200,
+		.num_p0_dio_channels = 32,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6229] = {
+		.name		= "pci-6229",
+		.n_adchan	= 32,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_622x,
+		.ai_speed	= 4000,
+		.n_aochan	= 4,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_bipolar10,
+		.reg_type	= ni_reg_622x,
+		.ao_speed	= 1200,
+		.num_p0_dio_channels = 32,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6250] = {
+		.name		= "pci-6250",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 800,
+		.reg_type	= ni_reg_625x,
+		.num_p0_dio_channels = 8,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6251] = {
+		.name		= "pci-6251",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 800,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_ni_M_625x_ao,
+		.reg_type	= ni_reg_625x,
+		.ao_speed	= 350,
+		.num_p0_dio_channels = 8,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCIE6251] = {
+		.name		= "pcie-6251",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 800,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_ni_M_625x_ao,
+		.reg_type	= ni_reg_625x,
+		.ao_speed	= 350,
+		.num_p0_dio_channels = 8,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PXIE6251] = {
+		.name		= "pxie-6251",
+		.n_adchan	= 16,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 800,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_ni_M_625x_ao,
+		.reg_type	= ni_reg_625x,
+		.ao_speed	= 350,
+		.num_p0_dio_channels = 8,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6254] = {
+		.name		= "pci-6254",
+		.n_adchan	= 32,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 800,
+		.reg_type	= ni_reg_625x,
+		.num_p0_dio_channels = 32,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6259] = {
+		.name		= "pci-6259",
+		.n_adchan	= 32,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 800,
+		.n_aochan	= 4,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_ni_M_625x_ao,
+		.reg_type	= ni_reg_625x,
+		.ao_speed	= 350,
+		.num_p0_dio_channels = 32,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCIE6259] = {
+		.name		= "pcie-6259",
+		.n_adchan	= 32,
+		.adbits		= 16,
+		.ai_fifo_depth	= 4095,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 800,
+		.n_aochan	= 4,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_ni_M_625x_ao,
+		.reg_type	= ni_reg_625x,
+		.ao_speed	= 350,
+		.num_p0_dio_channels = 32,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6280] = {
+		.name		= "pci-6280",
+		.n_adchan	= 16,
+		.adbits		= 18,
+		.ai_fifo_depth	= 2047,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 1600,
+		.ao_fifo_depth	= 8191,
+		.reg_type	= ni_reg_628x,
+		.num_p0_dio_channels = 8,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6281] = {
+		.name		= "pci-6281",
+		.n_adchan	= 16,
+		.adbits		= 18,
+		.ai_fifo_depth	= 2047,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 1600,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table = &range_ni_M_628x_ao,
+		.reg_type	= ni_reg_628x,
+		.ao_unipolar	= 1,
+		.ao_speed	= 350,
+		.num_p0_dio_channels = 8,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PXI6281] = {
+		.name		= "pxi-6281",
+		.n_adchan	= 16,
+		.adbits		= 18,
+		.ai_fifo_depth	= 2047,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 1600,
+		.n_aochan	= 2,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_ni_M_628x_ao,
+		.reg_type	= ni_reg_628x,
+		.ao_unipolar	= 1,
+		.ao_speed	= 350,
+		.num_p0_dio_channels = 8,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6284] = {
+		.name		= "pci-6284",
+		.n_adchan	= 32,
+		.adbits		= 18,
+		.ai_fifo_depth	= 2047,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 1600,
+		.reg_type	= ni_reg_628x,
+		.num_p0_dio_channels = 32,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6289] = {
+		.name		= "pci-6289",
+		.n_adchan	= 32,
+		.adbits		= 18,
+		.ai_fifo_depth	= 2047,
+		.gainlkup	= ai_gain_628x,
+		.ai_speed	= 1600,
+		.n_aochan	= 4,
+		.aobits		= 16,
+		.ao_fifo_depth	= 8191,
+		.ao_range_table	= &range_ni_M_628x_ao,
+		.reg_type	= ni_reg_628x,
+		.ao_unipolar	= 1,
+		.ao_speed	= 350,
+		.num_p0_dio_channels = 32,
+		.caldac		= { caldac_none },
+	},
+	[BOARD_PCI6143] = {
+		.name		= "pci-6143",
+		.n_adchan	= 8,
+		.adbits		= 16,
+		.ai_fifo_depth	= 1024,
+		.gainlkup	= ai_gain_6143,
+		.ai_speed	= 4000,
+		.reg_type	= ni_reg_6143,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug, ad8804_debug },
+	},
+	[BOARD_PXI6143] = {
+		.name		= "pxi-6143",
+		.n_adchan	= 8,
+		.adbits		= 16,
+		.ai_fifo_depth	= 1024,
+		.gainlkup	= ai_gain_6143,
+		.ai_speed	= 4000,
+		.reg_type	= ni_reg_6143,
+		.num_p0_dio_channels = 8,
+		.caldac		= { ad8804_debug, ad8804_debug },
+	},
+};
+
+struct ni_private {
+NI_PRIVATE_COMMON};
+>>>>>>> refs/remotes/origin/master
 
 /* How we access registers */
 
@@ -1302,6 +2338,10 @@ NI_PRIVATE_COMMON};
 
 static void e_series_win_out(struct comedi_device *dev, uint16_t data, int reg)
 {
+<<<<<<< HEAD
+=======
+	struct ni_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&devpriv->window_lock, flags);
@@ -1312,6 +2352,10 @@ static void e_series_win_out(struct comedi_device *dev, uint16_t data, int reg)
 
 static uint16_t e_series_win_in(struct comedi_device *dev, int reg)
 {
+<<<<<<< HEAD
+=======
+	struct ni_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	uint16_t ret;
 
@@ -1326,7 +2370,13 @@ static uint16_t e_series_win_in(struct comedi_device *dev, int reg)
 static void m_series_stc_writew(struct comedi_device *dev, uint16_t data,
 				int reg)
 {
+<<<<<<< HEAD
 	unsigned offset;
+=======
+	struct ni_private *devpriv = dev->private;
+	unsigned offset;
+
+>>>>>>> refs/remotes/origin/master
 	switch (reg) {
 	case ADC_FIFO_Clear:
 		offset = M_Offset_AI_FIFO_Clear;
@@ -1408,9 +2458,15 @@ static void m_series_stc_writew(struct comedi_device *dev, uint16_t data,
 		offset = M_Offset_AO_FIFO_Clear;
 		break;
 	case DIO_Control_Register:
+<<<<<<< HEAD
 		printk
 		    ("%s: FIXME: register 0x%x does not map cleanly on to m-series boards.\n",
 		     __func__, reg);
+=======
+		dev_dbg(dev->class_dev,
+			"%s: FIXME: register 0x%x does not map cleanly on to m-series boards.\n",
+			__func__, reg);
+>>>>>>> refs/remotes/origin/master
 		return;
 		break;
 	case G_Autoincrement_Register(0):
@@ -1470,8 +2526,18 @@ static void m_series_stc_writew(struct comedi_device *dev, uint16_t data,
 		/* FIXME: DIO_Output_Register (16 bit reg) is replaced by M_Offset_Static_Digital_Output (32 bit)
 		   and M_Offset_SCXI_Serial_Data_Out (8 bit) */
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk("%s: bug! unhandled register=0x%x in switch.\n",
+=======
+		printk(KERN_WARNING "%s: bug! unhandled register=0x%x in switch.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       __func__, reg);
+=======
+		dev_warn(dev->class_dev,
+			 "%s: bug! unhandled register=0x%x in switch.\n",
+			 __func__, reg);
+>>>>>>> refs/remotes/origin/master
 		BUG();
 		return;
 		break;
@@ -1481,7 +2547,13 @@ static void m_series_stc_writew(struct comedi_device *dev, uint16_t data,
 
 static uint16_t m_series_stc_readw(struct comedi_device *dev, int reg)
 {
+<<<<<<< HEAD
 	unsigned offset;
+=======
+	struct ni_private *devpriv = dev->private;
+	unsigned offset;
+
+>>>>>>> refs/remotes/origin/master
 	switch (reg) {
 	case AI_Status_1_Register:
 		offset = M_Offset_AI_Status_1;
@@ -1505,8 +2577,18 @@ static uint16_t m_series_stc_readw(struct comedi_device *dev, int reg)
 		offset = M_Offset_G01_Status;
 		break;
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk("%s: bug! unhandled register=0x%x in switch.\n",
+=======
+		printk(KERN_WARNING "%s: bug! unhandled register=0x%x in switch.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       __func__, reg);
+=======
+		dev_warn(dev->class_dev,
+			 "%s: bug! unhandled register=0x%x in switch.\n",
+			 __func__, reg);
+>>>>>>> refs/remotes/origin/master
 		BUG();
 		return 0;
 		break;
@@ -1517,7 +2599,13 @@ static uint16_t m_series_stc_readw(struct comedi_device *dev, int reg)
 static void m_series_stc_writel(struct comedi_device *dev, uint32_t data,
 				int reg)
 {
+<<<<<<< HEAD
 	unsigned offset;
+=======
+	struct ni_private *devpriv = dev->private;
+	unsigned offset;
+
+>>>>>>> refs/remotes/origin/master
 	switch (reg) {
 	case AI_SC_Load_A_Registers:
 		offset = M_Offset_AI_SC_Load_A;
@@ -1547,8 +2635,18 @@ static void m_series_stc_writel(struct comedi_device *dev, uint32_t data,
 		offset = M_Offset_G1_Load_B;
 		break;
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk("%s: bug! unhandled register=0x%x in switch.\n",
+=======
+		printk(KERN_WARNING "%s: bug! unhandled register=0x%x in switch.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       __func__, reg);
+=======
+		dev_warn(dev->class_dev,
+			 "%s: bug! unhandled register=0x%x in switch.\n",
+			 __func__, reg);
+>>>>>>> refs/remotes/origin/master
 		BUG();
 		return;
 		break;
@@ -1558,7 +2656,13 @@ static void m_series_stc_writel(struct comedi_device *dev, uint32_t data,
 
 static uint32_t m_series_stc_readl(struct comedi_device *dev, int reg)
 {
+<<<<<<< HEAD
 	unsigned offset;
+=======
+	struct ni_private *devpriv = dev->private;
+	unsigned offset;
+
+>>>>>>> refs/remotes/origin/master
 	switch (reg) {
 	case G_HW_Save_Register(0):
 		offset = M_Offset_G0_HW_Save;
@@ -1573,8 +2677,18 @@ static uint32_t m_series_stc_readl(struct comedi_device *dev, int reg)
 		offset = M_Offset_G1_Save;
 		break;
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk("%s: bug! unhandled register=0x%x in switch.\n",
+=======
+		printk(KERN_WARNING "%s: bug! unhandled register=0x%x in switch.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       __func__, reg);
+=======
+		dev_warn(dev->class_dev,
+			 "%s: bug! unhandled register=0x%x in switch.\n",
+			 __func__, reg);
+>>>>>>> refs/remotes/origin/master
 		BUG();
 		return 0;
 		break;
@@ -1589,7 +2703,10 @@ static uint32_t m_series_stc_readl(struct comedi_device *dev, int reg)
 
 #include "ni_mio_common.c"
 
+<<<<<<< HEAD
 static int pcimio_find_device(struct comedi_device *dev, int bus, int slot);
+=======
+>>>>>>> refs/remotes/origin/master
 static int pcimio_ai_change(struct comedi_device *dev,
 			    struct comedi_subdevice *s, unsigned long new_size);
 static int pcimio_ao_change(struct comedi_device *dev,
@@ -1606,6 +2723,10 @@ static int pcimio_dio_change(struct comedi_device *dev,
 
 static void m_series_init_eeprom_buffer(struct comedi_device *dev)
 {
+<<<<<<< HEAD
+=======
+	struct ni_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	static const int Start_Cal_EEPROM = 0x400;
 	static const unsigned window_size = 10;
 	static const int serial_number_eeprom_offset = 0x4;
@@ -1632,9 +2753,19 @@ static void m_series_init_eeprom_buffer(struct comedi_device *dev)
 	}
 	devpriv->serial_number = be32_to_cpu(devpriv->serial_number);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < M_SERIES_EEPROM_SIZE; ++i) {
 		devpriv->eeprom_buffer[i] = ni_readb(Start_Cal_EEPROM + i);
 	}
+=======
+	for (i = 0; i < M_SERIES_EEPROM_SIZE; ++i)
+		devpriv->eeprom_buffer[i] = ni_readb(Start_Cal_EEPROM + i);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < M_SERIES_EEPROM_SIZE; ++i)
+		devpriv->eeprom_buffer[i] = ni_readb(Start_Cal_EEPROM + i);
+>>>>>>> refs/remotes/origin/master
 
 	writel(old_iodwbsr1_bits, devpriv->mite->mite_io_addr + MITE_IODWBSR_1);
 	writel(old_iodwbsr_bits, devpriv->mite->mite_io_addr + MITE_IODWBSR);
@@ -1644,6 +2775,12 @@ static void m_series_init_eeprom_buffer(struct comedi_device *dev)
 
 static void init_6143(struct comedi_device *dev)
 {
+<<<<<<< HEAD
+=======
+	const struct ni_board_struct *board = comedi_board(dev);
+	struct ni_private *devpriv = dev->private;
+
+>>>>>>> refs/remotes/origin/master
 	/*  Disable interrupts */
 	devpriv->stc_writew(dev, 0, Interrupt_Control_Register);
 
@@ -1652,7 +2789,12 @@ static void init_6143(struct comedi_device *dev)
 	ni_writeb(0x80, PipelineDelay_6143);	/*  Set EOCMode, ADCMode and pipelinedelay */
 	ni_writeb(0x00, EOC_Set_6143);	/*  Set EOC Delay */
 
+<<<<<<< HEAD
 	ni_writel(boardtype.ai_fifo_depth / 2, AIFIFO_Flag_6143);	/*  Set the FIFO half full level */
+=======
+	/* Set the FIFO half full level */
+	ni_writel(board->ai_fifo_depth / 2, AIFIFO_Flag_6143);
+>>>>>>> refs/remotes/origin/master
 
 	/*  Strobe Relay disable bit */
 	devpriv->ai_calib_source_enabled = 0;
@@ -1661,19 +2803,37 @@ static void init_6143(struct comedi_device *dev)
 	ni_writew(devpriv->ai_calib_source, Calibration_Channel_6143);
 }
 
+<<<<<<< HEAD
 /* cleans up allocated resources */
 static int pcimio_detach(struct comedi_device *dev)
 {
 	mio_common_detach(dev);
+<<<<<<< HEAD
 	if (dev->irq) {
 		free_irq(dev->irq, dev);
 	}
+=======
+	if (dev->irq)
+		free_irq(dev->irq, dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dev->private) {
+=======
+static void pcimio_detach(struct comedi_device *dev)
+{
+	struct ni_private *devpriv = dev->private;
+
+	mio_common_detach(dev);
+	if (dev->irq)
+		free_irq(dev->irq, dev);
+	if (devpriv) {
+>>>>>>> refs/remotes/origin/master
 		mite_free_ring(devpriv->ai_mite_ring);
 		mite_free_ring(devpriv->ao_mite_ring);
 		mite_free_ring(devpriv->cdo_mite_ring);
 		mite_free_ring(devpriv->gpct_mite_ring[0]);
 		mite_free_ring(devpriv->gpct_mite_ring[1]);
+<<<<<<< HEAD
 		if (devpriv->mite)
 			mite_unsetup(devpriv->mite);
 	}
@@ -1685,7 +2845,11 @@ static int pcimio_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 {
 	int ret;
 
+<<<<<<< HEAD
 	printk("comedi%d: ni_pcimio:", dev->minor);
+=======
+	dev_info(dev->hw_dev, "comedi%d: ni_pcimio:\n", dev->minor);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = ni_alloc_private(dev);
 	if (ret < 0)
@@ -1695,10 +2859,54 @@ static int pcimio_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	printk(" %s", boardtype.name);
+=======
+	dev_dbg(dev->hw_dev, "%s\n", boardtype.name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->board_name = boardtype.name;
 
 	if (boardtype.reg_type & ni_reg_m_series_mask) {
+=======
+		if (devpriv->mite) {
+			mite_unsetup(devpriv->mite);
+			mite_free(devpriv->mite);
+		}
+	}
+	comedi_pci_disable(dev);
+}
+
+static int pcimio_auto_attach(struct comedi_device *dev,
+			      unsigned long context)
+{
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	const struct ni_board_struct *board = NULL;
+	struct ni_private *devpriv;
+	unsigned int irq;
+	int ret;
+
+	if (context < ARRAY_SIZE(ni_boards))
+		board = &ni_boards[context];
+	if (!board)
+		return -ENODEV;
+	dev->board_ptr = board;
+	dev->board_name = board->name;
+
+	ret = comedi_pci_enable(dev);
+	if (ret)
+		return ret;
+
+	ret = ni_alloc_private(dev);
+	if (ret)
+		return ret;
+	devpriv = dev->private;
+
+	devpriv->mite = mite_alloc(pcidev);
+	if (!devpriv->mite)
+		return -ENOMEM;
+
+	if (board->reg_type & ni_reg_m_series_mask) {
+>>>>>>> refs/remotes/origin/master
 		devpriv->stc_writew = &m_series_stc_writew;
 		devpriv->stc_readw = &m_series_stc_readw;
 		devpriv->stc_writel = &m_series_stc_writel;
@@ -1712,10 +2920,21 @@ static int pcimio_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 
 	ret = mite_setup(devpriv->mite);
 	if (ret < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(" error setting up mite\n");
+=======
+		pr_warn("error setting up mite\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret;
 	}
 	comedi_set_hw_dev(dev, &devpriv->mite->pcidev->dev);
+=======
+		pr_warn("error setting up mite\n");
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	devpriv->ai_mite_ring = mite_alloc_ring(devpriv->mite);
 	if (devpriv->ai_mite_ring == NULL)
 		return -ENOMEM;
@@ -1732,6 +2951,7 @@ static int pcimio_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	if (devpriv->gpct_mite_ring[1] == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	if (boardtype.reg_type & ni_reg_m_series_mask)
 		m_series_init_eeprom_buffer(dev);
 	if (boardtype.reg_type == ni_reg_6143)
@@ -1740,6 +2960,7 @@ static int pcimio_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	dev->irq = mite_irq(devpriv->mite);
 
 	if (dev->irq == 0) {
+<<<<<<< HEAD
 		printk(" unknown irq (bad)\n");
 	} else {
 		printk(" ( irq = %u )", dev->irq);
@@ -1747,11 +2968,36 @@ static int pcimio_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 				  DRV_NAME, dev);
 		if (ret < 0) {
 			printk(" irq not available\n");
+=======
+		pr_warn("unknown irq (bad)\n");
+	} else {
+		pr_debug("( irq = %u )\n", dev->irq);
+		ret = request_irq(dev->irq, ni_E_interrupt, NI_E_IRQ_FLAGS,
+				  DRV_NAME, dev);
+		if (ret < 0) {
+			pr_warn("irq not available\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			dev->irq = 0;
 		}
 	}
 
 	ret = ni_E_init(dev, it);
+=======
+	if (board->reg_type & ni_reg_m_series_mask)
+		m_series_init_eeprom_buffer(dev);
+	if (board->reg_type == ni_reg_6143)
+		init_6143(dev);
+
+	irq = mite_irq(devpriv->mite);
+	if (irq) {
+		ret = request_irq(irq, ni_E_interrupt, NI_E_IRQ_FLAGS,
+				  dev->board_name, dev);
+		if (ret == 0)
+			dev->irq = irq;
+	}
+
+	ret = ni_E_init(dev);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
@@ -1764,6 +3010,7 @@ static int pcimio_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int pcimio_find_device(struct comedi_device *dev, int bus, int slot)
 {
 	struct mite_struct *mite;
@@ -1787,7 +3034,11 @@ static int pcimio_find_device(struct comedi_device *dev, int bus, int slot)
 			}
 		}
 	}
+<<<<<<< HEAD
 	printk("no device found\n");
+=======
+	pr_warn("no device found\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	mite_list_devices();
 	return -EIO;
 }
@@ -1795,6 +3046,12 @@ static int pcimio_find_device(struct comedi_device *dev, int bus, int slot)
 static int pcimio_ai_change(struct comedi_device *dev,
 			    struct comedi_subdevice *s, unsigned long new_size)
 {
+=======
+static int pcimio_ai_change(struct comedi_device *dev,
+			    struct comedi_subdevice *s, unsigned long new_size)
+{
+	struct ni_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = mite_buf_change(devpriv->ai_mite_ring, s->async);
@@ -1807,6 +3064,10 @@ static int pcimio_ai_change(struct comedi_device *dev,
 static int pcimio_ao_change(struct comedi_device *dev,
 			    struct comedi_subdevice *s, unsigned long new_size)
 {
+<<<<<<< HEAD
+=======
+	struct ni_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = mite_buf_change(devpriv->ao_mite_ring, s->async);
@@ -1820,6 +3081,10 @@ static int pcimio_gpct0_change(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       unsigned long new_size)
 {
+<<<<<<< HEAD
+=======
+	struct ni_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = mite_buf_change(devpriv->gpct_mite_ring[0], s->async);
@@ -1833,6 +3098,10 @@ static int pcimio_gpct1_change(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       unsigned long new_size)
 {
+<<<<<<< HEAD
+=======
+	struct ni_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = mite_buf_change(devpriv->gpct_mite_ring[1], s->async);
@@ -1845,6 +3114,10 @@ static int pcimio_gpct1_change(struct comedi_device *dev,
 static int pcimio_dio_change(struct comedi_device *dev,
 			     struct comedi_subdevice *s, unsigned long new_size)
 {
+<<<<<<< HEAD
+=======
+	struct ni_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = mite_buf_change(devpriv->cdo_mite_ring, s->async);
@@ -1854,6 +3127,89 @@ static int pcimio_dio_change(struct comedi_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static struct comedi_driver ni_pcimio_driver = {
+	.driver_name	= "ni_pcimio",
+	.module		= THIS_MODULE,
+	.auto_attach	= pcimio_auto_attach,
+	.detach		= pcimio_detach,
+};
+
+static int ni_pcimio_pci_probe(struct pci_dev *dev,
+			       const struct pci_device_id *id)
+{
+	return comedi_pci_auto_config(dev, &ni_pcimio_driver, id->driver_data);
+}
+
+static const struct pci_device_id ni_pcimio_pci_table[] = {
+	{ PCI_VDEVICE(NI, 0x0162), BOARD_PCIMIO_16XE_50 },	/* 0x1620? */
+	{ PCI_VDEVICE(NI, 0x1170), BOARD_PCIMIO_16XE_10 },
+	{ PCI_VDEVICE(NI, 0x1180), BOARD_PCIMIO_16E_1 },
+	{ PCI_VDEVICE(NI, 0x1190), BOARD_PCIMIO_16E_4 },
+	{ PCI_VDEVICE(NI, 0x11b0), BOARD_PXI6070E },
+	{ PCI_VDEVICE(NI, 0x11c0), BOARD_PXI6040E },
+	{ PCI_VDEVICE(NI, 0x11d0), BOARD_PXI6030E },
+	{ PCI_VDEVICE(NI, 0x1270), BOARD_PCI6032E },
+	{ PCI_VDEVICE(NI, 0x1330), BOARD_PCI6031E },
+	{ PCI_VDEVICE(NI, 0x1340), BOARD_PCI6033E },
+	{ PCI_VDEVICE(NI, 0x1350), BOARD_PCI6071E },
+	{ PCI_VDEVICE(NI, 0x14e0), BOARD_PCI6110 },
+	{ PCI_VDEVICE(NI, 0x14f0), BOARD_PCI6111 },
+	{ PCI_VDEVICE(NI, 0x1580), BOARD_PXI6031E },
+	{ PCI_VDEVICE(NI, 0x15b0), BOARD_PXI6071E },
+	{ PCI_VDEVICE(NI, 0x1880), BOARD_PCI6711 },
+	{ PCI_VDEVICE(NI, 0x1870), BOARD_PCI6713 },
+	{ PCI_VDEVICE(NI, 0x18b0), BOARD_PCI6052E },
+	{ PCI_VDEVICE(NI, 0x18c0), BOARD_PXI6052E },
+	{ PCI_VDEVICE(NI, 0x2410), BOARD_PCI6733 },
+	{ PCI_VDEVICE(NI, 0x2420), BOARD_PXI6733 },
+	{ PCI_VDEVICE(NI, 0x2430), BOARD_PCI6731 },
+	{ PCI_VDEVICE(NI, 0x2890), BOARD_PCI6036E },
+	{ PCI_VDEVICE(NI, 0x28c0), BOARD_PCI6014 },
+	{ PCI_VDEVICE(NI, 0x2a60), BOARD_PCI6023E },
+	{ PCI_VDEVICE(NI, 0x2a70), BOARD_PCI6024E },
+	{ PCI_VDEVICE(NI, 0x2a80), BOARD_PCI6025E },
+	{ PCI_VDEVICE(NI, 0x2ab0), BOARD_PXI6025E },
+	{ PCI_VDEVICE(NI, 0x2b80), BOARD_PXI6713 },
+	{ PCI_VDEVICE(NI, 0x2b90), BOARD_PXI6711 },
+	{ PCI_VDEVICE(NI, 0x2c80), BOARD_PCI6035E },
+	{ PCI_VDEVICE(NI, 0x2ca0), BOARD_PCI6034E },
+	{ PCI_VDEVICE(NI, 0x70aa), BOARD_PCI6229 },
+	{ PCI_VDEVICE(NI, 0x70ab), BOARD_PCI6259 },
+	{ PCI_VDEVICE(NI, 0x70ac), BOARD_PCI6289 },
+	{ PCI_VDEVICE(NI, 0x70af), BOARD_PCI6221 },
+	{ PCI_VDEVICE(NI, 0x70b0), BOARD_PCI6220 },
+	{ PCI_VDEVICE(NI, 0x70b4), BOARD_PCI6250 },
+	{ PCI_VDEVICE(NI, 0x70b6), BOARD_PCI6280 },
+	{ PCI_VDEVICE(NI, 0x70b7), BOARD_PCI6254 },
+	{ PCI_VDEVICE(NI, 0x70b8), BOARD_PCI6251 },
+	{ PCI_VDEVICE(NI, 0x70bc), BOARD_PCI6284 },
+	{ PCI_VDEVICE(NI, 0x70bd), BOARD_PCI6281 },
+	{ PCI_VDEVICE(NI, 0x70bf), BOARD_PXI6281 },
+	{ PCI_VDEVICE(NI, 0x70c0), BOARD_PCI6143 },
+	{ PCI_VDEVICE(NI, 0x70f2), BOARD_PCI6224 },
+	{ PCI_VDEVICE(NI, 0x70f3), BOARD_PXI6224 },
+	{ PCI_VDEVICE(NI, 0x710d), BOARD_PXI6143 },
+	{ PCI_VDEVICE(NI, 0x716c), BOARD_PCI6225 },
+	{ PCI_VDEVICE(NI, 0x716d), BOARD_PXI6225 },
+	{ PCI_VDEVICE(NI, 0x717f), BOARD_PCIE6259 },
+	{ PCI_VDEVICE(NI, 0x71bc), BOARD_PCI6221_37PIN },
+	{ PCI_VDEVICE(NI, 0x717d), BOARD_PCIE6251 },
+	{ PCI_VDEVICE(NI, 0x72e8), BOARD_PXIE6251 },
+	{ 0 }
+};
+MODULE_DEVICE_TABLE(pci, ni_pcimio_pci_table);
+
+static struct pci_driver ni_pcimio_pci_driver = {
+	.name		= "ni_pcimio",
+	.id_table	= ni_pcimio_pci_table,
+	.probe		= ni_pcimio_pci_probe,
+	.remove		= comedi_pci_auto_unconfig,
+};
+module_comedi_pci_driver(ni_pcimio_driver, ni_pcimio_pci_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");
 MODULE_LICENSE("GPL");

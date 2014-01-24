@@ -99,9 +99,15 @@
 #define JZ_LCD_CTRL_BPP_15_16		0x4
 #define JZ_LCD_CTRL_BPP_18_24		0x5
 
+<<<<<<< HEAD
 #define JZ_LCD_CMD_SOF_IRQ BIT(15)
 #define JZ_LCD_CMD_EOF_IRQ BIT(16)
 #define JZ_LCD_CMD_ENABLE_PAL BIT(12)
+=======
+#define JZ_LCD_CMD_SOF_IRQ BIT(31)
+#define JZ_LCD_CMD_EOF_IRQ BIT(30)
+#define JZ_LCD_CMD_ENABLE_PAL BIT(28)
+>>>>>>> refs/remotes/origin/master
 
 #define JZ_LCD_SYNC_MASK 0x3ff
 
@@ -136,7 +142,11 @@ struct jzfb {
 	uint32_t pseudo_palette[16];
 };
 
+<<<<<<< HEAD
 static const struct fb_fix_screeninfo jzfb_fix __devinitdata = {
+=======
+static const struct fb_fix_screeninfo jzfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id		= "JZ4740 FB",
 	.type		= FB_TYPE_PACKED_PIXELS,
 	.visual		= FB_VISUAL_TRUECOLOR,
@@ -471,7 +481,11 @@ static int jzfb_set_par(struct fb_info *info)
 	writel(ctrl, jzfb->base + JZ_REG_LCD_CTRL);
 
 	if (!jzfb->is_enabled)
+<<<<<<< HEAD
 		clk_disable(jzfb->ldclk);
+=======
+		clk_disable_unprepare(jzfb->ldclk);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&jzfb->lock);
 
@@ -485,7 +499,11 @@ static void jzfb_enable(struct jzfb *jzfb)
 {
 	uint32_t ctrl;
 
+<<<<<<< HEAD
 	clk_enable(jzfb->ldclk);
+=======
+	clk_prepare_enable(jzfb->ldclk);
+>>>>>>> refs/remotes/origin/master
 
 	jz_gpio_bulk_resume(jz_lcd_ctrl_pins, jzfb_num_ctrl_pins(jzfb));
 	jz_gpio_bulk_resume(jz_lcd_data_pins, jzfb_num_data_pins(jzfb));
@@ -514,7 +532,11 @@ static void jzfb_disable(struct jzfb *jzfb)
 	jz_gpio_bulk_suspend(jz_lcd_ctrl_pins, jzfb_num_ctrl_pins(jzfb));
 	jz_gpio_bulk_suspend(jz_lcd_data_pins, jzfb_num_data_pins(jzfb));
 
+<<<<<<< HEAD
 	clk_disable(jzfb->ldclk);
+=======
+	clk_disable_unprepare(jzfb->ldclk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int jzfb_blank(int blank_mode, struct fb_info *info)
@@ -619,7 +641,11 @@ static struct  fb_ops jzfb_ops = {
 	.fb_setcolreg = jzfb_setcolreg,
 };
 
+<<<<<<< HEAD
 static int __devinit jzfb_probe(struct platform_device *pdev)
+=======
+static int jzfb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct jzfb *jzfb;
@@ -632,6 +658,7 @@ static int __devinit jzfb_probe(struct platform_device *pdev)
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!mem) {
 		dev_err(&pdev->dev, "Failed to get register memory resource\n");
@@ -649,6 +676,12 @@ static int __devinit jzfb_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to allocate framebuffer device\n");
 		ret = -ENOMEM;
 		goto err_release_mem_region;
+=======
+	fb = framebuffer_alloc(sizeof(struct jzfb), &pdev->dev);
+	if (!fb) {
+		dev_err(&pdev->dev, "Failed to allocate framebuffer device\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	fb->fbops = &jzfb_ops;
@@ -657,15 +690,21 @@ static int __devinit jzfb_probe(struct platform_device *pdev)
 	jzfb = fb->par;
 	jzfb->pdev = pdev;
 	jzfb->pdata = pdata;
+<<<<<<< HEAD
 	jzfb->mem = mem;
 
 	jzfb->ldclk = clk_get(&pdev->dev, "lcd");
+=======
+
+	jzfb->ldclk = devm_clk_get(&pdev->dev, "lcd");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(jzfb->ldclk)) {
 		ret = PTR_ERR(jzfb->ldclk);
 		dev_err(&pdev->dev, "Failed to get lcd clock: %d\n", ret);
 		goto err_framebuffer_release;
 	}
 
+<<<<<<< HEAD
 	jzfb->lpclk = clk_get(&pdev->dev, "lcd_pclk");
 	if (IS_ERR(jzfb->lpclk)) {
 		ret = PTR_ERR(jzfb->lpclk);
@@ -678,6 +717,20 @@ static int __devinit jzfb_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to ioremap register memory region\n");
 		ret = -EBUSY;
 		goto err_put_lpclk;
+=======
+	jzfb->lpclk = devm_clk_get(&pdev->dev, "lcd_pclk");
+	if (IS_ERR(jzfb->lpclk)) {
+		ret = PTR_ERR(jzfb->lpclk);
+		dev_err(&pdev->dev, "Failed to get lcd pixel clock: %d\n", ret);
+		goto err_framebuffer_release;
+	}
+
+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	jzfb->base = devm_ioremap_resource(&pdev->dev, mem);
+	if (IS_ERR(jzfb->base)) {
+		ret = PTR_ERR(jzfb->base);
+		goto err_framebuffer_release;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, jzfb);
@@ -693,7 +746,11 @@ static int __devinit jzfb_probe(struct platform_device *pdev)
 	ret = jzfb_alloc_devmem(jzfb);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to allocate video memory\n");
+<<<<<<< HEAD
 		goto err_iounmap;
+=======
+		goto err_framebuffer_release;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	fb->fix = jzfb_fix;
@@ -707,7 +764,11 @@ static int __devinit jzfb_probe(struct platform_device *pdev)
 
 	fb_alloc_cmap(&fb->cmap, 256, 0);
 
+<<<<<<< HEAD
 	clk_enable(jzfb->ldclk);
+=======
+	clk_prepare_enable(jzfb->ldclk);
+>>>>>>> refs/remotes/origin/master
 	jzfb->is_enabled = 1;
 
 	writel(jzfb->framedesc->next, jzfb->base + JZ_REG_LCD_DA0);
@@ -734,6 +795,7 @@ err_free_devmem:
 
 	fb_dealloc_cmap(&fb->cmap);
 	jzfb_free_devmem(jzfb);
+<<<<<<< HEAD
 err_iounmap:
 	iounmap(jzfb->base);
 err_put_lpclk:
@@ -748,6 +810,14 @@ err_release_mem_region:
 }
 
 static int __devexit jzfb_remove(struct platform_device *pdev)
+=======
+err_framebuffer_release:
+	framebuffer_release(fb);
+	return ret;
+}
+
+static int jzfb_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jzfb *jzfb = platform_get_drvdata(pdev);
 
@@ -756,6 +826,7 @@ static int __devexit jzfb_remove(struct platform_device *pdev)
 	jz_gpio_bulk_free(jz_lcd_ctrl_pins, jzfb_num_ctrl_pins(jzfb));
 	jz_gpio_bulk_free(jz_lcd_data_pins, jzfb_num_data_pins(jzfb));
 
+<<<<<<< HEAD
 	iounmap(jzfb->base);
 	release_mem_region(jzfb->mem->start, resource_size(jzfb->mem));
 
@@ -767,6 +838,11 @@ static int __devexit jzfb_remove(struct platform_device *pdev)
 	clk_put(jzfb->lpclk);
 	clk_put(jzfb->ldclk);
 
+=======
+	fb_dealloc_cmap(&jzfb->fb->cmap);
+	jzfb_free_devmem(jzfb);
+
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(jzfb->fb);
 
 	return 0;
@@ -793,7 +869,11 @@ static int jzfb_suspend(struct device *dev)
 static int jzfb_resume(struct device *dev)
 {
 	struct jzfb *jzfb = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	clk_enable(jzfb->ldclk);
+=======
+	clk_prepare_enable(jzfb->ldclk);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&jzfb->lock);
 	if (jzfb->is_enabled)
@@ -822,12 +902,17 @@ static const struct dev_pm_ops jzfb_pm_ops = {
 
 static struct platform_driver jzfb_driver = {
 	.probe = jzfb_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(jzfb_remove),
+=======
+	.remove = jzfb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "jz4740-fb",
 		.pm = JZFB_PM_OPS,
 	},
 };
+<<<<<<< HEAD
 
 static int __init jzfb_init(void)
 {
@@ -840,6 +925,9 @@ static void __exit jzfb_exit(void)
 	platform_driver_unregister(&jzfb_driver);
 }
 module_exit(jzfb_exit);
+=======
+module_platform_driver(jzfb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");

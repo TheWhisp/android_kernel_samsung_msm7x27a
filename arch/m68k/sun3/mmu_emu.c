@@ -6,6 +6,10 @@
 ** Started 1/16/98 @ 2:22 am
 */
 
+<<<<<<< HEAD
+=======
+#include <linux/init.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mman.h>
 #include <linux/mm.h>
 #include <linux/kernel.h>
@@ -17,7 +21,13 @@
 
 #include <asm/setup.h>
 #include <asm/traps.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -123,7 +133,11 @@ void print_pte_vaddr (unsigned long vaddr)
 /*
  * Initialise the MMU emulator.
  */
+<<<<<<< HEAD
 void mmu_emu_init(unsigned long bootmem_end)
+=======
+void __init mmu_emu_init(unsigned long bootmem_end)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long seg, num;
 	int i,j;

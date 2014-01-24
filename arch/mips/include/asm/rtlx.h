@@ -38,7 +38,11 @@ enum rtlx_state {
 #define RTLX_BUFFER_SIZE 2048
 
 /* each channel supports read and write.
+<<<<<<< HEAD
    linux (vpe0) reads lx_buffer  and writes rt_buffer
+=======
+   linux (vpe0) reads lx_buffer	 and writes rt_buffer
+>>>>>>> refs/remotes/origin/master
    SP (vpe1) reads rt_buffer and writes lx_buffer
 */
 struct rtlx_channel {

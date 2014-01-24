@@ -1,6 +1,7 @@
 #ifndef __CRAMFS_H
 #define __CRAMFS_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/magic.h>
 
@@ -85,10 +86,17 @@ struct cramfs_super {
 				| CRAMFS_FLAG_SHIFTED_ROOT_OFFSET )
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/cramfs_fs.h>
+
+>>>>>>> refs/remotes/origin/master
 /* Uncompression interfaces to the underlying zlib */
 int cramfs_uncompress_block(void *dst, int dstlen, void *src, int srclen);
 int cramfs_uncompress_init(void);
 void cramfs_uncompress_exit(void);
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

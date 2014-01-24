@@ -2,6 +2,11 @@ config EXT4_FS
 	tristate "The Extended 4 (ext4) filesystem"
 	select JBD2
 	select CRC16
+<<<<<<< HEAD
+=======
+	select CRYPTO
+	select CRYPTO_CRC32C
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is the next generation of the ext3 filesystem.
 
@@ -37,6 +42,7 @@ config EXT4_USE_FOR_EXT23
 	  compiled kernel size by using one file system driver for
 	  ext2, ext3, and ext4 file systems.
 
+<<<<<<< HEAD
 config EXT4_FS_XATTR
 	bool "Ext4 extended attributes"
 	depends on EXT4_FS
@@ -53,6 +59,11 @@ config EXT4_FS_XATTR
 config EXT4_FS_POSIX_ACL
 	bool "Ext4 POSIX Access Control Lists"
 	depends on EXT4_FS_XATTR
+=======
+config EXT4_FS_POSIX_ACL
+	bool "Ext4 POSIX Access Control Lists"
+	depends on EXT4_FS
+>>>>>>> refs/remotes/origin/master
 	select FS_POSIX_ACL
 	help
 	  POSIX Access Control Lists (ACLs) support permissions for users and
@@ -65,7 +76,11 @@ config EXT4_FS_POSIX_ACL
 
 config EXT4_FS_SECURITY
 	bool "Ext4 Security Labels"
+<<<<<<< HEAD
 	depends on EXT4_FS_XATTR
+=======
+	depends on EXT4_FS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Security labels support alternative access control models
 	  implemented by security modules like SELinux.  This option

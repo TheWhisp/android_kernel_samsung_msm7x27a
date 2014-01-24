@@ -3,6 +3,7 @@
  *
  * Licensed under the GPL-2 or later.
  */
+<<<<<<< HEAD
 
 #ifndef __ASM_BFIN_UNISTD_H
 #define __ASM_BFIN_UNISTD_H
@@ -399,8 +400,15 @@
 #define __NR_syncfs		378
 #define __NR_setns		379
 #define __NR_sendmmsg		380
+<<<<<<< HEAD
 
 #define __NR_syscall		381
+=======
+#define __NR_process_vm_readv	381
+#define __NR_process_vm_writev	382
+
+#define __NR_syscall		383
+>>>>>>> refs/remotes/origin/cm-10.0
 #define NR_syscalls		__NR_syscall
 
 /* Old optional stuff no one actually uses */
@@ -433,6 +441,13 @@
 
 #ifdef __KERNEL__
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+#ifndef __ASM_BFIN_UNISTD_H
+#define __ASM_BFIN_UNISTD_H
+
+#include <uapi/asm/unistd.h>
+
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_STAT64
 #define __ARCH_WANT_SYS_ALARM
 #define __ARCH_WANT_SYS_GETHOSTNAME
@@ -443,6 +458,7 @@
 #define __ARCH_WANT_SYS_GETPGRP
 #define __ARCH_WANT_SYS_LLSEEK
 #define __ARCH_WANT_SYS_NICE
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 
@@ -455,5 +471,8 @@
 #define cond_syscall(x) asm(".weak\t_" #x "\n\t.set\t_" #x ",_sys_ni_syscall");
 
 #endif	/* __KERNEL__ */
+=======
+#define __ARCH_WANT_SYS_VFORK
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* __ASM_BFIN_UNISTD_H */

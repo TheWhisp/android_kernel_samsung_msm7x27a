@@ -6,6 +6,11 @@ nostackp := $(call cc-option, -fno-stack-protector)
 CFLAGS_physaddr.o		:= $(nostackp)
 CFLAGS_setup_nx.o		:= $(nostackp)
 
+<<<<<<< HEAD
+=======
+CFLAGS_fault.o := -I$(src)/../include/asm/trace
+
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_X86_PAT)		+= pat_rbtree.o
 obj-$(CONFIG_SMP)		+= tlb.o
 
@@ -27,6 +32,12 @@ obj-$(CONFIG_AMD_NUMA)		+= amdtopology.o
 obj-$(CONFIG_ACPI_NUMA)		+= srat.o
 obj-$(CONFIG_NUMA_EMU)		+= numa_emulation.o
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_HAVE_MEMBLOCK)		+= memblock.o
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_MEMTEST)		+= memtest.o

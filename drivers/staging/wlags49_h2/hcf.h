@@ -1,5 +1,8 @@
 
+<<<<<<< HEAD
 //   vim:tw=110:ts=4:
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef HCF_H
 #define HCF_H 1
 
@@ -40,9 +43,21 @@
 * software indicates your acceptance of these terms and conditions.  If you do
 * not agree with these terms and conditions, do not use the software.
 *
+<<<<<<< HEAD
+<<<<<<< HEAD
 * COPYRIGHT � 1994 - 1995	by AT&T.				All Rights Reserved
 * COPYRIGHT � 1996 - 2000 by Lucent Technologies.	All Rights Reserved
 * COPYRIGHT � 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
+=======
+* COPYRIGHT © 1994 - 1995	by AT&T.				All Rights Reserved
+* COPYRIGHT © 1996 - 2000 by Lucent Technologies.	All Rights Reserved
+* COPYRIGHT © 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+* COPYRIGHT © 1994 - 1995	by AT&T.				All Rights Reserved
+* COPYRIGHT © 1996 - 2000 by Lucent Technologies.	All Rights Reserved
+* COPYRIGHT © 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
+>>>>>>> refs/remotes/origin/master
 * All rights reserved.
 *
 * Redistribution and use in source or binary forms, with or without
@@ -90,7 +105,11 @@
 
 #define LOF(x) 			(sizeof(x)/sizeof(hcf_16)-1)
 
+<<<<<<< HEAD
 /*	Endianess
+=======
+/*	Endianness
+>>>>>>> refs/remotes/origin/master
  *	Little Endian (a.k.a. Intel), least significant byte first
  *	Big Endian (a.k.a. Motorola), most significant byte first
  *
@@ -101,7 +120,11 @@
  */
 
 /* To increase portability, use unsigned char and unsigned char * when accessing parts of larger
+<<<<<<< HEAD
  * types to convert their Endianess
+=======
+ * types to convert their Endianness
+>>>>>>> refs/remotes/origin/master
  */
 
 #define CNV_END_SHORT(w)  (hcf_16)( ((hcf_16)(w) & 0x00FF) << 8 | ((hcf_16)(w) & 0xFF00) >> 8 )
@@ -109,14 +132,24 @@
 
 #if HCF_BIG_ENDIAN
 //******************************************** B I G   E N D I A N *******************************************
+<<<<<<< HEAD
 #define CNV_LITTLE_TO_SHORT(w)	CNV_END_SHORT(w)	//    endianess conversion needed
 #define CNV_BIG_TO_SHORT(w)		(w)				// no endianess conversion needed
+=======
+#define CNV_LITTLE_TO_SHORT(w)	CNV_END_SHORT(w)	//    endianness conversion needed
+#define CNV_BIG_TO_SHORT(w)		(w)				// no endianness conversion needed
+>>>>>>> refs/remotes/origin/master
 #define CNV_LITTLE_TO_LONG(dw)	CNV_END_LONG(dw)
 #define CNV_LONG_TO_LITTLE(dw)	CNV_END_LONG(dw)
 #else
 //****************************************** L I T T L E   E N D I A N ****************************************
+<<<<<<< HEAD
 #define CNV_LITTLE_TO_SHORT(w) 	(w)				// no endianess conversion needed
 #define CNV_BIG_TO_SHORT(w)		CNV_END_SHORT(w)	//    endianess conversion needed
+=======
+#define CNV_LITTLE_TO_SHORT(w) 	(w)				// no endianness conversion needed
+#define CNV_BIG_TO_SHORT(w)		CNV_END_SHORT(w)	//    endianness conversion needed
+>>>>>>> refs/remotes/origin/master
 #define CNV_LITTLE_TO_LONG(dw)	(dw)
 #define CNV_LONG_TO_LITTLE(dw)	(dw)
 
@@ -301,13 +334,25 @@ typedef struct  {
 #if (HCF_EXT) & HCF_EXT_INT_TICK
   int			IFB_TickCnt;			// Hermes Timer Tick Counter
 #endif // HCF_EXT_INT_TICK
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if (HCF_EXT) & HCF_EXT_MB
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   hcf_16 	   *IFB_MBp;				// pointer to the MailBox
   hcf_16		IFB_MBSize;				// size of the MailBox
   hcf_16		IFB_MBWp;				// zero-based write index into the MailBox
   hcf_16		IFB_MBRp;				// zero-based read  index into the MailBox
   hcf_16		IFB_MBInfoLen;			// contents of L-field of the oldest available MailBoxInfoBlock
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif // HCF_EXT_MB
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if (HCF_TYPE) & HCF_TYPE_WPA
   hcf_16		IFB_MICTxCntl;			// MIC bit and Key index in TxControl field of TxFS
   hcf_32		IFB_MICTxKey[2];		// calculating key
@@ -335,12 +380,20 @@ typedef struct  {
    CFG_FW_PRINTF_BUFFER_LOCATION_STRCT IFB_FwPfBuff;
 #endif // HCF_ASSERT_PRINTF
 #endif // HCF_ASSERT
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if ! defined HCF_INT_OFF
   hcf_16 volatile IFB_IntOffCnt;		// 0xFFFF based HCF_ACT_INT_OFF nesting counter, DeepSleep flag
 #endif // HCF_INT_OFF
 #if (HCF_TYPE) & HCF_TYPE_CCX
   hcf_16         IFB_CKIPStat;			// CKIP Status flag
 #endif // HCF_TYPE_CCX
+=======
+  hcf_16 volatile IFB_IntOffCnt;		// 0xFFFF based HCF_ACT_INT_OFF nesting counter, DeepSleep flag
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  hcf_16 volatile IFB_IntOffCnt;		// 0xFFFF based HCF_ACT_INT_OFF nesting counter, DeepSleep flag
+>>>>>>> refs/remotes/origin/master
 #if (HCF_TALLIES) & ( HCF_TALLIES_NIC | HCF_TALLIES_HCF )	//Hermes and/or HCF tally support
   hcf_32		IFB_Silly_you_should_align;	//;?
   hcf_16		IFB_TallyLen;			// Tally length (to build an LTV)
@@ -380,11 +433,15 @@ typedef IFB_STRCT*	IFBP;
 /**********************   W C I    F U N C T I O N S    P R O T O T Y P E S   ******************************/
 /***********************************************************************************************************/
 
+<<<<<<< HEAD
 EXTERN_C int		 hcf_action			(IFBP ifbp, hcf_16 cmd );
 EXTERN_C int		 hcf_connect		(IFBP ifbp, hcf_io io_base );
+<<<<<<< HEAD
 #if (HCF_ENCAP) & HCF_ENC_SUP
 EXTERN_C hcf_8 		 hcf_encap			(wci_bufp type );
 #endif // HCF_ENC_SUP
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 EXTERN_C int		 hcf_get_info		(IFBP ifbp, LTVP ltvp );
 EXTERN_C int		 hcf_service_nic	(IFBP ifbp, wci_bufp bufp, unsigned int len );
 EXTERN_C int		 hcf_cntl			(IFBP ifbp, hcf_16 cmd );
@@ -399,6 +456,24 @@ EXTERN_C void		 hcf_dma_rx_put		(IFBP ifbp, DESC_STRCT *d );
 #endif // HCF_DMA
 #if (HCF_ASSERT) & HCF_ASSERT_LNK_MSF_RTN
 EXTERN_C void		 msf_assert	 		(unsigned int line_number, hcf_16 trace, hcf_32 qual );
+=======
+EXTERN_C int hcf_action(IFBP ifbp, hcf_16 cmd);
+EXTERN_C int hcf_connect(IFBP ifbp, hcf_io io_base);
+EXTERN_C int hcf_get_info(IFBP ifbp, LTVP ltvp);
+EXTERN_C int hcf_service_nic(IFBP ifbp, wci_bufp bufp, unsigned int len);
+EXTERN_C int hcf_cntl(IFBP ifbp, hcf_16 cmd);
+EXTERN_C int hcf_put_info(IFBP ifbp, LTVP ltvp);
+EXTERN_C int hcf_rcv_msg(IFBP ifbp, DESC_STRCT *descp, unsigned int offset);
+EXTERN_C int hcf_send_msg(IFBP ifbp, DESC_STRCT *dp, hcf_16 tx_cntl);
+#if HCF_DMA
+EXTERN_C void hcf_dma_tx_put(IFBP ifbp, DESC_STRCT *d, hcf_16 tx_cntl);
+EXTERN_C DESC_STRCT* hcf_dma_tx_get		(IFBP ifbp );
+EXTERN_C DESC_STRCT* hcf_dma_rx_get		(IFBP ifbp );
+EXTERN_C void hcf_dma_rx_put(IFBP ifbp, DESC_STRCT *d);
+#endif // HCF_DMA
+#if (HCF_ASSERT) & HCF_ASSERT_LNK_MSF_RTN
+EXTERN_C void msf_assert(unsigned int line_number, hcf_16 trace, hcf_32 qual);
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_ASSERT_LNK_MSF_RTN
 
 #endif  // HCF_H

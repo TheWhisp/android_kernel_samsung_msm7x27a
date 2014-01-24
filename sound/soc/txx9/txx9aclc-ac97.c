@@ -119,12 +119,19 @@ static void txx9aclc_ac97_cold_reset(struct snd_ac97 *ac97)
 }
 
 /* AC97 controller operations */
+<<<<<<< HEAD
 struct snd_ac97_bus_ops soc_ac97_ops = {
+=======
+static struct snd_ac97_bus_ops txx9aclc_ac97_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read		= txx9aclc_ac97_read,
 	.write		= txx9aclc_ac97_write,
 	.reset		= txx9aclc_ac97_cold_reset,
 };
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(soc_ac97_ops);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static irqreturn_t txx9aclc_ac97_irq(int irq, void *dev_id)
 {
@@ -170,7 +177,15 @@ static struct snd_soc_dai_driver txx9aclc_ac97_dai = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit txx9aclc_ac97_dev_probe(struct platform_device *pdev)
+=======
+static const struct snd_soc_component_driver txx9aclc_ac97_component = {
+	.name		= "txx9aclc-ac97",
+};
+
+static int txx9aclc_ac97_dev_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct txx9aclc_plat_drvdata *drvdata;
 	struct resource *r;
@@ -181,12 +196,18 @@ static int __devinit txx9aclc_ac97_dev_probe(struct platform_device *pdev)
 	if (irq < 0)
 		return irq;
 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!r)
 		return -EBUSY;
 
 	if (!devm_request_mem_region(&pdev->dev, r->start, resource_size(r),
 				     dev_name(&pdev->dev)))
 		return -EBUSY;
+=======
+	drvdata->base = devm_ioremap_resource(&pdev->dev, r);
+	if (IS_ERR(drvdata->base))
+		return PTR_ERR(drvdata->base);
+>>>>>>> refs/remotes/origin/master
 
 	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
 	if (!drvdata)
@@ -197,11 +218,16 @@ static int __devinit txx9aclc_ac97_dev_probe(struct platform_device *pdev)
 	    r->start >= TXX9_DIRECTMAP_BASE &&
 	    r->start < TXX9_DIRECTMAP_BASE + 0x400000)
 		drvdata->physbase |= 0xf00000000ull;
+<<<<<<< HEAD
 	drvdata->base = devm_ioremap(&pdev->dev, r->start, resource_size(r));
 	if (!drvdata->base)
 		return -EBUSY;
 	err = devm_request_irq(&pdev->dev, irq, txx9aclc_ac97_irq,
+<<<<<<< HEAD
 			       IRQF_DISABLED, dev_name(&pdev->dev), drvdata);
+=======
+			       0, dev_name(&pdev->dev), drvdata);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err < 0)
 		return err;
 
@@ -211,18 +237,43 @@ static int __devinit txx9aclc_ac97_dev_probe(struct platform_device *pdev)
 static int __devexit txx9aclc_ac97_dev_remove(struct platform_device *pdev)
 {
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+	err = devm_request_irq(&pdev->dev, irq, txx9aclc_ac97_irq,
+			       0, dev_name(&pdev->dev), drvdata);
+	if (err < 0)
+		return err;
+
+	err = snd_soc_set_ac97_ops(&txx9aclc_ac97_ops);
+	if (err < 0)
+		return err;
+
+	return snd_soc_register_component(&pdev->dev, &txx9aclc_ac97_component,
+					  &txx9aclc_ac97_dai, 1);
+}
+
+static int txx9aclc_ac97_dev_remove(struct platform_device *pdev)
+{
+	snd_soc_unregister_component(&pdev->dev);
+	snd_soc_set_ac97_ops(NULL);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver txx9aclc_ac97_driver = {
 	.probe		= txx9aclc_ac97_dev_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(txx9aclc_ac97_dev_remove),
+=======
+	.remove		= txx9aclc_ac97_dev_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "txx9aclc-ac97",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init txx9aclc_ac97_init(void)
 {
 	return platform_driver_register(&txx9aclc_ac97_driver);
@@ -235,6 +286,12 @@ static void __exit txx9aclc_ac97_exit(void)
 
 module_init(txx9aclc_ac97_init);
 module_exit(txx9aclc_ac97_exit);
+=======
+module_platform_driver(txx9aclc_ac97_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(txx9aclc_ac97_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Atsushi Nemoto <anemo@mba.ocn.ne.jp>");
 MODULE_DESCRIPTION("TXx9 ACLC AC97 driver");

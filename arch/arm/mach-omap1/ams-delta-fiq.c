@@ -19,9 +19,20 @@
 #include <linux/module.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <plat/board-ams-delta.h>
 
 #include <asm/fiq.h>
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/board-ams-delta.h>
+
+#include <asm/fiq.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <mach/ams-delta-fiq.h>
 
 static struct fiq_handler fh = {
@@ -47,7 +58,15 @@ static irqreturn_t deferred_fiq(int irq, void *dev_id)
 	struct irq_chip *irq_chip = NULL;
 	int gpio, irq_num, fiq_count;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	irq_desc = irq_to_desc(IH_GPIO_BASE);
+=======
+	irq_desc = irq_to_desc(gpio_to_irq(AMS_DELTA_GPIO_PIN_KEYBRD_CLK));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_desc = irq_to_desc(gpio_to_irq(AMS_DELTA_GPIO_PIN_KEYBRD_CLK));
+>>>>>>> refs/remotes/origin/master
 	if (irq_desc)
 		irq_chip = irq_desc->irq_data.chip;
 
@@ -101,7 +120,11 @@ void __init ams_delta_init_fiq(void)
 	}
 
 	retval = request_irq(INT_DEFERRED_FIQ, deferred_fiq,
+<<<<<<< HEAD
 			IRQ_TYPE_EDGE_RISING, "deferred_fiq", 0);
+=======
+			IRQ_TYPE_EDGE_RISING, "deferred_fiq", NULL);
+>>>>>>> refs/remotes/origin/master
 	if (retval < 0) {
 		pr_err("Failed to get deferred_fiq IRQ, ret=%d\n", retval);
 		release_fiq(&fh);

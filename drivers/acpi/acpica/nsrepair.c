@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,6 +54,10 @@
 #include "acnamesp.h"
 #include "acinterp.h"
 #include "acpredef.h"
+<<<<<<< HEAD
+=======
+#include "amlresrc.h"
+>>>>>>> refs/remotes/origin/master
 
 #define _COMPONENT          ACPI_NAMESPACE
 ACPI_MODULE_NAME("nsrepair")
@@ -71,11 +83,27 @@ ACPI_MODULE_NAME("nsrepair")
  * Buffer  -> String
  * Buffer  -> Package of Integers
  * Package -> Package of one Package
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Additional possible repairs:
  *
  * Required package elements that are NULL replaced by Integer/String/Buffer
  * Incorrect standalone package wrapped with required outer package
+=======
+=======
+ *
+ * Additional conversions that are available:
+ *  Convert a null return or zero return value to an end_tag descriptor
+ *  Convert an ASCII string to a Unicode buffer
+ *
+>>>>>>> refs/remotes/origin/master
+ * An incorrect standalone object is wrapped with required outer package
+ *
+ * Additional possible repairs:
+ * Required package elements that are NULL replaced by Integer/String/Buffer
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  ******************************************************************************/
 /* Local prototypes */
@@ -91,15 +119,70 @@ static acpi_status
 acpi_ns_convert_to_buffer(union acpi_operand_object *original_object,
 			  union acpi_operand_object **return_object);
 
+<<<<<<< HEAD
 static acpi_status
 acpi_ns_convert_to_package(union acpi_operand_object *original_object,
 			   union acpi_operand_object **return_object);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*******************************************************************************
  *
  * FUNCTION:    acpi_ns_repair_object
  *
  * PARAMETERS:  Data                - Pointer to validation data structure
+=======
+ *
+ ******************************************************************************/
+/* Local prototypes */
+static const struct acpi_simple_repair_info *acpi_ns_match_simple_repair(struct
+									 acpi_namespace_node
+									 *node,
+									 u32
+									 return_btype,
+									 u32
+									 package_index);
+
+/*
+ * Special but simple repairs for some names.
+ *
+ * 2nd argument: Unexpected types that can be repaired
+ */
+static const struct acpi_simple_repair_info acpi_object_repair_info[] = {
+	/* Resource descriptor conversions */
+
+	{"_CRS",
+	 ACPI_RTYPE_INTEGER | ACPI_RTYPE_STRING | ACPI_RTYPE_BUFFER |
+	 ACPI_RTYPE_NONE,
+	 ACPI_NOT_PACKAGE_ELEMENT,
+	 acpi_ns_convert_to_resource},
+	{"_DMA",
+	 ACPI_RTYPE_INTEGER | ACPI_RTYPE_STRING | ACPI_RTYPE_BUFFER |
+	 ACPI_RTYPE_NONE,
+	 ACPI_NOT_PACKAGE_ELEMENT,
+	 acpi_ns_convert_to_resource},
+	{"_PRS",
+	 ACPI_RTYPE_INTEGER | ACPI_RTYPE_STRING | ACPI_RTYPE_BUFFER |
+	 ACPI_RTYPE_NONE,
+	 ACPI_NOT_PACKAGE_ELEMENT,
+	 acpi_ns_convert_to_resource},
+
+	/* Unicode conversions */
+
+	{"_MLS", ACPI_RTYPE_STRING, 1,
+	 acpi_ns_convert_to_unicode},
+	{"_STR", ACPI_RTYPE_STRING | ACPI_RTYPE_BUFFER,
+	 ACPI_NOT_PACKAGE_ELEMENT,
+	 acpi_ns_convert_to_unicode},
+	{{0, 0, 0, 0}, 0, 0, NULL}	/* Table terminator */
+};
+
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_ns_simple_repair
+ *
+ * PARAMETERS:  info                - Method execution information block
+>>>>>>> refs/remotes/origin/master
  *              expected_btypes     - Object types expected
  *              package_index       - Index of object within parent package (if
  *                                    applicable - ACPI_NOT_PACKAGE_ELEMENT
@@ -115,16 +198,65 @@ acpi_ns_convert_to_package(union acpi_operand_object *original_object,
  ******************************************************************************/
 
 acpi_status
+<<<<<<< HEAD
 acpi_ns_repair_object(struct acpi_predefined_data *data,
+=======
+acpi_ns_simple_repair(struct acpi_evaluate_info *info,
+>>>>>>> refs/remotes/origin/master
 		      u32 expected_btypes,
 		      u32 package_index,
 		      union acpi_operand_object **return_object_ptr)
 {
 	union acpi_operand_object *return_object = *return_object_ptr;
+<<<<<<< HEAD
 	union acpi_operand_object *new_object;
 	acpi_status status;
 
 	ACPI_FUNCTION_NAME(ns_repair_object);
+=======
+	union acpi_operand_object *new_object = NULL;
+	acpi_status status;
+	const struct acpi_simple_repair_info *predefined;
+
+	ACPI_FUNCTION_NAME(ns_simple_repair);
+
+	/*
+	 * Special repairs for certain names that are in the repair table.
+	 * Check if this name is in the list of repairable names.
+	 */
+	predefined = acpi_ns_match_simple_repair(info->node,
+						 info->return_btype,
+						 package_index);
+	if (predefined) {
+		if (!return_object) {
+			ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname,
+					      ACPI_WARN_ALWAYS,
+					      "Missing expected return value"));
+		}
+
+		status =
+		    predefined->object_converter(return_object, &new_object);
+		if (ACPI_FAILURE(status)) {
+
+			/* A fatal error occurred during a conversion */
+
+			ACPI_EXCEPTION((AE_INFO, status,
+					"During return object analysis"));
+			return (status);
+		}
+		if (new_object) {
+			goto object_repaired;
+		}
+	}
+
+	/*
+	 * Do not perform simple object repair unless the return type is not
+	 * expected.
+	 */
+	if (info->return_btype & expected_btypes) {
+		return (AE_OK);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * At this point, we know that the type of the returned object was not
@@ -132,6 +264,27 @@ acpi_ns_repair_object(struct acpi_predefined_data *data,
 	 * repair the object by converting it to one of the expected object
 	 * types for this predefined name.
 	 */
+<<<<<<< HEAD
+=======
+
+	/*
+	 * If there is no return value, check if we require a return value for
+	 * this predefined name. Either one return value is expected, or none,
+	 * for both methods and other objects.
+	 *
+	 * Exit now if there is no return object. Warning if one was expected.
+	 */
+	if (!return_object) {
+		if (expected_btypes && (!(expected_btypes & ACPI_RTYPE_NONE))) {
+			ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname,
+					      ACPI_WARN_ALWAYS,
+					      "Missing expected return value"));
+
+			return (AE_AML_NO_RETURN_VALUE);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (expected_btypes & ACPI_RTYPE_INTEGER) {
 		status = acpi_ns_convert_to_integer(return_object, &new_object);
 		if (ACPI_SUCCESS(status)) {
@@ -151,9 +304,42 @@ acpi_ns_repair_object(struct acpi_predefined_data *data,
 		}
 	}
 	if (expected_btypes & ACPI_RTYPE_PACKAGE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		status = acpi_ns_convert_to_package(return_object, &new_object);
 		if (ACPI_SUCCESS(status)) {
 			goto object_repaired;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * A package is expected. We will wrap the existing object with a
+		 * new package object. It is often the case that if a variable-length
+		 * package is required, but there is only a single object needed, the
+		 * BIOS will return that object instead of wrapping it with a Package
+		 * object. Note: after the wrapping, the package will be validated
+		 * for correct contents (expected object type or types).
+		 */
+		status =
+<<<<<<< HEAD
+		    acpi_ns_wrap_with_package(data, return_object, &new_object);
+=======
+		    acpi_ns_wrap_with_package(info, return_object, &new_object);
+>>>>>>> refs/remotes/origin/master
+		if (ACPI_SUCCESS(status)) {
+			/*
+			 * The original object just had its reference count
+			 * incremented for being inserted into the new package.
+			 */
+			*return_object_ptr = new_object;	/* New Package object */
+<<<<<<< HEAD
+			data->flags |= ACPI_OBJECT_REPAIRED;
+			return (AE_OK);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			info->return_flags |= ACPI_OBJECT_REPAIRED;
+			return (AE_OK);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -161,10 +347,12 @@ acpi_ns_repair_object(struct acpi_predefined_data *data,
 
 	return (AE_AML_OPERAND_TYPE);
 
+<<<<<<< HEAD
       object_repaired:
 
 	/* Object was successfully repaired */
 
+<<<<<<< HEAD
 	/*
 	 * If the original object is a package element, we need to:
 	 * 1. Set the reference count of the new object to match the
@@ -181,14 +369,55 @@ acpi_ns_repair_object(struct acpi_predefined_data *data,
 
 		ACPI_DEBUG_PRINT((ACPI_DB_REPAIR,
 				  "%s: Converted %s to expected %s at index %u\n",
+=======
+=======
+object_repaired:
+
+	/* Object was successfully repaired */
+
+>>>>>>> refs/remotes/origin/master
+	if (package_index != ACPI_NOT_PACKAGE_ELEMENT) {
+		/*
+		 * The original object is a package element. We need to
+		 * decrement the reference count of the original object,
+		 * for removing it from the package.
+		 *
+		 * However, if the original object was just wrapped with a
+		 * package object as part of the repair, we don't need to
+		 * change the reference count.
+		 */
+<<<<<<< HEAD
+		if (!(data->flags & ACPI_OBJECT_WRAPPED)) {
+=======
+		if (!(info->return_flags & ACPI_OBJECT_WRAPPED)) {
+>>>>>>> refs/remotes/origin/master
+			new_object->common.reference_count =
+			    return_object->common.reference_count;
+
+			if (return_object->common.reference_count > 1) {
+				return_object->common.reference_count--;
+			}
+		}
+
+		ACPI_DEBUG_PRINT((ACPI_DB_REPAIR,
+				  "%s: Converted %s to expected %s at Package index %u\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 				  data->pathname,
+=======
+				  info->full_pathname,
+>>>>>>> refs/remotes/origin/master
 				  acpi_ut_get_object_type_name(return_object),
 				  acpi_ut_get_object_type_name(new_object),
 				  package_index));
 	} else {
 		ACPI_DEBUG_PRINT((ACPI_DB_REPAIR,
 				  "%s: Converted %s to expected %s\n",
+<<<<<<< HEAD
 				  data->pathname,
+=======
+				  info->full_pathname,
+>>>>>>> refs/remotes/origin/master
 				  acpi_ut_get_object_type_name(return_object),
 				  acpi_ut_get_object_type_name(new_object)));
 	}
@@ -197,6 +426,7 @@ acpi_ns_repair_object(struct acpi_predefined_data *data,
 
 	acpi_ut_remove_reference(return_object);
 	*return_object_ptr = new_object;
+<<<<<<< HEAD
 	data->flags |= ACPI_OBJECT_REPAIRED;
 	return (AE_OK);
 }
@@ -449,10 +679,63 @@ acpi_ns_convert_to_buffer(union acpi_operand_object *original_object,
 
 	*return_object = new_object;
 	return (AE_OK);
+=======
+	info->return_flags |= ACPI_OBJECT_REPAIRED;
+	return (AE_OK);
+}
+
+/******************************************************************************
+ *
+ * FUNCTION:    acpi_ns_match_simple_repair
+ *
+ * PARAMETERS:  node                - Namespace node for the method/object
+ *              return_btype        - Object type that was returned
+ *              package_index       - Index of object within parent package (if
+ *                                    applicable - ACPI_NOT_PACKAGE_ELEMENT
+ *                                    otherwise)
+ *
+ * RETURN:      Pointer to entry in repair table. NULL indicates not found.
+ *
+ * DESCRIPTION: Check an object name against the repairable object list.
+ *
+ *****************************************************************************/
+
+static const struct acpi_simple_repair_info *acpi_ns_match_simple_repair(struct
+									 acpi_namespace_node
+									 *node,
+									 u32
+									 return_btype,
+									 u32
+									 package_index)
+{
+	const struct acpi_simple_repair_info *this_name;
+
+	/* Search info table for a repairable predefined method/object name */
+
+	this_name = acpi_object_repair_info;
+	while (this_name->object_converter) {
+		if (ACPI_COMPARE_NAME(node->name.ascii, this_name->name)) {
+
+			/* Check if we can actually repair this name/type combination */
+
+			if ((return_btype & this_name->unexpected_btypes) &&
+			    (package_index == this_name->package_index)) {
+				return (this_name);
+			}
+
+			return (NULL);
+		}
+		this_name++;
+	}
+
+	return (NULL);		/* Name was not found in the repair table */
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * FUNCTION:    acpi_ns_convert_to_package
  *
  * PARAMETERS:  original_object     - Object to be converted
@@ -512,9 +795,16 @@ acpi_ns_convert_to_package(union acpi_operand_object *original_object,
 
 /*******************************************************************************
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * FUNCTION:    acpi_ns_repair_null_element
  *
  * PARAMETERS:  Data                - Pointer to validation data structure
+=======
+ * FUNCTION:    acpi_ns_repair_null_element
+ *
+ * PARAMETERS:  info                - Method execution information block
+>>>>>>> refs/remotes/origin/master
  *              expected_btypes     - Object types expected
  *              package_index       - Index of object within parent package (if
  *                                    applicable - ACPI_NOT_PACKAGE_ELEMENT
@@ -529,7 +819,11 @@ acpi_ns_convert_to_package(union acpi_operand_object *original_object,
  ******************************************************************************/
 
 acpi_status
+<<<<<<< HEAD
 acpi_ns_repair_null_element(struct acpi_predefined_data *data,
+=======
+acpi_ns_repair_null_element(struct acpi_evaluate_info * info,
+>>>>>>> refs/remotes/origin/master
 			    u32 expected_btypes,
 			    u32 package_index,
 			    union acpi_operand_object **return_object_ptr)
@@ -553,17 +847,29 @@ acpi_ns_repair_null_element(struct acpi_predefined_data *data,
 	 */
 	if (expected_btypes & ACPI_RTYPE_INTEGER) {
 
+<<<<<<< HEAD
 		/* Need an Integer - create a zero-value integer */
+=======
+		/* Need an integer - create a zero-value integer */
+>>>>>>> refs/remotes/origin/master
 
 		new_object = acpi_ut_create_integer_object((u64)0);
 	} else if (expected_btypes & ACPI_RTYPE_STRING) {
 
+<<<<<<< HEAD
 		/* Need a String - create a NULL string */
+=======
+		/* Need a string - create a NULL string */
+>>>>>>> refs/remotes/origin/master
 
 		new_object = acpi_ut_create_string_object(0);
 	} else if (expected_btypes & ACPI_RTYPE_BUFFER) {
 
+<<<<<<< HEAD
 		/* Need a Buffer - create a zero-length buffer */
+=======
+		/* Need a buffer - create a zero-length buffer */
+>>>>>>> refs/remotes/origin/master
 
 		new_object = acpi_ut_create_buffer_object(0);
 	} else {
@@ -579,16 +885,28 @@ acpi_ns_repair_null_element(struct acpi_predefined_data *data,
 	/* Set the reference count according to the parent Package object */
 
 	new_object->common.reference_count =
+<<<<<<< HEAD
 	    data->parent_package->common.reference_count;
 
 	ACPI_DEBUG_PRINT((ACPI_DB_REPAIR,
 			  "%s: Converted NULL package element to expected %s at index %u\n",
 			  data->pathname,
+=======
+	    info->parent_package->common.reference_count;
+
+	ACPI_DEBUG_PRINT((ACPI_DB_REPAIR,
+			  "%s: Converted NULL package element to expected %s at index %u\n",
+			  info->full_pathname,
+>>>>>>> refs/remotes/origin/master
 			  acpi_ut_get_object_type_name(new_object),
 			  package_index));
 
 	*return_object_ptr = new_object;
+<<<<<<< HEAD
 	data->flags |= ACPI_OBJECT_REPAIRED;
+=======
+	info->return_flags |= ACPI_OBJECT_REPAIRED;
+>>>>>>> refs/remotes/origin/master
 	return (AE_OK);
 }
 
@@ -596,7 +914,11 @@ acpi_ns_repair_null_element(struct acpi_predefined_data *data,
  *
  * FUNCTION:    acpi_ns_remove_null_elements
  *
+<<<<<<< HEAD
  * PARAMETERS:  Data                - Pointer to validation data structure
+=======
+ * PARAMETERS:  info                - Method execution information block
+>>>>>>> refs/remotes/origin/master
  *              package_type        - An acpi_return_package_types value
  *              obj_desc            - A Package object
  *
@@ -609,7 +931,11 @@ acpi_ns_repair_null_element(struct acpi_predefined_data *data,
  *****************************************************************************/
 
 void
+<<<<<<< HEAD
 acpi_ns_remove_null_elements(struct acpi_predefined_data *data,
+=======
+acpi_ns_remove_null_elements(struct acpi_evaluate_info *info,
+>>>>>>> refs/remotes/origin/master
 			     u8 package_type,
 			     union acpi_operand_object *obj_desc)
 {
@@ -634,6 +960,15 @@ acpi_ns_remove_null_elements(struct acpi_predefined_data *data,
 	case ACPI_PTYPE2_FIXED:
 	case ACPI_PTYPE2_MIN:
 	case ACPI_PTYPE2_REV_FIXED:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case ACPI_PTYPE2_FIX_VAR:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case ACPI_PTYPE2_FIX_VAR:
+
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -665,7 +1000,11 @@ acpi_ns_remove_null_elements(struct acpi_predefined_data *data,
 	if (new_count < count) {
 		ACPI_DEBUG_PRINT((ACPI_DB_REPAIR,
 				  "%s: Found and removed %u NULL elements\n",
+<<<<<<< HEAD
 				  data->pathname, (count - new_count)));
+=======
+				  info->full_pathname, (count - new_count)));
+>>>>>>> refs/remotes/origin/master
 
 		/* NULL terminate list and update the package count */
 
@@ -676,6 +1015,8 @@ acpi_ns_remove_null_elements(struct acpi_predefined_data *data,
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * FUNCTION:    acpi_ns_repair_package_list
  *
  * PARAMETERS:  Data                - Pointer to validation data structure
@@ -695,10 +1036,41 @@ acpi_ns_remove_null_elements(struct acpi_predefined_data *data,
  *
  *              Names that can be repaired in this manner include:
  *              _ALR, _CSD, _HPX, _MLS, _PRT, _PSS, _TRT, TSS
+=======
+ * FUNCTION:    acpi_ns_wrap_with_package
+ *
+ * PARAMETERS:  Data                - Pointer to validation data structure
+=======
+ * FUNCTION:    acpi_ns_wrap_with_package
+ *
+ * PARAMETERS:  info                - Method execution information block
+>>>>>>> refs/remotes/origin/master
+ *              original_object     - Pointer to the object to repair.
+ *              obj_desc_ptr        - The new package object is returned here
+ *
+ * RETURN:      Status, new object in *obj_desc_ptr
+ *
+ * DESCRIPTION: Repair a common problem with objects that are defined to
+ *              return a variable-length Package of sub-objects. If there is
+ *              only one sub-object, some BIOS code mistakenly simply declares
+ *              the single object instead of a Package with one sub-object.
+ *              This function attempts to repair this error by wrapping a
+ *              Package object around the original object, creating the
+ *              correct and expected Package with one sub-object.
+ *
+ *              Names that can be repaired in this manner include:
+ *              _ALR, _CSD, _HPX, _MLS, _PLD, _PRT, _PSS, _TRT, _TSS,
+ *              _BCL, _DOD, _FIX, _Sx
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
 acpi_status
+<<<<<<< HEAD
+<<<<<<< HEAD
 acpi_ns_repair_package_list(struct acpi_predefined_data *data,
 			    union acpi_operand_object **obj_desc_ptr)
 {
@@ -709,22 +1081,66 @@ acpi_ns_repair_package_list(struct acpi_predefined_data *data,
 	/*
 	 * Create the new outer package and populate it. The new package will
 	 * have a single element, the lone subpackage.
+=======
+acpi_ns_wrap_with_package(struct acpi_predefined_data *data,
+=======
+acpi_ns_wrap_with_package(struct acpi_evaluate_info *info,
+>>>>>>> refs/remotes/origin/master
+			  union acpi_operand_object *original_object,
+			  union acpi_operand_object **obj_desc_ptr)
+{
+	union acpi_operand_object *pkg_obj_desc;
+
+	ACPI_FUNCTION_NAME(ns_wrap_with_package);
+
+	/*
+	 * Create the new outer package and populate it. The new package will
+	 * have a single element, the lone sub-object.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 */
 	pkg_obj_desc = acpi_ut_create_package_object(1);
 	if (!pkg_obj_desc) {
 		return (AE_NO_MEMORY);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pkg_obj_desc->package.elements[0] = *obj_desc_ptr;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pkg_obj_desc->package.elements[0] = original_object;
+
+	ACPI_DEBUG_PRINT((ACPI_DB_REPAIR,
+			  "%s: Wrapped %s with expected Package object\n",
+<<<<<<< HEAD
+			  data->pathname,
+			  acpi_ut_get_object_type_name(original_object)));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  info->full_pathname,
+			  acpi_ut_get_object_type_name(original_object)));
+>>>>>>> refs/remotes/origin/master
 
 	/* Return the new object in the object pointer */
 
 	*obj_desc_ptr = pkg_obj_desc;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	data->flags |= ACPI_OBJECT_REPAIRED;
 
 	ACPI_DEBUG_PRINT((ACPI_DB_REPAIR,
 			  "%s: Repaired incorrectly formed Package\n",
 			  data->pathname));
 
+=======
+	data->flags |= ACPI_OBJECT_REPAIRED | ACPI_OBJECT_WRAPPED;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->return_flags |= ACPI_OBJECT_REPAIRED | ACPI_OBJECT_WRAPPED;
+>>>>>>> refs/remotes/origin/master
 	return (AE_OK);
 }

@@ -9,11 +9,14 @@ struct dyn_arch_ftrace { };
 
 #define MCOUNT_ADDR ((long)_mcount)
 
+<<<<<<< HEAD
 #ifdef CONFIG_64BIT
 #define MCOUNT_INSN_SIZE  12
 #else
 #define MCOUNT_INSN_SIZE  20
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline unsigned long ftrace_call_adjust(unsigned long addr)
 {
@@ -21,4 +24,14 @@ static inline unsigned long ftrace_call_adjust(unsigned long addr)
 }
 
 #endif /* __ASSEMBLY__ */
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_64BIT
+#define MCOUNT_INSN_SIZE  12
+#else
+#define MCOUNT_INSN_SIZE  22
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_S390_FTRACE_H */

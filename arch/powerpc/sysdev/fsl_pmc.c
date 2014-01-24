@@ -14,9 +14,21 @@
 #include <linux/init.h>
 #include <linux/types.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/suspend.h>
 #include <linux/delay.h>
 #include <linux/device.h>
+=======
+#include <linux/export.h>
+#include <linux/suspend.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 
 struct pmc_regs {

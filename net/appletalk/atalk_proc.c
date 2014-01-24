@@ -14,6 +14,14 @@
 #include <net/net_namespace.h>
 #include <net/sock.h>
 #include <linux/atalk.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 
 static __inline__ struct atalk_iface *atalk_get_interface_idx(loff_t pos)
@@ -177,12 +185,21 @@ static int atalk_seq_socket_show(struct seq_file *seq, void *v)
 	at = at_sk(s);
 
 	seq_printf(seq, "%02X   %04X:%02X:%02X  %04X:%02X:%02X  %08X:%08X "
+<<<<<<< HEAD
 			"%02X %d\n",
+=======
+			"%02X %u\n",
+>>>>>>> refs/remotes/origin/master
 		   s->sk_type, ntohs(at->src_net), at->src_node, at->src_port,
 		   ntohs(at->dest_net), at->dest_node, at->dest_port,
 		   sk_wmem_alloc_get(s),
 		   sk_rmem_alloc_get(s),
+<<<<<<< HEAD
 		   s->sk_state, SOCK_INODE(s->sk_socket)->i_uid);
+=======
+		   s->sk_state,
+		   from_kuid_munged(seq_user_ns(seq), sock_i_uid(s)));
+>>>>>>> refs/remotes/origin/master
 out:
 	return 0;
 }

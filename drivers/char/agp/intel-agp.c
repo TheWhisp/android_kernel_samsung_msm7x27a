@@ -12,6 +12,10 @@
 #include <asm/smp.h>
 #include "agp.h"
 #include "intel-agp.h"
+<<<<<<< HEAD
+=======
+#include <drm/intel-gtt.h>
+>>>>>>> refs/remotes/origin/master
 
 int intel_agp_enabled;
 EXPORT_SYMBOL(intel_agp_enabled);
@@ -731,8 +735,13 @@ static const struct intel_agp_driver_description {
 	{ 0, NULL, NULL }
 };
 
+<<<<<<< HEAD
 static int __devinit agp_intel_probe(struct pci_dev *pdev,
 				     const struct pci_device_id *ent)
+=======
+static int agp_intel_probe(struct pci_dev *pdev,
+			   const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct agp_bridge_data *bridge;
 	u8 cap_ptr = 0;
@@ -747,7 +756,11 @@ static int __devinit agp_intel_probe(struct pci_dev *pdev,
 
 	bridge->capndx = cap_ptr;
 
+<<<<<<< HEAD
 	if (intel_gmch_probe(pdev, bridge))
+=======
+	if (intel_gmch_probe(pdev, NULL, bridge))
+>>>>>>> refs/remotes/origin/master
 		goto found_gmch;
 
 	for (i = 0; intel_agp_chipsets[i].name != NULL; i++) {
@@ -818,13 +831,21 @@ found_gmch:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit agp_intel_remove(struct pci_dev *pdev)
+=======
+static void agp_intel_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct agp_bridge_data *bridge = pci_get_drvdata(pdev);
 
 	agp_remove_bridge(bridge);
 
+<<<<<<< HEAD
 	intel_gmch_remove(pdev);
+=======
+	intel_gmch_remove();
+>>>>>>> refs/remotes/origin/master
 
 	agp_put_bridge(bridge);
 }
@@ -850,6 +871,14 @@ static struct pci_device_id agp_intel_pci_table[] = {
 	.subvendor	= PCI_ANY_ID,			\
 	.subdevice	= PCI_ANY_ID,			\
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ID(PCI_DEVICE_ID_INTEL_82441), /* for HAS2 support */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ID(PCI_DEVICE_ID_INTEL_82441), /* for HAS2 support */
+>>>>>>> refs/remotes/origin/master
 	ID(PCI_DEVICE_ID_INTEL_82443LX_0),
 	ID(PCI_DEVICE_ID_INTEL_82443BX_0),
 	ID(PCI_DEVICE_ID_INTEL_82443GX_0),
@@ -901,12 +930,15 @@ static struct pci_device_id agp_intel_pci_table[] = {
 	ID(PCI_DEVICE_ID_INTEL_IRONLAKE_M_HB),
 	ID(PCI_DEVICE_ID_INTEL_IRONLAKE_MA_HB),
 	ID(PCI_DEVICE_ID_INTEL_IRONLAKE_MC2_HB),
+<<<<<<< HEAD
 	ID(PCI_DEVICE_ID_INTEL_SANDYBRIDGE_HB),
 	ID(PCI_DEVICE_ID_INTEL_SANDYBRIDGE_M_HB),
 	ID(PCI_DEVICE_ID_INTEL_SANDYBRIDGE_S_HB),
 	ID(PCI_DEVICE_ID_INTEL_IVYBRIDGE_HB),
 	ID(PCI_DEVICE_ID_INTEL_IVYBRIDGE_M_HB),
 	ID(PCI_DEVICE_ID_INTEL_IVYBRIDGE_S_HB),
+=======
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 
@@ -916,7 +948,11 @@ static struct pci_driver agp_intel_pci_driver = {
 	.name		= "agpgart-intel",
 	.id_table	= agp_intel_pci_table,
 	.probe		= agp_intel_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(agp_intel_remove),
+=======
+	.remove		= agp_intel_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.resume		= agp_intel_resume,
 #endif

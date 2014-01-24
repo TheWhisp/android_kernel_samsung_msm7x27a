@@ -31,7 +31,15 @@
 #include <linux/string.h>
 EXPORT_SYMBOL(memset);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(__xchg8);
 EXPORT_SYMBOL(__xchg32);
 EXPORT_SYMBOL(__cmpxchg_u32);
@@ -44,7 +52,10 @@ EXPORT_SYMBOL(__cmpxchg_u64);
 #endif
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 EXPORT_SYMBOL(lstrncpy_from_user);
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(lclear_user);
 EXPORT_SYMBOL(lstrnlen_user);
 
@@ -121,11 +132,19 @@ extern void __ashrdi3(void);
 extern void __ashldi3(void);
 extern void __lshrdi3(void);
 extern void __muldi3(void);
+<<<<<<< HEAD
+=======
+extern void __ucmpdi2(void);
+>>>>>>> refs/remotes/origin/master
 
 EXPORT_SYMBOL(__ashrdi3);
 EXPORT_SYMBOL(__ashldi3);
 EXPORT_SYMBOL(__lshrdi3);
 EXPORT_SYMBOL(__muldi3);
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(__ucmpdi2);
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage void * __canonicalize_funcptr_for_compare(void *);
 EXPORT_SYMBOL(__canonicalize_funcptr_for_compare);
@@ -158,5 +177,11 @@ extern void _mcount(void);
 EXPORT_SYMBOL(_mcount);
 #endif
 
+<<<<<<< HEAD
 /* from pacache.S -- needed for copy_page */
 EXPORT_SYMBOL(copy_user_page_asm);
+=======
+/* from pacache.S -- needed for clear/copy_page */
+EXPORT_SYMBOL(clear_page_asm);
+EXPORT_SYMBOL(copy_page_asm);
+>>>>>>> refs/remotes/origin/master

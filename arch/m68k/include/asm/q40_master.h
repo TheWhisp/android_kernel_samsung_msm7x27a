@@ -60,7 +60,11 @@
 #define Q40_RTC_WRITE  128
 
 /* define some Q40 specific ints */
+<<<<<<< HEAD
 #include "q40ints.h"
+=======
+#include <asm/q40ints.h>
+>>>>>>> refs/remotes/origin/master
 
 /* misc defs */
 #define DAC_LEFT  ((unsigned char *)0xff008000)

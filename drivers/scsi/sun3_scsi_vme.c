@@ -25,7 +25,13 @@
 #include <linux/blkdev.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/sun3ints.h>
 #include <asm/dvma.h>
@@ -39,6 +45,21 @@
 /* dma on! */
 #define REAL_DMA
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define NDEBUG 0
+
+#define NDEBUG_ABORT		0x00100000
+#define NDEBUG_TAGS		0x00200000
+#define NDEBUG_MERGING		0x00400000
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "scsi.h"
 #include "initio.h"
 #include <scsi/scsi_host.h>
@@ -50,8 +71,14 @@ extern int sun3_map_test(unsigned long, char *);
 /*#define RESET_BOOT */
 #define DRIVER_SETUP
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define NDEBUG 0
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * BUG can be used to trigger a strange code-size related hang on 2.1 kernels
  */
@@ -137,7 +164,15 @@ static struct Scsi_Host *default_instance;
  *
  */
  
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int sun3scsi_detect(struct scsi_host_template * tpnt)
+=======
+static int __init sun3scsi_detect(struct scsi_host_template * tpnt)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init sun3scsi_detect(struct scsi_host_template * tpnt)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long ioaddr, irq = 0;
 	static int called = 0;
@@ -283,6 +318,14 @@ int sun3scsi_release (struct Scsi_Host *shpnt)
 
 	iounmap((void *)sun3_scsi_regp);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	NCR5380_exit(shpnt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	NCR5380_exit(shpnt);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

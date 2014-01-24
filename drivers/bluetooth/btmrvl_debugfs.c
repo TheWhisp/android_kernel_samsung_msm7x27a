@@ -29,6 +29,7 @@
 struct btmrvl_debugfs_data {
 	struct dentry *config_dir;
 	struct dentry *status_dir;
+<<<<<<< HEAD
 
 	/* config */
 	struct dentry *psmode;
@@ -51,6 +52,13 @@ static int btmrvl_open_generic(struct inode *inode, struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t btmrvl_hscfgcmd_write(struct file *file,
 			const char __user *ubuf, size_t count, loff_t *ppos)
 {
@@ -63,7 +71,16 @@ static ssize_t btmrvl_hscfgcmd_write(struct file *file,
 	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	ret = strict_strtol(buf, 10, &result);
+<<<<<<< HEAD
+=======
+	ret = kstrtol(buf, 10, &result);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	priv->btmrvl_dev.hscfgcmd = result;
 
@@ -91,6 +108,10 @@ static ssize_t btmrvl_hscfgcmd_read(struct file *file, char __user *userbuf,
 static const struct file_operations btmrvl_hscfgcmd_fops = {
 	.read	= btmrvl_hscfgcmd_read,
 	.write	= btmrvl_hscfgcmd_write,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.open	= btmrvl_open_generic,
 	.llseek = default_llseek,
 };
@@ -131,6 +152,12 @@ static const struct file_operations btmrvl_psmode_fops = {
 	.read	= btmrvl_psmode_read,
 	.write	= btmrvl_psmode_write,
 	.open	= btmrvl_open_generic,
+<<<<<<< HEAD
+=======
+	.open	= simple_open,
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.llseek = default_llseek,
 };
 
@@ -146,7 +173,16 @@ static ssize_t btmrvl_pscmd_write(struct file *file, const char __user *ubuf,
 	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	ret = strict_strtol(buf, 10, &result);
+<<<<<<< HEAD
+=======
+	ret = kstrtol(buf, 10, &result);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	priv->btmrvl_dev.pscmd = result;
 
@@ -174,6 +210,10 @@ static ssize_t btmrvl_pscmd_read(struct file *file, char __user *userbuf,
 static const struct file_operations btmrvl_pscmd_fops = {
 	.read = btmrvl_pscmd_read,
 	.write = btmrvl_pscmd_write,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.open = btmrvl_open_generic,
 	.llseek = default_llseek,
 };
@@ -214,6 +254,12 @@ static const struct file_operations btmrvl_gpiogap_fops = {
 	.read	= btmrvl_gpiogap_read,
 	.write	= btmrvl_gpiogap_write,
 	.open	= btmrvl_open_generic,
+<<<<<<< HEAD
+=======
+	.open = simple_open,
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.llseek = default_llseek,
 };
 
@@ -229,7 +275,16 @@ static ssize_t btmrvl_hscmd_write(struct file *file, const char __user *ubuf,
 	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	ret = strict_strtol(buf, 10, &result);
+<<<<<<< HEAD
+=======
+	ret = kstrtol(buf, 10, &result);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	priv->btmrvl_dev.hscmd = result;
 	if (priv->btmrvl_dev.hscmd) {
@@ -255,6 +310,10 @@ static ssize_t btmrvl_hscmd_read(struct file *file, char __user *userbuf,
 static const struct file_operations btmrvl_hscmd_fops = {
 	.read	= btmrvl_hscmd_read,
 	.write	= btmrvl_hscmd_write,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.open	= btmrvl_open_generic,
 	.llseek = default_llseek,
 };
@@ -367,12 +426,26 @@ static ssize_t btmrvl_txdnldready_read(struct file *file, char __user *userbuf,
 static const struct file_operations btmrvl_txdnldready_fops = {
 	.read	= btmrvl_txdnldready_read,
 	.open	= btmrvl_open_generic,
+<<<<<<< HEAD
+=======
+	.open	= simple_open,
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.llseek = default_llseek,
 };
 
 void btmrvl_debugfs_init(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct btmrvl_private *priv = hdev->driver_data;
+=======
+	struct btmrvl_private *priv = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
+=======
+	struct btmrvl_private *priv = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct btmrvl_debugfs_data *dbg;
 
 	if (!hdev->debugfs)
@@ -388,6 +461,7 @@ void btmrvl_debugfs_init(struct hci_dev *hdev)
 
 	dbg->config_dir = debugfs_create_dir("config", hdev->debugfs);
 
+<<<<<<< HEAD
 	dbg->psmode = debugfs_create_file("psmode", 0644, dbg->config_dir,
 				hdev->driver_data, &btmrvl_psmode_fops);
 	dbg->pscmd = debugfs_create_file("pscmd", 0644, dbg->config_dir,
@@ -414,16 +488,52 @@ void btmrvl_debugfs_init(struct hci_dev *hdev)
 						dbg->status_dir,
 						hdev->driver_data,
 						&btmrvl_txdnldready_fops);
+<<<<<<< HEAD
+=======
+	debugfs_create_u8("psmode", 0644, dbg->config_dir,
+			  &priv->btmrvl_dev.psmode);
+	debugfs_create_file("pscmd", 0644, dbg->config_dir,
+			    priv, &btmrvl_pscmd_fops);
+	debugfs_create_x16("gpiogap", 0644, dbg->config_dir,
+			   &priv->btmrvl_dev.gpio_gap);
+	debugfs_create_u8("hsmode", 0644, dbg->config_dir,
+			  &priv->btmrvl_dev.hsmode);
+	debugfs_create_file("hscmd", 0644, dbg->config_dir,
+			    priv, &btmrvl_hscmd_fops);
+	debugfs_create_file("hscfgcmd", 0644, dbg->config_dir,
+			    priv, &btmrvl_hscfgcmd_fops);
+
+	dbg->status_dir = debugfs_create_dir("status", hdev->debugfs);
+	debugfs_create_u8("curpsmode", 0444, dbg->status_dir,
+			  &priv->adapter->psmode);
+	debugfs_create_u8("psstate", 0444, dbg->status_dir,
+			  &priv->adapter->ps_state);
+	debugfs_create_u8("hsstate", 0444, dbg->status_dir,
+			  &priv->adapter->hs_state);
+	debugfs_create_u8("txdnldready", 0444, dbg->status_dir,
+			  &priv->btmrvl_dev.tx_dnld_rdy);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void btmrvl_debugfs_remove(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct btmrvl_private *priv = hdev->driver_data;
+=======
+	struct btmrvl_private *priv = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
+=======
+	struct btmrvl_private *priv = hdev->driver_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct btmrvl_debugfs_data *dbg = priv->debugfs_data;
 
 	if (!dbg)
 		return;
 
+<<<<<<< HEAD
 	debugfs_remove(dbg->psmode);
 	debugfs_remove(dbg->pscmd);
 	debugfs_remove(dbg->gpiogap);
@@ -437,6 +547,10 @@ void btmrvl_debugfs_remove(struct hci_dev *hdev)
 	debugfs_remove(dbg->hsstate);
 	debugfs_remove(dbg->txdnldready);
 	debugfs_remove(dbg->status_dir);
+=======
+	debugfs_remove_recursive(dbg->config_dir);
+	debugfs_remove_recursive(dbg->status_dir);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(dbg);
 }

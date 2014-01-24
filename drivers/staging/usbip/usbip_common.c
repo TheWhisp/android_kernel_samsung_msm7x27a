@@ -22,6 +22,16 @@
 #include <linux/fs.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stat.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/sock.h>
 
 #include "usbip_common.h"
@@ -35,24 +45,44 @@ unsigned long usbip_debug_flag = 0xffffffff;
 unsigned long usbip_debug_flag;
 #endif
 EXPORT_SYMBOL_GPL(usbip_debug_flag);
+<<<<<<< HEAD
+=======
+module_param(usbip_debug_flag, ulong, S_IRUGO|S_IWUSR);
+MODULE_PARM_DESC(usbip_debug_flag, "debug flags (defined in usbip_common.h)");
+>>>>>>> refs/remotes/origin/master
 
 /* FIXME */
 struct device_attribute dev_attr_usbip_debug;
 EXPORT_SYMBOL_GPL(dev_attr_usbip_debug);
 
+<<<<<<< HEAD
 static ssize_t show_flag(struct device *dev, struct device_attribute *attr,
 			 char *buf)
+=======
+static ssize_t usbip_debug_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	return sprintf(buf, "%lx\n", usbip_debug_flag);
 }
 
+<<<<<<< HEAD
 static ssize_t store_flag(struct device *dev, struct device_attribute *attr,
 			  const char *buf, size_t count)
+=======
+static ssize_t usbip_debug_store(struct device *dev,
+				 struct device_attribute *attr, const char *buf,
+				 size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	sscanf(buf, "%lx", &usbip_debug_flag);
 	return count;
 }
+<<<<<<< HEAD
 DEVICE_ATTR(usbip_debug, (S_IRUGO | S_IWUSR), show_flag, store_flag);
+=======
+DEVICE_ATTR_RW(usbip_debug);
+>>>>>>> refs/remotes/origin/master
 
 static void usbip_dump_buffer(char *buff, int bufflen)
 {
@@ -63,9 +93,21 @@ static void usbip_dump_buffer(char *buff, int bufflen)
 static void usbip_dump_pipe(unsigned int p)
 {
 	unsigned char type = usb_pipetype(p);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char ep = usb_pipeendpoint(p);
 	unsigned char dev = usb_pipedevice(p);
 	unsigned char dir = usb_pipein(p);
+=======
+	unsigned char ep   = usb_pipeendpoint(p);
+	unsigned char dev  = usb_pipedevice(p);
+	unsigned char dir  = usb_pipein(p);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char ep   = usb_pipeendpoint(p);
+	unsigned char dev  = usb_pipedevice(p);
+	unsigned char dir  = usb_pipein(p);
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("dev(%d) ep(%d) [%s] ", dev, ep, dir ? "IN" : "OUT");
 
@@ -149,15 +191,25 @@ static void usbip_dump_usb_device(struct usb_device *udev)
 
 	dev_dbg(dev, "parent %p, bus %p\n", udev->parent, udev->bus);
 
+<<<<<<< HEAD
 	dev_dbg(dev, "descriptor %p, config %p, actconfig %p, "
 		"rawdescriptors %p\n", &udev->descriptor, udev->config,
+=======
+	dev_dbg(dev,
+		"descriptor %p, config %p, actconfig %p, rawdescriptors %p\n",
+		&udev->descriptor, udev->config,
+>>>>>>> refs/remotes/origin/master
 		udev->actconfig, udev->rawdescriptors);
 
 	dev_dbg(dev, "have_langid %d, string_langid %d\n",
 		udev->have_langid, udev->string_langid);
 
+<<<<<<< HEAD
 	dev_dbg(dev, "maxchild %d, children %p\n",
 		udev->maxchild, udev->children);
+=======
+	dev_dbg(dev, "maxchild %d\n", udev->maxchild);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void usbip_dump_request_type(__u8 rt)
@@ -204,7 +256,15 @@ static void usbip_dump_usb_ctrlrequest(struct usb_ctrlrequest *cmd)
 			pr_debug("CLEAR_FEAT\n");
 			break;
 		case USB_REQ_SET_FEATURE:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pr_debug("SET_FEAT  \n");
+=======
+			pr_debug("SET_FEAT\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("SET_FEAT\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		case USB_REQ_SET_ADDRESS:
 			pr_debug("SET_ADDRRS\n");
@@ -231,14 +291,34 @@ static void usbip_dump_usb_ctrlrequest(struct usb_ctrlrequest *cmd)
 			pr_debug("SYNC_FRAME\n");
 			break;
 		default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pr_debug("REQ(%02X) \n", cmd->bRequest);
+=======
+			pr_debug("REQ(%02X)\n", cmd->bRequest);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("REQ(%02X)\n", cmd->bRequest);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		usbip_dump_request_type(cmd->bRequestType);
 	} else if ((cmd->bRequestType & USB_TYPE_MASK) == USB_TYPE_CLASS) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("CLASS   \n");
 	} else if ((cmd->bRequestType & USB_TYPE_MASK) == USB_TYPE_VENDOR) {
 		pr_debug("VENDOR  \n");
+=======
+		pr_debug("CLASS\n");
+	} else if ((cmd->bRequestType & USB_TYPE_MASK) == USB_TYPE_VENDOR) {
+		pr_debug("VENDOR\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("CLASS\n");
+	} else if ((cmd->bRequestType & USB_TYPE_MASK) == USB_TYPE_VENDOR) {
+		pr_debug("VENDOR\n");
+>>>>>>> refs/remotes/origin/master
 	} else if ((cmd->bRequestType & USB_TYPE_MASK) == USB_TYPE_RESERVED) {
 		pr_debug("RESERVED\n");
 	}
@@ -333,9 +413,19 @@ void usbip_dump_header(struct usbip_header *pdu)
 }
 EXPORT_SYMBOL_GPL(usbip_dump_header);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Send/receive messages over TCP/IP. I refer drivers/block/nbd.c */
 int usbip_xmit(int send, struct socket *sock, char *buf,
 	       int size, int msg_flags)
+=======
+/* Receive data over TCP/IP. */
+int usbip_recv(struct socket *sock, void *buf, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Receive data over TCP/IP. */
+int usbip_recv(struct socket *sock, void *buf, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	int result;
 	struct msghdr msg;
@@ -354,6 +444,8 @@ int usbip_xmit(int send, struct socket *sock, char *buf,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (usbip_dbg_flag_xmit) {
 		if (send) {
 			if (!in_interrupt())
@@ -367,6 +459,10 @@ int usbip_xmit(int send, struct socket *sock, char *buf,
 		}
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	do {
 		sock->sk->sk_allocation = GFP_NOIO;
 		iov.iov_base    = buf;
@@ -376,6 +472,8 @@ int usbip_xmit(int send, struct socket *sock, char *buf,
 		msg.msg_control = NULL;
 		msg.msg_controllen = 0;
 		msg.msg_namelen    = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msg.msg_flags      = msg_flags | MSG_NOSIGNAL;
 
 		if (send)
@@ -388,12 +486,27 @@ int usbip_xmit(int send, struct socket *sock, char *buf,
 			pr_debug("%s sock %p buf %p size %u ret %d total %d\n",
 				 send ? "send" : "receive", sock, buf, size,
 				 result, total);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		msg.msg_flags      = MSG_NOSIGNAL;
+
+		result = kernel_recvmsg(sock, &msg, &iov, 1, size, MSG_WAITALL);
+		if (result <= 0) {
+			pr_debug("receive sock %p buf %p size %u ret %d total %d\n",
+				 sock, buf, size, result, total);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto err;
 		}
 
 		size -= result;
 		buf += result;
 		total += result;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	} while (size > 0);
 
@@ -412,6 +525,26 @@ int usbip_xmit(int send, struct socket *sock, char *buf,
 
 		if (send)
 			pr_debug("send, total %d\n", total);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	} while (size > 0);
+
+	if (usbip_dbg_flag_xmit) {
+		if (!in_interrupt())
+			pr_debug("%-10s:", current->comm);
+		else
+			pr_debug("interrupt  :");
+
+		pr_debug("receiving....\n");
+		usbip_dump_buffer(bp, osize);
+		pr_debug("received, osize %d ret %d size %d total %d\n",
+<<<<<<< HEAD
+			osize, result, size, total);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 osize, result, size, total);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return total;
@@ -419,7 +552,15 @@ int usbip_xmit(int send, struct socket *sock, char *buf,
 err:
 	return result;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(usbip_xmit);
+=======
+EXPORT_SYMBOL_GPL(usbip_recv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(usbip_recv);
+>>>>>>> refs/remotes/origin/master
 
 struct socket *sockfd_to_socket(unsigned int sockfd)
 {
@@ -433,10 +574,19 @@ struct socket *sockfd_to_socket(unsigned int sockfd)
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	inode = file->f_dentry->d_inode;
 
 	if (!inode || !S_ISSOCK(inode->i_mode))
 		return NULL;
+=======
+	inode = file_inode(file);
+
+	if (!inode || !S_ISSOCK(inode->i_mode)) {
+		fput(file);
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	socket = SOCKET_I(inode);
 
@@ -461,7 +611,10 @@ static void usbip_pack_cmd_submit(struct usbip_header *pdu, struct urb *urb,
 	 * will be discussed when usbip is ported to other operating systems.
 	 */
 	if (pack) {
+<<<<<<< HEAD
 		/* vhci_tx.c */
+=======
+>>>>>>> refs/remotes/origin/master
 		spdu->transfer_flags =
 			tweak_transfer_flags(urb->transfer_flags);
 		spdu->transfer_buffer_length	= urb->transfer_buffer_length;
@@ -469,9 +622,13 @@ static void usbip_pack_cmd_submit(struct usbip_header *pdu, struct urb *urb,
 		spdu->number_of_packets		= urb->number_of_packets;
 		spdu->interval			= urb->interval;
 	} else  {
+<<<<<<< HEAD
 		/* stub_rx.c */
 		urb->transfer_flags         = spdu->transfer_flags;
 
+=======
+		urb->transfer_flags         = spdu->transfer_flags;
+>>>>>>> refs/remotes/origin/master
 		urb->transfer_buffer_length = spdu->transfer_buffer_length;
 		urb->start_frame            = spdu->start_frame;
 		urb->number_of_packets      = spdu->number_of_packets;
@@ -485,16 +642,22 @@ static void usbip_pack_ret_submit(struct usbip_header *pdu, struct urb *urb,
 	struct usbip_header_ret_submit *rpdu = &pdu->u.ret_submit;
 
 	if (pack) {
+<<<<<<< HEAD
 		/* stub_tx.c */
 
+=======
+>>>>>>> refs/remotes/origin/master
 		rpdu->status		= urb->status;
 		rpdu->actual_length	= urb->actual_length;
 		rpdu->start_frame	= urb->start_frame;
 		rpdu->number_of_packets = urb->number_of_packets;
 		rpdu->error_count	= urb->error_count;
 	} else {
+<<<<<<< HEAD
 		/* vhci_rx.c */
 
+=======
+>>>>>>> refs/remotes/origin/master
 		urb->status		= rpdu->status;
 		urb->actual_length	= rpdu->actual_length;
 		urb->start_frame	= rpdu->start_frame;
@@ -627,9 +790,19 @@ void usbip_header_correct_endian(struct usbip_header *pdu, int send)
 }
 EXPORT_SYMBOL_GPL(usbip_header_correct_endian);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void usbip_iso_pakcet_correct_endian(
 	struct usbip_iso_packet_descriptor *iso,
 	int send)
+=======
+static void usbip_iso_packet_correct_endian(
+		struct usbip_iso_packet_descriptor *iso, int send)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void usbip_iso_packet_correct_endian(
+		struct usbip_iso_packet_descriptor *iso, int send)
+>>>>>>> refs/remotes/origin/master
 {
 	/* does not need all members. but copy all simply. */
 	if (send) {
@@ -662,14 +835,21 @@ static void usbip_pack_iso(struct usbip_iso_packet_descriptor *iso,
 }
 
 /* must free buffer */
+<<<<<<< HEAD
 void *usbip_alloc_iso_desc_pdu(struct urb *urb, ssize_t *bufflen)
 {
 	void *buff;
+=======
+struct usbip_iso_packet_descriptor*
+usbip_alloc_iso_desc_pdu(struct urb *urb, ssize_t *bufflen)
+{
+>>>>>>> refs/remotes/origin/master
 	struct usbip_iso_packet_descriptor *iso;
 	int np = urb->number_of_packets;
 	ssize_t size = np * sizeof(*iso);
 	int i;
 
+<<<<<<< HEAD
 	buff = kzalloc(size, GFP_KERNEL);
 	if (!buff)
 		return NULL;
@@ -678,12 +858,29 @@ void *usbip_alloc_iso_desc_pdu(struct urb *urb, ssize_t *bufflen)
 		iso = buff + (i * sizeof(*iso));
 
 		usbip_pack_iso(iso, &urb->iso_frame_desc[i], 1);
+<<<<<<< HEAD
 		usbip_iso_pakcet_correct_endian(iso, 1);
+=======
+		usbip_iso_packet_correct_endian(iso, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iso = kzalloc(size, GFP_KERNEL);
+	if (!iso)
+		return NULL;
+
+	for (i = 0; i < np; i++) {
+		usbip_pack_iso(&iso[i], &urb->iso_frame_desc[i], 1);
+		usbip_iso_packet_correct_endian(&iso[i], 1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	*bufflen = size;
 
+<<<<<<< HEAD
 	return buff;
+=======
+	return iso;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(usbip_alloc_iso_desc_pdu);
 
@@ -702,17 +899,30 @@ int usbip_recv_iso(struct usbip_device *ud, struct urb *urb)
 		return 0;
 
 	/* my Bluetooth dongle gets ISO URBs which are np = 0 */
+<<<<<<< HEAD
 	if (np == 0) {
 		/* pr_info("iso np == 0\n"); */
 		/* usbip_dump_urb(urb); */
 		return 0;
 	}
+=======
+	if (np == 0)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	buff = kzalloc(size, GFP_KERNEL);
 	if (!buff)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usbip_xmit(0, ud->tcp_socket, buff, size, 0);
+=======
+	ret = usbip_recv(ud->tcp_socket, buff, size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = usbip_recv(ud->tcp_socket, buff, size);
+>>>>>>> refs/remotes/origin/master
 	if (ret != size) {
 		dev_err(&urb->dev->dev, "recv iso_frame_descriptor, %d\n",
 			ret);
@@ -726,11 +936,22 @@ int usbip_recv_iso(struct usbip_device *ud, struct urb *urb)
 		return -EPIPE;
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i < np; i++) {
 		iso = buff + (i * sizeof(*iso));
 
+<<<<<<< HEAD
 		usbip_iso_pakcet_correct_endian(iso, 0);
+=======
+		usbip_iso_packet_correct_endian(iso, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		usbip_pack_iso(iso, &urb->iso_frame_desc[i], 0);
+=======
+	iso = (struct usbip_iso_packet_descriptor *) buff;
+	for (i = 0; i < np; i++) {
+		usbip_iso_packet_correct_endian(&iso[i], 0);
+		usbip_pack_iso(&iso[i], &urb->iso_frame_desc[i], 0);
+>>>>>>> refs/remotes/origin/master
 		total_length += urb->iso_frame_desc[i].actual_length;
 	}
 
@@ -777,7 +998,11 @@ void usbip_pad_iso(struct usbip_device *ud, struct urb *urb)
 	/*
 	 * if actual_length is transfer_buffer_length then no padding is
 	 * present.
+<<<<<<< HEAD
 	*/
+=======
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (urb->actual_length == urb->transfer_buffer_length)
 		return;
 
@@ -801,14 +1026,20 @@ int usbip_recv_xbuff(struct usbip_device *ud, struct urb *urb)
 	int size;
 
 	if (ud->side == USBIP_STUB) {
+<<<<<<< HEAD
 		/* stub_rx.c */
+=======
+>>>>>>> refs/remotes/origin/master
 		/* the direction of urb must be OUT. */
 		if (usb_pipein(urb->pipe))
 			return 0;
 
 		size = urb->transfer_buffer_length;
 	} else {
+<<<<<<< HEAD
 		/* vhci_rx.c */
+=======
+>>>>>>> refs/remotes/origin/master
 		/* the direction of urb must be IN. */
 		if (usb_pipeout(urb->pipe))
 			return 0;
@@ -820,8 +1051,16 @@ int usbip_recv_xbuff(struct usbip_device *ud, struct urb *urb)
 	if (!(size > 0))
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usbip_xmit(0, ud->tcp_socket, (char *)urb->transfer_buffer,
 			 size, 0);
+=======
+	ret = usbip_recv(ud->tcp_socket, urb->transfer_buffer, size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = usbip_recv(ud->tcp_socket, urb->transfer_buffer, size);
+>>>>>>> refs/remotes/origin/master
 	if (ret != size) {
 		dev_err(&urb->dev->dev, "recv xbuf, %d\n", ret);
 		if (ud->side == USBIP_STUB) {
@@ -836,19 +1075,45 @@ int usbip_recv_xbuff(struct usbip_device *ud, struct urb *urb)
 }
 EXPORT_SYMBOL_GPL(usbip_recv_xbuff);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usbip_common_init(void)
+=======
+static int __init usbip_core_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init usbip_core_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	pr_info(DRIVER_DESC " v" USBIP_VERSION "\n");
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __exit usbip_common_exit(void)
+=======
+static void __exit usbip_core_exit(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __exit usbip_core_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_init(usbip_common_init);
 module_exit(usbip_common_exit);
+=======
+module_init(usbip_core_init);
+module_exit(usbip_core_exit);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_init(usbip_core_init);
+module_exit(usbip_core_exit);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

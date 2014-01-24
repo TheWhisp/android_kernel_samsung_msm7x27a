@@ -13,6 +13,7 @@
 
 char *ceph_osdmap_state_str(char *str, int len, int state)
 {
+<<<<<<< HEAD
 	int flag = 0;
 
 	if (!len)
@@ -33,12 +34,30 @@ char *ceph_osdmap_state_str(char *str, int len, int state)
 		snprintf(str, len, "doesn't exist");
 	}
 done:
+=======
+	if (!len)
+		return str;
+
+	if ((state & CEPH_OSD_EXISTS) && (state & CEPH_OSD_UP))
+		snprintf(str, len, "exists, up");
+	else if (state & CEPH_OSD_EXISTS)
+		snprintf(str, len, "exists");
+	else if (state & CEPH_OSD_UP)
+		snprintf(str, len, "up");
+	else
+		snprintf(str, len, "doesn't exist");
+
+>>>>>>> refs/remotes/origin/master
 	return str;
 }
 
 /* maps */
 
+<<<<<<< HEAD
 static int calc_bits_of(unsigned t)
+=======
+static int calc_bits_of(unsigned int t)
+>>>>>>> refs/remotes/origin/master
 {
 	int b = 0;
 	while (t) {
@@ -53,6 +72,7 @@ static int calc_bits_of(unsigned t)
  */
 static void calc_pg_masks(struct ceph_pg_pool_info *pi)
 {
+<<<<<<< HEAD
 	pi->pg_num_mask = (1 << calc_bits_of(le32_to_cpu(pi->v.pg_num)-1)) - 1;
 	pi->pgp_num_mask =
 		(1 << calc_bits_of(le32_to_cpu(pi->v.pgp_num)-1)) - 1;
@@ -60,6 +80,10 @@ static void calc_pg_masks(struct ceph_pg_pool_info *pi)
 		(1 << calc_bits_of(le32_to_cpu(pi->v.lpg_num)-1)) - 1;
 	pi->lpgp_num_mask =
 		(1 << calc_bits_of(le32_to_cpu(pi->v.lpgp_num)-1)) - 1;
+=======
+	pi->pg_num_mask = (1 << calc_bits_of(pi->pg_num-1)) - 1;
+	pi->pgp_num_mask = (1 << calc_bits_of(pi->pgp_num-1)) - 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -135,6 +159,24 @@ bad:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
+=======
+static int skip_name_map(void **p, void *end)
+{
+        int len;
+        ceph_decode_32_safe(p, end, len ,bad);
+        while (len--) {
+                int strlen;
+                *p += sizeof(u32);
+                ceph_decode_32_safe(p, end, strlen, bad);
+                *p += strlen;
+}
+        return 0;
+bad:
+        return -EINVAL;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct crush_map *crush_decode(void *pbyval, void *end)
 {
 	struct crush_map *c;
@@ -143,6 +185,10 @@ static struct crush_map *crush_decode(void *pbyval, void *end)
 	void **p = &pbyval;
 	void *start = pbyval;
 	u32 magic;
+<<<<<<< HEAD
+=======
+	u32 num_name_maps;
+>>>>>>> refs/remotes/origin/master
 
 	dout("crush_decode %p to %p len %d\n", *p, end, (int)(end - *p));
 
@@ -150,17 +196,31 @@ static struct crush_map *crush_decode(void *pbyval, void *end)
 	if (c == NULL)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
+=======
+        /* set tunables to default values */
+        c->choose_local_tries = 2;
+        c->choose_local_fallback_tries = 5;
+        c->choose_total_tries = 19;
+	c->chooseleaf_descend_once = 0;
+
+>>>>>>> refs/remotes/origin/master
 	ceph_decode_need(p, end, 4*sizeof(u32), bad);
 	magic = ceph_decode_32(p);
 	if (magic != CRUSH_MAGIC) {
 		pr_err("crush_decode magic %x != current %x\n",
+<<<<<<< HEAD
 		       (unsigned)magic, (unsigned)CRUSH_MAGIC);
+=======
+		       (unsigned int)magic, (unsigned int)CRUSH_MAGIC);
+>>>>>>> refs/remotes/origin/master
 		goto bad;
 	}
 	c->max_buckets = ceph_decode_32(p);
 	c->max_rules = ceph_decode_32(p);
 	c->max_devices = ceph_decode_32(p);
 
+<<<<<<< HEAD
 	c->device_parents = kcalloc(c->max_devices, sizeof(u32), GFP_NOFS);
 	if (c->device_parents == NULL)
 		goto badmem;
@@ -168,6 +228,8 @@ static struct crush_map *crush_decode(void *pbyval, void *end)
 	if (c->bucket_parents == NULL)
 		goto badmem;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	c->buckets = kcalloc(c->max_buckets, sizeof(*c->buckets), GFP_NOFS);
 	if (c->buckets == NULL)
 		goto badmem;
@@ -283,7 +345,17 @@ static struct crush_map *crush_decode(void *pbyval, void *end)
 		ceph_decode_32_safe(p, end, yes, bad);
 #if BITS_PER_LONG == 32
 		err = -EINVAL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (yes > ULONG_MAX / sizeof(struct crush_rule_step))
+=======
+		if (yes > (ULONG_MAX - sizeof(*r))
+			  / sizeof(struct crush_rule_step))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (yes > (ULONG_MAX - sizeof(*r))
+			  / sizeof(struct crush_rule_step))
+>>>>>>> refs/remotes/origin/master
 			goto bad;
 #endif
 		r = c->rules[i] = kmalloc(sizeof(*r) +
@@ -303,7 +375,34 @@ static struct crush_map *crush_decode(void *pbyval, void *end)
 	}
 
 	/* ignore trailing name maps. */
+<<<<<<< HEAD
 
+=======
+        for (num_name_maps = 0; num_name_maps < 3; num_name_maps++) {
+                err = skip_name_map(p, end);
+                if (err < 0)
+                        goto done;
+        }
+
+        /* tunables */
+        ceph_decode_need(p, end, 3*sizeof(u32), done);
+        c->choose_local_tries = ceph_decode_32(p);
+        c->choose_local_fallback_tries =  ceph_decode_32(p);
+        c->choose_total_tries = ceph_decode_32(p);
+        dout("crush decode tunable choose_local_tries = %d",
+             c->choose_local_tries);
+        dout("crush decode tunable choose_local_fallback_tries = %d",
+             c->choose_local_fallback_tries);
+        dout("crush decode tunable choose_total_tries = %d",
+             c->choose_total_tries);
+
+	ceph_decode_need(p, end, sizeof(u32), done);
+	c->chooseleaf_descend_once = ceph_decode_32(p);
+	dout("crush decode tunable chooseleaf_descend_once = %d",
+	     c->chooseleaf_descend_once);
+
+done:
+>>>>>>> refs/remotes/origin/master
 	dout("crush_decode success\n");
 	return c;
 
@@ -321,12 +420,22 @@ bad:
  */
 static int pgid_cmp(struct ceph_pg l, struct ceph_pg r)
 {
+<<<<<<< HEAD
 	u64 a = *(u64 *)&l;
 	u64 b = *(u64 *)&r;
 
 	if (a < b)
 		return -1;
 	if (a > b)
+=======
+	if (l.pool < r.pool)
+		return -1;
+	if (l.pool > r.pool)
+		return 1;
+	if (l.seed < r.seed)
+		return -1;
+	if (l.seed > r.seed)
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	return 0;
 }
@@ -339,6 +448,14 @@ static int __insert_pg_mapping(struct ceph_pg_mapping *new,
 	struct ceph_pg_mapping *pg = NULL;
 	int c;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dout("__insert_pg_mapping %llx %p\n", *(u64 *)&new->pgid, new);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dout("__insert_pg_mapping %llx %p\n", *(u64 *)&new->pgid, new);
+>>>>>>> refs/remotes/origin/master
 	while (*p) {
 		parent = *p;
 		pg = rb_entry(parent, struct ceph_pg_mapping, node);
@@ -366,16 +483,70 @@ static struct ceph_pg_mapping *__lookup_pg_mapping(struct rb_root *root,
 	while (n) {
 		pg = rb_entry(n, struct ceph_pg_mapping, node);
 		c = pgid_cmp(pgid, pg->pgid);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (c < 0)
 			n = n->rb_left;
 		else if (c > 0)
 			n = n->rb_right;
 		else
 			return pg;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (c < 0) {
+			n = n->rb_left;
+		} else if (c > 0) {
+			n = n->rb_right;
+		} else {
+<<<<<<< HEAD
+			dout("__lookup_pg_mapping %llx got %p\n",
+			     *(u64 *)&pgid, pg);
+			return pg;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dout("__lookup_pg_mapping %lld.%x got %p\n",
+			     pgid.pool, pgid.seed, pg);
+			return pg;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	return NULL;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int __remove_pg_mapping(struct rb_root *root, struct ceph_pg pgid)
+{
+	struct ceph_pg_mapping *pg = __lookup_pg_mapping(root, pgid);
+
+	if (pg) {
+<<<<<<< HEAD
+		dout("__remove_pg_mapping %llx %p\n", *(u64 *)&pgid, pg);
+=======
+		dout("__remove_pg_mapping %lld.%x %p\n", pgid.pool, pgid.seed,
+		     pg);
+>>>>>>> refs/remotes/origin/master
+		rb_erase(&pg->node, root);
+		kfree(pg);
+		return 0;
+	}
+<<<<<<< HEAD
+	dout("__remove_pg_mapping %llx dne\n", *(u64 *)&pgid);
+	return -ENOENT;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dout("__remove_pg_mapping %lld.%x dne\n", pgid.pool, pgid.seed);
+	return -ENOENT;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * rbtree of pg pool info
  */
@@ -401,7 +572,11 @@ static int __insert_pg_pool(struct rb_root *root, struct ceph_pg_pool_info *new)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct ceph_pg_pool_info *__lookup_pg_pool(struct rb_root *root, int id)
+=======
+static struct ceph_pg_pool_info *__lookup_pg_pool(struct rb_root *root, u64 id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_pg_pool_info *pi;
 	struct rb_node *n = root->rb_node;
@@ -418,6 +593,25 @@ static struct ceph_pg_pool_info *__lookup_pg_pool(struct rb_root *root, int id)
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+const char *ceph_pg_pool_name_by_id(struct ceph_osdmap *map, u64 id)
+{
+	struct ceph_pg_pool_info *pi;
+
+	if (id == CEPH_NOPOOL)
+		return NULL;
+
+	if (WARN_ON_ONCE(id > (u64) INT_MAX))
+		return NULL;
+
+	pi = __lookup_pg_pool(&map->pg_pools, (int) id);
+
+	return pi ? pi->name : NULL;
+}
+EXPORT_SYMBOL(ceph_pg_pool_name_by_id);
+
+>>>>>>> refs/remotes/origin/master
 int ceph_pg_poolid_by_name(struct ceph_osdmap *map, const char *name)
 {
 	struct rb_node *rbp;
@@ -441,6 +635,7 @@ static void __remove_pg_pool(struct rb_root *root, struct ceph_pg_pool_info *pi)
 
 static int __decode_pool(void **p, void *end, struct ceph_pg_pool_info *pi)
 {
+<<<<<<< HEAD
 	unsigned n, m;
 
 	ceph_decode_copy(p, &pi->v, sizeof(pi->v));
@@ -459,6 +654,59 @@ static int __decode_pool(void **p, void *end, struct ceph_pg_pool_info *pi)
 	}
 
 	*p += le32_to_cpu(pi->v.num_removed_snap_intervals) * sizeof(u64) * 2;
+=======
+	u8 ev, cv;
+	unsigned len, num;
+	void *pool_end;
+
+	ceph_decode_need(p, end, 2 + 4, bad);
+	ev = ceph_decode_8(p);  /* encoding version */
+	cv = ceph_decode_8(p); /* compat version */
+	if (ev < 5) {
+		pr_warning("got v %d < 5 cv %d of ceph_pg_pool\n", ev, cv);
+		return -EINVAL;
+	}
+	if (cv > 7) {
+		pr_warning("got v %d cv %d > 7 of ceph_pg_pool\n", ev, cv);
+		return -EINVAL;
+	}
+	len = ceph_decode_32(p);
+	ceph_decode_need(p, end, len, bad);
+	pool_end = *p + len;
+
+	pi->type = ceph_decode_8(p);
+	pi->size = ceph_decode_8(p);
+	pi->crush_ruleset = ceph_decode_8(p);
+	pi->object_hash = ceph_decode_8(p);
+
+	pi->pg_num = ceph_decode_32(p);
+	pi->pgp_num = ceph_decode_32(p);
+
+	*p += 4 + 4;  /* skip lpg* */
+	*p += 4;      /* skip last_change */
+	*p += 8 + 4;  /* skip snap_seq, snap_epoch */
+
+	/* skip snaps */
+	num = ceph_decode_32(p);
+	while (num--) {
+		*p += 8;  /* snapid key */
+		*p += 1 + 1; /* versions */
+		len = ceph_decode_32(p);
+		*p += len;
+	}
+
+	/* skip removed snaps */
+	num = ceph_decode_32(p);
+	*p += num * (8 + 8);
+
+	*p += 8;  /* skip auid */
+	pi->flags = ceph_decode_64(p);
+
+	/* ignore the rest */
+
+	*p = pool_end;
+	calc_pg_masks(pi);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 bad:
@@ -468,23 +716,63 @@ bad:
 static int __decode_pool_names(void **p, void *end, struct ceph_osdmap *map)
 {
 	struct ceph_pg_pool_info *pi;
+<<<<<<< HEAD
 	u32 num, len, pool;
+=======
+	u32 num, len;
+	u64 pool;
+>>>>>>> refs/remotes/origin/master
 
 	ceph_decode_32_safe(p, end, num, bad);
 	dout(" %d pool names\n", num);
 	while (num--) {
+<<<<<<< HEAD
 		ceph_decode_32_safe(p, end, pool, bad);
 		ceph_decode_32_safe(p, end, len, bad);
 		dout("  pool %d len %d\n", pool, len);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		ceph_decode_need(p, end, len, bad);
+>>>>>>> refs/remotes/origin/cm-11.0
 		pi = __lookup_pg_pool(&map->pg_pools, pool);
 		if (pi) {
+			char *name = kstrndup(*p, len, GFP_NOFS);
+
+			if (!name)
+				return -ENOMEM;
 			kfree(pi->name);
+<<<<<<< HEAD
 			pi->name = kmalloc(len + 1, GFP_NOFS);
 			if (pi->name) {
 				memcpy(pi->name, *p, len);
 				pi->name[len] = '\0';
 				dout("  name is %s\n", pi->name);
 			}
+=======
+=======
+		ceph_decode_64_safe(p, end, pool, bad);
+		ceph_decode_32_safe(p, end, len, bad);
+		dout("  pool %llu len %d\n", pool, len);
+>>>>>>> refs/remotes/origin/master
+		ceph_decode_need(p, end, len, bad);
+		pi = __lookup_pg_pool(&map->pg_pools, pool);
+		if (pi) {
+			char *name = kstrndup(*p, len, GFP_NOFS);
+
+			if (!name)
+				return -ENOMEM;
+			kfree(pi->name);
+			pi->name = name;
+			dout("  name is %s\n", pi->name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+			pi->name = name;
+			dout("  name is %s\n", pi->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		*p += len;
 	}
@@ -565,7 +853,10 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 	struct ceph_osdmap *map;
 	u16 version;
 	u32 len, max, i;
+<<<<<<< HEAD
 	u8 ev;
+=======
+>>>>>>> refs/remotes/origin/master
 	int err = -EINVAL;
 	void *start = *p;
 	struct ceph_pg_pool_info *pi;
@@ -578,9 +869,18 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 	map->pg_temp = RB_ROOT;
 
 	ceph_decode_16_safe(p, end, version, bad);
+<<<<<<< HEAD
 	if (version > CEPH_OSDMAP_VERSION) {
 		pr_warning("got unknown v %d > %d of osdmap\n", version,
 			   CEPH_OSDMAP_VERSION);
+=======
+	if (version > 6) {
+		pr_warning("got unknown v %d > 6 of osdmap\n", version);
+		goto bad;
+	}
+	if (version < 6) {
+		pr_warning("got old v %d < 6 of osdmap\n", version);
+>>>>>>> refs/remotes/origin/master
 		goto bad;
 	}
 
@@ -592,11 +892,28 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 
 	ceph_decode_32_safe(p, end, max, bad);
 	while (max--) {
+<<<<<<< HEAD
 		ceph_decode_need(p, end, 4 + 1 + sizeof(pi->v), bad);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		err = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-11.0
 		pi = kzalloc(sizeof(*pi), GFP_NOFS);
 		if (!pi)
 			goto bad;
 		pi->id = ceph_decode_32(p);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		err = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 		ev = ceph_decode_8(p); /* encoding version */
 		if (ev > CEPH_PG_POOL_VERSION) {
 			pr_warning("got unknown v %d > %d of ceph_pg_pool\n",
@@ -604,6 +921,14 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 			kfree(pi);
 			goto bad;
 		}
+=======
+		ceph_decode_need(p, end, 8 + 2, bad);
+		err = -ENOMEM;
+		pi = kzalloc(sizeof(*pi), GFP_NOFS);
+		if (!pi)
+			goto bad;
+		pi->id = ceph_decode_64(p);
+>>>>>>> refs/remotes/origin/master
 		err = __decode_pool(p, end, pi);
 		if (err < 0) {
 			kfree(pi);
@@ -612,8 +937,32 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 		__insert_pg_pool(&map->pg_pools, pi);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (version >= 5 && __decode_pool_names(p, end, map) < 0)
 		goto bad;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (version >= 5) {
+		err = __decode_pool_names(p, end, map);
+		if (err < 0) {
+			dout("fail to decode pool names");
+			goto bad;
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = __decode_pool_names(p, end, map);
+	if (err < 0) {
+		dout("fail to decode pool names");
+		goto bad;
+	}
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ceph_decode_32_safe(p, end, map->pool_max, bad);
 
@@ -651,9 +1000,32 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 		struct ceph_pg pgid;
 		struct ceph_pg_mapping *pg;
 
+<<<<<<< HEAD
 		ceph_decode_need(p, end, sizeof(u32) + sizeof(u64), bad);
 		ceph_decode_copy(p, &pgid, sizeof(pgid));
 		n = ceph_decode_32(p);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		err = -EINVAL;
+		if (n > (UINT_MAX - sizeof(*pg)) / sizeof(u32))
+			goto bad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ceph_decode_pgid(p, end, &pgid);
+		if (err)
+			goto bad;
+		ceph_decode_need(p, end, sizeof(u32), bad);
+		n = ceph_decode_32(p);
+		err = -EINVAL;
+		if (n > (UINT_MAX - sizeof(*pg)) / sizeof(u32))
+			goto bad;
+>>>>>>> refs/remotes/origin/master
+=======
+		err = -EINVAL;
+		if (n > (UINT_MAX - sizeof(*pg)) / sizeof(u32))
+			goto bad;
+>>>>>>> refs/remotes/origin/cm-11.0
 		ceph_decode_need(p, end, n * sizeof(u32), bad);
 		err = -ENOMEM;
 		pg = kmalloc(sizeof(*pg) + n*sizeof(u32), GFP_NOFS);
@@ -667,7 +1039,12 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 		err = __insert_pg_mapping(pg, &map->pg_temp);
 		if (err)
 			goto bad;
+<<<<<<< HEAD
 		dout(" added pg_temp %llx len %d\n", *(u64 *)&pgid, len);
+=======
+		dout(" added pg_temp %lld.%x len %d\n", pgid.pool, pgid.seed,
+		     len);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* crush */
@@ -690,7 +1067,19 @@ struct ceph_osdmap *osdmap_decode(void **p, void *end)
 	return map;
 
 bad:
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dout("osdmap_decode fail\n");
+=======
+	dout("osdmap_decode fail err %d\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dout("osdmap_decode fail err %d\n", err);
+>>>>>>> refs/remotes/origin/master
+=======
+	dout("osdmap_decode fail err %d\n", err);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ceph_osdmap_destroy(map);
 	return ERR_PTR(err);
 }
@@ -706,17 +1095,34 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 	struct ceph_fsid fsid;
 	u32 epoch = 0;
 	struct ceph_timespec modified;
+<<<<<<< HEAD
 	u32 len, pool;
 	__s32 new_pool_max, new_flags, max;
 	void *start = *p;
 	int err = -EINVAL;
 	u16 version;
+<<<<<<< HEAD
 	struct rb_node *rbp;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ceph_decode_16_safe(p, end, version, bad);
 	if (version > CEPH_OSDMAP_INC_VERSION) {
 		pr_warning("got unknown v %d > %d of inc osdmap\n", version,
 			   CEPH_OSDMAP_INC_VERSION);
+=======
+	s32 len;
+	u64 pool;
+	__s64 new_pool_max;
+	__s32 new_flags, max;
+	void *start = *p;
+	int err = -EINVAL;
+	u16 version;
+
+	ceph_decode_16_safe(p, end, version, bad);
+	if (version != 6) {
+		pr_warning("got unknown v %d != 6 of inc osdmap\n", version);
+>>>>>>> refs/remotes/origin/master
 		goto bad;
 	}
 
@@ -726,7 +1132,11 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 	epoch = ceph_decode_32(p);
 	BUG_ON(epoch != map->epoch+1);
 	ceph_decode_copy(p, &modified, sizeof(modified));
+<<<<<<< HEAD
 	new_pool_max = ceph_decode_32(p);
+=======
+	new_pool_max = ceph_decode_64(p);
+>>>>>>> refs/remotes/origin/master
 	new_flags = ceph_decode_32(p);
 
 	/* full map? */
@@ -776,6 +1186,7 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 	/* new_pool */
 	ceph_decode_32_safe(p, end, len, bad);
 	while (len--) {
+<<<<<<< HEAD
 		__u8 ev;
 		struct ceph_pg_pool_info *pi;
 
@@ -785,8 +1196,21 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 		if (ev > CEPH_PG_POOL_VERSION) {
 			pr_warning("got unknown v %d > %d of ceph_pg_pool\n",
 				   ev, CEPH_PG_POOL_VERSION);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			err = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto bad;
 		}
+=======
+		struct ceph_pg_pool_info *pi;
+
+		ceph_decode_64_safe(p, end, pool, bad);
+>>>>>>> refs/remotes/origin/master
 		pi = __lookup_pg_pool(&map->pg_pools, pool);
 		if (!pi) {
 			pi = kzalloc(sizeof(*pi), GFP_NOFS);
@@ -801,15 +1225,39 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 		if (err < 0)
 			goto bad;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (version >= 5 && __decode_pool_names(p, end, map) < 0)
 		goto bad;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (version >= 5) {
+		err = __decode_pool_names(p, end, map);
+		if (err < 0)
+			goto bad;
+	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* old_pool */
 	ceph_decode_32_safe(p, end, len, bad);
 	while (len--) {
 		struct ceph_pg_pool_info *pi;
 
+<<<<<<< HEAD
 		ceph_decode_32_safe(p, end, pool, bad);
+=======
+		ceph_decode_64_safe(p, end, pool, bad);
+>>>>>>> refs/remotes/origin/master
 		pi = __lookup_pg_pool(&map->pg_pools, pool);
 		if (pi)
 			__remove_pg_pool(&map->pg_pools, pi);
@@ -861,17 +1309,25 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 	}
 
 	/* new_pg_temp */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rbp = rb_first(&map->pg_temp);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ceph_decode_32_safe(p, end, len, bad);
 	while (len--) {
 		struct ceph_pg_mapping *pg;
 		int j;
 		struct ceph_pg pgid;
 		u32 pglen;
+<<<<<<< HEAD
 		ceph_decode_need(p, end, sizeof(u64) + sizeof(u32), bad);
 		ceph_decode_copy(p, &pgid, sizeof(pgid));
 		pglen = ceph_decode_32(p);
 
+<<<<<<< HEAD
 		/* remove any? */
 		while (rbp && pgid_cmp(rb_entry(rbp, struct ceph_pg_mapping,
 						node)->pgid, pgid) <= 0) {
@@ -885,13 +1341,50 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 		}
 
 		if (pglen) {
-			/* insert */
 			ceph_decode_need(p, end, pglen*sizeof(u32), bad);
-			pg = kmalloc(sizeof(*pg) + sizeof(u32)*pglen, GFP_NOFS);
-			if (!pg) {
-				err = -ENOMEM;
+
+			/* removing existing (if any) */
+			(void) __remove_pg_mapping(&map->pg_temp, pgid);
+
+			/* insert */
+			err = -EINVAL;
+			if (pglen > (UINT_MAX - sizeof(*pg)) / sizeof(u32))
 				goto bad;
+			err = -ENOMEM;
+			pg = kmalloc(sizeof(*pg) + sizeof(u32)*pglen, GFP_NOFS);
+			if (!pg)
+				goto bad;
+<<<<<<< HEAD
 			}
+=======
+=======
+
+		err = ceph_decode_pgid(p, end, &pgid);
+		if (err)
+			goto bad;
+		ceph_decode_need(p, end, sizeof(u32), bad);
+		pglen = ceph_decode_32(p);
+>>>>>>> refs/remotes/origin/master
+		if (pglen) {
+			ceph_decode_need(p, end, pglen*sizeof(u32), bad);
+
+			/* removing existing (if any) */
+			(void) __remove_pg_mapping(&map->pg_temp, pgid);
+
+			/* insert */
+			err = -EINVAL;
+			if (pglen > (UINT_MAX - sizeof(*pg)) / sizeof(u32))
+				goto bad;
+			err = -ENOMEM;
+			pg = kmalloc(sizeof(*pg) + sizeof(u32)*pglen, GFP_NOFS);
+			if (!pg)
+				goto bad;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			pg->pgid = pgid;
 			pg->len = pglen;
 			for (j = 0; j < pglen; j++)
@@ -901,8 +1394,10 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 				kfree(pg);
 				goto bad;
 			}
+<<<<<<< HEAD
 			dout(" added pg_temp %llx len %d\n", *(u64 *)&pgid,
 			     pglen);
+<<<<<<< HEAD
 		}
 	}
 	while (rbp) {
@@ -914,6 +1409,20 @@ struct ceph_osdmap *osdmap_apply_incremental(void **p, void *end,
 		rb_erase(&cur->node, &map->pg_temp);
 		kfree(cur);
 	}
+=======
+=======
+			dout(" added pg_temp %lld.%x len %d\n", pgid.pool,
+			     pgid.seed, pglen);
+>>>>>>> refs/remotes/origin/master
+		} else {
+			/* remove */
+			__remove_pg_mapping(&map->pg_temp, pgid);
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* ignore the rest */
 	*p = end;
@@ -941,8 +1450,21 @@ bad:
  * for now, we write only a single su, until we can
  * pass a stride back to the caller.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 void ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
+=======
+int ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
+>>>>>>> refs/remotes/origin/cm-11.0
 				   u64 off, u64 *plen,
+=======
+int ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
+				   u64 off, u64 len,
+>>>>>>> refs/remotes/origin/master
 				   u64 *ono,
 				   u64 *oxoff, u64 *oxlen)
 {
@@ -953,13 +1475,48 @@ void ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
 	u32 su_per_object;
 	u64 t, su_offset;
 
+<<<<<<< HEAD
 	dout("mapping %llu~%llu  osize %u fl_su %u\n", off, *plen,
 	     osize, su);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (su == 0 || sc == 0)
+		goto invalid;
+>>>>>>> refs/remotes/origin/cm-11.0
 	su_per_object = osize / su;
+	if (su_per_object == 0)
+		goto invalid;
 	dout("osize %u / su %u = su_per_object %u\n", osize, su,
 	     su_per_object);
 
+<<<<<<< HEAD
 	BUG_ON((su & ~PAGE_MASK) != 0);
+=======
+=======
+	dout("mapping %llu~%llu  osize %u fl_su %u\n", off, len,
+	     osize, su);
+>>>>>>> refs/remotes/origin/master
+	if (su == 0 || sc == 0)
+		goto invalid;
+	su_per_object = osize / su;
+	if (su_per_object == 0)
+		goto invalid;
+	dout("osize %u / su %u = su_per_object %u\n", osize, su,
+	     su_per_object);
+
+	if ((su & ~PAGE_MASK) != 0)
+		goto invalid;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	if ((su & ~PAGE_MASK) != 0)
+		goto invalid;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* bl = *off / su; */
 	t = off;
 	do_div(t, su);
@@ -971,7 +1528,11 @@ void ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
 	objsetno = stripeno / su_per_object;
 
 	*ono = objsetno * sc + stripepos;
+<<<<<<< HEAD
 	dout("objset %u * sc %u = ono %u\n", objsetno, sc, (unsigned)*ono);
+=======
+	dout("objset %u * sc %u = ono %u\n", objsetno, sc, (unsigned int)*ono);
+>>>>>>> refs/remotes/origin/master
 
 	/* *oxoff = *off % layout->fl_stripe_unit;  # offset in su */
 	t = off;
@@ -980,6 +1541,7 @@ void ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
 
 	/*
 	 * Calculate the length of the extent being written to the selected
+<<<<<<< HEAD
 	 * object. This is the minimum of the full length requested (plen) or
 	 * the remainder of the current stripe being written to.
 	 */
@@ -987,6 +1549,34 @@ void ceph_calc_file_object_mapping(struct ceph_file_layout *layout,
 	*plen = *oxlen;
 
 	dout(" obj extent %llu~%llu\n", *oxoff, *oxlen);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+	 * object. This is the minimum of the full length requested (len) or
+	 * the remainder of the current stripe being written to.
+	 */
+	*oxlen = min_t(u64, len, su - su_offset);
+
+	dout(" obj extent %llu~%llu\n", *oxoff, *oxlen);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	return 0;
+
+invalid:
+	dout(" invalid layout\n");
+	*ono = 0;
+	*oxoff = 0;
+	*oxlen = 0;
+	return -EINVAL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(ceph_calc_file_object_mapping);
 
@@ -994,6 +1584,7 @@ EXPORT_SYMBOL(ceph_calc_file_object_mapping);
  * calculate an object layout (i.e. pgid) from an oid,
  * file_layout, and osdmap
  */
+<<<<<<< HEAD
 int ceph_calc_object_layout(struct ceph_object_layout *ol,
 			    const char *oid,
 			    struct ceph_file_layout *fl,
@@ -1035,6 +1626,24 @@ int ceph_calc_object_layout(struct ceph_object_layout *ol,
 	return 0;
 }
 EXPORT_SYMBOL(ceph_calc_object_layout);
+=======
+int ceph_calc_ceph_pg(struct ceph_pg *pg, const char *oid,
+			struct ceph_osdmap *osdmap, uint64_t pool)
+{
+	struct ceph_pg_pool_info *pool_info;
+
+	BUG_ON(!osdmap);
+	pool_info = __lookup_pg_pool(&osdmap->pg_pools, pool);
+	if (!pool_info)
+		return -EIO;
+	pg->pool = pool;
+	pg->seed = ceph_str_hash(pool_info->object_hash, oid, strlen(oid));
+
+	dout("%s '%s' pgid %lld.%x\n", __func__, oid, pg->pool, pg->seed);
+	return 0;
+}
+EXPORT_SYMBOL(ceph_calc_ceph_pg);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Calculate raw osd vector for the given pgid.  Return pointer to osd
@@ -1046,10 +1655,44 @@ static int *calc_pg_raw(struct ceph_osdmap *osdmap, struct ceph_pg pgid,
 	struct ceph_pg_mapping *pg;
 	struct ceph_pg_pool_info *pool;
 	int ruleno;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned poolid, ps, pps;
 	int preferred;
 
 	/* pg_temp? */
+=======
+	unsigned poolid, ps, pps, t;
+	int preferred;
+
+	poolid = le32_to_cpu(pgid.pool);
+	ps = le16_to_cpu(pgid.ps);
+	preferred = (s16)le16_to_cpu(pgid.preferred);
+
+	pool = __lookup_pg_pool(&osdmap->pg_pools, poolid);
+=======
+	int r;
+	u32 pps;
+
+	pool = __lookup_pg_pool(&osdmap->pg_pools, pgid.pool);
+>>>>>>> refs/remotes/origin/master
+	if (!pool)
+		return NULL;
+
+	/* pg_temp? */
+<<<<<<< HEAD
+	if (preferred >= 0)
+		t = ceph_stable_mod(ps, le32_to_cpu(pool->v.lpg_num),
+				    pool->lpgp_num_mask);
+	else
+		t = ceph_stable_mod(ps, le32_to_cpu(pool->v.pg_num),
+				    pool->pgp_num_mask);
+	pgid.ps = cpu_to_le16(t);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pgid.seed = ceph_stable_mod(pgid.seed, pool->pg_num,
+				    pool->pg_num_mask);
+>>>>>>> refs/remotes/origin/master
 	pg = __lookup_pg_mapping(&osdmap->pg_temp, pgid);
 	if (pg) {
 		*num = pg->len;
@@ -1057,6 +1700,8 @@ static int *calc_pg_raw(struct ceph_osdmap *osdmap, struct ceph_pg pgid,
 	}
 
 	/* crush */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	poolid = le32_to_cpu(pgid.pool);
 	ps = le16_to_cpu(pgid.ps);
 	preferred = (s16)le16_to_cpu(pgid.preferred);
@@ -1069,6 +1714,8 @@ static int *calc_pg_raw(struct ceph_osdmap *osdmap, struct ceph_pg pgid,
 	pool = __lookup_pg_pool(&osdmap->pg_pools, poolid);
 	if (!pool)
 		return NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ruleno = crush_find_rule(osdmap->crush, pool->v.crush_ruleset,
 				 pool->v.type, pool->v.size);
 	if (ruleno < 0) {
@@ -1078,6 +1725,14 @@ static int *calc_pg_raw(struct ceph_osdmap *osdmap, struct ceph_pg pgid,
 		return NULL;
 	}
 
+<<<<<<< HEAD
+=======
+	/* don't forcefeed bad device ids to crush */
+	if (preferred >= osdmap->max_osd ||
+	    preferred >= osdmap->crush->max_devices)
+		preferred = -1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (preferred >= 0)
 		pps = ceph_stable_mod(ps,
 				      le32_to_cpu(pool->v.lpgp_num),
@@ -1090,6 +1745,44 @@ static int *calc_pg_raw(struct ceph_osdmap *osdmap, struct ceph_pg pgid,
 	*num = crush_do_rule(osdmap->crush, ruleno, pps, osds,
 			     min_t(int, pool->v.size, *num),
 			     preferred, osdmap->osd_weight);
+=======
+	ruleno = crush_find_rule(osdmap->crush, pool->crush_ruleset,
+				 pool->type, pool->size);
+	if (ruleno < 0) {
+		pr_err("no crush rule pool %lld ruleset %d type %d size %d\n",
+		       pgid.pool, pool->crush_ruleset, pool->type,
+		       pool->size);
+		return NULL;
+	}
+
+	if (pool->flags & CEPH_POOL_FLAG_HASHPSPOOL) {
+		/* hash pool id and seed sothat pool PGs do not overlap */
+		pps = crush_hash32_2(CRUSH_HASH_RJENKINS1,
+				     ceph_stable_mod(pgid.seed, pool->pgp_num,
+						     pool->pgp_num_mask),
+				     pgid.pool);
+	} else {
+		/*
+		 * legacy ehavior: add ps and pool together.  this is
+		 * not a great approach because the PGs from each pool
+		 * will overlap on top of each other: 0.5 == 1.4 ==
+		 * 2.3 == ...
+		 */
+		pps = ceph_stable_mod(pgid.seed, pool->pgp_num,
+				      pool->pgp_num_mask) +
+			(unsigned)pgid.pool;
+	}
+	r = crush_do_rule(osdmap->crush, ruleno, pps, osds,
+			  min_t(int, pool->size, *num),
+			  osdmap->osd_weight);
+	if (r < 0) {
+		pr_err("error %d from crush rule: pool %lld ruleset %d type %d"
+		       " size %d\n", r, pgid.pool, pool->crush_ruleset,
+		       pool->type, pool->size);
+		return NULL;
+	}
+	*num = r;
+>>>>>>> refs/remotes/origin/master
 	return osds;
 }
 

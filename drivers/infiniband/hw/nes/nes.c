@@ -1,5 +1,13 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2009 Intel Corporation.  All rights reserved.
+=======
+ * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2005 Open Grid Computing, Inc. All rights reserved.
  *
  * This software is available to you under a choice of one of two
@@ -79,12 +87,20 @@ int disable_mpa_crc = 0;
 module_param(disable_mpa_crc, int, 0644);
 MODULE_PARM_DESC(disable_mpa_crc, "Disable checking of MPA CRC");
 
+<<<<<<< HEAD
 unsigned int send_first = 0;
 module_param(send_first, int, 0644);
 MODULE_PARM_DESC(send_first, "Send RDMA Message First on Active Connection");
 
 
+<<<<<<< HEAD
 unsigned int nes_drv_opt = 0;
+=======
+unsigned int nes_drv_opt = NES_DRV_OPT_DISABLE_INT_MOD | NES_DRV_OPT_ENABLE_PAU;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int nes_drv_opt = NES_DRV_OPT_DISABLE_INT_MOD | NES_DRV_OPT_ENABLE_PAU;
+>>>>>>> refs/remotes/origin/master
 module_param(nes_drv_opt, int, 0644);
 MODULE_PARM_DESC(nes_drv_opt, "Driver option parameters");
 
@@ -96,7 +112,15 @@ unsigned int wqm_quanta = 0x10000;
 module_param(wqm_quanta, int, 0644);
 MODULE_PARM_DESC(wqm_quanta, "WQM quanta");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int limit_maxrdreqsz;
+=======
+static bool limit_maxrdreqsz;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool limit_maxrdreqsz;
+>>>>>>> refs/remotes/origin/master
 module_param(limit_maxrdreqsz, bool, 0644);
 MODULE_PARM_DESC(limit_maxrdreqsz, "Limit max read request size to 256 Bytes");
 
@@ -130,9 +154,15 @@ static struct notifier_block nes_net_notifier = {
 	.notifier_call = nes_net_event
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * nes_inetaddr_event
  */
@@ -143,6 +173,10 @@ static int nes_inetaddr_event(struct notifier_block *notifier,
 	struct net_device *event_netdev = ifa->ifa_dev->dev;
 	struct nes_device *nesdev;
 	struct net_device *netdev;
+<<<<<<< HEAD
+=======
+	struct net_device *upper_dev;
+>>>>>>> refs/remotes/origin/master
 	struct nes_vnic *nesvnic;
 	unsigned int is_bonded;
 
@@ -153,8 +187,14 @@ static int nes_inetaddr_event(struct notifier_block *notifier,
 				nesdev, nesdev->netdev[0]->name);
 		netdev = nesdev->netdev[0];
 		nesvnic = netdev_priv(netdev);
+<<<<<<< HEAD
 		is_bonded = netif_is_bond_slave(netdev) &&
 			    (netdev->master == event_netdev);
+=======
+		upper_dev = netdev_master_upper_dev_get(netdev);
+		is_bonded = netif_is_bond_slave(netdev) &&
+			    (upper_dev == event_netdev);
+>>>>>>> refs/remotes/origin/master
 		if ((netdev == event_netdev) || is_bonded) {
 			if (nesvnic->rdma_enabled == 0) {
 				nes_debug(NES_DBG_NETDEV, "Returning without processing event for %s since"
@@ -187,9 +227,15 @@ static int nes_inetaddr_event(struct notifier_block *notifier,
 					/* fall through */
 				case NETDEV_CHANGEADDR:
 					/* Add the address to the IP table */
+<<<<<<< HEAD
 					if (netdev->master)
 						nesvnic->local_ipaddr =
 							((struct in_device *)netdev->master->ip_ptr)->ifa_list->ifa_address;
+=======
+					if (upper_dev)
+						nesvnic->local_ipaddr =
+							((struct in_device *)upper_dev->ip_ptr)->ifa_list->ifa_address;
+>>>>>>> refs/remotes/origin/master
 					else
 						nesvnic->local_ipaddr = ifa->ifa_address;
 
@@ -321,6 +367,18 @@ void nes_rem_ref(struct ib_qp *ibqp)
 	}
 
 	if (atomic_dec_and_test(&nesqp->refcount)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (nesqp->pau_mode)
+			nes_destroy_pau_qp(nesdev, nesqp);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (nesqp->pau_mode)
+			nes_destroy_pau_qp(nesdev, nesqp);
+
+>>>>>>> refs/remotes/origin/master
 		/* Destroy the QP */
 		cqp_request = nes_get_cqp_request(nesdev);
 		if (cqp_request == NULL) {
@@ -449,7 +507,11 @@ static irqreturn_t nes_interrupt(int irq, void *dev_id)
 /**
  * nes_probe - Device initialization
  */
+<<<<<<< HEAD
 static int __devinit nes_probe(struct pci_dev *pcidev, const struct pci_device_id *ent)
+=======
+static int nes_probe(struct pci_dev *pcidev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev = NULL;
 	struct nes_device *nesdev = NULL;
@@ -754,7 +816,11 @@ static int __devinit nes_probe(struct pci_dev *pcidev, const struct pci_device_i
 /**
  * nes_remove - unload from kernel
  */
+<<<<<<< HEAD
 static void __devexit nes_remove(struct pci_dev *pcidev)
+=======
+static void nes_remove(struct pci_dev *pcidev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nes_device *nesdev = pci_get_drvdata(pcidev);
 	struct net_device *netdev;
@@ -815,7 +881,11 @@ static struct pci_driver nes_pci_driver = {
 	.name = DRV_NAME,
 	.id_table = nes_pci_table,
 	.probe = nes_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(nes_remove),
+=======
+	.remove = nes_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static ssize_t nes_show_adapter(struct device_driver *ddp, char *buf)

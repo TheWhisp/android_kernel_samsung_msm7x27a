@@ -3,7 +3,15 @@
  * PCMCIA-Hostbus related functions
  *
  * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2007-2008 Michael Buesch <mb@bu3sch.de>
+=======
+ * Copyright 2007-2008 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2007-2008 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GNU/GPL. See COPYING for details.
  */
@@ -143,7 +151,11 @@ int ssb_pcmcia_switch_coreidx(struct ssb_bus *bus,
 
 	return 0;
 error:
+<<<<<<< HEAD
 	ssb_printk(KERN_ERR PFX "Failed to switch to core %u\n", coreidx);
+=======
+	ssb_err("Failed to switch to core %u\n", coreidx);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -153,10 +165,16 @@ int ssb_pcmcia_switch_core(struct ssb_bus *bus,
 	int err;
 
 #if SSB_VERBOSE_PCMCIACORESWITCH_DEBUG
+<<<<<<< HEAD
 	ssb_printk(KERN_INFO PFX
 		   "Switching to %s core, index %d\n",
 		   ssb_core_name(dev->id.coreid),
 		   dev->core_index);
+=======
+	ssb_info("Switching to %s core, index %d\n",
+		 ssb_core_name(dev->id.coreid),
+		 dev->core_index);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	err = ssb_pcmcia_switch_coreidx(bus, dev->core_index);
@@ -192,7 +210,11 @@ int ssb_pcmcia_switch_segment(struct ssb_bus *bus, u8 seg)
 
 	return 0;
 error:
+<<<<<<< HEAD
 	ssb_printk(KERN_ERR PFX "Failed to switch pcmcia segment\n");
+=======
+	ssb_err("Failed to switch pcmcia segment\n");
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -549,6 +571,7 @@ static int ssb_pcmcia_sprom_write_all(struct ssb_bus *bus, const u16 *sprom)
 	bool failed = 0;
 	size_t size = SSB_PCMCIA_SPROM_SIZE;
 
+<<<<<<< HEAD
 	ssb_printk(KERN_NOTICE PFX
 		   "Writing SPROM. Do NOT turn off the power! "
 		   "Please stand by...\n");
@@ -573,20 +596,51 @@ static int ssb_pcmcia_sprom_write_all(struct ssb_bus *bus, const u16 *sprom)
 		if (err) {
 			ssb_printk(KERN_NOTICE PFX
 				   "Failed to write to SPROM.\n");
+=======
+	ssb_notice("Writing SPROM. Do NOT turn off the power! Please stand by...\n");
+	err = ssb_pcmcia_sprom_command(bus, SSB_PCMCIA_SPROMCTL_WRITEEN);
+	if (err) {
+		ssb_notice("Could not enable SPROM write access\n");
+		return -EBUSY;
+	}
+	ssb_notice("[ 0%%");
+	msleep(500);
+	for (i = 0; i < size; i++) {
+		if (i == size / 4)
+			ssb_cont("25%%");
+		else if (i == size / 2)
+			ssb_cont("50%%");
+		else if (i == (size * 3) / 4)
+			ssb_cont("75%%");
+		else if (i % 2)
+			ssb_cont(".");
+		err = ssb_pcmcia_sprom_write(bus, i, sprom[i]);
+		if (err) {
+			ssb_notice("Failed to write to SPROM\n");
+>>>>>>> refs/remotes/origin/master
 			failed = 1;
 			break;
 		}
 	}
 	err = ssb_pcmcia_sprom_command(bus, SSB_PCMCIA_SPROMCTL_WRITEDIS);
 	if (err) {
+<<<<<<< HEAD
 		ssb_printk(KERN_NOTICE PFX
 			   "Could not disable SPROM write access.\n");
+=======
+		ssb_notice("Could not disable SPROM write access\n");
+>>>>>>> refs/remotes/origin/master
 		failed = 1;
 	}
 	msleep(500);
 	if (!failed) {
+<<<<<<< HEAD
 		ssb_printk("100%% ]\n");
 		ssb_printk(KERN_NOTICE PFX "SPROM written.\n");
+=======
+		ssb_cont("100%% ]\n");
+		ssb_notice("SPROM written\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return failed ? -EBUSY : 0;
@@ -676,6 +730,8 @@ static int ssb_pcmcia_do_get_invariants(struct pcmcia_device *p_dev,
 	case SSB_PCMCIA_CIS_ANTGAIN:
 		GOTO_ERROR_ON(tuple->TupleDataLen != 2,
 			"antg tpl size");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sprom->antenna_gain.ghz24.a0 = tuple->TupleData[1];
 		sprom->antenna_gain.ghz24.a1 = tuple->TupleData[1];
 		sprom->antenna_gain.ghz24.a2 = tuple->TupleData[1];
@@ -684,6 +740,17 @@ static int ssb_pcmcia_do_get_invariants(struct pcmcia_device *p_dev,
 		sprom->antenna_gain.ghz5.a1 = tuple->TupleData[1];
 		sprom->antenna_gain.ghz5.a2 = tuple->TupleData[1];
 		sprom->antenna_gain.ghz5.a3 = tuple->TupleData[1];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		sprom->antenna_gain.a0 = tuple->TupleData[1];
+		sprom->antenna_gain.a1 = tuple->TupleData[1];
+		sprom->antenna_gain.a2 = tuple->TupleData[1];
+		sprom->antenna_gain.a3 = tuple->TupleData[1];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SSB_PCMCIA_CIS_BFLAGS:
 		GOTO_ERROR_ON((tuple->TupleDataLen != 3) &&
@@ -704,7 +771,11 @@ static int ssb_pcmcia_do_get_invariants(struct pcmcia_device *p_dev,
 	return -ENOSPC; /* continue with next entry */
 
 error:
+<<<<<<< HEAD
 	ssb_printk(KERN_ERR PFX
+=======
+	ssb_err(
+>>>>>>> refs/remotes/origin/master
 		   "PCMCIA: Failed to fetch device invariants: %s\n",
 		   error_description);
 	return -ENODEV;
@@ -726,7 +797,11 @@ int ssb_pcmcia_get_invariants(struct ssb_bus *bus,
 	res = pcmcia_loop_tuple(bus->host_pcmcia, CISTPL_FUNCE,
 				ssb_pcmcia_get_mac, sprom);
 	if (res != 0) {
+<<<<<<< HEAD
 		ssb_printk(KERN_ERR PFX
+=======
+		ssb_err(
+>>>>>>> refs/remotes/origin/master
 			"PCMCIA: Failed to fetch MAC address\n");
 		return -ENODEV;
 	}
@@ -737,7 +812,11 @@ int ssb_pcmcia_get_invariants(struct ssb_bus *bus,
 	if ((res == 0) || (res == -ENOSPC))
 		return 0;
 
+<<<<<<< HEAD
 	ssb_printk(KERN_ERR PFX
+=======
+	ssb_err(
+>>>>>>> refs/remotes/origin/master
 			"PCMCIA: Failed to fetch device invariants\n");
 	return -ENODEV;
 }
@@ -847,6 +926,10 @@ int ssb_pcmcia_init(struct ssb_bus *bus)
 
 	return 0;
 error:
+<<<<<<< HEAD
 	ssb_printk(KERN_ERR PFX "Failed to initialize PCMCIA host device\n");
+=======
+	ssb_err("Failed to initialize PCMCIA host device\n");
+>>>>>>> refs/remotes/origin/master
 	return err;
 }

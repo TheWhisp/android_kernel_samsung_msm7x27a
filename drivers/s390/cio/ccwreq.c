@@ -1,10 +1,26 @@
 /*
  *  Handling of internal CCW device requests.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  *    Copyright IBM Corp. 2009
  *    Author(s): Peter Oberparleiter <peter.oberparleiter@de.ibm.com>
  */
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *    Copyright IBM Corp. 2009, 2011
+ *    Author(s): Peter Oberparleiter <peter.oberparleiter@de.ibm.com>
+ */
+
+#define KMSG_COMPONENT "cio"
+#define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/err.h>
 #include <asm/ccwdev.h>
@@ -323,7 +339,31 @@ void ccw_request_timeout(struct ccw_device *cdev)
 {
 	struct subchannel *sch = to_subchannel(cdev->dev.parent);
 	struct ccw_request *req = &cdev->private->req;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int rc;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int rc = -ENODEV, chp;
+
+	if (cio_update_schib(sch))
+		goto err;
+
+	for (chp = 0; chp < 8; chp++) {
+		if ((0x80 >> chp) & sch->schib.pmcw.lpum)
+			pr_warning("%s: No interrupt was received within %lus "
+				   "(CS=%02x, DS=%02x, CHPID=%x.%02x)\n",
+				   dev_name(&cdev->dev), req->timeout / HZ,
+				   scsw_cstat(&sch->schib.scsw),
+				   scsw_dstat(&sch->schib.scsw),
+				   sch->schid.cssid,
+				   sch->schib.pmcw.chpid[chp]);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!ccwreq_next_path(cdev)) {
 		/* set the final return code for this request */
@@ -342,7 +382,15 @@ err:
  * ccw_request_notoper - notoper handler for I/O request procedure
  * @cdev: ccw device
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Handle timeout during I/O request procedure.
+=======
+ * Handle notoper during I/O request procedure.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Handle notoper during I/O request procedure.
+>>>>>>> refs/remotes/origin/master
  */
 void ccw_request_notoper(struct ccw_device *cdev)
 {

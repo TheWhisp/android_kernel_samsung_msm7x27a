@@ -47,6 +47,14 @@
  *  o buffer memory
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>	/* for Tavor hack below */
 #include <linux/slab.h>
 
@@ -1085,7 +1093,11 @@ rpcrdma_buffer_create(struct rpcrdma_buffer *buf, struct rpcrdma_ep *ep,
 	case RPCRDMA_MEMWINDOWS:
 		/* Allocate one extra request's worth, for full cycling */
 		for (i = (buf->rb_max_requests+1) * RPCRDMA_MAX_SEGS; i; i--) {
+<<<<<<< HEAD
 			r->r.mw = ib_alloc_mw(ia->ri_pd);
+=======
+			r->r.mw = ib_alloc_mw(ia->ri_pd, IB_MW_TYPE_1);
+>>>>>>> refs/remotes/origin/master
 			if (IS_ERR(r->r.mw)) {
 				rc = PTR_ERR(r->r.mw);
 				dprintk("RPC:       %s: ib_alloc_mw"
@@ -1489,6 +1501,18 @@ rpcrdma_register_frmr_external(struct rpcrdma_mr_seg *seg,
 	u8 key;
 	int len, pageoff;
 	int i, rc;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int seg_len;
+	u64 pa;
+	int page_no;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int seg_len;
+	u64 pa;
+	int page_no;
+>>>>>>> refs/remotes/origin/master
 
 	pageoff = offset_in_page(seg1->mr_offset);
 	seg1->mr_offset -= pageoff;	/* start of page */
@@ -1496,11 +1520,29 @@ rpcrdma_register_frmr_external(struct rpcrdma_mr_seg *seg,
 	len = -pageoff;
 	if (*nsegs > RPCRDMA_MAX_DATA_SEGS)
 		*nsegs = RPCRDMA_MAX_DATA_SEGS;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < *nsegs;) {
 		rpcrdma_map_one(ia, seg, writing);
 		seg1->mr_chunk.rl_mw->r.frmr.fr_pgl->page_list[i] = seg->mr_dma;
 		len += seg->mr_len;
 		BUG_ON(seg->mr_len > PAGE_SIZE);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	for (page_no = i = 0; i < *nsegs;) {
+		rpcrdma_map_one(ia, seg, writing);
+		pa = seg->mr_dma;
+		for (seg_len = seg->mr_len; seg_len > 0; seg_len -= PAGE_SIZE) {
+			seg1->mr_chunk.rl_mw->r.frmr.fr_pgl->
+				page_list[page_no++] = pa;
+			pa += PAGE_SIZE;
+		}
+		len += seg->mr_len;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		++seg;
 		++i;
 		/* Check for holes */
@@ -1539,9 +1581,21 @@ rpcrdma_register_frmr_external(struct rpcrdma_mr_seg *seg,
 	frmr_wr.send_flags = IB_SEND_SIGNALED;
 	frmr_wr.wr.fast_reg.iova_start = seg1->mr_dma;
 	frmr_wr.wr.fast_reg.page_list = seg1->mr_chunk.rl_mw->r.frmr.fr_pgl;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	frmr_wr.wr.fast_reg.page_list_len = i;
 	frmr_wr.wr.fast_reg.page_shift = PAGE_SHIFT;
 	frmr_wr.wr.fast_reg.length = i << PAGE_SHIFT;
+=======
+	frmr_wr.wr.fast_reg.page_list_len = page_no;
+	frmr_wr.wr.fast_reg.page_shift = PAGE_SHIFT;
+	frmr_wr.wr.fast_reg.length = page_no << PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	frmr_wr.wr.fast_reg.page_list_len = page_no;
+	frmr_wr.wr.fast_reg.page_shift = PAGE_SHIFT;
+	frmr_wr.wr.fast_reg.length = page_no << PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(frmr_wr.wr.fast_reg.length < len);
 	frmr_wr.wr.fast_reg.access_flags = (writing ?
 				IB_ACCESS_REMOTE_WRITE | IB_ACCESS_LOCAL_WRITE :
@@ -1665,12 +1719,21 @@ rpcrdma_register_memwin_external(struct rpcrdma_mr_seg *seg,
 
 	*nsegs = 1;
 	rpcrdma_map_one(ia, seg, writing);
+<<<<<<< HEAD
 	param.mr = ia->ri_bind_mem;
 	param.wr_id = 0ULL;	/* no send cookie */
 	param.addr = seg->mr_dma;
 	param.length = seg->mr_len;
 	param.send_flags = 0;
 	param.mw_access_flags = mem_priv;
+=======
+	param.bind_info.mr = ia->ri_bind_mem;
+	param.wr_id = 0ULL;	/* no send cookie */
+	param.bind_info.addr = seg->mr_dma;
+	param.bind_info.length = seg->mr_len;
+	param.send_flags = 0;
+	param.bind_info.mw_access_flags = mem_priv;
+>>>>>>> refs/remotes/origin/master
 
 	DECR_CQCOUNT(&r_xprt->rx_ep);
 	rc = ib_bind_mw(ia->ri_id->qp, seg->mr_chunk.rl_mw->r.mw, &param);
@@ -1682,7 +1745,11 @@ rpcrdma_register_memwin_external(struct rpcrdma_mr_seg *seg,
 		rpcrdma_unmap_one(ia, seg);
 	} else {
 		seg->mr_rkey = seg->mr_chunk.rl_mw->r.mw->rkey;
+<<<<<<< HEAD
 		seg->mr_base = param.addr;
+=======
+		seg->mr_base = param.bind_info.addr;
+>>>>>>> refs/remotes/origin/master
 		seg->mr_nsegs = 1;
 	}
 	return rc;
@@ -1698,10 +1765,17 @@ rpcrdma_deregister_memwin_external(struct rpcrdma_mr_seg *seg,
 	int rc;
 
 	BUG_ON(seg->mr_nsegs != 1);
+<<<<<<< HEAD
 	param.mr = ia->ri_bind_mem;
 	param.addr = 0ULL;	/* unbind */
 	param.length = 0;
 	param.mw_access_flags = 0;
+=======
+	param.bind_info.mr = ia->ri_bind_mem;
+	param.bind_info.addr = 0ULL;	/* unbind */
+	param.bind_info.length = 0;
+	param.bind_info.mw_access_flags = 0;
+>>>>>>> refs/remotes/origin/master
 	if (*r) {
 		param.wr_id = (u64) (unsigned long) *r;
 		param.send_flags = IB_SEND_SIGNALED;

@@ -55,13 +55,21 @@
 #define FLASH_PARTITION3_SIZE 0x001C0000
 
 
+<<<<<<< HEAD
 struct map_info flagadm_map = {
+=======
+static struct map_info flagadm_map = {
+>>>>>>> refs/remotes/origin/master
 		.name =		"FlagaDM flash device",
 		.size =		FLASH_SIZE,
 		.bankwidth =	2,
 };
 
+<<<<<<< HEAD
 struct mtd_partition flagadm_parts[] = {
+=======
+static struct mtd_partition flagadm_parts[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name =		"Bootloader",
 		.offset	=	FLASH_PARTITION0_ADDR,
@@ -112,7 +120,11 @@ static int __init init_flagadm(void)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	iounmap((void *)flagadm_map.virt);
+=======
+	iounmap((void __iomem *)flagadm_map.virt);
+>>>>>>> refs/remotes/origin/master
 	return -ENXIO;
 }
 
@@ -123,8 +135,13 @@ static void __exit cleanup_flagadm(void)
 		map_destroy(mymtd);
 	}
 	if (flagadm_map.virt) {
+<<<<<<< HEAD
 		iounmap((void *)flagadm_map.virt);
 		flagadm_map.virt = 0;
+=======
+		iounmap((void __iomem *)flagadm_map.virt);
+		flagadm_map.virt = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

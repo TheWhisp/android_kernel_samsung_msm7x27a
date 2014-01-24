@@ -15,15 +15,24 @@
 
 #include <mach/hardware.h>
 
+<<<<<<< HEAD
 /*
  * Stolen area that contains debug uart physical and virtual addresses.  These
  * addresses are filled in by the uncompress.h code, and are used by the debug
  * macros in debug-macro.S.
  *
  * This area sits just below the page tables (see arch/arm/kernel/head.S).
+<<<<<<< HEAD
  */
 #define DAVINCI_UART_INFO	(PLAT_PHYS_OFFSET + 0x3ff8)
+=======
+ * We define it as a relative offset from start of usable RAM.
+ */
+#define DAVINCI_UART_INFO_OFS	0x3ff8
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define DAVINCI_UART0_BASE	(IO_PHYS + 0x20000)
 #define DAVINCI_UART1_BASE	(IO_PHYS + 0x20400)
 #define DAVINCI_UART2_BASE	(IO_PHYS + 0x20800)
@@ -46,12 +55,18 @@
 #define UART_DM646X_SCR_TX_WATERMARK	0x08
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 struct davinci_uart_config {
 	/* Bit field of UARTs present; bit 0 --> UART1 */
 	unsigned int enabled_uarts;
 };
 
 extern int davinci_serial_init(struct davinci_uart_config *);
+=======
+#include <linux/platform_device.h>
+
+extern int davinci_serial_init(struct platform_device *);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* __ASM_ARCH_SERIAL_H */

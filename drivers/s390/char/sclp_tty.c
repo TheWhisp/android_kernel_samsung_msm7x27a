@@ -1,9 +1,16 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/sclp_tty.c
  *    SCLP line mode terminal driver.
  *
  *  S390 version
  *    Copyright (C) 1999 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *    SCLP line mode terminal driver.
+ *
+ *  S390 version
+ *    Copyright IBM Corp. 1999
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Peschke <mpeschke@de.ibm.com>
  *		 Martin Schwidefsky <schwidefsky@de.ibm.com>
  */
@@ -48,7 +55,11 @@ static struct sclp_buffer *sclp_ttybuf;
 /* Timer for delayed output of console messages. */
 static struct timer_list sclp_tty_timer;
 
+<<<<<<< HEAD
 static struct tty_struct *sclp_tty;
+=======
+static struct tty_port sclp_port;
+>>>>>>> refs/remotes/origin/master
 static unsigned char sclp_tty_chars[SCLP_TTY_BUF_SIZE];
 static unsigned short int sclp_tty_chars_count;
 
@@ -64,9 +75,15 @@ static int sclp_tty_columns = 80;
 static int
 sclp_tty_open(struct tty_struct *tty, struct file *filp)
 {
+<<<<<<< HEAD
 	sclp_tty = tty;
 	tty->driver_data = NULL;
 	tty->low_latency = 0;
+=======
+	tty_port_tty_set(&sclp_port, tty);
+	tty->driver_data = NULL;
+	sclp_port.low_latency = 0;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -76,7 +93,11 @@ sclp_tty_close(struct tty_struct *tty, struct file *filp)
 {
 	if (tty->count > 1)
 		return;
+<<<<<<< HEAD
 	sclp_tty = NULL;
+=======
+	tty_port_tty_set(&sclp_port, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -125,10 +146,15 @@ sclp_ttybuf_callback(struct sclp_buffer *buffer, int rc)
 					    struct sclp_buffer, list);
 		spin_unlock_irqrestore(&sclp_tty_lock, flags);
 	} while (buffer && sclp_emit_buffer(buffer, sclp_ttybuf_callback));
+<<<<<<< HEAD
 	/* check if the tty needs a wake up call */
 	if (sclp_tty != NULL) {
 		tty_wakeup(sclp_tty);
 	}
+=======
+
+	tty_port_tty_wakeup(&sclp_port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -326,21 +352,36 @@ sclp_tty_flush_buffer(struct tty_struct *tty)
 static void
 sclp_tty_input(unsigned char* buf, unsigned int count)
 {
+<<<<<<< HEAD
+=======
+	struct tty_struct *tty = tty_port_tty_get(&sclp_port);
+>>>>>>> refs/remotes/origin/master
 	unsigned int cchar;
 
 	/*
 	 * If this tty driver is currently closed
 	 * then throw the received input away.
 	 */
+<<<<<<< HEAD
 	if (sclp_tty == NULL)
 		return;
 	cchar = ctrlchar_handle(buf, count, sclp_tty);
+=======
+	if (tty == NULL)
+		return;
+	cchar = ctrlchar_handle(buf, count, tty);
+>>>>>>> refs/remotes/origin/master
 	switch (cchar & CTRLCHAR_MASK) {
 	case CTRLCHAR_SYSRQ:
 		break;
 	case CTRLCHAR_CTRL:
+<<<<<<< HEAD
 		tty_insert_flip_char(sclp_tty, cchar, TTY_NORMAL);
 		tty_flip_buffer_push(sclp_tty);
+=======
+		tty_insert_flip_char(&sclp_port, cchar, TTY_NORMAL);
+		tty_flip_buffer_push(&sclp_port);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case CTRLCHAR_NONE:
 		/* send (normal) input to line discipline */
@@ -348,6 +389,7 @@ sclp_tty_input(unsigned char* buf, unsigned int count)
 		    (strncmp((const char *) buf + count - 2, "^n", 2) &&
 		     strncmp((const char *) buf + count - 2, "\252n", 2))) {
 			/* add the auto \n */
+<<<<<<< HEAD
 			tty_insert_flip_string(sclp_tty, buf, count);
 			tty_insert_flip_char(sclp_tty, '\n', TTY_NORMAL);
 		} else
@@ -355,6 +397,16 @@ sclp_tty_input(unsigned char* buf, unsigned int count)
 		tty_flip_buffer_push(sclp_tty);
 		break;
 	}
+=======
+			tty_insert_flip_string(&sclp_port, buf, count);
+			tty_insert_flip_char(&sclp_port, '\n', TTY_NORMAL);
+		} else
+			tty_insert_flip_string(&sclp_port, buf, count - 2);
+		tty_flip_buffer_push(&sclp_port);
+		break;
+	}
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -543,7 +595,10 @@ sclp_tty_init(void)
 		sclp_tty_tolower = 1;
 	}
 	sclp_tty_chars_count = 0;
+<<<<<<< HEAD
 	sclp_tty = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rc = sclp_register(&sclp_input_event);
 	if (rc) {
@@ -551,7 +606,15 @@ sclp_tty_init(void)
 		return rc;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tty_port_init(&sclp_port);
+
+>>>>>>> refs/remotes/origin/master
 	driver->driver_name = "sclp_line";
 	driver->name = "sclp_line";
 	driver->major = TTY_MAJOR;
@@ -564,9 +627,17 @@ sclp_tty_init(void)
 	driver->init_termios.c_lflag = ISIG | ECHO;
 	driver->flags = TTY_DRIVER_REAL_RAW;
 	tty_set_operations(driver, &sclp_ops);
+<<<<<<< HEAD
 	rc = tty_register_driver(driver);
 	if (rc) {
 		put_tty_driver(driver);
+=======
+	tty_port_link_device(&sclp_port, driver, 0);
+	rc = tty_register_driver(driver);
+	if (rc) {
+		put_tty_driver(driver);
+		tty_port_destroy(&sclp_port);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 	sclp_tty_driver = driver;

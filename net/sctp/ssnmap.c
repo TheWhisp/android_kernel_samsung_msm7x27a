@@ -24,6 +24,7 @@
  *
  * Please send any bug reports or fixes you make to the
  * email address(es):
+<<<<<<< HEAD
  *    lksctp developers <lksctp-developers@lists.sourceforge.net>
  *
  * Or submit a bug report through the following website:
@@ -34,6 +35,12 @@
  *
  * Any bugs reported given to us we will try to fix... any fixes shared will
  * be incorporated into the next SCTP release.
+=======
+ *    lksctp developers <linux-sctp@vger.kernel.org>
+ *
+ * Written or modified by:
+ *    Jon Grimm             <jgrimm@us.ibm.com>
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/types.h>
@@ -41,8 +48,11 @@
 #include <net/sctp/sctp.h>
 #include <net/sctp/sm.h>
 
+<<<<<<< HEAD
 #define MAX_KMALLOC_SIZE	131072
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sctp_ssnmap *sctp_ssnmap_init(struct sctp_ssnmap *map, __u16 in,
 					    __u16 out);
 
@@ -65,7 +75,11 @@ struct sctp_ssnmap *sctp_ssnmap_new(__u16 in, __u16 out,
 	int size;
 
 	size = sctp_ssnmap_size(in, out);
+<<<<<<< HEAD
 	if (size <= MAX_KMALLOC_SIZE)
+=======
+	if (size <= KMALLOC_MAX_SIZE)
+>>>>>>> refs/remotes/origin/master
 		retval = kmalloc(size, gfp);
 	else
 		retval = (struct sctp_ssnmap *)
@@ -76,13 +90,20 @@ struct sctp_ssnmap *sctp_ssnmap_new(__u16 in, __u16 out,
 	if (!sctp_ssnmap_init(retval, in, out))
 		goto fail_map;
 
+<<<<<<< HEAD
 	retval->malloced = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 	SCTP_DBG_OBJCNT_INC(ssnmap);
 
 	return retval;
 
 fail_map:
+<<<<<<< HEAD
 	if (size <= MAX_KMALLOC_SIZE)
+=======
+	if (size <= KMALLOC_MAX_SIZE)
+>>>>>>> refs/remotes/origin/master
 		kfree(retval);
 	else
 		free_pages((unsigned long)retval, get_order(size));
@@ -120,6 +141,7 @@ void sctp_ssnmap_clear(struct sctp_ssnmap *map)
 /* Dispose of a ssnmap.  */
 void sctp_ssnmap_free(struct sctp_ssnmap *map)
 {
+<<<<<<< HEAD
 	if (map && map->malloced) {
 		int size;
 
@@ -130,4 +152,18 @@ void sctp_ssnmap_free(struct sctp_ssnmap *map)
 			free_pages((unsigned long)map, get_order(size));
 		SCTP_DBG_OBJCNT_DEC(ssnmap);
 	}
+=======
+	int size;
+
+	if (unlikely(!map))
+		return;
+
+	size = sctp_ssnmap_size(map->in.len, map->out.len);
+	if (size <= KMALLOC_MAX_SIZE)
+		kfree(map);
+	else
+		free_pages((unsigned long)map, get_order(size));
+
+	SCTP_DBG_OBJCNT_DEC(ssnmap);
+>>>>>>> refs/remotes/origin/master
 }

@@ -599,9 +599,21 @@ MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, nv_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int adma_enabled;
 static int swncq_enabled = 1;
 static int msi_enabled;
+=======
+static bool adma_enabled;
+static bool swncq_enabled = 1;
+static bool msi_enabled;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool adma_enabled;
+static bool swncq_enabled = 1;
+static bool msi_enabled;
+>>>>>>> refs/remotes/origin/master
 
 static void nv_adma_register_mode(struct ata_port *ap)
 {
@@ -620,9 +632,19 @@ static void nv_adma_register_mode(struct ata_port *ap)
 		count++;
 	}
 	if (count == 20)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_WARNING,
 			"timeout waiting for ADMA IDLE, stat=0x%hx\n",
 			status);
+=======
+		ata_port_warn(ap, "timeout waiting for ADMA IDLE, stat=0x%hx\n",
+			      status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_warn(ap, "timeout waiting for ADMA IDLE, stat=0x%hx\n",
+			      status);
+>>>>>>> refs/remotes/origin/master
 
 	tmp = readw(mmio + NV_ADMA_CTL);
 	writew(tmp & ~NV_ADMA_CTL_GO, mmio + NV_ADMA_CTL);
@@ -635,9 +657,21 @@ static void nv_adma_register_mode(struct ata_port *ap)
 		count++;
 	}
 	if (count == 20)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_WARNING,
 			 "timeout waiting for ADMA LEGACY, stat=0x%hx\n",
 			 status);
+=======
+		ata_port_warn(ap,
+			      "timeout waiting for ADMA LEGACY, stat=0x%hx\n",
+			      status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_warn(ap,
+			      "timeout waiting for ADMA LEGACY, stat=0x%hx\n",
+			      status);
+>>>>>>> refs/remotes/origin/master
 
 	pp->flags |= NV_ADMA_PORT_REGISTER_MODE;
 }
@@ -665,7 +699,15 @@ static void nv_adma_mode(struct ata_port *ap)
 		count++;
 	}
 	if (count == 20)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_WARNING,
+=======
+		ata_port_warn(ap,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_warn(ap,
+>>>>>>> refs/remotes/origin/master
 			"timeout waiting for ADMA LEGACY clear and IDLE, stat=0x%hx\n",
 			status);
 
@@ -772,10 +814,23 @@ static int nv_adma_slave_config(struct scsi_device *sdev)
 
 	blk_queue_segment_boundary(sdev->request_queue, segment_boundary);
 	blk_queue_max_segments(sdev->request_queue, sg_tablesize);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ata_port_printk(ap, KERN_INFO,
 		"DMA mask 0x%llX, segment boundary 0x%lX, hw segs %hu\n",
 		(unsigned long long)*ap->host->dev->dma_mask,
 		segment_boundary, sg_tablesize);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ata_port_info(ap,
+		      "DMA mask 0x%llX, segment boundary 0x%lX, hw segs %hu\n",
+		      (unsigned long long)*ap->host->dev->dma_mask,
+		      segment_boundary, sg_tablesize);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(ap->lock, flags);
 
@@ -1443,8 +1498,16 @@ static unsigned int nv_adma_qc_issue(struct ata_queued_cmd *qc)
 	   existing commands. */
 	if (unlikely(qc->tf.protocol == ATA_PROT_NCQ &&
 		     (qc->flags & ATA_QCFLAG_RESULT_TF))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(qc->dev, KERN_ERR,
 			"NCQ w/ RESULT_TF not allowed\n");
+=======
+		ata_dev_err(qc->dev, "NCQ w/ RESULT_TF not allowed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_err(qc->dev, "NCQ w/ RESULT_TF not allowed\n");
+>>>>>>> refs/remotes/origin/master
 		return AC_ERR_SYSTEM;
 	}
 
@@ -1581,15 +1644,35 @@ static int nv_hardreset(struct ata_link *link, unsigned int *class,
 		int rc;
 
 		if (!(ehc->i.flags & ATA_EHI_QUIET))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ata_link_printk(link, KERN_INFO, "nv: skipping "
 					"hardreset on occupied port\n");
+=======
+			ata_link_info(link,
+				      "nv: skipping hardreset on occupied port\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_link_info(link,
+				      "nv: skipping hardreset on occupied port\n");
+>>>>>>> refs/remotes/origin/master
 
 		/* make sure the link is online */
 		rc = sata_link_resume(link, timing, deadline);
 		/* whine about phy resume failure but proceed */
 		if (rc && rc != -EOPNOTSUPP)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ata_link_printk(link, KERN_WARNING, "failed to resume "
 					"link (errno=%d)\n", rc);
+=======
+			ata_link_warn(link, "failed to resume link (errno=%d)\n",
+				      rc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_link_warn(link, "failed to resume link (errno=%d)\n",
+				      rc);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* device signature acquisition is unreliable */
@@ -1686,7 +1769,15 @@ static void nv_adma_error_handler(struct ata_port *ap)
 			u8 cpb_count = readb(mmio + NV_ADMA_CPB_COUNT);
 			u8 next_cpb_idx = readb(mmio + NV_ADMA_NEXT_CPB_IDX);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ata_port_printk(ap, KERN_ERR,
+=======
+			ata_port_err(ap,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_port_err(ap,
+>>>>>>> refs/remotes/origin/master
 				"EH in ADMA mode, notifier 0x%X "
 				"notifier_error 0x%X gen_ctl 0x%X status 0x%X "
 				"next cpb count 0x%X next cpb idx 0x%x\n",
@@ -1697,7 +1788,15 @@ static void nv_adma_error_handler(struct ata_port *ap)
 				struct nv_adma_cpb *cpb = &pp->cpb[i];
 				if ((ata_tag_valid(ap->link.active_tag) && i == ap->link.active_tag) ||
 				    ap->link.sactive & (1 << i))
+<<<<<<< HEAD
+<<<<<<< HEAD
 					ata_port_printk(ap, KERN_ERR,
+=======
+					ata_port_err(ap,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					ata_port_err(ap,
+>>>>>>> refs/remotes/origin/master
 						"CPB %d: ctl_flags 0x%x, resp_flags 0x%x\n",
 						i, cpb->ctl_flags, cpb->resp_flags);
 			}
@@ -1799,23 +1898,55 @@ static void nv_swncq_ncq_stop(struct ata_port *ap)
 	u32 sactive;
 	u32 done_mask;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ata_port_printk(ap, KERN_ERR,
 			"EH in SWNCQ mode,QC:qc_active 0x%X sactive 0x%X\n",
 			ap->qc_active, ap->link.sactive);
 	ata_port_printk(ap, KERN_ERR,
+=======
+	ata_port_err(ap, "EH in SWNCQ mode,QC:qc_active 0x%X sactive 0x%X\n",
+		     ap->qc_active, ap->link.sactive);
+	ata_port_err(ap,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_port_err(ap, "EH in SWNCQ mode,QC:qc_active 0x%X sactive 0x%X\n",
+		     ap->qc_active, ap->link.sactive);
+	ata_port_err(ap,
+>>>>>>> refs/remotes/origin/master
 		"SWNCQ:qc_active 0x%X defer_bits 0x%X last_issue_tag 0x%x\n  "
 		"dhfis 0x%X dmafis 0x%X sdbfis 0x%X\n",
 		pp->qc_active, pp->defer_queue.defer_bits, pp->last_issue_tag,
 		pp->dhfis_bits, pp->dmafis_bits, pp->sdbfis_bits);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ata_port_printk(ap, KERN_ERR, "ATA_REG 0x%X ERR_REG 0x%X\n",
 			ap->ops->sff_check_status(ap),
 			ioread8(ap->ioaddr.error_addr));
+=======
+	ata_port_err(ap, "ATA_REG 0x%X ERR_REG 0x%X\n",
+		     ap->ops->sff_check_status(ap),
+		     ioread8(ap->ioaddr.error_addr));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_port_err(ap, "ATA_REG 0x%X ERR_REG 0x%X\n",
+		     ap->ops->sff_check_status(ap),
+		     ioread8(ap->ioaddr.error_addr));
+>>>>>>> refs/remotes/origin/master
 
 	sactive = readl(pp->sactive_block);
 	done_mask = pp->qc_active ^ sactive;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ata_port_printk(ap, KERN_ERR, "tag : dhfis dmafis sdbfis sacitve\n");
+=======
+	ata_port_err(ap, "tag : dhfis dmafis sdbfis sactive\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_port_err(ap, "tag : dhfis dmafis sdbfis sactive\n");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ATA_MAX_QUEUE; i++) {
 		u8 err = 0;
 		if (pp->qc_active & (1 << i))
@@ -1825,6 +1956,8 @@ static void nv_swncq_ncq_stop(struct ata_port *ap)
 		else
 			continue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_ERR,
 				"tag 0x%x: %01x %01x %01x %01x %s\n", i,
 				(pp->dhfis_bits >> i) & 0x1,
@@ -1832,6 +1965,20 @@ static void nv_swncq_ncq_stop(struct ata_port *ap)
 				(pp->sdbfis_bits >> i) & 0x1,
 				(sactive >> i) & 0x1,
 				(err ? "error! tag doesn't exit" : " "));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ata_port_err(ap,
+			     "tag 0x%x: %01x %01x %01x %01x %s\n", i,
+			     (pp->dhfis_bits >> i) & 0x1,
+			     (pp->dmafis_bits >> i) & 0x1,
+			     (pp->sdbfis_bits >> i) & 0x1,
+			     (sactive >> i) & 0x1,
+			     (err ? "error! tag doesn't exit" : " "));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	nv_swncq_pp_reinit(ap);
@@ -1956,8 +2103,18 @@ static int nv_swncq_slave_config(struct scsi_device *sdev)
 
 	if (strncmp(model_num, "Maxtor", 6) == 0) {
 		ata_scsi_change_queue_depth(sdev, 1, SCSI_QDEPTH_DEFAULT);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_NOTICE,
 			"Disabling SWNCQ mode (depth %x)\n", sdev->queue_depth);
+=======
+		ata_dev_notice(dev, "Disabling SWNCQ mode (depth %x)\n",
+			       sdev->queue_depth);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_notice(dev, "Disabling SWNCQ mode (depth %x)\n",
+			       sdev->queue_depth);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return rc;
@@ -2356,7 +2513,13 @@ static irqreturn_t nv_swncq_interrupt(int irq, void *dev_instance)
 
 static int nv_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct ata_port_info *ppi[] = { NULL, NULL };
 	struct nv_pi_priv *ipriv;
 	struct ata_host *host;
@@ -2373,8 +2536,16 @@ static int nv_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		if (pci_resource_start(pdev, bar) == 0)
 			return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	rc = pcim_enable_device(pdev);
 	if (rc)
@@ -2382,10 +2553,23 @@ static int nv_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	/* determine type and allocate host */
 	if (type == CK804 && adma_enabled) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_NOTICE, &pdev->dev, "Using ADMA mode\n");
 		type = ADMA;
 	} else if (type == MCP5x && swncq_enabled) {
 		dev_printk(KERN_NOTICE, &pdev->dev, "Using SWNCQ mode\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		dev_notice(&pdev->dev, "Using ADMA mode\n");
+		type = ADMA;
+	} else if (type == MCP5x && swncq_enabled) {
+		dev_notice(&pdev->dev, "Using SWNCQ mode\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		type = SWNCQ;
 	}
 
@@ -2429,7 +2613,15 @@ static int nv_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		nv_swncq_host_init(host);
 
 	if (msi_enabled) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_NOTICE, &pdev->dev, "Using MSI\n");
+=======
+		dev_notice(&pdev->dev, "Using MSI\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_notice(&pdev->dev, "Using MSI\n");
+>>>>>>> refs/remotes/origin/master
 		pci_enable_msi(pdev);
 	}
 
@@ -2440,7 +2632,11 @@ static int nv_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 #ifdef CONFIG_PM
 static int nv_pci_device_resume(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct nv_host_priv *hpriv = host->private_data;
 	int rc;
 
@@ -2515,6 +2711,7 @@ static void nv_adma_host_stop(struct ata_host *host)
 	nv_ck804_host_stop(host);
 }
 
+<<<<<<< HEAD
 static int __init nv_init(void)
 {
 	return pci_register_driver(&nv_pci_driver);
@@ -2527,10 +2724,17 @@ static void __exit nv_exit(void)
 
 module_init(nv_init);
 module_exit(nv_exit);
+=======
+module_pci_driver(nv_pci_driver);
+
+>>>>>>> refs/remotes/origin/master
 module_param_named(adma, adma_enabled, bool, 0444);
 MODULE_PARM_DESC(adma, "Enable use of ADMA (Default: false)");
 module_param_named(swncq, swncq_enabled, bool, 0444);
 MODULE_PARM_DESC(swncq, "Enable use of SWNCQ (Default: true)");
 module_param_named(msi, msi_enabled, bool, 0444);
 MODULE_PARM_DESC(msi, "Enable use of MSI (Default: false)");
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

@@ -26,6 +26,13 @@
 #include <linux/mm.h>
 #include <linux/highmem.h>
 #include <linux/hrtimer.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/backing-dev.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void __journal_temp_unlink_buffer(struct journal_head *jh);
 
@@ -99,11 +106,24 @@ static int start_this_handle(journal_t *journal, handle_t *handle)
 
 alloc_transaction:
 	if (!journal->j_running_transaction) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 		new_transaction = kzalloc(sizeof(*new_transaction),
 						GFP_NOFS|__GFP_NOFAIL);
 		if (!new_transaction) {
 			ret = -ENOMEM;
 			goto out;
+<<<<<<< HEAD
+=======
+		new_transaction = kzalloc(sizeof(*new_transaction), GFP_NOFS);
+		if (!new_transaction) {
+			congestion_wait(BLK_RW_ASYNC, HZ/50);
+			goto alloc_transaction;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -245,7 +265,10 @@ static handle_t *new_handle(int nblocks)
 	handle_t *handle = jbd_alloc_handle(GFP_NOFS);
 	if (!handle)
 		return NULL;
+<<<<<<< HEAD
 	memset(handle, 0, sizeof(*handle));
+=======
+>>>>>>> refs/remotes/origin/master
 	handle->h_buffer_credits = nblocks;
 	handle->h_ref = 1;
 
@@ -426,17 +449,58 @@ int journal_restart(handle_t *handle, int nblocks)
  * void journal_lock_updates () - establish a transaction barrier.
  * @journal:  Journal to establish a barrier on.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * This locks out any further updates from being started, and blocks
  * until all existing updates have completed, returning only once the
  * journal is in a quiescent state with no updates running.
  *
  * The journal lock should not be held on entry.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * This locks out any further updates from being started, and blocks until all
+ * existing updates have completed, returning only once the journal is in a
+ * quiescent state with no updates running.
+ *
+ * We do not use simple mutex for synchronization as there are syscalls which
+ * want to return with filesystem locked and that trips up lockdep. Also
+ * hibernate needs to lock filesystem but locked mutex then blocks hibernation.
+ * Since locking filesystem is rare operation, we use simple counter and
+ * waitqueue for locking.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 void journal_lock_updates(journal_t *journal)
 {
 	DEFINE_WAIT(wait);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&journal->j_state_lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+wait:
+	/* Wait for previous locked operation to finish */
+	wait_event(journal->j_wait_transaction_locked,
+		   journal->j_barrier_count == 0);
+
+	spin_lock(&journal->j_state_lock);
+	/*
+	 * Check reliably under the lock whether we are the ones winning the race
+	 * and locking the journal
+	 */
+	if (journal->j_barrier_count > 0) {
+		spin_unlock(&journal->j_state_lock);
+		goto wait;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	++journal->j_barrier_count;
 
 	/* Wait until there are no running updates */
@@ -460,6 +524,8 @@ void journal_lock_updates(journal_t *journal)
 		spin_lock(&journal->j_state_lock);
 	}
 	spin_unlock(&journal->j_state_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/*
 	 * We have now established a barrier against other normal updates, but
@@ -468,6 +534,10 @@ void journal_lock_updates(journal_t *journal)
 	 * too.
 	 */
 	mutex_lock(&journal->j_barrier);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -475,14 +545,26 @@ void journal_lock_updates(journal_t *journal)
  * @journal:  Journal to release the barrier on.
  *
  * Release a transaction barrier obtained with journal_lock_updates().
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Should be called without the journal lock held.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 void journal_unlock_updates (journal_t *journal)
 {
 	J_ASSERT(journal->j_barrier_count != 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&journal->j_barrier);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&journal->j_state_lock);
 	--journal->j_barrier_count;
 	spin_unlock(&journal->j_state_lock);
@@ -696,7 +778,13 @@ repeat:
 	if (!jh->b_transaction) {
 		JBUFFER_TRACE(jh, "no transaction");
 		J_ASSERT_JH(jh, !jh->b_next_transaction);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		jh->b_transaction = transaction;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		JBUFFER_TRACE(jh, "file as BJ_Reserved");
 		spin_lock(&journal->j_list_lock);
 		__journal_file_buffer(jh, transaction, BJ_Reserved);
@@ -713,9 +801,21 @@ done:
 			    "Possible IO failure.\n");
 		page = jh2bh(jh)->b_page;
 		offset = offset_in_page(jh2bh(jh)->b_data);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		source = kmap_atomic(page, KM_USER0);
 		memcpy(jh->b_frozen_data, source+offset, jh2bh(jh)->b_size);
 		kunmap_atomic(source, KM_USER0);
+=======
+		source = kmap_atomic(page);
+		memcpy(jh->b_frozen_data, source+offset, jh2bh(jh)->b_size);
+		kunmap_atomic(source);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		source = kmap_atomic(page);
+		memcpy(jh->b_frozen_data, source+offset, jh2bh(jh)->b_size);
+		kunmap_atomic(source);
+>>>>>>> refs/remotes/origin/master
 	}
 	jbd_unlock_bh_state(bh);
 
@@ -818,7 +918,13 @@ int journal_get_create_access(handle_t *handle, struct buffer_head *bh)
 		 * committed and so it's safe to clear the dirty bit.
 		 */
 		clear_buffer_dirty(jh2bh(jh));
+<<<<<<< HEAD
+<<<<<<< HEAD
 		jh->b_transaction = transaction;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* first access by this transaction */
 		jh->b_modified = 0;
@@ -844,8 +950,18 @@ int journal_get_create_access(handle_t *handle, struct buffer_head *bh)
 	 */
 	JBUFFER_TRACE(jh, "cancelling revoke");
 	journal_cancel_revoke(handle, jh);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	journal_put_journal_head(jh);
 out:
+=======
+out:
+	journal_put_journal_head(jh);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+	journal_put_journal_head(jh);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1069,8 +1185,20 @@ int journal_dirty_data(handle_t *handle, struct buffer_head *bh)
 				ret = -EIO;
 				goto no_journal;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 			if (jh->b_transaction != NULL) {
+=======
+			/* We might have slept so buffer could be refiled now */
+			if (jh->b_transaction != NULL &&
+			    jh->b_transaction != handle->h_transaction) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* We might have slept so buffer could be refiled now */
+			if (jh->b_transaction != NULL &&
+			    jh->b_transaction != handle->h_transaction) {
+>>>>>>> refs/remotes/origin/master
 				JBUFFER_TRACE(jh, "unfile from commit");
 				__journal_temp_unlink_buffer(jh);
 				/* It still points to the committing
@@ -1091,8 +1219,14 @@ int journal_dirty_data(handle_t *handle, struct buffer_head *bh)
 		if (jh->b_jlist != BJ_SyncData && jh->b_jlist != BJ_Locked) {
 			JBUFFER_TRACE(jh, "not on correct data list: unfile");
 			J_ASSERT_JH(jh, jh->b_jlist != BJ_Shadow);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			__journal_temp_unlink_buffer(jh);
 			jh->b_transaction = handle->h_transaction;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			JBUFFER_TRACE(jh, "file as data");
 			__journal_file_buffer(jh, handle->h_transaction,
 						BJ_SyncData);
@@ -1256,7 +1390,11 @@ int journal_forget (handle_t *handle, struct buffer_head *bh)
 		goto not_jbd;
 	}
 
+<<<<<<< HEAD
 	/* keep track of wether or not this transaction modified us */
+=======
+	/* keep track of whether or not this transaction modified us */
+>>>>>>> refs/remotes/origin/master
 	was_modified = jh->b_modified;
 
 	/*
@@ -1300,8 +1438,14 @@ int journal_forget (handle_t *handle, struct buffer_head *bh)
 			__journal_file_buffer(jh, transaction, BJ_Forget);
 		} else {
 			__journal_unfile_buffer(jh);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			journal_remove_journal_head(bh);
 			__brelse(bh);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!buffer_jbd(bh)) {
 				spin_unlock(&journal->j_list_lock);
 				jbd_unlock_bh_state(bh);
@@ -1432,8 +1576,11 @@ int journal_stop(handle_t *handle)
 		}
 	}
 
+<<<<<<< HEAD
 	if (handle->h_sync)
 		transaction->t_synchronous_commit = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 	current->journal_info = NULL;
 	spin_lock(&journal->j_state_lock);
 	spin_lock(&transaction->t_handle_lock);
@@ -1622,19 +1769,62 @@ static void __journal_temp_unlink_buffer(struct journal_head *jh)
 		mark_buffer_dirty(bh);	/* Expose it to the VM */
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Remove buffer from all transactions.
+ *
+ * Called with bh_state lock and j_list_lock
+ *
+ * jh and bh may be already freed when this function returns.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void __journal_unfile_buffer(struct journal_head *jh)
 {
 	__journal_temp_unlink_buffer(jh);
 	jh->b_transaction = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	journal_put_journal_head(jh);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	journal_put_journal_head(jh);
+>>>>>>> refs/remotes/origin/master
 }
 
 void journal_unfile_buffer(journal_t *journal, struct journal_head *jh)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	jbd_lock_bh_state(jh2bh(jh));
 	spin_lock(&journal->j_list_lock);
 	__journal_unfile_buffer(jh);
 	spin_unlock(&journal->j_list_lock);
 	jbd_unlock_bh_state(jh2bh(jh));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct buffer_head *bh = jh2bh(jh);
+
+	/* Get reference so that buffer cannot be freed before we unlock it */
+	get_bh(bh);
+	jbd_lock_bh_state(bh);
+	spin_lock(&journal->j_list_lock);
+	__journal_unfile_buffer(jh);
+	spin_unlock(&journal->j_list_lock);
+	jbd_unlock_bh_state(bh);
+	__brelse(bh);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1661,16 +1851,28 @@ __journal_try_to_free_buffer(journal_t *journal, struct buffer_head *bh)
 			/* A written-back ordered data buffer */
 			JBUFFER_TRACE(jh, "release data");
 			__journal_unfile_buffer(jh);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			journal_remove_journal_head(bh);
 			__brelse(bh);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if (jh->b_cp_transaction != NULL && jh->b_transaction == NULL) {
 		/* written-back checkpointed metadata buffer */
 		if (jh->b_jlist == BJ_None) {
 			JBUFFER_TRACE(jh, "remove from checkpoint list");
 			__journal_remove_checkpoint(jh);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			journal_remove_journal_head(bh);
 			__brelse(bh);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	spin_unlock(&journal->j_list_lock);
@@ -1733,7 +1935,15 @@ int journal_try_to_free_buffers(journal_t *journal,
 		/*
 		 * We take our own ref against the journal_head here to avoid
 		 * having to add tons of locking around each instance of
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * journal_remove_journal_head() and journal_put_journal_head().
+=======
+		 * journal_put_journal_head().
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * journal_put_journal_head().
+>>>>>>> refs/remotes/origin/master
 		 */
 		jh = journal_grab_journal_head(bh);
 		if (!jh)
@@ -1770,10 +1980,22 @@ static int __dispose_buffer(struct journal_head *jh, transaction_t *transaction)
 	int may_free = 1;
 	struct buffer_head *bh = jh2bh(jh);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__journal_unfile_buffer(jh);
 
 	if (jh->b_cp_transaction) {
 		JBUFFER_TRACE(jh, "on running+cp transaction");
+=======
+	if (jh->b_cp_transaction) {
+		JBUFFER_TRACE(jh, "on running+cp transaction");
+		__journal_temp_unlink_buffer(jh);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (jh->b_cp_transaction) {
+		JBUFFER_TRACE(jh, "on running+cp transaction");
+		__journal_temp_unlink_buffer(jh);
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We don't want to write the buffer anymore, clear the
 		 * bit so that we don't confuse checks in
@@ -1784,8 +2006,16 @@ static int __dispose_buffer(struct journal_head *jh, transaction_t *transaction)
 		may_free = 0;
 	} else {
 		JBUFFER_TRACE(jh, "on running transaction");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		journal_remove_journal_head(bh);
 		__brelse(bh);
+=======
+		__journal_unfile_buffer(jh);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__journal_unfile_buffer(jh);
+>>>>>>> refs/remotes/origin/master
 	}
 	return may_free;
 }
@@ -2014,6 +2244,7 @@ zap_buffer_unlocked:
  * void journal_invalidatepage() - invalidate a journal page
  * @journal: journal to use for flush
  * @page:    page to flush
+<<<<<<< HEAD
  * @offset:  length of page to invalidate.
  *
  * Reap page buffers containing data after offset in page.
@@ -2024,6 +2255,22 @@ void journal_invalidatepage(journal_t *journal,
 {
 	struct buffer_head *head, *bh, *next;
 	unsigned int curr_off = 0;
+=======
+ * @offset:  offset of the range to invalidate
+ * @length:  length of the range to invalidate
+ *
+ * Reap page buffers containing data in specified range in page.
+ */
+void journal_invalidatepage(journal_t *journal,
+		      struct page *page,
+		      unsigned int offset,
+		      unsigned int length)
+{
+	struct buffer_head *head, *bh, *next;
+	unsigned int stop = offset + length;
+	unsigned int curr_off = 0;
+	int partial_page = (offset || length < PAGE_CACHE_SIZE);
+>>>>>>> refs/remotes/origin/master
 	int may_free = 1;
 
 	if (!PageLocked(page))
@@ -2031,6 +2278,11 @@ void journal_invalidatepage(journal_t *journal,
 	if (!page_has_buffers(page))
 		return;
 
+<<<<<<< HEAD
+=======
+	BUG_ON(stop > PAGE_CACHE_SIZE || stop < length);
+
+>>>>>>> refs/remotes/origin/master
 	/* We will potentially be playing with lists other than just the
 	 * data lists (especially for journaled data mode), so be
 	 * cautious in our locking. */
@@ -2040,11 +2292,25 @@ void journal_invalidatepage(journal_t *journal,
 		unsigned int next_off = curr_off + bh->b_size;
 		next = bh->b_this_page;
 
+<<<<<<< HEAD
+=======
+		if (next_off > stop)
+			return;
+
+>>>>>>> refs/remotes/origin/master
 		if (offset <= curr_off) {
 			/* This block is wholly outside the truncation point */
 			lock_buffer(bh);
 			may_free &= journal_unmap_buffer(journal, bh,
+<<<<<<< HEAD
+<<<<<<< HEAD
 							 offset > 0);
+=======
+							 partial_page);
+>>>>>>> refs/remotes/origin/master
+=======
+							 offset > 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 			unlock_buffer(bh);
 		}
 		curr_off = next_off;
@@ -2052,7 +2318,11 @@ void journal_invalidatepage(journal_t *journal,
 
 	} while (bh != head);
 
+<<<<<<< HEAD
 	if (!offset) {
+=======
+	if (!partial_page) {
+>>>>>>> refs/remotes/origin/master
 		if (may_free && try_to_free_buffers(page))
 			J_ASSERT(!page_has_buffers(page));
 	}
@@ -2096,6 +2366,16 @@ void __journal_file_buffer(struct journal_head *jh,
 
 	if (jh->b_transaction)
 		__journal_temp_unlink_buffer(jh);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	else
+		journal_grab_journal_head(bh);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else
+		journal_grab_journal_head(bh);
+>>>>>>> refs/remotes/origin/master
 	jh->b_transaction = transaction;
 
 	switch (jlist) {
@@ -2153,9 +2433,22 @@ void journal_file_buffer(struct journal_head *jh,
  * already started to be used by a subsequent transaction, refile the
  * buffer on that transaction's metadata list.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Called under journal->j_list_lock
  *
  * Called under jbd_lock_bh_state(jh2bh(jh))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Called under j_list_lock
+ * Called under jbd_lock_bh_state(jh2bh(jh))
+ *
+ * jh and bh may be already free when this function returns
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 void __journal_refile_buffer(struct journal_head *jh)
 {
@@ -2179,6 +2472,20 @@ void __journal_refile_buffer(struct journal_head *jh)
 
 	was_dirty = test_clear_buffer_jbddirty(bh);
 	__journal_temp_unlink_buffer(jh);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * We set b_transaction here because b_next_transaction will inherit
+	 * our jh reference and thus __journal_file_buffer() must not take a
+	 * new one.
+	 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	jh->b_transaction = jh->b_next_transaction;
 	jh->b_next_transaction = NULL;
 	if (buffer_freed(bh))
@@ -2195,6 +2502,8 @@ void __journal_refile_buffer(struct journal_head *jh)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * For the unlocked version of this call, also make sure that any
  * hanging journal_head is cleaned up if necessary.
  *
@@ -2207,11 +2516,24 @@ void __journal_refile_buffer(struct journal_head *jh)
  * ourselves to avoid a jh leak.
  *
  * *** The journal_head may be freed by this call! ***
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * __journal_refile_buffer() with necessary locking added. We take our bh
+ * reference so that we can safely unlock bh.
+ *
+ * The jh and bh may be freed by this call.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 void journal_refile_buffer(journal_t *journal, struct journal_head *jh)
 {
 	struct buffer_head *bh = jh2bh(jh);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	jbd_lock_bh_state(bh);
 	spin_lock(&journal->j_list_lock);
 
@@ -2219,6 +2541,19 @@ void journal_refile_buffer(journal_t *journal, struct journal_head *jh)
 	jbd_unlock_bh_state(bh);
 	journal_remove_journal_head(bh);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Get reference so that buffer cannot be freed before we unlock it */
+	get_bh(bh);
+	jbd_lock_bh_state(bh);
+	spin_lock(&journal->j_list_lock);
+	__journal_refile_buffer(jh);
+	jbd_unlock_bh_state(bh);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&journal->j_list_lock);
 	__brelse(bh);
 }

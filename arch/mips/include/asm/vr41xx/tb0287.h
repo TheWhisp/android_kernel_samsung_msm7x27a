@@ -1,7 +1,11 @@
 /*
  *  tb0287.h, Include file for TANBAC TB0287 mini-ITX board.
  *
+<<<<<<< HEAD
  *  Copyright (C) 2005  Media Lab Inc. <ito@mlb.co.jp>
+=======
+ *  Copyright (C) 2005	Media Lab Inc. <ito@mlb.co.jp>
+>>>>>>> refs/remotes/origin/master
  *
  *  This code is largely based on tb0219.h.
  *

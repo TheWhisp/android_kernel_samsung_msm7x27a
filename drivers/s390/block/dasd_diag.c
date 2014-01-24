@@ -1,10 +1,17 @@
 /*
+<<<<<<< HEAD
  * File...........: linux/drivers/s390/block/dasd_diag.c
+=======
+>>>>>>> refs/remotes/origin/master
  * Author(s)......: Holger Smolinski <Holger.Smolinski@de.ibm.com>
  * Based on.......: linux/drivers/s390/block/mdisk.c
  * ...............: by Hartmunt Penner <hpenner@de.ibm.com>
  * Bugreports.to..: <Linux390@de.ibm.com>
+<<<<<<< HEAD
  * (C) IBM Corporation, IBM Deutschland Entwicklung GmbH, 1999,2000
+=======
+ * Copyright IBM Corp. 1999, 2000
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -185,14 +192,22 @@ dasd_start_diag(struct dasd_ccw_req * cqr)
 	private->iob.bio_list = dreq->bio;
 	private->iob.flaga = DASD_DIAG_FLAGA_DEFAULT;
 
+<<<<<<< HEAD
 	cqr->startclk = get_clock();
+=======
+	cqr->startclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 	cqr->starttime = jiffies;
 	cqr->retries--;
 
 	rc = dia250(&private->iob, RW_BIO);
 	switch (rc) {
 	case 0: /* Synchronous I/O finished successfully */
+<<<<<<< HEAD
 		cqr->stopclk = get_clock();
+=======
+		cqr->stopclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 		cqr->status = DASD_CQR_SUCCESS;
 		/* Indicate to calling function that only a dasd_schedule_bh()
 		   and no timer is needed */
@@ -223,13 +238,25 @@ dasd_diag_term_IO(struct dasd_ccw_req * cqr)
 	mdsk_term_io(device);
 	mdsk_init_io(device, device->block->bp_block, 0, NULL);
 	cqr->status = DASD_CQR_CLEAR_PENDING;
+<<<<<<< HEAD
 	cqr->stopclk = get_clock();
+=======
+	cqr->stopclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 	dasd_schedule_device_bh(device);
 	return 0;
 }
 
 /* Handle external interruption. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void dasd_ext_handler(unsigned int ext_int_code,
+=======
+static void dasd_ext_handler(struct ext_code ext_code,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void dasd_ext_handler(struct ext_code ext_code,
+>>>>>>> refs/remotes/origin/master
 			     unsigned int param32, unsigned long param64)
 {
 	struct dasd_ccw_req *cqr, *next;
@@ -239,7 +266,15 @@ static void dasd_ext_handler(unsigned int ext_int_code,
 	addr_t ip;
 	int rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch (ext_int_code >> 24) {
+=======
+	switch (ext_code.subcode >> 8) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (ext_code.subcode >> 8) {
+>>>>>>> refs/remotes/origin/master
 	case DASD_DIAG_CODE_31BIT:
 		ip = (addr_t) param32;
 		break;
@@ -249,7 +284,11 @@ static void dasd_ext_handler(unsigned int ext_int_code,
 	default:
 		return;
 	}
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[EXTINT_DSD]++;
+=======
+	inc_irq_stat(IRQEXT_DSD);
+>>>>>>> refs/remotes/origin/master
 	if (!ip) {		/* no intparm: unsolicited interrupt */
 		DBF_EVENT(DBF_NOTICE, "%s", "caught unsolicited "
 			      "interrupt");
@@ -277,10 +316,21 @@ static void dasd_ext_handler(unsigned int ext_int_code,
 		return;
 	}
 
+<<<<<<< HEAD
 	cqr->stopclk = get_clock();
 
 	expires = 0;
+<<<<<<< HEAD
 	if ((ext_int_code & 0xff0000) == 0) {
+=======
+	if ((ext_code.subcode & 0xff) == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cqr->stopclk = get_tod_clock();
+
+	expires = 0;
+	if ((ext_code.subcode & 0xff) == 0) {
+>>>>>>> refs/remotes/origin/master
 		cqr->status = DASD_CQR_SUCCESS;
 		/* Start first request on queue if possible -> fast_io. */
 		if (!list_empty(&device->ccw_queue)) {
@@ -296,7 +346,15 @@ static void dasd_ext_handler(unsigned int ext_int_code,
 		cqr->status = DASD_CQR_QUEUED;
 		DBF_DEV_EVENT(DBF_DEBUG, device, "interrupt status for "
 			      "request %p was %d (%d retries left)", cqr,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			      (ext_int_code >> 16) & 0xff, cqr->retries);
+=======
+			      ext_code.subcode & 0xff, cqr->retries);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      ext_code.subcode & 0xff, cqr->retries);
+>>>>>>> refs/remotes/origin/master
 		dasd_diag_erp(device);
 	}
 
@@ -360,6 +418,10 @@ dasd_diag_check_device(struct dasd_device *device)
 	}
 
 	device->default_expires = DIAG_TIMEOUT;
+<<<<<<< HEAD
+=======
+	device->default_retries = DIAG_MAX_RETRIES;
+>>>>>>> refs/remotes/origin/master
 
 	/* Figure out position of label block */
 	switch (private->rdc_data.vdev_class) {
@@ -556,8 +618,13 @@ static struct dasd_ccw_req *dasd_diag_build_cp(struct dasd_device *memdev,
 			recid++;
 		}
 	}
+<<<<<<< HEAD
 	cqr->retries = DIAG_MAX_RETRIES;
 	cqr->buildclk = get_clock();
+=======
+	cqr->retries = memdev->default_retries;
+	cqr->buildclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 	if (blk_noretry_request(req) ||
 	    block->base->features & DASD_FEATURE_FAILFAST)
 		set_bit(DASD_CQR_FLAGS_FAILFAST, &cqr->flags);
@@ -583,7 +650,14 @@ dasd_diag_free_cp(struct dasd_ccw_req *cqr, struct request *req)
 
 static void dasd_diag_handle_terminated_request(struct dasd_ccw_req *cqr)
 {
+<<<<<<< HEAD
 	cqr->status = DASD_CQR_FILLED;
+=======
+	if (cqr->retries < 0)
+		cqr->status = DASD_CQR_FAILED;
+	else
+		cqr->status = DASD_CQR_FILLED;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Fill in IOCTL data for device. */
@@ -642,7 +716,11 @@ dasd_diag_init(void)
 	}
 	ASCEBC(dasd_diag_discipline.ebcname, 4);
 
+<<<<<<< HEAD
 	service_subclass_irq_register();
+=======
+	irq_subclass_register(IRQ_SUBCLASS_SERVICE_SIGNAL);
+>>>>>>> refs/remotes/origin/master
 	register_external_interrupt(0x2603, dasd_ext_handler);
 	dasd_diag_discipline_pointer = &dasd_diag_discipline;
 	return 0;
@@ -652,7 +730,11 @@ static void __exit
 dasd_diag_cleanup(void)
 {
 	unregister_external_interrupt(0x2603, dasd_ext_handler);
+<<<<<<< HEAD
 	service_subclass_irq_unregister();
+=======
+	irq_subclass_unregister(IRQ_SUBCLASS_SERVICE_SIGNAL);
+>>>>>>> refs/remotes/origin/master
 	dasd_diag_discipline_pointer = NULL;
 }
 

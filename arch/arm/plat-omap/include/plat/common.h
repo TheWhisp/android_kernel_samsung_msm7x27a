@@ -27,6 +27,7 @@
 #ifndef __ARCH_ARM_MACH_OMAP_COMMON_H
 #define __ARCH_ARM_MACH_OMAP_COMMON_H
 
+<<<<<<< HEAD
 #include <linux/delay.h>
 
 #include <plat/i2c.h>
@@ -96,5 +97,16 @@ extern struct device *omap2_get_mpuss_device(void);
 extern struct device *omap2_get_iva_device(void);
 extern struct device *omap2_get_l3_device(void);
 extern struct device *omap4_get_dsp_device(void);
+=======
+#include <plat/i2c.h>
+#include <plat/omap_hwmod.h>
+
+extern int __init omap_init_clocksource_32k(void);
+
+extern void omap_reserve(void);
+extern int omap_dss_reset(struct omap_hwmod *);
+
+void omap_sram_init(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __ARCH_ARM_MACH_OMAP_COMMON_H */

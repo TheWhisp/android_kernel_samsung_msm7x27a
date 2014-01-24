@@ -16,7 +16,15 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
 #include <sound/core.h>
@@ -39,7 +47,15 @@ static const char *wm8955_supply_names[WM8955_NUM_SUPPLIES] = {
 
 /* codec private data */
 struct wm8955_priv {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int mclk_rate;
 
@@ -49,6 +65,8 @@ struct wm8955_priv {
 	struct regulator_bulk_data supplies[WM8955_NUM_SUPPLIES];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const u16 wm8955_reg[WM8955_MAX_REGISTER + 1] = {
 	0x0000,     /* R0 */
 	0x0000,     /* R1 */
@@ -112,6 +130,92 @@ static const u16 wm8955_reg[WM8955_MAX_REGISTER + 1] = {
 	0x0000,     /* R59 - PLL Control 4 */
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct reg_default wm8955_reg_defaults[] = {
+	{ 2,  0x0079 },     /* R2  - LOUT1 volume */
+	{ 3,  0x0079 },     /* R3  - ROUT1 volume */
+	{ 5,  0x0008 },     /* R5  - DAC Control */
+	{ 7,  0x000A },     /* R7  - Audio Interface */
+	{ 8,  0x0000 },     /* R8  - Sample Rate */
+	{ 10, 0x00FF },     /* R10 - Left DAC volume */
+	{ 11, 0x00FF },     /* R11 - Right DAC volume */
+	{ 12, 0x000F },     /* R12 - Bass control */
+	{ 13, 0x000F },     /* R13 - Treble control */
+	{ 23, 0x00C1 },     /* R23 - Additional control (1) */
+	{ 24, 0x0000 },     /* R24 - Additional control (2) */
+	{ 25, 0x0000 },     /* R25 - Power Management (1) */
+	{ 26, 0x0000 },     /* R26 - Power Management (2) */
+	{ 27, 0x0000 },     /* R27 - Additional Control (3) */
+	{ 34, 0x0050 },     /* R34 - Left out Mix (1) */
+	{ 35, 0x0050 },     /* R35 - Left out Mix (2) */
+	{ 36, 0x0050 },     /* R36 - Right out Mix (1) */
+	{ 37, 0x0050 },     /* R37 - Right Out Mix (2) */
+	{ 38, 0x0050 },     /* R38 - Mono out Mix (1) */
+	{ 39, 0x0050 },     /* R39 - Mono out Mix (2) */
+	{ 40, 0x0079 },     /* R40 - LOUT2 volume */
+	{ 41, 0x0079 },     /* R41 - ROUT2 volume */
+	{ 42, 0x0079 },     /* R42 - MONOOUT volume */
+	{ 43, 0x0000 },     /* R43 - Clocking / PLL */
+	{ 44, 0x0103 },     /* R44 - PLL Control 1 */
+	{ 45, 0x0024 },     /* R45 - PLL Control 2 */
+	{ 46, 0x01BA },     /* R46 - PLL Control 3 */
+	{ 59, 0x0000 },     /* R59 - PLL Control 4 */
+};
+
+static bool wm8955_writeable(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8955_LOUT1_VOLUME:
+	case WM8955_ROUT1_VOLUME:
+	case WM8955_DAC_CONTROL:
+	case WM8955_AUDIO_INTERFACE:
+	case WM8955_SAMPLE_RATE:
+	case WM8955_LEFT_DAC_VOLUME:
+	case WM8955_RIGHT_DAC_VOLUME:
+	case WM8955_BASS_CONTROL:
+	case WM8955_TREBLE_CONTROL:
+	case WM8955_RESET:
+	case WM8955_ADDITIONAL_CONTROL_1:
+	case WM8955_ADDITIONAL_CONTROL_2:
+	case WM8955_POWER_MANAGEMENT_1:
+	case WM8955_POWER_MANAGEMENT_2:
+	case WM8955_ADDITIONAL_CONTROL_3:
+	case WM8955_LEFT_OUT_MIX_1:
+	case WM8955_LEFT_OUT_MIX_2:
+	case WM8955_RIGHT_OUT_MIX_1:
+	case WM8955_RIGHT_OUT_MIX_2:
+	case WM8955_MONO_OUT_MIX_1:
+	case WM8955_MONO_OUT_MIX_2:
+	case WM8955_LOUT2_VOLUME:
+	case WM8955_ROUT2_VOLUME:
+	case WM8955_MONOOUT_VOLUME:
+	case WM8955_CLOCKING_PLL:
+	case WM8955_PLL_CONTROL_1:
+	case WM8955_PLL_CONTROL_2:
+	case WM8955_PLL_CONTROL_3:
+	case WM8955_PLL_CONTROL_4:
+		return true;
+	default:
+		return false;
+	}
+}
+
+static bool wm8955_volatile(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8955_RESET:
+		return true;
+	default:
+		return false;
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm8955_reset(struct snd_soc_codec *codec)
 {
 	return snd_soc_write(codec, WM8955_RESET, 0);
@@ -528,7 +632,15 @@ SND_SOC_DAPM_OUTPUT("MONOOUT"),
 SND_SOC_DAPM_OUTPUT("OUT3"),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route wm8955_intercon[] = {
+=======
+static const struct snd_soc_dapm_route wm8955_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route wm8955_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "DACL", NULL, "SYSCLK" },
 	{ "DACR", NULL, "SYSCLK" },
 
@@ -573,6 +685,8 @@ static const struct snd_soc_dapm_route wm8955_intercon[] = {
 	{ "OUT3", NULL, "OUT3 PGA" },
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8955_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -588,6 +702,10 @@ static int wm8955_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm8955_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
@@ -766,8 +884,16 @@ static int wm8955_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
 	struct wm8955_priv *wm8955 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 *reg_cache = codec->reg_cache;
 	int ret, i;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
@@ -796,6 +922,8 @@ static int wm8955_set_bias_level(struct snd_soc_codec *codec,
 				return ret;
 			}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			/* Sync back cached values if they're
 			 * different from the hardware default.
 			 */
@@ -808,6 +936,12 @@ static int wm8955_set_bias_level(struct snd_soc_codec *codec,
 
 				snd_soc_write(codec, i, reg_cache[i]);
 			}
+=======
+			regcache_sync(wm8955->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			regcache_sync(wm8955->regmap);
+>>>>>>> refs/remotes/origin/master
 
 			/* Enable VREF and VMID */
 			snd_soc_update_bits(codec, WM8955_POWER_MANAGEMENT_1,
@@ -859,7 +993,15 @@ static int wm8955_set_bias_level(struct snd_soc_codec *codec,
 #define WM8955_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8955_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8955_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8955_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.set_sysclk = wm8955_set_sysclk,
 	.set_fmt = wm8955_set_fmt,
 	.hw_params = wm8955_hw_params,
@@ -879,10 +1021,27 @@ static struct snd_soc_dai_driver wm8955_dai = {
 };
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8955_suspend(struct snd_soc_codec *codec, pm_message_t state)
 {
 	wm8955_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int wm8955_suspend(struct snd_soc_codec *codec)
+{
+	struct wm8955_priv *wm8955 = snd_soc_codec_get_drvdata(codec);
+
+	wm8955_set_bias_level(codec, SND_SOC_BIAS_OFF);
+
+	regcache_mark_dirty(wm8955->regmap);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -901,10 +1060,24 @@ static int wm8955_probe(struct snd_soc_codec *codec)
 {
 	struct wm8955_priv *wm8955 = snd_soc_codec_get_drvdata(codec);
 	struct wm8955_pdata *pdata = dev_get_platdata(codec->dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 *reg_cache = codec->reg_cache;
 	int ret, i;
 
 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8955->control_type);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ret, i;
+
+	codec->control_data = wm8955->regmap;
+
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -959,12 +1132,27 @@ static int wm8955_probe(struct snd_soc_codec *codec)
 	/* Set platform data values */
 	if (pdata) {
 		if (pdata->out2_speaker)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			reg_cache[WM8955_ADDITIONAL_CONTROL_2]
 				|= WM8955_ROUT2INV;
 
 		if (pdata->monoin_diff)
 			reg_cache[WM8955_MONO_OUT_MIX_1]
 				|= WM8955_DMEN;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			snd_soc_update_bits(codec, WM8955_ADDITIONAL_CONTROL_2,
+					    WM8955_ROUT2INV, WM8955_ROUT2INV);
+
+		if (pdata->monoin_diff)
+			snd_soc_update_bits(codec, WM8955_MONO_OUT_MIX_1,
+					    WM8955_DMEN, WM8955_DMEN);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	wm8955_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
@@ -972,7 +1160,13 @@ static int wm8955_probe(struct snd_soc_codec *codec)
 	/* Bias level configuration will have done an extra enable */
 	regulator_bulk_disable(ARRAY_SIZE(wm8955->supplies), wm8955->supplies);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8955_add_widgets(codec);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_enable:
@@ -997,18 +1191,53 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8955 = {
 	.suspend =	wm8955_suspend,
 	.resume =	wm8955_resume,
 	.set_bias_level = wm8955_set_bias_level,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8955_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8955_reg,
 };
 
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	.controls =	wm8955_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8955_snd_controls),
+	.dapm_widgets = wm8955_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8955_dapm_widgets),
+	.dapm_routes =	wm8955_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8955_dapm_routes),
+};
+
+static const struct regmap_config wm8955_regmap = {
+	.reg_bits = 7,
+	.val_bits = 9,
+
+	.max_register = WM8955_MAX_REGISTER,
+	.volatile_reg = wm8955_volatile,
+	.writeable_reg = wm8955_writeable,
+
+	.cache_type = REGCACHE_RBTREE,
+	.reg_defaults = wm8955_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8955_reg_defaults),
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static __devinit int wm8955_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+static int wm8955_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8955_priv *wm8955;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8955 = kzalloc(sizeof(struct wm8955_priv), GFP_KERNEL);
 	if (wm8955 == NULL)
 		return -ENOMEM;
@@ -1020,13 +1249,64 @@ static __devinit int wm8955_i2c_probe(struct i2c_client *i2c,
 			&soc_codec_dev_wm8955, &wm8955_dai, 1);
 	if (ret < 0)
 		kfree(wm8955);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	wm8955 = devm_kzalloc(&i2c->dev, sizeof(struct wm8955_priv),
+			      GFP_KERNEL);
+	if (wm8955 == NULL)
+		return -ENOMEM;
+
+<<<<<<< HEAD
+	wm8955->regmap = regmap_init_i2c(i2c, &wm8955_regmap);
+=======
+	wm8955->regmap = devm_regmap_init_i2c(i2c, &wm8955_regmap);
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(wm8955->regmap)) {
+		ret = PTR_ERR(wm8955->regmap);
+		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+			ret);
+		return ret;
+	}
+
+	i2c_set_clientdata(i2c, wm8955);
+
+	ret = snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_wm8955, &wm8955_dai, 1);
+<<<<<<< HEAD
+	if (ret != 0)
+		goto err;
+
+	return ret;
+
+err:
+	regmap_exit(wm8955->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int wm8955_i2c_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	snd_soc_unregister_codec(&client->dev);
 	kfree(i2c_get_clientdata(client));
+=======
+	struct wm8955_priv *wm8955 = i2c_get_clientdata(client);
+
+	snd_soc_unregister_codec(&client->dev);
+	regmap_exit(wm8955->regmap);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return ret;
+}
+
+static int wm8955_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1038,36 +1318,65 @@ MODULE_DEVICE_TABLE(i2c, wm8955_i2c_id);
 
 static struct i2c_driver wm8955_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8955-codec",
+=======
+		.name = "wm8955",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm8955_i2c_probe,
 	.remove =   __devexit_p(wm8955_i2c_remove),
 	.id_table = wm8955_i2c_id,
 };
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init wm8955_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = i2c_add_driver(&wm8955_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register WM8955 I2C driver: %d\n",
 		       ret);
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 module_init(wm8955_modinit);
 
 static void __exit wm8955_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 	i2c_del_driver(&wm8955_i2c_driver);
 #endif
+=======
+	i2c_del_driver(&wm8955_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 module_exit(wm8955_exit);
+=======
+		.name = "wm8955",
+		.owner = THIS_MODULE,
+	},
+	.probe =    wm8955_i2c_probe,
+	.remove =   wm8955_i2c_remove,
+	.id_table = wm8955_i2c_id,
+};
+
+module_i2c_driver(wm8955_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC WM8955 driver");
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");

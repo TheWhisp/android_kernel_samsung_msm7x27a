@@ -10,6 +10,14 @@
 #include <linux/personality.h>
 #include <asm/uaccess.h>
 #include "internal.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "mount.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "mount.h"
+>>>>>>> refs/remotes/origin/master
 
 static long do_sys_name_to_handle(struct path *path,
 				  struct file_handle __user *ufh,
@@ -21,11 +29,24 @@ static long do_sys_name_to_handle(struct path *path,
 	struct file_handle *handle = NULL;
 
 	/*
+<<<<<<< HEAD
 	 * We need t make sure wether the file system
 	 * support decoding of the file handle
 	 */
+<<<<<<< HEAD
 	if (!path->mnt->mnt_sb->s_export_op ||
 	    !path->mnt->mnt_sb->s_export_op->fh_to_dentry)
+=======
+	if (!path->dentry->d_sb->s_export_op ||
+	    !path->dentry->d_sb->s_export_op->fh_to_dentry)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * We need to make sure whether the file system
+	 * support decoding of the file handle
+	 */
+	if (!path->dentry->d_sb->s_export_op ||
+	    !path->dentry->d_sb->s_export_op->fh_to_dentry)
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 
 	if (copy_from_user(&f_handle, ufh, sizeof(struct file_handle)))
@@ -39,7 +60,11 @@ static long do_sys_name_to_handle(struct path *path,
 	if (!handle)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	/* convert handle size to  multiple of sizeof(u32) */
+=======
+	/* convert handle size to multiple of sizeof(u32) */
+>>>>>>> refs/remotes/origin/master
 	handle_dwords = f_handle.handle_bytes >> 2;
 
 	/* we ask for a non connected handle */
@@ -51,7 +76,11 @@ static long do_sys_name_to_handle(struct path *path,
 	handle_bytes = handle_dwords * sizeof(u32);
 	handle->handle_bytes = handle_bytes;
 	if ((handle->handle_bytes > f_handle.handle_bytes) ||
+<<<<<<< HEAD
 	    (retval == 255) || (retval == -ENOSPC)) {
+=======
+	    (retval == FILEID_INVALID) || (retval == -ENOSPC)) {
+>>>>>>> refs/remotes/origin/master
 		/* As per old exportfs_encode_fh documentation
 		 * we could return ENOSPC to indicate overflow
 		 * But file system returned 255 always. So handle
@@ -66,7 +95,17 @@ static long do_sys_name_to_handle(struct path *path,
 	} else
 		retval = 0;
 	/* copy the mount id */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (copy_to_user(mnt_id, &path->mnt->mnt_id, sizeof(*mnt_id)) ||
+=======
+	if (copy_to_user(mnt_id, &real_mount(path->mnt)->mnt_id,
+			 sizeof(*mnt_id)) ||
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (copy_to_user(mnt_id, &real_mount(path->mnt)->mnt_id,
+			 sizeof(*mnt_id)) ||
+>>>>>>> refs/remotes/origin/master
 	    copy_to_user(ufh, handle,
 			 sizeof(struct file_handle) + handle_bytes))
 		retval = -EFAULT;
@@ -111,11 +150,16 @@ SYSCALL_DEFINE5(name_to_handle_at, int, dfd, const char __user *, name,
 
 static struct vfsmount *get_vfsmount_from_fd(int fd)
 {
+<<<<<<< HEAD
 	struct path path;
+=======
+	struct vfsmount *mnt;
+>>>>>>> refs/remotes/origin/master
 
 	if (fd == AT_FDCWD) {
 		struct fs_struct *fs = current->fs;
 		spin_lock(&fs->lock);
+<<<<<<< HEAD
 		path = fs->pwd;
 		mntget(path.mnt);
 		spin_unlock(&fs->lock);
@@ -129,6 +173,18 @@ static struct vfsmount *get_vfsmount_from_fd(int fd)
 		fput_light(file, fput_needed);
 	}
 	return path.mnt;
+=======
+		mnt = mntget(fs->pwd.mnt);
+		spin_unlock(&fs->lock);
+	} else {
+		struct fd f = fdget(fd);
+		if (!f.file)
+			return ERR_PTR(-EBADF);
+		mnt = mntget(f.file->f_path.mnt);
+		fdput(f);
+	}
+	return mnt;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vfs_dentry_acceptable(void *context, struct dentry *dentry)

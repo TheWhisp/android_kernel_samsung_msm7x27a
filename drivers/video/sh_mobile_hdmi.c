@@ -31,6 +31,10 @@
 
 #include "sh_mobile_lcdcfb.h"
 
+<<<<<<< HEAD
+=======
+/* HDMI Core Control Register (HTOP0) */
+>>>>>>> refs/remotes/origin/master
 #define HDMI_SYSTEM_CTRL			0x00 /* System control */
 #define HDMI_L_R_DATA_SWAP_CTRL_RPKT		0x01 /* L/R data swap control,
 							bits 19..16 of 20-bit N for Audio Clock Regeneration packet */
@@ -201,6 +205,71 @@
 #define HDMI_REVISION_ID			0xF1 /* Revision ID */
 #define HDMI_TEST_MODE				0xFE /* Test mode */
 
+<<<<<<< HEAD
+=======
+/* HDMI Control Register (HTOP1) */
+#define HDMI_HTOP1_TEST_MODE			0x0000 /* Test mode */
+#define HDMI_HTOP1_VIDEO_INPUT			0x0008 /* VideoInput */
+#define HDMI_HTOP1_CORE_RSTN			0x000C /* CoreResetn */
+#define HDMI_HTOP1_PLLBW			0x0018 /* PLLBW */
+#define HDMI_HTOP1_CLK_TO_PHY			0x001C /* Clk to Phy */
+#define HDMI_HTOP1_VIDEO_INPUT2			0x0020 /* VideoInput2 */
+#define HDMI_HTOP1_TISEMP0_1			0x0024 /* tisemp0-1 */
+#define HDMI_HTOP1_TISEMP2_C			0x0028 /* tisemp2-c */
+#define HDMI_HTOP1_TISIDRV			0x002C /* tisidrv */
+#define HDMI_HTOP1_TISEN			0x0034 /* tisen */
+#define HDMI_HTOP1_TISDREN			0x0038 /* tisdren  */
+#define HDMI_HTOP1_CISRANGE			0x003C /* cisrange  */
+#define HDMI_HTOP1_ENABLE_SELECTOR		0x0040 /* Enable Selector */
+#define HDMI_HTOP1_MACRO_RESET			0x0044 /* Macro reset */
+#define HDMI_HTOP1_PLL_CALIBRATION		0x0048 /* PLL calibration */
+#define HDMI_HTOP1_RE_CALIBRATION		0x004C /* Re-calibration */
+#define HDMI_HTOP1_CURRENT			0x0050 /* Current */
+#define HDMI_HTOP1_PLL_LOCK_DETECT		0x0054 /* PLL lock detect */
+#define HDMI_HTOP1_PHY_TEST_MODE		0x0058 /* PHY Test Mode */
+#define HDMI_HTOP1_CLK_SET			0x0080 /* Clock Set */
+#define HDMI_HTOP1_DDC_FAIL_SAFE		0x0084 /* DDC fail safe */
+#define HDMI_HTOP1_PRBS				0x0088 /* PRBS */
+#define HDMI_HTOP1_EDID_AINC_CONTROL		0x008C /* EDID ainc Control */
+#define HDMI_HTOP1_HTOP_DCL_MODE		0x00FC /* Deep Coloer Mode */
+#define HDMI_HTOP1_HTOP_DCL_FRC_COEF0		0x0100 /* Deep Color:FRC COEF0 */
+#define HDMI_HTOP1_HTOP_DCL_FRC_COEF1		0x0104 /* Deep Color:FRC COEF1 */
+#define HDMI_HTOP1_HTOP_DCL_FRC_COEF2		0x0108 /* Deep Color:FRC COEF2 */
+#define HDMI_HTOP1_HTOP_DCL_FRC_COEF3		0x010C /* Deep Color:FRC COEF3 */
+#define HDMI_HTOP1_HTOP_DCL_FRC_COEF0_C		0x0110 /* Deep Color:FRC COEF0C */
+#define HDMI_HTOP1_HTOP_DCL_FRC_COEF1_C		0x0114 /* Deep Color:FRC COEF1C */
+#define HDMI_HTOP1_HTOP_DCL_FRC_COEF2_C		0x0118 /* Deep Color:FRC COEF2C */
+#define HDMI_HTOP1_HTOP_DCL_FRC_COEF3_C		0x011C /* Deep Color:FRC COEF3C */
+#define HDMI_HTOP1_HTOP_DCL_FRC_MODE		0x0120 /* Deep Color:FRC Mode */
+#define HDMI_HTOP1_HTOP_DCL_RECT_START1		0x0124 /* Deep Color:Rect Start1 */
+#define HDMI_HTOP1_HTOP_DCL_RECT_SIZE1		0x0128 /* Deep Color:Rect Size1 */
+#define HDMI_HTOP1_HTOP_DCL_RECT_START2		0x012C /* Deep Color:Rect Start2 */
+#define HDMI_HTOP1_HTOP_DCL_RECT_SIZE2		0x0130 /* Deep Color:Rect Size2 */
+#define HDMI_HTOP1_HTOP_DCL_RECT_START3		0x0134 /* Deep Color:Rect Start3 */
+#define HDMI_HTOP1_HTOP_DCL_RECT_SIZE3		0x0138 /* Deep Color:Rect Size3 */
+#define HDMI_HTOP1_HTOP_DCL_RECT_START4		0x013C /* Deep Color:Rect Start4 */
+#define HDMI_HTOP1_HTOP_DCL_RECT_SIZE4		0x0140 /* Deep Color:Rect Size4 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_Y1_1	0x0144 /* Deep Color:Fil Para Y1_1 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_Y1_2	0x0148 /* Deep Color:Fil Para Y1_2 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_CB1_1	0x014C /* Deep Color:Fil Para CB1_1 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_CB1_2	0x0150 /* Deep Color:Fil Para CB1_2 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_CR1_1	0x0154 /* Deep Color:Fil Para CR1_1 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_CR1_2	0x0158 /* Deep Color:Fil Para CR1_2 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_Y2_1	0x015C /* Deep Color:Fil Para Y2_1 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_Y2_2	0x0160 /* Deep Color:Fil Para Y2_2 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_CB2_1	0x0164 /* Deep Color:Fil Para CB2_1 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_CB2_2	0x0168 /* Deep Color:Fil Para CB2_2 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_CR2_1	0x016C /* Deep Color:Fil Para CR2_1 */
+#define HDMI_HTOP1_HTOP_DCL_FIL_PARA_CR2_2	0x0170 /* Deep Color:Fil Para CR2_2 */
+#define HDMI_HTOP1_HTOP_DCL_COR_PARA_Y1		0x0174 /* Deep Color:Cor Para Y1 */
+#define HDMI_HTOP1_HTOP_DCL_COR_PARA_CB1	0x0178 /* Deep Color:Cor Para CB1 */
+#define HDMI_HTOP1_HTOP_DCL_COR_PARA_CR1	0x017C /* Deep Color:Cor Para CR1 */
+#define HDMI_HTOP1_HTOP_DCL_COR_PARA_Y2		0x0180 /* Deep Color:Cor Para Y2 */
+#define HDMI_HTOP1_HTOP_DCL_COR_PARA_CB2	0x0184 /* Deep Color:Cor Para CB2 */
+#define HDMI_HTOP1_HTOP_DCL_COR_PARA_CR2	0x0188 /* Deep Color:Cor Para CR2 */
+#define HDMI_HTOP1_EDID_DATA_READ		0x0200 /* EDID Data Read 128Byte:0x03FC */
+
+>>>>>>> refs/remotes/origin/master
 enum hotplug_state {
 	HDMI_HOTPLUG_DISCONNECTED,
 	HDMI_HOTPLUG_CONNECTED,
@@ -208,7 +277,19 @@ enum hotplug_state {
 };
 
 struct sh_hdmi {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct sh_mobile_lcdc_entity entity;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	void __iomem *base;
+=======
+	struct sh_mobile_lcdc_entity entity;
+
+	void __iomem *base;
+	void __iomem *htop1;
+>>>>>>> refs/remotes/origin/master
 	enum hotplug_state hp_state;	/* hot-plug status */
 	u8 preprogrammed_vic;		/* use a pre-programmed VIC or
 					   the external mode */
@@ -217,6 +298,8 @@ struct sh_hdmi {
 	u8 edid_blocks;
 	struct clk *hdmi_clk;
 	struct device *dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct fb_info *info;
 	struct mutex mutex;		/* Protect the info pointer */
 	struct delayed_work edid_work;
@@ -225,16 +308,87 @@ struct sh_hdmi {
 	struct notifier_block notifier;
 };
 
+=======
+	struct delayed_work edid_work;
+	struct fb_videomode mode;
+	struct fb_monspecs monspec;
+=======
+	struct delayed_work edid_work;
+	struct fb_videomode mode;
+	struct fb_monspecs monspec;
+
+	/* register access functions */
+	void (*write)(struct sh_hdmi *hdmi, u8 data, u8 reg);
+	u8 (*read)(struct sh_hdmi *hdmi, u8 reg);
+>>>>>>> refs/remotes/origin/master
+};
+
+#define entity_to_sh_hdmi(e)	container_of(e, struct sh_hdmi, entity)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static void hdmi_write(struct sh_hdmi *hdmi, u8 data, u8 reg)
+=======
+static void __hdmi_write8(struct sh_hdmi *hdmi, u8 data, u8 reg)
+>>>>>>> refs/remotes/origin/master
 {
 	iowrite8(data, hdmi->base + reg);
 }
 
+<<<<<<< HEAD
 static u8 hdmi_read(struct sh_hdmi *hdmi, u8 reg)
+=======
+static u8 __hdmi_read8(struct sh_hdmi *hdmi, u8 reg)
+>>>>>>> refs/remotes/origin/master
 {
 	return ioread8(hdmi->base + reg);
 }
 
+<<<<<<< HEAD
+=======
+static void __hdmi_write32(struct sh_hdmi *hdmi, u8 data, u8 reg)
+{
+	iowrite32((u32)data, hdmi->base + (reg * 4));
+	udelay(100);
+}
+
+static u8 __hdmi_read32(struct sh_hdmi *hdmi, u8 reg)
+{
+	return (u8)ioread32(hdmi->base + (reg * 4));
+}
+
+static void hdmi_write(struct sh_hdmi *hdmi, u8 data, u8 reg)
+{
+	hdmi->write(hdmi, data, reg);
+}
+
+static u8 hdmi_read(struct sh_hdmi *hdmi, u8 reg)
+{
+	return hdmi->read(hdmi, reg);
+}
+
+static void hdmi_bit_set(struct sh_hdmi *hdmi, u8 mask, u8 data, u8 reg)
+{
+	u8 val = hdmi_read(hdmi, reg);
+
+	val &= ~mask;
+	val |= (data & mask);
+
+	hdmi_write(hdmi, val, reg);
+}
+
+static void hdmi_htop1_write(struct sh_hdmi *hdmi, u32 data, u32 reg)
+{
+	iowrite32(data, hdmi->htop1 + reg);
+	udelay(100);
+}
+
+static u32 hdmi_htop1_read(struct sh_hdmi *hdmi, u32 reg)
+{
+	return ioread32(hdmi->htop1 + reg);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	HDMI sound
  */
@@ -290,6 +444,8 @@ static struct snd_soc_codec_driver soc_codec_dev_sh_hdmi = {
 /* External video parameter settings */
 static void sh_hdmi_external_video_param(struct sh_hdmi *hdmi)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct fb_var_screeninfo *var = &hdmi->var;
 	u16 htotal, hblank, hdelay, vtotal, vblank, vdelay, voffset;
 	u8 sync = 0;
@@ -298,16 +454,45 @@ static void sh_hdmi_external_video_param(struct sh_hdmi *hdmi)
 
 	hdelay = var->hsync_len + var->left_margin;
 	hblank = var->right_margin + hdelay;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct fb_videomode *mode = &hdmi->mode;
+	u16 htotal, hblank, hdelay, vtotal, vblank, vdelay, voffset;
+	u8 sync = 0;
+
+	htotal = mode->xres + mode->right_margin + mode->left_margin
+	       + mode->hsync_len;
+	hdelay = mode->hsync_len + mode->left_margin;
+	hblank = mode->right_margin + hdelay;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Vertical timing looks a bit different in Figure 18,
 	 * but let's try the same first by setting offset = 0
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vtotal = var->yres + var->upper_margin + var->lower_margin + var->vsync_len;
 
 	vdelay = var->vsync_len + var->upper_margin;
 	vblank = var->lower_margin + vdelay;
 	voffset = min(var->upper_margin / 2, 6U);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	vtotal = mode->yres + mode->upper_margin + mode->lower_margin
+	       + mode->vsync_len;
+	vdelay = mode->vsync_len + mode->upper_margin;
+	vblank = mode->lower_margin + vdelay;
+	voffset = min(mode->upper_margin / 2, 6U);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * [3]: VSYNC polarity: Positive
@@ -315,6 +500,8 @@ static void sh_hdmi_external_video_param(struct sh_hdmi *hdmi)
 	 * [1]: Interlace/Progressive: Progressive
 	 * [0]: External video settings enable: used.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (var->sync & FB_SYNC_HOR_HIGH_ACT)
 		sync |= 4;
 	if (var->sync & FB_SYNC_VERT_HIGH_ACT)
@@ -323,6 +510,21 @@ static void sh_hdmi_external_video_param(struct sh_hdmi *hdmi)
 	dev_dbg(hdmi->dev, "H: %u, %u, %u, %u; V: %u, %u, %u, %u; sync 0x%x\n",
 		htotal, hblank, hdelay, var->hsync_len,
 		vtotal, vblank, vdelay, var->vsync_len, sync);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (mode->sync & FB_SYNC_HOR_HIGH_ACT)
+		sync |= 4;
+	if (mode->sync & FB_SYNC_VERT_HIGH_ACT)
+		sync |= 8;
+
+	dev_dbg(hdmi->dev, "H: %u, %u, %u, %u; V: %u, %u, %u, %u; sync 0x%x\n",
+		htotal, hblank, hdelay, mode->hsync_len,
+		vtotal, vblank, vdelay, mode->vsync_len, sync);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	hdmi_write(hdmi, sync | (voffset << 4), HDMI_EXTERNAL_VIDEO_PARAM_SETTINGS);
 
@@ -335,8 +537,18 @@ static void sh_hdmi_external_video_param(struct sh_hdmi *hdmi)
 	hdmi_write(hdmi, hdelay, HDMI_EXTERNAL_H_DELAY_7_0);
 	hdmi_write(hdmi, hdelay >> 8, HDMI_EXTERNAL_H_DELAY_9_8);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hdmi_write(hdmi, var->hsync_len, HDMI_EXTERNAL_H_DURATION_7_0);
 	hdmi_write(hdmi, var->hsync_len >> 8, HDMI_EXTERNAL_H_DURATION_9_8);
+=======
+	hdmi_write(hdmi, mode->hsync_len, HDMI_EXTERNAL_H_DURATION_7_0);
+	hdmi_write(hdmi, mode->hsync_len >> 8, HDMI_EXTERNAL_H_DURATION_9_8);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hdmi_write(hdmi, mode->hsync_len, HDMI_EXTERNAL_H_DURATION_7_0);
+	hdmi_write(hdmi, mode->hsync_len >> 8, HDMI_EXTERNAL_H_DURATION_9_8);
+>>>>>>> refs/remotes/origin/master
 
 	hdmi_write(hdmi, vtotal, HDMI_EXTERNAL_V_TOTAL_7_0);
 	hdmi_write(hdmi, vtotal >> 8, HDMI_EXTERNAL_V_TOTAL_9_8);
@@ -345,7 +557,15 @@ static void sh_hdmi_external_video_param(struct sh_hdmi *hdmi)
 
 	hdmi_write(hdmi, vdelay, HDMI_EXTERNAL_V_DELAY);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hdmi_write(hdmi, var->vsync_len, HDMI_EXTERNAL_V_DURATION);
+=======
+	hdmi_write(hdmi, mode->vsync_len, HDMI_EXTERNAL_V_DURATION);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hdmi_write(hdmi, mode->vsync_len, HDMI_EXTERNAL_V_DURATION);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set bit 0 of HDMI_EXTERNAL_VIDEO_PARAM_SETTINGS here for external mode */
 	if (!hdmi->preprogrammed_vic)
@@ -387,7 +607,11 @@ static void sh_hdmi_video_config(struct sh_hdmi *hdmi)
 static void sh_hdmi_audio_config(struct sh_hdmi *hdmi)
 {
 	u8 data;
+<<<<<<< HEAD
 	struct sh_mobile_hdmi_info *pdata = hdmi->dev->platform_data;
+=======
+	struct sh_mobile_hdmi_info *pdata = dev_get_platdata(hdmi->dev);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * [7:4] L/R data swap control
@@ -472,7 +696,15 @@ static void sh_hdmi_audio_config(struct sh_hdmi *hdmi)
  */
 static void sh_hdmi_phy_config(struct sh_hdmi *hdmi)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (hdmi->var.pixclock < 10000) {
+=======
+	if (hdmi->mode.pixclock < 10000) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (hdmi->mode.pixclock < 10000) {
+>>>>>>> refs/remotes/origin/master
 		/* for 1080p8bit 148MHz */
 		hdmi_write(hdmi, 0x1d, HDMI_SLIPHDMIT_PARAM_SETTINGS_1);
 		hdmi_write(hdmi, 0x00, HDMI_SLIPHDMIT_PARAM_SETTINGS_2);
@@ -483,7 +715,15 @@ static void sh_hdmi_phy_config(struct sh_hdmi *hdmi)
 		hdmi_write(hdmi, 0x0e, HDMI_SLIPHDMIT_PARAM_SETTINGS_8);
 		hdmi_write(hdmi, 0x25, HDMI_SLIPHDMIT_PARAM_SETTINGS_9);
 		hdmi_write(hdmi, 0x04, HDMI_SLIPHDMIT_PARAM_SETTINGS_10);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (hdmi->var.pixclock < 30000) {
+=======
+	} else if (hdmi->mode.pixclock < 30000) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (hdmi->mode.pixclock < 30000) {
+>>>>>>> refs/remotes/origin/master
 		/* 720p, 8bit, 74.25MHz. Might need to be adjusted for other formats */
 		/*
 		 * [1:0]	Speed_A
@@ -692,11 +932,19 @@ static void sh_hdmi_configure(struct sh_hdmi *hdmi)
 	msleep(10);
 
 	/* PS mode b->d, reset PLLA and PLLB */
+<<<<<<< HEAD
 	hdmi_write(hdmi, 0x4C, HDMI_SYSTEM_CTRL);
 
 	udelay(10);
 
 	hdmi_write(hdmi, 0x40, HDMI_SYSTEM_CTRL);
+=======
+	hdmi_bit_set(hdmi, 0xFC, 0x4C, HDMI_SYSTEM_CTRL);
+
+	udelay(10);
+
+	hdmi_bit_set(hdmi, 0xFC, 0x40, HDMI_SYSTEM_CTRL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long sh_hdmi_rate_error(struct sh_hdmi *hdmi,
@@ -704,7 +952,11 @@ static unsigned long sh_hdmi_rate_error(struct sh_hdmi *hdmi,
 		unsigned long *hdmi_rate, unsigned long *parent_rate)
 {
 	unsigned long target = PICOS2KHZ(mode->pixclock) * 1000, rate_error;
+<<<<<<< HEAD
 	struct sh_mobile_hdmi_info *pdata = hdmi->dev->platform_data;
+=======
+	struct sh_mobile_hdmi_info *pdata = dev_get_platdata(hdmi->dev);
+>>>>>>> refs/remotes/origin/master
 
 	*hdmi_rate = clk_round_rate(hdmi->hdmi_clk, target);
 	if ((long)*hdmi_rate < 0)
@@ -732,6 +984,8 @@ static unsigned long sh_hdmi_rate_error(struct sh_hdmi *hdmi,
 static int sh_hdmi_read_edid(struct sh_hdmi *hdmi, unsigned long *hdmi_rate,
 			     unsigned long *parent_rate)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct fb_var_screeninfo tmpvar;
 	struct fb_var_screeninfo *var = &tmpvar;
 	const struct fb_videomode *mode, *found = NULL;
@@ -740,6 +994,19 @@ static int sh_hdmi_read_edid(struct sh_hdmi *hdmi, unsigned long *hdmi_rate,
 	unsigned int f_width = 0, f_height = 0, f_refresh = 0;
 	unsigned long found_rate_error = ULONG_MAX; /* silly compiler... */
 	bool scanning = false, preferred_bad = false;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sh_mobile_lcdc_chan *ch = hdmi->entity.lcdc;
+	const struct fb_videomode *mode, *found = NULL;
+	unsigned int f_width = 0, f_height = 0, f_refresh = 0;
+	unsigned long found_rate_error = ULONG_MAX; /* silly compiler... */
+	bool scanning = false, preferred_bad = false;
+	bool use_edid_mode = false;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 edid[128];
 	char *forced;
 	int i;
@@ -747,7 +1014,13 @@ static int sh_hdmi_read_edid(struct sh_hdmi *hdmi, unsigned long *hdmi_rate,
 	/* Read EDID */
 	dev_dbg(hdmi->dev, "Read back EDID code:");
 	for (i = 0; i < 128; i++) {
+<<<<<<< HEAD
 		edid[i] = hdmi_read(hdmi, HDMI_EDID_KSV_FIFO_ACCESS_WINDOW);
+=======
+		edid[i] = (hdmi->htop1) ?
+			(u8)hdmi_htop1_read(hdmi, HDMI_HTOP1_EDID_DATA_READ + (i * 4)) :
+			hdmi_read(hdmi, HDMI_EDID_KSV_FIFO_ACCESS_WINDOW);
+>>>>>>> refs/remotes/origin/master
 #ifdef DEBUG
 		if ((i % 16) == 0) {
 			printk(KERN_CONT "\n");
@@ -854,12 +1127,24 @@ static int sh_hdmi_read_edid(struct sh_hdmi *hdmi, unsigned long *hdmi_rate,
 		}
 
 		/* Check if supported: sufficient fb memory, supported clock-rate */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		fb_videomode_to_var(var, mode);
 
 		var->bits_per_pixel = info->var.bits_per_pixel;
 
 		if (info && info->fbops->fb_check_var &&
 		    info->fbops->fb_check_var(var, info)) {
+=======
+		if (ch && ch->notify &&
+		    ch->notify(ch, SH_MOBILE_LCDC_EVENT_DISPLAY_MODE, mode,
+			       NULL)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ch && ch->notify &&
+		    ch->notify(ch, SH_MOBILE_LCDC_EVENT_DISPLAY_MODE, mode,
+			       NULL)) {
+>>>>>>> refs/remotes/origin/master
 			scanning = true;
 			preferred_bad = true;
 			continue;
@@ -867,6 +1152,8 @@ static int sh_hdmi_read_edid(struct sh_hdmi *hdmi, unsigned long *hdmi_rate,
 
 		found = mode;
 		found_rate_error = rate_error;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	hdmi->var.width = hdmi->monspec.max_x * 10;
@@ -889,6 +1176,26 @@ static int sh_hdmi_read_edid(struct sh_hdmi *hdmi, unsigned long *hdmi_rate,
 			found = &modelist->mode;
 			found_rate_error = sh_hdmi_rate_error(hdmi, found, hdmi_rate, parent_rate);
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		use_edid_mode = true;
+	}
+
+	/*
+	 * TODO 1: if no default mode is present, postpone running the config
+	 * until after the LCDC channel is initialized.
+	 * TODO 2: consider registering the HDMI platform device from the LCDC
+	 * driver.
+	 */
+	if (!found && hdmi->entity.def_mode.xres != 0) {
+		found = &hdmi->entity.def_mode;
+		found_rate_error = sh_hdmi_rate_error(hdmi, found, hdmi_rate,
+						      parent_rate);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* No cookie today */
@@ -912,12 +1219,28 @@ static int sh_hdmi_read_edid(struct sh_hdmi *hdmi, unsigned long *hdmi_rate,
 	else
 		hdmi->preprogrammed_vic = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(hdmi->dev, "Using %s %s mode %ux%u@%uHz (%luHz), clock error %luHz\n",
 		modelist ? "default" : "EDID", hdmi->preprogrammed_vic ? "VIC" : "external",
 		found->xres, found->yres, found->refresh,
 		PICOS2KHZ(found->pixclock) * 1000, found_rate_error);
 
 	fb_videomode_to_var(&hdmi->var, found);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	dev_dbg(hdmi->dev, "Using %s %s mode %ux%u@%uHz (%luHz), "
+		"clock error %luHz\n", use_edid_mode ? "EDID" : "default",
+		hdmi->preprogrammed_vic ? "VIC" : "external", found->xres,
+		found->yres, found->refresh, PICOS2KHZ(found->pixclock) * 1000,
+		found_rate_error);
+
+	hdmi->mode = *found;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sh_hdmi_external_video_param(hdmi);
 
 	return 0;
@@ -929,13 +1252,21 @@ static irqreturn_t sh_hdmi_hotplug(int irq, void *dev_id)
 	u8 status1, status2, mask1, mask2;
 
 	/* mode_b and PLLA and PLLB reset */
+<<<<<<< HEAD
 	hdmi_write(hdmi, 0x2C, HDMI_SYSTEM_CTRL);
+=======
+	hdmi_bit_set(hdmi, 0xFC, 0x2C, HDMI_SYSTEM_CTRL);
+>>>>>>> refs/remotes/origin/master
 
 	/* How long shall reset be held? */
 	udelay(10);
 
 	/* mode_b and PLLA and PLLB reset release */
+<<<<<<< HEAD
 	hdmi_write(hdmi, 0x20, HDMI_SYSTEM_CTRL);
+=======
+	hdmi_bit_set(hdmi, 0xFC, 0x20, HDMI_SYSTEM_CTRL);
+>>>>>>> refs/remotes/origin/master
 
 	status1 = hdmi_read(hdmi, HDMI_INTERRUPT_STATUS_1);
 	status2 = hdmi_read(hdmi, HDMI_INTERRUPT_STATUS_2);
@@ -998,6 +1329,8 @@ static irqreturn_t sh_hdmi_hotplug(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* locking:	called with info->lock held, or before register_framebuffer() */
 static void sh_hdmi_display_on(void *arg, struct fb_info *info)
 {
@@ -1014,6 +1347,19 @@ static void sh_hdmi_display_on(void *arg, struct fb_info *info)
 
 	/* No need to lock */
 	hdmi->info = info;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int sh_hdmi_display_on(struct sh_mobile_lcdc_entity *entity)
+{
+	struct sh_hdmi *hdmi = entity_to_sh_hdmi(entity);
+
+	dev_dbg(hdmi->dev, "%s(%p): state %x\n", __func__, hdmi,
+		hdmi->hp_state);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * hp_state can be set to
@@ -1021,6 +1367,8 @@ static void sh_hdmi_display_on(void *arg, struct fb_info *info)
 	 * HDMI_HOTPLUG_CONNECTED:	on monitor plug-in
 	 * HDMI_HOTPLUG_EDID_DONE:	on EDID read completion
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch (hdmi->hp_state) {
 	case HDMI_HOTPLUG_EDID_DONE:
 		/* PS mode d->e. All functions are active */
@@ -1041,10 +1389,35 @@ static void sh_hdmi_display_off(void *arg)
 	struct sh_mobile_hdmi_info *pdata = hdmi->dev->platform_data;
 
 	dev_dbg(hdmi->dev, "%s(%p)\n", __func__, pdata->lcd_dev);
+=======
+	if (hdmi->hp_state == HDMI_HOTPLUG_EDID_DONE) {
+		/* PS mode d->e. All functions are active */
+		hdmi_write(hdmi, 0x80, HDMI_SYSTEM_CTRL);
+=======
+	if (hdmi->hp_state == HDMI_HOTPLUG_EDID_DONE) {
+		/* PS mode d->e. All functions are active */
+		hdmi_bit_set(hdmi, 0xFC, 0x80, HDMI_SYSTEM_CTRL);
+>>>>>>> refs/remotes/origin/master
+		dev_dbg(hdmi->dev, "HDMI running\n");
+	}
+
+	return hdmi->hp_state == HDMI_HOTPLUG_DISCONNECTED
+		? SH_MOBILE_LCDC_DISPLAY_DISCONNECTED
+		: SH_MOBILE_LCDC_DISPLAY_CONNECTED;
+}
+
+static void sh_hdmi_display_off(struct sh_mobile_lcdc_entity *entity)
+{
+	struct sh_hdmi *hdmi = entity_to_sh_hdmi(entity);
+
+	dev_dbg(hdmi->dev, "%s(%p)\n", __func__, hdmi);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* PS mode e->a */
 	hdmi_write(hdmi, 0x10, HDMI_SYSTEM_CTRL);
 }
 
+<<<<<<< HEAD
 static bool sh_hdmi_must_reconfigure(struct sh_hdmi *hdmi)
 {
 	struct fb_info *info = hdmi->info;
@@ -1071,6 +1444,21 @@ static bool sh_hdmi_must_reconfigure(struct sh_hdmi *hdmi)
 
 	return true;
 }
+=======
+=======
+	/* PS mode e->a */
+	hdmi_bit_set(hdmi, 0xFC, 0x10, HDMI_SYSTEM_CTRL);
+}
+
+>>>>>>> refs/remotes/origin/master
+static const struct sh_mobile_lcdc_entity_ops sh_hdmi_ops = {
+	.display_on = sh_hdmi_display_on,
+	.display_off = sh_hdmi_display_off,
+};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * sh_hdmi_clk_configure() - set HDMI clock frequency and enable the clock
@@ -1111,6 +1499,8 @@ static long sh_hdmi_clk_configure(struct sh_hdmi *hdmi, unsigned long hdmi_rate,
 static void sh_hdmi_edid_work_fn(struct work_struct *work)
 {
 	struct sh_hdmi *hdmi = container_of(work, struct sh_hdmi, edid_work.work);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct fb_info *info;
 	struct sh_mobile_hdmi_info *pdata = hdmi->dev->platform_data;
 	struct sh_mobile_lcdc_chan *ch;
@@ -1125,6 +1515,18 @@ static void sh_hdmi_edid_work_fn(struct work_struct *work)
 	mutex_lock(&hdmi->mutex);
 
 	info = hdmi->info;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sh_mobile_lcdc_chan *ch = hdmi->entity.lcdc;
+	int ret;
+
+	dev_dbg(hdmi->dev, "%s(%p): begin, hotplug status %d\n", __func__, hdmi,
+		hdmi->hp_state);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (hdmi->hp_state == HDMI_HOTPLUG_CONNECTED) {
 		unsigned long parent_rate = 0, hdmi_rate;
@@ -1145,6 +1547,8 @@ static void sh_hdmi_edid_work_fn(struct work_struct *work)
 		/* Switched to another (d) power-save mode */
 		msleep(10);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!info)
 			goto out;
 
@@ -1176,10 +1580,23 @@ static void sh_hdmi_edid_work_fn(struct work_struct *work)
 		if (!info)
 			goto out;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (ch && ch->notify)
+			ch->notify(ch, SH_MOBILE_LCDC_EVENT_DISPLAY_CONNECT,
+				   &hdmi->mode, &hdmi->monspec);
+	} else {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		hdmi->monspec.modedb_len = 0;
 		fb_destroy_modedb(hdmi->monspec.modedb);
 		hdmi->monspec.modedb = NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (lock_fb_info(info)) {
 			console_lock();
 
@@ -1189,11 +1606,25 @@ static void sh_hdmi_edid_work_fn(struct work_struct *work)
 			console_unlock();
 			unlock_fb_info(info);
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (ch && ch->notify)
+			ch->notify(ch, SH_MOBILE_LCDC_EVENT_DISPLAY_DISCONNECT,
+				   NULL, NULL);
+
+		ret = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:
 	if (ret < 0 && ret != -EAGAIN)
 		hdmi->hp_state = HDMI_HOTPLUG_DISCONNECTED;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&hdmi->mutex);
 
 	dev_dbg(hdmi->dev, "%s(%p): end\n", __func__, pdata->lcd_dev);
@@ -1235,13 +1666,77 @@ static int sh_hdmi_notify(struct notifier_block *nb,
 		return NOTIFY_OK;
 	}
 	return NOTIFY_DONE;
+=======
+
+	dev_dbg(hdmi->dev, "%s(%p): end\n", __func__, hdmi);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	dev_dbg(hdmi->dev, "%s(%p): end\n", __func__, hdmi);
+}
+
+static void sh_hdmi_htop1_init(struct sh_hdmi *hdmi)
+{
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_HTOP_DCL_MODE);
+	hdmi_htop1_write(hdmi, 0x0000000b, 0x0010);
+	hdmi_htop1_write(hdmi, 0x00006710, HDMI_HTOP1_HTOP_DCL_FRC_MODE);
+	hdmi_htop1_write(hdmi, 0x01020406, HDMI_HTOP1_HTOP_DCL_FIL_PARA_Y1_1);
+	hdmi_htop1_write(hdmi, 0x07080806, HDMI_HTOP1_HTOP_DCL_FIL_PARA_Y1_2);
+	hdmi_htop1_write(hdmi, 0x01020406, HDMI_HTOP1_HTOP_DCL_FIL_PARA_CB1_1);
+	hdmi_htop1_write(hdmi, 0x07080806, HDMI_HTOP1_HTOP_DCL_FIL_PARA_CB1_2);
+	hdmi_htop1_write(hdmi, 0x01020406, HDMI_HTOP1_HTOP_DCL_FIL_PARA_CR1_1);
+	hdmi_htop1_write(hdmi, 0x07080806, HDMI_HTOP1_HTOP_DCL_FIL_PARA_CR1_2);
+	hdmi_htop1_write(hdmi, 0x01020406, HDMI_HTOP1_HTOP_DCL_FIL_PARA_Y2_1);
+	hdmi_htop1_write(hdmi, 0x07080806, HDMI_HTOP1_HTOP_DCL_FIL_PARA_Y2_2);
+	hdmi_htop1_write(hdmi, 0x01020406, HDMI_HTOP1_HTOP_DCL_FIL_PARA_CB2_1);
+	hdmi_htop1_write(hdmi, 0x07080806, HDMI_HTOP1_HTOP_DCL_FIL_PARA_CB2_2);
+	hdmi_htop1_write(hdmi, 0x01020406, HDMI_HTOP1_HTOP_DCL_FIL_PARA_CR2_1);
+	hdmi_htop1_write(hdmi, 0x07080806, HDMI_HTOP1_HTOP_DCL_FIL_PARA_CR2_2);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_HTOP_DCL_COR_PARA_Y1);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_HTOP_DCL_COR_PARA_CB1);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_HTOP_DCL_COR_PARA_CR1);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_HTOP_DCL_COR_PARA_Y2);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_HTOP_DCL_COR_PARA_CB2);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_HTOP_DCL_COR_PARA_CR2);
+	hdmi_htop1_write(hdmi, 0x00000008, HDMI_HTOP1_CURRENT);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_TISEMP0_1);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_TISEMP2_C);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_PHY_TEST_MODE);
+	hdmi_htop1_write(hdmi, 0x00000081, HDMI_HTOP1_TISIDRV);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_PLLBW);
+	hdmi_htop1_write(hdmi, 0x0000000f, HDMI_HTOP1_TISEN);
+	hdmi_htop1_write(hdmi, 0x0000000f, HDMI_HTOP1_TISDREN);
+	hdmi_htop1_write(hdmi, 0x00000003, HDMI_HTOP1_ENABLE_SELECTOR);
+	hdmi_htop1_write(hdmi, 0x00000001, HDMI_HTOP1_MACRO_RESET);
+	hdmi_htop1_write(hdmi, 0x00000016, HDMI_HTOP1_CISRANGE);
+	msleep(100);
+	hdmi_htop1_write(hdmi, 0x00000001, HDMI_HTOP1_ENABLE_SELECTOR);
+	msleep(100);
+	hdmi_htop1_write(hdmi, 0x00000003, HDMI_HTOP1_ENABLE_SELECTOR);
+	hdmi_htop1_write(hdmi, 0x00000001, HDMI_HTOP1_MACRO_RESET);
+	hdmi_htop1_write(hdmi, 0x0000000f, HDMI_HTOP1_TISEN);
+	hdmi_htop1_write(hdmi, 0x0000000f, HDMI_HTOP1_TISDREN);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_VIDEO_INPUT);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_CLK_TO_PHY);
+	hdmi_htop1_write(hdmi, 0x00000000, HDMI_HTOP1_VIDEO_INPUT2);
+	hdmi_htop1_write(hdmi, 0x0000000a, HDMI_HTOP1_CLK_SET);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init sh_hdmi_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct sh_mobile_hdmi_info *pdata = pdev->dev.platform_data;
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	struct sh_mobile_lcdc_board_cfg	*board_cfg;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sh_mobile_hdmi_info *pdata = dev_get_platdata(&pdev->dev);
+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	struct resource *htop1_res;
+>>>>>>> refs/remotes/origin/master
 	int irq = platform_get_irq(pdev, 0), ret;
 	struct sh_hdmi *hdmi;
 	long rate;
@@ -1249,21 +1744,59 @@ static int __init sh_hdmi_probe(struct platform_device *pdev)
 	if (!res || !pdata || irq < 0)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	hdmi = kzalloc(sizeof(*hdmi), GFP_KERNEL);
+=======
+	htop1_res = NULL;
+	if (pdata->flags & HDMI_HAS_HTOP1) {
+		htop1_res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+		if (!htop1_res) {
+			dev_err(&pdev->dev, "htop1 needs register base\n");
+			return -EINVAL;
+		}
+	}
+
+	hdmi = devm_kzalloc(&pdev->dev, sizeof(*hdmi), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!hdmi) {
 		dev_err(&pdev->dev, "Cannot allocate device data\n");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&hdmi->mutex);
 
 	hdmi->dev = &pdev->dev;
+=======
+	hdmi->dev = &pdev->dev;
+	hdmi->entity.owner = THIS_MODULE;
+	hdmi->entity.ops = &sh_hdmi_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hdmi->dev = &pdev->dev;
+	hdmi->entity.owner = THIS_MODULE;
+	hdmi->entity.ops = &sh_hdmi_ops;
+>>>>>>> refs/remotes/origin/master
 
 	hdmi->hdmi_clk = clk_get(&pdev->dev, "ick");
 	if (IS_ERR(hdmi->hdmi_clk)) {
 		ret = PTR_ERR(hdmi->hdmi_clk);
 		dev_err(&pdev->dev, "Unable to get clock: %d\n", ret);
+<<<<<<< HEAD
 		goto egetclk;
+=======
+		return ret;
+	}
+
+	/* select register access functions */
+	if (pdata->flags & HDMI_32BIT_REG) {
+		hdmi->write	= __hdmi_write32;
+		hdmi->read	= __hdmi_read32;
+	} else {
+		hdmi->write	= __hdmi_write8;
+		hdmi->read	= __hdmi_read8;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* An arbitrary relaxed pixclock just to get things started: from standard 480p */
@@ -1276,7 +1809,11 @@ static int __init sh_hdmi_probe(struct platform_device *pdev)
 		goto erate;
 	}
 
+<<<<<<< HEAD
 	ret = clk_enable(hdmi->hdmi_clk);
+=======
+	ret = clk_prepare_enable(hdmi->hdmi_clk);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(hdmi->dev, "Cannot enable clock: %d\n", ret);
 		goto erate;
@@ -1297,6 +1834,8 @@ static int __init sh_hdmi_probe(struct platform_device *pdev)
 		goto emap;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, hdmi);
 
 	/* Set up LCDC callbacks */
@@ -1305,12 +1844,39 @@ static int __init sh_hdmi_probe(struct platform_device *pdev)
 	board_cfg->board_data = hdmi;
 	board_cfg->display_on = sh_hdmi_display_on;
 	board_cfg->display_off = sh_hdmi_display_off;
+=======
+	platform_set_drvdata(pdev, &hdmi->entity);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_set_drvdata(pdev, &hdmi->entity);
+>>>>>>> refs/remotes/origin/master
 
 	INIT_DELAYED_WORK(&hdmi->edid_work, sh_hdmi_edid_work_fn);
 
 	pm_runtime_enable(&pdev->dev);
 	pm_runtime_get_sync(&pdev->dev);
 
+<<<<<<< HEAD
+=======
+	/* init interrupt polarity */
+	if (pdata->flags & HDMI_OUTPUT_PUSH_PULL)
+		hdmi_bit_set(hdmi, 0x02, 0x02, HDMI_SYSTEM_CTRL);
+
+	if (pdata->flags & HDMI_OUTPUT_POLARITY_HI)
+		hdmi_bit_set(hdmi, 0x01, 0x01, HDMI_SYSTEM_CTRL);
+
+	/* enable htop1 register if needed */
+	if (htop1_res) {
+		hdmi->htop1 = ioremap(htop1_res->start, resource_size(htop1_res));
+		if (!hdmi->htop1) {
+			dev_err(&pdev->dev, "control register region already claimed\n");
+			ret = -ENOMEM;
+			goto emap_htop1;
+		}
+		sh_hdmi_htop1_init(hdmi);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Product and revision IDs are 0 in sh-mobile version */
 	dev_info(&pdev->dev, "Detected HDMI controller 0x%x:0x%x\n",
 		 hdmi_read(hdmi, HDMI_PRODUCT_ID), hdmi_read(hdmi, HDMI_REVISION_ID));
@@ -1329,40 +1895,73 @@ static int __init sh_hdmi_probe(struct platform_device *pdev)
 		goto ecodec;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hdmi->notifier.notifier_call = sh_hdmi_notify;
 	fb_register_client(&hdmi->notifier);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 ecodec:
 	free_irq(irq, hdmi);
 ereqirq:
+<<<<<<< HEAD
+=======
+	if (hdmi->htop1)
+		iounmap(hdmi->htop1);
+emap_htop1:
+>>>>>>> refs/remotes/origin/master
 	pm_runtime_put(&pdev->dev);
 	pm_runtime_disable(&pdev->dev);
 	iounmap(hdmi->base);
 emap:
 	release_mem_region(res->start, resource_size(res));
 ereqreg:
+<<<<<<< HEAD
 	clk_disable(hdmi->hdmi_clk);
 erate:
 	clk_put(hdmi->hdmi_clk);
 egetclk:
+<<<<<<< HEAD
 	mutex_destroy(&hdmi->mutex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(hdmi);
+=======
+	clk_disable_unprepare(hdmi->hdmi_clk);
+erate:
+	clk_put(hdmi->hdmi_clk);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
 static int __exit sh_hdmi_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sh_mobile_hdmi_info *pdata = pdev->dev.platform_data;
 	struct sh_hdmi *hdmi = platform_get_drvdata(pdev);
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	struct sh_mobile_lcdc_board_cfg	*board_cfg = &pdata->lcd_chan->board_cfg;
+=======
+	struct sh_hdmi *hdmi = entity_to_sh_hdmi(platform_get_drvdata(pdev));
+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sh_hdmi *hdmi = entity_to_sh_hdmi(platform_get_drvdata(pdev));
+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>>>>>> refs/remotes/origin/master
 	int irq = platform_get_irq(pdev, 0);
 
 	snd_soc_unregister_codec(&pdev->dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fb_unregister_client(&hdmi->notifier);
 
 	board_cfg->display_on = NULL;
@@ -1370,18 +1969,34 @@ static int __exit sh_hdmi_remove(struct platform_device *pdev)
 	board_cfg->board_data = NULL;
 	board_cfg->owner = NULL;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* No new work will be scheduled, wait for running ISR */
 	free_irq(irq, hdmi);
 	/* Wait for already scheduled work */
 	cancel_delayed_work_sync(&hdmi->edid_work);
 	pm_runtime_put(&pdev->dev);
 	pm_runtime_disable(&pdev->dev);
+<<<<<<< HEAD
 	clk_disable(hdmi->hdmi_clk);
 	clk_put(hdmi->hdmi_clk);
 	iounmap(hdmi->base);
 	release_mem_region(res->start, resource_size(res));
+<<<<<<< HEAD
 	mutex_destroy(&hdmi->mutex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(hdmi);
+=======
+	clk_disable_unprepare(hdmi->hdmi_clk);
+	clk_put(hdmi->hdmi_clk);
+	if (hdmi->htop1)
+		iounmap(hdmi->htop1);
+	iounmap(hdmi->base);
+	release_mem_region(res->start, resource_size(res));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1393,6 +2008,7 @@ static struct platform_driver sh_hdmi_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init sh_hdmi_init(void)
 {
 	return platform_driver_probe(&sh_hdmi_driver, sh_hdmi_probe);
@@ -1404,6 +2020,9 @@ static void __exit sh_hdmi_exit(void)
 	platform_driver_unregister(&sh_hdmi_driver);
 }
 module_exit(sh_hdmi_exit);
+=======
+module_platform_driver_probe(sh_hdmi_driver, sh_hdmi_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Guennadi Liakhovetski <g.liakhovetski@gmx.de>");
 MODULE_DESCRIPTION("SuperH / ARM-shmobile HDMI driver");

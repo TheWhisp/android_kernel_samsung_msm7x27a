@@ -22,7 +22,15 @@ static int pci_conf1_read(unsigned int seg, unsigned int bus,
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((bus > 255) || (devfn > 255) || (reg > 4095)) {
+=======
+	if (seg || (bus > 255) || (devfn > 255) || (reg > 4095)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (seg || (bus > 255) || (devfn > 255) || (reg > 4095)) {
+>>>>>>> refs/remotes/origin/master
 		*value = -1;
 		return -EINVAL;
 	}
@@ -53,7 +61,15 @@ static int pci_conf1_write(unsigned int seg, unsigned int bus,
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((bus > 255) || (devfn > 255) || (reg > 4095))
+=======
+	if (seg || (bus > 255) || (devfn > 255) || (reg > 4095))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (seg || (bus > 255) || (devfn > 255) || (reg > 4095))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	raw_spin_lock_irqsave(&pci_config_lock, flags);
@@ -79,7 +95,15 @@ static int pci_conf1_write(unsigned int seg, unsigned int bus,
 
 #undef PCI_CONF1_ADDRESS
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct pci_raw_ops pci_direct_conf1 = {
+=======
+const struct pci_raw_ops pci_direct_conf1 = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+const struct pci_raw_ops pci_direct_conf1 = {
+>>>>>>> refs/remotes/origin/master
 	.read =		pci_conf1_read,
 	.write =	pci_conf1_write,
 };
@@ -97,6 +121,14 @@ static int pci_conf2_read(unsigned int seg, unsigned int bus,
 	unsigned long flags;
 	int dev, fn;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	WARN_ON(seg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(seg);
+>>>>>>> refs/remotes/origin/master
 	if ((bus > 255) || (devfn > 255) || (reg > 255)) {
 		*value = -1;
 		return -EINVAL;
@@ -138,6 +170,14 @@ static int pci_conf2_write(unsigned int seg, unsigned int bus,
 	unsigned long flags;
 	int dev, fn;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	WARN_ON(seg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(seg);
+>>>>>>> refs/remotes/origin/master
 	if ((bus > 255) || (devfn > 255) || (reg > 255)) 
 		return -EINVAL;
 
@@ -173,7 +213,15 @@ static int pci_conf2_write(unsigned int seg, unsigned int bus,
 
 #undef PCI_CONF2_ADDRESS
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct pci_raw_ops pci_direct_conf2 = {
+=======
+static const struct pci_raw_ops pci_direct_conf2 = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_raw_ops pci_direct_conf2 = {
+>>>>>>> refs/remotes/origin/master
 	.read =		pci_conf2_read,
 	.write =	pci_conf2_write,
 };
@@ -189,7 +237,15 @@ struct pci_raw_ops pci_direct_conf2 = {
  * This should be close to trivial, but it isn't, because there are buggy
  * chipsets (yes, you guessed it, by Intel and Compaq) that have no class ID.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init pci_sanity_check(struct pci_raw_ops *o)
+=======
+static int __init pci_sanity_check(const struct pci_raw_ops *o)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init pci_sanity_check(const struct pci_raw_ops *o)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 x = 0;
 	int year, devfn;

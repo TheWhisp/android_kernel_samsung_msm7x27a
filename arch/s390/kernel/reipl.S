@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/kernel/reipl.S
  *
  *  S390 version
@@ -6,6 +7,7 @@
  *    Author(s): Holger Smolinski (Holger.Smolinski@de.ibm.com)
  */
 
+<<<<<<< HEAD
 #include <asm/asm-offsets.h>
 
 #
@@ -14,6 +16,36 @@
 #
 		.globl	do_reipl_asm
 do_reipl_asm:	basr	%r13,0
+=======
+#include <linux/linkage.h>
+#include <asm/asm-offsets.h>
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 2000
+ *    Author(s): Holger Smolinski (Holger.Smolinski@de.ibm.com)
+ */
+
+#include <linux/linkage.h>
+#include <asm/asm-offsets.h>
+#include <asm/sigp.h>
+>>>>>>> refs/remotes/origin/master
+
+#
+# store_status: Empty implementation until kdump is supported on 31 bit
+#
+ENTRY(store_status)
+		br	%r14
+
+#
+# do_reipl_asm
+# Parameter: r2 = schid of reipl device
+#
+ENTRY(do_reipl_asm)
+		basr	%r13,0
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 .Lpg0:		lpsw	.Lnewpsw-.Lpg0(%r13)
 .Lpg1:		# do store status of all registers
 
@@ -53,7 +85,11 @@ do_reipl_asm:	basr	%r13,0
 		bas	%r14,.Ldisab-.Lpg0(%r13)
 .L003:		st	%r1,__LC_SUBCHANNEL_ID
 		lpsw	0
+<<<<<<< HEAD
 		sigp	0,0,0(6)
+=======
+		sigp	0,0,SIGP_RESTART
+>>>>>>> refs/remotes/origin/master
 .Ldisab:	st	%r14,.Ldispsw+4-.Lpg0(%r13)
 		lpsw	.Ldispsw-.Lpg0(%r13)
 		.align	8

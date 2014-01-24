@@ -5,7 +5,13 @@
  * User space memory access functions
  */
 #include <asm/page.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/cache.h>
 #include <asm/errno.h>
 #include <asm-generic/uaccess-unaligned.h>
@@ -60,12 +66,22 @@ static inline long access_ok(int type, const void __user * addr,
 /*
  * The exception table contains two values: the first is an address
  * for an instruction that is allowed to fault, and the second is
+<<<<<<< HEAD
  * the address to the fixup routine. 
  */
 
 struct exception_table_entry {
 	unsigned long insn;  /* address of insn that is allowed to fault.   */
 	long fixup;          /* fixup routine */
+=======
+ * the address to the fixup routine. Even on a 64bit kernel we could
+ * use a 32bit (unsigned int) address here.
+ */
+
+struct exception_table_entry {
+	unsigned long insn;	/* address of insn that is allowed to fault. */
+	unsigned long fixup;	/* fixup routine */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define ASM_EXCEPTIONTABLE_ENTRY( fault_addr, except_addr )\
@@ -182,6 +198,7 @@ struct exception_data {
 #if !defined(CONFIG_64BIT)
 
 #define __put_kernel_asm64(__val,ptr) do {		    \
+<<<<<<< HEAD
 	u64 __val64 = (u64)(__val);			    \
 	u32 hi = (__val64) >> 32;			    \
 	u32 lo = (__val64) & 0xffffffff;		    \
@@ -192,10 +209,20 @@ struct exception_data {
 		ASM_EXCEPTIONTABLE_ENTRY(2b,fixup_put_user_skip_1)\
 		: "=r"(__pu_err)                            \
 		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err) \
+=======
+	__asm__ __volatile__ (				    \
+		"\n1:\tstw %2,0(%1)"			    \
+		"\n2:\tstw %R2,4(%1)\n\t"		    \
+		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_put_user_skip_2)\
+		ASM_EXCEPTIONTABLE_ENTRY(2b,fixup_put_user_skip_1)\
+		: "=r"(__pu_err)                            \
+		: "r"(ptr), "r"(__val), "0"(__pu_err) \
+>>>>>>> refs/remotes/origin/master
 		: "r1");				    \
 } while (0)
 
 #define __put_user_asm64(__val,ptr) do {	    	    \
+<<<<<<< HEAD
 	u64 __val64 = (u64)(__val);			    \
 	u32 hi = (__val64) >> 32;			    \
 	u32 lo = (__val64) & 0xffffffff;		    \
@@ -206,6 +233,15 @@ struct exception_data {
 		ASM_EXCEPTIONTABLE_ENTRY(2b,fixup_put_user_skip_1)\
 		: "=r"(__pu_err)                            \
 		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err) \
+=======
+	__asm__ __volatile__ (				    \
+		"\n1:\tstw %2,0(%%sr3,%1)"		    \
+		"\n2:\tstw %R2,4(%%sr3,%1)\n\t"		    \
+		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_put_user_skip_2)\
+		ASM_EXCEPTIONTABLE_ENTRY(2b,fixup_put_user_skip_1)\
+		: "=r"(__pu_err)                            \
+		: "r"(ptr), "r"(__val), "0"(__pu_err) \
+>>>>>>> refs/remotes/origin/master
 		: "r1");				    \
 } while (0)
 
@@ -219,6 +255,7 @@ struct exception_data {
 extern unsigned long lcopy_to_user(void __user *, const void *, unsigned long);
 extern unsigned long lcopy_from_user(void *, const void __user *, unsigned long);
 extern unsigned long lcopy_in_user(void __user *, const void __user *, unsigned long);
+<<<<<<< HEAD
 extern long lstrncpy_from_user(char *, const char __user *, long);
 extern unsigned lclear_user(void __user *,unsigned long);
 extern long lstrnlen_user(const char __user *,long);
@@ -228,6 +265,16 @@ extern long lstrnlen_user(const char __user *,long);
  */
 
 #define strncpy_from_user lstrncpy_from_user
+=======
+extern long strncpy_from_user(char *, const char __user *, long);
+extern unsigned lclear_user(void __user *,unsigned long);
+extern long lstrnlen_user(const char __user *,long);
+/*
+ * Complex access routines -- macros
+ */
+#define user_addr_max() (~0UL)
+
+>>>>>>> refs/remotes/origin/master
 #define strnlen_user lstrnlen_user
 #define strlen_user(str) lstrnlen_user(str, 0x7fffffffL)
 #define clear_user lclear_user

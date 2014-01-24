@@ -16,7 +16,10 @@
 #include <linux/mtd/physmap.h>
 #include <linux/spi/flash.h>
 #include <linux/spi/spi.h>
+<<<<<<< HEAD
 #include <linux/spi/orion_spi.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/i2c.h>
 #include <linux/mv643xx_eth.h>
 #include <linux/ata_platform.h>
@@ -30,7 +33,11 @@
 #include "common.h"
 #include "mpp.h"
 
+<<<<<<< HEAD
 struct mtd_partition hp_t5325_partitions[] = {
+=======
+static struct mtd_partition hp_t5325_partitions[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name		= "u-boot env",
 		.size		= SZ_64K,
@@ -60,14 +67,22 @@ struct mtd_partition hp_t5325_partitions[] = {
 	},
 };
 
+<<<<<<< HEAD
 const struct flash_platform_data hp_t5325_flash = {
+=======
+static const struct flash_platform_data hp_t5325_flash = {
+>>>>>>> refs/remotes/origin/master
 	.type		= "mx25l8005",
 	.name		= "spi_flash",
 	.parts		= hp_t5325_partitions,
 	.nr_parts	= ARRAY_SIZE(hp_t5325_partitions),
 };
 
+<<<<<<< HEAD
 struct spi_board_info __initdata hp_t5325_spi_slave_info[] = {
+=======
+static struct spi_board_info __initdata hp_t5325_spi_slave_info[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.modalias	= "m25p80",
 		.platform_data	= &hp_t5325_flash,
@@ -106,6 +121,20 @@ static struct platform_device hp_t5325_button_device = {
 	}
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct platform_device hp_t5325_audio_device = {
+	.name		= "t5325-audio",
+	.id		= -1,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int hp_t5325_mpp_config[] __initdata = {
 	MPP0_NF_IO2,
 	MPP1_SPI_MOSI,
@@ -179,6 +208,14 @@ static void __init hp_t5325_init(void)
 	kirkwood_sata_init(&hp_t5325_sata_data);
 	kirkwood_ehci_init();
 	platform_device_register(&hp_t5325_button_device);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	platform_device_register(&hp_t5325_audio_device);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_device_register(&hp_t5325_audio_device);
+>>>>>>> refs/remotes/origin/master
 
 	i2c_register_board_info(0, i2c_board_info, ARRAY_SIZE(i2c_board_info));
 	kirkwood_audio_init();
@@ -201,10 +238,27 @@ subsys_initcall(hp_t5325_pci_init);
 
 MACHINE_START(T5325, "HP t5325 Thin Client")
 	/* Maintainer: Martin Michlmayr <tbm@cyrius.com> */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= hp_t5325_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
+<<<<<<< HEAD
 	.timer		= &kirkwood_timer,
+<<<<<<< HEAD
+=======
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= kirkwood_timer_init,
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

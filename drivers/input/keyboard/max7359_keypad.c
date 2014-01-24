@@ -179,7 +179,11 @@ static void max7359_initialize(struct i2c_client *client)
 	max7359_fall_deepsleep(client);
 }
 
+<<<<<<< HEAD
 static int __devinit max7359_probe(struct i2c_client *client,
+=======
+static int max7359_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 					const struct i2c_device_id *id)
 {
 	const struct matrix_keymap_data *keymap_data = client->dev.platform_data;
@@ -260,7 +264,11 @@ failed_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit max7359_remove(struct i2c_client *client)
+=======
+static int max7359_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max7359_keypad *keypad = i2c_get_clientdata(client);
 
@@ -271,7 +279,11 @@ static int __devexit max7359_remove(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int max7359_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -312,10 +324,12 @@ static struct i2c_driver max7359_i2c_driver = {
 		.pm   = &max7359_pm,
 	},
 	.probe		= max7359_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(max7359_remove),
 	.id_table	= max7359_ids,
 };
 
+<<<<<<< HEAD
 static int __init max7359_init(void)
 {
 	return i2c_add_driver(&max7359_i2c_driver);
@@ -327,6 +341,16 @@ static void __exit max7359_exit(void)
 	i2c_del_driver(&max7359_i2c_driver);
 }
 module_exit(max7359_exit);
+=======
+module_i2c_driver(max7359_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= max7359_remove,
+	.id_table	= max7359_ids,
+};
+
+module_i2c_driver(max7359_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kim Kyuwon <q1.kim@samsung.com>");
 MODULE_DESCRIPTION("MAX7359 Key Switch Controller Driver");

@@ -10,15 +10,22 @@ struct pt_regs;
 
 struct task_struct;
 
+<<<<<<< HEAD
 #include "asm/ptrace.h"
 #include "registers.h"
 #include "sysdep/archsetjmp.h"
+=======
+#include <asm/ptrace.h>
+#include <registers.h>
+#include <sysdep/archsetjmp.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/prefetch.h>
 
 struct mm_struct;
 
 struct thread_struct {
+<<<<<<< HEAD
 	struct task_struct *saved_task;
 	/*
 	 * This flag is set to 1 before calling do_fork (and analyzed in
@@ -29,12 +36,19 @@ struct thread_struct {
 	 */
 	int forking;
 	struct pt_regs regs;
+=======
+	struct pt_regs regs;
+	struct pt_regs *segv_regs;
+>>>>>>> refs/remotes/origin/master
 	int singlestep_syscall;
 	void *fault_addr;
 	jmp_buf *fault_catcher;
 	struct task_struct *prev_sched;
 	unsigned long temp_stack;
+<<<<<<< HEAD
 	jmp_buf *exec_buf;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct arch_thread arch;
 	jmp_buf switch_buf;
 	int mm_count;
@@ -58,22 +72,32 @@ struct thread_struct {
 
 #define INIT_THREAD \
 { \
+<<<<<<< HEAD
 	.forking		= 0, \
+=======
+>>>>>>> refs/remotes/origin/master
 	.regs		   	= EMPTY_REGS,	\
 	.fault_addr		= NULL, \
 	.prev_sched		= NULL, \
 	.temp_stack		= 0, \
+<<<<<<< HEAD
 	.exec_buf		= NULL, \
+=======
+>>>>>>> refs/remotes/origin/master
 	.arch			= INIT_ARCH_THREAD, \
 	.request		= { 0 } \
 }
 
+<<<<<<< HEAD
 extern struct task_struct *alloc_task_struct_node(int node);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void release_thread(struct task_struct *task)
 {
 }
 
+<<<<<<< HEAD
 extern int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 
 static inline void prepare_to_copy(struct task_struct *tsk)
@@ -81,6 +105,8 @@ static inline void prepare_to_copy(struct task_struct *tsk)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern unsigned long thread_saved_pc(struct task_struct *t);
 
 static inline void mm_copy_segments(struct mm_struct *from_mm,

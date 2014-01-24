@@ -48,15 +48,32 @@
 #include <linux/unistd.h>
 #include <linux/kallsyms.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/io.h>
 #include <asm/asm-offsets.h>
+=======
+#include <linux/rcupdate.h>
+
+#include <asm/io.h>
+#include <asm/asm-offsets.h>
+#include <asm/assembly.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pdc.h>
 #include <asm/pdc_chassis.h>
 #include <asm/pgalloc.h>
 #include <asm/unwind.h>
 #include <asm/sections.h>
 
+<<<<<<< HEAD
 /*
  * The idle thread. There's no useful work to be
  * done, so just try to conserve power and have a
@@ -69,16 +86,29 @@ void cpu_idle(void)
 
 	/* endless idle loop with no priority at all */
 	while (1) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		while (!need_resched())
 			barrier();
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		rcu_idle_enter();
+		while (!need_resched())
+			barrier();
+		rcu_idle_exit();
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 		check_pgt_cache();
 	}
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define COMMAND_GLOBAL  F_EXTEND(0xfffe0030)
 #define CMD_RESET       5       /* reset any module */
 
@@ -164,6 +194,7 @@ void (*pm_power_off)(void) = machine_power_off;
 EXPORT_SYMBOL(pm_power_off);
 
 /*
+<<<<<<< HEAD
  * Create a kernel thread
  */
 
@@ -181,6 +212,8 @@ pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 EXPORT_SYMBOL(kernel_thread);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Free current thread data structures etc..
  */
 void exit_thread(void)
@@ -192,7 +225,13 @@ void flush_thread(void)
 	/* Only needs to handle fpu stuff or perf monitors.
 	** REVISIT: several arches implement a "lazy fpu state".
 	*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set_fs(USER_DS);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void release_thread(struct task_struct *dead_task)
@@ -218,6 +257,7 @@ int dump_task_fpu (struct task_struct *tsk, elf_fpregset_t *r)
 	return 1;
 }
 
+<<<<<<< HEAD
 /* Note that "fork()" is implemented in terms of clone, with
    parameters (SIGCHLD, regs->gr[30], regs). */
 int
@@ -260,6 +300,13 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
 	    struct task_struct * p, struct pt_regs * pregs)
 {
 	struct pt_regs * cregs = &(p->thread.regs);
+=======
+int
+copy_thread(unsigned long clone_flags, unsigned long usp,
+	    unsigned long arg, struct task_struct *p)
+{
+	struct pt_regs *cregs = &(p->thread.regs);
+>>>>>>> refs/remotes/origin/master
 	void *stack = task_stack_page(p);
 	
 	/* We have to use void * instead of a function pointer, because
@@ -270,6 +317,7 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
 #ifdef CONFIG_HPUX
 	extern void * const hpux_child_return;
 #endif
+<<<<<<< HEAD
 
 	*cregs = *pregs;
 
@@ -291,12 +339,25 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
 		/* Must exit via ret_from_kernel_thread in order
 		 * to call schedule_tail()
 		 */
+=======
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(cregs, 0, sizeof(struct pt_regs));
+		if (!usp) /* idle thread */
+			return 0;
+
+		/* kernel thread */
+		/* Must exit via ret_from_kernel_thread in order
+		 * to call schedule_tail()
+		 */
+		cregs->ksp = (unsigned long)stack + THREAD_SZ_ALGN + FRAME_SIZE;
+>>>>>>> refs/remotes/origin/master
 		cregs->kpc = (unsigned long) &ret_from_kernel_thread;
 		/*
 		 * Copy function and argument to be called from
 		 * ret_from_kernel_thread.
 		 */
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
 		cregs->gr[27] = pregs->gr[27];
 #endif
 		cregs->gr[26] = pregs->gr[26];
@@ -313,6 +374,26 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
 			+ (pregs->gr[21] & (THREAD_SIZE - 1));
 		cregs->gr[30] = usp;
 		if (p->personality == PER_HPUX) {
+=======
+		cregs->gr[27] = ((unsigned long *)usp)[3];
+		cregs->gr[26] = ((unsigned long *)usp)[2];
+#else
+		cregs->gr[26] = usp;
+#endif
+		cregs->gr[25] = arg;
+	} else {
+		/* user thread */
+		/* usp must be word aligned.  This also prevents users from
+		 * passing in the value 1 (which is the signal for a special
+		 * return for a kernel thread) */
+		if (usp) {
+			usp = ALIGN(usp, 4);
+			if (likely(usp))
+				cregs->gr[30] = usp;
+		}
+		cregs->ksp = (unsigned long)stack + THREAD_SZ_ALGN + FRAME_SIZE;
+		if (personality(p->personality) == PER_HPUX) {
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HPUX
 			cregs->kpc = (unsigned long) &hpux_child_return;
 #else
@@ -323,8 +404,12 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
 		}
 		/* Setup thread TLS area from the 4th parameter in clone */
 		if (clone_flags & CLONE_SETTLS)
+<<<<<<< HEAD
 		  cregs->cr27 = pregs->gr[23];
 	
+=======
+			cregs->cr27 = cregs->gr[23];
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -335,6 +420,7 @@ unsigned long thread_saved_pc(struct task_struct *t)
 	return t->thread.regs.kpc;
 }
 
+<<<<<<< HEAD
 /*
  * sys_execve() executes a new program.
  */
@@ -368,6 +454,8 @@ int kernel_execve(const char *filename,
 	return __execve(filename, argv, envp, current);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long
 get_wchan(struct task_struct *p)
 {

@@ -5,12 +5,24 @@
 #include <asm/machvec.h>
 
 /*
+<<<<<<< HEAD
  * A sane default based on a reasonable vector table size, platforms are
  * advised to cap this at the hard limit that they're interested in
  * through the machvec.
  */
 #define NR_IRQS			512
 #define NR_IRQS_LEGACY		8	/* Legacy external IRQ0-7 */
+=======
+ * Only legacy non-sparseirq platforms have to set a reasonably sane
+ * value here. sparseirq platforms allocate their irq_descs on the fly,
+ * so will expand automatically based on the number of registered IRQs.
+ */
+#ifdef CONFIG_SPARSE_IRQ
+# define NR_IRQS		8
+#else
+# define NR_IRQS		512
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is a special IRQ number for indicating that no IRQ has been
@@ -21,6 +33,8 @@
 #define NO_IRQ_IGNORE		((unsigned int)-1)
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Convert back and forth between INTEVT and IRQ values.
  */
 #ifdef CONFIG_CPU_HAS_INTEVT
@@ -32,6 +46,10 @@
 #endif
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Simple Mask Register Support
  */
 extern void make_maskreg_irq(unsigned int irq);

@@ -58,7 +58,11 @@ static int ide_imodel_proc_show(struct seq_file *m, void *v)
 
 static int ide_imodel_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ide_imodel_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ide_imodel_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations ide_imodel_proc_fops = {
@@ -82,7 +86,11 @@ static int ide_mate_proc_show(struct seq_file *m, void *v)
 
 static int ide_mate_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ide_mate_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ide_mate_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations ide_mate_proc_fops = {
@@ -103,7 +111,11 @@ static int ide_channel_proc_show(struct seq_file *m, void *v)
 
 static int ide_channel_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ide_channel_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ide_channel_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations ide_channel_proc_fops = {
@@ -143,7 +155,11 @@ static int ide_identify_proc_show(struct seq_file *m, void *v)
 
 static int ide_identify_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ide_identify_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ide_identify_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations ide_identify_proc_fops = {
@@ -325,7 +341,11 @@ static int ide_settings_proc_show(struct seq_file *m, void *v)
 
 static int ide_settings_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ide_settings_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ide_settings_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 #define MAX_LEN	30
@@ -333,7 +353,11 @@ static int ide_settings_proc_open(struct inode *inode, struct file *file)
 static ssize_t ide_settings_proc_write(struct file *file, const char __user *buffer,
 				       size_t count, loff_t *pos)
 {
+<<<<<<< HEAD
 	ide_drive_t	*drive = (ide_drive_t *) PDE(file->f_path.dentry->d_inode)->data;
+=======
+	ide_drive_t	*drive = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	char		name[MAX_LEN + 1];
 	int		for_real = 0, mul_factor, div_factor;
 	unsigned long	n;
@@ -474,7 +498,11 @@ static int ide_geometry_proc_show(struct seq_file *m, void *v)
 
 static int ide_geometry_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ide_geometry_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ide_geometry_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 const struct file_operations ide_geometry_proc_fops = {
@@ -497,7 +525,11 @@ static int ide_dmodel_proc_show(struct seq_file *seq, void *v)
 
 static int ide_dmodel_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ide_dmodel_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ide_dmodel_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations ide_dmodel_proc_fops = {
@@ -525,7 +557,11 @@ static int ide_driver_proc_show(struct seq_file *m, void *v)
 
 static int ide_driver_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ide_driver_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ide_driver_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ide_replace_subdriver(ide_drive_t *drive, const char *driver)
@@ -558,7 +594,11 @@ static int ide_replace_subdriver(ide_drive_t *drive, const char *driver)
 static ssize_t ide_driver_proc_write(struct file *file, const char __user *buffer,
 				     size_t count, loff_t *pos)
 {
+<<<<<<< HEAD
 	ide_drive_t	*drive = (ide_drive_t *) PDE(file->f_path.dentry->d_inode)->data;
+=======
+	ide_drive_t	*drive = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	char name[32];
 
 	if (!capable(CAP_SYS_ADMIN))
@@ -601,7 +641,11 @@ static int ide_media_proc_show(struct seq_file *m, void *v)
 
 static int ide_media_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ide_media_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ide_media_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations ide_media_proc_fops = {

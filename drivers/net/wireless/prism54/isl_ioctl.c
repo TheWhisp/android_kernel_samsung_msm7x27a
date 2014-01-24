@@ -183,7 +183,11 @@ prism54_update_stats(struct work_struct *work)
 	data = r.ptr;
 
 	/* copy this MAC to the bss */
+<<<<<<< HEAD
 	memcpy(bss.address, data, 6);
+=======
+	memcpy(bss.address, data, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	kfree(data);
 
 	/* now ask for the corresponding bss */
@@ -531,7 +535,11 @@ prism54_set_wap(struct net_device *ndev, struct iw_request_info *info,
 		return -EINVAL;
 
 	/* prepare the structure for the set object */
+<<<<<<< HEAD
 	memcpy(&bssid[0], awrq->sa_data, 6);
+=======
+	memcpy(&bssid[0], awrq->sa_data, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	/* set the bssid -- does this make sense when in AP mode? */
 	rvalue = mgt_set_request(priv, DOT11_OID_BSSID, 0, &bssid);
@@ -550,7 +558,11 @@ prism54_get_wap(struct net_device *ndev, struct iw_request_info *info,
 	int rvalue;
 
 	rvalue = mgt_get_request(priv, DOT11_OID_BSSID, 0, NULL, &r);
+<<<<<<< HEAD
 	memcpy(awrq->sa_data, r.ptr, 6);
+=======
+	memcpy(awrq->sa_data, r.ptr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	awrq->sa_family = ARPHRD_ETHER;
 	kfree(r.ptr);
 
@@ -582,7 +594,11 @@ prism54_translate_bss(struct net_device *ndev, struct iw_request_info *info,
 	size_t wpa_ie_len;
 
 	/* The first entry must be the MAC address */
+<<<<<<< HEAD
 	memcpy(iwe.u.ap_addr.sa_data, bss->address, 6);
+=======
+	memcpy(iwe.u.ap_addr.sa_data, bss->address, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	iwe.u.ap_addr.sa_family = ARPHRD_ETHER;
 	iwe.cmd = SIOCGIWAP;
 	current_ev = iwe_stream_add_event(info, current_ev, end_buf,
@@ -778,7 +794,15 @@ prism54_get_essid(struct net_device *ndev, struct iw_request_info *info,
 		dwrq->flags = 0;
 		dwrq->length = 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	essid->octets[essid->length] = '\0';
+=======
+	essid->octets[dwrq->length] = '\0';
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	essid->octets[dwrq->length] = '\0';
+>>>>>>> refs/remotes/origin/master
 	memcpy(extra, essid->octets, dwrq->length);
 	kfree(essid);
 
@@ -1503,6 +1527,10 @@ static int prism54_get_auth(struct net_device *ndev,
 			case DOT11_AUTH_BOTH:
 			case DOT11_AUTH_SK:
 				param->value = IW_AUTH_ALG_SHARED_KEY;
+<<<<<<< HEAD
+=======
+				break;
+>>>>>>> refs/remotes/origin/master
 			case DOT11_AUTH_NONE:
 			default:
 				param->value = 0;
@@ -2488,11 +2516,17 @@ prism54_set_mac_address(struct net_device *ndev, void *addr)
 			      &((struct sockaddr *) addr)->sa_data);
 	if (!ret)
 		memcpy(priv->ndev->dev_addr,
+<<<<<<< HEAD
 		       &((struct sockaddr *) addr)->sa_data, 6);
+=======
+		       &((struct sockaddr *) addr)->sa_data, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Note: currently, use hostapd ioctl from the Host AP driver for WPA
  * support. This is to be replaced with Linux wireless extensions once they
  * get WPA support. */
@@ -2810,6 +2844,12 @@ prism54_hostapd(struct net_device *ndev, struct iw_point *p)
 
        return ret;
 }
+=======
+#define PRISM54_SET_WPA			SIOCIWFIRSTPRIV+12
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PRISM54_SET_WPA			SIOCIWFIRSTPRIV+12
+>>>>>>> refs/remotes/origin/master
 
 static int
 prism54_set_wpa(struct net_device *ndev, struct iw_request_info *info,
@@ -3223,6 +3263,8 @@ const struct iw_handler_def prism54_handler_def = {
 	.private_args = (struct iw_priv_args *) prism54_private_args,
 	.get_wireless_stats = prism54_get_wireless_stats,
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /* For wpa_supplicant */
 
@@ -3240,3 +3282,7 @@ prism54_ioctl(struct net_device *ndev, struct ifreq *rq, int cmd)
 	}
 	return -EOPNOTSUPP;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

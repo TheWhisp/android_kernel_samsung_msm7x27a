@@ -47,7 +47,15 @@ struct comp_id {
 	u16 id, variant, major, minor;
 } __packed;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline fwtype_t determine_firmware_type(struct comp_id *nic_id)
+=======
+static inline enum fwtype determine_firmware_type(struct comp_id *nic_id)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline enum fwtype determine_firmware_type(struct comp_id *nic_id)
+>>>>>>> refs/remotes/origin/master
 {
 	if (nic_id->id < 0x8000)
 		return FIRMWARE_TYPE_AGERE;
@@ -71,11 +79,25 @@ int determine_fw_capabilities(struct orinoco_private *priv,
 			      u32 *hw_ver)
 {
 	struct device *dev = priv->dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
 	int err;
 	struct comp_id nic_id, sta_id;
 	unsigned int firmver;
 	char tmp[SYMBOL_MAX_VER_LEN+1] __attribute__((aligned(2)));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct hermes *hw = &priv->hw;
+	int err;
+	struct comp_id nic_id, sta_id;
+	unsigned int firmver;
+	char tmp[SYMBOL_MAX_VER_LEN + 1] __attribute__((aligned(2)));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Get the hardware version */
 	err = HERMES_READ_RECORD(hw, USER_BAP, HERMES_RID_NICID, &nic_id);
@@ -280,7 +302,15 @@ int orinoco_hw_read_card_settings(struct orinoco_private *priv, u8 *dev_addr)
 {
 	struct device *dev = priv->dev;
 	struct hermes_idstring nickbuf;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int len;
 	int err;
 	u16 reclen;
@@ -458,7 +488,15 @@ int orinoco_hw_program_rids(struct orinoco_private *priv)
 {
 	struct net_device *dev = priv->ndev;
 	struct wireless_dev *wdev = netdev_priv(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err;
 	struct hermes_idstring idbuf;
 
@@ -529,7 +567,15 @@ int orinoco_hw_program_rids(struct orinoco_private *priv)
 	memcpy(&idbuf.val, priv->desired_essid, sizeof(idbuf.val));
 	/* WinXP wants partner to configure OWNSSID even in IBSS mode. (jimc) */
 	err = hw->ops->write_ltv(hw, USER_BAP, HERMES_RID_CNFOWNSSID,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			HERMES_BYTES_TO_RECLEN(strlen(priv->desired_essid)+2),
+=======
+			HERMES_BYTES_TO_RECLEN(strlen(priv->desired_essid) + 2),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			HERMES_BYTES_TO_RECLEN(strlen(priv->desired_essid) + 2),
+>>>>>>> refs/remotes/origin/master
 			&idbuf);
 	if (err) {
 		printk(KERN_ERR "%s: Error %d setting OWNSSID\n",
@@ -537,7 +583,15 @@ int orinoco_hw_program_rids(struct orinoco_private *priv)
 		return err;
 	}
 	err = hw->ops->write_ltv(hw, USER_BAP, HERMES_RID_CNFDESIREDSSID,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			HERMES_BYTES_TO_RECLEN(strlen(priv->desired_essid)+2),
+=======
+			HERMES_BYTES_TO_RECLEN(strlen(priv->desired_essid) + 2),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			HERMES_BYTES_TO_RECLEN(strlen(priv->desired_essid) + 2),
+>>>>>>> refs/remotes/origin/master
 			&idbuf);
 	if (err) {
 		printk(KERN_ERR "%s: Error %d setting DESIREDSSID\n",
@@ -549,7 +603,15 @@ int orinoco_hw_program_rids(struct orinoco_private *priv)
 	idbuf.len = cpu_to_le16(strlen(priv->nick));
 	memcpy(&idbuf.val, priv->nick, sizeof(idbuf.val));
 	err = hw->ops->write_ltv(hw, USER_BAP, HERMES_RID_CNFOWNNAME,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				 HERMES_BYTES_TO_RECLEN(strlen(priv->nick)+2),
+=======
+				 HERMES_BYTES_TO_RECLEN(strlen(priv->nick) + 2),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 HERMES_BYTES_TO_RECLEN(strlen(priv->nick) + 2),
+>>>>>>> refs/remotes/origin/master
 				 &idbuf);
 	if (err) {
 		printk(KERN_ERR "%s: Error %d setting nickname\n",
@@ -689,7 +751,15 @@ int orinoco_hw_program_rids(struct orinoco_private *priv)
 /* Get tsc from the firmware */
 int orinoco_hw_get_tkip_iv(struct orinoco_private *priv, int key, u8 *tsc)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	u8 tsc_arr[4][ORINOCO_SEQ_LEN];
 
@@ -706,7 +776,15 @@ int orinoco_hw_get_tkip_iv(struct orinoco_private *priv, int key, u8 *tsc)
 
 int __orinoco_hw_set_bitrate(struct orinoco_private *priv)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int ratemode = priv->bitratemode;
 	int err = 0;
 
@@ -737,7 +815,15 @@ int __orinoco_hw_set_bitrate(struct orinoco_private *priv)
 
 int orinoco_hw_get_act_bitrate(struct orinoco_private *priv, int *bitrate)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int err = 0;
 	u16 val;
@@ -786,7 +872,15 @@ int __orinoco_hw_set_wap(struct orinoco_private *priv)
 {
 	int roaming_flag;
 	int err = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 
 	switch (priv->firmware_type) {
 	case FIRMWARE_TYPE_AGERE:
@@ -818,7 +912,15 @@ int __orinoco_hw_set_wap(struct orinoco_private *priv)
  * which is needed for 802.1x implementations. */
 int __orinoco_hw_setup_wepkeys(struct orinoco_private *priv)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	int i;
 
@@ -902,7 +1004,15 @@ int __orinoco_hw_setup_wepkeys(struct orinoco_private *priv)
 
 int __orinoco_hw_setup_enc(struct orinoco_private *priv)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	int master_wep_flag;
 	int auth_flag;
@@ -999,7 +1109,15 @@ int __orinoco_hw_set_tkip_key(struct orinoco_private *priv, int key_idx,
 		u8 rx_mic[MIC_KEYLEN];
 		u8 tsc[ORINOCO_SEQ_LEN];
 	} __packed buf;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	int err;
 	int k;
@@ -1052,7 +1170,15 @@ int __orinoco_hw_set_tkip_key(struct orinoco_private *priv, int key_idx,
 
 int orinoco_clear_tkip_key(struct orinoco_private *priv, int key_idx)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	err = hermes_write_wordrec(hw, USER_BAP,
@@ -1068,7 +1194,15 @@ int __orinoco_hw_set_multicast_list(struct orinoco_private *priv,
 				    struct net_device *dev,
 				    int mc_count, int promisc)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	if (promisc != priv->promiscuous) {
@@ -1111,9 +1245,21 @@ int __orinoco_hw_set_multicast_list(struct orinoco_private *priv,
 
 /* Return : < 0 -> error code ; >= 0 -> length */
 int orinoco_hw_get_essid(struct orinoco_private *priv, int *active,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 char buf[IW_ESSID_MAX_SIZE+1])
 {
 	hermes_t *hw = &priv->hw;
+=======
+			 char buf[IW_ESSID_MAX_SIZE + 1])
+{
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 char buf[IW_ESSID_MAX_SIZE + 1])
+{
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	struct hermes_idstring essidbuf;
 	char *p = (char *)(&essidbuf.val);
@@ -1166,7 +1312,15 @@ int orinoco_hw_get_essid(struct orinoco_private *priv, int *active,
 
 int orinoco_hw_get_freq(struct orinoco_private *priv)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	u16 channel;
 	int freq = 0;
@@ -1206,7 +1360,15 @@ int orinoco_hw_get_freq(struct orinoco_private *priv)
 int orinoco_hw_get_bitratelist(struct orinoco_private *priv,
 			       int *numrates, s32 *rates, int max)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	struct hermes_idstring list;
 	unsigned char *p = (unsigned char *)&list.val;
 	int err = 0;
@@ -1238,7 +1400,15 @@ int orinoco_hw_trigger_scan(struct orinoco_private *priv,
 			    const struct cfg80211_ssid *ssid)
 {
 	struct net_device *dev = priv->ndev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int err = 0;
 
@@ -1323,7 +1493,15 @@ int orinoco_hw_trigger_scan(struct orinoco_private *priv,
 int orinoco_hw_disassociate(struct orinoco_private *priv,
 			    u8 *addr, u16 reason_code)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	struct {
@@ -1346,7 +1524,15 @@ int orinoco_hw_disassociate(struct orinoco_private *priv,
 int orinoco_hw_get_current_bssid(struct orinoco_private *priv,
 				 u8 *addr)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	err = hw->ops->read_ltv(hw, USER_BAP, HERMES_RID_CURRENTBSSID,

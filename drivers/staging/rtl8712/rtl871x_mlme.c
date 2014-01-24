@@ -28,6 +28,11 @@
 
 #define _RTL871X_MLME_C_
 
+<<<<<<< HEAD
+=======
+#include <linux/etherdevice.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "osdep_service.h"
 #include "drv_types.h"
 #include "recv_osdep.h"
@@ -52,6 +57,16 @@ static sint _init_mlme_priv(struct _adapter *padapter)
 	pmlmepriv->fw_state = 0;
 	pmlmepriv->cur_network.network.InfrastructureMode =
 				 Ndis802_11AutoUnknown;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* Maybe someday we should rename this variable to "active_mode"(Jeff)*/
+	pmlmepriv->passive_mode = 1; /* 1: active, 0: passive. */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Maybe someday we should rename this variable to "active_mode"(Jeff)*/
+	pmlmepriv->passive_mode = 1; /* 1: active, 0: passive. */
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&(pmlmepriv->lock));
 	spin_lock_init(&(pmlmepriv->lock2));
 	_init_queue(&(pmlmepriv->free_bss_pool));
@@ -135,7 +150,11 @@ static void _free_network_nolock(struct mlme_priv *pmlmepriv,
 
 /*
 	return the wlan_network with the matching addr
+<<<<<<< HEAD
 	Shall be calle under atomic context...
+=======
+	Shall be called under atomic context...
+>>>>>>> refs/remotes/origin/master
 	to avoid possible racing condition...
 */
 static struct wlan_network *_r8712_find_network(struct  __queue *scanned_queue,
@@ -144,9 +163,14 @@ static struct wlan_network *_r8712_find_network(struct  __queue *scanned_queue,
 	unsigned long irqL;
 	struct list_head *phead, *plist;
 	struct wlan_network *pnetwork = NULL;
+<<<<<<< HEAD
 	u8 zero_addr[ETH_ALEN] = {0, 0, 0, 0, 0, 0};
 
 	if (!memcmp(zero_addr, addr, ETH_ALEN))
+=======
+
+	if (is_zero_ether_addr(addr))
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	spin_lock_irqsave(&scanned_queue->lock, irqL);
 	phead = get_list_head(scanned_queue);
@@ -253,7 +277,11 @@ void r8712_free_network_queue(struct _adapter *dev)
 /*
 	return the wlan_network with the matching addr
 
+<<<<<<< HEAD
 	Shall be calle under atomic context...
+=======
+	Shall be called under atomic context...
+>>>>>>> refs/remotes/origin/master
 	to avoid possible racing condition...
 */
 static struct wlan_network *r8712_find_network(struct  __queue *scanned_queue,
@@ -485,6 +513,21 @@ static int is_desired_network(struct _adapter *adapter,
 	if ((psecuritypriv->PrivacyAlgrthm != _NO_PRIVACY_) &&
 		    (pnetwork->network.Privacy == 0))
 		bselected = false;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (check_fwstate(&adapter->mlmepriv, WIFI_ADHOC_STATE) == true) {
+		if (pnetwork->network.InfrastructureMode !=
+			adapter->mlmepriv.cur_network.network.
+			InfrastructureMode)
+			bselected = false;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return bselected;
 }
 
@@ -543,7 +586,15 @@ void r8712_survey_event_callback(struct _adapter *adapter, u8 *pbuf)
 			ibss_wlan = r8712_find_network(
 						&pmlmepriv->scanned_queue,
 						pnetwork->MacAddress);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (!ibss_wlan) {
+=======
+			if (ibss_wlan) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ibss_wlan) {
+>>>>>>> refs/remotes/origin/master
 				memcpy(ibss_wlan->network.IEs,
 					pnetwork->IEs, 8);
 				goto exit;
@@ -595,9 +646,12 @@ void r8712_surveydone_event_callback(struct _adapter *adapter, u8 *pbuf)
 						 adapter->registrypriv.
 							dev_network.MacAddress;
 					pmlmepriv->fw_state ^= _FW_UNDER_SURVEY;
+<<<<<<< HEAD
 					memset(&pdev_network->Ssid, 0,
 						sizeof(struct
 						       ndis_802_11_ssid));
+=======
+>>>>>>> refs/remotes/origin/master
 					memcpy(&pdev_network->Ssid,
 						&pmlmepriv->assoc_ssid,
 						sizeof(struct
@@ -683,9 +737,23 @@ void r8712_ind_disconnect(struct _adapter *padapter)
 {
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	_clr_fwstate_(pmlmepriv, _FW_LINKED);
 	padapter->ledpriv.LedControlHandler(padapter, LED_CTL_NO_LINK);
 	r8712_os_indicate_disconnect(padapter);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (check_fwstate(pmlmepriv, _FW_LINKED) == true) {
+		_clr_fwstate_(pmlmepriv, _FW_LINKED);
+		padapter->ledpriv.LedControlHandler(padapter, LED_CTL_NO_LINK);
+		r8712_os_indicate_disconnect(padapter);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (padapter->pwrctrlpriv.pwr_mode !=
 	    padapter->registrypriv.power_mgnt) {
 		_cancel_timer_ex(&pmlmepriv->dhcp_timer);
@@ -718,9 +786,21 @@ void r8712_joinbss_event_callback(struct _adapter *adapter, u8 *pbuf)
 
 	if (sizeof(struct list_head) == 4 * sizeof(u32)) {
 		pnetwork = (struct wlan_network *)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   _malloc(sizeof(struct wlan_network));
 		memcpy((u8 *)pnetwork+16, (u8 *)pbuf + 8,
 			 sizeof(struct wlan_network) - 16);
+=======
+			_malloc(sizeof(struct wlan_network));
+		memcpy((u8 *)pnetwork+16, (u8 *)pbuf + 8,
+			sizeof(struct wlan_network) - 16);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			_malloc(sizeof(struct wlan_network));
+		memcpy((u8 *)pnetwork+16, (u8 *)pbuf + 8,
+			sizeof(struct wlan_network) - 16);
+>>>>>>> refs/remotes/origin/master
 	} else
 		pnetwork = (struct wlan_network *)pbuf;
 
@@ -995,8 +1075,11 @@ void r8712_stadel_event_callback(struct _adapter *adapter, u8 *pbuf)
 			memcpy(pdev_network, &tgt_network->network,
 				r8712_get_ndis_wlan_bssid_ex_sz(&tgt_network->
 							network));
+<<<<<<< HEAD
 			memset(&pdev_network->Ssid, 0,
 				sizeof(struct ndis_802_11_ssid));
+=======
+>>>>>>> refs/remotes/origin/master
 			memcpy(&pdev_network->Ssid,
 				&pmlmepriv->assoc_ssid,
 				sizeof(struct ndis_802_11_ssid));
@@ -1027,7 +1110,11 @@ void r8712_cpwm_event_callback(struct _adapter *adapter, u8 *pbuf)
  *	 and the WiFi client will drop the data with seq number 0.
  *	So, the 8712 firmware has to inform driver with receiving the
  *	 ADDBA-Req frame so that the driver can reset the
+<<<<<<< HEAD
  *	sequence value of Rx reorder contorl.
+=======
+ *	sequence value of Rx reorder control.
+>>>>>>> refs/remotes/origin/master
  */
 void r8712_got_addbareq_event_callback(struct _adapter *adapter, u8 *pbuf)
 {
@@ -1037,9 +1124,12 @@ void r8712_got_addbareq_event_callback(struct _adapter *adapter, u8 *pbuf)
 	struct	sta_priv *pstapriv = &adapter->stapriv;
 	struct	recv_reorder_ctrl *precvreorder_ctrl = NULL;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "r8712u: [%s] mac = %pM, seq = %d, tid = %d\n",
 	     __func__, pAddbareq_pram->MacAddress,
 	    pAddbareq_pram->StartSeqNum, pAddbareq_pram->tid);
+=======
+>>>>>>> refs/remotes/origin/master
 	psta = r8712_get_stainfo(pstapriv, pAddbareq_pram->MacAddress);
 	if (psta) {
 		precvreorder_ctrl =
@@ -1271,12 +1361,32 @@ sint r8712_set_key(struct _adapter *adapter,
 			psecuritypriv->DefKey[keyid].skey, keylen);
 		break;
 	case _TKIP_:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (keyid < 1 || keyid > 2)
+			return _FAIL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (keyid < 1 || keyid > 2)
+			return _FAIL;
+>>>>>>> refs/remotes/origin/master
 		keylen = 16;
 		memcpy(psetkeyparm->key,
 			&psecuritypriv->XGrpKey[keyid - 1], keylen);
 		psetkeyparm->grpkey = 1;
 		break;
 	case _AES_:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (keyid < 1 || keyid > 2)
+			return _FAIL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (keyid < 1 || keyid > 2)
+			return _FAIL;
+>>>>>>> refs/remotes/origin/master
 		keylen = 16;
 		memcpy(psetkeyparm->key,
 			&psecuritypriv->XGrpKey[keyid - 1], keylen);
@@ -1631,7 +1741,11 @@ void r8712_update_registrypriv_dev_network(struct _adapter *adapter)
 	struct wlan_network	*cur_network = &adapter->mlmepriv.cur_network;
 
 	pdev_network->Privacy = cpu_to_le32(psecuritypriv->PrivacyAlgrthm
+<<<<<<< HEAD
 					    > 0 ? 1 : 0) ; /* adhoc no 802.1x */
+=======
+					    > 0 ? 1 : 0); /* adhoc no 802.1x */
+>>>>>>> refs/remotes/origin/master
 	pdev_network->Rssi = 0;
 	switch (pregistrypriv->wireless_mode) {
 	case WIRELESS_11B:
@@ -1657,7 +1771,15 @@ void r8712_update_registrypriv_dev_network(struct _adapter *adapter)
 	/* 1. Supported rates
 	 * 2. IE
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sz = r8712_generate_ie(pregistrypriv, adapter);
+=======
+	sz = r8712_generate_ie(pregistrypriv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sz = r8712_generate_ie(pregistrypriv);
+>>>>>>> refs/remotes/origin/master
 	pdev_network->IELength = sz;
 	pdev_network->Length = r8712_get_ndis_wlan_bssid_ex_sz(
 			      (struct ndis_wlan_bssid_ex *)pdev_network);
@@ -1761,7 +1883,11 @@ static void update_ht_cap(struct _adapter *padapter, u8 *pie, uint ie_len)
 		phtpriv->rx_ampdu_maxlen = max_ampdu_sz;
 	}
 	/* for A-MPDU Rx reordering buffer control for bmc_sta & sta_info
+<<<<<<< HEAD
 	 * if A-MPDU Rx is enabled, reseting rx_ordering_ctrl
+=======
+	 * if A-MPDU Rx is enabled, resetting rx_ordering_ctrl
+>>>>>>> refs/remotes/origin/master
 	 * wstart_b(indicate_seq) to default value=0xffff
 	 * todo: check if AP can send A-MPDU packets
 	 */
@@ -1776,7 +1902,11 @@ static void update_ht_cap(struct _adapter *padapter, u8 *pie, uint ie_len)
 	psta = r8712_get_stainfo(&padapter->stapriv,
 				 pcur_network->network.MacAddress);
 	if (psta) {
+<<<<<<< HEAD
 		for (i = 0; i < 16 ; i++) {
+=======
+		for (i = 0; i < 16; i++) {
+>>>>>>> refs/remotes/origin/master
 			preorder_ctrl = &psta->recvreorder_ctrl[i];
 			preorder_ctrl->indicate_seq = 0xffff;
 			preorder_ctrl->wend_b = 0xffff;
@@ -1802,6 +1932,8 @@ void r8712_issue_addbareq_cmd(struct _adapter *padapter, int priority)
 		}
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /*the function is >= passive_level*/
 unsigned int r8712_add_ht_addt_info(struct _adapter *padapter,
@@ -1838,3 +1970,7 @@ unsigned int r8712_add_ht_addt_info(struct _adapter *padapter,
 	}
 	return phtpriv->ht_option;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

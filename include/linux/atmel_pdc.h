@@ -33,4 +33,14 @@
 
 #define ATMEL_PDC_PTSR		0x124	/* Transfer Status Register */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define ATMEL_PDC_SCND_BUF_OFF	0x10	/* Offset between first and second buffer registers */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ATMEL_PDC_SCND_BUF_OFF	0x10	/* Offset between first and second buffer registers */
+
+>>>>>>> refs/remotes/origin/master
 #endif

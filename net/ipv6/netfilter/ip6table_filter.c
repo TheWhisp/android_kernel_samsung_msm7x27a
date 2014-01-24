@@ -32,19 +32,36 @@ static const struct xt_table packet_filter = {
 
 /* The work comes in here from netfilter.c. */
 static unsigned int
+<<<<<<< HEAD
 ip6table_filter_hook(unsigned int hook, struct sk_buff *skb,
+=======
+ip6table_filter_hook(const struct nf_hook_ops *ops, struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 		     const struct net_device *in, const struct net_device *out,
 		     int (*okfn)(struct sk_buff *))
 {
 	const struct net *net = dev_net((in != NULL) ? in : out);
 
+<<<<<<< HEAD
 	return ip6t_do_table(skb, hook, in, out, net->ipv6.ip6table_filter);
+=======
+	return ip6t_do_table(skb, ops->hooknum, in, out,
+			     net->ipv6.ip6table_filter);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct nf_hook_ops *filter_ops __read_mostly;
 
 /* Default to forward because I got too much mail already. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int forward = NF_ACCEPT;
+=======
+static bool forward = true;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool forward = true;
+>>>>>>> refs/remotes/origin/master
 module_param(forward, bool, 0000);
 
 static int __net_init ip6table_filter_net_init(struct net *net)
@@ -56,14 +73,26 @@ static int __net_init ip6table_filter_net_init(struct net *net)
 		return -ENOMEM;
 	/* Entry 1 is the FORWARD hook */
 	((struct ip6t_standard *)repl->entries)[1].target.verdict =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		-forward - 1;
+=======
+		forward ? -NF_ACCEPT - 1 : -NF_DROP - 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		forward ? -NF_ACCEPT - 1 : -NF_DROP - 1;
+>>>>>>> refs/remotes/origin/master
 
 	net->ipv6.ip6table_filter =
 		ip6t_register_table(net, &packet_filter, repl);
 	kfree(repl);
+<<<<<<< HEAD
 	if (IS_ERR(net->ipv6.ip6table_filter))
 		return PTR_ERR(net->ipv6.ip6table_filter);
 	return 0;
+=======
+	return PTR_ERR_OR_ZERO(net->ipv6.ip6table_filter);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __net_exit ip6table_filter_net_exit(struct net *net)
@@ -80,11 +109,17 @@ static int __init ip6table_filter_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (forward < 0 || forward > NF_MAX_VERDICT) {
 		pr_err("iptables forward must be 0 or 1\n");
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = register_pernet_subsys(&ip6table_filter_net_ops);
 	if (ret < 0)
 		return ret;

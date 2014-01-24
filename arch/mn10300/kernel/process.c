@@ -25,9 +25,25 @@
 #include <linux/err.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/system.h>
+=======
+#include <linux/rcupdate.h>
+#include <asm/uaccess.h>
+#include <asm/pgtable.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rcupdate.h>
+#include <asm/uaccess.h>
+#include <asm/pgtable.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/processor.h>
 #include <asm/mmu_context.h>
@@ -37,12 +53,15 @@
 #include "internal.h"
 
 /*
+<<<<<<< HEAD
  * power management idle function, if any..
  */
 void (*pm_idle)(void);
 EXPORT_SYMBOL(pm_idle);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * return saved PC of a blocked thread.
  */
 unsigned long thread_saved_pc(struct task_struct *tsk)
@@ -56,6 +75,7 @@ unsigned long thread_saved_pc(struct task_struct *tsk)
 void (*pm_power_off)(void);
 EXPORT_SYMBOL(pm_power_off);
 
+<<<<<<< HEAD
 #if !defined(CONFIG_SMP) || defined(CONFIG_HOTPLUG_CPU)
 /*
  * we use this if we don't have any better idle routine
@@ -70,10 +90,13 @@ static void default_idle(void)
 }
 
 #else /* !CONFIG_SMP || CONFIG_HOTPLUG_CPU  */
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * On SMP it's slightly faster (but much more power-consuming!)
  * to poll the ->work.need_resched flag instead of waiting for the
  * cross-CPU IPI to arrive. Use this option with caution.
+<<<<<<< HEAD
  */
 static inline void poll_idle(void)
 {
@@ -108,6 +131,14 @@ void cpu_idle(void)
 {
 	/* endless idle loop with no priority at all */
 	for (;;) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-11.0
 		while (!need_resched()) {
 			void (*idle)(void);
 
@@ -122,12 +153,32 @@ void cpu_idle(void)
 			}
 			idle();
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		rcu_idle_exit();
+
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
+=======
+ *
+ * tglx: No idea why this depends on HOTPLUG_CPU !?!
+ */
+#if !defined(CONFIG_SMP) || defined(CONFIG_HOTPLUG_CPU)
+void arch_cpu_idle(void)
+{
+	safe_halt();
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 void release_segments(struct mm_struct *mm)
 {
@@ -162,6 +213,7 @@ void machine_power_off(void)
 
 void show_regs(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 }
 
 /*
@@ -186,6 +238,12 @@ int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 EXPORT_SYMBOL(kernel_thread);
 
 /*
+=======
+	show_regs_print_info(KERN_DEFAULT);
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * free current thread data structures etc..
  */
 void exit_thread(void)
@@ -211,12 +269,23 @@ void copy_segments(struct task_struct *p, struct mm_struct *new_mm)
 }
 
 /*
+<<<<<<< HEAD
  * this gets called before we allocate a new thread and copy the current task
  * into it so that we can store lazy state into memory
  */
 void prepare_to_copy(struct task_struct *tsk)
 {
 	unlazy_fpu(tsk);
+=======
+ * this gets called so that we can store lazy state into memory and copy the
+ * current task into the new thread.
+ */
+int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
+{
+	unlazy_fpu(src);
+	*dst = *src;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -225,6 +294,7 @@ void prepare_to_copy(struct task_struct *tsk)
  */
 int copy_thread(unsigned long clone_flags,
 		unsigned long c_usp, unsigned long ustk_size,
+<<<<<<< HEAD
 		struct task_struct *p, struct pt_regs *kregs)
 {
 	struct thread_info *ti = task_thread_info(p);
@@ -233,10 +303,19 @@ int copy_thread(unsigned long clone_flags,
 
 	uregs = current->thread.uregs;
 
+=======
+		struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	struct pt_regs *c_regs;
+	unsigned long c_ksp;
+
+>>>>>>> refs/remotes/origin/master
 	c_ksp = (unsigned long) task_stack_page(p) + THREAD_SIZE;
 
 	/* allocate the userspace exception frame and set it up */
 	c_ksp -= sizeof(struct pt_regs);
+<<<<<<< HEAD
 	c_uregs = (struct pt_regs *) c_ksp;
 
 	p->thread.uregs = c_uregs;
@@ -314,6 +393,40 @@ asmlinkage long sys_execve(const char __user *name,
 	error = do_execve(filename, argv, envp, current_frame());
 	putname(filename);
 	return error;
+=======
+	c_regs = (struct pt_regs *) c_ksp;
+	c_ksp -= 12; /* allocate function call ABI slack */
+
+	/* set up things up so the scheduler can start the new task */
+	p->thread.uregs = c_regs;
+	ti->frame	= c_regs;
+	p->thread.a3	= (unsigned long) c_regs;
+	p->thread.sp	= c_ksp;
+	p->thread.wchan	= p->thread.pc;
+	p->thread.usp	= c_usp;
+
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(c_regs, 0, sizeof(struct pt_regs));
+		c_regs->a0 = c_usp; /* function */
+		c_regs->d0 = ustk_size; /* argument */
+		local_save_flags(c_regs->epsw);
+		c_regs->epsw |= EPSW_IE | EPSW_IM_7;
+		p->thread.pc	= (unsigned long) ret_from_kernel_thread;
+		return 0;
+	}
+	*c_regs = *current_pt_regs();
+	if (c_usp)
+		c_regs->sp = c_usp;
+	c_regs->epsw &= ~EPSW_FE; /* my FPU */
+
+	/* the new TLS pointer is passed in as arg #5 to sys_clone() */
+	if (clone_flags & CLONE_SETTLS)
+		c_regs->e2 = current_frame()->d3;
+
+	p->thread.pc	= (unsigned long) ret_from_fork;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned long get_wchan(struct task_struct *p)

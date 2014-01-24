@@ -5,7 +5,14 @@
  * After timer expires a kevent will be sent.
  *
  * Copyright (C) 2004, 2010 Nokia Corporation
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-11.0
  * Written by Timo Teras <ext-timo.teras@nokia.com>
  *
  * Converted to x_tables and reworked for upstream inclusion
@@ -39,10 +46,22 @@
 #include <linux/netfilter/xt_IDLETIMER.h>
 #include <linux/kdev_t.h>
 #include <linux/kobject.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/skbuff.h>
 #include <linux/workqueue.h>
 #include <linux/sysfs.h>
 #include <net/net_namespace.h>
+=======
+#include <linux/workqueue.h>
+#include <linux/sysfs.h>
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/skbuff.h>
+#include <linux/workqueue.h>
+#include <linux/sysfs.h>
+#include <net/net_namespace.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct idletimer_tg_attr {
 	struct attribute attr;
@@ -59,8 +78,16 @@ struct idletimer_tg {
 	struct idletimer_tg_attr attr;
 
 	unsigned int refcnt;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bool send_nl_msg;
 	bool active;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	bool send_nl_msg;
+	bool active;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static LIST_HEAD(idletimer_tg_list);
@@ -68,6 +95,9 @@ static DEFINE_MUTEX(list_mutex);
 
 static struct kobject *idletimer_tg_kobj;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void notify_netlink_uevent(const char *label, struct idletimer_tg *timer)
 {
 	char label_msg[NLMSG_MAX_SIZE];
@@ -77,6 +107,22 @@ static void notify_netlink_uevent(const char *label, struct idletimer_tg *timer)
 
 	res = snprintf(label_msg, NLMSG_MAX_SIZE, "LABEL=%s",
 		       label);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void notify_netlink_uevent(const char *iface, struct idletimer_tg *timer)
+{
+	char iface_msg[NLMSG_MAX_SIZE];
+	char state_msg[NLMSG_MAX_SIZE];
+	char *envp[] = { iface_msg, state_msg, NULL };
+	int res;
+
+	res = snprintf(iface_msg, NLMSG_MAX_SIZE, "INTERFACE=%s",
+		       iface);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (NLMSG_MAX_SIZE <= res) {
 		pr_err("message too long (%d)", res);
 		return;
@@ -87,13 +133,26 @@ static void notify_netlink_uevent(const char *label, struct idletimer_tg *timer)
 		pr_err("message too long (%d)", res);
 		return;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("putting nlmsg: <%s> <%s>\n", label_msg, state_msg);
+=======
+	pr_debug("putting nlmsg: <%s> <%s>\n", iface_msg, state_msg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("putting nlmsg: <%s> <%s>\n", iface_msg, state_msg);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kobject_uevent_env(idletimer_tg_kobj, KOBJ_CHANGE, envp);
 	return;
 
 
 }
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static
 struct idletimer_tg *__idletimer_tg_find_by_label(const char *label)
 {
@@ -114,7 +173,14 @@ static ssize_t idletimer_tg_show(struct kobject *kobj, struct attribute *attr,
 {
 	struct idletimer_tg *timer;
 	unsigned long expires = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long now = jiffies;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	unsigned long now = jiffies;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&list_mutex);
 
@@ -124,6 +190,8 @@ static ssize_t idletimer_tg_show(struct kobject *kobj, struct attribute *attr,
 
 	mutex_unlock(&list_mutex);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (time_after(expires, now))
 		return sprintf(buf, "%u\n",
 			       jiffies_to_msecs(expires - now) / 1000);
@@ -133,6 +201,24 @@ static ssize_t idletimer_tg_show(struct kobject *kobj, struct attribute *attr,
 			jiffies_to_msecs(now - expires) / 1000);
 	else
 		return sprintf(buf, "0\n");
+=======
+	if (time_after(expires, jiffies))
+=======
+	if (time_after(expires, now))
+>>>>>>> refs/remotes/origin/cm-11.0
+		return sprintf(buf, "%u\n",
+			       jiffies_to_msecs(expires - now) / 1000);
+
+<<<<<<< HEAD
+	return sprintf(buf, "0\n");
+>>>>>>> refs/remotes/origin/master
+=======
+	if (timer->send_nl_msg)
+		return sprintf(buf, "0 %d\n",
+			jiffies_to_msecs(now - expires) / 1000);
+	else
+		return sprintf(buf, "0\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void idletimer_tg_work(struct work_struct *work)
@@ -141,9 +227,18 @@ static void idletimer_tg_work(struct work_struct *work)
 						  work);
 
 	sysfs_notify(idletimer_tg_kobj, NULL, timer->attr.attr.name);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (timer->send_nl_msg)
 		notify_netlink_uevent(timer->attr.attr.name, timer);
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+
+	if (timer->send_nl_msg)
+		notify_netlink_uevent(timer->attr.attr.name, timer);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void idletimer_tg_expired(unsigned long data)
@@ -152,7 +247,14 @@ static void idletimer_tg_expired(unsigned long data)
 
 	pr_debug("timer %s expired\n", timer->attr.attr.name);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	timer->active = false;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	timer->active = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 	schedule_work(&timer->work);
 }
 
@@ -162,14 +264,26 @@ static int idletimer_tg_create(struct idletimer_tg_info *info)
 
 	info->timer = kmalloc(sizeof(*info->timer), GFP_KERNEL);
 	if (!info->timer) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("couldn't alloc timer\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto out;
 	}
 
 	info->timer->attr.attr.name = kstrdup(info->label, GFP_KERNEL);
 	if (!info->timer->attr.attr.name) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("couldn't alloc attribute name\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto out_free_timer;
 	}
@@ -187,8 +301,16 @@ static int idletimer_tg_create(struct idletimer_tg_info *info)
 	setup_timer(&info->timer->timer, idletimer_tg_expired,
 		    (unsigned long) info->timer);
 	info->timer->refcnt = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info->timer->send_nl_msg = (info->send_nl_msg == 0) ? false : true;
 	info->timer->active = true;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	info->timer->send_nl_msg = (info->send_nl_msg == 0) ? false : true;
+	info->timer->active = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mod_timer(&info->timer->timer,
 		  msecs_to_jiffies(info->timeout * 1000) + jiffies);
@@ -212,13 +334,24 @@ static unsigned int idletimer_tg_target(struct sk_buff *skb,
 					 const struct xt_action_param *par)
 {
 	const struct idletimer_tg_info *info = par->targinfo;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long now = jiffies;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	unsigned long now = jiffies;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	pr_debug("resetting timer %s, timeout period %u\n",
 		 info->label, info->timeout);
 
 	BUG_ON(!info->timer);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	info->timer->active = true;
 
 	if (time_before(info->timer->timer.expires, now)) {
@@ -228,8 +361,17 @@ static unsigned int idletimer_tg_target(struct sk_buff *skb,
 	}
 
 	/* TODO: Avoid modifying timers on each packet */
+<<<<<<< HEAD
 	mod_timer(&info->timer->timer,
 		  msecs_to_jiffies(info->timeout * 1000) + now);
+=======
+	mod_timer(&info->timer->timer,
+		  msecs_to_jiffies(info->timeout * 1000) + jiffies);
+>>>>>>> refs/remotes/origin/master
+=======
+	mod_timer(&info->timer->timer,
+		  msecs_to_jiffies(info->timeout * 1000) + now);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return XT_CONTINUE;
 }
@@ -238,9 +380,20 @@ static int idletimer_tg_checkentry(const struct xt_tgchk_param *par)
 {
 	struct idletimer_tg_info *info = par->targinfo;
 	int ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long now = jiffies;
 
 	pr_debug("checkentry targinfo %s\n", info->label);
+=======
+
+	pr_debug("checkentry targinfo%s\n", info->label);
+>>>>>>> refs/remotes/origin/master
+=======
+	unsigned long now = jiffies;
+
+	pr_debug("checkentry targinfo %s\n", info->label);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (info->timeout == 0) {
 		pr_debug("timeout value is zero\n");
@@ -259,17 +412,38 @@ static int idletimer_tg_checkentry(const struct xt_tgchk_param *par)
 	info->timer = __idletimer_tg_find_by_label(info->label);
 	if (info->timer) {
 		info->timer->refcnt++;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		info->timer->active = true;
 
 		if (time_before(info->timer->timer.expires, now)) {
 			schedule_work(&info->timer->work);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pr_debug("Starting Checkentry timer"
 				"(Expired, Jiffies): %lu, %lu\n",
+=======
+			pr_debug("Starting Checkentry timer (Expired, Jiffies): %lu, %lu\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				info->timer->timer.expires, now);
 		}
 
 		mod_timer(&info->timer->timer,
 			  msecs_to_jiffies(info->timeout * 1000) + now);
+=======
+		mod_timer(&info->timer->timer,
+			  msecs_to_jiffies(info->timeout * 1000) + jiffies);
+>>>>>>> refs/remotes/origin/master
+=======
+			pr_debug("Starting Checkentry timer (Expired, Jiffies): %lu, %lu\n",
+				info->timer->timer.expires, now);
+		}
+
+		mod_timer(&info->timer->timer,
+			  msecs_to_jiffies(info->timeout * 1000) + now);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		pr_debug("increased refcnt of timer %s to %u\n",
 			 info->label, info->timer->refcnt);
@@ -283,7 +457,14 @@ static int idletimer_tg_checkentry(const struct xt_tgchk_param *par)
 	}
 
 	mutex_unlock(&list_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -305,7 +486,15 @@ static void idletimer_tg_destroy(const struct xt_tgdtor_param *par)
 		kfree(info->timer);
 	} else {
 		pr_debug("decreased refcnt of timer %s to %u\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		info->label, info->timer->refcnt);
+=======
+			 info->label, info->timer->refcnt);
+>>>>>>> refs/remotes/origin/master
+=======
+		info->label, info->timer->refcnt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	mutex_unlock(&list_mutex);
@@ -313,7 +502,14 @@ static void idletimer_tg_destroy(const struct xt_tgdtor_param *par)
 
 static struct xt_target idletimer_tg __read_mostly = {
 	.name		= "IDLETIMER",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.revision	= 1,
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	.revision	= 1,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.family		= NFPROTO_UNSPEC,
 	.target		= idletimer_tg_target,
 	.targetsize     = sizeof(struct idletimer_tg_info),
@@ -379,4 +575,11 @@ MODULE_DESCRIPTION("Xtables: idle time monitor");
 MODULE_LICENSE("GPL v2");
 MODULE_ALIAS("ipt_IDLETIMER");
 MODULE_ALIAS("ip6t_IDLETIMER");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("arpt_IDLETIMER");
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+MODULE_ALIAS("arpt_IDLETIMER");
+>>>>>>> refs/remotes/origin/cm-11.0

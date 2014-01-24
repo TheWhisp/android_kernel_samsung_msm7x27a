@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * arch/arm/plat-omap/include/mach/sram.h
  *
@@ -13,6 +14,13 @@
 
 #ifndef __ASSEMBLY__
 #include <asm/fncpy.h>
+=======
+int omap_sram_init(void);
+
+void omap_map_sram(unsigned long start, unsigned long size,
+			unsigned long skip, int cached);
+void omap_sram_reset(void);
+>>>>>>> refs/remotes/origin/master
 
 extern void *omap_sram_push_address(unsigned long size);
 
@@ -24,6 +32,7 @@ extern void *omap_sram_push_address(unsigned long size);
 		_res = fncpy(_sram_address, &(funcp), size);	\
 	_res;							\
 })
+<<<<<<< HEAD
 
 extern void omap_sram_reprogram_clock(u32 dpllctl, u32 ckctl);
 
@@ -95,6 +104,18 @@ static inline void omap_push_sram_idle(void) {}
  */
 #define OMAP2_SRAM_PA		0x40200000
 #define OMAP3_SRAM_PA           0x40200000
+<<<<<<< HEAD
 #define OMAP4_SRAM_PA		0x40300000
 
+=======
+#ifdef CONFIG_OMAP4_ERRATA_I688
+#define OMAP4_SRAM_PA		0x40304000
+#define OMAP4_SRAM_VA		0xfe404000
+#else
+#define OMAP4_SRAM_PA		0x40300000
 #endif
+#define AM33XX_SRAM_PA		0x40300000
+>>>>>>> refs/remotes/origin/cm-10.0
+#endif
+=======
+>>>>>>> refs/remotes/origin/master

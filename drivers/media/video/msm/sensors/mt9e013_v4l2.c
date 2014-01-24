@@ -472,6 +472,14 @@ static struct msm_sensor_fn_t mt9e013_func_tbl = {
 	.sensor_config = msm_sensor_config,
 	.sensor_power_up = msm_sensor_power_up,
 	.sensor_power_down = msm_sensor_power_down,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.sensor_get_csi_params = msm_sensor_get_csi_params,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sensor_get_csi_params = msm_sensor_get_csi_params,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_sensor_reg_t mt9e013_regs = {

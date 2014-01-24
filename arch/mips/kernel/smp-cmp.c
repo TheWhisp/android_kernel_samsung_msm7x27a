@@ -25,11 +25,24 @@
 #include <linux/interrupt.h>
 #include <linux/compiler.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/cacheflush.h>
 #include <asm/cpu.h>
 #include <asm/processor.h>
 #include <asm/system.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/atomic.h>
+#include <asm/cacheflush.h>
+#include <asm/cpu.h>
+#include <asm/processor.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/hardirq.h>
 #include <asm/mmu_context.h>
 #include <asm/smp.h>
@@ -98,12 +111,23 @@ static void cmp_init_secondary(void)
 
 	/* Enable per-cpu interrupts: platform specific */
 
+<<<<<<< HEAD
 	c->core = (read_c0_ebase() >> 1) & 0xff;
 #if defined(CONFIG_MIPS_MT_SMP) || defined(CONFIG_MIPS_MT_SMTC)
 	c->vpe_id = (read_c0_tcbind() >> TCBIND_CURVPE_SHIFT) & TCBIND_CURVPE;
 #endif
 #ifdef CONFIG_MIPS_MT_SMTC
 	c->tc_id  = (read_c0_tcbind() >> TCBIND_CURTC_SHIFT) & TCBIND_CURTC;
+=======
+	c->core = (read_c0_ebase() >> 1) & 0x1ff;
+#if defined(CONFIG_MIPS_MT_SMP) || defined(CONFIG_MIPS_MT_SMTC)
+	if (cpu_has_mipsmt)
+		c->vpe_id = (read_c0_tcbind() >> TCBIND_CURVPE_SHIFT) &
+			TCBIND_CURVPE;
+#endif
+#ifdef CONFIG_MIPS_MT_SMTC
+	c->tc_id  = (read_c0_tcbind() & TCBIND_CURTC) >> TCBIND_CURTC_SHIFT;
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -173,14 +197,31 @@ void __init cmp_smp_setup(void)
 		if (amon_cpu_avail(i)) {
 			set_cpu_possible(i, true);
 			__cpu_number_map[i]	= ++ncpu;
+<<<<<<< HEAD
 			__cpu_logical_map[ncpu]	= i;
+=======
+			__cpu_logical_map[ncpu] = i;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (cpu_has_mipsmt) {
+<<<<<<< HEAD
 		unsigned int nvpe, mvpconf0 = read_c0_mvpconf0();
 
 		nvpe = ((mvpconf0 & MVPCONF0_PTC) >> MVPCONF0_PTC_SHIFT) + 1;
+=======
+		unsigned int nvpe = 1;
+#ifdef CONFIG_MIPS_MT_SMP
+		unsigned int mvpconf0 = read_c0_mvpconf0();
+
+		nvpe = ((mvpconf0 & MVPCONF0_PVPE) >> MVPCONF0_PVPE_SHIFT) + 1;
+#elif defined(CONFIG_MIPS_MT_SMTC)
+		unsigned int mvpconf0 = read_c0_mvpconf0();
+
+		nvpe = ((mvpconf0 & MVPCONF0_PTC) >> MVPCONF0_PTC_SHIFT) + 1;
+#endif
+>>>>>>> refs/remotes/origin/master
 		smp_num_siblings = nvpe;
 	}
 	pr_info("Detected %i available secondary CPU(s)\n", ncpu);

@@ -11,24 +11,43 @@
 
 #include <sound/core.h>
 #include <sound/initval.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "driver.h"
 #include "audio.h"
 
+<<<<<<< HEAD
 static int line6_index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *line6_id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
 	Initialize the Line6 USB audio system.
 */
 int line6_init_audio(struct usb_line6 *line6)
 {
+<<<<<<< HEAD
 	static int dev;
 	struct snd_card *card;
 	int err;
 
 	err = snd_card_create(line6_index[dev], line6_id[dev], THIS_MODULE, 0,
 			      &card);
+=======
+	struct snd_card *card;
+	int err;
+
+	err = snd_card_create(SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
+			      THIS_MODULE, 0, &card);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 

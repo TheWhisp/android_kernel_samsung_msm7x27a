@@ -18,6 +18,11 @@
  * Authors: Hollis Blanchard <hollisb@us.ibm.com>
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/slab.h>
 #include <asm/page.h>

@@ -5,7 +5,15 @@
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
  *              by Kai Germaschewski <kai.germaschewski@gmx.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -18,7 +26,15 @@
 
 struct FsmInst;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 typedef void (* FSMFNPTR)(struct FsmInst *, int, void *);
+=======
+typedef void (*FSMFNPTR)(struct FsmInst *, int, void *);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+typedef void (*FSMFNPTR)(struct FsmInst *, int, void *);
+>>>>>>> refs/remotes/origin/master
 
 struct Fsm {
 	FSMFNPTR *jumpmatrix;

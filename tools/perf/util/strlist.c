@@ -5,21 +5,39 @@
  */
 
 #include "strlist.h"
+<<<<<<< HEAD
+=======
+#include "util.h"
+>>>>>>> refs/remotes/origin/master
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+<<<<<<< HEAD
 static struct str_node *str_node__new(const char *s, bool dupstr)
 {
 	struct str_node *self = malloc(sizeof(*self));
 
 	if (self != NULL) {
 		if (dupstr) {
+=======
+static
+struct rb_node *strlist__node_new(struct rblist *rblist, const void *entry)
+{
+	const char *s = entry;
+	struct rb_node *rc = NULL;
+	struct strlist *strlist = container_of(rblist, struct strlist, rblist);
+	struct str_node *snode = malloc(sizeof(*snode));
+
+	if (snode != NULL) {
+		if (strlist->dupstr) {
+>>>>>>> refs/remotes/origin/master
 			s = strdup(s);
 			if (s == NULL)
 				goto out_delete;
 		}
+<<<<<<< HEAD
 		self->s = s;
 	}
 
@@ -70,6 +88,49 @@ int strlist__add(struct strlist *self, const char *new_entry)
 }
 
 int strlist__load(struct strlist *self, const char *filename)
+=======
+		snode->s = s;
+		rc = &snode->rb_node;
+	}
+
+	return rc;
+
+out_delete:
+	free(snode);
+	return NULL;
+}
+
+static void str_node__delete(struct str_node *snode, bool dupstr)
+{
+	if (dupstr)
+		zfree((char **)&snode->s);
+	free(snode);
+}
+
+static
+void strlist__node_delete(struct rblist *rblist, struct rb_node *rb_node)
+{
+	struct strlist *slist = container_of(rblist, struct strlist, rblist);
+	struct str_node *snode = container_of(rb_node, struct str_node, rb_node);
+
+	str_node__delete(snode, slist->dupstr);
+}
+
+static int strlist__node_cmp(struct rb_node *rb_node, const void *entry)
+{
+	const char *str = entry;
+	struct str_node *snode = container_of(rb_node, struct str_node, rb_node);
+
+	return strcmp(snode->s, str);
+}
+
+int strlist__add(struct strlist *slist, const char *new_entry)
+{
+	return rblist__add_node(&slist->rblist, new_entry);
+}
+
+int strlist__load(struct strlist *slist, const char *filename)
+>>>>>>> refs/remotes/origin/master
 {
 	char entry[1024];
 	int err;
@@ -85,7 +146,11 @@ int strlist__load(struct strlist *self, const char *filename)
 			continue;
 		entry[len - 1] = '\0';
 
+<<<<<<< HEAD
 		err = strlist__add(self, entry);
+=======
+		err = strlist__add(slist, entry);
+>>>>>>> refs/remotes/origin/master
 		if (err != 0)
 			goto out;
 	}
@@ -96,6 +161,7 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 void strlist__remove(struct strlist *self, struct str_node *sn)
 {
 	rb_erase(&sn->rb_node, &self->entries);
@@ -135,19 +201,51 @@ static int strlist__parse_list_entry(struct strlist *self, const char *s)
 }
 
 int strlist__parse_list(struct strlist *self, const char *s)
+=======
+void strlist__remove(struct strlist *slist, struct str_node *snode)
+{
+	rblist__remove_node(&slist->rblist, &snode->rb_node);
+}
+
+struct str_node *strlist__find(struct strlist *slist, const char *entry)
+{
+	struct str_node *snode = NULL;
+	struct rb_node *rb_node = rblist__find(&slist->rblist, entry);
+
+	if (rb_node)
+		snode = container_of(rb_node, struct str_node, rb_node);
+
+	return snode;
+}
+
+static int strlist__parse_list_entry(struct strlist *slist, const char *s)
+{
+	if (strncmp(s, "file://", 7) == 0)
+		return strlist__load(slist, s + 7);
+
+	return strlist__add(slist, s);
+}
+
+int strlist__parse_list(struct strlist *slist, const char *s)
+>>>>>>> refs/remotes/origin/master
 {
 	char *sep;
 	int err;
 
 	while ((sep = strchr(s, ',')) != NULL) {
 		*sep = '\0';
+<<<<<<< HEAD
 		err = strlist__parse_list_entry(self, s);
+=======
+		err = strlist__parse_list_entry(slist, s);
+>>>>>>> refs/remotes/origin/master
 		*sep = ',';
 		if (err != 0)
 			return err;
 		s = sep + 1;
 	}
 
+<<<<<<< HEAD
 	return *s ? strlist__parse_list_entry(self, s) : 0;
 }
 
@@ -197,4 +295,46 @@ struct str_node *strlist__entry(const struct strlist *self, unsigned int idx)
 	}
 
 	return NULL;
+=======
+	return *s ? strlist__parse_list_entry(slist, s) : 0;
+}
+
+struct strlist *strlist__new(bool dupstr, const char *list)
+{
+	struct strlist *slist = malloc(sizeof(*slist));
+
+	if (slist != NULL) {
+		rblist__init(&slist->rblist);
+		slist->rblist.node_cmp    = strlist__node_cmp;
+		slist->rblist.node_new    = strlist__node_new;
+		slist->rblist.node_delete = strlist__node_delete;
+
+		slist->dupstr	 = dupstr;
+		if (list && strlist__parse_list(slist, list) != 0)
+			goto out_error;
+	}
+
+	return slist;
+out_error:
+	free(slist);
+	return NULL;
+}
+
+void strlist__delete(struct strlist *slist)
+{
+	if (slist != NULL)
+		rblist__delete(&slist->rblist);
+}
+
+struct str_node *strlist__entry(const struct strlist *slist, unsigned int idx)
+{
+	struct str_node *snode = NULL;
+	struct rb_node *rb_node;
+
+	rb_node = rblist__entry(&slist->rblist, idx);
+	if (rb_node)
+		snode = container_of(rb_node, struct str_node, rb_node);
+
+	return snode;
+>>>>>>> refs/remotes/origin/master
 }

@@ -17,6 +17,14 @@
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/fs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/preempt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/preempt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/smp.h>
 #include <linux/notifier.h>
 #include <linux/kdebug.h>
@@ -77,7 +85,9 @@ static void raise_exception(struct mce *m, struct pt_regs *pregs)
 }
 
 static cpumask_var_t mce_inject_cpumask;
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 static int mce_raise_notify(struct notifier_block *self,
 			    unsigned long val, void *data)
 {
@@ -98,6 +108,40 @@ static struct notifier_block mce_raise_nb = {
 	.notifier_call = mce_raise_notify,
 	.priority = NMI_LOCAL_NORMAL_PRIOR,
 };
+=======
+=======
+static DEFINE_MUTEX(mce_inject_mutex);
+
+>>>>>>> refs/remotes/origin/master
+static int mce_raise_notify(unsigned int cmd, struct pt_regs *regs)
+{
+	int cpu = smp_processor_id();
+	struct mce *m = &__get_cpu_var(injectm);
+	if (!cpumask_test_cpu(cpu, mce_inject_cpumask))
+		return NMI_DONE;
+	cpumask_clear_cpu(cpu, mce_inject_cpumask);
+	if (m->inject_flags & MCJ_EXCEPTION)
+		raise_exception(m, regs);
+	else if (m->status)
+		raise_poll(m);
+	return NMI_HANDLED;
+}
+
+static void mce_irq_ipi(void *info)
+{
+	int cpu = smp_processor_id();
+	struct mce *m = &__get_cpu_var(injectm);
+
+	if (cpumask_test_cpu(cpu, mce_inject_cpumask) &&
+			m->inject_flags & MCJ_EXCEPTION) {
+		cpumask_clear_cpu(cpu, mce_inject_cpumask);
+		raise_exception(m, NULL);
+	}
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Inject mce on current CPU */
 static int raise_local(void)
@@ -146,9 +190,23 @@ static void raise_mce(struct mce *m)
 		return;
 
 #ifdef CONFIG_X86_LOCAL_APIC
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (m->inject_flags & MCJ_NMI_BROADCAST) {
 		unsigned long start;
 		int cpu;
+=======
+	if (m->inject_flags & (MCJ_IRQ_BRAODCAST | MCJ_NMI_BROADCAST)) {
+		unsigned long start;
+		int cpu;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (m->inject_flags & (MCJ_IRQ_BROADCAST | MCJ_NMI_BROADCAST)) {
+		unsigned long start;
+		int cpu;
+
+>>>>>>> refs/remotes/origin/master
 		get_online_cpus();
 		cpumask_copy(mce_inject_cpumask, cpu_online_mask);
 		cpumask_clear_cpu(get_cpu(), mce_inject_cpumask);
@@ -158,13 +216,46 @@ static void raise_mce(struct mce *m)
 			    MCJ_CTX(mcpu->inject_flags) != MCJ_CTX_RANDOM)
 				cpumask_clear_cpu(cpu, mce_inject_cpumask);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!cpumask_empty(mce_inject_cpumask))
 			apic->send_IPI_mask(mce_inject_cpumask, NMI_VECTOR);
+=======
+		if (!cpumask_empty(mce_inject_cpumask)) {
+			if (m->inject_flags & MCJ_IRQ_BRAODCAST) {
+=======
+		if (!cpumask_empty(mce_inject_cpumask)) {
+			if (m->inject_flags & MCJ_IRQ_BROADCAST) {
+>>>>>>> refs/remotes/origin/master
+				/*
+				 * don't wait because mce_irq_ipi is necessary
+				 * to be sync with following raise_local
+				 */
+				preempt_disable();
+				smp_call_function_many(mce_inject_cpumask,
+					mce_irq_ipi, NULL, 0);
+				preempt_enable();
+			} else if (m->inject_flags & MCJ_NMI_BROADCAST)
+				apic->send_IPI_mask(mce_inject_cpumask,
+						NMI_VECTOR);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		start = jiffies;
 		while (!cpumask_empty(mce_inject_cpumask)) {
 			if (!time_before(jiffies, start + 2*HZ)) {
 				printk(KERN_ERR
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"Timeout waiting for mce inject NMI %lx\n",
+=======
+				"Timeout waiting for mce inject %lx\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				"Timeout waiting for mce inject %lx\n",
+>>>>>>> refs/remotes/origin/master
 					*cpumask_bits(mce_inject_cpumask));
 				break;
 			}
@@ -175,7 +266,15 @@ static void raise_mce(struct mce *m)
 		put_online_cpus();
 	} else
 #endif
+<<<<<<< HEAD
 		raise_local();
+=======
+	{
+		preempt_disable();
+		raise_local();
+		preempt_enable();
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Error injection interface */
@@ -206,7 +305,14 @@ static ssize_t mce_write(struct file *filp, const char __user *ubuf,
 	 * so do it a jiffie or two later everywhere.
 	 */
 	schedule_timeout(2);
+<<<<<<< HEAD
 	raise_mce(&m);
+=======
+
+	mutex_lock(&mce_inject_mutex);
+	raise_mce(&m);
+	mutex_unlock(&mce_inject_mutex);
+>>>>>>> refs/remotes/origin/master
 	return usize;
 }
 
@@ -215,8 +321,20 @@ static int inject_init(void)
 	if (!alloc_cpumask_var(&mce_inject_cpumask, GFP_KERNEL))
 		return -ENOMEM;
 	printk(KERN_INFO "Machine check injector initialized\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mce_chrdev_ops.write = mce_write;
 	register_die_notifier(&mce_raise_nb);
+=======
+	register_mce_write_callback(mce_write);
+	register_nmi_handler(NMI_LOCAL, mce_raise_notify, 0,
+				"mce_notify");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	register_mce_write_callback(mce_write);
+	register_nmi_handler(NMI_LOCAL, mce_raise_notify, 0,
+				"mce_notify");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

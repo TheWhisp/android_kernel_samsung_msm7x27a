@@ -5,7 +5,15 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,8 +61,13 @@ ACPI_MODULE_NAME("rsutils")
  *
  * FUNCTION:    acpi_rs_decode_bitmask
  *
+<<<<<<< HEAD
  * PARAMETERS:  Mask            - Bitmask to decode
  *              List            - Where the converted list is returned
+=======
+ * PARAMETERS:  mask            - Bitmask to decode
+ *              list            - Where the converted list is returned
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Count of bits set (length of list)
  *
@@ -86,8 +99,13 @@ u8 acpi_rs_decode_bitmask(u16 mask, u8 * list)
  *
  * FUNCTION:    acpi_rs_encode_bitmask
  *
+<<<<<<< HEAD
  * PARAMETERS:  List            - List of values to encode
  *              Count           - Length of list
+=======
+ * PARAMETERS:  list            - List of values to encode
+ *              count           - Length of list
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Encoded bitmask
  *
@@ -108,15 +126,24 @@ u16 acpi_rs_encode_bitmask(u8 * list, u8 count)
 		mask |= (0x1 << list[i]);
 	}
 
+<<<<<<< HEAD
 	return mask;
+=======
+	return (mask);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
  *
  * FUNCTION:    acpi_rs_move_data
  *
+<<<<<<< HEAD
  * PARAMETERS:  Destination         - Pointer to the destination descriptor
  *              Source              - Pointer to the source descriptor
+=======
+ * PARAMETERS:  destination         - Pointer to the destination descriptor
+ *              source              - Pointer to the source descriptor
+>>>>>>> refs/remotes/origin/master
  *              item_count          - How many items to move
  *              move_type           - Byte width
  *
@@ -144,6 +171,19 @@ acpi_rs_move_data(void *destination, void *source, u16 item_count, u8 move_type)
 			 * since there are no alignment or endian issues
 			 */
 		case ACPI_RSC_MOVE8:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		case ACPI_RSC_MOVE_GPIO_RES:
+		case ACPI_RSC_MOVE_SERIAL_VEN:
+		case ACPI_RSC_MOVE_SERIAL_RES:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case ACPI_RSC_MOVE_GPIO_RES:
+		case ACPI_RSC_MOVE_SERIAL_VEN:
+		case ACPI_RSC_MOVE_SERIAL_RES:
+
+>>>>>>> refs/remotes/origin/master
 			ACPI_MEMCPY(destination, source, item_count);
 			return;
 
@@ -153,21 +193,42 @@ acpi_rs_move_data(void *destination, void *source, u16 item_count, u8 move_type)
 			 * misaligned memory transfers
 			 */
 		case ACPI_RSC_MOVE16:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		case ACPI_RSC_MOVE_GPIO_PIN:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case ACPI_RSC_MOVE_GPIO_PIN:
+
+>>>>>>> refs/remotes/origin/master
 			ACPI_MOVE_16_TO_16(&ACPI_CAST_PTR(u16, destination)[i],
 					   &ACPI_CAST_PTR(u16, source)[i]);
 			break;
 
 		case ACPI_RSC_MOVE32:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			ACPI_MOVE_32_TO_32(&ACPI_CAST_PTR(u32, destination)[i],
 					   &ACPI_CAST_PTR(u32, source)[i]);
 			break;
 
 		case ACPI_RSC_MOVE64:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			ACPI_MOVE_64_TO_64(&ACPI_CAST_PTR(u64, destination)[i],
 					   &ACPI_CAST_PTR(u64, source)[i]);
 			break;
 
 		default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 	}
@@ -179,7 +240,11 @@ acpi_rs_move_data(void *destination, void *source, u16 item_count, u8 move_type)
  *
  * PARAMETERS:  total_length        - Length of the AML descriptor, including
  *                                    the header and length fields.
+<<<<<<< HEAD
  *              Aml                 - Pointer to the raw AML descriptor
+=======
+ *              aml                 - Pointer to the raw AML descriptor
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -231,7 +296,11 @@ acpi_rs_set_resource_length(acpi_rsdesc_size total_length,
  * PARAMETERS:  descriptor_type     - Byte to be inserted as the type
  *              total_length        - Length of the AML descriptor, including
  *                                    the header and length fields.
+<<<<<<< HEAD
  *              Aml                 - Pointer to the raw AML descriptor
+=======
+ *              aml                 - Pointer to the raw AML descriptor
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -261,8 +330,13 @@ acpi_rs_set_resource_header(u8 descriptor_type,
  *
  * FUNCTION:    acpi_rs_strcpy
  *
+<<<<<<< HEAD
  * PARAMETERS:  Destination         - Pointer to the destination string
  *              Source              - Pointer to the source string
+=======
+ * PARAMETERS:  destination         - Pointer to the destination string
+ *              source              - Pointer to the source string
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      String length, including NULL terminator
  *
@@ -296,7 +370,11 @@ static u16 acpi_rs_strcpy(char *destination, char *source)
  *              minimum_length      - Minimum length of the descriptor (minus
  *                                    any optional fields)
  *              resource_source     - Where the resource_source is returned
+<<<<<<< HEAD
  *              Aml                 - Pointer to the raw AML descriptor
+=======
+ *              aml                 - Pointer to the raw AML descriptor
+>>>>>>> refs/remotes/origin/master
  *              string_ptr          - (optional) where to store the actual
  *                                    resource_source string
  *
@@ -354,8 +432,15 @@ acpi_rs_get_resource_source(acpi_rs_length resource_length,
 		 *
 		 * Zero the entire area of the buffer.
 		 */
+<<<<<<< HEAD
 		total_length = (u32)
 		ACPI_STRLEN(ACPI_CAST_PTR(char, &aml_resource_source[1])) + 1;
+=======
+		total_length =
+		    (u32)
+		    ACPI_STRLEN(ACPI_CAST_PTR(char, &aml_resource_source[1])) +
+		    1;
+>>>>>>> refs/remotes/origin/master
 		total_length = (u32) ACPI_ROUND_UP_TO_NATIVE_WORD(total_length);
 
 		ACPI_MEMSET(resource_source->string_ptr, 0, total_length);
@@ -382,7 +467,11 @@ acpi_rs_get_resource_source(acpi_rs_length resource_length,
  *
  * FUNCTION:    acpi_rs_set_resource_source
  *
+<<<<<<< HEAD
  * PARAMETERS:  Aml                 - Pointer to the raw AML descriptor
+=======
+ * PARAMETERS:  aml                 - Pointer to the raw AML descriptor
+>>>>>>> refs/remotes/origin/master
  *              minimum_length      - Minimum length of the descriptor (minus
  *                                    any optional fields)
  *              resource_source     - Internal resource_source
@@ -441,7 +530,11 @@ acpi_rs_set_resource_source(union aml_resource * aml,
  *
  * FUNCTION:    acpi_rs_get_prt_method_data
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node            - Device node
+=======
+ * PARAMETERS:  node            - Device node
+>>>>>>> refs/remotes/origin/master
  *              ret_buffer      - Pointer to a buffer structure for the
  *                                results
  *
@@ -490,7 +583,11 @@ acpi_rs_get_prt_method_data(struct acpi_namespace_node * node,
  *
  * FUNCTION:    acpi_rs_get_crs_method_data
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node            - Device node
+=======
+ * PARAMETERS:  node            - Device node
+>>>>>>> refs/remotes/origin/master
  *              ret_buffer      - Pointer to a buffer structure for the
  *                                results
  *
@@ -530,7 +627,11 @@ acpi_rs_get_crs_method_data(struct acpi_namespace_node *node,
 	 */
 	status = acpi_rs_create_resource_list(obj_desc, ret_buffer);
 
+<<<<<<< HEAD
 	/* On exit, we must delete the object returned by evaluate_object */
+=======
+	/* On exit, we must delete the object returned by evaluateObject */
+>>>>>>> refs/remotes/origin/master
 
 	acpi_ut_remove_reference(obj_desc);
 	return_ACPI_STATUS(status);
@@ -540,7 +641,11 @@ acpi_rs_get_crs_method_data(struct acpi_namespace_node *node,
  *
  * FUNCTION:    acpi_rs_get_prs_method_data
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node            - Device node
+=======
+ * PARAMETERS:  node            - Device node
+>>>>>>> refs/remotes/origin/master
  *              ret_buffer      - Pointer to a buffer structure for the
  *                                results
  *
@@ -581,7 +686,11 @@ acpi_rs_get_prs_method_data(struct acpi_namespace_node *node,
 	 */
 	status = acpi_rs_create_resource_list(obj_desc, ret_buffer);
 
+<<<<<<< HEAD
 	/* On exit, we must delete the object returned by evaluate_object */
+=======
+	/* On exit, we must delete the object returned by evaluateObject */
+>>>>>>> refs/remotes/origin/master
 
 	acpi_ut_remove_reference(obj_desc);
 	return_ACPI_STATUS(status);
@@ -590,10 +699,80 @@ acpi_rs_get_prs_method_data(struct acpi_namespace_node *node,
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * FUNCTION:    acpi_rs_get_aei_method_data
+ *
+ * PARAMETERS:  Node            - Device node
+=======
+ * FUNCTION:    acpi_rs_get_aei_method_data
+ *
+ * PARAMETERS:  node            - Device node
+>>>>>>> refs/remotes/origin/master
+ *              ret_buffer      - Pointer to a buffer structure for the
+ *                                results
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: This function is called to get the _AEI value of an object
+ *              contained in an object specified by the handle passed in
+ *
+ *              If the function fails an appropriate status will be returned
+ *              and the contents of the callers buffer is undefined.
+ *
+ ******************************************************************************/
+
+acpi_status
+acpi_rs_get_aei_method_data(struct acpi_namespace_node *node,
+			    struct acpi_buffer *ret_buffer)
+{
+	union acpi_operand_object *obj_desc;
+	acpi_status status;
+
+	ACPI_FUNCTION_TRACE(rs_get_aei_method_data);
+
+	/* Parameters guaranteed valid by caller */
+
+	/* Execute the method, no parameters */
+
+	status = acpi_ut_evaluate_object(node, METHOD_NAME__AEI,
+					 ACPI_BTYPE_BUFFER, &obj_desc);
+	if (ACPI_FAILURE(status)) {
+		return_ACPI_STATUS(status);
+	}
+
+	/*
+	 * Make the call to create a resource linked list from the
+	 * byte stream buffer that comes back from the _CRS method
+	 * execution.
+	 */
+	status = acpi_rs_create_resource_list(obj_desc, ret_buffer);
+
+<<<<<<< HEAD
+	/* On exit, we must delete the object returned by evaluate_object */
+=======
+	/* On exit, we must delete the object returned by evaluateObject */
+>>>>>>> refs/remotes/origin/master
+
+	acpi_ut_remove_reference(obj_desc);
+	return_ACPI_STATUS(status);
+}
+
+/*******************************************************************************
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
  * FUNCTION:    acpi_rs_get_method_data
  *
  * PARAMETERS:  Handle          - Handle to the containing object
  *              Path            - Path to method, relative to Handle
+=======
+ * FUNCTION:    acpi_rs_get_method_data
+ *
+ * PARAMETERS:  handle          - Handle to the containing object
+ *              path            - Path to method, relative to Handle
+>>>>>>> refs/remotes/origin/master
  *              ret_buffer      - Pointer to a buffer structure for the
  *                                results
  *
@@ -621,7 +800,13 @@ acpi_rs_get_method_data(acpi_handle handle,
 	/* Execute the method, no parameters */
 
 	status =
+<<<<<<< HEAD
 	    acpi_ut_evaluate_object(handle, path, ACPI_BTYPE_BUFFER, &obj_desc);
+=======
+	    acpi_ut_evaluate_object(ACPI_CAST_PTR
+				    (struct acpi_namespace_node, handle), path,
+				    ACPI_BTYPE_BUFFER, &obj_desc);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		return_ACPI_STATUS(status);
 	}
@@ -643,7 +828,11 @@ acpi_rs_get_method_data(acpi_handle handle,
  *
  * FUNCTION:    acpi_rs_set_srs_method_data
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node            - Device node
+=======
+ * PARAMETERS:  node            - Device node
+>>>>>>> refs/remotes/origin/master
  *              in_buffer       - Pointer to a buffer structure of the
  *                                parameter
  *
@@ -678,7 +867,11 @@ acpi_rs_set_srs_method_data(struct acpi_namespace_node *node,
 	}
 
 	info->prefix_node = node;
+<<<<<<< HEAD
 	info->pathname = METHOD_NAME__SRS;
+=======
+	info->relative_pathname = METHOD_NAME__SRS;
+>>>>>>> refs/remotes/origin/master
 	info->parameters = args;
 	info->flags = ACPI_IGNORE_RETURN_VALUE;
 
@@ -690,7 +883,11 @@ acpi_rs_set_srs_method_data(struct acpi_namespace_node *node,
 	 * Convert the linked list into a byte stream
 	 */
 	buffer.length = ACPI_ALLOCATE_LOCAL_BUFFER;
+<<<<<<< HEAD
 	status = acpi_rs_create_aml_resources(in_buffer->pointer, &buffer);
+=======
+	status = acpi_rs_create_aml_resources(in_buffer, &buffer);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		goto cleanup;
 	}
@@ -721,7 +918,11 @@ acpi_rs_set_srs_method_data(struct acpi_namespace_node *node,
 
 	acpi_ut_remove_reference(args[0]);
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	ACPI_FREE(info);
 	return_ACPI_STATUS(status);
 }

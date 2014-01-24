@@ -24,7 +24,15 @@
 
 static DEFINE_SPINLOCK(die_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void NORET_TYPE die(const char *str, struct pt_regs *regs, long err)
+=======
+void die(const char *str, struct pt_regs *regs, long err)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void die(const char *str, struct pt_regs *regs, long err)
+>>>>>>> refs/remotes/origin/master
 {
 	static int die_counter;
 
@@ -61,7 +69,11 @@ void NORET_TYPE die(const char *str, struct pt_regs *regs, long err)
 	show_regs_log_lvl(regs, KERN_EMERG);
 	show_stack_log_lvl(current, regs->sp, regs, KERN_EMERG);
 	bust_spinlocks(0);
+<<<<<<< HEAD
 	add_taint(TAINT_DIE);
+=======
+	add_taint(TAINT_DIE, LOCKDEP_NOW_UNRELIABLE);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&die_lock);
 
 	if (in_interrupt())

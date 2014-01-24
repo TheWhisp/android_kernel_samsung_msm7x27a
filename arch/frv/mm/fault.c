@@ -20,7 +20,13 @@
 #include <linux/ptrace.h>
 #include <linux/hardirq.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/uaccess.h>
 #include <asm/gdb-stub.h>
@@ -35,11 +41,18 @@ asmlinkage void do_page_fault(int datammu, unsigned long esr0, unsigned long ear
 	struct vm_area_struct *vma;
 	struct mm_struct *mm;
 	unsigned long _pme, lrai, lrad, fixup;
+<<<<<<< HEAD
+=======
+	unsigned long flags = 0;
+>>>>>>> refs/remotes/origin/master
 	siginfo_t info;
 	pgd_t *pge;
 	pud_t *pue;
 	pte_t *pte;
+<<<<<<< HEAD
 	int write;
+=======
+>>>>>>> refs/remotes/origin/master
 	int fault;
 
 #if 0
@@ -82,6 +95,12 @@ asmlinkage void do_page_fault(int datammu, unsigned long esr0, unsigned long ear
 	if (in_atomic() || !mm)
 		goto no_context;
 
+<<<<<<< HEAD
+=======
+	if (user_mode(__frame))
+		flags |= FAULT_FLAG_USER;
+
+>>>>>>> refs/remotes/origin/master
 	down_read(&mm->mmap_sem);
 
 	vma = find_vma(mm, ear0);
@@ -130,7 +149,10 @@ asmlinkage void do_page_fault(int datammu, unsigned long esr0, unsigned long ear
  */
  good_area:
 	info.si_code = SEGV_ACCERR;
+<<<<<<< HEAD
 	write = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (esr0 & ESR0_ATXC) {
 	default:
 		/* handle write to write protected page */
@@ -141,7 +163,11 @@ asmlinkage void do_page_fault(int datammu, unsigned long esr0, unsigned long ear
 #endif
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
 		write = 1;
+=======
+		flags |= FAULT_FLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 		break;
 
 		 /* handle read from protected page */
@@ -163,7 +189,11 @@ asmlinkage void do_page_fault(int datammu, unsigned long esr0, unsigned long ear
 	 * make sure we exit gracefully rather than endlessly redo
 	 * the fault.
 	 */
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, ear0, write ? FAULT_FLAG_WRITE : 0);
+=======
+	fault = handle_mm_fault(mm, vma, ear0, flags);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;

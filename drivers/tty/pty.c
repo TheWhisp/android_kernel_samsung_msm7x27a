@@ -4,9 +4,12 @@
  *  Added support for a Unix98-style ptmx device.
  *    -- C. Scott Ananian <cananian@alumni.princeton.edu>, 14-Jan-1998
  *
+<<<<<<< HEAD
  *  When reading this code see also fs/devpts. In particular note that the
  *  driver_data field is used by the devpts side as a binding to the devpts
  *  inode.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>
@@ -21,18 +24,36 @@
 #include <linux/major.h>
 #include <linux/mm.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysctl.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/uaccess.h>
 #include <linux/bitops.h>
 #include <linux/devpts_fs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mutex.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_UNIX98_PTYS
 static struct tty_driver *ptm_driver;
 static struct tty_driver *pts_driver;
+<<<<<<< HEAD
+=======
+static DEFINE_MUTEX(devpts_mutex);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static void pty_close(struct tty_struct *tty, struct file *filp)
@@ -41,12 +62,25 @@ static void pty_close(struct tty_struct *tty, struct file *filp)
 	if (tty->driver->subtype == PTY_TYPE_MASTER)
 		WARN_ON(tty->count > 1);
 	else {
+<<<<<<< HEAD
 		if (tty->count > 2)
 			return;
 	}
 	wake_up_interruptible(&tty->read_wait);
 	wake_up_interruptible(&tty->write_wait);
 	tty->packet = 0;
+=======
+		if (test_bit(TTY_IO_ERROR, &tty->flags))
+			return;
+		if (tty->count > 2)
+			return;
+	}
+	set_bit(TTY_IO_ERROR, &tty->flags);
+	wake_up_interruptible(&tty->read_wait);
+	wake_up_interruptible(&tty->write_wait);
+	tty->packet = 0;
+	/* Review - krefs on tty_link ?? */
+>>>>>>> refs/remotes/origin/master
 	if (!tty->link)
 		return;
 	set_bit(TTY_OTHER_CLOSED, &tty->link->flags);
@@ -55,12 +89,25 @@ static void pty_close(struct tty_struct *tty, struct file *filp)
 	if (tty->driver->subtype == PTY_TYPE_MASTER) {
 		set_bit(TTY_OTHER_CLOSED, &tty->flags);
 #ifdef CONFIG_UNIX98_PTYS
+<<<<<<< HEAD
 		if (tty->driver == ptm_driver)
 			devpts_pty_kill(tty->link);
 #endif
 		tty_unlock();
 		tty_vhangup(tty->link);
 		tty_lock();
+=======
+		if (tty->driver == ptm_driver) {
+			mutex_lock(&devpts_mutex);
+			if (tty->link->driver_data)
+				devpts_pty_kill(tty->link->driver_data);
+			mutex_unlock(&devpts_mutex);
+		}
+#endif
+		tty_unlock(tty);
+		tty_vhangup(tty->link);
+		tty_lock(tty);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -84,17 +131,26 @@ static void pty_unthrottle(struct tty_struct *tty)
  *	pty_space	-	report space left for writing
  *	@to: tty we are writing into
  *
+<<<<<<< HEAD
  *	The tty buffers allow 64K but we sneak a peak and clip at 8K this
  *	allows a lot of overspill room for echo and other fun messes to
  *	be handled properly
+=======
+ *	Limit the buffer space used by ptys to 8k.
+>>>>>>> refs/remotes/origin/master
  */
 
 static int pty_space(struct tty_struct *to)
 {
+<<<<<<< HEAD
 	int n = 8192 - to->buf.memory_used;
 	if (n < 0)
 		return 0;
 	return n;
+=======
+	int n = tty_buffer_space_avail(to->port);
+	return min(n, 8192);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -118,12 +174,19 @@ static int pty_write(struct tty_struct *tty, const unsigned char *buf, int c)
 
 	if (c > 0) {
 		/* Stuff the data into the input queue of the other end */
+<<<<<<< HEAD
 		c = tty_insert_flip_string(to, buf, c);
 		/* And shovel */
 		if (c) {
 			tty_flip_buffer_push(to);
 			tty_wakeup(tty);
 		}
+=======
+		c = tty_insert_flip_string(to->port, buf, c);
+		/* And shovel */
+		if (c)
+			tty_flip_buffer_push(to->port);
+>>>>>>> refs/remotes/origin/master
 	}
 	return c;
 }
@@ -169,6 +232,44 @@ static int pty_set_lock(struct tty_struct *tty, int __user *arg)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int pty_get_lock(struct tty_struct *tty, int __user *arg)
+{
+	int locked = test_bit(TTY_PTY_LOCK, &tty->flags);
+	return put_user(locked, arg);
+}
+
+/* Set the packet mode on a pty */
+static int pty_set_pktmode(struct tty_struct *tty, int __user *arg)
+{
+	unsigned long flags;
+	int pktmode;
+
+	if (get_user(pktmode, arg))
+		return -EFAULT;
+
+	spin_lock_irqsave(&tty->ctrl_lock, flags);
+	if (pktmode) {
+		if (!tty->packet) {
+			tty->packet = 1;
+			tty->link->ctrl_status = 0;
+		}
+	} else
+		tty->packet = 0;
+	spin_unlock_irqrestore(&tty->ctrl_lock, flags);
+
+	return 0;
+}
+
+/* Get the packet mode of a pty */
+static int pty_get_pktmode(struct tty_struct *tty, int __user *arg)
+{
+	int pktmode = tty->packet;
+	return put_user(pktmode, arg);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Send a signal to the slave */
 static int pty_signal(struct tty_struct *tty, int sig)
 {
@@ -204,16 +305,23 @@ static void pty_flush_buffer(struct tty_struct *tty)
 
 static int pty_open(struct tty_struct *tty, struct file *filp)
 {
+<<<<<<< HEAD
 	int	retval = -ENODEV;
 
 	if (!tty || !tty->link)
 		goto out;
 
 	retval = -EIO;
+=======
+	if (!tty || !tty->link)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	if (test_bit(TTY_OTHER_CLOSED, &tty->flags))
 		goto out;
 	if (test_bit(TTY_PTY_LOCK, &tty->link->flags))
 		goto out;
+<<<<<<< HEAD
 	if (tty->link->count != 1)
 		goto out;
 
@@ -222,13 +330,31 @@ static int pty_open(struct tty_struct *tty, struct file *filp)
 	retval = 0;
 out:
 	return retval;
+=======
+	if (tty->driver->subtype == PTY_TYPE_SLAVE && tty->link->count != 1)
+		goto out;
+
+	clear_bit(TTY_IO_ERROR, &tty->flags);
+	clear_bit(TTY_OTHER_CLOSED, &tty->link->flags);
+	set_bit(TTY_THROTTLED, &tty->flags);
+	return 0;
+
+out:
+	set_bit(TTY_IO_ERROR, &tty->flags);
+	return -EIO;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pty_set_termios(struct tty_struct *tty,
 					struct ktermios *old_termios)
 {
+<<<<<<< HEAD
 	tty->termios->c_cflag &= ~(CSIZE | PARENB);
 	tty->termios->c_cflag |= (CS8 | CREAD);
+=======
+	tty->termios.c_cflag &= ~(CSIZE | PARENB);
+	tty->termios.c_cflag |= (CS8 | CREAD);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -240,14 +366,22 @@ static void pty_set_termios(struct tty_struct *tty,
  *	peform a terminal resize correctly
  */
 
+<<<<<<< HEAD
 int pty_resize(struct tty_struct *tty,  struct winsize *ws)
+=======
+static int pty_resize(struct tty_struct *tty,  struct winsize *ws)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pid *pgrp, *rpgrp;
 	unsigned long flags;
 	struct tty_struct *pty = tty->link;
 
 	/* For a PTY we need to lock the tty side */
+<<<<<<< HEAD
 	mutex_lock(&tty->termios_mutex);
+=======
+	mutex_lock(&tty->winsize_mutex);
+>>>>>>> refs/remotes/origin/master
 	if (!memcmp(ws, &tty->winsize, sizeof(*ws)))
 		goto done;
 
@@ -274,6 +408,7 @@ int pty_resize(struct tty_struct *tty,  struct winsize *ws)
 	tty->winsize = *ws;
 	pty->winsize = *ws;	/* Never used so will go away soon */
 done:
+<<<<<<< HEAD
 	mutex_unlock(&tty->termios_mutex);
 	return 0;
 }
@@ -293,10 +428,45 @@ static int pty_install(struct tty_driver *driver, struct tty_struct *tty)
 	if (!try_module_get(driver->other->owner)) {
 		/* This cannot in fact currently happen */
 		retval = -ENOMEM;
+=======
+	mutex_unlock(&tty->winsize_mutex);
+	return 0;
+}
+
+/**
+ *	pty_common_install		-	set up the pty pair
+ *	@driver: the pty driver
+ *	@tty: the tty being instantiated
+ *	@bool: legacy, true if this is BSD style
+ *
+ *	Perform the initial set up for the tty/pty pair. Called from the
+ *	tty layer when the port is first opened.
+ *
+ *	Locking: the caller must hold the tty_mutex
+ */
+static int pty_common_install(struct tty_driver *driver, struct tty_struct *tty,
+		bool legacy)
+{
+	struct tty_struct *o_tty;
+	struct tty_port *ports[2];
+	int idx = tty->index;
+	int retval = -ENOMEM;
+
+	o_tty = alloc_tty_struct();
+	if (!o_tty)
+		goto err;
+	ports[0] = kmalloc(sizeof **ports, GFP_KERNEL);
+	ports[1] = kmalloc(sizeof **ports, GFP_KERNEL);
+	if (!ports[0] || !ports[1])
+		goto err_free_tty;
+	if (!try_module_get(driver->other->owner)) {
+		/* This cannot in fact currently happen */
+>>>>>>> refs/remotes/origin/master
 		goto err_free_tty;
 	}
 	initialize_tty_struct(o_tty, driver->other, idx);
 
+<<<<<<< HEAD
 	/* We always use new tty termios data so we can do this
 	   the easy way .. */
 	retval = tty_init_termios(tty);
@@ -306,17 +476,42 @@ static int pty_install(struct tty_driver *driver, struct tty_struct *tty)
 	retval = tty_init_termios(o_tty);
 	if (retval)
 		goto err_free_termios;
+=======
+	if (legacy) {
+		/* We always use new tty termios data so we can do this
+		   the easy way .. */
+		retval = tty_init_termios(tty);
+		if (retval)
+			goto err_deinit_tty;
+
+		retval = tty_init_termios(o_tty);
+		if (retval)
+			goto err_free_termios;
+
+		driver->other->ttys[idx] = o_tty;
+		driver->ttys[idx] = tty;
+	} else {
+		memset(&tty->termios_locked, 0, sizeof(tty->termios_locked));
+		tty->termios = driver->init_termios;
+		memset(&o_tty->termios_locked, 0, sizeof(tty->termios_locked));
+		o_tty->termios = driver->other->init_termios;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Everything allocated ... set up the o_tty structure.
 	 */
+<<<<<<< HEAD
 	driver->other->ttys[idx] = o_tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	tty_driver_kref_get(driver->other);
 	if (driver->subtype == PTY_TYPE_MASTER)
 		o_tty->count++;
 	/* Establish the links in both directions */
 	tty->link   = o_tty;
 	o_tty->link = tty;
+<<<<<<< HEAD
 
 	tty_driver_kref_get(driver);
 	tty->count++;
@@ -324,22 +519,80 @@ static int pty_install(struct tty_driver *driver, struct tty_struct *tty)
 	return 0;
 err_free_termios:
 	tty_free_termios(tty);
+=======
+	tty_port_init(ports[0]);
+	tty_port_init(ports[1]);
+	o_tty->port = ports[0];
+	tty->port = ports[1];
+	o_tty->port->itty = o_tty;
+
+	tty_driver_kref_get(driver);
+	tty->count++;
+	return 0;
+err_free_termios:
+	if (legacy)
+		tty_free_termios(tty);
+>>>>>>> refs/remotes/origin/master
 err_deinit_tty:
 	deinitialize_tty_struct(o_tty);
 	module_put(o_tty->driver->owner);
 err_free_tty:
+<<<<<<< HEAD
 	free_tty_struct(o_tty);
 	return retval;
 }
 
+=======
+	kfree(ports[0]);
+	kfree(ports[1]);
+	free_tty_struct(o_tty);
+err:
+	return retval;
+}
+
+static void pty_cleanup(struct tty_struct *tty)
+{
+	tty_port_put(tty->port);
+}
+
+/* Traditional BSD devices */
+#ifdef CONFIG_LEGACY_PTYS
+
+static int pty_install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	return pty_common_install(driver, tty, true);
+}
+
+static void pty_remove(struct tty_driver *driver, struct tty_struct *tty)
+{
+	struct tty_struct *pair = tty->link;
+	driver->ttys[tty->index] = NULL;
+	if (pair)
+		pair->driver->ttys[pair->index] = NULL;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int pty_bsd_ioctl(struct tty_struct *tty,
 			 unsigned int cmd, unsigned long arg)
 {
 	switch (cmd) {
 	case TIOCSPTLCK: /* Set PT Lock (disallow slave open) */
 		return pty_set_lock(tty, (int __user *) arg);
+<<<<<<< HEAD
 	case TIOCSIG:    /* Send signal to other side of pty */
 		return pty_signal(tty, (int) arg);
+=======
+	case TIOCGPTLCK: /* Get PT Lock status */
+		return pty_get_lock(tty, (int __user *)arg);
+	case TIOCPKT: /* Set PT packet mode */
+		return pty_set_pktmode(tty, (int __user *)arg);
+	case TIOCGPKT: /* Get PT packet mode */
+		return pty_get_pktmode(tty, (int __user *)arg);
+	case TIOCSIG:    /* Send signal to other side of pty */
+		return pty_signal(tty, (int) arg);
+	case TIOCGPTN: /* TTY returns ENOTTY, but glibc expects EINVAL here */
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 	return -ENOIOCTLCMD;
 }
@@ -362,7 +615,13 @@ static const struct tty_operations master_pty_ops_bsd = {
 	.unthrottle = pty_unthrottle,
 	.set_termios = pty_set_termios,
 	.ioctl = pty_bsd_ioctl,
+<<<<<<< HEAD
 	.resize = pty_resize
+=======
+	.cleanup = pty_cleanup,
+	.resize = pty_resize,
+	.remove = pty_remove
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct tty_operations slave_pty_ops_bsd = {
@@ -375,7 +634,13 @@ static const struct tty_operations slave_pty_ops_bsd = {
 	.chars_in_buffer = pty_chars_in_buffer,
 	.unthrottle = pty_unthrottle,
 	.set_termios = pty_set_termios,
+<<<<<<< HEAD
 	.resize = pty_resize
+=======
+	.cleanup = pty_cleanup,
+	.resize = pty_resize,
+	.remove = pty_remove
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init legacy_pty_init(void)
@@ -385,6 +650,7 @@ static void __init legacy_pty_init(void)
 	if (legacy_count <= 0)
 		return;
 
+<<<<<<< HEAD
 	pty_driver = alloc_tty_driver(legacy_count);
 	if (!pty_driver)
 		panic("Couldn't allocate pty driver");
@@ -393,7 +659,26 @@ static void __init legacy_pty_init(void)
 	if (!pty_slave_driver)
 		panic("Couldn't allocate pty slave driver");
 
+<<<<<<< HEAD
 	pty_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pty_driver = tty_alloc_driver(legacy_count,
+			TTY_DRIVER_RESET_TERMIOS |
+			TTY_DRIVER_REAL_RAW |
+			TTY_DRIVER_DYNAMIC_ALLOC);
+	if (IS_ERR(pty_driver))
+		panic("Couldn't allocate pty driver");
+
+	pty_slave_driver = tty_alloc_driver(legacy_count,
+			TTY_DRIVER_RESET_TERMIOS |
+			TTY_DRIVER_REAL_RAW |
+			TTY_DRIVER_DYNAMIC_ALLOC);
+	if (IS_ERR(pty_slave_driver))
+		panic("Couldn't allocate pty slave driver");
+
+>>>>>>> refs/remotes/origin/master
 	pty_driver->driver_name = "pty_master";
 	pty_driver->name = "pty";
 	pty_driver->major = PTY_MASTER_MAJOR;
@@ -407,11 +692,20 @@ static void __init legacy_pty_init(void)
 	pty_driver->init_termios.c_lflag = 0;
 	pty_driver->init_termios.c_ispeed = 38400;
 	pty_driver->init_termios.c_ospeed = 38400;
+<<<<<<< HEAD
 	pty_driver->flags = TTY_DRIVER_RESET_TERMIOS | TTY_DRIVER_REAL_RAW;
 	pty_driver->other = pty_slave_driver;
 	tty_set_operations(pty_driver, &master_pty_ops_bsd);
 
+<<<<<<< HEAD
 	pty_slave_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pty_driver->other = pty_slave_driver;
+	tty_set_operations(pty_driver, &master_pty_ops_bsd);
+
+>>>>>>> refs/remotes/origin/master
 	pty_slave_driver->driver_name = "pty_slave";
 	pty_slave_driver->name = "ttyp";
 	pty_slave_driver->major = PTY_SLAVE_MAJOR;
@@ -422,8 +716,11 @@ static void __init legacy_pty_init(void)
 	pty_slave_driver->init_termios.c_cflag = B38400 | CS8 | CREAD;
 	pty_slave_driver->init_termios.c_ispeed = 38400;
 	pty_slave_driver->init_termios.c_ospeed = 38400;
+<<<<<<< HEAD
 	pty_slave_driver->flags = TTY_DRIVER_RESET_TERMIOS |
 					TTY_DRIVER_REAL_RAW;
+=======
+>>>>>>> refs/remotes/origin/master
 	pty_slave_driver->other = pty_driver;
 	tty_set_operations(pty_slave_driver, &slave_pty_ops_bsd);
 
@@ -438,6 +735,8 @@ static inline void legacy_pty_init(void) { }
 
 /* Unix98 devices */
 #ifdef CONFIG_UNIX98_PTYS
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * sysctl support for setting limits on the number of Unix98 ptys allocated.
  * Otherwise one can eat up all kernel memory by opening /dev/ptmx repeatedly.
@@ -498,12 +797,31 @@ static struct ctl_table pty_root_table[] = {
 };
 
 
+=======
+
+static struct cdev ptmx_cdev;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static struct cdev ptmx_cdev;
+
+>>>>>>> refs/remotes/origin/master
 static int pty_unix98_ioctl(struct tty_struct *tty,
 			    unsigned int cmd, unsigned long arg)
 {
 	switch (cmd) {
 	case TIOCSPTLCK: /* Set PT Lock (disallow slave open) */
 		return pty_set_lock(tty, (int __user *)arg);
+<<<<<<< HEAD
+=======
+	case TIOCGPTLCK: /* Get PT Lock status */
+		return pty_get_lock(tty, (int __user *)arg);
+	case TIOCPKT: /* Set PT packet mode */
+		return pty_set_pktmode(tty, (int __user *)arg);
+	case TIOCGPKT: /* Get PT packet mode */
+		return pty_get_pktmode(tty, (int __user *)arg);
+>>>>>>> refs/remotes/origin/master
 	case TIOCGPTN: /* Get PT Number */
 		return put_user(tty->index, (unsigned int __user *)arg);
 	case TIOCSIG:    /* Send signal to other side of pty */
@@ -525,10 +843,20 @@ static int pty_unix98_ioctl(struct tty_struct *tty,
 static struct tty_struct *ptm_unix98_lookup(struct tty_driver *driver,
 		struct inode *ptm_inode, int idx)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct tty_struct *tty = devpts_get_tty(ptm_inode, idx);
 	if (tty)
 		tty = tty->link;
 	return tty;
+=======
+	/* Master must be open via /dev/ptmx */
+	return ERR_PTR(-EIO);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Master must be open via /dev/ptmx */
+	return ERR_PTR(-EIO);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -537,19 +865,32 @@ static struct tty_struct *ptm_unix98_lookup(struct tty_driver *driver,
  *	@idx: tty index
  *
  *	Look up a pty master device. Called under the tty_mutex for now.
+<<<<<<< HEAD
  *	This provides our locking.
+=======
+ *	This provides our locking for the tty pointer.
+>>>>>>> refs/remotes/origin/master
  */
 
 static struct tty_struct *pts_unix98_lookup(struct tty_driver *driver,
 		struct inode *pts_inode, int idx)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty = devpts_get_tty(pts_inode, idx);
+=======
+	struct tty_struct *tty;
+
+	mutex_lock(&devpts_mutex);
+	tty = devpts_get_priv(pts_inode);
+	mutex_unlock(&devpts_mutex);
+>>>>>>> refs/remotes/origin/master
 	/* Master must be open before slave */
 	if (!tty)
 		return ERR_PTR(-EIO);
 	return tty;
 }
 
+<<<<<<< HEAD
 static void pty_unix98_shutdown(struct tty_struct *tty)
 {
 	tty_driver_remove_tty(tty->driver, tty);
@@ -557,11 +898,14 @@ static void pty_unix98_shutdown(struct tty_struct *tty)
 	kfree(tty->termios);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* We have no need to install and remove our tty objects as devpts does all
    the work for us */
 
 static int pty_unix98_install(struct tty_driver *driver, struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	struct tty_struct *o_tty;
 	int idx = tty->index;
 
@@ -599,8 +943,11 @@ static int pty_unix98_install(struct tty_driver *driver, struct tty_struct *tty)
 	 */
 	tty_driver_kref_get(driver);
 	tty->count++;
+<<<<<<< HEAD
 	pty_inc_count(); /* tty */
 	pty_inc_count(); /* tty->link */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 err_free_mem:
 	deinitialize_tty_struct(o_tty);
@@ -612,15 +959,45 @@ err_free_tty:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static void pty_unix98_remove(struct tty_driver *driver, struct tty_struct *tty)
 {
 	pty_dec_count();
+=======
+static void ptm_unix98_remove(struct tty_driver *driver, struct tty_struct *tty)
+{
+}
+
+static void pts_unix98_remove(struct tty_driver *driver, struct tty_struct *tty)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return pty_common_install(driver, tty, false);
+}
+
+static void pty_unix98_remove(struct tty_driver *driver, struct tty_struct *tty)
+{
+}
+
+/* this is called once with whichever end is closed last */
+static void pty_unix98_shutdown(struct tty_struct *tty)
+{
+	devpts_kill_index(tty->driver_data, tty->index);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct tty_operations ptm_unix98_ops = {
 	.lookup = ptm_unix98_lookup,
 	.install = pty_unix98_install,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.remove = pty_unix98_remove,
+=======
+	.remove = ptm_unix98_remove,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = pty_unix98_remove,
+>>>>>>> refs/remotes/origin/master
 	.open = pty_open,
 	.close = pty_close,
 	.write = pty_write,
@@ -630,14 +1007,28 @@ static const struct tty_operations ptm_unix98_ops = {
 	.unthrottle = pty_unthrottle,
 	.set_termios = pty_set_termios,
 	.ioctl = pty_unix98_ioctl,
+<<<<<<< HEAD
 	.shutdown = pty_unix98_shutdown,
 	.resize = pty_resize
+=======
+	.resize = pty_resize,
+	.shutdown = pty_unix98_shutdown,
+	.cleanup = pty_cleanup
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct tty_operations pty_unix98_ops = {
 	.lookup = pts_unix98_lookup,
 	.install = pty_unix98_install,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.remove = pty_unix98_remove,
+=======
+	.remove = pts_unix98_remove,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = pty_unix98_remove,
+>>>>>>> refs/remotes/origin/master
 	.open = pty_open,
 	.close = pty_close,
 	.write = pty_write,
@@ -646,7 +1037,12 @@ static const struct tty_operations pty_unix98_ops = {
 	.chars_in_buffer = pty_chars_in_buffer,
 	.unthrottle = pty_unthrottle,
 	.set_termios = pty_set_termios,
+<<<<<<< HEAD
 	.shutdown = pty_unix98_shutdown
+=======
+	.shutdown = pty_unix98_shutdown,
+	.cleanup = pty_cleanup,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -657,13 +1053,21 @@ static const struct tty_operations pty_unix98_ops = {
  *	Allocate a unix98 pty master device from the ptmx driver.
  *
  *	Locking: tty_mutex protects the init_dev work. tty->count should
+<<<<<<< HEAD
  * 		protect the rest.
+=======
+ *		protect the rest.
+>>>>>>> refs/remotes/origin/master
  *		allocated_ptys_lock handles the list of free pty numbers
  */
 
 static int ptmx_open(struct inode *inode, struct file *filp)
 {
 	struct tty_struct *tty;
+<<<<<<< HEAD
+=======
+	struct inode *slave_inode;
+>>>>>>> refs/remotes/origin/master
 	int retval;
 	int index;
 
@@ -677,6 +1081,7 @@ static int ptmx_open(struct inode *inode, struct file *filp)
 		return retval;
 
 	/* find a device that is not in use. */
+<<<<<<< HEAD
 	tty_lock();
 	index = devpts_new_index(inode);
 	tty_unlock();
@@ -687,14 +1092,33 @@ static int ptmx_open(struct inode *inode, struct file *filp)
 
 	mutex_lock(&tty_mutex);
 	tty_lock();
+<<<<<<< HEAD
 	tty = tty_init_dev(ptm_driver, index, 1);
+=======
+	tty = tty_init_dev(ptm_driver, index);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&tty_mutex);
+=======
+	mutex_lock(&devpts_mutex);
+	index = devpts_new_index(inode);
+	if (index < 0) {
+		retval = index;
+		mutex_unlock(&devpts_mutex);
+		goto err_file;
+	}
+
+	mutex_unlock(&devpts_mutex);
+
+	mutex_lock(&tty_mutex);
+	tty = tty_init_dev(ptm_driver, index);
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(tty)) {
 		retval = PTR_ERR(tty);
 		goto out;
 	}
 
+<<<<<<< HEAD
 	set_bit(TTY_PTY_LOCK, &tty->flags); /* LOCK THE SLAVE */
 
 	tty_add_file(tty, filp);
@@ -702,11 +1126,31 @@ static int ptmx_open(struct inode *inode, struct file *filp)
 	retval = devpts_pty_new(inode, tty->link);
 	if (retval)
 		goto err_release;
+=======
+	/* The tty returned here is locked so we can safely
+	   drop the mutex */
+	mutex_unlock(&tty_mutex);
+
+	set_bit(TTY_PTY_LOCK, &tty->flags); /* LOCK THE SLAVE */
+	tty->driver_data = inode;
+
+	tty_add_file(tty, filp);
+
+	slave_inode = devpts_pty_new(inode,
+			MKDEV(UNIX98_PTY_SLAVE_MAJOR, index), index,
+			tty->link);
+	if (IS_ERR(slave_inode)) {
+		retval = PTR_ERR(slave_inode);
+		goto err_release;
+	}
+	tty->link->driver_data = slave_inode;
+>>>>>>> refs/remotes/origin/master
 
 	retval = ptm_driver->ops->open(tty, filp);
 	if (retval)
 		goto err_release;
 
+<<<<<<< HEAD
 	tty_unlock();
 	return 0;
 err_release:
@@ -716,6 +1160,17 @@ err_release:
 out:
 	devpts_kill_index(inode, index);
 	tty_unlock();
+=======
+	tty_unlock(tty);
+	return 0;
+err_release:
+	tty_unlock(tty);
+	tty_release(inode, filp);
+	return retval;
+out:
+	mutex_unlock(&tty_mutex);
+	devpts_kill_index(inode, index);
+>>>>>>> refs/remotes/origin/master
 err_file:
 	tty_free_file(filp);
 	return retval;
@@ -725,6 +1180,7 @@ static struct file_operations ptmx_fops;
 
 static void __init unix98_pty_init(void)
 {
+<<<<<<< HEAD
 	ptm_driver = alloc_tty_driver(NR_UNIX98_PTY_MAX);
 	if (!ptm_driver)
 		panic("Couldn't allocate Unix98 ptm driver");
@@ -732,7 +1188,29 @@ static void __init unix98_pty_init(void)
 	if (!pts_driver)
 		panic("Couldn't allocate Unix98 pts driver");
 
+<<<<<<< HEAD
 	ptm_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ptm_driver = tty_alloc_driver(NR_UNIX98_PTY_MAX,
+			TTY_DRIVER_RESET_TERMIOS |
+			TTY_DRIVER_REAL_RAW |
+			TTY_DRIVER_DYNAMIC_DEV |
+			TTY_DRIVER_DEVPTS_MEM |
+			TTY_DRIVER_DYNAMIC_ALLOC);
+	if (IS_ERR(ptm_driver))
+		panic("Couldn't allocate Unix98 ptm driver");
+	pts_driver = tty_alloc_driver(NR_UNIX98_PTY_MAX,
+			TTY_DRIVER_RESET_TERMIOS |
+			TTY_DRIVER_REAL_RAW |
+			TTY_DRIVER_DYNAMIC_DEV |
+			TTY_DRIVER_DEVPTS_MEM |
+			TTY_DRIVER_DYNAMIC_ALLOC);
+	if (IS_ERR(pts_driver))
+		panic("Couldn't allocate Unix98 pts driver");
+
+>>>>>>> refs/remotes/origin/master
 	ptm_driver->driver_name = "pty_master";
 	ptm_driver->name = "ptm";
 	ptm_driver->major = UNIX98_PTY_MASTER_MAJOR;
@@ -746,12 +1224,21 @@ static void __init unix98_pty_init(void)
 	ptm_driver->init_termios.c_lflag = 0;
 	ptm_driver->init_termios.c_ispeed = 38400;
 	ptm_driver->init_termios.c_ospeed = 38400;
+<<<<<<< HEAD
 	ptm_driver->flags = TTY_DRIVER_RESET_TERMIOS | TTY_DRIVER_REAL_RAW |
 		TTY_DRIVER_DYNAMIC_DEV | TTY_DRIVER_DEVPTS_MEM;
 	ptm_driver->other = pts_driver;
 	tty_set_operations(ptm_driver, &ptm_unix98_ops);
 
+<<<<<<< HEAD
 	pts_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ptm_driver->other = pts_driver;
+	tty_set_operations(ptm_driver, &ptm_unix98_ops);
+
+>>>>>>> refs/remotes/origin/master
 	pts_driver->driver_name = "pty_slave";
 	pts_driver->name = "pts";
 	pts_driver->major = UNIX98_PTY_SLAVE_MAJOR;
@@ -762,8 +1249,11 @@ static void __init unix98_pty_init(void)
 	pts_driver->init_termios.c_cflag = B38400 | CS8 | CREAD;
 	pts_driver->init_termios.c_ispeed = 38400;
 	pts_driver->init_termios.c_ospeed = 38400;
+<<<<<<< HEAD
 	pts_driver->flags = TTY_DRIVER_RESET_TERMIOS | TTY_DRIVER_REAL_RAW |
 		TTY_DRIVER_DYNAMIC_DEV | TTY_DRIVER_DEVPTS_MEM;
+=======
+>>>>>>> refs/remotes/origin/master
 	pts_driver->other = ptm_driver;
 	tty_set_operations(pts_driver, &pty_unix98_ops);
 
@@ -772,8 +1262,14 @@ static void __init unix98_pty_init(void)
 	if (tty_register_driver(pts_driver))
 		panic("Couldn't register Unix98 pts driver");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	register_sysctl_table(pty_root_table);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Now create the /dev/ptmx special device */
 	tty_default_fops(&ptmx_fops);
 	ptmx_fops.open = ptmx_open;
@@ -781,7 +1277,11 @@ static void __init unix98_pty_init(void)
 	cdev_init(&ptmx_cdev, &ptmx_fops);
 	if (cdev_add(&ptmx_cdev, MKDEV(TTYAUX_MAJOR, 2), 1) ||
 	    register_chrdev_region(MKDEV(TTYAUX_MAJOR, 2), 1, "/dev/ptmx") < 0)
+<<<<<<< HEAD
 		panic("Couldn't register /dev/ptmx driver\n");
+=======
+		panic("Couldn't register /dev/ptmx driver");
+>>>>>>> refs/remotes/origin/master
 	device_create(tty_class, NULL, MKDEV(TTYAUX_MAJOR, 2), NULL, "ptmx");
 }
 

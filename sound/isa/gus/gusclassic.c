@@ -24,7 +24,15 @@
 #include <linux/isa.h>
 #include <linux/delay.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <sound/core.h>
 #include <sound/gus.h>
@@ -42,7 +50,15 @@ MODULE_SUPPORTED_DEVICE("{{Gravis,UltraSound Classic}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/master
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* 0x220,0x230,0x240,0x250,0x260 */
 static int irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* 3,5,9,11,12,15 */
 static int dma1[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 1,3,5,6,7 */
@@ -73,13 +89,23 @@ MODULE_PARM_DESC(channels, "GF1 channels for " CRD_NAME " driver.");
 module_param_array(pcm_channels, int, NULL, 0444);
 MODULE_PARM_DESC(pcm_channels, "Reserved PCM channels for " CRD_NAME " driver.");
 
+<<<<<<< HEAD
 static int __devinit snd_gusclassic_match(struct device *dev, unsigned int n)
+=======
+static int snd_gusclassic_match(struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	return enable[n];
 }
 
+<<<<<<< HEAD
 static int __devinit snd_gusclassic_create(struct snd_card *card,
 		struct device *dev, unsigned int n, struct snd_gus_card **rgus)
+=======
+static int snd_gusclassic_create(struct snd_card *card,
+				 struct device *dev, unsigned int n,
+				 struct snd_gus_card **rgus)
+>>>>>>> refs/remotes/origin/master
 {
 	static long possible_ports[] = {0x220, 0x230, 0x240, 0x250, 0x260};
 	static int possible_irqs[] = {5, 11, 12, 9, 7, 15, 3, 4, -1};
@@ -123,7 +149,11 @@ static int __devinit snd_gusclassic_create(struct snd_card *card,
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_gusclassic_detect(struct snd_gus_card *gus)
+=======
+static int snd_gusclassic_detect(struct snd_gus_card *gus)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char d;
 
@@ -142,7 +172,11 @@ static int __devinit snd_gusclassic_detect(struct snd_gus_card *gus)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_gusclassic_probe(struct device *dev, unsigned int n)
+=======
+static int snd_gusclassic_probe(struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct snd_gus_card *gus;
@@ -211,17 +245,27 @@ out:	snd_card_free(card);
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_gusclassic_remove(struct device *dev, unsigned int n)
 {
 	snd_card_free(dev_get_drvdata(dev));
 	dev_set_drvdata(dev, NULL);
+=======
+static int snd_gusclassic_remove(struct device *dev, unsigned int n)
+{
+	snd_card_free(dev_get_drvdata(dev));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct isa_driver snd_gusclassic_driver = {
 	.match		= snd_gusclassic_match,
 	.probe		= snd_gusclassic_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_gusclassic_remove),
+=======
+	.remove		= snd_gusclassic_remove,
+>>>>>>> refs/remotes/origin/master
 #if 0	/* FIXME */
 	.suspend	= snd_gusclassic_suspend,
 	.remove		= snd_gusclassic_remove,

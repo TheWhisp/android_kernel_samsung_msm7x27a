@@ -130,7 +130,11 @@ csum_partial_cfu_aligned(const unsigned long __user *src, unsigned long *dst,
 		*dst = word | tmp;
 		checksum += carry;
 	}
+<<<<<<< HEAD
 	if (err) *errp = err;
+=======
+	if (err && errp) *errp = err;
+>>>>>>> refs/remotes/origin/master
 	return checksum;
 }
 
@@ -185,7 +189,11 @@ csum_partial_cfu_dest_aligned(const unsigned long __user *src,
 		*dst = word | tmp;
 		checksum += carry;
 	}
+<<<<<<< HEAD
 	if (err) *errp = err;
+=======
+	if (err && errp) *errp = err;
+>>>>>>> refs/remotes/origin/master
 	return checksum;
 }
 
@@ -242,7 +250,11 @@ csum_partial_cfu_src_aligned(const unsigned long __user *src,
 	stq_u(partial_dest | second_dest, dst);
 out:
 	checksum += carry;
+<<<<<<< HEAD
 	if (err) *errp = err;
+=======
+	if (err && errp) *errp = err;
+>>>>>>> refs/remotes/origin/master
 	return checksum;
 }
 
@@ -325,7 +337,11 @@ csum_partial_cfu_unaligned(const unsigned long __user * src,
 		stq_u(partial_dest | word | second_dest, dst);
 		checksum += carry;
 	}
+<<<<<<< HEAD
 	if (err) *errp = err;
+=======
+	if (err && errp) *errp = err;
+>>>>>>> refs/remotes/origin/master
 	return checksum;
 }
 
@@ -338,6 +354,14 @@ csum_partial_copy_from_user(const void __user *src, void *dst, int len,
 	unsigned long doff = 7 & (unsigned long) dst;
 
 	if (len) {
+<<<<<<< HEAD
+=======
+		if (!access_ok(VERIFY_READ, src, len)) {
+			if (errp) *errp = -EFAULT;
+			memset(dst, 0, len);
+			return sum;
+		}
+>>>>>>> refs/remotes/origin/master
 		if (!doff) {
 			if (!soff)
 				checksum = csum_partial_cfu_aligned(

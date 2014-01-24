@@ -58,27 +58,44 @@ enum {
  * max8998_regulator_data - regulator data
  * @id: regulator id
  * @initdata: regulator init data (contraints, supplies, ...)
+<<<<<<< HEAD
+=======
+ * @reg_node: DT node of regulator (unused on non-DT platforms)
+>>>>>>> refs/remotes/origin/master
  */
 struct max8998_regulator_data {
 	int				id;
 	struct regulator_init_data	*initdata;
+<<<<<<< HEAD
+=======
+	struct device_node		*reg_node;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
  * struct max8998_board - packages regulator init data
  * @regulators: array of defined regulators
+<<<<<<< HEAD
  * @num_regulators: number of regultors used
+=======
+ * @num_regulators: number of regulators used
+>>>>>>> refs/remotes/origin/master
  * @irq_base: base IRQ number for max8998, required for IRQs
  * @ono: power onoff IRQ number for max8998
  * @buck_voltage_lock: Do NOT change the values of the following six
  *   registers set by buck?_voltage?. The voltage of BUCK1/2 cannot
  *   be other than the preset values.
+<<<<<<< HEAD
  * @buck1_voltage1: BUCK1 DVS mode 1 voltage register
  * @buck1_voltage2: BUCK1 DVS mode 2 voltage register
  * @buck1_voltage3: BUCK1 DVS mode 3 voltage register
  * @buck1_voltage4: BUCK1 DVS mode 4 voltage register
  * @buck2_voltage1: BUCK2 DVS mode 1 voltage register
  * @buck2_voltage2: BUCK2 DVS mode 2 voltage register
+=======
+ * @buck1_voltage: BUCK1 DVS mode 1 voltage registers
+ * @buck2_voltage: BUCK2 DVS mode 2 voltage registers
+>>>>>>> refs/remotes/origin/master
  * @buck1_set1: BUCK1 gpio pin 1 to set output voltage
  * @buck1_set2: BUCK1 gpio pin 2 to set output voltage
  * @buck1_default_idx: Default for BUCK1 gpio pin 1, 2
@@ -87,10 +104,29 @@ struct max8998_regulator_data {
  * @wakeup: Allow to wake up from suspend
  * @rtc_delay: LP3974 RTC chip bug that requires delay after a register
  * write before reading it.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @eoc: End of Charge Level in percent: 10% ~ 45% by 5% step
+ *   If it equals 0, leave it unchanged.
+ *   Otherwise, it is a invalid value.
+ * @restart: Restart Level in mV: 100, 150, 200, and -1 for disable.
+ *   If it equals 0, leave it unchanged.
+ *   Otherwise, it is a invalid value.
+ * @timeout: Full Timeout in hours: 5, 6, 7, and -1 for disable.
+ *   If it equals 0, leave it unchanged.
+ *   Otherwise, leave it unchanged.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct max8998_platform_data {
 	struct max8998_regulator_data	*regulators;
 	int				num_regulators;
+<<<<<<< HEAD
 	int				irq_base;
 	int				ono;
 	bool				buck_voltage_lock;
@@ -100,6 +136,13 @@ struct max8998_platform_data {
 	int				buck1_voltage4;
 	int				buck2_voltage1;
 	int				buck2_voltage2;
+=======
+	unsigned int			irq_base;
+	int				ono;
+	bool				buck_voltage_lock;
+	int				buck1_voltage[4];
+	int				buck2_voltage[2];
+>>>>>>> refs/remotes/origin/master
 	int				buck1_set1;
 	int				buck1_set2;
 	int				buck1_default_idx;
@@ -107,6 +150,18 @@ struct max8998_platform_data {
 	int				buck2_default_idx;
 	bool				wakeup;
 	bool				rtc_delay;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int				eoc;
+	int				restart;
+	int				timeout;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int				eoc;
+	int				restart;
+	int				timeout;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /*  __LINUX_MFD_MAX8998_H */

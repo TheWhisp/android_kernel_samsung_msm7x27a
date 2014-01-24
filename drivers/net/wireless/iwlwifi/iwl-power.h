@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2007 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2007 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Portions of this file are derived from the ipw3945 project, as well
  * as portions of the ieee80211 subsystem header files.
@@ -43,7 +47,11 @@ struct iwl_power_mgr {
 	struct iwl_powertable_cmd sleep_cmd;
 	struct iwl_powertable_cmd sleep_cmd_next;
 	int debug_sleep_level_override;
+<<<<<<< HEAD
 	bool pci_pm;
+=======
+	bool bus_pm;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int iwl_power_set_mode(struct iwl_priv *priv, struct iwl_powertable_cmd *cmd,

@@ -24,14 +24,24 @@ struct pci_hostbridge_probe {
 	u32 device;
 };
 
+<<<<<<< HEAD
 static u64 __cpuinitdata fam10h_pci_mmconf_base;
 
 static struct pci_hostbridge_probe pci_probes[] __cpuinitdata = {
+=======
+static u64 fam10h_pci_mmconf_base;
+
+static struct pci_hostbridge_probe pci_probes[] = {
+>>>>>>> refs/remotes/origin/master
 	{ 0, 0x18, PCI_VENDOR_ID_AMD, 0x1200 },
 	{ 0xff, 0, PCI_VENDOR_ID_AMD, 0x1200 },
 };
 
+<<<<<<< HEAD
 static int __cpuinit cmp_range(const void *x1, const void *x2)
+=======
+static int cmp_range(const void *x1, const void *x2)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct range *r1 = x1;
 	const struct range *r2 = x2;
@@ -49,7 +59,11 @@ static int __cpuinit cmp_range(const void *x1, const void *x2)
 /* need to avoid (0xfd<<32), (0xfe<<32), and (0xff<<32), ht used space */
 #define FAM10H_PCI_MMCONF_BASE (0xfcULL<<32)
 #define BASE_VALID(b) ((b) + MMCONF_SIZE <= (0xfdULL<<32) || (b) >= (1ULL<<40))
+<<<<<<< HEAD
 static void __cpuinit get_fam10h_pci_mmconf_base(void)
+=======
+static void get_fam10h_pci_mmconf_base(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	unsigned bus;
@@ -166,7 +180,11 @@ out:
 	fam10h_pci_mmconf_base = base;
 }
 
+<<<<<<< HEAD
 void __cpuinit fam10h_check_enable_mmcfg(void)
+=======
+void fam10h_check_enable_mmcfg(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 val;
 	u32 address;
@@ -230,7 +248,11 @@ static const struct dmi_system_id __initconst mmconf_dmi_table[] = {
 	{}
 };
 
+<<<<<<< HEAD
 /* Called from a __cpuinit function, but only on the BSP. */
+=======
+/* Called from a non __init function, but only on the BSP. */
+>>>>>>> refs/remotes/origin/master
 void __ref check_enable_amd_mmconf_dmi(void)
 {
 	dmi_check_system(mmconf_dmi_table);

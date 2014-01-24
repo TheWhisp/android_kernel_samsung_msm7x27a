@@ -409,6 +409,8 @@ static int send_write_chunks(struct svcxprt_rdma *xprt,
 		u64 rs_offset;
 
 		arg_ch = &arg_ary->wc_array[chunk_no].wc_target;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		write_len = min(xfer_len, arg_ch->rs_length);
 
 		/* Prepare the response chunk given the length actually
@@ -418,12 +420,36 @@ static int send_write_chunks(struct svcxprt_rdma *xprt,
 					    arg_ch->rs_handle,
 					    rs_offset,
 					    write_len);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		write_len = min(xfer_len, ntohl(arg_ch->rs_length));
+
+		/* Prepare the response chunk given the length actually
+		 * written */
+		xdr_decode_hyper((__be32 *)&arg_ch->rs_offset, &rs_offset);
+		svc_rdma_xdr_encode_array_chunk(res_ary, chunk_no,
+						arg_ch->rs_handle,
+						arg_ch->rs_offset,
+						write_len);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		chunk_off = 0;
 		while (write_len) {
 			int this_write;
 			this_write = min(write_len, max_write);
 			ret = send_write(xprt, rqstp,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					 arg_ch->rs_handle,
+=======
+					 ntohl(arg_ch->rs_handle),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 ntohl(arg_ch->rs_handle),
+>>>>>>> refs/remotes/origin/master
 					 rs_offset + chunk_off,
 					 xdr_off,
 					 this_write,
@@ -457,6 +483,14 @@ static int send_reply_chunks(struct svcxprt_rdma *xprt,
 	u32 xdr_off;
 	int chunk_no;
 	int chunk_off;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int nchunks;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int nchunks;
+>>>>>>> refs/remotes/origin/master
 	struct rpcrdma_segment *ch;
 	struct rpcrdma_write_array *arg_ary;
 	struct rpcrdma_write_array *res_ary;
@@ -476,6 +510,8 @@ static int send_reply_chunks(struct svcxprt_rdma *xprt,
 		max_write = xprt->sc_max_sge * PAGE_SIZE;
 
 	/* xdr offset starts at RPC message */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (xdr_off = 0, chunk_no = 0;
 	     xfer_len && chunk_no < arg_ary->wc_nchunks;
 	     chunk_no++) {
@@ -489,13 +525,42 @@ static int send_reply_chunks(struct svcxprt_rdma *xprt,
 		svc_rdma_xdr_encode_array_chunk(res_ary, chunk_no,
 					    ch->rs_handle, rs_offset,
 					    write_len);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	nchunks = ntohl(arg_ary->wc_nchunks);
+	for (xdr_off = 0, chunk_no = 0;
+	     xfer_len && chunk_no < nchunks;
+	     chunk_no++) {
+		u64 rs_offset;
+		ch = &arg_ary->wc_array[chunk_no].wc_target;
+		write_len = min(xfer_len, htonl(ch->rs_length));
+
+		/* Prepare the reply chunk given the length actually
+		 * written */
+		xdr_decode_hyper((__be32 *)&ch->rs_offset, &rs_offset);
+		svc_rdma_xdr_encode_array_chunk(res_ary, chunk_no,
+						ch->rs_handle, ch->rs_offset,
+						write_len);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		chunk_off = 0;
 		while (write_len) {
 			int this_write;
 
 			this_write = min(write_len, max_write);
 			ret = send_write(xprt, rqstp,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					 ch->rs_handle,
+=======
+					 ntohl(ch->rs_handle),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 ntohl(ch->rs_handle),
+>>>>>>> refs/remotes/origin/master
 					 rs_offset + chunk_off,
 					 xdr_off,
 					 this_write,
@@ -546,6 +611,10 @@ static int send_reply(struct svcxprt_rdma *rdma,
 	int sge_no;
 	int sge_bytes;
 	int page_no;
+<<<<<<< HEAD
+=======
+	int pages;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* Post a recv buffer to handle another request. */
@@ -609,7 +678,12 @@ static int send_reply(struct svcxprt_rdma *rdma,
 	 * respages array. They are our pages until the I/O
 	 * completes.
 	 */
+<<<<<<< HEAD
 	for (page_no = 0; page_no < rqstp->rq_resused; page_no++) {
+=======
+	pages = rqstp->rq_next_page - rqstp->rq_respages;
+	for (page_no = 0; page_no < pages; page_no++) {
+>>>>>>> refs/remotes/origin/master
 		ctxt->pages[page_no+1] = rqstp->rq_respages[page_no];
 		ctxt->count++;
 		rqstp->rq_respages[page_no] = NULL;

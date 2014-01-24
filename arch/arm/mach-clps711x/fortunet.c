@@ -57,8 +57,12 @@ typedef struct tag_IMAGE_PARAMS
 #define IMAGE_PARAMS_PHYS	0xC01F0000
 
 static void __init
+<<<<<<< HEAD
 fortunet_fixup(struct machine_desc *desc, struct tag *tags,
 		 char **cmdline, struct meminfo *mi)
+=======
+fortunet_fixup(struct tag *tags, char **cmdline, struct meminfo *mi)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	IMAGE_PARAMS *ip = phys_to_virt(IMAGE_PARAMS_PHYS);
 	*cmdline = phys_to_virt(ip->command_line);
@@ -75,9 +79,16 @@ fortunet_fixup(struct machine_desc *desc, struct tag *tags,
 
 MACHINE_START(FORTUNET, "ARM-FortuNet")
 	/* Maintainer: FortuNet Inc. */
+<<<<<<< HEAD
 	.boot_params	= 0x00000000,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.fixup		= fortunet_fixup,
 	.map_io		= clps711x_map_io,
 	.init_irq	= clps711x_init_irq,
 	.timer		= &clps711x_timer,
+<<<<<<< HEAD
+=======
+	.restart	= clps711x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

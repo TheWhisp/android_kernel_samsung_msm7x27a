@@ -18,12 +18,15 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ************************************************************************
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: ni_daq_dio24
@@ -37,6 +40,7 @@ This is just a wrapper around the 8255.o driver to properly handle
 the PCMCIA interface.
 */
 
+<<<<<<< HEAD
 			    /* #define LABPC_DEBUG *//*  enable debugging messages */
 #undef LABPC_DEBUG
 
@@ -48,11 +52,21 @@ the PCMCIA interface.
 
 #include "8255.h"
 
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+>>>>>>> refs/remotes/origin/master
 #include <pcmcia/cistpl.h>
 #include <pcmcia/cisreg.h>
 #include <pcmcia/ds.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct pcmcia_device *pcmcia_cur_dev = NULL;
+=======
+static struct pcmcia_device *pcmcia_cur_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DIO24_SIZE 4		/*  size of io region used by board */
 
@@ -133,6 +147,7 @@ static int dio24_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 #endif
 		break;
 	default:
+<<<<<<< HEAD
 		printk("bug! couldn't determine board type\n");
 		return -EINVAL;
 		break;
@@ -149,6 +164,21 @@ static int dio24_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 
 	if (iobase == 0) {
 		printk("io base address is zero!\n");
+=======
+		pr_err("bug! couldn't determine board type\n");
+		return -EINVAL;
+		break;
+	}
+	pr_debug("comedi%d: ni_daq_dio24: %s, io 0x%lx", dev->minor,
+		 thisboard->name, iobase);
+#ifdef incomplete
+	if (irq)
+		pr_debug("irq %u\n", irq);
+#endif
+
+	if (iobase == 0) {
+		pr_err("io base address is zero!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -173,7 +203,11 @@ static int dio24_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 
 static int dio24_detach(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 	printk("comedi%d: ni_daq_dio24: remove\n", dev->minor);
+=======
+	dev_info(dev->hw_dev, "comedi%d: ni_daq_dio24: remove\n", dev->minor);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (dev->subdevices)
 		subdev_8255_cleanup(dev, dev->subdevices + 0);
@@ -198,10 +232,46 @@ struct local_info_t {
 	struct pcmcia_device *link;
 	int stop;
 	struct bus_operations *bus;
+=======
+#include "8255.h"
+
+static int dio24_auto_attach(struct comedi_device *dev,
+			     unsigned long context)
+{
+	struct pcmcia_device *link = comedi_to_pcmcia_dev(dev);
+	struct comedi_subdevice *s;
+	int ret;
+
+	link->config_flags |= CONF_AUTO_SET_IO;
+	ret = comedi_pcmcia_enable(dev, NULL);
+	if (ret)
+		return ret;
+	dev->iobase = link->resource[0]->start;
+
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	/* 8255 dio */
+	s = &dev->subdevices[0];
+	ret = subdev_8255_init(dev, s, NULL, dev->iobase);
+	if (ret)
+		return ret;
+
+	return 0;
+}
+
+static struct comedi_driver driver_dio24 = {
+	.driver_name	= "ni_daq_dio24",
+	.module		= THIS_MODULE,
+	.auto_attach	= dio24_auto_attach,
+	.detach		= comedi_pcmcia_disable,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int dio24_cs_attach(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 	struct local_info_t *local;
 
 	printk(KERN_INFO "ni_daq_dio24: HOLA SOY YO - CS-attach!\n");
@@ -354,3 +424,27 @@ void __exit cleanup_module(void)
 	exit_dio24_cs();
 	comedi_driver_unregister(&driver_dio24);
 }
+=======
+	return comedi_pcmcia_auto_config(link, &driver_dio24);
+}
+
+static const struct pcmcia_device_id dio24_cs_ids[] = {
+	PCMCIA_DEVICE_MANF_CARD(0x010b, 0x475c),	/* daqcard-dio24 */
+	PCMCIA_DEVICE_NULL
+};
+MODULE_DEVICE_TABLE(pcmcia, dio24_cs_ids);
+
+static struct pcmcia_driver dio24_cs_driver = {
+	.name		= "ni_daq_dio24",
+	.owner		= THIS_MODULE,
+	.id_table	= dio24_cs_ids,
+	.probe		= dio24_cs_attach,
+	.remove		= comedi_pcmcia_auto_unconfig,
+};
+module_comedi_pcmcia_driver(driver_dio24, dio24_cs_driver);
+
+MODULE_AUTHOR("Daniel Vecino Castel <dvecino@able.es>");
+MODULE_DESCRIPTION(
+	"Comedi driver for National Instruments PCMCIA DAQ-Card DIO-24");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

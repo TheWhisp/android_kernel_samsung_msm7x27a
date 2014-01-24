@@ -1,5 +1,6 @@
 if PLAT_VERSATILE
 
+<<<<<<< HEAD
 config PLAT_VERSATILE_CLCD
 	bool
 
@@ -11,7 +12,27 @@ config PLAT_VERSATILE_LEDS
 	depends on ARCH_REALVIEW || ARCH_VERSATILE
 
 config PLAT_VERSATILE_SCHED_CLOCK
+<<<<<<< HEAD
 	def_bool y if !ARCH_INTEGRATOR_AP
 	select HAVE_SCHED_CLOCK
+=======
+	def_bool y
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config PLAT_VERSATILE_CLOCK
+	bool
+
+config PLAT_VERSATILE_CLCD
+	bool
+
+config PLAT_VERSATILE_LEDS
+	def_bool y if NEW_LEDS
+	depends on ARCH_REALVIEW || ARCH_VERSATILE
+	select LEDS_CLASS
+	select LEDS_TRIGGERS
+
+config PLAT_VERSATILE_SCHED_CLOCK
+	def_bool y
+>>>>>>> refs/remotes/origin/master
 
 endif

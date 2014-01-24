@@ -33,7 +33,15 @@ static unsigned long pll_recalc(struct clk *clk)
 	return clk->parent->rate * multiplier;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk_ops pll_clk_ops = {
+=======
+static struct sh_clk_ops pll_clk_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sh_clk_ops pll_clk_ops = {
+>>>>>>> refs/remotes/origin/master
 	.recalc		= pll_recalc,
 };
 
@@ -79,7 +87,15 @@ struct clk div4_clks[DIV4_NR] = {
 #define MSTPCR1		0xffc80034
 #define MSTPCR2		0xffc10028
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum { MSTP004, MSTP000, MSTP114, MSTP113, MSTP112,
+=======
+enum { MSTP004, MSTP000, MSTP127, MSTP114, MSTP113, MSTP112,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum { MSTP004, MSTP000, MSTP127, MSTP114, MSTP113, MSTP112,
+>>>>>>> refs/remotes/origin/master
        MSTP111, MSTP110, MSTP103, MSTP102, MSTP220,
        MSTP_NR };
 
@@ -89,6 +105,14 @@ static struct clk mstp_clks[MSTP_NR] = {
 	[MSTP000] = SH_CLK_MSTP32(&div4_clks[DIV4_P], MSTPCR0, 0, 0),
 
 	/* MSTPCR1 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	[MSTP127] = SH_CLK_MSTP32(&div4_clks[DIV4_P], MSTPCR1, 27, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[MSTP127] = SH_CLK_MSTP32(&div4_clks[DIV4_P], MSTPCR1, 27, 0),
+>>>>>>> refs/remotes/origin/master
 	[MSTP114] = SH_CLK_MSTP32(&div4_clks[DIV4_P], MSTPCR1, 14, 0),
 	[MSTP113] = SH_CLK_MSTP32(&div4_clks[DIV4_P], MSTPCR1, 13, 0),
 	[MSTP112] = SH_CLK_MSTP32(&div4_clks[DIV4_P], MSTPCR1, 12, 0),
@@ -101,8 +125,14 @@ static struct clk mstp_clks[MSTP_NR] = {
 	[MSTP220] = SH_CLK_MSTP32(&div4_clks[DIV4_P], MSTPCR2, 20, 0),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define CLKDEV_CON_ID(_id, _clk) { .con_id = _id, .clk = _clk }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct clk_lookup lookups[] = {
 	/* main clocks */
 	CLKDEV_CON_ID("extal", &extal_clk),
@@ -114,6 +144,8 @@ static struct clk_lookup lookups[] = {
 	CLKDEV_CON_ID("cpu_clk", &div4_clks[DIV4_I]),
 
 	/* MSTP32 clocks */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	CLKDEV_CON_ID("sdhi0", &mstp_clks[MSTP004]),
 	CLKDEV_CON_ID("riic", &mstp_clks[MSTP000]),
 	{
@@ -145,6 +177,33 @@ static struct clk_lookup lookups[] = {
 	},
 	CLKDEV_CON_ID("usb0", &mstp_clks[MSTP102]),
 	CLKDEV_CON_ID("mmc0", &mstp_clks[MSTP220]),
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	CLKDEV_DEV_ID("sh_mobile_sdhi.0", &mstp_clks[MSTP004]),
+	CLKDEV_CON_ID("riic0", &mstp_clks[MSTP000]),
+	CLKDEV_CON_ID("riic1", &mstp_clks[MSTP000]),
+	CLKDEV_CON_ID("riic2", &mstp_clks[MSTP000]),
+	CLKDEV_CON_ID("riic3", &mstp_clks[MSTP000]),
+	CLKDEV_CON_ID("riic4", &mstp_clks[MSTP000]),
+	CLKDEV_CON_ID("riic5", &mstp_clks[MSTP000]),
+	CLKDEV_CON_ID("riic6", &mstp_clks[MSTP000]),
+	CLKDEV_CON_ID("riic7", &mstp_clks[MSTP000]),
+
+	CLKDEV_ICK_ID("tmu_fck", "sh_tmu.0", &mstp_clks[MSTP113]),
+	CLKDEV_ICK_ID("tmu_fck", "sh_tmu.1", &mstp_clks[MSTP114]),
+	CLKDEV_ICK_ID("sci_fck", "sh-sci.2", &mstp_clks[MSTP112]),
+	CLKDEV_ICK_ID("sci_fck", "sh-sci.1", &mstp_clks[MSTP111]),
+	CLKDEV_ICK_ID("sci_fck", "sh-sci.0", &mstp_clks[MSTP110]),
+
+	CLKDEV_CON_ID("usb_fck", &mstp_clks[MSTP103]),
+	CLKDEV_DEV_ID("renesas_usbhs.0", &mstp_clks[MSTP102]),
+	CLKDEV_CON_ID("mmc0", &mstp_clks[MSTP220]),
+	CLKDEV_CON_ID("rspi2", &mstp_clks[MSTP127]),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 int __init arch_clk_init(void)
@@ -160,7 +219,11 @@ int __init arch_clk_init(void)
 		ret = sh_clk_div4_register(div4_clks, ARRAY_SIZE(div4_clks),
 					   &div4_table);
 	if (!ret)
+<<<<<<< HEAD
 		ret = sh_clk_mstp32_register(mstp_clks, MSTP_NR);
+=======
+		ret = sh_clk_mstp_register(mstp_clks, MSTP_NR);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }

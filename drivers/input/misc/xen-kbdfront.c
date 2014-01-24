@@ -104,7 +104,11 @@ static irqreturn_t input_handler(int rq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit xenkbd_probe(struct xenbus_device *dev,
+=======
+static int xenkbd_probe(struct xenbus_device *dev,
+>>>>>>> refs/remotes/origin/master
 				  const struct xenbus_device_id *id)
 {
 	int ret, i, abs;
@@ -311,7 +315,10 @@ static void xenkbd_backend_changed(struct xenbus_device *dev,
 	case XenbusStateReconfiguring:
 	case XenbusStateReconfigured:
 	case XenbusStateUnknown:
+<<<<<<< HEAD
 	case XenbusStateClosed:
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case XenbusStateInitWait:
@@ -350,6 +357,13 @@ InitWait:
 
 		break;
 
+<<<<<<< HEAD
+=======
+	case XenbusStateClosed:
+		if (dev->state == XenbusStateClosed)
+			break;
+		/* Missed the backend's CLOSING state -- fallthrough */
+>>>>>>> refs/remotes/origin/master
 	case XenbusStateClosing:
 		xenbus_frontend_closed(dev);
 		break;
@@ -361,19 +375,41 @@ static const struct xenbus_device_id xenkbd_ids[] = {
 	{ "" }
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct xenbus_driver xenkbd_driver = {
 	.name = "vkbd",
 	.owner = THIS_MODULE,
 	.ids = xenkbd_ids,
+=======
+static DEFINE_XENBUS_DRIVER(xenkbd, ,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_XENBUS_DRIVER(xenkbd, ,
+>>>>>>> refs/remotes/origin/master
 	.probe = xenkbd_probe,
 	.remove = xenkbd_remove,
 	.resume = xenkbd_resume,
 	.otherend_changed = xenkbd_backend_changed,
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static int __init xenkbd_init(void)
 {
 	if (!xen_pv_domain())
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+);
+
+static int __init xenkbd_init(void)
+{
+	if (!xen_domain())
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	/* Nothing to do if running in dom0. */

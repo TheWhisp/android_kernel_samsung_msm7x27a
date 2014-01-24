@@ -127,7 +127,11 @@ static void pcips2_close(struct serio *io)
 	free_irq(ps2if->dev->irq, ps2if);
 }
 
+<<<<<<< HEAD
 static int __devinit pcips2_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int pcips2_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pcips2_data *ps2if;
 	struct serio *serio;
@@ -176,7 +180,11 @@ static int __devinit pcips2_probe(struct pci_dev *dev, const struct pci_device_i
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit pcips2_remove(struct pci_dev *dev)
+=======
+static void pcips2_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pcips2_data *ps2if = pci_get_drvdata(dev);
 
@@ -206,11 +214,16 @@ static const struct pci_device_id pcips2_ids[] = {
 	},
 	{ 0, }
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(pci, pcips2_ids);
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_driver pcips2_driver = {
 	.name			= "pcips2",
 	.id_table		= pcips2_ids,
 	.probe			= pcips2_probe,
+<<<<<<< HEAD
 	.remove			= __devexit_p(pcips2_remove),
 };
 
@@ -226,8 +239,17 @@ static void __exit pcips2_exit(void)
 
 module_init(pcips2_init);
 module_exit(pcips2_exit);
+=======
+	.remove			= pcips2_remove,
+};
+
+module_pci_driver(pcips2_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Russell King <rmk@arm.linux.org.uk>");
 MODULE_DESCRIPTION("PCI PS/2 keyboard/mouse driver");
+<<<<<<< HEAD
 MODULE_DEVICE_TABLE(pci, pcips2_ids);
+=======
+>>>>>>> refs/remotes/origin/master

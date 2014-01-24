@@ -16,6 +16,10 @@
 #include <linux/smc91x.h>
 #include <linux/io.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio-pxa.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 
 #include <asm/mach-types.h>
@@ -23,10 +27,24 @@
 #include <mach/addr-map.h>
 #include <mach/mfp-mmp2.h>
 #include <mach/mmp2.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "common.h"
 
 #define FLINT_NR_IRQS	(IRQ_BOARD_START + 48)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <mach/irqs.h>
+
+#include "common.h"
+
+#define FLINT_NR_IRQS	(MMP_NR_IRQS + 48)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static unsigned long flint_pin_config[] __initdata = {
 	/* UART1 */
@@ -76,6 +94,13 @@ static unsigned long flint_pin_config[] __initdata = {
 	GPIO160_ND_RDY1,
 };
 
+<<<<<<< HEAD
+=======
+static struct pxa_gpio_platform_data mmp2_gpio_pdata = {
+	.irq_base	= MMP_GPIO_TO_IRQ(0),
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct smc91x_platdata flint_smc91x_info = {
 	.flags  = SMC91X_USE_16BIT | SMC91X_NOWAIT,
 };
@@ -87,8 +112,18 @@ static struct resource smc91x_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.start  = gpio_to_irq(155),
 		.end    = gpio_to_irq(155),
+=======
+		.start  = MMP_GPIO_TO_IRQ(155),
+		.end    = MMP_GPIO_TO_IRQ(155),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start  = MMP_GPIO_TO_IRQ(155),
+		.end    = MMP_GPIO_TO_IRQ(155),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	}
 };
@@ -110,6 +145,16 @@ static void __init flint_init(void)
 	/* on-chip devices */
 	mmp2_add_uart(1);
 	mmp2_add_uart(2);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	platform_device_register(&mmp2_device_gpio);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_device_add_data(&mmp2_device_gpio, &mmp2_gpio_pdata,
+				 sizeof(struct pxa_gpio_platform_data));
+	platform_device_register(&mmp2_device_gpio);
+>>>>>>> refs/remotes/origin/master
 
 	/* off-chip devices */
 	platform_device_register(&smc91x_device);
@@ -119,6 +164,16 @@ MACHINE_START(FLINT, "Flint Development Platform")
 	.map_io		= mmp_map_io,
 	.nr_irqs	= FLINT_NR_IRQS,
 	.init_irq       = mmp2_init_irq,
+<<<<<<< HEAD
 	.timer          = &mmp2_timer,
 	.init_machine   = flint_init,
+<<<<<<< HEAD
+=======
+	.restart	= mmp_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= mmp2_timer_init,
+	.init_machine   = flint_init,
+	.restart	= mmp_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

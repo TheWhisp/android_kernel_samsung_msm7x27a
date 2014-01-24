@@ -339,7 +339,11 @@ static const struct rtc_class_ops wm8350_rtc_ops = {
 	.alarm_irq_enable = wm8350_rtc_alarm_irq_enable,
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int wm8350_rtc_suspend(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
@@ -375,10 +379,13 @@ static int wm8350_rtc_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 #else
 #define wm8350_rtc_suspend NULL
 #define wm8350_rtc_resume NULL
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int wm8350_rtc_probe(struct platform_device *pdev)
@@ -439,8 +446,13 @@ static int wm8350_rtc_probe(struct platform_device *pdev)
 
 	device_init_wakeup(&pdev->dev, 1);
 
+<<<<<<< HEAD
 	wm_rtc->rtc = rtc_device_register("wm8350", &pdev->dev,
 					  &wm8350_rtc_ops, THIS_MODULE);
+=======
+	wm_rtc->rtc = devm_rtc_device_register(&pdev->dev, "wm8350",
+					&wm8350_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(wm_rtc->rtc)) {
 		ret = PTR_ERR(wm_rtc->rtc);
 		dev_err(&pdev->dev, "failed to register RTC: %d\n", ret);
@@ -459,14 +471,21 @@ static int wm8350_rtc_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit wm8350_rtc_remove(struct platform_device *pdev)
 {
 	struct wm8350 *wm8350 = platform_get_drvdata(pdev);
 	struct wm8350_rtc *wm_rtc = &wm8350->rtc;
+=======
+static int wm8350_rtc_remove(struct platform_device *pdev)
+{
+	struct wm8350 *wm8350 = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	wm8350_free_irq(wm8350, WM8350_IRQ_RTC_SEC, wm8350);
 	wm8350_free_irq(wm8350, WM8350_IRQ_RTC_ALM, wm8350);
 
+<<<<<<< HEAD
 	rtc_device_unregister(wm_rtc->rtc);
 
 	return 0;
@@ -480,12 +499,25 @@ static struct dev_pm_ops wm8350_rtc_pm_ops = {
 static struct platform_driver wm8350_rtc_driver = {
 	.probe = wm8350_rtc_probe,
 	.remove = __devexit_p(wm8350_rtc_remove),
+=======
+	return 0;
+}
+
+static SIMPLE_DEV_PM_OPS(wm8350_rtc_pm_ops, wm8350_rtc_suspend,
+			wm8350_rtc_resume);
+
+static struct platform_driver wm8350_rtc_driver = {
+	.probe = wm8350_rtc_probe,
+	.remove = wm8350_rtc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "wm8350-rtc",
 		.pm = &wm8350_rtc_pm_ops,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init wm8350_rtc_init(void)
 {
 	return platform_driver_register(&wm8350_rtc_driver);
@@ -497,6 +529,12 @@ static void __exit wm8350_rtc_exit(void)
 	platform_driver_unregister(&wm8350_rtc_driver);
 }
 module_exit(wm8350_rtc_exit);
+=======
+module_platform_driver(wm8350_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(wm8350_rtc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 MODULE_DESCRIPTION("RTC driver for the WM8350");

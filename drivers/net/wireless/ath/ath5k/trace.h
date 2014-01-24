@@ -2,32 +2,75 @@
 #define __TRACE_ATH5K_H
 
 #include <linux/tracepoint.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "base.h"
 
 #ifndef CONFIG_ATH5K_TRACER
+=======
+
+
+#if !defined(CONFIG_ATH5K_TRACER) || defined(__CHECKER__)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+
+#if !defined(CONFIG_ATH5K_TRACER) || defined(__CHECKER__)
+>>>>>>> refs/remotes/origin/master
 #undef TRACE_EVENT
 #define TRACE_EVENT(name, proto, ...) \
 static inline void trace_ ## name(proto) {}
 #endif
 
 struct sk_buff;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #define PRIV_ENTRY  __field(struct ath5k_softc *, priv)
 #define PRIV_ASSIGN __entry->priv = priv
+=======
+struct ath5k_txq;
+struct ath5k_tx_status;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct ath5k_txq;
+struct ath5k_tx_status;
+>>>>>>> refs/remotes/origin/master
 
 #undef TRACE_SYSTEM
 #define TRACE_SYSTEM ath5k
 
 TRACE_EVENT(ath5k_rx,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	TP_PROTO(struct ath5k_softc *priv, struct sk_buff *skb),
 	TP_ARGS(priv, skb),
 	TP_STRUCT__entry(
 		PRIV_ENTRY
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	TP_PROTO(struct ath5k_hw *priv, struct sk_buff *skb),
+	TP_ARGS(priv, skb),
+	TP_STRUCT__entry(
+		__field(struct ath5k_hw *, priv)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		__field(unsigned long, skbaddr)
 		__dynamic_array(u8, frame, skb->len)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
+<<<<<<< HEAD
 		PRIV_ASSIGN;
+=======
+		__entry->priv = priv;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__entry->priv = priv;
+>>>>>>> refs/remotes/origin/master
 		__entry->skbaddr = (unsigned long) skb;
 		memcpy(__get_dynamic_array(frame), skb->data, skb->len);
 	),
@@ -37,20 +80,44 @@ TRACE_EVENT(ath5k_rx,
 );
 
 TRACE_EVENT(ath5k_tx,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	TP_PROTO(struct ath5k_softc *priv, struct sk_buff *skb,
+=======
+	TP_PROTO(struct ath5k_hw *priv, struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TP_PROTO(struct ath5k_hw *priv, struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 		 struct ath5k_txq *q),
 
 	TP_ARGS(priv, skb, q),
 
 	TP_STRUCT__entry(
+<<<<<<< HEAD
+<<<<<<< HEAD
 		PRIV_ENTRY
+=======
+		__field(struct ath5k_hw *, priv)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__field(struct ath5k_hw *, priv)
+>>>>>>> refs/remotes/origin/master
 		__field(unsigned long, skbaddr)
 		__field(u8, qnum)
 		__dynamic_array(u8, frame, skb->len)
 	),
 
 	TP_fast_assign(
+<<<<<<< HEAD
+<<<<<<< HEAD
 		PRIV_ASSIGN;
+=======
+		__entry->priv = priv;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__entry->priv = priv;
+>>>>>>> refs/remotes/origin/master
 		__entry->skbaddr = (unsigned long) skb;
 		__entry->qnum = (u8) q->qnum;
 		memcpy(__get_dynamic_array(frame), skb->data, skb->len);
@@ -63,13 +130,29 @@ TRACE_EVENT(ath5k_tx,
 );
 
 TRACE_EVENT(ath5k_tx_complete,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	TP_PROTO(struct ath5k_softc *priv, struct sk_buff *skb,
+=======
+	TP_PROTO(struct ath5k_hw *priv, struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TP_PROTO(struct ath5k_hw *priv, struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 		 struct ath5k_txq *q, struct ath5k_tx_status *ts),
 
 	TP_ARGS(priv, skb, q, ts),
 
 	TP_STRUCT__entry(
+<<<<<<< HEAD
+<<<<<<< HEAD
 		PRIV_ENTRY
+=======
+		__field(struct ath5k_hw *, priv)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__field(struct ath5k_hw *, priv)
+>>>>>>> refs/remotes/origin/master
 		__field(unsigned long, skbaddr)
 		__field(u8, qnum)
 		__field(u8, ts_status)
@@ -78,7 +161,15 @@ TRACE_EVENT(ath5k_tx_complete,
 	),
 
 	TP_fast_assign(
+<<<<<<< HEAD
+<<<<<<< HEAD
 		PRIV_ASSIGN;
+=======
+		__entry->priv = priv;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__entry->priv = priv;
+>>>>>>> refs/remotes/origin/master
 		__entry->skbaddr = (unsigned long) skb;
 		__entry->qnum = (u8) q->qnum;
 		__entry->ts_status = ts->ts_status;
@@ -95,10 +186,21 @@ TRACE_EVENT(ath5k_tx_complete,
 
 #endif /* __TRACE_ATH5K_H */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ATH5K_TRACER
+=======
+#if defined(CONFIG_ATH5K_TRACER) && !defined(__CHECKER__)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #undef TRACE_INCLUDE_PATH
 #define TRACE_INCLUDE_PATH ../../drivers/net/wireless/ath/ath5k
+=======
+#if defined(CONFIG_ATH5K_TRACER) && !defined(__CHECKER__)
+
+#undef TRACE_INCLUDE_PATH
+#define TRACE_INCLUDE_PATH .
+>>>>>>> refs/remotes/origin/master
 #undef TRACE_INCLUDE_FILE
 #define TRACE_INCLUDE_FILE trace
 

@@ -34,7 +34,15 @@
 #include <mach/msm_rpcrouter.h>
 #include <mach/msm_battery_jena.h>
 #include <mach/bq27425_fuelguage.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "../../arch/arm/mach-msm/proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/pmic.h>
 #include <linux/android_alarm.h>
 /*from S+*/

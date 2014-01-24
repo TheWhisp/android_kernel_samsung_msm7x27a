@@ -81,6 +81,18 @@ int cpuidle_register_governor(struct cpuidle_governor *gov)
 	if (!gov || !gov->select)
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (cpuidle_disabled())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpuidle_disabled())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&cpuidle_lock);
 	if (__cpuidle_find_governor(gov->name) == NULL) {
 		ret = 0;
@@ -93,6 +105,7 @@ int cpuidle_register_governor(struct cpuidle_governor *gov)
 
 	return ret;
 }
+<<<<<<< HEAD
 
 /**
  * cpuidle_replace_governor - find a replacement governor
@@ -136,3 +149,5 @@ void cpuidle_unregister_governor(struct cpuidle_governor *gov)
 	mutex_unlock(&cpuidle_lock);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master

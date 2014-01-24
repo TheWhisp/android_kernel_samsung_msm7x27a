@@ -20,6 +20,8 @@
 #include <linux/io.h>
 #include <linux/ktime.h>
 #include <linux/pm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
 #include <linux/proc_fs.h>
 #include <linux/smp.h>
@@ -29,6 +31,20 @@
 #include <linux/wakelock.h>
 #include <linux/delay.h>
 #include <mach/msm_iomap.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/pm_qos.h>
+#include <linux/smp.h>
+#include <linux/suspend.h>
+#include <linux/tick.h>
+#include <linux/delay.h>
+#include <mach/msm_iomap.h>
+#include <mach/socinfo.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/system.h>
 #include <asm/cacheflush.h>
 #include <asm/hardware/gic.h>
@@ -45,18 +61,36 @@
 #include <mach/cpuidle.h>
 #include "idle.h"
 #include "pm.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "rpm_resources.h"
 #include "scm-boot.h"
 #include "spm.h"
 #include "timer.h"
 #include "qdss.h"
+=======
+#include "scm-boot.h"
+#include "spm.h"
+#include "timer.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "scm-boot.h"
+#include "spm.h"
+#include "timer.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "pm-boot.h"
 
 /******************************************************************************
  * Debug Definitions
  *****************************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	MSM_PM_DEBUG_SUSPEND = BIT(0),
 	MSM_PM_DEBUG_POWER_COLLAPSE = BIT(1),
@@ -78,6 +112,8 @@ module_param_named(
 /******************************************************************************
  * Sleep Modes and Parameters
  *****************************************************************************/
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static struct msm_pm_platform_data *msm_pm_modes;
 static int rpm_cpu0_wakeup_irq;
@@ -94,6 +130,10 @@ void __init msm_pm_set_rpm_wakeup_irq(unsigned int irq)
 	rpm_cpu0_wakeup_irq = irq;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	MSM_PM_MODE_ATTR_SUSPEND,
 	MSM_PM_MODE_ATTR_IDLE,
@@ -123,10 +163,26 @@ struct msm_pm_sysfs_sleep_mode {
 static char *msm_pm_sleep_mode_labels[MSM_PM_SLEEP_MODE_NR] = {
 	[MSM_PM_SLEEP_MODE_POWER_COLLAPSE] = "power_collapse",
 	[MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT] = "wfi",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	[MSM_PM_SLEEP_MODE_RETENTION] = "retention",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[MSM_PM_SLEEP_MODE_RETENTION] = "retention",
+>>>>>>> refs/remotes/origin/cm-11.0
 	[MSM_PM_SLEEP_MODE_POWER_COLLAPSE_STANDALONE] =
 		"standalone_power_collapse",
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static struct msm_pm_sleep_ops pm_sleep_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct msm_pm_sleep_ops pm_sleep_ops;
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Write out the attribute.
  */
@@ -148,7 +204,15 @@ static ssize_t msm_pm_mode_attr_show(
 			continue;
 
 		cpu = GET_CPU_OF_ATTR(attr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mode = &msm_pm_modes[MSM_PM_MODE(cpu, i)];
+=======
+		mode = &msm_pm_sleep_modes[MSM_PM_MODE(cpu, i)];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mode = &msm_pm_sleep_modes[MSM_PM_MODE(cpu, i)];
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (!strcmp(attr->attr.name,
 			msm_pm_mode_attr_labels[MSM_PM_MODE_ATTR_SUSPEND])) {
@@ -194,7 +258,15 @@ static ssize_t msm_pm_mode_attr_store(struct kobject *kobj,
 			continue;
 
 		cpu = GET_CPU_OF_ATTR(attr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mode = &msm_pm_modes[MSM_PM_MODE(cpu, i)];
+=======
+		mode = &msm_pm_sleep_modes[MSM_PM_MODE(cpu, i)];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mode = &msm_pm_sleep_modes[MSM_PM_MODE(cpu, i)];
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (!strcmp(attr->attr.name,
 			msm_pm_mode_attr_labels[MSM_PM_MODE_ATTR_SUSPEND])) {
@@ -235,8 +307,23 @@ static int __init msm_pm_mode_sysfs_add_cpu(
 	for (i = 0; i < MSM_PM_SLEEP_MODE_NR; i++) {
 		int idx = MSM_PM_MODE(cpu, i);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((!msm_pm_modes[idx].suspend_supported)
 			&& (!msm_pm_modes[idx].idle_supported))
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if ((!msm_pm_sleep_modes[idx].suspend_supported)
+			&& (!msm_pm_sleep_modes[idx].idle_supported))
+			continue;
+
+		if (!msm_pm_sleep_mode_labels[i] ||
+				!msm_pm_sleep_mode_labels[i][0])
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 
 		mode = kzalloc(sizeof(*mode), GFP_KERNEL);
@@ -257,11 +344,26 @@ static int __init msm_pm_mode_sysfs_add_cpu(
 
 		for (k = 0, j = 0; k < MSM_PM_MODE_ATTR_NR; k++) {
 			if ((k == MSM_PM_MODE_ATTR_IDLE) &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 				!msm_pm_modes[idx].idle_supported)
 				continue;
 			if ((k == MSM_PM_MODE_ATTR_SUSPEND) &&
 			     !msm_pm_modes[idx].suspend_supported)
 				continue;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+				!msm_pm_sleep_modes[idx].idle_supported)
+				continue;
+			if ((k == MSM_PM_MODE_ATTR_SUSPEND) &&
+			     !msm_pm_sleep_modes[idx].suspend_supported)
+				continue;
+			sysfs_attr_init(&mode->kas[j].ka.attr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			mode->kas[j].cpu = cpu;
 			mode->kas[j].ka.attr.mode = 0644;
 			mode->kas[j].ka.show = msm_pm_mode_attr_show;
@@ -331,6 +433,8 @@ mode_sysfs_add_exit:
 }
 
 /******************************************************************************
+<<<<<<< HEAD
+<<<<<<< HEAD
  * CONFIG_MSM_IDLE_STATS
  *****************************************************************************/
 
@@ -544,6 +648,10 @@ write_proc_failed:
 
 
 /******************************************************************************
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * Configure Hardware before/after Low Power Mode
  *****************************************************************************/
 
@@ -623,7 +731,17 @@ EXPORT_SYMBOL(msm_pm_set_max_sleep_time);
  *
  *****************************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct msm_rpmrs_limits *msm_pm_idle_rs_limits;
+=======
+static void *msm_pm_idle_rs_limits;
+static bool msm_pm_use_qtimer;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void *msm_pm_idle_rs_limits;
+static bool msm_pm_use_qtimer;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static void msm_pm_swfi(void)
 {
@@ -631,14 +749,48 @@ static void msm_pm_swfi(void)
 	msm_arch_idle();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+static void msm_pm_retention(void)
+{
+	int ret = 0;
+
+	msm_pm_config_hw_before_swfi();
+	ret = msm_spm_set_low_power_mode(MSM_SPM_MODE_POWER_RETENTION, false);
+	WARN_ON(ret);
+	msm_arch_idle();
+	ret = msm_spm_set_low_power_mode(MSM_SPM_MODE_CLOCK_GATING, false);
+	WARN_ON(ret);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_CACHE_L2X0
 static inline bool msm_pm_l2x0_power_collapse(void)
 {
 	bool collapsed = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	l2x0_suspend();
 	collapsed = msm_pm_collapse();
 	l2x0_resume(collapsed);
+=======
+	l2cc_suspend();
+	collapsed = msm_pm_collapse();
+	l2cc_resume();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	l2cc_suspend();
+	collapsed = msm_pm_collapse();
+	l2cc_resume();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return collapsed;
 }
@@ -649,12 +801,33 @@ static inline bool msm_pm_l2x0_power_collapse(void)
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static bool msm_pm_spm_power_collapse(
+=======
+static bool __ref msm_pm_spm_power_collapse(
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool __ref msm_pm_spm_power_collapse(
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int cpu, bool from_idle, bool notify_rpm)
 {
 	void *entry;
 	bool collapsed = 0;
 	int ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	unsigned int saved_gic_cpu_ctrl;
+
+	saved_gic_cpu_ctrl = readl_relaxed(MSM_QGIC_CPU_BASE + GIC_CPU_CTRL);
+	mb();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (MSM_PM_DEBUG_POWER_COLLAPSE & msm_pm_debug_mask)
 		pr_info("CPU%u: %s: notify_rpm %d\n",
@@ -673,7 +846,15 @@ static bool msm_pm_spm_power_collapse(
 			cpu, __func__, entry);
 
 #ifdef CONFIG_VFP
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vfp_flush_context();
+=======
+	vfp_pm_suspend();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vfp_pm_suspend();
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	collapsed = msm_pm_l2x0_power_collapse();
@@ -682,11 +863,27 @@ static bool msm_pm_spm_power_collapse(
 
 	if (collapsed) {
 #ifdef CONFIG_VFP
+<<<<<<< HEAD
+<<<<<<< HEAD
 		vfp_reinit();
 #endif
 		cpu_init();
 		writel(0xF0, MSM_QGIC_CPU_BASE + GIC_CPU_PRIMASK);
 		writel(1, MSM_QGIC_CPU_BASE + GIC_CPU_CTRL);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		vfp_pm_resume();
+#endif
+		cpu_init();
+		writel(0xF0, MSM_QGIC_CPU_BASE + GIC_CPU_PRIMASK);
+		writel_relaxed(saved_gic_cpu_ctrl,
+				MSM_QGIC_CPU_BASE + GIC_CPU_CTRL);
+		mb();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		local_fiq_enable();
 	}
 
@@ -741,12 +938,43 @@ static bool msm_pm_power_collapse(bool from_idle)
 
 	collapsed = msm_pm_spm_power_collapse(cpu, from_idle, true);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (MSM_PM_DEBUG_CLOCK & msm_pm_debug_mask)
 		pr_info("CPU%u: %s: restore clock rate to %lu\n",
 			cpu, __func__, saved_acpuclk_rate);
 	if (acpuclk_set_rate(cpu, saved_acpuclk_rate, SETRATE_PC) < 0)
 		pr_err("CPU%u: %s: failed to restore clock rate(%lu)\n",
 			cpu, __func__, saved_acpuclk_rate);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (cpu_online(cpu)) {
+		if (MSM_PM_DEBUG_CLOCK & msm_pm_debug_mask)
+			pr_info("CPU%u: %s: restore clock rate to %lu\n",
+				cpu, __func__, saved_acpuclk_rate);
+		if (acpuclk_set_rate(cpu, saved_acpuclk_rate, SETRATE_PC) < 0)
+			pr_err("CPU%u: %s: failed to restore clock rate(%lu)\n",
+				cpu, __func__, saved_acpuclk_rate);
+	} else {
+		unsigned int gic_dist_enabled;
+		unsigned int gic_dist_pending;
+		gic_dist_enabled = readl_relaxed(
+				MSM_QGIC_DIST_BASE + GIC_DIST_ENABLE_CLEAR);
+		gic_dist_pending = readl_relaxed(
+				MSM_QGIC_DIST_BASE + GIC_DIST_PENDING_SET);
+		mb();
+		gic_dist_pending &= gic_dist_enabled;
+
+		if (gic_dist_pending)
+			pr_err("CPU %d interrupted during hotplug.Pending int 0x%x\n",
+					cpu, gic_dist_pending);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	avs_reset_delays(avsdscr_setting);
 	msm_pm_config_hw_after_power_up();
@@ -758,6 +986,8 @@ static bool msm_pm_power_collapse(bool from_idle)
 	return collapsed;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static irqreturn_t msm_pm_rpm_wakeup_interrupt(int irq, void *dev_id)
 {
 	if (dev_id != &msm_pm_rpm_wakeup_interrupt)
@@ -766,6 +996,66 @@ static irqreturn_t msm_pm_rpm_wakeup_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void msm_pm_qtimer_available(void)
+{
+	if (machine_is_msm8974())
+		msm_pm_use_qtimer = true;
+}
+
+static int64_t msm_pm_timer_enter_idle(void)
+{
+	if (msm_pm_use_qtimer)
+		return ktime_to_ns(tick_nohz_get_sleep_length());
+
+	return msm_timer_enter_idle();
+}
+
+static void msm_pm_timer_exit_idle(bool timer_halted)
+{
+	if (msm_pm_use_qtimer)
+		return;
+
+	msm_timer_exit_idle((int) timer_halted);
+}
+
+static int64_t msm_pm_timer_enter_suspend(int64_t *period)
+{
+	int time = 0;
+
+	if (msm_pm_use_qtimer)
+		return sched_clock();
+
+	time = msm_timer_get_sclk_time(period);
+	if (!time)
+		pr_err("%s: Unable to read sclk.\n", __func__);
+
+	return time;
+}
+
+static int64_t msm_pm_timer_exit_suspend(int64_t time, int64_t period)
+{
+	if (msm_pm_use_qtimer)
+		return sched_clock() - time;
+
+	if (time != 0) {
+		int64_t end_time = msm_timer_get_sclk_time(NULL);
+		if (end_time != 0) {
+			time = end_time - time;
+			if (time < 0)
+				time += period;
+		} else
+			time = 0;
+	}
+
+	return time;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /******************************************************************************
  * External Idle/Suspend Functions
@@ -776,17 +1066,39 @@ void arch_idle(void)
 	return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int msm_pm_idle_prepare(struct cpuidle_device *dev)
+=======
+int msm_pm_idle_prepare(struct cpuidle_device *dev,
+		struct cpuidle_driver *drv, int index)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int msm_pm_idle_prepare(struct cpuidle_device *dev,
+		struct cpuidle_driver *drv, int index)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	uint32_t latency_us;
 	uint32_t sleep_us;
 	int i;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned int power_usage = -1;
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int power_usage = -1;
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	latency_us = (uint32_t) pm_qos_request(PM_QOS_CPU_DMA_LATENCY);
 	sleep_us = (uint32_t) ktime_to_ns(tick_nohz_get_sleep_length());
 	sleep_us = DIV_ROUND_UP(sleep_us, 1000);
 
 	for (i = 0; i < dev->state_count; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct cpuidle_state *state = &dev->states[i];
 		enum msm_pm_sleep_mode mode;
 		bool allow;
@@ -798,6 +1110,26 @@ int msm_pm_idle_prepare(struct cpuidle_device *dev)
 
 		allow = msm_pm_modes[idx].idle_enabled &&
 				msm_pm_modes[idx].idle_supported;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		struct cpuidle_state *state = &drv->states[i];
+		struct cpuidle_state_usage *st_usage = &dev->states_usage[i];
+		enum msm_pm_sleep_mode mode;
+		bool allow;
+		void *rs_limits = NULL;
+		uint32_t power;
+		int idx;
+
+		mode = (enum msm_pm_sleep_mode) cpuidle_get_statedata(st_usage);
+		idx = MSM_PM_MODE(dev->cpu, mode);
+
+		allow = msm_pm_sleep_modes[idx].idle_enabled &&
+				msm_pm_sleep_modes[idx].idle_supported;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		switch (mode) {
 		case MSM_PM_SLEEP_MODE_POWER_COLLAPSE:
@@ -808,31 +1140,64 @@ int msm_pm_idle_prepare(struct cpuidle_device *dev)
 				allow = false;
 				break;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_HAS_WAKELOCK
 			if (has_wake_lock(WAKE_LOCK_IDLE)) {
 				allow = false;
 				break;
 			}
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* fall through */
 
 		case MSM_PM_SLEEP_MODE_POWER_COLLAPSE_STANDALONE:
 			if (!allow)
 				break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 			if (!dev->cpu &&
 				msm_rpm_local_request_is_outstanding()) {
 				allow = false;
 				break;
 			}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			/* fall through */
+
+		case MSM_PM_SLEEP_MODE_RETENTION:
+			if (!allow)
+				break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			/* fall through */
 
 		case MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT:
 			if (!allow)
 				break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			rs_limits = msm_rpmrs_lowest_limits(true,
 						mode, latency_us, sleep_us);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			if (pm_sleep_ops.lowest_limits)
+				rs_limits = pm_sleep_ops.lowest_limits(true,
+						mode, latency_us, sleep_us,
+						&power);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			if (MSM_PM_DEBUG_IDLE & msm_pm_debug_mask)
 				pr_info("CPU%u: %s: %s, latency %uus, "
@@ -840,6 +1205,8 @@ int msm_pm_idle_prepare(struct cpuidle_device *dev)
 					dev->cpu, __func__, state->desc,
 					latency_us, sleep_us, rs_limits);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if ((MSM_PM_DEBUG_IDLE_LIMITS & msm_pm_debug_mask) &&
 					rs_limits)
 				pr_info("CPU%u: %s: limit %p: "
@@ -851,6 +1218,10 @@ int msm_pm_idle_prepare(struct cpuidle_device *dev)
 					rs_limits->vdd_mem,
 					rs_limits->vdd_dig);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (!rs_limits)
 				allow = false;
 			break;
@@ -865,6 +1236,8 @@ int msm_pm_idle_prepare(struct cpuidle_device *dev)
 				dev->cpu, __func__, state->desc, (int)allow);
 
 		if (allow) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			state->flags &= ~CPUIDLE_FLAG_IGNORE;
 			state->target_residency = 0;
 			state->exit_latency = 0;
@@ -878,14 +1251,40 @@ int msm_pm_idle_prepare(struct cpuidle_device *dev)
 	}
 
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			if (power < power_usage) {
+				power_usage = power;
+				ret = mode;
+			}
+
+			if (MSM_PM_SLEEP_MODE_POWER_COLLAPSE == mode)
+				msm_pm_idle_rs_limits = rs_limits;
+		}
+	}
+
+	return ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 int msm_pm_idle_enter(enum msm_pm_sleep_mode sleep_mode)
 {
 	int64_t time;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_IDLE_STATS
 	int exit_stat;
 #endif
+=======
+	int exit_stat;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int exit_stat;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (MSM_PM_DEBUG_IDLE & msm_pm_debug_mask)
 		pr_info("CPU%u: %s: mode %d\n",
@@ -896,13 +1295,30 @@ int msm_pm_idle_enter(enum msm_pm_sleep_mode sleep_mode)
 	switch (sleep_mode) {
 	case MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT:
 		msm_pm_swfi();
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_IDLE_STATS
 		exit_stat = MSM_PM_STAT_IDLE_WFI;
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		exit_stat = MSM_PM_STAT_IDLE_WFI;
+		break;
+
+	case MSM_PM_SLEEP_MODE_RETENTION:
+		msm_pm_retention();
+		exit_stat = MSM_PM_STAT_RETENTION;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case MSM_PM_SLEEP_MODE_POWER_COLLAPSE_STANDALONE:
 		msm_pm_power_collapse_standalone(true);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_IDLE_STATS
 		exit_stat = MSM_PM_STAT_IDLE_STANDALONE_POWER_COLLAPSE;
 #endif
@@ -913,10 +1329,35 @@ int msm_pm_idle_enter(enum msm_pm_sleep_mode sleep_mode)
 		bool timer_halted = false;
 		uint32_t sleep_delay;
 		int ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		exit_stat = MSM_PM_STAT_IDLE_STANDALONE_POWER_COLLAPSE;
+		break;
+
+	case MSM_PM_SLEEP_MODE_POWER_COLLAPSE: {
+		int64_t timer_expiration = 0;
+		bool timer_halted = false;
+		uint32_t sleep_delay;
+		int ret = -ENODEV;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		int notify_rpm =
 			(sleep_mode == MSM_PM_SLEEP_MODE_POWER_COLLAPSE);
 		int collapsed;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		timer_expiration = msm_pm_timer_enter_idle();
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		timer_expiration = msm_pm_timer_enter_idle();
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		sleep_delay = (uint32_t) msm_pm_convert_and_cap_time(
 			timer_expiration, MSM_PM_SLEEP_TICK_LIMIT);
 		if (sleep_delay == 0) /* 0 would mean infinite time */
@@ -925,12 +1366,27 @@ int msm_pm_idle_enter(enum msm_pm_sleep_mode sleep_mode)
 		if (MSM_PM_DEBUG_IDLE_CLK & msm_pm_debug_mask)
 			clock_debug_print_enabled();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = msm_rpmrs_enter_sleep(
 			sleep_delay, msm_pm_idle_rs_limits, true, notify_rpm);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (pm_sleep_ops.enter_sleep)
+			ret = pm_sleep_ops.enter_sleep(sleep_delay,
+					msm_pm_idle_rs_limits,
+					true, notify_rpm);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!ret) {
 			collapsed = msm_pm_power_collapse(true);
 			timer_halted = true;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			msm_rpmrs_exit_sleep(msm_pm_idle_rs_limits, true,
 					notify_rpm, collapsed);
 		}
@@ -939,6 +1395,19 @@ int msm_pm_idle_enter(enum msm_pm_sleep_mode sleep_mode)
 #ifdef CONFIG_MSM_IDLE_STATS
 		exit_stat = MSM_PM_STAT_IDLE_POWER_COLLAPSE;
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			if (pm_sleep_ops.exit_sleep)
+				pm_sleep_ops.exit_sleep(msm_pm_idle_rs_limits,
+						true, notify_rpm, collapsed);
+		}
+		msm_pm_timer_exit_idle(timer_halted);
+		exit_stat = MSM_PM_STAT_IDLE_POWER_COLLAPSE;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	}
 
@@ -948,9 +1417,17 @@ int msm_pm_idle_enter(enum msm_pm_sleep_mode sleep_mode)
 	}
 
 	time = ktime_to_ns(ktime_get()) - time;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_IDLE_STATS
 	msm_pm_add_stat(exit_stat, time);
 #endif
+=======
+	msm_pm_add_stat(exit_stat, time);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_pm_add_stat(exit_stat, time);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	do_div(time, 1000);
 	return (int) time;
@@ -984,7 +1461,15 @@ void msm_pm_cpu_enter_lowpower(unsigned int cpu)
 	for (i = 0; i < MSM_PM_SLEEP_MODE_NR; i++) {
 		struct msm_pm_platform_data *mode;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mode = &msm_pm_modes[MSM_PM_MODE(cpu, i)];
+=======
+		mode = &msm_pm_sleep_modes[MSM_PM_MODE(cpu, i)];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mode = &msm_pm_sleep_modes[MSM_PM_MODE(cpu, i)];
+>>>>>>> refs/remotes/origin/cm-11.0
 		allow[i] = mode->suspend_supported && mode->suspend_enabled;
 	}
 
@@ -999,9 +1484,25 @@ void msm_pm_cpu_enter_lowpower(unsigned int cpu)
 		per_cpu(msm_pm_last_slp_mode, cpu)
 			= MSM_PM_SLEEP_MODE_POWER_COLLAPSE_STANDALONE;
 		msm_pm_power_collapse_standalone(false);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (allow[MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT]) {
 		per_cpu(msm_pm_last_slp_mode, cpu)
 			= MSM_PM_SLEEP_MODE_POWER_COLLAPSE_STANDALONE;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	} else if (allow[MSM_PM_SLEEP_MODE_RETENTION]) {
+		per_cpu(msm_pm_last_slp_mode, cpu)
+			= MSM_PM_SLEEP_MODE_RETENTION;
+		msm_pm_retention();
+	} else if (allow[MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT]) {
+		per_cpu(msm_pm_last_slp_mode, cpu)
+			= MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_pm_swfi();
 	} else
 		per_cpu(msm_pm_last_slp_mode, cpu) = MSM_PM_SLEEP_MODE_NR;
@@ -1041,11 +1542,21 @@ static int msm_pm_enter(suspend_state_t state)
 {
 	bool allow[MSM_PM_SLEEP_MODE_NR];
 	int i;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_MSM_IDLE_STATS
 	int64_t period = 0;
 	int64_t time = msm_timer_get_sclk_time(&period);
 #endif
+=======
+	int64_t period = 0;
+	int64_t time = msm_pm_timer_enter_suspend(&period);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int64_t period = 0;
+	int64_t time = msm_pm_timer_enter_suspend(&period);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (MSM_PM_DEBUG_SUSPEND & msm_pm_debug_mask)
 		pr_info("%s\n", __func__);
@@ -1059,13 +1570,33 @@ static int msm_pm_enter(suspend_state_t state)
 	for (i = 0; i < MSM_PM_SLEEP_MODE_NR; i++) {
 		struct msm_pm_platform_data *mode;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mode = &msm_pm_modes[MSM_PM_MODE(0, i)];
+=======
+		mode = &msm_pm_sleep_modes[MSM_PM_MODE(0, i)];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mode = &msm_pm_sleep_modes[MSM_PM_MODE(0, i)];
+>>>>>>> refs/remotes/origin/cm-11.0
 		allow[i] = mode->suspend_supported && mode->suspend_enabled;
 	}
 
 	if (allow[MSM_PM_SLEEP_MODE_POWER_COLLAPSE]) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct msm_rpmrs_limits *rs_limits;
 		int ret;
+=======
+		void *rs_limits = NULL;
+		int ret = -ENODEV;
+		uint32_t power;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		void *rs_limits = NULL;
+		int ret = -ENODEV;
+		uint32_t power;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (MSM_PM_DEBUG_SUSPEND & msm_pm_debug_mask)
 			pr_info("%s: power collapse\n", __func__);
@@ -1080,6 +1611,8 @@ static int msm_pm_enter(suspend_state_t state)
 			msm_pm_sleep_time_override = 0;
 		}
 #endif /* CONFIG_MSM_SLEEP_TIME_OVERRIDE */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		if (MSM_PM_DEBUG_SUSPEND_LIMITS & msm_pm_debug_mask)
 			msm_rpmrs_show_resources();
@@ -1102,11 +1635,36 @@ static int msm_pm_enter(suspend_state_t state)
 				int collapsed = msm_pm_power_collapse(false);
 				msm_rpmrs_exit_sleep(rs_limits, false, true,
 						collapsed);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (pm_sleep_ops.lowest_limits)
+			rs_limits = pm_sleep_ops.lowest_limits(false,
+					MSM_PM_SLEEP_MODE_POWER_COLLAPSE, -1,
+					-1, &power);
+
+		if (rs_limits) {
+			if (pm_sleep_ops.enter_sleep)
+				ret = pm_sleep_ops.enter_sleep(
+						msm_pm_max_sleep_time,
+						rs_limits, false, true);
+			if (!ret) {
+				int collapsed = msm_pm_power_collapse(false);
+				if (pm_sleep_ops.exit_sleep) {
+					pm_sleep_ops.exit_sleep(rs_limits,
+						false, true, collapsed);
+				}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			}
 		} else {
 			pr_err("%s: cannot find the lowest power limit\n",
 				__func__);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_MSM_IDLE_STATS
 		if (time != 0) {
@@ -1121,10 +1679,31 @@ static int msm_pm_enter(suspend_state_t state)
 
 		msm_pm_add_stat(MSM_PM_STAT_SUSPEND, time);
 #endif /* CONFIG_MSM_IDLE_STATS */
+=======
+		time = msm_pm_timer_exit_suspend(time, period);
+		msm_pm_add_stat(MSM_PM_STAT_SUSPEND, time);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		time = msm_pm_timer_exit_suspend(time, period);
+		msm_pm_add_stat(MSM_PM_STAT_SUSPEND, time);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (allow[MSM_PM_SLEEP_MODE_POWER_COLLAPSE_STANDALONE]) {
 		if (MSM_PM_DEBUG_SUSPEND & msm_pm_debug_mask)
 			pr_info("%s: standalone power collapse\n", __func__);
 		msm_pm_power_collapse_standalone(false);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	} else if (allow[MSM_PM_SLEEP_MODE_RETENTION]) {
+		if (MSM_PM_DEBUG_SUSPEND & msm_pm_debug_mask)
+			pr_info("%s: retention\n", __func__);
+		msm_pm_retention();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else if (allow[MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT]) {
 		if (MSM_PM_DEBUG_SUSPEND & msm_pm_debug_mask)
 			pr_info("%s: swfi\n", __func__);
@@ -1153,30 +1732,96 @@ void __init msm_pm_init_sleep_status_data(
 	msm_pm_slp_sts = data;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+void msm_pm_set_sleep_ops(struct msm_pm_sleep_ops *ops)
+{
+	if (ops)
+		pm_sleep_ops = *ops;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init msm_pm_init(void)
 {
 	pgd_t *pc_pgd;
 	pmd_t *pmd;
 	unsigned long pmdval;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int cpu;
 #ifdef CONFIG_MSM_IDLE_STATS
 	struct proc_dir_entry *d_entry;
 #endif
 	int ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	enum msm_pm_time_stats_id enable_stats[] = {
+		MSM_PM_STAT_IDLE_WFI,
+		MSM_PM_STAT_RETENTION,
+		MSM_PM_STAT_IDLE_STANDALONE_POWER_COLLAPSE,
+		MSM_PM_STAT_IDLE_POWER_COLLAPSE,
+		MSM_PM_STAT_SUSPEND,
+	};
+	unsigned long exit_phys;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Page table for cores to come back up safely. */
 	pc_pgd = pgd_alloc(&init_mm);
 	if (!pc_pgd)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pmd = pmd_offset(pc_pgd +
 			 pgd_index(virt_to_phys(msm_pm_collapse_exit)),
 			 virt_to_phys(msm_pm_collapse_exit));
 	pmdval = (virt_to_phys(msm_pm_collapse_exit) & PGDIR_MASK) |
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	exit_phys = virt_to_phys(msm_pm_collapse_exit);
+
+	pmd = pmd_offset(pud_offset(pc_pgd + pgd_index(exit_phys),exit_phys),
+					exit_phys);
+	pmdval = (exit_phys & PGDIR_MASK) |
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		     PMD_TYPE_SECT | PMD_SECT_AP_WRITE;
 	pmd[0] = __pmd(pmdval);
 	pmd[1] = __pmd(pmdval + (1 << (PGDIR_SHIFT - 1)));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msm_saved_state_phys =
+		allocate_contiguous_ebi_nomap(CPU_SAVED_STATE_SIZE *
+					      num_possible_cpus(), 4);
+	if (!msm_saved_state_phys)
+		return -ENOMEM;
+	msm_saved_state = ioremap_nocache(msm_saved_state_phys,
+					  CPU_SAVED_STATE_SIZE *
+					  num_possible_cpus());
+	if (!msm_saved_state)
+		return -ENOMEM;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* It is remotely possible that the code in msm_pm_collapse_exit()
 	 * which turns on the MMU with this mapping is in the
 	 * next even-numbered megabyte beyond the
@@ -1186,6 +1831,8 @@ static int __init msm_pm_init(void)
 	pmd[2] = __pmd(pmdval + (2 << (PGDIR_SHIFT - 1)));
 	flush_pmd_entry(pmd);
 	msm_pm_pc_pgd = virt_to_phys(pc_pgd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	ret = request_irq(rpm_cpu0_wakeup_irq,
 			msm_pm_rpm_wakeup_interrupt, IRQF_TRIGGER_RISING,
@@ -1244,6 +1891,21 @@ static int __init msm_pm_init(void)
 	msm_spm_allow_x_cpu_set_vdd(false);
 
 	suspend_set_ops(&msm_pm_ops);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	clean_caches((unsigned long)&msm_pm_pc_pgd, sizeof(msm_pm_pc_pgd),
+		     virt_to_phys(&msm_pm_pc_pgd));
+
+	msm_pm_mode_sysfs_add();
+	msm_pm_add_stats(enable_stats, ARRAY_SIZE(enable_stats));
+
+	suspend_set_ops(&msm_pm_ops);
+	msm_pm_qtimer_available();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_cpuidle_init();
 
 	return 0;

@@ -2,7 +2,15 @@
  * This file contains the code that low level functions that interact
  * with 57712 FCoE firmware.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008 - 2010 Broadcom Corporation
+=======
+ * Copyright (c) 2008 - 2011 Broadcom Corporation
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008 - 2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +31,15 @@ static void bnx2fc_process_enable_conn_cmpl(struct bnx2fc_hba *hba,
 						struct fcoe_kcqe *ofld_kcqe);
 static void bnx2fc_init_failure(struct bnx2fc_hba *hba, u32 err_code);
 static void bnx2fc_process_conn_destroy_cmpl(struct bnx2fc_hba *hba,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					struct fcoe_kcqe *conn_destroy);
+=======
+					struct fcoe_kcqe *destroy_kcqe);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					struct fcoe_kcqe *destroy_kcqe);
+>>>>>>> refs/remotes/origin/master
 
 int bnx2fc_send_stat_req(struct bnx2fc_hba *hba)
 {
@@ -67,7 +83,15 @@ int bnx2fc_send_fw_fcoe_init_msg(struct bnx2fc_hba *hba)
 	int rc = 0;
 
 	if (!hba->cnic) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "hba->cnic NULL during fcoe fw init\n");
+=======
+		printk(KERN_ERR PFX "hba->cnic NULL during fcoe fw init\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR PFX "hba->cnic NULL during fcoe fw init\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -77,7 +101,11 @@ int bnx2fc_send_fw_fcoe_init_msg(struct bnx2fc_hba *hba)
 	fcoe_init1.hdr.flags = (FCOE_KWQE_LAYER_CODE <<
 					FCOE_KWQE_HEADER_LAYER_CODE_SHIFT);
 
+<<<<<<< HEAD
 	fcoe_init1.num_tasks = BNX2FC_MAX_TASKS;
+=======
+	fcoe_init1.num_tasks = hba->max_tasks;
+>>>>>>> refs/remotes/origin/master
 	fcoe_init1.sq_num_wqes = BNX2FC_SQ_WQES_MAX;
 	fcoe_init1.rq_num_wqes = BNX2FC_RQ_WQES_MAX;
 	fcoe_init1.rq_buffer_log_size = BNX2FC_RQ_BUF_LOG_SZ;
@@ -100,6 +128,19 @@ int bnx2fc_send_fw_fcoe_init_msg(struct bnx2fc_hba *hba)
 	fcoe_init2.hdr.flags = (FCOE_KWQE_LAYER_CODE <<
 					FCOE_KWQE_HEADER_LAYER_CODE_SHIFT);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	fcoe_init2.hsi_major_version = FCOE_HSI_MAJOR_VERSION;
+	fcoe_init2.hsi_minor_version = FCOE_HSI_MINOR_VERSION;
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fcoe_init2.hash_tbl_pbl_addr_lo = (u32) hba->hash_tbl_pbl_dma;
 	fcoe_init2.hash_tbl_pbl_addr_hi = (u32)
 					   ((u64) hba->hash_tbl_pbl_dma >> 32);
@@ -122,6 +163,18 @@ int bnx2fc_send_fw_fcoe_init_msg(struct bnx2fc_hba *hba)
 	fcoe_init3.error_bit_map_lo = 0xffffffff;
 	fcoe_init3.error_bit_map_hi = 0xffffffff;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	fcoe_init3.perf_config = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * enable both cached connection and cached tasks
+	 * 0 = none, 1 = cached connection, 2 = cached tasks, 3 = both
+	 */
+	fcoe_init3.perf_config = 3;
+>>>>>>> refs/remotes/origin/master
 
 	kwqe_arr[0] = (struct kwqe *) &fcoe_init1;
 	kwqe_arr[1] = (struct kwqe *) &fcoe_init2;
@@ -161,7 +214,18 @@ int bnx2fc_send_session_ofld_req(struct fcoe_port *port,
 					struct bnx2fc_rport *tgt)
 {
 	struct fc_lport *lport = port->lport;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct bnx2fc_hba *hba = port->priv;
+=======
+	struct bnx2fc_interface *interface = port->priv;
+	struct bnx2fc_hba *hba = interface->hba;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bnx2fc_interface *interface = port->priv;
+	struct fcoe_ctlr *ctlr = bnx2fc_to_ctlr(interface);
+	struct bnx2fc_hba *hba = interface->hba;
+>>>>>>> refs/remotes/origin/master
 	struct kwqe *kwqe_arr[4];
 	struct fcoe_kwqe_conn_offload1 ofld_req1;
 	struct fcoe_kwqe_conn_offload2 ofld_req2;
@@ -223,7 +287,15 @@ int bnx2fc_send_session_ofld_req(struct fcoe_port *port,
 	ofld_req3.hdr.flags =
 		(FCOE_KWQE_LAYER_CODE << FCOE_KWQE_HEADER_LAYER_CODE_SHIFT);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ofld_req3.vlan_tag = hba->vlan_id <<
+=======
+	ofld_req3.vlan_tag = interface->vlan_id <<
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ofld_req3.vlan_tag = interface->vlan_id <<
+>>>>>>> refs/remotes/origin/master
 				FCOE_KWQE_CONN_OFFLOAD3_VLAN_ID_SHIFT;
 	ofld_req3.vlan_tag |= 3 << FCOE_KWQE_CONN_OFFLOAD3_PRIORITY_SHIFT;
 
@@ -273,11 +345,37 @@ int bnx2fc_send_session_ofld_req(struct fcoe_port *port,
 	ofld_req3.flags |= (((rdata->sp_features & FC_SP_FT_SEQC) ? 1 : 0) <<
 			     FCOE_KWQE_CONN_OFFLOAD3_B_CONT_INCR_SEQ_CNT_SHIFT);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* vlan flag */
 	ofld_req3.flags |= (hba->vlan_enabled <<
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Info from PRLI response, this info is used for sequence level error
+	 * recovery support
+	 */
+	if (tgt->dev_type == TYPE_TAPE) {
+		ofld_req3.flags |= 1 <<
+				    FCOE_KWQE_CONN_OFFLOAD3_B_CONF_REQ_SHIFT;
+		ofld_req3.flags |= (((rdata->flags & FC_RP_FLAGS_REC_SUPPORTED)
+				    ? 1 : 0) <<
+				    FCOE_KWQE_CONN_OFFLOAD3_B_REC_VALID_SHIFT);
+	}
+
+	/* vlan flag */
+	ofld_req3.flags |= (interface->vlan_enabled <<
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 			    FCOE_KWQE_CONN_OFFLOAD3_B_VLAN_FLAG_SHIFT);
 
 	/* C2_VALID and ACK flags are not set as they are not suppported */
+=======
+			    FCOE_KWQE_CONN_OFFLOAD3_B_VLAN_FLAG_SHIFT);
+
+	/* C2_VALID and ACK flags are not set as they are not supported */
+>>>>>>> refs/remotes/origin/master
 
 
 	/* Initialize offload request 4 structure */
@@ -289,6 +387,8 @@ int bnx2fc_send_session_ofld_req(struct fcoe_port *port,
 	ofld_req4.e_d_tov_timer_val = lport->e_d_tov / 20;
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ofld_req4.src_mac_addr_lo32[0] =  port->data_src_addr[5];
 							/* local mac */
 	ofld_req4.src_mac_addr_lo32[1] =  port->data_src_addr[4];
@@ -302,6 +402,34 @@ int bnx2fc_send_session_ofld_req(struct fcoe_port *port,
 	ofld_req4.dst_mac_addr_lo32[3] =  hba->ctlr.dest_addr[2];
 	ofld_req4.dst_mac_addr_hi16[0] =  hba->ctlr.dest_addr[1];
 	ofld_req4.dst_mac_addr_hi16[1] =  hba->ctlr.dest_addr[0];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ofld_req4.src_mac_addr_lo[0] =  port->data_src_addr[5];
+							/* local mac */
+	ofld_req4.src_mac_addr_lo[1] =  port->data_src_addr[4];
+	ofld_req4.src_mac_addr_mid[0] =  port->data_src_addr[3];
+	ofld_req4.src_mac_addr_mid[1] =  port->data_src_addr[2];
+	ofld_req4.src_mac_addr_hi[0] =  port->data_src_addr[1];
+	ofld_req4.src_mac_addr_hi[1] =  port->data_src_addr[0];
+<<<<<<< HEAD
+	ofld_req4.dst_mac_addr_lo[0] =  interface->ctlr.dest_addr[5];
+							/* fcf mac */
+	ofld_req4.dst_mac_addr_lo[1] =  interface->ctlr.dest_addr[4];
+	ofld_req4.dst_mac_addr_mid[0] =  interface->ctlr.dest_addr[3];
+	ofld_req4.dst_mac_addr_mid[1] =  interface->ctlr.dest_addr[2];
+	ofld_req4.dst_mac_addr_hi[0] =  interface->ctlr.dest_addr[1];
+	ofld_req4.dst_mac_addr_hi[1] =  interface->ctlr.dest_addr[0];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ofld_req4.dst_mac_addr_lo[0] =  ctlr->dest_addr[5];
+							/* fcf mac */
+	ofld_req4.dst_mac_addr_lo[1] = ctlr->dest_addr[4];
+	ofld_req4.dst_mac_addr_mid[0] = ctlr->dest_addr[3];
+	ofld_req4.dst_mac_addr_mid[1] = ctlr->dest_addr[2];
+	ofld_req4.dst_mac_addr_hi[0] = ctlr->dest_addr[1];
+	ofld_req4.dst_mac_addr_hi[1] = ctlr->dest_addr[0];
+>>>>>>> refs/remotes/origin/master
 
 	ofld_req4.lcq_addr_lo = (u32) tgt->lcq_dma;
 	ofld_req4.lcq_addr_hi = (u32)((u64) tgt->lcq_dma >> 32);
@@ -327,11 +455,26 @@ int bnx2fc_send_session_ofld_req(struct fcoe_port *port,
  * @port:		port structure pointer
  * @tgt:		bnx2fc_rport structure pointer
  */
+<<<<<<< HEAD
 static int bnx2fc_send_session_enable_req(struct fcoe_port *port,
 					struct bnx2fc_rport *tgt)
 {
 	struct kwqe *kwqe_arr[2];
+<<<<<<< HEAD
 	struct bnx2fc_hba *hba = port->priv;
+=======
+	struct bnx2fc_interface *interface = port->priv;
+	struct bnx2fc_hba *hba = interface->hba;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int bnx2fc_send_session_enable_req(struct fcoe_port *port,
+					struct bnx2fc_rport *tgt)
+{
+	struct kwqe *kwqe_arr[2];
+	struct bnx2fc_interface *interface = port->priv;
+	struct fcoe_ctlr *ctlr = bnx2fc_to_ctlr(interface);
+	struct bnx2fc_hba *hba = interface->hba;
+>>>>>>> refs/remotes/origin/master
 	struct fcoe_kwqe_conn_enable_disable enbl_req;
 	struct fc_lport *lport = port->lport;
 	struct fc_rport *rport = tgt->rport;
@@ -345,6 +488,8 @@ static int bnx2fc_send_session_enable_req(struct fcoe_port *port,
 	enbl_req.hdr.flags =
 		(FCOE_KWQE_LAYER_CODE << FCOE_KWQE_HEADER_LAYER_CODE_SHIFT);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	enbl_req.src_mac_addr_lo32[0] =  port->data_src_addr[5];
 							/* local mac */
 	enbl_req.src_mac_addr_lo32[1] =  port->data_src_addr[4];
@@ -359,6 +504,34 @@ static int bnx2fc_send_session_enable_req(struct fcoe_port *port,
 	enbl_req.dst_mac_addr_lo32[3] =  hba->ctlr.dest_addr[2];
 	enbl_req.dst_mac_addr_hi16[0] =  hba->ctlr.dest_addr[1];
 	enbl_req.dst_mac_addr_hi16[1] =  hba->ctlr.dest_addr[0];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	enbl_req.src_mac_addr_lo[0] =  port->data_src_addr[5];
+							/* local mac */
+	enbl_req.src_mac_addr_lo[1] =  port->data_src_addr[4];
+	enbl_req.src_mac_addr_mid[0] =  port->data_src_addr[3];
+	enbl_req.src_mac_addr_mid[1] =  port->data_src_addr[2];
+	enbl_req.src_mac_addr_hi[0] =  port->data_src_addr[1];
+	enbl_req.src_mac_addr_hi[1] =  port->data_src_addr[0];
+	memcpy(tgt->src_addr, port->data_src_addr, ETH_ALEN);
+
+<<<<<<< HEAD
+	enbl_req.dst_mac_addr_lo[0] =  interface->ctlr.dest_addr[5];
+	enbl_req.dst_mac_addr_lo[1] =  interface->ctlr.dest_addr[4];
+	enbl_req.dst_mac_addr_mid[0] =  interface->ctlr.dest_addr[3];
+	enbl_req.dst_mac_addr_mid[1] =  interface->ctlr.dest_addr[2];
+	enbl_req.dst_mac_addr_hi[0] =  interface->ctlr.dest_addr[1];
+	enbl_req.dst_mac_addr_hi[1] =  interface->ctlr.dest_addr[0];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enbl_req.dst_mac_addr_lo[0] =  ctlr->dest_addr[5];
+	enbl_req.dst_mac_addr_lo[1] =  ctlr->dest_addr[4];
+	enbl_req.dst_mac_addr_mid[0] = ctlr->dest_addr[3];
+	enbl_req.dst_mac_addr_mid[1] = ctlr->dest_addr[2];
+	enbl_req.dst_mac_addr_hi[0] = ctlr->dest_addr[1];
+	enbl_req.dst_mac_addr_hi[1] = ctlr->dest_addr[0];
+>>>>>>> refs/remotes/origin/master
 
 	port_id = fc_host_port_id(lport->host);
 	if (port_id != tgt->sid) {
@@ -374,10 +547,23 @@ static int bnx2fc_send_session_enable_req(struct fcoe_port *port,
 	enbl_req.d_id[0] = (port_id & 0x000000FF);
 	enbl_req.d_id[1] = (port_id & 0x0000FF00) >> 8;
 	enbl_req.d_id[2] = (port_id & 0x00FF0000) >> 16;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	enbl_req.vlan_tag = hba->vlan_id <<
 				FCOE_KWQE_CONN_ENABLE_DISABLE_VLAN_ID_SHIFT;
 	enbl_req.vlan_tag |= 3 << FCOE_KWQE_CONN_ENABLE_DISABLE_PRIORITY_SHIFT;
 	enbl_req.vlan_flag = hba->vlan_enabled;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	enbl_req.vlan_tag = interface->vlan_id <<
+				FCOE_KWQE_CONN_ENABLE_DISABLE_VLAN_ID_SHIFT;
+	enbl_req.vlan_tag |= 3 << FCOE_KWQE_CONN_ENABLE_DISABLE_PRIORITY_SHIFT;
+	enbl_req.vlan_flag = interface->vlan_enabled;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	enbl_req.context_id = tgt->context_id;
 	enbl_req.conn_id = tgt->fcoe_conn_id;
 
@@ -397,7 +583,18 @@ static int bnx2fc_send_session_enable_req(struct fcoe_port *port,
 int bnx2fc_send_session_disable_req(struct fcoe_port *port,
 				    struct bnx2fc_rport *tgt)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct bnx2fc_hba *hba = port->priv;
+=======
+	struct bnx2fc_interface *interface = port->priv;
+	struct bnx2fc_hba *hba = interface->hba;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bnx2fc_interface *interface = port->priv;
+	struct fcoe_ctlr *ctlr = bnx2fc_to_ctlr(interface);
+	struct bnx2fc_hba *hba = interface->hba;
+>>>>>>> refs/remotes/origin/master
 	struct fcoe_kwqe_conn_enable_disable disable_req;
 	struct kwqe *kwqe_arr[2];
 	struct fc_rport *rport = tgt->rport;
@@ -411,6 +608,8 @@ int bnx2fc_send_session_disable_req(struct fcoe_port *port,
 	disable_req.hdr.flags =
 		(FCOE_KWQE_LAYER_CODE << FCOE_KWQE_HEADER_LAYER_CODE_SHIFT);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	disable_req.src_mac_addr_lo32[0] =  port->data_src_addr[5];
 	disable_req.src_mac_addr_lo32[2] =  port->data_src_addr[3];
 	disable_req.src_mac_addr_lo32[3] =  port->data_src_addr[2];
@@ -423,6 +622,32 @@ int bnx2fc_send_session_disable_req(struct fcoe_port *port,
 	disable_req.dst_mac_addr_lo32[3] =  hba->ctlr.dest_addr[2];
 	disable_req.dst_mac_addr_hi16[0] =  hba->ctlr.dest_addr[1];
 	disable_req.dst_mac_addr_hi16[1] =  hba->ctlr.dest_addr[0];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	disable_req.src_mac_addr_lo[0] =  tgt->src_addr[5];
+	disable_req.src_mac_addr_lo[1] =  tgt->src_addr[4];
+	disable_req.src_mac_addr_mid[0] =  tgt->src_addr[3];
+	disable_req.src_mac_addr_mid[1] =  tgt->src_addr[2];
+	disable_req.src_mac_addr_hi[0] =  tgt->src_addr[1];
+	disable_req.src_mac_addr_hi[1] =  tgt->src_addr[0];
+
+<<<<<<< HEAD
+	disable_req.dst_mac_addr_lo[0] =  interface->ctlr.dest_addr[5];
+	disable_req.dst_mac_addr_lo[1] =  interface->ctlr.dest_addr[4];
+	disable_req.dst_mac_addr_mid[0] =  interface->ctlr.dest_addr[3];
+	disable_req.dst_mac_addr_mid[1] =  interface->ctlr.dest_addr[2];
+	disable_req.dst_mac_addr_hi[0] =  interface->ctlr.dest_addr[1];
+	disable_req.dst_mac_addr_hi[1] =  interface->ctlr.dest_addr[0];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	disable_req.dst_mac_addr_lo[0] =  ctlr->dest_addr[5];
+	disable_req.dst_mac_addr_lo[1] =  ctlr->dest_addr[4];
+	disable_req.dst_mac_addr_mid[0] = ctlr->dest_addr[3];
+	disable_req.dst_mac_addr_mid[1] = ctlr->dest_addr[2];
+	disable_req.dst_mac_addr_hi[0] = ctlr->dest_addr[1];
+	disable_req.dst_mac_addr_hi[1] = ctlr->dest_addr[0];
+>>>>>>> refs/remotes/origin/master
 
 	port_id = tgt->sid;
 	disable_req.s_id[0] = (port_id & 0x000000FF);
@@ -436,11 +661,25 @@ int bnx2fc_send_session_disable_req(struct fcoe_port *port,
 	disable_req.d_id[2] = (port_id & 0x00FF0000) >> 16;
 	disable_req.context_id = tgt->context_id;
 	disable_req.conn_id = tgt->fcoe_conn_id;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	disable_req.vlan_tag = hba->vlan_id <<
 				FCOE_KWQE_CONN_ENABLE_DISABLE_VLAN_ID_SHIFT;
 	disable_req.vlan_tag |=
 			3 << FCOE_KWQE_CONN_ENABLE_DISABLE_PRIORITY_SHIFT;
 	disable_req.vlan_flag = hba->vlan_enabled;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	disable_req.vlan_tag = interface->vlan_id <<
+				FCOE_KWQE_CONN_ENABLE_DISABLE_VLAN_ID_SHIFT;
+	disable_req.vlan_tag |=
+			3 << FCOE_KWQE_CONN_ENABLE_DISABLE_PRIORITY_SHIFT;
+	disable_req.vlan_flag = interface->vlan_enabled;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	kwqe_arr[0] = (struct kwqe *) &disable_req;
 
@@ -519,7 +758,15 @@ void bnx2fc_process_l2_frame_compl(struct bnx2fc_rport *tgt,
 {
 	struct fcoe_port *port = tgt->port;
 	struct fc_lport *lport = port->lport;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct bnx2fc_hba *hba = port->priv;
+=======
+	struct bnx2fc_interface *interface = port->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bnx2fc_interface *interface = port->priv;
+>>>>>>> refs/remotes/origin/master
 	struct bnx2fc_unsol_els *unsol_els;
 	struct fc_frame_header *fh;
 	struct fc_frame *fp;
@@ -580,7 +827,15 @@ void bnx2fc_process_l2_frame_compl(struct bnx2fc_rport *tgt,
 		fr_eof(fp) = FC_EOF_T;
 		fr_crc(fp) = cpu_to_le32(~crc);
 		unsol_els->lport = lport;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		unsol_els->hba = hba;
+=======
+		unsol_els->hba = interface->hba;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsol_els->hba = interface->hba;
+>>>>>>> refs/remotes/origin/master
 		unsol_els->fp = fp;
 		INIT_WORK(&unsol_els->unsol_els_work, bnx2fc_unsol_els_work);
 		queue_work(bnx2fc_wq, &unsol_els->unsol_els_work);
@@ -602,9 +857,24 @@ static void bnx2fc_process_unsol_compl(struct bnx2fc_rport *tgt, u16 wqe)
 	u32 frame_len, len;
 	struct bnx2fc_cmd *io_req = NULL;
 	struct fcoe_task_ctx_entry *task, *task_page;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct bnx2fc_hba *hba = tgt->port->priv;
 	int task_idx, index;
 	int rc = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct bnx2fc_interface *interface = tgt->port->priv;
+	struct bnx2fc_hba *hba = interface->hba;
+	int task_idx, index;
+	int rc = 0;
+	u64 err_warn_bit_map;
+	u8 err_warn = 0xff;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 	BNX2FC_TGT_DBG(tgt, "Entered UNSOL COMPLETION wqe = 0x%x\n", wqe);
@@ -662,23 +932,48 @@ static void bnx2fc_process_unsol_compl(struct bnx2fc_rport *tgt, u16 wqe)
 		xid = err_entry->fc_hdr.ox_id;
 		BNX2FC_TGT_DBG(tgt, "Unsol Error Frame OX_ID = 0x%x\n", xid);
 		BNX2FC_TGT_DBG(tgt, "err_warn_bitmap = %08x:%08x\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			err_entry->err_warn_bitmap_hi,
 			err_entry->err_warn_bitmap_lo);
 		BNX2FC_TGT_DBG(tgt, "buf_offsets - tx = 0x%x, rx = 0x%x\n",
 			err_entry->tx_buf_off, err_entry->rx_buf_off);
 
 		bnx2fc_return_rqe(tgt, 1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			err_entry->data.err_warn_bitmap_hi,
+			err_entry->data.err_warn_bitmap_lo);
+		BNX2FC_TGT_DBG(tgt, "buf_offsets - tx = 0x%x, rx = 0x%x\n",
+			err_entry->data.tx_buf_off, err_entry->data.rx_buf_off);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (xid > BNX2FC_MAX_XID) {
 			BNX2FC_TGT_DBG(tgt, "xid(0x%x) out of FW range\n",
 				   xid);
+<<<<<<< HEAD
 			spin_unlock_bh(&tgt->tgt_lock);
 			break;
+=======
+			goto ret_err_rqe;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		if (xid > hba->max_xid) {
+			BNX2FC_TGT_DBG(tgt, "xid(0x%x) out of FW range\n",
+				   xid);
+			goto ret_err_rqe;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		task_idx = xid / BNX2FC_TASKS_PER_PAGE;
 		index = xid % BNX2FC_TASKS_PER_PAGE;
 		task_page = (struct fcoe_task_ctx_entry *)
+<<<<<<< HEAD
+<<<<<<< HEAD
 						hba->task_ctx[task_idx];
 		task = &(task_page[index]);
 
@@ -692,14 +987,51 @@ static void bnx2fc_process_unsol_compl(struct bnx2fc_rport *tgt, u16 wqe)
 			printk(KERN_ERR PFX "err_warn: Not a SCSI cmd\n");
 			spin_unlock_bh(&tgt->tgt_lock);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					hba->task_ctx[task_idx];
+		task = &(task_page[index]);
+
+		io_req = (struct bnx2fc_cmd *)hba->cmd_mgr->cmds[xid];
+		if (!io_req)
+			goto ret_err_rqe;
+
+		if (io_req->cmd_type != BNX2FC_SCSI_CMD) {
+			printk(KERN_ERR PFX "err_warn: Not a SCSI cmd\n");
+			goto ret_err_rqe;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (test_and_clear_bit(BNX2FC_FLAG_IO_CLEANUP,
 				       &io_req->req_flags)) {
 			BNX2FC_IO_DBG(io_req, "unsol_err: cleanup in "
 					    "progress.. ignore unsol err\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock_bh(&tgt->tgt_lock);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			goto ret_err_rqe;
+		}
+
+		err_warn_bit_map = (u64)
+			((u64)err_entry->data.err_warn_bitmap_hi << 32) |
+			(u64)err_entry->data.err_warn_bitmap_lo;
+		for (i = 0; i < BNX2FC_NUM_ERR_BITS; i++) {
+			if (err_warn_bit_map & (u64)((u64)1 << i)) {
+				err_warn = i;
+				break;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/*
@@ -709,6 +1041,8 @@ static void bnx2fc_process_unsol_compl(struct bnx2fc_rport *tgt, u16 wqe)
 		 * logging out the target, when the ABTS eventually
 		 * times out.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!test_and_set_bit(BNX2FC_FLAG_ISSUE_ABTS,
 				      &io_req->req_flags)) {
 			/*
@@ -729,6 +1063,71 @@ static void bnx2fc_process_unsol_compl(struct bnx2fc_rport *tgt, u16 wqe)
 		} else
 			printk(KERN_ERR PFX "err_warn: io_req (0x%x) already "
 					    "in ABTS processing\n", xid);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (test_bit(BNX2FC_FLAG_ISSUE_ABTS, &io_req->req_flags)) {
+			printk(KERN_ERR PFX "err_warn: io_req (0x%x) already "
+					    "in ABTS processing\n", xid);
+			goto ret_err_rqe;
+		}
+		BNX2FC_TGT_DBG(tgt, "err = 0x%x\n", err_warn);
+		if (tgt->dev_type != TYPE_TAPE)
+			goto skip_rec;
+		switch (err_warn) {
+		case FCOE_ERROR_CODE_REC_TOV_TIMER_EXPIRATION:
+		case FCOE_ERROR_CODE_DATA_OOO_RO:
+		case FCOE_ERROR_CODE_COMMON_INCORRECT_SEQ_CNT:
+		case FCOE_ERROR_CODE_DATA_SOFI3_SEQ_ACTIVE_SET:
+		case FCOE_ERROR_CODE_FCP_RSP_OPENED_SEQ:
+		case FCOE_ERROR_CODE_DATA_SOFN_SEQ_ACTIVE_RESET:
+			BNX2FC_TGT_DBG(tgt, "REC TOV popped for xid - 0x%x\n",
+				   xid);
+<<<<<<< HEAD
+			memset(&io_req->err_entry, 0,
+			       sizeof(struct fcoe_err_report_entry));
+=======
+>>>>>>> refs/remotes/origin/master
+			memcpy(&io_req->err_entry, err_entry,
+			       sizeof(struct fcoe_err_report_entry));
+			if (!test_bit(BNX2FC_FLAG_SRR_SENT,
+				      &io_req->req_flags)) {
+				spin_unlock_bh(&tgt->tgt_lock);
+				rc = bnx2fc_send_rec(io_req);
+				spin_lock_bh(&tgt->tgt_lock);
+
+				if (rc)
+					goto skip_rec;
+			} else
+				printk(KERN_ERR PFX "SRR in progress\n");
+			goto ret_err_rqe;
+			break;
+		default:
+			break;
+		}
+
+skip_rec:
+		set_bit(BNX2FC_FLAG_ISSUE_ABTS, &io_req->req_flags);
+		/*
+		 * Cancel the timeout_work, as we received IO
+		 * completion with FW error.
+		 */
+		if (cancel_delayed_work(&io_req->timeout_work))
+			kref_put(&io_req->refcount, bnx2fc_cmd_release);
+
+		rc = bnx2fc_initiate_abts(io_req);
+		if (rc != SUCCESS) {
+			printk(KERN_ERR PFX "err_warn: initiate_abts "
+				"failed xid = 0x%x. issue cleanup\n",
+				io_req->xid);
+			bnx2fc_initiate_cleanup(io_req);
+		}
+ret_err_rqe:
+		bnx2fc_return_rqe(tgt, 1);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_bh(&tgt->tgt_lock);
 		break;
 
@@ -744,11 +1143,73 @@ static void bnx2fc_process_unsol_compl(struct bnx2fc_rport *tgt, u16 wqe)
 		xid = cpu_to_be16(err_entry->fc_hdr.ox_id);
 		BNX2FC_TGT_DBG(tgt, "Unsol Warning Frame OX_ID = 0x%x\n", xid);
 		BNX2FC_TGT_DBG(tgt, "err_warn_bitmap = %08x:%08x",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			err_entry->err_warn_bitmap_hi,
 			err_entry->err_warn_bitmap_lo);
 		BNX2FC_TGT_DBG(tgt, "buf_offsets - tx = 0x%x, rx = 0x%x",
 			err_entry->tx_buf_off, err_entry->rx_buf_off);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			err_entry->data.err_warn_bitmap_hi,
+			err_entry->data.err_warn_bitmap_lo);
+		BNX2FC_TGT_DBG(tgt, "buf_offsets - tx = 0x%x, rx = 0x%x",
+			err_entry->data.tx_buf_off, err_entry->data.rx_buf_off);
+
+<<<<<<< HEAD
+		if (xid > BNX2FC_MAX_XID) {
+=======
+		if (xid > hba->max_xid) {
+>>>>>>> refs/remotes/origin/master
+			BNX2FC_TGT_DBG(tgt, "xid(0x%x) out of FW range\n", xid);
+			goto ret_warn_rqe;
+		}
+
+		err_warn_bit_map = (u64)
+			((u64)err_entry->data.err_warn_bitmap_hi << 32) |
+			(u64)err_entry->data.err_warn_bitmap_lo;
+		for (i = 0; i < BNX2FC_NUM_ERR_BITS; i++) {
+			if (err_warn_bit_map & (u64) (1 << i)) {
+				err_warn = i;
+				break;
+			}
+		}
+		BNX2FC_TGT_DBG(tgt, "warn = 0x%x\n", err_warn);
+
+		task_idx = xid / BNX2FC_TASKS_PER_PAGE;
+		index = xid % BNX2FC_TASKS_PER_PAGE;
+		task_page = (struct fcoe_task_ctx_entry *)
+			     interface->hba->task_ctx[task_idx];
+		task = &(task_page[index]);
+		io_req = (struct bnx2fc_cmd *)hba->cmd_mgr->cmds[xid];
+		if (!io_req)
+			goto ret_warn_rqe;
+
+		if (io_req->cmd_type != BNX2FC_SCSI_CMD) {
+			printk(KERN_ERR PFX "err_warn: Not a SCSI cmd\n");
+			goto ret_warn_rqe;
+		}
+
+<<<<<<< HEAD
+		memset(&io_req->err_entry, 0,
+		       sizeof(struct fcoe_err_report_entry));
+=======
+>>>>>>> refs/remotes/origin/master
+		memcpy(&io_req->err_entry, err_entry,
+		       sizeof(struct fcoe_err_report_entry));
+
+		if (err_warn == FCOE_ERROR_CODE_REC_TOV_TIMER_EXPIRATION)
+			/* REC_TOV is not a warning code */
+			BUG_ON(1);
+		else
+			BNX2FC_TGT_DBG(tgt, "Unsolicited warning\n");
+ret_warn_rqe:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bnx2fc_return_rqe(tgt, 1);
 		spin_unlock_bh(&tgt->tgt_lock);
 		break;
@@ -764,7 +1225,17 @@ void bnx2fc_process_cq_compl(struct bnx2fc_rport *tgt, u16 wqe)
 	struct fcoe_task_ctx_entry *task;
 	struct fcoe_task_ctx_entry *task_page;
 	struct fcoe_port *port = tgt->port;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct bnx2fc_hba *hba = port->priv;
+=======
+	struct bnx2fc_interface *interface = port->priv;
+	struct bnx2fc_hba *hba = interface->hba;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bnx2fc_interface *interface = port->priv;
+	struct bnx2fc_hba *hba = interface->hba;
+>>>>>>> refs/remotes/origin/master
 	struct bnx2fc_cmd *io_req;
 	int task_idx, index;
 	u16 xid;
@@ -774,8 +1245,17 @@ void bnx2fc_process_cq_compl(struct bnx2fc_rport *tgt, u16 wqe)
 
 	spin_lock_bh(&tgt->tgt_lock);
 	xid = wqe & FCOE_PEND_WQ_CQE_TASK_ID;
+<<<<<<< HEAD
 	if (xid >= BNX2FC_MAX_TASKS) {
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "ERROR:xid out of range\n");
+=======
+		printk(KERN_ERR PFX "ERROR:xid out of range\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (xid >= hba->max_tasks) {
+		printk(KERN_ERR PFX "ERROR:xid out of range\n");
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_bh(&tgt->tgt_lock);
 		return;
 	}
@@ -784,9 +1264,21 @@ void bnx2fc_process_cq_compl(struct bnx2fc_rport *tgt, u16 wqe)
 	task_page = (struct fcoe_task_ctx_entry *)hba->task_ctx[task_idx];
 	task = &(task_page[index]);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	num_rq = ((task->rx_wr_tx_rd.rx_flags &
 		   FCOE_TASK_CTX_ENTRY_RXWR_TXRD_NUM_RQ_WQE) >>
 		   FCOE_TASK_CTX_ENTRY_RXWR_TXRD_NUM_RQ_WQE_SHIFT);
+=======
+	num_rq = ((task->rxwr_txrd.var_ctx.rx_flags &
+		   FCOE_TCE_RX_WR_TX_RD_VAR_NUM_RQ_WQE) >>
+		   FCOE_TCE_RX_WR_TX_RD_VAR_NUM_RQ_WQE_SHIFT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	num_rq = ((task->rxwr_txrd.var_ctx.rx_flags &
+		   FCOE_TCE_RX_WR_TX_RD_VAR_NUM_RQ_WQE) >>
+		   FCOE_TCE_RX_WR_TX_RD_VAR_NUM_RQ_WQE_SHIFT);
+>>>>>>> refs/remotes/origin/master
 
 	io_req = (struct bnx2fc_cmd *)hba->cmd_mgr->cmds[xid];
 
@@ -799,22 +1291,46 @@ void bnx2fc_process_cq_compl(struct bnx2fc_rport *tgt, u16 wqe)
 	/* Timestamp IO completion time */
 	cmd_type = io_req->cmd_type;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* optimized completion path */
 	if (cmd_type == BNX2FC_SCSI_CMD) {
 		rx_state = ((task->rx_wr_tx_rd.rx_flags &
 			    FCOE_TASK_CTX_ENTRY_RXWR_TXRD_RX_STATE) >>
 			    FCOE_TASK_CTX_ENTRY_RXWR_TXRD_RX_STATE_SHIFT);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rx_state = ((task->rxwr_txrd.var_ctx.rx_flags &
+		    FCOE_TCE_RX_WR_TX_RD_VAR_RX_STATE) >>
+		    FCOE_TCE_RX_WR_TX_RD_VAR_RX_STATE_SHIFT);
+
+	/* Process other IO completion types */
+	switch (cmd_type) {
+	case BNX2FC_SCSI_CMD:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (rx_state == FCOE_TASK_RX_STATE_COMPLETED) {
 			bnx2fc_process_scsi_cmd_compl(io_req, task, num_rq);
 			spin_unlock_bh(&tgt->tgt_lock);
 			return;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	/* Process other IO completion types */
 	switch (cmd_type) {
 	case BNX2FC_SCSI_CMD:
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		if (rx_state == FCOE_TASK_RX_STATE_ABTS_COMPLETED)
 			bnx2fc_process_abts_compl(io_req, task, num_rq);
 		else if (rx_state ==
@@ -841,8 +1357,27 @@ void bnx2fc_process_cq_compl(struct bnx2fc_rport *tgt, u16 wqe)
 		break;
 
 	case BNX2FC_ELS:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		BNX2FC_IO_DBG(io_req, "cq_compl - call process_els_compl\n");
 		bnx2fc_process_els_compl(io_req, task, num_rq);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (rx_state == FCOE_TASK_RX_STATE_COMPLETED)
+			bnx2fc_process_els_compl(io_req, task, num_rq);
+		else if (rx_state == FCOE_TASK_RX_STATE_ABTS_COMPLETED)
+			bnx2fc_process_abts_compl(io_req, task, num_rq);
+		else if (rx_state ==
+			 FCOE_TASK_RX_STATE_EXCHANGE_CLEANUP_COMPLETED)
+			bnx2fc_process_cleanup_compl(io_req, task, num_rq);
+		else
+			printk(KERN_ERR PFX "Invalid rx state =  %d\n",
+				rx_state);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case BNX2FC_CLEANUP:
@@ -850,6 +1385,22 @@ void bnx2fc_process_cq_compl(struct bnx2fc_rport *tgt, u16 wqe)
 		kref_put(&io_req->refcount, bnx2fc_cmd_release);
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case BNX2FC_SEQ_CLEANUP:
+		BNX2FC_IO_DBG(io_req, "cq_compl(0x%x) - seq cleanup resp\n",
+			      io_req->xid);
+		bnx2fc_process_seq_cleanup_compl(io_req, task, rx_state);
+		kref_put(&io_req->refcount, bnx2fc_cmd_release);
+		break;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		printk(KERN_ERR PFX "Invalid cmd_type %d\n", cmd_type);
 		break;
@@ -857,6 +1408,29 @@ void bnx2fc_process_cq_compl(struct bnx2fc_rport *tgt, u16 wqe)
 	spin_unlock_bh(&tgt->tgt_lock);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void bnx2fc_arm_cq(struct bnx2fc_rport *tgt)
+{
+	struct b577xx_fcoe_rx_doorbell *rx_db = &tgt->rx_db;
+	u32 msg;
+
+	wmb();
+	rx_db->doorbell_cq_cons = tgt->cq_cons_idx | (tgt->cq_curr_toggle_bit <<
+			FCOE_CQE_TOGGLE_BIT_SHIFT);
+	msg = *((u32 *)rx_db);
+	writel(cpu_to_le32(msg), tgt->ctx_base);
+	mmiowb();
+
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct bnx2fc_work *bnx2fc_alloc_work(struct bnx2fc_rport *tgt, u16 wqe)
 {
 	struct bnx2fc_work *work;
@@ -875,8 +1449,20 @@ int bnx2fc_process_new_cqes(struct bnx2fc_rport *tgt)
 	struct fcoe_cqe *cq;
 	u32 cq_cons;
 	struct fcoe_cqe *cqe;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 wqe;
 	bool more_cqes_found = false;
+=======
+	u32 num_free_sqes = 0;
+	u32 num_cqes = 0;
+	u16 wqe;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 num_free_sqes = 0;
+	u32 num_cqes = 0;
+	u16 wqe;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * cq_lock is a low contention lock used to protect
@@ -894,6 +1480,8 @@ int bnx2fc_process_new_cqes(struct bnx2fc_rport *tgt)
 	cq_cons = tgt->cq_cons_idx;
 	cqe = &cq[cq_cons];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	do {
 		more_cqes_found ^= true;
 
@@ -950,6 +1538,63 @@ unlock:
 	 * spin_lock implies full memory barrier, no need to smp_wmb
 	 */
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	while (((wqe = cqe->wqe) & FCOE_CQE_TOGGLE_BIT) ==
+	       (tgt->cq_curr_toggle_bit <<
+	       FCOE_CQE_TOGGLE_BIT_SHIFT)) {
+
+		/* new entry on the cq */
+		if (wqe & FCOE_CQE_CQE_TYPE) {
+			/* Unsolicited event notification */
+			bnx2fc_process_unsol_compl(tgt, wqe);
+		} else {
+			/* Pending work request completion */
+			struct bnx2fc_work *work = NULL;
+			struct bnx2fc_percpu_s *fps = NULL;
+			unsigned int cpu = wqe % num_possible_cpus();
+
+			fps = &per_cpu(bnx2fc_percpu, cpu);
+			spin_lock_bh(&fps->fp_work_lock);
+			if (unlikely(!fps->iothread))
+				goto unlock;
+
+			work = bnx2fc_alloc_work(tgt, wqe);
+			if (work)
+				list_add_tail(&work->list,
+					      &fps->work_list);
+unlock:
+			spin_unlock_bh(&fps->fp_work_lock);
+
+			/* Pending work request completion */
+			if (fps->iothread && work)
+				wake_up_process(fps->iothread);
+			else
+				bnx2fc_process_cq_compl(tgt, wqe);
+			num_free_sqes++;
+		}
+		cqe++;
+		tgt->cq_cons_idx++;
+		num_cqes++;
+
+		if (tgt->cq_cons_idx == BNX2FC_CQ_WQES_MAX) {
+			tgt->cq_cons_idx = 0;
+			cqe = cq;
+			tgt->cq_curr_toggle_bit =
+				1 - tgt->cq_curr_toggle_bit;
+		}
+	}
+	if (num_cqes) {
+		/* Arm CQ only if doorbell is mapped */
+		if (tgt->ctx_base)
+			bnx2fc_arm_cq(tgt);
+		atomic_add(num_free_sqes, &tgt->free_sqes);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&tgt->cq_lock);
 	return 0;
 }
@@ -969,7 +1614,15 @@ static void bnx2fc_fastpath_notification(struct bnx2fc_hba *hba,
 	struct bnx2fc_rport *tgt = hba->tgt_ofld_list[conn_id];
 
 	if (!tgt) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "conn_id 0x%x not valid\n", conn_id);
+=======
+		printk(KERN_ERR PFX "conn_id 0x%x not valid\n", conn_id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR PFX "conn_id 0x%x not valid\n", conn_id);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -990,9 +1643,19 @@ static void bnx2fc_process_ofld_cmpl(struct bnx2fc_hba *hba,
 {
 	struct bnx2fc_rport		*tgt;
 	struct fcoe_port		*port;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct bnx2fc_interface		*interface;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32				conn_id;
 	u32				context_id;
 	int				rc;
+=======
+	struct bnx2fc_interface		*interface;
+	u32				conn_id;
+	u32				context_id;
+>>>>>>> refs/remotes/origin/master
 
 	conn_id = ofld_kcqe->fcoe_conn_id;
 	context_id = ofld_kcqe->fcoe_conn_context_id;
@@ -1004,8 +1667,20 @@ static void bnx2fc_process_ofld_cmpl(struct bnx2fc_hba *hba,
 	BNX2FC_TGT_DBG(tgt, "Entered ofld compl - context_id = 0x%x\n",
 		ofld_kcqe->fcoe_conn_context_id);
 	port = tgt->port;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (hba != tgt->port->priv) {
 		printk(KERN_ALERT PFX "ERROR:ofld_cmpl: HBA mis-match\n");
+=======
+	interface = tgt->port->priv;
+	if (hba != interface->hba) {
+		printk(KERN_ERR PFX "ERROR:ofld_cmpl: HBA mis-match\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	interface = tgt->port->priv;
+	if (hba != interface->hba) {
+		printk(KERN_ERR PFX "ERROR:ofld_cmpl: HBA mis-match\n");
+>>>>>>> refs/remotes/origin/master
 		goto ofld_cmpl_err;
 	}
 	/*
@@ -1020,17 +1695,28 @@ static void bnx2fc_process_ofld_cmpl(struct bnx2fc_hba *hba,
 				"resources\n");
 			set_bit(BNX2FC_FLAG_CTX_ALLOC_FAILURE, &tgt->flags);
 		}
+<<<<<<< HEAD
 		goto ofld_cmpl_err;
 	} else {
 
 		/* now enable the session */
 		rc = bnx2fc_send_session_enable_req(port, tgt);
 		if (rc) {
+<<<<<<< HEAD
 			printk(KERN_ALERT PFX "enable session failed\n");
+=======
+			printk(KERN_ERR PFX "enable session failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto ofld_cmpl_err;
 		}
 	}
 	return;
+=======
+	} else {
+		/* FW offload request successfully completed */
+		set_bit(BNX2FC_FLAG_OFFLOADED, &tgt->flags);
+	}
+>>>>>>> refs/remotes/origin/master
 ofld_cmpl_err:
 	set_bit(BNX2FC_FLAG_OFLD_REQ_CMPL, &tgt->flags);
 	wake_up_interruptible(&tgt->ofld_wait);
@@ -1049,6 +1735,14 @@ static void bnx2fc_process_enable_conn_cmpl(struct bnx2fc_hba *hba,
 						struct fcoe_kcqe *ofld_kcqe)
 {
 	struct bnx2fc_rport		*tgt;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct bnx2fc_interface		*interface;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bnx2fc_interface		*interface;
+>>>>>>> refs/remotes/origin/master
 	u32				conn_id;
 	u32				context_id;
 
@@ -1056,7 +1750,15 @@ static void bnx2fc_process_enable_conn_cmpl(struct bnx2fc_hba *hba,
 	conn_id = ofld_kcqe->fcoe_conn_id;
 	tgt = hba->tgt_ofld_list[conn_id];
 	if (!tgt) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "ERROR:enbl_cmpl: No pending ofld req\n");
+=======
+		printk(KERN_ERR PFX "ERROR:enbl_cmpl: No pending ofld req\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR PFX "ERROR:enbl_cmpl: No pending ofld req\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -1068,6 +1770,8 @@ static void bnx2fc_process_enable_conn_cmpl(struct bnx2fc_hba *hba,
 	 * and enable
 	 */
 	if (tgt->context_id != context_id) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "context id mis-match\n");
 		return;
 	}
@@ -1078,12 +1782,33 @@ static void bnx2fc_process_enable_conn_cmpl(struct bnx2fc_hba *hba,
 	if (ofld_kcqe->completion_status) {
 		goto enbl_cmpl_err;
 	} else {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		printk(KERN_ERR PFX "context id mis-match\n");
+		return;
+	}
+	interface = tgt->port->priv;
+	if (hba != interface->hba) {
+		printk(KERN_ERR PFX "bnx2fc-enbl_cmpl: HBA mis-match\n");
+		goto enbl_cmpl_err;
+	}
+<<<<<<< HEAD
+	if (ofld_kcqe->completion_status)
+		goto enbl_cmpl_err;
+	else {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* enable successful - rport ready for issuing IOs */
 		set_bit(BNX2FC_FLAG_OFFLOADED, &tgt->flags);
 		set_bit(BNX2FC_FLAG_OFLD_REQ_CMPL, &tgt->flags);
 		wake_up_interruptible(&tgt->ofld_wait);
 	}
 	return;
+=======
+	if (!ofld_kcqe->completion_status)
+		/* enable successful - rport ready for issuing IOs */
+		set_bit(BNX2FC_FLAG_ENABLED, &tgt->flags);
+>>>>>>> refs/remotes/origin/master
 
 enbl_cmpl_err:
 	set_bit(BNX2FC_FLAG_OFLD_REQ_CMPL, &tgt->flags);
@@ -1100,20 +1825,44 @@ static void bnx2fc_process_conn_disable_cmpl(struct bnx2fc_hba *hba,
 	conn_id = disable_kcqe->fcoe_conn_id;
 	tgt = hba->tgt_ofld_list[conn_id];
 	if (!tgt) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "ERROR: disable_cmpl: No disable req\n");
+=======
+		printk(KERN_ERR PFX "ERROR: disable_cmpl: No disable req\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR PFX "ERROR: disable_cmpl: No disable req\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	BNX2FC_TGT_DBG(tgt, PFX "disable_cmpl: conn_id %d\n", conn_id);
 
 	if (disable_kcqe->completion_status) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "ERROR: Disable failed with cmpl status %d\n",
+=======
+		printk(KERN_ERR PFX "Disable failed with cmpl status %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			disable_kcqe->completion_status);
 		return;
+=======
+		printk(KERN_ERR PFX "Disable failed with cmpl status %d\n",
+			disable_kcqe->completion_status);
+		set_bit(BNX2FC_FLAG_DISABLE_FAILED, &tgt->flags);
+		set_bit(BNX2FC_FLAG_UPLD_REQ_COMPL, &tgt->flags);
+		wake_up_interruptible(&tgt->upld_wait);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* disable successful */
 		BNX2FC_TGT_DBG(tgt, "disable successful\n");
 		clear_bit(BNX2FC_FLAG_OFFLOADED, &tgt->flags);
+<<<<<<< HEAD
+=======
+		clear_bit(BNX2FC_FLAG_ENABLED, &tgt->flags);
+>>>>>>> refs/remotes/origin/master
 		set_bit(BNX2FC_FLAG_DISABLED, &tgt->flags);
 		set_bit(BNX2FC_FLAG_UPLD_REQ_COMPL, &tgt->flags);
 		wake_up_interruptible(&tgt->upld_wait);
@@ -1129,14 +1878,30 @@ static void bnx2fc_process_conn_destroy_cmpl(struct bnx2fc_hba *hba,
 	conn_id = destroy_kcqe->fcoe_conn_id;
 	tgt = hba->tgt_ofld_list[conn_id];
 	if (!tgt) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "destroy_cmpl: No destroy req\n");
+=======
+		printk(KERN_ERR PFX "destroy_cmpl: No destroy req\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR PFX "destroy_cmpl: No destroy req\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	BNX2FC_TGT_DBG(tgt, "destroy_cmpl: conn_id %d\n", conn_id);
 
 	if (destroy_kcqe->completion_status) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "Destroy conn failed, cmpl status %d\n",
+=======
+		printk(KERN_ERR PFX "Destroy conn failed, cmpl status %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR PFX "Destroy conn failed, cmpl status %d\n",
+>>>>>>> refs/remotes/origin/master
 			destroy_kcqe->completion_status);
 		return;
 	} else {
@@ -1163,7 +1928,22 @@ static void bnx2fc_init_failure(struct bnx2fc_hba *hba, u32 err_code)
 	case FCOE_KCQE_COMPLETION_STATUS_NIC_ERROR:
 		printk(KERN_ERR PFX "init_failure due to NIC error\n");
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case FCOE_KCQE_COMPLETION_STATUS_ERROR:
+		printk(KERN_ERR PFX "init failure due to compl status err\n");
+		break;
+	case FCOE_KCQE_COMPLETION_STATUS_WRONG_HSI_VERSION:
+		printk(KERN_ERR PFX "init failure due to HSI mismatch\n");
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		printk(KERN_ERR PFX "Unknown Error code %d\n", err_code);
 	}
@@ -1222,7 +2002,15 @@ void bnx2fc_indicate_kcqe(void *context, struct kcqe *kcq[],
 			} else {
 				printk(KERN_ERR PFX "DESTROY success\n");
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			hba->flags |= BNX2FC_FLAG_DESTROY_CMPL;
+=======
+			set_bit(BNX2FC_FLAG_DESTROY_CMPL, &hba->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			set_bit(BNX2FC_FLAG_DESTROY_CMPL, &hba->flags);
+>>>>>>> refs/remotes/origin/master
 			wake_up_interruptible(&hba->destroy_wait);
 			break;
 
@@ -1244,7 +2032,15 @@ void bnx2fc_indicate_kcqe(void *context, struct kcqe *kcq[],
 		case FCOE_KCQE_OPCODE_FCOE_ERROR:
 			/* fall thru */
 		default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ALERT PFX "unknown opcode 0x%x\n",
+=======
+			printk(KERN_ERR PFX "unknown opcode 0x%x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk(KERN_ERR PFX "unknown opcode 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 								kcqe->op_code);
 		}
 	}
@@ -1269,6 +2065,8 @@ void bnx2fc_add_2_sq(struct bnx2fc_rport *tgt, u16 xid)
 
 void bnx2fc_ring_doorbell(struct bnx2fc_rport *tgt)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct b577xx_doorbell_set_prod ev_doorbell;
 	u32 msg;
 
@@ -1284,6 +2082,21 @@ void bnx2fc_ring_doorbell(struct bnx2fc_rport *tgt)
 	msg = *((u32 *)&ev_doorbell);
 	writel(cpu_to_le32(msg), tgt->ctx_base);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct b577xx_doorbell_set_prod *sq_db = &tgt->sq_db;
+	u32 msg;
+
+	wmb();
+	sq_db->prod = tgt->sq_prod_idx |
+				(tgt->sq_curr_toggle_bit << 15);
+	msg = *((u32 *)sq_db);
+	writel(cpu_to_le32(msg), tgt->ctx_base);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mmiowb();
 
 }
@@ -1294,12 +2107,26 @@ int bnx2fc_map_doorbell(struct bnx2fc_rport *tgt)
 	struct fcoe_port *port = tgt->port;
 	u32 reg_off;
 	resource_size_t reg_base;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct bnx2fc_hba *hba = port->priv;
+=======
+	struct bnx2fc_interface *interface = port->priv;
+	struct bnx2fc_hba *hba = interface->hba;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	reg_base = pci_resource_start(hba->pcidev,
 					BNX2X_DOORBELL_PCI_BAR);
 	reg_off = BNX2FC_5771X_DB_PAGE_SIZE *
 			(context_id & 0x1FFFF) + DPM_TRIGER_TYPE;
+=======
+	struct bnx2fc_interface *interface = port->priv;
+	struct bnx2fc_hba *hba = interface->hba;
+
+	reg_base = pci_resource_start(hba->pcidev,
+					BNX2X_DOORBELL_PCI_BAR);
+	reg_off = (1 << BNX2X_DB_SHIFT) * (context_id & 0x1FFFF);
+>>>>>>> refs/remotes/origin/master
 	tgt->ctx_base = ioremap_nocache(reg_base + reg_off, 4);
 	if (!tgt->ctx_base)
 		return -ENOMEM;
@@ -1333,6 +2160,105 @@ void bnx2fc_return_rqe(struct bnx2fc_rport *tgt, u8 num_items)
 	tgt->conn_db->rq_prod = tgt->rq_prod_idx;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void bnx2fc_init_seq_cleanup_task(struct bnx2fc_cmd *seq_clnp_req,
+				  struct fcoe_task_ctx_entry *task,
+				  struct bnx2fc_cmd *orig_io_req,
+				  u32 offset)
+{
+	struct scsi_cmnd *sc_cmd = orig_io_req->sc_cmd;
+	struct bnx2fc_rport *tgt = seq_clnp_req->tgt;
+	struct bnx2fc_interface *interface = tgt->port->priv;
+	struct fcoe_bd_ctx *bd = orig_io_req->bd_tbl->bd_tbl;
+	struct fcoe_task_ctx_entry *orig_task;
+	struct fcoe_task_ctx_entry *task_page;
+	struct fcoe_ext_mul_sges_ctx *sgl;
+	u8 task_type = FCOE_TASK_TYPE_SEQUENCE_CLEANUP;
+	u8 orig_task_type;
+	u16 orig_xid = orig_io_req->xid;
+	u32 context_id = tgt->context_id;
+	u64 phys_addr = (u64)orig_io_req->bd_tbl->bd_tbl_dma;
+	u32 orig_offset = offset;
+	int bd_count;
+	int orig_task_idx, index;
+	int i;
+
+	memset(task, 0, sizeof(struct fcoe_task_ctx_entry));
+
+	if (sc_cmd->sc_data_direction == DMA_TO_DEVICE)
+		orig_task_type = FCOE_TASK_TYPE_WRITE;
+	else
+		orig_task_type = FCOE_TASK_TYPE_READ;
+
+	/* Tx flags */
+	task->txwr_rxrd.const_ctx.tx_flags =
+				FCOE_TASK_TX_STATE_SEQUENCE_CLEANUP <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_TX_STATE_SHIFT;
+	/* init flags */
+	task->txwr_rxrd.const_ctx.init_flags = task_type <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_TASK_TYPE_SHIFT;
+	task->txwr_rxrd.const_ctx.init_flags |= FCOE_TASK_CLASS_TYPE_3 <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_CLASS_TYPE_SHIFT;
+	task->rxwr_txrd.const_ctx.init_flags = context_id <<
+				FCOE_TCE_RX_WR_TX_RD_CONST_CID_SHIFT;
+	task->rxwr_txrd.const_ctx.init_flags = context_id <<
+				FCOE_TCE_RX_WR_TX_RD_CONST_CID_SHIFT;
+
+	task->txwr_rxrd.union_ctx.cleanup.ctx.cleaned_task_id = orig_xid;
+
+	task->txwr_rxrd.union_ctx.cleanup.ctx.rolled_tx_seq_cnt = 0;
+	task->txwr_rxrd.union_ctx.cleanup.ctx.rolled_tx_data_offset = offset;
+
+	bd_count = orig_io_req->bd_tbl->bd_valid;
+
+	/* obtain the appropriate bd entry from relative offset */
+	for (i = 0; i < bd_count; i++) {
+		if (offset < bd[i].buf_len)
+			break;
+		offset -= bd[i].buf_len;
+	}
+	phys_addr += (i * sizeof(struct fcoe_bd_ctx));
+
+	if (orig_task_type == FCOE_TASK_TYPE_WRITE) {
+		task->txwr_only.sgl_ctx.sgl.mul_sgl.cur_sge_addr.lo =
+				(u32)phys_addr;
+		task->txwr_only.sgl_ctx.sgl.mul_sgl.cur_sge_addr.hi =
+				(u32)((u64)phys_addr >> 32);
+		task->txwr_only.sgl_ctx.sgl.mul_sgl.sgl_size =
+				bd_count;
+		task->txwr_only.sgl_ctx.sgl.mul_sgl.cur_sge_off =
+				offset; /* adjusted offset */
+		task->txwr_only.sgl_ctx.sgl.mul_sgl.cur_sge_idx = i;
+	} else {
+		orig_task_idx = orig_xid / BNX2FC_TASKS_PER_PAGE;
+		index = orig_xid % BNX2FC_TASKS_PER_PAGE;
+
+		task_page = (struct fcoe_task_ctx_entry *)
+			     interface->hba->task_ctx[orig_task_idx];
+		orig_task = &(task_page[index]);
+
+		/* Multiple SGEs were used for this IO */
+		sgl = &task->rxwr_only.union_ctx.read_info.sgl_ctx.sgl;
+		sgl->mul_sgl.cur_sge_addr.lo = (u32)phys_addr;
+		sgl->mul_sgl.cur_sge_addr.hi = (u32)((u64)phys_addr >> 32);
+		sgl->mul_sgl.sgl_size = bd_count;
+		sgl->mul_sgl.cur_sge_off = offset; /*adjusted offset */
+		sgl->mul_sgl.cur_sge_idx = i;
+
+		memset(&task->rxwr_only.rx_seq_ctx, 0,
+		       sizeof(struct fcoe_rx_seq_ctx));
+		task->rxwr_only.rx_seq_ctx.low_exp_ro = orig_offset;
+		task->rxwr_only.rx_seq_ctx.high_exp_ro = orig_offset;
+	}
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void bnx2fc_init_cleanup_task(struct bnx2fc_cmd *io_req,
 			      struct fcoe_task_ctx_entry *task,
 			      u16 orig_xid)
@@ -1344,6 +2270,8 @@ void bnx2fc_init_cleanup_task(struct bnx2fc_cmd *io_req,
 	memset(task, 0, sizeof(struct fcoe_task_ctx_entry));
 
 	/* Tx Write Rx Read */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	task->tx_wr_rx_rd.tx_flags = FCOE_TASK_TX_STATE_EXCHANGE_CLEANUP <<
 				FCOE_TASK_CTX_ENTRY_TXWR_RXRD_TX_STATE_SHIFT;
 	task->tx_wr_rx_rd.init_flags = task_type <<
@@ -1356,6 +2284,38 @@ void bnx2fc_init_cleanup_task(struct bnx2fc_cmd *io_req,
 	task->cmn.general.cleanup_info.task_id = orig_xid;
 
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* init flags */
+	task->txwr_rxrd.const_ctx.init_flags = task_type <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_TASK_TYPE_SHIFT;
+	task->txwr_rxrd.const_ctx.init_flags |= FCOE_TASK_CLASS_TYPE_3 <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_CLASS_TYPE_SHIFT;
+	if (tgt->dev_type == TYPE_TAPE)
+		task->txwr_rxrd.const_ctx.init_flags |=
+				FCOE_TASK_DEV_TYPE_TAPE <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_DEV_TYPE_SHIFT;
+	else
+		task->txwr_rxrd.const_ctx.init_flags |=
+				FCOE_TASK_DEV_TYPE_DISK <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_DEV_TYPE_SHIFT;
+	task->txwr_rxrd.union_ctx.cleanup.ctx.cleaned_task_id = orig_xid;
+
+	/* Tx flags */
+	task->txwr_rxrd.const_ctx.tx_flags =
+				FCOE_TASK_TX_STATE_EXCHANGE_CLEANUP <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_TX_STATE_SHIFT;
+
+	/* Rx Read Tx Write */
+	task->rxwr_txrd.const_ctx.init_flags = context_id <<
+				FCOE_TCE_RX_WR_TX_RD_CONST_CID_SHIFT;
+	task->rxwr_txrd.var_ctx.rx_flags |= 1 <<
+				FCOE_TCE_RX_WR_TX_RD_VAR_EXP_FIRST_FRAME_SHIFT;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void bnx2fc_init_mp_task(struct bnx2fc_cmd *io_req,
@@ -1364,6 +2324,14 @@ void bnx2fc_init_mp_task(struct bnx2fc_cmd *io_req,
 	struct bnx2fc_mp_req *mp_req = &(io_req->mp_req);
 	struct bnx2fc_rport *tgt = io_req->tgt;
 	struct fc_frame_header *fc_hdr;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct fcoe_ext_mul_sges_ctx *sgl;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fcoe_ext_mul_sges_ctx *sgl;
+>>>>>>> refs/remotes/origin/master
 	u8 task_type = 0;
 	u64 *hdr;
 	u64 temp_hdr[3];
@@ -1389,6 +2357,8 @@ void bnx2fc_init_mp_task(struct bnx2fc_cmd *io_req,
 	/* Tx only */
 	if ((task_type == FCOE_TASK_TYPE_MIDPATH) ||
 	    (task_type == FCOE_TASK_TYPE_UNSOLICITED)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		task->tx_wr_only.sgl_ctx.mul_sges.cur_sge_addr.lo =
 				(u32)mp_req->mp_req_bd_dma;
 		task->tx_wr_only.sgl_ctx.mul_sges.cur_sge_addr.hi =
@@ -1419,17 +2389,77 @@ void bnx2fc_init_mp_task(struct bnx2fc_cmd *io_req,
 			FCOE_TASK_CTX_ENTRY_TX_RX_CMN_EXP_FIRST_FRAME_SHIFT;
 
 	/* Rx Write Tx Read */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		task->txwr_only.sgl_ctx.sgl.mul_sgl.cur_sge_addr.lo =
+				(u32)mp_req->mp_req_bd_dma;
+		task->txwr_only.sgl_ctx.sgl.mul_sgl.cur_sge_addr.hi =
+				(u32)((u64)mp_req->mp_req_bd_dma >> 32);
+		task->txwr_only.sgl_ctx.sgl.mul_sgl.sgl_size = 1;
+	}
+
+	/* Tx Write Rx Read */
+	/* init flags */
+	task->txwr_rxrd.const_ctx.init_flags = task_type <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_TASK_TYPE_SHIFT;
+	if (tgt->dev_type == TYPE_TAPE)
+		task->txwr_rxrd.const_ctx.init_flags |=
+				FCOE_TASK_DEV_TYPE_TAPE <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_DEV_TYPE_SHIFT;
+	else
+		task->txwr_rxrd.const_ctx.init_flags |=
+				FCOE_TASK_DEV_TYPE_DISK <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_DEV_TYPE_SHIFT;
+	task->txwr_rxrd.const_ctx.init_flags |= FCOE_TASK_CLASS_TYPE_3 <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_CLASS_TYPE_SHIFT;
+
+	/* tx flags */
+	task->txwr_rxrd.const_ctx.tx_flags = FCOE_TASK_TX_STATE_INIT <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_TX_STATE_SHIFT;
+
+	/* Rx Write Tx Read */
+	task->rxwr_txrd.const_ctx.data_2_trns = io_req->data_xfer_len;
+
+	/* rx flags */
+	task->rxwr_txrd.var_ctx.rx_flags |= 1 <<
+				FCOE_TCE_RX_WR_TX_RD_VAR_EXP_FIRST_FRAME_SHIFT;
+
+	context_id = tgt->context_id;
+	task->rxwr_txrd.const_ctx.init_flags = context_id <<
+				FCOE_TCE_RX_WR_TX_RD_CONST_CID_SHIFT;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fc_hdr = &(mp_req->req_fc_hdr);
 	if (task_type == FCOE_TASK_TYPE_MIDPATH) {
 		fc_hdr->fh_ox_id = cpu_to_be16(io_req->xid);
 		fc_hdr->fh_rx_id = htons(0xffff);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		task->rx_wr_tx_rd.rx_id = 0xffff;
+=======
+		task->rxwr_txrd.var_ctx.rx_id = 0xffff;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		task->rxwr_txrd.var_ctx.rx_id = 0xffff;
+>>>>>>> refs/remotes/origin/master
 	} else if (task_type == FCOE_TASK_TYPE_UNSOLICITED) {
 		fc_hdr->fh_rx_id = cpu_to_be16(io_req->xid);
 	}
 
 	/* Fill FC Header into middle path buffer */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hdr = (u64 *) &task->cmn.general.cmd_info.mp_fc_frame.fc_hdr;
+=======
+	hdr = (u64 *) &task->txwr_rxrd.union_ctx.tx_frame.fc_hdr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hdr = (u64 *) &task->txwr_rxrd.union_ctx.tx_frame.fc_hdr;
+>>>>>>> refs/remotes/origin/master
 	memcpy(temp_hdr, fc_hdr, sizeof(temp_hdr));
 	hdr[0] = cpu_to_be64(temp_hdr[0]);
 	hdr[1] = cpu_to_be64(temp_hdr[1]);
@@ -1437,12 +2467,27 @@ void bnx2fc_init_mp_task(struct bnx2fc_cmd *io_req,
 
 	/* Rx Only */
 	if (task_type == FCOE_TASK_TYPE_MIDPATH) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		task->rx_wr_only.sgl_ctx.mul_sges.cur_sge_addr.lo =
 				(u32)mp_req->mp_resp_bd_dma;
 		task->rx_wr_only.sgl_ctx.mul_sges.cur_sge_addr.hi =
 				(u32)((u64)mp_req->mp_resp_bd_dma >> 32);
 		task->rx_wr_only.sgl_ctx.mul_sges.sgl_size = 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		sgl = &task->rxwr_only.union_ctx.read_info.sgl_ctx.sgl;
+
+		sgl->mul_sgl.cur_sge_addr.lo = (u32)mp_req->mp_resp_bd_dma;
+		sgl->mul_sgl.cur_sge_addr.hi =
+				(u32)((u64)mp_req->mp_resp_bd_dma >> 32);
+		sgl->mul_sgl.sgl_size = 1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1453,6 +2498,18 @@ void bnx2fc_init_task(struct bnx2fc_cmd *io_req,
 	struct scsi_cmnd *sc_cmd = io_req->sc_cmd;
 	struct io_bdt *bd_tbl = io_req->bd_tbl;
 	struct bnx2fc_rport *tgt = io_req->tgt;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct fcoe_cached_sge_ctx *cached_sge;
+	struct fcoe_ext_mul_sges_ctx *sgl;
+	int dev_type = tgt->dev_type;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fcoe_cached_sge_ctx *cached_sge;
+	struct fcoe_ext_mul_sges_ctx *sgl;
+	int dev_type = tgt->dev_type;
+>>>>>>> refs/remotes/origin/master
 	u64 *fcp_cmnd;
 	u64 tmp_fcp_cmnd[4];
 	u32 context_id;
@@ -1470,6 +2527,8 @@ void bnx2fc_init_task(struct bnx2fc_cmd *io_req,
 		task_type = FCOE_TASK_TYPE_READ;
 
 	/* Tx only */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (task_type == FCOE_TASK_TYPE_WRITE) {
 		task->tx_wr_only.sgl_ctx.mul_sges.cur_sge_addr.lo =
 				(u32)bd_tbl->bd_tbl_dma;
@@ -1477,10 +2536,45 @@ void bnx2fc_init_task(struct bnx2fc_cmd *io_req,
 				(u32)((u64)bd_tbl->bd_tbl_dma >> 32);
 		task->tx_wr_only.sgl_ctx.mul_sges.sgl_size =
 				bd_tbl->bd_valid;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	bd_count = bd_tbl->bd_valid;
+	cached_sge = &task->rxwr_only.union_ctx.read_info.sgl_ctx.cached_sge;
+	if (task_type == FCOE_TASK_TYPE_WRITE) {
+		if ((dev_type == TYPE_DISK) && (bd_count == 1)) {
+			struct fcoe_bd_ctx *fcoe_bd_tbl = bd_tbl->bd_tbl;
+
+			task->txwr_only.sgl_ctx.cached_sge.cur_buf_addr.lo =
+			cached_sge->cur_buf_addr.lo =
+					fcoe_bd_tbl->buf_addr_lo;
+			task->txwr_only.sgl_ctx.cached_sge.cur_buf_addr.hi =
+			cached_sge->cur_buf_addr.hi =
+					fcoe_bd_tbl->buf_addr_hi;
+			task->txwr_only.sgl_ctx.cached_sge.cur_buf_rem =
+			cached_sge->cur_buf_rem =
+					fcoe_bd_tbl->buf_len;
+
+			task->txwr_rxrd.const_ctx.init_flags |= 1 <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_CACHED_SGE_SHIFT;
+		} else {
+			task->txwr_only.sgl_ctx.sgl.mul_sgl.cur_sge_addr.lo =
+					(u32)bd_tbl->bd_tbl_dma;
+			task->txwr_only.sgl_ctx.sgl.mul_sgl.cur_sge_addr.hi =
+					(u32)((u64)bd_tbl->bd_tbl_dma >> 32);
+			task->txwr_only.sgl_ctx.sgl.mul_sgl.sgl_size =
+					bd_tbl->bd_valid;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*Tx Write Rx Read */
 	/* Init state to NORMAL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	task->tx_wr_rx_rd.tx_flags = FCOE_TASK_TX_STATE_NORMAL <<
 				FCOE_TASK_CTX_ENTRY_TXWR_RXRD_TX_STATE_SHIFT;
 	task->tx_wr_rx_rd.init_flags = task_type <<
@@ -1512,6 +2606,37 @@ void bnx2fc_init_task(struct bnx2fc_cmd *io_req,
 	/* Fill FCP_CMND IU */
 	fcp_cmnd = (u64 *)
 		    task->cmn.general.cmd_info.fcp_cmd_payload.opaque;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	task->txwr_rxrd.const_ctx.init_flags |= task_type <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_TASK_TYPE_SHIFT;
+	if (dev_type == TYPE_TAPE) {
+		task->txwr_rxrd.const_ctx.init_flags |=
+				FCOE_TASK_DEV_TYPE_TAPE <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_DEV_TYPE_SHIFT;
+		io_req->rec_retry = 0;
+		io_req->rec_retry = 0;
+	} else
+		task->txwr_rxrd.const_ctx.init_flags |=
+				FCOE_TASK_DEV_TYPE_DISK <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_DEV_TYPE_SHIFT;
+	task->txwr_rxrd.const_ctx.init_flags |= FCOE_TASK_CLASS_TYPE_3 <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_CLASS_TYPE_SHIFT;
+	/* tx flags */
+	task->txwr_rxrd.const_ctx.tx_flags = FCOE_TASK_TX_STATE_NORMAL <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_TX_STATE_SHIFT;
+
+	/* Set initial seq counter */
+	task->txwr_rxrd.union_ctx.tx_seq.ctx.seq_cnt = 1;
+
+	/* Fill FCP_CMND IU */
+	fcp_cmnd = (u64 *)
+		    task->txwr_rxrd.union_ctx.fcp_cmd.opaque;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bnx2fc_build_fcp_cmnd(io_req, (struct fcp_cmnd *)&tmp_fcp_cmnd);
 
 	/* swap fcp_cmnd */
@@ -1523,16 +2648,48 @@ void bnx2fc_init_task(struct bnx2fc_cmd *io_req,
 	}
 
 	/* Rx Write Tx Read */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	task->rx_wr_tx_rd.rx_id = 0xffff;
 
 	/* Rx Only */
 	if (task_type == FCOE_TASK_TYPE_READ) {
 
 		bd_count = bd_tbl->bd_valid;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	task->rxwr_txrd.const_ctx.data_2_trns = io_req->data_xfer_len;
+
+	context_id = tgt->context_id;
+	task->rxwr_txrd.const_ctx.init_flags = context_id <<
+				FCOE_TCE_RX_WR_TX_RD_CONST_CID_SHIFT;
+
+	/* rx flags */
+	/* Set state to "waiting for the first packet" */
+	task->rxwr_txrd.var_ctx.rx_flags |= 1 <<
+				FCOE_TCE_RX_WR_TX_RD_VAR_EXP_FIRST_FRAME_SHIFT;
+
+	task->rxwr_txrd.var_ctx.rx_id = 0xffff;
+
+	/* Rx Only */
+	if (task_type != FCOE_TASK_TYPE_READ)
+		return;
+
+	sgl = &task->rxwr_only.union_ctx.read_info.sgl_ctx.sgl;
+	bd_count = bd_tbl->bd_valid;
+
+	if (dev_type == TYPE_DISK) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (bd_count == 1) {
 
 			struct fcoe_bd_ctx *fcoe_bd_tbl = bd_tbl->bd_tbl;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			task->rx_wr_only.sgl_ctx.single_sge.cur_buf_addr.lo =
 					fcoe_bd_tbl->buf_addr_lo;
 			task->rx_wr_only.sgl_ctx.single_sge.cur_buf_addr.hi =
@@ -1550,6 +2707,45 @@ void bnx2fc_init_task(struct bnx2fc_cmd *io_req,
 			task->rx_wr_only.sgl_ctx.mul_sges.sgl_size =
 					bd_tbl->bd_valid;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			cached_sge->cur_buf_addr.lo = fcoe_bd_tbl->buf_addr_lo;
+			cached_sge->cur_buf_addr.hi = fcoe_bd_tbl->buf_addr_hi;
+			cached_sge->cur_buf_rem = fcoe_bd_tbl->buf_len;
+			task->txwr_rxrd.const_ctx.init_flags |= 1 <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_CACHED_SGE_SHIFT;
+		} else if (bd_count == 2) {
+			struct fcoe_bd_ctx *fcoe_bd_tbl = bd_tbl->bd_tbl;
+
+			cached_sge->cur_buf_addr.lo = fcoe_bd_tbl->buf_addr_lo;
+			cached_sge->cur_buf_addr.hi = fcoe_bd_tbl->buf_addr_hi;
+			cached_sge->cur_buf_rem = fcoe_bd_tbl->buf_len;
+
+			fcoe_bd_tbl++;
+			cached_sge->second_buf_addr.lo =
+						 fcoe_bd_tbl->buf_addr_lo;
+			cached_sge->second_buf_addr.hi =
+						fcoe_bd_tbl->buf_addr_hi;
+			cached_sge->second_buf_rem = fcoe_bd_tbl->buf_len;
+			task->txwr_rxrd.const_ctx.init_flags |= 1 <<
+				FCOE_TCE_TX_WR_RX_RD_CONST_CACHED_SGE_SHIFT;
+		} else {
+
+			sgl->mul_sgl.cur_sge_addr.lo = (u32)bd_tbl->bd_tbl_dma;
+			sgl->mul_sgl.cur_sge_addr.hi =
+					(u32)((u64)bd_tbl->bd_tbl_dma >> 32);
+			sgl->mul_sgl.sgl_size = bd_count;
+		}
+	} else {
+		sgl->mul_sgl.cur_sge_addr.lo = (u32)bd_tbl->bd_tbl_dma;
+		sgl->mul_sgl.cur_sge_addr.hi =
+				(u32)((u64)bd_tbl->bd_tbl_dma >> 32);
+		sgl->mul_sgl.sgl_size = bd_count;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1567,6 +2763,10 @@ int bnx2fc_setup_task_ctx(struct bnx2fc_hba *hba)
 	int rc = 0;
 	struct regpair *task_ctx_bdt;
 	dma_addr_t addr;
+<<<<<<< HEAD
+=======
+	int task_ctx_arr_sz;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	/*
@@ -1590,7 +2790,12 @@ int bnx2fc_setup_task_ctx(struct bnx2fc_hba *hba)
 	 * Allocate task_ctx which is an array of pointers pointing to
 	 * a page containing 32 task contexts
 	 */
+<<<<<<< HEAD
 	hba->task_ctx = kzalloc((BNX2FC_TASK_CTX_ARR_SZ * sizeof(void *)),
+=======
+	task_ctx_arr_sz = (hba->max_tasks / BNX2FC_TASKS_PER_PAGE);
+	hba->task_ctx = kzalloc((task_ctx_arr_sz * sizeof(void *)),
+>>>>>>> refs/remotes/origin/master
 				 GFP_KERNEL);
 	if (!hba->task_ctx) {
 		printk(KERN_ERR PFX "unable to allocate task context array\n");
@@ -1601,7 +2806,11 @@ int bnx2fc_setup_task_ctx(struct bnx2fc_hba *hba)
 	/*
 	 * Allocate task_ctx_dma which is an array of dma addresses
 	 */
+<<<<<<< HEAD
 	hba->task_ctx_dma = kmalloc((BNX2FC_TASK_CTX_ARR_SZ *
+=======
+	hba->task_ctx_dma = kmalloc((task_ctx_arr_sz *
+>>>>>>> refs/remotes/origin/master
 					sizeof(dma_addr_t)), GFP_KERNEL);
 	if (!hba->task_ctx_dma) {
 		printk(KERN_ERR PFX "unable to alloc context mapping array\n");
@@ -1610,7 +2819,11 @@ int bnx2fc_setup_task_ctx(struct bnx2fc_hba *hba)
 	}
 
 	task_ctx_bdt = (struct regpair *)hba->task_ctx_bd_tbl;
+<<<<<<< HEAD
 	for (i = 0; i < BNX2FC_TASK_CTX_ARR_SZ; i++) {
+=======
+	for (i = 0; i < task_ctx_arr_sz; i++) {
+>>>>>>> refs/remotes/origin/master
 
 		hba->task_ctx[i] = dma_alloc_coherent(&hba->pcidev->dev,
 						      PAGE_SIZE,
@@ -1630,7 +2843,11 @@ int bnx2fc_setup_task_ctx(struct bnx2fc_hba *hba)
 	return 0;
 
 out3:
+<<<<<<< HEAD
 	for (i = 0; i < BNX2FC_TASK_CTX_ARR_SZ; i++) {
+=======
+	for (i = 0; i < task_ctx_arr_sz; i++) {
+>>>>>>> refs/remotes/origin/master
 		if (hba->task_ctx[i]) {
 
 			dma_free_coherent(&hba->pcidev->dev, PAGE_SIZE,
@@ -1654,6 +2871,10 @@ out:
 
 void bnx2fc_free_task_ctx(struct bnx2fc_hba *hba)
 {
+<<<<<<< HEAD
+=======
+	int task_ctx_arr_sz;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (hba->task_ctx_bd_tbl) {
@@ -1663,8 +2884,14 @@ void bnx2fc_free_task_ctx(struct bnx2fc_hba *hba)
 		hba->task_ctx_bd_tbl = NULL;
 	}
 
+<<<<<<< HEAD
 	if (hba->task_ctx) {
 		for (i = 0; i < BNX2FC_TASK_CTX_ARR_SZ; i++) {
+=======
+	task_ctx_arr_sz = (hba->max_tasks / BNX2FC_TASKS_PER_PAGE);
+	if (hba->task_ctx) {
+		for (i = 0; i < task_ctx_arr_sz; i++) {
+>>>>>>> refs/remotes/origin/master
 			if (hba->task_ctx[i]) {
 				dma_free_coherent(&hba->pcidev->dev, PAGE_SIZE,
 						    hba->task_ctx[i],

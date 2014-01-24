@@ -26,7 +26,15 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -42,7 +50,15 @@ MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
 MODULE_DESCRIPTION("Universal interface for Audio Codec '97");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable_loopback;
+=======
+static bool enable_loopback;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable_loopback;
+>>>>>>> refs/remotes/origin/master
 
 module_param(enable_loopback, bool, 0444);
 MODULE_PARM_DESC(enable_loopback, "Enable AC97 ADC/DAC Loopback Control");
@@ -175,6 +191,10 @@ static const struct ac97_codec_id snd_ac97_codec_ids[] = {
 { 0x54524106, 0xffffffff, "TR28026",		NULL,		NULL },
 { 0x54524108, 0xffffffff, "TR28028",		patch_tritech_tr28028,	NULL }, // added by xin jin [07/09/99]
 { 0x54524123, 0xffffffff, "TR28602",		NULL,		NULL }, // only guess --jk [TR28023 = eMicro EM28023 (new CT1297)]
+<<<<<<< HEAD
+=======
+{ 0x54584e03, 0xffffffff, "TLV320AIC27",	NULL,		NULL },
+>>>>>>> refs/remotes/origin/master
 { 0x54584e20, 0xffffffff, "TLC320AD9xC",	NULL,		NULL },
 { 0x56494161, 0xffffffff, "VIA1612A",		NULL,		NULL }, // modified ICE1232 with S/PDIF
 { 0x56494170, 0xffffffff, "VIA1617A",		patch_vt1617a,	NULL }, // modified VT1616 with S/PDIF
@@ -299,7 +319,11 @@ EXPORT_SYMBOL(snd_ac97_write);
  * Reads a value from the given register.  This will invoke the read
  * callback directly after the register check.
  *
+<<<<<<< HEAD
  * Returns the read value.
+=======
+ * Return: The read value.
+>>>>>>> refs/remotes/origin/master
  */
 unsigned short snd_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
 {
@@ -352,7 +376,11 @@ EXPORT_SYMBOL(snd_ac97_write_cache);
  * Compares the value with the register cache and updates the value
  * only when the value is changed.
  *
+<<<<<<< HEAD
  * Returns 1 if the value is changed, 0 if no change, or a negative
+=======
+ * Return: 1 if the value is changed, 0 if no change, or a negative
+>>>>>>> refs/remotes/origin/master
  * code on failure.
  */
 int snd_ac97_update(struct snd_ac97 *ac97, unsigned short reg, unsigned short value)
@@ -384,7 +412,11 @@ EXPORT_SYMBOL(snd_ac97_update);
  * Updates the masked-bits on the given register only when the value
  * is changed.
  *
+<<<<<<< HEAD
  * Returns 1 if the bits are changed, 0 if no change, or a negative
+=======
+ * Return: 1 if the bits are changed, 0 if no change, or a negative
+>>>>>>> refs/remotes/origin/master
  * code on failure.
  */
 int snd_ac97_update_bits(struct snd_ac97 *ac97, unsigned short reg, unsigned short mask, unsigned short value)
@@ -1296,7 +1328,11 @@ static int snd_ac97_cmix_new_stereo(struct snd_card *card, const char *pfx,
 				    struct snd_ac97 *ac97)
 {
 	int err;
+<<<<<<< HEAD
 	char name[44];
+=======
+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+>>>>>>> refs/remotes/origin/master
 	unsigned char lo_max, hi_max;
 
 	if (! snd_ac97_valid_reg(ac97, reg))
@@ -1836,7 +1872,11 @@ void snd_ac97_get_name(struct snd_ac97 *ac97, unsigned int id, char *name, int m
  * snd_ac97_get_short_name - retrieve codec name
  * @ac97: the codec instance
  *
+<<<<<<< HEAD
  * Returns the short identifying name of the codec.
+=======
+ * Return: The short identifying name of the codec.
+>>>>>>> refs/remotes/origin/master
  */
 const char *snd_ac97_get_short_name(struct snd_ac97 *ac97)
 {
@@ -1910,7 +1950,11 @@ static int ac97_reset_wait(struct snd_ac97 *ac97, int timeout, int with_modem)
  * The AC97 bus instance is registered as a low-level device, so you don't
  * have to release it manually.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure.
+=======
+ * Return: Zero if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ac97_bus(struct snd_card *card, int num, struct snd_ac97_bus_ops *ops,
 		 void *private_data, struct snd_ac97_bus **rbus)
@@ -2006,7 +2050,11 @@ static void do_update_power(struct work_struct *work)
  * The ac97 instance is registered as a low-level device, so you don't
  * have to release it manually.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure.
+=======
+ * Return: Zero if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ac97_mixer(struct snd_ac97_bus *bus, struct snd_ac97_template *template, struct snd_ac97 **rac97)
 {
@@ -2373,6 +2421,11 @@ static struct ac97_power_reg power_regs[PWIDX_SIZE] = {
  * @powerup: non-zero when power up the part
  *
  * Update the AC97 powerdown register bits of the given part.
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ac97_update_power(struct snd_ac97 *ac97, int reg, int powerup)
 {
@@ -2885,7 +2938,11 @@ static int apply_quirk_str(struct snd_ac97 *ac97, const char *typestr)
  * headphone (true line-out) control as "Master".
  * The quirk-list must be terminated with a zero-filled entry.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure.
+=======
+ * Return: Zero if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 
 int snd_ac97_tune_hardware(struct snd_ac97 *ac97, struct ac97_quirk *quirk, const char *override)

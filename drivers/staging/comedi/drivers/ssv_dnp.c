@@ -15,11 +15,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: ssv_dnp
@@ -31,6 +34,10 @@ Status: unknown
 
 /* include files ----------------------------------------------------------- */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "../comedidev.h"
 
 /* Some global definitions: the registers of the DNP ----------------------- */
@@ -50,6 +57,7 @@ Status: unknown
 #define PCMR  0xa3		/* Port C Mode Register                      */
 #define PCDR  0xa7		/* Port C Data Register                      */
 
+<<<<<<< HEAD
 /* This data structure holds information about the supported boards -------- */
 
 struct dnp_board {
@@ -157,6 +165,102 @@ static int dnp_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		return -ENOMEM;
 
 	s = dev->subdevices + 0;
+=======
+static int dnp_dio_insn_bits(struct comedi_device *dev,
+			     struct comedi_subdevice *s,
+			     struct comedi_insn *insn,
+			     unsigned int *data)
+{
+	unsigned int mask;
+	unsigned int val;
+
+	/*
+	 * Ports A and B are straight forward: each bit corresponds to an
+	 * output pin with the same order. Port C is different: bits 0...3
+	 * correspond to bits 4...7 of the output register (PCDR).
+	 */
+
+	mask = comedi_dio_update_state(s, data);
+	if (mask) {
+		outb(PADR, CSCIR);
+		outb(s->state & 0xff, CSCDR);
+
+		outb(PBDR, CSCIR);
+		outb((s->state >> 8) & 0xff, CSCDR);
+
+		outb(PCDR, CSCIR);
+		val = inb(CSCDR) & 0x0f;
+		outb(((s->state >> 12) & 0xf0) | val, CSCDR);
+	}
+
+	outb(PADR, CSCIR);
+	val = inb(CSCDR);
+	outb(PBDR, CSCIR);
+	val |= (inb(CSCDR) << 8);
+	outb(PCDR, CSCIR);
+	val |= ((inb(CSCDR) & 0xf0) << 12);
+
+	data[1] = val;
+
+	return insn->n;
+}
+
+static int dnp_dio_insn_config(struct comedi_device *dev,
+			       struct comedi_subdevice *s,
+			       struct comedi_insn *insn,
+			       unsigned int *data)
+{
+	unsigned int chan = CR_CHAN(insn->chanspec);
+	unsigned int mask;
+	unsigned int val;
+	int ret;
+
+	ret = comedi_dio_insn_config(dev, s, insn, data, 0);
+	if (ret)
+		return ret;
+
+	if (chan < 8) {			/* Port A */
+		mask = 1 << chan;
+		outb(PAMR, CSCIR);
+	} else if (chan < 16) {		/* Port B */
+		mask = 1 << (chan - 8);
+		outb(PBMR, CSCIR);
+	} else {			/* Port C */
+		/*
+		 * We have to pay attention with port C.
+		 * This is the meaning of PCMR:
+		 *   Bit in PCMR:              7 6 5 4 3 2 1 0
+		 *   Corresponding port C pin: d 3 d 2 d 1 d 0   d= don't touch
+		 *
+		 * Multiplication by 2 brings bits into correct position
+		 * for PCMR!
+		 */
+		mask = 1 << ((chan - 16) * 2);
+		outb(PCMR, CSCIR);
+	}
+
+	val = inb(CSCDR);
+	if (data[0] == COMEDI_OUTPUT)
+		val |= mask;
+	else
+		val &= ~mask;
+	outb(val, CSCDR);
+
+	return insn->n;
+
+}
+
+static int dnp_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+{
+	struct comedi_subdevice *s;
+	int ret;
+
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	/* digital i/o subdevice                                             */
 	s->type = COMEDI_SUBD_DIO;
 	s->subdev_flags = SDF_READABLE | SDF_WRITABLE;
@@ -166,8 +270,11 @@ static int dnp_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	s->insn_bits = dnp_dio_insn_bits;
 	s->insn_config = dnp_dio_insn_config;
 
+<<<<<<< HEAD
 	printk("attached\n");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* We use the I/O ports 0x22,0x23 and 0xa3-0xa9, which are always
 	 * allocated for the primary 8259, so we don't need to allocate them
 	 * ourselves. */
@@ -180,6 +287,7 @@ static int dnp_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	outb(PCMR, CSCIR);
 	outb((inb(CSCDR) & 0xAA), CSCDR);
 
+<<<<<<< HEAD
 	return 1;
 
 }
@@ -196,12 +304,21 @@ static int dnp_detach(struct comedi_device *dev)
 {
 
 	/* configure all ports as input (default)                            */
+=======
+	dev_info(dev->class_dev, "%s: attached\n", dev->board_name);
+	return 1;
+}
+
+static void dnp_detach(struct comedi_device *dev)
+{
+>>>>>>> refs/remotes/origin/master
 	outb(PAMR, CSCIR);
 	outb(0x00, CSCDR);
 	outb(PBMR, CSCIR);
 	outb(0x00, CSCDR);
 	outb(PCMR, CSCIR);
 	outb((inb(CSCDR) & 0xAA), CSCDR);
+<<<<<<< HEAD
 
 	/* announce that we are finished                                     */
 	printk(KERN_INFO "comedi%d: dnp: remove\n", dev->minor);
@@ -251,11 +368,27 @@ static int dnp_dio_insn_bits(struct comedi_device *dev,
 
 	/* on return, data[1] contains the value of the digital input lines. */
 	outb(PADR, CSCIR);
-	data[0] = inb(CSCDR);
+<<<<<<< HEAD
+<<<<<<< HEAD
+	data[1] = inb(CSCDR);
 	outb(PBDR, CSCIR);
-	data[0] += inb(CSCDR) << 8;
+	data[1] += inb(CSCDR) << 8;
 	outb(PCDR, CSCIR);
+	data[1] += ((inb(CSCDR) & 0xF0) << 12);
+=======
+	data[0] = inb(CSCDR);
+=======
+	data[1] = inb(CSCDR);
+>>>>>>> refs/remotes/origin/cm-11.0
+	outb(PBDR, CSCIR);
+	data[1] += inb(CSCDR) << 8;
+	outb(PCDR, CSCIR);
+<<<<<<< HEAD
 	data[0] += ((inb(CSCDR) & 0xF0) << 12);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data[1] += ((inb(CSCDR) & 0xF0) << 12);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 2;
 
@@ -325,6 +458,17 @@ static int dnp_dio_insn_config(struct comedi_device *dev,
 	return 1;
 
 }
+=======
+}
+
+static struct comedi_driver dnp_driver = {
+	.driver_name	= "dnp-1486",
+	.module		= THIS_MODULE,
+	.attach		= dnp_attach,
+	.detach		= dnp_detach,
+};
+module_comedi_driver(dnp_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

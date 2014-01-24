@@ -1,6 +1,10 @@
 /*
  *  comedi/drivers/das08.c
+<<<<<<< HEAD
  *  DAS08 driver
+=======
+ *  comedi driver for common DAS08 support (used by ISA/PCI/PCMCIA drivers)
+>>>>>>> refs/remotes/origin/master
  *
  *  COMEDI - Linux Control and Measurement Device Interface
  *  Copyright (C) 2000 David A. Schleef <ds@schleef.org>
@@ -16,17 +20,21 @@
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
+<<<<<<< HEAD
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *****************************************************************
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
  * Driver: das08
  * Description: DAS-08 compatible boards
+<<<<<<< HEAD
  * Author: Warren Jasper, ds, Frank Hess
  * Devices: [Keithley Metrabyte] DAS08 (isa-das08),
  *   [ComputerBoards] DAS08 (isa-das08), DAS08-PGM (das08-pgm),
@@ -75,6 +83,28 @@
 #define   CNTRL_DIR            0x2
 #define   CNTRL_INTR           0x4
 
+=======
+ * Devices: various, see das08_isa, das08_cs, and das08_pci drivers
+ * Author: Warren Jasper, ds, Frank Hess
+ * Updated: Fri, 31 Aug 2012 19:19:06 +0100
+ * Status: works
+ *
+ * This driver is used by the das08_isa, das08_cs, and das08_pci
+ * drivers to provide the common support for the DAS-08 hardware.
+ *
+ * The driver doesn't support asynchronous commands, since the
+ * cheap das08 hardware doesn't really support them.
+ */
+
+#include <linux/module.h>
+
+#include "../comedidev.h"
+
+#include "8255.h"
+#include "8253.h"
+#include "das08.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
     cio-das08.pdf
 
@@ -154,6 +184,7 @@
 
 /* gainlist same as _pgx_ below */
 
+<<<<<<< HEAD
 static int das08_ai_rinsn(struct comedi_device *dev, struct comedi_subdevice *s,
 			  struct comedi_insn *insn, unsigned int *data);
 static int das08_di_rbits(struct comedi_device *dev, struct comedi_subdevice *s,
@@ -215,6 +246,51 @@ static const struct comedi_lrange range_das08_pgm = { 9, {
 							  UNI_RANGE(0.1),
 							  UNI_RANGE(0.01)
 							  }
+=======
+static const struct comedi_lrange range_das08_pgl = {
+	9, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(2.5),
+		BIP_RANGE(1.25),
+		BIP_RANGE(0.625),
+		UNI_RANGE(10),
+		UNI_RANGE(5),
+		UNI_RANGE(2.5),
+		UNI_RANGE(1.25)
+	}
+};
+
+static const struct comedi_lrange range_das08_pgh = {
+	12, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(1),
+		BIP_RANGE(0.5),
+		BIP_RANGE(0.1),
+		BIP_RANGE(0.05),
+		BIP_RANGE(0.01),
+		BIP_RANGE(0.005),
+		UNI_RANGE(10),
+		UNI_RANGE(1),
+		UNI_RANGE(0.1),
+		UNI_RANGE(0.01)
+	}
+};
+
+static const struct comedi_lrange range_das08_pgm = {
+	9, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(0.5),
+		BIP_RANGE(0.05),
+		BIP_RANGE(0.01),
+		UNI_RANGE(10),
+		UNI_RANGE(1),
+		UNI_RANGE(0.1),
+		UNI_RANGE(0.01)
+	}
+>>>>>>> refs/remotes/origin/master
 };				/*
 				   cio-das08jr.pdf
 
@@ -253,6 +329,7 @@ static const int *const das08_gainlists[] = {
 	das08_pgm_gainlist,
 };
 
+<<<<<<< HEAD
 static const struct das08_board_struct das08_boards[] = {
 	{
 	 .name = "isa-das08",	/*  cio-das08.pdf */
@@ -506,10 +583,15 @@ struct das08_board_struct das08_cs_boards[NUM_DAS08_CS_BOARDS] = {
 
 #ifdef CONFIG_COMEDI_PCI
 static DEFINE_PCI_DEVICE_TABLE(das08_pci_table) = {
+<<<<<<< HEAD
 	{
 	PCI_VENDOR_ID_COMPUTERBOARDS, PCI_DEVICE_ID_PCIDAS08,
 		    PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0}, {
 	0}
+=======
+	{ PCI_DEVICE(PCI_VENDOR_ID_COMPUTERBOARDS, PCI_DEVICE_ID_PCIDAS08) },
+	{0}
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 MODULE_DEVICE_TABLE(pci, das08_pci_table);
@@ -518,11 +600,18 @@ MODULE_DEVICE_TABLE(pci, das08_pci_table);
 #define devpriv ((struct das08_private_struct *)dev->private)
 #define thisboard ((const struct das08_board_struct *)dev->board_ptr)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIMEOUT 100000
 
 static int das08_ai_rinsn(struct comedi_device *dev, struct comedi_subdevice *s,
 			  struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	const struct das08_board_struct *thisboard = comedi_board(dev);
+	struct das08_private_struct *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i, n;
 	int chan;
 	int range;
@@ -554,7 +643,11 @@ static int das08_ai_rinsn(struct comedi_device *dev, struct comedi_subdevice *s,
 		/* clear over-range bits for 16-bit boards */
 		if (thisboard->ai_nbits == 16)
 			if (inb(dev->iobase + DAS08_MSB) & 0x80)
+<<<<<<< HEAD
 				printk(KERN_INFO "das08: over-range\n");
+=======
+				dev_info(dev->class_dev, "over-range\n");
+>>>>>>> refs/remotes/origin/master
 
 		/* trigger conversion */
 		outb_p(0, dev->iobase + DAS08_TRIG_12BIT);
@@ -564,7 +657,11 @@ static int das08_ai_rinsn(struct comedi_device *dev, struct comedi_subdevice *s,
 				break;
 		}
 		if (i == TIMEOUT) {
+<<<<<<< HEAD
 			printk(KERN_ERR "das08: timeout\n");
+=======
+			dev_err(dev->class_dev, "timeout\n");
+>>>>>>> refs/remotes/origin/master
 			return -ETIME;
 		}
 		msb = inb(dev->iobase + DAS08_MSB);
@@ -594,6 +691,7 @@ static int das08_di_rbits(struct comedi_device *dev, struct comedi_subdevice *s,
 	data[0] = 0;
 	data[1] = DAS08_IP(inb(dev->iobase + DAS08_STATUS));
 
+<<<<<<< HEAD
 	return 2;
 }
 
@@ -619,6 +717,30 @@ static int das08_do_wbits(struct comedi_device *dev, struct comedi_subdevice *s,
 	data[1] = wbits;
 
 	return 2;
+=======
+	return insn->n;
+}
+
+static int das08_do_wbits(struct comedi_device *dev,
+			  struct comedi_subdevice *s,
+			  struct comedi_insn *insn,
+			  unsigned int *data)
+{
+	struct das08_private_struct *devpriv = dev->private;
+
+	if (comedi_dio_update_state(s, data)) {
+		/* prevent race with setting of analog input mux */
+		spin_lock(&dev->spinlock);
+		devpriv->do_mux_bits &= ~DAS08_DO_MASK;
+		devpriv->do_mux_bits |= DAS08_OP(s->state);
+		outb(devpriv->do_mux_bits, dev->iobase + DAS08_CONTROL);
+		spin_unlock(&dev->spinlock);
+	}
+
+	data[1] = s->state;
+
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int das08jr_di_rbits(struct comedi_device *dev,
@@ -628,11 +750,16 @@ static int das08jr_di_rbits(struct comedi_device *dev,
 	data[0] = 0;
 	data[1] = inb(dev->iobase + DAS08JR_DIO);
 
+<<<<<<< HEAD
 	return 2;
+=======
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int das08jr_do_wbits(struct comedi_device *dev,
 			    struct comedi_subdevice *s,
+<<<<<<< HEAD
 			    struct comedi_insn *insn, unsigned int *data)
 {
 	/*  null bits we are going to set */
@@ -794,18 +921,114 @@ static unsigned int i8254_read_status(struct i8254_struct *st, int channel)
 	int chan = st->logic2phys[channel];
 
 	return i8254_read_status_low(st->iobase, chan);
+=======
+			    struct comedi_insn *insn,
+			    unsigned int *data)
+{
+	if (comedi_dio_update_state(s, data))
+		outb(s->state, dev->iobase + DAS08JR_DIO);
+
+	data[1] = s->state;
+
+	return insn->n;
+}
+
+static void das08_ao_set_data(struct comedi_device *dev,
+			      unsigned int chan, unsigned int data)
+{
+	const struct das08_board_struct *thisboard = comedi_board(dev);
+	struct das08_private_struct *devpriv = dev->private;
+	unsigned char lsb;
+	unsigned char msb;
+
+	lsb = data & 0xff;
+	msb = (data >> 8) & 0xff;
+	if (thisboard->is_jr) {
+		outb(lsb, dev->iobase + DAS08JR_AO_LSB(chan));
+		outb(msb, dev->iobase + DAS08JR_AO_MSB(chan));
+		/* load DACs */
+		inb(dev->iobase + DAS08JR_DIO);
+	} else {
+		outb(lsb, dev->iobase + DAS08AO_AO_LSB(chan));
+		outb(msb, dev->iobase + DAS08AO_AO_MSB(chan));
+		/* load DACs */
+		inb(dev->iobase + DAS08AO_AO_UPDATE);
+	}
+	devpriv->ao_readback[chan] = data;
+}
+
+static void das08_ao_initialize(struct comedi_device *dev,
+				struct comedi_subdevice *s)
+{
+	int n;
+	unsigned int data;
+
+	data = s->maxdata / 2;	/* should be about 0 volts */
+	for (n = 0; n < s->n_chan; n++)
+		das08_ao_set_data(dev, n, data);
+}
+
+static int das08_ao_winsn(struct comedi_device *dev,
+			  struct comedi_subdevice *s,
+			  struct comedi_insn *insn, unsigned int *data)
+{
+	unsigned int n;
+	unsigned int chan;
+
+	chan = CR_CHAN(insn->chanspec);
+
+	for (n = 0; n < insn->n; n++)
+		das08_ao_set_data(dev, chan, *data);
+
+	return n;
+}
+
+static int das08_ao_rinsn(struct comedi_device *dev,
+			  struct comedi_subdevice *s,
+			  struct comedi_insn *insn, unsigned int *data)
+{
+	struct das08_private_struct *devpriv = dev->private;
+	unsigned int n;
+	unsigned int chan;
+
+	chan = CR_CHAN(insn->chanspec);
+
+	for (n = 0; n < insn->n; n++)
+		data[n] = devpriv->ao_readback[chan];
+
+	return n;
+}
+
+static void i8254_initialize(struct comedi_device *dev)
+{
+	const struct das08_board_struct *thisboard = comedi_board(dev);
+	unsigned long i8254_iobase = dev->iobase + thisboard->i8254_offset;
+	unsigned int mode = I8254_MODE0 | I8254_BINARY;
+	int i;
+
+	for (i = 0; i < 3; ++i)
+		i8254_set_mode(i8254_iobase, 0, i, mode);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int das08_counter_read(struct comedi_device *dev,
 			      struct comedi_subdevice *s,
 			      struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	int chan = insn->chanspec;
 
 	/* printk("Reading counter channel %d ",chan); */
 	data[0] = i8254_read_channel(&devpriv->i8254, chan);
 	/* printk("=> 0x%08X\n",data[0]); */
 
+=======
+	const struct das08_board_struct *thisboard = comedi_board(dev);
+	unsigned long i8254_iobase = dev->iobase + thisboard->i8254_offset;
+	int chan = insn->chanspec;
+
+	data[0] = i8254_read(i8254_iobase, 0, chan);
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -813,11 +1036,19 @@ static int das08_counter_write(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	int chan = insn->chanspec;
 
 	/* printk("Writing counter channel %d with 0x%04X\n",chan,data[0]); */
 	i8254_write_channel(&devpriv->i8254, chan, data[0]);
 
+=======
+	const struct das08_board_struct *thisboard = comedi_board(dev);
+	unsigned long i8254_iobase = dev->iobase + thisboard->i8254_offset;
+	int chan = insn->chanspec;
+
+	i8254_write(i8254_iobase, 0, chan, data[0]);
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -825,6 +1056,7 @@ static int das08_counter_config(struct comedi_device *dev,
 				struct comedi_subdevice *s,
 				struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	int chan = insn->chanspec;
 
 	if (insn->n != 2)
@@ -836,6 +1068,18 @@ static int das08_counter_config(struct comedi_device *dev,
 		break;
 	case INSN_CONFIG_8254_READ_STATUS:
 		data[1] = i8254_read_status(&devpriv->i8254, chan);
+=======
+	const struct das08_board_struct *thisboard = comedi_board(dev);
+	unsigned long i8254_iobase = dev->iobase + thisboard->i8254_offset;
+	int chan = insn->chanspec;
+
+	switch (data[0]) {
+	case INSN_CONFIG_SET_COUNTER_MODE:
+		i8254_set_mode(i8254_iobase, 0, chan, data[1]);
+		break;
+	case INSN_CONFIG_8254_READ_STATUS:
+		data[1] = i8254_status(i8254_iobase, 0, chan);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
@@ -844,6 +1088,7 @@ static int das08_counter_config(struct comedi_device *dev,
 	return 2;
 }
 
+<<<<<<< HEAD
 static int das08_attach(struct comedi_device *dev, struct comedi_devconfig *it);
 
 static struct comedi_driver driver_das08 = {
@@ -869,10 +1114,20 @@ int das08_common_attach(struct comedi_device *dev, unsigned long iobase)
 			return -EIO;
 		}
 	}
+=======
+int das08_common_attach(struct comedi_device *dev, unsigned long iobase)
+{
+	const struct das08_board_struct *thisboard = comedi_board(dev);
+	struct das08_private_struct *devpriv = dev->private;
+	struct comedi_subdevice *s;
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	dev->iobase = iobase;
 
 	dev->board_name = thisboard->name;
 
+<<<<<<< HEAD
 	ret = alloc_subdevices(dev, 6);
 	if (ret < 0)
 		return ret;
@@ -880,6 +1135,15 @@ int das08_common_attach(struct comedi_device *dev, unsigned long iobase)
 	s = dev->subdevices + 0;
 	/* ai */
 	if (thisboard->ai) {
+=======
+	ret = comedi_alloc_subdevices(dev, 6);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+	/* ai */
+	if (thisboard->ai_nbits) {
+>>>>>>> refs/remotes/origin/master
 		s->type = COMEDI_SUBD_AI;
 		/* XXX some boards actually have differential
 		 * inputs instead of single ended.
@@ -890,26 +1154,44 @@ int das08_common_attach(struct comedi_device *dev, unsigned long iobase)
 		s->n_chan = 8;
 		s->maxdata = (1 << thisboard->ai_nbits) - 1;
 		s->range_table = das08_ai_lranges[thisboard->ai_pg];
+<<<<<<< HEAD
 		s->insn_read = thisboard->ai;
+=======
+		s->insn_read = das08_ai_rinsn;
+>>>>>>> refs/remotes/origin/master
 		devpriv->pg_gainlist = das08_gainlists[thisboard->ai_pg];
 	} else {
 		s->type = COMEDI_SUBD_UNUSED;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 1;
 	/* ao */
 	if (thisboard->ao) {
 		s->type = COMEDI_SUBD_AO;
 /* XXX lacks read-back insn */
+=======
+	s = &dev->subdevices[1];
+	/* ao */
+	if (thisboard->ao_nbits) {
+		s->type = COMEDI_SUBD_AO;
+>>>>>>> refs/remotes/origin/master
 		s->subdev_flags = SDF_WRITABLE;
 		s->n_chan = 2;
 		s->maxdata = (1 << thisboard->ao_nbits) - 1;
 		s->range_table = &range_bipolar5;
+<<<<<<< HEAD
 		s->insn_write = thisboard->ao;
+=======
+		s->insn_write = das08_ao_winsn;
+		s->insn_read = das08_ao_rinsn;
+		das08_ao_initialize(dev, s);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		s->type = COMEDI_SUBD_UNUSED;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 2;
 	/* di */
 	if (thisboard->di) {
@@ -919,24 +1201,51 @@ int das08_common_attach(struct comedi_device *dev, unsigned long iobase)
 		s->maxdata = 1;
 		s->range_table = &range_digital;
 		s->insn_bits = thisboard->di;
+=======
+	s = &dev->subdevices[2];
+	/* di */
+	if (thisboard->di_nchan) {
+		s->type = COMEDI_SUBD_DI;
+		s->subdev_flags = SDF_READABLE;
+		s->n_chan = thisboard->di_nchan;
+		s->maxdata = 1;
+		s->range_table = &range_digital;
+		s->insn_bits =
+			thisboard->is_jr ? das08jr_di_rbits : das08_di_rbits;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		s->type = COMEDI_SUBD_UNUSED;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 3;
 	/* do */
 	if (thisboard->do_) {
+=======
+	s = &dev->subdevices[3];
+	/* do */
+	if (thisboard->do_nchan) {
+>>>>>>> refs/remotes/origin/master
 		s->type = COMEDI_SUBD_DO;
 		s->subdev_flags = SDF_WRITABLE | SDF_READABLE;
 		s->n_chan = thisboard->do_nchan;
 		s->maxdata = 1;
 		s->range_table = &range_digital;
+<<<<<<< HEAD
 		s->insn_bits = thisboard->do_;
+=======
+		s->insn_bits =
+			thisboard->is_jr ? das08jr_do_wbits : das08_do_wbits;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		s->type = COMEDI_SUBD_UNUSED;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 4;
+=======
+	s = &dev->subdevices[4];
+>>>>>>> refs/remotes/origin/master
 	/* 8255 */
 	if (thisboard->i8255_offset != 0) {
 		subdev_8255_init(dev, s, NULL, (unsigned long)(dev->iobase +
@@ -946,7 +1255,11 @@ int das08_common_attach(struct comedi_device *dev, unsigned long iobase)
 		s->type = COMEDI_SUBD_UNUSED;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 5;
+=======
+	s = &dev->subdevices[5];
+>>>>>>> refs/remotes/origin/master
 	/* 8254 */
 	if (thisboard->i8254_offset != 0) {
 		s->type = COMEDI_SUBD_COUNTER;
@@ -956,6 +1269,7 @@ int das08_common_attach(struct comedi_device *dev, unsigned long iobase)
 		s->insn_read = das08_counter_read;
 		s->insn_write = das08_counter_write;
 		s->insn_config = das08_counter_config;
+<<<<<<< HEAD
 		/* Set-up the 8254 structure */
 		devpriv->i8254.channels = 3;
 		devpriv->i8254.logic2phys[0] = 0;
@@ -966,6 +1280,9 @@ int das08_common_attach(struct comedi_device *dev, unsigned long iobase)
 		    devpriv->i8254.mode[1] =
 		    devpriv->i8254.mode[2] = I8254_MODE0 | I8254_BINARY;
 		i8254_initialize(&devpriv->i8254);
+=======
+		i8254_initialize(dev);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		s->type = COMEDI_SUBD_UNUSED;
 	}
@@ -974,6 +1291,7 @@ int das08_common_attach(struct comedi_device *dev, unsigned long iobase)
 }
 EXPORT_SYMBOL_GPL(das08_common_attach);
 
+<<<<<<< HEAD
 static int das08_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 {
 	int ret;
@@ -1135,6 +1453,18 @@ module_exit(driver_das08_cleanup_module);
 #ifdef CONFIG_COMEDI_PCMCIA
 EXPORT_SYMBOL_GPL(das08_cs_boards);
 #endif
+=======
+static int __init das08_init(void)
+{
+	return 0;
+}
+module_init(das08_init);
+
+static void __exit das08_exit(void)
+{
+}
+module_exit(das08_exit);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

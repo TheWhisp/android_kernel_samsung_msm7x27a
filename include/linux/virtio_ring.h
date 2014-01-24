@@ -1,5 +1,6 @@
 #ifndef _LINUX_VIRTIO_RING_H
 #define _LINUX_VIRTIO_RING_H
+<<<<<<< HEAD
 /* An interface for efficient virtio implementation, currently for use by KVM
  * and lguest, but hopefully others soon.  Do NOT change this since it will
  * break existing servers and clients.
@@ -135,13 +136,22 @@ static inline void vring_init(struct vring *vr, unsigned int num, void *p,
 	vr->num = num;
 	vr->desc = p;
 	vr->avail = p + num*sizeof(struct vring_desc);
+<<<<<<< HEAD
 	vr->used = (void *)(((unsigned long)&vr->avail->ring[num] + align-1)
 			    & ~(align - 1));
+=======
+	vr->used = (void *)(((unsigned long)&vr->avail->ring[num] + sizeof(__u16)
+		+ align-1) & ~(align - 1));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline unsigned vring_size(unsigned int num, unsigned long align)
 {
+<<<<<<< HEAD
 	return ((sizeof(struct vring_desc) * num + sizeof(__u16) * (2 + num)
+=======
+	return ((sizeof(struct vring_desc) * num + sizeof(__u16) * (3 + num)
+>>>>>>> refs/remotes/origin/cm-10.0
 		 + align - 1) & ~(align - 1))
 		+ sizeof(__u16) * 3 + sizeof(struct vring_used_elem) * num;
 }
@@ -168,8 +178,86 @@ struct virtqueue;
 struct virtqueue *vring_new_virtqueue(unsigned int num,
 				      unsigned int vring_align,
 				      struct virtio_device *vdev,
+<<<<<<< HEAD
+=======
+				      bool weak_barriers,
+>>>>>>> refs/remotes/origin/cm-10.0
 				      void *pages,
 				      void (*notify)(struct virtqueue *vq),
+=======
+
+#include <asm/barrier.h>
+#include <linux/irqreturn.h>
+#include <uapi/linux/virtio_ring.h>
+
+/*
+ * Barriers in virtio are tricky.  Non-SMP virtio guests can't assume
+ * they're not on an SMP host system, so they need to assume real
+ * barriers.  Non-SMP virtio hosts could skip the barriers, but does
+ * anyone care?
+ *
+ * For virtio_pci on SMP, we don't need to order with respect to MMIO
+ * accesses through relaxed memory I/O windows, so smp_mb() et al are
+ * sufficient.
+ *
+ * For using virtio to talk to real devices (eg. other heterogeneous
+ * CPUs) we do need real barriers.  In theory, we could be using both
+ * kinds of virtio, so it's a runtime decision, and the branch is
+ * actually quite cheap.
+ */
+
+#ifdef CONFIG_SMP
+static inline void virtio_mb(bool weak_barriers)
+{
+	if (weak_barriers)
+		smp_mb();
+	else
+		mb();
+}
+
+static inline void virtio_rmb(bool weak_barriers)
+{
+	if (weak_barriers)
+		smp_rmb();
+	else
+		rmb();
+}
+
+static inline void virtio_wmb(bool weak_barriers)
+{
+	if (weak_barriers)
+		smp_wmb();
+	else
+		wmb();
+}
+#else
+static inline void virtio_mb(bool weak_barriers)
+{
+	mb();
+}
+
+static inline void virtio_rmb(bool weak_barriers)
+{
+	rmb();
+}
+
+static inline void virtio_wmb(bool weak_barriers)
+{
+	wmb();
+}
+#endif
+
+struct virtio_device;
+struct virtqueue;
+
+struct virtqueue *vring_new_virtqueue(unsigned int index,
+				      unsigned int num,
+				      unsigned int vring_align,
+				      struct virtio_device *vdev,
+				      bool weak_barriers,
+				      void *pages,
+				      bool (*notify)(struct virtqueue *vq),
+>>>>>>> refs/remotes/origin/master
 				      void (*callback)(struct virtqueue *vq),
 				      const char *name);
 void vring_del_virtqueue(struct virtqueue *vq);
@@ -177,5 +265,8 @@ void vring_del_virtqueue(struct virtqueue *vq);
 void vring_transport_features(struct virtio_device *vdev);
 
 irqreturn_t vring_interrupt(int irq, void *_vq);
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_VIRTIO_RING_H */

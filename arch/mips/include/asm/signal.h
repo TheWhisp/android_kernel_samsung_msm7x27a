@@ -9,6 +9,7 @@
 #ifndef _ASM_SIGNAL_H
 #define _ASM_SIGNAL_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #define _NSIG		128
@@ -96,6 +97,10 @@ typedef unsigned long old_sigset_t;		/* at least 32 bits */
 #define SIGSTKSZ       8192
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/signal.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_TRAD_SIGNALS
 #define sig_uses_siginfo(ka)	((ka)->sa.sa_flags & SA_SIGINFO)
@@ -103,6 +108,7 @@ typedef unsigned long old_sigset_t;		/* at least 32 bits */
 #define sig_uses_siginfo(ka)	(1)
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #define SIG_BLOCK	1	/* for blocking signals */
@@ -135,5 +141,11 @@ typedef struct sigaltstack {
 #define ptrace_signal_deliver(regs, cookie) do { } while (0)
 
 #endif /* __KERNEL__ */
+=======
+#include <asm/sigcontext.h>
+#include <asm/siginfo.h>
+
+#define __ARCH_HAS_IRIX_SIGACTION
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_SIGNAL_H */

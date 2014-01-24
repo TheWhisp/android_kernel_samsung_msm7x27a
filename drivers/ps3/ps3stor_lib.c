@@ -19,6 +19,14 @@
  */
 
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/lv1call.h>
 #include <asm/ps3stor.h>
@@ -166,7 +174,15 @@ int ps3stor_setup(struct ps3_storage_device *dev, irq_handler_t handler)
 		goto fail_close_device;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	error = request_irq(dev->irq, handler, IRQF_DISABLED,
+=======
+	error = request_irq(dev->irq, handler, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = request_irq(dev->irq, handler, 0,
+>>>>>>> refs/remotes/origin/master
 			    dev->sbd.core.driver->name, dev);
 	if (error) {
 		dev_err(&dev->sbd.core, "%s:%u: request_irq failed %d\n",

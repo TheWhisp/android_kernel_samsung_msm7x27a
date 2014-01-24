@@ -10,6 +10,7 @@ perf-buildid-list		mainporcelain common
 perf-diff			mainporcelain common
 perf-evlist			mainporcelain common
 perf-inject			mainporcelain common
+<<<<<<< HEAD
 perf-list			mainporcelain common
 perf-sched			mainporcelain common
 perf-record			mainporcelain common
@@ -23,3 +24,20 @@ perf-kmem			mainporcelain common
 perf-lock			mainporcelain common
 perf-kvm			mainporcelain common
 perf-test			mainporcelain common
+=======
+perf-kmem			mainporcelain common
+perf-kvm			mainporcelain common
+perf-list			mainporcelain common
+perf-lock			mainporcelain common
+perf-mem			mainporcelain common
+perf-probe			mainporcelain full
+perf-record			mainporcelain common
+perf-report			mainporcelain common
+perf-sched			mainporcelain common
+perf-script			mainporcelain common
+perf-stat			mainporcelain common
+perf-test			mainporcelain common
+perf-timechart			mainporcelain common
+perf-top			mainporcelain common
+perf-trace			mainporcelain common
+>>>>>>> refs/remotes/origin/master

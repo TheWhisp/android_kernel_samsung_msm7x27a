@@ -114,7 +114,11 @@ struct hfsc_class {
 
 	struct gnet_stats_basic_packed bstats;
 	struct gnet_stats_queue qstats;
+<<<<<<< HEAD
 	struct gnet_stats_rate_est rate_est;
+=======
+	struct gnet_stats_rate_est64 rate_est;
+>>>>>>> refs/remotes/origin/master
 	unsigned int	level;		/* class level in hierarchy */
 	struct tcf_proto *filter_list;	/* filter list */
 	unsigned int	filter_cnt;	/* filter count */
@@ -1305,7 +1309,12 @@ hfsc_dump_sc(struct sk_buff *skb, int attr, struct internal_sc *sc)
 	tsc.m1 = sm2m(sc->sm1);
 	tsc.d  = dx2d(sc->dx);
 	tsc.m2 = sm2m(sc->sm2);
+<<<<<<< HEAD
 	NLA_PUT(skb, attr, sizeof(tsc), &tsc);
+=======
+	if (nla_put(skb, attr, sizeof(tsc), &tsc))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	return skb->len;
 
@@ -1368,6 +1377,14 @@ hfsc_dump_class_stats(struct Qdisc *sch, unsigned long arg,
 	struct tc_hfsc_stats xstats;
 
 	cl->qstats.qlen = cl->qdisc->q.qlen;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cl->qstats.backlog = cl->qdisc->qstats.backlog;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cl->qstats.backlog = cl->qdisc->qstats.backlog;
+>>>>>>> refs/remotes/origin/master
 	xstats.level   = cl->level;
 	xstats.period  = cl->cl_vtperiod;
 	xstats.work    = cl->cl_total;
@@ -1387,7 +1404,10 @@ static void
 hfsc_walk(struct Qdisc *sch, struct qdisc_walker *arg)
 {
 	struct hfsc_sched *q = qdisc_priv(sch);
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct hfsc_class *cl;
 	unsigned int i;
 
@@ -1395,7 +1415,11 @@ hfsc_walk(struct Qdisc *sch, struct qdisc_walker *arg)
 		return;
 
 	for (i = 0; i < q->clhash.hashsize; i++) {
+<<<<<<< HEAD
 		hlist_for_each_entry(cl, n, &q->clhash.hash[i],
+=======
+		hlist_for_each_entry(cl, &q->clhash.hash[i],
+>>>>>>> refs/remotes/origin/master
 				     cl_common.hnode) {
 			if (arg->count < arg->skip) {
 				arg->count++;
@@ -1521,11 +1545,18 @@ hfsc_reset_qdisc(struct Qdisc *sch)
 {
 	struct hfsc_sched *q = qdisc_priv(sch);
 	struct hfsc_class *cl;
+<<<<<<< HEAD
 	struct hlist_node *n;
 	unsigned int i;
 
 	for (i = 0; i < q->clhash.hashsize; i++) {
 		hlist_for_each_entry(cl, n, &q->clhash.hash[i], cl_common.hnode)
+=======
+	unsigned int i;
+
+	for (i = 0; i < q->clhash.hashsize; i++) {
+		hlist_for_each_entry(cl, &q->clhash.hash[i], cl_common.hnode)
+>>>>>>> refs/remotes/origin/master
 			hfsc_reset_class(cl);
 	}
 	q->eligible = RB_ROOT;
@@ -1538,16 +1569,28 @@ static void
 hfsc_destroy_qdisc(struct Qdisc *sch)
 {
 	struct hfsc_sched *q = qdisc_priv(sch);
+<<<<<<< HEAD
 	struct hlist_node *n, *next;
+=======
+	struct hlist_node *next;
+>>>>>>> refs/remotes/origin/master
 	struct hfsc_class *cl;
 	unsigned int i;
 
 	for (i = 0; i < q->clhash.hashsize; i++) {
+<<<<<<< HEAD
 		hlist_for_each_entry(cl, n, &q->clhash.hash[i], cl_common.hnode)
 			tcf_destroy_chain(&cl->filter_list);
 	}
 	for (i = 0; i < q->clhash.hashsize; i++) {
 		hlist_for_each_entry_safe(cl, n, next, &q->clhash.hash[i],
+=======
+		hlist_for_each_entry(cl, &q->clhash.hash[i], cl_common.hnode)
+			tcf_destroy_chain(&cl->filter_list);
+	}
+	for (i = 0; i < q->clhash.hashsize; i++) {
+		hlist_for_each_entry_safe(cl, next, &q->clhash.hash[i],
+>>>>>>> refs/remotes/origin/master
 					  cl_common.hnode)
 			hfsc_destroy_class(sch, cl);
 	}
@@ -1561,9 +1604,35 @@ hfsc_dump_qdisc(struct Qdisc *sch, struct sk_buff *skb)
 	struct hfsc_sched *q = qdisc_priv(sch);
 	unsigned char *b = skb_tail_pointer(skb);
 	struct tc_hfsc_qopt qopt;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct hfsc_class *cl;
+	struct hlist_node *n;
+=======
+	struct hfsc_class *cl;
+>>>>>>> refs/remotes/origin/master
+	unsigned int i;
+
+	sch->qstats.backlog = 0;
+	for (i = 0; i < q->clhash.hashsize; i++) {
+<<<<<<< HEAD
+		hlist_for_each_entry(cl, n, &q->clhash.hash[i], cl_common.hnode)
+			sch->qstats.backlog += cl->qdisc->qstats.backlog;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	qopt.defcls = q->defcls;
 	NLA_PUT(skb, TCA_OPTIONS, sizeof(qopt), &qopt);
+=======
+		hlist_for_each_entry(cl, &q->clhash.hash[i], cl_common.hnode)
+			sch->qstats.backlog += cl->qdisc->qstats.backlog;
+	}
+
+	qopt.defcls = q->defcls;
+	if (nla_put(skb, TCA_OPTIONS, sizeof(qopt), &qopt))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return skb->len;
 
  nla_put_failure:
@@ -1597,7 +1666,10 @@ hfsc_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	if (cl->qdisc->q.qlen == 1)
 		set_active(cl, qdisc_pkt_len(skb));
 
+<<<<<<< HEAD
 	bstats_update(&cl->bstats, skb);
+=======
+>>>>>>> refs/remotes/origin/master
 	sch->q.qlen++;
 
 	return NET_XMIT_SUCCESS;
@@ -1645,6 +1717,10 @@ hfsc_dequeue(struct Qdisc *sch)
 		return NULL;
 	}
 
+<<<<<<< HEAD
+=======
+	bstats_update(&cl->bstats, skb);
+>>>>>>> refs/remotes/origin/master
 	update_vf(cl, qdisc_pkt_len(skb), cur_time);
 	if (realtime)
 		cl->cl_cumul += qdisc_pkt_len(skb);

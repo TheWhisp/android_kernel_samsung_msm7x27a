@@ -14,11 +14,14 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+<<<<<<< HEAD
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
  */
 /*
 Driver: dt282x
@@ -56,15 +59,33 @@ Notes:
     be fixed to check for this situation and return an error.
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <linux/gfp.h>
 #include <linux/ioport.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 #include "comedi_fc.h"
 
 #define DEBUG
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+#include <linux/delay.h>
+#include <linux/gfp.h>
+#include <linux/interrupt.h>
+#include <linux/io.h>
+
+#include <asm/dma.h>
+
+#include "comedi_fc.h"
+>>>>>>> refs/remotes/origin/master
 
 #define DT2821_TIMEOUT		100	/* 500 us */
 #define DT2821_SIZE 0x10
@@ -157,55 +178,97 @@ Notes:
 
 static const struct comedi_lrange range_dt282x_ai_lo_bipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(-10, 10),
 		RANGE(-5, 5),
 		RANGE(-2.5, 2.5),
 		RANGE(-1.25, 1.25)
+=======
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(2.5),
+		BIP_RANGE(1.25)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static const struct comedi_lrange range_dt282x_ai_lo_unipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(0, 10),
 		RANGE(0, 5),
 		RANGE(0, 2.5),
 		RANGE(0, 1.25)
+=======
+		UNI_RANGE(10),
+		UNI_RANGE(5),
+		UNI_RANGE(2.5),
+		UNI_RANGE(1.25)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static const struct comedi_lrange range_dt282x_ai_5_bipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(-5, 5),
 		RANGE(-2.5, 2.5),
 		RANGE(-1.25, 1.25),
 		RANGE(-0.625, 0.625)
+=======
+		BIP_RANGE(5),
+		BIP_RANGE(2.5),
+		BIP_RANGE(1.25),
+		BIP_RANGE(0.625)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static const struct comedi_lrange range_dt282x_ai_5_unipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(0, 5),
 		RANGE(0, 2.5),
 		RANGE(0, 1.25),
 		RANGE(0, 0.625),
+=======
+		UNI_RANGE(5),
+		UNI_RANGE(2.5),
+		UNI_RANGE(1.25),
+		UNI_RANGE(0.625)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static const struct comedi_lrange range_dt282x_ai_hi_bipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(-10, 10),
 		RANGE(-1, 1),
 		RANGE(-0.1, 0.1),
 		RANGE(-0.02, 0.02)
+=======
+		BIP_RANGE(10),
+		BIP_RANGE(1),
+		BIP_RANGE(0.1),
+		BIP_RANGE(0.02)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static const struct comedi_lrange range_dt282x_ai_hi_unipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(0, 10),
 		RANGE(0, 1),
 		RANGE(0, 0.1),
 		RANGE(0, 0.02)
+=======
+		UNI_RANGE(10),
+		UNI_RANGE(1),
+		UNI_RANGE(0.1),
+		UNI_RANGE(0.02)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
@@ -220,6 +283,7 @@ struct dt282x_board {
 	int dabits;
 };
 
+<<<<<<< HEAD
 static const struct dt282x_board boardtypes[] = {
 	{.name = "dt2821",
 	 .adbits = 12,
@@ -352,6 +416,8 @@ static const struct dt282x_board boardtypes[] = {
 #define n_boardtypes (sizeof(boardtypes)/sizeof(struct dt282x_board))
 #define this_board ((const struct dt282x_board *)dev->board_ptr)
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct dt282x_private {
 	int ad_2scomp;		/* we have 2's comp jumper set  */
 	int da0_2scomp;		/* same, for DAC0               */
@@ -359,7 +425,11 @@ struct dt282x_private {
 
 	const struct comedi_lrange *darangelist[2];
 
+<<<<<<< HEAD
 	short ao[2];
+=======
+	unsigned short ao[2];
+>>>>>>> refs/remotes/origin/master
 
 	volatile int dacsr;	/* software copies of registers */
 	volatile int adcsr;
@@ -370,7 +440,11 @@ struct dt282x_private {
 
 	struct {
 		int chan;
+<<<<<<< HEAD
 		short *buf;	/* DMA buffer */
+=======
+		unsigned short *buf;	/* DMA buffer */
+>>>>>>> refs/remotes/origin/master
 		volatile int size;	/* size of current transfer */
 	} dma[2];
 	int dma_maxsize;	/* max size of DMA transfer (in bytes) */
@@ -379,18 +453,26 @@ struct dt282x_private {
 	int dma_dir;
 };
 
+<<<<<<< HEAD
 #define devpriv ((struct dt282x_private *)dev->private)
 #define boardtype (*(const struct dt282x_board *)dev->board_ptr)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *    Some useless abstractions
  */
 #define chan_to_DAC(a)	((a)&1)
+<<<<<<< HEAD
 #define update_dacsr(a)	outw(devpriv->dacsr|(a), dev->iobase+DT2821_DACSR)
 #define update_adcsr(a)	outw(devpriv->adcsr|(a), dev->iobase+DT2821_ADCSR)
 #define mux_busy() (inw(dev->iobase+DT2821_ADCSR)&DT2821_MUXBUSY)
 #define ad_done() (inw(dev->iobase+DT2821_ADCSR)&DT2821_ADDONE)
 #define update_supcsr(a) outw(devpriv->supcsr|(a), dev->iobase+DT2821_SUPCSR)
+=======
+#define mux_busy() (inw(dev->iobase+DT2821_ADCSR)&DT2821_MUXBUSY)
+#define ad_done() (inw(dev->iobase+DT2821_ADCSR)&DT2821_ADDONE)
+>>>>>>> refs/remotes/origin/master
 
 /*
  *    danger! macro abuse... a is the expression to wait on, and b is
@@ -411,6 +493,7 @@ struct dt282x_private {
 		}						\
 	} while (0)
 
+<<<<<<< HEAD
 static int dt282x_attach(struct comedi_device *dev,
 			 struct comedi_devconfig *it);
 static int dt282x_detach(struct comedi_device *dev);
@@ -438,6 +521,8 @@ module_init(driver_dt282x_init_module);
 module_exit(driver_dt282x_cleanup_module);
 
 static void free_resources(struct comedi_device *dev);
+=======
+>>>>>>> refs/remotes/origin/master
 static int prep_ai_dma(struct comedi_device *dev, int chan, int size);
 static int prep_ao_dma(struct comedi_device *dev, int chan, int size);
 static int dt282x_ai_cancel(struct comedi_device *dev,
@@ -449,6 +534,7 @@ static void dt282x_disable_dma(struct comedi_device *dev);
 
 static int dt282x_grab_dma(struct comedi_device *dev, int dma1, int dma2);
 
+<<<<<<< HEAD
 static void dt282x_munge(struct comedi_device *dev, short *buf,
 			 unsigned int nbytes)
 {
@@ -459,6 +545,20 @@ static void dt282x_munge(struct comedi_device *dev, short *buf,
 
 	if (devpriv->ad_2scomp)
 		sign = 1 << (boardtype.adbits - 1);
+=======
+static void dt282x_munge(struct comedi_device *dev, unsigned short *buf,
+			 unsigned int nbytes)
+{
+	const struct dt282x_board *board = comedi_board(dev);
+	struct dt282x_private *devpriv = dev->private;
+	unsigned int i;
+	unsigned short mask = (1 << board->adbits) - 1;
+	unsigned short sign = 1 << (board->adbits - 1);
+	int n;
+
+	if (devpriv->ad_2scomp)
+		sign = 1 << (board->adbits - 1);
+>>>>>>> refs/remotes/origin/master
 	else
 		sign = 0;
 
@@ -471,6 +571,7 @@ static void dt282x_munge(struct comedi_device *dev, short *buf,
 
 static void dt282x_ao_dma_interrupt(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 	void *ptr;
 	int size;
 	int i;
@@ -480,6 +581,18 @@ static void dt282x_ao_dma_interrupt(struct comedi_device *dev)
 
 	if (!s->async->prealloc_buf) {
 		printk(KERN_ERR "async->data disappeared.  dang!\n");
+=======
+	struct dt282x_private *devpriv = dev->private;
+	struct comedi_subdevice *s = dev->write_subdev;
+	void *ptr;
+	int size;
+	int i;
+
+	outw(devpriv->supcsr | DT2821_CLRDMADNE, dev->iobase + DT2821_SUPCSR);
+
+	if (!s->async->prealloc_buf) {
+		dev_err(dev->class_dev, "no buffer in %s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -492,7 +605,11 @@ static void dt282x_ao_dma_interrupt(struct comedi_device *dev)
 
 	size = cfc_read_array_from_buffer(s, ptr, devpriv->dma_maxsize);
 	if (size == 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "dt282x: AO underrun\n");
+=======
+		dev_err(dev->class_dev, "AO underrun\n");
+>>>>>>> refs/remotes/origin/master
 		dt282x_ao_cancel(dev, s);
 		s->async->events |= COMEDI_CB_OVERFLOW;
 		return;
@@ -503,16 +620,29 @@ static void dt282x_ao_dma_interrupt(struct comedi_device *dev)
 
 static void dt282x_ai_dma_interrupt(struct comedi_device *dev)
 {
+<<<<<<< HEAD
+=======
+	struct dt282x_private *devpriv = dev->private;
+	struct comedi_subdevice *s = dev->read_subdev;
+>>>>>>> refs/remotes/origin/master
 	void *ptr;
 	int size;
 	int i;
 	int ret;
+<<<<<<< HEAD
 	struct comedi_subdevice *s = dev->subdevices;
 
 	update_supcsr(DT2821_CLRDMADNE);
 
 	if (!s->async->prealloc_buf) {
 		printk(KERN_ERR "async->data disappeared.  dang!\n");
+=======
+
+	outw(devpriv->supcsr | DT2821_CLRDMADNE, dev->iobase + DT2821_SUPCSR);
+
+	if (!s->async->prealloc_buf) {
+		dev_err(dev->class_dev, "no buffer in %s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -533,7 +663,11 @@ static void dt282x_ai_dma_interrupt(struct comedi_device *dev)
 	devpriv->nread -= size / 2;
 
 	if (devpriv->nread < 0) {
+<<<<<<< HEAD
 		printk(KERN_INFO "dt282x: off by one\n");
+=======
+		dev_info(dev->class_dev, "nread off by one\n");
+>>>>>>> refs/remotes/origin/master
 		devpriv->nread = 0;
 	}
 	if (!devpriv->nread) {
@@ -546,7 +680,11 @@ static void dt282x_ai_dma_interrupt(struct comedi_device *dev)
 	/* XXX probably wrong */
 	if (!devpriv->ntrig) {
 		devpriv->supcsr &= ~(DT2821_DDMA);
+<<<<<<< HEAD
 		update_supcsr(0);
+=======
+		outw(devpriv->supcsr, dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 	/* restart the channel */
@@ -555,6 +693,10 @@ static void dt282x_ai_dma_interrupt(struct comedi_device *dev)
 
 static int prep_ai_dma(struct comedi_device *dev, int dma_index, int n)
 {
+<<<<<<< HEAD
+=======
+	struct dt282x_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int dma_chan;
 	unsigned long dma_ptr;
 	unsigned long flags;
@@ -586,6 +728,10 @@ static int prep_ai_dma(struct comedi_device *dev, int dma_index, int n)
 
 static int prep_ao_dma(struct comedi_device *dev, int dma_index, int n)
 {
+<<<<<<< HEAD
+=======
+	struct dt282x_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int dma_chan;
 	unsigned long dma_ptr;
 	unsigned long flags;
@@ -609,8 +755,14 @@ static int prep_ao_dma(struct comedi_device *dev, int dma_index, int n)
 static irqreturn_t dt282x_interrupt(int irq, void *d)
 {
 	struct comedi_device *dev = d;
+<<<<<<< HEAD
 	struct comedi_subdevice *s;
 	struct comedi_subdevice *s_ao;
+=======
+	struct dt282x_private *devpriv = dev->private;
+	struct comedi_subdevice *s = dev->read_subdev;
+	struct comedi_subdevice *s_ao = dev->write_subdev;
+>>>>>>> refs/remotes/origin/master
 	unsigned int supcsr, adcsr, dacsr;
 	int handled = 0;
 
@@ -619,8 +771,11 @@ static irqreturn_t dt282x_interrupt(int irq, void *d)
 		return IRQ_HANDLED;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 0;
 	s_ao = dev->subdevices + 1;
+=======
+>>>>>>> refs/remotes/origin/master
 	adcsr = inw(dev->iobase + DT2821_ADCSR);
 	dacsr = inw(dev->iobase + DT2821_DACSR);
 	supcsr = inw(dev->iobase + DT2821_SUPCSR);
@@ -640,6 +795,7 @@ static irqreturn_t dt282x_interrupt(int irq, void *d)
 		handled = 1;
 	}
 	if (dacsr & DT2821_DAERR) {
+<<<<<<< HEAD
 #if 0
 		static int warn = 5;
 		if (--warn <= 0) {
@@ -647,6 +803,8 @@ static irqreturn_t dt282x_interrupt(int irq, void *d)
 			printk(KERN_INFO "disabling irq\n");
 		}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		comedi_error(dev, "D/A error");
 		dt282x_ao_cancel(dev, s_ao);
 		s->async->events |= COMEDI_CB_ERROR;
@@ -655,6 +813,7 @@ static irqreturn_t dt282x_interrupt(int irq, void *d)
 #if 0
 	if (adcsr & DT2821_ADDONE) {
 		int ret;
+<<<<<<< HEAD
 		short data;
 
 		data = (short)inw(dev->iobase + DT2821_ADDAT);
@@ -662,6 +821,15 @@ static irqreturn_t dt282x_interrupt(int irq, void *d)
 
 		if (devpriv->ad_2scomp)
 			data ^= 1 << (boardtype.adbits - 1);
+=======
+		unsigned short data;
+
+		data = inw(dev->iobase + DT2821_ADDAT);
+		data &= (1 << board->adbits) - 1;
+
+		if (devpriv->ad_2scomp)
+			data ^= 1 << (board->adbits - 1);
+>>>>>>> refs/remotes/origin/master
 		ret = comedi_buf_put(s->async, data);
 
 		if (ret == 0)
@@ -672,20 +840,33 @@ static irqreturn_t dt282x_interrupt(int irq, void *d)
 			s->async->events |= COMEDI_CB_EOA;
 		} else {
 			if (supcsr & DT2821_SCDN)
+<<<<<<< HEAD
 				update_supcsr(DT2821_STRIG);
+=======
+				outw(devpriv->supcsr | DT2821_STRIG,
+					dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 		}
 		handled = 1;
 	}
 #endif
 	comedi_event(dev, s);
+<<<<<<< HEAD
 	/* printk("adcsr=0x%02x dacsr-0x%02x supcsr=0x%02x\n",
 		adcsr, dacsr, supcsr); */
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return IRQ_RETVAL(handled);
 }
 
 static void dt282x_load_changain(struct comedi_device *dev, int n,
 				 unsigned int *chanlist)
 {
+<<<<<<< HEAD
+=======
+	struct dt282x_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 	unsigned int chan, range;
 
@@ -693,7 +874,12 @@ static void dt282x_load_changain(struct comedi_device *dev, int n,
 	for (i = 0; i < n; i++) {
 		chan = CR_CHAN(chanlist[i]);
 		range = CR_RANGE(chanlist[i]);
+<<<<<<< HEAD
 		update_adcsr((range << 4) | (chan));
+=======
+		outw(devpriv->adcsr | (range << 4) | chan,
+			dev->iobase + DT2821_ADCSR);
+>>>>>>> refs/remotes/origin/master
 	}
 	outw(n - 1, dev->iobase + DT2821_CHANCSR);
 }
@@ -708,10 +894,16 @@ static int dt282x_ai_insn_read(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	const struct dt282x_board *board = comedi_board(dev);
+	struct dt282x_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	/* XXX should we really be enabling the ad clock here? */
 	devpriv->adcsr = DT2821_ADCLK;
+<<<<<<< HEAD
 	update_adcsr(0);
 
 	dt282x_load_changain(dev, 1, &insn->chanspec);
@@ -721,14 +913,32 @@ static int dt282x_ai_insn_read(struct comedi_device *dev,
 
 	for (i = 0; i < insn->n; i++) {
 		update_supcsr(DT2821_STRIG);
+=======
+	outw(devpriv->adcsr, dev->iobase + DT2821_ADCSR);
+
+	dt282x_load_changain(dev, 1, &insn->chanspec);
+
+	outw(devpriv->supcsr | DT2821_PRLD, dev->iobase + DT2821_SUPCSR);
+	wait_for(!mux_busy(), comedi_error(dev, "timeout\n"); return -ETIME;);
+
+	for (i = 0; i < insn->n; i++) {
+		outw(devpriv->supcsr | DT2821_STRIG,
+			dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 		wait_for(ad_done(), comedi_error(dev, "timeout\n");
 			 return -ETIME;);
 
 		data[i] =
 		    inw(dev->iobase +
+<<<<<<< HEAD
 			DT2821_ADDAT) & ((1 << boardtype.adbits) - 1);
 		if (devpriv->ad_2scomp)
 			data[i] ^= (1 << (boardtype.adbits - 1));
+=======
+			DT2821_ADDAT) & ((1 << board->adbits) - 1);
+		if (devpriv->ad_2scomp)
+			data[i] ^= (1 << (board->adbits - 1));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return i;
@@ -737,6 +947,7 @@ static int dt282x_ai_insn_read(struct comedi_device *dev,
 static int dt282x_ai_cmdtest(struct comedi_device *dev,
 			     struct comedi_subdevice *s, struct comedi_cmd *cmd)
 {
+<<<<<<< HEAD
 	int err = 0;
 	int tmp;
 
@@ -766,10 +977,25 @@ static int dt282x_ai_cmdtest(struct comedi_device *dev,
 	cmd->stop_src &= TRIG_COUNT | TRIG_NONE;
 	if (!cmd->stop_src || tmp != cmd->stop_src)
 		err++;
+=======
+	const struct dt282x_board *board = comedi_board(dev);
+	int err = 0;
+	int tmp;
+
+	/* Step 1 : check if triggers are trivially valid */
+
+	err |= cfc_check_trigger_src(&cmd->start_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_begin_src,
+					TRIG_FOLLOW | TRIG_EXT);
+	err |= cfc_check_trigger_src(&cmd->convert_src, TRIG_TIMER);
+	err |= cfc_check_trigger_src(&cmd->scan_end_src, TRIG_COUNT);
+	err |= cfc_check_trigger_src(&cmd->stop_src, TRIG_COUNT | TRIG_NONE);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 1;
 
+<<<<<<< HEAD
 	/*
 	 * step 2: make sure trigger sources are unique
 	 * and mutually compatible
@@ -781,10 +1007,19 @@ static int dt282x_ai_cmdtest(struct comedi_device *dev,
 		err++;
 	if (cmd->stop_src != TRIG_COUNT && cmd->stop_src != TRIG_NONE)
 		err++;
+=======
+	/* Step 2a : make sure trigger sources are unique */
+
+	err |= cfc_check_trigger_is_unique(cmd->scan_begin_src);
+	err |= cfc_check_trigger_is_unique(cmd->stop_src);
+
+	/* Step 2b : and mutually compatible */
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 2;
 
+<<<<<<< HEAD
 	/* step 3: make sure arguments are trivially compatible */
 
 	if (cmd->start_arg != 0) {
@@ -831,6 +1066,32 @@ static int dt282x_ai_cmdtest(struct comedi_device *dev,
 			cmd->stop_arg = 0;
 			err++;
 		}
+=======
+	/* Step 3: check if arguments are trivially valid */
+
+	err |= cfc_check_trigger_arg_is(&cmd->start_arg, 0);
+
+	if (cmd->scan_begin_src == TRIG_FOLLOW) {
+		/* internal trigger */
+		err |= cfc_check_trigger_arg_is(&cmd->scan_begin_arg, 0);
+	} else {
+		/* external trigger */
+		/* should be level/edge, hi/lo specification here */
+		err |= cfc_check_trigger_arg_is(&cmd->scan_begin_arg, 0);
+	}
+
+	err |= cfc_check_trigger_arg_min(&cmd->convert_arg, 4000);
+
+#define SLOWEST_TIMER	(250*(1<<15)*255)
+	err |= cfc_check_trigger_arg_max(&cmd->convert_arg, SLOWEST_TIMER);
+	err |= cfc_check_trigger_arg_min(&cmd->convert_arg, board->ai_speed);
+	err |= cfc_check_trigger_arg_is(&cmd->scan_end_arg, cmd->chanlist_len);
+
+	if (cmd->stop_src == TRIG_COUNT) {
+		/* any count is allowed */
+	} else {	/* TRIG_NONE */
+		err |= cfc_check_trigger_arg_is(&cmd->stop_arg, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (err)
@@ -851,6 +1112,11 @@ static int dt282x_ai_cmdtest(struct comedi_device *dev,
 
 static int dt282x_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	const struct dt282x_board *board = comedi_board(dev);
+	struct dt282x_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	struct comedi_cmd *cmd = &s->async->cmd;
 	int timer;
 
@@ -863,8 +1129,13 @@ static int dt282x_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 
 	dt282x_disable_dma(dev);
 
+<<<<<<< HEAD
 	if (cmd->convert_arg < this_board->ai_speed)
 		cmd->convert_arg = this_board->ai_speed;
+=======
+	if (cmd->convert_arg < board->ai_speed)
+		cmd->convert_arg = board->ai_speed;
+>>>>>>> refs/remotes/origin/master
 	timer = dt282x_ns_to_timer(&cmd->convert_arg, TRIG_ROUND_NEAREST);
 	outw(timer, dev->iobase + DT2821_TMRCTR);
 
@@ -875,7 +1146,12 @@ static int dt282x_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 		/* external trigger */
 		devpriv->supcsr = DT2821_ERRINTEN | DT2821_DS0 | DT2821_DS1;
 	}
+<<<<<<< HEAD
 	update_supcsr(DT2821_CLRDMADNE | DT2821_BUFFB | DT2821_ADCINIT);
+=======
+	outw(devpriv->supcsr | DT2821_CLRDMADNE | DT2821_BUFFB | DT2821_ADCINIT,
+		dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 
 	devpriv->ntrig = cmd->stop_arg * cmd->scan_end_arg;
 	devpriv->nread = devpriv->ntrig;
@@ -886,7 +1162,11 @@ static int dt282x_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	if (devpriv->ntrig) {
 		prep_ai_dma(dev, 1, 0);
 		devpriv->supcsr |= DT2821_DDMA;
+<<<<<<< HEAD
 		update_supcsr(0);
+=======
+		outw(devpriv->supcsr, dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	devpriv->adcsr = 0;
@@ -894,6 +1174,7 @@ static int dt282x_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	dt282x_load_changain(dev, cmd->chanlist_len, cmd->chanlist);
 
 	devpriv->adcsr = DT2821_ADCLK | DT2821_IADDONE;
+<<<<<<< HEAD
 	update_adcsr(0);
 
 	update_supcsr(DT2821_PRLD);
@@ -904,6 +1185,19 @@ static int dt282x_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	} else {
 		devpriv->supcsr |= DT2821_XTRIG;
 		update_supcsr(0);
+=======
+	outw(devpriv->adcsr, dev->iobase + DT2821_ADCSR);
+
+	outw(devpriv->supcsr | DT2821_PRLD, dev->iobase + DT2821_SUPCSR);
+	wait_for(!mux_busy(), comedi_error(dev, "timeout\n"); return -ETIME;);
+
+	if (cmd->scan_begin_src == TRIG_FOLLOW) {
+		outw(devpriv->supcsr | DT2821_STRIG,
+			dev->iobase + DT2821_SUPCSR);
+	} else {
+		devpriv->supcsr |= DT2821_XTRIG;
+		outw(devpriv->supcsr, dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -911,6 +1205,11 @@ static int dt282x_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 
 static void dt282x_disable_dma(struct comedi_device *dev)
 {
+<<<<<<< HEAD
+=======
+	struct dt282x_private *devpriv = dev->private;
+
+>>>>>>> refs/remotes/origin/master
 	if (devpriv->usedma) {
 		disable_dma(devpriv->dma[0].chan);
 		disable_dma(devpriv->dma[1].chan);
@@ -920,6 +1219,7 @@ static void dt282x_disable_dma(struct comedi_device *dev)
 static int dt282x_ai_cancel(struct comedi_device *dev,
 			    struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
 	dt282x_disable_dma(dev);
 
 	devpriv->adcsr = 0;
@@ -927,6 +1227,17 @@ static int dt282x_ai_cancel(struct comedi_device *dev,
 
 	devpriv->supcsr = 0;
 	update_supcsr(DT2821_ADCINIT);
+=======
+	struct dt282x_private *devpriv = dev->private;
+
+	dt282x_disable_dma(dev);
+
+	devpriv->adcsr = 0;
+	outw(devpriv->adcsr, dev->iobase + DT2821_ADCSR);
+
+	devpriv->supcsr = 0;
+	outw(devpriv->supcsr | DT2821_ADCINIT, dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -972,6 +1283,11 @@ static int dt282x_ao_insn_read(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct dt282x_private *devpriv = dev->private;
+
+>>>>>>> refs/remotes/origin/master
 	data[0] = devpriv->ao[CR_CHAN(insn->chanspec)];
 
 	return 1;
@@ -981,12 +1297,22 @@ static int dt282x_ao_insn_write(struct comedi_device *dev,
 				struct comedi_subdevice *s,
 				struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	short d;
+=======
+	const struct dt282x_board *board = comedi_board(dev);
+	struct dt282x_private *devpriv = dev->private;
+	unsigned short d;
+>>>>>>> refs/remotes/origin/master
 	unsigned int chan;
 
 	chan = CR_CHAN(insn->chanspec);
 	d = data[0];
+<<<<<<< HEAD
 	d &= (1 << boardtype.dabits) - 1;
+=======
+	d &= (1 << board->dabits) - 1;
+>>>>>>> refs/remotes/origin/master
 	devpriv->ao[chan] = d;
 
 	devpriv->dacsr |= DT2821_SSEL;
@@ -995,6 +1321,7 @@ static int dt282x_ao_insn_write(struct comedi_device *dev,
 		/* select channel */
 		devpriv->dacsr |= DT2821_YSEL;
 		if (devpriv->da0_2scomp)
+<<<<<<< HEAD
 			d ^= (1 << (boardtype.dabits - 1));
 	} else {
 		devpriv->dacsr &= ~DT2821_YSEL;
@@ -1007,6 +1334,20 @@ static int dt282x_ao_insn_write(struct comedi_device *dev,
 	outw(d, dev->iobase + DT2821_DADAT);
 
 	update_supcsr(DT2821_DACON);
+=======
+			d ^= (1 << (board->dabits - 1));
+	} else {
+		devpriv->dacsr &= ~DT2821_YSEL;
+		if (devpriv->da1_2scomp)
+			d ^= (1 << (board->dabits - 1));
+	}
+
+	outw(devpriv->dacsr, dev->iobase + DT2821_DACSR);
+
+	outw(d, dev->iobase + DT2821_DADAT);
+
+	outw(devpriv->supcsr | DT2821_DACON, dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -1017,6 +1358,7 @@ static int dt282x_ao_cmdtest(struct comedi_device *dev,
 	int err = 0;
 	int tmp;
 
+<<<<<<< HEAD
 	/* step 1: make sure trigger sources are trivially valid */
 
 	tmp = cmd->start_src;
@@ -1043,10 +1385,20 @@ static int dt282x_ao_cmdtest(struct comedi_device *dev,
 	cmd->stop_src &= TRIG_NONE;
 	if (!cmd->stop_src || tmp != cmd->stop_src)
 		err++;
+=======
+	/* Step 1 : check if triggers are trivially valid */
+
+	err |= cfc_check_trigger_src(&cmd->start_src, TRIG_INT);
+	err |= cfc_check_trigger_src(&cmd->scan_begin_src, TRIG_TIMER);
+	err |= cfc_check_trigger_src(&cmd->convert_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_end_src, TRIG_COUNT);
+	err |= cfc_check_trigger_src(&cmd->stop_src, TRIG_COUNT | TRIG_NONE);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 1;
 
+<<<<<<< HEAD
 	/*
 	 * step 2: make sure trigger sources are unique
 	 * and mutually compatible
@@ -1055,10 +1407,18 @@ static int dt282x_ao_cmdtest(struct comedi_device *dev,
 	/* note that mutual compatibility is not an issue here */
 	if (cmd->stop_src != TRIG_COUNT && cmd->stop_src != TRIG_NONE)
 		err++;
+=======
+	/* Step 2a : make sure trigger sources are unique */
+
+	err |= cfc_check_trigger_is_unique(cmd->stop_src);
+
+	/* Step 2b : and mutually compatible */
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 2;
 
+<<<<<<< HEAD
 	/* step 3: make sure arguments are trivially compatible */
 
 	if (cmd->start_arg != 0) {
@@ -1086,6 +1446,19 @@ static int dt282x_ao_cmdtest(struct comedi_device *dev,
 			cmd->stop_arg = 0;
 			err++;
 		}
+=======
+	/* Step 3: check if arguments are trivially valid */
+
+	err |= cfc_check_trigger_arg_is(&cmd->start_arg, 0);
+	err |= cfc_check_trigger_arg_min(&cmd->scan_begin_arg, 5000);
+	err |= cfc_check_trigger_arg_is(&cmd->convert_arg, 0);
+	err |= cfc_check_trigger_arg_max(&cmd->scan_end_arg, 2);
+
+	if (cmd->stop_src == TRIG_COUNT) {
+		/* any count is allowed */
+	} else {	/* TRIG_NONE */
+		err |= cfc_check_trigger_arg_is(&cmd->stop_arg, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (err)
@@ -1108,6 +1481,10 @@ static int dt282x_ao_cmdtest(struct comedi_device *dev,
 static int dt282x_ao_inttrig(struct comedi_device *dev,
 			     struct comedi_subdevice *s, unsigned int x)
 {
+<<<<<<< HEAD
+=======
+	struct dt282x_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int size;
 
 	if (x != 0)
@@ -1116,7 +1493,11 @@ static int dt282x_ao_inttrig(struct comedi_device *dev,
 	size = cfc_read_array_from_buffer(s, devpriv->dma[0].buf,
 					  devpriv->dma_maxsize);
 	if (size == 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "dt282x: AO underrun\n");
+=======
+		dev_err(dev->class_dev, "AO underrun\n");
+>>>>>>> refs/remotes/origin/master
 		return -EPIPE;
 	}
 	prep_ao_dma(dev, 0, size);
@@ -1124,12 +1505,20 @@ static int dt282x_ao_inttrig(struct comedi_device *dev,
 	size = cfc_read_array_from_buffer(s, devpriv->dma[1].buf,
 					  devpriv->dma_maxsize);
 	if (size == 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "dt282x: AO underrun\n");
+=======
+		dev_err(dev->class_dev, "AO underrun\n");
+>>>>>>> refs/remotes/origin/master
 		return -EPIPE;
 	}
 	prep_ao_dma(dev, 1, size);
 
+<<<<<<< HEAD
 	update_supcsr(DT2821_STRIG);
+=======
+	outw(devpriv->supcsr | DT2821_STRIG, dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 	s->async->inttrig = NULL;
 
 	return 1;
@@ -1137,6 +1526,10 @@ static int dt282x_ao_inttrig(struct comedi_device *dev,
 
 static int dt282x_ao_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	struct dt282x_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int timer;
 	struct comedi_cmd *cmd = &s->async->cmd;
 
@@ -1150,7 +1543,12 @@ static int dt282x_ao_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	dt282x_disable_dma(dev);
 
 	devpriv->supcsr = DT2821_ERRINTEN | DT2821_DS1 | DT2821_DDMA;
+<<<<<<< HEAD
 	update_supcsr(DT2821_CLRDMADNE | DT2821_BUFFB | DT2821_DACINIT);
+=======
+	outw(devpriv->supcsr | DT2821_CLRDMADNE | DT2821_BUFFB | DT2821_DACINIT,
+		dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 
 	devpriv->ntrig = cmd->stop_arg * cmd->chanlist_len;
 	devpriv->nread = devpriv->ntrig;
@@ -1162,7 +1560,11 @@ static int dt282x_ao_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	outw(timer, dev->iobase + DT2821_TMRCTR);
 
 	devpriv->dacsr = DT2821_SSEL | DT2821_DACLK | DT2821_IDARDY;
+<<<<<<< HEAD
 	update_dacsr(0);
+=======
+	outw(devpriv->dacsr, dev->iobase + DT2821_DACSR);
+>>>>>>> refs/remotes/origin/master
 
 	s->async->inttrig = dt282x_ao_inttrig;
 
@@ -1172,6 +1574,7 @@ static int dt282x_ao_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 static int dt282x_ao_cancel(struct comedi_device *dev,
 			    struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
 	dt282x_disable_dma(dev);
 
 	devpriv->dacsr = 0;
@@ -1179,12 +1582,24 @@ static int dt282x_ao_cancel(struct comedi_device *dev,
 
 	devpriv->supcsr = 0;
 	update_supcsr(DT2821_DACINIT);
+=======
+	struct dt282x_private *devpriv = dev->private;
+
+	dt282x_disable_dma(dev);
+
+	devpriv->dacsr = 0;
+	outw(devpriv->dacsr, dev->iobase + DT2821_DACSR);
+
+	devpriv->supcsr = 0;
+	outw(devpriv->supcsr | DT2821_DACINIT, dev->iobase + DT2821_SUPCSR);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int dt282x_dio_insn_bits(struct comedi_device *dev,
 				struct comedi_subdevice *s,
+<<<<<<< HEAD
 				struct comedi_insn *insn, unsigned int *data)
 {
 	if (data[0]) {
@@ -1196,10 +1611,22 @@ static int dt282x_dio_insn_bits(struct comedi_device *dev,
 	data[1] = inw(dev->iobase + DT2821_DIODAT);
 
 	return 2;
+=======
+				struct comedi_insn *insn,
+				unsigned int *data)
+{
+	if (comedi_dio_update_state(s, data))
+		outw(s->state, dev->iobase + DT2821_DIODAT);
+
+	data[1] = inw(dev->iobase + DT2821_DIODAT);
+
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int dt282x_dio_insn_config(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
+<<<<<<< HEAD
 				  struct comedi_insn *insn, unsigned int *data)
 {
 	int mask;
@@ -1222,6 +1649,34 @@ static int dt282x_dio_insn_config(struct comedi_device *dev,
 	outw(devpriv->dacsr, dev->iobase + DT2821_DACSR);
 
 	return 1;
+=======
+				  struct comedi_insn *insn,
+				  unsigned int *data)
+{
+	struct dt282x_private *devpriv = dev->private;
+	unsigned int chan = CR_CHAN(insn->chanspec);
+	unsigned int mask;
+	int ret;
+
+	if (chan < 8)
+		mask = 0x00ff;
+	else
+		mask = 0xff00;
+
+	ret = comedi_dio_insn_config(dev, s, insn, data, mask);
+	if (ret)
+		return ret;
+
+	devpriv->dacsr &= ~(DT2821_LBOE | DT2821_HBOE);
+	if (s->io_bits & 0x00ff)
+		devpriv->dacsr |= DT2821_LBOE;
+	if (s->io_bits & 0xff00)
+		devpriv->dacsr |= DT2821_HBOE;
+
+	outw(devpriv->dacsr, dev->iobase + DT2821_DACSR);
+
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct comedi_lrange *const ai_range_table[] = {
@@ -1271,6 +1726,50 @@ enum {  /* i/o base, irq, dma channels */
 	opt_ai_range, opt_ao0_range, opt_ao1_range,	/* range */
 };
 
+<<<<<<< HEAD
+=======
+static int dt282x_grab_dma(struct comedi_device *dev, int dma1, int dma2)
+{
+	struct dt282x_private *devpriv = dev->private;
+	int ret;
+
+	devpriv->usedma = 0;
+
+	if (!dma1 && !dma2)
+		return 0;
+
+	if (dma1 == dma2 || dma1 < 5 || dma2 < 5 || dma1 > 7 || dma2 > 7)
+		return -EINVAL;
+
+	if (dma2 < dma1) {
+		int i;
+		i = dma1;
+		dma1 = dma2;
+		dma2 = i;
+	}
+
+	ret = request_dma(dma1, "dt282x A");
+	if (ret)
+		return -EBUSY;
+	devpriv->dma[0].chan = dma1;
+
+	ret = request_dma(dma2, "dt282x B");
+	if (ret)
+		return -EBUSY;
+	devpriv->dma[1].chan = dma2;
+
+	devpriv->dma_maxsize = PAGE_SIZE;
+	devpriv->dma[0].buf = (void *)__get_free_page(GFP_KERNEL | GFP_DMA);
+	devpriv->dma[1].buf = (void *)__get_free_page(GFP_KERNEL | GFP_DMA);
+	if (!devpriv->dma[0].buf || !devpriv->dma[1].buf)
+		return -ENOMEM;
+
+	devpriv->usedma = 1;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
    options:
    0	i/o base
@@ -1287,6 +1786,7 @@ enum {  /* i/o base, irq, dma channels */
  */
 static int dt282x_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 {
+<<<<<<< HEAD
 	int i, irq;
 	int ret;
 	struct comedi_subdevice *s;
@@ -1315,6 +1815,20 @@ static int dt282x_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	       inw(dev->iobase + DT2821_SUPCSR),
 	       inw(dev->iobase + DT2821_TMRCTR));
 #endif
+=======
+	const struct dt282x_board *board = comedi_board(dev);
+	struct dt282x_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+	int i;
+
+	ret = comedi_request_region(dev, it->options[0], DT2821_SIZE);
+	if (ret)
+		return ret;
+
+	outw(DT2821_BDINIT, dev->iobase + DT2821_SUPCSR);
+	i = inw(dev->iobase + DT2821_ADCSR);
+>>>>>>> refs/remotes/origin/master
 
 	if (((inw(dev->iobase + DT2821_ADCSR) & DT2821_ADCSR_MASK)
 	     != DT2821_ADCSR_VAL) ||
@@ -1326,11 +1840,16 @@ static int dt282x_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	     != DT2821_SUPCSR_VAL) ||
 	    ((inw(dev->iobase + DT2821_TMRCTR) & DT2821_TMRCTR_MASK)
 	     != DT2821_TMRCTR_VAL)) {
+<<<<<<< HEAD
 		printk(KERN_ERR " board not found");
+=======
+		dev_err(dev->class_dev, "board not found\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 	/* should do board test */
 
+<<<<<<< HEAD
 	irq = it->options[opt_irq];
 #if 0
 	if (irq < 0) {
@@ -1416,6 +1935,62 @@ static int dt282x_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		s->cancel = dt282x_ao_cancel;
 		s->maxdata = (1 << boardtype.dabits) - 1;
 		s->len_chanlist = 2;
+=======
+	if (it->options[opt_irq] > 0) {
+		ret = request_irq(it->options[opt_irq], dt282x_interrupt, 0,
+				  dev->board_name, dev);
+		if (ret == 0)
+			dev->irq = it->options[opt_irq];
+	}
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	if (dev->irq) {
+		ret = dt282x_grab_dma(dev, it->options[opt_dma1],
+				      it->options[opt_dma2]);
+		if (ret < 0)
+			return ret;
+	}
+
+	ret = comedi_alloc_subdevices(dev, 3);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+
+	/* ai subdevice */
+	s->type = COMEDI_SUBD_AI;
+	s->subdev_flags = SDF_READABLE |
+	    ((it->options[opt_diff]) ? SDF_DIFF : SDF_COMMON);
+	s->n_chan =
+	    (it->options[opt_diff]) ? board->adchan_di : board->adchan_se;
+	s->insn_read = dt282x_ai_insn_read;
+	s->maxdata = (1 << board->adbits) - 1;
+	s->range_table =
+	    opt_ai_range_lkup(board->ispgl, it->options[opt_ai_range]);
+	devpriv->ad_2scomp = it->options[opt_ai_twos];
+	if (dev->irq) {
+		dev->read_subdev = s;
+		s->subdev_flags |= SDF_CMD_READ;
+		s->len_chanlist = 16;
+		s->do_cmdtest = dt282x_ai_cmdtest;
+		s->do_cmd = dt282x_ai_cmd;
+		s->cancel = dt282x_ai_cancel;
+	}
+
+	s = &dev->subdevices[1];
+
+	s->n_chan = board->dachan;
+	if (s->n_chan) {
+		/* ao subsystem */
+		s->type = COMEDI_SUBD_AO;
+		s->subdev_flags = SDF_WRITABLE;
+		s->insn_read = dt282x_ao_insn_read;
+		s->insn_write = dt282x_ao_insn_write;
+		s->maxdata = (1 << board->dabits) - 1;
+>>>>>>> refs/remotes/origin/master
 		s->range_table_list = devpriv->darangelist;
 		devpriv->darangelist[0] =
 		    opt_ao_range_lkup(it->options[opt_ao0_range]);
@@ -1423,11 +1998,26 @@ static int dt282x_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		    opt_ao_range_lkup(it->options[opt_ao1_range]);
 		devpriv->da0_2scomp = it->options[opt_ao0_twos];
 		devpriv->da1_2scomp = it->options[opt_ao1_twos];
+<<<<<<< HEAD
+=======
+		if (dev->irq) {
+			dev->write_subdev = s;
+			s->subdev_flags |= SDF_CMD_WRITE;
+			s->len_chanlist = 2;
+			s->do_cmdtest = dt282x_ao_cmdtest;
+			s->do_cmd = dt282x_ao_cmd;
+			s->cancel = dt282x_ao_cancel;
+		}
+>>>>>>> refs/remotes/origin/master
 	} else {
 		s->type = COMEDI_SUBD_UNUSED;
 	}
 
+<<<<<<< HEAD
 	s++;
+=======
+	s = &dev->subdevices[2];
+>>>>>>> refs/remotes/origin/master
 	/* dio subsystem */
 	s->type = COMEDI_SUBD_DIO;
 	s->subdev_flags = SDF_READABLE | SDF_WRITABLE;
@@ -1437,6 +2027,7 @@ static int dt282x_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	s->maxdata = 1;
 	s->range_table = &range_digital;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "\n");
 
 	return 0;
@@ -1448,6 +2039,15 @@ static void free_resources(struct comedi_device *dev)
 		free_irq(dev->irq, dev);
 	if (dev->iobase)
 		release_region(dev->iobase, DT2821_SIZE);
+=======
+	return 0;
+}
+
+static void dt282x_detach(struct comedi_device *dev)
+{
+	struct dt282x_private *devpriv = dev->private;
+
+>>>>>>> refs/remotes/origin/master
 	if (dev->private) {
 		if (devpriv->dma[0].chan)
 			free_dma(devpriv->dma[0].chan);
@@ -1458,6 +2058,7 @@ static void free_resources(struct comedi_device *dev)
 		if (devpriv->dma[1].buf)
 			free_page((unsigned long)devpriv->dma[1].buf);
 	}
+<<<<<<< HEAD
 }
 
 static int dt282x_detach(struct comedi_device *dev)
@@ -1514,6 +2115,151 @@ static int dt282x_grab_dma(struct comedi_device *dev, int dma1, int dma2)
 
 	return 0;
 }
+=======
+	comedi_legacy_detach(dev);
+}
+
+static const struct dt282x_board boardtypes[] = {
+	{
+		.name		= "dt2821",
+		.adbits		= 12,
+		.adchan_se	= 16,
+		.adchan_di	= 8,
+		.ai_speed	= 20000,
+		.ispgl		= 0,
+		.dachan		= 2,
+		.dabits		= 12,
+	}, {
+		.name		= "dt2821-f",
+		.adbits		= 12,
+		.adchan_se	= 16,
+		.adchan_di	= 8,
+		.ai_speed	= 6500,
+		.ispgl		= 0,
+		.dachan		= 2,
+		.dabits		= 12,
+	}, {
+		.name		= "dt2821-g",
+		.adbits		= 12,
+		.adchan_se	= 16,
+		.adchan_di	= 8,
+		.ai_speed	= 4000,
+		.ispgl		= 0,
+		.dachan		= 2,
+		.dabits		= 12,
+	}, {
+		.name		= "dt2823",
+		.adbits		= 16,
+		.adchan_se	= 0,
+		.adchan_di	= 4,
+		.ai_speed	= 10000,
+		.ispgl		= 0,
+		.dachan		= 2,
+		.dabits		= 16,
+	}, {
+		.name		= "dt2824-pgh",
+		.adbits		= 12,
+		.adchan_se	= 16,
+		.adchan_di	= 8,
+		.ai_speed	= 20000,
+		.ispgl		= 0,
+		.dachan		= 0,
+		.dabits		= 0,
+	}, {
+		.name		= "dt2824-pgl",
+		.adbits		= 12,
+		.adchan_se	= 16,
+		.adchan_di	= 8,
+		.ai_speed	= 20000,
+		.ispgl		= 1,
+		.dachan		= 0,
+		.dabits		= 0,
+	}, {
+		.name		= "dt2825",
+		.adbits		= 12,
+		.adchan_se	= 16,
+		.adchan_di	= 8,
+		.ai_speed	= 20000,
+		.ispgl		= 1,
+		.dachan		= 2,
+		.dabits		= 12,
+	}, {
+		.name		= "dt2827",
+		.adbits		= 16,
+		.adchan_se	= 0,
+		.adchan_di	= 4,
+		.ai_speed	= 10000,
+		.ispgl		= 0,
+		.dachan		= 2,
+		.dabits		= 12,
+	}, {
+		.name		= "dt2828",
+		.adbits		= 12,
+		.adchan_se	= 4,
+		.adchan_di	= 0,
+		.ai_speed	= 10000,
+		.ispgl		= 0,
+		.dachan		= 2,
+		.dabits		= 12,
+	}, {
+		.name		= "dt2829",
+		.adbits		= 16,
+		.adchan_se	= 8,
+		.adchan_di	= 0,
+		.ai_speed	= 33250,
+		.ispgl		= 0,
+		.dachan		= 2,
+		.dabits		= 16,
+	}, {
+		.name		= "dt21-ez",
+		.adbits		= 12,
+		.adchan_se	= 16,
+		.adchan_di	= 8,
+		.ai_speed	= 10000,
+		.ispgl		= 0,
+		.dachan		= 2,
+		.dabits		= 12,
+	}, {
+		.name		= "dt23-ez",
+		.adbits		= 16,
+		.adchan_se	= 16,
+		.adchan_di	= 8,
+		.ai_speed	= 10000,
+		.ispgl		= 0,
+		.dachan		= 0,
+		.dabits		= 0,
+	}, {
+		.name		= "dt24-ez",
+		.adbits		= 12,
+		.adchan_se	= 16,
+		.adchan_di	= 8,
+		.ai_speed	= 10000,
+		.ispgl		= 0,
+		.dachan		= 0,
+		.dabits		= 0,
+	}, {
+		.name		= "dt24-ez-pgl",
+		.adbits		= 12,
+		.adchan_se	= 16,
+		.adchan_di	= 8,
+		.ai_speed	= 10000,
+		.ispgl		= 1,
+		.dachan		= 0,
+		.dabits		= 0,
+	},
+};
+
+static struct comedi_driver dt282x_driver = {
+	.driver_name	= "dt282x",
+	.module		= THIS_MODULE,
+	.attach		= dt282x_attach,
+	.detach		= dt282x_detach,
+	.board_name	= &boardtypes[0].name,
+	.num_names	= ARRAY_SIZE(boardtypes),
+	.offset		= sizeof(struct dt282x_board),
+};
+module_comedi_driver(dt282x_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

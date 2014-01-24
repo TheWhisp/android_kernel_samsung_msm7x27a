@@ -5,6 +5,7 @@
  *
  * Licensed under the GPL-2 or later.
  */
+<<<<<<< HEAD
 
 #ifndef __BFIN_SPORT_H__
 #define __BFIN_SPORT_H__
@@ -13,6 +14,10 @@
 #define NORM_MODE	0x0
 #define TDM_MODE	0x1
 #define I2S_MODE	0x2
+<<<<<<< HEAD
+=======
+#define NDSO_MODE	0x3
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Data format, normal, a-law or u-law */
 #define NORM_FORMAT	0x0
@@ -56,10 +61,23 @@ struct sport_config {
 /* Userspace interface */
 #define SPORT_IOC_MAGIC		'P'
 #define SPORT_IOC_CONFIG	_IOWR('P', 0x01, struct sport_config)
+<<<<<<< HEAD
+=======
+#define SPORT_IOC_GET_SYSTEMCLOCK         _IOR('P', 0x02, unsigned long)
+#define SPORT_IOC_SET_BAUDRATE            _IOW('P', 0x03, unsigned long)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
 
 #include <linux/types.h>
+=======
+#ifndef __BFIN_SPORT_H__
+#define __BFIN_SPORT_H__
+
+
+#include <linux/types.h>
+#include <uapi/asm/bfin_sport.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * All Blackfin system MMRs are padded to 32bits even if the register
@@ -118,6 +136,7 @@ struct bfin_snd_platform_data {
 })
 
 #endif
+<<<<<<< HEAD
 
 /* SPORT_TCR1 Masks */
 #define TSPEN		0x0001	/* TX enable */
@@ -191,3 +210,5 @@ struct bfin_snd_platform_data {
 #define EX_MFD(x)	BFIN_EXTRACT(MFD, x)
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

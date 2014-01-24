@@ -6,7 +6,11 @@
  *    Daniel Laird <daniel.j.laird@nxp.com>
  *
  *  Based on software written by:
+<<<<<<< HEAD
  *      Nikita Youshchenko <yoush@debian.org>, based on PNX8550 code.
+=======
+ *	Nikita Youshchenko <yoush@debian.org>, based on PNX8550 code.
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

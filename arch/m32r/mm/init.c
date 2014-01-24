@@ -28,10 +28,14 @@
 #include <asm/mmu_context.h>
 #include <asm/setup.h>
 #include <asm/tlb.h>
+<<<<<<< HEAD
 
 /* References to section boundaries */
 extern char _text, _etext, _edata;
 extern char __init_begin, __init_end;
+=======
+#include <asm/sections.h>
+>>>>>>> refs/remotes/origin/master
 
 pgd_t swapper_pg_dir[1024];
 
@@ -43,7 +47,10 @@ unsigned long mmu_context_cache_dat;
 #else
 unsigned long mmu_context_cache_dat[NR_CPUS];
 #endif
+<<<<<<< HEAD
 static unsigned long hole_pages;
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * function prototype
@@ -60,7 +67,11 @@ void free_initrd_mem(unsigned long, unsigned long);
 #define MAX_LOW_PFN(nid)	(NODE_DATA(nid)->bdata->node_low_pfn)
 
 #ifndef CONFIG_DISCONTIGMEM
+<<<<<<< HEAD
 unsigned long __init zone_sizes_init(void)
+=======
+void __init zone_sizes_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long  zones_size[MAX_NR_ZONES] = {0, };
 	unsigned long  max_dma;
@@ -86,11 +97,17 @@ unsigned long __init zone_sizes_init(void)
 #endif /* CONFIG_MMU */
 
 	free_area_init_node(0, zones_size, start_pfn, 0);
+<<<<<<< HEAD
 
 	return 0;
 }
 #else	/* CONFIG_DISCONTIGMEM */
 extern unsigned long zone_sizes_init(void);
+=======
+}
+#else	/* CONFIG_DISCONTIGMEM */
+extern void zone_sizes_init(void);
+>>>>>>> refs/remotes/origin/master
 #endif	/* CONFIG_DISCONTIGMEM */
 
 /*======================================================================*
@@ -108,6 +125,7 @@ void __init paging_init(void)
 	for (i = 0 ; i < USER_PTRS_PER_PGD * 2 ; i++)
 		pgd_val(pg_dir[i]) = 0;
 #endif /* CONFIG_MMU */
+<<<<<<< HEAD
 	hole_pages = zone_sizes_init();
 }
 
@@ -126,6 +144,9 @@ int __init reservedpages_count(void)
 	}
 
 	return reservedpages;
+=======
+	zone_sizes_init();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*======================================================================*
@@ -134,6 +155,7 @@ int __init reservedpages_count(void)
  *======================================================================*/
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	int codesize, reservedpages, datasize, initsize;
 	int nid;
 #ifndef CONFIG_MMU
@@ -154,11 +176,20 @@ void __init mem_init(void)
 	high_memory = (void *)__va(PFN_PHYS(MAX_LOW_PFN(0)));
 #else
 	high_memory = (void *)(memory_end & PAGE_MASK);
+=======
+#ifndef CONFIG_MMU
+	extern unsigned long memory_end;
+
+	high_memory = (void *)(memory_end & PAGE_MASK);
+#else
+	high_memory = (void *)__va(PFN_PHYS(MAX_LOW_PFN(0)));
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MMU */
 
 	/* clear the zero-page */
 	memset(empty_zero_page, 0, PAGE_SIZE);
 
+<<<<<<< HEAD
 	/* this will put all low memory onto the freelists */
 	for_each_online_node(nid)
 		totalram_pages += free_all_bootmem_node(NODE_DATA(nid));
@@ -176,6 +207,11 @@ void __init mem_init(void)
 		reservedpages << (PAGE_SHIFT-10),
 		datasize >> 10,
 		initsize >> 10);
+=======
+	set_max_mapnr(get_num_physpages());
+	free_all_bootmem();
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*======================================================================*
@@ -184,6 +220,7 @@ void __init mem_init(void)
  *======================================================================*/
 void free_initmem(void)
 {
+<<<<<<< HEAD
 	unsigned long addr;
 
 	addr = (unsigned long)(&__init_begin);
@@ -195,6 +232,9 @@ void free_initmem(void)
 	}
 	printk (KERN_INFO "Freeing unused kernel memory: %dk freed\n", \
 	  (int)(&__init_end - &__init_begin) >> 10);
+=======
+	free_initmem_default(-1);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_BLK_DEV_INITRD
@@ -204,6 +244,7 @@ void free_initmem(void)
  *======================================================================*/
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	unsigned long p;
 	for (p = start; p < end; p += PAGE_SIZE) {
 		ClearPageReserved(virt_to_page(p));
@@ -212,5 +253,8 @@ void free_initrd_mem(unsigned long start, unsigned long end)
 		totalram_pages++;
 	}
 	printk (KERN_INFO "Freeing initrd memory: %ldk freed\n", (end - start) >> 10);
+=======
+	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif

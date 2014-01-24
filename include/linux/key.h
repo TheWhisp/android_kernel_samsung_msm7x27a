@@ -21,9 +21,21 @@
 #include <linux/rcupdate.h>
 #include <linux/sysctl.h>
 #include <linux/rwsem.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
+=======
+#include <linux/atomic.h>
+#include <linux/assoc_array.h>
+
+#ifdef __KERNEL__
+#include <linux/uidgid.h>
+>>>>>>> refs/remotes/origin/master
 
 /* key handle serial number */
 typedef int32_t key_serial_t;
@@ -81,6 +93,15 @@ struct key_owner;
 struct keyring_list;
 struct keyring_name;
 
+<<<<<<< HEAD
+=======
+struct keyring_index_key {
+	struct key_type		*type;
+	const char		*description;
+	size_t			desc_len;
+};
+
+>>>>>>> refs/remotes/origin/master
 /*****************************************************************************/
 /*
  * key reference with possession attribute handling
@@ -98,7 +119,11 @@ struct keyring_name;
 typedef struct __key_reference_with_attributes *key_ref_t;
 
 static inline key_ref_t make_key_ref(const struct key *key,
+<<<<<<< HEAD
 				     unsigned long possession)
+=======
+				     bool possession)
+>>>>>>> refs/remotes/origin/master
 {
 	return (key_ref_t) ((unsigned long) key | possession);
 }
@@ -108,7 +133,11 @@ static inline struct key *key_ref_to_ptr(const key_ref_t key_ref)
 	return (struct key *) ((unsigned long) key_ref & ~1UL);
 }
 
+<<<<<<< HEAD
 static inline unsigned long is_key_possessed(const key_ref_t key_ref)
+=======
+static inline bool is_key_possessed(const key_ref_t key_ref)
+>>>>>>> refs/remotes/origin/master
 {
 	return (unsigned long) key_ref & 1UL;
 }
@@ -124,8 +153,15 @@ static inline unsigned long is_key_possessed(const key_ref_t key_ref)
 struct key {
 	atomic_t		usage;		/* number of references */
 	key_serial_t		serial;		/* key serial number */
+<<<<<<< HEAD
 	struct rb_node		serial_node;
 	struct key_type		*type;		/* type of key */
+=======
+	union {
+		struct list_head graveyard_link;
+		struct rb_node	serial_node;
+	};
+>>>>>>> refs/remotes/origin/master
 	struct rw_semaphore	sem;		/* change vs change sem */
 	struct key_user		*user;		/* owner of this key */
 	void			*security;	/* security data for this key */
@@ -133,8 +169,14 @@ struct key {
 		time_t		expiry;		/* time at which key expires (or 0) */
 		time_t		revoked_at;	/* time at which key was revoked */
 	};
+<<<<<<< HEAD
 	uid_t			uid;
 	gid_t			gid;
+=======
+	time_t			last_used_at;	/* last time used for LRU keyring discard */
+	kuid_t			uid;
+	kgid_t			gid;
+>>>>>>> refs/remotes/origin/master
 	key_perm_t		perm;		/* access permissions */
 	unsigned short		quotalen;	/* length added to quota */
 	unsigned short		datalen;	/* payload data length
@@ -155,6 +197,11 @@ struct key {
 #define KEY_FLAG_IN_QUOTA	3	/* set if key consumes quota */
 #define KEY_FLAG_USER_CONSTRUCT	4	/* set if key is being constructed in userspace */
 #define KEY_FLAG_NEGATIVE	5	/* set if key is negative */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define KEY_FLAG_ROOT_CAN_CLEAR	6	/* set if key can be cleared by root without permission */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* the description string
 	 * - this is used to match a key against search criteria
@@ -162,6 +209,25 @@ struct key {
 	 * - eg: for krb5 AFS, this might be "afs@REDHAT.COM"
 	 */
 	char			*description;
+=======
+#define KEY_FLAG_ROOT_CAN_CLEAR	6	/* set if key can be cleared by root without permission */
+#define KEY_FLAG_INVALIDATED	7	/* set if key has been invalidated */
+#define KEY_FLAG_TRUSTED	8	/* set if key is trusted */
+#define KEY_FLAG_TRUSTED_ONLY	9	/* set if keyring only accepts links to trusted keys */
+
+	/* the key type and key description string
+	 * - the desc is used to match a key against search criteria
+	 * - it should be a printable string
+	 * - eg: for krb5 AFS, this might be "afs@REDHAT.COM"
+	 */
+	union {
+		struct keyring_index_key index_key;
+		struct {
+			struct key_type	*type;		/* type of key */
+			char		*description;
+		};
+	};
+>>>>>>> refs/remotes/origin/master
 
 	/* type specific data
 	 * - this is used by the keyring type to index the name
@@ -178,16 +244,31 @@ struct key {
 	 *   whatever
 	 */
 	union {
+<<<<<<< HEAD
 		unsigned long		value;
 		void __rcu		*rcudata;
 		void			*data;
 		struct keyring_list __rcu *subscriptions;
 	} payload;
+=======
+		union {
+			unsigned long		value;
+			void __rcu		*rcudata;
+			void			*data;
+			void			*data2[2];
+		} payload;
+		struct assoc_array keys;
+	};
+>>>>>>> refs/remotes/origin/master
 };
 
 extern struct key *key_alloc(struct key_type *type,
 			     const char *desc,
+<<<<<<< HEAD
 			     uid_t uid, gid_t gid,
+=======
+			     kuid_t uid, kgid_t gid,
+>>>>>>> refs/remotes/origin/master
 			     const struct cred *cred,
 			     key_perm_t perm,
 			     unsigned long flags);
@@ -196,6 +277,7 @@ extern struct key *key_alloc(struct key_type *type,
 #define KEY_ALLOC_IN_QUOTA	0x0000	/* add to quota, reject if would overrun */
 #define KEY_ALLOC_QUOTA_OVERRUN	0x0001	/* add to quota, permit even if overrun */
 #define KEY_ALLOC_NOT_IN_QUOTA	0x0002	/* not in quota */
+<<<<<<< HEAD
 
 extern void key_revoke(struct key *key);
 extern void key_put(struct key *key);
@@ -207,6 +289,25 @@ static inline struct key *key_get(struct key *key)
 	return key;
 }
 
+=======
+#define KEY_ALLOC_TRUSTED	0x0004	/* Key should be flagged as trusted */
+
+extern void key_revoke(struct key *key);
+extern void key_invalidate(struct key *key);
+extern void key_put(struct key *key);
+
+static inline struct key *__key_get(struct key *key)
+{
+	atomic_inc(&key->usage);
+	return key;
+}
+
+static inline struct key *key_get(struct key *key)
+{
+	return key ? __key_get(key) : key;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void key_ref_put(key_ref_t key_ref)
 {
 	key_put(key_ref_to_ptr(key_ref));
@@ -235,7 +336,11 @@ extern struct key *request_key_async_with_auxdata(struct key_type *type,
 
 extern int wait_for_key_construction(struct key *key, bool intr);
 
+<<<<<<< HEAD
 extern int key_validate(struct key *key);
+=======
+extern int key_validate(const struct key *key);
+>>>>>>> refs/remotes/origin/master
 
 extern key_ref_t key_create_or_update(key_ref_t keyring,
 				      const char *type,
@@ -255,8 +360,14 @@ extern int key_link(struct key *keyring,
 extern int key_unlink(struct key *keyring,
 		      struct key *key);
 
+<<<<<<< HEAD
 extern struct key *keyring_alloc(const char *description, uid_t uid, gid_t gid,
 				 const struct cred *cred,
+=======
+extern struct key *keyring_alloc(const char *description, kuid_t uid, kgid_t gid,
+				 const struct cred *cred,
+				 key_perm_t perm,
+>>>>>>> refs/remotes/origin/master
 				 unsigned long flags,
 				 struct key *dest);
 
@@ -271,11 +382,29 @@ extern int keyring_add_key(struct key *keyring,
 
 extern struct key *key_lookup(key_serial_t id);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline key_serial_t key_serial(struct key *key)
+=======
+static inline key_serial_t key_serial(const struct key *key)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline key_serial_t key_serial(const struct key *key)
+>>>>>>> refs/remotes/origin/master
 {
 	return key ? key->serial : 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern void key_set_timeout(struct key *, unsigned);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void key_set_timeout(struct key *, unsigned);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * key_is_instantiated - Determine if a key has been positively instantiated
  * @key: The key to check.
@@ -293,12 +422,29 @@ static inline bool key_is_instantiated(const struct key *key)
 	(rcu_dereference_protected((KEY)->payload.rcudata,		\
 				   rwsem_is_locked(&((struct key *)(KEY))->sem)))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define rcu_assign_keypointer(KEY, PAYLOAD)				\
+	(rcu_assign_pointer((KEY)->payload.rcudata, PAYLOAD))
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SYSCTL
 extern ctl_table key_sysctls[];
 #endif
 
 extern void key_replace_session_keyring(void);
 
+=======
+#define rcu_assign_keypointer(KEY, PAYLOAD)				\
+do {									\
+	rcu_assign_pointer((KEY)->payload.rcudata, (PAYLOAD));		\
+} while (0)
+
+#ifdef CONFIG_SYSCTL
+extern ctl_table key_sysctls[];
+#endif
+>>>>>>> refs/remotes/origin/master
 /*
  * the userspace interface
  */
@@ -313,6 +459,10 @@ extern void key_init(void);
 #define key_serial(k)			0
 #define key_get(k) 			({ NULL; })
 #define key_revoke(k)			do { } while(0)
+<<<<<<< HEAD
+=======
+#define key_invalidate(k)		do { } while(0)
+>>>>>>> refs/remotes/origin/master
 #define key_put(k)			do { } while(0)
 #define key_ref_put(k)			do { } while(0)
 #define make_key_ref(k, p)		NULL
@@ -321,7 +471,10 @@ extern void key_init(void);
 #define key_fsuid_changed(t)		do { } while(0)
 #define key_fsgid_changed(t)		do { } while(0)
 #define key_init()			do { } while(0)
+<<<<<<< HEAD
 #define key_replace_session_keyring()	do { } while(0)
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CONFIG_KEYS */
 #endif /* __KERNEL__ */

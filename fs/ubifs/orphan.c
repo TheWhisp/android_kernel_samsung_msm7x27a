@@ -52,11 +52,15 @@
  * than the maximum number of orphans allowed.
  */
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
 static int dbg_check_orphans(struct ubifs_info *c);
 #else
 #define dbg_check_orphans(c) 0
 #endif
+=======
+static int dbg_check_orphans(struct ubifs_info *c);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ubifs_add_orphan - add an orphan.
@@ -92,7 +96,11 @@ int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
 		else if (inum > o->inum)
 			p = &(*p)->rb_right;
 		else {
+<<<<<<< HEAD
 			dbg_err("orphaned twice");
+=======
+			ubifs_err("orphaned twice");
+>>>>>>> refs/remotes/origin/master
 			spin_unlock(&c->orphan_lock);
 			kfree(orphan);
 			return 0;
@@ -130,13 +138,22 @@ void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
 		else if (inum > o->inum)
 			p = p->rb_right;
 		else {
+<<<<<<< HEAD
 			if (o->dnext) {
+=======
+			if (o->del) {
+>>>>>>> refs/remotes/origin/master
 				spin_unlock(&c->orphan_lock);
 				dbg_gen("deleted twice ino %lu",
 					(unsigned long)inum);
 				return;
 			}
+<<<<<<< HEAD
 			if (o->cnext) {
+=======
+			if (o->cmt) {
+				o->del = 1;
+>>>>>>> refs/remotes/origin/master
 				o->dnext = c->orph_dnext;
 				c->orph_dnext = o;
 				spin_unlock(&c->orphan_lock);
@@ -158,8 +175,13 @@ void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
 		}
 	}
 	spin_unlock(&c->orphan_lock);
+<<<<<<< HEAD
 	dbg_err("missing orphan ino %lu", (unsigned long)inum);
 	dbg_dump_stack();
+=======
+	ubifs_err("missing orphan ino %lu", (unsigned long)inum);
+	dump_stack();
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -176,11 +198,21 @@ int ubifs_orphan_start_commit(struct ubifs_info *c)
 	last = &c->orph_cnext;
 	list_for_each_entry(orphan, &c->orph_new, new_list) {
 		ubifs_assert(orphan->new);
+<<<<<<< HEAD
 		orphan->new = 0;
 		*last = orphan;
 		last = &orphan->cnext;
 	}
 	*last = orphan->cnext;
+=======
+		ubifs_assert(!orphan->cmt);
+		orphan->new = 0;
+		orphan->cmt = 1;
+		*last = orphan;
+		last = &orphan->cnext;
+	}
+	*last = NULL;
+>>>>>>> refs/remotes/origin/master
 	c->cmt_orphans = c->new_orphans;
 	c->new_orphans = 0;
 	dbg_cmt("%d orphans to commit", c->cmt_orphans);
@@ -248,8 +280,12 @@ static int do_write_orph_node(struct ubifs_info *c, int len, int atomic)
 		ubifs_assert(c->ohead_offs == 0);
 		ubifs_prepare_node(c, c->orph_buf, len, 1);
 		len = ALIGN(len, c->min_io_size);
+<<<<<<< HEAD
 		err = ubifs_leb_change(c, c->ohead_lnum, c->orph_buf, len,
 				       UBI_SHORTTERM);
+=======
+		err = ubifs_leb_change(c, c->ohead_lnum, c->orph_buf, len);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (c->ohead_offs == 0) {
 			/* Ensure LEB has been unmapped */
@@ -258,7 +294,11 @@ static int do_write_orph_node(struct ubifs_info *c, int len, int atomic)
 				return err;
 		}
 		err = ubifs_write_node(c, c->orph_buf, len, c->ohead_lnum,
+<<<<<<< HEAD
 				       c->ohead_offs, UBI_SHORTTERM);
+=======
+				       c->ohead_offs);
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -304,7 +344,13 @@ static int write_orph_node(struct ubifs_info *c, int atomic)
 	cnext = c->orph_cnext;
 	for (i = 0; i < cnt; i++) {
 		orphan = cnext;
+<<<<<<< HEAD
 		orph->inos[i] = cpu_to_le64(orphan->inum);
+=======
+		ubifs_assert(orphan->cmt);
+		orph->inos[i] = cpu_to_le64(orphan->inum);
+		orphan->cmt = 0;
+>>>>>>> refs/remotes/origin/master
 		cnext = orphan->cnext;
 		orphan->cnext = NULL;
 	}
@@ -383,11 +429,19 @@ static int consolidate(struct ubifs_info *c)
 		list_for_each_entry(orphan, &c->orph_list, list) {
 			if (orphan->new)
 				continue;
+<<<<<<< HEAD
+=======
+			orphan->cmt = 1;
+>>>>>>> refs/remotes/origin/master
 			*last = orphan;
 			last = &orphan->cnext;
 			cnt += 1;
 		}
+<<<<<<< HEAD
 		*last = orphan->cnext;
+=======
+		*last = NULL;
+>>>>>>> refs/remotes/origin/master
 		ubifs_assert(cnt == c->tot_orphans - c->new_orphans);
 		c->cmt_orphans = cnt;
 		c->ohead_lnum = c->orph_first;
@@ -447,6 +501,10 @@ static void erase_deleted(struct ubifs_info *c)
 		orphan = dnext;
 		dnext = orphan->dnext;
 		ubifs_assert(!orphan->new);
+<<<<<<< HEAD
+=======
+		ubifs_assert(orphan->del);
+>>>>>>> refs/remotes/origin/master
 		rb_erase(&orphan->rb, &c->orph_tree);
 		list_del(&orphan->list);
 		c->tot_orphans -= 1;
@@ -536,6 +594,10 @@ static int insert_dead_orphan(struct ubifs_info *c, ino_t inum)
 	rb_link_node(&orphan->rb, parent, p);
 	rb_insert_color(&orphan->rb, &c->orph_tree);
 	list_add_tail(&orphan->list, &c->orph_list);
+<<<<<<< HEAD
+=======
+	orphan->del = 1;
+>>>>>>> refs/remotes/origin/master
 	orphan->dnext = c->orph_dnext;
 	c->orph_dnext = orphan;
 	dbg_mnt("ino %lu, new %d, tot %d", (unsigned long)inum,
@@ -567,9 +629,15 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
 
 	list_for_each_entry(snod, &sleb->nodes, list) {
 		if (snod->type != UBIFS_ORPH_NODE) {
+<<<<<<< HEAD
 			ubifs_err("invalid node type %d in orphan area at "
 				  "%d:%d", snod->type, sleb->lnum, snod->offs);
 			dbg_dump_node(c, snod->node);
+=======
+			ubifs_err("invalid node type %d in orphan area at %d:%d",
+				  snod->type, sleb->lnum, snod->offs);
+			ubifs_dump_node(c, snod->node);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 
@@ -594,10 +662,16 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
 			 * number. That makes this orphan node, out of date.
 			 */
 			if (!first) {
+<<<<<<< HEAD
 				ubifs_err("out of order commit number %llu in "
 					  "orphan node at %d:%d",
 					  cmt_no, sleb->lnum, snod->offs);
 				dbg_dump_node(c, snod->node);
+=======
+				ubifs_err("out of order commit number %llu in orphan node at %d:%d",
+					  cmt_no, sleb->lnum, snod->offs);
+				ubifs_dump_node(c, snod->node);
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			}
 			dbg_rcvry("out of date LEB %d", sleb->lnum);
@@ -725,7 +799,13 @@ int ubifs_mount_orphans(struct ubifs_info *c, int unclean, int read_only)
 	return err;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
+=======
+/*
+ * Everything below is related to debugging.
+ */
+>>>>>>> refs/remotes/origin/master
 
 struct check_orphan {
 	struct rb_node rb;
@@ -929,7 +1009,15 @@ static int dbg_check_orphans(struct ubifs_info *c)
 	struct check_info ci;
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_ORPH))
+=======
+	if (!dbg_is_chk_orph(c))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_orph(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	ci.last_ino = 0;
@@ -968,5 +1056,8 @@ out:
 	kfree(ci.node);
 	return err;
 }
+<<<<<<< HEAD
 
 #endif /* CONFIG_UBIFS_FS_DEBUG */
+=======
+>>>>>>> refs/remotes/origin/master

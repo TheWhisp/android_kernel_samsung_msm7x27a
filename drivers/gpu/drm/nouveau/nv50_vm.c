@@ -48,7 +48,11 @@ nv50_vm_map_pgt(struct nouveau_gpuobj *pgd, u32 pde,
 			phys |= 0x60;
 		else if (coverage <= 64 * 1024 * 1024)
 			phys |= 0x40;
+<<<<<<< HEAD
 		else if (coverage < 128 * 1024 * 1024)
+=======
+		else if (coverage <= 128 * 1024 * 1024)
+>>>>>>> refs/remotes/origin/cm-10.0
 			phys |= 0x20;
 	}
 
@@ -57,6 +61,7 @@ nv50_vm_map_pgt(struct nouveau_gpuobj *pgd, u32 pde,
 }
 
 static inline u64
+<<<<<<< HEAD
 nv50_vm_addr(struct nouveau_vma *vma, u64 phys, u32 memtype, u32 target)
 {
 	struct drm_nouveau_private *dev_priv = vma->vm->dev->dev_private;
@@ -78,6 +83,17 @@ nv50_vm_addr(struct nouveau_vma *vma, u64 phys, u32 memtype, u32 target)
 	if (!(vma->access & NV_MEM_ACCESS_WO))
 		phys |= (1 << 3);
 
+=======
+vm_addr(struct nouveau_vma *vma, u64 phys, u32 memtype, u32 target)
+{
+	phys |= 1; /* present */
+	phys |= (u64)memtype << 40;
+	phys |= target << 4;
+	if (vma->access & NV_MEM_ACCESS_SYS)
+		phys |= (1 << 6);
+	if (!(vma->access & NV_MEM_ACCESS_WO))
+		phys |= (1 << 3);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return phys;
 }
 
@@ -85,11 +101,27 @@ void
 nv50_vm_map(struct nouveau_vma *vma, struct nouveau_gpuobj *pgt,
 	    struct nouveau_mem *mem, u32 pte, u32 cnt, u64 phys, u64 delta)
 {
+<<<<<<< HEAD
 	u32 comp = (mem->memtype & 0x180) >> 7;
 	u32 block;
 	int i;
 
 	phys  = nv50_vm_addr(vma, phys, mem->memtype, 0);
+=======
+	struct drm_nouveau_private *dev_priv = vma->vm->dev->dev_private;
+	u32 comp = (mem->memtype & 0x180) >> 7;
+	u32 block, target;
+	int i;
+
+	/* IGPs don't have real VRAM, re-target to stolen system memory */
+	target = 0;
+	if (dev_priv->vram_sys_base) {
+		phys += dev_priv->vram_sys_base;
+		target = 3;
+	}
+
+	phys  = vm_addr(vma, phys, mem->memtype, target);
+>>>>>>> refs/remotes/origin/cm-10.0
 	pte <<= 3;
 	cnt <<= 3;
 
@@ -125,9 +157,16 @@ void
 nv50_vm_map_sg(struct nouveau_vma *vma, struct nouveau_gpuobj *pgt,
 	       struct nouveau_mem *mem, u32 pte, u32 cnt, dma_addr_t *list)
 {
+<<<<<<< HEAD
 	pte <<= 3;
 	while (cnt--) {
 		u64 phys = nv50_vm_addr(vma, (u64)*list++, mem->memtype, 2);
+=======
+	u32 target = (vma->access & NV_MEM_ACCESS_NOSNOOP) ? 3 : 2;
+	pte <<= 3;
+	while (cnt--) {
+		u64 phys = vm_addr(vma, (u64)*list++, mem->memtype, target);
+>>>>>>> refs/remotes/origin/cm-10.0
 		nv_wo32(pgt, pte + 0, lower_32_bits(phys));
 		nv_wo32(pgt, pte + 4, upper_32_bits(phys));
 		pte += 8;
@@ -156,7 +195,11 @@ nv50_vm_flush(struct nouveau_vm *vm)
 	pinstmem->flush(vm->dev);
 
 	/* BAR */
+<<<<<<< HEAD
 	if (vm != dev_priv->chan_vm) {
+=======
+	if (vm == dev_priv->bar1_vm || vm == dev_priv->bar3_vm) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		nv50_vm_flush_engine(vm->dev, 6);
 		return;
 	}

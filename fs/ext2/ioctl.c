@@ -19,7 +19,11 @@
 
 long ext2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	struct ext2_inode_info *ei = EXT2_I(inode);
 	unsigned int flags;
 	unsigned short rsv_window_size;
@@ -35,7 +39,15 @@ long ext2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	case EXT2_IOC_SETFLAGS: {
 		unsigned int oldflags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = mnt_want_write(filp->f_path.mnt);
+=======
+		ret = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			return ret;
 
@@ -77,6 +89,8 @@ long ext2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		flags = flags & EXT2_FL_USER_MODIFIABLE;
 		flags |= oldflags & ~EXT2_FL_USER_MODIFIABLE;
 		ei->i_flags = flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mutex_unlock(&inode->i_mutex);
 
 		ext2_set_inode_flags(inode);
@@ -84,10 +98,27 @@ long ext2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		mark_inode_dirty(inode);
 setflags_out:
 		mnt_drop_write(filp->f_path.mnt);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+		ext2_set_inode_flags(inode);
+		inode->i_ctime = CURRENT_TIME_SEC;
+		mutex_unlock(&inode->i_mutex);
+
+		mark_inode_dirty(inode);
+setflags_out:
+		mnt_drop_write_file(filp);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 	case EXT2_IOC_GETVERSION:
 		return put_user(inode->i_generation, (int __user *) arg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case EXT2_IOC_SETVERSION:
 		if (!inode_owner_or_capable(inode))
 			return -EPERM;
@@ -102,6 +133,36 @@ setflags_out:
 		}
 		mnt_drop_write(filp->f_path.mnt);
 		return ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case EXT2_IOC_SETVERSION: {
+		__u32 generation;
+
+		if (!inode_owner_or_capable(inode))
+			return -EPERM;
+		ret = mnt_want_write_file(filp);
+		if (ret)
+			return ret;
+		if (get_user(generation, (int __user *) arg)) {
+			ret = -EFAULT;
+			goto setversion_out;
+		}
+
+		mutex_lock(&inode->i_mutex);
+		inode->i_ctime = CURRENT_TIME_SEC;
+		inode->i_generation = generation;
+		mutex_unlock(&inode->i_mutex);
+
+		mark_inode_dirty(inode);
+setversion_out:
+		mnt_drop_write_file(filp);
+		return ret;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case EXT2_IOC_GETRSVSZ:
 		if (test_opt(inode->i_sb, RESERVATION)
 			&& S_ISREG(inode->i_mode)
@@ -121,7 +182,15 @@ setflags_out:
 		if (get_user(rsv_window_size, (int __user *)arg))
 			return -EFAULT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = mnt_want_write(filp->f_path.mnt);
+=======
+		ret = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			return ret;
 
@@ -145,7 +214,15 @@ setflags_out:
 			rsv->rsv_goal_size = rsv_window_size;
 		}
 		mutex_unlock(&ei->truncate_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mnt_drop_write(filp->f_path.mnt);
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	default:

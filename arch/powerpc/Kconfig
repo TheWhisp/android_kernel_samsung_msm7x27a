@@ -27,6 +27,7 @@ config MMU
 	bool
 	default y
 
+<<<<<<< HEAD
 config GENERIC_CMOS_UPDATE
 	def_bool y
 
@@ -36,6 +37,8 @@ config GENERIC_TIME_VSYSCALL
 config GENERIC_CLOCKEVENTS
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/master
 config HAVE_SETUP_PER_CPU_AREA
 	def_bool PPC64
 
@@ -87,10 +90,21 @@ config ARCH_HAS_ILOG2_U64
 	bool
 	default y if 64BIT
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+config ARCH_HAS_CPU_IDLE_WAIT
+	bool
+	default y
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config GENERIC_HWEIGHT
 	bool
 	default y
 
+<<<<<<< HEAD
 config GENERIC_GPIO
 	bool
 	help
@@ -102,21 +116,42 @@ config ARCH_NO_VIRT_TO_BUS
 config PPC
 	bool
 	default y
+=======
+config PPC
+	bool
+	default y
+	select ARCH_MIGHT_HAVE_PC_PARPORT
+	select BINFMT_ELF
+>>>>>>> refs/remotes/origin/master
 	select OF
 	select OF_EARLY_FLATTREE
 	select HAVE_FTRACE_MCOUNT_RECORD
 	select HAVE_DYNAMIC_FTRACE
 	select HAVE_FUNCTION_TRACER
 	select HAVE_FUNCTION_GRAPH_TRACER
+<<<<<<< HEAD
 	select ARCH_WANT_OPTIONAL_GPIOLIB
 	select HAVE_IDE
 	select HAVE_IOREMAP_PROT
 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+=======
+	select SYSCTL_EXCEPTION_TRACE
+	select ARCH_WANT_OPTIONAL_GPIOLIB
+	select VIRT_TO_BUS if !PPC64
+	select HAVE_IDE
+	select HAVE_IOREMAP_PROT
+	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_LITTLE_ENDIAN
+>>>>>>> refs/remotes/origin/master
 	select HAVE_KPROBES
 	select HAVE_ARCH_KGDB
 	select HAVE_KRETPROBES
 	select HAVE_ARCH_TRACEHOOK
 	select HAVE_MEMBLOCK
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select HAVE_MEMBLOCK_NODE_MAP
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_DMA_ATTRS
 	select HAVE_DMA_API_DEBUG
 	select USE_GENERIC_SMP_HELPERS if SMP
@@ -128,21 +163,88 @@ config PPC
 	select HAVE_REGS_AND_STACK_ACCESS_API
 	select HAVE_HW_BREAKPOINT if PERF_EVENTS && PPC_BOOK3S_64
 	select HAVE_GENERIC_HARDIRQS
+<<<<<<< HEAD
 	select HAVE_SPARSE_IRQ
 	select IRQ_PER_CPU
 	select GENERIC_IRQ_SHOW
 	select GENERIC_IRQ_SHOW_LEVEL
 	select HAVE_RCU_TABLE_FREE if SMP
 	select HAVE_SYSCALL_TRACEPOINTS
+=======
+	select SPARSE_IRQ
+	select IRQ_PER_CPU
+=======
+	select HAVE_MEMBLOCK_NODE_MAP
+	select HAVE_DMA_ATTRS
+	select HAVE_DMA_API_DEBUG
+	select HAVE_OPROFILE
+	select HAVE_DEBUG_KMEMLEAK
+	select GENERIC_ATOMIC64 if PPC32
+	select ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE
+	select HAVE_PERF_EVENTS
+	select HAVE_REGS_AND_STACK_ACCESS_API
+	select HAVE_HW_BREAKPOINT if PERF_EVENTS && PPC_BOOK3S_64
+	select ARCH_WANT_IPC_PARSE_VERSION
+	select SPARSE_IRQ
+>>>>>>> refs/remotes/origin/master
+	select IRQ_DOMAIN
+	select GENERIC_IRQ_SHOW
+	select GENERIC_IRQ_SHOW_LEVEL
+	select IRQ_FORCED_THREADING
+	select HAVE_RCU_TABLE_FREE if SMP
+	select HAVE_SYSCALL_TRACEPOINTS
+<<<<<<< HEAD
+	select HAVE_BPF_JIT if (PPC64 && NET)
+	select HAVE_ARCH_JUMP_LABEL
+	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select HAVE_BPF_JIT if PPC64
+	select HAVE_ARCH_JUMP_LABEL
+	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+	select GENERIC_SMP_IDLE_THREAD
+	select GENERIC_CMOS_UPDATE
+	select GENERIC_TIME_VSYSCALL_OLD
+	select GENERIC_CLOCKEVENTS
+	select GENERIC_STRNCPY_FROM_USER
+	select GENERIC_STRNLEN_USER
+	select HAVE_MOD_ARCH_SPECIFIC
+	select MODULES_USE_ELF_RELA
+	select CLONE_BACKWARDS
+	select ARCH_USE_BUILTIN_BSWAP
+	select OLD_SIGSUSPEND
+	select OLD_SIGACTION if PPC32
+	select HAVE_DEBUG_STACKOVERFLOW
+	select HAVE_IRQ_EXIT_ON_IRQ_STACK
+
+config GENERIC_CSUM
+	def_bool CPU_LITTLE_ENDIAN
+>>>>>>> refs/remotes/origin/master
 
 config EARLY_PRINTK
 	bool
 	default y
 
+<<<<<<< HEAD
+=======
+config PANIC_TIMEOUT
+	int
+	default 180
+
+>>>>>>> refs/remotes/origin/master
 config COMPAT
 	bool
 	default y if PPC64
 	select COMPAT_BINFMT_ELF
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select ARCH_WANT_OLD_COMPAT_IPC
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_WANT_OLD_COMPAT_IPC
+	select COMPAT_OLD_SIGACTION
+>>>>>>> refs/remotes/origin/master
 
 config SYSVIPC_COMPAT
 	bool
@@ -209,7 +311,12 @@ config ARCH_HIBERNATION_POSSIBLE
 config ARCH_SUSPEND_POSSIBLE
 	def_bool y
 	depends on ADB_PMU || PPC_EFIKA || PPC_LITE5200 || PPC_83xx || \
+<<<<<<< HEAD
 		   (PPC_85xx && !SMP) || PPC_86xx || PPC_PSERIES || 44x || 40x
+=======
+		   (PPC_85xx && !PPC_E500MC) || PPC_86xx || PPC_PSERIES \
+		   || 44x || 40x
+>>>>>>> refs/remotes/origin/master
 
 config PPC_DCR_NATIVE
 	bool
@@ -233,6 +340,12 @@ config PPC_OF_PLATFORM_PCI
 config ARCH_SUPPORTS_DEBUG_PAGEALLOC
 	def_bool y
 
+<<<<<<< HEAD
+=======
+config ARCH_SUPPORTS_UPROBES
+	def_bool y
+
+>>>>>>> refs/remotes/origin/master
 config PPC_ADV_DEBUG_REGS
 	bool
 	depends on 40x || BOOKE
@@ -260,6 +373,13 @@ config PPC_ADV_DEBUG_DAC_RANGE
 	depends on PPC_ADV_DEBUG_REGS && 44x
 	default y
 
+<<<<<<< HEAD
+=======
+config PPC_EMULATE_SSTEP
+	bool
+	default y if KPROBES || UPROBES || XMON || HAVE_HW_BREAKPOINT
+
+>>>>>>> refs/remotes/origin/master
 source "init/Kconfig"
 
 source "kernel/Kconfig.freezer"
@@ -273,7 +393,10 @@ config HIGHMEM
 	bool "High memory support"
 	depends on PPC32
 
+<<<<<<< HEAD
 source kernel/time/Kconfig
+=======
+>>>>>>> refs/remotes/origin/master
 source kernel/Kconfig.hz
 source kernel/Kconfig.preempt
 source "fs/Kconfig.binfmt"
@@ -285,7 +408,11 @@ config HUGETLB_PAGE_SIZE_VARIABLE
 
 config MATH_EMULATION
 	bool "Math emulation"
+<<<<<<< HEAD
 	depends on 4xx || 8xx || E200 || PPC_MPC832x || E500
+=======
+	depends on 4xx || 8xx || PPC_MPC832x || BOOKE
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Some PowerPC chips designed for embedded applications do not have
 	  a floating-point unit and therefore do not implement the
@@ -294,6 +421,7 @@ config MATH_EMULATION
 	  unit, which will allow programs that use floating-point
 	  instructions to run.
 
+<<<<<<< HEAD
 config 8XX_MINIMAL_FPEMU
 	bool "Minimal math emulation for 8xx"
 	depends on 8xx && !MATH_EMULATION
@@ -304,6 +432,39 @@ config 8XX_MINIMAL_FPEMU
 	  this behavior.
 
 	  It is recommended that you build a soft-float userspace instead.
+=======
+	  This is also useful to emulate missing (optional) instructions
+	  such as fsqrt on cores that do have an FPU but do not implement
+	  them (such as Freescale BookE).
+
+choice
+	prompt "Math emulation options"
+	default MATH_EMULATION_FULL
+	depends on MATH_EMULATION
+
+config	MATH_EMULATION_FULL
+	bool "Emulate all the floating point instructions"
+	---help---
+	  Select this option will enable the kernel to support to emulate
+	  all the floating point instructions. If your SoC doesn't have
+	  a FPU, you should select this.
+
+config MATH_EMULATION_HW_UNIMPLEMENTED
+	bool "Just emulate the FPU unimplemented instructions"
+	---help---
+	  Select this if you know there does have a hardware FPU on your
+	  SoC, but some floating point instructions are not implemented by that.
+
+endchoice
+
+config PPC_TRANSACTIONAL_MEM
+       bool "Transactional Memory support for POWERPC"
+       depends on PPC_BOOK3S_64
+       depends on SMP
+       default n
+       ---help---
+         Support user-mode Transactional Memory on POWERPC.
+>>>>>>> refs/remotes/origin/master
 
 config IOMMU_HELPER
 	def_bool PPC64
@@ -320,7 +481,16 @@ config SWIOTLB
 
 config HOTPLUG_CPU
 	bool "Support for enabling/disabling CPUs"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	depends on SMP && HOTPLUG && EXPERIMENTAL && (PPC_PSERIES || PPC_PMAC)
+=======
+	depends on SMP && HOTPLUG && EXPERIMENTAL && (PPC_PSERIES || PPC_PMAC || PPC_POWERNV)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on SMP && (PPC_PSERIES || \
+	PPC_PMAC || PPC_POWERNV || (PPC_85xx && !PPC_E500MC))
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Say Y here to be able to disable and re-enable individual
 	  CPUs at runtime on SMP machines.
@@ -341,8 +511,17 @@ config ARCH_ENABLE_MEMORY_HOTREMOVE
 	def_bool y
 
 config KEXEC
+<<<<<<< HEAD
 	bool "kexec system call (EXPERIMENTAL)"
+<<<<<<< HEAD
 	depends on (PPC_BOOK3S || FSL_BOOKE) && EXPERIMENTAL
+=======
+	depends on (PPC_BOOK3S || FSL_BOOKE || (44x && !SMP && !PPC_47x)) && EXPERIMENTAL
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool "kexec system call"
+	depends on (PPC_BOOK3S || FSL_BOOKE || (44x && !SMP))
+>>>>>>> refs/remotes/origin/master
 	help
 	  kexec is a system call that implements the ability to shutdown your
 	  current kernel, and to start another kernel.  It is like a reboot
@@ -353,19 +532,39 @@ config KEXEC
 
 	  It is an ongoing process to be certain the hardware in a machine
 	  is properly shutdown, so do not be surprised if this code does not
+<<<<<<< HEAD
 	  initially work for you.  It may help to enable device hotplugging
 	  support.  As of this writing the exact hardware interface is
 	  strongly in flux, so no good recommendation can be made.
 
 config CRASH_DUMP
 	bool "Build a kdump crash kernel"
+<<<<<<< HEAD
 	depends on PPC64 || 6xx || FSL_BOOKE
 	select RELOCATABLE if PPC64 || FSL_BOOKE
+=======
+	depends on PPC64 || 6xx || FSL_BOOKE || (44x && !SMP && !PPC_47x)
+	select RELOCATABLE if PPC64 || 44x
+	select DYNAMIC_MEMSTART if FSL_BOOKE
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  initially work for you.  As of this writing the exact hardware
+	  interface is strongly in flux, so no good recommendation can be
+	  made.
+
+config CRASH_DUMP
+	bool "Build a kdump crash kernel"
+	depends on PPC64 || 6xx || FSL_BOOKE || (44x && !SMP)
+	select RELOCATABLE if PPC64 || 44x
+	select DYNAMIC_MEMSTART if FSL_BOOKE
+>>>>>>> refs/remotes/origin/master
 	help
 	  Build a kernel suitable for use as a kdump capture kernel.
 	  The same kernel binary can be used as production kernel and dump
 	  capture kernel.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config PHYP_DUMP
 	bool "Hypervisor-assisted dump (EXPERIMENTAL)"
 	depends on PPC_PSERIES && EXPERIMENTAL
@@ -380,9 +579,35 @@ config PPCBUG_NVRAM
 	bool "Enable reading PPCBUG NVRAM during boot" if PPLUS || LOPEC
 	default y if PPC_PREP
 
+=======
+config FA_DUMP
+	bool "Firmware-assisted dump"
+	depends on PPC64 && PPC_RTAS && CRASH_DUMP
+=======
+config FA_DUMP
+	bool "Firmware-assisted dump"
+	depends on PPC64 && PPC_RTAS && CRASH_DUMP && KEXEC
+>>>>>>> refs/remotes/origin/master
+	help
+	  A robust mechanism to get reliable kernel crash dump with
+	  assistance from firmware. This approach does not use kexec,
+	  instead firmware assists in booting the kdump kernel
+	  while preserving memory contents. Firmware-assisted dump
+	  is meant to be a kdump replacement offering robustness and
+	  speed not possible without system firmware assistance.
+
+	  If unsure, say "N"
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 config IRQ_ALL_CPUS
 	bool "Distribute interrupts on all CPUs by default"
 	depends on SMP && !MV64360
+=======
+config IRQ_ALL_CPUS
+	bool "Distribute interrupts on all CPUs by default"
+	depends on SMP
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option gives the kernel permission to distribute IRQs across
 	  multiple CPUs.  Saying N here will route all IRQs to the first
@@ -400,11 +625,14 @@ config NODES_SHIFT
 	default "4"
 	depends on NEED_MULTIPLE_NODES
 
+<<<<<<< HEAD
 config MAX_ACTIVE_REGIONS
 	int
 	default "256" if PPC64
 	default "32"
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ARCH_SELECT_MEMORY_MODEL
 	def_bool y
 	depends on PPC64
@@ -422,12 +650,22 @@ config ARCH_SPARSEMEM_DEFAULT
 	def_bool y
 	depends on (SMP && PPC_PSERIES) || PPC_PS3
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config ARCH_POPULATES_NODE_MAP
 	def_bool y
 
 config SYS_SUPPORTS_HUGETLBFS
        def_bool y
        depends on PPC_BOOK3S_64
+=======
+config SYS_SUPPORTS_HUGETLBFS
+	bool
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config SYS_SUPPORTS_HUGETLBFS
+	bool
+>>>>>>> refs/remotes/origin/master
 
 source "mm/Kconfig"
 
@@ -556,6 +794,17 @@ config SCHED_SMT
 	  when dealing with POWER5 cpus at a cost of slightly increased
 	  overhead in some places. If unsure say N here.
 
+<<<<<<< HEAD
+=======
+config PPC_DENORMALISATION
+	bool "PowerPC denormalisation exception handling"
+	depends on PPC_BOOK3S_64
+	default "y" if PPC_POWERNV
+	---help---
+	  Add support for handling denormalisation of single precision
+	  values.  Useful for bare metal only.  If unsure say Y here.
+
+>>>>>>> refs/remotes/origin/master
 config CMDLINE_BOOL
 	bool "Default bootloader kernel arguments"
 
@@ -609,20 +858,37 @@ endmenu
 
 config ISA_DMA_API
 	bool
+<<<<<<< HEAD
+<<<<<<< HEAD
 	default !PPC_ISERIES || PCI
+=======
+	default PCI
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default PCI
+>>>>>>> refs/remotes/origin/master
 
 menu "Bus options"
 
 config ISA
 	bool "Support for ISA-bus hardware"
+<<<<<<< HEAD
 	depends on PPC_PREP || PPC_CHRP
+=======
+	depends on PPC_CHRP
+>>>>>>> refs/remotes/origin/master
 	select PPC_I8259
 	help
 	  Find out whether you have ISA slots on your motherboard.  ISA is the
 	  name of a bus system, i.e. the way the CPU talks to the other stuff
 	  inside your box.  If you have an Apple machine, say N here; if you
+<<<<<<< HEAD
 	  have an IBM RS/6000 or pSeries machine or a PReP machine, say Y.  If
 	  you have an embedded board, consult your board documentation.
+=======
+	  have an IBM RS/6000 or pSeries machine, say Y.  If you have an
+	  embedded board, consult your board documentation.
+>>>>>>> refs/remotes/origin/master
 
 config ZONE_DMA
 	bool
@@ -653,6 +919,14 @@ config SBUS
 
 config FSL_SOC
 	bool
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select HAVE_CAN_FLEXCAN if NET && CAN
+	select PPC_CLOCK if CAN_FLEXCAN
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config FSL_PCI
  	bool
@@ -687,6 +961,19 @@ config FSL_LBC
 	  controller.  Also contains some common code used by
 	  drivers for specific local bus peripherals.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config FSL_IFC
+	bool
+        depends on FSL_SOC
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config FSL_GTM
 	bool
 	depends on PPC_83xx || QUICC_ENGINE || CPM2
@@ -707,9 +994,18 @@ config PCI
 	bool "PCI support" if PPC_PCI_CHOICE
 	default y if !40x && !CPM2 && !8xx && !PPC_83xx \
 		&& !PPC_85xx && !PPC_86xx && !GAMECUBE_COMMON
+<<<<<<< HEAD
 	default PCI_PERMEDIA if !4xx && !CPM2 && !8xx
 	default PCI_QSPAN if !4xx && !CPM2 && 8xx
 	select ARCH_SUPPORTS_MSI
+<<<<<<< HEAD
+=======
+	select GENERIC_PCI_IOMAP
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default PCI_QSPAN if !4xx && !CPM2 && 8xx
+	select GENERIC_PCI_IOMAP
+>>>>>>> refs/remotes/origin/master
 	help
 	  Find out whether your system includes a PCI bus. PCI is the name of
 	  a bus system, i.e. the way the CPU talks to the other stuff inside
@@ -736,11 +1032,13 @@ config PCI_8260
 	select PPC_INDIRECT_PCI
 	default y
 
+<<<<<<< HEAD
 config 8260_PCI9
 	bool "Enable workaround for MPC826x erratum PCI 9"
 	depends on PCI_8260 && !8272
 	default y
 
+<<<<<<< HEAD
 choice
 	prompt "IDMA channel for PCI 9 workaround"
 	depends on 8260_PCI9
@@ -759,6 +1057,10 @@ config 8260_PCI9_IDMA4
 
 endchoice
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 source "drivers/pci/pcie/Kconfig"
 
 source "drivers/pci/Kconfig"
@@ -790,6 +1092,19 @@ source "drivers/rapidio/Kconfig"
 
 endmenu
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config NONSTATIC_KERNEL
+	bool
+	default n
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 menu "Advanced setup"
 	depends on PPC32
 
@@ -839,6 +1154,8 @@ config LOWMEM_CAM_NUM
 	int "Number of CAMs to use to map low memory" if LOWMEM_CAM_NUM_BOOL
 	default 3
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config RELOCATABLE
 	bool "Build a relocatable kernel (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && ADVANCED_OPTIONS && FLATMEM && FSL_BOOKE
@@ -846,6 +1163,47 @@ config RELOCATABLE
 	  This builds a kernel image that is capable of running at the
 	  location the kernel is loaded at (some alignment restrictions may
 	  exist).
+=======
+config DYNAMIC_MEMSTART
+	bool "Enable page aligned dynamic load address for kernel (EXPERIMENTAL)"
+	depends on EXPERIMENTAL && ADVANCED_OPTIONS && FLATMEM && (FSL_BOOKE || 44x)
+=======
+config DYNAMIC_MEMSTART
+	bool "Enable page aligned dynamic load address for kernel"
+	depends on ADVANCED_OPTIONS && FLATMEM && (FSL_BOOKE || 44x)
+>>>>>>> refs/remotes/origin/master
+	select NONSTATIC_KERNEL
+	help
+	  This option enables the kernel to be loaded at any page aligned
+	  physical address. The kernel creates a mapping from KERNELBASE to 
+	  the address where the kernel is loaded. The page size here implies
+	  the TLB page size of the mapping for kernel on the particular platform.
+	  Please refer to the init code for finding the TLB page size.
+
+	  DYNAMIC_MEMSTART is an easy way of implementing pseudo-RELOCATABLE
+	  kernel image, where the only restriction is the page aligned kernel
+	  load address. When this option is enabled, the compile time physical 
+	  address CONFIG_PHYSICAL_START is ignored.
+
+	  This option is overridden by CONFIG_RELOCATABLE
+
+config RELOCATABLE
+<<<<<<< HEAD
+	bool "Build a relocatable kernel (EXPERIMENTAL)"
+	depends on EXPERIMENTAL && ADVANCED_OPTIONS && FLATMEM && 44x
+=======
+	bool "Build a relocatable kernel"
+	depends on ADVANCED_OPTIONS && FLATMEM && 44x
+>>>>>>> refs/remotes/origin/master
+	select NONSTATIC_KERNEL
+	help
+	  This builds a kernel image that is capable of running at the
+	  location the kernel is loaded at, without any alignment restrictions.
+	  This feature is a superset of DYNAMIC_MEMSTART and hence overrides it.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  One use is for the kexec on panic case where the recovery kernel
 	  must live at a different physical address than the primary
@@ -855,7 +1213,21 @@ config RELOCATABLE
 	  it has been loaded at and the compile time physical addresses
 	  CONFIG_PHYSICAL_START is ignored.  However CONFIG_PHYSICAL_START
 	  setting can still be useful to bootwrappers that need to know the
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  load location of the kernel (eg. u-boot/mkimage).
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	  load address of the kernel (eg. u-boot/mkimage).
+
+config RELOCATABLE_PPC32
+	def_bool y
+	depends on PPC32 && RELOCATABLE
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config PAGE_OFFSET_BOOL
 	bool "Set custom page offset address"
@@ -885,7 +1257,15 @@ config KERNEL_START_BOOL
 config KERNEL_START
 	hex "Virtual address of kernel base" if KERNEL_START_BOOL
 	default PAGE_OFFSET if PAGE_OFFSET_BOOL
+<<<<<<< HEAD
+<<<<<<< HEAD
 	default "0xc2000000" if CRASH_DUMP && !RELOCATABLE
+=======
+	default "0xc2000000" if CRASH_DUMP && !NONSTATIC_KERNEL
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default "0xc2000000" if CRASH_DUMP && !NONSTATIC_KERNEL
+>>>>>>> refs/remotes/origin/master
 	default "0xc0000000"
 
 config PHYSICAL_START_BOOL
@@ -898,7 +1278,15 @@ config PHYSICAL_START_BOOL
 
 config PHYSICAL_START
 	hex "Physical address where the kernel is loaded" if PHYSICAL_START_BOOL
+<<<<<<< HEAD
+<<<<<<< HEAD
 	default "0x02000000" if PPC_STD_MMU && CRASH_DUMP && !RELOCATABLE
+=======
+	default "0x02000000" if PPC_STD_MMU && CRASH_DUMP && !NONSTATIC_KERNEL
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default "0x02000000" if PPC_STD_MMU && CRASH_DUMP && !NONSTATIC_KERNEL
+>>>>>>> refs/remotes/origin/master
 	default "0x00000000"
 
 config PHYSICAL_ALIGN
@@ -921,7 +1309,11 @@ config TASK_SIZE_BOOL
 
 config TASK_SIZE
 	hex "Size of user task space" if TASK_SIZE_BOOL
+<<<<<<< HEAD
 	default "0x80000000" if PPC_PREP || PPC_8xx
+=======
+	default "0x80000000" if PPC_8xx
+>>>>>>> refs/remotes/origin/master
 	default "0xc0000000"
 
 config CONSISTENT_SIZE_BOOL
@@ -944,6 +1336,14 @@ endmenu
 if PPC64
 config RELOCATABLE
 	bool "Build a relocatable kernel"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select NONSTATIC_KERNEL
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select NONSTATIC_KERNEL
+>>>>>>> refs/remotes/origin/master
 	help
 	  This builds a kernel image that is capable of running anywhere
 	  in the RMA (real memory area) at any 16k-aligned base address.
@@ -955,6 +1355,18 @@ config RELOCATABLE
 	  must live at a different physical address than the primary
 	  kernel.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+# This value must have zeroes in the bottom 60 bits otherwise lots will break
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+# This value must have zeroes in the bottom 60 bits otherwise lots will break
+>>>>>>> refs/remotes/origin/master
+=======
+# This value must have zeroes in the bottom 60 bits otherwise lots will break
+>>>>>>> refs/remotes/origin/cm-11.0
 config PAGE_OFFSET
 	hex
 	default "0xc000000000000000"
@@ -966,6 +1378,12 @@ config PHYSICAL_START
 	default "0x00000000"
 endif
 
+<<<<<<< HEAD
+=======
+config	ARCH_RANDOM
+	def_bool n
+
+>>>>>>> refs/remotes/origin/master
 source "net/Kconfig"
 
 source "drivers/Kconfig"

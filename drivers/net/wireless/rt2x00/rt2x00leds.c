@@ -113,7 +113,11 @@ static int rt2x00leds_register_led(struct rt2x00_dev *rt2x00dev,
 
 	retval = led_classdev_register(device, &led->led_dev);
 	if (retval) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Failed to register led handler.\n");
+=======
+		rt2x00_err(rt2x00dev, "Failed to register led handler\n");
+>>>>>>> refs/remotes/origin/master
 		return retval;
 	}
 
@@ -124,6 +128,7 @@ static int rt2x00leds_register_led(struct rt2x00_dev *rt2x00dev,
 
 void rt2x00leds_register(struct rt2x00_dev *rt2x00dev)
 {
+<<<<<<< HEAD
 	char dev_name[16];
 	char name[32];
 	int retval;
@@ -135,6 +140,17 @@ void rt2x00leds_register(struct rt2x00_dev *rt2x00dev)
 
 	if (rt2x00dev->led_radio.flags & LED_INITIALIZED) {
 		snprintf(name, sizeof(name), "%s::radio", dev_name);
+=======
+	char name[36];
+	int retval;
+	unsigned long on_period;
+	unsigned long off_period;
+	const char *phy_name = wiphy_name(rt2x00dev->hw->wiphy);
+
+	if (rt2x00dev->led_radio.flags & LED_INITIALIZED) {
+		snprintf(name, sizeof(name), "%s-%s::radio",
+			 rt2x00dev->ops->name, phy_name);
+>>>>>>> refs/remotes/origin/master
 
 		retval = rt2x00leds_register_led(rt2x00dev,
 						 &rt2x00dev->led_radio,
@@ -144,7 +160,12 @@ void rt2x00leds_register(struct rt2x00_dev *rt2x00dev)
 	}
 
 	if (rt2x00dev->led_assoc.flags & LED_INITIALIZED) {
+<<<<<<< HEAD
 		snprintf(name, sizeof(name), "%s::assoc", dev_name);
+=======
+		snprintf(name, sizeof(name), "%s-%s::assoc",
+			 rt2x00dev->ops->name, phy_name);
+>>>>>>> refs/remotes/origin/master
 
 		retval = rt2x00leds_register_led(rt2x00dev,
 						 &rt2x00dev->led_assoc,
@@ -154,7 +175,12 @@ void rt2x00leds_register(struct rt2x00_dev *rt2x00dev)
 	}
 
 	if (rt2x00dev->led_qual.flags & LED_INITIALIZED) {
+<<<<<<< HEAD
 		snprintf(name, sizeof(name), "%s::quality", dev_name);
+=======
+		snprintf(name, sizeof(name), "%s-%s::quality",
+			 rt2x00dev->ops->name, phy_name);
+>>>>>>> refs/remotes/origin/master
 
 		retval = rt2x00leds_register_led(rt2x00dev,
 						 &rt2x00dev->led_qual,

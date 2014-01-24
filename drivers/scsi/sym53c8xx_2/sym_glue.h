@@ -174,7 +174,11 @@ struct sym_slcb {
  */
 struct sym_shcb {
 	/*
+<<<<<<< HEAD
 	 *  Chip and controller indentification.
+=======
+	 *  Chip and controller identification.
+>>>>>>> refs/remotes/origin/master
 	 */
 	int		unit;
 	char		inst_name[16];

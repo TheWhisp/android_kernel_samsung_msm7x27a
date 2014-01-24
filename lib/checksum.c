@@ -32,7 +32,15 @@
 /* Revised by Kenneth Albanowski for m68knommu. Basic problem: unaligned access
  kills, so most of the assembly has to go. */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/checksum.h>
 
 #include <asm/byteorder.h>
@@ -49,7 +57,15 @@ static inline unsigned short from32to16(unsigned int x)
 
 static unsigned int do_csum(const unsigned char *buff, int len)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int odd, count;
+=======
+	int odd;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int odd;
+>>>>>>> refs/remotes/origin/master
 	unsigned int result = 0;
 
 	if (len <= 0)
@@ -64,6 +80,8 @@ static unsigned int do_csum(const unsigned char *buff, int len)
 		len--;
 		buff++;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	count = len >> 1;		/* nr of 16-bit words.. */
 	if (count) {
 		if (2 & (unsigned long) buff) {
@@ -78,11 +96,37 @@ static unsigned int do_csum(const unsigned char *buff, int len)
 			do {
 				unsigned int w = *(unsigned int *) buff;
 				count--;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (len >= 2) {
+		if (2 & (unsigned long) buff) {
+			result += *(unsigned short *) buff;
+			len -= 2;
+			buff += 2;
+		}
+		if (len >= 4) {
+			const unsigned char *end = buff + ((unsigned)len & ~3);
+			unsigned int carry = 0;
+			do {
+				unsigned int w = *(unsigned int *) buff;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				buff += 4;
 				result += carry;
 				result += w;
 				carry = (w > result);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			} while (count);
+=======
+			} while (buff < end);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} while (buff < end);
+>>>>>>> refs/remotes/origin/master
 			result += carry;
 			result = (result & 0xffff) + (result >> 16);
 		}
@@ -105,6 +149,10 @@ out:
 }
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef ip_fast_csum
+>>>>>>> refs/remotes/origin/master
 /*
  *	This is a version of ip_compute_csum() optimized for IP headers,
  *	which always checksum on 4 octet boundaries.
@@ -114,6 +162,10 @@ __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
 	return (__force __sum16)~do_csum(iph, ihl*4);
 }
 EXPORT_SYMBOL(ip_fast_csum);
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * computes the checksum of a memory block at buff, length len,

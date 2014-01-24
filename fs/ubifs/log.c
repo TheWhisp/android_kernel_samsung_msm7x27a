@@ -29,11 +29,15 @@
 
 #include "ubifs.h"
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
 static int dbg_check_bud_bytes(struct ubifs_info *c);
 #else
 #define dbg_check_bud_bytes(c) 0
 #endif
+=======
+static int dbg_check_bud_bytes(struct ubifs_info *c);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ubifs_search_bud - search bud LEB.
@@ -262,7 +266,15 @@ int ubifs_add_bud_to_log(struct ubifs_info *c, int jhead, int lnum, int offs)
 		 * an unclean reboot, because the target LEB might have been
 		 * unmapped, but not yet physically erased.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_leb_map(c->ubi, bud->lnum, UBI_SHORTTERM);
+=======
+		err = ubifs_leb_map(c, bud->lnum, UBI_SHORTTERM);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_map(c, bud->lnum);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out_unlock;
 	}
@@ -270,7 +282,11 @@ int ubifs_add_bud_to_log(struct ubifs_info *c, int jhead, int lnum, int offs)
 	dbg_log("write ref LEB %d:%d",
 		c->lhead_lnum, c->lhead_offs);
 	err = ubifs_write_node(c, ref, UBIFS_REF_NODE_SZ, c->lhead_lnum,
+<<<<<<< HEAD
 			       c->lhead_offs, UBI_SHORTTERM);
+=======
+			       c->lhead_offs);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out_unlock;
 
@@ -283,8 +299,14 @@ int ubifs_add_bud_to_log(struct ubifs_info *c, int jhead, int lnum, int offs)
 	return 0;
 
 out_unlock:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (err != -EAGAIN)
 		ubifs_ro_mode(c, err);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&c->log_mutex);
 	kfree(ref);
 	kfree(bud);
@@ -321,6 +343,7 @@ static void remove_buds(struct ubifs_info *c)
 			 * heads (non-closed buds).
 			 */
 			c->cmt_bud_bytes += wbuf->offs - bud->start;
+<<<<<<< HEAD
 			dbg_log("preserve %d:%d, jhead %s, bud bytes %d, "
 				"cmt_bud_bytes %lld", bud->lnum, bud->start,
 				dbg_jhead(bud->jhead), wbuf->offs - bud->start,
@@ -332,6 +355,17 @@ static void remove_buds(struct ubifs_info *c)
 				"cmt_bud_bytes %lld", bud->lnum, bud->start,
 				dbg_jhead(bud->jhead), c->leb_size - bud->start,
 				c->cmt_bud_bytes);
+=======
+			dbg_log("preserve %d:%d, jhead %s, bud bytes %d, cmt_bud_bytes %lld",
+				bud->lnum, bud->start, dbg_jhead(bud->jhead),
+				wbuf->offs - bud->start, c->cmt_bud_bytes);
+			bud->start = wbuf->offs;
+		} else {
+			c->cmt_bud_bytes += c->leb_size - bud->start;
+			dbg_log("remove %d:%d, jhead %s, bud bytes %d, cmt_bud_bytes %lld",
+				bud->lnum, bud->start, dbg_jhead(bud->jhead),
+				c->leb_size - bud->start, c->cmt_bud_bytes);
+>>>>>>> refs/remotes/origin/master
 			rb_erase(p1, &c->buds);
 			/*
 			 * If the commit does not finish, the recovery will need
@@ -424,7 +458,11 @@ int ubifs_log_start_commit(struct ubifs_info *c, int *ltail_lnum)
 
 	len = ALIGN(len, c->min_io_size);
 	dbg_log("writing commit start at LEB %d:0, len %d", c->lhead_lnum, len);
+<<<<<<< HEAD
 	err = ubifs_leb_write(c, c->lhead_lnum, cs, 0, len, UBI_SHORTTERM);
+=======
+	err = ubifs_leb_write(c, c->lhead_lnum, cs, 0, len);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 
@@ -625,7 +663,11 @@ static int add_node(struct ubifs_info *c, void *buf, int *lnum, int *offs,
 		int sz = ALIGN(*offs, c->min_io_size), err;
 
 		ubifs_pad(c, buf + *offs, sz - *offs);
+<<<<<<< HEAD
 		err = ubifs_leb_change(c, *lnum, buf, sz, UBI_SHORTTERM);
+=======
+		err = ubifs_leb_change(c, *lnum, buf, sz);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 		*lnum = ubifs_next_log_lnum(c, *lnum);
@@ -704,7 +746,11 @@ int ubifs_consolidate_log(struct ubifs_info *c)
 		int sz = ALIGN(offs, c->min_io_size);
 
 		ubifs_pad(c, buf + offs, sz - offs);
+<<<<<<< HEAD
 		err = ubifs_leb_change(c, write_lnum, buf, sz, UBI_SHORTTERM);
+=======
+		err = ubifs_leb_change(c, write_lnum, buf, sz);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out_free;
 		offs = ALIGN(offs, c->min_io_size);
@@ -736,8 +782,11 @@ out_free:
 	return err;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * dbg_check_bud_bytes - make sure bud bytes calculation are all right.
  * @c: UBIFS file-system description object
@@ -752,7 +801,15 @@ static int dbg_check_bud_bytes(struct ubifs_info *c)
 	struct ubifs_bud *bud;
 	long long bud_bytes = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_GEN))
+=======
+	if (!dbg_is_chk_gen(c))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_gen(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	spin_lock(&c->buds_lock);
@@ -769,5 +826,8 @@ static int dbg_check_bud_bytes(struct ubifs_info *c)
 
 	return err;
 }
+<<<<<<< HEAD
 
 #endif /* CONFIG_UBIFS_FS_DEBUG */
+=======
+>>>>>>> refs/remotes/origin/master

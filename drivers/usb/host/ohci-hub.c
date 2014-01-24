@@ -111,6 +111,14 @@ __acquires(ohci->lock)
 	if (!autostop) {
 		ohci->next_statechange = jiffies + msecs_to_jiffies (5);
 		ohci->autostop = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		ohci->rh_state = OHCI_RH_SUSPENDED;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ohci->rh_state = OHCI_RH_SUSPENDED;
+>>>>>>> refs/remotes/origin/master
 	}
 
 done:
@@ -140,7 +148,15 @@ __acquires(ohci->lock)
 
 	if (ohci->hc_control & (OHCI_CTRL_IR | OHCI_SCHED_ENABLES)) {
 		/* this can happen after resuming a swsusp snapshot */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (hcd->state == HC_STATE_RESUMING) {
+=======
+		if (ohci->rh_state != OHCI_RH_RUNNING) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ohci->rh_state != OHCI_RH_RUNNING) {
+>>>>>>> refs/remotes/origin/master
 			ohci_dbg (ohci, "BIOS/SMM active, control %03x\n",
 					ohci->hc_control);
 			status = -EBUSY;
@@ -175,7 +191,10 @@ __acquires(ohci->lock)
 	if (status == -EBUSY) {
 		if (!autostopped) {
 			spin_unlock_irq (&ohci->lock);
+<<<<<<< HEAD
 			(void) ohci_init (ohci);
+=======
+>>>>>>> refs/remotes/origin/master
 			status = ohci_restart (ohci);
 
 			usb_root_hub_lost_power(hcd->self.root_hub);
@@ -212,10 +231,18 @@ __acquires(ohci->lock)
 	/* Sometimes PCI D3 suspend trashes frame timings ... */
 	periodic_reinit (ohci);
 
+<<<<<<< HEAD
 	/* the following code is executed with ohci->lock held and
 	 * irqs disabled if and only if autostopped is true
 	 */
 
+=======
+	/*
+	 * The following code is executed with ohci->lock held and
+	 * irqs disabled if and only if autostopped is true.  This
+	 * will cause sparse to warn about a "context imbalance".
+	 */
+>>>>>>> refs/remotes/origin/master
 skip_resume:
 	/* interrupts might have been disabled */
 	ohci_writel (ohci, OHCI_INTR_INIT, &ohci->regs->intrenable);
@@ -274,6 +301,14 @@ skip_resume:
 		(void) ohci_readl (ohci, &ohci->regs->control);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ohci->rh_state = OHCI_RH_RUNNING;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ohci->rh_state = OHCI_RH_RUNNING;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -314,6 +349,7 @@ static int ohci_bus_resume (struct usb_hcd *hcd)
 	return rc;
 }
 
+<<<<<<< HEAD
 /* Carry out the final steps of resuming the controller device */
 static void ohci_finish_controller_resume(struct usb_hcd *hcd)
 {
@@ -336,11 +372,16 @@ static void ohci_finish_controller_resume(struct usb_hcd *hcd)
 	/* If needed, reinitialize and suspend the root hub */
 	if (need_reinit) {
 		spin_lock_irq(&ohci->lock);
+<<<<<<< HEAD
 		hcd->state = HC_STATE_RESUMING;
 		ohci_rh_resume(ohci);
 		hcd->state = HC_STATE_QUIESCING;
 		ohci_rh_suspend(ohci, 0);
 		hcd->state = HC_STATE_SUSPENDED;
+=======
+		ohci_rh_resume(ohci);
+		ohci_rh_suspend(ohci, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock_irq(&ohci->lock);
 	}
 
@@ -359,6 +400,8 @@ static void ohci_finish_controller_resume(struct usb_hcd *hcd)
 	usb_hcd_resume_root_hub(hcd);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Carry out polling-, autostop-, and autoresume-related state changes */
 static int ohci_root_hub_state_changes(struct ohci_hcd *ohci, int changed,
 		int any_connected, int rhsc_status)
@@ -575,7 +618,11 @@ ohci_hub_descriptor (
 	    temp |= 0x0010;
 	else if (rh & RH_A_OCPM)	/* per-port overcurrent reporting? */
 	    temp |= 0x0008;
+<<<<<<< HEAD
 	desc->wHubCharacteristics = (__force __u16)cpu_to_hc16(ohci, temp);
+=======
+	desc->wHubCharacteristics = cpu_to_le16(temp);
+>>>>>>> refs/remotes/origin/master
 
 	/* ports removable, and usb 1.0 legacy PortPwrCtrlMask */
 	rh = roothub_b (ohci);
@@ -623,6 +670,7 @@ static int ohci_start_port_reset (struct usb_hcd *hcd, unsigned port)
 
 /* See usb 7.1.7.5:  root hubs must issue at least 50 msec reset signaling,
  * not necessarily continuous ... to guard against resume signaling.
+<<<<<<< HEAD
  * The short timeout is safe for non-root hubs, and is backward-compatible
  * with earlier Linux hosts.
  */
@@ -631,6 +679,10 @@ static int ohci_start_port_reset (struct usb_hcd *hcd, unsigned port)
 #else
 #define	PORT_RESET_MSEC		10
 #endif
+=======
+ */
+#define	PORT_RESET_MSEC		50
+>>>>>>> refs/remotes/origin/master
 
 /* this timer value might be vendor-specific ... */
 #define	PORT_RESET_HW_MSEC	10
@@ -774,10 +826,15 @@ static int ohci_hub_control (
 		temp = roothub_portstatus (ohci, wIndex);
 		put_unaligned_le32(temp, buf);
 
+<<<<<<< HEAD
 #ifndef	OHCI_VERBOSE_DEBUG
 	if (*(u16*)(buf+2))	/* only if wPortChange is interesting */
 #endif
 		dbg_port (ohci, "GetStatus", wIndex, temp);
+=======
+		if (*(u16*)(buf+2))	/* only if wPortChange is interesting */
+			dbg_port(ohci, "GetStatus", wIndex, temp);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SetHubFeature:
 		switch (wValue) {

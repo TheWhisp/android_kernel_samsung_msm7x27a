@@ -11,6 +11,8 @@
 
 #include "mv78xx0.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define pcibios_assign_all_busses()	1
 
 #define PCIBIOS_MIN_IO			0x00001000
@@ -18,4 +20,8 @@
 #define PCIMEM_BASE			MV78XX0_PCIE_MEM_PHYS_BASE /* mem base for VGA */
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

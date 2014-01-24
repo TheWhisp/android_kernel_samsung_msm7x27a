@@ -10,6 +10,14 @@
 #include <asm/paravirt_types.h>
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/cpumask.h>
 
@@ -127,21 +135,27 @@ static inline u64 paravirt_read_msr(unsigned msr, int *err)
 	return PVOP_CALL2(u64, pv_cpu_ops.read_msr, msr, err);
 }
 
+<<<<<<< HEAD
 static inline int paravirt_rdmsr_regs(u32 *regs)
 {
 	return PVOP_CALL1(int, pv_cpu_ops.rdmsr_regs, regs);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int paravirt_write_msr(unsigned msr, unsigned low, unsigned high)
 {
 	return PVOP_CALL3(int, pv_cpu_ops.write_msr, msr, low, high);
 }
 
+<<<<<<< HEAD
 static inline int paravirt_wrmsr_regs(u32 *regs)
 {
 	return PVOP_CALL1(int, pv_cpu_ops.wrmsr_regs, regs);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* These should all do BUG_ON(_err), but our headers are too tangled. */
 #define rdmsr(msr, val1, val2)			\
 do {						\
@@ -175,9 +189,12 @@ do {						\
 	_err;					\
 })
 
+<<<<<<< HEAD
 #define rdmsr_safe_regs(regs)	paravirt_rdmsr_regs(regs)
 #define wrmsr_safe_regs(regs)	paravirt_wrmsr_regs(regs)
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int rdmsrl_safe(unsigned msr, unsigned long long *p)
 {
 	int err;
@@ -185,6 +202,7 @@ static inline int rdmsrl_safe(unsigned msr, unsigned long long *p)
 	*p = paravirt_read_msr(msr, &err);
 	return err;
 }
+<<<<<<< HEAD
 static inline int rdmsrl_amd_safe(unsigned msr, unsigned long long *p)
 {
 	u32 gprs[8] = { 0 };
@@ -211,6 +229,8 @@ static inline int wrmsrl_amd_safe(unsigned msr, unsigned long long val)
 
 	return paravirt_wrmsr_regs(gprs);
 }
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline u64 paravirt_read_tsc(void)
 {
@@ -230,6 +250,24 @@ static inline unsigned long long paravirt_sched_clock(void)
 	return PVOP_CALL0(unsigned long long, pv_time_ops.sched_clock);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct static_key;
+extern struct static_key paravirt_steal_enabled;
+extern struct static_key paravirt_steal_rq_enabled;
+
+static inline u64 paravirt_steal_clock(int cpu)
+{
+	return PVOP_CALL1(u64, pv_time_ops.steal_clock, cpu);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long long paravirt_read_pmc(int counter)
 {
 	return PVOP_CALL1(u64, pv_cpu_ops.read_pmc, counter);
@@ -242,6 +280,11 @@ do {						\
 	high = _l >> 32;			\
 } while (0)
 
+<<<<<<< HEAD
+=======
+#define rdpmcl(counter, val) ((val) = paravirt_read_pmc(counter))
+
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long long paravirt_rdtscp(unsigned int *aux)
 {
 	return PVOP_CALL1(u64, pv_cpu_ops.read_tscp, aux);
@@ -289,10 +332,13 @@ static inline void set_ldt(const void *addr, unsigned entries)
 {
 	PVOP_VCALL2(pv_cpu_ops.set_ldt, addr, entries);
 }
+<<<<<<< HEAD
 static inline void store_gdt(struct desc_ptr *dtr)
 {
 	PVOP_VCALL1(pv_cpu_ops.store_gdt, dtr);
 }
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void store_idt(struct desc_ptr *dtr)
 {
 	PVOP_VCALL1(pv_cpu_ops.store_idt, dtr);
@@ -387,9 +433,16 @@ static inline void __flush_tlb_single(unsigned long addr)
 
 static inline void flush_tlb_others(const struct cpumask *cpumask,
 				    struct mm_struct *mm,
+<<<<<<< HEAD
 				    unsigned long va)
 {
 	PVOP_VCALL3(pv_mmu_ops.flush_tlb_others, cpumask, mm, va);
+=======
+				    unsigned long start,
+				    unsigned long end)
+{
+	PVOP_VCALL4(pv_mmu_ops.flush_tlb_others, cpumask, mm, start, end);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int paravirt_pgd_alloc(struct mm_struct *mm)
@@ -554,7 +607,10 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
 		PVOP_VCALL4(pv_mmu_ops.set_pte_at, mm, addr, ptep, pte.pte);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
 			      pmd_t *pmdp, pmd_t pmd)
 {
@@ -565,7 +621,10 @@ static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
 		PVOP_VCALL4(pv_mmu_ops.set_pmd_at, mm, addr, pmdp,
 			    native_pmd_val(pmd));
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void set_pmd(pmd_t *pmdp, pmd_t pmd)
 {
@@ -744,6 +803,7 @@ static inline void __set_fixmap(unsigned /* enum fixed_addresses */ idx,
 
 #if defined(CONFIG_SMP) && defined(CONFIG_PARAVIRT_SPINLOCKS)
 
+<<<<<<< HEAD
 static inline int arch_spin_is_locked(struct arch_spinlock *lock)
 {
 	return PVOP_CALL1(int, pv_lock_ops.spin_is_locked, lock);
@@ -774,6 +834,18 @@ static __always_inline int arch_spin_trylock(struct arch_spinlock *lock)
 static __always_inline void arch_spin_unlock(struct arch_spinlock *lock)
 {
 	PVOP_VCALL1(pv_lock_ops.spin_unlock, lock);
+=======
+static __always_inline void __ticket_lock_spinning(struct arch_spinlock *lock,
+							__ticket_t ticket)
+{
+	PVOP_VCALLEE2(pv_lock_ops.lock_spinning, lock, ticket);
+}
+
+static __always_inline void __ticket_unlock_kick(struct arch_spinlock *lock,
+							__ticket_t ticket)
+{
+	PVOP_VCALL2(pv_lock_ops.unlock_kick, lock, ticket);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif
@@ -1016,10 +1088,15 @@ extern void default_banner(void);
 		  call PARA_INDIRECT(pv_cpu_ops+PV_CPU_swapgs)		\
 		 )
 
+<<<<<<< HEAD
 #define GET_CR2_INTO_RCX				\
 	call PARA_INDIRECT(pv_mmu_ops+PV_MMU_read_cr2);	\
 	movq %rax, %rcx;				\
 	xorq %rax, %rax;
+=======
+#define GET_CR2_INTO_RAX				\
+	call PARA_INDIRECT(pv_mmu_ops+PV_MMU_read_cr2)
+>>>>>>> refs/remotes/origin/master
 
 #define PARAVIRT_ADJUST_EXCEPTION_FRAME					\
 	PARA_SITE(PARA_PATCH(pv_irq_ops, PV_IRQ_adjust_exception_frame), \

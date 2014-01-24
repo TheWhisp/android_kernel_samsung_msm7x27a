@@ -12,7 +12,13 @@
 
 #include <asm/ecard.h>
 #include <asm/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "../scsi.h"
 #include <scsi/scsi_host.h>
@@ -31,7 +37,10 @@
 #define NCR5380_write(reg, value)	cumanascsi_write(_instance, reg, value)
 #define NCR5380_intr			cumanascsi_intr
 #define NCR5380_queue_command		cumanascsi_queue_command
+<<<<<<< HEAD
 #define NCR5380_proc_info		cumanascsi_proc_info
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define NCR5380_implementation_fields	\
 	unsigned ctrl;			\
@@ -226,8 +235,13 @@ static struct scsi_host_template cumanascsi_template = {
 	.proc_name		= "CumanaSCSI-1",
 };
 
+<<<<<<< HEAD
 static int __devinit
 cumanascsi1_probe(struct expansion_card *ec, const struct ecard_id *id)
+=======
+static int cumanascsi1_probe(struct expansion_card *ec,
+			     const struct ecard_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host;
 	int ret;
@@ -299,7 +313,11 @@ cumanascsi1_probe(struct expansion_card *ec, const struct ecard_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit cumanascsi1_remove(struct expansion_card *ec)
+=======
+static void cumanascsi1_remove(struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = ecard_get_drvdata(ec);
 
@@ -321,7 +339,11 @@ static const struct ecard_id cumanascsi1_cids[] = {
 
 static struct ecard_driver cumanascsi1_driver = {
 	.probe		= cumanascsi1_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cumanascsi1_remove),
+=======
+	.remove		= cumanascsi1_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= cumanascsi1_cids,
 	.drv = {
 		.name		= "cumanascsi1",

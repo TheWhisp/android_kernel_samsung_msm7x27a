@@ -37,6 +37,16 @@
  *	Known problem: this driver wasn't tested on multiprocessor machine.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/ptrace.h>
@@ -146,6 +156,7 @@ static int  enslave( struct net_device *, struct net_device * );
 static int  emancipate( struct net_device * );
 #endif
 
+<<<<<<< HEAD
 #ifdef __i386__
 #define ASM_CRC 1
 #endif
@@ -153,7 +164,17 @@ static int  emancipate( struct net_device * );
 static const char  version[] =
 	"Granch SBNI12 driver ver 5.0.1  Jun 22 2001  Denis I.Timofeev.\n";
 
+<<<<<<< HEAD
 static int  skip_pci_probe	__initdata = 0;
+=======
+static bool skip_pci_probe	__initdata = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char  version[] =
+	"Granch SBNI12 driver ver 5.0.1  Jun 22 2001  Denis I.Timofeev.\n";
+
+static bool skip_pci_probe	__initdata = false;
+>>>>>>> refs/remotes/origin/master
 static int  scandone	__initdata = 0;
 static int  num		__initdata = 0;
 
@@ -174,7 +195,11 @@ static u32	mac[  SBNI_MAX_NUM_CARDS ] __initdata;
 
 #ifndef MODULE
 typedef u32  iarr[];
+<<<<<<< HEAD
 static iarr __initdata *dest[5] = { &io, &irq, &baud, &rxl, &mac };
+=======
+static iarr *dest[5] __initdata = { &io, &irq, &baud, &rxl, &mac };
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* A zero-terminated list of I/O addresses to be probed on ISA bus */
@@ -200,8 +225,18 @@ sbni_isa_probe( struct net_device  *dev )
 
 		return  0;
 	else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk( KERN_ERR "sbni: base address 0x%lx is busy, or adapter "
 			"is malfunctional!\n", dev->base_addr );
+=======
+		pr_err("base address 0x%lx is busy, or adapter is malfunctional!\n",
+		       dev->base_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("base address 0x%lx is busy, or adapter is malfunctional!\n",
+		       dev->base_addr);
+>>>>>>> refs/remotes/origin/master
 		return  -ENODEV;
 	}
 }
@@ -210,7 +245,15 @@ static const struct net_device_ops sbni_netdev_ops = {
 	.ndo_open		= sbni_open,
 	.ndo_stop		= sbni_close,
 	.ndo_start_xmit		= sbni_start_xmit,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= set_multicast_list,
+=======
+	.ndo_set_rx_mode	= set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_do_ioctl		= sbni_ioctl,
 	.ndo_change_mtu		= eth_change_mtu,
 	.ndo_set_mac_address 	= eth_mac_addr,
@@ -226,7 +269,13 @@ static void __init sbni_devsetup(struct net_device *dev)
 int __init sbni_probe(int unit)
 {
 	struct net_device *dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static unsigned  version_printed __initdata = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	dev = alloc_netdev(sizeof(struct net_local), "sbni", sbni_devsetup);
@@ -250,8 +299,16 @@ int __init sbni_probe(int unit)
 		free_netdev(dev);
 		return err;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if( version_printed++ == 0 )
 		printk( KERN_INFO "%s", version );
+=======
+	pr_info_once("%s", version);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info_once("%s", version);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -303,7 +360,13 @@ sbni_pci_probe( struct net_device  *dev )
 	       != NULL ) {
 		int  pci_irq_line;
 		unsigned long  pci_ioaddr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		u16  subsys;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if( pdev->vendor != SBNI_PCI_VENDOR &&
 		    pdev->device != SBNI_PCI_DEVICE )
@@ -314,9 +377,17 @@ sbni_pci_probe( struct net_device  *dev )
 
 		/* Avoid already found cards from previous calls */
 		if( !request_region( pci_ioaddr, SBNI_IO_EXTENT, dev->name ) ) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pci_read_config_word( pdev, PCI_SUBSYSTEM_ID, &subsys );
 
 			if (subsys != 2)
+=======
+			if (pdev->subsystem_device != 2)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (pdev->subsystem_device != 2)
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 			/* Dual adapter is present */
@@ -326,9 +397,21 @@ sbni_pci_probe( struct net_device  *dev )
 		}
 
 		if (pci_irq_line <= 0 || pci_irq_line >= nr_irqs)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk( KERN_WARNING
 	"  WARNING: The PCI BIOS assigned this PCI card to IRQ %d, which is unlikely to work!.\n"
 	" You should use the PCI BIOS setup to assign a valid IRQ line.\n",
+=======
+			pr_warn(
+"WARNING: The PCI BIOS assigned this PCI card to IRQ %d, which is unlikely to work!.\n"
+"You should use the PCI BIOS setup to assign a valid IRQ line.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn(
+"WARNING: The PCI BIOS assigned this PCI card to IRQ %d, which is unlikely to work!.\n"
+"You should use the PCI BIOS setup to assign a valid IRQ line.\n",
+>>>>>>> refs/remotes/origin/master
 				pci_irq_line );
 
 		/* avoiding re-enable dual adapters */
@@ -372,8 +455,16 @@ sbni_probe1( struct net_device  *dev,  unsigned long  ioaddr,  int  irq )
 		outb( 0, ioaddr + CSR0 );
 
 		if( !irq ) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk( KERN_ERR "%s: can't detect device irq!\n",
 				dev->name );
+=======
+			pr_err("%s: can't detect device irq!\n", dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: can't detect device irq!\n", dev->name);
+>>>>>>> refs/remotes/origin/master
 			release_region( ioaddr, SBNI_IO_EXTENT );
 			return NULL;
 		}
@@ -386,7 +477,15 @@ sbni_probe1( struct net_device  *dev,  unsigned long  ioaddr,  int  irq )
 	/* Fill in sbni-specific dev fields. */
 	nl = netdev_priv(dev);
 	if( !nl ) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk( KERN_ERR "%s: unable to get memory!\n", dev->name );
+=======
+		pr_err("%s: unable to get memory!\n", dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: unable to get memory!\n", dev->name);
+>>>>>>> refs/remotes/origin/master
 		release_region( ioaddr, SBNI_IO_EXTENT );
 		return NULL;
 	}
@@ -415,6 +514,8 @@ sbni_probe1( struct net_device  *dev,  unsigned long  ioaddr,  int  irq )
 	if( inb( ioaddr + CSR0 ) & 0x01 )
 		nl->state |= FL_SLOW_MODE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk( KERN_NOTICE "%s: ioaddr %#lx, irq %d, "
 		"MAC: 00:ff:01:%02x:%02x:%02x\n", 
 		dev->name, dev->base_addr, dev->irq,
@@ -430,6 +531,28 @@ sbni_probe1( struct net_device  *dev,  unsigned long  ioaddr,  int  irq )
 		printk( "0x%x (fixed)\n", nl->cur_rxl_index ); 
 	else
 		printk( "(auto)\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pr_notice("%s: ioaddr %#lx, irq %d, MAC: 00:ff:01:%02x:%02x:%02x\n",
+		  dev->name, dev->base_addr, dev->irq,
+		  ((u8 *)dev->dev_addr)[3],
+		  ((u8 *)dev->dev_addr)[4],
+		  ((u8 *)dev->dev_addr)[5]);
+
+	pr_notice("%s: speed %d",
+		  dev->name,
+		  ((nl->state & FL_SLOW_MODE) ? 500000 : 2000000)
+		  / (1 << nl->csr1.rate));
+
+	if( nl->delta_rxl == 0 )
+		pr_cont(", receive level 0x%x (fixed)\n", nl->cur_rxl_index);
+	else
+		pr_cont(", receive level (auto)\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SBNI_MULTILINE
 	nl->master = dev;
@@ -568,7 +691,15 @@ handle_channel( struct net_device  *dev )
 		 */
 		csr0 = inb( ioaddr + CSR0 );
 		if( !(csr0 & TR_RDY)  ||  (csr0 & RC_RDY) )
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk( KERN_ERR "%s: internal error!\n", dev->name );
+=======
+			netdev_err(dev, "internal error!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_err(dev, "internal error!\n");
+>>>>>>> refs/remotes/origin/master
 
 		/* if state & FL_NEED_RESEND != 0 then tx_frameno != 0 */
 		if( req_ans  ||  nl->tx_frameno != 0 )
@@ -851,7 +982,15 @@ prepare_to_send( struct sk_buff  *skb,  struct net_device  *dev )
 
 	/* nl->tx_buf_p == NULL here! */
 	if( nl->tx_buf_p )
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk( KERN_ERR "%s: memory leak!\n", dev->name );
+=======
+		netdev_err(dev, "memory leak!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "memory leak!\n");
+>>>>>>> refs/remotes/origin/master
 
 	nl->outpos = 0;
 	nl->state &= ~(FL_WAIT_ACK | FL_NEED_RESEND);
@@ -1179,16 +1318,34 @@ sbni_open( struct net_device  *dev )
 
 				((struct net_local *) (netdev_priv(*p)))
 					->second = dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				printk( KERN_NOTICE "%s: using shared irq "
 					"with %s\n", dev->name, (*p)->name );
+=======
+				netdev_notice(dev, "using shared irq with %s\n",
+					      (*p)->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_notice(dev, "using shared irq with %s\n",
+					      (*p)->name);
+>>>>>>> refs/remotes/origin/master
 				nl->state |= FL_SECONDARY;
 				goto  handler_attached;
 			}
 	}
 
 	if( request_irq(dev->irq, sbni_interrupt, IRQF_SHARED, dev->name, dev) ) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk( KERN_ERR "%s: unable to get IRQ %d.\n",
 			dev->name, dev->irq );
+=======
+		netdev_err(dev, "unable to get IRQ %d\n", dev->irq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "unable to get IRQ %d\n", dev->irq);
+>>>>>>> refs/remotes/origin/master
 		return  -EAGAIN;
 	}
 
@@ -1220,8 +1377,18 @@ sbni_close( struct net_device  *dev )
 	struct net_local  *nl = netdev_priv(dev);
 
 	if( nl->second  &&  nl->second->flags & IFF_UP ) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk( KERN_NOTICE "Secondary channel (%s) is active!\n",
 			nl->second->name );
+=======
+		netdev_notice(dev, "Secondary channel (%s) is active!\n",
+			      nl->second->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_notice(dev, "Secondary channel (%s) is active!\n",
+			      nl->second->name);
+>>>>>>> refs/remotes/origin/master
 		return  -EBUSY;
 	}
 
@@ -1363,8 +1530,18 @@ sbni_ioctl( struct net_device  *dev,  struct ifreq  *ifr,  int  cmd )
 			return -EFAULT;
 		slave_dev = dev_get_by_name(&init_net, slave_name );
 		if( !slave_dev  ||  !(slave_dev->flags & IFF_UP) ) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk( KERN_ERR "%s: trying to enslave non-active "
 				"device %s\n", dev->name, slave_name );
+=======
+			netdev_err(dev, "trying to enslave non-active device %s\n",
+				   slave_name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_err(dev, "trying to enslave non-active device %s\n",
+				   slave_name);
+>>>>>>> refs/remotes/origin/master
 			return  -EPERM;
 		}
 
@@ -1417,8 +1594,16 @@ enslave( struct net_device  *dev,  struct net_device  *slave_dev )
 
 	spin_unlock( &snl->lock );
 	spin_unlock( &nl->lock );
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk( KERN_NOTICE "%s: slave device (%s) attached.\n",
 		dev->name, slave_dev->name );
+=======
+	netdev_notice(dev, "slave device (%s) attached\n", slave_dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_notice(dev, "slave device (%s) attached\n", slave_dev->name);
+>>>>>>> refs/remotes/origin/master
 	return  0;
 }
 
@@ -1547,7 +1732,15 @@ sbni_setup( char  *p )
 				break;
 	}
 bad_param:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk( KERN_ERR "Error in sbni kernel parameter!\n" );
+=======
+	pr_err("Error in sbni kernel parameter!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("Error in sbni kernel parameter!\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1557,6 +1750,7 @@ __setup( "sbni=", sbni_setup );
 
 /* -------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 #ifdef ASM_CRC
 
 static u32
@@ -1639,6 +1833,8 @@ calc_crc32( u32  crc,  u8  *p,  u32  len )
 
 #else	/* ASM_CRC */
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u32
 calc_crc32( u32  crc,  u8  *p,  u32  len )
 {
@@ -1648,9 +1844,12 @@ calc_crc32( u32  crc,  u8  *p,  u32  len )
 	return  crc;
 }
 
+<<<<<<< HEAD
 #endif	/* ASM_CRC */
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u32  crc32tab[] __attribute__ ((aligned(8))) = {
 	0xD202EF8D,  0xA505DF1B,  0x3C0C8EA1,  0x4B0BBE37,
 	0xD56F2B94,  0xA2681B02,  0x3B614AB8,  0x4C667A2E,

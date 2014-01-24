@@ -26,8 +26,13 @@
  *
  */
 
+<<<<<<< HEAD
 #ifndef	__ASM_RC32434_ETH_H
 #define	__ASM_RC32434_ETH_H
+=======
+#ifndef __ASM_RC32434_ETH_H
+#define __ASM_RC32434_ETH_H
+>>>>>>> refs/remotes/origin/master
 
 
 #define ETH0_BASE_ADDR		0x18060000
@@ -217,4 +222,8 @@ struct eth_regs {
 #define ETH_TX_LE		(1 << 16)
 #define ETH_TX_CC		0x001E0000
 
+<<<<<<< HEAD
 #endif  /* __ASM_RC32434_ETH_H */
+=======
+#endif	/* __ASM_RC32434_ETH_H */
+>>>>>>> refs/remotes/origin/master

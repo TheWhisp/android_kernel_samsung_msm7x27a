@@ -67,7 +67,11 @@ enum {
 	TCF_META_ID_SK_FORWARD_ALLOCS,
 	TCF_META_ID_SK_SNDBUF,
  	TCF_META_ID_SK_ALLOCS,
+<<<<<<< HEAD
  	TCF_META_ID_SK_ROUTE_CAPS,
+=======
+	__TCF_META_ID_SK_ROUTE_CAPS,	/* unimplemented but in ABI already */
+>>>>>>> refs/remotes/origin/cm-10.0
  	TCF_META_ID_SK_HASH,
  	TCF_META_ID_SK_LINGERTIME,
  	TCF_META_ID_SK_ACK_BACKLOG,

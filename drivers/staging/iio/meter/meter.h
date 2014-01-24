@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #include "../sysfs.h"
+=======
+#include <linux/iio/sysfs.h>
+>>>>>>> refs/remotes/origin/master
 
 /* metering ic types of attribute */
 
@@ -362,7 +366,15 @@
 #define IIO_EVENT_ATTR_CYCEND(_evlist, _show, _store, _mask) \
 	IIO_EVENT_ATTR_SH(cycend, _evlist, _show, _store, _mask)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* on the rising and falling edge of the the voltage waveform */
+=======
+/* on the rising and falling edge of the voltage waveform */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* on the rising and falling edge of the voltage waveform */
+>>>>>>> refs/remotes/origin/master
 #define IIO_EVENT_ATTR_ZERO_CROSS(_evlist, _show, _store, _mask) \
 	IIO_EVENT_ATTR_SH(zero_cross, _evlist, _show, _store, _mask)
 

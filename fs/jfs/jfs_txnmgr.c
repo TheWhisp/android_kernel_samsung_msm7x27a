@@ -1143,7 +1143,13 @@ int txCommit(tid_t tid,		/* transaction identifier */
 	struct jfs_log *log;
 	struct tblock *tblk;
 	struct lrd *lrd;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int lsn;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct inode *ip;
 	struct jfs_inode_info *jfs_ip;
 	int k, n;
@@ -1310,7 +1316,15 @@ int txCommit(tid_t tid,		/* transaction identifier */
 	 */
 	lrd->type = cpu_to_le16(LOG_COMMIT);
 	lrd->length = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lsn = lmLog(log, tblk, lrd, NULL);
+=======
+	lmLog(log, tblk, lrd, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lmLog(log, tblk, lrd, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	lmGroupCommit(log, tblk);
 
@@ -2685,7 +2699,11 @@ void txAbort(tid_t tid, int dirty)
 	 * mark filesystem dirty
 	 */
 	if (dirty)
+<<<<<<< HEAD
 		jfs_error(tblk->sb, "txAbort");
+=======
+		jfs_error(tblk->sb, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	return;
 }
@@ -2801,7 +2819,15 @@ int jfs_lazycommit(void *arg)
 
 		if (freezing(current)) {
 			LAZY_UNLOCK(flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			refrigerator();
+=======
+			try_to_freeze();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			try_to_freeze();
+>>>>>>> refs/remotes/origin/master
 		} else {
 			DECLARE_WAITQUEUE(wq, current);
 
@@ -2935,7 +2961,13 @@ int jfs_sync(void *arg)
 {
 	struct inode *ip;
 	struct jfs_inode_info *jfs_ip;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int rc;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tid_t tid;
 
 	do {
@@ -2961,7 +2993,15 @@ int jfs_sync(void *arg)
 				 */
 				TXN_UNLOCK();
 				tid = txBegin(ip->i_sb, COMMIT_INODE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 				rc = txCommit(tid, 1, &ip, 0);
+=======
+				txCommit(tid, 1, &ip, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				txCommit(tid, 1, &ip, 0);
+>>>>>>> refs/remotes/origin/master
 				txEnd(tid);
 				mutex_unlock(&jfs_ip->commit_mutex);
 
@@ -2979,12 +3019,18 @@ int jfs_sync(void *arg)
 				 * put back on the anon_list.
 				 */
 
+<<<<<<< HEAD
 				/* Take off anon_list */
 				list_del(&jfs_ip->anon_inode_list);
 
 				/* Put on anon_list2 */
 				list_add(&jfs_ip->anon_inode_list,
 					 &TxAnchor.anon_list2);
+=======
+				/* Move from anon_list to anon_list2 */
+				list_move(&jfs_ip->anon_inode_list,
+					  &TxAnchor.anon_list2);
+>>>>>>> refs/remotes/origin/master
 
 				TXN_UNLOCK();
 				iput(ip);
@@ -2996,7 +3042,15 @@ int jfs_sync(void *arg)
 
 		if (freezing(current)) {
 			TXN_UNLOCK();
+<<<<<<< HEAD
+<<<<<<< HEAD
 			refrigerator();
+=======
+			try_to_freeze();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			try_to_freeze();
+>>>>>>> refs/remotes/origin/master
 		} else {
 			set_current_state(TASK_INTERRUPTIBLE);
 			TXN_UNLOCK();

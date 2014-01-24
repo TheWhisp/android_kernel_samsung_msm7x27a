@@ -3,6 +3,8 @@
 
 #include <asm/types.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(__KERNEL__)
 
 # include <asm/byteorder.h>
@@ -38,6 +40,10 @@
 #endif
 #endif /* ! defined(__KERNEL__) */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int init_cow_file(int fd, char *cow_file, char *backing_file,
 			 int sectorsize, int alignment, int *bitmap_offset_out,
 			 unsigned long *bitmap_len_out, int *data_offset_out);

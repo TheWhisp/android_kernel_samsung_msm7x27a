@@ -60,7 +60,11 @@ static enum ip_defrag_users nf_ct_defrag_user(unsigned int hooknum,
 		return IP_DEFRAG_CONNTRACK_OUT + zone;
 }
 
+<<<<<<< HEAD
 static unsigned int ipv4_conntrack_defrag(unsigned int hooknum,
+=======
+static unsigned int ipv4_conntrack_defrag(const struct nf_hook_ops *ops,
+>>>>>>> refs/remotes/origin/master
 					  struct sk_buff *skb,
 					  const struct net_device *in,
 					  const struct net_device *out,
@@ -82,8 +86,19 @@ static unsigned int ipv4_conntrack_defrag(unsigned int hooknum,
 #endif
 #endif
 	/* Gather fragments. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ip_hdr(skb)->frag_off & htons(IP_MF | IP_OFFSET)) {
+=======
+	if (ip_is_fragment(ip_hdr(skb))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		enum ip_defrag_users user = nf_ct_defrag_user(hooknum, skb);
+=======
+	if (ip_is_fragment(ip_hdr(skb))) {
+		enum ip_defrag_users user =
+			nf_ct_defrag_user(ops->hooknum, skb);
+
+>>>>>>> refs/remotes/origin/master
 		if (nf_ct_ipv4_gather_frags(skb, user))
 			return NF_STOLEN;
 	}
@@ -94,14 +109,22 @@ static struct nf_hook_ops ipv4_defrag_ops[] = {
 	{
 		.hook		= ipv4_conntrack_defrag,
 		.owner		= THIS_MODULE,
+<<<<<<< HEAD
 		.pf		= PF_INET,
+=======
+		.pf		= NFPROTO_IPV4,
+>>>>>>> refs/remotes/origin/master
 		.hooknum	= NF_INET_PRE_ROUTING,
 		.priority	= NF_IP_PRI_CONNTRACK_DEFRAG,
 	},
 	{
 		.hook           = ipv4_conntrack_defrag,
 		.owner          = THIS_MODULE,
+<<<<<<< HEAD
 		.pf             = PF_INET,
+=======
+		.pf             = NFPROTO_IPV4,
+>>>>>>> refs/remotes/origin/master
 		.hooknum        = NF_INET_LOCAL_OUT,
 		.priority       = NF_IP_PRI_CONNTRACK_DEFRAG,
 	},

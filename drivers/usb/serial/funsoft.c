@@ -16,7 +16,11 @@
 #include <linux/usb/serial.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const struct usb_device_id id_table[] = {
 	{ USB_DEVICE(0x1404, 0xcddc) },
@@ -29,7 +33,10 @@ static struct usb_driver funsoft_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver funsoft_device = {
@@ -38,6 +45,7 @@ static struct usb_serial_driver funsoft_device = {
 		.name =		"funsoft",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.usb_driver = 		&funsoft_driver,
 	.num_ports =		1,
 };
@@ -63,6 +71,17 @@ static void __exit funsoft_exit(void)
 
 module_init(funsoft_init);
 module_exit(funsoft_exit);
+=======
+	.num_ports =		1,
+};
+
+static struct usb_serial_driver * const serial_drivers[] = {
+	&funsoft_device, NULL
+};
+
+module_usb_serial_driver(funsoft_driver, serial_drivers);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");
 
 module_param(debug, bool, S_IRUGO | S_IWUSR);

@@ -18,12 +18,20 @@
 #include <linux/swap.h>
 #include "sysv.h"
 
+<<<<<<< HEAD
 static int sysv_readdir(struct file *, void *, filldir_t);
+=======
+static int sysv_readdir(struct file *, struct dir_context *);
+>>>>>>> refs/remotes/origin/master
 
 const struct file_operations sysv_dir_operations = {
 	.llseek		= generic_file_llseek,
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= sysv_readdir,
+=======
+	.iterate	= sysv_readdir,
+>>>>>>> refs/remotes/origin/master
 	.fsync		= generic_file_fsync,
 };
 
@@ -65,6 +73,7 @@ static struct page * dir_get_page(struct inode *dir, unsigned long n)
 	return page;
 }
 
+<<<<<<< HEAD
 static int sysv_readdir(struct file * filp, void * dirent, filldir_t filldir)
 {
 	unsigned long pos = filp->f_pos;
@@ -77,6 +86,23 @@ static int sysv_readdir(struct file * filp, void * dirent, filldir_t filldir)
 	pos = (pos + SYSV_DIRSIZE-1) & ~(SYSV_DIRSIZE-1);
 	if (pos >= inode->i_size)
 		goto done;
+=======
+static int sysv_readdir(struct file *file, struct dir_context *ctx)
+{
+	unsigned long pos = ctx->pos;
+	struct inode *inode = file_inode(file);
+	struct super_block *sb = inode->i_sb;
+	unsigned long npages = dir_pages(inode);
+	unsigned offset;
+	unsigned long n;
+
+	ctx->pos = pos = (pos + SYSV_DIRSIZE-1) & ~(SYSV_DIRSIZE-1);
+	if (pos >= inode->i_size)
+		return 0;
+
+	offset = pos & ~PAGE_CACHE_MASK;
+	n = pos >> PAGE_CACHE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	for ( ; n < npages; n++, offset = 0) {
 		char *kaddr, *limit;
@@ -88,13 +114,19 @@ static int sysv_readdir(struct file * filp, void * dirent, filldir_t filldir)
 		kaddr = (char *)page_address(page);
 		de = (struct sysv_dir_entry *)(kaddr+offset);
 		limit = kaddr + PAGE_CACHE_SIZE - SYSV_DIRSIZE;
+<<<<<<< HEAD
 		for ( ;(char*)de <= limit; de++) {
 			char *name = de->name;
 			int over;
+=======
+		for ( ;(char*)de <= limit; de++, ctx->pos += sizeof(*de)) {
+			char *name = de->name;
+>>>>>>> refs/remotes/origin/master
 
 			if (!de->inode)
 				continue;
 
+<<<<<<< HEAD
 			offset = (char *)de - kaddr;
 
 			over = filldir(dirent, name, strnlen(name,SYSV_NAMELEN),
@@ -104,13 +136,23 @@ static int sysv_readdir(struct file * filp, void * dirent, filldir_t filldir)
 			if (over) {
 				dir_put_page(page);
 				goto done;
+=======
+			if (!dir_emit(ctx, name, strnlen(name,SYSV_NAMELEN),
+					fs16_to_cpu(SYSV_SB(sb), de->inode),
+					DT_UNKNOWN)) {
+				dir_put_page(page);
+				return 0;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		dir_put_page(page);
 	}
+<<<<<<< HEAD
 
 done:
 	filp->f_pos = ((loff_t)n << PAGE_CACHE_SHIFT) | offset;
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

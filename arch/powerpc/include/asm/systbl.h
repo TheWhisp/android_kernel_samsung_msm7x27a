@@ -10,8 +10,13 @@ SYSCALL_SPU(read)
 SYSCALL_SPU(write)
 COMPAT_SYS_SPU(open)
 SYSCALL_SPU(close)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(waitpid)
 COMPAT_SYS_SPU(creat)
+=======
+SYSCALL_SPU(waitpid)
+SYSCALL_SPU(creat)
+>>>>>>> refs/remotes/origin/master
 SYSCALL_SPU(link)
 SYSCALL_SPU(unlink)
 COMPAT_SYS(execve)
@@ -22,7 +27,11 @@ SYSCALL_SPU(chmod)
 SYSCALL_SPU(lchown)
 SYSCALL(ni_syscall)
 OLDSYS(stat)
+<<<<<<< HEAD
 SYSX_SPU(sys_lseek,ppc32_lseek,sys_lseek)
+=======
+COMPAT_SYS_SPU(lseek)
+>>>>>>> refs/remotes/origin/master
 SYSCALL_SPU(getpid)
 COMPAT_SYS(mount)
 SYSX(sys_ni_syscall,sys_oldumount,sys_oldumount)
@@ -36,6 +45,7 @@ SYSCALL(pause)
 COMPAT_SYS(utime)
 SYSCALL(ni_syscall)
 SYSCALL(ni_syscall)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(access)
 COMPAT_SYS_SPU(nice)
 SYSCALL(ni_syscall)
@@ -43,6 +53,15 @@ SYSCALL_SPU(sync)
 COMPAT_SYS_SPU(kill)
 SYSCALL_SPU(rename)
 COMPAT_SYS_SPU(mkdir)
+=======
+SYSCALL_SPU(access)
+SYSCALL_SPU(nice)
+SYSCALL(ni_syscall)
+SYSCALL_SPU(sync)
+SYSCALL_SPU(kill)
+SYSCALL_SPU(rename)
+SYSCALL_SPU(mkdir)
+>>>>>>> refs/remotes/origin/master
 SYSCALL_SPU(rmdir)
 SYSCALL_SPU(dup)
 SYSCALL_SPU(pipe)
@@ -60,10 +79,17 @@ SYSCALL(ni_syscall)
 COMPAT_SYS_SPU(ioctl)
 COMPAT_SYS_SPU(fcntl)
 SYSCALL(ni_syscall)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(setpgid)
 SYSCALL(ni_syscall)
 SYSX(sys_ni_syscall,sys_olduname, sys_olduname)
 COMPAT_SYS_SPU(umask)
+=======
+SYSCALL_SPU(setpgid)
+SYSCALL(ni_syscall)
+SYSX(sys_ni_syscall,sys_olduname, sys_olduname)
+SYSCALL_SPU(umask)
+>>>>>>> refs/remotes/origin/master
 SYSCALL_SPU(chroot)
 COMPAT_SYS(ustat)
 SYSCALL_SPU(dup2)
@@ -72,23 +98,42 @@ SYSCALL_SPU(getpgrp)
 SYSCALL_SPU(setsid)
 SYS32ONLY(sigaction)
 SYSCALL_SPU(sgetmask)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(ssetmask)
 SYSCALL_SPU(setreuid)
 SYSCALL_SPU(setregid)
 SYS32ONLY(sigsuspend)
 COMPAT_SYS(sigpending)
 COMPAT_SYS_SPU(sethostname)
+=======
+SYSCALL_SPU(ssetmask)
+SYSCALL_SPU(setreuid)
+SYSCALL_SPU(setregid)
+#define compat_sys_sigsuspend sys_sigsuspend
+SYS32ONLY(sigsuspend)
+COMPAT_SYS(sigpending)
+SYSCALL_SPU(sethostname)
+>>>>>>> refs/remotes/origin/master
 COMPAT_SYS_SPU(setrlimit)
 COMPAT_SYS(old_getrlimit)
 COMPAT_SYS_SPU(getrusage)
 COMPAT_SYS_SPU(gettimeofday)
 COMPAT_SYS_SPU(settimeofday)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(getgroups)
 COMPAT_SYS_SPU(setgroups)
 SYSX(sys_ni_syscall,sys_ni_syscall,ppc_select)
 SYSCALL_SPU(symlink)
 OLDSYS(lstat)
 COMPAT_SYS_SPU(readlink)
+=======
+SYSCALL_SPU(getgroups)
+SYSCALL_SPU(setgroups)
+SYSX(sys_ni_syscall,sys_ni_syscall,ppc_select)
+SYSCALL_SPU(symlink)
+OLDSYS(lstat)
+SYSCALL_SPU(readlink)
+>>>>>>> refs/remotes/origin/master
 SYSCALL(uselib)
 SYSCALL(swapon)
 SYSCALL(reboot)
@@ -99,14 +144,23 @@ COMPAT_SYS_SPU(truncate)
 COMPAT_SYS_SPU(ftruncate)
 SYSCALL_SPU(fchmod)
 SYSCALL_SPU(fchown)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(getpriority)
 COMPAT_SYS_SPU(setpriority)
+=======
+SYSCALL_SPU(getpriority)
+SYSCALL_SPU(setpriority)
+>>>>>>> refs/remotes/origin/master
 SYSCALL(ni_syscall)
 COMPAT_SYS(statfs)
 COMPAT_SYS(fstatfs)
 SYSCALL(ni_syscall)
 COMPAT_SYS_SPU(socketcall)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(syslog)
+=======
+SYSCALL_SPU(syslog)
+>>>>>>> refs/remotes/origin/master
 COMPAT_SYS_SPU(setitimer)
 COMPAT_SYS_SPU(getitimer)
 COMPAT_SYS_SPU(newstat)
@@ -124,7 +178,11 @@ COMPAT_SYS(ipc)
 SYSCALL_SPU(fsync)
 SYS32ONLY(sigreturn)
 PPC_SYS(clone)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(setdomainname)
+=======
+SYSCALL_SPU(setdomainname)
+>>>>>>> refs/remotes/origin/master
 SYSCALL_SPU(newuname)
 SYSCALL(ni_syscall)
 COMPAT_SYS_SPU(adjtimex)
@@ -135,10 +193,17 @@ SYSCALL(init_module)
 SYSCALL(delete_module)
 SYSCALL(ni_syscall)
 SYSCALL(quotactl)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(getpgid)
 SYSCALL_SPU(fchdir)
 SYSCALL_SPU(bdflush)
 COMPAT_SYS(sysfs)
+=======
+SYSCALL_SPU(getpgid)
+SYSCALL_SPU(fchdir)
+SYSCALL_SPU(bdflush)
+SYSCALL_SPU(sysfs)
+>>>>>>> refs/remotes/origin/master
 SYSX_SPU(ppc64_personality,ppc64_personality,sys_personality)
 SYSCALL(ni_syscall)
 SYSCALL_SPU(setfsuid)
@@ -150,13 +215,18 @@ SYSCALL_SPU(flock)
 SYSCALL_SPU(msync)
 COMPAT_SYS_SPU(readv)
 COMPAT_SYS_SPU(writev)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(getsid)
+=======
+SYSCALL_SPU(getsid)
+>>>>>>> refs/remotes/origin/master
 SYSCALL_SPU(fdatasync)
 COMPAT_SYS(sysctl)
 SYSCALL_SPU(mlock)
 SYSCALL_SPU(munlock)
 SYSCALL_SPU(mlockall)
 SYSCALL_SPU(munlockall)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(sched_setparam)
 COMPAT_SYS_SPU(sched_getparam)
 COMPAT_SYS_SPU(sched_setscheduler)
@@ -164,6 +234,15 @@ COMPAT_SYS_SPU(sched_getscheduler)
 SYSCALL_SPU(sched_yield)
 COMPAT_SYS_SPU(sched_get_priority_max)
 COMPAT_SYS_SPU(sched_get_priority_min)
+=======
+SYSCALL_SPU(sched_setparam)
+SYSCALL_SPU(sched_getparam)
+SYSCALL_SPU(sched_setscheduler)
+SYSCALL_SPU(sched_getscheduler)
+SYSCALL_SPU(sched_yield)
+SYSCALL_SPU(sched_get_priority_max)
+SYSCALL_SPU(sched_get_priority_min)
+>>>>>>> refs/remotes/origin/master
 COMPAT_SYS_SPU(sched_rr_get_interval)
 COMPAT_SYS_SPU(nanosleep)
 SYSCALL_SPU(mremap)
@@ -171,10 +250,21 @@ SYSCALL_SPU(setresuid)
 SYSCALL_SPU(getresuid)
 SYSCALL(ni_syscall)
 SYSCALL_SPU(poll)
+<<<<<<< HEAD
+<<<<<<< HEAD
 COMPAT_SYS(nfsservctl)
+=======
+SYSCALL(ni_syscall)
+>>>>>>> refs/remotes/origin/cm-10.0
 SYSCALL_SPU(setresgid)
 SYSCALL_SPU(getresgid)
 COMPAT_SYS_SPU(prctl)
+=======
+SYSCALL(ni_syscall)
+SYSCALL_SPU(setresgid)
+SYSCALL_SPU(getresgid)
+SYSCALL_SPU(prctl)
+>>>>>>> refs/remotes/origin/master
 COMPAT_SYS(rt_sigreturn)
 COMPAT_SYS(rt_sigaction)
 COMPAT_SYS(rt_sigprocmask)
@@ -189,7 +279,11 @@ SYSCALL_SPU(getcwd)
 SYSCALL_SPU(capget)
 SYSCALL_SPU(capset)
 COMPAT_SYS(sigaltstack)
+<<<<<<< HEAD
 SYSX_SPU(sys_sendfile64,compat_sys_sendfile,sys_sendfile)
+=======
+COMPAT_SYS_SPU(sendfile)
+>>>>>>> refs/remotes/origin/master
 SYSCALL(ni_syscall)
 SYSCALL(ni_syscall)
 PPC_SYS(vfork)
@@ -238,7 +332,11 @@ SYSCALL_SPU(io_cancel)
 SYSCALL(set_tid_address)
 SYSX_SPU(sys_fadvise64,ppc32_fadvise64,sys_fadvise64)
 SYSCALL(exit_group)
+<<<<<<< HEAD
 SYSX(sys_lookup_dcookie,ppc32_lookup_dcookie,sys_lookup_dcookie)
+=======
+COMPAT_SYS(lookup_dcookie)
+>>>>>>> refs/remotes/origin/master
 SYSCALL_SPU(epoll_create)
 SYSCALL_SPU(epoll_ctl)
 SYSCALL_SPU(epoll_wait)
@@ -253,7 +351,11 @@ COMPAT_SYS_SPU(clock_gettime)
 COMPAT_SYS_SPU(clock_getres)
 COMPAT_SYS_SPU(clock_nanosleep)
 SYSX(ppc64_swapcontext,ppc32_swapcontext,ppc_swapcontext)
+<<<<<<< HEAD
 COMPAT_SYS_SPU(tgkill)
+=======
+SYSCALL_SPU(tgkill)
+>>>>>>> refs/remotes/origin/master
 COMPAT_SYS_SPU(utimes)
 COMPAT_SYS_SPU(statfs64)
 COMPAT_SYS_SPU(fstatfs64)
@@ -272,12 +374,21 @@ COMPAT_SYS(mq_timedreceive)
 COMPAT_SYS(mq_notify)
 COMPAT_SYS(mq_getsetattr)
 COMPAT_SYS(kexec_load)
+<<<<<<< HEAD
 COMPAT_SYS(add_key)
 COMPAT_SYS(request_key)
 COMPAT_SYS(keyctl)
 COMPAT_SYS(waitid)
 COMPAT_SYS(ioprio_set)
 COMPAT_SYS(ioprio_get)
+=======
+SYSCALL(add_key)
+SYSCALL(request_key)
+COMPAT_SYS(keyctl)
+COMPAT_SYS(waitid)
+SYSCALL(ioprio_set)
+SYSCALL(ioprio_get)
+>>>>>>> refs/remotes/origin/master
 SYSCALL(inotify_init)
 SYSCALL(inotify_add_watch)
 SYSCALL(inotify_rm_watch)
@@ -354,3 +465,15 @@ COMPAT_SYS_SPU(clock_adjtime)
 SYSCALL_SPU(syncfs)
 COMPAT_SYS_SPU(sendmmsg)
 SYSCALL_SPU(setns)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+COMPAT_SYS(process_vm_readv)
+COMPAT_SYS(process_vm_writev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+COMPAT_SYS(process_vm_readv)
+COMPAT_SYS(process_vm_writev)
+SYSCALL(finit_module)
+SYSCALL(ni_syscall) /* sys_kcmp */
+>>>>>>> refs/remotes/origin/master

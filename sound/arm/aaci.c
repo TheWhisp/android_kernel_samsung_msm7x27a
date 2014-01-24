@@ -443,7 +443,15 @@ static int aaci_pcm_open(struct snd_pcm_substream *substream)
 	mutex_lock(&aaci->irq_lock);
 	if (!aaci->users++) {
 		ret = request_irq(aaci->dev->irq[0], aaci_irq,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   IRQF_SHARED | IRQF_DISABLED, DRIVER_NAME, aaci);
+=======
+			   IRQF_SHARED, DRIVER_NAME, aaci);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   IRQF_SHARED, DRIVER_NAME, aaci);
+>>>>>>> refs/remotes/origin/master
 		if (ret != 0)
 			aaci->users--;
 	}
@@ -753,7 +761,11 @@ static struct snd_pcm_ops aaci_capture_ops = {
  * Power Management.
  */
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 static int aaci_do_suspend(struct snd_card *card, unsigned int state)
+=======
+static int aaci_do_suspend(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct aaci *aaci = card->private_data;
 	snd_power_change_state(card, SNDRV_CTL_POWER_D3cold);
@@ -761,12 +773,17 @@ static int aaci_do_suspend(struct snd_card *card, unsigned int state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int aaci_do_resume(struct snd_card *card, unsigned int state)
+=======
+static int aaci_do_resume(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int aaci_suspend(struct amba_device *dev, pm_message_t state)
 {
 	struct snd_card *card = amba_get_drvdata(dev);
@@ -787,6 +804,28 @@ static int aaci_resume(struct amba_device *dev)
 
 
 static struct ac97_pcm ac97_defs[] __devinitdata = {
+=======
+static int aaci_suspend(struct device *dev)
+{
+	struct snd_card *card = dev_get_drvdata(dev);
+	return card ? aaci_do_suspend(card) : 0;
+}
+
+static int aaci_resume(struct device *dev)
+{
+	struct snd_card *card = dev_get_drvdata(dev);
+	return card ? aaci_do_resume(card) : 0;
+}
+
+static SIMPLE_DEV_PM_OPS(aaci_dev_pm_ops, aaci_suspend, aaci_resume);
+#define AACI_DEV_PM_OPS (&aaci_dev_pm_ops)
+#else
+#define AACI_DEV_PM_OPS NULL
+#endif
+
+
+static struct ac97_pcm ac97_defs[] = {
+>>>>>>> refs/remotes/origin/master
 	[0] = {	/* Front PCM */
 		.exclusive = 1,
 		.r = {
@@ -832,7 +871,11 @@ static struct snd_ac97_bus_ops aaci_bus_ops = {
 	.read	= aaci_ac97_read,
 };
 
+<<<<<<< HEAD
 static int __devinit aaci_probe_ac97(struct aaci *aaci)
+=======
+static int aaci_probe_ac97(struct aaci *aaci)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_ac97_template ac97_template;
 	struct snd_ac97_bus *ac97_bus;
@@ -893,7 +936,11 @@ static void aaci_free_card(struct snd_card *card)
 		iounmap(aaci->base);
 }
 
+<<<<<<< HEAD
 static struct aaci * __devinit aaci_init_card(struct amba_device *dev)
+=======
+static struct aaci *aaci_init_card(struct amba_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct aaci *aaci;
 	struct snd_card *card;
@@ -926,7 +973,11 @@ static struct aaci * __devinit aaci_init_card(struct amba_device *dev)
 	return aaci;
 }
 
+<<<<<<< HEAD
 static int __devinit aaci_init_pcm(struct aaci *aaci)
+=======
+static int aaci_init_pcm(struct aaci *aaci)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int ret;
@@ -948,7 +999,11 @@ static int __devinit aaci_init_pcm(struct aaci *aaci)
 	return ret;
 }
 
+<<<<<<< HEAD
 static unsigned int __devinit aaci_size_fifo(struct aaci *aaci)
+=======
+static unsigned int aaci_size_fifo(struct aaci *aaci)
+>>>>>>> refs/remotes/origin/master
 {
 	struct aaci_runtime *aacirun = &aaci->playback;
 	int i;
@@ -984,8 +1039,13 @@ static unsigned int __devinit aaci_size_fifo(struct aaci *aaci)
 	return i;
 }
 
+<<<<<<< HEAD
 static int __devinit aaci_probe(struct amba_device *dev,
 	const struct amba_id *id)
+=======
+static int aaci_probe(struct amba_device *dev,
+		      const struct amba_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct aaci *aaci;
 	int ret, i;
@@ -1072,12 +1132,19 @@ static int __devinit aaci_probe(struct amba_device *dev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit aaci_remove(struct amba_device *dev)
 {
 	struct snd_card *card = amba_get_drvdata(dev);
 
 	amba_set_drvdata(dev, NULL);
 
+=======
+static int aaci_remove(struct amba_device *dev)
+{
+	struct snd_card *card = amba_get_drvdata(dev);
+
+>>>>>>> refs/remotes/origin/master
 	if (card) {
 		struct aaci *aaci = card->private_data;
 		writel(0, aaci->base + AACI_MAINCR);
@@ -1097,6 +1164,12 @@ static struct amba_id aaci_ids[] = {
 	{ 0, 0 },
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(amba, aaci_ids);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct amba_driver aaci_driver = {
 	.drv		= {
 		.name	= DRIVER_NAME,
@@ -1108,6 +1181,7 @@ static struct amba_driver aaci_driver = {
 	.id_table	= aaci_ids,
 };
 
+<<<<<<< HEAD
 static int __init aaci_init(void)
 {
 	return amba_driver_register(&aaci_driver);
@@ -1120,6 +1194,24 @@ static void __exit aaci_exit(void)
 
 module_init(aaci_init);
 module_exit(aaci_exit);
+=======
+module_amba_driver(aaci_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(amba, aaci_ids);
+
+static struct amba_driver aaci_driver = {
+	.drv		= {
+		.name	= DRIVER_NAME,
+		.pm	= AACI_DEV_PM_OPS,
+	},
+	.probe		= aaci_probe,
+	.remove		= aaci_remove,
+	.id_table	= aaci_ids,
+};
+
+module_amba_driver(aaci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("ARM PrimeCell PL041 Advanced Audio CODEC Interface driver");

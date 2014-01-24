@@ -22,6 +22,10 @@
 #include <linux/i2c.h>
 #include <linux/i2c-algo-bit.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/proc_fs.h>
@@ -1114,11 +1118,22 @@ static int __devinit dm1105_probe(struct pci_dev *pdev,
 	if (ret < 0)
 		goto err_remove_mem_frontend;
 
+<<<<<<< HEAD
 	ret = frontend_init(dev);
 	if (ret < 0)
 		goto err_disconnect_frontend;
 
 	dvb_net_init(dvb_adapter, &dev->dvbnet, dmx);
+=======
+	ret = dvb_net_init(dvb_adapter, &dev->dvbnet, dmx);
+	if (ret < 0)
+		goto err_disconnect_frontend;
+
+	ret = frontend_init(dev);
+	if (ret < 0)
+		goto err_dvb_net;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	dm1105_ir_init(dev);
 
 	INIT_WORK(&dev->work, dm1105_dmx_buffer);

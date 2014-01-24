@@ -31,8 +31,13 @@
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include "ttm/ttm_module.h"
 #include "drm_sysfs.h"
+=======
+#include <drm/ttm/ttm_module.h>
+#include <drm/drm_sysfs.h>
+>>>>>>> refs/remotes/origin/master
 
 static DECLARE_WAIT_QUEUE_HEAD(exit_q);
 atomic_t device_released;

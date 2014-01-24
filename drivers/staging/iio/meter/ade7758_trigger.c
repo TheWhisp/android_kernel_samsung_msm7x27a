@@ -7,6 +7,8 @@
  */
 
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/irq.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
@@ -17,7 +19,21 @@
 
 #include "../iio.h"
 #include "../sysfs.h"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/kernel.h>
+#include <linux/spi/spi.h>
+#include <linux/export.h>
+
+<<<<<<< HEAD
+#include "../iio.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "../trigger.h"
+=======
+#include <linux/iio/iio.h>
+#include <linux/iio/trigger.h>
+>>>>>>> refs/remotes/origin/master
 #include "ade7758.h"
 
 /**
@@ -37,7 +53,11 @@ static irqreturn_t ade7758_data_rdy_trig_poll(int irq, void *private)
 static int ade7758_data_rdy_trigger_set_state(struct iio_trigger *trig,
 						bool state)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = trig->private_data;
+=======
+	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&indio_dev->dev, "%s (%d)\n", __func__, state);
 	return ade7758_set_irq(&indio_dev->dev, state);
@@ -49,7 +69,11 @@ static int ade7758_data_rdy_trigger_set_state(struct iio_trigger *trig,
  **/
 static int ade7758_trig_try_reen(struct iio_trigger *trig)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = trig->private_data;
+=======
+	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
+>>>>>>> refs/remotes/origin/master
 	struct ade7758_state *st = iio_priv(indio_dev);
 
 	enable_irq(st->us->irq);
@@ -57,12 +81,31 @@ static int ade7758_trig_try_reen(struct iio_trigger *trig)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct iio_trigger_ops ade7758_trigger_ops = {
+	.owner = THIS_MODULE,
+	.set_trigger_state = &ade7758_data_rdy_trigger_set_state,
+	.try_reenable = &ade7758_trig_try_reen,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int ade7758_probe_trigger(struct iio_dev *indio_dev)
 {
 	struct ade7758_state *st = iio_priv(indio_dev);
 	int ret;
 
+<<<<<<< HEAD
 	st->trig = iio_allocate_trigger("%s-dev%d",
+=======
+	st->trig = iio_trigger_alloc("%s-dev%d",
+>>>>>>> refs/remotes/origin/master
 					spi_get_device_id(st->us)->name,
 					indio_dev->id);
 	if (st->trig == NULL) {
@@ -79,10 +122,20 @@ int ade7758_probe_trigger(struct iio_dev *indio_dev)
 		goto error_free_trig;
 
 	st->trig->dev.parent = &st->us->dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	st->trig->owner = THIS_MODULE;
 	st->trig->private_data = indio_dev;
 	st->trig->set_trigger_state = &ade7758_data_rdy_trigger_set_state;
 	st->trig->try_reenable = &ade7758_trig_try_reen;
+=======
+	st->trig->ops = &ade7758_trigger_ops;
+	st->trig->private_data = indio_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	st->trig->ops = &ade7758_trigger_ops;
+	iio_trigger_set_drvdata(st->trig, indio_dev);
+>>>>>>> refs/remotes/origin/master
 	ret = iio_trigger_register(st->trig);
 
 	/* select default trigger */
@@ -95,7 +148,11 @@ int ade7758_probe_trigger(struct iio_dev *indio_dev)
 error_free_irq:
 	free_irq(st->us->irq, st->trig);
 error_free_trig:
+<<<<<<< HEAD
 	iio_free_trigger(st->trig);
+=======
+	iio_trigger_free(st->trig);
+>>>>>>> refs/remotes/origin/master
 error_ret:
 	return ret;
 }
@@ -106,5 +163,9 @@ void ade7758_remove_trigger(struct iio_dev *indio_dev)
 
 	iio_trigger_unregister(st->trig);
 	free_irq(st->us->irq, st->trig);
+<<<<<<< HEAD
 	iio_free_trigger(st->trig);
+=======
+	iio_trigger_free(st->trig);
+>>>>>>> refs/remotes/origin/master
 }

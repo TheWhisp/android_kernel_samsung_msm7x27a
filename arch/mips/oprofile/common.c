@@ -12,11 +12,18 @@
 #include <linux/oprofile.h>
 #include <linux/smp.h>
 #include <asm/cpu-info.h>
+<<<<<<< HEAD
+=======
+#include <asm/cpu-type.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "op_impl.h"
 
 extern struct op_mips_model op_model_mipsxx_ops __weak;
+<<<<<<< HEAD
 extern struct op_mips_model op_model_rm9000_ops __weak;
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct op_mips_model op_model_loongson2_ops __weak;
 
 static struct op_mips_model *model;
@@ -28,6 +35,7 @@ static int op_mips_setup(void)
 	/* Pre-compute the values to stuff in the hardware registers.  */
 	model->reg_setup(ctr);
 
+<<<<<<< HEAD
 	/* Configure the registers on all cpus.  */
 	on_each_cpu(model->cpu_setup, NULL, 1);
 
@@ -35,6 +43,15 @@ static int op_mips_setup(void)
 }
 
 static int op_mips_create_files(struct super_block *sb, struct dentry *root)
+=======
+	/* Configure the registers on all cpus.	 */
+	on_each_cpu(model->cpu_setup, NULL, 1);
+
+	return 0;
+}
+
+static int op_mips_create_files(struct dentry *root)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -43,6 +60,7 @@ static int op_mips_create_files(struct super_block *sb, struct dentry *root)
 		char buf[4];
 
 		snprintf(buf, sizeof buf, "%d", i);
+<<<<<<< HEAD
 		dir = oprofilefs_mkdir(sb, root, buf);
 
 		oprofilefs_create_ulong(sb, dir, "enabled", &ctr[i].enabled);
@@ -53,6 +71,18 @@ static int op_mips_create_files(struct super_block *sb, struct dentry *root)
 		oprofilefs_create_ulong(sb, dir, "exl", &ctr[i].exl);
 		/* Dummy.  */
 		oprofilefs_create_ulong(sb, dir, "unit_mask", &ctr[i].unit_mask);
+=======
+		dir = oprofilefs_mkdir(root, buf);
+
+		oprofilefs_create_ulong(dir, "enabled", &ctr[i].enabled);
+		oprofilefs_create_ulong(dir, "event", &ctr[i].event);
+		oprofilefs_create_ulong(dir, "count", &ctr[i].count);
+		oprofilefs_create_ulong(dir, "kernel", &ctr[i].kernel);
+		oprofilefs_create_ulong(dir, "user", &ctr[i].user);
+		oprofilefs_create_ulong(dir, "exl", &ctr[i].exl);
+		/* Dummy.  */
+		oprofilefs_create_ulong(dir, "unit_mask", &ctr[i].unit_mask);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -78,23 +108,39 @@ int __init oprofile_arch_init(struct oprofile_operations *ops)
 
 	switch (current_cpu_type()) {
 	case CPU_5KC:
+<<<<<<< HEAD
+=======
+	case CPU_M14KC:
+	case CPU_M14KEC:
+>>>>>>> refs/remotes/origin/master
 	case CPU_20KC:
 	case CPU_24K:
 	case CPU_25KF:
 	case CPU_34K:
 	case CPU_1004K:
 	case CPU_74K:
+<<<<<<< HEAD
+=======
+	case CPU_LOONGSON1:
+>>>>>>> refs/remotes/origin/master
 	case CPU_SB1:
 	case CPU_SB1A:
 	case CPU_R10000:
 	case CPU_R12000:
 	case CPU_R14000:
+<<<<<<< HEAD
 		lmodel = &op_model_mipsxx_ops;
 		break;
 
 	case CPU_RM9000:
 		lmodel = &op_model_rm9000_ops;
 		break;
+=======
+	case CPU_XLR:
+		lmodel = &op_model_mipsxx_ops;
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case CPU_LOONGSON2:
 		lmodel = &op_model_loongson2_ops;
 		break;
@@ -111,10 +157,22 @@ int __init oprofile_arch_init(struct oprofile_operations *ops)
 
 	ops->create_files	= op_mips_create_files;
 	ops->setup		= op_mips_setup;
+<<<<<<< HEAD
 	//ops->shutdown         = op_mips_shutdown;
 	ops->start		= op_mips_start;
 	ops->stop		= op_mips_stop;
 	ops->cpu_type		= lmodel->cpu_type;
+<<<<<<< HEAD
+=======
+	ops->backtrace		= op_mips_backtrace;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	//ops->shutdown		= op_mips_shutdown;
+	ops->start		= op_mips_start;
+	ops->stop		= op_mips_stop;
+	ops->cpu_type		= lmodel->cpu_type;
+	ops->backtrace		= op_mips_backtrace;
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "oprofile: using %s performance monitoring.\n",
 	       lmodel->cpu_type);

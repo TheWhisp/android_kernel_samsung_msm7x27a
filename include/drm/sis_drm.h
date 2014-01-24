@@ -64,4 +64,11 @@ typedef struct {
 	unsigned int offset, size;
 } drm_sis_fb_t;
 
+<<<<<<< HEAD
+=======
+struct sis_file_private {
+	struct list_head obj_list;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif				/* __SIS_DRM_H__ */

@@ -15,7 +15,19 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/of_address.h>
+#include <asm/cacheflush.h>
+#include <asm/cp15.h>
+#include <asm/cputype.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/hardware/cache-tauros2.h>
 
 
@@ -107,6 +119,29 @@ static void tauros2_flush_range(unsigned long start, unsigned long end)
 
 	dsb();
 }
+<<<<<<< HEAD
+=======
+
+static void tauros2_disable(void)
+{
+	__asm__ __volatile__ (
+	"mcr	p15, 1, %0, c7, c11, 0 @L2 Cache Clean All\n\t"
+	"mrc	p15, 0, %0, c1, c0, 0\n\t"
+	"bic	%0, %0, #(1 << 26)\n\t"
+	"mcr	p15, 0, %0, c1, c0, 0  @Disable L2 Cache\n\t"
+	: : "r" (0x0));
+}
+
+static void tauros2_resume(void)
+{
+	__asm__ __volatile__ (
+	"mcr	p15, 1, %0, c7, c7, 0 @L2 Cache Invalidate All\n\t"
+	"mrc	p15, 0, %0, c1, c0, 0\n\t"
+	"orr	%0, %0, #(1 << 26)\n\t"
+	"mcr	p15, 0, %0, c1, c0, 0 @Enable L2 Cache\n\t"
+	: : "r" (0x0));
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static inline u32 __init read_extra_features(void)
@@ -123,6 +158,7 @@ static inline void __init write_extra_features(u32 u)
 	__asm__("mcr p15, 1, %0, c15, c1, 0" : : "r" (u));
 }
 
+<<<<<<< HEAD
 static void __init disable_l2_prefetch(void)
 {
 	u32 u;
@@ -142,6 +178,10 @@ static inline int __init cpuid_scheme(void)
 {
 	extern int processor_id;
 
+=======
+static inline int __init cpuid_scheme(void)
+{
+>>>>>>> refs/remotes/origin/master
 	return !!((processor_id & 0x000f0000) == 0x000f0000);
 }
 
@@ -168,12 +208,45 @@ static inline void __init write_actlr(u32 actlr)
 	__asm__("mcr p15, 0, %0, c1, c0, 1\n" : : "r" (actlr));
 }
 
+<<<<<<< HEAD
 void __init tauros2_init(void)
 {
 	extern int processor_id;
 	char *mode;
 
 	disable_l2_prefetch();
+=======
+static void enable_extra_feature(unsigned int features)
+{
+	u32 u;
+
+	u = read_extra_features();
+
+	if (features & CACHE_TAUROS2_PREFETCH_ON)
+		u &= ~0x01000000;
+	else
+		u |= 0x01000000;
+	printk(KERN_INFO "Tauros2: %s L2 prefetch.\n",
+			(features & CACHE_TAUROS2_PREFETCH_ON)
+			? "Enabling" : "Disabling");
+
+	if (features & CACHE_TAUROS2_LINEFILL_BURST8)
+		u |= 0x00100000;
+	else
+		u &= ~0x00100000;
+	printk(KERN_INFO "Tauros2: %s line fill burt8.\n",
+			(features & CACHE_TAUROS2_LINEFILL_BURST8)
+			? "Enabling" : "Disabling");
+
+	write_extra_features(u);
+}
+
+static void __init tauros2_internal_init(unsigned int features)
+{
+	char *mode = NULL;
+
+	enable_extra_feature(features);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CPU_32v5
 	if ((processor_id & 0xff0f0000) == 0x56050000) {
@@ -193,6 +266,11 @@ void __init tauros2_init(void)
 		outer_cache.inv_range = tauros2_inv_range;
 		outer_cache.clean_range = tauros2_clean_range;
 		outer_cache.flush_range = tauros2_flush_range;
+<<<<<<< HEAD
+=======
+		outer_cache.disable = tauros2_disable;
+		outer_cache.resume = tauros2_resume;
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -218,6 +296,11 @@ void __init tauros2_init(void)
 		outer_cache.inv_range = tauros2_inv_range;
 		outer_cache.clean_range = tauros2_clean_range;
 		outer_cache.flush_range = tauros2_flush_range;
+<<<<<<< HEAD
+=======
+		outer_cache.disable = tauros2_disable;
+		outer_cache.resume = tauros2_resume;
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -261,3 +344,37 @@ void __init tauros2_init(void)
 	printk(KERN_INFO "Tauros2: L2 cache support initialised "
 			 "in %s mode.\n", mode);
 }
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_OF
+static const struct of_device_id tauros2_ids[] __initconst = {
+	{ .compatible = "marvell,tauros2-cache"},
+	{}
+};
+#endif
+
+void __init tauros2_init(unsigned int features)
+{
+#ifdef CONFIG_OF
+	struct device_node *node;
+	int ret;
+	unsigned int f;
+
+	node = of_find_matching_node(NULL, tauros2_ids);
+	if (!node) {
+		pr_info("Not found marvell,tauros2-cache, disable it\n");
+		return;
+	}
+
+	ret = of_property_read_u32(node, "marvell,tauros2-cache-features", &f);
+	if (ret) {
+		pr_info("Not found marvell,tauros-cache-features property, "
+			"disable extra features\n");
+		features = 0;
+	} else
+		features = f;
+#endif
+	tauros2_internal_init(features);
+}
+>>>>>>> refs/remotes/origin/master

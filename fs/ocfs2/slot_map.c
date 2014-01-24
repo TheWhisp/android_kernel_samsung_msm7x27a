@@ -493,8 +493,18 @@ int ocfs2_find_slot(struct ocfs2_super *osb)
 			goto bail;
 		}
 	} else
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_NOTICE, "slot %d is already allocated to this node!\n",
 		     slot);
+=======
+		printk(KERN_INFO "ocfs2: Slot %d on device (%s) was already "
+		       "allocated to this node!\n", slot, osb->dev_str);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_INFO "ocfs2: Slot %d on device (%s) was already "
+		       "allocated to this node!\n", slot, osb->dev_str);
+>>>>>>> refs/remotes/origin/master
 
 	ocfs2_set_slot(si, slot, osb->node_num);
 	osb->slot_num = slot;

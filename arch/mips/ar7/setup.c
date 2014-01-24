@@ -92,11 +92,22 @@ void __init plat_mem_setup(void)
 	_machine_restart = ar7_machine_restart;
 	_machine_halt = ar7_machine_halt;
 	pm_power_off = ar7_machine_power_off;
+<<<<<<< HEAD
 	panic_timeout = 3;
 
 	io_base = (unsigned long)ioremap(AR7_REGS_BASE, 0x10000);
 	if (!io_base)
+<<<<<<< HEAD
 		panic("Can't remap IO base!\n");
+=======
+		panic("Can't remap IO base!");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	io_base = (unsigned long)ioremap(AR7_REGS_BASE, 0x10000);
+	if (!io_base)
+		panic("Can't remap IO base!");
+>>>>>>> refs/remotes/origin/master
 	set_io_port_base(io_base);
 
 	prom_meminit();

@@ -59,6 +59,14 @@ static const char busname[] = "rmi";
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 #include <linux/input/rmi_platformdata.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "rmi_drvr.h"
 #include "rmi.h"

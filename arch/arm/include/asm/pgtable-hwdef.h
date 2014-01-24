@@ -10,6 +10,8 @@
 #ifndef _ASMARM_PGTABLE_HWDEF_H
 #define _ASMARM_PGTABLE_HWDEF_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Hardware page table definitions.
  *
@@ -86,5 +88,17 @@
 #define PTE_SMALL_AP_UNO_SRW	(0x55 << 4)
 #define PTE_SMALL_AP_URO_SRW	(0xaa << 4)
 #define PTE_SMALL_AP_URW_SRW	(0xff << 4)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_ARM_LPAE
+#include <asm/pgtable-3level-hwdef.h>
+#else
+#include <asm/pgtable-2level-hwdef.h>
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

@@ -47,11 +47,25 @@
 #include <linux/serial_core.h>
 #include <linux/sysrq.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/atomic.h>
 #include <asm/bootinfo.h>
 #include <asm/io.h>
 #include <asm/system.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/tty_flip.h>
+
+#include <linux/atomic.h>
+#include <asm/bootinfo.h>
+#include <asm/io.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/dec/interrupts.h>
 #include <asm/dec/kn01.h>
@@ -187,7 +201,10 @@ static inline void dz_receive_chars(struct dz_mux *mux)
 {
 	struct uart_port *uport;
 	struct dz_port *dport = &mux->dport[0];
+<<<<<<< HEAD
 	struct tty_struct *tty = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct uart_icount *icount;
 	int lines_rx[DZ_NB_PORT] = { [0 ... DZ_NB_PORT - 1] = 0 };
 	unsigned char ch, flag;
@@ -197,7 +214,10 @@ static inline void dz_receive_chars(struct dz_mux *mux)
 	while ((status = dz_in(dport, DZ_RBUF)) & DZ_DVAL) {
 		dport = &mux->dport[LINE(status)];
 		uport = &dport->port;
+<<<<<<< HEAD
 		tty = uport->state->port.tty;	/* point to the proper dev */
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ch = UCHAR(status);		/* grab the char */
 		flag = TTY_NORMAL;
@@ -249,7 +269,11 @@ static inline void dz_receive_chars(struct dz_mux *mux)
 	}
 	for (i = 0; i < DZ_NB_PORT; i++)
 		if (lines_rx[i])
+<<<<<<< HEAD
 			tty_flip_buffer_push(mux->dport[i].port.state->port.tty);
+=======
+			tty_flip_buffer_push(&mux->dport[i].port.state->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

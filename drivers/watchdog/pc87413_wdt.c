@@ -18,6 +18,16 @@
  *      Release 1.1
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/miscdevice.h>
@@ -33,7 +43,13 @@
 #include <linux/io.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* #define DEBUG 1 */
 
@@ -42,7 +58,13 @@
 
 #define VERSION             "1.1"
 #define MODNAME             "pc87413 WDT"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX                 MODNAME ": "
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DPFX                MODNAME " - DEBUG: "
 
 #define WDT_INDEX_IO_PORT   (io+0)	/* I/O port base (index register) */
@@ -56,6 +78,14 @@
 #define IO_DEFAULT	0x2E		/* Address used on Portwell Boards */
 
 static int io = IO_DEFAULT;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int swc_base_addr = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int swc_base_addr = -1;
+>>>>>>> refs/remotes/origin/master
 
 static int timeout = DEFAULT_TIMEOUT;	/* timeout value */
 static unsigned long timer_enabled;	/* is the timer enabled? */
@@ -64,7 +94,15 @@ static char expect_close;		/* is the close expected? */
 
 static DEFINE_SPINLOCK(io_lock);	/* to guard us from io races */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/master
 
 /* -- Low level function ----------------------------------------*/
 
@@ -86,7 +124,15 @@ static inline void pc87413_select_wdt_out(void)
 	outb_p(cr_data, WDT_DATA_IO_PORT);
 
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DPFX
+=======
+	pr_info(DPFX
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DPFX
+>>>>>>> refs/remotes/origin/master
 		"Select multiple pin,pin55,as WDT output: Bit7 to 1: %d\n",
 								cr_data);
 #endif
@@ -110,15 +156,33 @@ static inline void pc87413_enable_swc(void)
 	outb_p(cr_data, WDT_DATA_IO_PORT);	/* Index0x30_bit0P1 */
 
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DPFX "pc87413 - Enable SWC functions\n");
+=======
+	pr_info(DPFX "pc87413 - Enable SWC functions\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DPFX "pc87413 - Enable SWC functions\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 /* Read SWC I/O base address */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int pc87413_get_swc_base(void)
 {
 	unsigned int  swc_base_addr = 0;
+=======
+static void pc87413_get_swc_base_addr(void)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void pc87413_get_swc_base_addr(void)
+{
+>>>>>>> refs/remotes/origin/master
 	unsigned char addr_l, addr_h = 0;
 
 	/* Step 3: Read SWC I/O Base Address */
@@ -132,87 +196,212 @@ static inline unsigned int pc87413_get_swc_base(void)
 
 	swc_base_addr = (addr_h << 8) + addr_l;
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DPFX
 		"Read SWC I/O Base Address: low %d, high %d, res %d\n",
 						addr_l, addr_h, swc_base_addr);
 #endif
 	return swc_base_addr;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pr_info(DPFX
+		"Read SWC I/O Base Address: low %d, high %d, res %d\n",
+						addr_l, addr_h, swc_base_addr);
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Select Bank 3 of SWC */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void pc87413_swc_bank3(unsigned int swc_base_addr)
+=======
+static inline void pc87413_swc_bank3(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void pc87413_swc_bank3(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Step 4: Select Bank3 of SWC */
 	outb_p(inb(swc_base_addr + 0x0f) | 0x03, swc_base_addr + 0x0f);
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DPFX "Select Bank3 of SWC\n");
+=======
+	pr_info(DPFX "Select Bank3 of SWC\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DPFX "Select Bank3 of SWC\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 /* Set watchdog timeout to x minutes */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void pc87413_programm_wdto(unsigned int swc_base_addr,
 					 char pc87413_time)
+=======
+static inline void pc87413_programm_wdto(char pc87413_time)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void pc87413_programm_wdto(char pc87413_time)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Step 5: Programm WDTO, Twd. */
 	outb_p(pc87413_time, swc_base_addr + WDTO);
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DPFX "Set WDTO to %d minutes\n", pc87413_time);
+=======
+	pr_info(DPFX "Set WDTO to %d minutes\n", pc87413_time);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DPFX "Set WDTO to %d minutes\n", pc87413_time);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 /* Enable WDEN */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void pc87413_enable_wden(unsigned int swc_base_addr)
+=======
+static inline void pc87413_enable_wden(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void pc87413_enable_wden(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Step 6: Enable WDEN */
 	outb_p(inb(swc_base_addr + WDCTL) | 0x01, swc_base_addr + WDCTL);
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DPFX "Enable WDEN\n");
+=======
+	pr_info(DPFX "Enable WDEN\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DPFX "Enable WDEN\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 /* Enable SW_WD_TREN */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void pc87413_enable_sw_wd_tren(unsigned int swc_base_addr)
+=======
+static inline void pc87413_enable_sw_wd_tren(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void pc87413_enable_sw_wd_tren(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Enable SW_WD_TREN */
 	outb_p(inb(swc_base_addr + WDCFG) | 0x80, swc_base_addr + WDCFG);
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DPFX "Enable SW_WD_TREN\n");
+=======
+	pr_info(DPFX "Enable SW_WD_TREN\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DPFX "Enable SW_WD_TREN\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 /* Disable SW_WD_TREN */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void pc87413_disable_sw_wd_tren(unsigned int swc_base_addr)
+=======
+static inline void pc87413_disable_sw_wd_tren(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void pc87413_disable_sw_wd_tren(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Disable SW_WD_TREN */
 	outb_p(inb(swc_base_addr + WDCFG) & 0x7f, swc_base_addr + WDCFG);
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DPFX "pc87413 - Disable SW_WD_TREN\n");
+=======
+	pr_info(DPFX "pc87413 - Disable SW_WD_TREN\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DPFX "pc87413 - Disable SW_WD_TREN\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 /* Enable SW_WD_TRG */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void pc87413_enable_sw_wd_trg(unsigned int swc_base_addr)
+=======
+static inline void pc87413_enable_sw_wd_trg(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void pc87413_enable_sw_wd_trg(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Enable SW_WD_TRG */
 	outb_p(inb(swc_base_addr + WDCTL) | 0x80, swc_base_addr + WDCTL);
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DPFX "pc87413 - Enable SW_WD_TRG\n");
+=======
+	pr_info(DPFX "pc87413 - Enable SW_WD_TRG\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DPFX "pc87413 - Enable SW_WD_TRG\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 /* Disable SW_WD_TRG */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void pc87413_disable_sw_wd_trg(unsigned int swc_base_addr)
+=======
+static inline void pc87413_disable_sw_wd_trg(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void pc87413_disable_sw_wd_trg(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Disable SW_WD_TRG */
 	outb_p(inb(swc_base_addr + WDCTL) & 0x7f, swc_base_addr + WDCTL);
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DPFX "Disable SW_WD_TRG\n");
+=======
+	pr_info(DPFX "Disable SW_WD_TRG\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DPFX "Disable SW_WD_TRG\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -222,6 +411,8 @@ static inline void pc87413_disable_sw_wd_trg(unsigned int swc_base_addr)
 
 static void pc87413_enable(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int swc_base_addr;
 
 	spin_lock(&io_lock);
@@ -234,6 +425,20 @@ static void pc87413_enable(void)
 	pc87413_enable_wden(swc_base_addr);
 	pc87413_enable_sw_wd_tren(swc_base_addr);
 	pc87413_enable_sw_wd_trg(swc_base_addr);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_lock(&io_lock);
+
+	pc87413_swc_bank3();
+	pc87413_programm_wdto(timeout);
+	pc87413_enable_wden();
+	pc87413_enable_sw_wd_tren();
+	pc87413_enable_sw_wd_trg();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock(&io_lock);
 }
@@ -242,6 +447,8 @@ static void pc87413_enable(void)
 
 static void pc87413_disable(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int swc_base_addr;
 
 	spin_lock(&io_lock);
@@ -253,6 +460,19 @@ static void pc87413_disable(void)
 	pc87413_disable_sw_wd_tren(swc_base_addr);
 	pc87413_disable_sw_wd_trg(swc_base_addr);
 	pc87413_programm_wdto(swc_base_addr, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_lock(&io_lock);
+
+	pc87413_swc_bank3();
+	pc87413_disable_sw_wd_tren();
+	pc87413_disable_sw_wd_trg();
+	pc87413_programm_wdto(0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock(&io_lock);
 }
@@ -261,6 +481,8 @@ static void pc87413_disable(void)
 
 static void pc87413_refresh(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int swc_base_addr;
 
 	spin_lock(&io_lock);
@@ -275,6 +497,22 @@ static void pc87413_refresh(void)
 	pc87413_enable_wden(swc_base_addr);
 	pc87413_enable_sw_wd_tren(swc_base_addr);
 	pc87413_enable_sw_wd_trg(swc_base_addr);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_lock(&io_lock);
+
+	pc87413_swc_bank3();
+	pc87413_disable_sw_wd_tren();
+	pc87413_disable_sw_wd_trg();
+	pc87413_programm_wdto(timeout);
+	pc87413_enable_wden();
+	pc87413_enable_sw_wd_tren();
+	pc87413_enable_sw_wd_trg();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock(&io_lock);
 }
@@ -301,8 +539,16 @@ static int pc87413_open(struct inode *inode, struct file *file)
 	/* Reload and activate timer */
 	pc87413_refresh();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO MODNAME
 		"Watchdog enabled. Timeout set to %d minute(s).\n", timeout);
+=======
+	pr_info("Watchdog enabled. Timeout set to %d minute(s).\n", timeout);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Watchdog enabled. Timeout set to %d minute(s).\n", timeout);
+>>>>>>> refs/remotes/origin/master
 
 	return nonseekable_open(inode, file);
 }
@@ -325,11 +571,23 @@ static int pc87413_release(struct inode *inode, struct file *file)
 
 	if (expect_close == 42) {
 		pc87413_disable();
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO MODNAME
 				"Watchdog disabled, sleeping again...\n");
 	} else {
 		printk(KERN_CRIT MODNAME
 				"Unexpected close, not stopping watchdog!\n");
+=======
+		pr_info("Watchdog disabled, sleeping again...\n");
+	} else {
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("Watchdog disabled, sleeping again...\n");
+	} else {
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		pc87413_refresh();
 	}
 	clear_bit(0, &timer_enabled);
@@ -445,7 +703,15 @@ static long pc87413_ioctl(struct file *file, unsigned int cmd,
 	case WDIOC_KEEPALIVE:
 		pc87413_refresh();
 #ifdef DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO DPFX "keepalive\n");
+=======
+		pr_info(DPFX "keepalive\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info(DPFX "keepalive\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 		return 0;
 	case WDIOC_SETTIMEOUT:
@@ -525,6 +791,8 @@ static int __init pc87413_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Version " VERSION " at io 0x%X\n",
 							WDT_INDEX_IO_PORT);
 
@@ -534,10 +802,28 @@ static int __init pc87413_init(void)
 	if (ret != 0) {
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", ret);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pr_info("Version " VERSION " at io 0x%X\n",
+							WDT_INDEX_IO_PORT);
+
+	if (!request_muxed_region(io, 2, MODNAME))
+		return -EBUSY;
+
+	ret = register_reboot_notifier(&pc87413_notifier);
+	if (ret != 0) {
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = misc_register(&pc87413_miscdev);
 	if (ret != 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 			WATCHDOG_MINOR, ret);
@@ -547,6 +833,40 @@ static int __init pc87413_init(void)
 	printk(KERN_INFO PFX "initialized. timeout=%d min \n", timeout);
 	pc87413_enable();
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+		goto reboot_unreg;
+	}
+	pr_info("initialized. timeout=%d min\n", timeout);
+
+	pc87413_select_wdt_out();
+	pc87413_enable_swc();
+	pc87413_get_swc_base_addr();
+
+	if (!request_region(swc_base_addr, 0x20, MODNAME)) {
+		pr_err("cannot request SWC region at 0x%x\n", swc_base_addr);
+		ret = -EBUSY;
+		goto misc_unreg;
+	}
+
+	pc87413_enable();
+
+	release_region(io, 2);
+	return 0;
+
+misc_unreg:
+	misc_deregister(&pc87413_miscdev);
+reboot_unreg:
+	unregister_reboot_notifier(&pc87413_notifier);
+	release_region(io, 2);
+	return ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -564,14 +884,34 @@ static void __exit pc87413_exit(void)
 	/* Stop the timer before we leave */
 	if (!nowayout) {
 		pc87413_disable();
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO MODNAME "Watchdog disabled.\n");
+=======
+		pr_info("Watchdog disabled\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("Watchdog disabled\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	misc_deregister(&pc87413_miscdev);
 	unregister_reboot_notifier(&pc87413_notifier);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* release_region(io, 2); */
 
 	printk(KERN_INFO MODNAME " watchdog component driver removed.\n");
+=======
+	release_region(swc_base_addr, 0x20);
+
+	pr_info("watchdog component driver removed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_region(swc_base_addr, 0x20);
+
+	pr_info("watchdog component driver removed\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(pc87413_init);
@@ -582,8 +922,11 @@ MODULE_AUTHOR("Sven Anders <anders@anduras.de>, "
 MODULE_DESCRIPTION("PC87413 WDT driver");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
 
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(io, int, 0);
 MODULE_PARM_DESC(io, MODNAME " I/O port (default: "
 					__MODULE_STRING(IO_DEFAULT) ").");
@@ -593,7 +936,15 @@ MODULE_PARM_DESC(timeout,
 		"Watchdog timeout in minutes (default="
 				__MODULE_STRING(DEFAULT_TIMEOUT) ").");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");

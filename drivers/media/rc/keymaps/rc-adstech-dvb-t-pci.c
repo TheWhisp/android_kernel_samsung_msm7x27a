@@ -11,6 +11,14 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /* ADS Tech Instant TV DVB-T PCI Remote */
 

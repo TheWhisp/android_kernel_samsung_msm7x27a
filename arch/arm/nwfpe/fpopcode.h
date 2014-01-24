@@ -475,9 +475,15 @@ static inline unsigned int getDestinationSize(const unsigned int opcode)
 	return (nRc);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned int checkCondition(const unsigned int opcode,
 				   const unsigned int ccodes);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern const float64 float64Constant[];
 extern const float32 float32Constant[];
 

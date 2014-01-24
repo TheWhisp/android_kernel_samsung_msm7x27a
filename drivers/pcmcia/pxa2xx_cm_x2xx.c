@@ -12,9 +12,19 @@
 
 #include <linux/module.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/mach-types.h>
 #include <mach/system.h>
+=======
+#include <asm/mach-types.h>
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/mach-types.h>
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/master
 
 int cmx255_pcmcia_init(void);
 int cmx270_pcmcia_init(void);

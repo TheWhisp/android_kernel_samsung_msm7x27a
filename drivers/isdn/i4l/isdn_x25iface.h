@@ -13,9 +13,16 @@
 #define ISDN_X25IFACE_MAGIC 0x1e75a2b9
 /* #define DEBUG_ISDN_X25 if you want isdn_x25 debugging messages */
 #ifdef DEBUG_ISDN_X25
+<<<<<<< HEAD
+<<<<<<< HEAD
 #   define IX25DEBUG(fmt,args...) printk(KERN_DEBUG fmt , ## args)
 #else
 #   define IX25DEBUG(fmt,args...)
+=======
+#   define IX25DEBUG(fmt, args...) printk(KERN_DEBUG fmt, ##args)
+#else
+#   define IX25DEBUG(fmt, args...)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #include <linux/skbuff.h>
@@ -23,12 +30,32 @@
 #include <linux/isdn.h>
 #include <linux/concap.h>
 
+<<<<<<< HEAD
 extern struct concap_proto_ops * isdn_x25iface_concap_proto_ops_pt;
 extern struct concap_proto     * isdn_x25iface_proto_new(void);
+=======
+extern struct concap_proto_ops *isdn_x25iface_concap_proto_ops_pt;
+extern struct concap_proto *isdn_x25iface_proto_new(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#   define IX25DEBUG(fmt, args...) printk(KERN_DEBUG fmt, ##args)
+#else
+#   define IX25DEBUG(fmt, args...)
+#endif
+
+#include <linux/skbuff.h>
+#include <linux/isdn.h>
+#include <linux/concap.h>
+
+extern struct concap_proto_ops *isdn_x25iface_concap_proto_ops_pt;
+extern struct concap_proto *isdn_x25iface_proto_new(void);
+>>>>>>> refs/remotes/origin/master
 
 
 
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
@@ -37,3 +64,7 @@ extern struct concap_proto     * isdn_x25iface_proto_new(void);
 
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -23,7 +23,17 @@
  *
  * configfs Copyright (C) 2005 Oracle.  All rights reserved.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Please see Documentation/filesystems/configfs.txt for more information.
+=======
+ * Please see Documentation/filesystems/configfs/configfs.txt for more
+ * information.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Please see Documentation/filesystems/configfs/configfs.txt for more
+ * information.
+>>>>>>> refs/remotes/origin/master
  */
 
 #undef DEBUG
@@ -43,8 +53,14 @@
 static struct lock_class_key default_group_class[MAX_LOCK_DEPTH];
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern struct super_block * configfs_sb;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct address_space_operations configfs_aops = {
 	.readpage	= simple_readpage,
 	.write_begin	= simple_write_begin,
@@ -80,8 +96,13 @@ int configfs_setattr(struct dentry * dentry, struct iattr * iattr)
 			return -ENOMEM;
 		/* assign default attributes */
 		sd_iattr->ia_mode = sd->s_mode;
+<<<<<<< HEAD
 		sd_iattr->ia_uid = 0;
 		sd_iattr->ia_gid = 0;
+=======
+		sd_iattr->ia_uid = GLOBAL_ROOT_UID;
+		sd_iattr->ia_gid = GLOBAL_ROOT_GID;
+>>>>>>> refs/remotes/origin/master
 		sd_iattr->ia_atime = sd_iattr->ia_mtime = sd_iattr->ia_ctime = CURRENT_TIME;
 		sd->s_iattr = sd_iattr;
 	}
@@ -115,7 +136,15 @@ int configfs_setattr(struct dentry * dentry, struct iattr * iattr)
 	return error;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void set_default_inode_attr(struct inode * inode, mode_t mode)
+=======
+static inline void set_default_inode_attr(struct inode * inode, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void set_default_inode_attr(struct inode * inode, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	inode->i_mode = mode;
 	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
@@ -131,9 +160,22 @@ static inline void set_inode_attr(struct inode * inode, struct iattr * iattr)
 	inode->i_ctime = iattr->ia_ctime;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct inode * configfs_new_inode(mode_t mode, struct configfs_dirent * sd)
 {
 	struct inode * inode = new_inode(configfs_sb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct inode *configfs_new_inode(umode_t mode, struct configfs_dirent *sd,
+				 struct super_block *s)
+{
+	struct inode * inode = new_inode(s);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (inode) {
 		inode->i_ino = get_next_ino();
 		inode->i_mapping->a_ops = &configfs_aops;
@@ -184,6 +226,8 @@ static void configfs_set_inode_lock_class(struct configfs_dirent *sd,
 
 #endif /* CONFIG_LOCKDEP */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int configfs_create(struct dentry * dentry, int mode, int (*init)(struct inode *))
 {
 	int error = 0;
@@ -217,6 +261,45 @@ int configfs_create(struct dentry * dentry, int mode, int (*init)(struct inode *
 	} else
 		iput(inode);
  Done:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int configfs_create(struct dentry * dentry, umode_t mode, int (*init)(struct inode *))
+{
+	int error = 0;
+	struct inode *inode = NULL;
+	struct configfs_dirent *sd;
+	struct inode *p_inode;
+
+	if (!dentry)
+		return -ENOENT;
+
+	if (dentry->d_inode)
+		return -EEXIST;
+
+	sd = dentry->d_fsdata;
+	inode = configfs_new_inode(mode, sd, dentry->d_sb);
+	if (!inode)
+		return -ENOMEM;
+
+	p_inode = dentry->d_parent->d_inode;
+	p_inode->i_mtime = p_inode->i_ctime = CURRENT_TIME;
+	configfs_set_inode_lock_class(sd, inode);
+
+	if (init) {
+		error = init(inode);
+		if (error) {
+			iput(inode);
+			return error;
+		}
+	}
+	d_instantiate(dentry, inode);
+	if (S_ISDIR(mode) || S_ISLNK(mode))
+		dget(dentry);  /* pin link and directory dentries in core */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -291,7 +374,15 @@ int __init configfs_inode_init(void)
 	return bdi_init(&configfs_backing_dev_info);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __exit configfs_inode_exit(void)
+=======
+void configfs_inode_exit(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void configfs_inode_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	bdi_destroy(&configfs_backing_dev_info);
 }

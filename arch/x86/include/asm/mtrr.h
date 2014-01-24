@@ -23,24 +23,37 @@
 #ifndef _ASM_X86_MTRR_H
 #define _ASM_X86_MTRR_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/ioctl.h>
 #include <linux/errno.h>
 
 #define	MTRR_IOCTL_BASE	'M'
 
+<<<<<<< HEAD
 struct mtrr_sentry {
     unsigned long base;    /*  Base address     */
     unsigned int size;    /*  Size of region   */
     unsigned int type;     /*  Type of region   */
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Warning: this structure has a different order from i386
    on x86-64. The 32bit emulation code takes care of that.
    But you need to use this for 64bit, otherwise your X server
    will break. */
 
 #ifdef __i386__
+<<<<<<< HEAD
+=======
+struct mtrr_sentry {
+    unsigned long base;    /*  Base address     */
+    unsigned int size;    /*  Size of region   */
+    unsigned int type;     /*  Type of region   */
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct mtrr_gentry {
     unsigned int regnum;   /*  Register number  */
     unsigned long base;    /*  Base address     */
@@ -50,12 +63,29 @@ struct mtrr_gentry {
 
 #else /* __i386__ */
 
+<<<<<<< HEAD
 struct mtrr_gentry {
     unsigned long base;    /*  Base address     */
     unsigned int size;    /*  Size of region   */
     unsigned int regnum;   /*  Register number  */
     unsigned int type;     /*  Type of region   */
 };
+=======
+struct mtrr_sentry {
+	__u64 base;		/*  Base address     */
+	__u32 size;		/*  Size of region   */
+	__u32 type;		/*  Type of region   */
+};
+
+struct mtrr_gentry {
+	__u64 base;		/*  Base address     */
+	__u32 size;		/*  Size of region   */
+	__u32 regnum;		/*  Register number  */
+	__u32 type;		/*  Type of region   */
+	__u32 _pad;		/*  Unused	     */
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !__i386__ */
 
 struct mtrr_var_range {
@@ -108,6 +138,15 @@ struct mtrr_state_type {
 #ifdef __KERNEL__
 
 /*  The following functions are for use by other drivers  */
+=======
+#include <uapi/asm/mtrr.h>
+
+
+/*
+ * The following functions are for use by other drivers that cannot use
+ * arch_phys_wc_add and arch_phys_wc_del.
+ */
+>>>>>>> refs/remotes/origin/master
 # ifdef CONFIG_MTRR
 extern u8 mtrr_type_lookup(u64 addr, u64 end);
 extern void mtrr_save_fixed_ranges(void *);
@@ -126,6 +165,10 @@ extern void mtrr_aps_init(void);
 extern void mtrr_bp_restore(void);
 extern int mtrr_trim_uncached_memory(unsigned long end_pfn);
 extern int amd_special_default_mtrr(void);
+<<<<<<< HEAD
+=======
+extern int phys_wc_to_mtrr_index(int handle);
+>>>>>>> refs/remotes/origin/master
 #  else
 static inline u8 mtrr_type_lookup(u64 addr, u64 end)
 {
@@ -161,6 +204,13 @@ static inline int mtrr_trim_uncached_memory(unsigned long end_pfn)
 static inline void mtrr_centaur_report_mcr(int mcr, u32 lo, u32 hi)
 {
 }
+<<<<<<< HEAD
+=======
+static inline int phys_wc_to_mtrr_index(int handle)
+{
+	return -1;
+}
+>>>>>>> refs/remotes/origin/master
 
 #define mtrr_ap_init() do {} while (0)
 #define mtrr_bp_init() do {} while (0)
@@ -200,6 +250,9 @@ struct mtrr_gentry32 {
 				 _IOW(MTRR_IOCTL_BASE,  9, struct mtrr_sentry32)
 #endif /* CONFIG_COMPAT */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_MTRR_H */

@@ -22,6 +22,11 @@ extern spinlock_t pa_tlb_lock;
 extern void flush_tlb_all(void);
 extern void flush_tlb_all_local(void *);
 
+<<<<<<< HEAD
+=======
+#define smp_flush_tlb_all()	flush_tlb_all()
+
+>>>>>>> refs/remotes/origin/master
 /*
  * flush_tlb_mm()
  *
@@ -61,13 +66,23 @@ static inline void flush_tlb_mm(struct mm_struct *mm)
 static inline void flush_tlb_page(struct vm_area_struct *vma,
 	unsigned long addr)
 {
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+	unsigned long flags, sid;
+>>>>>>> refs/remotes/origin/master
 
 	/* For one page, it's not worth testing the split_tlb variable */
 
 	mb();
+<<<<<<< HEAD
 	mtsp(vma->vm_mm->context,1);
 	purge_tlb_start(flags);
+=======
+	sid = vma->vm_mm->context;
+	purge_tlb_start(flags);
+	mtsp(sid, 1);
+>>>>>>> refs/remotes/origin/master
 	pdtlb(addr);
 	pitlb(addr);
 	purge_tlb_end(flags);

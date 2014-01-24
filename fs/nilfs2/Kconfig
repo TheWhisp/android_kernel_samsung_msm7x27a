@@ -1,6 +1,10 @@
 config NILFS2_FS
+<<<<<<< HEAD
 	tristate "NILFS2 file system support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+	tristate "NILFS2 file system support"
+>>>>>>> refs/remotes/origin/master
 	select CRC32
 	help
 	  NILFS2 is a log-structured file system (LFS) supporting continuous

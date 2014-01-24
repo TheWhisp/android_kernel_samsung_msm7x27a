@@ -4,7 +4,15 @@
  * but are connected to the PCI bus by a PLX9052.
  *
  * Current maintainers are:
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 	Pavel Roskin <proski AT gnu.org>
+=======
+ *	Pavel Roskin <proski AT gnu.org>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Pavel Roskin <proski AT gnu.org>
+>>>>>>> refs/remotes/origin/master
  * and	David Gibson <hermes AT gibson.dropbear.id.au>
  *
  * (C) Copyright David Gibson, IBM Corp. 2001-2003.
@@ -102,14 +110,30 @@
 #define PLX_RESET_TIME	(500)	/* milliseconds */
 
 #define PLX_INTCSR		0x4c /* Interrupt Control & Status Register */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PLX_INTCSR_INTEN	(1<<6) /* Interrupt Enable bit */
+=======
+#define PLX_INTCSR_INTEN	(1 << 6) /* Interrupt Enable bit */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PLX_INTCSR_INTEN	(1 << 6) /* Interrupt Enable bit */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Do a soft reset of the card using the Configuration Option Register
  */
 static int orinoco_plx_cor_reset(struct orinoco_private *priv)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	struct orinoco_pci_card *card = priv->card;
 	unsigned long timeout;
 	u16 reg;
@@ -273,7 +297,10 @@ static int orinoco_plx_init_one(struct pci_dev *pdev,
 	free_irq(pdev->irq, priv);
 
  fail_irq:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_orinocodev(priv);
 
  fail_alloc:
@@ -294,14 +321,21 @@ static int orinoco_plx_init_one(struct pci_dev *pdev,
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit orinoco_plx_remove_one(struct pci_dev *pdev)
+=======
+static void orinoco_plx_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct orinoco_private *priv = pci_get_drvdata(pdev);
 	struct orinoco_pci_card *card = priv->card;
 
 	orinoco_if_del(priv);
 	free_irq(pdev->irq, priv);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_orinocodev(priv);
 	pci_iounmap(pdev, priv->hw.iobase);
 	pci_iounmap(pdev, card->attr_io);
@@ -334,7 +368,11 @@ static struct pci_driver orinoco_plx_driver = {
 	.name		= DRIVER_NAME,
 	.id_table	= orinoco_plx_id_table,
 	.probe		= orinoco_plx_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(orinoco_plx_remove_one),
+=======
+	.remove		= orinoco_plx_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= orinoco_pci_suspend,
 	.resume		= orinoco_pci_resume,
 };

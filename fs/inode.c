@@ -2,6 +2,8 @@
  * (C) 1997 Linus Torvalds
  * (C) 1999 Andrea Arcangeli <andrea@suse.de> (dynamic inode allocation)
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/mm.h>
 #include <linux/dcache.h>
@@ -16,16 +18,44 @@
 #include <linux/swap.h>
 #include <linux/security.h>
 #include <linux/pagemap.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/export.h>
+#include <linux/fs.h>
+#include <linux/mm.h>
+#include <linux/backing-dev.h>
+#include <linux/hash.h>
+#include <linux/swap.h>
+#include <linux/security.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/cdev.h>
 #include <linux/bootmem.h>
 #include <linux/fsnotify.h>
 #include <linux/mount.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/async.h>
 #include <linux/posix_acl.h>
 #include <linux/prefetch.h>
 #include <linux/ima.h>
 #include <linux/cred.h>
 #include <linux/buffer_head.h> /* for inode_has_buffers */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/posix_acl.h>
+#include <linux/prefetch.h>
+#include <linux/buffer_head.h> /* for inode_has_buffers */
+#include <linux/ratelimit.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/list_lru.h>
+>>>>>>> refs/remotes/origin/master
 #include "internal.h"
 
 /*
@@ -33,11 +63,26 @@
  *
  * inode->i_lock protects:
  *   inode->i_state, inode->i_hash, __iget()
+<<<<<<< HEAD
+<<<<<<< HEAD
  * inode_lru_lock protects:
  *   inode_lru, inode->i_lru
  * inode_sb_list_lock protects:
  *   sb->s_inodes, inode->i_sb_list
  * inode_wb_list_lock protects:
+=======
+ * inode->i_sb->s_inode_lru_lock protects:
+=======
+ * Inode LRU list locks protect:
+>>>>>>> refs/remotes/origin/master
+ *   inode->i_sb->s_inode_lru, inode->i_lru
+ * inode_sb_list_lock protects:
+ *   sb->s_inodes, inode->i_sb_list
+ * bdi->wb.list_lock protects:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *   bdi->wb.b_{dirty,io,more_io}, inode->i_wb_list
  * inode_hash_lock protects:
  *   inode_hashtable, inode->i_hash
@@ -46,9 +91,21 @@
  *
  * inode_sb_list_lock
  *   inode->i_lock
+<<<<<<< HEAD
+<<<<<<< HEAD
  *     inode_lru_lock
  *
  * inode_wb_list_lock
+=======
+ *     inode->i_sb->s_inode_lru_lock
+ *
+ * bdi->wb.list_lock
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *     Inode LRU list locks
+ *
+ * bdi->wb.list_lock
+>>>>>>> refs/remotes/origin/master
  *   inode->i_lock
  *
  * inode_hash_lock
@@ -64,6 +121,8 @@ static unsigned int i_hash_shift __read_mostly;
 static struct hlist_head *inode_hashtable __read_mostly;
 static __cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_hash_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static LIST_HEAD(inode_lru);
 static DEFINE_SPINLOCK(inode_lru_lock);
 
@@ -80,6 +139,12 @@ __cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_wb_list_lock);
  * time we are past evict_inodes.
  */
 static DECLARE_RWSEM(iprune_sem);
+=======
+__cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_sb_list_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+__cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_sb_list_lock);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Empty aops. Can be used for the cases where the user does not
@@ -94,7 +159,12 @@ EXPORT_SYMBOL(empty_aops);
  */
 struct inodes_stat_t inodes_stat;
 
+<<<<<<< HEAD
 static DEFINE_PER_CPU(unsigned int, nr_inodes);
+<<<<<<< HEAD
+=======
+static DEFINE_PER_CPU(unsigned int, nr_unused);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct kmem_cache *inode_cachep __read_mostly;
 
@@ -102,20 +172,55 @@ static int get_nr_inodes(void)
 {
 	int i;
 	int sum = 0;
+=======
+static DEFINE_PER_CPU(unsigned long, nr_inodes);
+static DEFINE_PER_CPU(unsigned long, nr_unused);
+
+static struct kmem_cache *inode_cachep __read_mostly;
+
+static long get_nr_inodes(void)
+{
+	int i;
+	long sum = 0;
+>>>>>>> refs/remotes/origin/master
 	for_each_possible_cpu(i)
 		sum += per_cpu(nr_inodes, i);
 	return sum < 0 ? 0 : sum;
 }
 
+<<<<<<< HEAD
 static inline int get_nr_inodes_unused(void)
 {
+<<<<<<< HEAD
 	return inodes_stat.nr_unused;
+=======
+	int i;
+	int sum = 0;
+	for_each_possible_cpu(i)
+		sum += per_cpu(nr_unused, i);
+	return sum < 0 ? 0 : sum;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int get_nr_dirty_inodes(void)
 {
 	/* not actually dirty inodes, but a wild approximation */
 	int nr_dirty = get_nr_inodes() - get_nr_inodes_unused();
+=======
+static inline long get_nr_inodes_unused(void)
+{
+	int i;
+	long sum = 0;
+	for_each_possible_cpu(i)
+		sum += per_cpu(nr_unused, i);
+	return sum < 0 ? 0 : sum;
+}
+
+long get_nr_dirty_inodes(void)
+{
+	/* not actually dirty inodes, but a wild approximation */
+	long nr_dirty = get_nr_inodes() - get_nr_inodes_unused();
+>>>>>>> refs/remotes/origin/master
 	return nr_dirty > 0 ? nr_dirty : 0;
 }
 
@@ -127,7 +232,16 @@ int proc_nr_inodes(ctl_table *table, int write,
 		   void __user *buffer, size_t *lenp, loff_t *ppos)
 {
 	inodes_stat.nr_inodes = get_nr_inodes();
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	inodes_stat.nr_unused = get_nr_inodes_unused();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return proc_dointvec(table, write, buffer, lenp, ppos);
+=======
+	inodes_stat.nr_unused = get_nr_inodes_unused();
+	return proc_doulongvec_minmax(table, write, buffer, lenp, ppos);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -151,9 +265,21 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
 	atomic_set(&inode->i_count, 1);
 	inode->i_op = &empty_iops;
 	inode->i_fop = &empty_fops;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 1;
+=======
+	inode->__i_nlink = 1;
+	inode->i_opflags = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_uid = 0;
 	inode->i_gid = 0;
+=======
+	inode->__i_nlink = 1;
+	inode->i_opflags = 0;
+	i_uid_write(inode, 0);
+	i_gid_write(inode, 0);
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&inode->i_writecount, 0);
 	inode->i_size = 0;
 	inode->i_blocks = 0;
@@ -176,14 +302,26 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
 	mutex_init(&inode->i_mutex);
 	lockdep_set_class(&inode->i_mutex, &sb->s_type->i_mutex_key);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	init_rwsem(&inode->i_alloc_sem);
 	lockdep_set_class(&inode->i_alloc_sem, &sb->s_type->i_alloc_sem_key);
+=======
+	atomic_set(&inode->i_dio_count, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&inode->i_dio_count, 0);
+>>>>>>> refs/remotes/origin/master
 
 	mapping->a_ops = &empty_aops;
 	mapping->host = inode;
 	mapping->flags = 0;
 	mapping_set_gfp_mask(mapping, GFP_HIGHUSER_MOVABLE);
+<<<<<<< HEAD
 	mapping->assoc_mapping = NULL;
+=======
+	mapping->private_data = NULL;
+>>>>>>> refs/remotes/origin/master
 	mapping->backing_dev_info = &default_backing_dev_info;
 	mapping->writeback_index = 0;
 
@@ -200,6 +338,14 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
 	}
 	inode->i_private = NULL;
 	inode->i_mapping = mapping;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&inode->i_dentry);	/* buggered by rcu freeing */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_HLIST_HEAD(&inode->i_dentry);	/* buggered by rcu freeing */
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FS_POSIX_ACL
 	inode->i_acl = inode->i_default_acl = ACL_NOT_CACHED;
 #endif
@@ -250,6 +396,20 @@ void __destroy_inode(struct inode *inode)
 	BUG_ON(inode_has_buffers(inode));
 	security_inode_free(inode);
 	fsnotify_inode_delete(inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!inode->i_nlink) {
+		WARN_ON(atomic_long_read(&inode->i_sb->s_remove_count) == 0);
+		atomic_long_dec(&inode->i_sb->s_remove_count);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FS_POSIX_ACL
 	if (inode->i_acl && inode->i_acl != ACL_NOT_CACHED)
 		posix_acl_release(inode->i_acl);
@@ -263,7 +423,13 @@ EXPORT_SYMBOL(__destroy_inode);
 static void i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(inode_cachep, inode);
 }
 
@@ -277,6 +443,98 @@ static void destroy_inode(struct inode *inode)
 		call_rcu(&inode->i_rcu, i_callback);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * drop_nlink - directly drop an inode's link count
+ * @inode: inode
+ *
+ * This is a low-level filesystem helper to replace any
+ * direct filesystem manipulation of i_nlink.  In cases
+ * where we are attempting to track writes to the
+ * filesystem, a decrement to zero means an imminent
+ * write when the file is truncated and actually unlinked
+ * on the filesystem.
+ */
+void drop_nlink(struct inode *inode)
+{
+	WARN_ON(inode->i_nlink == 0);
+	inode->__i_nlink--;
+	if (!inode->i_nlink)
+		atomic_long_inc(&inode->i_sb->s_remove_count);
+}
+EXPORT_SYMBOL(drop_nlink);
+
+/**
+ * clear_nlink - directly zero an inode's link count
+ * @inode: inode
+ *
+ * This is a low-level filesystem helper to replace any
+ * direct filesystem manipulation of i_nlink.  See
+ * drop_nlink() for why we care about i_nlink hitting zero.
+ */
+void clear_nlink(struct inode *inode)
+{
+	if (inode->i_nlink) {
+		inode->__i_nlink = 0;
+		atomic_long_inc(&inode->i_sb->s_remove_count);
+	}
+}
+EXPORT_SYMBOL(clear_nlink);
+
+/**
+ * set_nlink - directly set an inode's link count
+ * @inode: inode
+ * @nlink: new nlink (should be non-zero)
+ *
+ * This is a low-level filesystem helper to replace any
+ * direct filesystem manipulation of i_nlink.
+ */
+void set_nlink(struct inode *inode, unsigned int nlink)
+{
+	if (!nlink) {
+		clear_nlink(inode);
+	} else {
+		/* Yes, some filesystems do change nlink from zero to one */
+		if (inode->i_nlink == 0)
+			atomic_long_dec(&inode->i_sb->s_remove_count);
+
+		inode->__i_nlink = nlink;
+	}
+}
+EXPORT_SYMBOL(set_nlink);
+
+/**
+ * inc_nlink - directly increment an inode's link count
+ * @inode: inode
+ *
+ * This is a low-level filesystem helper to replace any
+ * direct filesystem manipulation of i_nlink.  Currently,
+ * it is only here for parity with dec_nlink().
+ */
+void inc_nlink(struct inode *inode)
+{
+<<<<<<< HEAD
+	if (WARN_ON(inode->i_nlink == 0))
+		atomic_long_dec(&inode->i_sb->s_remove_count);
+=======
+	if (unlikely(inode->i_nlink == 0)) {
+		WARN_ON(!(inode->i_state & I_LINKABLE));
+		atomic_long_dec(&inode->i_sb->s_remove_count);
+	}
+>>>>>>> refs/remotes/origin/master
+
+	inode->__i_nlink++;
+}
+EXPORT_SYMBOL(inc_nlink);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void address_space_init_once(struct address_space *mapping)
 {
 	memset(mapping, 0, sizeof(*mapping));
@@ -285,7 +543,11 @@ void address_space_init_once(struct address_space *mapping)
 	mutex_init(&mapping->i_mmap_mutex);
 	INIT_LIST_HEAD(&mapping->private_list);
 	spin_lock_init(&mapping->private_lock);
+<<<<<<< HEAD
 	INIT_RAW_PRIO_TREE_ROOT(&mapping->i_mmap);
+=======
+	mapping->i_mmap = RB_ROOT;
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&mapping->i_mmap_nonlinear);
 }
 EXPORT_SYMBOL(address_space_init_once);
@@ -299,7 +561,13 @@ void inode_init_once(struct inode *inode)
 {
 	memset(inode, 0, sizeof(*inode));
 	INIT_HLIST_NODE(&inode->i_hash);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&inode->i_devices);
 	INIT_LIST_HEAD(&inode->i_wb_list);
 	INIT_LIST_HEAD(&inode->i_lru);
@@ -337,22 +605,67 @@ EXPORT_SYMBOL(ihold);
 
 static void inode_lru_list_add(struct inode *inode)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode_lru_lock);
 	if (list_empty(&inode->i_lru)) {
 		list_add(&inode->i_lru, &inode_lru);
 		inodes_stat.nr_unused++;
 	}
 	spin_unlock(&inode_lru_lock);
+=======
+	spin_lock(&inode->i_sb->s_inode_lru_lock);
+	if (list_empty(&inode->i_lru)) {
+		list_add(&inode->i_lru, &inode->i_sb->s_inode_lru);
+		inode->i_sb->s_nr_inodes_unused++;
+		this_cpu_inc(nr_unused);
+	}
+	spin_unlock(&inode->i_sb->s_inode_lru_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void inode_lru_list_del(struct inode *inode)
 {
+<<<<<<< HEAD
 	spin_lock(&inode_lru_lock);
 	if (!list_empty(&inode->i_lru)) {
 		list_del_init(&inode->i_lru);
 		inodes_stat.nr_unused--;
 	}
 	spin_unlock(&inode_lru_lock);
+=======
+	spin_lock(&inode->i_sb->s_inode_lru_lock);
+	if (!list_empty(&inode->i_lru)) {
+		list_del_init(&inode->i_lru);
+		inode->i_sb->s_nr_inodes_unused--;
+		this_cpu_dec(nr_unused);
+	}
+	spin_unlock(&inode->i_sb->s_inode_lru_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (list_lru_add(&inode->i_sb->s_inode_lru, &inode->i_lru))
+		this_cpu_inc(nr_unused);
+}
+
+/*
+ * Add inode to LRU if needed (inode is unused and clean).
+ *
+ * Needs inode->i_lock held.
+ */
+void inode_add_lru(struct inode *inode)
+{
+	if (!(inode->i_state & (I_DIRTY | I_SYNC | I_FREEING | I_WILL_FREE)) &&
+	    !atomic_read(&inode->i_count) && inode->i_sb->s_flags & MS_ACTIVE)
+		inode_lru_list_add(inode);
+}
+
+
+static void inode_lru_list_del(struct inode *inode)
+{
+
+	if (list_lru_del(&inode->i_sb->s_inode_lru, &inode->i_lru))
+		this_cpu_dec(nr_unused);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -407,12 +720,28 @@ void __insert_inode_hash(struct inode *inode, unsigned long hashval)
 EXPORT_SYMBOL(__insert_inode_hash);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	remove_inode_hash - remove an inode from the hash
+=======
+ *	__remove_inode_hash - remove an inode from the hash
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	__remove_inode_hash - remove an inode from the hash
+>>>>>>> refs/remotes/origin/master
  *	@inode: inode to unhash
  *
  *	Remove an inode from the superblock.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void remove_inode_hash(struct inode *inode)
+=======
+void __remove_inode_hash(struct inode *inode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __remove_inode_hash(struct inode *inode)
+>>>>>>> refs/remotes/origin/master
 {
 	spin_lock(&inode_hash_lock);
 	spin_lock(&inode->i_lock);
@@ -420,9 +749,19 @@ void remove_inode_hash(struct inode *inode)
 	spin_unlock(&inode->i_lock);
 	spin_unlock(&inode_hash_lock);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(remove_inode_hash);
+=======
+EXPORT_SYMBOL(__remove_inode_hash);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void end_writeback(struct inode *inode)
+=======
+EXPORT_SYMBOL(__remove_inode_hash);
+
+void clear_inode(struct inode *inode)
+>>>>>>> refs/remotes/origin/master
 {
 	might_sleep();
 	/*
@@ -436,11 +775,18 @@ void end_writeback(struct inode *inode)
 	BUG_ON(!list_empty(&inode->i_data.private_list));
 	BUG_ON(!(inode->i_state & I_FREEING));
 	BUG_ON(inode->i_state & I_CLEAR);
+<<<<<<< HEAD
 	inode_sync_wait(inode);
 	/* don't need i_lock here, no concurrent mods to i_state */
 	inode->i_state = I_FREEING | I_CLEAR;
 }
 EXPORT_SYMBOL(end_writeback);
+=======
+	/* don't need i_lock here, no concurrent mods to i_state */
+	inode->i_state = I_FREEING | I_CLEAR;
+}
+EXPORT_SYMBOL(clear_inode);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Free the inode passed in, removing it from the lists it is still connected
@@ -462,15 +808,41 @@ static void evict(struct inode *inode)
 	BUG_ON(!(inode->i_state & I_FREEING));
 	BUG_ON(!list_empty(&inode->i_lru));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode_wb_list_del(inode);
+=======
+	if (!list_empty(&inode->i_wb_list))
+		inode_wb_list_del(inode);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode_sb_list_del(inode);
 
+=======
+	if (!list_empty(&inode->i_wb_list))
+		inode_wb_list_del(inode);
+
+	inode_sb_list_del(inode);
+
+	/*
+	 * Wait for flusher thread to be done with the inode so that filesystem
+	 * does not start destroying it while writeback is still running. Since
+	 * the inode has I_FREEING set, flusher thread won't start new work on
+	 * the inode.  We just have to wait for running writeback to finish.
+	 */
+	inode_wait_for_writeback(inode);
+
+>>>>>>> refs/remotes/origin/master
 	if (op->evict_inode) {
 		op->evict_inode(inode);
 	} else {
 		if (inode->i_data.nrpages)
 			truncate_inode_pages(&inode->i_data, 0);
+<<<<<<< HEAD
 		end_writeback(inode);
+=======
+		clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (S_ISBLK(inode->i_mode) && inode->i_bdev)
 		bd_forget(inode);
@@ -539,6 +911,8 @@ void evict_inodes(struct super_block *sb)
 	spin_unlock(&inode_sb_list_lock);
 
 	dispose_list(&dispose);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/*
 	 * Cycle through iprune_sem to make sure any inode that prune_icache
@@ -547,6 +921,10 @@ void evict_inodes(struct super_block *sb)
 	 */
 	down_write(&iprune_sem);
 	up_write(&iprune_sem);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -595,6 +973,7 @@ int invalidate_inodes(struct super_block *sb, bool kill_dirty)
 	return busy;
 }
 
+<<<<<<< HEAD
 static int can_unuse(struct inode *inode)
 {
 	if (inode->i_state & ~I_REFERENCED)
@@ -609,8 +988,19 @@ static int can_unuse(struct inode *inode)
 }
 
 /*
+<<<<<<< HEAD
  * Scan `goal' inodes on the unused list for freeable ones. They are moved to a
  * temporary list and then are freed outside inode_lru_lock by dispose_list().
+=======
+ * Walk the superblock inode LRU for freeable inodes and attempt to free them.
+ * This is called from the superblock shrinker function with a number of inodes
+ * to trim from the LRU. Inodes to be freed are moved to a temporary list and
+ * then are freed outside inode_lock by dispose_list().
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Isolate the inode from the LRU in preparation for freeing it.
+>>>>>>> refs/remotes/origin/master
  *
  * Any inodes which are pinned purely because of attached pagecache have their
  * pagecache removed.  If the inode has metadata buffers attached to
@@ -624,12 +1014,18 @@ static int can_unuse(struct inode *inode)
  * LRU does not have strict ordering. Hence we don't want to reclaim inodes
  * with this flag set because they are the inodes that are out of order.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void prune_icache(int nr_to_scan)
+=======
+void prune_icache_sb(struct super_block *sb, int nr_to_scan)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	LIST_HEAD(freeable);
 	int nr_scanned;
 	unsigned long reap = 0;
 
+<<<<<<< HEAD
 	down_read(&iprune_sem);
 	spin_lock(&inode_lru_lock);
 	for (nr_scanned = 0; nr_scanned < nr_to_scan; nr_scanned++) {
@@ -642,11 +1038,32 @@ static void prune_icache(int nr_to_scan)
 
 		/*
 		 * we are inverting the inode_lru_lock/inode->i_lock here,
+=======
+	spin_lock(&sb->s_inode_lru_lock);
+	for (nr_scanned = nr_to_scan; nr_scanned >= 0; nr_scanned--) {
+		struct inode *inode;
+
+		if (list_empty(&sb->s_inode_lru))
+			break;
+
+		inode = list_entry(sb->s_inode_lru.prev, struct inode, i_lru);
+
+		/*
+		 * we are inverting the sb->s_inode_lru_lock/inode->i_lock here,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * so use a trylock. If we fail to get the lock, just move the
 		 * inode to the back of the list so we don't spin on it.
 		 */
 		if (!spin_trylock(&inode->i_lock)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			list_move(&inode->i_lru, &inode_lru);
+=======
+			list_move(&inode->i_lru, &sb->s_inode_lru);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			list_move(&inode->i_lru, &sb->s_inode_lru);
+>>>>>>> refs/remotes/origin/cm-11.0
 			continue;
 		}
 
@@ -658,28 +1075,47 @@ static void prune_icache(int nr_to_scan)
 		    (inode->i_state & ~I_REFERENCED)) {
 			list_del_init(&inode->i_lru);
 			spin_unlock(&inode->i_lock);
+<<<<<<< HEAD
 			inodes_stat.nr_unused--;
+=======
+			sb->s_nr_inodes_unused--;
+			this_cpu_dec(nr_unused);
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 		}
 
 		/* recently referenced inodes get one more pass */
 		if (inode->i_state & I_REFERENCED) {
 			inode->i_state &= ~I_REFERENCED;
+<<<<<<< HEAD
 			list_move(&inode->i_lru, &inode_lru);
+=======
+			list_move(&inode->i_lru, &sb->s_inode_lru);
+>>>>>>> refs/remotes/origin/cm-10.0
 			spin_unlock(&inode->i_lock);
 			continue;
 		}
 		if (inode_has_buffers(inode) || inode->i_data.nrpages) {
 			__iget(inode);
 			spin_unlock(&inode->i_lock);
+<<<<<<< HEAD
 			spin_unlock(&inode_lru_lock);
+=======
+			spin_unlock(&sb->s_inode_lru_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (remove_inode_buffers(inode))
 				reap += invalidate_mapping_pages(&inode->i_data,
 								0, -1);
 			iput(inode);
+<<<<<<< HEAD
 			spin_lock(&inode_lru_lock);
 
 			if (inode != list_entry(inode_lru.next,
+=======
+			spin_lock(&sb->s_inode_lru_lock);
+
+			if (inode != list_entry(sb->s_inode_lru.next,
+>>>>>>> refs/remotes/origin/cm-10.0
 						struct inode, i_lru))
 				continue;	/* wrong inode or list_empty */
 			/* avoid lock inversions with trylock */
@@ -695,12 +1131,18 @@ static void prune_icache(int nr_to_scan)
 		spin_unlock(&inode->i_lock);
 
 		list_move(&inode->i_lru, &freeable);
+<<<<<<< HEAD
 		inodes_stat.nr_unused--;
+=======
+		sb->s_nr_inodes_unused--;
+		this_cpu_dec(nr_unused);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (current_is_kswapd())
 		__count_vm_events(KSWAPD_INODESTEAL, reap);
 	else
 		__count_vm_events(PGINODESTEAL, reap);
+<<<<<<< HEAD
 	spin_unlock(&inode_lru_lock);
 
 	dispose_list(&freeable);
@@ -740,6 +1182,95 @@ static struct shrinker icache_shrinker = {
 	.seeks = DEFAULT_SEEKS,
 };
 
+=======
+	spin_unlock(&sb->s_inode_lru_lock);
+	if (current->reclaim_state)
+		current->reclaim_state->reclaimed_slab += reap;
+
+	dispose_list(&freeable);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static enum lru_status
+inode_lru_isolate(struct list_head *item, spinlock_t *lru_lock, void *arg)
+{
+	struct list_head *freeable = arg;
+	struct inode	*inode = container_of(item, struct inode, i_lru);
+
+	/*
+	 * we are inverting the lru lock/inode->i_lock here, so use a trylock.
+	 * If we fail to get the lock, just skip it.
+	 */
+	if (!spin_trylock(&inode->i_lock))
+		return LRU_SKIP;
+
+	/*
+	 * Referenced or dirty inodes are still in use. Give them another pass
+	 * through the LRU as we canot reclaim them now.
+	 */
+	if (atomic_read(&inode->i_count) ||
+	    (inode->i_state & ~I_REFERENCED)) {
+		list_del_init(&inode->i_lru);
+		spin_unlock(&inode->i_lock);
+		this_cpu_dec(nr_unused);
+		return LRU_REMOVED;
+	}
+
+	/* recently referenced inodes get one more pass */
+	if (inode->i_state & I_REFERENCED) {
+		inode->i_state &= ~I_REFERENCED;
+		spin_unlock(&inode->i_lock);
+		return LRU_ROTATE;
+	}
+
+	if (inode_has_buffers(inode) || inode->i_data.nrpages) {
+		__iget(inode);
+		spin_unlock(&inode->i_lock);
+		spin_unlock(lru_lock);
+		if (remove_inode_buffers(inode)) {
+			unsigned long reap;
+			reap = invalidate_mapping_pages(&inode->i_data, 0, -1);
+			if (current_is_kswapd())
+				__count_vm_events(KSWAPD_INODESTEAL, reap);
+			else
+				__count_vm_events(PGINODESTEAL, reap);
+			if (current->reclaim_state)
+				current->reclaim_state->reclaimed_slab += reap;
+		}
+		iput(inode);
+		spin_lock(lru_lock);
+		return LRU_RETRY;
+	}
+
+	WARN_ON(inode->i_state & I_NEW);
+	inode->i_state |= I_FREEING;
+	list_move(&inode->i_lru, freeable);
+	spin_unlock(&inode->i_lock);
+
+	this_cpu_dec(nr_unused);
+	return LRU_REMOVED;
+}
+
+/*
+ * Walk the superblock inode LRU for freeable inodes and attempt to free them.
+ * This is called from the superblock shrinker function with a number of inodes
+ * to trim from the LRU. Inodes to be freed are moved to a temporary list and
+ * then are freed outside inode_lock by dispose_list().
+ */
+long prune_icache_sb(struct super_block *sb, unsigned long nr_to_scan,
+		     int nid)
+{
+	LIST_HEAD(freeable);
+	long freed;
+
+	freed = list_lru_walk_node(&sb->s_inode_lru, nid, inode_lru_isolate,
+				       &freeable, &nr_to_scan);
+	dispose_list(&freeable);
+	return freed;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void __wait_on_freeing_inode(struct inode *inode);
 /*
  * Called with the inode lock held.
@@ -749,6 +1280,7 @@ static struct inode *find_inode(struct super_block *sb,
 				int (*test)(struct inode *, void *),
 				void *data)
 {
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct inode *inode = NULL;
 
@@ -763,6 +1295,17 @@ repeat:
 			spin_unlock(&inode->i_lock);
 			continue;
 		}
+=======
+	struct inode *inode = NULL;
+
+repeat:
+	hlist_for_each_entry(inode, head, i_hash) {
+		if (inode->i_sb != sb)
+			continue;
+		if (!test(inode, data))
+			continue;
+		spin_lock(&inode->i_lock);
+>>>>>>> refs/remotes/origin/master
 		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
 			__wait_on_freeing_inode(inode);
 			goto repeat;
@@ -781,6 +1324,7 @@ repeat:
 static struct inode *find_inode_fast(struct super_block *sb,
 				struct hlist_head *head, unsigned long ino)
 {
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct inode *inode = NULL;
 
@@ -795,6 +1339,17 @@ repeat:
 			spin_unlock(&inode->i_lock);
 			continue;
 		}
+=======
+	struct inode *inode = NULL;
+
+repeat:
+	hlist_for_each_entry(inode, head, i_hash) {
+		if (inode->i_ino != ino)
+			continue;
+		if (inode->i_sb != sb)
+			continue;
+		spin_lock(&inode->i_lock);
+>>>>>>> refs/remotes/origin/master
 		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
 			__wait_on_freeing_inode(inode);
 			goto repeat;
@@ -892,6 +1447,8 @@ struct inode *new_inode(struct super_block *sb)
 }
 EXPORT_SYMBOL(new_inode);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * unlock_new_inode - clear the I_NEW state and wake up any waiters
  * @inode:	new inode to unlock
@@ -902,12 +1459,30 @@ EXPORT_SYMBOL(new_inode);
 void unlock_new_inode(struct inode *inode)
 {
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
+=======
+#ifdef CONFIG_DEBUG_LOCK_ALLOC
+void lockdep_annotate_inode_mutex_key(struct inode *inode)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_DEBUG_LOCK_ALLOC
+void lockdep_annotate_inode_mutex_key(struct inode *inode)
+{
+>>>>>>> refs/remotes/origin/master
 	if (S_ISDIR(inode->i_mode)) {
 		struct file_system_type *type = inode->i_sb->s_type;
 
 		/* Set new key only if filesystem hasn't already changed it */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!lockdep_match_class(&inode->i_mutex,
 		    &type->i_mutex_key)) {
+=======
+		if (lockdep_match_class(&inode->i_mutex, &type->i_mutex_key)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (lockdep_match_class(&inode->i_mutex, &type->i_mutex_key)) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * ensure nobody is actually holding i_mutex
 			 */
@@ -917,16 +1492,82 @@ void unlock_new_inode(struct inode *inode)
 					  &type->i_mutex_dir_key);
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 	spin_lock(&inode->i_lock);
 	WARN_ON(!(inode->i_state & I_NEW));
 	inode->i_state &= ~I_NEW;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+}
+EXPORT_SYMBOL(lockdep_annotate_inode_mutex_key);
+#endif
+
+/**
+ * unlock_new_inode - clear the I_NEW state and wake up any waiters
+ * @inode:	new inode to unlock
+ *
+ * Called when the inode is fully initialised to clear the new state of the
+ * inode and wake up anyone waiting for the inode to finish initialisation.
+ */
+void unlock_new_inode(struct inode *inode)
+{
+	lockdep_annotate_inode_mutex_key(inode);
+	spin_lock(&inode->i_lock);
+	WARN_ON(!(inode->i_state & I_NEW));
+	inode->i_state &= ~I_NEW;
+	smp_mb();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wake_up_bit(&inode->i_state, __I_NEW);
 	spin_unlock(&inode->i_lock);
 }
 EXPORT_SYMBOL(unlock_new_inode);
 
 /**
+<<<<<<< HEAD
+=======
+ * lock_two_nondirectories - take two i_mutexes on non-directory objects
+ * @inode1: first inode to lock
+ * @inode2: second inode to lock
+ */
+void lock_two_nondirectories(struct inode *inode1, struct inode *inode2)
+{
+	WARN_ON_ONCE(S_ISDIR(inode1->i_mode));
+	if (inode1 == inode2 || !inode2) {
+		mutex_lock(&inode1->i_mutex);
+		return;
+	}
+	WARN_ON_ONCE(S_ISDIR(inode2->i_mode));
+	if (inode1 < inode2) {
+		mutex_lock(&inode1->i_mutex);
+		mutex_lock_nested(&inode2->i_mutex, I_MUTEX_NONDIR2);
+	} else {
+		mutex_lock(&inode2->i_mutex);
+		mutex_lock_nested(&inode1->i_mutex, I_MUTEX_NONDIR2);
+	}
+}
+EXPORT_SYMBOL(lock_two_nondirectories);
+
+/**
+ * unlock_two_nondirectories - release locks from lock_two_nondirectories()
+ * @inode1: first inode to unlock
+ * @inode2: second inode to unlock
+ */
+void unlock_two_nondirectories(struct inode *inode1, struct inode *inode2)
+{
+	mutex_unlock(&inode1->i_mutex);
+	if (inode2 && inode2 != inode1)
+		mutex_unlock(&inode2->i_mutex);
+}
+EXPORT_SYMBOL(unlock_two_nondirectories);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * iget5_locked - obtain an inode from a mounted file system
  * @sb:		super block of file system
  * @hashval:	hash value (usually inode number) to get
@@ -1077,11 +1718,18 @@ EXPORT_SYMBOL(iget_locked);
 static int test_inode_iunique(struct super_block *sb, unsigned long ino)
 {
 	struct hlist_head *b = inode_hashtable + hash(sb, ino);
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct inode *inode;
 
 	spin_lock(&inode_hash_lock);
 	hlist_for_each_entry(inode, node, b, i_hash) {
+=======
+	struct inode *inode;
+
+	spin_lock(&inode_hash_lock);
+	hlist_for_each_entry(inode, b, i_hash) {
+>>>>>>> refs/remotes/origin/master
 		if (inode->i_ino == ino && inode->i_sb == sb) {
 			spin_unlock(&inode_hash_lock);
 			return 0;
@@ -1236,10 +1884,16 @@ int insert_inode_locked(struct inode *inode)
 	struct hlist_head *head = inode_hashtable + hash(sb, ino);
 
 	while (1) {
+<<<<<<< HEAD
 		struct hlist_node *node;
 		struct inode *old = NULL;
 		spin_lock(&inode_hash_lock);
 		hlist_for_each_entry(old, node, head, i_hash) {
+=======
+		struct inode *old = NULL;
+		spin_lock(&inode_hash_lock);
+		hlist_for_each_entry(old, head, i_hash) {
+>>>>>>> refs/remotes/origin/master
 			if (old->i_ino != ino)
 				continue;
 			if (old->i_sb != sb)
@@ -1251,7 +1905,11 @@ int insert_inode_locked(struct inode *inode)
 			}
 			break;
 		}
+<<<<<<< HEAD
 		if (likely(!node)) {
+=======
+		if (likely(!old)) {
+>>>>>>> refs/remotes/origin/master
 			spin_lock(&inode->i_lock);
 			inode->i_state |= I_NEW;
 			hlist_add_head(&inode->i_hash, head);
@@ -1279,11 +1937,18 @@ int insert_inode_locked4(struct inode *inode, unsigned long hashval,
 	struct hlist_head *head = inode_hashtable + hash(sb, hashval);
 
 	while (1) {
+<<<<<<< HEAD
 		struct hlist_node *node;
 		struct inode *old = NULL;
 
 		spin_lock(&inode_hash_lock);
 		hlist_for_each_entry(old, node, head, i_hash) {
+=======
+		struct inode *old = NULL;
+
+		spin_lock(&inode_hash_lock);
+		hlist_for_each_entry(old, head, i_hash) {
+>>>>>>> refs/remotes/origin/master
 			if (old->i_sb != sb)
 				continue;
 			if (!test(old, data))
@@ -1295,7 +1960,11 @@ int insert_inode_locked4(struct inode *inode, unsigned long hashval,
 			}
 			break;
 		}
+<<<<<<< HEAD
 		if (likely(!node)) {
+=======
+		if (likely(!old)) {
+>>>>>>> refs/remotes/origin/master
 			spin_lock(&inode->i_lock);
 			inode->i_state |= I_NEW;
 			hlist_add_head(&inode->i_hash, head);
@@ -1324,6 +1993,8 @@ int generic_delete_inode(struct inode *inode)
 EXPORT_SYMBOL(generic_delete_inode);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Normal UNIX filesystem behaviour: delete the
  * inode when the usage count drops to zero, and
  * i_nlink is zero.
@@ -1335,6 +2006,10 @@ int generic_drop_inode(struct inode *inode)
 EXPORT_SYMBOL_GPL(generic_drop_inode);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Called when we're dropping the last reference
  * to an inode.
  *
@@ -1352,15 +2027,27 @@ static void iput_final(struct inode *inode)
 
 	WARN_ON(inode->i_state & I_NEW);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (op && op->drop_inode)
+=======
+	if (op->drop_inode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (op->drop_inode)
+>>>>>>> refs/remotes/origin/master
 		drop = op->drop_inode(inode);
 	else
 		drop = generic_drop_inode(inode);
 
 	if (!drop && (sb->s_flags & MS_ACTIVE)) {
 		inode->i_state |= I_REFERENCED;
+<<<<<<< HEAD
 		if (!(inode->i_state & (I_DIRTY|I_SYNC)))
 			inode_lru_list_add(inode);
+=======
+		inode_add_lru(inode);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&inode->i_lock);
 		return;
 	}
@@ -1375,7 +2062,17 @@ static void iput_final(struct inode *inode)
 	}
 
 	inode->i_state |= I_FREEING;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode_lru_list_del(inode);
+=======
+	if (!list_empty(&inode->i_lru))
+		inode_lru_list_del(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!list_empty(&inode->i_lru))
+		inode_lru_list_del(inode);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&inode->i_lock);
 
 	evict(inode);
@@ -1455,18 +2152,59 @@ static int relatime_need_update(struct vfsmount *mnt, struct inode *inode,
 	return 0;
 }
 
+<<<<<<< HEAD
 /**
  *	touch_atime	-	update the access time
  *	@mnt: mount the inode is accessed on
  *	@dentry: dentry accessed
+=======
+/*
+ * This does the actual work of updating an inodes time or version.  Must have
+ * had called mnt_want_write() before calling this.
+ */
+static int update_time(struct inode *inode, struct timespec *time, int flags)
+{
+	if (inode->i_op->update_time)
+		return inode->i_op->update_time(inode, time, flags);
+
+	if (flags & S_ATIME)
+		inode->i_atime = *time;
+	if (flags & S_VERSION)
+		inode_inc_iversion(inode);
+	if (flags & S_CTIME)
+		inode->i_ctime = *time;
+	if (flags & S_MTIME)
+		inode->i_mtime = *time;
+	mark_inode_dirty_sync(inode);
+	return 0;
+}
+
+/**
+ *	touch_atime	-	update the access time
+ *	@path: the &struct path to update
+>>>>>>> refs/remotes/origin/master
  *
  *	Update the accessed time on an inode and mark it for writeback.
  *	This function automatically handles read only file systems and media,
  *	as well as the "noatime" flag and inode specific "noatime" markers.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void touch_atime(struct vfsmount *mnt, struct dentry *dentry)
 {
 	struct inode *inode = dentry->d_inode;
+=======
+void touch_atime(struct path *path)
+{
+	struct vfsmount *mnt = path->mnt;
+	struct inode *inode = path->dentry->d_inode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void touch_atime(const struct path *path)
+{
+	struct vfsmount *mnt = path->mnt;
+	struct inode *inode = path->dentry->d_inode;
+>>>>>>> refs/remotes/origin/master
 	struct timespec now;
 
 	if (inode->i_flags & S_NOATIME)
@@ -1489,6 +2227,7 @@ void touch_atime(struct vfsmount *mnt, struct dentry *dentry)
 	if (timespec_equal(&inode->i_atime, &now))
 		return;
 
+<<<<<<< HEAD
 	if (mnt_want_write(mnt))
 		return;
 
@@ -1498,6 +2237,98 @@ void touch_atime(struct vfsmount *mnt, struct dentry *dentry)
 }
 EXPORT_SYMBOL(touch_atime);
 
+=======
+	if (!sb_start_write_trylock(inode->i_sb))
+		return;
+
+	if (__mnt_want_write(mnt))
+		goto skip_update;
+	/*
+	 * File systems can error out when updating inodes if they need to
+	 * allocate new space to modify an inode (such is the case for
+	 * Btrfs), but since we touch atime while walking down the path we
+	 * really don't care if we failed to update the atime of the file,
+	 * so just ignore the return value.
+	 * We may also fail on filesystems that have the ability to make parts
+	 * of the fs read only, e.g. subvolumes in Btrfs.
+	 */
+	update_time(inode, &now, S_ATIME);
+	__mnt_drop_write(mnt);
+skip_update:
+	sb_end_write(inode->i_sb);
+}
+EXPORT_SYMBOL(touch_atime);
+
+/*
+ * The logic we want is
+ *
+ *	if suid or (sgid and xgrp)
+ *		remove privs
+ */
+int should_remove_suid(struct dentry *dentry)
+{
+	umode_t mode = dentry->d_inode->i_mode;
+	int kill = 0;
+
+	/* suid always must be killed */
+	if (unlikely(mode & S_ISUID))
+		kill = ATTR_KILL_SUID;
+
+	/*
+	 * sgid without any exec bits is just a mandatory locking mark; leave
+	 * it alone.  If some exec bits are set, it's a real sgid; kill it.
+	 */
+	if (unlikely((mode & S_ISGID) && (mode & S_IXGRP)))
+		kill |= ATTR_KILL_SGID;
+
+	if (unlikely(kill && !capable(CAP_FSETID) && S_ISREG(mode)))
+		return kill;
+
+	return 0;
+}
+EXPORT_SYMBOL(should_remove_suid);
+
+static int __remove_suid(struct dentry *dentry, int kill)
+{
+	struct iattr newattrs;
+
+	newattrs.ia_valid = ATTR_FORCE | kill;
+	/*
+	 * Note we call this on write, so notify_change will not
+	 * encounter any conflicting delegations:
+	 */
+	return notify_change(dentry, &newattrs, NULL);
+}
+
+int file_remove_suid(struct file *file)
+{
+	struct dentry *dentry = file->f_path.dentry;
+	struct inode *inode = dentry->d_inode;
+	int killsuid;
+	int killpriv;
+	int error = 0;
+
+	/* Fast path for nothing security related */
+	if (IS_NOSEC(inode))
+		return 0;
+
+	killsuid = should_remove_suid(dentry);
+	killpriv = security_inode_need_killpriv(dentry);
+
+	if (killpriv < 0)
+		return killpriv;
+	if (killpriv)
+		error = security_inode_killpriv(dentry);
+	if (!error && killsuid)
+		error = __remove_suid(dentry, killsuid);
+	if (!error && (inode->i_sb->s_flags & MS_NOSEC))
+		inode->i_flags |= S_NOSEC;
+
+	return error;
+}
+EXPORT_SYMBOL(file_remove_suid);
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	file_update_time	-	update mtime and ctime time
  *	@file: file accessed
@@ -1507,6 +2338,7 @@ EXPORT_SYMBOL(touch_atime);
  *	usage in the file write path of filesystems, and filesystems may
  *	choose to explicitly ignore update via this function with the
  *	S_NOCMTIME inode flag, e.g. for network filesystem where these
+<<<<<<< HEAD
  *	timestamps are handled by the server.
  */
 
@@ -1519,6 +2351,22 @@ void file_update_time(struct file *file)
 	/* First try to exhaust all avenues to not sync */
 	if (IS_NOCMTIME(inode))
 		return;
+=======
+ *	timestamps are handled by the server.  This can return an error for
+ *	file systems who need to allocate space in order to update an inode.
+ */
+
+int file_update_time(struct file *file)
+{
+	struct inode *inode = file_inode(file);
+	struct timespec now;
+	int sync_it = 0;
+	int ret;
+
+	/* First try to exhaust all avenues to not sync */
+	if (IS_NOCMTIME(inode))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	now = current_fs_time(inode->i_sb);
 	if (!timespec_equal(&inode->i_mtime, &now))
@@ -1531,6 +2379,7 @@ void file_update_time(struct file *file)
 		sync_it |= S_VERSION;
 
 	if (!sync_it)
+<<<<<<< HEAD
 		return;
 
 	/* Finally allowed to write? Takes lock. */
@@ -1545,7 +2394,23 @@ void file_update_time(struct file *file)
 	if (sync_it & S_MTIME)
 		inode->i_mtime = now;
 	mark_inode_dirty_sync(inode);
+<<<<<<< HEAD
 	mnt_drop_write(file->f_path.mnt);
+=======
+	mnt_drop_write_file(file);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 0;
+
+	/* Finally allowed to write? Takes lock. */
+	if (__mnt_want_write_file(file))
+		return 0;
+
+	ret = update_time(inode, &now, sync_it);
+	__mnt_drop_write_file(file);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(file_update_time);
 
@@ -1605,7 +2470,15 @@ __setup("ihash_entries=", set_ihash_entries);
  */
 void __init inode_init_early(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int loop;
+=======
+	unsigned int loop;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int loop;
+>>>>>>> refs/remotes/origin/master
 
 	/* If hashes are distributed across NUMA nodes, defer
 	 * hash allocation until vmalloc space is available.
@@ -1621,15 +2494,34 @@ void __init inode_init_early(void)
 					HASH_EARLY,
 					&i_hash_shift,
 					&i_hash_mask,
+<<<<<<< HEAD
 					0);
 
+<<<<<<< HEAD
 	for (loop = 0; loop < (1 << i_hash_shift); loop++)
+=======
+	for (loop = 0; loop < (1U << i_hash_shift); loop++)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					0,
+					0);
+
+	for (loop = 0; loop < (1U << i_hash_shift); loop++)
+>>>>>>> refs/remotes/origin/master
 		INIT_HLIST_HEAD(&inode_hashtable[loop]);
 }
 
 void __init inode_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int loop;
+=======
+	unsigned int loop;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int loop;
+>>>>>>> refs/remotes/origin/master
 
 	/* inode slab cache */
 	inode_cachep = kmem_cache_create("inode_cache",
@@ -1638,7 +2530,13 @@ void __init inode_init(void)
 					 (SLAB_RECLAIM_ACCOUNT|SLAB_PANIC|
 					 SLAB_MEM_SPREAD),
 					 init_once);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	register_shrinker(&icache_shrinker);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Hash may have been set up in inode_init_early */
 	if (!hashdist)
@@ -1652,9 +2550,20 @@ void __init inode_init(void)
 					0,
 					&i_hash_shift,
 					&i_hash_mask,
+<<<<<<< HEAD
 					0);
 
+<<<<<<< HEAD
 	for (loop = 0; loop < (1 << i_hash_shift); loop++)
+=======
+	for (loop = 0; loop < (1U << i_hash_shift); loop++)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					0,
+					0);
+
+	for (loop = 0; loop < (1U << i_hash_shift); loop++)
+>>>>>>> refs/remotes/origin/master
 		INIT_HLIST_HEAD(&inode_hashtable[loop]);
 }
 
@@ -1668,7 +2577,11 @@ void init_special_inode(struct inode *inode, umode_t mode, dev_t rdev)
 		inode->i_fop = &def_blk_fops;
 		inode->i_rdev = rdev;
 	} else if (S_ISFIFO(mode))
+<<<<<<< HEAD
 		inode->i_fop = &def_fifo_fops;
+=======
+		inode->i_fop = &pipefifo_fops;
+>>>>>>> refs/remotes/origin/master
 	else if (S_ISSOCK(mode))
 		inode->i_fop = &bad_sock_fops;
 	else
@@ -1685,7 +2598,15 @@ EXPORT_SYMBOL(init_special_inode);
  * @mode: mode of the new inode
  */
 void inode_init_owner(struct inode *inode, const struct inode *dir,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			mode_t mode)
+=======
+			umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	inode->i_uid = current_fsuid();
 	if (dir && dir->i_mode & S_ISGID) {
@@ -1707,12 +2628,68 @@ EXPORT_SYMBOL(inode_init_owner);
  */
 bool inode_owner_or_capable(const struct inode *inode)
 {
+<<<<<<< HEAD
 	struct user_namespace *ns = inode_userns(inode);
 
 	if (current_user_ns() == ns && current_fsuid() == inode->i_uid)
 		return true;
 	if (ns_capable(ns, CAP_FOWNER))
+=======
+	if (uid_eq(current_fsuid(), inode->i_uid))
+		return true;
+	if (inode_capable(inode, CAP_FOWNER))
+>>>>>>> refs/remotes/origin/master
 		return true;
 	return false;
 }
 EXPORT_SYMBOL(inode_owner_or_capable);
+<<<<<<< HEAD
+=======
+
+/*
+ * Direct i/o helper functions
+ */
+static void __inode_dio_wait(struct inode *inode)
+{
+	wait_queue_head_t *wq = bit_waitqueue(&inode->i_state, __I_DIO_WAKEUP);
+	DEFINE_WAIT_BIT(q, &inode->i_state, __I_DIO_WAKEUP);
+
+	do {
+		prepare_to_wait(wq, &q.wait, TASK_UNINTERRUPTIBLE);
+		if (atomic_read(&inode->i_dio_count))
+			schedule();
+	} while (atomic_read(&inode->i_dio_count));
+	finish_wait(wq, &q.wait);
+}
+
+/**
+ * inode_dio_wait - wait for outstanding DIO requests to finish
+ * @inode: inode to wait for
+ *
+ * Waits for all pending direct I/O requests to finish so that we can
+ * proceed with a truncate or equivalent operation.
+ *
+ * Must be called under a lock that serializes taking new references
+ * to i_dio_count, usually by inode->i_mutex.
+ */
+void inode_dio_wait(struct inode *inode)
+{
+	if (atomic_read(&inode->i_dio_count))
+		__inode_dio_wait(inode);
+}
+EXPORT_SYMBOL(inode_dio_wait);
+
+/*
+ * inode_dio_done - signal finish of a direct I/O requests
+ * @inode: inode the direct I/O happens on
+ *
+ * This is called once we've finished processing a direct I/O request,
+ * and is used to wake up callers waiting for direct I/O to be quiesced.
+ */
+void inode_dio_done(struct inode *inode)
+{
+	if (atomic_dec_and_test(&inode->i_dio_count))
+		wake_up_bit(&inode->i_state, __I_DIO_WAKEUP);
+}
+EXPORT_SYMBOL(inode_dio_done);
+>>>>>>> refs/remotes/origin/master

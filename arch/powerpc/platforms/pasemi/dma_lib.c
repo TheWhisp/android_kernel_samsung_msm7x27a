@@ -19,10 +19,24 @@
 
 #include <linux/kernel.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/of.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/export.h>
+#include <linux/pci.h>
+#include <linux/slab.h>
+#include <linux/of.h>
+#include <linux/sched.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pasemi_dma.h>
 
@@ -576,7 +590,15 @@ int pasemi_dma_init(void)
 		res.start = 0xfd800000;
 		res.end = res.start + 0x1000;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dma_status = __ioremap(res.start, res.end-res.start, 0);
+=======
+	dma_status = __ioremap(res.start, resource_size(&res), 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_status = __ioremap(res.start, resource_size(&res), 0);
+>>>>>>> refs/remotes/origin/master
 	pci_dev_put(iob_pdev);
 
 	for (i = 0; i < MAX_TXCH; i++)

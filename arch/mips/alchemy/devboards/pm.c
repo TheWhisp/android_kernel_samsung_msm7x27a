@@ -194,7 +194,11 @@ static ssize_t db1x_pmattr_store(struct kobject *kobj,
 }
 
 #define ATTR(x)							\
+<<<<<<< HEAD
 	static struct kobj_attribute x##_attribute = 		\
+=======
+	static struct kobj_attribute x##_attribute =		\
+>>>>>>> refs/remotes/origin/master
 		__ATTR(x, 0664, db1x_pmattr_show,		\
 				db1x_pmattr_store);
 

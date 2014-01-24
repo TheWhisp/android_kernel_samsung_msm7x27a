@@ -26,15 +26,33 @@
 #include <linux/delay.h>
 #include <linux/seq_file.h>
 #include <linux/initrd.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/fsl_devices.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/pgtable.h>
 #include <asm/page.h>
 #include <asm/atomic.h>
+=======
+#include <asm/pgtable.h>
+#include <asm/page.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/pgtable.h>
+#include <asm/page.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/io.h>
 #include <asm/machdep.h>
@@ -49,10 +67,22 @@
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "mpc85xx.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "mpc85xx.h"
+
+>>>>>>> refs/remotes/origin/master
 static int sbc_rev;
 
 static void __init sbc8548_pic_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct mpic *mpic;
 	struct resource r;
 	struct device_node *np = NULL;
@@ -78,6 +108,16 @@ static void __init sbc8548_pic_init(void)
 	/* Return the mpic node */
 	of_node_put(np);
 
+=======
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+>>>>>>> refs/remotes/origin/master
 	mpic_init(mpic);
 }
 
@@ -110,6 +150,7 @@ static int __init sbc8548_hw_rev(void)
  */
 static void __init sbc8548_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
@@ -130,6 +171,13 @@ static void __init sbc8548_setup_arch(void)
 		}
 	}
 #endif
+=======
+	if (ppc_md.progress)
+		ppc_md.progress("sbc8548_setup_arch()", 0);
+
+	fsl_pci_assign_primary();
+
+>>>>>>> refs/remotes/origin/master
 	sbc_rev = sbc8548_hw_rev();
 }
 
@@ -150,6 +198,8 @@ static void sbc8548_show_cpuinfo(struct seq_file *m)
 	seq_printf(m, "PLL setting\t: 0x%x\n", ((phid1 >> 24) & 0x3f));
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_device_id __initdata of_bus_ids[] = {
 	{ .name = "soc", },
 	{ .type = "soc", },
@@ -165,6 +215,12 @@ static int __init declare_of_platform_devices(void)
 	return 0;
 }
 machine_device_initcall(sbc8548, declare_of_platform_devices);
+=======
+machine_device_initcall(sbc8548, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_arch_initcall(sbc8548, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, device-tree isn't unflattened

@@ -1,12 +1,28 @@
 /*
  * adm9240.c	Part of lm_sensors, Linux kernel modules for hardware
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 		monitoring
+=======
+ *		monitoring
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *		monitoring
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 1999	Frodo Looijaard <frodol@dds.nl>
  *			Philip Edelbrock <phil@netroedge.com>
  * Copyright (C) 2003	Michiel Rook <michiel@grendelproject.nl>
  * Copyright (C) 2005	Grant Coady <gcoady.lk@gmail.com> with valuable
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 				guidance from Jean Delvare
+=======
+ *				guidance from Jean Delvare
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *				guidance from Jean Delvare
+>>>>>>> refs/remotes/origin/master
  *
  * Driver supports	Analog Devices		ADM9240
  *			Dallas Semiconductor	DS1780
@@ -50,6 +66,10 @@
 #include <linux/hwmon-vid.h>
 #include <linux/err.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Addresses to scan */
 static const unsigned short normal_i2c[] = { 0x2c, 0x2d, 0x2e, 0x2f,
@@ -97,13 +117,21 @@ static inline unsigned int IN_FROM_REG(u8 reg, int n)
 
 static inline u8 IN_TO_REG(unsigned long val, int n)
 {
+<<<<<<< HEAD
 	return SENSORS_LIMIT(SCALE(val, 192, nom_mv[n]), 0, 255);
+=======
+	return clamp_val(SCALE(val, 192, nom_mv[n]), 0, 255);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* temperature range: -40..125, 127 disables temperature alarm */
 static inline s8 TEMP_TO_REG(long val)
 {
+<<<<<<< HEAD
 	return SENSORS_LIMIT(SCALE(val, 1, 1000), -40, 127);
+=======
+	return clamp_val(SCALE(val, 1, 1000), -40, 127);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* two fans, each with low fan speed limit */
@@ -121,7 +149,11 @@ static inline unsigned int FAN_FROM_REG(u8 reg, u8 div)
 /* analog out 0..1250mV */
 static inline u8 AOUT_TO_REG(unsigned long val)
 {
+<<<<<<< HEAD
 	return SENSORS_LIMIT(SCALE(val, 255, 1250), 0, 255);
+=======
+	return clamp_val(SCALE(val, 255, 1250), 0, 255);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline unsigned int AOUT_FROM_REG(u8 reg)
@@ -204,7 +236,22 @@ static ssize_t set_max(struct device *dev, struct device_attribute *devattr,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm9240_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	long val;
+	int err;
+
+	err = kstrtol(buf, 10, &val);
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_max[attr->index] = TEMP_TO_REG(val);
@@ -255,7 +302,22 @@ static ssize_t set_in_min(struct device *dev,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm9240_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_min[attr->index] = IN_TO_REG(val, attr->index);
@@ -272,7 +334,22 @@ static ssize_t set_in_max(struct device *dev,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm9240_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_max[attr->index] = IN_TO_REG(val, attr->index);
@@ -283,7 +360,15 @@ static ssize_t set_in_max(struct device *dev,
 }
 
 #define vin(nr)							\
+<<<<<<< HEAD
+<<<<<<< HEAD
 static SENSOR_DEVICE_ATTR(in##nr##_input, S_IRUGO, 		\
+=======
+static SENSOR_DEVICE_ATTR(in##nr##_input, S_IRUGO,		\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static SENSOR_DEVICE_ATTR(in##nr##_input, S_IRUGO,		\
+>>>>>>> refs/remotes/origin/master
 		show_in, NULL, nr);				\
 static SENSOR_DEVICE_ATTR(in##nr##_min, S_IRUGO | S_IWUSR,	\
 		show_in_min, set_in_min, nr);			\
@@ -335,8 +420,14 @@ static void adm9240_write_fan_div(struct i2c_client *client, int nr,
 	reg &= ~(3 << shift);
 	reg |= (fan_div << shift);
 	i2c_smbus_write_byte_data(client, ADM9240_REG_VID_FAN_DIV, reg);
+<<<<<<< HEAD
 	dev_dbg(&client->dev, "fan%d clock divider changed from %u "
 			"to %u\n", nr + 1, 1 << old, 1 << fan_div);
+=======
+	dev_dbg(&client->dev,
+		"fan%d clock divider changed from %u to %u\n",
+		nr + 1, 1 << old, 1 << fan_div);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -357,9 +448,26 @@ static ssize_t set_fan_min(struct device *dev,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm9240_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 	int nr = attr->index;
 	u8 new_div;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int nr = attr->index;
+	u8 new_div;
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 
@@ -465,7 +573,22 @@ static ssize_t set_aout(struct device *dev,
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm9240_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtol(buf, NULL, 10);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	long val;
+	int err;
+
+	err = kstrtol(buf, 10, &val);
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->aout = AOUT_TO_REG(val);
@@ -475,13 +598,23 @@ static ssize_t set_aout(struct device *dev,
 }
 static DEVICE_ATTR(aout_output, S_IRUGO | S_IWUSR, show_aout, set_aout);
 
+<<<<<<< HEAD
 /* chassis_clear */
 static ssize_t chassis_clear_legacy(struct device *dev,
 		struct device_attribute *attr,
 		const char *buf, size_t count)
 {
 	struct i2c_client *client = to_i2c_client(dev);
+<<<<<<< HEAD
 	unsigned long val = simple_strtol(buf, NULL, 10);
+=======
+	long val;
+	int err;
+
+	err = kstrtol(buf, 10, &val);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_warn(dev, "Attribute chassis_clear is deprecated, "
 		 "use intrusion0_alarm instead\n");
@@ -495,6 +628,8 @@ static ssize_t chassis_clear_legacy(struct device *dev,
 }
 static DEVICE_ATTR(chassis_clear, S_IWUSR, NULL, chassis_clear_legacy);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t chassis_clear(struct device *dev,
 		struct device_attribute *attr,
 		const char *buf, size_t count)
@@ -503,7 +638,15 @@ static ssize_t chassis_clear(struct device *dev,
 	struct adm9240_data *data = i2c_get_clientdata(client);
 	unsigned long val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val) || val != 0)
+=======
+	if (kstrtoul(buf, 10, &val) || val != 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtoul(buf, 10, &val) || val != 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->update_lock);
@@ -556,7 +699,10 @@ static struct attribute *adm9240_attributes[] = {
 	&sensor_dev_attr_fan2_alarm.dev_attr.attr,
 	&dev_attr_alarms.attr,
 	&dev_attr_aout_output.attr,
+<<<<<<< HEAD
 	&dev_attr_chassis_clear.attr,
+=======
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_intrusion0_alarm.dev_attr.attr,
 	&dev_attr_cpu0_vid.attr,
 	NULL
@@ -620,11 +766,17 @@ static int adm9240_probe(struct i2c_client *new_client,
 	struct adm9240_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&new_client->dev, sizeof(*data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(new_client, data);
 	mutex_init(&data->update_lock);
@@ -632,8 +784,19 @@ static int adm9240_probe(struct i2c_client *new_client,
 	adm9240_init_client(new_client);
 
 	/* populate sysfs filesystem */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&new_client->dev.kobj, &adm9240_group)))
+=======
+	err = sysfs_create_group(&new_client->dev.kobj, &adm9240_group);
+	if (err)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto exit_free;
+=======
+	err = sysfs_create_group(&new_client->dev.kobj, &adm9240_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&new_client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -645,9 +808,12 @@ static int adm9240_probe(struct i2c_client *new_client,
 
 exit_remove:
 	sysfs_remove_group(&new_client->dev.kobj, &adm9240_group);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -658,7 +824,10 @@ static int adm9240_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &adm9240_group);
 
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -681,8 +850,16 @@ static void adm9240_init_client(struct i2c_client *client)
 	} else { /* cold start: open limits before starting chip */
 		int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < 6; i++)
 		{
+=======
+		for (i = 0; i < 6; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < 6; i++) {
+>>>>>>> refs/remotes/origin/master
 			i2c_smbus_write_byte_data(client,
 					ADM9240_REG_IN_MIN(i), 0);
 			i2c_smbus_write_byte_data(client,
@@ -700,8 +877,13 @@ static void adm9240_init_client(struct i2c_client *client)
 		/* start measurement cycle */
 		i2c_smbus_write_byte_data(client, ADM9240_REG_CONFIG, 1);
 
+<<<<<<< HEAD
 		dev_info(&client->dev, "cold start: config was 0x%02x "
 				"mode %u\n", conf, mode);
+=======
+		dev_info(&client->dev,
+			 "cold start: config was 0x%02x mode %u\n", conf, mode);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -717,8 +899,16 @@ static struct adm9240_data *adm9240_update_device(struct device *dev)
 	if (time_after(jiffies, data->last_updated_measure + (HZ * 7 / 4))
 			|| !data->valid) {
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < 6; i++) /* read voltages */
 		{
+=======
+		for (i = 0; i < 6; i++) { /* read voltages */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < 6; i++) { /* read voltages */
+>>>>>>> refs/remotes/origin/master
 			data->in[i] = i2c_smbus_read_byte_data(client,
 					ADM9240_REG_IN(i));
 		}
@@ -727,16 +917,38 @@ static struct adm9240_data *adm9240_update_device(struct device *dev)
 					i2c_smbus_read_byte_data(client,
 					ADM9240_REG_INT(1)) << 8;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* read temperature: assume temperature changes less than
 		 * 0.5'C per two measurement cycles thus ignore possible
 		 * but unlikely aliasing error on lsb reading. --Grant */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * read temperature: assume temperature changes less than
+		 * 0.5'C per two measurement cycles thus ignore possible
+		 * but unlikely aliasing error on lsb reading. --Grant
+		 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		data->temp = ((i2c_smbus_read_byte_data(client,
 					ADM9240_REG_TEMP) << 8) |
 					i2c_smbus_read_byte_data(client,
 					ADM9240_REG_TEMP_CONF)) / 128;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < 2; i++) /* read fans */
 		{
+=======
+		for (i = 0; i < 2; i++) { /* read fans */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < 2; i++) { /* read fans */
+>>>>>>> refs/remotes/origin/master
 			data->fan[i] = i2c_smbus_read_byte_data(client,
 					ADM9240_REG_FAN(i));
 
@@ -760,15 +972,31 @@ static struct adm9240_data *adm9240_update_device(struct device *dev)
 	if (time_after(jiffies, data->last_updated_config + (HZ * 300))
 			|| !data->valid) {
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < 6; i++)
 		{
+=======
+		for (i = 0; i < 6; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < 6; i++) {
+>>>>>>> refs/remotes/origin/master
 			data->in_min[i] = i2c_smbus_read_byte_data(client,
 					ADM9240_REG_IN_MIN(i));
 			data->in_max[i] = i2c_smbus_read_byte_data(client,
 					ADM9240_REG_IN_MAX(i));
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < 2; i++)
 		{
+=======
+		for (i = 0; i < 2; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < 2; i++) {
+>>>>>>> refs/remotes/origin/master
 			data->fan_min[i] = i2c_smbus_read_byte_data(client,
 					ADM9240_REG_FAN_MIN(i));
 		}
@@ -795,6 +1023,8 @@ static struct adm9240_data *adm9240_update_device(struct device *dev)
 	return data;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_adm9240_init(void)
 {
 	return i2c_add_driver(&adm9240_driver);
@@ -804,12 +1034,24 @@ static void __exit sensors_adm9240_exit(void)
 {
 	i2c_del_driver(&adm9240_driver);
 }
+=======
+module_i2c_driver(adm9240_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(adm9240_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michiel Rook <michiel@grendelproject.nl>, "
 		"Grant Coady <gcoady.lk@gmail.com> and others");
 MODULE_DESCRIPTION("ADM9240/DS1780/LM81 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(sensors_adm9240_init);
 module_exit(sensors_adm9240_exit);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

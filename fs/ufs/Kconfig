@@ -29,7 +29,11 @@ config UFS_FS
 
 config UFS_FS_WRITE
 	bool "UFS file system write support (DANGEROUS)"
+<<<<<<< HEAD
 	depends on UFS_FS && EXPERIMENTAL
+=======
+	depends on UFS_FS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to try writing to UFS partitions. This is
 	  experimental, so you should back up your UFS partitions beforehand.

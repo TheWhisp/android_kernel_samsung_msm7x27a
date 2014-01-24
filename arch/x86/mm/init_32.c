@@ -35,7 +35,13 @@
 #include <asm/asm.h>
 #include <asm/bios_ebda.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/dma.h>
@@ -54,12 +60,18 @@
 #include <asm/page_types.h>
 #include <asm/init.h>
 
+<<<<<<< HEAD
+=======
+#include "mm_internal.h"
+
+>>>>>>> refs/remotes/origin/master
 unsigned long highstart_pfn, highend_pfn;
 
 static noinline int do_test_wp_bit(void);
 
 bool __read_mostly __vmalloc_start_set = false;
 
+<<<<<<< HEAD
 static __init void *alloc_low_page(void)
 {
 	unsigned long pfn = pgt_buf_end++;
@@ -73,6 +85,8 @@ static __init void *alloc_low_page(void)
 	return adr;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Creates a middle page table and puts a pointer to it in the
  * given global directory entry. This only returns the gd entry
@@ -85,10 +99,14 @@ static pmd_t * __init one_md_table_init(pgd_t *pgd)
 
 #ifdef CONFIG_X86_PAE
 	if (!(pgd_val(*pgd) & _PAGE_PRESENT)) {
+<<<<<<< HEAD
 		if (after_bootmem)
 			pmd_table = (pmd_t *)alloc_bootmem_pages(PAGE_SIZE);
 		else
 			pmd_table = (pmd_t *)alloc_low_page();
+=======
+		pmd_table = (pmd_t *)alloc_low_page();
+>>>>>>> refs/remotes/origin/master
 		paravirt_alloc_pmd(&init_mm, __pa(pmd_table) >> PAGE_SHIFT);
 		set_pgd(pgd, __pgd(__pa(pmd_table) | _PAGE_PRESENT));
 		pud = pud_offset(pgd, 0);
@@ -110,6 +128,7 @@ static pmd_t * __init one_md_table_init(pgd_t *pgd)
 static pte_t * __init one_page_table_init(pmd_t *pmd)
 {
 	if (!(pmd_val(*pmd) & _PAGE_PRESENT)) {
+<<<<<<< HEAD
 		pte_t *page_table = NULL;
 
 		if (after_bootmem) {
@@ -121,6 +140,9 @@ static pte_t * __init one_page_table_init(pmd_t *pmd)
 				(pte_t *)alloc_bootmem_pages(PAGE_SIZE);
 		} else
 			page_table = (pte_t *)alloc_low_page();
+=======
+		pte_t *page_table = (pte_t *)alloc_low_page();
+>>>>>>> refs/remotes/origin/master
 
 		paravirt_alloc_pte(&init_mm, __pa(page_table) >> PAGE_SHIFT);
 		set_pmd(pmd, __pmd(__pa(page_table) | _PAGE_TABLE));
@@ -147,8 +169,44 @@ pte_t * __init populate_extra_pte(unsigned long vaddr)
 	return one_page_table_init(pmd) + pte_idx;
 }
 
+<<<<<<< HEAD
 static pte_t *__init page_table_kmap_check(pte_t *pte, pmd_t *pmd,
 					   unsigned long vaddr, pte_t *lastpte)
+=======
+static unsigned long __init
+page_table_range_init_count(unsigned long start, unsigned long end)
+{
+	unsigned long count = 0;
+#ifdef CONFIG_HIGHMEM
+	int pmd_idx_kmap_begin = fix_to_virt(FIX_KMAP_END) >> PMD_SHIFT;
+	int pmd_idx_kmap_end = fix_to_virt(FIX_KMAP_BEGIN) >> PMD_SHIFT;
+	int pgd_idx, pmd_idx;
+	unsigned long vaddr;
+
+	if (pmd_idx_kmap_begin == pmd_idx_kmap_end)
+		return 0;
+
+	vaddr = start;
+	pgd_idx = pgd_index(vaddr);
+
+	for ( ; (pgd_idx < PTRS_PER_PGD) && (vaddr != end); pgd_idx++) {
+		for (; (pmd_idx < PTRS_PER_PMD) && (vaddr != end);
+							pmd_idx++) {
+			if ((vaddr >> PMD_SHIFT) >= pmd_idx_kmap_begin &&
+			    (vaddr >> PMD_SHIFT) <= pmd_idx_kmap_end)
+				count++;
+			vaddr += PMD_SIZE;
+		}
+		pmd_idx = 0;
+	}
+#endif
+	return count;
+}
+
+static pte_t *__init page_table_kmap_check(pte_t *pte, pmd_t *pmd,
+					   unsigned long vaddr, pte_t *lastpte,
+					   void **adr)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_HIGHMEM
 	/*
@@ -162,16 +220,27 @@ static pte_t *__init page_table_kmap_check(pte_t *pte, pmd_t *pmd,
 
 	if (pmd_idx_kmap_begin != pmd_idx_kmap_end
 	    && (vaddr >> PMD_SHIFT) >= pmd_idx_kmap_begin
+<<<<<<< HEAD
 	    && (vaddr >> PMD_SHIFT) <= pmd_idx_kmap_end
 	    && ((__pa(pte) >> PAGE_SHIFT) < pgt_buf_start
 		|| (__pa(pte) >> PAGE_SHIFT) >= pgt_buf_end)) {
+=======
+	    && (vaddr >> PMD_SHIFT) <= pmd_idx_kmap_end) {
+>>>>>>> refs/remotes/origin/master
 		pte_t *newpte;
 		int i;
 
 		BUG_ON(after_bootmem);
+<<<<<<< HEAD
 		newpte = alloc_low_page();
 		for (i = 0; i < PTRS_PER_PTE; i++)
 			set_pte(newpte + i, pte[i]);
+=======
+		newpte = *adr;
+		for (i = 0; i < PTRS_PER_PTE; i++)
+			set_pte(newpte + i, pte[i]);
+		*adr = (void *)(((unsigned long)(*adr)) + PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 		paravirt_alloc_pte(&init_mm, __pa(newpte) >> PAGE_SHIFT);
 		set_pmd(pmd, __pmd(__pa(newpte)|_PAGE_TABLE));
@@ -205,6 +274,14 @@ page_table_range_init(unsigned long start, unsigned long end, pgd_t *pgd_base)
 	pgd_t *pgd;
 	pmd_t *pmd;
 	pte_t *pte = NULL;
+<<<<<<< HEAD
+=======
+	unsigned long count = page_table_range_init_count(start, end);
+	void *adr = NULL;
+
+	if (count)
+		adr = alloc_low_pages(count);
+>>>>>>> refs/remotes/origin/master
 
 	vaddr = start;
 	pgd_idx = pgd_index(vaddr);
@@ -217,7 +294,11 @@ page_table_range_init(unsigned long start, unsigned long end, pgd_t *pgd_base)
 		for (; (pmd_idx < PTRS_PER_PMD) && (vaddr != end);
 							pmd++, pmd_idx++) {
 			pte = page_table_kmap_check(one_page_table_init(pmd),
+<<<<<<< HEAD
 			                            pmd, vaddr, pte);
+=======
+						    pmd, vaddr, pte, &adr);
+>>>>>>> refs/remotes/origin/master
 
 			vaddr += PMD_SIZE;
 		}
@@ -311,6 +392,10 @@ repeat:
 					__pgprot(PTE_IDENT_ATTR |
 						 _PAGE_PSE);
 
+<<<<<<< HEAD
+=======
+				pfn &= PMD_MASK >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 				addr2 = (pfn + PTRS_PER_PTE-1) * PAGE_SIZE +
 					PAGE_OFFSET + PAGE_SIZE-1;
 
@@ -416,6 +501,7 @@ static void __init permanent_kmaps_init(pgd_t *pgd_base)
 	pkmap_page_table = pte;
 }
 
+<<<<<<< HEAD
 static void __init add_one_highpage_init(struct page *page)
 {
 	ClearPageReserved(page);
@@ -427,6 +513,7 @@ static void __init add_one_highpage_init(struct page *page)
 void __init add_highpages_with_active_regions(int nid,
 			 unsigned long start_pfn, unsigned long end_pfn)
 {
+<<<<<<< HEAD
 	struct range *range;
 	int nr_range;
 	int i;
@@ -444,6 +531,28 @@ void __init add_highpages_with_active_regions(int nid,
 			page = pfn_to_page(node_pfn);
 			add_one_highpage_init(page);
 		}
+=======
+=======
+void __init add_highpages_with_active_regions(int nid,
+			 unsigned long start_pfn, unsigned long end_pfn)
+{
+>>>>>>> refs/remotes/origin/master
+	phys_addr_t start, end;
+	u64 i;
+
+	for_each_free_mem_range(i, nid, &start, &end, NULL) {
+		unsigned long pfn = clamp_t(unsigned long, PFN_UP(start),
+					    start_pfn, end_pfn);
+		unsigned long e_pfn = clamp_t(unsigned long, PFN_DOWN(end),
+					      start_pfn, end_pfn);
+		for ( ; pfn < e_pfn; pfn++)
+			if (pfn_valid(pfn))
+<<<<<<< HEAD
+				add_one_highpage_init(pfn_to_page(pfn));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				free_highmem_page(pfn_to_page(pfn));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 #else
@@ -452,19 +561,37 @@ static inline void permanent_kmaps_init(pgd_t *pgd_base)
 }
 #endif /* CONFIG_HIGHMEM */
 
+<<<<<<< HEAD
 void __init native_pagetable_setup_start(pgd_t *base)
 {
 	unsigned long pfn, va;
 	pgd_t *pgd;
+=======
+void __init native_pagetable_init(void)
+{
+	unsigned long pfn, va;
+	pgd_t *pgd, *base = swapper_pg_dir;
+>>>>>>> refs/remotes/origin/master
 	pud_t *pud;
 	pmd_t *pmd;
 	pte_t *pte;
 
 	/*
 	 * Remove any mappings which extend past the end of physical
+<<<<<<< HEAD
 	 * memory from the boot time page table:
 	 */
 	for (pfn = max_low_pfn + 1; pfn < 1<<(32-PAGE_SHIFT); pfn++) {
+=======
+	 * memory from the boot time page table.
+	 * In virtual address space, we should have at least two pages
+	 * from VMALLOC_END to pkmap or fixmap according to VMALLOC_END
+	 * definition. And max_low_pfn is set to VMALLOC_END physical
+	 * address. If initial memory mapping is doing right job, we
+	 * should have pte used near max_low_pfn or one pmd is not present.
+	 */
+	for (pfn = max_low_pfn; pfn < 1<<(32-PAGE_SHIFT); pfn++) {
+>>>>>>> refs/remotes/origin/master
 		va = PAGE_OFFSET + (pfn<<PAGE_SHIFT);
 		pgd = base + pgd_index(va);
 		if (!pgd_present(*pgd))
@@ -475,10 +602,21 @@ void __init native_pagetable_setup_start(pgd_t *base)
 		if (!pmd_present(*pmd))
 			break;
 
+<<<<<<< HEAD
+=======
+		/* should not be large page here */
+		if (pmd_large(*pmd)) {
+			pr_warn("try to clear pte for ram above max_low_pfn: pfn: %lx pmd: %p pmd phys: %lx, but pmd is big page and is not using pte !\n",
+				pfn, pmd, __pa(pmd));
+			BUG_ON(1);
+		}
+
+>>>>>>> refs/remotes/origin/master
 		pte = pte_offset_kernel(pmd, va);
 		if (!pte_present(*pte))
 			break;
 
+<<<<<<< HEAD
 		pte_clear(NULL, va, pte);
 	}
 	paravirt_alloc_pmd(&init_mm, __pa(base) >> PAGE_SHIFT);
@@ -486,6 +624,14 @@ void __init native_pagetable_setup_start(pgd_t *base)
 
 void __init native_pagetable_setup_done(pgd_t *base)
 {
+=======
+		printk(KERN_DEBUG "clearing pte for ram above max_low_pfn: pfn: %lx pmd: %p pmd phys: %lx pte: %p pte phys: %lx\n",
+				pfn, pmd, __pa(pmd), pte, __pa(pte));
+		pte_clear(NULL, va, pte);
+	}
+	paravirt_alloc_pmd(&init_mm, __pa(base) >> PAGE_SHIFT);
+	paging_init();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -500,7 +646,11 @@ void __init native_pagetable_setup_done(pgd_t *base)
  * If we're booting paravirtualized under a hypervisor, then there are
  * more options: we may already be running PAE, and the pagetable may
  * or may not be based in swapper_pg_dir.  In any case,
+<<<<<<< HEAD
  * paravirt_pagetable_setup_start() will set up swapper_pg_dir
+=======
+ * paravirt_pagetable_init() will set up swapper_pg_dir
+>>>>>>> refs/remotes/origin/master
  * appropriately for the rest of the initialization to work.
  *
  * In general, pagetable_init() assumes that the pagetable may already
@@ -560,7 +710,11 @@ early_param("highmem", parse_highmem);
  * artificially via the highmem=x boot parameter then create
  * it:
  */
+<<<<<<< HEAD
 void __init lowmem_pfn_init(void)
+=======
+static void __init lowmem_pfn_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* max_low_pfn is 0, we already have early_res support */
 	max_low_pfn = max_pfn;
@@ -596,7 +750,11 @@ void __init lowmem_pfn_init(void)
  * We have more RAM than fits into lowmem - we try to put it into
  * highmem, also taking the highmem=x boot parameter into account:
  */
+<<<<<<< HEAD
 void __init highmem_pfn_init(void)
+=======
+static void __init highmem_pfn_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	max_low_pfn = MAXMEM_PFN;
 
@@ -650,20 +808,48 @@ void __init initmem_init(void)
 	highstart_pfn = highend_pfn = max_pfn;
 	if (max_pfn > max_low_pfn)
 		highstart_pfn = max_low_pfn;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_x86_register_active_regions(0, 0, highend_pfn);
 	sparse_memory_present_with_active_regions(0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_NOTICE "%ldMB HIGHMEM available.\n",
 		pages_to_mb(highend_pfn - highstart_pfn));
 	num_physpages = highend_pfn;
 	high_memory = (void *) __va(highstart_pfn * PAGE_SIZE - 1) + 1;
 #else
+<<<<<<< HEAD
 	memblock_x86_register_active_regions(0, 0, max_low_pfn);
 	sparse_memory_present_with_active_regions(0);
 	num_physpages = max_low_pfn;
 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE - 1) + 1;
 #endif
+=======
+	num_physpages = max_low_pfn;
+	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE - 1) + 1;
+#endif
+
+	memblock_set_node(0, (phys_addr_t)ULLONG_MAX, 0);
+	sparse_memory_present_with_active_regions(0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_FLATMEM
 	max_mapnr = num_physpages;
+=======
+	printk(KERN_NOTICE "%ldMB HIGHMEM available.\n",
+		pages_to_mb(highend_pfn - highstart_pfn));
+	high_memory = (void *) __va(highstart_pfn * PAGE_SIZE - 1) + 1;
+#else
+	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE - 1) + 1;
+#endif
+
+	memblock_set_node(0, (phys_addr_t)ULLONG_MAX, &memblock.memory, 0);
+	sparse_memory_present_with_active_regions(0);
+
+#ifdef CONFIG_FLATMEM
+	max_mapnr = IS_ENABLED(CONFIG_HIGHMEM) ? highend_pfn : max_low_pfn;
+>>>>>>> refs/remotes/origin/master
 #endif
 	__vmalloc_start_set = true;
 
@@ -674,6 +860,8 @@ void __init initmem_init(void)
 }
 #endif /* !CONFIG_NEED_MULTIPLE_NODES */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __init zone_sizes_init(void)
 {
 	unsigned long max_zone_pfns[MAX_NR_ZONES];
@@ -690,13 +878,20 @@ static void __init zone_sizes_init(void)
 	free_area_init_nodes(max_zone_pfns);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void __init setup_bootmem_allocator(void)
 {
 	printk(KERN_INFO "  mapped low ram: 0 - %08lx\n",
 		 max_pfn_mapped<<PAGE_SHIFT);
 	printk(KERN_INFO "  low ram: 0 - %08lx\n", max_low_pfn<<PAGE_SHIFT);
+<<<<<<< HEAD
 
 	after_bootmem = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -735,16 +930,24 @@ static void __init test_wp_bit(void)
   "Checking if this processor honours the WP bit even in supervisor mode...");
 
 	/* Any page-aligned address will do, the test is non-destructive */
+<<<<<<< HEAD
 	__set_fixmap(FIX_WP_TEST, __pa(&swapper_pg_dir), PAGE_READONLY);
+=======
+	__set_fixmap(FIX_WP_TEST, __pa(&swapper_pg_dir), PAGE_KERNEL_RO);
+>>>>>>> refs/remotes/origin/master
 	boot_cpu_data.wp_works_ok = do_test_wp_bit();
 	clear_fixmap(FIX_WP_TEST);
 
 	if (!boot_cpu_data.wp_works_ok) {
 		printk(KERN_CONT "No.\n");
+<<<<<<< HEAD
 #ifdef CONFIG_X86_WP_WORKS_OK
 		panic(
   "This kernel doesn't support CPU's with broken WP. Recompile it for a 386!");
 #endif
+=======
+		panic("Linux doesn't support CPUs with broken WP.");
+>>>>>>> refs/remotes/origin/master
 	} else {
 		printk(KERN_CONT "Ok.\n");
 	}
@@ -752,14 +955,35 @@ static void __init test_wp_bit(void)
 
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	int codesize, reservedpages, datasize, initsize;
 	int tmp;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_iommu_alloc();
 
 #ifdef CONFIG_FLATMEM
 	BUG_ON(!mem_map);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * With CONFIG_DEBUG_PAGEALLOC initialization of highmem pages has to
+	 * be done before free_all_bootmem(). Memblock use free low memory for
+	 * temporary data (see find_range_array()) and for this purpose can use
+	 * pages that was already passed to the buddy allocator, hence marked as
+	 * not accessible in the page tables when compiled with
+	 * CONFIG_DEBUG_PAGEALLOC. Otherwise order of initialization is not
+	 * important here.
+	 */
+	set_highmem_pages_init();
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* this will put all low memory onto the freelists */
 	totalram_pages += free_all_bootmem();
 
@@ -771,8 +995,11 @@ void __init mem_init(void)
 		if (page_is_ram(tmp) && PageReserved(pfn_to_page(tmp)))
 			reservedpages++;
 
+<<<<<<< HEAD
 	set_highmem_pages_init();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	codesize =  (unsigned long) &_etext - (unsigned long) &_text;
 	datasize =  (unsigned long) &_edata - (unsigned long) &_etext;
 	initsize =  (unsigned long) &__init_end - (unsigned long) &__init_begin;
@@ -787,6 +1014,14 @@ void __init mem_init(void)
 		initsize >> 10,
 		totalhigh_pages << (PAGE_SHIFT-10));
 
+=======
+	/* this will put all low memory onto the freelists */
+	free_all_bootmem();
+
+	after_bootmem = 1;
+
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO "virtual kernel memory layout:\n"
 		"    fixmap  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
 #ifdef CONFIG_HIGHMEM
@@ -834,6 +1069,12 @@ void __init mem_init(void)
 	BUILD_BUG_ON(VMALLOC_START			>= VMALLOC_END);
 #undef high_memory
 #undef __FIXADDR_TOP
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_RANDOMIZE_BASE
+	BUILD_BUG_ON(CONFIG_RANDOMIZE_BASE_MAX_OFFSET > KERNEL_IMAGE_SIZE);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HIGHMEM
 	BUG_ON(PKMAP_BASE + LAST_PKMAP*PAGE_SIZE	> FIXADDR_START);
@@ -856,6 +1097,21 @@ int arch_add_memory(int nid, u64 start, u64 size)
 
 	return __add_pages(nid, zone, start_pfn, nr_pages);
 }
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_MEMORY_HOTREMOVE
+int arch_remove_memory(u64 start, u64 size)
+{
+	unsigned long start_pfn = start >> PAGE_SHIFT;
+	unsigned long nr_pages = size >> PAGE_SHIFT;
+	struct zone *zone;
+
+	zone = page_zone(pfn_to_page(start_pfn));
+	return __remove_pages(zone, start_pfn, nr_pages);
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*

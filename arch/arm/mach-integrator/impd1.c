@@ -21,10 +21,16 @@
 #include <linux/amba/bus.h>
 #include <linux/amba/clcd.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include <linux/clkdev.h>
 
 #include <asm/hardware/icst.h>
+=======
+#include <linux/platform_data/clk-integrator.h>
+#include <linux/slab.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <mach/lm.h>
 #include <mach/impd1.h>
 #include <asm/sizes.h>
@@ -36,6 +42,7 @@ MODULE_PARM_DESC(lmid, "logic module stack position");
 
 struct impd1_module {
 	void __iomem	*base;
+<<<<<<< HEAD
 	struct clk	vcos[2];
 	struct clk_lookup *clks[3];
 };
@@ -75,6 +82,8 @@ static const struct clk_ops impd1_clk_ops = {
 	.round	= icst_clk_round,
 	.set	= icst_clk_set,
 	.setvco	= impd1_setvco,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 void impd1_tweak_control(struct device *dev, u32 mask, u32 val)
@@ -344,10 +353,13 @@ static struct impd1_device impd1_devs[] = {
 	}
 };
 
+<<<<<<< HEAD
 static struct clk fixed_14745600 = {
 	.rate = 14745600,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int impd1_probe(struct lm_device *dev)
 {
 	struct impd1_module *impd1;
@@ -376,6 +388,7 @@ static int impd1_probe(struct lm_device *dev)
 	printk("IM-PD1 found at 0x%08lx\n",
 		(unsigned long)dev->resource.start);
 
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(impd1->vcos); i++) {
 		impd1->vcos[i].ops = &impd1_clk_ops,
 		impd1->vcos[i].owner = THIS_MODULE,
@@ -393,32 +406,63 @@ static int impd1_probe(struct lm_device *dev)
 					dev->id);
 	for (i = 0; i < ARRAY_SIZE(impd1->clks); i++)
 		clkdev_add(impd1->clks[i]);
+=======
+	integrator_impd1_clk_init(impd1->base, dev->id);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(impd1_devs); i++) {
 		struct impd1_device *idev = impd1_devs + i;
 		struct amba_device *d;
 		unsigned long pc_base;
+<<<<<<< HEAD
 
 		pc_base = dev->resource.start + idev->offset;
 
+<<<<<<< HEAD
 		d = kzalloc(sizeof(struct amba_device), GFP_KERNEL);
+=======
+		d = amba_device_alloc(NULL, pc_base, SZ_4K);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!d)
 			continue;
 
 		dev_set_name(&d->dev, "lm%x:%5.5lx", dev->id, idev->offset >> 12);
 		d->dev.parent	= &dev->dev;
+<<<<<<< HEAD
 		d->res.start	= dev->resource.start + idev->offset;
 		d->res.end	= d->res.start + SZ_4K - 1;
 		d->res.flags	= IORESOURCE_MEM;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		d->irq[0]	= dev->irq;
 		d->irq[1]	= dev->irq;
 		d->periphid	= idev->id;
 		d->dev.platform_data = idev->platform_data;
 
+<<<<<<< HEAD
 		ret = amba_device_register(d, &dev->resource);
 		if (ret) {
 			dev_err(&d->dev, "unable to register device: %d\n", ret);
 			kfree(d);
+=======
+		ret = amba_device_add(d, &dev->resource);
+		if (ret) {
+			dev_err(&d->dev, "unable to register device: %d\n", ret);
+			amba_device_put(d);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		char devname[32];
+
+		pc_base = dev->resource.start + idev->offset;
+		snprintf(devname, 32, "lm%x:%5.5lx", dev->id, idev->offset >> 12);
+		d = amba_ahb_device_add_res(&dev->dev, devname, pc_base, SZ_4K,
+					    dev->irq, dev->irq,
+					    idev->platform_data, idev->id,
+					    &dev->resource);
+		if (IS_ERR(d)) {
+			dev_err(&dev->dev, "unable to register device: %ld\n", PTR_ERR(d));
+			continue;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -442,12 +486,18 @@ static int impd1_remove_one(struct device *dev, void *data)
 static void impd1_remove(struct lm_device *dev)
 {
 	struct impd1_module *impd1 = lm_get_drvdata(dev);
+<<<<<<< HEAD
 	int i;
 
 	device_for_each_child(&dev->dev, NULL, impd1_remove_one);
 
 	for (i = 0; i < ARRAY_SIZE(impd1->clks); i++)
 		clkdev_drop(impd1->clks[i]);
+=======
+
+	device_for_each_child(&dev->dev, NULL, impd1_remove_one);
+	integrator_impd1_clk_exit(dev->id);
+>>>>>>> refs/remotes/origin/master
 
 	lm_set_drvdata(dev, NULL);
 

@@ -45,11 +45,23 @@
 #include "cifs_debug.h"
 #include "cifsfs.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CIFS_NFSD_EXPORT
+=======
+#ifdef CONFIG_CIFS_NFSD_EXPORT
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct dentry *cifs_get_parent(struct dentry *dentry)
 {
 	/* BB need to add code here eventually to enable export via NFSD */
 	cFYI(1, "get parent for %p", dentry);
+=======
+#ifdef CONFIG_CIFS_NFSD_EXPORT
+static struct dentry *cifs_get_parent(struct dentry *dentry)
+{
+	/* BB need to add code here eventually to enable export via NFSD */
+	cifs_dbg(FYI, "get parent for %p\n", dentry);
+>>>>>>> refs/remotes/origin/master
 	return ERR_PTR(-EACCES);
 }
 
@@ -63,5 +75,13 @@ const struct export_operations cifs_export_ops = {
 	.encode_fs =  */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CIFS_NFSD_EXPORT */
+=======
+#endif /* CONFIG_CIFS_NFSD_EXPORT */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_CIFS_NFSD_EXPORT */
+>>>>>>> refs/remotes/origin/master
 

@@ -22,7 +22,11 @@
 #include <linux/jiffies.h>
 #include <linux/of.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/i2c/at24.h>
+=======
+#include <linux/platform_data/at24.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * I2C EEPROMs from most vendors are inexpensive and mostly interchangeable.
@@ -428,6 +432,12 @@ static ssize_t at24_bin_write(struct file *filp, struct kobject *kobj,
 {
 	struct at24_data *at24;
 
+<<<<<<< HEAD
+=======
+	if (unlikely(off >= attr->size))
+		return -EFBIG;
+
+>>>>>>> refs/remotes/origin/master
 	at24 = dev_get_drvdata(container_of(kobj, struct device, kobj));
 	return at24_write(at24, buf, off, count);
 }
@@ -492,10 +502,16 @@ static int at24_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	if (client->dev.platform_data) {
 		chip = *(struct at24_platform_data *)client->dev.platform_data;
 	} else {
+<<<<<<< HEAD
 		if (!id->driver_data) {
 			err = -ENODEV;
 			goto err_out;
 		}
+=======
+		if (!id->driver_data)
+			return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 		magic = id->driver_data;
 		chip.byte_len = BIT(magic & AT24_BITMASK(AT24_SIZE_BYTELEN));
 		magic >>= AT24_SIZE_BYTELEN;
@@ -519,8 +535,12 @@ static int at24_probe(struct i2c_client *client, const struct i2c_device_id *id)
 			"byte_len looks suspicious (no power of 2)!\n");
 	if (!chip.page_size) {
 		dev_err(&client->dev, "page_size must not be 0!\n");
+<<<<<<< HEAD
 		err = -EINVAL;
 		goto err_out;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!is_power_of_2(chip.page_size))
 		dev_warn(&client->dev,
@@ -528,10 +548,16 @@ static int at24_probe(struct i2c_client *client, const struct i2c_device_id *id)
 
 	/* Use I2C operations unless we're stuck with SMBus extensions. */
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+<<<<<<< HEAD
 		if (chip.flags & AT24_FLAG_ADDR16) {
 			err = -EPFNOSUPPORT;
 			goto err_out;
 		}
+=======
+		if (chip.flags & AT24_FLAG_ADDR16)
+			return -EPFNOSUPPORT;
+
+>>>>>>> refs/remotes/origin/master
 		if (i2c_check_functionality(client->adapter,
 				I2C_FUNC_SMBUS_READ_I2C_BLOCK)) {
 			use_smbus = I2C_SMBUS_I2C_BLOCK_DATA;
@@ -542,8 +568,12 @@ static int at24_probe(struct i2c_client *client, const struct i2c_device_id *id)
 				I2C_FUNC_SMBUS_READ_BYTE_DATA)) {
 			use_smbus = I2C_SMBUS_BYTE_DATA;
 		} else {
+<<<<<<< HEAD
 			err = -EPFNOSUPPORT;
 			goto err_out;
+=======
+			return -EPFNOSUPPORT;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -553,12 +583,19 @@ static int at24_probe(struct i2c_client *client, const struct i2c_device_id *id)
 		num_addresses =	DIV_ROUND_UP(chip.byte_len,
 			(chip.flags & AT24_FLAG_ADDR16) ? 65536 : 256);
 
+<<<<<<< HEAD
 	at24 = kzalloc(sizeof(struct at24_data) +
 		num_addresses * sizeof(struct i2c_client *), GFP_KERNEL);
 	if (!at24) {
 		err = -ENOMEM;
 		goto err_out;
 	}
+=======
+	at24 = devm_kzalloc(&client->dev, sizeof(struct at24_data) +
+		num_addresses * sizeof(struct i2c_client *), GFP_KERNEL);
+	if (!at24)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&at24->lock);
 	at24->use_smbus = use_smbus;
@@ -596,11 +633,18 @@ static int at24_probe(struct i2c_client *client, const struct i2c_device_id *id)
 			at24->write_max = write_max;
 
 			/* buffer (data + address at the beginning) */
+<<<<<<< HEAD
 			at24->writebuf = kmalloc(write_max + 2, GFP_KERNEL);
 			if (!at24->writebuf) {
 				err = -ENOMEM;
 				goto err_struct;
 			}
+=======
+			at24->writebuf = devm_kzalloc(&client->dev,
+				write_max + 2, GFP_KERNEL);
+			if (!at24->writebuf)
+				return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			dev_warn(&client->dev,
 				"cannot write due to controller restrictions.");
@@ -648,6 +692,7 @@ err_clients:
 		if (at24->client[i])
 			i2c_unregister_device(at24->client[i]);
 
+<<<<<<< HEAD
 	kfree(at24->writebuf);
 err_struct:
 	kfree(at24);
@@ -657,6 +702,12 @@ err_out:
 }
 
 static int __devexit at24_remove(struct i2c_client *client)
+=======
+	return err;
+}
+
+static int at24_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct at24_data *at24;
 	int i;
@@ -667,8 +718,11 @@ static int __devexit at24_remove(struct i2c_client *client)
 	for (i = 1; i < at24->num_addresses; i++)
 		i2c_unregister_device(at24->client[i]);
 
+<<<<<<< HEAD
 	kfree(at24->writebuf);
 	kfree(at24);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -680,7 +734,11 @@ static struct i2c_driver at24_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = at24_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(at24_remove),
+=======
+	.remove = at24_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = at24_ids,
 };
 

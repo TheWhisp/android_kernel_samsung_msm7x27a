@@ -39,6 +39,10 @@
 #include <linux/mm.h>
 #include <linux/console.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+=======
+#include <linux/vt.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/sibyte/bcm1480_regs.h>
 #include <asm/sibyte/bcm1480_scd.h>
@@ -54,8 +58,13 @@
 
 static void *cfg_space;
 
+<<<<<<< HEAD
 #define PCI_BUS_ENABLED	1
 #define PCI_DEVICE_MODE	2
+=======
+#define PCI_BUS_ENABLED 1
+#define PCI_DEVICE_MODE 2
+>>>>>>> refs/remotes/origin/master
 
 static int bcm1480_bus_status;
 
@@ -194,7 +203,11 @@ struct pci_controller bcm1480_controller = {
 	.pci_ops	= &bcm1480_pci_ops,
 	.mem_resource	= &bcm1480_mem_resource,
 	.io_resource	= &bcm1480_io_resource,
+<<<<<<< HEAD
 	.io_offset      = A_BCM1480_PHYS_PCI_IO_MATCH_BYTES,
+=======
+	.io_offset	= A_BCM1480_PHYS_PCI_IO_MATCH_BYTES,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -204,7 +217,15 @@ static int __init bcm1480_pcibios_init(void)
 	uint64_t reg;
 
 	/* CFE will assign PCI resources */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_probe_only = 1;
+=======
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/master
 
 	/* Avoid ISA compat ranges.  */
 	PCIBIOS_MIN_IO = 0x00008000UL;
@@ -227,7 +248,11 @@ static int __init bcm1480_pcibios_init(void)
 					     PCI_COMMAND));
 		if (!(cmdreg & PCI_COMMAND_MASTER)) {
 			printk
+<<<<<<< HEAD
 			    ("PCI: Skipping PCI probe.  Bus is not initialized.\n");
+=======
+			    ("PCI: Skipping PCI probe.	Bus is not initialized.\n");
+>>>>>>> refs/remotes/origin/master
 			iounmap(cfg_space);
 			return 1; /* XXX */
 		}
@@ -257,7 +282,13 @@ static int __init bcm1480_pcibios_init(void)
 	register_pci_controller(&bcm1480_controller);
 
 #ifdef CONFIG_VGA_CONSOLE
+<<<<<<< HEAD
 	take_over_console(&vga_con, 0, MAX_NR_CONSOLES-1, 1);
+=======
+	console_lock();
+	do_take_over_console(&vga_con, 0, MAX_NR_CONSOLES-1, 1);
+	console_unlock();
+>>>>>>> refs/remotes/origin/master
 #endif
 	return 0;
 }

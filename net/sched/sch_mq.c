@@ -11,6 +11,14 @@
 #include <linux/types.h>
 #include <linux/slab.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/errno.h>
 #include <linux/skbuff.h>
@@ -56,12 +64,20 @@ static int mq_init(struct Qdisc *sch, struct nlattr *opt)
 
 	for (ntx = 0; ntx < dev->num_tx_queues; ntx++) {
 		dev_queue = netdev_get_tx_queue(dev, ntx);
+<<<<<<< HEAD
 		qdisc = qdisc_create_dflt(dev_queue, &pfifo_fast_ops,
+=======
+		qdisc = qdisc_create_dflt(dev_queue, default_qdisc_ops,
+>>>>>>> refs/remotes/origin/master
 					  TC_H_MAKE(TC_H_MAJ(sch->handle),
 						    TC_H_MIN(ntx + 1)));
 		if (qdisc == NULL)
 			goto err;
 		priv->qdiscs[ntx] = qdisc;
+<<<<<<< HEAD
+=======
+		qdisc->flags |= TCQ_F_ONETXQUEUE;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	sch->flags |= TCQ_F_MQROOT;
@@ -149,7 +165,12 @@ static int mq_graft(struct Qdisc *sch, unsigned long cl, struct Qdisc *new,
 		dev_deactivate(dev);
 
 	*old = dev_graft_qdisc(dev_queue, new);
+<<<<<<< HEAD
 
+=======
+	if (new)
+		new->flags |= TCQ_F_ONETXQUEUE;
+>>>>>>> refs/remotes/origin/master
 	if (dev->flags & IFF_UP)
 		dev_activate(dev);
 	return 0;

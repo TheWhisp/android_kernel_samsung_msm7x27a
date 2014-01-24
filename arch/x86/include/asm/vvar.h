@@ -10,6 +10,8 @@
  * In normal kernel code, they are used like any other variable.
  * In user code, they are accessed through the VVAR macro.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Each of these variables lives in the vsyscall page, and each
  * one needs a unique offset within the little piece of the page
  * reserved for vvars.  Specify that offset in DECLARE_VVAR.
@@ -19,6 +21,21 @@
 
 /* Offset of vars within vsyscall page */
 #define VSYSCALL_VARS_OFFSET (3072 + 128)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * These variables live in a page of kernel data that has an extra RO
+ * mapping for userspace.  Each variable needs a unique offset within
+ * that page; specify that offset with the DECLARE_VVAR macro.  (If
+ * you mess up, the linker will catch it.)
+ */
+
+/* Base address of vvars.  This is not ABI. */
+#define VVAR_ADDRESS (-10*1024*1024 - 4096)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if defined(__VVAR_KERNEL_LDS)
 
@@ -26,17 +43,40 @@
  * right place.
  */
 #define DECLARE_VVAR(offset, type, name) \
+<<<<<<< HEAD
+<<<<<<< HEAD
 	EMIT_VVAR(name, VSYSCALL_VARS_OFFSET + offset)
+=======
+	EMIT_VVAR(name, offset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EMIT_VVAR(name, offset)
+>>>>>>> refs/remotes/origin/master
 
 #else
 
 #define DECLARE_VVAR(offset, type, name)				\
 	static type const * const vvaraddr_ ## name =			\
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(void *)(VSYSCALL_START + VSYSCALL_VARS_OFFSET + (offset));
 
 #define DEFINE_VVAR(type, name)						\
 	type __vvar_ ## name						\
 	__attribute__((section(".vsyscall_var_" #name), aligned(16)))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		(void *)(VVAR_ADDRESS + (offset));
+
+#define DEFINE_VVAR(type, name)						\
+	type name							\
+<<<<<<< HEAD
+	__attribute__((section(".vvar_" #name), aligned(16)))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__attribute__((section(".vvar_" #name), aligned(16))) __visible
+>>>>>>> refs/remotes/origin/master
 
 #define VVAR(name) (*vvaraddr_ ## name)
 
@@ -45,8 +85,21 @@
 /* DECLARE_VVAR(offset, type, name) */
 
 DECLARE_VVAR(0, volatile unsigned long, jiffies)
+<<<<<<< HEAD
+<<<<<<< HEAD
 DECLARE_VVAR(8, int, vgetcpu_mode)
 DECLARE_VVAR(128, struct vsyscall_gtod_data, vsyscall_gtod_data)
 
 #undef DECLARE_VVAR
 #undef VSYSCALL_VARS_OFFSET
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+DECLARE_VVAR(16, int, vgetcpu_mode)
+DECLARE_VVAR(128, struct vsyscall_gtod_data, vsyscall_gtod_data)
+
+#undef DECLARE_VVAR
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

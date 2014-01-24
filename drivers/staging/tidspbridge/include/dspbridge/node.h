@@ -47,7 +47,13 @@
  *      -EPERM:          A failure occurred, unable to allocate node.
  *      -EBADR:    Proccessor is not in the running state.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      hprocessor != NULL.
  *      node_uuid != NULL.
  *      noderes != NULL.
@@ -81,7 +87,13 @@ extern int node_allocate(struct proc_object *hprocessor,
  *      -EPERM:      General Failure.
  *      -EINVAL:      Invalid Size.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      pbuffer != NULL.
  *  Ensures:
  */
@@ -106,7 +118,13 @@ extern int node_alloc_msg_buf(struct node_object *hnode,
  *                          or NODE_RUNNING state.
  *      -ETIME:       A timeout occurred before the DSP responded.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  Ensures:
  *      0 && (Node's current priority == prio)
  */
@@ -157,7 +175,13 @@ extern int node_change_priority(struct node_object *hnode, s32 prio);
  *                              Device node to device node, or device node to
  *                              GPP), the two nodes are on different DSPs.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  Ensures:
  */
 extern int node_connect(struct node_object *node1,
@@ -185,7 +209,13 @@ extern int node_connect(struct node_object *node1,
  *      -ETIME:       A timeout occurred before the DSP responded.
  *      -EPERM:          A failure occurred, unable to create node.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  Ensures:
  */
 extern int node_create(struct node_object *hnode);
@@ -206,7 +236,13 @@ extern int node_create(struct node_object *hnode);
  *      -ENOMEM:    Insufficient memory for requested resources.
  *      -EPERM:      General failure.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      node_man != NULL.
  *      hdev_obj != NULL.
  *  Ensures:
@@ -226,7 +262,11 @@ extern int node_create_mgr(struct node_mgr **node_man,
  *  Parameters:
  *      noderes:              Node resource info handle returned from
  *                                 node_allocate().
+<<<<<<< HEAD
  *      pr_ctxt:                Poninter to process context data.
+=======
+ *      pr_ctxt:                Pointer to process context data.
+>>>>>>> refs/remotes/origin/master
  *  Returns:
  *      0:            Success.
  *      -EFAULT:        Invalid hnode.
@@ -234,7 +274,13 @@ extern int node_create_mgr(struct node_mgr **node_man,
  *      -EPERM:          A failure occurred in deleting the node.
  *      -ESPIPE:        Delete function not found in the COFF file.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  Ensures:
  *      0:            hnode is invalid.
  */
@@ -250,7 +296,13 @@ extern int node_delete(struct node_res_object *noderes,
  *  Returns:
  *      0:        Success.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      Valid hnode_mgr.
  *  Ensures:
  */
@@ -287,6 +339,8 @@ extern int node_enum_nodes(struct node_mgr *hnode_mgr,
 				  u32 *pu_allocated);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== node_exit ========
  *  Purpose:
  *      Discontinue usage of NODE module.
@@ -301,6 +355,10 @@ extern int node_enum_nodes(struct node_mgr *hnode_mgr,
 extern void node_exit(void);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== node_free_msg_buf ========
  *  Purpose:
  *      Free a message buffer previously allocated with node_alloc_msg_buf.
@@ -313,7 +371,13 @@ extern void node_exit(void);
  *      -EFAULT:    Invalid node handle.
  *      -EPERM:      Failure to free the buffer.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      pbuffer != NULL.
  *  Ensures:
  */
@@ -336,7 +400,13 @@ extern int node_free_msg_buf(struct node_object *hnode,
  *      0:        Success.
  *      -EFAULT:    Invalid hnode.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      pattr != NULL.
  *  Ensures:
  *      0:        *pattrs contains the node's current attributes.
@@ -363,7 +433,13 @@ extern int node_get_attr(struct node_object *hnode,
  *              Error occurred while trying to retrieve a message.
  *      -ETIME:   Timeout occurred and no message is available.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      message != NULL.
  *  Ensures:
  */
@@ -386,6 +462,8 @@ extern int node_get_nldr_obj(struct node_mgr *hnode_mgr,
 				    struct nldr_object **nldr_ovlyobj);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== node_init ========
  *  Purpose:
  *      Initialize the NODE module.
@@ -397,6 +475,10 @@ extern int node_get_nldr_obj(struct node_mgr *hnode_mgr,
 extern bool node_init(void);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== node_on_exit ========
  *  Purpose:
  *      Gets called when RMS_EXIT is received for a node. PROC needs to pass
@@ -425,7 +507,13 @@ void node_on_exit(struct node_object *hnode, s32 node_status);
  *      -ETIME:       A timeout occurred before the DSP responded.
  *      DSP_EWRONGSTSATE:   Node is not in NODE_RUNNING state.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  Ensures:
  */
 extern int node_pause(struct node_object *hnode);
@@ -449,7 +537,13 @@ extern int node_pause(struct node_object *hnode);
  *      -ETIME:       Timeout occurred before message could be set.
  *      -EBADR:    Node is in invalid state for sending messages.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      pmsg != NULL.
  *  Ensures:
  */
@@ -473,7 +567,13 @@ extern int node_put_message(struct node_object *hnode,
  *      -ENOSYS:   Notification type specified by notify_type is not
  *                      supported.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      hnotification != NULL.
  *  Ensures:
  */
@@ -500,7 +600,13 @@ extern int node_register_notify(struct node_object *hnode,
  *      DSP_EWRONGSTSATE:   Node is not in NODE_PAUSED or NODE_CREATED state.
  *      -ESPIPE:        Execute function not found in the COFF file.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  Ensures:
  */
 extern int node_run(struct node_object *hnode);
@@ -523,7 +629,13 @@ extern int node_run(struct node_object *hnode);
  *              Unable to terminate the node.
  *      -EBADR:    Operation not valid for the current node state.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      pstatus != NULL.
  *  Ensures:
  */

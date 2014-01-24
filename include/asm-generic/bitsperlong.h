@@ -1,6 +1,7 @@
 #ifndef __ASM_GENERIC_BITS_PER_LONG
 #define __ASM_GENERIC_BITS_PER_LONG
 
+<<<<<<< HEAD
 /*
  * There seems to be no way of detecting this automatically from user
  * space, so 64 bit architectures should override this in their
@@ -13,6 +14,10 @@
 #endif
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm-generic/bitsperlong.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_64BIT
 #define BITS_PER_LONG 64
@@ -28,5 +33,12 @@
 #error Inconsistent word size. Check asm/bitsperlong.h
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+#ifndef BITS_PER_LONG_LONG
+#define BITS_PER_LONG_LONG 64
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_GENERIC_BITS_PER_LONG */

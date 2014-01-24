@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
@@ -12,20 +17,70 @@
 #include <linux/user-return-notifier.h>
 #include <linux/dmi.h>
 #include <linux/utsname.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <trace/events/power.h>
 #include <linux/hw_breakpoint.h>
 #include <asm/cpu.h>
 #include <asm/system.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/stackprotector.h>
+#include <linux/tick.h>
+#include <linux/cpuidle.h>
+#include <trace/events/power.h>
+#include <linux/hw_breakpoint.h>
+#include <asm/cpu.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/apic.h>
 #include <asm/syscalls.h>
 #include <asm/idle.h>
 #include <asm/uaccess.h>
 #include <asm/i387.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/debugreg.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/fpu-internal.h>
+#include <asm/debugreg.h>
+#include <asm/nmi.h>
+
+<<<<<<< HEAD
+#ifdef CONFIG_X86_64
+static DEFINE_PER_CPU(unsigned char, is_idle);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * per-CPU TSS segments. Threads are completely 'soft' on Linux,
+ * no more per-task TSS's. The TSS size is kept cacheline-aligned
+ * so they are allowed to end up in the .data..cacheline_aligned
+ * section. Since TSS's are completely CPU-local, we want them
+ * on exact cacheline boundaries, to eliminate cacheline ping-pong.
+ */
+__visible DEFINE_PER_CPU_SHARED_ALIGNED(struct tss_struct, init_tss) = INIT_TSS;
+
+#ifdef CONFIG_X86_64
+static DEFINE_PER_CPU(unsigned char, is_idle);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 struct kmem_cache *task_xstate_cachep;
 EXPORT_SYMBOL_GPL(task_xstate_cachep);
 
+<<<<<<< HEAD
+=======
+/*
+ * this gets called so that we can store lazy state into memory and copy the
+ * current task into the new thread.
+ */
+>>>>>>> refs/remotes/origin/master
 int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
 {
 	int ret;
@@ -36,7 +91,11 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
 		ret = fpu_alloc(&dst->thread.fpu);
 		if (ret)
 			return ret;
+<<<<<<< HEAD
 		fpu_copy(&dst->thread.fpu, &src->thread.fpu);
+=======
+		fpu_copy(dst, src);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -46,10 +105,20 @@ void free_thread_xstate(struct task_struct *tsk)
 	fpu_free(&tsk->thread.fpu);
 }
 
+<<<<<<< HEAD
 void free_thread_info(struct thread_info *ti)
 {
 	free_thread_xstate(ti->task);
+<<<<<<< HEAD
 	free_pages((unsigned long)ti, get_order(THREAD_SIZE));
+=======
+	free_pages((unsigned long)ti, THREAD_ORDER);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void arch_release_task_struct(struct task_struct *tsk)
+{
+	free_thread_xstate(tsk);
+>>>>>>> refs/remotes/origin/master
 }
 
 void arch_task_cache_init(void)
@@ -82,6 +151,7 @@ void exit_thread(void)
 		put_cpu();
 		kfree(bp);
 	}
+<<<<<<< HEAD
 }
 
 void show_regs(struct pt_regs *regs)
@@ -114,6 +184,10 @@ void show_regs_common(void)
 	if (board)
 		printk(KERN_CONT "/%s", board);
 	printk(KERN_CONT "\n");
+=======
+
+	drop_fpu(me);
+>>>>>>> refs/remotes/origin/master
 }
 
 void flush_thread(void)
@@ -122,12 +196,22 @@ void flush_thread(void)
 
 	flush_ptrace_hw_breakpoint(tsk);
 	memset(tsk->thread.tls_array, 0, sizeof(tsk->thread.tls_array));
+<<<<<<< HEAD
 	/*
 	 * Forget coprocessor state..
 	 */
 	tsk->fpu_counter = 0;
 	clear_fpu(tsk);
 	clear_used_math();
+=======
+	drop_init_fpu(tsk);
+	/*
+	 * Free the FPU state for non xsave platforms. They get reallocated
+	 * lazily at the first use.
+	 */
+	if (!use_eager_fpu())
+		free_thread_xstate(tsk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hard_disable_TSC(void)
@@ -232,6 +316,7 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p,
 	propagate_user_return_notify(prev_p, next_p);
 }
 
+<<<<<<< HEAD
 int sys_fork(struct pt_regs *regs)
 {
 	return do_fork(SIGCHLD, regs->sp, regs, 0, NULL, NULL);
@@ -293,7 +378,11 @@ int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 	regs.orig_ax = -1;
 	regs.ip = (unsigned long) kernel_thread_helper;
 	regs.cs = __KERNEL_CS | get_kernel_rpl();
+<<<<<<< HEAD
 	regs.flags = X86_EFLAGS_IF | 0x2;
+=======
+	regs.flags = X86_EFLAGS_IF | X86_EFLAGS_BIT1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Ok, create the new process.. */
 	return do_fork(flags | CLONE_VM | CLONE_UNTRACED, 0, &regs, 0, NULL, NULL);
@@ -327,12 +416,15 @@ long sys_execve(const char __user *name,
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Idle related variables and functions
  */
 unsigned long boot_option_idle_override = IDLE_NO_OVERRIDE;
 EXPORT_SYMBOL(boot_option_idle_override);
 
+<<<<<<< HEAD
 /*
  * Powermanagement idle function, if any..
  */
@@ -346,6 +438,123 @@ static inline int hlt_use_halt(void)
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
+=======
+static void (*x86_idle)(void);
+
+>>>>>>> refs/remotes/origin/master
+#ifndef CONFIG_SMP
+static inline void play_dead(void)
+{
+	BUG();
+}
+#endif
+
+#ifdef CONFIG_X86_64
+void enter_idle(void)
+{
+<<<<<<< HEAD
+	percpu_write(is_idle, 1);
+	idle_notifier_call_chain(IDLE_START);
+<<<<<<< HEAD
+=======
+	this_cpu_write(is_idle, 1);
+	atomic_notifier_call_chain(&idle_notifier, IDLE_START, NULL);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+}
+
+static void __exit_idle(void)
+{
+	if (x86_test_and_clear_bit_percpu(0, is_idle) == 0)
+		return;
+<<<<<<< HEAD
+<<<<<<< HEAD
+	idle_notifier_call_chain(IDLE_END);
+=======
+	atomic_notifier_call_chain(&idle_notifier, IDLE_END, NULL);
+>>>>>>> refs/remotes/origin/master
+=======
+	idle_notifier_call_chain(IDLE_END);
+>>>>>>> refs/remotes/origin/cm-11.0
+}
+
+/* Called from interrupts to signify idle end */
+void exit_idle(void)
+{
+	/* idle loop has pid 0 */
+	if (current->pid)
+		return;
+	__exit_idle();
+}
+#endif
+
+<<<<<<< HEAD
+/*
+ * The idle thread. There's no useful work to be
+ * done, so just try to conserve power and have a
+ * low exit latency (ie sit in a loop waiting for
+ * somebody to say that they'd like to reschedule)
+ */
+void cpu_idle(void)
+{
+	/*
+	 * If we're the non-boot CPU, nothing set the stack canary up
+	 * for us.  CPU0 already has it initialized but no harm in
+	 * doing it again.  This is a good place for updating it, as
+	 * we wont ever return from this function (so the invalid
+	 * canaries already on the stack wont ever trigger).
+	 */
+	boot_init_stack_canary();
+	current_thread_info()->status |= TS_POLLING;
+
+	while (1) {
+		tick_nohz_idle_enter();
+
+		while (!need_resched()) {
+			rmb();
+
+			if (cpu_is_offline(smp_processor_id()))
+				play_dead();
+
+			/*
+			 * Idle routines should keep interrupts disabled
+			 * from here on, until they go to idle.
+			 * Otherwise, idle callbacks can misfire.
+			 */
+			local_touch_nmi();
+			local_irq_disable();
+
+			enter_idle();
+
+			/* Don't trace irqs off for idle */
+			stop_critical_timings();
+
+			/* enter_idle() needs rcu for notifiers */
+			rcu_idle_enter();
+
+			if (cpuidle_idle_call())
+				pm_idle();
+
+			rcu_idle_exit();
+			start_critical_timings();
+
+			/* In many cases the interrupt that ended idle
+			   has already called exit_idle. But some idle
+			   loops can be woken up without interrupt. */
+			__exit_idle();
+		}
+
+		tick_nohz_idle_exit();
+		preempt_enable_no_resched();
+		schedule();
+		preempt_disable();
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * We use this if we don't have any better
  * idle routine..
@@ -353,8 +562,13 @@ static inline int hlt_use_halt(void)
 void default_idle(void)
 {
 	if (hlt_use_halt()) {
+<<<<<<< HEAD
 		trace_power_start(POWER_CSTATE, 1, smp_processor_id());
 		trace_cpu_idle(1, smp_processor_id());
+=======
+		trace_power_start_rcuidle(POWER_CSTATE, 1, smp_processor_id());
+		trace_cpu_idle_rcuidle(1, smp_processor_id());
+>>>>>>> refs/remotes/origin/cm-10.0
 		current_thread_info()->status &= ~TS_POLLING;
 		/*
 		 * TS_POLLING-cleared state must be visible before we
@@ -367,18 +581,84 @@ void default_idle(void)
 		else
 			local_irq_enable();
 		current_thread_info()->status |= TS_POLLING;
+<<<<<<< HEAD
 		trace_power_end(smp_processor_id());
 		trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
+=======
+		trace_power_end_rcuidle(smp_processor_id());
+		trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, smp_processor_id());
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		local_irq_enable();
 		/* loop is done by the caller */
 		cpu_relax();
 	}
+=======
+void arch_cpu_idle_enter(void)
+{
+	local_touch_nmi();
+	enter_idle();
+}
+
+void arch_cpu_idle_exit(void)
+{
+	__exit_idle();
+}
+
+void arch_cpu_idle_dead(void)
+{
+	play_dead();
+}
+
+/*
+ * Called from the generic idle code.
+ */
+void arch_cpu_idle(void)
+{
+	if (cpuidle_idle_call())
+		x86_idle();
+	else
+		local_irq_enable();
+}
+
+/*
+ * We use this if we don't have any better idle routine..
+ */
+void default_idle(void)
+{
+	trace_cpu_idle_rcuidle(1, smp_processor_id());
+	safe_halt();
+	trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, smp_processor_id());
+>>>>>>> refs/remotes/origin/master
 }
 #ifdef CONFIG_APM_MODULE
 EXPORT_SYMBOL(default_idle);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+bool set_pm_idle_to_default(void)
+{
+	bool ret = !!pm_idle;
+
+	pm_idle = default_idle;
+
+	return ret;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_XEN
+bool xen_set_default_idle(void)
+{
+	bool ret = !!x86_idle;
+
+	x86_idle = default_idle;
+
+	return ret;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 void stop_this_cpu(void *dummy)
 {
 	local_irq_disable();
@@ -388,6 +668,7 @@ void stop_this_cpu(void *dummy)
 	set_cpu_online(smp_processor_id(), false);
 	disable_local_APIC();
 
+<<<<<<< HEAD
 	for (;;) {
 		if (hlt_works(smp_processor_id()))
 			halt();
@@ -414,6 +695,7 @@ void cpu_idle_wait(void)
 }
 EXPORT_SYMBOL_GPL(cpu_idle_wait);
 
+<<<<<<< HEAD
 /*
  * This uses new MONITOR/MWAIT instructions on P4 processors with PNI,
  * which can obviate IPI to trigger checking of need_resched.
@@ -437,12 +719,19 @@ void mwait_idle_with_hints(unsigned long ax, unsigned long cx)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Default MONITOR/MWAIT with no hints, used for default C1 state */
 static void mwait_idle(void)
 {
 	if (!need_resched()) {
+<<<<<<< HEAD
 		trace_power_start(POWER_CSTATE, 1, smp_processor_id());
 		trace_cpu_idle(1, smp_processor_id());
+=======
+		trace_power_start_rcuidle(POWER_CSTATE, 1, smp_processor_id());
+		trace_cpu_idle_rcuidle(1, smp_processor_id());
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (this_cpu_has(X86_FEATURE_CLFLUSH_MONITOR))
 			clflush((void *)&current_thread_info()->flags);
 
@@ -452,8 +741,13 @@ static void mwait_idle(void)
 			__sti_mwait(0, 0);
 		else
 			local_irq_enable();
+<<<<<<< HEAD
 		trace_power_end(smp_processor_id());
 		trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
+=======
+		trace_power_end_rcuidle(smp_processor_id());
+		trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, smp_processor_id());
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		local_irq_enable();
 }
@@ -465,6 +759,7 @@ static void mwait_idle(void)
  */
 static void poll_idle(void)
 {
+<<<<<<< HEAD
 	trace_power_start(POWER_CSTATE, 0, smp_processor_id());
 	trace_cpu_idle(0, smp_processor_id());
 	local_irq_enable();
@@ -472,6 +767,15 @@ static void poll_idle(void)
 		cpu_relax();
 	trace_power_end(smp_processor_id());
 	trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
+=======
+	trace_power_start_rcuidle(POWER_CSTATE, 0, smp_processor_id());
+	trace_cpu_idle_rcuidle(0, smp_processor_id());
+	local_irq_enable();
+	while (!need_resched())
+		cpu_relax();
+	trace_power_end_rcuidle(smp_processor_id());
+	trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, smp_processor_id());
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -511,6 +815,10 @@ int mwait_usable(const struct cpuinfo_x86 *c)
 	 * C1  supports MWAIT
 	 */
 	return (edx & MWAIT_EDX_C1);
+=======
+	for (;;)
+		halt();
+>>>>>>> refs/remotes/origin/master
 }
 
 bool amd_e400_c1e_detected;
@@ -531,9 +839,12 @@ void amd_e400_remove_cpu(int cpu)
  */
 static void amd_e400_idle(void)
 {
+<<<<<<< HEAD
 	if (need_resched())
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!amd_e400_c1e_detected) {
 		u32 lo, hi;
 
@@ -543,7 +854,11 @@ static void amd_e400_idle(void)
 			amd_e400_c1e_detected = true;
 			if (!boot_cpu_has(X86_FEATURE_NONSTOP_TSC))
 				mark_tsc_unstable("TSC halt in AMD C1E");
+<<<<<<< HEAD
 			printk(KERN_INFO "System has AMD C1E enabled\n");
+=======
+			pr_info("System has AMD C1E enabled\n");
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -557,8 +872,12 @@ static void amd_e400_idle(void)
 			 */
 			clockevents_notify(CLOCK_EVT_NOTIFY_BROADCAST_FORCE,
 					   &cpu);
+<<<<<<< HEAD
 			printk(KERN_INFO "Switch to broadcast mode on CPU%d\n",
 			       cpu);
+=======
+			pr_info("Switch to broadcast mode on CPU%d\n", cpu);
+>>>>>>> refs/remotes/origin/master
 		}
 		clockevents_notify(CLOCK_EVT_NOTIFY_BROADCAST_ENTER, &cpu);
 
@@ -568,13 +887,20 @@ static void amd_e400_idle(void)
 		 * The switch back from broadcast mode needs to be
 		 * called with interrupts disabled.
 		 */
+<<<<<<< HEAD
 		 local_irq_disable();
 		 clockevents_notify(CLOCK_EVT_NOTIFY_BROADCAST_EXIT, &cpu);
 		 local_irq_enable();
+=======
+		local_irq_disable();
+		clockevents_notify(CLOCK_EVT_NOTIFY_BROADCAST_EXIT, &cpu);
+		local_irq_enable();
+>>>>>>> refs/remotes/origin/master
 	} else
 		default_idle();
 }
 
+<<<<<<< HEAD
 void __cpuinit select_idle_routine(const struct cpuinfo_x86 *c)
 {
 #ifdef CONFIG_SMP
@@ -598,12 +924,33 @@ void __cpuinit select_idle_routine(const struct cpuinfo_x86 *c)
 		pm_idle = amd_e400_idle;
 	} else
 		pm_idle = default_idle;
+=======
+void select_idle_routine(const struct cpuinfo_x86 *c)
+{
+#ifdef CONFIG_SMP
+	if (boot_option_idle_override == IDLE_POLL && smp_num_siblings > 1)
+		pr_warn_once("WARNING: polling idle and HT enabled, performance may degrade\n");
+#endif
+	if (x86_idle || boot_option_idle_override == IDLE_POLL)
+		return;
+
+	if (cpu_has_bug(c, X86_BUG_AMD_APIC_C1E)) {
+		/* E400: APIC timer interrupt does not wake up CPU from C1e */
+		pr_info("using AMD E400 aware idle routine\n");
+		x86_idle = amd_e400_idle;
+	} else
+		x86_idle = default_idle;
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init init_amd_e400_c1e_mask(void)
 {
 	/* If we're using amd_e400_idle, we need to allocate amd_e400_c1e_mask. */
+<<<<<<< HEAD
 	if (pm_idle == amd_e400_idle)
+=======
+	if (x86_idle == amd_e400_idle)
+>>>>>>> refs/remotes/origin/master
 		zalloc_cpumask_var(&amd_e400_c1e_mask, GFP_KERNEL);
 }
 
@@ -613,12 +960,18 @@ static int __init idle_setup(char *str)
 		return -EINVAL;
 
 	if (!strcmp(str, "poll")) {
+<<<<<<< HEAD
 		printk("using polling idle threads.\n");
 		pm_idle = poll_idle;
 		boot_option_idle_override = IDLE_POLL;
 	} else if (!strcmp(str, "mwait")) {
 		boot_option_idle_override = IDLE_FORCE_MWAIT;
 		WARN_ONCE(1, "\"idle=mwait\" will be removed in 2012\n");
+=======
+		pr_info("using polling idle threads\n");
+		boot_option_idle_override = IDLE_POLL;
+		cpu_idle_poll_ctrl(true);
+>>>>>>> refs/remotes/origin/master
 	} else if (!strcmp(str, "halt")) {
 		/*
 		 * When the boot option of idle=halt is added, halt is
@@ -627,7 +980,11 @@ static int __init idle_setup(char *str)
 		 * To continue to load the CPU idle driver, don't touch
 		 * the boot_option_idle_override.
 		 */
+<<<<<<< HEAD
 		pm_idle = default_idle;
+=======
+		x86_idle = default_idle;
+>>>>>>> refs/remotes/origin/master
 		boot_option_idle_override = IDLE_HALT;
 	} else if (!strcmp(str, "nomwait")) {
 		/*

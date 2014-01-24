@@ -11,6 +11,16 @@
 #ifndef SH_MIPI_CSI
 #define SH_MIPI_CSI
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/list.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/list.h>
+
+>>>>>>> refs/remotes/origin/master
 enum sh_csi2_phy {
 	SH_CSI2_PHY_MAIN,
 	SH_CSI2_PHY_SUB,
@@ -31,16 +41,40 @@ struct sh_csi2_client_config {
 	unsigned char lanes;		/* bitmask[3:0] */
 	unsigned char channel;		/* 0..3 */
 	struct platform_device *pdev;	/* client platform device */
+<<<<<<< HEAD
 };
 
+<<<<<<< HEAD
+=======
+struct v4l2_device;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char *name;		/* async matching: client name */
+};
+
+struct v4l2_device;
+
+>>>>>>> refs/remotes/origin/master
 struct sh_csi2_pdata {
 	enum sh_csi2_type type;
 	unsigned int flags;
 	struct sh_csi2_client_config *clients;
 	int num_clients;
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 struct device;
 struct v4l2_device;
 
+=======
+	struct v4l2_device *v4l2_dev;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
 #endif

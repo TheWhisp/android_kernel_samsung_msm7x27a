@@ -23,12 +23,26 @@
  * 02110-1301, USA.
  *
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/input.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/io.h>
+=======
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <linux/gpio_keys.h>
 #include <linux/i2c.h>
@@ -37,12 +51,25 @@
 #include <linux/leds.h>
 #include <linux/spi/spi.h>
 #include <linux/spi/ads7846.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/omapfb.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/omapfb.h>
+#include <linux/platform_data/keypad-omap.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
+<<<<<<< HEAD
 #include <plat/omap7xx.h>
+<<<<<<< HEAD
 #include <plat/common.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/board.h>
 #include <plat/keypad.h>
 #include <plat/usb.h>
@@ -50,7 +77,20 @@
 
 #include <mach/irqs.h>
 
+<<<<<<< HEAD
 #include <linux/delay.h>
+=======
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/omap7xx.h>
+#include "mmc.h"
+
+#include <mach/irqs.h>
+#include <mach/usb.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 /* LCD register definition */
 #define       OMAP_LCDC_CONTROL               (0xfffec000 + 0x00)
@@ -325,8 +365,14 @@ static struct platform_device gpio_leds_device = {
 
 static struct resource htcpld_resources[] = {
 	[0] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.start  = OMAP_GPIO_IRQ(HTCHERALD_GIRQ_BTNS),
 		.end    = OMAP_GPIO_IRQ(HTCHERALD_GIRQ_BTNS),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -399,10 +445,16 @@ static struct omap_lcd_config htcherald_lcd_config __initdata = {
 	.ctrl_name	= "internal",
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct omap_board_config_kernel htcherald_config[] __initdata = {
 	{ OMAP_TAG_LCD, &htcherald_lcd_config },
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device lcd_device = {
 	.name           = "lcd_htcherald",
 	.id             = -1,
@@ -455,7 +507,13 @@ static struct spi_board_info __initdata htcherald_spi_board_info[] = {
 	{
 		.modalias		= "ads7846",
 		.platform_data		= &htcherald_ts_platform_data,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.irq			= OMAP_GPIO_IRQ(HTCHERALD_GPIO_TS),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.max_speed_hz		= 2500000,
 		.bus_num		= 2,
 		.chip_select		= 1,
@@ -484,8 +542,12 @@ static void __init htcherald_lcd_init(void)
 				break;
 		}
 		if (!tries)
+<<<<<<< HEAD
 			printk(KERN_WARNING "Timeout waiting for end of frame "
 			       "-- LCD may not be available\n");
+=======
+			pr_err("Timeout waiting for end of frame -- LCD may not be available\n");
+>>>>>>> refs/remotes/origin/master
 
 		/* turn off DMA */
 		reg = omap_readw(OMAP_DMA_LCD_CCR);
@@ -500,7 +562,15 @@ static void __init htcherald_lcd_init(void)
 
 static void __init htcherald_map_io(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	omap1_map_common_io();
+=======
+	omap7xx_map_io();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	omap7xx_map_io();
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The LCD panel must be disabled and DMA turned off here, as doing
@@ -581,8 +651,18 @@ static void __init htcherald_init(void)
 	printk(KERN_INFO "HTC Herald init.\n");
 
 	/* Do board initialization before we register all the devices */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	omap_board_config = htcherald_config;
 	omap_board_config_size = ARRAY_SIZE(htcherald_config);
+=======
+	htcpld_resources[0].start = gpio_to_irq(HTCHERALD_GIRQ_BTNS);
+	htcpld_resources[0].end = gpio_to_irq(HTCHERALD_GIRQ_BTNS);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	htcpld_resources[0].start = gpio_to_irq(HTCHERALD_GIRQ_BTNS);
+	htcpld_resources[0].end = gpio_to_irq(HTCHERALD_GIRQ_BTNS);
+>>>>>>> refs/remotes/origin/master
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 
 	htcherald_disable_watchdog();
@@ -590,6 +670,14 @@ static void __init htcherald_init(void)
 	htcherald_usb_enable();
 	omap1_usb_init(&htcherald_usb_config);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	htcherald_spi_board_info[0].irq = gpio_to_irq(HTCHERALD_GPIO_TS);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	htcherald_spi_board_info[0].irq = gpio_to_irq(HTCHERALD_GPIO_TS);
+>>>>>>> refs/remotes/origin/master
 	spi_register_board_info(htcherald_spi_board_info,
 		ARRAY_SIZE(htcherald_spi_board_info));
 
@@ -599,6 +687,8 @@ static void __init htcherald_init(void)
 	htc_mmc_data[0] = &htc_mmc1_data;
 	omap1_init_mmc(htc_mmc_data, 1);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 static void __init htcherald_init_irq(void)
@@ -606,15 +696,45 @@ static void __init htcherald_init_irq(void)
 	printk(KERN_INFO "htcherald_init_irq.\n");
 	omap1_init_common_hw();
 	omap_init_irq();
+=======
+
+	omapfb_set_lcd_config(&htcherald_lcd_config);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	omapfb_set_lcd_config(&htcherald_lcd_config);
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(HERALD, "HTC Herald")
 	/* Maintainer: Cory Maccarrone <darkstar6262@gmail.com> */
 	/* Maintainer: wing-linux.sourceforge.net */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params    = 0x10000100,
 	.map_io         = htcherald_map_io,
 	.reserve	= omap_reserve,
 	.init_irq       = htcherald_init_irq,
 	.init_machine   = htcherald_init,
 	.timer          = &omap_timer,
+=======
+	.atag_offset    = 0x100,
+	.map_io         = htcherald_map_io,
+	.init_early     = omap1_init_early,
+	.reserve	= omap_reserve,
+	.init_irq       = omap1_init_irq,
+	.init_machine   = htcherald_init,
+	.timer          = &omap1_timer,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset    = 0x100,
+	.map_io         = htcherald_map_io,
+	.init_early     = omap1_init_early,
+	.init_irq       = omap1_init_irq,
+	.init_machine   = htcherald_init,
+	.init_late	= omap1_init_late,
+	.init_time	= omap1_timer_init,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

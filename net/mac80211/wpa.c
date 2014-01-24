@@ -15,6 +15,14 @@
 #include <linux/gfp.h>
 #include <asm/unaligned.h>
 #include <net/mac80211.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <crypto/aes.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <crypto/aes.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ieee80211_i.h"
 #include "michael.h"
@@ -52,7 +60,17 @@ ieee80211_tx_h_michael_mic_add(struct ieee80211_tx_data *tx)
 	}
 
 	if (info->control.hw_key &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    !(tx->flags & IEEE80211_TX_FRAGMENTED) &&
+=======
+	    (info->flags & IEEE80211_TX_CTL_DONTFRAG ||
+	     tx->local->ops->set_frag_threshold) &&
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (info->flags & IEEE80211_TX_CTL_DONTFRAG ||
+	     tx->local->ops->set_frag_threshold) &&
+>>>>>>> refs/remotes/origin/master
 	    !(tx->key->conf.flags & IEEE80211_KEY_FLAG_GENERATE_MMIC)) {
 		/* hwaccel - with no need for SW-generated MMIC */
 		return TX_CONTINUE;
@@ -60,10 +78,17 @@ ieee80211_tx_h_michael_mic_add(struct ieee80211_tx_data *tx)
 
 	tail = MICHAEL_MIC_LEN;
 	if (!info->control.hw_key)
+<<<<<<< HEAD
 		tail += TKIP_ICV_LEN;
 
 	if (WARN_ON(skb_tailroom(skb) < tail ||
 		    skb_headroom(skb) < TKIP_IV_LEN))
+=======
+		tail += IEEE80211_TKIP_ICV_LEN;
+
+	if (WARN_ON(skb_tailroom(skb) < tail ||
+		    skb_headroom(skb) < IEEE80211_TKIP_IV_LEN))
+>>>>>>> refs/remotes/origin/master
 		return TX_DROP;
 
 	key = &tx->key->conf.key[NL80211_TKIP_DATA_OFFSET_TX_MIC_KEY];
@@ -86,11 +111,17 @@ ieee80211_rx_h_michael_mic_verify(struct ieee80211_rx_data *rx)
 	struct sk_buff *skb = rx->skb;
 	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int queue = rx->queue;
 
 	/* otherwise, TKIP is vulnerable to TID 0 vs. non-QoS replays */
 	if (rx->queue == NUM_RX_DATA_QUEUES - 1)
 		queue = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * it makes no sense to check for MIC errors on anything other
@@ -107,7 +138,11 @@ ieee80211_rx_h_michael_mic_verify(struct ieee80211_rx_data *rx)
 	 */
 	if (status->flag & (RX_FLAG_MMIC_STRIPPED | RX_FLAG_IV_STRIPPED)) {
 		if (status->flag & RX_FLAG_MMIC_ERROR)
+<<<<<<< HEAD
 			goto mic_fail;
+=======
+			goto mic_fail_no_key;
+>>>>>>> refs/remotes/origin/master
 
 		if (!(status->flag & RX_FLAG_IV_STRIPPED) && rx->key &&
 		    rx->key->conf.cipher == WLAN_CIPHER_SUITE_TKIP)
@@ -142,6 +177,19 @@ ieee80211_rx_h_michael_mic_verify(struct ieee80211_rx_data *rx)
 	if (skb->len < hdrlen + MICHAEL_MIC_LEN)
 		return RX_DROP_UNUSABLE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (skb_linearize(rx->skb))
+		return RX_DROP_UNUSABLE;
+	hdr = (void *)skb->data;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	data = skb->data + hdrlen;
 	data_len = skb->len - hdrlen - MICHAEL_MIC_LEN;
 	key = &rx->key->conf.key[NL80211_TKIP_DATA_OFFSET_RX_MIC_KEY];
@@ -154,12 +202,28 @@ ieee80211_rx_h_michael_mic_verify(struct ieee80211_rx_data *rx)
 
 update_iv:
 	/* update IV in key information to be able to detect replays */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rx->key->u.tkip.rx[queue].iv32 = rx->tkip_iv32;
 	rx->key->u.tkip.rx[queue].iv16 = rx->tkip_iv16;
+=======
+	rx->key->u.tkip.rx[rx->security_idx].iv32 = rx->tkip_iv32;
+	rx->key->u.tkip.rx[rx->security_idx].iv16 = rx->tkip_iv16;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rx->key->u.tkip.rx[rx->security_idx].iv32 = rx->tkip_iv32;
+	rx->key->u.tkip.rx[rx->security_idx].iv16 = rx->tkip_iv16;
+>>>>>>> refs/remotes/origin/master
 
 	return RX_CONTINUE;
 
 mic_fail:
+<<<<<<< HEAD
+=======
+	rx->key->u.tkip.mic_failures++;
+
+mic_fail_no_key:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * In some cases the key can be unset - e.g. a multicast packet, in
 	 * a driver that supports HW encryption. Send up the key idx only if
@@ -177,12 +241,24 @@ static int tkip_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
 	struct ieee80211_key *key = tx->key;
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int hdrlen;
 	int len, tail;
 	u8 *pos;
 
 	if (info->control.hw_key &&
+<<<<<<< HEAD
 	    !(info->control.hw_key->flags & IEEE80211_KEY_FLAG_GENERATE_IV)) {
+=======
+	    !(info->control.hw_key->flags & IEEE80211_KEY_FLAG_GENERATE_IV) &&
+	    !(info->control.hw_key->flags & IEEE80211_KEY_FLAG_PUT_IV_SPACE)) {
+>>>>>>> refs/remotes/origin/master
 		/* hwaccel - with no need for software-generated IV */
 		return 0;
 	}
@@ -193,6 +269,7 @@ static int tkip_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
 	if (info->control.hw_key)
 		tail = 0;
 	else
+<<<<<<< HEAD
 		tail = TKIP_ICV_LEN;
 
 	if (WARN_ON(skb_tailroom(skb) < tail ||
@@ -204,28 +281,76 @@ static int tkip_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
 	pos += hdrlen;
 
 	/* Increase IV for the frame */
+<<<<<<< HEAD
 	key->u.tkip.tx.iv16++;
 	if (key->u.tkip.tx.iv16 == 0)
 		key->u.tkip.tx.iv32++;
 
 	pos = ieee80211_tkip_add_iv(pos, key, key->u.tkip.tx.iv16);
+=======
+	spin_lock_irqsave(&key->u.tkip.txlock, flags);
+=======
+		tail = IEEE80211_TKIP_ICV_LEN;
+
+	if (WARN_ON(skb_tailroom(skb) < tail ||
+		    skb_headroom(skb) < IEEE80211_TKIP_IV_LEN))
+		return -1;
+
+	pos = skb_push(skb, IEEE80211_TKIP_IV_LEN);
+	memmove(pos, pos + IEEE80211_TKIP_IV_LEN, hdrlen);
+	skb_set_network_header(skb, skb_network_offset(skb) +
+				    IEEE80211_TKIP_IV_LEN);
+	pos += hdrlen;
+
+	/* the HW only needs room for the IV, but not the actual IV */
+	if (info->control.hw_key &&
+	    (info->control.hw_key->flags & IEEE80211_KEY_FLAG_PUT_IV_SPACE))
+		return 0;
+
+	/* Increase IV for the frame */
+	spin_lock(&key->u.tkip.txlock);
+>>>>>>> refs/remotes/origin/master
+	key->u.tkip.tx.iv16++;
+	if (key->u.tkip.tx.iv16 == 0)
+		key->u.tkip.tx.iv32++;
+	pos = ieee80211_tkip_add_iv(pos, key);
+<<<<<<< HEAD
+	spin_unlock_irqrestore(&key->u.tkip.txlock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&key->u.tkip.txlock);
+>>>>>>> refs/remotes/origin/master
 
 	/* hwaccel - with software IV */
 	if (info->control.hw_key)
 		return 0;
 
 	/* Add room for ICV */
+<<<<<<< HEAD
 	skb_put(skb, TKIP_ICV_LEN);
 
+<<<<<<< HEAD
 	hdr = (struct ieee80211_hdr *) skb->data;
 	return ieee80211_tkip_encrypt_data(tx->local->wep_tx_tfm,
 					   key, pos, len, hdr->addr2);
+=======
+	return ieee80211_tkip_encrypt_data(tx->local->wep_tx_tfm,
+					   key, skb, pos, len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb_put(skb, IEEE80211_TKIP_ICV_LEN);
+
+	return ieee80211_tkip_encrypt_data(tx->local->wep_tx_tfm,
+					   key, skb, pos, len);
+>>>>>>> refs/remotes/origin/master
 }
 
 
 ieee80211_tx_result
 ieee80211_crypto_tkip_encrypt(struct ieee80211_tx_data *tx)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff *skb = tx->skb;
 
 	ieee80211_tx_set_protected(tx);
@@ -234,6 +359,21 @@ ieee80211_crypto_tkip_encrypt(struct ieee80211_tx_data *tx)
 		if (tkip_encrypt_skb(tx, skb) < 0)
 			return TX_DROP;
 	} while ((skb = skb->next));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sk_buff *skb;
+
+	ieee80211_tx_set_protected(tx);
+
+	skb_queue_walk(&tx->skbs, skb) {
+		if (tkip_encrypt_skb(tx, skb) < 0)
+			return TX_DROP;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return TX_CONTINUE;
 }
@@ -247,11 +387,17 @@ ieee80211_crypto_tkip_decrypt(struct ieee80211_rx_data *rx)
 	struct ieee80211_key *key = rx->key;
 	struct sk_buff *skb = rx->skb;
 	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int queue = rx->queue;
 
 	/* otherwise, TKIP is vulnerable to TID 0 vs. non-QoS replays */
 	if (rx->queue == NUM_RX_DATA_QUEUES - 1)
 		queue = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	hdrlen = ieee80211_hdrlen(hdr->frame_control);
 
@@ -261,6 +407,20 @@ ieee80211_crypto_tkip_decrypt(struct ieee80211_rx_data *rx)
 	if (!rx->sta || skb->len - hdrlen < 12)
 		return RX_DROP_UNUSABLE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* it may be possible to optimize this a bit more */
+	if (skb_linearize(rx->skb))
+		return RX_DROP_UNUSABLE;
+	hdr = (void *)skb->data;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Let TKIP code verify IV, but skip decryption.
 	 * In the case where hardware checks the IV as well,
@@ -272,37 +432,71 @@ ieee80211_crypto_tkip_decrypt(struct ieee80211_rx_data *rx)
 	res = ieee80211_tkip_decrypt_data(rx->local->wep_rx_tfm,
 					  key, skb->data + hdrlen,
 					  skb->len - hdrlen, rx->sta->sta.addr,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					  hdr->addr1, hwaccel, queue,
+=======
+					  hdr->addr1, hwaccel, rx->security_idx,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  hdr->addr1, hwaccel, rx->security_idx,
+>>>>>>> refs/remotes/origin/master
 					  &rx->tkip_iv32,
 					  &rx->tkip_iv16);
 	if (res != TKIP_DECRYPT_OK)
 		return RX_DROP_UNUSABLE;
 
 	/* Trim ICV */
+<<<<<<< HEAD
 	skb_trim(skb, skb->len - TKIP_ICV_LEN);
 
 	/* Remove IV */
 	memmove(skb->data + TKIP_IV_LEN, skb->data, hdrlen);
 	skb_pull(skb, TKIP_IV_LEN);
+=======
+	skb_trim(skb, skb->len - IEEE80211_TKIP_ICV_LEN);
+
+	/* Remove IV */
+	memmove(skb->data + IEEE80211_TKIP_IV_LEN, skb->data, hdrlen);
+	skb_pull(skb, IEEE80211_TKIP_IV_LEN);
+>>>>>>> refs/remotes/origin/master
 
 	return RX_CONTINUE;
 }
 
 
+<<<<<<< HEAD
 static void ccmp_special_blocks(struct sk_buff *skb, u8 *pn, u8 *scratch,
+=======
+static void ccmp_special_blocks(struct sk_buff *skb, u8 *pn, u8 *b_0, u8 *aad,
+>>>>>>> refs/remotes/origin/master
 				int encrypted)
 {
 	__le16 mask_fc;
 	int a4_included, mgmt;
 	u8 qos_tid;
+<<<<<<< HEAD
 	u8 *b_0, *aad;
 	u16 data_len, len_a;
 	unsigned int hdrlen;
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
 
+<<<<<<< HEAD
 	b_0 = scratch + 3 * AES_BLOCK_LEN;
 	aad = scratch + 4 * AES_BLOCK_LEN;
+=======
+	memset(scratch, 0, 6 * AES_BLOCK_SIZE);
 
+	b_0 = scratch + 3 * AES_BLOCK_SIZE;
+	aad = scratch + 4 * AES_BLOCK_SIZE;
+>>>>>>> refs/remotes/origin/cm-10.0
+
+=======
+	u16 len_a;
+	unsigned int hdrlen;
+	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Mask FC: zero subtype b4 b5 b6 (if not mgmt)
 	 * Retry, PwrMgt, MoreData; set Protected
@@ -324,20 +518,36 @@ static void ccmp_special_blocks(struct sk_buff *skb, u8 *pn, u8 *scratch,
 	else
 		qos_tid = 0;
 
+<<<<<<< HEAD
 	data_len = skb->len - hdrlen - CCMP_HDR_LEN;
 	if (encrypted)
 		data_len -= CCMP_MIC_LEN;
 
 	/* First block, b_0 */
 	b_0[0] = 0x59; /* flags: Adata: 1, M: 011, L: 001 */
+=======
+	/* In CCM, the initial vectors (IV) used for CTR mode encryption and CBC
+	 * mode authentication are not allowed to collide, yet both are derived
+	 * from this vector b_0. We only set L := 1 here to indicate that the
+	 * data size can be represented in (L+1) bytes. The CCM layer will take
+	 * care of storing the data length in the top (L+1) bytes and setting
+	 * and clearing the other bits as is required to derive the two IVs.
+	 */
+	b_0[0] = 0x1;
+
+>>>>>>> refs/remotes/origin/master
 	/* Nonce: Nonce Flags | A2 | PN
 	 * Nonce Flags: Priority (b0..b3) | Management (b4) | Reserved (b5..b7)
 	 */
 	b_0[1] = qos_tid | (mgmt << 4);
 	memcpy(&b_0[2], hdr->addr2, ETH_ALEN);
+<<<<<<< HEAD
 	memcpy(&b_0[8], pn, CCMP_PN_LEN);
 	/* l(m) */
 	put_unaligned_be16(data_len, &b_0[14]);
+=======
+	memcpy(&b_0[8], pn, IEEE80211_CCMP_PN_LEN);
+>>>>>>> refs/remotes/origin/master
 
 	/* AAD (extra authenticate-only data) / masked 802.11 header
 	 * FC | A1 | A2 | A3 | SC | [A4] | [QC] */
@@ -390,11 +600,33 @@ static int ccmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
 	struct ieee80211_key *key = tx->key;
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 	int hdrlen, len, tail;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 *pos, *pn;
 	int i;
 
 	if (info->control.hw_key &&
 	    !(info->control.hw_key->flags & IEEE80211_KEY_FLAG_GENERATE_IV)) {
+=======
+	u8 *pos;
+	u8 pn[6];
+	u64 pn64;
+	u8 scratch[6 * AES_BLOCK_SIZE];
+=======
+	u8 *pos;
+	u8 pn[6];
+	u64 pn64;
+	u8 aad[2 * AES_BLOCK_SIZE];
+	u8 b_0[AES_BLOCK_SIZE];
+>>>>>>> refs/remotes/origin/master
+
+	if (info->control.hw_key &&
+	    !(info->control.hw_key->flags & IEEE80211_KEY_FLAG_GENERATE_IV) &&
+	    !(info->control.hw_key->flags & IEEE80211_KEY_FLAG_PUT_IV_SPACE)) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * hwaccel has no need for preallocated room for CCMP
 		 * header or MIC fields
@@ -408,6 +640,7 @@ static int ccmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
 	if (info->control.hw_key)
 		tail = 0;
 	else
+<<<<<<< HEAD
 		tail = CCMP_MIC_LEN;
 
 	if (WARN_ON(skb_tailroom(skb) < tail ||
@@ -416,6 +649,7 @@ static int ccmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
 
 	pos = skb_push(skb, CCMP_HDR_LEN);
 	memmove(pos, pos + CCMP_HDR_LEN, hdrlen);
+<<<<<<< HEAD
 	hdr = (struct ieee80211_hdr *) pos;
 	pos += hdrlen;
 
@@ -427,6 +661,40 @@ static int ccmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
 		if (pn[i])
 			break;
 	}
+=======
+=======
+		tail = IEEE80211_CCMP_MIC_LEN;
+
+	if (WARN_ON(skb_tailroom(skb) < tail ||
+		    skb_headroom(skb) < IEEE80211_CCMP_HDR_LEN))
+		return -1;
+
+	pos = skb_push(skb, IEEE80211_CCMP_HDR_LEN);
+	memmove(pos, pos + IEEE80211_CCMP_HDR_LEN, hdrlen);
+	skb_set_network_header(skb, skb_network_offset(skb) +
+				    IEEE80211_CCMP_HDR_LEN);
+>>>>>>> refs/remotes/origin/master
+
+	/* the HW only needs room for the IV, but not the actual IV */
+	if (info->control.hw_key &&
+	    (info->control.hw_key->flags & IEEE80211_KEY_FLAG_PUT_IV_SPACE))
+		return 0;
+
+	hdr = (struct ieee80211_hdr *) pos;
+	pos += hdrlen;
+
+	pn64 = atomic64_inc_return(&key->u.ccmp.tx_pn);
+
+	pn[5] = pn64;
+	pn[4] = pn64 >> 8;
+	pn[3] = pn64 >> 16;
+	pn[2] = pn64 >> 24;
+	pn[1] = pn64 >> 32;
+	pn[0] = pn64 >> 40;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ccmp_pn2hdr(pos, pn, key->conf.keyidx);
 
@@ -434,10 +702,22 @@ static int ccmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
 	if (info->control.hw_key)
 		return 0;
 
+<<<<<<< HEAD
 	pos += CCMP_HDR_LEN;
+<<<<<<< HEAD
 	ccmp_special_blocks(skb, pn, key->u.ccmp.tx_crypto_buf, 0);
 	ieee80211_aes_ccm_encrypt(key->u.ccmp.tfm, key->u.ccmp.tx_crypto_buf, pos, len,
+=======
+	ccmp_special_blocks(skb, pn, scratch, 0);
+	ieee80211_aes_ccm_encrypt(key->u.ccmp.tfm, scratch, pos, len,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  pos, skb_put(skb, CCMP_MIC_LEN));
+=======
+	pos += IEEE80211_CCMP_HDR_LEN;
+	ccmp_special_blocks(skb, pn, b_0, aad, 0);
+	ieee80211_aes_ccm_encrypt(key->u.ccmp.tfm, b_0, aad, pos, len,
+				  skb_put(skb, IEEE80211_CCMP_MIC_LEN));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -446,6 +726,8 @@ static int ccmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
 ieee80211_tx_result
 ieee80211_crypto_ccmp_encrypt(struct ieee80211_tx_data *tx)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff *skb = tx->skb;
 
 	ieee80211_tx_set_protected(tx);
@@ -454,6 +736,21 @@ ieee80211_crypto_ccmp_encrypt(struct ieee80211_tx_data *tx)
 		if (ccmp_encrypt_skb(tx, skb) < 0)
 			return TX_DROP;
 	} while ((skb = skb->next));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sk_buff *skb;
+
+	ieee80211_tx_set_protected(tx);
+
+	skb_queue_walk(&tx->skbs, skb) {
+		if (ccmp_encrypt_skb(tx, skb) < 0)
+			return TX_DROP;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return TX_CONTINUE;
 }
@@ -467,7 +764,11 @@ ieee80211_crypto_ccmp_decrypt(struct ieee80211_rx_data *rx)
 	struct ieee80211_key *key = rx->key;
 	struct sk_buff *skb = rx->skb;
 	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
+<<<<<<< HEAD
 	u8 pn[CCMP_PN_LEN];
+=======
+	u8 pn[IEEE80211_CCMP_PN_LEN];
+>>>>>>> refs/remotes/origin/master
 	int data_len;
 	int queue;
 
@@ -477,26 +778,65 @@ ieee80211_crypto_ccmp_decrypt(struct ieee80211_rx_data *rx)
 	    !ieee80211_is_robust_mgmt_frame(hdr))
 		return RX_CONTINUE;
 
+<<<<<<< HEAD
 	data_len = skb->len - hdrlen - CCMP_HDR_LEN - CCMP_MIC_LEN;
 	if (!rx->sta || data_len < 0)
 		return RX_DROP_UNUSABLE;
 
+<<<<<<< HEAD
 	ccmp_hdr2pn(pn, skb->data + hdrlen);
 
 	queue = ieee80211_is_mgmt(hdr->frame_control) ?
 		NUM_RX_DATA_QUEUES : rx->queue;
+=======
+	if (status->flag & RX_FLAG_DECRYPTED) {
+		if (!pskb_may_pull(rx->skb, hdrlen + CCMP_HDR_LEN))
+=======
+	data_len = skb->len - hdrlen - IEEE80211_CCMP_HDR_LEN -
+		   IEEE80211_CCMP_MIC_LEN;
+	if (!rx->sta || data_len < 0)
+		return RX_DROP_UNUSABLE;
+
+	if (status->flag & RX_FLAG_DECRYPTED) {
+		if (!pskb_may_pull(rx->skb, hdrlen + IEEE80211_CCMP_HDR_LEN))
+>>>>>>> refs/remotes/origin/master
+			return RX_DROP_UNUSABLE;
+	} else {
+		if (skb_linearize(rx->skb))
+			return RX_DROP_UNUSABLE;
+	}
+
+	ccmp_hdr2pn(pn, skb->data + hdrlen);
+
+	queue = rx->security_idx;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (memcmp(pn, key->u.ccmp.rx_pn[queue], CCMP_PN_LEN) <= 0) {
+=======
+
+	if (memcmp(pn, key->u.ccmp.rx_pn[queue], IEEE80211_CCMP_PN_LEN) <= 0) {
+>>>>>>> refs/remotes/origin/master
 		key->u.ccmp.replays++;
 		return RX_DROP_UNUSABLE;
 	}
 
 	if (!(status->flag & RX_FLAG_DECRYPTED)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* hardware didn't decrypt/verify MIC */
 		ccmp_special_blocks(skb, pn, key->u.ccmp.rx_crypto_buf, 1);
 
 		if (ieee80211_aes_ccm_decrypt(
 			    key->u.ccmp.tfm, key->u.ccmp.rx_crypto_buf,
+=======
+		u8 scratch[6 * AES_BLOCK_SIZE];
+		/* hardware didn't decrypt/verify MIC */
+		ccmp_special_blocks(skb, pn, scratch, 1);
+
+		if (ieee80211_aes_ccm_decrypt(
+			    key->u.ccmp.tfm, scratch,
+>>>>>>> refs/remotes/origin/cm-10.0
 			    skb->data + hdrlen + CCMP_HDR_LEN, data_len,
 			    skb->data + skb->len - CCMP_MIC_LEN,
 			    skb->data + hdrlen + CCMP_HDR_LEN))
@@ -506,9 +846,36 @@ ieee80211_crypto_ccmp_decrypt(struct ieee80211_rx_data *rx)
 	memcpy(key->u.ccmp.rx_pn[queue], pn, CCMP_PN_LEN);
 
 	/* Remove CCMP header and MIC */
+<<<<<<< HEAD
 	skb_trim(skb, skb->len - CCMP_MIC_LEN);
+=======
+	if (pskb_trim(skb, skb->len - CCMP_MIC_LEN))
+		return RX_DROP_UNUSABLE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	memmove(skb->data + CCMP_HDR_LEN, skb->data, hdrlen);
 	skb_pull(skb, CCMP_HDR_LEN);
+=======
+		u8 aad[2 * AES_BLOCK_SIZE];
+		u8 b_0[AES_BLOCK_SIZE];
+		/* hardware didn't decrypt/verify MIC */
+		ccmp_special_blocks(skb, pn, b_0, aad, 1);
+
+		if (ieee80211_aes_ccm_decrypt(
+			    key->u.ccmp.tfm, b_0, aad,
+			    skb->data + hdrlen + IEEE80211_CCMP_HDR_LEN,
+			    data_len,
+			    skb->data + skb->len - IEEE80211_CCMP_MIC_LEN))
+			return RX_DROP_UNUSABLE;
+	}
+
+	memcpy(key->u.ccmp.rx_pn[queue], pn, IEEE80211_CCMP_PN_LEN);
+
+	/* Remove CCMP header and MIC */
+	if (pskb_trim(skb, skb->len - IEEE80211_CCMP_MIC_LEN))
+		return RX_DROP_UNUSABLE;
+	memmove(skb->data + IEEE80211_CCMP_HDR_LEN, skb->data, hdrlen);
+	skb_pull(skb, IEEE80211_CCMP_HDR_LEN);
+>>>>>>> refs/remotes/origin/master
 
 	return RX_CONTINUE;
 }
@@ -516,6 +883,7 @@ ieee80211_crypto_ccmp_decrypt(struct ieee80211_rx_data *rx)
 
 static void bip_aad(struct sk_buff *skb, u8 *aad)
 {
+<<<<<<< HEAD
 	/* BIP AAD: FC(masked) || A1 || A2 || A3 */
 
 	/* FC type/subtype */
@@ -527,6 +895,40 @@ static void bip_aad(struct sk_buff *skb, u8 *aad)
 }
 
 
+<<<<<<< HEAD
+=======
+=======
+	__le16 mask_fc;
+	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+
+	/* BIP AAD: FC(masked) || A1 || A2 || A3 */
+
+	/* FC type/subtype */
+	/* Mask FC Retry, PwrMgt, MoreData flags to zero */
+	mask_fc = hdr->frame_control;
+	mask_fc &= ~cpu_to_le16(IEEE80211_FCTL_RETRY | IEEE80211_FCTL_PM |
+				IEEE80211_FCTL_MOREDATA);
+	put_unaligned(mask_fc, (__le16 *) &aad[0]);
+	/* A1 || A2 || A3 */
+	memcpy(aad + 2, &hdr->addr1, 3 * ETH_ALEN);
+}
+
+
+>>>>>>> refs/remotes/origin/master
+static inline void bip_ipn_set64(u8 *d, u64 pn)
+{
+	*d++ = pn;
+	*d++ = pn >> 8;
+	*d++ = pn >> 16;
+	*d++ = pn >> 24;
+	*d++ = pn >> 32;
+	*d = pn >> 40;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void bip_ipn_swap(u8 *d, const u8 *s)
 {
 	*d++ = s[5];
@@ -541,6 +943,8 @@ static inline void bip_ipn_swap(u8 *d, const u8 *s)
 ieee80211_tx_result
 ieee80211_crypto_aes_cmac_encrypt(struct ieee80211_tx_data *tx)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff *skb = tx->skb;
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 	struct ieee80211_key *key = tx->key;
@@ -550,6 +954,29 @@ ieee80211_crypto_aes_cmac_encrypt(struct ieee80211_tx_data *tx)
 
 	if (info->control.hw_key)
 		return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sk_buff *skb;
+	struct ieee80211_tx_info *info;
+	struct ieee80211_key *key = tx->key;
+	struct ieee80211_mmie *mmie;
+	u8 aad[20];
+	u64 pn64;
+
+	if (WARN_ON(skb_queue_len(&tx->skbs) != 1))
+		return TX_DROP;
+
+	skb = skb_peek(&tx->skbs);
+
+	info = IEEE80211_SKB_CB(skb);
+
+	if (info->control.hw_key)
+		return TX_CONTINUE;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (WARN_ON(skb_tailroom(skb) < sizeof(*mmie)))
 		return TX_DROP;
@@ -560,6 +987,8 @@ ieee80211_crypto_aes_cmac_encrypt(struct ieee80211_tx_data *tx)
 	mmie->key_id = cpu_to_le16(key->conf.keyidx);
 
 	/* PN = PN + 1 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pn = key->u.aes_cmac.tx_pn;
 
 	for (i = sizeof(key->u.aes_cmac.tx_pn) - 1; i >= 0; i--) {
@@ -568,14 +997,34 @@ ieee80211_crypto_aes_cmac_encrypt(struct ieee80211_tx_data *tx)
 			break;
 	}
 	bip_ipn_swap(mmie->sequence_number, pn);
+=======
+	pn64 = atomic64_inc_return(&key->u.aes_cmac.tx_pn);
+
+	bip_ipn_set64(mmie->sequence_number, pn64);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pn64 = atomic64_inc_return(&key->u.aes_cmac.tx_pn);
+
+	bip_ipn_set64(mmie->sequence_number, pn64);
+>>>>>>> refs/remotes/origin/master
 
 	bip_aad(skb, aad);
 
 	/*
 	 * MIC = AES-128-CMAC(IGTK, AAD || Management Frame Body || MMIE, 64)
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ieee80211_aes_cmac(key->u.aes_cmac.tfm, key->u.aes_cmac.tx_crypto_buf,
 			   aad, skb->data + 24, skb->len - 24, mmie->mic);
+=======
+	ieee80211_aes_cmac(key->u.aes_cmac.tfm, aad,
+			   skb->data + 24, skb->len - 24, mmie->mic);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ieee80211_aes_cmac(key->u.aes_cmac.tfm, aad,
+			   skb->data + 24, skb->len - 24, mmie->mic);
+>>>>>>> refs/remotes/origin/master
 
 	return TX_CONTINUE;
 }
@@ -594,6 +1043,16 @@ ieee80211_crypto_aes_cmac_decrypt(struct ieee80211_rx_data *rx)
 	if (!ieee80211_is_mgmt(hdr->frame_control))
 		return RX_CONTINUE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* management frames are already linear */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* management frames are already linear */
+
+>>>>>>> refs/remotes/origin/master
 	if (skb->len < 24 + sizeof(*mmie))
 		return RX_DROP_UNUSABLE;
 
@@ -613,8 +1072,16 @@ ieee80211_crypto_aes_cmac_decrypt(struct ieee80211_rx_data *rx)
 	if (!(status->flag & RX_FLAG_DECRYPTED)) {
 		/* hardware didn't decrypt/verify MIC */
 		bip_aad(skb, aad);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ieee80211_aes_cmac(key->u.aes_cmac.tfm,
 				   key->u.aes_cmac.rx_crypto_buf, aad,
+=======
+		ieee80211_aes_cmac(key->u.aes_cmac.tfm, aad,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ieee80211_aes_cmac(key->u.aes_cmac.tfm, aad,
+>>>>>>> refs/remotes/origin/master
 				   skb->data + 24, skb->len - 24, mic);
 		if (memcmp(mic, mmie->mic, sizeof(mmie->mic)) != 0) {
 			key->u.aes_cmac.icverrors++;
@@ -629,3 +1096,31 @@ ieee80211_crypto_aes_cmac_decrypt(struct ieee80211_rx_data *rx)
 
 	return RX_CONTINUE;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+ieee80211_tx_result
+ieee80211_crypto_hw_encrypt(struct ieee80211_tx_data *tx)
+{
+	struct sk_buff *skb;
+	struct ieee80211_tx_info *info = NULL;
+
+	skb_queue_walk(&tx->skbs, skb) {
+		info  = IEEE80211_SKB_CB(skb);
+
+		/* handle hw-only algorithm */
+		if (!info->control.hw_key)
+			return TX_DROP;
+	}
+
+	ieee80211_tx_set_protected(tx);
+
+	return TX_CONTINUE;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

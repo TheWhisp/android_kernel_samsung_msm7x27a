@@ -469,7 +469,11 @@ static void leo_wid_put(struct fb_info *info, struct fb_wid_list *wl)
 
 		default:
 			continue;
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 		sbus_writel(0x5800 + j, &lx_krn->krn_type);
 		sbus_writel(wi->wi_values[0], &lx_krn->krn_value);
 	}
@@ -547,7 +551,11 @@ static void leo_unmap_regs(struct platform_device *op, struct fb_info *info,
 		of_iounmap(&op->resource[0], info->screen_base, 0x800000);
 }
 
+<<<<<<< HEAD
 static int __devinit leo_probe(struct platform_device *op)
+=======
+static int leo_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	struct fb_info *info;
@@ -636,7 +644,11 @@ out_err:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit leo_remove(struct platform_device *op)
+=======
+static int leo_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = dev_get_drvdata(&op->dev);
 	struct leo_par *par = info->par;
@@ -648,8 +660,11 @@ static int __devexit leo_remove(struct platform_device *op)
 
 	framebuffer_release(info);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -668,7 +683,11 @@ static struct platform_driver leo_driver = {
 		.of_match_table = leo_match,
 	},
 	.probe		= leo_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(leo_remove),
+=======
+	.remove		= leo_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init leo_init(void)

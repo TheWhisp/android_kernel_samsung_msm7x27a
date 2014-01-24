@@ -28,17 +28,49 @@
 #include <linux/gpio.h>
 #include <linux/mdio-gpio.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_OF_GPIO
 #include <linux/of_gpio.h>
 #include <linux/of_mdio.h>
 #include <linux/of_platform.h>
 #endif
+=======
+#include <linux/of_gpio.h>
+#include <linux/of_mdio.h>
+>>>>>>> refs/remotes/origin/master
 
 struct mdio_gpio_info {
 	struct mdiobb_ctrl ctrl;
 	int mdc, mdio;
 };
 
+<<<<<<< HEAD
+=======
+static void *mdio_gpio_of_get_data(struct platform_device *pdev)
+{
+	struct device_node *np = pdev->dev.of_node;
+	struct mdio_gpio_platform_data *pdata;
+	int ret;
+
+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return NULL;
+
+	ret = of_get_gpio(np, 0);
+	if (ret < 0)
+		return NULL;
+
+	pdata->mdc = ret;
+
+	ret = of_get_gpio(np, 1);
+	if (ret < 0)
+		return NULL;
+	pdata->mdio = ret;
+
+	return pdata;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void mdio_dir(struct mdiobb_ctrl *ctrl, int dir)
 {
 	struct mdio_gpio_info *bitbang =
@@ -82,9 +114,15 @@ static struct mdiobb_ops mdio_gpio_ops = {
 	.get_mdio_data = mdio_get,
 };
 
+<<<<<<< HEAD
 static struct mii_bus * __devinit mdio_gpio_bus_init(struct device *dev,
 					struct mdio_gpio_platform_data *pdata,
 					int bus_id)
+=======
+static struct mii_bus *mdio_gpio_bus_init(struct device *dev,
+					  struct mdio_gpio_platform_data *pdata,
+					  int bus_id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mii_bus *new_bus;
 	struct mdio_gpio_info *bitbang;
@@ -95,6 +133,14 @@ static struct mii_bus * __devinit mdio_gpio_bus_init(struct device *dev,
 		goto out;
 
 	bitbang->ctrl.ops = &mdio_gpio_ops;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bitbang->ctrl.reset = pdata->reset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bitbang->ctrl.reset = pdata->reset;
+>>>>>>> refs/remotes/origin/master
 	bitbang->mdc = pdata->mdc;
 	bitbang->mdio = pdata->mdio;
 
@@ -115,7 +161,15 @@ static struct mii_bus * __devinit mdio_gpio_bus_init(struct device *dev,
 		if (!new_bus->irq[i])
 			new_bus->irq[i] = PHY_POLL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snprintf(new_bus->id, MII_BUS_ID_SIZE, "%x", bus_id);
+=======
+	snprintf(new_bus->id, MII_BUS_ID_SIZE, "gpio-%x", bus_id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snprintf(new_bus->id, MII_BUS_ID_SIZE, "gpio-%x", bus_id);
+>>>>>>> refs/remotes/origin/master
 
 	if (gpio_request(bitbang->mdc, "mdc"))
 		goto out_free_bus;
@@ -151,7 +205,11 @@ static void mdio_gpio_bus_deinit(struct device *dev)
 	kfree(bitbang);
 }
 
+<<<<<<< HEAD
 static void __devexit mdio_gpio_bus_destroy(struct device *dev)
+=======
+static void mdio_gpio_bus_destroy(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mii_bus *bus = dev_get_drvdata(dev);
 
@@ -159,33 +217,66 @@ static void __devexit mdio_gpio_bus_destroy(struct device *dev)
 	mdio_gpio_bus_deinit(dev);
 }
 
+<<<<<<< HEAD
 static int __devinit mdio_gpio_probe(struct platform_device *pdev)
 {
 	struct mdio_gpio_platform_data *pdata = pdev->dev.platform_data;
 	struct mii_bus *new_bus;
 	int ret;
+=======
+static int mdio_gpio_probe(struct platform_device *pdev)
+{
+	struct mdio_gpio_platform_data *pdata;
+	struct mii_bus *new_bus;
+	int ret, bus_id;
+
+	if (pdev->dev.of_node) {
+		pdata = mdio_gpio_of_get_data(pdev);
+		bus_id = of_alias_get_id(pdev->dev.of_node, "mdio-gpio");
+	} else {
+		pdata = dev_get_platdata(&pdev->dev);
+		bus_id = pdev->id;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (!pdata)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	new_bus = mdio_gpio_bus_init(&pdev->dev, pdata, pdev->id);
 	if (!new_bus)
 		return -ENODEV;
 
 	ret = mdiobus_register(new_bus);
+=======
+	new_bus = mdio_gpio_bus_init(&pdev->dev, pdata, bus_id);
+	if (!new_bus)
+		return -ENODEV;
+
+	if (pdev->dev.of_node)
+		ret = of_mdiobus_register(new_bus, pdev->dev.of_node);
+	else
+		ret = mdiobus_register(new_bus);
+
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		mdio_gpio_bus_deinit(&pdev->dev);
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit mdio_gpio_remove(struct platform_device *pdev)
+=======
+static int mdio_gpio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	mdio_gpio_bus_destroy(&pdev->dev);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_OF_GPIO
 
 static int __devinit mdio_ofgpio_probe(struct platform_device *ofdev)
@@ -254,13 +345,21 @@ static inline int __init mdio_ofgpio_init(void)
 	return platform_driver_register(&mdio_ofgpio_driver);
 }
 
+<<<<<<< HEAD
 static inline void __exit mdio_ofgpio_exit(void)
+=======
+static inline void mdio_ofgpio_exit(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	platform_driver_unregister(&mdio_ofgpio_driver);
 }
 #else
 static inline int __init mdio_ofgpio_init(void) { return 0; }
+<<<<<<< HEAD
 static inline void __exit mdio_ofgpio_exit(void) { }
+=======
+static inline void mdio_ofgpio_exit(void) { }
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_OF_GPIO */
 
 static struct platform_driver mdio_gpio_driver = {
@@ -294,6 +393,24 @@ static void __exit mdio_gpio_exit(void)
 	mdio_ofgpio_exit();
 }
 module_exit(mdio_gpio_exit);
+=======
+static struct of_device_id mdio_gpio_of_match[] = {
+	{ .compatible = "virtual,mdio-gpio", },
+	{ /* sentinel */ }
+};
+
+static struct platform_driver mdio_gpio_driver = {
+	.probe = mdio_gpio_probe,
+	.remove = mdio_gpio_remove,
+	.driver		= {
+		.name	= "mdio-gpio",
+		.owner	= THIS_MODULE,
+		.of_match_table = mdio_gpio_of_match,
+	},
+};
+
+module_platform_driver(mdio_gpio_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("platform:mdio-gpio");
 MODULE_AUTHOR("Laurent Pinchart, Paulius Zaleckas");

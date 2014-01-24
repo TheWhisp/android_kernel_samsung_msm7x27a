@@ -160,7 +160,11 @@ nv50_mpeg_init(struct drm_device *dev, int engine)
 }
 
 static int
+<<<<<<< HEAD
 nv50_mpeg_fini(struct drm_device *dev, int engine)
+=======
+nv50_mpeg_fini(struct drm_device *dev, int engine, bool suspend)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/*XXX: context save for s/r */
 	nv_mask(dev, 0x00b32c, 0x00000001, 0x00000000);

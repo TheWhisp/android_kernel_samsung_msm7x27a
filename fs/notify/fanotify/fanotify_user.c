@@ -13,9 +13,25 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 
 #include <asm/ioctls.h>
 
+<<<<<<< HEAD
+=======
+#include "../../mount.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/compat.h>
+
+#include <asm/ioctls.h>
+
+#include "../../mount.h"
+#include "../fdinfo.h"
+#include "fanotify.h"
+
+>>>>>>> refs/remotes/origin/master
 #define FANOTIFY_DEFAULT_MAX_EVENTS	16384
 #define FANOTIFY_DEFAULT_MAX_MARKS	8192
 #define FANOTIFY_DEFAULT_MAX_LISTENERS	128
@@ -24,11 +40,19 @@ extern const struct fsnotify_ops fanotify_fsnotify_ops;
 
 static struct kmem_cache *fanotify_mark_cache __read_mostly;
 static struct kmem_cache *fanotify_response_event_cache __read_mostly;
+<<<<<<< HEAD
+=======
+struct kmem_cache *fanotify_event_cachep __read_mostly;
+>>>>>>> refs/remotes/origin/master
 
 struct fanotify_response_event {
 	struct list_head list;
 	__s32 fd;
+<<<<<<< HEAD
 	struct fsnotify_event *event;
+=======
+	struct fanotify_event_info *event;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -56,11 +80,19 @@ static struct fsnotify_event *get_one_event(struct fsnotify_group *group,
 	return fsnotify_remove_notify_event(group);
 }
 
+<<<<<<< HEAD
 static int create_fd(struct fsnotify_group *group, struct fsnotify_event *event)
 {
 	int client_fd;
 	struct dentry *dentry;
 	struct vfsmount *mnt;
+=======
+static int create_fd(struct fsnotify_group *group,
+		     struct fanotify_event_info *event,
+		     struct file **file)
+{
+	int client_fd;
+>>>>>>> refs/remotes/origin/master
 	struct file *new_file;
 
 	pr_debug("%s: group=%p event=%p\n", __func__, group, event);
@@ -69,22 +101,32 @@ static int create_fd(struct fsnotify_group *group, struct fsnotify_event *event)
 	if (client_fd < 0)
 		return client_fd;
 
+<<<<<<< HEAD
 	if (event->data_type != FSNOTIFY_EVENT_PATH) {
 		WARN_ON(1);
 		put_unused_fd(client_fd);
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * we need a new file handle for the userspace program so it can read even if it was
 	 * originally opened O_WRONLY.
 	 */
+<<<<<<< HEAD
 	dentry = dget(event->path.dentry);
 	mnt = mntget(event->path.mnt);
 	/* it's possible this event was an overflow event.  in that case dentry and mnt
 	 * are NULL;  That's fine, just don't call dentry open */
 	if (dentry && mnt)
 		new_file = dentry_open(dentry, mnt,
+=======
+	/* it's possible this event was an overflow event.  in that case dentry and mnt
+	 * are NULL;  That's fine, just don't call dentry open */
+	if (event->path.dentry && event->path.mnt)
+		new_file = dentry_open(&event->path,
+>>>>>>> refs/remotes/origin/master
 				       group->fanotify_data.f_flags | FMODE_NONOTIFY,
 				       current_cred());
 	else
@@ -100,13 +142,18 @@ static int create_fd(struct fsnotify_group *group, struct fsnotify_event *event)
 		put_unused_fd(client_fd);
 		client_fd = PTR_ERR(new_file);
 	} else {
+<<<<<<< HEAD
 		fd_install(client_fd, new_file);
+=======
+		*file = new_file;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return client_fd;
 }
 
 static int fill_event_metadata(struct fsnotify_group *group,
+<<<<<<< HEAD
 				   struct fanotify_event_metadata *metadata,
 				   struct fsnotify_event *event)
 {
@@ -115,16 +162,42 @@ static int fill_event_metadata(struct fsnotify_group *group,
 	pr_debug("%s: group=%p metadata=%p event=%p\n", __func__,
 		 group, metadata, event);
 
+=======
+			       struct fanotify_event_metadata *metadata,
+			       struct fsnotify_event *fsn_event,
+			       struct file **file)
+{
+	int ret = 0;
+	struct fanotify_event_info *event;
+
+	pr_debug("%s: group=%p metadata=%p event=%p\n", __func__,
+		 group, metadata, fsn_event);
+
+	*file = NULL;
+	event = container_of(fsn_event, struct fanotify_event_info, fse);
+>>>>>>> refs/remotes/origin/master
 	metadata->event_len = FAN_EVENT_METADATA_LEN;
 	metadata->metadata_len = FAN_EVENT_METADATA_LEN;
 	metadata->vers = FANOTIFY_METADATA_VERSION;
 	metadata->reserved = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	metadata->mask = event->mask & FAN_ALL_OUTGOING_EVENTS;
 	metadata->pid = pid_vnr(event->tgid);
 	if (unlikely(event->mask & FAN_Q_OVERFLOW))
 		metadata->fd = FAN_NOFD;
 	else {
 		metadata->fd = create_fd(group, event);
+=======
+	metadata->mask = fsn_event->mask & FAN_ALL_OUTGOING_EVENTS;
+	metadata->pid = pid_vnr(event->tgid);
+	if (unlikely(fsn_event->mask & FAN_Q_OVERFLOW))
+		metadata->fd = FAN_NOFD;
+	else {
+		metadata->fd = create_fd(group, event, file);
+>>>>>>> refs/remotes/origin/master
 		if (metadata->fd < 0)
 			ret = metadata->fd;
 	}
@@ -205,7 +278,11 @@ static int prepare_for_access_response(struct fsnotify_group *group,
 	if (!re)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	re->event = event;
+=======
+	re->event = FANOTIFY_E(event);
+>>>>>>> refs/remotes/origin/master
 	re->fd = fd;
 
 	mutex_lock(&group->fanotify_data.access_mutex);
@@ -213,7 +290,11 @@ static int prepare_for_access_response(struct fsnotify_group *group,
 	if (atomic_read(&group->fanotify_data.bypass_perm)) {
 		mutex_unlock(&group->fanotify_data.access_mutex);
 		kmem_cache_free(fanotify_response_event_cache, re);
+<<<<<<< HEAD
 		event->response = FAN_ALLOW;
+=======
+		FANOTIFY_E(event)->response = FAN_ALLOW;
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 		
@@ -223,6 +304,7 @@ static int prepare_for_access_response(struct fsnotify_group *group,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void remove_access_response(struct fsnotify_group *group,
 				   struct fsnotify_event *event,
 				   __s32 fd)
@@ -242,6 +324,8 @@ static void remove_access_response(struct fsnotify_group *group,
 
 	return;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 static int prepare_for_access_response(struct fsnotify_group *group,
 				       struct fsnotify_event *event,
@@ -250,12 +334,15 @@ static int prepare_for_access_response(struct fsnotify_group *group,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void remove_access_response(struct fsnotify_group *group,
 				   struct fsnotify_event *event,
 				   __s32 fd)
 {
 	return;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static ssize_t copy_event_to_user(struct fsnotify_group *group,
@@ -263,15 +350,24 @@ static ssize_t copy_event_to_user(struct fsnotify_group *group,
 				  char __user *buf)
 {
 	struct fanotify_event_metadata fanotify_event_metadata;
+<<<<<<< HEAD
+=======
+	struct file *f;
+>>>>>>> refs/remotes/origin/master
 	int fd, ret;
 
 	pr_debug("%s: group=%p event=%p\n", __func__, group, event);
 
+<<<<<<< HEAD
 	ret = fill_event_metadata(group, &fanotify_event_metadata, event);
+=======
+	ret = fill_event_metadata(group, &fanotify_event_metadata, event, &f);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto out;
 
 	fd = fanotify_event_metadata.fd;
+<<<<<<< HEAD
 	ret = prepare_for_access_response(group, event, fd);
 	if (ret)
 		goto out_close_fd;
@@ -292,6 +388,30 @@ out:
 #ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
 	if (event->mask & FAN_ALL_PERM_EVENTS) {
 		event->response = FAN_DENY;
+=======
+	ret = -EFAULT;
+	if (copy_to_user(buf, &fanotify_event_metadata,
+			 fanotify_event_metadata.event_len))
+		goto out_close_fd;
+
+	ret = prepare_for_access_response(group, event, fd);
+	if (ret)
+		goto out_close_fd;
+
+	if (fd != FAN_NOFD)
+		fd_install(fd, f);
+	return fanotify_event_metadata.event_len;
+
+out_close_fd:
+	if (fd != FAN_NOFD) {
+		put_unused_fd(fd);
+		fput(f);
+	}
+out:
+#ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
+	if (event->mask & FAN_ALL_PERM_EVENTS) {
+		FANOTIFY_E(event)->response = FAN_DENY;
+>>>>>>> refs/remotes/origin/master
 		wake_up(&group->fanotify_data.access_waitq);
 	}
 #endif
@@ -339,7 +459,11 @@ static ssize_t fanotify_read(struct file *file, char __user *buf,
 			if (IS_ERR(kevent))
 				break;
 			ret = copy_event_to_user(group, kevent, buf);
+<<<<<<< HEAD
 			fsnotify_put_event(kevent);
+=======
+			fsnotify_destroy_event(group, kevent);
+>>>>>>> refs/remotes/origin/master
 			if (ret < 0)
 				break;
 			buf += ret;
@@ -417,8 +541,14 @@ static int fanotify_release(struct inode *ignored, struct file *file)
 
 	wake_up(&group->fanotify_data.access_waitq);
 #endif
+<<<<<<< HEAD
 	/* matches the fanotify_init->fsnotify_alloc_group */
 	fsnotify_put_group(group);
+=======
+
+	/* matches the fanotify_init->fsnotify_alloc_group */
+	fsnotify_destroy_group(group);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -426,7 +556,11 @@ static int fanotify_release(struct inode *ignored, struct file *file)
 static long fanotify_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	struct fsnotify_group *group;
+<<<<<<< HEAD
 	struct fsnotify_event_holder *holder;
+=======
+	struct fsnotify_event *fsn_event;
+>>>>>>> refs/remotes/origin/master
 	void __user *p;
 	int ret = -ENOTTY;
 	size_t send_len = 0;
@@ -438,7 +572,11 @@ static long fanotify_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 	switch (cmd) {
 	case FIONREAD:
 		mutex_lock(&group->notification_mutex);
+<<<<<<< HEAD
 		list_for_each_entry(holder, &group->notification_list, event_list)
+=======
+		list_for_each_entry(fsn_event, &group->notification_list, list)
+>>>>>>> refs/remotes/origin/master
 			send_len += FAN_EVENT_METADATA_LEN;
 		mutex_unlock(&group->notification_mutex);
 		ret = put_user(send_len, (int __user *) p);
@@ -449,6 +587,10 @@ static long fanotify_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 }
 
 static const struct file_operations fanotify_fops = {
+<<<<<<< HEAD
+=======
+	.show_fdinfo	= fanotify_show_fdinfo,
+>>>>>>> refs/remotes/origin/master
 	.poll		= fanotify_poll,
 	.read		= fanotify_read,
 	.write		= fanotify_write,
@@ -473,16 +615,24 @@ static int fanotify_find_path(int dfd, const char __user *filename,
 		 dfd, filename, flags);
 
 	if (filename == NULL) {
+<<<<<<< HEAD
 		struct file *file;
 		int fput_needed;
 
 		ret = -EBADF;
 		file = fget_light(dfd, &fput_needed);
 		if (!file)
+=======
+		struct fd f = fdget(dfd);
+
+		ret = -EBADF;
+		if (!f.file)
+>>>>>>> refs/remotes/origin/master
 			goto out;
 
 		ret = -ENOTDIR;
 		if ((flags & FAN_MARK_ONLYDIR) &&
+<<<<<<< HEAD
 		    !(S_ISDIR(file->f_path.dentry->d_inode->i_mode))) {
 			fput_light(file, fput_needed);
 			goto out;
@@ -491,6 +641,16 @@ static int fanotify_find_path(int dfd, const char __user *filename,
 		*path = file->f_path;
 		path_get(path);
 		fput_light(file, fput_needed);
+=======
+		    !(S_ISDIR(file_inode(f.file)->i_mode))) {
+			fdput(f);
+			goto out;
+		}
+
+		*path = f.file->f_path;
+		path_get(path);
+		fdput(f);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		unsigned int lookup_flags = 0;
 
@@ -514,7 +674,12 @@ out:
 
 static __u32 fanotify_mark_remove_from_mask(struct fsnotify_mark *fsn_mark,
 					    __u32 mask,
+<<<<<<< HEAD
 					    unsigned int flags)
+=======
+					    unsigned int flags,
+					    int *destroy)
+>>>>>>> refs/remotes/origin/master
 {
 	__u32 oldmask;
 
@@ -528,8 +693,12 @@ static __u32 fanotify_mark_remove_from_mask(struct fsnotify_mark *fsn_mark,
 	}
 	spin_unlock(&fsn_mark->lock);
 
+<<<<<<< HEAD
 	if (!(oldmask & ~mask))
 		fsnotify_destroy_mark(fsn_mark);
+=======
+	*destroy = !(oldmask & ~mask);
+>>>>>>> refs/remotes/origin/master
 
 	return mask & oldmask;
 }
@@ -540,6 +709,7 @@ static int fanotify_remove_vfsmount_mark(struct fsnotify_group *group,
 {
 	struct fsnotify_mark *fsn_mark = NULL;
 	__u32 removed;
+<<<<<<< HEAD
 
 	fsn_mark = fsnotify_find_vfsmount_mark(group, mnt);
 	if (!fsn_mark)
@@ -547,7 +717,30 @@ static int fanotify_remove_vfsmount_mark(struct fsnotify_group *group,
 
 	removed = fanotify_mark_remove_from_mask(fsn_mark, mask, flags);
 	fsnotify_put_mark(fsn_mark);
+<<<<<<< HEAD
 	if (removed & mnt->mnt_fsnotify_mask)
+=======
+	if (removed & real_mount(mnt)->mnt_fsnotify_mask)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int destroy_mark;
+
+	mutex_lock(&group->mark_mutex);
+	fsn_mark = fsnotify_find_vfsmount_mark(group, mnt);
+	if (!fsn_mark) {
+		mutex_unlock(&group->mark_mutex);
+		return -ENOENT;
+	}
+
+	removed = fanotify_mark_remove_from_mask(fsn_mark, mask, flags,
+						 &destroy_mark);
+	if (destroy_mark)
+		fsnotify_destroy_mark_locked(fsn_mark, group);
+	mutex_unlock(&group->mark_mutex);
+
+	fsnotify_put_mark(fsn_mark);
+	if (removed & real_mount(mnt)->mnt_fsnotify_mask)
+>>>>>>> refs/remotes/origin/master
 		fsnotify_recalc_vfsmount_mask(mnt);
 
 	return 0;
@@ -559,12 +752,30 @@ static int fanotify_remove_inode_mark(struct fsnotify_group *group,
 {
 	struct fsnotify_mark *fsn_mark = NULL;
 	__u32 removed;
+<<<<<<< HEAD
 
 	fsn_mark = fsnotify_find_inode_mark(group, inode);
 	if (!fsn_mark)
 		return -ENOENT;
 
 	removed = fanotify_mark_remove_from_mask(fsn_mark, mask, flags);
+=======
+	int destroy_mark;
+
+	mutex_lock(&group->mark_mutex);
+	fsn_mark = fsnotify_find_inode_mark(group, inode);
+	if (!fsn_mark) {
+		mutex_unlock(&group->mark_mutex);
+		return -ENOENT;
+	}
+
+	removed = fanotify_mark_remove_from_mask(fsn_mark, mask, flags,
+						 &destroy_mark);
+	if (destroy_mark)
+		fsnotify_destroy_mark_locked(fsn_mark, group);
+	mutex_unlock(&group->mark_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	/* matches the fsnotify_find_inode_mark() */
 	fsnotify_put_mark(fsn_mark);
 	if (removed & inode->i_fsnotify_mask)
@@ -600,12 +811,41 @@ static __u32 fanotify_mark_add_to_mask(struct fsnotify_mark *fsn_mark,
 	return mask & ~oldmask;
 }
 
+<<<<<<< HEAD
+=======
+static struct fsnotify_mark *fanotify_add_new_mark(struct fsnotify_group *group,
+						   struct inode *inode,
+						   struct vfsmount *mnt)
+{
+	struct fsnotify_mark *mark;
+	int ret;
+
+	if (atomic_read(&group->num_marks) > group->fanotify_data.max_marks)
+		return ERR_PTR(-ENOSPC);
+
+	mark = kmem_cache_alloc(fanotify_mark_cache, GFP_KERNEL);
+	if (!mark)
+		return ERR_PTR(-ENOMEM);
+
+	fsnotify_init_mark(mark, fanotify_free_mark);
+	ret = fsnotify_add_mark_locked(mark, group, inode, mnt, 0);
+	if (ret) {
+		fsnotify_put_mark(mark);
+		return ERR_PTR(ret);
+	}
+
+	return mark;
+}
+
+
+>>>>>>> refs/remotes/origin/master
 static int fanotify_add_vfsmount_mark(struct fsnotify_group *group,
 				      struct vfsmount *mnt, __u32 mask,
 				      unsigned int flags)
 {
 	struct fsnotify_mark *fsn_mark;
 	__u32 added;
+<<<<<<< HEAD
 	int ret = 0;
 
 	fsn_mark = fsnotify_find_vfsmount_mark(group, mnt);
@@ -624,11 +864,35 @@ static int fanotify_add_vfsmount_mark(struct fsnotify_group *group,
 	}
 	added = fanotify_mark_add_to_mask(fsn_mark, mask, flags);
 
+<<<<<<< HEAD
 	if (added & ~mnt->mnt_fsnotify_mask)
+=======
+	if (added & ~real_mount(mnt)->mnt_fsnotify_mask)
+>>>>>>> refs/remotes/origin/cm-10.0
 		fsnotify_recalc_vfsmount_mask(mnt);
 err:
 	fsnotify_put_mark(fsn_mark);
 	return ret;
+=======
+
+	mutex_lock(&group->mark_mutex);
+	fsn_mark = fsnotify_find_vfsmount_mark(group, mnt);
+	if (!fsn_mark) {
+		fsn_mark = fanotify_add_new_mark(group, NULL, mnt);
+		if (IS_ERR(fsn_mark)) {
+			mutex_unlock(&group->mark_mutex);
+			return PTR_ERR(fsn_mark);
+		}
+	}
+	added = fanotify_mark_add_to_mask(fsn_mark, mask, flags);
+	mutex_unlock(&group->mark_mutex);
+
+	if (added & ~real_mount(mnt)->mnt_fsnotify_mask)
+		fsnotify_recalc_vfsmount_mask(mnt);
+
+	fsnotify_put_mark(fsn_mark);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int fanotify_add_inode_mark(struct fsnotify_group *group,
@@ -637,7 +901,10 @@ static int fanotify_add_inode_mark(struct fsnotify_group *group,
 {
 	struct fsnotify_mark *fsn_mark;
 	__u32 added;
+<<<<<<< HEAD
 	int ret = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s: group=%p inode=%p\n", __func__, group, inode);
 
@@ -651,6 +918,7 @@ static int fanotify_add_inode_mark(struct fsnotify_group *group,
 	    (atomic_read(&inode->i_writecount) > 0))
 		return 0;
 
+<<<<<<< HEAD
 	fsn_mark = fsnotify_find_inode_mark(group, inode);
 	if (!fsn_mark) {
 		if (atomic_read(&group->num_marks) > group->fanotify_data.max_marks)
@@ -672,6 +940,25 @@ static int fanotify_add_inode_mark(struct fsnotify_group *group,
 err:
 	fsnotify_put_mark(fsn_mark);
 	return ret;
+=======
+	mutex_lock(&group->mark_mutex);
+	fsn_mark = fsnotify_find_inode_mark(group, inode);
+	if (!fsn_mark) {
+		fsn_mark = fanotify_add_new_mark(group, inode, NULL);
+		if (IS_ERR(fsn_mark)) {
+			mutex_unlock(&group->mark_mutex);
+			return PTR_ERR(fsn_mark);
+		}
+	}
+	added = fanotify_mark_add_to_mask(fsn_mark, mask, flags);
+	mutex_unlock(&group->mark_mutex);
+
+	if (added & ~inode->i_fsnotify_mask)
+		fsnotify_recalc_inode_mask(inode);
+
+	fsnotify_put_mark(fsn_mark);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* fanotify syscalls */
@@ -731,13 +1018,21 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
 		break;
 	default:
 		fd = -EINVAL;
+<<<<<<< HEAD
 		goto out_put_group;
+=======
+		goto out_destroy_group;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (flags & FAN_UNLIMITED_QUEUE) {
 		fd = -EPERM;
 		if (!capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 			goto out_put_group;
+=======
+			goto out_destroy_group;
+>>>>>>> refs/remotes/origin/master
 		group->max_events = UINT_MAX;
 	} else {
 		group->max_events = FANOTIFY_DEFAULT_MAX_EVENTS;
@@ -746,7 +1041,11 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
 	if (flags & FAN_UNLIMITED_MARKS) {
 		fd = -EPERM;
 		if (!capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 			goto out_put_group;
+=======
+			goto out_destroy_group;
+>>>>>>> refs/remotes/origin/master
 		group->fanotify_data.max_marks = UINT_MAX;
 	} else {
 		group->fanotify_data.max_marks = FANOTIFY_DEFAULT_MAX_MARKS;
@@ -754,6 +1053,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
 
 	fd = anon_inode_getfd("[fanotify]", &fanotify_fops, group, f_flags);
 	if (fd < 0)
+<<<<<<< HEAD
 		goto out_put_group;
 
 	return fd;
@@ -766,13 +1066,33 @@ out_put_group:
 SYSCALL_DEFINE(fanotify_mark)(int fanotify_fd, unsigned int flags,
 			      __u64 mask, int dfd,
 			      const char  __user * pathname)
+=======
+		goto out_destroy_group;
+
+	return fd;
+
+out_destroy_group:
+	fsnotify_destroy_group(group);
+	return fd;
+}
+
+SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
+			      __u64, mask, int, dfd,
+			      const char  __user *, pathname)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = NULL;
 	struct vfsmount *mnt = NULL;
 	struct fsnotify_group *group;
+<<<<<<< HEAD
 	struct file *filp;
 	struct path path;
 	int ret, fput_needed;
+=======
+	struct fd f;
+	struct path path;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s: fanotify_fd=%d flags=%x dfd=%d pathname=%p mask=%llx\n",
 		 __func__, fanotify_fd, flags, dfd, pathname, mask);
@@ -806,15 +1126,26 @@ SYSCALL_DEFINE(fanotify_mark)(int fanotify_fd, unsigned int flags,
 #endif
 		return -EINVAL;
 
+<<<<<<< HEAD
 	filp = fget_light(fanotify_fd, &fput_needed);
 	if (unlikely(!filp))
+=======
+	f = fdget(fanotify_fd);
+	if (unlikely(!f.file))
+>>>>>>> refs/remotes/origin/master
 		return -EBADF;
 
 	/* verify that this is indeed an fanotify instance */
 	ret = -EINVAL;
+<<<<<<< HEAD
 	if (unlikely(filp->f_op != &fanotify_fops))
 		goto fput_and_out;
 	group = filp->private_data;
+=======
+	if (unlikely(f.file->f_op != &fanotify_fops))
+		goto fput_and_out;
+	group = f.file->private_data;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * group->priority == FS_PRIO_0 == FAN_CLASS_NOTIF.  These are not
@@ -861,6 +1192,7 @@ SYSCALL_DEFINE(fanotify_mark)(int fanotify_fd, unsigned int flags,
 
 	path_put(&path);
 fput_and_out:
+<<<<<<< HEAD
 	fput_light(filp, fput_needed);
 	return ret;
 }
@@ -874,6 +1206,26 @@ asmlinkage long SyS_fanotify_mark(long fanotify_fd, long flags, __u64 mask,
 				  (const char  __user *) pathname);
 }
 SYSCALL_ALIAS(sys_fanotify_mark, SyS_fanotify_mark);
+=======
+	fdput(f);
+	return ret;
+}
+
+#ifdef CONFIG_COMPAT
+COMPAT_SYSCALL_DEFINE6(fanotify_mark,
+				int, fanotify_fd, unsigned int, flags,
+				__u32, mask0, __u32, mask1, int, dfd,
+				const char  __user *, pathname)
+{
+	return sys_fanotify_mark(fanotify_fd, flags,
+#ifdef __BIG_ENDIAN
+				((__u64)mask1 << 32) | mask0,
+#else
+				((__u64)mask0 << 32) | mask1,
+#endif
+				 dfd, pathname);
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -886,6 +1238,10 @@ static int __init fanotify_user_setup(void)
 	fanotify_mark_cache = KMEM_CACHE(fsnotify_mark, SLAB_PANIC);
 	fanotify_response_event_cache = KMEM_CACHE(fanotify_response_event,
 						   SLAB_PANIC);
+<<<<<<< HEAD
+=======
+	fanotify_event_cachep = KMEM_CACHE(fanotify_event_info, SLAB_PANIC);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

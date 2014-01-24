@@ -379,6 +379,7 @@ void ahd_insb(struct ahd_softc * ahd, long port,
 int		ahd_linux_register_host(struct ahd_softc *,
 					struct scsi_host_template *);
 
+<<<<<<< HEAD
 /*************************** Pretty Printing **********************************/
 struct info_str {
 	char *buffer;
@@ -387,6 +388,8 @@ struct info_str {
 	int pos;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************** Locking *************************************/
 static inline void
 ahd_lockinit(struct ahd_softc *ahd)
@@ -513,8 +516,13 @@ ahd_flush_device_writes(struct ahd_softc *ahd)
 }
 
 /**************************** Proc FS Support *********************************/
+<<<<<<< HEAD
 int	ahd_linux_proc_info(struct Scsi_Host *, char *, char **,
 			    off_t, int, int);
+=======
+int	ahd_proc_write_seeprom(struct Scsi_Host *, char *, int);
+int	ahd_linux_show_info(struct seq_file *,struct Scsi_Host *);
+>>>>>>> refs/remotes/origin/master
 
 /*********************** Transaction Access Wrappers **************************/
 static inline void ahd_cmd_set_transaction_status(struct scsi_cmnd *, uint32_t);

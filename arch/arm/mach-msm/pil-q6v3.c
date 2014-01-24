@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -60,6 +68,8 @@
 #define Q6_STRAP_TCM_BASE	(0x28C << 15)
 #define Q6_STRAP_TCM_CONFIG	0x28B
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PROXY_VOTE_TIMEOUT	10000
 
 struct q6v3_data {
@@ -74,6 +84,20 @@ static int nop_verify_blob(struct pil_desc *pil, u32 phy_addr, size_t size)
 	return 0;
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+struct q6v3_data {
+	void __iomem *base;
+	unsigned long start_addr;
+	struct pil_device *pil;
+	struct clk *pll;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int pil_q6v3_init_image(struct pil_desc *pil, const u8 *metadata,
 		size_t size)
 {
@@ -83,6 +107,8 @@ static int pil_q6v3_init_image(struct pil_desc *pil, const u8 *metadata,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void q6v3_remove_proxy_votes(unsigned long data)
 {
 	struct q6v3_data *drv = (struct q6v3_data *)data;
@@ -105,6 +131,30 @@ static void q6v3_remove_proxy_votes_now(struct q6v3_data *drv)
 	/* If the proxy vote hasn't been removed yet, remove it immediately. */
 	if (del_timer(&drv->timer))
 		q6v3_remove_proxy_votes((unsigned long)drv);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void pil_q6v3_remove_proxy_votes(struct pil_desc *pil)
+{
+	struct q6v3_data *drv = dev_get_drvdata(pil->dev);
+	clk_disable_unprepare(drv->pll);
+}
+
+static int pil_q6v3_make_proxy_votes(struct pil_desc *pil)
+{
+	int ret;
+	struct q6v3_data *drv = dev_get_drvdata(pil->dev);
+
+	ret = clk_prepare_enable(drv->pll);
+	if (ret) {
+		dev_err(pil->dev, "Failed to enable PLL\n");
+		return ret;
+	}
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int pil_q6v3_reset(struct pil_desc *pil)
@@ -112,8 +162,14 @@ static int pil_q6v3_reset(struct pil_desc *pil)
 	u32 reg;
 	struct q6v3_data *drv = dev_get_drvdata(pil->dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	q6v3_make_proxy_votes(pil->dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Put Q6 into reset */
 	reg = readl_relaxed(LCC_Q6_FUNC);
 	reg |= Q6SS_SS_ARES | Q6SS_ISDB_ARES | Q6SS_ETM_ARES | STOP_CORE |
@@ -158,7 +214,13 @@ static int pil_q6v3_reset(struct pil_desc *pil)
 static int pil_q6v3_shutdown(struct pil_desc *pil)
 {
 	u32 reg;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct q6v3_data *drv = dev_get_drvdata(pil->dev);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Put Q6 into reset */
 	reg = readl_relaxed(LCC_Q6_FUNC);
@@ -178,16 +240,35 @@ static int pil_q6v3_shutdown(struct pil_desc *pil)
 	reg |= CLAMP_IO;
 	writel_relaxed(reg, LCC_Q6_FUNC);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	q6v3_remove_proxy_votes_now(drv);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static struct pil_reset_ops pil_q6v3_ops = {
 	.init_image = pil_q6v3_init_image,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.verify_blob = nop_verify_blob,
 	.auth_and_reset = pil_q6v3_reset,
 	.shutdown = pil_q6v3_shutdown,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	.auth_and_reset = pil_q6v3_reset,
+	.shutdown = pil_q6v3_shutdown,
+	.proxy_vote = pil_q6v3_make_proxy_votes,
+	.proxy_unvote = pil_q6v3_remove_proxy_votes,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int pil_q6v3_init_image_trusted(struct pil_desc *pil,
@@ -198,12 +279,20 @@ static int pil_q6v3_init_image_trusted(struct pil_desc *pil,
 
 static int pil_q6v3_reset_trusted(struct pil_desc *pil)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	q6v3_make_proxy_votes(pil->dev);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return pas_auth_and_reset(PAS_Q6);
 }
 
 static int pil_q6v3_shutdown_trusted(struct pil_desc *pil)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 	struct q6v3_data *drv = dev_get_drvdata(pil->dev);
 
@@ -214,13 +303,32 @@ static int pil_q6v3_shutdown_trusted(struct pil_desc *pil)
 	q6v3_remove_proxy_votes_now(drv);
 
 	return 0;
+=======
+	return pas_shutdown(PAS_Q6);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return pas_shutdown(PAS_Q6);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct pil_reset_ops pil_q6v3_ops_trusted = {
 	.init_image = pil_q6v3_init_image_trusted,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.verify_blob = nop_verify_blob,
 	.auth_and_reset = pil_q6v3_reset_trusted,
 	.shutdown = pil_q6v3_shutdown_trusted,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	.auth_and_reset = pil_q6v3_reset_trusted,
+	.shutdown = pil_q6v3_shutdown_trusted,
+	.proxy_vote = pil_q6v3_make_proxy_votes,
+	.proxy_unvote = pil_q6v3_remove_proxy_votes,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __devinit pil_q6v3_driver_probe(struct platform_device *pdev)
@@ -246,6 +354,8 @@ static int __devinit pil_q6v3_driver_probe(struct platform_device *pdev)
 	if (!drv)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	drv->pll = clk_get(&pdev->dev, "pll4");
 	if (IS_ERR(drv->pll))
 		return PTR_ERR(drv->pll);
@@ -253,6 +363,21 @@ static int __devinit pil_q6v3_driver_probe(struct platform_device *pdev)
 	setup_timer(&drv->timer, q6v3_remove_proxy_votes, (unsigned long)drv);
 	desc->name = "q6";
 	desc->dev = &pdev->dev;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	drv->pll = devm_clk_get(&pdev->dev, "pll4");
+	if (IS_ERR(drv->pll))
+		return PTR_ERR(drv->pll);
+
+	desc->name = "q6";
+	desc->dev = &pdev->dev;
+	desc->owner = THIS_MODULE;
+	desc->proxy_timeout = 10000;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (pas_supported(PAS_Q6) > 0) {
 		desc->ops = &pil_q6v3_ops_trusted;
@@ -262,15 +387,36 @@ static int __devinit pil_q6v3_driver_probe(struct platform_device *pdev)
 		dev_info(&pdev->dev, "using non-secure boot\n");
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (msm_pil_register(desc))
 		return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	drv->pil = msm_pil_register(desc);
+	if (IS_ERR(drv->pil)) {
+		return PTR_ERR(drv->pil);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static int __devexit pil_q6v3_driver_exit(struct platform_device *pdev)
 {
 	struct q6v3_data *drv = platform_get_drvdata(pdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	del_timer_sync(&drv->timer);
+=======
+	msm_pil_unregister(drv->pil);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_pil_unregister(drv->pil);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

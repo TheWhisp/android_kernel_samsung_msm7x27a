@@ -84,9 +84,21 @@ static int cy8ctmg110_write_regs(struct cy8ctmg110 *tsc, unsigned char reg,
 	memcpy(i2c_data + 1, value, len);
 
 	ret = i2c_master_send(client, i2c_data, len + 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret != 1) {
 		dev_err(&client->dev, "i2c write data cmd failed\n");
 		return ret ? ret : -EIO;
+=======
+	if (ret != len + 1) {
+		dev_err(&client->dev, "i2c write data cmd failed\n");
+		return ret < 0 ? ret : -EIO;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret != len + 1) {
+		dev_err(&client->dev, "i2c write data cmd failed\n");
+		return ret < 0 ? ret : -EIO;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -99,9 +111,24 @@ static int cy8ctmg110_read_regs(struct cy8ctmg110 *tsc,
 	int ret;
 	struct i2c_msg msg[2] = {
 		/* first write slave position to i2c devices */
+<<<<<<< HEAD
 		{ client->addr, 0, 1, &cmd },
 		/* Second read data from position */
 		{ client->addr, I2C_M_RD, len, data }
+=======
+		{
+			.addr = client->addr,
+			.len = 1,
+			.buf = &cmd
+		},
+		/* Second read data from position */
+		{
+			.addr = client->addr,
+			.flags = I2C_M_RD,
+			.len = len,
+			.buf = data
+		}
+>>>>>>> refs/remotes/origin/master
 	};
 
 	ret = i2c_transfer(client->adapter, msg, 2);
@@ -166,7 +193,11 @@ static irqreturn_t cy8ctmg110_irq_thread(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit cy8ctmg110_probe(struct i2c_client *client,
+=======
+static int cy8ctmg110_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 					const struct i2c_device_id *id)
 {
 	const struct cy8ctmg110_pdata *pdata = client->dev.platform_data;
@@ -193,6 +224,16 @@ static int __devinit cy8ctmg110_probe(struct i2c_client *client,
 
 	ts->client = client;
 	ts->input = input_dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ts->reset_pin = pdata->reset_pin;
+	ts->irq_pin = pdata->irq_pin;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ts->reset_pin = pdata->reset_pin;
+	ts->irq_pin = pdata->irq_pin;
+>>>>>>> refs/remotes/origin/master
 
 	snprintf(ts->phys, sizeof(ts->phys),
 		 "%s/input0", dev_name(&client->dev));
@@ -249,7 +290,12 @@ static int __devinit cy8ctmg110_probe(struct i2c_client *client,
 	}
 
 	err = request_threaded_irq(client->irq, NULL, cy8ctmg110_irq_thread,
+<<<<<<< HEAD
 				   IRQF_TRIGGER_RISING, "touch_reset_key", ts);
+=======
+				   IRQF_TRIGGER_RISING | IRQF_ONESHOT,
+				   "touch_reset_key", ts);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		dev_err(&client->dev,
 			"irq %d busy? error %d\n", client->irq, err);
@@ -279,7 +325,11 @@ err_free_mem:
 	return err;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int cy8ctmg110_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -307,11 +357,19 @@ static int cy8ctmg110_resume(struct device *dev)
 	}
 	return 0;
 }
+<<<<<<< HEAD
 
 static SIMPLE_DEV_PM_OPS(cy8ctmg110_pm, cy8ctmg110_suspend, cy8ctmg110_resume);
 #endif
 
 static int __devexit cy8ctmg110_remove(struct i2c_client *client)
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(cy8ctmg110_pm, cy8ctmg110_suspend, cy8ctmg110_resume);
+
+static int cy8ctmg110_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cy8ctmg110 *ts = i2c_get_clientdata(client);
 
@@ -328,7 +386,15 @@ static int __devexit cy8ctmg110_remove(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct i2c_device_id cy8ctmg110_idtable[] = {
+=======
+static const struct i2c_device_id cy8ctmg110_idtable[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct i2c_device_id cy8ctmg110_idtable[] = {
+>>>>>>> refs/remotes/origin/master
 	{ CY8CTMG110_DRIVER_NAME, 1 },
 	{ }
 };
@@ -339,6 +405,7 @@ static struct i2c_driver cy8ctmg110_driver = {
 	.driver		= {
 		.owner	= THIS_MODULE,
 		.name	= CY8CTMG110_DRIVER_NAME,
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 		.pm	= &cy8ctmg110_pm,
 #endif
@@ -348,6 +415,7 @@ static struct i2c_driver cy8ctmg110_driver = {
 	.remove		= __devexit_p(cy8ctmg110_remove),
 };
 
+<<<<<<< HEAD
 static int __init cy8ctmg110_init(void)
 {
 	return i2c_add_driver(&cy8ctmg110_driver);
@@ -360,6 +428,19 @@ static void __exit cy8ctmg110_exit(void)
 
 module_init(cy8ctmg110_init);
 module_exit(cy8ctmg110_exit);
+=======
+module_i2c_driver(cy8ctmg110_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= &cy8ctmg110_pm,
+	},
+	.id_table	= cy8ctmg110_idtable,
+	.probe		= cy8ctmg110_probe,
+	.remove		= cy8ctmg110_remove,
+};
+
+module_i2c_driver(cy8ctmg110_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Samuli Konttila <samuli.konttila@aavamobile.com>");
 MODULE_DESCRIPTION("cy8ctmg110 TouchScreen Driver");

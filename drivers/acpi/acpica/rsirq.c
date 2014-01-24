@@ -5,7 +5,15 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +61,11 @@ ACPI_MODULE_NAME("rsirq")
  * acpi_rs_get_irq
  *
  ******************************************************************************/
+<<<<<<< HEAD
 struct acpi_rsconvert_info acpi_rs_get_irq[8] = {
+=======
+struct acpi_rsconvert_info acpi_rs_get_irq[9] = {
+>>>>>>> refs/remotes/origin/master
 	{ACPI_RSC_INITGET, ACPI_RESOURCE_TYPE_IRQ,
 	 ACPI_RS_SIZE(struct acpi_resource_irq),
 	 ACPI_RSC_TABLE_SIZE(acpi_rs_get_irq)},
@@ -80,7 +92,11 @@ struct acpi_rsconvert_info acpi_rs_get_irq[8] = {
 
 	{ACPI_RSC_EXIT_NE, ACPI_RSC_COMPARE_AML_LENGTH, 0, 3},
 
+<<<<<<< HEAD
 	/* Get flags: Triggering[0], Polarity[3], Sharing[4] */
+=======
+	/* Get flags: Triggering[0], Polarity[3], Sharing[4], Wake[5] */
+>>>>>>> refs/remotes/origin/master
 
 	{ACPI_RSC_1BITFLAG, ACPI_RS_OFFSET(data.irq.triggering),
 	 AML_OFFSET(irq.flags),
@@ -92,7 +108,15 @@ struct acpi_rsconvert_info acpi_rs_get_irq[8] = {
 
 	{ACPI_RSC_1BITFLAG, ACPI_RS_OFFSET(data.irq.sharable),
 	 AML_OFFSET(irq.flags),
+<<<<<<< HEAD
 	 4}
+=======
+	 4},
+
+	{ACPI_RSC_1BITFLAG, ACPI_RS_OFFSET(data.irq.wake_capable),
+	 AML_OFFSET(irq.flags),
+	 5}
+>>>>>>> refs/remotes/origin/master
 };
 
 /*******************************************************************************
@@ -101,7 +125,11 @@ struct acpi_rsconvert_info acpi_rs_get_irq[8] = {
  *
  ******************************************************************************/
 
+<<<<<<< HEAD
 struct acpi_rsconvert_info acpi_rs_set_irq[13] = {
+=======
+struct acpi_rsconvert_info acpi_rs_set_irq[14] = {
+>>>>>>> refs/remotes/origin/master
 	/* Start with a default descriptor of length 3 */
 
 	{ACPI_RSC_INITSET, ACPI_RESOURCE_NAME_IRQ,
@@ -114,7 +142,11 @@ struct acpi_rsconvert_info acpi_rs_set_irq[13] = {
 	 AML_OFFSET(irq.irq_mask),
 	 ACPI_RS_OFFSET(data.irq.interrupt_count)},
 
+<<<<<<< HEAD
 	/* Set the flags byte */
+=======
+	/* Set flags: Triggering[0], Polarity[3], Sharing[4], Wake[5] */
+>>>>>>> refs/remotes/origin/master
 
 	{ACPI_RSC_1BITFLAG, ACPI_RS_OFFSET(data.irq.triggering),
 	 AML_OFFSET(irq.flags),
@@ -128,6 +160,13 @@ struct acpi_rsconvert_info acpi_rs_set_irq[13] = {
 	 AML_OFFSET(irq.flags),
 	 4},
 
+<<<<<<< HEAD
+=======
+	{ACPI_RSC_1BITFLAG, ACPI_RS_OFFSET(data.irq.wake_capable),
+	 AML_OFFSET(irq.flags),
+	 5},
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * All done if the output descriptor length is required to be 3
 	 * (i.e., optimization to 2 bytes cannot be attempted)
@@ -181,7 +220,11 @@ struct acpi_rsconvert_info acpi_rs_set_irq[13] = {
  *
  ******************************************************************************/
 
+<<<<<<< HEAD
 struct acpi_rsconvert_info acpi_rs_convert_ext_irq[9] = {
+=======
+struct acpi_rsconvert_info acpi_rs_convert_ext_irq[10] = {
+>>>>>>> refs/remotes/origin/master
 	{ACPI_RSC_INITGET, ACPI_RESOURCE_TYPE_EXTENDED_IRQ,
 	 ACPI_RS_SIZE(struct acpi_resource_extended_irq),
 	 ACPI_RSC_TABLE_SIZE(acpi_rs_convert_ext_irq)},
@@ -190,8 +233,15 @@ struct acpi_rsconvert_info acpi_rs_convert_ext_irq[9] = {
 	 sizeof(struct aml_resource_extended_irq),
 	 0},
 
+<<<<<<< HEAD
 	/* Flag bits */
 
+=======
+	/*
+	 * Flags: Producer/Consumer[0], Triggering[1], Polarity[2],
+	 *        Sharing[3], Wake[4]
+	 */
+>>>>>>> refs/remotes/origin/master
 	{ACPI_RSC_1BITFLAG, ACPI_RS_OFFSET(data.extended_irq.producer_consumer),
 	 AML_OFFSET(extended_irq.flags),
 	 0},
@@ -208,19 +258,34 @@ struct acpi_rsconvert_info acpi_rs_convert_ext_irq[9] = {
 	 AML_OFFSET(extended_irq.flags),
 	 3},
 
+<<<<<<< HEAD
+=======
+	{ACPI_RSC_1BITFLAG, ACPI_RS_OFFSET(data.extended_irq.wake_capable),
+	 AML_OFFSET(extended_irq.flags),
+	 4},
+
+>>>>>>> refs/remotes/origin/master
 	/* IRQ Table length (Byte4) */
 
 	{ACPI_RSC_COUNT, ACPI_RS_OFFSET(data.extended_irq.interrupt_count),
 	 AML_OFFSET(extended_irq.interrupt_count),
+<<<<<<< HEAD
 	 sizeof(u32)}
 	,
+=======
+	 sizeof(u32)},
+>>>>>>> refs/remotes/origin/master
 
 	/* Copy every IRQ in the table, each is 32 bits */
 
 	{ACPI_RSC_MOVE32, ACPI_RS_OFFSET(data.extended_irq.interrupts[0]),
 	 AML_OFFSET(extended_irq.interrupts[0]),
+<<<<<<< HEAD
 	 0}
 	,
+=======
+	 0},
+>>>>>>> refs/remotes/origin/master
 
 	/* Optional resource_source (Index and String) */
 
@@ -264,3 +329,47 @@ struct acpi_rsconvert_info acpi_rs_convert_dma[6] = {
 	 AML_OFFSET(dma.dma_channel_mask),
 	 ACPI_RS_OFFSET(data.dma.channel_count)}
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/*******************************************************************************
+ *
+ * acpi_rs_convert_fixed_dma
+ *
+ ******************************************************************************/
+
+struct acpi_rsconvert_info acpi_rs_convert_fixed_dma[4] = {
+	{ACPI_RSC_INITGET, ACPI_RESOURCE_TYPE_FIXED_DMA,
+	 ACPI_RS_SIZE(struct acpi_resource_fixed_dma),
+	 ACPI_RSC_TABLE_SIZE(acpi_rs_convert_fixed_dma)},
+
+	{ACPI_RSC_INITSET, ACPI_RESOURCE_NAME_FIXED_DMA,
+	 sizeof(struct aml_resource_fixed_dma),
+	 0},
+
+	/*
+	 * These fields are contiguous in both the source and destination:
+	 * request_lines
+	 * Channels
+	 */
+<<<<<<< HEAD
+
+=======
+>>>>>>> refs/remotes/origin/master
+	{ACPI_RSC_MOVE16, ACPI_RS_OFFSET(data.fixed_dma.request_lines),
+	 AML_OFFSET(fixed_dma.request_lines),
+	 2},
+
+	{ACPI_RSC_MOVE8, ACPI_RS_OFFSET(data.fixed_dma.width),
+	 AML_OFFSET(fixed_dma.width),
+	 1},
+<<<<<<< HEAD
+
+};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+>>>>>>> refs/remotes/origin/master

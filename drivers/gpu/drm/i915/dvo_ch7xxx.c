@@ -32,12 +32,20 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CH7xxx_REG_DID		0x4b
 
 #define CH7011_VID		0x83 /* 7010 as well */
+<<<<<<< HEAD
+=======
+#define CH7010B_VID		0x05
+>>>>>>> refs/remotes/origin/master
 #define CH7009A_VID		0x84
 #define CH7009B_VID		0x85
 #define CH7301_VID		0x95
 
 #define CH7xxx_VID		0x84
 #define CH7xxx_DID		0x17
+<<<<<<< HEAD
+=======
+#define CH7010_DID		0x16
+>>>>>>> refs/remotes/origin/master
 
 #define CH7xxx_NUM_REGS		0x4c
 
@@ -87,11 +95,26 @@ static struct ch7xxx_id_struct {
 	char *name;
 } ch7xxx_ids[] = {
 	{ CH7011_VID, "CH7011" },
+<<<<<<< HEAD
+=======
+	{ CH7010B_VID, "CH7010B" },
+>>>>>>> refs/remotes/origin/master
 	{ CH7009A_VID, "CH7009A" },
 	{ CH7009B_VID, "CH7009B" },
 	{ CH7301_VID, "CH7301" },
 };
 
+<<<<<<< HEAD
+=======
+static struct ch7xxx_did_struct {
+	uint8_t did;
+	char *name;
+} ch7xxx_dids[] = {
+	{ CH7xxx_DID, "CH7XXX" },
+	{ CH7010_DID, "CH7010B" },
+};
+
+>>>>>>> refs/remotes/origin/master
 struct ch7xxx_priv {
 	bool quiet;
 };
@@ -108,10 +131,33 @@ static char *ch7xxx_get_id(uint8_t vid)
 	return NULL;
 }
 
+<<<<<<< HEAD
 /** Reads an 8 bit register */
 static bool ch7xxx_readb(struct intel_dvo_device *dvo, int addr, uint8_t *ch)
 {
+<<<<<<< HEAD
 	struct ch7xxx_priv *ch7xxx= dvo->dev_priv;
+=======
+	struct ch7xxx_priv *ch7xxx = dvo->dev_priv;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *ch7xxx_get_did(uint8_t did)
+{
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(ch7xxx_dids); i++) {
+		if (ch7xxx_dids[i].did == did)
+			return ch7xxx_dids[i].name;
+	}
+
+	return NULL;
+}
+
+/** Reads an 8 bit register */
+static bool ch7xxx_readb(struct intel_dvo_device *dvo, int addr, uint8_t *ch)
+{
+	struct ch7xxx_priv *ch7xxx = dvo->dev_priv;
+>>>>>>> refs/remotes/origin/master
 	struct i2c_adapter *adapter = dvo->i2c_bus;
 	u8 out_buf[2];
 	u8 in_buf[2];
@@ -179,7 +225,11 @@ static bool ch7xxx_init(struct intel_dvo_device *dvo,
 	/* this will detect the CH7xxx chip on the specified i2c bus */
 	struct ch7xxx_priv *ch7xxx;
 	uint8_t vendor, device;
+<<<<<<< HEAD
 	char *name;
+=======
+	char *name, *devid;
+>>>>>>> refs/remotes/origin/master
 
 	ch7xxx = kzalloc(sizeof(struct ch7xxx_priv), GFP_KERNEL);
 	if (ch7xxx == NULL)
@@ -204,7 +254,12 @@ static bool ch7xxx_init(struct intel_dvo_device *dvo,
 	if (!ch7xxx_readb(dvo, CH7xxx_REG_DID, &device))
 		goto out;
 
+<<<<<<< HEAD
 	if (device != CH7xxx_DID) {
+=======
+	devid = ch7xxx_get_did(device);
+	if (!devid) {
+>>>>>>> refs/remotes/origin/master
 		DRM_DEBUG_KMS("ch7xxx not detected; got 0x%02x from %s "
 				"slave %d.\n",
 			  vendor, adapter->name, dvo->slave_addr);
@@ -283,27 +338,60 @@ static void ch7xxx_mode_set(struct intel_dvo_device *dvo,
 		idf |= CH7xxx_IDF_HSP;
 
 	if (mode->flags & DRM_MODE_FLAG_PVSYNC)
+<<<<<<< HEAD
 		idf |= CH7xxx_IDF_HSP;
+=======
+		idf |= CH7xxx_IDF_VSP;
+>>>>>>> refs/remotes/origin/master
 
 	ch7xxx_writeb(dvo, CH7xxx_IDF, idf);
 }
 
 /* set the CH7xxx power state */
+<<<<<<< HEAD
 static void ch7xxx_dpms(struct intel_dvo_device *dvo, int mode)
 {
 	if (mode == DRM_MODE_DPMS_ON)
+=======
+static void ch7xxx_dpms(struct intel_dvo_device *dvo, bool enable)
+{
+	if (enable)
+>>>>>>> refs/remotes/origin/master
 		ch7xxx_writeb(dvo, CH7xxx_PM, CH7xxx_PM_DVIL | CH7xxx_PM_DVIP);
 	else
 		ch7xxx_writeb(dvo, CH7xxx_PM, CH7xxx_PM_FPD);
 }
 
+<<<<<<< HEAD
+=======
+static bool ch7xxx_get_hw_state(struct intel_dvo_device *dvo)
+{
+	u8 val;
+
+	ch7xxx_readb(dvo, CH7xxx_PM, &val);
+
+	if (val & (CH7xxx_PM_DVIL | CH7xxx_PM_DVIP))
+		return true;
+	else
+		return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void ch7xxx_dump_regs(struct intel_dvo_device *dvo)
 {
 	int i;
 
 	for (i = 0; i < CH7xxx_NUM_REGS; i++) {
 		uint8_t val;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((i % 8) == 0 )
+=======
+		if ((i % 8) == 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((i % 8) == 0)
+>>>>>>> refs/remotes/origin/master
 			DRM_LOG_KMS("\n %02X: ", i);
 		ch7xxx_readb(dvo, i, &val);
 		DRM_LOG_KMS("%02X ", val);
@@ -326,6 +414,10 @@ struct intel_dvo_dev_ops ch7xxx_ops = {
 	.mode_valid = ch7xxx_mode_valid,
 	.mode_set = ch7xxx_mode_set,
 	.dpms = ch7xxx_dpms,
+<<<<<<< HEAD
+=======
+	.get_hw_state = ch7xxx_get_hw_state,
+>>>>>>> refs/remotes/origin/master
 	.dump_regs = ch7xxx_dump_regs,
 	.destroy = ch7xxx_destroy,
 };

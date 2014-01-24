@@ -25,27 +25,69 @@
 #include <linux/serial_core.h>
 #include <linux/types.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/hardware/vic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
 #include <mach/map.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/regs-fb.h>
 #include <mach/regs-gpio.h>
 #include <mach/regs-modem.h>
 #include <mach/regs-srom.h>
 #include <mach/s3c6410.h>
+=======
+#include <mach/regs-gpio.h>
+#include <mach/regs-modem.h>
+#include <mach/regs-srom.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/regs-gpio.h>
+#include <mach/gpio-samsung.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <plat/adc.h>
 #include <plat/cpu.h>
 #include <plat/devs.h>
 #include <plat/fb.h>
+<<<<<<< HEAD
 #include <plat/nand.h>
 #include <plat/regs-serial.h>
 #include <plat/ts.h>
+<<<<<<< HEAD
 
 #include <video/platform_lcd.h>
 
+=======
+#include <plat/regs-fb-v4.h>
+
+#include <video/platform_lcd.h>
+
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/mtd-nand-s3c2410.h>
+#include <plat/regs-serial.h>
+#include <linux/platform_data/touchscreen-s3c2410.h>
+
+#include <video/platform_lcd.h>
+#include <video/samsung_fimd.h>
+#include <plat/samsung-time.h>
+
+#include "common.h"
+#include "regs-modem.h"
+#include "regs-srom.h"
+
+>>>>>>> refs/remotes/origin/master
 #define UCON S3C2410_UCON_DEFAULT
 #define ULCON (S3C2410_LCON_CS8 | S3C2410_LCON_PNONE | S3C2410_LCON_STOPB)
 #define UFCON (S3C2410_UFCON_RXTRIG8 | S3C2410_UFCON_FIFOMODE)
@@ -84,6 +126,7 @@ static struct s3c2410_uartcfg real6410_uartcfgs[] __initdata = {
 /* DM9000AEP 10/100 ethernet controller */
 
 static struct resource real6410_dm9k_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start	= S3C64XX_PA_XM0CSN1,
 		.end	= S3C64XX_PA_XM0CSN1 + 1,
@@ -99,6 +142,12 @@ static struct resource real6410_dm9k_resource[] = {
 		.end	= S3C_EINT(7),
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHLEVEL
 	}
+=======
+	[0] = DEFINE_RES_MEM(S3C64XX_PA_XM0CSN1, 2),
+	[1] = DEFINE_RES_MEM(S3C64XX_PA_XM0CSN1 + 4, 2),
+	[2] = DEFINE_RES_NAMED(S3C_EINT(7), 1, NULL, IORESOURCE_IRQ \
+					| IORESOURCE_IRQ_HIGHLEVEL),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct dm9000_plat_data real6410_dm9k_pdata = {
@@ -115,6 +164,7 @@ static struct platform_device real6410_device_eth = {
 	},
 };
 
+<<<<<<< HEAD
 static struct s3c_fb_pd_win real6410_fb_win[] = {
 	{
 		.win_mode	= {	/* 4.3" 480x272 */
@@ -150,6 +200,59 @@ static struct s3c_fb_platdata real6410_lcd_pdata __initdata = {
 	.win[0]		= &real6410_fb_win[0],
 	.vidcon0	= VIDCON0_VIDOUT_RGB | VIDCON0_PNRMODE_RGB,
 	.vidcon1	= VIDCON1_INV_HSYNC | VIDCON1_INV_VSYNC,
+=======
+static struct s3c_fb_pd_win real6410_lcd_type0_fb_win = {
+	.max_bpp	= 32,
+	.default_bpp	= 16,
+	.xres		= 480,
+	.yres		= 272,
+};
+
+static struct fb_videomode real6410_lcd_type0_timing = {
+	/* 4.3" 480x272 */
+	.left_margin	= 3,
+	.right_margin	= 2,
+	.upper_margin	= 1,
+	.lower_margin	= 1,
+	.hsync_len	= 40,
+	.vsync_len	= 1,
+};
+
+static struct s3c_fb_pd_win real6410_lcd_type1_fb_win = {
+	.max_bpp	= 32,
+	.default_bpp	= 16,
+	.xres		= 800,
+	.yres		= 480,
+};
+
+static struct fb_videomode real6410_lcd_type1_timing = {
+	/* 7.0" 800x480 */
+	.left_margin	= 8,
+	.right_margin	= 13,
+	.upper_margin	= 7,
+	.lower_margin	= 5,
+	.hsync_len	= 3,
+	.vsync_len	= 1,
+	.xres		= 800,
+	.yres		= 480,
+};
+
+static struct s3c_fb_platdata real6410_lcd_pdata[] __initdata = {
+	{
+		.setup_gpio	= s3c64xx_fb_gpio_setup_24bpp,
+		.vtiming	= &real6410_lcd_type0_timing,
+		.win[0]		= &real6410_lcd_type0_fb_win,
+		.vidcon0	= VIDCON0_VIDOUT_RGB | VIDCON0_PNRMODE_RGB,
+		.vidcon1	= VIDCON1_INV_HSYNC | VIDCON1_INV_VSYNC,
+	}, {
+		.setup_gpio	= s3c64xx_fb_gpio_setup_24bpp,
+		.vtiming	= &real6410_lcd_type1_timing,
+		.win[0]		= &real6410_lcd_type1_fb_win,
+		.vidcon0	= VIDCON0_VIDOUT_RGB | VIDCON0_PNRMODE_RGB,
+		.vidcon1	= VIDCON1_INV_HSYNC | VIDCON1_INV_VSYNC,
+	},
+	{ },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct mtd_partition real6410_nand_part[] = {
@@ -198,12 +301,18 @@ static struct platform_device *real6410_devices[] __initdata = {
 	&s3c_device_ohci,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct s3c2410_ts_mach_info s3c_ts_platform __initdata = {
 	.delay			= 10000,
 	.presc			= 49,
 	.oversampling_shift	= 2,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init real6410_map_io(void)
 {
 	u32 tmp;
@@ -211,6 +320,10 @@ static void __init real6410_map_io(void)
 	s3c64xx_init_io(NULL, 0);
 	s3c24xx_init_clocks(12000000);
 	s3c24xx_init_uarts(real6410_uartcfgs, ARRAY_SIZE(real6410_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 
 	/* set the LCD type */
 	tmp = __raw_readl(S3C64XX_SPCON);
@@ -268,7 +381,11 @@ static void real6410_parse_features(
 					"screen type already set\n", f);
 			} else {
 				int li = f - '0';
+<<<<<<< HEAD
 				if (li >= ARRAY_SIZE(real6410_fb_win))
+=======
+				if (li >= ARRAY_SIZE(real6410_lcd_pdata))
+>>>>>>> refs/remotes/origin/master
 					printk(KERN_INFO "REAL6410: '%c' out "
 						"of range LCD mode\n", f);
 				else {
@@ -292,6 +409,7 @@ static void __init real6410_machine_init(void)
 	/* Parse the feature string */
 	real6410_parse_features(&features, real6410_features_str);
 
+<<<<<<< HEAD
 	real6410_lcd_pdata.win[0] = &real6410_fb_win[features.lcd_index];
 
 	printk(KERN_INFO "REAL6410: selected LCD display is %dx%d\n",
@@ -300,7 +418,20 @@ static void __init real6410_machine_init(void)
 
 	s3c_fb_set_platdata(&real6410_lcd_pdata);
 	s3c_nand_set_platdata(&real6410_nand_info);
+<<<<<<< HEAD
 	s3c24xx_ts_set_platdata(&s3c_ts_platform);
+=======
+	s3c24xx_ts_set_platdata(NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_INFO "REAL6410: selected LCD display is %dx%d\n",
+		real6410_lcd_pdata[features.lcd_index].win[0]->xres,
+		real6410_lcd_pdata[features.lcd_index].win[0]->yres);
+
+	s3c_fb_set_platdata(&real6410_lcd_pdata[features.lcd_index]);
+	s3c_nand_set_platdata(&real6410_nand_info);
+	s3c24xx_ts_set_platdata(NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/* configure nCS1 width to 16 bits */
 
@@ -329,10 +460,32 @@ static void __init real6410_machine_init(void)
 
 MACHINE_START(REAL6410, "REAL6410")
 	/* Maintainer: Darius Augulis <augulis.darius@gmail.com> */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= S3C64XX_PA_SDRAM + 0x100,
 
 	.init_irq	= s3c6410_init_irq,
 	.map_io		= real6410_map_io,
 	.init_machine	= real6410_machine_init,
 	.timer		= &s3c24xx_timer,
+=======
+	.atag_offset	= 0x100,
+
+	.init_irq	= s3c6410_init_irq,
+	.handle_irq	= vic_handle_irq,
+	.map_io		= real6410_map_io,
+	.init_machine	= real6410_machine_init,
+	.timer		= &s3c24xx_timer,
+	.restart	= s3c64xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+
+	.init_irq	= s3c6410_init_irq,
+	.map_io		= real6410_map_io,
+	.init_machine	= real6410_machine_init,
+	.init_late	= s3c64xx_init_late,
+	.init_time	= samsung_timer_init,
+	.restart	= s3c64xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

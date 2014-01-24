@@ -24,6 +24,14 @@
 
 #include <linux/kernel.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/if_arp.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/if_arp.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/netlink.h>
 #include <net/genetlink.h>
 #include <net/wpan-phy.h>
@@ -34,7 +42,11 @@
 
 #include "ieee802154.h"
 
+<<<<<<< HEAD
 static int ieee802154_nl_fill_phy(struct sk_buff *msg, u32 pid,
+=======
+static int ieee802154_nl_fill_phy(struct sk_buff *msg, u32 portid,
+>>>>>>> refs/remotes/origin/master
 	u32 seq, int flags, struct wpan_phy *phy)
 {
 	void *hdr;
@@ -52,18 +64,32 @@ static int ieee802154_nl_fill_phy(struct sk_buff *msg, u32 pid,
 		goto out;
 
 	mutex_lock(&phy->pib_lock);
+<<<<<<< HEAD
 	NLA_PUT_STRING(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy));
 
 	NLA_PUT_U8(msg, IEEE802154_ATTR_PAGE, phy->current_page);
 	NLA_PUT_U8(msg, IEEE802154_ATTR_CHANNEL, phy->current_channel);
+=======
+	if (nla_put_string(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy)) ||
+	    nla_put_u8(msg, IEEE802154_ATTR_PAGE, phy->current_page) ||
+	    nla_put_u8(msg, IEEE802154_ATTR_CHANNEL, phy->current_channel))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 32; i++) {
 		if (phy->channels_supported[i])
 			buf[pages++] = phy->channels_supported[i] | (i << 27);
 	}
+<<<<<<< HEAD
 	if (pages)
 		NLA_PUT(msg, IEEE802154_ATTR_CHANNEL_PAGE_LIST,
 				pages * sizeof(uint32_t), buf);
 
+=======
+	if (pages &&
+	    nla_put(msg, IEEE802154_ATTR_CHANNEL_PAGE_LIST,
+		    pages * sizeof(uint32_t), buf))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&phy->pib_lock);
 	kfree(buf);
 	return genlmsg_end(msg, hdr);
@@ -76,8 +102,12 @@ out:
 	return -EMSGSIZE;
 }
 
+<<<<<<< HEAD
 static int ieee802154_list_phy(struct sk_buff *skb,
 	struct genl_info *info)
+=======
+int ieee802154_list_phy(struct sk_buff *skb, struct genl_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Request for interface name, index, type, IEEE address,
 	   PAN Id, short address */
@@ -100,11 +130,19 @@ static int ieee802154_list_phy(struct sk_buff *skb,
 	if (!phy)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	msg = nlmsg_new(NLMSG_GOODSIZE, GFP_KERNEL);
 	if (!msg)
 		goto out_dev;
 
 	rc = ieee802154_nl_fill_phy(msg, info->snd_pid, info->snd_seq,
+=======
+	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+	if (!msg)
+		goto out_dev;
+
+	rc = ieee802154_nl_fill_phy(msg, info->snd_portid, info->snd_seq,
+>>>>>>> refs/remotes/origin/master
 			0, phy);
 	if (rc < 0)
 		goto out_free;
@@ -137,7 +175,11 @@ static int ieee802154_dump_phy_iter(struct wpan_phy *phy, void *_data)
 		return 0;
 
 	rc = ieee802154_nl_fill_phy(data->skb,
+<<<<<<< HEAD
 			NETLINK_CB(data->cb->skb).pid,
+=======
+			NETLINK_CB(data->cb->skb).portid,
+>>>>>>> refs/remotes/origin/master
 			data->cb->nlh->nlmsg_seq,
 			NLM_F_MULTI,
 			phy);
@@ -150,8 +192,12 @@ static int ieee802154_dump_phy_iter(struct wpan_phy *phy, void *_data)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ieee802154_dump_phy(struct sk_buff *skb,
 	struct netlink_callback *cb)
+=======
+int ieee802154_dump_phy(struct sk_buff *skb, struct netlink_callback *cb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dump_phy_data data = {
 		.cb = cb,
@@ -169,8 +215,12 @@ static int ieee802154_dump_phy(struct sk_buff *skb,
 	return skb->len;
 }
 
+<<<<<<< HEAD
 static int ieee802154_add_iface(struct sk_buff *skb,
 		struct genl_info *info)
+=======
+int ieee802154_add_iface(struct sk_buff *skb, struct genl_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *msg;
 	struct wpan_phy *phy;
@@ -178,6 +228,10 @@ static int ieee802154_add_iface(struct sk_buff *skb,
 	const char *devname;
 	int rc = -ENOBUFS;
 	struct net_device *dev;
+<<<<<<< HEAD
+=======
+	int type = __IEEE802154_DEV_INVALID;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s\n", __func__);
 
@@ -213,21 +267,90 @@ static int ieee802154_add_iface(struct sk_buff *skb,
 		goto nla_put_failure;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (info->attrs[IEEE802154_ATTR_HW_ADDR] &&
+	    nla_len(info->attrs[IEEE802154_ATTR_HW_ADDR]) !=
+			IEEE802154_ADDR_LEN) {
+		rc = -EINVAL;
+		goto nla_put_failure;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev = phy->add_iface(phy, devname);
+=======
+	if (info->attrs[IEEE802154_ATTR_DEV_TYPE]) {
+		type = nla_get_u8(info->attrs[IEEE802154_ATTR_DEV_TYPE]);
+		if (type >= __IEEE802154_DEV_MAX) {
+			rc = -EINVAL;
+			goto nla_put_failure;
+		}
+	}
+
+	dev = phy->add_iface(phy, devname, type);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(dev)) {
 		rc = PTR_ERR(dev);
 		goto nla_put_failure;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (info->attrs[IEEE802154_ATTR_HW_ADDR]) {
+		struct sockaddr addr;
+
+		addr.sa_family = ARPHRD_IEEE802154;
+		nla_memcpy(&addr.sa_data, info->attrs[IEEE802154_ATTR_HW_ADDR],
+				IEEE802154_ADDR_LEN);
+
+		/*
+		 * strangely enough, some callbacks (inetdev_event) from
+		 * dev_set_mac_address require RTNL_LOCK
+		 */
+		rtnl_lock();
+		rc = dev_set_mac_address(dev, &addr);
+		rtnl_unlock();
+		if (rc)
+			goto dev_unregister;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	NLA_PUT_STRING(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy));
 	NLA_PUT_STRING(msg, IEEE802154_ATTR_DEV_NAME, dev->name);
 
+=======
+	if (nla_put_string(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy)) ||
+	    nla_put_string(msg, IEEE802154_ATTR_DEV_NAME, dev->name))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	dev_put(dev);
 
 	wpan_phy_put(phy);
 
 	return ieee802154_nl_reply(msg, info);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+dev_unregister:
+	rtnl_lock(); /* del_iface must be called with RTNL lock */
+	phy->del_iface(phy, dev);
+	dev_put(dev);
+	rtnl_unlock();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 nla_put_failure:
 	nlmsg_free(msg);
 out_dev:
@@ -235,8 +358,12 @@ out_dev:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int ieee802154_del_iface(struct sk_buff *skb,
 		struct genl_info *info)
+=======
+int ieee802154_del_iface(struct sk_buff *skb, struct genl_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *msg;
 	struct wpan_phy *phy;
@@ -302,10 +429,16 @@ static int ieee802154_del_iface(struct sk_buff *skb,
 
 	rtnl_unlock();
 
+<<<<<<< HEAD
 
 	NLA_PUT_STRING(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy));
 	NLA_PUT_STRING(msg, IEEE802154_ATTR_DEV_NAME, name);
 
+=======
+	if (nla_put_string(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy)) ||
+	    nla_put_string(msg, IEEE802154_ATTR_DEV_NAME, name))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	wpan_phy_put(phy);
 
 	return ieee802154_nl_reply(msg, info);
@@ -319,6 +452,7 @@ out_dev:
 
 	return rc;
 }
+<<<<<<< HEAD
 
 static struct genl_ops ieee802154_phy_ops[] = {
 	IEEE802154_DUMP(IEEE802154_LIST_PHY, ieee802154_list_phy,
@@ -344,3 +478,5 @@ int nl802154_phy_register(void)
 
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/master

@@ -11,6 +11,11 @@
  * Driver based on skeletonfb.c, sa1100fb.c and others.
 */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/err.h>
@@ -26,8 +31,18 @@
 #include <linux/platform_device.h>
 #include <linux/clk.h>
 #include <linux/cpufreq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/io.h>
+=======
+#include <linux/io.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/div64.h>
 
 #include <asm/mach/map.h>
@@ -45,10 +60,28 @@
 #ifdef CONFIG_FB_S3C2410_DEBUG
 static int debug	= 1;
 #else
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug	= 0;
 #endif
 
 #define dprintk(msg...)	if (debug) { printk(KERN_DEBUG "s3c2410fb: " msg); }
+=======
+static int debug;
+#endif
+
+#define dprintk(msg...)	if (debug) printk(KERN_DEBUG "s3c2410fb: " msg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int debug;
+#endif
+
+#define dprintk(msg...) \
+do { \
+	if (debug) \
+		pr_debug(msg); \
+} while (0)
+>>>>>>> refs/remotes/origin/master
 
 /* useful functions */
 
@@ -117,7 +150,11 @@ static int s3c2410fb_check_var(struct fb_var_screeninfo *var,
 			       struct fb_info *info)
 {
 	struct s3c2410fb_info *fbi = info->par;
+<<<<<<< HEAD
 	struct s3c2410fb_mach_info *mach_info = fbi->dev->platform_data;
+=======
+	struct s3c2410fb_mach_info *mach_info = dev_get_platdata(fbi->dev);
+>>>>>>> refs/remotes/origin/master
 	struct s3c2410fb_display *display = NULL;
 	struct s3c2410fb_display *default_display = mach_info->displays +
 						    mach_info->default_display;
@@ -567,11 +604,24 @@ static int s3c2410fb_blank(int blank_mode, struct fb_info *info)
 
 	tpal_reg += is_s3c2412(fbi) ? S3C2412_TPAL : S3C2410_TPAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (blank_mode == FB_BLANK_POWERDOWN) {
 		s3c2410fb_lcd_enable(fbi, 0);
 	} else {
 		s3c2410fb_lcd_enable(fbi, 1);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (blank_mode == FB_BLANK_POWERDOWN)
+		s3c2410fb_lcd_enable(fbi, 0);
+	else
+		s3c2410fb_lcd_enable(fbi, 1);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (blank_mode == FB_BLANK_UNBLANK)
 		writel(0x0, tpal_reg);
@@ -599,11 +649,19 @@ static int s3c2410fb_debug_store(struct device *dev,
 	if (strnicmp(buf, "on", 2) == 0 ||
 	    strnicmp(buf, "1", 1) == 0) {
 		debug = 1;
+<<<<<<< HEAD
 		printk(KERN_DEBUG "s3c2410fb: Debug On");
 	} else if (strnicmp(buf, "off", 3) == 0 ||
 		   strnicmp(buf, "0", 1) == 0) {
 		debug = 0;
 		printk(KERN_DEBUG "s3c2410fb: Debug Off");
+=======
+		dev_dbg(dev, "s3c2410fb: Debug On");
+	} else if (strnicmp(buf, "off", 3) == 0 ||
+		   strnicmp(buf, "0", 1) == 0) {
+		debug = 0;
+		dev_dbg(dev, "s3c2410fb: Debug Off");
+>>>>>>> refs/remotes/origin/master
 	} else {
 		return -EINVAL;
 	}
@@ -632,7 +690,11 @@ static struct fb_ops s3c2410fb_ops = {
  *	cache.  Once this area is remapped, all virtual memory
  *	access to the video memory should occur at the new region.
  */
+<<<<<<< HEAD
 static int __devinit s3c2410fb_map_video_memory(struct fb_info *info)
+=======
+static int s3c2410fb_map_video_memory(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c2410fb_info *fbi = info->par;
 	dma_addr_t map_dma;
@@ -681,7 +743,11 @@ static inline void modify_gpio(void __iomem *reg,
 static int s3c2410fb_init_registers(struct fb_info *info)
 {
 	struct s3c2410fb_info *fbi = info->par;
+<<<<<<< HEAD
 	struct s3c2410fb_mach_info *mach_info = fbi->dev->platform_data;
+=======
+	struct s3c2410fb_mach_info *mach_info = dev_get_platdata(fbi->dev);
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	void __iomem *regs = fbi->io;
 	void __iomem *tpal;
@@ -767,7 +833,13 @@ static irqreturn_t s3c2410fb_irq(int irq, void *dev_id)
 static int s3c2410fb_cpufreq_transition(struct notifier_block *nb,
 					unsigned long val, void *data)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct cpufreq_freqs *freqs = data;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct s3c2410fb_info *info;
 	struct fb_info *fbinfo;
 	long delta_f;
@@ -813,10 +885,21 @@ static inline void s3c2410fb_cpufreq_deregister(struct s3c2410fb_info *info)
 #endif
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char driver_name[] = "s3c2410fb";
+=======
+static const char driver_name[] = "s3c2410fb";
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 				  enum s3c_drv_type drv_type)
+=======
+static const char driver_name[] = "s3c2410fb";
+
+static int s3c24xxfb_probe(struct platform_device *pdev,
+			   enum s3c_drv_type drv_type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c2410fb_info *info;
 	struct s3c2410fb_display *display;
@@ -829,7 +912,11 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 	int size;
 	u32 lcdcon1;
 
+<<<<<<< HEAD
 	mach_info = pdev->dev.platform_data;
+=======
+	mach_info = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (mach_info == NULL) {
 		dev_err(&pdev->dev,
 			"no platform data for lcd, cannot attach\n");
@@ -882,7 +969,20 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 		goto release_mem;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info->irq_base = info->io + ((drv_type == DRV_S3C2412) ? S3C2412_LCDINTBASE : S3C2410_LCDINTBASE);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (drv_type == DRV_S3C2412)
+		info->irq_base = info->io + S3C2412_LCDINTBASE;
+	else
+		info->irq_base = info->io + S3C2410_LCDINTBASE;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dprintk("devinit\n");
 
@@ -911,7 +1011,15 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 	for (i = 0; i < 256; i++)
 		info->palette_buffer[i] = PALETTE_BUFF_CLEAR;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(irq, s3c2410fb_irq, IRQF_DISABLED, pdev->name, info);
+=======
+	ret = request_irq(irq, s3c2410fb_irq, 0, pdev->name, info);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(irq, s3c2410fb_irq, 0, pdev->name, info);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&pdev->dev, "cannot get irq %d - err %d\n", irq, ret);
 		ret = -EBUSY;
@@ -920,7 +1028,11 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 
 	info->clk = clk_get(NULL, "lcd");
 	if (IS_ERR(info->clk)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "failed to get lcd clock source\n");
+=======
+		dev_err(&pdev->dev, "failed to get lcd clock source\n");
+>>>>>>> refs/remotes/origin/master
 		ret = PTR_ERR(info->clk);
 		goto release_irq;
 	}
@@ -928,7 +1040,15 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 	clk_enable(info->clk);
 	dprintk("got and enabled clock\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msleep(1);
+=======
+	usleep_range(1000, 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usleep_range(1000, 1100);
+>>>>>>> refs/remotes/origin/master
 
 	info->clk_rate = clk_get_rate(info->clk);
 
@@ -946,7 +1066,11 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 	/* Initialize video memory */
 	ret = s3c2410fb_map_video_memory(fbinfo);
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Failed to allocate video RAM: %d\n", ret);
+=======
+		dev_err(&pdev->dev, "Failed to allocate video RAM: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto release_clock;
 	}
@@ -969,18 +1093,34 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 
 	ret = register_framebuffer(fbinfo);
 	if (ret < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Failed to register framebuffer device: %d\n",
+=======
+		dev_err(&pdev->dev, "Failed to register framebuffer device: %d\n",
+>>>>>>> refs/remotes/origin/master
 			ret);
 		goto free_cpufreq;
 	}
 
 	/* create device files */
 	ret = device_create_file(&pdev->dev, &dev_attr_debug);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret) {
 		printk(KERN_ERR "failed to add debug attribute\n");
 	}
+=======
+	if (ret)
+		printk(KERN_ERR "failed to add debug attribute\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO "fb%d: %s frame buffer device\n",
+=======
+	if (ret)
+		dev_err(&pdev->dev, "failed to add debug attribute\n");
+
+	dev_info(&pdev->dev, "fb%d: %s frame buffer device\n",
+>>>>>>> refs/remotes/origin/master
 		fbinfo->node, fbinfo->fix.id);
 
 	return 0;
@@ -999,17 +1139,28 @@ release_regs:
 release_mem:
 	release_mem_region(res->start, size);
 dealloc_fb:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(fbinfo);
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit s3c2410fb_probe(struct platform_device *pdev)
+=======
+static int s3c2410fb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return s3c24xxfb_probe(pdev, DRV_S3C2410);
 }
 
+<<<<<<< HEAD
 static int __devinit s3c2412fb_probe(struct platform_device *pdev)
+=======
+static int s3c2412fb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return s3c24xxfb_probe(pdev, DRV_S3C2412);
 }
@@ -1018,7 +1169,11 @@ static int __devinit s3c2412fb_probe(struct platform_device *pdev)
 /*
  *  Cleanup
  */
+<<<<<<< HEAD
 static int __devexit s3c2410fb_remove(struct platform_device *pdev)
+=======
+static int s3c2410fb_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *fbinfo = platform_get_drvdata(pdev);
 	struct s3c2410fb_info *info = fbinfo->par;
@@ -1028,7 +1183,15 @@ static int __devexit s3c2410fb_remove(struct platform_device *pdev)
 	s3c2410fb_cpufreq_deregister(info);
 
 	s3c2410fb_lcd_enable(info, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msleep(1);
+=======
+	usleep_range(1000, 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usleep_range(1000, 1100);
+>>>>>>> refs/remotes/origin/master
 
 	s3c2410fb_unmap_video_memory(fbinfo);
 
@@ -1045,7 +1208,10 @@ static int __devexit s3c2410fb_remove(struct platform_device *pdev)
 
 	release_mem_region(info->mem->start, resource_size(info->mem));
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(fbinfo);
 
 	return 0;
@@ -1065,7 +1231,15 @@ static int s3c2410fb_suspend(struct platform_device *dev, pm_message_t state)
 	 * the LCD DMA engine is not going to get back on the bus
 	 * before the clock goes off again (bjd) */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msleep(1);
+=======
+	usleep_range(1000, 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usleep_range(1000, 1100);
+>>>>>>> refs/remotes/origin/master
 	clk_disable(info->clk);
 
 	return 0;
@@ -1077,7 +1251,15 @@ static int s3c2410fb_resume(struct platform_device *dev)
 	struct s3c2410fb_info *info = fbinfo->par;
 
 	clk_enable(info->clk);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msleep(1);
+=======
+	usleep_range(1000, 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usleep_range(1000, 1100);
+>>>>>>> refs/remotes/origin/master
 
 	s3c2410fb_init_registers(fbinfo);
 
@@ -1095,7 +1277,11 @@ static int s3c2410fb_resume(struct platform_device *dev)
 
 static struct platform_driver s3c2410fb_driver = {
 	.probe		= s3c2410fb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(s3c2410fb_remove),
+=======
+	.remove		= s3c2410fb_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= s3c2410fb_suspend,
 	.resume		= s3c2410fb_resume,
 	.driver		= {
@@ -1106,7 +1292,11 @@ static struct platform_driver s3c2410fb_driver = {
 
 static struct platform_driver s3c2412fb_driver = {
 	.probe		= s3c2412fb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(s3c2410fb_remove),
+=======
+	.remove		= s3c2410fb_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= s3c2410fb_suspend,
 	.resume		= s3c2410fb_resume,
 	.driver		= {
@@ -1134,8 +1324,13 @@ static void __exit s3c2410fb_cleanup(void)
 module_init(s3c2410fb_init);
 module_exit(s3c2410fb_cleanup);
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>, "
 	      "Ben Dooks <ben-linux@fluff.org>");
+=======
+MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
+MODULE_AUTHOR("Ben Dooks <ben-linux@fluff.org>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("Framebuffer driver for the s3c2410");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:s3c2410-lcd");

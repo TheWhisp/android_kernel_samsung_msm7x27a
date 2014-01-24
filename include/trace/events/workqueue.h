@@ -27,7 +27,11 @@ DECLARE_EVENT_CLASS(workqueue_work,
 /**
  * workqueue_queue_work - called when a work gets queued
  * @req_cpu:	the requested cpu
+<<<<<<< HEAD
  * @cwq:	pointer to struct cpu_workqueue_struct
+=======
+ * @pwq:	pointer to struct pool_workqueue
+>>>>>>> refs/remotes/origin/master
  * @work:	pointer to struct work_struct
  *
  * This event occurs when a work is queued immediately or once a
@@ -36,10 +40,17 @@ DECLARE_EVENT_CLASS(workqueue_work,
  */
 TRACE_EVENT(workqueue_queue_work,
 
+<<<<<<< HEAD
 	TP_PROTO(unsigned int req_cpu, struct cpu_workqueue_struct *cwq,
 		 struct work_struct *work),
 
 	TP_ARGS(req_cpu, cwq, work),
+=======
+	TP_PROTO(unsigned int req_cpu, struct pool_workqueue *pwq,
+		 struct work_struct *work),
+
+	TP_ARGS(req_cpu, pwq, work),
+>>>>>>> refs/remotes/origin/master
 
 	TP_STRUCT__entry(
 		__field( void *,	work	)
@@ -52,9 +63,15 @@ TRACE_EVENT(workqueue_queue_work,
 	TP_fast_assign(
 		__entry->work		= work;
 		__entry->function	= work->func;
+<<<<<<< HEAD
 		__entry->workqueue	= cwq->wq;
 		__entry->req_cpu	= req_cpu;
 		__entry->cpu		= cwq->gcwq->cpu;
+=======
+		__entry->workqueue	= pwq->wq;
+		__entry->req_cpu	= req_cpu;
+		__entry->cpu		= pwq->pool->cpu;
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_printk("work struct=%p function=%pf workqueue=%p req_cpu=%u cpu=%u",
@@ -103,7 +120,11 @@ TRACE_EVENT(workqueue_execute_start,
 );
 
 /**
+<<<<<<< HEAD
  * workqueue_execute_end - called immediately before the workqueue callback
+=======
+ * workqueue_execute_end - called immediately after the workqueue callback
+>>>>>>> refs/remotes/origin/master
  * @work:	pointer to struct work_struct
  *
  * Allows to track workqueue execution.

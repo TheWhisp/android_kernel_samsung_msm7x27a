@@ -193,17 +193,33 @@ machine_device_initcall(mpc832x_rdb, mpc832x_spi_init);
  */
 static void __init mpc832x_rdb_setup_arch(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_PCI) || defined(CONFIG_QUICC_ENGINE)
+=======
+#if defined(CONFIG_QUICC_ENGINE)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_QUICC_ENGINE)
+>>>>>>> refs/remotes/origin/master
 	struct device_node *np;
 #endif
 
 	if (ppc_md.progress)
 		ppc_md.progress("mpc832x_rdb_setup_arch()", 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	for_each_compatible_node(np, "pci", "fsl,mpc8349-pci")
 		mpc83xx_add_bridge(np);
 #endif
+=======
+	mpc83xx_setup_pci();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mpc83xx_setup_pci();
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_QUICC_ENGINE
 	qe_reset();
@@ -218,6 +234,8 @@ static void __init mpc832x_rdb_setup_arch(void)
 #endif				/* CONFIG_QUICC_ENGINE */
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_device_id mpc832x_ids[] = {
 	{ .type = "soc", },
 	{ .compatible = "soc", },
@@ -264,6 +282,12 @@ static void __init mpc832x_rdb_init_IRQ(void)
 	of_node_put(np);
 #endif				/* CONFIG_QUICC_ENGINE */
 }
+=======
+machine_device_initcall(mpc832x_rdb, mpc83xx_declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_device_initcall(mpc832x_rdb, mpc83xx_declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, MMU is off, device-tree isn't unflattened
@@ -279,7 +303,15 @@ define_machine(mpc832x_rdb) {
 	.name		= "MPC832x RDB",
 	.probe		= mpc832x_rdb_probe,
 	.setup_arch	= mpc832x_rdb_setup_arch,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.init_IRQ	= mpc832x_rdb_init_IRQ,
+=======
+	.init_IRQ	= mpc83xx_ipic_and_qe_init_IRQ,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_IRQ	= mpc83xx_ipic_and_qe_init_IRQ,
+>>>>>>> refs/remotes/origin/master
 	.get_irq	= ipic_get_irq,
 	.restart	= mpc83xx_restart,
 	.time_init	= mpc83xx_time_init,

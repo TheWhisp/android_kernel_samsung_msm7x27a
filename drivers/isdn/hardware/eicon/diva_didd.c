@@ -1,12 +1,27 @@
 /* $Id: diva_didd.c,v 1.13.6.4 2005/02/11 19:40:25 armin Exp $
  *
  * DIDD Interface module for Eicon active cards.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Functions are in dadapter.c 
  * 
  * Copyright 2002-2003 by Armin Schindler (mac@melware.de) 
  * Copyright 2002-2003 Cytronics & Melware (info@melware.de)
  * 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * Functions are in dadapter.c
+ *
+ * Copyright 2002-2003 by Armin Schindler (mac@melware.de)
+ * Copyright 2002-2003 Cytronics & Melware (info@melware.de)
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  */
@@ -27,7 +42,15 @@
 static char *main_revision = "$Revision: 1.13.6.4 $";
 
 static char *DRIVERNAME =
+<<<<<<< HEAD
+<<<<<<< HEAD
     "Eicon DIVA - DIDD table (http://www.melware.net)";
+=======
+	"Eicon DIVA - DIDD table (http://www.melware.net)";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"Eicon DIVA - DIDD table (http://www.melware.net)";
+>>>>>>> refs/remotes/origin/master
 static char *DRIVERLNAME = "divadidd";
 char *DRIVERRELEASE_DIDD = "2.0";
 
@@ -72,7 +95,15 @@ static int divadidd_proc_show(struct seq_file *m, void *v)
 	seq_printf(m, "name     : %s\n", DRIVERLNAME);
 	seq_printf(m, "release  : %s\n", DRIVERRELEASE_DIDD);
 	seq_printf(m, "build    : %s(%s)\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       diva_didd_common_code_build, DIVA_BUILD);
+=======
+		   diva_didd_common_code_build, DIVA_BUILD);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   diva_didd_common_code_build, DIVA_BUILD);
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, "revision : %s\n", getrev(tmprev));
 
 	return 0;
@@ -91,7 +122,11 @@ static const struct file_operations divadidd_proc_fops = {
 	.release	= single_release,
 };
 
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION create_proc(void)
+=======
+static int __init create_proc(void)
+>>>>>>> refs/remotes/origin/master
 {
 	proc_net_eicon = proc_mkdir("eicon", init_net.proc_net);
 
@@ -109,7 +144,11 @@ static void remove_proc(void)
 	remove_proc_entry("eicon", init_net.proc_net);
 }
 
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION divadidd_init(void)
+=======
+static int __init divadidd_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	char tmprev[32];
 	int ret = 0;
@@ -137,11 +176,23 @@ static int DIVA_INIT_FUNCTION divadidd_init(void)
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
       out:
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return (ret);
 }
 
 static void DIVA_EXIT_FUNCTION divadidd_exit(void)
+=======
+out:
+	return (ret);
+}
+
+static void __exit divadidd_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	diddfunc_finit();
 	remove_proc();

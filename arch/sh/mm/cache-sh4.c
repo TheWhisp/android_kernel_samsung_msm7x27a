@@ -18,6 +18,14 @@
 #include <linux/highmem.h>
 #include <asm/pgtable.h>
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/cache_insns.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cache_insns.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/cacheflush.h>
 
 /*
@@ -244,7 +252,15 @@ static void sh4_flush_cache_page(void *args)
 		if (map_coherent)
 			vaddr = kmap_coherent(page, address);
 		else
+<<<<<<< HEAD
+<<<<<<< HEAD
 			vaddr = kmap_atomic(page, KM_USER0);
+=======
+			vaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			vaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 
 		address = (unsigned long)vaddr;
 	}
@@ -259,7 +275,15 @@ static void sh4_flush_cache_page(void *args)
 		if (map_coherent)
 			kunmap_coherent(vaddr);
 		else
+<<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(vaddr, KM_USER0);
+=======
+			kunmap_atomic(vaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(vaddr);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

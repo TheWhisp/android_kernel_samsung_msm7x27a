@@ -78,6 +78,16 @@
 #include <asm/processor.h>
 #include "intel_ips.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm-generic/io-64-nonatomic-lo-hi.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/io-64-nonatomic-lo-hi.h>
+
+>>>>>>> refs/remotes/origin/master
 #define PCI_DEVICE_ID_INTEL_THERMAL_SENSOR 0x3b32
 
 /*
@@ -345,6 +355,8 @@ struct ips_driver {
 static bool
 ips_gpu_turbo_enabled(struct ips_driver *ips);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef readq
 static inline __u64 readq(const volatile void __iomem *addr)
 {
@@ -358,6 +370,10 @@ static inline __u64 readq(const volatile void __iomem *addr)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ips_cpu_busy - is CPU busy?
  * @ips: IPS driver struct
@@ -404,7 +420,15 @@ static void ips_cpu_raise(struct ips_driver *ips)
 
 	thm_writew(THM_MPCPC, (new_tdp_limit * 10) / 8);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	turbo_override |= TURBO_TDC_OVR_EN | TURBO_TDC_OVR_EN;
+=======
+	turbo_override |= TURBO_TDC_OVR_EN | TURBO_TDP_OVR_EN;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	turbo_override |= TURBO_TDC_OVR_EN | TURBO_TDP_OVR_EN;
+>>>>>>> refs/remotes/origin/master
 	wrmsrl(TURBO_POWER_CURRENT_LIMIT, turbo_override);
 
 	turbo_override &= ~TURBO_TDP_MASK;
@@ -439,7 +463,15 @@ static void ips_cpu_lower(struct ips_driver *ips)
 
 	thm_writew(THM_MPCPC, (new_limit * 10) / 8);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	turbo_override |= TURBO_TDC_OVR_EN | TURBO_TDC_OVR_EN;
+=======
+	turbo_override |= TURBO_TDC_OVR_EN | TURBO_TDP_OVR_EN;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	turbo_override |= TURBO_TDC_OVR_EN | TURBO_TDP_OVR_EN;
+>>>>>>> refs/remotes/origin/master
 	wrmsrl(TURBO_POWER_CURRENT_LIMIT, turbo_override);
 
 	turbo_override &= ~TURBO_TDP_MASK;
@@ -621,11 +653,19 @@ static bool mcp_exceeded(struct ips_driver *ips)
 	bool ret = false;
 	u32 temp_limit;
 	u32 avg_power;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const char *msg = "MCP limit exceeded: ";
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&ips->turbo_status_lock, flags);
 
 	temp_limit = ips->mcp_temp_limit * 100;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ips->mcp_avg_temp > temp_limit) {
 		dev_info(&ips->dev->dev,
 			"%sAvg temp %u, limit %u\n", msg, ips->mcp_avg_temp,
@@ -640,6 +680,19 @@ static bool mcp_exceeded(struct ips_driver *ips)
 			ips->mcp_power_limit);
 		ret = true;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (ips->mcp_avg_temp > temp_limit)
+		ret = true;
+
+	avg_power = ips->cpu_avg_power + ips->mch_avg_power;
+	if (avg_power > ips->mcp_power_limit)
+		ret = true;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&ips->turbo_status_lock, flags);
 
@@ -1607,7 +1660,15 @@ static int ips_probe(struct pci_dev *dev, const struct pci_device_id *id)
 		ips->poll_turbo_status = true;
 
 	if (!ips_get_i915_syms(ips)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&dev->dev, "failed to get i915 symbols, graphics turbo disabled\n");
+=======
+		dev_info(&dev->dev, "failed to get i915 symbols, graphics turbo disabled until i915 loads\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_info(&dev->dev, "failed to get i915 symbols, graphics turbo disabled until i915 loads\n");
+>>>>>>> refs/remotes/origin/master
 		ips->gpu_turbo_enabled = false;
 	} else {
 		dev_dbg(&dev->dev, "graphics turbo enabled\n");
@@ -1739,6 +1800,7 @@ static void ips_remove(struct pci_dev *dev)
 	dev_dbg(&dev->dev, "IPS driver removed\n");
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int ips_suspend(struct pci_dev *dev, pm_message_t state)
 {
@@ -1754,6 +1816,8 @@ static int ips_resume(struct pci_dev *dev)
 #define ips_resume NULL
 #endif /* CONFIG_PM */
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void ips_shutdown(struct pci_dev *dev)
 {
 }
@@ -1763,6 +1827,7 @@ static struct pci_driver ips_pci_driver = {
 	.id_table = ips_id_table,
 	.probe = ips_probe,
 	.remove = ips_remove,
+<<<<<<< HEAD
 	.suspend = ips_suspend,
 	.resume = ips_resume,
 	.shutdown = ips_shutdown,
@@ -1780,6 +1845,12 @@ static void ips_exit(void)
 	return;
 }
 module_exit(ips_exit);
+=======
+	.shutdown = ips_shutdown,
+};
+
+module_pci_driver(ips_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jesse Barnes <jbarnes@virtuousgeek.org>");

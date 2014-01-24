@@ -534,8 +534,13 @@ static void rx8025_sysfs_unregister(struct device *dev)
 	device_remove_file(dev, &dev_attr_clock_adjust_ppb);
 }
 
+<<<<<<< HEAD
 static int __devinit rx8025_probe(struct i2c_client *client,
 				  const struct i2c_device_id *id)
+=======
+static int rx8025_probe(struct i2c_client *client,
+			const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
 	struct rx8025_data *rx8025;
@@ -549,7 +554,11 @@ static int __devinit rx8025_probe(struct i2c_client *client,
 		goto errout;
 	}
 
+<<<<<<< HEAD
 	rx8025 = kzalloc(sizeof(*rx8025), GFP_KERNEL);
+=======
+	rx8025 = devm_kzalloc(&client->dev, sizeof(*rx8025), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!rx8025) {
 		dev_err(&adapter->dev, "failed to alloc memory\n");
 		err = -ENOMEM;
@@ -562,7 +571,11 @@ static int __devinit rx8025_probe(struct i2c_client *client,
 
 	err = rx8025_init_client(client, &need_reset);
 	if (err)
+<<<<<<< HEAD
 		goto errout_free;
+=======
+		goto errout;
+>>>>>>> refs/remotes/origin/master
 
 	if (need_reset) {
 		struct rtc_time tm;
@@ -572,12 +585,20 @@ static int __devinit rx8025_probe(struct i2c_client *client,
 		rx8025_set_time(&client->dev, &tm);
 	}
 
+<<<<<<< HEAD
 	rx8025->rtc = rtc_device_register(client->name, &client->dev,
+=======
+	rx8025->rtc = devm_rtc_device_register(&client->dev, client->name,
+>>>>>>> refs/remotes/origin/master
 					  &rx8025_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rx8025->rtc)) {
 		err = PTR_ERR(rx8025->rtc);
 		dev_err(&client->dev, "unable to register the class device\n");
+<<<<<<< HEAD
 		goto errout_free;
+=======
+		goto errout;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (client->irq > 0) {
@@ -586,7 +607,11 @@ static int __devinit rx8025_probe(struct i2c_client *client,
 				  0, "rx8025", client);
 		if (err) {
 			dev_err(&client->dev, "unable to request IRQ\n");
+<<<<<<< HEAD
 			goto errout_reg;
+=======
+			goto errout;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -603,18 +628,25 @@ errout_irq:
 	if (client->irq > 0)
 		free_irq(client->irq, client);
 
+<<<<<<< HEAD
 errout_reg:
 	rtc_device_unregister(rx8025->rtc);
 
 errout_free:
 	kfree(rx8025);
 
+=======
+>>>>>>> refs/remotes/origin/master
 errout:
 	dev_err(&adapter->dev, "probing for rx8025 failed\n");
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit rx8025_remove(struct i2c_client *client)
+=======
+static int rx8025_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rx8025_data *rx8025 = i2c_get_clientdata(client);
 	struct mutex *lock = &rx8025->rtc->ops_lock;
@@ -629,8 +661,11 @@ static int __devexit rx8025_remove(struct i2c_client *client)
 	}
 
 	rx8025_sysfs_unregister(&client->dev);
+<<<<<<< HEAD
 	rtc_device_unregister(rx8025->rtc);
 	kfree(rx8025);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -640,10 +675,12 @@ static struct i2c_driver rx8025_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe		= rx8025_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rx8025_remove),
 	.id_table	= rx8025_id,
 };
 
+<<<<<<< HEAD
 static int __init rx8025_init(void)
 {
 	return i2c_add_driver(&rx8025_driver);
@@ -653,10 +690,26 @@ static void __exit rx8025_exit(void)
 {
 	i2c_del_driver(&rx8025_driver);
 }
+=======
+module_i2c_driver(rx8025_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= rx8025_remove,
+	.id_table	= rx8025_id,
+};
+
+module_i2c_driver(rx8025_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Wolfgang Grandegger <wg@grandegger.com>");
 MODULE_DESCRIPTION("RX-8025 SA/NB RTC driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(rx8025_init);
 module_exit(rx8025_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

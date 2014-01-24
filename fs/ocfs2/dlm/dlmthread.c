@@ -94,24 +94,56 @@ int __dlm_lockres_unused(struct dlm_lock_resource *res)
 {
 	int bit;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (__dlm_lockres_has_locks(res))
 		return 0;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	assert_spin_locked(&res->spinlock);
+
+	if (__dlm_lockres_has_locks(res))
+		return 0;
+
+	/* Locks are in the process of being created */
+	if (res->inflight_locks)
+		return 0;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!list_empty(&res->dirty) || res->state & DLM_LOCK_RES_DIRTY)
 		return 0;
 
 	if (res->state & DLM_LOCK_RES_RECOVERING)
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* Another node has this resource with this node as the master */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Another node has this resource with this node as the master */
+>>>>>>> refs/remotes/origin/master
 	bit = find_next_bit(res->refmap, O2NM_MAX_NODES, 0);
 	if (bit < O2NM_MAX_NODES)
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * since the bit for dlm->node_num is not set, inflight_locks better
 	 * be zero
 	 */
 	BUG_ON(res->inflight_locks != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -185,8 +217,14 @@ static void dlm_purge_lockres(struct dlm_ctxt *dlm,
 		/* clear our bit from the master's refmap, ignore errors */
 		ret = dlm_drop_lockres_ref(dlm, res);
 		if (ret < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			mlog(ML_ERROR, "%s: deref %.*s failed %d\n", dlm->name,
 			     res->lockname.len, res->lockname.name, ret);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!dlm_is_host_down(ret))
 				BUG();
 		}
@@ -209,7 +247,15 @@ static void dlm_purge_lockres(struct dlm_ctxt *dlm,
 		BUG();
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__dlm_unhash_lockres(res);
+=======
+	__dlm_unhash_lockres(dlm, res);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__dlm_unhash_lockres(dlm, res);
+>>>>>>> refs/remotes/origin/master
 
 	/* lockres is not in the hash now.  drop the flag and wake up
 	 * any processes waiting in dlm_get_lock_resource. */
@@ -286,8 +332,11 @@ static void dlm_shuffle_lists(struct dlm_ctxt *dlm,
 			      struct dlm_lock_resource *res)
 {
 	struct dlm_lock *lock, *target;
+<<<<<<< HEAD
 	struct list_head *iter;
 	struct list_head *head;
+=======
+>>>>>>> refs/remotes/origin/master
 	int can_grant = 1;
 
 	/*
@@ -314,9 +363,13 @@ converting:
 		     dlm->name, res->lockname.len, res->lockname.name);
 		BUG();
 	}
+<<<<<<< HEAD
 	head = &res->granted;
 	list_for_each(iter, head) {
 		lock = list_entry(iter, struct dlm_lock, list);
+=======
+	list_for_each_entry(lock, &res->granted, list) {
+>>>>>>> refs/remotes/origin/master
 		if (lock==target)
 			continue;
 		if (!dlm_lock_compatible(lock->ml.type,
@@ -333,9 +386,14 @@ converting:
 					target->ml.convert_type;
 		}
 	}
+<<<<<<< HEAD
 	head = &res->converting;
 	list_for_each(iter, head) {
 		lock = list_entry(iter, struct dlm_lock, list);
+=======
+
+	list_for_each_entry(lock, &res->converting, list) {
+>>>>>>> refs/remotes/origin/master
 		if (lock==target)
 			continue;
 		if (!dlm_lock_compatible(lock->ml.type,
@@ -384,9 +442,13 @@ blocked:
 		goto leave;
 	target = list_entry(res->blocked.next, struct dlm_lock, list);
 
+<<<<<<< HEAD
 	head = &res->granted;
 	list_for_each(iter, head) {
 		lock = list_entry(iter, struct dlm_lock, list);
+=======
+	list_for_each_entry(lock, &res->granted, list) {
+>>>>>>> refs/remotes/origin/master
 		if (lock==target)
 			continue;
 		if (!dlm_lock_compatible(lock->ml.type, target->ml.type)) {
@@ -400,9 +462,13 @@ blocked:
 		}
 	}
 
+<<<<<<< HEAD
 	head = &res->converting;
 	list_for_each(iter, head) {
 		lock = list_entry(iter, struct dlm_lock, list);
+=======
+	list_for_each_entry(lock, &res->converting, list) {
+>>>>>>> refs/remotes/origin/master
 		if (lock==target)
 			continue;
 		if (!dlm_lock_compatible(lock->ml.type, target->ml.type)) {

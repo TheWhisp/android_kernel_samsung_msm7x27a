@@ -1,13 +1,27 @@
 /*
  * rational fractions
  *
+<<<<<<< HEAD
  * Copyright (C) 2009 emlix GmbH, Oskar Schirmer <os@emlix.com>
+=======
+ * Copyright (C) 2009 emlix GmbH, Oskar Schirmer <oskar@scara.com>
+>>>>>>> refs/remotes/origin/master
  *
  * helper functions when coping with rational numbers
  */
 
 #include <linux/rational.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/compiler.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/compiler.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * calculate best rational approximation for a given fraction

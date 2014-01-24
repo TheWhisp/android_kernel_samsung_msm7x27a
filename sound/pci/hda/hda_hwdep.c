@@ -25,7 +25,15 @@
 #include <linux/mutex.h>
 #include <linux/ctype.h>
 #include <linux/string.h>
+<<<<<<< HEAD
 #include <linux/firmware.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include "hda_codec.h"
 #include "hda_local.h"
@@ -125,7 +133,11 @@ static void hwdep_free(struct snd_hwdep *hwdep)
 	clear_hwdep_elements(hwdep->private_data);
 }
 
+<<<<<<< HEAD
 int /*__devinit*/ snd_hda_create_hwdep(struct hda_codec *codec)
+=======
+int snd_hda_create_hwdep(struct hda_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	char hwname[16];
 	struct snd_hwdep *hwdep;
@@ -148,6 +160,10 @@ int /*__devinit*/ snd_hda_create_hwdep(struct hda_codec *codec)
 	hwdep->ops.ioctl_compat = hda_hwdep_ioctl_compat;
 #endif
 
+<<<<<<< HEAD
+=======
+	mutex_init(&codec->user_mutex);
+>>>>>>> refs/remotes/origin/master
 	snd_array_init(&codec->init_verbs, sizeof(struct hda_verb), 32);
 	snd_array_init(&codec->hints, sizeof(struct hda_hint), 32);
 	snd_array_init(&codec->user_pins, sizeof(struct hda_pincfg), 16);
@@ -155,7 +171,11 @@ int /*__devinit*/ snd_hda_create_hwdep(struct hda_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_SND_HDA_POWER_SAVE
+=======
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/master
 static ssize_t power_on_acct_show(struct device *dev,
 				  struct device_attribute *attr,
 				  char *buf)
@@ -191,7 +211,11 @@ int snd_hda_hwdep_add_power_sysfs(struct hda_codec *codec)
 					  hwdep->device, &power_attrs[i]);
 	return 0;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_SND_HDA_POWER_SAVE */
+=======
+#endif /* CONFIG_PM */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SND_HDA_RECONFIG
 
@@ -294,7 +318,11 @@ static ssize_t type##_store(struct device *dev,			\
 	struct snd_hwdep *hwdep = dev_get_drvdata(dev);		\
 	struct hda_codec *codec = hwdep->private_data;		\
 	unsigned long val;					\
+<<<<<<< HEAD
 	int err = strict_strtoul(buf, 0, &val);			\
+=======
+	int err = kstrtoul(buf, 0, &val);			\
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)						\
 		return err;					\
 	codec->type = val;					\
@@ -346,12 +374,20 @@ static ssize_t init_verbs_show(struct device *dev,
 	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
 	struct hda_codec *codec = hwdep->private_data;
 	int i, len = 0;
+<<<<<<< HEAD
+=======
+	mutex_lock(&codec->user_mutex);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < codec->init_verbs.used; i++) {
 		struct hda_verb *v = snd_array_elem(&codec->init_verbs, i);
 		len += snprintf(buf + len, PAGE_SIZE - len,
 				"0x%02x 0x%03x 0x%04x\n",
 				v->nid, v->verb, v->param);
 	}
+<<<<<<< HEAD
+=======
+	mutex_unlock(&codec->user_mutex);
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
@@ -364,12 +400,25 @@ static int parse_init_verbs(struct hda_codec *codec, const char *buf)
 		return -EINVAL;
 	if (!nid || !verb)
 		return -EINVAL;
+<<<<<<< HEAD
 	v = snd_array_new(&codec->init_verbs);
 	if (!v)
 		return -ENOMEM;
 	v->nid = nid;
 	v->verb = verb;
 	v->param = param;
+=======
+	mutex_lock(&codec->user_mutex);
+	v = snd_array_new(&codec->init_verbs);
+	if (!v) {
+		mutex_unlock(&codec->user_mutex);
+		return -ENOMEM;
+	}
+	v->nid = nid;
+	v->verb = verb;
+	v->param = param;
+	mutex_unlock(&codec->user_mutex);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -392,11 +441,19 @@ static ssize_t hints_show(struct device *dev,
 	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
 	struct hda_codec *codec = hwdep->private_data;
 	int i, len = 0;
+<<<<<<< HEAD
+=======
+	mutex_lock(&codec->user_mutex);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < codec->hints.used; i++) {
 		struct hda_hint *hint = snd_array_elem(&codec->hints, i);
 		len += snprintf(buf + len, PAGE_SIZE - len,
 				"%s = %s\n", hint->key, hint->val);
 	}
+<<<<<<< HEAD
+=======
+	mutex_unlock(&codec->user_mutex);
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
@@ -431,6 +488,10 @@ static int parse_hints(struct hda_codec *codec, const char *buf)
 {
 	char *key, *val;
 	struct hda_hint *hint;
+<<<<<<< HEAD
+=======
+	int err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	buf = skip_spaces(buf);
 	if (!*buf || *buf == '#' || *buf == '\n')
@@ -450,19 +511,28 @@ static int parse_hints(struct hda_codec *codec, const char *buf)
 	val = skip_spaces(val);
 	remove_trail_spaces(key);
 	remove_trail_spaces(val);
+<<<<<<< HEAD
+=======
+	mutex_lock(&codec->user_mutex);
+>>>>>>> refs/remotes/origin/master
 	hint = get_hint(codec, key);
 	if (hint) {
 		/* replace */
 		kfree(hint->key);
 		hint->key = key;
 		hint->val = val;
+<<<<<<< HEAD
 		return 0;
+=======
+		goto unlock;
+>>>>>>> refs/remotes/origin/master
 	}
 	/* allocate a new hint entry */
 	if (codec->hints.used >= MAX_HINTS)
 		hint = NULL;
 	else
 		hint = snd_array_new(&codec->hints);
+<<<<<<< HEAD
 	if (!hint) {
 		kfree(key);
 		return -ENOMEM;
@@ -470,6 +540,19 @@ static int parse_hints(struct hda_codec *codec, const char *buf)
 	hint->key = key;
 	hint->val = val;
 	return 0;
+=======
+	if (hint) {
+		hint->key = key;
+		hint->val = val;
+	} else {
+		err = -ENOMEM;
+	}
+ unlock:
+	mutex_unlock(&codec->user_mutex);
+	if (err)
+		kfree(key);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t hints_store(struct device *dev,
@@ -489,11 +572,19 @@ static ssize_t pin_configs_show(struct hda_codec *codec,
 				char *buf)
 {
 	int i, len = 0;
+<<<<<<< HEAD
+=======
+	mutex_lock(&codec->user_mutex);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < list->used; i++) {
 		struct hda_pincfg *pin = snd_array_elem(list, i);
 		len += sprintf(buf + len, "0x%02x 0x%08x\n",
 			       pin->nid, pin->cfg);
 	}
+<<<<<<< HEAD
+=======
+	mutex_unlock(&codec->user_mutex);
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
@@ -528,13 +619,24 @@ static ssize_t driver_pin_configs_show(struct device *dev,
 
 static int parse_user_pin_configs(struct hda_codec *codec, const char *buf)
 {
+<<<<<<< HEAD
 	int nid, cfg;
+=======
+	int nid, cfg, err;
+>>>>>>> refs/remotes/origin/master
 
 	if (sscanf(buf, "%i %i", &nid, &cfg) != 2)
 		return -EINVAL;
 	if (!nid)
 		return -EINVAL;
+<<<<<<< HEAD
 	return snd_hda_add_pincfg(codec, &codec->user_pins, nid, cfg);
+=======
+	mutex_lock(&codec->user_mutex);
+	err = snd_hda_add_pincfg(codec, &codec->user_pins, nid, cfg);
+	mutex_unlock(&codec->user_mutex);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t user_pin_configs_store(struct device *dev,
@@ -596,6 +698,7 @@ const char *snd_hda_get_hint(struct hda_codec *codec, const char *key)
 	struct hda_hint *hint = get_hint(codec, key);
 	return hint ? hint->val : NULL;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_get_hint);
 
 int snd_hda_get_bool_hint(struct hda_codec *codec, const char *key)
@@ -613,6 +716,56 @@ int snd_hda_get_bool_hint(struct hda_codec *codec, const char *key)
 }
 EXPORT_SYMBOL_HDA(snd_hda_get_bool_hint);
 
+=======
+EXPORT_SYMBOL_GPL(snd_hda_get_hint);
+
+int snd_hda_get_bool_hint(struct hda_codec *codec, const char *key)
+{
+	const char *p;
+	int ret;
+
+	mutex_lock(&codec->user_mutex);
+	p = snd_hda_get_hint(codec, key);
+	if (!p || !*p)
+		ret = -ENOENT;
+	else {
+		switch (toupper(*p)) {
+		case 'T': /* true */
+		case 'Y': /* yes */
+		case '1':
+			ret = 1;
+			break;
+		default:
+			ret = 0;
+			break;
+		}
+	}
+	mutex_unlock(&codec->user_mutex);
+	return ret;
+}
+EXPORT_SYMBOL_GPL(snd_hda_get_bool_hint);
+
+int snd_hda_get_int_hint(struct hda_codec *codec, const char *key, int *valp)
+{
+	const char *p;
+	unsigned long val;
+	int ret;
+
+	mutex_lock(&codec->user_mutex);
+	p = snd_hda_get_hint(codec, key);
+	if (!p)
+		ret = -ENOENT;
+	else if (kstrtoul(p, 0, &val))
+		ret = -EINVAL;
+	else {
+		*valp = val;
+		ret = 0;
+	}
+	mutex_unlock(&codec->user_mutex);
+	return ret;
+}
+EXPORT_SYMBOL_GPL(snd_hda_get_int_hint);
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_SND_HDA_RECONFIG */
 
 #ifdef CONFIG_SND_HDA_PATCH_LOADER
@@ -643,14 +796,32 @@ static inline int strmatch(const char *a, const char *b)
 static void parse_codec_mode(char *buf, struct hda_bus *bus,
 			     struct hda_codec **codecp)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int vendorid, subid, caddr;
+=======
+	int vendorid, subid, caddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int vendorid, subid, caddr;
+>>>>>>> refs/remotes/origin/master
 	struct hda_codec *codec;
 
 	*codecp = NULL;
 	if (sscanf(buf, "%i %i %i", &vendorid, &subid, &caddr) == 3) {
 		list_for_each_entry(codec, &bus->codec_list, list) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (codec->vendor_id == vendorid &&
 			    codec->subsystem_id == subid &&
+=======
+			if ((vendorid <= 0 || codec->vendor_id == vendorid) &&
+			    (subid <= 0 || codec->subsystem_id == subid) &&
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if ((vendorid <= 0 || codec->vendor_id == vendorid) &&
+			    (subid <= 0 || codec->subsystem_id == subid) &&
+>>>>>>> refs/remotes/origin/master
 			    codec->addr == caddr) {
 				*codecp = codec;
 				break;
@@ -700,7 +871,11 @@ static void parse_##name##_mode(char *buf, struct hda_bus *bus, \
 				 struct hda_codec **codecp) \
 { \
 	unsigned long val; \
+<<<<<<< HEAD
 	if (!strict_strtoul(buf, 0, &val)) \
+=======
+	if (!kstrtoul(buf, 0, &val)) \
+>>>>>>> refs/remotes/origin/master
 		(*codecp)->name = val; \
 }
 
@@ -711,6 +886,7 @@ DEFINE_PARSE_ID_MODE(revision_id);
 
 struct hda_patch_item {
 	const char *tag;
+<<<<<<< HEAD
 	void (*parser)(char *buf, struct hda_bus *bus, struct hda_codec **retc);
 	int need_codec;
 };
@@ -725,6 +901,52 @@ static struct hda_patch_item patch_items[NUM_LINE_MODES] = {
 	[LINE_MODE_SUBSYSTEM_ID] = { "[subsystem_id]", parse_subsystem_id_mode, 1 },
 	[LINE_MODE_REVISION_ID] = { "[revision_id]", parse_revision_id_mode, 1 },
 	[LINE_MODE_CHIP_NAME] = { "[chip_name]", parse_chip_name_mode, 1 },
+=======
+	const char *alias;
+	void (*parser)(char *buf, struct hda_bus *bus, struct hda_codec **retc);
+};
+
+static struct hda_patch_item patch_items[NUM_LINE_MODES] = {
+	[LINE_MODE_CODEC] = {
+		.tag = "[codec]",
+		.parser = parse_codec_mode,
+	},
+	[LINE_MODE_MODEL] = {
+		.tag = "[model]",
+		.parser = parse_model_mode,
+	},
+	[LINE_MODE_VERB] = {
+		.tag = "[verb]",
+		.alias = "[init_verbs]",
+		.parser = parse_verb_mode,
+	},
+	[LINE_MODE_PINCFG] = {
+		.tag = "[pincfg]",
+		.alias = "[user_pin_configs]",
+		.parser = parse_pincfg_mode,
+	},
+	[LINE_MODE_HINT] = {
+		.tag = "[hint]",
+		.alias = "[hints]",
+		.parser = parse_hint_mode
+	},
+	[LINE_MODE_VENDOR_ID] = {
+		.tag = "[vendor_id]",
+		.parser = parse_vendor_id_mode,
+	},
+	[LINE_MODE_SUBSYSTEM_ID] = {
+		.tag = "[subsystem_id]",
+		.parser = parse_subsystem_id_mode,
+	},
+	[LINE_MODE_REVISION_ID] = {
+		.tag = "[revision_id]",
+		.parser = parse_revision_id_mode,
+	},
+	[LINE_MODE_CHIP_NAME] = {
+		.tag = "[chip_name]",
+		.parser = parse_chip_name_mode,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 /* check the line starting with '[' -- change the parser mode accodingly */
@@ -736,6 +958,11 @@ static int parse_line_mode(char *buf, struct hda_bus *bus)
 			continue;
 		if (strmatch(buf, patch_items[i].tag))
 			return i;
+<<<<<<< HEAD
+=======
+		if (patch_items[i].alias && strmatch(buf, patch_items[i].alias))
+			return i;
+>>>>>>> refs/remotes/origin/master
 	}
 	return LINE_MODE_NONE;
 }
@@ -746,6 +973,7 @@ static int parse_line_mode(char *buf, struct hda_bus *bus)
  *
  * the spaces at the beginning and the end of the line are stripped
  */
+<<<<<<< HEAD
 static int get_line_from_fw(char *buf, int size, struct firmware *fw)
 {
 	int len;
@@ -756,10 +984,30 @@ static int get_line_from_fw(char *buf, int size, struct firmware *fw)
 	}
 	if (!fw->size)
 		return 0;
+<<<<<<< HEAD
 	if (size < fw->size)
 		size = fw->size;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (len = 0; len < fw->size; len++) {
+=======
+static int get_line_from_fw(char *buf, int size, size_t *fw_size_p,
+			    const void **fw_data_p)
+{
+	int len;
+	size_t fw_size = *fw_size_p;
+	const char *p = *fw_data_p;
+
+	while (isspace(*p) && fw_size) {
+		p++;
+		fw_size--;
+	}
+	if (!fw_size)
+		return 0;
+
+	for (len = 0; len < fw_size; len++) {
+>>>>>>> refs/remotes/origin/master
 		if (!*p)
 			break;
 		if (*p == '\n') {
@@ -771,8 +1019,13 @@ static int get_line_from_fw(char *buf, int size, struct firmware *fw)
 			*buf++ = *p++;
 	}
 	*buf = 0;
+<<<<<<< HEAD
 	fw->size -= len;
 	fw->data = p;
+=======
+	*fw_size_p = fw_size - len;
+	*fw_data_p = p;
+>>>>>>> refs/remotes/origin/master
 	remove_trail_spaces(buf);
 	return 1;
 }
@@ -780,6 +1033,7 @@ static int get_line_from_fw(char *buf, int size, struct firmware *fw)
 /*
  * load a "patch" firmware file and parse it
  */
+<<<<<<< HEAD
 int snd_hda_load_patch(struct hda_bus *bus, const char *patch)
 {
 	int err;
@@ -803,11 +1057,23 @@ int snd_hda_load_patch(struct hda_bus *bus, const char *patch)
 	line_mode = LINE_MODE_NONE;
 	codec = NULL;
 	while (get_line_from_fw(buf, sizeof(buf) - 1, &tmp)) {
+=======
+int snd_hda_load_patch(struct hda_bus *bus, size_t fw_size, const void *fw_buf)
+{
+	char buf[128];
+	struct hda_codec *codec;
+	int line_mode;
+
+	line_mode = LINE_MODE_NONE;
+	codec = NULL;
+	while (get_line_from_fw(buf, sizeof(buf) - 1, &fw_size, &fw_buf)) {
+>>>>>>> refs/remotes/origin/master
 		if (!*buf || *buf == '#' || *buf == '\n')
 			continue;
 		if (*buf == '[')
 			line_mode = parse_line_mode(buf, bus);
 		else if (patch_items[line_mode].parser &&
+<<<<<<< HEAD
 			 (codec || !patch_items[line_mode].need_codec))
 			patch_items[line_mode].parser(buf, bus, &codec);
 	}
@@ -815,4 +1081,12 @@ int snd_hda_load_patch(struct hda_bus *bus, const char *patch)
 	return 0;
 }
 EXPORT_SYMBOL_HDA(snd_hda_load_patch);
+=======
+			 (codec || line_mode <= LINE_MODE_CODEC))
+			patch_items[line_mode].parser(buf, bus, &codec);
+	}
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_hda_load_patch);
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_SND_HDA_PATCH_LOADER */

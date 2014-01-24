@@ -181,7 +181,11 @@ static const struct platform_suspend_ops avr32_pm_ops = {
 	.enter	= avr32_pm_enter,
 };
 
+<<<<<<< HEAD
 static unsigned long avr32_pm_offset(void *symbol)
+=======
+static unsigned long __init avr32_pm_offset(void *symbol)
+>>>>>>> refs/remotes/origin/master
 {
 	extern u8 pm_exception[];
 

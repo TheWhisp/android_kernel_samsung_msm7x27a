@@ -14,16 +14,20 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 
 #ifndef _COMEDIDEV_H
 #define _COMEDIDEV_H
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/kdev_t.h>
@@ -48,11 +52,22 @@
 		printk(KERN_DEBUG "comedi: " format , ## args);	\
 } while (0)
 
+=======
+#include <linux/dma-mapping.h>
+#include <linux/mutex.h>
+#include <linux/spinlock_types.h>
+#include <linux/rwsem.h>
+#include <linux/kref.h>
+
+#include "comedi.h"
+
+>>>>>>> refs/remotes/origin/master
 #define COMEDI_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + (c))
 #define COMEDI_VERSION_CODE COMEDI_VERSION(COMEDI_MAJORVERSION, \
 	COMEDI_MINORVERSION, COMEDI_MICROVERSION)
 #define COMEDI_RELEASE VERSION
 
+<<<<<<< HEAD
 #define PCI_VENDOR_ID_ADLINK		0x144a
 #define PCI_VENDOR_ID_ICP		0x104c
 #define PCI_VENDOR_ID_CONTEC		0x1221
@@ -61,11 +76,21 @@
 #define COMEDI_NUM_BOARD_MINORS 0x30
 #define COMEDI_FIRST_SUBDEVICE_MINOR COMEDI_NUM_BOARD_MINORS
 
+<<<<<<< HEAD
 #define COMEDI_DEVICE_CREATE(cs, parent, devt, drvdata, device, fmt...) \
 	device_create(cs, ((parent) ? (parent) : (device)), devt, drvdata, fmt)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct comedi_subdevice {
 	struct comedi_device *device;
+=======
+#define COMEDI_NUM_BOARD_MINORS 0x30
+
+struct comedi_subdevice {
+	struct comedi_device *device;
+	int index;
+>>>>>>> refs/remotes/origin/master
 	int type;
 	int n_chan;
 	int subdev_flags;
@@ -80,16 +105,23 @@ struct comedi_subdevice {
 	unsigned runflags;
 	spinlock_t spin_lock;
 
+<<<<<<< HEAD
 	int io_bits;
+=======
+	unsigned int io_bits;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int maxdata;	/* if maxdata==0, use list */
 	const unsigned int *maxdata_list;	/* list is channel specific */
 
+<<<<<<< HEAD
 	unsigned int flags;
 	const unsigned int *flaglist;
 
 	unsigned int settling_time_0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct comedi_lrange *range_table;
 	const struct comedi_lrange *const *range_table_list;
 
@@ -133,11 +165,23 @@ struct comedi_buf_page {
 	dma_addr_t dma_addr;
 };
 
+<<<<<<< HEAD
+=======
+struct comedi_buf_map {
+	struct device *dma_hw_dev;
+	struct comedi_buf_page *page_list;
+	unsigned int n_pages;
+	enum dma_data_direction dma_dir;
+	struct kref refcount;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct comedi_async {
 	struct comedi_subdevice *subdevice;
 
 	void *prealloc_buf;	/* pre-allocated buffer */
 	unsigned int prealloc_bufsz;	/* buffer size, in bytes */
+<<<<<<< HEAD
 	/* virtual and dma address of each page */
 	struct comedi_buf_page *buf_page_list;
 	unsigned n_buf_pages;	/* num elements in buf_page_list */
@@ -145,6 +189,11 @@ struct comedi_async {
 	unsigned int max_bufsize;	/* maximum buffer size, bytes */
 	/* current number of mmaps of prealloc_buf */
 	unsigned int mmap_count;
+=======
+	struct comedi_buf_map *buf_map;	/* map of buffer pages */
+
+	unsigned int max_bufsize;	/* maximum buffer size, bytes */
+>>>>>>> refs/remotes/origin/master
 
 	/* byte count for writer (write completed) */
 	unsigned int buf_write_count;
@@ -174,10 +223,14 @@ struct comedi_async {
 
 	wait_queue_head_t wait_head;
 
+<<<<<<< HEAD
 	/* callback stuff */
 	unsigned int cb_mask;
 	int (*cb_func) (unsigned int flags, void *);
 	void *cb_arg;
+=======
+	unsigned int cb_mask;
+>>>>>>> refs/remotes/origin/master
 
 	int (*inttrig) (struct comedi_device *dev, struct comedi_subdevice *s,
 			unsigned int x);
@@ -189,7 +242,12 @@ struct comedi_driver {
 	const char *driver_name;
 	struct module *module;
 	int (*attach) (struct comedi_device *, struct comedi_devconfig *);
+<<<<<<< HEAD
 	int (*detach) (struct comedi_device *);
+=======
+	void (*detach) (struct comedi_device *);
+	int (*auto_attach) (struct comedi_device *, unsigned long);
+>>>>>>> refs/remotes/origin/master
 
 	/* number of elements in board_name and board_id arrays */
 	unsigned int num_names;
@@ -205,6 +263,10 @@ struct comedi_device {
 
 	struct device *class_dev;
 	int minor;
+<<<<<<< HEAD
+=======
+	unsigned int detach_count;
+>>>>>>> refs/remotes/origin/master
 	/* hw_dev is passed to dma_alloc_coherent when allocating async buffers
 	 * for subdevices that have async_dma_dir set to something other than
 	 * DMA_NONE */
@@ -212,16 +274,30 @@ struct comedi_device {
 
 	const char *board_name;
 	const void *board_ptr;
+<<<<<<< HEAD
 	int attached;
 	spinlock_t spinlock;
 	struct mutex mutex;
 	int in_request_module;
+=======
+	bool attached:1;
+	bool in_request_module:1;
+	bool ioenabled:1;
+	spinlock_t spinlock;
+	struct mutex mutex;
+	struct rw_semaphore attach_lock;
+	struct kref refcount;
+>>>>>>> refs/remotes/origin/master
 
 	int n_subdevices;
 	struct comedi_subdevice *subdevices;
 
 	/* dumb */
 	unsigned long iobase;
+<<<<<<< HEAD
+=======
+	unsigned long iolen;
+>>>>>>> refs/remotes/origin/master
 	unsigned int irq;
 
 	struct comedi_subdevice *read_subdev;
@@ -233,6 +309,7 @@ struct comedi_device {
 	void (*close) (struct comedi_device *dev);
 };
 
+<<<<<<< HEAD
 struct comedi_device_file_info {
 	struct comedi_device *device;
 	struct comedi_subdevice *read_subdevice;
@@ -245,6 +322,12 @@ extern int comedi_debug;
 #else
 static const int comedi_debug;
 #endif
+=======
+static inline const void *comedi_board(const struct comedi_device *dev)
+{
+	return dev->board_ptr;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * function prototypes
@@ -263,6 +346,7 @@ enum comedi_minor_bits {
 static const unsigned COMEDI_SUBDEVICE_MINOR_SHIFT = 4;
 static const unsigned COMEDI_SUBDEVICE_MINOR_OFFSET = 1;
 
+<<<<<<< HEAD
 struct comedi_device_file_info *comedi_get_device_file_info(unsigned minor);
 
 static inline struct comedi_subdevice *comedi_get_read_subdevice(
@@ -290,12 +374,17 @@ int comedi_device_attach(struct comedi_device *dev,
 			 struct comedi_devconfig *it);
 int comedi_driver_register(struct comedi_driver *);
 int comedi_driver_unregister(struct comedi_driver *);
+=======
+struct comedi_device *comedi_dev_get_from_minor(unsigned minor);
+int comedi_dev_put(struct comedi_device *dev);
+>>>>>>> refs/remotes/origin/master
 
 void init_polling(void);
 void cleanup_polling(void);
 void start_polling(struct comedi_device *);
 void stop_polling(struct comedi_device *);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PROC_FS
 void comedi_proc_init(void);
 void comedi_proc_cleanup(void);
@@ -312,10 +401,15 @@ static inline void comedi_proc_cleanup(void)
 /* subdevice runflags */
 enum subdevice_runflags {
 	SRF_USER = 0x00000001,
+=======
+/* subdevice runflags */
+enum subdevice_runflags {
+>>>>>>> refs/remotes/origin/master
 	SRF_RT = 0x00000002,
 	/* indicates an COMEDI_CB_ERROR event has occurred since the last
 	 * command was started */
 	SRF_ERROR = 0x00000004,
+<<<<<<< HEAD
 	SRF_RUNNING = 0x08000000
 };
 
@@ -323,6 +417,19 @@ int comedi_check_chanlist(struct comedi_subdevice *s,
 			  int n,
 			  unsigned int *chanlist);
 unsigned comedi_get_subdevice_runflags(struct comedi_subdevice *s);
+=======
+	SRF_RUNNING = 0x08000000,
+	SRF_FREE_SPRIV = 0x80000000,	/* free s->private on detach */
+};
+
+bool comedi_is_subdevice_running(struct comedi_subdevice *s);
+
+void *comedi_alloc_spriv(struct comedi_subdevice *s, size_t size);
+
+int comedi_check_chanlist(struct comedi_subdevice *s,
+			  int n,
+			  unsigned int *chanlist);
+>>>>>>> refs/remotes/origin/master
 
 /* range stuff */
 
@@ -338,6 +445,13 @@ extern const struct comedi_lrange range_bipolar5;
 extern const struct comedi_lrange range_bipolar2_5;
 extern const struct comedi_lrange range_unipolar10;
 extern const struct comedi_lrange range_unipolar5;
+<<<<<<< HEAD
+=======
+extern const struct comedi_lrange range_unipolar2_5;
+extern const struct comedi_lrange range_0_20mA;
+extern const struct comedi_lrange range_4_20mA;
+extern const struct comedi_lrange range_0_32mA;
+>>>>>>> refs/remotes/origin/master
 extern const struct comedi_lrange range_unknown;
 
 #define range_digital		range_unipolar5
@@ -353,6 +467,7 @@ struct comedi_lrange {
 	struct comedi_krange range[GCC_ZERO_LENGTH_ARRAY];
 };
 
+<<<<<<< HEAD
 /* some silly little inline functions */
 
 static inline int alloc_subdevices(struct comedi_device *dev,
@@ -381,6 +496,39 @@ static inline int alloc_private(struct comedi_device *dev, int size)
 	if (!dev->private)
 		return -ENOMEM;
 	return 0;
+=======
+static inline bool comedi_range_is_bipolar(struct comedi_subdevice *s,
+					   unsigned int range)
+{
+	return s->range_table->range[range].min < 0;
+}
+
+static inline bool comedi_range_is_unipolar(struct comedi_subdevice *s,
+					    unsigned int range)
+{
+	return s->range_table->range[range].min >= 0;
+}
+
+static inline bool comedi_chan_range_is_bipolar(struct comedi_subdevice *s,
+						unsigned int chan,
+						unsigned int range)
+{
+	return s->range_table_list[chan]->range[range].min < 0;
+}
+
+static inline bool comedi_chan_range_is_unipolar(struct comedi_subdevice *s,
+						 unsigned int chan,
+						 unsigned int range)
+{
+	return s->range_table_list[chan]->range[range].min >= 0;
+}
+
+/* munge between offset binary and two's complement values */
+static inline unsigned int comedi_offset_munge(struct comedi_subdevice *s,
+					       unsigned int val)
+{
+	return val ^ s->maxdata ^ (s->maxdata >> 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline unsigned int bytes_per_sample(const struct comedi_subdevice *subd)
@@ -391,6 +539,7 @@ static inline unsigned int bytes_per_sample(const struct comedi_subdevice *subd)
 		return sizeof(short);
 }
 
+<<<<<<< HEAD
 /* must be used in attach to set dev->hw_dev if you wish to dma directly
 into comedi's buffer */
 static inline void comedi_set_hw_dev(struct comedi_device *dev,
@@ -418,10 +567,31 @@ unsigned comedi_buf_write_free(struct comedi_async *async, unsigned int nbytes);
 unsigned comedi_buf_read_alloc(struct comedi_async *async, unsigned nbytes);
 unsigned comedi_buf_read_free(struct comedi_async *async, unsigned int nbytes);
 unsigned int comedi_buf_read_n_available(struct comedi_async *async);
+=======
+/*
+ * Must set dev->hw_dev if you wish to dma directly into comedi's buffer.
+ * Also useful for retrieving a previously configured hardware device of
+ * known bus type.  Set automatically for auto-configured devices.
+ * Automatically set to NULL when detaching hardware device.
+ */
+int comedi_set_hw_dev(struct comedi_device *dev, struct device *hw_dev);
+
+unsigned int comedi_buf_write_alloc(struct comedi_async *, unsigned int);
+unsigned int comedi_buf_write_free(struct comedi_async *, unsigned int);
+
+unsigned int comedi_buf_read_n_available(struct comedi_async *);
+unsigned int comedi_buf_read_alloc(struct comedi_async *, unsigned int);
+unsigned int comedi_buf_read_free(struct comedi_async *, unsigned int);
+
+int comedi_buf_put(struct comedi_async *, unsigned short);
+int comedi_buf_get(struct comedi_async *, unsigned short *);
+
+>>>>>>> refs/remotes/origin/master
 void comedi_buf_memcpy_to(struct comedi_async *async, unsigned int offset,
 			  const void *source, unsigned int num_bytes);
 void comedi_buf_memcpy_from(struct comedi_async *async, unsigned int offset,
 			    void *destination, unsigned int num_bytes);
+<<<<<<< HEAD
 static inline unsigned comedi_buf_write_n_allocated(struct comedi_async *async)
 {
 	return async->buf_write_alloc_count - async->buf_write_count;
@@ -478,5 +648,188 @@ void comedi_usb_auto_unconfig(struct usb_device *usbdev);
 #ifdef CONFIG_COMEDI_PCMCIA_DRIVERS_MODULE
 #define CONFIG_COMEDI_PCMCIA
 #endif
+=======
+
+/* drivers.c - general comedi driver functions */
+
+int comedi_dio_insn_config(struct comedi_device *, struct comedi_subdevice *,
+			   struct comedi_insn *, unsigned int *data,
+			   unsigned int mask);
+unsigned int comedi_dio_update_state(struct comedi_subdevice *,
+				     unsigned int *data);
+
+void *comedi_alloc_devpriv(struct comedi_device *, size_t);
+int comedi_alloc_subdevices(struct comedi_device *, int);
+
+int comedi_load_firmware(struct comedi_device *, struct device *,
+			 const char *name,
+			 int (*cb)(struct comedi_device *,
+				   const u8 *data, size_t size,
+				   unsigned long context),
+			 unsigned long context);
+
+int __comedi_request_region(struct comedi_device *,
+			    unsigned long start, unsigned long len);
+int comedi_request_region(struct comedi_device *,
+			  unsigned long start, unsigned long len);
+void comedi_legacy_detach(struct comedi_device *);
+
+int comedi_auto_config(struct device *, struct comedi_driver *,
+		       unsigned long context);
+void comedi_auto_unconfig(struct device *);
+
+int comedi_driver_register(struct comedi_driver *);
+void comedi_driver_unregister(struct comedi_driver *);
+
+/**
+ * module_comedi_driver() - Helper macro for registering a comedi driver
+ * @__comedi_driver: comedi_driver struct
+ *
+ * Helper macro for comedi drivers which do not do anything special in module
+ * init/exit. This eliminates a lot of boilerplate. Each module may only use
+ * this macro once, and calling it replaces module_init() and module_exit().
+ */
+#define module_comedi_driver(__comedi_driver) \
+	module_driver(__comedi_driver, comedi_driver_register, \
+			comedi_driver_unregister)
+
+#ifdef CONFIG_COMEDI_PCI_DRIVERS
+
+/* comedi_pci.c - comedi PCI driver specific functions */
+
+/*
+ * PCI Vendor IDs not in <linux/pci_ids.h>
+ */
+#define PCI_VENDOR_ID_KOLTER		0x1001
+#define PCI_VENDOR_ID_ICP		0x104c
+#define PCI_VENDOR_ID_DT		0x1116
+#define PCI_VENDOR_ID_IOTECH		0x1616
+#define PCI_VENDOR_ID_CONTEC		0x1221
+#define PCI_VENDOR_ID_RTD		0x1435
+#define PCI_VENDOR_ID_HUMUSOFT		0x186c
+
+struct pci_dev;
+struct pci_driver;
+
+struct pci_dev *comedi_to_pci_dev(struct comedi_device *);
+
+int comedi_pci_enable(struct comedi_device *);
+void comedi_pci_disable(struct comedi_device *);
+
+int comedi_pci_auto_config(struct pci_dev *, struct comedi_driver *,
+			   unsigned long context);
+void comedi_pci_auto_unconfig(struct pci_dev *);
+
+int comedi_pci_driver_register(struct comedi_driver *, struct pci_driver *);
+void comedi_pci_driver_unregister(struct comedi_driver *, struct pci_driver *);
+
+/**
+ * module_comedi_pci_driver() - Helper macro for registering a comedi PCI driver
+ * @__comedi_driver: comedi_driver struct
+ * @__pci_driver: pci_driver struct
+ *
+ * Helper macro for comedi PCI drivers which do not do anything special
+ * in module init/exit. This eliminates a lot of boilerplate. Each
+ * module may only use this macro once, and calling it replaces
+ * module_init() and module_exit()
+ */
+#define module_comedi_pci_driver(__comedi_driver, __pci_driver) \
+	module_driver(__comedi_driver, comedi_pci_driver_register, \
+			comedi_pci_driver_unregister, &(__pci_driver))
+
+#else
+
+/*
+ * Some of the comedi mixed ISA/PCI drivers call the PCI specific
+ * functions. Provide some dummy functions if CONFIG_COMEDI_PCI_DRIVERS
+ * is not enabled.
+ */
+
+static inline struct pci_dev *comedi_to_pci_dev(struct comedi_device *dev)
+{
+	return NULL;
+}
+
+static inline int comedi_pci_enable(struct comedi_device *dev)
+{
+	return -ENOSYS;
+}
+
+static inline void comedi_pci_disable(struct comedi_device *dev)
+{
+}
+
+#endif /* CONFIG_COMEDI_PCI_DRIVERS */
+
+#ifdef CONFIG_COMEDI_PCMCIA_DRIVERS
+
+/* comedi_pcmcia.c - comedi PCMCIA driver specific functions */
+
+struct pcmcia_driver;
+struct pcmcia_device;
+
+struct pcmcia_device *comedi_to_pcmcia_dev(struct comedi_device *);
+
+int comedi_pcmcia_enable(struct comedi_device *,
+			 int (*conf_check)(struct pcmcia_device *, void *));
+void comedi_pcmcia_disable(struct comedi_device *);
+
+int comedi_pcmcia_auto_config(struct pcmcia_device *, struct comedi_driver *);
+void comedi_pcmcia_auto_unconfig(struct pcmcia_device *);
+
+int comedi_pcmcia_driver_register(struct comedi_driver *,
+					struct pcmcia_driver *);
+void comedi_pcmcia_driver_unregister(struct comedi_driver *,
+					struct pcmcia_driver *);
+
+/**
+ * module_comedi_pcmcia_driver() - Helper macro for registering a comedi PCMCIA driver
+ * @__comedi_driver: comedi_driver struct
+ * @__pcmcia_driver: pcmcia_driver struct
+ *
+ * Helper macro for comedi PCMCIA drivers which do not do anything special
+ * in module init/exit. This eliminates a lot of boilerplate. Each
+ * module may only use this macro once, and calling it replaces
+ * module_init() and module_exit()
+ */
+#define module_comedi_pcmcia_driver(__comedi_driver, __pcmcia_driver) \
+	module_driver(__comedi_driver, comedi_pcmcia_driver_register, \
+			comedi_pcmcia_driver_unregister, &(__pcmcia_driver))
+
+#endif /* CONFIG_COMEDI_PCMCIA_DRIVERS */
+
+#ifdef CONFIG_COMEDI_USB_DRIVERS
+
+/* comedi_usb.c - comedi USB driver specific functions */
+
+struct usb_driver;
+struct usb_interface;
+
+struct usb_interface *comedi_to_usb_interface(struct comedi_device *);
+struct usb_device *comedi_to_usb_dev(struct comedi_device *);
+
+int comedi_usb_auto_config(struct usb_interface *, struct comedi_driver *,
+			   unsigned long context);
+void comedi_usb_auto_unconfig(struct usb_interface *);
+
+int comedi_usb_driver_register(struct comedi_driver *, struct usb_driver *);
+void comedi_usb_driver_unregister(struct comedi_driver *, struct usb_driver *);
+
+/**
+ * module_comedi_usb_driver() - Helper macro for registering a comedi USB driver
+ * @__comedi_driver: comedi_driver struct
+ * @__usb_driver: usb_driver struct
+ *
+ * Helper macro for comedi USB drivers which do not do anything special
+ * in module init/exit. This eliminates a lot of boilerplate. Each
+ * module may only use this macro once, and calling it replaces
+ * module_init() and module_exit()
+ */
+#define module_comedi_usb_driver(__comedi_driver, __usb_driver) \
+	module_driver(__comedi_driver, comedi_usb_driver_register, \
+			comedi_usb_driver_unregister, &(__usb_driver))
+
+#endif /* CONFIG_COMEDI_USB_DRIVERS */
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _COMEDIDEV_H */

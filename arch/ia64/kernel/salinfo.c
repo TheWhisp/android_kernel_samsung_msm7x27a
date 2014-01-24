@@ -40,6 +40,10 @@
 #include <linux/cpu.h>
 #include <linux/types.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/smp.h>
 #include <linux/timer.h>
@@ -53,7 +57,11 @@ MODULE_AUTHOR("Jesse Barnes <jbarnes@sgi.com>");
 MODULE_DESCRIPTION("/proc interface to IA-64 SAL features");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static int salinfo_read(char *page, char **start, off_t off, int count, int *eof, void *data);
+=======
+static const struct file_operations proc_salinfo_fops;
+>>>>>>> refs/remotes/origin/master
 
 typedef struct {
 	const char		*name;		/* name of the proc entry */
@@ -65,7 +73,11 @@ typedef struct {
  * List {name,feature} pairs for every entry in /proc/sal/<feature>
  * that this module exports
  */
+<<<<<<< HEAD
 static salinfo_entry_t salinfo_entries[]={
+=======
+static const salinfo_entry_t salinfo_entries[]={
+>>>>>>> refs/remotes/origin/master
 	{ "bus_lock",           IA64_SAL_PLATFORM_FEATURE_BUS_LOCK, },
 	{ "irq_redirection",	IA64_SAL_PLATFORM_FEATURE_IRQ_REDIR_HINT, },
 	{ "ipi_redirection",	IA64_SAL_PLATFORM_FEATURE_IPI_REDIR_HINT, },
@@ -301,9 +313,13 @@ salinfo_event_open(struct inode *inode, struct file *file)
 static ssize_t
 salinfo_event_read(struct file *file, char __user *buffer, size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
 	struct proc_dir_entry *entry = PDE(inode);
 	struct salinfo_data *data = entry->data;
+=======
+	struct salinfo_data *data = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	char cmd[32];
 	size_t size;
 	int i, n, cpu = -1;
@@ -360,8 +376,12 @@ static const struct file_operations salinfo_event_fops = {
 static int
 salinfo_log_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	struct proc_dir_entry *entry = PDE(inode);
 	struct salinfo_data *data = entry->data;
+=======
+	struct salinfo_data *data = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
@@ -386,8 +406,12 @@ salinfo_log_open(struct inode *inode, struct file *file)
 static int
 salinfo_log_release(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	struct proc_dir_entry *entry = PDE(inode);
 	struct salinfo_data *data = entry->data;
+=======
+	struct salinfo_data *data = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 
 	if (data->state == STATE_NO_DATA) {
 		vfree(data->log_buffer);
@@ -463,9 +487,13 @@ retry:
 static ssize_t
 salinfo_log_read(struct file *file, char __user *buffer, size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
 	struct proc_dir_entry *entry = PDE(inode);
 	struct salinfo_data *data = entry->data;
+=======
+	struct salinfo_data *data = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	u8 *buf;
 	u64 bufsize;
 
@@ -524,9 +552,13 @@ salinfo_log_clear(struct salinfo_data *data, int cpu)
 static ssize_t
 salinfo_log_write(struct file *file, const char __user *buffer, size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
 	struct proc_dir_entry *entry = PDE(inode);
 	struct salinfo_data *data = entry->data;
+=======
+	struct salinfo_data *data = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	char cmd[32];
 	size_t size;
 	u32 offset;
@@ -575,7 +607,11 @@ static const struct file_operations salinfo_data_fops = {
 	.llseek  = default_llseek,
 };
 
+<<<<<<< HEAD
 static int __cpuinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 salinfo_cpu_callback(struct notifier_block *nb, unsigned long action, void *hcpu)
 {
 	unsigned int i, cpu = (unsigned long)hcpu;
@@ -616,7 +652,11 @@ salinfo_cpu_callback(struct notifier_block *nb, unsigned long action, void *hcpu
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block salinfo_cpu_notifier __cpuinitdata =
+=======
+static struct notifier_block salinfo_cpu_notifier =
+>>>>>>> refs/remotes/origin/master
 {
 	.notifier_call = salinfo_cpu_callback,
 	.priority = 0,
@@ -637,8 +677,14 @@ salinfo_init(void)
 
 	for (i=0; i < NR_SALINFO_ENTRIES; i++) {
 		/* pass the feature bit in question as misc data */
+<<<<<<< HEAD
 		*sdir++ = create_proc_read_entry (salinfo_entries[i].name, 0, salinfo_dir,
 						  salinfo_read, (void *)salinfo_entries[i].feature);
+=======
+		*sdir++ = proc_create_data(salinfo_entries[i].name, 0, salinfo_dir,
+					   &proc_salinfo_fops,
+					   (void *)salinfo_entries[i].feature);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < ARRAY_SIZE(salinfo_log_name); i++) {
@@ -684,6 +730,7 @@ salinfo_init(void)
  * 'data' contains an integer that corresponds to the feature we're
  * testing
  */
+<<<<<<< HEAD
 static int
 salinfo_read(char *page, char **start, off_t off, int count, int *eof, void *data)
 {
@@ -702,4 +749,25 @@ salinfo_read(char *page, char **start, off_t off, int count, int *eof, void *dat
 	return len;
 }
 
+=======
+static int proc_salinfo_show(struct seq_file *m, void *v)
+{
+	unsigned long data = (unsigned long)v;
+	seq_puts(m, (sal_platform_features & data) ? "1\n" : "0\n");
+	return 0;
+}
+
+static int proc_salinfo_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, proc_salinfo_show, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_salinfo_fops = {
+	.open		= proc_salinfo_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+>>>>>>> refs/remotes/origin/master
 module_init(salinfo_init);

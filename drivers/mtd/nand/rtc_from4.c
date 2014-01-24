@@ -351,7 +351,11 @@ static int rtc_from4_correct_data(struct mtd_info *mtd, const u_char *buf, u_cha
 		return 0;
 	}
 
+<<<<<<< HEAD
 	/* Read the syndrom pattern from the FPGA and correct the bitorder */
+=======
+	/* Read the syndrome pattern from the FPGA and correct the bitorder */
+>>>>>>> refs/remotes/origin/cm-10.0
 	rs_ecc = (volatile unsigned short *)(rtc_from4_fio_base + RTC_FROM4_RS_ECC);
 	for (i = 0; i < 8; i++) {
 		ecc[i] = bitrev8(*rs_ecc);
@@ -380,7 +384,11 @@ static int rtc_from4_correct_data(struct mtd_info *mtd, const u_char *buf, u_cha
 	/* Let the library code do its magic. */
 	res = decode_rs8(rs_decoder, (uint8_t *) buf, par, 512, syn, 0, NULL, 0xff, NULL);
 	if (res > 0) {
+<<<<<<< HEAD
 		DEBUG(MTD_DEBUG_LEVEL0, "rtc_from4_correct_data: " "ECC corrected %d errors on read\n", res);
+=======
+		pr_debug("rtc_from4_correct_data: " "ECC corrected %d errors on read\n", res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return res;
 }
@@ -444,7 +452,10 @@ static int rtc_from4_errstat(struct mtd_info *mtd, struct nand_chip *this,
 		len = mtd->writesize;
 		buf = kmalloc(len, GFP_KERNEL);
 		if (!buf) {
+<<<<<<< HEAD
 			printk(KERN_ERR "rtc_from4_errstat: Out of memory!\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			er_stat = 1;
 			goto out;
 		}
@@ -528,6 +539,10 @@ static int __init rtc_from4_init(void)
 	this->ecc.mode = NAND_ECC_HW_SYNDROME;
 	this->ecc.size = 512;
 	this->ecc.bytes = 8;
+<<<<<<< HEAD
+=======
+	this->ecc.strength = 3;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* return the status of extra status and ECC checks */
 	this->errstat = rtc_from4_errstat;
 	/* set the nand_oobinfo to support FPGA H/W error detection */

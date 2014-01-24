@@ -34,7 +34,15 @@
 #include <linux/fs.h>
 #include <linux/file.h>
 #include <linux/ppp_defs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/if_ppp.h>
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/if_pppox.h>
 #include <linux/mtio.h>
 #include <linux/auto_fs.h>
@@ -49,7 +57,13 @@
 #include <linux/elevator.h>
 #include <linux/rtc.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/serial.h>
 #include <linux/if_tun.h>
 #include <linux/ctype.h>
@@ -67,7 +81,17 @@
 #include <linux/gigaset_dev.h>
 
 #ifdef CONFIG_BLOCK
+<<<<<<< HEAD
 #include <linux/loop.h>
+<<<<<<< HEAD
+=======
+#include <linux/cdrom.h>
+#include <linux/fd.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cdrom.h>
+#include <linux/fd.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi.h>
 #include <scsi/scsi_ioctl.h>
 #include <scsi/sg.h>
@@ -103,6 +127,14 @@
 
 #include <linux/hiddev.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define __DVB_CORE__
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __DVB_CORE__
+>>>>>>> refs/remotes/origin/master
 #include <linux/dvb/audio.h>
 #include <linux/dvb/dmx.h>
 #include <linux/dvb/frontend.h>
@@ -606,7 +638,10 @@ struct serial_struct32 {
 static int serial_struct_ioctl(unsigned fd, unsigned cmd,
 			struct serial_struct32 __user *ss32)
 {
+<<<<<<< HEAD
         typedef struct serial_struct SS;
+=======
+>>>>>>> refs/remotes/origin/master
         typedef struct serial_struct32 SS32;
         int err;
         struct serial_struct ss;
@@ -680,7 +715,12 @@ static int do_i2c_rdwr_ioctl(unsigned int fd, unsigned int cmd,
 	struct i2c_msg			__user *tmsgs;
 	struct i2c_msg32		__user *umsgs;
 	compat_caddr_t			datap;
+<<<<<<< HEAD
 	int				nmsgs, i;
+=======
+	u32				nmsgs;
+	int				i;
+>>>>>>> refs/remotes/origin/master
 
 	if (get_user(nmsgs, &udata->nmsgs))
 		return -EFAULT;
@@ -842,6 +882,12 @@ COMPATIBLE_IOCTL(TIOCGDEV)
 COMPATIBLE_IOCTL(TIOCCBRK)
 COMPATIBLE_IOCTL(TIOCGSID)
 COMPATIBLE_IOCTL(TIOCGICOUNT)
+<<<<<<< HEAD
+=======
+COMPATIBLE_IOCTL(TIOCGPKT)
+COMPATIBLE_IOCTL(TIOCGPTLCK)
+COMPATIBLE_IOCTL(TIOCGEXCL)
+>>>>>>> refs/remotes/origin/master
 /* Little t */
 COMPATIBLE_IOCTL(TIOCGETD)
 COMPATIBLE_IOCTL(TIOCSETD)
@@ -866,6 +912,15 @@ COMPATIBLE_IOCTL(TIOCGPTN)
 COMPATIBLE_IOCTL(TIOCSPTLCK)
 COMPATIBLE_IOCTL(TIOCSERGETLSR)
 COMPATIBLE_IOCTL(TIOCSIG)
+<<<<<<< HEAD
+=======
+#ifdef TIOCSRS485
+COMPATIBLE_IOCTL(TIOCSRS485)
+#endif
+#ifdef TIOCGRS485
+COMPATIBLE_IOCTL(TIOCGRS485)
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef TCGETS2
 COMPATIBLE_IOCTL(TCGETS2)
 COMPATIBLE_IOCTL(TCSETS2)
@@ -897,6 +952,11 @@ COMPATIBLE_IOCTL(KDGKBSENT)
 COMPATIBLE_IOCTL(KDSKBSENT)
 COMPATIBLE_IOCTL(KDGKBDIACR)
 COMPATIBLE_IOCTL(KDSKBDIACR)
+<<<<<<< HEAD
+=======
+COMPATIBLE_IOCTL(KDGKBDIACRUC)
+COMPATIBLE_IOCTL(KDSKBDIACRUC)
+>>>>>>> refs/remotes/origin/master
 COMPATIBLE_IOCTL(KDKBDREP)
 COMPATIBLE_IOCTL(KDGKBLED)
 COMPATIBLE_IOCTL(KDGETLED)
@@ -942,10 +1002,24 @@ COMPATIBLE_IOCTL(MTIOCTOP)
 /* Socket level stuff */
 COMPATIBLE_IOCTL(FIOQSIZE)
 #ifdef CONFIG_BLOCK
+<<<<<<< HEAD
 /* loop */
 IGNORE_IOCTL(LOOP_CLR_FD)
 /* md calls this on random blockdevs */
 IGNORE_IOCTL(RAID_VERSION)
+<<<<<<< HEAD
+=======
+/* qemu/qemu-img might call these two on plain files for probing */
+IGNORE_IOCTL(CDROM_DRIVE_STATUS)
+IGNORE_IOCTL(FDGETPRM32)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* md calls this on random blockdevs */
+IGNORE_IOCTL(RAID_VERSION)
+/* qemu/qemu-img might call these two on plain files for probing */
+IGNORE_IOCTL(CDROM_DRIVE_STATUS)
+IGNORE_IOCTL(FDGETPRM32)
+>>>>>>> refs/remotes/origin/master
 /* SG stuff */
 COMPATIBLE_IOCTL(SG_SET_TIMEOUT)
 COMPATIBLE_IOCTL(SG_GET_TIMEOUT)
@@ -1000,6 +1074,14 @@ COMPATIBLE_IOCTL(PPPIOCCONNECT)
 COMPATIBLE_IOCTL(PPPIOCDISCONN)
 COMPATIBLE_IOCTL(PPPIOCATTCHAN)
 COMPATIBLE_IOCTL(PPPIOCGCHAN)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+COMPATIBLE_IOCTL(PPPIOCGL2TPSTATS)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+COMPATIBLE_IOCTL(PPPIOCGL2TPSTATS)
+>>>>>>> refs/remotes/origin/master
 /* PPPOX */
 COMPATIBLE_IOCTL(PPPOEIOCSFWD)
 COMPATIBLE_IOCTL(PPPOEIOCDFWD)
@@ -1210,7 +1292,14 @@ COMPATIBLE_IOCTL(HCIGETDEVINFO)
 COMPATIBLE_IOCTL(HCIGETCONNLIST)
 COMPATIBLE_IOCTL(HCIGETCONNINFO)
 COMPATIBLE_IOCTL(HCIGETAUTHINFO)
+<<<<<<< HEAD
+<<<<<<< HEAD
 COMPATIBLE_IOCTL(HCISETAUTHINFO)
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+COMPATIBLE_IOCTL(HCISETAUTHINFO)
+>>>>>>> refs/remotes/origin/cm-11.0
 COMPATIBLE_IOCTL(HCISETRAW)
 COMPATIBLE_IOCTL(HCISETSCAN)
 COMPATIBLE_IOCTL(HCISETAUTH)
@@ -1503,6 +1592,8 @@ static long do_ioctl_trans(int fd, unsigned int cmd,
 	return -ENOIOCTLCMD;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void compat_ioctl_error(struct file *filp, unsigned int fd,
 		unsigned int cmd, unsigned long arg)
 {
@@ -1532,6 +1623,10 @@ static void compat_ioctl_error(struct file *filp, unsigned int fd,
 		free_page((unsigned long)path);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int compat_ioctl_check_table(unsigned int xcmd)
 {
 	int i;
@@ -1557,6 +1652,7 @@ static int compat_ioctl_check_table(unsigned int xcmd)
 asmlinkage long compat_sys_ioctl(unsigned int fd, unsigned int cmd,
 				unsigned long arg)
 {
+<<<<<<< HEAD
 	struct file *filp;
 	int error = -EBADF;
 	int fput_needed;
@@ -1567,6 +1663,15 @@ asmlinkage long compat_sys_ioctl(unsigned int fd, unsigned int cmd,
 
 	/* RED-PEN how should LSM module know it's handling 32bit? */
 	error = security_file_ioctl(filp, cmd, arg);
+=======
+	struct fd f = fdget(fd);
+	int error = -EBADF;
+	if (!f.file)
+		goto out;
+
+	/* RED-PEN how should LSM module know it's handling 32bit? */
+	error = security_file_ioctl(f.file, cmd, arg);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		goto out_fput;
 
@@ -1586,30 +1691,51 @@ asmlinkage long compat_sys_ioctl(unsigned int fd, unsigned int cmd,
 #if defined(CONFIG_IA64) || defined(CONFIG_X86_64)
 	case FS_IOC_RESVSP_32:
 	case FS_IOC_RESVSP64_32:
+<<<<<<< HEAD
 		error = compat_ioctl_preallocate(filp, compat_ptr(arg));
+=======
+		error = compat_ioctl_preallocate(f.file, compat_ptr(arg));
+>>>>>>> refs/remotes/origin/master
 		goto out_fput;
 #else
 	case FS_IOC_RESVSP:
 	case FS_IOC_RESVSP64:
+<<<<<<< HEAD
 		error = ioctl_preallocate(filp, compat_ptr(arg));
+=======
+		error = ioctl_preallocate(f.file, compat_ptr(arg));
+>>>>>>> refs/remotes/origin/master
 		goto out_fput;
 #endif
 
 	case FIBMAP:
 	case FIGETBSZ:
 	case FIONREAD:
+<<<<<<< HEAD
 		if (S_ISREG(filp->f_path.dentry->d_inode->i_mode))
+=======
+		if (S_ISREG(file_inode(f.file)->i_mode))
+>>>>>>> refs/remotes/origin/master
 			break;
 		/*FALL THROUGH*/
 
 	default:
+<<<<<<< HEAD
 		if (filp->f_op && filp->f_op->compat_ioctl) {
 			error = filp->f_op->compat_ioctl(filp, cmd, arg);
+=======
+		if (f.file->f_op->compat_ioctl) {
+			error = f.file->f_op->compat_ioctl(f.file, cmd, arg);
+>>>>>>> refs/remotes/origin/master
 			if (error != -ENOIOCTLCMD)
 				goto out_fput;
 		}
 
+<<<<<<< HEAD
 		if (!filp->f_op || !filp->f_op->unlocked_ioctl)
+=======
+		if (!f.file->f_op->unlocked_ioctl)
+>>>>>>> refs/remotes/origin/master
 			goto do_ioctl;
 		break;
 	}
@@ -1617,7 +1743,9 @@ asmlinkage long compat_sys_ioctl(unsigned int fd, unsigned int cmd,
 	if (compat_ioctl_check_table(XFORM(cmd)))
 		goto found_handler;
 
+<<<<<<< HEAD
 	error = do_ioctl_trans(fd, cmd, arg, filp);
+<<<<<<< HEAD
 	if (error == -ENOIOCTLCMD) {
 		static int count;
 
@@ -1625,15 +1753,30 @@ asmlinkage long compat_sys_ioctl(unsigned int fd, unsigned int cmd,
 			compat_ioctl_error(filp, fd, cmd, arg);
 		error = -EINVAL;
 	}
+=======
+	if (error == -ENOIOCTLCMD)
+		error = -ENOTTY;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = do_ioctl_trans(fd, cmd, arg, f.file);
+	if (error == -ENOIOCTLCMD)
+		error = -ENOTTY;
+>>>>>>> refs/remotes/origin/master
 
 	goto out_fput;
 
  found_handler:
 	arg = (unsigned long)compat_ptr(arg);
  do_ioctl:
+<<<<<<< HEAD
 	error = do_vfs_ioctl(filp, fd, cmd, arg);
  out_fput:
 	fput_light(filp, fput_needed);
+=======
+	error = do_vfs_ioctl(f.file, fd, cmd, arg);
+ out_fput:
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
  out:
 	return error;
 }

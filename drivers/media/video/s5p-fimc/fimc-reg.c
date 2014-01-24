@@ -30,17 +30,28 @@ void fimc_hw_reset(struct fimc_dev *dev)
 	cfg = readl(dev->regs + S5P_CIGCTRL);
 	cfg |= (S5P_CIGCTRL_SWRST | S5P_CIGCTRL_IRQ_LEVEL);
 	writel(cfg, dev->regs + S5P_CIGCTRL);
+<<<<<<< HEAD
 	udelay(1000);
+=======
+	udelay(10);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	cfg = readl(dev->regs + S5P_CIGCTRL);
 	cfg &= ~S5P_CIGCTRL_SWRST;
 	writel(cfg, dev->regs + S5P_CIGCTRL);
+<<<<<<< HEAD
+=======
+
+	if (dev->variant->out_buf_count > 4)
+		fimc_hw_set_dma_seq(dev, 0xF);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static u32 fimc_hw_get_in_flip(struct fimc_ctx *ctx)
 {
 	u32 flip = S5P_MSCTRL_FLIP_NORMAL;
 
+<<<<<<< HEAD
 	switch (ctx->flip) {
 	case FLIP_X_AXIS:
 		flip = S5P_MSCTRL_FLIP_X_MIRROR;
@@ -54,6 +65,13 @@ static u32 fimc_hw_get_in_flip(struct fimc_ctx *ctx)
 	default:
 		break;
 	}
+=======
+	if (ctx->hflip)
+		flip = S5P_MSCTRL_FLIP_X_MIRROR;
+	if (ctx->vflip)
+		flip = S5P_MSCTRL_FLIP_Y_MIRROR;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ctx->rotation <= 90)
 		return flip;
 
@@ -64,6 +82,7 @@ static u32 fimc_hw_get_target_flip(struct fimc_ctx *ctx)
 {
 	u32 flip = S5P_CITRGFMT_FLIP_NORMAL;
 
+<<<<<<< HEAD
 	switch (ctx->flip) {
 	case FLIP_X_AXIS:
 		flip = S5P_CITRGFMT_FLIP_X_MIRROR;
@@ -77,6 +96,13 @@ static u32 fimc_hw_get_target_flip(struct fimc_ctx *ctx)
 	default:
 		break;
 	}
+=======
+	if (ctx->hflip)
+		flip |= S5P_CITRGFMT_FLIP_X_MIRROR;
+	if (ctx->vflip)
+		flip |= S5P_CITRGFMT_FLIP_Y_MIRROR;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ctx->rotation <= 90)
 		return flip;
 
@@ -130,7 +156,11 @@ void fimc_hw_set_target_format(struct fimc_ctx *ctx)
 		  S5P_CITRGFMT_VSIZE_MASK);
 
 	switch (frame->fmt->color) {
+<<<<<<< HEAD
 	case S5P_FIMC_RGB565...S5P_FIMC_RGB888:
+=======
+	case S5P_FIMC_RGB444...S5P_FIMC_RGB888:
+>>>>>>> refs/remotes/origin/cm-10.0
 		cfg |= S5P_CITRGFMT_RGB;
 		break;
 	case S5P_FIMC_YCBCR420:
@@ -188,6 +218,10 @@ void fimc_hw_set_out_dma(struct fimc_ctx *ctx)
 	struct fimc_dev *dev = ctx->fimc_dev;
 	struct fimc_frame *frame = &ctx->d_frame;
 	struct fimc_dma_offset *offset = &frame->dma_offset;
+<<<<<<< HEAD
+=======
+	struct fimc_fmt *fmt = frame->fmt;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Set the input dma offsets. */
 	cfg = 0;
@@ -211,6 +245,7 @@ void fimc_hw_set_out_dma(struct fimc_ctx *ctx)
 	cfg = readl(dev->regs + S5P_CIOCTRL);
 
 	cfg &= ~(S5P_CIOCTRL_ORDER2P_MASK | S5P_CIOCTRL_ORDER422_MASK |
+<<<<<<< HEAD
 		 S5P_CIOCTRL_YCBCR_PLANE_MASK);
 
 	if (frame->fmt->colplanes == 1)
@@ -220,6 +255,24 @@ void fimc_hw_set_out_dma(struct fimc_ctx *ctx)
 	else if (frame->fmt->colplanes == 3)
 		cfg |= S5P_CIOCTRL_YCBCR_3PLANE;
 
+=======
+		 S5P_CIOCTRL_YCBCR_PLANE_MASK | S5P_CIOCTRL_RGB16FMT_MASK);
+
+	if (fmt->colplanes == 1)
+		cfg |= ctx->out_order_1p;
+	else if (fmt->colplanes == 2)
+		cfg |= ctx->out_order_2p | S5P_CIOCTRL_YCBCR_2PLANE;
+	else if (fmt->colplanes == 3)
+		cfg |= S5P_CIOCTRL_YCBCR_3PLANE;
+
+	if (fmt->color == S5P_FIMC_RGB565)
+		cfg |= S5P_CIOCTRL_RGB565;
+	else if (fmt->color == S5P_FIMC_RGB555)
+		cfg |= S5P_CIOCTRL_ARGB1555;
+	else if (fmt->color == S5P_FIMC_RGB444)
+		cfg |= S5P_CIOCTRL_ARGB4444;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	writel(cfg, dev->regs + S5P_CIOCTRL);
 }
 
@@ -267,7 +320,18 @@ static void fimc_hw_set_scaler(struct fimc_ctx *ctx)
 	struct fimc_scaler *sc = &ctx->scaler;
 	struct fimc_frame *src_frame = &ctx->s_frame;
 	struct fimc_frame *dst_frame = &ctx->d_frame;
+<<<<<<< HEAD
 	u32 cfg = 0;
+=======
+
+	u32 cfg = readl(dev->regs + S5P_CISCCTRL);
+
+	cfg &= ~(S5P_CISCCTRL_CSCR2Y_WIDE | S5P_CISCCTRL_CSCY2R_WIDE |
+		 S5P_CISCCTRL_SCALEUP_H | S5P_CISCCTRL_SCALEUP_V |
+		 S5P_CISCCTRL_SCALERBYPASS | S5P_CISCCTRL_ONE2ONE |
+		 S5P_CISCCTRL_INRGB_FMT_MASK | S5P_CISCCTRL_OUTRGB_FMT_MASK |
+		 S5P_CISCCTRL_INTERLACE | S5P_CISCCTRL_RGB_EXT);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!(ctx->flags & FIMC_COLOR_RANGE_NARROW))
 		cfg |= (S5P_CISCCTRL_CSCR2Y_WIDE | S5P_CISCCTRL_CSCY2R_WIDE);
@@ -284,6 +348,7 @@ static void fimc_hw_set_scaler(struct fimc_ctx *ctx)
 	if (sc->copy_mode)
 		cfg |= S5P_CISCCTRL_ONE2ONE;
 
+<<<<<<< HEAD
 
 	if (ctx->in_path == FIMC_DMA) {
 		if (src_frame->fmt->color == S5P_FIMC_RGB565)
@@ -300,6 +365,30 @@ static void fimc_hw_set_scaler(struct fimc_ctx *ctx)
 		else if (dst_frame->fmt->color == S5P_FIMC_RGB666)
 			cfg |= S5P_CISCCTRL_OUTRGB_FMT_RGB666;
 		else if (dst_frame->fmt->color == S5P_FIMC_RGB888)
+=======
+	if (ctx->in_path == FIMC_DMA) {
+		switch (src_frame->fmt->color) {
+		case S5P_FIMC_RGB565:
+			cfg |= S5P_CISCCTRL_INRGB_FMT_RGB565;
+			break;
+		case S5P_FIMC_RGB666:
+			cfg |= S5P_CISCCTRL_INRGB_FMT_RGB666;
+			break;
+		case S5P_FIMC_RGB888:
+			cfg |= S5P_CISCCTRL_INRGB_FMT_RGB888;
+			break;
+		}
+	}
+
+	if (ctx->out_path == FIMC_DMA) {
+		u32 color = dst_frame->fmt->color;
+
+		if (color >= S5P_FIMC_RGB444 && color <= S5P_FIMC_RGB565)
+			cfg |= S5P_CISCCTRL_OUTRGB_FMT_RGB565;
+		else if (color == S5P_FIMC_RGB666)
+			cfg |= S5P_CISCCTRL_OUTRGB_FMT_RGB666;
+		else if (color == S5P_FIMC_RGB888)
+>>>>>>> refs/remotes/origin/cm-10.0
 			cfg |= S5P_CISCCTRL_OUTRGB_FMT_RGB888;
 	} else {
 		cfg |= S5P_CISCCTRL_OUTRGB_FMT_RGB888;
@@ -324,9 +413,15 @@ void fimc_hw_set_mainscaler(struct fimc_ctx *ctx)
 	fimc_hw_set_scaler(ctx);
 
 	cfg = readl(dev->regs + S5P_CISCCTRL);
+<<<<<<< HEAD
 
 	if (variant->has_mainscaler_ext) {
 		cfg &= ~(S5P_CISCCTRL_MHRATIO_MASK | S5P_CISCCTRL_MVRATIO_MASK);
+=======
+	cfg &= ~(S5P_CISCCTRL_MHRATIO_MASK | S5P_CISCCTRL_MVRATIO_MASK);
+
+	if (variant->has_mainscaler_ext) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		cfg |= S5P_CISCCTRL_MHRATIO_EXT(sc->main_hratio);
 		cfg |= S5P_CISCCTRL_MVRATIO_EXT(sc->main_vratio);
 		writel(cfg, dev->regs + S5P_CISCCTRL);
@@ -339,7 +434,10 @@ void fimc_hw_set_mainscaler(struct fimc_ctx *ctx)
 		cfg |= S5P_CIEXTEN_MVRATIO_EXT(sc->main_vratio);
 		writel(cfg, dev->regs + S5P_CIEXTEN);
 	} else {
+<<<<<<< HEAD
 		cfg &= ~(S5P_CISCCTRL_MHRATIO_MASK | S5P_CISCCTRL_MVRATIO_MASK);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		cfg |= S5P_CISCCTRL_MHRATIO(sc->main_hratio);
 		cfg |= S5P_CISCCTRL_MVRATIO(sc->main_vratio);
 		writel(cfg, dev->regs + S5P_CISCCTRL);
@@ -368,6 +466,7 @@ void fimc_hw_en_capture(struct fimc_ctx *ctx)
 	writel(cfg | S5P_CIIMGCPT_IMGCPTEN, dev->regs + S5P_CIIMGCPT);
 }
 
+<<<<<<< HEAD
 void fimc_hw_set_effect(struct fimc_ctx *ctx)
 {
 	struct fimc_dev *dev = ctx->fimc_dev;
@@ -379,11 +478,44 @@ void fimc_hw_set_effect(struct fimc_ctx *ctx)
 	if (effect->type == S5P_FIMC_EFFECT_ARBITRARY) {
 		cfg |= S5P_CIIMGEFF_PAT_CB(effect->pat_cb);
 		cfg |= S5P_CIIMGEFF_PAT_CR(effect->pat_cr);
+=======
+void fimc_hw_set_effect(struct fimc_ctx *ctx, bool active)
+{
+	struct fimc_dev *dev = ctx->fimc_dev;
+	struct fimc_effect *effect = &ctx->effect;
+	u32 cfg = 0;
+
+	if (active) {
+		cfg |= S5P_CIIMGEFF_IE_SC_AFTER | S5P_CIIMGEFF_IE_ENABLE;
+		cfg |= effect->type;
+		if (effect->type == S5P_FIMC_EFFECT_ARBITRARY) {
+			cfg |= S5P_CIIMGEFF_PAT_CB(effect->pat_cb);
+			cfg |= S5P_CIIMGEFF_PAT_CR(effect->pat_cr);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	writel(cfg, dev->regs + S5P_CIIMGEFF);
 }
 
+<<<<<<< HEAD
+=======
+void fimc_hw_set_rgb_alpha(struct fimc_ctx *ctx)
+{
+	struct fimc_dev *dev = ctx->fimc_dev;
+	struct fimc_frame *frame = &ctx->d_frame;
+	u32 cfg;
+
+	if (!(frame->fmt->flags & FMT_HAS_ALPHA))
+		return;
+
+	cfg = readl(dev->regs + S5P_CIOCTRL);
+	cfg &= ~S5P_CIOCTRL_ALPHA_OUT_MASK;
+	cfg |= (frame->alpha << 4);
+	writel(cfg, dev->regs + S5P_CIOCTRL);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void fimc_hw_set_in_dma_size(struct fimc_ctx *ctx)
 {
 	struct fimc_dev *dev = ctx->fimc_dev;
@@ -547,6 +679,7 @@ int fimc_hw_set_camera_polarity(struct fimc_dev *fimc,
 	u32 cfg = readl(fimc->regs + S5P_CIGCTRL);
 
 	cfg &= ~(S5P_CIGCTRL_INVPOLPCLK | S5P_CIGCTRL_INVPOLVSYNC |
+<<<<<<< HEAD
 		 S5P_CIGCTRL_INVPOLHREF | S5P_CIGCTRL_INVPOLHSYNC);
 
 	if (cam->flags & FIMC_CLK_INV_PCLK)
@@ -561,6 +694,26 @@ int fimc_hw_set_camera_polarity(struct fimc_dev *fimc,
 	if (cam->flags & FIMC_CLK_INV_HSYNC)
 		cfg |= S5P_CIGCTRL_INVPOLHSYNC;
 
+=======
+		 S5P_CIGCTRL_INVPOLHREF | S5P_CIGCTRL_INVPOLHSYNC |
+		 S5P_CIGCTRL_INVPOLFIELD);
+
+	if (cam->flags & V4L2_MBUS_PCLK_SAMPLE_FALLING)
+		cfg |= S5P_CIGCTRL_INVPOLPCLK;
+
+	if (cam->flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
+		cfg |= S5P_CIGCTRL_INVPOLVSYNC;
+
+	if (cam->flags & V4L2_MBUS_HSYNC_ACTIVE_LOW)
+		cfg |= S5P_CIGCTRL_INVPOLHREF;
+
+	if (cam->flags & V4L2_MBUS_HSYNC_ACTIVE_LOW)
+		cfg |= S5P_CIGCTRL_INVPOLHSYNC;
+
+	if (cam->flags & V4L2_MBUS_FIELD_EVEN_LOW)
+		cfg |= S5P_CIGCTRL_INVPOLFIELD;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	writel(cfg, fimc->regs + S5P_CIGCTRL);
 
 	return 0;
@@ -588,7 +741,11 @@ int fimc_hw_set_camera_source(struct fimc_dev *fimc,
 
 	if (cam->bus_type == FIMC_ITU_601 || cam->bus_type == FIMC_ITU_656) {
 		for (i = 0; i < ARRAY_SIZE(pix_desc); i++) {
+<<<<<<< HEAD
 			if (fimc->vid_cap.fmt.code == pix_desc[i].pixelcode) {
+=======
+			if (fimc->vid_cap.mf.code == pix_desc[i].pixelcode) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				cfg = pix_desc[i].cisrcfmt;
 				bus_width = pix_desc[i].bus_width;
 				break;
@@ -596,9 +753,15 @@ int fimc_hw_set_camera_source(struct fimc_dev *fimc,
 		}
 
 		if (i == ARRAY_SIZE(pix_desc)) {
+<<<<<<< HEAD
 			v4l2_err(&fimc->vid_cap.v4l2_dev,
 				 "Camera color format not supported: %d\n",
 				 fimc->vid_cap.fmt.code);
+=======
+			v4l2_err(fimc->vid_cap.vfd,
+				 "Camera color format not supported: %d\n",
+				 fimc->vid_cap.mf.code);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EINVAL;
 		}
 
@@ -608,6 +771,12 @@ int fimc_hw_set_camera_source(struct fimc_dev *fimc,
 			else if (bus_width == 16)
 				cfg |= S5P_CISRCFMT_ITU601_16BIT;
 		} /* else defaults to ITU-R BT.656 8-bit */
+<<<<<<< HEAD
+=======
+	} else if (cam->bus_type == FIMC_MIPI_CSI2) {
+		if (fimc_fmt_is_jpeg(f->fmt->color))
+			cfg |= S5P_CISRCFMT_ITU601_8BIT;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	cfg |= S5P_CISRCFMT_HSIZE(f->o_width) | S5P_CISRCFMT_VSIZE(f->o_height);
@@ -649,7 +818,11 @@ int fimc_hw_set_camera_type(struct fimc_dev *fimc,
 	/* Select ITU B interface, disable Writeback path and test pattern. */
 	cfg &= ~(S5P_CIGCTRL_TESTPAT_MASK | S5P_CIGCTRL_SELCAM_ITU_A |
 		S5P_CIGCTRL_SELCAM_MIPI | S5P_CIGCTRL_CAMIF_SELWB |
+<<<<<<< HEAD
 		S5P_CIGCTRL_SELCAM_MIPI_A);
+=======
+		S5P_CIGCTRL_SELCAM_MIPI_A | S5P_CIGCTRL_CAM_JPEG);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (cam->bus_type == FIMC_MIPI_CSI2) {
 		cfg |= S5P_CIGCTRL_SELCAM_MIPI;
@@ -658,11 +831,26 @@ int fimc_hw_set_camera_type(struct fimc_dev *fimc,
 			cfg |= S5P_CIGCTRL_SELCAM_MIPI_A;
 
 		/* TODO: add remaining supported formats. */
+<<<<<<< HEAD
 		if (vid_cap->fmt.code == V4L2_MBUS_FMT_VYUY8_2X8) {
 			tmp = S5P_CSIIMGFMT_YCBCR422_8BIT;
 		} else {
 			err("camera image format not supported: %d",
 			    vid_cap->fmt.code);
+=======
+		switch (vid_cap->mf.code) {
+		case V4L2_MBUS_FMT_VYUY8_2X8:
+			tmp = S5P_CSIIMGFMT_YCBCR422_8BIT;
+			break;
+		case V4L2_MBUS_FMT_JPEG_1X8:
+			tmp = S5P_CSIIMGFMT_USER(1);
+			cfg |= S5P_CIGCTRL_CAM_JPEG;
+			break;
+		default:
+			v4l2_err(fimc->vid_cap.vfd,
+				 "Not supported camera pixel format: %d",
+				 vid_cap->mf.code);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EINVAL;
 		}
 		tmp |= (cam->csi_data_align == 32) << 8;

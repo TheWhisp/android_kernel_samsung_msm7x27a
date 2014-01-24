@@ -57,7 +57,11 @@
  * global sequence counter value. It also increases the global sequence
  * counter.
  */
+<<<<<<< HEAD
 static unsigned long long next_sqnum(struct ubi_device *ubi)
+=======
+unsigned long long ubi_next_sqnum(struct ubi_device *ubi)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long long sqnum;
 
@@ -340,8 +344,15 @@ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
 
 	dbg_eba("erase LEB %d:%d, PEB %d", vol_id, lnum, pnum);
 
+<<<<<<< HEAD
 	vol->eba_tbl[lnum] = UBI_LEB_UNMAPPED;
 	err = ubi_wl_put_peb(ubi, pnum, 0);
+=======
+	down_read(&ubi->fm_sem);
+	vol->eba_tbl[lnum] = UBI_LEB_UNMAPPED;
+	up_read(&ubi->fm_sem);
+	err = ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 0);
+>>>>>>> refs/remotes/origin/master
 
 out_unlock:
 	leb_write_unlock(ubi, vol_id, lnum);
@@ -420,9 +431,14 @@ retry:
 				 */
 				if (err == UBI_IO_BAD_HDR_EBADMSG ||
 				    err == UBI_IO_BAD_HDR) {
+<<<<<<< HEAD
 					ubi_warn("corrupted VID header at PEB "
 						 "%d, LEB %d:%d", pnum, vol_id,
 						 lnum);
+=======
+					ubi_warn("corrupted VID header at PEB %d, LEB %d:%d",
+						 pnum, vol_id, lnum);
+>>>>>>> refs/remotes/origin/master
 					err = -EBADMSG;
 				} else
 					ubi_ro_mode(ubi);
@@ -443,7 +459,15 @@ retry:
 		if (err == UBI_IO_BITFLIPS) {
 			scrub = 1;
 			err = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		} else if (err == -EBADMSG) {
+=======
+		} else if (mtd_is_eccerr(err)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (mtd_is_eccerr(err)) {
+>>>>>>> refs/remotes/origin/master
 			if (vol->vol_type == UBI_DYNAMIC_VOLUME)
 				goto out_unlock;
 			scrub = 1;
@@ -507,7 +531,11 @@ static int recover_peb(struct ubi_device *ubi, int pnum, int vol_id, int lnum,
 		return -ENOMEM;
 
 retry:
+<<<<<<< HEAD
 	new_pnum = ubi_wl_get_peb(ubi, UBI_UNKNOWN);
+=======
+	new_pnum = ubi_wl_get_peb(ubi);
+>>>>>>> refs/remotes/origin/master
 	if (new_pnum < 0) {
 		ubi_free_vid_hdr(ubi, vid_hdr);
 		return new_pnum;
@@ -522,25 +550,55 @@ retry:
 		goto out_put;
 	}
 
+<<<<<<< HEAD
 	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
+=======
+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+>>>>>>> refs/remotes/origin/master
 	err = ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
 	if (err)
 		goto write_error;
 
 	data_size = offset + len;
 	mutex_lock(&ubi->buf_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(ubi->peb_buf1 + offset, 0xFF, len);
 
 	/* Read everything before the area where the write failure happened */
 	if (offset > 0) {
 		err = ubi_io_read_data(ubi, ubi->peb_buf1, pnum, 0, offset);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	memset(ubi->peb_buf + offset, 0xFF, len);
+
+	/* Read everything before the area where the write failure happened */
+	if (offset > 0) {
+		err = ubi_io_read_data(ubi, ubi->peb_buf, pnum, 0, offset);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (err && err != UBI_IO_BITFLIPS)
 			goto out_unlock;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(ubi->peb_buf1 + offset, buf, len);
 
 	err = ubi_io_write_data(ubi, ubi->peb_buf1, new_pnum, 0, data_size);
+=======
+	memcpy(ubi->peb_buf + offset, buf, len);
+
+	err = ubi_io_write_data(ubi, ubi->peb_buf, new_pnum, 0, data_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(ubi->peb_buf + offset, buf, len);
+
+	err = ubi_io_write_data(ubi, ubi->peb_buf, new_pnum, 0, data_size);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		mutex_unlock(&ubi->buf_mutex);
 		goto write_error;
@@ -549,8 +607,15 @@ retry:
 	mutex_unlock(&ubi->buf_mutex);
 	ubi_free_vid_hdr(ubi, vid_hdr);
 
+<<<<<<< HEAD
 	vol->eba_tbl[lnum] = new_pnum;
 	ubi_wl_put_peb(ubi, pnum, 1);
+=======
+	down_read(&ubi->fm_sem);
+	vol->eba_tbl[lnum] = new_pnum;
+	up_read(&ubi->fm_sem);
+	ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
+>>>>>>> refs/remotes/origin/master
 
 	ubi_msg("data was successfully recovered");
 	return 0;
@@ -558,7 +623,11 @@ retry:
 out_unlock:
 	mutex_unlock(&ubi->buf_mutex);
 out_put:
+<<<<<<< HEAD
 	ubi_wl_put_peb(ubi, new_pnum, 1);
+=======
+	ubi_wl_put_peb(ubi, vol_id, lnum, new_pnum, 1);
+>>>>>>> refs/remotes/origin/master
 	ubi_free_vid_hdr(ubi, vid_hdr);
 	return err;
 
@@ -568,7 +637,11 @@ write_error:
 	 * get another one.
 	 */
 	ubi_warn("failed to write to PEB %d", new_pnum);
+<<<<<<< HEAD
 	ubi_wl_put_peb(ubi, new_pnum, 1);
+=======
+	ubi_wl_put_peb(ubi, vol_id, lnum, new_pnum, 1);
+>>>>>>> refs/remotes/origin/master
 	if (++tries > UBI_IO_RETRIES) {
 		ubi_free_vid_hdr(ubi, vid_hdr);
 		return err;
@@ -585,7 +658,10 @@ write_error:
  * @buf: the data to write
  * @offset: offset within the logical eraseblock where to write
  * @len: how many bytes to write
+<<<<<<< HEAD
  * @dtype: data type
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This function writes data to logical eraseblock @lnum of a dynamic volume
  * @vol. Returns zero in case of success and a negative error code in case
@@ -593,7 +669,11 @@ write_error:
  * written to the flash media, but may be some garbage.
  */
 int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+<<<<<<< HEAD
 		      const void *buf, int offset, int len, int dtype)
+=======
+		      const void *buf, int offset, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, pnum, tries = 0, vol_id = vol->vol_id;
 	struct ubi_vid_hdr *vid_hdr;
@@ -634,14 +714,22 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
 	}
 
 	vid_hdr->vol_type = UBI_VID_DYNAMIC;
+<<<<<<< HEAD
 	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
+=======
+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+>>>>>>> refs/remotes/origin/master
 	vid_hdr->vol_id = cpu_to_be32(vol_id);
 	vid_hdr->lnum = cpu_to_be32(lnum);
 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
 	vid_hdr->data_pad = cpu_to_be32(vol->data_pad);
 
 retry:
+<<<<<<< HEAD
 	pnum = ubi_wl_get_peb(ubi, dtype);
+=======
+	pnum = ubi_wl_get_peb(ubi);
+>>>>>>> refs/remotes/origin/master
 	if (pnum < 0) {
 		ubi_free_vid_hdr(ubi, vid_hdr);
 		leb_write_unlock(ubi, vol_id, lnum);
@@ -661,14 +749,25 @@ retry:
 	if (len) {
 		err = ubi_io_write_data(ubi, buf, pnum, offset, len);
 		if (err) {
+<<<<<<< HEAD
 			ubi_warn("failed to write %d bytes at offset %d of "
 				 "LEB %d:%d, PEB %d", len, offset, vol_id,
 				 lnum, pnum);
+=======
+			ubi_warn("failed to write %d bytes at offset %d of LEB %d:%d, PEB %d",
+				 len, offset, vol_id, lnum, pnum);
+>>>>>>> refs/remotes/origin/master
 			goto write_error;
 		}
 	}
 
+<<<<<<< HEAD
 	vol->eba_tbl[lnum] = pnum;
+=======
+	down_read(&ubi->fm_sem);
+	vol->eba_tbl[lnum] = pnum;
+	up_read(&ubi->fm_sem);
+>>>>>>> refs/remotes/origin/master
 
 	leb_write_unlock(ubi, vol_id, lnum);
 	ubi_free_vid_hdr(ubi, vid_hdr);
@@ -687,7 +786,11 @@ write_error:
 	 * eraseblock, so just put it and request a new one. We assume that if
 	 * this physical eraseblock went bad, the erase code will handle that.
 	 */
+<<<<<<< HEAD
 	err = ubi_wl_put_peb(ubi, pnum, 1);
+=======
+	err = ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
+>>>>>>> refs/remotes/origin/master
 	if (err || ++tries > UBI_IO_RETRIES) {
 		ubi_ro_mode(ubi);
 		leb_write_unlock(ubi, vol_id, lnum);
@@ -695,7 +798,11 @@ write_error:
 		return err;
 	}
 
+<<<<<<< HEAD
 	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
+=======
+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+>>>>>>> refs/remotes/origin/master
 	ubi_msg("try another PEB");
 	goto retry;
 }
@@ -707,7 +814,10 @@ write_error:
  * @lnum: logical eraseblock number
  * @buf: data to write
  * @len: how many bytes to write
+<<<<<<< HEAD
  * @dtype: data type
+=======
+>>>>>>> refs/remotes/origin/master
  * @used_ebs: how many logical eraseblocks will this volume contain
  *
  * This function writes data to logical eraseblock @lnum of static volume
@@ -724,8 +834,12 @@ write_error:
  * code in case of failure.
  */
 int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
+<<<<<<< HEAD
 			 int lnum, const void *buf, int len, int dtype,
 			 int used_ebs)
+=======
+			 int lnum, const void *buf, int len, int used_ebs)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, pnum, tries = 0, data_size = len, vol_id = vol->vol_id;
 	struct ubi_vid_hdr *vid_hdr;
@@ -750,7 +864,11 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
 		return err;
 	}
 
+<<<<<<< HEAD
 	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
+=======
+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+>>>>>>> refs/remotes/origin/master
 	vid_hdr->vol_id = cpu_to_be32(vol_id);
 	vid_hdr->lnum = cpu_to_be32(lnum);
 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
@@ -763,7 +881,11 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
 	vid_hdr->data_crc = cpu_to_be32(crc);
 
 retry:
+<<<<<<< HEAD
 	pnum = ubi_wl_get_peb(ubi, dtype);
+=======
+	pnum = ubi_wl_get_peb(ubi);
+>>>>>>> refs/remotes/origin/master
 	if (pnum < 0) {
 		ubi_free_vid_hdr(ubi, vid_hdr);
 		leb_write_unlock(ubi, vol_id, lnum);
@@ -788,7 +910,13 @@ retry:
 	}
 
 	ubi_assert(vol->eba_tbl[lnum] < 0);
+<<<<<<< HEAD
 	vol->eba_tbl[lnum] = pnum;
+=======
+	down_read(&ubi->fm_sem);
+	vol->eba_tbl[lnum] = pnum;
+	up_read(&ubi->fm_sem);
+>>>>>>> refs/remotes/origin/master
 
 	leb_write_unlock(ubi, vol_id, lnum);
 	ubi_free_vid_hdr(ubi, vid_hdr);
@@ -807,7 +935,11 @@ write_error:
 		return err;
 	}
 
+<<<<<<< HEAD
 	err = ubi_wl_put_peb(ubi, pnum, 1);
+=======
+	err = ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
+>>>>>>> refs/remotes/origin/master
 	if (err || ++tries > UBI_IO_RETRIES) {
 		ubi_ro_mode(ubi);
 		leb_write_unlock(ubi, vol_id, lnum);
@@ -815,7 +947,11 @@ write_error:
 		return err;
 	}
 
+<<<<<<< HEAD
 	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
+=======
+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+>>>>>>> refs/remotes/origin/master
 	ubi_msg("try another PEB");
 	goto retry;
 }
@@ -827,7 +963,10 @@ write_error:
  * @lnum: logical eraseblock number
  * @buf: data to write
  * @len: how many bytes to write
+<<<<<<< HEAD
  * @dtype: data type
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This function changes the contents of a logical eraseblock atomically. @buf
  * has to contain new logical eraseblock data, and @len - the length of the
@@ -839,7 +978,11 @@ write_error:
  * LEB change may be done at a time. This is ensured by @ubi->alc_mutex.
  */
 int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
+<<<<<<< HEAD
 			      int lnum, const void *buf, int len, int dtype)
+=======
+			      int lnum, const void *buf, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, pnum, tries = 0, vol_id = vol->vol_id;
 	struct ubi_vid_hdr *vid_hdr;
@@ -856,7 +999,11 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
 		err = ubi_eba_unmap_leb(ubi, vol, lnum);
 		if (err)
 			return err;
+<<<<<<< HEAD
 		return ubi_eba_write_leb(ubi, vol, lnum, NULL, 0, 0, dtype);
+=======
+		return ubi_eba_write_leb(ubi, vol, lnum, NULL, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
@@ -868,7 +1015,11 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
 	if (err)
 		goto out_mutex;
 
+<<<<<<< HEAD
 	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
+=======
+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+>>>>>>> refs/remotes/origin/master
 	vid_hdr->vol_id = cpu_to_be32(vol_id);
 	vid_hdr->lnum = cpu_to_be32(lnum);
 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
@@ -881,7 +1032,11 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
 	vid_hdr->data_crc = cpu_to_be32(crc);
 
 retry:
+<<<<<<< HEAD
 	pnum = ubi_wl_get_peb(ubi, dtype);
+=======
+	pnum = ubi_wl_get_peb(ubi);
+>>>>>>> refs/remotes/origin/master
 	if (pnum < 0) {
 		err = pnum;
 		goto out_leb_unlock;
@@ -905,12 +1060,22 @@ retry:
 	}
 
 	if (vol->eba_tbl[lnum] >= 0) {
+<<<<<<< HEAD
 		err = ubi_wl_put_peb(ubi, vol->eba_tbl[lnum], 0);
+=======
+		err = ubi_wl_put_peb(ubi, vol_id, lnum, vol->eba_tbl[lnum], 0);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out_leb_unlock;
 	}
 
+<<<<<<< HEAD
 	vol->eba_tbl[lnum] = pnum;
+=======
+	down_read(&ubi->fm_sem);
+	vol->eba_tbl[lnum] = pnum;
+	up_read(&ubi->fm_sem);
+>>>>>>> refs/remotes/origin/master
 
 out_leb_unlock:
 	leb_write_unlock(ubi, vol_id, lnum);
@@ -930,13 +1095,21 @@ write_error:
 		goto out_leb_unlock;
 	}
 
+<<<<<<< HEAD
 	err = ubi_wl_put_peb(ubi, pnum, 1);
+=======
+	err = ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
+>>>>>>> refs/remotes/origin/master
 	if (err || ++tries > UBI_IO_RETRIES) {
 		ubi_ro_mode(ubi);
 		goto out_leb_unlock;
 	}
 
+<<<<<<< HEAD
 	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
+=======
+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+>>>>>>> refs/remotes/origin/master
 	ubi_msg("try another PEB");
 	goto retry;
 }
@@ -979,7 +1152,15 @@ static int is_error_sane(int err)
  * physical eraseblock @to. The @vid_hdr buffer may be changed by this
  * function. Returns:
  *   o %0 in case of success;
+<<<<<<< HEAD
+<<<<<<< HEAD
  *   o %MOVE_CANCEL_RACE, %MOVE_TARGET_WR_ERR, %MOVE_CANCEL_BITFLIPS, etc;
+=======
+ *   o %MOVE_CANCEL_RACE, %MOVE_TARGET_WR_ERR, %MOVE_TARGET_BITFLIPS, etc;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *   o %MOVE_CANCEL_RACE, %MOVE_TARGET_WR_ERR, %MOVE_TARGET_BITFLIPS, etc;
+>>>>>>> refs/remotes/origin/master
  *   o a negative error code in case of failure.
  */
 int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
@@ -1044,22 +1225,43 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
 	 * cancel it.
 	 */
 	if (vol->eba_tbl[lnum] != from) {
+<<<<<<< HEAD
 		dbg_wl("LEB %d:%d is no longer mapped to PEB %d, mapped to "
 		       "PEB %d, cancel", vol_id, lnum, from,
 		       vol->eba_tbl[lnum]);
+=======
+		dbg_wl("LEB %d:%d is no longer mapped to PEB %d, mapped to PEB %d, cancel",
+		       vol_id, lnum, from, vol->eba_tbl[lnum]);
+>>>>>>> refs/remotes/origin/master
 		err = MOVE_CANCEL_RACE;
 		goto out_unlock_leb;
 	}
 
 	/*
 	 * OK, now the LEB is locked and we can safely start moving it. Since
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * this function utilizes the @ubi->peb_buf1 buffer which is shared
+=======
+	 * this function utilizes the @ubi->peb_buf buffer which is shared
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * this function utilizes the @ubi->peb_buf buffer which is shared
+>>>>>>> refs/remotes/origin/master
 	 * with some other functions - we lock the buffer by taking the
 	 * @ubi->buf_mutex.
 	 */
 	mutex_lock(&ubi->buf_mutex);
 	dbg_wl("read %d bytes of data", aldata_size);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_io_read_data(ubi, ubi->peb_buf1, from, 0, aldata_size);
+=======
+	err = ubi_io_read_data(ubi, ubi->peb_buf, from, 0, aldata_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubi_io_read_data(ubi, ubi->peb_buf, from, 0, aldata_size);
+>>>>>>> refs/remotes/origin/master
 	if (err && err != UBI_IO_BITFLIPS) {
 		ubi_warn("error %d while reading data from PEB %d",
 			 err, from);
@@ -1079,10 +1281,23 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
 	 */
 	if (vid_hdr->vol_type == UBI_VID_DYNAMIC)
 		aldata_size = data_size =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ubi_calc_data_len(ubi, ubi->peb_buf1, data_size);
 
 	cond_resched();
 	crc = crc32(UBI_CRC32_INIT, ubi->peb_buf1, data_size);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			ubi_calc_data_len(ubi, ubi->peb_buf, data_size);
+
+	cond_resched();
+	crc = crc32(UBI_CRC32_INIT, ubi->peb_buf, data_size);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cond_resched();
 
 	/*
@@ -1096,7 +1311,11 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
 		vid_hdr->data_size = cpu_to_be32(data_size);
 		vid_hdr->data_crc = cpu_to_be32(crc);
 	}
+<<<<<<< HEAD
 	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
+=======
+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+>>>>>>> refs/remotes/origin/master
 
 	err = ubi_io_write_vid_hdr(ubi, to, vid_hdr);
 	if (err) {
@@ -1111,17 +1330,38 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
 	err = ubi_io_read_vid_hdr(ubi, to, vid_hdr, 1);
 	if (err) {
 		if (err != UBI_IO_BITFLIPS) {
+<<<<<<< HEAD
 			ubi_warn("error %d while reading VID header back from "
 				  "PEB %d", err, to);
 			if (is_error_sane(err))
 				err = MOVE_TARGET_RD_ERR;
 		} else
+<<<<<<< HEAD
 			err = MOVE_CANCEL_BITFLIPS;
+=======
+			err = MOVE_TARGET_BITFLIPS;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ubi_warn("error %d while reading VID header back from PEB %d",
+				 err, to);
+			if (is_error_sane(err))
+				err = MOVE_TARGET_RD_ERR;
+		} else
+			err = MOVE_TARGET_BITFLIPS;
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock_buf;
 	}
 
 	if (data_size > 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_io_write_data(ubi, ubi->peb_buf1, to, 0, aldata_size);
+=======
+		err = ubi_io_write_data(ubi, ubi->peb_buf, to, 0, aldata_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubi_io_write_data(ubi, ubi->peb_buf, to, 0, aldata_size);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			if (err == -EIO)
 				err = MOVE_TARGET_WR_ERR;
@@ -1134,8 +1374,14 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
 		 * We've written the data and are going to read it back to make
 		 * sure it was written correctly.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		err = ubi_io_read_data(ubi, ubi->peb_buf2, to, 0, aldata_size);
+=======
+		memset(ubi->peb_buf, 0xFF, aldata_size);
+		err = ubi_io_read_data(ubi, ubi->peb_buf, to, 0, aldata_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err) {
 			if (err != UBI_IO_BITFLIPS) {
 				ubi_warn("error %d while reading data back "
@@ -1143,22 +1389,54 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
 				if (is_error_sane(err))
 					err = MOVE_TARGET_RD_ERR;
 			} else
+<<<<<<< HEAD
 				err = MOVE_CANCEL_BITFLIPS;
+=======
+				err = MOVE_TARGET_BITFLIPS;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memset(ubi->peb_buf, 0xFF, aldata_size);
+		err = ubi_io_read_data(ubi, ubi->peb_buf, to, 0, aldata_size);
+		if (err) {
+			if (err != UBI_IO_BITFLIPS) {
+				ubi_warn("error %d while reading data back from PEB %d",
+					 err, to);
+				if (is_error_sane(err))
+					err = MOVE_TARGET_RD_ERR;
+			} else
+				err = MOVE_TARGET_BITFLIPS;
+>>>>>>> refs/remotes/origin/master
 			goto out_unlock_buf;
 		}
 
 		cond_resched();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (memcmp(ubi->peb_buf1, ubi->peb_buf2, aldata_size)) {
+=======
+		if (crc != crc32(UBI_CRC32_INIT, ubi->peb_buf, data_size)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ubi_warn("read data back from PEB %d and it is "
 				 "different", to);
+=======
+		if (crc != crc32(UBI_CRC32_INIT, ubi->peb_buf, data_size)) {
+			ubi_warn("read data back from PEB %d and it is different",
+				 to);
+>>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
 			goto out_unlock_buf;
 		}
 	}
 
 	ubi_assert(vol->eba_tbl[lnum] == from);
+<<<<<<< HEAD
 	vol->eba_tbl[lnum] = to;
+=======
+	down_read(&ubi->fm_sem);
+	vol->eba_tbl[lnum] = to;
+	up_read(&ubi->fm_sem);
+>>>>>>> refs/remotes/origin/master
 
 out_unlock_buf:
 	mutex_unlock(&ubi->buf_mutex);
@@ -1171,7 +1449,11 @@ out_unlock_leb:
  * print_rsvd_warning - warn about not having enough reserved PEBs.
  * @ubi: UBI device description object
  *
+<<<<<<< HEAD
  * This is a helper function for 'ubi_eba_init_scan()' which is called when UBI
+=======
+ * This is a helper function for 'ubi_eba_init()' which is called when UBI
+>>>>>>> refs/remotes/origin/master
  * cannot reserve enough PEBs for bad block handling. This function makes a
  * decision whether we have to print a warning or not. The algorithm is as
  * follows:
@@ -1186,13 +1468,21 @@ out_unlock_leb:
  * reported by real users.
  */
 static void print_rsvd_warning(struct ubi_device *ubi,
+<<<<<<< HEAD
 			       struct ubi_scan_info *si)
+=======
+			       struct ubi_attach_info *ai)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * The 1 << 18 (256KiB) number is picked randomly, just a reasonably
 	 * large number to distinguish between newly flashed and used images.
 	 */
+<<<<<<< HEAD
 	if (si->max_sqnum > (1 << 18)) {
+=======
+	if (ai->max_sqnum > (1 << 18)) {
+>>>>>>> refs/remotes/origin/master
 		int min = ubi->beb_rsvd_level / 10;
 
 		if (!min)
@@ -1201,6 +1491,7 @@ static void print_rsvd_warning(struct ubi_device *ubi,
 			return;
 	}
 
+<<<<<<< HEAD
 	ubi_warn("cannot reserve enough PEBs for bad PEB handling, reserved %d,"
 		 " need %d", ubi->beb_rsvd_pebs, ubi->beb_rsvd_level);
 	if (ubi->corr_peb_count)
@@ -1212,16 +1503,134 @@ static void print_rsvd_warning(struct ubi_device *ubi,
  * ubi_eba_init_scan - initialize the EBA sub-system using scanning information.
  * @ubi: UBI device description object
  * @si: scanning information
+=======
+	ubi_warn("cannot reserve enough PEBs for bad PEB handling, reserved %d, need %d",
+		 ubi->beb_rsvd_pebs, ubi->beb_rsvd_level);
+	if (ubi->corr_peb_count)
+		ubi_warn("%d PEBs are corrupted and not used",
+			 ubi->corr_peb_count);
+}
+
+/**
+ * self_check_eba - run a self check on the EBA table constructed by fastmap.
+ * @ubi: UBI device description object
+ * @ai_fastmap: UBI attach info object created by fastmap
+ * @ai_scan: UBI attach info object created by scanning
+ *
+ * Returns < 0 in case of an internal error, 0 otherwise.
+ * If a bad EBA table entry was found it will be printed out and
+ * ubi_assert() triggers.
+ */
+int self_check_eba(struct ubi_device *ubi, struct ubi_attach_info *ai_fastmap,
+		   struct ubi_attach_info *ai_scan)
+{
+	int i, j, num_volumes, ret = 0;
+	int **scan_eba, **fm_eba;
+	struct ubi_ainf_volume *av;
+	struct ubi_volume *vol;
+	struct ubi_ainf_peb *aeb;
+	struct rb_node *rb;
+
+	num_volumes = ubi->vtbl_slots + UBI_INT_VOL_COUNT;
+
+	scan_eba = kmalloc(sizeof(*scan_eba) * num_volumes, GFP_KERNEL);
+	if (!scan_eba)
+		return -ENOMEM;
+
+	fm_eba = kmalloc(sizeof(*fm_eba) * num_volumes, GFP_KERNEL);
+	if (!fm_eba) {
+		kfree(scan_eba);
+		return -ENOMEM;
+	}
+
+	for (i = 0; i < num_volumes; i++) {
+		vol = ubi->volumes[i];
+		if (!vol)
+			continue;
+
+		scan_eba[i] = kmalloc(vol->reserved_pebs * sizeof(**scan_eba),
+				      GFP_KERNEL);
+		if (!scan_eba[i]) {
+			ret = -ENOMEM;
+			goto out_free;
+		}
+
+		fm_eba[i] = kmalloc(vol->reserved_pebs * sizeof(**fm_eba),
+				    GFP_KERNEL);
+		if (!fm_eba[i]) {
+			ret = -ENOMEM;
+			goto out_free;
+		}
+
+		for (j = 0; j < vol->reserved_pebs; j++)
+			scan_eba[i][j] = fm_eba[i][j] = UBI_LEB_UNMAPPED;
+
+		av = ubi_find_av(ai_scan, idx2vol_id(ubi, i));
+		if (!av)
+			continue;
+
+		ubi_rb_for_each_entry(rb, aeb, &av->root, u.rb)
+			scan_eba[i][aeb->lnum] = aeb->pnum;
+
+		av = ubi_find_av(ai_fastmap, idx2vol_id(ubi, i));
+		if (!av)
+			continue;
+
+		ubi_rb_for_each_entry(rb, aeb, &av->root, u.rb)
+			fm_eba[i][aeb->lnum] = aeb->pnum;
+
+		for (j = 0; j < vol->reserved_pebs; j++) {
+			if (scan_eba[i][j] != fm_eba[i][j]) {
+				if (scan_eba[i][j] == UBI_LEB_UNMAPPED ||
+					fm_eba[i][j] == UBI_LEB_UNMAPPED)
+					continue;
+
+				ubi_err("LEB:%i:%i is PEB:%i instead of %i!",
+					vol->vol_id, i, fm_eba[i][j],
+					scan_eba[i][j]);
+				ubi_assert(0);
+			}
+		}
+	}
+
+out_free:
+	for (i = 0; i < num_volumes; i++) {
+		if (!ubi->volumes[i])
+			continue;
+
+		kfree(scan_eba[i]);
+		kfree(fm_eba[i]);
+	}
+
+	kfree(scan_eba);
+	kfree(fm_eba);
+	return ret;
+}
+
+/**
+ * ubi_eba_init - initialize the EBA sub-system using attaching information.
+ * @ubi: UBI device description object
+ * @ai: attaching information
+>>>>>>> refs/remotes/origin/master
  *
  * This function returns zero in case of success and a negative error code in
  * case of failure.
  */
+<<<<<<< HEAD
 int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si)
 {
 	int i, j, err, num_volumes;
 	struct ubi_scan_volume *sv;
 	struct ubi_volume *vol;
 	struct ubi_scan_leb *seb;
+=======
+int ubi_eba_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+{
+	int i, j, err, num_volumes;
+	struct ubi_ainf_volume *av;
+	struct ubi_volume *vol;
+	struct ubi_ainf_peb *aeb;
+>>>>>>> refs/remotes/origin/master
 	struct rb_node *rb;
 
 	dbg_eba("initialize EBA sub-system");
@@ -1230,7 +1639,11 @@ int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si)
 	mutex_init(&ubi->alc_mutex);
 	ubi->ltree = RB_ROOT;
 
+<<<<<<< HEAD
 	ubi->global_sqnum = si->max_sqnum + 1;
+=======
+	ubi->global_sqnum = ai->max_sqnum + 1;
+>>>>>>> refs/remotes/origin/master
 	num_volumes = ubi->vtbl_slots + UBI_INT_VOL_COUNT;
 
 	for (i = 0; i < num_volumes; i++) {
@@ -1250,18 +1663,32 @@ int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si)
 		for (j = 0; j < vol->reserved_pebs; j++)
 			vol->eba_tbl[j] = UBI_LEB_UNMAPPED;
 
+<<<<<<< HEAD
 		sv = ubi_scan_find_sv(si, idx2vol_id(ubi, i));
 		if (!sv)
 			continue;
 
 		ubi_rb_for_each_entry(rb, seb, &sv->root, u.rb) {
 			if (seb->lnum >= vol->reserved_pebs)
+=======
+		av = ubi_find_av(ai, idx2vol_id(ubi, i));
+		if (!av)
+			continue;
+
+		ubi_rb_for_each_entry(rb, aeb, &av->root, u.rb) {
+			if (aeb->lnum >= vol->reserved_pebs)
+>>>>>>> refs/remotes/origin/master
 				/*
 				 * This may happen in case of an unclean reboot
 				 * during re-size.
 				 */
+<<<<<<< HEAD
 				ubi_scan_move_to_list(sv, seb, &si->erase);
 			vol->eba_tbl[seb->lnum] = seb->pnum;
+=======
+				ubi_move_aeb_to_list(av, aeb, &ai->erase);
+			vol->eba_tbl[aeb->lnum] = aeb->pnum;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1283,7 +1710,11 @@ int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si)
 		if (ubi->avail_pebs < ubi->beb_rsvd_level) {
 			/* No enough free physical eraseblocks */
 			ubi->beb_rsvd_pebs = ubi->avail_pebs;
+<<<<<<< HEAD
 			print_rsvd_warning(ubi, si);
+=======
+			print_rsvd_warning(ubi, ai);
+>>>>>>> refs/remotes/origin/master
 		} else
 			ubi->beb_rsvd_pebs = ubi->beb_rsvd_level;
 

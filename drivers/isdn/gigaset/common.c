@@ -30,7 +30,15 @@
 /* Module parameters */
 int gigaset_debuglevel;
 EXPORT_SYMBOL_GPL(gigaset_debuglevel);
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_param_named(debug, gigaset_debuglevel, int, S_IRUGO|S_IWUSR);
+=======
+module_param_named(debug, gigaset_debuglevel, int, S_IRUGO | S_IWUSR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param_named(debug, gigaset_debuglevel, int, S_IRUGO | S_IWUSR);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(debug, "debug level");
 
 /* driver state flags */
@@ -123,7 +131,15 @@ int gigaset_enterconfigmode(struct cardstate *cs)
 		if (r < 0)
 			goto error;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r = setflags(cs, TIOCM_RTS|TIOCM_DTR, 800);
+=======
+	r = setflags(cs, TIOCM_RTS | TIOCM_DTR, 800);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	r = setflags(cs, TIOCM_RTS | TIOCM_DTR, 800);
+>>>>>>> refs/remotes/origin/master
 	if (r < 0)
 		goto error;
 
@@ -131,8 +147,18 @@ int gigaset_enterconfigmode(struct cardstate *cs)
 
 error:
 	dev_err(cs->dev, "error %d on setuartbits\n", -r);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cs->control_state = TIOCM_RTS|TIOCM_DTR;
 	cs->ops->set_modem_ctrl(cs, 0, TIOCM_RTS|TIOCM_DTR);
+=======
+	cs->control_state = TIOCM_RTS | TIOCM_DTR;
+	cs->ops->set_modem_ctrl(cs, 0, TIOCM_RTS | TIOCM_DTR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cs->control_state = TIOCM_RTS | TIOCM_DTR;
+	cs->ops->set_modem_ctrl(cs, 0, TIOCM_RTS | TIOCM_DTR);
+>>>>>>> refs/remotes/origin/master
 
 	return -1;
 }
@@ -194,13 +220,21 @@ int gigaset_get_channel(struct bc_state *bcs)
 		gig_dbg(DEBUG_CHANNEL, "could not allocate channel %d",
 			bcs->channel);
 		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+<<<<<<< HEAD
 		return 0;
+=======
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 	}
 	++bcs->use_count;
 	bcs->busy = 1;
 	gig_dbg(DEBUG_CHANNEL, "allocated channel %d", bcs->channel);
 	spin_unlock_irqrestore(&bcs->cs->lock, flags);
+<<<<<<< HEAD
 	return 1;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 struct bc_state *gigaset_get_free_channel(struct cardstate *cs)
@@ -258,7 +292,11 @@ int gigaset_get_channels(struct cardstate *cs)
 			spin_unlock_irqrestore(&cs->lock, flags);
 			gig_dbg(DEBUG_CHANNEL,
 				"could not allocate all channels");
+<<<<<<< HEAD
 			return 0;
+=======
+			return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 		}
 	for (i = 0; i < cs->channels; ++i)
 		++cs->bcs[i].use_count;
@@ -266,7 +304,11 @@ int gigaset_get_channels(struct cardstate *cs)
 
 	gig_dbg(DEBUG_CHANNEL, "allocated all channels");
 
+<<<<<<< HEAD
 	return 1;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void gigaset_free_channels(struct cardstate *cs)
@@ -362,7 +404,11 @@ struct event_t *gigaset_add_event(struct cardstate *cs,
 }
 EXPORT_SYMBOL_GPL(gigaset_add_event);
 
+<<<<<<< HEAD
 static void free_strings(struct at_state_t *at_state)
+=======
+static void clear_at_state(struct at_state_t *at_state)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -372,18 +418,26 @@ static void free_strings(struct at_state_t *at_state)
 	}
 }
 
+<<<<<<< HEAD
 static void clear_at_state(struct at_state_t *at_state)
 {
 	free_strings(at_state);
 }
 
 static void dealloc_at_states(struct cardstate *cs)
+=======
+static void dealloc_temp_at_states(struct cardstate *cs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct at_state_t *cur, *next;
 
 	list_for_each_entry_safe(cur, next, &cs->temp_at_states, list) {
 		list_del(&cur->list);
+<<<<<<< HEAD
 		free_strings(cur);
+=======
+		clear_at_state(cur);
+>>>>>>> refs/remotes/origin/master
 		kfree(cur);
 	}
 }
@@ -393,8 +447,12 @@ static void gigaset_freebcs(struct bc_state *bcs)
 	int i;
 
 	gig_dbg(DEBUG_INIT, "freeing bcs[%d]->hw", bcs->channel);
+<<<<<<< HEAD
 	if (!bcs->cs->ops->freebcshw(bcs))
 		gig_dbg(DEBUG_INIT, "failed");
+=======
+	bcs->cs->ops->freebcshw(bcs);
+>>>>>>> refs/remotes/origin/master
 
 	gig_dbg(DEBUG_INIT, "clearing bcs[%d]->at_state", bcs->channel);
 	clear_at_state(&bcs->at_state);
@@ -473,11 +531,14 @@ void gigaset_freecs(struct cardstate *cs)
 
 	mutex_lock(&cs->mutex);
 
+<<<<<<< HEAD
 	if (!cs->bcs)
 		goto f_cs;
 	if (!cs->inbuf)
 		goto f_bcs;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&cs->lock, flags);
 	cs->running = 0;
 	spin_unlock_irqrestore(&cs->lock, flags); /* event handler and timer are
@@ -512,6 +573,7 @@ void gigaset_freecs(struct cardstate *cs)
 	case 1: /* error when registering to LL */
 		gig_dbg(DEBUG_INIT, "clearing at_state");
 		clear_at_state(&cs->at_state);
+<<<<<<< HEAD
 		dealloc_at_states(cs);
 
 		/* fall through */
@@ -523,6 +585,19 @@ void gigaset_freecs(struct cardstate *cs)
 f_bcs:	gig_dbg(DEBUG_INIT, "freeing bcs[]");
 	kfree(cs->bcs);
 f_cs:	gig_dbg(DEBUG_INIT, "freeing cs");
+=======
+		dealloc_temp_at_states(cs);
+		clear_events(cs);
+		tty_port_destroy(&cs->port);
+
+		/* fall through */
+	case 0:	/* error in basic setup */
+		gig_dbg(DEBUG_INIT, "freeing inbuf");
+		kfree(cs->inbuf);
+		kfree(cs->bcs);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&cs->mutex);
 	free_cs(cs);
 }
@@ -571,6 +646,11 @@ static void gigaset_inbuf_init(struct inbuf_t *inbuf, struct cardstate *cs)
  * @inbuf:	buffer structure.
  * @src:	received data.
  * @numbytes:	number of bytes received.
+<<<<<<< HEAD
+=======
+ *
+ * Return value: !=0 if some data was appended
+>>>>>>> refs/remotes/origin/master
  */
 int gigaset_fill_inbuf(struct inbuf_t *inbuf, const unsigned char *src,
 		       unsigned numbytes)
@@ -591,7 +671,15 @@ int gigaset_fill_inbuf(struct inbuf_t *inbuf, const unsigned char *src,
 		if (head > tail)
 			n = head - 1 - tail;
 		else if (head == 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			n = (RBUFSIZE-1) - tail;
+=======
+			n = (RBUFSIZE - 1) - tail;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			n = (RBUFSIZE - 1) - tail;
+>>>>>>> refs/remotes/origin/master
 		else
 			n = RBUFSIZE - tail;
 		if (!n) {
@@ -614,8 +702,13 @@ int gigaset_fill_inbuf(struct inbuf_t *inbuf, const unsigned char *src,
 EXPORT_SYMBOL_GPL(gigaset_fill_inbuf);
 
 /* Initialize the b-channel structure */
+<<<<<<< HEAD
 static struct bc_state *gigaset_initbcs(struct bc_state *bcs,
 					struct cardstate *cs, int channel)
+=======
+static int gigaset_initbcs(struct bc_state *bcs, struct cardstate *cs,
+			   int channel)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -654,11 +747,15 @@ static struct bc_state *gigaset_initbcs(struct bc_state *bcs,
 	bcs->apconnstate = 0;
 
 	gig_dbg(DEBUG_INIT, "  setting up bcs[%d]->hw", channel);
+<<<<<<< HEAD
 	if (cs->ops->initbcshw(bcs))
 		return bcs;
 
 	gig_dbg(DEBUG_INIT, "  failed");
 	return NULL;
+=======
+	return cs->ops->initbcshw(bcs);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -694,6 +791,7 @@ struct cardstate *gigaset_initcs(struct gigaset_driver *drv, int channels,
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	gig_dbg(DEBUG_INIT, "allocating bcs[0..%d]", channels - 1);
 	cs->bcs = kmalloc(channels * sizeof(struct bc_state), GFP_KERNEL);
 	if (!cs->bcs) {
@@ -707,6 +805,8 @@ struct cardstate *gigaset_initcs(struct gigaset_driver *drv, int channels,
 		goto error;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	cs->cs_init = 0;
 	cs->channels = channels;
 	cs->onechannel = onechannel;
@@ -720,12 +820,26 @@ struct cardstate *gigaset_initcs(struct gigaset_driver *drv, int channels,
 
 	tasklet_init(&cs->event_tasklet, gigaset_handle_event,
 		     (unsigned long) cs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cs->commands_pending = 0;
 	cs->cur_at_seq = 0;
 	cs->gotfwver = -1;
 	cs->open_count = 0;
 	cs->dev = NULL;
 	cs->tty = NULL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	tty_port_init(&cs->port);
+	cs->commands_pending = 0;
+	cs->cur_at_seq = 0;
+	cs->gotfwver = -1;
+	cs->dev = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cs->tty_dev = NULL;
 	cs->cidmode = cidmode != 0;
 	cs->tabnocid = gigaset_tab_nocid;
@@ -737,6 +851,15 @@ struct cardstate *gigaset_initcs(struct gigaset_driver *drv, int channels,
 	cs->mode = M_UNKNOWN;
 	cs->mstate = MS_UNINITIALIZED;
 
+<<<<<<< HEAD
+=======
+	cs->bcs = kmalloc(channels * sizeof(struct bc_state), GFP_KERNEL);
+	cs->inbuf = kmalloc(sizeof(struct inbuf_t), GFP_KERNEL);
+	if (!cs->bcs || !cs->inbuf) {
+		pr_err("out of memory\n");
+		goto error;
+	}
+>>>>>>> refs/remotes/origin/master
 	++cs->cs_init;
 
 	gig_dbg(DEBUG_INIT, "setting up at_state");
@@ -758,7 +881,11 @@ struct cardstate *gigaset_initcs(struct gigaset_driver *drv, int channels,
 	cs->cmdbytes = 0;
 
 	gig_dbg(DEBUG_INIT, "setting up iif");
+<<<<<<< HEAD
 	if (!gigaset_isdn_regdev(cs, modulename)) {
+=======
+	if (gigaset_isdn_regdev(cs, modulename) < 0) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("error registering ISDN device\n");
 		goto error;
 	}
@@ -766,7 +893,11 @@ struct cardstate *gigaset_initcs(struct gigaset_driver *drv, int channels,
 	make_valid(cs, VALID_ID);
 	++cs->cs_init;
 	gig_dbg(DEBUG_INIT, "setting up hw");
+<<<<<<< HEAD
 	if (!cs->ops->initcshw(cs))
+=======
+	if (cs->ops->initcshw(cs) < 0)
+>>>>>>> refs/remotes/origin/master
 		goto error;
 
 	++cs->cs_init;
@@ -780,7 +911,11 @@ struct cardstate *gigaset_initcs(struct gigaset_driver *drv, int channels,
 	/* set up channel data structures */
 	for (i = 0; i < channels; ++i) {
 		gig_dbg(DEBUG_INIT, "setting up bcs[%d]", i);
+<<<<<<< HEAD
 		if (!gigaset_initbcs(cs->bcs + i, cs, i)) {
+=======
+		if (gigaset_initbcs(cs->bcs + i, cs, i) < 0) {
+>>>>>>> refs/remotes/origin/master
 			pr_err("could not allocate channel %d data\n", i);
 			goto error;
 		}
@@ -849,8 +984,12 @@ static void cleanup_cs(struct cardstate *cs)
 	cs->mstate = MS_UNINITIALIZED;
 
 	clear_at_state(&cs->at_state);
+<<<<<<< HEAD
 	dealloc_at_states(cs);
 	free_strings(&cs->at_state);
+=======
+	dealloc_temp_at_states(cs);
+>>>>>>> refs/remotes/origin/master
 	gigaset_at_init(&cs->at_state, NULL, cs, 0);
 
 	cs->inbuf->inputstate = INS_command;
@@ -876,7 +1015,11 @@ static void cleanup_cs(struct cardstate *cs)
 
 	for (i = 0; i < cs->channels; ++i) {
 		gigaset_freebcs(cs->bcs + i);
+<<<<<<< HEAD
 		if (!gigaset_initbcs(cs->bcs + i, cs, i))
+=======
+		if (gigaset_initbcs(cs->bcs + i, cs, i) < 0)
+>>>>>>> refs/remotes/origin/master
 			pr_err("could not allocate channel %d data\n", i);
 	}
 
@@ -897,24 +1040,45 @@ static void cleanup_cs(struct cardstate *cs)
  * waiting for completion of the initialization.
  *
  * Return value:
+<<<<<<< HEAD
  *	1 - success, 0 - error
+=======
+ *	0 on success, error code < 0 on failure
+>>>>>>> refs/remotes/origin/master
  */
 int gigaset_start(struct cardstate *cs)
 {
 	unsigned long flags;
 
 	if (mutex_lock_interruptible(&cs->mutex))
+<<<<<<< HEAD
 		return 0;
+=======
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&cs->lock, flags);
 	cs->connected = 1;
 	spin_unlock_irqrestore(&cs->lock, flags);
 
 	if (cs->mstate != MS_LOCKED) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		cs->ops->set_modem_ctrl(cs, 0, TIOCM_DTR|TIOCM_RTS);
 		cs->ops->baud_rate(cs, B115200);
 		cs->ops->set_line_ctrl(cs, CS8);
 		cs->control_state = TIOCM_DTR|TIOCM_RTS;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		cs->ops->set_modem_ctrl(cs, 0, TIOCM_DTR | TIOCM_RTS);
+		cs->ops->baud_rate(cs, B115200);
+		cs->ops->set_line_ctrl(cs, CS8);
+		cs->control_state = TIOCM_DTR | TIOCM_RTS;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cs->waiting = 1;
@@ -928,11 +1092,19 @@ int gigaset_start(struct cardstate *cs)
 	wait_event(cs->waitqueue, !cs->waiting);
 
 	mutex_unlock(&cs->mutex);
+<<<<<<< HEAD
 	return 1;
 
 error:
 	mutex_unlock(&cs->mutex);
 	return 0;
+=======
+	return 0;
+
+error:
+	mutex_unlock(&cs->mutex);
+	return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(gigaset_start);
 
@@ -944,7 +1116,11 @@ EXPORT_SYMBOL_GPL(gigaset_start);
  * waiting for completion of the shutdown.
  *
  * Return value:
+<<<<<<< HEAD
  *	0 - success, -1 - error (no device associated)
+=======
+ *	0 - success, -ENODEV - error (no device associated)
+>>>>>>> refs/remotes/origin/master
  */
 int gigaset_shutdown(struct cardstate *cs)
 {
@@ -952,7 +1128,11 @@ int gigaset_shutdown(struct cardstate *cs)
 
 	if (!(cs->flags & VALID_MINOR)) {
 		mutex_unlock(&cs->mutex);
+<<<<<<< HEAD
 		return -1;
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cs->waiting = 1;
@@ -1051,8 +1231,14 @@ static struct cardstate *gigaset_get_cs_by_minor(unsigned minor)
 
 struct cardstate *gigaset_get_cs_by_tty(struct tty_struct *tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (tty->index < 0 || tty->index >= tty->driver->num)
 		return NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return gigaset_get_cs_by_minor(tty->index + tty->driver->minor_start);
 }
 
@@ -1135,7 +1321,10 @@ struct gigaset_driver *gigaset_initdriver(unsigned minor, unsigned minors,
 	return drv;
 
 error:
+<<<<<<< HEAD
 	kfree(drv->cs);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(drv);
 	return NULL;
 }

@@ -26,6 +26,11 @@
 
 */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/delay.h>
@@ -99,7 +104,11 @@ int bttv_sub_add_device(struct bttv_core *core, char *name)
 		kfree(sub);
 		return err;
 	}
+<<<<<<< HEAD
 	printk("bttv%d: add subdevice \"%s\"\n", core->nr, dev_name(&sub->dev));
+=======
+	pr_info("%d: add subdevice \"%s\"\n", core->nr, dev_name(&sub->dev));
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_add_tail(&sub->list,&core->subs);
 	return 0;
 }

@@ -14,6 +14,14 @@
 
 #include <linux/kernel.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/input.h>
 #include <linux/platform_device.h>
@@ -25,6 +33,8 @@ MODULE_DESCRIPTION("PC Speaker beeper driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:pcspkr");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MIPS) || defined(CONFIG_X86)
 /* Use the global PIT lock ! */
 #include <asm/i8253.h>
@@ -33,6 +43,10 @@ MODULE_ALIAS("platform:pcspkr");
 static DEFINE_RAW_SPINLOCK(i8253_lock);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int pcspkr_event(struct input_dev *dev, unsigned int type, unsigned int code, int value)
 {
 	unsigned int count = 0;
@@ -70,7 +84,11 @@ static int pcspkr_event(struct input_dev *dev, unsigned int type, unsigned int c
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pcspkr_probe(struct platform_device *dev)
+=======
+static int pcspkr_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *pcspkr_dev;
 	int err;
@@ -102,12 +120,19 @@ static int __devinit pcspkr_probe(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit pcspkr_remove(struct platform_device *dev)
+=======
+static int pcspkr_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *pcspkr_dev = platform_get_drvdata(dev);
 
 	input_unregister_device(pcspkr_dev);
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	/* turn off the speaker */
 	pcspkr_event(NULL, EV_SND, SND_BELL, 0);
 
@@ -138,9 +163,11 @@ static struct platform_driver pcspkr_platform_driver = {
 		.pm	= &pcspkr_pm_ops,
 	},
 	.probe		= pcspkr_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pcspkr_remove),
 	.shutdown	= pcspkr_shutdown,
 };
+<<<<<<< HEAD
 
 
 static int __init pcspkr_init(void)
@@ -155,3 +182,14 @@ static void __exit pcspkr_exit(void)
 
 module_init(pcspkr_init);
 module_exit(pcspkr_exit);
+=======
+module_platform_driver(pcspkr_platform_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= pcspkr_remove,
+	.shutdown	= pcspkr_shutdown,
+};
+module_platform_driver(pcspkr_platform_driver);
+
+>>>>>>> refs/remotes/origin/master

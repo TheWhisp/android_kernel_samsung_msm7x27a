@@ -25,6 +25,15 @@ struct kmem_cache *gfs2_inode_cachep __read_mostly;
 struct kmem_cache *gfs2_bufdata_cachep __read_mostly;
 struct kmem_cache *gfs2_rgrpd_cachep __read_mostly;
 struct kmem_cache *gfs2_quotad_cachep __read_mostly;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+mempool_t *gfs2_bh_pool __read_mostly;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct kmem_cache *gfs2_rsrv_cachep __read_mostly;
+mempool_t *gfs2_page_pool __read_mostly;
+>>>>>>> refs/remotes/origin/master
 
 void gfs2_assert_i(struct gfs2_sbd *sdp)
 {
@@ -52,6 +61,12 @@ int gfs2_lm_withdraw(struct gfs2_sbd *sdp, char *fmt, ...)
 
 		kobject_uevent(&sdp->sd_kobj, KOBJ_OFFLINE);
 
+<<<<<<< HEAD
+=======
+		if (!strcmp(sdp->sd_lockstruct.ls_ops->lm_proto_name, "lock_dlm"))
+			wait_for_completion(&sdp->sd_wdack);
+
+>>>>>>> refs/remotes/origin/master
 		if (lm->lm_unmount) {
 			fs_err(sdp, "telling LM to unmount\n");
 			lm->lm_unmount(sdp);
@@ -263,6 +278,7 @@ int gfs2_io_error_bh_i(struct gfs2_sbd *sdp, struct buffer_head *bh,
 	return rv;
 }
 
+<<<<<<< HEAD
 void gfs2_icbit_munge(struct gfs2_sbd *sdp, unsigned char **bitmap,
 		      unsigned int bit, int new_value)
 {
@@ -283,3 +299,5 @@ void gfs2_icbit_munge(struct gfs2_sbd *sdp, unsigned char **bitmap,
 		bitmap[c][o] &= ~(1 << b);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master

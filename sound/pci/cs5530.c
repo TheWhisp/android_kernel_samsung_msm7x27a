@@ -37,7 +37,15 @@
  */
 
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <sound/core.h>
@@ -50,7 +58,24 @@ MODULE_LICENSE("GPL");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+
+module_param_array(index, int, NULL, 0444);
+MODULE_PARM_DESC(index, "Index value for CS5530 Audio driver.");
+module_param_array(id, charp, NULL, 0444);
+MODULE_PARM_DESC(id, "ID string for CS5530 Audio driver.");
+module_param_array(enable, bool, NULL, 0444);
+MODULE_PARM_DESC(enable, "Enable CS5530 Audio driver.");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct snd_cs5530 {
 	struct snd_card *card;
@@ -81,6 +106,7 @@ static int snd_cs5530_dev_free(struct snd_device *device)
 	return snd_cs5530_free(chip);
 }
 
+<<<<<<< HEAD
 static void __devexit snd_cs5530_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -88,6 +114,14 @@ static void __devexit snd_cs5530_remove(struct pci_dev *pci)
 }
 
 static u8 __devinit snd_cs5530_mixer_read(unsigned long io, u8 reg)
+=======
+static void snd_cs5530_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+static u8 snd_cs5530_mixer_read(unsigned long io, u8 reg)
+>>>>>>> refs/remotes/origin/master
 {
 	outb(reg, io + 4);
 	udelay(20);
@@ -96,9 +130,15 @@ static u8 __devinit snd_cs5530_mixer_read(unsigned long io, u8 reg)
 	return reg;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cs5530_create(struct snd_card *card,
 				       struct pci_dev *pci,
 				       struct snd_cs5530 **rchip)
+=======
+static int snd_cs5530_create(struct snd_card *card,
+			     struct pci_dev *pci,
+			     struct snd_cs5530 **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_cs5530 *chip;
 	unsigned long sb_base;
@@ -135,8 +175,12 @@ static int __devinit snd_cs5530_create(struct snd_card *card,
 
 	mem = pci_ioremap_bar(pci, 0);
 	if (mem == NULL) {
+<<<<<<< HEAD
 		kfree(chip);
 		pci_disable_device(pci);
+=======
+		snd_cs5530_free(chip);
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
@@ -244,8 +288,13 @@ static int __devinit snd_cs5530_create(struct snd_card *card,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cs5530_probe(struct pci_dev *pci,
 					const struct pci_device_id *pci_id)
+=======
+static int snd_cs5530_probe(struct pci_dev *pci,
+			    const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -284,8 +333,13 @@ static int __devinit snd_cs5530_probe(struct pci_dev *pci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct pci_driver driver = {
+<<<<<<< HEAD
 	.name = "CS5530_Audio",
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = snd_cs5530_ids,
 	.probe = snd_cs5530_probe,
 	.remove = __devexit_p(snd_cs5530_remove),
@@ -304,3 +358,13 @@ static void __exit alsa_card_cs5530_exit(void)
 module_init(alsa_card_cs5530_init)
 module_exit(alsa_card_cs5530_exit)
 
+=======
+static struct pci_driver cs5530_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_cs5530_ids,
+	.probe = snd_cs5530_probe,
+	.remove = snd_cs5530_remove,
+};
+
+module_pci_driver(cs5530_driver);
+>>>>>>> refs/remotes/origin/master

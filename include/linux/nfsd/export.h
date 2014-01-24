@@ -6,6 +6,7 @@
  *
  * Copyright (C) 1995-1997 Olaf Kirch <okir@monad.swb.de>
  */
+<<<<<<< HEAD
 
 #ifndef NFSD_EXPORT_H
 #define NFSD_EXPORT_H
@@ -58,6 +59,13 @@
 					| NFSEXP_INSECURE_PORT)
 
 #ifdef __KERNEL__
+=======
+#ifndef NFSD_EXPORT_H
+#define NFSD_EXPORT_H
+
+# include <linux/nfsd/nfsfh.h>
+#include <uapi/linux/nfsd/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * FS Locations
@@ -96,14 +104,26 @@ struct svc_export {
 	struct auth_domain *	ex_client;
 	int			ex_flags;
 	struct path		ex_path;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	char			*ex_pathname;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	uid_t			ex_anon_uid;
 	gid_t			ex_anon_gid;
+=======
+	kuid_t			ex_anon_uid;
+	kgid_t			ex_anon_gid;
+>>>>>>> refs/remotes/origin/master
 	int			ex_fsid;
 	unsigned char *		ex_uuid; /* 16 byte fsid */
 	struct nfsd4_fs_locations ex_fslocs;
 	int			ex_nflavors;
 	struct exp_flavor_info	ex_flavors[MAX_SECINFO_LIST];
+<<<<<<< HEAD
+=======
+	struct cache_detail	*cd;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* an "export key" (expkey) maps a filehandlefragement to an
@@ -130,25 +150,49 @@ __be32 check_nfsd_access(struct svc_export *exp, struct svc_rqst *rqstp);
 /*
  * Function declarations
  */
+<<<<<<< HEAD
 int			nfsd_export_init(void);
 void			nfsd_export_shutdown(void);
 void			nfsd_export_flush(void);
+<<<<<<< HEAD
 void			exp_readlock(void);
 void			exp_readunlock(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int			nfsd_export_init(struct net *);
+void			nfsd_export_shutdown(struct net *);
+void			nfsd_export_flush(struct net *);
+>>>>>>> refs/remotes/origin/master
 struct svc_export *	rqst_exp_get_by_name(struct svc_rqst *,
 					     struct path *);
 struct svc_export *	rqst_exp_parent(struct svc_rqst *,
 					struct path *);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct svc_export *	rqst_find_fsidzero_export(struct svc_rqst *);
+>>>>>>> refs/remotes/origin/cm-10.0
 int			exp_rootfh(struct auth_domain *, 
+=======
+struct svc_export *	rqst_find_fsidzero_export(struct svc_rqst *);
+int			exp_rootfh(struct net *, struct auth_domain *,
+>>>>>>> refs/remotes/origin/master
 					char *path, struct knfsd_fh *, int maxsize);
 __be32			exp_pseudoroot(struct svc_rqst *, struct svc_fh *);
 __be32			nfserrno(int errno);
 
+<<<<<<< HEAD
 extern struct cache_detail svc_export_cache;
 
 static inline void exp_put(struct svc_export *exp)
 {
 	cache_put(&exp->h, &svc_export_cache);
+=======
+static inline void exp_put(struct svc_export *exp)
+{
+	cache_put(&exp->h, exp->cd);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void exp_get(struct svc_export *exp)
@@ -157,7 +201,11 @@ static inline void exp_get(struct svc_export *exp)
 }
 struct svc_export * rqst_exp_find(struct svc_rqst *, int, u32 *);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #endif /* NFSD_EXPORT_H */
 
+=======
+#endif /* NFSD_EXPORT_H */
+>>>>>>> refs/remotes/origin/master

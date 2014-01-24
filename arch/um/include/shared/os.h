@@ -7,10 +7,19 @@
 #define __OS_H__
 
 #include <stdarg.h>
+<<<<<<< HEAD
 #include "irq_user.h"
 #include "longjmp.h"
 #include "mm_id.h"
+<<<<<<< HEAD
 #include "sysdep/tls.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <irq_user.h>
+#include <longjmp.h>
+#include <mm_id.h>
+>>>>>>> refs/remotes/origin/master
 
 #define CATCH_EINTR(expr) while ((errno = 0, ((expr) < 0)) && (errno == EINTR))
 
@@ -142,6 +151,10 @@ extern int os_seek_file(int fd, unsigned long long offset);
 extern int os_open_file(const char *file, struct openflags flags, int mode);
 extern int os_read_file(int fd, void *buf, int len);
 extern int os_write_file(int fd, const void *buf, int count);
+<<<<<<< HEAD
+=======
+extern int os_sync_file(int fd);
+>>>>>>> refs/remotes/origin/master
 extern int os_file_size(const char *file, unsigned long long *size_out);
 extern int os_file_modtime(const char *file, unsigned long *modtime);
 extern int os_pipe(int *fd, int stream, int close_on_exec);
@@ -192,7 +205,10 @@ extern int os_getpid(void);
 extern int os_getpgrp(void);
 
 extern void init_new_thread_signals(void);
+<<<<<<< HEAD
 extern int run_kernel_thread(int (*fn)(void *), void *arg, jmp_buf **jmp_ptr);
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern int os_map_memory(void *virt, int fd, unsigned long long off,
 			 unsigned long len, int r, int w, int x);
@@ -202,13 +218,21 @@ extern int os_unmap_memory(void *addr, int len);
 extern int os_drop_memory(void *addr, int length);
 extern int can_drop_memory(void);
 extern void os_flush_stdout(void);
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 /* uaccess.c */
 extern unsigned long __do_user_copy(void *to, const void *from, int n,
 				    void **fault_addr, jmp_buf **fault_catcher,
 				    void (*op)(void *to, const void *from,
 					       int n), int *faulted_out);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int os_mincore(void *addr, unsigned long len);
+
+>>>>>>> refs/remotes/origin/master
 /* execvp.c */
 extern int execvp_noalloc(char *buf, const char *file, char *const argv[]);
 /* helper.c */
@@ -218,10 +242,16 @@ extern int run_helper_thread(int (*proc)(void *), void *arg,
 extern int helper_wait(int pid);
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* tls.c */
 extern int os_set_thread_area(user_desc_t *info, int pid);
 extern int os_get_thread_area(user_desc_t *info, int pid);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* umid.c */
 extern int umid_file_name(char *name, char *buf, int len);
 extern int set_umid(char *name);
@@ -231,12 +261,24 @@ extern char *get_umid(void);
 extern void timer_init(void);
 extern void set_sigstack(void *sig_stack, int size);
 extern void remove_sigstack(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void set_handler(int sig, void (*handler)(int), int flags, ...);
+=======
+extern void set_handler(int sig);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void set_handler(int sig);
+>>>>>>> refs/remotes/origin/master
 extern int change_sig(int signal, int on);
 extern void block_signals(void);
 extern void unblock_signals(void);
 extern int get_signals(void);
 extern int set_signals(int enable);
+<<<<<<< HEAD
+=======
+extern int os_is_signal_stack(void);
+>>>>>>> refs/remotes/origin/master
 
 /* util.c */
 extern void stack_protections(unsigned long address);
@@ -245,6 +287,10 @@ extern void setup_machinename(char *machine_out);
 extern void setup_hostinfo(char *buf, int len);
 extern void os_dump_core(void) __attribute__ ((noreturn));
 extern void um_early_printk(const char *s, unsigned int n);
+<<<<<<< HEAD
+=======
+extern void os_fix_helper_signals(void);
+>>>>>>> refs/remotes/origin/master
 
 /* time.c */
 extern void idle_sleep(unsigned long long nsecs);

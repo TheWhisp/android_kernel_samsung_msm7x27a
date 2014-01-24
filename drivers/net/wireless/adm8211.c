@@ -16,6 +16,14 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/if.h>
 #include <linux/skbuff.h>
 #include <linux/slab.h>
@@ -24,6 +32,14 @@
 #include <linux/delay.h>
 #include <linux/crc32.h>
 #include <linux/eeprom_93cx6.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/mac80211.h>
 
 #include "adm8211.h"
@@ -1248,7 +1264,17 @@ static int adm8211_hw_reset(struct ieee80211_hw *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u64 adm8211_get_tsft(struct ieee80211_hw *dev)
+=======
+static u64 adm8211_get_tsft(struct ieee80211_hw *dev,
+			    struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u64 adm8211_get_tsft(struct ieee80211_hw *dev,
+			    struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm8211_priv *priv = dev->priv;
 	u32 tsftl;
@@ -1290,7 +1316,12 @@ static int adm8211_config(struct ieee80211_hw *dev, u32 changed)
 {
 	struct adm8211_priv *priv = dev->priv;
 	struct ieee80211_conf *conf = &dev->conf;
+<<<<<<< HEAD
 	int channel = ieee80211_frequency_to_channel(conf->channel->center_freq);
+=======
+	int channel =
+		ieee80211_frequency_to_channel(conf->chandef.chan->center_freq);
+>>>>>>> refs/remotes/origin/master
 
 	if (channel != priv->channel) {
 		priv->channel = channel;
@@ -1658,7 +1689,13 @@ static void adm8211_tx_raw(struct ieee80211_hw *dev, struct sk_buff *skb,
 }
 
 /* Put adm8211_tx_hdr on skb and transmit */
+<<<<<<< HEAD
 static void adm8211_tx(struct ieee80211_hw *dev, struct sk_buff *skb)
+=======
+static void adm8211_tx(struct ieee80211_hw *dev,
+		       struct ieee80211_tx_control *control,
+		       struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm8211_tx_hdr *txhdr;
 	size_t payload_len, hdrlen;
@@ -1735,8 +1772,12 @@ static int adm8211_alloc_rings(struct ieee80211_hw *dev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	priv->tx_ring = (struct adm8211_desc *)(priv->rx_ring +
 						priv->rx_ring_size);
+=======
+	priv->tx_ring = priv->rx_ring + priv->rx_ring_size;
+>>>>>>> refs/remotes/origin/master
 	priv->tx_ring_dma = priv->rx_ring_dma +
 			    sizeof(struct adm8211_desc) * priv->rx_ring_size;
 
@@ -1757,7 +1798,11 @@ static const struct ieee80211_ops adm8211_ops = {
 	.get_tsf		= adm8211_get_tsft
 };
 
+<<<<<<< HEAD
 static int __devinit adm8211_probe(struct pci_dev *pdev,
+=======
+static int adm8211_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				   const struct pci_device_id *id)
 {
 	struct ieee80211_hw *dev;
@@ -1852,7 +1897,11 @@ static int __devinit adm8211_probe(struct pci_dev *pdev,
 	if (!is_valid_ether_addr(perm_addr)) {
 		printk(KERN_WARNING "%s (adm8211): Invalid hwaddr in EEPROM!\n",
 		       pci_name(pdev));
+<<<<<<< HEAD
 		random_ether_addr(perm_addr);
+=======
+		eth_random_addr(perm_addr);
+>>>>>>> refs/remotes/origin/master
 	}
 	SET_IEEE80211_PERM_ADDR(dev, perm_addr);
 
@@ -1919,7 +1968,10 @@ static int __devinit adm8211_probe(struct pci_dev *pdev,
 	pci_iounmap(pdev, priv->map);
 
  err_free_dev:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	ieee80211_free_hw(dev);
 
  err_free_reg:
@@ -1931,7 +1983,11 @@ static int __devinit adm8211_probe(struct pci_dev *pdev,
 }
 
 
+<<<<<<< HEAD
 static void __devexit adm8211_remove(struct pci_dev *pdev)
+=======
+static void adm8211_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_hw *dev = pci_get_drvdata(pdev);
 	struct adm8211_priv *priv;
@@ -1981,13 +2037,18 @@ static struct pci_driver adm8211_driver = {
 	.name		= "adm8211",
 	.id_table	= adm8211_pci_id_table,
 	.probe		= adm8211_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(adm8211_remove),
+=======
+	.remove		= adm8211_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= adm8211_suspend,
 	.resume		= adm8211_resume,
 #endif /* CONFIG_PM */
 };
 
+<<<<<<< HEAD
 
 
 static int __init adm8211_init(void)
@@ -2004,3 +2065,6 @@ static void __exit adm8211_exit(void)
 
 module_init(adm8211_init);
 module_exit(adm8211_exit);
+=======
+module_pci_driver(adm8211_driver);
+>>>>>>> refs/remotes/origin/master

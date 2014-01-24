@@ -12,7 +12,15 @@
 */
 #include <mach/hardware.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.macro	addruart, rp, rv
+=======
+		.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/master
 		mrc	p15, 0, \rp, c1, c0
 		tst	\rp, #1			@ MMU enabled?
 		moveq	\rp, #0x80000000	@ physical base address

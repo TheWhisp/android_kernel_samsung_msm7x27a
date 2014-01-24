@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/kernel/cpcmd.c
  *
  *  S390 version
  *    Copyright IBM Corp. 1999,2007
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999, 2007
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com),
  *               Christian Borntraeger (cborntra@de.ibm.com),
  */
@@ -18,7 +23,13 @@
 #include <linux/string.h>
 #include <asm/ebcdic.h>
 #include <asm/cpcmd.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 static DEFINE_SPINLOCK(cpcmd_lock);

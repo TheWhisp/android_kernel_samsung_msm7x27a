@@ -33,7 +33,10 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/suspend.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/v4l2-common.h>
 #include <media/v4l2-ioctl.h>
 #include <media/v4l2-chip-ident.h>
@@ -43,8 +46,11 @@
 
 static DEFINE_MUTEX(au0828_sysfs_lock);
 
+<<<<<<< HEAD
 #define AU0828_VERSION_CODE KERNEL_VERSION(0, 0, 1)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ------------------------------------------------------------------
 	Videobuf operations
    ------------------------------------------------------------------*/
@@ -1254,8 +1260,11 @@ static int vidioc_querycap(struct file *file, void  *priv,
 	strlcpy(cap->card, dev->board.name, sizeof(cap->card));
 	strlcpy(cap->bus_info, dev->v4l2_dev.name, sizeof(cap->bus_info));
 
+<<<<<<< HEAD
 	cap->version = AU0828_VERSION_CODE;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*set the device capabilities */
 	cap->capabilities = V4L2_CAP_VIDEO_CAPTURE |
 		V4L2_CAP_VBI_CAPTURE |

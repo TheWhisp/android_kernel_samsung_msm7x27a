@@ -86,7 +86,15 @@ struct swap_eb {
 	unsigned int flags;
 	unsigned int active_count;
 	unsigned int erase_count;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int pad;		/* speeds up pointer decremtnt */
+=======
+	unsigned int pad;		/* speeds up pointer decrement */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int pad;		/* speeds up pointer decrement */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define MTDSWAP_ECNT_MIN(rbroot) (rb_entry(rb_first(rbroot), struct swap_eb, \
@@ -274,12 +282,28 @@ static int mtdswap_handle_badblock(struct mtdswap_dev *d, struct swap_eb *eb)
 	eb->root = NULL;
 
 	/* badblocks not supported */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!d->mtd->block_markbad)
+=======
+	if (!mtd_can_have_bb(d->mtd))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!mtd_can_have_bb(d->mtd))
+>>>>>>> refs/remotes/origin/master
 		return 1;
 
 	offset = mtdswap_eb_offset(d, eb);
 	dev_warn(d->dev, "Marking bad block at %08llx\n", offset);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = d->mtd->block_markbad(d->mtd, offset);
+=======
+	ret = mtd_block_markbad(d->mtd, offset);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mtd_block_markbad(d->mtd, offset);
+>>>>>>> refs/remotes/origin/master
 
 	if (ret) {
 		dev_warn(d->dev, "Mark block bad failed for block at %08llx "
@@ -312,9 +336,21 @@ static int mtdswap_handle_write_error(struct mtdswap_dev *d, struct swap_eb *eb)
 static int mtdswap_read_oob(struct mtdswap_dev *d, loff_t from,
 			struct mtd_oob_ops *ops)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = d->mtd->read_oob(d->mtd, from, ops);
 
 	if (ret == -EUCLEAN)
+=======
+	int ret = mtd_read_oob(d->mtd, from, ops);
+
+	if (mtd_is_bitflip(ret))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = mtd_read_oob(d->mtd, from, ops);
+
+	if (mtd_is_bitflip(ret))
+>>>>>>> refs/remotes/origin/master
 		return ret;
 
 	if (ret) {
@@ -343,18 +379,40 @@ static int mtdswap_read_markers(struct mtdswap_dev *d, struct swap_eb *eb)
 	offset = mtdswap_eb_offset(d, eb);
 
 	/* Check first if the block is bad. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (d->mtd->block_isbad && d->mtd->block_isbad(d->mtd, offset))
+=======
+	if (mtd_can_have_bb(d->mtd) && mtd_block_isbad(d->mtd, offset))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mtd_can_have_bb(d->mtd) && mtd_block_isbad(d->mtd, offset))
+>>>>>>> refs/remotes/origin/master
 		return MTDSWAP_SCANNED_BAD;
 
 	ops.ooblen = 2 * d->mtd->ecclayout->oobavail;
 	ops.oobbuf = d->oob_buf;
 	ops.ooboffs = 0;
 	ops.datbuf = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_AUTO;
 
 	ret = mtdswap_read_oob(d, offset, &ops);
 
 	if (ret && ret != -EUCLEAN)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ops.mode = MTD_OPS_AUTO_OOB;
+
+	ret = mtdswap_read_oob(d, offset, &ops);
+
+	if (ret && !mtd_is_bitflip(ret))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 
 	data = (struct mtdswap_oobdata *)d->oob_buf;
@@ -363,7 +421,15 @@ static int mtdswap_read_markers(struct mtdswap_dev *d, struct swap_eb *eb)
 
 	if (le16_to_cpu(data->magic) == MTDSWAP_MAGIC_CLEAN) {
 		eb->erase_count = le32_to_cpu(data->count);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ret == -EUCLEAN)
+=======
+		if (mtd_is_bitflip(ret))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (mtd_is_bitflip(ret))
+>>>>>>> refs/remotes/origin/master
 			ret = MTDSWAP_SCANNED_BITFLIP;
 		else {
 			if (le16_to_cpu(data2->magic) == MTDSWAP_MAGIC_DIRTY)
@@ -389,7 +455,15 @@ static int mtdswap_write_marker(struct mtdswap_dev *d, struct swap_eb *eb,
 
 	ops.ooboffs = 0;
 	ops.oobbuf = (uint8_t *)&n;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_AUTO;
+=======
+	ops.mode = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops.mode = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/master
 	ops.datbuf = NULL;
 
 	if (marker == MTDSWAP_TYPE_CLEAN) {
@@ -403,12 +477,28 @@ static int mtdswap_write_marker(struct mtdswap_dev *d, struct swap_eb *eb,
 		offset = mtdswap_eb_offset(d, eb) + d->mtd->writesize;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = d->mtd->write_oob(d->mtd, offset , &ops);
+=======
+	ret = mtd_write_oob(d->mtd, offset, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mtd_write_oob(d->mtd, offset, &ops);
+>>>>>>> refs/remotes/origin/master
 
 	if (ret) {
 		dev_warn(d->dev, "Write OOB failed for block at %08llx "
 			"error %d\n", offset, ret);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ret == -EIO || ret == -EBADMSG)
+=======
+		if (ret == -EIO || mtd_is_eccerr(ret))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ret == -EIO || mtd_is_eccerr(ret))
+>>>>>>> refs/remotes/origin/master
 			mtdswap_handle_write_error(d, eb);
 		return ret;
 	}
@@ -567,7 +657,15 @@ retry:
 	erase.len	= mtd->erasesize;
 	erase.priv	= (u_long)&wq;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mtd->erase(mtd, &erase);
+=======
+	ret = mtd_erase(mtd, &erase);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mtd_erase(mtd, &erase);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		if (retries++ < MTDSWAP_ERASE_RETRIES) {
 			dev_warn(d->dev,
@@ -628,7 +726,15 @@ static int mtdswap_map_free_block(struct mtdswap_dev *d, unsigned int page,
 			TREE_COUNT(d, CLEAN)--;
 
 			ret = mtdswap_write_marker(d, eb, MTDSWAP_TYPE_DIRTY);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		} while (ret == -EIO || ret == -EBADMSG);
+=======
+		} while (ret == -EIO || mtd_is_eccerr(ret));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} while (ret == -EIO || mtd_is_eccerr(ret));
+>>>>>>> refs/remotes/origin/master
 
 		if (ret)
 			return ret;
@@ -678,7 +784,15 @@ retry:
 	ret = mtdswap_map_free_block(d, page, bp);
 	eb = d->eb_data + (*bp / d->pages_per_eblk);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret == -EIO || ret == -EBADMSG) {
+=======
+	if (ret == -EIO || mtd_is_eccerr(ret)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret == -EIO || mtd_is_eccerr(ret)) {
+>>>>>>> refs/remotes/origin/master
 		d->curr_write = NULL;
 		eb->active_count--;
 		d->revmap[*bp] = PAGE_UNDEF;
@@ -689,8 +803,18 @@ retry:
 		return ret;
 
 	writepos = (loff_t)*bp << PAGE_SHIFT;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret =  mtd->write(mtd, writepos, PAGE_SIZE, &retlen, buf);
 	if (ret == -EIO || ret == -EBADMSG) {
+=======
+	ret =  mtd_write(mtd, writepos, PAGE_SIZE, &retlen, buf);
+	if (ret == -EIO || mtd_is_eccerr(ret)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret =  mtd_write(mtd, writepos, PAGE_SIZE, &retlen, buf);
+	if (ret == -EIO || mtd_is_eccerr(ret)) {
+>>>>>>> refs/remotes/origin/master
 		d->curr_write_pos--;
 		eb->active_count--;
 		d->revmap[*bp] = PAGE_UNDEF;
@@ -736,9 +860,21 @@ static int mtdswap_move_block(struct mtdswap_dev *d, unsigned int oldblock,
 	retries = 0;
 
 retry:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mtd->read(mtd, readpos, PAGE_SIZE, &retlen, d->page_buf);
 
 	if (ret < 0 && ret != -EUCLEAN) {
+=======
+	ret = mtd_read(mtd, readpos, PAGE_SIZE, &retlen, d->page_buf);
+
+	if (ret < 0 && !mtd_is_bitflip(ret)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mtd_read(mtd, readpos, PAGE_SIZE, &retlen, d->page_buf);
+
+	if (ret < 0 && !mtd_is_bitflip(ret)) {
+>>>>>>> refs/remotes/origin/master
 		oldeb = d->eb_data + oldblock / d->pages_per_eblk;
 		oldeb->flags |= EBLOCK_READERR;
 
@@ -931,7 +1067,15 @@ static unsigned int mtdswap_eblk_passes(struct mtdswap_dev *d,
 	struct mtd_oob_ops ops;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_AUTO;
+=======
+	ops.mode = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops.mode = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/master
 	ops.len = mtd->writesize;
 	ops.ooblen = mtd->ecclayout->oobavail;
 	ops.ooboffs = 0;
@@ -946,7 +1090,15 @@ static unsigned int mtdswap_eblk_passes(struct mtdswap_dev *d,
 			patt = mtdswap_test_patt(test + i);
 			memset(d->page_buf, patt, mtd->writesize);
 			memset(d->oob_buf, patt, mtd->ecclayout->oobavail);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ret = mtd->write_oob(mtd, pos, &ops);
+=======
+			ret = mtd_write_oob(mtd, pos, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = mtd_write_oob(mtd, pos, &ops);
+>>>>>>> refs/remotes/origin/master
 			if (ret)
 				goto error;
 
@@ -955,7 +1107,15 @@ static unsigned int mtdswap_eblk_passes(struct mtdswap_dev *d,
 
 		pos = base;
 		for (i = 0; i < mtd_pages; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ret = mtd->read_oob(mtd, pos, &ops);
+=======
+			ret = mtd_read_oob(mtd, pos, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = mtd_read_oob(mtd, pos, &ops);
+>>>>>>> refs/remotes/origin/master
 			if (ret)
 				goto error;
 
@@ -1016,7 +1176,15 @@ static int mtdswap_gc(struct mtdswap_dev *d, unsigned int background)
 
 	if (ret == 0)
 		mtdswap_rb_add(d, eb, MTDSWAP_CLEAN);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	else if (ret != -EIO && ret != -EBADMSG)
+=======
+	else if (ret != -EIO && !mtd_is_eccerr(ret))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (ret != -EIO && !mtd_is_eccerr(ret))
+>>>>>>> refs/remotes/origin/master
 		mtdswap_rb_add(d, eb, MTDSWAP_DIRTY);
 
 	return 0;
@@ -1047,8 +1215,16 @@ static int mtdswap_flush(struct mtd_blktrans_dev *dev)
 {
 	struct mtdswap_dev *d = MTDSWAP_MBD_TO_MTDSWAP(dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (d->mtd->sync)
 		d->mtd->sync(d->mtd);
+=======
+	mtd_sync(d->mtd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_sync(d->mtd);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1059,9 +1235,21 @@ static unsigned int mtdswap_badblocks(struct mtd_info *mtd, uint64_t size)
 
 	badcnt = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (mtd->block_isbad)
 		for (offset = 0; offset < size; offset += mtd->erasesize)
 			if (mtd->block_isbad(mtd, offset))
+=======
+	if (mtd_can_have_bb(mtd))
+		for (offset = 0; offset < size; offset += mtd->erasesize)
+			if (mtd_block_isbad(mtd, offset))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mtd_can_have_bb(mtd))
+		for (offset = 0; offset < size; offset += mtd->erasesize)
+			if (mtd_block_isbad(mtd, offset))
+>>>>>>> refs/remotes/origin/master
 				badcnt++;
 
 	return badcnt;
@@ -1161,10 +1349,23 @@ static int mtdswap_readsect(struct mtd_blktrans_dev *dev,
 	retries = 0;
 
 retry:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mtd->read(mtd, readpos, PAGE_SIZE, &retlen, buf);
 
 	d->mtd_read_count++;
 	if (ret == -EUCLEAN) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = mtd_read(mtd, readpos, PAGE_SIZE, &retlen, buf);
+
+	d->mtd_read_count++;
+	if (mtd_is_bitflip(ret)) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		eb->flags |= EBLOCK_BITFLIP;
 		mtdswap_rb_add(d, eb, MTDSWAP_BITFLIP);
 		ret = 0;
@@ -1374,11 +1575,24 @@ static int mtdswap_init(struct mtdswap_dev *d, unsigned int eblocks,
 		goto revmap_fail;
 
 	eblk_bytes = sizeof(struct swap_eb)*d->eblks;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	d->eb_data = vmalloc(eblk_bytes);
 	if (!d->eb_data)
 		goto eb_data_fail;
 
 	memset(d->eb_data, 0, eblk_bytes);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	d->eb_data = vzalloc(eblk_bytes);
+	if (!d->eb_data)
+		goto eb_data_fail;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < pages; i++)
 		d->page_data[i] = BLOCK_UNDEF;
 
@@ -1427,7 +1641,11 @@ static void mtdswap_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
 		return;
 
 	while ((this_opt = strsep(&parts, ",")) != NULL) {
+<<<<<<< HEAD
 		if (strict_strtoul(this_opt, 0, &part) < 0)
+=======
+		if (kstrtoul(this_opt, 0, &part) < 0)
+>>>>>>> refs/remotes/origin/master
 			return;
 
 		if (mtd->index == part)

@@ -9,7 +9,19 @@
 /* DMA-Interrupt reasons. */
 #define B43_DMAIRQ_FATALMASK	((1 << 10) | (1 << 11) | (1 << 12) \
 					 | (1 << 14) | (1 << 15))
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define B43_DMAIRQ_NONFATALMASK	(1 << 13)
+=======
+#define B43_DMAIRQ_RDESC_UFLOW		(1 << 13)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define B43_DMAIRQ_RDESC_UFLOW		(1 << 13)
+>>>>>>> refs/remotes/origin/master
+=======
+#define B43_DMAIRQ_RDESC_UFLOW		(1 << 13)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define B43_DMAIRQ_RX_DONE		(1 << 16)
 
 /*** 32-bit DMA Engine. ***/
@@ -20,6 +32,14 @@
 #define		B43_DMA32_TXSUSPEND			0x00000002
 #define		B43_DMA32_TXLOOPBACK		0x00000004
 #define		B43_DMA32_TXFLUSH			0x00000010
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define		B43_DMA32_TXPARITYDISABLE		0x00000800
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define		B43_DMA32_TXPARITYDISABLE		0x00000800
+>>>>>>> refs/remotes/origin/master
 #define		B43_DMA32_TXADDREXT_MASK		0x00030000
 #define		B43_DMA32_TXADDREXT_SHIFT		16
 #define B43_DMA32_TXRING				0x04
@@ -44,6 +64,14 @@
 #define		B43_DMA32_RXFROFF_MASK		0x000000FE
 #define		B43_DMA32_RXFROFF_SHIFT		1
 #define		B43_DMA32_RXDIRECTFIFO		0x00000100
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define		B43_DMA32_RXPARITYDISABLE		0x00000800
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define		B43_DMA32_RXPARITYDISABLE		0x00000800
+>>>>>>> refs/remotes/origin/master
 #define		B43_DMA32_RXADDREXT_MASK		0x00030000
 #define		B43_DMA32_RXADDREXT_SHIFT		16
 #define B43_DMA32_RXRING				0x14
@@ -84,6 +112,14 @@ struct b43_dmadesc32 {
 #define		B43_DMA64_TXSUSPEND			0x00000002
 #define		B43_DMA64_TXLOOPBACK		0x00000004
 #define		B43_DMA64_TXFLUSH			0x00000010
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define		B43_DMA64_TXPARITYDISABLE		0x00000800
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define		B43_DMA64_TXPARITYDISABLE		0x00000800
+>>>>>>> refs/remotes/origin/master
 #define		B43_DMA64_TXADDREXT_MASK		0x00030000
 #define		B43_DMA64_TXADDREXT_SHIFT		16
 #define B43_DMA64_TXINDEX				0x04
@@ -111,6 +147,14 @@ struct b43_dmadesc32 {
 #define		B43_DMA64_RXFROFF_MASK		0x000000FE
 #define		B43_DMA64_RXFROFF_SHIFT		1
 #define		B43_DMA64_RXDIRECTFIFO		0x00000100
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define		B43_DMA64_RXPARITYDISABLE		0x00000800
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define		B43_DMA64_RXPARITYDISABLE		0x00000800
+>>>>>>> refs/remotes/origin/master
 #define		B43_DMA64_RXADDREXT_MASK		0x00030000
 #define		B43_DMA64_RXADDREXT_SHIFT		16
 #define B43_DMA64_RXINDEX				0x24
@@ -157,6 +201,8 @@ struct b43_dmadesc_generic {
 } __packed;
 
 /* Misc DMA constants */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define B43_DMA_RINGMEMSIZE		PAGE_SIZE
 #define B43_DMA0_RX_FRAMEOFFSET		30
 
@@ -164,6 +210,24 @@ struct b43_dmadesc_generic {
 #define B43_TXRING_SLOTS		256
 #define B43_RXRING_SLOTS		64
 #define B43_DMA0_RX_BUFFERSIZE		(B43_DMA0_RX_FRAMEOFFSET + IEEE80211_MAX_FRAME_LEN)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define B43_DMA32_RINGMEMSIZE		4096
+#define B43_DMA64_RINGMEMSIZE		8192
+/* Offset of frame with actual data */
+#define B43_DMA0_RX_FW598_FO		38
+#define B43_DMA0_RX_FW351_FO		30
+
+/* DMA engine tuning knobs */
+#define B43_TXRING_SLOTS		256
+#define B43_RXRING_SLOTS		256
+#define B43_DMA0_RX_FW598_BUFSIZE	(B43_DMA0_RX_FW598_FO + IEEE80211_MAX_FRAME_LEN)
+#define B43_DMA0_RX_FW351_BUFSIZE	(B43_DMA0_RX_FW351_FO + IEEE80211_MAX_FRAME_LEN)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Pointer poison */
 #define B43_DMA_PTR_POISON		((void *)ERR_PTR(-ENOMEM))
@@ -208,6 +272,21 @@ enum b43_dmatype {
 	B43_DMA_64BIT	= 64,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum b43_addrtype {
+	B43_DMA_ADDR_LOW,
+	B43_DMA_ADDR_HIGH,
+	B43_DMA_ADDR_EXT,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct b43_dmaring {
 	/* Lowlevel DMA ops. */
 	const struct b43_dma_ops *ops;
@@ -281,6 +360,21 @@ int b43_dma_tx(struct b43_wldev *dev,
 void b43_dma_handle_txstatus(struct b43_wldev *dev,
 			     const struct b43_txstatus *status);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void b43_dma_handle_rx_overflow(struct b43_dmaring *ring);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void b43_dma_handle_rx_overflow(struct b43_dmaring *ring);
+
+>>>>>>> refs/remotes/origin/master
+=======
+void b43_dma_handle_rx_overflow(struct b43_dmaring *ring);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 void b43_dma_rx(struct b43_dmaring *ring);
 
 void b43_dma_direct_fifo_rx(struct b43_wldev *dev,

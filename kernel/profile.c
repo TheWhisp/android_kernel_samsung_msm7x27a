@@ -8,12 +8,26 @@
  *  Scheduler profiling support, Arjan van de Ven and Ingo Molnar,
  *	Red Hat, July 2004
  *  Consolidation of architecture support code for profiling,
+<<<<<<< HEAD
  *	William Irwin, Oracle, July 2004
  *  Amortized hit count accounting via per-cpu open-addressed hashtables
  *	to resolve timer interrupt livelocks, William Irwin, Oracle, 2004
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Nadia Yvette Chambers, Oracle, July 2004
+ *  Amortized hit count accounting via per-cpu open-addressed hashtables
+ *	to resolve timer interrupt livelocks, Nadia Yvette Chambers,
+ *	Oracle, 2004
+ */
+
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/profile.h>
 #include <linux/bootmem.h>
 #include <linux/notifier.h>
@@ -36,9 +50,12 @@ struct profile_hit {
 #define NR_PROFILE_HIT		(PAGE_SIZE/sizeof(struct profile_hit))
 #define NR_PROFILE_GRP		(NR_PROFILE_HIT/PROFILE_GRPSZ)
 
+<<<<<<< HEAD
 /* Oprofile timer tick hook */
 static int (*timer_hook)(struct pt_regs *) __read_mostly;
 
+=======
+>>>>>>> refs/remotes/origin/master
 static atomic_t *prof_buffer;
 static unsigned long prof_len, prof_shift;
 
@@ -207,6 +224,7 @@ int profile_event_unregister(enum profile_type type, struct notifier_block *n)
 }
 EXPORT_SYMBOL_GPL(profile_event_unregister);
 
+<<<<<<< HEAD
 int register_timer_hook(int (*hook)(struct pt_regs *))
 {
 	if (timer_hook)
@@ -226,6 +244,8 @@ void unregister_timer_hook(int (*hook)(struct pt_regs *))
 EXPORT_SYMBOL_GPL(unregister_timer_hook);
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 /*
  * Each cpu has a pair of open-addressed hashtables for pending
@@ -256,7 +276,11 @@ EXPORT_SYMBOL_GPL(unregister_timer_hook);
  * pagetable hash functions, but uses a full hashtable full of finite
  * collision chains, not just pairs of them.
  *
+<<<<<<< HEAD
  * -- wli
+=======
+ * -- nyc
+>>>>>>> refs/remotes/origin/master
  */
 static void __profile_flip_buffers(void *unused)
 {
@@ -352,7 +376,11 @@ out:
 	put_cpu();
 }
 
+<<<<<<< HEAD
 static int __cpuinit profile_cpu_callback(struct notifier_block *info,
+=======
+static int profile_cpu_callback(struct notifier_block *info,
+>>>>>>> refs/remotes/origin/master
 					unsigned long action, void *__cpu)
 {
 	int node, cpu = (unsigned long)__cpu;
@@ -435,8 +463,11 @@ void profile_tick(int type)
 {
 	struct pt_regs *regs = get_irq_regs();
 
+<<<<<<< HEAD
 	if (type == CPU_PROFILING && timer_hook)
 		timer_hook(regs);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!user_mode(regs) && prof_cpu_mask != NULL &&
 	    cpumask_test_cpu(smp_processor_id(), prof_cpu_mask))
 		profile_hit(type, (void *)profile_pc(regs));
@@ -485,10 +516,17 @@ static const struct file_operations prof_cpu_mask_proc_fops = {
 	.write		= prof_cpu_mask_proc_write,
 };
 
+<<<<<<< HEAD
 void create_prof_cpu_mask(struct proc_dir_entry *root_irq_dir)
 {
 	/* create /proc/irq/prof_cpu_mask */
 	proc_create("prof_cpu_mask", 0600, root_irq_dir, &prof_cpu_mask_proc_fops);
+=======
+void create_prof_cpu_mask(void)
+{
+	/* create /proc/irq/prof_cpu_mask */
+	proc_create("irq/prof_cpu_mask", 0600, NULL, &prof_cpu_mask_proc_fops);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -623,7 +661,11 @@ int __ref create_proc_profile(void) /* false positive from hotcpu_notifier */
 			    NULL, &proc_profile_operations);
 	if (!entry)
 		return 0;
+<<<<<<< HEAD
 	entry->size = (1+prof_len) * sizeof(atomic_t);
+=======
+	proc_set_size(entry, (1 + prof_len) * sizeof(atomic_t));
+>>>>>>> refs/remotes/origin/master
 	hotcpu_notifier(profile_cpu_callback, 0);
 	return 0;
 }

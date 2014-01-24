@@ -39,7 +39,15 @@
 })
 
 #define __page_to_pfn(pg)						\
+<<<<<<< HEAD
+<<<<<<< HEAD
 ({	struct page *__pg = (pg);					\
+=======
+({	const struct page *__pg = (pg);					\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+({	const struct page *__pg = (pg);					\
+>>>>>>> refs/remotes/origin/master
 	struct pglist_data *__pgdat = NODE_DATA(page_to_nid(__pg));	\
 	(unsigned long)(__pg - __pgdat->node_mem_map) +			\
 	 __pgdat->node_start_pfn;					\
@@ -53,11 +61,23 @@
 
 #elif defined(CONFIG_SPARSEMEM)
 /*
+<<<<<<< HEAD
  * Note: section's mem_map is encorded to reflect its start_pfn.
  * section[i].section_mem_map == mem_map's address - start_pfn;
  */
 #define __page_to_pfn(pg)					\
+<<<<<<< HEAD
 ({	struct page *__pg = (pg);				\
+=======
+({	const struct page *__pg = (pg);				\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Note: section's mem_map is encoded to reflect its start_pfn.
+ * section[i].section_mem_map == mem_map's address - start_pfn;
+ */
+#define __page_to_pfn(pg)					\
+({	const struct page *__pg = (pg);				\
+>>>>>>> refs/remotes/origin/master
 	int __sec = page_to_section(__pg);			\
 	(unsigned long)(__pg - __section_mem_map_addr(__nr_to_section(__sec)));	\
 })

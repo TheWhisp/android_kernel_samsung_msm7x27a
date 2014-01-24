@@ -39,6 +39,40 @@ struct physdev_eoi {
 };
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Register a shared page for the hypervisor to indicate whether the guest
+ * must issue PHYSDEVOP_eoi. The semantics of PHYSDEVOP_eoi change slightly
+ * once the guest used this function in that the associated event channel
+ * will automatically get unmasked. The page registered is used as a bit
+ * array indexed by Xen's PIRQ value.
+ */
+#define PHYSDEVOP_pirq_eoi_gmfn_v1       17
+/*
+ * Register a shared page for the hypervisor to indicate whether the
+ * guest must issue PHYSDEVOP_eoi. This hypercall is very similar to
+ * PHYSDEVOP_pirq_eoi_gmfn_v1 but it doesn't change the semantics of
+ * PHYSDEVOP_eoi. The page registered is used as a bit array indexed by
+ * Xen's PIRQ value.
+ */
+#define PHYSDEVOP_pirq_eoi_gmfn_v2       28
+struct physdev_pirq_eoi_gmfn {
+    /* IN */
+<<<<<<< HEAD
+    unsigned long gmfn;
+};
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    xen_ulong_t gmfn;
+};
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Query the status of an IRQ line.
  * @arg == pointer to physdev_irq_status_query structure.
  */
@@ -109,6 +143,14 @@ struct physdev_irq {
 #define MAP_PIRQ_TYPE_MSI		0x0
 #define MAP_PIRQ_TYPE_GSI		0x1
 #define MAP_PIRQ_TYPE_UNKNOWN		0x2
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define MAP_PIRQ_TYPE_MSI_SEG		0x3
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAP_PIRQ_TYPE_MSI_SEG		0x3
+>>>>>>> refs/remotes/origin/master
 
 #define PHYSDEVOP_map_pirq		13
 struct physdev_map_pirq {
@@ -119,7 +161,15 @@ struct physdev_map_pirq {
     int index;
     /* IN or OUT */
     int pirq;
+<<<<<<< HEAD
+<<<<<<< HEAD
     /* IN */
+=======
+    /* IN - high 16 bits hold segment for MAP_PIRQ_TYPE_MSI_SEG */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    /* IN - high 16 bits hold segment for MAP_PIRQ_TYPE_MSI_SEG */
+>>>>>>> refs/remotes/origin/master
     int bus;
     /* IN */
     int devfn;
@@ -144,6 +194,22 @@ struct physdev_manage_pci {
 	uint8_t devfn;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define PHYSDEVOP_restore_msi            19
+struct physdev_restore_msi {
+	/* IN */
+	uint8_t bus;
+	uint8_t devfn;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PHYSDEVOP_manage_pci_add_ext	20
 struct physdev_manage_pci_ext {
 	/* IN */
@@ -198,6 +264,85 @@ struct physdev_get_free_pirq {
     uint32_t pirq;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define XEN_PCI_DEV_EXTFN              0x1
+#define XEN_PCI_DEV_VIRTFN             0x2
+#define XEN_PCI_DEV_PXM                0x4
+
+<<<<<<< HEAD
+=======
+#define XEN_PCI_MMCFG_RESERVED         0x1
+
+#define PHYSDEVOP_pci_mmcfg_reserved    24
+struct physdev_pci_mmcfg_reserved {
+    uint64_t address;
+    uint16_t segment;
+    uint8_t start_bus;
+    uint8_t end_bus;
+    uint32_t flags;
+};
+
+>>>>>>> refs/remotes/origin/master
+#define PHYSDEVOP_pci_device_add        25
+struct physdev_pci_device_add {
+    /* IN */
+    uint16_t seg;
+    uint8_t bus;
+    uint8_t devfn;
+    uint32_t flags;
+    struct {
+        uint8_t bus;
+        uint8_t devfn;
+    } physfn;
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+    uint32_t optarr[];
+#elif defined(__GNUC__)
+    uint32_t optarr[0];
+#endif
+};
+
+#define PHYSDEVOP_pci_device_remove     26
+#define PHYSDEVOP_restore_msi_ext       27
+<<<<<<< HEAD
+=======
+/*
+ * Dom0 should use these two to announce MMIO resources assigned to
+ * MSI-X capable devices won't (prepare) or may (release) change.
+ */
+#define PHYSDEVOP_prepare_msix          30
+#define PHYSDEVOP_release_msix          31
+>>>>>>> refs/remotes/origin/master
+struct physdev_pci_device {
+    /* IN */
+    uint16_t seg;
+    uint8_t bus;
+    uint8_t devfn;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PHYSDEVOP_DBGP_RESET_PREPARE    1
+#define PHYSDEVOP_DBGP_RESET_DONE       2
+
+#define PHYSDEVOP_DBGP_BUS_UNKNOWN      0
+#define PHYSDEVOP_DBGP_BUS_PCI          1
+
+#define PHYSDEVOP_dbgp_op               29
+struct physdev_dbgp_op {
+    /* IN */
+    uint8_t op;
+    uint8_t bus;
+    union {
+        struct physdev_pci_device pci;
+    } u;
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Notify that some PIRQ-bound event channels have been unmasked.
  * ** This command is obsolete since interface version 0x00030202 and is **

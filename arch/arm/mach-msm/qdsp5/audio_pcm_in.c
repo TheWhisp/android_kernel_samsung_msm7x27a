@@ -2,7 +2,15 @@
  *
  * pcm audio input device
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This code is based in part on arch/arm/mach-msm/qdsp5v2/audio_pcm_in.c,
  * Copyright (C) 2008 Google, Inc.
@@ -26,6 +34,14 @@
 #include <linux/kthread.h>
 #include <linux/wait.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/ion.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ion.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/delay.h>
 
@@ -41,6 +57,14 @@
 
 #include "audmgr.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <mach/qdsp5/audio_acdb_def.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/qdsp5/audio_acdb_def.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/qdsp5/qdsp5audpreproc.h>
 #include <mach/qdsp5/qdsp5audpreproccmdi.h>
 #include <mach/qdsp5/qdsp5audpreprocmsg.h>
@@ -74,7 +98,13 @@ struct audio_in {
 	struct mutex read_lock;
 	wait_queue_head_t wait;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_adsp_module *audpre;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_adsp_module *audrec;
 	const char *module_name;
 	unsigned queue_ids;
@@ -104,6 +134,14 @@ struct audio_in {
 	int enabled;
 	int running;
 	int stopped; /* set when stopped, cleared on flush */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct audrec_session_info session_info; /*audrec session info*/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct audrec_session_info session_info; /*audrec session info*/
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* audpre settings */
 	int tx_agc_enable;
@@ -114,6 +152,16 @@ struct audio_in {
 	 * All the coeff should be passed from user space	    */
 	int iir_enable;
 	audpreproc_cmd_cfg_iir_tuning_filter_params iir_cfg;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct ion_client *client;
+	struct ion_handle *output_buff_handle;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ion_client *client;
+	struct ion_handle *output_buff_handle;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int audpcm_in_dsp_enable(struct audio_in *audio, int enable);
@@ -173,6 +221,41 @@ static unsigned convert_samp_index(unsigned index)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* ------------------- dsp --------------------- */
+static void audpre_dsp_event(void *data, unsigned id,  void *event_data)
+{
+
+	uint16_t *msg = event_data;
+
+	if (!msg)
+		return;
+
+	switch (id) {
+	case AUDPREPROC_MSG_CMD_CFG_DONE_MSG:
+		MM_DBG("type %d, status_flag %d\n",\
+			msg[0], msg[1]);
+		break;
+	case AUDPREPROC_MSG_ERROR_MSG_ID:
+		MM_INFO("err_index %d\n", msg[0]);
+		break;
+	case ADSP_MESSAGE_ID:
+		MM_DBG("Received ADSP event: module enable(audpreproctask)\n");
+		break;
+	default:
+		MM_ERR("unknown event %d\n", id);
+	}
+}
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* must be called with audio->lock held */
 static int audpcm_in_enable(struct audio_in *audio)
 {
@@ -189,6 +272,8 @@ static int audpcm_in_enable(struct audio_in *audio)
 	cfg.snd_method = RPC_SND_METHOD_MIDI;
 
 	rc = audmgr_enable(&audio->audmgr, &cfg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rc < 0)
 		return rc;
 
@@ -200,6 +285,32 @@ static int audpcm_in_enable(struct audio_in *audio)
 	if (msm_adsp_enable(audio->audrec)) {
 		audmgr_disable(&audio->audmgr);
 		msm_adsp_disable(audio->audpre);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (rc < 0) {
+		msm_adsp_dump(audio->audrec);
+		return rc;
+	}
+	/*update aurec session info in audpreproc layer*/
+        audio->session_info.session_id = audio->enc_id;
+        audio->session_info.sampling_freq =
+                        convert_samp_index(audio->samp_rate);
+        audpreproc_update_audrec_info(&audio->session_info);
+
+	if (audpreproc_enable(audio->enc_id, &audpre_dsp_event, audio)) {
+		MM_ERR("msm_adsp_enable(audpreproc) failed\n");
+		audmgr_disable(&audio->audmgr);
+		return -ENODEV;
+	}
+
+	if (msm_adsp_enable(audio->audrec)) {
+		audpreproc_disable(audio->enc_id, audio);
+		audmgr_disable(&audio->audmgr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		MM_ERR("msm_adsp_enable(audrec) failed\n");
 		return -ENODEV;
 	}
@@ -213,20 +324,52 @@ static int audpcm_in_enable(struct audio_in *audio)
 /* must be called with audio->lock held */
 static int audpcm_in_disable(struct audio_in *audio)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int rc;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (audio->enabled) {
 		audio->enabled = 0;
 
 		audpcm_in_dsp_enable(audio, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		wake_up(&audio->wait);
 
 		msm_adsp_disable(audio->audrec);
 		msm_adsp_disable(audio->audpre);
 		audmgr_disable(&audio->audmgr);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		audio->stopped = 1;
+		wake_up(&audio->wait);
+
+		msm_adsp_disable(audio->audrec);
+		audpreproc_disable(audio->enc_id, audio);
+		/*reset the sampling frequency information at audpreproc layer*/
+		audio->session_info.sampling_freq = 0;
+		audpreproc_update_audrec_info(&audio->session_info);
+		rc = audmgr_disable(&audio->audmgr);
+		if (rc < 0)
+			msm_adsp_dump(audio->audrec);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* ------------------- dsp --------------------- */
 static void audpre_dsp_event(void *data, unsigned id, size_t len,
 			    void (*getevent)(void *ptr, size_t len))
@@ -249,6 +392,10 @@ static void audpre_dsp_event(void *data, unsigned id, size_t len,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct audio_frame {
 	uint16_t count_low;
 	uint16_t count_high;
@@ -323,6 +470,16 @@ static void audrec_dsp_event(void *data, unsigned id, size_t len,
 	case AUDREC_MSG_CMD_AREC_PARAM_CFG_DONE_MSG: {
 		MM_INFO("PARAM CFG DONE\n");
 		audio->running = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (is_acdb_enabled())
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (is_acdb_enabled())
+			break;
+>>>>>>> refs/remotes/origin/cm-11.0
 		audio_dsp_set_tx_agc(audio);
 		audio_dsp_set_ns(audio);
 		audio_dsp_set_iir(audio);
@@ -356,18 +513,30 @@ static void audrec_dsp_event(void *data, unsigned id, size_t len,
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct msm_adsp_ops audpre_adsp_ops = {
 	.event = audpre_dsp_event,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_adsp_ops audrec_adsp_ops = {
 	.event = audrec_dsp_event,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #define audio_send_queue_pre(audio, cmd, len) \
 	msm_adsp_write(audio->audpre, QDSP_uPAudPreProcCmdQueue, cmd, len)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define audio_send_queue_recbs(audio, cmd, len) \
 	msm_adsp_write(audio->audrec, ((audio->queue_ids & 0xFFFF0000) >> 16),\
 			cmd, len)
@@ -395,7 +564,15 @@ static int audio_dsp_set_tx_agc(struct audio_in *audio)
 		audio->tx_agc_cfg.tx_agc_enable_flag =
 			AUDPREPROC_CMD_TX_AGC_ENA_FLAG_ENA;
 		/* cmd.param_mask = 0xFFF0 from sample code */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		audio->tx_agc_cfg.param_mask =
+=======
+		audio->tx_agc_cfg.tx_agc_param_mask =
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		audio->tx_agc_cfg.tx_agc_param_mask =
+>>>>>>> refs/remotes/origin/cm-11.0
 			(1 << AUDPREPROC_CMD_PARAM_MASK_RMS_TAY) |
 			(1 << AUDPREPROC_CMD_PARAM_MASK_RELEASEK) |
 			(1 << AUDPREPROC_CMD_PARAM_MASK_DELAY) |
@@ -416,7 +593,15 @@ static int audio_dsp_set_tx_agc(struct audio_in *audio)
 	}
 	cmd = audio->tx_agc_cfg;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return audio_send_queue_pre(audio, &cmd, sizeof(cmd));
+=======
+	return audpreproc_dsp_set_agc(&cmd, sizeof(cmd));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return audpreproc_dsp_set_agc(&cmd, sizeof(cmd));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int audio_enable_tx_agc(struct audio_in *audio, int enable)
@@ -462,7 +647,15 @@ static int audio_dsp_set_ns(struct audio_in *audio)
 	}
 	cmd = audio->ns_cfg;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return audio_send_queue_pre(audio, &cmd, sizeof(cmd));
+=======
+	return audpreproc_dsp_set_ns(&cmd, sizeof(cmd));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return audpreproc_dsp_set_ns(&cmd, sizeof(cmd));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int audio_enable_ns(struct audio_in *audio, int enable)
@@ -491,7 +684,15 @@ static int audio_dsp_set_iir(struct audio_in *audio)
 
 	cmd = audio->iir_cfg;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return audio_send_queue_pre(audio, &cmd, sizeof(cmd));
+=======
+	return audpreproc_dsp_set_iir(&cmd, sizeof(cmd));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return audpreproc_dsp_set_iir(&cmd, sizeof(cmd));
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int audio_enable_iir(struct audio_in *audio, int enable)
@@ -584,7 +785,15 @@ static void audpcm_in_flush(struct audio_in *audio)
 	audio->in_head = 0;
 	audio->in_tail = 0;
 	audio->in_count = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = FRAME_NUM-1; i <= 0; i--) {
+=======
+	for (i = FRAME_NUM-1; i >= 0; i--) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = FRAME_NUM-1; i >= 0; i--) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		audio->in[i].size = 0;
 		audio->in[i].read = 0;
 	}
@@ -613,7 +822,13 @@ static long audpcm_in_ioctl(struct file *file,
 	}
 	case AUDIO_STOP:
 		rc = audpcm_in_disable(audio);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		audio->stopped = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case AUDIO_FLUSH:
 		if (audio->stopped) {
@@ -759,6 +974,8 @@ static int audpcm_in_release(struct inode *inode, struct file *file)
 	audpcm_in_flush(audio);
 	audpreproc_aenc_free(audio->enc_id);
 	msm_adsp_put(audio->audrec);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_adsp_put(audio->audpre);
 	audio->audrec = NULL;
 	audio->audpre = NULL;
@@ -767,6 +984,21 @@ static int audpcm_in_release(struct inode *inode, struct file *file)
 		free_contiguous_memory((void *)audio->data);
 		audio->data = NULL;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	audio->audrec = NULL;
+	audio->opened = 0;
+	if (audio->data) {
+		ion_unmap_kernel(audio->client, audio->output_buff_handle);
+		ion_free(audio->client, audio->output_buff_handle);
+		audio->data = NULL;
+	}
+	ion_client_destroy(audio->client);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&audio->lock);
 	return 0;
 }
@@ -777,6 +1009,20 @@ static int audpcm_in_open(struct inode *inode, struct file *file)
 {
 	struct audio_in *audio = &the_audio_in;
 	int rc;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int len = 0;
+	unsigned long ionflag = 0;
+	ion_phys_addr_t addr = 0;
+	struct ion_handle *handle = NULL;
+	struct ion_client *client = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	int encid;
 	mutex_lock(&audio->lock);
@@ -814,6 +1060,8 @@ static int audpcm_in_open(struct inode *inode, struct file *file)
 		goto done;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = msm_adsp_get("AUDPREPROCTASK", &audio->audpre,
 				&audpre_adsp_ops, audio);
 	if (rc) {
@@ -822,11 +1070,17 @@ static int audpcm_in_open(struct inode *inode, struct file *file)
 		goto done;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	audio->dsp_cnt = 0;
 	audio->stopped = 0;
 
 	audpcm_in_flush(audio);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	audio->data = allocate_contiguous_memory(DMASZ, MEMTYPE_EBI1,
 				SZ_4K, 0);
 	if (!audio->data) {
@@ -844,6 +1098,60 @@ static int audpcm_in_open(struct inode *inode, struct file *file)
 		MM_DBG("read buf: phy addr 0x%08x kernel addr 0x%08x\n",
 				audio->phys, (int)audio->data);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	client = msm_ion_client_create(UINT_MAX, "Audio_PCM_in_client");
+	if (IS_ERR_OR_NULL(client)) {
+		MM_ERR("Unable to create ION client\n");
+		rc = -ENOMEM;
+		goto client_create_error;
+	}
+	audio->client = client;
+
+	MM_DBG("allocating mem sz = %d\n", DMASZ);
+	handle = ion_alloc(client, DMASZ, SZ_4K,
+		ION_HEAP(ION_AUDIO_HEAP_ID));
+	if (IS_ERR_OR_NULL(handle)) {
+		MM_ERR("Unable to create allocate O/P buffers\n");
+		rc = -ENOMEM;
+		goto output_buff_alloc_error;
+	}
+
+	audio->output_buff_handle = handle;
+
+	rc = ion_phys(client , handle, &addr, &len);
+	if (rc) {
+		MM_ERR("O/P buffers:Invalid phy: %x sz: %x\n",
+			(unsigned int) addr, (unsigned int) len);
+		rc = -ENOMEM;
+		goto output_buff_get_phys_error;
+	} else {
+		MM_INFO("O/P buffers:valid phy: %x sz: %x\n",
+			(unsigned int) addr, (unsigned int) len);
+	}
+	audio->phys = (int32_t)addr;
+
+	rc = ion_handle_get_flags(client, handle, &ionflag);
+	if (rc) {
+		MM_ERR("could not get flags for the handle\n");
+		rc = -ENOMEM;
+		goto output_buff_get_flags_error;
+	}
+
+	audio->data = ion_map_kernel(client, handle, ionflag);
+	if (IS_ERR(audio->data)) {
+		MM_ERR("could not map read buffers,freeing instance 0x%08x\n",
+				(int)audio);
+		rc = -ENOMEM;
+		goto output_buff_map_error;
+	}
+	MM_DBG("read buf: phy addr 0x%08x kernel addr 0x%08x\n",
+		audio->phys, (int)audio->data);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	file->private_data = audio;
 	audio->opened = 1;
@@ -851,9 +1159,26 @@ static int audpcm_in_open(struct inode *inode, struct file *file)
 done:
 	mutex_unlock(&audio->lock);
 	return rc;
+<<<<<<< HEAD
+<<<<<<< HEAD
 evt_error:
 	msm_adsp_put(audio->audrec);
 	msm_adsp_put(audio->audpre);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+output_buff_map_error:
+output_buff_get_phys_error:
+output_buff_get_flags_error:
+	ion_free(client, audio->output_buff_handle);
+output_buff_alloc_error:
+	ion_client_destroy(client);
+client_create_error:
+	msm_adsp_put(audio->audrec);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	audpreproc_aenc_free(audio->enc_id);
 	mutex_unlock(&audio->lock);
 	return rc;
@@ -868,6 +1193,21 @@ static long audpre_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	mutex_lock(&audio->lock);
 	switch (cmd) {
 	case AUDIO_ENABLE_AUDPRE:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+		if (is_acdb_enabled()) {
+			MM_INFO("Audpp is supported via acdb\n");
+			rc = -EFAULT;
+			break;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (copy_from_user(&enable_mask, (void *) arg,
 						sizeof(enable_mask))) {
 			rc = -EFAULT;

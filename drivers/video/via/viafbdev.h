@@ -26,6 +26,14 @@
 #include <linux/fb.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "via_aux.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "via_aux.h"
+>>>>>>> refs/remotes/origin/master
 #include "ioctl.h"
 #include "share.h"
 #include "chip.h"
@@ -48,6 +56,20 @@ struct viafb_shared {
 	struct proc_dir_entry *iga2_proc_entry;
 	struct viafb_dev *vdev;			/* Global dev info */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* I2C busses that may have auxiliary devices */
+	struct via_aux_bus *i2c_26;
+	struct via_aux_bus *i2c_31;
+	struct via_aux_bus *i2c_2C;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* All the information will be needed to set engine */
 	struct tmds_setting_information tmds_setting_info;
 	struct lvds_setting_information lvds_setting_info;

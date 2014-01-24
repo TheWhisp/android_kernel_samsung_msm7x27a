@@ -22,7 +22,15 @@
 #include "r852.h"
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int r852_enable_dma = 1;
+=======
+static bool r852_enable_dma = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool r852_enable_dma = 1;
+>>>>>>> refs/remotes/origin/master
 module_param(r852_enable_dma, bool, S_IRUGO);
 MODULE_PARM_DESC(r852_enable_dma, "Enable usage of the DMA (default)");
 
@@ -181,7 +189,11 @@ static void r852_do_dma(struct r852_device *dev, uint8_t *buf, int do_read)
 	/* Set dma direction */
 	dev->dma_dir = do_read;
 	dev->dma_stage = 1;
+<<<<<<< HEAD
 	INIT_COMPLETION(dev->dma_done);
+=======
+	reinit_completion(&dev->dma_done);
+>>>>>>> refs/remotes/origin/master
 
 	dbg_verbose("doing dma %s ", do_read ? "read" : "write");
 
@@ -229,7 +241,11 @@ static void r852_do_dma(struct r852_device *dev, uint8_t *buf, int do_read)
 /*
  * Program data lines of the nand chip to send data to it
  */
+<<<<<<< HEAD
 void r852_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+=======
+static void r852_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev = r852_get_dev(mtd);
 	uint32_t reg;
@@ -261,7 +277,11 @@ void r852_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
 /*
  * Read data lines of the nand chip to retrieve data
  */
+<<<<<<< HEAD
 void r852_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+=======
+static void r852_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev = r852_get_dev(mtd);
 	uint32_t reg;
@@ -309,6 +329,7 @@ static uint8_t r852_read_byte(struct mtd_info *mtd)
 	return r852_read_reg(dev, R852_DATALINE);
 }
 
+<<<<<<< HEAD
 
 /*
  * Readback the buffer to verify it
@@ -334,6 +355,12 @@ int r852_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
  * Control several chip lines & send commands
  */
 void r852_cmdctl(struct mtd_info *mtd, int dat, unsigned int ctrl)
+=======
+/*
+ * Control several chip lines & send commands
+ */
+static void r852_cmdctl(struct mtd_info *mtd, int dat, unsigned int ctrl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev = r852_get_dev(mtd);
 
@@ -378,7 +405,11 @@ void r852_cmdctl(struct mtd_info *mtd, int dat, unsigned int ctrl)
  * Wait till card is ready.
  * based on nand_wait, but returns errors on DMA error
  */
+<<<<<<< HEAD
 int r852_wait(struct mtd_info *mtd, struct nand_chip *chip)
+=======
+static int r852_wait(struct mtd_info *mtd, struct nand_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev = chip->priv;
 
@@ -407,7 +438,11 @@ int r852_wait(struct mtd_info *mtd, struct nand_chip *chip)
  * Check if card is ready
  */
 
+<<<<<<< HEAD
 int r852_ready(struct mtd_info *mtd)
+=======
+static int r852_ready(struct mtd_info *mtd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev = r852_get_dev(mtd);
 	return !(r852_read_reg(dev, R852_CARD_STA) & R852_CARD_STA_BUSY);
@@ -418,7 +453,11 @@ int r852_ready(struct mtd_info *mtd)
  * Set ECC engine mode
 */
 
+<<<<<<< HEAD
 void r852_ecc_hwctl(struct mtd_info *mtd, int mode)
+=======
+static void r852_ecc_hwctl(struct mtd_info *mtd, int mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev = r852_get_dev(mtd);
 
@@ -450,7 +489,11 @@ void r852_ecc_hwctl(struct mtd_info *mtd, int mode)
  * Calculate ECC, only used for writes
  */
 
+<<<<<<< HEAD
 int r852_ecc_calculate(struct mtd_info *mtd, const uint8_t *dat,
+=======
+static int r852_ecc_calculate(struct mtd_info *mtd, const uint8_t *dat,
+>>>>>>> refs/remotes/origin/master
 							uint8_t *ecc_code)
 {
 	struct r852_device *dev = r852_get_dev(mtd);
@@ -482,7 +525,11 @@ int r852_ecc_calculate(struct mtd_info *mtd, const uint8_t *dat,
  * Correct the data using ECC, hw did almost everything for us
  */
 
+<<<<<<< HEAD
 int r852_ecc_correct(struct mtd_info *mtd, uint8_t *dat,
+=======
+static int r852_ecc_correct(struct mtd_info *mtd, uint8_t *dat,
+>>>>>>> refs/remotes/origin/master
 				uint8_t *read_ecc, uint8_t *calc_ecc)
 {
 	uint16_t ecc_reg;
@@ -539,6 +586,7 @@ exit:
  * nand_read_oob_syndrome assumes we can send column address - we can't
  */
 static int r852_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+<<<<<<< HEAD
 			     int page, int sndcmd)
 {
 	if (sndcmd) {
@@ -547,13 +595,24 @@ static int r852_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
 	}
 	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
 	return sndcmd;
+=======
+			     int page)
+{
+	chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
+	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Start the nand engine
  */
 
+<<<<<<< HEAD
 void r852_engine_enable(struct r852_device *dev)
+=======
+static void r852_engine_enable(struct r852_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (r852_read_reg_dword(dev, R852_HW) & R852_HW_UNKNOWN) {
 		r852_write_reg(dev, R852_CTL, R852_CTL_RESET | R852_CTL_ON);
@@ -571,7 +630,11 @@ void r852_engine_enable(struct r852_device *dev)
  * Stop the nand engine
  */
 
+<<<<<<< HEAD
 void r852_engine_disable(struct r852_device *dev)
+=======
+static void r852_engine_disable(struct r852_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	r852_write_reg_dword(dev, R852_HW, 0);
 	r852_write_reg(dev, R852_CTL, R852_CTL_RESET);
@@ -581,7 +644,11 @@ void r852_engine_disable(struct r852_device *dev)
  * Test if card is present
  */
 
+<<<<<<< HEAD
 void r852_card_update_present(struct r852_device *dev)
+=======
+static void r852_card_update_present(struct r852_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	uint8_t reg;
@@ -596,7 +663,11 @@ void r852_card_update_present(struct r852_device *dev)
  * Update card detection IRQ state according to current card state
  * which is read in r852_card_update_present
  */
+<<<<<<< HEAD
 void r852_update_card_detect(struct r852_device *dev)
+=======
+static void r852_update_card_detect(struct r852_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int card_detect_reg = r852_read_reg(dev, R852_CARD_IRQ_ENABLE);
 	dev->card_unstable = 0;
@@ -610,8 +681,13 @@ void r852_update_card_detect(struct r852_device *dev)
 	r852_write_reg(dev, R852_CARD_IRQ_ENABLE, card_detect_reg);
 }
 
+<<<<<<< HEAD
 ssize_t r852_media_type_show(struct device *sys_dev,
 		struct device_attribute *attr, char *buf)
+=======
+static ssize_t r852_media_type_show(struct device *sys_dev,
+			struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mtd_info *mtd = container_of(sys_dev, struct mtd_info, dev);
 	struct r852_device *dev = r852_get_dev(mtd);
@@ -621,11 +697,19 @@ ssize_t r852_media_type_show(struct device *sys_dev,
 	return strlen(data);
 }
 
+<<<<<<< HEAD
 DEVICE_ATTR(media_type, S_IRUGO, r852_media_type_show, NULL);
 
 
 /* Detect properties of card in slot */
 void r852_update_media_status(struct r852_device *dev)
+=======
+static DEVICE_ATTR(media_type, S_IRUGO, r852_media_type_show, NULL);
+
+
+/* Detect properties of card in slot */
+static void r852_update_media_status(struct r852_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	uint8_t reg;
 	unsigned long flags;
@@ -654,7 +738,11 @@ void r852_update_media_status(struct r852_device *dev)
  * Register the nand device
  * Called when the card is detected
  */
+<<<<<<< HEAD
 int r852_register_nand_device(struct r852_device *dev)
+=======
+static int r852_register_nand_device(struct r852_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	dev->mtd = kzalloc(sizeof(struct mtd_info), GFP_KERNEL);
 
@@ -692,7 +780,11 @@ error1:
  * Unregister the card
  */
 
+<<<<<<< HEAD
 void r852_unregister_nand_device(struct r852_device *dev)
+=======
+static void r852_unregister_nand_device(struct r852_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!dev->card_registred)
 		return;
@@ -706,7 +798,11 @@ void r852_unregister_nand_device(struct r852_device *dev)
 }
 
 /* Card state updater */
+<<<<<<< HEAD
 void r852_card_detect_work(struct work_struct *work)
+=======
+static void r852_card_detect_work(struct work_struct *work)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev =
 		container_of(work, struct r852_device, card_detect_work.work);
@@ -845,7 +941,11 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+=======
+static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 	struct nand_chip *chip;
@@ -885,12 +985,23 @@ int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
 	chip->read_byte = r852_read_byte;
 	chip->read_buf = r852_read_buf;
 	chip->write_buf = r852_write_buf;
+<<<<<<< HEAD
 	chip->verify_buf = r852_verify_buf;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* ecc */
 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
 	chip->ecc.size = R852_DMA_LEN;
 	chip->ecc.bytes = SM_OOB_SIZE;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	chip->ecc.strength = 2;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	chip->ecc.strength = 2;
+>>>>>>> refs/remotes/origin/master
 	chip->ecc.hwctl = r852_ecc_hwctl;
 	chip->ecc.calculate = r852_ecc_calculate;
 	chip->ecc.correct = r852_ecc_correct;
@@ -985,7 +1096,11 @@ error1:
 	return error;
 }
 
+<<<<<<< HEAD
 void r852_remove(struct pci_dev *pci_dev)
+=======
+static void r852_remove(struct pci_dev *pci_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev = pci_get_drvdata(pci_dev);
 
@@ -1016,7 +1131,11 @@ void r852_remove(struct pci_dev *pci_dev)
 	pci_disable_device(pci_dev);
 }
 
+<<<<<<< HEAD
 void r852_shutdown(struct pci_dev *pci_dev)
+=======
+static void r852_shutdown(struct pci_dev *pci_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev = pci_get_drvdata(pci_dev);
 
@@ -1026,8 +1145,17 @@ void r852_shutdown(struct pci_dev *pci_dev)
 	pci_disable_device(pci_dev);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 int r852_suspend(struct device *device)
+=======
+static int r852_suspend(struct device *device)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM_SLEEP
+static int r852_suspend(struct device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
 
@@ -1048,7 +1176,15 @@ int r852_suspend(struct device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int r852_resume(struct device *device)
+=======
+static int r852_resume(struct device *device)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int r852_resume(struct device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
 
@@ -1079,9 +1215,12 @@ int r852_resume(struct device *device)
 	r852_update_card_detect(dev);
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define r852_suspend	NULL
 #define r852_resume	NULL
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static const struct pci_device_id r852_pci_id_tbl[] = {
@@ -1092,7 +1231,15 @@ static const struct pci_device_id r852_pci_id_tbl[] = {
 
 MODULE_DEVICE_TABLE(pci, r852_pci_id_tbl);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
+=======
+static SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_driver r852_pci_driver = {
 	.name		= DRV_NAME,
@@ -1103,6 +1250,7 @@ static struct pci_driver r852_pci_driver = {
 	.driver.pm	= &r852_pm_ops,
 };
 
+<<<<<<< HEAD
 static __init int r852_module_init(void)
 {
 	return pci_register_driver(&r852_pci_driver);
@@ -1115,6 +1263,9 @@ static void __exit r852_module_exit(void)
 
 module_init(r852_module_init);
 module_exit(r852_module_exit);
+=======
+module_pci_driver(r852_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Maxim Levitsky <maximlevitsky@gmail.com>");

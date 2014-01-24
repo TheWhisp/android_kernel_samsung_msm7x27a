@@ -20,12 +20,26 @@
 #include <linux/io.h>
 
 #include <asm/checksum.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #include "ksyms.h"
 
 EXPORT_SYMBOL(__uc32_find_next_zero_bit);
 EXPORT_SYMBOL(__uc32_find_next_bit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#include "ksyms.h"
+
+EXPORT_SYMBOL(find_next_zero_bit);
+EXPORT_SYMBOL(find_next_bit);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 EXPORT_SYMBOL(__backtrace);
 

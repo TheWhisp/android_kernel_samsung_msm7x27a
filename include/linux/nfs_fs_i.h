@@ -1,10 +1,16 @@
 #ifndef _NFS_FS_I
 #define _NFS_FS_I
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/types.h>
 #include <linux/list.h>
 #include <linux/nfs.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct nlm_lockowner;
 
 /*

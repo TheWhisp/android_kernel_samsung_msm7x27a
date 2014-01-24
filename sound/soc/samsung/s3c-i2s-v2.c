@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 /* sound/soc/samsung/s3c-i2c-v2.c
  *
  * ALSA Soc Audio Layer - I2S core for newer Samsung SoCs.
+=======
+/* ALSA Soc Audio Layer - I2S core for newer Samsung SoCs.
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (c) 2006 Wolfson Microelectronics PLC.
  *	Graeme Gregory graeme.gregory@wolfsonmicro.com
@@ -16,6 +20,14 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/clk.h>
 #include <linux/io.h>
@@ -32,11 +44,15 @@
 #undef S3C_IIS_V2_SUPPORTED
 
 #if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413) \
+<<<<<<< HEAD
 	|| defined(CONFIG_CPU_S5PV210)
 #define S3C_IIS_V2_SUPPORTED
 #endif
 
 #ifdef CONFIG_PLAT_S3C64XX
+=======
+	|| defined(CONFIG_ARCH_S3C64XX) || defined(CONFIG_CPU_S5PV210)
+>>>>>>> refs/remotes/origin/master
 #define S3C_IIS_V2_SUPPORTED
 #endif
 
@@ -730,8 +746,14 @@ static int s3c2412_i2s_resume(struct snd_soc_dai *dai)
 #define s3c2412_i2s_resume  NULL
 #endif
 
+<<<<<<< HEAD
 int s3c_i2sv2_register_dai(struct device *dev, int id,
 		struct snd_soc_dai_driver *drv)
+=======
+int s3c_i2sv2_register_component(struct device *dev, int id,
+			   struct snd_soc_component_driver *cmp_drv,
+			   struct snd_soc_dai_driver *dai_drv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_dai_ops *ops = drv->ops;
 
@@ -749,8 +771,14 @@ int s3c_i2sv2_register_dai(struct device *dev, int id,
 	drv->suspend = s3c2412_i2s_suspend;
 	drv->resume = s3c2412_i2s_resume;
 
+<<<<<<< HEAD
 	return snd_soc_register_dai(dev, drv);
 }
 EXPORT_SYMBOL_GPL(s3c_i2sv2_register_dai);
+=======
+	return snd_soc_register_component(dev, cmp_drv, dai_drv, 1);
+}
+EXPORT_SYMBOL_GPL(s3c_i2sv2_register_component);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

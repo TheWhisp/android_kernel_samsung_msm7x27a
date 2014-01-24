@@ -28,10 +28,14 @@
  *
  * Please send any bug reports or fixes you make to the
  * email address(es):
+<<<<<<< HEAD
  *    lksctp developers <lksctp-developers@lists.sourceforge.net>
  *
  * Or submit a bug report through the following website:
  *    http://www.sf.net/projects/lksctp
+=======
+ *    lksctp developers <linux-sctp@vger.kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Written or modified by:
  *    La Monte H.P. Yarroll <piggy@acm.org>
@@ -41,9 +45,12 @@
  *    Daisy Chang	    <daisyc@us.ibm.com>
  *    Ardelle Fan	    <ardelle.fan@intel.com>
  *    Sridhar Samudrala	    <sri@us.ibm.com>
+<<<<<<< HEAD
  *
  * Any bugs reported given to us we will try to fix... any fixes shared will
  * be incorporated into the next SCTP release.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
@@ -59,7 +66,12 @@ other_event_table[SCTP_NUM_OTHER_TYPES][SCTP_STATE_NUM_STATES];
 static const sctp_sm_table_entry_t
 timeout_event_table[SCTP_NUM_TIMEOUT_TYPES][SCTP_STATE_NUM_STATES];
 
+<<<<<<< HEAD
 static const sctp_sm_table_entry_t *sctp_chunk_event_lookup(sctp_cid_t cid,
+=======
+static const sctp_sm_table_entry_t *sctp_chunk_event_lookup(struct net *net,
+							    sctp_cid_t cid,
+>>>>>>> refs/remotes/origin/master
 							    sctp_state_t state);
 
 
@@ -82,13 +94,22 @@ static const sctp_sm_table_entry_t bug = {
 	rtn;								\
 })
 
+<<<<<<< HEAD
 const sctp_sm_table_entry_t *sctp_sm_lookup_event(sctp_event_t event_type,
+=======
+const sctp_sm_table_entry_t *sctp_sm_lookup_event(struct net *net,
+						  sctp_event_t event_type,
+>>>>>>> refs/remotes/origin/master
 						  sctp_state_t state,
 						  sctp_subtype_t event_subtype)
 {
 	switch (event_type) {
 	case SCTP_EVENT_T_CHUNK:
+<<<<<<< HEAD
 		return sctp_chunk_event_lookup(event_subtype.chunk, state);
+=======
+		return sctp_chunk_event_lookup(net, event_subtype.chunk, state);
+>>>>>>> refs/remotes/origin/master
 	case SCTP_EVENT_T_TIMEOUT:
 		return DO_LOOKUP(SCTP_EVENT_TIMEOUT_MAX, timeout,
 				 timeout_event_table);
@@ -906,7 +927,12 @@ static const sctp_sm_table_entry_t timeout_event_table[SCTP_NUM_TIMEOUT_TYPES][S
 	TYPE_SCTP_EVENT_TIMEOUT_AUTOCLOSE,
 };
 
+<<<<<<< HEAD
 static const sctp_sm_table_entry_t *sctp_chunk_event_lookup(sctp_cid_t cid,
+=======
+static const sctp_sm_table_entry_t *sctp_chunk_event_lookup(struct net *net,
+							    sctp_cid_t cid,
+>>>>>>> refs/remotes/origin/master
 							    sctp_state_t state)
 {
 	if (state > SCTP_STATE_MAX)
@@ -915,12 +941,20 @@ static const sctp_sm_table_entry_t *sctp_chunk_event_lookup(sctp_cid_t cid,
 	if (cid <= SCTP_CID_BASE_MAX)
 		return &chunk_event_table[cid][state];
 
+<<<<<<< HEAD
 	if (sctp_prsctp_enable) {
+=======
+	if (net->sctp.prsctp_enable) {
+>>>>>>> refs/remotes/origin/master
 		if (cid == SCTP_CID_FWD_TSN)
 			return &prsctp_chunk_event_table[0][state];
 	}
 
+<<<<<<< HEAD
 	if (sctp_addip_enable) {
+=======
+	if (net->sctp.addip_enable) {
+>>>>>>> refs/remotes/origin/master
 		if (cid == SCTP_CID_ASCONF)
 			return &addip_chunk_event_table[0][state];
 
@@ -928,7 +962,11 @@ static const sctp_sm_table_entry_t *sctp_chunk_event_lookup(sctp_cid_t cid,
 			return &addip_chunk_event_table[1][state];
 	}
 
+<<<<<<< HEAD
 	if (sctp_auth_enable) {
+=======
+	if (net->sctp.auth_enable) {
+>>>>>>> refs/remotes/origin/master
 		if (cid == SCTP_CID_AUTH)
 			return &auth_chunk_event_table[0][state];
 	}

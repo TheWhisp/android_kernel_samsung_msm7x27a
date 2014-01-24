@@ -21,6 +21,7 @@
 #include <net/ipv6.h>
 #include <net/tcp.h>
 
+<<<<<<< HEAD
 extern int sysctl_tcp_syncookies;
 extern __u32 syncookie_secret[2][16-4+SHA_DIGEST_WORDS];
 
@@ -47,6 +48,28 @@ static __u16 const msstab[] = {
  */
 #define COUNTER_TRIES 4
 
+=======
+#define COOKIEBITS 24	/* Upper bits store count */
+#define COOKIEMASK (((__u32)1 << COOKIEBITS) - 1)
+
+static u32 syncookie6_secret[2][16-4+SHA_DIGEST_WORDS];
+
+/* RFC 2460, Section 8.3:
+ * [ipv6 tcp] MSS must be computed as the maximum packet size minus 60 [..]
+ *
+ * Due to IPV6_MIN_MTU=1280 the lowest possible MSS is 1220, which allows
+ * using higher values than ipv4 tcp syncookies.
+ * The other values are chosen based on ethernet (1500 and 9k MTU), plus
+ * one that accounts for common encap (PPPoe) overhead. Table must be sorted.
+ */
+static __u16 const msstab[] = {
+	1280 - 60, /* IPV6_MIN_MTU - 60 */
+	1480 - 60,
+	1500 - 60,
+	9000 - 60,
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline struct sock *get_cookie_sock(struct sock *sk, struct sk_buff *skb,
 					   struct request_sock *req,
 					   struct dst_entry *dst)
@@ -69,6 +92,7 @@ static DEFINE_PER_CPU(__u32 [16 + 5 + SHA_WORKSPACE_WORDS],
 static u32 cookie_hash(const struct in6_addr *saddr, const struct in6_addr *daddr,
 		       __be16 sport, __be16 dport, u32 count, int c)
 {
+<<<<<<< HEAD
 	__u32 *tmp = __get_cpu_var(ipv6_cookie_scratch);
 
 	/*
@@ -77,6 +101,20 @@ static u32 cookie_hash(const struct in6_addr *saddr, const struct in6_addr *dadd
 	 * and overwrite the digest with the secret
 	 */
 	memcpy(tmp + 10, syncookie_secret[c], 44);
+=======
+	__u32 *tmp;
+
+	net_get_random_once(syncookie6_secret, sizeof(syncookie6_secret));
+
+	tmp  = __get_cpu_var(ipv6_cookie_scratch);
+
+	/*
+	 * we have 320 bits of information to hash, copy in the remaining
+	 * 192 bits required for sha_transform, from the syncookie6_secret
+	 * and overwrite the digest with the secret
+	 */
+	memcpy(tmp + 10, syncookie6_secret[c], 44);
+>>>>>>> refs/remotes/origin/master
 	memcpy(tmp, saddr, 16);
 	memcpy(tmp + 4, daddr, 16);
 	tmp[8] = ((__force u32)sport << 16) + (__force u32)dport;
@@ -89,8 +127,14 @@ static u32 cookie_hash(const struct in6_addr *saddr, const struct in6_addr *dadd
 static __u32 secure_tcp_syn_cookie(const struct in6_addr *saddr,
 				   const struct in6_addr *daddr,
 				   __be16 sport, __be16 dport, __u32 sseq,
+<<<<<<< HEAD
 				   __u32 count, __u32 data)
 {
+=======
+				   __u32 data)
+{
+	u32 count = tcp_cookie_time();
+>>>>>>> refs/remotes/origin/master
 	return (cookie_hash(saddr, daddr, sport, dport, 0, 0) +
 		sseq + (count << COOKIEBITS) +
 		((cookie_hash(saddr, daddr, sport, dport, count, 1) + data)
@@ -99,15 +143,25 @@ static __u32 secure_tcp_syn_cookie(const struct in6_addr *saddr,
 
 static __u32 check_tcp_syn_cookie(__u32 cookie, const struct in6_addr *saddr,
 				  const struct in6_addr *daddr, __be16 sport,
+<<<<<<< HEAD
 				  __be16 dport, __u32 sseq, __u32 count,
 				  __u32 maxdiff)
 {
 	__u32 diff;
+=======
+				  __be16 dport, __u32 sseq)
+{
+	__u32 diff, count = tcp_cookie_time();
+>>>>>>> refs/remotes/origin/master
 
 	cookie -= cookie_hash(saddr, daddr, sport, dport, 0, 0) + sseq;
 
 	diff = (count - (cookie >> COOKIEBITS)) & ((__u32) -1 >> COOKIEBITS);
+<<<<<<< HEAD
 	if (diff >= maxdiff)
+=======
+	if (diff >= MAX_SYNCOOKIE_AGE)
+>>>>>>> refs/remotes/origin/master
 		return (__u32)-1;
 
 	return (cookie -
@@ -115,7 +169,12 @@ static __u32 check_tcp_syn_cookie(__u32 cookie, const struct in6_addr *saddr,
 		& COOKIEMASK;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 __u32 cookie_v6_init_sequence(struct sock *sk, struct sk_buff *skb, __u16 *mssp)
+=======
+__u32 cookie_v6_init_sequence(struct sock *sk, const struct sk_buff *skb, __u16 *mssp)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct ipv6hdr *iph = ipv6_hdr(skb);
 	const struct tcphdr *th = tcp_hdr(skb);
@@ -124,12 +183,21 @@ __u32 cookie_v6_init_sequence(struct sock *sk, struct sk_buff *skb, __u16 *mssp)
 
 	tcp_synq_overflow(sk);
 
+=======
+u32 __cookie_v6_init_sequence(const struct ipv6hdr *iph,
+			      const struct tcphdr *th, __u16 *mssp)
+{
+	int mssind;
+	const __u16 mss = *mssp;
+
+>>>>>>> refs/remotes/origin/master
 	for (mssind = ARRAY_SIZE(msstab) - 1; mssind ; mssind--)
 		if (mss >= msstab[mssind])
 			break;
 
 	*mssp = msstab[mssind];
 
+<<<<<<< HEAD
 	NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_SYNCOOKIESSENT);
 
 	return secure_tcp_syn_cookie(&iph->saddr, &iph->daddr, th->source,
@@ -137,7 +205,11 @@ __u32 cookie_v6_init_sequence(struct sock *sk, struct sk_buff *skb, __u16 *mssp)
 				     jiffies / (HZ * 60), mssind);
 }
 
+<<<<<<< HEAD
 static inline int cookie_check(struct sk_buff *skb, __u32 cookie)
+=======
+static inline int cookie_check(const struct sk_buff *skb, __u32 cookie)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct ipv6hdr *iph = ipv6_hdr(skb);
 	const struct tcphdr *th = tcp_hdr(skb);
@@ -148,13 +220,49 @@ static inline int cookie_check(struct sk_buff *skb, __u32 cookie)
 
 	return mssind < ARRAY_SIZE(msstab) ? msstab[mssind] : 0;
 }
+=======
+	return secure_tcp_syn_cookie(&iph->saddr, &iph->daddr, th->source,
+				     th->dest, ntohl(th->seq), mssind);
+}
+EXPORT_SYMBOL_GPL(__cookie_v6_init_sequence);
+
+__u32 cookie_v6_init_sequence(struct sock *sk, const struct sk_buff *skb, __u16 *mssp)
+{
+	const struct ipv6hdr *iph = ipv6_hdr(skb);
+	const struct tcphdr *th = tcp_hdr(skb);
+
+	tcp_synq_overflow(sk);
+	NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_SYNCOOKIESSENT);
+
+	return __cookie_v6_init_sequence(iph, th, mssp);
+}
+
+int __cookie_v6_check(const struct ipv6hdr *iph, const struct tcphdr *th,
+		      __u32 cookie)
+{
+	__u32 seq = ntohl(th->seq) - 1;
+	__u32 mssind = check_tcp_syn_cookie(cookie, &iph->saddr, &iph->daddr,
+					    th->source, th->dest, seq);
+
+	return mssind < ARRAY_SIZE(msstab) ? msstab[mssind] : 0;
+}
+EXPORT_SYMBOL_GPL(__cookie_v6_check);
+>>>>>>> refs/remotes/origin/master
 
 struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
 {
 	struct tcp_options_received tcp_opt;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 *hash_location;
+=======
+	const u8 *hash_location;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct inet_request_sock *ireq;
 	struct inet6_request_sock *ireq6;
+=======
+	struct inet_request_sock *ireq;
+>>>>>>> refs/remotes/origin/master
 	struct tcp_request_sock *treq;
 	struct ipv6_pinfo *np = inet6_sk(sk);
 	struct tcp_sock *tp = tcp_sk(sk);
@@ -171,7 +279,11 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
 		goto out;
 
 	if (tcp_synq_no_recent_overflow(sk) ||
+<<<<<<< HEAD
 		(mss = cookie_check(skb, cookie)) == 0) {
+=======
+		(mss = __cookie_v6_check(ipv6_hdr(skb), th, cookie)) == 0) {
+>>>>>>> refs/remotes/origin/master
 		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_SYNCOOKIESFAILED);
 		goto out;
 	}
@@ -180,9 +292,15 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
 
 	/* check for timestamp cookie support */
 	memset(&tcp_opt, 0, sizeof(tcp_opt));
+<<<<<<< HEAD
 	tcp_parse_options(skb, &tcp_opt, &hash_location, 0);
 
 	if (!cookie_check_timestamp(&tcp_opt, &ecn_ok))
+=======
+	tcp_parse_options(skb, &tcp_opt, 0, NULL);
+
+	if (!cookie_check_timestamp(&tcp_opt, sock_net(sk), &ecn_ok))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	ret = NULL;
@@ -191,21 +309,39 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
 		goto out;
 
 	ireq = inet_rsk(req);
+<<<<<<< HEAD
 	ireq6 = inet6_rsk(req);
 	treq = tcp_rsk(req);
+=======
+	treq = tcp_rsk(req);
+	treq->listener = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	if (security_inet_conn_request(sk, skb, req))
 		goto out_free;
 
 	req->mss = mss;
+<<<<<<< HEAD
 	ireq->rmt_port = th->source;
 	ireq->loc_port = th->dest;
+<<<<<<< HEAD
 	ipv6_addr_copy(&ireq6->rmt_addr, &ipv6_hdr(skb)->saddr);
 	ipv6_addr_copy(&ireq6->loc_addr, &ipv6_hdr(skb)->daddr);
+=======
+	ireq6->rmt_addr = ipv6_hdr(skb)->saddr;
+	ireq6->loc_addr = ipv6_hdr(skb)->daddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ireq->ir_rmt_port = th->source;
+	ireq->ir_num = ntohs(th->dest);
+	ireq->ir_v6_rmt_addr = ipv6_hdr(skb)->saddr;
+	ireq->ir_v6_loc_addr = ipv6_hdr(skb)->daddr;
+>>>>>>> refs/remotes/origin/master
 	if (ipv6_opt_accepted(sk, skb) ||
 	    np->rxopt.bits.rxinfo || np->rxopt.bits.rxoinfo ||
 	    np->rxopt.bits.rxhlim || np->rxopt.bits.rxohlim) {
 		atomic_inc(&skb->users);
+<<<<<<< HEAD
 		ireq6->pktopts = skb;
 	}
 
@@ -217,12 +353,33 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
 
 	req->expires = 0UL;
 	req->retrans = 0;
+=======
+		ireq->pktopts = skb;
+	}
+
+	ireq->ir_iif = sk->sk_bound_dev_if;
+	/* So that link locals have meaning */
+	if (!sk->sk_bound_dev_if &&
+	    ipv6_addr_type(&ireq->ir_v6_rmt_addr) & IPV6_ADDR_LINKLOCAL)
+		ireq->ir_iif = inet6_iif(skb);
+
+	req->expires = 0UL;
+	req->num_retrans = 0;
+>>>>>>> refs/remotes/origin/master
 	ireq->ecn_ok		= ecn_ok;
 	ireq->snd_wscale	= tcp_opt.snd_wscale;
 	ireq->sack_ok		= tcp_opt.sack_ok;
 	ireq->wscale_ok		= tcp_opt.wscale_ok;
 	ireq->tstamp_ok		= tcp_opt.saw_tstamp;
 	req->ts_recent		= tcp_opt.saw_tstamp ? tcp_opt.rcv_tsval : 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	treq->snt_synack	= tcp_opt.saw_tstamp ? tcp_opt.rcv_tsecr : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	treq->snt_synack	= tcp_opt.saw_tstamp ? tcp_opt.rcv_tsecr : 0;
+>>>>>>> refs/remotes/origin/master
 	treq->rcv_isn = ntohl(th->seq) - 1;
 	treq->snt_isn = cookie;
 
@@ -236,12 +393,27 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
 		struct flowi6 fl6;
 		memset(&fl6, 0, sizeof(fl6));
 		fl6.flowi6_proto = IPPROTO_TCP;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&fl6.daddr, &ireq6->rmt_addr);
 		final_p = fl6_update_dst(&fl6, np->opt, &final);
 		ipv6_addr_copy(&fl6.saddr, &ireq6->loc_addr);
+=======
+		fl6.daddr = ireq6->rmt_addr;
+		final_p = fl6_update_dst(&fl6, np->opt, &final);
+		fl6.saddr = ireq6->loc_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		fl6.flowi6_oif = sk->sk_bound_dev_if;
 		fl6.flowi6_mark = sk->sk_mark;
 		fl6.fl6_dport = inet_rsk(req)->rmt_port;
+=======
+		fl6.daddr = ireq->ir_v6_rmt_addr;
+		final_p = fl6_update_dst(&fl6, np->opt, &final);
+		fl6.saddr = ireq->ir_v6_loc_addr;
+		fl6.flowi6_oif = sk->sk_bound_dev_if;
+		fl6.flowi6_mark = sk->sk_mark;
+		fl6.fl6_dport = ireq->ir_rmt_port;
+>>>>>>> refs/remotes/origin/master
 		fl6.fl6_sport = inet_sk(sk)->inet_sport;
 		security_req_classify_flow(req, flowi6_to_flowi(&fl6));
 

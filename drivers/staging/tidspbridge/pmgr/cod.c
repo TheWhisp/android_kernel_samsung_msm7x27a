@@ -30,9 +30,15 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- Platform Manager */
 /* Include appropriate loader header file */
 #include <dspbridge/dbll.h>
@@ -61,8 +67,14 @@ struct cod_libraryobj {
 	struct cod_manager *cod_mgr;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u32 refs = 0L;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct dbll_fxns ldr_fxns = {
 	(dbll_close_fxn) dbll_close,
 	(dbll_create_fxn) dbll_create,
@@ -183,10 +195,16 @@ void cod_close(struct cod_libraryobj *lib)
 {
 	struct cod_manager *hmgr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(lib != NULL);
 	DBC_REQUIRE(lib->cod_mgr);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hmgr = lib->cod_mgr;
 	hmgr->fxns.close_fxn(lib->dbll_lib);
 
@@ -208,9 +226,15 @@ int cod_create(struct cod_manager **mgr, char *str_zl_file)
 	struct dbll_attrs zl_attrs;
 	int status = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(mgr != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* assume failure */
 	*mgr = NULL;
 
@@ -263,9 +287,15 @@ int cod_create(struct cod_manager **mgr, char *str_zl_file)
  */
 void cod_delete(struct cod_manager *cod_mgr_obj)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(cod_mgr_obj);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cod_mgr_obj->base_lib) {
 		if (cod_mgr_obj->loaded)
 			cod_mgr_obj->fxns.unload_fxn(cod_mgr_obj->base_lib,
@@ -281,6 +311,8 @@ void cod_delete(struct cod_manager *cod_mgr_obj)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== cod_exit ========
  *  Purpose:
  *      Discontinue usage of the COD module.
@@ -296,6 +328,10 @@ void cod_exit(void)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== cod_get_base_lib ========
  *  Purpose:
  *      Get handle to the base image DBL library.
@@ -305,10 +341,16 @@ int cod_get_base_lib(struct cod_manager *cod_mgr_obj,
 {
 	int status = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(cod_mgr_obj);
 	DBC_REQUIRE(plib != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*plib = (struct dbll_library_obj *)cod_mgr_obj->base_lib;
 
 	return status;
@@ -322,12 +364,20 @@ int cod_get_base_name(struct cod_manager *cod_mgr_obj, char *sz_name,
 {
 	int status = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(cod_mgr_obj);
 	DBC_REQUIRE(sz_name != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (usize <= COD_MAXPATHLENGTH)
 		strncpy(sz_name, cod_mgr_obj->sz_zl_file, usize);
+=======
+	if (usize <= COD_MAXPATHLENGTH)
+		strlcpy(sz_name, cod_mgr_obj->sz_zl_file, usize);
+>>>>>>> refs/remotes/origin/master
 	else
 		status = -EPERM;
 
@@ -342,10 +392,16 @@ int cod_get_base_name(struct cod_manager *cod_mgr_obj, char *sz_name,
  */
 int cod_get_entry(struct cod_manager *cod_mgr_obj, u32 *entry_pt)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(cod_mgr_obj);
 	DBC_REQUIRE(entry_pt != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*entry_pt = cod_mgr_obj->entry;
 
 	return 0;
@@ -361,10 +417,16 @@ int cod_get_loader(struct cod_manager *cod_mgr_obj,
 {
 	int status = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(cod_mgr_obj);
 	DBC_REQUIRE(loader != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*loader = (struct dbll_tar_obj *)cod_mgr_obj->target;
 
 	return status;
@@ -382,6 +444,8 @@ int cod_get_section(struct cod_libraryobj *lib, char *str_sect,
 	struct cod_manager *cod_mgr_obj;
 	int status = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(lib != NULL);
 	DBC_REQUIRE(lib->cod_mgr);
@@ -389,6 +453,10 @@ int cod_get_section(struct cod_libraryobj *lib, char *str_sect,
 	DBC_REQUIRE(addr != NULL);
 	DBC_REQUIRE(len != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*addr = 0;
 	*len = 0;
 	if (lib != NULL) {
@@ -399,8 +467,14 @@ int cod_get_section(struct cod_libraryobj *lib, char *str_sect,
 		status = -ESPIPE;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE(!status || ((*addr == 0) && (*len == 0)));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -417,11 +491,17 @@ int cod_get_sym_value(struct cod_manager *cod_mgr_obj, char *str_sym,
 {
 	struct dbll_sym_val *dbll_sym;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(cod_mgr_obj);
 	DBC_REQUIRE(str_sym != NULL);
 	DBC_REQUIRE(pul_value != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(bridge, "%s: cod_mgr_obj: %p str_sym: %s pul_value: %p\n",
 		__func__, cod_mgr_obj, str_sym, pul_value);
 	if (cod_mgr_obj->base_lib) {
@@ -442,6 +522,8 @@ int cod_get_sym_value(struct cod_manager *cod_mgr_obj, char *str_sym,
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== cod_init ========
  *  Purpose:
  *      Initialize the COD module's private state.
@@ -461,6 +543,10 @@ bool cod_init(void)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== cod_load_base ========
  *  Purpose:
  *      Load the initial program image, optionally with command-line arguments,
@@ -482,6 +568,8 @@ int cod_load_base(struct cod_manager *cod_mgr_obj, u32 num_argc, char *args[],
 	int status;
 	u32 i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(cod_mgr_obj);
 	DBC_REQUIRE(num_argc > 0);
@@ -490,6 +578,10 @@ int cod_load_base(struct cod_manager *cod_mgr_obj, u32 num_argc, char *args[],
 	DBC_REQUIRE(pfn_write != NULL);
 	DBC_REQUIRE(cod_mgr_obj->base_lib != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *  Make sure every argv[] stated in argc has a value, or change argc to
 	 *  reflect true number in NULL terminated argv array.
@@ -538,12 +630,18 @@ int cod_open(struct cod_manager *hmgr, char *sz_coff_path,
 	int status = 0;
 	struct cod_libraryobj *lib = NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(hmgr);
 	DBC_REQUIRE(sz_coff_path != NULL);
 	DBC_REQUIRE(flags == COD_NOLOAD || flags == COD_SYMB);
 	DBC_REQUIRE(lib_obj != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*lib_obj = NULL;
 
 	lib = kzalloc(sizeof(struct cod_libraryobj), GFP_KERNEL);
@@ -575,10 +673,16 @@ int cod_open_base(struct cod_manager *hmgr, char *sz_coff_path,
 	int status = 0;
 	struct dbll_library_obj *lib;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(hmgr);
 	DBC_REQUIRE(sz_coff_path != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* if we previously opened a base image, close it now */
 	if (hmgr->base_lib) {
 		if (hmgr->loaded) {
@@ -612,12 +716,18 @@ int cod_read_section(struct cod_libraryobj *lib, char *str_sect,
 {
 	int status = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(lib != NULL);
 	DBC_REQUIRE(lib->cod_mgr);
 	DBC_REQUIRE(str_sect != NULL);
 	DBC_REQUIRE(str_content != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (lib != NULL)
 		status =
 		    lib->cod_mgr->fxns.read_sect_fxn(lib->dbll_lib, str_sect,

@@ -25,6 +25,13 @@ client_id
 
 	The ceph unique client id that was assigned for this specific session.
 
+<<<<<<< HEAD
+=======
+features
+
+	A hexadecimal encoding of the feature bits for this image.
+
+>>>>>>> refs/remotes/origin/master
 major
 
 	The block device major number.
@@ -33,10 +40,28 @@ name
 
 	The name of the rbd image.
 
+<<<<<<< HEAD
 pool
 
 	The pool where this rbd image resides. The pool-name pair is unique
 	per rados system.
+=======
+image_id
+
+	The unique id for the rbd image.  (For rbd image format 1
+	this is empty.)
+
+pool
+
+	The name of the storage pool where this rbd image resides.
+	An rbd image name is unique within its pool.
+
+pool_id
+
+	The unique identifier for the rbd image's pool.  This is
+	a permanent attribute of the pool.  A pool's id will never
+	change.
+>>>>>>> refs/remotes/origin/master
 
 size
 
@@ -51,6 +76,9 @@ current_snap
 
 	The current snapshot for which the device is mapped.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 create_snap
 
 	Create a snapshot:
@@ -64,6 +92,16 @@ rollback_snap
 
 	 $ echo <snap-name> > /sys/bus/rbd/devices/<dev-id>/snap_rollback
 
+create_snap
+
+	Create a snapshot:
+
+	 $ echo <snap-name> > /sys/bus/rbd/devices/<dev-id>/snap_create
+
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 snap_*
 
 	A directory per each snapshot
@@ -81,3 +119,9 @@ size
 	The size of the image when this snapshot was taken.
 
 
+=======
+parent
+
+	Information identifying the pool, image, and snapshot id for
+	the parent image in a layered rbd image (format 2 only).
+>>>>>>> refs/remotes/origin/master

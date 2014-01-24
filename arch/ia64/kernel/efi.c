@@ -39,14 +39,34 @@
 #include <asm/pgtable.h>
 #include <asm/processor.h>
 #include <asm/mca.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/tlbflush.h>
 
 #define EFI_DEBUG	0
 
+<<<<<<< HEAD
 extern efi_status_t efi_call_phys (void *, ...);
 
 struct efi efi;
 EXPORT_SYMBOL(efi);
+=======
+static __initdata unsigned long palo_phys;
+
+static __initdata efi_config_table_type_t arch_tables[] = {
+	{PROCESSOR_ABSTRACTION_LAYER_OVERWRITE_GUID, "PALO", &palo_phys},
+	{NULL_GUID, NULL, 0},
+};
+
+extern efi_status_t efi_call_phys (void *, ...);
+
+>>>>>>> refs/remotes/origin/master
 static efi_runtime_services_t *runtime;
 static u64 mem_limit = ~0UL, max_addr = ~0UL, min_addr = 0UL;
 
@@ -156,7 +176,15 @@ prefix##_get_next_variable (unsigned long *name_size, efi_char16_t *name,      \
 #define STUB_SET_VARIABLE(prefix, adjust_arg)				       \
 static efi_status_t							       \
 prefix##_set_variable (efi_char16_t *name, efi_guid_t *vendor,		       \
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       unsigned long attr, unsigned long data_size,	       \
+=======
+		       u32 attr, unsigned long data_size,		       \
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       u32 attr, unsigned long data_size,		       \
+>>>>>>> refs/remotes/origin/master
 		       void *data)					       \
 {									       \
 	struct ia64_fpreg fr[6];					       \
@@ -422,9 +450,15 @@ static u8 __init palo_checksum(u8 *buffer, u32 length)
  * Parse and handle PALO table which is published at:
  * http://www.dig64.org/home/DIG64_PALO_R1_0.pdf
  */
+<<<<<<< HEAD
 static void __init handle_palo(unsigned long palo_phys)
 {
 	struct palo_table *palo = __va(palo_phys);
+=======
+static void __init handle_palo(unsigned long phys_addr)
+{
+	struct palo_table *palo = __va(phys_addr);
+>>>>>>> refs/remotes/origin/master
 	u8  checksum;
 
 	if (strncmp(palo->signature, PALO_SIG, sizeof(PALO_SIG) - 1)) {
@@ -466,12 +500,18 @@ void __init
 efi_init (void)
 {
 	void *efi_map_start, *efi_map_end;
+<<<<<<< HEAD
 	efi_config_table_t *config_tables;
+=======
+>>>>>>> refs/remotes/origin/master
 	efi_char16_t *c16;
 	u64 efi_desc_size;
 	char *cp, vendor[100] = "unknown";
 	int i;
+<<<<<<< HEAD
 	unsigned long palo_phys;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * It's too early to be able to use the standard kernel command line
@@ -513,8 +553,11 @@ efi_init (void)
 		       efi.systab->hdr.revision >> 16,
 		       efi.systab->hdr.revision & 0xffff);
 
+<<<<<<< HEAD
 	config_tables = __va(efi.systab->tables);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Show what we know for posterity */
 	c16 = __va(efi.systab->fw_vendor);
 	if (c16) {
@@ -527,6 +570,7 @@ efi_init (void)
 	       efi.systab->hdr.revision >> 16,
 	       efi.systab->hdr.revision & 0xffff, vendor);
 
+<<<<<<< HEAD
 	efi.mps        = EFI_INVALID_TABLE_ADDR;
 	efi.acpi       = EFI_INVALID_TABLE_ADDR;
 	efi.acpi20     = EFI_INVALID_TABLE_ADDR;
@@ -564,6 +608,12 @@ efi_init (void)
 		}
 	}
 	printk("\n");
+=======
+	palo_phys      = EFI_INVALID_TABLE_ADDR;
+
+	if (efi_config_init(arch_tables) != 0)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	if (palo_phys != EFI_INVALID_TABLE_ADDR)
 		handle_palo(palo_phys);
@@ -869,7 +919,11 @@ kern_mem_attribute (unsigned long phys_addr, unsigned long size)
 EXPORT_SYMBOL(kern_mem_attribute);
 
 int
+<<<<<<< HEAD
 valid_phys_addr_range (unsigned long phys_addr, unsigned long size)
+=======
+valid_phys_addr_range (phys_addr_t phys_addr, unsigned long size)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 attr;
 
@@ -1115,11 +1169,14 @@ efi_memmap_init(u64 *s, u64 *e)
 		if (!is_memory_available(md))
 			continue;
 
+<<<<<<< HEAD
 #ifdef CONFIG_CRASH_DUMP
 		/* saved_max_pfn should ignore max_addr= command line arg */
 		if (saved_max_pfn < (efi_md_end(md) >> PAGE_SHIFT))
 			saved_max_pfn = (efi_md_end(md) >> PAGE_SHIFT);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Round ends inward to granule boundaries
 		 * Give trimmings to uncached allocator

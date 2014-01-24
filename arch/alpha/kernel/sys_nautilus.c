@@ -35,7 +35,13 @@
 #include <linux/bitops.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -65,7 +71,15 @@ nautilus_init_irq(void)
 }
 
 static int __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 nautilus_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+nautilus_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+nautilus_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Preserve the IRQ set up by the console.  */
 
@@ -186,7 +200,10 @@ nautilus_machine_check(unsigned long vector, unsigned long la_ptr)
 	mb();
 }
 
+<<<<<<< HEAD
 extern void free_reserved_mem(void *, void *);
+=======
+>>>>>>> refs/remotes/origin/master
 extern void pcibios_claim_one_bus(struct pci_bus *);
 
 static struct resource irongate_io = {
@@ -240,8 +257,13 @@ nautilus_init_pci(void)
 	if (pci_mem < memtop)
 		memtop = pci_mem;
 	if (memtop > alpha_mv.min_mem_address) {
+<<<<<<< HEAD
 		free_reserved_mem(__va(alpha_mv.min_mem_address),
 				  __va(memtop));
+=======
+		free_reserved_area(__va(alpha_mv.min_mem_address),
+				   __va(memtop), -1, NULL);
+>>>>>>> refs/remotes/origin/master
 		printk("nautilus_init_pci: %ldk freed\n",
 			(memtop - alpha_mv.min_mem_address) >> 10);
 	}

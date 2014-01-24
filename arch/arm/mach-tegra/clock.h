@@ -24,6 +24,11 @@
 #include <linux/list.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
+=======
+#include <mach/clk.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DIV_BUS			(1 << 0)
 #define DIV_U71			(1 << 1)
 #define DIV_U71_FIXED		(1 << 2)
@@ -39,7 +44,20 @@
 #define PERIPH_MANUAL_RESET	(1 << 12)
 #define PLL_ALT_MISC_REG	(1 << 13)
 #define PLLU			(1 << 14)
+<<<<<<< HEAD
 #define ENABLE_ON_INIT		(1 << 28)
+=======
+#define PLLX                    (1 << 15)
+#define MUX_PWM                 (1 << 16)
+#define MUX8                    (1 << 17)
+#define DIV_U71_UART            (1 << 18)
+#define MUX_CLK_OUT             (1 << 19)
+#define PLLM                    (1 << 20)
+#define DIV_U71_INT             (1 << 21)
+#define DIV_U71_IDLE            (1 << 22)
+#define ENABLE_ON_INIT		(1 << 28)
+#define PERIPH_ON_APB           (1 << 29)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct clk;
 
@@ -65,6 +83,11 @@ struct clk_ops {
 	int		(*set_rate)(struct clk *, unsigned long);
 	long		(*round_rate)(struct clk *, unsigned long);
 	void		(*reset)(struct clk *, bool);
+<<<<<<< HEAD
+=======
+	int		(*clk_cfg_ex)(struct clk *,
+				enum tegra_clk_ex_param, u32);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum clk_state {
@@ -114,6 +137,10 @@ struct clk {
 			unsigned long			vco_max;
 			const struct clk_pll_freq_table	*freq_table;
 			int				lock_delay;
+<<<<<<< HEAD
+=======
+			unsigned long			fixed_rate;
+>>>>>>> refs/remotes/origin/cm-10.0
 		} pll;
 		struct {
 			u32				sel;
@@ -146,15 +173,24 @@ struct tegra_clk_init_table {
 };
 
 void tegra2_init_clocks(void);
+<<<<<<< HEAD
 void tegra2_periph_reset_deassert(struct clk *c);
 void tegra2_periph_reset_assert(struct clk *c);
 void clk_init(struct clk *clk);
 struct clk *tegra_get_clock_by_name(const char *name);
 unsigned long clk_measure_input_freq(void);
+=======
+void tegra30_init_clocks(void);
+void clk_init(struct clk *clk);
+struct clk *tegra_get_clock_by_name(const char *name);
+>>>>>>> refs/remotes/origin/cm-10.0
 int clk_reparent(struct clk *c, struct clk *parent);
 void tegra_clk_init_from_table(struct tegra_clk_init_table *table);
 unsigned long clk_get_rate_locked(struct clk *c);
 int clk_set_rate_locked(struct clk *c, unsigned long rate);
+<<<<<<< HEAD
 void tegra2_sdmmc_tap_delay(struct clk *c, int delay);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

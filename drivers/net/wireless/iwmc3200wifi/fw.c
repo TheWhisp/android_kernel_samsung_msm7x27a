@@ -187,7 +187,11 @@ static int iwm_load_img(struct iwm_priv *iwm, const char *img_name)
 		if (ret < 0)
 			goto err_release_fw;
 		opcode_idx++;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Read firmware version */
 	fw_offset = iwm_fw_op_offset(iwm, fw, IWM_HDR_REC_OP_SW_VER, 0);

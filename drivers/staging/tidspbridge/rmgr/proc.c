@@ -25,9 +25,15 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/ntfy.h>
 #include <dspbridge/sync.h>
@@ -101,8 +107,14 @@ struct proc_object {
 	struct list_head proc_list;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u32 refs;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 DEFINE_MUTEX(proc_lock);	/* For critical sections */
 
 /*  ----------------------------------- Function Prototypes */
@@ -124,6 +136,7 @@ static struct dmm_map_object *add_mapping_info(struct process_context *pr_ctxt,
 						dsp_addr, size);
 
 	map_obj = kzalloc(sizeof(struct dmm_map_object), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!map_obj) {
 		pr_err("%s: kzalloc failed\n", __func__);
 		return NULL;
@@ -134,6 +147,16 @@ static struct dmm_map_object *add_mapping_info(struct process_context *pr_ctxt,
 							GFP_KERNEL);
 	if (!map_obj->pages) {
 		pr_err("%s: kzalloc failed\n", __func__);
+=======
+	if (!map_obj)
+		return NULL;
+
+	INIT_LIST_HEAD(&map_obj->link);
+
+	map_obj->pages = kcalloc(num_usr_pgs, sizeof(struct page *),
+				 GFP_KERNEL);
+	if (!map_obj->pages) {
+>>>>>>> refs/remotes/origin/master
 		kfree(map_obj);
 		return NULL;
 	}
@@ -281,9 +304,15 @@ proc_attach(u32 processor_id,
 	struct drv_data *drv_datap = dev_get_drvdata(bridge);
 	u8 dev_type;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(ph_processor != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pr_ctxt->processor) {
 		*ph_processor = pr_ctxt->processor;
 		return status;
@@ -308,7 +337,11 @@ proc_attach(u32 processor_id,
 	if (status)
 		goto func_end;
 
+<<<<<<< HEAD
 	/* If we made it this far, create the Proceesor object: */
+=======
+	/* If we made it this far, create the Processor object: */
+>>>>>>> refs/remotes/origin/master
 	p_proc_object = kzalloc(sizeof(struct proc_object), GFP_KERNEL);
 	/* Fill out the Processor Object: */
 	if (p_proc_object == NULL) {
@@ -382,10 +415,16 @@ proc_attach(u32 processor_id,
 		kfree(p_proc_object);
 	}
 func_end:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE((status == -EPERM && *ph_processor == NULL) ||
 		   (!status && p_proc_object) ||
 		   (status == 0 && p_proc_object));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -394,7 +433,10 @@ static int get_exec_file(struct cfg_devnode *dev_node_obj,
 				u32 size, char *exec_file)
 {
 	u8 dev_type;
+<<<<<<< HEAD
 	s32 len;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct drv_data *drv_datap = dev_get_drvdata(bridge);
 
 	dev_get_dev_type(hdev_obj, (u8 *) &dev_type);
@@ -406,6 +448,7 @@ static int get_exec_file(struct cfg_devnode *dev_node_obj,
 		if (!drv_datap || !drv_datap->base_img)
 			return -EFAULT;
 
+<<<<<<< HEAD
 		if (strlen(drv_datap->base_img) > size)
 			return -EINVAL;
 
@@ -413,6 +456,12 @@ static int get_exec_file(struct cfg_devnode *dev_node_obj,
 	} else if (dev_type == IVA_UNIT && iva_img) {
 		len = strlen(iva_img);
 		strncpy(exec_file, iva_img, len + 1);
+=======
+		if (strlen(drv_datap->base_img) >= size)
+			return -EINVAL;
+
+		strcpy(exec_file, drv_datap->base_img);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		return -ENOENT;
 	}
@@ -445,10 +494,16 @@ int proc_auto_start(struct cfg_devnode *dev_node_obj,
 	struct drv_data *drv_datap = dev_get_drvdata(bridge);
 	u8 dev_type;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(dev_node_obj != NULL);
 	DBC_REQUIRE(hdev_obj != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Create a Dummy PROC Object */
 	if (!drv_datap || !drv_datap->mgr_object) {
 		status = -ENODATA;
@@ -510,14 +565,24 @@ func_end:
  *      Call the bridge_dev_ctrl fxn with the Argument. This is a Synchronous
  *      Operation. arg can be null.
  */
+<<<<<<< HEAD
 int proc_ctrl(void *hprocessor, u32 dw_cmd, struct dsp_cbdata * arg)
+=======
+int proc_ctrl(void *hprocessor, u32 dw_cmd, struct dsp_cbdata *arg)
+>>>>>>> refs/remotes/origin/master
 {
 	int status = 0;
 	struct proc_object *p_proc_object = hprocessor;
 	u32 timeout = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (p_proc_object) {
 		/* intercept PWR deep sleep command */
 		if (dw_cmd == BRDIOCTL_DEEPSLEEP) {
@@ -565,8 +630,14 @@ int proc_detach(struct process_context *pr_ctxt)
 	int status = 0;
 	struct proc_object *p_proc_object = NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	p_proc_object = (struct proc_object *)pr_ctxt->processor;
 
 	if (p_proc_object) {
@@ -607,11 +678,17 @@ int proc_enum_nodes(void *hprocessor, void **node_tab,
 	struct proc_object *p_proc_object = (struct proc_object *)hprocessor;
 	struct node_mgr *hnode_mgr = NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(node_tab != NULL || node_tab_size == 0);
 	DBC_REQUIRE(pu_num_nodes != NULL);
 	DBC_REQUIRE(pu_allocated != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (p_proc_object) {
 		if (!(dev_get_node_manager(p_proc_object->dev_obj,
 						       &hnode_mgr))) {
@@ -722,7 +799,10 @@ static int memory_give_ownership(struct dmm_map_object *map_obj,
 
 	sg = kcalloc(num_pages, sizeof(*sg), GFP_KERNEL);
 	if (!sg) {
+<<<<<<< HEAD
 		pr_err("%s: kcalloc failed\n", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto out;
 	}
@@ -768,8 +848,14 @@ int proc_begin_dma(void *hprocessor, void *pmpu_addr, u32 ul_size,
 	struct process_context *pr_ctxt = (struct process_context *) hprocessor;
 	struct dmm_map_object *map_obj;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pr_ctxt) {
 		status = -EFAULT;
 		goto err_out;
@@ -810,8 +896,14 @@ int proc_end_dma(void *hprocessor, void *pmpu_addr, u32 ul_size,
 	struct process_context *pr_ctxt = (struct process_context *) hprocessor;
 	struct dmm_map_object *map_obj;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pr_ctxt) {
 		status = -EFAULT;
 		goto err_out;
@@ -884,10 +976,16 @@ int proc_get_resource_info(void *hprocessor, u32 resource_type,
 	struct rmm_target_obj *rmm = NULL;
 	struct io_mgr *hio_mgr = NULL;	/* IO manager handle */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(resource_info != NULL);
 	DBC_REQUIRE(resource_info_size >= sizeof(struct dsp_resourceinfo));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!p_proc_object) {
 		status = -EFAULT;
 		goto func_end;
@@ -940,6 +1038,8 @@ func_end:
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== proc_exit ========
  *  Purpose:
  *      Decrement reference count, and free resources when reference count is
@@ -955,6 +1055,10 @@ void proc_exit(void)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== proc_get_dev_object ========
  *  Purpose:
  *      Return the Dev Object handle for a given Processor.
@@ -966,9 +1070,15 @@ int proc_get_dev_object(void *hprocessor,
 	int status = -EPERM;
 	struct proc_object *p_proc_object = (struct proc_object *)hprocessor;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(device_obj != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (p_proc_object) {
 		*device_obj = p_proc_object->dev_obj;
 		status = 0;
@@ -977,9 +1087,15 @@ int proc_get_dev_object(void *hprocessor,
 		status = -EFAULT;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE((!status && *device_obj != NULL) ||
 		   (status && *device_obj == NULL));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -996,10 +1112,16 @@ int proc_get_state(void *hprocessor,
 	struct proc_object *p_proc_object = (struct proc_object *)hprocessor;
 	int brd_status;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(proc_state_obj != NULL);
 	DBC_REQUIRE(state_info_size >= sizeof(struct dsp_processorstate));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (p_proc_object) {
 		/* First, retrieve BRD state information */
 		status = (*p_proc_object->intf_fxns->brd_status)
@@ -1047,7 +1169,11 @@ int proc_get_state(void *hprocessor,
  *      This call is destructive, meaning the processor is placed in the monitor
  *      state as a result of this function.
  */
+<<<<<<< HEAD
 int proc_get_trace(void *hprocessor, u8 * pbuf, u32 max_size)
+=======
+int proc_get_trace(void *hprocessor, u8 *pbuf, u32 max_size)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 	status = -ENOSYS;
@@ -1055,6 +1181,8 @@ int proc_get_trace(void *hprocessor, u8 * pbuf, u32 max_size)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== proc_init ========
  *  Purpose:
  *      Initialize PROC's private state, keeping a reference count on each call
@@ -1074,6 +1202,10 @@ bool proc_init(void)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== proc_load ========
  *  Purpose:
  *      Reset a processor and load a new base program image.
@@ -1111,10 +1243,16 @@ int proc_load(void *hprocessor, const s32 argc_index,
 	    omap_dspbridge_dev->dev.platform_data;
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(argc_index > 0);
 	DBC_REQUIRE(user_args != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef OPT_LOAD_TIME_INSTRUMENTATION
 	do_gettimeofday(&tv1);
 #endif
@@ -1202,8 +1340,14 @@ int proc_load(void *hprocessor, const s32 argc_index,
 			if (status) {
 				status = -EPERM;
 			} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				DBC_ASSERT(p_proc_object->last_coff ==
 					   NULL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				/* Allocate memory for pszLastCoff */
 				p_proc_object->last_coff =
 						kzalloc((strlen(user_args[0]) +
@@ -1226,7 +1370,13 @@ int proc_load(void *hprocessor, const s32 argc_index,
 		if (!hmsg_mgr) {
 			status = msg_create(&hmsg_mgr, p_proc_object->dev_obj,
 					    (msg_onexit) node_on_exit);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			DBC_ASSERT(!status);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			dev_set_msg_mgr(p_proc_object->dev_obj, hmsg_mgr);
 		}
 	}
@@ -1315,6 +1465,7 @@ int proc_load(void *hprocessor, const s32 argc_index,
 				(p_proc_object->bridge_context, &brd_state))) {
 			pr_info("%s: Processor Loaded %s\n", __func__, pargv0);
 			kfree(drv_datap->base_img);
+<<<<<<< HEAD
 			drv_datap->base_img = kmalloc(strlen(pargv0) + 1,
 								GFP_KERNEL);
 			if (drv_datap->base_img)
@@ -1322,7 +1473,15 @@ int proc_load(void *hprocessor, const s32 argc_index,
 							strlen(pargv0) + 1);
 			else
 				status = -ENOMEM;
+<<<<<<< HEAD
 			DBC_ASSERT(brd_state == BRD_LOADED);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			drv_datap->base_img = kstrdup(pargv0, GFP_KERNEL);
+			if (!drv_datap->base_img)
+				status = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1331,9 +1490,15 @@ func_end:
 		pr_err("%s: Processor failed to load\n", __func__);
 		proc_stop(p_proc_object);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE((!status
 		    && p_proc_object->proc_state == PROC_LOADED)
 		   || status);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef OPT_LOAD_TIME_INSTRUMENTATION
 	do_gettimeofday(&tv2);
 	if (tv2.tv_usec < tv1.tv_usec) {
@@ -1437,15 +1602,25 @@ func_end:
  */
 int proc_register_notify(void *hprocessor, u32 event_mask,
 				u32 notify_type, struct dsp_notification
+<<<<<<< HEAD
 				* hnotification)
+=======
+				*hnotification)
+>>>>>>> refs/remotes/origin/master
 {
 	int status = 0;
 	struct proc_object *p_proc_object = (struct proc_object *)hprocessor;
 	struct deh_mgr *hdeh_mgr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(hnotification != NULL);
 	DBC_REQUIRE(refs > 0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Check processor handle */
 	if (!p_proc_object) {
 		status = -EFAULT;
@@ -1567,7 +1742,13 @@ int proc_start(void *hprocessor)
 	u32 dw_dsp_addr;	/* Loaded code's entry point. */
 	int brd_state;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!p_proc_object) {
 		status = -EFAULT;
 		goto func_end;
@@ -1616,7 +1797,13 @@ func_cont:
 		if (!((*p_proc_object->intf_fxns->brd_status)
 				(p_proc_object->bridge_context, &brd_state))) {
 			pr_info("%s: dsp in running state\n", __func__);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			DBC_ASSERT(brd_state != BRD_HIBERNATION);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		pr_err("%s: Failed to start the dsp\n", __func__);
@@ -1624,8 +1811,14 @@ func_cont:
 	}
 
 func_end:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE((!status && p_proc_object->proc_state ==
 		    PROC_RUNNING) || status);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -1644,9 +1837,17 @@ int proc_stop(void *hprocessor)
 	u32 node_tab_size = 1;
 	u32 num_nodes = 0;
 	u32 nodes_allocated = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int brd_state;
 
 	DBC_REQUIRE(refs > 0);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (!p_proc_object) {
 		status = -EFAULT;
 		goto func_end;
@@ -1657,8 +1858,13 @@ int proc_stop(void *hprocessor)
 		status = node_enum_nodes(hnode_mgr, &hnode, node_tab_size,
 					 &num_nodes, &nodes_allocated);
 		if ((status == -EINVAL) || (nodes_allocated > 0)) {
+<<<<<<< HEAD
 			pr_err("%s: Can't stop device, active nodes = %d \n",
 			       __func__, nodes_allocated);
+=======
+			pr_err("%s: Can't stop device, active nodes = %d\n",
+				__func__, nodes_allocated);
+>>>>>>> refs/remotes/origin/master
 			return -EBADR;
 		}
 	}
@@ -1678,11 +1884,17 @@ int proc_stop(void *hprocessor)
 				msg_delete(hmsg_mgr);
 				dev_set_msg_mgr(p_proc_object->dev_obj, NULL);
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (!((*p_proc_object->
 			      intf_fxns->brd_status) (p_proc_object->
 							  bridge_context,
 							  &brd_state)))
 				DBC_ASSERT(brd_state == BRD_STOPPED);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		pr_err("%s: Failed to stop the processor\n", __func__);
@@ -1820,10 +2032,16 @@ static int proc_monitor(struct proc_object *proc_obj)
 {
 	int status = -EPERM;
 	struct msg_mgr *hmsg_mgr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int brd_state;
 
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(proc_obj);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* This is needed only when Device is loaded when it is
 	 * already 'ACTIVE' */
@@ -1840,6 +2058,8 @@ static int proc_monitor(struct proc_object *proc_obj)
 	if (!((*proc_obj->intf_fxns->brd_monitor)
 			  (proc_obj->bridge_context))) {
 		status = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!((*proc_obj->intf_fxns->brd_status)
 				  (proc_obj->bridge_context, &brd_state)))
 			DBC_ASSERT(brd_state == BRD_IDLE);
@@ -1847,6 +2067,14 @@ static int proc_monitor(struct proc_object *proc_obj)
 
 	DBC_ENSURE((!status && brd_state == BRD_IDLE) ||
 		   status);
+=======
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -1880,8 +2108,14 @@ static char **prepend_envp(char **new_envp, char **envp, s32 envp_elems,
 {
 	char **pp_envp = new_envp;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(new_envp);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Prepend new environ var=value string */
 	*new_envp++ = sz_var;
 
@@ -1906,9 +2140,15 @@ int proc_notify_clients(void *proc, u32 events)
 	int status = 0;
 	struct proc_object *p_proc_object = (struct proc_object *)proc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(p_proc_object);
 	DBC_REQUIRE(is_valid_proc_event(events));
 	DBC_REQUIRE(refs > 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!p_proc_object) {
 		status = -EFAULT;
 		goto func_end;
@@ -1930,9 +2170,15 @@ int proc_notify_all_clients(void *proc, u32 events)
 	int status = 0;
 	struct proc_object *p_proc_object = (struct proc_object *)proc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(is_valid_proc_event(events));
 	DBC_REQUIRE(refs > 0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!p_proc_object) {
 		status = -EFAULT;
 		goto func_end;
@@ -1949,7 +2195,11 @@ func_end:
  *  Purpose:
  *      Retrieves the processor ID.
  */
+<<<<<<< HEAD
 int proc_get_processor_id(void *proc, u32 * proc_id)
+=======
+int proc_get_processor_id(void *proc, u32 *proc_id)
+>>>>>>> refs/remotes/origin/master
 {
 	int status = 0;
 	struct proc_object *p_proc_object = (struct proc_object *)proc;

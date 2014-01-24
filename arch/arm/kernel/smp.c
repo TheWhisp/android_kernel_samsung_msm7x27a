@@ -19,18 +19,41 @@
 #include <linux/mm.h>
 #include <linux/err.h>
 #include <linux/cpu.h>
+<<<<<<< HEAD
 #include <linux/smp.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/seq_file.h>
 #include <linux/irq.h>
 #include <linux/percpu.h>
 #include <linux/clockchips.h>
 #include <linux/completion.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cpufreq.h>
+#include <linux/irq_work.h>
+
+#include <linux/atomic.h>
+#include <asm/smp.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/cacheflush.h>
 #include <asm/cpu.h>
 #include <asm/cputype.h>
 #include <asm/exception.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/idmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/idmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/topology.h>
 #include <asm/mmu_context.h>
 #include <asm/pgtable.h>
@@ -39,8 +62,15 @@
 #include <asm/sections.h>
 #include <asm/tlbflush.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/localtimer.h>
 #include <asm/smp_plat.h>
+=======
+#include <asm/smp_plat.h>
+#include <asm/virt.h>
+#include <asm/mach/arch.h>
+#include <asm/mpu.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * as from 2.5, kernels no longer have an init_tasks structure
@@ -49,21 +79,45 @@
  */
 struct secondary_data secondary_data;
 
+<<<<<<< HEAD
 enum ipi_msg_type {
 	IPI_CPU_START = 1,
 	IPI_TIMER = 2,
+=======
+/*
+ * control for which core is the next to come out of the secondary
+ * boot "holding pen"
+ */
+volatile int pen_release = -1;
+
+enum ipi_msg_type {
+	IPI_WAKEUP,
+	IPI_TIMER,
+>>>>>>> refs/remotes/origin/master
 	IPI_RESCHEDULE,
 	IPI_CALL_FUNC,
 	IPI_CALL_FUNC_SINGLE,
 	IPI_CPU_STOP,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	IPI_CPU_BACKTRACE,
 };
 
+<<<<<<< HEAD
+=======
+static DECLARE_COMPLETION(cpu_running);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int __cpuinit __cpu_up(unsigned int cpu)
 {
 	struct cpuinfo_arm *ci = &per_cpu(cpu_data, cpu);
 	struct task_struct *idle = ci->idle;
+<<<<<<< HEAD
 	pgd_t *pgd;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	/*
@@ -86,6 +140,7 @@ int __cpuinit __cpu_up(unsigned int cpu)
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Allocate initial page tables to allow the new CPU to
 	 * enable the MMU safely.  This essentially means a set
 	 * of our "standard" page tables, with the addition of
@@ -104,12 +159,57 @@ int __cpuinit __cpu_up(unsigned int cpu)
 	}
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IPI_IRQ_WORK,
+	IPI_COMPLETION,
+};
+
+static DECLARE_COMPLETION(cpu_running);
+
+static struct smp_operations smp_ops;
+
+void __init smp_set_ops(struct smp_operations *ops)
+{
+	if (ops)
+		smp_ops = *ops;
+};
+
+static unsigned long get_arch_pgd(pgd_t *pgd)
+{
+	phys_addr_t pgdir = virt_to_idmap(pgd);
+	BUG_ON(pgdir & ARCH_PGD_MASK);
+	return pgdir >> ARCH_PGD_SHIFT;
+}
+
+int __cpu_up(unsigned int cpu, struct task_struct *idle)
+{
+	int ret;
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * We need to tell the secondary core where to find
 	 * its stack and the page tables.
 	 */
 	secondary_data.stack = task_stack_page(idle) + THREAD_START_SP;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	secondary_data.pgdir = virt_to_phys(pgd);
+=======
+	secondary_data.pgdir = virt_to_phys(idmap_pgd);
+>>>>>>> refs/remotes/origin/cm-10.0
 	secondary_data.swapper_pg_dir = virt_to_phys(swapper_pg_dir);
+=======
+#ifdef CONFIG_ARM_MPU
+	secondary_data.mpu_rgn_szr = mpu_rgn_info.rgns[MPU_RAM_REGION].drsr;
+#endif
+
+#ifdef CONFIG_MMU
+	secondary_data.pgdir = get_arch_pgd(idmap_pgd);
+	secondary_data.swapper_pg_dir = get_arch_pgd(swapper_pg_dir);
+#endif
+>>>>>>> refs/remotes/origin/master
 	__cpuc_flush_dcache_area(&secondary_data, sizeof(secondary_data));
 	outer_clean_range(__pa(&secondary_data), __pa(&secondary_data + 1));
 
@@ -118,12 +218,20 @@ int __cpuinit __cpu_up(unsigned int cpu)
 	 */
 	ret = boot_secondary(cpu, idle);
 	if (ret == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned long timeout;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * CPU was successfully started, wait for it
 		 * to come online or time out.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		timeout = jiffies + HZ;
 		while (time_before(jiffies, timeout)) {
 			if (cpu_online(cpu))
@@ -132,6 +240,14 @@ int __cpuinit __cpu_up(unsigned int cpu)
 			udelay(10);
 			barrier();
 		}
+=======
+		wait_for_completion_timeout(&cpu_running,
+						 msecs_to_jiffies(1000));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wait_for_completion_timeout(&cpu_running,
+						 msecs_to_jiffies(1000));
+>>>>>>> refs/remotes/origin/master
 
 		if (!cpu_online(cpu)) {
 			pr_crit("CPU%u: failed to come online\n", cpu);
@@ -141,9 +257,11 @@ int __cpuinit __cpu_up(unsigned int cpu)
 		pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
 	}
 
+<<<<<<< HEAD
 	secondary_data.stack = NULL;
 	secondary_data.pgdir = 0;
 
+<<<<<<< HEAD
 	if (PHYS_OFFSET != PAGE_OFFSET) {
 #ifndef CONFIG_HOTPLUG_CPU
 		identity_mapping_del(pgd, __pa(__init_begin), __pa(__init_end));
@@ -154,19 +272,75 @@ int __cpuinit __cpu_up(unsigned int cpu)
 
 	pgd_free(&init_mm, pgd);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 #ifdef CONFIG_HOTPLUG_CPU
 static void percpu_timer_stop(void);
 
+=======
+
+	memset(&secondary_data, 0, sizeof(secondary_data));
+	return ret;
+}
+
+/* platform specific SMP operations */
+void __init smp_init_cpus(void)
+{
+	if (smp_ops.smp_init_cpus)
+		smp_ops.smp_init_cpus();
+}
+
+int boot_secondary(unsigned int cpu, struct task_struct *idle)
+{
+	if (smp_ops.smp_boot_secondary)
+		return smp_ops.smp_boot_secondary(cpu, idle);
+	return -ENOSYS;
+}
+
+int platform_can_cpu_hotplug(void)
+{
+#ifdef CONFIG_HOTPLUG_CPU
+	if (smp_ops.cpu_kill)
+		return 1;
+#endif
+
+	return 0;
+}
+
+#ifdef CONFIG_HOTPLUG_CPU
+static int platform_cpu_kill(unsigned int cpu)
+{
+	if (smp_ops.cpu_kill)
+		return smp_ops.cpu_kill(cpu);
+	return 1;
+}
+
+static int platform_cpu_disable(unsigned int cpu)
+{
+	if (smp_ops.cpu_disable)
+		return smp_ops.cpu_disable(cpu);
+
+	/*
+	 * By default, allow disabling all CPUs except the first one,
+	 * since this is special on a lot of platforms, e.g. because
+	 * of clock tick interrupts.
+	 */
+	return cpu == 0 ? -EPERM : 0;
+}
+>>>>>>> refs/remotes/origin/master
 /*
  * __cpu_disable runs on the processor to be shutdown.
  */
 int __cpu_disable(void)
 {
 	unsigned int cpu = smp_processor_id();
+<<<<<<< HEAD
 	struct task_struct *p;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = platform_cpu_disable(cpu);
@@ -185,6 +359,7 @@ int __cpu_disable(void)
 	migrate_irqs();
 
 	/*
+<<<<<<< HEAD
 	 * Stop the local timer for this CPU.
 	 */
 	percpu_timer_stop();
@@ -202,6 +377,18 @@ int __cpu_disable(void)
 			cpumask_clear_cpu(cpu, mm_cpumask(p->mm));
 	}
 	read_unlock(&tasklist_lock);
+=======
+	 * Flush user cache and TLB mappings, and then remove this CPU
+	 * from the vm mask set of all processes.
+	 *
+	 * Caches are flushed to the Level of Unification Inner Shareable
+	 * to write-back dirty lines to unified caches shared by all CPUs.
+	 */
+	flush_cache_louis();
+	local_flush_tlb_all();
+
+	clear_tasks_mm_cpumask(cpu);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -218,8 +405,24 @@ void __cpu_die(unsigned int cpu)
 		pr_err("CPU%u: cpu didn't die\n", cpu);
 		return;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("CPU%u: shutdown\n", cpu);
 
+=======
+	printk(KERN_NOTICE "CPU%u: shutdown\n", cpu);
+=======
+	pr_debug("CPU%u: shutdown\n", cpu);
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	/*
+	 * platform_cpu_kill() is generally expected to do the powering off
+	 * and/or cutting of clocks to the dying CPU.  Optionally, this may
+	 * be done by the CPU which is dying in preference to supporting
+	 * this call, but that means there is _no_ synchronisation between
+	 * the requesting CPU and the dying CPU actually losing power.
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (!platform_cpu_kill(cpu))
 		printk("CPU%u: unable to kill\n", cpu);
 }
@@ -239,16 +442,65 @@ void __ref cpu_die(void)
 	idle_task_exit();
 
 	local_irq_disable();
+<<<<<<< HEAD
 	mb();
 
 	/* Tell __cpu_die() that this CPU is now safe to dispose of */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	complete(&cpu_died);
+=======
+	RCU_NONIDLE(complete(&cpu_died));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_NONIDLE(complete(&cpu_died));
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * actual CPU shutdown procedure is at least platform (if not
 	 * CPU) specific.
 	 */
 	platform_cpu_die(cpu);
+=======
+
+	/*
+	 * Flush the data out of the L1 cache for this CPU.  This must be
+	 * before the completion to ensure that data is safely written out
+	 * before platform_cpu_kill() gets called - which may disable
+	 * *this* CPU and power down its cache.
+	 */
+	flush_cache_louis();
+
+	/*
+	 * Tell __cpu_die() that this CPU is now safe to dispose of.  Once
+	 * this returns, power and/or clocks can be removed at any point
+	 * from this CPU and its cache by platform_cpu_kill().
+	 */
+	complete(&cpu_died);
+
+	/*
+	 * Ensure that the cache lines associated with that completion are
+	 * written out.  This covers the case where _this_ CPU is doing the
+	 * powering down, to ensure that the completion is visible to the
+	 * CPU waiting for this one.
+	 */
+	flush_cache_louis();
+
+	/*
+	 * The actual CPU shutdown procedure is at least platform (if not
+	 * CPU) specific.  This may remove power, or it may simply spin.
+	 *
+	 * Platforms are generally expected *NOT* to return from this call,
+	 * although there are some which do because they have no way to
+	 * power down the CPU.  These platforms are the _only_ reason we
+	 * have a return path which uses the fragment of assembly below.
+	 *
+	 * The return path should not be used for platforms which can
+	 * power off the CPU.
+	 */
+	if (smp_ops.cpu_die)
+		smp_ops.cpu_die(cpu);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Do not return to the idle loop - jump back to the secondary
@@ -263,6 +515,8 @@ void __ref cpu_die(void)
 }
 #endif /* CONFIG_HOTPLUG_CPU */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __cpu_logical_map[NR_CPUS];
 
 void __init smp_setup_processor_id(void)
@@ -277,22 +531,48 @@ void __init smp_setup_processor_id(void)
 	printk(KERN_INFO "Booting Linux on physical CPU %d\n", cpu);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Called by both boot and secondaries to move global data into
  * per-processor storage.
  */
+<<<<<<< HEAD
 static void __cpuinit smp_store_cpu_info(unsigned int cpuid)
+=======
+static void smp_store_cpu_info(unsigned int cpuid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cpuinfo_arm *cpu_info = &per_cpu(cpu_data, cpuid);
 
 	cpu_info->loops_per_jiffy = loops_per_jiffy;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	store_cpu_topology(cpuid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpu_info->cpuid = read_cpuid_id();
+
+<<<<<<< HEAD
+	store_cpu_topology(cpuid);
+>>>>>>> refs/remotes/origin/master
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * This is the secondary CPU boot entry.  We're using this CPUs
  * idle thread stack, but a set of temporary page tables.
  */
+<<<<<<< HEAD
 asmlinkage void __cpuinit secondary_start_kernel(void)
+=======
+asmlinkage void secondary_start_kernel(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mm_struct *mm = &init_mm;
 	unsigned int cpu;
@@ -302,11 +582,26 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 	 * switch away from it before attempting any exclusive accesses.
 	 */
 	cpu_switch_mm(mm->pgd, mm);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	enter_lazy_tlb(mm, current);
 	local_flush_tlb_all();
 
+<<<<<<< HEAD
 	pr_debug("CPU%u: Booted secondary processor\n", cpu);
+=======
+	enter_lazy_tlb(mm, current);
+	local_flush_tlb_all();
+>>>>>>> refs/remotes/origin/cm-11.0
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	local_flush_bp_all();
+	enter_lazy_tlb(mm, current);
+	local_flush_tlb_all();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * All kernel threads share the same mm context; grab a
 	 * reference and switch to it.
@@ -316,15 +611,32 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 	current->active_mm = mm;
 	cpumask_set_cpu(cpu, mm_cpumask(mm));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	pr_debug("CPU%u: Booted secondary processor\n", cpu);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	cpu_init();
+=======
+	cpu_init();
+
+	printk("CPU%u: Booted secondary processor\n", cpu);
+
+>>>>>>> refs/remotes/origin/master
 	preempt_disable();
 	trace_hardirqs_off();
 
 	/*
 	 * Give the platform a chance to do its own initialisation.
 	 */
+<<<<<<< HEAD
 	platform_secondary_init(cpu);
 
+<<<<<<< HEAD
 	/*
 	 * Enable local interrupts.
 	 */
@@ -336,6 +648,15 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 	 * Setup the percpu timer for this CPU.
 	 */
 	percpu_timer_setup();
+=======
+	notify_cpu_starting(cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (smp_ops.smp_secondary_init)
+		smp_ops.smp_secondary_init(cpu);
+
+	notify_cpu_starting(cpu);
+>>>>>>> refs/remotes/origin/master
 
 	calibrate_delay();
 
@@ -344,20 +665,48 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 	/*
 	 * OK, now it's safe to let the boot CPU continue.  Wait for
 	 * the CPU migration code to notice that the CPU is online
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * before we continue.
 	 */
 	set_cpu_online(cpu, true);
 	while (!cpu_active(cpu))
 		cpu_relax();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * before we continue - which happens after __cpu_up returns.
+	 */
+	set_cpu_online(cpu, true);
+	complete(&cpu_running);
+
+<<<<<<< HEAD
+	/*
+	 * Setup the percpu timer for this CPU.
+	 */
+	percpu_timer_setup();
+
+	local_irq_enable();
+	local_fiq_enable();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	local_irq_enable();
+	local_fiq_enable();
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * OK, it's off to the idle thread for us
 	 */
+<<<<<<< HEAD
 	cpu_idle();
+=======
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init smp_cpus_done(unsigned int max_cpus)
 {
+<<<<<<< HEAD
 	int cpu;
 	unsigned long bogosum = 0;
 
@@ -369,19 +718,39 @@ void __init smp_cpus_done(unsigned int max_cpus)
 	       num_online_cpus(),
 	       bogosum / (500000/HZ),
 	       (bogosum / (5000/HZ)) % 100);
+=======
+	printk(KERN_INFO "SMP: Total of %d processors activated.\n",
+	       num_online_cpus());
+
+	hyp_mode_check();
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init smp_prepare_boot_cpu(void)
 {
+<<<<<<< HEAD
 	unsigned int cpu = smp_processor_id();
 
 	per_cpu(cpu_data, cpu).idle = current;
+=======
+	set_my_cpu_offset(per_cpu_offset(smp_processor_id()));
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init smp_prepare_cpus(unsigned int max_cpus)
 {
 	unsigned int ncores = num_possible_cpus();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	init_cpu_topology();
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_cpu_topology();
+
+>>>>>>> refs/remotes/origin/master
 	smp_store_cpu_info(smp_processor_id());
 
 	/*
@@ -389,8 +758,13 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 	 */
 	if (max_cpus > ncores)
 		max_cpus = ncores;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (max_cpus > 1) {
+=======
+	if (ncores > 1 && max_cpus) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * Enable the local timer or broadcast device for the
 		 * boot CPU, but only if we have more than one CPU.
@@ -398,10 +772,37 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 		percpu_timer_setup();
 
 		/*
+<<<<<<< HEAD
+=======
+		 * Initialise the present map, which describes the set of CPUs
+		 * actually populated at the present time. A platform should
+		 * re-initialize the map in platform_smp_prepare_cpus() if
+		 * present != possible (e.g. physical hotplug).
+=======
+	if (ncores > 1 && max_cpus) {
+		/*
+		 * Initialise the present map, which describes the set of CPUs
+		 * actually populated at the present time. A platform should
+		 * re-initialize the map in the platforms smp_prepare_cpus()
+		 * if present != possible (e.g. physical hotplug).
+>>>>>>> refs/remotes/origin/master
+		 */
+		init_cpu_present(cpu_possible_mask);
+
+		/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * Initialise the SCU if there are more than one CPU
 		 * and let them know where to start.
 		 */
 		platform_smp_prepare_cpus(max_cpus);
+=======
+		 * Initialise the SCU if there are more than one CPU
+		 * and let them know where to start.
+		 */
+		if (smp_ops.smp_prepare_cpus)
+			smp_ops.smp_prepare_cpus(max_cpus);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -409,7 +810,12 @@ static void (*smp_cross_call)(const struct cpumask *, unsigned int);
 
 void __init set_smp_cross_call(void (*fn)(const struct cpumask *, unsigned int))
 {
+<<<<<<< HEAD
 	smp_cross_call = fn;
+=======
+	if (!smp_cross_call)
+		smp_cross_call = fn;
+>>>>>>> refs/remotes/origin/master
 }
 
 void arch_send_call_function_ipi_mask(const struct cpumask *mask)
@@ -417,20 +823,56 @@ void arch_send_call_function_ipi_mask(const struct cpumask *mask)
 	smp_cross_call(mask, IPI_CALL_FUNC);
 }
 
+<<<<<<< HEAD
+=======
+void arch_send_wakeup_ipi_mask(const struct cpumask *mask)
+{
+	smp_cross_call(mask, IPI_WAKEUP);
+}
+
+>>>>>>> refs/remotes/origin/master
 void arch_send_call_function_single_ipi(int cpu)
 {
 	smp_cross_call(cpumask_of(cpu), IPI_CALL_FUNC_SINGLE);
 }
 
+<<<<<<< HEAD
 static const char *ipi_types[NR_IPI] = {
 #define S(x,s)	[x - IPI_CPU_START] = s
 	S(IPI_CPU_START, "CPU start interrupts"),
+=======
+#ifdef CONFIG_IRQ_WORK
+void arch_irq_work_raise(void)
+{
+	if (is_smp())
+		smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
+}
+#endif
+
+static const char *ipi_types[NR_IPI] = {
+<<<<<<< HEAD
+#define S(x,s)	[x] = s
+	S(IPI_WAKEUP, "CPU wakeup interrupts"),
+>>>>>>> refs/remotes/origin/master
+=======
+#define S(x,s)	[x - IPI_CPU_START] = s
+	S(IPI_CPU_START, "CPU start interrupts"),
+>>>>>>> refs/remotes/origin/cm-11.0
 	S(IPI_TIMER, "Timer broadcast interrupts"),
 	S(IPI_RESCHEDULE, "Rescheduling interrupts"),
 	S(IPI_CALL_FUNC, "Function call interrupts"),
 	S(IPI_CALL_FUNC_SINGLE, "Single function call interrupts"),
 	S(IPI_CPU_STOP, "CPU stop interrupts"),
+<<<<<<< HEAD
+<<<<<<< HEAD
 	S(IPI_CPU_BACKTRACE, "CPU backtrace"),
+=======
+	S(IPI_IRQ_WORK, "IRQ work interrupts"),
+	S(IPI_COMPLETION, "completion interrupts"),
+>>>>>>> refs/remotes/origin/master
+=======
+	S(IPI_CPU_BACKTRACE, "CPU backtrace"),
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 void show_ipi_list(struct seq_file *p, int prec)
@@ -440,7 +882,11 @@ void show_ipi_list(struct seq_file *p, int prec)
 	for (i = 0; i < NR_IPI; i++) {
 		seq_printf(p, "%*s%u: ", prec - 1, "IPI", i);
 
+<<<<<<< HEAD
 		for_each_present_cpu(cpu)
+=======
+		for_each_online_cpu(cpu)
+>>>>>>> refs/remotes/origin/master
 			seq_printf(p, "%10u ",
 				   __get_irq_stat(cpu, ipi_irqs[i]));
 
@@ -459,6 +905,7 @@ u64 smp_irq_stat_cpu(unsigned int cpu)
 	return sum;
 }
 
+<<<<<<< HEAD
 /*
  * Timer (local or broadcast) support
  */
@@ -467,9 +914,13 @@ static DEFINE_PER_CPU(struct clock_event_device, percpu_clockevent);
 static void ipi_timer(void)
 {
 	struct clock_event_device *evt = &__get_cpu_var(percpu_clockevent);
+<<<<<<< HEAD
 	irq_enter();
 	evt->event_handler(evt);
 	irq_exit();
+=======
+	evt->event_handler(evt);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
@@ -499,6 +950,25 @@ static void __cpuinit broadcast_timer_setup(struct clock_event_device *evt)
 	clockevents_register_device(evt);
 }
 
+<<<<<<< HEAD
+=======
+static struct local_timer_ops *lt_ops;
+
+#ifdef CONFIG_LOCAL_TIMERS
+int local_timer_register(struct local_timer_ops *ops)
+{
+	if (lt_ops)
+		return -EBUSY;
+
+	lt_ops = ops;
+	return 0;
+}
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __cpuinit percpu_timer_setup(void)
 {
 	unsigned int cpu = smp_processor_id();
@@ -507,7 +977,11 @@ void __cpuinit percpu_timer_setup(void)
 	evt->cpumask = cpumask_of(cpu);
 	evt->broadcast = smp_timer_broadcast;
 
+<<<<<<< HEAD
 	if (local_timer_setup(evt))
+=======
+	if (!lt_ops || lt_ops->setup(evt))
+>>>>>>> refs/remotes/origin/cm-10.0
 		broadcast_timer_setup(evt);
 }
 
@@ -522,8 +996,20 @@ static void percpu_timer_stop(void)
 	unsigned int cpu = smp_processor_id();
 	struct clock_event_device *evt = &per_cpu(percpu_clockevent, cpu);
 
+<<<<<<< HEAD
 	local_timer_stop(evt);
+=======
+	if (lt_ops)
+		lt_ops->stop(evt);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
+=======
+#ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
+void tick_broadcast(const struct cpumask *mask)
+{
+	smp_cross_call(mask, IPI_TIMER);
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static DEFINE_RAW_SPINLOCK(stop_lock);
@@ -541,7 +1027,15 @@ static void ipi_cpu_stop(unsigned int cpu)
 		raw_spin_unlock(&stop_lock);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set_cpu_active(cpu, false);
+=======
+	set_cpu_online(cpu, false);
+>>>>>>> refs/remotes/origin/master
+=======
+	set_cpu_active(cpu, false);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	local_fiq_disable();
 	local_irq_disable();
@@ -550,6 +1044,10 @@ static void ipi_cpu_stop(unsigned int cpu)
 		cpu_relax();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static cpumask_t backtrace_mask;
 static DEFINE_RAW_SPINLOCK(backtrace_lock);
 
@@ -600,6 +1098,22 @@ static void ipi_cpu_backtrace(unsigned int cpu, struct pt_regs *regs)
 		raw_spin_unlock(&backtrace_lock);
 		cpu_clear(cpu, backtrace_mask);
 	}
+<<<<<<< HEAD
+=======
+static DEFINE_PER_CPU(struct completion *, cpu_completion);
+
+int register_ipi_completion(struct completion *completion, int cpu)
+{
+	per_cpu(cpu_completion, cpu) = completion;
+	return IPI_COMPLETION;
+}
+
+static void ipi_complete(unsigned int cpu)
+{
+	complete(per_cpu(cpu_completion, cpu));
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /*
@@ -615,6 +1129,10 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 	unsigned int cpu = smp_processor_id();
 	struct pt_regs *old_regs = set_irq_regs(regs);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ipinr >= IPI_CPU_START && ipinr < IPI_CPU_START + NR_IPI)
 		__inc_irq_stat(cpu, ipi_irqs[ipinr - IPI_CPU_START]);
 
@@ -623,14 +1141,38 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 		/* Wake up from WFI/WFE using SGI */
 		break;
 	case IPI_TIMER:
+<<<<<<< HEAD
 		ipi_timer();
+=======
+		irq_enter();
+		ipi_timer();
+		irq_exit();
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
+=======
+	if (ipinr < NR_IPI)
+		__inc_irq_stat(cpu, ipi_irqs[ipinr]);
+
+	switch (ipinr) {
+	case IPI_WAKEUP:
+		break;
+
+#ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
+	case IPI_TIMER:
+		irq_enter();
+		tick_receive_broadcast();
+		irq_exit();
+		break;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	case IPI_RESCHEDULE:
 		scheduler_ipi();
 		break;
 
 	case IPI_CALL_FUNC:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		generic_smp_call_function_interrupt();
 		break;
 
@@ -640,10 +1182,63 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 
 	case IPI_CPU_STOP:
 		ipi_cpu_stop(cpu);
+=======
+		irq_enter();
+		generic_smp_call_function_interrupt();
+		irq_exit();
+		break;
+
+	case IPI_CALL_FUNC_SINGLE:
+		irq_enter();
+		generic_smp_call_function_single_interrupt();
+		irq_exit();
+		break;
+
+	case IPI_CPU_STOP:
+		irq_enter();
+		ipi_cpu_stop(cpu);
+		irq_exit();
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case IPI_CPU_BACKTRACE:
 		ipi_cpu_backtrace(cpu, regs);
+=======
+		irq_enter();
+		generic_smp_call_function_interrupt();
+		irq_exit();
+		break;
+
+	case IPI_CALL_FUNC_SINGLE:
+		irq_enter();
+		generic_smp_call_function_single_interrupt();
+		irq_exit();
+		break;
+
+	case IPI_CPU_STOP:
+		irq_enter();
+		ipi_cpu_stop(cpu);
+		irq_exit();
+		break;
+
+<<<<<<< HEAD
+#ifdef CONFIG_IRQ_WORK
+	case IPI_IRQ_WORK:
+		irq_enter();
+		irq_work_run();
+		irq_exit();
+		break;
+#endif
+
+	case IPI_COMPLETION:
+		irq_enter();
+		ipi_complete(cpu);
+		irq_exit();
+>>>>>>> refs/remotes/origin/master
+=======
+	case IPI_CPU_BACKTRACE:
+		ipi_cpu_backtrace(cpu, regs);
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	default:
@@ -656,6 +1251,8 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 
 void smp_send_reschedule(int cpu)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (unlikely(cpu_is_offline(cpu))) {
 		WARN_ON(1);
@@ -674,6 +1271,40 @@ void smp_send_stop(void)
 
 		smp_cross_call(&mask, IPI_CPU_STOP);
 	}
+=======
+	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
+}
+
+#ifdef CONFIG_HOTPLUG_CPU
+static void smp_kill_cpus(cpumask_t *mask)
+{
+	unsigned int cpu;
+	for_each_cpu(cpu, mask)
+		platform_cpu_kill(cpu);
+}
+#else
+static void smp_kill_cpus(cpumask_t *mask) { }
+#endif
+
+=======
+	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
+}
+
+>>>>>>> refs/remotes/origin/master
+void smp_send_stop(void)
+{
+	unsigned long timeout;
+	struct cpumask mask;
+
+	cpumask_copy(&mask, cpu_online_mask);
+	cpumask_clear_cpu(smp_processor_id(), &mask);
+	if (!cpumask_empty(&mask))
+		smp_cross_call(&mask, IPI_CPU_STOP);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Wait up to one second for other CPUs to stop */
 	timeout = USEC_PER_SEC;
@@ -682,6 +1313,21 @@ void smp_send_stop(void)
 
 	if (num_active_cpus() > 1)
 		pr_warning("SMP: failed to stop secondary CPUs\n");
+<<<<<<< HEAD
+=======
+
+	smp_kill_cpus(&mask);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* Wait up to one second for other CPUs to stop */
+	timeout = USEC_PER_SEC;
+	while (num_online_cpus() > 1 && timeout--)
+		udelay(1);
+
+	if (num_online_cpus() > 1)
+		pr_warning("SMP: failed to stop secondary CPUs\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -691,3 +1337,59 @@ int setup_profiling_timer(unsigned int multiplier)
 {
 	return -EINVAL;
 }
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_CPU_FREQ
+
+static DEFINE_PER_CPU(unsigned long, l_p_j_ref);
+static DEFINE_PER_CPU(unsigned long, l_p_j_ref_freq);
+static unsigned long global_l_p_j_ref;
+static unsigned long global_l_p_j_ref_freq;
+
+static int cpufreq_callback(struct notifier_block *nb,
+					unsigned long val, void *data)
+{
+	struct cpufreq_freqs *freq = data;
+	int cpu = freq->cpu;
+
+	if (freq->flags & CPUFREQ_CONST_LOOPS)
+		return NOTIFY_OK;
+
+	if (!per_cpu(l_p_j_ref, cpu)) {
+		per_cpu(l_p_j_ref, cpu) =
+			per_cpu(cpu_data, cpu).loops_per_jiffy;
+		per_cpu(l_p_j_ref_freq, cpu) = freq->old;
+		if (!global_l_p_j_ref) {
+			global_l_p_j_ref = loops_per_jiffy;
+			global_l_p_j_ref_freq = freq->old;
+		}
+	}
+
+	if ((val == CPUFREQ_PRECHANGE  && freq->old < freq->new) ||
+	    (val == CPUFREQ_POSTCHANGE && freq->old > freq->new) ||
+	    (val == CPUFREQ_RESUMECHANGE || val == CPUFREQ_SUSPENDCHANGE)) {
+		loops_per_jiffy = cpufreq_scale(global_l_p_j_ref,
+						global_l_p_j_ref_freq,
+						freq->new);
+		per_cpu(cpu_data, cpu).loops_per_jiffy =
+			cpufreq_scale(per_cpu(l_p_j_ref, cpu),
+					per_cpu(l_p_j_ref_freq, cpu),
+					freq->new);
+	}
+	return NOTIFY_OK;
+}
+
+static struct notifier_block cpufreq_notifier = {
+	.notifier_call  = cpufreq_callback,
+};
+
+static int __init register_cpufreq_notifier(void)
+{
+	return cpufreq_register_notifier(&cpufreq_notifier,
+						CPUFREQ_TRANSITION_NOTIFIER);
+}
+core_initcall(register_cpufreq_notifier);
+
+#endif
+>>>>>>> refs/remotes/origin/master

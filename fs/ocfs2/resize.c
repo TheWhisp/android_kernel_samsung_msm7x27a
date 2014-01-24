@@ -469,6 +469,10 @@ int ocfs2_group_add(struct inode *inode, struct ocfs2_new_group_input *input)
 	struct ocfs2_chain_list *cl;
 	struct ocfs2_chain_rec *cr;
 	u16 cl_bpc;
+<<<<<<< HEAD
+=======
+	u64 bg_ptr;
+>>>>>>> refs/remotes/origin/master
 
 	if (ocfs2_is_hard_readonly(osb) || ocfs2_is_soft_readonly(osb))
 		return -EROFS;
@@ -513,7 +517,11 @@ int ocfs2_group_add(struct inode *inode, struct ocfs2_new_group_input *input)
 	ret = ocfs2_verify_group_and_input(main_bm_inode, fe, input, group_bh);
 	if (ret) {
 		mlog_errno(ret);
+<<<<<<< HEAD
 		goto out_unlock;
+=======
+		goto out_free_group_bh;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	trace_ocfs2_group_add((unsigned long long)input->group,
@@ -523,7 +531,11 @@ int ocfs2_group_add(struct inode *inode, struct ocfs2_new_group_input *input)
 	if (IS_ERR(handle)) {
 		mlog_errno(PTR_ERR(handle));
 		ret = -EINVAL;
+<<<<<<< HEAD
 		goto out_unlock;
+=======
+		goto out_free_group_bh;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cl_bpc = le16_to_cpu(fe->id2.i_chain.cl_bpc);
@@ -538,12 +550,20 @@ int ocfs2_group_add(struct inode *inode, struct ocfs2_new_group_input *input)
 	}
 
 	group = (struct ocfs2_group_desc *)group_bh->b_data;
+<<<<<<< HEAD
+=======
+	bg_ptr = le64_to_cpu(group->bg_next_group);
+>>>>>>> refs/remotes/origin/master
 	group->bg_next_group = cr->c_blkno;
 	ocfs2_journal_dirty(handle, group_bh);
 
 	ret = ocfs2_journal_access_di(handle, INODE_CACHE(main_bm_inode),
 				      main_bm_bh, OCFS2_JOURNAL_ACCESS_WRITE);
 	if (ret < 0) {
+<<<<<<< HEAD
+=======
+		group->bg_next_group = cpu_to_le64(bg_ptr);
+>>>>>>> refs/remotes/origin/master
 		mlog_errno(ret);
 		goto out_commit;
 	}
@@ -574,8 +594,16 @@ int ocfs2_group_add(struct inode *inode, struct ocfs2_new_group_input *input)
 
 out_commit:
 	ocfs2_commit_trans(osb, handle);
+<<<<<<< HEAD
 out_unlock:
 	brelse(group_bh);
+=======
+
+out_free_group_bh:
+	brelse(group_bh);
+
+out_unlock:
+>>>>>>> refs/remotes/origin/master
 	brelse(main_bm_bh);
 
 	ocfs2_inode_unlock(main_bm_inode, 1);

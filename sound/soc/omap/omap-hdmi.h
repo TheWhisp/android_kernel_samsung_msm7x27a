@@ -1,9 +1,22 @@
 /*
  * omap-hdmi.h
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2009 Texas Instruments
  *
  * Contact: Jorge Candelaria <x0107209@ti.com>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Definitions for OMAP ALSA SoC DAI driver for HDMI audio on OMAP4 processors.
+ * Copyright (C) 2010-2011 Texas Instruments Incorporated - http://www.ti.com/
+ * Authors: Jorge Candelaria <jorge.candelaria@ti.com>
+ *          Ricardo Neri <ricardo.neri@ti.com>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,6 +37,8 @@
 #ifndef __OMAP_HDMI_H__
 #define __OMAP_HDMI_H__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_HDMI_NO_IP_MODULE
 
 #define HDMI_WP			0x58006000
@@ -33,3 +48,25 @@ extern void hdmi_audio_core_stub_init(void);
 #endif
 
 #endif	/* End of __OMAP_HDMI_H__ */
+=======
+#define OMAP_HDMI_AUDIO_DMA_PORT 0x8c
+
+#define OMAP_HDMI_RATES	(SNDRV_PCM_RATE_32000 | \
+				SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
+=======
+#define OMAP_HDMI_AUDIO_DMA_PORT 0x8c
+
+#define OMAP_HDMI_RATES	(SNDRV_PCM_RATE_32000 | \
+				SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 | \
+				SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 | \
+				SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000)
+>>>>>>> refs/remotes/origin/master
+
+#define OMAP_HDMI_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+				SNDRV_PCM_FMTBIT_S24_LE)
+
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

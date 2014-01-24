@@ -9,6 +9,7 @@
 
 struct pt_regs;
 
+<<<<<<< HEAD
 asmlinkage int sys_fork(unsigned long r2, unsigned long r3,
 			unsigned long r4, unsigned long r5,
 			unsigned long r6, unsigned long r7,
@@ -26,6 +27,8 @@ asmlinkage int sys_execve(const char *ufilename, char **uargv,
 			  unsigned long r6, unsigned long r7,
 			  struct pt_regs *pregs);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Misc syscall related bits */
 asmlinkage long long do_syscall_trace_enter(struct pt_regs *regs);
 asmlinkage void do_syscall_trace_leave(struct pt_regs *regs);

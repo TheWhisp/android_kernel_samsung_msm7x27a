@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -29,8 +37,14 @@ struct grmnet {
 
 	struct usb_ep			*in;
 	struct usb_ep			*out;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_endpoint_descriptor	*in_desc;
 	struct usb_endpoint_descriptor	*out_desc;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* to usb host, aka laptop, windows pc etc. Will
 	 * be filled by usb driver of rmnet functionality
@@ -52,6 +66,16 @@ int gbam_setup(unsigned int no_bam_port, unsigned int no_bam2bam_port);
 int gbam_connect(struct grmnet *gr, u8 port_num,
 				 enum transport_type trans, u8 connection_idx);
 void gbam_disconnect(struct grmnet *gr, u8 port_num, enum transport_type trans);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void gbam_suspend(struct grmnet *gr, u8 port_num, enum transport_type trans);
+void gbam_resume(struct grmnet *gr, u8 port_num, enum transport_type trans);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void gbam_suspend(struct grmnet *gr, u8 port_num, enum transport_type trans);
+void gbam_resume(struct grmnet *gr, u8 port_num, enum transport_type trans);
+>>>>>>> refs/remotes/origin/cm-11.0
 int gsmd_ctrl_connect(struct grmnet *gr, int port_num);
 void gsmd_ctrl_disconnect(struct grmnet *gr, u8 port_num);
 int gsmd_ctrl_setup(unsigned int count);

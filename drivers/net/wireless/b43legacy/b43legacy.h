@@ -8,13 +8,34 @@
 #include <linux/stringify.h>
 #include <linux/netdevice.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 
 #include <linux/ssb/ssb.h>
 #include <linux/ssb/ssb_driver_chipcommon.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <linux/wireless.h>
+=======
+#include <linux/completion.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/completion.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <net/mac80211.h>
 
 #include "debugfs.h"
@@ -23,10 +44,16 @@
 #include "phy.h"
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* The unique identifier of the firmware that's officially supported by this
  * driver version. */
 #define B43legacy_SUPPORTED_FIRMWARE_ID	"FW10"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define B43legacy_IRQWAIT_MAX_RETRIES	20
 
 /* MMIO offsets */
@@ -532,6 +559,16 @@ struct b43legacy_dma {
 
 	struct b43legacy_dmaring *rx_ring0;
 	struct b43legacy_dmaring *rx_ring3; /* only on core.rev < 5 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	u32 translation; /* Routing bits */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	u32 translation; /* Routing bits */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Data structures for PIO transmission, per 80211 core. */
@@ -563,8 +600,27 @@ struct b43legacy_key {
 	u8 algorithm;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct b43legacy_wldev;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define B43legacy_QOS_QUEUE_NUM	4
+
+struct b43legacy_wldev;
+
+/* QOS parameters for a queue. */
+struct b43legacy_qos_params {
+	/* The QOS parameters */
+	struct ieee80211_tx_queue_params p;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Data structure for the WLAN parts (802.11 cores) of the b43legacy chip. */
 struct b43legacy_wl {
 	/* Pointer to the active wireless device on this chip */
@@ -576,6 +632,18 @@ struct b43legacy_wl {
 	struct mutex mutex;		/* locks wireless core state */
 	spinlock_t leds_lock;		/* lock for leds */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* firmware loading work */
+	struct work_struct firmware_load;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* firmware loading work */
+	struct work_struct firmware_load;
+
+>>>>>>> refs/remotes/origin/master
 	/* We can only have one operating interface (802.11 core)
 	 * at a time. General information about this interface follows.
 	 */
@@ -614,6 +682,27 @@ struct b43legacy_wl {
 	bool beacon1_uploaded;
 	bool beacon_templates_virgin; /* Never wrote the templates? */
 	struct work_struct beacon_update_trigger;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* The current QOS parameters for the 4 queues. */
+	struct b43legacy_qos_params qos_params[B43legacy_QOS_QUEUE_NUM];
+
+	/* Packet transmit work */
+	struct work_struct tx_work;
+
+	/* Queue of packets to be transmitted. */
+	struct sk_buff_head tx_queue[B43legacy_QOS_QUEUE_NUM];
+
+	/* Flag that implement the queues stopping. */
+	bool tx_queue_stopped[B43legacy_QOS_QUEUE_NUM];
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Pointers to the firmware data and meta information about it. */
@@ -713,6 +802,25 @@ struct b43legacy_wldev {
 
 	/* Firmware data */
 	struct b43legacy_firmware fw;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	const struct firmware *fwp;	/* needed to pass fw pointer */
+
+	/* completion struct for firmware loading */
+	struct completion fw_load_complete;
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Devicelist in struct b43legacy_wl (all 802.11 cores) */
 	struct list_head list;
@@ -813,6 +921,8 @@ struct b43legacy_lopair *b43legacy_get_lopair(struct b43legacy_phy *phy,
 
 
 /* Message printing */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void b43legacyinfo(struct b43legacy_wl *wl, const char *fmt, ...)
 		__attribute__((format(printf, 2, 3)));
 void b43legacyerr(struct b43legacy_wl *wl, const char *fmt, ...)
@@ -822,6 +932,22 @@ void b43legacywarn(struct b43legacy_wl *wl, const char *fmt, ...)
 #if B43legacy_DEBUG
 void b43legacydbg(struct b43legacy_wl *wl, const char *fmt, ...)
 		__attribute__((format(printf, 2, 3)));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+__printf(2, 3)
+void b43legacyinfo(struct b43legacy_wl *wl, const char *fmt, ...);
+__printf(2, 3)
+void b43legacyerr(struct b43legacy_wl *wl, const char *fmt, ...);
+__printf(2, 3)
+void b43legacywarn(struct b43legacy_wl *wl, const char *fmt, ...);
+#if B43legacy_DEBUG
+__printf(2, 3)
+void b43legacydbg(struct b43legacy_wl *wl, const char *fmt, ...);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* DEBUG */
 # define b43legacydbg(wl, fmt...) do { /* nothing */ } while (0)
 #endif /* DEBUG */

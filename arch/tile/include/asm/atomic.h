@@ -17,10 +17,25 @@
 #ifndef _ASM_TILE_ATOMIC_H
 #define _ASM_TILE_ATOMIC_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
 
 #include <linux/compiler.h>
 #include <asm/system.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/cmpxchg.h>
+
+#ifndef __ASSEMBLY__
+
+#include <linux/compiler.h>
+#include <linux/types.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define ATOMIC_INIT(i)	{ (i) }
 
@@ -112,6 +127,35 @@ static inline int atomic_read(const atomic_t *v)
 #define atomic_inc_and_test(v)		(atomic_inc_return(v) == 0)
 
 /**
+<<<<<<< HEAD
+=======
+ * atomic_xchg - atomically exchange contents of memory with a new value
+ * @v: pointer of type atomic_t
+ * @i: integer value to store in memory
+ *
+ * Atomically sets @v to @i and returns old @v
+ */
+static inline int atomic_xchg(atomic_t *v, int n)
+{
+	return xchg(&v->counter, n);
+}
+
+/**
+ * atomic_cmpxchg - atomically exchange contents of memory if it matches
+ * @v: pointer of type atomic_t
+ * @o: old value that memory should have
+ * @n: new value to write to memory if it matches
+ *
+ * Atomically checks if @v holds @o and replaces it with @n if so.
+ * Returns the old value at @v.
+ */
+static inline int atomic_cmpxchg(atomic_t *v, int o, int n)
+{
+	return cmpxchg(&v->counter, o, n);
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * atomic_add_negative - add and test if negative
  * @v: pointer of type atomic_t
  * @i: integer value to add
@@ -121,6 +165,8 @@ static inline int atomic_read(const atomic_t *v)
  */
 #define atomic_add_negative(i, v)	(atomic_add_return((i), (v)) < 0)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * atomic_inc_not_zero - increment unless the number is zero
  * @v: pointer of type atomic_t
@@ -178,6 +224,10 @@ extern unsigned long __cmpxchg_called_with_bad_pointer(void);
 
 #define tas(ptr) (xchg((ptr), 1))
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 
 #ifndef __tilegx__
@@ -186,9 +236,63 @@ extern unsigned long __cmpxchg_called_with_bad_pointer(void);
 #include <asm/atomic_64.h>
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Provide the appropriate atomic_long_t definitions. */
 #ifndef __ASSEMBLY__
 #include <asm-generic/atomic-long.h>
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef __ASSEMBLY__
+
+/**
+ * atomic64_xchg - atomically exchange contents of memory with a new value
+ * @v: pointer of type atomic64_t
+ * @i: integer value to store in memory
+ *
+ * Atomically sets @v to @i and returns old @v
+ */
+static inline long long atomic64_xchg(atomic64_t *v, long long n)
+{
+	return xchg64(&v->counter, n);
+}
+
+/**
+ * atomic64_cmpxchg - atomically exchange contents of memory if it matches
+ * @v: pointer of type atomic64_t
+ * @o: old value that memory should have
+ * @n: new value to write to memory if it matches
+ *
+ * Atomically checks if @v holds @o and replaces it with @n if so.
+ * Returns the old value at @v.
+ */
+static inline long long atomic64_cmpxchg(atomic64_t *v, long long o,
+					long long n)
+{
+	return cmpxchg64(&v->counter, o, n);
+}
+
+static inline long long atomic64_dec_if_positive(atomic64_t *v)
+{
+	long long c, old, dec;
+
+	c = atomic64_read(v);
+	for (;;) {
+		dec = c - 1;
+		if (unlikely(dec < 0))
+			break;
+		old = atomic64_cmpxchg((v), c, dec);
+		if (likely(old == c))
+			break;
+		c = old;
+	}
+	return dec;
+}
+
+#endif /* __ASSEMBLY__ */
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_TILE_ATOMIC_H */

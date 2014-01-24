@@ -18,7 +18,15 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -28,6 +36,8 @@
 
 #include "ak4535.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AK4535_VERSION "0.3"
 
 /* codec private data */
@@ -35,11 +45,24 @@ struct ak4535_priv {
 	unsigned int sysclk;
 	enum snd_soc_control_type control_type;
 	void *control_data;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* codec private data */
+struct ak4535_priv {
+	struct regmap *regmap;
+	unsigned int sysclk;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
  * ak4535 register cache
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const u8 ak4535_reg[AK4535_CACHEREGNUM] = {
 	0x00, 0x80, 0x00, 0x03,
 	0x02, 0x00, 0x11, 0x01,
@@ -104,6 +127,41 @@ static int ak4535_sync(struct snd_soc_codec *codec)
 	return r;
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct reg_default ak4535_reg_defaults[] = {
+	{ 0, 0x00 },
+	{ 1, 0x80 },
+	{ 2, 0x00 },
+	{ 3, 0x03 },
+	{ 4, 0x02 },
+	{ 5, 0x00 },
+	{ 6, 0x11 },
+	{ 7, 0x01 },
+	{ 8, 0x00 },
+	{ 9, 0x40 },
+	{ 10, 0x36 },
+	{ 11, 0x10 },
+	{ 12, 0x00 },
+	{ 13, 0x00 },
+	{ 14, 0x57 },
+};
+
+static bool ak4535_volatile(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case AK4535_STATUS:
+		return true;
+	default:
+		return false;
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const char *ak4535_mono_gain[] = {"+6dB", "-17dB"};
 static const char *ak4535_mono_out[] = {"(L + R)/2", "Hi-Z"};
 static const char *ak4535_hp_out[] = {"Stereo", "Mono"};
@@ -301,10 +359,20 @@ static int ak4535_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
 	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	u8 mode2 = ak4535_read_reg_cache(codec, AK4535_MODE2) & ~(0x3 << 5);
+=======
+	u8 mode2 = snd_soc_read(codec, AK4535_MODE2) & ~(0x3 << 5);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_codec *codec = dai->codec;
+	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
+	u8 mode2 = snd_soc_read(codec, AK4535_MODE2) & ~(0x3 << 5);
+>>>>>>> refs/remotes/origin/master
 	int rate = params_rate(params), fs = 256;
 
 	if (rate)
@@ -323,7 +391,15 @@ static int ak4535_hw_params(struct snd_pcm_substream *substream,
 	}
 
 	/* set rate */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ak4535_write(codec, AK4535_MODE2, mode2);
+=======
+	snd_soc_write(codec, AK4535_MODE2, mode2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_write(codec, AK4535_MODE2, mode2);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -348,24 +424,48 @@ static int ak4535_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	/* use 32 fs for BCLK to save power */
 	mode1 |= 0x4;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ak4535_write(codec, AK4535_MODE1, mode1);
+=======
+	snd_soc_write(codec, AK4535_MODE1, mode1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_write(codec, AK4535_MODE1, mode1);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int ak4535_mute(struct snd_soc_dai *dai, int mute)
 {
 	struct snd_soc_codec *codec = dai->codec;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC);
 	if (!mute)
 		ak4535_write(codec, AK4535_DAC, mute_reg & ~0x20);
 	else
 		ak4535_write(codec, AK4535_DAC, mute_reg | 0x20);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u16 mute_reg = snd_soc_read(codec, AK4535_DAC);
+	if (!mute)
+		snd_soc_write(codec, AK4535_DAC, mute_reg & ~0x20);
+	else
+		snd_soc_write(codec, AK4535_DAC, mute_reg | 0x20);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int ak4535_set_bias_level(struct snd_soc_codec *codec,
 	enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 i, mute_reg;
 
 	switch (level) {
@@ -386,6 +486,26 @@ static int ak4535_set_bias_level(struct snd_soc_codec *codec,
 	case SND_SOC_BIAS_OFF:
 		i = ak4535_read_reg_cache(codec, AK4535_PM1);
 		ak4535_write(codec, AK4535_PM1, i & (~0x80));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (level) {
+	case SND_SOC_BIAS_ON:
+		snd_soc_update_bits(codec, AK4535_DAC, 0x20, 0);
+		break;
+	case SND_SOC_BIAS_PREPARE:
+		snd_soc_update_bits(codec, AK4535_DAC, 0x20, 0x20);
+		break;
+	case SND_SOC_BIAS_STANDBY:
+		snd_soc_update_bits(codec, AK4535_PM1, 0x80, 0x80);
+		snd_soc_update_bits(codec, AK4535_PM2, 0x80, 0);
+		break;
+	case SND_SOC_BIAS_OFF:
+		snd_soc_update_bits(codec, AK4535_PM1, 0x80, 0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	codec->dapm.bias_level = level;
@@ -396,7 +516,15 @@ static int ak4535_set_bias_level(struct snd_soc_codec *codec,
 		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
 		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops ak4535_dai_ops = {
+=======
+static const struct snd_soc_dai_ops ak4535_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops ak4535_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= ak4535_hw_params,
 	.set_fmt	= ak4535_set_dai_fmt,
 	.digital_mute	= ak4535_mute,
@@ -420,7 +548,15 @@ static struct snd_soc_dai_driver ak4535_dai = {
 	.ops = &ak4535_dai_ops,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ak4535_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int ak4535_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ak4535_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	ak4535_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -428,7 +564,15 @@ static int ak4535_suspend(struct snd_soc_codec *codec, pm_message_t state)
 
 static int ak4535_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ak4535_sync(codec);
+=======
+	snd_soc_cache_sync(codec);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_cache_sync(codec);
+>>>>>>> refs/remotes/origin/master
 	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 	return 0;
 }
@@ -436,6 +580,8 @@ static int ak4535_resume(struct snd_soc_codec *codec)
 static int ak4535_probe(struct snd_soc_codec *codec)
 {
 	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	printk(KERN_INFO "AK4535 Audio Codec %s", AK4535_VERSION);
 
@@ -445,6 +591,25 @@ static int ak4535_probe(struct snd_soc_codec *codec)
 	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
 	snd_soc_add_controls(codec, ak4535_snd_controls,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ret;
+
+	codec->control_data = ak4535->regmap;
+	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
+	if (ret < 0) {
+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+		return ret;
+	}
+	/* power on device */
+	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+
+	snd_soc_add_codec_controls(codec, ak4535_snd_controls,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				ARRAY_SIZE(ak4535_snd_controls));
 	return 0;
 }
@@ -456,30 +621,69 @@ static int ak4535_remove(struct snd_soc_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct regmap_config ak4535_regmap = {
+	.reg_bits = 8,
+	.val_bits = 8,
+
+	.max_register = AK4535_STATUS,
+	.volatile_reg = ak4535_volatile,
+
+	.cache_type = REGCACHE_RBTREE,
+	.reg_defaults = ak4535_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(ak4535_reg_defaults),
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_codec_driver soc_codec_dev_ak4535 = {
 	.probe =	ak4535_probe,
 	.remove =	ak4535_remove,
 	.suspend =	ak4535_suspend,
 	.resume =	ak4535_resume,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.read = ak4535_read_reg_cache,
 	.write = ak4535_write,
 	.set_bias_level = ak4535_set_bias_level,
 	.reg_cache_size = ARRAY_SIZE(ak4535_reg),
 	.reg_word_size = sizeof(u8),
 	.reg_cache_default = ak4535_reg,
+=======
+	.set_bias_level = ak4535_set_bias_level,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.set_bias_level = ak4535_set_bias_level,
+>>>>>>> refs/remotes/origin/master
 	.dapm_widgets = ak4535_dapm_widgets,
 	.num_dapm_widgets = ARRAY_SIZE(ak4535_dapm_widgets),
 	.dapm_routes = ak4535_audio_map,
 	.num_dapm_routes = ARRAY_SIZE(ak4535_audio_map),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static __devinit int ak4535_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+static int ak4535_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ak4535_priv *ak4535;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ak4535 = kzalloc(sizeof(struct ak4535_priv), GFP_KERNEL);
 	if (ak4535 == NULL)
 		return -ENOMEM;
@@ -492,13 +696,57 @@ static __devinit int ak4535_i2c_probe(struct i2c_client *i2c,
 			&soc_codec_dev_ak4535, &ak4535_dai, 1);
 	if (ret < 0)
 		kfree(ak4535);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ak4535 = devm_kzalloc(&i2c->dev, sizeof(struct ak4535_priv),
+			      GFP_KERNEL);
+	if (ak4535 == NULL)
+		return -ENOMEM;
+
+<<<<<<< HEAD
+	ak4535->regmap = regmap_init_i2c(i2c, &ak4535_regmap);
+=======
+	ak4535->regmap = devm_regmap_init_i2c(i2c, &ak4535_regmap);
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(ak4535->regmap)) {
+		ret = PTR_ERR(ak4535->regmap);
+		dev_err(&i2c->dev, "Failed to init regmap: %d\n", ret);
+		return ret;
+	}
+
+	i2c_set_clientdata(i2c, ak4535);
+
+	ret = snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_ak4535, &ak4535_dai, 1);
+<<<<<<< HEAD
+	if (ret != 0)
+		regmap_exit(ak4535->regmap);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int ak4535_i2c_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	snd_soc_unregister_codec(&client->dev);
 	kfree(i2c_get_clientdata(client));
+=======
+	struct ak4535_priv *ak4535 = i2c_get_clientdata(client);
+
+	snd_soc_unregister_codec(&client->dev);
+	regmap_exit(ak4535->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return ret;
+}
+
+static int ak4535_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -510,13 +758,19 @@ MODULE_DEVICE_TABLE(i2c, ak4535_i2c_id);
 
 static struct i2c_driver ak4535_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "ak4535-codec",
+=======
+		.name = "ak4535",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe =    ak4535_i2c_probe,
 	.remove =   __devexit_p(ak4535_i2c_remove),
 	.id_table = ak4535_i2c_id,
 };
+<<<<<<< HEAD
 #endif
 
 static int __init ak4535_modinit(void)
@@ -540,6 +794,21 @@ static void __exit ak4535_exit(void)
 #endif
 }
 module_exit(ak4535_exit);
+=======
+
+module_i2c_driver(ak4535_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name = "ak4535",
+		.owner = THIS_MODULE,
+	},
+	.probe =    ak4535_i2c_probe,
+	.remove =   ak4535_i2c_remove,
+	.id_table = ak4535_i2c_id,
+};
+
+module_i2c_driver(ak4535_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Soc AK4535 driver");
 MODULE_AUTHOR("Richard Purdie");

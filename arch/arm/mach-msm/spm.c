@@ -72,8 +72,14 @@ struct msm_spm_device {
 };
 
 static DEFINE_PER_CPU_SHARED_ALIGNED(struct msm_spm_device, msm_spm_devices);
+<<<<<<< HEAD
+<<<<<<< HEAD
 static atomic_t msm_spm_set_vdd_x_cpu_allowed = ATOMIC_INIT(1);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /******************************************************************************
  * Internal helper functions
  *****************************************************************************/
@@ -189,6 +195,8 @@ int msm_spm_set_low_power_mode(unsigned int mode, bool notify_rpm)
 
 int msm_spm_set_vdd(unsigned int cpu, unsigned int vlevel)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 	struct msm_spm_device *dev;
 	uint32_t timeout_us;
@@ -203,6 +211,16 @@ int msm_spm_set_vdd(unsigned int cpu, unsigned int vlevel)
 		goto set_vdd_x_cpu_bail;
 	}
 
+=======
+	struct msm_spm_device *dev;
+	uint32_t timeout_us;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_spm_device *dev;
+	uint32_t timeout_us;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev = &per_cpu(msm_spm_devices, cpu);
 
 	if (msm_spm_debug_mask & MSM_SPM_DEBUG_VCTL)
@@ -239,15 +257,27 @@ int msm_spm_set_vdd(unsigned int cpu, unsigned int vlevel)
 		pr_info("%s: cpu %u done, remaining timeout %uus\n",
 			__func__, cpu, timeout_us);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_restore(flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 set_vdd_bail:
 	pr_err("%s: cpu %u failed, remaining timeout %uus, vlevel 0x%x\n",
 	       __func__, cpu, timeout_us, msm_spm_get_sts_curr_pmic_data(dev));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 set_vdd_x_cpu_bail:
 	local_irq_restore(flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return -EIO;
 }
 
@@ -263,11 +293,17 @@ void msm_spm_reinit(void)
 	mb();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void msm_spm_allow_x_cpu_set_vdd(bool allowed)
 {
 	atomic_set(&msm_spm_set_vdd_x_cpu_allowed, allowed ? 1 : 0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init msm_spm_init(struct msm_spm_platform_data *data, int nr_devs)
 {
 	unsigned int cpu;

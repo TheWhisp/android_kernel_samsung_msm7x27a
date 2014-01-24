@@ -3,6 +3,7 @@
  * the GNU Free Documentation License, Version 1.1 or any later version
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
 #ifndef _PARPORT_H_
 #define _PARPORT_H_
@@ -93,6 +94,11 @@ typedef enum {
 
 /* The rest is for the kernel only */
 #ifdef __KERNEL__
+=======
+#ifndef _PARPORT_H_
+#define _PARPORT_H_
+
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/jiffies.h>
 #include <linux/proc_fs.h>
@@ -100,8 +106,16 @@ typedef enum {
 #include <linux/wait.h>
 #include <linux/irqreturn.h>
 #include <linux/semaphore.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ptrace.h>
+=======
+#include <asm/ptrace.h>
+#include <uapi/linux/parport.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Define this later. */
 struct parport;
@@ -565,5 +579,8 @@ extern int parport_device_proc_unregister(struct pardevice *device);
 extern unsigned long parport_default_timeslice;
 extern int parport_default_spintime;
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _PARPORT_H_ */

@@ -33,6 +33,14 @@
 	(((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0 ) | \
 	 VM_READ | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
 
+<<<<<<< HEAD
+=======
+#define __PHYSICAL_START	ALIGN(CONFIG_PHYSICAL_START, \
+				      CONFIG_PHYSICAL_ALIGN)
+
+#define __START_KERNEL		(__START_KERNEL_map + __PHYSICAL_START)
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_64
 #include <asm/page_64_types.h>
 #else
@@ -46,16 +54,32 @@ extern int devmem_is_allowed(unsigned long pagenr);
 extern unsigned long max_low_pfn_mapped;
 extern unsigned long max_pfn_mapped;
 
+<<<<<<< HEAD
 static inline phys_addr_t get_max_mapped(void)
 {
 	return (phys_addr_t)max_pfn_mapped << PAGE_SHIFT;
 }
 
+=======
+static inline phys_addr_t get_max_low_mapped(void)
+{
+	return (phys_addr_t)max_low_pfn_mapped << PAGE_SHIFT;
+}
+
+bool pfn_range_is_mapped(unsigned long start_pfn, unsigned long end_pfn);
+
+>>>>>>> refs/remotes/origin/master
 extern unsigned long init_memory_mapping(unsigned long start,
 					 unsigned long end);
 
 extern void initmem_init(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void free_initmem(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* !__ASSEMBLY__ */
 

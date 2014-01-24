@@ -31,6 +31,7 @@
 #include <linux/err.h>
 #include <linux/clk.h>
 
+<<<<<<< HEAD
 #include <mach/irqs.h>
 #include <plat/mux.h>
 #include <plat/i2c.h>
@@ -108,6 +109,25 @@ static inline int omap1_i2c_add_bus(int bus_id)
 	res[1].start = INT_I2C;
 	pdata = &i2c_pdata[bus_id - 1];
 
+<<<<<<< HEAD
+=======
+	/* all OMAP1 have IP version 1 register set */
+	pdata->rev = OMAP_I2C_IP_VERSION_1;
+
+	/* all OMAP1 I2C are implemented like this */
+	pdata->flags = OMAP_I2C_FLAG_NO_FIFO |
+		       OMAP_I2C_FLAG_SIMPLE_CLOCK |
+		       OMAP_I2C_FLAG_16BIT_DATA_REG |
+		       OMAP_I2C_FLAG_ALWAYS_ARMXOR_CLK;
+
+	/* how the cpu bus is wired up differs for 7xx only */
+
+	if (cpu_is_omap7xx())
+		pdata->flags |= OMAP_I2C_FLAG_BUS_SHIFT_1;
+	else
+		pdata->flags |= OMAP_I2C_FLAG_BUS_SHIFT_2;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return platform_device_register(pdev);
 }
 
@@ -123,6 +143,7 @@ static void omap_pm_set_max_mpu_wakeup_lat_compat(struct device *dev, long t)
 	omap_pm_set_max_mpu_wakeup_lat(dev, t);
 }
 
+<<<<<<< HEAD
 static struct omap_device_pm_latency omap_i2c_latency[] = {
 	[0] = {
 		.deactivate_func	= omap_device_idle_hwmods,
@@ -131,13 +152,22 @@ static struct omap_device_pm_latency omap_i2c_latency[] = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int omap2_i2c_add_bus(int bus_id)
 {
 	int l;
 	struct omap_hwmod *oh;
+<<<<<<< HEAD
 	struct omap_device *od;
 	char oh_name[MAX_OMAP_I2C_HWMOD_NAME_LEN];
 	struct omap_i2c_bus_platform_data *pdata;
+=======
+	struct platform_device *pdev;
+	char oh_name[MAX_OMAP_I2C_HWMOD_NAME_LEN];
+	struct omap_i2c_bus_platform_data *pdata;
+	struct omap_i2c_dev_attr *dev_attr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	omap2_i2c_mux_pins(bus_id);
 
@@ -152,6 +182,19 @@ static inline int omap2_i2c_add_bus(int bus_id)
 
 	pdata = &i2c_pdata[bus_id - 1];
 	/*
+<<<<<<< HEAD
+=======
+	 * pass the hwmod class's CPU-specific knowledge of I2C IP revision in
+	 * use, and functionality implementation flags, up to the OMAP I2C
+	 * driver via platform data
+	 */
+	pdata->rev = oh->class->rev;
+
+	dev_attr = (struct omap_i2c_dev_attr *)oh->dev_attr;
+	pdata->flags = dev_attr->flags;
+
+	/*
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * When waiting for completion of a i2c transfer, we need to
 	 * set a wake up latency constraint for the MPU. This is to
 	 * ensure quick enough wakeup from idle, when transfer
@@ -160,12 +203,21 @@ static inline int omap2_i2c_add_bus(int bus_id)
 	 */
 	if (cpu_is_omap34xx())
 		pdata->set_mpu_wkup_lat = omap_pm_set_max_mpu_wakeup_lat_compat;
+<<<<<<< HEAD
 	od = omap_device_build(name, bus_id, oh, pdata,
 			sizeof(struct omap_i2c_bus_platform_data),
 			omap_i2c_latency, ARRAY_SIZE(omap_i2c_latency), 0);
 	WARN(IS_ERR(od), "Could not build omap_device for %s\n", name);
 
 	return PTR_ERR(od);
+=======
+	pdev = omap_device_build(name, bus_id, oh, pdata,
+			sizeof(struct omap_i2c_bus_platform_data),
+			NULL, 0, 0);
+	WARN(IS_ERR(pdev), "Could not build omap_device for %s\n", name);
+
+	return PTR_RET(pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #else
 static inline int omap2_i2c_add_bus(int bus_id)
@@ -182,6 +234,15 @@ static int __init omap_i2c_add_bus(int bus_id)
 		return omap2_i2c_add_bus(bus_id);
 }
 
+=======
+#include <plat/i2c.h>
+
+#define OMAP_I2C_MAX_CONTROLLERS 4
+static struct omap_i2c_bus_platform_data i2c_pdata[OMAP_I2C_MAX_CONTROLLERS];
+
+#define OMAP_I2C_CMDLINE_SETUP	(BIT(31))
+
+>>>>>>> refs/remotes/origin/master
 /**
  * omap_i2c_bus_setup - Process command line options for the I2C bus speed
  * @str: String of options
@@ -195,12 +256,20 @@ static int __init omap_i2c_add_bus(int bus_id)
  */
 static int __init omap_i2c_bus_setup(char *str)
 {
+<<<<<<< HEAD
 	int ports;
 	int ints[3];
 
 	ports = omap_i2c_nr_ports();
 	get_options(str, 3, ints);
 	if (ints[0] < 2 || ints[1] < 1 || ints[1] > ports)
+=======
+	int ints[3];
+
+	get_options(str, 3, ints);
+	if (ints[0] < 2 || ints[1] < 1 ||
+			ints[1] > OMAP_I2C_MAX_CONTROLLERS)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	i2c_pdata[ints[1] - 1].clkrate = ints[2];
 	i2c_pdata[ints[1] - 1].clkrate |= OMAP_I2C_CMDLINE_SETUP;
@@ -213,14 +282,22 @@ __setup("i2c_bus=", omap_i2c_bus_setup);
  * Register busses defined in command line but that are not registered with
  * omap_register_i2c_bus from board initialization code.
  */
+<<<<<<< HEAD
 static int __init omap_register_i2c_bus_cmdline(void)
+=======
+int __init omap_register_i2c_bus_cmdline(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err = 0;
 
 	for (i = 0; i < ARRAY_SIZE(i2c_pdata); i++)
 		if (i2c_pdata[i].clkrate & OMAP_I2C_CMDLINE_SETUP) {
 			i2c_pdata[i].clkrate &= ~OMAP_I2C_CMDLINE_SETUP;
+<<<<<<< HEAD
 			err = omap_i2c_add_bus(i + 1);
+=======
+			err = omap_i2c_add_bus(&i2c_pdata[i], i + 1);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				goto out;
 		}
@@ -228,7 +305,10 @@ static int __init omap_register_i2c_bus_cmdline(void)
 out:
 	return err;
 }
+<<<<<<< HEAD
 subsys_initcall(omap_register_i2c_bus_cmdline);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * omap_register_i2c_bus - register I2C bus with device descriptors
@@ -245,7 +325,11 @@ int __init omap_register_i2c_bus(int bus_id, u32 clkrate,
 {
 	int err;
 
+<<<<<<< HEAD
 	BUG_ON(bus_id < 1 || bus_id > omap_i2c_nr_ports());
+=======
+	BUG_ON(bus_id < 1 || bus_id > OMAP_I2C_MAX_CONTROLLERS);
+>>>>>>> refs/remotes/origin/master
 
 	if (info) {
 		err = i2c_register_board_info(bus_id, info, len);
@@ -258,5 +342,9 @@ int __init omap_register_i2c_bus(int bus_id, u32 clkrate,
 
 	i2c_pdata[bus_id - 1].clkrate &= ~OMAP_I2C_CMDLINE_SETUP;
 
+<<<<<<< HEAD
 	return omap_i2c_add_bus(bus_id);
+=======
+	return omap_i2c_add_bus(&i2c_pdata[bus_id - 1], bus_id);
+>>>>>>> refs/remotes/origin/master
 }

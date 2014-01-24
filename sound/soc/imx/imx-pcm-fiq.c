@@ -8,7 +8,12 @@
  *
  *  This program is free software; you can redistribute  it and/or modify it
  *  under  the terms of  the GNU General  Public License as published by the
+<<<<<<< HEAD
  *  Free Software Foundation;  only version 2 of the  License.
+=======
+ *  Free Software Foundation;  either version 2 of the  License, or (at your
+ *  option) any later version.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 #include <linux/clk.h>
 #include <linux/delay.h>
@@ -239,26 +244,41 @@ static int ssi_irq = 0;
 
 static int imx_pcm_fiq_new(struct snd_soc_pcm_runtime *rtd)
 {
+<<<<<<< HEAD
 	struct snd_card *card = rtd->card->snd_card;
 	struct snd_soc_dai *dai = rtd->cpu_dai;
 	struct snd_pcm *pcm = rtd->pcm;
+=======
+	struct snd_pcm *pcm = rtd->pcm;
+	struct snd_pcm_substream *substream;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	ret = imx_pcm_new(rtd);
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	if (dai->driver->playback.channels_min) {
 		struct snd_pcm_substream *substream =
 			pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
+=======
+	substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
+	if (substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct snd_dma_buffer *buf = &substream->dma_buffer;
 
 		imx_ssi_fiq_tx_buffer = (unsigned long)buf->area;
 	}
 
+<<<<<<< HEAD
 	if (dai->driver->capture.channels_min) {
 		struct snd_pcm_substream *substream =
 			pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
+=======
+	substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
+	if (substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct snd_dma_buffer *buf = &substream->dma_buffer;
 
 		imx_ssi_fiq_rx_buffer = (unsigned long)buf->area;
@@ -333,6 +353,7 @@ static struct platform_driver imx_pcm_driver = {
 	.remove = __devexit_p(imx_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init snd_imx_pcm_init(void)
 {
 	return platform_driver_register(&imx_pcm_driver);
@@ -344,3 +365,8 @@ static void __exit snd_imx_pcm_exit(void)
 	platform_driver_unregister(&imx_pcm_driver);
 }
 module_exit(snd_imx_pcm_exit);
+=======
+module_platform_driver(imx_pcm_driver);
+
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/cm-10.0

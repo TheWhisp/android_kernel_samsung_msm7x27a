@@ -94,9 +94,21 @@
 #include <linux/delay.h>
 #include <linux/seq_file.h>
 #include <linux/serial.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <linux/uaccess.h>
 #include <asm/system.h>
+=======
+#include <linux/ratelimit.h>
+
+#include <linux/uaccess.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+
+#include <linux/uaccess.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/kbd_kern.h>
 #include <linux/vt_kern.h>
@@ -181,10 +193,19 @@ struct tty_struct *alloc_tty_struct(void)
 
 void free_tty_struct(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	if (tty->dev)
 		put_device(tty->dev);
 	kfree(tty->write_buf);
 	tty_buffer_free_all(tty);
+=======
+	if (!tty)
+		return;
+	if (tty->dev)
+		put_device(tty->dev);
+	kfree(tty->write_buf);
+	tty->magic = 0xDEADDEAD;
+>>>>>>> refs/remotes/origin/master
 	kfree(tty);
 }
 
@@ -234,7 +255,11 @@ void tty_free_file(struct file *file)
 }
 
 /* Delete file from its tty */
+<<<<<<< HEAD
 void tty_del_file(struct file *file)
+=======
+static void tty_del_file(struct file *file)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tty_file_private *priv = file->private_data;
 
@@ -531,10 +556,71 @@ void tty_wakeup(struct tty_struct *tty)
 EXPORT_SYMBOL_GPL(tty_wakeup);
 
 /**
+<<<<<<< HEAD
  *	__tty_hangup		-	actual handler for hangup events
  *	@work: tty device
  *
  *	This can be called by the "eventd" kernel thread.  That is process
+=======
+ *	tty_signal_session_leader	- sends SIGHUP to session leader
+ *	@tty		controlling tty
+ *	@exit_session	if non-zero, signal all foreground group processes
+ *
+ *	Send SIGHUP and SIGCONT to the session leader and its process group.
+ *	Optionally, signal all processes in the foreground process group.
+ *
+ *	Returns the number of processes in the session with this tty
+ *	as their controlling terminal. This value is used to drop
+ *	tty references for those processes.
+ */
+static int tty_signal_session_leader(struct tty_struct *tty, int exit_session)
+{
+	struct task_struct *p;
+	int refs = 0;
+	struct pid *tty_pgrp = NULL;
+
+	read_lock(&tasklist_lock);
+	if (tty->session) {
+		do_each_pid_task(tty->session, PIDTYPE_SID, p) {
+			spin_lock_irq(&p->sighand->siglock);
+			if (p->signal->tty == tty) {
+				p->signal->tty = NULL;
+				/* We defer the dereferences outside fo
+				   the tasklist lock */
+				refs++;
+			}
+			if (!p->signal->leader) {
+				spin_unlock_irq(&p->sighand->siglock);
+				continue;
+			}
+			__group_send_sig_info(SIGHUP, SEND_SIG_PRIV, p);
+			__group_send_sig_info(SIGCONT, SEND_SIG_PRIV, p);
+			put_pid(p->signal->tty_old_pgrp);  /* A noop */
+			spin_lock(&tty->ctrl_lock);
+			tty_pgrp = get_pid(tty->pgrp);
+			if (tty->pgrp)
+				p->signal->tty_old_pgrp = get_pid(tty->pgrp);
+			spin_unlock(&tty->ctrl_lock);
+			spin_unlock_irq(&p->sighand->siglock);
+		} while_each_pid_task(tty->session, PIDTYPE_SID, p);
+	}
+	read_unlock(&tasklist_lock);
+
+	if (tty_pgrp) {
+		if (exit_session)
+			kill_pgrp(tty_pgrp, SIGHUP, exit_session);
+		put_pid(tty_pgrp);
+	}
+
+	return refs;
+}
+
+/**
+ *	__tty_hangup		-	actual handler for hangup events
+ *	@work: tty device
+ *
+ *	This can be called by a "kworker" kernel thread.  That is process
+>>>>>>> refs/remotes/origin/master
  *	synchronous but doesn't hold any locks, so we need to make sure we
  *	have the appropriate locks for what we're doing.
  *
@@ -547,6 +633,7 @@ EXPORT_SYMBOL_GPL(tty_wakeup);
  *		BTM
  *		  redirect lock for undoing redirection
  *		  file list lock for manipulating list of ttys
+<<<<<<< HEAD
  *		  tty_ldisc_lock from called functions
  *		  termios_mutex resetting termios data
  *		  tasklist_lock to walk task list for hangup event
@@ -561,6 +648,20 @@ void __tty_hangup(struct tty_struct *tty)
 	int    closecount = 0, n;
 	unsigned long flags;
 	int refs = 0;
+=======
+ *		  tty_ldiscs_lock from called functions
+ *		  termios_rwsem resetting termios data
+ *		  tasklist_lock to walk task list for hangup event
+ *		    ->siglock to protect ->signal/->sighand
+ */
+static void __tty_hangup(struct tty_struct *tty, int exit_session)
+{
+	struct file *cons_filp = NULL;
+	struct file *filp, *f = NULL;
+	struct tty_file_private *priv;
+	int    closecount = 0, n;
+	int refs;
+>>>>>>> refs/remotes/origin/master
 
 	if (!tty)
 		return;
@@ -573,7 +674,16 @@ void __tty_hangup(struct tty_struct *tty)
 	}
 	spin_unlock(&redirect_lock);
 
+<<<<<<< HEAD
 	tty_lock();
+=======
+	tty_lock(tty);
+
+	if (test_bit(TTY_HUPPED, &tty->flags)) {
+		tty_unlock(tty);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* some functions below drop BTM, so we need this bit */
 	set_bit(TTY_HUPPING, &tty->flags);
@@ -597,12 +707,21 @@ void __tty_hangup(struct tty_struct *tty)
 	}
 	spin_unlock(&tty_files_lock);
 
+<<<<<<< HEAD
+=======
+	refs = tty_signal_session_leader(tty, exit_session);
+	/* Account for the p->signal references we killed */
+	while (refs--)
+		tty_kref_put(tty);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * it drops BTM and thus races with reopen
 	 * we protect the race by TTY_HUPPING
 	 */
 	tty_ldisc_hangup(tty);
 
+<<<<<<< HEAD
 	read_lock(&tasklist_lock);
 	if (tty->session) {
 		do_each_pid_task(tty->session, PIDTYPE_SID, p) {
@@ -632,17 +751,25 @@ void __tty_hangup(struct tty_struct *tty)
 	spin_lock_irqsave(&tty->ctrl_lock, flags);
 	clear_bit(TTY_THROTTLED, &tty->flags);
 	clear_bit(TTY_PUSH, &tty->flags);
+=======
+	spin_lock_irq(&tty->ctrl_lock);
+	clear_bit(TTY_THROTTLED, &tty->flags);
+>>>>>>> refs/remotes/origin/master
 	clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
 	put_pid(tty->session);
 	put_pid(tty->pgrp);
 	tty->session = NULL;
 	tty->pgrp = NULL;
 	tty->ctrl_status = 0;
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&tty->ctrl_lock, flags);
 
 	/* Account for the p->signal references we killed */
 	while (refs--)
 		tty_kref_put(tty);
+=======
+	spin_unlock_irq(&tty->ctrl_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If one of the devices matches a console pointer, we
@@ -664,9 +791,14 @@ void __tty_hangup(struct tty_struct *tty)
 	 */
 	set_bit(TTY_HUPPED, &tty->flags);
 	clear_bit(TTY_HUPPING, &tty->flags);
+<<<<<<< HEAD
 	tty_ldisc_enable(tty);
 
 	tty_unlock();
+=======
+
+	tty_unlock(tty);
+>>>>>>> refs/remotes/origin/master
 
 	if (f)
 		fput(f);
@@ -677,7 +809,11 @@ static void do_tty_hangup(struct work_struct *work)
 	struct tty_struct *tty =
 		container_of(work, struct tty_struct, hangup_work);
 
+<<<<<<< HEAD
 	__tty_hangup(tty);
+=======
+	__tty_hangup(tty, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -715,7 +851,11 @@ void tty_vhangup(struct tty_struct *tty)
 
 	printk(KERN_DEBUG "%s vhangup...\n", tty_name(tty, buf));
 #endif
+<<<<<<< HEAD
 	__tty_hangup(tty);
+=======
+	__tty_hangup(tty, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 EXPORT_SYMBOL(tty_vhangup);
@@ -739,6 +879,30 @@ void tty_vhangup_self(void)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ *	tty_vhangup_session		-	hangup session leader exit
+ *	@tty: tty to hangup
+ *
+ *	The session leader is exiting and hanging up its controlling terminal.
+ *	Every process in the foreground process group is signalled SIGHUP.
+ *
+ *	We do this synchronously so that when the syscall returns the process
+ *	is complete. That guarantee is necessary for security reasons.
+ */
+
+static void tty_vhangup_session(struct tty_struct *tty)
+{
+#ifdef TTY_DEBUG_HANGUP
+	char	buf[64];
+
+	printk(KERN_DEBUG "%s vhangup session...\n", tty_name(tty, buf));
+#endif
+	__tty_hangup(tty, 1);
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  *	tty_hung_up_p		-	was tty hung up
  *	@filp: file pointer of tty
  *
@@ -789,19 +953,54 @@ static void session_clear_tty(struct pid *session)
 void disassociate_ctty(int on_exit)
 {
 	struct tty_struct *tty;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct pid *tty_pgrp = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!current->signal->leader)
 		return;
 
 	tty = get_current_tty();
 	if (tty) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		tty_pgrp = get_pid(tty->pgrp);
+=======
+		struct pid *tty_pgrp = get_pid(tty->pgrp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (on_exit) {
 			if (tty->driver->type != TTY_DRIVER_TYPE_PTY)
 				tty_vhangup(tty);
 		}
 		tty_kref_put(tty);
+<<<<<<< HEAD
+=======
+		if (tty_pgrp) {
+			kill_pgrp(tty_pgrp, SIGHUP, on_exit);
+			if (!on_exit)
+				kill_pgrp(tty_pgrp, SIGCONT, on_exit);
+			put_pid(tty_pgrp);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (on_exit && tty->driver->type != TTY_DRIVER_TYPE_PTY) {
+			tty_vhangup_session(tty);
+		} else {
+			struct pid *tty_pgrp = tty_get_pgrp(tty);
+			if (tty_pgrp) {
+				kill_pgrp(tty_pgrp, SIGHUP, on_exit);
+				if (!on_exit)
+					kill_pgrp(tty_pgrp, SIGCONT, on_exit);
+				put_pid(tty_pgrp);
+			}
+		}
+		tty_kref_put(tty);
+
+>>>>>>> refs/remotes/origin/master
 	} else if (on_exit) {
 		struct pid *old_pgrp;
 		spin_lock_irq(&current->sighand->siglock);
@@ -815,12 +1014,18 @@ void disassociate_ctty(int on_exit)
 		}
 		return;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (tty_pgrp) {
 		kill_pgrp(tty_pgrp, SIGHUP, on_exit);
 		if (!on_exit)
 			kill_pgrp(tty_pgrp, SIGCONT, on_exit);
 		put_pid(tty_pgrp);
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irq(&current->sighand->siglock);
 	put_pid(current->signal->tty_old_pgrp);
@@ -856,10 +1061,18 @@ void disassociate_ctty(int on_exit)
  */
 void no_tty(void)
 {
+<<<<<<< HEAD
 	struct task_struct *tsk = current;
 	tty_lock();
 	disassociate_ctty(0);
 	tty_unlock();
+=======
+	/* FIXME: Review locking here. The tty_lock never covered any race
+	   between a new association and proc_clear_tty but possible we need
+	   to protect against this anyway */
+	struct task_struct *tsk = current;
+	disassociate_ctty(0);
+>>>>>>> refs/remotes/origin/master
 	proc_clear_tty(tsk);
 }
 
@@ -966,7 +1179,11 @@ static ssize_t tty_read(struct file *file, char __user *buf, size_t count,
 			loff_t *ppos)
 {
 	int i;
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct tty_struct *tty = file_tty(file);
 	struct tty_ldisc *ld;
 
@@ -1088,8 +1305,15 @@ static inline ssize_t do_tty_write(
 		cond_resched();
 	}
 	if (written) {
+<<<<<<< HEAD
 		struct inode *inode = file->f_path.dentry->d_inode;
 		tty_update_time(&inode->i_mtime);
+<<<<<<< HEAD
+=======
+		tty_update_time(&file_inode(file)->i_mtime);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = written;
 	}
 out:
@@ -1113,12 +1337,21 @@ void tty_write_message(struct tty_struct *tty, char *msg)
 {
 	if (tty) {
 		mutex_lock(&tty->atomic_write_lock);
+<<<<<<< HEAD
 		tty_lock();
 		if (tty->ops->write && !test_bit(TTY_CLOSING, &tty->flags)) {
 			tty_unlock();
 			tty->ops->write(tty, msg, strlen(msg));
 		} else
 			tty_unlock();
+=======
+		tty_lock(tty);
+		if (tty->ops->write && !test_bit(TTY_CLOSING, &tty->flags)) {
+			tty_unlock(tty);
+			tty->ops->write(tty, msg, strlen(msg));
+		} else
+			tty_unlock(tty);
+>>>>>>> refs/remotes/origin/master
 		tty_write_unlock(tty);
 	}
 	return;
@@ -1144,12 +1377,19 @@ void tty_write_message(struct tty_struct *tty, char *msg)
 static ssize_t tty_write(struct file *file, const char __user *buf,
 						size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tty_struct *tty = file_tty(file);
  	struct tty_ldisc *ld;
 	ssize_t ret;
 
+<<<<<<< HEAD
 	if (tty_paranoia_check(tty, inode, "tty_write"))
+=======
+	if (tty_paranoia_check(tty, file_inode(file), "tty_write"))
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	if (!tty || !tty->ops->write ||
 		(test_bit(TTY_IO_ERROR, &tty->flags)))
@@ -1173,10 +1413,15 @@ ssize_t redirected_tty_write(struct file *file, const char __user *buf,
 	struct file *p = NULL;
 
 	spin_lock(&redirect_lock);
+<<<<<<< HEAD
 	if (redirect) {
 		get_file(redirect);
 		p = redirect;
 	}
+=======
+	if (redirect)
+		p = get_file(redirect);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&redirect_lock);
 
 	if (p) {
@@ -1223,7 +1468,14 @@ static void pty_line_name(struct tty_driver *driver, int index, char *p)
  */
 static void tty_line_name(struct tty_driver *driver, int index, char *p)
 {
+<<<<<<< HEAD
 	sprintf(p, "%s%d", driver->name, index + driver->name_base);
+=======
+	if (driver->flags & TTY_DRIVER_UNNUMBERED_NODE)
+		strcpy(p, driver->name);
+	else
+		sprintf(p, "%s%d", driver->name, index + driver->name_base);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1240,6 +1492,8 @@ static void tty_line_name(struct tty_driver *driver, int index, char *p)
 static struct tty_struct *tty_driver_lookup_tty(struct tty_driver *driver,
 		struct inode *inode, int idx)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct tty_struct *tty;
 
 	if (driver->ops->lookup)
@@ -1247,6 +1501,17 @@ static struct tty_struct *tty_driver_lookup_tty(struct tty_driver *driver,
 
 	tty = driver->ttys[idx];
 	return tty;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (driver->ops->lookup)
+		return driver->ops->lookup(driver, inode, idx);
+
+	return driver->ttys[idx];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1262,6 +1527,7 @@ int tty_init_termios(struct tty_struct *tty)
 	struct ktermios *tp;
 	int idx = tty->index;
 
+<<<<<<< HEAD
 	tp = tty->driver->termios[idx];
 	if (tp == NULL) {
 		tp = kzalloc(sizeof(struct ktermios[2]), GFP_KERNEL);
@@ -1277,10 +1543,47 @@ int tty_init_termios(struct tty_struct *tty)
 	/* Compatibility until drivers always set this */
 	tty->termios->c_ispeed = tty_termios_input_baud_rate(tty->termios);
 	tty->termios->c_ospeed = tty_termios_baud_rate(tty->termios);
+=======
+	if (tty->driver->flags & TTY_DRIVER_RESET_TERMIOS)
+		tty->termios = tty->driver->init_termios;
+	else {
+		/* Check for lazy saved data */
+		tp = tty->driver->termios[idx];
+		if (tp != NULL)
+			tty->termios = *tp;
+		else
+			tty->termios = tty->driver->init_termios;
+	}
+	/* Compatibility until drivers always set this */
+	tty->termios.c_ispeed = tty_termios_input_baud_rate(&tty->termios);
+	tty->termios.c_ospeed = tty_termios_baud_rate(&tty->termios);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL_GPL(tty_init_termios);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int tty_standard_install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	int ret = tty_init_termios(tty);
+	if (ret)
+		return ret;
+
+	tty_driver_kref_get(driver);
+	tty->count++;
+	driver->ttys[tty->index] = tty;
+	return 0;
+}
+EXPORT_SYMBOL_GPL(tty_standard_install);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	tty_driver_install_tty() - install a tty entry in the driver
  *	@driver: the driver for the tty
@@ -1296,6 +1599,8 @@ EXPORT_SYMBOL_GPL(tty_init_termios);
 static int tty_driver_install_tty(struct tty_driver *driver,
 						struct tty_struct *tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int idx = tty->index;
 	int ret;
 
@@ -1311,6 +1616,14 @@ static int tty_driver_install_tty(struct tty_driver *driver,
 		return 0;
 	}
 	return -ENOMEM;
+=======
+	return driver->ops->install ? driver->ops->install(driver, tty) :
+		tty_standard_install(driver, tty);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return driver->ops->install ? driver->ops->install(driver, tty) :
+		tty_standard_install(driver, tty);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1345,8 +1658,12 @@ static int tty_reopen(struct tty_struct *tty)
 	struct tty_driver *driver = tty->driver;
 
 	if (test_bit(TTY_CLOSING, &tty->flags) ||
+<<<<<<< HEAD
 			test_bit(TTY_HUPPING, &tty->flags) ||
 			test_bit(TTY_LDISC_CHANGING, &tty->flags))
+=======
+			test_bit(TTY_HUPPING, &tty->flags))
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 
 	if (driver->type == TTY_DRIVER_TYPE_PTY &&
@@ -1361,11 +1678,19 @@ static int tty_reopen(struct tty_struct *tty)
 		tty->link->count++;
 	}
 	tty->count++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tty->driver = driver; /* N.B. why do this every time?? */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&tty->ldisc_mutex);
 	WARN_ON(!test_bit(TTY_LDISC, &tty->flags));
 	mutex_unlock(&tty->ldisc_mutex);
+=======
+
+	WARN_ON(!tty->ldisc);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1375,7 +1700,13 @@ static int tty_reopen(struct tty_struct *tty)
  *	@driver: tty driver we are opening a device on
  *	@idx: device index
  *	@ret_tty: returned tty structure
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	@first_ok: ok to open a new device (used by ptmx)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *	Prepare a tty device. This may not be a "new" clean device but
  *	could also be an active device. The pty drivers require special
@@ -1395,18 +1726,32 @@ static int tty_reopen(struct tty_struct *tty)
  * relaxed for the (most common) case of reopening a tty.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct tty_struct *tty_init_dev(struct tty_driver *driver, int idx,
 								int first_ok)
+=======
+struct tty_struct *tty_init_dev(struct tty_driver *driver, int idx)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct tty_struct *tty_init_dev(struct tty_driver *driver, int idx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tty_struct *tty;
 	int retval;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check if pty master is being opened multiple times */
 	if (driver->subtype == PTY_TYPE_MASTER &&
 		(driver->flags & TTY_DRIVER_DEVPTS_MEM) && !first_ok) {
 		return ERR_PTR(-EIO);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * First time open is complex, especially for PTY devices.
 	 * This code guarantees that either everything succeeds and the
@@ -1425,10 +1770,26 @@ struct tty_struct *tty_init_dev(struct tty_driver *driver, int idx,
 	}
 	initialize_tty_struct(tty, driver, idx);
 
+<<<<<<< HEAD
+=======
+	tty_lock(tty);
+>>>>>>> refs/remotes/origin/master
 	retval = tty_driver_install_tty(driver, tty);
 	if (retval < 0)
 		goto err_deinit_tty;
 
+<<<<<<< HEAD
+=======
+	if (!tty->port)
+		tty->port = driver->ports[idx];
+
+	WARN_RATELIMIT(!tty->port,
+			"%s: %s driver does not set tty->port. This will crash the kernel later. Fix the driver!\n",
+			__func__, tty->driver->name);
+
+	tty->port->itty = tty;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Structures all installed ... call the ldisc open routines.
 	 * If we fail here just call release_tty to clean up.  No need
@@ -1437,9 +1798,17 @@ struct tty_struct *tty_init_dev(struct tty_driver *driver, int idx,
 	retval = tty_ldisc_setup(tty, tty->link);
 	if (retval)
 		goto err_release_tty;
+<<<<<<< HEAD
 	return tty;
 
 err_deinit_tty:
+=======
+	/* Return the tty locked so that it cannot vanish under the caller */
+	return tty;
+
+err_deinit_tty:
+	tty_unlock(tty);
+>>>>>>> refs/remotes/origin/master
 	deinitialize_tty_struct(tty);
 	free_tty_struct(tty);
 err_module_put:
@@ -1448,8 +1817,17 @@ err_module_put:
 
 	/* call the tty release_tty routine to clean out this slot */
 err_release_tty:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (printk_ratelimit())
 		printk(KERN_INFO "tty_init_dev: ldisc open failed, "
+=======
+	printk_ratelimited(KERN_INFO "tty_init_dev: ldisc open failed, "
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tty_unlock(tty);
+	printk_ratelimited(KERN_INFO "tty_init_dev: ldisc open failed, "
+>>>>>>> refs/remotes/origin/master
 				 "clearing slot %d\n", idx);
 	release_tty(tty, idx);
 	return ERR_PTR(retval);
@@ -1459,6 +1837,7 @@ void tty_free_termios(struct tty_struct *tty)
 {
 	struct ktermios *tp;
 	int idx = tty->index;
+<<<<<<< HEAD
 	/* Kill this flag and push into drivers for locking etc */
 	if (tty->driver->flags & TTY_DRIVER_RESET_TERMIOS) {
 		/* FIXME: Locking on ->termios array */
@@ -1475,6 +1854,38 @@ void tty_shutdown(struct tty_struct *tty)
 	tty_free_termios(tty);
 }
 EXPORT_SYMBOL(tty_shutdown);
+=======
+
+	/* If the port is going to reset then it has no termios to save */
+	if (tty->driver->flags & TTY_DRIVER_RESET_TERMIOS)
+		return;
+
+	/* Stash the termios data */
+	tp = tty->driver->termios[idx];
+	if (tp == NULL) {
+		tp = kmalloc(sizeof(struct ktermios), GFP_KERNEL);
+		if (tp == NULL) {
+			pr_warn("tty: no memory to save termios state.\n");
+			return;
+		}
+		tty->driver->termios[idx] = tp;
+	}
+	*tp = tty->termios;
+}
+EXPORT_SYMBOL(tty_free_termios);
+
+/**
+ *	tty_flush_works		-	flush all works of a tty
+ *	@tty: tty device to flush works for
+ *
+ *	Sync flush all works belonging to @tty.
+ */
+static void tty_flush_works(struct tty_struct *tty)
+{
+	flush_work(&tty->SAK_work);
+	flush_work(&tty->hangup_work);
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	release_one_tty		-	release tty structure memory
@@ -1485,7 +1896,10 @@ EXPORT_SYMBOL(tty_shutdown);
  *	in use. It also gets called when setup of a device fails.
  *
  *	Locking:
+<<<<<<< HEAD
  *		tty_mutex - sometimes only
+=======
+>>>>>>> refs/remotes/origin/master
  *		takes the file list lock internally when working on the list
  *	of ttys that the driver keeps.
  *
@@ -1518,11 +1932,14 @@ static void queue_release_one_tty(struct kref *kref)
 {
 	struct tty_struct *tty = container_of(kref, struct tty_struct, kref);
 
+<<<<<<< HEAD
 	if (tty->ops->shutdown)
 		tty->ops->shutdown(tty);
 	else
 		tty_shutdown(tty);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* The hangup queue is now free so we can reuse it rather than
 	   waste a chunk of memory for each port */
 	INIT_WORK(&tty->hangup_work, release_one_tty);
@@ -1551,16 +1968,34 @@ EXPORT_SYMBOL(tty_kref_put);
  *	and decrement the refcount of the backing module.
  *
  *	Locking:
+<<<<<<< HEAD
  *		tty_mutex - sometimes only
  *		takes the file list lock internally when working on the list
  *	of ttys that the driver keeps.
  *		FIXME: should we require tty_mutex is held here ??
+=======
+ *		tty_mutex
+ *		takes the file list lock internally when working on the list
+ *	of ttys that the driver keeps.
+>>>>>>> refs/remotes/origin/master
  *
  */
 static void release_tty(struct tty_struct *tty, int idx)
 {
 	/* This should always be true but check for the moment */
 	WARN_ON(tty->index != idx);
+<<<<<<< HEAD
+=======
+	WARN_ON(!mutex_is_locked(&tty_mutex));
+	if (tty->ops->shutdown)
+		tty->ops->shutdown(tty);
+	tty_free_termios(tty);
+	tty_driver_remove_tty(tty->driver, tty);
+	tty->port->itty = NULL;
+	if (tty->link)
+		tty->link->port->itty = NULL;
+	cancel_work_sync(&tty->port->buf.work);
+>>>>>>> refs/remotes/origin/master
 
 	if (tty->link)
 		tty_kref_put(tty->link);
@@ -1568,6 +2003,74 @@ static void release_tty(struct tty_struct *tty, int idx)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *	tty_release_checks - check a tty before real release
+ *	@tty: tty to check
+ *	@o_tty: link of @tty (if any)
+ *	@idx: index of the tty
+ *
+ *	Performs some paranoid checking before true release of the @tty.
+ *	This is a no-op unless TTY_PARANOIA_CHECK is defined.
+ */
+static int tty_release_checks(struct tty_struct *tty, struct tty_struct *o_tty,
+		int idx)
+{
+#ifdef TTY_PARANOIA_CHECK
+	if (idx < 0 || idx >= tty->driver->num) {
+		printk(KERN_DEBUG "%s: bad idx when trying to free (%s)\n",
+				__func__, tty->name);
+		return -1;
+	}
+
+	/* not much to check for devpts */
+	if (tty->driver->flags & TTY_DRIVER_DEVPTS_MEM)
+		return 0;
+
+	if (tty != tty->driver->ttys[idx]) {
+		printk(KERN_DEBUG "%s: driver.table[%d] not tty for (%s)\n",
+				__func__, idx, tty->name);
+		return -1;
+	}
+<<<<<<< HEAD
+	if (tty->termios != tty->driver->termios[idx]) {
+		printk(KERN_DEBUG "%s: driver.termios[%d] not termios for (%s)\n",
+				__func__, idx, tty->name);
+		return -1;
+	}
+=======
+>>>>>>> refs/remotes/origin/master
+	if (tty->driver->other) {
+		if (o_tty != tty->driver->other->ttys[idx]) {
+			printk(KERN_DEBUG "%s: other->table[%d] not o_tty for (%s)\n",
+					__func__, idx, tty->name);
+			return -1;
+		}
+<<<<<<< HEAD
+		if (o_tty->termios != tty->driver->other->termios[idx]) {
+			printk(KERN_DEBUG "%s: other->termios[%d] not o_termios for (%s)\n",
+					__func__, idx, tty->name);
+			return -1;
+		}
+=======
+>>>>>>> refs/remotes/origin/master
+		if (o_tty->link != tty) {
+			printk(KERN_DEBUG "%s: bad pty pointers\n", __func__);
+			return -1;
+		}
+	}
+#endif
+	return 0;
+}
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	tty_release		-	vfs callback for close
  *	@inode: inode of tty
  *	@filp: file pointer for handle to tty
@@ -1591,24 +2094,45 @@ int tty_release(struct inode *inode, struct file *filp)
 	struct tty_struct *tty = file_tty(filp);
 	struct tty_struct *o_tty;
 	int	pty_master, tty_closing, o_tty_closing, do_sleep;
+<<<<<<< HEAD
 	int	devpts;
 	int	idx;
 	char	buf[64];
 
+<<<<<<< HEAD
 	if (tty_paranoia_check(tty, inode, "tty_release_dev"))
 		return 0;
 
 	tty_lock();
 	check_tty_count(tty, "tty_release_dev");
+=======
+	if (tty_paranoia_check(tty, inode, __func__))
+		return 0;
+
+	tty_lock();
+	check_tty_count(tty, __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int	idx;
+	char	buf[64];
+
+	if (tty_paranoia_check(tty, inode, __func__))
+		return 0;
+
+	tty_lock(tty);
+	check_tty_count(tty, __func__);
+>>>>>>> refs/remotes/origin/master
 
 	__tty_fasync(-1, filp, 0);
 
 	idx = tty->index;
 	pty_master = (tty->driver->type == TTY_DRIVER_TYPE_PTY &&
 		      tty->driver->subtype == PTY_TYPE_MASTER);
+<<<<<<< HEAD
 	devpts = (tty->driver->flags & TTY_DRIVER_DEVPTS_MEM) != 0;
 	o_tty = tty->link;
 
+<<<<<<< HEAD
 #ifdef TTY_PARANOIA_CHECK
 	if (idx < 0 || idx >= tty->driver->num) {
 		printk(KERN_DEBUG "tty_release_dev: bad idx when trying to "
@@ -1662,10 +2186,36 @@ int tty_release(struct inode *inode, struct file *filp)
 		}
 	}
 #endif
+=======
+	if (tty_release_checks(tty, o_tty, idx)) {
+		tty_unlock();
+=======
+	/* Review: parallel close */
+	o_tty = tty->link;
+
+	if (tty_release_checks(tty, o_tty, idx)) {
+		tty_unlock(tty);
+>>>>>>> refs/remotes/origin/master
+		return 0;
+	}
+
+#ifdef TTY_DEBUG_HANGUP
+	printk(KERN_DEBUG "%s: %s (tty count=%d)...\n", __func__,
+			tty_name(tty, buf), tty->count);
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (tty->ops->close)
 		tty->ops->close(tty, filp);
 
 	tty_unlock();
+=======
+	if (tty->ops->close)
+		tty->ops->close(tty, filp);
+
+	tty_unlock(tty);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Sanity check: if tty->count is going to zero, there shouldn't be
 	 * any waiters on tty->read_wait or tty->write_wait.  We test the
@@ -1688,7 +2238,11 @@ int tty_release(struct inode *inode, struct file *filp)
 		   opens on /dev/tty */
 
 		mutex_lock(&tty_mutex);
+<<<<<<< HEAD
 		tty_lock();
+=======
+		tty_lock_pair(tty, o_tty);
+>>>>>>> refs/remotes/origin/master
 		tty_closing = tty->count <= 1;
 		o_tty_closing = o_tty &&
 			(o_tty->count <= (pty_master ? 1 : 0));
@@ -1717,9 +2271,20 @@ int tty_release(struct inode *inode, struct file *filp)
 		if (!do_sleep)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "tty_release_dev: %s: read/write wait queue "
 				    "active!\n", tty_name(tty, buf));
+=======
+		printk(KERN_WARNING "%s: %s: read/write wait queue active!\n",
+				__func__, tty_name(tty, buf));
+>>>>>>> refs/remotes/origin/cm-10.0
 		tty_unlock();
+=======
+		printk(KERN_WARNING "%s: %s: read/write wait queue active!\n",
+				__func__, tty_name(tty, buf));
+		tty_unlock_pair(tty, o_tty);
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&tty_mutex);
 		schedule();
 	}
@@ -1728,18 +2293,44 @@ int tty_release(struct inode *inode, struct file *filp)
 	 * The closing flags are now consistent with the open counts on
 	 * both sides, and we've completed the last operation that could
 	 * block, so it's safe to proceed with closing.
+<<<<<<< HEAD
 	 */
 	if (pty_master) {
 		if (--o_tty->count < 0) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "tty_release_dev: bad pty slave count "
 					    "(%d) for %s\n",
 			       o_tty->count, tty_name(o_tty, buf));
+=======
+			printk(KERN_WARNING "%s: bad pty slave count (%d) for %s\n",
+				__func__, o_tty->count, tty_name(o_tty, buf));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 *
+	 * We must *not* drop the tty_mutex until we ensure that a further
+	 * entry into tty_open can not pick up this tty.
+	 */
+	if (pty_master) {
+		if (--o_tty->count < 0) {
+			printk(KERN_WARNING "%s: bad pty slave count (%d) for %s\n",
+				__func__, o_tty->count, tty_name(o_tty, buf));
+>>>>>>> refs/remotes/origin/master
 			o_tty->count = 0;
 		}
 	}
 	if (--tty->count < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "tty_release_dev: bad tty->count (%d) for %s\n",
 		       tty->count, tty_name(tty, buf));
+=======
+		printk(KERN_WARNING "%s: bad tty->count (%d) for %s\n",
+				__func__, tty->count, tty_name(tty, buf));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_WARNING "%s: bad tty->count (%d) for %s\n",
+				__func__, tty->count, tty_name(tty, buf));
+>>>>>>> refs/remotes/origin/master
 		tty->count = 0;
 	}
 
@@ -1780,6 +2371,7 @@ int tty_release(struct inode *inode, struct file *filp)
 	}
 
 	mutex_unlock(&tty_mutex);
+<<<<<<< HEAD
 
 	/* check whether both sides are closing ... */
 	if (!tty_closing || (o_tty && !o_tty_closing)) {
@@ -1788,12 +2380,29 @@ int tty_release(struct inode *inode, struct file *filp)
 	}
 
 #ifdef TTY_DEBUG_HANGUP
+<<<<<<< HEAD
 	printk(KERN_DEBUG "freeing tty structure...");
+=======
+	printk(KERN_DEBUG "%s: freeing tty structure...\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tty_unlock_pair(tty, o_tty);
+	/* At this point the TTY_CLOSING flag should ensure a dead tty
+	   cannot be re-opened by a racing opener */
+
+	/* check whether both sides are closing ... */
+	if (!tty_closing || (o_tty && !o_tty_closing))
+		return 0;
+
+#ifdef TTY_DEBUG_HANGUP
+	printk(KERN_DEBUG "%s: %s: final close\n", __func__, tty_name(tty, buf));
+>>>>>>> refs/remotes/origin/master
 #endif
 	/*
 	 * Ask the line discipline code to release its structures
 	 */
 	tty_ldisc_release(tty, o_tty);
+<<<<<<< HEAD
 	/*
 	 * The release_tty function takes care of the details of clearing
 	 * the slots and preserving the termios structure.
@@ -1804,10 +2413,127 @@ int tty_release(struct inode *inode, struct file *filp)
 	if (devpts)
 		devpts_kill_index(inode, idx);
 	tty_unlock();
+=======
+
+	/* Wait for pending work before tty destruction commmences */
+	tty_flush_works(tty);
+	if (o_tty)
+		tty_flush_works(o_tty);
+
+#ifdef TTY_DEBUG_HANGUP
+	printk(KERN_DEBUG "%s: %s: freeing structure...\n", __func__, tty_name(tty, buf));
+#endif
+	/*
+	 * The release_tty function takes care of the details of clearing
+	 * the slots and preserving the termios structure. The tty_unlock_pair
+	 * should be safe as we keep a kref while the tty is locked (so the
+	 * unlock never unlocks a freed tty).
+	 */
+	mutex_lock(&tty_mutex);
+	release_tty(tty, idx);
+	mutex_unlock(&tty_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *	tty_open_current_tty - get tty of current task for open
+ *	@device: device number
+ *	@filp: file pointer to tty
+ *	@return: tty of the current task iff @device is /dev/tty
+ *
+ *	We cannot return driver and index like for the other nodes because
+ *	devpts will not work then. It expects inodes to be from devpts FS.
+<<<<<<< HEAD
+=======
+ *
+ *	We need to move to returning a refcounted object from all the lookup
+ *	paths including this one.
+>>>>>>> refs/remotes/origin/master
+ */
+static struct tty_struct *tty_open_current_tty(dev_t device, struct file *filp)
+{
+	struct tty_struct *tty;
+
+	if (device != MKDEV(TTYAUX_MAJOR, 0))
+		return NULL;
+
+	tty = get_current_tty();
+	if (!tty)
+		return ERR_PTR(-ENXIO);
+
+	filp->f_flags |= O_NONBLOCK; /* Don't let /dev/tty block */
+	/* noctty = 1; */
+	tty_kref_put(tty);
+	/* FIXME: we put a reference and return a TTY! */
+<<<<<<< HEAD
+=======
+	/* This is only safe because the caller holds tty_mutex */
+>>>>>>> refs/remotes/origin/master
+	return tty;
+}
+
+/**
+ *	tty_lookup_driver - lookup a tty driver for a given device file
+ *	@device: device number
+ *	@filp: file pointer to tty
+ *	@noctty: set if the device should not become a controlling tty
+ *	@index: index for the device in the @return driver
+ *	@return: driver for this inode (with increased refcount)
+ *
+ * 	If @return is not erroneous, the caller is responsible to decrement the
+ * 	refcount by tty_driver_kref_put.
+ *
+ *	Locking: tty_mutex protects get_tty_driver
+ */
+static struct tty_driver *tty_lookup_driver(dev_t device, struct file *filp,
+		int *noctty, int *index)
+{
+	struct tty_driver *driver;
+
+	switch (device) {
+#ifdef CONFIG_VT
+	case MKDEV(TTY_MAJOR, 0): {
+		extern struct tty_driver *console_driver;
+		driver = tty_driver_kref_get(console_driver);
+		*index = fg_console;
+		*noctty = 1;
+		break;
+	}
+#endif
+	case MKDEV(TTYAUX_MAJOR, 1): {
+		struct tty_driver *console_driver = console_device(index);
+		if (console_driver) {
+			driver = tty_driver_kref_get(console_driver);
+			if (driver) {
+				/* Don't let /dev/console block */
+				filp->f_flags |= O_NONBLOCK;
+				*noctty = 1;
+				break;
+			}
+		}
+		return ERR_PTR(-ENODEV);
+	}
+	default:
+		driver = get_tty_driver(device, index);
+		if (!driver)
+			return ERR_PTR(-ENODEV);
+		break;
+	}
+	return driver;
+}
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	tty_open		-	open a tty device
  *	@inode: inode of device file
  *	@filp: file pointer to tty
@@ -1823,16 +2549,41 @@ int tty_release(struct inode *inode, struct file *filp)
  *	The termios state of a pty is reset on first open so that
  *	settings don't persist across reuse.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	Locking: tty_mutex protects tty, get_tty_driver and tty_init_dev work.
+=======
+ *	Locking: tty_mutex protects tty, tty_lookup_driver and tty_init_dev.
+>>>>>>> refs/remotes/origin/cm-10.0
  *		 tty->count should protect the rest.
  *		 ->siglock protects ->signal/->sighand
+=======
+ *	Locking: tty_mutex protects tty, tty_lookup_driver and tty_init_dev.
+ *		 tty->count should protect the rest.
+ *		 ->siglock protects ->signal/->sighand
+ *
+ *	Note: the tty_unlock/lock cases without a ref are only safe due to
+ *	tty_mutex
+>>>>>>> refs/remotes/origin/master
  */
 
 static int tty_open(struct inode *inode, struct file *filp)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct tty_struct *tty = NULL;
 	int noctty, retval;
 	struct tty_driver *driver;
+=======
+	struct tty_struct *tty;
+	int noctty, retval;
+	struct tty_driver *driver = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct tty_struct *tty;
+	int noctty, retval;
+	struct tty_driver *driver = NULL;
+>>>>>>> refs/remotes/origin/master
 	int index;
 	dev_t device = inode->i_rdev;
 	unsigned saved_flags = filp->f_flags;
@@ -1849,8 +2600,10 @@ retry_open:
 	retval = 0;
 
 	mutex_lock(&tty_mutex);
+<<<<<<< HEAD
 	tty_lock();
 
+<<<<<<< HEAD
 	if (device == MKDEV(TTYAUX_MAJOR, 0)) {
 		tty = get_current_tty();
 		if (!tty) {
@@ -1911,14 +2664,40 @@ got_driver:
 			tty_driver_kref_put(driver);
 			tty_free_file(filp);
 			return PTR_ERR(tty);
+=======
+=======
+	/* This is protected by the tty_mutex */
+>>>>>>> refs/remotes/origin/master
+	tty = tty_open_current_tty(device, filp);
+	if (IS_ERR(tty)) {
+		retval = PTR_ERR(tty);
+		goto err_unlock;
+	} else if (!tty) {
+		driver = tty_lookup_driver(device, filp, &noctty, &index);
+		if (IS_ERR(driver)) {
+			retval = PTR_ERR(driver);
+			goto err_unlock;
+		}
+
+		/* check whether we're reopening an existing tty */
+		tty = tty_driver_lookup_tty(driver, inode, index);
+		if (IS_ERR(tty)) {
+			retval = PTR_ERR(tty);
+			goto err_unlock;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (tty) {
+<<<<<<< HEAD
 		retval = tty_reopen(tty);
 		if (retval)
 			tty = ERR_PTR(retval);
 	} else
+<<<<<<< HEAD
 		tty = tty_init_dev(driver, index, 0);
 
 	mutex_unlock(&tty_mutex);
@@ -1927,16 +2706,57 @@ got_driver:
 		tty_unlock();
 		tty_free_file(filp);
 		return PTR_ERR(tty);
+=======
+=======
+		tty_lock(tty);
+		retval = tty_reopen(tty);
+		if (retval < 0) {
+			tty_unlock(tty);
+			tty = ERR_PTR(retval);
+		}
+	} else	/* Returns with the tty_lock held for now */
+>>>>>>> refs/remotes/origin/master
+		tty = tty_init_dev(driver, index);
+
+	mutex_unlock(&tty_mutex);
+	if (driver)
+		tty_driver_kref_put(driver);
+	if (IS_ERR(tty)) {
+<<<<<<< HEAD
+		tty_unlock();
+		retval = PTR_ERR(tty);
+		goto err_file;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		retval = PTR_ERR(tty);
+		goto err_file;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	tty_add_file(tty, filp);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	check_tty_count(tty, "tty_open");
+=======
+	check_tty_count(tty, __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	check_tty_count(tty, __func__);
+>>>>>>> refs/remotes/origin/master
 	if (tty->driver->type == TTY_DRIVER_TYPE_PTY &&
 	    tty->driver->subtype == PTY_TYPE_MASTER)
 		noctty = 1;
 #ifdef TTY_DEBUG_HANGUP
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_DEBUG "opening %s...", tty->name);
+=======
+	printk(KERN_DEBUG "%s: opening %s...\n", __func__, tty->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_DEBUG "%s: opening %s...\n", __func__, tty->name);
+>>>>>>> refs/remotes/origin/master
 #endif
 	if (tty->ops->open)
 		retval = tty->ops->open(tty, filp);
@@ -1950,10 +2770,22 @@ got_driver:
 
 	if (retval) {
 #ifdef TTY_DEBUG_HANGUP
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "error %d in opening %s...", retval,
 		       tty->name);
+=======
+		printk(KERN_DEBUG "%s: error %d in opening %s...\n", __func__,
+				retval, tty->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 		tty_unlock(); /* need to call tty_release without BTM */
+=======
+		printk(KERN_DEBUG "%s: error %d in opening %s...\n", __func__,
+				retval, tty->name);
+#endif
+		tty_unlock(tty); /* need to call tty_release without BTM */
+>>>>>>> refs/remotes/origin/master
 		tty_release(inode, filp);
 		if (retval != -ERESTARTSYS)
 			return retval;
@@ -1965,6 +2797,7 @@ got_driver:
 		/*
 		 * Need to reset f_op in case a hangup happened.
 		 */
+<<<<<<< HEAD
 		tty_lock();
 		if (filp->f_op == &hung_up_tty_fops)
 			filp->f_op = &tty_fops;
@@ -1976,6 +2809,18 @@ got_driver:
 
 	mutex_lock(&tty_mutex);
 	tty_lock();
+=======
+		if (filp->f_op == &hung_up_tty_fops)
+			filp->f_op = &tty_fops;
+		goto retry_open;
+	}
+	clear_bit(TTY_HUPPED, &tty->flags);
+	tty_unlock(tty);
+
+
+	mutex_lock(&tty_mutex);
+	tty_lock(tty);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&current->sighand->siglock);
 	if (!noctty &&
 	    current->signal->leader &&
@@ -1983,9 +2828,31 @@ got_driver:
 	    tty->session == NULL)
 		__proc_set_tty(current, tty);
 	spin_unlock_irq(&current->sighand->siglock);
+<<<<<<< HEAD
 	tty_unlock();
 	mutex_unlock(&tty_mutex);
 	return 0;
+<<<<<<< HEAD
+=======
+err_unlock:
+	tty_unlock();
+=======
+	tty_unlock(tty);
+	mutex_unlock(&tty_mutex);
+	return 0;
+err_unlock:
+>>>>>>> refs/remotes/origin/master
+	mutex_unlock(&tty_mutex);
+	/* after locks to avoid deadlock */
+	if (!IS_ERR_OR_NULL(driver))
+		tty_driver_kref_put(driver);
+err_file:
+	tty_free_file(filp);
+	return retval;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2008,7 +2875,11 @@ static unsigned int tty_poll(struct file *filp, poll_table *wait)
 	struct tty_ldisc *ld;
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (tty_paranoia_check(tty, filp->f_path.dentry->d_inode, "tty_poll"))
+=======
+	if (tty_paranoia_check(tty, file_inode(filp), "tty_poll"))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	ld = tty_ldisc_ref_wait(tty);
@@ -2021,21 +2892,43 @@ static unsigned int tty_poll(struct file *filp, poll_table *wait)
 static int __tty_fasync(int fd, struct file *filp, int on)
 {
 	struct tty_struct *tty = file_tty(filp);
+<<<<<<< HEAD
 	unsigned long flags;
 	int retval = 0;
 
 	if (tty_paranoia_check(tty, filp->f_path.dentry->d_inode, "tty_fasync"))
+=======
+	struct tty_ldisc *ldisc;
+	unsigned long flags;
+	int retval = 0;
+
+	if (tty_paranoia_check(tty, file_inode(filp), "tty_fasync"))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	retval = fasync_helper(fd, filp, on, &tty->fasync);
 	if (retval <= 0)
 		goto out;
 
+<<<<<<< HEAD
 	if (on) {
 		enum pid_type type;
 		struct pid *pid;
 		if (!waitqueue_active(&tty->read_wait))
 			tty->minimum_to_wake = 1;
+=======
+	ldisc = tty_ldisc_ref(tty);
+	if (ldisc) {
+		if (ldisc->ops->fasync)
+			ldisc->ops->fasync(tty, on);
+		tty_ldisc_deref(ldisc);
+	}
+
+	if (on) {
+		enum pid_type type;
+		struct pid *pid;
+
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&tty->ctrl_lock, flags);
 		if (tty->pgrp) {
 			pid = tty->pgrp;
@@ -2048,6 +2941,7 @@ static int __tty_fasync(int fd, struct file *filp, int on)
 		spin_unlock_irqrestore(&tty->ctrl_lock, flags);
 		retval = __f_setown(filp, pid, type, 0);
 		put_pid(pid);
+<<<<<<< HEAD
 		if (retval)
 			goto out;
 	} else {
@@ -2055,16 +2949,29 @@ static int __tty_fasync(int fd, struct file *filp, int on)
 			tty->minimum_to_wake = N_TTY_BUF_SIZE;
 	}
 	retval = 0;
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 out:
 	return retval;
 }
 
 static int tty_fasync(int fd, struct file *filp, int on)
 {
+<<<<<<< HEAD
 	int retval;
 	tty_lock();
 	retval = __tty_fasync(fd, filp, on);
 	tty_unlock();
+=======
+	struct tty_struct *tty = file_tty(filp);
+	int retval;
+
+	tty_lock(tty);
+	retval = __tty_fasync(fd, filp, on);
+	tty_unlock(tty);
+
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -2079,7 +2986,11 @@ static int tty_fasync(int fd, struct file *filp, int on)
  *	FIXME: does not honour flow control ??
  *
  *	Locking:
+<<<<<<< HEAD
  *		Called functions take tty_ldisc_lock
+=======
+ *		Called functions take tty_ldiscs_lock
+>>>>>>> refs/remotes/origin/master
  *		current->signal->tty check is safe without locks
  *
  *	FIXME: may race normal receive processing
@@ -2108,7 +3019,11 @@ static int tiocsti(struct tty_struct *tty, char __user *p)
  *
  *	Copies the kernel idea of the window size into the user buffer.
  *
+<<<<<<< HEAD
  *	Locking: tty->termios_mutex is taken to ensure the winsize data
+=======
+ *	Locking: tty->winsize_mutex is taken to ensure the winsize data
+>>>>>>> refs/remotes/origin/master
  *		is consistent.
  */
 
@@ -2116,9 +3031,15 @@ static int tiocgwinsz(struct tty_struct *tty, struct winsize __user *arg)
 {
 	int err;
 
+<<<<<<< HEAD
 	mutex_lock(&tty->termios_mutex);
 	err = copy_to_user(arg, &tty->winsize, sizeof(*arg));
 	mutex_unlock(&tty->termios_mutex);
+=======
+	mutex_lock(&tty->winsize_mutex);
+	err = copy_to_user(arg, &tty->winsize, sizeof(*arg));
+	mutex_unlock(&tty->winsize_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return err ? -EFAULT: 0;
 }
@@ -2139,7 +3060,11 @@ int tty_do_resize(struct tty_struct *tty, struct winsize *ws)
 	unsigned long flags;
 
 	/* Lock the tty */
+<<<<<<< HEAD
 	mutex_lock(&tty->termios_mutex);
+=======
+	mutex_lock(&tty->winsize_mutex);
+>>>>>>> refs/remotes/origin/master
 	if (!memcmp(ws, &tty->winsize, sizeof(*ws)))
 		goto done;
 	/* Get the PID values and reference them so we can
@@ -2154,9 +3079,16 @@ int tty_do_resize(struct tty_struct *tty, struct winsize *ws)
 
 	tty->winsize = *ws;
 done:
+<<<<<<< HEAD
 	mutex_unlock(&tty->termios_mutex);
 	return 0;
 }
+=======
+	mutex_unlock(&tty->winsize_mutex);
+	return 0;
+}
+EXPORT_SYMBOL(tty_do_resize);
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	tiocswinsz		-	implement window size set ioctl
@@ -2213,8 +3145,12 @@ static int tioccons(struct file *file)
 		spin_unlock(&redirect_lock);
 		return -EBUSY;
 	}
+<<<<<<< HEAD
 	get_file(file);
 	redirect = file;
+=======
+	redirect = get_file(file);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&redirect_lock);
 	return 0;
 }
@@ -2548,11 +3484,22 @@ static int tty_tiocmset(struct tty_struct *tty, unsigned int cmd,
 		clear = ~val;
 		break;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	set &= TIOCM_DTR|TIOCM_RTS|TIOCM_OUT1|TIOCM_OUT2|TIOCM_LOOP|TIOCM_CD|
 		TIOCM_RI|TIOCM_DSR|TIOCM_CTS;
 	clear &= TIOCM_DTR|TIOCM_RTS|TIOCM_OUT1|TIOCM_OUT2|TIOCM_LOOP|TIOCM_CD|
 		TIOCM_RI|TIOCM_DSR|TIOCM_CTS;
+<<<<<<< HEAD
+=======
+	set &= TIOCM_DTR|TIOCM_RTS|TIOCM_OUT1|TIOCM_OUT2|TIOCM_LOOP;
+	clear &= TIOCM_DTR|TIOCM_RTS|TIOCM_OUT1|TIOCM_OUT2|TIOCM_LOOP;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return tty->ops->tiocmset(tty, set, clear);
 }
 
@@ -2598,9 +3545,14 @@ long tty_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	void __user *p = (void __user *)arg;
 	int retval;
 	struct tty_ldisc *ld;
+<<<<<<< HEAD
 	struct inode *inode = file->f_dentry->d_inode;
 
 	if (tty_paranoia_check(tty, inode, "tty_ioctl"))
+=======
+
+	if (tty_paranoia_check(tty, file_inode(file), "tty_ioctl"))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	real_tty = tty_pair_get_tty(tty);
@@ -2645,6 +3597,14 @@ long tty_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	case TIOCNXCL:
 		clear_bit(TTY_EXCLUSIVE, &tty->flags);
 		return 0;
+<<<<<<< HEAD
+=======
+	case TIOCGEXCL:
+	{
+		int excl = test_bit(TTY_EXCLUSIVE, &tty->flags);
+		return put_user(excl, (int __user *)p);
+	}
+>>>>>>> refs/remotes/origin/master
 	case TIOCNOTTY:
 		if (current->signal->tty != tty)
 			return -ENOTTY;
@@ -2726,7 +3686,11 @@ long tty_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	if (ld->ops->ioctl) {
 		retval = ld->ops->ioctl(tty, file, cmd, arg);
 		if (retval == -ENOIOCTLCMD)
+<<<<<<< HEAD
 			retval = -EINVAL;
+=======
+			retval = -ENOTTY;
+>>>>>>> refs/remotes/origin/master
 	}
 	tty_ldisc_deref(ld);
 	return retval;
@@ -2736,12 +3700,19 @@ long tty_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 static long tty_compat_ioctl(struct file *file, unsigned int cmd,
 				unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_dentry->d_inode;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tty_struct *tty = file_tty(file);
 	struct tty_ldisc *ld;
 	int retval = -ENOIOCTLCMD;
 
+<<<<<<< HEAD
 	if (tty_paranoia_check(tty, inode, "tty_ioctl"))
+=======
+	if (tty_paranoia_check(tty, file_inode(file), "tty_ioctl"))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (tty->ops->compat_ioctl) {
@@ -2753,12 +3724,32 @@ static long tty_compat_ioctl(struct file *file, unsigned int cmd,
 	ld = tty_ldisc_ref_wait(tty);
 	if (ld->ops->compat_ioctl)
 		retval = ld->ops->compat_ioctl(tty, file, cmd, arg);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	else
+		retval = n_tty_compat_ioctl_helper(tty, file, cmd, arg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else
+		retval = n_tty_compat_ioctl_helper(tty, file, cmd, arg);
+>>>>>>> refs/remotes/origin/master
 	tty_ldisc_deref(ld);
 
 	return retval;
 }
 #endif
 
+<<<<<<< HEAD
+=======
+static int this_tty(const void *t, struct file *file, unsigned fd)
+{
+	if (likely(file->f_op->read != tty_read))
+		return 0;
+	return file_tty(file) != t ? 0 : fd + 1;
+}
+	
+>>>>>>> refs/remotes/origin/master
 /*
  * This implements the "Secure Attention Key" ---  the idea is to
  * prevent trojan horses by killing all processes associated with this
@@ -2786,8 +3777,11 @@ void __do_SAK(struct tty_struct *tty)
 	struct task_struct *g, *p;
 	struct pid *session;
 	int		i;
+<<<<<<< HEAD
 	struct file	*filp;
 	struct fdtable *fdt;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!tty)
 		return;
@@ -2817,6 +3811,7 @@ void __do_SAK(struct tty_struct *tty)
 			continue;
 		}
 		task_lock(p);
+<<<<<<< HEAD
 		if (p->files) {
 			/*
 			 * We don't take a ref to the file, so we must
@@ -2838,6 +3833,14 @@ void __do_SAK(struct tty_struct *tty)
 				}
 			}
 			spin_unlock(&p->files->file_lock);
+=======
+		i = iterate_fd(p->files, 0, this_tty, tty);
+		if (i != 0) {
+			printk(KERN_NOTICE "SAK: killed process %d"
+			    " (%s): fd#%d opened to the tty\n",
+				    task_pid_nr(p), p->comm, i - 1);
+			force_sig(SIGKILL, p);
+>>>>>>> refs/remotes/origin/master
 		}
 		task_unlock(p);
 	} while_each_thread(g, p);
@@ -2867,9 +3870,15 @@ void do_SAK(struct tty_struct *tty)
 
 EXPORT_SYMBOL(do_SAK);
 
+<<<<<<< HEAD
 static int dev_match_devt(struct device *dev, void *data)
 {
 	dev_t *devt = data;
+=======
+static int dev_match_devt(struct device *dev, const void *data)
+{
+	const dev_t *devt = data;
+>>>>>>> refs/remotes/origin/master
 	return dev->devt == *devt;
 }
 
@@ -2900,8 +3909,12 @@ void initialize_tty_struct(struct tty_struct *tty,
 	tty_ldisc_init(tty);
 	tty->session = NULL;
 	tty->pgrp = NULL;
+<<<<<<< HEAD
 	tty->overrun_time = jiffies;
+<<<<<<< HEAD
 	tty->buf.head = tty->buf.tail = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	tty_buffer_init(tty);
 	mutex_init(&tty->termios_mutex);
 	mutex_init(&tty->ldisc_mutex);
@@ -2913,6 +3926,17 @@ void initialize_tty_struct(struct tty_struct *tty,
 	mutex_init(&tty->output_lock);
 	mutex_init(&tty->echo_lock);
 	spin_lock_init(&tty->read_lock);
+=======
+	mutex_init(&tty->legacy_mutex);
+	mutex_init(&tty->throttle_mutex);
+	init_rwsem(&tty->termios_rwsem);
+	mutex_init(&tty->winsize_mutex);
+	init_ldsem(&tty->ldisc_sem);
+	init_waitqueue_head(&tty->write_wait);
+	init_waitqueue_head(&tty->read_wait);
+	INIT_WORK(&tty->hangup_work, do_tty_hangup);
+	mutex_init(&tty->atomic_write_lock);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&tty->ctrl_lock);
 	INIT_LIST_HEAD(&tty->tty_files);
 	INIT_WORK(&tty->SAK_work, do_SAK_work);
@@ -2960,6 +3984,18 @@ EXPORT_SYMBOL_GPL(tty_put_char);
 
 struct class *tty_class;
 
+<<<<<<< HEAD
+=======
+static int tty_cdev_add(struct tty_driver *driver, dev_t dev,
+		unsigned int index, unsigned int count)
+{
+	/* init here, since reused cdevs cause crashes */
+	cdev_init(&driver->cdevs[index], &tty_fops);
+	driver->cdevs[index].owner = driver->owner;
+	return cdev_add(&driver->cdevs[index], dev, count);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	tty_register_device - register a tty device
  *	@driver: the tty driver that describes the tty device
@@ -2982,8 +4018,51 @@ struct class *tty_class;
 struct device *tty_register_device(struct tty_driver *driver, unsigned index,
 				   struct device *device)
 {
+<<<<<<< HEAD
 	char name[64];
 	dev_t dev = MKDEV(driver->major, driver->minor_start) + index;
+=======
+	return tty_register_device_attr(driver, index, device, NULL, NULL);
+}
+EXPORT_SYMBOL(tty_register_device);
+
+static void tty_device_create_release(struct device *dev)
+{
+	pr_debug("device: '%s': %s\n", dev_name(dev), __func__);
+	kfree(dev);
+}
+
+/**
+ *	tty_register_device_attr - register a tty device
+ *	@driver: the tty driver that describes the tty device
+ *	@index: the index in the tty driver for this tty device
+ *	@device: a struct device that is associated with this tty device.
+ *		This field is optional, if there is no known struct device
+ *		for this tty device it can be set to NULL safely.
+ *	@drvdata: Driver data to be set to device.
+ *	@attr_grp: Attribute group to be set on device.
+ *
+ *	Returns a pointer to the struct device for this tty device
+ *	(or ERR_PTR(-EFOO) on error).
+ *
+ *	This call is required to be made to register an individual tty device
+ *	if the tty driver's flags have the TTY_DRIVER_DYNAMIC_DEV bit set.  If
+ *	that bit is not set, this function should not be called by a tty
+ *	driver.
+ *
+ *	Locking: ??
+ */
+struct device *tty_register_device_attr(struct tty_driver *driver,
+				   unsigned index, struct device *device,
+				   void *drvdata,
+				   const struct attribute_group **attr_grp)
+{
+	char name[64];
+	dev_t devt = MKDEV(driver->major, driver->minor_start) + index;
+	struct device *dev = NULL;
+	int retval = -ENODEV;
+	bool cdev = false;
+>>>>>>> refs/remotes/origin/master
 
 	if (index >= driver->num) {
 		printk(KERN_ERR "Attempt to register invalid tty line number "
@@ -2996,9 +4075,46 @@ struct device *tty_register_device(struct tty_driver *driver, unsigned index,
 	else
 		tty_line_name(driver, index, name);
 
+<<<<<<< HEAD
 	return device_create(tty_class, device, dev, NULL, name);
 }
 EXPORT_SYMBOL(tty_register_device);
+=======
+	if (!(driver->flags & TTY_DRIVER_DYNAMIC_ALLOC)) {
+		retval = tty_cdev_add(driver, devt, index, 1);
+		if (retval)
+			goto error;
+		cdev = true;
+	}
+
+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+	if (!dev) {
+		retval = -ENOMEM;
+		goto error;
+	}
+
+	dev->devt = devt;
+	dev->class = tty_class;
+	dev->parent = device;
+	dev->release = tty_device_create_release;
+	dev_set_name(dev, "%s", name);
+	dev->groups = attr_grp;
+	dev_set_drvdata(dev, drvdata);
+
+	retval = device_register(dev);
+	if (retval)
+		goto error;
+
+	return dev;
+
+error:
+	put_device(dev);
+	if (cdev)
+		cdev_del(&driver->cdevs[index]);
+	return ERR_PTR(retval);
+}
+EXPORT_SYMBOL_GPL(tty_register_device_attr);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * 	tty_unregister_device - unregister a tty device
@@ -3015,10 +4131,15 @@ void tty_unregister_device(struct tty_driver *driver, unsigned index)
 {
 	device_destroy(tty_class,
 		MKDEV(driver->major, driver->minor_start) + index);
+<<<<<<< HEAD
 }
 EXPORT_SYMBOL(tty_unregister_device);
 
+<<<<<<< HEAD
 struct tty_driver *alloc_tty_driver(int lines)
+=======
+struct tty_driver *__alloc_tty_driver(int lines, struct module *owner)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct tty_driver *driver;
 
@@ -3027,18 +4148,101 @@ struct tty_driver *alloc_tty_driver(int lines)
 		kref_init(&driver->kref);
 		driver->magic = TTY_DRIVER_MAGIC;
 		driver->num = lines;
+<<<<<<< HEAD
+=======
+		driver->owner = owner;
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* later we'll move allocation of tables here */
 	}
 	return driver;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(alloc_tty_driver);
+=======
+EXPORT_SYMBOL(__alloc_tty_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(driver->flags & TTY_DRIVER_DYNAMIC_ALLOC))
+		cdev_del(&driver->cdevs[index]);
+}
+EXPORT_SYMBOL(tty_unregister_device);
+
+/**
+ * __tty_alloc_driver -- allocate tty driver
+ * @lines: count of lines this driver can handle at most
+ * @owner: module which is repsonsible for this driver
+ * @flags: some of TTY_DRIVER_* flags, will be set in driver->flags
+ *
+ * This should not be called directly, some of the provided macros should be
+ * used instead. Use IS_ERR and friends on @retval.
+ */
+struct tty_driver *__tty_alloc_driver(unsigned int lines, struct module *owner,
+		unsigned long flags)
+{
+	struct tty_driver *driver;
+	unsigned int cdevs = 1;
+	int err;
+
+	if (!lines || (flags & TTY_DRIVER_UNNUMBERED_NODE && lines > 1))
+		return ERR_PTR(-EINVAL);
+
+	driver = kzalloc(sizeof(struct tty_driver), GFP_KERNEL);
+	if (!driver)
+		return ERR_PTR(-ENOMEM);
+
+	kref_init(&driver->kref);
+	driver->magic = TTY_DRIVER_MAGIC;
+	driver->num = lines;
+	driver->owner = owner;
+	driver->flags = flags;
+
+	if (!(flags & TTY_DRIVER_DEVPTS_MEM)) {
+		driver->ttys = kcalloc(lines, sizeof(*driver->ttys),
+				GFP_KERNEL);
+		driver->termios = kcalloc(lines, sizeof(*driver->termios),
+				GFP_KERNEL);
+		if (!driver->ttys || !driver->termios) {
+			err = -ENOMEM;
+			goto err_free_all;
+		}
+	}
+
+	if (!(flags & TTY_DRIVER_DYNAMIC_ALLOC)) {
+		driver->ports = kcalloc(lines, sizeof(*driver->ports),
+				GFP_KERNEL);
+		if (!driver->ports) {
+			err = -ENOMEM;
+			goto err_free_all;
+		}
+		cdevs = lines;
+	}
+
+	driver->cdevs = kcalloc(cdevs, sizeof(*driver->cdevs), GFP_KERNEL);
+	if (!driver->cdevs) {
+		err = -ENOMEM;
+		goto err_free_all;
+	}
+
+	return driver;
+err_free_all:
+	kfree(driver->ports);
+	kfree(driver->ttys);
+	kfree(driver->termios);
+	kfree(driver);
+	return ERR_PTR(err);
+}
+EXPORT_SYMBOL(__tty_alloc_driver);
+>>>>>>> refs/remotes/origin/master
 
 static void destruct_tty_driver(struct kref *kref)
 {
 	struct tty_driver *driver = container_of(kref, struct tty_driver, kref);
 	int i;
 	struct ktermios *tp;
+<<<<<<< HEAD
 	void *p;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (driver->flags & TTY_DRIVER_INSTALLED) {
 		/*
@@ -3055,6 +4259,7 @@ static void destruct_tty_driver(struct kref *kref)
 			if (!(driver->flags & TTY_DRIVER_DYNAMIC_DEV))
 				tty_unregister_device(driver, i);
 		}
+<<<<<<< HEAD
 		p = driver->ttys;
 		proc_tty_unregister_driver(driver);
 		driver->ttys = NULL;
@@ -3062,6 +4267,16 @@ static void destruct_tty_driver(struct kref *kref)
 		kfree(p);
 		cdev_del(&driver->cdev);
 	}
+=======
+		proc_tty_unregister_driver(driver);
+		if (driver->flags & TTY_DRIVER_DYNAMIC_ALLOC)
+			cdev_del(&driver->cdevs[0]);
+	}
+	kfree(driver->cdevs);
+	kfree(driver->ports);
+	kfree(driver->termios);
+	kfree(driver->ttys);
+>>>>>>> refs/remotes/origin/master
 	kfree(driver);
 }
 
@@ -3092,6 +4307,7 @@ int tty_register_driver(struct tty_driver *driver)
 	int error;
 	int i;
 	dev_t dev;
+<<<<<<< HEAD
 	void **p = NULL;
 	struct device *d;
 
@@ -3101,6 +4317,10 @@ int tty_register_driver(struct tty_driver *driver)
 			return -ENOMEM;
 	}
 
+=======
+	struct device *d;
+
+>>>>>>> refs/remotes/origin/master
 	if (!driver->major) {
 		error = alloc_chrdev_region(&dev, driver->minor_start,
 						driver->num, driver->name);
@@ -3112,6 +4332,7 @@ int tty_register_driver(struct tty_driver *driver)
 		dev = MKDEV(driver->major, driver->minor_start);
 		error = register_chrdev_region(dev, driver->num, driver->name);
 	}
+<<<<<<< HEAD
 	if (error < 0) {
 		kfree(p);
 		return error;
@@ -3134,6 +4355,15 @@ int tty_register_driver(struct tty_driver *driver)
 		driver->termios = NULL;
 		kfree(p);
 		return error;
+=======
+	if (error < 0)
+		goto err;
+
+	if (driver->flags & TTY_DRIVER_DYNAMIC_ALLOC) {
+		error = tty_cdev_add(driver, dev, 0, driver->num);
+		if (error)
+			goto err_unreg_char;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_lock(&tty_mutex);
@@ -3145,7 +4375,11 @@ int tty_register_driver(struct tty_driver *driver)
 			d = tty_register_device(driver, i, NULL);
 			if (IS_ERR(d)) {
 				error = PTR_ERR(d);
+<<<<<<< HEAD
 				goto err;
+=======
+				goto err_unreg_devs;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -3153,7 +4387,11 @@ int tty_register_driver(struct tty_driver *driver)
 	driver->flags |= TTY_DRIVER_INSTALLED;
 	return 0;
 
+<<<<<<< HEAD
 err:
+=======
+err_unreg_devs:
+>>>>>>> refs/remotes/origin/master
 	for (i--; i >= 0; i--)
 		tty_unregister_device(driver, i);
 
@@ -3161,6 +4399,7 @@ err:
 	list_del(&driver->tty_drivers);
 	mutex_unlock(&tty_mutex);
 
+<<<<<<< HEAD
 	unregister_chrdev_region(dev, driver->num);
 	driver->ttys = NULL;
 	driver->termios = NULL;
@@ -3168,6 +4407,13 @@ err:
 	return error;
 }
 
+=======
+err_unreg_char:
+	unregister_chrdev_region(dev, driver->num);
+err:
+	return error;
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(tty_register_driver);
 
 /*
@@ -3278,7 +4524,15 @@ void __init console_init(void)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char *tty_devnode(struct device *dev, mode_t *mode)
+=======
+static char *tty_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *tty_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!mode)
 		return NULL;

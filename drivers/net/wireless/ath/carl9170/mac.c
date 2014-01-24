@@ -48,7 +48,11 @@ int carl9170_set_dyn_sifs_ack(struct ar9170 *ar)
 	if (conf_is_ht40(&ar->hw->conf))
 		val = 0x010a;
 	else {
+<<<<<<< HEAD
 		if (ar->hw->conf.channel->band == IEEE80211_BAND_2GHZ)
+=======
+		if (ar->hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ)
+>>>>>>> refs/remotes/origin/master
 			val = 0x105;
 		else
 			val = 0x104;
@@ -66,7 +70,11 @@ int carl9170_set_rts_cts_rate(struct ar9170 *ar)
 		rts_rate = 0x1da;
 		cts_rate = 0x10a;
 	} else {
+<<<<<<< HEAD
 		if (ar->hw->conf.channel->band == IEEE80211_BAND_2GHZ) {
+=======
+		if (ar->hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ) {
+>>>>>>> refs/remotes/origin/master
 			/* 11 mbit CCK */
 			rts_rate = 033;
 			cts_rate = 003;
@@ -93,7 +101,11 @@ int carl9170_set_slot_time(struct ar9170 *ar)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if ((ar->hw->conf.channel->band == IEEE80211_BAND_5GHZ) ||
+=======
+	if ((ar->hw->conf.chandef.chan->band == IEEE80211_BAND_5GHZ) ||
+>>>>>>> refs/remotes/origin/master
 	    vif->bss_conf.use_short_slot)
 		slottime = 9;
 
@@ -120,7 +132,11 @@ int carl9170_set_mac_rates(struct ar9170 *ar)
 	basic |= (vif->bss_conf.basic_rates & 0xff0) << 4;
 	rcu_read_unlock();
 
+<<<<<<< HEAD
 	if (ar->hw->conf.channel->band == IEEE80211_BAND_5GHZ)
+=======
+	if (ar->hw->conf.chandef.chan->band == IEEE80211_BAND_5GHZ)
+>>>>>>> refs/remotes/origin/master
 		mandatory = 0xff00; /* OFDM 6/9/12/18/24/36/48/54 */
 	else
 		mandatory = 0xff0f; /* OFDM (6/9../54) + CCK (1/2/5.5/11) */
@@ -304,7 +320,12 @@ int carl9170_set_operating_mode(struct ar9170 *ar)
 	struct ath_common *common = &ar->common;
 	u8 *mac_addr, *bssid;
 	u32 cam_mode = AR9170_MAC_CAM_DEFAULTS;
+<<<<<<< HEAD
 	u32 enc_mode = AR9170_MAC_ENCRYPTION_DEFAULTS;
+=======
+	u32 enc_mode = AR9170_MAC_ENCRYPTION_DEFAULTS |
+		AR9170_MAC_ENCRYPTION_MGMT_RX_SOFTWARE;
+>>>>>>> refs/remotes/origin/master
 	u32 rx_ctrl = AR9170_MAC_RX_CTRL_DEAGG |
 		      AR9170_MAC_RX_CTRL_SHORT_FILTER;
 	u32 sniffer = AR9170_MAC_SNIFFER_DEFAULTS;
@@ -318,10 +339,17 @@ int carl9170_set_operating_mode(struct ar9170 *ar)
 		bssid = common->curbssid;
 
 		switch (vif->type) {
+<<<<<<< HEAD
 		case NL80211_IFTYPE_MESH_POINT:
 		case NL80211_IFTYPE_ADHOC:
 			cam_mode |= AR9170_MAC_CAM_IBSS;
 			break;
+=======
+		case NL80211_IFTYPE_ADHOC:
+			cam_mode |= AR9170_MAC_CAM_IBSS;
+			break;
+		case NL80211_IFTYPE_MESH_POINT:
+>>>>>>> refs/remotes/origin/master
 		case NL80211_IFTYPE_AP:
 			cam_mode |= AR9170_MAC_CAM_AP;
 
@@ -342,7 +370,28 @@ int carl9170_set_operating_mode(struct ar9170 *ar)
 			break;
 		}
 	} else {
+<<<<<<< HEAD
 		mac_addr = NULL;
+=======
+		/*
+		 * Enable monitor mode
+		 *
+		 * rx_ctrl |= AR9170_MAC_RX_CTRL_ACK_IN_SNIFFER;
+		 * sniffer |= AR9170_MAC_SNIFFER_ENABLE_PROMISC;
+		 *
+		 * When the hardware is in SNIFFER_PROMISC mode,
+		 * it generates spurious ACKs for every incoming
+		 * frame. This confuses every peer in the
+		 * vicinity and the network throughput will suffer
+		 * badly.
+		 *
+		 * Hence, the hardware will be put into station
+		 * mode and just the rx filters are disabled.
+		 */
+		cam_mode |= AR9170_MAC_CAM_STA;
+		rx_ctrl |= AR9170_MAC_RX_CTRL_PASS_TO_HOST;
+		mac_addr = common->macaddr;
+>>>>>>> refs/remotes/origin/master
 		bssid = NULL;
 	}
 	rcu_read_unlock();
@@ -354,8 +403,11 @@ int carl9170_set_operating_mode(struct ar9170 *ar)
 		enc_mode |= AR9170_MAC_ENCRYPTION_RX_SOFTWARE;
 
 	if (ar->sniffer_enabled) {
+<<<<<<< HEAD
 		rx_ctrl |= AR9170_MAC_RX_CTRL_ACK_IN_SNIFFER;
 		sniffer |= AR9170_MAC_SNIFFER_ENABLE_PROMISC;
+=======
+>>>>>>> refs/remotes/origin/master
 		enc_mode |= AR9170_MAC_ENCRYPTION_RX_SOFTWARE;
 	}
 
@@ -455,6 +507,8 @@ int carl9170_set_beacon_timers(struct ar9170 *ar)
 	return carl9170_regwrite_result();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int carl9170_update_beacon(struct ar9170 *ar, const bool submit)
 {
 	struct sk_buff *skb = NULL;
@@ -584,6 +638,10 @@ err_free:
 	return err;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int carl9170_upload_key(struct ar9170 *ar, const u8 id, const u8 *mac,
 			const u8 ktype, const u8 keyidx, const u8 *keydata,
 			const int keylen)
@@ -614,3 +672,47 @@ int carl9170_disable_key(struct ar9170 *ar, const u8 id)
 	return carl9170_exec_cmd(ar, CARL9170_CMD_DKEY,
 		sizeof(key), (u8 *)&key, 0, NULL);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+int carl9170_set_mac_tpc(struct ar9170 *ar, struct ieee80211_channel *channel)
+{
+	unsigned int power, chains;
+
+	if (ar->eeprom.tx_mask != 1)
+		chains = AR9170_TX_PHY_TXCHAIN_2;
+	else
+		chains = AR9170_TX_PHY_TXCHAIN_1;
+
+	switch (channel->band) {
+	case IEEE80211_BAND_2GHZ:
+		power = ar->power_2G_ofdm[0] & 0x3f;
+		break;
+	case IEEE80211_BAND_5GHZ:
+		power = ar->power_5G_leg[0] & 0x3f;
+		break;
+	default:
+		BUG_ON(1);
+	}
+
+	power = min_t(unsigned int, power, ar->hw->conf.power_level * 2);
+
+	carl9170_regwrite_begin(ar);
+	carl9170_regwrite(AR9170_MAC_REG_ACK_TPC,
+			  0x3c1e | power << 20 | chains << 26);
+	carl9170_regwrite(AR9170_MAC_REG_RTS_CTS_TPC,
+			  power << 5 | chains << 11 |
+			  power << 21 | chains << 27);
+	carl9170_regwrite(AR9170_MAC_REG_CFEND_QOSNULL_TPC,
+			  power << 5 | chains << 11 |
+			  power << 21 | chains << 27);
+	carl9170_regwrite_finish();
+	return carl9170_regwrite_result();
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

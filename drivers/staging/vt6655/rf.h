@@ -41,7 +41,10 @@
 #define RF_MAXIMAG              0x02
 #define RF_AIROHA               0x03
 
+<<<<<<< HEAD
 //#define RF_GCT5103              0x04
+=======
+>>>>>>> refs/remotes/origin/master
 #define RF_UW2451               0x05
 #define RF_MAXIMG               0x06
 #define RF_MAXIM2829            0x07 // RobertYu: 20041118
@@ -69,13 +72,17 @@
 #define CB_MAXIM2829_CHANNEL_5G_HIGH    41 //Index41: channel = 100, Tf = 5500MHz, set the (A3:A0=0101) D6=1
 #define CB_UW2452_CHANNEL_5G_HIGH       41 //[20041210] Index41: channel = 100, Tf = 5500MHz, change VCO2->VCO3
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*---------------------  Export Classes  ----------------------------*/
 
 /*---------------------  Export Variables  --------------------------*/
 
 /*---------------------  Export Functions  --------------------------*/
 
+<<<<<<< HEAD
 bool IFRFbWriteEmbeded(unsigned long dwIoBase, unsigned long dwData);
 bool RFbSelectChannel(unsigned long dwIoBase, unsigned char byRFType, unsigned char byChannel);
 bool RFbInit (
@@ -95,12 +102,36 @@ RFvRSSITodBm(
     unsigned char byCurrRSSI,
     long    *pldBm
     );
+=======
+bool IFRFbWriteEmbedded(unsigned long dwIoBase, unsigned long dwData);
+bool RFbSelectChannel(unsigned long dwIoBase, unsigned char byRFType, unsigned char byChannel);
+bool RFbInit(
+	PSDevice  pDevice
+);
+bool RFvWriteWakeProgSyn(unsigned long dwIoBase, unsigned char byRFType, unsigned int uChannel);
+bool RFbSetPower(PSDevice pDevice, unsigned int uRATE, unsigned int uCH);
+bool RFbRawSetPower(
+	PSDevice  pDevice,
+	unsigned char byPwr,
+	unsigned int uRATE
+);
+
+void
+RFvRSSITodBm(
+	PSDevice pDevice,
+	unsigned char byCurrRSSI,
+	long    *pldBm
+);
+>>>>>>> refs/remotes/origin/master
 
 //{{ RobertYu: 20050104
 bool RFbAL7230SelectChannelPostProcess(unsigned long dwIoBase, unsigned char byOldChannel, unsigned char byNewChannel);
 //}} RobertYu
 
 #endif // __RF_H__
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master

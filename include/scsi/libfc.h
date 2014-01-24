@@ -30,6 +30,14 @@
 
 #include <scsi/fc/fc_fcp.h>
 #include <scsi/fc/fc_ns.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <scsi/fc/fc_ms.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <scsi/fc/fc_ms.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/fc/fc_els.h>
 #include <scsi/fc/fc_gs.h>
 
@@ -52,6 +60,16 @@
  * @LPORT_ST_RPN_ID:   Register port name by ID (RPN_ID) sent
  * @LPORT_ST_RFT_ID:   Register Fibre Channel types by ID (RFT_ID) sent
  * @LPORT_ST_RFF_ID:   Register FC-4 Features by ID (RFF_ID) sent
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @LPORT_ST_FDMI:     Waiting for mgmt server rport to become ready
+ * @LPORT_ST_RHBA:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @LPORT_ST_FDMI:     Waiting for mgmt server rport to become ready
+ * @LPORT_ST_RHBA:
+>>>>>>> refs/remotes/origin/master
  * @LPORT_ST_SCR:      State Change Register (SCR) sent
  * @LPORT_ST_READY:    Ready for use
  * @LPORT_ST_LOGO:     Local port logout (LOGO) sent
@@ -66,6 +84,20 @@ enum fc_lport_state {
 	LPORT_ST_RSPN_ID,
 	LPORT_ST_RFT_ID,
 	LPORT_ST_RFF_ID,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	LPORT_ST_FDMI,
+	LPORT_ST_RHBA,
+	LPORT_ST_RPA,
+	LPORT_ST_DHBA,
+	LPORT_ST_DPRT,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	LPORT_ST_SCR,
 	LPORT_ST_READY,
 	LPORT_ST_LOGO,
@@ -216,7 +248,11 @@ struct fc_rport_priv {
 };
 
 /**
+<<<<<<< HEAD
  * struct fcoe_dev_stats - fcoe stats structure
+=======
+ * struct fc_stats - fc stats structure
+>>>>>>> refs/remotes/origin/master
  * @SecondsSinceLastReset: Seconds since the last reset
  * @TxFrames:              Number of transmitted frames
  * @TxWords:               Number of transmitted words
@@ -224,6 +260,12 @@ struct fc_rport_priv {
  * @RxWords:               Number of received words
  * @ErrorFrames:           Number of received error frames
  * @DumpedFrames:          Number of dumped frames
+<<<<<<< HEAD
+=======
+ * @FcpPktAllocFails:      Number of fcp packet allocation failures
+ * @FcpPktAborts:          Number of fcp packet aborts
+ * @FcpFrameAllocFails:    Number of fcp frame allocation failures
+>>>>>>> refs/remotes/origin/master
  * @LinkFailureCount:      Number of link failures
  * @LossOfSignalCount:     Number for signal losses
  * @InvalidTxWordCount:    Number of invalid transmitted words
@@ -236,7 +278,11 @@ struct fc_rport_priv {
  * @VLinkFailureCount:     Number of virtual link failures
  * @MissDiscAdvCount:      Number of missing FIP discovery advertisement
  */
+<<<<<<< HEAD
 struct fcoe_dev_stats {
+=======
+struct fc_stats {
+>>>>>>> refs/remotes/origin/master
 	u64		SecondsSinceLastReset;
 	u64		TxFrames;
 	u64		TxWords;
@@ -244,6 +290,12 @@ struct fcoe_dev_stats {
 	u64		RxWords;
 	u64		ErrorFrames;
 	u64		DumpedFrames;
+<<<<<<< HEAD
+=======
+	u64		FcpPktAllocFails;
+	u64		FcpPktAborts;
+	u64		FcpFrameAllocFails;
+>>>>>>> refs/remotes/origin/master
 	u64		LinkFailureCount;
 	u64		LossOfSignalCount;
 	u64		InvalidTxWordCount;
@@ -281,9 +333,15 @@ struct fc_seq_els_data {
  * @timer:           The command timer
  * @tm_done:         Completion indicator
  * @wait_for_comp:   Indicator to wait for completion of the I/O (in jiffies)
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @start_time:      Timestamp indicating the start of the I/O (in jiffies)
  * @end_time:        Timestamp indicating the end of the I/O (in jiffies)
  * @last_pkt_time:   Timestamp of the last frame received (in jiffies)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @data_len:        The length of the data
  * @cdb_cmd:         The CDB command
  * @xfer_len:        The transfer length
@@ -304,16 +362,32 @@ struct fc_seq_els_data {
  * @recov_seq:       The sequence for REC or SRR
  */
 struct fc_fcp_pkt {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Housekeeping information */
 	struct fc_lport   *lp;
 	u16		  state;
 	atomic_t	  ref_cnt;
 	spinlock_t	  scsi_pkt_lock;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spinlock_t	  scsi_pkt_lock;
+	atomic_t	  ref_cnt;
+
+	/* SCSI command and data transfer information */
+	u32		  data_len;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* SCSI I/O related information */
 	struct scsi_cmnd  *cmd;
 	struct list_head  list;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Timeout related information */
 	struct timer_list timer;
 	struct completion tm_done;
@@ -340,14 +414,56 @@ struct fc_fcp_pkt {
 	u32		  req_flags;
 	u32		  scsi_resid;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Housekeeping information */
+	struct fc_lport   *lp;
+	u8		  state;
+
+	/* SCSI/FCP return status */
+	u8		  cdb_status;
+	u8		  status_code;
+	u8		  scsi_comp_flags;
+	u32		  io_status;
+	u32		  req_flags;
+	u32		  scsi_resid;
+
+	/* Transport related veriables */
+	size_t		  xfer_len;
+	struct fcp_cmnd   cdb_cmd;
+	u32		  xfer_contig_end;
+	u16		  max_payload;
+	u16		  xfer_ddp;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Associated structures */
 	struct fc_rport	  *rport;
 	struct fc_seq	  *seq_ptr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Error Processing information */
 	u8		  recov_retry;
 	struct fc_seq	  *recov_seq;
 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Timeout/error related information */
+	struct timer_list timer;
+	int	          wait_for_comp;
+	u32		  recov_retry;
+	struct fc_seq	  *recov_seq;
+	struct completion tm_done;
+} ____cacheline_aligned_in_smp;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Structure and function definitions for managing Fibre Channel Exchanges
@@ -403,6 +519,15 @@ struct fc_seq {
  * @fh_type:      The frame type
  * @class:        The class of service
  * @seq:          The sequence in use on this exchange
+<<<<<<< HEAD
+=======
+ * @resp_active:  Number of tasks that are concurrently executing @resp().
+ * @resp_task:    If @resp_active > 0, either the task executing @resp(), the
+ *                task that has been interrupted to execute the soft-IRQ
+ *                executing @resp() or NULL if more than one task is executing
+ *                @resp concurrently.
+ * @resp_wq:      Waitqueue for the tasks waiting on @resp_active.
+>>>>>>> refs/remotes/origin/master
  * @resp:         Callback for responses on this exchange
  * @destructor:   Called when destroying the exchange
  * @arg:          Passed as a void pointer to the resp() callback
@@ -413,6 +538,8 @@ struct fc_seq {
  *	sequence allocation
  */
 struct fc_exch {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct fc_exch_mgr  *em;
 	struct fc_exch_pool *pool;
 	u32		    state;
@@ -422,11 +549,33 @@ struct fc_exch {
 	atomic_t	    ex_refcnt;
 	struct delayed_work timeout_work;
 	struct fc_lport	    *lp;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spinlock_t	    ex_lock;
+	atomic_t	    ex_refcnt;
+	enum fc_class	    class;
+	struct fc_exch_mgr  *em;
+	struct fc_exch_pool *pool;
+	struct list_head    ex_list;
+	struct fc_lport	    *lp;
+	u32		    esb_stat;
+	u8		    state;
+	u8		    fh_type;
+	u8		    seq_id;
+	u8		    encaps;
+	u16		    xid;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u16		    oxid;
 	u16		    rxid;
 	u32		    oid;
 	u32		    sid;
 	u32		    did;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32		    esb_stat;
 	u32		    r_a_tov;
 	u8		    seq_id;
@@ -442,6 +591,27 @@ struct fc_exch {
 	void		    (*destructor)(struct fc_seq *, void *);
 
 };
+=======
+	u32		    r_a_tov;
+	u32		    f_ctl;
+	struct fc_seq       seq;
+=======
+	u32		    r_a_tov;
+	u32		    f_ctl;
+	struct fc_seq       seq;
+	int		    resp_active;
+	struct task_struct  *resp_task;
+	wait_queue_head_t   resp_wq;
+>>>>>>> refs/remotes/origin/master
+	void		    (*resp)(struct fc_seq *, struct fc_frame *, void *);
+	void		    *arg;
+	void		    (*destructor)(struct fc_seq *, void *);
+	struct delayed_work timeout_work;
+} ____cacheline_aligned_in_smp;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define	fc_seq_exch(sp) container_of(sp, struct fc_exch, seq)
 
 
@@ -511,6 +681,25 @@ struct libfc_function_template {
 	 */
 	int (*ddp_done)(struct fc_lport *, u16);
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	 * Sets up the DDP context for a given exchange id on the given
+	 * scatterlist if LLD supports DDP for FCoE target.
+=======
+	 * Sets up the DDP context for a given exchange id on the given
+	 * scatterlist if LLD supports DDP for target.
+>>>>>>> refs/remotes/origin/master
+	 *
+	 * STATUS: OPTIONAL
+	 */
+	int (*ddp_target)(struct fc_lport *, u16, struct scatterlist *,
+			  unsigned int);
+	/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Allow LLD to fill its own Link Error Status Block
 	 *
 	 * STATUS: OPTIONAL
@@ -799,6 +988,14 @@ enum fc_lport_event {
  * @host:                  The SCSI host associated with a local port
  * @ema_list:              Exchange manager anchor list
  * @dns_rdata:             The directory server remote port
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @ms_rdata:		   The management server remote port
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @ms_rdata:		   The management server remote port
+>>>>>>> refs/remotes/origin/master
  * @ptp_rdata:             Point to point remote port
  * @scsi_priv:             FCP layer internal data
  * @disc:                  Discovery context
@@ -810,8 +1007,12 @@ enum fc_lport_event {
  * @state:                 Identifies the state
  * @boot_time:             Timestamp indicating when the local port came online
  * @host_stats:            SCSI host statistics
+<<<<<<< HEAD
  * @dev_stats:             FCoE device stats (TODO: libfc should not be
  *                         FCoE aware)
+=======
+ * @stats:                 FC local port stats (TODO separate libfc LLD stats)
+>>>>>>> refs/remotes/origin/master
  * @retry_count:           Number of retries in the current state
  * @port_id:               FC Port ID
  * @wwpn:                  World Wide Port Name
@@ -844,6 +1045,14 @@ struct fc_lport {
 	struct Scsi_Host	       *host;
 	struct list_head	       ema_list;
 	struct fc_rport_priv	       *dns_rdata;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct fc_rport_priv	       *ms_rdata;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fc_rport_priv	       *ms_rdata;
+>>>>>>> refs/remotes/origin/master
 	struct fc_rport_priv	       *ptp_rdata;
 	void			       *scsi_priv;
 	struct fc_disc                 disc;
@@ -859,7 +1068,15 @@ struct fc_lport {
 	enum fc_lport_state	       state;
 	unsigned long		       boot_time;
 	struct fc_host_statistics      host_stats;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct fcoe_dev_stats	       *dev_stats;
+=======
+	struct fcoe_dev_stats __percpu *dev_stats;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fc_stats	__percpu       *stats;
+>>>>>>> refs/remotes/origin/master
 	u8			       retry_count;
 
 	/* Fabric information */
@@ -879,6 +1096,14 @@ struct fc_lport {
 	u32			       does_npiv:1;
 	u32			       npiv_enabled:1;
 	u32			       point_to_multipoint:1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u32			       fdmi_enabled:1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32			       fdmi_enabled:1;
+>>>>>>> refs/remotes/origin/master
 	u32			       mfs;
 	u8			       max_retry_count;
 	u8			       max_rport_retry_count;
@@ -971,8 +1196,13 @@ static inline void fc_lport_state_enter(struct fc_lport *lport,
  */
 static inline int fc_lport_init_stats(struct fc_lport *lport)
 {
+<<<<<<< HEAD
 	lport->dev_stats = alloc_percpu(struct fcoe_dev_stats);
 	if (!lport->dev_stats)
+=======
+	lport->stats = alloc_percpu(struct fc_stats);
+	if (!lport->stats)
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	return 0;
 }
@@ -983,7 +1213,11 @@ static inline int fc_lport_init_stats(struct fc_lport *lport)
  */
 static inline void fc_lport_free_stats(struct fc_lport *lport)
 {
+<<<<<<< HEAD
 	free_percpu(lport->dev_stats);
+=======
+	free_percpu(lport->stats);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1060,7 +1294,12 @@ void fc_rport_terminate_io(struct fc_rport *);
 /*
  * DISCOVERY LAYER
  *****************************/
+<<<<<<< HEAD
 int fc_disc_init(struct fc_lport *);
+=======
+void fc_disc_init(struct fc_lport *);
+void fc_disc_config(struct fc_lport *, void *);
+>>>>>>> refs/remotes/origin/master
 
 static inline struct fc_lport *fc_disc_lport(struct fc_disc *disc)
 {
@@ -1107,6 +1346,10 @@ void fc_fill_hdr(struct fc_frame *, const struct fc_frame *,
  * EXCHANGE MANAGER LAYER
  *****************************/
 int fc_exch_init(struct fc_lport *);
+<<<<<<< HEAD
+=======
+void fc_exch_update_stats(struct fc_lport *lport);
+>>>>>>> refs/remotes/origin/master
 struct fc_exch_mgr_anchor *fc_exch_mgr_add(struct fc_lport *,
 					   struct fc_exch_mgr *,
 					   bool (*match)(struct fc_frame *));

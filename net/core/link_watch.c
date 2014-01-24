@@ -76,10 +76,40 @@ static void rfc2863_policy(struct net_device *dev)
 }
 
 
+<<<<<<< HEAD
 static bool linkwatch_urgent_event(struct net_device *dev)
 {
+<<<<<<< HEAD
 	return netif_running(dev) && netif_carrier_ok(dev) &&
 		qdisc_tx_changing(dev);
+=======
+=======
+void linkwatch_init_dev(struct net_device *dev)
+{
+	/* Handle pre-registration link state changes */
+	if (!netif_carrier_ok(dev) || netif_dormant(dev))
+		rfc2863_policy(dev);
+}
+
+
+static bool linkwatch_urgent_event(struct net_device *dev)
+{
+>>>>>>> refs/remotes/origin/master
+	if (!netif_running(dev))
+		return false;
+
+	if (dev->ifindex != dev->iflink)
+		return true;
+
+<<<<<<< HEAD
+	return netif_carrier_ok(dev) &&	qdisc_tx_changing(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->priv_flags & IFF_TEAM_PORT)
+		return true;
+
+	return netif_carrier_ok(dev) &&	qdisc_tx_changing(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -115,6 +145,7 @@ static void linkwatch_schedule_work(int urgent)
 		delay = 0;
 
 	/*
+<<<<<<< HEAD
 	 * This is true if we've scheduled it immeditately or if we don't
 	 * need an immediate execution and it's already pending.
 	 */
@@ -131,6 +162,15 @@ static void linkwatch_schedule_work(int urgent)
 
 	/* Otherwise we reschedule it again for immediate execution. */
 	schedule_delayed_work(&linkwatch_work, 0);
+=======
+	 * If urgent, schedule immediate execution; otherwise, don't
+	 * override the existing timer.
+	 */
+	if (test_bit(LW_URGENT, &linkwatch_flags))
+		mod_delayed_work(system_wq, &linkwatch_work, 0);
+	else
+		schedule_delayed_work(&linkwatch_work, delay);
+>>>>>>> refs/remotes/origin/master
 }
 
 

@@ -13,6 +13,7 @@
 #include <linux/mm.h>
 #include <asm/page.h>
 #include <asm/code-patching.h>
+<<<<<<< HEAD
 
 
 void patch_instruction(unsigned int *addr, unsigned int instr)
@@ -24,6 +25,25 @@ void patch_instruction(unsigned int *addr, unsigned int instr)
 void patch_branch(unsigned int *addr, unsigned long target, int flags)
 {
 	patch_instruction(addr, create_branch(addr, target, flags));
+=======
+#include <asm/uaccess.h>
+
+
+int patch_instruction(unsigned int *addr, unsigned int instr)
+{
+	int err;
+
+	__put_user_size(instr, addr, 4, err);
+	if (err)
+		return err;
+	asm ("dcbst 0, %0; sync; icbi 0,%0; sync; isync" : : "r" (addr));
+	return 0;
+}
+
+int patch_branch(unsigned int *addr, unsigned long target, int flags)
+{
+	return patch_instruction(addr, create_branch(addr, target, flags));
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned int create_branch(const unsigned int *addr,

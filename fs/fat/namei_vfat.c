@@ -41,9 +41,15 @@ static int vfat_revalidate_shortname(struct dentry *dentry)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int vfat_revalidate(struct dentry *dentry, struct nameidata *nd)
 {
 	if (nd && nd->flags & LOOKUP_RCU)
+=======
+static int vfat_revalidate(struct dentry *dentry, unsigned int flags)
+{
+	if (flags & LOOKUP_RCU)
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 
 	/* This is not negative dentry. Always valid. */
@@ -52,9 +58,15 @@ static int vfat_revalidate(struct dentry *dentry, struct nameidata *nd)
 	return vfat_revalidate_shortname(dentry);
 }
 
+<<<<<<< HEAD
 static int vfat_revalidate_ci(struct dentry *dentry, struct nameidata *nd)
 {
 	if (nd && nd->flags & LOOKUP_RCU)
+=======
+static int vfat_revalidate_ci(struct dentry *dentry, unsigned int flags)
+{
+	if (flags & LOOKUP_RCU)
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 
 	/*
@@ -74,7 +86,11 @@ static int vfat_revalidate_ci(struct dentry *dentry, struct nameidata *nd)
 	 * This may be nfsd (or something), anyway, we can't see the
 	 * intent of this. So, since this can be for creation, drop it.
 	 */
+<<<<<<< HEAD
 	if (!nd)
+=======
+	if (!flags)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/*
@@ -82,10 +98,20 @@ static int vfat_revalidate_ci(struct dentry *dentry, struct nameidata *nd)
 	 * case sensitive name which is specified by user if this is
 	 * for creation.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(nd->flags & (LOOKUP_CONTINUE | LOOKUP_PARENT))) {
 		if (nd->flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET))
 			return 0;
 	}
+=======
+	if (nd->flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET))
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	return vfat_revalidate_shortname(dentry);
 }
@@ -109,8 +135,12 @@ static unsigned int vfat_striptail_len(const struct qstr *qstr)
  * that the existing dentry can be used. The vfat fs routines will
  * return ENOENT or EINVAL as appropriate.
  */
+<<<<<<< HEAD
 static int vfat_hash(const struct dentry *dentry, const struct inode *inode,
 		struct qstr *qstr)
+=======
+static int vfat_hash(const struct dentry *dentry, struct qstr *qstr)
+>>>>>>> refs/remotes/origin/master
 {
 	qstr->hash = full_name_hash(qstr->name, vfat_striptail_len(qstr));
 	return 0;
@@ -122,8 +152,12 @@ static int vfat_hash(const struct dentry *dentry, const struct inode *inode,
  * that the existing dentry can be used. The vfat fs routines will
  * return ENOENT or EINVAL as appropriate.
  */
+<<<<<<< HEAD
 static int vfat_hashi(const struct dentry *dentry, const struct inode *inode,
 		struct qstr *qstr)
+=======
+static int vfat_hashi(const struct dentry *dentry, struct qstr *qstr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nls_table *t = MSDOS_SB(dentry->d_sb)->nls_io;
 	const unsigned char *name;
@@ -144,8 +178,12 @@ static int vfat_hashi(const struct dentry *dentry, const struct inode *inode,
 /*
  * Case insensitive compare of two vfat names.
  */
+<<<<<<< HEAD
 static int vfat_cmpi(const struct dentry *parent, const struct inode *pinode,
 		const struct dentry *dentry, const struct inode *inode,
+=======
+static int vfat_cmpi(const struct dentry *parent, const struct dentry *dentry,
+>>>>>>> refs/remotes/origin/master
 		unsigned int len, const char *str, const struct qstr *name)
 {
 	struct nls_table *t = MSDOS_SB(parent->d_sb)->nls_io;
@@ -164,8 +202,12 @@ static int vfat_cmpi(const struct dentry *parent, const struct inode *pinode,
 /*
  * Case sensitive compare of two vfat names.
  */
+<<<<<<< HEAD
 static int vfat_cmp(const struct dentry *parent, const struct inode *pinode,
 		const struct dentry *dentry, const struct inode *inode,
+=======
+static int vfat_cmp(const struct dentry *parent, const struct dentry *dentry,
+>>>>>>> refs/remotes/origin/master
 		unsigned int len, const char *str, const struct qstr *name)
 {
 	unsigned int alen, blen;
@@ -523,6 +565,8 @@ xlate_to_uni(const unsigned char *name, int len, unsigned char *outname,
 
 		op = &outname[*outlen * sizeof(wchar_t)];
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (nls) {
 			for (i = 0, ip = name, op = outname, *outlen = 0;
 			     i < len && *outlen <= FAT_LFN_LEN;
@@ -574,6 +618,53 @@ xlate_to_uni(const unsigned char *name, int len, unsigned char *outname,
 			if (i < len)
 				return -ENAMETOOLONG;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		for (i = 0, ip = name, op = outname, *outlen = 0;
+			 i < len && *outlen < FAT_LFN_LEN;
+			 *outlen += 1) {
+			if (escape && (*ip == ':')) {
+				if (i > len - 5)
+					return -EINVAL;
+				ec = 0;
+				for (k = 1; k < 5; k++) {
+					nc = ip[k];
+					ec <<= 4;
+					if (nc >= '0' && nc <= '9') {
+						ec |= nc - '0';
+						continue;
+					}
+					if (nc >= 'a' && nc <= 'f') {
+						ec |= nc - ('a' - 10);
+						continue;
+					}
+					if (nc >= 'A' && nc <= 'F') {
+						ec |= nc - ('A' - 10);
+						continue;
+					}
+					return -EINVAL;
+				}
+				*op++ = ec & 0xFF;
+				*op++ = ec >> 8;
+				ip += 5;
+				i += 5;
+			} else {
+				charlen = nls->char2uni(ip, len - i,
+									(wchar_t *)op);
+				if (charlen < 0)
+					return -EINVAL;
+				ip += charlen;
+				i += charlen;
+				op += 2;
+			}
+		}
+		if (i < len)
+			return -ENAMETOOLONG;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	*longlen = *outlen;
@@ -664,8 +755,12 @@ shortname:
 	de->time = de->ctime = time;
 	de->date = de->cdate = de->adate = date;
 	de->ctime_cs = time_cs;
+<<<<<<< HEAD
 	de->start = cpu_to_le16(cluster);
 	de->starthi = cpu_to_le16(cluster >> 16);
+=======
+	fat_set_start(de, cluster);
+>>>>>>> refs/remotes/origin/master
 	de->size = 0;
 out_free:
 	__putname(uname);
@@ -727,7 +822,11 @@ static int vfat_d_anon_disconn(struct dentry *dentry)
 }
 
 static struct dentry *vfat_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				  struct nameidata *nd)
+=======
+				  unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = dir->i_sb;
 	struct fat_slot_info sinfo;
@@ -735,7 +834,11 @@ static struct dentry *vfat_lookup(struct inode *dir, struct dentry *dentry,
 	struct dentry *alias;
 	int err;
 
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	err = vfat_find(dir, &dentry->d_name, &sinfo);
 	if (err) {
@@ -766,13 +869,21 @@ static struct dentry *vfat_lookup(struct inode *dir, struct dentry *dentry,
 		if (!S_ISDIR(inode->i_mode))
 			d_move(alias, dentry);
 		iput(inode);
+<<<<<<< HEAD
 		unlock_super(sb);
+=======
+		mutex_unlock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 		return alias;
 	} else
 		dput(alias);
 
 out:
+<<<<<<< HEAD
 	unlock_super(sb);
+=======
+	mutex_unlock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	dentry->d_time = dentry->d_parent->d_inode->i_version;
 	dentry = d_splice_alias(inode, dentry);
 	if (dentry)
@@ -780,12 +891,25 @@ out:
 	return dentry;
 
 error:
+<<<<<<< HEAD
 	unlock_super(sb);
 	return ERR_PTR(err);
 }
 
+<<<<<<< HEAD
 static int vfat_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int vfat_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		       struct nameidata *nd)
+=======
+	mutex_unlock(&MSDOS_SB(sb)->s_lock);
+	return ERR_PTR(err);
+}
+
+static int vfat_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+		       bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = dir->i_sb;
 	struct inode *inode;
@@ -793,7 +917,11 @@ static int vfat_create(struct inode *dir, struct dentry *dentry, int mode,
 	struct timespec ts;
 	int err;
 
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	ts = CURRENT_TIME_SEC;
 	err = vfat_add_entry(dir, &dentry->d_name, 0, 0, &ts, &sinfo);
@@ -814,7 +942,11 @@ static int vfat_create(struct inode *dir, struct dentry *dentry, int mode,
 	dentry->d_time = dentry->d_parent->d_inode->i_version;
 	d_instantiate(dentry, inode);
 out:
+<<<<<<< HEAD
 	unlock_super(sb);
+=======
+	mutex_unlock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -825,7 +957,11 @@ static int vfat_rmdir(struct inode *dir, struct dentry *dentry)
 	struct fat_slot_info sinfo;
 	int err;
 
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	err = fat_dir_empty(inode);
 	if (err)
@@ -843,7 +979,11 @@ static int vfat_rmdir(struct inode *dir, struct dentry *dentry)
 	inode->i_mtime = inode->i_atime = CURRENT_TIME_SEC;
 	fat_detach(inode);
 out:
+<<<<<<< HEAD
 	unlock_super(sb);
+=======
+	mutex_unlock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -855,7 +995,11 @@ static int vfat_unlink(struct inode *dir, struct dentry *dentry)
 	struct fat_slot_info sinfo;
 	int err;
 
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	err = vfat_find(dir, &dentry->d_name, &sinfo);
 	if (err)
@@ -868,12 +1012,24 @@ static int vfat_unlink(struct inode *dir, struct dentry *dentry)
 	inode->i_mtime = inode->i_atime = CURRENT_TIME_SEC;
 	fat_detach(inode);
 out:
+<<<<<<< HEAD
 	unlock_super(sb);
+=======
+	mutex_unlock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int vfat_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int vfat_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int vfat_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = dir->i_sb;
 	struct inode *inode;
@@ -881,7 +1037,11 @@ static int vfat_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 	struct timespec ts;
 	int err, cluster;
 
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	ts = CURRENT_TIME_SEC;
 	cluster = fat_alloc_new_dir(dir, &ts);
@@ -903,20 +1063,36 @@ static int vfat_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 		goto out;
 	}
 	inode->i_version++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 2;
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/master
 	inode->i_mtime = inode->i_atime = inode->i_ctime = ts;
 	/* timestamp is already written, so mark_inode_dirty() is unneeded. */
 
 	dentry->d_time = dentry->d_parent->d_inode->i_version;
 	d_instantiate(dentry, inode);
 
+<<<<<<< HEAD
 	unlock_super(sb);
+=======
+	mutex_unlock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out_free:
 	fat_free_clusters(dir, cluster);
 out:
+<<<<<<< HEAD
 	unlock_super(sb);
+=======
+	mutex_unlock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -928,14 +1104,22 @@ static int vfat_rename(struct inode *old_dir, struct dentry *old_dentry,
 	struct inode *old_inode, *new_inode;
 	struct fat_slot_info old_sinfo, sinfo;
 	struct timespec ts;
+<<<<<<< HEAD
 	loff_t dotdot_i_pos, new_i_pos;
+=======
+	loff_t new_i_pos;
+>>>>>>> refs/remotes/origin/master
 	int err, is_dir, update_dotdot, corrupt = 0;
 	struct super_block *sb = old_dir->i_sb;
 
 	old_sinfo.bh = sinfo.bh = dotdot_bh = NULL;
 	old_inode = old_dentry->d_inode;
 	new_inode = new_dentry->d_inode;
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	err = vfat_find(old_dir, &old_dentry->d_name, &old_sinfo);
 	if (err)
 		goto out;
@@ -943,8 +1127,12 @@ static int vfat_rename(struct inode *old_dir, struct dentry *old_dentry,
 	is_dir = S_ISDIR(old_inode->i_mode);
 	update_dotdot = (is_dir && old_dir != new_dir);
 	if (update_dotdot) {
+<<<<<<< HEAD
 		if (fat_get_dotdot_entry(old_inode, &dotdot_bh, &dotdot_de,
 					 &dotdot_i_pos) < 0) {
+=======
+		if (fat_get_dotdot_entry(old_inode, &dotdot_bh, &dotdot_de)) {
+>>>>>>> refs/remotes/origin/master
 			err = -EIO;
 			goto out;
 		}
@@ -978,9 +1166,13 @@ static int vfat_rename(struct inode *old_dir, struct dentry *old_dentry,
 		mark_inode_dirty(old_inode);
 
 	if (update_dotdot) {
+<<<<<<< HEAD
 		int start = MSDOS_I(new_dir)->i_logstart;
 		dotdot_de->start = cpu_to_le16(start);
 		dotdot_de->starthi = cpu_to_le16(start >> 16);
+=======
+		fat_set_start(dotdot_de, MSDOS_I(new_dir)->i_logstart);
+>>>>>>> refs/remotes/origin/master
 		mark_buffer_dirty_inode(dotdot_bh, old_inode);
 		if (IS_DIRSYNC(new_dir)) {
 			err = sync_dirty_buffer(dotdot_bh);
@@ -1013,7 +1205,11 @@ out:
 	brelse(sinfo.bh);
 	brelse(dotdot_bh);
 	brelse(old_sinfo.bh);
+<<<<<<< HEAD
 	unlock_super(sb);
+=======
+	mutex_unlock(&MSDOS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 
@@ -1022,9 +1218,13 @@ error_dotdot:
 	corrupt = 1;
 
 	if (update_dotdot) {
+<<<<<<< HEAD
 		int start = MSDOS_I(old_dir)->i_logstart;
 		dotdot_de->start = cpu_to_le16(start);
 		dotdot_de->starthi = cpu_to_le16(start >> 16);
+=======
+		fat_set_start(dotdot_de, MSDOS_I(old_dir)->i_logstart);
+>>>>>>> refs/remotes/origin/master
 		mark_buffer_dirty_inode(dotdot_bh, old_inode);
 		corrupt |= sync_dirty_buffer(dotdot_bh);
 	}
@@ -1092,6 +1292,10 @@ static struct file_system_type vfat_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("vfat");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_vfat_fs(void)
 {

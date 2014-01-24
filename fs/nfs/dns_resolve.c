@@ -8,10 +8,26 @@
 
 #ifdef CONFIG_NFS_USE_KERNEL_DNS
 
+<<<<<<< HEAD
 #include <linux/sunrpc/clnt.h>
 #include <linux/dns_resolver.h>
+<<<<<<< HEAD
 
 ssize_t nfs_dns_resolve_name(char *name, size_t namelen,
+=======
+#include "dns_resolve.h"
+
+ssize_t nfs_dns_resolve_name(struct net *net, char *name, size_t namelen,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/sunrpc/clnt.h>
+#include <linux/sunrpc/addr.h>
+#include <linux/dns_resolver.h>
+#include "dns_resolve.h"
+
+ssize_t nfs_dns_resolve_name(struct net *net, char *name, size_t namelen,
+>>>>>>> refs/remotes/origin/master
 		struct sockaddr *sa, size_t salen)
 {
 	ssize_t ret;
@@ -20,7 +36,15 @@ ssize_t nfs_dns_resolve_name(char *name, size_t namelen,
 
 	ip_len = dns_query(NULL, name, namelen, NULL, &ip_addr, NULL);
 	if (ip_len > 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = rpc_pton(ip_addr, ip_len, sa, salen);
+=======
+		ret = rpc_pton(net, ip_addr, ip_len, sa, salen);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = rpc_pton(net, ip_addr, ip_len, sa, salen);
+>>>>>>> refs/remotes/origin/master
 	else
 		ret = -ESRCH;
 	kfree(ip_addr);
@@ -29,6 +53,10 @@ ssize_t nfs_dns_resolve_name(char *name, size_t namelen,
 
 #else
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/hash.h>
 #include <linux/string.h>
 #include <linux/kmod.h>
@@ -38,17 +66,44 @@ ssize_t nfs_dns_resolve_name(char *name, size_t namelen,
 #include <linux/seq_file.h>
 #include <linux/inet.h>
 #include <linux/sunrpc/clnt.h>
+<<<<<<< HEAD
 #include <linux/sunrpc/cache.h>
 #include <linux/sunrpc/svcauth.h>
+<<<<<<< HEAD
 
 #include "dns_resolve.h"
 #include "cache_lib.h"
+=======
+#include <linux/sunrpc/rpc_pipe_fs.h>
+
+#include "dns_resolve.h"
+#include "cache_lib.h"
+#include "netns.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sunrpc/addr.h>
+#include <linux/sunrpc/cache.h>
+#include <linux/sunrpc/svcauth.h>
+#include <linux/sunrpc/rpc_pipe_fs.h>
+#include <linux/nfs_fs.h>
+
+#include "nfs4_fs.h"
+#include "dns_resolve.h"
+#include "cache_lib.h"
+#include "netns.h"
+>>>>>>> refs/remotes/origin/master
 
 #define NFS_DNS_HASHBITS 4
 #define NFS_DNS_HASHTBL_SIZE (1 << NFS_DNS_HASHBITS)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct cache_head *nfs_dns_table[NFS_DNS_HASHTBL_SIZE];
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct nfs_dns_ent {
 	struct cache_head h;
 
@@ -138,7 +193,11 @@ static int nfs_dns_upcall(struct cache_detail *cd,
 
 	ret = nfs_cache_upcall(cd, key->hostname);
 	if (ret)
+<<<<<<< HEAD
 		ret = sunrpc_cache_pipe_upcall(cd, ch, nfs_dns_request);
+=======
+		ret = sunrpc_cache_pipe_upcall(cd, ch);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -224,7 +283,15 @@ static int nfs_dns_parse(struct cache_detail *cd, char *buf, int buflen)
 	len = qword_get(&buf, buf1, sizeof(buf1));
 	if (len <= 0)
 		goto out;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	key.addrlen = rpc_pton(buf1, len,
+=======
+	key.addrlen = rpc_pton(cd->net, buf1, len,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	key.addrlen = rpc_pton(cd->net, buf1, len,
+>>>>>>> refs/remotes/origin/master
 			(struct sockaddr *)&key.addr,
 			sizeof(key.addr));
 
@@ -260,6 +327,8 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct cache_detail nfs_dns_resolve = {
 	.owner = THIS_MODULE,
 	.hash_size = NFS_DNS_HASHTBL_SIZE,
@@ -275,6 +344,10 @@ static struct cache_detail nfs_dns_resolve = {
 	.alloc = nfs_dns_ent_alloc,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int do_cache_lookup(struct cache_detail *cd,
 		struct nfs_dns_ent *key,
 		struct nfs_dns_ent **item,
@@ -337,8 +410,18 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ssize_t nfs_dns_resolve_name(char *name, size_t namelen,
 		struct sockaddr *sa, size_t salen)
+=======
+ssize_t nfs_dns_resolve_name(struct net *net, char *name,
+		size_t namelen, struct sockaddr *sa, size_t salen)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ssize_t nfs_dns_resolve_name(struct net *net, char *name,
+		size_t namelen, struct sockaddr *sa, size_t salen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfs_dns_ent key = {
 		.hostname = name,
@@ -346,28 +429,229 @@ ssize_t nfs_dns_resolve_name(char *name, size_t namelen,
 	};
 	struct nfs_dns_ent *item = NULL;
 	ssize_t ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	ret = do_cache_lookup_wait(&nfs_dns_resolve, &key, &item);
+=======
+	struct nfs_net *nn = net_generic(net, nfs_net_id);
+
+	ret = do_cache_lookup_wait(nn->nfs_dns_resolve, &key, &item);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs_net *nn = net_generic(net, nfs_net_id);
+
+	ret = do_cache_lookup_wait(nn->nfs_dns_resolve, &key, &item);
+>>>>>>> refs/remotes/origin/master
 	if (ret == 0) {
 		if (salen >= item->addrlen) {
 			memcpy(sa, &item->addr, item->addrlen);
 			ret = item->addrlen;
 		} else
 			ret = -EOVERFLOW;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		cache_put(&item->h, &nfs_dns_resolve);
+=======
+		cache_put(&item->h, nn->nfs_dns_resolve);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cache_put(&item->h, nn->nfs_dns_resolve);
+>>>>>>> refs/remotes/origin/master
 	} else if (ret == -ENOENT)
 		ret = -ESRCH;
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int nfs_dns_resolver_init(void)
 {
 	return nfs_cache_register(&nfs_dns_resolve);
+=======
+int nfs_dns_resolver_cache_init(struct net *net)
+{
+	int err = -ENOMEM;
+	struct nfs_net *nn = net_generic(net, nfs_net_id);
+	struct cache_detail *cd;
+	struct cache_head **tbl;
+
+	cd = kzalloc(sizeof(struct cache_detail), GFP_KERNEL);
+	if (cd == NULL)
+		goto err_cd;
+
+	tbl = kzalloc(NFS_DNS_HASHTBL_SIZE * sizeof(struct cache_head *),
+			GFP_KERNEL);
+	if (tbl == NULL)
+		goto err_tbl;
+
+	cd->owner = THIS_MODULE,
+	cd->hash_size = NFS_DNS_HASHTBL_SIZE,
+	cd->hash_table = tbl,
+	cd->name = "dns_resolve",
+	cd->cache_put = nfs_dns_ent_put,
+	cd->cache_upcall = nfs_dns_upcall,
+	cd->cache_parse = nfs_dns_parse,
+	cd->cache_show = nfs_dns_show,
+	cd->match = nfs_dns_match,
+	cd->init = nfs_dns_ent_init,
+	cd->update = nfs_dns_ent_update,
+	cd->alloc = nfs_dns_ent_alloc,
+
+	nfs_cache_init(cd);
+	err = nfs_cache_register_net(net, cd);
+	if (err)
+		goto err_reg;
+	nn->nfs_dns_resolve = cd;
+	return 0;
+
+err_reg:
+	nfs_cache_destroy(cd);
+	kfree(cd->hash_table);
+err_tbl:
+	kfree(cd);
+err_cd:
+=======
+static struct cache_detail nfs_dns_resolve_template = {
+	.owner		= THIS_MODULE,
+	.hash_size	= NFS_DNS_HASHTBL_SIZE,
+	.name		= "dns_resolve",
+	.cache_put	= nfs_dns_ent_put,
+	.cache_upcall	= nfs_dns_upcall,
+	.cache_request	= nfs_dns_request,
+	.cache_parse	= nfs_dns_parse,
+	.cache_show	= nfs_dns_show,
+	.match		= nfs_dns_match,
+	.init		= nfs_dns_ent_init,
+	.update		= nfs_dns_ent_update,
+	.alloc		= nfs_dns_ent_alloc,
+};
+
+
+int nfs_dns_resolver_cache_init(struct net *net)
+{
+	int err;
+	struct nfs_net *nn = net_generic(net, nfs_net_id);
+
+	nn->nfs_dns_resolve = cache_create_net(&nfs_dns_resolve_template, net);
+	if (IS_ERR(nn->nfs_dns_resolve))
+		return PTR_ERR(nn->nfs_dns_resolve);
+
+	err = nfs_cache_register_net(net, nn->nfs_dns_resolve);
+	if (err)
+		goto err_reg;
+	return 0;
+
+err_reg:
+	cache_destroy_net(nn->nfs_dns_resolve, net);
+>>>>>>> refs/remotes/origin/master
+	return err;
+}
+
+void nfs_dns_resolver_cache_destroy(struct net *net)
+{
+	struct nfs_net *nn = net_generic(net, nfs_net_id);
+<<<<<<< HEAD
+	struct cache_detail *cd = nn->nfs_dns_resolve;
+
+	nfs_cache_unregister_net(net, cd);
+	nfs_cache_destroy(cd);
+	kfree(cd->hash_table);
+	kfree(cd);
+}
+
+=======
+
+	nfs_cache_unregister_net(net, nn->nfs_dns_resolve);
+	cache_destroy_net(nn->nfs_dns_resolve, net);
+}
+
+static int nfs4_dns_net_init(struct net *net)
+{
+	return nfs_dns_resolver_cache_init(net);
+}
+
+static void nfs4_dns_net_exit(struct net *net)
+{
+	nfs_dns_resolver_cache_destroy(net);
+}
+
+static struct pernet_operations nfs4_dns_resolver_ops = {
+	.init = nfs4_dns_net_init,
+	.exit = nfs4_dns_net_exit,
+};
+
+>>>>>>> refs/remotes/origin/master
+static int rpc_pipefs_event(struct notifier_block *nb, unsigned long event,
+			   void *ptr)
+{
+	struct super_block *sb = ptr;
+	struct net *net = sb->s_fs_info;
+	struct nfs_net *nn = net_generic(net, nfs_net_id);
+	struct cache_detail *cd = nn->nfs_dns_resolve;
+	int ret = 0;
+
+	if (cd == NULL)
+		return 0;
+
+	if (!try_module_get(THIS_MODULE))
+		return 0;
+
+	switch (event) {
+	case RPC_PIPEFS_MOUNT:
+		ret = nfs_cache_register_sb(sb, cd);
+		break;
+	case RPC_PIPEFS_UMOUNT:
+		nfs_cache_unregister_sb(sb, cd);
+		break;
+	default:
+		ret = -ENOTSUPP;
+		break;
+	}
+	module_put(THIS_MODULE);
+	return ret;
+}
+
+static struct notifier_block nfs_dns_resolver_block = {
+	.notifier_call	= rpc_pipefs_event,
+};
+
+int nfs_dns_resolver_init(void)
+{
+<<<<<<< HEAD
+	return rpc_pipefs_notifier_register(&nfs_dns_resolver_block);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err;
+
+	err = register_pernet_subsys(&nfs4_dns_resolver_ops);
+	if (err < 0)
+		goto out;
+	err = rpc_pipefs_notifier_register(&nfs_dns_resolver_block);
+	if (err < 0)
+		goto out1;
+	return 0;
+out1:
+	unregister_pernet_subsys(&nfs4_dns_resolver_ops);
+out:
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 void nfs_dns_resolver_destroy(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nfs_cache_unregister(&nfs_dns_resolve);
 }
 
+=======
+	rpc_pipefs_notifier_unregister(&nfs_dns_resolver_block);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rpc_pipefs_notifier_unregister(&nfs_dns_resolver_block);
+	unregister_pernet_subsys(&nfs4_dns_resolver_ops);
+}
+>>>>>>> refs/remotes/origin/master
 #endif

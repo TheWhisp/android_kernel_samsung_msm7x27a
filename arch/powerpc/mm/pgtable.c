@@ -27,12 +27,23 @@
 #include <linux/init.h>
 #include <linux/percpu.h>
 #include <linux/hardirq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/hugetlb.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hugetlb.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgalloc.h>
 #include <asm/tlbflush.h>
 #include <asm/tlb.h>
 
+<<<<<<< HEAD
 #include "mmu_decl.h"
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int is_exec_fault(void)
 {
 	return current->thread.regs && TRAP(current->thread.regs) == 0x400;
@@ -71,7 +82,11 @@ struct page * maybe_pte_to_page(pte_t pte)
  * support falls into the same category.
  */
 
+<<<<<<< HEAD
 static pte_t set_pte_filter(pte_t pte, unsigned long addr)
+=======
+static pte_t set_pte_filter(pte_t pte)
+>>>>>>> refs/remotes/origin/master
 {
 	pte = __pte(pte_val(pte) & ~_PAGE_HPTEFLAGS);
 	if (pte_looks_normal(pte) && !(cpu_has_feature(CPU_FTR_COHERENT_ICACHE) ||
@@ -80,6 +95,7 @@ static pte_t set_pte_filter(pte_t pte, unsigned long addr)
 		if (!pg)
 			return pte;
 		if (!test_bit(PG_arch_1, &pg->flags)) {
+<<<<<<< HEAD
 #ifdef CONFIG_8xx
 			/* On 8xx, cache control instructions (particularly
 			 * "dcbst" from flush_dcache_icache) fault as write
@@ -91,6 +107,8 @@ static pte_t set_pte_filter(pte_t pte, unsigned long addr)
 			/* 8xx doesn't care about PID, size or ind args */
 			_tlbil_va(addr, 0, 0, 0);
 #endif /* CONFIG_8xx */
+=======
+>>>>>>> refs/remotes/origin/master
 			flush_dcache_icache_page(pg);
 			set_bit(PG_arch_1, &pg->flags);
 		}
@@ -110,7 +128,11 @@ static pte_t set_access_flags_filter(pte_t pte, struct vm_area_struct *vma,
  * as we don't have two bits to spare for _PAGE_EXEC and _PAGE_HWEXEC so
  * instead we "filter out" the exec permission for non clean pages.
  */
+<<<<<<< HEAD
 static pte_t set_pte_filter(pte_t pte, unsigned long addr)
+=======
+static pte_t set_pte_filter(pte_t pte)
+>>>>>>> refs/remotes/origin/master
 {
 	struct page *pg;
 
@@ -192,7 +214,11 @@ void set_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
 	 * this context might not have been activated yet when this
 	 * is called.
 	 */
+<<<<<<< HEAD
 	pte = set_pte_filter(pte, addr);
+=======
+	pte = set_pte_filter(pte);
+>>>>>>> refs/remotes/origin/master
 
 	/* Perform the setting of the PTE */
 	__set_pte_at(mm, addr, ptep, pte, 0);
@@ -212,7 +238,15 @@ int ptep_set_access_flags(struct vm_area_struct *vma, unsigned long address,
 	entry = set_access_flags_filter(entry, vma, dirty);
 	changed = !pte_same(*(ptep), entry);
 	if (changed) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(vma->vm_flags & VM_HUGETLB))
+=======
+		if (!is_vm_hugetlb_page(vma))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!is_vm_hugetlb_page(vma))
+>>>>>>> refs/remotes/origin/master
 			assert_pte_locked(vma->vm_mm, address);
 		__ptep_set_access_flags(ptep, entry);
 		flush_tlb_page_nohash(vma, address);
@@ -234,6 +268,17 @@ void assert_pte_locked(struct mm_struct *mm, unsigned long addr)
 	pud = pud_offset(pgd, addr);
 	BUG_ON(pud_none(*pud));
 	pmd = pmd_offset(pud, addr);
+<<<<<<< HEAD
+=======
+	/*
+	 * khugepaged to collapse normal pages to hugepage, first set
+	 * pmd to none to force page fault/gup to take mmap_sem. After
+	 * pmd is set to none, we do a pte_clear which does this assertion
+	 * so if we find pmd none, return.
+	 */
+	if (pmd_none(*pmd))
+		return;
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(!pmd_present(*pmd));
 	assert_spin_locked(pte_lockptr(mm, pmd));
 }

@@ -11,6 +11,11 @@
 
 /dts-v1/;
 
+<<<<<<< HEAD
+=======
+/include/ "fsl/e500v2_power_isa.dtsi"
+
+>>>>>>> refs/remotes/origin/master
 / {
 	model = "MPC8560ADS";
 	compatible = "MPC8560ADS", "MPC85xxADS";

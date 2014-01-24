@@ -25,8 +25,13 @@
  *
  */
 
+<<<<<<< HEAD
 #include "info.h"
 #include "control.h"
+=======
+#include <sound/info.h>
+#include <sound/control.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  *  ASAHI KASEI - AK4531 codec

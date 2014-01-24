@@ -17,14 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/spinlock.h>
 #include <linux/io.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/iomux-mx3.h>
+=======
+
+#include "hardware.h"
+#include "iomux-mx3.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * IOMUX register (base) addresses
@@ -40,7 +57,11 @@ static DEFINE_SPINLOCK(gpio_mux_lock);
 
 #define IOMUX_REG_MASK (IOMUX_PADNUM_MASK & ~0x3)
 
+<<<<<<< HEAD
 unsigned long mxc_pin_alloc_map[NB_PORTS * 32 / BITS_PER_LONG];
+=======
+static unsigned long mxc_pin_alloc_map[NB_PORTS * 32 / BITS_PER_LONG];
+>>>>>>> refs/remotes/origin/master
 /*
  * set the mode for a IOMUX pin.
  */

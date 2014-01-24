@@ -30,7 +30,13 @@
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/cpufreq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 
@@ -187,6 +193,7 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
 
 #endif
 
+<<<<<<< HEAD
 int acpi_processor_get_limit_info(struct acpi_processor *pr)
 {
 
@@ -199,6 +206,8 @@ int acpi_processor_get_limit_info(struct acpi_processor *pr)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* thermal coolign device callbacks */
 static int acpi_processor_max_state(struct acpi_processor *pr)
 {
@@ -219,9 +228,19 @@ processor_get_max_state(struct thermal_cooling_device *cdev,
 			unsigned long *state)
 {
 	struct acpi_device *device = cdev->devdata;
+<<<<<<< HEAD
 	struct acpi_processor *pr = acpi_driver_data(device);
 
 	if (!device || !pr)
+=======
+	struct acpi_processor *pr;
+
+	if (!device)
+		return -EINVAL;
+
+	pr = acpi_driver_data(device);
+	if (!pr)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	*state = acpi_processor_max_state(pr);
@@ -233,9 +252,19 @@ processor_get_cur_state(struct thermal_cooling_device *cdev,
 			unsigned long *cur_state)
 {
 	struct acpi_device *device = cdev->devdata;
+<<<<<<< HEAD
 	struct acpi_processor *pr = acpi_driver_data(device);
 
 	if (!device || !pr)
+=======
+	struct acpi_processor *pr;
+
+	if (!device)
+		return -EINVAL;
+
+	pr = acpi_driver_data(device);
+	if (!pr)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	*cur_state = cpufreq_get_cur_state(pr->id);
@@ -249,11 +278,23 @@ processor_set_cur_state(struct thermal_cooling_device *cdev,
 			unsigned long state)
 {
 	struct acpi_device *device = cdev->devdata;
+<<<<<<< HEAD
 	struct acpi_processor *pr = acpi_driver_data(device);
 	int result = 0;
 	int max_pstate;
 
 	if (!device || !pr)
+=======
+	struct acpi_processor *pr;
+	int result = 0;
+	int max_pstate;
+
+	if (!device)
+		return -EINVAL;
+
+	pr = acpi_driver_data(device);
+	if (!pr)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	max_pstate = cpufreq_get_max_state(pr->id);
@@ -273,7 +314,15 @@ processor_set_cur_state(struct thermal_cooling_device *cdev,
 	return result;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct thermal_cooling_device_ops processor_cooling_ops = {
+=======
+const struct thermal_cooling_device_ops processor_cooling_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+const struct thermal_cooling_device_ops processor_cooling_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_max_state = processor_get_max_state,
 	.get_cur_state = processor_get_cur_state,
 	.set_cur_state = processor_set_cur_state,

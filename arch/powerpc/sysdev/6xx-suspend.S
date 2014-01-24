@@ -29,7 +29,11 @@ _GLOBAL(mpc6xx_enter_standby)
 	ori	r5, r5, ret_from_standby@l
 	mtlr	r5
 
+<<<<<<< HEAD
 	rlwinm	r5, r1, 0, 0, 31-THREAD_SHIFT
+=======
+	CURRENT_THREAD_INFO(r5, r1)
+>>>>>>> refs/remotes/origin/master
 	lwz	r6, TI_LOCAL_FLAGS(r5)
 	ori	r6, r6, _TLF_SLEEPING
 	stw	r6, TI_LOCAL_FLAGS(r5)

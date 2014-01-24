@@ -6,14 +6,30 @@
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/security.h>
 
 #include <asm/cpu.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/hardirq.h>
 #include <asm/mmu_context.h>
 #include <asm/mipsmtregs.h>
@@ -210,7 +226,11 @@ void mips_mt_set_cpuoptions(void)
 	unsigned int nconfig7 = oconfig7;
 
 	if (mt_opt_norps) {
+<<<<<<< HEAD
 		printk("\"norps\" option deprectated: use \"rpsctl=\"\n");
+=======
+		printk("\"norps\" option deprecated: use \"rpsctl=\"\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	if (mt_opt_rpsctl >= 0) {
 		printk("34K return prediction stack override set to %d.\n",

@@ -48,7 +48,11 @@ static struct resource tc6387xb_mmc_resources[] = {
 static int tc6387xb_suspend(struct platform_device *dev, pm_message_t state)
 {
 	struct tc6387xb *tc6387xb = platform_get_drvdata(dev);
+<<<<<<< HEAD
 	struct tc6387xb_platform_data *pdata = dev->dev.platform_data;
+=======
+	struct tc6387xb_platform_data *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata && pdata->suspend)
 		pdata->suspend(dev);
@@ -60,7 +64,11 @@ static int tc6387xb_suspend(struct platform_device *dev, pm_message_t state)
 static int tc6387xb_resume(struct platform_device *dev)
 {
 	struct tc6387xb *tc6387xb = platform_get_drvdata(dev);
+<<<<<<< HEAD
 	struct tc6387xb_platform_data *pdata = dev->dev.platform_data;
+=======
+	struct tc6387xb_platform_data *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	clk_enable(tc6387xb->clk32k);
 	if (pdata && pdata->resume)
@@ -126,7 +134,11 @@ static struct tmio_mmc_data tc6387xb_mmc_data = {
 
 /*--------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static struct mfd_cell tc6387xb_cells[] = {
+=======
+static const struct mfd_cell tc6387xb_cells[] = {
+>>>>>>> refs/remotes/origin/master
 	[TC6387XB_CELL_MMC] = {
 		.name = "tmio-mmc",
 		.enable = tc6387xb_mmc_enable,
@@ -138,9 +150,15 @@ static struct mfd_cell tc6387xb_cells[] = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit tc6387xb_probe(struct platform_device *dev)
 {
 	struct tc6387xb_platform_data *pdata = dev->dev.platform_data;
+=======
+static int tc6387xb_probe(struct platform_device *dev)
+{
+	struct tc6387xb_platform_data *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct resource *iomem, *rscr;
 	struct clk *clk32k;
 	struct tc6387xb *tc6387xb;
@@ -177,7 +195,15 @@ static int __devinit tc6387xb_probe(struct platform_device *dev)
 	if (ret)
 		goto err_resource;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tc6387xb->scr = ioremap(rscr->start, rscr->end - rscr->start + 1);
+=======
+	tc6387xb->scr = ioremap(rscr->start, resource_size(rscr));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tc6387xb->scr = ioremap(rscr->start, resource_size(rscr));
+>>>>>>> refs/remotes/origin/master
 	if (!tc6387xb->scr) {
 		ret = -ENOMEM;
 		goto err_ioremap;
@@ -192,7 +218,11 @@ static int __devinit tc6387xb_probe(struct platform_device *dev)
 	printk(KERN_INFO "Toshiba tc6387xb initialised\n");
 
 	ret = mfd_add_devices(&dev->dev, dev->id, tc6387xb_cells,
+<<<<<<< HEAD
 			      ARRAY_SIZE(tc6387xb_cells), iomem, irq);
+=======
+			      ARRAY_SIZE(tc6387xb_cells), iomem, irq, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (!ret)
 		return 0;
@@ -208,7 +238,11 @@ err_no_irq:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit tc6387xb_remove(struct platform_device *dev)
+=======
+static int tc6387xb_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tc6387xb *tc6387xb = platform_get_drvdata(dev);
 
@@ -217,7 +251,10 @@ static int __devexit tc6387xb_remove(struct platform_device *dev)
 	release_resource(&tc6387xb->rscr);
 	clk_disable(tc6387xb->clk32k);
 	clk_put(tc6387xb->clk32k);
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(tc6387xb);
 
 	return 0;
@@ -229,11 +266,17 @@ static struct platform_driver tc6387xb_platform_driver = {
 		.name		= "tc6387xb",
 	},
 	.probe		= tc6387xb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(tc6387xb_remove),
+=======
+	.remove		= tc6387xb_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend        = tc6387xb_suspend,
 	.resume         = tc6387xb_resume,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init tc6387xb_init(void)
 {
@@ -247,6 +290,12 @@ static void __exit tc6387xb_exit(void)
 
 module_init(tc6387xb_init);
 module_exit(tc6387xb_exit);
+=======
+module_platform_driver(tc6387xb_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(tc6387xb_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Toshiba TC6387XB core driver");
 MODULE_LICENSE("GPL v2");

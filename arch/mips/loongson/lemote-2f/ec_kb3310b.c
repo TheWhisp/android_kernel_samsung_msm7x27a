@@ -45,8 +45,14 @@ void ec_write(unsigned short addr, unsigned char val)
 	/*  flush the write action */
 	inb(EC_IO_PORT_DATA);
 	spin_unlock_irqrestore(&index_access_lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	return;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(ec_write);
 

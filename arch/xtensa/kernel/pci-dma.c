@@ -21,6 +21,10 @@
 #include <linux/string.h>
 #include <linux/pci.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/cacheflush.h>
 
@@ -62,6 +66,10 @@ dma_alloc_coherent(struct device *dev,size_t size,dma_addr_t *handle,gfp_t flag)
 
 	return (void*)uncached;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dma_alloc_coherent);
+>>>>>>> refs/remotes/origin/master
 
 void dma_free_coherent(struct device *hwdev, size_t size,
 			 void *vaddr, dma_addr_t dma_handle)
@@ -73,6 +81,10 @@ void dma_free_coherent(struct device *hwdev, size_t size,
 
 	free_pages(addr, get_order(size));
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dma_free_coherent);
+>>>>>>> refs/remotes/origin/master
 
 
 void consistent_sync(void *vaddr, size_t size, int direction)
@@ -92,3 +104,7 @@ void consistent_sync(void *vaddr, size_t size, int direction)
 		break;
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(consistent_sync);
+>>>>>>> refs/remotes/origin/master

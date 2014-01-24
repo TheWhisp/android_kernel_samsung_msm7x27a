@@ -13,9 +13,19 @@
 #define ASM_ALIGN ".balign 4"
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static __always_inline bool arch_static_branch(struct jump_label_key *key)
+=======
+static __always_inline bool arch_static_branch(struct static_key *key)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	asm goto("0:	brcl 0,0\n"
+=======
+static __always_inline bool arch_static_branch(struct static_key *key)
+{
+	asm_volatile_goto("0:	brcl 0,0\n"
+>>>>>>> refs/remotes/origin/master
 		".pushsection __jump_table, \"aw\"\n"
 		ASM_ALIGN "\n"
 		ASM_PTR " 0b, %l[label], %0\n"

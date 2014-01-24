@@ -23,9 +23,16 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <asm/mach/map.h>
 #include <asm/hardware/vic.h>
+=======
+#include <linux/irqchip/arm-vic.h>
+#include <linux/reboot.h>
+#include <mach/hardware.h>
+#include <asm/mach/map.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/netx-regs.h>
 #include <asm/mach/irq.h>
 
@@ -168,7 +175,15 @@ void __init netx_init_irq(void)
 {
 	int irq;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vic_init(__io(io_p2v(NETX_PA_VIC)), 0, ~0, 0);
+=======
+	vic_init(io_p2v(NETX_PA_VIC), 0, ~0, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vic_init(io_p2v(NETX_PA_VIC), NETX_IRQ_VIC_START, ~0, 0);
+>>>>>>> refs/remotes/origin/master
 
 	for (irq = NETX_IRQ_HIF_CHAINED(0); irq <= NETX_IRQ_HIF_LAST; irq++) {
 		irq_set_chip_and_handler(irq, &netx_hif_chip,
@@ -187,3 +202,18 @@ static int __init netx_init(void)
 
 subsys_initcall(netx_init);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void netx_restart(char mode, const char *cmd)
+=======
+void netx_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
+{
+	writel(NETX_SYSTEM_RES_CR_FIRMW_RES_EN | NETX_SYSTEM_RES_CR_FIRMW_RES,
+	       NETX_SYSTEM_RES_CR);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

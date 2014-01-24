@@ -20,13 +20,20 @@ SECTIONS
   . = START + SIZEOF_HEADERS;
 
   _text = .;
+<<<<<<< HEAD
   _stext = .;
   __init_begin = .;
+=======
+>>>>>>> refs/remotes/origin/master
   INIT_TEXT_SECTION(0)
   . = ALIGN(PAGE_SIZE);
 
   .text      :
   {
+<<<<<<< HEAD
+=======
+    _stext = .;
+>>>>>>> refs/remotes/origin/master
     TEXT_TEXT
     SCHED_TEXT
     LOCK_TEXT
@@ -60,9 +67,18 @@ SECTIONS
 	PROVIDE_HIDDEN(__rela_iplt_end = .);
   }
 
+<<<<<<< HEAD
   #include "asm/common.lds.S"
 
   init.data : { INIT_DATA }
+=======
+  #include <asm/common.lds.S>
+
+  __init_begin = .;
+  init.data : { INIT_DATA }
+  __init_end = .;
+
+>>>>>>> refs/remotes/origin/master
   .data    :
   {
     INIT_TASK_DATA(KERNEL_STACK_SIZE)
@@ -97,6 +113,10 @@ SECTIONS
   PROVIDE(_bss_start = .);
   SBSS(0)
   BSS(0)
+<<<<<<< HEAD
+=======
+   __bss_stop = .;
+>>>>>>> refs/remotes/origin/master
   _end = .;
   PROVIDE (end = .);
 

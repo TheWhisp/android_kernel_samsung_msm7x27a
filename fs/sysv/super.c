@@ -44,7 +44,15 @@ enum {
 	JAN_1_1980 = (10*365 + 2) * 24 * 60 * 60
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void detected_xenix(struct sysv_sb_info *sbi)
+=======
+static void detected_xenix(struct sysv_sb_info *sbi, unsigned *max_links)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void detected_xenix(struct sysv_sb_info *sbi, unsigned *max_links)
+>>>>>>> refs/remotes/origin/master
 {
 	struct buffer_head *bh1 = sbi->s_bh1;
 	struct buffer_head *bh2 = sbi->s_bh2;
@@ -59,7 +67,15 @@ static void detected_xenix(struct sysv_sb_info *sbi)
 		sbd2 = (struct xenix_super_block *) (bh2->b_data - 512);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sbi->s_link_max = XENIX_LINK_MAX;
+=======
+	*max_links = XENIX_LINK_MAX;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*max_links = XENIX_LINK_MAX;
+>>>>>>> refs/remotes/origin/master
 	sbi->s_fic_size = XENIX_NICINOD;
 	sbi->s_flc_size = XENIX_NICFREE;
 	sbi->s_sbd1 = (char *)sbd1;
@@ -75,7 +91,15 @@ static void detected_xenix(struct sysv_sb_info *sbi)
 	sbi->s_nzones = fs32_to_cpu(sbi, sbd1->s_fsize);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void detected_sysv4(struct sysv_sb_info *sbi)
+=======
+static void detected_sysv4(struct sysv_sb_info *sbi, unsigned *max_links)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void detected_sysv4(struct sysv_sb_info *sbi, unsigned *max_links)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sysv4_super_block * sbd;
 	struct buffer_head *bh1 = sbi->s_bh1;
@@ -86,7 +110,15 @@ static void detected_sysv4(struct sysv_sb_info *sbi)
 	else
 		sbd = (struct sysv4_super_block *) bh2->b_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sbi->s_link_max = SYSV_LINK_MAX;
+=======
+	*max_links = SYSV_LINK_MAX;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*max_links = SYSV_LINK_MAX;
+>>>>>>> refs/remotes/origin/master
 	sbi->s_fic_size = SYSV_NICINOD;
 	sbi->s_flc_size = SYSV_NICFREE;
 	sbi->s_sbd1 = (char *)sbd;
@@ -103,7 +135,15 @@ static void detected_sysv4(struct sysv_sb_info *sbi)
 	sbi->s_nzones = fs32_to_cpu(sbi, sbd->s_fsize);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void detected_sysv2(struct sysv_sb_info *sbi)
+=======
+static void detected_sysv2(struct sysv_sb_info *sbi, unsigned *max_links)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void detected_sysv2(struct sysv_sb_info *sbi, unsigned *max_links)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sysv2_super_block *sbd;
 	struct buffer_head *bh1 = sbi->s_bh1;
@@ -114,7 +154,15 @@ static void detected_sysv2(struct sysv_sb_info *sbi)
 	else
 		sbd = (struct sysv2_super_block *) bh2->b_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sbi->s_link_max = SYSV_LINK_MAX;
+=======
+	*max_links = SYSV_LINK_MAX;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*max_links = SYSV_LINK_MAX;
+>>>>>>> refs/remotes/origin/master
 	sbi->s_fic_size = SYSV_NICINOD;
 	sbi->s_flc_size = SYSV_NICFREE;
 	sbi->s_sbd1 = (char *)sbd;
@@ -131,14 +179,30 @@ static void detected_sysv2(struct sysv_sb_info *sbi)
 	sbi->s_nzones = fs32_to_cpu(sbi, sbd->s_fsize);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void detected_coherent(struct sysv_sb_info *sbi)
+=======
+static void detected_coherent(struct sysv_sb_info *sbi, unsigned *max_links)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void detected_coherent(struct sysv_sb_info *sbi, unsigned *max_links)
+>>>>>>> refs/remotes/origin/master
 {
 	struct coh_super_block * sbd;
 	struct buffer_head *bh1 = sbi->s_bh1;
 
 	sbd = (struct coh_super_block *) bh1->b_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sbi->s_link_max = COH_LINK_MAX;
+=======
+	*max_links = COH_LINK_MAX;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*max_links = COH_LINK_MAX;
+>>>>>>> refs/remotes/origin/master
 	sbi->s_fic_size = COH_NICINOD;
 	sbi->s_flc_size = COH_NICFREE;
 	sbi->s_sbd1 = (char *)sbd;
@@ -154,12 +218,28 @@ static void detected_coherent(struct sysv_sb_info *sbi)
 	sbi->s_nzones = fs32_to_cpu(sbi, sbd->s_fsize);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void detected_v7(struct sysv_sb_info *sbi)
+=======
+static void detected_v7(struct sysv_sb_info *sbi, unsigned *max_links)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void detected_v7(struct sysv_sb_info *sbi, unsigned *max_links)
+>>>>>>> refs/remotes/origin/master
 {
 	struct buffer_head *bh2 = sbi->s_bh2;
 	struct v7_super_block *sbd = (struct v7_super_block *)bh2->b_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sbi->s_link_max = V7_LINK_MAX;
+=======
+	*max_links = V7_LINK_MAX;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*max_links = V7_LINK_MAX;
+>>>>>>> refs/remotes/origin/master
 	sbi->s_fic_size = V7_NICINOD;
 	sbi->s_flc_size = V7_NICFREE;
 	sbi->s_sbd1 = (char *)sbd;
@@ -290,7 +370,15 @@ static char *flavour_names[] = {
 	[FSTYPE_AFS]	= "AFS",
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void (*flavour_setup[])(struct sysv_sb_info *) = {
+=======
+static void (*flavour_setup[])(struct sysv_sb_info *, unsigned *) = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void (*flavour_setup[])(struct sysv_sb_info *, unsigned *) = {
+>>>>>>> refs/remotes/origin/master
 	[FSTYPE_XENIX]	= detected_xenix,
 	[FSTYPE_SYSV4]	= detected_sysv4,
 	[FSTYPE_SYSV2]	= detected_sysv2,
@@ -310,7 +398,15 @@ static int complete_read_super(struct super_block *sb, int silent, int size)
 
 	sbi->s_firstinodezone = 2;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	flavour_setup[sbi->s_type](sbi);
+=======
+	flavour_setup[sbi->s_type](sbi, &sb->s_max_links);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	flavour_setup[sbi->s_type](sbi, &sb->s_max_links);
+>>>>>>> refs/remotes/origin/master
 	
 	sbi->s_truncate = 1;
 	sbi->s_ndatazones = sbi->s_nzones - sbi->s_firstdatazone;
@@ -341,9 +437,19 @@ static int complete_read_super(struct super_block *sb, int silent, int size)
 		printk("SysV FS: get root inode failed\n");
 		return 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root_inode);
 	if (!sb->s_root) {
 		iput(root_inode);
+=======
+	sb->s_root = d_make_root(root_inode);
+	if (!sb->s_root) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(root_inode);
+	if (!sb->s_root) {
+>>>>>>> refs/remotes/origin/master
 		printk("SysV FS: get root dentry failed\n");
 		return 0;
 	}
@@ -369,6 +475,10 @@ static int sysv_fill_super(struct super_block *sb, void *data, int silent)
 
 	sbi->s_sb = sb;
 	sbi->s_block_base = 0;
+<<<<<<< HEAD
+=======
+	mutex_init(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 	sb->s_fs_info = sbi;
 
 	sb_set_blocksize(sb, BLOCK_SIZE);
@@ -487,6 +597,10 @@ static int v7_fill_super(struct super_block *sb, void *data, int silent)
 	sbi->s_sb = sb;
 	sbi->s_block_base = 0;
 	sbi->s_type = FSTYPE_V7;
+<<<<<<< HEAD
+=======
+	mutex_init(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 	sb->s_fs_info = sbi;
 	
 	sb_set_blocksize(sb, 512);
@@ -545,6 +659,10 @@ static struct file_system_type sysv_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("sysv");
+>>>>>>> refs/remotes/origin/master
 
 static struct file_system_type v7_fs_type = {
 	.owner		= THIS_MODULE,
@@ -553,6 +671,11 @@ static struct file_system_type v7_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("v7");
+MODULE_ALIAS("v7");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_sysv_fs(void)
 {
@@ -586,5 +709,8 @@ static void __exit exit_sysv_fs(void)
 
 module_init(init_sysv_fs)
 module_exit(exit_sysv_fs)
+<<<<<<< HEAD
 MODULE_ALIAS("v7");
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

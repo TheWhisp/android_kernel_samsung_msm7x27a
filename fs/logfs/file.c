@@ -159,7 +159,12 @@ static int logfs_writepage(struct page *page, struct writeback_control *wbc)
 	return __logfs_writepage(page);
 }
 
+<<<<<<< HEAD
 static void logfs_invalidatepage(struct page *page, unsigned long offset)
+=======
+static void logfs_invalidatepage(struct page *page, unsigned int offset,
+				 unsigned int length)
+>>>>>>> refs/remotes/origin/master
 {
 	struct logfs_block *block = logfs_block(page);
 
@@ -183,7 +188,11 @@ static int logfs_releasepage(struct page *page, gfp_t only_xfs_uses_this)
 
 long logfs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct logfs_inode *li = logfs_inode(inode);
 	unsigned int oldflags, flags;
 	int err;
@@ -219,11 +228,36 @@ long logfs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int logfs_fsync(struct file *file, int datasync)
 {
 	struct super_block *sb = file->f_mapping->host->i_sb;
 
 	logfs_write_anchor(sb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int logfs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+{
+	struct super_block *sb = file->f_mapping->host->i_sb;
+	struct inode *inode = file->f_mapping->host;
+	int ret;
+
+	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (ret)
+		return ret;
+
+	mutex_lock(&inode->i_mutex);
+	logfs_get_wblocks(sb, NULL, WF_LOCK);
+	logfs_write_anchor(sb);
+	logfs_put_wblocks(sb, NULL, WF_LOCK);
+	mutex_unlock(&inode->i_mutex);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

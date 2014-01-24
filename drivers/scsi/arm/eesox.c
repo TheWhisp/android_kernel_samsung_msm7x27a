@@ -273,7 +273,11 @@ static void eesoxscsi_buffer_out(void *buf, int length, void __iomem *base)
 {
 	const void __iomem *reg_fas = base + EESOX_FAS216_OFFSET;
 	const void __iomem *reg_dmastat = base + EESOX_DMASTAT;
+<<<<<<< HEAD
 	const void __iomem *reg_dmadata = base + EESOX_DMADATA;
+=======
+	void __iomem *reg_dmadata = base + EESOX_DMADATA;
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		unsigned int status;
@@ -422,6 +426,7 @@ eesoxscsi_set_proc_info(struct Scsi_Host *host, char *buffer, int length)
 	return ret;
 }
 
+<<<<<<< HEAD
 /* Prototype: int eesoxscsi_proc_info(char *buffer, char **start, off_t offset,
  *				      int length, int host_no, int inout)
  * Purpose  : Return information about the driver to a user process accessing
@@ -461,6 +466,22 @@ int eesoxscsi_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_
 		pos = length;
 
 	return pos;
+=======
+static int eesoxscsi_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	struct eesoxscsi_info *info;
+
+	info = (struct eesoxscsi_info *)host->hostdata;
+
+	seq_printf(m, "EESOX SCSI driver v%s\n", VERSION);
+	fas216_print_host(&info->info, m);
+	seq_printf(m, "Term    : o%s\n",
+			info->control & EESOX_TERM_ENABLE ? "n" : "ff");
+
+	fas216_print_stats(&info->info, m);
+	fas216_print_devices(&info->info, m);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t eesoxscsi_show_term(struct device *dev, struct device_attribute *attr, char *buf)
@@ -498,7 +519,12 @@ static DEVICE_ATTR(bus_term, S_IRUGO | S_IWUSR,
 
 static struct scsi_host_template eesox_template = {
 	.module				= THIS_MODULE,
+<<<<<<< HEAD
 	.proc_info			= eesoxscsi_proc_info,
+=======
+	.show_info			= eesoxscsi_show_info,
+	.write_info			= eesoxscsi_set_proc_info,
+>>>>>>> refs/remotes/origin/master
 	.name				= "EESOX SCSI",
 	.info				= eesoxscsi_info,
 	.queuecommand			= fas216_queue_command,
@@ -515,8 +541,12 @@ static struct scsi_host_template eesox_template = {
 	.proc_name			= "eesox",
 };
 
+<<<<<<< HEAD
 static int __devinit
 eesoxscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
+=======
+static int eesoxscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host;
 	struct eesoxscsi_info *info;
@@ -617,7 +647,11 @@ eesoxscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit eesoxscsi_remove(struct expansion_card *ec)
+=======
+static void eesoxscsi_remove(struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = ecard_get_drvdata(ec);
 	struct eesoxscsi_info *info = (struct eesoxscsi_info *)host->hostdata;
@@ -643,7 +677,11 @@ static const struct ecard_id eesoxscsi_cids[] = {
 
 static struct ecard_driver eesoxscsi_driver = {
 	.probe		= eesoxscsi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(eesoxscsi_remove),
+=======
+	.remove		= eesoxscsi_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= eesoxscsi_cids,
 	.drv = {
 		.name		= "eesoxscsi",

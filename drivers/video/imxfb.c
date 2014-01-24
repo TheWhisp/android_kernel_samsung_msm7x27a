@@ -31,9 +31,20 @@
 #include <linux/dma-mapping.h>
 #include <linux/io.h>
 #include <linux/math64.h>
+<<<<<<< HEAD
 
 #include <mach/imxfb.h>
 #include <mach/hardware.h>
+=======
+#include <linux/of.h>
+#include <linux/of_device.h>
+
+#include <video/of_display_timing.h>
+#include <video/of_videomode.h>
+#include <video/videomode.h>
+
+#include <linux/platform_data/video-imxfb.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Complain if VAR is out of range.
@@ -53,8 +64,13 @@
 #define LCDC_SIZE	0x04
 #define SIZE_XMAX(x)	((((x) >> 4) & 0x3f) << 20)
 
+<<<<<<< HEAD
 #define YMAX_MASK       (cpu_is_mx1() ? 0x1ff : 0x3ff)
 #define SIZE_YMAX(y)	((y) & YMAX_MASK)
+=======
+#define YMAX_MASK_IMX1	0x1ff
+#define YMAX_MASK_IMX21	0x3ff
+>>>>>>> refs/remotes/origin/master
 
 #define LCDC_VPW	0x08
 #define VPW_VPW(x)	((x) & 0x3ff)
@@ -113,10 +129,18 @@
 #define LCDISR_EOF	(1<<1)
 #define LCDISR_BOF	(1<<0)
 
+<<<<<<< HEAD
 /* Used fb-mode. Can be set on kernel command line, therefore file-static. */
 static const char *fb_mode;
 
 
+=======
+#define IMXFB_LSCR1_DEFAULT 0x00120300
+
+/* Used fb-mode. Can be set on kernel command line, therefore file-static. */
+static const char *fb_mode;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * These are the bitfields for each
  * display depth that we support.
@@ -128,10 +152,26 @@ struct imxfb_rgb {
 	struct fb_bitfield	transp;
 };
 
+<<<<<<< HEAD
 struct imxfb_info {
 	struct platform_device  *pdev;
 	void __iomem		*regs;
 	struct clk		*clk;
+=======
+enum imxfb_type {
+	IMX1_FB,
+	IMX21_FB,
+};
+
+struct imxfb_info {
+	struct platform_device  *pdev;
+	void __iomem		*regs;
+	struct clk		*clk_ipg;
+	struct clk		*clk_ahb;
+	struct clk		*clk_per;
+	enum imxfb_type		devtype;
+	bool			enabled;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * These are the addresses we mapped
@@ -166,6 +206,40 @@ struct imxfb_info {
 	void (*backlight_power)(int);
 };
 
+<<<<<<< HEAD
+=======
+static struct platform_device_id imxfb_devtype[] = {
+	{
+		.name = "imx1-fb",
+		.driver_data = IMX1_FB,
+	}, {
+		.name = "imx21-fb",
+		.driver_data = IMX21_FB,
+	}, {
+		/* sentinel */
+	}
+};
+MODULE_DEVICE_TABLE(platform, imxfb_devtype);
+
+static struct of_device_id imxfb_of_dev_id[] = {
+	{
+		.compatible = "fsl,imx1-fb",
+		.data = &imxfb_devtype[IMX1_FB],
+	}, {
+		.compatible = "fsl,imx21-fb",
+		.data = &imxfb_devtype[IMX21_FB],
+	}, {
+		/* sentinel */
+	}
+};
+MODULE_DEVICE_TABLE(of, imxfb_of_dev_id);
+
+static inline int is_imx1_fb(struct imxfb_info *fbi)
+{
+	return fbi->devtype == IMX1_FB;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define IMX_NAME	"IMX"
 
 /*
@@ -293,6 +367,12 @@ static const struct imx_fb_videomode *imxfb_find_mode(struct imxfb_info *fbi)
 	struct imx_fb_videomode *m;
 	int i;
 
+<<<<<<< HEAD
+=======
+	if (!fb_mode)
+		return &fbi->mode[0];
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0, m = &fbi->mode[0]; i < fbi->num_modes; i++, m++) {
 		if (!strcmp(m->mode.name, fb_mode))
 			return m;
@@ -340,7 +420,11 @@ static int imxfb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 
 	pr_debug("var->bits_per_pixel=%d\n", var->bits_per_pixel);
 
+<<<<<<< HEAD
 	lcd_clk = clk_get_rate(fbi->clk);
+=======
+	lcd_clk = clk_get_rate(fbi->clk_per);
+>>>>>>> refs/remotes/origin/master
 
 	tmp = var->pixclock * (unsigned long long)lcd_clk;
 
@@ -364,7 +448,11 @@ static int imxfb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 		break;
 	case 16:
 	default:
+<<<<<<< HEAD
 		if (cpu_is_mx1())
+=======
+		if (is_imx1_fb(fbi))
+>>>>>>> refs/remotes/origin/master
 			pcr |= PCR_BPIX_12;
 		else
 			pcr |= PCR_BPIX_16;
@@ -448,6 +536,12 @@ static int imxfb_bl_update_status(struct backlight_device *bl)
 	struct imxfb_info *fbi = bl_get_data(bl);
 	int brightness = bl->props.brightness;
 
+<<<<<<< HEAD
+=======
+	if (!fbi->pwmr)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (bl->props.power != FB_BLANK_UNBLANK)
 		brightness = 0;
 	if (bl->props.fb_blank != FB_BLANK_UNBLANK)
@@ -455,11 +549,25 @@ static int imxfb_bl_update_status(struct backlight_device *bl)
 
 	fbi->pwmr = (fbi->pwmr & ~0xFF) | brightness;
 
+<<<<<<< HEAD
 	if (bl->props.fb_blank != FB_BLANK_UNBLANK)
 		clk_enable(fbi->clk);
 	writel(fbi->pwmr, fbi->regs + LCDC_PWMR);
 	if (bl->props.fb_blank != FB_BLANK_UNBLANK)
 		clk_disable(fbi->clk);
+=======
+	if (bl->props.fb_blank != FB_BLANK_UNBLANK) {
+		clk_prepare_enable(fbi->clk_ipg);
+		clk_prepare_enable(fbi->clk_ahb);
+		clk_prepare_enable(fbi->clk_per);
+	}
+	writel(fbi->pwmr, fbi->regs + LCDC_PWMR);
+	if (bl->props.fb_blank != FB_BLANK_UNBLANK) {
+		clk_disable_unprepare(fbi->clk_per);
+		clk_disable_unprepare(fbi->clk_ahb);
+		clk_disable_unprepare(fbi->clk_ipg);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -505,6 +613,13 @@ static void imxfb_exit_backlight(struct imxfb_info *fbi)
 
 static void imxfb_enable_controller(struct imxfb_info *fbi)
 {
+<<<<<<< HEAD
+=======
+
+	if (fbi->enabled)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	pr_debug("Enabling LCD controller\n");
 
 	writel(fbi->screen_dma, fbi->regs + LCDC_SSA);
@@ -522,7 +637,14 @@ static void imxfb_enable_controller(struct imxfb_info *fbi)
 	 */
 	writel(RMCR_LCDC_EN_MX1, fbi->regs + LCDC_RMCR);
 
+<<<<<<< HEAD
 	clk_enable(fbi->clk);
+=======
+	clk_prepare_enable(fbi->clk_ipg);
+	clk_prepare_enable(fbi->clk_ahb);
+	clk_prepare_enable(fbi->clk_per);
+	fbi->enabled = true;
+>>>>>>> refs/remotes/origin/master
 
 	if (fbi->backlight_power)
 		fbi->backlight_power(1);
@@ -532,6 +654,12 @@ static void imxfb_enable_controller(struct imxfb_info *fbi)
 
 static void imxfb_disable_controller(struct imxfb_info *fbi)
 {
+<<<<<<< HEAD
+=======
+	if (!fbi->enabled)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	pr_debug("Disabling LCD controller\n");
 
 	if (fbi->backlight_power)
@@ -539,7 +667,14 @@ static void imxfb_disable_controller(struct imxfb_info *fbi)
 	if (fbi->lcd_power)
 		fbi->lcd_power(0);
 
+<<<<<<< HEAD
 	clk_disable(fbi->clk);
+=======
+	clk_disable_unprepare(fbi->clk_per);
+	clk_disable_unprepare(fbi->clk_ipg);
+	clk_disable_unprepare(fbi->clk_ahb);
+	fbi->enabled = false;
+>>>>>>> refs/remotes/origin/master
 
 	writel(0, fbi->regs + LCDC_RMCR);
 }
@@ -584,6 +719,10 @@ static struct fb_ops imxfb_ops = {
 static int imxfb_activate_var(struct fb_var_screeninfo *var, struct fb_info *info)
 {
 	struct imxfb_info *fbi = info->par;
+<<<<<<< HEAD
+=======
+	u32 ymax_mask = is_imx1_fb(fbi) ? YMAX_MASK_IMX1 : YMAX_MASK_IMX21;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("var: xres=%d hslen=%d lm=%d rm=%d\n",
 		var->xres, var->hsync_len,
@@ -605,7 +744,11 @@ static int imxfb_activate_var(struct fb_var_screeninfo *var, struct fb_info *inf
 	if (var->right_margin > 255)
 		printk(KERN_ERR "%s: invalid right_margin %d\n",
 			info->fix.id, var->right_margin);
+<<<<<<< HEAD
 	if (var->yres < 1 || var->yres > YMAX_MASK)
+=======
+	if (var->yres < 1 || var->yres > ymax_mask)
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "%s: invalid yres %d\n",
 			info->fix.id, var->yres);
 	if (var->vsync_len > 100)
@@ -633,15 +776,30 @@ static int imxfb_activate_var(struct fb_var_screeninfo *var, struct fb_info *inf
 		VCR_V_WAIT_2(var->upper_margin),
 		fbi->regs + LCDC_VCR);
 
+<<<<<<< HEAD
 	writel(SIZE_XMAX(var->xres) | SIZE_YMAX(var->yres),
+=======
+	writel(SIZE_XMAX(var->xres) | (var->yres & ymax_mask),
+>>>>>>> refs/remotes/origin/master
 			fbi->regs + LCDC_SIZE);
 
 	writel(fbi->pcr, fbi->regs + LCDC_PCR);
 #ifndef PWMR_BACKLIGHT_AVAILABLE
+<<<<<<< HEAD
 	writel(fbi->pwmr, fbi->regs + LCDC_PWMR);
 #endif
 	writel(fbi->lscr1, fbi->regs + LCDC_LSCR1);
 	writel(fbi->dmacr, fbi->regs + LCDC_DMACR);
+=======
+	if (fbi->pwmr)
+		writel(fbi->pwmr, fbi->regs + LCDC_PWMR);
+#endif
+	writel(fbi->lscr1, fbi->regs + LCDC_LSCR1);
+
+	/* dmacr = 0 is no valid value, as we need DMA control marks. */
+	if (fbi->dmacr)
+		writel(fbi->dmacr, fbi->regs + LCDC_DMACR);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -677,6 +835,7 @@ static int imxfb_resume(struct platform_device *dev)
 #define imxfb_resume	NULL
 #endif
 
+<<<<<<< HEAD
 static int __init imxfb_init_fbinfo(struct platform_device *pdev)
 {
 	struct imx_fb_platform_data *pdata = pdev->dev.platform_data;
@@ -684,6 +843,14 @@ static int __init imxfb_init_fbinfo(struct platform_device *pdev)
 	struct imxfb_info *fbi = info->par;
 	struct imx_fb_videomode *m;
 	int i;
+=======
+static int imxfb_init_fbinfo(struct platform_device *pdev)
+{
+	struct imx_fb_platform_data *pdata = dev_get_platdata(&pdev->dev);
+	struct fb_info *info = dev_get_drvdata(&pdev->dev);
+	struct imxfb_info *fbi = info->par;
+	struct device_node *np;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s\n",__func__);
 
@@ -693,6 +860,11 @@ static int __init imxfb_init_fbinfo(struct platform_device *pdev)
 
 	memset(fbi, 0, sizeof(struct imxfb_info));
 
+<<<<<<< HEAD
+=======
+	fbi->devtype = pdev->id_entry->driver_data;
+
+>>>>>>> refs/remotes/origin/master
 	strlcpy(info->fix.id, IMX_NAME, sizeof(info->fix.id));
 
 	info->fix.type			= FB_TYPE_PACKED_PIXELS;
@@ -712,6 +884,7 @@ static int __init imxfb_init_fbinfo(struct platform_device *pdev)
 	info->fbops			= &imxfb_ops;
 	info->flags			= FBINFO_FLAG_DEFAULT |
 					  FBINFO_READS_FAST;
+<<<<<<< HEAD
 	info->var.grayscale		= pdata->cmap_greyscale;
 	fbi->cmap_inverse		= pdata->cmap_inverse;
 	fbi->cmap_static		= pdata->cmap_static;
@@ -724,29 +897,116 @@ static int __init imxfb_init_fbinfo(struct platform_device *pdev)
 	for (i = 0, m = &pdata->mode[0]; i < pdata->num_modes; i++, m++)
 		info->fix.smem_len = max_t(size_t, info->fix.smem_len,
 				m->mode.xres * m->mode.yres * m->bpp / 8);
+=======
+	if (pdata) {
+		info->var.grayscale		= pdata->cmap_greyscale;
+		fbi->cmap_inverse		= pdata->cmap_inverse;
+		fbi->cmap_static		= pdata->cmap_static;
+		fbi->lscr1			= pdata->lscr1;
+		fbi->dmacr			= pdata->dmacr;
+		fbi->pwmr			= pdata->pwmr;
+		fbi->lcd_power			= pdata->lcd_power;
+		fbi->backlight_power		= pdata->backlight_power;
+	} else {
+		np = pdev->dev.of_node;
+		info->var.grayscale = of_property_read_bool(np,
+						"cmap-greyscale");
+		fbi->cmap_inverse = of_property_read_bool(np, "cmap-inverse");
+		fbi->cmap_static = of_property_read_bool(np, "cmap-static");
+
+		fbi->lscr1 = IMXFB_LSCR1_DEFAULT;
+		of_property_read_u32(np, "fsl,lscr1", &fbi->lscr1);
+
+		of_property_read_u32(np, "fsl,dmacr", &fbi->dmacr);
+
+		/* These two function pointers could be used by some specific
+		 * platforms. */
+		fbi->lcd_power = NULL;
+		fbi->backlight_power = NULL;
+	}
 
 	return 0;
 }
 
+static int imxfb_of_read_mode(struct device *dev, struct device_node *np,
+		struct imx_fb_videomode *imxfb_mode)
+{
+	int ret;
+	struct fb_videomode *of_mode = &imxfb_mode->mode;
+	u32 bpp;
+	u32 pcr;
+
+	ret = of_property_read_string(np, "model", &of_mode->name);
+	if (ret)
+		of_mode->name = NULL;
+
+	ret = of_get_fb_videomode(np, of_mode, OF_USE_NATIVE_MODE);
+	if (ret) {
+		dev_err(dev, "Failed to get videomode from DT\n");
+		return ret;
+	}
+
+	ret = of_property_read_u32(np, "bits-per-pixel", &bpp);
+	ret |= of_property_read_u32(np, "fsl,pcr", &pcr);
+
+	if (ret) {
+		dev_err(dev, "Failed to read bpp and pcr from DT\n");
+		return -EINVAL;
+	}
+
+	if (bpp < 1 || bpp > 255) {
+		dev_err(dev, "Bits per pixel have to be between 1 and 255\n");
+		return -EINVAL;
+	}
+
+	imxfb_mode->bpp = bpp;
+	imxfb_mode->pcr = pcr;
+>>>>>>> refs/remotes/origin/master
+
+	return 0;
+}
+
+<<<<<<< HEAD
 static int __init imxfb_probe(struct platform_device *pdev)
+=======
+static int imxfb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct imxfb_info *fbi;
 	struct fb_info *info;
 	struct imx_fb_platform_data *pdata;
 	struct resource *res;
+<<<<<<< HEAD
 	int ret, i;
 
 	dev_info(&pdev->dev, "i.MX Framebuffer driver\n");
 
+=======
+	struct imx_fb_videomode *m;
+	const struct of_device_id *of_id;
+	int ret, i;
+	int bytes_per_pixel;
+
+	dev_info(&pdev->dev, "i.MX Framebuffer driver\n");
+
+	of_id = of_match_device(imxfb_of_dev_id, &pdev->dev);
+	if (of_id)
+		pdev->id_entry = of_id->data;
+
+>>>>>>> refs/remotes/origin/master
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
 	if (!pdata) {
 		dev_err(&pdev->dev,"No platform_data available\n");
 		return -ENOMEM;
 	}
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	info = framebuffer_alloc(sizeof(struct imxfb_info), &pdev->dev);
 	if (!info)
@@ -754,15 +1014,64 @@ static int __init imxfb_probe(struct platform_device *pdev)
 
 	fbi = info->par;
 
+<<<<<<< HEAD
 	if (!fb_mode)
 		fb_mode = pdata->mode[0].mode.name;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	platform_set_drvdata(pdev, info);
 
 	ret = imxfb_init_fbinfo(pdev);
 	if (ret < 0)
 		goto failed_init;
 
+<<<<<<< HEAD
+=======
+	if (pdata) {
+		if (!fb_mode)
+			fb_mode = pdata->mode[0].mode.name;
+
+		fbi->mode = pdata->mode;
+		fbi->num_modes = pdata->num_modes;
+	} else {
+		struct device_node *display_np;
+		fb_mode = NULL;
+
+		display_np = of_parse_phandle(pdev->dev.of_node, "display", 0);
+		if (!display_np) {
+			dev_err(&pdev->dev, "No display defined in devicetree\n");
+			ret = -EINVAL;
+			goto failed_of_parse;
+		}
+
+		/*
+		 * imxfb does not support more modes, we choose only the native
+		 * mode.
+		 */
+		fbi->num_modes = 1;
+
+		fbi->mode = devm_kzalloc(&pdev->dev,
+				sizeof(struct imx_fb_videomode), GFP_KERNEL);
+		if (!fbi->mode) {
+			ret = -ENOMEM;
+			goto failed_of_parse;
+		}
+
+		ret = imxfb_of_read_mode(&pdev->dev, display_np, fbi->mode);
+		if (ret)
+			goto failed_of_parse;
+	}
+
+	/* Calculate maximum bytes used per pixel. In most cases this should
+	 * be the same as m->bpp/8 */
+	m = &fbi->mode[0];
+	bytes_per_pixel = (m->bpp + 7) / 8;
+	for (i = 0; i < fbi->num_modes; i++, m++)
+		info->fix.smem_len = max_t(size_t, info->fix.smem_len,
+				m->mode.xres * m->mode.yres * bytes_per_pixel);
+
+>>>>>>> refs/remotes/origin/master
 	res = request_mem_region(res->start, resource_size(res),
 				DRIVER_NAME);
 	if (!res) {
@@ -770,20 +1079,47 @@ static int __init imxfb_probe(struct platform_device *pdev)
 		goto failed_req;
 	}
 
+<<<<<<< HEAD
 	fbi->clk = clk_get(&pdev->dev, NULL);
 	if (IS_ERR(fbi->clk)) {
 		ret = PTR_ERR(fbi->clk);
 		dev_err(&pdev->dev, "unable to get clock: %d\n", ret);
+=======
+	fbi->clk_ipg = devm_clk_get(&pdev->dev, "ipg");
+	if (IS_ERR(fbi->clk_ipg)) {
+		ret = PTR_ERR(fbi->clk_ipg);
+		goto failed_getclock;
+	}
+
+	fbi->clk_ahb = devm_clk_get(&pdev->dev, "ahb");
+	if (IS_ERR(fbi->clk_ahb)) {
+		ret = PTR_ERR(fbi->clk_ahb);
+		goto failed_getclock;
+	}
+
+	fbi->clk_per = devm_clk_get(&pdev->dev, "per");
+	if (IS_ERR(fbi->clk_per)) {
+		ret = PTR_ERR(fbi->clk_per);
+>>>>>>> refs/remotes/origin/master
 		goto failed_getclock;
 	}
 
 	fbi->regs = ioremap(res->start, resource_size(res));
 	if (fbi->regs == NULL) {
 		dev_err(&pdev->dev, "Cannot map frame buffer registers\n");
+<<<<<<< HEAD
 		goto failed_ioremap;
 	}
 
 	if (!pdata->fixed_screen_cpu) {
+=======
+		ret = -ENOMEM;
+		goto failed_ioremap;
+	}
+
+	/* Seems not being used by anyone, so no support for oftree */
+	if (!pdata || !pdata->fixed_screen_cpu) {
+>>>>>>> refs/remotes/origin/master
 		fbi->map_size = PAGE_ALIGN(info->fix.smem_len);
 		fbi->map_cpu = dma_alloc_writecombine(&pdev->dev,
 				fbi->map_size, &fbi->map_dma, GFP_KERNEL);
@@ -808,18 +1144,29 @@ static int __init imxfb_probe(struct platform_device *pdev)
 		info->fix.smem_start = fbi->screen_dma;
 	}
 
+<<<<<<< HEAD
 	if (pdata->init) {
+=======
+	if (pdata && pdata->init) {
+>>>>>>> refs/remotes/origin/master
 		ret = pdata->init(fbi->pdev);
 		if (ret)
 			goto failed_platform_init;
 	}
 
+<<<<<<< HEAD
 	fbi->mode = pdata->mode;
 	fbi->num_modes = pdata->num_modes;
 
 	INIT_LIST_HEAD(&info->modelist);
 	for (i = 0; i < pdata->num_modes; i++)
 		fb_add_videomode(&pdata->mode[i].mode, &info->modelist);
+=======
+
+	INIT_LIST_HEAD(&info->modelist);
+	for (i = 0; i < fbi->num_modes; i++)
+		fb_add_videomode(&fbi->mode[i].mode, &info->modelist);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * This makes sure that our colour bitfield
@@ -849,15 +1196,23 @@ static int __init imxfb_probe(struct platform_device *pdev)
 failed_register:
 	fb_dealloc_cmap(&info->cmap);
 failed_cmap:
+<<<<<<< HEAD
 	if (pdata->exit)
 		pdata->exit(fbi->pdev);
 failed_platform_init:
 	if (!pdata->fixed_screen_cpu)
+=======
+	if (pdata && pdata->exit)
+		pdata->exit(fbi->pdev);
+failed_platform_init:
+	if (pdata && !pdata->fixed_screen_cpu)
+>>>>>>> refs/remotes/origin/master
 		dma_free_writecombine(&pdev->dev,fbi->map_size,fbi->map_cpu,
 			fbi->map_dma);
 failed_map:
 	iounmap(fbi->regs);
 failed_ioremap:
+<<<<<<< HEAD
 	clk_put(fbi->clk);
 failed_getclock:
 	release_mem_region(res->start, resource_size(res));
@@ -865,11 +1220,23 @@ failed_req:
 	kfree(info->pseudo_palette);
 failed_init:
 	platform_set_drvdata(pdev, NULL);
+=======
+failed_getclock:
+	release_mem_region(res->start, resource_size(res));
+failed_req:
+failed_of_parse:
+	kfree(info->pseudo_palette);
+failed_init:
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(info);
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit imxfb_remove(struct platform_device *pdev)
+=======
+static int imxfb_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct imx_fb_platform_data *pdata;
 	struct fb_info *info = platform_get_drvdata(pdev);
@@ -885,8 +1252,13 @@ static int __devexit imxfb_remove(struct platform_device *pdev)
 #endif
 	unregister_framebuffer(info);
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
 	if (pdata->exit)
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+	if (pdata && pdata->exit)
+>>>>>>> refs/remotes/origin/master
 		pdata->exit(fbi->pdev);
 
 	fb_dealloc_cmap(&info->cmap);
@@ -895,15 +1267,22 @@ static int __devexit imxfb_remove(struct platform_device *pdev)
 
 	iounmap(fbi->regs);
 	release_mem_region(res->start, resource_size(res));
+<<<<<<< HEAD
 	clk_disable(fbi->clk);
 	clk_put(fbi->clk);
 
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 void  imxfb_shutdown(struct platform_device * dev)
+=======
+static void imxfb_shutdown(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = platform_get_drvdata(dev);
 	struct imxfb_info *fbi = info->par;
@@ -913,11 +1292,21 @@ void  imxfb_shutdown(struct platform_device * dev)
 static struct platform_driver imxfb_driver = {
 	.suspend	= imxfb_suspend,
 	.resume		= imxfb_resume,
+<<<<<<< HEAD
 	.remove		= __devexit_p(imxfb_remove),
 	.shutdown	= imxfb_shutdown,
 	.driver		= {
 		.name	= DRIVER_NAME,
 	},
+=======
+	.remove		= imxfb_remove,
+	.shutdown	= imxfb_shutdown,
+	.driver		= {
+		.name	= DRIVER_NAME,
+		.of_match_table = imxfb_of_dev_id,
+	},
+	.id_table	= imxfb_devtype,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int imxfb_setup(void)
@@ -941,7 +1330,11 @@ static int imxfb_setup(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 int __init imxfb_init(void)
+=======
+static int __init imxfb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = imxfb_setup();
 

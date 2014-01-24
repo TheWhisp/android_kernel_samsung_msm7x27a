@@ -13,12 +13,21 @@
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/irqs.h>
 #include <mach/map.h>
 #include <mach/dma.h>
 
 #include <plat/devs.h>
+<<<<<<< HEAD
 #include <plat/audio.h>
 #include <plat/gpio-cfg.h>
 
@@ -26,6 +35,11 @@ static const char *rclksrc[] = {
 	[0] = "iis",
 	[1] = "audio-bus",
 };
+=======
+#include <linux/platform_data/asoc-s3c.h>
+#include <plat/gpio-cfg.h>
+#include <mach/gpio-samsung.h>
+>>>>>>> refs/remotes/origin/master
 
 static int s3c64xx_i2s_cfg_gpio(struct platform_device *pdev)
 {
@@ -56,6 +70,7 @@ static int s3c64xx_i2s_cfg_gpio(struct platform_device *pdev)
 }
 
 static struct resource s3c64xx_iis0_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C64XX_PA_IIS0,
 		.end   = S3C64XX_PA_IIS0 + 0x100 - 1,
@@ -71,15 +86,23 @@ static struct resource s3c64xx_iis0_resource[] = {
 		.end   = DMACH_I2S0_IN,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S3C64XX_PA_IIS0, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_I2S0_OUT),
+	[2] = DEFINE_RES_DMA(DMACH_I2S0_IN),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c_audio_pdata i2sv3_pdata = {
 	.cfg_gpio = s3c64xx_i2s_cfg_gpio,
+<<<<<<< HEAD
 	.type = {
 		.i2s = {
 			.src_clk = rclksrc,
 		},
 	},
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s3c64xx_device_iis0 = {
@@ -94,6 +117,7 @@ struct platform_device s3c64xx_device_iis0 = {
 EXPORT_SYMBOL(s3c64xx_device_iis0);
 
 static struct resource s3c64xx_iis1_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C64XX_PA_IIS1,
 		.end   = S3C64XX_PA_IIS1 + 0x100 - 1,
@@ -109,6 +133,11 @@ static struct resource s3c64xx_iis1_resource[] = {
 		.end   = DMACH_I2S1_IN,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S3C64XX_PA_IIS1, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_I2S1_OUT),
+	[2] = DEFINE_RES_DMA(DMACH_I2S1_IN),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s3c64xx_device_iis1 = {
@@ -123,6 +152,7 @@ struct platform_device s3c64xx_device_iis1 = {
 EXPORT_SYMBOL(s3c64xx_device_iis1);
 
 static struct resource s3c64xx_iisv4_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C64XX_PA_IISV4,
 		.end   = S3C64XX_PA_IISV4 + 0x100 - 1,
@@ -138,6 +168,11 @@ static struct resource s3c64xx_iisv4_resource[] = {
 		.end   = DMACH_HSI_I2SV40_RX,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S3C64XX_PA_IISV4, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_HSI_I2SV40_TX),
+	[2] = DEFINE_RES_DMA(DMACH_HSI_I2SV40_RX),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c_audio_pdata i2sv4_pdata = {
@@ -145,7 +180,10 @@ static struct s3c_audio_pdata i2sv4_pdata = {
 	.type = {
 		.i2s = {
 			.quirks = QUIRK_PRI_6CHAN,
+<<<<<<< HEAD
 			.src_clk = rclksrc,
+=======
+>>>>>>> refs/remotes/origin/master
 		},
 	},
 };
@@ -186,6 +224,7 @@ static int s3c64xx_pcm_cfg_gpio(struct platform_device *pdev)
 }
 
 static struct resource s3c64xx_pcm0_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C64XX_PA_PCM0,
 		.end   = S3C64XX_PA_PCM0 + 0x100 - 1,
@@ -201,6 +240,11 @@ static struct resource s3c64xx_pcm0_resource[] = {
 		.end   = DMACH_PCM0_RX,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S3C64XX_PA_PCM0, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_PCM0_TX),
+	[2] = DEFINE_RES_DMA(DMACH_PCM0_RX),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c_audio_pdata s3c_pcm0_pdata = {
@@ -219,6 +263,7 @@ struct platform_device s3c64xx_device_pcm0 = {
 EXPORT_SYMBOL(s3c64xx_device_pcm0);
 
 static struct resource s3c64xx_pcm1_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C64XX_PA_PCM1,
 		.end   = S3C64XX_PA_PCM1 + 0x100 - 1,
@@ -234,6 +279,11 @@ static struct resource s3c64xx_pcm1_resource[] = {
 		.end   = DMACH_PCM1_RX,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S3C64XX_PA_PCM1, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_PCM1_TX),
+	[2] = DEFINE_RES_DMA(DMACH_PCM1_RX),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c_audio_pdata s3c_pcm1_pdata = {
@@ -264,6 +314,7 @@ static int s3c64xx_ac97_cfg_gpe(struct platform_device *pdev)
 }
 
 static struct resource s3c64xx_ac97_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C64XX_PA_AC97,
 		.end   = S3C64XX_PA_AC97 + 0x100 - 1,
@@ -289,6 +340,13 @@ static struct resource s3c64xx_ac97_resource[] = {
 		.end   = IRQ_AC97,
 		.flags = IORESOURCE_IRQ,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S3C64XX_PA_AC97, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_AC97_PCMOUT),
+	[2] = DEFINE_RES_DMA(DMACH_AC97_PCMIN),
+	[3] = DEFINE_RES_DMA(DMACH_AC97_MICIN),
+	[4] = DEFINE_RES_IRQ(IRQ_AC97),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c_audio_pdata s3c_ac97_pdata;

@@ -36,7 +36,11 @@
 #define RBTX4938_SPICS_ADDR	(IO_BASE + TXX9_CE(2) + 0x00005002)
 #define RBTX4938_SFPWR_ADDR	(IO_BASE + TXX9_CE(2) + 0x00005008)
 #define RBTX4938_SFVOL_ADDR	(IO_BASE + TXX9_CE(2) + 0x0000500a)
+<<<<<<< HEAD
 #define RBTX4938_SOFTRESET_ADDR	(IO_BASE + TXX9_CE(2) + 0x00007000)
+=======
+#define RBTX4938_SOFTRESET_ADDR (IO_BASE + TXX9_CE(2) + 0x00007000)
+>>>>>>> refs/remotes/origin/master
 #define RBTX4938_SOFTRESETLOCK_ADDR	(IO_BASE + TXX9_CE(2) + 0x00007002)
 #define RBTX4938_PCIRESET_ADDR	(IO_BASE + TXX9_CE(2) + 0x00007004)
 #define RBTX4938_ETHER_BASE	(IO_BASE + TXX9_CE(2) + 0x00020000)
@@ -78,7 +82,11 @@
 #define rbtx4938_spics_addr	((__u8 __iomem *)RBTX4938_SPICS_ADDR)
 #define rbtx4938_sfpwr_addr	((__u8 __iomem *)RBTX4938_SFPWR_ADDR)
 #define rbtx4938_sfvol_addr	((__u8 __iomem *)RBTX4938_SFVOL_ADDR)
+<<<<<<< HEAD
 #define rbtx4938_softreset_addr	((__u8 __iomem *)RBTX4938_SOFTRESET_ADDR)
+=======
+#define rbtx4938_softreset_addr ((__u8 __iomem *)RBTX4938_SOFTRESET_ADDR)
+>>>>>>> refs/remotes/origin/master
 #define rbtx4938_softresetlock_addr	\
 				((__u8 __iomem *)RBTX4938_SOFTRESETLOCK_ADDR)
 #define rbtx4938_pcireset_addr	((__u8 __iomem *)RBTX4938_PCIRESET_ADDR)
@@ -94,7 +102,11 @@
 
 /* These are the virtual IRQ numbers, we divide all IRQ's into
  * 'spaces', the 'space' determines where and how to enable/disable
+<<<<<<< HEAD
  * that particular IRQ on an RBTX4938 machine.  Add new 'spaces' as new
+=======
+ * that particular IRQ on an RBTX4938 machine.	Add new 'spaces' as new
+>>>>>>> refs/remotes/origin/master
  * IRQ hardware is supported.
  */
 #define RBTX4938_NR_IRQ_IOC	8
@@ -103,18 +115,32 @@
 #define RBTX4938_IRQ_IOC	(TXX9_IRQ_BASE + TX4938_NUM_IR)
 #define RBTX4938_IRQ_END	(RBTX4938_IRQ_IOC + RBTX4938_NR_IRQ_IOC)
 
+<<<<<<< HEAD
 #define RBTX4938_IRQ_IRC_ECCERR	(RBTX4938_IRQ_IRC + TX4938_IR_ECCERR)
 #define RBTX4938_IRQ_IRC_WTOERR	(RBTX4938_IRQ_IRC + TX4938_IR_WTOERR)
 #define RBTX4938_IRQ_IRC_INT(n)	(RBTX4938_IRQ_IRC + TX4938_IR_INT(n))
 #define RBTX4938_IRQ_IRC_SIO(n)	(RBTX4938_IRQ_IRC + TX4938_IR_SIO(n))
+=======
+#define RBTX4938_IRQ_IRC_ECCERR (RBTX4938_IRQ_IRC + TX4938_IR_ECCERR)
+#define RBTX4938_IRQ_IRC_WTOERR (RBTX4938_IRQ_IRC + TX4938_IR_WTOERR)
+#define RBTX4938_IRQ_IRC_INT(n) (RBTX4938_IRQ_IRC + TX4938_IR_INT(n))
+#define RBTX4938_IRQ_IRC_SIO(n) (RBTX4938_IRQ_IRC + TX4938_IR_SIO(n))
+>>>>>>> refs/remotes/origin/master
 #define RBTX4938_IRQ_IRC_DMA(ch, n)	(RBTX4938_IRQ_IRC + TX4938_IR_DMA(ch, n))
 #define RBTX4938_IRQ_IRC_PIO	(RBTX4938_IRQ_IRC + TX4938_IR_PIO)
 #define RBTX4938_IRQ_IRC_PDMAC	(RBTX4938_IRQ_IRC + TX4938_IR_PDMAC)
 #define RBTX4938_IRQ_IRC_PCIC	(RBTX4938_IRQ_IRC + TX4938_IR_PCIC)
+<<<<<<< HEAD
 #define RBTX4938_IRQ_IRC_TMR(n)	(RBTX4938_IRQ_IRC + TX4938_IR_TMR(n))
 #define RBTX4938_IRQ_IRC_NDFMC	(RBTX4938_IRQ_IRC + TX4938_IR_NDFMC)
 #define RBTX4938_IRQ_IRC_PCIERR	(RBTX4938_IRQ_IRC + TX4938_IR_PCIERR)
 #define RBTX4938_IRQ_IRC_PCIPME	(RBTX4938_IRQ_IRC + TX4938_IR_PCIPME)
+=======
+#define RBTX4938_IRQ_IRC_TMR(n) (RBTX4938_IRQ_IRC + TX4938_IR_TMR(n))
+#define RBTX4938_IRQ_IRC_NDFMC	(RBTX4938_IRQ_IRC + TX4938_IR_NDFMC)
+#define RBTX4938_IRQ_IRC_PCIERR (RBTX4938_IRQ_IRC + TX4938_IR_PCIERR)
+#define RBTX4938_IRQ_IRC_PCIPME (RBTX4938_IRQ_IRC + TX4938_IR_PCIPME)
+>>>>>>> refs/remotes/origin/master
 #define RBTX4938_IRQ_IRC_ACLC	(RBTX4938_IRQ_IRC + TX4938_IR_ACLC)
 #define RBTX4938_IRQ_IRC_ACLCPME	(RBTX4938_IRQ_IRC + TX4938_IR_ACLCPME)
 #define RBTX4938_IRQ_IRC_PCIC1	(RBTX4938_IRQ_IRC + TX4938_IR_PCIC1)

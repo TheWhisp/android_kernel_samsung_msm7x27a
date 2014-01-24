@@ -33,6 +33,15 @@
 #define NILFS_CNO_MIN	((__u64)1)
 #define NILFS_CNO_MAX	(~(__u64)0)
 
+<<<<<<< HEAD
+=======
+/**
+ * struct nilfs_dat_info - on-memory private data of DAT file
+ * @mi: on-memory private data of metadata file
+ * @palloc_cache: persistent object allocator cache of DAT file
+ * @shadow: shadow map of DAT file
+ */
+>>>>>>> refs/remotes/origin/master
 struct nilfs_dat_info {
 	struct nilfs_mdt_info mi;
 	struct nilfs_palloc_cache palloc_cache;
@@ -85,13 +94,29 @@ void nilfs_dat_commit_alloc(struct inode *dat, struct nilfs_palloc_req *req)
 	struct nilfs_dat_entry *entry;
 	void *kaddr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(req->pr_entry_bh->b_page, KM_USER0);
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
 					     req->pr_entry_bh, kaddr);
 	entry->de_start = cpu_to_le64(NILFS_CNO_MIN);
 	entry->de_end = cpu_to_le64(NILFS_CNO_MAX);
 	entry->de_blocknr = cpu_to_le64(0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	nilfs_palloc_commit_alloc_entry(dat, req);
 	nilfs_dat_commit_entry(dat, req);
@@ -109,13 +134,29 @@ static void nilfs_dat_commit_free(struct inode *dat,
 	struct nilfs_dat_entry *entry;
 	void *kaddr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(req->pr_entry_bh->b_page, KM_USER0);
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
 					     req->pr_entry_bh, kaddr);
 	entry->de_start = cpu_to_le64(NILFS_CNO_MIN);
 	entry->de_end = cpu_to_le64(NILFS_CNO_MIN);
 	entry->de_blocknr = cpu_to_le64(0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	nilfs_dat_commit_entry(dat, req);
 	nilfs_palloc_commit_free_entry(dat, req);
@@ -136,12 +177,28 @@ void nilfs_dat_commit_start(struct inode *dat, struct nilfs_palloc_req *req,
 	struct nilfs_dat_entry *entry;
 	void *kaddr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(req->pr_entry_bh->b_page, KM_USER0);
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
 					     req->pr_entry_bh, kaddr);
 	entry->de_start = cpu_to_le64(nilfs_mdt_cno(dat));
 	entry->de_blocknr = cpu_to_le64(blocknr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	nilfs_dat_commit_entry(dat, req);
 }
@@ -160,12 +217,28 @@ int nilfs_dat_prepare_end(struct inode *dat, struct nilfs_palloc_req *req)
 		return ret;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(req->pr_entry_bh->b_page, KM_USER0);
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
 					     req->pr_entry_bh, kaddr);
 	start = le64_to_cpu(entry->de_start);
 	blocknr = le64_to_cpu(entry->de_blocknr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	if (blocknr == 0) {
 		ret = nilfs_palloc_prepare_free_entry(dat, req);
@@ -186,7 +259,15 @@ void nilfs_dat_commit_end(struct inode *dat, struct nilfs_palloc_req *req,
 	sector_t blocknr;
 	void *kaddr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(req->pr_entry_bh->b_page, KM_USER0);
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
 					     req->pr_entry_bh, kaddr);
 	end = start = le64_to_cpu(entry->de_start);
@@ -196,7 +277,15 @@ void nilfs_dat_commit_end(struct inode *dat, struct nilfs_palloc_req *req,
 	}
 	entry->de_end = cpu_to_le64(end);
 	blocknr = le64_to_cpu(entry->de_blocknr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	if (blocknr == 0)
 		nilfs_dat_commit_free(dat, req);
@@ -211,12 +300,28 @@ void nilfs_dat_abort_end(struct inode *dat, struct nilfs_palloc_req *req)
 	sector_t blocknr;
 	void *kaddr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(req->pr_entry_bh->b_page, KM_USER0);
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
 					     req->pr_entry_bh, kaddr);
 	start = le64_to_cpu(entry->de_start);
 	blocknr = le64_to_cpu(entry->de_blocknr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	if (start == nilfs_mdt_cno(dat) && blocknr == 0)
 		nilfs_palloc_abort_free_entry(dat, req);
@@ -346,20 +451,44 @@ int nilfs_dat_move(struct inode *dat, __u64 vblocknr, sector_t blocknr)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(entry_bh->b_page, KM_USER0);
+=======
+	kaddr = kmap_atomic(entry_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(entry_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	entry = nilfs_palloc_block_get_entry(dat, vblocknr, entry_bh, kaddr);
 	if (unlikely(entry->de_blocknr == cpu_to_le64(0))) {
 		printk(KERN_CRIT "%s: vbn = %llu, [%llu, %llu)\n", __func__,
 		       (unsigned long long)vblocknr,
 		       (unsigned long long)le64_to_cpu(entry->de_start),
 		       (unsigned long long)le64_to_cpu(entry->de_end));
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 		brelse(entry_bh);
 		return -EINVAL;
 	}
 	WARN_ON(blocknr == 0);
 	entry->de_blocknr = cpu_to_le64(blocknr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	mark_buffer_dirty(entry_bh);
 	nilfs_mdt_mark_dirty(dat);
@@ -409,7 +538,15 @@ int nilfs_dat_translate(struct inode *dat, __u64 vblocknr, sector_t *blocknrp)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(entry_bh->b_page, KM_USER0);
+=======
+	kaddr = kmap_atomic(entry_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(entry_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	entry = nilfs_palloc_block_get_entry(dat, vblocknr, entry_bh, kaddr);
 	blocknr = le64_to_cpu(entry->de_blocknr);
 	if (blocknr == 0) {
@@ -419,7 +556,15 @@ int nilfs_dat_translate(struct inode *dat, __u64 vblocknr, sector_t *blocknrp)
 	*blocknrp = blocknr;
 
  out:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	brelse(entry_bh);
 	return ret;
 }
@@ -440,7 +585,15 @@ ssize_t nilfs_dat_get_vinfo(struct inode *dat, void *buf, unsigned visz,
 						   0, &entry_bh);
 		if (ret < 0)
 			return ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(entry_bh->b_page, KM_USER0);
+=======
+		kaddr = kmap_atomic(entry_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kaddr = kmap_atomic(entry_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 		/* last virtual block number in this block */
 		first = vinfo->vi_vblocknr;
 		do_div(first, entries_per_block);
@@ -456,7 +609,15 @@ ssize_t nilfs_dat_get_vinfo(struct inode *dat, void *buf, unsigned visz,
 			vinfo->vi_end = le64_to_cpu(entry->de_end);
 			vinfo->vi_blocknr = le64_to_cpu(entry->de_blocknr);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 		brelse(entry_bh);
 	}
 

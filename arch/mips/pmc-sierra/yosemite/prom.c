@@ -20,7 +20,10 @@
 #include <asm/processor.h>
 #include <asm/reboot.h>
 #include <asm/smp-ops.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/bootinfo.h>
 #include <asm/pmon.h>
 
@@ -102,7 +105,11 @@ void __init prom_init(void)
 
 	/* Get the boot parameters */
 	for (i = 1; i < argc; i++) {
+<<<<<<< HEAD
 		if (strlen(arcs_cmdline) + strlen(arg[i] + 1) >=
+=======
+		if (strlen(arcs_cmdline) + strlen(arg[i]) + 1 >=
+>>>>>>> refs/remotes/origin/cm-10.0
 		    sizeof(arcs_cmdline))
 			break;
 

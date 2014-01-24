@@ -34,7 +34,15 @@ static DESCRIPTOR DAdapter;
 static DESCRIPTOR MAdapter;
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
     MAINT driver connector section
+=======
+   MAINT driver connector section
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   MAINT driver connector section
+>>>>>>> refs/remotes/origin/master
    -------------------------------------------------------------------------- */
 static void no_printf(unsigned char *x, ...)
 {
@@ -74,6 +82,8 @@ void diva_xdi_didd_register_adapter(int card)
 		d.features = IoAdapters[card - 1]->Properties.Features;
 		DBG_TRC(("DIDD register A(%d) channels=%d", card,
 			 d.channels))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    /* workaround for different Name in structure */
 		    strlcpy(IoAdapters[card - 1]->Name,
 			    IoAdapters[card - 1]->Properties.Name,
@@ -85,6 +95,24 @@ void diva_xdi_didd_register_adapter(int card)
 		if (req.didd_add_adapter.e.Rc != 0xff) {
 			DBG_ERR(("DIDD register A(%d) failed !", card))
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			/* workaround for different Name in structure */
+			strlcpy(IoAdapters[card - 1]->Name,
+				IoAdapters[card - 1]->Properties.Name,
+				sizeof(IoAdapters[card - 1]->Name));
+		req.didd_remove_adapter.e.Req = 0;
+		req.didd_add_adapter.e.Rc = IDI_SYNC_REQ_DIDD_ADD_ADAPTER;
+		req.didd_add_adapter.info.descriptor = (void *) &d;
+		DAdapter.request((ENTITY *)&req);
+		if (req.didd_add_adapter.e.Rc != 0xff) {
+			DBG_ERR(("DIDD register A(%d) failed !", card))
+				}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		IoAdapters[card - 1]->os_trap_nfy_Fnc = NULL;
 	}
 }
@@ -99,11 +127,25 @@ void diva_xdi_didd_remove_adapter(int card)
 
 	IoAdapters[card - 1]->os_trap_nfy_Fnc = NULL;
 	DBG_TRC(("DIDD de-register A(%d)", card))
+<<<<<<< HEAD
+<<<<<<< HEAD
 	req.didd_remove_adapter.e.Req = 0;
 	req.didd_remove_adapter.e.Rc = IDI_SYNC_REQ_DIDD_REMOVE_ADAPTER;
 	req.didd_remove_adapter.info.p_request =
 	    (IDI_CALL) Requests[card - 1];
 	DAdapter.request((ENTITY *) & req);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		req.didd_remove_adapter.e.Req = 0;
+	req.didd_remove_adapter.e.Rc = IDI_SYNC_REQ_DIDD_REMOVE_ADAPTER;
+	req.didd_remove_adapter.info.p_request =
+		(IDI_CALL) Requests[card - 1];
+	DAdapter.request((ENTITY *)&req);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(&(a->IdTable), 0x00, 256);
 }
 
@@ -115,7 +157,15 @@ static void start_dbg(void)
 	DbgRegister("DIVAS", DRIVERRELEASE_DIVAS, (debugmask) ? debugmask : DBG_DEFAULT);
 	DBG_LOG(("DIVA ISDNXDI BUILD (%s[%s])",
 		 DIVA_BUILD, diva_xdi_common_code_build))
+<<<<<<< HEAD
+<<<<<<< HEAD
 }
+=======
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * stop debug
@@ -130,7 +180,15 @@ static void stop_dbg(void)
 /*
  * didd callback function
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void *didd_callback(void *context, DESCRIPTOR * adapter,
+=======
+static void *didd_callback(void *context, DESCRIPTOR *adapter,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void *didd_callback(void *context, DESCRIPTOR *adapter,
+>>>>>>> refs/remotes/origin/master
 			   int removal)
 {
 	if (adapter->type == IDI_DADAPTER) {
@@ -153,7 +211,11 @@ static void *didd_callback(void *context, DESCRIPTOR * adapter,
 /*
  * connect to didd
  */
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION connect_didd(void)
+=======
+static int __init connect_didd(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int x = 0;
 	int dadapter = 0;
@@ -168,10 +230,23 @@ static int DIVA_INIT_FUNCTION connect_didd(void)
 			memcpy(&DAdapter, &DIDD_Table[x], sizeof(DAdapter));
 			req.didd_notify.e.Req = 0;
 			req.didd_notify.e.Rc =
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    IDI_SYNC_REQ_DIDD_REGISTER_ADAPTER_NOTIFY;
 			req.didd_notify.info.callback = (void *)didd_callback;
 			req.didd_notify.info.context = NULL;
 			DAdapter.request((ENTITY *) & req);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				IDI_SYNC_REQ_DIDD_REGISTER_ADAPTER_NOTIFY;
+			req.didd_notify.info.callback = (void *)didd_callback;
+			req.didd_notify.info.context = NULL;
+			DAdapter.request((ENTITY *)&req);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (req.didd_notify.e.Rc != 0xff) {
 				stop_dbg();
 				return (0);
@@ -203,21 +278,46 @@ static void disconnect_didd(void)
 	req.didd_notify.e.Req = 0;
 	req.didd_notify.e.Rc = IDI_SYNC_REQ_DIDD_REMOVE_ADAPTER_NOTIFY;
 	req.didd_notify.info.handle = notify_handle;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DAdapter.request((ENTITY *) & req);
+=======
+	DAdapter.request((ENTITY *)&req);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DAdapter.request((ENTITY *)&req);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * init
  */
+<<<<<<< HEAD
 int DIVA_INIT_FUNCTION divasfunc_init(int dbgmask)
+=======
+int __init divasfunc_init(int dbgmask)
+>>>>>>> refs/remotes/origin/master
 {
 	char *version;
 
 	debugmask = dbgmask;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
 	if (!connect_didd()) {
 		DBG_ERR(("divasfunc: failed to connect to DIDD."))
 		return (0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (!connect_didd()) {
+		DBG_ERR(("divasfunc: failed to connect to DIDD."))
+			return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	version = diva_xdi_common_code_build;

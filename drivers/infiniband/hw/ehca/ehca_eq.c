@@ -101,7 +101,11 @@ int ehca_create_eq(struct ehca_shca *shca,
 		if (!vpage)
 			goto create_eq_exit2;
 
+<<<<<<< HEAD
 		rpage = virt_to_abs(vpage);
+=======
+		rpage = __pa(vpage);
+>>>>>>> refs/remotes/origin/master
 		h_ret = hipz_h_register_rpage_eq(shca->ipz_hca_handle,
 						 eq->ipz_eq_handle,
 						 &eq->pf,
@@ -125,7 +129,15 @@ int ehca_create_eq(struct ehca_shca *shca,
 		tasklet_init(&eq->interrupt_task, ehca_tasklet_eq, (long)shca);
 
 		ret = ibmebus_request_irq(eq->ist, ehca_interrupt_eq,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					  IRQF_DISABLED, "ehca_eq",
+=======
+					  0, "ehca_eq",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  0, "ehca_eq",
+>>>>>>> refs/remotes/origin/master
 					  (void *)shca);
 		if (ret < 0)
 			ehca_err(ib_dev, "Can't map interrupt handler.");
@@ -133,7 +145,15 @@ int ehca_create_eq(struct ehca_shca *shca,
 		tasklet_init(&eq->interrupt_task, ehca_tasklet_neq, (long)shca);
 
 		ret = ibmebus_request_irq(eq->ist, ehca_interrupt_neq,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					  IRQF_DISABLED, "ehca_neq",
+=======
+					  0, "ehca_neq",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  0, "ehca_neq",
+>>>>>>> refs/remotes/origin/master
 					  (void *)shca);
 		if (ret < 0)
 			ehca_err(ib_dev, "Can't map interrupt handler.");

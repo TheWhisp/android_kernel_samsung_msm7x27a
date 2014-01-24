@@ -16,12 +16,21 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+<<<<<<< HEAD
+=======
+#define L4_34XX_BASE		0x48000000
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 
 /*  ----------------------------------- Host OS */
 #include <dspbridge/host_os.h>
 #include <plat/dmtimer.h>
+<<<<<<< HEAD
 #include <plat/mcbsp.h>
+=======
+#include <linux/platform_data/asoc-ti-mcbsp.h>
+>>>>>>> refs/remotes/origin/master
 
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
@@ -29,9 +38,15 @@
 #include <dspbridge/dev.h>
 #include "_tiomap.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- This */
 #include <dspbridge/clk.h>
 
@@ -54,6 +69,14 @@
 
 /* Bridge GPT id (1 - 4), DM Timer id (5 - 8) */
 #define DMT_ID(id) ((id) + 4)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define DM_TIMER_CLOCKS		4
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DM_TIMER_CLOCKS		4
+>>>>>>> refs/remotes/origin/master
 
 /* Bridge MCBSP id (6 - 10), OMAP Mcbsp id (0 - 4) */
 #define MCBSP_ID(id) ((id) - 6)
@@ -114,11 +137,34 @@ static s8 get_clk_type(u8 id)
  */
 void dsp_clk_exit(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dsp_clock_disable_all(dsp_clocks);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int i;
+
+	dsp_clock_disable_all(dsp_clocks);
+
+	for (i = 0; i < DM_TIMER_CLOCKS; i++)
+		omap_dm_timer_free(timer[i]);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_put(iva2_clk);
 	clk_put(ssi.sst_fck);
 	clk_put(ssi.ssr_fck);
+=======
+	clk_unprepare(iva2_clk);
+	clk_put(iva2_clk);
+	clk_unprepare(ssi.sst_fck);
+	clk_put(ssi.sst_fck);
+	clk_unprepare(ssi.ssr_fck);
+	clk_put(ssi.ssr_fck);
+	clk_unprepare(ssi.ick);
+>>>>>>> refs/remotes/origin/master
 	clk_put(ssi.ick);
 }
 
@@ -130,20 +176,52 @@ void dsp_clk_exit(void)
 void dsp_clk_init(void)
 {
 	static struct platform_device dspbridge_device;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	dspbridge_device.dev.bus = &platform_bus_type;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int i, id;
+
+	dspbridge_device.dev.bus = &platform_bus_type;
+
+	for (i = 0, id = 5; i < DM_TIMER_CLOCKS; i++, id++)
+		timer[i] = omap_dm_timer_request_specific(id);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	iva2_clk = clk_get(&dspbridge_device.dev, "iva2_ck");
 	if (IS_ERR(iva2_clk))
 		dev_err(bridge, "failed to get iva2 clock %p\n", iva2_clk);
+=======
+	iva2_clk = clk_get(&dspbridge_device.dev, "iva2_ck");
+	if (IS_ERR(iva2_clk))
+		dev_err(bridge, "failed to get iva2 clock %p\n", iva2_clk);
+	else
+		clk_prepare(iva2_clk);
+>>>>>>> refs/remotes/origin/master
 
 	ssi.sst_fck = clk_get(&dspbridge_device.dev, "ssi_sst_fck");
 	ssi.ssr_fck = clk_get(&dspbridge_device.dev, "ssi_ssr_fck");
 	ssi.ick = clk_get(&dspbridge_device.dev, "ssi_ick");
 
+<<<<<<< HEAD
 	if (IS_ERR(ssi.sst_fck) || IS_ERR(ssi.ssr_fck) || IS_ERR(ssi.ick))
 		dev_err(bridge, "failed to get ssi: sst %p, ssr %p, ick %p\n",
 					ssi.sst_fck, ssi.ssr_fck, ssi.ick);
+=======
+	if (IS_ERR(ssi.sst_fck) || IS_ERR(ssi.ssr_fck) || IS_ERR(ssi.ick)) {
+		dev_err(bridge, "failed to get ssi: sst %p, ssr %p, ick %p\n",
+					ssi.sst_fck, ssi.ssr_fck, ssi.ick);
+	} else {
+		clk_prepare(ssi.sst_fck);
+		clk_prepare(ssi.ssr_fck);
+		clk_prepare(ssi.ick);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -204,12 +282,25 @@ int dsp_clk_enable(enum dsp_clk_id clk_id)
 		clk_enable(iva2_clk);
 		break;
 	case GPT_CLK:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		timer[clk_id - 1] =
 				omap_dm_timer_request_specific(DMT_ID(clk_id));
 		break;
 #ifdef CONFIG_OMAP_MCBSP
 	case MCBSP_CLK:
 		omap_mcbsp_set_io_type(MCBSP_ID(clk_id), OMAP_MCBSP_POLL_IO);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		status = omap_dm_timer_start(timer[clk_id - 1]);
+		break;
+#ifdef CONFIG_OMAP_MCBSP
+	case MCBSP_CLK:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		omap_mcbsp_request(MCBSP_ID(clk_id));
 		omap2_mcbsp_set_clks_src(MCBSP_ID(clk_id), MCBSP_CLKS_PAD_SRC);
 		break;
@@ -282,7 +373,15 @@ int dsp_clk_disable(enum dsp_clk_id clk_id)
 		clk_disable(iva2_clk);
 		break;
 	case GPT_CLK:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		omap_dm_timer_free(timer[clk_id - 1]);
+=======
+		status = omap_dm_timer_stop(timer[clk_id - 1]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		status = omap_dm_timer_stop(timer[clk_id - 1]);
+>>>>>>> refs/remotes/origin/master
 		break;
 #ifdef CONFIG_OMAP_MCBSP
 	case MCBSP_CLK:

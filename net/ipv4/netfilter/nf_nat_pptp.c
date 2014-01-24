@@ -13,6 +13,11 @@
  *
  * Development of this code funded by Astaro AG (http://www.astaro.com/)
  *
+<<<<<<< HEAD
+=======
+ * (C) 2006-2012 Patrick McHardy <kaber@trash.net>
+ *
+>>>>>>> refs/remotes/origin/master
  * TODO: - NAT to a unique tuple, not to TCP source port
  * 	   (needs netfilter tuple reservation)
  */
@@ -22,7 +27,10 @@
 
 #include <net/netfilter/nf_nat.h>
 #include <net/netfilter/nf_nat_helper.h>
+<<<<<<< HEAD
 #include <net/netfilter/nf_nat_rule.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <net/netfilter/nf_conntrack_helper.h>
 #include <net/netfilter/nf_conntrack_expect.h>
 #include <net/netfilter/nf_conntrack_zones.h>
@@ -47,9 +55,19 @@ static void pptp_nat_expected(struct nf_conn *ct,
 	struct nf_conntrack_tuple t;
 	const struct nf_ct_pptp_master *ct_pptp_info;
 	const struct nf_nat_pptp *nat_pptp_info;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct nf_nat_range range;
+=======
+	struct nf_nat_ipv4_range range;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ct_pptp_info = &nfct_help(master)->help.ct_pptp_info;
+=======
+	struct nf_nat_range range;
+
+	ct_pptp_info = nfct_help_data(master);
+>>>>>>> refs/remotes/origin/master
 	nat_pptp_info = &nfct_nat(master)->help.nat_pptp_info;
 
 	/* And here goes the grand finale of corrosion... */
@@ -88,6 +106,8 @@ static void pptp_nat_expected(struct nf_conn *ct,
 	BUG_ON(ct->status & IPS_NAT_DONE_MASK);
 
 	/* Change src to where master sends to */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	range.flags = IP_NAT_RANGE_MAP_IPS;
 	range.min_ip = range.max_ip
 		= ct->master->tuplehash[!exp->dir].tuple.dst.u3.ip;
@@ -106,6 +126,44 @@ static void pptp_nat_expected(struct nf_conn *ct,
 		range.min = range.max = exp->saved_proto;
 	}
 	nf_nat_setup_info(ct, &range, IP_NAT_MANIP_DST);
+=======
+	range.flags = NF_NAT_RANGE_MAP_IPS;
+	range.min_ip = range.max_ip
+		= ct->master->tuplehash[!exp->dir].tuple.dst.u3.ip;
+	if (exp->dir == IP_CT_DIR_ORIGINAL) {
+		range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
+		range.min = range.max = exp->saved_proto;
+=======
+	range.flags = NF_NAT_RANGE_MAP_IPS;
+	range.min_addr = range.max_addr
+		= ct->master->tuplehash[!exp->dir].tuple.dst.u3;
+	if (exp->dir == IP_CT_DIR_ORIGINAL) {
+		range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
+		range.min_proto = range.max_proto = exp->saved_proto;
+>>>>>>> refs/remotes/origin/master
+	}
+	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
+
+	/* For DST manip, map port here to where it's expected. */
+	range.flags = NF_NAT_RANGE_MAP_IPS;
+<<<<<<< HEAD
+	range.min_ip = range.max_ip
+		= ct->master->tuplehash[!exp->dir].tuple.src.u3.ip;
+	if (exp->dir == IP_CT_DIR_REPLY) {
+		range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
+		range.min = range.max = exp->saved_proto;
+	}
+	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_DST);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	range.min_addr = range.max_addr
+		= ct->master->tuplehash[!exp->dir].tuple.src.u3;
+	if (exp->dir == IP_CT_DIR_REPLY) {
+		range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
+		range.min_proto = range.max_proto = exp->saved_proto;
+	}
+	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_DST);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* outbound packets == from PNS to PAC */
@@ -113,6 +171,10 @@ static int
 pptp_outbound_pkt(struct sk_buff *skb,
 		  struct nf_conn *ct,
 		  enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		  unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		  struct PptpControlHeader *ctlh,
 		  union pptp_ctrl_union *pptpReq)
 
@@ -123,7 +185,11 @@ pptp_outbound_pkt(struct sk_buff *skb,
 	__be16 new_callid;
 	unsigned int cid_off;
 
+<<<<<<< HEAD
 	ct_pptp_info  = &nfct_help(ct)->help.ct_pptp_info;
+=======
+	ct_pptp_info = nfct_help_data(ct);
+>>>>>>> refs/remotes/origin/master
 	nat_pptp_info = &nfct_nat(ct)->help.nat_pptp_info;
 
 	new_callid = ct_pptp_info->pns_call_id;
@@ -175,7 +241,11 @@ pptp_outbound_pkt(struct sk_buff *skb,
 		 ntohs(REQ_CID(pptpReq, cid_off)), ntohs(new_callid));
 
 	/* mangle packet */
+<<<<<<< HEAD
 	if (nf_nat_mangle_tcp_packet(skb, ct, ctinfo,
+=======
+	if (nf_nat_mangle_tcp_packet(skb, ct, ctinfo, protoff,
+>>>>>>> refs/remotes/origin/master
 				     cid_off + sizeof(struct pptp_pkt_hdr) +
 				     sizeof(struct PptpControlHeader),
 				     sizeof(new_callid), (char *)&new_callid,
@@ -192,7 +262,11 @@ pptp_exp_gre(struct nf_conntrack_expect *expect_orig,
 	struct nf_ct_pptp_master *ct_pptp_info;
 	struct nf_nat_pptp *nat_pptp_info;
 
+<<<<<<< HEAD
 	ct_pptp_info  = &nfct_help(ct)->help.ct_pptp_info;
+=======
+	ct_pptp_info = nfct_help_data(ct);
+>>>>>>> refs/remotes/origin/master
 	nat_pptp_info = &nfct_nat(ct)->help.nat_pptp_info;
 
 	/* save original PAC call ID in nat_info */
@@ -216,6 +290,10 @@ static int
 pptp_inbound_pkt(struct sk_buff *skb,
 		 struct nf_conn *ct,
 		 enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+		 unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 		 struct PptpControlHeader *ctlh,
 		 union pptp_ctrl_union *pptpReq)
 {
@@ -268,7 +346,11 @@ pptp_inbound_pkt(struct sk_buff *skb,
 	pr_debug("altering peer call id from 0x%04x to 0x%04x\n",
 		 ntohs(REQ_CID(pptpReq, pcid_off)), ntohs(new_pcid));
 
+<<<<<<< HEAD
 	if (nf_nat_mangle_tcp_packet(skb, ct, ctinfo,
+=======
+	if (nf_nat_mangle_tcp_packet(skb, ct, ctinfo, protoff,
+>>>>>>> refs/remotes/origin/master
 				     pcid_off + sizeof(struct pptp_pkt_hdr) +
 				     sizeof(struct PptpControlHeader),
 				     sizeof(new_pcid), (char *)&new_pcid,
@@ -282,6 +364,8 @@ static int __init nf_nat_helper_pptp_init(void)
 	nf_nat_need_gre();
 
 	BUG_ON(nf_nat_pptp_hook_outbound != NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_nat_pptp_hook_outbound, pptp_outbound_pkt);
 
 	BUG_ON(nf_nat_pptp_hook_inbound != NULL);
@@ -292,15 +376,45 @@ static int __init nf_nat_helper_pptp_init(void)
 
 	BUG_ON(nf_nat_pptp_hook_expectfn != NULL);
 	rcu_assign_pointer(nf_nat_pptp_hook_expectfn, pptp_nat_expected);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	RCU_INIT_POINTER(nf_nat_pptp_hook_outbound, pptp_outbound_pkt);
+
+	BUG_ON(nf_nat_pptp_hook_inbound != NULL);
+	RCU_INIT_POINTER(nf_nat_pptp_hook_inbound, pptp_inbound_pkt);
+
+	BUG_ON(nf_nat_pptp_hook_exp_gre != NULL);
+	RCU_INIT_POINTER(nf_nat_pptp_hook_exp_gre, pptp_exp_gre);
+
+	BUG_ON(nf_nat_pptp_hook_expectfn != NULL);
+	RCU_INIT_POINTER(nf_nat_pptp_hook_expectfn, pptp_nat_expected);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void __exit nf_nat_helper_pptp_fini(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_nat_pptp_hook_expectfn, NULL);
 	rcu_assign_pointer(nf_nat_pptp_hook_exp_gre, NULL);
 	rcu_assign_pointer(nf_nat_pptp_hook_inbound, NULL);
 	rcu_assign_pointer(nf_nat_pptp_hook_outbound, NULL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	RCU_INIT_POINTER(nf_nat_pptp_hook_expectfn, NULL);
+	RCU_INIT_POINTER(nf_nat_pptp_hook_exp_gre, NULL);
+	RCU_INIT_POINTER(nf_nat_pptp_hook_inbound, NULL);
+	RCU_INIT_POINTER(nf_nat_pptp_hook_outbound, NULL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	synchronize_rcu();
 }
 

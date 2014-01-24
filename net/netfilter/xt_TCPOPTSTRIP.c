@@ -30,28 +30,63 @@ static inline unsigned int optlen(const u_int8_t *opt, unsigned int offset)
 
 static unsigned int
 tcpoptstrip_mangle_packet(struct sk_buff *skb,
+<<<<<<< HEAD
 			  const struct xt_tcpoptstrip_target_info *info,
 			  unsigned int tcphoff, unsigned int minlen)
 {
+=======
+			  const struct xt_action_param *par,
+			  unsigned int tcphoff, unsigned int minlen)
+{
+	const struct xt_tcpoptstrip_target_info *info = par->targinfo;
+>>>>>>> refs/remotes/origin/master
 	unsigned int optl, i, j;
 	struct tcphdr *tcph;
 	u_int16_t n, o;
 	u_int8_t *opt;
+<<<<<<< HEAD
+=======
+	int len, tcp_hdrlen;
+
+	/* This is a fragment, no TCP header is available */
+	if (par->fragoff != 0)
+		return XT_CONTINUE;
+>>>>>>> refs/remotes/origin/master
 
 	if (!skb_make_writable(skb, skb->len))
 		return NF_DROP;
 
+<<<<<<< HEAD
 	tcph = (struct tcphdr *)(skb_network_header(skb) + tcphoff);
+=======
+	len = skb->len - tcphoff;
+	if (len < (int)sizeof(struct tcphdr))
+		return NF_DROP;
+
+	tcph = (struct tcphdr *)(skb_network_header(skb) + tcphoff);
+	tcp_hdrlen = tcph->doff * 4;
+
+	if (len < tcp_hdrlen)
+		return NF_DROP;
+
+>>>>>>> refs/remotes/origin/master
 	opt  = (u_int8_t *)tcph;
 
 	/*
 	 * Walk through all TCP options - if we find some option to remove,
 	 * set all octets to %TCPOPT_NOP and adjust checksum.
 	 */
+<<<<<<< HEAD
 	for (i = sizeof(struct tcphdr); i < tcp_hdrlen(skb); i += optl) {
 		optl = optlen(opt, i);
 
 		if (i + optl > tcp_hdrlen(skb))
+=======
+	for (i = sizeof(struct tcphdr); i < tcp_hdrlen - 1; i += optl) {
+		optl = optlen(opt, i);
+
+		if (i + optl > tcp_hdrlen)
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		if (!tcpoptstrip_test_bit(info->strip_bmap, opt[i]))
@@ -76,24 +111,53 @@ tcpoptstrip_mangle_packet(struct sk_buff *skb,
 static unsigned int
 tcpoptstrip_tg4(struct sk_buff *skb, const struct xt_action_param *par)
 {
+<<<<<<< HEAD
 	return tcpoptstrip_mangle_packet(skb, par->targinfo, ip_hdrlen(skb),
 	       sizeof(struct iphdr) + sizeof(struct tcphdr));
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_IP6_NF_MANGLE) || defined(CONFIG_IP6_NF_MANGLE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_MANGLE)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return tcpoptstrip_mangle_packet(skb, par, ip_hdrlen(skb),
+	       sizeof(struct iphdr) + sizeof(struct tcphdr));
+}
+
+#if IS_ENABLED(CONFIG_IP6_NF_MANGLE)
+>>>>>>> refs/remotes/origin/master
 static unsigned int
 tcpoptstrip_tg6(struct sk_buff *skb, const struct xt_action_param *par)
 {
 	struct ipv6hdr *ipv6h = ipv6_hdr(skb);
 	int tcphoff;
 	u_int8_t nexthdr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	nexthdr = ipv6h->nexthdr;
 	tcphoff = ipv6_skip_exthdr(skb, sizeof(*ipv6h), &nexthdr);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	__be16 frag_off;
+
+	nexthdr = ipv6h->nexthdr;
+	tcphoff = ipv6_skip_exthdr(skb, sizeof(*ipv6h), &nexthdr, &frag_off);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (tcphoff < 0)
 		return NF_DROP;
 
 	return tcpoptstrip_mangle_packet(skb, par->targinfo, tcphoff,
+=======
+	if (tcphoff < 0)
+		return NF_DROP;
+
+	return tcpoptstrip_mangle_packet(skb, par, tcphoff,
+>>>>>>> refs/remotes/origin/master
 	       sizeof(*ipv6h) + sizeof(struct tcphdr));
 }
 #endif
@@ -108,7 +172,15 @@ static struct xt_target tcpoptstrip_tg_reg[] __read_mostly = {
 		.targetsize = sizeof(struct xt_tcpoptstrip_target_info),
 		.me         = THIS_MODULE,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IP6_NF_MANGLE) || defined(CONFIG_IP6_NF_MANGLE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_MANGLE)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_MANGLE)
+>>>>>>> refs/remotes/origin/master
 	{
 		.name       = "TCPOPTSTRIP",
 		.family     = NFPROTO_IPV6,

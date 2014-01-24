@@ -20,6 +20,14 @@
  * flag.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
 #include <linux/clk.h>
@@ -28,7 +36,11 @@
 #include <linux/slab.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/ep93xx_keypad.h>
+=======
+#include <linux/platform_data/keypad-ep93xx.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Keypad Interface Register offsets
@@ -181,6 +193,7 @@ static void ep93xx_keypad_close(struct input_dev *pdev)
 }
 
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 /*
  * NOTE: I don't know if this is correct, or will work on the ep93xx.
@@ -191,6 +204,12 @@ static void ep93xx_keypad_close(struct input_dev *pdev)
 static int ep93xx_keypad_suspend(struct platform_device *pdev,
 				 pm_message_t state)
 {
+=======
+#ifdef CONFIG_PM_SLEEP
+static int ep93xx_keypad_suspend(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ep93xx_keypad *keypad = platform_get_drvdata(pdev);
 	struct input_dev *input_dev = keypad->input_dev;
 
@@ -209,8 +228,14 @@ static int ep93xx_keypad_suspend(struct platform_device *pdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ep93xx_keypad_resume(struct platform_device *pdev)
 {
+=======
+static int ep93xx_keypad_resume(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ep93xx_keypad *keypad = platform_get_drvdata(pdev);
 	struct input_dev *input_dev = keypad->input_dev;
 
@@ -231,12 +256,21 @@ static int ep93xx_keypad_resume(struct platform_device *pdev)
 
 	return 0;
 }
+<<<<<<< HEAD
 #else	/* !CONFIG_PM */
 #define ep93xx_keypad_suspend	NULL
 #define ep93xx_keypad_resume	NULL
 #endif	/* !CONFIG_PM */
 
 static int __devinit ep93xx_keypad_probe(struct platform_device *pdev)
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(ep93xx_keypad_pm_ops,
+			 ep93xx_keypad_suspend, ep93xx_keypad_resume);
+
+static int ep93xx_keypad_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ep93xx_keypad *keypad;
 	const struct matrix_keymap_data *keymap_data;
@@ -307,6 +341,7 @@ static int __devinit ep93xx_keypad_probe(struct platform_device *pdev)
 	input_dev->open = ep93xx_keypad_open;
 	input_dev->close = ep93xx_keypad_close;
 	input_dev->dev.parent = &pdev->dev;
+<<<<<<< HEAD
 	input_dev->keycode = keypad->keycodes;
 	input_dev->keycodesize = sizeof(keypad->keycodes[0]);
 	input_dev->keycodemax = ARRAY_SIZE(keypad->keycodes);
@@ -322,7 +357,26 @@ static int __devinit ep93xx_keypad_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, keypad);
 
 	err = request_irq(keypad->irq, ep93xx_keypad_irq_handler,
+<<<<<<< HEAD
 			  IRQF_DISABLED, pdev->name, keypad);
+=======
+			  0, pdev->name, keypad);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	err = matrix_keypad_build_keymap(keymap_data, NULL,
+					 EP93XX_MATRIX_ROWS, EP93XX_MATRIX_COLS,
+					 keypad->keycodes, input_dev);
+	if (err)
+		goto failed_free_dev;
+
+	if (keypad->pdata->flags & EP93XX_KEYPAD_AUTOREPEAT)
+		__set_bit(EV_REP, input_dev->evbit);
+	input_set_drvdata(input_dev, keypad);
+
+	err = request_irq(keypad->irq, ep93xx_keypad_irq_handler,
+			  0, pdev->name, keypad);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto failed_free_dev;
 
@@ -330,13 +384,21 @@ static int __devinit ep93xx_keypad_probe(struct platform_device *pdev)
 	if (err)
 		goto failed_free_irq;
 
+<<<<<<< HEAD
+=======
+	platform_set_drvdata(pdev, keypad);
+>>>>>>> refs/remotes/origin/master
 	device_init_wakeup(&pdev->dev, 1);
 
 	return 0;
 
 failed_free_irq:
+<<<<<<< HEAD
 	free_irq(keypad->irq, pdev);
 	platform_set_drvdata(pdev, NULL);
+=======
+	free_irq(keypad->irq, keypad);
+>>>>>>> refs/remotes/origin/master
 failed_free_dev:
 	input_free_device(input_dev);
 failed_put_clk:
@@ -352,14 +414,22 @@ failed_free:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit ep93xx_keypad_remove(struct platform_device *pdev)
+=======
+static int ep93xx_keypad_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ep93xx_keypad *keypad = platform_get_drvdata(pdev);
 	struct resource *res;
 
+<<<<<<< HEAD
 	free_irq(keypad->irq, pdev);
 
 	platform_set_drvdata(pdev, NULL);
+=======
+	free_irq(keypad->irq, keypad);
+>>>>>>> refs/remotes/origin/master
 
 	if (keypad->enabled)
 		clk_disable(keypad->clk);
@@ -383,12 +453,14 @@ static struct platform_driver ep93xx_keypad_driver = {
 	.driver		= {
 		.name	= "ep93xx-keypad",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= ep93xx_keypad_probe,
 	.remove		= __devexit_p(ep93xx_keypad_remove),
 	.suspend	= ep93xx_keypad_suspend,
 	.resume		= ep93xx_keypad_resume,
 };
+<<<<<<< HEAD
 
 static int __init ep93xx_keypad_init(void)
 {
@@ -402,6 +474,17 @@ static void __exit ep93xx_keypad_exit(void)
 
 module_init(ep93xx_keypad_init);
 module_exit(ep93xx_keypad_exit);
+=======
+module_platform_driver(ep93xx_keypad_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= &ep93xx_keypad_pm_ops,
+	},
+	.probe		= ep93xx_keypad_probe,
+	.remove		= ep93xx_keypad_remove,
+};
+module_platform_driver(ep93xx_keypad_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("H Hartley Sweeten <hsweeten@visionengravers.com>");

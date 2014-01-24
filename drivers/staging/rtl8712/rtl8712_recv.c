@@ -28,12 +28,21 @@
 
 #define _RTL8712_RECV_C_
 
+<<<<<<< HEAD
+=======
+#include <linux/if_ether.h>
+#include <linux/ip.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "osdep_service.h"
 #include "drv_types.h"
 #include "recv_osdep.h"
 #include "mlme_osdep.h"
+<<<<<<< HEAD
 #include "ip.h"
 #include "if_ether.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "ethernet.h"
 #include "usb_ops.h"
 #include "wifi.h"
@@ -55,8 +64,14 @@ int r8712_init_recv_priv(struct recv_priv *precvpriv, struct _adapter *padapter)
 	int alignment = 0;
 	struct sk_buff *pskb = NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sema_init(&precvpriv->recv_sema, 0);
 	sema_init(&precvpriv->terminate_recvthread_sema, 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*init recv_buf*/
 	_init_queue(&precvpriv->free_recv_buf_queue);
 	precvpriv->pallocated_recv_buf = _malloc(NR_RECVBUFF *
@@ -109,18 +124,30 @@ void r8712_free_recv_priv(struct recv_priv *precvpriv)
 	struct _adapter *padapter = precvpriv->adapter;
 
 	precvbuf = (struct recv_buf *)precvpriv->precv_buf;
+<<<<<<< HEAD
 	for (i = 0; i < NR_RECVBUFF ; i++) {
+=======
+	for (i = 0; i < NR_RECVBUFF; i++) {
+>>>>>>> refs/remotes/origin/master
 		r8712_os_recvbuf_resource_free(padapter, precvbuf);
 		precvbuf++;
 	}
 	kfree(precvpriv->pallocated_recv_buf);
 	skb_queue_purge(&precvpriv->rx_skb_queue);
 	if (skb_queue_len(&precvpriv->rx_skb_queue))
+<<<<<<< HEAD
 		printk(KERN_WARNING "r8712u: rx_skb_queue not empty\n");
 	skb_queue_purge(&precvpriv->free_recv_skb_queue);
 	if (skb_queue_len(&precvpriv->free_recv_skb_queue))
 		printk(KERN_WARNING "r8712u: free_recv_skb_queue not empty "
 		       "%d\n", skb_queue_len(&precvpriv->free_recv_skb_queue));
+=======
+		netdev_warn(padapter->pnetdev, "r8712u: rx_skb_queue not empty\n");
+	skb_queue_purge(&precvpriv->free_recv_skb_queue);
+	if (skb_queue_len(&precvpriv->free_recv_skb_queue))
+		netdev_warn(padapter->pnetdev, "r8712u: free_recv_skb_queue not empty %d\n",
+			    skb_queue_len(&precvpriv->free_recv_skb_queue));
+>>>>>>> refs/remotes/origin/master
 }
 
 int r8712_init_recvbuf(struct _adapter *padapter, struct recv_buf *precvbuf)
@@ -192,7 +219,15 @@ static void update_recvframe_attrib_from_recvstat(struct rx_pkt_attrib *pattrib,
 	} else
 		pattrib->tcpchk_valid = 0; /* invalid */
 	pattrib->mcs_rate = (u8)((le32_to_cpu(prxstat->rxdw3)) & 0x3f);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pattrib->htc = (u8)((le32_to_cpu(prxstat->rxdw3) >> 6) & 0x1);
+=======
+	pattrib->htc = (u8)((le32_to_cpu(prxstat->rxdw3) >> 14) & 0x1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pattrib->htc = (u8)((le32_to_cpu(prxstat->rxdw3) >> 14) & 0x1);
+>>>>>>> refs/remotes/origin/master
 	/*Offset 16*/
 	/*Offset 20*/
 	/*phy_info*/
@@ -207,7 +242,15 @@ static union recv_frame *recvframe_defrag(struct _adapter *adapter,
 				   struct  __queue *defrag_q)
 {
 	struct list_head *plist, *phead;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8	wlanhdr_offset;
+=======
+	u8	*data, wlanhdr_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8	*data, wlanhdr_offset;
+>>>>>>> refs/remotes/origin/master
 	u8	curfragnum;
 	struct recv_frame_hdr *pfhdr, *pnfhdr;
 	union recv_frame *prframe, *pnextrframe;
@@ -224,6 +267,8 @@ static union recv_frame *recvframe_defrag(struct _adapter *adapter,
 		/*the first fragment number must be 0
 		 *free the whole queue*/
 		r8712_free_recvframe(prframe, pfree_recv_queue);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		prframe = NULL;
 		goto exit;
 	}
@@ -233,13 +278,44 @@ static union recv_frame *recvframe_defrag(struct _adapter *adapter,
 		/*check the fragment sequence  (2nd ~n fragment frame) */
 		pnfhdr = &pnextrframe->u.hdr;
 		curfragnum++;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		r8712_free_recvframe_queue(defrag_q, pfree_recv_queue);
+		return NULL;
+	}
+	curfragnum++;
+	plist = get_list_head(defrag_q);
+	plist = get_next(plist);
+	data = get_recvframe_data(prframe);
+	while (end_of_queue_search(phead, plist) == false) {
+		pnextrframe = LIST_CONTAINOR(plist, union recv_frame, u);
+		pnfhdr = &pnextrframe->u.hdr;
+		/*check the fragment sequence  (2nd ~n fragment frame) */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (curfragnum != pnfhdr->attrib.frag_num) {
 			/* the fragment number must increase  (after decache)
 			 * release the defrag_q & prframe */
 			r8712_free_recvframe(prframe, pfree_recv_queue);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			prframe = NULL;
 			goto exit;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			r8712_free_recvframe_queue(defrag_q, pfree_recv_queue);
+			return NULL;
+		}
+		curfragnum++;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* copy the 2nd~n fragment frame's payload to the first fragment
 		 * get the 2nd~last fragment frame's payload */
 		wlanhdr_offset = pnfhdr->attrib.hdrlen + pnfhdr->attrib.iv_len;
@@ -252,7 +328,13 @@ static union recv_frame *recvframe_defrag(struct _adapter *adapter,
 		pfhdr->attrib.icv_len = pnfhdr->attrib.icv_len;
 		plist = get_next(plist);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 exit:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* free the defrag_q queue and return the prframe */
 	r8712_free_recvframe_queue(defrag_q, pfree_recv_queue);
 	return prframe;
@@ -267,7 +349,11 @@ union recv_frame *r8712_recvframe_chk_defrag(struct _adapter *padapter,
 	u8   *psta_addr;
 	struct recv_frame_hdr *pfhdr;
 	struct sta_info *psta;
+<<<<<<< HEAD
 	struct	sta_priv *pstapriv ;
+=======
+	struct	sta_priv *pstapriv;
+>>>>>>> refs/remotes/origin/master
 	struct list_head *phead;
 	union recv_frame *prtnframe = NULL;
 	struct  __queue *pfree_recv_queue, *pdefrag_q;
@@ -363,9 +449,14 @@ static int amsdu_to_msdu(struct _adapter *padapter, union recv_frame *prframe)
 		nSubframe_Length = (nSubframe_Length >> 8) +
 				   (nSubframe_Length << 8);
 		if (a_len < (ETHERNET_HEADER_SIZE + nSubframe_Length)) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "r8712u: nRemain_Length is %d and"
 			    " nSubframe_Length is: %d\n",
 			    a_len, nSubframe_Length);
+=======
+			netdev_warn(padapter->pnetdev, "r8712u: nRemain_Length is %d and nSubframe_Length is: %d\n",
+				    a_len, nSubframe_Length);
+>>>>>>> refs/remotes/origin/master
 			goto exit;
 		}
 		/* move the data point to data content */
@@ -373,13 +464,22 @@ static int amsdu_to_msdu(struct _adapter *padapter, union recv_frame *prframe)
 		a_len -= ETH_HLEN;
 		/* Allocate new skb for releasing to upper layer */
 		sub_skb = dev_alloc_skb(nSubframe_Length + 12);
+<<<<<<< HEAD
+=======
+		if (!sub_skb)
+			break;
+>>>>>>> refs/remotes/origin/master
 		skb_reserve(sub_skb, 12);
 		data_ptr = (u8 *)skb_put(sub_skb, nSubframe_Length);
 		memcpy(data_ptr, pdata, nSubframe_Length);
 		subframes[nr_subframes++] = sub_skb;
 		if (nr_subframes >= MAX_SUBFRAME_COUNT) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "r8712u: ParseSubframe(): Too"
 			    " many Subframes! Packets dropped!\n");
+=======
+			netdev_warn(padapter->pnetdev, "r8712u: ParseSubframe(): Too many Subframes! Packets dropped!\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		pdata += nSubframe_Length;
@@ -459,7 +559,11 @@ void r8712_rxcmd_event_hdl(struct _adapter *padapter, void *prxcmdbuf)
 		cmd_seq = (u8)((le32_to_cpu(voffset) >> 24) & 0x7f);
 		eid = (u8)((le32_to_cpu(voffset) >> 16) & 0xff);
 		r8712_event_handle(padapter, (uint *)poffset);
+<<<<<<< HEAD
 		poffset += (cmd_len + 8);/*8 bytes aligment*/
+=======
+		poffset += (cmd_len + 8);/*8 bytes alignment*/
+>>>>>>> refs/remotes/origin/master
 	} while (le32_to_cpu(voffset) & BIT(31));
 
 }
@@ -603,7 +707,11 @@ static int recv_indicatepkt_reorder(struct _adapter *padapter,
 		}
 	}
 	spin_lock_irqsave(&ppending_recvframe_queue->lock, irql);
+<<<<<<< HEAD
 	/*s2. check if winstart_b(indicate_seq) needs to been updated*/
+=======
+	/*s2. check if winstart_b(indicate_seq) needs to be updated*/
+>>>>>>> refs/remotes/origin/master
 	if (!check_indicate_seq(preorder_ctrl, pattrib->seq_num))
 		goto _err_exit;
 	/*s3. Insert all packet into Reorder Queue to maintain its ordering.*/
@@ -848,7 +956,11 @@ static void query_rx_phy_status(struct _adapter *padapter,
 	} else {
 		/* (1)Get RSSI for HT rate */
 		for (i = 0; i < ((padapter->registrypriv.rf_config) &
+<<<<<<< HEAD
 			    0x0f) ; i++) {
+=======
+			    0x0f); i++) {
+>>>>>>> refs/remotes/origin/master
 			rf_rx_num++;
 			rx_pwr[i] = ((pphy_head[PHY_STAT_GAIN_TRSW_SHT + i]
 				    & 0x3F) * 2) - 110;
@@ -1074,7 +1186,15 @@ static int recvbuf2recvframe(struct _adapter *padapter, struct sk_buff *pskb)
 		/* for first fragment packet, driver need allocate 1536 +
 		 * drvinfo_sz + RXDESC_SIZE to defrag packet. */
 		if ((mf == 1) && (frag == 0))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			alloc_sz = 1658;
+=======
+			alloc_sz = 1658;/*1658+6=1664, 1664 is 128 alignment.*/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			alloc_sz = 1658;/*1658+6=1664, 1664 is 128 alignment.*/
+>>>>>>> refs/remotes/origin/master
 		else
 			alloc_sz = tmp_len;
 		/* 2 is for IP header 4 bytes alignment in QoS packet case.
@@ -1093,6 +1213,11 @@ static int recvbuf2recvframe(struct _adapter *padapter, struct sk_buff *pskb)
 			precvframe->u.hdr.rx_end = pkt_copy->data + alloc_sz;
 		} else {
 			precvframe->u.hdr.pkt = skb_clone(pskb, GFP_ATOMIC);
+<<<<<<< HEAD
+=======
+			if (!precvframe->u.hdr.pkt)
+				return _FAIL;
+>>>>>>> refs/remotes/origin/master
 			precvframe->u.hdr.rx_head = pbuf;
 			precvframe->u.hdr.rx_data = pbuf;
 			precvframe->u.hdr.rx_tail = pbuf;
@@ -1126,6 +1251,25 @@ static void recv_tasklet(void *priv)
 		recvbuf2recvframe(padapter, pskb);
 		skb_reset_tail_pointer(pskb);
 		pskb->len = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		skb_queue_tail(&precvpriv->free_recv_skb_queue, pskb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (!skb_cloned(pskb))
+			skb_queue_tail(&precvpriv->free_recv_skb_queue, pskb);
+		else
+			consume_skb(pskb);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }

@@ -8,7 +8,11 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -16,11 +20,15 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <linux/memblock.h>
+<<<<<<< HEAD
 #include <linux/err.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 
 #include <plat/omap_hwmod.h>
 #include <plat/omap_device.h>
@@ -156,6 +164,16 @@ static inline void omap_init_mcpdm(void) {}
 
 /*-------------------------------------------------------------------------*/
 
+=======
+#include <asm/memblock.h>
+
+#include <plat/tc.h>
+#include <plat/board.h>
+#include <plat/mmc.h>
+#include <plat/menelaus.h>
+#include <plat/omap44xx.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_MMC_OMAP) || defined(CONFIG_MMC_OMAP_MODULE) || \
 	defined(CONFIG_MMC_OMAP_HS) || defined(CONFIG_MMC_OMAP_HS_MODULE)
 
@@ -206,6 +224,7 @@ fail:
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_OMAP_SOC_ABE_DSP) || \
 	defined(CONFIG_SND_OMAP_SOC_ABE_DSP_MODULE)
 
@@ -255,6 +274,8 @@ static inline void omap_init_aess(void) {}
 
 /*-------------------------------------------------------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_HW_RANDOM_OMAP) || defined(CONFIG_HW_RANDOM_OMAP_MODULE)
 
 #ifdef CONFIG_ARCH_OMAP2
@@ -286,6 +307,11 @@ static void omap_init_rng(void)
 static inline void omap_init_rng(void) {}
 #endif
 
+<<<<<<< HEAD
+=======
+/*-------------------------------------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Numbering for the SPI-capable controllers when used for SPI:
  * spi		= 1
  * uwire	= 2
@@ -340,14 +366,21 @@ void __init omap_dsp_reserve_sdram_memblock(void)
 	if (!size)
 		return;
 
+<<<<<<< HEAD
 	paddr = memblock_alloc(size, SZ_1M);
+=======
+	paddr = arm_memblock_steal(size, SZ_1M);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!paddr) {
 		pr_err("%s: failed to reserve %x bytes\n",
 				__func__, size);
 		return;
 	}
+<<<<<<< HEAD
 	memblock_free(paddr, size);
 	memblock_remove(paddr, size);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	omap_dsp_phys_mempool_base = paddr;
 }
@@ -385,9 +418,12 @@ static int __init omap_init_devices(void)
 	 * in alphabetical order so they're easier to sort through.
 	 */
 	omap_init_rng();
+<<<<<<< HEAD
 	omap_init_dmic();
 	omap_init_mcpdm();
 	omap_init_aess();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap_init_uwire();
 	return 0;
 }

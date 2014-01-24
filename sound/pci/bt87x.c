@@ -25,7 +25,15 @@
 #include <linux/interrupt.h>
 #include <linux/pci.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <asm/io.h>
 #include <sound/core.h>
@@ -42,9 +50,21 @@ MODULE_SUPPORTED_DEVICE("{{Brooktree,Bt878},"
 
 static int index[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = -2}; /* Exclude the first card */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
 static int digital_rate[SNDRV_CARDS];	/* digital input rate */
 static int load_all;	/* allow to load the non-whitelisted cards */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+static int digital_rate[SNDRV_CARDS];	/* digital input rate */
+static bool load_all;	/* allow to load the non-whitelisted cards */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+static int digital_rate[SNDRV_CARDS];	/* digital input rate */
+static bool load_all;	/* allow to load the non-whitelisted cards */
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for Bt87x soundcard");
@@ -164,7 +184,11 @@ struct snd_bt87x_board {
 	unsigned no_digital:1;	/* No digital input */
 };
 
+<<<<<<< HEAD
 static __devinitdata struct snd_bt87x_board snd_bt87x_boards[] = {
+=======
+static struct snd_bt87x_board snd_bt87x_boards[] = {
+>>>>>>> refs/remotes/origin/master
 	[SND_BT87X_BOARD_UNKNOWN] = {
 		.dig_rate = 32000, /* just a guess */
 	},
@@ -696,7 +720,11 @@ static int snd_bt87x_dev_free(struct snd_device *device)
 	return snd_bt87x_free(chip);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+=======
+static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct snd_pcm *pcm;
@@ -714,9 +742,15 @@ static int __devinit snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *nam
 							ALIGN(255 * 4092, 1024));
 }
 
+<<<<<<< HEAD
 static int __devinit snd_bt87x_create(struct snd_card *card,
 				      struct pci_dev *pci,
 				      struct snd_bt87x **rchip)
+=======
+static int snd_bt87x_create(struct snd_card *card,
+			    struct pci_dev *pci,
+			    struct snd_bt87x **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_bt87x *chip;
 	int err;
@@ -760,7 +794,15 @@ static int __devinit snd_bt87x_create(struct snd_card *card,
 	snd_bt87x_writel(chip, REG_INT_STAT, MY_INTERRUPTS);
 
 	err = request_irq(pci->irq, snd_bt87x_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  "Bt87x audio", chip);
+=======
+			  KBUILD_MODNAME, chip);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  KBUILD_MODNAME, chip);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		snd_printk(KERN_ERR "cannot grab irq %d\n", pci->irq);
 		goto fail;
@@ -822,7 +864,11 @@ MODULE_DEVICE_TABLE(pci, snd_bt87x_ids);
  * (DVB cards use the audio function to transfer MPEG data) */
 static struct {
 	unsigned short subvendor, subdevice;
+<<<<<<< HEAD
 } blacklist[] __devinitdata = {
+=======
+} blacklist[] = {
+>>>>>>> refs/remotes/origin/master
 	{0x0071, 0x0101}, /* Nebula Electronics DigiTV */
 	{0x11bd, 0x001c}, /* Pinnacle PCTV Sat */
 	{0x11bd, 0x0026}, /* Pinnacle PCTV SAT CI */
@@ -839,7 +885,11 @@ static struct {
 static struct pci_driver driver;
 
 /* return the id of the card, or a negative value if it's blacklisted */
+<<<<<<< HEAD
 static int __devinit snd_bt87x_detect_card(struct pci_dev *pci)
+=======
+static int snd_bt87x_detect_card(struct pci_dev *pci)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	const struct pci_device_id *supported;
@@ -864,8 +914,13 @@ static int __devinit snd_bt87x_detect_card(struct pci_dev *pci)
 	return SND_BT87X_BOARD_UNKNOWN;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_bt87x_probe(struct pci_dev *pci,
 				     const struct pci_device_id *pci_id)
+=======
+static int snd_bt87x_probe(struct pci_dev *pci,
+			   const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -950,10 +1005,16 @@ _error:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_bt87x_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
 	pci_set_drvdata(pci, NULL);
+=======
+static void snd_bt87x_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+>>>>>>> refs/remotes/origin/master
 }
 
 /* default entries for all Bt87x cards - it's not exported */
@@ -965,10 +1026,21 @@ static DEFINE_PCI_DEVICE_TABLE(snd_bt87x_default_ids) = {
 };
 
 static struct pci_driver driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.name = "Bt87x",
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = snd_bt87x_ids,
 	.probe = snd_bt87x_probe,
 	.remove = __devexit_p(snd_bt87x_remove),
+=======
+	.name = KBUILD_MODNAME,
+	.id_table = snd_bt87x_ids,
+	.probe = snd_bt87x_probe,
+	.remove = snd_bt87x_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init alsa_card_bt87x_init(void)

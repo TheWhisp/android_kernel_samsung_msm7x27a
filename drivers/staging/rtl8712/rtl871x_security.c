@@ -28,6 +28,33 @@
 
 #define  _RTL871X_SECURITY_C_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/compiler.h>
+#include <linux/kernel.h>
+#include <linux/errno.h>
+#include <linux/init.h>
+=======
+#include <linux/compiler.h>
+#include <linux/kernel.h>
+#include <linux/errno.h>
+>>>>>>> refs/remotes/origin/master
+#include <linux/slab.h>
+#include <linux/module.h>
+#include <linux/kref.h>
+#include <linux/netdevice.h>
+#include <linux/skbuff.h>
+#include <linux/circ_buf.h>
+#include <linux/uaccess.h>
+#include <asm/byteorder.h>
+#include <linux/atomic.h>
+#include <linux/semaphore.h>
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "osdep_service.h"
 #include "drv_types.h"
 #include "wifi.h"
@@ -43,7 +70,11 @@ struct arc4context {
 	u8 state[256];
 };
 
+<<<<<<< HEAD
 static void arcfour_init(struct arc4context *parc4ctx, u8 * key, u32 key_len)
+=======
+static void arcfour_init(struct arc4context *parc4ctx, u8 *key, u32 key_len)
+>>>>>>> refs/remotes/origin/master
 {
 	u32	t, u;
 	u32	keyindex;
@@ -273,7 +304,11 @@ static void secmicclear(struct mic_data *pmicdata)
 	pmicdata->M = 0;
 }
 
+<<<<<<< HEAD
 void r8712_secmicsetkey(struct mic_data *pmicdata, u8 * key)
+=======
+void r8712_secmicsetkey(struct mic_data *pmicdata, u8 *key)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Set the key */
 	pmicdata->K0 = secmicgetuint32(key);
@@ -305,7 +340,11 @@ static void secmicappendbyte(struct mic_data *pmicdata, u8 b)
 	}
 }
 
+<<<<<<< HEAD
 void r8712_secmicappend(struct mic_data *pmicdata, u8 * src, u32 nbytes)
+=======
+void r8712_secmicappend(struct mic_data *pmicdata, u8 *src, u32 nbytes)
+>>>>>>> refs/remotes/origin/master
 {
 	/* This is simple */
 	while (nbytes > 0) {
@@ -820,7 +859,11 @@ static void mix_column(u8 *in, u8 *out)
 	u8 temp[4];
 	u8 tempb[4];
 
+<<<<<<< HEAD
 	for (i = 0 ; i < 4; i++) {
+=======
+	for (i = 0; i < 4; i++) {
+>>>>>>> refs/remotes/origin/master
 		if ((in[i] & 0x80) == 0x80)
 			add1b[i] = 0x1b;
 		else
@@ -1172,7 +1215,11 @@ u32 r8712_aes_encrypt(struct _adapter *padapter, u8 *pxmitframe)
 					length = pxmitpriv->frag_len -
 						 pattrib->hdrlen -
 						 pattrib->iv_len -
+<<<<<<< HEAD
 						 pattrib->icv_len ;
+=======
+						 pattrib->icv_len;
+>>>>>>> refs/remotes/origin/master
 					aes_cipher(prwskey, pattrib->
 						   hdrlen, pframe, length);
 					pframe += pxmitpriv->frag_len;
@@ -1300,7 +1347,11 @@ static sint aes_decipher(u8 *key, uint	hdrlen,
 		bitwise_xor(aes_out, padded_buffer, chain_buffer);
 		aes128k128d(key, chain_buffer, aes_out);
 	}
+<<<<<<< HEAD
 	for (j = 0 ; j < 8; j++)
+=======
+	for (j = 0; j < 8; j++)
+>>>>>>> refs/remotes/origin/master
 		mic[j] = aes_out[j];
 	/* Insert MIC into payload */
 	for (j = 0; j < 8; j++)
@@ -1353,7 +1404,11 @@ u32 r8712_aes_decrypt(struct _adapter *padapter, u8 *precvframe)
 					   precvframe)->u.hdr.attrib;
 	struct	security_priv *psecuritypriv = &padapter->securitypriv;
 
+<<<<<<< HEAD
 	pframe = (unsigned char *)((union recv_frame*)precvframe)->
+=======
+	pframe = (unsigned char *)((union recv_frame *)precvframe)->
+>>>>>>> refs/remotes/origin/master
 		 u.hdr.rx_data;
 	/* 4 start to encrypt each fragment */
 	if ((prxattrib->encrypt == _AES_)) {

@@ -36,7 +36,11 @@
 
 static struct __initdata map_desc ks8695_io_desc[] = {
 	{
+<<<<<<< HEAD
 		.virtual	= KS8695_IO_VA,
+=======
+		.virtual	= (unsigned long)KS8695_IO_VA,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(KS8695_IO_PA),
 		.length		= KS8695_IO_SIZE,
 		.type		= MT_DEVICE,

@@ -11,10 +11,20 @@
 #include <string.h>
 #include <termios.h>
 #include "chan_user.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "os.h"
 #include "um_malloc.h"
 #include "user.h"
+=======
+#include "os.h"
+#include "um_malloc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <os.h>
+#include <um_malloc.h>
+>>>>>>> refs/remotes/origin/master
 #include "xterm.h"
 
 struct xterm_chan {
@@ -123,6 +133,14 @@ static int xterm_open(int input, int output, int primary, void *d,
 		err = -errno;
 		printk(UM_KERN_ERR "xterm_open : unlink failed, errno = %d\n",
 		       errno);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		close(fd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		close(fd);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	close(fd);

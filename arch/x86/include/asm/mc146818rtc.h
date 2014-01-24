@@ -5,7 +5,13 @@
 #define _ASM_X86_MC146818RTC_H
 
 #include <asm/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <linux/mc146818rtc.h>
 
@@ -81,8 +87,18 @@ static inline unsigned char current_lock_cmos_reg(void)
 #else
 #define lock_cmos_prefix(reg) do {} while (0)
 #define lock_cmos_suffix(reg) do {} while (0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define lock_cmos(reg)
 #define unlock_cmos()
+=======
+#define lock_cmos(reg) do { } while (0)
+#define unlock_cmos() do { } while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define lock_cmos(reg) do { } while (0)
+#define unlock_cmos() do { } while (0)
+>>>>>>> refs/remotes/origin/master
 #define do_i_have_lock_cmos() 0
 #define current_lock_cmos_reg() 0
 #endif
@@ -96,8 +112,13 @@ static inline unsigned char current_lock_cmos_reg(void)
 unsigned char rtc_cmos_read(unsigned char addr);
 void rtc_cmos_write(unsigned char val, unsigned char addr);
 
+<<<<<<< HEAD
 extern int mach_set_rtc_mmss(unsigned long nowtime);
 extern unsigned long mach_get_cmos_time(void);
+=======
+extern int mach_set_rtc_mmss(const struct timespec *now);
+extern void mach_get_cmos_time(struct timespec *now);
+>>>>>>> refs/remotes/origin/master
 
 #define RTC_IRQ 8
 

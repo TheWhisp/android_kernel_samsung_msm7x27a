@@ -9,6 +9,14 @@
 #include <linux/init.h>
 #include <linux/timex.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/percpu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/percpu.h>
+>>>>>>> refs/remotes/origin/master
 
 unsigned long lpj_fine;
 unsigned long preset_lpj;
@@ -30,7 +38,11 @@ __setup("lpj=", lpj_setup);
 #define DELAY_CALIBRATION_TICKS			((HZ < 100) ? 1 : (HZ/100))
 #define MAX_DIRECT_CALIBRATION_RETRIES		5
 
+<<<<<<< HEAD
 static unsigned long __cpuinit calibrate_delay_direct(void)
+=======
+static unsigned long calibrate_delay_direct(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long pre_start, start, post_start;
 	unsigned long pre_end, end, post_end;
@@ -165,7 +177,14 @@ static unsigned long __cpuinit calibrate_delay_direct(void)
 	return 0;
 }
 #else
+<<<<<<< HEAD
 static unsigned long __cpuinit calibrate_delay_direct(void) {return 0;}
+=======
+static unsigned long calibrate_delay_direct(void)
+{
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -179,7 +198,11 @@ static unsigned long __cpuinit calibrate_delay_direct(void) {return 0;}
  */
 #define LPS_PREC 8
 
+<<<<<<< HEAD
 static unsigned long __cpuinit calibrate_delay_converge(void)
+=======
+static unsigned long calibrate_delay_converge(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* First stage - slowly accelerate to find initial bounds */
 	unsigned long lpj, lpj_base, ticks, loopadd, loopadd_base, chop_limit;
@@ -243,12 +266,58 @@ recalibrate:
 	return lpj;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEFINE_PER_CPU(unsigned long, cpu_loops_per_jiffy) = { 0 };
+
+/*
+ * Check if cpu calibration delay is already known. For example,
+ * some processors with multi-core sockets may have all cores
+ * with the same calibration delay.
+ *
+ * Architectures should override this function if a faster calibration
+ * method is available.
+ */
+<<<<<<< HEAD
+unsigned long __attribute__((weak)) __cpuinit calibrate_delay_is_known(void)
+=======
+unsigned long __attribute__((weak)) calibrate_delay_is_known(void)
+>>>>>>> refs/remotes/origin/master
+{
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 void __cpuinit calibrate_delay(void)
 {
 	unsigned long lpj;
 	static bool printed;
+<<<<<<< HEAD
 
 	if (preset_lpj) {
+=======
+=======
+void calibrate_delay(void)
+{
+	unsigned long lpj;
+	static bool printed;
+>>>>>>> refs/remotes/origin/master
+	int this_cpu = smp_processor_id();
+
+	if (per_cpu(cpu_loops_per_jiffy, this_cpu)) {
+		lpj = per_cpu(cpu_loops_per_jiffy, this_cpu);
+		if (!printed)
+			pr_info("Calibrating delay loop (skipped) "
+				"already calibrated this CPU");
+	} else if (preset_lpj) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		lpj = preset_lpj;
 		if (!printed)
 			pr_info("Calibrating delay loop (skipped) "
@@ -257,6 +326,16 @@ void __cpuinit calibrate_delay(void)
 		lpj = lpj_fine;
 		pr_info("Calibrating delay loop (skipped), "
 			"value calculated using timer frequency.. ");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	} else if ((lpj = calibrate_delay_is_known())) {
+		;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if ((lpj = calibrate_delay_is_known())) {
+		;
+>>>>>>> refs/remotes/origin/master
 	} else if ((lpj = calibrate_delay_direct()) != 0) {
 		if (!printed)
 			pr_info("Calibrating delay using timer "
@@ -266,6 +345,14 @@ void __cpuinit calibrate_delay(void)
 			pr_info("Calibrating delay loop... ");
 		lpj = calibrate_delay_converge();
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	per_cpu(cpu_loops_per_jiffy, this_cpu) = lpj;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	per_cpu(cpu_loops_per_jiffy, this_cpu) = lpj;
+>>>>>>> refs/remotes/origin/master
 	if (!printed)
 		pr_cont("%lu.%02lu BogoMIPS (lpj=%lu)\n",
 			lpj/(500000/HZ),

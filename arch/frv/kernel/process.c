@@ -25,10 +25,27 @@
 #include <linux/reboot.h>
 #include <linux/interrupt.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/asm-offsets.h>
 #include <asm/uaccess.h>
 #include <asm/system.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/rcupdate.h>
+
+#include <asm/asm-offsets.h>
+#include <asm/uaccess.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/setup.h>
 #include <asm/pgtable.h>
 #include <asm/tlb.h>
@@ -38,12 +55,19 @@
 #include "local.h"
 
 asmlinkage void ret_from_fork(void);
+<<<<<<< HEAD
+=======
+asmlinkage void ret_from_kernel_thread(void);
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pgalloc.h>
 
 void (*pm_power_off)(void);
 EXPORT_SYMBOL(pm_power_off);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct task_struct *alloc_task_struct_node(int node)
 {
 	struct task_struct *p = kmalloc_node(THREAD_SIZE, GFP_KERNEL, node);
@@ -59,6 +83,12 @@ void free_task_struct(struct task_struct *p)
 		kfree(p);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void core_sleep_idle(void)
 {
 #ifdef LED_DEBUG_SLEEP
@@ -73,6 +103,7 @@ static void core_sleep_idle(void)
 	mb();
 }
 
+<<<<<<< HEAD
 void (*idle)(void) = core_sleep_idle;
 
 /*
@@ -85,17 +116,42 @@ void cpu_idle(void)
 {
 	/* endless idle loop with no priority at all */
 	while (1) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-11.0
 		while (!need_resched()) {
 			check_pgt_cache();
 
 			if (!frv_dma_inprogress && idle)
 				idle();
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		rcu_idle_exit();
+
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+void arch_cpu_idle(void)
+{
+	if (!frv_dma_inprogress)
+		core_sleep_idle();
+	else
+		local_irq_enable();
+>>>>>>> refs/remotes/origin/master
 }
 
 void machine_restart(char * __unused)
@@ -143,10 +199,18 @@ void machine_power_off(void)
 
 void flush_thread(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if 0 //ndef NO_FPU
 	unsigned long zero = 0;
 #endif
 	set_fs(USER_DS);
+=======
+	/* nothing */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* nothing */
+>>>>>>> refs/remotes/origin/master
 }
 
 inline unsigned long user_stack(const struct pt_regs *regs)
@@ -156,6 +220,7 @@ inline unsigned long user_stack(const struct pt_regs *regs)
 	return user_mode(regs) ? regs->sp : 0;
 }
 
+<<<<<<< HEAD
 asmlinkage int sys_fork(void)
 {
 #ifndef CONFIG_MMU
@@ -197,10 +262,13 @@ void prepare_to_copy(struct task_struct *tsk)
 } /* end prepare_to_copy() */
 
 /*****************************************************************************/
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * set up the kernel stack and exception frames for a new process
  */
 int copy_thread(unsigned long clone_flags,
+<<<<<<< HEAD
 		unsigned long usp, unsigned long topstk,
 		struct task_struct *p, struct pt_regs *regs)
 {
@@ -229,14 +297,43 @@ int copy_thread(unsigned long clone_flags,
 	}
 
 	p->set_child_tid = p->clear_child_tid = NULL;
+=======
+		unsigned long usp, unsigned long arg,
+		struct task_struct *p)
+{
+	struct pt_regs *childregs;
+
+	childregs = (struct pt_regs *)
+		(task_stack_page(p) + THREAD_SIZE - FRV_FRAME0_SIZE);
+
+	/* set up the userspace frame (the only place that the USP is stored) */
+	*childregs = *current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 
 	p->thread.frame	 = childregs;
 	p->thread.curr	 = p;
 	p->thread.sp	 = (unsigned long) childregs;
 	p->thread.fp	 = 0;
 	p->thread.lr	 = 0;
+<<<<<<< HEAD
 	p->thread.pc	 = (unsigned long) ret_from_fork;
 	p->thread.frame0 = childregs0;
+=======
+	p->thread.frame0 = childregs;
+
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		childregs->gr9 = usp; /* function */
+		childregs->gr8 = arg;
+		p->thread.pc = (unsigned long) ret_from_kernel_thread;
+		save_user_regs(p->thread.user);
+		return 0;
+	}
+	if (usp)
+		childregs->sp = usp;
+	childregs->next_frame	= NULL;
+
+	p->thread.pc = (unsigned long) ret_from_fork;
+>>>>>>> refs/remotes/origin/master
 
 	/* the new TLS pointer is passed in as arg #5 to sys_clone() */
 	if (clone_flags & CLONE_SETTLS)
@@ -247,6 +344,7 @@ int copy_thread(unsigned long clone_flags,
 	return 0;
 } /* end copy_thread() */
 
+<<<<<<< HEAD
 /*
  * sys_execve() executes a new program.
  */
@@ -266,6 +364,8 @@ asmlinkage int sys_execve(const char __user *name,
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long get_wchan(struct task_struct *p)
 {
 	struct pt_regs *regs0;

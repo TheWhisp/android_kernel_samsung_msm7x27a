@@ -10,10 +10,18 @@
 #define __ASM_MACH_ATH79_IRQ_H
 
 #define MIPS_CPU_IRQ_BASE	0
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define NR_IRQS			16
 
 #define ATH79_MISC_IRQ_BASE	8
 #define ATH79_MISC_IRQ_COUNT	8
+=======
+#define NR_IRQS			40
+
+#define ATH79_MISC_IRQ_BASE	8
+#define ATH79_MISC_IRQ_COUNT	32
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define ATH79_CPU_IRQ_IP2	(MIPS_CPU_IRQ_BASE + 2)
 #define ATH79_CPU_IRQ_USB	(MIPS_CPU_IRQ_BASE + 3)
@@ -30,6 +38,34 @@
 #define ATH79_MISC_IRQ_PERFC	(ATH79_MISC_IRQ_BASE + 5)
 #define ATH79_MISC_IRQ_OHCI	(ATH79_MISC_IRQ_BASE + 6)
 #define ATH79_MISC_IRQ_DMA	(ATH79_MISC_IRQ_BASE + 7)
+<<<<<<< HEAD
+=======
+#define ATH79_MISC_IRQ_TIMER2	(ATH79_MISC_IRQ_BASE + 8)
+#define ATH79_MISC_IRQ_TIMER3	(ATH79_MISC_IRQ_BASE + 9)
+#define ATH79_MISC_IRQ_TIMER4	(ATH79_MISC_IRQ_BASE + 10)
+#define ATH79_MISC_IRQ_ETHSW	(ATH79_MISC_IRQ_BASE + 12)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NR_IRQS			51
+
+#define ATH79_CPU_IRQ(_x)	(MIPS_CPU_IRQ_BASE + (_x))
+
+#define ATH79_MISC_IRQ_BASE	8
+#define ATH79_MISC_IRQ_COUNT	32
+#define ATH79_MISC_IRQ(_x)	(ATH79_MISC_IRQ_BASE + (_x))
+
+#define ATH79_PCI_IRQ_BASE	(ATH79_MISC_IRQ_BASE + ATH79_MISC_IRQ_COUNT)
+#define ATH79_PCI_IRQ_COUNT	6
+#define ATH79_PCI_IRQ(_x)	(ATH79_PCI_IRQ_BASE + (_x))
+
+#define ATH79_IP2_IRQ_BASE	(ATH79_PCI_IRQ_BASE + ATH79_PCI_IRQ_COUNT)
+#define ATH79_IP2_IRQ_COUNT	2
+#define ATH79_IP2_IRQ(_x)	(ATH79_IP2_IRQ_BASE + (_x))
+
+#define ATH79_IP3_IRQ_BASE	(ATH79_IP2_IRQ_BASE + ATH79_IP2_IRQ_COUNT)
+#define ATH79_IP3_IRQ_COUNT     3
+#define ATH79_IP3_IRQ(_x)       (ATH79_IP3_IRQ_BASE + (_x))
+>>>>>>> refs/remotes/origin/master
 
 #include_next <irq.h>
 

@@ -15,6 +15,30 @@ config PROC_DEVICETREE
 	  an image of the device tree that the kernel copies from Open
 	  Firmware or other boot firmware. If unsure, say Y here.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+config OF_SELFTEST
+	bool "Device Tree Runtime self tests"
+	help
+	  This option builds in test cases for the device tree infrastructure
+	  that are executed one at boot time, and the results dumped to the
+=======
+config OF_SELFTEST
+	bool "Device Tree Runtime self tests"
+	depends on OF_IRQ
+	help
+	  This option builds in test cases for the device tree infrastructure
+	  that are executed once at boot time, and the results dumped to the
+>>>>>>> refs/remotes/origin/master
+	  console.
+
+	  If unsure, say N here, but this option is safe to enable.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config OF_FLATTREE
 	bool
 	select DTC
@@ -26,9 +50,22 @@ config OF_EARLY_FLATTREE
 config OF_PROMTREE
 	bool
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config OF_DYNAMIC
 	def_bool y
 	depends on PPC_OF
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+# Hardly any platforms need this.  It is safe to select, but only do so if you
+# need it.
+config OF_DYNAMIC
+	bool
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config OF_ADDRESS
 	def_bool y
@@ -38,6 +75,7 @@ config OF_IRQ
 	def_bool y
 	depends on !SPARC
 
+<<<<<<< HEAD
 config OF_DEVICE
 	def_bool y
 
@@ -53,16 +91,21 @@ config OF_I2C
 	help
 	  OpenFirmware I2C accessors
 
+=======
+>>>>>>> refs/remotes/origin/master
 config OF_NET
 	depends on NETDEVICES
 	def_bool y
 
+<<<<<<< HEAD
 config OF_SPI
 	def_tristate SPI
 	depends on SPI && !SPARC
 	help
 	  OpenFirmware SPI accessors
 
+=======
+>>>>>>> refs/remotes/origin/master
 config OF_MDIO
 	def_tristate PHYLIB
 	depends on PHYLIB
@@ -71,8 +114,58 @@ config OF_MDIO
 
 config OF_PCI
 	def_tristate PCI
+<<<<<<< HEAD
+<<<<<<< HEAD
 	depends on PCI && (PPC || MICROBLAZE || X86)
 	help
 	  OpenFirmware PCI bus accessors
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	depends on PCI
+	help
+	  OpenFirmware PCI bus accessors
+
+config OF_PCI_IRQ
+	def_tristate PCI
+	depends on OF_PCI && OF_IRQ
+	help
+	  OpenFirmware PCI IRQ routing helpers
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+config OF_SPMI
+	def_tristate SPMI
+	depends on SPMI
+	help
+	  OpenFirmware SPMI bus accessors
+
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+config OF_MTD
+	depends on MTD
+	def_bool y
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+config OF_SLIMBUS
+	def_tristate SLIMBUS
+	depends on SLIMBUS
+	help
+	  OpenFirmware SLIMBUS accessors
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 endmenu # OF

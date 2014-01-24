@@ -43,4 +43,8 @@
 /*---------------------  Export Functions  --------------------------*/
 bool AESbGenCCMP(unsigned char *pbyRxKey, unsigned char *pbyFrame, unsigned short wFrameSize);
 
+<<<<<<< HEAD
 #endif //__AES_H__
+=======
+#endif /* __AES_H__ */
+>>>>>>> refs/remotes/origin/master

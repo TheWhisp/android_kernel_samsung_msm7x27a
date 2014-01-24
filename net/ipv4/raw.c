@@ -38,7 +38,15 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 #include <asm/current.h>
 #include <asm/uaccess.h>
@@ -48,6 +56,14 @@
 #include <linux/errno.h>
 #include <linux/aio.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/sockios.h>
 #include <linux/socket.h>
@@ -110,9 +126,13 @@ EXPORT_SYMBOL_GPL(raw_unhash_sk);
 static struct sock *__raw_v4_lookup(struct net *net, struct sock *sk,
 		unsigned short num, __be32 raddr, __be32 laddr, int dif)
 {
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	sk_for_each_from(sk, node) {
+=======
+	sk_for_each_from(sk) {
+>>>>>>> refs/remotes/origin/master
 		struct inet_sock *inet = inet_sk(sk);
 
 		if (net_eq(sock_net(sk), net) && inet->inet_num == num	&&
@@ -217,6 +237,16 @@ static void raw_err(struct sock *sk, struct sk_buff *skb, u32 info)
 	int err = 0;
 	int harderr = 0;
 
+<<<<<<< HEAD
+=======
+	if (type == ICMP_DEST_UNREACH && code == ICMP_FRAG_NEEDED)
+		ipv4_sk_update_pmtu(skb, sk, info);
+	else if (type == ICMP_REDIRECT) {
+		ipv4_sk_redirect(skb, sk);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Report error on raw socket, if:
 	   1. User requested ip_recverr.
 	   2. Socket is connected (otherwise the error indication
@@ -289,11 +319,25 @@ void raw_icmp_error(struct sk_buff *skb, int protocol, u32 info)
 	read_unlock(&raw_v4_hashinfo.lock);
 }
 
+<<<<<<< HEAD
 static int raw_rcv_skb(struct sock * sk, struct sk_buff * skb)
 {
 	/* Charge it to the socket. */
 
+<<<<<<< HEAD
 	if (ip_queue_rcv_skb(sk, skb) < 0) {
+=======
+	ipv4_pktinfo_prepare(skb);
+	if (sock_queue_rcv_skb(sk, skb) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int raw_rcv_skb(struct sock *sk, struct sk_buff *skb)
+{
+	/* Charge it to the socket. */
+
+	ipv4_pktinfo_prepare(sk, skb);
+	if (sock_queue_rcv_skb(sk, skb) < 0) {
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 		return NET_RX_DROP;
 	}
@@ -328,6 +372,14 @@ static int raw_send_hdrinc(struct sock *sk, struct flowi4 *fl4,
 	unsigned int iphlen;
 	int err;
 	struct rtable *rt = *rtp;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int hlen, tlen;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int hlen, tlen;
+>>>>>>> refs/remotes/origin/master
 
 	if (length > rt->dst.dev->mtu) {
 		ip_local_error(sk, EMSGSIZE, fl4->daddr, inet->inet_dport,
@@ -337,12 +389,29 @@ static int raw_send_hdrinc(struct sock *sk, struct flowi4 *fl4,
 	if (flags&MSG_PROBE)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	skb = sock_alloc_send_skb(sk,
 				  length + LL_ALLOCATED_SPACE(rt->dst.dev) + 15,
 				  flags & MSG_DONTWAIT, &err);
 	if (skb == NULL)
 		goto error;
 	skb_reserve(skb, LL_RESERVED_SPACE(rt->dst.dev));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	hlen = LL_RESERVED_SPACE(rt->dst.dev);
+	tlen = rt->dst.dev->needed_tailroom;
+	skb = sock_alloc_send_skb(sk,
+				  length + hlen + tlen + 15,
+				  flags & MSG_DONTWAIT, &err);
+	if (skb == NULL)
+		goto error;
+	skb_reserve(skb, hlen);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	skb->priority = sk->sk_priority;
 	skb->mark = sk->sk_mark;
@@ -488,11 +557,21 @@ static int raw_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 		if (msg->msg_namelen < sizeof(*usin))
 			goto out;
 		if (usin->sin_family != AF_INET) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			static int complained;
 			if (!complained++)
 				printk(KERN_INFO "%s forgot to set AF_INET in "
 						 "raw sendmsg. Fix it!\n",
 						 current->comm);
+=======
+			pr_info_once("%s: %s forgot to set AF_INET. Fix it!\n",
+				     __func__, current->comm);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_info_once("%s: %s forgot to set AF_INET. Fix it!\n",
+				     __func__, current->comm);
+>>>>>>> refs/remotes/origin/master
 			err = -EAFNOSUPPORT;
 			if (usin->sin_family)
 				goto out;
@@ -512,6 +591,11 @@ static int raw_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 	ipc.addr = inet->inet_saddr;
 	ipc.opt = NULL;
 	ipc.tx_flags = 0;
+<<<<<<< HEAD
+=======
+	ipc.ttl = 0;
+	ipc.tos = -1;
+>>>>>>> refs/remotes/origin/master
 	ipc.oif = sk->sk_bound_dev_if;
 
 	if (msg->msg_controllen) {
@@ -551,7 +635,11 @@ static int raw_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 			daddr = ipc.opt->opt.faddr;
 		}
 	}
+<<<<<<< HEAD
 	tos = RT_CONN_FLAGS(sk);
+=======
+	tos = get_rtconn_flags(&ipc, sk);
+>>>>>>> refs/remotes/origin/master
 	if (msg->msg_flags & MSG_DONTROUTE)
 		tos |= RTO_ONLINK;
 
@@ -560,12 +648,33 @@ static int raw_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 			ipc.oif = inet->mc_index;
 		if (!saddr)
 			saddr = inet->mc_addr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
+=======
+	} else if (!ipc.oif)
+		ipc.oif = inet->uc_index;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (!ipc.oif)
+		ipc.oif = inet->uc_index;
+>>>>>>> refs/remotes/origin/master
 
 	flowi4_init_output(&fl4, ipc.oif, sk->sk_mark, tos,
 			   RT_SCOPE_UNIVERSE,
 			   inet->hdrincl ? IPPROTO_RAW : sk->sk_protocol,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   FLOWI_FLAG_CAN_SLEEP, daddr, saddr, 0, 0);
+=======
+			   inet_sk_flowi_flags(sk) | FLOWI_FLAG_CAN_SLEEP,
+			   daddr, saddr, 0, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   inet_sk_flowi_flags(sk) | FLOWI_FLAG_CAN_SLEEP |
+			    (inet->hdrincl ? FLOWI_FLAG_KNOWN_NH : 0),
+			   daddr, saddr, 0, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (!inet->hdrincl) {
 		err = raw_probe_proto_opt(&fl4, msg);
@@ -684,11 +793,16 @@ static int raw_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 	if (flags & MSG_OOB)
 		goto out;
 
+<<<<<<< HEAD
 	if (addr_len)
 		*addr_len = sizeof(*sin);
 
 	if (flags & MSG_ERRQUEUE) {
 		err = ip_recv_error(sk, msg, len);
+=======
+	if (flags & MSG_ERRQUEUE) {
+		err = ip_recv_error(sk, msg, len, addr_len);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -714,6 +828,10 @@ static int raw_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 		sin->sin_addr.s_addr = ip_hdr(skb)->saddr;
 		sin->sin_port = 0;
 		memset(&sin->sin_zero, 0, sizeof(sin->sin_zero));
+<<<<<<< HEAD
+=======
+		*addr_len = sizeof(*sin);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (inet->cmsg_flags)
 		ip_cmsg_recv(msg, skb);
@@ -827,6 +945,8 @@ static int compat_raw_getsockopt(struct sock *sk, int level, int optname,
 static int raw_ioctl(struct sock *sk, int cmd, unsigned long arg)
 {
 	switch (cmd) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case SIOCOUTQ: {
 			int amount = sk_wmem_alloc_get(sk);
 
@@ -849,6 +969,35 @@ static int raw_ioctl(struct sock *sk, int cmd, unsigned long arg)
 			return ipmr_ioctl(sk, cmd, (void __user *)arg);
 #else
 			return -ENOIOCTLCMD;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case SIOCOUTQ: {
+		int amount = sk_wmem_alloc_get(sk);
+
+		return put_user(amount, (int __user *)arg);
+	}
+	case SIOCINQ: {
+		struct sk_buff *skb;
+		int amount = 0;
+
+		spin_lock_bh(&sk->sk_receive_queue.lock);
+		skb = skb_peek(&sk->sk_receive_queue);
+		if (skb != NULL)
+			amount = skb->len;
+		spin_unlock_bh(&sk->sk_receive_queue.lock);
+		return put_user(amount, (int __user *)arg);
+	}
+
+	default:
+#ifdef CONFIG_IP_MROUTE
+		return ipmr_ioctl(sk, cmd, (void __user *)arg);
+#else
+		return -ENOIOCTLCMD;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	}
 }
@@ -885,6 +1034,10 @@ struct proto raw_prot = {
 	.recvmsg	   = raw_recvmsg,
 	.bind		   = raw_bind,
 	.backlog_rcv	   = raw_rcv_skb,
+<<<<<<< HEAD
+=======
+	.release_cb	   = ip4_datagram_release_cb,
+>>>>>>> refs/remotes/origin/master
 	.hash		   = raw_hash_sk,
 	.unhash		   = raw_unhash_sk,
 	.obj_size	   = sizeof(struct raw_sock),
@@ -904,9 +1057,13 @@ static struct sock *raw_get_first(struct seq_file *seq)
 
 	for (state->bucket = 0; state->bucket < RAW_HTABLE_SIZE;
 			++state->bucket) {
+<<<<<<< HEAD
 		struct hlist_node *node;
 
 		sk_for_each(sk, node, &state->h->ht[state->bucket])
+=======
+		sk_for_each(sk, &state->h->ht[state->bucket])
+>>>>>>> refs/remotes/origin/master
 			if (sock_net(sk) == seq_file_net(seq))
 				goto found;
 	}
@@ -981,11 +1138,21 @@ static void raw_sock_seq_show(struct seq_file *seq, struct sock *sp, int i)
 	      srcp  = inet->inet_num;
 
 	seq_printf(seq, "%4d: %08X:%04X %08X:%04X"
+<<<<<<< HEAD
 		" %02X %08X:%08X %02X:%08lX %08X %5d %8d %lu %d %pK %d\n",
 		i, src, srcp, dest, destp, sp->sk_state,
 		sk_wmem_alloc_get(sp),
 		sk_rmem_alloc_get(sp),
 		0, 0L, 0, sock_i_uid(sp), 0, sock_i_ino(sp),
+=======
+		" %02X %08X:%08X %02X:%08lX %08X %5u %8d %lu %d %pK %d\n",
+		i, src, srcp, dest, destp, sp->sk_state,
+		sk_wmem_alloc_get(sp),
+		sk_rmem_alloc_get(sp),
+		0, 0L, 0,
+		from_kuid_munged(seq_user_ns(seq), sock_i_uid(sp)),
+		0, sock_i_ino(sp),
+>>>>>>> refs/remotes/origin/master
 		atomic_read(&sp->sk_refcnt), sp, atomic_read(&sp->sk_drops));
 }
 
@@ -1038,7 +1205,11 @@ static const struct file_operations raw_seq_fops = {
 
 static __net_init int raw_init_net(struct net *net)
 {
+<<<<<<< HEAD
 	if (!proc_net_fops_create(net, "raw", S_IRUGO, &raw_seq_fops))
+=======
+	if (!proc_create("raw", S_IRUGO, net->proc_net, &raw_seq_fops))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	return 0;
@@ -1046,7 +1217,11 @@ static __net_init int raw_init_net(struct net *net)
 
 static __net_exit void raw_exit_net(struct net *net)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, "raw");
+=======
+	remove_proc_entry("raw", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 static __net_initdata struct pernet_operations raw_net_ops = {

@@ -31,7 +31,10 @@
 #include "nouveau_grctx.h"
 #include "nouveau_dma.h"
 #include "nouveau_vm.h"
+<<<<<<< HEAD
 #include "nouveau_ramht.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "nv50_evo.h"
 
 struct nv50_graph_engine {
@@ -121,6 +124,7 @@ nv50_graph_unload_context(struct drm_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void
 nv50_graph_init_reset(struct drm_device *dev)
 {
@@ -147,16 +151,34 @@ nv50_graph_init_regs__nv(struct drm_device *dev)
 {
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	uint32_t units = nv_rd32(dev, 0x1540);
+=======
+static int
+nv50_graph_init(struct drm_device *dev, int engine)
+{
+	struct drm_nouveau_private *dev_priv = dev->dev_private;
+	struct nv50_graph_engine *pgraph = nv_engine(dev, engine);
+	u32 units = nv_rd32(dev, 0x001540);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 
 	NV_DEBUG(dev, "\n");
 
+<<<<<<< HEAD
+=======
+	/* master reset */
+	nv_mask(dev, 0x000200, 0x00201000, 0x00000000);
+	nv_mask(dev, 0x000200, 0x00201000, 0x00201000);
+	nv_wr32(dev, 0x40008c, 0x00000004); /* HW_CTX_SWITCH_ENABLED */
+
+	/* reset/enable traps and interrupts */
+>>>>>>> refs/remotes/origin/cm-10.0
 	nv_wr32(dev, 0x400804, 0xc0000000);
 	nv_wr32(dev, 0x406800, 0xc0000000);
 	nv_wr32(dev, 0x400c04, 0xc0000000);
 	nv_wr32(dev, 0x401800, 0xc0000000);
 	nv_wr32(dev, 0x405018, 0xc0000000);
 	nv_wr32(dev, 0x402000, 0xc0000000);
+<<<<<<< HEAD
 
 	for (i = 0; i < 16; i++) {
 		if (units & 1 << i) {
@@ -169,10 +191,25 @@ nv50_graph_init_regs__nv(struct drm_device *dev)
 				nv_wr32(dev, 0x408708 + (i << 11), 0xc0000000);
 				nv_wr32(dev, 0x40831c + (i << 11), 0xc0000000);
 			}
+=======
+	for (i = 0; i < 16; i++) {
+		if (!(units & (1 << i)))
+			continue;
+
+		if (dev_priv->chipset < 0xa0) {
+			nv_wr32(dev, 0x408900 + (i << 12), 0xc0000000);
+			nv_wr32(dev, 0x408e08 + (i << 12), 0xc0000000);
+			nv_wr32(dev, 0x408314 + (i << 12), 0xc0000000);
+		} else {
+			nv_wr32(dev, 0x408600 + (i << 11), 0xc0000000);
+			nv_wr32(dev, 0x408708 + (i << 11), 0xc0000000);
+			nv_wr32(dev, 0x40831c + (i << 11), 0xc0000000);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
 	nv_wr32(dev, 0x400108, 0xffffffff);
+<<<<<<< HEAD
 
 	nv_wr32(dev, 0x400824, 0x00004000);
 	nv_wr32(dev, 0x400500, 0x00010001);
@@ -186,6 +223,26 @@ nv50_graph_init_zcull(struct drm_device *dev)
 
 	NV_DEBUG(dev, "\n");
 
+=======
+	nv_wr32(dev, 0x400138, 0xffffffff);
+	nv_wr32(dev, 0x400100, 0xffffffff);
+	nv_wr32(dev, 0x40013c, 0xffffffff);
+	nv_wr32(dev, 0x400500, 0x00010001);
+
+	/* upload context program, initialise ctxctl defaults */
+	nv_wr32(dev, 0x400324, 0x00000000);
+	for (i = 0; i < pgraph->ctxprog_size; i++)
+		nv_wr32(dev, 0x400328, pgraph->ctxprog[i]);
+	nv_wr32(dev, 0x400824, 0x00000000);
+	nv_wr32(dev, 0x400828, 0x00000000);
+	nv_wr32(dev, 0x40082c, 0x00000000);
+	nv_wr32(dev, 0x400830, 0x00000000);
+	nv_wr32(dev, 0x400724, 0x00000000);
+	nv_wr32(dev, 0x40032c, 0x00000000);
+	nv_wr32(dev, 0x400320, 4);	/* CTXCTL_CMD = NEWCTXDMA */
+
+	/* some unknown zcull magic */
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (dev_priv->chipset & 0xf0) {
 	case 0x50:
 	case 0x80:
@@ -214,6 +271,7 @@ nv50_graph_init_zcull(struct drm_device *dev)
 		nv_wr32(dev, 0x402c28 + (i * 8), 0x00000000);
 		nv_wr32(dev, 0x402c2c + (i * 8), 0x00000000);
 	}
+<<<<<<< HEAD
 }
 
 static int
@@ -251,13 +309,26 @@ nv50_graph_init(struct drm_device *dev, int engine)
 		return ret;
 
 	nv50_graph_init_intr(dev);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int
+<<<<<<< HEAD
 nv50_graph_fini(struct drm_device *dev, int engine)
 {
 	NV_DEBUG(dev, "\n");
+=======
+nv50_graph_fini(struct drm_device *dev, int engine, bool suspend)
+{
+	nv_mask(dev, 0x400500, 0x00010001, 0x00000000);
+	if (!nv_wait(dev, 0x400700, ~0, 0) && suspend) {
+		nv_mask(dev, 0x400500, 0x00010001, 0x00010001);
+		return -EBUSY;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	nv50_graph_unload_context(dev);
 	nv_wr32(dev, 0x40013c, 0x00000000);
 	return 0;
@@ -658,9 +729,15 @@ nv50_pgraph_tp_trap(struct drm_device *dev, int type, uint32_t ustatus_old,
 			}
 			break;
 		case 7: /* MP error */
+<<<<<<< HEAD
 			if (ustatus & 0x00010000) {
 				nv50_pgraph_mp_trap(dev, i, display);
 				ustatus &= ~0x00010000;
+=======
+			if (ustatus & 0x04030000) {
+				nv50_pgraph_mp_trap(dev, i, display);
+				ustatus &= ~0x04030000;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			break;
 		case 8: /* TPDMA error */

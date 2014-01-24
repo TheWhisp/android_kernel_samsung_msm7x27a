@@ -77,6 +77,7 @@ Who:	Robin Getz <rgetz@blackfin.uclinux.org> & Matt Mackall <mpm@selenic.com>
 
 ---------------------------
 
+<<<<<<< HEAD
 What:	Deprecated snapshot ioctls
 When:	2.6.36
 
@@ -88,6 +89,8 @@ Who:	Jiri Slaby <jirislaby@gmail.com>
 
 ---------------------------
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 What:	The ieee80211_regdom module parameter
 When:	March 2010 / desktop catchup
 
@@ -125,6 +128,7 @@ Who:	Pavel Machek <pavel@ucw.cz>
 
 ---------------------------
 
+<<<<<<< HEAD
 What:	sys_sysctl
 When:	September 2010
 Option: CONFIG_SYSCTL_SYSCALL
@@ -160,6 +164,8 @@ Who:	Eric Biederman <ebiederm@xmission.com>
 
 ---------------------------
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 What:	/proc/<pid>/oom_adj
 When:	August 2012
 Why:	/proc/<pid>/oom_adj allows userspace to influence the oom killer's
@@ -176,7 +182,11 @@ Why:	/proc/<pid>/oom_adj allows userspace to influence the oom killer's
 
 	A much more powerful interface, /proc/<pid>/oom_score_adj, was
 	introduced with the oom killer rewrite that allows users to increase or
+<<<<<<< HEAD
 	decrease the badness() score linearly.  This interface will replace
+=======
+	decrease the badness score linearly.  This interface will replace
+>>>>>>> refs/remotes/origin/cm-10.0
 	/proc/<pid>/oom_adj.
 
 	A warning will be emitted to the kernel log if an application uses this
@@ -185,6 +195,7 @@ Why:	/proc/<pid>/oom_adj allows userspace to influence the oom killer's
 
 ---------------------------
 
+<<<<<<< HEAD
 What:	CS5535/CS5536 obsolete GPIO driver
 When:	June 2011
 Files:	drivers/staging/cs5535_gpio/*
@@ -199,6 +210,8 @@ Who:	Andres Salomon <dilinger@queued.net>
 
 --------------------------
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 What:	remove EXPORT_SYMBOL(kernel_thread)
 When:	August 2006
 Files:	arch/*/kernel/*_ksyms.c
@@ -286,7 +299,11 @@ When:	The schedule was July 2008, but it was decided that we are going to keep t
 Why:	The support code for the old firmware hurts code readability/maintainability
 	and slightly hurts runtime performance. Bugfixes for the old firmware
 	are not provided by Broadcom anymore.
+<<<<<<< HEAD
 Who:	Michael Buesch <mb@bu3sch.de>
+=======
+Who:	Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 ---------------------------
 
@@ -302,6 +319,7 @@ Who:	Ravikiran Thirumalai <kiran@scalex86.org>
 
 ---------------------------
 
+<<<<<<< HEAD
 What:	CONFIG_THERMAL_HWMON
 When:	January 2009
 Why:	This option was introduced just to allow older lm-sensors userspace
@@ -315,6 +333,11 @@ What:	Code that is now under CONFIG_WIRELESS_EXT_SYSFS
 	(in net/core/net-sysfs.c)
 When:	After the only user (hal) has seen a release with the patches
 	for enough time, probably some time in 2010.
+=======
+What:	Code that is now under CONFIG_WIRELESS_EXT_SYSFS
+	(in net/core/net-sysfs.c)
+When:	3.5
+>>>>>>> refs/remotes/origin/cm-10.0
 Why:	Over 1K .text/.data size reduction, data is available in other
 	ways (ioctls)
 Who:	Johannes Berg <johannes@sipsolutions.net>
@@ -412,6 +435,7 @@ Who: 	anybody or Florian Mickler <florian@mickler.org>
 
 ----------------------------
 
+<<<<<<< HEAD
 What:	KVM paravirt mmu host support
 When:	January 2011
 Why:	The paravirt mmu host support is slower than non-paravirt mmu, both
@@ -423,6 +447,10 @@ Who:	Avi Kivity <avi@redhat.com>
 
 What:	iwlwifi 50XX module parameters
 When:	2.6.40
+=======
+What:	iwlwifi 50XX module parameters
+When:	3.0
+>>>>>>> refs/remotes/origin/cm-10.0
 Why:	The "..50" modules parameters were used to configure 5000 series and
 	up devices; different set of module parameters also available for 4965
 	with same functionalities. Consolidate both set into single place
@@ -433,7 +461,11 @@ Who:	Wey-Yi Guy <wey-yi.w.guy@intel.com>
 ----------------------------
 
 What:	iwl4965 alias support
+<<<<<<< HEAD
 When:	2.6.40
+=======
+When:	3.0
+>>>>>>> refs/remotes/origin/cm-10.0
 Why:	Internal alias support has been present in module-init-tools for some
 	time, the MODULE_ALIAS("iwl4965") boilerplate aliases can be removed
 	with no impact.
@@ -466,6 +498,7 @@ Who:	FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
 
 ----------------------------
 
+<<<<<<< HEAD
 What: 	DMA_xxBIT_MASK macros
 When:	Jun 2011
 Why:	DMA_xxBIT_MASK macros were replaced with DMA_BIT_MASK() macros.
@@ -475,6 +508,10 @@ Who:	FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
 
 What:	iwlwifi disable_hw_scan module parameters
 When:	2.6.40
+=======
+What:	iwlwifi disable_hw_scan module parameters
+When:	3.0
+>>>>>>> refs/remotes/origin/cm-10.0
 Why:	Hareware scan is the prefer method for iwlwifi devices for
 	scanning operation. Remove software scan support for all the
 	iwlwifi devices.
@@ -483,6 +520,7 @@ Who:	Wey-Yi Guy <wey-yi.w.guy@intel.com>
 
 ----------------------------
 
+<<<<<<< HEAD
 What:   access to nfsd auth cache through sys_nfsservctl or '.' files
         in the 'nfsd' filesystem.
 When:   2.6.40
@@ -503,6 +541,8 @@ Who:	Tejun Heo <tj@kernel.org>
 
 ----------------------------
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 What:	Legacy, non-standard chassis intrusion detection interface.
 When:	June 2011
 Why:	The adm9240, w83792d and w83793 hardware monitoring drivers have
@@ -520,6 +560,7 @@ Files:	net/netfilter/xt_connlimit.c
 
 ----------------------------
 
+<<<<<<< HEAD
 What:	noswapaccount kernel command line parameter
 When:	2.6.40
 Why:	The original implementation of memsw feature enabled by
@@ -536,6 +577,8 @@ Who:	Michal Hocko <mhocko@suse.cz>
 
 ----------------------------
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 What:	ipt_addrtype match include file
 When:	2012
 Why:	superseded by xt_addrtype
@@ -553,6 +596,7 @@ Who:	Jean Delvare <khali@linux-fr.org>
 
 ----------------------------
 
+<<<<<<< HEAD
 What:	Support for UVCIOC_CTRL_ADD in the uvcvideo driver
 When:	2.6.42
 Why:	The information passed to the driver by this ioctl is now queried
@@ -597,3 +641,123 @@ Why:	Just opening a V4L device should not change the state of the hardware
 Who:	Hans Verkuil <hans.verkuil@cisco.com>
 
 ----------------------------
+=======
+What:	Opening a radio device node will no longer automatically switch the
+	tuner mode from tv to radio.
+When:	3.3
+Why:	Just opening a V4L device should not change the state of the hardware
+	like that. It's very unexpected and against the V4L spec. Instead, you
+	switch to radio mode by calling VIDIOC_S_FREQUENCY. This is the second
+	and last step of the move to consistent handling of tv and radio tuners.
+Who:	Hans Verkuil <hans.verkuil@cisco.com>
+
+----------------------------
+
+What:	g_file_storage driver
+When:	3.8
+Why:	This driver has been superseded by g_mass_storage.
+Who:	Alan Stern <stern@rowland.harvard.edu>
+
+----------------------------
+
+What:   threeg and interface sysfs files in /sys/devices/platform/acer-wmi
+When:   2012
+Why:    In 3.0, we can now autodetect internal 3G device and already have
+	the threeg rfkill device. So, we plan to remove threeg sysfs support
+	for it's no longer necessary.
+
+	We also plan to remove interface sysfs file that exposed which ACPI-WMI
+	interface that was used by acer-wmi driver. It will replaced by
+	information log when acer-wmi initial.
+Who:    Lee, Chun-Yi <jlee@novell.com>
+
+---------------------------
+
+What:	/sys/devices/platform/_UDC_/udc/_UDC_/is_dualspeed file and
+	is_dualspeed line in /sys/devices/platform/ci13xxx_*/udc/device file.
+When:	3.8
+Why:	The is_dualspeed file is superseded by maximum_speed in the same
+	directory and is_dualspeed line in device file is superseded by
+	max_speed line in the same file.
+
+	The maximum_speed/max_speed specifies maximum speed supported by UDC.
+	To check if dualspeeed is supported, check if the value is >= 3.
+	Various possible speeds are defined in <linux/usb/ch9.h>.
+Who:	Michal Nazarewicz <mina86@mina86.com>
+
+----------------------------
+
+What:	The XFS nodelaylog mount option
+When:	3.3
+Why:	The delaylog mode that has been the default since 2.6.39 has proven
+	stable, and the old code is in the way of additional improvements in
+	the log code.
+Who:	Christoph Hellwig <hch@lst.de>
+
+----------------------------
+
+What:	iwlagn alias support
+When:	3.5
+Why:	The iwlagn module has been renamed iwlwifi.  The alias will be around
+	for backward compatibility for several cycles and then dropped.
+Who:	Don Fry <donald.h.fry@intel.com>
+
+----------------------------
+
+What:	pci_scan_bus_parented()
+When:	3.5
+Why:	The pci_scan_bus_parented() interface creates a new root bus.  The
+	bus is created with default resources (ioport_resource and
+	iomem_resource) that are always wrong, so we rely on arch code to
+	correct them later.  Callers of pci_scan_bus_parented() should
+	convert to using pci_scan_root_bus() so they can supply a list of
+	bus resources when the bus is created.
+Who:	Bjorn Helgaas <bhelgaas@google.com>
+
+----------------------------
+
+What:	Low Performance USB Block driver ("CONFIG_BLK_DEV_UB")
+When:	3.6
+Why:	This driver provides support for USB storage devices like "USB
+	sticks". As of now, it is deactivated in Debian, Fedora and
+        Ubuntu. All current users can switch over to usb-storage
+        (CONFIG_USB_STORAGE) which only drawback is the additional SCSI
+        stack.
+Who:	Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+
+----------------------------
+
+What:	kmap_atomic(page, km_type)
+When:	3.5
+Why:	The old kmap_atomic() with two arguments is deprecated, we only
+	keep it for backward compatibility for few cycles and then drop it.
+Who:	Cong Wang <amwang@redhat.com>
+
+----------------------------
+
+What:	get_robust_list syscall
+When:	2013
+Why:	There appear to be no production users of the get_robust_list syscall,
+	and it runs the risk of leaking address locations, allowing the bypass
+	of ASLR. It was only ever intended for debugging, so it should be
+	removed.
+Who:	Kees Cook <keescook@chromium.org>
+
+----------------------------
+
+What:	setitimer accepts user NULL pointer (value)
+When:	3.6
+Why:	setitimer is not returning -EFAULT if user pointer is NULL. This
+	violates the spec.
+Who:	Sasikantha Babu <sasikanth.v19@gmail.com>
+
+----------------------------
+
+What:	V4L2_CID_HCENTER, V4L2_CID_VCENTER V4L2 controls
+When:	3.7
+Why:	The V4L2_CID_VCENTER, V4L2_CID_HCENTER controls have been deprecated
+	for about 4 years and they are not used by any mainline driver.
+	There are newer controls (V4L2_CID_PAN*, V4L2_CID_TILT*) that provide
+	similar	functionality.
+Who:	Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
+>>>>>>> refs/remotes/origin/cm-10.0

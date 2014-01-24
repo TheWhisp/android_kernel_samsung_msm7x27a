@@ -432,11 +432,17 @@ static void wm8350_irq_sync_unlock(struct irq_data *data)
 	for (i = 0; i < ARRAY_SIZE(wm8350->irq_masks); i++) {
 		/* If there's been a change in the mask write it back
 		 * to the hardware. */
+<<<<<<< HEAD
 		if (wm8350->irq_masks[i] !=
 		    wm8350->reg_cache[WM8350_INT_STATUS_1_MASK + i])
 			WARN_ON(wm8350_reg_write(wm8350,
 					 WM8350_INT_STATUS_1_MASK + i,
 						 wm8350->irq_masks[i]));
+=======
+		WARN_ON(regmap_update_bits(wm8350->regmap,
+					   WM8350_INT_STATUS_1_MASK + i,
+					   0xffff, wm8350->irq_masks[i]));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&wm8350->irq_lock);
@@ -473,17 +479,31 @@ int wm8350_irq_init(struct wm8350 *wm8350, int irq,
 {
 	int ret, cur_irq, i;
 	int flags = IRQF_ONESHOT;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int irq_base = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int irq_base = -1;
+>>>>>>> refs/remotes/origin/master
 
 	if (!irq) {
 		dev_warn(wm8350->dev, "No interrupt support, no core IRQ\n");
 		return 0;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!pdata || !pdata->irq_base) {
 		dev_warn(wm8350->dev, "No interrupt support, no IRQ base\n");
 		return 0;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Mask top level interrupts */
 	wm8350_reg_write(wm8350, WM8350_SYSTEM_INTERRUPTS_MASK, 0xFFFF);
 
@@ -500,9 +520,30 @@ int wm8350_irq_init(struct wm8350 *wm8350, int irq,
 
 	mutex_init(&wm8350->irq_lock);
 	wm8350->chip_irq = irq;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8350->irq_base = pdata->irq_base;
 
 	if (pdata->irq_high) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (pdata && pdata->irq_base > 0)
+		irq_base = pdata->irq_base;
+
+	wm8350->irq_base = irq_alloc_descs(irq_base, 0, ARRAY_SIZE(wm8350_irqs), 0);
+	if (wm8350->irq_base < 0) {
+		dev_warn(wm8350->dev, "Allocating irqs failed with %d\n",
+			wm8350->irq_base);
+		return 0;
+	}
+
+	if (pdata && pdata->irq_high) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		flags |= IRQF_TRIGGER_HIGH;
 
 		wm8350_set_bits(wm8350, WM8350_SYSTEM_CONTROL_1,

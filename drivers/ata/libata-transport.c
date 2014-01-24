@@ -32,11 +32,23 @@
 #include <linux/libata.h>
 #include <linux/hdreg.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "libata.h"
 #include "libata-transport.h"
 
+<<<<<<< HEAD
 #define ATA_PORT_ATTRS		2
+=======
+#define ATA_PORT_ATTRS		3
+>>>>>>> refs/remotes/origin/master
 #define ATA_LINK_ATTRS		3
 #define ATA_DEV_ATTRS		9
 
@@ -215,6 +227,10 @@ static DEVICE_ATTR(name, S_IRUGO, show_ata_port_##name, NULL)
 
 ata_port_simple_attr(nr_pmp_links, nr_pmp_links, "%d\n", int);
 ata_port_simple_attr(stats.idle_irq, idle_irq, "%ld\n", unsigned long);
+<<<<<<< HEAD
+=======
+ata_port_simple_attr(local_port_no, port_no, "%u\n", unsigned int);
+>>>>>>> refs/remotes/origin/master
 
 static DECLARE_TRANSPORT_CLASS(ata_port_class,
 			       "ata_port", NULL, NULL, NULL);
@@ -231,7 +247,11 @@ static void ata_tport_release(struct device *dev)
  * Returns:
  *	%1 if the device represents a ATA Port, %0 else
  */
+<<<<<<< HEAD
 int ata_is_port(const struct device *dev)
+=======
+static int ata_is_port(const struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return dev->release == ata_tport_release;
 }
@@ -279,16 +299,42 @@ int ata_tport_add(struct device *parent,
 	struct device *dev = &ap->tdev;
 
 	device_initialize(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dev->type = &ata_port_type;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->type = &ata_port_type;
+>>>>>>> refs/remotes/origin/master
 
 	dev->parent = get_device(parent);
 	dev->release = ata_tport_release;
 	dev_set_name(dev, "ata%d", ap->print_id);
 	transport_setup_device(dev);
+<<<<<<< HEAD
+=======
+	ata_acpi_bind_port(ap);
+>>>>>>> refs/remotes/origin/master
 	error = device_add(dev);
 	if (error) {
 		goto tport_err;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	device_enable_async_suspend(dev);
+	pm_runtime_set_active(dev);
+	pm_runtime_enable(dev);
+	pm_runtime_forbid(dev);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	transport_add_device(dev);
 	transport_configure_device(dev);
 
@@ -312,25 +358,60 @@ int ata_tport_add(struct device *parent,
 /*
  * ATA link attributes
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
 #define ata_link_show_linkspeed(field)					\
+=======
+static int noop(int x) { return x; }
+
+#define ata_link_show_linkspeed(field, format)			        \
+>>>>>>> refs/remotes/origin/master
+=======
+static int noop(int x) { return x; }
+
+#define ata_link_show_linkspeed(field, format)			        \
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t								\
 show_ata_link_##field(struct device *dev,				\
 		      struct device_attribute *attr, char *buf)		\
 {									\
 	struct ata_link *link = transport_class_to_link(dev);		\
 									\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%s\n", sata_spd_string(fls(link->field)));	\
+=======
+	return sprintf(buf, "%s\n", sata_spd_string(format(link->field))); \
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
-#define ata_link_linkspeed_attr(field)					\
-	ata_link_show_linkspeed(field)					\
+#define ata_link_linkspeed_attr(field, format)				\
+	ata_link_show_linkspeed(field, format)				\
 static DEVICE_ATTR(field, S_IRUGO, show_ata_link_##field, NULL)
 
+<<<<<<< HEAD
 ata_link_linkspeed_attr(hw_sata_spd_limit);
 ata_link_linkspeed_attr(sata_spd_limit);
 ata_link_linkspeed_attr(sata_spd);
+=======
+	return sprintf(buf, "%s\n", sata_spd_string(format(link->field))); \
+}
+
+#define ata_link_linkspeed_attr(field, format)				\
+	ata_link_show_linkspeed(field, format)				\
+static DEVICE_ATTR(field, S_IRUGO, show_ata_link_##field, NULL)
+
+ata_link_linkspeed_attr(hw_sata_spd_limit, fls);
+ata_link_linkspeed_attr(sata_spd_limit, fls);
+ata_link_linkspeed_attr(sata_spd, noop);
+>>>>>>> refs/remotes/origin/master
+=======
+ata_link_linkspeed_attr(hw_sata_spd_limit, fls);
+ata_link_linkspeed_attr(sata_spd_limit, fls);
+ata_link_linkspeed_attr(sata_spd, noop);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 static DECLARE_TRANSPORT_CLASS(ata_link_class,
@@ -348,7 +429,11 @@ static void ata_tlink_release(struct device *dev)
  * Returns:
  *	%1 if the device represents a ATA link, %0 else
  */
+<<<<<<< HEAD
 int ata_is_link(const struct device *dev)
+=======
+static int ata_is_link(const struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return dev->release == ata_tlink_release;
 }
@@ -565,7 +650,11 @@ static void ata_tdev_release(struct device *dev)
  * Returns:
  *	%1 if the device represents a ATA device, %0 else
  */
+<<<<<<< HEAD
 int ata_is_ata_dev(const struct device *dev)
+=======
+static int ata_is_ata_dev(const struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return dev->release == ata_tdev_release;
 }
@@ -636,6 +725,10 @@ static int ata_tdev_add(struct ata_device *ata_dev)
 		dev_set_name(dev, "dev%d.%d.0", ap->print_id, link->pmp);
 
 	transport_setup_device(dev);
+<<<<<<< HEAD
+=======
+	ata_acpi_bind_dev(ata_dev);
+>>>>>>> refs/remotes/origin/master
 	error = device_add(dev);
 	if (error) {
 		ata_tdev_free(ata_dev);
@@ -702,6 +795,10 @@ struct scsi_transport_template *ata_attach_transport(void)
 	count = 0;
 	SETUP_PORT_ATTRIBUTE(nr_pmp_links);
 	SETUP_PORT_ATTRIBUTE(idle_irq);
+<<<<<<< HEAD
+=======
+	SETUP_PORT_ATTRIBUTE(port_no);
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(count > ATA_PORT_ATTRS);
 	i->port_attrs[count] = NULL;
 

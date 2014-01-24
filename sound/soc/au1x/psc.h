@@ -1,7 +1,19 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Au12x0/Au1550 PSC ALSA ASoC audio support.
  *
  * (c) 2007-2008 MSC Vertriebsges.m.b.H.,
+=======
+ * Alchemy ALSA ASoC audio support.
+ *
+ * (c) 2007-2011 MSC Vertriebsges.m.b.H.,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Alchemy ALSA ASoC audio support.
+ *
+ * (c) 2007-2011 MSC Vertriebsges.m.b.H.,
+>>>>>>> refs/remotes/origin/master
  *	Manuel Lauss <manuel.lauss@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -13,10 +25,16 @@
 #ifndef _AU1X_PCM_H
 #define _AU1X_PCM_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* DBDMA helpers */
 extern struct platform_device *au1xpsc_pcm_add(struct platform_device *pdev);
 extern void au1xpsc_pcm_destroy(struct platform_device *dmapd);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct au1xpsc_audio_data {
 	void __iomem *mmio;
 
@@ -27,6 +45,8 @@ struct au1xpsc_audio_data {
 
 	unsigned long pm[2];
 	struct mutex lock;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct platform_device *dmapd;
 };
 
@@ -36,6 +56,16 @@ struct au1xpsc_audio_data {
 #define SUBSTREAM_TYPE(substream) \
 	((substream)->stream == SNDRV_PCM_STREAM_PLAYBACK ? PCM_TX : PCM_RX)
 
+=======
+	int dmaids[2];
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int dmaids[2];
+};
+
+>>>>>>> refs/remotes/origin/master
 /* easy access macros */
 #define PSC_CTRL(x)	((unsigned long)((x)->mmio) + PSC_CTRL_OFFSET)
 #define PSC_SEL(x)	((unsigned long)((x)->mmio) + PSC_SEL_OFFSET)

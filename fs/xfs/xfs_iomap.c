@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_bit.h"
 #include "xfs_log.h"
 #include "xfs_inum.h"
@@ -31,6 +32,10 @@
 #include "xfs_ialloc_btree.h"
 #include "xfs_dinode.h"
 #include "xfs_inode.h"
+<<<<<<< HEAD
+=======
+#include "xfs_inode_item.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xfs_btree.h"
 #include "xfs_bmap.h"
 #include "xfs_rtalloc.h"
@@ -43,6 +48,30 @@
 #include "xfs_utils.h"
 #include "xfs_iomap.h"
 #include "xfs_trace.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_btree.h"
+#include "xfs_bmap_btree.h"
+#include "xfs_bmap.h"
+#include "xfs_bmap_util.h"
+#include "xfs_error.h"
+#include "xfs_trans.h"
+#include "xfs_trans_space.h"
+#include "xfs_iomap.h"
+#include "xfs_trace.h"
+#include "xfs_icache.h"
+#include "xfs_quota.h"
+#include "xfs_dquot_item.h"
+#include "xfs_dquot.h"
+#include "xfs_dinode.h"
+>>>>>>> refs/remotes/origin/master
 
 
 #define XFS_WRITEIO_ALIGN(mp,off)	(((off) >> mp->m_writeio_log) \
@@ -57,6 +86,8 @@ xfs_iomap_eof_align_last_fsb(
 	xfs_fileoff_t	*last_fsb)
 {
 	xfs_fileoff_t	new_last_fsb = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_extlen_t	align;
 	int		eof, error;
 
@@ -77,6 +108,33 @@ xfs_iomap_eof_align_last_fsb(
 	 */
 	else if (mp->m_dalign && (ip->i_size >= XFS_FSB_TO_B(mp, mp->m_dalign)))
 		new_last_fsb = roundup_64(*last_fsb, mp->m_dalign);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	xfs_extlen_t	align = 0;
+	int		eof, error;
+
+	if (!XFS_IS_REALTIME_INODE(ip)) {
+		/*
+		 * Round up the allocation request to a stripe unit
+		 * (m_dalign) boundary if the file size is >= stripe unit
+		 * size, and we are allocating past the allocation eof.
+		 *
+		 * If mounted with the "-o swalloc" option the alignment is
+		 * increased from the strip unit size to the stripe width.
+		 */
+		if (mp->m_swidth && (mp->m_flags & XFS_MOUNT_SWALLOC))
+			align = mp->m_swidth;
+		else if (mp->m_dalign)
+			align = mp->m_dalign;
+
+		if (align && XFS_ISIZE(ip) >= XFS_FSB_TO_B(mp, align))
+			new_last_fsb = roundup_64(*last_fsb, align);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Always round up the allocation request to an extent boundary
@@ -108,7 +166,11 @@ xfs_alert_fsblock_zero(
 	xfs_alert_tag(ip->i_mount, XFS_PTAG_FSBLOCK_ZERO,
 			"Access to block zero in inode %llu "
 			"start_block: %llx start_off: %llx "
+<<<<<<< HEAD
 			"blkcnt: %llx extent-state: %x\n",
+=======
+			"blkcnt: %llx extent-state: %x",
+>>>>>>> refs/remotes/origin/master
 		(unsigned long long)ip->i_ino,
 		(unsigned long long)imap->br_startblock,
 		(unsigned long long)imap->br_startoff,
@@ -141,11 +203,15 @@ xfs_iomap_write_direct(
 	int		committed;
 	int		error;
 
+<<<<<<< HEAD
 	/*
 	 * Make sure that the dquots are there. This doesn't hold
 	 * the ilock across a disk read.
 	 */
 	error = xfs_qm_dqattach_locked(ip, 0);
+=======
+	error = xfs_qm_dqattach(ip, 0);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return XFS_ERROR(error);
 
@@ -154,10 +220,21 @@ xfs_iomap_write_direct(
 
 	offset_fsb = XFS_B_TO_FSBT(mp, offset);
 	last_fsb = XFS_B_TO_FSB(mp, ((xfs_ufsize_t)(offset + count)));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((offset + count) > ip->i_size) {
+=======
+	if ((offset + count) > XFS_ISIZE(ip)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		error = xfs_iomap_eof_align_last_fsb(mp, ip, extsz, &last_fsb);
 		if (error)
 			goto error_out;
+=======
+	if ((offset + count) > XFS_ISIZE(ip)) {
+		error = xfs_iomap_eof_align_last_fsb(mp, ip, extsz, &last_fsb);
+		if (error)
+			return XFS_ERROR(error);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (nmaps && (imap->br_startblock == HOLESTARTBLOCK))
 			last_fsb = MIN(last_fsb, (xfs_fileoff_t)
@@ -189,6 +266,7 @@ xfs_iomap_write_direct(
 	/*
 	 * Allocate and setup the transaction
 	 */
+<<<<<<< HEAD
 	xfs_iunlock(ip, XFS_ILOCK_EXCL);
 	tp = xfs_trans_alloc(mp, XFS_TRANS_DIOSTRAT);
 	error = xfs_trans_reserve(tp, resblks,
@@ -208,6 +286,7 @@ xfs_iomap_write_direct(
 	if (error)
 		goto error1;
 
+<<<<<<< HEAD
 	xfs_trans_ijoin(tp, ip);
 
 	bmapi_flag = XFS_BMAPI_WRITE;
@@ -217,30 +296,81 @@ xfs_iomap_write_direct(
 	/*
 	 * Issue the xfs_bmapi() call to allocate the blocks.
 	 *
+=======
+=======
+	tp = xfs_trans_alloc(mp, XFS_TRANS_DIOSTRAT);
+	error = xfs_trans_reserve(tp, &M_RES(mp)->tr_write,
+				  resblks, resrtextents);
+	/*
+	 * Check for running out of space, note: need lock to return
+	 */
+	if (error) {
+		xfs_trans_cancel(tp, 0);
+		return XFS_ERROR(error);
+	}
+
+	xfs_ilock(ip, XFS_ILOCK_EXCL);
+
+	error = xfs_trans_reserve_quota_nblks(tp, ip, qblocks, 0, quota_flag);
+	if (error)
+		goto out_trans_cancel;
+
+>>>>>>> refs/remotes/origin/master
+	xfs_trans_ijoin(tp, ip, 0);
+
+	bmapi_flag = 0;
+	if (offset < XFS_ISIZE(ip) || extsz)
+		bmapi_flag |= XFS_BMAPI_PREALLOC;
+
+	/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * From this point onwards we overwrite the imap pointer that the
 	 * caller gave to us.
 	 */
 	xfs_bmap_init(&free_list, &firstfsb);
 	nimaps = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	error = xfs_bmapi(tp, ip, offset_fsb, count_fsb, bmapi_flag,
 		&firstfsb, 0, imap, &nimaps, &free_list);
+=======
+	error = xfs_bmapi_write(tp, ip, offset_fsb, count_fsb, bmapi_flag,
+				&firstfsb, 0, imap, &nimaps, &free_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error)
 		goto error0;
+=======
+	error = xfs_bmapi_write(tp, ip, offset_fsb, count_fsb, bmapi_flag,
+				&firstfsb, 0, imap, &nimaps, &free_list);
+	if (error)
+		goto out_bmap_cancel;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Complete the transaction
 	 */
 	error = xfs_bmap_finish(&tp, &free_list, &committed);
 	if (error)
+<<<<<<< HEAD
 		goto error0;
 	error = xfs_trans_commit(tp, XFS_TRANS_RELEASE_LOG_RES);
 	if (error)
 		goto error_out;
+=======
+		goto out_bmap_cancel;
+	error = xfs_trans_commit(tp, XFS_TRANS_RELEASE_LOG_RES);
+	if (error)
+		goto out_unlock;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Copy any maps to caller's array and return any error.
 	 */
 	if (nimaps == 0) {
+<<<<<<< HEAD
 		error = ENOSPC;
 		goto error_out;
 	}
@@ -261,6 +391,25 @@ error1:	/* Just cancel transaction */
 
 error_out:
 	return XFS_ERROR(error);
+=======
+		error = XFS_ERROR(ENOSPC);
+		goto out_unlock;
+	}
+
+	if (!(imap->br_startblock || XFS_IS_REALTIME_INODE(ip)))
+		error = xfs_alert_fsblock_zero(ip, imap);
+
+out_unlock:
+	xfs_iunlock(ip, XFS_ILOCK_EXCL);
+	return error;
+
+out_bmap_cancel:
+	xfs_bmap_cancel(&free_list);
+	xfs_trans_unreserve_quota_nblks(tp, ip, (long)qblocks, 0, quota_flag);
+out_trans_cancel:
+	xfs_trans_cancel(tp, XFS_TRANS_RELEASE_LOG_RES | XFS_TRANS_ABORT);
+	goto out_unlock;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -288,7 +437,24 @@ xfs_iomap_eof_want_preallocate(
 	int		found_delalloc = 0;
 
 	*prealloc = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((offset + count) <= ip->i_size)
+=======
+	if (offset + count <= XFS_ISIZE(ip))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (offset + count <= XFS_ISIZE(ip))
+		return 0;
+
+	/*
+	 * If the file is smaller than the minimum prealloc and we are using
+	 * dynamic preallocation, don't do any preallocation at all as it is
+	 * likely this is the only write to the file that is going to be done.
+	 */
+	if (!(mp->m_flags & XFS_MOUNT_DFLT_IOSIZE) &&
+	    XFS_ISIZE(ip) < XFS_FSB_TO_B(mp, mp->m_writeio_blocks))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/*
@@ -296,12 +462,26 @@ xfs_iomap_eof_want_preallocate(
 	 * do any speculative allocation.
 	 */
 	start_fsb = XFS_B_TO_FSBT(mp, ((xfs_ufsize_t)(offset + count - 1)));
+<<<<<<< HEAD
 	count_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)XFS_MAXIOFFSET(mp));
 	while (count_fsb > 0) {
 		imaps = nimaps;
 		firstblock = NULLFSBLOCK;
+<<<<<<< HEAD
 		error = xfs_bmapi(NULL, ip, start_fsb, count_fsb, 0,
 				  &firstblock, 0, imap, &imaps, NULL);
+=======
+		error = xfs_bmapi_read(ip, start_fsb, count_fsb, imap, &imaps,
+				       0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	count_fsb = XFS_B_TO_FSB(mp, mp->m_super->s_maxbytes);
+	while (count_fsb > 0) {
+		imaps = nimaps;
+		firstblock = NULLFSBLOCK;
+		error = xfs_bmapi_read(ip, start_fsb, count_fsb, imap, &imaps,
+				       0);
+>>>>>>> refs/remotes/origin/master
 		if (error)
 			return error;
 		for (n = 0; n < imaps; n++) {
@@ -321,6 +501,124 @@ xfs_iomap_eof_want_preallocate(
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Determine the initial size of the preallocation. We are beyond the current
+ * EOF here, but we need to take into account whether this is a sparse write or
+ * an extending write when determining the preallocation size.  Hence we need to
+ * look up the extent that ends at the current write offset and use the result
+ * to determine the preallocation size.
+ *
+ * If the extent is a hole, then preallocation is essentially disabled.
+ * Otherwise we take the size of the preceeding data extent as the basis for the
+ * preallocation size. If the size of the extent is greater than half the
+ * maximum extent length, then use the current offset as the basis. This ensures
+ * that for large files the preallocation size always extends to MAXEXTLEN
+ * rather than falling short due to things like stripe unit/width alignment of
+ * real extents.
+ */
+STATIC xfs_fsblock_t
+xfs_iomap_eof_prealloc_initial_size(
+	struct xfs_mount	*mp,
+	struct xfs_inode	*ip,
+	xfs_off_t		offset,
+	xfs_bmbt_irec_t		*imap,
+	int			nimaps)
+{
+	xfs_fileoff_t   start_fsb;
+	int		imaps = 1;
+	int		error;
+
+	ASSERT(nimaps >= imaps);
+
+	/* if we are using a specific prealloc size, return now */
+	if (mp->m_flags & XFS_MOUNT_DFLT_IOSIZE)
+		return 0;
+
+	/* If the file is small, then use the minimum prealloc */
+	if (XFS_ISIZE(ip) < XFS_FSB_TO_B(mp, mp->m_dalign))
+		return 0;
+
+	/*
+	 * As we write multiple pages, the offset will always align to the
+	 * start of a page and hence point to a hole at EOF. i.e. if the size is
+	 * 4096 bytes, we only have one block at FSB 0, but XFS_B_TO_FSB(4096)
+	 * will return FSB 1. Hence if there are blocks in the file, we want to
+	 * point to the block prior to the EOF block and not the hole that maps
+	 * directly at @offset.
+	 */
+	start_fsb = XFS_B_TO_FSB(mp, offset);
+	if (start_fsb)
+		start_fsb--;
+	error = xfs_bmapi_read(ip, start_fsb, 1, imap, &imaps, XFS_BMAPI_ENTIRE);
+	if (error)
+		return 0;
+
+	ASSERT(imaps == 1);
+	if (imap[0].br_startblock == HOLESTARTBLOCK)
+		return 0;
+	if (imap[0].br_blockcount <= (MAXEXTLEN >> 1))
+		return imap[0].br_blockcount << 1;
+	return XFS_B_TO_FSB(mp, offset);
+}
+
+STATIC bool
+xfs_quota_need_throttle(
+	struct xfs_inode *ip,
+	int type,
+	xfs_fsblock_t alloc_blocks)
+{
+	struct xfs_dquot *dq = xfs_inode_dquot(ip, type);
+
+	if (!dq || !xfs_this_quota_on(ip->i_mount, type))
+		return false;
+
+	/* no hi watermark, no throttle */
+	if (!dq->q_prealloc_hi_wmark)
+		return false;
+
+	/* under the lo watermark, no throttle */
+	if (dq->q_res_bcount + alloc_blocks < dq->q_prealloc_lo_wmark)
+		return false;
+
+	return true;
+}
+
+STATIC void
+xfs_quota_calc_throttle(
+	struct xfs_inode *ip,
+	int type,
+	xfs_fsblock_t *qblocks,
+	int *qshift)
+{
+	int64_t freesp;
+	int shift = 0;
+	struct xfs_dquot *dq = xfs_inode_dquot(ip, type);
+
+	/* over hi wmark, squash the prealloc completely */
+	if (dq->q_res_bcount >= dq->q_prealloc_hi_wmark) {
+		*qblocks = 0;
+		return;
+	}
+
+	freesp = dq->q_prealloc_hi_wmark - dq->q_res_bcount;
+	if (freesp < dq->q_low_space[XFS_QLOWSP_5_PCNT]) {
+		shift = 2;
+		if (freesp < dq->q_low_space[XFS_QLOWSP_3_PCNT])
+			shift += 2;
+		if (freesp < dq->q_low_space[XFS_QLOWSP_1_PCNT])
+			shift += 2;
+	}
+
+	/* only overwrite the throttle values if we are more aggressive */
+	if ((freesp >> shift) < (*qblocks >> *qshift)) {
+		*qblocks = freesp;
+		*qshift = shift;
+	}
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * If we don't have a user specified preallocation size, dynamically increase
  * the preallocation size as the size of the file grows. Cap the maximum size
  * at a single extent or less if the filesystem is near full. The closer the
@@ -329,6 +627,7 @@ xfs_iomap_eof_want_preallocate(
 STATIC xfs_fsblock_t
 xfs_iomap_prealloc_size(
 	struct xfs_mount	*mp,
+<<<<<<< HEAD
 	struct xfs_inode	*ip)
 {
 	xfs_fsblock_t		alloc_blocks = 0;
@@ -342,7 +641,11 @@ xfs_iomap_prealloc_size(
 		 * if we pass in alloc_blocks = 0. Hence the "+ 1" to
 		 * ensure we always pass in a non-zero value.
 		 */
+<<<<<<< HEAD
 		alloc_blocks = XFS_B_TO_FSB(mp, ip->i_size) + 1;
+=======
+		alloc_blocks = XFS_B_TO_FSB(mp, XFS_ISIZE(ip)) + 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 		alloc_blocks = XFS_FILEOFF_MIN(MAXEXTLEN,
 					rounddown_pow_of_two(alloc_blocks));
 
@@ -366,6 +669,97 @@ xfs_iomap_prealloc_size(
 	if (alloc_blocks < mp->m_writeio_blocks)
 		alloc_blocks = mp->m_writeio_blocks;
 
+=======
+	struct xfs_inode	*ip,
+	xfs_off_t		offset,
+	struct xfs_bmbt_irec	*imap,
+	int			nimaps)
+{
+	xfs_fsblock_t		alloc_blocks = 0;
+	int			shift = 0;
+	int64_t			freesp;
+	xfs_fsblock_t		qblocks;
+	int			qshift = 0;
+
+	alloc_blocks = xfs_iomap_eof_prealloc_initial_size(mp, ip, offset,
+							   imap, nimaps);
+	if (!alloc_blocks)
+		goto check_writeio;
+	qblocks = alloc_blocks;
+
+	/*
+	 * MAXEXTLEN is not a power of two value but we round the prealloc down
+	 * to the nearest power of two value after throttling. To prevent the
+	 * round down from unconditionally reducing the maximum supported prealloc
+	 * size, we round up first, apply appropriate throttling, round down and
+	 * cap the value to MAXEXTLEN.
+	 */
+	alloc_blocks = XFS_FILEOFF_MIN(roundup_pow_of_two(MAXEXTLEN),
+				       alloc_blocks);
+
+	xfs_icsb_sync_counters(mp, XFS_ICSB_LAZY_COUNT);
+	freesp = mp->m_sb.sb_fdblocks;
+	if (freesp < mp->m_low_space[XFS_LOWSP_5_PCNT]) {
+		shift = 2;
+		if (freesp < mp->m_low_space[XFS_LOWSP_4_PCNT])
+			shift++;
+		if (freesp < mp->m_low_space[XFS_LOWSP_3_PCNT])
+			shift++;
+		if (freesp < mp->m_low_space[XFS_LOWSP_2_PCNT])
+			shift++;
+		if (freesp < mp->m_low_space[XFS_LOWSP_1_PCNT])
+			shift++;
+	}
+
+	/*
+	 * Check each quota to cap the prealloc size and provide a shift
+	 * value to throttle with.
+	 */
+	if (xfs_quota_need_throttle(ip, XFS_DQ_USER, alloc_blocks))
+		xfs_quota_calc_throttle(ip, XFS_DQ_USER, &qblocks, &qshift);
+	if (xfs_quota_need_throttle(ip, XFS_DQ_GROUP, alloc_blocks))
+		xfs_quota_calc_throttle(ip, XFS_DQ_GROUP, &qblocks, &qshift);
+	if (xfs_quota_need_throttle(ip, XFS_DQ_PROJ, alloc_blocks))
+		xfs_quota_calc_throttle(ip, XFS_DQ_PROJ, &qblocks, &qshift);
+
+	/*
+	 * The final prealloc size is set to the minimum of free space available
+	 * in each of the quotas and the overall filesystem.
+	 *
+	 * The shift throttle value is set to the maximum value as determined by
+	 * the global low free space values and per-quota low free space values.
+	 */
+	alloc_blocks = MIN(alloc_blocks, qblocks);
+	shift = MAX(shift, qshift);
+
+	if (shift)
+		alloc_blocks >>= shift;
+	/*
+	 * rounddown_pow_of_two() returns an undefined result if we pass in
+	 * alloc_blocks = 0.
+	 */
+	if (alloc_blocks)
+		alloc_blocks = rounddown_pow_of_two(alloc_blocks);
+	if (alloc_blocks > MAXEXTLEN)
+		alloc_blocks = MAXEXTLEN;
+
+	/*
+	 * If we are still trying to allocate more space than is
+	 * available, squash the prealloc hard. This can happen if we
+	 * have a large file on a small filesystem and the above
+	 * lowspace thresholds are smaller than MAXEXTLEN.
+	 */
+	while (alloc_blocks && alloc_blocks >= freesp)
+		alloc_blocks >>= 4;
+
+check_writeio:
+	if (alloc_blocks < mp->m_writeio_blocks)
+		alloc_blocks = mp->m_writeio_blocks;
+
+	trace_xfs_iomap_prealloc_size(ip, alloc_blocks, shift,
+				      mp->m_writeio_blocks);
+
+>>>>>>> refs/remotes/origin/master
 	return alloc_blocks;
 }
 
@@ -381,11 +775,21 @@ xfs_iomap_write_delay(
 	xfs_fileoff_t	last_fsb;
 	xfs_off_t	aligned_offset;
 	xfs_fileoff_t	ioalign;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_fsblock_t	firstblock;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_extlen_t	extsz;
 	int		nimaps;
 	xfs_bmbt_irec_t imap[XFS_WRITE_IMAPS];
 	int		prealloc, flushed = 0;
+=======
+	xfs_extlen_t	extsz;
+	int		nimaps;
+	xfs_bmbt_irec_t imap[XFS_WRITE_IMAPS];
+	int		prealloc;
+>>>>>>> refs/remotes/origin/master
 	int		error;
 
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
@@ -401,7 +805,10 @@ xfs_iomap_write_delay(
 	extsz = xfs_get_extsz_hint(ip);
 	offset_fsb = XFS_B_TO_FSBT(mp, offset);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	error = xfs_iomap_eof_want_preallocate(mp, ip, offset, count,
 				imap, XFS_WRITE_IMAPS, &prealloc);
 	if (error)
@@ -409,7 +816,14 @@ xfs_iomap_write_delay(
 
 retry:
 	if (prealloc) {
+<<<<<<< HEAD
 		xfs_fsblock_t	alloc_blocks = xfs_iomap_prealloc_size(mp, ip);
+=======
+		xfs_fsblock_t	alloc_blocks;
+
+		alloc_blocks = xfs_iomap_prealloc_size(mp, ip, offset, imap,
+						       XFS_WRITE_IMAPS);
+>>>>>>> refs/remotes/origin/master
 
 		aligned_offset = XFS_WRITEIO_ALIGN(mp, (offset + count - 1));
 		ioalign = XFS_B_TO_FSBT(mp, aligned_offset);
@@ -424,13 +838,33 @@ retry:
 			return error;
 	}
 
+<<<<<<< HEAD
 	nimaps = XFS_WRITE_IMAPS;
+<<<<<<< HEAD
 	firstblock = NULLFSBLOCK;
 	error = xfs_bmapi(NULL, ip, offset_fsb,
 			  (xfs_filblks_t)(last_fsb - offset_fsb),
 			  XFS_BMAPI_DELAY | XFS_BMAPI_WRITE |
 			  XFS_BMAPI_ENTIRE, &firstblock, 1, imap,
 			  &nimaps, NULL);
+=======
+	error = xfs_bmapi_delay(ip, offset_fsb, last_fsb - offset_fsb,
+				imap, &nimaps, XFS_BMAPI_ENTIRE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Make sure preallocation does not create extents beyond the range we
+	 * actually support in this filesystem.
+	 */
+	if (last_fsb > XFS_B_TO_FSB(mp, mp->m_super->s_maxbytes))
+		last_fsb = XFS_B_TO_FSB(mp, mp->m_super->s_maxbytes);
+
+	ASSERT(last_fsb > offset_fsb);
+
+	nimaps = XFS_WRITE_IMAPS;
+	error = xfs_bmapi_delay(ip, offset_fsb, last_fsb - offset_fsb,
+				imap, &nimaps, XFS_BMAPI_ENTIRE);
+>>>>>>> refs/remotes/origin/master
 	switch (error) {
 	case 0:
 	case ENOSPC:
@@ -441,13 +875,18 @@ retry:
 	}
 
 	/*
+<<<<<<< HEAD
 	 * If bmapi returned us nothing, we got either ENOSPC or EDQUOT.  For
 	 * ENOSPC, * flush all other inodes with delalloc blocks to free up
 	 * some of the excess reserved metadata space. For both cases, retry
+=======
+	 * If bmapi returned us nothing, we got either ENOSPC or EDQUOT. Retry
+>>>>>>> refs/remotes/origin/master
 	 * without EOF preallocation.
 	 */
 	if (nimaps == 0) {
 		trace_xfs_delalloc_enospc(ip, offset, count);
+<<<<<<< HEAD
 		if (flushed)
 			return XFS_ERROR(error ? error : ENOSPC);
 
@@ -461,11 +900,29 @@ retry:
 		error = 0;
 		prealloc = 0;
 		goto retry;
+=======
+		if (prealloc) {
+			prealloc = 0;
+			error = 0;
+			goto retry;
+		}
+		return XFS_ERROR(error ? error : ENOSPC);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!(imap[0].br_startblock || XFS_IS_REALTIME_INODE(ip)))
 		return xfs_alert_fsblock_zero(ip, &imap[0]);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Tag the inode as speculatively preallocated so we can reclaim this
+	 * space on demand, if necessary.
+	 */
+	if (prealloc)
+		xfs_inode_set_eofblocks_tag(ip);
+
+>>>>>>> refs/remotes/origin/master
 	*ret_imap = imap[0];
 	return 0;
 }
@@ -484,7 +941,10 @@ int
 xfs_iomap_write_allocate(
 	xfs_inode_t	*ip,
 	xfs_off_t	offset,
+<<<<<<< HEAD
 	size_t		count,
+=======
+>>>>>>> refs/remotes/origin/master
 	xfs_bmbt_irec_t *imap)
 {
 	xfs_mount_t	*mp = ip->i_mount;
@@ -526,16 +986,29 @@ xfs_iomap_write_allocate(
 			tp = xfs_trans_alloc(mp, XFS_TRANS_STRAT_WRITE);
 			tp->t_flags |= XFS_TRANS_RESERVE;
 			nres = XFS_EXTENTADD_SPACE_RES(mp, XFS_DATA_FORK);
+<<<<<<< HEAD
 			error = xfs_trans_reserve(tp, nres,
 					XFS_WRITE_LOG_RES(mp),
 					0, XFS_TRANS_PERM_LOG_RES,
 					XFS_WRITE_LOG_COUNT);
+=======
+			error = xfs_trans_reserve(tp, &M_RES(mp)->tr_write,
+						  nres, 0);
+>>>>>>> refs/remotes/origin/master
 			if (error) {
 				xfs_trans_cancel(tp, 0);
 				return XFS_ERROR(error);
 			}
 			xfs_ilock(ip, XFS_ILOCK_EXCL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			xfs_trans_ijoin(tp, ip);
+=======
+			xfs_trans_ijoin(tp, ip, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			xfs_trans_ijoin(tp, ip, 0);
+>>>>>>> refs/remotes/origin/master
 
 			xfs_bmap_init(&free_list, &first_block);
 
@@ -571,7 +1044,15 @@ xfs_iomap_write_allocate(
 			 * back....
 			 */
 			nimaps = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			end_fsb = XFS_B_TO_FSB(mp, ip->i_size);
+=======
+			end_fsb = XFS_B_TO_FSB(mp, XFS_ISIZE(ip));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			end_fsb = XFS_B_TO_FSB(mp, XFS_ISIZE(ip));
+>>>>>>> refs/remotes/origin/master
 			error = xfs_bmap_last_offset(NULL, ip, &last_block,
 							XFS_DATA_FORK);
 			if (error)
@@ -587,6 +1068,8 @@ xfs_iomap_write_allocate(
 			}
 
 			/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 * Go get the actual blocks.
 	 	 	 *
 			 * From this point onwards we overwrite the imap
@@ -595,6 +1078,23 @@ xfs_iomap_write_allocate(
 			error = xfs_bmapi(tp, ip, map_start_fsb, count_fsb,
 					XFS_BMAPI_WRITE, &first_block, 1,
 					imap, &nimaps, &free_list);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			 * From this point onwards we overwrite the imap
+			 * pointer that the caller gave to us.
+			 */
+			error = xfs_bmapi_write(tp, ip, map_start_fsb,
+<<<<<<< HEAD
+						count_fsb, 0, &first_block, 1,
+						imap, &nimaps, &free_list);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						count_fsb,
+						XFS_BMAPI_STACK_SWITCH,
+						&first_block, 1,
+						imap, &nimaps, &free_list);
+>>>>>>> refs/remotes/origin/master
 			if (error)
 				goto trans_cancel;
 
@@ -654,6 +1154,14 @@ xfs_iomap_write_unwritten(
 	xfs_trans_t	*tp;
 	xfs_bmbt_irec_t imap;
 	xfs_bmap_free_t free_list;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	xfs_fsize_t	i_size;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xfs_fsize_t	i_size;
+>>>>>>> refs/remotes/origin/master
 	uint		resblks;
 	int		committed;
 	int		error;
@@ -688,6 +1196,7 @@ xfs_iomap_write_unwritten(
 		 * the same inode that we complete here and might deadlock
 		 * on the iolock.
 		 */
+<<<<<<< HEAD
 		xfs_wait_for_freeze(mp, SB_FREEZE_TRANS);
 		tp = _xfs_trans_alloc(mp, XFS_TRANS_STRAT_WRITE, KM_NOFS);
 		tp->t_flags |= XFS_TRANS_RESERVE;
@@ -695,26 +1204,76 @@ xfs_iomap_write_unwritten(
 				XFS_WRITE_LOG_RES(mp), 0,
 				XFS_TRANS_PERM_LOG_RES,
 				XFS_WRITE_LOG_COUNT);
+=======
+		sb_start_intwrite(mp->m_super);
+		tp = _xfs_trans_alloc(mp, XFS_TRANS_STRAT_WRITE, KM_NOFS);
+		tp->t_flags |= XFS_TRANS_RESERVE | XFS_TRANS_FREEZE_PROT;
+		error = xfs_trans_reserve(tp, &M_RES(mp)->tr_write,
+					  resblks, 0);
+>>>>>>> refs/remotes/origin/master
 		if (error) {
 			xfs_trans_cancel(tp, 0);
 			return XFS_ERROR(error);
 		}
 
 		xfs_ilock(ip, XFS_ILOCK_EXCL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		xfs_trans_ijoin(tp, ip);
+=======
+		xfs_trans_ijoin(tp, ip, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		xfs_trans_ijoin(tp, ip, 0);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Modify the unwritten extent state of the buffer.
 		 */
 		xfs_bmap_init(&free_list, &firstfsb);
 		nimaps = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = xfs_bmapi(tp, ip, offset_fsb, count_fsb,
 				  XFS_BMAPI_WRITE|XFS_BMAPI_CONVERT, &firstfsb,
+=======
+		error = xfs_bmapi_write(tp, ip, offset_fsb, count_fsb,
+				  XFS_BMAPI_CONVERT, &firstfsb,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = xfs_bmapi_write(tp, ip, offset_fsb, count_fsb,
+				  XFS_BMAPI_CONVERT, &firstfsb,
+>>>>>>> refs/remotes/origin/master
 				  1, &imap, &nimaps, &free_list);
 		if (error)
 			goto error_on_bmapi_transaction;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = xfs_bmap_finish(&(tp), &(free_list), &committed);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * Log the updated inode size as we go.  We have to be careful
+		 * to only log it up to the actual write offset if it is
+		 * halfway into a block.
+		 */
+		i_size = XFS_FSB_TO_B(mp, offset_fsb + count_fsb);
+		if (i_size > offset + count)
+			i_size = offset + count;
+
+		i_size = xfs_new_eof(ip, i_size);
+		if (i_size) {
+			ip->i_d.di_size = i_size;
+			xfs_trans_log_inode(tp, ip, XFS_ILOG_CORE);
+		}
+
+		error = xfs_bmap_finish(&tp, &free_list, &committed);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (error)
 			goto error_on_bmapi_transaction;
 

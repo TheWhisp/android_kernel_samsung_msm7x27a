@@ -26,12 +26,19 @@
 #include <linux/input.h>
 #include <linux/input/matrix_keypad.h>
 #include <linux/spi/spi.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/edma.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/arch.h>
 #include <asm/mach-types.h>
 
 #include <mach/irqs.h>
+<<<<<<< HEAD
 #include <mach/edma.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/mux.h>
 #include <mach/cp_intc.h>
 #include <mach/tnetv107x.h>
@@ -85,10 +92,16 @@ static struct davinci_mmc_config mmc_config = {
 	.wires		= 4,
 	.max_freq	= 50000000,
 	.caps		= MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED,
+<<<<<<< HEAD
 	.version	= MMC_CTLR_VERSION_1,
 };
 
 static const short sdio1_pins[] __initdata = {
+=======
+};
+
+static const short sdio1_pins[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	TNETV107X_SDIO1_CLK_1,		TNETV107X_SDIO1_CMD_1,
 	TNETV107X_SDIO1_DATA0_1,	TNETV107X_SDIO1_DATA1_1,
 	TNETV107X_SDIO1_DATA2_1,	TNETV107X_SDIO1_DATA3_1,
@@ -96,12 +109,20 @@ static const short sdio1_pins[] __initdata = {
 	-1
 };
 
+<<<<<<< HEAD
 static const short uart1_pins[] __initdata = {
+=======
+static const short uart1_pins[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	TNETV107X_UART1_RD,		TNETV107X_UART1_TD,
 	-1
 };
 
+<<<<<<< HEAD
 static const short ssp_pins[] __initdata = {
+=======
+static const short ssp_pins[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	TNETV107X_SSP0_0, TNETV107X_SSP0_1, TNETV107X_SSP0_2,
 	TNETV107X_SSP1_0, TNETV107X_SSP1_1, TNETV107X_SSP1_2,
 	TNETV107X_SSP1_3, -1
@@ -144,7 +165,15 @@ static struct davinci_nand_pdata nand_config = {
 	.parts		= nand_partitions,
 	.nr_parts	= ARRAY_SIZE(nand_partitions),
 	.ecc_mode	= NAND_ECC_HW,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.options	= NAND_USE_FLASH_BBT,
+=======
+	.bbt_options	= NAND_BBT_USE_FLASH,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.bbt_options	= NAND_BBT_USE_FLASH,
+>>>>>>> refs/remotes/origin/master
 	.ecc_bits	= 1,
 };
 
@@ -277,9 +306,29 @@ console_initcall(tnetv107x_evm_console_init);
 #endif
 
 MACHINE_START(TNETV107X, "TNETV107X EVM")
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= (TNETV107X_DDR_BASE + 0x100),
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= tnetv107x_init,
 	.init_irq	= cp_intc_init,
 	.timer		= &davinci_timer,
 	.init_machine	= tnetv107x_evm_board_init,
+<<<<<<< HEAD
+=======
+	.dma_zone_size	= SZ_128M,
+	.restart	= tnetv107x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= tnetv107x_init,
+	.init_irq	= cp_intc_init,
+	.init_time	= davinci_timer_init,
+	.init_machine	= tnetv107x_evm_board_init,
+	.init_late	= davinci_init_late,
+	.dma_zone_size	= SZ_128M,
+	.restart	= tnetv107x_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

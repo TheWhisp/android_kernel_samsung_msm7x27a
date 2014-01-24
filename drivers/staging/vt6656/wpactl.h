@@ -30,25 +30,33 @@
 #define __WPACTL_H__
 
 #include "device.h"
+<<<<<<< HEAD
 #ifdef WPA_SUPPLICANT_DRIVER_WEXT_SUPPORT
 #include "iowpa.h"
 #endif
 
 /*---------------------  Export Definitions -------------------------*/
 
+=======
+#include "iowpa.h"
+>>>>>>> refs/remotes/origin/master
 
 //WPA related
 
 typedef enum { WPA_ALG_NONE, WPA_ALG_WEP, WPA_ALG_TKIP, WPA_ALG_CCMP } wpa_alg;
+<<<<<<< HEAD
 typedef enum { CIPHER_NONE, CIPHER_WEP40, CIPHER_TKIP, CIPHER_CCMP,
 	       CIPHER_WEP104 } wpa_cipher;
 typedef enum { KEY_MGMT_802_1X, KEY_MGMT_PSK, KEY_MGMT_NONE,
 	       KEY_MGMT_802_1X_NO_WPA, KEY_MGMT_WPA_NONE, KEY_MGMT_CCKM } wpa_key_mgmt;//20080717-02,<Modify> by James Li
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define AUTH_ALG_OPEN_SYSTEM	0x01
 #define AUTH_ALG_SHARED_KEY	0x02
 #define AUTH_ALG_LEAP		0x04
 
+<<<<<<< HEAD
 #define GENERIC_INFO_ELEM 0xdd
 #define RSN_INFO_ELEM 0x30
 
@@ -63,5 +71,10 @@ typedef unsigned long long NDIS_802_11_KEY_RSC;
 int wpa_set_wpadev(PSDevice pDevice, int val);
 int wpa_ioctl(PSDevice pDevice, struct iw_point *p);
 int wpa_set_keys(PSDevice pDevice, void *ctx, BOOL  fcpfkernel);
+=======
+typedef unsigned long long NDIS_802_11_KEY_RSC;
+
+int wpa_set_keys(struct vnt_private *, void *ctx);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __WPACL_H__ */

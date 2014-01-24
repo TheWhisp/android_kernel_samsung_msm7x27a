@@ -27,11 +27,20 @@
  *
  * Authors:
  *    Keith Whitwell <keith@tungstengraphics.com>
+<<<<<<< HEAD
  */
 
 #include "drmP.h"
 #include "drm.h"
 #include "radeon_drm.h"
+=======
+ *
+ * ------------------------ This file is DEPRECATED! -------------------------
+ */
+
+#include <drm/drmP.h>
+#include <drm/radeon_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon_drv.h"
 
 /* Very simple allocator for GART memory, working on a static range
@@ -139,7 +148,15 @@ static int init_heap(struct mem_block **heap, int start, int size)
 	if (!blocks)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*heap = kmalloc(sizeof(**heap), GFP_KERNEL);
+=======
+	*heap = kzalloc(sizeof(**heap), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*heap = kzalloc(sizeof(**heap), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!*heap) {
 		kfree(blocks);
 		return -ENOMEM;
@@ -150,7 +167,13 @@ static int init_heap(struct mem_block **heap, int start, int size)
 	blocks->file_priv = NULL;
 	blocks->next = blocks->prev = *heap;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(*heap, 0, sizeof(**heap));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	(*heap)->file_priv = (struct drm_file *) - 1;
 	(*heap)->next = (*heap)->prev = blocks;
 	return 0;

@@ -16,16 +16,39 @@
 #include <linux/suspend.h>
 #include <linux/errno.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/serial_core.h>
 #include <linux/io.h>
 
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/suspend.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 #include <mach/map.h>
 
 #include <plat/regs-serial.h>
 #include <mach/regs-clock.h>
 #include <mach/regs-irq.h>
+=======
+#include <asm/suspend.h>
+
+#include <plat/regs-serial.h>
+
+#ifdef CONFIG_SAMSUNG_ATAGS
+#include <mach/hardware.h>
+#include <mach/map.h>
+#include <mach/regs-clock.h>
+#include <mach/regs-irq.h>
+#include <mach/irqs.h>
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 
 #include <plat/pm.h>
@@ -50,7 +73,11 @@ void s3c_pm_dbg(const char *fmt, ...)
 	char buff[256];
 
 	va_start(va, fmt);
+<<<<<<< HEAD
 	vsprintf(buff, fmt, va);
+=======
+	vsnprintf(buff, sizeof(buff), fmt, va);
+>>>>>>> refs/remotes/origin/master
 	va_end(va);
 
 	printascii(buff);
@@ -73,7 +100,11 @@ unsigned char pm_uart_udivslot;
 
 #ifdef CONFIG_SAMSUNG_PM_DEBUG
 
+<<<<<<< HEAD
 struct pm_uart_save uart_save[CONFIG_SERIAL_SAMSUNG_UARTS];
+=======
+static struct pm_uart_save uart_save;
+>>>>>>> refs/remotes/origin/master
 
 static void s3c_pm_save_uart(unsigned int uart, struct pm_uart_save *save)
 {
@@ -94,11 +125,15 @@ static void s3c_pm_save_uart(unsigned int uart, struct pm_uart_save *save)
 
 static void s3c_pm_save_uarts(void)
 {
+<<<<<<< HEAD
 	struct pm_uart_save *save = uart_save;
 	unsigned int uart;
 
 	for (uart = 0; uart < CONFIG_SERIAL_SAMSUNG_UARTS; uart++, save++)
 		s3c_pm_save_uart(uart, save);
+=======
+	s3c_pm_save_uart(CONFIG_DEBUG_S3C_UART, &uart_save);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void s3c_pm_restore_uart(unsigned int uart, struct pm_uart_save *save)
@@ -119,11 +154,15 @@ static void s3c_pm_restore_uart(unsigned int uart, struct pm_uart_save *save)
 
 static void s3c_pm_restore_uarts(void)
 {
+<<<<<<< HEAD
 	struct pm_uart_save *save = uart_save;
 	unsigned int uart;
 
 	for (uart = 0; uart < CONFIG_SERIAL_SAMSUNG_UARTS; uart++, save++)
 		s3c_pm_restore_uart(uart, save);
+=======
+	s3c_pm_restore_uart(CONFIG_DEBUG_S3C_UART, &uart_save);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static void s3c_pm_save_uarts(void) { }
@@ -231,7 +270,15 @@ static void __maybe_unused s3c_pm_show_resume_irqs(int start,
 
 
 void (*pm_cpu_prep)(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
 void (*pm_cpu_sleep)(void);
+=======
+int (*pm_cpu_sleep)(unsigned long);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int (*pm_cpu_sleep)(unsigned long);
+>>>>>>> refs/remotes/origin/master
 
 #define any_allowed(mask, allow) (((mask) & (allow)) != (allow))
 
@@ -242,6 +289,10 @@ void (*pm_cpu_sleep)(void);
 
 static int s3c_pm_enter(suspend_state_t state)
 {
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	/* ensure the debug is initialised (if enabled) */
 
 	s3c_pm_debug_init();
@@ -258,7 +309,12 @@ static int s3c_pm_enter(suspend_state_t state)
 	 * require a full power-cycle)
 	*/
 
+<<<<<<< HEAD
 	if (!any_allowed(s3c_irqwake_intmask, s3c_irqwake_intallow) &&
+=======
+	if (!of_have_populated_dt() &&
+	    !any_allowed(s3c_irqwake_intmask, s3c_irqwake_intallow) &&
+>>>>>>> refs/remotes/origin/master
 	    !any_allowed(s3c_irqwake_eintmask, s3c_irqwake_eintallow)) {
 		printk(KERN_ERR "%s: No wake-up sources!\n", __func__);
 		printk(KERN_ERR "%s: Aborting sleep\n", __func__);
@@ -267,7 +323,20 @@ static int s3c_pm_enter(suspend_state_t state)
 
 	/* save all necessary core registers not covered by the drivers */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	s3c_pm_save_gpios();
+=======
+	samsung_pm_save_gpios();
+	samsung_pm_saved_gpios();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!of_have_populated_dt()) {
+		samsung_pm_save_gpios();
+		samsung_pm_saved_gpios();
+	}
+
+>>>>>>> refs/remotes/origin/master
 	s3c_pm_save_uarts();
 	s3c_pm_save_core();
 
@@ -294,6 +363,8 @@ static int s3c_pm_enter(suspend_state_t state)
 
 	s3c_pm_arch_stop_clocks();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* s3c_cpu_save will also act as our return point from when
 	 * we resume as it saves its own register state and restores it
 	 * during the resume.  */
@@ -303,12 +374,40 @@ static int s3c_pm_enter(suspend_state_t state)
 	/* restore the cpu state using the kernel's cpu init code. */
 
 	cpu_init();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* this will also act as our return point from when
+	 * we resume as it saves its own register state and restores it
+	 * during the resume.  */
+
+<<<<<<< HEAD
+	cpu_suspend(0, pm_cpu_sleep);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = cpu_suspend(0, pm_cpu_sleep);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* restore the system state */
 
 	s3c_pm_restore_core();
 	s3c_pm_restore_uarts();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	s3c_pm_restore_gpios();
+=======
+	samsung_pm_restore_gpios();
+	s3c_pm_restored_gpios();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (!of_have_populated_dt()) {
+		samsung_pm_restore_gpios();
+		s3c_pm_restored_gpios();
+	}
+>>>>>>> refs/remotes/origin/master
 
 	s3c_pm_debug_init();
 

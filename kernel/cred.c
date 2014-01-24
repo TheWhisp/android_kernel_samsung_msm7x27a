@@ -8,7 +8,15 @@
  * as published by the Free Software Foundation; either version
  * 2 of the Licence, or (at your option) any later version.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/cred.h>
 #include <linux/slab.h>
 #include <linux/sched.h>
@@ -16,6 +24,14 @@
 #include <linux/keyctl.h>
 #include <linux/init_task.h>
 #include <linux/security.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/binfmts.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/binfmts.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/cn_proc.h>
 
 #if 0
@@ -29,6 +45,7 @@
 static struct kmem_cache *cred_jar;
 
 /*
+<<<<<<< HEAD
  * The common credentials for the initial task's thread group
  */
 #ifdef CONFIG_KEYS
@@ -40,6 +57,8 @@ static struct thread_group_cred init_tgcred = {
 #endif
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * The initial credentials for the initial task
  */
 struct cred init_cred = {
@@ -48,6 +67,17 @@ struct cred init_cred = {
 	.subscribers		= ATOMIC_INIT(2),
 	.magic			= CRED_MAGIC,
 #endif
+<<<<<<< HEAD
+=======
+	.uid			= GLOBAL_ROOT_UID,
+	.gid			= GLOBAL_ROOT_GID,
+	.suid			= GLOBAL_ROOT_UID,
+	.sgid			= GLOBAL_ROOT_GID,
+	.euid			= GLOBAL_ROOT_UID,
+	.egid			= GLOBAL_ROOT_GID,
+	.fsuid			= GLOBAL_ROOT_UID,
+	.fsgid			= GLOBAL_ROOT_GID,
+>>>>>>> refs/remotes/origin/master
 	.securebits		= SECUREBITS_DEFAULT,
 	.cap_inheritable	= CAP_EMPTY_SET,
 	.cap_permitted		= CAP_FULL_SET,
@@ -56,9 +86,12 @@ struct cred init_cred = {
 	.user			= INIT_USER,
 	.user_ns		= &init_user_ns,
 	.group_info		= &init_groups,
+<<<<<<< HEAD
 #ifdef CONFIG_KEYS
 	.tgcred			= &init_tgcred,
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void set_cred_subscribers(struct cred *cred, int n)
@@ -87,6 +120,7 @@ static inline void alter_cred_subscribers(const struct cred *_cred, int n)
 }
 
 /*
+<<<<<<< HEAD
  * Dispose of the shared task group credentials
  */
 #ifdef CONFIG_KEYS
@@ -117,6 +151,8 @@ static void release_tgcred(struct cred *cred)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * The RCU callback to actually dispose of a set of credentials
  */
 static void put_cred_rcu(struct rcu_head *rcu)
@@ -141,12 +177,23 @@ static void put_cred_rcu(struct rcu_head *rcu)
 #endif
 
 	security_cred_free(cred);
+<<<<<<< HEAD
 	key_put(cred->thread_keyring);
 	key_put(cred->request_key_auth);
 	release_tgcred(cred);
 	if (cred->group_info)
 		put_group_info(cred->group_info);
 	free_uid(cred->user);
+=======
+	key_put(cred->session_keyring);
+	key_put(cred->process_keyring);
+	key_put(cred->thread_keyring);
+	key_put(cred->request_key_auth);
+	if (cred->group_info)
+		put_group_info(cred->group_info);
+	free_uid(cred->user);
+	put_user_ns(cred->user_ns);
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(cred_jar, cred);
 }
 
@@ -197,6 +244,7 @@ void exit_creds(struct task_struct *tsk)
 	validate_creds(cred);
 	alter_cred_subscribers(cred, -1);
 	put_cred(cred);
+<<<<<<< HEAD
 
 	cred = (struct cred *) tsk->replacement_session_keyring;
 	if (cred) {
@@ -204,6 +252,8 @@ void exit_creds(struct task_struct *tsk)
 		validate_creds(cred);
 		put_cred(cred);
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -243,6 +293,7 @@ struct cred *cred_alloc_blank(void)
 	if (!new)
 		return NULL;
 
+<<<<<<< HEAD
 #ifdef CONFIG_KEYS
 	new->tgcred = kzalloc(sizeof(*new->tgcred), GFP_KERNEL);
 	if (!new->tgcred) {
@@ -252,6 +303,8 @@ struct cred *cred_alloc_blank(void)
 	atomic_set(&new->tgcred->usage, 1);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&new->usage, 1);
 #ifdef CONFIG_DEBUG_CREDENTIALS
 	new->magic = CRED_MAGIC;
@@ -302,11 +355,21 @@ struct cred *prepare_creds(void)
 	set_cred_subscribers(new, 0);
 	get_group_info(new->group_info);
 	get_uid(new->user);
+<<<<<<< HEAD
 
 #ifdef CONFIG_KEYS
 	key_get(new->thread_keyring);
 	key_get(new->request_key_auth);
 	atomic_inc(&new->tgcred->usage);
+=======
+	get_user_ns(new->user_ns);
+
+#ifdef CONFIG_KEYS
+	key_get(new->session_keyring);
+	key_get(new->process_keyring);
+	key_get(new->thread_keyring);
+	key_get(new->request_key_auth);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_SECURITY
@@ -330,6 +393,7 @@ EXPORT_SYMBOL(prepare_creds);
  */
 struct cred *prepare_exec_creds(void)
 {
+<<<<<<< HEAD
 	struct thread_group_cred *tgcred = NULL;
 	struct cred *new;
 
@@ -344,12 +408,20 @@ struct cred *prepare_exec_creds(void)
 		kfree(tgcred);
 		return new;
 	}
+=======
+	struct cred *new;
+
+	new = prepare_creds();
+	if (!new)
+		return new;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_KEYS
 	/* newly exec'd tasks don't get a thread keyring */
 	key_put(new->thread_keyring);
 	new->thread_keyring = NULL;
 
+<<<<<<< HEAD
 	/* create a new per-thread-group creds for all this set of threads to
 	 * share */
 	memcpy(tgcred, new->tgcred, sizeof(struct thread_group_cred));
@@ -363,6 +435,11 @@ struct cred *prepare_exec_creds(void)
 
 	release_tgcred(new);
 	new->tgcred = tgcred;
+=======
+	/* inherit the session keyring; new process keyring */
+	key_put(new->process_keyring);
+	new->process_keyring = NULL;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	return new;
@@ -379,6 +456,7 @@ struct cred *prepare_exec_creds(void)
  */
 int copy_creds(struct task_struct *p, unsigned long clone_flags)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_KEYS
 	struct thread_group_cred *tgcred;
 #endif
@@ -387,6 +465,11 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
 
 	p->replacement_session_keyring = NULL;
 
+=======
+	struct cred *new;
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	if (
 #ifdef CONFIG_KEYS
 		!p->cred->thread_keyring &&
@@ -413,11 +496,14 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
 			goto error_put;
 	}
 
+<<<<<<< HEAD
 	/* cache user_ns in cred.  Doesn't need a refcount because it will
 	 * stay pinned by cred->user
 	 */
 	new->user_ns = new->user->user_ns;
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_KEYS
 	/* new threads get their own thread keyrings if their parent already
 	 * had one */
@@ -428,6 +514,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
 			install_thread_keyring_to_cred(new);
 	}
 
+<<<<<<< HEAD
 	/* we share the process and session keyrings between all the threads in
 	 * a process - this is slightly icky as we violate COW credentials a
 	 * bit */
@@ -444,6 +531,14 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
 
 		release_tgcred(new);
 		new->tgcred = tgcred;
+=======
+	/* The process keyring is only shared between the threads in a process;
+	 * anything outside of those threads doesn't inherit.
+	 */
+	if (!(clone_flags & CLONE_THREAD)) {
+		key_put(new->process_keyring);
+		new->process_keyring = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -458,6 +553,34 @@ error_put:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static bool cred_cap_issubset(const struct cred *set, const struct cred *subset)
+{
+	const struct user_namespace *set_ns = set->user_ns;
+	const struct user_namespace *subset_ns = subset->user_ns;
+
+	/* If the two credentials are in the same user namespace see if
+	 * the capabilities of subset are a subset of set.
+	 */
+	if (set_ns == subset_ns)
+		return cap_issubset(subset->cap_permitted, set->cap_permitted);
+
+	/* The credentials are in a different user namespaces
+	 * therefore one is a subset of the other only if a set is an
+	 * ancestor of subset and set->euid is owner of subset or one
+	 * of subsets ancestors.
+	 */
+	for (;subset_ns != &init_user_ns; subset_ns = subset_ns->parent) {
+		if ((set_ns == subset_ns->parent)  &&
+		    uid_eq(subset_ns->owner, set->euid))
+			return true;
+	}
+
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * commit_creds - Install new credentials upon the current task
  * @new: The credentials to be assigned
@@ -492,11 +615,19 @@ int commit_creds(struct cred *new)
 	get_cred(new); /* we will require a ref for the subj creds too */
 
 	/* dumpability changes */
+<<<<<<< HEAD
 	if (old->euid != new->euid ||
 	    old->egid != new->egid ||
 	    old->fsuid != new->fsuid ||
 	    old->fsgid != new->fsgid ||
 	    !cap_issubset(new->cap_permitted, old->cap_permitted)) {
+=======
+	if (!uid_eq(old->euid, new->euid) ||
+	    !gid_eq(old->egid, new->egid) ||
+	    !uid_eq(old->fsuid, new->fsuid) ||
+	    !gid_eq(old->fsgid, new->fsgid) ||
+	    !cred_cap_issubset(old, new)) {
+>>>>>>> refs/remotes/origin/master
 		if (task->mm)
 			set_dumpable(task->mm, suid_dumpable);
 		task->pdeath_signal = 0;
@@ -504,16 +635,32 @@ int commit_creds(struct cred *new)
 	}
 
 	/* alter the thread keyring */
+<<<<<<< HEAD
 	if (new->fsuid != old->fsuid)
 		key_fsuid_changed(task);
 	if (new->fsgid != old->fsgid)
 		key_fsgid_changed(task);
 
 	/* do it
+<<<<<<< HEAD
 	 * - What if a process setreuid()'s and this brings the
 	 *   new uid over his NPROC rlimit?  We can check this now
 	 *   cheaply with the new uid cache, so if it matters
 	 *   we should be checking for it.  -DaveM
+=======
+	 * RLIMIT_NPROC limits on user->processes have already been checked
+	 * in set_user().
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!uid_eq(new->fsuid, old->fsuid))
+		key_fsuid_changed(task);
+	if (!gid_eq(new->fsgid, old->fsgid))
+		key_fsgid_changed(task);
+
+	/* do it
+	 * RLIMIT_NPROC limits on user->processes have already been checked
+	 * in set_user().
+>>>>>>> refs/remotes/origin/master
 	 */
 	alter_cred_subscribers(new, 2);
 	if (new->user != old->user)
@@ -525,6 +672,7 @@ int commit_creds(struct cred *new)
 	alter_cred_subscribers(old, -2);
 
 	/* send notifications */
+<<<<<<< HEAD
 	if (new->uid   != old->uid  ||
 	    new->euid  != old->euid ||
 	    new->suid  != old->suid ||
@@ -535,6 +683,18 @@ int commit_creds(struct cred *new)
 	    new->egid  != old->egid ||
 	    new->sgid  != old->sgid ||
 	    new->fsgid != old->fsgid)
+=======
+	if (!uid_eq(new->uid,   old->uid)  ||
+	    !uid_eq(new->euid,  old->euid) ||
+	    !uid_eq(new->suid,  old->suid) ||
+	    !uid_eq(new->fsuid, old->fsuid))
+		proc_id_connector(task, PROC_EVENT_UID);
+
+	if (!gid_eq(new->gid,   old->gid)  ||
+	    !gid_eq(new->egid,  old->egid) ||
+	    !gid_eq(new->sgid,  old->sgid) ||
+	    !gid_eq(new->fsgid, old->fsgid))
+>>>>>>> refs/remotes/origin/master
 		proc_id_connector(task, PROC_EVENT_GID);
 
 	/* release the old obj and subj refs both */
@@ -648,6 +808,15 @@ void __init cred_init(void)
  */
 struct cred *prepare_kernel_cred(struct task_struct *daemon)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KEYS
+	struct thread_group_cred *tgcred;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct cred *old;
 	struct cred *new;
 
@@ -655,6 +824,20 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
 	if (!new)
 		return NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KEYS
+	tgcred = kmalloc(sizeof(*tgcred), GFP_KERNEL);
+	if (!tgcred) {
+		kmem_cache_free(cred_jar, new);
+		return NULL;
+	}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kdebug("prepare_kernel_cred() alloc %p", new);
 
 	if (daemon)
@@ -668,13 +851,32 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
 	atomic_set(&new->usage, 1);
 	set_cred_subscribers(new, 0);
 	get_uid(new->user);
+<<<<<<< HEAD
 	get_group_info(new->group_info);
 
 #ifdef CONFIG_KEYS
+<<<<<<< HEAD
 	atomic_inc(&init_tgcred.usage);
 	new->tgcred = &init_tgcred;
+=======
+	atomic_set(&tgcred->usage, 1);
+	spin_lock_init(&tgcred->lock);
+	tgcred->process_keyring = NULL;
+	tgcred->session_keyring = NULL;
+	new->tgcred = tgcred;
+>>>>>>> refs/remotes/origin/cm-10.0
 	new->request_key_auth = NULL;
 	new->thread_keyring = NULL;
+=======
+	get_user_ns(new->user_ns);
+	get_group_info(new->group_info);
+
+#ifdef CONFIG_KEYS
+	new->session_keyring = NULL;
+	new->process_keyring = NULL;
+	new->thread_keyring = NULL;
+	new->request_key_auth = NULL;
+>>>>>>> refs/remotes/origin/master
 	new->jit_keyring = KEY_REQKEY_DEFL_THREAD_KEYRING;
 #endif
 
@@ -789,9 +991,21 @@ static void dump_invalid_creds(const struct cred *cred, const char *label,
 	       atomic_read(&cred->usage),
 	       read_cred_subscribers(cred));
 	printk(KERN_ERR "CRED: ->*uid = { %d,%d,%d,%d }\n",
+<<<<<<< HEAD
 	       cred->uid, cred->euid, cred->suid, cred->fsuid);
 	printk(KERN_ERR "CRED: ->*gid = { %d,%d,%d,%d }\n",
 	       cred->gid, cred->egid, cred->sgid, cred->fsgid);
+=======
+		from_kuid_munged(&init_user_ns, cred->uid),
+		from_kuid_munged(&init_user_ns, cred->euid),
+		from_kuid_munged(&init_user_ns, cred->suid),
+		from_kuid_munged(&init_user_ns, cred->fsuid));
+	printk(KERN_ERR "CRED: ->*gid = { %d,%d,%d,%d }\n",
+		from_kgid_munged(&init_user_ns, cred->gid),
+		from_kgid_munged(&init_user_ns, cred->egid),
+		from_kgid_munged(&init_user_ns, cred->sgid),
+		from_kgid_munged(&init_user_ns, cred->fsgid));
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SECURITY
 	printk(KERN_ERR "CRED: ->security is %p\n", cred->security);
 	if ((unsigned long) cred->security >= PAGE_SIZE &&

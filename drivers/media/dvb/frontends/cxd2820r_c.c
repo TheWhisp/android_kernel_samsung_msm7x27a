@@ -21,13 +21,21 @@
 
 #include "cxd2820r_priv.h"
 
+<<<<<<< HEAD
 int cxd2820r_set_frontend_c(struct dvb_frontend *fe,
 	struct dvb_frontend_parameters *params)
+=======
+int cxd2820r_set_frontend_c(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 	int ret, i;
 	u8 buf[2];
+<<<<<<< HEAD
+=======
+	u32 if_freq;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 if_ctl;
 	u64 num;
 	struct reg_val_mask tab[] = {
@@ -56,9 +64,15 @@ int cxd2820r_set_frontend_c(struct dvb_frontend *fe,
 
 	/* program tuner */
 	if (fe->ops.tuner_ops.set_params)
+<<<<<<< HEAD
 		fe->ops.tuner_ops.set_params(fe, params);
 
 	if (priv->delivery_system !=  SYS_DVBC_ANNEX_AC) {
+=======
+		fe->ops.tuner_ops.set_params(fe);
+
+	if (priv->delivery_system !=  SYS_DVBC_ANNEX_A) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (i = 0; i < ARRAY_SIZE(tab); i++) {
 			ret = cxd2820r_wr_reg_mask(priv, tab[i].reg,
 				tab[i].val, tab[i].mask);
@@ -67,10 +81,27 @@ int cxd2820r_set_frontend_c(struct dvb_frontend *fe,
 		}
 	}
 
+<<<<<<< HEAD
 	priv->delivery_system = SYS_DVBC_ANNEX_AC;
 	priv->ber_running = 0; /* tune stops BER counter */
 
 	num = priv->cfg.if_dvbc;
+=======
+	priv->delivery_system = SYS_DVBC_ANNEX_A;
+	priv->ber_running = 0; /* tune stops BER counter */
+
+	/* program IF frequency */
+	if (fe->ops.tuner_ops.get_if_frequency) {
+		ret = fe->ops.tuner_ops.get_if_frequency(fe, &if_freq);
+		if (ret)
+			goto error;
+	} else
+		if_freq = 0;
+
+	dbg("%s: if_freq=%d", __func__, if_freq);
+
+	num = if_freq / 1000; /* Hz => kHz */
+>>>>>>> refs/remotes/origin/cm-10.0
 	num *= 0x4000;
 	if_ctl = cxd2820r_div_u64_round_closest(num, 41000);
 	buf[0] = (if_ctl >> 8) & 0x3f;
@@ -94,8 +125,12 @@ error:
 	return ret;
 }
 
+<<<<<<< HEAD
 int cxd2820r_get_frontend_c(struct dvb_frontend *fe,
 	struct dvb_frontend_parameters *p)
+=======
+int cxd2820r_get_frontend_c(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
@@ -335,4 +370,7 @@ int cxd2820r_get_tune_settings_c(struct dvb_frontend *fe,
 
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

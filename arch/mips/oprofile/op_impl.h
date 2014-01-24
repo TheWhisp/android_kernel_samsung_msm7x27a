@@ -36,4 +36,14 @@ struct op_mips_model {
 	unsigned char num_counters;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void op_mips_backtrace(struct pt_regs * const regs, unsigned int depth);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void op_mips_backtrace(struct pt_regs * const regs, unsigned int depth);
+
+>>>>>>> refs/remotes/origin/master
 #endif

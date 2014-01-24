@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright IBM Corp. 1999, 2009
+=======
+ * Copyright IBM Corp. 1999,2012
+>>>>>>> refs/remotes/origin/master
  *
  * Author(s): Martin Peschke <mpeschke@de.ibm.com>
  *	      Martin Schwidefsky <schwidefsky@de.ibm.com>
@@ -15,7 +19,11 @@
 
 /* maximum number of pages concerning our own memory management */
 #define MAX_KMEM_PAGES (sizeof(unsigned long) << 3)
+<<<<<<< HEAD
 #define MAX_CONSOLE_PAGES	6
+=======
+#define SCLP_CONSOLE_PAGES	6
+>>>>>>> refs/remotes/origin/master
 
 #define EVTYP_OPCMD		0x01
 #define EVTYP_MSG		0x02
@@ -88,11 +96,30 @@ struct sccb_header {
 	u16	response_code;
 } __attribute__((packed));
 
+<<<<<<< HEAD
 extern u64 sclp_facilities;
+=======
+struct init_sccb {
+	struct sccb_header header;
+	u16 _reserved;
+	u16 mask_length;
+	sccb_mask_t receive_mask;
+	sccb_mask_t send_mask;
+	sccb_mask_t sclp_receive_mask;
+	sccb_mask_t sclp_send_mask;
+} __attribute__((packed));
+
+extern u64 sclp_facilities;
+
+>>>>>>> refs/remotes/origin/master
 #define SCLP_HAS_CHP_INFO	(sclp_facilities & 0x8000000000000000ULL)
 #define SCLP_HAS_CHP_RECONFIG	(sclp_facilities & 0x2000000000000000ULL)
 #define SCLP_HAS_CPU_INFO	(sclp_facilities & 0x0800000000000000ULL)
 #define SCLP_HAS_CPU_RECONFIG	(sclp_facilities & 0x0400000000000000ULL)
+<<<<<<< HEAD
+=======
+#define SCLP_HAS_PCI_RECONFIG	(sclp_facilities & 0x0000000040000000ULL)
+>>>>>>> refs/remotes/origin/master
 
 
 struct gds_subvector {
@@ -160,10 +187,24 @@ int sclp_remove_processed(struct sccb_header *sccb);
 int sclp_deactivate(void);
 int sclp_reactivate(void);
 int sclp_service_call(sclp_cmdw_t command, void *sccb);
+<<<<<<< HEAD
+=======
+int sclp_sync_request(sclp_cmdw_t command, void *sccb);
+>>>>>>> refs/remotes/origin/master
 
 int sclp_sdias_init(void);
 void sclp_sdias_exit(void);
 
+<<<<<<< HEAD
+=======
+extern int sclp_console_pages;
+extern int sclp_console_drop;
+extern unsigned long sclp_console_full;
+extern u8 sclp_fac84;
+extern unsigned long long sclp_rzm;
+extern unsigned long long sclp_rnmax;
+
+>>>>>>> refs/remotes/origin/master
 /* useful inlines */
 
 /* VM uses EBCDIC 037, LPAR+native(SE+HMC) use EBCDIC 500 */

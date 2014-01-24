@@ -21,7 +21,13 @@
 #include <linux/if_ether.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include <linux/inet.h>
@@ -38,7 +44,11 @@
 
 static int rose_header(struct sk_buff *skb, struct net_device *dev,
 		       unsigned short type,
+<<<<<<< HEAD
 		       const void *daddr, const void *saddr, unsigned len)
+=======
+		       const void *daddr, const void *saddr, unsigned int len)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char *buff = skb_push(skb, ROSE_MIN_LEN + 2);
 

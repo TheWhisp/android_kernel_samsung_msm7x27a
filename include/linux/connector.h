@@ -1,7 +1,15 @@
 /*
  * 	connector.h
  * 
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 2004-2005 Copyright (c) Evgeniy Polyakov <johnpol@2ka.mipt.ru>
+=======
+ * 2004-2005 Copyright (c) Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * 2004-2005 Copyright (c) Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -18,6 +26,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+<<<<<<< HEAD
 
 #ifndef __CONNECTOR_H
 #define __CONNECTOR_H
@@ -43,6 +52,10 @@
 #define CN_IDX_DRBD			0x8
 #define CN_VAL_DRBD			0x1
 #define CN_KVP_IDX			0x9	/* HyperV KVP */
+<<<<<<< HEAD
+=======
+#define CN_KVP_VAL			0x1	/* queries from the kernel */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CN_NETLINK_USERS		10	/* Highest index + 1 */
 
@@ -75,12 +88,27 @@ struct cn_msg {
 
 #ifdef __KERNEL__
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef __CONNECTOR_H
+#define __CONNECTOR_H
+
+
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/list.h>
 #include <linux/workqueue.h>
 
 #include <net/sock.h>
+<<<<<<< HEAD
+=======
+#include <uapi/linux/connector.h>
+>>>>>>> refs/remotes/origin/master
 
 #define CN_CBQ_NAMELEN		32
 
@@ -136,5 +164,8 @@ void cn_queue_free_dev(struct cn_queue_dev *dev);
 
 int cn_cb_equal(struct cb_id *, struct cb_id *);
 
+<<<<<<< HEAD
 #endif				/* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif				/* __CONNECTOR_H */

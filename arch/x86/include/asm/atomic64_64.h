@@ -72,12 +72,16 @@ static inline void atomic64_sub(long i, atomic64_t *v)
  */
 static inline int atomic64_sub_and_test(long i, atomic64_t *v)
 {
+<<<<<<< HEAD
 	unsigned char c;
 
 	asm volatile(LOCK_PREFIX "subq %2,%0; sete %1"
 		     : "=m" (v->counter), "=qm" (c)
 		     : "er" (i), "m" (v->counter) : "memory");
 	return c;
+=======
+	GEN_BINARY_RMWcc(LOCK_PREFIX "subq", v->counter, "er", i, "%0", "e");
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -116,12 +120,16 @@ static inline void atomic64_dec(atomic64_t *v)
  */
 static inline int atomic64_dec_and_test(atomic64_t *v)
 {
+<<<<<<< HEAD
 	unsigned char c;
 
 	asm volatile(LOCK_PREFIX "decq %0; sete %1"
 		     : "=m" (v->counter), "=qm" (c)
 		     : "m" (v->counter) : "memory");
 	return c != 0;
+=======
+	GEN_UNARY_RMWcc(LOCK_PREFIX "decq", v->counter, "%0", "e");
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -134,12 +142,16 @@ static inline int atomic64_dec_and_test(atomic64_t *v)
  */
 static inline int atomic64_inc_and_test(atomic64_t *v)
 {
+<<<<<<< HEAD
 	unsigned char c;
 
 	asm volatile(LOCK_PREFIX "incq %0; sete %1"
 		     : "=m" (v->counter), "=qm" (c)
 		     : "m" (v->counter) : "memory");
 	return c != 0;
+=======
+	GEN_UNARY_RMWcc(LOCK_PREFIX "incq", v->counter, "%0", "e");
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -153,12 +165,16 @@ static inline int atomic64_inc_and_test(atomic64_t *v)
  */
 static inline int atomic64_add_negative(long i, atomic64_t *v)
 {
+<<<<<<< HEAD
 	unsigned char c;
 
 	asm volatile(LOCK_PREFIX "addq %2,%0; sets %1"
 		     : "=m" (v->counter), "=qm" (c)
 		     : "er" (i), "m" (v->counter) : "memory");
 	return c;
+=======
+	GEN_BINARY_RMWcc(LOCK_PREFIX "addq", v->counter, "er", i, "%0", "s");
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -170,11 +186,19 @@ static inline int atomic64_add_negative(long i, atomic64_t *v)
  */
 static inline long atomic64_add_return(long i, atomic64_t *v)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	long __i = i;
 	asm volatile(LOCK_PREFIX "xaddq %0, %1;"
 		     : "+r" (i), "+m" (v->counter)
 		     : : "memory");
 	return i + __i;
+=======
+	return i + xadd(&v->counter, i);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return i + xadd(&v->counter, i);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long atomic64_sub_return(long i, atomic64_t *v)
@@ -202,7 +226,15 @@ static inline long atomic64_xchg(atomic64_t *v, long new)
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
+=======
+ * Returns the old value of @v.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns the old value of @v.
+>>>>>>> refs/remotes/origin/master
  */
 static inline int atomic64_add_unless(atomic64_t *v, long a, long u)
 {

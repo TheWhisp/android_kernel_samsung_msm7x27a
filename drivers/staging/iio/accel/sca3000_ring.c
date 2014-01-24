@@ -5,14 +5,26 @@
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
  *
+<<<<<<< HEAD
  * Copyright (c) 2009 Jonathan Cameron <jic23@cam.ac.uk>
+=======
+ * Copyright (c) 2009 Jonathan Cameron <jic23@kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
 #include <linux/fs.h>
 #include <linux/device.h>
+=======
+#include <linux/fs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/fs.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/spi/spi.h>
@@ -20,11 +32,23 @@
 #include <linux/sched.h>
 #include <linux/poll.h>
 
+<<<<<<< HEAD
 #include "../iio.h"
 #include "../sysfs.h"
+<<<<<<< HEAD
 #include "../ring_generic.h"
 #include "../ring_hw.h"
 #include "accel.h"
+=======
+#include "../buffer.h"
+#include "../ring_hw.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+#include <linux/iio/buffer.h>
+#include "../ring_hw.h"
+>>>>>>> refs/remotes/origin/master
 #include "sca3000.h"
 
 /* RFC / future work
@@ -42,7 +66,10 @@ static int sca3000_read_data(struct sca3000_state *st,
 			    int len)
 {
 	int ret;
+<<<<<<< HEAD
 	struct spi_message msg;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct spi_transfer xfer[2] = {
 		{
 			.len = 1,
@@ -58,10 +85,14 @@ static int sca3000_read_data(struct sca3000_state *st,
 	}
 	xfer[1].rx_buf = *rx_p;
 	st->tx[0] = SCA3000_READ_REG(reg_address_high);
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfer[0], &msg);
 	spi_message_add_tail(&xfer[1], &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, xfer, ARRAY_SIZE(xfer));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(get_device(&st->us->dev), "problem reading register");
 		goto error_free_rx;
@@ -84,12 +115,27 @@ error_ret:
  * can only be inferred approximately from ring buffer events such as 50% full
  * and knowledge of when buffer was last emptied.  This is left to userspace.
  **/
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int sca3000_read_first_n_hw_rb(struct iio_ring_buffer *r,
 				      size_t count, char __user *buf)
 {
 	struct iio_hw_ring_buffer *hw_ring = iio_to_hw_ring_buf(r);
 	struct iio_dev *indio_dev = hw_ring->private;
 	struct sca3000_state *st = indio_dev->dev_data;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int sca3000_read_first_n_hw_rb(struct iio_buffer *r,
+				      size_t count, char __user *buf)
+{
+	struct iio_hw_buffer *hw_ring = iio_to_hw_buf(r);
+	struct iio_dev *indio_dev = hw_ring->private;
+	struct sca3000_state *st = iio_priv(indio_dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 *rx;
 	int ret, i, num_available, num_read = 0;
 	int bytes_per_sample = 1;
@@ -137,12 +183,22 @@ error_ret:
 }
 
 /* This is only valid with all 3 elements enabled */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int sca3000_ring_get_length(struct iio_ring_buffer *r)
+=======
+static int sca3000_ring_get_length(struct iio_buffer *r)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int sca3000_ring_get_length(struct iio_buffer *r)
+>>>>>>> refs/remotes/origin/master
 {
 	return 64;
 }
 
 /* only valid if resolution is kept at 11bits */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int sca3000_ring_get_bytes_per_datum(struct iio_ring_buffer *r)
 {
 	return 6;
@@ -156,6 +212,20 @@ static void sca3000_ring_release(struct device *dev)
 static IIO_RING_ENABLE_ATTR;
 static IIO_RING_BYTES_PER_DATUM_ATTR;
 static IIO_RING_LENGTH_ATTR;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int sca3000_ring_get_bytes_per_datum(struct iio_buffer *r)
+{
+	return 6;
+}
+
+static IIO_BUFFER_ENABLE_ATTR;
+static IIO_BUFFER_LENGTH_ATTR;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * sca3000_query_ring_int() is the hardware ring status interrupt enabled
@@ -166,9 +236,19 @@ static ssize_t sca3000_query_ring_int(struct device *dev,
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret, val;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_ring_buffer *ring = dev_get_drvdata(dev);
 	struct iio_dev *indio_dev = ring->indio_dev;
 	struct sca3000_state *st = indio_dev->dev_data;
+=======
+	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&st->lock);
 	ret = sca3000_read_data_short(st, SCA3000_REG_ADDR_INT_MASK, 1);
@@ -188,15 +268,31 @@ static ssize_t sca3000_set_ring_int(struct device *dev,
 				      const char *buf,
 				      size_t len)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_ring_buffer *ring = dev_get_drvdata(dev);
 	struct iio_dev *indio_dev = ring->indio_dev;
 	struct sca3000_state *st = indio_dev->dev_data;
+=======
+	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	long val;
 	int ret;
 
 	mutex_lock(&st->lock);
 	ret = strict_strtol(buf, 10, &val);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+	u8 val;
+	int ret;
+
+	mutex_lock(&st->lock);
+	ret = kstrtou8(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = sca3000_read_data_short(st, SCA3000_REG_ADDR_INT_MASK, 1);
@@ -226,6 +322,8 @@ static IIO_DEVICE_ATTR(75_percent, S_IRUGO | S_IWUSR,
 		       sca3000_set_ring_int,
 		       SCA3000_INT_MASK_RING_THREE_QUARTER);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /**
  * sca3000_show_ring_bpse() -sysfs function to query bits per sample from ring
@@ -294,18 +392,40 @@ error_ret:
 	return ret ? ret : len;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t sca3000_show_buffer_scale(struct device *dev,
 					 struct device_attribute *attr,
 					 char *buf)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_ring_buffer *ring = dev_get_drvdata(dev);
 	struct iio_dev *indio_dev = ring->indio_dev;
 	struct sca3000_state *st = indio_dev->dev_data;
+=======
+	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "0.%06d\n", 4*st->info->scale);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static IIO_DEVICE_ATTR(accel_scale,
+=======
+static IIO_DEVICE_ATTR(in_accel_scale,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static IIO_DEVICE_ATTR(in_accel_scale,
+>>>>>>> refs/remotes/origin/master
 		       S_IRUGO,
 		       sca3000_show_buffer_scale,
 		       NULL,
@@ -319,16 +439,31 @@ static IIO_DEVICE_ATTR(accel_scale,
  */
 static struct attribute *sca3000_ring_attributes[] = {
 	&dev_attr_length.attr,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	&dev_attr_bytes_per_datum.attr,
 	&dev_attr_enable.attr,
 	&iio_dev_attr_50_percent.dev_attr.attr,
 	&iio_dev_attr_75_percent.dev_attr.attr,
 	&iio_dev_attr_accel_scale.dev_attr.attr,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	&dev_attr_enable.attr,
+	&iio_dev_attr_50_percent.dev_attr.attr,
+	&iio_dev_attr_75_percent.dev_attr.attr,
+	&iio_dev_attr_in_accel_scale.dev_attr.attr,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
 static struct attribute_group sca3000_ring_attr = {
 	.attrs = sca3000_ring_attributes,
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static const struct attribute_group *sca3000_ring_attr_groups[] = {
@@ -345,22 +480,50 @@ static struct iio_ring_buffer *sca3000_rb_allocate(struct iio_dev *indio_dev)
 {
 	struct iio_ring_buffer *buf;
 	struct iio_hw_ring_buffer *ring;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.name = "buffer",
+};
+
+static struct iio_buffer *sca3000_rb_allocate(struct iio_dev *indio_dev)
+{
+	struct iio_buffer *buf;
+	struct iio_hw_buffer *ring;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ring = kzalloc(sizeof *ring, GFP_KERNEL);
+=======
+
+	ring = kzalloc(sizeof(*ring), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ring)
 		return NULL;
 
 	ring->private = indio_dev;
 	buf = &ring->buf;
 	buf->stufftoread = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iio_ring_buffer_init(buf, indio_dev);
 	buf->dev.type = &sca3000_ring_type;
 	buf->dev.parent = &indio_dev->dev;
 	dev_set_drvdata(&buf->dev, (void *)buf);
+=======
+	buf->attrs = &sca3000_ring_attr;
+	iio_buffer_init(buf);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	buf->attrs = &sca3000_ring_attr;
+	iio_buffer_init(buf);
+>>>>>>> refs/remotes/origin/master
 
 	return buf;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void sca3000_rb_free(struct iio_ring_buffer *r)
 {
 	if (r)
@@ -368,13 +531,33 @@ static inline void sca3000_rb_free(struct iio_ring_buffer *r)
 }
 
 static const struct iio_ring_access_funcs sca3000_ring_access_funcs = {
+=======
+static inline void sca3000_rb_free(struct iio_buffer *r)
+=======
+static void sca3000_ring_release(struct iio_buffer *r)
+>>>>>>> refs/remotes/origin/master
+{
+	kfree(iio_to_hw_buf(r));
+}
+
+static const struct iio_buffer_access_funcs sca3000_ring_access_funcs = {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read_first_n = &sca3000_read_first_n_hw_rb,
 	.get_length = &sca3000_ring_get_length,
 	.get_bytes_per_datum = &sca3000_ring_get_bytes_per_datum,
+=======
+	.read_first_n = &sca3000_read_first_n_hw_rb,
+	.get_length = &sca3000_ring_get_length,
+	.get_bytes_per_datum = &sca3000_ring_get_bytes_per_datum,
+	.release = sca3000_ring_release,
+>>>>>>> refs/remotes/origin/master
 };
 
 int sca3000_configure_ring(struct iio_dev *indio_dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	indio_dev->ring = sca3000_rb_allocate(indio_dev);
 	if (indio_dev->ring == NULL)
 		return -ENOMEM;
@@ -385,19 +568,54 @@ int sca3000_configure_ring(struct iio_dev *indio_dev)
 	iio_scan_mask_set(indio_dev->ring, 0);
 	iio_scan_mask_set(indio_dev->ring, 1);
 	iio_scan_mask_set(indio_dev->ring, 2);
+=======
+	indio_dev->buffer = sca3000_rb_allocate(indio_dev);
+	if (indio_dev->buffer == NULL)
+=======
+	struct iio_buffer *buffer;
+
+	buffer = sca3000_rb_allocate(indio_dev);
+	if (buffer == NULL)
+>>>>>>> refs/remotes/origin/master
+		return -ENOMEM;
+	indio_dev->modes |= INDIO_BUFFER_HARDWARE;
+
+	indio_dev->buffer->access = &sca3000_ring_access_funcs;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	iio_device_attach_buffer(indio_dev, buffer);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 void sca3000_unconfigure_ring(struct iio_dev *indio_dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sca3000_rb_free(indio_dev->ring);
+=======
+	sca3000_rb_free(indio_dev->buffer);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iio_buffer_put(indio_dev->buffer);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline
 int __sca3000_hw_ring_state_set(struct iio_dev *indio_dev, bool state)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sca3000_state *st = indio_dev->dev_data;
+=======
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	mutex_lock(&st->lock);
@@ -435,14 +653,30 @@ static int sca3000_hw_ring_postdisable(struct iio_dev *indio_dev)
 	return __sca3000_hw_ring_state_set(indio_dev, 0);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct iio_ring_setup_ops sca3000_ring_setup_ops = {
+=======
+static const struct iio_buffer_setup_ops sca3000_ring_setup_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct iio_buffer_setup_ops sca3000_ring_setup_ops = {
+>>>>>>> refs/remotes/origin/master
 	.preenable = &sca3000_hw_ring_preenable,
 	.postdisable = &sca3000_hw_ring_postdisable,
 };
 
 void sca3000_register_ring_funcs(struct iio_dev *indio_dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	indio_dev->ring->setup_ops = &sca3000_ring_setup_ops;
+=======
+	indio_dev->setup_ops = &sca3000_ring_setup_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	indio_dev->setup_ops = &sca3000_ring_setup_ops;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -451,7 +685,15 @@ void sca3000_register_ring_funcs(struct iio_dev *indio_dev)
  * This is only split from the main interrupt handler so as to
  * reduce the amount of code if the ring buffer is not enabled.
  **/
+<<<<<<< HEAD
+<<<<<<< HEAD
 void sca3000_ring_int_process(u8 val, struct iio_ring_buffer *ring)
+=======
+void sca3000_ring_int_process(u8 val, struct iio_buffer *ring)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sca3000_ring_int_process(u8 val, struct iio_buffer *ring)
+>>>>>>> refs/remotes/origin/master
 {
 	if (val & (SCA3000_INT_STATUS_THREE_QUARTERS |
 		   SCA3000_INT_STATUS_HALF)) {

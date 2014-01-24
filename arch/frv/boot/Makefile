@@ -17,6 +17,11 @@ PARAMS_PHYS	 = 0x0207c000
 INITRD_PHYS	 = 0x02180000
 INITRD_VIRT	 = 0x02180000
 
+<<<<<<< HEAD
+=======
+OBJCOPYFLAGS	:=-O binary -R .note -R .note.gnu.build-id -R .comment
+
+>>>>>>> refs/remotes/origin/master
 #
 # If you don't define ZRELADDR above,
 # then it defaults to ZTEXTADDR
@@ -32,18 +37,32 @@ Image: $(obj)/Image
 targets: $(obj)/Image
 
 $(obj)/Image: vmlinux FORCE
+<<<<<<< HEAD
 	$(OBJCOPY) -O binary -R .note -R .comment -S vmlinux $@
 
 #$(obj)/Image:	$(CONFIGURE) $(SYSTEM)
 #	$(OBJCOPY) -O binary -R .note -R .comment -g -S $(SYSTEM) $@
+=======
+	$(OBJCOPY) $(OBJCOPYFLAGS) -S vmlinux $@
+
+#$(obj)/Image:	$(CONFIGURE) $(SYSTEM)
+#	$(OBJCOPY) $(OBJCOPYFLAGS) -g -S $(SYSTEM) $@
+>>>>>>> refs/remotes/origin/master
 
 bzImage: zImage
 
 zImage:	$(CONFIGURE) compressed/$(LINUX)
+<<<<<<< HEAD
 	$(OBJCOPY) -O binary -R .note -R .comment -S compressed/$(LINUX) $@
 
 bootpImage: bootp/bootp
 	$(OBJCOPY) -O binary -R .note -R .comment -S bootp/bootp $@
+=======
+	$(OBJCOPY) $(OBJCOPYFLAGS) -S compressed/$(LINUX) $@
+
+bootpImage: bootp/bootp
+	$(OBJCOPY) $(OBJCOPYFLAGS) -S bootp/bootp $@
+>>>>>>> refs/remotes/origin/master
 
 compressed/$(LINUX): $(LINUX) dep
 	@$(MAKE) -C compressed $(LINUX)

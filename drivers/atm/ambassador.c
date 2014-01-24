@@ -38,7 +38,15 @@
 #include <linux/ihex.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/byteorder.h>
 
@@ -802,7 +810,11 @@ static void fill_rx_pool (amb_dev * dev, unsigned char pool,
     }
     // cast needed as there is no %? for pointer differences
     PRINTD (DBG_SKB, "allocated skb at %p, head %p, area %li",
+<<<<<<< HEAD
 	    skb, skb->head, (long) (skb_end_pointer(skb) - skb->head));
+=======
+	    skb, skb->head, (long) skb_end_offset(skb));
+>>>>>>> refs/remotes/origin/master
     rx.handle = virt_to_bus (skb);
     rx.host_address = cpu_to_be32 (virt_to_bus (skb->data));
     if (rx_give (dev, &rx, pool))
@@ -813,7 +825,15 @@ static void fill_rx_pool (amb_dev * dev, unsigned char pool,
   return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 // top up all RX pools (can also be called as a bottom half)
+=======
+// top up all RX pools
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+// top up all RX pools
+>>>>>>> refs/remotes/origin/master
 static void fill_rx_pools (amb_dev * dev) {
   unsigned char pool;
   
@@ -872,11 +892,19 @@ static irqreturn_t interrupt_handler(int irq, void *dev_id) {
       ++irq_work;
   
     if (irq_work) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef FILL_RX_POOLS_IN_BH
       schedule_work (&dev->bh);
 #else
       fill_rx_pools (dev);
 #endif
+=======
+      fill_rx_pools (dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+      fill_rx_pools (dev);
+>>>>>>> refs/remotes/origin/master
 
       PRINTD (DBG_IRQ, "work done: %u", irq_work);
     } else {
@@ -1407,7 +1435,11 @@ static void amb_free_rx_skb (struct atm_vcc * atm_vcc, struct sk_buff * skb) {
   rx.host_address = cpu_to_be32 (virt_to_bus (skb->data));
   
   skb->data = skb->head;
+<<<<<<< HEAD
   skb->tail = skb->head;
+=======
+  skb_reset_tail_pointer(skb);
+>>>>>>> refs/remotes/origin/master
   skb->len = 0;
   
   if (!rx_give (dev, &rx, pool)) {
@@ -1511,9 +1543,15 @@ static void do_housekeeping (unsigned long arg) {
 
 /********** creation of communication queues **********/
 
+<<<<<<< HEAD
 static int __devinit create_queues (amb_dev * dev, unsigned int cmds,
 				 unsigned int txs, unsigned int * rxs,
 				 unsigned int * rx_buffer_sizes) {
+=======
+static int create_queues(amb_dev *dev, unsigned int cmds, unsigned int txs,
+			 unsigned int *rxs, unsigned int *rx_buffer_sizes)
+{
+>>>>>>> refs/remotes/origin/master
   unsigned char pool;
   size_t total = 0;
   void * memory;
@@ -1741,8 +1779,14 @@ static  int decode_loader_result (loader_command cmd, u32 result)
 	return res;
 }
 
+<<<<<<< HEAD
 static int __devinit do_loader_command (volatile loader_block * lb,
 				     const amb_dev * dev, loader_command cmd) {
+=======
+static int do_loader_command(volatile loader_block *lb, const amb_dev *dev,
+			     loader_command cmd)
+{
+>>>>>>> refs/remotes/origin/master
   
   unsigned long timeout;
   
@@ -1797,8 +1841,14 @@ static int __devinit do_loader_command (volatile loader_block * lb,
 
 /* loader: determine loader version */
 
+<<<<<<< HEAD
 static int __devinit get_loader_version (loader_block * lb,
 				      const amb_dev * dev, u32 * version) {
+=======
+static int get_loader_version(loader_block *lb, const amb_dev *dev,
+			      u32 *version)
+{
+>>>>>>> refs/remotes/origin/master
   int res;
   
   PRINTD (DBG_FLOW|DBG_LOAD, "get_loader_version");
@@ -1813,9 +1863,15 @@ static int __devinit get_loader_version (loader_block * lb,
 
 /* loader: write memory data blocks */
 
+<<<<<<< HEAD
 static int __devinit loader_write (loader_block* lb,
 				   const amb_dev *dev,
 				   const struct ihex_binrec *rec) {
+=======
+static int loader_write(loader_block *lb, const amb_dev *dev,
+			const struct ihex_binrec *rec)
+{
+>>>>>>> refs/remotes/origin/master
   transfer_block * tb = &lb->payload.transfer;
   
   PRINTD (DBG_FLOW|DBG_LOAD, "loader_write");
@@ -1828,9 +1884,15 @@ static int __devinit loader_write (loader_block* lb,
 
 /* loader: verify memory data blocks */
 
+<<<<<<< HEAD
 static int __devinit loader_verify (loader_block * lb,
 				    const amb_dev *dev,
 				    const struct ihex_binrec *rec) {
+=======
+static int loader_verify(loader_block *lb, const amb_dev *dev,
+			 const struct ihex_binrec *rec)
+{
+>>>>>>> refs/remotes/origin/master
   transfer_block * tb = &lb->payload.transfer;
   int res;
   
@@ -1846,8 +1908,13 @@ static int __devinit loader_verify (loader_block * lb,
 
 /* loader: start microcode */
 
+<<<<<<< HEAD
 static int __devinit loader_start (loader_block * lb,
 				const amb_dev * dev, u32 address) {
+=======
+static int loader_start(loader_block *lb, const amb_dev *dev, u32 address)
+{
+>>>>>>> refs/remotes/origin/master
   PRINTD (DBG_FLOW|DBG_LOAD, "loader_start");
   
   lb->payload.start = cpu_to_be32 (address);
@@ -1922,7 +1989,12 @@ static int amb_reset (amb_dev * dev, int diags) {
 
 /********** transfer and start the microcode **********/
 
+<<<<<<< HEAD
 static int __devinit ucode_init (loader_block * lb, amb_dev * dev) {
+=======
+static int ucode_init(loader_block *lb, amb_dev *dev)
+{
+>>>>>>> refs/remotes/origin/master
   const struct firmware *fw;
   unsigned long start_address;
   const struct ihex_binrec *rec;
@@ -1965,6 +2037,10 @@ static int __devinit ucode_init (loader_block * lb, amb_dev * dev) {
     res = loader_verify(lb, dev, rec);
     if (res)
       break;
+<<<<<<< HEAD
+=======
+    rec = ihex_next_binrec(rec);
+>>>>>>> refs/remotes/origin/master
   }
   release_firmware(fw);
   if (!res)
@@ -1983,7 +2059,12 @@ static inline __be32 bus_addr(void * addr) {
     return cpu_to_be32 (virt_to_bus (addr));
 }
 
+<<<<<<< HEAD
 static int __devinit amb_talk (amb_dev * dev) {
+=======
+static int amb_talk(amb_dev *dev)
+{
+>>>>>>> refs/remotes/origin/master
   adap_talk_block a;
   unsigned char pool;
   unsigned long timeout;
@@ -2030,7 +2111,12 @@ static int __devinit amb_talk (amb_dev * dev) {
 }
 
 // get microcode version
+<<<<<<< HEAD
 static void __devinit amb_ucode_version (amb_dev * dev) {
+=======
+static void amb_ucode_version(amb_dev *dev)
+{
+>>>>>>> refs/remotes/origin/master
   u32 major;
   u32 minor;
   command cmd;
@@ -2045,7 +2131,12 @@ static void __devinit amb_ucode_version (amb_dev * dev) {
 }
   
 // get end station address
+<<<<<<< HEAD
 static void __devinit amb_esi (amb_dev * dev, u8 * esi) {
+=======
+static void amb_esi(amb_dev *dev, u8 *esi)
+{
+>>>>>>> refs/remotes/origin/master
   u32 lower4;
   u16 upper2;
   command cmd;
@@ -2091,7 +2182,11 @@ static void fixup_plx_window (amb_dev *dev, loader_block *lb)
 	return;
 }
 
+<<<<<<< HEAD
 static int __devinit amb_init (amb_dev * dev)
+=======
+static int amb_init(amb_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
   loader_block lb;
   
@@ -2154,11 +2249,17 @@ static void setup_dev(amb_dev *dev, struct pci_dev *pci_dev)
       dev->tx_avail = ATM_OC3_PCR;
       dev->rx_avail = ATM_OC3_PCR;
       
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef FILL_RX_POOLS_IN_BH
       // initialise bottom half
       INIT_WORK(&dev->bh, (void (*)(void *)) fill_rx_pools, dev);
 #endif
       
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
       // semaphore for txer/rxer modifications - we cannot use a
       // spinlock as the critical region needs to switch processes
       mutex_init(&dev->vcc_sf);
@@ -2192,7 +2293,12 @@ static void setup_pci_dev(struct pci_dev *pci_dev)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit amb_probe(struct pci_dev *pci_dev, const struct pci_device_id *pci_ent)
+=======
+static int amb_probe(struct pci_dev *pci_dev,
+		     const struct pci_device_id *pci_ent)
+>>>>>>> refs/remotes/origin/master
 {
 	amb_dev * dev;
 	int err;
@@ -2293,7 +2399,11 @@ out_disable:
 }
 
 
+<<<<<<< HEAD
 static void __devexit amb_remove_one(struct pci_dev *pci_dev)
+=======
+static void amb_remove_one(struct pci_dev *pci_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct amb_dev *dev;
 
@@ -2387,7 +2497,11 @@ MODULE_DEVICE_TABLE(pci, amb_pci_tbl);
 static struct pci_driver amb_driver = {
 	.name =		"amb",
 	.probe =	amb_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(amb_remove_one),
+=======
+	.remove =	amb_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.id_table =	amb_pci_tbl,
 };
 

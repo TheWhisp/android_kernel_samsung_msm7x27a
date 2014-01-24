@@ -112,7 +112,15 @@ static u32 ehca_encode_hwpage_size(u32 pgsize)
 
 static u64 ehca_get_max_hwpage_size(struct ehca_shca *shca)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return 1UL << ilog2(shca->hca_cap_mr_pgsize);
+=======
+	return rounddown_pow_of_two(shca->hca_cap_mr_pgsize);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return rounddown_pow_of_two(shca->hca_cap_mr_pgsize);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct ehca_mr *ehca_mr_new(void)
@@ -688,7 +696,11 @@ dereg_mr_exit0:
 
 /*----------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 struct ib_mw *ehca_alloc_mw(struct ib_pd *pd)
+=======
+struct ib_mw *ehca_alloc_mw(struct ib_pd *pd, enum ib_mw_type type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ib_mw *ib_mw;
 	u64 h_ret;
@@ -698,6 +710,12 @@ struct ib_mw *ehca_alloc_mw(struct ib_pd *pd)
 		container_of(pd->device, struct ehca_shca, ib_device);
 	struct ehca_mw_hipzout_parms hipzout;
 
+<<<<<<< HEAD
+=======
+	if (type != IB_MW_TYPE_1)
+		return ERR_PTR(-EINVAL);
+
+>>>>>>> refs/remotes/origin/master
 	e_mw = ehca_mw_new();
 	if (!e_mw) {
 		ib_mw = ERR_PTR(-ENOMEM);
@@ -1136,7 +1154,11 @@ int ehca_reg_mr_rpages(struct ehca_shca *shca,
 		}
 
 		if (rnum > 1) {
+<<<<<<< HEAD
 			rpage = virt_to_abs(kpage);
+=======
+			rpage = __pa(kpage);
+>>>>>>> refs/remotes/origin/master
 			if (!rpage) {
 				ehca_err(&shca->ib_device, "kpage=%p i=%x",
 					 kpage, i);
@@ -1231,7 +1253,11 @@ inline int ehca_rereg_mr_rereg1(struct ehca_shca *shca,
 			 pginfo->num_kpages, pginfo->num_hwpages, kpage);
 		goto ehca_rereg_mr_rereg1_exit1;
 	}
+<<<<<<< HEAD
 	rpage = virt_to_abs(kpage);
+=======
+	rpage = __pa(kpage);
+>>>>>>> refs/remotes/origin/master
 	if (!rpage) {
 		ehca_err(&shca->ib_device, "kpage=%p", kpage);
 		ret = -EFAULT;
@@ -1525,7 +1551,11 @@ static inline void *ehca_calc_sectbase(int top, int dir, int idx)
 	unsigned long ret = idx;
 	ret |= dir << EHCA_DIR_INDEX_SHIFT;
 	ret |= top << EHCA_TOP_INDEX_SHIFT;
+<<<<<<< HEAD
 	return abs_to_virt(ret << SECTION_SIZE_BITS);
+=======
+	return __va(ret << SECTION_SIZE_BITS);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define ehca_bmap_valid(entry) \
@@ -1537,7 +1567,11 @@ static u64 ehca_reg_mr_section(int top, int dir, int idx, u64 *kpage,
 {
 	u64 h_ret = 0;
 	unsigned long page = 0;
+<<<<<<< HEAD
 	u64 rpage = virt_to_abs(kpage);
+=======
+	u64 rpage = __pa(kpage);
+>>>>>>> refs/remotes/origin/master
 	int page_count;
 
 	void *sectbase = ehca_calc_sectbase(top, dir, idx);
@@ -1553,7 +1587,11 @@ static u64 ehca_reg_mr_section(int top, int dir, int idx, u64 *kpage,
 		for (rnum = 0; (rnum < MAX_RPAGES) && (page < page_count);
 		     rnum++) {
 			void *pg = sectbase + ((page++) * pginfo->hwpage_size);
+<<<<<<< HEAD
 			kpage[rnum] = virt_to_abs(pg);
+=======
+			kpage[rnum] = __pa(pg);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		h_ret = hipz_h_register_rpage_mr(shca->ipz_hca_handle, mr,
@@ -1870,9 +1908,14 @@ static int ehca_set_pagebuf_user1(struct ehca_mr_pginfo *pginfo,
 		for (i = pginfo->u.usr.next_nmap; i < chunk->nmap; ) {
 			pgaddr = page_to_pfn(sg_page(&chunk->page_list[i]))
 				<< PAGE_SHIFT ;
+<<<<<<< HEAD
 			*kpage = phys_to_abs(pgaddr +
 					     (pginfo->next_hwpage *
 					      pginfo->hwpage_size));
+=======
+			*kpage = pgaddr + (pginfo->next_hwpage *
+					   pginfo->hwpage_size);
+>>>>>>> refs/remotes/origin/master
 			if ( !(*kpage) ) {
 				ehca_gen_err("pgaddr=%llx "
 					     "chunk->page_list[i]=%llx "
@@ -1927,7 +1970,11 @@ static int ehca_check_kpages_per_ate(struct scatterlist *page_list,
 		u64 pgaddr = page_to_pfn(sg_page(&page_list[t])) << PAGE_SHIFT;
 		if (ehca_debug_level >= 3)
 			ehca_gen_dbg("chunk_page=%llx value=%016llx", pgaddr,
+<<<<<<< HEAD
 				     *(u64 *)abs_to_virt(phys_to_abs(pgaddr)));
+=======
+				     *(u64 *)__va(pgaddr));
+>>>>>>> refs/remotes/origin/master
 		if (pgaddr - PAGE_SIZE != *prev_pgaddr) {
 			ehca_gen_err("uncontiguous page found pgaddr=%llx "
 				     "prev_pgaddr=%llx page_list_i=%x",
@@ -1962,7 +2009,11 @@ static int ehca_set_pagebuf_user2(struct ehca_mr_pginfo *pginfo,
 			if (nr_kpages == kpages_per_hwpage) {
 				pgaddr = ( page_to_pfn(sg_page(&chunk->page_list[i]))
 					   << PAGE_SHIFT );
+<<<<<<< HEAD
 				*kpage = phys_to_abs(pgaddr);
+=======
+				*kpage = pgaddr;
+>>>>>>> refs/remotes/origin/master
 				if ( !(*kpage) ) {
 					ehca_gen_err("pgaddr=%llx i=%x",
 						     pgaddr, i);
@@ -1990,6 +2041,7 @@ static int ehca_set_pagebuf_user2(struct ehca_mr_pginfo *pginfo,
 						 (pginfo->hwpage_size - 1)) >>
 						PAGE_SHIFT;
 					nr_kpages -= pginfo->kpage_cnt;
+<<<<<<< HEAD
 					*kpage = phys_to_abs(
 						pgaddr &
 						~(pginfo->hwpage_size - 1));
@@ -1997,6 +2049,13 @@ static int ehca_set_pagebuf_user2(struct ehca_mr_pginfo *pginfo,
 				if (ehca_debug_level >= 3) {
 					u64 val = *(u64 *)abs_to_virt(
 						phys_to_abs(pgaddr));
+=======
+					*kpage = pgaddr &
+						 ~(pginfo->hwpage_size - 1);
+				}
+				if (ehca_debug_level >= 3) {
+					u64 val = *(u64 *)__va(pgaddr);
+>>>>>>> refs/remotes/origin/master
 					ehca_gen_dbg("kpage=%llx chunk_page=%llx "
 						     "value=%016llx",
 						     *kpage, pgaddr, val);
@@ -2084,9 +2143,14 @@ static int ehca_set_pagebuf_phys(struct ehca_mr_pginfo *pginfo,
 					     pginfo->num_hwpages, i);
 				return -EFAULT;
 			}
+<<<<<<< HEAD
 			*kpage = phys_to_abs(
 				(pbuf->addr & ~(pginfo->hwpage_size - 1)) +
 				(pginfo->next_hwpage * pginfo->hwpage_size));
+=======
+			*kpage = (pbuf->addr & ~(pginfo->hwpage_size - 1)) +
+				 (pginfo->next_hwpage * pginfo->hwpage_size);
+>>>>>>> refs/remotes/origin/master
 			if ( !(*kpage) && pbuf->addr ) {
 				ehca_gen_err("pbuf->addr=%llx pbuf->size=%llx "
 					     "next_hwpage=%llx", pbuf->addr,
@@ -2124,8 +2188,13 @@ static int ehca_set_pagebuf_fmr(struct ehca_mr_pginfo *pginfo,
 	/* loop over desired page_list entries */
 	fmrlist = pginfo->u.fmr.page_list + pginfo->u.fmr.next_listelem;
 	for (i = 0; i < number; i++) {
+<<<<<<< HEAD
 		*kpage = phys_to_abs((*fmrlist & ~(pginfo->hwpage_size - 1)) +
 				     pginfo->next_hwpage * pginfo->hwpage_size);
+=======
+		*kpage = (*fmrlist & ~(pginfo->hwpage_size - 1)) +
+			   pginfo->next_hwpage * pginfo->hwpage_size;
+>>>>>>> refs/remotes/origin/master
 		if ( !(*kpage) ) {
 			ehca_gen_err("*fmrlist=%llx fmrlist=%p "
 				     "next_listelem=%llx next_hwpage=%llx",
@@ -2152,8 +2221,12 @@ static int ehca_set_pagebuf_fmr(struct ehca_mr_pginfo *pginfo,
 			u64 prev = *kpage;
 			/* check if adrs are contiguous */
 			for (j = 1; j < cnt_per_hwpage; j++) {
+<<<<<<< HEAD
 				u64 p = phys_to_abs(fmrlist[j] &
 						    ~(pginfo->hwpage_size - 1));
+=======
+				u64 p = fmrlist[j] & ~(pginfo->hwpage_size - 1);
+>>>>>>> refs/remotes/origin/master
 				if (prev + pginfo->u.fmr.fmr_pgsize != p) {
 					ehca_gen_err("uncontiguous fmr pages "
 						     "found prev=%llx p=%llx "
@@ -2388,8 +2461,13 @@ static int ehca_update_busmap(unsigned long pfn, unsigned long nr_pages)
 		memset(ehca_bmap, 0xFF, EHCA_TOP_MAP_SIZE);
 	}
 
+<<<<<<< HEAD
 	start_section = phys_to_abs(pfn * PAGE_SIZE) / EHCA_SECTSIZE;
 	end_section = phys_to_abs((pfn + nr_pages) * PAGE_SIZE) / EHCA_SECTSIZE;
+=======
+	start_section = (pfn * PAGE_SIZE) / EHCA_SECTSIZE;
+	end_section = ((pfn + nr_pages) * PAGE_SIZE) / EHCA_SECTSIZE;
+>>>>>>> refs/remotes/origin/master
 	for (i = start_section; i < end_section; i++) {
 		int ret;
 		top = ehca_calc_index(i, EHCA_TOP_INDEX_SHIFT);
@@ -2508,7 +2586,11 @@ static u64 ehca_map_vaddr(void *caddr)
 	if (!ehca_bmap)
 		return EHCA_INVAL_ADDR;
 
+<<<<<<< HEAD
 	abs_addr = virt_to_abs(caddr);
+=======
+	abs_addr = __pa(caddr);
+>>>>>>> refs/remotes/origin/master
 	top = ehca_calc_index(abs_addr, EHCA_TOP_INDEX_SHIFT + EHCA_SECTSHIFT);
 	if (!ehca_bmap_valid(ehca_bmap->top[top]))
 		return EHCA_INVAL_ADDR;

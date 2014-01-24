@@ -39,19 +39,33 @@ static int nommu_region_show(struct seq_file *m, struct vm_region *region)
 	unsigned long ino = 0;
 	struct file *file;
 	dev_t dev = 0;
+<<<<<<< HEAD
 	int flags, len;
+=======
+	int flags;
+>>>>>>> refs/remotes/origin/master
 
 	flags = region->vm_flags;
 	file = region->vm_file;
 
 	if (file) {
+<<<<<<< HEAD
 		struct inode *inode = region->vm_file->f_path.dentry->d_inode;
+=======
+		struct inode *inode = file_inode(region->vm_file);
+>>>>>>> refs/remotes/origin/master
 		dev = inode->i_sb->s_dev;
 		ino = inode->i_ino;
 	}
 
+<<<<<<< HEAD
 	seq_printf(m,
 		   "%08lx-%08lx %c%c%c%c %08llx %02x:%02x %lu %n",
+=======
+	seq_setwidth(m, 25 + sizeof(void *) * 6 - 1);
+	seq_printf(m,
+		   "%08lx-%08lx %c%c%c%c %08llx %02x:%02x %lu ",
+>>>>>>> refs/remotes/origin/master
 		   region->vm_start,
 		   region->vm_end,
 		   flags & VM_READ ? 'r' : '-',
@@ -59,6 +73,7 @@ static int nommu_region_show(struct seq_file *m, struct vm_region *region)
 		   flags & VM_EXEC ? 'x' : '-',
 		   flags & VM_MAYSHARE ? flags & VM_SHARED ? 'S' : 's' : 'p',
 		   ((loff_t)region->vm_pgoff) << PAGE_SHIFT,
+<<<<<<< HEAD
 		   MAJOR(dev), MINOR(dev), ino, &len);
 
 	if (file) {
@@ -66,6 +81,12 @@ static int nommu_region_show(struct seq_file *m, struct vm_region *region)
 		if (len < 1)
 			len = 1;
 		seq_printf(m, "%*c", len, ' ');
+=======
+		   MAJOR(dev), MINOR(dev), ino);
+
+	if (file) {
+		seq_pad(m, ' ');
+>>>>>>> refs/remotes/origin/master
 		seq_path(m, &file->f_path, "");
 	}
 

@@ -7,6 +7,7 @@
  *
  * Copyright (C) 2001 - 2005 Tensilica Inc.
  */
+<<<<<<< HEAD
 
 #ifndef _XTENSA_PTRACE_H
 #define _XTENSA_PTRACE_H
@@ -74,6 +75,13 @@
 #define PTRACE_SETXTREGS	19
 
 #ifdef __KERNEL__
+=======
+#ifndef _XTENSA_PTRACE_H
+#define _XTENSA_PTRACE_H
+
+#include <uapi/asm/ptrace.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
@@ -99,7 +107,12 @@ struct pt_regs {
 	unsigned long windowstart;	/*  52 */
 	unsigned long syscall;		/*  56 */
 	unsigned long icountlevel;	/*  60 */
+<<<<<<< HEAD
 	int reserved[1];		/*  64 */
+=======
+	unsigned long scompare1;	/*  64 */
+	unsigned long threadptr;	/*  68 */
+>>>>>>> refs/remotes/origin/master
 
 	/* Additional configurable registers that are used by the compiler. */
 	xtregs_opt_t xtregs_opt;
@@ -110,22 +123,40 @@ struct pt_regs {
 	/* current register frame.
 	 * Note: The ESF for kernel exceptions ends after 16 registers!
 	 */
+<<<<<<< HEAD
 	unsigned long areg[16];		/* 128 (64) */
+=======
+	unsigned long areg[16];
+>>>>>>> refs/remotes/origin/master
 };
 
 #include <variant/core.h>
 
 # define arch_has_single_step()	(1)
 # define task_pt_regs(tsk) ((struct pt_regs*) \
+<<<<<<< HEAD
   (task_stack_page(tsk) + KERNEL_STACK_SIZE - (XCHAL_NUM_AREGS-16)*4) - 1)
 # define user_mode(regs) (((regs)->ps & 0x00000020)!=0)
 # define instruction_pointer(regs) ((regs)->pc)
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(task_stack_page(tsk) + KERNEL_STACK_SIZE - (XCHAL_NUM_AREGS-16)*4) - 1)
+# define user_mode(regs) (((regs)->ps & 0x00000020)!=0)
+# define instruction_pointer(regs) ((regs)->pc)
+>>>>>>> refs/remotes/origin/master
 
 # ifndef CONFIG_SMP
 #  define profile_pc(regs) instruction_pointer(regs)
 # endif
 
+<<<<<<< HEAD
+=======
+#define user_stack_pointer(regs) ((regs)->areg[1])
+
+>>>>>>> refs/remotes/origin/master
 #else	/* __ASSEMBLY__ */
 
 # include <asm/asm-offsets.h>
@@ -133,6 +164,9 @@ extern void show_regs(struct pt_regs *);
 
 #endif	/* !__ASSEMBLY__ */
 
+<<<<<<< HEAD
 #endif  /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _XTENSA_PTRACE_H */

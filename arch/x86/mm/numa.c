@@ -56,11 +56,19 @@ early_param("numa", numa_setup);
 /*
  * apicid, cpu, node mappings
  */
+<<<<<<< HEAD
 s16 __apicid_to_node[MAX_LOCAL_APIC] __cpuinitdata = {
 	[0 ... MAX_LOCAL_APIC-1] = NUMA_NO_NODE
 };
 
 int __cpuinit numa_cpu_node(int cpu)
+=======
+s16 __apicid_to_node[MAX_LOCAL_APIC] = {
+	[0 ... MAX_LOCAL_APIC-1] = NUMA_NO_NODE
+};
+
+int numa_cpu_node(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int apicid = early_per_cpu(x86_cpu_to_apicid, cpu);
 
@@ -78,7 +86,11 @@ EXPORT_SYMBOL(node_to_cpumask_map);
 DEFINE_EARLY_PER_CPU(int, x86_cpu_to_node_map, NUMA_NO_NODE);
 EXPORT_EARLY_PER_CPU_SYMBOL(x86_cpu_to_node_map);
 
+<<<<<<< HEAD
 void __cpuinit numa_set_node(int cpu, int node)
+=======
+void numa_set_node(int cpu, int node)
+>>>>>>> refs/remotes/origin/master
 {
 	int *cpu_to_node_map = early_per_cpu_ptr(x86_cpu_to_node_map);
 
@@ -97,11 +109,18 @@ void __cpuinit numa_set_node(int cpu, int node)
 #endif
 	per_cpu(x86_cpu_to_node_map, cpu) = node;
 
+<<<<<<< HEAD
 	if (node != NUMA_NO_NODE)
 		set_cpu_numa_node(cpu, node);
 }
 
 void __cpuinit numa_clear_node(int cpu)
+=======
+	set_cpu_numa_node(cpu, node);
+}
+
+void numa_clear_node(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	numa_set_node(cpu, NUMA_NO_NODE);
 }
@@ -110,11 +129,20 @@ void __cpuinit numa_clear_node(int cpu)
  * Allocate node_to_cpumask_map based on number of available nodes
  * Requires node_possible_map to be valid.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Note: node_to_cpumask() is not valid until after this is done.
+=======
+ * Note: cpumask_of_node() is not valid until after this is done.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Note: cpumask_of_node() is not valid until after this is done.
+>>>>>>> refs/remotes/origin/master
  * (Use CONFIG_DEBUG_PER_CPU_MAPS to check this.)
  */
 void __init setup_node_to_cpumask_map(void)
 {
+<<<<<<< HEAD
 	unsigned int node, num = 0;
 
 	/* setup nr_node_ids if not done yet */
@@ -123,6 +151,13 @@ void __init setup_node_to_cpumask_map(void)
 			num = node;
 		nr_node_ids = num + 1;
 	}
+=======
+	unsigned int node;
+
+	/* setup nr_node_ids if not done yet */
+	if (nr_node_ids == MAX_NUMNODES)
+		setup_nr_node_ids();
+>>>>>>> refs/remotes/origin/master
 
 	/* allocate the map */
 	for (node = 0; node < nr_node_ids; node++)
@@ -141,8 +176,13 @@ static int __init numa_add_memblk_to(int nid, u64 start, u64 end,
 
 	/* whine about and ignore invalid blks */
 	if (start > end || nid < 0 || nid >= MAX_NUMNODES) {
+<<<<<<< HEAD
 		pr_warning("NUMA: Warning: invalid memblk node %d (%Lx-%Lx)\n",
 			   nid, start, end);
+=======
+		pr_warning("NUMA: Warning: invalid memblk node %d [mem %#010Lx-%#010Lx]\n",
+			   nid, start, end - 1);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -192,10 +232,21 @@ int __init numa_add_memblk(int nid, u64 start, u64 end)
 /* Initialize NODE_DATA for a node on the local memory */
 static void __init setup_node_data(int nid, u64 start, u64 end)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const u64 nd_low = PFN_PHYS(MAX_DMA_PFN);
 	const u64 nd_high = PFN_PHYS(max_pfn_mapped);
 	const size_t nd_size = roundup(sizeof(pg_data_t), PAGE_SIZE);
+<<<<<<< HEAD
 	bool remapped = false;
+=======
+	const size_t nd_size = roundup(sizeof(pg_data_t), PAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const size_t nd_size = roundup(sizeof(pg_data_t), PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	u64 nd_pa;
 	void *nd;
 	int tnid;
@@ -209,10 +260,13 @@ static void __init setup_node_data(int nid, u64 start, u64 end)
 
 	start = roundup(start, ZONE_ALIGN);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "Initmem setup node %d %016Lx-%016Lx\n",
 	       nid, start, end);
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * Allocate node data.  Try remap allocator first, node-local
 	 * memory and then any node.  Never allocate in DMA zone.
 	 */
@@ -233,13 +287,65 @@ static void __init setup_node_data(int nid, u64 start, u64 end)
 		}
 		memblock_x86_reserve_range(nd_pa, nd_pa + nd_size, "NODE_DATA");
 		nd = __va(nd_pa);
+=======
+	 * Allocate node data.  Try node-local memory and then any node.
+	 * Never allocate in DMA zone.
+	 */
+	nd_pa = memblock_alloc_nid(nd_size, SMP_CACHE_BYTES, nid);
+	if (!nd_pa) {
+		pr_err("Cannot find %zu bytes in node %d\n",
+		       nd_size, nid);
+		return;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
+	nd = __va(nd_pa);
 
 	/* report and initialize */
-	printk(KERN_INFO "  NODE_DATA [%016Lx - %016Lx]%s\n",
-	       nd_pa, nd_pa + nd_size - 1, remapped ? " (remapped)" : "");
+	printk(KERN_INFO "  NODE_DATA [mem %#010Lx-%#010Lx]\n",
+	       nd_pa, nd_pa + nd_size - 1);
 	tnid = early_pfn_to_nid(nd_pa >> PAGE_SHIFT);
+<<<<<<< HEAD
 	if (!remapped && tnid != nid)
+=======
+=======
+	printk(KERN_INFO "Initmem setup node %d [mem %#010Lx-%#010Lx]\n",
+	       nid, start, end - 1);
+
+	/*
+>>>>>>> refs/remotes/origin/master
+	 * Allocate node data.  Try node-local memory and then any node.
+	 * Never allocate in DMA zone.
+	 */
+	nd_pa = memblock_alloc_nid(nd_size, SMP_CACHE_BYTES, nid);
+	if (!nd_pa) {
+<<<<<<< HEAD
+		pr_err("Cannot find %zu bytes in node %d\n",
+		       nd_size, nid);
+		return;
+=======
+		nd_pa = __memblock_alloc_base(nd_size, SMP_CACHE_BYTES,
+					      MEMBLOCK_ALLOC_ACCESSIBLE);
+		if (!nd_pa) {
+			pr_err("Cannot find %zu bytes in node %d\n",
+			       nd_size, nid);
+			return;
+		}
+>>>>>>> refs/remotes/origin/master
+	}
+	nd = __va(nd_pa);
+
+	/* report and initialize */
+	printk(KERN_INFO "  NODE_DATA [mem %#010Lx-%#010Lx]\n",
+	       nd_pa, nd_pa + nd_size - 1);
+	tnid = early_pfn_to_nid(nd_pa >> PAGE_SHIFT);
+	if (tnid != nid)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	if (tnid != nid)
+>>>>>>> refs/remotes/origin/cm-11.0
 		printk(KERN_INFO "    NODE_DATA(%d) on node %d\n", nid, tnid);
 
 	node_data[nid] = nd;
@@ -295,6 +401,7 @@ int __init numa_cleanup_meminfo(struct numa_meminfo *mi)
 			 */
 			if (bi->end > bj->start && bi->start < bj->end) {
 				if (bi->nid != bj->nid) {
+<<<<<<< HEAD
 					pr_err("NUMA: node %d (%Lx-%Lx) overlaps with node %d (%Lx-%Lx)\n",
 					       bi->nid, bi->start, bi->end,
 					       bj->nid, bj->start, bj->end);
@@ -303,6 +410,16 @@ int __init numa_cleanup_meminfo(struct numa_meminfo *mi)
 				pr_warning("NUMA: Warning: node %d (%Lx-%Lx) overlaps with itself (%Lx-%Lx)\n",
 					   bi->nid, bi->start, bi->end,
 					   bj->start, bj->end);
+=======
+					pr_err("NUMA: node %d [mem %#010Lx-%#010Lx] overlaps with node %d [mem %#010Lx-%#010Lx]\n",
+					       bi->nid, bi->start, bi->end - 1,
+					       bj->nid, bj->start, bj->end - 1);
+					return -EINVAL;
+				}
+				pr_warning("NUMA: Warning: node %d [mem %#010Lx-%#010Lx] overlaps with itself [mem %#010Lx-%#010Lx]\n",
+					   bi->nid, bi->start, bi->end - 1,
+					   bj->start, bj->end - 1);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			/*
@@ -324,9 +441,15 @@ int __init numa_cleanup_meminfo(struct numa_meminfo *mi)
 			}
 			if (k < mi->nr_blks)
 				continue;
+<<<<<<< HEAD
 			printk(KERN_INFO "NUMA: Node %d [%Lx,%Lx) + [%Lx,%Lx) -> [%Lx,%Lx)\n",
 			       bi->nid, bi->start, bi->end, bj->start, bj->end,
 			       start, end);
+=======
+			printk(KERN_INFO "NUMA: Node %d [mem %#010Lx-%#010Lx] + [mem %#010Lx-%#010Lx] -> [mem %#010Lx-%#010Lx]\n",
+			       bi->nid, bi->start, bi->end - 1, bj->start,
+			       bj->end - 1, start, end - 1);
+>>>>>>> refs/remotes/origin/master
 			bi->start = start;
 			bi->end = end;
 			numa_remove_memblk_from(j--, mi);
@@ -368,8 +491,16 @@ void __init numa_reset_distance(void)
 
 	/* numa_distance could be 1LU marking allocation failure, test cnt */
 	if (numa_distance_cnt)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		memblock_x86_free_range(__pa(numa_distance),
 					__pa(numa_distance) + size);
+=======
+		memblock_free(__pa(numa_distance), size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memblock_free(__pa(numa_distance), size);
+>>>>>>> refs/remotes/origin/master
 	numa_distance_cnt = 0;
 	numa_distance = NULL;	/* enable table creation */
 }
@@ -392,13 +523,29 @@ static int __init numa_alloc_distance(void)
 
 	phys = memblock_find_in_range(0, PFN_PHYS(max_pfn_mapped),
 				      size, PAGE_SIZE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (phys == MEMBLOCK_ERROR) {
+=======
+	if (!phys) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!phys) {
+>>>>>>> refs/remotes/origin/master
 		pr_warning("NUMA: Warning: can't allocate distance table!\n");
 		/* don't retry until explicitly reset */
 		numa_distance = (void *)1LU;
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_x86_reserve_range(phys, phys + size, "NUMA DIST");
+=======
+	memblock_reserve(phys, size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_reserve(phys, size);
+>>>>>>> refs/remotes/origin/master
 
 	numa_distance = __va(phys);
 	numa_distance_cnt = cnt;
@@ -427,8 +574,20 @@ static int __init numa_alloc_distance(void)
  * calls are ignored until the distance table is reset with
  * numa_reset_distance().
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * If @from or @to is higher than the highest known node at the time of
  * table creation or @distance doesn't make sense, the call is ignored.
+=======
+ * If @from or @to is higher than the highest known node or lower than zero
+ * at the time of table creation or @distance doesn't make sense, the call
+ * is ignored.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * If @from or @to is higher than the highest known node or lower than zero
+ * at the time of table creation or @distance doesn't make sense, the call
+ * is ignored.
+>>>>>>> refs/remotes/origin/master
  * This is to allow simplification of specific NUMA config implementations.
  */
 void __init numa_set_distance(int from, int to, int distance)
@@ -436,8 +595,20 @@ void __init numa_set_distance(int from, int to, int distance)
 	if (!numa_distance && numa_alloc_distance() < 0)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (from >= numa_distance_cnt || to >= numa_distance_cnt) {
 		printk_once(KERN_DEBUG "NUMA: Debug: distance out of bound, from=%d to=%d distance=%d\n",
+=======
+	if (from >= numa_distance_cnt || to >= numa_distance_cnt ||
+			from < 0 || to < 0) {
+		pr_warn_once("NUMA: Warning: node ids are out of bound, from=%d to=%d distance=%d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (from >= numa_distance_cnt || to >= numa_distance_cnt ||
+			from < 0 || to < 0) {
+		pr_warn_once("NUMA: Warning: node ids are out of bound, from=%d to=%d distance=%d\n",
+>>>>>>> refs/remotes/origin/master
 			    from, to, distance);
 		return;
 	}
@@ -479,8 +650,18 @@ static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
 			numaram = 0;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	e820ram = max_pfn - (memblock_x86_hole_size(0,
 					PFN_PHYS(max_pfn)) >> PAGE_SHIFT);
+=======
+	e820ram = max_pfn - absent_pages_in_range(0, max_pfn);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	e820ram = max_pfn - absent_pages_in_range(0, max_pfn);
+
+>>>>>>> refs/remotes/origin/master
 	/* We seem to lose 3 pages somewhere. Allow 1M of slack. */
 	if ((s64)(e820ram - numaram) >= (1 << (20 - PAGE_SHIFT))) {
 		printk(KERN_ERR "NUMA: nodes only cover %LuMB of your %LuMB e820 RAM. Not used.\n",
@@ -493,6 +674,14 @@ static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
 
 static int __init numa_register_memblks(struct numa_meminfo *mi)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long uninitialized_var(pfn_align);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long uninitialized_var(pfn_align);
+>>>>>>> refs/remotes/origin/master
 	int i, nid;
 
 	/* Account for nodes with cpus and no memory */
@@ -501,6 +690,8 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
 	if (WARN_ON(nodes_empty(node_possible_map)))
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < mi->nr_blks; i++)
 		memblock_x86_register_active_regions(mi->blk[i].nid,
 					mi->blk[i].start >> PAGE_SHIFT,
@@ -508,6 +699,43 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
 
 	/* for out of order entries */
 	sort_node_map();
+=======
+	for (i = 0; i < mi->nr_blks; i++) {
+		struct numa_memblk *mb = &mi->blk[i];
+		memblock_set_node(mb->start, mb->end - mb->start, mb->nid);
+=======
+	for (i = 0; i < mi->nr_blks; i++) {
+		struct numa_memblk *mb = &mi->blk[i];
+		memblock_set_node(mb->start, mb->end - mb->start,
+				  &memblock.memory, mb->nid);
+
+		/*
+		 * At this time, all memory regions reserved by memblock are
+		 * used by the kernel. Set the nid in memblock.reserved will
+		 * mark out all the nodes the kernel resides in.
+		 */
+		memblock_set_node(mb->start, mb->end - mb->start,
+				  &memblock.reserved, mb->nid);
+>>>>>>> refs/remotes/origin/master
+	}
+
+	/*
+	 * If sections array is gonna be used for pfn -> nid mapping, check
+	 * whether its granularity is fine enough.
+	 */
+#ifdef NODE_NOT_IN_PAGE_FLAGS
+	pfn_align = node_map_pfn_alignment();
+	if (pfn_align && pfn_align < PAGES_PER_SECTION) {
+		printk(KERN_WARNING "Node alignment %LuMB < min %LuMB, rejecting NUMA config\n",
+		       PFN_PHYS(pfn_align) >> 20,
+		       PFN_PHYS(PAGES_PER_SECTION) >> 20);
+		return -EINVAL;
+	}
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!numa_meminfo_cover_memory(mi))
 		return -EINVAL;
 
@@ -527,6 +755,16 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
 			setup_node_data(nid, start, end);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* Dump memblock with node info and return. */
+	memblock_dump_all();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Dump memblock with node info and return. */
+	memblock_dump_all();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -552,6 +790,33 @@ static void __init numa_init_array(void)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static void __init numa_clear_kernel_node_hotplug(void)
+{
+	int i, nid;
+	nodemask_t numa_kernel_nodes;
+	unsigned long start, end;
+	struct memblock_type *type = &memblock.reserved;
+
+	/* Mark all kernel nodes. */
+	for (i = 0; i < type->cnt; i++)
+		node_set(type->regions[i].nid, numa_kernel_nodes);
+
+	/* Clear MEMBLOCK_HOTPLUG flag for memory in kernel nodes. */
+	for (i = 0; i < numa_meminfo.nr_blks; i++) {
+		nid = numa_meminfo.blk[i].nid;
+		if (!node_isset(nid, numa_kernel_nodes))
+			continue;
+
+		start = numa_meminfo.blk[i].start;
+		end = numa_meminfo.blk[i].end;
+
+		memblock_clear_hotplug(start, end - start);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __init numa_init(int (*init_func)(void))
 {
 	int i;
@@ -564,12 +829,39 @@ static int __init numa_init(int (*init_func)(void))
 	nodes_clear(node_possible_map);
 	nodes_clear(node_online_map);
 	memset(&numa_meminfo, 0, sizeof(numa_meminfo));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	remove_all_active_ranges();
+=======
+	WARN_ON(memblock_set_node(0, ULLONG_MAX, MAX_NUMNODES));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(memblock_set_node(0, ULLONG_MAX, &memblock.memory,
+				  MAX_NUMNODES));
+	WARN_ON(memblock_set_node(0, ULLONG_MAX, &memblock.reserved,
+				  MAX_NUMNODES));
+	/* In case that parsing SRAT failed. */
+	WARN_ON(memblock_clear_hotplug(0, ULLONG_MAX));
+>>>>>>> refs/remotes/origin/master
 	numa_reset_distance();
 
 	ret = init_func();
 	if (ret < 0)
 		return ret;
+<<<<<<< HEAD
+=======
+
+	/*
+	 * We reset memblock back to the top-down direction
+	 * here because if we configured ACPI_NUMA, we have
+	 * parsed SRAT in init_func(). It is ok to have the
+	 * reset here even if we did't configure ACPI_NUMA
+	 * or acpi numa init fails and fallbacks to dummy
+	 * numa init.
+	 */
+	memblock_set_bottom_up(false);
+
+>>>>>>> refs/remotes/origin/master
 	ret = numa_cleanup_meminfo(&numa_meminfo);
 	if (ret < 0)
 		return ret;
@@ -589,6 +881,19 @@ static int __init numa_init(int (*init_func)(void))
 			numa_clear_node(i);
 	}
 	numa_init_array();
+<<<<<<< HEAD
+=======
+
+	/*
+	 * At very early time, the kernel have to use some memory such as
+	 * loading the kernel image. We cannot prevent this anyway. So any
+	 * node the kernel resides in should be un-hotpluggable.
+	 *
+	 * And when we come here, numa_init() won't fail.
+	 */
+	numa_clear_kernel_node_hotplug();
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -605,8 +910,13 @@ static int __init dummy_numa_init(void)
 {
 	printk(KERN_INFO "%s\n",
 	       numa_off ? "NUMA turned off" : "No NUMA configuration found");
+<<<<<<< HEAD
 	printk(KERN_INFO "Faking a node at %016Lx-%016Lx\n",
 	       0LLU, PFN_PHYS(max_pfn));
+=======
+	printk(KERN_INFO "Faking a node at [mem %#018Lx-%#018Lx]\n",
+	       0LLU, PFN_PHYS(max_pfn) - 1);
+>>>>>>> refs/remotes/origin/master
 
 	node_set(0, numa_nodes_parsed);
 	numa_add_memblk(0, 0, PFN_PHYS(max_pfn));
@@ -694,12 +1004,20 @@ void __init init_cpu_to_node(void)
 #ifndef CONFIG_DEBUG_PER_CPU_MAPS
 
 # ifndef CONFIG_NUMA_EMU
+<<<<<<< HEAD
 void __cpuinit numa_add_cpu(int cpu)
+=======
+void numa_add_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	cpumask_set_cpu(cpu, node_to_cpumask_map[early_cpu_to_node(cpu)]);
 }
 
+<<<<<<< HEAD
 void __cpuinit numa_remove_cpu(int cpu)
+=======
+void numa_remove_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	cpumask_clear_cpu(cpu, node_to_cpumask_map[early_cpu_to_node(cpu)]);
 }
@@ -766,17 +1084,29 @@ void debug_cpumask_set_cpu(int cpu, int node, bool enable)
 }
 
 # ifndef CONFIG_NUMA_EMU
+<<<<<<< HEAD
 static void __cpuinit numa_set_cpumask(int cpu, bool enable)
+=======
+static void numa_set_cpumask(int cpu, bool enable)
+>>>>>>> refs/remotes/origin/master
 {
 	debug_cpumask_set_cpu(cpu, early_cpu_to_node(cpu), enable);
 }
 
+<<<<<<< HEAD
 void __cpuinit numa_add_cpu(int cpu)
+=======
+void numa_add_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	numa_set_cpumask(cpu, true);
 }
 
+<<<<<<< HEAD
 void __cpuinit numa_remove_cpu(int cpu)
+=======
+void numa_remove_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	numa_set_cpumask(cpu, false);
 }

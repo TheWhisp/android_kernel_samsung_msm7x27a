@@ -129,7 +129,11 @@ static struct notifier_block vreg_cpufreq_notifier_block = {
  *	bfin_dpmc_probe -
  *
  */
+<<<<<<< HEAD
 static int __devinit bfin_dpmc_probe(struct platform_device *pdev)
+=======
+static int bfin_dpmc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (pdev->dev.platform_data)
 		pdata = pdev->dev.platform_data;
@@ -143,7 +147,11 @@ static int __devinit bfin_dpmc_probe(struct platform_device *pdev)
 /**
  *	bfin_dpmc_remove -
  */
+<<<<<<< HEAD
 static int __devexit bfin_dpmc_remove(struct platform_device *pdev)
+=======
+static int bfin_dpmc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	pdata = NULL;
 	return cpufreq_unregister_notifier(&vreg_cpufreq_notifier_block,
@@ -152,11 +160,16 @@ static int __devexit bfin_dpmc_remove(struct platform_device *pdev)
 
 struct platform_driver bfin_dpmc_device_driver = {
 	.probe   = bfin_dpmc_probe,
+<<<<<<< HEAD
 	.remove  = __devexit_p(bfin_dpmc_remove),
+=======
+	.remove  = bfin_dpmc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver  = {
 		.name = DRIVER_NAME,
 	}
 };
+<<<<<<< HEAD
 
 /**
  *	bfin_dpmc_init - Init driver
@@ -175,6 +188,9 @@ static void __exit bfin_dpmc_exit(void)
 	platform_driver_unregister(&bfin_dpmc_device_driver);
 }
 module_exit(bfin_dpmc_exit);
+=======
+module_platform_driver(bfin_dpmc_device_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("cpu power management driver for Blackfin");

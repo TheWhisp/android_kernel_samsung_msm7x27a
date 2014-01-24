@@ -29,6 +29,11 @@
 
 #include <video/omapdss.h>
 #include "dss.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "dss_features.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static ssize_t display_enabled_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -44,6 +49,7 @@ static ssize_t display_enabled_store(struct device *dev,
 		const char *buf, size_t size)
 {
 	struct omap_dss_device *dssdev = to_dss_device(dev);
+<<<<<<< HEAD
 	int r, enabled;
 
 	r = kstrtoint(buf, 0, &enabled);
@@ -52,6 +58,15 @@ static ssize_t display_enabled_store(struct device *dev,
 
 	enabled = !!enabled;
 
+=======
+	int r;
+	bool enabled;
+
+	r = strtobool(buf, &enabled);
+	if (r)
+		return r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (enabled != (dssdev->state != OMAP_DSS_DISPLAY_DISABLED)) {
 		if (enabled) {
 			r = dssdev->driver->enable(dssdev);
@@ -65,6 +80,7 @@ static ssize_t display_enabled_store(struct device *dev,
 	return size;
 }
 
+<<<<<<< HEAD
 static ssize_t display_upd_mode_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -107,6 +123,8 @@ static ssize_t display_upd_mode_store(struct device *dev,
 	return size;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t display_tear_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -120,17 +138,29 @@ static ssize_t display_tear_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t size)
 {
 	struct omap_dss_device *dssdev = to_dss_device(dev);
+<<<<<<< HEAD
 	int te, r;
+=======
+	int r;
+	bool te;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!dssdev->driver->enable_te || !dssdev->driver->get_te)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	r = kstrtoint(buf, 0, &te);
 	if (r)
 		return r;
 
 	te = !!te;
 
+=======
+	r = strtobool(buf, &te);
+	if (r)
+		return r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	r = dssdev->driver->enable_te(dssdev, te);
 	if (r)
 		return r;
@@ -236,17 +266,29 @@ static ssize_t display_mirror_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t size)
 {
 	struct omap_dss_device *dssdev = to_dss_device(dev);
+<<<<<<< HEAD
 	int mirror, r;
+=======
+	int r;
+	bool mirror;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!dssdev->driver->set_mirror || !dssdev->driver->get_mirror)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	r = kstrtoint(buf, 0, &mirror);
 	if (r)
 		return r;
 
 	mirror = !!mirror;
 
+=======
+	r = strtobool(buf, &mirror);
+	if (r)
+		return r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	r = dssdev->driver->set_mirror(dssdev, mirror);
 	if (r)
 		return r;
@@ -294,8 +336,11 @@ static ssize_t display_wss_store(struct device *dev,
 
 static DEVICE_ATTR(enabled, S_IRUGO|S_IWUSR,
 		display_enabled_show, display_enabled_store);
+<<<<<<< HEAD
 static DEVICE_ATTR(update_mode, S_IRUGO|S_IWUSR,
 		display_upd_mode_show, display_upd_mode_store);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static DEVICE_ATTR(tear_elim, S_IRUGO|S_IWUSR,
 		display_tear_show, display_tear_store);
 static DEVICE_ATTR(timings, S_IRUGO|S_IWUSR,
@@ -309,7 +354,10 @@ static DEVICE_ATTR(wss, S_IRUGO|S_IWUSR,
 
 static struct device_attribute *display_sysfs_attrs[] = {
 	&dev_attr_enabled,
+<<<<<<< HEAD
 	&dev_attr_update_mode,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	&dev_attr_tear_elim,
 	&dev_attr_timings,
 	&dev_attr_rotate,
@@ -317,6 +365,9 @@ static struct device_attribute *display_sysfs_attrs[] = {
 	&dev_attr_wss,
 	NULL
 };
+=======
+#include "dss_features.h"
+>>>>>>> refs/remotes/origin/master
 
 void omapdss_default_get_resolution(struct omap_dss_device *dssdev,
 			u16 *xres, u16 *yres)
@@ -326,6 +377,8 @@ void omapdss_default_get_resolution(struct omap_dss_device *dssdev,
 }
 EXPORT_SYMBOL(omapdss_default_get_resolution);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void default_get_overlay_fifo_thresholds(enum omap_plane plane,
 		u32 fifo_size, enum omap_burst_size *burst_size,
 		u32 *fifo_low, u32 *fifo_high)
@@ -339,6 +392,10 @@ void default_get_overlay_fifo_thresholds(enum omap_plane plane,
 	*fifo_low = fifo_size - burst_size_bytes;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int omapdss_default_get_recommended_bpp(struct omap_dss_device *dssdev)
 {
 	switch (dssdev->type) {
@@ -349,21 +406,50 @@ int omapdss_default_get_recommended_bpp(struct omap_dss_device *dssdev)
 			return 16;
 
 	case OMAP_DISPLAY_TYPE_DBI:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case OMAP_DISPLAY_TYPE_DSI:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dssdev->ctrl.pixel_size == 24)
 			return 24;
 		else
 			return 16;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case OMAP_DISPLAY_TYPE_DSI:
+		if (dsi_get_pixel_size(dssdev->panel.dsi_pix_fmt) > 16)
+			return 24;
+		else
+			return 16;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	case OMAP_DISPLAY_TYPE_VENC:
 	case OMAP_DISPLAY_TYPE_SDI:
 	case OMAP_DISPLAY_TYPE_HDMI:
 		return 24;
 	default:
 		BUG();
+=======
+	case OMAP_DISPLAY_TYPE_VENC:
+	case OMAP_DISPLAY_TYPE_SDI:
+	case OMAP_DISPLAY_TYPE_HDMI:
+	case OMAP_DISPLAY_TYPE_DVI:
+		return 24;
+	default:
+		BUG();
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(omapdss_default_get_recommended_bpp);
 
+<<<<<<< HEAD
 /* Checks if replication logic should be used. Only use for active matrix,
  * when overlay is in RGB12U or RGB16 mode, and LCD interface is
  * 18bpp or 24bpp */
@@ -389,9 +475,17 @@ bool dss_use_replication(struct omap_dss_device *dssdev,
 		bpp = 24;
 		break;
 	case OMAP_DISPLAY_TYPE_DBI:
+<<<<<<< HEAD
 	case OMAP_DISPLAY_TYPE_DSI:
 		bpp = dssdev->ctrl.pixel_size;
 		break;
+=======
+		bpp = dssdev->ctrl.pixel_size;
+		break;
+	case OMAP_DISPLAY_TYPE_DSI:
+		bpp = dsi_get_pixel_size(dssdev->panel.dsi_pix_fmt);
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		BUG();
 	}
@@ -559,11 +653,114 @@ void dss_disable_all_devices(void)
 void omap_dss_get_device(struct omap_dss_device *dssdev)
 {
 	get_device(&dssdev->dev);
+=======
+void omapdss_default_get_timings(struct omap_dss_device *dssdev,
+		struct omap_video_timings *timings)
+{
+	*timings = dssdev->panel.timings;
+}
+EXPORT_SYMBOL(omapdss_default_get_timings);
+
+int dss_suspend_all_devices(void)
+{
+	struct omap_dss_device *dssdev = NULL;
+
+	for_each_dss_dev(dssdev) {
+		if (!dssdev->driver)
+			continue;
+
+		if (dssdev->state == OMAP_DSS_DISPLAY_ACTIVE) {
+			dssdev->driver->disable(dssdev);
+			dssdev->activate_after_resume = true;
+		} else {
+			dssdev->activate_after_resume = false;
+		}
+	}
+
+	return 0;
+}
+
+int dss_resume_all_devices(void)
+{
+	struct omap_dss_device *dssdev = NULL;
+
+	for_each_dss_dev(dssdev) {
+		if (!dssdev->driver)
+			continue;
+
+		if (dssdev->activate_after_resume) {
+			dssdev->driver->enable(dssdev);
+			dssdev->activate_after_resume = false;
+		}
+	}
+
+	return 0;
+}
+
+void dss_disable_all_devices(void)
+{
+	struct omap_dss_device *dssdev = NULL;
+
+	for_each_dss_dev(dssdev) {
+		if (!dssdev->driver)
+			continue;
+
+		if (dssdev->state == OMAP_DSS_DISPLAY_ACTIVE)
+			dssdev->driver->disable(dssdev);
+	}
+}
+
+static LIST_HEAD(panel_list);
+static DEFINE_MUTEX(panel_list_mutex);
+static int disp_num_counter;
+
+int omapdss_register_display(struct omap_dss_device *dssdev)
+{
+	struct omap_dss_driver *drv = dssdev->driver;
+
+	snprintf(dssdev->alias, sizeof(dssdev->alias),
+			"display%d", disp_num_counter++);
+
+	if (drv && drv->get_resolution == NULL)
+		drv->get_resolution = omapdss_default_get_resolution;
+	if (drv && drv->get_recommended_bpp == NULL)
+		drv->get_recommended_bpp = omapdss_default_get_recommended_bpp;
+	if (drv && drv->get_timings == NULL)
+		drv->get_timings = omapdss_default_get_timings;
+
+	mutex_lock(&panel_list_mutex);
+	list_add_tail(&dssdev->panel_list, &panel_list);
+	mutex_unlock(&panel_list_mutex);
+	return 0;
+}
+EXPORT_SYMBOL(omapdss_register_display);
+
+void omapdss_unregister_display(struct omap_dss_device *dssdev)
+{
+	mutex_lock(&panel_list_mutex);
+	list_del(&dssdev->panel_list);
+	mutex_unlock(&panel_list_mutex);
+}
+EXPORT_SYMBOL(omapdss_unregister_display);
+
+struct omap_dss_device *omap_dss_get_device(struct omap_dss_device *dssdev)
+{
+	if (!try_module_get(dssdev->owner))
+		return NULL;
+
+	if (get_device(dssdev->dev) == NULL) {
+		module_put(dssdev->owner);
+		return NULL;
+	}
+
+	return dssdev;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(omap_dss_get_device);
 
 void omap_dss_put_device(struct omap_dss_device *dssdev)
 {
+<<<<<<< HEAD
 	put_device(&dssdev->dev);
 }
 EXPORT_SYMBOL(omap_dss_put_device);
@@ -589,6 +786,58 @@ struct omap_dss_device *omap_dss_get_next_device(struct omap_dss_device *from)
 	if (from)
 		put_device(&from->dev);
 
+=======
+	put_device(dssdev->dev);
+	module_put(dssdev->owner);
+}
+EXPORT_SYMBOL(omap_dss_put_device);
+
+/*
+ * ref count of the found device is incremented.
+ * ref count of from-device is decremented.
+ */
+struct omap_dss_device *omap_dss_get_next_device(struct omap_dss_device *from)
+{
+	struct list_head *l;
+	struct omap_dss_device *dssdev;
+
+	mutex_lock(&panel_list_mutex);
+
+	if (list_empty(&panel_list)) {
+		dssdev = NULL;
+		goto out;
+	}
+
+	if (from == NULL) {
+		dssdev = list_first_entry(&panel_list, struct omap_dss_device,
+				panel_list);
+		omap_dss_get_device(dssdev);
+		goto out;
+	}
+
+	omap_dss_put_device(from);
+
+	list_for_each(l, &panel_list) {
+		dssdev = list_entry(l, struct omap_dss_device, panel_list);
+		if (dssdev == from) {
+			if (list_is_last(l, &panel_list)) {
+				dssdev = NULL;
+				goto out;
+			}
+
+			dssdev = list_entry(l->next, struct omap_dss_device,
+					panel_list);
+			omap_dss_get_device(dssdev);
+			goto out;
+		}
+	}
+
+	WARN(1, "'from' dssdev not found\n");
+
+	dssdev = NULL;
+out:
+	mutex_unlock(&panel_list_mutex);
+>>>>>>> refs/remotes/origin/master
 	return dssdev;
 }
 EXPORT_SYMBOL(omap_dss_get_next_device);
@@ -607,6 +856,7 @@ struct omap_dss_device *omap_dss_find_device(void *data,
 }
 EXPORT_SYMBOL(omap_dss_find_device);
 
+<<<<<<< HEAD
 int omap_dss_start_device(struct omap_dss_device *dssdev)
 {
 	if (!dssdev->driver) {
@@ -628,3 +878,74 @@ void omap_dss_stop_device(struct omap_dss_device *dssdev)
 }
 EXPORT_SYMBOL(omap_dss_stop_device);
 
+=======
+void videomode_to_omap_video_timings(const struct videomode *vm,
+		struct omap_video_timings *ovt)
+{
+	memset(ovt, 0, sizeof(*ovt));
+
+	ovt->pixel_clock = vm->pixelclock / 1000;
+	ovt->x_res = vm->hactive;
+	ovt->hbp = vm->hback_porch;
+	ovt->hfp = vm->hfront_porch;
+	ovt->hsw = vm->hsync_len;
+	ovt->y_res = vm->vactive;
+	ovt->vbp = vm->vback_porch;
+	ovt->vfp = vm->vfront_porch;
+	ovt->vsw = vm->vsync_len;
+
+	ovt->vsync_level = vm->flags & DISPLAY_FLAGS_VSYNC_HIGH ?
+		OMAPDSS_SIG_ACTIVE_HIGH :
+		OMAPDSS_SIG_ACTIVE_LOW;
+	ovt->hsync_level = vm->flags & DISPLAY_FLAGS_HSYNC_HIGH ?
+		OMAPDSS_SIG_ACTIVE_HIGH :
+		OMAPDSS_SIG_ACTIVE_LOW;
+	ovt->de_level = vm->flags & DISPLAY_FLAGS_DE_HIGH ?
+		OMAPDSS_SIG_ACTIVE_HIGH :
+		OMAPDSS_SIG_ACTIVE_LOW;
+	ovt->data_pclk_edge = vm->flags & DISPLAY_FLAGS_PIXDATA_POSEDGE ?
+		OMAPDSS_DRIVE_SIG_RISING_EDGE :
+		OMAPDSS_DRIVE_SIG_FALLING_EDGE;
+
+	ovt->sync_pclk_edge = OMAPDSS_DRIVE_SIG_OPPOSITE_EDGES;
+}
+EXPORT_SYMBOL(videomode_to_omap_video_timings);
+
+void omap_video_timings_to_videomode(const struct omap_video_timings *ovt,
+		struct videomode *vm)
+{
+	memset(vm, 0, sizeof(*vm));
+
+	vm->pixelclock = ovt->pixel_clock * 1000;
+
+	vm->hactive = ovt->x_res;
+	vm->hback_porch = ovt->hbp;
+	vm->hfront_porch = ovt->hfp;
+	vm->hsync_len = ovt->hsw;
+	vm->vactive = ovt->y_res;
+	vm->vback_porch = ovt->vbp;
+	vm->vfront_porch = ovt->vfp;
+	vm->vsync_len = ovt->vsw;
+
+	if (ovt->hsync_level == OMAPDSS_SIG_ACTIVE_HIGH)
+		vm->flags |= DISPLAY_FLAGS_HSYNC_HIGH;
+	else
+		vm->flags |= DISPLAY_FLAGS_HSYNC_LOW;
+
+	if (ovt->vsync_level == OMAPDSS_SIG_ACTIVE_HIGH)
+		vm->flags |= DISPLAY_FLAGS_VSYNC_HIGH;
+	else
+		vm->flags |= DISPLAY_FLAGS_VSYNC_LOW;
+
+	if (ovt->de_level == OMAPDSS_SIG_ACTIVE_HIGH)
+		vm->flags |= DISPLAY_FLAGS_DE_HIGH;
+	else
+		vm->flags |= DISPLAY_FLAGS_DE_LOW;
+
+	if (ovt->data_pclk_edge == OMAPDSS_DRIVE_SIG_RISING_EDGE)
+		vm->flags |= DISPLAY_FLAGS_PIXDATA_POSEDGE;
+	else
+		vm->flags |= DISPLAY_FLAGS_PIXDATA_NEGEDGE;
+}
+EXPORT_SYMBOL(omap_video_timings_to_videomode);
+>>>>>>> refs/remotes/origin/master

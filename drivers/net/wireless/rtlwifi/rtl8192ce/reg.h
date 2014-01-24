@@ -1,6 +1,14 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -544,6 +552,10 @@
 #define	IMR_WLANOFF				BIT(0)
 
 #define EFUSE_REAL_CONTENT_LEN			512
+<<<<<<< HEAD
+=======
+#define EFUSE_OOB_PROTECT_BYTES			15
+>>>>>>> refs/remotes/origin/master
 
 #define	EEPROM_DEFAULT_TSSI			0x0
 #define EEPROM_DEFAULT_TXPOWERDIFF		0x0
@@ -559,7 +571,10 @@
 #define	EEPROM_DEFAULT_TXPOWERLEVEL		0x22
 #define	EEPROM_DEFAULT_HT40_2SDIFF		0x0
 #define EEPROM_DEFAULT_HT20_DIFF		2
+<<<<<<< HEAD
 #define	EEPROM_DEFAULT_LEGACYHTTXPOWERDIFF	0x3
+=======
+>>>>>>> refs/remotes/origin/master
 #define EEPROM_DEFAULT_HT40_PWRMAXOFFSET	0
 #define EEPROM_DEFAULT_HT20_PWRMAXOFFSET	0
 
@@ -638,6 +653,7 @@
 
 #define	EEPROM_TXPWR_GROUP			0x6F
 
+<<<<<<< HEAD
 #define EEPROM_TSSI_A				0x76
 #define EEPROM_TSSI_B				0x77
 #define EEPROM_THERMAL_METER			0x78
@@ -649,6 +665,10 @@
 #define RF_OPTION3				0x7B
 #define RF_OPTION4				0x7C
 
+=======
+#define EEPROM_CHANNELPLAN			0x75
+
+>>>>>>> refs/remotes/origin/master
 #define	STOPBECON				BIT(6)
 #define	STOPHIGHT				BIT(5)
 #define	STOPMGT					BIT(4)
@@ -688,6 +708,7 @@
 #define RSV_CTRL				0x001C
 #define RD_CTRL					0x0524
 
+<<<<<<< HEAD
 #define REG_USB_INFO				0xFE17
 #define REG_USB_SPECIAL_OPTION			0xFE55
 
@@ -695,6 +716,8 @@
 #define REG_USB_AGG_TO				0xFE5C
 #define REG_USB_AGG_TH				0xFE5D
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define REG_USB_VID				0xFE60
 #define REG_USB_PID				0xFE62
 #define REG_USB_OPTIONAL			0xFE64
@@ -1074,10 +1097,23 @@
 #define _SRL(x)					(((x) & 0x3F) << 8)
 
 #define _SIFS_CCK_CTX(x)			((x) & 0xFF)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define _SIFS_CCK_TRX(x)			(((x) & 0xFF) << 8);
 
 #define _SIFS_OFDM_CTX(x)			((x) & 0xFF)
 #define _SIFS_OFDM_TRX(x)			(((x) & 0xFF) << 8);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define _SIFS_CCK_TRX(x)			(((x) & 0xFF) << 8)
+
+#define _SIFS_OFDM_CTX(x)			((x) & 0xFF)
+#define _SIFS_OFDM_TRX(x)			(((x) & 0xFF) << 8)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define _TBTT_PROHIBIT_HOLD(x)			(((x) & 0xFF) << 8)
 
@@ -1190,20 +1226,41 @@
 
 #define USB_AGG_EN				BIT(3)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MAC_ADDR_LEN				6
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define LAST_ENTRY_OF_TX_PKT_BUFFER		255
 
 #define POLLING_LLT_THRESHOLD			20
 #define POLLING_READY_TIMEOUT_COUNT		1000
 
+<<<<<<< HEAD
 #define	MAX_MSS_DENSITY_2T			0x13
 #define	MAX_MSS_DENSITY_1T			0x0A
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define EPROM_CMD_OPERATING_MODE_MASK	((1<<7)|(1<<6))
 #define EPROM_CMD_CONFIG			0x3
 #define EPROM_CMD_LOAD				1
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define	HWSET_MAX_SIZE_92S			HWSET_MAX_SIZE
+=======
+#define HWSET_MAX_SIZE				128
+#define	HWSET_MAX_SIZE_92S			HWSET_MAX_SIZE
+#define EFUSE_MAX_SECTION			16
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HWSET_MAX_SIZE				128
+#define	HWSET_MAX_SIZE_92S			HWSET_MAX_SIZE
+#define EFUSE_MAX_SECTION			16
+>>>>>>> refs/remotes/origin/master
 
 #define	WL_HWPDN_EN				BIT(0)
 

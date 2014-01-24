@@ -69,6 +69,7 @@ void netx_clcd_remove(struct clcd_fb *fb)
 			      fb->fb.screen_base, fb->fb.fix.smem_start);
 }
 
+<<<<<<< HEAD
 void clk_disable(struct clk *clk)
 {
 }
@@ -92,6 +93,7 @@ void clk_put(struct clk *clk)
 {
 }
 
+<<<<<<< HEAD
 static struct amba_device fb_device = {
 	.dev		= {
 		.init_name = "fb",
@@ -104,6 +106,12 @@ static struct amba_device fb_device = {
 	},
 	.irq		= { NETX_IRQ_LCD, NO_IRQ },
 };
+=======
+static AMBA_AHB_DEVICE(fb, "fb", 0, 0x00104000, { NETX_IRQ_LCD }, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static AMBA_AHB_DEVICE(fb, "fb", 0, 0x00104000, { NETX_IRQ_LCD }, NULL);
+>>>>>>> refs/remotes/origin/master
 
 int netx_fb_init(struct clcd_board *board, struct clcd_panel *panel)
 {

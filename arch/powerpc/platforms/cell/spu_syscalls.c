@@ -25,6 +25,10 @@
 #include <linux/module.h>
 #include <linux/syscalls.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
+=======
+#include <linux/binfmts.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/spu.h>
 
@@ -65,12 +69,24 @@ static inline void spufs_calls_put(struct spufs_calls *calls) { }
 
 #endif /* CONFIG_SPU_FS_MODULE */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 asmlinkage long sys_spu_create(const char __user *name,
 		unsigned int flags, mode_t mode, int neighbor_fd)
+=======
+SYSCALL_DEFINE4(spu_create, const char __user *, name, unsigned int, flags,
+	umode_t, mode, int, neighbor_fd)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	long ret;
 	struct file *neighbor;
 	int fput_needed;
+=======
+SYSCALL_DEFINE4(spu_create, const char __user *, name, unsigned int, flags,
+	umode_t, mode, int, neighbor_fd)
+{
+	long ret;
+>>>>>>> refs/remotes/origin/master
 	struct spufs_calls *calls;
 
 	calls = spufs_calls_get();
@@ -78,11 +94,19 @@ asmlinkage long sys_spu_create(const char __user *name,
 		return -ENOSYS;
 
 	if (flags & SPU_CREATE_AFFINITY_SPU) {
+<<<<<<< HEAD
 		ret = -EBADF;
 		neighbor = fget_light(neighbor_fd, &fput_needed);
 		if (neighbor) {
 			ret = calls->create_thread(name, flags, mode, neighbor);
 			fput_light(neighbor, fput_needed);
+=======
+		struct fd neighbor = fdget(neighbor_fd);
+		ret = -EBADF;
+		if (neighbor.file) {
+			ret = calls->create_thread(name, flags, mode, neighbor.file);
+			fdput(neighbor);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else
 		ret = calls->create_thread(name, flags, mode, NULL);
@@ -94,8 +118,12 @@ asmlinkage long sys_spu_create(const char __user *name,
 asmlinkage long sys_spu_run(int fd, __u32 __user *unpc, __u32 __user *ustatus)
 {
 	long ret;
+<<<<<<< HEAD
 	struct file *filp;
 	int fput_needed;
+=======
+	struct fd arg;
+>>>>>>> refs/remotes/origin/master
 	struct spufs_calls *calls;
 
 	calls = spufs_calls_get();
@@ -103,10 +131,17 @@ asmlinkage long sys_spu_run(int fd, __u32 __user *unpc, __u32 __user *ustatus)
 		return -ENOSYS;
 
 	ret = -EBADF;
+<<<<<<< HEAD
 	filp = fget_light(fd, &fput_needed);
 	if (filp) {
 		ret = calls->spu_run(filp, unpc, ustatus);
 		fput_light(filp, fput_needed);
+=======
+	arg = fdget(fd);
+	if (arg.file) {
+		ret = calls->spu_run(arg.file, unpc, ustatus);
+		fdput(arg);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spufs_calls_put(calls);
@@ -129,7 +164,11 @@ int elf_coredump_extra_notes_size(void)
 	return ret;
 }
 
+<<<<<<< HEAD
 int elf_coredump_extra_notes_write(struct file *file, loff_t *foffset)
+=======
+int elf_coredump_extra_notes_write(struct coredump_params *cprm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spufs_calls *calls;
 	int ret;
@@ -138,7 +177,11 @@ int elf_coredump_extra_notes_write(struct file *file, loff_t *foffset)
 	if (!calls)
 		return 0;
 
+<<<<<<< HEAD
 	ret = calls->coredump_extra_notes_write(file, foffset);
+=======
+	ret = calls->coredump_extra_notes_write(cprm);
+>>>>>>> refs/remotes/origin/master
 
 	spufs_calls_put(calls);
 

@@ -77,6 +77,14 @@
 #include <linux/netdevice.h>
 #include <linux/wimax.h>
 #include <linux/security.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "wimax-internal.h"
 
 
@@ -278,7 +286,11 @@ int wimax_msg_send(struct wimax_dev *wimax_dev, struct sk_buff *skb)
 
 	d_printf(1, dev, "CTX: wimax msg, %zu bytes\n", size);
 	d_dump(2, dev, msg, size);
+<<<<<<< HEAD
 	genlmsg_multicast(skb, 0, wimax_gnl_mcg.id, GFP_KERNEL);
+=======
+	genlmsg_multicast(&wimax_gnl_family, skb, 0, 0, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	d_printf(1, dev, "CTX: genl multicast done\n");
 	return 0;
 }
@@ -320,6 +332,7 @@ int wimax_msg(struct wimax_dev *wimax_dev, const char *pipe_name,
 }
 EXPORT_SYMBOL_GPL(wimax_msg);
 
+<<<<<<< HEAD
 
 static const struct nla_policy wimax_gnl_msg_policy[WIMAX_GNL_ATTR_MAX + 1] = {
 	[WIMAX_GNL_MSG_IFIDX] = {
@@ -331,6 +344,8 @@ static const struct nla_policy wimax_gnl_msg_policy[WIMAX_GNL_ATTR_MAX + 1] = {
 };
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Relays a message from user space to the driver
  *
@@ -339,7 +354,10 @@ static const struct nla_policy wimax_gnl_msg_policy[WIMAX_GNL_ATTR_MAX + 1] = {
  *
  * This call will block while handling/relaying the message.
  */
+<<<<<<< HEAD
 static
+=======
+>>>>>>> refs/remotes/origin/master
 int wimax_gnl_doit_msg_from_user(struct sk_buff *skb, struct genl_info *info)
 {
 	int result, ifindex;
@@ -417,6 +435,7 @@ error_no_wimax_dev:
 	return result;
 }
 
+<<<<<<< HEAD
 
 /*
  * Generic Netlink glue
@@ -430,3 +449,5 @@ struct genl_ops wimax_gnl_msg_from_user = {
 	.dumpit = NULL,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master

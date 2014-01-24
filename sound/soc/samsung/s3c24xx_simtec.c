@@ -9,10 +9,22 @@
 
 #include <linux/gpio.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/soc.h>
 
 #include <plat/audio-simtec.h>
+=======
+#include <linux/module.h>
+
+#include <sound/soc.h>
+
+#include <linux/platform_data/asoc-s3c24xx_simtec.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "s3c24xx-i2s.h"
 #include "s3c24xx_simtec.h"
@@ -133,18 +145,42 @@ static const struct snd_kcontrol_new amp_unmute_controls[] = {
 
 void simtec_audio_init(struct snd_soc_pcm_runtime *rtd)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_card *card = rtd->card;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_card *card = rtd->card;
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->amp_gpio > 0) {
 		pr_debug("%s: adding amp routes\n", __func__);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		snd_soc_add_controls(codec, amp_unmute_controls,
+=======
+		snd_soc_add_card_controls(card, amp_unmute_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_add_card_controls(card, amp_unmute_controls,
+>>>>>>> refs/remotes/origin/master
 				     ARRAY_SIZE(amp_unmute_controls));
 	}
 
 	if (pdata->amp_gain[0] > 0) {
 		pr_debug("%s: adding amp controls\n", __func__);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		snd_soc_add_controls(codec, amp_gain_controls,
+=======
+		snd_soc_add_card_controls(card, amp_gain_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_add_card_controls(card, amp_gain_controls,
+>>>>>>> refs/remotes/origin/master
 				     ARRAY_SIZE(amp_gain_controls));
 	}
 }
@@ -300,7 +336,15 @@ static void detach_gpio_amp(struct s3c24xx_audio_simtec_pdata *pd)
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
+<<<<<<< HEAD
 int simtec_audio_resume(struct device *dev)
+=======
+static int simtec_audio_resume(struct device *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int simtec_audio_resume(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	simtec_call_startup(pdata);
 	return 0;
@@ -312,8 +356,13 @@ const struct dev_pm_ops simtec_audio_pmops = {
 EXPORT_SYMBOL_GPL(simtec_audio_pmops);
 #endif
 
+<<<<<<< HEAD
 int __devinit simtec_audio_core_probe(struct platform_device *pdev,
 				      struct snd_soc_card *card)
+=======
+int simtec_audio_core_probe(struct platform_device *pdev,
+			    struct snd_soc_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_device *snd_dev;
 	int ret;
@@ -370,7 +419,11 @@ err_clk:
 }
 EXPORT_SYMBOL_GPL(simtec_audio_core_probe);
 
+<<<<<<< HEAD
 int __devexit simtec_audio_remove(struct platform_device *pdev)
+=======
+int simtec_audio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_device *snd_dev = platform_get_drvdata(pdev);
 

@@ -4,6 +4,7 @@
  * Copyright (C) 1997 Jakub Jelinek (jj@sunsite.mff.cuni.cz)
  */
 
+<<<<<<< HEAD
 #include <asm/asi.h>
 
 	.text
@@ -11,6 +12,13 @@
 	.globl	strncmp
 	.type	strncmp,#function
 strncmp:
+=======
+#include <linux/linkage.h>
+#include <asm/asi.h>
+
+	.text
+ENTRY(strncmp)
+>>>>>>> refs/remotes/origin/master
 	brlez,pn %o2, 3f
 	 lduba	[%o0] (ASI_PNF), %o3
 1:
@@ -29,4 +37,8 @@ strncmp:
 3:
 	retl
 	 clr	%o0
+<<<<<<< HEAD
 	.size	strncmp, .-strncmp
+=======
+ENDPROC(strncmp)
+>>>>>>> refs/remotes/origin/master

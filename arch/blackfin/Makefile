@@ -20,7 +20,10 @@ endif
 KBUILD_AFLAGS           += $(call cc-option,-mno-fdpic)
 KBUILD_CFLAGS_MODULE    += -mlong-calls
 LDFLAGS                 += -m elf32bfin
+<<<<<<< HEAD
 KALLSYMS         += --symbol-prefix=_
+=======
+>>>>>>> refs/remotes/origin/master
 
 KBUILD_DEFCONFIG := BF537-STAMP_defconfig
 
@@ -54,6 +57,10 @@ machine-$(CONFIG_BF548M) := bf548
 machine-$(CONFIG_BF549)  := bf548
 machine-$(CONFIG_BF549M) := bf548
 machine-$(CONFIG_BF561)  := bf561
+<<<<<<< HEAD
+=======
+machine-$(CONFIG_BF609)  := bf609
+>>>>>>> refs/remotes/origin/master
 MACHINE := $(machine-y)
 export MACHINE
 
@@ -86,6 +93,10 @@ cpu-$(CONFIG_BF548M) := bf548m
 cpu-$(CONFIG_BF549)  := bf549
 cpu-$(CONFIG_BF549M) := bf549m
 cpu-$(CONFIG_BF561)  := bf561
+<<<<<<< HEAD
+=======
+cpu-$(CONFIG_BF609)  := bf609
+>>>>>>> refs/remotes/origin/master
 
 rev-$(CONFIG_BF_REV_0_0)  := 0.0
 rev-$(CONFIG_BF_REV_0_1)  := 0.1
@@ -107,8 +118,11 @@ KBUILD_AFLAGS += -mcpu=$(CPU_REV)
 CHECKFLAGS_SILICON = $(shell echo "" | $(CPP) $(KBUILD_CFLAGS) -dD - 2>/dev/null | awk '$$2 == "__SILICON_REVISION__" { print $$3 }')
 CHECKFLAGS += -D__SILICON_REVISION__=$(CHECKFLAGS_SILICON) -D__bfin__
 
+<<<<<<< HEAD
 head-y   := arch/$(ARCH)/kernel/init_task.o
 
+=======
+>>>>>>> refs/remotes/origin/master
 core-y   += arch/$(ARCH)/kernel/ arch/$(ARCH)/mm/ arch/$(ARCH)/mach-common/
 
 # If we have a machine-specific directory, then include it in the build.
@@ -142,11 +156,19 @@ archclean:
 
 INSTALL_PATH ?= /tftpboot
 boot := arch/$(ARCH)/boot
+<<<<<<< HEAD
 BOOT_TARGETS = vmImage vmImage.bin vmImage.bz2 vmImage.gz vmImage.lzma vmImage.lzo vmImage.xip
 PHONY += $(BOOT_TARGETS) install
 KBUILD_IMAGE := $(boot)/vmImage
 
 all: vmImage
+=======
+BOOT_TARGETS = uImage uImage.bin uImage.bz2 uImage.gz uImage.lzma uImage.lzo uImage.xip
+PHONY += $(BOOT_TARGETS) install
+KBUILD_IMAGE := $(boot)/uImage
+
+all: uImage
+>>>>>>> refs/remotes/origin/master
 
 $(BOOT_TARGETS): vmlinux
 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@

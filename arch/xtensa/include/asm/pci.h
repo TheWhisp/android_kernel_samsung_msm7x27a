@@ -22,11 +22,17 @@
 
 extern struct pci_controller* pcibios_alloc_controller(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void pcibios_set_master(struct pci_dev *dev)
 {
 	/* No special bus mastering setup handling */
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void pcibios_penalize_isa_irq(int irq)
 {
 	/* We don't do dynamic PCI IRQ allocation */
@@ -58,7 +64,11 @@ struct pci_dev;
 
 /* Map a range of PCI memory or I/O space for a device into user space */
 int pci_mmap_page_range(struct pci_dev *pdev, struct vm_area_struct *vma,
+<<<<<<< HEAD
                         enum pci_mmap_state mmap_state, int write_combine);
+=======
+			enum pci_mmap_state mmap_state, int write_combine);
+>>>>>>> refs/remotes/origin/master
 
 /* Tell drivers/pci/proc.c that we have pci_mmap_page_range() */
 #define HAVE_PCI_MMAP	1

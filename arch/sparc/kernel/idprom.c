@@ -8,7 +8,15 @@
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/oplib.h>
 #include <asm/idprom.h>
@@ -25,6 +33,7 @@ static struct idprom idprom_buffer;
  * of the Sparc CPU and have a meaningful IDPROM machtype value that we
  * know about.  See asm-sparc/machines.h for empirical constants.
  */
+<<<<<<< HEAD
 static struct Sun_Machine_Models Sun_Machines[NUM_SUN_MACHINES] = {
 /* First, Sun4's */
 { .name = "Sun 4/100 Series",        .id_machtype = (SM_SUN4 | SM_4_110) },
@@ -41,6 +50,11 @@ static struct Sun_Machine_Models Sun_Machines[NUM_SUN_MACHINES] = {
 { .name = "Sun4c SparcStation 2",    .id_machtype = (SM_SUN4C | SM_4C_SS2) },
 { .name = "Sun4c SparcStation ELC",  .id_machtype = (SM_SUN4C | SM_4C_ELC) },
 { .name = "Sun4c SparcStation IPX",  .id_machtype = (SM_SUN4C | SM_4C_IPX) },
+=======
+static struct Sun_Machine_Models Sun_Machines[] = {
+/* First, Leon */
+{ .name = "Leon3 System-on-a-Chip",  .id_machtype = (M_LEON | M_LEON3_SOC) },
+>>>>>>> refs/remotes/origin/master
 /* Finally, early Sun4m's */
 { .name = "Sun4m SparcSystem600",    .id_machtype = (SM_SUN4M | SM_4M_SS60) },
 { .name = "Sun4m SparcStation10/20", .id_machtype = (SM_SUN4M | SM_4M_SS50) },
@@ -53,7 +67,11 @@ static void __init display_system_type(unsigned char machtype)
 	char sysname[128];
 	register int i;
 
+<<<<<<< HEAD
 	for (i = 0; i < NUM_SUN_MACHINES; i++) {
+=======
+	for (i = 0; i < ARRAY_SIZE(Sun_Machines); i++) {
+>>>>>>> refs/remotes/origin/master
 		if (Sun_Machines[i].id_machtype == machtype) {
 			if (machtype != (SM_SUN4M_OBP | 0x00) ||
 			    prom_getproperty(prom_root_node, "banner-name",

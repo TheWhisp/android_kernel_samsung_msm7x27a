@@ -37,9 +37,12 @@ parameters may be changed at runtime by the command
 
 	eata=		[HW,SCSI]
 
+<<<<<<< HEAD
 	fd_mcs=		[HW,SCSI]
 			See header of drivers/scsi/fd_mcs.c.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	fdomain=	[HW,SCSI]
 			See header of drivers/scsi/fdomain.c.
 
@@ -48,9 +51,12 @@ parameters may be changed at runtime by the command
 
 	gvp11=		[HW,SCSI]
 
+<<<<<<< HEAD
 	ibmmcascsi=	[HW,MCA,SCSI] IBM MicroChannel SCSI adapter
 			See Documentation/mca.txt.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	in2000=		[HW,SCSI]
 			See header of drivers/scsi/in2000.c.
 

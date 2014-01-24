@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -220,7 +228,15 @@ static int snddev_ecodec_open(struct msm_snddev_info *dev_info)
 		goto err_clk;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(drv->ecodec_clk);
+=======
+	clk_prepare_enable(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	clk_reset(drv->ecodec_clk, CLK_RESET_DEASSERT);
 
@@ -260,7 +276,15 @@ int snddev_ecodec_close(struct msm_snddev_info *dev_info)
 
 		pr_info("%s: closing all devices\n", __func__);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		clk_disable(drv->ecodec_clk);
+=======
+		clk_disable_unprepare(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clk_disable_unprepare(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-11.0
 		aux_pcm_gpios_free();
 
 		afe_close(PCM_RX);
@@ -344,7 +368,15 @@ int __init snddev_ecodec_init(void)
 	mutex_init(&drv->dev_lock);
 	drv->ref_cnt = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	drv->ecodec_clk = clk_get(NULL, "pcm_clk");
+=======
+	drv->ecodec_clk = clk_get_sys(NULL, "pcm_clk");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	drv->ecodec_clk = clk_get_sys(NULL, "pcm_clk");
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (IS_ERR(drv->ecodec_clk)) {
 		pr_err("%s: could not get pcm_clk\n", __func__);
 		return PTR_ERR(drv->ecodec_clk);

@@ -15,6 +15,7 @@
 #include <linux/time.h>
 #include <linux/mm.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 
 #include "tick-internal.h"
 
@@ -22,13 +23,44 @@
  * NTP timekeeping variables:
  */
 
+<<<<<<< HEAD
+=======
+DEFINE_SPINLOCK(ntp_lock);
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* USER_HZ period (usecs): */
 unsigned long			tick_usec = TICK_USEC;
 
 /* ACTHZ period (nsecs): */
 unsigned long			tick_nsec;
 
+<<<<<<< HEAD
 u64				tick_length;
+=======
+static u64			tick_length;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rtc.h>
+
+#include "tick-internal.h"
+#include "ntp_internal.h"
+
+/*
+ * NTP timekeeping variables:
+ *
+ * Note: All of the NTP state is protected by the timekeeping locks.
+ */
+
+
+/* USER_HZ period (usecs): */
+unsigned long			tick_usec = TICK_USEC;
+
+/* SHIFTED_HZ period (nsecs): */
+unsigned long			tick_nsec;
+
+static u64			tick_length;
+>>>>>>> refs/remotes/origin/master
 static u64			tick_length_base;
 
 #define MAX_TICKADJ		500LL		/* usecs */
@@ -47,10 +79,18 @@ static u64			tick_length_base;
 static int			time_state = TIME_OK;
 
 /* clock status bits:							*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 int				time_status = STA_UNSYNC;
+=======
+static int			time_status = STA_UNSYNC;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* TAI offset (secs):							*/
 static long			time_tai;
+=======
+static int			time_status = STA_UNSYNC;
+>>>>>>> refs/remotes/origin/master
 
 /* time adjustment (nsecs):						*/
 static s64			time_offset;
@@ -130,8 +170,15 @@ static inline void pps_reset_freq_interval(void)
 
 /**
  * pps_clear - Clears the PPS state variables
+<<<<<<< HEAD
  *
+<<<<<<< HEAD
  * Must be called while holding a write on the xtime_lock
+=======
+ * Must be called while holding a write on the ntp_lock
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static inline void pps_clear(void)
 {
@@ -146,8 +193,15 @@ static inline void pps_clear(void)
 /* Decrease pps_valid to indicate that another second has passed since
  * the last PPS signal. When it reaches 0, indicate that PPS signal is
  * missing.
+<<<<<<< HEAD
  *
+<<<<<<< HEAD
  * Must be called while holding a write on the xtime_lock
+=======
+ * Must be called while holding a write on the ntp_lock
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static inline void pps_dec_valid(void)
 {
@@ -231,6 +285,26 @@ static inline void pps_fill_timex(struct timex *txc)
 
 #endif /* CONFIG_NTP_PPS */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/**
+ * ntp_synced - Returns 1 if the NTP status is not UNSYNC
+ *
+ */
+static inline int ntp_synced(void)
+{
+	return !(time_status & STA_UNSYNC);
+}
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * NTP methods:
  */
@@ -328,11 +402,27 @@ static void ntp_update_offset(long offset)
 
 /**
  * ntp_clear - Clears the NTP state variables
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Must be called while holding a write on the xtime_lock
  */
 void ntp_clear(void)
 {
+=======
+ */
+void ntp_clear(void)
+{
+	unsigned long flags;
+
+	spin_lock_irqsave(&ntp_lock, flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+void ntp_clear(void)
+{
+>>>>>>> refs/remotes/origin/master
 	time_adjust	= 0;		/* stop active adjtime() */
 	time_status	|= STA_UNSYNC;
 	time_maxerror	= NTP_PHASE_LIMIT;
@@ -345,8 +435,38 @@ void ntp_clear(void)
 
 	/* Clear PPS state variables */
 	pps_clear();
+<<<<<<< HEAD
+<<<<<<< HEAD
 }
 
+=======
+	spin_unlock_irqrestore(&ntp_lock, flags);
+
+=======
+>>>>>>> refs/remotes/origin/master
+}
+
+
+u64 ntp_tick_length(void)
+{
+<<<<<<< HEAD
+	unsigned long flags;
+	s64 ret;
+
+	spin_lock_irqsave(&ntp_lock, flags);
+	ret = tick_length;
+	spin_unlock_irqrestore(&ntp_lock, flags);
+	return ret;
+}
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return tick_length;
+}
+
+
+>>>>>>> refs/remotes/origin/master
 /*
  * this routine handles the overflow of the microsecond field
  *
@@ -359,8 +479,21 @@ void ntp_clear(void)
  */
 int second_overflow(unsigned long secs)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int leap = 0;
 	s64 delta;
+=======
+	s64 delta;
+	int leap = 0;
+	unsigned long flags;
+
+	spin_lock_irqsave(&ntp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s64 delta;
+	int leap = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Leap second processing. If in leap-insert state at the end of the
@@ -380,7 +513,14 @@ int second_overflow(unsigned long secs)
 		else if (secs % 86400 == 0) {
 			leap = -1;
 			time_state = TIME_OOP;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			time_tai++;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+			time_tai++;
+>>>>>>> refs/remotes/origin/cm-11.0
 			printk(KERN_NOTICE
 				"Clock: inserting leap second 23:59:60 UTC\n");
 		}
@@ -390,7 +530,10 @@ int second_overflow(unsigned long secs)
 			time_state = TIME_OK;
 		else if ((secs + 1) % 86400 == 0) {
 			leap = 1;
+<<<<<<< HEAD
 			time_tai--;
+=======
+>>>>>>> refs/remotes/origin/master
 			time_state = TIME_WAIT;
 			printk(KERN_NOTICE
 				"Clock: deleting leap second 23:59:59 UTC\n");
@@ -442,15 +585,36 @@ int second_overflow(unsigned long secs)
 	tick_length += (s64)(time_adjust * NSEC_PER_USEC / NTP_INTERVAL_FREQ)
 							 << NTP_SCALE_SHIFT;
 	time_adjust = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 out:
+=======
+
+
+
+out:
+	spin_unlock_irqrestore(&ntp_lock, flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return leap;
 }
 
 #ifdef CONFIG_GENERIC_CMOS_UPDATE
 
+<<<<<<< HEAD
 /* Disable the cmos update - used by virtualization and embedded */
 int no_sync_cmos_clock  __read_mostly;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+out:
+	return leap;
+}
+
+#if defined(CONFIG_GENERIC_CMOS_UPDATE) || defined(CONFIG_RTC_SYSTOHC)
+>>>>>>> refs/remotes/origin/master
 static void sync_cmos_clock(struct work_struct *work);
 
 static DECLARE_DELAYED_WORK(sync_cmos_work, sync_cmos_clock);
@@ -466,6 +630,10 @@ static void sync_cmos_clock(struct work_struct *work)
 	 * called as close as possible to 500 ms before the new second starts.
 	 * This code is run on a timer.  If the clock is set, that timer
 	 * may not expire at the correct time.  Thus, we adjust...
+<<<<<<< HEAD
+=======
+	 * We want the clock to be within a couple of ticks from the target.
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (!ntp_synced()) {
 		/*
@@ -476,14 +644,35 @@ static void sync_cmos_clock(struct work_struct *work)
 	}
 
 	getnstimeofday(&now);
+<<<<<<< HEAD
 	if (abs(now.tv_nsec - (NSEC_PER_SEC / 2)) <= tick_nsec / 2)
 		fail = update_persistent_clock(now);
+=======
+	if (abs(now.tv_nsec - (NSEC_PER_SEC / 2)) <= tick_nsec * 5) {
+		struct timespec adjust = now;
+
+		fail = -ENODEV;
+		if (persistent_clock_is_local)
+			adjust.tv_sec -= (sys_tz.tz_minuteswest * 60);
+#ifdef CONFIG_GENERIC_CMOS_UPDATE
+		fail = update_persistent_clock(adjust);
+#endif
+#ifdef CONFIG_RTC_SYSTOHC
+		if (fail == -ENODEV)
+			fail = rtc_set_ntp_time(adjust);
+#endif
+	}
+>>>>>>> refs/remotes/origin/master
 
 	next.tv_nsec = (NSEC_PER_SEC / 2) - now.tv_nsec - (TICK_NSEC / 2);
 	if (next.tv_nsec <= 0)
 		next.tv_nsec += NSEC_PER_SEC;
 
+<<<<<<< HEAD
 	if (!fail)
+=======
+	if (!fail || fail == -ENODEV)
+>>>>>>> refs/remotes/origin/master
 		next.tv_sec = 659;
 	else
 		next.tv_sec = 0;
@@ -495,14 +684,28 @@ static void sync_cmos_clock(struct work_struct *work)
 	schedule_delayed_work(&sync_cmos_work, timespec_to_jiffies(&next));
 }
 
+<<<<<<< HEAD
 static void notify_cmos_timer(void)
 {
+<<<<<<< HEAD
 	if (!no_sync_cmos_clock)
 		schedule_delayed_work(&sync_cmos_work, 0);
+=======
+	schedule_delayed_work(&sync_cmos_work, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #else
 static inline void notify_cmos_timer(void) { }
+=======
+void ntp_notify_cmos_timer(void)
+{
+	schedule_delayed_work(&sync_cmos_work, 0);
+}
+
+#else
+void ntp_notify_cmos_timer(void) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -528,6 +731,7 @@ static inline void process_adj_status(struct timex *txc, struct timespec *ts)
 	/* only set allowed bits */
 	time_status &= STA_RONLY;
 	time_status |= txc->status & ~STA_RONLY;
+<<<<<<< HEAD
 
 }
 /*
@@ -535,6 +739,14 @@ static inline void process_adj_status(struct timex *txc, struct timespec *ts)
  * all the global NTP state:
  */
 static inline void process_adjtimex_modes(struct timex *txc, struct timespec *ts)
+=======
+}
+
+
+static inline void process_adjtimex_modes(struct timex *txc,
+						struct timespec *ts,
+						s32 *time_tai)
+>>>>>>> refs/remotes/origin/master
 {
 	if (txc->modes & ADJ_STATUS)
 		process_adj_status(txc, ts);
@@ -568,7 +780,11 @@ static inline void process_adjtimex_modes(struct timex *txc, struct timespec *ts
 	}
 
 	if (txc->modes & ADJ_TAI && txc->constant > 0)
+<<<<<<< HEAD
 		time_tai = txc->constant;
+=======
+		*time_tai = txc->constant;
+>>>>>>> refs/remotes/origin/master
 
 	if (txc->modes & ADJ_OFFSET)
 		ntp_update_offset(txc->offset);
@@ -580,6 +796,7 @@ static inline void process_adjtimex_modes(struct timex *txc, struct timespec *ts
 		ntp_update_frequency();
 }
 
+<<<<<<< HEAD
 /*
  * adjtimex mainly allows reading (and writing, if superuser) of
  * kernel time-keeping variables. used by xntpd.
@@ -590,6 +807,15 @@ int do_adjtimex(struct timex *txc)
 	int result;
 
 	/* Validate the data before disabling interrupts */
+=======
+
+
+/**
+ * ntp_validate_timex - Ensures the timex is ok for use in do_adjtimex
+ */
+int ntp_validate_timex(struct timex *txc)
+{
+>>>>>>> refs/remotes/origin/master
 	if (txc->modes & ADJ_ADJTIME) {
 		/* singleshot must not be used with any other mode bits */
 		if (!(txc->modes & ADJ_OFFSET_SINGLESHOT))
@@ -601,7 +827,10 @@ int do_adjtimex(struct timex *txc)
 		/* In order to modify anything, you gotta be super-user! */
 		 if (txc->modes && !capable(CAP_SYS_TIME))
 			return -EPERM;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * if the quartz is off by more than 10% then
 		 * something is VERY wrong!
@@ -612,6 +841,7 @@ int do_adjtimex(struct timex *txc)
 			return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (txc->modes & ADJ_SETOFFSET) {
 		struct timespec delta;
 		delta.tv_sec  = txc->time.tv_sec;
@@ -627,7 +857,27 @@ int do_adjtimex(struct timex *txc)
 
 	getnstimeofday(&ts);
 
+<<<<<<< HEAD
 	write_seqlock_irq(&xtime_lock);
+=======
+	spin_lock_irq(&ntp_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((txc->modes & ADJ_SETOFFSET) && (!capable(CAP_SYS_TIME)))
+		return -EPERM;
+
+	return 0;
+}
+
+
+/*
+ * adjtimex mainly allows reading (and writing, if superuser) of
+ * kernel time-keeping variables. used by xntpd.
+ */
+int __do_adjtimex(struct timex *txc, struct timespec *ts, s32 *time_tai)
+{
+	int result;
+>>>>>>> refs/remotes/origin/master
 
 	if (txc->modes & ADJ_ADJTIME) {
 		long save_adjust = time_adjust;
@@ -642,7 +892,11 @@ int do_adjtimex(struct timex *txc)
 
 		/* If there are input parameters, then process them: */
 		if (txc->modes)
+<<<<<<< HEAD
 			process_adjtimex_modes(txc, &ts);
+=======
+			process_adjtimex_modes(txc, ts, time_tai);
+>>>>>>> refs/remotes/origin/master
 
 		txc->offset = shift_right(time_offset * NTP_INTERVAL_FREQ,
 				  NTP_SCALE_SHIFT);
@@ -664,12 +918,21 @@ int do_adjtimex(struct timex *txc)
 	txc->precision	   = 1;
 	txc->tolerance	   = MAXFREQ_SCALED / PPM_SCALE;
 	txc->tick	   = tick_usec;
+<<<<<<< HEAD
 	txc->tai	   = time_tai;
+=======
+	txc->tai	   = *time_tai;
+>>>>>>> refs/remotes/origin/master
 
 	/* fill PPS status fields */
 	pps_fill_timex(txc);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	write_sequnlock_irq(&xtime_lock);
+=======
+	spin_unlock_irq(&ntp_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	txc->time.tv_sec = ts.tv_sec;
 	txc->time.tv_usec = ts.tv_nsec;
@@ -678,6 +941,13 @@ int do_adjtimex(struct timex *txc)
 
 	notify_cmos_timer();
 
+=======
+	txc->time.tv_sec = ts->tv_sec;
+	txc->time.tv_usec = ts->tv_nsec;
+	if (!(time_status & STA_NANO))
+		txc->time.tv_usec /= NSEC_PER_USEC;
+
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
@@ -849,7 +1119,11 @@ static void hardpps_update_phase(long error)
 }
 
 /*
+<<<<<<< HEAD
  * hardpps() - discipline CPU clock oscillator to external PPS signal
+=======
+ * __hardpps() - discipline CPU clock oscillator to external PPS signal
+>>>>>>> refs/remotes/origin/master
  *
  * This routine is called at each PPS signal arrival in order to
  * discipline the CPU clock oscillator to the PPS signal. It takes two
@@ -860,6 +1134,7 @@ static void hardpps_update_phase(long error)
  * This code is based on David Mills's reference nanokernel
  * implementation. It was mostly rewritten but keeps the same idea.
  */
+<<<<<<< HEAD
 void hardpps(const struct timespec *phase_ts, const struct timespec *raw_ts)
 {
 	struct pps_normtime pts_norm, freq_norm;
@@ -867,8 +1142,20 @@ void hardpps(const struct timespec *phase_ts, const struct timespec *raw_ts)
 
 	pts_norm = pps_normalize_ts(*phase_ts);
 
+<<<<<<< HEAD
 	write_seqlock_irqsave(&xtime_lock, flags);
+=======
+	spin_lock_irqsave(&ntp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+void __hardpps(const struct timespec *phase_ts, const struct timespec *raw_ts)
+{
+	struct pps_normtime pts_norm, freq_norm;
+
+	pts_norm = pps_normalize_ts(*phase_ts);
+
+>>>>>>> refs/remotes/origin/master
 	/* clear the error bits, they will be set again if needed */
 	time_status &= ~(STA_PPSJITTER | STA_PPSWANDER | STA_PPSERROR);
 
@@ -880,7 +1167,14 @@ void hardpps(const struct timespec *phase_ts, const struct timespec *raw_ts)
 	 * just start the frequency interval */
 	if (unlikely(pps_fbase.tv_sec == 0)) {
 		pps_fbase = *raw_ts;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		write_sequnlock_irqrestore(&xtime_lock, flags);
+=======
+		spin_unlock_irqrestore(&ntp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -895,7 +1189,14 @@ void hardpps(const struct timespec *phase_ts, const struct timespec *raw_ts)
 		time_status |= STA_PPSJITTER;
 		/* restart the frequency calibration interval */
 		pps_fbase = *raw_ts;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		write_sequnlock_irqrestore(&xtime_lock, flags);
+=======
+		spin_unlock_irqrestore(&ntp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("hardpps: PPSJITTER: bad pulse\n");
 		return;
 	}
@@ -912,10 +1213,18 @@ void hardpps(const struct timespec *phase_ts, const struct timespec *raw_ts)
 
 	hardpps_update_phase(pts_norm.nsec);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	write_sequnlock_irqrestore(&xtime_lock, flags);
+=======
+	spin_unlock_irqrestore(&ntp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(hardpps);
 
+=======
+}
+>>>>>>> refs/remotes/origin/master
 #endif	/* CONFIG_NTP_PPS */
 
 static int __init ntp_tick_adj_setup(char *str)

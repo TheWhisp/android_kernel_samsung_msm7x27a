@@ -147,7 +147,13 @@ static struct fb_var_screeninfo vesafb_defined = {
 	39721L,48L,16L,33L,10L,
 	96L,2L,~0,	/* No sync info */
 	FB_VMODE_NONINTERLACED,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	0, {0,0,0,0,0}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -1894,14 +1900,22 @@ static int initMatrox2(struct matrox_fb_info *minfo, struct board *b)
 	if (register_framebuffer(&minfo->fbcon) < 0) {
 		goto failVideoIO;
 	}
+<<<<<<< HEAD
 	printk("fb%d: %s frame buffer device\n",
 	       minfo->fbcon.node, minfo->fbcon.fix.id);
+=======
+	fb_info(&minfo->fbcon, "%s frame buffer device\n", minfo->fbcon.fix.id);
+>>>>>>> refs/remotes/origin/master
 
 	/* there is no console on this fb... but we have to initialize hardware
 	 * until someone tells me what is proper thing to do */
 	if (!minfo->initialized) {
+<<<<<<< HEAD
 		printk(KERN_INFO "fb%d: initializing hardware\n",
 		       minfo->fbcon.node);
+=======
+		fb_info(&minfo->fbcon, "initializing hardware\n");
+>>>>>>> refs/remotes/origin/master
 		/* We have to use FB_ACTIVATE_FORCE, as we had to put vesafb_defined to the fbcon.var
 		 * already before, so register_framebuffer works correctly. */
 		vesafb_defined.activate |= FB_ACTIVATE_FORCE;
@@ -2030,10 +2044,16 @@ static int matroxfb_probe(struct pci_dev* pdev, const struct pci_device_id* dumm
 		return -1;
 	}
 
+<<<<<<< HEAD
 	minfo = kmalloc(sizeof(*minfo), GFP_KERNEL);
 	if (!minfo)
 		return -1;
 	memset(minfo, 0, sizeof(*minfo));
+=======
+	minfo = kzalloc(sizeof(*minfo), GFP_KERNEL);
+	if (!minfo)
+		return -1;
+>>>>>>> refs/remotes/origin/master
 
 	minfo->pcidev = pdev;
 	minfo->dead = 0;

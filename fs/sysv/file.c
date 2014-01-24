@@ -41,9 +41,17 @@ static int sysv_setattr(struct dentry *dentry, struct iattr *attr)
 
 	if ((attr->ia_valid & ATTR_SIZE) &&
 	    attr->ia_size != i_size_read(inode)) {
+<<<<<<< HEAD
 		error = vmtruncate(inode, attr->ia_size);
 		if (error)
 			return error;
+=======
+		error = inode_newsize_ok(inode, attr->ia_size);
+		if (error)
+			return error;
+		truncate_setsize(inode, attr->ia_size);
+		sysv_truncate(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	setattr_copy(inode, attr);
@@ -52,7 +60,10 @@ static int sysv_setattr(struct dentry *dentry, struct iattr *attr)
 }
 
 const struct inode_operations sysv_file_inode_operations = {
+<<<<<<< HEAD
 	.truncate	= sysv_truncate,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setattr	= sysv_setattr,
 	.getattr	= sysv_getattr,
 };

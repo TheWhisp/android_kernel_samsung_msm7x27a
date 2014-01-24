@@ -28,8 +28,14 @@
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <generated/utsrelease.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/utsname.h>
 #include <linux/init.h>
 #include <linux/slab.h>
@@ -39,6 +45,14 @@
 #include <linux/configfs.h>
 #include <linux/ctype.h>
 #include <linux/hash.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 #include <scsi/scsi.h>
 #include <scsi/scsi_host.h>
@@ -48,12 +62,22 @@
 #include <scsi/fc_encode.h>
 
 #include <target/target_core_base.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <target/target_core_transport.h>
 #include <target/target_core_fabric_ops.h>
 #include <target/target_core_device.h>
 #include <target/target_core_tpg.h>
 #include <target/target_core_configfs.h>
 #include <target/target_core_base.h>
+=======
+#include <target/target_core_fabric.h>
+#include <target/target_core_configfs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <target/target_core_fabric.h>
+#include <target/target_core_configfs.h>
+>>>>>>> refs/remotes/origin/master
 #include <target/configfs_macros.h>
 
 #include "tcm_fc.h"
@@ -65,6 +89,8 @@
 int ft_queue_data_in(struct se_cmd *se_cmd)
 {
 	struct ft_cmd *cmd = container_of(se_cmd, struct ft_cmd, se_cmd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_transport_task *task;
 	struct fc_frame *fp = NULL;
 	struct fc_exch *ep;
@@ -80,16 +106,49 @@ int ft_queue_data_in(struct se_cmd *se_cmd)
 	size_t tlen;
 	size_t off_in_page;
 	struct page *page;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct fc_frame *fp = NULL;
+	struct fc_exch *ep;
+	struct fc_lport *lport;
+	struct scatterlist *sg = NULL;
+	size_t remaining;
+	u32 f_ctl = FC_FC_EX_CTX | FC_FC_REL_OFF;
+	u32 mem_off = 0;
+	u32 fh_off = 0;
+	u32 frame_off = 0;
+	size_t frame_len = 0;
+	size_t mem_len = 0;
+	size_t tlen;
+	size_t off_in_page;
+	struct page *page = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int use_sg;
 	int error;
 	void *page_addr;
 	void *from;
 	void *to = NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (cmd->aborted)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cmd->aborted)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	ep = fc_seq_exch(cmd->seq);
 	lport = ep->lp;
 	cmd->seq = lport->tt.seq_start_next(cmd->seq);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	task = T_TASK(se_cmd);
 	BUG_ON(!task);
 	remaining = se_cmd->data_length;
@@ -108,19 +167,58 @@ int ft_queue_data_in(struct se_cmd *se_cmd)
 		mem_len = remaining;
 		mem_off = 0;
 		page = NULL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	remaining = se_cmd->data_length;
+
+	/*
+	 * Setup to use first mem list entry, unless no data.
+	 */
+	BUG_ON(remaining && !se_cmd->t_data_sg);
+	if (remaining) {
+		sg = se_cmd->t_data_sg;
+		mem_len = sg->length;
+		mem_off = sg->offset;
+		page = sg_page(sg);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* no scatter/gather in skb for odd word length due to fc_seq_send() */
 	use_sg = !(remaining % 4);
 
 	while (remaining) {
+<<<<<<< HEAD
 		if (!mem_len) {
+<<<<<<< HEAD
 			BUG_ON(!mem);
 			mem = list_entry(mem->se_list.next,
 				struct se_mem, se_list);
 			mem_len = min((size_t)mem->se_len, remaining);
 			mem_off = mem->se_off;
 			page = mem->se_page;
+=======
+=======
+		struct fc_seq *seq = cmd->seq;
+
+		if (!seq) {
+			pr_debug("%s: Command aborted, xid 0x%x\n",
+				 __func__, ep->xid);
+			break;
+		}
+		if (!mem_len) {
+>>>>>>> refs/remotes/origin/master
+			sg = sg_next(sg);
+			mem_len = min((size_t)sg->length, remaining);
+			mem_off = sg->offset;
+			page = sg_page(sg);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		if (!frame_len) {
 			/*
@@ -148,6 +246,8 @@ int ft_queue_data_in(struct se_cmd *se_cmd)
 		tlen = min(mem_len, frame_len);
 
 		if (use_sg) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (!mem) {
 				BUG_ON(!task->t_task_buf);
 				page_addr = task->t_task_buf + mem_off;
@@ -160,6 +260,12 @@ int ft_queue_data_in(struct se_cmd *se_cmd)
 				tlen = min(tlen, PAGE_SIZE - off_in_page);
 			} else
 				off_in_page = mem_off;
+=======
+			off_in_page = mem_off;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			off_in_page = mem_off;
+>>>>>>> refs/remotes/origin/master
 			BUG_ON(!page);
 			get_page(page);
 			skb_fill_page_desc(fp_skb(fp),
@@ -169,20 +275,40 @@ int ft_queue_data_in(struct se_cmd *se_cmd)
 			fp_skb(fp)->data_len += tlen;
 			fp_skb(fp)->truesize +=
 					PAGE_SIZE << compound_order(page);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		} else if (mem) {
 			BUG_ON(!page);
 			from = kmap_atomic(page + (mem_off >> PAGE_SHIFT),
 					   KM_SOFTIRQ0);
+=======
+		} else {
+			BUG_ON(!page);
+			from = kmap_atomic(page + (mem_off >> PAGE_SHIFT));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			BUG_ON(!page);
+			from = kmap_atomic(page + (mem_off >> PAGE_SHIFT));
+>>>>>>> refs/remotes/origin/master
 			page_addr = from;
 			from += mem_off & ~PAGE_MASK;
 			tlen = min(tlen, (size_t)(PAGE_SIZE -
 						(mem_off & ~PAGE_MASK)));
 			memcpy(to, from, tlen);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(page_addr, KM_SOFTIRQ0);
 			to += tlen;
 		} else {
 			from = task->t_task_buf + mem_off;
 			memcpy(to, from, tlen);
+=======
+			kunmap_atomic(page_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(page_addr);
+>>>>>>> refs/remotes/origin/master
 			to += tlen;
 		}
 
@@ -198,11 +324,22 @@ int ft_queue_data_in(struct se_cmd *se_cmd)
 			f_ctl |= FC_FC_END_SEQ;
 		fc_fill_fc_hdr(fp, FC_RCTL_DD_SOL_DATA, ep->did, ep->sid,
 			       FC_TYPE_FCP, f_ctl, fh_off);
+<<<<<<< HEAD
 		error = lport->tt.seq_send(lport, cmd->seq, fp);
 		if (error) {
 			/* XXX For now, initiator will retry */
+<<<<<<< HEAD
 			if (printk_ratelimit())
 				printk(KERN_ERR "%s: Failed to send frame %p, "
+=======
+			pr_err_ratelimited("%s: Failed to send frame %p, "
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = lport->tt.seq_send(lport, seq, fp);
+		if (error) {
+			/* XXX For now, initiator will retry */
+			pr_err_ratelimited("%s: Failed to send frame %p, "
+>>>>>>> refs/remotes/origin/master
 						"xid <0x%x>, remaining %zu, "
 						"lso_max <0x%x>\n",
 						__func__, fp, ep->xid,
@@ -212,6 +349,16 @@ int ft_queue_data_in(struct se_cmd *se_cmd)
 	return ft_queue_status(se_cmd);
 }
 
+<<<<<<< HEAD
+=======
+static void ft_execute_work(struct work_struct *work)
+{
+	struct ft_cmd *cmd = container_of(work, struct ft_cmd, work);
+
+	target_execute_cmd(&cmd->se_cmd);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Receive write data frame.
  */
@@ -221,6 +368,8 @@ void ft_recv_write_data(struct ft_cmd *cmd, struct fc_frame *fp)
 	struct fc_seq *seq = cmd->seq;
 	struct fc_exch *ep;
 	struct fc_lport *lport;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_transport_task *task;
 	struct fc_frame_header *fh;
 	struct se_mem *mem;
@@ -230,19 +379,42 @@ void ft_recv_write_data(struct ft_cmd *cmd, struct fc_frame *fp)
 	size_t mem_len;
 	size_t tlen;
 	struct page *page;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct fc_frame_header *fh;
+	struct scatterlist *sg = NULL;
+	u32 mem_off = 0;
+	u32 rel_off;
+	size_t frame_len;
+	size_t mem_len = 0;
+	size_t tlen;
+	struct page *page = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void *page_addr;
 	void *from;
 	void *to;
 	u32 f_ctl;
 	void *buf;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	task = T_TASK(se_cmd);
 	BUG_ON(!task);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fh = fc_frame_header_get(fp);
 	if (!(ntoh24(fh->fh_f_ctl) & FC_FC_REL_OFF))
 		goto drop;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Doesn't expect even single byte of payload. Payload
 	 * is expected to be copied directly to user buffers
@@ -298,6 +470,57 @@ void ft_recv_write_data(struct ft_cmd *cmd, struct fc_frame *fp)
 			lport->tt.seq_exch_abort(cmd->seq, 0);
 			goto drop;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	f_ctl = ntoh24(fh->fh_f_ctl);
+	ep = fc_seq_exch(seq);
+	lport = ep->lp;
+	if (cmd->was_ddp_setup) {
+		BUG_ON(!ep);
+		BUG_ON(!lport);
+		/*
+		 * Since DDP (Large Rx offload) was setup for this request,
+		 * payload is expected to be copied directly to user buffers.
+		 */
+		buf = fc_frame_payload_get(fp, 1);
+		if (buf)
+			pr_err("%s: xid 0x%x, f_ctl 0x%x, cmd->sg %p, "
+				"cmd->sg_cnt 0x%x. DDP was setup"
+				" hence not expected to receive frame with "
+				"payload, Frame will be dropped if"
+				"'Sequence Initiative' bit in f_ctl is"
+				"not set\n", __func__, ep->xid, f_ctl,
+<<<<<<< HEAD
+				cmd->sg, cmd->sg_cnt);
+=======
+				se_cmd->t_data_sg, se_cmd->t_data_nents);
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * Invalidate HW DDP context if it was setup for respective
+		 * command. Invalidation of HW DDP context is requited in both
+		 * situation (success and error).
+		 */
+		ft_invl_hw_context(cmd);
+
+		/*
+		 * If "Sequence Initiative (TSI)" bit set in f_ctl, means last
+		 * write data frame is received successfully where payload is
+		 * posted directly to user buffer and only the last frame's
+		 * header is posted in receive queue.
+		 *
+		 * If "Sequence Initiative (TSI)" bit is not set, means error
+		 * condition w.r.t. DDP, hence drop the packet and let explict
+		 * ABORTS from other end of exchange timer trigger the recovery.
+		 */
+		if (f_ctl & FC_FC_SEQ_INIT)
+			goto last_frame;
+		else
+			goto drop;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rel_off = ntohl(fh->fh_parm_offset);
@@ -312,6 +535,8 @@ void ft_recv_write_data(struct ft_cmd *cmd, struct fc_frame *fp)
 		frame_len = se_cmd->data_length - rel_off;
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * Setup to use first mem list entry if any.
 	 */
 	if (task->t_tasks_se_num) {
@@ -325,16 +550,44 @@ void ft_recv_write_data(struct ft_cmd *cmd, struct fc_frame *fp)
 		page = NULL;
 		mem_off = 0;
 		mem_len = frame_len;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * Setup to use first mem list entry, unless no data.
+	 */
+	BUG_ON(frame_len && !se_cmd->t_data_sg);
+	if (frame_len) {
+		sg = se_cmd->t_data_sg;
+		mem_len = sg->length;
+		mem_off = sg->offset;
+		page = sg_page(sg);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	while (frame_len) {
 		if (!mem_len) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			BUG_ON(!mem);
 			mem = list_entry(mem->se_list.next,
 					 struct se_mem, se_list);
 			mem_len = mem->se_len;
 			mem_off = mem->se_off;
 			page = mem->se_page;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			sg = sg_next(sg);
+			mem_len = sg->length;
+			mem_off = sg->offset;
+			page = sg_page(sg);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		if (rel_off >= mem_len) {
 			rel_off -= mem_len;
@@ -347,6 +600,8 @@ void ft_recv_write_data(struct ft_cmd *cmd, struct fc_frame *fp)
 
 		tlen = min(mem_len, frame_len);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (mem) {
 			to = kmap_atomic(page + (mem_off >> PAGE_SHIFT),
 					 KM_SOFTIRQ0);
@@ -360,6 +615,21 @@ void ft_recv_write_data(struct ft_cmd *cmd, struct fc_frame *fp)
 			to = task->t_task_buf + mem_off;
 			memcpy(to, from, tlen);
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		to = kmap_atomic(page + (mem_off >> PAGE_SHIFT));
+		page_addr = to;
+		to += mem_off & ~PAGE_MASK;
+		tlen = min(tlen, (size_t)(PAGE_SIZE -
+					  (mem_off & ~PAGE_MASK)));
+		memcpy(to, from, tlen);
+		kunmap_atomic(page_addr);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		from += tlen;
 		frame_len -= tlen;
 		mem_off += tlen;
@@ -367,8 +637,68 @@ void ft_recv_write_data(struct ft_cmd *cmd, struct fc_frame *fp)
 		cmd->write_data_len += tlen;
 	}
 last_frame:
+<<<<<<< HEAD
 	if (cmd->write_data_len == se_cmd->data_length)
 		transport_generic_handle_data(se_cmd);
 drop:
 	fc_frame_free(fp);
 }
+<<<<<<< HEAD
+=======
+=======
+	if (cmd->write_data_len == se_cmd->data_length) {
+		INIT_WORK(&cmd->work, ft_execute_work);
+		queue_work(cmd->sess->tport->tpg->workqueue, &cmd->work);
+	}
+drop:
+	fc_frame_free(fp);
+}
+>>>>>>> refs/remotes/origin/master
+
+/*
+ * Handle and cleanup any HW specific resources if
+ * received ABORTS, errors, timeouts.
+ */
+void ft_invl_hw_context(struct ft_cmd *cmd)
+{
+<<<<<<< HEAD
+	struct fc_seq *seq = cmd->seq;
+=======
+	struct fc_seq *seq;
+>>>>>>> refs/remotes/origin/master
+	struct fc_exch *ep = NULL;
+	struct fc_lport *lport = NULL;
+
+	BUG_ON(!cmd);
+<<<<<<< HEAD
+=======
+	seq = cmd->seq;
+>>>>>>> refs/remotes/origin/master
+
+	/* Cleanup the DDP context in HW if DDP was setup */
+	if (cmd->was_ddp_setup && seq) {
+		ep = fc_seq_exch(seq);
+		if (ep) {
+			lport = ep->lp;
+			if (lport && (ep->xid <= lport->lro_xid))
+				/*
+				 * "ddp_done" trigger invalidation of HW
+				 * specific DDP context
+				 */
+				cmd->write_data_len = lport->tt.ddp_done(lport,
+								      ep->xid);
+
+				/*
+				 * Resetting same variable to indicate HW's
+				 * DDP context has been invalidated to avoid
+				 * re_invalidation of same context (context is
+				 * identified using ep->xid)
+				 */
+				cmd->was_ddp_setup = 0;
+		}
+	}
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

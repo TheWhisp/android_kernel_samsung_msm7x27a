@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -10,7 +18,21 @@
  * GNU General Public License for more details.
  *
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/kernel.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+#define pr_fmt(fmt) "AXI: %s(): " fmt, __func__
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/seq_file.h>
 #include <linux/debugfs.h>
 #include <linux/slab.h>

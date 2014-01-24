@@ -1,6 +1,9 @@
 #include <linux/err.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/hardirq.h>
 #include "ctree.h"
@@ -11,7 +14,11 @@ static struct kmem_cache *extent_map_cache;
 
 int __init extent_map_init(void)
 {
+<<<<<<< HEAD
 	extent_map_cache = kmem_cache_create("extent_map",
+=======
+	extent_map_cache = kmem_cache_create("btrfs_extent_map",
+>>>>>>> refs/remotes/origin/master
 			sizeof(struct extent_map), 0,
 			SLAB_RECLAIM_ACCOUNT | SLAB_MEM_SPREAD, NULL);
 	if (!extent_map_cache)
@@ -35,6 +42,10 @@ void extent_map_exit(void)
 void extent_map_tree_init(struct extent_map_tree *tree)
 {
 	tree->map = RB_ROOT;
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&tree->modified_extents);
+>>>>>>> refs/remotes/origin/master
 	rwlock_init(&tree->lock);
 }
 
@@ -48,13 +59,23 @@ void extent_map_tree_init(struct extent_map_tree *tree)
 struct extent_map *alloc_extent_map(void)
 {
 	struct extent_map *em;
+<<<<<<< HEAD
 	em = kmem_cache_alloc(extent_map_cache, GFP_NOFS);
+=======
+	em = kmem_cache_zalloc(extent_map_cache, GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 	if (!em)
 		return NULL;
 	em->in_tree = 0;
 	em->flags = 0;
 	em->compress_type = BTRFS_COMPRESS_NONE;
+<<<<<<< HEAD
 	atomic_set(&em->refs, 1);
+=======
+	em->generation = 0;
+	atomic_set(&em->refs, 1);
+	INIT_LIST_HEAD(&em->list);
+>>>>>>> refs/remotes/origin/master
 	return em;
 }
 
@@ -72,6 +93,10 @@ void free_extent_map(struct extent_map *em)
 	WARN_ON(atomic_read(&em->refs) == 0);
 	if (atomic_dec_and_test(&em->refs)) {
 		WARN_ON(em->in_tree);
+<<<<<<< HEAD
+=======
+		WARN_ON(!list_empty(&em->list));
+>>>>>>> refs/remotes/origin/master
 		kmem_cache_free(extent_map_cache, em);
 	}
 }
@@ -167,6 +192,21 @@ static int mergable_maps(struct extent_map *prev, struct extent_map *next)
 	if (test_bit(EXTENT_FLAG_COMPRESSED, &prev->flags))
 		return 0;
 
+<<<<<<< HEAD
+=======
+	if (test_bit(EXTENT_FLAG_LOGGING, &prev->flags) ||
+	    test_bit(EXTENT_FLAG_LOGGING, &next->flags))
+		return 0;
+
+	/*
+	 * We don't want to merge stuff that hasn't been written to the log yet
+	 * since it may not reflect exactly what is on disk, and that would be
+	 * bad.
+	 */
+	if (!list_empty(&prev->list) || !list_empty(&next->list))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (extent_map_end(prev) == next->start &&
 	    prev->flags == next->flags &&
 	    prev->bdev == next->bdev &&
@@ -183,6 +223,8 @@ static int mergable_maps(struct extent_map *prev, struct extent_map *next)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len)
 {
 	int ret = 0;
@@ -199,6 +241,17 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len)
 		goto out;
 
 	clear_bit(EXTENT_FLAG_PINNED, &em->flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+{
+	struct extent_map *merge = NULL;
+	struct rb_node *rb;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (em->start != 0) {
 		rb = rb_prev(&em->rb_node);
@@ -206,10 +259,21 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len)
 			merge = rb_entry(rb, struct extent_map, rb_node);
 		if (rb && mergable_maps(merge, em)) {
 			em->start = merge->start;
+<<<<<<< HEAD
+=======
+			em->orig_start = merge->orig_start;
+>>>>>>> refs/remotes/origin/master
 			em->len += merge->len;
 			em->block_len += merge->block_len;
 			em->block_start = merge->block_start;
 			merge->in_tree = 0;
+<<<<<<< HEAD
+=======
+			em->mod_len = (em->mod_len + em->mod_start) - merge->mod_start;
+			em->mod_start = merge->mod_start;
+			em->generation = max(em->generation, merge->generation);
+
+>>>>>>> refs/remotes/origin/master
 			rb_erase(&merge->rb_node, &tree->map);
 			free_extent_map(merge);
 		}
@@ -223,8 +287,76 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len)
 		em->block_len += merge->len;
 		rb_erase(&merge->rb_node, &tree->map);
 		merge->in_tree = 0;
+<<<<<<< HEAD
 		free_extent_map(merge);
 	}
+<<<<<<< HEAD
+=======
+}
+
+int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len)
+{
+	int ret = 0;
+	struct extent_map *em;
+=======
+		em->mod_len = (merge->mod_start + merge->mod_len) - em->mod_start;
+		em->generation = max(em->generation, merge->generation);
+		free_extent_map(merge);
+	}
+}
+
+/**
+ * unpin_extent_cache - unpin an extent from the cache
+ * @tree:	tree to unpin the extent in
+ * @start:	logical offset in the file
+ * @len:	length of the extent
+ * @gen:	generation that this extent has been modified in
+ *
+ * Called after an extent has been written to disk properly.  Set the generation
+ * to the generation that actually added the file item to the inode so we know
+ * we need to sync this extent when we call fsync().
+ */
+int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+		       u64 gen)
+{
+	int ret = 0;
+	struct extent_map *em;
+	bool prealloc = false;
+>>>>>>> refs/remotes/origin/master
+
+	write_lock(&tree->lock);
+	em = lookup_extent_mapping(tree, start, len);
+
+	WARN_ON(!em || em->start != start);
+
+	if (!em)
+		goto out;
+
+<<<<<<< HEAD
+	clear_bit(EXTENT_FLAG_PINNED, &em->flags);
+
+	try_merge_map(tree, em);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!test_bit(EXTENT_FLAG_LOGGING, &em->flags))
+		list_move(&em->list, &tree->modified_extents);
+	em->generation = gen;
+	clear_bit(EXTENT_FLAG_PINNED, &em->flags);
+	em->mod_start = em->start;
+	em->mod_len = em->len;
+
+	if (test_bit(EXTENT_FLAG_FILLING, &em->flags)) {
+		prealloc = true;
+		clear_bit(EXTENT_FLAG_FILLING, &em->flags);
+	}
+
+	try_merge_map(tree, em);
+
+	if (prealloc) {
+		em->mod_start = em->start;
+		em->mod_len = em->len;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	free_extent_map(em);
 out:
@@ -233,6 +365,16 @@ out:
 
 }
 
+<<<<<<< HEAD
+=======
+void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em)
+{
+	clear_bit(EXTENT_FLAG_LOGGING, &em->flags);
+	if (em->in_tree)
+		try_merge_map(tree, em);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * add_extent_mapping - add new extent map to the extent tree
  * @tree:	tree to insert new map in
@@ -244,10 +386,19 @@ out:
  * reference dropped if the merge attempt was successful.
  */
 int add_extent_mapping(struct extent_map_tree *tree,
+<<<<<<< HEAD
 		       struct extent_map *em)
 {
 	int ret = 0;
+<<<<<<< HEAD
 	struct extent_map *merge = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       struct extent_map *em, int modified)
+{
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 	struct rb_node *rb;
 	struct extent_map *exist;
 
@@ -263,6 +414,8 @@ int add_extent_mapping(struct extent_map_tree *tree,
 		goto out;
 	}
 	atomic_inc(&em->refs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (em->start != 0) {
 		rb = rb_prev(&em->rb_node);
 		if (rb)
@@ -287,6 +440,20 @@ int add_extent_mapping(struct extent_map_tree *tree,
 		merge->in_tree = 0;
 		free_extent_map(merge);
 	}
+=======
+
+	try_merge_map(tree, em);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	em->mod_start = em->start;
+	em->mod_len = em->len;
+
+	if (modified)
+		list_move(&em->list, &tree->modified_extents);
+	else
+		try_merge_map(tree, em);
+>>>>>>> refs/remotes/origin/master
 out:
 	return ret;
 }
@@ -299,6 +466,8 @@ static u64 range_end(u64 start, u64 len)
 	return start + len;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * lookup_extent_mapping - lookup extent_map
  * @tree:	tree to lookup in
@@ -312,6 +481,15 @@ static u64 range_end(u64 start, u64 len)
  */
 struct extent_map *lookup_extent_mapping(struct extent_map_tree *tree,
 					 u64 start, u64 len)
+=======
+struct extent_map *__lookup_extent_mapping(struct extent_map_tree *tree,
+					   u64 start, u64 len, int strict)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct extent_map *
+__lookup_extent_mapping(struct extent_map_tree *tree,
+			u64 start, u64 len, int strict)
+>>>>>>> refs/remotes/origin/master
 {
 	struct extent_map *em;
 	struct rb_node *rb_node;
@@ -320,6 +498,8 @@ struct extent_map *lookup_extent_mapping(struct extent_map_tree *tree,
 	u64 end = range_end(start, len);
 
 	rb_node = __tree_search(&tree->map, start, &prev, &next);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!rb_node && prev) {
 		em = rb_entry(prev, struct extent_map, rb_node);
 		if (end > em->start && start < extent_map_end(em))
@@ -348,10 +528,58 @@ struct extent_map *lookup_extent_mapping(struct extent_map_tree *tree,
 found:
 	atomic_inc(&em->refs);
 out:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!rb_node) {
+		if (prev)
+			rb_node = prev;
+		else if (next)
+			rb_node = next;
+		else
+			return NULL;
+	}
+
+	em = rb_entry(rb_node, struct extent_map, rb_node);
+
+	if (strict && !(end > em->start && start < extent_map_end(em)))
+		return NULL;
+
+	atomic_inc(&em->refs);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return em;
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * lookup_extent_mapping - lookup extent_map
+ * @tree:	tree to lookup in
+ * @start:	byte offset to start the search
+ * @len:	length of the lookup range
+ *
+ * Find and return the first extent_map struct in @tree that intersects the
+ * [start, len] range.  There may be additional objects in the tree that
+ * intersect, so check the object returned carefully to make sure that no
+ * additional lookups are needed.
+ */
+struct extent_map *lookup_extent_mapping(struct extent_map_tree *tree,
+					 u64 start, u64 len)
+{
+	return __lookup_extent_mapping(tree, start, len, 1);
+}
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * search_extent_mapping - find a nearby extent map
  * @tree:	tree to lookup in
  * @start:	byte offset to start the search
@@ -365,6 +593,8 @@ out:
 struct extent_map *search_extent_mapping(struct extent_map_tree *tree,
 					 u64 start, u64 len)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct extent_map *em;
 	struct rb_node *rb_node;
 	struct rb_node *prev = NULL;
@@ -397,6 +627,12 @@ found:
 	atomic_inc(&em->refs);
 out:
 	return em;
+=======
+	return __lookup_extent_mapping(tree, start, len, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return __lookup_extent_mapping(tree, start, len, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -413,6 +649,11 @@ int remove_extent_mapping(struct extent_map_tree *tree, struct extent_map *em)
 
 	WARN_ON(test_bit(EXTENT_FLAG_PINNED, &em->flags));
 	rb_erase(&em->rb_node, &tree->map);
+<<<<<<< HEAD
+=======
+	if (!test_bit(EXTENT_FLAG_LOGGING, &em->flags))
+		list_del_init(&em->list);
+>>>>>>> refs/remotes/origin/master
 	em->in_tree = 0;
 	return ret;
 }

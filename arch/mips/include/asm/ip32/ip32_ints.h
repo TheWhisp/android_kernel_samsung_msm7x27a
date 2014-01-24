@@ -13,7 +13,11 @@
 
 /*
  * This list reflects the assignment of interrupt numbers to
+<<<<<<< HEAD
  * interrupting events.  Order is fairly irrelevant to handling
+=======
+ * interrupting events.	 Order is fairly irrelevant to handling
+>>>>>>> refs/remotes/origin/master
  * priority.  This differs from irix.
  */
 

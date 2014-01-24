@@ -31,6 +31,10 @@
  */
 
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/init.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/param.h>
@@ -77,7 +81,11 @@ void m360_cpm_reset(void);
 
 
 
+<<<<<<< HEAD
 void m360_cpm_reset()
+=======
+void __init m360_cpm_reset()
+>>>>>>> refs/remotes/origin/master
 {
 /* 	pte_t		   *pte; */
 

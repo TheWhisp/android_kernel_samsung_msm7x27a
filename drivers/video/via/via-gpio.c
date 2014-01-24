@@ -10,6 +10,14 @@
 #include <linux/platform_device.h>
 #include <linux/via-core.h>
 #include <linux/via-gpio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The ports we know about.  Note that the port-25 gpios are not
@@ -211,7 +219,11 @@ EXPORT_SYMBOL_GPL(viafb_gpio_lookup);
 /*
  * Platform device stuff.
  */
+<<<<<<< HEAD
 static __devinit int viafb_gpio_probe(struct platform_device *platdev)
+=======
+static int viafb_gpio_probe(struct platform_device *platdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct viafb_dev *vdev = platdev->dev.platform_data;
 	struct via_port_cfg *port_cfg = vdev->port_cfg;

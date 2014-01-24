@@ -14,6 +14,11 @@
 // #include <linux/mm.h>
 #include <linux/kbuild.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/hibernate.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SPARC32
 int sparc32_foo(void)
 {
@@ -24,6 +29,22 @@ int sparc32_foo(void)
 #else
 int sparc64_foo(void)
 {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HIBERNATION
+	BLANK();
+	OFFSET(SC_REG_FP, saved_context, fp);
+	OFFSET(SC_REG_CWP, saved_context, cwp);
+	OFFSET(SC_REG_WSTATE, saved_context, wstate);
+
+	OFFSET(SC_REG_TICK, saved_context, tick);
+	OFFSET(SC_REG_PSTATE, saved_context, pstate);
+
+	OFFSET(SC_REG_G4, saved_context, g4);
+	OFFSET(SC_REG_G5, saved_context, g5);
+	OFFSET(SC_REG_G6, saved_context, g6);
+#endif
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #endif

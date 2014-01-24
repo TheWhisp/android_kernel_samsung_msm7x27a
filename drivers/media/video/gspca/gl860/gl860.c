@@ -18,6 +18,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "gspca.h"
 #include "gl860.h"
 
@@ -334,7 +340,10 @@ static int sd_config(struct gspca_dev *gspca_dev,
 		return -1;
 
 	cam = &gspca_dev->cam;
+<<<<<<< HEAD
 	gspca_dev->nbalt = 4;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (sd->sensor) {
 	case ID_MI1320:
@@ -521,6 +530,7 @@ static struct usb_driver sd_driver = {
 
 /*====================== Init and Exit module functions ====================*/
 
+<<<<<<< HEAD
 static int __init sd_mod_init(void)
 {
 	PDEBUG(D_PROBE, "driver startup - version %s", DRIVER_VERSION);
@@ -537,6 +547,9 @@ static void __exit sd_mod_exit(void)
 
 module_init(sd_mod_init);
 module_exit(sd_mod_exit);
+=======
+module_usb_driver(sd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*==========================================================================*/
 
@@ -572,9 +585,14 @@ int gl860_RTx(struct gspca_dev *gspca_dev,
 	}
 
 	if (r < 0)
+<<<<<<< HEAD
 		err("ctrl transfer failed %4d "
 			"[p%02x r%d v%04x i%04x len%d]",
 			r, pref, req, val, index, len);
+=======
+		pr_err("ctrl transfer failed %4d [p%02x r%d v%04x i%04x len%d]\n",
+		       r, pref, req, val, index, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else if (len > 1 && r < len)
 		PDEBUG(D_ERR, "short ctrl transfer %d/%d", r, len);
 

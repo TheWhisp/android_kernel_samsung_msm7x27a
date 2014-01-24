@@ -18,6 +18,7 @@
 #include <asm/mach/irq.h>
 #include <mach/pm.h>
 #include <mach/bridge-regs.h>
+<<<<<<< HEAD
 #include "common.h"
 
 static void gpio_irq_handler(unsigned int irq, struct irq_desc *desc)
@@ -36,6 +37,11 @@ static void gpio_irq_handler(unsigned int irq, struct irq_desc *desc)
 	}
 }
 
+=======
+#include <plat/orion-gpio.h>
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 static void pmu_irq_mask(struct irq_data *d)
 {
 	int pin = irq_to_pmu(d->irq);
@@ -102,16 +108,46 @@ static void pmu_irq_handler(unsigned int irq, struct irq_desc *desc)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static int __initdata gpio0_irqs[4] = {
+	IRQ_DOVE_GPIO_0_7,
+	IRQ_DOVE_GPIO_8_15,
+	IRQ_DOVE_GPIO_16_23,
+	IRQ_DOVE_GPIO_24_31,
+};
+
+static int __initdata gpio1_irqs[4] = {
+	IRQ_DOVE_HIGH_GPIO,
+	0,
+	0,
+	0,
+};
+
+static int __initdata gpio2_irqs[4] = {
+	0,
+	0,
+	0,
+	0,
+};
+
+>>>>>>> refs/remotes/origin/master
 void __init dove_init_irq(void)
 {
 	int i;
 
+<<<<<<< HEAD
 	orion_irq_init(0, (void __iomem *)(IRQ_VIRT_BASE + IRQ_MASK_LOW_OFF));
 	orion_irq_init(32, (void __iomem *)(IRQ_VIRT_BASE + IRQ_MASK_HIGH_OFF));
+=======
+	orion_irq_init(0, IRQ_VIRT_BASE + IRQ_MASK_LOW_OFF);
+	orion_irq_init(32, IRQ_VIRT_BASE + IRQ_MASK_HIGH_OFF);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Initialize gpiolib for GPIOs 0-71.
 	 */
+<<<<<<< HEAD
 	orion_gpio_init(0, 32, DOVE_GPIO_LO_VIRT_BASE, 0,
 			IRQ_DOVE_GPIO_START);
 	irq_set_chained_handler(IRQ_DOVE_GPIO_0_7, gpio_irq_handler);
@@ -125,6 +161,16 @@ void __init dove_init_irq(void)
 
 	orion_gpio_init(64, 8, DOVE_GPIO2_VIRT_BASE, 0,
 			IRQ_DOVE_GPIO_START + 64);
+=======
+	orion_gpio_init(NULL, 0, 32, DOVE_GPIO_LO_VIRT_BASE, 0,
+			IRQ_DOVE_GPIO_START, gpio0_irqs);
+
+	orion_gpio_init(NULL, 32, 32, DOVE_GPIO_HI_VIRT_BASE, 0,
+			IRQ_DOVE_GPIO_START + 32, gpio1_irqs);
+
+	orion_gpio_init(NULL, 64, 8, DOVE_GPIO2_VIRT_BASE, 0,
+			IRQ_DOVE_GPIO_START + 64, gpio2_irqs);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Mask and clear PMU interrupts

@@ -26,11 +26,18 @@
 #include <linux/coredump.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/cacheflush.h>
 #include <asm/a.out-core.h>
 
+<<<<<<< HEAD
 static int load_aout_binary(struct linux_binprm *, struct pt_regs * regs);
 static int load_aout_library(struct file*);
 static int aout_core_dump(struct coredump_params *cprm);
@@ -51,15 +58,25 @@ static int set_brk(unsigned long start, unsigned long end)
 	end = PAGE_ALIGN(end);
 	if (end > start) {
 		unsigned long addr;
+<<<<<<< HEAD
 		down_write(&current->mm->mmap_sem);
 		addr = do_brk(start, end - start);
 		up_write(&current->mm->mmap_sem);
+=======
+		addr = vm_brk(start, end - start);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (BAD_ADDR(addr))
 			return addr;
 	}
 	return 0;
 }
 
+=======
+static int load_aout_binary(struct linux_binprm *);
+static int load_aout_library(struct file*);
+
+#ifdef CONFIG_COREDUMP
+>>>>>>> refs/remotes/origin/master
 /*
  * Routine writes a core dump image in the current directory.
  * Currently only a stub-function.
@@ -69,10 +86,15 @@ static int set_brk(unsigned long start, unsigned long end)
  * field, which also makes sure the core-dumps won't be recursive if the
  * dumping of the process results in another error..
  */
+<<<<<<< HEAD
 
 static int aout_core_dump(struct coredump_params *cprm)
 {
 	struct file *file = cprm->file;
+=======
+static int aout_core_dump(struct coredump_params *cprm)
+{
+>>>>>>> refs/remotes/origin/master
 	mm_segment_t fs;
 	int has_dumped = 0;
 	void __user *dump_start;
@@ -89,10 +111,16 @@ static int aout_core_dump(struct coredump_params *cprm)
 	fs = get_fs();
 	set_fs(KERNEL_DS);
 	has_dumped = 1;
+<<<<<<< HEAD
 	current->flags |= PF_DUMPCORE;
        	strncpy(dump.u_comm, current->comm, sizeof(dump.u_comm));
 	dump.u_ar0 = offsetof(struct user, regs);
 	dump.signal = cprm->signr;
+=======
+       	strncpy(dump.u_comm, current->comm, sizeof(dump.u_comm));
+	dump.u_ar0 = offsetof(struct user, regs);
+	dump.signal = cprm->siginfo->si_signo;
+>>>>>>> refs/remotes/origin/master
 	aout_dump_thread(cprm->regs, &dump);
 
 /* If the size of the dump file exceeds the rlimit, then see what would happen
@@ -113,10 +141,17 @@ static int aout_core_dump(struct coredump_params *cprm)
 
 	set_fs(KERNEL_DS);
 /* struct user */
+<<<<<<< HEAD
 	if (!dump_write(file, &dump, sizeof(dump)))
 		goto end_coredump;
 /* Now dump all of the user data.  Include malloced stuff as well */
 	if (!dump_seek(cprm->file, PAGE_SIZE - sizeof(dump)))
+=======
+	if (!dump_emit(cprm, &dump, sizeof(dump)))
+		goto end_coredump;
+/* Now dump all of the user data.  Include malloced stuff as well */
+	if (!dump_skip(cprm, PAGE_SIZE - sizeof(dump)))
+>>>>>>> refs/remotes/origin/master
 		goto end_coredump;
 /* now we start writing out the user space info */
 	set_fs(USER_DS);
@@ -124,20 +159,57 @@ static int aout_core_dump(struct coredump_params *cprm)
 	if (dump.u_dsize != 0) {
 		dump_start = START_DATA(dump);
 		dump_size = dump.u_dsize << PAGE_SHIFT;
+<<<<<<< HEAD
 		if (!dump_write(file, dump_start, dump_size))
+=======
+		if (!dump_emit(cprm, dump_start, dump_size))
+>>>>>>> refs/remotes/origin/master
 			goto end_coredump;
 	}
 /* Now prepare to dump the stack area */
 	if (dump.u_ssize != 0) {
 		dump_start = START_STACK(dump);
 		dump_size = dump.u_ssize << PAGE_SHIFT;
+<<<<<<< HEAD
 		if (!dump_write(file, dump_start, dump_size))
+=======
+		if (!dump_emit(cprm, dump_start, dump_size))
+>>>>>>> refs/remotes/origin/master
 			goto end_coredump;
 	}
 end_coredump:
 	set_fs(fs);
 	return has_dumped;
 }
+<<<<<<< HEAD
+=======
+#else
+#define aout_core_dump NULL
+#endif
+
+static struct linux_binfmt aout_format = {
+	.module		= THIS_MODULE,
+	.load_binary	= load_aout_binary,
+	.load_shlib	= load_aout_library,
+	.core_dump	= aout_core_dump,
+	.min_coredump	= PAGE_SIZE
+};
+
+#define BAD_ADDR(x)	((unsigned long)(x) >= TASK_SIZE)
+
+static int set_brk(unsigned long start, unsigned long end)
+{
+	start = PAGE_ALIGN(start);
+	end = PAGE_ALIGN(end);
+	if (end > start) {
+		unsigned long addr;
+		addr = vm_brk(start, end - start);
+		if (BAD_ADDR(addr))
+			return addr;
+	}
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * create_aout_tables() parses the env- and arg-strings in new user
@@ -202,8 +274,14 @@ static unsigned long __user *create_aout_tables(char __user *p, struct linux_bin
  * libraries.  There is no binary dependent code anywhere else.
  */
 
+<<<<<<< HEAD
 static int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 {
+=======
+static int load_aout_binary(struct linux_binprm * bprm)
+{
+	struct pt_regs *regs = current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 	struct exec ex;
 	unsigned long error;
 	unsigned long fd_offset;
@@ -214,7 +292,11 @@ static int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 	if ((N_MAGIC(ex) != ZMAGIC && N_MAGIC(ex) != OMAGIC &&
 	     N_MAGIC(ex) != QMAGIC && N_MAGIC(ex) != NMAGIC) ||
 	    N_TRSIZE(ex) || N_DRSIZE(ex) ||
+<<<<<<< HEAD
 	    i_size_read(bprm->file->f_path.dentry->d_inode) < ex.a_text+ex.a_data+N_SYMSIZE(ex)+N_TXTOFF(ex)) {
+=======
+	    i_size_read(file_inode(bprm->file)) < ex.a_text+ex.a_data+N_SYMSIZE(ex)+N_TXTOFF(ex)) {
+>>>>>>> refs/remotes/origin/master
 		return -ENOEXEC;
 	}
 
@@ -222,7 +304,11 @@ static int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 	 * Requires a mmap handler. This prevents people from using a.out
 	 * as part of an exploit attack against /proc-related vulnerabilities.
 	 */
+<<<<<<< HEAD
 	if (!bprm->file->f_op || !bprm->file->f_op->mmap)
+=======
+	if (!bprm->file->f_op->mmap)
+>>>>>>> refs/remotes/origin/master
 		return -ENOEXEC;
 
 	fd_offset = N_TXTOFF(ex);
@@ -256,11 +342,29 @@ static int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 		(current->mm->start_data = N_DATADDR(ex));
 	current->mm->brk = ex.a_bss +
 		(current->mm->start_brk = N_BSSADDR(ex));
+<<<<<<< HEAD
 	current->mm->free_area_cache = current->mm->mmap_base;
 	current->mm->cached_hole_size = 0;
 
+<<<<<<< HEAD
 	install_exec_creds(bprm);
  	current->flags &= ~PF_FORKNOEXEC;
+=======
+=======
+
+>>>>>>> refs/remotes/origin/master
+	retval = setup_arg_pages(bprm, STACK_TOP, EXSTACK_DEFAULT);
+	if (retval < 0) {
+		/* Someone check-me: is this error path enough? */
+		send_sig(SIGKILL, current, 0);
+		return retval;
+	}
+
+	install_exec_creds(bprm);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (N_MAGIC(ex) == OMAGIC) {
 		unsigned long text_addr, map_size;
@@ -275,23 +379,39 @@ static int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 		pos = 32;
 		map_size = ex.a_text+ex.a_data;
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 		down_write(&current->mm->mmap_sem);
 		error = do_brk(text_addr & PAGE_MASK, map_size);
 		up_write(&current->mm->mmap_sem);
+=======
+		error = vm_brk(text_addr & PAGE_MASK, map_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = vm_brk(text_addr & PAGE_MASK, map_size);
+>>>>>>> refs/remotes/origin/master
 		if (error != (text_addr & PAGE_MASK)) {
 			send_sig(SIGKILL, current, 0);
 			return error;
 		}
 
+<<<<<<< HEAD
 		error = bprm->file->f_op->read(bprm->file,
 			  (char __user *)text_addr,
 			  ex.a_text+ex.a_data, &pos);
+=======
+		error = read_code(bprm->file, text_addr, pos,
+				  ex.a_text+ex.a_data);
+>>>>>>> refs/remotes/origin/master
 		if ((signed long)error < 0) {
 			send_sig(SIGKILL, current, 0);
 			return error;
 		}
+<<<<<<< HEAD
 			 
 		flush_icache_range(text_addr, text_addr+ex.a_text+ex.a_data);
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if ((ex.a_text & 0xfff || ex.a_data & 0xfff) &&
 		    (N_MAGIC(ex) != NMAGIC) && printk_ratelimit())
@@ -307,10 +427,15 @@ static int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 		}
 
 		if (!bprm->file->f_op->mmap||((fd_offset & ~PAGE_MASK) != 0)) {
+<<<<<<< HEAD
 			loff_t pos = fd_offset;
+<<<<<<< HEAD
 			down_write(&current->mm->mmap_sem);
 			do_brk(N_TXTADDR(ex), ex.a_text+ex.a_data);
 			up_write(&current->mm->mmap_sem);
+=======
+			vm_brk(N_TXTADDR(ex), ex.a_text+ex.a_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 			bprm->file->f_op->read(bprm->file,
 					(char __user *)N_TXTADDR(ex),
 					ex.a_text+ex.a_data, &pos);
@@ -320,24 +445,55 @@ static int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 			goto beyond_if;
 		}
 
+<<<<<<< HEAD
 		down_write(&current->mm->mmap_sem);
 		error = do_mmap(bprm->file, N_TXTADDR(ex), ex.a_text,
 			PROT_READ | PROT_EXEC,
 			MAP_FIXED | MAP_PRIVATE | MAP_DENYWRITE | MAP_EXECUTABLE,
 			fd_offset);
 		up_write(&current->mm->mmap_sem);
+=======
+=======
+			vm_brk(N_TXTADDR(ex), ex.a_text+ex.a_data);
+			read_code(bprm->file, N_TXTADDR(ex), fd_offset,
+				  ex.a_text + ex.a_data);
+			goto beyond_if;
+		}
+
+>>>>>>> refs/remotes/origin/master
+		error = vm_mmap(bprm->file, N_TXTADDR(ex), ex.a_text,
+			PROT_READ | PROT_EXEC,
+			MAP_FIXED | MAP_PRIVATE | MAP_DENYWRITE | MAP_EXECUTABLE,
+			fd_offset);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (error != N_TXTADDR(ex)) {
 			send_sig(SIGKILL, current, 0);
 			return error;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		down_write(&current->mm->mmap_sem);
  		error = do_mmap(bprm->file, N_DATADDR(ex), ex.a_data,
 				PROT_READ | PROT_WRITE | PROT_EXEC,
 				MAP_FIXED | MAP_PRIVATE | MAP_DENYWRITE | MAP_EXECUTABLE,
 				fd_offset + ex.a_text);
 		up_write(&current->mm->mmap_sem);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		error = vm_mmap(bprm->file, N_DATADDR(ex), ex.a_data,
+				PROT_READ | PROT_WRITE | PROT_EXEC,
+				MAP_FIXED | MAP_PRIVATE | MAP_DENYWRITE | MAP_EXECUTABLE,
+				fd_offset + ex.a_text);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (error != N_DATADDR(ex)) {
 			send_sig(SIGKILL, current, 0);
 			return error;
@@ -352,6 +508,8 @@ beyond_if:
 		return retval;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = setup_arg_pages(bprm, STACK_TOP, EXSTACK_DEFAULT);
 	if (retval < 0) { 
 		/* Someone check-me: is this error path enough? */ 
@@ -359,6 +517,10 @@ beyond_if:
 		return retval;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	current->mm->start_stack =
 		(unsigned long) create_aout_tables((char __user *) bprm->p, bprm);
 #ifdef __alpha__
@@ -376,7 +538,11 @@ static int load_aout_library(struct file *file)
 	int retval;
 	struct exec ex;
 
+<<<<<<< HEAD
 	inode = file->f_path.dentry->d_inode;
+=======
+	inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 
 	retval = -ENOEXEC;
 	error = kernel_read(file, 0, (char *) &ex, sizeof(ex));
@@ -394,7 +560,11 @@ static int load_aout_library(struct file *file)
 	 * Requires a mmap handler. This prevents people from using a.out
 	 * as part of an exploit attack against /proc-related vulnerabilities.
 	 */
+<<<<<<< HEAD
 	if (!file->f_op || !file->f_op->mmap)
+=======
+	if (!file->f_op->mmap)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	if (N_FLAGS(ex))
@@ -406,33 +576,60 @@ static int load_aout_library(struct file *file)
 	start_addr =  ex.a_entry & 0xfffff000;
 
 	if ((N_TXTOFF(ex) & ~PAGE_MASK) != 0) {
+<<<<<<< HEAD
 		loff_t pos = N_TXTOFF(ex);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (printk_ratelimit())
 		{
 			printk(KERN_WARNING 
 			       "N_TXTOFF is not page aligned. Please convert library: %s\n",
 			       file->f_path.dentry->d_name.name);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		down_write(&current->mm->mmap_sem);
 		do_brk(start_addr, ex.a_text + ex.a_data + ex.a_bss);
 		up_write(&current->mm->mmap_sem);
+=======
+		vm_brk(start_addr, ex.a_text + ex.a_data + ex.a_bss);
+>>>>>>> refs/remotes/origin/cm-10.0
 		
 		file->f_op->read(file, (char __user *)start_addr,
 			ex.a_text + ex.a_data, &pos);
 		flush_icache_range((unsigned long) start_addr,
 				   (unsigned long) start_addr + ex.a_text + ex.a_data);
 
+=======
+		vm_brk(start_addr, ex.a_text + ex.a_data + ex.a_bss);
+		
+		read_code(file, start_addr, N_TXTOFF(ex),
+			  ex.a_text + ex.a_data);
+>>>>>>> refs/remotes/origin/master
 		retval = 0;
 		goto out;
 	}
 	/* Now use mmap to map the library into memory. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	down_write(&current->mm->mmap_sem);
 	error = do_mmap(file, start_addr, ex.a_text + ex.a_data,
 			PROT_READ | PROT_WRITE | PROT_EXEC,
 			MAP_FIXED | MAP_PRIVATE | MAP_DENYWRITE,
 			N_TXTOFF(ex));
 	up_write(&current->mm->mmap_sem);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	error = vm_mmap(file, start_addr, ex.a_text + ex.a_data,
+			PROT_READ | PROT_WRITE | PROT_EXEC,
+			MAP_FIXED | MAP_PRIVATE | MAP_DENYWRITE,
+			N_TXTOFF(ex));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	retval = error;
 	if (error != start_addr)
 		goto out;
@@ -440,9 +637,17 @@ static int load_aout_library(struct file *file)
 	len = PAGE_ALIGN(ex.a_text + ex.a_data);
 	bss = ex.a_text + ex.a_data + ex.a_bss;
 	if (bss > len) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		down_write(&current->mm->mmap_sem);
 		error = do_brk(start_addr + len, bss - len);
 		up_write(&current->mm->mmap_sem);
+=======
+		error = vm_brk(start_addr + len, bss - len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = vm_brk(start_addr + len, bss - len);
+>>>>>>> refs/remotes/origin/master
 		retval = error;
 		if (error != start_addr + len)
 			goto out;
@@ -454,7 +659,17 @@ out:
 
 static int __init init_aout_binfmt(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return register_binfmt(&aout_format);
+=======
+	register_binfmt(&aout_format);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	register_binfmt(&aout_format);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit exit_aout_binfmt(void)

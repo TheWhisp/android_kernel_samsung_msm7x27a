@@ -53,4 +53,8 @@ Maintainers
   and to Simtec Electronics for allowing me time to work on this.
 
 
+<<<<<<< HEAD
 (c) 2004 Ben Dooks
+=======
+(c) 2004 Ben Dooks
+>>>>>>> refs/remotes/origin/master

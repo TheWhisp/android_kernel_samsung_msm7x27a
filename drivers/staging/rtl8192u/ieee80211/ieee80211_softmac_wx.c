@@ -1,5 +1,9 @@
 /* IEEE 802.11 SoftMAC layer
+<<<<<<< HEAD
  * Copyright (c) 2005 Andrea Merello <andreamrl@tiscali.it>
+=======
+ * Copyright (c) 2005 Andrea Merello <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Mostly extracted from the rtl8180-sa2400 driver for the
  * in-kernel generic ieee802.11 stack.
@@ -14,6 +18,11 @@
  */
 
 
+<<<<<<< HEAD
+=======
+#include <linux/etherdevice.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "ieee80211.h"
 #include "dot11d.h"
 /* FIXME: add A freqs */
@@ -136,7 +145,10 @@ int ieee80211_wx_set_wap(struct ieee80211_device *ieee,
 {
 
 	int ret = 0;
+<<<<<<< HEAD
 	u8 zero[] = {0,0,0,0,0,0};
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	short ifup = ieee->proto_started;//dev->flags & IFF_UP;
@@ -165,7 +177,11 @@ int ieee80211_wx_set_wap(struct ieee80211_device *ieee,
 	spin_lock_irqsave(&ieee->lock, flags);
 
 	memcpy(ieee->current_network.bssid, temp->sa_data, ETH_ALEN);
+<<<<<<< HEAD
 	ieee->wap_set = memcmp(temp->sa_data, zero,ETH_ALEN)!=0;
+=======
+	ieee->wap_set = !is_zero_ether_addr(temp->sa_data);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&ieee->lock, flags);
 
@@ -301,7 +317,11 @@ void ieee80211_wx_sync_scan_wq(struct work_struct *work)
 	HT_EXTCHNL_OFFSET chan_offset=0;
 	HT_CHANNEL_WIDTH bandwidth=0;
 	int b40M = 0;
+<<<<<<< HEAD
 	static int count = 0;
+=======
+	static int count;
+>>>>>>> refs/remotes/origin/master
 	chan = ieee->current_network.channel;
 	netif_carrier_off(ieee->dev);
 
@@ -481,6 +501,7 @@ int ieee80211_wx_get_name(struct ieee80211_device *ieee,
 			     struct iw_request_info *info,
 			     union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	strcpy(wrqu->name, "802.11");
 	if(ieee->modulation & IEEE80211_CCK_MODULATION){
 		strcat(wrqu->name, "b");
@@ -497,6 +518,25 @@ int ieee80211_wx_get_name(struct ieee80211_device *ieee,
 	else if(ieee->state != IEEE80211_NOLINK)
 		strcat(wrqu->name," link..");
 
+=======
+	strlcpy(wrqu->name, "802.11", IFNAMSIZ);
+	if (ieee->modulation & IEEE80211_CCK_MODULATION) {
+		strlcat(wrqu->name, "b", IFNAMSIZ);
+		if (ieee->modulation & IEEE80211_OFDM_MODULATION)
+			strlcat(wrqu->name, "/g", IFNAMSIZ);
+	} else if (ieee->modulation & IEEE80211_OFDM_MODULATION) {
+		strlcat(wrqu->name, "g", IFNAMSIZ);
+	}
+
+	if (ieee->mode & (IEEE_N_24G | IEEE_N_5G))
+		strlcat(wrqu->name, "/n", IFNAMSIZ);
+
+	if ((ieee->state == IEEE80211_LINKED) ||
+	    (ieee->state == IEEE80211_LINKED_SCANNING))
+		strlcat(wrqu->name, " linked", IFNAMSIZ);
+	else if (ieee->state != IEEE80211_NOLINK)
+		strlcat(wrqu->name, " link..", IFNAMSIZ);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

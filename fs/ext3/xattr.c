@@ -50,6 +50,8 @@
  * by the buffer lock.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
@@ -58,6 +60,16 @@
 #include <linux/mbcache.h>
 #include <linux/quotaops.h>
 #include <linux/rwsem.h>
+=======
+#include "ext3.h"
+#include <linux/mbcache.h>
+#include <linux/quotaops.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ext3.h"
+#include <linux/mbcache.h>
+#include <linux/quotaops.h>
+>>>>>>> refs/remotes/origin/master
 #include "xattr.h"
 #include "acl.h"
 
@@ -818,10 +830,17 @@ inserted:
 			ea_idebug(inode, "creating block %d", block);
 
 			new_bh = sb_getblk(sb, block);
+<<<<<<< HEAD
 			if (!new_bh) {
 getblk_failed:
 				ext3_free_blocks(handle, inode, block, 1);
 				error = -EIO;
+=======
+			if (unlikely(!new_bh)) {
+getblk_failed:
+				ext3_free_blocks(handle, inode, block, 1);
+				error = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 				goto cleanup;
 			}
 			lock_buffer(new_bh);

@@ -26,8 +26,13 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/vmalloc.h>
 #include <linux/init.h>
@@ -37,18 +42,32 @@
 #include <linux/io.h>
 #include <asm/mmu.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/fixmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define flush_HPTE(X, va, pg)	_tlbie(va)
+=======
+#include <asm/fixmap.h>
+>>>>>>> refs/remotes/origin/master
 
 unsigned long ioremap_base;
 unsigned long ioremap_bot;
 EXPORT_SYMBOL(ioremap_bot);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* The maximum lowmem defaults to 768Mb, but this can be configured to
  * another value.
  */
 #define MAX_LOW_MEM	CONFIG_LOWMEM_SIZE
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_SMP
 struct pgtable_cache_struct quicklists;
 #endif
@@ -79,9 +98,18 @@ static void __iomem *__ioremap(phys_addr_t addr, unsigned long size,
 		p >= memory_start && p < virt_to_phys(high_memory) &&
 		!(p >= virt_to_phys((unsigned long)&__bss_stop) &&
 		p < virt_to_phys((unsigned long)__bss_stop))) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "__ioremap(): phys addr "PTE_FMT
+<<<<<<< HEAD
 			" is RAM lr %p\n", (unsigned long)p,
+=======
+			" is RAM lr %pf\n", (unsigned long)p,
+>>>>>>> refs/remotes/origin/cm-10.0
 			__builtin_return_address(0));
+=======
+		pr_warn("__ioremap(): phys addr "PTE_FMT" is RAM lr %pf\n",
+			(unsigned long)p, __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -132,9 +160,16 @@ void __iomem *ioremap(phys_addr_t addr, unsigned long size)
 }
 EXPORT_SYMBOL(ioremap);
 
+<<<<<<< HEAD
 void iounmap(void *addr)
 {
 	if (addr > high_memory && (unsigned long) addr < ioremap_bot)
+=======
+void iounmap(void __iomem *addr)
+{
+	if ((__force void *)addr > high_memory &&
+					(unsigned long) addr < ioremap_bot)
+>>>>>>> refs/remotes/origin/master
 		vfree((void *) (PAGE_MASK & (unsigned long) addr));
 }
 EXPORT_SYMBOL(iounmap);
@@ -156,8 +191,12 @@ int map_page(unsigned long va, phys_addr_t pa, int flags)
 		set_pte_at(&init_mm, va, pg, pfn_pte(pa >> PAGE_SHIFT,
 				__pgprot(flags)));
 		if (unlikely(mem_init_done))
+<<<<<<< HEAD
 			flush_HPTE(0, va, pmd_val(*pd));
 			/* flush_HPTE(0, va, pg); */
+=======
+			_tlbie(va);
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -171,7 +210,15 @@ void __init mapin_ram(void)
 
 	v = CONFIG_KERNEL_START;
 	p = memory_start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (s = 0; s < memory_size; s += PAGE_SIZE) {
+=======
+	for (s = 0; s < lowmem_size; s += PAGE_SIZE) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (s = 0; s < lowmem_size; s += PAGE_SIZE) {
+>>>>>>> refs/remotes/origin/master
 		f = _PAGE_PRESENT | _PAGE_ACCESSED |
 				_PAGE_SHARED | _PAGE_HWEXEC;
 		if ((char *) v < _stext || (char *) v >= _etext)
@@ -254,3 +301,22 @@ __init_refok pte_t *pte_alloc_one_kernel(struct mm_struct *mm,
 	}
 	return pte;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t flags)
+{
+	unsigned long address = __fix_to_virt(idx);
+
+	if (idx >= __end_of_fixed_addresses)
+		BUG();
+
+	map_page(address, phys, pgprot_val(flags));
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

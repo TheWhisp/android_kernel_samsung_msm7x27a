@@ -1,6 +1,7 @@
 #ifndef _ASM_PARISC_UNISTD_H_
 #define _ASM_PARISC_UNISTD_H_
 
+<<<<<<< HEAD
 /*
  * This file contains the system call numbers.
  */
@@ -835,6 +836,10 @@
 #define LINUX_GATEWAY_ADDR      0x100
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/unistd.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 #define SYS_ify(syscall_name)   __NR_##syscall_name
@@ -981,6 +986,10 @@ type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)	\
 #define __ARCH_WANT_SYS_SIGNAL
 #define __ARCH_WANT_SYS_TIME
 #define __ARCH_WANT_COMPAT_SYS_TIME
+<<<<<<< HEAD
+=======
+#define __ARCH_WANT_COMPAT_SYS_SCHED_RR_GET_INTERVAL
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_SYS_UTIME
 #define __ARCH_WANT_SYS_WAITPID
 #define __ARCH_WANT_SYS_SOCKETCALL
@@ -992,14 +1001,22 @@ type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)	\
 #define __ARCH_WANT_SYS_OLDUMOUNT
 #define __ARCH_WANT_SYS_SIGPENDING
 #define __ARCH_WANT_SYS_SIGPROCMASK
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 #define __ARCH_WANT_COMPAT_SYS_RT_SIGSUSPEND
+=======
+#define __ARCH_WANT_SYS_FORK
+#define __ARCH_WANT_SYS_VFORK
+#define __ARCH_WANT_SYS_CLONE
+#define __ARCH_WANT_COMPAT_SYS_SENDFILE
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASSEMBLY__ */
 
 #undef STR
 
+<<<<<<< HEAD
 /*
  * "Conditional" syscalls
  *
@@ -1009,4 +1026,6 @@ type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)	\
 #define cond_syscall(x) asm(".weak\t" #x "\n\t.set\t" #x ",sys_ni_syscall")
 
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_PARISC_UNISTD_H_ */

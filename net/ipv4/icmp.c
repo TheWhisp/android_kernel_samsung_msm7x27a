@@ -62,6 +62,16 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/jiffies.h>
@@ -89,11 +99,21 @@
 #include <linux/errno.h>
 #include <linux/timer.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <net/checksum.h>
 #include <net/xfrm.h>
 #include <net/inet_common.h>
+<<<<<<< HEAD
+=======
+#include <net/ip_fib.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Build xmit assembly blocks
@@ -252,10 +272,18 @@ static inline bool icmpv4_xrlim_allow(struct net *net, struct rtable *rt,
 
 	/* Limit if icmp type is enabled in ratemask. */
 	if ((1 << type) & net->ipv4.sysctl_icmp_ratemask) {
+<<<<<<< HEAD
 		if (!rt->peer)
 			rt_bind_peer(rt, fl4->daddr, 1);
 		rc = inet_peer_xrlim_allow(rt->peer,
 					   net->ipv4.sysctl_icmp_ratelimit);
+=======
+		struct inet_peer *peer = inet_getpeer_v4(net->ipv4.peers, fl4->daddr, 1);
+		rc = inet_peer_xrlim_allow(peer,
+					   net->ipv4.sysctl_icmp_ratelimit);
+		if (peer)
+			inet_putpeer(peer);
+>>>>>>> refs/remotes/origin/master
 	}
 out:
 	return rc;
@@ -333,7 +361,11 @@ static void icmp_reply(struct icmp_bxm *icmp_param, struct sk_buff *skb)
 	struct flowi4 fl4;
 	struct sock *sk;
 	struct inet_sock *inet;
+<<<<<<< HEAD
 	__be32 daddr;
+=======
+	__be32 daddr, saddr;
+>>>>>>> refs/remotes/origin/master
 
 	if (ip_options_echo(&icmp_param->replyopts.opt.opt, skb))
 		return;
@@ -347,8 +379,17 @@ static void icmp_reply(struct icmp_bxm *icmp_param, struct sk_buff *skb)
 
 	inet->tos = ip_hdr(skb)->tos;
 	daddr = ipc.addr = ip_hdr(skb)->saddr;
+<<<<<<< HEAD
 	ipc.opt = NULL;
 	ipc.tx_flags = 0;
+=======
+	saddr = fib_compute_spec_dst(skb);
+	ipc.opt = NULL;
+	ipc.tx_flags = 0;
+	ipc.ttl = 0;
+	ipc.tos = -1;
+
+>>>>>>> refs/remotes/origin/master
 	if (icmp_param->replyopts.opt.opt.optlen) {
 		ipc.opt = &icmp_param->replyopts.opt;
 		if (ipc.opt->opt.srr)
@@ -356,7 +397,11 @@ static void icmp_reply(struct icmp_bxm *icmp_param, struct sk_buff *skb)
 	}
 	memset(&fl4, 0, sizeof(fl4));
 	fl4.daddr = daddr;
+<<<<<<< HEAD
 	fl4.saddr = rt->rt_spec_dst;
+=======
+	fl4.saddr = saddr;
+>>>>>>> refs/remotes/origin/master
 	fl4.flowi4_tos = RT_TOS(ip_hdr(skb)->tos);
 	fl4.flowi4_proto = IPPROTO_ICMP;
 	security_skb_classify_flow(skb, flowi4_to_flowi(&fl4));
@@ -478,7 +523,11 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 {
 	struct iphdr *iph;
 	int room;
+<<<<<<< HEAD
 	struct icmp_bxm icmp_param;
+=======
+	struct icmp_bxm *icmp_param;
+>>>>>>> refs/remotes/origin/master
 	struct rtable *rt = skb_rtable(skb_in);
 	struct ipcm_cookie ipc;
 	struct flowi4 fl4;
@@ -499,7 +548,12 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 	iph = ip_hdr(skb_in);
 
 	if ((u8 *)iph < skb_in->head ||
+<<<<<<< HEAD
 	    (skb_in->network_header + sizeof(*iph)) > skb_in->tail)
+=======
+	    (skb_network_header(skb_in) + sizeof(*iph)) >
+	    skb_tail_pointer(skb_in))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	/*
@@ -553,9 +607,19 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 		}
 	}
 
+<<<<<<< HEAD
 	sk = icmp_xmit_lock(net);
 	if (sk == NULL)
 		return;
+=======
+	icmp_param = kmalloc(sizeof(*icmp_param), GFP_ATOMIC);
+	if (!icmp_param)
+		return;
+
+	sk = icmp_xmit_lock(net);
+	if (sk == NULL)
+		goto out_free;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *	Construct source address and options.
@@ -568,7 +632,11 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 		rcu_read_lock();
 		if (rt_is_input_route(rt) &&
 		    net->ipv4.sysctl_icmp_errors_use_inbound_ifaddr)
+<<<<<<< HEAD
 			dev = dev_get_by_index_rcu(net, rt->rt_iif);
+=======
+			dev = dev_get_by_index_rcu(net, inet_iif(skb_in));
+>>>>>>> refs/remotes/origin/master
 
 		if (dev)
 			saddr = inet_select_addr(dev, 0, RT_SCOPE_LINK);
@@ -581,7 +649,11 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 					   IPTOS_PREC_INTERNETCONTROL) :
 					  iph->tos;
 
+<<<<<<< HEAD
 	if (ip_options_echo(&icmp_param.replyopts.opt.opt, skb_in))
+=======
+	if (ip_options_echo(&icmp_param->replyopts.opt.opt, skb_in))
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 
 
@@ -589,6 +661,7 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 	 *	Prepare data for ICMP header.
 	 */
 
+<<<<<<< HEAD
 	icmp_param.data.icmph.type	 = type;
 	icmp_param.data.icmph.code	 = code;
 	icmp_param.data.icmph.un.gateway = info;
@@ -602,6 +675,23 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 
 	rt = icmp_route_lookup(net, &fl4, skb_in, iph, saddr, tos,
 			       type, code, &icmp_param);
+=======
+	icmp_param->data.icmph.type	 = type;
+	icmp_param->data.icmph.code	 = code;
+	icmp_param->data.icmph.un.gateway = info;
+	icmp_param->data.icmph.checksum	 = 0;
+	icmp_param->skb	  = skb_in;
+	icmp_param->offset = skb_network_offset(skb_in);
+	inet_sk(sk)->tos = tos;
+	ipc.addr = iph->saddr;
+	ipc.opt = &icmp_param->replyopts.opt;
+	ipc.tx_flags = 0;
+	ipc.ttl = 0;
+	ipc.tos = -1;
+
+	rt = icmp_route_lookup(net, &fl4, skb_in, iph, saddr, tos,
+			       type, code, icmp_param);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rt))
 		goto out_unlock;
 
@@ -613,6 +703,7 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 	room = dst_mtu(&rt->dst);
 	if (room > 576)
 		room = 576;
+<<<<<<< HEAD
 	room -= sizeof(struct iphdr) + icmp_param.replyopts.opt.opt.optlen;
 	room -= sizeof(struct icmphdr);
 
@@ -622,27 +713,75 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 	icmp_param.head_len = sizeof(struct icmphdr);
 
 	icmp_push_reply(&icmp_param, &fl4, &ipc, &rt);
+=======
+	room -= sizeof(struct iphdr) + icmp_param->replyopts.opt.opt.optlen;
+	room -= sizeof(struct icmphdr);
+
+	icmp_param->data_len = skb_in->len - icmp_param->offset;
+	if (icmp_param->data_len > room)
+		icmp_param->data_len = room;
+	icmp_param->head_len = sizeof(struct icmphdr);
+
+	icmp_push_reply(icmp_param, &fl4, &ipc, &rt);
+>>>>>>> refs/remotes/origin/master
 ende:
 	ip_rt_put(rt);
 out_unlock:
 	icmp_xmit_unlock(sk);
+<<<<<<< HEAD
+=======
+out_free:
+	kfree(icmp_param);
+>>>>>>> refs/remotes/origin/master
 out:;
 }
 EXPORT_SYMBOL(icmp_send);
 
 
+<<<<<<< HEAD
 /*
  *	Handle ICMP_DEST_UNREACH, ICMP_TIME_EXCEED, and ICMP_QUENCH.
+=======
+static void icmp_socket_deliver(struct sk_buff *skb, u32 info)
+{
+	const struct iphdr *iph = (const struct iphdr *) skb->data;
+	const struct net_protocol *ipprot;
+	int protocol = iph->protocol;
+
+	/* Checkin full IP header plus 8 bytes of protocol to
+	 * avoid additional coding at protocol handlers.
+	 */
+	if (!pskb_may_pull(skb, iph->ihl * 4 + 8))
+		return;
+
+	raw_icmp_error(skb, protocol, info);
+
+	rcu_read_lock();
+	ipprot = rcu_dereference(inet_protos[protocol]);
+	if (ipprot && ipprot->err_handler)
+		ipprot->err_handler(skb, info);
+	rcu_read_unlock();
+}
+
+/*
+ *	Handle ICMP_DEST_UNREACH, ICMP_TIME_EXCEED, ICMP_QUENCH, and
+ *	ICMP_PARAMETERPROB.
+>>>>>>> refs/remotes/origin/master
  */
 
 static void icmp_unreach(struct sk_buff *skb)
 {
 	const struct iphdr *iph;
 	struct icmphdr *icmph;
+<<<<<<< HEAD
 	int hash, protocol;
 	const struct net_protocol *ipprot;
 	u32 info = 0;
 	struct net *net;
+=======
+	struct net *net;
+	u32 info = 0;
+>>>>>>> refs/remotes/origin/master
 
 	net = dev_net(skb_dst(skb)->dev);
 
@@ -670,18 +809,37 @@ static void icmp_unreach(struct sk_buff *skb)
 			break;
 		case ICMP_FRAG_NEEDED:
 			if (ipv4_config.no_pmtu_disc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				LIMIT_NETDEBUG(KERN_INFO "ICMP: %pI4: fragmentation needed and DF set.\n",
+=======
+				LIMIT_NETDEBUG(KERN_INFO pr_fmt("%pI4: fragmentation needed and DF set\n"),
+>>>>>>> refs/remotes/origin/cm-10.0
 					       &iph->daddr);
 			} else {
 				info = ip_rt_frag_needed(net, iph,
 							 ntohs(icmph->un.frag.mtu),
 							 skb->dev);
+=======
+				LIMIT_NETDEBUG(KERN_INFO pr_fmt("%pI4: fragmentation needed and DF set\n"),
+					       &iph->daddr);
+			} else {
+				info = ntohs(icmph->un.frag.mtu);
+>>>>>>> refs/remotes/origin/master
 				if (!info)
 					goto out;
 			}
 			break;
 		case ICMP_SR_FAILED:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			LIMIT_NETDEBUG(KERN_INFO "ICMP: %pI4: Source Route Failed.\n",
+=======
+			LIMIT_NETDEBUG(KERN_INFO pr_fmt("%pI4: Source Route Failed\n"),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			LIMIT_NETDEBUG(KERN_INFO pr_fmt("%pI4: Source Route Failed\n"),
+>>>>>>> refs/remotes/origin/master
 				       &iph->daddr);
 			break;
 		default:
@@ -712,7 +870,9 @@ static void icmp_unreach(struct sk_buff *skb)
 
 	if (!net->ipv4.sysctl_icmp_ignore_bogus_error_responses &&
 	    inet_addr_type(net, iph->daddr) == RTN_BROADCAST) {
+<<<<<<< HEAD
 		if (net_ratelimit())
+<<<<<<< HEAD
 			printk(KERN_WARNING "%pI4 sent an invalid ICMP "
 					    "type %u, code %u "
 					    "error to a broadcast: %pI4 on %s\n",
@@ -720,6 +880,12 @@ static void icmp_unreach(struct sk_buff *skb)
 			       icmph->type, icmph->code,
 			       &iph->daddr,
 			       skb->dev->name);
+=======
+			pr_warn("%pI4 sent an invalid ICMP type %u, code %u error to a broadcast: %pI4 on %s\n",
+				&ip_hdr(skb)->saddr,
+				icmph->type, icmph->code,
+				&iph->daddr, skb->dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	}
 
@@ -743,6 +909,16 @@ static void icmp_unreach(struct sk_buff *skb)
 	if (ipprot && ipprot->err_handler)
 		ipprot->err_handler(skb, info);
 	rcu_read_unlock();
+=======
+		net_warn_ratelimited("%pI4 sent an invalid ICMP type %u, code %u error to a broadcast: %pI4 on %s\n",
+				     &ip_hdr(skb)->saddr,
+				     icmph->type, icmph->code,
+				     &iph->daddr, skb->dev->name);
+		goto out;
+	}
+
+	icmp_socket_deliver(skb, info);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return;
@@ -758,6 +934,7 @@ out_err:
 
 static void icmp_redirect(struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	const struct iphdr *iph;
 
 	if (skb->len < sizeof(struct iphdr))
@@ -790,7 +967,11 @@ static void icmp_redirect(struct sk_buff *skb)
 	if (iph->protocol == IPPROTO_ICMP &&
 	    iph->ihl >= 5 &&
 	    pskb_may_pull(skb, (iph->ihl<<2)+8)) {
+<<<<<<< HEAD
 		ping_v4_err(skb, icmp_hdr(skb)->un.gateway);
+=======
+		ping_err(skb, icmp_hdr(skb)->un.gateway);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 out:
@@ -798,6 +979,17 @@ out:
 out_err:
 	ICMP_INC_STATS_BH(dev_net(skb->dev), ICMP_MIB_INERRORS);
 	goto out;
+=======
+	if (skb->len < sizeof(struct iphdr)) {
+		ICMP_INC_STATS_BH(dev_net(skb->dev), ICMP_MIB_INERRORS);
+		return;
+	}
+
+	if (!pskb_may_pull(skb, sizeof(struct iphdr)))
+		return;
+
+	icmp_socket_deliver(skb, icmp_hdr(skb)->un.gateway);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -871,6 +1063,7 @@ out_err:
 	goto out;
 }
 
+<<<<<<< HEAD
 
 /*
  *	Handle ICMP_ADDRESS_MASK requests.  (RFC950)
@@ -946,12 +1139,19 @@ static void icmp_address_reply(struct sk_buff *skb)
 				break;
 		}
 		if (!ifa && net_ratelimit()) {
+<<<<<<< HEAD
 			printk(KERN_INFO "Wrong address mask %pI4 from %s/%pI4\n",
 			       mp, dev->name, &ip_hdr(skb)->saddr);
+=======
+			pr_info("Wrong address mask %pI4 from %s/%pI4\n",
+				mp, dev->name, &ip_hdr(skb)->saddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void icmp_discard(struct sk_buff *skb)
 {
 }
@@ -995,7 +1195,11 @@ int icmp_rcv(struct sk_buff *skb)
 	case CHECKSUM_NONE:
 		skb->csum = 0;
 		if (__skb_checksum_complete(skb))
+<<<<<<< HEAD
 			goto error;
+=======
+			goto csum_error;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!pskb_pull(skb, sizeof(*icmph)))
@@ -1043,11 +1247,43 @@ int icmp_rcv(struct sk_buff *skb)
 drop:
 	kfree_skb(skb);
 	return 0;
+<<<<<<< HEAD
+=======
+csum_error:
+	ICMP_INC_STATS_BH(net, ICMP_MIB_CSUMERRORS);
+>>>>>>> refs/remotes/origin/master
 error:
 	ICMP_INC_STATS_BH(net, ICMP_MIB_INERRORS);
 	goto drop;
 }
 
+<<<<<<< HEAD
+=======
+void icmp_err(struct sk_buff *skb, u32 info)
+{
+	struct iphdr *iph = (struct iphdr *)skb->data;
+	int offset = iph->ihl<<2;
+	struct icmphdr *icmph = (struct icmphdr *)(skb->data + offset);
+	int type = icmp_hdr(skb)->type;
+	int code = icmp_hdr(skb)->code;
+	struct net *net = dev_net(skb->dev);
+
+	/*
+	 * Use ping_err to handle all icmp errors except those
+	 * triggered by ICMP_ECHOREPLY which sent from kernel.
+	 */
+	if (icmph->type != ICMP_ECHOREPLY) {
+		ping_err(skb, offset, info);
+		return;
+	}
+
+	if (type == ICMP_DEST_UNREACH && code == ICMP_FRAG_NEEDED)
+		ipv4_update_pmtu(skb, net, info, 0, 0, IPPROTO_ICMP, 0);
+	else if (type == ICMP_REDIRECT)
+		ipv4_redirect(skb, net, 0, 0, IPPROTO_ICMP, 0);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	This table is the definition of how we handle ICMP.
  */
@@ -1115,10 +1351,17 @@ static const struct icmp_control icmp_pointers[NR_ICMP_TYPES + 1] = {
 		.handler = icmp_discard,
 	},
 	[ICMP_ADDRESS] = {
+<<<<<<< HEAD
 		.handler = icmp_address,
 	},
 	[ICMP_ADDRESSREPLY] = {
 		.handler = icmp_address_reply,
+=======
+		.handler = icmp_discard,
+	},
+	[ICMP_ADDRESSREPLY] = {
+		.handler = icmp_discard,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -1152,10 +1395,22 @@ static int __net_init icmp_sk_init(struct net *net)
 		net->ipv4.icmp_sk[i] = sk;
 
 		/* Enough space for 2 64K ICMP packets, including
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * sk_buff struct overhead.
 		 */
 		sk->sk_sndbuf =
 			(2 * ((64 * 1024) + sizeof(struct sk_buff)));
+=======
+		 * sk_buff/skb_shared_info struct overhead.
+		 */
+		sk->sk_sndbuf =	2 * SKB_TRUESIZE(64 * 1024);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * sk_buff/skb_shared_info struct overhead.
+		 */
+		sk->sk_sndbuf =	2 * SKB_TRUESIZE(64 * 1024);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Speedup sock_wfree()

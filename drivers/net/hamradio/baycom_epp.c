@@ -449,7 +449,11 @@ static int transmit(struct baycom_state *bc, int cnt, unsigned char stat)
 			if ((--bc->hdlctx.slotcnt) > 0)
 				return 0;
 			bc->hdlctx.slotcnt = bc->ch_params.slottime;
+<<<<<<< HEAD
 			if ((random32() % 256) > bc->ch_params.ppersist)
+=======
+			if ((prandom_u32() % 256) > bc->ch_params.ppersist)
+>>>>>>> refs/remotes/origin/master
 				return 0;
 		}
 	}
@@ -1162,7 +1166,15 @@ static void baycom_probe(struct net_device *dev)
 /*
  * command line settable parameters
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const char *mode[NR_PORTS] = { "", };
+=======
+static char *mode[NR_PORTS] = { "", };
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *mode[NR_PORTS] = { "", };
+>>>>>>> refs/remotes/origin/master
 static int iobase[NR_PORTS] = { 0x378, };
 
 module_param_array(mode, charp, NULL, 0);

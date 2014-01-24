@@ -576,7 +576,15 @@ xpnet_init(void)
 	 * report an error if the data is not retrievable and the
 	 * packet will be dropped.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	xpnet_device->features = NETIF_F_NO_CSUM;
+=======
+	xpnet_device->features = NETIF_F_HW_CSUM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xpnet_device->features = NETIF_F_HW_CSUM;
+>>>>>>> refs/remotes/origin/master
 
 	result = register_netdev(xpnet_device);
 	if (result != 0) {

@@ -40,7 +40,11 @@
 #include <net/ip_vs.h>
 
 
+<<<<<<< HEAD
 static inline unsigned int
+=======
+static inline int
+>>>>>>> refs/remotes/origin/master
 ip_vs_nq_dest_overhead(struct ip_vs_dest *dest)
 {
 	/*
@@ -55,10 +59,18 @@ ip_vs_nq_dest_overhead(struct ip_vs_dest *dest)
  *	Weighted Least Connection scheduling
  */
 static struct ip_vs_dest *
+<<<<<<< HEAD
 ip_vs_nq_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
 {
 	struct ip_vs_dest *dest, *least = NULL;
 	unsigned int loh = 0, doh;
+=======
+ip_vs_nq_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+		  struct ip_vs_iphdr *iph)
+{
+	struct ip_vs_dest *dest, *least = NULL;
+	int loh = 0, doh;
+>>>>>>> refs/remotes/origin/master
 
 	IP_VS_DBG(6, "%s(): Scheduling...\n", __func__);
 
@@ -75,7 +87,11 @@ ip_vs_nq_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
 	 * new connections.
 	 */
 
+<<<<<<< HEAD
 	list_for_each_entry(dest, &svc->destinations, n_list) {
+=======
+	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+>>>>>>> refs/remotes/origin/master
 
 		if (dest->flags & IP_VS_DEST_F_OVERLOAD ||
 		    !atomic_read(&dest->weight))
@@ -91,8 +107,13 @@ ip_vs_nq_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
 		}
 
 		if (!least ||
+<<<<<<< HEAD
 		    (loh * atomic_read(&dest->weight) >
 		     doh * atomic_read(&least->weight))) {
+=======
+		    ((__s64)loh * atomic_read(&dest->weight) >
+		     (__s64)doh * atomic_read(&least->weight))) {
+>>>>>>> refs/remotes/origin/master
 			least = dest;
 			loh = doh;
 		}
@@ -133,6 +154,10 @@ static int __init ip_vs_nq_init(void)
 static void __exit ip_vs_nq_cleanup(void)
 {
 	unregister_ip_vs_scheduler(&ip_vs_nq_scheduler);
+<<<<<<< HEAD
+=======
+	synchronize_rcu();
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(ip_vs_nq_init);

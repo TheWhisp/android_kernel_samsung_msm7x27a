@@ -8,7 +8,15 @@
 #include <linux/sched.h>
 #include "hpfs_fn.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hpfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int hpfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hpfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	const unsigned char *name = dentry->d_name.name;
 	unsigned len = dentry->d_name.len;
@@ -56,7 +64,15 @@ static int hpfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 	result->i_fop = &hpfs_dir_ops;
 	result->i_blocks = 4;
 	result->i_size = 2048;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	result->i_nlink = 2;
+=======
+	set_nlink(result, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(result, 2);
+>>>>>>> refs/remotes/origin/master
 	if (dee.read_only)
 		result->i_mode &= ~0222;
 
@@ -70,7 +86,11 @@ static int hpfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 	fnode->len = len;
 	memcpy(fnode->name, name, len > 15 ? 15 : len);
 	fnode->up = cpu_to_le32(dir->i_ino);
+<<<<<<< HEAD
 	fnode->dirflag = 1;
+=======
+	fnode->flags |= FNODE_dir;
+>>>>>>> refs/remotes/origin/master
 	fnode->btree.n_free_nodes = 7;
 	fnode->btree.n_used_nodes = 1;
 	fnode->btree.first_free = cpu_to_le16(0x14);
@@ -91,8 +111,13 @@ static int hpfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 	inc_nlink(dir);
 	insert_inode_hash(result);
 
+<<<<<<< HEAD
 	if (result->i_uid != current_fsuid() ||
 	    result->i_gid != current_fsgid() ||
+=======
+	if (!uid_eq(result->i_uid, current_fsuid()) ||
+	    !gid_eq(result->i_gid, current_fsgid()) ||
+>>>>>>> refs/remotes/origin/master
 	    result->i_mode != (mode | S_IFDIR)) {
 		result->i_uid = current_fsuid();
 		result->i_gid = current_fsgid();
@@ -115,7 +140,15 @@ bail:
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hpfs_create(struct inode *dir, struct dentry *dentry, int mode, struct nameidata *nd)
+=======
+static int hpfs_create(struct inode *dir, struct dentry *dentry, umode_t mode, struct nameidata *nd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hpfs_create(struct inode *dir, struct dentry *dentry, umode_t mode, bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	const unsigned char *name = dentry->d_name.name;
 	unsigned len = dentry->d_name.len;
@@ -150,7 +183,15 @@ static int hpfs_create(struct inode *dir, struct dentry *dentry, int mode, struc
 	result->i_mode &= ~0111;
 	result->i_op = &hpfs_file_iops;
 	result->i_fop = &hpfs_file_ops;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	result->i_nlink = 1;
+=======
+	set_nlink(result, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(result, 1);
+>>>>>>> refs/remotes/origin/master
 	hpfs_i(result)->i_parent_dir = dir->i_ino;
 	result->i_ctime.tv_sec = result->i_mtime.tv_sec = result->i_atime.tv_sec = local_to_gmt(dir->i_sb, le32_to_cpu(dee.creation_date));
 	result->i_ctime.tv_nsec = 0;
@@ -179,8 +220,13 @@ static int hpfs_create(struct inode *dir, struct dentry *dentry, int mode, struc
 
 	insert_inode_hash(result);
 
+<<<<<<< HEAD
 	if (result->i_uid != current_fsuid() ||
 	    result->i_gid != current_fsgid() ||
+=======
+	if (!uid_eq(result->i_uid, current_fsuid()) ||
+	    !gid_eq(result->i_gid, current_fsgid()) ||
+>>>>>>> refs/remotes/origin/master
 	    result->i_mode != (mode | S_IFREG)) {
 		result->i_uid = current_fsuid();
 		result->i_gid = current_fsgid();
@@ -201,7 +247,15 @@ bail:
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hpfs_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t rdev)
+=======
+static int hpfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hpfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const unsigned char *name = dentry->d_name.name;
 	unsigned len = dentry->d_name.len;
@@ -242,7 +296,15 @@ static int hpfs_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t 
 	hpfs_i(result)->i_ea_size = 0;
 	result->i_uid = current_fsuid();
 	result->i_gid = current_fsgid();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	result->i_nlink = 1;
+=======
+	set_nlink(result, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(result, 1);
+>>>>>>> refs/remotes/origin/master
 	result->i_size = 0;
 	result->i_blocks = 1;
 	init_special_inode(result, mode, rdev);
@@ -318,7 +380,15 @@ static int hpfs_symlink(struct inode *dir, struct dentry *dentry, const char *sy
 	result->i_uid = current_fsuid();
 	result->i_gid = current_fsgid();
 	result->i_blocks = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	result->i_nlink = 1;
+=======
+	set_nlink(result, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(result, 1);
+>>>>>>> refs/remotes/origin/master
 	result->i_size = strlen(symlink);
 	result->i_op = &page_symlink_inode_operations;
 	result->i_data.a_ops = &hpfs_symlink_aops;
@@ -398,7 +468,15 @@ again:
 			hpfs_unlock(dir->i_sb);
 			return -ENOSPC;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (generic_permission(inode, MAY_WRITE, 0, NULL) ||
+=======
+		if (generic_permission(inode, MAY_WRITE) ||
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (generic_permission(inode, MAY_WRITE) ||
+>>>>>>> refs/remotes/origin/master
 		    !S_ISREG(inode->i_mode) ||
 		    get_write_access(inode)) {
 			d_rehash(dentry);
@@ -407,7 +485,11 @@ again:
 			/*printk("HPFS: truncating file before delete.\n");*/
 			newattrs.ia_size = 0;
 			newattrs.ia_valid = ATTR_SIZE | ATTR_CTIME;
+<<<<<<< HEAD
 			err = notify_change(dentry, &newattrs);
+=======
+			err = notify_change(dentry, &newattrs, NULL);
+>>>>>>> refs/remotes/origin/master
 			put_write_access(inode);
 			if (!err)
 				goto again;

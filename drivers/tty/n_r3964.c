@@ -1065,7 +1065,11 @@ static ssize_t r3964_read(struct tty_struct *tty, struct file *file,
 
 	TRACE_L("read()");
 
+<<<<<<< HEAD
 	tty_lock();
+=======
+	tty_lock(tty);
+>>>>>>> refs/remotes/origin/master
 
 	pClient = findClient(pInfo, task_pid(current));
 	if (pClient) {
@@ -1077,7 +1081,11 @@ static ssize_t r3964_read(struct tty_struct *tty, struct file *file,
 				goto unlock;
 			}
 			/* block until there is a message: */
+<<<<<<< HEAD
 			wait_event_interruptible_tty(pInfo->read_wait,
+=======
+			wait_event_interruptible_tty(tty, pInfo->read_wait,
+>>>>>>> refs/remotes/origin/master
 					(pMsg = remove_msg(pInfo, pClient)));
 		}
 
@@ -1107,7 +1115,11 @@ static ssize_t r3964_read(struct tty_struct *tty, struct file *file,
 	}
 	ret = -EPERM;
 unlock:
+<<<<<<< HEAD
 	tty_unlock();
+=======
+	tty_unlock(tty);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1156,7 +1168,11 @@ static ssize_t r3964_write(struct tty_struct *tty, struct file *file,
 	pHeader->locks = 0;
 	pHeader->owner = NULL;
 
+<<<<<<< HEAD
 	tty_lock();
+=======
+	tty_lock(tty);
+>>>>>>> refs/remotes/origin/master
 
 	pClient = findClient(pInfo, task_pid(current));
 	if (pClient) {
@@ -1175,7 +1191,11 @@ static ssize_t r3964_write(struct tty_struct *tty, struct file *file,
 	add_tx_queue(pInfo, pHeader);
 	trigger_transmit(pInfo);
 
+<<<<<<< HEAD
 	tty_unlock();
+=======
+	tty_unlock(tty);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1244,7 +1264,11 @@ static void r3964_receive_buf(struct tty_struct *tty, const unsigned char *cp,
 {
 	struct r3964_info *pInfo = tty->disc_data;
 	const unsigned char *p;
+<<<<<<< HEAD
 	char *f, flags = 0;
+=======
+	char *f, flags = TTY_NORMAL;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = count, p = cp, f = fp; i; i--, p++) {

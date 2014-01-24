@@ -27,10 +27,18 @@
 #include <asm/bootinfo.h>
 #include <asm/io.h>
 #include <asm/mipsregs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/processor.h>
 #include <asm/pci/bridge.h>
+=======
+
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/sn/addrs.h>
 #include <asm/sn/agent.h>
 #include <asm/sn/arch.h>
@@ -55,6 +63,7 @@
 
 extern asmlinkage void ip27_irq(void);
 
+<<<<<<< HEAD
 extern struct bridge_controller *irq_to_bridge[];
 extern int irq_to_slot[];
 
@@ -73,7 +82,11 @@ static inline int alloc_level(int cpu, int irq)
 
 	level = find_first_zero_bit(hub->irq_alloc_mask, LEVELS_PER_SLICE);
 	if (level >= LEVELS_PER_SLICE)
+<<<<<<< HEAD
 		panic("Cpu %d flooded with devices\n", cpu);
+=======
+		panic("Cpu %d flooded with devices", cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__set_bit(level, hub->irq_alloc_mask);
 	si->level_to_irq[level] = irq;
@@ -96,9 +109,15 @@ static inline int find_level(cpuid_t *cpunum, int irq)
 			}
 	}
 
+<<<<<<< HEAD
 	panic("Could not identify cpu/level for irq %d\n", irq);
+=======
+	panic("Could not identify cpu/level for irq %d", irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Find first bit set
  */
@@ -116,7 +135,15 @@ static int ms1bit(unsigned long x)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * This code is unnecessarily complex, because we do IRQF_DISABLED
+=======
+ * This code is unnecessarily complex, because we do
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This code is unnecessarily complex, because we do
+>>>>>>> refs/remotes/origin/master
  * intr enabling. Basically, once we grab the set of intrs we need
  * to service, we must mask _all_ these interrupts; firstly, to make
  * sure the same intr does not intr again, causing recursion that
@@ -205,6 +232,7 @@ static void ip27_hub_error(void)
 	panic("CPU %d got a hub error interrupt", smp_processor_id());
 }
 
+<<<<<<< HEAD
 static int intr_connect_level(int cpu, int bit)
 {
 	nasid_t nasid = COMPACT_TO_NASID_NODEID(cpu_to_node(cpu));
@@ -337,12 +365,20 @@ static struct irq_chip bridge_irq_type = {
 	.irq_unmask	= enable_bridge_irq,
 };
 
+<<<<<<< HEAD
 void __devinit register_bridge_irq(unsigned int irq)
+=======
+void register_bridge_irq(unsigned int irq)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	irq_set_chip_and_handler(irq, &bridge_irq_type, handle_level_irq);
 }
 
+<<<<<<< HEAD
 int __devinit request_bridge_irq(struct bridge_controller *bc)
+=======
+int request_bridge_irq(struct bridge_controller *bc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int irq = allocate_irqno();
 	int swlevel, cpu;
@@ -374,6 +410,8 @@ int __devinit request_bridge_irq(struct bridge_controller *bc)
 	return irq;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage void plat_irq_dispatch(void)
 {
 	unsigned long pending = read_c0_cause() & read_c0_status();

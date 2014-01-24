@@ -1,8 +1,13 @@
 /*
  * net/tipc/core.h: Include file for TIPC global declarations
  *
+<<<<<<< HEAD
  * Copyright (c) 2005-2006, Ericsson AB
  * Copyright (c) 2005-2007, 2010-2011, Wind River Systems
+=======
+ * Copyright (c) 2005-2006, 2013 Ericsson AB
+ * Copyright (c) 2005-2007, 2010-2013, Wind River Systems
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +42,11 @@
 #ifndef _TIPC_CORE_H
 #define _TIPC_CORE_H
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/tipc.h>
 #include <linux/tipc_config.h>
 #include <linux/types.h>
@@ -47,7 +57,15 @@
 #include <linux/string.h>
 #include <asm/uaccess.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/hardirq.h>
 #include <linux/netdevice.h>
 #include <linux/in.h>
@@ -58,16 +76,20 @@
 
 #define TIPC_MOD_VER "2.0.0"
 
+<<<<<<< HEAD
 struct tipc_msg;	/* msg.h */
 struct print_buf;	/* log.h */
 
 /*
+<<<<<<< HEAD
  * TIPC sanity test macros
  */
 
 #define assert(i)  BUG_ON(!(i))
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * TIPC system monitoring code
  */
 
@@ -128,14 +150,25 @@ void tipc_msg_dbg(struct print_buf *, struct tipc_msg *, const char *);
 
 #endif
 
+=======
+#define ULTRA_STRING_MAX_LEN	32768
+#define TIPC_MAX_SUBSCRIPTIONS	65535
+#define TIPC_MAX_PUBLICATIONS	65535
+
+struct tipc_msg;	/* msg.h */
+
+int tipc_snprintf(char *buf, int len, const char *fmt, ...);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * TIPC-specific error codes
  */
+<<<<<<< HEAD
 
 #define ELINKCONG EAGAIN	/* link congestion <=> resource unavailable */
 
 /*
+<<<<<<< HEAD
  * TIPC operating mode routines
  */
 #define TIPC_NOT_RUNNING  0
@@ -143,6 +176,8 @@ void tipc_msg_dbg(struct print_buf *, struct tipc_msg *, const char *);
 #define TIPC_NET_MODE     2
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Global configuration variables
  */
 
@@ -152,19 +187,39 @@ extern int tipc_max_subscriptions;
 extern int tipc_max_publications;
 extern int tipc_net_id;
 extern int tipc_remote_management;
+=======
+#define ELINKCONG EAGAIN	/* link congestion <=> resource unavailable */
+
+/*
+ * Global configuration variables
+ */
+extern u32 tipc_own_addr __read_mostly;
+extern int tipc_max_ports __read_mostly;
+extern int tipc_net_id __read_mostly;
+extern int tipc_remote_management __read_mostly;
+extern int sysctl_tipc_rmem[3] __read_mostly;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Other global variables
  */
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 extern int tipc_mode;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int tipc_random;
 extern const char tipc_alphabet[];
 
+=======
+extern int tipc_random __read_mostly;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Routines available to privileged subsystems
  */
+<<<<<<< HEAD
 
 extern int tipc_core_start_net(unsigned long);
 extern int  tipc_handler_start(void);
@@ -174,6 +229,7 @@ extern void tipc_netlink_stop(void);
 extern int  tipc_socket_init(void);
 extern void tipc_socket_stop(void);
 
+<<<<<<< HEAD
 static inline int delimit(int val, int min, int max)
 {
 	if (val > max)
@@ -184,10 +240,37 @@ static inline int delimit(int val, int min, int max)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * TIPC timer and signal code
  */
 
+=======
+int tipc_core_start_net(unsigned long);
+int tipc_handler_start(void);
+void tipc_handler_stop(void);
+int tipc_netlink_start(void);
+void tipc_netlink_stop(void);
+int tipc_socket_init(void);
+void tipc_socket_stop(void);
+int tipc_sock_create_local(int type, struct socket **res);
+void tipc_sock_release_local(struct socket *sock);
+int tipc_sock_accept_local(struct socket *sock, struct socket **newsock,
+			   int flags);
+
+#ifdef CONFIG_SYSCTL
+int tipc_register_sysctl(void);
+void tipc_unregister_sysctl(void);
+#else
+#define tipc_register_sysctl() 0
+#define tipc_unregister_sysctl()
+#endif
+
+/*
+ * TIPC timer and signal code
+ */
+>>>>>>> refs/remotes/origin/master
 typedef void (*Handler) (unsigned long);
 
 u32 tipc_k_signal(Handler routine, unsigned long argument);
@@ -200,7 +283,10 @@ u32 tipc_k_signal(Handler routine, unsigned long argument);
  *
  * Timer must be initialized before use (and terminated when no longer needed).
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void k_init_timer(struct timer_list *timer, Handler routine,
 				unsigned long argument)
 {
@@ -220,7 +306,10 @@ static inline void k_init_timer(struct timer_list *timer, Handler routine,
  * then an additional jiffy is added to account for the fact that
  * the starting time may be in the middle of the current jiffy.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void k_start_timer(struct timer_list *timer, unsigned long msec)
 {
 	mod_timer(timer, jiffies + msecs_to_jiffies(msec) + 1);
@@ -236,7 +325,10 @@ static inline void k_start_timer(struct timer_list *timer, unsigned long msec)
  * WARNING: Must not be called when holding locks required by the timer's
  *          timeout routine, otherwise deadlock can occur on SMP systems!
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void k_cancel_timer(struct timer_list *timer)
 {
 	del_timer_sync(timer);
@@ -253,12 +345,18 @@ static inline void k_cancel_timer(struct timer_list *timer)
  * (Do not "enhance" this routine to automatically cancel an active timer,
  * otherwise deadlock can arise when a timeout routine calls k_term_timer.)
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void k_term_timer(struct timer_list *timer)
 {
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * TIPC message buffer code
  *
@@ -268,7 +366,10 @@ static inline void k_term_timer(struct timer_list *timer)
  * Note: Headroom should be a multiple of 4 to ensure the TIPC header fields
  *       are word aligned for quicker access
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define BUF_HEADROOM LL_MAX_HEADER
 
 struct tipc_skb_cb {
@@ -277,14 +378,19 @@ struct tipc_skb_cb {
 
 #define TIPC_SKB_CB(__skb) ((struct tipc_skb_cb *)&((__skb)->cb[0]))
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct tipc_msg *buf_msg(struct sk_buff *skb)
 {
 	return (struct tipc_msg *)skb->data;
 }
 
+<<<<<<< HEAD
 extern struct sk_buff *tipc_buf_acquire(u32 size);
 
+<<<<<<< HEAD
 /**
  * buf_discard - frees a TIPC message buffer
  * @skb: message buffer
@@ -309,4 +415,10 @@ static inline int buf_linearize(struct sk_buff *skb)
 	return skb_linearize(skb);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sk_buff *tipc_buf_acquire(u32 size);
+
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -14,7 +14,11 @@
  * Memory copy routines
  */
 
+<<<<<<< HEAD
 	.code16gcc
+=======
+	.code16
+>>>>>>> refs/remotes/origin/master
 	.text
 
 GLOBAL(memcpy)
@@ -30,7 +34,11 @@ GLOBAL(memcpy)
 	rep; movsb
 	popw	%di
 	popw	%si
+<<<<<<< HEAD
 	ret
+=======
+	retl
+>>>>>>> refs/remotes/origin/master
 ENDPROC(memcpy)
 
 GLOBAL(memset)
@@ -45,25 +53,41 @@ GLOBAL(memset)
 	andw	$3, %cx
 	rep; stosb
 	popw	%di
+<<<<<<< HEAD
 	ret
+=======
+	retl
+>>>>>>> refs/remotes/origin/master
 ENDPROC(memset)
 
 GLOBAL(copy_from_fs)
 	pushw	%ds
 	pushw	%fs
 	popw	%ds
+<<<<<<< HEAD
 	call	memcpy
 	popw	%ds
 	ret
+=======
+	calll	memcpy
+	popw	%ds
+	retl
+>>>>>>> refs/remotes/origin/master
 ENDPROC(copy_from_fs)
 
 GLOBAL(copy_to_fs)
 	pushw	%es
 	pushw	%fs
 	popw	%es
+<<<<<<< HEAD
 	call	memcpy
 	popw	%es
 	ret
+=======
+	calll	memcpy
+	popw	%es
+	retl
+>>>>>>> refs/remotes/origin/master
 ENDPROC(copy_to_fs)
 
 #if 0 /* Not currently used, but can be enabled as needed */
@@ -71,17 +95,29 @@ GLOBAL(copy_from_gs)
 	pushw	%ds
 	pushw	%gs
 	popw	%ds
+<<<<<<< HEAD
 	call	memcpy
 	popw	%ds
 	ret
+=======
+	calll	memcpy
+	popw	%ds
+	retl
+>>>>>>> refs/remotes/origin/master
 ENDPROC(copy_from_gs)
 
 GLOBAL(copy_to_gs)
 	pushw	%es
 	pushw	%gs
 	popw	%es
+<<<<<<< HEAD
 	call	memcpy
 	popw	%es
 	ret
+=======
+	calll	memcpy
+	popw	%es
+	retl
+>>>>>>> refs/remotes/origin/master
 ENDPROC(copy_to_gs)
 #endif

@@ -12,6 +12,18 @@ config REALVIEW_EB_A9MP
 	bool "Support Multicore Cortex-A9 Tile"
 	depends on MACH_REALVIEW_EB
 	select CPU_V7
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select HAVE_SMP
+	select MIGHT_HAVE_CACHE_L2X0
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select HAVE_ARM_SCU if SMP
+	select HAVE_ARM_TWD if SMP
+	select HAVE_SMP
+	select MIGHT_HAVE_CACHE_L2X0
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enable support for the Cortex-A9MPCore tile fitted to the
 	  Realview(R) Emulation Baseboard platform.
@@ -19,8 +31,22 @@ config REALVIEW_EB_A9MP
 config REALVIEW_EB_ARM11MP
 	bool "Support ARM11MPCore Tile"
 	depends on MACH_REALVIEW_EB
+<<<<<<< HEAD
 	select CPU_V6K
 	select ARCH_HAS_BARRIERS if SMP
+<<<<<<< HEAD
+=======
+	select HAVE_SMP
+	select MIGHT_HAVE_CACHE_L2X0
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_HAS_BARRIERS if SMP
+	select CPU_V6K
+	select HAVE_ARM_SCU if SMP
+	select HAVE_ARM_TWD if SMP
+	select HAVE_SMP
+	select MIGHT_HAVE_CACHE_L2X0
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enable support for the ARM11MPCore tile fitted to the Realview(R)
 	  Emulation Baseboard platform.
@@ -36,10 +62,26 @@ config REALVIEW_EB_ARM11MP_REVB
 
 config MACH_REALVIEW_PB11MP
 	bool "Support RealView(R) Platform Baseboard for ARM11MPCore"
+<<<<<<< HEAD
 	select CPU_V6K
 	select ARM_GIC
 	select HAVE_PATA_PLATFORM
+<<<<<<< HEAD
+=======
+	select HAVE_SMP
+	select MIGHT_HAVE_CACHE_L2X0
+>>>>>>> refs/remotes/origin/cm-10.0
 	select ARCH_HAS_BARRIERS if SMP
+=======
+	select ARCH_HAS_BARRIERS if SMP
+	select ARM_GIC
+	select CPU_V6K
+	select HAVE_ARM_SCU if SMP
+	select HAVE_ARM_TWD if SMP
+	select HAVE_PATA_PLATFORM
+	select HAVE_SMP
+	select MIGHT_HAVE_CACHE_L2X0
+>>>>>>> refs/remotes/origin/master
 	help
 	  Include support for the ARM(R) RealView(R) Platform Baseboard for
 	  the ARM11MPCore.  This platform has an on-board ARM11MPCore and has
@@ -48,8 +90,20 @@ config MACH_REALVIEW_PB11MP
 # ARMv6 CPU without K extensions, but does have the new exclusive ops
 config MACH_REALVIEW_PB1176
 	bool "Support RealView(R) Platform Baseboard for ARM1176JZF-S"
+<<<<<<< HEAD
 	select CPU_V6
 	select ARM_GIC
+<<<<<<< HEAD
+=======
+	select HAVE_TCM
+	select MIGHT_HAVE_CACHE_L2X0
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARM_GIC
+	select CPU_V6
+	select HAVE_TCM
+	select MIGHT_HAVE_CACHE_L2X0
+>>>>>>> refs/remotes/origin/master
 	help
 	  Include support for the ARM(R) RealView(R) Platform Baseboard for
 	  ARM1176JZF-S.
@@ -65,8 +119,13 @@ config REALVIEW_PB1176_SECURE_FLASH
 
 config MACH_REALVIEW_PBA8
 	bool "Support RealView(R) Platform Baseboard for Cortex(tm)-A8 platform"
+<<<<<<< HEAD
 	select CPU_V7
 	select ARM_GIC
+=======
+	select ARM_GIC
+	select CPU_V7
+>>>>>>> refs/remotes/origin/master
 	select HAVE_PATA_PLATFORM
 	help
 	  Include support for the ARM(R) RealView Platform Baseboard for
@@ -75,9 +134,24 @@ config MACH_REALVIEW_PBA8
 
 config MACH_REALVIEW_PBX
 	bool "Support RealView(R) Platform Baseboard Explore"
+<<<<<<< HEAD
 	select ARM_GIC
 	select HAVE_PATA_PLATFORM
+<<<<<<< HEAD
+=======
+	select HAVE_SMP
+	select MIGHT_HAVE_CACHE_L2X0
+>>>>>>> refs/remotes/origin/cm-10.0
 	select ARCH_SPARSEMEM_ENABLE if CPU_V7 && !REALVIEW_HIGH_PHYS_OFFSET
+=======
+	select ARCH_SPARSEMEM_ENABLE if CPU_V7 && !REALVIEW_HIGH_PHYS_OFFSET
+	select ARM_GIC
+	select HAVE_ARM_SCU if SMP
+	select HAVE_ARM_TWD if SMP
+	select HAVE_PATA_PLATFORM
+	select HAVE_SMP
+	select MIGHT_HAVE_CACHE_L2X0
+>>>>>>> refs/remotes/origin/master
 	select ZONE_DMA if SPARSEMEM
 	help
 	  Include support for the ARM(R) RealView(R) Platform Baseboard

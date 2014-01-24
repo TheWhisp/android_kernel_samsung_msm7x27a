@@ -219,8 +219,13 @@ LD1:
 	cmp.l	#_edata, %a1
 	blt     LD1
 
+<<<<<<< HEAD
 	moveal	#_sbss, %a0
 	moveal	#_ebss, %a1
+=======
+	moveal	#__bss_start, %a0
+	moveal	#__bss_stop, %a1
+>>>>>>> refs/remotes/origin/master
 
 	/* Copy 0 to %a0 until %a0 == %a1 */
 L1:
@@ -234,7 +239,11 @@ load_quicc:
 store_ram_size:
 	/* Set ram size information */
 	move.l	#_sdata, _rambase
+<<<<<<< HEAD
 	move.l	#_ebss, _ramstart
+=======
+	move.l	#__bss_stop, _ramstart
+>>>>>>> refs/remotes/origin/master
 	move.l	#RAMEND, %d0
 	sub.l	#0x1000, %d0			/* Reserve 4K for stack space.*/
 	move.l	%d0, _ramend			/* Different from RAMEND.*/

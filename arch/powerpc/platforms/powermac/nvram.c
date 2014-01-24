@@ -8,7 +8,15 @@
  *
  *  Todo: - add support for the OF persistent properties
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/stddef.h>
 #include <linux/string.h>
@@ -23,7 +31,13 @@
 #include <linux/spinlock.h>
 #include <asm/sections.h>
 #include <asm/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/prom.h>
 #include <asm/machdep.h>
 #include <asm/nvram.h>
@@ -279,7 +293,15 @@ static u32 core99_check(u8* datas)
 
 static int sm_erase_bank(int bank)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int stat, i;
+=======
+	int stat;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int stat;
+>>>>>>> refs/remotes/origin/master
 	unsigned long timeout;
 
 	u8 __iomem *base = (u8 __iomem *)nvram_data + core99_bank*NVRAM_SIZE;
@@ -301,11 +323,24 @@ static int sm_erase_bank(int bank)
 	out_8(base, SM_FLASH_CMD_CLEAR_STATUS);
 	out_8(base, SM_FLASH_CMD_RESET);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i=0; i<NVRAM_SIZE; i++)
 		if (base[i] != 0xff) {
 			printk(KERN_ERR "nvram: Sharp/Micron flash erase failed !\n");
 			return -ENXIO;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (memchr_inv(base, 0xff, NVRAM_SIZE)) {
+		printk(KERN_ERR "nvram: Sharp/Micron flash erase failed !\n");
+		return -ENXIO;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -336,17 +371,38 @@ static int sm_write_bank(int bank, u8* datas)
 	}
 	out_8(base, SM_FLASH_CMD_CLEAR_STATUS);
 	out_8(base, SM_FLASH_CMD_RESET);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i=0; i<NVRAM_SIZE; i++)
 		if (base[i] != datas[i]) {
 			printk(KERN_ERR "nvram: Sharp/Micron flash write failed !\n");
 			return -ENXIO;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (memcmp(base, datas, NVRAM_SIZE)) {
+		printk(KERN_ERR "nvram: Sharp/Micron flash write failed !\n");
+		return -ENXIO;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int amd_erase_bank(int bank)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i, stat = 0;
+=======
+	int stat = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int stat = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned long timeout;
 
 	u8 __iomem *base = (u8 __iomem *)nvram_data + core99_bank*NVRAM_SIZE;
@@ -382,12 +438,26 @@ static int amd_erase_bank(int bank)
 	/* Reset */
 	out_8(base, 0xf0);
 	udelay(1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
 	for (i=0; i<NVRAM_SIZE; i++)
 		if (base[i] != 0xff) {
 			printk(KERN_ERR "nvram: AMD flash erase failed !\n");
 			return -ENXIO;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (memchr_inv(base, 0xff, NVRAM_SIZE)) {
+		printk(KERN_ERR "nvram: AMD flash erase failed !\n");
+		return -ENXIO;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -429,11 +499,24 @@ static int amd_write_bank(int bank, u8* datas)
 	out_8(base, 0xf0);
 	udelay(1);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i=0; i<NVRAM_SIZE; i++)
 		if (base[i] != datas[i]) {
 			printk(KERN_ERR "nvram: AMD flash write failed !\n");
 			return -ENXIO;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (memcmp(base, datas, NVRAM_SIZE)) {
+		printk(KERN_ERR "nvram: AMD flash write failed !\n");
+		return -ENXIO;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -580,10 +663,23 @@ int __init pmac_nvram_init(void)
 	/* Try to obtain an address */
 	if (of_address_to_resource(dp, 0, &r1) == 0) {
 		nvram_naddrs = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		s1 = (r1.end - r1.start) + 1;
 		if (of_address_to_resource(dp, 1, &r2) == 0) {
 			nvram_naddrs = 2;
 			s2 = (r2.end - r2.start) + 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		s1 = resource_size(&r1);
+		if (of_address_to_resource(dp, 1, &r2) == 0) {
+			nvram_naddrs = 2;
+			s2 = resource_size(&r2);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 

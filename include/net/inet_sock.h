@@ -32,7 +32,10 @@
  *
  * @faddr - Saved first hop address
  * @nexthop - Saved nexthop address in LSRR and SSRR
+<<<<<<< HEAD
  * @is_data - Options in __data, rather than skb
+=======
+>>>>>>> refs/remotes/origin/master
  * @is_strictroute - Strict source route
  * @srr_is_hit - Packet destination addr was our one
  * @is_changed - IP checksum more not valid
@@ -71,13 +74,28 @@ struct ip_options_data {
 
 struct inet_request_sock {
 	struct request_sock	req;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16			inet6_rsk_offset;
 #endif
 	__be16			loc_port;
 	__be32			loc_addr;
 	__be32			rmt_addr;
 	__be16			rmt_port;
+=======
+#define ir_loc_addr		req.__req_common.skc_rcv_saddr
+#define ir_rmt_addr		req.__req_common.skc_daddr
+#define ir_num			req.__req_common.skc_num
+#define ir_rmt_port		req.__req_common.skc_dport
+#define ir_v6_rmt_addr		req.__req_common.skc_v6_daddr
+#define ir_v6_loc_addr		req.__req_common.skc_v6_rcv_saddr
+#define ir_iif			req.__req_common.skc_bound_dev_if
+
+>>>>>>> refs/remotes/origin/master
 	kmemcheck_bitfield_begin(flags);
 	u16			snd_wscale : 4,
 				rcv_wscale : 4,
@@ -89,6 +107,10 @@ struct inet_request_sock {
 				no_srccheck: 1;
 	kmemcheck_bitfield_end(flags);
 	struct ip_options_rcu	*opt;
+<<<<<<< HEAD
+=======
+	struct sk_buff		*pktopts;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct inet_request_sock *inet_rsk(const struct request_sock *sk)
@@ -101,11 +123,20 @@ struct inet_cork {
 	__be32			addr;
 	struct ip_options	*opt;
 	unsigned int		fragsize;
+<<<<<<< HEAD
 	struct dst_entry	*dst;
 	int			length; /* Total length of all frames */
 	struct page		*page;
 	u32			off;
 	u8			tx_flags;
+=======
+	int			length; /* Total length of all frames */
+	struct dst_entry	*dst;
+	u8			tx_flags;
+	__u8			ttl;
+	__s16			tos;
+	char			priority;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct inet_cork_full {
@@ -132,6 +163,14 @@ struct rtable;
  * @tos - TOS
  * @mc_ttl - Multicasting TTL
  * @is_icsk - is this an inet_connection_sock?
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @uc_index - Unicast outgoing device index
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @uc_index - Unicast outgoing device index
+>>>>>>> refs/remotes/origin/master
  * @mc_index - Multicast device index
  * @mc_list - Group array
  * @cork - info to build ip hdr on each ip frag while socket is corked
@@ -139,15 +178,29 @@ struct rtable;
 struct inet_sock {
 	/* sk and pinet6 has to be the first two members of inet_sock */
 	struct sock		sk;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	struct ipv6_pinfo	*pinet6;
 #endif
 	/* Socket demultiplex comparisons on incoming packets. */
 #define inet_daddr		sk.__sk_common.skc_daddr
 #define inet_rcv_saddr		sk.__sk_common.skc_rcv_saddr
+<<<<<<< HEAD
 
 	__be16			inet_dport;
 	__u16			inet_num;
+=======
+#define inet_dport		sk.__sk_common.skc_dport
+#define inet_num		sk.__sk_common.skc_num
+
+>>>>>>> refs/remotes/origin/master
 	__be32			inet_saddr;
 	__s16			uc_ttl;
 	__u16			cmsg_flags;
@@ -155,6 +208,10 @@ struct inet_sock {
 	__u16			inet_id;
 
 	struct ip_options_rcu __rcu	*inet_opt;
+<<<<<<< HEAD
+=======
+	int			rx_dst_ifindex;
+>>>>>>> refs/remotes/origin/master
 	__u8			tos;
 	__u8			min_ttl;
 	__u8			mc_ttl;
@@ -167,6 +224,16 @@ struct inet_sock {
 				transparent:1,
 				mc_all:1,
 				nodefrag:1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	__u8			rcv_tos;
+	int			uc_index;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u8			rcv_tos;
+	int			uc_index;
+>>>>>>> refs/remotes/origin/master
 	int			mc_index;
 	__be32			mc_addr;
 	struct ip_mc_socklist __rcu	*mc_list;
@@ -188,7 +255,15 @@ static inline void __inet_sk_copy_descendant(struct sock *sk_to,
 	memcpy(inet_sk(sk_to) + 1, inet_sk(sk_from) + 1,
 	       sk_from->sk_prot->obj_size - ancestor_size);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if !(defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE))
+=======
+#if !(IS_ENABLED(CONFIG_IPV6))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if !(IS_ENABLED(CONFIG_IPV6))
+>>>>>>> refs/remotes/origin/master
 static inline void inet_sk_copy_descendant(struct sock *sk_to,
 					   const struct sock *sk_from)
 {
@@ -196,6 +271,7 @@ static inline void inet_sk_copy_descendant(struct sock *sk_to,
 }
 #endif
 
+<<<<<<< HEAD
 extern int inet_sk_rebuild_header(struct sock *sk);
 
 extern u32 inet_ehash_secret;
@@ -205,10 +281,20 @@ extern void build_ehash_secret(void);
 static inline unsigned int inet_ehashfn(struct net *net,
 					const __be32 laddr, const __u16 lport,
 					const __be32 faddr, const __be16 fport)
+=======
+int inet_sk_rebuild_header(struct sock *sk);
+
+static inline unsigned int __inet_ehashfn(const __be32 laddr,
+					  const __u16 lport,
+					  const __be32 faddr,
+					  const __be16 fport,
+					  u32 initval)
+>>>>>>> refs/remotes/origin/master
 {
 	return jhash_3words((__force __u32) laddr,
 			    (__force __u32) faddr,
 			    ((__u32) lport) << 16 | (__force __u32)fport,
+<<<<<<< HEAD
 			    inet_ehash_secret + net_hash_mix(net));
 }
 
@@ -222,6 +308,9 @@ static inline int inet_sk_ehashfn(const struct sock *sk)
 	struct net *net = sock_net(sk);
 
 	return inet_ehashfn(net, laddr, lport, faddr, fport);
+=======
+			    initval);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct request_sock *inet_reqsk_alloc(struct request_sock_ops *ops)
@@ -241,10 +330,19 @@ static inline __u8 inet_sk_flowi_flags(const struct sock *sk)
 {
 	__u8 flags = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (inet_sk(sk)->transparent)
+=======
+	if (inet_sk(sk)->transparent || inet_sk(sk)->hdrincl)
+>>>>>>> refs/remotes/origin/cm-10.0
 		flags |= FLOWI_FLAG_ANYSRC;
 	if (sk->sk_protocol == IPPROTO_TCP)
 		flags |= FLOWI_FLAG_PRECOW_METRICS;
+=======
+	if (inet_sk(sk)->transparent || inet_sk(sk)->hdrincl)
+		flags |= FLOWI_FLAG_ANYSRC;
+>>>>>>> refs/remotes/origin/master
 	return flags;
 }
 

@@ -24,7 +24,14 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -35,6 +42,7 @@
 
 #include "tlv320aic23.h"
 
+<<<<<<< HEAD
 #define AIC23_VERSION "0.1"
 
 /*
@@ -47,6 +55,7 @@ static const u16 tlv320aic23_reg[] = {
 	0x0000, 0x0000, 0x0000, 0x0000,	/* 12 */
 };
 
+<<<<<<< HEAD
 /*
  * read tlv320aic23 register cache
  */
@@ -104,6 +113,36 @@ static int tlv320aic23_write(struct snd_soc_codec *codec, unsigned int reg,
 	return -EIO;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * AIC23 register cache
+ */
+static const struct reg_default tlv320aic23_reg[] = {
+	{  0, 0x0097 },
+	{  1, 0x0097 },
+	{  2, 0x00F9 },
+	{  3, 0x00F9 },
+	{  4, 0x001A },
+	{  5, 0x0004 },
+	{  6, 0x0007 },
+	{  7, 0x0001 },
+	{  8, 0x0020 },
+	{  9, 0x0000 },
+};
+
+static const struct regmap_config tlv320aic23_regmap = {
+	.reg_bits = 7,
+	.val_bits = 9,
+
+	.max_register = TLV320AIC23_RESET,
+	.reg_defaults = tlv320aic23_reg,
+	.num_reg_defaults = ARRAY_SIZE(tlv320aic23_reg),
+	.cache_type = REGCACHE_RBTREE,
+};
+
+>>>>>>> refs/remotes/origin/master
 static const char *rec_src_text[] = { "Line", "Mic" };
 static const char *deemph_text[] = {"None", "32Khz", "44.1Khz", "48Khz"};
 
@@ -139,8 +178,18 @@ static int snd_soc_tlv320aic23_put_volsw(struct snd_kcontrol *kcontrol,
 	*/
 	val = (val >= 4) ? 4  : (3 - val);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reg = tlv320aic23_read_reg_cache(codec, TLV320AIC23_ANLG) & (~0x1C0);
 	tlv320aic23_write(codec, TLV320AIC23_ANLG, reg | (val << 6));
+=======
+	reg = snd_soc_read(codec, TLV320AIC23_ANLG) & (~0x1C0);
+	snd_soc_write(codec, TLV320AIC23_ANLG, reg | (val << 6));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reg = snd_soc_read(codec, TLV320AIC23_ANLG) & (~0x1C0);
+	snd_soc_write(codec, TLV320AIC23_ANLG, reg | (val << 6));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -151,7 +200,15 @@ static int snd_soc_tlv320aic23_get_volsw(struct snd_kcontrol *kcontrol,
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 	u16 val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	val = tlv320aic23_read_reg_cache(codec, TLV320AIC23_ANLG) & (0x1C0);
+=======
+	val = snd_soc_read(codec, TLV320AIC23_ANLG) & (0x1C0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	val = snd_soc_read(codec, TLV320AIC23_ANLG) & (0x1C0);
+>>>>>>> refs/remotes/origin/master
 	val = val >> 6;
 	val = (val >= 4) ? 4  : (3 -  val);
 	ucontrol->value.integer.value[0] = val;
@@ -159,6 +216,8 @@ static int snd_soc_tlv320aic23_get_volsw(struct snd_kcontrol *kcontrol,
 
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SOC_TLV320AIC23_SINGLE_TLV(xname, reg, shift, max, invert, tlv_array) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
@@ -168,6 +227,10 @@ static int snd_soc_tlv320aic23_get_volsw(struct snd_kcontrol *kcontrol,
 	.put = snd_soc_tlv320aic23_put_volsw, \
 	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct snd_kcontrol_new tlv320aic23_snd_controls[] = {
 	SOC_DOUBLE_R_TLV("Digital Playback Volume", TLV320AIC23_LCHNVOL,
 			 TLV320AIC23_RCHNVOL, 0, 127, 0, out_gain_tlv),
@@ -178,8 +241,20 @@ static const struct snd_kcontrol_new tlv320aic23_snd_controls[] = {
 			 TLV320AIC23_RINVOL, 0, 31, 0, input_gain_tlv),
 	SOC_SINGLE("Mic Input Switch", TLV320AIC23_ANLG, 1, 1, 1),
 	SOC_SINGLE("Mic Booster Switch", TLV320AIC23_ANLG, 0, 1, 0),
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SOC_TLV320AIC23_SINGLE_TLV("Sidetone Volume", TLV320AIC23_ANLG,
 				  6, 4, 0, sidetone_vol_tlv),
+=======
+	SOC_SINGLE_EXT_TLV("Sidetone Volume", TLV320AIC23_ANLG, 6, 4, 0,
+			   snd_soc_tlv320aic23_get_volsw,
+			   snd_soc_tlv320aic23_put_volsw, sidetone_vol_tlv),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SOC_SINGLE_EXT_TLV("Sidetone Volume", TLV320AIC23_ANLG, 6, 4, 0,
+			   snd_soc_tlv320aic23_get_volsw,
+			   snd_soc_tlv320aic23_put_volsw, sidetone_vol_tlv),
+>>>>>>> refs/remotes/origin/master
 	SOC_ENUM("Playback De-emphasis", tlv320aic23_deemph),
 };
 
@@ -239,8 +314,15 @@ static const struct snd_soc_dapm_route tlv320aic23_intercon[] = {
 
 /* AIC23 driver data */
 struct aic23 {
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
+<<<<<<< HEAD
 	void *control_data;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 	int mclk;
 	int requested_adc;
 	int requested_dac;
@@ -352,7 +434,15 @@ static int find_rate(int mclk, u32 need_adc, u32 need_dac)
 static void get_current_sample_rates(struct snd_soc_codec *codec, int mclk,
 		u32 *sample_rate_adc, u32 *sample_rate_dac)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int src = tlv320aic23_read_reg_cache(codec, TLV320AIC23_SRATE);
+=======
+	int src = snd_soc_read(codec, TLV320AIC23_SRATE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int src = snd_soc_read(codec, TLV320AIC23_SRATE);
+>>>>>>> refs/remotes/origin/master
 	int sr = (src >> 2) & 0x0f;
 	int val = (mclk / bosr_usb_divisor_table[src & 3]);
 	int adc = (val * sr_adc_mult_table[sr]) / SR_MULT;
@@ -376,7 +466,15 @@ static int set_sample_rate_control(struct snd_soc_codec *codec, int mclk,
 				__func__, sample_rate_adc, sample_rate_dac);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tlv320aic23_write(codec, TLV320AIC23_SRATE, data);
+=======
+	snd_soc_write(codec, TLV320AIC23_SRATE, data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_write(codec, TLV320AIC23_SRATE, data);
+>>>>>>> refs/remotes/origin/master
 #ifdef DEBUG
 	{
 		u32 adc, dac;
@@ -392,8 +490,12 @@ static int tlv320aic23_hw_params(struct snd_pcm_substream *substream,
 				 struct snd_pcm_hw_params *params,
 				 struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	u16 iface_reg;
 	int ret;
 	struct aic23 *aic23 = snd_soc_codec_get_drvdata(codec);
@@ -415,9 +517,19 @@ static int tlv320aic23_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iface_reg =
 	    tlv320aic23_read_reg_cache(codec,
 				       TLV320AIC23_DIGT_FMT) & ~(0x03 << 2);
+=======
+	iface_reg = snd_soc_read(codec, TLV320AIC23_DIGT_FMT) & ~(0x03 << 2);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iface_reg = snd_soc_read(codec, TLV320AIC23_DIGT_FMT) & ~(0x03 << 2);
+
+>>>>>>> refs/remotes/origin/master
 	switch (params_format(params)) {
 	case SNDRV_PCM_FORMAT_S16_LE:
 		break;
@@ -431,7 +543,15 @@ static int tlv320aic23_hw_params(struct snd_pcm_substream *substream,
 		iface_reg |= (0x03 << 2);
 		break;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tlv320aic23_write(codec, TLV320AIC23_DIGT_FMT, iface_reg);
+=======
+	snd_soc_write(codec, TLV320AIC23_DIGT_FMT, iface_reg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_write(codec, TLV320AIC23_DIGT_FMT, iface_reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -439,11 +559,22 @@ static int tlv320aic23_hw_params(struct snd_pcm_substream *substream,
 static int tlv320aic23_pcm_prepare(struct snd_pcm_substream *substream,
 				   struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
 
 	/* set active */
+<<<<<<< HEAD
 	tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0001);
+=======
+	snd_soc_write(codec, TLV320AIC23_ACTIVE, 0x0001);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_codec *codec = dai->codec;
+
+	/* set active */
+	snd_soc_write(codec, TLV320AIC23_ACTIVE, 0x0001);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -451,14 +582,26 @@ static int tlv320aic23_pcm_prepare(struct snd_pcm_substream *substream,
 static void tlv320aic23_shutdown(struct snd_pcm_substream *substream,
 				 struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct aic23 *aic23 = snd_soc_codec_get_drvdata(codec);
 
 	/* deactivate */
 	if (!codec->active) {
 		udelay(50);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0);
+=======
+		snd_soc_write(codec, TLV320AIC23_ACTIVE, 0x0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_write(codec, TLV320AIC23_ACTIVE, 0x0);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 		aic23->requested_dac = 0;
@@ -471,14 +614,30 @@ static int tlv320aic23_mute(struct snd_soc_dai *dai, int mute)
 	struct snd_soc_codec *codec = dai->codec;
 	u16 reg;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reg = tlv320aic23_read_reg_cache(codec, TLV320AIC23_DIGT);
+=======
+	reg = snd_soc_read(codec, TLV320AIC23_DIGT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reg = snd_soc_read(codec, TLV320AIC23_DIGT);
+>>>>>>> refs/remotes/origin/master
 	if (mute)
 		reg |= TLV320AIC23_DACM_MUTE;
 
 	else
 		reg &= ~TLV320AIC23_DACM_MUTE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tlv320aic23_write(codec, TLV320AIC23_DIGT, reg);
+=======
+	snd_soc_write(codec, TLV320AIC23_DIGT, reg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_write(codec, TLV320AIC23_DIGT, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -489,8 +648,16 @@ static int tlv320aic23_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	struct snd_soc_codec *codec = codec_dai->codec;
 	u16 iface_reg;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iface_reg =
 	    tlv320aic23_read_reg_cache(codec, TLV320AIC23_DIGT_FMT) & (~0x03);
+=======
+	iface_reg = snd_soc_read(codec, TLV320AIC23_DIGT_FMT) & (~0x03);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iface_reg = snd_soc_read(codec, TLV320AIC23_DIGT_FMT) & (~0x03);
+>>>>>>> refs/remotes/origin/master
 
 	/* set master/slave audio interface */
 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
@@ -498,6 +665,14 @@ static int tlv320aic23_set_dai_fmt(struct snd_soc_dai *codec_dai,
 		iface_reg |= TLV320AIC23_MS_MASTER;
 		break;
 	case SND_SOC_DAIFMT_CBS_CFS:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		iface_reg &= ~TLV320AIC23_MS_MASTER;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iface_reg &= ~TLV320AIC23_MS_MASTER;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
@@ -524,7 +699,15 @@ static int tlv320aic23_set_dai_fmt(struct snd_soc_dai *codec_dai,
 
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tlv320aic23_write(codec, TLV320AIC23_DIGT_FMT, iface_reg);
+=======
+	snd_soc_write(codec, TLV320AIC23_DIGT_FMT, iface_reg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_write(codec, TLV320AIC23_DIGT_FMT, iface_reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -540,19 +723,37 @@ static int tlv320aic23_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 static int tlv320aic23_set_bias_level(struct snd_soc_codec *codec,
 				      enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 reg = tlv320aic23_read_reg_cache(codec, TLV320AIC23_PWR) & 0xff7f;
+=======
+	u16 reg = snd_soc_read(codec, TLV320AIC23_PWR) & 0x17f;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 reg = snd_soc_read(codec, TLV320AIC23_PWR) & 0x17f;
+>>>>>>> refs/remotes/origin/master
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
 		/* vref/mid, osc on, dac unmute */
 		reg &= ~(TLV320AIC23_DEVICE_PWR_OFF | TLV320AIC23_OSC_OFF | \
 			TLV320AIC23_DAC_OFF);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		tlv320aic23_write(codec, TLV320AIC23_PWR, reg);
+=======
+		snd_soc_write(codec, TLV320AIC23_PWR, reg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_write(codec, TLV320AIC23_PWR, reg);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SND_SOC_BIAS_PREPARE:
 		break;
 	case SND_SOC_BIAS_STANDBY:
 		/* everything off except vref/vmid, */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		tlv320aic23_write(codec, TLV320AIC23_PWR, reg | \
 			TLV320AIC23_CLK_OFF);
 		break;
@@ -560,6 +761,20 @@ static int tlv320aic23_set_bias_level(struct snd_soc_codec *codec,
 		/* everything off, dac mute, inactive */
 		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0);
 		tlv320aic23_write(codec, TLV320AIC23_PWR, 0xffff);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		snd_soc_write(codec, TLV320AIC23_PWR,
+			      reg | TLV320AIC23_CLK_OFF);
+		break;
+	case SND_SOC_BIAS_OFF:
+		/* everything off, dac mute, inactive */
+		snd_soc_write(codec, TLV320AIC23_ACTIVE, 0x0);
+		snd_soc_write(codec, TLV320AIC23_PWR, 0x1ff);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	codec->dapm.bias_level = level;
@@ -570,7 +785,15 @@ static int tlv320aic23_set_bias_level(struct snd_soc_codec *codec,
 #define AIC23_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
 			 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops tlv320aic23_dai_ops = {
+=======
+static const struct snd_soc_dai_ops tlv320aic23_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops tlv320aic23_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.prepare	= tlv320aic23_pcm_prepare,
 	.hw_params	= tlv320aic23_hw_params,
 	.shutdown	= tlv320aic23_shutdown,
@@ -596,8 +819,16 @@ static struct snd_soc_dai_driver tlv320aic23_dai = {
 	.ops = &tlv320aic23_dai_ops,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int tlv320aic23_suspend(struct snd_soc_codec *codec,
 			       pm_message_t state)
+=======
+static int tlv320aic23_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tlv320aic23_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
@@ -606,6 +837,8 @@ static int tlv320aic23_suspend(struct snd_soc_codec *codec,
 
 static int tlv320aic23_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 reg;
 
 	/* Sync reg_cache with the hardware */
@@ -613,6 +846,14 @@ static int tlv320aic23_resume(struct snd_soc_codec *codec)
 		u16 val = tlv320aic23_read_reg_cache(codec, reg);
 		tlv320aic23_write(codec, reg, val);
 	}
+=======
+	snd_soc_cache_sync(codec);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct aic23 *aic23 = snd_soc_codec_get_drvdata(codec);
+	regcache_mark_dirty(aic23->regmap);
+	regcache_sync(aic23->regmap);
+>>>>>>> refs/remotes/origin/master
 	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
 	return 0;
@@ -620,7 +861,9 @@ static int tlv320aic23_resume(struct snd_soc_codec *codec)
 
 static int tlv320aic23_probe(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	struct aic23 *aic23 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	int reg;
 
 	printk(KERN_INFO "AIC23 Audio Codec %s\n", AIC23_VERSION);
@@ -630,10 +873,41 @@ static int tlv320aic23_probe(struct snd_soc_codec *codec)
 
 	/* Reset codec */
 	tlv320aic23_write(codec, TLV320AIC23_RESET, 0);
+=======
+	int ret;
+
+	printk(KERN_INFO "AIC23 Audio Codec %s\n", AIC23_VERSION);
+
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, aic23->control_type);
+=======
+	int ret;
+
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
+	if (ret < 0) {
+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+		return ret;
+	}
+
+	/* Reset codec */
+	snd_soc_write(codec, TLV320AIC23_RESET, 0);
+
+<<<<<<< HEAD
+	/* Write the register default value to cache for reserved registers,
+	 * so the write to the these registers are suppressed by the cache
+	 * restore code when it skips writes of default registers.
+	 */
+	snd_soc_cache_write(codec, 0x0A, 0);
+	snd_soc_cache_write(codec, 0x0B, 0);
+	snd_soc_cache_write(codec, 0x0C, 0);
+	snd_soc_cache_write(codec, 0x0D, 0);
+	snd_soc_cache_write(codec, 0x0E, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* power on device */
 	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+<<<<<<< HEAD
 	tlv320aic23_write(codec, TLV320AIC23_DIGT, TLV320AIC23_DEEMP_44K);
 
 	/* Unmute input */
@@ -663,8 +937,40 @@ static int tlv320aic23_probe(struct snd_soc_codec *codec)
 	tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x1);
 
 	snd_soc_add_controls(codec, tlv320aic23_snd_controls,
+=======
+=======
+	/* power on device */
+	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+
+>>>>>>> refs/remotes/origin/master
+	snd_soc_write(codec, TLV320AIC23_DIGT, TLV320AIC23_DEEMP_44K);
+
+	/* Unmute input */
+	snd_soc_update_bits(codec, TLV320AIC23_LINVOL,
+			    TLV320AIC23_LIM_MUTED, TLV320AIC23_LRS_ENABLED);
+
+	snd_soc_update_bits(codec, TLV320AIC23_RINVOL,
+			    TLV320AIC23_LIM_MUTED, TLV320AIC23_LRS_ENABLED);
+
+	snd_soc_update_bits(codec, TLV320AIC23_ANLG,
+			    TLV320AIC23_BYPASS_ON | TLV320AIC23_MICM_MUTED,
+			    0);
+
+	/* Default output volume */
+	snd_soc_write(codec, TLV320AIC23_LCHNVOL,
+		      TLV320AIC23_DEFAULT_OUT_VOL & TLV320AIC23_OUT_VOL_MASK);
+	snd_soc_write(codec, TLV320AIC23_RCHNVOL,
+		      TLV320AIC23_DEFAULT_OUT_VOL & TLV320AIC23_OUT_VOL_MASK);
+
+	snd_soc_write(codec, TLV320AIC23_ACTIVE, 0x1);
+
+<<<<<<< HEAD
+	snd_soc_add_codec_controls(codec, tlv320aic23_snd_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 				ARRAY_SIZE(tlv320aic23_snd_controls));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -675,23 +981,38 @@ static int tlv320aic23_remove(struct snd_soc_codec *codec)
 }
 
 static struct snd_soc_codec_driver soc_codec_dev_tlv320aic23 = {
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(tlv320aic23_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = tlv320aic23_reg,
+=======
+>>>>>>> refs/remotes/origin/master
 	.probe = tlv320aic23_probe,
 	.remove = tlv320aic23_remove,
 	.suspend = tlv320aic23_suspend,
 	.resume = tlv320aic23_resume,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.read = tlv320aic23_read_reg_cache,
 	.write = tlv320aic23_write,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set_bias_level = tlv320aic23_set_bias_level,
+=======
+	.set_bias_level = tlv320aic23_set_bias_level,
+	.controls = tlv320aic23_snd_controls,
+	.num_controls = ARRAY_SIZE(tlv320aic23_snd_controls),
+>>>>>>> refs/remotes/origin/master
 	.dapm_widgets = tlv320aic23_dapm_widgets,
 	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
 	.dapm_routes = tlv320aic23_intercon,
 	.num_dapm_routes = ARRAY_SIZE(tlv320aic23_intercon),
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * If the i2c layer weren't so broken, we could pass this kind of data
  * around
@@ -705,24 +1026,55 @@ static int tlv320aic23_codec_probe(struct i2c_client *i2c,
 	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	aic23 = kzalloc(sizeof(struct aic23), GFP_KERNEL);
+=======
+	aic23 = devm_kzalloc(&i2c->dev, sizeof(struct aic23), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (aic23 == NULL)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, aic23);
+<<<<<<< HEAD
 	aic23->control_data = i2c;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	aic23->control_type = SND_SOC_I2C;
 
 	ret =  snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_tlv320aic23, &tlv320aic23_dai, 1);
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(aic23);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	aic23 = devm_kzalloc(&i2c->dev, sizeof(struct aic23), GFP_KERNEL);
+	if (aic23 == NULL)
+		return -ENOMEM;
+
+	aic23->regmap = devm_regmap_init_i2c(i2c, &tlv320aic23_regmap);
+	if (IS_ERR(aic23->regmap))
+		return PTR_ERR(aic23->regmap);
+
+	i2c_set_clientdata(i2c, aic23);
+
+	ret =  snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_tlv320aic23, &tlv320aic23_dai, 1);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 static int __exit tlv320aic23_i2c_remove(struct i2c_client *i2c)
 {
 	snd_soc_unregister_codec(&i2c->dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(i2c_get_clientdata(i2c));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -742,6 +1094,7 @@ static struct i2c_driver tlv320aic23_i2c_driver = {
 	.id_table = tlv320aic23_id,
 };
 
+<<<<<<< HEAD
 #endif
 
 static int __init tlv320aic23_modinit(void)
@@ -765,6 +1118,9 @@ static void __exit tlv320aic23_exit(void)
 #endif
 }
 module_exit(tlv320aic23_exit);
+=======
+module_i2c_driver(tlv320aic23_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC TLV320AIC23 codec driver");
 MODULE_AUTHOR("Arun KS <arunks@mistralsolutions.com>");

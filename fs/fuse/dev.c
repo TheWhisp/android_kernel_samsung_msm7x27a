@@ -19,7 +19,15 @@
 #include <linux/pipe_fs_i.h>
 #include <linux/swap.h>
 #include <linux/splice.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/freezer.h>
+=======
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
+=======
+#include <linux/freezer.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_ALIAS_MISCDEV(FUSE_MINOR);
 MODULE_ALIAS("devname:fuse");
@@ -35,13 +43,24 @@ static struct fuse_conn *fuse_get_conn(struct file *file)
 	return file->private_data;
 }
 
+<<<<<<< HEAD
 static void fuse_request_init(struct fuse_req *req)
 {
 	memset(req, 0, sizeof(*req));
+=======
+static void fuse_request_init(struct fuse_req *req, struct page **pages,
+			      struct fuse_page_desc *page_descs,
+			      unsigned npages)
+{
+	memset(req, 0, sizeof(*req));
+	memset(pages, 0, sizeof(*pages) * npages);
+	memset(page_descs, 0, sizeof(*page_descs) * npages);
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&req->list);
 	INIT_LIST_HEAD(&req->intr_entry);
 	init_waitqueue_head(&req->waitq);
 	atomic_set(&req->count, 1);
+<<<<<<< HEAD
 }
 
 struct fuse_req *fuse_request_alloc(void)
@@ -59,10 +78,61 @@ struct fuse_req *fuse_request_alloc_nofs(void)
 	if (req)
 		fuse_request_init(req);
 	return req;
+=======
+	req->pages = pages;
+	req->page_descs = page_descs;
+	req->max_pages = npages;
+}
+
+static struct fuse_req *__fuse_request_alloc(unsigned npages, gfp_t flags)
+{
+	struct fuse_req *req = kmem_cache_alloc(fuse_req_cachep, flags);
+	if (req) {
+		struct page **pages;
+		struct fuse_page_desc *page_descs;
+
+		if (npages <= FUSE_REQ_INLINE_PAGES) {
+			pages = req->inline_pages;
+			page_descs = req->inline_page_descs;
+		} else {
+			pages = kmalloc(sizeof(struct page *) * npages, flags);
+			page_descs = kmalloc(sizeof(struct fuse_page_desc) *
+					     npages, flags);
+		}
+
+		if (!pages || !page_descs) {
+			kfree(pages);
+			kfree(page_descs);
+			kmem_cache_free(fuse_req_cachep, req);
+			return NULL;
+		}
+
+		fuse_request_init(req, pages, page_descs, npages);
+	}
+	return req;
+}
+
+struct fuse_req *fuse_request_alloc(unsigned npages)
+{
+	return __fuse_request_alloc(npages, GFP_KERNEL);
+}
+EXPORT_SYMBOL_GPL(fuse_request_alloc);
+
+struct fuse_req *fuse_request_alloc_nofs(unsigned npages)
+{
+	return __fuse_request_alloc(npages, GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 }
 
 void fuse_request_free(struct fuse_req *req)
 {
+<<<<<<< HEAD
+=======
+	if (req->pages != req->inline_pages) {
+		kfree(req->pages);
+		kfree(req->page_descs);
+	}
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(fuse_req_cachep, req);
 }
 
@@ -79,7 +149,11 @@ static void restore_sigs(sigset_t *oldset)
 	sigprocmask(SIG_SETMASK, oldset, NULL);
 }
 
+<<<<<<< HEAD
 static void __fuse_get_request(struct fuse_req *req)
+=======
+void __fuse_get_request(struct fuse_req *req)
+>>>>>>> refs/remotes/origin/master
 {
 	atomic_inc(&req->count);
 }
@@ -93,6 +167,7 @@ static void __fuse_put_request(struct fuse_req *req)
 
 static void fuse_req_init_context(struct fuse_req *req)
 {
+<<<<<<< HEAD
 	req->in.h.uid = current_fsuid();
 	req->in.h.gid = current_fsgid();
 	req->in.h.pid = current->pid;
@@ -112,11 +187,43 @@ struct fuse_req *fuse_get_req(struct fuse_conn *fc)
 	err = -EINTR;
 	if (intr)
 		goto out;
+=======
+	req->in.h.uid = from_kuid_munged(&init_user_ns, current_fsuid());
+	req->in.h.gid = from_kgid_munged(&init_user_ns, current_fsgid());
+	req->in.h.pid = current->pid;
+}
+
+static bool fuse_block_alloc(struct fuse_conn *fc, bool for_background)
+{
+	return !fc->initialized || (for_background && fc->blocked);
+}
+
+static struct fuse_req *__fuse_get_req(struct fuse_conn *fc, unsigned npages,
+				       bool for_background)
+{
+	struct fuse_req *req;
+	int err;
+	atomic_inc(&fc->num_waiting);
+
+	if (fuse_block_alloc(fc, for_background)) {
+		sigset_t oldset;
+		int intr;
+
+		block_sigs(&oldset);
+		intr = wait_event_interruptible_exclusive(fc->blocked_waitq,
+				!fuse_block_alloc(fc, for_background));
+		restore_sigs(&oldset);
+		err = -EINTR;
+		if (intr)
+			goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	err = -ENOTCONN;
 	if (!fc->connected)
 		goto out;
 
+<<<<<<< HEAD
 	req = fuse_request_alloc();
 	err = -ENOMEM;
 	if (!req)
@@ -124,14 +231,44 @@ struct fuse_req *fuse_get_req(struct fuse_conn *fc)
 
 	fuse_req_init_context(req);
 	req->waiting = 1;
+=======
+	req = fuse_request_alloc(npages);
+	err = -ENOMEM;
+	if (!req) {
+		if (for_background)
+			wake_up(&fc->blocked_waitq);
+		goto out;
+	}
+
+	fuse_req_init_context(req);
+	req->waiting = 1;
+	req->background = for_background;
+>>>>>>> refs/remotes/origin/master
 	return req;
 
  out:
 	atomic_dec(&fc->num_waiting);
 	return ERR_PTR(err);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(fuse_get_req);
 
+=======
+
+struct fuse_req *fuse_get_req(struct fuse_conn *fc, unsigned npages)
+{
+	return __fuse_get_req(fc, npages, false);
+}
+EXPORT_SYMBOL_GPL(fuse_get_req);
+
+struct fuse_req *fuse_get_req_for_background(struct fuse_conn *fc,
+					     unsigned npages)
+{
+	return __fuse_get_req(fc, npages, true);
+}
+EXPORT_SYMBOL_GPL(fuse_get_req_for_background);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Return request in fuse_file->reserved_req.  However that may
  * currently be in use.  If that is the case, wait for it to become
@@ -149,8 +286,12 @@ static struct fuse_req *get_reserved_req(struct fuse_conn *fc,
 		if (ff->reserved_req) {
 			req = ff->reserved_req;
 			ff->reserved_req = NULL;
+<<<<<<< HEAD
 			get_file(file);
 			req->stolen_file = file;
+=======
+			req->stolen_file = get_file(file);
+>>>>>>> refs/remotes/origin/master
 		}
 		spin_unlock(&fc->lock);
 	} while (!req);
@@ -167,7 +308,11 @@ static void put_reserved_req(struct fuse_conn *fc, struct fuse_req *req)
 	struct fuse_file *ff = file->private_data;
 
 	spin_lock(&fc->lock);
+<<<<<<< HEAD
 	fuse_request_init(req);
+=======
+	fuse_request_init(req, req->pages, req->page_descs, req->max_pages);
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(ff->reserved_req);
 	ff->reserved_req = req;
 	wake_up_all(&fc->reserved_req_waitq);
@@ -188,24 +333,52 @@ static void put_reserved_req(struct fuse_conn *fc, struct fuse_req *req)
  * filesystem should not have it's own file open.  If deadlock is
  * intentional, it can still be broken by "aborting" the filesystem.
  */
+<<<<<<< HEAD
 struct fuse_req *fuse_get_req_nofail(struct fuse_conn *fc, struct file *file)
+=======
+struct fuse_req *fuse_get_req_nofail_nopages(struct fuse_conn *fc,
+					     struct file *file)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fuse_req *req;
 
 	atomic_inc(&fc->num_waiting);
+<<<<<<< HEAD
 	wait_event(fc->blocked_waitq, !fc->blocked);
 	req = fuse_request_alloc();
+=======
+	wait_event(fc->blocked_waitq, fc->initialized);
+	req = fuse_request_alloc(0);
+>>>>>>> refs/remotes/origin/master
 	if (!req)
 		req = get_reserved_req(fc, file);
 
 	fuse_req_init_context(req);
 	req->waiting = 1;
+<<<<<<< HEAD
+=======
+	req->background = 0;
+>>>>>>> refs/remotes/origin/master
 	return req;
 }
 
 void fuse_put_request(struct fuse_conn *fc, struct fuse_req *req)
 {
 	if (atomic_dec_and_test(&req->count)) {
+<<<<<<< HEAD
+=======
+		if (unlikely(req->background)) {
+			/*
+			 * We get here in the unlikely case that a background
+			 * request was allocated but not sent
+			 */
+			spin_lock(&fc->lock);
+			if (!fc->blocked)
+				wake_up(&fc->blocked_waitq);
+			spin_unlock(&fc->lock);
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if (req->waiting)
 			atomic_dec(&fc->num_waiting);
 
@@ -303,10 +476,22 @@ __releases(fc->lock)
 	list_del(&req->intr_entry);
 	req->state = FUSE_REQ_FINISHED;
 	if (req->background) {
+<<<<<<< HEAD
 		if (fc->num_background == fc->max_background) {
 			fc->blocked = 0;
 			wake_up_all(&fc->blocked_waitq);
 		}
+=======
+		req->background = 0;
+
+		if (fc->num_background == fc->max_background)
+			fc->blocked = 0;
+
+		/* Wake up next waiter, if any */
+		if (!fc->blocked && waitqueue_active(&fc->blocked_waitq))
+			wake_up(&fc->blocked_waitq);
+
+>>>>>>> refs/remotes/origin/master
 		if (fc->num_background == fc->congestion_threshold &&
 		    fc->connected && fc->bdi_initialized) {
 			clear_bdi_congested(&fc->bdi, BLK_RW_SYNC);
@@ -388,10 +573,20 @@ __acquires(fc->lock)
 	 * Wait it out.
 	 */
 	spin_unlock(&fc->lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	while (req->state != FUSE_REQ_FINISHED)
 		wait_event_freezable(req->waitq,
 				     req->state == FUSE_REQ_FINISHED);
+<<<<<<< HEAD
+=======
+	wait_event(req->waitq, req->state == FUSE_REQ_FINISHED);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	spin_lock(&fc->lock);
 
 	if (!req->aborted)
@@ -411,9 +606,15 @@ __acquires(fc->lock)
 	}
 }
 
+<<<<<<< HEAD
 void fuse_request_send(struct fuse_conn *fc, struct fuse_req *req)
 {
 	req->isreply = 1;
+=======
+static void __fuse_request_send(struct fuse_conn *fc, struct fuse_req *req)
+{
+	BUG_ON(req->background);
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&fc->lock);
 	if (!fc->connected)
 		req->out.h.error = -ENOTCONN;
@@ -430,12 +631,25 @@ void fuse_request_send(struct fuse_conn *fc, struct fuse_req *req)
 	}
 	spin_unlock(&fc->lock);
 }
+<<<<<<< HEAD
+=======
+
+void fuse_request_send(struct fuse_conn *fc, struct fuse_req *req)
+{
+	req->isreply = 1;
+	__fuse_request_send(fc, req);
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(fuse_request_send);
 
 static void fuse_request_send_nowait_locked(struct fuse_conn *fc,
 					    struct fuse_req *req)
 {
+<<<<<<< HEAD
 	req->background = 1;
+=======
+	BUG_ON(!req->background);
+>>>>>>> refs/remotes/origin/master
 	fc->num_background++;
 	if (fc->num_background == fc->max_background)
 		fc->blocked = 1;
@@ -496,6 +710,30 @@ void fuse_request_send_background_locked(struct fuse_conn *fc,
 	fuse_request_send_nowait_locked(fc, req);
 }
 
+<<<<<<< HEAD
+=======
+void fuse_force_forget(struct file *file, u64 nodeid)
+{
+	struct inode *inode = file_inode(file);
+	struct fuse_conn *fc = get_fuse_conn(inode);
+	struct fuse_req *req;
+	struct fuse_forget_in inarg;
+
+	memset(&inarg, 0, sizeof(inarg));
+	inarg.nlookup = 1;
+	req = fuse_get_req_nofail_nopages(fc, file);
+	req->in.h.opcode = FUSE_FORGET;
+	req->in.h.nodeid = nodeid;
+	req->in.numargs = 1;
+	req->in.args[0].size = sizeof(inarg);
+	req->in.args[0].value = &inarg;
+	req->isreply = 0;
+	__fuse_request_send(fc, req);
+	/* ignore errors */
+	fuse_put_request(fc, req);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Lock the request.  Up to the next unlock_request() there mustn't be
  * anything that could cause a page-fault.  If the request was already
@@ -697,8 +935,11 @@ static int fuse_try_move_page(struct fuse_copy_state *cs, struct page **pagep)
 	struct page *oldpage = *pagep;
 	struct page *newpage;
 	struct pipe_buffer *buf = cs->pipebufs;
+<<<<<<< HEAD
 	struct address_space *mapping;
 	pgoff_t index;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	unlock_request(cs->fc, cs->req);
 	fuse_copy_finish(cs);
@@ -729,9 +970,12 @@ static int fuse_try_move_page(struct fuse_copy_state *cs, struct page **pagep)
 	if (fuse_check_page(newpage) != 0)
 		goto out_fallback_unlock;
 
+<<<<<<< HEAD
 	mapping = oldpage->mapping;
 	index = oldpage->index;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This is a new and locked page, it shouldn't be mapped or
 	 * have any special flags on it
@@ -842,10 +1086,23 @@ static int fuse_copy_page(struct fuse_copy_state *cs, struct page **pagep,
 			}
 		}
 		if (page) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			void *mapaddr = kmap_atomic(page, KM_USER0);
 			void *buf = mapaddr + offset;
 			offset += fuse_copy_do(cs, &buf, &count);
 			kunmap_atomic(mapaddr, KM_USER0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			void *mapaddr = kmap_atomic(page);
+			void *buf = mapaddr + offset;
+			offset += fuse_copy_do(cs, &buf, &count);
+			kunmap_atomic(mapaddr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else
 			offset += fuse_copy_do(cs, NULL, &count);
 	}
@@ -860,11 +1117,19 @@ static int fuse_copy_pages(struct fuse_copy_state *cs, unsigned nbytes,
 {
 	unsigned i;
 	struct fuse_req *req = cs->req;
+<<<<<<< HEAD
 	unsigned offset = req->page_offset;
 	unsigned count = min(nbytes, (unsigned) PAGE_SIZE - offset);
 
 	for (i = 0; i < req->num_pages && (nbytes || zeroing); i++) {
 		int err;
+=======
+
+	for (i = 0; i < req->num_pages && (nbytes || zeroing); i++) {
+		int err;
+		unsigned offset = req->page_descs[i].offset;
+		unsigned count = min(nbytes, req->page_descs[i].length);
+>>>>>>> refs/remotes/origin/master
 
 		err = fuse_copy_page(cs, &req->pages[i], offset, count,
 				     zeroing);
@@ -872,8 +1137,11 @@ static int fuse_copy_pages(struct fuse_copy_state *cs, unsigned nbytes,
 			return err;
 
 		nbytes -= count;
+<<<<<<< HEAD
 		count = min(nbytes, (unsigned) PAGE_SIZE);
 		offset = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -1271,7 +1539,11 @@ static ssize_t fuse_dev_splice_read(struct file *in, loff_t *ppos,
 		page_nr++;
 		ret += buf->len;
 
+<<<<<<< HEAD
 		if (pipe->inode)
+=======
+		if (pipe->files)
+>>>>>>> refs/remotes/origin/master
 			do_wakeup = 1;
 	}
 
@@ -1382,7 +1654,69 @@ static int fuse_notify_inval_entry(struct fuse_conn *fc, unsigned int size,
 	down_read(&fc->killsb);
 	err = -ENOENT;
 	if (fc->sb)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = fuse_reverse_inval_entry(fc->sb, outarg.parent, &name);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		err = fuse_reverse_inval_entry(fc->sb, outarg.parent, 0, &name);
+	up_read(&fc->killsb);
+	kfree(buf);
+	return err;
+
+err:
+	kfree(buf);
+	fuse_copy_finish(cs);
+	return err;
+}
+
+static int fuse_notify_delete(struct fuse_conn *fc, unsigned int size,
+			      struct fuse_copy_state *cs)
+{
+	struct fuse_notify_delete_out outarg;
+	int err = -ENOMEM;
+	char *buf;
+	struct qstr name;
+
+	buf = kzalloc(FUSE_NAME_MAX + 1, GFP_KERNEL);
+	if (!buf)
+		goto err;
+
+	err = -EINVAL;
+	if (size < sizeof(outarg))
+		goto err;
+
+	err = fuse_copy_one(cs, &outarg, sizeof(outarg));
+	if (err)
+		goto err;
+
+	err = -ENAMETOOLONG;
+	if (outarg.namelen > FUSE_NAME_MAX)
+		goto err;
+
+	err = -EINVAL;
+	if (size != sizeof(outarg) + outarg.namelen + 1)
+		goto err;
+
+	name.name = buf;
+	name.len = outarg.namelen;
+	err = fuse_copy_one(cs, buf, outarg.namelen + 1);
+	if (err)
+		goto err;
+	fuse_copy_finish(cs);
+	buf[outarg.namelen] = 0;
+	name.hash = full_name_hash(name.name, name.len);
+
+	down_read(&fc->killsb);
+	err = -ENOENT;
+	if (fc->sb)
+		err = fuse_reverse_inval_entry(fc->sb, outarg.parent,
+					       outarg.child, &name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	up_read(&fc->killsb);
 	kfree(buf);
 	return err;
@@ -1494,6 +1828,7 @@ static int fuse_retrieve(struct fuse_conn *fc, struct inode *inode,
 	unsigned int num;
 	unsigned int offset;
 	size_t total_len = 0;
+<<<<<<< HEAD
 
 	req = fuse_get_req(fc);
 	if (IS_ERR(req))
@@ -1501,10 +1836,31 @@ static int fuse_retrieve(struct fuse_conn *fc, struct inode *inode,
 
 	offset = outarg->offset & ~PAGE_CACHE_MASK;
 
+=======
+	int num_pages;
+
+	offset = outarg->offset & ~PAGE_CACHE_MASK;
+	file_size = i_size_read(inode);
+
+	num = outarg->size;
+	if (outarg->offset > file_size)
+		num = 0;
+	else if (outarg->offset + num > file_size)
+		num = file_size - outarg->offset;
+
+	num_pages = (num + offset + PAGE_SIZE - 1) >> PAGE_SHIFT;
+	num_pages = min(num_pages, FUSE_MAX_PAGES_PER_REQ);
+
+	req = fuse_get_req(fc, num_pages);
+	if (IS_ERR(req))
+		return PTR_ERR(req);
+
+>>>>>>> refs/remotes/origin/master
 	req->in.h.opcode = FUSE_NOTIFY_REPLY;
 	req->in.h.nodeid = outarg->nodeid;
 	req->in.numargs = 2;
 	req->in.argpages = 1;
+<<<<<<< HEAD
 	req->page_offset = offset;
 	req->end = fuse_retrieve_end;
 
@@ -1517,6 +1873,14 @@ static int fuse_retrieve(struct fuse_conn *fc, struct inode *inode,
 		num = file_size - outarg->offset;
 
 	while (num && req->num_pages < FUSE_MAX_PAGES_PER_REQ) {
+=======
+	req->page_descs[0].offset = offset;
+	req->end = fuse_retrieve_end;
+
+	index = outarg->offset >> PAGE_CACHE_SHIFT;
+
+	while (num && req->num_pages < num_pages) {
+>>>>>>> refs/remotes/origin/master
 		struct page *page;
 		unsigned int this_num;
 
@@ -1526,6 +1890,10 @@ static int fuse_retrieve(struct fuse_conn *fc, struct inode *inode,
 
 		this_num = min_t(unsigned, num, PAGE_CACHE_SIZE - offset);
 		req->pages[req->num_pages] = page;
+<<<<<<< HEAD
+=======
+		req->page_descs[req->num_pages].length = this_num;
+>>>>>>> refs/remotes/origin/master
 		req->num_pages++;
 
 		offset = 0;
@@ -1602,6 +1970,18 @@ static int fuse_notify(struct fuse_conn *fc, enum fuse_notify_code code,
 	case FUSE_NOTIFY_RETRIEVE:
 		return fuse_notify_retrieve(fc, size, cs);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case FUSE_NOTIFY_DELETE:
+		return fuse_notify_delete(fc, size, cs);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case FUSE_NOTIFY_DELETE:
+		return fuse_notify_delete(fc, size, cs);
+
+>>>>>>> refs/remotes/origin/master
 	default:
 		fuse_copy_finish(cs);
 		return -EINVAL;
@@ -1611,11 +1991,17 @@ static int fuse_notify(struct fuse_conn *fc, enum fuse_notify_code code,
 /* Look up request on processing list by unique ID */
 static struct fuse_req *request_find(struct fuse_conn *fc, u64 unique)
 {
+<<<<<<< HEAD
 	struct list_head *entry;
 
 	list_for_each(entry, &fc->processing) {
 		struct fuse_req *req;
 		req = list_entry(entry, struct fuse_req, list);
+=======
+	struct fuse_req *req;
+
+	list_for_each_entry(req, &fc->processing, list) {
+>>>>>>> refs/remotes/origin/master
 		if (req->in.h.unique == unique || req->intr_unique == unique)
 			return req;
 	}
@@ -1962,6 +2348,10 @@ void fuse_abort_conn(struct fuse_conn *fc)
 	if (fc->connected) {
 		fc->connected = 0;
 		fc->blocked = 0;
+<<<<<<< HEAD
+=======
+		fc->initialized = 1;
+>>>>>>> refs/remotes/origin/master
 		end_io_requests(fc);
 		end_queued_requests(fc);
 		end_polls(fc);
@@ -1980,6 +2370,10 @@ int fuse_dev_release(struct inode *inode, struct file *file)
 		spin_lock(&fc->lock);
 		fc->connected = 0;
 		fc->blocked = 0;
+<<<<<<< HEAD
+=======
+		fc->initialized = 1;
+>>>>>>> refs/remotes/origin/master
 		end_queued_requests(fc);
 		end_polls(fc);
 		wake_up_all(&fc->blocked_waitq);

@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,6 +56,42 @@
 #define _COMPONENT          ACPI_UTILITIES
 ACPI_MODULE_NAME("utalloc")
 
+<<<<<<< HEAD
+=======
+#if !defined (USE_NATIVE_ALLOCATE_ZEROED)
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_os_allocate_zeroed
+ *
+ * PARAMETERS:  size                - Size of the allocation
+ *
+ * RETURN:      Address of the allocated memory on success, NULL on failure.
+ *
+ * DESCRIPTION: Subsystem equivalent of calloc. Allocate and zero memory.
+ *              This is the default implementation. Can be overridden via the
+ *              USE_NATIVE_ALLOCATE_ZEROED flag.
+ *
+ ******************************************************************************/
+void *acpi_os_allocate_zeroed(acpi_size size)
+{
+	void *allocation;
+
+	ACPI_FUNCTION_ENTRY();
+
+	allocation = acpi_os_allocate(size);
+	if (allocation) {
+
+		/* Clear the memory block */
+
+		ACPI_MEMSET(allocation, 0, size);
+	}
+
+	return (allocation);
+}
+
+#endif				/* !USE_NATIVE_ALLOCATE_ZEROED */
+
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_ut_create_caches
@@ -59,6 +103,10 @@ ACPI_MODULE_NAME("utalloc")
  * DESCRIPTION: Create all local caches
  *
  ******************************************************************************/
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 acpi_status acpi_ut_create_caches(void)
 {
 	acpi_status status;
@@ -175,10 +223,17 @@ acpi_status acpi_ut_delete_caches(void)
 
 	/* Free memory lists */
 
+<<<<<<< HEAD
 	ACPI_FREE(acpi_gbl_global_list);
 	acpi_gbl_global_list = NULL;
 
 	ACPI_FREE(acpi_gbl_ns_node_list);
+=======
+	acpi_os_free(acpi_gbl_global_list);
+	acpi_gbl_global_list = NULL;
+
+	acpi_os_free(acpi_gbl_ns_node_list);
+>>>>>>> refs/remotes/origin/master
 	acpi_gbl_ns_node_list = NULL;
 #endif
 
@@ -189,7 +244,11 @@ acpi_status acpi_ut_delete_caches(void)
  *
  * FUNCTION:    acpi_ut_validate_buffer
  *
+<<<<<<< HEAD
  * PARAMETERS:  Buffer              - Buffer descriptor to be validated
+=======
+ * PARAMETERS:  buffer              - Buffer descriptor to be validated
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -227,7 +286,11 @@ acpi_status acpi_ut_validate_buffer(struct acpi_buffer * buffer)
  *
  * FUNCTION:    acpi_ut_initialize_buffer
  *
+<<<<<<< HEAD
  * PARAMETERS:  Buffer              - Buffer to be validated
+=======
+ * PARAMETERS:  buffer              - Buffer to be validated
+>>>>>>> refs/remotes/origin/master
  *              required_length     - Length needed
  *
  * RETURN:      Status
@@ -302,6 +365,7 @@ acpi_ut_initialize_buffer(struct acpi_buffer * buffer,
 	ACPI_MEMSET(buffer->pointer, 0, required_length);
 	return (AE_OK);
 }
+<<<<<<< HEAD
 
 #ifdef NOT_USED_BY_LINUX
 /*******************************************************************************
@@ -381,3 +445,5 @@ void *acpi_ut_allocate_zeroed(acpi_size size,
 	return (allocation);
 }
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

@@ -3,6 +3,7 @@
  *
  * Licensed under the GPL-2 or later.
  */
+<<<<<<< HEAD
 
 #ifndef _BFIN_PTRACE_H
 #define _BFIN_PTRACE_H
@@ -102,11 +103,30 @@ struct pt_regs {
 /* user_mode returns true if only one bit is set in IPEND, other than the
    master interrupt enable.  */
 #define user_mode(regs) (!(((regs)->ipend & ~0x10) & (((regs)->ipend & ~0x10) - 1)))
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef _BFIN_PTRACE_H
+#define _BFIN_PTRACE_H
+
+#include <uapi/asm/ptrace.h>
+
+#ifndef __ASSEMBLY__
+
+/* user_mode returns true if only one bit is set in IPEND, other than the
+   master interrupt enable.  */
+#define user_mode(regs) (!(((regs)->ipend & ~0x10) & (((regs)->ipend & ~0x10) - 1)))
+>>>>>>> refs/remotes/origin/master
 
 #define arch_has_single_step()	(1)
 /* common code demands this function */
 #define ptrace_disable(child) user_disable_single_step(child)
+<<<<<<< HEAD
+=======
+#define current_user_stack_pointer() rdusp()
+>>>>>>> refs/remotes/origin/master
 
 extern int is_user_addr_valid(struct task_struct *child,
 			      unsigned long start, unsigned long len);
@@ -127,6 +147,7 @@ extern int is_user_addr_valid(struct task_struct *child,
 
 #include <asm-generic/ptrace.h>
 
+<<<<<<< HEAD
 #endif  /*  __KERNEL__  */
 
 #endif				/* __ASSEMBLY__ */
@@ -198,4 +219,7 @@ extern int is_user_addr_valid(struct task_struct *child,
 
 #define PT_LAST_PSEUDO PT_FDPIC_INTERP
 
+=======
+#endif				/* __ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif				/* _BFIN_PTRACE_H */

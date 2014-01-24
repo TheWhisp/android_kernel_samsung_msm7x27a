@@ -6,18 +6,70 @@
 
 #include "ext4.h"
 
+<<<<<<< HEAD
+=======
+/* Checksumming functions */
+static __le32 ext4_mmp_csum(struct super_block *sb, struct mmp_struct *mmp)
+{
+	struct ext4_sb_info *sbi = EXT4_SB(sb);
+	int offset = offsetof(struct mmp_struct, mmp_checksum);
+	__u32 csum;
+
+	csum = ext4_chksum(sbi, sbi->s_csum_seed, (char *)mmp, offset);
+
+	return cpu_to_le32(csum);
+}
+
+int ext4_mmp_csum_verify(struct super_block *sb, struct mmp_struct *mmp)
+{
+	if (!EXT4_HAS_RO_COMPAT_FEATURE(sb,
+				       EXT4_FEATURE_RO_COMPAT_METADATA_CSUM))
+		return 1;
+
+	return mmp->mmp_checksum == ext4_mmp_csum(sb, mmp);
+}
+
+void ext4_mmp_csum_set(struct super_block *sb, struct mmp_struct *mmp)
+{
+	if (!EXT4_HAS_RO_COMPAT_FEATURE(sb,
+				       EXT4_FEATURE_RO_COMPAT_METADATA_CSUM))
+		return;
+
+	mmp->mmp_checksum = ext4_mmp_csum(sb, mmp);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Write the MMP block using WRITE_SYNC to try to get the block on-disk
  * faster.
  */
+<<<<<<< HEAD
 static int write_mmp_block(struct buffer_head *bh)
 {
+=======
+static int write_mmp_block(struct super_block *sb, struct buffer_head *bh)
+{
+	struct mmp_struct *mmp = (struct mmp_struct *)(bh->b_data);
+
+	/*
+	 * We protect against freezing so that we don't create dirty buffers
+	 * on frozen filesystem.
+	 */
+	sb_start_write(sb);
+	ext4_mmp_csum_set(sb, mmp);
+>>>>>>> refs/remotes/origin/master
 	mark_buffer_dirty(bh);
 	lock_buffer(bh);
 	bh->b_end_io = end_buffer_write_sync;
 	get_bh(bh);
+<<<<<<< HEAD
 	submit_bh(WRITE_SYNC, bh);
 	wait_on_buffer(bh);
+=======
+	submit_bh(WRITE_SYNC | REQ_META | REQ_PRIO, bh);
+	wait_on_buffer(bh);
+	sb_end_write(sb);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(!buffer_uptodate(bh)))
 		return 1;
 
@@ -41,25 +93,43 @@ static int read_mmp_block(struct super_block *sb, struct buffer_head **bh,
 	 * is not blocked in the elevator. */
 	if (!*bh)
 		*bh = sb_getblk(sb, mmp_block);
+<<<<<<< HEAD
+=======
+	if (!*bh)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	if (*bh) {
 		get_bh(*bh);
 		lock_buffer(*bh);
 		(*bh)->b_end_io = end_buffer_read_sync;
+<<<<<<< HEAD
 		submit_bh(READ_SYNC, *bh);
+=======
+		submit_bh(READ_SYNC | REQ_META | REQ_PRIO, *bh);
+>>>>>>> refs/remotes/origin/master
 		wait_on_buffer(*bh);
 		if (!buffer_uptodate(*bh)) {
 			brelse(*bh);
 			*bh = NULL;
 		}
 	}
+<<<<<<< HEAD
 	if (!*bh) {
+=======
+	if (unlikely(!*bh)) {
+>>>>>>> refs/remotes/origin/master
 		ext4_warning(sb, "Error while reading MMP block %llu",
 			     mmp_block);
 		return -EIO;
 	}
 
 	mmp = (struct mmp_struct *)((*bh)->b_data);
+<<<<<<< HEAD
 	if (le32_to_cpu(mmp->mmp_magic) != EXT4_MMP_MAGIC)
+=======
+	if (le32_to_cpu(mmp->mmp_magic) != EXT4_MMP_MAGIC ||
+	    !ext4_mmp_csum_verify(sb, mmp))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	return 0;
@@ -109,7 +179,15 @@ static int kmmpd(void *data)
 	mmp->mmp_check_interval = cpu_to_le16(mmp_check_interval);
 	bdevname(bh->b_bdev, mmp->mmp_bdevname);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(mmp->mmp_nodename, init_utsname()->sysname,
+=======
+	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
+>>>>>>> refs/remotes/origin/master
 	       sizeof(mmp->mmp_nodename));
 
 	while (!kthread_should_stop()) {
@@ -120,13 +198,29 @@ static int kmmpd(void *data)
 		mmp->mmp_time = cpu_to_le64(get_seconds());
 		last_update_time = jiffies;
 
+<<<<<<< HEAD
 		retval = write_mmp_block(bh);
+=======
+		retval = write_mmp_block(sb, bh);
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Don't spew too many error messages. Print one every
 		 * (s_mmp_update_interval * 60) seconds.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (retval && (failed_writes % 60) == 0) {
 			ext4_error(sb, "Error writing to MMP block");
+=======
+		if (retval) {
+			if ((failed_writes % 60) == 0)
+				ext4_error(sb, "Error writing to MMP block");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (retval) {
+			if ((failed_writes % 60) == 0)
+				ext4_error(sb, "Error writing to MMP block");
+>>>>>>> refs/remotes/origin/master
 			failed_writes++;
 		}
 
@@ -199,7 +293,11 @@ static int kmmpd(void *data)
 	mmp->mmp_seq = cpu_to_le32(EXT4_MMP_SEQ_CLEAN);
 	mmp->mmp_time = cpu_to_le64(get_seconds());
 
+<<<<<<< HEAD
 	retval = write_mmp_block(bh);
+=======
+	retval = write_mmp_block(sb, bh);
+>>>>>>> refs/remotes/origin/master
 
 failed:
 	kfree(data);
@@ -216,7 +314,11 @@ static unsigned int mmp_new_seq(void)
 	u32 new_seq;
 
 	do {
+<<<<<<< HEAD
 		get_random_bytes(&new_seq, sizeof(u32));
+=======
+		new_seq = prandom_u32();
+>>>>>>> refs/remotes/origin/master
 	} while (new_seq > EXT4_MMP_SEQ_MAX);
 
 	return new_seq;
@@ -256,8 +358,18 @@ int ext4_multi_mount_protect(struct super_block *sb,
 	 * If check_interval in MMP block is larger, use that instead of
 	 * update_interval from the superblock.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (mmp->mmp_check_interval > mmp_check_interval)
 		mmp_check_interval = mmp->mmp_check_interval;
+=======
+	if (le16_to_cpu(mmp->mmp_check_interval) > mmp_check_interval)
+		mmp_check_interval = le16_to_cpu(mmp->mmp_check_interval);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (le16_to_cpu(mmp->mmp_check_interval) > mmp_check_interval)
+		mmp_check_interval = le16_to_cpu(mmp->mmp_check_interval);
+>>>>>>> refs/remotes/origin/master
 
 	seq = le32_to_cpu(mmp->mmp_seq);
 	if (seq == EXT4_MMP_SEQ_CLEAN)
@@ -295,9 +407,21 @@ skip:
 	/*
 	 * write a new random sequence number.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mmp->mmp_seq = seq = cpu_to_le32(mmp_new_seq());
+=======
+	seq = mmp_new_seq();
+	mmp->mmp_seq = cpu_to_le32(seq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	retval = write_mmp_block(bh);
+=======
+	seq = mmp_new_seq();
+	mmp->mmp_seq = cpu_to_le32(seq);
+
+	retval = write_mmp_block(sb, bh);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		goto failed;
 

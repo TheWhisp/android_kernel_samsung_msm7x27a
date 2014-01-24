@@ -21,11 +21,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
 #ifndef __NOUVEAU_BIOS_H__
 #define __NOUVEAU_BIOS_H__
 
 #include "nvreg.h"
 #include "nouveau_i2c.h"
+=======
+#ifndef __NOUVEAU_DISPBIOS_H__
+#define __NOUVEAU_DISPBIOS_H__
+>>>>>>> refs/remotes/origin/master
 
 #define DCB_MAX_NUM_ENTRIES 16
 #define DCB_MAX_NUM_I2C_ENTRIES 16
@@ -34,9 +39,29 @@
 
 #define DCB_LOC_ON_CHIP 0
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define ROM16(x) le16_to_cpu(*(uint16_t *)&(x))
 #define ROM32(x) le32_to_cpu(*(uint32_t *)&(x))
 #define ROMPTR(bios, x) (ROM16(x) ? &(bios)->data[ROM16(x)] : NULL)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define ROM16(x) le16_to_cpu(*(u16 *)&(x))
+#define ROM32(x) le32_to_cpu(*(u32 *)&(x))
+#define ROM48(x) ({ u8 *p = &(x); (u64)ROM16(p[4]) << 32 | ROM32(p[0]); })
+#define ROM64(x) le64_to_cpu(*(u64 *)&(x))
+#define ROMPTR(d,x) ({            \
+<<<<<<< HEAD
+	struct drm_nouveau_private *dev_priv = (d)->dev_private; \
+	ROM16(x) ? &dev_priv->vbios.data[ROM16(x)] : NULL; \
+})
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nouveau_drm *drm = nouveau_drm((d)); \
+	ROM16(x) ? &drm->vbios.data[ROM16(x)] : NULL; \
+})
+>>>>>>> refs/remotes/origin/master
 
 struct bit_entry {
 	uint8_t  id;
@@ -48,6 +73,8 @@ struct bit_entry {
 
 int bit_table(struct drm_device *, u8 id, struct bit_entry *);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct dcb_i2c_entry {
 	uint32_t entry;
 	uint8_t port_type;
@@ -72,6 +99,15 @@ struct dcb_gpio_entry {
 struct dcb_gpio_table {
 	int entries;
 	struct dcb_gpio_entry entry[DCB_MAX_NUM_GPIO_ENTRIES];
+=======
+enum dcb_gpio_tag {
+	DCB_GPIO_PANEL_POWER = 0x01,
+	DCB_GPIO_TVDAC0 = 0x0c,
+	DCB_GPIO_TVDAC1 = 0x2d,
+	DCB_GPIO_PWM_FAN = 0x09,
+	DCB_GPIO_FAN_SENSE = 0x3d,
+	DCB_GPIO_UNUSED = 0xff
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum dcb_connector_type {
@@ -81,12 +117,18 @@ enum dcb_connector_type {
 	DCB_CONNECTOR_TV_3 = 0x13,
 	DCB_CONNECTOR_DVI_I = 0x30,
 	DCB_CONNECTOR_DVI_D = 0x31,
+<<<<<<< HEAD
+=======
+	DCB_CONNECTOR_DMS59_0 = 0x38,
+	DCB_CONNECTOR_DMS59_1 = 0x39,
+>>>>>>> refs/remotes/origin/cm-10.0
 	DCB_CONNECTOR_LVDS = 0x40,
 	DCB_CONNECTOR_LVDS_SPWG = 0x41,
 	DCB_CONNECTOR_DP = 0x46,
 	DCB_CONNECTOR_eDP = 0x47,
 	DCB_CONNECTOR_HDMI_0 = 0x60,
 	DCB_CONNECTOR_HDMI_1 = 0x61,
+<<<<<<< HEAD
 	DCB_CONNECTOR_NONE = 0xff
 };
 
@@ -104,6 +146,13 @@ struct dcb_connector_table {
 	struct dcb_connector_table_entry entry[DCB_MAX_NUM_CONNECTOR_ENTRIES];
 };
 
+=======
+	DCB_CONNECTOR_DMS59_DP0 = 0x64,
+	DCB_CONNECTOR_DMS59_DP1 = 0x65,
+	DCB_CONNECTOR_NONE = 0xff
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 enum dcb_type {
 	OUTPUT_ANALOG = 0,
 	OUTPUT_TV = 1,
@@ -111,6 +160,10 @@ enum dcb_type {
 	OUTPUT_LVDS = 3,
 	OUTPUT_DP = 6,
 	OUTPUT_EOL = 14, /* DCB 4.0+, appears to be end-of-list */
+<<<<<<< HEAD
+=======
+	OUTPUT_UNUSED = 15,
+>>>>>>> refs/remotes/origin/cm-10.0
 	OUTPUT_ANY = -1
 };
 
@@ -155,6 +208,7 @@ struct dcb_entry {
 
 struct dcb_table {
 	uint8_t version;
+<<<<<<< HEAD
 
 	int entries;
 	struct dcb_entry entry[DCB_MAX_NUM_ENTRIES];
@@ -167,12 +221,31 @@ struct dcb_table {
 	struct dcb_gpio_table gpio;
 	uint16_t connector_table_ptr;
 	struct dcb_connector_table connector;
+=======
+	int entries;
+	struct dcb_entry entry[DCB_MAX_NUM_ENTRIES];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum nouveau_or {
 	OUTPUT_A = (1 << 0),
 	OUTPUT_B = (1 << 1),
 	OUTPUT_C = (1 << 2)
+=======
+#include <subdev/bios/dcb.h>
+#include <subdev/bios/conn.h>
+
+struct dcb_table {
+	uint8_t version;
+	int entries;
+	struct dcb_output entry[DCB_MAX_NUM_ENTRIES];
+};
+
+enum nouveau_or {
+	DCB_OUTPUT_A = (1 << 0),
+	DCB_OUTPUT_B = (1 << 1),
+	DCB_OUTPUT_C = (1 << 2)
+>>>>>>> refs/remotes/origin/master
 };
 
 enum LVDS_script {
@@ -185,6 +258,7 @@ enum LVDS_script {
 	LVDS_PANEL_OFF
 };
 
+<<<<<<< HEAD
 /* these match types in pll limits table version 0x40,
  * nouveau uses them on all chipsets internally where a
  * specific pll needs to be referenced, but the exact
@@ -195,7 +269,11 @@ enum pll_types {
 	PLL_SHADER = 0x02,
 	PLL_UNK03  = 0x03,
 	PLL_MEMORY = 0x04,
+<<<<<<< HEAD
 	PLL_UNK05  = 0x05,
+=======
+	PLL_VDEC   = 0x05,
+>>>>>>> refs/remotes/origin/cm-10.0
 	PLL_UNK40  = 0x40,
 	PLL_UNK41  = 0x41,
 	PLL_UNK42  = 0x42,
@@ -237,6 +315,8 @@ struct pll_lims {
 	int refclk;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct nvbios {
 	struct drm_device *dev;
 	enum {
@@ -244,6 +324,16 @@ struct nvbios {
 		NVBIOS_BIT
 	} type;
 	uint16_t offset;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	uint32_t length;
+	uint8_t *data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t length;
+	uint8_t *data;
+>>>>>>> refs/remotes/origin/master
 
 	uint8_t chip_version;
 
@@ -254,8 +344,14 @@ struct nvbios {
 
 	spinlock_t lock;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t data[NV_PROM_SIZE];
 	unsigned int length;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bool execute;
 
 	uint8_t major_version;
@@ -267,6 +363,7 @@ struct nvbios {
 	bool old_style_init;
 	uint16_t init_script_tbls_ptr;
 	uint16_t extra_init_script_tbl_ptr;
+<<<<<<< HEAD
 	uint16_t macro_index_tbl_ptr;
 	uint16_t macro_tbl_ptr;
 	uint16_t condition_tbl_ptr;
@@ -281,6 +378,12 @@ struct nvbios {
 	uint16_t some_script_ptr; /* BIT I + 14 */
 	uint16_t init96_tbl_ptr; /* BIT I + 16 */
 
+=======
+
+	uint16_t ram_restrict_tbl_ptr;
+	uint8_t ram_restrict_group_count;
+
+>>>>>>> refs/remotes/origin/master
 	struct dcb_table dcb;
 
 	struct {
@@ -288,12 +391,20 @@ struct nvbios {
 	} state;
 
 	struct {
+<<<<<<< HEAD
 		struct dcb_entry *output;
+<<<<<<< HEAD
 		uint16_t script_table_ptr;
 		uint16_t dp_table_ptr;
+=======
+		int crtc;
+		uint16_t script_table_ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} display;
 
 	struct {
+=======
+>>>>>>> refs/remotes/origin/master
 		uint16_t fptablepointer;	/* also used by tmds */
 		uint16_t fpxlatetableptr;
 		int xlatwidth;
@@ -333,4 +444,38 @@ struct nvbios {
 	} legacy;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void *dcb_table(struct drm_device *);
+void *dcb_outp(struct drm_device *, u8 idx);
+int dcb_outp_foreach(struct drm_device *, void *data,
+		     int (*)(struct drm_device *, void *, int idx, u8 *outp));
+u8 *dcb_conntab(struct drm_device *);
+u8 *dcb_conn(struct drm_device *, u8 idx);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *olddcb_table(struct drm_device *);
+void *olddcb_outp(struct drm_device *, u8 idx);
+int olddcb_outp_foreach(struct drm_device *, void *data,
+		     int (*)(struct drm_device *, void *, int idx, u8 *outp));
+u8 *olddcb_conntab(struct drm_device *);
+u8 *olddcb_conn(struct drm_device *, u8 idx);
+
+int nouveau_bios_init(struct drm_device *);
+void nouveau_bios_takedown(struct drm_device *dev);
+int nouveau_run_vbios_init(struct drm_device *);
+struct dcb_connector_table_entry *
+nouveau_bios_connector_entry(struct drm_device *, int index);
+bool nouveau_bios_fp_mode(struct drm_device *, struct drm_display_mode *);
+uint8_t *nouveau_bios_embedded_edid(struct drm_device *);
+int nouveau_bios_parse_lvds_table(struct drm_device *, int pxclk,
+					 bool *dl, bool *if_is_24bit);
+int run_tmds_table(struct drm_device *, struct dcb_output *,
+			  int head, int pxclk);
+int call_lvds_script(struct drm_device *, struct dcb_output *, int head,
+			    enum LVDS_script, int pxclk);
+
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -3,6 +3,10 @@
  *	information. (Superset of Rusty's minimalistic state match.)
  *
  *	(C) 2001  Marc Boucher (marc@mbsi.ca).
+<<<<<<< HEAD
+=======
+ *	(C) 2006-2012 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  *	Copyright © CC Computer Consultants GmbH, 2007 - 2008
  *
  *	This program is free software; you can redistribute it and/or modify

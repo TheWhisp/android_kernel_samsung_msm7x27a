@@ -1,8 +1,11 @@
 #ifndef _ASM_S390_FUTEX_H
 #define _ASM_S390_FUTEX_H
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/futex.h>
 #include <linux/uaccess.h>
 #include <asm/errno.h>
@@ -18,9 +21,12 @@ static inline int futex_atomic_op_inuser (int encoded_op, u32 __user *uaddr)
 	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
 		oparg = 1 << oparg;
 
+<<<<<<< HEAD
 	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(u32)))
 		return -EFAULT;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pagefault_disable();
 	ret = uaccess.futex_atomic_op(op, uaddr, oparg, &oldval);
 	pagefault_enable();
@@ -42,6 +48,7 @@ static inline int futex_atomic_op_inuser (int encoded_op, u32 __user *uaddr)
 static inline int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
 						u32 oldval, u32 newval)
 {
+<<<<<<< HEAD
 	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(u32)))
 		return -EFAULT;
 
@@ -49,4 +56,9 @@ static inline int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
 }
 
 #endif /* __KERNEL__ */
+=======
+	return uaccess.futex_atomic_cmpxchg(uval, uaddr, oldval, newval);
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_S390_FUTEX_H */

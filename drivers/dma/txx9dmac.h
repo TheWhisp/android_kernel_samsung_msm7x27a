@@ -172,7 +172,13 @@ struct txx9dmac_chan {
 	spinlock_t		lock;
 
 	/* these other elements are all protected by lock */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dma_cookie_t		completed;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head	active_list;
 	struct list_head	queue;
 	struct list_head	free_list;

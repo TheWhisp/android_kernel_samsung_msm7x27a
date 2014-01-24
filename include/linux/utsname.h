@@ -1,6 +1,7 @@
 #ifndef _LINUX_UTSNAME_H
 #define _LINUX_UTSNAME_H
 
+<<<<<<< HEAD
 #define __OLD_UTS_LEN 8
 
 struct oldold_utsname {
@@ -31,12 +32,33 @@ struct new_utsname {
 };
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/sched.h>
 #include <linux/kref.h>
 #include <linux/nsproxy.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+=======
+#include <uapi/linux/utsname.h>
+
+>>>>>>> refs/remotes/origin/master
+enum uts_proc {
+	UTS_PROC_OSTYPE,
+	UTS_PROC_OSRELEASE,
+	UTS_PROC_VERSION,
+	UTS_PROC_HOSTNAME,
+	UTS_PROC_DOMAINNAME,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct user_namespace;
 extern struct user_namespace init_user_ns;
 
@@ -44,6 +66,10 @@ struct uts_namespace {
 	struct kref kref;
 	struct new_utsname name;
 	struct user_namespace *user_ns;
+<<<<<<< HEAD
+=======
+	unsigned int proc_inum;
+>>>>>>> refs/remotes/origin/master
 };
 extern struct uts_namespace init_uts_ns;
 
@@ -54,7 +80,11 @@ static inline void get_uts_ns(struct uts_namespace *ns)
 }
 
 extern struct uts_namespace *copy_utsname(unsigned long flags,
+<<<<<<< HEAD
 					  struct task_struct *tsk);
+=======
+	struct user_namespace *user_ns, struct uts_namespace *old_ns);
+>>>>>>> refs/remotes/origin/master
 extern void free_uts_ns(struct kref *kref);
 
 static inline void put_uts_ns(struct uts_namespace *ns)
@@ -71,15 +101,40 @@ static inline void put_uts_ns(struct uts_namespace *ns)
 }
 
 static inline struct uts_namespace *copy_utsname(unsigned long flags,
+<<<<<<< HEAD
 						 struct task_struct *tsk)
+=======
+	struct user_namespace *user_ns, struct uts_namespace *old_ns)
+>>>>>>> refs/remotes/origin/master
 {
 	if (flags & CLONE_NEWUTS)
 		return ERR_PTR(-EINVAL);
 
+<<<<<<< HEAD
 	return tsk->nsproxy->uts_ns;
 }
 #endif
 
+<<<<<<< HEAD
+=======
+=======
+	return old_ns;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_PROC_SYSCTL
+extern void uts_proc_notify(enum uts_proc proc);
+#else
+static inline void uts_proc_notify(enum uts_proc proc)
+{
+}
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct new_utsname *utsname(void)
 {
 	return &current->nsproxy->uts_ns->name;
@@ -92,6 +147,9 @@ static inline struct new_utsname *init_utsname(void)
 
 extern struct rw_semaphore uts_sem;
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_UTSNAME_H */

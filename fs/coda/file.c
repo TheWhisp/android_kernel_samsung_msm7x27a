@@ -36,7 +36,11 @@ coda_file_read(struct file *coda_file, char __user *buf, size_t count, loff_t *p
 	BUG_ON(!cfi || cfi->cfi_magic != CODA_MAGIC);
 	host_file = cfi->cfi_container;
 
+<<<<<<< HEAD
 	if (!host_file->f_op || !host_file->f_op->read)
+=======
+	if (!host_file->f_op->read)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	return host_file->f_op->read(host_file, buf, count, ppos);
@@ -66,7 +70,11 @@ coda_file_splice_read(struct file *coda_file, loff_t *ppos,
 static ssize_t
 coda_file_write(struct file *coda_file, const char __user *buf, size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *host_inode, *coda_inode = coda_file->f_path.dentry->d_inode;
+=======
+	struct inode *host_inode, *coda_inode = file_inode(coda_file);
+>>>>>>> refs/remotes/origin/master
 	struct coda_file_info *cfi;
 	struct file *host_file;
 	ssize_t ret;
@@ -75,10 +83,18 @@ coda_file_write(struct file *coda_file, const char __user *buf, size_t count, lo
 	BUG_ON(!cfi || cfi->cfi_magic != CODA_MAGIC);
 	host_file = cfi->cfi_container;
 
+<<<<<<< HEAD
 	if (!host_file->f_op || !host_file->f_op->write)
 		return -EINVAL;
 
 	host_inode = host_file->f_path.dentry->d_inode;
+=======
+	if (!host_file->f_op->write)
+		return -EINVAL;
+
+	host_inode = file_inode(host_file);
+	file_start_write(host_file);
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&coda_inode->i_mutex);
 
 	ret = host_file->f_op->write(host_file, buf, count, ppos);
@@ -87,6 +103,10 @@ coda_file_write(struct file *coda_file, const char __user *buf, size_t count, lo
 	coda_inode->i_blocks = (coda_inode->i_size + 511) >> 9;
 	coda_inode->i_mtime = coda_inode->i_ctime = CURRENT_TIME_SEC;
 	mutex_unlock(&coda_inode->i_mutex);
+<<<<<<< HEAD
+=======
+	file_end_write(host_file);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -103,11 +123,19 @@ coda_file_mmap(struct file *coda_file, struct vm_area_struct *vma)
 	BUG_ON(!cfi || cfi->cfi_magic != CODA_MAGIC);
 	host_file = cfi->cfi_container;
 
+<<<<<<< HEAD
 	if (!host_file->f_op || !host_file->f_op->mmap)
 		return -ENODEV;
 
 	coda_inode = coda_file->f_path.dentry->d_inode;
 	host_inode = host_file->f_path.dentry->d_inode;
+=======
+	if (!host_file->f_op->mmap)
+		return -ENODEV;
+
+	coda_inode = file_inode(coda_file);
+	host_inode = file_inode(host_file);
+>>>>>>> refs/remotes/origin/master
 
 	cii = ITOC(coda_inode);
 	spin_lock(&cii->c_lock);
@@ -178,7 +206,11 @@ int coda_release(struct inode *coda_inode, struct file *coda_file)
 	err = venus_close(coda_inode->i_sb, coda_i2f(coda_inode),
 			  coda_flags, coda_file->f_cred->fsuid);
 
+<<<<<<< HEAD
 	host_inode = cfi->cfi_container->f_path.dentry->d_inode;
+=======
+	host_inode = file_inode(cfi->cfi_container);
+>>>>>>> refs/remotes/origin/master
 	cii = ITOC(coda_inode);
 
 	/* did we mmap this file? */
@@ -199,10 +231,21 @@ int coda_release(struct inode *coda_inode, struct file *coda_file)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int coda_fsync(struct file *coda_file, int datasync)
+=======
+int coda_fsync(struct file *coda_file, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct file *host_file;
 	struct inode *coda_inode = coda_file->f_path.dentry->d_inode;
+=======
+int coda_fsync(struct file *coda_file, loff_t start, loff_t end, int datasync)
+{
+	struct file *host_file;
+	struct inode *coda_inode = file_inode(coda_file);
+>>>>>>> refs/remotes/origin/master
 	struct coda_file_info *cfi;
 	int err;
 
@@ -210,6 +253,20 @@ int coda_fsync(struct file *coda_file, int datasync)
 	      S_ISLNK(coda_inode->i_mode)))
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	err = filemap_write_and_wait_range(coda_inode->i_mapping, start, end);
+	if (err)
+		return err;
+	mutex_lock(&coda_inode->i_mutex);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cfi = CODA_FTOC(coda_file);
 	BUG_ON(!cfi || cfi->cfi_magic != CODA_MAGIC);
 	host_file = cfi->cfi_container;
@@ -217,6 +274,14 @@ int coda_fsync(struct file *coda_file, int datasync)
 	err = vfs_fsync(host_file, datasync);
 	if (!err && !datasync)
 		err = venus_fsync(coda_inode->i_sb, coda_i2f(coda_inode));
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mutex_unlock(&coda_inode->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&coda_inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

@@ -28,7 +28,15 @@
  *
  * As a module of low level hardware access routines, there is no
  * locking. Users of this module should ensure that they serialize
+<<<<<<< HEAD
+<<<<<<< HEAD
  * access to the hermes_t structure, and to the hardware
+=======
+ * access to the hermes structure, and to the hardware
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * access to the hermes structure, and to the hardware
+>>>>>>> refs/remotes/origin/master
 */
 
 #include <linux/if_ether.h>
@@ -43,7 +51,15 @@
 #define		HERMES_BAP_DATALEN_MAX		(4096)
 #define		HERMES_BAP_OFFSET_MAX		(4096)
 #define		HERMES_PORTID_MAX		(7)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define		HERMES_NUMPORTS_MAX		(HERMES_PORTID_MAX+1)
+=======
+#define		HERMES_NUMPORTS_MAX		(HERMES_PORTID_MAX + 1)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define		HERMES_NUMPORTS_MAX		(HERMES_PORTID_MAX + 1)
+>>>>>>> refs/remotes/origin/master
 #define		HERMES_PDR_LEN_MAX		(260)	/* in bytes, from EK */
 #define		HERMES_PDA_RECS_MAX		(200)	/* a guess */
 #define		HERMES_PDA_LEN_MAX		(1024)	/* in bytes, from EK */
@@ -148,7 +164,15 @@
 #define		HERMES_CMD_WRITEMIF		(0x0031)
 
 /*--- Debugging Commands -----------------------------*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define 	HERMES_CMD_TEST			(0x0038)
+=======
+#define		HERMES_CMD_TEST			(0x0038)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define		HERMES_CMD_TEST			(0x0038)
+>>>>>>> refs/remotes/origin/master
 
 
 /* Test command arguments */
@@ -178,8 +202,18 @@
 
 #define HERMES_DESCRIPTOR_OFFSET	0
 #define HERMES_802_11_OFFSET		(14)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define HERMES_802_3_OFFSET		(14+32)
 #define HERMES_802_2_OFFSET		(14+32+14)
+=======
+#define HERMES_802_3_OFFSET		(14 + 32)
+#define HERMES_802_2_OFFSET		(14 + 32 + 14)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HERMES_802_3_OFFSET		(14 + 32)
+#define HERMES_802_2_OFFSET		(14 + 32 + 14)
+>>>>>>> refs/remotes/origin/master
 #define HERMES_TXCNTL2_OFFSET		(HERMES_802_3_OFFSET - 2)
 
 #define HERMES_RXSTAT_ERR		(0x0003)
@@ -406,7 +440,15 @@ struct hermes_ops {
 };
 
 /* Basic control structure */
+<<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct hermes {
+=======
+struct hermes {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct hermes {
+>>>>>>> refs/remotes/origin/master
 	void __iomem *iobase;
 	int reg_spacing;
 #define HERMES_16BIT_REGSPACING	0
@@ -415,7 +457,15 @@ typedef struct hermes {
 	bool eeprom_pda;
 	const struct hermes_ops *ops;
 	void *priv;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } hermes_t;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+>>>>>>> refs/remotes/origin/master
 
 /* Register access convenience macros */
 #define hermes_read_reg(hw, off) \
@@ -427,28 +477,67 @@ typedef struct hermes {
 	hermes_write_reg((hw), HERMES_##name, (val))
 
 /* Function prototypes */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void hermes_struct_init(hermes_t *hw, void __iomem *address, int reg_spacing);
 
 /* Inline functions */
 
 static inline int hermes_present(hermes_t *hw)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void hermes_struct_init(struct hermes *hw, void __iomem *address,
+			int reg_spacing);
+
+/* Inline functions */
+
+static inline int hermes_present(struct hermes *hw)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return hermes_read_regn(hw, SWSUPPORT0) == HERMES_MAGIC;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void hermes_set_irqmask(hermes_t *hw, u16 events)
+=======
+static inline void hermes_set_irqmask(struct hermes *hw, u16 events)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void hermes_set_irqmask(struct hermes *hw, u16 events)
+>>>>>>> refs/remotes/origin/master
 {
 	hw->inten = events;
 	hermes_write_regn(hw, INTEN, events);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int hermes_enable_port(hermes_t *hw, int port)
+=======
+static inline int hermes_enable_port(struct hermes *hw, int port)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int hermes_enable_port(struct hermes *hw, int port)
+>>>>>>> refs/remotes/origin/master
 {
 	return hw->ops->cmd_wait(hw, HERMES_CMD_ENABLE | (port << 8),
 				 0, NULL);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int hermes_disable_port(hermes_t *hw, int port)
+=======
+static inline int hermes_disable_port(struct hermes *hw, int port)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int hermes_disable_port(struct hermes *hw, int port)
+>>>>>>> refs/remotes/origin/master
 {
 	return hw->ops->cmd_wait(hw, HERMES_CMD_DISABLE | (port << 8),
 				 0, NULL);
@@ -456,13 +545,31 @@ static inline int hermes_disable_port(hermes_t *hw, int port)
 
 /* Initiate an INQUIRE command (tallies or scan).  The result will come as an
  * information frame in __orinoco_ev_info() */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int hermes_inquire(hermes_t *hw, u16 rid)
+=======
+static inline int hermes_inquire(struct hermes *hw, u16 rid)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int hermes_inquire(struct hermes *hw, u16 rid)
+>>>>>>> refs/remotes/origin/master
 {
 	return hw->ops->cmd_wait(hw, HERMES_CMD_INQUIRE, rid, NULL);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define HERMES_BYTES_TO_RECLEN(n) ((((n)+1)/2) + 1)
 #define HERMES_RECLEN_TO_BYTES(n) (((n)-1) * 2)
+=======
+#define HERMES_BYTES_TO_RECLEN(n) ((((n) + 1) / 2) + 1)
+#define HERMES_RECLEN_TO_BYTES(n) (((n) - 1) * 2)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HERMES_BYTES_TO_RECLEN(n) ((((n) + 1) / 2) + 1)
+#define HERMES_RECLEN_TO_BYTES(n) (((n) - 1) * 2)
+>>>>>>> refs/remotes/origin/master
 
 /* Note that for the next two, the count is in 16-bit words, not bytes */
 static inline void hermes_read_words(struct hermes *hw, int off,
@@ -498,7 +605,17 @@ static inline void hermes_clear_words(struct hermes *hw, int off,
 	(hw->ops->write_ltv((hw), (bap), (rid), \
 			    HERMES_BYTES_TO_RECLEN(sizeof(*buf)), (buf)))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int hermes_read_wordrec(hermes_t *hw, int bap, u16 rid, u16 *word)
+=======
+static inline int hermes_read_wordrec(struct hermes *hw, int bap, u16 rid,
+				      u16 *word)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int hermes_read_wordrec(struct hermes *hw, int bap, u16 rid,
+				      u16 *word)
+>>>>>>> refs/remotes/origin/master
 {
 	__le16 rec;
 	int err;
@@ -508,7 +625,17 @@ static inline int hermes_read_wordrec(hermes_t *hw, int bap, u16 rid, u16 *word)
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int hermes_write_wordrec(hermes_t *hw, int bap, u16 rid, u16 word)
+=======
+static inline int hermes_write_wordrec(struct hermes *hw, int bap, u16 rid,
+				       u16 word)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int hermes_write_wordrec(struct hermes *hw, int bap, u16 rid,
+				       u16 word)
+>>>>>>> refs/remotes/origin/master
 {
 	__le16 rec = cpu_to_le16(word);
 	return HERMES_WRITE_RECORD(hw, bap, rid, &rec);

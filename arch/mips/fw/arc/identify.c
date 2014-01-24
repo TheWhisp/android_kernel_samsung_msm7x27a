@@ -11,6 +11,14 @@
  *
  * Copyright (C) 1996 David S. Miller (davem@davemloft.net)
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/types.h>
@@ -99,7 +107,11 @@ void __init prom_identify_arch(void)
 	if (p == NULL) {
 #ifdef CONFIG_SGI_IP27
 		/* IP27 PROM misbehaves, seems to not implement ARC
+<<<<<<< HEAD
 		   GetChild().  So we just assume it's an IP27.  */
+=======
+		   GetChild().	So we just assume it's an IP27.	 */
+>>>>>>> refs/remotes/origin/master
 		iname = "SGI-IP27";
 #else
 		iname = "Unknown";

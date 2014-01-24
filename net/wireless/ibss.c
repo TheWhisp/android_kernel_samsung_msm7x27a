@@ -7,9 +7,21 @@
 #include <linux/etherdevice.h>
 #include <linux/if_arp.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/cfg80211.h>
 #include "wext-compat.h"
 #include "nl80211.h"
+=======
+#include <linux/export.h>
+#include <net/cfg80211.h>
+#include "wext-compat.h"
+#include "nl80211.h"
+#include "rdev-ops.h"
+>>>>>>> refs/remotes/origin/master
 
 
 void __cfg80211_ibss_joined(struct net_device *dev, const u8 *bssid)
@@ -35,7 +47,11 @@ void __cfg80211_ibss_joined(struct net_device *dev, const u8 *bssid)
 
 	if (wdev->current_bss) {
 		cfg80211_unhold_bss(wdev->current_bss);
+<<<<<<< HEAD
 		cfg80211_put_bss(&wdev->current_bss->pub);
+=======
+		cfg80211_put_bss(wdev->wiphy, &wdev->current_bss->pub);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cfg80211_hold_bss(bss_from_pub(bss));
@@ -59,7 +75,11 @@ void cfg80211_ibss_joined(struct net_device *dev, const u8 *bssid, gfp_t gfp)
 	struct cfg80211_event *ev;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	CFG80211_DEV_WARN_ON(!wdev->ssid_len);
+=======
+	trace_cfg80211_ibss_joined(dev, bssid);
+>>>>>>> refs/remotes/origin/master
 
 	ev = kzalloc(sizeof(*ev), gfp);
 	if (!ev)
@@ -81,6 +101,11 @@ int __cfg80211_join_ibss(struct cfg80211_registered_device *rdev,
 			 struct cfg80211_cached_keys *connkeys)
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
+<<<<<<< HEAD
+=======
+	struct ieee80211_channel *check_chan;
+	u8 radar_detect_width = 0;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	ASSERT_WDEV_LOCK(wdev);
@@ -95,9 +120,15 @@ int __cfg80211_join_ibss(struct cfg80211_registered_device *rdev,
 		* 11a for maximum compatibility.
 		*/
 		struct ieee80211_supported_band *sband =
+<<<<<<< HEAD
 			rdev->wiphy.bands[params->channel->band];
 		int j;
 		u32 flag = params->channel->band == IEEE80211_BAND_5GHZ ?
+=======
+			rdev->wiphy.bands[params->chandef.chan->band];
+		int j;
+		u32 flag = params->chandef.chan->band == IEEE80211_BAND_5GHZ ?
+>>>>>>> refs/remotes/origin/master
 			IEEE80211_RATE_MANDATORY_A :
 			IEEE80211_RATE_MANDATORY_B;
 
@@ -111,10 +142,42 @@ int __cfg80211_join_ibss(struct cfg80211_registered_device *rdev,
 		kfree(wdev->connect_keys);
 	wdev->connect_keys = connkeys;
 
+<<<<<<< HEAD
 #ifdef CONFIG_CFG80211_WEXT
 	wdev->wext.ibss.channel = params->channel;
 #endif
 	err = rdev->ops->join_ibss(&rdev->wiphy, dev, params);
+=======
+	wdev->ibss_fixed = params->channel_fixed;
+	wdev->ibss_dfs_possible = params->userspace_handles_dfs;
+#ifdef CONFIG_CFG80211_WEXT
+	wdev->wext.ibss.chandef = params->chandef;
+#endif
+	check_chan = params->chandef.chan;
+	if (params->userspace_handles_dfs) {
+		/* use channel NULL to check for radar even if the current
+		 * channel is not a radar channel - it might decide to change
+		 * to DFS channel later.
+		 */
+		radar_detect_width = BIT(params->chandef.width);
+		check_chan = NULL;
+	}
+
+	err = cfg80211_can_use_iftype_chan(rdev, wdev, wdev->iftype,
+					   check_chan,
+					   (params->channel_fixed &&
+					    !radar_detect_width)
+					   ? CHAN_MODE_SHARED
+					   : CHAN_MODE_EXCLUSIVE,
+					   radar_detect_width);
+
+	if (err) {
+		wdev->connect_keys = NULL;
+		return err;
+	}
+
+	err = rdev_join_ibss(rdev, dev, params);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		wdev->connect_keys = NULL;
 		return err;
@@ -134,11 +197,19 @@ int cfg80211_join_ibss(struct cfg80211_registered_device *rdev,
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
 	int err;
 
+<<<<<<< HEAD
 	mutex_lock(&rdev->devlist_mtx);
 	wdev_lock(wdev);
 	err = __cfg80211_join_ibss(rdev, dev, params, connkeys);
 	wdev_unlock(wdev);
 	mutex_unlock(&rdev->devlist_mtx);
+=======
+	ASSERT_RTNL();
+
+	wdev_lock(wdev);
+	err = __cfg80211_join_ibss(rdev, dev, params, connkeys);
+	wdev_unlock(wdev);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -160,11 +231,19 @@ static void __cfg80211_clear_ibss(struct net_device *dev, bool nowext)
 	 */
 	if (rdev->ops->del_key)
 		for (i = 0; i < 6; i++)
+<<<<<<< HEAD
 			rdev->ops->del_key(wdev->wiphy, dev, i, false, NULL);
 
 	if (wdev->current_bss) {
 		cfg80211_unhold_bss(wdev->current_bss);
 		cfg80211_put_bss(&wdev->current_bss->pub);
+=======
+			rdev_del_key(rdev, dev, i, false, NULL);
+
+	if (wdev->current_bss) {
+		cfg80211_unhold_bss(wdev->current_bss);
+		cfg80211_put_bss(wdev->wiphy, &wdev->current_bss->pub);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	wdev->current_bss = NULL;
@@ -195,7 +274,11 @@ int __cfg80211_leave_ibss(struct cfg80211_registered_device *rdev,
 	if (!wdev->ssid_len)
 		return -ENOLINK;
 
+<<<<<<< HEAD
 	err = rdev->ops->leave_ibss(&rdev->wiphy, dev);
+=======
+	err = rdev_leave_ibss(rdev, dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return err;
@@ -232,7 +315,13 @@ int cfg80211_ibss_wext_join(struct cfg80211_registered_device *rdev,
 		wdev->wext.ibss.beacon_interval = 100;
 
 	/* try to find an IBSS channel if none requested ... */
+<<<<<<< HEAD
 	if (!wdev->wext.ibss.channel) {
+=======
+	if (!wdev->wext.ibss.chandef.chan) {
+		struct ieee80211_channel *new_chan = NULL;
+
+>>>>>>> refs/remotes/origin/master
 		for (band = 0; band < IEEE80211_NUM_BANDS; band++) {
 			struct ieee80211_supported_band *sband;
 			struct ieee80211_channel *chan;
@@ -247,6 +336,7 @@ int cfg80211_ibss_wext_join(struct cfg80211_registered_device *rdev,
 					continue;
 				if (chan->flags & IEEE80211_CHAN_DISABLED)
 					continue;
+<<<<<<< HEAD
 				wdev->wext.ibss.channel = chan;
 				break;
 			}
@@ -257,6 +347,21 @@ int cfg80211_ibss_wext_join(struct cfg80211_registered_device *rdev,
 
 		if (!wdev->wext.ibss.channel)
 			return -EINVAL;
+=======
+				new_chan = chan;
+				break;
+			}
+
+			if (new_chan)
+				break;
+		}
+
+		if (!new_chan)
+			return -EINVAL;
+
+		cfg80211_chandef_create(&wdev->wext.ibss.chandef, new_chan,
+					NL80211_CHAN_NO_HT);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* don't join -- SSID is not there */
@@ -317,7 +422,11 @@ int cfg80211_ibss_wext_siwfreq(struct net_device *dev,
 			return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (wdev->wext.ibss.channel == chan)
+=======
+	if (wdev->wext.ibss.chandef.chan == chan)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	wdev_lock(wdev);
@@ -330,18 +439,29 @@ int cfg80211_ibss_wext_siwfreq(struct net_device *dev,
 		return err;
 
 	if (chan) {
+<<<<<<< HEAD
 		wdev->wext.ibss.channel = chan;
+=======
+		cfg80211_chandef_create(&wdev->wext.ibss.chandef, chan,
+					NL80211_CHAN_NO_HT);
+>>>>>>> refs/remotes/origin/master
 		wdev->wext.ibss.channel_fixed = true;
 	} else {
 		/* cfg80211_ibss_wext_join will pick one if needed */
 		wdev->wext.ibss.channel_fixed = false;
 	}
 
+<<<<<<< HEAD
 	mutex_lock(&rdev->devlist_mtx);
 	wdev_lock(wdev);
 	err = cfg80211_ibss_wext_join(rdev, wdev);
 	wdev_unlock(wdev);
 	mutex_unlock(&rdev->devlist_mtx);
+=======
+	wdev_lock(wdev);
+	err = cfg80211_ibss_wext_join(rdev, wdev);
+	wdev_unlock(wdev);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -360,8 +480,13 @@ int cfg80211_ibss_wext_giwfreq(struct net_device *dev,
 	wdev_lock(wdev);
 	if (wdev->current_bss)
 		chan = wdev->current_bss->pub.channel;
+<<<<<<< HEAD
 	else if (wdev->wext.ibss.channel)
 		chan = wdev->wext.ibss.channel;
+=======
+	else if (wdev->wext.ibss.chandef.chan)
+		chan = wdev->wext.ibss.chandef.chan;
+>>>>>>> refs/remotes/origin/master
 	wdev_unlock(wdev);
 
 	if (chan) {
@@ -407,11 +532,17 @@ int cfg80211_ibss_wext_siwessid(struct net_device *dev,
 	memcpy(wdev->wext.ibss.ssid, ssid, len);
 	wdev->wext.ibss.ssid_len = len;
 
+<<<<<<< HEAD
 	mutex_lock(&rdev->devlist_mtx);
 	wdev_lock(wdev);
 	err = cfg80211_ibss_wext_join(rdev, wdev);
 	wdev_unlock(wdev);
 	mutex_unlock(&rdev->devlist_mtx);
+=======
+	wdev_lock(wdev);
+	err = cfg80211_ibss_wext_join(rdev, wdev);
+	wdev_unlock(wdev);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -472,7 +603,11 @@ int cfg80211_ibss_wext_siwap(struct net_device *dev,
 
 	/* fixed already - and no change */
 	if (wdev->wext.ibss.bssid && bssid &&
+<<<<<<< HEAD
 	    compare_ether_addr(bssid, wdev->wext.ibss.bssid) == 0)
+=======
+	    ether_addr_equal(bssid, wdev->wext.ibss.bssid))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	wdev_lock(wdev);
@@ -490,11 +625,17 @@ int cfg80211_ibss_wext_siwap(struct net_device *dev,
 	} else
 		wdev->wext.ibss.bssid = NULL;
 
+<<<<<<< HEAD
 	mutex_lock(&rdev->devlist_mtx);
 	wdev_lock(wdev);
 	err = cfg80211_ibss_wext_join(rdev, wdev);
 	wdev_unlock(wdev);
 	mutex_unlock(&rdev->devlist_mtx);
+=======
+	wdev_lock(wdev);
+	err = cfg80211_ibss_wext_join(rdev, wdev);
+	wdev_unlock(wdev);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

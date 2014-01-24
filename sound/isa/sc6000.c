@@ -48,7 +48,15 @@ MODULE_SUPPORTED_DEVICE("{{Gallant, SC-6000},"
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/master
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* 0x220, 0x240 */
 static int irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* 5, 7, 9, 10, 11 */
 static long mss_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* 0x530, 0xe80 */
@@ -121,7 +129,11 @@ MODULE_PARM_DESC(joystick, "Enable gameport.");
 /*
  * sc6000_irq_to_softcfg - Decode irq number into cfg code.
  */
+<<<<<<< HEAD
 static __devinit unsigned char sc6000_irq_to_softcfg(int irq)
+=======
+static unsigned char sc6000_irq_to_softcfg(int irq)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char val = 0;
 
@@ -150,7 +162,11 @@ static __devinit unsigned char sc6000_irq_to_softcfg(int irq)
 /*
  * sc6000_dma_to_softcfg - Decode dma number into cfg code.
  */
+<<<<<<< HEAD
 static __devinit unsigned char sc6000_dma_to_softcfg(int dma)
+=======
+static unsigned char sc6000_dma_to_softcfg(int dma)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char val = 0;
 
@@ -173,7 +189,11 @@ static __devinit unsigned char sc6000_dma_to_softcfg(int dma)
 /*
  * sc6000_mpu_irq_to_softcfg - Decode MPU-401 irq number into cfg code.
  */
+<<<<<<< HEAD
 static __devinit unsigned char sc6000_mpu_irq_to_softcfg(int mpu_irq)
+=======
+static unsigned char sc6000_mpu_irq_to_softcfg(int mpu_irq)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char val = 0;
 
@@ -242,8 +262,13 @@ static int sc6000_write(char __iomem *vport, int cmd)
 	return -EIO;
 }
 
+<<<<<<< HEAD
 static int __devinit sc6000_dsp_get_answer(char __iomem *vport, int command,
 					   char *data, int data_len)
+=======
+static int sc6000_dsp_get_answer(char __iomem *vport, int command,
+				 char *data, int data_len)
+>>>>>>> refs/remotes/origin/master
 {
 	int len = 0;
 
@@ -269,7 +294,11 @@ static int __devinit sc6000_dsp_get_answer(char __iomem *vport, int command,
 	return len ? len : -EIO;
 }
 
+<<<<<<< HEAD
 static int __devinit sc6000_dsp_reset(char __iomem *vport)
+=======
+static int sc6000_dsp_reset(char __iomem *vport)
+>>>>>>> refs/remotes/origin/master
 {
 	iowrite8(1, vport + DSP_RESET);
 	udelay(10);
@@ -281,7 +310,11 @@ static int __devinit sc6000_dsp_reset(char __iomem *vport)
 }
 
 /* detection and initialization */
+<<<<<<< HEAD
 static int __devinit sc6000_hw_cfg_write(char __iomem *vport, const int *cfg)
+=======
+static int sc6000_hw_cfg_write(char __iomem *vport, const int *cfg)
+>>>>>>> refs/remotes/origin/master
 {
 	if (sc6000_write(vport, COMMAND_6C) < 0) {
 		snd_printk(KERN_WARNING "CMD 0x%x: failed!\n", COMMAND_6C);
@@ -345,8 +378,13 @@ static int sc6000_setup_board(char __iomem *vport, int config)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit sc6000_init_mss(char __iomem *vport, int config,
 				     char __iomem *vmss_port, int mss_config)
+=======
+static int sc6000_init_mss(char __iomem *vport, int config,
+			   char __iomem *vmss_port, int mss_config)
+>>>>>>> refs/remotes/origin/master
 {
 	if (sc6000_write(vport, DSP_INIT_MSS)) {
 		snd_printk(KERN_ERR "sc6000_init_mss [0x%x]: failed!\n",
@@ -364,9 +402,15 @@ static int __devinit sc6000_init_mss(char __iomem *vport, int config,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit sc6000_hw_cfg_encode(char __iomem *vport, int *cfg,
 					   long xport, long xmpu,
 					   long xmss_port, int joystick)
+=======
+static void sc6000_hw_cfg_encode(char __iomem *vport, int *cfg,
+				 long xport, long xmpu,
+				 long xmss_port, int joystick)
+>>>>>>> refs/remotes/origin/master
 {
 	cfg[0] = 0;
 	cfg[1] = 0;
@@ -386,8 +430,13 @@ static void __devinit sc6000_hw_cfg_encode(char __iomem *vport, int *cfg,
 	snd_printd("hw cfg %x, %x\n", cfg[0], cfg[1]);
 }
 
+<<<<<<< HEAD
 static int __devinit sc6000_init_board(char __iomem *vport,
 					char __iomem *vmss_port, int dev)
+=======
+static int sc6000_init_board(char __iomem *vport,
+			     char __iomem *vmss_port, int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	char answer[15];
 	char version[2];
@@ -467,7 +516,11 @@ static int __devinit sc6000_init_board(char __iomem *vport,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_sc6000_mixer(struct snd_wss *chip)
+=======
+static int snd_sc6000_mixer(struct snd_wss *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = chip->card;
 	struct snd_ctl_elem_id id1, id2;
@@ -502,7 +555,11 @@ static int __devinit snd_sc6000_mixer(struct snd_wss *chip)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_sc6000_match(struct device *devptr, unsigned int dev)
+=======
+static int snd_sc6000_match(struct device *devptr, unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!enable[dev])
 		return 0;
@@ -545,7 +602,11 @@ static int __devinit snd_sc6000_match(struct device *devptr, unsigned int dev)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_sc6000_probe(struct device *devptr, unsigned int dev)
+=======
+static int snd_sc6000_probe(struct device *devptr, unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	static int possible_irqs[] = { 5, 7, 9, 10, 11, -1 };
 	static int possible_dmas[] = { 1, 3, 0, -1 };
@@ -658,8 +719,16 @@ static int __devinit snd_sc6000_probe(struct device *devptr, unsigned int dev)
 		if (snd_mpu401_uart_new(card, 0,
 					MPU401_HW_MPU401,
 					mpu_port[dev], 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					mpu_irq[dev], IRQF_DISABLED,
 					NULL) < 0)
+=======
+					mpu_irq[dev], NULL) < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					mpu_irq[dev], NULL) < 0)
+>>>>>>> refs/remotes/origin/master
 			snd_printk(KERN_ERR "no MPU-401 device at 0x%lx ?\n",
 					mpu_port[dev]);
 	}
@@ -688,7 +757,11 @@ err_exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_sc6000_remove(struct device *devptr, unsigned int dev)
+=======
+static int snd_sc6000_remove(struct device *devptr, unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = dev_get_drvdata(devptr);
 	char __iomem **vport = card->private_data;
@@ -699,7 +772,10 @@ static int __devexit snd_sc6000_remove(struct device *devptr, unsigned int dev)
 	release_region(port[dev], 0x10);
 	release_region(mss_port[dev], 4);
 
+<<<<<<< HEAD
 	dev_set_drvdata(devptr, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_card_free(card);
 	return 0;
 }
@@ -707,7 +783,11 @@ static int __devexit snd_sc6000_remove(struct device *devptr, unsigned int dev)
 static struct isa_driver snd_sc6000_driver = {
 	.match		= snd_sc6000_match,
 	.probe		= snd_sc6000_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_sc6000_remove),
+=======
+	.remove		= snd_sc6000_remove,
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: suspend/resume */
 	.driver		= {
 		.name	= DRV_NAME,

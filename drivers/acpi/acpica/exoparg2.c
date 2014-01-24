@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -123,7 +131,11 @@ acpi_status acpi_ex_opcode_2A_0T_0R(struct acpi_walk_state *walk_state)
 		/*
 		 * Dispatch the notify to the appropriate handler
 		 * NOTE: the request is queued for execution after this method
+<<<<<<< HEAD
 		 * completes.  The notify handlers are NOT invoked synchronously
+=======
+		 * completes. The notify handlers are NOT invoked synchronously
+>>>>>>> refs/remotes/origin/master
 		 * from this thread -- because handlers may in turn run other
 		 * control methods.
 		 */
@@ -215,7 +227,11 @@ acpi_status acpi_ex_opcode_2A_2T_1R(struct acpi_walk_state *walk_state)
 		goto cleanup;
 	}
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Since the remainder is not returned indirectly, remove a reference to
 	 * it. Only the quotient is returned indirectly.
@@ -257,7 +273,11 @@ acpi_status acpi_ex_opcode_2A_1T_1R(struct acpi_walk_state *walk_state)
 	union acpi_operand_object *return_desc = NULL;
 	u64 index;
 	acpi_status status = AE_OK;
+<<<<<<< HEAD
 	acpi_size length;
+=======
+	acpi_size length = 0;
+>>>>>>> refs/remotes/origin/master
 
 	ACPI_FUNCTION_TRACE_STR(ex_opcode_2A_1T_1R,
 				acpi_ps_get_opcode_name(walk_state->opcode));
@@ -304,7 +324,10 @@ acpi_status acpi_ex_opcode_2A_1T_1R(struct acpi_walk_state *walk_state)
 		break;
 
 	case AML_TO_STRING_OP:	/* to_string (Buffer, Length, Result) (ACPI 2.0) */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Input object is guaranteed to be a buffer at this point (it may have
 		 * been converted.)  Copy the raw buffer data to a new object of
@@ -320,7 +343,10 @@ acpi_status acpi_ex_opcode_2A_1T_1R(struct acpi_walk_state *walk_state)
 		 * NOTE: A length of zero is ok, and will create a zero-length, null
 		 *       terminated string.
 		 */
+<<<<<<< HEAD
 		length = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 		while ((length < operand[0]->buffer.length) &&
 		       (length < operand[1]->integer.value) &&
 		       (operand[0]->buffer.pointer[length])) {
@@ -376,6 +402,10 @@ acpi_status acpi_ex_opcode_2A_1T_1R(struct acpi_walk_state *walk_state)
 		case ACPI_TYPE_STRING:
 
 			if (index >= operand[0]->string.length) {
+<<<<<<< HEAD
+=======
+				length = operand[0]->string.length;
+>>>>>>> refs/remotes/origin/master
 				status = AE_AML_STRING_LIMIT;
 			}
 
@@ -386,6 +416,10 @@ acpi_status acpi_ex_opcode_2A_1T_1R(struct acpi_walk_state *walk_state)
 		case ACPI_TYPE_BUFFER:
 
 			if (index >= operand[0]->buffer.length) {
+<<<<<<< HEAD
+=======
+				length = operand[0]->buffer.length;
+>>>>>>> refs/remotes/origin/master
 				status = AE_AML_BUFFER_LIMIT;
 			}
 
@@ -396,6 +430,10 @@ acpi_status acpi_ex_opcode_2A_1T_1R(struct acpi_walk_state *walk_state)
 		case ACPI_TYPE_PACKAGE:
 
 			if (index >= operand[0]->package.count) {
+<<<<<<< HEAD
+=======
+				length = operand[0]->package.count;
+>>>>>>> refs/remotes/origin/master
 				status = AE_AML_PACKAGE_LIMIT;
 			}
 
@@ -414,8 +452,14 @@ acpi_status acpi_ex_opcode_2A_1T_1R(struct acpi_walk_state *walk_state)
 
 		if (ACPI_FAILURE(status)) {
 			ACPI_EXCEPTION((AE_INFO, status,
+<<<<<<< HEAD
 					"Index (0x%8.8X%8.8X) is beyond end of object",
 					ACPI_FORMAT_UINT64(index)));
+=======
+					"Index (0x%X%8.8X) is beyond end of object (length 0x%X)",
+					ACPI_FORMAT_UINT64(index),
+					(u32)length));
+>>>>>>> refs/remotes/origin/master
 			goto cleanup;
 		}
 
@@ -443,7 +487,11 @@ acpi_status acpi_ex_opcode_2A_1T_1R(struct acpi_walk_state *walk_state)
 		break;
 	}
 
+<<<<<<< HEAD
       store_result_to_target:
+=======
+store_result_to_target:
+>>>>>>> refs/remotes/origin/master
 
 	if (ACPI_SUCCESS(status)) {
 		/*
@@ -460,7 +508,11 @@ acpi_status acpi_ex_opcode_2A_1T_1R(struct acpi_walk_state *walk_state)
 		}
 	}
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	/* Delete return object on error */
 
@@ -551,7 +603,11 @@ acpi_status acpi_ex_opcode_2A_0T_1R(struct acpi_walk_state *walk_state)
 		goto cleanup;
 	}
 
+<<<<<<< HEAD
       store_logical_result:
+=======
+store_logical_result:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Set return value to according to logical_result. logical TRUE (all ones)
 	 * Default is FALSE (zero)
@@ -560,7 +616,11 @@ acpi_status acpi_ex_opcode_2A_0T_1R(struct acpi_walk_state *walk_state)
 		return_desc->integer.value = ACPI_UINT64_MAX;
 	}
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	/* Delete return object on error */
 

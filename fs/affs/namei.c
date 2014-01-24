@@ -13,6 +13,7 @@
 typedef int (*toupper_t)(int);
 
 static int	 affs_toupper(int ch);
+<<<<<<< HEAD
 static int	 affs_hash_dentry(const struct dentry *,
 		const struct inode *, struct qstr *);
 static int       affs_compare_dentry(const struct dentry *parent,
@@ -25,6 +26,14 @@ static int	 affs_intl_hash_dentry(const struct dentry *,
 static int       affs_intl_compare_dentry(const struct dentry *parent,
 		const struct inode *pinode,
 		const struct dentry *dentry, const struct inode *inode,
+=======
+static int	 affs_hash_dentry(const struct dentry *, struct qstr *);
+static int       affs_compare_dentry(const struct dentry *parent, const struct dentry *dentry,
+		unsigned int len, const char *str, const struct qstr *name);
+static int	 affs_intl_toupper(int ch);
+static int	 affs_intl_hash_dentry(const struct dentry *, struct qstr *);
+static int       affs_intl_compare_dentry(const struct dentry *parent, const struct dentry *dentry,
+>>>>>>> refs/remotes/origin/master
 		unsigned int len, const char *str, const struct qstr *name);
 
 const struct dentry_operations affs_dentry_operations = {
@@ -86,14 +95,22 @@ __affs_hash_dentry(struct qstr *qstr, toupper_t toupper)
 }
 
 static int
+<<<<<<< HEAD
 affs_hash_dentry(const struct dentry *dentry, const struct inode *inode,
 		struct qstr *qstr)
+=======
+affs_hash_dentry(const struct dentry *dentry, struct qstr *qstr)
+>>>>>>> refs/remotes/origin/master
 {
 	return __affs_hash_dentry(qstr, affs_toupper);
 }
 static int
+<<<<<<< HEAD
 affs_intl_hash_dentry(const struct dentry *dentry, const struct inode *inode,
 		struct qstr *qstr)
+=======
+affs_intl_hash_dentry(const struct dentry *dentry, struct qstr *qstr)
+>>>>>>> refs/remotes/origin/master
 {
 	return __affs_hash_dentry(qstr, affs_intl_toupper);
 }
@@ -131,15 +148,23 @@ static inline int __affs_compare_dentry(unsigned int len,
 }
 
 static int
+<<<<<<< HEAD
 affs_compare_dentry(const struct dentry *parent, const struct inode *pinode,
 		const struct dentry *dentry, const struct inode *inode,
+=======
+affs_compare_dentry(const struct dentry *parent, const struct dentry *dentry,
+>>>>>>> refs/remotes/origin/master
 		unsigned int len, const char *str, const struct qstr *name)
 {
 	return __affs_compare_dentry(len, str, name, affs_toupper);
 }
 static int
+<<<<<<< HEAD
 affs_intl_compare_dentry(const struct dentry *parent,const struct inode *pinode,
 		const struct dentry *dentry, const struct inode *inode,
+=======
+affs_intl_compare_dentry(const struct dentry *parent, const struct dentry *dentry,
+>>>>>>> refs/remotes/origin/master
 		unsigned int len, const char *str, const struct qstr *name)
 {
 	return __affs_compare_dentry(len, str, name, affs_intl_toupper);
@@ -211,7 +236,11 @@ affs_find_entry(struct inode *dir, struct dentry *dentry)
 }
 
 struct dentry *
+<<<<<<< HEAD
 affs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
+=======
+affs_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = dir->i_sb;
 	struct buffer_head *bh;
@@ -255,13 +284,29 @@ affs_unlink(struct inode *dir, struct dentry *dentry)
 }
 
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 affs_create(struct inode *dir, struct dentry *dentry, int mode, struct nameidata *nd)
+=======
+affs_create(struct inode *dir, struct dentry *dentry, umode_t mode, struct nameidata *nd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+affs_create(struct inode *dir, struct dentry *dentry, umode_t mode, bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = dir->i_sb;
 	struct inode	*inode;
 	int		 error;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("AFFS: create(%lu,\"%.*s\",0%o)\n",dir->i_ino,(int)dentry->d_name.len,
+=======
+	pr_debug("AFFS: create(%lu,\"%.*s\",0%ho)\n",dir->i_ino,(int)dentry->d_name.len,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("AFFS: create(%lu,\"%.*s\",0%ho)\n",dir->i_ino,(int)dentry->d_name.len,
+>>>>>>> refs/remotes/origin/master
 		 dentry->d_name.name,mode);
 
 	inode = affs_new_inode(dir);
@@ -277,7 +322,15 @@ affs_create(struct inode *dir, struct dentry *dentry, int mode, struct nameidata
 	inode->i_mapping->a_ops = (AFFS_SB(sb)->s_flags & SF_OFS) ? &affs_aops_ofs : &affs_aops;
 	error = affs_add_entry(dir, inode, dentry, ST_FILE);
 	if (error) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 0;
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		iput(inode);
 		return error;
 	}
@@ -285,12 +338,28 @@ affs_create(struct inode *dir, struct dentry *dentry, int mode, struct nameidata
 }
 
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 affs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+affs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+affs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode		*inode;
 	int			 error;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("AFFS: mkdir(%lu,\"%.*s\",0%o)\n",dir->i_ino,
+=======
+	pr_debug("AFFS: mkdir(%lu,\"%.*s\",0%ho)\n",dir->i_ino,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("AFFS: mkdir(%lu,\"%.*s\",0%ho)\n",dir->i_ino,
+>>>>>>> refs/remotes/origin/master
 		 (int)dentry->d_name.len,dentry->d_name.name,mode);
 
 	inode = affs_new_inode(dir);
@@ -305,7 +374,15 @@ affs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 
 	error = affs_add_entry(dir, inode, dentry, ST_USERDIR);
 	if (error) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 0;
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		mark_inode_dirty(inode);
 		iput(inode);
 		return error;
@@ -392,7 +469,15 @@ affs_symlink(struct inode *dir, struct dentry *dentry, const char *symname)
 	return 0;
 
 err:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 0;
+=======
+	clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 	mark_inode_dirty(inode);
 	iput(inode);
 	return error;

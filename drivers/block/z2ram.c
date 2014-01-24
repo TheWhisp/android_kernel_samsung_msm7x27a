@@ -43,9 +43,12 @@
 #include <linux/zorro.h>
 
 
+<<<<<<< HEAD
 extern int m68k_realnum_memory;
 extern struct mem_info m68k_memory[NUM_MEMINFO];
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define Z2MINOR_COMBINED      (0)
 #define Z2MINOR_Z2ONLY        (1)
 #define Z2MINOR_CHIPONLY      (2)
@@ -116,8 +119,13 @@ get_z2ram( void )
 	if ( test_bit( i, zorro_unused_z2ram ) )
 	{
 	    z2_count++;
+<<<<<<< HEAD
 	    z2ram_map[ z2ram_size++ ] = 
 		ZTWO_VADDR( Z2RAM_START ) + ( i << Z2RAM_CHUNKSHIFT );
+=======
+	    z2ram_map[z2ram_size++] = (unsigned long)ZTWO_VADDR(Z2RAM_START) +
+				      (i << Z2RAM_CHUNKSHIFT);
+>>>>>>> refs/remotes/origin/master
 	    clear_bit( i, zorro_unused_z2ram );
 	}
     }
@@ -309,20 +317,31 @@ err_out:
     return rc;
 }
 
+<<<<<<< HEAD
 static int
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 z2_release(struct gendisk *disk, fmode_t mode)
 {
     mutex_lock(&z2ram_mutex);
     if ( current_device == -1 ) {
     	mutex_unlock(&z2ram_mutex);
+<<<<<<< HEAD
     	return 0;
+=======
+    	return;
+>>>>>>> refs/remotes/origin/master
     }
     mutex_unlock(&z2ram_mutex);
     /*
      * FIXME: unmap memory
      */
+<<<<<<< HEAD
 
     return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct block_device_operations z2_fops =

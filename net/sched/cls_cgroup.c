@@ -17,14 +17,24 @@
 #include <linux/skbuff.h>
 #include <linux/cgroup.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
+=======
+#include <linux/fdtable.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/rtnetlink.h>
 #include <net/pkt_cls.h>
 #include <net/sock.h>
 #include <net/cls_cgroup.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct cgroup_subsys_state *cgrp_create(struct cgroup_subsys *ss,
 					       struct cgroup *cgrp);
 static void cgrp_destroy(struct cgroup_subsys *ss, struct cgroup *cgrp);
+=======
+static struct cgroup_subsys_state *cgrp_create(struct cgroup *cgrp);
+static void cgrp_destroy(struct cgroup *cgrp);
+>>>>>>> refs/remotes/origin/cm-10.0
 static int cgrp_populate(struct cgroup_subsys *ss, struct cgroup *cgrp);
 
 struct cgroup_subsys net_cls_subsys = {
@@ -43,22 +53,40 @@ static inline struct cgroup_cls_state *cgrp_cls_state(struct cgroup *cgrp)
 {
 	return container_of(cgroup_subsys_state(cgrp, net_cls_subsys_id),
 			    struct cgroup_cls_state, css);
+=======
+static inline struct cgroup_cls_state *css_cls_state(struct cgroup_subsys_state *css)
+{
+	return css ? container_of(css, struct cgroup_cls_state, css) : NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct cgroup_cls_state *task_cls_state(struct task_struct *p)
 {
+<<<<<<< HEAD
 	return container_of(task_subsys_state(p, net_cls_subsys_id),
 			    struct cgroup_cls_state, css);
 }
 
+<<<<<<< HEAD
 static struct cgroup_subsys_state *cgrp_create(struct cgroup_subsys *ss,
 						 struct cgroup *cgrp)
+=======
+static struct cgroup_subsys_state *cgrp_create(struct cgroup *cgrp)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return css_cls_state(task_css(p, net_cls_subsys_id));
+}
+
+static struct cgroup_subsys_state *
+cgrp_css_alloc(struct cgroup_subsys_state *parent_css)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cgroup_cls_state *cs;
 
 	cs = kzalloc(sizeof(*cs), GFP_KERNEL);
 	if (!cs)
 		return ERR_PTR(-ENOMEM);
+<<<<<<< HEAD
 
 	if (cgrp->parent)
 		cs->classid = cgrp_cls_state(cgrp->parent)->classid;
@@ -66,7 +94,11 @@ static struct cgroup_subsys_state *cgrp_create(struct cgroup_subsys *ss,
 	return &cs->css;
 }
 
+<<<<<<< HEAD
 static void cgrp_destroy(struct cgroup_subsys *ss, struct cgroup *cgrp)
+=======
+static void cgrp_destroy(struct cgroup *cgrp)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	kfree(cgrp_cls_state(cgrp));
 }
@@ -79,6 +111,58 @@ static u64 read_classid(struct cgroup *cgrp, struct cftype *cft)
 static int write_classid(struct cgroup *cgrp, struct cftype *cft, u64 value)
 {
 	cgrp_cls_state(cgrp)->classid = (u32) value;
+=======
+	return &cs->css;
+}
+
+static int cgrp_css_online(struct cgroup_subsys_state *css)
+{
+	struct cgroup_cls_state *cs = css_cls_state(css);
+	struct cgroup_cls_state *parent = css_cls_state(css_parent(css));
+
+	if (parent)
+		cs->classid = parent->classid;
+	return 0;
+}
+
+static void cgrp_css_free(struct cgroup_subsys_state *css)
+{
+	kfree(css_cls_state(css));
+}
+
+static int update_classid(const void *v, struct file *file, unsigned n)
+{
+	int err;
+	struct socket *sock = sock_from_file(file, &err);
+	if (sock)
+		sock->sk->sk_classid = (u32)(unsigned long)v;
+	return 0;
+}
+
+static void cgrp_attach(struct cgroup_subsys_state *css,
+			struct cgroup_taskset *tset)
+{
+	struct task_struct *p;
+	struct cgroup_cls_state *cs = css_cls_state(css);
+	void *v = (void *)(unsigned long)cs->classid;
+
+	cgroup_taskset_for_each(p, css, tset) {
+		task_lock(p);
+		iterate_fd(p->files, 0, update_classid, v);
+		task_unlock(p);
+	}
+}
+
+static u64 read_classid(struct cgroup_subsys_state *css, struct cftype *cft)
+{
+	return css_cls_state(css)->classid;
+}
+
+static int write_classid(struct cgroup_subsys_state *css, struct cftype *cft,
+			 u64 value)
+{
+	css_cls_state(css)->classid = (u32) value;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -88,12 +172,28 @@ static struct cftype ss_files[] = {
 		.read_u64 = read_classid,
 		.write_u64 = write_classid,
 	},
+<<<<<<< HEAD
 };
 
 static int cgrp_populate(struct cgroup_subsys *ss, struct cgroup *cgrp)
 {
 	return cgroup_add_files(cgrp, ss, ss_files, ARRAY_SIZE(ss_files));
 }
+=======
+	{ }	/* terminate */
+};
+
+struct cgroup_subsys net_cls_subsys = {
+	.name		= "net_cls",
+	.css_alloc	= cgrp_css_alloc,
+	.css_online	= cgrp_css_online,
+	.css_free	= cgrp_css_free,
+	.attach		= cgrp_attach,
+	.subsys_id	= net_cls_subsys_id,
+	.base_cftypes	= ss_files,
+	.module		= THIS_MODULE,
+};
+>>>>>>> refs/remotes/origin/master
 
 struct cls_cgroup_head {
 	u32			handle;
@@ -101,7 +201,15 @@ struct cls_cgroup_head {
 	struct tcf_ematch_tree	ematches;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int cls_cgroup_classify(struct sk_buff *skb, struct tcf_proto *tp,
+=======
+static int cls_cgroup_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cls_cgroup_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+>>>>>>> refs/remotes/origin/master
 			       struct tcf_result *res)
 {
 	struct cls_cgroup_head *head = tp->root;
@@ -162,7 +270,12 @@ static const struct nla_policy cgroup_policy[TCA_CGROUP_MAX + 1] = {
 	[TCA_CGROUP_EMATCHES]	= { .type = NLA_NESTED },
 };
 
+<<<<<<< HEAD
 static int cls_cgroup_change(struct tcf_proto *tp, unsigned long base,
+=======
+static int cls_cgroup_change(struct net *net, struct sk_buff *in_skb,
+			     struct tcf_proto *tp, unsigned long base,
+>>>>>>> refs/remotes/origin/master
 			     u32 handle, struct nlattr **tca,
 			     unsigned long *arg)
 {
@@ -198,7 +311,12 @@ static int cls_cgroup_change(struct tcf_proto *tp, unsigned long base,
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
 	err = tcf_exts_validate(tp, tb, tca[TCA_RATE], &e, &cgroup_ext_map);
+=======
+	err = tcf_exts_validate(net, tp, tb, tca[TCA_RATE], &e,
+				&cgroup_ext_map);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -294,12 +412,15 @@ static int __init init_cgroup_cls(void)
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 #ifndef CONFIG_NET_CLS_CGROUP
 	/* We can't use rcu_assign_pointer because this is an int. */
 	smp_wmb();
 	net_cls_subsys_id = net_cls_subsys.subsys_id;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = register_tcf_proto_ops(&cls_cgroup_ops);
 	if (ret)
 		cgroup_unload_subsys(&net_cls_subsys);
@@ -312,11 +433,14 @@ static void __exit exit_cgroup_cls(void)
 {
 	unregister_tcf_proto_ops(&cls_cgroup_ops);
 
+<<<<<<< HEAD
 #ifndef CONFIG_NET_CLS_CGROUP
 	net_cls_subsys_id = -1;
 	synchronize_rcu();
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	cgroup_unload_subsys(&net_cls_subsys);
 }
 

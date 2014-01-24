@@ -6,9 +6,15 @@
  * Licensed under the GPL.
  */
 
+<<<<<<< HEAD
 #include "linux/init.h"
 #include <linux/netdevice.h>
 #include "net_kern.h"
+=======
+#include <linux/init.h>
+#include <linux/netdevice.h>
+#include <net_kern.h>
+>>>>>>> refs/remotes/origin/master
 #include "daemon.h"
 
 struct daemon_init {

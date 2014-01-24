@@ -167,6 +167,10 @@ int ib_find_cached_pkey(struct ib_device *device,
 	unsigned long flags;
 	int i;
 	int ret = -ENOENT;
+<<<<<<< HEAD
+=======
+	int partial_ix = -1;
+>>>>>>> refs/remotes/origin/master
 
 	if (port_num < start_port(device) || port_num > end_port(device))
 		return -EINVAL;
@@ -179,6 +183,49 @@ int ib_find_cached_pkey(struct ib_device *device,
 
 	for (i = 0; i < cache->table_len; ++i)
 		if ((cache->table[i] & 0x7fff) == (pkey & 0x7fff)) {
+<<<<<<< HEAD
+=======
+			if (cache->table[i] & 0x8000) {
+				*index = i;
+				ret = 0;
+				break;
+			} else
+				partial_ix = i;
+		}
+
+	if (ret && partial_ix >= 0) {
+		*index = partial_ix;
+		ret = 0;
+	}
+
+	read_unlock_irqrestore(&device->cache.lock, flags);
+
+	return ret;
+}
+EXPORT_SYMBOL(ib_find_cached_pkey);
+
+int ib_find_exact_cached_pkey(struct ib_device *device,
+			      u8                port_num,
+			      u16               pkey,
+			      u16              *index)
+{
+	struct ib_pkey_cache *cache;
+	unsigned long flags;
+	int i;
+	int ret = -ENOENT;
+
+	if (port_num < start_port(device) || port_num > end_port(device))
+		return -EINVAL;
+
+	read_lock_irqsave(&device->cache.lock, flags);
+
+	cache = device->cache.pkey_cache[port_num - start_port(device)];
+
+	*index = -1;
+
+	for (i = 0; i < cache->table_len; ++i)
+		if (cache->table[i] == pkey) {
+>>>>>>> refs/remotes/origin/master
 			*index = i;
 			ret = 0;
 			break;
@@ -188,7 +235,11 @@ int ib_find_cached_pkey(struct ib_device *device,
 
 	return ret;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(ib_find_cached_pkey);
+=======
+EXPORT_SYMBOL(ib_find_exact_cached_pkey);
+>>>>>>> refs/remotes/origin/master
 
 int ib_get_cached_lmc(struct ib_device *device,
 		      u8                port_num,
@@ -302,7 +353,17 @@ static void ib_cache_event(struct ib_event_handler *handler,
 	    event->event == IB_EVENT_LID_CHANGE  ||
 	    event->event == IB_EVENT_PKEY_CHANGE ||
 	    event->event == IB_EVENT_SM_CHANGE   ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    event->event == IB_EVENT_CLIENT_REREGISTER) {
+=======
+	    event->event == IB_EVENT_CLIENT_REREGISTER ||
+	    event->event == IB_EVENT_GID_CHANGE) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    event->event == IB_EVENT_CLIENT_REREGISTER ||
+	    event->event == IB_EVENT_GID_CHANGE) {
+>>>>>>> refs/remotes/origin/master
 		work = kmalloc(sizeof *work, GFP_ATOMIC);
 		if (work) {
 			INIT_WORK(&work->work, ib_cache_task);

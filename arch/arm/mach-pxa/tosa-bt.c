@@ -102,7 +102,11 @@ err_reset:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int __devexit tosa_bt_remove(struct platform_device *dev)
+=======
+static int tosa_bt_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tosa_bt_data *data = dev->dev.platform_data;
 	struct rfkill *rfk = platform_get_drvdata(dev);
@@ -125,7 +129,11 @@ static int __devexit tosa_bt_remove(struct platform_device *dev)
 
 static struct platform_driver tosa_bt_driver = {
 	.probe = tosa_bt_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tosa_bt_remove),
+=======
+	.remove = tosa_bt_remove,
+>>>>>>> refs/remotes/origin/master
 
 	.driver = {
 		.name = "tosa-bt",

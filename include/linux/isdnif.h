@@ -10,11 +10,15 @@
  * of the GNU General Public License, incorporated herein by reference.
  *
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ISDNIF_H__
 #define __ISDNIF_H__
 
 
+<<<<<<< HEAD
 /*
  * Values for general protocol-selection
  */
@@ -55,6 +59,10 @@
 #ifdef __KERNEL__
 
 #include <linux/skbuff.h>
+=======
+#include <linux/skbuff.h>
+#include <uapi/linux/isdnif.h>
+>>>>>>> refs/remotes/origin/master
 
 /***************************************************************************/
 /* Extensions made by Werner Cornelius (werner@ikt.de)                     */
@@ -541,6 +549,9 @@ typedef struct {
 extern int register_isdn(isdn_if*);
 #include <asm/uaccess.h>
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ISDNIF_H__ */

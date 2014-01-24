@@ -14,8 +14,16 @@
 #include <linux/io.h>
 #include <linux/delay.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/timer.h>
 #include <asm/hw_irq.h>
 #include <asm/pgtable.h>
@@ -264,7 +272,11 @@ static void i8259A_shutdown(void)
 	 * out of.
 	 */
 	outb(0xff, PIC_MASTER_IMR);	/* mask all of 8259A-1 */
+<<<<<<< HEAD
 	outb(0xff, PIC_SLAVE_IMR);	/* mask all of 8259A-1 */
+=======
+	outb(0xff, PIC_SLAVE_IMR);	/* mask all of 8259A-2 */
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct syscore_ops i8259_syscore_ops = {
@@ -313,8 +325,12 @@ static void init_8259A(int auto_eoi)
 	 */
 	outb_pic(0x11, PIC_MASTER_CMD);	/* ICW1: select 8259A-1 init */
 
+<<<<<<< HEAD
 	/* ICW2: 8259A-1 IR0-7 mapped to 0x30-0x37 on x86-64,
 	   to 0x20-0x27 on i386 */
+=======
+	/* ICW2: 8259A-1 IR0-7 mapped to 0x30-0x37 */
+>>>>>>> refs/remotes/origin/master
 	outb_pic(IRQ0_VECTOR, PIC_MASTER_IMR);
 
 	/* 8259A-1 (the master) has a slave on IR2 */

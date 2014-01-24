@@ -9,6 +9,10 @@
  * (C) Copyright TOSHIBA CORPORATION 2004-2007
  * All Rights Reserved.
  */
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/module.h>
@@ -74,7 +78,13 @@ struct txx9ndfmc_drvdata {
 	unsigned char hold;	/* in gbusclock */
 	unsigned char spw;	/* in gbusclock */
 	struct nand_hw_control hw_control;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct mtd_partition *parts[MAX_TXX9NDFMC_DEV];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *mtd_to_platdev(struct mtd_info *mtd)
@@ -87,7 +97,11 @@ static struct platform_device *mtd_to_platdev(struct mtd_info *mtd)
 static void __iomem *ndregaddr(struct platform_device *dev, unsigned int reg)
 {
 	struct txx9ndfmc_drvdata *drvdata = platform_get_drvdata(dev);
+<<<<<<< HEAD
 	struct txx9ndfmc_platform_data *plat = dev->dev.platform_data;
+=======
+	struct txx9ndfmc_platform_data *plat = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	return drvdata->base + (reg << plat->shift);
 }
@@ -132,6 +146,7 @@ static void txx9ndfmc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
 		*buf++ = __raw_readl(ndfdtr);
 }
 
+<<<<<<< HEAD
 static int txx9ndfmc_verify_buf(struct mtd_info *mtd, const uint8_t *buf,
 				int len)
 {
@@ -144,13 +159,19 @@ static int txx9ndfmc_verify_buf(struct mtd_info *mtd, const uint8_t *buf,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void txx9ndfmc_cmd_ctrl(struct mtd_info *mtd, int cmd,
 			       unsigned int ctrl)
 {
 	struct nand_chip *chip = mtd->priv;
 	struct txx9ndfmc_priv *txx9_priv = chip->priv;
 	struct platform_device *dev = txx9_priv->dev;
+<<<<<<< HEAD
 	struct txx9ndfmc_platform_data *plat = dev->dev.platform_data;
+=======
+	struct txx9ndfmc_platform_data *plat = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (ctrl & NAND_CTRL_CHANGE) {
 		u32 mcr = txx9ndfmc_read(dev, TXX9_NDFMCR);
@@ -237,7 +258,11 @@ static void txx9ndfmc_enable_hwecc(struct mtd_info *mtd, int mode)
 
 static void txx9ndfmc_initialize(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	struct txx9ndfmc_platform_data *plat = dev->dev.platform_data;
+=======
+	struct txx9ndfmc_platform_data *plat = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct txx9ndfmc_drvdata *drvdata = platform_get_drvdata(dev);
 	int tmout = 100;
 
@@ -286,27 +311,48 @@ static int txx9ndfmc_nand_scan(struct mtd_info *mtd)
 
 static int __init txx9ndfmc_probe(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	struct txx9ndfmc_platform_data *plat = dev->dev.platform_data;
+<<<<<<< HEAD
 	static const char *probes[] = { "cmdlinepart", NULL };
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct txx9ndfmc_platform_data *plat = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	int hold, spw;
 	int i;
 	struct txx9ndfmc_drvdata *drvdata;
 	unsigned long gbusclk = plat->gbus_clock;
 	struct resource *res;
 
+<<<<<<< HEAD
 	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
 	drvdata = devm_kzalloc(&dev->dev, sizeof(*drvdata), GFP_KERNEL);
 	if (!drvdata)
 		return -ENOMEM;
+<<<<<<< HEAD
 	if (!devm_request_mem_region(&dev->dev, res->start,
 				     resource_size(res), dev_name(&dev->dev)))
 		return -EBUSY;
 	drvdata->base = devm_ioremap(&dev->dev, res->start,
 				     resource_size(res));
+=======
+	drvdata->base = devm_request_and_ioremap(&dev->dev, res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!drvdata->base)
 		return -EBUSY;
+=======
+	drvdata = devm_kzalloc(&dev->dev, sizeof(*drvdata), GFP_KERNEL);
+	if (!drvdata)
+		return -ENOMEM;
+	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
+	drvdata->base = devm_ioremap_resource(&dev->dev, res);
+	if (IS_ERR(drvdata->base))
+		return PTR_ERR(drvdata->base);
+>>>>>>> refs/remotes/origin/master
 
 	hold = plat->hold ?: 20; /* tDH */
 	spw = plat->spw ?: 90; /* max(tREADID, tWP, tRP) */
@@ -333,7 +379,13 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
 		struct txx9ndfmc_priv *txx9_priv;
 		struct nand_chip *chip;
 		struct mtd_info *mtd;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int nr_parts;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (!(plat->ch_mask & (1 << i)))
 			continue;
@@ -353,7 +405,10 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
 		chip->read_byte = txx9ndfmc_read_byte;
 		chip->read_buf = txx9ndfmc_read_buf;
 		chip->write_buf = txx9ndfmc_write_buf;
+<<<<<<< HEAD
 		chip->verify_buf = txx9ndfmc_verify_buf;
+=======
+>>>>>>> refs/remotes/origin/master
 		chip->cmd_ctrl = txx9ndfmc_cmd_ctrl;
 		chip->dev_ready = txx9ndfmc_dev_ready;
 		chip->ecc.calculate = txx9ndfmc_calculate_ecc;
@@ -363,6 +418,14 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
 		/* txx9ndfmc_nand_scan will overwrite ecc.size and ecc.bytes */
 		chip->ecc.size = 256;
 		chip->ecc.bytes = 3;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		chip->ecc.strength = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		chip->ecc.strength = 1;
+>>>>>>> refs/remotes/origin/master
 		chip->chip_delay = 100;
 		chip->controller = &drvdata->hw_control;
 
@@ -393,9 +456,17 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
 		}
 		mtd->name = txx9_priv->mtdname;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		nr_parts = parse_mtd_partitions(mtd, probes,
 						&drvdata->parts[i], 0);
 		mtd_device_register(mtd, drvdata->parts[i], nr_parts);
+=======
+		mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 		drvdata->mtds[i] = mtd;
 	}
 
@@ -407,7 +478,10 @@ static int __exit txx9ndfmc_remove(struct platform_device *dev)
 	struct txx9ndfmc_drvdata *drvdata = platform_get_drvdata(dev);
 	int i;
 
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!drvdata)
 		return 0;
 	for (i = 0; i < MAX_TXX9NDFMC_DEV; i++) {
@@ -421,7 +495,13 @@ static int __exit txx9ndfmc_remove(struct platform_device *dev)
 		txx9_priv = chip->priv;
 
 		nand_release(mtd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kfree(drvdata->parts[i]);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(txx9_priv->mtdname);
 		kfree(txx9_priv);
 	}
@@ -448,6 +528,7 @@ static struct platform_driver txx9ndfmc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init txx9ndfmc_init(void)
 {
 	return platform_driver_probe(&txx9ndfmc_driver, txx9ndfmc_probe);
@@ -460,6 +541,9 @@ static void __exit txx9ndfmc_exit(void)
 
 module_init(txx9ndfmc_init);
 module_exit(txx9ndfmc_exit);
+=======
+module_platform_driver_probe(txx9ndfmc_driver, txx9ndfmc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("TXx9 SoC NAND flash controller driver");

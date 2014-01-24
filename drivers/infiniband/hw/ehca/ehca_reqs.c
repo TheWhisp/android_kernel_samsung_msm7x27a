@@ -42,7 +42,13 @@
  */
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "ehca_classes.h"
 #include "ehca_tools.h"
 #include "ehca_qes.h"
@@ -136,7 +142,11 @@ static void trace_send_wr_ud(const struct ib_send_wr *send_wr)
 				     mad_hdr->attr_mod);
 		}
 		for (j = 0; j < send_wr->num_sge; j++) {
+<<<<<<< HEAD
 			u8 *data = (u8 *)abs_to_virt(sge->addr);
+=======
+			u8 *data = __va(sge->addr);
+>>>>>>> refs/remotes/origin/master
 			ehca_gen_dbg("send_wr#%x sge#%x addr=%p length=%x "
 				     "lkey=%x",
 				     idx, j, data, sge->length, sge->lkey);

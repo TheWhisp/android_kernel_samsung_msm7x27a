@@ -6,7 +6,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +70,11 @@ acpi_ds_execute_arguments(struct acpi_namespace_node *node,
  *
  * FUNCTION:    acpi_ds_execute_arguments
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node                - Object NS node
+=======
+ * PARAMETERS:  node                - Object NS node
+>>>>>>> refs/remotes/origin/master
  *              scope_node          - Parent NS node
  *              aml_length          - Length of executable AML
  *              aml_start           - Pointer to the AML
@@ -158,7 +170,11 @@ acpi_ds_execute_arguments(struct acpi_namespace_node *node,
 	walk_state->deferred_node = node;
 	status = acpi_ps_parse_aml(walk_state);
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	acpi_ps_delete_parse_tree(op);
 	return_ACPI_STATUS(status);
 }
@@ -250,6 +266,22 @@ acpi_ds_get_bank_field_arguments(union acpi_operand_object *obj_desc)
 	status = acpi_ds_execute_arguments(node, node->parent,
 					   extra_desc->extra.aml_length,
 					   extra_desc->extra.aml_start);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (ACPI_FAILURE(status)) {
+		return_ACPI_STATUS(status);
+	}
+
+	status = acpi_ut_add_address_range(obj_desc->region.space_id,
+					   obj_desc->region.address,
+					   obj_desc->region.length, node);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 
@@ -391,6 +423,8 @@ acpi_status acpi_ds_get_region_arguments(union acpi_operand_object *obj_desc)
 		return_ACPI_STATUS(status);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Validate the region address/length via the host OS */
 
 	status = acpi_os_validate_address(obj_desc->region.space_id,
@@ -411,5 +445,15 @@ acpi_status acpi_ds_get_region_arguments(union acpi_operand_object *obj_desc)
 		status = AE_OK;
 	}
 
+=======
+	status = acpi_ut_add_address_range(obj_desc->region.space_id,
+					   obj_desc->region.address,
+					   obj_desc->region.length, node);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = acpi_ut_add_address_range(obj_desc->region.space_id,
+					   obj_desc->region.address,
+					   obj_desc->region.length, node);
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }

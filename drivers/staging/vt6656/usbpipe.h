@@ -30,6 +30,7 @@
 #ifndef __USBPIPE_H__
 #define __USBPIPE_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 #include "device.h"
 
@@ -71,5 +72,20 @@ int PIPEnsControlIn(
 int PIPEnsInterruptRead(PSDevice pDevice);
 int PIPEnsBulkInUsbRead(PSDevice pDevice, PRCB pRCB);
 int PIPEnsSendBulkOut(PSDevice pDevice, PUSB_SEND_CONTEXT pContext);
+=======
+#include "device.h"
+
+int PIPEnsControlOut(struct vnt_private *, u8 byRequest, u16 wValue,
+		u16 wIndex, u16 wLength, u8 *pbyBuffer);
+int PIPEnsControlOutAsyn(struct vnt_private *, u8 byRequest,
+	u16 wValue, u16 wIndex, u16 wLength, u8 *pbyBuffer);
+int PIPEnsControlIn(struct vnt_private *, u8 byRequest, u16 wValue,
+	u16 wIndex, u16 wLength,  u8 *pbyBuffer);
+
+int PIPEnsInterruptRead(struct vnt_private *);
+int PIPEnsBulkInUsbRead(struct vnt_private *, struct vnt_rcb *pRCB);
+int PIPEnsSendBulkOut(struct vnt_private *,
+				struct vnt_usb_send_context *pContext);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __USBPIPE_H__ */

@@ -20,12 +20,16 @@
 
 #define DRIVER_NAME "line6usb"
 
+<<<<<<< HEAD
 #if defined(CONFIG_LINE6_USB_DUMP_CTRL) || defined(CONFIG_LINE6_USB_DUMP_MIDI) || defined(CONFIG_LINE6_USB_DUMP_PCM)
 #define CONFIG_LINE6_USB_DUMP_ANY
 #endif
 
 #define LINE6_TIMEOUT 1
 #define LINE6_MAX_DEVICES 8
+=======
+#define LINE6_TIMEOUT 1
+>>>>>>> refs/remotes/origin/master
 #define LINE6_BUFSIZE_LISTEN 32
 #define LINE6_MESSAGE_MAXLEN 256
 
@@ -53,6 +57,7 @@
 
 #define LINE6_CHANNEL_MASK 0x0f
 
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DEBUG
 #define DEBUG_MESSAGES(x) (x)
 #else
@@ -61,6 +66,10 @@
 
 #define MISSING_CASE	\
 	printk(KERN_ERR "line6usb driver bug: missing case in %s:%d\n", \
+=======
+#define MISSING_CASE	\
+	pr_err("line6usb driver bug: missing case in %s:%d\n", \
+>>>>>>> refs/remotes/origin/master
 		__FILE__, __LINE__)
 
 #define CHECK_RETURN(x)		\
@@ -78,7 +87,10 @@ do {					\
 } while (0)
 
 extern const unsigned char line6_midi_id[3];
+<<<<<<< HEAD
 extern struct usb_line6 *line6_devices[LINE6_MAX_DEVICES];
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const int SYSEX_DATA_OFS = sizeof(line6_midi_id) + 3;
 static const int SYSEX_EXTRA_SIZE = sizeof(line6_midi_id) + 4;
@@ -88,6 +100,20 @@ static const int SYSEX_EXTRA_SIZE = sizeof(line6_midi_id) + 4;
 */
 struct line6_properties {
 	/**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		 Bit identifying this device in the line6usb driver.
+	*/
+	int device_bit;
+
+	/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 Card id string (maximum 16 characters).
 		 This can be used to address the device in ALSA programs as
 		 "default:CARD=<id>"
@@ -100,11 +126,17 @@ struct line6_properties {
 	const char *name;
 
 	/**
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 Bit identifying this device in the line6usb driver.
 	*/
 	int device_bit;
 
 	/**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 Bit vector defining this device's capabilities in the
 		 line6usb driver.
 	*/
@@ -202,36 +234,53 @@ extern char *line6_alloc_sysex_buffer(struct usb_line6 *line6, int code1,
 				      int code2, int size);
 extern ssize_t line6_nop_read(struct device *dev,
 			      struct device_attribute *attr, char *buf);
+<<<<<<< HEAD
 extern ssize_t line6_nop_write(struct device *dev,
 			       struct device_attribute *attr,
 			       const char *buf, size_t count);
+=======
+>>>>>>> refs/remotes/origin/master
 extern int line6_read_data(struct usb_line6 *line6, int address, void *data,
 			   size_t datalen);
 extern int line6_read_serial_number(struct usb_line6 *line6,
 				    int *serial_number);
+<<<<<<< HEAD
 extern int line6_send_program(struct usb_line6 *line6, int value);
+=======
+extern int line6_send_program(struct usb_line6 *line6, u8 value);
+>>>>>>> refs/remotes/origin/master
 extern int line6_send_raw_message(struct usb_line6 *line6, const char *buffer,
 				  int size);
 extern int line6_send_raw_message_async(struct usb_line6 *line6,
 					const char *buffer, int size);
 extern int line6_send_sysex_message(struct usb_line6 *line6,
 				    const char *buffer, int size);
+<<<<<<< HEAD
 extern int line6_send_sysex_message_async(struct usb_line6 *line6,
 					  const char *buffer, int size);
+=======
+>>>>>>> refs/remotes/origin/master
 extern ssize_t line6_set_raw(struct device *dev, struct device_attribute *attr,
 			     const char *buf, size_t count);
 extern void line6_start_timer(struct timer_list *timer, unsigned int msecs,
 			      void (*function) (unsigned long),
 			      unsigned long data);
 extern int line6_transmit_parameter(struct usb_line6 *line6, int param,
+<<<<<<< HEAD
 				    int value);
+=======
+				    u8 value);
+>>>>>>> refs/remotes/origin/master
 extern int line6_version_request_async(struct usb_line6 *line6);
 extern int line6_write_data(struct usb_line6 *line6, int address, void *data,
 			    size_t datalen);
 
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DUMP_ANY
 extern void line6_write_hexdump(struct usb_line6 *line6, char dir,
 				const unsigned char *buffer, int size);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

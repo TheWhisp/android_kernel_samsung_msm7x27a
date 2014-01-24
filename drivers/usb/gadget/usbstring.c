@@ -9,14 +9,28 @@
 
 #include <linux/errno.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/list.h>
 #include <linux/string.h>
 #include <linux/device.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/nls.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/list.h>
+#include <linux/string.h>
+#include <linux/device.h>
+#include <linux/nls.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/unaligned.h>
 
 
@@ -83,12 +97,24 @@ fail:
 	return -1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * usb_gadget_get_string - fill out a string descriptor 
  * @table: of c strings encoded using UTF-8
  * @id: string id, from low byte of wValue in get string descriptor
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @buf: at least 256 bytes
+=======
+ * @buf: at least 256 bytes, must be 16-bit aligned
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @buf: at least 256 bytes, must be 16-bit aligned
+>>>>>>> refs/remotes/origin/master
  *
  * Finds the UTF-8 string matching the ID, and converts it into a
  * string descriptor in utf16-le.
@@ -125,12 +151,26 @@ usb_gadget_get_string (struct usb_gadget_strings *table, int id, u8 *buf)
 
 	/* string descriptors have length, tag, then UTF16-LE text */
 	len = min ((size_t) 126, strlen (s->s));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset (buf + 2, 0, 2 * len);	/* zero all the bytes */
 	len = utf8_to_utf16le(s->s, (__le16 *)&buf[2], len);
+=======
+	len = utf8s_to_utf16s(s->s, len, UTF16_LITTLE_ENDIAN,
+			(wchar_t *) &buf[2], 126);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	len = utf8s_to_utf16s(s->s, len, UTF16_LITTLE_ENDIAN,
+			(wchar_t *) &buf[2], 126);
+>>>>>>> refs/remotes/origin/master
 	if (len < 0)
 		return -EINVAL;
 	buf [0] = (len + 1) * 2;
 	buf [1] = USB_DT_STRING;
 	return buf [0];
 }
+<<<<<<< HEAD
 
+=======
+EXPORT_SYMBOL_GPL(usb_gadget_get_string);
+>>>>>>> refs/remotes/origin/master

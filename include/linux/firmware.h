@@ -1,7 +1,13 @@
 #ifndef _LINUX_FIRMWARE_H
 #define _LINUX_FIRMWARE_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/compiler.h>
 #include <linux/gfp.h>
@@ -13,8 +19,21 @@ struct firmware {
 	size_t size;
 	const u8 *data;
 	struct page **pages;
+<<<<<<< HEAD
 };
 
+<<<<<<< HEAD
+=======
+struct module;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* firmware loader private fields */
+	void *priv;
+};
+
+struct module;
+>>>>>>> refs/remotes/origin/master
 struct device;
 
 struct builtin_fw {
@@ -62,6 +81,17 @@ static inline int request_firmware_nowait(
 static inline void release_firmware(const struct firmware *fw)
 {
 }
+<<<<<<< HEAD
+=======
+
+#endif
+
+#ifdef CONFIG_FW_LOADER_USER_HELPER
+int request_firmware_direct(const struct firmware **fw, const char *name,
+			    struct device *device);
+#else
+#define request_firmware_direct	request_firmware
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif

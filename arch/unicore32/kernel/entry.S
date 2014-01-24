@@ -544,8 +544,11 @@ fast_work_pending:
 work_pending:
 	cand.a	r1, #_TIF_NEED_RESCHED
 	bne	work_resched
+<<<<<<< HEAD
 	cand.a	r1, #_TIF_SIGPENDING|_TIF_NOTIFY_RESUME
 	beq	no_work_pending
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	r0, sp				@ 'regs'
 	mov	r2, why				@ 'syscall'
 	cand.a	r1, #_TIF_SIGPENDING		@ delivering a signal?
@@ -575,6 +578,7 @@ ENDPROC(ret_to_user)
  */
 ENTRY(ret_from_fork)
 	b.l	schedule_tail
+<<<<<<< HEAD
 	get_thread_info tsk
 	ldw	r1, [tsk+], #TI_FLAGS		@ check for syscall tracing
 	mov	why, #1
@@ -586,6 +590,18 @@ ENTRY(ret_from_fork)
 	b	ret_slow_syscall
 ENDPROC(ret_from_fork)
 
+=======
+	b	ret_slow_syscall
+ENDPROC(ret_from_fork)
+
+ENTRY(ret_from_kernel_thread)
+	b.l	schedule_tail
+	mov	r0, r5
+	adr	lr, ret_slow_syscall
+	mov	pc, r4
+ENDPROC(ret_from_kernel_thread)
+
+>>>>>>> refs/remotes/origin/master
 /*=============================================================================
  * SWI handler
  *-----------------------------------------------------------------------------
@@ -671,6 +687,7 @@ __cr_alignment:
 #endif
 	.ltorg
 
+<<<<<<< HEAD
 ENTRY(sys_execve)
 		add	r3, sp, #S_OFF
 		b	__sys_execve
@@ -682,17 +699,22 @@ ENTRY(sys_clone)
 		b	__sys_clone
 ENDPROC(sys_clone)
 
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(sys_rt_sigreturn)
 		add	r0, sp, #S_OFF
 		mov	why, #0		@ prevent syscall restart handling
 		b	__sys_rt_sigreturn
 ENDPROC(sys_rt_sigreturn)
 
+<<<<<<< HEAD
 ENTRY(sys_sigaltstack)
 		ldw	r2, [sp+], #S_OFF + S_SP
 		b	do_sigaltstack
 ENDPROC(sys_sigaltstack)
 
+=======
+>>>>>>> refs/remotes/origin/master
 	__INIT
 
 /*

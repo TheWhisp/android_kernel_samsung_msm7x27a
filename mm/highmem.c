@@ -17,7 +17,15 @@
  */
 
 #include <linux/mm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/swap.h>
 #include <linux/bio.h>
 #include <linux/pagemap.h>
@@ -94,6 +102,22 @@ static DECLARE_WAIT_QUEUE_HEAD(pkmap_map_wait);
 		do { spin_unlock(&kmap_lock); (void)(flags); } while (0)
 #endif
 
+<<<<<<< HEAD
+=======
+struct page *kmap_to_page(void *vaddr)
+{
+	unsigned long addr = (unsigned long)vaddr;
+
+	if (addr >= PKMAP_ADDR(0) && addr < PKMAP_ADDR(LAST_PKMAP)) {
+		int i = PKMAP_NR(addr);
+		return pte_page(pkmap_page_table[i]);
+	}
+
+	return virt_to_page(addr);
+}
+EXPORT_SYMBOL(kmap_to_page);
+
+>>>>>>> refs/remotes/origin/master
 static void flush_all_zero_pkmaps(void)
 {
 	int i;
@@ -125,8 +149,12 @@ static void flush_all_zero_pkmaps(void)
 		 * So no dangers, even with speculative execution.
 		 */
 		page = pte_page(pkmap_page_table[i]);
+<<<<<<< HEAD
 		pte_clear(&init_mm, (unsigned long)page_address(page),
 			  &pkmap_page_table[i]);
+=======
+		pte_clear(&init_mm, PKMAP_ADDR(i), &pkmap_page_table[i]);
+>>>>>>> refs/remotes/origin/master
 
 		set_page_address(page, NULL);
 		need_flush = 1;
@@ -250,7 +278,15 @@ void *kmap_high_get(struct page *page)
 #endif
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * kunmap_high - map a highmem page into memory
+=======
+ * kunmap_high - unmap a highmem page into memory
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * kunmap_high - unmap a highmem page into memory
+>>>>>>> refs/remotes/origin/master
  * @page: &struct page to unmap
  *
  * If ARCH_NEEDS_KMAP_HIGH_GET is not defined then this may be called
@@ -312,11 +348,15 @@ struct page_address_map {
 	struct list_head list;
 };
 
+<<<<<<< HEAD
 /*
  * page_address_map freelist, allocated from page_address_maps.
  */
 static struct list_head page_address_pool;	/* freelist */
 static spinlock_t pool_lock;			/* protects page_address_pool */
+=======
+static struct page_address_map page_address_maps[LAST_PKMAP];
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Hash table bucket
@@ -326,7 +366,15 @@ static struct page_address_slot {
 	spinlock_t lock;			/* Protect this bucket's list */
 } ____cacheline_aligned_in_smp page_address_htable[1<<PA_HASH_ORDER];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct page_address_slot *page_slot(struct page *page)
+=======
+static struct page_address_slot *page_slot(const struct page *page)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct page_address_slot *page_slot(const struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	return &page_address_htable[hash_ptr(page, PA_HASH_ORDER)];
 }
@@ -337,7 +385,15 @@ static struct page_address_slot *page_slot(struct page *page)
  *
  * Returns the page's virtual address.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void *page_address(struct page *page)
+=======
+void *page_address(const struct page *page)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *page_address(const struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	void *ret;
@@ -381,6 +437,7 @@ void set_page_address(struct page *page, void *virtual)
 
 	pas = page_slot(page);
 	if (virtual) {		/* Add */
+<<<<<<< HEAD
 		BUG_ON(list_empty(&page_address_pool));
 
 		spin_lock_irqsave(&pool_lock, flags);
@@ -389,6 +446,9 @@ void set_page_address(struct page *page, void *virtual)
 		list_del(&pam->list);
 		spin_unlock_irqrestore(&pool_lock, flags);
 
+=======
+		pam = &page_address_maps[PKMAP_NR((unsigned long)virtual)];
+>>>>>>> refs/remotes/origin/master
 		pam->page = page;
 		pam->virtual = virtual;
 
@@ -401,9 +461,12 @@ void set_page_address(struct page *page, void *virtual)
 			if (pam->page == page) {
 				list_del(&pam->list);
 				spin_unlock_irqrestore(&pas->lock, flags);
+<<<<<<< HEAD
 				spin_lock_irqsave(&pool_lock, flags);
 				list_add_tail(&pam->list, &page_address_pool);
 				spin_unlock_irqrestore(&pool_lock, flags);
+=======
+>>>>>>> refs/remotes/origin/master
 				goto done;
 			}
 		}
@@ -413,20 +476,29 @@ done:
 	return;
 }
 
+<<<<<<< HEAD
 static struct page_address_map page_address_maps[LAST_PKMAP];
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __init page_address_init(void)
 {
 	int i;
 
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&page_address_pool);
 	for (i = 0; i < ARRAY_SIZE(page_address_maps); i++)
 		list_add(&page_address_maps[i].list, &page_address_pool);
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(page_address_htable); i++) {
 		INIT_LIST_HEAD(&page_address_htable[i].lh);
 		spin_lock_init(&page_address_htable[i].lock);
 	}
+<<<<<<< HEAD
 	spin_lock_init(&pool_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif	/* defined(CONFIG_HIGHMEM) && !defined(WANT_PAGE_VIRTUAL) */

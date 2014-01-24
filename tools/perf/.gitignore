@@ -13,9 +13,25 @@ perf*.html
 common-cmds.h
 perf.data
 perf.data.old
+<<<<<<< HEAD
+=======
+output.svg
+>>>>>>> refs/remotes/origin/master
 perf-archive
 tags
 TAGS
 cscope*
 config.mak
 config.mak.autogen
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+*-bison.*
+*-flex.*
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+*-bison.*
+*-flex.*
+*.pyc
+*.pyo
+>>>>>>> refs/remotes/origin/master

@@ -1,6 +1,7 @@
 #ifndef _LINUX_ICMPV6_H
 #define _LINUX_ICMPV6_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <asm/byteorder.h>
 
@@ -80,11 +81,16 @@ struct icmp6hdr {
 
 #ifdef __KERNEL__
 #include <linux/skbuff.h>
+=======
+#include <linux/skbuff.h>
+#include <uapi/linux/icmpv6.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline struct icmp6hdr *icmp6_hdr(const struct sk_buff *skb)
 {
 	return (struct icmp6hdr *)skb_transport_header(skb);
 }
+<<<<<<< HEAD
 #endif
 
 #define ICMPV6_ROUTER_PREF_LOW		0x3
@@ -177,6 +183,26 @@ struct icmp6_filter {
 extern void				icmpv6_send(struct sk_buff *skb,
 						    u8 type, u8 code,
 						    __u32 info);
+=======
+
+#include <linux/netdevice.h>
+
+#if IS_ENABLED(CONFIG_IPV6)
+extern void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info);
+
+typedef void ip6_icmp_send_t(struct sk_buff *skb, u8 type, u8 code, __u32 info);
+extern int inet6_register_icmp_sender(ip6_icmp_send_t *fn);
+extern int inet6_unregister_icmp_sender(ip6_icmp_send_t *fn);
+
+#else
+
+static inline void icmpv6_send(struct sk_buff *skb,
+			       u8 type, u8 code, __u32 info)
+{
+
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 extern int				icmpv6_init(void);
 extern int				icmpv6_err_convert(u8 type, u8 code,
@@ -194,5 +220,8 @@ extern void				icmpv6_flow_init(struct sock *sk,
 							 const struct in6_addr *daddr,
 							 int oif);
 #endif
+<<<<<<< HEAD
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

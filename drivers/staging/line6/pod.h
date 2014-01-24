@@ -15,12 +15,18 @@
 #include <linux/interrupt.h>
 #include <linux/spinlock.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
 #include <linux/wait.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 
 #include "driver.h"
+<<<<<<< HEAD
 #include "dumprequest.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
 	PODxt Live interfaces
@@ -46,13 +52,17 @@
 */
 enum {
 	POD_STARTUP_INIT = 1,
+<<<<<<< HEAD
 	POD_STARTUP_DUMPREQ,
+=======
+>>>>>>> refs/remotes/origin/master
 	POD_STARTUP_VERSIONREQ,
 	POD_STARTUP_WORKQUEUE,
 	POD_STARTUP_SETUP,
 	POD_STARTUP_LAST = POD_STARTUP_SETUP - 1
 };
 
+<<<<<<< HEAD
 /**
 	Data structure for values that need to be requested explicitly.
 	This is the case for system and tuner settings.
@@ -77,6 +87,8 @@ struct pod_program {
 	unsigned char control[POD_CONTROL_SIZE];
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct usb_line6_pod {
 	/**
 		Generic Line6 USB data.
@@ -84,6 +96,7 @@ struct usb_line6_pod {
 	struct usb_line6 line6;
 
 	/**
+<<<<<<< HEAD
 		Dump request structure.
 	*/
 	struct line6_dump_request dumpreq;
@@ -141,6 +154,11 @@ struct usb_line6_pod {
 		Wait for audio clipping event.
 	*/
 	struct ValueWait clipping;
+=======
+		Instrument monitor level.
+	*/
+	int monitor_level;
+>>>>>>> refs/remotes/origin/master
 
 	/**
 		Timer for device initializaton.
@@ -158,6 +176,7 @@ struct usb_line6_pod {
 	int startup_progress;
 
 	/**
+<<<<<<< HEAD
 		Dirty flags for access to parameter data.
 	*/
 	unsigned long param_dirty[POD_CONTROL_SIZE / sizeof(unsigned long)];
@@ -168,6 +187,8 @@ struct usb_line6_pod {
 	unsigned long atomic_flags;
 
 	/**
+=======
+>>>>>>> refs/remotes/origin/master
 		Serial number of device.
 	*/
 	int serial_number;
@@ -181,6 +202,7 @@ struct usb_line6_pod {
 		Device ID.
 	*/
 	int device_id;
+<<<<<<< HEAD
 
 	/**
 		Flag to indicate modification of current program settings.
@@ -191,15 +213,23 @@ struct usb_line6_pod {
 		Flag to enable MIDI postprocessing.
 	*/
 	char midi_postprocess;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 extern void line6_pod_disconnect(struct usb_interface *interface);
 extern int line6_pod_init(struct usb_interface *interface,
 			  struct usb_line6_pod *pod);
+<<<<<<< HEAD
 extern void line6_pod_midi_postprocess(struct usb_line6_pod *pod,
 				       unsigned char *data, int length);
 extern void line6_pod_process_message(struct usb_line6_pod *pod);
 extern void line6_pod_transmit_parameter(struct usb_line6_pod *pod, int param,
 					 int value);
+=======
+extern void line6_pod_process_message(struct usb_line6_pod *pod);
+extern void line6_pod_transmit_parameter(struct usb_line6_pod *pod, int param,
+					 u8 value);
+>>>>>>> refs/remotes/origin/master
 
 #endif

@@ -167,7 +167,11 @@ static void post_set(void)
 	setCx86(CX86_CCR3, ccr3);
 
 	/* Enable caches */
+<<<<<<< HEAD
 	write_cr0(read_cr0() & 0xbfffffff);
+=======
+	write_cr0(read_cr0() & ~X86_CR0_CD);
+>>>>>>> refs/remotes/origin/master
 
 	/* Restore value of CR4 */
 	if (cpu_has_pge)

@@ -13,20 +13,37 @@
 
 #ifdef CONFIG_OF
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/setup.h>
 #include <asm/irq.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct machine_desc *setup_machine_fdt(unsigned int dt_phys);
 extern void arm_dt_memblock_reserve(void);
 
 #else /* CONFIG_OF */
 
 static inline struct machine_desc *setup_machine_fdt(unsigned int dt_phys)
+=======
+extern const struct machine_desc *setup_machine_fdt(unsigned int dt_phys);
+extern void arm_dt_memblock_reserve(void);
+extern void __init arm_dt_init_cpu_maps(void);
+
+#else /* CONFIG_OF */
+
+static inline const struct machine_desc *setup_machine_fdt(unsigned int dt_phys)
+>>>>>>> refs/remotes/origin/master
 {
 	return NULL;
 }
 
 static inline void arm_dt_memblock_reserve(void) { }
+<<<<<<< HEAD
+=======
+static inline void arm_dt_init_cpu_maps(void) { }
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CONFIG_OF */
 #endif /* ASMARM_PROM_H */

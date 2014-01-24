@@ -14,11 +14,16 @@
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/soc.h>
 #include <sound/tlv.h>
 
 #include "max9877.h"
 
+<<<<<<< HEAD
 static struct i2c_client *i2c;
 
 static u8 max9877_regs[5] = { 0x40, 0x00, 0x00, 0x00, 0x49 };
@@ -106,6 +111,7 @@ static int max9877_set_2reg(struct snd_kcontrol *kcontrol,
 	unsigned int mask = mc->max;
 	unsigned int val = (ucontrol->value.integer.value[0] & mask);
 	unsigned int val2 = (ucontrol->value.integer.value[1] & mask);
+<<<<<<< HEAD
 	unsigned int change = 1;
 
 	if (((max9877_regs[reg] >> shift) & mask) == val)
@@ -113,6 +119,15 @@ static int max9877_set_2reg(struct snd_kcontrol *kcontrol,
 
 	if (((max9877_regs[reg2] >> shift) & mask) == val2)
 		change = 0;
+=======
+	unsigned int change = 0;
+
+	if (((max9877_regs[reg] >> shift) & mask) != val)
+		change = 1;
+
+	if (((max9877_regs[reg2] >> shift) & mask) != val2)
+		change = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (change) {
 		max9877_regs[reg] &= ~(mask << shift);
@@ -178,6 +193,17 @@ static int max9877_set_osc_mode(struct snd_kcontrol *kcontrol,
 	max9877_write_regs();
 	return 1;
 }
+=======
+static struct regmap *regmap;
+
+static struct reg_default max9877_regs[] = {
+	{ 0, 0x40 },
+	{ 1, 0x00 },
+	{ 2, 0x00 },
+	{ 3, 0x00 },
+	{ 4, 0x49 },
+};
+>>>>>>> refs/remotes/origin/master
 
 static const unsigned int max9877_pgain_tlv[] = {
 	TLV_DB_RANGE_HEAD(2),
@@ -212,6 +238,7 @@ static const char *max9877_osc_mode[] = {
 };
 
 static const struct soc_enum max9877_enum[] = {
+<<<<<<< HEAD
 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(max9877_out_mode), max9877_out_mode),
 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(max9877_osc_mode), max9877_osc_mode),
 };
@@ -253,7 +280,11 @@ static const struct snd_kcontrol_new max9877_controls[] = {
 /* This function is called from ASoC machine driver */
 int max9877_add_controls(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	return snd_soc_add_controls(codec, max9877_controls,
+=======
+	return snd_soc_add_codec_controls(codec, max9877_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 			ARRAY_SIZE(max9877_controls));
 }
 EXPORT_SYMBOL_GPL(max9877_add_controls);
@@ -271,6 +302,106 @@ static int __devinit max9877_i2c_probe(struct i2c_client *client,
 static __devexit int max9877_i2c_remove(struct i2c_client *client)
 {
 	i2c = NULL;
+=======
+	SOC_ENUM_SINGLE(MAX9877_OUTPUT_MODE, 0, ARRAY_SIZE(max9877_out_mode),
+			max9877_out_mode),
+	SOC_ENUM_SINGLE(MAX9877_OUTPUT_MODE, MAX9877_OSC_OFFSET,
+			ARRAY_SIZE(max9877_osc_mode), max9877_osc_mode),
+};
+
+static const struct snd_kcontrol_new max9877_controls[] = {
+	SOC_SINGLE_TLV("MAX9877 PGAINA Playback Volume",
+		       MAX9877_INPUT_MODE, 0, 2, 0, max9877_pgain_tlv),
+	SOC_SINGLE_TLV("MAX9877 PGAINB Playback Volume",
+		       MAX9877_INPUT_MODE, 2, 2, 0, max9877_pgain_tlv),
+	SOC_SINGLE_TLV("MAX9877 Amp Speaker Playback Volume",
+		       MAX9877_SPK_VOLUME, 0, 31, 0, max9877_output_tlv),
+	SOC_DOUBLE_R_TLV("MAX9877 Amp HP Playback Volume",
+			 MAX9877_HPL_VOLUME, MAX9877_HPR_VOLUME, 0, 31, 0,
+			 max9877_output_tlv),
+	SOC_SINGLE("MAX9877 INB Stereo Switch",
+		   MAX9877_INPUT_MODE, 4, 1, 1),
+	SOC_SINGLE("MAX9877 INA Stereo Switch",
+		   MAX9877_INPUT_MODE, 5, 1, 1),
+	SOC_SINGLE("MAX9877 Zero-crossing detection Switch",
+		   MAX9877_INPUT_MODE, 6, 1, 0),
+	SOC_SINGLE("MAX9877 Bypass Mode Switch",
+		   MAX9877_OUTPUT_MODE, 6, 1, 0),
+	SOC_ENUM("MAX9877 Output Mode", max9877_enum[0]),
+	SOC_ENUM("MAX9877 Oscillator Mode", max9877_enum[1]),
+};
+
+static const struct snd_soc_dapm_widget max9877_dapm_widgets[] = {
+SND_SOC_DAPM_INPUT("INA1"),
+SND_SOC_DAPM_INPUT("INA2"),
+SND_SOC_DAPM_INPUT("INB1"),
+SND_SOC_DAPM_INPUT("INB2"),
+SND_SOC_DAPM_INPUT("RXIN+"),
+SND_SOC_DAPM_INPUT("RXIN-"),
+
+SND_SOC_DAPM_PGA("SHDN", MAX9877_OUTPUT_MODE, 7, 1, NULL, 0),
+
+SND_SOC_DAPM_OUTPUT("OUT+"),
+SND_SOC_DAPM_OUTPUT("OUT-"),
+SND_SOC_DAPM_OUTPUT("HPL"),
+SND_SOC_DAPM_OUTPUT("HPR"),
+};
+
+static const struct snd_soc_dapm_route max9877_dapm_routes[] = {
+	{ "SHDN", NULL, "INA1" },
+	{ "SHDN", NULL, "INA2" },
+	{ "SHDN", NULL, "INB1" },
+	{ "SHDN", NULL, "INB2" },
+
+	{ "OUT+", NULL, "RXIN+" },
+	{ "OUT+", NULL, "SHDN" },
+
+	{ "OUT-", NULL, "SHDN" },
+	{ "OUT-", NULL, "RXIN-" },
+
+	{ "HPL", NULL, "SHDN" },
+	{ "HPR", NULL, "SHDN" },
+};
+
+static const struct snd_soc_codec_driver max9877_codec = {
+	.controls = max9877_controls,
+	.num_controls = ARRAY_SIZE(max9877_controls),
+
+	.dapm_widgets = max9877_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(max9877_dapm_widgets),
+	.dapm_routes = max9877_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(max9877_dapm_routes),
+};
+
+static const struct regmap_config max9877_regmap = {
+	.reg_bits = 8,
+	.val_bits = 8,
+
+	.reg_defaults = max9877_regs,
+	.num_reg_defaults = ARRAY_SIZE(max9877_regs),
+	.cache_type = REGCACHE_RBTREE,
+};
+
+static int max9877_i2c_probe(struct i2c_client *client,
+			     const struct i2c_device_id *id)
+{
+	int i;
+
+	regmap = devm_regmap_init_i2c(client, &max9877_regmap);
+	if (IS_ERR(regmap))
+		return PTR_ERR(regmap);
+
+	/* Ensure the device is in reset state */
+	for (i = 0; i < ARRAY_SIZE(max9877_regs); i++)
+		regmap_write(regmap, max9877_regs[i].reg, max9877_regs[i].def);
+
+	return snd_soc_register_codec(&client->dev, &max9877_codec, NULL, 0);
+}
+
+static int max9877_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -287,6 +418,7 @@ static struct i2c_driver max9877_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = max9877_i2c_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(max9877_i2c_remove),
 	.id_table = max9877_i2c_id,
 };
@@ -302,6 +434,13 @@ static void __exit max9877_exit(void)
 	i2c_del_driver(&max9877_i2c_driver);
 }
 module_exit(max9877_exit);
+=======
+	.remove = max9877_i2c_remove,
+	.id_table = max9877_i2c_id,
+};
+
+module_i2c_driver(max9877_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC MAX9877 amp driver");
 MODULE_AUTHOR("Joonyoung Shim <jy0922.shim@samsung.com>");

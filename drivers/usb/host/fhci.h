@@ -28,6 +28,10 @@
 #include <linux/usb.h>
 #include <linux/usb/hcd.h>
 #include <asm/qe.h>
+<<<<<<< HEAD
+=======
+#include <asm/immap_qe.h>
+>>>>>>> refs/remotes/origin/master
 
 #define USB_CLOCK	48000000
 
@@ -173,6 +177,7 @@
 #define USB_E_TXB_MASK		0x0002
 #define USB_E_RXB_MASK		0x0001
 
+<<<<<<< HEAD
 /* Freescale USB Host controller registers */
 struct fhci_regs {
 	u8 usb_mod;		/* mode register */
@@ -192,6 +197,8 @@ struct fhci_regs {
 	u8 reserved6[1];
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Freescale USB HOST */
 struct fhci_pram {
 	__be16 ep_ptr[4];	/* Endpoint porter reg */
@@ -267,7 +274,11 @@ struct fhci_hcd {
 	int gpios[NUM_GPIOS];
 	bool alow_gpios[NUM_GPIOS];
 
+<<<<<<< HEAD
 	struct fhci_regs __iomem *regs;	/* I/O memory used to communicate */
+=======
+	struct qe_usb_ctlr __iomem *regs; /* I/O memory used to communicate */
+>>>>>>> refs/remotes/origin/master
 	struct fhci_pram __iomem *pram;	/* Parameter RAM */
 	struct gtm_timer *timer;
 
@@ -356,7 +367,11 @@ struct ed {
 
 	/* read only parameters, should be cleared upon initialization */
 	u8 toggle_carry;	/* toggle carry from the last TD submitted */
+<<<<<<< HEAD
 	u32 last_iso;		/* time stamp of last queued ISO transfer */
+=======
+	u16 next_iso;		/* time stamp of next queued ISO transfer */
+>>>>>>> refs/remotes/origin/master
 	struct td *td_head;	/* a pointer to the current TD handled */
 };
 

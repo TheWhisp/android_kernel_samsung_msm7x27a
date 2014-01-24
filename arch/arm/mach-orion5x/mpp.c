@@ -10,7 +10,13 @@
 
 #include <linux/kernel.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mbus.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <mach/hardware.h>
 #include <plat/mpp.h>
@@ -24,7 +30,15 @@ static unsigned int __init orion5x_variant(void)
 
 	orion5x_pcie_id(&dev, &rev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev == MV88F5181_DEV_ID && rev >= MV88F5181L_REV_A0)
+=======
+	if (dev == MV88F5181_DEV_ID)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev == MV88F5181_DEV_ID)
+>>>>>>> refs/remotes/origin/master
 		return MPP_F5181_MASK;
 
 	if (dev == MV88F5182_DEV_ID)

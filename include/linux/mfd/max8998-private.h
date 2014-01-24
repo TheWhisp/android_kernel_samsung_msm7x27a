@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * max8998.h - Voltage regulator driver for the Maxim 8998
+=======
+ * max8998-private.h - Voltage regulator driver for the Maxim 8998
+>>>>>>> refs/remotes/origin/master
  *
  *  Copyright (C) 2009-2010 Samsung Electrnoics
  *  Kyungmin Park <kyungmin.park@samsung.com>
@@ -132,9 +136,18 @@ enum {
 
 #define MAX8998_ENRAMP                  (1 << 4)
 
+<<<<<<< HEAD
 /**
  * struct max8998_dev - max8998 master device for sub-drivers
  * @dev: master device of the chip (can be used to access platform data)
+=======
+struct irq_domain;
+
+/**
+ * struct max8998_dev - max8998 master device for sub-drivers
+ * @dev: master device of the chip (can be used to access platform data)
+ * @pdata: platform data for the driver and subdrivers
+>>>>>>> refs/remotes/origin/master
  * @i2c: i2c client private data for regulator
  * @rtc: i2c client private data for rtc
  * @iolock: mutex for serializing io access
@@ -148,12 +161,21 @@ enum {
  */
 struct max8998_dev {
 	struct device *dev;
+<<<<<<< HEAD
+=======
+	struct max8998_platform_data *pdata;
+>>>>>>> refs/remotes/origin/master
 	struct i2c_client *i2c;
 	struct i2c_client *rtc;
 	struct mutex iolock;
 	struct mutex irqlock;
 
+<<<<<<< HEAD
 	int irq_base;
+=======
+	unsigned int irq_base;
+	struct irq_domain *irq_domain;
+>>>>>>> refs/remotes/origin/master
 	int irq;
 	int ono;
 	u8 irq_masks_cur[MAX8998_NUM_IRQ_REGS];

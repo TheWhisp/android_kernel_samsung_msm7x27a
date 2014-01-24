@@ -2,7 +2,15 @@
 #define _LINUX_KERNEL_TRACE_H
 
 #include <linux/fs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/clocksource.h>
 #include <linux/ring_buffer.h>
@@ -13,6 +21,14 @@
 #include <linux/trace_seq.h>
 #include <linux/ftrace_event.h>
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_FTRACE_SYSCALLS
+#include <asm/unistd.h>		/* For NR_SYSCALLS	     */
+#include <asm/syscall.h>	/* some archs define it here */
+#endif
+
+>>>>>>> refs/remotes/origin/master
 enum trace_type {
 	__TRACE_FIRST_TYPE = 0,
 
@@ -29,6 +45,10 @@ enum trace_type {
 	TRACE_GRAPH_ENT,
 	TRACE_USER_STACK,
 	TRACE_BLK,
+<<<<<<< HEAD
+=======
+	TRACE_BPUTS,
+>>>>>>> refs/remotes/origin/master
 
 	__TRACE_LAST_TYPE,
 };
@@ -56,17 +76,46 @@ enum trace_type {
 #define F_STRUCT(args...)		args
 
 #undef FTRACE_ENTRY
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define FTRACE_ENTRY(name, struct_name, id, tstruct, print)	\
 	struct struct_name {					\
 		struct trace_entry	ent;			\
 		tstruct						\
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define FTRACE_ENTRY(name, struct_name, id, tstruct, print, filter)	\
+	struct struct_name {						\
+		struct trace_entry	ent;				\
+		tstruct							\
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 #undef TP_ARGS
 #define TP_ARGS(args...)	args
 
 #undef FTRACE_ENTRY_DUP
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define FTRACE_ENTRY_DUP(name, name_struct, id, tstruct, printk)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define FTRACE_ENTRY_DUP(name, name_struct, id, tstruct, printk, filter)
+
+#undef FTRACE_ENTRY_REG
+#define FTRACE_ENTRY_REG(name, struct_name, id, tstruct, print,	\
+			 filter, regfn) \
+	FTRACE_ENTRY(name, struct_name, id, PARAMS(tstruct), PARAMS(print), \
+		     filter)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "trace_entries.h"
 
@@ -112,10 +161,19 @@ enum trace_flag_type {
 	TRACE_FLAG_NEED_RESCHED		= 0x04,
 	TRACE_FLAG_HARDIRQ		= 0x08,
 	TRACE_FLAG_SOFTIRQ		= 0x10,
+<<<<<<< HEAD
+=======
+	TRACE_FLAG_PREEMPT_RESCHED	= 0x20,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define TRACE_BUF_SIZE		1024
 
+<<<<<<< HEAD
+=======
+struct trace_array;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The CPU trace array - it consists of thousands of trace entries
  * plus some other descriptor data: (for example which task started
@@ -125,6 +183,10 @@ struct trace_array_cpu {
 	atomic_t		disabled;
 	void			*buffer_page;	/* ring buffer spare */
 
+<<<<<<< HEAD
+=======
+	unsigned long		entries;
+>>>>>>> refs/remotes/origin/master
 	unsigned long		saved_latency;
 	unsigned long		critical_start;
 	unsigned long		critical_end;
@@ -135,24 +197,113 @@ struct trace_array_cpu {
 	unsigned long		skipped_entries;
 	cycle_t			preempt_timestamp;
 	pid_t			pid;
+<<<<<<< HEAD
 	uid_t			uid;
 	char			comm[TASK_COMM_LEN];
 };
 
+=======
+	kuid_t			uid;
+	char			comm[TASK_COMM_LEN];
+};
+
+struct tracer;
+
+struct trace_buffer {
+	struct trace_array		*tr;
+	struct ring_buffer		*buffer;
+	struct trace_array_cpu __percpu	*data;
+	cycle_t				time_start;
+	int				cpu;
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The trace array - an array of per-CPU trace arrays. This is the
  * highest level data structure that individual tracers deal with.
  * They have on/off state as well:
  */
 struct trace_array {
+<<<<<<< HEAD
 	struct ring_buffer	*buffer;
 	unsigned long		entries;
 	int			cpu;
+<<<<<<< HEAD
+=======
+	int			buffer_disabled;
+>>>>>>> refs/remotes/origin/cm-10.0
 	cycle_t			time_start;
 	struct task_struct	*waiter;
 	struct trace_array_cpu	*data[NR_CPUS];
 };
 
+=======
+	struct list_head	list;
+	char			*name;
+	struct trace_buffer	trace_buffer;
+#ifdef CONFIG_TRACER_MAX_TRACE
+	/*
+	 * The max_buffer is used to snapshot the trace when a maximum
+	 * latency is reached, or when the user initiates a snapshot.
+	 * Some tracers will use this to store a maximum trace while
+	 * it continues examining live traces.
+	 *
+	 * The buffers for the max_buffer are set up the same as the trace_buffer
+	 * When a snapshot is taken, the buffer of the max_buffer is swapped
+	 * with the buffer of the trace_buffer and the buffers are reset for
+	 * the trace_buffer so the tracing can continue.
+	 */
+	struct trace_buffer	max_buffer;
+	bool			allocated_snapshot;
+#endif
+	int			buffer_disabled;
+#ifdef CONFIG_FTRACE_SYSCALLS
+	int			sys_refcount_enter;
+	int			sys_refcount_exit;
+	struct ftrace_event_file __rcu *enter_syscall_files[NR_syscalls];
+	struct ftrace_event_file __rcu *exit_syscall_files[NR_syscalls];
+#endif
+	int			stop_count;
+	int			clock_id;
+	struct tracer		*current_trace;
+	unsigned int		flags;
+	raw_spinlock_t		start_lock;
+	struct dentry		*dir;
+	struct dentry		*options;
+	struct dentry		*percpu_dir;
+	struct dentry		*event_dir;
+	struct list_head	systems;
+	struct list_head	events;
+	cpumask_var_t		tracing_cpumask; /* only trace on set CPUs */
+	int			ref;
+};
+
+enum {
+	TRACE_ARRAY_FL_GLOBAL	= (1 << 0)
+};
+
+extern struct list_head ftrace_trace_arrays;
+
+extern struct mutex trace_types_lock;
+
+extern int trace_array_get(struct trace_array *tr);
+extern void trace_array_put(struct trace_array *tr);
+
+/*
+ * The global tracer (top) should be the first trace array added,
+ * but we check the flag anyway.
+ */
+static inline struct trace_array *top_trace_array(void)
+{
+	struct trace_array *tr;
+
+	tr = list_entry(ftrace_trace_arrays.prev,
+			typeof(*tr), list);
+	WARN_ON(!(tr->flags & TRACE_ARRAY_FL_GLOBAL));
+	return tr;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define FTRACE_CMP_TYPE(var, type) \
 	__builtin_types_compatible_p(typeof(var), type *)
 
@@ -188,6 +339,10 @@ extern void __ftrace_bad_type(void);
 		IF_ASSIGN(var, ent, struct userstack_entry, TRACE_USER_STACK);\
 		IF_ASSIGN(var, ent, struct print_entry, TRACE_PRINT);	\
 		IF_ASSIGN(var, ent, struct bprint_entry, TRACE_BPRINT);	\
+<<<<<<< HEAD
+=======
+		IF_ASSIGN(var, ent, struct bputs_entry, TRACE_BPUTS);	\
+>>>>>>> refs/remotes/origin/master
 		IF_ASSIGN(var, ent, struct trace_mmiotrace_rw,		\
 			  TRACE_MMIO_RW);				\
 		IF_ASSIGN(var, ent, struct trace_mmiotrace_map,		\
@@ -276,12 +431,104 @@ struct tracer {
 						u32 mask, int set);
 	struct tracer		*next;
 	struct tracer_flags	*flags;
+<<<<<<< HEAD
 	int			print_max;
 	int			use_max_tr;
 	bool			enabled;
 };
 
 
+<<<<<<< HEAD
+=======
+/* Only current can touch trace_recursion */
+#define trace_recursion_inc() do { (current)->trace_recursion++; } while (0)
+#define trace_recursion_dec() do { (current)->trace_recursion--; } while (0)
+
+/* Ring buffer has the 10 LSB bits to count */
+#define trace_recursion_buffer() ((current)->trace_recursion & 0x3ff)
+
+/* for function tracing recursion */
+#define TRACE_INTERNAL_BIT		(1<<11)
+#define TRACE_GLOBAL_BIT		(1<<12)
+#define TRACE_CONTROL_BIT		(1<<13)
+=======
+	bool			print_max;
+	bool			enabled;
+#ifdef CONFIG_TRACER_MAX_TRACE
+	bool			use_max_tr;
+#endif
+};
+
+
+/* Only current can touch trace_recursion */
+
+/*
+ * For function tracing recursion:
+ *  The order of these bits are important.
+ *
+ *  When function tracing occurs, the following steps are made:
+ *   If arch does not support a ftrace feature:
+ *    call internal function (uses INTERNAL bits) which calls...
+ *   If callback is registered to the "global" list, the list
+ *    function is called and recursion checks the GLOBAL bits.
+ *    then this function calls...
+ *   The function callback, which can use the FTRACE bits to
+ *    check for recursion.
+ *
+ * Now if the arch does not suppport a feature, and it calls
+ * the global list function which calls the ftrace callback
+ * all three of these steps will do a recursion protection.
+ * There's no reason to do one if the previous caller already
+ * did. The recursion that we are protecting against will
+ * go through the same steps again.
+ *
+ * To prevent the multiple recursion checks, if a recursion
+ * bit is set that is higher than the MAX bit of the current
+ * check, then we know that the check was made by the previous
+ * caller, and we can skip the current check.
+ */
+enum {
+	TRACE_BUFFER_BIT,
+	TRACE_BUFFER_NMI_BIT,
+	TRACE_BUFFER_IRQ_BIT,
+	TRACE_BUFFER_SIRQ_BIT,
+
+	/* Start of function recursion bits */
+	TRACE_FTRACE_BIT,
+	TRACE_FTRACE_NMI_BIT,
+	TRACE_FTRACE_IRQ_BIT,
+	TRACE_FTRACE_SIRQ_BIT,
+
+	/* GLOBAL_BITs must be greater than FTRACE_BITs */
+	TRACE_GLOBAL_BIT,
+	TRACE_GLOBAL_NMI_BIT,
+	TRACE_GLOBAL_IRQ_BIT,
+	TRACE_GLOBAL_SIRQ_BIT,
+
+	/* INTERNAL_BITs must be greater than GLOBAL_BITs */
+	TRACE_INTERNAL_BIT,
+	TRACE_INTERNAL_NMI_BIT,
+	TRACE_INTERNAL_IRQ_BIT,
+	TRACE_INTERNAL_SIRQ_BIT,
+
+	TRACE_CONTROL_BIT,
+>>>>>>> refs/remotes/origin/master
+
+/*
+ * Abuse of the trace_recursion.
+ * As we need a way to maintain state if we are tracing the function
+ * graph in irq because we want to trace a particular function that
+ * was called in irq context but we have irq tracing off. Since this
+ * can only be modified by current, we can reuse trace_recursion.
+ */
+<<<<<<< HEAD
+#define TRACE_IRQ_BIT			(1<<13)
+
+#define trace_recursion_set(bit)	do { (current)->trace_recursion |= (bit); } while (0)
+#define trace_recursion_clear(bit)	do { (current)->trace_recursion &= ~(bit); } while (0)
+#define trace_recursion_test(bit)	((current)->trace_recursion & (bit))
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TRACE_PIPE_ALL_CPU	-1
 
 int tracer_init(struct tracer *t, struct trace_array *tr);
@@ -293,11 +540,111 @@ void tracing_reset_current(int cpu);
 void tracing_reset_current_online_cpus(void);
 int tracing_open_generic(struct inode *inode, struct file *filp);
 struct dentry *trace_create_file(const char *name,
+<<<<<<< HEAD
 				 mode_t mode,
+=======
+				 umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TRACE_IRQ_BIT,
+};
+
+#define trace_recursion_set(bit)	do { (current)->trace_recursion |= (1<<(bit)); } while (0)
+#define trace_recursion_clear(bit)	do { (current)->trace_recursion &= ~(1<<(bit)); } while (0)
+#define trace_recursion_test(bit)	((current)->trace_recursion & (1<<(bit)))
+
+#define TRACE_CONTEXT_BITS	4
+
+#define TRACE_FTRACE_START	TRACE_FTRACE_BIT
+#define TRACE_FTRACE_MAX	((1 << (TRACE_FTRACE_START + TRACE_CONTEXT_BITS)) - 1)
+
+#define TRACE_GLOBAL_START	TRACE_GLOBAL_BIT
+#define TRACE_GLOBAL_MAX	((1 << (TRACE_GLOBAL_START + TRACE_CONTEXT_BITS)) - 1)
+
+#define TRACE_LIST_START	TRACE_INTERNAL_BIT
+#define TRACE_LIST_MAX		((1 << (TRACE_LIST_START + TRACE_CONTEXT_BITS)) - 1)
+
+#define TRACE_CONTEXT_MASK	TRACE_LIST_MAX
+
+static __always_inline int trace_get_context_bit(void)
+{
+	int bit;
+
+	if (in_interrupt()) {
+		if (in_nmi())
+			bit = 0;
+
+		else if (in_irq())
+			bit = 1;
+		else
+			bit = 2;
+	} else
+		bit = 3;
+
+	return bit;
+}
+
+static __always_inline int trace_test_and_set_recursion(int start, int max)
+{
+	unsigned int val = current->trace_recursion;
+	int bit;
+
+	/* A previous recursion check was made */
+	if ((val & TRACE_CONTEXT_MASK) > max)
+		return 0;
+
+	bit = trace_get_context_bit() + start;
+	if (unlikely(val & (1 << bit)))
+		return -1;
+
+	val |= 1 << bit;
+	current->trace_recursion = val;
+	barrier();
+
+	return bit;
+}
+
+static __always_inline void trace_clear_recursion(int bit)
+{
+	unsigned int val = current->trace_recursion;
+
+	if (!bit)
+		return;
+
+	bit = 1 << bit;
+	val &= ~bit;
+
+	barrier();
+	current->trace_recursion = val;
+}
+
+static inline struct ring_buffer_iter *
+trace_buffer_iter(struct trace_iterator *iter, int cpu)
+{
+	if (iter->buffer_iter && iter->buffer_iter[cpu])
+		return iter->buffer_iter[cpu];
+	return NULL;
+}
+
+int tracer_init(struct tracer *t, struct trace_array *tr);
+int tracing_is_enabled(void);
+void tracing_reset(struct trace_buffer *buf, int cpu);
+void tracing_reset_online_cpus(struct trace_buffer *buf);
+void tracing_reset_current(int cpu);
+void tracing_reset_all_online_cpus(void);
+int tracing_open_generic(struct inode *inode, struct file *filp);
+bool tracing_is_disabled(void);
+struct dentry *trace_create_file(const char *name,
+				 umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				 struct dentry *parent,
 				 void *data,
 				 const struct file_operations *fops);
 
+<<<<<<< HEAD
+=======
+struct dentry *tracing_init_dentry_tr(struct trace_array *tr);
+>>>>>>> refs/remotes/origin/master
 struct dentry *tracing_init_dentry(void);
 
 struct ring_buffer_event;
@@ -308,9 +655,12 @@ trace_buffer_lock_reserve(struct ring_buffer *buffer,
 			  unsigned long len,
 			  unsigned long flags,
 			  int pc);
+<<<<<<< HEAD
 void trace_buffer_unlock_commit(struct ring_buffer *buffer,
 				struct ring_buffer_event *event,
 				unsigned long flags, int pc);
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct trace_entry *tracing_get_trace_entry(struct trace_array *tr,
 						struct trace_array_cpu *data);
@@ -318,6 +668,12 @@ struct trace_entry *tracing_get_trace_entry(struct trace_array *tr,
 struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
 					  int *ent_cpu, u64 *ent_ts);
 
+<<<<<<< HEAD
+=======
+void __buffer_unlock_commit(struct ring_buffer *buffer,
+			    struct ring_buffer_event *event);
+
+>>>>>>> refs/remotes/origin/master
 int trace_empty(struct trace_iterator *iter);
 
 void *trace_find_next_entry_inc(struct trace_iterator *iter);
@@ -326,6 +682,7 @@ void trace_init_global_iter(struct trace_iterator *iter);
 
 void tracing_iter_reset(struct trace_iterator *iter, int cpu);
 
+<<<<<<< HEAD
 void default_wait_pipe(struct trace_iterator *iter);
 void poll_wait_pipe(struct trace_iterator *iter);
 
@@ -334,6 +691,10 @@ void ftrace(struct trace_array *tr,
 			    unsigned long ip,
 			    unsigned long parent_ip,
 			    unsigned long flags, int pc);
+=======
+void poll_wait_pipe(struct trace_iterator *iter);
+
+>>>>>>> refs/remotes/origin/master
 void tracing_sched_switch_trace(struct trace_array *tr,
 				struct task_struct *prev,
 				struct task_struct *next,
@@ -351,6 +712,14 @@ void trace_graph_function(struct trace_array *tr,
 		    unsigned long ip,
 		    unsigned long parent_ip,
 		    unsigned long flags, int pc);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void trace_latency_header(struct seq_file *m);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void trace_latency_header(struct seq_file *m);
+>>>>>>> refs/remotes/origin/master
 void trace_default_header(struct seq_file *m);
 void print_trace_header(struct seq_file *m, struct trace_iterator *iter);
 int trace_empty(struct trace_iterator *iter);
@@ -365,12 +734,16 @@ void tracing_sched_switch_assign_trace(struct trace_array *tr);
 void tracing_stop_sched_switch_record(void);
 void tracing_start_sched_switch_record(void);
 int register_tracer(struct tracer *type);
+<<<<<<< HEAD
 void unregister_tracer(struct tracer *type);
 int is_tracing_stopped(void);
 enum trace_file_type {
 	TRACE_FILE_LAT_FMT	= 1,
 	TRACE_FILE_ANNOTATE	= 2,
 };
+=======
+int is_tracing_stopped(void);
+>>>>>>> refs/remotes/origin/master
 
 extern cpumask_var_t __read_mostly tracing_buffer_mask;
 
@@ -393,6 +766,18 @@ void update_max_tr_single(struct trace_array *tr,
 void ftrace_trace_stack(struct ring_buffer *buffer, unsigned long flags,
 			int skip, int pc);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void ftrace_trace_stack_regs(struct ring_buffer *buffer, unsigned long flags,
+			     int skip, int pc, struct pt_regs *regs);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ftrace_trace_stack_regs(struct ring_buffer *buffer, unsigned long flags,
+			     int skip, int pc, struct pt_regs *regs);
+
+>>>>>>> refs/remotes/origin/master
 void ftrace_trace_userstack(struct ring_buffer *buffer, unsigned long flags,
 			    int pc);
 
@@ -404,6 +789,21 @@ static inline void ftrace_trace_stack(struct ring_buffer *buffer,
 {
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void ftrace_trace_stack_regs(struct ring_buffer *buffer,
+					   unsigned long flags, int skip,
+					   int pc, struct pt_regs *regs)
+{
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void ftrace_trace_userstack(struct ring_buffer *buffer,
 					  unsigned long flags, int pc)
 {
@@ -421,13 +821,22 @@ extern void trace_find_cmdline(int pid, char comm[]);
 
 #ifdef CONFIG_DYNAMIC_FTRACE
 extern unsigned long ftrace_update_tot_cnt;
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 #define DYN_FTRACE_TEST_NAME trace_selftest_dynamic_test_func
 extern int DYN_FTRACE_TEST_NAME(void);
 #define DYN_FTRACE_TEST_NAME2 trace_selftest_dynamic_test_func2
 extern int DYN_FTRACE_TEST_NAME2(void);
+<<<<<<< HEAD
 #endif
 
 extern int ring_buffer_expanded;
+=======
+
+extern bool ring_buffer_expanded;
+>>>>>>> refs/remotes/origin/master
 extern bool tracing_selftest_disabled;
 DECLARE_PER_CPU(int, ftrace_cpu_disabled);
 
@@ -450,6 +859,18 @@ extern int trace_selftest_startup_sched_switch(struct tracer *trace,
 					       struct trace_array *tr);
 extern int trace_selftest_startup_branch(struct tracer *trace,
 					 struct trace_array *tr);
+<<<<<<< HEAD
+=======
+/*
+ * Tracer data references selftest functions that only occur
+ * on boot up. These can be __init functions. Thus, when selftests
+ * are enabled, then the tracers need to reference __init functions.
+ */
+#define __tracer_data		__refdata
+#else
+/* Tracers are seldom changed. Optimize when selftests are disabled. */
+#define __tracer_data		__read_mostly
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_FTRACE_STARTUP_TEST */
 
 extern void *head_page(struct trace_array_cpu *data);
@@ -463,13 +884,21 @@ trace_array_vprintk(struct trace_array *tr,
 		    unsigned long ip, const char *fmt, va_list args);
 int trace_array_printk(struct trace_array *tr,
 		       unsigned long ip, const char *fmt, ...);
+<<<<<<< HEAD
+=======
+int trace_array_printk_buf(struct ring_buffer *buffer,
+			   unsigned long ip, const char *fmt, ...);
+>>>>>>> refs/remotes/origin/master
 void trace_printk_seq(struct trace_seq *s);
 enum print_line_t print_trace_line(struct trace_iterator *iter);
 
 extern unsigned long trace_flags;
 
+<<<<<<< HEAD
 extern int trace_clock_id;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Standard output formatting function used for function return traces */
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
 
@@ -480,6 +909,11 @@ extern int trace_clock_id;
 #define TRACE_GRAPH_PRINT_PROC          0x8
 #define TRACE_GRAPH_PRINT_DURATION      0x10
 #define TRACE_GRAPH_PRINT_ABS_TIME      0x20
+<<<<<<< HEAD
+=======
+#define TRACE_GRAPH_PRINT_FILL_SHIFT	28
+#define TRACE_GRAPH_PRINT_FILL_MASK	(0x3 << TRACE_GRAPH_PRINT_FILL_SHIFT)
+>>>>>>> refs/remotes/origin/master
 
 extern enum print_line_t
 print_graph_function_flags(struct trace_iterator *iter, u32 flags);
@@ -499,20 +933,67 @@ extern void __trace_graph_return(struct trace_array *tr,
 #ifdef CONFIG_DYNAMIC_FTRACE
 /* TODO: make this variable */
 #define FTRACE_GRAPH_MAX_FUNCS		32
+<<<<<<< HEAD
 extern int ftrace_graph_filter_enabled;
 extern int ftrace_graph_count;
 extern unsigned long ftrace_graph_funcs[FTRACE_GRAPH_MAX_FUNCS];
+=======
+extern int ftrace_graph_count;
+extern unsigned long ftrace_graph_funcs[FTRACE_GRAPH_MAX_FUNCS];
+extern int ftrace_graph_notrace_count;
+extern unsigned long ftrace_graph_notrace_funcs[FTRACE_GRAPH_MAX_FUNCS];
+>>>>>>> refs/remotes/origin/master
 
 static inline int ftrace_graph_addr(unsigned long addr)
 {
 	int i;
 
+<<<<<<< HEAD
 	if (!ftrace_graph_filter_enabled)
 		return 1;
 
 	for (i = 0; i < ftrace_graph_count; i++) {
+<<<<<<< HEAD
 		if (addr == ftrace_graph_funcs[i])
 			return 1;
+=======
+=======
+	if (!ftrace_graph_count)
+		return 1;
+
+	for (i = 0; i < ftrace_graph_count; i++) {
+>>>>>>> refs/remotes/origin/master
+		if (addr == ftrace_graph_funcs[i]) {
+			/*
+			 * If no irqs are to be traced, but a set_graph_function
+			 * is set, and called by an interrupt handler, we still
+			 * want to trace it.
+			 */
+			if (in_irq())
+				trace_recursion_set(TRACE_IRQ_BIT);
+			else
+				trace_recursion_clear(TRACE_IRQ_BIT);
+			return 1;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+	return 0;
+}
+
+static inline int ftrace_graph_notrace_addr(unsigned long addr)
+{
+	int i;
+
+	if (!ftrace_graph_notrace_count)
+		return 0;
+
+	for (i = 0; i < ftrace_graph_notrace_count; i++) {
+		if (addr == ftrace_graph_notrace_funcs[i])
+			return 1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -522,6 +1003,14 @@ static inline int ftrace_graph_addr(unsigned long addr)
 {
 	return 1;
 }
+<<<<<<< HEAD
+=======
+
+static inline int ftrace_graph_notrace_addr(unsigned long addr)
+{
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_DYNAMIC_FTRACE */
 #else /* CONFIG_FUNCTION_GRAPH_TRACER */
 static inline enum print_line_t
@@ -534,6 +1023,10 @@ print_graph_function_flags(struct trace_iterator *iter, u32 flags)
 extern struct list_head ftrace_pids;
 
 #ifdef CONFIG_FUNCTION_TRACER
+<<<<<<< HEAD
+=======
+extern bool ftrace_filter_param __initdata;
+>>>>>>> refs/remotes/origin/master
 static inline int ftrace_trace_task(struct task_struct *task)
 {
 	if (list_empty(&ftrace_pids))
@@ -541,13 +1034,35 @@ static inline int ftrace_trace_task(struct task_struct *task)
 
 	return test_tsk_trace_trace(task);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern int ftrace_is_dead(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int ftrace_is_dead(void);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline int ftrace_trace_task(struct task_struct *task)
 {
 	return 1;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline int ftrace_is_dead(void) { return 0; }
+#endif
+
+int ftrace_event_is_function(struct ftrace_event_call *call);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * struct trace_parser - servers for reading the user input separated by spaces
  * @cont: set if the input is not complete - no final space char was found
@@ -613,6 +1128,18 @@ enum trace_iterator_flags {
 	TRACE_ITER_GRAPH_TIME		= 0x80000,
 	TRACE_ITER_RECORD_CMD		= 0x100000,
 	TRACE_ITER_OVERWRITE		= 0x200000,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	TRACE_ITER_STOP_ON_FREE		= 0x400000,
+	TRACE_ITER_IRQ_INFO		= 0x800000,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TRACE_ITER_STOP_ON_FREE		= 0x400000,
+	TRACE_ITER_IRQ_INFO		= 0x800000,
+	TRACE_ITER_MARKERS		= 0x1000000,
+	TRACE_ITER_FUNCTION		= 0x2000000,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -651,6 +1178,7 @@ static inline void trace_branch_disable(void)
 /* set ring buffers to default size if not already done so */
 int tracing_update_buffers(void);
 
+<<<<<<< HEAD
 /* trace event type bit fields, not numeric */
 enum {
 	TRACE_EVENT_TYPE_PRINTF		= 1,
@@ -661,6 +1189,12 @@ struct ftrace_event_field {
 	struct list_head	link;
 	char			*name;
 	char			*type;
+=======
+struct ftrace_event_field {
+	struct list_head	link;
+	const char		*name;
+	const char		*type;
+>>>>>>> refs/remotes/origin/master
 	int			filter_type;
 	int			offset;
 	int			size;
@@ -678,12 +1212,28 @@ struct event_filter {
 struct event_subsystem {
 	struct list_head	list;
 	const char		*name;
+<<<<<<< HEAD
 	struct dentry		*entry;
 	struct event_filter	*filter;
 	int			nr_events;
 	int			ref_count;
 };
 
+=======
+	struct event_filter	*filter;
+	int			ref_count;
+};
+
+struct ftrace_subsystem_dir {
+	struct list_head		list;
+	struct event_subsystem		*subsystem;
+	struct trace_array		*tr;
+	struct dentry			*entry;
+	int				ref_count;
+	int				nr_events;
+};
+
+>>>>>>> refs/remotes/origin/master
 #define FILTER_PRED_INVALID	((unsigned short)-1)
 #define FILTER_PRED_IS_RIGHT	(1 << 15)
 #define FILTER_PRED_FOLD	(1 << 15)
@@ -722,6 +1272,8 @@ struct filter_pred {
 	filter_pred_fn_t 	fn;
 	u64 			val;
 	struct regex		regex;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Leaf nodes use field_name, ops is used by AND and OR
 	 * nodes. The field_name is always freed when freeing a pred.
@@ -732,6 +1284,14 @@ struct filter_pred {
 		char		*field_name;
 		unsigned short	*ops;
 	};
+=======
+	unsigned short		*ops;
+	struct ftrace_event_field *field;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned short		*ops;
+	struct ftrace_event_field *field;
+>>>>>>> refs/remotes/origin/master
 	int 			offset;
 	int 			not;
 	int 			op;
@@ -741,6 +1301,7 @@ struct filter_pred {
 	unsigned short		right;
 };
 
+<<<<<<< HEAD
 extern struct list_head ftrace_common_fields;
 
 extern enum regex_type
@@ -750,11 +1311,21 @@ extern void print_event_filter(struct ftrace_event_call *call,
 extern int apply_event_filter(struct ftrace_event_call *call,
 			      char *filter_string);
 extern int apply_subsystem_event_filter(struct event_subsystem *system,
+=======
+extern enum regex_type
+filter_parse_regex(char *buff, int len, char **search, int *not);
+extern void print_event_filter(struct ftrace_event_file *file,
+			       struct trace_seq *s);
+extern int apply_event_filter(struct ftrace_event_file *file,
+			      char *filter_string);
+extern int apply_subsystem_event_filter(struct ftrace_subsystem_dir *dir,
+>>>>>>> refs/remotes/origin/master
 					char *filter_string);
 extern void print_subsystem_event_filter(struct event_subsystem *system,
 					 struct trace_seq *s);
 extern int filter_assign_type(const char *type);
 
+<<<<<<< HEAD
 struct list_head *
 trace_get_fields(struct ftrace_event_call *event_call);
 
@@ -773,6 +1344,14 @@ filter_check_discard(struct ftrace_event_call *call, void *rec,
 }
 
 extern void trace_event_enable_cmd_record(bool enable);
+=======
+struct ftrace_event_field *
+trace_find_event_field(struct ftrace_event_call *call, char *name);
+
+extern void trace_event_enable_cmd_record(bool enable);
+extern int event_trace_add_tracer(struct dentry *parent, struct trace_array *tr);
+extern int event_trace_del_tracer(struct trace_array *tr);
+>>>>>>> refs/remotes/origin/master
 
 extern struct mutex event_mutex;
 extern struct list_head ftrace_events;
@@ -780,10 +1359,13 @@ extern struct list_head ftrace_events;
 extern const char *__start___trace_bprintk_fmt[];
 extern const char *__stop___trace_bprintk_fmt[];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int trace_keep_overwrite(struct tracer *tracer, u32 mask, int set);
 int set_tracer_flag(unsigned int mask, int enabled);
 
 #undef FTRACE_ENTRY
+<<<<<<< HEAD
 #define FTRACE_ENTRY(call, struct_name, id, tstruct, print)		\
 	extern struct ftrace_event_call					\
 	__attribute__((__aligned__(4))) event_##call;
@@ -806,5 +1388,52 @@ int set_tracer_flag(unsigned int mask, int enabled);
 #define trace_recursion_set(bit)	do { (current)->trace_recursion |= (bit); } while (0)
 #define trace_recursion_clear(bit)	do { (current)->trace_recursion &= ~(bit); } while (0)
 #define trace_recursion_test(bit)	((current)->trace_recursion & (bit))
+=======
+=======
+extern const char *__start___tracepoint_str[];
+extern const char *__stop___tracepoint_str[];
+
+void trace_printk_init_buffers(void);
+void trace_printk_start_comm(void);
+int trace_keep_overwrite(struct tracer *tracer, u32 mask, int set);
+int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled);
+
+/*
+ * Normal trace_printk() and friends allocates special buffers
+ * to do the manipulation, as well as saves the print formats
+ * into sections to display. But the trace infrastructure wants
+ * to use these without the added overhead at the price of being
+ * a bit slower (used mainly for warnings, where we don't care
+ * about performance). The internal_trace_puts() is for such
+ * a purpose.
+ */
+#define internal_trace_puts(str) __trace_puts(_THIS_IP_, str, strlen(str))
+
+=======
+int trace_keep_overwrite(struct tracer *tracer, u32 mask, int set);
+int set_tracer_flag(unsigned int mask, int enabled);
+
+>>>>>>> refs/remotes/origin/cm-11.0
+#undef FTRACE_ENTRY
+>>>>>>> refs/remotes/origin/master
+#define FTRACE_ENTRY(call, struct_name, id, tstruct, print, filter)	\
+	extern struct ftrace_event_call					\
+	__attribute__((__aligned__(4))) event_##call;
+#undef FTRACE_ENTRY_DUP
+#define FTRACE_ENTRY_DUP(call, struct_name, id, tstruct, print, filter)	\
+	FTRACE_ENTRY(call, struct_name, id, PARAMS(tstruct), PARAMS(print), \
+		     filter)
+#include "trace_entries.h"
+
+#if defined(CONFIG_PERF_EVENTS) && defined(CONFIG_FUNCTION_TRACER)
+int perf_ftrace_event_register(struct ftrace_event_call *call,
+			       enum trace_reg type, void *data);
+#else
+#define perf_ftrace_event_register NULL
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_KERNEL_TRACE_H */

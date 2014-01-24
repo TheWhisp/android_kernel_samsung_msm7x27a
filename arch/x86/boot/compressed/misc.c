@@ -108,12 +108,16 @@ static void error(char *m);
  * This is set up by the setup-routine at boot-time
  */
 struct boot_params *real_mode;		/* Pointer to real-mode data */
+<<<<<<< HEAD
 static int quiet;
 static int debug;
+=======
+>>>>>>> refs/remotes/origin/master
 
 void *memset(void *s, int c, size_t n);
 void *memcpy(void *dest, const void *src, size_t n);
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_64
 #define memptr long
 #else
@@ -122,6 +126,10 @@ void *memcpy(void *dest, const void *src, size_t n);
 
 static memptr free_mem_ptr;
 static memptr free_mem_end_ptr;
+=======
+memptr free_mem_ptr;
+memptr free_mem_end_ptr;
+>>>>>>> refs/remotes/origin/master
 
 static char *vidmem;
 static int vidport;
@@ -147,6 +155,13 @@ static int lines, cols;
 #include "../../../../lib/decompress_unlzo.c"
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KERNEL_LZ4
+#include "../../../../lib/decompress_unlz4.c"
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static void scroll(void)
 {
 	int i;
@@ -170,15 +185,22 @@ static void serial_putchar(int ch)
 	outb(ch, early_serial_base + TXR);
 }
 
+<<<<<<< HEAD
 void __putstr(int error, const char *s)
+=======
+void __putstr(const char *s)
+>>>>>>> refs/remotes/origin/master
 {
 	int x, y, pos;
 	char c;
 
+<<<<<<< HEAD
 #ifndef CONFIG_X86_VERBOSE_BOOTUP
 	if (!error)
 		return;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	if (early_serial_base) {
 		const char *str = s;
 		while (*str) {
@@ -265,14 +287,96 @@ void *memcpy(void *dest, const void *src, size_t n)
 
 static void error(char *x)
 {
+<<<<<<< HEAD
 	__putstr(1, "\n\n");
 	__putstr(1, x);
 	__putstr(1, "\n\n -- System halted");
+=======
+	error_putstr("\n\n");
+	error_putstr(x);
+	error_putstr("\n\n -- System halted");
+>>>>>>> refs/remotes/origin/master
 
 	while (1)
 		asm("hlt");
 }
 
+<<<<<<< HEAD
+=======
+#if CONFIG_X86_NEED_RELOCS
+static void handle_relocations(void *output, unsigned long output_len)
+{
+	int *reloc;
+	unsigned long delta, map, ptr;
+	unsigned long min_addr = (unsigned long)output;
+	unsigned long max_addr = min_addr + output_len;
+
+	/*
+	 * Calculate the delta between where vmlinux was linked to load
+	 * and where it was actually loaded.
+	 */
+	delta = min_addr - LOAD_PHYSICAL_ADDR;
+	if (!delta) {
+		debug_putstr("No relocation needed... ");
+		return;
+	}
+	debug_putstr("Performing relocations... ");
+
+	/*
+	 * The kernel contains a table of relocation addresses. Those
+	 * addresses have the final load address of the kernel in virtual
+	 * memory. We are currently working in the self map. So we need to
+	 * create an adjustment for kernel memory addresses to the self map.
+	 * This will involve subtracting out the base address of the kernel.
+	 */
+	map = delta - __START_KERNEL_map;
+
+	/*
+	 * Process relocations: 32 bit relocations first then 64 bit after.
+	 * Two sets of binary relocations are added to the end of the kernel
+	 * before compression. Each relocation table entry is the kernel
+	 * address of the location which needs to be updated stored as a
+	 * 32-bit value which is sign extended to 64 bits.
+	 *
+	 * Format is:
+	 *
+	 * kernel bits...
+	 * 0 - zero terminator for 64 bit relocations
+	 * 64 bit relocation repeated
+	 * 0 - zero terminator for 32 bit relocations
+	 * 32 bit relocation repeated
+	 *
+	 * So we work backwards from the end of the decompressed image.
+	 */
+	for (reloc = output + output_len - sizeof(*reloc); *reloc; reloc--) {
+		int extended = *reloc;
+		extended += map;
+
+		ptr = (unsigned long)extended;
+		if (ptr < min_addr || ptr > max_addr)
+			error("32-bit relocation outside of kernel!\n");
+
+		*(uint32_t *)ptr += delta;
+	}
+#ifdef CONFIG_X86_64
+	for (reloc--; *reloc; reloc--) {
+		long extended = *reloc;
+		extended += map;
+
+		ptr = (unsigned long)extended;
+		if (ptr < min_addr || ptr > max_addr)
+			error("64-bit relocation outside of kernel!\n");
+
+		*(uint64_t *)ptr += delta;
+	}
+#endif
+}
+#else
+static inline void handle_relocations(void *output, unsigned long output_len)
+{ }
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static void parse_elf(void *output)
 {
 #ifdef CONFIG_X86_64
@@ -294,8 +398,12 @@ static void parse_elf(void *output)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (!quiet)
 		putstr("Parsing ELF... ");
+=======
+	debug_putstr("Parsing ELF... ");
+>>>>>>> refs/remotes/origin/master
 
 	phdrs = malloc(sizeof(*phdrs) * ehdr.e_phnum);
 	if (!phdrs)
@@ -321,6 +429,12 @@ static void parse_elf(void *output)
 		default: /* Ignore other PT_* */ break;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	free(phdrs);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 asmlinkage void decompress_kernel(void *rmode, memptr heap,
@@ -334,6 +448,21 @@ asmlinkage void decompress_kernel(void *rmode, memptr heap,
 		quiet = 1;
 	if (cmdline_find_option_bool("debug"))
 		debug = 1;
+=======
+
+	free(phdrs);
+}
+
+asmlinkage void *decompress_kernel(void *rmode, memptr heap,
+				  unsigned char *input_data,
+				  unsigned long input_len,
+				  unsigned char *output,
+				  unsigned long output_len)
+{
+	real_mode = rmode;
+
+	sanitize_boot_params(real_mode);
+>>>>>>> refs/remotes/origin/master
 
 	if (real_mode->screen_info.orig_video_mode == 7) {
 		vidmem = (char *) 0xb0000;
@@ -347,12 +476,23 @@ asmlinkage void decompress_kernel(void *rmode, memptr heap,
 	cols = real_mode->screen_info.orig_video_cols;
 
 	console_init();
+<<<<<<< HEAD
 	if (debug)
 		putstr("early console in decompress_kernel\n");
+=======
+	debug_putstr("early console in decompress_kernel\n");
+>>>>>>> refs/remotes/origin/master
 
 	free_mem_ptr     = heap;	/* Heap */
 	free_mem_end_ptr = heap + BOOT_HEAP_SIZE;
 
+<<<<<<< HEAD
+=======
+	output = choose_kernel_location(input_data, input_len,
+					output, output_len);
+
+	/* Validate memory location choices. */
+>>>>>>> refs/remotes/origin/master
 	if ((unsigned long)output & (MIN_KERNEL_ALIGN - 1))
 		error("Destination address inappropriately aligned");
 #ifdef CONFIG_X86_64
@@ -367,6 +507,7 @@ asmlinkage void decompress_kernel(void *rmode, memptr heap,
 		error("Wrong destination address");
 #endif
 
+<<<<<<< HEAD
 	if (!quiet)
 		putstr("\nDecompressing Linux... ");
 	decompress(input_data, input_len, NULL, NULL, output, NULL, error);
@@ -374,4 +515,12 @@ asmlinkage void decompress_kernel(void *rmode, memptr heap,
 	if (!quiet)
 		putstr("done.\nBooting the kernel.\n");
 	return;
+=======
+	debug_putstr("\nDecompressing Linux... ");
+	decompress(input_data, input_len, NULL, NULL, output, NULL, error);
+	parse_elf(output);
+	handle_relocations(output, output_len);
+	debug_putstr("done.\nBooting the kernel.\n");
+	return output;
+>>>>>>> refs/remotes/origin/master
 }

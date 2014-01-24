@@ -11,8 +11,22 @@
  * (at your option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef _LINUX_MMC_DW_MMC_H_
 #define _LINUX_MMC_DW_MMC_H_
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifndef LINUX_MMC_DW_MMC_H
+#define LINUX_MMC_DW_MMC_H
+
+#include <linux/scatterlist.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mmc/core.h>
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_MCI_SLOTS	2
 
@@ -40,7 +54,15 @@ struct mmc_data;
  * @lock: Spinlock protecting the queue and associated data.
  * @regs: Pointer to MMIO registers.
  * @sg: Scatterlist entry currently being processed by PIO code, if any.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @pio_offset: Offset into the current scatterlist entry.
+=======
+ * @sg_miter: PIO mapping scatterlist iterator.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @sg_miter: PIO mapping scatterlist iterator.
+>>>>>>> refs/remotes/origin/master
  * @cur_slot: The slot which is currently using the controller.
  * @mrq: The request currently being processed on @cur_slot,
  *	or NULL if the controller is idle.
@@ -48,6 +70,14 @@ struct mmc_data;
  * @data: The data currently being transferred, or NULL if no data
  *	transfer is in progress.
  * @use_dma: Whether DMA channel is initialized or not.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @using_dma: Whether DMA is in use for the current transfer.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @using_dma: Whether DMA is in use for the current transfer.
+>>>>>>> refs/remotes/origin/master
  * @sg_dma: Bus address of DMA buffer.
  * @sg_cpu: Virtual address of DMA buffer.
  * @dma_ops: Pointer to platform-specific DMA callbacks.
@@ -71,6 +101,8 @@ struct mmc_data;
  *	rate and timeout calculations.
  * @current_speed: Configured rate of the controller.
  * @num_slots: Number of slots available.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @pdev: Platform device associated with the MMC controller.
  * @pdata: Platform data associated with the MMC controller.
  * @slot: Slots sharing this MMC controller.
@@ -78,6 +110,35 @@ struct mmc_data;
  * @push_data: Pointer to FIFO push function.
  * @pull_data: Pointer to FIFO pull function.
  * @quirks: Set of quirks that apply to specific versions of the IP.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @verid: Denote Version ID.
+ * @data_offset: Set the offset of DATA register according to VERID.
+ * @dev: Device associated with the MMC controller.
+ * @pdata: Platform data associated with the MMC controller.
+<<<<<<< HEAD
+=======
+ * @drv_data: Driver specific data for identified variant of the controller
+ * @priv: Implementation defined private data.
+ * @biu_clk: Pointer to bus interface unit clock instance.
+ * @ciu_clk: Pointer to card interface unit clock instance.
+>>>>>>> refs/remotes/origin/master
+ * @slot: Slots sharing this MMC controller.
+ * @fifo_depth: depth of FIFO.
+ * @data_shift: log2 of FIFO item size.
+ * @part_buf_start: Start index in part_buf.
+ * @part_buf_count: Bytes of partial data in part_buf.
+ * @part_buf: Simple buffer for partial fifo reads/writes.
+ * @push_data: Pointer to FIFO push function.
+ * @pull_data: Pointer to FIFO pull function.
+ * @quirks: Set of quirks that apply to specific versions of the IP.
+ * @irq_flags: The flags to be passed to request_irq.
+ * @irq: The irq value to be passed to request_irq.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Locking
  * =======
@@ -108,19 +169,46 @@ struct dw_mci {
 	void __iomem		*regs;
 
 	struct scatterlist	*sg;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int		pio_offset;
+=======
+	struct sg_mapping_iter	sg_miter;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sg_mapping_iter	sg_miter;
+>>>>>>> refs/remotes/origin/master
 
 	struct dw_mci_slot	*cur_slot;
 	struct mmc_request	*mrq;
 	struct mmc_command	*cmd;
 	struct mmc_data		*data;
+<<<<<<< HEAD
 
 	/* DMA interface members*/
 	int			use_dma;
+<<<<<<< HEAD
+=======
+	int			using_dma;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dma_addr_t		sg_dma;
 	void			*sg_cpu;
 	struct dw_mci_dma_ops	*dma_ops;
+=======
+	struct mmc_command	stop_abort;
+	unsigned int		prev_blksz;
+	unsigned char		timing;
+	struct workqueue_struct	*card_workqueue;
+
+	/* DMA interface members*/
+	int			use_dma;
+	int			using_dma;
+
+	dma_addr_t		sg_dma;
+	void			*sg_cpu;
+	const struct dw_mci_dma_ops	*dma_ops;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMC_DW_IDMAC
 	unsigned int		ring_size;
 #else
@@ -131,7 +219,15 @@ struct dw_mci {
 	u32			stop_cmdr;
 	u32			dir_status;
 	struct tasklet_struct	tasklet;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct tasklet_struct	card_tasklet;
+=======
+	struct work_struct	card_work;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct work_struct	card_work;
+>>>>>>> refs/remotes/origin/master
 	unsigned long		pending_events;
 	unsigned long		completed_events;
 	enum dw_mci_state	state;
@@ -141,12 +237,47 @@ struct dw_mci {
 	u32			current_speed;
 	u32			num_slots;
 	u32			fifoth_val;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct platform_device	*pdev;
+=======
+	u16			verid;
+	u16			data_offset;
+	struct device		dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dw_mci_board	*pdata;
 	struct dw_mci_slot	*slot[MAX_MCI_SLOTS];
 
 	/* FIFO push and pull */
+<<<<<<< HEAD
 	int			data_shift;
+=======
+=======
+	u16			verid;
+	u16			data_offset;
+	struct device		*dev;
+	struct dw_mci_board	*pdata;
+	const struct dw_mci_drv_data	*drv_data;
+	void			*priv;
+	struct clk		*biu_clk;
+	struct clk		*ciu_clk;
+	struct dw_mci_slot	*slot[MAX_MCI_SLOTS];
+
+	/* FIFO push and pull */
+>>>>>>> refs/remotes/origin/master
+	int			fifo_depth;
+	int			data_shift;
+	u8			part_buf_start;
+	u8			part_buf_count;
+	union {
+		u16		part_buf16;
+		u32		part_buf32;
+		u64		part_buf;
+	};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void (*push_data)(struct dw_mci *host, void *buf, int cnt);
 	void (*pull_data)(struct dw_mci *host, void *buf, int cnt);
 
@@ -154,6 +285,16 @@ struct dw_mci {
 	u32			quirks;
 
 	struct regulator	*vmmc;	/* Power regulator */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long		irq_flags; /* IRQ flags */
+	unsigned int		irq;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long		irq_flags; /* IRQ flags */
+	int			irq;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* DMA ops for Internal/External DMAC interface */
@@ -177,6 +318,12 @@ struct dw_mci_dma_ops {
 /* Unreliable card detection */
 #define DW_MCI_QUIRK_BROKEN_CARD_DETECTION	BIT(3)
 
+<<<<<<< HEAD
+=======
+/* Slot level quirks */
+/* This slot has no write protect */
+#define DW_MCI_SLOT_QUIRK_NO_WRITE_PROTECT	BIT(0)
+>>>>>>> refs/remotes/origin/master
 
 struct dma_pdata;
 
@@ -193,9 +340,30 @@ struct dw_mci_board {
 	u32 num_slots;
 
 	u32 quirks; /* Workaround / Quirk flags */
+<<<<<<< HEAD
 	unsigned int bus_hz; /* Bus speed */
 
 	unsigned int caps;	/* Capabilities */
+<<<<<<< HEAD
+=======
+	unsigned int caps2;	/* More capabilities */
+=======
+	unsigned int bus_hz; /* Clock speed at the cclk_in pad */
+
+	u32 caps;	/* Capabilities */
+	u32 caps2;	/* More capabilities */
+	u32 pm_caps;	/* PM capabilities */
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Override fifo depth. If 0, autodetect it from the FIFOTH register,
+	 * but note that this may not be reliable after a bootloader has used
+	 * it.
+	 */
+	unsigned int fifo_depth;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* delay in mS before detecting cards after interrupt */
 	u32 detect_delay_ms;
@@ -219,4 +387,12 @@ struct dw_mci_board {
 	struct block_settings *blk_settings;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* _LINUX_MMC_DW_MMC_H_ */
+=======
+#endif /* LINUX_MMC_DW_MMC_H */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* LINUX_MMC_DW_MMC_H */
+>>>>>>> refs/remotes/origin/master

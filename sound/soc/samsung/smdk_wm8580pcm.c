@@ -8,6 +8,14 @@
  *  Free Software Foundation;  either version 2 of the  License, or (at your
  *  option) any later version.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/soc.h>
 #include <sound/pcm_params.h>
 #include <sound/pcm.h>
@@ -127,21 +135,46 @@ static struct snd_soc_dai_link smdk_dai[] = {
 		.cpu_dai_name = "samsung-pcm.0",
 		.codec_dai_name = "wm8580-hifi-playback",
 		.platform_name = "samsung-audio",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.codec_name = "wm8580-codec.0-001b",
+=======
+		.codec_name = "wm8580.0-001b",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.codec_name = "wm8580.0-001b",
+>>>>>>> refs/remotes/origin/master
 		.ops = &smdk_wm8580_pcm_ops,
 	}, {
 		.name = "WM8580 PAIF PCM TX",
 		.stream_name = "Capture",
 		.cpu_dai_name = "samsung-pcm.0",
 		.codec_dai_name = "wm8580-hifi-capture",
+<<<<<<< HEAD
 		.platform_name = "samsung-audio",
+<<<<<<< HEAD
 		.codec_name = "wm8580-codec.0-001b",
+=======
+		.codec_name = "wm8580.0-001b",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.platform_name = "samsung-pcm.0",
+		.codec_name = "wm8580.0-001b",
+>>>>>>> refs/remotes/origin/master
 		.ops = &smdk_wm8580_pcm_ops,
 	},
 };
 
 static struct snd_soc_card smdk_pcm = {
 	.name = "SMDK-PCM",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = smdk_dai,
 	.num_links = 2,
 };
@@ -151,7 +184,11 @@ static struct snd_soc_card smdk_pcm = {
  * is absent (or not connected), so we connect EXT_VOICE_CLK(OSC4),
  * 2.0484Mhz, directly with MCLK both Codec and SoC.
  */
+<<<<<<< HEAD
 static int __devinit snd_smdk_probe(struct platform_device *pdev)
+=======
+static int snd_smdk_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 
@@ -171,10 +208,16 @@ static int __devinit snd_smdk_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_smdk_remove(struct platform_device *pdev)
 {
 	snd_soc_unregister_card(&smdk_pcm);
 	platform_set_drvdata(pdev, NULL);
+=======
+static int snd_smdk_remove(struct platform_device *pdev)
+{
+	snd_soc_unregister_card(&smdk_pcm);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -184,9 +227,11 @@ static struct platform_driver snd_smdk_driver = {
 		.name = "samsung-smdk-pcm",
 	},
 	.probe = snd_smdk_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(snd_smdk_remove),
 };
 
+<<<<<<< HEAD
 static int __init smdk_audio_init(void)
 {
 	return platform_driver_register(&snd_smdk_driver);
@@ -200,6 +245,15 @@ static void __exit smdk_audio_exit(void)
 }
 
 module_exit(smdk_audio_exit);
+=======
+module_platform_driver(snd_smdk_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = snd_smdk_remove,
+};
+
+module_platform_driver(snd_smdk_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Sangbeom Kim, <sbkim73@samsung.com>");
 MODULE_DESCRIPTION("ALSA SoC SMDK WM8580 for PCM");

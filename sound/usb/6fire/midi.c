@@ -5,7 +5,13 @@
  *
  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
  * Created:	Jan 01, 2011
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Version:	0.3.0
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright:	(C) Torsten Schenk
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,6 +26,13 @@
 #include "chip.h"
 #include "comm.h"
 
+<<<<<<< HEAD
+=======
+enum {
+	MIDI_BUFSIZE = 64
+};
+
+>>>>>>> refs/remotes/origin/master
 static void usb6fire_midi_out_handler(struct urb *urb)
 {
 	struct midi_runtime *rt = urb->context;
@@ -147,7 +160,11 @@ static struct snd_rawmidi_ops in_ops = {
 	.trigger = usb6fire_midi_in_trigger
 };
 
+<<<<<<< HEAD
 int __devinit usb6fire_midi_init(struct sfire_chip *chip)
+=======
+int usb6fire_midi_init(struct sfire_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct midi_runtime *rt = kzalloc(sizeof(struct midi_runtime),
@@ -157,6 +174,15 @@ int __devinit usb6fire_midi_init(struct sfire_chip *chip)
 	if (!rt)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	rt->out_buffer = kzalloc(MIDI_BUFSIZE, GFP_KERNEL);
+	if (!rt->out_buffer) {
+		kfree(rt);
+		return -ENOMEM;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	rt->chip = chip;
 	rt->in_received = usb6fire_midi_in_received;
 	rt->out_buffer[0] = 0x80; /* 'send midi' command */
@@ -170,6 +196,10 @@ int __devinit usb6fire_midi_init(struct sfire_chip *chip)
 
 	ret = snd_rawmidi_new(chip->card, "6FireUSB", 0, 1, 1, &rt->instance);
 	if (ret < 0) {
+<<<<<<< HEAD
+=======
+		kfree(rt->out_buffer);
+>>>>>>> refs/remotes/origin/master
 		kfree(rt);
 		snd_printk(KERN_ERR PREFIX "unable to create midi.\n");
 		return ret;
@@ -198,6 +228,13 @@ void usb6fire_midi_abort(struct sfire_chip *chip)
 
 void usb6fire_midi_destroy(struct sfire_chip *chip)
 {
+<<<<<<< HEAD
 	kfree(chip->midi);
+=======
+	struct midi_runtime *rt = chip->midi;
+
+	kfree(rt->out_buffer);
+	kfree(rt);
+>>>>>>> refs/remotes/origin/master
 	chip->midi = NULL;
 }

@@ -27,7 +27,13 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/gpio.h>
 #include <linux/regulator/consumer.h>
@@ -55,6 +61,8 @@
 #define BURST_BASEFREQ_HZ	49152000
 
 #define SAMPLES_TO_US(rate, samples) \
+<<<<<<< HEAD
+<<<<<<< HEAD
 	(1000000000 / ((rate * 1000) / samples))
 
 #define US_TO_SAMPLES(rate, us) \
@@ -62,9 +70,28 @@
 
 #define UTHR_FROM_PERIOD_SIZE(samples, playrate, burstrate) \
 	((samples * 5000) / ((burstrate * 5000) / (burstrate - playrate)))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	(1000000000 / (((rate) * 1000) / (samples)))
+
+#define US_TO_SAMPLES(rate, us) \
+	((rate) / (1000000 / ((us) < 1000000 ? (us) : 1000000)))
+
+#define UTHR_FROM_PERIOD_SIZE(samples, playrate, burstrate) \
+	(((samples)*5000) / (((burstrate)*5000) / ((burstrate) - (playrate))))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void dac33_calculate_times(struct snd_pcm_substream *substream);
 static int dac33_prepare_chip(struct snd_pcm_substream *substream);
+=======
+
+static void dac33_calculate_times(struct snd_pcm_substream *substream,
+				  struct snd_soc_codec *codec);
+static int dac33_prepare_chip(struct snd_pcm_substream *substream,
+			      struct snd_soc_codec *codec);
+>>>>>>> refs/remotes/origin/master
 
 enum dac33_state {
 	DAC33_IDLE = 0,
@@ -428,8 +455,13 @@ static int dac33_playback_event(struct snd_soc_dapm_widget *w,
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
 		if (likely(dac33->substream)) {
+<<<<<<< HEAD
 			dac33_calculate_times(dac33->substream);
 			dac33_prepare_chip(dac33->substream);
+=======
+			dac33_calculate_times(dac33->substream, w->codec);
+			dac33_prepare_chip(dac33->substream, w->codec);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case SND_SOC_DAPM_POST_PMD:
@@ -627,6 +659,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"RIGHT_LO", NULL, "Codec Power"},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int dac33_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -639,6 +673,10 @@ static int dac33_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int dac33_set_bias_level(struct snd_soc_codec *codec,
 				enum snd_soc_bias_level level)
 {
@@ -812,23 +850,37 @@ static void dac33_oscwait(struct snd_soc_codec *codec)
 static int dac33_startup(struct snd_pcm_substream *substream,
 			   struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
 
 	/* Stream started, save the substream pointer */
 	dac33->substream = substream;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void dac33_shutdown(struct snd_pcm_substream *substream,
 			     struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
 
 	dac33->substream = NULL;
@@ -840,8 +892,12 @@ static int dac33_hw_params(struct snd_pcm_substream *substream,
 			   struct snd_pcm_hw_params *params,
 			   struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
 
 	/* Check parameters for validity */
@@ -883,10 +939,16 @@ static int dac33_hw_params(struct snd_pcm_substream *substream,
  * writes happens in different order, than dac33 might end up in unknown state.
  * Use the known, working sequence of register writes to initialize the dac33.
  */
+<<<<<<< HEAD
 static int dac33_prepare_chip(struct snd_pcm_substream *substream)
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+static int dac33_prepare_chip(struct snd_pcm_substream *substream,
+			      struct snd_soc_codec *codec)
+{
+>>>>>>> refs/remotes/origin/master
 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
 	unsigned int oscset, ratioset, pwr_ctrl, reg_tmp;
 	u8 aictrl_a, aictrl_b, fifoctrl_a;
@@ -1082,10 +1144,16 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void dac33_calculate_times(struct snd_pcm_substream *substream)
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+static void dac33_calculate_times(struct snd_pcm_substream *substream,
+				  struct snd_soc_codec *codec)
+{
+>>>>>>> refs/remotes/origin/master
 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
 	unsigned int period_size = substream->runtime->period_size;
 	unsigned int rate = substream->runtime->rate;
@@ -1143,8 +1211,12 @@ static void dac33_calculate_times(struct snd_pcm_substream *substream)
 static int dac33_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
 			     struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
 	int ret = 0;
 
@@ -1176,8 +1248,12 @@ static snd_pcm_sframes_t dac33_dai_delay(
 			struct snd_pcm_substream *substream,
 			struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
 	unsigned long long t0, t1, t_now;
 	unsigned int time_delta, uthr;
@@ -1410,7 +1486,13 @@ static int dac33_soc_probe(struct snd_soc_codec *codec)
 
 	codec->control_data = dac33->control_data;
 	codec->hw_write = (hw_write_t) i2c_master_send;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	codec->dapm.idle_bias_off = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dac33->codec = codec;
 
 	/* Read the tlv320dac33 ID registers */
@@ -1431,7 +1513,15 @@ static int dac33_soc_probe(struct snd_soc_codec *codec)
 	/* Check if the IRQ number is valid and request it */
 	if (dac33->irq >= 0) {
 		ret = request_irq(dac33->irq, dac33_interrupt_handler,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				  IRQF_TRIGGER_RISING | IRQF_DISABLED,
+=======
+				  IRQF_TRIGGER_RISING,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  IRQF_TRIGGER_RISING,
+>>>>>>> refs/remotes/origin/master
 				  codec->name, codec);
 		if (ret < 0) {
 			dev_err(codec->dev, "Could not request IRQ%d (%d)\n",
@@ -1451,6 +1541,8 @@ static int dac33_soc_probe(struct snd_soc_codec *codec)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, dac33_snd_controls,
 			     ARRAY_SIZE(dac33_snd_controls));
 	/* Only add the FIFO controls, if we have valid IRQ number */
@@ -1460,6 +1552,18 @@ static int dac33_soc_probe(struct snd_soc_codec *codec)
 
 	dac33_add_widgets(codec);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Only add the FIFO controls, if we have valid IRQ number */
+	if (dac33->irq >= 0)
+		snd_soc_add_codec_controls(codec, dac33_mode_snd_controls,
+				     ARRAY_SIZE(dac33_mode_snd_controls));
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err_power:
 	return ret;
 }
@@ -1477,7 +1581,12 @@ static int dac33_soc_remove(struct snd_soc_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int dac33_soc_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int dac33_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	dac33_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
@@ -1491,24 +1600,58 @@ static int dac33_soc_resume(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_codec_driver soc_codec_dev_tlv320dac33 = {
 	.read = dac33_read_reg_cache,
 	.write = dac33_write_locked,
 	.set_bias_level = dac33_set_bias_level,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.idle_bias_off = true,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.idle_bias_off = true,
+>>>>>>> refs/remotes/origin/master
 	.reg_cache_size = ARRAY_SIZE(dac33_reg),
 	.reg_word_size = sizeof(u8),
 	.reg_cache_default = dac33_reg,
 	.probe = dac33_soc_probe,
 	.remove = dac33_soc_remove,
+<<<<<<< HEAD
 	.suspend = dac33_soc_suspend,
 	.resume = dac33_soc_resume,
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	.controls = dac33_snd_controls,
+	.num_controls = ARRAY_SIZE(dac33_snd_controls),
+	.dapm_widgets = dac33_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(dac33_dapm_widgets),
+	.dapm_routes = audio_map,
+	.num_dapm_routes = ARRAY_SIZE(audio_map),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define DAC33_RATES	(SNDRV_PCM_RATE_44100 | \
 			 SNDRV_PCM_RATE_48000)
 #define DAC33_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops dac33_dai_ops = {
+=======
+static const struct snd_soc_dai_ops dac33_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops dac33_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= dac33_startup,
 	.shutdown	= dac33_shutdown,
 	.hw_params	= dac33_hw_params,
@@ -1525,12 +1668,29 @@ static struct snd_soc_dai_driver dac33_dai = {
 		.channels_min = 2,
 		.channels_max = 2,
 		.rates = DAC33_RATES,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.formats = DAC33_FORMATS,},
+=======
+		.formats = DAC33_FORMATS,
+		.sig_bits = 24,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ops = &dac33_dai_ops,
 };
 
 static int __devinit dac33_i2c_probe(struct i2c_client *client,
 				     const struct i2c_device_id *id)
+=======
+		.formats = DAC33_FORMATS,
+		.sig_bits = 24,
+	},
+	.ops = &dac33_dai_ops,
+};
+
+static int dac33_i2c_probe(struct i2c_client *client,
+			   const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tlv320dac33_platform_data *pdata;
 	struct tlv320dac33_priv *dac33;
@@ -1542,7 +1702,17 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
 	}
 	pdata = client->dev.platform_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dac33 = kzalloc(sizeof(struct tlv320dac33_priv), GFP_KERNEL);
+=======
+	dac33 = devm_kzalloc(&client->dev, sizeof(struct tlv320dac33_priv),
+			     GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dac33 = devm_kzalloc(&client->dev, sizeof(struct tlv320dac33_priv),
+			     GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (dac33 == NULL)
 		return -ENOMEM;
 
@@ -1597,11 +1767,21 @@ err_get:
 	if (dac33->power_gpio >= 0)
 		gpio_free(dac33->power_gpio);
 err_gpio:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(dac33);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit dac33_i2c_remove(struct i2c_client *client)
+=======
+	return ret;
+}
+
+static int dac33_i2c_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tlv320dac33_priv *dac33 = i2c_get_clientdata(client);
 
@@ -1614,8 +1794,14 @@ static int __devexit dac33_i2c_remove(struct i2c_client *client)
 	regulator_bulk_free(ARRAY_SIZE(dac33->supplies), dac33->supplies);
 
 	snd_soc_unregister_codec(&client->dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(dac33);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1634,6 +1820,7 @@ static struct i2c_driver tlv320dac33_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe		= dac33_i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(dac33_i2c_remove),
 	.id_table	= tlv320dac33_i2c_id,
 };
@@ -1656,6 +1843,13 @@ static void __exit dac33_module_exit(void)
 }
 module_exit(dac33_module_exit);
 
+=======
+	.remove		= dac33_i2c_remove,
+	.id_table	= tlv320dac33_i2c_id,
+};
+
+module_i2c_driver(tlv320dac33_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC TLV320DAC33 codec driver");
 MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");

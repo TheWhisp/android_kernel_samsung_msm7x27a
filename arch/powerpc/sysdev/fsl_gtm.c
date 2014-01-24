@@ -1,7 +1,11 @@
 /*
  * Freescale General-purpose Timers Module
  *
+<<<<<<< HEAD
  * Copyright (c) Freescale Semicondutor, Inc. 2006.
+=======
+ * Copyright (c) Freescale Semiconductor, Inc. 2006.
+>>>>>>> refs/remotes/origin/master
  *               Shlomi Gridish <gridish@freescale.com>
  *               Jerry Huang <Chang-Ming.Huang@freescale.com>
  * Copyright (c) MontaVista Software, Inc. 2008.
@@ -19,9 +23,22 @@
 #include <linux/list.h>
 #include <linux/io.h>
 #include <linux/of.h>
+<<<<<<< HEAD
 #include <linux/spinlock.h>
 #include <linux/bitops.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/spinlock.h>
+#include <linux/bitops.h>
+#include <linux/slab.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/fsl_gtm.h>
 
 #define GTCFR_STP(x)		((x) & 1 ? 1 << 5 : 1 << 1)
@@ -400,16 +417,27 @@ static int __init fsl_gtm_init(void)
 		gtm->clock = *clock;
 
 		for (i = 0; i < ARRAY_SIZE(gtm->timers); i++) {
+<<<<<<< HEAD
 			int ret;
 			struct resource irq;
 
 			ret = of_irq_to_resource(np, i, &irq);
 			if (ret == NO_IRQ) {
+=======
+			unsigned int irq;
+
+			irq = irq_of_parse_and_map(np, i);
+			if (irq == NO_IRQ) {
+>>>>>>> refs/remotes/origin/master
 				pr_err("%s: not enough interrupts specified\n",
 				       np->full_name);
 				goto err;
 			}
+<<<<<<< HEAD
 			gtm->timers[i].irq = irq.start;
+=======
+			gtm->timers[i].irq = irq;
+>>>>>>> refs/remotes/origin/master
 			gtm->timers[i].gtm = gtm;
 		}
 

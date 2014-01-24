@@ -6,6 +6,10 @@
  */
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "internals.h"
 
@@ -57,3 +61,7 @@ struct irq_chip dummy_irq_chip = {
 	.irq_mask	= noop,
 	.irq_unmask	= noop,
 };
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(dummy_irq_chip);
+>>>>>>> refs/remotes/origin/master

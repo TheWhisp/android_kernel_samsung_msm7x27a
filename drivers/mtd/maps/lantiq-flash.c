@@ -7,6 +7,10 @@
  *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/kernel.h>
@@ -19,9 +23,15 @@
 #include <linux/mtd/cfi.h>
 #include <linux/platform_device.h>
 #include <linux/mtd/physmap.h>
+<<<<<<< HEAD
 
 #include <lantiq_soc.h>
 #include <lantiq_platform.h>
+=======
+#include <linux/of.h>
+
+#include <lantiq_soc.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The NOR flash is connected to the same external bus unit (EBU) as PCI.
@@ -44,7 +54,16 @@ struct ltq_mtd {
 	struct map_info *map;
 };
 
+<<<<<<< HEAD
 static char ltq_map_name[] = "ltq_nor";
+<<<<<<< HEAD
+=======
+static const char *ltq_probe_types[] __devinitconst = { "cmdlinepart", NULL };
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char ltq_map_name[] = "ltq_nor";
+static const char * const ltq_probe_types[] = { "cmdlinepart", "ofpart", NULL };
+>>>>>>> refs/remotes/origin/master
 
 static map_word
 ltq_read16(struct map_info *map, unsigned long adr)
@@ -107,29 +126,58 @@ ltq_copy_to(struct map_info *map, unsigned long to,
 	spin_unlock_irqrestore(&ebu_lock, flags);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const char const *part_probe_types[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init
 ltq_mtd_probe(struct platform_device *pdev)
 {
 	struct physmap_flash_data *ltq_mtd_data = dev_get_platdata(&pdev->dev);
 	struct ltq_mtd *ltq_mtd;
+<<<<<<< HEAD
 	struct mtd_partition *parts;
 	struct resource *res;
 	int nr_parts = 0;
+=======
+	struct resource *res;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct cfi_private *cfi;
 	int err;
 
+=======
+static int
+ltq_mtd_probe(struct platform_device *pdev)
+{
+	struct mtd_part_parser_data ppdata;
+	struct ltq_mtd *ltq_mtd;
+	struct cfi_private *cfi;
+	int err;
+
+	if (of_machine_is_compatible("lantiq,falcon") &&
+			(ltq_boot_select() != BS_FLASH)) {
+		dev_err(&pdev->dev, "invalid bootstrap options\n");
+		return -ENODEV;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ltq_mtd = kzalloc(sizeof(struct ltq_mtd), GFP_KERNEL);
 	platform_set_drvdata(pdev, ltq_mtd);
 
 	ltq_mtd->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!ltq_mtd->res) {
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "failed to get memory resource");
+=======
+		dev_err(&pdev->dev, "failed to get memory resource\n");
+>>>>>>> refs/remotes/origin/master
 		err = -ENOENT;
 		goto err_out;
 	}
 
+<<<<<<< HEAD
 	res = devm_request_mem_region(&pdev->dev, ltq_mtd->res->start,
 		resource_size(ltq_mtd->res), dev_name(&pdev->dev));
 	if (!ltq_mtd->res) {
@@ -147,6 +195,15 @@ ltq_mtd_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "failed to ioremap!\n");
 		err = -ENOMEM;
 		goto err_free;
+=======
+	ltq_mtd->map = kzalloc(sizeof(struct map_info), GFP_KERNEL);
+	ltq_mtd->map->phys = ltq_mtd->res->start;
+	ltq_mtd->map->size = resource_size(ltq_mtd->res);
+	ltq_mtd->map->virt = devm_ioremap_resource(&pdev->dev, ltq_mtd->res);
+	if (IS_ERR(ltq_mtd->map->virt)) {
+		err = PTR_ERR(ltq_mtd->map->virt);
+		goto err_out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ltq_mtd->map->name = ltq_map_name;
@@ -163,7 +220,15 @@ ltq_mtd_probe(struct platform_device *pdev)
 	if (!ltq_mtd->mtd) {
 		dev_err(&pdev->dev, "probing failed\n");
 		err = -ENXIO;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto err_unmap;
+=======
+		goto err_free;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_free;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ltq_mtd->mtd->owner = THIS_MODULE;
@@ -172,6 +237,8 @@ ltq_mtd_probe(struct platform_device *pdev)
 	cfi->addr_unlock1 ^= 1;
 	cfi->addr_unlock2 ^= 1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	nr_parts = parse_mtd_partitions(ltq_mtd->mtd,
 				part_probe_types, &parts, 0);
 	if (nr_parts > 0) {
@@ -183,6 +250,16 @@ ltq_mtd_probe(struct platform_device *pdev)
 	}
 
 	err = add_mtd_partitions(ltq_mtd->mtd, parts, nr_parts);
+=======
+	err = mtd_device_parse_register(ltq_mtd->mtd, ltq_probe_types, NULL,
+					ltq_mtd_data->parts,
+					ltq_mtd_data->nr_parts);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ppdata.of_node = pdev->dev.of_node;
+	err = mtd_device_parse_register(ltq_mtd->mtd, ltq_probe_types,
+					&ppdata, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		dev_err(&pdev->dev, "failed to add partitions\n");
 		goto err_destroy;
@@ -192,8 +269,14 @@ ltq_mtd_probe(struct platform_device *pdev)
 
 err_destroy:
 	map_destroy(ltq_mtd->mtd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 err_unmap:
 	iounmap(ltq_mtd->map->virt);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err_free:
 	kfree(ltq_mtd->map);
 err_out:
@@ -201,24 +284,41 @@ err_out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 ltq_mtd_remove(struct platform_device *pdev)
 {
 	struct ltq_mtd *ltq_mtd = platform_get_drvdata(pdev);
 
 	if (ltq_mtd) {
 		if (ltq_mtd->mtd) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			del_mtd_partitions(ltq_mtd->mtd);
 			map_destroy(ltq_mtd->mtd);
 		}
 		if (ltq_mtd->map->virt)
 			iounmap(ltq_mtd->map->virt);
+=======
+			mtd_device_unregister(ltq_mtd->mtd);
+			map_destroy(ltq_mtd->mtd);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mtd_device_unregister(ltq_mtd->mtd);
+			map_destroy(ltq_mtd->mtd);
+		}
+>>>>>>> refs/remotes/origin/master
 		kfree(ltq_mtd->map);
 		kfree(ltq_mtd);
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver ltq_mtd_driver = {
 	.remove = __devexit_p(ltq_mtd_remove),
 	.driver = {
@@ -245,6 +345,25 @@ exit_ltq_mtd(void)
 
 module_init(init_ltq_mtd);
 module_exit(exit_ltq_mtd);
+=======
+static const struct of_device_id ltq_mtd_match[] = {
+	{ .compatible = "lantiq,nor" },
+	{},
+};
+MODULE_DEVICE_TABLE(of, ltq_mtd_match);
+
+static struct platform_driver ltq_mtd_driver = {
+	.probe = ltq_mtd_probe,
+	.remove = ltq_mtd_remove,
+	.driver = {
+		.name = "ltq-nor",
+		.owner = THIS_MODULE,
+		.of_match_table = ltq_mtd_match,
+	},
+};
+
+module_platform_driver(ltq_mtd_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("John Crispin <blogic@openwrt.org>");

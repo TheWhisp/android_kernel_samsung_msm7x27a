@@ -31,9 +31,21 @@
 #include "hysdn_defs.h"
 #include <linux/kernelcapi.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char hycapi_revision[]="$Revision: 1.8.6.4 $";
 
 unsigned int hycapi_enable = 0xffffffff; 
+=======
+static char hycapi_revision[] = "$Revision: 1.8.6.4 $";
+
+unsigned int hycapi_enable = 0xffffffff;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char hycapi_revision[] = "$Revision: 1.8.6.4 $";
+
+unsigned int hycapi_enable = 0xffffffff;
+>>>>>>> refs/remotes/origin/master
 module_param(hycapi_enable, uint, 0);
 
 typedef struct _hycapi_appl {
@@ -48,18 +60,42 @@ static u16 hycapi_send_message(struct capi_ctr *ctrl, struct sk_buff *skb);
 
 static inline int _hycapi_appCheck(int app_id, int ctrl_no)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if((ctrl_no <= 0) || (ctrl_no > CAPI_MAXCONTR) || (app_id <= 0) ||
+=======
+	if ((ctrl_no <= 0) || (ctrl_no > CAPI_MAXCONTR) || (app_id <= 0) ||
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ctrl_no <= 0) || (ctrl_no > CAPI_MAXCONTR) || (app_id <= 0) ||
+>>>>>>> refs/remotes/origin/master
 	   (app_id > CAPI_MAXAPPL))
 	{
 		printk(KERN_ERR "HYCAPI: Invalid request app_id %d for controller %d", app_id, ctrl_no);
 		return -1;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return ((hycapi_applications[app_id-1].ctrl_mask & (1 << (ctrl_no-1))) != 0);
+=======
+	return ((hycapi_applications[app_id - 1].ctrl_mask & (1 << (ctrl_no-1))) != 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ((hycapi_applications[app_id - 1].ctrl_mask & (1 << (ctrl_no-1))) != 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /******************************
 Kernel-Capi callback reset_ctr
+<<<<<<< HEAD
+<<<<<<< HEAD
 ******************************/     
+=======
+******************************/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+******************************/
+>>>>>>> refs/remotes/origin/master
 
 static void
 hycapi_reset_ctr(struct capi_ctr *ctrl)
@@ -75,7 +111,15 @@ hycapi_reset_ctr(struct capi_ctr *ctrl)
 
 /******************************
 Kernel-Capi callback remove_ctr
+<<<<<<< HEAD
+<<<<<<< HEAD
 ******************************/     
+=======
+******************************/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+******************************/
+>>>>>>> refs/remotes/origin/master
 
 static void
 hycapi_remove_ctr(struct capi_ctr *ctrl)
@@ -85,6 +129,8 @@ hycapi_remove_ctr(struct capi_ctr *ctrl)
 	hysdn_card *card = NULL;
 #ifdef HYCAPI_PRINTFNAMES
 	printk(KERN_NOTICE "HYCAPI hycapi_remove_ctr\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif 
 	cinfo = (hycapictrl_info *)(ctrl->driverdata);
 	if(!cinfo) {
@@ -97,13 +143,40 @@ hycapi_remove_ctr(struct capi_ctr *ctrl)
 		if(hycapi_applications[i].listen_req[ctrl->cnr-1]) {
 			kfree_skb(hycapi_applications[i].listen_req[ctrl->cnr-1]);
 			hycapi_applications[i].listen_req[ctrl->cnr-1] = NULL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#endif
+	cinfo = (hycapictrl_info *)(ctrl->driverdata);
+	if (!cinfo) {
+		printk(KERN_ERR "No hycapictrl_info set!");
+		return;
+	}
+	card = cinfo->card;
+	capi_ctr_suspend_output(ctrl);
+	for (i = 0; i < CAPI_MAXAPPL; i++) {
+		if (hycapi_applications[i].listen_req[ctrl->cnr - 1]) {
+			kfree_skb(hycapi_applications[i].listen_req[ctrl->cnr - 1]);
+			hycapi_applications[i].listen_req[ctrl->cnr - 1] = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	detach_capi_ctr(ctrl);
 	ctrl->driverdata = NULL;
 	kfree(card->hyctrlinfo);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	card->hyctrlinfo = NULL;
 }
 
@@ -121,7 +194,15 @@ hycapi_sendmsg_internal(struct capi_ctr *ctrl, struct sk_buff *skb)
 
 	spin_lock_irq(&cinfo->lock);
 #ifdef HYCAPI_PRINTFNAMES
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_NOTICE "hycapi_send_message\n");    
+=======
+	printk(KERN_NOTICE "hycapi_send_message\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_NOTICE "hycapi_send_message\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 	cinfo->skbs[cinfo->in_idx++] = skb;	/* add to buffer list */
 	if (cinfo->in_idx >= HYSDN_MAX_CAPI_SKB)
@@ -130,7 +211,15 @@ hycapi_sendmsg_internal(struct capi_ctr *ctrl, struct sk_buff *skb)
 	if (cinfo->sk_count >= HYSDN_MAX_CAPI_SKB) {
 		/* inform upper layers we're full */
 		printk(KERN_ERR "HYSDN Card%d: CAPI-buffer overrun!\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       card->myid);	
+=======
+		       card->myid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       card->myid);
+>>>>>>> refs/remotes/origin/master
 		capi_ctr_suspend_output(ctrl);
 	}
 	cinfo->tx_skb = skb;
@@ -147,7 +236,15 @@ re-register any applications in the private list.
 
 ************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void 
+=======
+static void
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 hycapi_register_internal(struct capi_ctr *ctrl, __u16 appl,
 			 capi_register_params *rp)
 {
@@ -161,9 +258,21 @@ hycapi_register_internal(struct capi_ctr *ctrl, __u16 appl,
 	__u16 MessageBufferSize = 0;
 	int slen = strlen(ExtFeatureDefaults);
 #ifdef HYCAPI_PRINTFNAMES
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_NOTICE "hycapi_register_appl\n"); 
 #endif
 	MessageBufferSize = rp->level3cnt * rp->datablkcnt * rp->datablklen; 
+=======
+	printk(KERN_NOTICE "hycapi_register_appl\n");
+#endif
+	MessageBufferSize = rp->level3cnt * rp->datablkcnt * rp->datablklen;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_NOTICE "hycapi_register_appl\n");
+#endif
+	MessageBufferSize = rp->level3cnt * rp->datablkcnt * rp->datablklen;
+>>>>>>> refs/remotes/origin/master
 
 	len = CAPI_MSG_BASELEN + 8 + slen + 1;
 	if (!(skb = alloc_skb(len, GFP_ATOMIC))) {
@@ -171,6 +280,8 @@ hycapi_register_internal(struct capi_ctr *ctrl, __u16 appl,
 		       card->myid);
 		return;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(skb_put(skb,sizeof(__u16)), &len, sizeof(__u16));
 	memcpy(skb_put(skb,sizeof(__u16)), &appl, sizeof(__u16));
 	memcpy(skb_put(skb,sizeof(__u8)), &_command, sizeof(_command));
@@ -183,6 +294,25 @@ hycapi_register_internal(struct capi_ctr *ctrl, __u16 appl,
 	memcpy(skb_put(skb,slen), ExtFeatureDefaults, slen);
 	hycapi_applications[appl-1].ctrl_mask |= (1 << (ctrl->cnr-1));    
 	hycapi_send_message(ctrl, skb);    
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	memcpy(skb_put(skb, sizeof(__u16)), &len, sizeof(__u16));
+	memcpy(skb_put(skb, sizeof(__u16)), &appl, sizeof(__u16));
+	memcpy(skb_put(skb, sizeof(__u8)), &_command, sizeof(_command));
+	memcpy(skb_put(skb, sizeof(__u8)), &_subcommand, sizeof(_subcommand));
+	memcpy(skb_put(skb, sizeof(__u16)), &MessageNumber, sizeof(__u16));
+	memcpy(skb_put(skb, sizeof(__u16)), &MessageBufferSize, sizeof(__u16));
+	memcpy(skb_put(skb, sizeof(__u16)), &(rp->level3cnt), sizeof(__u16));
+	memcpy(skb_put(skb, sizeof(__u16)), &(rp->datablkcnt), sizeof(__u16));
+	memcpy(skb_put(skb, sizeof(__u16)), &(rp->datablklen), sizeof(__u16));
+	memcpy(skb_put(skb, slen), ExtFeatureDefaults, slen);
+	hycapi_applications[appl - 1].ctrl_mask |= (1 << (ctrl->cnr - 1));
+	hycapi_send_message(ctrl, skb);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /************************************************************
@@ -200,12 +330,27 @@ static void hycapi_restart_internal(struct capi_ctr *ctrl)
 #ifdef HYCAPI_PRINTFNAMES
 	printk(KERN_WARNING "HYSDN: hycapi_restart_internal");
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for(i=0; i<CAPI_MAXAPPL; i++) {
 		if(_hycapi_appCheck(i+1, ctrl->cnr) == 1) {
 			hycapi_register_internal(ctrl, i+1, 
 						 &hycapi_applications[i].rp);
 			if(hycapi_applications[i].listen_req[ctrl->cnr-1]) {
 				skb = skb_copy(hycapi_applications[i].listen_req[ctrl->cnr-1], GFP_ATOMIC);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	for (i = 0; i < CAPI_MAXAPPL; i++) {
+		if (_hycapi_appCheck(i + 1, ctrl->cnr) == 1) {
+			hycapi_register_internal(ctrl, i + 1,
+						 &hycapi_applications[i].rp);
+			if (hycapi_applications[i].listen_req[ctrl->cnr - 1]) {
+				skb = skb_copy(hycapi_applications[i].listen_req[ctrl->cnr - 1], GFP_ATOMIC);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				hycapi_sendmsg_internal(ctrl, skb);
 			}
 		}
@@ -220,35 +365,83 @@ The application is recorded in the internal list.
 *************************************************************/
 
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 hycapi_register_appl(struct capi_ctr *ctrl, __u16 appl, 
+=======
+hycapi_register_appl(struct capi_ctr *ctrl, __u16 appl,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+hycapi_register_appl(struct capi_ctr *ctrl, __u16 appl,
+>>>>>>> refs/remotes/origin/master
 		     capi_register_params *rp)
 {
 	int MaxLogicalConnections = 0, MaxBDataBlocks = 0, MaxBDataLen = 0;
 	hycapictrl_info *cinfo = (hycapictrl_info *)(ctrl->driverdata);
 	hysdn_card *card = cinfo->card;
 	int chk = _hycapi_appCheck(appl, ctrl->cnr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if(chk < 0) {
 		return;
 	}
 	if(chk == 1) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (chk < 0) {
+		return;
+	}
+	if (chk == 1) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_INFO "HYSDN: apl %d already registered\n", appl);
 		return;
 	}
 	MaxBDataBlocks = rp->datablkcnt > CAPI_MAXDATAWINDOW ? CAPI_MAXDATAWINDOW : rp->datablkcnt;
 	rp->datablkcnt = MaxBDataBlocks;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	MaxBDataLen = rp->datablklen < 1024 ? 1024 : rp->datablklen ;
 	rp->datablklen = MaxBDataLen;
 	
 	MaxLogicalConnections = rp->level3cnt;
 	if (MaxLogicalConnections < 0) {
 		MaxLogicalConnections = card->bchans * -MaxLogicalConnections; 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	MaxBDataLen = rp->datablklen < 1024 ? 1024 : rp->datablklen;
+	rp->datablklen = MaxBDataLen;
+
+	MaxLogicalConnections = rp->level3cnt;
+	if (MaxLogicalConnections < 0) {
+		MaxLogicalConnections = card->bchans * -MaxLogicalConnections;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (MaxLogicalConnections == 0) {
 		MaxLogicalConnections = card->bchans;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
 	rp->level3cnt = MaxLogicalConnections;
 	memcpy(&hycapi_applications[appl-1].rp, 
+=======
+
+	rp->level3cnt = MaxLogicalConnections;
+	memcpy(&hycapi_applications[appl - 1].rp,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	rp->level3cnt = MaxLogicalConnections;
+	memcpy(&hycapi_applications[appl - 1].rp,
+>>>>>>> refs/remotes/origin/master
 	       rp, sizeof(capi_register_params));
 }
 
@@ -279,6 +472,8 @@ static void hycapi_release_internal(struct capi_ctr *ctrl, __u16 appl)
 		       card->myid);
 		return;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(skb_put(skb,sizeof(__u16)), &len, sizeof(__u16));
 	memcpy(skb_put(skb,sizeof(__u16)), &appl, sizeof(__u16));
 	memcpy(skb_put(skb,sizeof(__u8)), &_command, sizeof(_command));
@@ -286,12 +481,34 @@ static void hycapi_release_internal(struct capi_ctr *ctrl, __u16 appl)
 	memcpy(skb_put(skb,sizeof(__u16)), &MessageNumber, sizeof(__u16));    
 	hycapi_send_message(ctrl, skb);    
 	hycapi_applications[appl-1].ctrl_mask &= ~(1 << (ctrl->cnr-1));    
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	memcpy(skb_put(skb, sizeof(__u16)), &len, sizeof(__u16));
+	memcpy(skb_put(skb, sizeof(__u16)), &appl, sizeof(__u16));
+	memcpy(skb_put(skb, sizeof(__u8)), &_command, sizeof(_command));
+	memcpy(skb_put(skb, sizeof(__u8)), &_subcommand, sizeof(_subcommand));
+	memcpy(skb_put(skb, sizeof(__u16)), &MessageNumber, sizeof(__u16));
+	hycapi_send_message(ctrl, skb);
+	hycapi_applications[appl - 1].ctrl_mask &= ~(1 << (ctrl->cnr - 1));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /******************************************************************
 hycapi_release_appl
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 Release the application from the internal list an remove it's 
+=======
+Release the application from the internal list an remove it's
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+Release the application from the internal list an remove it's
+>>>>>>> refs/remotes/origin/master
 registration at controller-level
 ******************************************************************/
 
@@ -301,6 +518,8 @@ hycapi_release_appl(struct capi_ctr *ctrl, __u16 appl)
 	int chk;
 
 	chk = _hycapi_appCheck(appl, ctrl->cnr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if(chk<0) {
 		printk(KERN_ERR "HYCAPI: Releasing invalid appl %d on controller %d\n", appl, ctrl->cnr);
 		return;
@@ -310,6 +529,22 @@ hycapi_release_appl(struct capi_ctr *ctrl, __u16 appl)
 		hycapi_applications[appl-1].listen_req[ctrl->cnr-1] = NULL;
 	}
 	if(chk == 1)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (chk < 0) {
+		printk(KERN_ERR "HYCAPI: Releasing invalid appl %d on controller %d\n", appl, ctrl->cnr);
+		return;
+	}
+	if (hycapi_applications[appl - 1].listen_req[ctrl->cnr - 1]) {
+		kfree_skb(hycapi_applications[appl - 1].listen_req[ctrl->cnr - 1]);
+		hycapi_applications[appl - 1].listen_req[ctrl->cnr - 1] = NULL;
+	}
+	if (chk == 1)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		hycapi_release_internal(ctrl, appl);
 	}
@@ -327,7 +562,15 @@ int hycapi_capi_release(hysdn_card *card)
 #ifdef HYCAPI_PRINTFNAMES
 	printk(KERN_NOTICE "hycapi_capi_release\n");
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if(cinfo) {
+=======
+	if (cinfo) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cinfo) {
+>>>>>>> refs/remotes/origin/master
 		ctrl = &cinfo->capi_ctrl;
 		hycapi_remove_ctr(ctrl);
 	}
@@ -347,7 +590,15 @@ int hycapi_capi_stop(hysdn_card *card)
 #ifdef HYCAPI_PRINTFNAMES
 	printk(KERN_NOTICE "hycapi_capi_stop\n");
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if(cinfo) {
+=======
+	if (cinfo) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cinfo) {
+>>>>>>> refs/remotes/origin/master
 		ctrl = &cinfo->capi_ctrl;
 /*		ctrl->suspend_output(ctrl); */
 		capi_ctr_down(ctrl);
@@ -377,6 +628,8 @@ static u16 hycapi_send_message(struct capi_ctr *ctrl, struct sk_buff *skb)
 	u16 retval = CAPI_NOERROR;
 
 	appl_id = CAPIMSG_APPID(skb->data);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(_hycapi_appCheck(appl_id, ctrl->cnr))
 	{
 		case 0:
@@ -430,6 +683,66 @@ static u16 hycapi_send_message(struct capi_ctr *ctrl, struct sk_buff *skb)
 	if (retval == CAPI_NOERROR)
 		hycapi_sendmsg_internal(ctrl, skb);
 	else 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (_hycapi_appCheck(appl_id, ctrl->cnr))
+	{
+	case 0:
+/*			printk(KERN_INFO "Need to register\n"); */
+		hycapi_register_internal(ctrl,
+					 appl_id,
+					 &(hycapi_applications[appl_id - 1].rp));
+		break;
+	case 1:
+		break;
+	default:
+		printk(KERN_ERR "HYCAPI: Controller mixup!\n");
+		retval = CAPI_ILLAPPNR;
+		goto out;
+	}
+	switch (CAPIMSG_CMD(skb->data)) {
+	case CAPI_DISCONNECT_B3_RESP:
+		capilib_free_ncci(&cinfo->ncci_head, appl_id,
+				  CAPIMSG_NCCI(skb->data));
+		break;
+	case CAPI_DATA_B3_REQ:
+		_len = CAPIMSG_LEN(skb->data);
+		if (_len > 22) {
+			_len2 = _len - 22;
+			skb_copy_from_linear_data(skb, msghead, 22);
+			skb_copy_to_linear_data_offset(skb, _len2,
+						       msghead, 22);
+			skb_pull(skb, _len2);
+			CAPIMSG_SETLEN(skb->data, 22);
+			retval = capilib_data_b3_req(&cinfo->ncci_head,
+						     CAPIMSG_APPID(skb->data),
+						     CAPIMSG_NCCI(skb->data),
+						     CAPIMSG_MSGID(skb->data));
+		}
+		break;
+	case CAPI_LISTEN_REQ:
+		if (hycapi_applications[appl_id - 1].listen_req[ctrl->cnr - 1])
+		{
+			kfree_skb(hycapi_applications[appl_id - 1].listen_req[ctrl->cnr - 1]);
+			hycapi_applications[appl_id - 1].listen_req[ctrl->cnr - 1] = NULL;
+		}
+		if (!(hycapi_applications[appl_id  -1].listen_req[ctrl->cnr - 1] = skb_copy(skb, GFP_ATOMIC)))
+		{
+			printk(KERN_ERR "HYSDN: memory squeeze in private_listen\n");
+		}
+		break;
+	default:
+		break;
+	}
+out:
+	if (retval == CAPI_NOERROR)
+		hycapi_sendmsg_internal(ctrl, skb);
+	else
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_kfree_skb_any(skb);
 
 	return retval;
@@ -445,6 +758,8 @@ static int hycapi_proc_show(struct seq_file *m, void *v)
 	seq_printf(m, "%-16s %s\n", "name", cinfo->cardname);
 	seq_printf(m, "%-16s 0x%x\n", "io", card->iobase);
 	seq_printf(m, "%-16s %d\n", "irq", card->irq);
+<<<<<<< HEAD
+<<<<<<< HEAD
     
 	switch (card->brdtype) {
 		case BD_PCCARD:  s = "HYSDN Hycard"; break;
@@ -453,6 +768,21 @@ static int hycapi_proc_show(struct seq_file *m, void *v)
 		case BD_CHAMP2: s = "HYSDN Champ2";	break;
 		case BD_PLEXUS: s = "HYSDN Plexus30"; break;
 		default: s = "???"; break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	switch (card->brdtype) {
+	case BD_PCCARD:  s = "HYSDN Hycard"; break;
+	case BD_ERGO: s = "HYSDN Ergo2"; break;
+	case BD_METRO: s = "HYSDN Metro4"; break;
+	case BD_CHAMP2: s = "HYSDN Champ2";	break;
+	case BD_PLEXUS: s = "HYSDN Plexus30"; break;
+	default: s = "???"; break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	seq_printf(m, "%-16s %s\n", "type", s);
 	if ((s = cinfo->version[VER_DRIVER]) != NULL)
@@ -461,15 +791,31 @@ static int hycapi_proc_show(struct seq_file *m, void *v)
 		seq_printf(m, "%-16s %s\n", "ver_cardtype", s);
 	if ((s = cinfo->version[VER_SERIAL]) != NULL)
 		seq_printf(m, "%-16s %s\n", "ver_serial", s);
+<<<<<<< HEAD
+<<<<<<< HEAD
     
 	seq_printf(m, "%-16s %s\n", "cardname", cinfo->cardname);
     
+=======
+
+	seq_printf(m, "%-16s %s\n", "cardname", cinfo->cardname);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	seq_printf(m, "%-16s %s\n", "cardname", cinfo->cardname);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int hycapi_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, hycapi_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, hycapi_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations hycapi_proc_fops = {
@@ -491,7 +837,15 @@ on capi-interface registration.
 static int hycapi_load_firmware(struct capi_ctr *ctrl, capiloaddata *data)
 {
 #ifdef HYCAPI_PRINTFNAMES
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_NOTICE "hycapi_load_firmware\n");    
+=======
+	printk(KERN_NOTICE "hycapi_load_firmware\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_NOTICE "hycapi_load_firmware\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 	return 0;
 }
@@ -501,7 +855,15 @@ static char *hycapi_procinfo(struct capi_ctr *ctrl)
 {
 	hycapictrl_info *cinfo = (hycapictrl_info *)(ctrl->driverdata);
 #ifdef HYCAPI_PRINTFNAMES
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_NOTICE "hycapi_proc_info\n");    
+=======
+	printk(KERN_NOTICE "hycapi_proc_info\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_NOTICE "hycapi_proc_info\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 	if (!cinfo)
 		return "";
@@ -525,7 +887,15 @@ New nccis are created if necessary.
 *******************************************************************/
 
 void
+<<<<<<< HEAD
+<<<<<<< HEAD
 hycapi_rx_capipkt(hysdn_card * card, unsigned char *buf, unsigned short len)
+=======
+hycapi_rx_capipkt(hysdn_card *card, unsigned char *buf, unsigned short len)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+hycapi_rx_capipkt(hysdn_card *card, unsigned char *buf, unsigned short len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *skb;
 	hycapictrl_info *cinfo = card->hyctrlinfo;
@@ -533,6 +903,8 @@ hycapi_rx_capipkt(hysdn_card * card, unsigned char *buf, unsigned short len)
 	__u16 ApplId;
 	__u16 MsgLen, info;
 	__u16 len2, CapiCmd;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__u32 CP64[2] = {0,0};
 #ifdef HYCAPI_PRINTFNAMES
 	printk(KERN_NOTICE "hycapi_rx_capipkt\n");    
@@ -551,6 +923,31 @@ hycapi_rx_capipkt(hysdn_card * card, unsigned char *buf, unsigned short len)
 	CapiCmd = CAPIMSG_CMD(buf);
 	
 	if((CapiCmd == CAPI_DATA_B3_IND) && (MsgLen < 30)) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	__u32 CP64[2] = {0, 0};
+#ifdef HYCAPI_PRINTFNAMES
+	printk(KERN_NOTICE "hycapi_rx_capipkt\n");
+#endif
+	if (!cinfo) {
+		return;
+	}
+	ctrl = &cinfo->capi_ctrl;
+	if (len < CAPI_MSG_BASELEN) {
+		printk(KERN_ERR "HYSDN Card%d: invalid CAPI-message, length %d!\n",
+		       card->myid, len);
+		return;
+	}
+	MsgLen = CAPIMSG_LEN(buf);
+	ApplId = CAPIMSG_APPID(buf);
+	CapiCmd = CAPIMSG_CMD(buf);
+
+	if ((CapiCmd == CAPI_DATA_B3_IND) && (MsgLen < 30)) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		len2 = len + (30 - MsgLen);
 		if (!(skb = alloc_skb(len2, GFP_ATOMIC))) {
 			printk(KERN_ERR "HYSDN Card%d: incoming packet dropped\n",
@@ -558,7 +955,15 @@ hycapi_rx_capipkt(hysdn_card * card, unsigned char *buf, unsigned short len)
 			return;
 		}
 		memcpy(skb_put(skb, MsgLen), buf, MsgLen);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		memcpy(skb_put(skb, 2*sizeof(__u32)), CP64, 2* sizeof(__u32));
+=======
+		memcpy(skb_put(skb, 2 * sizeof(__u32)), CP64, 2 * sizeof(__u32));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memcpy(skb_put(skb, 2 * sizeof(__u32)), CP64, 2 * sizeof(__u32));
+>>>>>>> refs/remotes/origin/master
 		memcpy(skb_put(skb, len - MsgLen), buf + MsgLen,
 		       len - MsgLen);
 		CAPIMSG_SETLEN(skb->data, 30);
@@ -570,6 +975,8 @@ hycapi_rx_capipkt(hysdn_card * card, unsigned char *buf, unsigned short len)
 		}
 		memcpy(skb_put(skb, len), buf, len);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(CAPIMSG_CMD(skb->data)) 
 	{
 		case CAPI_CONNECT_B3_CONF:
@@ -618,6 +1025,61 @@ hycapi_rx_capipkt(hysdn_card * card, unsigned char *buf, unsigned short len)
 			break;
 		default:
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (CAPIMSG_CMD(skb->data))
+	{
+	case CAPI_CONNECT_B3_CONF:
+/* Check info-field for error-indication: */
+		info = CAPIMSG_U16(skb->data, 12);
+		switch (info)
+		{
+		case 0:
+			capilib_new_ncci(&cinfo->ncci_head, ApplId, CAPIMSG_NCCI(skb->data),
+					 hycapi_applications[ApplId - 1].rp.datablkcnt);
+
+			break;
+		case 0x0001:
+			printk(KERN_ERR "HYSDN Card%d: NCPI not supported by current "
+			       "protocol. NCPI ignored.\n", card->myid);
+			break;
+		case 0x2001:
+			printk(KERN_ERR "HYSDN Card%d: Message not supported in"
+			       " current state\n", card->myid);
+			break;
+		case 0x2002:
+			printk(KERN_ERR "HYSDN Card%d: invalid PLCI\n", card->myid);
+			break;
+		case 0x2004:
+			printk(KERN_ERR "HYSDN Card%d: out of NCCI\n", card->myid);
+			break;
+		case 0x3008:
+			printk(KERN_ERR "HYSDN Card%d: NCPI not supported\n",
+			       card->myid);
+			break;
+		default:
+			printk(KERN_ERR "HYSDN Card%d: Info in CONNECT_B3_CONF: %d\n",
+			       card->myid, info);
+			break;
+		}
+		break;
+	case CAPI_CONNECT_B3_IND:
+		capilib_new_ncci(&cinfo->ncci_head, ApplId,
+				 CAPIMSG_NCCI(skb->data),
+				 hycapi_applications[ApplId - 1].rp.datablkcnt);
+		break;
+	case CAPI_DATA_B3_CONF:
+		capilib_data_b3_conf(&cinfo->ncci_head, ApplId,
+				     CAPIMSG_NCCI(skb->data),
+				     CAPIMSG_MSGID(skb->data));
+		break;
+	default:
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	capi_ctr_handle_message(ctrl, ApplId, skb);
 }
@@ -630,6 +1092,8 @@ internal queue.
 
 *******************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void hycapi_tx_capiack(hysdn_card * card)
 {
 	hycapictrl_info *cinfo = card->hyctrlinfo;
@@ -637,6 +1101,20 @@ void hycapi_tx_capiack(hysdn_card * card)
 	printk(KERN_NOTICE "hycapi_tx_capiack\n");    
 #endif
 	if(!cinfo) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void hycapi_tx_capiack(hysdn_card *card)
+{
+	hycapictrl_info *cinfo = card->hyctrlinfo;
+#ifdef HYCAPI_PRINTFNAMES
+	printk(KERN_NOTICE "hycapi_tx_capiack\n");
+#endif
+	if (!cinfo) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	spin_lock_irq(&cinfo->lock);
@@ -661,7 +1139,15 @@ struct sk_buff *
 hycapi_tx_capiget(hysdn_card *card)
 {
 	hycapictrl_info *cinfo = card->hyctrlinfo;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if(!cinfo) {
+=======
+	if (!cinfo) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cinfo) {
+>>>>>>> refs/remotes/origin/master
 		return (struct sk_buff *)NULL;
 	}
 	if (!cinfo->sk_count)
@@ -681,10 +1167,23 @@ attach the capi-driver to the kernel-capi.
 int hycapi_init(void)
 {
 	int i;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for(i=0;i<CAPI_MAXAPPL;i++) {
 		memset(&(hycapi_applications[i]), 0, sizeof(hycapi_appl));
 	}
 	return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	for (i = 0; i < CAPI_MAXAPPL; i++) {
+		memset(&(hycapi_applications[i]), 0, sizeof(hycapi_appl));
+	}
+	return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**************************************************************
@@ -694,7 +1193,15 @@ detach the capi-driver to the kernel-capi. Actually this should
 free some more ressources. Do that later.
 **************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void 
+=======
+void
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void
+>>>>>>> refs/remotes/origin/master
 hycapi_cleanup(void)
 {
 }
@@ -710,9 +1217,21 @@ static void hycapi_fill_profile(hysdn_card *card)
 	hycapictrl_info *cinfo = NULL;
 	struct capi_ctr *ctrl = NULL;
 	cinfo = card->hyctrlinfo;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if(!cinfo) return;
 	ctrl = &cinfo->capi_ctrl;
 	strcpy(ctrl->manu, "Hypercope");	
+=======
+	if (!cinfo) return;
+	ctrl = &cinfo->capi_ctrl;
+	strcpy(ctrl->manu, "Hypercope");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cinfo) return;
+	ctrl = &cinfo->capi_ctrl;
+	strcpy(ctrl->manu, "Hypercope");
+>>>>>>> refs/remotes/origin/master
 	ctrl->version.majorversion = 2;
 	ctrl->version.minorversion = 0;
 	ctrl->version.majormanuversion = 3;
@@ -732,18 +1251,42 @@ static void hycapi_fill_profile(hysdn_card *card)
 		(card->faxchans ? B3_PROT_T30 : 0) |
 		(card->faxchans ? B3_PROT_T30EXT : 0) |
 		B3_PROT_ISO8208;
+<<<<<<< HEAD
+<<<<<<< HEAD
 }	
 
 int 
+=======
+}
+
+int
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+int
+>>>>>>> refs/remotes/origin/master
 hycapi_capi_create(hysdn_card *card)
 {
 	hycapictrl_info *cinfo = NULL;
 	struct capi_ctr *ctrl = NULL;
 	int retval;
 #ifdef HYCAPI_PRINTFNAMES
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_NOTICE "hycapi_capi_create\n");        
 #endif
 	if((hycapi_enable & (1 << card->myid)) == 0) {
+=======
+	printk(KERN_NOTICE "hycapi_capi_create\n");
+#endif
+	if ((hycapi_enable & (1 << card->myid)) == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_NOTICE "hycapi_capi_create\n");
+#endif
+	if ((hycapi_enable & (1 << card->myid)) == 0) {
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 	if (!card->hyctrlinfo) {
@@ -758,12 +1301,27 @@ hycapi_capi_create(hysdn_card *card)
 		INIT_LIST_HEAD(&cinfo->ncci_head);
 
 		switch (card->brdtype) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			case BD_PCCARD:  strcpy(cinfo->cardname,"HYSDN Hycard"); break;
 			case BD_ERGO: strcpy(cinfo->cardname,"HYSDN Ergo2"); break;
 			case BD_METRO: strcpy(cinfo->cardname,"HYSDN Metro4"); break;
 			case BD_CHAMP2: strcpy(cinfo->cardname,"HYSDN Champ2"); break;
 			case BD_PLEXUS: strcpy(cinfo->cardname,"HYSDN Plexus30"); break;
 			default: strcpy(cinfo->cardname,"HYSDN ???"); break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		case BD_PCCARD:  strcpy(cinfo->cardname, "HYSDN Hycard"); break;
+		case BD_ERGO: strcpy(cinfo->cardname, "HYSDN Ergo2"); break;
+		case BD_METRO: strcpy(cinfo->cardname, "HYSDN Metro4"); break;
+		case BD_CHAMP2: strcpy(cinfo->cardname, "HYSDN Champ2"); break;
+		case BD_PLEXUS: strcpy(cinfo->cardname, "HYSDN Plexus30"); break;
+		default: strcpy(cinfo->cardname, "HYSDN ???"); break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		ctrl = &cinfo->capi_ctrl;
@@ -792,7 +1350,15 @@ hycapi_capi_create(hysdn_card *card)
 		ctrl = &card->hyctrlinfo->capi_ctrl;
 		hycapi_fill_profile(card);
 		capi_ctr_ready(ctrl);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		hycapi_restart_internal(ctrl); 
+=======
+		hycapi_restart_internal(ctrl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hycapi_restart_internal(ctrl);
+>>>>>>> refs/remotes/origin/master
 /*		ctrl->resume_output(ctrl); */
 	}
 	return 0;

@@ -6,13 +6,49 @@
  */
 
 #include <linux/fs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/seq_file.h>
 #include <linux/slab.h>
+=======
+#include <linux/export.h>
+#include <linux/seq_file.h>
+#include <linux/slab.h>
+#include <linux/cred.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 #include <asm/page.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/*
+ * seq_files have a buffer which can may overflow. When this happens a larger
+ * buffer is reallocated and all the data will be printed again.
+ * The overflow state is true when m->count == m->size.
+ */
+static bool seq_overflow(struct seq_file *m)
+{
+	return m->count == m->size;
+}
+
+static void seq_set_overflow(struct seq_file *m)
+{
+	m->count = m->size;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	seq_open -	initialize sequential file
  *	@file: file we initialize
@@ -40,6 +76,12 @@ int seq_open(struct file *file, const struct seq_operations *op)
 	memset(p, 0, sizeof(*p));
 	mutex_init(&p->lock);
 	p->op = op;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USER_NS
+	p->user_ns = file->f_cred->user_ns;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Wrappers around seq_open(e.g. swaps_open) need to be
@@ -92,7 +134,15 @@ static int traverse(struct seq_file *m, loff_t offset)
 			error = 0;
 			m->count = 0;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (m->count == m->size)
+=======
+		if (seq_overflow(m))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (seq_overflow(m))
+>>>>>>> refs/remotes/origin/master
 			goto Eoverflow;
 		if (pos + m->count > offset) {
 			m->from = offset - pos;
@@ -116,6 +166,10 @@ static int traverse(struct seq_file *m, loff_t offset)
 Eoverflow:
 	m->op->stop(m, p);
 	kfree(m->buf);
+<<<<<<< HEAD
+=======
+	m->count = 0;
+>>>>>>> refs/remotes/origin/master
 	m->buf = kmalloc(m->size <<= 1, GFP_KERNEL);
 	return !m->buf ? -ENOMEM : -EAGAIN;
 }
@@ -140,9 +194,33 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
 
 	mutex_lock(&m->lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Don't assume *ppos is where we left it */
 	if (unlikely(*ppos != m->read_pos)) {
 		m->read_pos = *ppos;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * seq_file->op->..m_start/m_stop/m_next may do special actions
+	 * or optimisations based on the file->f_version, so we want to
+	 * pass the file->f_version to those methods.
+	 *
+	 * seq_file->version is just copy of f_version, and seq_file
+	 * methods can treat it simply as file version.
+	 * It is copied in first and copied out after all operations.
+	 * It is convenient to have it as  part of structure to avoid the
+	 * need of passing another argument to all the seq_file methods.
+	 */
+	m->version = file->f_version;
+
+	/* Don't assume *ppos is where we left it */
+	if (unlikely(*ppos != m->read_pos)) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		while ((err = traverse(m, *ppos)) == -EAGAIN)
 			;
 		if (err) {
@@ -152,6 +230,8 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
 			m->index = 0;
 			m->count = 0;
 			goto Done;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		}
 	}
 
@@ -167,6 +247,18 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
 	 * need of passing another argument to all the seq_file methods.
 	 */
 	m->version = file->f_version;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		} else {
+			m->read_pos = *ppos;
+		}
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* grab buffer if we didn't have one */
 	if (!m->buf) {
 		m->buf = kmalloc(m->size = PAGE_SIZE, GFP_KERNEL);
@@ -210,10 +302,17 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
 			goto Fill;
 		m->op->stop(m, p);
 		kfree(m->buf);
+<<<<<<< HEAD
 		m->buf = kmalloc(m->size <<= 1, GFP_KERNEL);
 		if (!m->buf)
 			goto Enomem;
 		m->count = 0;
+=======
+		m->count = 0;
+		m->buf = kmalloc(m->size <<= 1, GFP_KERNEL);
+		if (!m->buf)
+			goto Enomem;
+>>>>>>> refs/remotes/origin/master
 		m->version = 0;
 		pos = m->index;
 		p = m->op->start(m, &pos);
@@ -232,7 +331,15 @@ Fill:
 			break;
 		}
 		err = m->op->show(m, p);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (m->count == m->size || err) {
+=======
+		if (seq_overflow(m) || err) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (seq_overflow(m) || err) {
+>>>>>>> refs/remotes/origin/master
 			m->count = offs;
 			if (likely(err <= 0))
 				break;
@@ -274,17 +381,26 @@ EXPORT_SYMBOL(seq_read);
  *	seq_lseek -	->llseek() method for sequential files.
  *	@file: the file in question
  *	@offset: new position
+<<<<<<< HEAD
  *	@origin: 0 for absolute, 1 for relative position
  *
  *	Ready-made ->f_op->llseek()
  */
 loff_t seq_lseek(struct file *file, loff_t offset, int origin)
+=======
+ *	@whence: 0 for absolute, 1 for relative position
+ *
+ *	Ready-made ->f_op->llseek()
+ */
+loff_t seq_lseek(struct file *file, loff_t offset, int whence)
+>>>>>>> refs/remotes/origin/master
 {
 	struct seq_file *m = file->private_data;
 	loff_t retval = -EINVAL;
 
 	mutex_lock(&m->lock);
 	m->version = file->f_version;
+<<<<<<< HEAD
 	switch (origin) {
 		case 1:
 			offset += file->f_pos;
@@ -307,6 +423,32 @@ loff_t seq_lseek(struct file *file, loff_t offset, int origin)
 					retval = file->f_pos = offset;
 				}
 			}
+=======
+	switch (whence) {
+	case SEEK_CUR:
+		offset += file->f_pos;
+	case SEEK_SET:
+		if (offset < 0)
+			break;
+		retval = offset;
+		if (offset != m->read_pos) {
+			while ((retval = traverse(m, offset)) == -EAGAIN)
+				;
+			if (retval) {
+				/* with extreme prejudice... */
+				file->f_pos = 0;
+				m->read_pos = 0;
+				m->version = 0;
+				m->index = 0;
+				m->count = 0;
+			} else {
+				m->read_pos = offset;
+				retval = file->f_pos = offset;
+			}
+		} else {
+			file->f_pos = offset;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	file->f_version = m->version;
 	mutex_unlock(&m->lock);
@@ -317,7 +459,11 @@ EXPORT_SYMBOL(seq_lseek);
 /**
  *	seq_release -	free the structures associated with sequential file.
  *	@file: file in question
+<<<<<<< HEAD
  *	@inode: file->f_path.dentry->d_inode
+=======
+ *	@inode: its inode
+>>>>>>> refs/remotes/origin/master
  *
  *	Frees the structures associated with sequential file; can be used
  *	as ->f_op->release() if you don't have private data to destroy.
@@ -359,7 +505,15 @@ int seq_escape(struct seq_file *m, const char *s, const char *esc)
 			*p++ = '0' + (c & 07);
 			continue;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		m->count = m->size;
+=======
+		seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/master
 		return -1;
         }
 	m->count = p - m->buf;
@@ -367,6 +521,7 @@ int seq_escape(struct seq_file *m, const char *s, const char *esc)
 }
 EXPORT_SYMBOL(seq_escape);
 
+<<<<<<< HEAD
 int seq_printf(struct seq_file *m, const char *f, ...)
 {
 	va_list args;
@@ -376,14 +531,45 @@ int seq_printf(struct seq_file *m, const char *f, ...)
 		va_start(args, f);
 		len = vsnprintf(m->buf + m->count, m->size - m->count, f, args);
 		va_end(args);
+=======
+int seq_vprintf(struct seq_file *m, const char *f, va_list args)
+{
+	int len;
+
+	if (m->count < m->size) {
+		len = vsnprintf(m->buf + m->count, m->size - m->count, f, args);
+>>>>>>> refs/remotes/origin/master
 		if (m->count + len < m->size) {
 			m->count += len;
 			return 0;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	m->count = m->size;
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -1;
 }
+=======
+	seq_set_overflow(m);
+	return -1;
+}
+EXPORT_SYMBOL(seq_vprintf);
+
+int seq_printf(struct seq_file *m, const char *f, ...)
+{
+	int ret;
+	va_list args;
+
+	va_start(args, f);
+	ret = seq_vprintf(m, f, args);
+	va_end(args);
+
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(seq_printf);
 
 /**
@@ -397,7 +583,15 @@ EXPORT_SYMBOL(seq_printf);
  *      Returns pointer past last written character in @s, or NULL in case of
  *      failure.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 char *mangle_path(char *s, char *p, char *esc)
+=======
+char *mangle_path(char *s, const char *p, const char *esc)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+char *mangle_path(char *s, const char *p, const char *esc)
+>>>>>>> refs/remotes/origin/master
 {
 	while (s <= p) {
 		char c = *p++;
@@ -427,7 +621,15 @@ EXPORT_SYMBOL(mangle_path);
  * return the absolute path of 'path', as represented by the
  * dentry / mnt pair in the path parameter.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int seq_path(struct seq_file *m, struct path *path, char *esc)
+=======
+int seq_path(struct seq_file *m, const struct path *path, const char *esc)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int seq_path(struct seq_file *m, const struct path *path, const char *esc)
+>>>>>>> refs/remotes/origin/master
 {
 	char *buf;
 	size_t size = seq_get_buf(m, &buf);
@@ -450,8 +652,18 @@ EXPORT_SYMBOL(seq_path);
 /*
  * Same as seq_path, but relative to supplied root.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int seq_path_root(struct seq_file *m, struct path *path, struct path *root,
 		  char *esc)
+=======
+int seq_path_root(struct seq_file *m, const struct path *path,
+		  const struct path *root, const char *esc)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int seq_path_root(struct seq_file *m, const struct path *path,
+		  const struct path *root, const char *esc)
+>>>>>>> refs/remotes/origin/master
 {
 	char *buf;
 	size_t size = seq_get_buf(m, &buf);
@@ -480,7 +692,15 @@ int seq_path_root(struct seq_file *m, struct path *path, struct path *root,
 /*
  * returns the path of the 'dentry' from the root of its filesystem.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int seq_dentry(struct seq_file *m, struct dentry *dentry, char *esc)
+=======
+int seq_dentry(struct seq_file *m, struct dentry *dentry, const char *esc)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int seq_dentry(struct seq_file *m, struct dentry *dentry, const char *esc)
+>>>>>>> refs/remotes/origin/master
 {
 	char *buf;
 	size_t size = seq_get_buf(m, &buf);
@@ -510,7 +730,15 @@ int seq_bitmap(struct seq_file *m, const unsigned long *bits,
 			return 0;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	m->count = m->size;
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/master
 	return -1;
 }
 EXPORT_SYMBOL(seq_bitmap);
@@ -526,7 +754,15 @@ int seq_bitmap_list(struct seq_file *m, const unsigned long *bits,
 			return 0;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	m->count = m->size;
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/master
 	return -1;
 }
 EXPORT_SYMBOL(seq_bitmap_list);
@@ -567,6 +803,27 @@ int single_open(struct file *file, int (*show)(struct seq_file *, void *),
 }
 EXPORT_SYMBOL(single_open);
 
+<<<<<<< HEAD
+=======
+int single_open_size(struct file *file, int (*show)(struct seq_file *, void *),
+		void *data, size_t size)
+{
+	char *buf = kmalloc(size, GFP_KERNEL);
+	int ret;
+	if (!buf)
+		return -ENOMEM;
+	ret = single_open(file, show, data);
+	if (ret) {
+		kfree(buf);
+		return ret;
+	}
+	((struct seq_file *)file->private_data)->buf = buf;
+	((struct seq_file *)file->private_data)->size = size;
+	return 0;
+}
+EXPORT_SYMBOL(single_open_size);
+
+>>>>>>> refs/remotes/origin/master
 int single_release(struct inode *inode, struct file *file)
 {
 	const struct seq_operations *op = ((struct seq_file *)file->private_data)->op;
@@ -637,11 +894,80 @@ int seq_puts(struct seq_file *m, const char *s)
 		m->count += len;
 		return 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	m->count = m->size;
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/master
 	return -1;
 }
 EXPORT_SYMBOL(seq_puts);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * A helper routine for putting decimal numbers without rich format of printf().
+ * only 'unsigned long long' is supported.
+ * This routine will put one byte delimiter + number into seq_file.
+ * This routine is very quick when you show lots of numbers.
+ * In usual cases, it will be better to use seq_printf(). It's easier to read.
+ */
+int seq_put_decimal_ull(struct seq_file *m, char delimiter,
+			unsigned long long num)
+{
+	int len;
+
+	if (m->count + 2 >= m->size) /* we'll write 2 bytes at least */
+		goto overflow;
+
+	if (delimiter)
+		m->buf[m->count++] = delimiter;
+
+	if (num < 10) {
+		m->buf[m->count++] = num + '0';
+		return 0;
+	}
+
+	len = num_to_str(m->buf + m->count, m->size - m->count, num);
+	if (!len)
+		goto overflow;
+	m->count += len;
+	return 0;
+overflow:
+	seq_set_overflow(m);
+	return -1;
+}
+EXPORT_SYMBOL(seq_put_decimal_ull);
+
+int seq_put_decimal_ll(struct seq_file *m, char delimiter,
+			long long num)
+{
+	if (num < 0) {
+		if (m->count + 3 >= m->size) {
+			seq_set_overflow(m);
+			return -1;
+		}
+		if (delimiter)
+			m->buf[m->count++] = delimiter;
+		num = -num;
+		delimiter = '-';
+	}
+	return seq_put_decimal_ull(m, delimiter, num);
+
+}
+EXPORT_SYMBOL(seq_put_decimal_ll);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * seq_write - write arbitrary data to buffer
  * @seq: seq_file identifying the buffer to which data should be written
@@ -657,11 +983,37 @@ int seq_write(struct seq_file *seq, const void *data, size_t len)
 		seq->count += len;
 		return 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	seq->count = seq->size;
+=======
+	seq_set_overflow(seq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_set_overflow(seq);
+>>>>>>> refs/remotes/origin/master
 	return -1;
 }
 EXPORT_SYMBOL(seq_write);
 
+<<<<<<< HEAD
+=======
+/**
+ * seq_pad - write padding spaces to buffer
+ * @m: seq_file identifying the buffer to which data should be written
+ * @c: the byte to append after padding if non-zero
+ */
+void seq_pad(struct seq_file *m, char c)
+{
+	int size = m->pad_until - m->count;
+	if (size > 0)
+		seq_printf(m, "%*s", size, "");
+	if (c)
+		seq_putc(m, c);
+}
+EXPORT_SYMBOL(seq_pad);
+
+>>>>>>> refs/remotes/origin/master
 struct list_head *seq_list_start(struct list_head *head, loff_t pos)
 {
 	struct list_head *lh;
@@ -819,3 +1171,60 @@ struct hlist_node *seq_hlist_next_rcu(void *v,
 		return rcu_dereference(node->next);
 }
 EXPORT_SYMBOL(seq_hlist_next_rcu);
+<<<<<<< HEAD
+=======
+
+/**
+ * seq_hlist_start_precpu - start an iteration of a percpu hlist array
+ * @head: pointer to percpu array of struct hlist_heads
+ * @cpu:  pointer to cpu "cursor"
+ * @pos:  start position of sequence
+ *
+ * Called at seq_file->op->start().
+ */
+struct hlist_node *
+seq_hlist_start_percpu(struct hlist_head __percpu *head, int *cpu, loff_t pos)
+{
+	struct hlist_node *node;
+
+	for_each_possible_cpu(*cpu) {
+		hlist_for_each(node, per_cpu_ptr(head, *cpu)) {
+			if (pos-- == 0)
+				return node;
+		}
+	}
+	return NULL;
+}
+EXPORT_SYMBOL(seq_hlist_start_percpu);
+
+/**
+ * seq_hlist_next_percpu - move to the next position of the percpu hlist array
+ * @v:    pointer to current hlist_node
+ * @head: pointer to percpu array of struct hlist_heads
+ * @cpu:  pointer to cpu "cursor"
+ * @pos:  start position of sequence
+ *
+ * Called at seq_file->op->next().
+ */
+struct hlist_node *
+seq_hlist_next_percpu(void *v, struct hlist_head __percpu *head,
+			int *cpu, loff_t *pos)
+{
+	struct hlist_node *node = v;
+
+	++*pos;
+
+	if (node->next)
+		return node->next;
+
+	for (*cpu = cpumask_next(*cpu, cpu_possible_mask); *cpu < nr_cpu_ids;
+	     *cpu = cpumask_next(*cpu, cpu_possible_mask)) {
+		struct hlist_head *bucket = per_cpu_ptr(head, *cpu);
+
+		if (!hlist_empty(bucket))
+			return bucket->first;
+	}
+	return NULL;
+}
+EXPORT_SYMBOL(seq_hlist_next_percpu);
+>>>>>>> refs/remotes/origin/master

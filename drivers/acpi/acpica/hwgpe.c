@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: hwgpe - Low level GPE enable/disable/clear functions
@@ -6,7 +9,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +59,15 @@
 
 #define _COMPONENT          ACPI_HARDWARE
 ACPI_MODULE_NAME("hwgpe")
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/master
 /* Local prototypes */
 static acpi_status
 acpi_hw_enable_wakeup_gpe_block(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
@@ -60,7 +79,10 @@ acpi_hw_enable_wakeup_gpe_block(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
  * FUNCTION:	acpi_hw_get_gpe_register_bit
  *
  * PARAMETERS:	gpe_event_info	    - Info block for the GPE
+<<<<<<< HEAD
  *		gpe_register_info   - Info block for the GPE register
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:	Register mask with a one in the GPE bit position
  *
@@ -69,11 +91,20 @@ acpi_hw_enable_wakeup_gpe_block(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
  *
  ******************************************************************************/
 
+<<<<<<< HEAD
 u32 acpi_hw_get_gpe_register_bit(struct acpi_gpe_event_info *gpe_event_info,
 			     struct acpi_gpe_register_info *gpe_register_info)
 {
 	return (u32)1 << (gpe_event_info->gpe_number -
 				gpe_register_info->base_gpe_number);
+=======
+u32 acpi_hw_get_gpe_register_bit(struct acpi_gpe_event_info *gpe_event_info)
+{
+
+	return ((u32)1 <<
+		(gpe_event_info->gpe_number -
+		 gpe_event_info->register_info->base_gpe_number));
+>>>>>>> refs/remotes/origin/master
 }
 
 /******************************************************************************
@@ -115,8 +146,12 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_event_info, u32 action)
 
 	/* Set or clear just the bit that corresponds to this GPE */
 
+<<<<<<< HEAD
 	register_bit = acpi_hw_get_gpe_register_bit(gpe_event_info,
 						gpe_register_info);
+=======
+	register_bit = acpi_hw_get_gpe_register_bit(gpe_event_info);
+>>>>>>> refs/remotes/origin/master
 	switch (action) {
 	case ACPI_GPE_CONDITIONAL_ENABLE:
 
@@ -129,15 +164,28 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_event_info, u32 action)
 		/*lint -fallthrough */
 
 	case ACPI_GPE_ENABLE:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		ACPI_SET_BIT(enable_mask, register_bit);
 		break;
 
 	case ACPI_GPE_DISABLE:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		ACPI_CLEAR_BIT(enable_mask, register_bit);
 		break;
 
 	default:
+<<<<<<< HEAD
 		ACPI_ERROR((AE_INFO, "Invalid GPE Action, %u\n", action));
+=======
+
+		ACPI_ERROR((AE_INFO, "Invalid GPE Action, %u", action));
+>>>>>>> refs/remotes/origin/master
 		return (AE_BAD_PARAMETER);
 	}
 
@@ -178,8 +226,12 @@ acpi_status acpi_hw_clear_gpe(struct acpi_gpe_event_info * gpe_event_info)
 	 * Write a one to the appropriate bit in the status register to
 	 * clear this GPE.
 	 */
+<<<<<<< HEAD
 	register_bit =
 	    acpi_hw_get_gpe_register_bit(gpe_event_info, gpe_register_info);
+=======
+	register_bit = acpi_hw_get_gpe_register_bit(gpe_event_info);
+>>>>>>> refs/remotes/origin/master
 
 	status = acpi_hw_write(register_bit,
 			       &gpe_register_info->status_address);
@@ -222,8 +274,12 @@ acpi_hw_get_gpe_status(struct acpi_gpe_event_info * gpe_event_info,
 
 	/* Get the register bitmask for this GPE */
 
+<<<<<<< HEAD
 	register_bit = acpi_hw_get_gpe_register_bit(gpe_event_info,
 						gpe_register_info);
+=======
+	register_bit = acpi_hw_get_gpe_register_bit(gpe_event_info);
+>>>>>>> refs/remotes/origin/master
 
 	/* GPE currently enabled? (enabled for runtime?) */
 
@@ -344,7 +400,12 @@ acpi_hw_clear_gpe_block(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
 
 acpi_status
 acpi_hw_enable_runtime_gpe_block(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
+<<<<<<< HEAD
 				 struct acpi_gpe_block_info *gpe_block, void *context)
+=======
+				 struct acpi_gpe_block_info * gpe_block,
+				 void *context)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 i;
 	acpi_status status;
@@ -479,3 +540,13 @@ acpi_status acpi_hw_enable_all_wakeup_gpes(void)
 	status = acpi_ev_walk_gpe_list(acpi_hw_enable_wakeup_gpe_block, NULL);
 	return_ACPI_STATUS(status);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master

@@ -9,11 +9,21 @@
 #include <linux/namei.h>
 #include <linux/slab.h>
 #include <asm/current.h>
+<<<<<<< HEAD
 #include <asm/uaccess.h>
 #include <linux/kernel.h>
 #include <linux/security.h>
 #include <linux/syscalls.h>
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/uaccess.h>
+#include <linux/kernel.h>
+#include <linux/security.h>
+#include <linux/syscalls.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/capability.h>
 #include <linux/quotaops.h>
 #include <linux/types.h>
@@ -28,13 +38,22 @@ static int check_quotactl_permission(struct super_block *sb, int type, int cmd,
 	case Q_SYNC:
 	case Q_GETINFO:
 	case Q_XGETQSTAT:
+<<<<<<< HEAD
+=======
+	case Q_XGETQSTATV:
+>>>>>>> refs/remotes/origin/master
 	case Q_XQUOTASYNC:
 		break;
 	/* allow to query information for dquots we "own" */
 	case Q_GETQUOTA:
 	case Q_XGETQUOTA:
+<<<<<<< HEAD
 		if ((type == USRQUOTA && current_euid() == id) ||
 		    (type == GRPQUOTA && in_egroup_p(id)))
+=======
+		if ((type == USRQUOTA && uid_eq(current_euid(), make_kuid(current_user_ns(), id))) ||
+		    (type == GRPQUOTA && in_egroup_p(make_kgid(current_user_ns(), id))))
+>>>>>>> refs/remotes/origin/master
 			break;
 		/*FALLTHROUGH*/
 	default:
@@ -48,7 +67,11 @@ static int check_quotactl_permission(struct super_block *sb, int type, int cmd,
 static void quota_sync_one(struct super_block *sb, void *arg)
 {
 	if (sb->s_qcop && sb->s_qcop->quota_sync)
+<<<<<<< HEAD
 		sb->s_qcop->quota_sync(sb, *(int *)arg, 1);
+=======
+		sb->s_qcop->quota_sync(sb, *(int *)arg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int quota_sync_all(int type)
@@ -117,6 +140,10 @@ static int quota_setinfo(struct super_block *sb, int type, void __user *addr)
 
 static void copy_to_if_dqblk(struct if_dqblk *dst, struct fs_disk_quota *src)
 {
+<<<<<<< HEAD
+=======
+	memset(dst, 0, sizeof(*dst));
+>>>>>>> refs/remotes/origin/master
 	dst->dqb_bhardlimit = src->d_blk_hardlimit;
 	dst->dqb_bsoftlimit = src->d_blk_softlimit;
 	dst->dqb_curspace = src->d_bcount;
@@ -131,13 +158,24 @@ static void copy_to_if_dqblk(struct if_dqblk *dst, struct fs_disk_quota *src)
 static int quota_getquota(struct super_block *sb, int type, qid_t id,
 			  void __user *addr)
 {
+<<<<<<< HEAD
+=======
+	struct kqid qid;
+>>>>>>> refs/remotes/origin/master
 	struct fs_disk_quota fdq;
 	struct if_dqblk idq;
 	int ret;
 
 	if (!sb->s_qcop->get_dqblk)
 		return -ENOSYS;
+<<<<<<< HEAD
 	ret = sb->s_qcop->get_dqblk(sb, type, id, &fdq);
+=======
+	qid = make_kqid(current_user_ns(), type, id);
+	if (!qid_valid(qid))
+		return -EINVAL;
+	ret = sb->s_qcop->get_dqblk(sb, qid, &fdq);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 	copy_to_if_dqblk(&idq, &fdq);
@@ -177,13 +215,25 @@ static int quota_setquota(struct super_block *sb, int type, qid_t id,
 {
 	struct fs_disk_quota fdq;
 	struct if_dqblk idq;
+<<<<<<< HEAD
+=======
+	struct kqid qid;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&idq, addr, sizeof(idq)))
 		return -EFAULT;
 	if (!sb->s_qcop->set_dqblk)
 		return -ENOSYS;
+<<<<<<< HEAD
 	copy_from_if_dqblk(&fdq, &idq);
 	return sb->s_qcop->set_dqblk(sb, type, id, &fdq);
+=======
+	qid = make_kqid(current_user_ns(), type, id);
+	if (!qid_valid(qid))
+		return -EINVAL;
+	copy_from_if_dqblk(&fdq, &idq);
+	return sb->s_qcop->set_dqblk(sb, qid, &fdq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int quota_setxstate(struct super_block *sb, int cmd, void __user *addr)
@@ -210,27 +260,77 @@ static int quota_getxstate(struct super_block *sb, void __user *addr)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int quota_getxstatev(struct super_block *sb, void __user *addr)
+{
+	struct fs_quota_statv fqs;
+	int ret;
+
+	if (!sb->s_qcop->get_xstatev)
+		return -ENOSYS;
+
+	memset(&fqs, 0, sizeof(fqs));
+	if (copy_from_user(&fqs, addr, 1)) /* Just read qs_version */
+		return -EFAULT;
+
+	/* If this kernel doesn't support user specified version, fail */
+	switch (fqs.qs_version) {
+	case FS_QSTATV_VERSION1:
+		break;
+	default:
+		return -EINVAL;
+	}
+	ret = sb->s_qcop->get_xstatev(sb, &fqs);
+	if (!ret && copy_to_user(addr, &fqs, sizeof(fqs)))
+		return -EFAULT;
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int quota_setxquota(struct super_block *sb, int type, qid_t id,
 			   void __user *addr)
 {
 	struct fs_disk_quota fdq;
+<<<<<<< HEAD
+=======
+	struct kqid qid;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&fdq, addr, sizeof(fdq)))
 		return -EFAULT;
 	if (!sb->s_qcop->set_dqblk)
 		return -ENOSYS;
+<<<<<<< HEAD
 	return sb->s_qcop->set_dqblk(sb, type, id, &fdq);
+=======
+	qid = make_kqid(current_user_ns(), type, id);
+	if (!qid_valid(qid))
+		return -EINVAL;
+	return sb->s_qcop->set_dqblk(sb, qid, &fdq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int quota_getxquota(struct super_block *sb, int type, qid_t id,
 			   void __user *addr)
 {
 	struct fs_disk_quota fdq;
+<<<<<<< HEAD
+=======
+	struct kqid qid;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (!sb->s_qcop->get_dqblk)
 		return -ENOSYS;
+<<<<<<< HEAD
 	ret = sb->s_qcop->get_dqblk(sb, type, id, &fdq);
+=======
+	qid = make_kqid(current_user_ns(), type, id);
+	if (!qid_valid(qid))
+		return -EINVAL;
+	ret = sb->s_qcop->get_dqblk(sb, qid, &fdq);
+>>>>>>> refs/remotes/origin/master
 	if (!ret && copy_to_user(addr, &fdq, sizeof(fdq)))
 		return -EFAULT;
 	return ret;
@@ -271,37 +371,99 @@ static int do_quotactl(struct super_block *sb, int type, int cmd, qid_t id,
 	case Q_SYNC:
 		if (!sb->s_qcop->quota_sync)
 			return -ENOSYS;
+<<<<<<< HEAD
 		return sb->s_qcop->quota_sync(sb, type, 1);
+=======
+		return sb->s_qcop->quota_sync(sb, type);
+>>>>>>> refs/remotes/origin/master
 	case Q_XQUOTAON:
 	case Q_XQUOTAOFF:
 	case Q_XQUOTARM:
 		return quota_setxstate(sb, cmd, addr);
 	case Q_XGETQSTAT:
 		return quota_getxstate(sb, addr);
+<<<<<<< HEAD
+=======
+	case Q_XGETQSTATV:
+		return quota_getxstatev(sb, addr);
+>>>>>>> refs/remotes/origin/master
 	case Q_XSETQLIM:
 		return quota_setxquota(sb, type, id, addr);
 	case Q_XGETQUOTA:
 		return quota_getxquota(sb, type, id, addr);
 	case Q_XQUOTASYNC:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* caller already holds s_umount */
 		if (sb->s_flags & MS_RDONLY)
 			return -EROFS;
 		writeback_inodes_sb(sb);
+=======
+		if (sb->s_flags & MS_RDONLY)
+			return -EROFS;
+		/* XFS quotas are fully coherent now, making this call a noop */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (sb->s_flags & MS_RDONLY)
+			return -EROFS;
+		/* XFS quotas are fully coherent now, making this call a noop */
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	default:
 		return -EINVAL;
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+#ifdef CONFIG_BLOCK
+
+>>>>>>> refs/remotes/origin/master
+/* Return 1 if 'cmd' will block on frozen filesystem */
+static int quotactl_cmd_write(int cmd)
+{
+	switch (cmd) {
+	case Q_GETFMT:
+	case Q_GETINFO:
+	case Q_SYNC:
+	case Q_XGETQSTAT:
+<<<<<<< HEAD
+=======
+	case Q_XGETQSTATV:
+>>>>>>> refs/remotes/origin/master
+	case Q_XGETQUOTA:
+	case Q_XQUOTASYNC:
+		return 0;
+	}
+	return 1;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_BLOCK */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * look up a superblock on which quota ops will be performed
  * - use the name of a block device to find the superblock thereon
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct super_block *quotactl_block(const char __user *special)
+=======
+static struct super_block *quotactl_block(const char __user *special, int cmd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct super_block *quotactl_block(const char __user *special, int cmd)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_BLOCK
 	struct block_device *bdev;
 	struct super_block *sb;
+<<<<<<< HEAD
 	char *tmp = getname(special);
 
 	if (IS_ERR(tmp))
@@ -310,7 +472,27 @@ static struct super_block *quotactl_block(const char __user *special)
 	putname(tmp);
 	if (IS_ERR(bdev))
 		return ERR_CAST(bdev);
+<<<<<<< HEAD
 	sb = get_super(bdev);
+=======
+=======
+	struct filename *tmp = getname(special);
+
+	if (IS_ERR(tmp))
+		return ERR_CAST(tmp);
+	bdev = lookup_bdev(tmp->name);
+	putname(tmp);
+	if (IS_ERR(bdev))
+		return ERR_CAST(bdev);
+>>>>>>> refs/remotes/origin/master
+	if (quotactl_cmd_write(cmd))
+		sb = get_super_thawed(bdev);
+	else
+		sb = get_super(bdev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bdput(bdev);
 	if (!sb)
 		return ERR_PTR(-ENODEV);
@@ -362,13 +544,35 @@ SYSCALL_DEFINE4(quotactl, unsigned int, cmd, const char __user *, special,
 			pathp = &path;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sb = quotactl_block(special);
 	if (IS_ERR(sb))
 		return PTR_ERR(sb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	sb = quotactl_block(special, cmds);
+	if (IS_ERR(sb)) {
+		ret = PTR_ERR(sb);
+		goto out;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = do_quotactl(sb, type, cmds, id, addr, pathp);
 
 	drop_super(sb);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	if (pathp && !IS_ERR(pathp))
 		path_put(pathp);
 	return ret;

@@ -44,6 +44,8 @@
 #include <linux/slab.h>
 
 #include <asm/mach-au1x00/au1000.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "au1200fb.h"
 
 #ifdef CONFIG_PM
@@ -58,6 +60,20 @@
 #define DRIVER_DESC "LCD controller driver for AU1200 processors"
 
 #define DEBUG 1
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/mach-au1x00/au1200fb.h>	/* platform_data */
+#include "au1200fb.h"
+
+#define DRIVER_NAME "au1200fb"
+#define DRIVER_DESC "LCD controller driver for AU1200 processors"
+
+#define DEBUG 0
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define print_err(f, arg...) printk(KERN_ERR DRIVER_NAME ": " f "\n", ## arg)
 #define print_warn(f, arg...) printk(KERN_WARNING DRIVER_NAME ": " f "\n", ## arg)
@@ -150,7 +166,17 @@ struct au1200_lcd_iodata_t {
 
 /* Private, per-framebuffer management information (independent of the panel itself) */
 struct au1200fb_device {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct fb_info fb_info;			/* FB driver info record */
+=======
+	struct fb_info *fb_info;		/* FB driver info record */
+	struct au1200fb_platdata *pd;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fb_info *fb_info;		/* FB driver info record */
+	struct au1200fb_platdata *pd;
+>>>>>>> refs/remotes/origin/master
 
 	int					plane;
 	unsigned char* 		fb_mem;		/* FrameBuffer memory map */
@@ -158,7 +184,13 @@ struct au1200fb_device {
 	dma_addr_t    		fb_phys;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct au1200fb_device _au1200fb_devices[CONFIG_FB_AU1200_DEVS];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /********************************************************************/
 
 /* LCD controller restrictions */
@@ -171,10 +203,31 @@ static struct au1200fb_device _au1200fb_devices[CONFIG_FB_AU1200_DEVS];
 /* Default number of visible screen buffer to allocate */
 #define AU1200FB_NBR_VIDEO_BUFFERS 1
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /********************************************************************/
 
 static struct au1200_lcd *lcd = (struct au1200_lcd *) AU1200_LCD_ADDR;
 static int window_index = 2; /* default is zero */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* Default maximum number of fb devices to create */
+#define MAX_DEVICE_COUNT	4
+
+/* Default window configuration entry to use (see windows[]) */
+#define DEFAULT_WINDOW_INDEX	2
+
+/********************************************************************/
+
+static struct fb_info *_au1200fb_infos[MAX_DEVICE_COUNT];
+static struct au1200_lcd *lcd = (struct au1200_lcd *) AU1200_LCD_ADDR;
+static int device_count = MAX_DEVICE_COUNT;
+static int window_index = DEFAULT_WINDOW_INDEX;	/* default is zero */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int panel_index = 2; /* default is zero */
 static struct window_settings *win;
 static struct panel_settings *panel;
@@ -202,6 +255,8 @@ struct window_settings {
 #define LCD_WINCTRL1_PO_16BPP LCD_WINCTRL1_PO_01
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int board_au1200fb_panel_init (void);
 extern int board_au1200fb_panel_shutdown (void);
 
@@ -211,6 +266,10 @@ int au1200fb_pm_callback(au1xxx_power_dev_t *dev,
 au1xxx_power_dev_t *LCD_pm_dev;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Default window configurations
  */
@@ -341,8 +400,14 @@ struct panel_settings
 	uint32 mode_toyclksrc;
 	uint32 mode_backlight;
 	uint32 mode_auxpll;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int (*device_init)(void);
 	int (*device_shutdown)(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define Xres min_xres
 #define Yres min_yres
 	u32	min_xres;		/* Minimum horizontal resolution */
@@ -392,8 +457,14 @@ static struct panel_settings known_lcd_panels[] =
 		.mode_toyclksrc	= 0x00000004, /* AUXPLL directly */
 		.mode_backlight	= 0x00000000,
 		.mode_auxpll		= 8, /* 96MHz AUXPLL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.device_init		= NULL,
 		.device_shutdown	= NULL,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		320, 320,
 		240, 240,
 	},
@@ -422,8 +493,14 @@ static struct panel_settings known_lcd_panels[] =
 		.mode_toyclksrc	= 0x00000004, /* AUXPLL directly */
 		.mode_backlight	= 0x00000000,
 		.mode_auxpll		= 8, /* 96MHz AUXPLL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.device_init		= NULL,
 		.device_shutdown	= NULL,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		640, 480,
 		640, 480,
 	},
@@ -452,8 +529,14 @@ static struct panel_settings known_lcd_panels[] =
 		.mode_toyclksrc	= 0x00000004, /* AUXPLL directly */
 		.mode_backlight	= 0x00000000,
 		.mode_auxpll		= 8, /* 96MHz AUXPLL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.device_init		= NULL,
 		.device_shutdown	= NULL,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		800, 800,
 		600, 600,
 	},
@@ -482,8 +565,14 @@ static struct panel_settings known_lcd_panels[] =
 		.mode_toyclksrc	= 0x00000004, /* AUXPLL directly */
 		.mode_backlight	= 0x00000000,
 		.mode_auxpll		= 6, /* 72MHz AUXPLL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.device_init		= NULL,
 		.device_shutdown	= NULL,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		1024, 1024,
 		768, 768,
 	},
@@ -512,8 +601,14 @@ static struct panel_settings known_lcd_panels[] =
 		.mode_toyclksrc	= 0x00000004, /* AUXPLL directly */
 		.mode_backlight	= 0x00000000,
 		.mode_auxpll		= 10, /* 120MHz AUXPLL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.device_init		= NULL,
 		.device_shutdown	= NULL,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		1280, 1280,
 		1024, 1024,
 	},
@@ -542,8 +637,14 @@ static struct panel_settings known_lcd_panels[] =
 		.mode_toyclksrc	= 0x00000004, /* AUXPLL directly */
 		.mode_backlight	= 0x00000000,
 		.mode_auxpll		= 8, /* 96MHz AUXPLL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.device_init		= board_au1200fb_panel_init,
 		.device_shutdown	= board_au1200fb_panel_shutdown,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		1024, 1024,
 		768, 768,
 	},
@@ -575,8 +676,14 @@ static struct panel_settings known_lcd_panels[] =
 		.mode_toyclksrc	= 0x00000004, /* AUXPLL directly */
 		.mode_backlight	= 0x00000000,
 		.mode_auxpll		= 8, /* 96MHz AUXPLL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.device_init		= board_au1200fb_panel_init,
 		.device_shutdown	= board_au1200fb_panel_shutdown,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		640, 480,
 		640, 480,
 	},
@@ -608,8 +715,14 @@ static struct panel_settings known_lcd_panels[] =
 		.mode_toyclksrc	= 0x00000004, /* AUXPLL directly */
 		.mode_backlight	= 0x00000000,
 		.mode_auxpll		= 8, /* 96MHz AUXPLL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.device_init		= board_au1200fb_panel_init,
 		.device_shutdown	= board_au1200fb_panel_shutdown,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		320, 320,
 		240, 240,
 	},
@@ -641,17 +754,65 @@ static struct panel_settings known_lcd_panels[] =
 		.mode_toyclksrc	= 0x00000004, /* AUXPLL directly */
 		.mode_backlight	= 0x00000000,
 		.mode_auxpll		= 8, /* 96MHz AUXPLL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.device_init		= board_au1200fb_panel_init,
 		.device_shutdown	= board_au1200fb_panel_shutdown,
 		856, 856,
 		480, 480,
 	},
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		856, 856,
+		480, 480,
+	},
+	[9] = {
+		.name = "DB1300_800x480",
+		.monspecs = {
+			.modedb = NULL,
+			.modedb_len = 0,
+			.hfmin = 30000,
+			.hfmax = 70000,
+			.vfmin = 60,
+			.vfmax = 60,
+			.dclkmin = 6000000,
+			.dclkmax = 28000000,
+			.input = FB_DISP_RGB,
+		},
+		.mode_screen		= LCD_SCREEN_SX_N(800) |
+					  LCD_SCREEN_SY_N(480),
+		.mode_horztiming	= LCD_HORZTIMING_HPW_N(5) |
+					  LCD_HORZTIMING_HND1_N(16) |
+					  LCD_HORZTIMING_HND2_N(8),
+		.mode_verttiming	= LCD_VERTTIMING_VPW_N(4) |
+					  LCD_VERTTIMING_VND1_N(8) |
+					  LCD_VERTTIMING_VND2_N(5),
+		.mode_clkcontrol	= LCD_CLKCONTROL_PCD_N(1) |
+					  LCD_CLKCONTROL_IV |
+					  LCD_CLKCONTROL_IH,
+		.mode_pwmdiv		= 0x00000000,
+		.mode_pwmhi		= 0x00000000,
+		.mode_outmask		= 0x00FFFFFF,
+		.mode_fifoctrl		= 0x2f2f2f2f,
+		.mode_toyclksrc		= 0x00000004, /* AUXPLL directly */
+		.mode_backlight		= 0x00000000,
+		.mode_auxpll		= (48/12) * 2,
+		800, 800,
+		480, 480,
+	},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define NUM_PANELS (ARRAY_SIZE(known_lcd_panels))
 
 /********************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int set_brightness(unsigned int brightness)
 {
@@ -671,6 +832,10 @@ static int set_brightness(unsigned int brightness)
 }
 #endif /* CONFIG_PM */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int winbpp (unsigned int winctrl1)
 {
 	int bits = 0;
@@ -712,8 +877,18 @@ static int fbinfo2index (struct fb_info *fb_info)
 {
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < CONFIG_FB_AU1200_DEVS; ++i) {
 		if (fb_info == (struct fb_info *)(&_au1200fb_devices[i].fb_info))
+=======
+	for (i = 0; i < device_count; ++i) {
+		if (fb_info == _au1200fb_infos[i])
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < device_count; ++i) {
+		if (fb_info == _au1200fb_infos[i])
+>>>>>>> refs/remotes/origin/master
 			return i;
 	}
 	printk("au1200fb: ERROR: fbinfo2index failed!\n");
@@ -790,7 +965,17 @@ static int au1200_setlocation (struct au1200fb_device *fbdev, int plane,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void au1200_setpanel (struct panel_settings *newpanel)
+=======
+static void au1200_setpanel(struct panel_settings *newpanel,
+			    struct au1200fb_platdata *pd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void au1200_setpanel(struct panel_settings *newpanel,
+			    struct au1200fb_platdata *pd)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Perform global setup/init of LCD controller
@@ -824,8 +1009,18 @@ static void au1200_setpanel (struct panel_settings *newpanel)
 		    the controller, the clock cannot be turned off before first
 			shutting down the controller.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (panel->device_shutdown != NULL)
 			panel->device_shutdown();
+=======
+		if (pd->panel_shutdown)
+			pd->panel_shutdown();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pd->panel_shutdown)
+			pd->panel_shutdown();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Newpanel == NULL indicates a shutdown operation only */
@@ -878,7 +1073,17 @@ static void au1200_setpanel (struct panel_settings *newpanel)
 	au_sync();
 
 	/* Call init of panel */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (panel->device_init != NULL) panel->device_init();
+=======
+	if (pd->panel_init)
+		pd->panel_init();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pd->panel_init)
+		pd->panel_init();
+>>>>>>> refs/remotes/origin/master
 
 	/* FIX!!!! not appropriate on panel change!!! Global setup/init */
 	lcd->intenable = 0;
@@ -962,7 +1167,15 @@ static void au1200_setmode(struct au1200fb_device *fbdev)
 	lcd->window[plane].winctrl2 = ( 0
 		| LCD_WINCTRL2_CKMODE_00
 		| LCD_WINCTRL2_DBM
+<<<<<<< HEAD
+<<<<<<< HEAD
 		| LCD_WINCTRL2_BX_N( fbdev->fb_info.fix.line_length)
+=======
+		| LCD_WINCTRL2_BX_N(fbdev->fb_info->fix.line_length)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		| LCD_WINCTRL2_BX_N(fbdev->fb_info->fix.line_length)
+>>>>>>> refs/remotes/origin/master
 		| LCD_WINCTRL2_SCX_1
 		| LCD_WINCTRL2_SCY_1
 		) ;
@@ -1050,7 +1263,15 @@ static void au1200fb_update_fbinfo(struct fb_info *fbi)
 static int au1200fb_fb_check_var(struct fb_var_screeninfo *var,
 	struct fb_info *fbi)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct au1200fb_device *fbdev = (struct au1200fb_device *)fbi;
+=======
+	struct au1200fb_device *fbdev = fbi->par;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct au1200fb_device *fbdev = fbi->par;
+>>>>>>> refs/remotes/origin/master
 	u32 pixclock;
 	int screen_size, plane;
 
@@ -1142,7 +1363,15 @@ static int au1200fb_fb_check_var(struct fb_var_screeninfo *var,
  */
 static int au1200fb_fb_set_par(struct fb_info *fbi)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct au1200fb_device *fbdev = (struct au1200fb_device *)fbi;
+=======
+	struct au1200fb_device *fbdev = fbi->par;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct au1200fb_device *fbdev = fbi->par;
+>>>>>>> refs/remotes/origin/master
 
 	au1200fb_update_fbinfo(fbi);
 	au1200_setmode(fbdev);
@@ -1211,6 +1440,16 @@ static int au1200fb_fb_setcolreg(unsigned regno, unsigned red, unsigned green,
  */
 static int au1200fb_fb_blank(int blank_mode, struct fb_info *fbi)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct au1200fb_device *fbdev = fbi->par;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct au1200fb_device *fbdev = fbi->par;
+
+>>>>>>> refs/remotes/origin/master
 	/* Short-circuit screen blanking */
 	if (noblanking)
 		return 0;
@@ -1220,13 +1459,29 @@ static int au1200fb_fb_blank(int blank_mode, struct fb_info *fbi)
 	case FB_BLANK_UNBLANK:
 	case FB_BLANK_NORMAL:
 		/* printk("turn on panel\n"); */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		au1200_setpanel(panel);
+=======
+		au1200_setpanel(panel, fbdev->pd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		au1200_setpanel(panel, fbdev->pd);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case FB_BLANK_VSYNC_SUSPEND:
 	case FB_BLANK_HSYNC_SUSPEND:
 	case FB_BLANK_POWERDOWN:
 		/* printk("turn off panel\n"); */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		au1200_setpanel(NULL);
+=======
+		au1200_setpanel(NULL, fbdev->pd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		au1200_setpanel(NULL, fbdev->pd);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
@@ -1242,16 +1497,26 @@ static int au1200fb_fb_blank(int blank_mode, struct fb_info *fbi)
  * method mainly to allow the use of the TLB streaming flag (CCA=6)
  */
 static int au1200fb_fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 {
 	unsigned int len;
 	unsigned long start=0, off;
+<<<<<<< HEAD
 	struct au1200fb_device *fbdev = (struct au1200fb_device *) info;
 
 #ifdef CONFIG_PM
 	au1xxx_pm_access(LCD_pm_dev);
 #endif
+=======
+=======
+{
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct au1200fb_device *fbdev = info->par;
+>>>>>>> refs/remotes/origin/cm-10.0
 
+<<<<<<< HEAD
 	if (vma->vm_pgoff > (~0UL >> PAGE_SHIFT)) {
 		return -EINVAL;
 	}
@@ -1267,17 +1532,25 @@ static int au1200fb_fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 
 	off += start;
 	vma->vm_pgoff = off >> PAGE_SHIFT;
+=======
+{
+	struct au1200fb_device *fbdev = info->par;
+>>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 	pgprot_val(vma->vm_page_prot) |= _CACHE_MASK; /* CCA=7 */
 
+<<<<<<< HEAD
 	vma->vm_flags |= VM_IO;
 
-	return io_remap_pfn_range(vma, vma->vm_start, off >> PAGE_SHIFT,
-				  vma->vm_end - vma->vm_start,
-				  vma->vm_page_prot);
+	return vm_iomap_memory(vma, fbdev->fb_phys, fbdev->fb_len);
 
 	return 0;
+=======
+	return vm_iomap_memory(vma, fbdev->fb_phys, fbdev->fb_len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void set_global(u_int cmd, struct au1200_lcd_global_regs_t *pdata)
@@ -1458,6 +1731,8 @@ static void get_window(unsigned int plane,
 static int au1200fb_ioctl(struct fb_info *info, unsigned int cmd,
                           unsigned long arg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int plane;
 	int val;
 
@@ -1465,6 +1740,17 @@ static int au1200fb_ioctl(struct fb_info *info, unsigned int cmd,
 	au1xxx_pm_access(LCD_pm_dev);
 #endif
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct au1200fb_device *fbdev = info->par;
+	int plane;
+	int val;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	plane = fbinfo2index(info);
 	print_dbg("au1200fb: ioctl %d on plane %d\n", cmd, plane);
 
@@ -1506,7 +1792,15 @@ static int au1200fb_ioctl(struct fb_info *info, unsigned int cmd,
 				struct panel_settings *newpanel;
 				panel_index = iodata.global.panel_choice;
 				newpanel = &known_lcd_panels[panel_index];
+<<<<<<< HEAD
+<<<<<<< HEAD
 				au1200_setpanel(newpanel);
+=======
+				au1200_setpanel(newpanel, fbdev->pd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				au1200_setpanel(newpanel, fbdev->pd);
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 
@@ -1536,9 +1830,23 @@ static struct fb_ops au1200fb_fb_ops = {
 	.fb_set_par	= au1200fb_fb_set_par,
 	.fb_setcolreg	= au1200fb_fb_setcolreg,
 	.fb_blank	= au1200fb_fb_blank,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.fb_fillrect	= cfb_fillrect,
 	.fb_copyarea	= cfb_copyarea,
 	.fb_imageblit	= cfb_imageblit,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.fb_fillrect	= sys_fillrect,
+	.fb_copyarea	= sys_copyarea,
+	.fb_imageblit	= sys_imageblit,
+	.fb_read	= fb_sys_read,
+	.fb_write	= fb_sys_write,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.fb_sync	= NULL,
 	.fb_ioctl	= au1200fb_ioctl,
 	.fb_mmap	= au1200fb_fb_mmap,
@@ -1561,10 +1869,22 @@ static irqreturn_t au1200fb_handle_irq(int irq, void* dev_id)
 
 static int au1200fb_init_fbinfo(struct au1200fb_device *fbdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct fb_info *fbi = &fbdev->fb_info;
 	int bpp;
 
 	memset(fbi, 0, sizeof(struct fb_info));
+=======
+	struct fb_info *fbi = fbdev->fb_info;
+	int bpp;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fb_info *fbi = fbdev->fb_info;
+	int bpp;
+
+>>>>>>> refs/remotes/origin/master
 	fbi->fbops = &au1200fb_fb_ops;
 
 	bpp = winbpp(win->w[fbdev->plane].mode_winctrl1);
@@ -1621,6 +1941,8 @@ static int au1200fb_init_fbinfo(struct au1200fb_device *fbdev)
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* AU1200 LCD controller device driver */
 
 static int au1200fb_drv_probe(struct platform_device *dev)
@@ -1633,20 +1955,155 @@ static int au1200fb_drv_probe(struct platform_device *dev)
 		return -EINVAL;
 
 	for (plane = 0; plane < CONFIG_FB_AU1200_DEVS; ++plane) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static int au1200fb_setup(struct au1200fb_platdata *pd)
+{
+	char *options = NULL;
+	char *this_opt, *endptr;
+	int num_panels = ARRAY_SIZE(known_lcd_panels);
+	int panel_idx = -1;
+
+	fb_get_options(DRIVER_NAME, &options);
+
+	if (!options)
+		goto out;
+
+	while ((this_opt = strsep(&options, ",")) != NULL) {
+		/* Panel option - can be panel name,
+		 * "bs" for board-switch, or number/index */
+		if (!strncmp(this_opt, "panel:", 6)) {
+			int i;
+			long int li;
+			char *endptr;
+			this_opt += 6;
+			/* First check for index, which allows
+			 * to short circuit this mess */
+			li = simple_strtol(this_opt, &endptr, 0);
+			if (*endptr == '\0')
+				panel_idx = (int)li;
+			else if (strcmp(this_opt, "bs") == 0)
+				panel_idx = pd->panel_index();
+			else {
+				for (i = 0; i < num_panels; i++) {
+					if (!strcmp(this_opt,
+						    known_lcd_panels[i].name)) {
+						panel_idx = i;
+						break;
+					}
+				}
+			}
+			if ((panel_idx < 0) || (panel_idx >= num_panels))
+				print_warn("Panel %s not supported!", this_opt);
+			else
+				panel_index = panel_idx;
+
+		} else if (strncmp(this_opt, "nohwcursor", 10) == 0)
+			nohwcursor = 1;
+		else if (strncmp(this_opt, "devices:", 8) == 0) {
+			this_opt += 8;
+			device_count = simple_strtol(this_opt, &endptr, 0);
+			if ((device_count < 0) ||
+			    (device_count > MAX_DEVICE_COUNT))
+				device_count = MAX_DEVICE_COUNT;
+		} else if (strncmp(this_opt, "wincfg:", 7) == 0) {
+			this_opt += 7;
+			window_index = simple_strtol(this_opt, &endptr, 0);
+			if ((window_index < 0) ||
+			    (window_index >= ARRAY_SIZE(windows)))
+				window_index = DEFAULT_WINDOW_INDEX;
+		} else if (strncmp(this_opt, "off", 3) == 0)
+			return 1;
+		else
+			print_warn("Unsupported option \"%s\"", this_opt);
+	}
+
+out:
+	return 0;
+}
+
+/* AU1200 LCD controller device driver */
+<<<<<<< HEAD
+static int __devinit au1200fb_drv_probe(struct platform_device *dev)
+=======
+static int au1200fb_drv_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
+{
+	struct au1200fb_device *fbdev;
+	struct au1200fb_platdata *pd;
+	struct fb_info *fbi = NULL;
+	unsigned long page;
+	int bpp, plane, ret, irq;
+
+	print_info("" DRIVER_DESC "");
+
+	pd = dev->dev.platform_data;
+	if (!pd)
+		return -ENODEV;
+
+	/* Setup driver with options */
+	if (au1200fb_setup(pd))
+		return -ENODEV;
+
+	/* Point to the panel selected */
+	panel = &known_lcd_panels[panel_index];
+	win = &windows[window_index];
+
+	printk(DRIVER_NAME ": Panel %d %s\n", panel_index, panel->name);
+	printk(DRIVER_NAME ": Win %d %s\n", window_index, win->name);
+
+	/* shut gcc up */
+	ret = 0;
+	fbdev = NULL;
+
+	for (plane = 0; plane < device_count; ++plane) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bpp = winbpp(win->w[plane].mode_winctrl1);
 		if (win->w[plane].xres == 0)
 			win->w[plane].xres = panel->Xres;
 		if (win->w[plane].yres == 0)
 			win->w[plane].yres = panel->Yres;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		fbdev = &_au1200fb_devices[plane];
 		memset(fbdev, 0, sizeof(struct au1200fb_device));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		fbi = framebuffer_alloc(sizeof(struct au1200fb_device),
+					&dev->dev);
+		if (!fbi)
+			goto failed;
+
+		_au1200fb_infos[plane] = fbi;
+		fbdev = fbi->par;
+		fbdev->fb_info = fbi;
+		fbdev->pd = pd;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		fbdev->plane = plane;
 
 		/* Allocate the framebuffer to the maximum screen size */
 		fbdev->fb_len = (win->w[plane].xres * win->w[plane].yres * bpp) / 8;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		fbdev->fb_mem = dma_alloc_noncoherent(&dev->dev,
+=======
+		fbdev->fb_mem = dmam_alloc_noncoherent(&dev->dev,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		fbdev->fb_mem = dmam_alloc_noncoherent(&dev->dev,
+>>>>>>> refs/remotes/origin/master
 				PAGE_ALIGN(fbdev->fb_len),
 				&fbdev->fb_phys, GFP_KERNEL);
 		if (!fbdev->fb_mem) {
@@ -1673,11 +2130,23 @@ static int au1200fb_drv_probe(struct platform_device *dev)
 			goto failed;
 
 		/* Register new framebuffer */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((ret = register_framebuffer(&fbdev->fb_info)) < 0) {
+=======
+		ret = register_framebuffer(fbi);
+		if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = register_framebuffer(fbi);
+		if (ret < 0) {
+>>>>>>> refs/remotes/origin/master
 			print_err("cannot register new framebuffer");
 			goto failed;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		au1200fb_fb_set_par(&fbdev->fb_info);
 
 #if !defined(CONFIG_FRAMEBUFFER_CONSOLE) && defined(CONFIG_LOGO)
@@ -1688,11 +2157,28 @@ static int au1200fb_drv_probe(struct platform_device *dev)
 						&fbdev->fb_info);
 
 				fb_show_logo(&fbdev->fb_info, FB_ROTATE_UR);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		au1200fb_fb_set_par(fbi);
+
+#if !defined(CONFIG_FRAMEBUFFER_CONSOLE) && defined(CONFIG_LOGO)
+		if (plane == 0)
+			if (fb_prepare_logo(fbi, FB_ROTATE_UR)) {
+				/* Start display and show logo on boot */
+				fb_set_cmap(&fbi->cmap, fbi);
+				fb_show_logo(fbi, FB_ROTATE_UR);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 #endif
 	}
 
 	/* Now hook interrupt too */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ret = request_irq(AU1200_LCD_INT, au1200fb_handle_irq,
 		 	  IRQF_DISABLED | IRQF_SHARED, "lcd", (void *)dev)) < 0) {
 		print_err("fail to request interrupt line %d (err: %d)",
@@ -1700,10 +2186,33 @@ static int au1200fb_drv_probe(struct platform_device *dev)
 		goto failed;
 	}
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	irq = platform_get_irq(dev, 0);
+	ret = request_irq(irq, au1200fb_handle_irq,
+			  IRQF_SHARED, "lcd", (void *)dev);
+	if (ret) {
+		print_err("fail to request interrupt line %d (err: %d)",
+			  irq, ret);
+		goto failed;
+	}
+
+	platform_set_drvdata(dev, pd);
+
+	/* Kickstart the panel */
+	au1200_setpanel(panel, pd);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 failed:
 	/* NOTE: This only does the current plane/window that failed; others are still active */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (fbdev->fb_mem)
 		dma_free_noncoherent(dev, PAGE_ALIGN(fbdev->fb_len),
 				fbdev->fb_mem, fbdev->fb_phys);
@@ -1711,11 +2220,25 @@ failed:
 		fb_dealloc_cmap(&fbdev->fb_info.cmap);
 	if (fbdev->fb_info.pseudo_palette)
 		kfree(fbdev->fb_info.pseudo_palette);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (fbi) {
+		if (fbi->cmap.len != 0)
+			fb_dealloc_cmap(&fbi->cmap);
+		kfree(fbi->pseudo_palette);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (plane == 0)
 		free_irq(AU1200_LCD_INT, (void*)dev);
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int au1200fb_drv_remove(struct platform_device *dev)
 {
 	struct au1200fb_device *fbdev;
@@ -1744,11 +2267,47 @@ static int au1200fb_drv_remove(struct platform_device *dev)
 	}
 
 	free_irq(AU1200_LCD_INT, (void *)dev);
+=======
+static int __devexit au1200fb_drv_remove(struct platform_device *dev)
+{
+=======
+static int au1200fb_drv_remove(struct platform_device *dev)
+{
+>>>>>>> refs/remotes/origin/master
+	struct au1200fb_platdata *pd = platform_get_drvdata(dev);
+	struct au1200fb_device *fbdev;
+	struct fb_info *fbi;
+	int plane;
+
+	/* Turn off the panel */
+	au1200_setpanel(NULL, pd);
+
+	for (plane = 0; plane < device_count; ++plane)	{
+		fbi = _au1200fb_infos[plane];
+		fbdev = fbi->par;
+
+		/* Clean up all probe data */
+		unregister_framebuffer(fbi);
+		if (fbi->cmap.len != 0)
+			fb_dealloc_cmap(&fbi->cmap);
+		kfree(fbi->pseudo_palette);
+
+		framebuffer_release(fbi);
+		_au1200fb_infos[plane] = NULL;
+	}
+
+	free_irq(platform_get_irq(dev, 0), (void *)dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int au1200fb_drv_suspend(struct platform_device *dev, u32 state)
 {
 	/* TODO */
@@ -1760,10 +2319,58 @@ static int au1200fb_drv_resume(struct platform_device *dev)
 	/* TODO */
 	return 0;
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int au1200fb_drv_suspend(struct device *dev)
+{
+	struct au1200fb_platdata *pd = dev_get_drvdata(dev);
+	au1200_setpanel(NULL, pd);
+
+	lcd->outmask = 0;
+	au_sync();
+
+	return 0;
+}
+
+static int au1200fb_drv_resume(struct device *dev)
+{
+	struct au1200fb_platdata *pd = dev_get_drvdata(dev);
+	struct fb_info *fbi;
+	int i;
+
+	/* Kickstart the panel */
+	au1200_setpanel(panel, pd);
+
+	for (i = 0; i < device_count; i++) {
+		fbi = _au1200fb_infos[i];
+		au1200fb_fb_set_par(fbi);
+	}
+
+	return 0;
+}
+
+static const struct dev_pm_ops au1200fb_pmops = {
+	.suspend	= au1200fb_drv_suspend,
+	.resume		= au1200fb_drv_resume,
+	.freeze		= au1200fb_drv_suspend,
+	.thaw		= au1200fb_drv_resume,
+};
+
+#define AU1200FB_PMOPS	(&au1200fb_pmops)
+
+#else
+#define AU1200FB_PMOPS	NULL
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PM */
 
 static struct platform_driver au1200fb_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name		= "au1200-lcd",
 		.owner          = THIS_MODULE,
 	},
@@ -1773,10 +2380,22 @@ static struct platform_driver au1200fb_driver = {
 	.suspend	= au1200fb_drv_suspend,
 	.resume		= au1200fb_drv_resume,
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.name	= "au1200-lcd",
+		.owner	= THIS_MODULE,
+		.pm	= AU1200FB_PMOPS,
+	},
+	.probe		= au1200fb_drv_probe,
+<<<<<<< HEAD
+	.remove		= __devexit_p(au1200fb_drv_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 /* Kernel driver */
 
 static void au1200fb_setup(void)
@@ -1910,6 +2529,10 @@ static int __init au1200fb_init(void)
 		printk(KERN_INFO "Power management device entry for the au1200fb loaded.\n");
 	#endif
 
+=======
+static int __init au1200fb_init(void)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	return platform_driver_register(&au1200fb_driver);
 }
 
@@ -1920,6 +2543,11 @@ static void __exit au1200fb_cleanup(void)
 
 module_init(au1200fb_init);
 module_exit(au1200fb_cleanup);
+=======
+	.remove		= au1200fb_drv_remove,
+};
+module_platform_driver(au1200fb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");

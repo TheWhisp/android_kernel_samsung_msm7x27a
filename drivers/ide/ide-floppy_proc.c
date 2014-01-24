@@ -1,4 +1,12 @@
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ide.h>
 #include <linux/seq_file.h>
 
@@ -14,7 +22,11 @@ static int idefloppy_capacity_proc_show(struct seq_file *m, void *v)
 
 static int idefloppy_capacity_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, idefloppy_capacity_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, idefloppy_capacity_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations idefloppy_capacity_proc_fops = {

@@ -45,7 +45,11 @@ struct netns_pfkey {
 static DEFINE_MUTEX(pfkey_mutex);
 
 #define DUMMY_MARK 0
+<<<<<<< HEAD
 static struct xfrm_mark dummy_mark = {0, 0};
+=======
+static const struct xfrm_mark dummy_mark = {0, 0};
+>>>>>>> refs/remotes/origin/master
 struct pfkey_sock {
 	/* struct sock must be the first member of struct pfkey_sock */
 	struct sock	sk;
@@ -54,7 +58,11 @@ struct pfkey_sock {
 
 	struct {
 		uint8_t		msg_version;
+<<<<<<< HEAD
 		uint32_t	msg_pid;
+=======
+		uint32_t	msg_portid;
+>>>>>>> refs/remotes/origin/master
 		int		(*dump)(struct pfkey_sock *sk);
 		void		(*done)(struct pfkey_sock *sk);
 		union {
@@ -141,7 +149,11 @@ static int pfkey_create(struct net *net, struct socket *sock, int protocol,
 	struct sock *sk;
 	int err;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 	if (sock->type != SOCK_RAW)
 		return -ESOCKTNOSUPPORT;
@@ -203,7 +215,10 @@ static int pfkey_broadcast_one(struct sk_buff *skb, struct sk_buff **skb2,
 	}
 	if (*skb2 != NULL) {
 		if (atomic_read(&sk->sk_rmem_alloc) <= sk->sk_rcvbuf) {
+<<<<<<< HEAD
 			skb_orphan(*skb2);
+=======
+>>>>>>> refs/remotes/origin/master
 			skb_set_owner_r(*skb2, sk);
 			skb_queue_tail(&sk->sk_receive_queue, *skb2);
 			sk->sk_data_ready(sk, (*skb2)->len);
@@ -226,7 +241,10 @@ static int pfkey_broadcast(struct sk_buff *skb, gfp_t allocation,
 {
 	struct netns_pfkey *net_pfkey = net_generic(net, pfkey_net_id);
 	struct sock *sk;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb2 = NULL;
 	int err = -ESRCH;
 
@@ -237,7 +255,11 @@ static int pfkey_broadcast(struct sk_buff *skb, gfp_t allocation,
 		return -ENOMEM;
 
 	rcu_read_lock();
+<<<<<<< HEAD
 	sk_for_each_rcu(sk, node, &net_pfkey->table) {
+=======
+	sk_for_each_rcu(sk, &net_pfkey->table) {
+>>>>>>> refs/remotes/origin/master
 		struct pfkey_sock *pfk = pfkey_sk(sk);
 		int err2;
 
@@ -340,7 +362,11 @@ static int pfkey_error(const struct sadb_msg *orig, int err, struct sock *sk)
 	return 0;
 }
 
+<<<<<<< HEAD
 static u8 sadb_ext_min_len[] = {
+=======
+static const u8 sadb_ext_min_len[] = {
+>>>>>>> refs/remotes/origin/master
 	[SADB_EXT_RESERVED]		= (u8) 0,
 	[SADB_EXT_SA]			= (u8) sizeof(struct sadb_sa),
 	[SADB_EXT_LIFETIME_CURRENT]	= (u8) sizeof(struct sadb_lifetime),
@@ -375,7 +401,15 @@ static int verify_address_len(const void *p)
 	const struct sadb_address *sp = p;
 	const struct sockaddr *addr = (const struct sockaddr *)(sp + 1);
 	const struct sockaddr_in *sin;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	const struct sockaddr_in6 *sin6;
 #endif
 	int len;
@@ -387,7 +421,15 @@ static int verify_address_len(const void *p)
 		    sp->sadb_address_prefixlen > 32)
 			return -EINVAL;
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		len = DIV_ROUND_UP(sizeof(*sp) + sizeof(*sin6), sizeof(uint64_t));
 		if (sp->sadb_address_len != len ||
@@ -469,7 +511,15 @@ static int present_and_same_family(const struct sadb_address *src,
 	if (s_addr->sa_family != d_addr->sa_family)
 		return 0;
 	if (s_addr->sa_family != AF_INET
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	    && s_addr->sa_family != AF_INET6
 #endif
 		)
@@ -579,7 +629,15 @@ static inline int pfkey_sockaddr_len(sa_family_t family)
 	switch (family) {
 	case AF_INET:
 		return sizeof(struct sockaddr_in);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		return sizeof(struct sockaddr_in6);
 #endif
@@ -595,7 +653,15 @@ int pfkey_sockaddr_extract(const struct sockaddr *sa, xfrm_address_t *xaddr)
 		xaddr->a4 =
 			((struct sockaddr_in *)sa)->sin_addr.s_addr;
 		return AF_INET;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		memcpy(xaddr->a6,
 		       &((struct sockaddr_in6 *)sa)->sin6_addr,
@@ -621,7 +687,15 @@ static struct  xfrm_state *pfkey_xfrm_state_lookup(struct net *net, const struct
 	unsigned short family;
 	xfrm_address_t *xaddr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sa = (const struct sadb_sa *) ext_hdrs[SADB_EXT_SA-1];
+=======
+	sa = ext_hdrs[SADB_EXT_SA - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sa = ext_hdrs[SADB_EXT_SA - 1];
+>>>>>>> refs/remotes/origin/master
 	if (sa == NULL)
 		return NULL;
 
@@ -630,7 +704,15 @@ static struct  xfrm_state *pfkey_xfrm_state_lookup(struct net *net, const struct
 		return NULL;
 
 	/* sadb_address_len should be checked by caller */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	addr = (const struct sadb_address *) ext_hdrs[SADB_EXT_ADDRESS_DST-1];
+=======
+	addr = ext_hdrs[SADB_EXT_ADDRESS_DST - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr = ext_hdrs[SADB_EXT_ADDRESS_DST - 1];
+>>>>>>> refs/remotes/origin/master
 	if (addr == NULL)
 		return NULL;
 
@@ -639,7 +721,15 @@ static struct  xfrm_state *pfkey_xfrm_state_lookup(struct net *net, const struct
 	case AF_INET:
 		xaddr = (xfrm_address_t *)&((const struct sockaddr_in *)(addr + 1))->sin_addr;
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		xaddr = (xfrm_address_t *)&((const struct sockaddr_in6 *)(addr + 1))->sin6_addr;
 		break;
@@ -705,14 +795,30 @@ static unsigned int pfkey_sockaddr_fill(const xfrm_address_t *xaddr, __be16 port
 		memset(sin->sin_zero, 0, sizeof(sin->sin_zero));
 		return 32;
 	    }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 	    {
 		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)sa;
 		sin6->sin6_family = AF_INET6;
 		sin6->sin6_port = port;
 		sin6->sin6_flowinfo = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&sin6->sin6_addr, (const struct in6_addr *)xaddr->a6);
+=======
+		sin6->sin6_addr = *(struct in6_addr *)xaddr->a6;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sin6->sin6_addr = *(struct in6_addr *)xaddr->a6;
+>>>>>>> refs/remotes/origin/master
 		sin6->sin6_scope_id = 0;
 		return 128;
 	    }
@@ -762,7 +868,11 @@ static struct sk_buff *__pfkey_xfrm_state2msg(const struct xfrm_state *x,
 	}
 
 	/* identity & sensitivity */
+<<<<<<< HEAD
 	if (xfrm_addr_cmp(&x->sel.saddr, &x->props.saddr, x->props.family))
+=======
+	if (!xfrm_addr_equal(&x->sel.saddr, &x->props.saddr, x->props.family))
+>>>>>>> refs/remotes/origin/master
 		size += sizeof(struct sadb_address) + sockaddr_size;
 
 	if (add_keys) {
@@ -816,18 +926,33 @@ static struct sk_buff *__pfkey_xfrm_state2msg(const struct xfrm_state *x,
 	sa->sadb_sa_auth = 0;
 	if (x->aalg) {
 		struct xfrm_algo_desc *a = xfrm_aalg_get_byname(x->aalg->alg_name, 0);
+<<<<<<< HEAD
 		sa->sadb_sa_auth = a ? a->desc.sadb_alg_id : 0;
+=======
+		sa->sadb_sa_auth = (a && a->pfkey_supported) ?
+					a->desc.sadb_alg_id : 0;
+>>>>>>> refs/remotes/origin/master
 	}
 	sa->sadb_sa_encrypt = 0;
 	BUG_ON(x->ealg && x->calg);
 	if (x->ealg) {
 		struct xfrm_algo_desc *a = xfrm_ealg_get_byname(x->ealg->alg_name, 0);
+<<<<<<< HEAD
 		sa->sadb_sa_encrypt = a ? a->desc.sadb_alg_id : 0;
+=======
+		sa->sadb_sa_encrypt = (a && a->pfkey_supported) ?
+					a->desc.sadb_alg_id : 0;
+>>>>>>> refs/remotes/origin/master
 	}
 	/* KAME compatible: sadb_sa_encrypt is overloaded with calg id */
 	if (x->calg) {
 		struct xfrm_algo_desc *a = xfrm_calg_get_byname(x->calg->alg_name, 0);
+<<<<<<< HEAD
 		sa->sadb_sa_encrypt = a ? a->desc.sadb_alg_id : 0;
+=======
+		sa->sadb_sa_encrypt = (a && a->pfkey_supported) ?
+					a->desc.sadb_alg_id : 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	sa->sadb_sa_flags = 0;
@@ -909,8 +1034,13 @@ static struct sk_buff *__pfkey_xfrm_state2msg(const struct xfrm_state *x,
 	if (!addr->sadb_address_prefixlen)
 		BUG();
 
+<<<<<<< HEAD
 	if (xfrm_addr_cmp(&x->sel.saddr, &x->props.saddr,
 			  x->props.family)) {
+=======
+	if (!xfrm_addr_equal(&x->sel.saddr, &x->props.saddr,
+			     x->props.family)) {
+>>>>>>> refs/remotes/origin/master
 		addr = (struct sadb_address*) skb_put(skb,
 			sizeof(struct sadb_address)+sockaddr_size);
 		addr->sadb_address_len =
@@ -1039,7 +1169,15 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 	int err;
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sa = (const struct sadb_sa *) ext_hdrs[SADB_EXT_SA-1];
+=======
+	sa = ext_hdrs[SADB_EXT_SA - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sa = ext_hdrs[SADB_EXT_SA - 1];
+>>>>>>> refs/remotes/origin/master
 	if (!sa ||
 	    !present_and_same_family(ext_hdrs[SADB_EXT_ADDRESS_SRC-1],
 				     ext_hdrs[SADB_EXT_ADDRESS_DST-1]))
@@ -1078,7 +1216,15 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 	     sa->sadb_sa_encrypt > SADB_X_CALG_MAX) ||
 	    sa->sadb_sa_encrypt > SADB_EALG_MAX)
 		return ERR_PTR(-EINVAL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	key = (const struct sadb_key*) ext_hdrs[SADB_EXT_KEY_AUTH-1];
+=======
+	key = ext_hdrs[SADB_EXT_KEY_AUTH - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	key = ext_hdrs[SADB_EXT_KEY_AUTH - 1];
+>>>>>>> refs/remotes/origin/master
 	if (key != NULL &&
 	    sa->sadb_sa_auth != SADB_X_AALG_NULL &&
 	    ((key->sadb_key_bits+7) / 8 == 0 ||
@@ -1097,7 +1243,12 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 
 	x->id.proto = proto;
 	x->id.spi = sa->sadb_sa_spi;
+<<<<<<< HEAD
 	x->props.replay_window = sa->sadb_sa_replay;
+=======
+	x->props.replay_window = min_t(unsigned int, sa->sadb_sa_replay,
+					(sizeof(x->replay.bitmap) * 8));
+>>>>>>> refs/remotes/origin/master
 	if (sa->sadb_sa_flags & SADB_SAFLAGS_NOECN)
 		x->props.flags |= XFRM_STATE_NOECN;
 	if (sa->sadb_sa_flags & SADB_SAFLAGS_DECAP_DSCP)
@@ -1105,14 +1256,30 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 	if (sa->sadb_sa_flags & SADB_SAFLAGS_NOPMTUDISC)
 		x->props.flags |= XFRM_STATE_NOPMTUDISC;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lifetime = (const struct sadb_lifetime*) ext_hdrs[SADB_EXT_LIFETIME_HARD-1];
+=======
+	lifetime = ext_hdrs[SADB_EXT_LIFETIME_HARD - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lifetime = ext_hdrs[SADB_EXT_LIFETIME_HARD - 1];
+>>>>>>> refs/remotes/origin/master
 	if (lifetime != NULL) {
 		x->lft.hard_packet_limit = _KEY2X(lifetime->sadb_lifetime_allocations);
 		x->lft.hard_byte_limit = _KEY2X(lifetime->sadb_lifetime_bytes);
 		x->lft.hard_add_expires_seconds = lifetime->sadb_lifetime_addtime;
 		x->lft.hard_use_expires_seconds = lifetime->sadb_lifetime_usetime;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lifetime = (const struct sadb_lifetime*) ext_hdrs[SADB_EXT_LIFETIME_SOFT-1];
+=======
+	lifetime = ext_hdrs[SADB_EXT_LIFETIME_SOFT - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lifetime = ext_hdrs[SADB_EXT_LIFETIME_SOFT - 1];
+>>>>>>> refs/remotes/origin/master
 	if (lifetime != NULL) {
 		x->lft.soft_packet_limit = _KEY2X(lifetime->sadb_lifetime_allocations);
 		x->lft.soft_byte_limit = _KEY2X(lifetime->sadb_lifetime_bytes);
@@ -1120,7 +1287,15 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 		x->lft.soft_use_expires_seconds = lifetime->sadb_lifetime_usetime;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sec_ctx = (const struct sadb_x_sec_ctx *) ext_hdrs[SADB_X_EXT_SEC_CTX-1];
+=======
+	sec_ctx = ext_hdrs[SADB_X_EXT_SEC_CTX - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sec_ctx = ext_hdrs[SADB_X_EXT_SEC_CTX - 1];
+>>>>>>> refs/remotes/origin/master
 	if (sec_ctx != NULL) {
 		struct xfrm_user_sec_ctx *uctx = pfkey_sadb2xfrm_user_sec_ctx(sec_ctx);
 
@@ -1134,11 +1309,23 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 			goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	key = (const struct sadb_key*) ext_hdrs[SADB_EXT_KEY_AUTH-1];
+=======
+	key = ext_hdrs[SADB_EXT_KEY_AUTH - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (sa->sadb_sa_auth) {
 		int keysize = 0;
 		struct xfrm_algo_desc *a = xfrm_aalg_get_byid(sa->sadb_sa_auth);
 		if (!a) {
+=======
+	key = ext_hdrs[SADB_EXT_KEY_AUTH - 1];
+	if (sa->sadb_sa_auth) {
+		int keysize = 0;
+		struct xfrm_algo_desc *a = xfrm_aalg_get_byid(sa->sadb_sa_auth);
+		if (!a || !a->pfkey_supported) {
+>>>>>>> refs/remotes/origin/master
 			err = -ENOSYS;
 			goto out;
 		}
@@ -1160,7 +1347,11 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 	if (sa->sadb_sa_encrypt) {
 		if (hdr->sadb_msg_satype == SADB_X_SATYPE_IPCOMP) {
 			struct xfrm_algo_desc *a = xfrm_calg_get_byid(sa->sadb_sa_encrypt);
+<<<<<<< HEAD
 			if (!a) {
+=======
+			if (!a || !a->pfkey_supported) {
+>>>>>>> refs/remotes/origin/master
 				err = -ENOSYS;
 				goto out;
 			}
@@ -1172,7 +1363,11 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 		} else {
 			int keysize = 0;
 			struct xfrm_algo_desc *a = xfrm_ealg_get_byid(sa->sadb_sa_encrypt);
+<<<<<<< HEAD
 			if (!a) {
+=======
+			if (!a || !a->pfkey_supported) {
+>>>>>>> refs/remotes/origin/master
 				err = -ENOSYS;
 				goto out;
 			}
@@ -1195,10 +1390,13 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 
 	x->props.family = pfkey_sadb_addr2xfrm_addr((struct sadb_address *) ext_hdrs[SADB_EXT_ADDRESS_SRC-1],
 						    &x->props.saddr);
+<<<<<<< HEAD
 	if (!x->props.family) {
 		err = -EAFNOSUPPORT;
 		goto out;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	pfkey_sadb_addr2xfrm_addr((struct sadb_address *) ext_hdrs[SADB_EXT_ADDRESS_DST-1],
 				  &x->id.daddr);
 
@@ -1311,7 +1509,15 @@ static int pfkey_getspi(struct sock *sk, struct sk_buff *skb, const struct sadb_
 		xdaddr = (xfrm_address_t *)&((struct sockaddr_in *)(daddr + 1))->sin_addr.s_addr;
 		xsaddr = (xfrm_address_t *)&((struct sockaddr_in *)(saddr + 1))->sin_addr.s_addr;
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		xdaddr = (xfrm_address_t *)&((struct sockaddr_in6 *)(daddr + 1))->sin6_addr;
 		xsaddr = (xfrm_address_t *)&((struct sockaddr_in6 *)(saddr + 1))->sin6_addr;
@@ -1321,7 +1527,11 @@ static int pfkey_getspi(struct sock *sk, struct sk_buff *skb, const struct sadb_
 
 	if (hdr->sadb_msg_seq) {
 		x = xfrm_find_acq_byseq(net, DUMMY_MARK, hdr->sadb_msg_seq);
+<<<<<<< HEAD
 		if (x && xfrm_addr_cmp(&x->id.daddr, xdaddr, family)) {
+=======
+		if (x && !xfrm_addr_equal(&x->id.daddr, xdaddr, family)) {
+>>>>>>> refs/remotes/origin/master
 			xfrm_state_put(x);
 			x = NULL;
 		}
@@ -1447,7 +1657,11 @@ static int key_notify_sa(struct xfrm_state *x, const struct km_event *c)
 	hdr->sadb_msg_errno = 0;
 	hdr->sadb_msg_reserved = 0;
 	hdr->sadb_msg_seq = c->seq;
+<<<<<<< HEAD
 	hdr->sadb_msg_pid = c->pid;
+=======
+	hdr->sadb_msg_pid = c->portid;
+>>>>>>> refs/remotes/origin/master
 
 	pfkey_broadcast(skb, GFP_ATOMIC, BROADCAST_ALL, NULL, xs_net(x));
 
@@ -1486,7 +1700,11 @@ static int pfkey_add(struct sock *sk, struct sk_buff *skb, const struct sadb_msg
 	else
 		c.event = XFRM_MSG_UPDSA;
 	c.seq = hdr->sadb_msg_seq;
+<<<<<<< HEAD
 	c.pid = hdr->sadb_msg_pid;
+=======
+	c.portid = hdr->sadb_msg_pid;
+>>>>>>> refs/remotes/origin/master
 	km_state_notify(x, &c);
 out:
 	xfrm_state_put(x);
@@ -1523,7 +1741,11 @@ static int pfkey_delete(struct sock *sk, struct sk_buff *skb, const struct sadb_
 		goto out;
 
 	c.seq = hdr->sadb_msg_seq;
+<<<<<<< HEAD
 	c.pid = hdr->sadb_msg_pid;
+=======
+	c.portid = hdr->sadb_msg_pid;
+>>>>>>> refs/remotes/origin/master
 	c.event = XFRM_MSG_DELSA;
 	km_state_notify(x, &c);
 out:
@@ -1578,13 +1800,21 @@ static struct sk_buff *compose_sadb_supported(const struct sadb_msg *orig,
 	struct sadb_msg *hdr;
 	int len, auth_len, enc_len, i;
 
+<<<<<<< HEAD
 	auth_len = xfrm_count_auth_supported();
+=======
+	auth_len = xfrm_count_pfkey_auth_supported();
+>>>>>>> refs/remotes/origin/master
 	if (auth_len) {
 		auth_len *= sizeof(struct sadb_alg);
 		auth_len += sizeof(struct sadb_supported);
 	}
 
+<<<<<<< HEAD
 	enc_len = xfrm_count_enc_supported();
+=======
+	enc_len = xfrm_count_pfkey_enc_supported();
+>>>>>>> refs/remotes/origin/master
 	if (enc_len) {
 		enc_len *= sizeof(struct sadb_alg);
 		enc_len += sizeof(struct sadb_supported);
@@ -1615,6 +1845,11 @@ static struct sk_buff *compose_sadb_supported(const struct sadb_msg *orig,
 			struct xfrm_algo_desc *aalg = xfrm_aalg_get_byidx(i);
 			if (!aalg)
 				break;
+<<<<<<< HEAD
+=======
+			if (!aalg->pfkey_supported)
+				continue;
+>>>>>>> refs/remotes/origin/master
 			if (aalg->available)
 				*ap++ = aalg->desc;
 		}
@@ -1634,6 +1869,11 @@ static struct sk_buff *compose_sadb_supported(const struct sadb_msg *orig,
 			struct xfrm_algo_desc *ealg = xfrm_ealg_get_byidx(i);
 			if (!ealg)
 				break;
+<<<<<<< HEAD
+=======
+			if (!ealg->pfkey_supported)
+				continue;
+>>>>>>> refs/remotes/origin/master
 			if (ealg->available)
 				*ap++ = ealg->desc;
 		}
@@ -1701,7 +1941,11 @@ static int key_notify_sa_flush(const struct km_event *c)
 	hdr->sadb_msg_satype = pfkey_proto2satype(c->data.proto);
 	hdr->sadb_msg_type = SADB_FLUSH;
 	hdr->sadb_msg_seq = c->seq;
+<<<<<<< HEAD
 	hdr->sadb_msg_pid = c->pid;
+=======
+	hdr->sadb_msg_pid = c->portid;
+>>>>>>> refs/remotes/origin/master
 	hdr->sadb_msg_version = PF_KEY_V2;
 	hdr->sadb_msg_errno = (uint8_t) 0;
 	hdr->sadb_msg_len = (sizeof(struct sadb_msg) / sizeof(uint64_t));
@@ -1715,7 +1959,11 @@ static int key_notify_sa_flush(const struct km_event *c)
 static int pfkey_flush(struct sock *sk, struct sk_buff *skb, const struct sadb_msg *hdr, void * const *ext_hdrs)
 {
 	struct net *net = sock_net(sk);
+<<<<<<< HEAD
 	unsigned proto;
+=======
+	unsigned int proto;
+>>>>>>> refs/remotes/origin/master
 	struct km_event c;
 	struct xfrm_audit audit_info;
 	int err, err2;
@@ -1737,7 +1985,11 @@ static int pfkey_flush(struct sock *sk, struct sk_buff *skb, const struct sadb_m
 
 	c.data.proto = proto;
 	c.seq = hdr->sadb_msg_seq;
+<<<<<<< HEAD
 	c.pid = hdr->sadb_msg_pid;
+=======
+	c.portid = hdr->sadb_msg_pid;
+>>>>>>> refs/remotes/origin/master
 	c.event = XFRM_MSG_FLUSHSA;
 	c.net = net;
 	km_state_notify(NULL, &c);
@@ -1765,7 +2017,11 @@ static int dump_sa(struct xfrm_state *x, int count, void *ptr)
 	out_hdr->sadb_msg_errno = 0;
 	out_hdr->sadb_msg_reserved = 0;
 	out_hdr->sadb_msg_seq = count + 1;
+<<<<<<< HEAD
 	out_hdr->sadb_msg_pid = pfk->dump.msg_pid;
+=======
+	out_hdr->sadb_msg_pid = pfk->dump.msg_portid;
+>>>>>>> refs/remotes/origin/master
 
 	if (pfk->dump.skb)
 		pfkey_broadcast(pfk->dump.skb, GFP_ATOMIC, BROADCAST_ONE,
@@ -1799,7 +2055,11 @@ static int pfkey_dump(struct sock *sk, struct sk_buff *skb, const struct sadb_ms
 		return -EINVAL;
 
 	pfk->dump.msg_version = hdr->sadb_msg_version;
+<<<<<<< HEAD
 	pfk->dump.msg_pid = hdr->sadb_msg_pid;
+=======
+	pfk->dump.msg_portid = hdr->sadb_msg_pid;
+>>>>>>> refs/remotes/origin/master
 	pfk->dump.dump = pfkey_dump_sa;
 	pfk->dump.done = pfkey_dump_sa_done;
 	xfrm_state_walk_init(&pfk->dump.u.state, proto);
@@ -1924,6 +2184,12 @@ parse_ipsecrequests(struct xfrm_policy *xp, struct sadb_x_policy *pol)
 	int len = pol->sadb_x_policy_len*8 - sizeof(struct sadb_x_policy);
 	struct sadb_x_ipsecrequest *rq = (void*)(pol+1);
 
+<<<<<<< HEAD
+=======
+	if (pol->sadb_x_policy_len * 8 < sizeof(struct sadb_x_policy))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	while (len >= sizeof(struct sadb_x_ipsecrequest)) {
 		if ((err = parse_ipsecrequest(xp, rq)) < 0)
 			return err;
@@ -2159,7 +2425,11 @@ static int key_notify_policy(struct xfrm_policy *xp, int dir, const struct km_ev
 		out_hdr->sadb_msg_type = event2poltype(c->event);
 	out_hdr->sadb_msg_errno = 0;
 	out_hdr->sadb_msg_seq = c->seq;
+<<<<<<< HEAD
 	out_hdr->sadb_msg_pid = c->pid;
+=======
+	out_hdr->sadb_msg_pid = c->portid;
+>>>>>>> refs/remotes/origin/master
 	pfkey_broadcast(out_skb, GFP_ATOMIC, BROADCAST_ALL, NULL, xp_net(xp));
 	return 0;
 
@@ -2195,12 +2465,17 @@ static int pfkey_spdadd(struct sock *sk, struct sk_buff *skb, const struct sadb_
 		      XFRM_POLICY_BLOCK : XFRM_POLICY_ALLOW);
 	xp->priority = pol->sadb_x_policy_priority;
 
+<<<<<<< HEAD
 	sa = ext_hdrs[SADB_EXT_ADDRESS_SRC-1],
 	xp->family = pfkey_sadb_addr2xfrm_addr(sa, &xp->selector.saddr);
 	if (!xp->family) {
 		err = -EINVAL;
 		goto out;
 	}
+=======
+	sa = ext_hdrs[SADB_EXT_ADDRESS_SRC-1];
+	xp->family = pfkey_sadb_addr2xfrm_addr(sa, &xp->selector.saddr);
+>>>>>>> refs/remotes/origin/master
 	xp->selector.family = xp->family;
 	xp->selector.prefixlen_s = sa->sadb_address_prefixlen;
 	xp->selector.proto = pfkey_proto_to_xfrm(sa->sadb_address_proto);
@@ -2208,7 +2483,11 @@ static int pfkey_spdadd(struct sock *sk, struct sk_buff *skb, const struct sadb_
 	if (xp->selector.sport)
 		xp->selector.sport_mask = htons(0xffff);
 
+<<<<<<< HEAD
 	sa = ext_hdrs[SADB_EXT_ADDRESS_DST-1],
+=======
+	sa = ext_hdrs[SADB_EXT_ADDRESS_DST-1];
+>>>>>>> refs/remotes/origin/master
 	pfkey_sadb_addr2xfrm_addr(sa, &xp->selector.daddr);
 	xp->selector.prefixlen_d = sa->sadb_address_prefixlen;
 
@@ -2221,7 +2500,15 @@ static int pfkey_spdadd(struct sock *sk, struct sk_buff *skb, const struct sadb_
 	if (xp->selector.dport)
 		xp->selector.dport_mask = htons(0xffff);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sec_ctx = (struct sadb_x_sec_ctx *) ext_hdrs[SADB_X_EXT_SEC_CTX-1];
+=======
+	sec_ctx = ext_hdrs[SADB_X_EXT_SEC_CTX - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sec_ctx = ext_hdrs[SADB_X_EXT_SEC_CTX - 1];
+>>>>>>> refs/remotes/origin/master
 	if (sec_ctx != NULL) {
 		struct xfrm_user_sec_ctx *uctx = pfkey_sadb2xfrm_user_sec_ctx(sec_ctx);
 
@@ -2274,7 +2561,11 @@ static int pfkey_spdadd(struct sock *sk, struct sk_buff *skb, const struct sadb_
 		c.event = XFRM_MSG_NEWPOLICY;
 
 	c.seq = hdr->sadb_msg_seq;
+<<<<<<< HEAD
 	c.pid = hdr->sadb_msg_pid;
+=======
+	c.portid = hdr->sadb_msg_pid;
+>>>>>>> refs/remotes/origin/master
 
 	km_policy_notify(xp, pol->sadb_x_policy_dir-1, &c);
 	xfrm_pol_put(xp);
@@ -2309,7 +2600,11 @@ static int pfkey_spddelete(struct sock *sk, struct sk_buff *skb, const struct sa
 
 	memset(&sel, 0, sizeof(sel));
 
+<<<<<<< HEAD
 	sa = ext_hdrs[SADB_EXT_ADDRESS_SRC-1],
+=======
+	sa = ext_hdrs[SADB_EXT_ADDRESS_SRC-1];
+>>>>>>> refs/remotes/origin/master
 	sel.family = pfkey_sadb_addr2xfrm_addr(sa, &sel.saddr);
 	sel.prefixlen_s = sa->sadb_address_prefixlen;
 	sel.proto = pfkey_proto_to_xfrm(sa->sadb_address_proto);
@@ -2317,7 +2612,11 @@ static int pfkey_spddelete(struct sock *sk, struct sk_buff *skb, const struct sa
 	if (sel.sport)
 		sel.sport_mask = htons(0xffff);
 
+<<<<<<< HEAD
 	sa = ext_hdrs[SADB_EXT_ADDRESS_DST-1],
+=======
+	sa = ext_hdrs[SADB_EXT_ADDRESS_DST-1];
+>>>>>>> refs/remotes/origin/master
 	pfkey_sadb_addr2xfrm_addr(sa, &sel.daddr);
 	sel.prefixlen_d = sa->sadb_address_prefixlen;
 	sel.proto = pfkey_proto_to_xfrm(sa->sadb_address_proto);
@@ -2325,7 +2624,15 @@ static int pfkey_spddelete(struct sock *sk, struct sk_buff *skb, const struct sa
 	if (sel.dport)
 		sel.dport_mask = htons(0xffff);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sec_ctx = (struct sadb_x_sec_ctx *) ext_hdrs[SADB_X_EXT_SEC_CTX-1];
+=======
+	sec_ctx = ext_hdrs[SADB_X_EXT_SEC_CTX - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sec_ctx = ext_hdrs[SADB_X_EXT_SEC_CTX - 1];
+>>>>>>> refs/remotes/origin/master
 	if (sec_ctx != NULL) {
 		struct xfrm_user_sec_ctx *uctx = pfkey_sadb2xfrm_user_sec_ctx(sec_ctx);
 
@@ -2353,13 +2660,22 @@ static int pfkey_spddelete(struct sock *sk, struct sk_buff *skb, const struct sa
 		goto out;
 
 	c.seq = hdr->sadb_msg_seq;
+<<<<<<< HEAD
 	c.pid = hdr->sadb_msg_pid;
+=======
+	c.portid = hdr->sadb_msg_pid;
+>>>>>>> refs/remotes/origin/master
 	c.data.byid = 0;
 	c.event = XFRM_MSG_DELPOLICY;
 	km_policy_notify(xp, pol->sadb_x_policy_dir-1, &c);
 
 out:
 	xfrm_pol_put(xp);
+<<<<<<< HEAD
+=======
+	if (err == 0)
+		xfrm_garbage_collect(net);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -2599,7 +2915,11 @@ static int pfkey_spdget(struct sock *sk, struct sk_buff *skb, const struct sadb_
 		if (err)
 			goto out;
 		c.seq = hdr->sadb_msg_seq;
+<<<<<<< HEAD
 		c.pid = hdr->sadb_msg_pid;
+=======
+		c.portid = hdr->sadb_msg_pid;
+>>>>>>> refs/remotes/origin/master
 		c.data.byid = 1;
 		c.event = XFRM_MSG_DELPOLICY;
 		km_policy_notify(xp, dir, &c);
@@ -2609,6 +2929,11 @@ static int pfkey_spdget(struct sock *sk, struct sk_buff *skb, const struct sadb_
 
 out:
 	xfrm_pol_put(xp);
+<<<<<<< HEAD
+=======
+	if (delete && err == 0)
+		xfrm_garbage_collect(net);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -2636,7 +2961,11 @@ static int dump_sp(struct xfrm_policy *xp, int dir, int count, void *ptr)
 	out_hdr->sadb_msg_satype = SADB_SATYPE_UNSPEC;
 	out_hdr->sadb_msg_errno = 0;
 	out_hdr->sadb_msg_seq = count + 1;
+<<<<<<< HEAD
 	out_hdr->sadb_msg_pid = pfk->dump.msg_pid;
+=======
+	out_hdr->sadb_msg_pid = pfk->dump.msg_portid;
+>>>>>>> refs/remotes/origin/master
 
 	if (pfk->dump.skb)
 		pfkey_broadcast(pfk->dump.skb, GFP_ATOMIC, BROADCAST_ONE,
@@ -2665,7 +2994,11 @@ static int pfkey_spddump(struct sock *sk, struct sk_buff *skb, const struct sadb
 		return -EBUSY;
 
 	pfk->dump.msg_version = hdr->sadb_msg_version;
+<<<<<<< HEAD
 	pfk->dump.msg_pid = hdr->sadb_msg_pid;
+=======
+	pfk->dump.msg_portid = hdr->sadb_msg_pid;
+>>>>>>> refs/remotes/origin/master
 	pfk->dump.dump = pfkey_dump_sp;
 	pfk->dump.done = pfkey_dump_sp_done;
 	xfrm_policy_walk_init(&pfk->dump.u.policy, XFRM_POLICY_TYPE_MAIN);
@@ -2684,7 +3017,11 @@ static int key_notify_policy_flush(const struct km_event *c)
 	hdr = (struct sadb_msg *) skb_put(skb_out, sizeof(struct sadb_msg));
 	hdr->sadb_msg_type = SADB_X_SPDFLUSH;
 	hdr->sadb_msg_seq = c->seq;
+<<<<<<< HEAD
 	hdr->sadb_msg_pid = c->pid;
+=======
+	hdr->sadb_msg_pid = c->portid;
+>>>>>>> refs/remotes/origin/master
 	hdr->sadb_msg_version = PF_KEY_V2;
 	hdr->sadb_msg_errno = (uint8_t) 0;
 	hdr->sadb_msg_satype = SADB_SATYPE_UNSPEC;
@@ -2715,7 +3052,11 @@ static int pfkey_spdflush(struct sock *sk, struct sk_buff *skb, const struct sad
 
 	c.data.type = XFRM_POLICY_TYPE_MAIN;
 	c.event = XFRM_MSG_FLUSHPOLICY;
+<<<<<<< HEAD
 	c.pid = hdr->sadb_msg_pid;
+=======
+	c.portid = hdr->sadb_msg_pid;
+>>>>>>> refs/remotes/origin/master
 	c.seq = hdr->sadb_msg_seq;
 	c.net = net;
 	km_policy_notify(NULL, 0, &c);
@@ -2725,7 +3066,11 @@ static int pfkey_spdflush(struct sock *sk, struct sk_buff *skb, const struct sad
 
 typedef int (*pfkey_handler)(struct sock *sk, struct sk_buff *skb,
 			     const struct sadb_msg *hdr, void * const *ext_hdrs);
+<<<<<<< HEAD
 static pfkey_handler pfkey_funcs[SADB_MAX + 1] = {
+=======
+static const pfkey_handler pfkey_funcs[SADB_MAX + 1] = {
+>>>>>>> refs/remotes/origin/master
 	[SADB_RESERVED]		= pfkey_reserved,
 	[SADB_GETSPI]		= pfkey_getspi,
 	[SADB_UPDATE]		= pfkey_add,
@@ -2826,6 +3171,11 @@ static int count_ah_combs(const struct xfrm_tmpl *t)
 		const struct xfrm_algo_desc *aalg = xfrm_aalg_get_byidx(i);
 		if (!aalg)
 			break;
+<<<<<<< HEAD
+=======
+		if (!aalg->pfkey_supported)
+			continue;
+>>>>>>> refs/remotes/origin/master
 		if (aalg_tmpl_set(t, aalg) && aalg->available)
 			sz += sizeof(struct sadb_comb);
 	}
@@ -2841,6 +3191,12 @@ static int count_esp_combs(const struct xfrm_tmpl *t)
 		if (!ealg)
 			break;
 
+<<<<<<< HEAD
+=======
+		if (!ealg->pfkey_supported)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		if (!(ealg_tmpl_set(t, ealg) && ealg->available))
 			continue;
 
@@ -2849,6 +3205,12 @@ static int count_esp_combs(const struct xfrm_tmpl *t)
 			if (!aalg)
 				break;
 
+<<<<<<< HEAD
+=======
+			if (!aalg->pfkey_supported)
+				continue;
+
+>>>>>>> refs/remotes/origin/master
 			if (aalg_tmpl_set(t, aalg) && aalg->available)
 				sz += sizeof(struct sadb_comb);
 		}
@@ -2872,6 +3234,12 @@ static void dump_ah_combs(struct sk_buff *skb, const struct xfrm_tmpl *t)
 		if (!aalg)
 			break;
 
+<<<<<<< HEAD
+=======
+		if (!aalg->pfkey_supported)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		if (aalg_tmpl_set(t, aalg) && aalg->available) {
 			struct sadb_comb *c;
 			c = (struct sadb_comb*)skb_put(skb, sizeof(struct sadb_comb));
@@ -2904,6 +3272,12 @@ static void dump_esp_combs(struct sk_buff *skb, const struct xfrm_tmpl *t)
 		if (!ealg)
 			break;
 
+<<<<<<< HEAD
+=======
+		if (!ealg->pfkey_supported)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		if (!(ealg_tmpl_set(t, ealg) && ealg->available))
 			continue;
 
@@ -2912,6 +3286,11 @@ static void dump_esp_combs(struct sk_buff *skb, const struct xfrm_tmpl *t)
 			const struct xfrm_algo_desc *aalg = xfrm_aalg_get_byidx(k);
 			if (!aalg)
 				break;
+<<<<<<< HEAD
+=======
+			if (!aalg->pfkey_supported)
+				continue;
+>>>>>>> refs/remotes/origin/master
 			if (!(aalg_tmpl_set(t, aalg) && aalg->available))
 				continue;
 			c = (struct sadb_comb*)skb_put(skb, sizeof(struct sadb_comb));
@@ -3028,7 +3407,11 @@ static u32 get_acqseq(void)
 	return res;
 }
 
+<<<<<<< HEAD
 static int pfkey_send_acquire(struct xfrm_state *x, struct xfrm_tmpl *t, struct xfrm_policy *xp, int dir)
+=======
+static int pfkey_send_acquire(struct xfrm_state *x, struct xfrm_tmpl *t, struct xfrm_policy *xp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *skb;
 	struct sadb_msg *hdr;
@@ -3109,7 +3492,14 @@ static int pfkey_send_acquire(struct xfrm_state *x, struct xfrm_tmpl *t, struct 
 	pol->sadb_x_policy_len = sizeof(struct sadb_x_policy)/sizeof(uint64_t);
 	pol->sadb_x_policy_exttype = SADB_X_EXT_POLICY;
 	pol->sadb_x_policy_type = IPSEC_POLICY_IPSEC;
+<<<<<<< HEAD
 	pol->sadb_x_policy_dir = dir+1;
+<<<<<<< HEAD
+=======
+	pol->sadb_x_policy_dir = XFRM_POLICY_OUT + 1;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pol->sadb_x_policy_reserved = 0;
 	pol->sadb_x_policy_id = xp->index;
 	pol->sadb_x_policy_priority = xp->priority;
@@ -3152,7 +3542,15 @@ static struct xfrm_policy *pfkey_compile_policy(struct sock *sk, int opt,
 			return NULL;
 		}
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		if (opt != IPV6_IPSEC_POLICY) {
 			*dir = -EOPNOTSUPP;
@@ -3486,7 +3884,15 @@ static int pfkey_send_migrate(const struct xfrm_selector *sel, u8 dir, u8 type,
 
 	/* Addresses to be used by KM for negotiation, if ext is available */
 	if (k != NULL && (set_sadb_kmaddress(skb, k) < 0))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		goto err;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err;
+>>>>>>> refs/remotes/origin/master
 
 	/* selector src */
 	set_sadb_address(skb, sasize_sel, SADB_EXT_ADDRESS_SRC, sel);
@@ -3554,7 +3960,11 @@ static int pfkey_sendmsg(struct kiocb *kiocb,
 		goto out;
 
 	err = -EMSGSIZE;
+<<<<<<< HEAD
 	if ((unsigned)len > sk->sk_sndbuf - 32)
+=======
+	if ((unsigned int)len > sk->sk_sndbuf - 32)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	err = -ENOBUFS;
@@ -3595,7 +4005,13 @@ static int pfkey_recvmsg(struct kiocb *kiocb,
 	if (flags & ~(MSG_PEEK|MSG_DONTWAIT|MSG_TRUNC|MSG_CMSG_COMPAT))
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb = skb_recv_datagram(sk, flags, flags & MSG_DONTWAIT, &err);
 	if (skb == NULL)
 		goto out;
@@ -3668,7 +4084,11 @@ static int pfkey_seq_show(struct seq_file *f, void *v)
 			       atomic_read(&s->sk_refcnt),
 			       sk_rmem_alloc_get(s),
 			       sk_wmem_alloc_get(s),
+<<<<<<< HEAD
 			       sock_i_uid(s),
+=======
+			       from_kuid_munged(seq_user_ns(f), sock_i_uid(s)),
+>>>>>>> refs/remotes/origin/master
 			       sock_i_ino(s)
 			       );
 	return 0;
@@ -3722,7 +4142,11 @@ static int __net_init pfkey_init_proc(struct net *net)
 {
 	struct proc_dir_entry *e;
 
+<<<<<<< HEAD
 	e = proc_net_fops_create(net, "pfkey", 0, &pfkey_proc_ops);
+=======
+	e = proc_create("pfkey", 0, net->proc_net, &pfkey_proc_ops);
+>>>>>>> refs/remotes/origin/master
 	if (e == NULL)
 		return -ENOMEM;
 
@@ -3731,7 +4155,11 @@ static int __net_init pfkey_init_proc(struct net *net)
 
 static void __net_exit pfkey_exit_proc(struct net *net)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, "pfkey");
+=======
+	remove_proc_entry("pfkey", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static inline int pfkey_init_proc(struct net *net)

@@ -7,7 +7,10 @@
 #include <asm/processor.h>
 #include <asm/asmmacro.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/paravirt.h>
 #include <asm/xen/privop.h>
 #include <linux/elfnote.h>

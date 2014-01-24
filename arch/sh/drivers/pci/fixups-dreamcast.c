@@ -28,7 +28,11 @@
 #include <asm/irq.h>
 #include <mach/pci.h>
 
+<<<<<<< HEAD
 static void __init gapspci_fixup_resources(struct pci_dev *dev)
+=======
+static void gapspci_fixup_resources(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_channel *p = dev->sysdata;
 
@@ -64,7 +68,15 @@ static void __init gapspci_fixup_resources(struct pci_dev *dev)
 }
 DECLARE_PCI_FIXUP_HEADER(PCI_ANY_ID, PCI_ANY_ID, gapspci_fixup_resources);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __init pcibios_map_platform_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+int __init pcibios_map_platform_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init pcibios_map_platform_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * The interrupt routing semantics here are quite trivial.

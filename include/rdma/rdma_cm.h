@@ -65,10 +65,26 @@ enum rdma_cm_event_type {
 enum rdma_port_space {
 	RDMA_PS_SDP   = 0x0001,
 	RDMA_PS_IPOIB = 0x0002,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	RDMA_PS_IB    = 0x013F,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RDMA_PS_IB    = 0x013F,
+>>>>>>> refs/remotes/origin/master
 	RDMA_PS_TCP   = 0x0106,
 	RDMA_PS_UDP   = 0x0111,
 };
 
+<<<<<<< HEAD
+=======
+#define RDMA_IB_IP_PS_MASK   0xFFFFFFFFFFFF0000ULL
+#define RDMA_IB_IP_PS_TCP    0x0000000001060000ULL
+#define RDMA_IB_IP_PS_UDP    0x0000000001110000ULL
+#define RDMA_IB_IP_PS_IB     0x00000000013F0000ULL
+
+>>>>>>> refs/remotes/origin/master
 struct rdma_addr {
 	struct sockaddr_storage src_addr;
 	struct sockaddr_storage dst_addr;
@@ -92,6 +108,10 @@ struct rdma_conn_param {
 	/* Fields below ignored if a QP is created on the rdma_cm_id. */
 	u8 srq;
 	u32 qp_num;
+<<<<<<< HEAD
+=======
+	u32 qkey;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct rdma_ud_param {
@@ -356,4 +376,24 @@ void rdma_set_service_type(struct rdma_cm_id *id, int tos);
  */
 int rdma_set_reuseaddr(struct rdma_cm_id *id, int reuse);
 
+<<<<<<< HEAD
+=======
+/**
+ * rdma_set_afonly - Specify that listens are restricted to the
+ *    bound address family only.
+ * @id: Communication identifer to configure.
+ * @afonly: Value indicating if listens are restricted.
+ *
+ * Must be set before identifier is in the listening state.
+ */
+int rdma_set_afonly(struct rdma_cm_id *id, int afonly);
+
+ /**
+ * rdma_get_service_id - Return the IB service ID for a specified address.
+ * @id: Communication identifier associated with the address.
+ * @addr: Address for the service ID.
+ */
+__be64 rdma_get_service_id(struct rdma_cm_id *id, struct sockaddr *addr);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* RDMA_CM_H */

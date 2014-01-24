@@ -1,6 +1,10 @@
 #include <errno.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include "sysdep/ptrace.h"
+=======
+#include <sysdep/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 int ptrace_getregs(long pid, unsigned long *regs_out)
 {

@@ -8,6 +8,10 @@
  *
  * Copyright (c) 2004, 2005, 2006 Voltaire, Inc. All rights reserved.
  * Copyright (c) 2005, 2006 Cisco Systems.  All rights reserved.
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2013 Mellanox Technologies. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This software is available to you under a choice of one of two
  * licenses.  You may choose to be licensed under the terms of the GNU
@@ -42,9 +46,21 @@
 
 #include <linux/types.h>
 #include <linux/net.h>
+<<<<<<< HEAD
 #include <scsi/libiscsi.h>
 #include <scsi/scsi_transport_iscsi.h>
 
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/printk.h>
+#include <scsi/libiscsi.h>
+#include <scsi/scsi_transport_iscsi.h>
+
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/wait.h>
 #include <linux/sched.h>
 #include <linux/list.h>
@@ -64,12 +80,20 @@
 
 #define DRV_NAME	"iser"
 #define PFX		DRV_NAME ": "
+<<<<<<< HEAD
 #define DRV_VER		"0.1"
 #define DRV_DATE	"May 7th, 2006"
 
 #define iser_dbg(fmt, arg...)				\
 	do {						\
 		if (iser_debug_level > 1)		\
+=======
+#define DRV_VER		"1.1"
+
+#define iser_dbg(fmt, arg...)				\
+	do {						\
+		if (iser_debug_level > 2)		\
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_DEBUG PFX "%s:" fmt,\
 				__func__ , ## arg);	\
 	} while (0)
@@ -77,7 +101,18 @@
 #define iser_warn(fmt, arg...)				\
 	do {						\
 		if (iser_debug_level > 0)		\
+<<<<<<< HEAD
 			printk(KERN_DEBUG PFX "%s:" fmt,\
+=======
+			pr_warn(PFX "%s:" fmt,          \
+				__func__ , ## arg);	\
+	} while (0)
+
+#define iser_info(fmt, arg...)				\
+	do {						\
+		if (iser_debug_level > 1)		\
+			pr_info(PFX "%s:" fmt,          \
+>>>>>>> refs/remotes/origin/master
 				__func__ , ## arg);	\
 	} while (0)
 
@@ -88,12 +123,30 @@
 	} while (0)
 
 #define SHIFT_4K	12
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SIZE_4K	(1UL << SHIFT_4K)
+=======
+#define SIZE_4K	(1ULL << SHIFT_4K)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SIZE_4K	(1ULL << SHIFT_4K)
+>>>>>>> refs/remotes/origin/master
 #define MASK_4K	(~(SIZE_4K-1))
 
 					/* support up to 512KB in one RDMA */
 #define ISCSI_ISER_SG_TABLESIZE         (0x80000 >> SHIFT_4K)
+<<<<<<< HEAD
 #define ISER_DEF_CMD_PER_LUN		128
+=======
+#define ISER_DEF_XMIT_CMDS_DEFAULT		512
+#if ISCSI_DEF_XMIT_CMDS_MAX > ISER_DEF_XMIT_CMDS_DEFAULT
+	#define ISER_DEF_XMIT_CMDS_MAX		ISCSI_DEF_XMIT_CMDS_MAX
+#else
+	#define ISER_DEF_XMIT_CMDS_MAX		ISER_DEF_XMIT_CMDS_DEFAULT
+#endif
+#define ISER_DEF_CMD_PER_LUN		ISER_DEF_XMIT_CMDS_MAX
+>>>>>>> refs/remotes/origin/master
 
 /* QP settings */
 /* Maximal bounds on received asynchronous PDUs */
@@ -102,9 +155,15 @@
 #define ISER_MAX_TX_MISC_PDUS		6 /* NOOP_OUT(2), TEXT(1),         *
 					   * SCSI_TMFUNC(2), LOGOUT(1) */
 
+<<<<<<< HEAD
 #define ISER_QP_MAX_RECV_DTOS		(ISCSI_DEF_XMIT_CMDS_MAX)
 
 #define ISER_MIN_POSTED_RX		(ISCSI_DEF_XMIT_CMDS_MAX >> 2)
+=======
+#define ISER_QP_MAX_RECV_DTOS		(ISER_DEF_XMIT_CMDS_MAX)
+
+#define ISER_MIN_POSTED_RX		(ISER_DEF_XMIT_CMDS_MAX >> 2)
+>>>>>>> refs/remotes/origin/master
 
 /* the max TX (send) WR supported by the iSER QP is defined by                 *
  * max_send_wr = T * (1 + D) + C ; D is how many inflight dataouts we expect   *
@@ -114,7 +173,11 @@
 
 #define ISER_INFLIGHT_DATAOUTS		8
 
+<<<<<<< HEAD
 #define ISER_QP_MAX_REQ_DTOS		(ISCSI_DEF_XMIT_CMDS_MAX *    \
+=======
+#define ISER_QP_MAX_REQ_DTOS		(ISER_DEF_XMIT_CMDS_MAX *    \
+>>>>>>> refs/remotes/origin/master
 					(1 + ISER_INFLIGHT_DATAOUTS) + \
 					ISER_MAX_TX_MISC_PDUS        + \
 					ISER_MAX_RX_MISC_PDUS)
@@ -132,6 +195,18 @@ struct iser_hdr {
 	__be64  read_va;
 } __attribute__((packed));
 
+<<<<<<< HEAD
+=======
+
+#define ISER_ZBVA_NOT_SUPPORTED		0x80
+#define ISER_SEND_W_INV_NOT_SUPPORTED	0x40
+
+struct iser_cm_hdr {
+	u8      flags;
+	u8      rsvd[3];
+} __packed;
+
+>>>>>>> refs/remotes/origin/master
 /* Constant PDU lengths calculations */
 #define ISER_HEADERS_LEN  (sizeof(struct iser_hdr) + sizeof(struct iscsi_hdr))
 
@@ -176,6 +251,10 @@ struct iser_data_buf {
 
 /* fwd declarations */
 struct iser_device;
+<<<<<<< HEAD
+=======
+struct iser_cq_desc;
+>>>>>>> refs/remotes/origin/master
 struct iscsi_iser_conn;
 struct iscsi_iser_task;
 struct iscsi_endpoint;
@@ -186,7 +265,11 @@ struct iser_mem_reg {
 	u64  va;
 	u64  len;
 	void *mem_h;
+<<<<<<< HEAD
 	int  is_fmr;
+=======
+	int  is_mr;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct iser_regd_buf {
@@ -225,6 +308,7 @@ struct iser_rx_desc {
 	char		             pad[ISER_RX_PAD_SIZE];
 } __attribute__((packed));
 
+<<<<<<< HEAD
 struct iser_device {
 	struct ib_device             *ib_device;
 	struct ib_pd	             *pd;
@@ -235,6 +319,42 @@ struct iser_device {
 	struct ib_event_handler      event_handler;
 	struct list_head             ig_list; /* entry in ig devices list */
 	int                          refcount;
+=======
+#define ISER_MAX_CQ 4
+
+struct iser_conn;
+struct iscsi_iser_task;
+
+struct iser_device {
+	struct ib_device             *ib_device;
+	struct ib_pd	             *pd;
+	struct ib_cq	             *rx_cq[ISER_MAX_CQ];
+	struct ib_cq	             *tx_cq[ISER_MAX_CQ];
+	struct ib_mr	             *mr;
+	struct tasklet_struct	     cq_tasklet[ISER_MAX_CQ];
+	struct ib_event_handler      event_handler;
+	struct list_head             ig_list; /* entry in ig devices list */
+	int                          refcount;
+	int                          cq_active_qps[ISER_MAX_CQ];
+	int			     cqs_used;
+	struct iser_cq_desc	     *cq_desc;
+	int                          (*iser_alloc_rdma_reg_res)(struct iser_conn *ib_conn,
+								unsigned cmds_max);
+	void                         (*iser_free_rdma_reg_res)(struct iser_conn *ib_conn);
+	int                          (*iser_reg_rdma_mem)(struct iscsi_iser_task *iser_task,
+							  enum iser_data_dir cmd_dir);
+	void                         (*iser_unreg_rdma_mem)(struct iscsi_iser_task *iser_task,
+							    enum iser_data_dir cmd_dir);
+};
+
+struct fast_reg_descriptor {
+	struct list_head		  list;
+	/* For fast registration - FRWR */
+	struct ib_mr			 *data_mr;
+	struct ib_fast_reg_page_list     *data_frpl;
+	/* Valid for fast registration flag */
+	bool				  valid;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct iser_conn {
@@ -246,6 +366,7 @@ struct iser_conn {
 	struct iser_device           *device;       /* device context          */
 	struct rdma_cm_id            *cma_id;       /* CMA ID		       */
 	struct ib_qp	             *qp;           /* QP 		       */
+<<<<<<< HEAD
 	struct ib_fmr_pool           *fmr_pool;     /* pool of IB FMRs         */
 	wait_queue_head_t	     wait;          /* waitq for conn/disconn  */
 	int                          post_recv_buf_count; /* posted rx count  */
@@ -256,10 +377,43 @@ struct iser_conn {
 	struct list_head	     conn_list;       /* entry in ig conn list */
 
 	char  			     *login_buf;
+<<<<<<< HEAD
 	u64 			     login_dma;
+=======
+	char			     *login_req_buf, *login_resp_buf;
+	u64			     login_req_dma, login_resp_dma;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int 		     rx_desc_head;
 	struct iser_rx_desc	     *rx_descs;
 	struct ib_recv_wr	     rx_wr[ISER_MIN_POSTED_RX];
+=======
+	wait_queue_head_t	     wait;          /* waitq for conn/disconn  */
+	unsigned		     qp_max_recv_dtos; /* num of rx buffers */
+	unsigned		     qp_max_recv_dtos_mask; /* above minus 1 */
+	unsigned		     min_posted_rx; /* qp_max_recv_dtos >> 2 */
+	int                          post_recv_buf_count; /* posted rx count  */
+	atomic_t                     post_send_buf_count; /* posted tx count   */
+	char 			     name[ISER_OBJECT_NAME_SIZE];
+	struct list_head	     conn_list;       /* entry in ig conn list */
+
+	char  			     *login_buf;
+	char			     *login_req_buf, *login_resp_buf;
+	u64			     login_req_dma, login_resp_dma;
+	unsigned int 		     rx_desc_head;
+	struct iser_rx_desc	     *rx_descs;
+	struct ib_recv_wr	     rx_wr[ISER_MIN_POSTED_RX];
+	union {
+		struct {
+			struct ib_fmr_pool      *pool;	   /* pool of IB FMRs         */
+			struct iser_page_vec	*page_vec; /* represents SG to fmr maps*
+							    * maps serialized as tx is*/
+		} fmr;
+		struct {
+			struct list_head	pool;
+			int			pool_size;
+		} frwr;
+	} fastreg;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct iscsi_iser_conn {
@@ -276,7 +430,13 @@ struct iscsi_iser_task {
 	struct iser_regd_buf         rdma_regd[ISER_DIRS_NUM];/* regd rdma buf */
 	struct iser_data_buf         data[ISER_DIRS_NUM];     /* orig. data des*/
 	struct iser_data_buf         data_copy[ISER_DIRS_NUM];/* contig. copy  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int                          headers_initialized;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct iser_page_vec {
@@ -286,6 +446,14 @@ struct iser_page_vec {
 	int data_size;
 };
 
+<<<<<<< HEAD
+=======
+struct iser_cq_desc {
+	struct iser_device           *device;
+	int                          cq_index;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct iser_global {
 	struct mutex      device_list_mutex;/*                   */
 	struct list_head  device_list;	     /* all iSER devices */
@@ -339,8 +507,15 @@ void iser_free_rx_descriptors(struct iser_conn *ib_conn);
 void iser_finalize_rdma_unaligned_sg(struct iscsi_iser_task *task,
 				     enum iser_data_dir         cmd_dir);
 
+<<<<<<< HEAD
 int  iser_reg_rdma_mem(struct iscsi_iser_task *task,
 		       enum   iser_data_dir        cmd_dir);
+=======
+int  iser_reg_rdma_mem_fmr(struct iscsi_iser_task *task,
+			   enum iser_data_dir cmd_dir);
+int  iser_reg_rdma_mem_frwr(struct iscsi_iser_task *task,
+			    enum iser_data_dir cmd_dir);
+>>>>>>> refs/remotes/origin/master
 
 int  iser_connect(struct iser_conn   *ib_conn,
 		  struct sockaddr_in *src_addr,
@@ -351,7 +526,14 @@ int  iser_reg_page_vec(struct iser_conn     *ib_conn,
 		       struct iser_page_vec *page_vec,
 		       struct iser_mem_reg  *mem_reg);
 
+<<<<<<< HEAD
 void iser_unreg_mem(struct iser_mem_reg *mem_reg);
+=======
+void iser_unreg_mem_fmr(struct iscsi_iser_task *iser_task,
+			enum iser_data_dir cmd_dir);
+void iser_unreg_mem_frwr(struct iscsi_iser_task *iser_task,
+			 enum iser_data_dir cmd_dir);
+>>>>>>> refs/remotes/origin/master
 
 int  iser_post_recvl(struct iser_conn *ib_conn);
 int  iser_post_recvm(struct iser_conn *ib_conn, int count);
@@ -365,5 +547,13 @@ int iser_dma_map_task_data(struct iscsi_iser_task *iser_task,
 void iser_dma_unmap_task_data(struct iscsi_iser_task *iser_task);
 int  iser_initialize_task_headers(struct iscsi_task *task,
 			struct iser_tx_desc *tx_desc);
+<<<<<<< HEAD
 int iser_alloc_rx_descriptors(struct iser_conn *ib_conn);
+=======
+int iser_alloc_rx_descriptors(struct iser_conn *ib_conn, struct iscsi_session *session);
+int iser_create_fmr_pool(struct iser_conn *ib_conn, unsigned cmds_max);
+void iser_free_fmr_pool(struct iser_conn *ib_conn);
+int iser_create_frwr_pool(struct iser_conn *ib_conn, unsigned cmds_max);
+void iser_free_frwr_pool(struct iser_conn *ib_conn);
+>>>>>>> refs/remotes/origin/master
 #endif

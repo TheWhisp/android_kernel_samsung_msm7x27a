@@ -26,9 +26,15 @@
 #include <asm/sgi/hpc3.h>
 #include <asm/sgi/ip22.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long sgi_gfxaddr;
 EXPORT_SYMBOL_GPL(sgi_gfxaddr);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void ip22_be_init(void) __init;
 
 void __init plat_mem_setup(void)
@@ -78,6 +84,8 @@ void __init plat_mem_setup(void)
 		prom_flags |= PROM_FLAG_USE_AS_CONSOLE;
 		add_preferred_console("arc", 0, NULL);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #if defined(CONFIG_VT) && defined(CONFIG_SGI_NEWPORT_CONSOLE)
 	{
@@ -96,4 +104,8 @@ void __init plat_mem_setup(void)
 		}
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

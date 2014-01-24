@@ -23,6 +23,24 @@
 
 #include "ad73311.h"
 
+<<<<<<< HEAD
+=======
+static const struct snd_soc_dapm_widget ad73311_dapm_widgets[] = {
+SND_SOC_DAPM_INPUT("VINP"),
+SND_SOC_DAPM_INPUT("VINN"),
+SND_SOC_DAPM_OUTPUT("VOUTN"),
+SND_SOC_DAPM_OUTPUT("VOUTP"),
+};
+
+static const struct snd_soc_dapm_route ad73311_dapm_routes[] = {
+	{ "Capture", NULL, "VINP" },
+	{ "Capture", NULL, "VINN" },
+
+	{ "VOUTN", NULL, "Playback" },
+	{ "VOUTP", NULL, "Playback" },
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_dai_driver ad73311_dai = {
 	.name = "ad73311-hifi",
 	.playback = {
@@ -39,7 +57,16 @@ static struct snd_soc_dai_driver ad73311_dai = {
 		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
 };
 
+<<<<<<< HEAD
 static struct snd_soc_codec_driver soc_codec_dev_ad73311;
+=======
+static struct snd_soc_codec_driver soc_codec_dev_ad73311 = {
+	.dapm_widgets = ad73311_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(ad73311_dapm_widgets),
+	.dapm_routes = ad73311_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(ad73311_dapm_routes),
+};
+>>>>>>> refs/remotes/origin/master
 
 static int ad73311_probe(struct platform_device *pdev)
 {
@@ -47,7 +74,11 @@ static int ad73311_probe(struct platform_device *pdev)
 			&soc_codec_dev_ad73311, &ad73311_dai, 1);
 }
 
+<<<<<<< HEAD
 static int __devexit ad73311_remove(struct platform_device *pdev)
+=======
+static int ad73311_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_codec(&pdev->dev);
 	return 0;
@@ -60,9 +91,11 @@ static struct platform_driver ad73311_codec_driver = {
 	},
 
 	.probe = ad73311_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ad73311_remove),
 };
 
+<<<<<<< HEAD
 static int __init ad73311_init(void)
 {
 	return platform_driver_register(&ad73311_codec_driver);
@@ -74,6 +107,15 @@ static void __exit ad73311_exit(void)
 	platform_driver_unregister(&ad73311_codec_driver);
 }
 module_exit(ad73311_exit);
+=======
+module_platform_driver(ad73311_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = ad73311_remove,
+};
+
+module_platform_driver(ad73311_codec_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC ad73311 driver");
 MODULE_AUTHOR("Cliff Cai ");

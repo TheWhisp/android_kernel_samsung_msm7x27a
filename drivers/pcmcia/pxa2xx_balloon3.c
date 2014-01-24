@@ -29,6 +29,8 @@
 
 #include "soc_common.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * These are a list of interrupt sources that provokes a polled
  * check of status
@@ -38,6 +40,10 @@ static struct pcmcia_irqs irqs[] = {
 	{ 0, BALLOON3_BP_NSTSCHG_IRQ, "PCMCIA0 STSCHG" },
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int balloon3_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
 	uint16_t ver;
@@ -49,12 +55,27 @@ static int balloon3_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 			ver);
 
 	skt->socket.pci_irq = BALLOON3_BP_CF_NRDY_IRQ;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
 }
 
 static void balloon3_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 {
 	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	skt->stat[SOC_STAT_CD].gpio = BALLOON3_GPIO_S0_CD;
+	skt->stat[SOC_STAT_CD].name = "PCMCIA0 CD";
+	skt->stat[SOC_STAT_BVD1].irq = BALLOON3_BP_NSTSCHG_IRQ;
+	skt->stat[SOC_STAT_BVD1].name = "PCMCIA0 STSCHG";
+
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long balloon3_pcmcia_status[2] = {
@@ -85,24 +106,46 @@ static void balloon3_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 			disable_irq(BALLOON3_BP_NSTSCHG_IRQ);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	state->detect	= !gpio_get_value(BALLOON3_GPIO_S0_CD);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	state->ready	= !!(status & BALLOON3_CF_nIRQ);
 	state->bvd1	= !!(status & BALLOON3_CF_nSTSCHG_BVD1);
 	state->bvd2	= 0;	/* not available */
 	state->vs_3v	= 1;	/* Always true its a CF card */
 	state->vs_Xv	= 0;	/* not available */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	state->wrprot	= 0;	/* not available */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int balloon3_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 				       const socket_state_t *state)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writew(BALLOON3_CF_RESET, BALLOON3_CF_CONTROL_REG |
+=======
+	__raw_writew(BALLOON3_CF_RESET, BALLOON3_CF_CONTROL_REG +
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__raw_writew(BALLOON3_CF_RESET, BALLOON3_CF_CONTROL_REG +
+>>>>>>> refs/remotes/origin/master
 			((state->flags & SS_RESET) ?
 			BALLOON3_FPGA_SETnCLR : 0));
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void balloon3_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
 }
@@ -119,6 +162,18 @@ static struct pcmcia_low_level balloon3_pcmcia_ops = {
 	.configure_socket	= balloon3_pcmcia_configure_socket,
 	.socket_init		= balloon3_pcmcia_socket_init,
 	.socket_suspend		= balloon3_pcmcia_socket_suspend,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct pcmcia_low_level balloon3_pcmcia_ops = {
+	.owner			= THIS_MODULE,
+	.hw_init		= balloon3_pcmcia_hw_init,
+	.socket_state		= balloon3_pcmcia_socket_state,
+	.configure_socket	= balloon3_pcmcia_configure_socket,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.first			= 0,
 	.nr			= 1,
 };

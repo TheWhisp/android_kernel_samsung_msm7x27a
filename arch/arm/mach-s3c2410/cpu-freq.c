@@ -16,7 +16,11 @@
 #include <linux/interrupt.h>
 #include <linux/ioport.h>
 #include <linux/cpufreq.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/io.h>
@@ -115,24 +119,45 @@ static struct s3c_cpufreq_info s3c2410_cpufreq_info = {
 	.debug_io_show	= s3c_cpufreq_debugfs_call(s3c2410_iotiming_debugfs),
 };
 
+<<<<<<< HEAD
 static int s3c2410_cpufreq_add(struct sys_device *sysdev)
+=======
+static int s3c2410_cpufreq_add(struct device *dev,
+			       struct subsys_interface *sif)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return s3c_cpufreq_register(&s3c2410_cpufreq_info);
 }
 
+<<<<<<< HEAD
 static struct sysdev_driver s3c2410_cpufreq_driver = {
 	.add		= s3c2410_cpufreq_add,
+=======
+static struct subsys_interface s3c2410_cpufreq_interface = {
+	.name		= "s3c2410_cpufreq",
+	.subsys		= &s3c2410_subsys,
+	.add_dev	= s3c2410_cpufreq_add,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init s3c2410_cpufreq_init(void)
 {
+<<<<<<< HEAD
 	return sysdev_driver_register(&s3c2410_sysclass,
 				      &s3c2410_cpufreq_driver);
+=======
+	return subsys_interface_register(&s3c2410_cpufreq_interface);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 arch_initcall(s3c2410_cpufreq_init);
 
+<<<<<<< HEAD
 static int s3c2410a_cpufreq_add(struct sys_device *sysdev)
+=======
+static int s3c2410a_cpufreq_add(struct device *dev,
+				struct subsys_interface *sif)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* alter the maximum freq settings for S3C2410A. If a board knows
 	 * it only has a maximum of 200, then it should register its own
@@ -143,17 +168,31 @@ static int s3c2410a_cpufreq_add(struct sys_device *sysdev)
 	s3c2410_cpufreq_info.max.pclk =  66500000;
 	s3c2410_cpufreq_info.name = "s3c2410a";
 
+<<<<<<< HEAD
 	return s3c2410_cpufreq_add(sysdev);
 }
 
 static struct sysdev_driver s3c2410a_cpufreq_driver = {
 	.add		= s3c2410a_cpufreq_add,
+=======
+	return s3c2410_cpufreq_add(dev, sif);
+}
+
+static struct subsys_interface s3c2410a_cpufreq_interface = {
+	.name		= "s3c2410a_cpufreq",
+	.subsys		= &s3c2410a_subsys,
+	.add_dev	= s3c2410a_cpufreq_add,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init s3c2410a_cpufreq_init(void)
 {
+<<<<<<< HEAD
 	return sysdev_driver_register(&s3c2410a_sysclass,
 				      &s3c2410a_cpufreq_driver);
+=======
+	return subsys_interface_register(&s3c2410a_cpufreq_interface);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 arch_initcall(s3c2410a_cpufreq_init);

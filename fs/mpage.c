@@ -13,7 +13,15 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/kdev_t.h>
 #include <linux/gfp.h>
@@ -371,9 +379,15 @@ mpage_readpages(struct address_space *mapping, struct list_head *pages,
 	sector_t last_block_in_bio = 0;
 	struct buffer_head map_bh;
 	unsigned long first_logical_block = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct blk_plug plug;
 
 	blk_start_plug(&plug);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	map_bh.b_state = 0;
 	map_bh.b_size = 0;
@@ -395,7 +409,13 @@ mpage_readpages(struct address_space *mapping, struct list_head *pages,
 	BUG_ON(!list_empty(pages));
 	if (bio)
 		mpage_bio_submit(READ, bio);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	blk_finish_plug(&plug);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(mpage_readpages);

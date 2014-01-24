@@ -4,6 +4,10 @@
 #include <linux/kernel.h>
 #include <linux/interrupt.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pmac_feature.h>
 #include <asm/pmac_pfunc.h>

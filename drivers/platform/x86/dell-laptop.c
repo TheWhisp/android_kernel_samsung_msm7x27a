@@ -60,6 +60,31 @@ struct calling_interface_structure {
 	struct calling_interface_token tokens[];
 } __packed;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct quirk_entry {
+	u8 touchpad_led;
+};
+
+static struct quirk_entry *quirks;
+
+static struct quirk_entry quirk_dell_vostro_v130 = {
+	.touchpad_led = 1,
+};
+
+static int dmi_matched(const struct dmi_system_id *dmi)
+{
+	quirks = dmi->driver_data;
+	return 1;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int da_command_address;
 static int da_command_code;
 static int da_num_tokens;
@@ -77,8 +102,17 @@ static struct backlight_device *dell_backlight_device;
 static struct rfkill *wifi_rfkill;
 static struct rfkill *bluetooth_rfkill;
 static struct rfkill *wwan_rfkill;
+<<<<<<< HEAD
 
 static const struct dmi_system_id __initdata dell_device_table[] = {
+=======
+static bool force_rfkill;
+
+module_param(force_rfkill, bool, 0444);
+MODULE_PARM_DESC(force_rfkill, "enable rfkill on non whitelisted models");
+
+static const struct dmi_system_id dell_device_table[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.ident = "Dell laptop",
 		.matches = {
@@ -101,6 +135,11 @@ static const struct dmi_system_id __initdata dell_device_table[] = {
 	},
 	{ }
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(dmi, dell_device_table);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct dmi_system_id __devinitdata dell_blacklist[] = {
 	/* Supported by compal-laptop */
@@ -149,6 +188,199 @@ static struct dmi_system_id __devinitdata dell_blacklist[] = {
 	{}
 };
 
+<<<<<<< HEAD
+=======
+static struct dmi_system_id __devinitdata dell_quirks[] = {
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Vostro V130",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro V130"),
+=======
+MODULE_DEVICE_TABLE(dmi, dell_device_table);
+
+static struct dmi_system_id dell_quirks[] = {
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Vostro V130",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro V130"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Vostro V131",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro V131"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Vostro 3350",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3350"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Vostro 3555",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3555"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Inspiron N311z",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron N311z"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Inspiron M5110",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron M5110"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Vostro 3360",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3360"),
+>>>>>>> refs/remotes/origin/master
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+<<<<<<< HEAD
+		.ident = "Dell Vostro V131",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro V131"),
+=======
+		.ident = "Dell Vostro 3460",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3460"),
+>>>>>>> refs/remotes/origin/master
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+<<<<<<< HEAD
+		.ident = "Dell Vostro 3555",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3555"),
+=======
+		.ident = "Dell Vostro 3560",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3560"),
+>>>>>>> refs/remotes/origin/master
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+<<<<<<< HEAD
+		.ident = "Dell Inspiron N311z",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron N311z"),
+=======
+		.ident = "Dell Vostro 3450",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Dell System Vostro 3450"),
+>>>>>>> refs/remotes/origin/master
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+<<<<<<< HEAD
+		.ident = "Dell Inspiron M5110",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron M5110"),
+=======
+		.ident = "Dell Inspiron 5420",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 5420"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Inspiron 5520",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 5520"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Inspiron 5720",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 5720"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Inspiron 7420",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 7420"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Inspiron 7520",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 7520"),
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Dell Inspiron 7720",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 7720"),
+>>>>>>> refs/remotes/origin/master
+		},
+		.driver_data = &quirk_dell_vostro_v130,
+	},
+	{ }
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct calling_interface_buffer *buffer;
 static struct page *bufferpage;
 static DEFINE_MUTEX(buffer_mutex);
@@ -170,6 +402,10 @@ static void __init parse_da_table(const struct dmi_header *dm)
 {
 	/* Final token is a terminator, so we don't want to copy it */
 	int tokens = (dm->length-11)/sizeof(struct calling_interface_token)-1;
+<<<<<<< HEAD
+=======
+	struct calling_interface_token *new_da_tokens;
+>>>>>>> refs/remotes/origin/master
 	struct calling_interface_structure *table =
 		container_of(dm, struct calling_interface_structure, header);
 
@@ -182,12 +418,22 @@ static void __init parse_da_table(const struct dmi_header *dm)
 	da_command_address = table->cmdIOAddress;
 	da_command_code = table->cmdIOCode;
 
+<<<<<<< HEAD
 	da_tokens = krealloc(da_tokens, (da_num_tokens + tokens) *
 			     sizeof(struct calling_interface_token),
 			     GFP_KERNEL);
 
 	if (!da_tokens)
 		return;
+=======
+	new_da_tokens = krealloc(da_tokens, (da_num_tokens + tokens) *
+				 sizeof(struct calling_interface_token),
+				 GFP_KERNEL);
+
+	if (!new_da_tokens)
+		return;
+	da_tokens = new_da_tokens;
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(da_tokens+da_num_tokens, table->tokens,
 	       sizeof(struct calling_interface_token) * tokens);
@@ -199,9 +445,17 @@ static void __init find_tokens(const struct dmi_header *dm, void *dummy)
 {
 	switch (dm->type) {
 	case 0xd4: /* Indexed IO */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		break;
 	case 0xd5: /* Protected Area Type 1 */
 		break;
+=======
+	case 0xd5: /* Protected Area Type 1 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case 0xd5: /* Protected Area Type 1 */
+>>>>>>> refs/remotes/origin/master
 	case 0xd6: /* Protected Area Type 2 */
 		break;
 	case 0xda: /* Calling interface */
@@ -286,42 +540,89 @@ static int dell_rfkill_set(void *data, bool blocked)
 	int disable = blocked ? 1 : 0;
 	unsigned long radio = (unsigned long)data;
 	int hwswitch_bit = (unsigned long)data - 1;
+<<<<<<< HEAD
 	int ret = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	get_buffer();
 	dell_send_request(buffer, 17, 11);
 
 	/* If the hardware switch controls this radio, and the hardware
+<<<<<<< HEAD
 	   switch is disabled, don't allow changing the software state */
 	if ((hwswitch_state & BIT(hwswitch_bit)) &&
 	    !(buffer->output[1] & BIT(16))) {
 		ret = -EINVAL;
 		goto out;
 	}
+=======
+	   switch is disabled, always disable the radio */
+	if ((hwswitch_state & BIT(hwswitch_bit)) &&
+	    !(buffer->output[1] & BIT(16)))
+		disable = 1;
+>>>>>>> refs/remotes/origin/master
 
 	buffer->input[0] = (1 | (radio<<8) | (disable << 16));
 	dell_send_request(buffer, 17, 11);
 
+<<<<<<< HEAD
 out:
 	release_buffer();
 	return ret;
+=======
+	release_buffer();
+	return 0;
+}
+
+/* Must be called with the buffer held */
+static void dell_rfkill_update_sw_state(struct rfkill *rfkill, int radio,
+					int status)
+{
+	if (status & BIT(0)) {
+		/* Has hw-switch, sync sw_state to BIOS */
+		int block = rfkill_blocked(rfkill);
+		buffer->input[0] = (1 | (radio << 8) | (block << 16));
+		dell_send_request(buffer, 17, 11);
+	} else {
+		/* No hw-switch, sync BIOS state to sw_state */
+		rfkill_set_sw_state(rfkill, !!(status & BIT(radio + 16)));
+	}
+}
+
+static void dell_rfkill_update_hw_state(struct rfkill *rfkill, int radio,
+					int status)
+{
+	if (hwswitch_state & (BIT(radio - 1)))
+		rfkill_set_hw_state(rfkill, !(status & BIT(16)));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dell_rfkill_query(struct rfkill *rfkill, void *data)
 {
 	int status;
+<<<<<<< HEAD
 	int bit = (unsigned long)data + 16;
 	int hwswitch_bit = (unsigned long)data - 1;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	get_buffer();
 	dell_send_request(buffer, 17, 11);
 	status = buffer->output[1];
+<<<<<<< HEAD
 	release_buffer();
 
 	rfkill_set_sw_state(rfkill, !!(status & BIT(bit)));
 
 	if (hwswitch_state & (BIT(hwswitch_bit)))
 		rfkill_set_hw_state(rfkill, !(status & BIT(16)));
+=======
+
+	dell_rfkill_update_hw_state(rfkill, (unsigned long)data, status);
+
+	release_buffer();
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct rfkill_ops dell_rfkill_ops = {
@@ -400,12 +701,35 @@ static const struct file_operations dell_debugfs_fops = {
 
 static void dell_update_rfkill(struct work_struct *ignored)
 {
+<<<<<<< HEAD
 	if (wifi_rfkill)
 		dell_rfkill_query(wifi_rfkill, (void *)1);
 	if (bluetooth_rfkill)
 		dell_rfkill_query(bluetooth_rfkill, (void *)2);
 	if (wwan_rfkill)
 		dell_rfkill_query(wwan_rfkill, (void *)3);
+=======
+	int status;
+
+	get_buffer();
+	dell_send_request(buffer, 17, 11);
+	status = buffer->output[1];
+
+	if (wifi_rfkill) {
+		dell_rfkill_update_hw_state(wifi_rfkill, 1, status);
+		dell_rfkill_update_sw_state(wifi_rfkill, 1, status);
+	}
+	if (bluetooth_rfkill) {
+		dell_rfkill_update_hw_state(bluetooth_rfkill, 2, status);
+		dell_rfkill_update_sw_state(bluetooth_rfkill, 2, status);
+	}
+	if (wwan_rfkill) {
+		dell_rfkill_update_hw_state(wwan_rfkill, 3, status);
+		dell_rfkill_update_sw_state(wwan_rfkill, 3, status);
+	}
+
+	release_buffer();
+>>>>>>> refs/remotes/origin/master
 }
 static DECLARE_DELAYED_WORK(dell_rfkill_work, dell_update_rfkill);
 
@@ -414,11 +738,23 @@ static int __init dell_setup_rfkill(void)
 {
 	int status;
 	int ret;
+<<<<<<< HEAD
 
 	if (dmi_check_system(dell_blacklist)) {
 		pr_info("Blacklisted hardware detected - not enabling rfkill\n");
 		return 0;
 	}
+=======
+	const char *product;
+
+	/*
+	 * rfkill causes trouble on various non Latitudes, according to Dell
+	 * actually testing the rfkill functionality is only done on Latitudes.
+	 */
+	product = dmi_get_system_info(DMI_PRODUCT_NAME);
+	if (!force_rfkill && (!product || strncmp(product, "Latitude", 8)))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	get_buffer();
 	dell_send_request(buffer, 17, 11);
@@ -428,6 +764,19 @@ static int __init dell_setup_rfkill(void)
 	hwswitch_state = buffer->output[1];
 	release_buffer();
 
+<<<<<<< HEAD
+=======
+	if (!(status & BIT(0))) {
+		if (force_rfkill) {
+			/* No hwsitch, clear all hw-controlled bits */
+			hwswitch_state &= ~7;
+		} else {
+			/* rfkill is only tested on laptops with a hwswitch */
+			return 0;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if ((status & (1<<2|1<<8)) == (1<<2|1<<8)) {
 		wifi_rfkill = rfkill_alloc("dell-wifi", &platform_device->dev,
 					   RFKILL_TYPE_WLAN,
@@ -552,6 +901,58 @@ static const struct backlight_ops dell_ops = {
 	.update_status  = dell_send_intensity,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void touchpad_led_on(void)
+{
+	int command = 0x97;
+	char data = 1;
+	i8042_command(&data, command | 1 << 12);
+}
+
+static void touchpad_led_off(void)
+{
+	int command = 0x97;
+	char data = 2;
+	i8042_command(&data, command | 1 << 12);
+}
+
+static void touchpad_led_set(struct led_classdev *led_cdev,
+	enum led_brightness value)
+{
+	if (value > 0)
+		touchpad_led_on();
+	else
+		touchpad_led_off();
+}
+
+static struct led_classdev touchpad_led = {
+	.name = "dell-laptop::touchpad",
+	.brightness_set = touchpad_led_set,
+	.flags = LED_CORE_SUSPENDRESUME,
+};
+
+<<<<<<< HEAD
+static int __devinit touchpad_led_init(struct device *dev)
+=======
+static int touchpad_led_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
+{
+	return led_classdev_register(dev, &touchpad_led);
+}
+
+static void touchpad_led_exit(void)
+{
+	led_classdev_unregister(&touchpad_led);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static bool dell_laptop_i8042_filter(unsigned char data, unsigned char str,
 			      struct serio *port)
 {
@@ -567,7 +968,11 @@ static bool dell_laptop_i8042_filter(unsigned char data, unsigned char str,
 		switch (data) {
 		case 0x8:
 			schedule_delayed_work(&dell_rfkill_work,
+<<<<<<< HEAD
 					      round_jiffies_relative(HZ));
+=======
+					      round_jiffies_relative(HZ / 4));
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		extended = false;
@@ -584,6 +989,19 @@ static int __init dell_init(void)
 	if (!dmi_check_system(dell_device_table))
 		return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	quirks = NULL;
+	/* find if this machine support other functions */
+	dmi_check_system(dell_quirks);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dmi_walk(find_tokens, NULL);
 
 	if (!da_tokens)  {
@@ -608,11 +1026,22 @@ static int __init dell_init(void)
 	 * is passed to SMI handler.
 	 */
 	bufferpage = alloc_page(GFP_KERNEL | GFP_DMA32);
+<<<<<<< HEAD
 
 	if (!bufferpage)
 		goto fail_buffer;
 	buffer = page_address(bufferpage);
+<<<<<<< HEAD
 	mutex_init(&buffer_mutex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!bufferpage) {
+		ret = -ENOMEM;
+		goto fail_buffer;
+	}
+	buffer = page_address(bufferpage);
+>>>>>>> refs/remotes/origin/master
 
 	ret = dell_setup_rfkill();
 
@@ -627,6 +1056,18 @@ static int __init dell_init(void)
 		goto fail_filter;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (quirks && quirks->touchpad_led)
+		touchpad_led_init(&platform_device->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (quirks && quirks->touchpad_led)
+		touchpad_led_init(&platform_device->dev);
+
+>>>>>>> refs/remotes/origin/master
 	dell_laptop_dir = debugfs_create_dir("dell_laptop", NULL);
 	if (dell_laptop_dir != NULL)
 		debugfs_create_file("rfkill", 0444, dell_laptop_dir, NULL,
@@ -693,6 +1134,16 @@ fail_platform_driver:
 static void __exit dell_exit(void)
 {
 	debugfs_remove_recursive(dell_laptop_dir);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (quirks && quirks->touchpad_led)
+		touchpad_led_exit();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (quirks && quirks->touchpad_led)
+		touchpad_led_exit();
+>>>>>>> refs/remotes/origin/master
 	i8042_remove_filter(dell_laptop_i8042_filter);
 	cancel_delayed_work_sync(&dell_rfkill_work);
 	backlight_device_unregister(dell_backlight_device);
@@ -711,6 +1162,12 @@ module_exit(dell_exit);
 MODULE_AUTHOR("Matthew Garrett <mjg@redhat.com>");
 MODULE_DESCRIPTION("Dell laptop driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("dmi:*svnDellInc.:*:ct8:*");
 MODULE_ALIAS("dmi:*svnDellInc.:*:ct9:*");
 MODULE_ALIAS("dmi:*svnDellComputerCorporation.:*:ct8:*");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

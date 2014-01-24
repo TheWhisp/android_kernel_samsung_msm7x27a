@@ -1,6 +1,10 @@
 /*
 	This is part of rtl8187 OpenSource driver.
+<<<<<<< HEAD
 	Copyright (C) Andrea Merello 2004-2005  <andreamrl@tiscali.it>
+=======
+	Copyright (C) Andrea Merello 2004-2005  <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
 	Released under the terms of GPL (General Public Licence)
 
 	Parts of this driver are based on the GPL part of the
@@ -10,7 +14,11 @@
 	Parts of this driver are based on the Intel Pro Wireless
 	2100 GPL driver.
 
+<<<<<<< HEAD
 	We want to tanks the Authors of those projects
+=======
+	We want to thank the Authors of those projects
+>>>>>>> refs/remotes/origin/master
 	and the Ndiswrapper project Authors.
 */
 
@@ -122,7 +130,11 @@ enum _RTL8192Usb_HW {
 	SIFS			= 0x03E, // SIFS register
 	TCR			= 0x040, // Transmit Configuration Register
 
+<<<<<<< HEAD
 #define TCR_MXDMA_2048 		7
+=======
+#define TCR_MXDMA_2048		7
+>>>>>>> refs/remotes/origin/master
 #define TCR_LRL_OFFSET		0
 #define TCR_SRL_OFFSET		8
 #define TCR_MXDMA_OFFSET	21
@@ -379,7 +391,11 @@ enum _RTL8192Usb_HW {
 //	IMR_POLL		= 0x360,
 	MacBlkCtrl		= 0x403, // Mac block on/off control register
 
+<<<<<<< HEAD
 	EPROM_CMD 		= 0xfe58,
+=======
+	EPROM_CMD		= 0xfe58,
+>>>>>>> refs/remotes/origin/master
 #define Cmd9346CR_9356SEL	(1<<4)
 #define EPROM_CMD_RESERVED_MASK (1<<5)
 #define EPROM_CMD_OPERATING_MODE_SHIFT 6
@@ -388,6 +404,7 @@ enum _RTL8192Usb_HW {
 #define EPROM_CMD_NORMAL 0
 #define EPROM_CMD_LOAD 1
 #define EPROM_CMD_PROGRAM 2
+<<<<<<< HEAD
 #define EPROM_CS_SHIFT 3
 #define EPROM_CK_SHIFT 2
 #define EPROM_W_SHIFT 1
@@ -398,6 +415,19 @@ enum _RTL8192Usb_HW {
 	MAC3 			= 0x003,
 	MAC4 			= 0x004,
 	MAC5 			= 0x005,
+=======
+#define EPROM_CS_BIT BIT(3)
+#define EPROM_CK_BIT BIT(2)
+#define EPROM_W_BIT  BIT(1)
+#define EPROM_R_BIT  BIT(0)
+
+	MAC0			= 0x000,
+	MAC1			= 0x001,
+	MAC2			= 0x002,
+	MAC3			= 0x003,
+	MAC4			= 0x004,
+	MAC5			= 0x005,
+>>>>>>> refs/remotes/origin/master
 
 };
 //----------------------------------------------------------------------------

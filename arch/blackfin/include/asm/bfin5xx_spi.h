@@ -77,7 +77,13 @@ struct bfin5xx_spi_master {
 struct bfin5xx_spi_chip {
 	u16 ctl_reg;
 	u8 enable_dma;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 bits_per_word;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 cs_chg_udelay; /* Some devices require 16-bit delays */
 	/* Value to send if no TX value is supplied, usually 0x0 or 0xFFFF */
 	u16 idle_tx_val;

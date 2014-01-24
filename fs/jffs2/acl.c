@@ -9,6 +9,16 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/fs.h>
@@ -92,15 +102,34 @@ static struct posix_acl *jffs2_acl_from_medium(void *value, size_t size)
 			case ACL_MASK:
 			case ACL_OTHER:
 				value += sizeof(struct jffs2_acl_entry_short);
+<<<<<<< HEAD
 				acl->a_entries[i].e_id = ACL_UNDEFINED_ID;
 				break;
 
 			case ACL_USER:
+=======
+				break;
+
+			case ACL_USER:
+				value += sizeof(struct jffs2_acl_entry);
+				if (value > end)
+					goto fail;
+				acl->a_entries[i].e_uid =
+					make_kuid(&init_user_ns,
+						  je32_to_cpu(entry->e_id));
+				break;
+>>>>>>> refs/remotes/origin/master
 			case ACL_GROUP:
 				value += sizeof(struct jffs2_acl_entry);
 				if (value > end)
 					goto fail;
+<<<<<<< HEAD
 				acl->a_entries[i].e_id = je32_to_cpu(entry->e_id);
+=======
+				acl->a_entries[i].e_gid =
+					make_kgid(&init_user_ns,
+						  je32_to_cpu(entry->e_id));
+>>>>>>> refs/remotes/origin/master
 				break;
 
 			default:
@@ -129,6 +158,7 @@ static void *jffs2_acl_to_medium(const struct posix_acl *acl, size_t *size)
 	header->a_version = cpu_to_je32(JFFS2_ACL_VERSION);
 	e = header + 1;
 	for (i=0; i < acl->a_count; i++) {
+<<<<<<< HEAD
 		entry = e;
 		entry->e_tag = cpu_to_je16(acl->a_entries[i].e_tag);
 		entry->e_perm = cpu_to_je16(acl->a_entries[i].e_perm);
@@ -136,6 +166,21 @@ static void *jffs2_acl_to_medium(const struct posix_acl *acl, size_t *size)
 			case ACL_USER:
 			case ACL_GROUP:
 				entry->e_id = cpu_to_je32(acl->a_entries[i].e_id);
+=======
+		const struct posix_acl_entry *acl_e = &acl->a_entries[i];
+		entry = e;
+		entry->e_tag = cpu_to_je16(acl_e->e_tag);
+		entry->e_perm = cpu_to_je16(acl_e->e_perm);
+		switch(acl_e->e_tag) {
+			case ACL_USER:
+				entry->e_id = cpu_to_je32(
+					from_kuid(&init_user_ns, acl_e->e_uid));
+				e += sizeof(struct jffs2_acl_entry);
+				break;
+			case ACL_GROUP:
+				entry->e_id = cpu_to_je32(
+					from_kgid(&init_user_ns, acl_e->e_gid));
+>>>>>>> refs/remotes/origin/master
 				e += sizeof(struct jffs2_acl_entry);
 				break;
 
@@ -156,7 +201,15 @@ static void *jffs2_acl_to_medium(const struct posix_acl *acl, size_t *size)
 	return ERR_PTR(-EINVAL);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct posix_acl *jffs2_get_acl(struct inode *inode, int type)
+=======
+struct posix_acl *jffs2_get_acl(struct inode *inode, int type)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct posix_acl *jffs2_get_acl(struct inode *inode, int type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct posix_acl *acl;
 	char *value = NULL;
@@ -227,7 +280,15 @@ static int jffs2_set_acl(struct inode *inode, int type, struct posix_acl *acl)
 	case ACL_TYPE_ACCESS:
 		xprefix = JFFS2_XPREFIX_ACL_ACCESS;
 		if (acl) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			mode_t mode = inode->i_mode;
+=======
+			umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/master
 			rc = posix_acl_equiv_mode(acl, &mode);
 			if (rc < 0)
 				return rc;
@@ -259,11 +320,21 @@ static int jffs2_set_acl(struct inode *inode, int type, struct posix_acl *acl)
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int jffs2_check_acl(struct inode *inode, int mask, unsigned int flags)
+=======
+int jffs2_init_acl_pre(struct inode *dir_i, struct inode *inode, umode_t *i_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int jffs2_init_acl_pre(struct inode *dir_i, struct inode *inode, umode_t *i_mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct posix_acl *acl;
 	int rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (flags & IPERM_FLAG_RCU)
 		return -ECHILD;
 
@@ -283,6 +354,10 @@ int jffs2_init_acl_pre(struct inode *dir_i, struct inode *inode, int *i_mode)
 	struct posix_acl *acl, *clone;
 	int rc;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cache_no_acl(inode);
 
 	if (S_ISLNK(*i_mode))
@@ -298,6 +373,8 @@ int jffs2_init_acl_pre(struct inode *dir_i, struct inode *inode, int *i_mode)
 		if (S_ISDIR(*i_mode))
 			set_cached_acl(inode, ACL_TYPE_DEFAULT, acl);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		clone = posix_acl_clone(acl, GFP_KERNEL);
 		if (!clone)
 			return -ENOMEM;
@@ -310,6 +387,20 @@ int jffs2_init_acl_pre(struct inode *dir_i, struct inode *inode, int *i_mode)
 			set_cached_acl(inode, ACL_TYPE_ACCESS, clone);
 
 		posix_acl_release(clone);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		rc = posix_acl_create(&acl, GFP_KERNEL, i_mode);
+		if (rc < 0)
+			return rc;
+		if (rc > 0)
+			set_cached_acl(inode, ACL_TYPE_ACCESS, acl);
+
+		posix_acl_release(acl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -335,7 +426,15 @@ int jffs2_init_acl_post(struct inode *inode)
 
 int jffs2_acl_chmod(struct inode *inode)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
+=======
+	struct posix_acl *acl;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct posix_acl *acl;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	if (S_ISLNK(inode->i_mode))
@@ -343,6 +442,8 @@ int jffs2_acl_chmod(struct inode *inode)
 	acl = jffs2_get_acl(inode, ACL_TYPE_ACCESS);
 	if (IS_ERR(acl) || !acl)
 		return PTR_ERR(acl);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clone = posix_acl_clone(acl, GFP_KERNEL);
 	posix_acl_release(acl);
 	if (!clone)
@@ -351,6 +452,18 @@ int jffs2_acl_chmod(struct inode *inode)
 	if (!rc)
 		rc = jffs2_set_acl(inode, ACL_TYPE_ACCESS, clone);
 	posix_acl_release(clone);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rc = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+	if (rc)
+		return rc;
+	rc = jffs2_set_acl(inode, ACL_TYPE_ACCESS, acl);
+	posix_acl_release(acl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -388,7 +501,11 @@ static int jffs2_acl_getxattr(struct dentry *dentry, const char *name,
 		return PTR_ERR(acl);
 	if (!acl)
 		return -ENODATA;
+<<<<<<< HEAD
 	rc = posix_acl_to_xattr(acl, buffer, size);
+=======
+	rc = posix_acl_to_xattr(&init_user_ns, acl, buffer, size);
+>>>>>>> refs/remotes/origin/master
 	posix_acl_release(acl);
 
 	return rc;
@@ -406,7 +523,11 @@ static int jffs2_acl_setxattr(struct dentry *dentry, const char *name,
 		return -EPERM;
 
 	if (value) {
+<<<<<<< HEAD
 		acl = posix_acl_from_xattr(value, size);
+=======
+		acl = posix_acl_from_xattr(&init_user_ns, value, size);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(acl))
 			return PTR_ERR(acl);
 		if (acl) {

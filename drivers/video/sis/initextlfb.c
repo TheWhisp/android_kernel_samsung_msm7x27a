@@ -65,7 +65,11 @@ sisfb_mode_rate_to_dclock(struct SiS_Private *SiS_Pr, unsigned char modeno,
     }
 #endif
 
+<<<<<<< HEAD
     if(!(SiS_SearchModeID(SiS_Pr, &ModeNo, &ModeIdIndex))) {;
+=======
+    if(!(SiS_SearchModeID(SiS_Pr, &ModeNo, &ModeIdIndex))) {
+>>>>>>> refs/remotes/origin/master
        printk(KERN_ERR "Could not find mode %x\n", ModeNo);
        return 65000;
     }

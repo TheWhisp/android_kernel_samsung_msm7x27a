@@ -43,7 +43,13 @@
 /* For SCSI -> ATAPI command conversion */
 #include <scsi/scsi.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/irq.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <asm/byteorder.h>
 #include <linux/uaccess.h>
@@ -1409,7 +1415,11 @@ static int idecd_capacity_proc_show(struct seq_file *m, void *v)
 
 static int idecd_capacity_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, idecd_capacity_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, idecd_capacity_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations idecd_capacity_proc_fops = {
@@ -1607,7 +1617,11 @@ out:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int idecd_release(struct gendisk *disk, fmode_t mode)
+=======
+static void idecd_release(struct gendisk *disk, fmode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cdrom_info *info = ide_drv_g(disk, cdrom_info);
 
@@ -1616,8 +1630,11 @@ static int idecd_release(struct gendisk *disk, fmode_t mode)
 
 	ide_cd_put(info);
 	mutex_unlock(&ide_cd_mutex);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int idecd_set_spindown(struct cdrom_device_info *cdi, unsigned long arg)
@@ -1759,7 +1776,11 @@ static int ide_cd_probe(ide_drive_t *drive)
 
 	info->dev.parent = &drive->gendev;
 	info->dev.release = ide_cd_release;
+<<<<<<< HEAD
 	dev_set_name(&info->dev, dev_name(&drive->gendev));
+=======
+	dev_set_name(&info->dev, "%s", dev_name(&drive->gendev));
+>>>>>>> refs/remotes/origin/master
 
 	if (device_register(&info->dev))
 		goto out_free_disk;

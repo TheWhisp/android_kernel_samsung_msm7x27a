@@ -9,6 +9,8 @@
 #include <net/lib80211.h>
 
 #include "host.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_LIBERTAS_MESH
 
@@ -34,6 +36,32 @@ int lbs_deinit_mesh(struct lbs_private *priv);
 int lbs_add_mesh(struct lbs_private *priv);
 void lbs_remove_mesh(struct lbs_private *priv);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include "dev.h"
+
+#ifdef CONFIG_LIBERTAS_MESH
+
+struct net_device;
+
+int lbs_init_mesh(struct lbs_private *priv);
+void lbs_start_mesh(struct lbs_private *priv);
+int lbs_deinit_mesh(struct lbs_private *priv);
+
+void lbs_remove_mesh(struct lbs_private *priv);
+
+static inline bool lbs_mesh_activated(struct lbs_private *priv)
+{
+	/* Mesh SSID is only programmed after successful init */
+	return priv->mesh_ssid_len != 0;
+}
+
+int lbs_mesh_set_channel(struct lbs_private *priv, u8 channel);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Sending / Receiving */
 
@@ -52,6 +80,8 @@ struct cmd_ds_command;
 struct cmd_ds_mesh_access;
 struct cmd_ds_mesh_config;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int lbs_mesh_bt_add_del(struct lbs_private *priv, bool add, u8 *addr1);
 int lbs_mesh_bt_reset(struct lbs_private *priv);
 int lbs_mesh_bt_get_inverted(struct lbs_private *priv, bool *inverted);
@@ -75,6 +105,10 @@ int lbs_mesh_config(struct lbs_private *priv, uint16_t enable, uint16_t chan);
 void lbs_persist_config_init(struct net_device *net);
 void lbs_persist_config_remove(struct net_device *net);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Ethtool statistics */
 
@@ -87,22 +121,46 @@ void lbs_mesh_ethtool_get_strings(struct net_device *dev,
 	uint32_t stringset, uint8_t *s);
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Accessors */
 
 #define lbs_mesh_open(priv) (priv->mesh_open)
 #define lbs_mesh_connected(priv) (priv->mesh_connect_status == LBS_CONNECTED)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 
 #define lbs_init_mesh(priv)
 #define lbs_deinit_mesh(priv)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define lbs_start_mesh(priv)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define lbs_start_mesh(priv)
+>>>>>>> refs/remotes/origin/master
 #define lbs_add_mesh(priv)
 #define lbs_remove_mesh(priv)
 #define lbs_mesh_set_dev(priv, dev, rxpd) (dev)
 #define lbs_mesh_set_txpd(priv, dev, txpd)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define lbs_mesh_config(priv, enable, chan)
 #define lbs_mesh_open(priv) (0)
 #define lbs_mesh_connected(priv) (0)
+=======
+#define lbs_mesh_set_channel(priv, channel) (0)
+#define lbs_mesh_activated(priv) (false)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define lbs_mesh_set_channel(priv, channel) (0)
+#define lbs_mesh_activated(priv) (false)
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

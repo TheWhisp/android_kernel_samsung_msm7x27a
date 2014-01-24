@@ -1,5 +1,11 @@
 #include <generated/utsrelease.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Simply sanity version stamp for modules. */
 #ifdef CONFIG_SMP

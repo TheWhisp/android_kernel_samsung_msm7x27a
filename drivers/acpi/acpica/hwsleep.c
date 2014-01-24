@@ -1,12 +1,33 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /******************************************************************************
  *
  * Name: hwsleep.c - ACPI Hardware Sleep/Wake Interface
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/******************************************************************************
+ *
+ * Name: hwsleep.c - ACPI Hardware Sleep/Wake Support functions for the
+ *                   original/legacy sleep/PM registers.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,13 +64,26 @@
  */
 
 #include <acpi/acpi.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "accommon.h"
 #include "actables.h"
 #include <linux/tboot.h>
+=======
+#include <linux/acpi.h>
+#include "accommon.h"
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/acpi.h>
+#include "accommon.h"
+>>>>>>> refs/remotes/origin/master
 
 #define _COMPONENT          ACPI_HARDWARE
 ACPI_MODULE_NAME("hwsleep")
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*******************************************************************************
  *
  * FUNCTION:    acpi_set_firmware_waking_vector
@@ -249,6 +283,44 @@ acpi_status asmlinkage acpi_enter_sleep_state(u8 sleep_state)
 			    acpi_gbl_sleep_type_a, acpi_gbl_sleep_type_b));
 		return_ACPI_STATUS(AE_AML_OPERAND_VALUE);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_hw_legacy_sleep
+ *
+ * PARAMETERS:  sleep_state         - Which sleep state to enter
+<<<<<<< HEAD
+ *              Flags               - ACPI_EXECUTE_GTS to run optional method
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Enter a system sleep state via the legacy FADT PM registers
+ *              THIS FUNCTION MUST BE CALLED WITH INTERRUPTS DISABLED
+ *
+ ******************************************************************************/
+<<<<<<< HEAD
+acpi_status acpi_hw_legacy_sleep(u8 sleep_state, u8 flags)
+=======
+acpi_status acpi_hw_legacy_sleep(u8 sleep_state)
+>>>>>>> refs/remotes/origin/master
+{
+	struct acpi_bit_register_info *sleep_type_reg_info;
+	struct acpi_bit_register_info *sleep_enable_reg_info;
+	u32 pm1a_control;
+	u32 pm1b_control;
+	u32 in_value;
+	acpi_status status;
+
+	ACPI_FUNCTION_TRACE(hw_legacy_sleep);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sleep_type_reg_info =
 	    acpi_hw_get_bit_register_info(ACPI_BITREG_SLEEP_TYPE);
@@ -285,6 +357,8 @@ acpi_status asmlinkage acpi_enter_sleep_state(u8 sleep_state)
 		return_ACPI_STATUS(status);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (gts) {
 		/* Execute the _GTS method */
 
@@ -297,8 +371,16 @@ acpi_status asmlinkage acpi_enter_sleep_state(u8 sleep_state)
 		if (ACPI_FAILURE(status) && status != AE_NOT_FOUND) {
 			return_ACPI_STATUS(status);
 		}
+=======
+	/* Optionally execute _GTS (Going To Sleep) */
+
+	if (flags & ACPI_EXECUTE_GTS) {
+		acpi_hw_execute_sleep_method(METHOD_PATHNAME__GTS, sleep_state);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Get current value of PM1A control */
 
 	status = acpi_hw_register_read(ACPI_REGISTER_PM1_CONTROL,
@@ -343,8 +425,23 @@ acpi_status asmlinkage acpi_enter_sleep_state(u8 sleep_state)
 
 	ACPI_FLUSH_CPU_CACHE();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tboot_sleep(sleep_state, pm1a_control, pm1b_control);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	status = acpi_os_prepare_sleep(sleep_state, pm1a_control,
+				       pm1b_control);
+	if (ACPI_SKIP(status))
+		return_ACPI_STATUS(AE_OK);
+	if (ACPI_FAILURE(status))
+		return_ACPI_STATUS(status);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Write #2: Write both SLP_TYP + SLP_EN */
 
 	status = acpi_hw_write_pm1_control(pm1a_control, pm1b_control);
@@ -364,7 +461,11 @@ acpi_status asmlinkage acpi_enter_sleep_state(u8 sleep_state)
 		 * to still read the right value. Ideally, this block would go
 		 * away entirely.
 		 */
+<<<<<<< HEAD
 		acpi_os_stall(10000000);
+=======
+		acpi_os_stall(10 * ACPI_USEC_PER_SEC);
+>>>>>>> refs/remotes/origin/master
 
 		status = acpi_hw_register_write(ACPI_REGISTER_PM1_CONTROL,
 						sleep_enable_reg_info->
@@ -374,6 +475,8 @@ acpi_status asmlinkage acpi_enter_sleep_state(u8 sleep_state)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Wait until we enter sleep state */
 
 	do {
@@ -446,16 +549,36 @@ acpi_status asmlinkage acpi_enter_sleep_state_s4bios(void)
 
 	do {
 		acpi_os_stall(1000);
+=======
+	/* Wait for transition back to Working State */
+
+	do {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Wait for transition back to Working State */
+
+	do {
+>>>>>>> refs/remotes/origin/master
 		status =
 		    acpi_read_bit_register(ACPI_BITREG_WAKE_STATUS, &in_value);
 		if (ACPI_FAILURE(status)) {
 			return_ACPI_STATUS(status);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	} while (!in_value);
 
 	return_ACPI_STATUS(AE_OK);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ACPI_EXPORT_SYMBOL(acpi_enter_sleep_state_s4bios)
 
 /*******************************************************************************
@@ -463,11 +586,26 @@ ACPI_EXPORT_SYMBOL(acpi_enter_sleep_state_s4bios)
  * FUNCTION:    acpi_leave_sleep_state_prep
  *
  * PARAMETERS:  sleep_state         - Which sleep state we are exiting
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_hw_legacy_wake_prep
+ *
+ * PARAMETERS:  sleep_state         - Which sleep state we just exited
+<<<<<<< HEAD
+ *              Flags               - ACPI_EXECUTE_BFS to run optional method
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
  * DESCRIPTION: Perform the first state of OS-independent ACPI cleanup after a
  *              sleep.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *              Called with interrupts DISABLED.
  *
  ******************************************************************************/
@@ -475,13 +613,36 @@ acpi_status acpi_leave_sleep_state_prep(u8 sleep_state)
 {
 	struct acpi_object_list arg_list;
 	union acpi_object arg;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *              Called with interrupts ENABLED.
+ *
+ ******************************************************************************/
+
+<<<<<<< HEAD
+acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state, u8 flags)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
+{
+>>>>>>> refs/remotes/origin/master
 	acpi_status status;
 	struct acpi_bit_register_info *sleep_type_reg_info;
 	struct acpi_bit_register_info *sleep_enable_reg_info;
 	u32 pm1a_control;
 	u32 pm1b_control;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ACPI_FUNCTION_TRACE(acpi_leave_sleep_state_prep);
+=======
+	ACPI_FUNCTION_TRACE(hw_legacy_wake_prep);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ACPI_FUNCTION_TRACE(hw_legacy_wake_prep);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Set SLP_TYPE and SLP_EN to state S0.
@@ -524,6 +685,8 @@ acpi_status acpi_leave_sleep_state_prep(u8 sleep_state)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfs) {
 		/* Execute the _BFS method */
 
@@ -536,15 +699,36 @@ acpi_status acpi_leave_sleep_state_prep(u8 sleep_state)
 		if (ACPI_FAILURE(status) && status != AE_NOT_FOUND) {
 			ACPI_EXCEPTION((AE_INFO, status, "During Method _BFS"));
 		}
+=======
+	/* Optionally execute _BFS (Back From Sleep) */
+
+	if (flags & ACPI_EXECUTE_BFS) {
+		acpi_hw_execute_sleep_method(METHOD_PATHNAME__BFS, sleep_state);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * FUNCTION:    acpi_leave_sleep_state
  *
  * PARAMETERS:  sleep_state         - Which sleep state we just exited
+=======
+ * FUNCTION:    acpi_hw_legacy_wake
+ *
+ * PARAMETERS:  sleep_state         - Which sleep state we just exited
+ *              Flags               - Reserved, set to zero
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * FUNCTION:    acpi_hw_legacy_wake
+ *
+ * PARAMETERS:  sleep_state         - Which sleep state we just exited
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -552,6 +736,8 @@ acpi_status acpi_leave_sleep_state_prep(u8 sleep_state)
  *              Called with interrupts ENABLED.
  *
  ******************************************************************************/
+<<<<<<< HEAD
+<<<<<<< HEAD
 acpi_status acpi_leave_sleep_state(u8 sleep_state)
 {
 	struct acpi_object_list arg_list;
@@ -559,10 +745,27 @@ acpi_status acpi_leave_sleep_state(u8 sleep_state)
 	acpi_status status;
 
 	ACPI_FUNCTION_TRACE(acpi_leave_sleep_state);
+=======
+
+acpi_status acpi_hw_legacy_wake(u8 sleep_state, u8 flags)
+=======
+
+acpi_status acpi_hw_legacy_wake(u8 sleep_state)
+>>>>>>> refs/remotes/origin/master
+{
+	acpi_status status;
+
+	ACPI_FUNCTION_TRACE(hw_legacy_wake);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Ensure enter_sleep_state_prep -> enter_sleep_state ordering */
 
 	acpi_gbl_sleep_type_a = ACPI_SLEEP_TYPE_INVALID;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Setup parameter object */
 
@@ -577,6 +780,12 @@ acpi_status acpi_leave_sleep_state(u8 sleep_state)
 	if (ACPI_FAILURE(status) && status != AE_NOT_FOUND) {
 		ACPI_EXCEPTION((AE_INFO, status, "During Method _SST"));
 	}
+=======
+	acpi_hw_execute_sleep_method(METHOD_PATHNAME__SST, ACPI_SST_WAKING);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	acpi_hw_execute_sleep_method(METHOD_PATHNAME__SST, ACPI_SST_WAKING);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * GPEs must be enabled before _WAK is called as GPEs
@@ -590,11 +799,21 @@ acpi_status acpi_leave_sleep_state(u8 sleep_state)
 	if (ACPI_FAILURE(status)) {
 		return_ACPI_STATUS(status);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	status = acpi_hw_enable_all_runtime_gpes();
 	if (ACPI_FAILURE(status)) {
 		return_ACPI_STATUS(status);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	arg.integer.value = sleep_state;
 	status = acpi_evaluate_object(NULL, METHOD_NAME__WAK, &arg_list, NULL);
 	if (ACPI_FAILURE(status) && status != AE_NOT_FOUND) {
@@ -609,12 +828,35 @@ acpi_status acpi_leave_sleep_state(u8 sleep_state)
 	 */
 	acpi_write_bit_register(ACPI_BITREG_WAKE_STATUS, 1);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Now we can execute _WAK, etc. Some machines require that the GPEs
+	 * are enabled before the wake methods are executed.
+	 */
+	acpi_hw_execute_sleep_method(METHOD_PATHNAME__WAK, sleep_state);
+
+	/*
+	 * Some BIOS code assumes that WAK_STS will be cleared on resume
+	 * and use it to determine whether the system is rebooting or
+	 * resuming. Clear WAK_STS for compatibility.
+	 */
+<<<<<<< HEAD
+	acpi_write_bit_register(ACPI_BITREG_WAKE_STATUS, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(void)acpi_write_bit_register(ACPI_BITREG_WAKE_STATUS,
+				      ACPI_CLEAR_STATUS);
+>>>>>>> refs/remotes/origin/master
 	acpi_gbl_system_awake_and_running = TRUE;
 
 	/* Enable power button */
 
 	(void)
 	    acpi_write_bit_register(acpi_gbl_fixed_event_info
+<<<<<<< HEAD
+<<<<<<< HEAD
 			      [ACPI_EVENT_POWER_BUTTON].
 			      enable_register_id, ACPI_ENABLE_EVENT);
 
@@ -633,3 +875,23 @@ acpi_status acpi_leave_sleep_state(u8 sleep_state)
 }
 
 ACPI_EXPORT_SYMBOL(acpi_leave_sleep_state)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				    [ACPI_EVENT_POWER_BUTTON].
+				    enable_register_id, ACPI_ENABLE_EVENT);
+
+	(void)
+	    acpi_write_bit_register(acpi_gbl_fixed_event_info
+				    [ACPI_EVENT_POWER_BUTTON].
+				    status_register_id, ACPI_CLEAR_STATUS);
+
+	acpi_hw_execute_sleep_method(METHOD_PATHNAME__SST, ACPI_SST_WORKING);
+	return_ACPI_STATUS(status);
+}
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

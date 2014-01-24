@@ -16,6 +16,14 @@
 #include <linux/compiler.h>
 #include <linux/completion.h>
 #include <linux/if_alg.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/scatterlist.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/scatterlist.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <net/sock.h>
 

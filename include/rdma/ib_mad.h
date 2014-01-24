@@ -77,6 +77,24 @@
 
 #define IB_MGMT_MAX_METHODS			128
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* MAD Status field bit masks */
+#define IB_MGMT_MAD_STATUS_SUCCESS			0x0000
+#define IB_MGMT_MAD_STATUS_BUSY				0x0001
+#define IB_MGMT_MAD_STATUS_REDIRECT_REQD		0x0002
+#define IB_MGMT_MAD_STATUS_BAD_VERSION			0x0004
+#define IB_MGMT_MAD_STATUS_UNSUPPORTED_METHOD		0x0008
+#define IB_MGMT_MAD_STATUS_UNSUPPORTED_METHOD_ATTRIB	0x000c
+#define IB_MGMT_MAD_STATUS_INVALID_ATTRIB_VALUE		0x001c
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* RMPP information */
 #define IB_MGMT_RMPP_VERSION			1
 
@@ -151,7 +169,11 @@ struct ib_rmpp_hdr {
 
 typedef u64 __bitwise ib_sa_comp_mask;
 
+<<<<<<< HEAD
 #define IB_SA_COMP_MASK(n) ((__force ib_sa_comp_mask) cpu_to_be64(1ull << n))
+=======
+#define IB_SA_COMP_MASK(n) ((__force ib_sa_comp_mask) cpu_to_be64(1ull << (n)))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ib_sa_hdr and ib_sa_mad structures must be packed because they have

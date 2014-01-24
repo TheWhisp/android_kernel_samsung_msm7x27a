@@ -22,7 +22,15 @@
 	 * aligned and add in the offset when we load the value here.
 	 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.macro addruart, rp, rv
+=======
+	.macro addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.macro addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/master
 		ldr	\rp, = S3C_PA_UART
 		ldr	\rv, = S3C_VA_UART
 #if CONFIG_DEBUG_S3C_UART != 0
@@ -36,4 +44,8 @@
  * will be fine with us.
  */
 
+<<<<<<< HEAD
 #include <plat/debug-macro.S>
+=======
+#include <debug/samsung.S>
+>>>>>>> refs/remotes/origin/master

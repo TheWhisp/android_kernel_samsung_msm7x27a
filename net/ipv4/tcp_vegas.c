@@ -163,13 +163,22 @@ static inline u32 tcp_vegas_ssthresh(struct tcp_sock *tp)
 	return  min(tp->snd_ssthresh, tp->snd_cwnd-1);
 }
 
+<<<<<<< HEAD
 static void tcp_vegas_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
+=======
+static void tcp_vegas_cong_avoid(struct sock *sk, u32 ack, u32 acked,
+				 u32 in_flight)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct vegas *vegas = inet_csk_ca(sk);
 
 	if (!vegas->doing_vegas_now) {
+<<<<<<< HEAD
 		tcp_reno_cong_avoid(sk, ack, in_flight);
+=======
+		tcp_reno_cong_avoid(sk, ack, acked, in_flight);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -194,7 +203,11 @@ static void tcp_vegas_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 			/* We don't have enough RTT samples to do the Vegas
 			 * calculation, so we'll behave like Reno.
 			 */
+<<<<<<< HEAD
 			tcp_reno_cong_avoid(sk, ack, in_flight);
+=======
+			tcp_reno_cong_avoid(sk, ack, acked, in_flight);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			u32 rtt, diff;
 			u64 target_cwnd;
@@ -243,7 +256,11 @@ static void tcp_vegas_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 
 			} else if (tp->snd_cwnd <= tp->snd_ssthresh) {
 				/* Slow start.  */
+<<<<<<< HEAD
 				tcp_slow_start(tp);
+=======
+				tcp_slow_start(tp, acked);
+>>>>>>> refs/remotes/origin/master
 			} else {
 				/* Congestion avoidance. */
 
@@ -283,7 +300,11 @@ static void tcp_vegas_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 	}
 	/* Use normal slow start */
 	else if (tp->snd_cwnd <= tp->snd_ssthresh)
+<<<<<<< HEAD
 		tcp_slow_start(tp);
+=======
+		tcp_slow_start(tp, acked);
+>>>>>>> refs/remotes/origin/master
 
 }
 

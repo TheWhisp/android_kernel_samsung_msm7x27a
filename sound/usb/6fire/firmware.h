@@ -22,6 +22,10 @@ enum /* firmware state of device */
 	FW_NOT_READY = 1
 };
 
+<<<<<<< HEAD
 int __devinit usb6fire_fw_init(struct usb_interface *intf);
+=======
+int usb6fire_fw_init(struct usb_interface *intf);
+>>>>>>> refs/remotes/origin/master
 #endif /* USB6FIRE_FIRMWARE_H */
 

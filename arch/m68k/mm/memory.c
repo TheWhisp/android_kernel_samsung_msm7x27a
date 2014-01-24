@@ -17,7 +17,13 @@
 #include <asm/segment.h>
 #include <asm/page.h>
 #include <asm/pgalloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/traps.h>
 #include <asm/machdep.h>
 
@@ -203,7 +209,19 @@ static inline void pushcl040(unsigned long paddr)
 
 void cache_clear (unsigned long paddr, int len)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
     if (CPU_IS_040_OR_060) {
+=======
+    if (CPU_IS_COLDFIRE) {
+	flush_cf_bcache(0, DCACHE_MAX_ADDR);
+    } else if (CPU_IS_040_OR_060) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    if (CPU_IS_COLDFIRE) {
+	clear_cf_bcache(0, DCACHE_MAX_ADDR);
+    } else if (CPU_IS_040_OR_060) {
+>>>>>>> refs/remotes/origin/master
 	int tmp;
 
 	/*
@@ -250,7 +268,19 @@ EXPORT_SYMBOL(cache_clear);
 
 void cache_push (unsigned long paddr, int len)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
     if (CPU_IS_040_OR_060) {
+=======
+    if (CPU_IS_COLDFIRE) {
+	flush_cf_bcache(0, DCACHE_MAX_ADDR);
+    } else if (CPU_IS_040_OR_060) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    if (CPU_IS_COLDFIRE) {
+	flush_cf_bcache(0, DCACHE_MAX_ADDR);
+    } else if (CPU_IS_040_OR_060) {
+>>>>>>> refs/remotes/origin/master
 	int tmp = PAGE_SIZE;
 
 	/*

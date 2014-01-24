@@ -24,6 +24,13 @@
 
 #include <linux/module.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/slab.h>
@@ -65,6 +72,13 @@ struct bcm203x_data {
 	unsigned long		state;
 
 	struct work_struct	work;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	atomic_t		shutdown;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	struct urb		*urb;
 	unsigned char		*buffer;
@@ -97,6 +111,13 @@ static void bcm203x_complete(struct urb *urb)
 
 		data->state = BCM203X_SELECT_MEMORY;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		/* use workqueue to have a small delay */
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		schedule_work(&data->work);
 		break;
 
@@ -155,7 +176,18 @@ static void bcm203x_work(struct work_struct *work)
 	struct bcm203x_data *data =
 		container_of(work, struct bcm203x_data, work);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (usb_submit_urb(data->urb, GFP_ATOMIC) < 0)
+=======
+	if (atomic_read(&data->shutdown))
+		return;
+
+	if (usb_submit_urb(data->urb, GFP_KERNEL) < 0)
+>>>>>>> refs/remotes/origin/master
+=======
+	if (usb_submit_urb(data->urb, GFP_ATOMIC) < 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 		BT_ERR("Can't submit URB");
 }
 
@@ -171,7 +203,11 @@ static int bcm203x_probe(struct usb_interface *intf, const struct usb_device_id 
 	if (intf->cur_altsetting->desc.bInterfaceNumber != 0)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&intf->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data) {
 		BT_ERR("Can't allocate memory for data structure");
 		return -ENOMEM;
@@ -183,14 +219,20 @@ static int bcm203x_probe(struct usb_interface *intf, const struct usb_device_id 
 	data->urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!data->urb) {
 		BT_ERR("Can't allocate URB");
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
 	if (request_firmware(&firmware, "BCM2033-MD.hex", &udev->dev) < 0) {
 		BT_ERR("Mini driver request failed");
 		usb_free_urb(data->urb);
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -203,7 +245,10 @@ static int bcm203x_probe(struct usb_interface *intf, const struct usb_device_id 
 		BT_ERR("Can't allocate memory for mini driver");
 		release_firmware(firmware);
 		usb_free_urb(data->urb);
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -218,7 +263,10 @@ static int bcm203x_probe(struct usb_interface *intf, const struct usb_device_id 
 		BT_ERR("Firmware request failed");
 		usb_free_urb(data->urb);
 		kfree(data->buffer);
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -230,7 +278,10 @@ static int bcm203x_probe(struct usb_interface *intf, const struct usb_device_id 
 		release_firmware(firmware);
 		usb_free_urb(data->urb);
 		kfree(data->buffer);
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -243,6 +294,13 @@ static int bcm203x_probe(struct usb_interface *intf, const struct usb_device_id 
 
 	usb_set_intfdata(intf, data);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* use workqueue to have a small delay */
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	schedule_work(&data->work);
 
 	return 0;
@@ -254,6 +312,15 @@ static void bcm203x_disconnect(struct usb_interface *intf)
 
 	BT_DBG("intf %p", intf);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	atomic_inc(&data->shutdown);
+	cancel_work_sync(&data->work);
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_kill_urb(data->urb);
 
 	usb_set_intfdata(intf, NULL);
@@ -261,7 +328,10 @@ static void bcm203x_disconnect(struct usb_interface *intf)
 	usb_free_urb(data->urb);
 	kfree(data->fw_data);
 	kfree(data->buffer);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct usb_driver bcm203x_driver = {
@@ -269,6 +339,7 @@ static struct usb_driver bcm203x_driver = {
 	.probe		= bcm203x_probe,
 	.disconnect	= bcm203x_disconnect,
 	.id_table	= bcm203x_table,
+<<<<<<< HEAD
 };
 
 static int __init bcm203x_init(void)
@@ -291,6 +362,35 @@ static void __exit bcm203x_exit(void)
 
 module_init(bcm203x_init);
 module_exit(bcm203x_exit);
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+<<<<<<< HEAD
+module_usb_driver(bcm203x_driver);
+>>>>>>> refs/remotes/origin/master
+=======
+static int __init bcm203x_init(void)
+{
+	int err;
+
+	BT_INFO("Broadcom Blutonium firmware driver ver %s", VERSION);
+
+	err = usb_register(&bcm203x_driver);
+	if (err < 0)
+		BT_ERR("Failed to register USB driver");
+
+	return err;
+}
+
+static void __exit bcm203x_exit(void)
+{
+	usb_deregister(&bcm203x_driver);
+}
+
+module_init(bcm203x_init);
+module_exit(bcm203x_exit);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_AUTHOR("Marcel Holtmann <marcel@holtmann.org>");
 MODULE_DESCRIPTION("Broadcom Blutonium firmware driver ver " VERSION);

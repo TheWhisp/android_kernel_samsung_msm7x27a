@@ -27,9 +27,19 @@
 	.section .altinstr_replacement, "ax", @progbits
 .Lmemcpy_c:
 	movq %rdi, %rax
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	movl %edx, %ecx
 	shrl $3, %ecx
+=======
+	movq %rdx, %rcx
+	shrq $3, %rcx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	movq %rdx, %rcx
+	shrq $3, %rcx
+>>>>>>> refs/remotes/origin/master
 	andl $7, %edx
 	rep movsq
 	movl %edx, %ecx
@@ -48,8 +58,16 @@
 	.section .altinstr_replacement, "ax", @progbits
 .Lmemcpy_c_e:
 	movq %rdi, %rax
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	movl %edx, %ecx
+=======
+	movq %rdx, %rcx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	movq %rdx, %rcx
+>>>>>>> refs/remotes/origin/master
 	rep movsb
 	ret
 .Lmemcpy_e_e:
@@ -60,10 +78,18 @@ ENTRY(memcpy)
 	CFI_STARTPROC
 	movq %rdi, %rax
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Use 32bit CMP here to avoid long NOP padding.
 	 */
 	cmp  $0x20, %edx
+=======
+	cmpq $0x20, %rdx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmpq $0x20, %rdx
+>>>>>>> refs/remotes/origin/master
 	jb .Lhandle_tail
 
 	/*
@@ -72,7 +98,15 @@ ENTRY(memcpy)
 	 */
 	cmp  %dil, %sil
 	jl .Lcopy_backward
+<<<<<<< HEAD
+<<<<<<< HEAD
 	subl $0x20, %edx
+=======
+	subq $0x20, %rdx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	subq $0x20, %rdx
+>>>>>>> refs/remotes/origin/master
 .Lcopy_forward_loop:
 	subq $0x20,	%rdx
 
@@ -91,7 +125,15 @@ ENTRY(memcpy)
 	movq %r11,	3*8(%rdi)
 	leaq 4*8(%rdi),	%rdi
 	jae  .Lcopy_forward_loop
+<<<<<<< HEAD
+<<<<<<< HEAD
 	addq $0x20,	%rdx
+=======
+	addl $0x20,	%edx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addl $0x20,	%edx
+>>>>>>> refs/remotes/origin/master
 	jmp  .Lhandle_tail
 
 .Lcopy_backward:
@@ -103,7 +145,11 @@ ENTRY(memcpy)
 	subq $0x20,	%rdx
 	/*
 	 * At most 3 ALU operations in one cycle,
+<<<<<<< HEAD
 	 * so append NOPS in the same 16bytes trunk.
+=======
+	 * so append NOPS in the same 16 bytes trunk.
+>>>>>>> refs/remotes/origin/master
 	 */
 	.p2align 4
 .Lcopy_backward_loop:
@@ -123,11 +169,25 @@ ENTRY(memcpy)
 	/*
 	 * Calculate copy position to head.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	addq $0x20,	%rdx
 	subq %rdx,	%rsi
 	subq %rdx,	%rdi
 .Lhandle_tail:
 	cmpq $16,	%rdx
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	addl $0x20,	%edx
+	subq %rdx,	%rsi
+	subq %rdx,	%rdi
+.Lhandle_tail:
+	cmpl $16,	%edx
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	jb   .Lless_16bytes
 
 	/*
@@ -144,7 +204,15 @@ ENTRY(memcpy)
 	retq
 	.p2align 4
 .Lless_16bytes:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmpq $8,	%rdx
+=======
+	cmpl $8,	%edx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmpl $8,	%edx
+>>>>>>> refs/remotes/origin/master
 	jb   .Lless_8bytes
 	/*
 	 * Move data from 8 bytes to 15 bytes.
@@ -156,7 +224,15 @@ ENTRY(memcpy)
 	retq
 	.p2align 4
 .Lless_8bytes:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmpq $4,	%rdx
+=======
+	cmpl $4,	%edx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmpl $4,	%edx
+>>>>>>> refs/remotes/origin/master
 	jb   .Lless_3bytes
 
 	/*
@@ -169,6 +245,8 @@ ENTRY(memcpy)
 	retq
 	.p2align 4
 .Lless_3bytes:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmpl $0, %edx
 	je .Lend
 	/*
@@ -181,6 +259,26 @@ ENTRY(memcpy)
 	incq %rsi
 	decl %edx
 	jnz .Lloop_1
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	subl $1, %edx
+	jb .Lend
+	/*
+	 * Move data from 1 bytes to 3 bytes.
+	 */
+	movzbl (%rsi), %ecx
+	jz .Lstore_1byte
+	movzbq 1(%rsi), %r8
+	movzbq (%rsi, %rdx), %r9
+	movb %r8b, 1(%rdi)
+	movb %r9b, (%rdi, %rdx)
+.Lstore_1byte:
+	movb %cl, (%rdi)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 .Lend:
 	retq

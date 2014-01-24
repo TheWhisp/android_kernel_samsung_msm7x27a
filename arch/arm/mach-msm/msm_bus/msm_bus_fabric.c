@@ -10,6 +10,16 @@
  * GNU General Public License for more details.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "AXI: %s(): " fmt, __func__
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "AXI: %s(): " fmt, __func__
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/device.h>
@@ -18,12 +28,28 @@
 #include <linux/clk.h>
 #include <linux/radix-tree.h>
 #include <mach/board.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/rpm.h>
+=======
+#include <mach/socinfo.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/socinfo.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "msm_bus_core.h"
 
 enum {
 	SLAVE_NODE,
 	MASTER_NODE,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	CLK_NODE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CLK_NODE,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum {
@@ -41,9 +67,19 @@ struct msm_bus_fabric {
 	int num_nodes;
 	struct list_head gateways;
 	struct msm_bus_inode_info info;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const struct msm_bus_fab_algorithm *algo;
 	struct msm_bus_fabric_registration *pdata;
 	struct msm_rpm_iv_pair *rpm_data;
+=======
+	struct msm_bus_fabric_registration *pdata;
+	void *hw_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_bus_fabric_registration *pdata;
+	void *hw_data;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 #define to_msm_bus_fabric(d) container_of(d, \
 	struct msm_bus_fabric, d)
@@ -56,7 +92,15 @@ struct msm_bus_fabric {
 static int msm_bus_fabric_add_node(struct msm_bus_fabric *fabric,
 	struct msm_bus_inode_info *info)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int status = -ENOMEM;
+=======
+	int status = -ENOMEM, ctx;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int status = -ENOMEM, ctx;
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_BUS_DBG("msm_bus_fabric_add_node: ID %d Gw: %d\n",
 		info->node_info->priv_id, info->node_info->gateway);
 	status = radix_tree_preload(GFP_ATOMIC);
@@ -70,6 +114,8 @@ static int msm_bus_fabric_add_node(struct msm_bus_fabric *fabric,
 		radix_tree_tag_set(&fabric->fab_tree, info->node_info->priv_id,
 			SLAVE_NODE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (info->node_info->slaveclk[DUAL_CTX]) {
 		info->nodeclk[DUAL_CTX].clk = clk_get_sys("msm_bus",
 			info->node_info->slaveclk[DUAL_CTX]);
@@ -81,6 +127,22 @@ static int msm_bus_fabric_add_node(struct msm_bus_fabric *fabric,
 		}
 		info->nodeclk[DUAL_CTX].enable = false;
 		info->nodeclk[DUAL_CTX].dirty = false;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	for (ctx = 0; ctx < NUM_CTX; ctx++) {
+		if (info->node_info->slaveclk[ctx]) {
+			radix_tree_tag_set(&fabric->fab_tree,
+				info->node_info->priv_id, CLK_NODE);
+			break;
+		}
+
+		info->nodeclk[ctx].enable = false;
+		info->nodeclk[ctx].dirty = false;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 out:
@@ -115,18 +177,49 @@ static int msm_bus_fabric_add_fab(struct msm_bus_fabric *fabric,
 /**
  * register_fabric_info() - Create the internal fabric structure and
  * build the topology tree from platform specific data
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
+=======
+ * @pdev: Platform device for getting base addresses
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @pdev: Platform device for getting base addresses
+>>>>>>> refs/remotes/origin/cm-11.0
  * @fabric: Fabric to which the gateways, nodes should be added
  *
  * This function is called from probe. Iterates over the platform data,
  * and builds the topology
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int register_fabric_info(struct msm_bus_fabric *fabric)
 {
 	int i, ret = 0, err = 0;
 
 	MSM_BUS_DBG("id:%d pdata-id: %d len: %d\n", fabric->fabdev.id,
 		fabric->pdata->id, fabric->pdata->len);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int register_fabric_info(struct platform_device *pdev,
+	struct msm_bus_fabric *fabric)
+{
+	int i = 0, ret = 0, err = 0;
+
+	MSM_BUS_DBG("id:%d pdata-id: %d len: %d\n", fabric->fabdev.id,
+		fabric->pdata->id, fabric->pdata->len);
+	fabric->hw_data = fabric->fabdev.hw_algo.allocate_hw_data(pdev,
+		fabric->pdata);
+	if (ZERO_OR_NULL_PTR(fabric->hw_data) && fabric->pdata->ahb == 0) {
+		MSM_BUS_ERR("Couldn't allocate hw_data for fab: %d\n",
+			fabric->fabdev.id);
+		goto error;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < fabric->pdata->len; i++) {
 		struct msm_bus_inode_info *info;
@@ -154,6 +247,8 @@ static int register_fabric_info(struct msm_bus_fabric *fabric)
 				info->nodeclk[ctx].enable = false;
 				info->nodeclk[ctx].dirty = false;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		if (info->node_info->memclk) {
 			info->memclk.clk = clk_get_sys("msm_bus",
@@ -165,6 +260,25 @@ static int register_fabric_info(struct msm_bus_fabric *fabric)
 			}
 			info->memclk.enable = false;
 			info->memclk.dirty = false;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+			if (info->node_info->memclk[ctx]) {
+				info->memclk[ctx].clk = clk_get_sys("msm_bus",
+						info->node_info->memclk[ctx]);
+				if (IS_ERR(info->memclk[ctx].clk)) {
+					MSM_BUS_ERR("Couldn't get clk %s\n",
+						info->node_info->memclk[ctx]);
+					err = -EINVAL;
+				}
+				info->memclk[ctx].enable = false;
+				info->memclk[ctx].dirty = false;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		ret = info->node_info->gateway ?
@@ -175,9 +289,28 @@ static int register_fabric_info(struct msm_bus_fabric *fabric)
 			kfree(info);
 			goto error;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	fabric->rpm_data = allocate_rpm_data(fabric->pdata);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+		if (fabric->fabdev.hw_algo.node_init == NULL)
+			continue;
+
+		fabric->fabdev.hw_algo.node_init(fabric->hw_data, info);
+		if (ret) {
+			MSM_BUS_ERR("Unable to init node info, ret: %d\n", ret);
+			kfree(info);
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	MSM_BUS_DBG("Fabric: %d nmasters: %d nslaves: %d\n"
 		" ntieredslaves: %d, rpm_enabled: %d\n",
@@ -300,6 +433,8 @@ static int msm_bus_fabric_update_clks(struct msm_bus_fabric_device *fabdev,
 				nodeclk->rate = rate;
 			}
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!status && slave->memclk.clk) {
 			rate = *slave->link_info.sel_clk;
 			if (slave->memclk.rate != rate) {
@@ -307,6 +442,20 @@ static int msm_bus_fabric_update_clks(struct msm_bus_fabric_device *fabdev,
 				slave->memclk.dirty = true;
 			}
 			slave->memclk.rate = rate;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (!status && slave->memclk[ctx].clk) {
+			rate = *slave->link_info.sel_clk;
+			if (slave->memclk[ctx].rate != rate) {
+				slave->memclk[ctx].rate = rate;
+				slave->memclk[ctx].dirty = true;
+			}
+			slave->memclk[ctx].rate = rate;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			fabric->clk_dirty = true;
 		}
 	}
@@ -321,6 +470,19 @@ void msm_bus_fabric_update_bw(struct msm_bus_fabric_device *fabdev,
 	struct msm_bus_fabric *fabric = to_msm_bus_fabric(fabdev);
 	void *sel_cdata;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* Temporarily stub out arbitration settings for msm8974 */
+	if (machine_is_msm8974())
+		return;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	sel_cdata = fabric->cdata[ctx];
 
 	/* If it's an ahb fabric, don't calculate arb values */
@@ -333,11 +495,21 @@ void msm_bus_fabric_update_bw(struct msm_bus_fabric_device *fabdev,
 		return;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msm_bus_rpm_update_bw(hop, info, fabric->pdata, sel_cdata,
+=======
+	fabdev->hw_algo.update_bw(hop, info, fabric->pdata, sel_cdata,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fabdev->hw_algo.update_bw(hop, info, fabric->pdata, sel_cdata,
+>>>>>>> refs/remotes/origin/cm-11.0
 		master_tiers, add_bw);
 	fabric->arb_dirty = true;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_bus_fabric_clk_set(int enable, struct msm_bus_inode_info *info)
 {
 	int i, status = 0;
@@ -347,16 +519,59 @@ static int msm_bus_fabric_clk_set(int enable, struct msm_bus_inode_info *info)
 				nodeclk[i].rate);
 			if (enable && !(info->nodeclk[i].enable)) {
 				clk_enable(info->nodeclk[i].clk);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int msm_bus_fabric_clk_set(int enable, struct msm_bus_inode_info *info,
+	int check_arb)
+{
+	int i, status = 0;
+	long rounded_rate;
+
+	for (i = 0; i < NUM_CTX; i++) {
+		if (info->nodeclk[i].dirty) {
+			if (info->nodeclk[i].rate != 0) {
+				rounded_rate = clk_round_rate(info->
+					nodeclk[i].clk, info->nodeclk[i].rate);
+				status = clk_set_rate(info->nodeclk[i].clk,
+					rounded_rate);
+				MSM_BUS_DBG("AXI: node: %d set_rate: %ld\n",
+					info->node_info->id, rounded_rate);
+			}
+
+			if (enable && !(info->nodeclk[i].enable)) {
+				clk_prepare_enable(info->nodeclk[i].clk);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				info->nodeclk[i].dirty = false;
 				info->nodeclk[i].enable = true;
 			} else if ((info->nodeclk[i].rate == 0) && (!enable)
 				&& (info->nodeclk[i].enable)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				clk_disable(info->nodeclk[i].clk);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+				/* Workaround to check commit data before
+				 * disabling SMI clock */
+				if (check_arb)
+					return 1;
+
+				clk_disable_unprepare(info->nodeclk[i].clk);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				info->nodeclk[i].dirty = false;
 				info->nodeclk[i].enable = false;
 			}
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (info->memclk.dirty) {
 		status = clk_set_rate(info->memclk.clk, info->memclk.rate);
 		if (enable && !(info->memclk.enable)) {
@@ -368,6 +583,33 @@ static int msm_bus_fabric_clk_set(int enable, struct msm_bus_inode_info *info)
 			clk_disable(info->memclk.clk);
 			info->memclk.dirty = false;
 			info->memclk.enable = false;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (info->memclk[i].dirty) {
+			if (info->nodeclk[i].rate != 0) {
+				rounded_rate = clk_round_rate(info->
+					memclk[i].clk, info->memclk[i].rate);
+				status = clk_set_rate(info->memclk[i].clk,
+					rounded_rate);
+				MSM_BUS_DBG("AXI: node: %d set_rate: %ld\n",
+					info->node_info->id, rounded_rate);
+			}
+
+			if (enable && !(info->memclk[i].enable)) {
+				clk_prepare_enable(info->memclk[i].clk);
+				info->memclk[i].dirty = false;
+				info->memclk[i].enable = true;
+			} else if (info->memclk[i].rate == 0 && (!enable) &&
+				(info->memclk[i].enable)) {
+				clk_disable_unprepare(info->memclk[i].clk);
+				info->memclk[i].dirty = false;
+				info->memclk[i].enable = false;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
@@ -380,6 +622,8 @@ static int msm_bus_fabric_clk_set(int enable, struct msm_bus_inode_info *info)
 */
 static int msm_bus_fabric_clk_commit(int enable, struct msm_bus_fabric *fabric)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int i, nfound = 0, status = 0;
 	struct msm_bus_inode_info *info[fabric->pdata->nslaves];
 
@@ -398,26 +642,108 @@ static int msm_bus_fabric_clk_commit(int enable, struct msm_bus_fabric *fabric)
 		fabric->fabdev.id, fabric->pdata->nslaves, SLAVE_NODE);
 	if (nfound == 0) {
 		MSM_BUS_DBG("No slaves found for fabric: %d\n",
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	unsigned int i, nfound = 0, status = 0, check_arb = 1;
+	struct msm_bus_inode_info *info[fabric->pdata->nslaves];
+
+	if (fabric->clk_dirty == true)
+		status = msm_bus_fabric_clk_set(enable, &fabric->info,
+			check_arb);
+
+	if (status < 0)
+		MSM_BUS_WARN("Error setting clocks on fabric: %d\n",
+			fabric->fabdev.id);
+
+	if (status == 1) {
+		/* Workaround to clear commit data before
+		* disabling clocks */
+		status = fabric->fabdev.hw_algo.clear_arb_data(fabric->pdata,
+			(void **)fabric->cdata);
+		status = fabric->fabdev.hw_algo.commit(fabric->pdata,
+			fabric->hw_data, (void **)fabric->cdata);
+		if (status)
+			MSM_BUS_DBG("Error committing arb for fabric: %d\n",
+				fabric->fabdev.id);
+
+		check_arb = 0;
+		status = msm_bus_fabric_clk_set(enable, &fabric->info,
+			check_arb);
+	}
+
+	nfound = radix_tree_gang_lookup_tag(&fabric->fab_tree, (void **)&info,
+		fabric->fabdev.id, fabric->pdata->nslaves, CLK_NODE);
+	if (nfound == 0) {
+		MSM_BUS_DBG("No clock nodes found for fabric: %d\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			fabric->fabdev.id);
 		goto out;
 	}
 
 	for (i = 0; i < nfound; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		status = msm_bus_fabric_clk_set(enable, info[i]);
 		if (status)
 			MSM_BUS_WARN("Error setting clocks for node: %d\n",
 				info[i]->node_info->id);
 	}
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		/* Workaround to clear commit data before
+		* disabling clocks */
+		status = msm_bus_fabric_clk_set(enable, info[i], 1);
+		if (status < 0)
+			MSM_BUS_WARN("Error setting clocks for node: %d\n",
+				info[i]->node_info->id);
+		if (status == 1) {
+			status = fabric->fabdev.hw_algo.clear_arb_data(fabric->
+				pdata, (void **)fabric->cdata);
+			status = fabric->fabdev.hw_algo.commit(fabric->pdata,
+				fabric->hw_data, (void **)fabric->cdata);
+			if (status)
+				MSM_BUS_DBG("Error commiting arb,fabric: %d\n",
+					fabric->fabdev.id);
+			status = msm_bus_fabric_clk_set(enable, info[i], 0);
+			if (status < 0)
+				MSM_BUS_WARN("Error setting clocks,node: %d\n",
+					info[i]->node_info->id);
+		}
+	}
+
+	fabric->arb_dirty = false;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 out:
 	return status;
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * msm_bus_fabric_rpm_commit() - Commit the arbitration data to RPM
  * @fabric: Fabric for which the data should be committed
  * */
 static int msm_bus_fabric_rpm_commit(struct msm_bus_fabric_device *fabdev)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ * msm_bus_fabric_hw_commit() - Commit the arbitration data to Hardware.
+ * @fabric: Fabric for which the data should be committed
+ * */
+static int msm_bus_fabric_hw_commit(struct msm_bus_fabric_device *fabdev)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int status = 0;
 	struct msm_bus_fabric *fabric = to_msm_bus_fabric(fabdev);
@@ -437,7 +763,15 @@ static int msm_bus_fabric_rpm_commit(struct msm_bus_fabric_device *fabdev)
 		goto skip_arb;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	status = msm_bus_rpm_commit(fabric->pdata, fabric->rpm_data,
+=======
+	status = fabdev->hw_algo.commit(fabric->pdata, fabric->hw_data,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = fabdev->hw_algo.commit(fabric->pdata, fabric->hw_data,
+>>>>>>> refs/remotes/origin/cm-11.0
 		(void **)fabric->cdata);
 	if (status)
 		MSM_BUS_DBG("Error committing arb data for fabric: %d\n",
@@ -451,7 +785,15 @@ skip_arb:
 	 */
 	status = msm_bus_fabric_clk_commit(DISABLE, fabric);
 	if (status)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		MSM_BUS_DBG("Error disabling clocks on fabric: %d\n",
+=======
+		MSM_BUS_WARN("Error disabling clocks on fabric: %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		MSM_BUS_WARN("Error disabling clocks on fabric: %d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			fabric->fabdev.id);
 	fabric->clk_dirty = false;
 	return status;
@@ -464,12 +806,24 @@ skip_arb:
  */
 int msm_bus_fabric_port_halt(struct msm_bus_fabric_device *fabdev, int iid)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_bus_halt_vector hvector = {0, 0};
 	struct msm_rpm_iv_pair rpm_data[2];
 	struct msm_bus_inode_info *info = NULL;
 	uint8_t mport;
 	uint32_t haltid = 0;
 	int status = 0;
+=======
+	struct msm_bus_inode_info *info = NULL;
+	uint8_t mport;
+	uint32_t haltid = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_bus_inode_info *info = NULL;
+	uint8_t mport;
+	uint32_t haltid = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_bus_fabric *fabric = to_msm_bus_fabric(fabdev);
 
 	info = fabdev->algo->find_node(fabdev, iid);
@@ -480,6 +834,8 @@ int msm_bus_fabric_port_halt(struct msm_bus_fabric_device *fabdev, int iid)
 
 	haltid = fabric->pdata->haltid;
 	mport = info->node_info->masterp[0];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_BUS_MASTER_HALT(hvector.haltmask, hvector.haltval, mport);
 	rpm_data[0].id = haltid;
 	rpm_data[0].value = hvector.haltval;
@@ -497,6 +853,14 @@ int msm_bus_fabric_port_halt(struct msm_bus_fabric_device *fabdev, int iid)
 		MSM_BUS_DBG("msm_rpm_set returned: %d\n", status);
 
 	return status;
+=======
+
+	return fabdev->hw_algo.port_halt(haltid, mport);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return fabdev->hw_algo.port_halt(haltid, mport);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -506,12 +870,24 @@ int msm_bus_fabric_port_halt(struct msm_bus_fabric_device *fabdev, int iid)
  */
 int msm_bus_fabric_port_unhalt(struct msm_bus_fabric_device *fabdev, int iid)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_bus_halt_vector hvector = {0, 0};
 	struct msm_rpm_iv_pair rpm_data[2];
 	struct msm_bus_inode_info *info = NULL;
 	uint8_t mport;
 	uint32_t haltid = 0;
 	int status = 0;
+=======
+	struct msm_bus_inode_info *info = NULL;
+	uint8_t mport;
+	uint32_t haltid = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_bus_inode_info *info = NULL;
+	uint8_t mport;
+	uint32_t haltid = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_bus_fabric *fabric = to_msm_bus_fabric(fabdev);
 
 	info = fabdev->algo->find_node(fabdev, iid);
@@ -522,6 +898,8 @@ int msm_bus_fabric_port_unhalt(struct msm_bus_fabric_device *fabdev, int iid)
 
 	haltid = fabric->pdata->haltid;
 	mport = info->node_info->masterp[0];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_BUS_MASTER_UNHALT(hvector.haltmask, hvector.haltval,
 		mport);
 	rpm_data[0].id = haltid;
@@ -540,6 +918,12 @@ int msm_bus_fabric_port_unhalt(struct msm_bus_fabric_device *fabdev, int iid)
 		MSM_BUS_DBG("msm_rpm_set returned: %d\n", status);
 
 	return status;
+=======
+	return fabdev->hw_algo.port_unhalt(haltid, mport);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return fabdev->hw_algo.port_unhalt(haltid, mport);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 /**
@@ -602,12 +986,52 @@ static struct msm_bus_fab_algorithm msm_bus_algo = {
 	.update_bw = msm_bus_fabric_update_bw,
 	.port_halt = msm_bus_fabric_port_halt,
 	.port_unhalt = msm_bus_fabric_port_unhalt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.commit = msm_bus_fabric_rpm_commit,
+=======
+	.commit = msm_bus_fabric_hw_commit,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.commit = msm_bus_fabric_hw_commit,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.find_node = msm_bus_fabric_find_node,
 	.find_gw_node = msm_bus_fabric_find_gw_node,
 	.get_gw_list = msm_bus_fabric_get_gw_list,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int msm_bus_fabric_hw_init(struct msm_bus_fabric_registration *pdata,
+	struct msm_bus_hw_algorithm *hw_algo)
+{
+	int ret = 0;
+
+	switch (pdata->hw_sel) {
+	case MSM_BUS_NOC:
+		msm_bus_noc_hw_init(pdata, hw_algo);
+		break;
+	case MSM_BUS_BIMC:
+		msm_bus_bimc_hw_init(pdata, hw_algo);
+		break;
+	default:
+		ret = msm_bus_rpm_hw_init(pdata, hw_algo);
+		if (ret) {
+			MSM_BUS_ERR("RPM initialization failed\n");
+			ret = -EINVAL;
+		}
+		break;
+	}
+	return ret;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_bus_fabric_probe(struct platform_device *pdev)
 {
 	int ctx, ret = 0;
@@ -645,7 +1069,23 @@ static int msm_bus_fabric_probe(struct platform_device *pdev)
 	pdata = (struct msm_bus_fabric_registration *)pdev->dev.platform_data;
 	fabric->fabdev.name = pdata->name;
 	fabric->fabdev.algo = &msm_bus_algo;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pdata->il_flag = msm_bus_rpm_is_mem_interleaved();
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	ret = msm_bus_fabric_hw_init(pdata, &fabric->fabdev.hw_algo);
+	if (ret) {
+		MSM_BUS_ERR("Error initializing hardware for fabric: %d\n",
+			fabric->fabdev.id);
+		goto err;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	fabric->ahb = pdata->ahb;
 	fabric->pdata = pdata;
 	fabric->pdata->board_algo->assign_iids(fabric->pdata,
@@ -679,7 +1119,15 @@ static int msm_bus_fabric_probe(struct platform_device *pdev)
 	}
 
 	/* Find num. of slaves, masters, populate gateways, radix tree */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = register_fabric_info(fabric);
+=======
+	ret = register_fabric_info(pdev, fabric);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = register_fabric_info(pdev, fabric);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret) {
 		MSM_BUS_ERR("Could not register fabric %d info, ret: %d\n",
 			fabric->fabdev.id, ret);
@@ -688,8 +1136,18 @@ static int msm_bus_fabric_probe(struct platform_device *pdev)
 	if (!fabric->ahb) {
 		/* Allocate memory for commit data */
 		for (ctx = 0; ctx < NUM_CTX; ctx++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ret = allocate_commit_data(fabric->pdata, &fabric->
 				cdata[ctx]);
+=======
+			ret = fabric->fabdev.hw_algo.allocate_commit_data(
+				fabric->pdata, &fabric->cdata[ctx], ctx);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = fabric->fabdev.hw_algo.allocate_commit_data(
+				fabric->pdata, &fabric->cdata[ctx], ctx);
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (ret) {
 				MSM_BUS_ERR("Failed to alloc commit data for "
 					"fab: %d, ret = %d\n",
@@ -724,12 +1182,27 @@ static int msm_bus_fabric_remove(struct platform_device *pdev)
 		fabric->pdata->nslaves; i++)
 		radix_tree_delete(&fabric->fab_tree, i);
 	if (!fabric->ahb) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		free_commit_data(fabric->cdata[DUAL_CTX]);
 		free_commit_data(fabric->cdata[ACTIVE_CTX]);
 	}
 
 	kfree(fabric->info.node_info);
 	kfree(fabric->rpm_data);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		fabdev->hw_algo.free_commit_data(fabric->cdata[DUAL_CTX]);
+		fabdev->hw_algo.free_commit_data(fabric->cdata[ACTIVE_CTX]);
+	}
+
+	kfree(fabric->info.node_info);
+	kfree(fabric->hw_data);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(fabric);
 	return ret;
 }

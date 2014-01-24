@@ -35,6 +35,14 @@
  */
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <rdma/ib_cache.h>
 
 #include "mad_priv.h"
@@ -1596,6 +1604,18 @@ find_mad_agent(struct ib_mad_port_private *port_priv,
 					mad->mad_hdr.class_version].class;
 			if (!class)
 				goto out;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			if (convert_mgmt_class(mad->mad_hdr.mgmt_class) >=
+			    IB_MGMT_MAX_METHODS)
+				goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (convert_mgmt_class(mad->mad_hdr.mgmt_class) >=
+			    IB_MGMT_MAX_METHODS)
+				goto out;
+>>>>>>> refs/remotes/origin/master
 			method = class->method_table[convert_mgmt_class(
 							mad->mad_hdr.mgmt_class)];
 			if (method)
@@ -1838,6 +1858,35 @@ static void ib_mad_complete_recv(struct ib_mad_agent_private *mad_agent_priv,
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static bool generate_unmatched_resp(struct ib_mad_private *recv,
+				    struct ib_mad_private *response)
+{
+	if (recv->mad.mad.mad_hdr.method == IB_MGMT_METHOD_GET ||
+	    recv->mad.mad.mad_hdr.method == IB_MGMT_METHOD_SET) {
+		memcpy(response, recv, sizeof *response);
+		response->header.recv_wc.wc = &response->header.wc;
+		response->header.recv_wc.recv_buf.mad = &response->mad.mad;
+		response->header.recv_wc.recv_buf.grh = &response->grh;
+		response->mad.mad.mad_hdr.method = IB_MGMT_METHOD_GET_RESP;
+		response->mad.mad.mad_hdr.status =
+			cpu_to_be16(IB_MGMT_MAD_STATUS_UNSUPPORTED_METHOD_ATTRIB);
+		if (recv->mad.mad.mad_hdr.mgmt_class == IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE)
+			response->mad.mad.mad_hdr.status |= IB_SMP_DIRECTION;
+
+		return true;
+	} else {
+		return false;
+	}
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void ib_mad_recv_done_handler(struct ib_mad_port_private *port_priv,
 				     struct ib_wc *wc)
 {
@@ -1847,6 +1896,14 @@ static void ib_mad_recv_done_handler(struct ib_mad_port_private *port_priv,
 	struct ib_mad_list_head *mad_list;
 	struct ib_mad_agent_private *mad_agent;
 	int port_num;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int ret = IB_MAD_RESULT_SUCCESS;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = IB_MAD_RESULT_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 
 	mad_list = (struct ib_mad_list_head *)(unsigned long)wc->wr_id;
 	qp_info = mad_list->mad_queue->qp_info;
@@ -1930,8 +1987,14 @@ static void ib_mad_recv_done_handler(struct ib_mad_port_private *port_priv,
 local:
 	/* Give driver "right of first refusal" on incoming MAD */
 	if (port_priv->device->process_mad) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = port_priv->device->process_mad(port_priv->device, 0,
 						     port_priv->port_num,
 						     wc, &recv->grh,
@@ -1959,6 +2022,19 @@ local:
 		 * or via recv_handler in ib_mad_complete_recv()
 		 */
 		recv = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	} else if ((ret & IB_MAD_RESULT_SUCCESS) &&
+		   generate_unmatched_resp(recv, response)) {
+		agent_send_response(&response->mad.mad, &recv->grh, wc,
+				    port_priv->device, port_num, qp_info->qp->qp_num);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:
@@ -1977,7 +2053,11 @@ static void adjust_timeout(struct ib_mad_agent_private *mad_agent_priv)
 	unsigned long delay;
 
 	if (list_empty(&mad_agent_priv->wait_list)) {
+<<<<<<< HEAD
 		__cancel_delayed_work(&mad_agent_priv->timed_work);
+=======
+		cancel_delayed_work(&mad_agent_priv->timed_work);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		mad_send_wr = list_entry(mad_agent_priv->wait_list.next,
 					 struct ib_mad_send_wr_private,
@@ -1986,6 +2066,7 @@ static void adjust_timeout(struct ib_mad_agent_private *mad_agent_priv)
 		if (time_after(mad_agent_priv->timeout,
 			       mad_send_wr->timeout)) {
 			mad_agent_priv->timeout = mad_send_wr->timeout;
+<<<<<<< HEAD
 			__cancel_delayed_work(&mad_agent_priv->timed_work);
 			delay = mad_send_wr->timeout - jiffies;
 			if ((long)delay <= 0)
@@ -1993,6 +2074,13 @@ static void adjust_timeout(struct ib_mad_agent_private *mad_agent_priv)
 			queue_delayed_work(mad_agent_priv->qp_info->
 					   port_priv->wq,
 					   &mad_agent_priv->timed_work, delay);
+=======
+			delay = mad_send_wr->timeout - jiffies;
+			if ((long)delay <= 0)
+				delay = 1;
+			mod_delayed_work(mad_agent_priv->qp_info->port_priv->wq,
+					 &mad_agent_priv->timed_work, delay);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -2025,11 +2113,17 @@ static void wait_for_response(struct ib_mad_send_wr_private *mad_send_wr)
 	list_add(&mad_send_wr->agent_list, list_item);
 
 	/* Reschedule a work item if we have a shorter timeout */
+<<<<<<< HEAD
 	if (mad_agent_priv->wait_list.next == &mad_send_wr->agent_list) {
 		__cancel_delayed_work(&mad_agent_priv->timed_work);
 		queue_delayed_work(mad_agent_priv->qp_info->port_priv->wq,
 				   &mad_agent_priv->timed_work, delay);
 	}
+=======
+	if (mad_agent_priv->wait_list.next == &mad_send_wr->agent_list)
+		mod_delayed_work(mad_agent_priv->qp_info->port_priv->wq,
+				 &mad_agent_priv->timed_work, delay);
+>>>>>>> refs/remotes/origin/master
 }
 
 void ib_reset_mad_timeout(struct ib_mad_send_wr_private *mad_send_wr,
@@ -2640,6 +2734,10 @@ static int ib_mad_port_start(struct ib_mad_port_private *port_priv)
 	int ret, i;
 	struct ib_qp_attr *attr;
 	struct ib_qp *qp;
+<<<<<<< HEAD
+=======
+	u16 pkey_index;
+>>>>>>> refs/remotes/origin/master
 
 	attr = kmalloc(sizeof *attr, GFP_KERNEL);
 	if (!attr) {
@@ -2647,6 +2745,14 @@ static int ib_mad_port_start(struct ib_mad_port_private *port_priv)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+=======
+	ret = ib_find_pkey(port_priv->device, port_priv->port_num,
+			   IB_DEFAULT_PKEY_FULL, &pkey_index);
+	if (ret)
+		pkey_index = 0;
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < IB_MAD_QPS_CORE; i++) {
 		qp = port_priv->qp_info[i].qp;
 		if (!qp)
@@ -2657,7 +2763,11 @@ static int ib_mad_port_start(struct ib_mad_port_private *port_priv)
 		 * one is needed for the Reset to Init transition
 		 */
 		attr->qp_state = IB_QPS_INIT;
+<<<<<<< HEAD
 		attr->pkey_index = 0;
+=======
+		attr->pkey_index = pkey_index;
+>>>>>>> refs/remotes/origin/master
 		attr->qkey = (qp->qp_num == 0) ? 0 : IB_QP1_QKEY;
 		ret = ib_modify_qp(qp, attr, IB_QP_STATE |
 					     IB_QP_PKEY_INDEX | IB_QP_QKEY);

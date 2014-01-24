@@ -1,5 +1,6 @@
 #ifndef _NF_CONNTRACK_TCP_H
 #define _NF_CONNTRACK_TCP_H
+<<<<<<< HEAD
 /* TCP tracking. */
 
 #include <linux/types.h>
@@ -18,7 +19,14 @@ enum tcp_conntrack {
 	TCP_CONNTRACK_LISTEN,	/* obsolete */
 #define TCP_CONNTRACK_SYN_SENT2	TCP_CONNTRACK_LISTEN
 	TCP_CONNTRACK_MAX,
+<<<<<<< HEAD
 	TCP_CONNTRACK_IGNORE
+=======
+	TCP_CONNTRACK_IGNORE,
+	TCP_CONNTRACK_RETRANS,
+	TCP_CONNTRACK_UNACK,
+	TCP_CONNTRACK_TIMEOUT_MAX
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Window scaling is advertised by the sender */
@@ -45,6 +53,11 @@ struct nf_ct_tcp_flags {
 };
 
 #ifdef __KERNEL__
+=======
+
+#include <uapi/linux/netfilter/nf_conntrack_tcp.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct ip_ct_tcp_state {
 	u_int32_t	td_end;		/* max of seq + len */
@@ -71,6 +84,9 @@ struct ip_ct_tcp {
 	u_int8_t	last_flags;	/* Last flags set */
 };
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _NF_CONNTRACK_TCP_H */

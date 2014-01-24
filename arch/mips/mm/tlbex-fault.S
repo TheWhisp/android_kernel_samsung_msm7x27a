@@ -7,7 +7,10 @@
  * Copyright (C) 1999 Silicon Graphics, Inc.
  */
 #include <asm/mipsregs.h>
+<<<<<<< HEAD
 #include <asm/page.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/regdef.h>
 #include <asm/stackframe.h>
 

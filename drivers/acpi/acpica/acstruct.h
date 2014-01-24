@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +61,11 @@
  ****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Walk state - current state of a parse tree walk.  Used for both a leisurely
+=======
+ * Walk state - current state of a parse tree walk. Used for both a leisurely
+>>>>>>> refs/remotes/origin/master
  * stroll through the tree (for whatever reason), and for control method
  * execution.
  */
@@ -68,7 +80,11 @@
 #define ACPI_WALK_METHOD            0x01
 #define ACPI_WALK_METHOD_RESTART    0x02
 
+<<<<<<< HEAD
 /* Flags for i_aSL compiler only */
+=======
+/* Flags for iASL compiler only */
+>>>>>>> refs/remotes/origin/master
 
 #define ACPI_WALK_CONST_REQUIRED    0x10
 #define ACPI_WALK_CONST_OPTIONAL    0x20
@@ -178,6 +194,7 @@ union acpi_aml_operands {
 };
 
 /*
+<<<<<<< HEAD
  * Structure used to pass object evaluation parameters.
  * Purpose is to reduce CPU stack use.
  */
@@ -192,11 +209,47 @@ struct acpi_evaluate_info {
 	u8 pass_number;
 	u8 return_object_type;
 	u8 flags;
+=======
+ * Structure used to pass object evaluation information and parameters.
+ * Purpose is to reduce CPU stack use.
+ */
+struct acpi_evaluate_info {
+	/* The first 3 elements are passed by the caller to acpi_ns_evaluate */
+
+	struct acpi_namespace_node *prefix_node;	/* Input: starting node */
+	char *relative_pathname;	/* Input: path relative to prefix_node */
+	union acpi_operand_object **parameters;	/* Input: argument list */
+
+	struct acpi_namespace_node *node;	/* Resolved node (prefix_node:relative_pathname) */
+	union acpi_operand_object *obj_desc;	/* Object attached to the resolved node */
+	char *full_pathname;	/* Full pathname of the resolved node */
+
+	const union acpi_predefined_info *predefined;	/* Used if Node is a predefined name */
+	union acpi_operand_object *return_object;	/* Object returned from the evaluation */
+	union acpi_operand_object *parent_package;	/* Used if return object is a Package */
+
+	u32 return_flags;	/* Used for return value analysis */
+	u32 return_btype;	/* Bitmapped type of the returned object */
+	u16 param_count;	/* Count of the input argument list */
+	u8 pass_number;		/* Parser pass number */
+	u8 return_object_type;	/* Object type of the returned object */
+	u8 node_flags;		/* Same as Node->Flags */
+	u8 flags;		/* General flags */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Values for Flags above */
 
+<<<<<<< HEAD
 #define ACPI_IGNORE_RETURN_VALUE        1
+=======
+#define ACPI_IGNORE_RETURN_VALUE    1
+
+/* Defines for return_flags field above */
+
+#define ACPI_OBJECT_REPAIRED        1
+#define ACPI_OBJECT_WRAPPED         2
+>>>>>>> refs/remotes/origin/master
 
 /* Info used by acpi_ns_initialize_devices */
 

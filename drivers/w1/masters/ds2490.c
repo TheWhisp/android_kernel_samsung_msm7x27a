@@ -1,7 +1,15 @@
 /*
  *	dscore.c
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/master
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1002,6 +1010,8 @@ static void ds_disconnect(struct usb_interface *intf)
 	kfree(dev);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ds_init(void)
 {
 	int err;
@@ -1025,4 +1035,15 @@ module_exit(ds_fini);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Evgeniy Polyakov <johnpol@2ka.mipt.ru>");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+module_usb_driver(ds_driver);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Evgeniy Polyakov <zbr@ioremap.net>");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("DS2490 USB <-> W1 bus master driver (DS9490*)");

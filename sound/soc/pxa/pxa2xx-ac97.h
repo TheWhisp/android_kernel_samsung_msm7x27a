@@ -14,7 +14,10 @@
 #define PXA2XX_DAI_AC97_AUX		1
 #define PXA2XX_DAI_AC97_MIC		2
 
+<<<<<<< HEAD
 /* platform data */
 extern struct snd_ac97_bus_ops pxa2xx_ac97_ops;
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

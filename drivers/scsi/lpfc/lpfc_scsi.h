@@ -1,7 +1,15 @@
 /*******************************************************************
  * This file is part of the Emulex Linux Device Driver for         *
  * Fibre Channel Host Bus Adapters.                                *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2004-2006 Emulex.  All rights reserved.           *
+=======
+ * Copyright (C) 2004-2012 Emulex.  All rights reserved.           *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2004-2013 Emulex.  All rights reserved.           *
+>>>>>>> refs/remotes/origin/master
  * EMULEX and SLI are trademarks of Emulex.                        *
  * www.emulex.com                                                  *
  *                                                                 *
@@ -21,6 +29,14 @@
 #include <asm/byteorder.h>
 
 struct lpfc_hba;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define LPFC_FCP_CDB_LEN 16
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LPFC_FCP_CDB_LEN 16
+>>>>>>> refs/remotes/origin/master
 
 #define list_remove_head(list, entry, type, member)		\
 	do {							\
@@ -72,6 +88,10 @@ struct fcp_rsp {
 #define RSP_RO_MISMATCH_ERR  0x03
 #define RSP_TM_NOT_SUPPORTED 0x04	/* Task mgmt function not supported */
 #define RSP_TM_NOT_COMPLETED 0x05	/* Task mgmt function not performed */
+<<<<<<< HEAD
+=======
+#define RSP_TM_INVALID_LU    0x09	/* Task mgmt function to invalid LU */
+>>>>>>> refs/remotes/origin/master
 
 	uint32_t rspInfoRsvd;	/* FCP_RSP_INFO bytes 4-7 (reserved) */
 
@@ -102,7 +122,15 @@ struct fcp_cmnd {
 #define  WRITE_DATA      0x01	/* Bit 0 */
 #define  READ_DATA       0x02	/* Bit 1 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t fcpCdb[16];	/* SRB cdb field is copied here */
+=======
+	uint8_t fcpCdb[LPFC_FCP_CDB_LEN]; /* SRB cdb field is copied here */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint8_t fcpCdb[LPFC_FCP_CDB_LEN]; /* SRB cdb field is copied here */
+>>>>>>> refs/remotes/origin/master
 	uint32_t fcpDl;		/* Total transfer length */
 
 };
@@ -149,9 +177,34 @@ struct lpfc_scsi_buf {
 	struct lpfc_iocbq cur_iocbq;
 	wait_queue_head_t *waitq;
 	unsigned long start_time;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+	/* Used to restore any changes to protection data for error injection */
+	void *prot_data_segment;
+	uint32_t prot_data;
+	uint32_t prot_data_type;
+#define	LPFC_INJERR_REFTAG	1
+#define	LPFC_INJERR_APPTAG	2
+#define	LPFC_INJERR_GUARD	3
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define LPFC_SCSI_DMA_EXT_SIZE 264
 #define LPFC_BPL_SIZE          1024
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MDAC_DIRECT_CMD                  0x22

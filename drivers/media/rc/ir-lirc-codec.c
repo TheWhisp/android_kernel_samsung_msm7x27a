@@ -14,6 +14,14 @@
 
 #include <linux/sched.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <media/lirc.h>
 #include <media/lirc_dev.h>
 #include <media/rc-core.h>
@@ -34,7 +42,11 @@ static int ir_lirc_decode(struct rc_dev *dev, struct ir_raw_event ev)
 	struct lirc_codec *lirc = &dev->raw->lirc;
 	int sample;
 
+<<<<<<< HEAD
 	if (!(dev->raw->enabled_protocols & RC_TYPE_LIRC))
+=======
+	if (!(dev->enabled_protocols & RC_BIT_LIRC))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (!dev->raw->lirc.drv || !dev->raw->lirc.drv->rbuf)
@@ -98,24 +110,63 @@ static int ir_lirc_decode(struct rc_dev *dev, struct ir_raw_event ev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t ir_lirc_transmit_ir(struct file *file, const char *buf,
+=======
+static ssize_t ir_lirc_transmit_ir(struct file *file, const char __user *buf,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t ir_lirc_transmit_ir(struct file *file, const char __user *buf,
+>>>>>>> refs/remotes/origin/master
 				   size_t n, loff_t *ppos)
 {
 	struct lirc_codec *lirc;
 	struct rc_dev *dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int *txbuf; /* buffer with values to transmit */
 	int ret = 0;
+=======
+	unsigned int *txbuf; /* buffer with values to transmit */
+	ssize_t ret = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	size_t count;
+=======
+	unsigned int *txbuf; /* buffer with values to transmit */
+	ssize_t ret = -EINVAL;
+	size_t count;
+	ktime_t start;
+	s64 towait;
+	unsigned int duration = 0; /* signal duration in us */
+	int i;
+
+	start = ktime_get();
+>>>>>>> refs/remotes/origin/master
 
 	lirc = lirc_get_pdata(file);
 	if (!lirc)
 		return -EFAULT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (n % sizeof(int))
 		return -EINVAL;
 
 	count = n / sizeof(int);
 	if (count > LIRCBUF_SIZE || count % 2 == 0 || n % sizeof(int) != 0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (n < sizeof(unsigned) || n % sizeof(unsigned))
+		return -EINVAL;
+
+	count = n / sizeof(unsigned);
+	if (count > LIRCBUF_SIZE || count % 2 == 0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	txbuf = memdup_user(buf, n);
@@ -128,8 +179,51 @@ static ssize_t ir_lirc_transmit_ir(struct file *file, const char *buf,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (dev->tx_ir)
+<<<<<<< HEAD
 		ret = dev->tx_ir(dev, txbuf, (u32)n);
+=======
+		ret = dev->tx_ir(dev, txbuf, count);
+
+	if (ret > 0)
+		ret *= sizeof(unsigned);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dev->tx_ir) {
+		ret = -ENOSYS;
+		goto out;
+	}
+
+	for (i = 0; i < count; i++) {
+		if (txbuf[i] > IR_MAX_DURATION / 1000 - duration || !txbuf[i]) {
+			ret = -EINVAL;
+			goto out;
+		}
+
+		duration += txbuf[i];
+	}
+
+	ret = dev->tx_ir(dev, txbuf, count);
+	if (ret < 0)
+		goto out;
+
+	for (duration = i = 0; i < ret; i++)
+		duration += txbuf[i];
+
+	ret *= sizeof(unsigned int);
+
+	/*
+	 * The lircd gap calculation expects the write function to
+	 * wait for the actual IR signal to be transmitted before
+	 * returning.
+	 */
+	towait = ktime_us_delta(ktime_add_us(start, duration), ktime_get());
+	if (towait > 0) {
+		set_current_state(TASK_INTERRUPTIBLE);
+		schedule_timeout(usecs_to_jiffies(towait));
+	}
+>>>>>>> refs/remotes/origin/master
 
 out:
 	kfree(txbuf);
@@ -137,10 +231,24 @@ out:
 }
 
 static long ir_lirc_ioctl(struct file *filep, unsigned int cmd,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			unsigned long __user arg)
 {
 	struct lirc_codec *lirc;
 	struct rc_dev *dev;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			unsigned long arg)
+{
+	struct lirc_codec *lirc;
+	struct rc_dev *dev;
+	u32 __user *argp = (u32 __user *)(arg);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	__u32 val = 0, tmp;
 
@@ -153,7 +261,15 @@ static long ir_lirc_ioctl(struct file *filep, unsigned int cmd,
 		return -EFAULT;
 
 	if (_IOC_DIR(cmd) & _IOC_WRITE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = get_user(val, (__u32 *)arg);
+=======
+		ret = get_user(val, argp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = get_user(val, argp);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			return ret;
 	}
@@ -173,13 +289,21 @@ static long ir_lirc_ioctl(struct file *filep, unsigned int cmd,
 	/* TX settings */
 	case LIRC_SET_TRANSMITTER_MASK:
 		if (!dev->s_tx_mask)
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			return -ENOSYS;
+>>>>>>> refs/remotes/origin/master
 
 		return dev->s_tx_mask(dev, val);
 
 	case LIRC_SET_SEND_CARRIER:
 		if (!dev->s_tx_carrier)
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			return -ENOSYS;
+>>>>>>> refs/remotes/origin/master
 
 		return dev->s_tx_carrier(dev, val);
 
@@ -262,7 +386,15 @@ static long ir_lirc_ioctl(struct file *filep, unsigned int cmd,
 	}
 
 	if (_IOC_DIR(cmd) & _IOC_READ)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = put_user(val, (__u32 *)arg);
+=======
+		ret = put_user(val, argp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = put_user(val, argp);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -277,7 +409,11 @@ static void ir_lirc_close(void *data)
 	return;
 }
 
+<<<<<<< HEAD
 static struct file_operations lirc_fops = {
+=======
+static const struct file_operations lirc_fops = {
+>>>>>>> refs/remotes/origin/master
 	.owner		= THIS_MODULE,
 	.write		= ir_lirc_transmit_ir,
 	.unlocked_ioctl	= ir_lirc_ioctl,
@@ -345,6 +481,10 @@ static int ir_lirc_register(struct rc_dev *dev)
 	drv->code_length = sizeof(struct ir_raw_event) * 8;
 	drv->fops = &lirc_fops;
 	drv->dev = &dev->dev;
+<<<<<<< HEAD
+=======
+	drv->rdev = dev;
+>>>>>>> refs/remotes/origin/master
 	drv->owner = THIS_MODULE;
 
 	drv->minor = lirc_register_driver(drv);
@@ -378,7 +518,11 @@ static int ir_lirc_unregister(struct rc_dev *dev)
 }
 
 static struct ir_raw_handler lirc_handler = {
+<<<<<<< HEAD
 	.protocols	= RC_TYPE_LIRC,
+=======
+	.protocols	= RC_BIT_LIRC,
+>>>>>>> refs/remotes/origin/master
 	.decode		= ir_lirc_decode,
 	.raw_register	= ir_lirc_register,
 	.raw_unregister	= ir_lirc_unregister,

@@ -15,6 +15,9 @@
 
 #define __io(a)                 ((void __iomem *)(0xe0000000 + (a)))
 
+<<<<<<< HEAD
 #define __mem_pci(addr) (addr)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

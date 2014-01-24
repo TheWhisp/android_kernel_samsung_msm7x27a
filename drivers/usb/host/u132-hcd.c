@@ -55,7 +55,13 @@
 #include <linux/mutex.h>
 #include <asm/io.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 
 	/* FIXME ohci.h is ONLY for internal use by the OHCI driver.
@@ -74,7 +80,15 @@ MODULE_LICENSE("GPL");
 #define INT_MODULE_PARM(n, v) static int n = v;module_param(n, int, 0444)
 INT_MODULE_PARM(testing, 0);
 /* Some boards misreport power switching/overcurrent*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int distrust_firmware = 1;
+=======
+static bool distrust_firmware = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool distrust_firmware = 1;
+>>>>>>> refs/remotes/origin/master
 module_param(distrust_firmware, bool, 0);
 MODULE_PARM_DESC(distrust_firmware, "true to distrust firmware power/overcurren"
 	"t setup");
@@ -1810,9 +1824,15 @@ static int u132_hcd_start(struct usb_hcd *hcd)
 		struct platform_device *pdev =
 			to_platform_device(hcd->self.controller);
 		u16 vendor = ((struct u132_platform_data *)
+<<<<<<< HEAD
 			(pdev->dev.platform_data))->vendor;
 		u16 device = ((struct u132_platform_data *)
 			(pdev->dev.platform_data))->device;
+=======
+			dev_get_platdata(&pdev->dev))->vendor;
+		u16 device = ((struct u132_platform_data *)
+			dev_get_platdata(&pdev->dev))->device;
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&u132->sw_lock);
 		msleep(10);
 		if (vendor == PCI_VENDOR_ID_AMD && device == 0x740c) {
@@ -2991,7 +3011,11 @@ static struct hc_driver u132_hc_driver = {
 * synchronously - but instead should immediately stop activity to the
 * device and asynchronously call usb_remove_hcd()
 */
+<<<<<<< HEAD
 static int __devexit u132_remove(struct platform_device *pdev)
+=======
+static int u132_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
 	if (hcd) {
@@ -3035,7 +3059,11 @@ static void u132_initialise(struct u132 *u132, struct platform_device *pdev)
 	int addrs = MAX_U132_ADDRS;
 	int udevs = MAX_U132_UDEVS;
 	int endps = MAX_U132_ENDPS;
+<<<<<<< HEAD
 	u132->board = pdev->dev.platform_data;
+=======
+	u132->board = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	u132->platform_dev = pdev;
 	u132->power = 0;
 	u132->reset = 0;
@@ -3085,7 +3113,11 @@ static void u132_initialise(struct u132 *u132, struct platform_device *pdev)
 	mutex_unlock(&u132->sw_lock);
 }
 
+<<<<<<< HEAD
 static int __devinit u132_probe(struct platform_device *pdev)
+=======
+static int u132_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_hcd *hcd;
 	int retval;
@@ -3134,6 +3166,10 @@ static int __devinit u132_probe(struct platform_device *pdev)
 			u132_u132_put_kref(u132);
 			return retval;
 		} else {
+<<<<<<< HEAD
+=======
+			device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 			u132_monitor_queue_work(u132, 100);
 			return 0;
 		}
@@ -3142,10 +3178,18 @@ static int __devinit u132_probe(struct platform_device *pdev)
 
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 /* for this device there's no useful distinction between the controller
 * and its root hub, except that the root hub only gets direct PM calls
 * when CONFIG_USB_SUSPEND is enabled.
 */
+=======
+/*
+ * for this device there's no useful distinction between the controller
+ * and its root hub, except that the root hub only gets direct PM calls
+ * when CONFIG_PM_RUNTIME is enabled.
+ */
+>>>>>>> refs/remotes/origin/master
 static int u132_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
@@ -3213,11 +3257,19 @@ static int u132_resume(struct platform_device *pdev)
 */
 static struct platform_driver u132_platform_driver = {
 	.probe = u132_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(u132_remove),
 	.suspend = u132_suspend,
 	.resume = u132_resume,
 	.driver = {
 		   .name = (char *)hcd_name,
+=======
+	.remove = u132_remove,
+	.suspend = u132_suspend,
+	.resume = u132_resume,
+	.driver = {
+		   .name = hcd_name,
+>>>>>>> refs/remotes/origin/master
 		   .owner = THIS_MODULE,
 		   },
 };

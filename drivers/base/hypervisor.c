@@ -10,6 +10,14 @@
 
 #include <linux/kobject.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "base.h"
 
 struct kobject *hypervisor_kobj;

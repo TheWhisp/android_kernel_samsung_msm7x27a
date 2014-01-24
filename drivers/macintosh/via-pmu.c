@@ -46,11 +46,22 @@
 #include <linux/suspend.h>
 #include <linux/cpu.h>
 #include <linux/compat.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/prom.h>
 #include <asm/machdep.h>
 #include <asm/io.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/sections.h>
 #include <asm/irq.h>
 #include <asm/pmac_feature.h>
@@ -751,8 +762,14 @@ done_battery_state_smart(struct adb_request* req)
 				voltage = (req->reply[8] << 8) | req->reply[9];
 				break;
 			default:
+<<<<<<< HEAD
 				printk(KERN_WARNING "pmu.c : unrecognized battery info, len: %d, %02x %02x %02x %02x\n",
 					req->reply_len, req->reply[0], req->reply[1], req->reply[2], req->reply[3]);
+=======
+				pr_warn("pmu.c: unrecognized battery info, "
+					"len: %d, %4ph\n", req->reply_len,
+							   req->reply);
+>>>>>>> refs/remotes/origin/master
 				break;
 		}
 	}
@@ -870,7 +887,11 @@ static int pmu_battery_proc_show(struct seq_file *m, void *v)
 
 static int pmu_battery_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, pmu_battery_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, pmu_battery_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations pmu_battery_proc_fops = {

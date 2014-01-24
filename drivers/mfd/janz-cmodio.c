@@ -33,7 +33,15 @@
 
 /* Module Parameters */
 static unsigned int num_modules = CMODIO_MAX_MODULES;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned char *modules[CMODIO_MAX_MODULES] = {
+=======
+static char *modules[CMODIO_MAX_MODULES] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *modules[CMODIO_MAX_MODULES] = {
+>>>>>>> refs/remotes/origin/master
 	"empty", "empty", "empty", "empty",
 };
 
@@ -63,7 +71,11 @@ struct cmodio_device {
  * Subdevices using the mfd-core API
  */
 
+<<<<<<< HEAD
 static int __devinit cmodio_setup_subdevice(struct cmodio_device *priv,
+=======
+static int cmodio_setup_subdevice(struct cmodio_device *priv,
+>>>>>>> refs/remotes/origin/master
 					    char *name, unsigned int devno,
 					    unsigned int modno)
 {
@@ -120,7 +132,11 @@ static int __devinit cmodio_setup_subdevice(struct cmodio_device *priv,
 }
 
 /* Probe each submodule using kernel parameters */
+<<<<<<< HEAD
 static int __devinit cmodio_probe_submodules(struct cmodio_device *priv)
+=======
+static int cmodio_probe_submodules(struct cmodio_device *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pdev = priv->pdev;
 	unsigned int num_probed = 0;
@@ -147,7 +163,11 @@ static int __devinit cmodio_probe_submodules(struct cmodio_device *priv)
 	}
 
 	return mfd_add_devices(&pdev->dev, 0, priv->cells,
+<<<<<<< HEAD
 			       num_probed, NULL, pdev->irq);
+=======
+			       num_probed, NULL, pdev->irq, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -177,17 +197,28 @@ static const struct attribute_group cmodio_sysfs_attr_group = {
  * PCI Driver
  */
 
+<<<<<<< HEAD
 static int __devinit cmodio_pci_probe(struct pci_dev *dev,
+=======
+static int cmodio_pci_probe(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 				      const struct pci_device_id *id)
 {
 	struct cmodio_device *priv;
 	int ret;
 
+<<<<<<< HEAD
 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
 	if (!priv) {
 		dev_err(&dev->dev, "unable to allocate private data\n");
 		ret = -ENOMEM;
 		goto out_return;
+=======
+	priv = devm_kzalloc(&dev->dev, sizeof(*priv), GFP_KERNEL);
+	if (!priv) {
+		dev_err(&dev->dev, "unable to allocate private data\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pci_set_drvdata(dev, priv);
@@ -197,7 +228,11 @@ static int __devinit cmodio_pci_probe(struct pci_dev *dev,
 	ret = pci_enable_device(dev);
 	if (ret) {
 		dev_err(&dev->dev, "unable to enable device\n");
+<<<<<<< HEAD
 		goto out_free_priv;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pci_set_master(dev);
@@ -248,6 +283,7 @@ out_pci_release_regions:
 	pci_release_regions(dev);
 out_pci_disable_device:
 	pci_disable_device(dev);
+<<<<<<< HEAD
 out_free_priv:
 	kfree(priv);
 out_return:
@@ -255,6 +291,13 @@ out_return:
 }
 
 static void __devexit cmodio_pci_remove(struct pci_dev *dev)
+=======
+
+	return ret;
+}
+
+static void cmodio_pci_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cmodio_device *priv = pci_get_drvdata(dev);
 
@@ -263,13 +306,20 @@ static void __devexit cmodio_pci_remove(struct pci_dev *dev)
 	iounmap(priv->ctrl);
 	pci_release_regions(dev);
 	pci_disable_device(dev);
+<<<<<<< HEAD
 	kfree(priv);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #define PCI_VENDOR_ID_JANZ		0x13c3
 
 /* The list of devices that this module will support */
+<<<<<<< HEAD
 static DEFINE_PCI_DEVICE_TABLE(cmodio_pci_ids) = {
+=======
+static const struct pci_device_id cmodio_pci_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030, PCI_VENDOR_ID_JANZ, 0x0101 },
 	{ PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9050, PCI_VENDOR_ID_JANZ, 0x0100 },
 	{ 0, }
@@ -280,6 +330,7 @@ static struct pci_driver cmodio_pci_driver = {
 	.name     = DRV_NAME,
 	.id_table = cmodio_pci_ids,
 	.probe    = cmodio_pci_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(cmodio_pci_remove),
 };
 
@@ -296,10 +347,19 @@ static void __exit cmodio_exit(void)
 {
 	pci_unregister_driver(&cmodio_pci_driver);
 }
+=======
+	.remove   = cmodio_pci_remove,
+};
+
+module_pci_driver(cmodio_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ira W. Snyder <iws@ovro.caltech.edu>");
 MODULE_DESCRIPTION("Janz CMOD-IO PCI MODULbus Carrier Board Driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(cmodio_init);
 module_exit(cmodio_exit);
+=======
+>>>>>>> refs/remotes/origin/master

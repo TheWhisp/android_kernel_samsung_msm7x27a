@@ -25,7 +25,10 @@
  * Date: May 21, 1996
  *
  * Functions:
+<<<<<<< HEAD
  *      ETHbyGetHashIndexByCrc32 - Caculate multicast hash value by CRC32
+=======
+>>>>>>> refs/remotes/origin/master
  *      ETHbIsBufferCrc32Ok - Check CRC value of the buffer if Ok or not
  *
  * Revision History:
@@ -37,6 +40,7 @@
 #include "tcrc.h"
 #include "tether.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 
 /*---------------------  Static Classes  ----------------------------*/
@@ -83,6 +87,8 @@ BYTE ETHbyGetHashIndexByCrc32(PBYTE pbyMultiAddr)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Check CRC value of the buffer if Ok or not
  *
@@ -93,6 +99,7 @@ BYTE ETHbyGetHashIndexByCrc32(PBYTE pbyMultiAddr)
  *  Out:
  *      none
  *
+<<<<<<< HEAD
  * Return Value: TRUE if ok; FALSE if error.
  *
  */
@@ -104,5 +111,18 @@ BOOL ETHbIsBufferCrc32Ok(PBYTE pbyBuffer, unsigned int cbFrameLength)
 	if (cpu_to_le32(*((PDWORD)(pbyBuffer + cbFrameLength - 4))) != dwCRC)
 		return FALSE;
 	return TRUE;
+=======
+ * Return Value: true if ok; false if error.
+ *
+ */
+bool ETHbIsBufferCrc32Ok(u8 * pbyBuffer, unsigned int cbFrameLength)
+{
+	u32 dwCRC;
+
+	dwCRC = CRCdwGetCrc32(pbyBuffer, cbFrameLength - 4);
+	if (cpu_to_le32(*((u32 *)(pbyBuffer + cbFrameLength - 4))) != dwCRC)
+		return false;
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 

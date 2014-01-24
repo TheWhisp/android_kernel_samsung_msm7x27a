@@ -18,6 +18,7 @@
 
 #include <linux/ioport.h>
 
+<<<<<<< HEAD
     /*
      *  Different Amiga models
      */
@@ -38,6 +39,9 @@
 #define AMI_CDTV	(13)
 #define AMI_CD32	(14)
 #define AMI_DRACO	(15)
+=======
+#include <asm/bootinfo-amiga.h>
+>>>>>>> refs/remotes/origin/master
 
 
     /*
@@ -46,11 +50,14 @@
 
 extern unsigned long amiga_chipset;
 
+<<<<<<< HEAD
 #define CS_STONEAGE	(0)
 #define CS_OCS		(1)
 #define CS_ECS		(2)
 #define CS_AGA		(3)
 
+=======
+>>>>>>> refs/remotes/origin/master
 
     /*
      *  Miscellaneous
@@ -266,7 +273,11 @@ struct CIA {
 
 #define zTwoBase (0x80000000)
 #define ZTWO_PADDR(x) (((unsigned long)(x))-zTwoBase)
+<<<<<<< HEAD
 #define ZTWO_VADDR(x) (((unsigned long)(x))+zTwoBase)
+=======
+#define ZTWO_VADDR(x) ((void __iomem *)(((unsigned long)(x))+zTwoBase))
+>>>>>>> refs/remotes/origin/master
 
 #define CUSTOM_PHYSADDR     (0xdff000)
 #define amiga_custom ((*(volatile struct CUSTOM *)(zTwoBase+CUSTOM_PHYSADDR)))

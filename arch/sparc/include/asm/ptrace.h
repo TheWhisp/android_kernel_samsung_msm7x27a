@@ -1,6 +1,7 @@
 #ifndef __SPARC_PTRACE_H
 #define __SPARC_PTRACE_H
 
+<<<<<<< HEAD
 #if defined(__sparc__) && defined(__arch64__)
 /* 64 bit sparc */
 #include <asm/pstate.h>
@@ -98,6 +99,11 @@ struct sparc_trapf {
  */
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
+=======
+#include <linux/types.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct pt_regs {
 	unsigned long psr;
 	unsigned long pc;
@@ -163,7 +169,20 @@ struct sparc_stackf {
 #ifdef __KERNEL__
 
 #include <linux/threads.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <uapi/asm/ptrace.h>
+
+#if defined(__sparc__) && defined(__arch64__)
+#ifndef __ASSEMBLY__
+
+#include <linux/threads.h>
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline int pt_regs_trap_type(struct pt_regs *regs)
 {
@@ -188,6 +207,12 @@ static inline bool pt_regs_clear_syscall(struct pt_regs *regs)
 #define arch_ptrace_stop(exit_code, info) \
 	synchronize_user_stack()
 
+<<<<<<< HEAD
+=======
+#define current_pt_regs() \
+	((struct pt_regs *)((unsigned long)current_thread_info() + THREAD_SIZE) - 1)
+
+>>>>>>> refs/remotes/origin/master
 struct global_reg_snapshot {
 	unsigned long		tstate;
 	unsigned long		tpc;
@@ -198,22 +223,61 @@ struct global_reg_snapshot {
 	struct thread_info	*thread;
 	unsigned long		pad1;
 };
+<<<<<<< HEAD
 extern struct global_reg_snapshot global_reg_snapshot[NR_CPUS];
 
 #define force_successful_syscall_return()	    \
 do {	current_thread_info()->syscall_noerror = 1; \
 } while (0)
+=======
+
+struct global_pmu_snapshot {
+	unsigned long		pcr[4];
+	unsigned long		pic[4];
+};
+
+union global_cpu_snapshot {
+	struct global_reg_snapshot	reg;
+	struct global_pmu_snapshot	pmu;
+};
+
+extern union global_cpu_snapshot global_cpu_snapshot[NR_CPUS];
+
+#define force_successful_syscall_return() set_thread_noerror(1)
+>>>>>>> refs/remotes/origin/master
 #define user_mode(regs) (!((regs)->tstate & TSTATE_PRIV))
 #define instruction_pointer(regs) ((regs)->tpc)
 #define instruction_pointer_set(regs, val) ((regs)->tpc = (val))
 #define user_stack_pointer(regs) ((regs)->u_regs[UREG_FP])
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define regs_return_value(regs) ((regs)->u_regs[UREG_I0])
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline int is_syscall_success(struct pt_regs *regs)
+{
+	return !(regs->tstate & (TSTATE_XCARRY | TSTATE_ICARRY));
+}
+
+static inline long regs_return_value(struct pt_regs *regs)
+{
+	return regs->u_regs[UREG_I0];
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 extern unsigned long profile_pc(struct pt_regs *);
 #else
 #define profile_pc(regs) instruction_pointer(regs)
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* (__KERNEL__) */
 
 #else /* __ASSEMBLY__ */
@@ -232,8 +296,19 @@ extern void show_regs(struct pt_regs *);
 #ifndef __ASSEMBLY__
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
 
 #include <asm/system.h>
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else /* __ASSEMBLY__ */
+#endif /* __ASSEMBLY__ */
+#else /* (defined(__sparc__) && defined(__arch64__)) */
+#ifndef __ASSEMBLY__
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline bool pt_regs_is_syscall(struct pt_regs *regs)
 {
@@ -253,11 +328,21 @@ static inline bool pt_regs_clear_syscall(struct pt_regs *regs)
 #define arch_ptrace_stop(exit_code, info) \
 	synchronize_user_stack()
 
+<<<<<<< HEAD
+=======
+#define current_pt_regs() \
+	((struct pt_regs *)((unsigned long)current_thread_info() + THREAD_SIZE) - 1)
+
+>>>>>>> refs/remotes/origin/master
 #define user_mode(regs) (!((regs)->psr & PSR_PS))
 #define instruction_pointer(regs) ((regs)->pc)
 #define user_stack_pointer(regs) ((regs)->u_regs[UREG_FP])
 unsigned long profile_pc(struct pt_regs *);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* (__KERNEL__) */
 
 #else /* (!__ASSEMBLY__) */
@@ -410,6 +495,12 @@ extern void show_regs(struct pt_regs *);
 #define SF_XXARG  0x5c
 
 #ifdef __KERNEL__
+=======
+#else /* (!__ASSEMBLY__) */
+#endif /* (!__ASSEMBLY__) */
+#endif /* (defined(__sparc__) && defined(__arch64__)) */
+#define STACK_BIAS		2047
+>>>>>>> refs/remotes/origin/master
 
 /* global_reg_snapshot offsets */
 #define GR_SNAP_TSTATE	0x00
@@ -421,6 +512,7 @@ extern void show_regs(struct pt_regs *);
 #define GR_SNAP_THREAD	0x30
 #define GR_SNAP_PAD1	0x38
 
+<<<<<<< HEAD
 #endif  /*  __KERNEL__  */
 
 /* Stuff for the ptrace system call */
@@ -446,4 +538,6 @@ extern void show_regs(struct pt_regs *);
 #define PTRACE_GETFPREGS64	  25
 #define PTRACE_SETFPREGS64	  26
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(__SPARC_PTRACE_H) */

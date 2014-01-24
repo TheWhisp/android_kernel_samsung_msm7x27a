@@ -2,10 +2,23 @@
  *
  * ISDN interface module for Eicon active cards DIVA.
  * CAPI Interface
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Copyright 2000-2003 by Armin Schindler (mac@melware.de) 
  * Copyright 2000-2003 Cytronics & Melware (info@melware.de)
  * 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * Copyright 2000-2003 by Armin Schindler (mac@melware.de)
+ * Copyright 2000-2003 Cytronics & Melware (info@melware.de)
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  */
@@ -28,7 +41,15 @@
 
 static char *main_revision = "$Revision: 1.24 $";
 static char *DRIVERNAME =
+<<<<<<< HEAD
+<<<<<<< HEAD
     "Eicon DIVA - CAPI Interface driver (http://www.melware.net)";
+=======
+	"Eicon DIVA - CAPI Interface driver (http://www.melware.net)";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"Eicon DIVA - CAPI Interface driver (http://www.melware.net)";
+>>>>>>> refs/remotes/origin/master
 static char *DRIVERLNAME = "divacapi";
 
 MODULE_DESCRIPTION("CAPI driver for Eicon DIVA cards");
@@ -69,7 +90,15 @@ diva_os_message_buffer_s *diva_os_alloc_message_buffer(unsigned long size,
 /*
  * free a message buffer
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void diva_os_free_message_buffer(diva_os_message_buffer_s * dmb)
+=======
+void diva_os_free_message_buffer(diva_os_message_buffer_s *dmb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void diva_os_free_message_buffer(diva_os_message_buffer_s *dmb)
+>>>>>>> refs/remotes/origin/master
 {
 	kfree_skb(dmb);
 }
@@ -118,7 +147,11 @@ void diva_os_set_controller_struct(struct capi_ctr *ctrl)
 /*
  * module init
  */
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION divacapi_init(void)
+=======
+static int __init divacapi_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	char tmprev[32];
 	int ret = 0;
@@ -144,7 +177,11 @@ static int DIVA_INIT_FUNCTION divacapi_init(void)
 /*
  * module exit
  */
+<<<<<<< HEAD
 static void DIVA_EXIT_FUNCTION divacapi_exit(void)
+=======
+static void __exit divacapi_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	finit_capifunc();
 	printk(KERN_INFO "%s: module unloaded.\n", DRIVERLNAME);

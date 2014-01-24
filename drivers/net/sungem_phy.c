@@ -33,7 +33,15 @@
 #include <asm/prom.h>
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "sungem_phy.h"
+=======
+#include <linux/sungem_phy.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sungem_phy.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Link modes of the BCM5400 PHY */
 static const int phy_BCM5400_link_table[8][3] = {
@@ -608,7 +616,11 @@ static int bcm5421_poll_link(struct mii_phy* phy)
 	if ( mode == BCM54XX_COPPER)
 		return genmii_poll_link(phy);
 
+<<<<<<< HEAD
 	/* try to find out wether we have a link */
+=======
+	/* try to find out whether we have a link */
+>>>>>>> refs/remotes/origin/master
 	phy_write(phy, MII_NCONFIG, 0x2000);
 	phy_reg = phy_read(phy, MII_NCONFIG);
 
@@ -634,7 +646,11 @@ static int bcm5421_read_link(struct mii_phy* phy)
 
 	phy->speed = SPEED_1000;
 
+<<<<<<< HEAD
 	/* find out wether we are running half- or full duplex */
+=======
+	/* find out whether we are running half- or full duplex */
+>>>>>>> refs/remotes/origin/master
 	phy_write(phy, MII_NCONFIG, 0x2000);
 	phy_reg = phy_read(phy, MII_NCONFIG);
 
@@ -681,7 +697,11 @@ static int bcm5461_poll_link(struct mii_phy* phy)
 	if ( mode == BCM54XX_COPPER)
 		return genmii_poll_link(phy);
 
+<<<<<<< HEAD
 	/* find out wether we have a link */
+=======
+	/* find out whether we have a link */
+>>>>>>> refs/remotes/origin/master
 	phy_write(phy, MII_NCONFIG, 0x7000);
 	phy_reg = phy_read(phy, MII_NCONFIG);
 
@@ -710,7 +730,11 @@ static int bcm5461_read_link(struct mii_phy* phy)
 
 	phy->speed = SPEED_1000;
 
+<<<<<<< HEAD
 	/* find out wether we are running half- or full duplex */
+=======
+	/* find out whether we are running half- or full duplex */
+>>>>>>> refs/remotes/origin/master
 	phy_write(phy, MII_NCONFIG, 0x7000);
 	phy_reg = phy_read(phy, MII_NCONFIG);
 
@@ -1156,7 +1180,15 @@ static struct mii_phy_def* mii_phy_table[] = {
 	NULL
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int mii_phy_probe(struct mii_phy *phy, int mii_id)
+=======
+int sungem_phy_probe(struct mii_phy *phy, int mii_id)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int sungem_phy_probe(struct mii_phy *phy, int mii_id)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	u32 id;
@@ -1195,6 +1227,16 @@ fail:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(mii_phy_probe);
 MODULE_LICENSE("GPL");
 
+=======
+EXPORT_SYMBOL(sungem_phy_probe);
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sungem_phy_probe);
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

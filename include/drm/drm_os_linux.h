@@ -65,6 +65,7 @@ struct no_agp_kern {
 #define DRM_AGP_KERN            struct no_agp_kern
 #endif
 
+<<<<<<< HEAD
 #if !(__OS_HAS_MTRR)
 static __inline__ int mtrr_add(unsigned long base, unsigned long size,
 			       unsigned int type, char increment)
@@ -81,12 +82,15 @@ static __inline__ int mtrr_del(int reg, unsigned long base, unsigned long size)
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /** Other copying of data to kernel space */
 #define DRM_COPY_FROM_USER(arg1, arg2, arg3)		\
 	copy_from_user(arg1, arg2, arg3)
 /** Other copying of data from kernel space */
 #define DRM_COPY_TO_USER(arg1, arg2, arg3)		\
 	copy_to_user(arg1, arg2, arg3)
+<<<<<<< HEAD
 /* Macros for copyfrom user, but checking readability only once */
 #define DRM_VERIFYAREA_READ( uaddr, size )		\
 	(access_ok( VERIFY_READ, uaddr, size ) ? 0 : -EFAULT)
@@ -96,6 +100,8 @@ static __inline__ int mtrr_del(int reg, unsigned long base, unsigned long size)
 	__copy_to_user(arg1, arg2, arg3)
 #define DRM_GET_USER_UNCHECKED(val, uaddr)		\
 	__get_user(val, uaddr)
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DRM_HZ HZ
 

@@ -23,10 +23,22 @@
 #include <linux/interrupt.h>
 #include <linux/pci.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
 #include <asm/atomic.h>
+=======
+#include <asm/uaccess.h>
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/uaccess.h>
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/smp.h>
 #include <asm/pgalloc.h>
 #include <asm/cpu-regs.h>

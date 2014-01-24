@@ -325,7 +325,11 @@ static int snd_ca0106_capture_mic_line_in_put(struct snd_kcontrol *kcontrol,
         return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_ca0106_capture_mic_line_in __devinitdata =
+=======
+static struct snd_kcontrol_new snd_ca0106_capture_mic_line_in =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =		"Shared Mic/Line in Capture Switch",
@@ -334,7 +338,11 @@ static struct snd_kcontrol_new snd_ca0106_capture_mic_line_in __devinitdata =
 	.put =		snd_ca0106_capture_mic_line_in_put
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_ca0106_capture_line_in_side_out __devinitdata =
+=======
+static struct snd_kcontrol_new snd_ca0106_capture_line_in_side_out =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =		"Shared Line in/Side out Capture Switch",
@@ -588,7 +596,11 @@ static int spi_mute_put(struct snd_kcontrol *kcontrol,
 	.private_value = ((chid) << 8) | (reg)			\
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_ca0106_volume_ctls[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_ca0106_volume_ctls[] = {
+>>>>>>> refs/remotes/origin/master
 	CA_VOLUME("Analog Front Playback Volume",
 		  CONTROL_FRONT_CHANNEL, PLAYBACK_VOLUME2),
         CA_VOLUME("Analog Rear Playback Volume",
@@ -669,7 +681,11 @@ static struct snd_kcontrol_new snd_ca0106_volume_ctls[] __devinitdata = {
 	.private_value = chid					\
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_ca0106_volume_i2c_adc_ctls[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_ca0106_volume_i2c_adc_ctls[] = {
+>>>>>>> refs/remotes/origin/master
         I2C_VOLUME("Phone Capture Volume", 0),
         I2C_VOLUME("Mic Capture Volume", 1),
         I2C_VOLUME("Line in Capture Volume", 2),
@@ -691,7 +707,11 @@ static const int spi_dmute_bit[] = {
 	SPI_DMUTE4_BIT,
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new __devinit
+=======
+static struct snd_kcontrol_new
+>>>>>>> refs/remotes/origin/master
 snd_ca0106_volume_spi_dac_ctl(struct snd_ca0106_details *details,
 			      int channel_id)
 {
@@ -735,7 +755,11 @@ snd_ca0106_volume_spi_dac_ctl(struct snd_ca0106_details *details,
 	return spi_switch;
 }
 
+<<<<<<< HEAD
 static int __devinit remove_ctl(struct snd_card *card, const char *name)
+=======
+static int remove_ctl(struct snd_card *card, const char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_ctl_elem_id id;
 	memset(&id, 0, sizeof(id));
@@ -744,7 +768,11 @@ static int __devinit remove_ctl(struct snd_card *card, const char *name)
 	return snd_ctl_remove_id(card, &id);
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol __devinit *ctl_find(struct snd_card *card, const char *name)
+=======
+static struct snd_kcontrol *ctl_find(struct snd_card *card, const char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_ctl_elem_id sid;
 	memset(&sid, 0, sizeof(sid));
@@ -754,7 +782,11 @@ static struct snd_kcontrol __devinit *ctl_find(struct snd_card *card, const char
 	return snd_ctl_find_id(card, &sid);
 }
 
+<<<<<<< HEAD
 static int __devinit rename_ctl(struct snd_card *card, const char *src, const char *dst)
+=======
+static int rename_ctl(struct snd_card *card, const char *src, const char *dst)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_kcontrol *kctl = ctl_find(card, src);
 	if (kctl) {
@@ -774,10 +806,17 @@ static int __devinit rename_ctl(struct snd_card *card, const char *src, const ch
 		}							\
 	} while (0)
 
+<<<<<<< HEAD
 static __devinitdata
 DECLARE_TLV_DB_SCALE(snd_ca0106_master_db_scale, -6375, 25, 1);
 
 static char *slave_vols[] __devinitdata = {
+=======
+static
+DECLARE_TLV_DB_SCALE(snd_ca0106_master_db_scale, -6375, 25, 1);
+
+static char *slave_vols[] = {
+>>>>>>> refs/remotes/origin/master
 	"Analog Front Playback Volume",
         "Analog Rear Playback Volume",
 	"Analog Center/LFE Playback Volume",
@@ -790,7 +829,11 @@ static char *slave_vols[] __devinitdata = {
 	NULL
 };
 
+<<<<<<< HEAD
 static char *slave_sws[] __devinitdata = {
+=======
+static char *slave_sws[] = {
+>>>>>>> refs/remotes/origin/master
 	"Analog Front Playback Switch",
 	"Analog Rear Playback Switch",
 	"Analog Center/LFE Playback Switch",
@@ -799,7 +842,11 @@ static char *slave_sws[] __devinitdata = {
 	NULL
 };
 
+<<<<<<< HEAD
 static void __devinit add_slaves(struct snd_card *card,
+=======
+static void add_slaves(struct snd_card *card,
+>>>>>>> refs/remotes/origin/master
 				 struct snd_kcontrol *master, char **list)
 {
 	for (; *list; list++) {
@@ -809,7 +856,11 @@ static void __devinit add_slaves(struct snd_card *card,
 	}
 }
 
+<<<<<<< HEAD
 int __devinit snd_ca0106_mixer(struct snd_ca0106 *emu)
+=======
+int snd_ca0106_mixer(struct snd_ca0106 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
         struct snd_card *card = emu->card;
@@ -907,7 +958,11 @@ int __devinit snd_ca0106_mixer(struct snd_ca0106 *emu)
         return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 struct ca0106_vol_tbl {
 	unsigned int channel_id;
 	unsigned int reg;
@@ -953,4 +1008,8 @@ void snd_ca0106_mixer_resume(struct snd_ca0106  *chip)
 	if (chip->details->i2c_adc)
 		ca0106_set_capture_mic_line_in(chip);
 }
+<<<<<<< HEAD
 #endif /* CONFIG_PM */
+=======
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master

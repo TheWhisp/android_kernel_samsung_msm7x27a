@@ -9,6 +9,7 @@
 #ifndef _ASM_SIGCONTEXT_H
 #define _ASM_SIGCONTEXT_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <asm/sgidefs.h>
 
@@ -74,6 +75,12 @@ struct sigcontext {
 
 #ifdef __KERNEL__
 
+=======
+#include <uapi/asm/sigcontext.h>
+
+#if _MIPS_SIM == _MIPS_SIM_ABI64 || _MIPS_SIM == _MIPS_SIM_NABI32
+
+>>>>>>> refs/remotes/origin/master
 struct sigcontext32 {
 	__u32		sc_regmask;	/* Unused */
 	__u32		sc_status;	/* Unused */
@@ -94,8 +101,12 @@ struct sigcontext32 {
 	__u32		sc_hi3;
 	__u32		sc_lo3;
 };
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #endif /* _MIPS_SIM == _MIPS_SIM_ABI64 || _MIPS_SIM == _MIPS_SIM_NABI32 */
 
+=======
+#endif /* _MIPS_SIM == _MIPS_SIM_ABI64 || _MIPS_SIM == _MIPS_SIM_NABI32 */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_SIGCONTEXT_H */

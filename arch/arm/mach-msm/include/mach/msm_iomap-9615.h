@@ -1,6 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -77,6 +85,18 @@
 #define MSM9615_HSUSB_PHYS		0x12500000
 #define MSM9615_HSUSB_SIZE		SZ_4K
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define MSM9615_HSIC_PHYS		0x12540000
+#define MSM9615_HSIC_SIZE		SZ_4K
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSM9615_HSIC_PHYS		0x12540000
+#define MSM9615_HSIC_SIZE		SZ_4K
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM9615_QFPROM_PHYS		0x00700000
 #define MSM9615_QFPROM_SIZE		SZ_4K
 

@@ -17,7 +17,11 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *----------------------------------------------------------------------------
  *
+<<<<<<< HEAD
  * MCA card detection code by Trent McNair.
+=======
+ * MCA card detection code by Trent McNair. (now deleted)
+>>>>>>> refs/remotes/origin/master
  * Fixes to not explicitly nul bss data from Xavier Bestel.
  * Some multiboard fixes from Rolf Eike Beer.
  * Auto probing of EISA config space from Trevor Hemsley.
@@ -32,7 +36,10 @@
 #include <linux/blkdev.h>
 #include <linux/device.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/mca.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/eisa.h>
 #include <linux/interrupt.h>
 #include <scsi/scsi_host.h>
@@ -43,7 +50,11 @@
 #include "53c700.h"
 
 
+<<<<<<< HEAD
 /* Must be enough for both EISA and MCA */
+=======
+/* Must be enough for EISA */
+>>>>>>> refs/remotes/origin/master
 #define MAX_SLOTS 8
 static __u8 __initdata id_array[MAX_SLOTS] = { [0 ... MAX_SLOTS-1] = 7 };
 
@@ -89,15 +100,25 @@ param_setup(char *str)
 __setup("sim710=", param_setup);
 
 static struct scsi_host_template sim710_driver_template = {
+<<<<<<< HEAD
 	.name			= "LSI (Symbios) 710 MCA/EISA",
+=======
+	.name			= "LSI (Symbios) 710 EISA",
+>>>>>>> refs/remotes/origin/master
 	.proc_name		= "sim710",
 	.this_id		= 7,
 	.module			= THIS_MODULE,
 };
 
+<<<<<<< HEAD
 static __devinit int
 sim710_probe_common(struct device *dev, unsigned long base_addr,
 		    int irq, int clock, int differential, int scsi_id)
+=======
+static int sim710_probe_common(struct device *dev, unsigned long base_addr,
+			       int irq, int clock, int differential,
+			       int scsi_id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host * host = NULL;
 	struct NCR_700_Host_Parameters *hostdata =
@@ -154,8 +175,12 @@ sim710_probe_common(struct device *dev, unsigned long base_addr,
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static __devexit int
 sim710_device_remove(struct device *dev)
+=======
+static int sim710_device_remove(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = dev_get_drvdata(dev);
 	struct NCR_700_Host_Parameters *hostdata =
@@ -169,6 +194,7 @@ sim710_device_remove(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_MCA
 
 /* CARD ID 01BB and 01BA use the same pos values */
@@ -277,6 +303,8 @@ static struct mca_driver sim710_mca_driver = {
 
 #endif /* CONFIG_MCA */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_EISA
 static struct eisa_device_id sim710_eisa_ids[] = {
 	{ "CPQ4410" },
@@ -330,7 +358,11 @@ static struct eisa_driver sim710_eisa_driver = {
 	.driver = {
 		.name		= "sim710",
 		.probe		= sim710_eisa_probe,
+<<<<<<< HEAD
 		.remove		= __devexit_p(sim710_device_remove),
+=======
+		.remove		= sim710_device_remove,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 #endif /* CONFIG_EISA */
@@ -344,10 +376,13 @@ static int __init sim710_init(void)
 		param_setup(sim710);
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_MCA
 	err = mca_register_driver(&sim710_mca_driver);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_EISA
 	err = eisa_driver_register(&sim710_eisa_driver);
 #endif
@@ -361,11 +396,14 @@ static int __init sim710_init(void)
 
 static void __exit sim710_exit(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_MCA
 	if (MCA_bus)
 		mca_unregister_driver(&sim710_mca_driver);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_EISA
 	eisa_driver_unregister(&sim710_eisa_driver);
 #endif

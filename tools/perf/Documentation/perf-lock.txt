@@ -8,7 +8,15 @@ perf-lock - Analyze lock events
 SYNOPSIS
 --------
 [verse]
+<<<<<<< HEAD
+<<<<<<< HEAD
 'perf lock' {record|report|trace}
+=======
+'perf lock' {record|report|script|info}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+'perf lock' {record|report|script|info}
+>>>>>>> refs/remotes/origin/master
 
 DESCRIPTION
 -----------
@@ -20,16 +28,40 @@ and statistics with this 'perf lock' command.
   produces the file "perf.data" which contains tracing
   results of lock events.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   'perf lock trace' shows raw lock events.
 
   'perf lock report' reports statistical data.
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+  'perf lock report' reports statistical data.
+
+  'perf lock script' shows raw lock events.
+
+  'perf lock info' shows metadata like threads or addresses
+  of lock instances.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 COMMON OPTIONS
 --------------
 
 -i::
 --input=<file>::
+<<<<<<< HEAD
+<<<<<<< HEAD
         Input file name.
+=======
+        Input file name. (default: perf.data unless stdin is a fifo)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+        Input file name. (default: perf.data unless stdin is a fifo)
+>>>>>>> refs/remotes/origin/master
 
 -v::
 --verbose::
@@ -45,8 +77,30 @@ REPORT OPTIONS
 -k::
 --key=<value>::
         Sorting key. Possible values: acquired (default), contended,
+<<<<<<< HEAD
         wait_total, wait_max, wait_min.
 
+<<<<<<< HEAD
+=======
+=======
+	avg_wait, wait_total, wait_max, wait_min.
+
+>>>>>>> refs/remotes/origin/master
+INFO OPTIONS
+------------
+
+-t::
+--threads::
+	dump thread list in perf.data
+
+-m::
+--map::
+	dump map of lock instances (address:name table)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 SEE ALSO
 --------
 linkperf:perf[1]

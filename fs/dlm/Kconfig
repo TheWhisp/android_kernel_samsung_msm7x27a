@@ -1,6 +1,10 @@
 menuconfig DLM
 	tristate "Distributed Lock Manager (DLM)"
+<<<<<<< HEAD
 	depends on EXPERIMENTAL && INET
+=======
+	depends on INET
+>>>>>>> refs/remotes/origin/master
 	depends on SYSFS && CONFIGFS_FS && (IPV6 || IPV6=n)
 	select IP_SCTP
 	help

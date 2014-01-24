@@ -13,7 +13,11 @@
 #include <asm/processor.h>
 #include <asm/cache.h>
 
+<<<<<<< HEAD
 void __cpuinit cpu_probe(void)
+=======
+void cpu_probe(void)
+>>>>>>> refs/remotes/origin/master
 {
 	boot_cpu_data.family			= CPU_FAMILY_SH2A;
 
@@ -29,6 +33,15 @@ void __cpuinit cpu_probe(void)
 #elif defined(CONFIG_CPU_SUBTYPE_SH7263)
 	boot_cpu_data.type			= CPU_SH7263;
 	boot_cpu_data.flags			|= CPU_HAS_FPU;
+<<<<<<< HEAD
+=======
+#elif defined(CONFIG_CPU_SUBTYPE_SH7264)
+	boot_cpu_data.type			= CPU_SH7264;
+	boot_cpu_data.flags			|= CPU_HAS_FPU;
+#elif defined(CONFIG_CPU_SUBTYPE_SH7269)
+	boot_cpu_data.type			= CPU_SH7269;
+	boot_cpu_data.flags			|= CPU_HAS_FPU;
+>>>>>>> refs/remotes/origin/master
 #elif defined(CONFIG_CPU_SUBTYPE_SH7206)
 	boot_cpu_data.type			= CPU_SH7206;
 	boot_cpu_data.flags			|= CPU_HAS_DSP;

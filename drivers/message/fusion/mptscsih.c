@@ -792,6 +792,10 @@ mptscsih_io_done(MPT_ADAPTER *ioc, MPT_FRAME_HDR *mf, MPT_FRAME_HDR *mr)
 			 * than an unsolicited DID_ABORT.
 			 */
 			sc->result = DID_RESET << 16;
+<<<<<<< HEAD
+=======
+			break;
+>>>>>>> refs/remotes/origin/master
 
 		case MPI_IOCSTATUS_SCSI_EXT_TERMINATED:		/* 0x004C */
 			if (ioc->bus_type == FC)
@@ -827,10 +831,24 @@ mptscsih_io_done(MPT_ADAPTER *ioc, MPT_FRAME_HDR *mf, MPT_FRAME_HDR *mr)
 				 * DID_SOFT_ERROR is set.
 				 */
 				if (ioc->bus_type == SPI) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 					if (pScsiReq->CDB[0] == READ_6  ||
 					    pScsiReq->CDB[0] == READ_10 ||
 					    pScsiReq->CDB[0] == READ_12 ||
 					    pScsiReq->CDB[0] == READ_16 ||
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					if ((pScsiReq->CDB[0] == READ_6  && ((pScsiReq->CDB[1] & 0x02) == 0)) ||
+					    pScsiReq->CDB[0] == READ_10 ||
+					    pScsiReq->CDB[0] == READ_12 ||
+						(pScsiReq->CDB[0] == READ_16 &&
+						((pScsiReq->CDB[1] & 0x02) == 0)) ||
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					    pScsiReq->CDB[0] == VERIFY  ||
 					    pScsiReq->CDB[0] == VERIFY_16) {
 						if (scsi_bufflen(sc) !=
@@ -1024,7 +1042,15 @@ out:
  *
  *	Must be called while new I/Os are being queued.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void
+=======
+void
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void
+>>>>>>> refs/remotes/origin/master
 mptscsih_flush_running_cmds(MPT_SCSI_HOST *hd)
 {
 	MPT_ADAPTER *ioc = hd->ioc;
@@ -1055,6 +1081,14 @@ mptscsih_flush_running_cmds(MPT_SCSI_HOST *hd)
 		sc->scsi_done(sc);
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(mptscsih_flush_running_cmds);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(mptscsih_flush_running_cmds);
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	mptscsih_search_running_cmds - Delete any commands associated
@@ -1281,6 +1315,7 @@ mptscsih_info(struct Scsi_Host *SChost)
 	return h->info_kbuf;
 }
 
+<<<<<<< HEAD
 struct info_str {
 	char *buffer;
 	int   length;
@@ -1376,6 +1411,19 @@ mptscsih_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_t off
 	}
 
 	return size;
+=======
+int mptscsih_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	MPT_SCSI_HOST	*hd = shost_priv(host);
+	MPT_ADAPTER	*ioc = hd->ioc;
+
+	seq_printf(m, "%s: %s, ", ioc->name, ioc->prod_name);
+	seq_printf(m, "%s%08xh, ", MPT_FW_REV_MAGIC_ID_STRING, ioc->facts.FWVersion.Word);
+	seq_printf(m, "Ports=%d, ", ioc->facts.NumberOfPorts);
+	seq_printf(m, "MaxQ=%d\n", ioc->req_depth);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
@@ -1629,7 +1677,23 @@ mptscsih_IssueTaskMgmt(MPT_SCSI_HOST *hd, u8 type, u8 channel, u8 id, int lun,
 		return 0;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ioc_raw_state & MPI_DOORBELL_ACTIVE) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* DOORBELL ACTIVE check is not required if
+	*  MPI_IOCFACTS_CAPABILITY_HIGH_PRI_Q is supported.
+	*/
+
+	if (!((ioc->facts.IOCCapabilities & MPI_IOCFACTS_CAPABILITY_HIGH_PRI_Q)
+		 && (ioc->facts.MsgVersion >= MPI_VERSION_01_05)) &&
+		(ioc_raw_state & MPI_DOORBELL_ACTIVE)) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(MYIOC_s_WARN_FMT
 			"TaskMgmt type=%x: ioc_state: "
 			"DOORBELL_ACTIVE (0x%x)!\n",
@@ -1728,7 +1792,19 @@ mptscsih_IssueTaskMgmt(MPT_SCSI_HOST *hd, u8 type, u8 channel, u8 id, int lun,
 		printk(MYIOC_s_WARN_FMT
 		       "Issuing Reset from %s!! doorbell=0x%08x\n",
 		       ioc->name, __func__, mpt_GetIocState(ioc, 0));
+<<<<<<< HEAD
+<<<<<<< HEAD
 		retval = mpt_Soft_Hard_ResetHandler(ioc, CAN_SLEEP);
+=======
+		retval = (ioc->bus_type == SAS) ?
+			mpt_HardResetHandler(ioc, CAN_SLEEP) :
+			mpt_Soft_Hard_ResetHandler(ioc, CAN_SLEEP);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		retval = (ioc->bus_type == SAS) ?
+			mpt_HardResetHandler(ioc, CAN_SLEEP) :
+			mpt_Soft_Hard_ResetHandler(ioc, CAN_SLEEP);
+>>>>>>> refs/remotes/origin/master
 		mpt_free_msg_frame(ioc, mf);
 	}
 
@@ -3337,7 +3413,11 @@ EXPORT_SYMBOL(mptscsih_shutdown);
 EXPORT_SYMBOL(mptscsih_suspend);
 EXPORT_SYMBOL(mptscsih_resume);
 #endif
+<<<<<<< HEAD
 EXPORT_SYMBOL(mptscsih_proc_info);
+=======
+EXPORT_SYMBOL(mptscsih_show_info);
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(mptscsih_info);
 EXPORT_SYMBOL(mptscsih_qcmd);
 EXPORT_SYMBOL(mptscsih_slave_destroy);

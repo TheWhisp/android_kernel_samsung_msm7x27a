@@ -60,7 +60,11 @@ static struct resource vx855_gpio_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell vx855_cells[] = {
+=======
+static const struct mfd_cell vx855_cells[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "vx855_gpio",
 		.num_resources = ARRAY_SIZE(vx855_gpio_resources),
@@ -72,7 +76,11 @@ static struct mfd_cell vx855_cells[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinit int vx855_probe(struct pci_dev *pdev,
+=======
+static int vx855_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				 const struct pci_device_id *id)
 {
 	int ret;
@@ -102,7 +110,11 @@ static __devinit int vx855_probe(struct pci_dev *pdev,
 	vx855_gpio_resources[1].end = vx855_gpio_resources[1].start + 3;
 
 	ret = mfd_add_devices(&pdev->dev, -1, vx855_cells, ARRAY_SIZE(vx855_cells),
+<<<<<<< HEAD
 			NULL, 0);
+=======
+			NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/* we always return -ENODEV here in order to enable other
 	 * drivers like old, not-yet-platform_device ported i2c-viapro */
@@ -112,13 +124,25 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit vx855_remove(struct pci_dev *pdev)
+=======
+static void vx855_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	mfd_remove_devices(&pdev->dev);
 	pci_disable_device(pdev);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_device_id vx855_pci_tbl[] = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(vx855_pci_tbl) = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_device_id vx855_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX855) },
 	{ 0, }
 };
@@ -128,6 +152,7 @@ static struct pci_driver vx855_pci_driver = {
 	.name		= "vx855",
 	.id_table	= vx855_pci_tbl,
 	.probe		= vx855_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(vx855_remove),
 };
 
@@ -142,6 +167,12 @@ static void vx855_exit(void)
 	pci_unregister_driver(&vx855_pci_driver);
 }
 module_exit(vx855_exit);
+=======
+	.remove		= vx855_remove,
+};
+
+module_pci_driver(vx855_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Harald Welte <HaraldWelte@viatech.com>");

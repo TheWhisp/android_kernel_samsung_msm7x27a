@@ -34,12 +34,18 @@
 #ifndef __MAC_H__
 #define __MAC_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 #include "device.h"
 #include "tmacro.h"
 
 /*---------------------  Export Definitions -------------------------*/
 
+=======
+#include "device.h"
+#include "tmacro.h"
+
+>>>>>>> refs/remotes/origin/master
 #define REV_ID_VT3253_A0    0x00
 #define REV_ID_VT3253_A1    0x01
 #define REV_ID_VT3253_B0    0x08
@@ -156,7 +162,10 @@
 #define MAC_REG_RSPINF_A_54 0xFA
 #define MAC_REG_RSPINF_A_72 0xFC
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 //
 // Bits in the I2MCFG EEPROM register
 //
@@ -281,7 +290,10 @@
 #define TCR_SYNCDCFOPT      0x02        //
 #define TCR_AUTOBCNTX       0x01        // Beacon automatically transmit enable
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 //ISR1
 #define ISR_GPIO3           0x40
 #define ISR_RXNOBUF         0x08
@@ -377,7 +389,10 @@
 //
 #define MISCFFCTL_WRITE     0x0001      //
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 // Loopback mode
 #define MAC_LB_EXT          0x02        //
 #define MAC_LB_INTERNAL     0x01        //
@@ -409,6 +424,7 @@
 #define MAC_REVISION_A0     0x00
 #define MAC_REVISION_A1     0x01
 
+<<<<<<< HEAD
 
 /*---------------------  Export Types  ------------------------------*/
 
@@ -422,7 +438,11 @@
 
 void MACvSetMultiAddrByHash(PSDevice pDevice, BYTE byHashIdx);
 void MACvWriteMultiAddr(PSDevice pDevice, unsigned int uByteIdx, BYTE byData);
+<<<<<<< HEAD
 BOOL MACbShutdown(PSDevice pDevice);
+=======
+void MACbShutdown(PSDevice pDevice);
+>>>>>>> refs/remotes/origin/cm-10.0
 void MACvSetBBType(PSDevice pDevice, BYTE byType);
 void MACvSetMISCFifo(PSDevice pDevice, WORD wOffset, DWORD dwData);
 void MACvDisableKeyEntry(PSDevice pDevice, unsigned int uEntryIdx);
@@ -439,5 +459,21 @@ void MACvDisableProtectMD(PSDevice pDevice);
 void MACvEnableBarkerPreambleMd(PSDevice pDevice);
 void MACvDisableBarkerPreambleMd(PSDevice pDevice);
 void MACvWriteBeaconInterval(PSDevice pDevice, WORD wInterval);
+=======
+void MACvWriteMultiAddr(struct vnt_private *, u32, u8);
+void MACbShutdown(struct vnt_private *);
+void MACvSetBBType(struct vnt_private *, u8);
+void MACvDisableKeyEntry(struct vnt_private *, u32);
+void MACvSetKeyEntry(struct vnt_private *, u16, u32, u32, u8 *, u32 *);
+void MACvRegBitsOff(struct vnt_private *, u8, u8);
+void MACvRegBitsOn(struct vnt_private *, u8, u8);
+void MACvWriteWord(struct vnt_private *, u8, u16);
+void MACvWriteBSSIDAddress(struct vnt_private *, u8 *);
+void MACvEnableProtectMD(struct vnt_private *);
+void MACvDisableProtectMD(struct vnt_private *);
+void MACvEnableBarkerPreambleMd(struct vnt_private *);
+void MACvDisableBarkerPreambleMd(struct vnt_private *);
+void MACvWriteBeaconInterval(struct vnt_private *, u16);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __MAC_H__ */

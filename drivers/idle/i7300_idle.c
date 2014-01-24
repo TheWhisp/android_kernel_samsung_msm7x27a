@@ -75,7 +75,11 @@ static unsigned long past_skip;
 
 static struct pci_dev *fbd_dev;
 
+<<<<<<< HEAD
 static spinlock_t i7300_idle_lock;
+=======
+static raw_spinlock_t i7300_idle_lock;
+>>>>>>> refs/remotes/origin/master
 static int i7300_idle_active;
 
 static u8 i7300_idle_thrtctl_saved;
@@ -457,7 +461,11 @@ static int i7300_idle_notifier(struct notifier_block *nb, unsigned long val,
 		idle_begin_time = ktime_get();
 	}
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&i7300_idle_lock, flags);
+=======
+	raw_spin_lock_irqsave(&i7300_idle_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	if (val == IDLE_START) {
 
 		cpumask_set_cpu(smp_processor_id(), idle_cpumask);
@@ -506,7 +514,11 @@ static int i7300_idle_notifier(struct notifier_block *nb, unsigned long val,
 		}
 	}
 end:
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&i7300_idle_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&i7300_idle_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -516,12 +528,18 @@ static struct notifier_block i7300_idle_nb = {
 
 MODULE_DEVICE_TABLE(pci, pci_tbl);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int stats_open_generic(struct inode *inode, struct file *fp)
 {
 	fp->private_data = inode->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t stats_read_ul(struct file *fp, char __user *ubuf, size_t count,
 				loff_t *off)
 {
@@ -534,7 +552,15 @@ static ssize_t stats_read_ul(struct file *fp, char __user *ubuf, size_t count,
 }
 
 static const struct file_operations idle_fops = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.open	= stats_open_generic,
+=======
+	.open	= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open	= simple_open,
+>>>>>>> refs/remotes/origin/master
 	.read	= stats_read_ul,
 	.llseek = default_llseek,
 };
@@ -554,7 +580,11 @@ struct debugfs_file_info {
 
 static int __init i7300_idle_init(void)
 {
+<<<<<<< HEAD
 	spin_lock_init(&i7300_idle_lock);
+=======
+	raw_spin_lock_init(&i7300_idle_lock);
+>>>>>>> refs/remotes/origin/master
 	total_us = 0;
 
 	if (i7300_idle_platform_probe(&fbd_dev, &ioat_dev, forceload))

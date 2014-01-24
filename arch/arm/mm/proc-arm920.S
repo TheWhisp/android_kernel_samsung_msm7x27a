@@ -85,6 +85,14 @@ ENTRY(cpu_arm920_proc_fin)
  * loc: location to jump to for soft reset
  */
 	.align	5
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_arm920_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -97,6 +105,16 @@ ENTRY(cpu_arm920_reset)
 	bic	ip, ip, #0x1100			@ ...i...s........
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_arm920_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_arm920_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  * cpu_arm920_do_idle()
@@ -207,6 +225,10 @@ ENTRY(arm920_coherent_user_range)
 	cmp	r0, r1
 	blo	1b
 	mcr	p15, 0, r0, c7, c10, 4		@ drain WB
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -315,6 +337,8 @@ ENTRY(arm920_dma_unmap_area)
 	mov	pc, lr
 ENDPROC(arm920_dma_unmap_area)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(arm920_cache_fns)
 	.long	arm920_flush_icache_all
 	.long	arm920_flush_kern_cache_all
@@ -327,6 +351,17 @@ ENTRY(arm920_cache_fns)
 	.long	arm920_dma_unmap_area
 	.long	arm920_dma_flush_range
 
+=======
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm920
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	arm920_flush_kern_cache_louis
+	.equ	arm920_flush_kern_cache_louis, arm920_flush_kern_cache_all
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm920
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -390,7 +425,13 @@ ENTRY(cpu_arm920_set_pte_ext)
 /* Suspend/resume support: taken from arch/arm/plat-s3c24xx/sleep.S */
 .globl	cpu_arm920_suspend_size
 .equ	cpu_arm920_suspend_size, 4 * 3
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
+=======
+#ifdef CONFIG_ARM_CPU_SUSPEND
+>>>>>>> refs/remotes/origin/cm-11.0
 ENTRY(cpu_arm920_do_suspend)
 	stmfd	sp!, {r4 - r7, lr}
 	mrc	p15, 0, r4, c13, c0, 0	@ PID
@@ -399,12 +440,29 @@ ENTRY(cpu_arm920_do_suspend)
 	mrc	p15, 0, r7, c1, c0, 0	@ Control register
 	stmia	r0, {r4 - r7}
 	ldmfd	sp!, {r4 - r7, pc}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_ARM_CPU_SUSPEND
+ENTRY(cpu_arm920_do_suspend)
+	stmfd	sp!, {r4 - r6, lr}
+	mrc	p15, 0, r4, c13, c0, 0	@ PID
+	mrc	p15, 0, r5, c3, c0, 0	@ Domain ID
+	mrc	p15, 0, r6, c1, c0, 0	@ Control register
+	stmia	r0, {r4 - r6}
+	ldmfd	sp!, {r4 - r6, pc}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ENDPROC(cpu_arm920_do_suspend)
 
 ENTRY(cpu_arm920_do_resume)
 	mov	ip, #0
 	mcr	p15, 0, ip, c8, c7, 0	@ invalidate I+D TLBs
 	mcr	p15, 0, ip, c7, c7, 0	@ invalidate I+D caches
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ldmia	r0, {r4 - r7}
 	mcr	p15, 0, r4, c13, c0, 0	@ PID
 	mcr	p15, 0, r5, c3, c0, 0	@ Domain ID
@@ -419,10 +477,26 @@ ENDPROC(cpu_arm920_do_resume)
 #else
 #define cpu_arm920_do_suspend	0
 #define cpu_arm920_do_resume	0
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ldmia	r0, {r4 - r6}
+	mcr	p15, 0, r4, c13, c0, 0	@ PID
+	mcr	p15, 0, r5, c3, c0, 0	@ Domain ID
+	mcr	p15, 0, r1, c2, c0, 0	@ TTB address
+	mov	r0, r6			@ control register
+	b	cpu_resume_mmu
+ENDPROC(cpu_arm920_do_resume)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	__CPUINIT
 
+=======
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	.type	__arm920_setup, #function
 __arm920_setup:
 	mov	r0, #0
@@ -450,6 +524,8 @@ arm920_crval:
 	crval	clear=0x00003f3f, mmuset=0x00003135, ucset=0x00001130
 
 	__INITDATA
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * Purpose : Function pointers used to access above functions - all calls
@@ -487,6 +563,21 @@ cpu_elf_name:
 cpu_arm920_name:
 	.asciz	"ARM920T"
 	.size	cpu_arm920_name, . - cpu_arm920_name
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions arm920, dabort=v4t_early_abort, pabort=legacy_pabort, suspend=1
+
+	.section ".rodata"
+
+	string	cpu_arch_name, "armv4t"
+	string	cpu_elf_name, "v4"
+	string	cpu_arm920_name, "ARM920T"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align
 

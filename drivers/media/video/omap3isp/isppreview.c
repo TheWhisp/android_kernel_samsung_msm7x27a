@@ -76,9 +76,57 @@ static struct omap3isp_prev_csc flr_prev_csc = {
 
 #define DEF_DETECT_CORRECT_VAL	0xe
 
+<<<<<<< HEAD
 #define PREV_MIN_WIDTH		64
 #define PREV_MIN_HEIGHT		8
 #define PREV_MAX_HEIGHT		16384
+=======
+/*
+ * Margins and image size limits.
+ *
+ * The preview engine crops several rows and columns internally depending on
+ * which filters are enabled. To avoid format changes when the filters are
+ * enabled or disabled (which would prevent them from being turned on or off
+ * during streaming), the driver assumes all the filters are enabled when
+ * computing sink crop and source format limits.
+ *
+ * If a filter is disabled, additional cropping is automatically added at the
+ * preview engine input by the driver to avoid overflow at line and frame end.
+ * This is completely transparent for applications.
+ *
+ * Median filter		4 pixels
+ * Noise filter,
+ * Faulty pixels correction	4 pixels, 4 lines
+ * CFA filter			4 pixels, 4 lines in Bayer mode
+ *					  2 lines in other modes
+ * Color suppression		2 pixels
+ * or luma enhancement
+ * -------------------------------------------------------------
+ * Maximum total		14 pixels, 8 lines
+ *
+ * The color suppression and luma enhancement filters are applied after bayer to
+ * YUV conversion. They thus can crop one pixel on the left and one pixel on the
+ * right side of the image without changing the color pattern. When both those
+ * filters are disabled, the driver must crop the two pixels on the same side of
+ * the image to avoid changing the bayer pattern. The left margin is thus set to
+ * 8 pixels and the right margin to 6 pixels.
+ */
+
+#define PREV_MARGIN_LEFT	8
+#define PREV_MARGIN_RIGHT	6
+#define PREV_MARGIN_TOP		4
+#define PREV_MARGIN_BOTTOM	4
+
+#define PREV_MIN_IN_WIDTH	64
+#define PREV_MIN_IN_HEIGHT	8
+#define PREV_MAX_IN_HEIGHT	16384
+
+#define PREV_MIN_OUT_WIDTH		0
+#define PREV_MIN_OUT_HEIGHT		0
+#define PREV_MAX_OUT_WIDTH_REV_1	1280
+#define PREV_MAX_OUT_WIDTH_REV_2	3300
+#define PREV_MAX_OUT_WIDTH_REV_15	4096
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Coeficient Tables for the submodules in Preview.
@@ -979,11 +1027,17 @@ static void preview_config_averager(struct isp_prev_device *prev, u8 average)
  * enabled when reporting source pad formats to userspace. If this assumption is
  * not true, rows and columns must be manually cropped at the preview engine
  * input to avoid overflows at the end of lines and frames.
+<<<<<<< HEAD
+=======
+ *
+ * See the explanation at the PREV_MARGIN_* definitions for more details.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void preview_config_input_size(struct isp_prev_device *prev)
 {
 	struct isp_device *isp = to_isp_device(prev);
 	struct prev_params *params = &prev->params;
+<<<<<<< HEAD
 	struct v4l2_mbus_framefmt *format = &prev->formats[PREV_PAD_SINK];
 	unsigned int sph = 0;
 	unsigned int eph = format->width - 1;
@@ -1025,6 +1079,31 @@ static void preview_config_input_size(struct isp_prev_device *prev)
 	}
 	if (!(params->features & (PREV_CHROMA_SUPPRESS | PREV_LUMA_ENHANCE)))
 		sph += 2;
+=======
+	unsigned int sph = prev->crop.left;
+	unsigned int eph = prev->crop.left + prev->crop.width - 1;
+	unsigned int slv = prev->crop.top;
+	unsigned int elv = prev->crop.top + prev->crop.height - 1;
+
+	if (params->features & PREV_CFA) {
+		sph -= 2;
+		eph += 2;
+		slv -= 2;
+		elv += 2;
+	}
+	if (params->features & (PREV_DEFECT_COR | PREV_NOISE_FILTER)) {
+		sph -= 2;
+		eph += 2;
+		slv -= 2;
+		elv += 2;
+	}
+	if (params->features & PREV_HORZ_MEDIAN_FILTER) {
+		sph -= 2;
+		eph += 2;
+	}
+	if (params->features & (PREV_CHROMA_SUPPRESS | PREV_LUMA_ENHANCE))
+		sph -= 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	isp_reg_writel(isp, (sph << ISPPRV_HORZ_INFO_SPH_SHIFT) | eph,
 		       OMAP3_ISP_IOMEM_PREV, ISPPRV_HORZ_INFO);
@@ -1228,7 +1307,10 @@ static void preview_init_params(struct isp_prev_device *prev)
 	/* Init values */
 	params->contrast = ISPPRV_CONTRAST_DEF * ISPPRV_CONTRAST_UNITS;
 	params->brightness = ISPPRV_BRIGHT_DEF * ISPPRV_BRIGHT_UNITS;
+<<<<<<< HEAD
 	params->average = NO_AVE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	params->cfa.format = OMAP3ISP_CFAFMT_BAYER;
 	memcpy(params->cfa.table, cfa_coef_table,
 	       sizeof(params->cfa.table));
@@ -1281,6 +1363,7 @@ static unsigned int preview_max_out_width(struct isp_prev_device *prev)
 
 	switch (isp->revision) {
 	case ISP_REVISION_1_0:
+<<<<<<< HEAD
 		return ISPPRV_MAXOUTPUT_WIDTH;
 
 	case ISP_REVISION_2_0:
@@ -1289,6 +1372,16 @@ static unsigned int preview_max_out_width(struct isp_prev_device *prev)
 
 	case ISP_REVISION_15_0:
 		return ISPPRV_MAXOUTPUT_WIDTH_3630;
+=======
+		return PREV_MAX_OUT_WIDTH_REV_1;
+
+	case ISP_REVISION_2_0:
+	default:
+		return PREV_MAX_OUT_WIDTH_REV_2;
+
+	case ISP_REVISION_15_0:
+		return PREV_MAX_OUT_WIDTH_REV_15;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -1296,8 +1389,11 @@ static void preview_configure(struct isp_prev_device *prev)
 {
 	struct isp_device *isp = to_isp_device(prev);
 	struct v4l2_mbus_framefmt *format;
+<<<<<<< HEAD
 	unsigned int max_out_width;
 	unsigned int format_avg;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	preview_setup_hw(prev);
 
@@ -1335,10 +1431,14 @@ static void preview_configure(struct isp_prev_device *prev)
 		preview_config_outlineoffset(prev,
 				ALIGN(format->width, 0x10) * 2);
 
+<<<<<<< HEAD
 	max_out_width = preview_max_out_width(prev);
 
 	format_avg = fls(DIV_ROUND_UP(format->width, max_out_width) - 1);
 	preview_config_averager(prev, format_avg);
+=======
+	preview_config_averager(prev, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	preview_config_ycpos(prev, format->code);
 }
 
@@ -1384,16 +1484,24 @@ static void preview_isr_buffer(struct isp_prev_device *prev)
 	int restart = 0;
 
 	if (prev->input == PREVIEW_INPUT_MEMORY) {
+<<<<<<< HEAD
 		buffer = omap3isp_video_buffer_next(&prev->video_in,
 						    prev->error);
+=======
+		buffer = omap3isp_video_buffer_next(&prev->video_in);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (buffer != NULL)
 			preview_set_inaddr(prev, buffer->isp_addr);
 		pipe->state |= ISP_PIPELINE_IDLE_INPUT;
 	}
 
 	if (prev->output & PREVIEW_OUTPUT_MEMORY) {
+<<<<<<< HEAD
 		buffer = omap3isp_video_buffer_next(&prev->video_out,
 						    prev->error);
+=======
+		buffer = omap3isp_video_buffer_next(&prev->video_out);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (buffer != NULL) {
 			preview_set_outaddr(prev, buffer->isp_addr);
 			restart = 1;
@@ -1420,8 +1528,11 @@ static void preview_isr_buffer(struct isp_prev_device *prev)
 	default:
 		return;
 	}
+<<<<<<< HEAD
 
 	prev->error = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1545,7 +1656,10 @@ static int preview_set_stream(struct v4l2_subdev *sd, int enable)
 		omap3isp_subclk_enable(isp, OMAP3_ISP_SUBCLK_PREVIEW);
 		preview_configure(prev);
 		atomic_set(&prev->stopping, 0);
+<<<<<<< HEAD
 		prev->error = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		preview_print_status(prev);
 	}
 
@@ -1597,6 +1711,19 @@ __preview_get_format(struct isp_prev_device *prev, struct v4l2_subdev_fh *fh,
 		return &prev->formats[pad];
 }
 
+<<<<<<< HEAD
+=======
+static struct v4l2_rect *
+__preview_get_crop(struct isp_prev_device *prev, struct v4l2_subdev_fh *fh,
+		   enum v4l2_subdev_format_whence which)
+{
+	if (which == V4L2_SUBDEV_FORMAT_TRY)
+		return v4l2_subdev_get_try_crop(fh, PREV_PAD_SINK);
+	else
+		return &prev->crop;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* previewer format descriptions */
 static const unsigned int preview_input_fmts[] = {
 	V4L2_MBUS_FMT_SGRBG10_1X10,
@@ -1611,17 +1738,30 @@ static const unsigned int preview_output_fmts[] = {
 };
 
 /*
+<<<<<<< HEAD
  * preview_try_format - Handle try format by pad subdev method
  * @prev: ISP preview device
  * @fh : V4L2 subdev file handle
  * @pad: pad num
  * @fmt: pointer to v4l2 format structure
+=======
+ * preview_try_format - Validate a format
+ * @prev: ISP preview engine
+ * @fh: V4L2 subdev file handle
+ * @pad: pad number
+ * @fmt: format to be validated
+ * @which: try/active format selector
+ *
+ * Validate and adjust the given format for the given pad based on the preview
+ * engine limits and the format and crop rectangles on other pads.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void preview_try_format(struct isp_prev_device *prev,
 			       struct v4l2_subdev_fh *fh, unsigned int pad,
 			       struct v4l2_mbus_framefmt *fmt,
 			       enum v4l2_subdev_format_whence which)
 {
+<<<<<<< HEAD
 	struct v4l2_mbus_framefmt *format;
 	unsigned int max_out_width;
 	enum v4l2_mbus_pixelcode pixelcode;
@@ -1629,6 +1769,12 @@ static void preview_try_format(struct isp_prev_device *prev,
 
 	max_out_width = preview_max_out_width(prev);
 
+=======
+	enum v4l2_mbus_pixelcode pixelcode;
+	struct v4l2_rect *crop;
+	unsigned int i;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (pad) {
 	case PREV_PAD_SINK:
 		/* When reading data from the CCDC, the input size has already
@@ -1641,10 +1787,18 @@ static void preview_try_format(struct isp_prev_device *prev,
 		 * filter array interpolation.
 		 */
 		if (prev->input == PREVIEW_INPUT_MEMORY) {
+<<<<<<< HEAD
 			fmt->width = clamp_t(u32, fmt->width, PREV_MIN_WIDTH,
 					     max_out_width * 8);
 			fmt->height = clamp_t(u32, fmt->height, PREV_MIN_HEIGHT,
 					      PREV_MAX_HEIGHT);
+=======
+			fmt->width = clamp_t(u32, fmt->width, PREV_MIN_IN_WIDTH,
+					     preview_max_out_width(prev));
+			fmt->height = clamp_t(u32, fmt->height,
+					      PREV_MIN_IN_HEIGHT,
+					      PREV_MAX_IN_HEIGHT);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		fmt->colorspace = V4L2_COLORSPACE_SRGB;
@@ -1661,6 +1815,7 @@ static void preview_try_format(struct isp_prev_device *prev,
 
 	case PREV_PAD_SOURCE:
 		pixelcode = fmt->code;
+<<<<<<< HEAD
 		format = __preview_get_format(prev, fh, PREV_PAD_SINK, which);
 		memcpy(fmt, format, sizeof(*fmt));
 
@@ -1670,6 +1825,10 @@ static void preview_try_format(struct isp_prev_device *prev,
 		 * spite of this, hardcode the output size to the biggest
 		 * possible value for simplicity reasons.
 		 */
+=======
+		*fmt = *__preview_get_format(prev, fh, PREV_PAD_SINK, which);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		switch (pixelcode) {
 		case V4L2_MBUS_FMT_YUYV8_1X16:
 		case V4L2_MBUS_FMT_UYVY8_1X16:
@@ -1681,6 +1840,7 @@ static void preview_try_format(struct isp_prev_device *prev,
 			break;
 		}
 
+<<<<<<< HEAD
 		/* The TRM states (12.1.4.7.1.2) that 2 pixels must be cropped
 		 * from the left and right sides when the input source is the
 		 * CCDC. This seems not to be needed in practice, investigation
@@ -1706,6 +1866,16 @@ static void preview_try_format(struct isp_prev_device *prev,
 		 */
 		fmt->width -= 14;
 		fmt->height -= 8;
+=======
+		/* The preview module output size is configurable through the
+		 * averager (horizontal scaling by 1/1, 1/2, 1/4 or 1/8). This
+		 * is not supported yet, hardcode the output size to the crop
+		 * rectangle size.
+		 */
+		crop = __preview_get_crop(prev, fh, which);
+		fmt->width = crop->width;
+		fmt->height = crop->height;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		fmt->colorspace = V4L2_COLORSPACE_JPEG;
 		break;
@@ -1715,6 +1885,52 @@ static void preview_try_format(struct isp_prev_device *prev,
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * preview_try_crop - Validate a crop rectangle
+ * @prev: ISP preview engine
+ * @sink: format on the sink pad
+ * @crop: crop rectangle to be validated
+ *
+ * The preview engine crops lines and columns for its internal operation,
+ * depending on which filters are enabled. Enforce minimum crop margins to
+ * handle that transparently for userspace.
+ *
+ * See the explanation at the PREV_MARGIN_* definitions for more details.
+ */
+static void preview_try_crop(struct isp_prev_device *prev,
+			     const struct v4l2_mbus_framefmt *sink,
+			     struct v4l2_rect *crop)
+{
+	unsigned int left = PREV_MARGIN_LEFT;
+	unsigned int right = sink->width - PREV_MARGIN_RIGHT;
+	unsigned int top = PREV_MARGIN_TOP;
+	unsigned int bottom = sink->height - PREV_MARGIN_BOTTOM;
+
+	/* When processing data on-the-fly from the CCDC, at least 2 pixels must
+	 * be cropped from the left and right sides of the image. As we don't
+	 * know which filters will be enabled, increase the left and right
+	 * margins by two.
+	 */
+	if (prev->input == PREVIEW_INPUT_CCDC) {
+		left += 2;
+		right -= 2;
+	}
+
+	/* Restrict left/top to even values to keep the Bayer pattern. */
+	crop->left &= ~1;
+	crop->top &= ~1;
+
+	crop->left = clamp_t(u32, crop->left, left, right - PREV_MIN_OUT_WIDTH);
+	crop->top = clamp_t(u32, crop->top, top, bottom - PREV_MIN_OUT_HEIGHT);
+	crop->width = clamp_t(u32, crop->width, PREV_MIN_OUT_WIDTH,
+			      right - crop->left);
+	crop->height = clamp_t(u32, crop->height, PREV_MIN_OUT_HEIGHT,
+			       bottom - crop->top);
+}
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * preview_enum_mbus_code - Handle pixel format enumeration
  * @sd     : pointer to v4l2 subdev structure
  * @fh     : V4L2 subdev file handle
@@ -1776,6 +1992,63 @@ static int preview_enum_frame_size(struct v4l2_subdev *sd,
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * preview_get_crop - Retrieve the crop rectangle on a pad
+ * @sd: ISP preview V4L2 subdevice
+ * @fh: V4L2 subdev file handle
+ * @crop: crop rectangle
+ *
+ * Return 0 on success or a negative error code otherwise.
+ */
+static int preview_get_crop(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh,
+			    struct v4l2_subdev_crop *crop)
+{
+	struct isp_prev_device *prev = v4l2_get_subdevdata(sd);
+
+	/* Cropping is only supported on the sink pad. */
+	if (crop->pad != PREV_PAD_SINK)
+		return -EINVAL;
+
+	crop->rect = *__preview_get_crop(prev, fh, crop->which);
+	return 0;
+}
+
+/*
+ * preview_set_crop - Retrieve the crop rectangle on a pad
+ * @sd: ISP preview V4L2 subdevice
+ * @fh: V4L2 subdev file handle
+ * @crop: crop rectangle
+ *
+ * Return 0 on success or a negative error code otherwise.
+ */
+static int preview_set_crop(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh,
+			    struct v4l2_subdev_crop *crop)
+{
+	struct isp_prev_device *prev = v4l2_get_subdevdata(sd);
+	struct v4l2_mbus_framefmt *format;
+
+	/* Cropping is only supported on the sink pad. */
+	if (crop->pad != PREV_PAD_SINK)
+		return -EINVAL;
+
+	/* The crop rectangle can't be changed while streaming. */
+	if (prev->state != ISP_PIPELINE_STREAM_STOPPED)
+		return -EBUSY;
+
+	format = __preview_get_format(prev, fh, PREV_PAD_SINK, crop->which);
+	preview_try_crop(prev, format, &crop->rect);
+	*__preview_get_crop(prev, fh, crop->which) = crop->rect;
+
+	/* Update the source format. */
+	format = __preview_get_format(prev, fh, PREV_PAD_SOURCE, crop->which);
+	preview_try_format(prev, fh, PREV_PAD_SOURCE, format, crop->which);
+
+	return 0;
+}
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * preview_get_format - Handle get format by pads subdev method
  * @sd : pointer to v4l2 subdev structure
  * @fh : V4L2 subdev file handle
@@ -1808,6 +2081,10 @@ static int preview_set_format(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh,
 {
 	struct isp_prev_device *prev = v4l2_get_subdevdata(sd);
 	struct v4l2_mbus_framefmt *format;
+<<<<<<< HEAD
+=======
+	struct v4l2_rect *crop;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	format = __preview_get_format(prev, fh, fmt->pad, fmt->which);
 	if (format == NULL)
@@ -1818,9 +2095,24 @@ static int preview_set_format(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh,
 
 	/* Propagate the format from sink to source */
 	if (fmt->pad == PREV_PAD_SINK) {
+<<<<<<< HEAD
 		format = __preview_get_format(prev, fh, PREV_PAD_SOURCE,
 					      fmt->which);
 		*format = fmt->format;
+=======
+		/* Reset the crop rectangle. */
+		crop = __preview_get_crop(prev, fh, fmt->which);
+		crop->left = 0;
+		crop->top = 0;
+		crop->width = fmt->format.width;
+		crop->height = fmt->format.height;
+
+		preview_try_crop(prev, &fmt->format, crop);
+
+		/* Update the source format. */
+		format = __preview_get_format(prev, fh, PREV_PAD_SOURCE,
+					      fmt->which);
+>>>>>>> refs/remotes/origin/cm-10.0
 		preview_try_format(prev, fh, PREV_PAD_SOURCE, format,
 				   fmt->which);
 	}
@@ -1869,6 +2161,11 @@ static const struct v4l2_subdev_pad_ops preview_v4l2_pad_ops = {
 	.enum_frame_size = preview_enum_frame_size,
 	.get_fmt = preview_get_format,
 	.set_fmt = preview_set_format,
+<<<<<<< HEAD
+=======
+	.get_crop = preview_get_crop,
+	.set_crop = preview_set_crop,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* subdev operations */
@@ -1966,8 +2263,49 @@ static const struct media_entity_operations preview_media_ops = {
 	.link_setup = preview_link_setup,
 };
 
+<<<<<<< HEAD
 /*
  * review_init_entities - Initialize subdev and media entity.
+=======
+void omap3isp_preview_unregister_entities(struct isp_prev_device *prev)
+{
+	v4l2_device_unregister_subdev(&prev->subdev);
+	omap3isp_video_unregister(&prev->video_in);
+	omap3isp_video_unregister(&prev->video_out);
+}
+
+int omap3isp_preview_register_entities(struct isp_prev_device *prev,
+	struct v4l2_device *vdev)
+{
+	int ret;
+
+	/* Register the subdev and video nodes. */
+	ret = v4l2_device_register_subdev(vdev, &prev->subdev);
+	if (ret < 0)
+		goto error;
+
+	ret = omap3isp_video_register(&prev->video_in, vdev);
+	if (ret < 0)
+		goto error;
+
+	ret = omap3isp_video_register(&prev->video_out, vdev);
+	if (ret < 0)
+		goto error;
+
+	return 0;
+
+error:
+	omap3isp_preview_unregister_entities(prev);
+	return ret;
+}
+
+/* -----------------------------------------------------------------------------
+ * ISP previewer initialisation and cleanup
+ */
+
+/*
+ * preview_init_entities - Initialize subdev and media entity.
+>>>>>>> refs/remotes/origin/cm-10.0
  * @prev : Pointer to preview structure
  * return -ENOMEM or zero on success
  */
@@ -2024,21 +2362,34 @@ static int preview_init_entities(struct isp_prev_device *prev)
 
 	ret = omap3isp_video_init(&prev->video_in, "preview");
 	if (ret < 0)
+<<<<<<< HEAD
 		return ret;
 
 	ret = omap3isp_video_init(&prev->video_out, "preview");
 	if (ret < 0)
 		return ret;
+=======
+		goto error_video_in;
+
+	ret = omap3isp_video_init(&prev->video_out, "preview");
+	if (ret < 0)
+		goto error_video_out;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Connect the video nodes to the previewer subdev. */
 	ret = media_entity_create_link(&prev->video_in.video.entity, 0,
 			&prev->subdev.entity, PREV_PAD_SINK, 0);
 	if (ret < 0)
+<<<<<<< HEAD
 		return ret;
+=======
+		goto error_link;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = media_entity_create_link(&prev->subdev.entity, PREV_PAD_SOURCE,
 			&prev->video_out.video.entity, 0, 0);
 	if (ret < 0)
+<<<<<<< HEAD
 		return ret;
 
 	return 0;
@@ -2087,6 +2438,21 @@ void omap3isp_preview_cleanup(struct isp_device *isp)
 {
 }
 
+=======
+		goto error_link;
+
+	return 0;
+
+error_link:
+	omap3isp_video_cleanup(&prev->video_out);
+error_video_out:
+	omap3isp_video_cleanup(&prev->video_in);
+error_video_in:
+	media_entity_cleanup(&prev->subdev.entity);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * isp_preview_init - Previewer initialization.
  * @dev : Pointer to ISP device
@@ -2095,12 +2461,16 @@ void omap3isp_preview_cleanup(struct isp_device *isp)
 int omap3isp_preview_init(struct isp_device *isp)
 {
 	struct isp_prev_device *prev = &isp->isp_prev;
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_init(&prev->lock);
 	init_waitqueue_head(&prev->wait);
 	preview_init_params(prev);
 
+<<<<<<< HEAD
 	ret = preview_init_entities(prev);
 	if (ret < 0)
 		goto out;
@@ -2110,4 +2480,17 @@ out:
 		omap3isp_preview_cleanup(isp);
 
 	return ret;
+=======
+	return preview_init_entities(prev);
+}
+
+void omap3isp_preview_cleanup(struct isp_device *isp)
+{
+	struct isp_prev_device *prev = &isp->isp_prev;
+
+	v4l2_ctrl_handler_free(&prev->ctrls);
+	omap3isp_video_cleanup(&prev->video_in);
+	omap3isp_video_cleanup(&prev->video_out);
+	media_entity_cleanup(&prev->subdev.entity);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

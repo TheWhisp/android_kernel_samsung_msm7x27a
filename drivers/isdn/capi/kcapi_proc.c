@@ -1,9 +1,22 @@
 /*
  * Kernel CAPI 2.0 Module - /proc/capi handling
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Copyright 1999 by Carsten Paeth <calle@calle.de>
  * Copyright 2002 by Kai Germaschewski <kai@germaschewski.name>
  * 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * Copyright 1999 by Carsten Paeth <calle@calle.de>
+ * Copyright 2002 by Kai Germaschewski <kai@germaschewski.name>
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -14,6 +27,14 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 static char *state2str(unsigned short state)
 {
@@ -28,7 +49,15 @@ static char *state2str(unsigned short state)
 // /proc/capi
 // ===========================================================================
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 // /proc/capi/controller: 
+=======
+// /proc/capi/controller:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+// /proc/capi/controller:
+>>>>>>> refs/remotes/origin/master
 //      cnr driver cardstate name driverinfo
 // /proc/capi/contrstats:
 //      cnr nrecvctlpkt nrecvdatapkt nsentctlpkt nsentdatapkt
@@ -84,7 +113,15 @@ static int contrstats_show(struct seq_file *seq, void *v)
 		return 0;
 
 	seq_printf(seq, "%d %lu %lu %lu %lu\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		   ctr->cnr, 
+=======
+		   ctr->cnr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   ctr->cnr,
+>>>>>>> refs/remotes/origin/master
 		   ctr->nrecvctlpkt,
 		   ctr->nrecvdatapkt,
 		   ctr->nsentctlpkt,
@@ -133,9 +170,21 @@ static const struct file_operations proc_contrstats_ops = {
 	.release	= seq_release,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 // /proc/capi/applications: 
 //      applid l3cnt dblkcnt dblklen #ncci recvqueuelen
 // /proc/capi/applstats: 
+=======
+// /proc/capi/applications:
+//      applid l3cnt dblkcnt dblklen #ncci recvqueuelen
+// /proc/capi/applstats:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+// /proc/capi/applications:
+//      applid l3cnt dblkcnt dblklen #ncci recvqueuelen
+// /proc/capi/applstats:
+>>>>>>> refs/remotes/origin/master
 //      applid nrecvctlpkt nrecvdatapkt nsentctlpkt nsentdatapkt
 // ---------------------------------------------------------------------------
 
@@ -296,7 +345,15 @@ static const struct file_operations proc_driver_ops = {
 
 // ---------------------------------------------------------------------------
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __init 
+=======
+void __init
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init
+>>>>>>> refs/remotes/origin/master
 kcapi_proc_init(void)
 {
 	proc_mkdir("capi",             NULL);

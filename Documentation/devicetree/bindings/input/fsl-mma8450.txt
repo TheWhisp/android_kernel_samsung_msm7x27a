@@ -1,0 +1,15 @@
+* Freescale MMA8450 3-Axis Accelerometer
+
+Required properties:
+- compatible : "fsl,mma8450".
+<<<<<<< HEAD
+=======
+- reg: the I2C address of MMA8450
+>>>>>>> refs/remotes/origin/master
+
+Example:
+
+accelerometer: mma8450@1c {
+	compatible = "fsl,mma8450";
+	reg = <0x1c>;
+};

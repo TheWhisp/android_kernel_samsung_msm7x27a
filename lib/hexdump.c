@@ -10,10 +10,23 @@
 #include <linux/types.h>
 #include <linux/ctype.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 const char hex_asc[] = "0123456789abcdef";
 EXPORT_SYMBOL(hex_asc);
+=======
+#include <linux/export.h>
+
+const char hex_asc[] = "0123456789abcdef";
+EXPORT_SYMBOL(hex_asc);
+const char hex_asc_upper[] = "0123456789ABCDEF";
+EXPORT_SYMBOL(hex_asc_upper);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * hex_to_bin - convert a hex digit to its real value
@@ -38,6 +51,8 @@ EXPORT_SYMBOL(hex_to_bin);
  * @dst: binary result
  * @src: ascii hexadecimal string
  * @count: result length
+<<<<<<< HEAD
+<<<<<<< HEAD
  */
 void hex2bin(u8 *dst, const char *src, size_t count)
 {
@@ -46,6 +61,28 @@ void hex2bin(u8 *dst, const char *src, size_t count)
 		*dst += hex_to_bin(*src++);
 		dst++;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * Return 0 on success, -1 in case of bad input.
+ */
+int hex2bin(u8 *dst, const char *src, size_t count)
+{
+	while (count--) {
+		int hi = hex_to_bin(*src++);
+		int lo = hex_to_bin(*src++);
+
+		if ((hi < 0) || (lo < 0))
+			return -1;
+
+		*dst++ = (hi << 4) | lo;
+	}
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(hex2bin);
 
@@ -220,6 +257,10 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
 }
 EXPORT_SYMBOL(print_hex_dump);
 
+<<<<<<< HEAD
+=======
+#if !defined(CONFIG_DYNAMIC_DEBUG)
+>>>>>>> refs/remotes/origin/master
 /**
  * print_hex_dump_bytes - shorthand form of print_hex_dump() with default params
  * @prefix_str: string to prefix each line with;
@@ -239,4 +280,9 @@ void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
 		       buf, len, true);
 }
 EXPORT_SYMBOL(print_hex_dump_bytes);
+<<<<<<< HEAD
 #endif
+=======
+#endif /* !defined(CONFIG_DYNAMIC_DEBUG) */
+#endif /* defined(CONFIG_PRINTK) */
+>>>>>>> refs/remotes/origin/master

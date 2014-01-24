@@ -58,7 +58,11 @@ int  sysctl_discovery_slots   = 6; /* 6 slots by default */
 int  sysctl_lap_keepalive_time = LM_IDLE_TIMEOUT * 1000 / HZ;
 char sysctl_devname[65];
 
+<<<<<<< HEAD
 const char *irlmp_reasons[] = {
+=======
+static const char *irlmp_reasons[] = {
+>>>>>>> refs/remotes/origin/master
 	"ERROR, NOT USED",
 	"LM_USER_REQUEST",
 	"LM_LAP_DISCONNECT",
@@ -66,8 +70,20 @@ const char *irlmp_reasons[] = {
 	"LM_LAP_RESET",
 	"LM_INIT_DISCONNECT",
 	"ERROR, NOT USED",
+<<<<<<< HEAD
 };
 
+=======
+	"UNKNOWN",
+};
+
+const char *irlmp_reason_str(LM_REASON reason)
+{
+	reason = min_t(size_t, reason, ARRAY_SIZE(irlmp_reasons) - 1);
+	return irlmp_reasons[reason];
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Function irlmp_init (void)
  *
@@ -747,7 +763,12 @@ void irlmp_disconnect_indication(struct lsap_cb *self, LM_REASON reason,
 {
 	struct lsap_cb *lsap;
 
+<<<<<<< HEAD
 	IRDA_DEBUG(1, "%s(), reason=%s\n", __func__, irlmp_reasons[reason]);
+=======
+	IRDA_DEBUG(1, "%s(), reason=%s [%d]\n", __func__,
+		   irlmp_reason_str(reason), reason);
+>>>>>>> refs/remotes/origin/master
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == LMP_LSAP_MAGIC, return;);
 

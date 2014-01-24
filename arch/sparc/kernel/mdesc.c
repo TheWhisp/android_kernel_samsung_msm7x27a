@@ -11,11 +11,27 @@
 #include <linux/mm.h>
 #include <linux/miscdevice.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/cpudata.h>
 #include <asm/hypervisor.h>
 #include <asm/mdesc.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/uaccess.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/uaccess.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/oplib.h>
 #include <asm/smp.h>
 
@@ -569,9 +585,13 @@ static void __init report_platform_properties(void)
 	mdesc_release(hp);
 }
 
+<<<<<<< HEAD
 static void __cpuinit fill_in_one_cache(cpuinfo_sparc *c,
 					struct mdesc_handle *hp,
 					u64 mp)
+=======
+static void fill_in_one_cache(cpuinfo_sparc *c, struct mdesc_handle *hp, u64 mp)
+>>>>>>> refs/remotes/origin/master
 {
 	const u64 *level = mdesc_get_property(hp, mp, "level", NULL);
 	const u64 *size = mdesc_get_property(hp, mp, "size", NULL);
@@ -614,7 +634,11 @@ static void __cpuinit fill_in_one_cache(cpuinfo_sparc *c,
 	}
 }
 
+<<<<<<< HEAD
 static void __cpuinit mark_core_ids(struct mdesc_handle *hp, u64 mp, int core_id)
+=======
+static void mark_core_ids(struct mdesc_handle *hp, u64 mp, int core_id)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 a;
 
@@ -647,7 +671,11 @@ static void __cpuinit mark_core_ids(struct mdesc_handle *hp, u64 mp, int core_id
 	}
 }
 
+<<<<<<< HEAD
 static void __cpuinit set_core_ids(struct mdesc_handle *hp)
+=======
+static void set_core_ids(struct mdesc_handle *hp)
+>>>>>>> refs/remotes/origin/master
 {
 	int idx;
 	u64 mp;
@@ -672,7 +700,11 @@ static void __cpuinit set_core_ids(struct mdesc_handle *hp)
 	}
 }
 
+<<<<<<< HEAD
 static void __cpuinit mark_proc_ids(struct mdesc_handle *hp, u64 mp, int proc_id)
+=======
+static void mark_proc_ids(struct mdesc_handle *hp, u64 mp, int proc_id)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 a;
 
@@ -691,7 +723,11 @@ static void __cpuinit mark_proc_ids(struct mdesc_handle *hp, u64 mp, int proc_id
 	}
 }
 
+<<<<<<< HEAD
 static void __cpuinit __set_proc_ids(struct mdesc_handle *hp, const char *exec_unit_name)
+=======
+static void __set_proc_ids(struct mdesc_handle *hp, const char *exec_unit_name)
+>>>>>>> refs/remotes/origin/master
 {
 	int idx;
 	u64 mp;
@@ -712,14 +748,23 @@ static void __cpuinit __set_proc_ids(struct mdesc_handle *hp, const char *exec_u
 	}
 }
 
+<<<<<<< HEAD
 static void __cpuinit set_proc_ids(struct mdesc_handle *hp)
+=======
+static void set_proc_ids(struct mdesc_handle *hp)
+>>>>>>> refs/remotes/origin/master
 {
 	__set_proc_ids(hp, "exec_unit");
 	__set_proc_ids(hp, "exec-unit");
 }
 
+<<<<<<< HEAD
 static void __cpuinit get_one_mondo_bits(const u64 *p, unsigned int *mask,
 					 unsigned long def, unsigned long max)
+=======
+static void get_one_mondo_bits(const u64 *p, unsigned int *mask,
+			       unsigned long def, unsigned long max)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 val;
 
@@ -740,8 +785,13 @@ use_default:
 	*mask = ((1U << def) * 64U) - 1U;
 }
 
+<<<<<<< HEAD
 static void __cpuinit get_mondo_data(struct mdesc_handle *hp, u64 mp,
 				     struct trap_per_cpu *tb)
+=======
+static void get_mondo_data(struct mdesc_handle *hp, u64 mp,
+			   struct trap_per_cpu *tb)
+>>>>>>> refs/remotes/origin/master
 {
 	static int printed;
 	const u64 *val;
@@ -767,7 +817,11 @@ static void __cpuinit get_mondo_data(struct mdesc_handle *hp, u64 mp,
 	}
 }
 
+<<<<<<< HEAD
 static void * __cpuinit mdesc_iterate_over_cpus(void *(*func)(struct mdesc_handle *, u64, int, void *), void *arg, cpumask_t *mask)
+=======
+static void *mdesc_iterate_over_cpus(void *(*func)(struct mdesc_handle *, u64, int, void *), void *arg, cpumask_t *mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mdesc_handle *hp = mdesc_grab();
 	void *ret = NULL;
@@ -797,7 +851,12 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void * __cpuinit record_one_cpu(struct mdesc_handle *hp, u64 mp, int cpuid, void *arg)
+=======
+static void *record_one_cpu(struct mdesc_handle *hp, u64 mp, int cpuid,
+			    void *arg)
+>>>>>>> refs/remotes/origin/master
 {
 	ncpus_probed++;
 #ifdef CONFIG_SMP
@@ -806,7 +865,11 @@ static void * __cpuinit record_one_cpu(struct mdesc_handle *hp, u64 mp, int cpui
 	return NULL;
 }
 
+<<<<<<< HEAD
 void __cpuinit mdesc_populate_present_mask(cpumask_t *mask)
+=======
+void mdesc_populate_present_mask(cpumask_t *mask)
+>>>>>>> refs/remotes/origin/master
 {
 	if (tlb_type != hypervisor)
 		return;
@@ -815,7 +878,36 @@ void __cpuinit mdesc_populate_present_mask(cpumask_t *mask)
 	mdesc_iterate_over_cpus(record_one_cpu, NULL, mask);
 }
 
+<<<<<<< HEAD
 static void * __cpuinit fill_in_one_cpu(struct mdesc_handle *hp, u64 mp, int cpuid, void *arg)
+=======
+static void * __init check_one_pgsz(struct mdesc_handle *hp, u64 mp, int cpuid, void *arg)
+{
+	const u64 *pgsz_prop = mdesc_get_property(hp, mp, "mmu-page-size-list", NULL);
+	unsigned long *pgsz_mask = arg;
+	u64 val;
+
+	val = (HV_PGSZ_MASK_8K | HV_PGSZ_MASK_64K |
+	       HV_PGSZ_MASK_512K | HV_PGSZ_MASK_4MB);
+	if (pgsz_prop)
+		val = *pgsz_prop;
+
+	if (!*pgsz_mask)
+		*pgsz_mask = val;
+	else
+		*pgsz_mask &= val;
+	return NULL;
+}
+
+void __init mdesc_get_page_sizes(cpumask_t *mask, unsigned long *pgsz_mask)
+{
+	*pgsz_mask = 0;
+	mdesc_iterate_over_cpus(check_one_pgsz, pgsz_mask, mask);
+}
+
+static void *fill_in_one_cpu(struct mdesc_handle *hp, u64 mp, int cpuid,
+			     void *arg)
+>>>>>>> refs/remotes/origin/master
 {
 	const u64 *cfreq = mdesc_get_property(hp, mp, "clock-frequency", NULL);
 	struct trap_per_cpu *tb;
@@ -864,7 +956,11 @@ static void * __cpuinit fill_in_one_cpu(struct mdesc_handle *hp, u64 mp, int cpu
 	return NULL;
 }
 
+<<<<<<< HEAD
 void __cpuinit mdesc_fill_in_cpu_data(cpumask_t *mask)
+=======
+void mdesc_fill_in_cpu_data(cpumask_t *mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mdesc_handle *hp;
 

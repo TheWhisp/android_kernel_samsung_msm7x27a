@@ -95,10 +95,20 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
 	}
 	msblk = sb->s_fs_info;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	msblk->devblksize = sb_min_blocksize(sb, BLOCK_SIZE);
+=======
+	msblk->devblksize = sb_min_blocksize(sb, SQUASHFS_DEVBLK_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	msblk->devblksize_log2 = ffz(~msblk->devblksize);
 
 	mutex_init(&msblk->read_data_mutex);
+=======
+	msblk->devblksize = sb_min_blocksize(sb, SQUASHFS_DEVBLK_SIZE);
+	msblk->devblksize_log2 = ffz(~msblk->devblksize);
+
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&msblk->meta_index_mutex);
 
 	/*
@@ -158,10 +168,31 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
 		goto failed_mount;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* Check block log for sanity */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Check block log for sanity */
+>>>>>>> refs/remotes/origin/master
 	msblk->block_log = le16_to_cpu(sblk->block_log);
 	if (msblk->block_log > SQUASHFS_FILE_MAX_LOG)
 		goto failed_mount;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Check that block_size and block_log match */
+	if (msblk->block_size != (1 << msblk->block_log))
+		goto failed_mount;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Check the root inode for sanity */
 	root_inode = le64_to_cpu(sblk->root_inode);
 	if (SQUASHFS_INODE_OFFSET(root_inode) > SQUASHFS_METADATA_SIZE)
@@ -201,13 +232,22 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
 		goto failed_mount;
 
 	/* Allocate read_page block */
+<<<<<<< HEAD
 	msblk->read_page = squashfs_cache_init("data", 1, msblk->block_size);
+=======
+	msblk->read_page = squashfs_cache_init("data",
+		squashfs_max_decompressors(), msblk->block_size);
+>>>>>>> refs/remotes/origin/master
 	if (msblk->read_page == NULL) {
 		ERROR("Failed to allocate read_page block\n");
 		goto failed_mount;
 	}
 
+<<<<<<< HEAD
 	msblk->stream = squashfs_decompressor_init(sb, flags);
+=======
+	msblk->stream = squashfs_decompressor_setup(sb, flags);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(msblk->stream)) {
 		err = PTR_ERR(msblk->stream);
 		msblk->stream = NULL;
@@ -316,11 +356,24 @@ check_directory_table:
 	}
 	insert_inode_hash(root);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root);
 	if (sb->s_root == NULL) {
 		ERROR("Root inode create failed\n");
 		err = -ENOMEM;
 		iput(root);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	sb->s_root = d_make_root(root);
+	if (sb->s_root == NULL) {
+		ERROR("Root inode create failed\n");
+		err = -ENOMEM;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto failed_mount;
 	}
 
@@ -332,7 +385,11 @@ failed_mount:
 	squashfs_cache_delete(msblk->block_cache);
 	squashfs_cache_delete(msblk->fragment_cache);
 	squashfs_cache_delete(msblk->read_page);
+<<<<<<< HEAD
 	squashfs_decompressor_free(msblk, msblk->stream);
+=======
+	squashfs_decompressor_destroy(msblk);
+>>>>>>> refs/remotes/origin/master
 	kfree(msblk->inode_lookup_table);
 	kfree(msblk->fragment_index);
 	kfree(msblk->id_table);
@@ -379,7 +436,11 @@ static void squashfs_put_super(struct super_block *sb)
 		squashfs_cache_delete(sbi->block_cache);
 		squashfs_cache_delete(sbi->fragment_cache);
 		squashfs_cache_delete(sbi->read_page);
+<<<<<<< HEAD
 		squashfs_decompressor_free(sbi, sbi->stream);
+=======
+		squashfs_decompressor_destroy(sbi);
+>>>>>>> refs/remotes/origin/master
 		kfree(sbi->id_table);
 		kfree(sbi->fragment_index);
 		kfree(sbi->meta_index);
@@ -421,6 +482,14 @@ static int __init init_inodecache(void)
 
 static void destroy_inodecache(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(squashfs_inode_cachep);
 }
 
@@ -464,7 +533,13 @@ static struct inode *squashfs_alloc_inode(struct super_block *sb)
 static void squashfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(squashfs_inode_cachep, squashfs_i(inode));
 }
 
@@ -481,6 +556,10 @@ static struct file_system_type squashfs_fs_type = {
 	.kill_sb = kill_block_super,
 	.fs_flags = FS_REQUIRES_DEV
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("squashfs");
+>>>>>>> refs/remotes/origin/master
 
 static const struct super_operations squashfs_super_ops = {
 	.alloc_inode = squashfs_alloc_inode,

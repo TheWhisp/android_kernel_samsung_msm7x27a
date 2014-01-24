@@ -4,7 +4,11 @@
  * for more details.
  *
  * Copyright (C) 2005 Thiemo Seufer
+<<<<<<< HEAD
  * Copyright (C) 2005  MIPS Technologies, Inc.  All rights reserved.
+=======
+ * Copyright (C) 2005  MIPS Technologies, Inc.	All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *	Author: Maciej W. Rozycki <macro@mips.com>
  */
 
@@ -36,7 +40,11 @@
  * values, so we can avoid sharing the same stack area between a cached
  * and the uncached mode.
  */
+<<<<<<< HEAD
 unsigned long __cpuinit run_uncached(void *func)
+=======
+unsigned long run_uncached(void *func)
+>>>>>>> refs/remotes/origin/master
 {
 	register long sp __asm__("$sp");
 	register long ret __asm__("$2");

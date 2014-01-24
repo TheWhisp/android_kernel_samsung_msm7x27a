@@ -25,6 +25,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/signal.h>
 
 #include <linux/of.h>
@@ -32,6 +36,7 @@
 #include <linux/of_address.h>
 
 /**
+<<<<<<< HEAD
  * ehci_xilinx_of_setup - Initialize the device for ehci_reset()
  * @hcd:	Pointer to the usb_hcd device to which the host controller bound
  *
@@ -56,6 +61,8 @@ static int ehci_xilinx_of_setup(struct usb_hcd *hcd)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * ehci_xilinx_port_handed_over - hand the port out if failed to enable it
  * @hcd:	Pointer to the usb_hcd device to which the host controller bound
  * @portnum:Port number to which the device is attached.
@@ -102,12 +109,20 @@ static const struct hc_driver ehci_xilinx_of_hc_driver = {
 	 * generic hardware linkage
 	 */
 	.irq			= ehci_irq,
+<<<<<<< HEAD
 	.flags			= HCD_MEMORY | HCD_USB2,
+=======
+	.flags			= HCD_MEMORY | HCD_USB2 | HCD_BH,
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * basic lifecycle operations
 	 */
+<<<<<<< HEAD
 	.reset			= ehci_xilinx_of_setup,
+=======
+	.reset			= ehci_setup,
+>>>>>>> refs/remotes/origin/master
 	.start			= ehci_run,
 	.stop			= ehci_stop,
 	.shutdown		= ehci_shutdown,
@@ -149,7 +164,11 @@ static const struct hc_driver ehci_xilinx_of_hc_driver = {
  * as HS only or HS/FS only, it checks the configuration in the device tree
  * entry, and sets an appropriate value for hcd->has_tt.
  */
+<<<<<<< HEAD
 static int __devinit ehci_hcd_xilinx_of_probe(struct platform_device *op)
+=======
+static int ehci_hcd_xilinx_of_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dn = op->dev.of_node;
 	struct usb_hcd *hcd;
@@ -174,7 +193,12 @@ static int __devinit ehci_hcd_xilinx_of_probe(struct platform_device *op)
 		return -ENOMEM;
 
 	hcd->rsrc_start = res.start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hcd->rsrc_len = res.end - res.start + 1;
+=======
+	hcd->rsrc_len = resource_size(&res);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len, hcd_name)) {
 		printk(KERN_ERR "%s: request_mem_region failed\n", __FILE__);
@@ -183,17 +207,36 @@ static int __devinit ehci_hcd_xilinx_of_probe(struct platform_device *op)
 	}
 
 	irq = irq_of_parse_and_map(dn, 0);
+<<<<<<< HEAD
 	if (irq == NO_IRQ) {
+=======
+	if (!irq) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "%s: irq_of_parse_and_map failed\n", __FILE__);
+=======
+	hcd->rsrc_len = resource_size(&res);
+
+	irq = irq_of_parse_and_map(dn, 0);
+	if (!irq) {
+		dev_err(&op->dev, "%s: irq_of_parse_and_map failed\n",
+			__FILE__);
+>>>>>>> refs/remotes/origin/master
 		rv = -EBUSY;
 		goto err_irq;
 	}
 
+<<<<<<< HEAD
 	hcd->regs = ioremap(hcd->rsrc_start, hcd->rsrc_len);
 	if (!hcd->regs) {
 		printk(KERN_ERR "%s: ioremap failed\n", __FILE__);
 		rv = -ENOMEM;
 		goto err_ioremap;
+=======
+	hcd->regs = devm_ioremap_resource(&op->dev, &res);
+	if (IS_ERR(hcd->regs)) {
+		rv = PTR_ERR(hcd->regs);
+		goto err_irq;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ehci = hcd_to_ehci(hcd);
@@ -219,6 +262,7 @@ static int __devinit ehci_hcd_xilinx_of_probe(struct platform_device *op)
 	/* Debug registers are at the first 0x100 region
 	 */
 	ehci->caps = hcd->regs + 0x100;
+<<<<<<< HEAD
 	ehci->regs = hcd->regs + 0x100 +
 		HC_LENGTH(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
 
@@ -235,6 +279,16 @@ err_ioremap:
 err_irq:
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 err_rmr:
+=======
+
+	rv = usb_add_hcd(hcd, irq, 0);
+	if (rv == 0) {
+		device_wakeup_enable(hcd->self.controller);
+		return 0;
+	}
+
+err_irq:
+>>>>>>> refs/remotes/origin/master
 	usb_put_hcd(hcd);
 
 	return rv;
@@ -249,21 +303,29 @@ err_rmr:
  */
 static int ehci_hcd_xilinx_of_remove(struct platform_device *op)
 {
+<<<<<<< HEAD
 	struct usb_hcd *hcd = dev_get_drvdata(&op->dev);
 	dev_set_drvdata(&op->dev, NULL);
+=======
+	struct usb_hcd *hcd = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&op->dev, "stopping XILINX-OF USB Controller\n");
 
 	usb_remove_hcd(hcd);
 
+<<<<<<< HEAD
 	iounmap(hcd->regs);
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	usb_put_hcd(hcd);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /**
  * ehci_hcd_xilinx_of_shutdown - shutdown the hcd
  * @op:		pointer to platform_device structure that is to be removed
@@ -281,6 +343,8 @@ static int ehci_hcd_xilinx_of_shutdown(struct platform_device *op)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct of_device_id ehci_hcd_xilinx_of_match[] = {
 		{.compatible = "xlnx,xps-usb-host-1.00.a",},
 	{},
@@ -290,7 +354,11 @@ MODULE_DEVICE_TABLE(of, ehci_hcd_xilinx_of_match);
 static struct platform_driver ehci_hcd_xilinx_of_driver = {
 	.probe		= ehci_hcd_xilinx_of_probe,
 	.remove		= ehci_hcd_xilinx_of_remove,
+<<<<<<< HEAD
 	.shutdown	= ehci_hcd_xilinx_of_shutdown,
+=======
+	.shutdown	= usb_hcd_platform_shutdown,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "xilinx-of-ehci",
 		.owner = THIS_MODULE,

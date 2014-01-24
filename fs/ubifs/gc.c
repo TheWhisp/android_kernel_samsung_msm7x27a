@@ -109,7 +109,11 @@ static int switch_gc_head(struct ubifs_info *c)
 		return err;
 
 	c->gc_lnum = -1;
+<<<<<<< HEAD
 	err = ubifs_wbuf_seek_nolock(wbuf, gc_lnum, 0, UBI_LONGTERM);
+=======
+	err = ubifs_wbuf_seek_nolock(wbuf, gc_lnum, 0);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -668,8 +672,12 @@ int ubifs_garbage_collect(struct ubifs_info *c, int anyway)
 	ubifs_assert(!wbuf->used);
 
 	for (i = 0; ; i++) {
+<<<<<<< HEAD
 		int space_before = c->leb_size - wbuf->offs - wbuf->used;
 		int space_after;
+=======
+		int space_before, space_after;
+>>>>>>> refs/remotes/origin/master
 
 		cond_resched();
 
@@ -714,9 +722,15 @@ int ubifs_garbage_collect(struct ubifs_info *c, int anyway)
 			break;
 		}
 
+<<<<<<< HEAD
 		dbg_gc("found LEB %d: free %d, dirty %d, sum %d "
 		       "(min. space %d)", lp.lnum, lp.free, lp.dirty,
 		       lp.free + lp.dirty, min_space);
+=======
+		dbg_gc("found LEB %d: free %d, dirty %d, sum %d (min. space %d)",
+		       lp.lnum, lp.free, lp.dirty, lp.free + lp.dirty,
+		       min_space);
+>>>>>>> refs/remotes/origin/master
 
 		space_before = c->leb_size - wbuf->offs - wbuf->used;
 		if (wbuf->lnum == -1)

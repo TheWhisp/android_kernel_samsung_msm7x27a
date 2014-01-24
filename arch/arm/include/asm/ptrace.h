@@ -10,6 +10,7 @@
 #ifndef __ASM_ARM_PTRACE_H
 #define __ASM_ARM_PTRACE_H
 
+<<<<<<< HEAD
 #include <asm/hwcap.h>
 
 #define PTRACE_GETREGS		12
@@ -69,8 +70,14 @@
 #define PSR_c		0x000000ff	/* Control		*/
 
 /*
+<<<<<<< HEAD
  * ARMv7 groups of APSR bits
  */
+=======
+ * ARMv7 groups of PSR bits
+ */
+#define APSR_MASK	0xf80f0000	/* N, Z, C, V, Q and GE flags */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PSR_ISET_MASK	0x01000010	/* ISA state (J, T) mask */
 #define PSR_IT_MASK	0x0600fc00	/* If-Then execution state mask */
 #define PSR_ENDIAN_MASK	0x00000200	/* Endianness state mask */
@@ -135,6 +142,14 @@ struct pt_regs {
 #define ARM_VFPREGS_SIZE ( 32 * 8 /*fpregs*/ + 4 /*fpscr*/ )
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/ptrace.h>
+
+#ifndef __ASSEMBLY__
+struct pt_regs {
+	unsigned long uregs[18];
+};
+>>>>>>> refs/remotes/origin/master
 
 #define user_mode(regs)	\
 	(((regs)->ARM_cpsr & 0xf) == 0)
@@ -164,6 +179,10 @@ struct pt_regs {
  */
 static inline int valid_user_regs(struct pt_regs *regs)
 {
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_CPU_V7M
+>>>>>>> refs/remotes/origin/master
 	unsigned long mode = regs->ARM_cpsr & MODE_MASK;
 
 	/*
@@ -186,8 +205,27 @@ static inline int valid_user_regs(struct pt_regs *regs)
 		regs->ARM_cpsr |= USR_MODE;
 
 	return 0;
+<<<<<<< HEAD
 }
 
+<<<<<<< HEAD
+=======
+=======
+#else /* ifndef CONFIG_CPU_V7M */
+	return 1;
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
+static inline long regs_return_value(struct pt_regs *regs)
+{
+	return regs->ARM_r0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define instruction_pointer(regs)	(regs)->ARM_pc
 
 #ifdef CONFIG_SMP
@@ -200,6 +238,23 @@ extern unsigned long profile_pc(struct pt_regs *regs);
 #define PREDICATE_ALWAYS	0xe0000000
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * True if instr is a 32-bit thumb instruction. This works if instr
+ * is the first or only half-word of a thumb instruction. It also works
+ * when instr holds all 32-bits of a wide thumb instruction if stored
+ * in the form (first_half<<16)|(second_half)
+ */
+#define is_wide_instruction(instr)	((unsigned)(instr) >= 0xe800)
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * kprobe-based event tracer support
  */
 #include <linux/stddef.h>
@@ -235,9 +290,24 @@ static inline unsigned long kernel_stack_pointer(struct pt_regs *regs)
 	return regs->ARM_sp;
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #endif /* __ASSEMBLY__ */
 
 #endif
 
+=======
+static inline unsigned long user_stack_pointer(struct pt_regs *regs)
+{
+	return regs->ARM_sp;
+}
+
+#define current_pt_regs(void) ({				\
+	register unsigned long sp asm ("sp");			\
+	(struct pt_regs *)((sp | (THREAD_SIZE - 1)) - 7) - 1;	\
+})
+
+#endif /* __ASSEMBLY__ */
+#endif
+>>>>>>> refs/remotes/origin/master

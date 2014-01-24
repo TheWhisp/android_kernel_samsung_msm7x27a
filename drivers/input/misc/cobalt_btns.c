@@ -73,7 +73,11 @@ static void handle_buttons(struct input_polled_dev *dev)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit cobalt_buttons_probe(struct platform_device *pdev)
+=======
+static int cobalt_buttons_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct buttons_dev *bdev;
 	struct input_polled_dev *poll_dev;
@@ -131,11 +135,18 @@ static int __devinit cobalt_buttons_probe(struct platform_device *pdev)
  err_free_mem:
 	input_free_polled_device(poll_dev);
 	kfree(bdev);
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, NULL);
 	return error;
 }
 
 static int __devexit cobalt_buttons_remove(struct platform_device *pdev)
+=======
+	return error;
+}
+
+static int cobalt_buttons_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &pdev->dev;
 	struct buttons_dev *bdev = dev_get_drvdata(dev);
@@ -144,7 +155,10 @@ static int __devexit cobalt_buttons_remove(struct platform_device *pdev)
 	input_free_polled_device(bdev->poll_dev);
 	iounmap(bdev->reg);
 	kfree(bdev);
+<<<<<<< HEAD
 	dev_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -157,12 +171,18 @@ MODULE_ALIAS("platform:Cobalt buttons");
 
 static struct platform_driver cobalt_buttons_driver = {
 	.probe	= cobalt_buttons_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(cobalt_buttons_remove),
+=======
+	.remove	= cobalt_buttons_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= "Cobalt buttons",
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init cobalt_buttons_init(void)
 {
@@ -176,3 +196,9 @@ static void __exit cobalt_buttons_exit(void)
 
 module_init(cobalt_buttons_init);
 module_exit(cobalt_buttons_exit);
+=======
+module_platform_driver(cobalt_buttons_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(cobalt_buttons_driver);
+>>>>>>> refs/remotes/origin/master

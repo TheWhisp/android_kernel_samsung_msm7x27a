@@ -45,7 +45,15 @@
 
 #if defined(MODULE) && defined(SERIAL_DEBUG_MCOUNT)
 #define DBG_CNT(s) printk("(%s): [%x] refc=%d, serc=%d, ttyc=%d -> %s\n", \
+<<<<<<< HEAD
+<<<<<<< HEAD
  tty->name, (info->flags), serial_driver->refcount,info->count,tty->count,s)
+=======
+ tty->name, (info->tport.flags), serial_driver->refcount,info->count,tty->count,s)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ tty->name, (info->tport.flags), serial_driver->refcount,info->count,tty->count,s)
+>>>>>>> refs/remotes/origin/master
 #else
 #define DBG_CNT(s)
 #endif
@@ -58,7 +66,13 @@
 
 #include <linux/types.h>
 #include <linux/serial.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/serialP.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/serial_reg.h>
 static char *serial_version = "4.30";
 
@@ -70,6 +84,14 @@ static char *serial_version = "4.30";
 #include <linux/interrupt.h>
 #include <linux/tty.h>
 #include <linux/tty_flip.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/circ_buf.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/circ_buf.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/console.h>
 #include <linux/major.h>
 #include <linux/string.h>
@@ -85,13 +107,46 @@ static char *serial_version = "4.30";
 
 #include <asm/setup.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/irq.h>
 
 #include <asm/amigahw.h>
 #include <asm/amigaints.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct serial_state {
+	struct tty_port		tport;
+	struct circ_buf		xmit;
+	struct async_icount	icount;
+
+	unsigned long		port;
+	int			baud_base;
+	int			xmit_fifo_size;
+	int			custom_divisor;
+	int			read_status_mask;
+	int			ignore_status_mask;
+	int			timeout;
+	int			quot;
+	int			IER; 	/* Interrupt Enable Register */
+	int			MCR; 	/* Modem control register */
+	int			x_char;	/* xon/xoff character */
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define custom amiga_custom
 static char *serial_name = "Amiga-builtin serial driver";
 
@@ -100,11 +155,24 @@ static struct tty_driver *serial_driver;
 /* number of characters left in xmit buffer before we ask for more */
 #define WAKEUP_CHARS 256
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct async_struct *IRQ_ports;
 
 static unsigned char current_ctl_bits;
 
 static void change_speed(struct async_struct *info, struct ktermios *old);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static unsigned char current_ctl_bits;
+
+static void change_speed(struct tty_struct *tty, struct serial_state *info,
+		struct ktermios *old);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void rs_wait_until_sent(struct tty_struct *tty, int timeout);
 
 
@@ -117,7 +185,15 @@ static struct serial_state rs_table[1];
 #define serial_isroot()	(capable(CAP_SYS_ADMIN))
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int serial_paranoia_check(struct async_struct *info,
+=======
+static inline int serial_paranoia_check(struct serial_state *info,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int serial_paranoia_check(struct serial_state *info,
+>>>>>>> refs/remotes/origin/master
 					char *name, const char *routine)
 {
 #ifdef SERIAL_PARANOIA_CHECK
@@ -170,7 +246,15 @@ static __inline__ void rtsdtr_ctrl(int bits)
  */
 static void rs_stop(struct tty_struct *tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (serial_paranoia_check(info, tty->name, "rs_stop"))
@@ -190,7 +274,15 @@ static void rs_stop(struct tty_struct *tty)
 
 static void rs_start(struct tty_struct *tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (serial_paranoia_check(info, tty->name, "rs_start"))
@@ -231,6 +323,8 @@ static void rs_start(struct tty_struct *tty)
  * -----------------------------------------------------------------------
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * This routine is used by the interrupt handler to schedule
  * processing in the software interrupt portion of the driver.
@@ -247,11 +341,31 @@ static void receive_chars(struct async_struct *info)
         int status;
 	int serdatr;
 	struct tty_struct *tty = info->tty;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void receive_chars(struct serial_state *info)
+{
+        int status;
+	int serdatr;
+<<<<<<< HEAD
+	struct tty_struct *tty = info->tport.tty;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char ch, flag;
 	struct	async_icount *icount;
 	int oe = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	icount = &info->state->icount;
+=======
+	icount = &info->icount;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	icount = &info->icount;
+>>>>>>> refs/remotes/origin/master
 
 	status = UART_LSR_DR; /* We obviously have a character! */
 	serdatr = custom.serdatr;
@@ -308,8 +422,17 @@ static void receive_chars(struct async_struct *info)
 	    printk("handling break....");
 #endif
 	    flag = TTY_BREAK;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    if (info->flags & ASYNC_SAK)
+=======
+	    if (info->tport.flags & ASYNC_SAK)
+>>>>>>> refs/remotes/origin/cm-10.0
 	      do_SAK(tty);
+=======
+	    if (info->tport.flags & ASYNC_SAK)
+	      do_SAK(info->tport.tty);
+>>>>>>> refs/remotes/origin/master
 	  } else if (status & UART_LSR_PE)
 	    flag = TTY_PARITY;
 	  else if (status & UART_LSR_FE)
@@ -323,28 +446,61 @@ static void receive_chars(struct async_struct *info)
 	     oe = 1;
 	  }
 	}
+<<<<<<< HEAD
 	tty_insert_flip_char(tty, ch, flag);
 	if (oe == 1)
 		tty_insert_flip_char(tty, 0, TTY_OVERRUN);
 	tty_flip_buffer_push(tty);
+=======
+	tty_insert_flip_char(&info->tport, ch, flag);
+	if (oe == 1)
+		tty_insert_flip_char(&info->tport, 0, TTY_OVERRUN);
+	tty_flip_buffer_push(&info->tport);
+>>>>>>> refs/remotes/origin/master
 out:
 	return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void transmit_chars(struct async_struct *info)
+=======
+static void transmit_chars(struct serial_state *info)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void transmit_chars(struct serial_state *info)
+>>>>>>> refs/remotes/origin/master
 {
 	custom.intreq = IF_TBE;
 	mb();
 	if (info->x_char) {
 	        custom.serdat = info->x_char | 0x100;
 		mb();
+<<<<<<< HEAD
+<<<<<<< HEAD
 		info->state->icount.tx++;
+=======
+		info->icount.tx++;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		info->icount.tx++;
+>>>>>>> refs/remotes/origin/master
 		info->x_char = 0;
 		return;
 	}
 	if (info->xmit.head == info->xmit.tail
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    || info->tty->stopped
 	    || info->tty->hw_stopped) {
+=======
+	    || info->tport.tty->stopped
+	    || info->tport.tty->hw_stopped) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    || info->tport.tty->stopped
+	    || info->tport.tty->hw_stopped) {
+>>>>>>> refs/remotes/origin/master
 		info->IER &= ~UART_IER_THRI;
 	        custom.intena = IF_TBE;
 		mb();
@@ -354,12 +510,28 @@ static void transmit_chars(struct async_struct *info)
 	custom.serdat = info->xmit.buf[info->xmit.tail++] | 0x100;
 	mb();
 	info->xmit.tail = info->xmit.tail & (SERIAL_XMIT_SIZE-1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info->state->icount.tx++;
+=======
+	info->icount.tx++;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->icount.tx++;
+>>>>>>> refs/remotes/origin/master
 
 	if (CIRC_CNT(info->xmit.head,
 		     info->xmit.tail,
 		     SERIAL_XMIT_SIZE) < WAKEUP_CHARS)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rs_sched_event(info, RS_EVENT_WRITE_WAKEUP);
+=======
+		tty_wakeup(info->tport.tty);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tty_wakeup(info->tport.tty);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef SERIAL_DEBUG_INTR
 	printk("THRE...");
@@ -371,8 +543,20 @@ static void transmit_chars(struct async_struct *info)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void check_modem_status(struct async_struct *info)
 {
+=======
+static void check_modem_status(struct serial_state *info)
+{
+	struct tty_port *port = &info->tport;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void check_modem_status(struct serial_state *info)
+{
+	struct tty_port *port = &info->tport;
+>>>>>>> refs/remotes/origin/master
 	unsigned char status = ciab.pra & (SER_DCD | SER_CTS | SER_DSR);
 	unsigned char dstatus;
 	struct	async_icount *icount;
@@ -382,52 +566,121 @@ static void check_modem_status(struct async_struct *info)
 	current_ctl_bits = status;
 
 	if (dstatus) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		icount = &info->state->icount;
+=======
+		icount = &info->icount;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		icount = &info->icount;
+>>>>>>> refs/remotes/origin/master
 		/* update input line counters */
 		if (dstatus & SER_DSR)
 			icount->dsr++;
 		if (dstatus & SER_DCD) {
 			icount->dcd++;
+<<<<<<< HEAD
 #ifdef CONFIG_HARD_PPS
+<<<<<<< HEAD
 			if ((info->flags & ASYNC_HARDPPS_CD) &&
+=======
+			if ((port->flags & ASYNC_HARDPPS_CD) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 			    !(status & SER_DCD))
 				hardpps();
 #endif
 		}
 		if (dstatus & SER_CTS)
 			icount->cts++;
+<<<<<<< HEAD
 		wake_up_interruptible(&info->delta_msr_wait);
 	}
 
 	if ((info->flags & ASYNC_CHECK_CD) && (dstatus & SER_DCD)) {
+=======
+=======
+		}
+		if (dstatus & SER_CTS)
+			icount->cts++;
+>>>>>>> refs/remotes/origin/master
+		wake_up_interruptible(&port->delta_msr_wait);
+	}
+
+	if ((port->flags & ASYNC_CHECK_CD) && (dstatus & SER_DCD)) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if (defined(SERIAL_DEBUG_OPEN) || defined(SERIAL_DEBUG_INTR))
 		printk("ttyS%d CD now %s...", info->line,
 		       (!(status & SER_DCD)) ? "on" : "off");
 #endif
 		if (!(status & SER_DCD))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			wake_up_interruptible(&info->open_wait);
+=======
+			wake_up_interruptible(&port->open_wait);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wake_up_interruptible(&port->open_wait);
+>>>>>>> refs/remotes/origin/master
 		else {
 #ifdef SERIAL_DEBUG_OPEN
 			printk("doing serial hangup...");
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (info->tty)
 				tty_hangup(info->tty);
 		}
 	}
 	if (info->flags & ASYNC_CTS_FLOW) {
 		if (info->tty->hw_stopped) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			if (port->tty)
+				tty_hangup(port->tty);
+		}
+	}
+<<<<<<< HEAD
+	if (port->flags & ASYNC_CTS_FLOW) {
+		if (port->tty->hw_stopped) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tty_port_cts_enabled(port)) {
+		if (port->tty->hw_stopped) {
+>>>>>>> refs/remotes/origin/master
 			if (!(status & SER_CTS)) {
 #if (defined(SERIAL_DEBUG_INTR) || defined(SERIAL_DEBUG_FLOW))
 				printk("CTS tx start...");
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 				info->tty->hw_stopped = 0;
+=======
+				port->tty->hw_stopped = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				port->tty->hw_stopped = 0;
+>>>>>>> refs/remotes/origin/master
 				info->IER |= UART_IER_THRI;
 				custom.intena = IF_SETCLR | IF_TBE;
 				mb();
 				/* set a pending Tx Interrupt, transmitter should restart now */
 				custom.intreq = IF_SETCLR | IF_TBE;
 				mb();
+<<<<<<< HEAD
+<<<<<<< HEAD
 				rs_sched_event(info, RS_EVENT_WRITE_WAKEUP);
+=======
+				tty_wakeup(port->tty);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				tty_wakeup(port->tty);
+>>>>>>> refs/remotes/origin/master
 				return;
 			}
 		} else {
@@ -435,7 +688,15 @@ static void check_modem_status(struct async_struct *info)
 #if (defined(SERIAL_DEBUG_INTR) || defined(SERIAL_DEBUG_FLOW))
 				printk("CTS tx stop...");
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 				info->tty->hw_stopped = 1;
+=======
+				port->tty->hw_stopped = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				port->tty->hw_stopped = 1;
+>>>>>>> refs/remotes/origin/master
 				info->IER &= ~UART_IER_THRI;
 				/* disable Tx interrupt and remove any pending interrupts */
 				custom.intena = IF_TBE;
@@ -450,7 +711,15 @@ static void check_modem_status(struct async_struct *info)
 static irqreturn_t ser_vbl_int( int irq, void *data)
 {
         /* vbl is just a periodic interrupt we tie into to update modem status */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct * info = IRQ_ports;
+=======
+	struct serial_state *info = data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = data;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * TBD - is it better to unregister from this interrupt or to
 	 * ignore it if MSI is clear ?
@@ -462,18 +731,39 @@ static irqreturn_t ser_vbl_int( int irq, void *data)
 
 static irqreturn_t ser_rx_int(int irq, void *dev_id)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct * info;
+=======
+	struct serial_state *info = dev_id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = dev_id;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef SERIAL_DEBUG_INTR
 	printk("ser_rx_int...");
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info = IRQ_ports;
 	if (!info || !info->tty)
 		return IRQ_NONE;
 
 	receive_chars(info);
 	info->last_active = jiffies;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!info->tport.tty)
+		return IRQ_NONE;
+
+	receive_chars(info);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef SERIAL_DEBUG_INTR
 	printk("end.\n");
 #endif
@@ -482,19 +772,40 @@ static irqreturn_t ser_rx_int(int irq, void *dev_id)
 
 static irqreturn_t ser_tx_int(int irq, void *dev_id)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct * info;
+=======
+	struct serial_state *info = dev_id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = dev_id;
+>>>>>>> refs/remotes/origin/master
 
 	if (custom.serdatr & SDR_TBE) {
 #ifdef SERIAL_DEBUG_INTR
 	  printk("ser_tx_int...");
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  info = IRQ_ports;
 	  if (!info || !info->tty)
 		return IRQ_NONE;
 
 	  transmit_chars(info);
 	  info->last_active = jiffies;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	  if (!info->tport.tty)
+		return IRQ_NONE;
+
+	  transmit_chars(info);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef SERIAL_DEBUG_INTR
 	  printk("end.\n");
 #endif
@@ -509,6 +820,8 @@ static irqreturn_t ser_tx_int(int irq, void *dev_id)
  */
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * This routine is used to handle the "bottom half" processing for the
  * serial driver, known also the "software interrupt" processing.
  * This processing is done at the kernel interrupt level, after the
@@ -532,6 +845,10 @@ static void do_softint(unsigned long private_)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * ---------------------------------------------------------------
  * Low level utility subroutines for the serial driver:  routines to
  * figure out the appropriate timeout for an interrupt chain, routines
@@ -540,8 +857,20 @@ static void do_softint(unsigned long private_)
  * ---------------------------------------------------------------
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int startup(struct async_struct * info)
 {
+=======
+static int startup(struct tty_struct *tty, struct serial_state *info)
+{
+	struct tty_port *port = &info->tport;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int startup(struct tty_struct *tty, struct serial_state *info)
+{
+	struct tty_port *port = &info->tport;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int	retval=0;
 	unsigned long page;
@@ -552,7 +881,15 @@ static int startup(struct async_struct * info)
 
 	local_irq_save(flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (info->flags & ASYNC_INITIALIZED) {
+=======
+	if (port->flags & ASYNC_INITIALIZED) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (port->flags & ASYNC_INITIALIZED) {
+>>>>>>> refs/remotes/origin/master
 		free_page(page);
 		goto errout;
 	}
@@ -574,9 +911,17 @@ static int startup(struct async_struct * info)
 	retval = request_irq(IRQ_AMIGA_VERTB, ser_vbl_int, 0, "serial status", info);
 	if (retval) {
 	  if (serial_isroot()) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    if (info->tty)
 	      set_bit(TTY_IO_ERROR,
 		      &info->tty->flags);
+=======
+	      set_bit(TTY_IO_ERROR, &tty->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	      set_bit(TTY_IO_ERROR, &tty->flags);
+>>>>>>> refs/remotes/origin/master
 	    retval = 0;
 	  }
 	  goto errout;
@@ -590,6 +935,8 @@ static int startup(struct async_struct * info)
 	/* remember current state of the DCD and CTS bits */
 	current_ctl_bits = ciab.pra & (SER_DCD | SER_CTS | SER_DSR);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	IRQ_ports = info;
 
 	info->MCR = 0;
@@ -599,11 +946,26 @@ static int startup(struct async_struct * info)
 
 	if (info->tty)
 		clear_bit(TTY_IO_ERROR, &info->tty->flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	info->MCR = 0;
+	if (C_BAUD(tty))
+	  info->MCR = SER_DTR | SER_RTS;
+	rtsdtr_ctrl(info->MCR);
+
+	clear_bit(TTY_IO_ERROR, &tty->flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	info->xmit.head = info->xmit.tail = 0;
 
 	/*
 	 * Set up the tty->alt_speed kludge
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (info->tty) {
 		if ((info->flags & ASYNC_SPD_MASK) == ASYNC_SPD_HI)
 			info->tty->alt_speed = 57600;
@@ -614,13 +976,40 @@ static int startup(struct async_struct * info)
 		if ((info->flags & ASYNC_SPD_MASK) == ASYNC_SPD_WARP)
 			info->tty->alt_speed = 460800;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_HI)
+		tty->alt_speed = 57600;
+	if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_VHI)
+		tty->alt_speed = 115200;
+	if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_SHI)
+		tty->alt_speed = 230400;
+	if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_WARP)
+		tty->alt_speed = 460800;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * and set the speed of the serial port
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	change_speed(info, NULL);
 
 	info->flags |= ASYNC_INITIALIZED;
+=======
+	change_speed(tty, info, NULL);
+
+	port->flags |= ASYNC_INITIALIZED;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	change_speed(tty, info, NULL);
+
+	port->flags |= ASYNC_INITIALIZED;
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 	return 0;
 
@@ -633,15 +1022,36 @@ errout:
  * This routine will shutdown a serial port; interrupts are disabled, and
  * DTR is dropped if the hangup on close termio flag is on.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void shutdown(struct async_struct * info)
+=======
+static void shutdown(struct tty_struct *tty, struct serial_state *info)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void shutdown(struct tty_struct *tty, struct serial_state *info)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long	flags;
 	struct serial_state *state;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(info->flags & ASYNC_INITIALIZED))
 		return;
 
 	state = info->state;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!(info->tport.flags & ASYNC_INITIALIZED))
+		return;
+
+	state = info;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef SERIAL_DEBUG_OPEN
 	printk("Shutting down serial port %d ....\n", info->line);
@@ -653,9 +1063,17 @@ static void shutdown(struct async_struct * info)
 	 * clear delta_msr_wait queue to avoid mem leaks: we may free the irq
 	 * here so the queue might never be waken up
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up_interruptible(&info->delta_msr_wait);
 
 	IRQ_ports = NULL;
+=======
+	wake_up_interruptible(&info->tport.delta_msr_wait);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wake_up_interruptible(&info->tport.delta_msr_wait);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Free the IRQ, if necessary
@@ -675,6 +1093,8 @@ static void shutdown(struct async_struct * info)
 	custom.adkcon = AC_UARTBRK;
 	mb();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!info->tty || (info->tty->termios->c_cflag & HUPCL))
 		info->MCR &= ~(SER_DTR|SER_RTS);
 	rtsdtr_ctrl(info->MCR);
@@ -683,6 +1103,21 @@ static void shutdown(struct async_struct * info)
 		set_bit(TTY_IO_ERROR, &info->tty->flags);
 
 	info->flags &= ~ASYNC_INITIALIZED;
+=======
+	if (tty->termios->c_cflag & HUPCL)
+=======
+	if (tty->termios.c_cflag & HUPCL)
+>>>>>>> refs/remotes/origin/master
+		info->MCR &= ~(SER_DTR|SER_RTS);
+	rtsdtr_ctrl(info->MCR);
+
+	set_bit(TTY_IO_ERROR, &tty->flags);
+
+	info->tport.flags &= ~ASYNC_INITIALIZED;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 }
 
@@ -691,17 +1126,38 @@ static void shutdown(struct async_struct * info)
  * This routine is called to set the UART divisor registers to match
  * the specified baud rate for a serial port.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void change_speed(struct async_struct *info,
 			 struct ktermios *old_termios)
 {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void change_speed(struct tty_struct *tty, struct serial_state *info,
+			 struct ktermios *old_termios)
+{
+	struct tty_port *port = &info->tport;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int	quot = 0, baud_base, baud;
 	unsigned cflag, cval = 0;
 	int	bits;
 	unsigned long	flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!info->tty || !info->tty->termios)
 		return;
 	cflag = info->tty->termios->c_cflag;
+=======
+	cflag = tty->termios->c_cflag;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cflag = tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 
 	/* Byte size is always 8 bits plus parity bit if requested */
 
@@ -722,6 +1178,8 @@ static void change_speed(struct async_struct *info,
 #endif
 
 	/* Determine divisor based on baud rate */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	baud = tty_get_baud_rate(info->tty);
 	if (!baud)
 		baud = 9600;	/* B0 transition handled in rs_set_termios */
@@ -729,6 +1187,19 @@ static void change_speed(struct async_struct *info,
 	if (baud == 38400 &&
 	    ((info->flags & ASYNC_SPD_MASK) == ASYNC_SPD_CUST))
 		quot = info->state->custom_divisor;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	baud = tty_get_baud_rate(tty);
+	if (!baud)
+		baud = 9600;	/* B0 transition handled in rs_set_termios */
+	baud_base = info->baud_base;
+	if (baud == 38400 && (port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_CUST)
+		quot = info->custom_divisor;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else {
 		if (baud == 134)
 			/* Special case since 134 is really 134.5 */
@@ -739,6 +1210,8 @@ static void change_speed(struct async_struct *info,
 	/* If the quotient is zero refuse the change */
 	if (!quot && old_termios) {
 		/* FIXME: Will need updating for new tty in the end */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		info->tty->termios->c_cflag &= ~CBAUD;
 		info->tty->termios->c_cflag |= (old_termios->c_cflag & CBAUD);
 		baud = tty_get_baud_rate(info->tty);
@@ -747,6 +1220,23 @@ static void change_speed(struct async_struct *info,
 		if (baud == 38400 &&
 		    ((info->flags & ASYNC_SPD_MASK) == ASYNC_SPD_CUST))
 			quot = info->state->custom_divisor;
+=======
+		tty->termios->c_cflag &= ~CBAUD;
+		tty->termios->c_cflag |= (old_termios->c_cflag & CBAUD);
+=======
+		tty->termios.c_cflag &= ~CBAUD;
+		tty->termios.c_cflag |= (old_termios->c_cflag & CBAUD);
+>>>>>>> refs/remotes/origin/master
+		baud = tty_get_baud_rate(tty);
+		if (!baud)
+			baud = 9600;
+		if (baud == 38400 &&
+		    (port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_CUST)
+			quot = info->custom_divisor;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		else {
 			if (baud == 134)
 				/* Special case since 134 is really 134.5 */
@@ -764,6 +1254,8 @@ static void change_speed(struct async_struct *info,
 
 	/* CTS flow control flag and modem status interrupts */
 	info->IER &= ~UART_IER_MSI;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (info->flags & ASYNC_HARDPPS_CD)
 		info->IER |= UART_IER_MSI;
 	if (cflag & CRTSCTS) {
@@ -775,6 +1267,24 @@ static void change_speed(struct async_struct *info,
 		info->flags &= ~ASYNC_CHECK_CD;
 	else {
 		info->flags |= ASYNC_CHECK_CD;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (port->flags & ASYNC_HARDPPS_CD)
+		info->IER |= UART_IER_MSI;
+	if (cflag & CRTSCTS) {
+		port->flags |= ASYNC_CTS_FLOW;
+		info->IER |= UART_IER_MSI;
+	} else
+		port->flags &= ~ASYNC_CTS_FLOW;
+	if (cflag & CLOCAL)
+		port->flags &= ~ASYNC_CHECK_CD;
+	else {
+		port->flags |= ASYNC_CHECK_CD;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		info->IER |= UART_IER_MSI;
 	}
 	/* TBD:
@@ -786,24 +1296,56 @@ static void change_speed(struct async_struct *info,
 	 */
 
 	info->read_status_mask = UART_LSR_OE | UART_LSR_DR;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (I_INPCK(info->tty))
 		info->read_status_mask |= UART_LSR_FE | UART_LSR_PE;
 	if (I_BRKINT(info->tty) || I_PARMRK(info->tty))
+=======
+	if (I_INPCK(tty))
+		info->read_status_mask |= UART_LSR_FE | UART_LSR_PE;
+	if (I_BRKINT(tty) || I_PARMRK(tty))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (I_INPCK(tty))
+		info->read_status_mask |= UART_LSR_FE | UART_LSR_PE;
+	if (I_BRKINT(tty) || I_PARMRK(tty))
+>>>>>>> refs/remotes/origin/master
 		info->read_status_mask |= UART_LSR_BI;
 
 	/*
 	 * Characters to ignore
 	 */
 	info->ignore_status_mask = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (I_IGNPAR(info->tty))
 		info->ignore_status_mask |= UART_LSR_PE | UART_LSR_FE;
 	if (I_IGNBRK(info->tty)) {
+=======
+	if (I_IGNPAR(tty))
+		info->ignore_status_mask |= UART_LSR_PE | UART_LSR_FE;
+	if (I_IGNBRK(tty)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (I_IGNPAR(tty))
+		info->ignore_status_mask |= UART_LSR_PE | UART_LSR_FE;
+	if (I_IGNBRK(tty)) {
+>>>>>>> refs/remotes/origin/master
 		info->ignore_status_mask |= UART_LSR_BI;
 		/*
 		 * If we're ignore parity and break indicators, ignore 
 		 * overruns too.  (For real raw support).
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (I_IGNPAR(info->tty))
+=======
+		if (I_IGNPAR(tty))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (I_IGNPAR(tty))
+>>>>>>> refs/remotes/origin/master
 			info->ignore_status_mask |= UART_LSR_OE;
 	}
 	/*
@@ -828,13 +1370,27 @@ static void change_speed(struct async_struct *info,
 	mb();
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info->LCR = cval;				/* Save LCR */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 }
 
 static int rs_put_char(struct tty_struct *tty, unsigned char ch)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info;
+=======
+	struct serial_state *info;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	info = tty->driver_data;
@@ -861,7 +1417,15 @@ static int rs_put_char(struct tty_struct *tty, unsigned char ch)
 
 static void rs_flush_chars(struct tty_struct *tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (serial_paranoia_check(info, tty->name, "rs_flush_chars"))
@@ -886,11 +1450,23 @@ static void rs_flush_chars(struct tty_struct *tty)
 static int rs_write(struct tty_struct * tty, const unsigned char *buf, int count)
 {
 	int	c, ret = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info;
 	unsigned long flags;
 
 	info = tty->driver_data;
 
+=======
+	struct serial_state *info = tty->driver_data;
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/master
 	if (serial_paranoia_check(info, tty->name, "rs_write"))
 		return 0;
 
@@ -934,7 +1510,15 @@ static int rs_write(struct tty_struct * tty, const unsigned char *buf, int count
 
 static int rs_write_room(struct tty_struct *tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 
 	if (serial_paranoia_check(info, tty->name, "rs_write_room"))
 		return 0;
@@ -943,7 +1527,15 @@ static int rs_write_room(struct tty_struct *tty)
 
 static int rs_chars_in_buffer(struct tty_struct *tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 
 	if (serial_paranoia_check(info, tty->name, "rs_chars_in_buffer"))
 		return 0;
@@ -952,7 +1544,15 @@ static int rs_chars_in_buffer(struct tty_struct *tty)
 
 static void rs_flush_buffer(struct tty_struct *tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (serial_paranoia_check(info, tty->name, "rs_flush_buffer"))
@@ -969,7 +1569,15 @@ static void rs_flush_buffer(struct tty_struct *tty)
  */
 static void rs_send_xchar(struct tty_struct *tty, char ch)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
         unsigned long flags;
 
 	if (serial_paranoia_check(info, tty->name, "rs_send_char"))
@@ -1004,7 +1612,15 @@ static void rs_send_xchar(struct tty_struct *tty, char ch)
  */
 static void rs_throttle(struct tty_struct * tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 #ifdef SERIAL_DEBUG_THROTTLE
 	char	buf[64];
@@ -1019,7 +1635,11 @@ static void rs_throttle(struct tty_struct * tty)
 	if (I_IXOFF(tty))
 		rs_send_xchar(tty, STOP_CHAR(tty));
 
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CRTSCTS)
+=======
+	if (tty->termios.c_cflag & CRTSCTS)
+>>>>>>> refs/remotes/origin/master
 		info->MCR &= ~SER_RTS;
 
 	local_irq_save(flags);
@@ -1029,7 +1649,15 @@ static void rs_throttle(struct tty_struct * tty)
 
 static void rs_unthrottle(struct tty_struct * tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 #ifdef SERIAL_DEBUG_THROTTLE
 	char	buf[64];
@@ -1047,7 +1675,11 @@ static void rs_unthrottle(struct tty_struct * tty)
 		else
 			rs_send_xchar(tty, START_CHAR(tty));
 	}
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CRTSCTS)
+=======
+	if (tty->termios.c_cflag & CRTSCTS)
+>>>>>>> refs/remotes/origin/master
 		info->MCR |= SER_RTS;
 	local_irq_save(flags);
 	rtsdtr_ctrl(info->MCR);
@@ -1060,16 +1692,31 @@ static void rs_unthrottle(struct tty_struct * tty)
  * ------------------------------------------------------------
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int get_serial_info(struct async_struct * info,
 			   struct serial_struct __user * retinfo)
 {
 	struct serial_struct tmp;
 	struct serial_state *state = info->state;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int get_serial_info(struct tty_struct *tty, struct serial_state *state,
+			   struct serial_struct __user * retinfo)
+{
+	struct serial_struct tmp;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    
 	if (!retinfo)
 		return -EFAULT;
 	memset(&tmp, 0, sizeof(tmp));
+<<<<<<< HEAD
 	tty_lock();
+<<<<<<< HEAD
 	tmp.type = state->type;
 	tmp.line = state->line;
 	tmp.port = state->port;
@@ -1079,25 +1726,59 @@ static int get_serial_info(struct async_struct * info,
 	tmp.baud_base = state->baud_base;
 	tmp.close_delay = state->close_delay;
 	tmp.closing_wait = state->closing_wait;
+=======
+=======
+	tty_lock(tty);
+>>>>>>> refs/remotes/origin/master
+	tmp.line = tty->index;
+	tmp.port = state->port;
+	tmp.flags = state->tport.flags;
+	tmp.xmit_fifo_size = state->xmit_fifo_size;
+	tmp.baud_base = state->baud_base;
+	tmp.close_delay = state->tport.close_delay;
+	tmp.closing_wait = state->tport.closing_wait;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	tmp.custom_divisor = state->custom_divisor;
 	tty_unlock();
+=======
+	tmp.custom_divisor = state->custom_divisor;
+	tty_unlock(tty);
+>>>>>>> refs/remotes/origin/master
 	if (copy_to_user(retinfo,&tmp,sizeof(*retinfo)))
 		return -EFAULT;
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int set_serial_info(struct async_struct * info,
 			   struct serial_struct __user * new_info)
 {
 	struct serial_struct new_serial;
  	struct serial_state old_state, *state;
 	unsigned int		change_irq,change_port;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int set_serial_info(struct tty_struct *tty, struct serial_state *state,
+			   struct serial_struct __user * new_info)
+{
+	struct tty_port *port = &state->tport;
+	struct serial_struct new_serial;
+	bool change_spd;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int 			retval = 0;
 
 	if (copy_from_user(&new_serial,new_info,sizeof(new_serial)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	tty_lock();
+<<<<<<< HEAD
 	state = info->state;
 	old_state = *state;
   
@@ -1106,10 +1787,28 @@ static int set_serial_info(struct async_struct * info,
 	if(change_irq || change_port || (new_serial.xmit_fifo_size != state->xmit_fifo_size)) {
 	  tty_unlock();
 	  return -EINVAL;
+=======
+=======
+	tty_lock(tty);
+>>>>>>> refs/remotes/origin/master
+	change_spd = ((new_serial.flags ^ port->flags) & ASYNC_SPD_MASK) ||
+		new_serial.custom_divisor != state->custom_divisor;
+	if (new_serial.irq || new_serial.port != state->port ||
+			new_serial.xmit_fifo_size != state->xmit_fifo_size) {
+<<<<<<< HEAD
+		tty_unlock();
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tty_unlock(tty);
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
   
 	if (!serial_isroot()) {
 		if ((new_serial.baud_base != state->baud_base) ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    (new_serial.close_delay != state->close_delay) ||
 		    (new_serial.xmit_fifo_size != state->xmit_fifo_size) ||
 		    ((new_serial.flags & ~ASYNC_USR_MASK) !=
@@ -1120,13 +1819,36 @@ static int set_serial_info(struct async_struct * info,
 		state->flags = ((state->flags & ~ASYNC_USR_MASK) |
 			       (new_serial.flags & ASYNC_USR_MASK));
 		info->flags = ((info->flags & ~ASYNC_USR_MASK) |
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		    (new_serial.close_delay != port->close_delay) ||
+		    (new_serial.xmit_fifo_size != state->xmit_fifo_size) ||
+		    ((new_serial.flags & ~ASYNC_USR_MASK) !=
+		     (port->flags & ~ASYNC_USR_MASK))) {
+<<<<<<< HEAD
+			tty_unlock();
+			return -EPERM;
+		}
+		port->flags = ((port->flags & ~ASYNC_USR_MASK) |
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tty_unlock(tty);
+			return -EPERM;
+		}
+		port->flags = ((port->flags & ~ASYNC_USR_MASK) |
+>>>>>>> refs/remotes/origin/master
 			       (new_serial.flags & ASYNC_USR_MASK));
 		state->custom_divisor = new_serial.custom_divisor;
 		goto check_and_exit;
 	}
 
 	if (new_serial.baud_base < 9600) {
+<<<<<<< HEAD
 		tty_unlock();
+=======
+		tty_unlock(tty);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -1136,6 +1858,8 @@ static int set_serial_info(struct async_struct * info,
 	 */
 
 	state->baud_base = new_serial.baud_base;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	state->flags = ((state->flags & ~ASYNC_FLAGS) |
 			(new_serial.flags & ASYNC_FLAGS));
 	info->flags = ((state->flags & ~ASYNC_INTERNAL_FLAGS) |
@@ -1162,7 +1886,41 @@ check_and_exit:
 		}
 	} else
 		retval = startup(info);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	port->flags = ((port->flags & ~ASYNC_FLAGS) |
+			(new_serial.flags & ASYNC_FLAGS));
+	state->custom_divisor = new_serial.custom_divisor;
+	port->close_delay = new_serial.close_delay * HZ/100;
+	port->closing_wait = new_serial.closing_wait * HZ/100;
+<<<<<<< HEAD
+	tty->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+=======
+	port->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
+
+check_and_exit:
+	if (port->flags & ASYNC_INITIALIZED) {
+		if (change_spd) {
+			if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_HI)
+				tty->alt_speed = 57600;
+			if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_VHI)
+				tty->alt_speed = 115200;
+			if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_SHI)
+				tty->alt_speed = 230400;
+			if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_WARP)
+				tty->alt_speed = 460800;
+			change_speed(tty, state, NULL);
+		}
+	} else
+		retval = startup(tty, state);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	tty_unlock();
+=======
+	tty_unlock(tty);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -1177,7 +1935,15 @@ check_and_exit:
  * 	    transmit holding register is empty.  This functionality
  * 	    allows an RS485 driver to be written in user space. 
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int get_lsr_info(struct async_struct * info, unsigned int __user *value)
+=======
+static int get_lsr_info(struct serial_state *info, unsigned int __user *value)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int get_lsr_info(struct serial_state *info, unsigned int __user *value)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char status;
 	unsigned int result;
@@ -1196,7 +1962,15 @@ static int get_lsr_info(struct async_struct * info, unsigned int __user *value)
 
 static int rs_tiocmget(struct tty_struct *tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct * info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned char control, status;
 	unsigned long flags;
 
@@ -1219,7 +1993,15 @@ static int rs_tiocmget(struct tty_struct *tty)
 static int rs_tiocmset(struct tty_struct *tty, unsigned int set,
 						unsigned int clear)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct * info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (serial_paranoia_check(info, tty->name, "rs_ioctl"))
@@ -1246,7 +2028,15 @@ static int rs_tiocmset(struct tty_struct *tty, unsigned int set,
  */
 static int rs_break(struct tty_struct *tty, int break_state)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct * info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (serial_paranoia_check(info, tty->name, "rs_break"))
@@ -1271,12 +2061,28 @@ static int rs_break(struct tty_struct *tty, int break_state)
 static int rs_get_icount(struct tty_struct *tty,
 				struct serial_icounter_struct *icount)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	struct async_icount cnow;
 	unsigned long flags;
 
 	local_irq_save(flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cnow = info->state->icount;
+=======
+	cnow = info->icount;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cnow = info->icount;
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 	icount->cts = cnow.cts;
 	icount->dsr = cnow.dsr;
@@ -1296,10 +2102,23 @@ static int rs_get_icount(struct tty_struct *tty,
 static int rs_ioctl(struct tty_struct *tty,
 		    unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct * info = tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct async_icount cprev, cnow;	/* kernel counter temps */
 	void __user *argp = (void __user *)arg;
 	unsigned long flags;
+=======
+	struct serial_state *info = tty->driver_data;
+	struct async_icount cprev, cnow;	/* kernel counter temps */
+	void __user *argp = (void __user *)arg;
+	unsigned long flags;
+	DEFINE_WAIT(wait);
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (serial_paranoia_check(info, tty->name, "rs_ioctl"))
 		return -ENODEV;
@@ -1313,9 +2132,21 @@ static int rs_ioctl(struct tty_struct *tty,
 
 	switch (cmd) {
 		case TIOCGSERIAL:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return get_serial_info(info, argp);
 		case TIOCSSERIAL:
 			return set_serial_info(info, argp);
+=======
+			return get_serial_info(tty, info, argp);
+		case TIOCSSERIAL:
+			return set_serial_info(tty, info, argp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return get_serial_info(tty, info, argp);
+		case TIOCSSERIAL:
+			return set_serial_info(tty, info, argp);
+>>>>>>> refs/remotes/origin/master
 		case TIOCSERCONFIG:
 			return 0;
 
@@ -1324,7 +2155,15 @@ static int rs_ioctl(struct tty_struct *tty,
 
 		case TIOCSERGSTRUCT:
 			if (copy_to_user(argp,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					 info, sizeof(struct async_struct)))
+=======
+					 info, sizeof(struct serial_state)))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 info, sizeof(struct serial_state)))
+>>>>>>> refs/remotes/origin/master
 				return -EFAULT;
 			return 0;
 
@@ -1337,28 +2176,71 @@ static int rs_ioctl(struct tty_struct *tty,
 		case TIOCMIWAIT:
 			local_irq_save(flags);
 			/* note the counters on entry */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			cprev = info->state->icount;
 			local_irq_restore(flags);
 			while (1) {
 				interruptible_sleep_on(&info->delta_msr_wait);
+=======
+			cprev = info->icount;
+			local_irq_restore(flags);
+			while (1) {
+				interruptible_sleep_on(&info->tport.delta_msr_wait);
+>>>>>>> refs/remotes/origin/cm-10.0
 				/* see if a signal did it */
 				if (signal_pending(current))
 					return -ERESTARTSYS;
 				local_irq_save(flags);
+<<<<<<< HEAD
 				cnow = info->state->icount; /* atomic copy */
+=======
+				cnow = info->icount; /* atomic copy */
+>>>>>>> refs/remotes/origin/cm-10.0
 				local_irq_restore(flags);
 				if (cnow.rng == cprev.rng && cnow.dsr == cprev.dsr && 
 				    cnow.dcd == cprev.dcd && cnow.cts == cprev.cts)
 					return -EIO; /* no change => error */
+=======
+			cprev = info->icount;
+			local_irq_restore(flags);
+			while (1) {
+				prepare_to_wait(&info->tport.delta_msr_wait,
+						&wait, TASK_INTERRUPTIBLE);
+				local_irq_save(flags);
+				cnow = info->icount; /* atomic copy */
+				local_irq_restore(flags);
+				if (cnow.rng == cprev.rng && cnow.dsr == cprev.dsr && 
+				    cnow.dcd == cprev.dcd && cnow.cts == cprev.cts) {
+					ret = -EIO; /* no change => error */
+					break;
+				}
+>>>>>>> refs/remotes/origin/master
 				if ( ((arg & TIOCM_RNG) && (cnow.rng != cprev.rng)) ||
 				     ((arg & TIOCM_DSR) && (cnow.dsr != cprev.dsr)) ||
 				     ((arg & TIOCM_CD)  && (cnow.dcd != cprev.dcd)) ||
 				     ((arg & TIOCM_CTS) && (cnow.cts != cprev.cts)) ) {
+<<<<<<< HEAD
 					return 0;
 				}
 				cprev = cnow;
 			}
 			/* NOTREACHED */
+=======
+					ret = 0;
+					break;
+				}
+				schedule();
+				/* see if a signal did it */
+				if (signal_pending(current)) {
+					ret = -ERESTARTSYS;
+					break;
+				}
+				cprev = cnow;
+			}
+			finish_wait(&info->tport.delta_msr_wait, &wait);
+			return ret;
+>>>>>>> refs/remotes/origin/master
 
 		case TIOCSERGWILD:
 		case TIOCSERSWILD:
@@ -1374,11 +2256,27 @@ static int rs_ioctl(struct tty_struct *tty,
 
 static void rs_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = tty->driver_data;
 	unsigned long flags;
 	unsigned int cflag = tty->termios->c_cflag;
 
 	change_speed(info, old_termios);
+=======
+	struct serial_state *info = tty->driver_data;
+	unsigned long flags;
+	unsigned int cflag = tty->termios->c_cflag;
+
+	change_speed(tty, info, old_termios);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+	unsigned long flags;
+	unsigned int cflag = tty->termios.c_cflag;
+
+	change_speed(tty, info, old_termios);
+>>>>>>> refs/remotes/origin/master
 
 	/* Handle transition to B0 status */
 	if ((old_termios->c_cflag & CBAUD) &&
@@ -1393,7 +2291,11 @@ static void rs_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 	if (!(old_termios->c_cflag & CBAUD) &&
 	    (cflag & CBAUD)) {
 		info->MCR |= SER_DTR;
+<<<<<<< HEAD
 		if (!(tty->termios->c_cflag & CRTSCTS) || 
+=======
+		if (!(tty->termios.c_cflag & CRTSCTS) || 
+>>>>>>> refs/remotes/origin/master
 		    !test_bit(TTY_THROTTLED, &tty->flags)) {
 			info->MCR |= SER_RTS;
 		}
@@ -1404,7 +2306,11 @@ static void rs_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 
 	/* Handle turning off CRTSCTS */
 	if ((old_termios->c_cflag & CRTSCTS) &&
+<<<<<<< HEAD
 	    !(tty->termios->c_cflag & CRTSCTS)) {
+=======
+	    !(tty->termios.c_cflag & CRTSCTS)) {
+>>>>>>> refs/remotes/origin/master
 		tty->hw_stopped = 0;
 		rs_start(tty);
 	}
@@ -1417,7 +2323,11 @@ static void rs_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 	 * or not.  Hence, this may change.....
 	 */
 	if (!(old_termios->c_cflag & CLOCAL) &&
+<<<<<<< HEAD
 	    (tty->termios->c_cflag & CLOCAL))
+=======
+	    (tty->termios.c_cflag & CLOCAL))
+>>>>>>> refs/remotes/origin/master
 		wake_up_interruptible(&info->open_wait);
 #endif
 }
@@ -1434,6 +2344,8 @@ static void rs_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
  */
 static void rs_close(struct tty_struct *tty, struct file * filp)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct * info = tty->driver_data;
 	struct serial_state *state;
 	unsigned long flags;
@@ -1484,14 +2396,40 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
 	tty->closing = 1;
 	if (info->closing_wait != ASYNC_CLOSING_WAIT_NONE)
 		tty_wait_until_sent(tty, info->closing_wait);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct serial_state *state = tty->driver_data;
+	struct tty_port *port = &state->tport;
+
+	if (serial_paranoia_check(state, tty->name, "rs_close"))
+		return;
+
+	if (tty_port_close_start(port, tty, filp) == 0)
+		return;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * At this point we stop accepting input.  To do this, we
 	 * disable the receive line status interrupts, and tell the
 	 * interrupt driver to stop checking the data ready bit in the
 	 * line status register.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info->read_status_mask &= ~UART_LSR_DR;
 	if (info->flags & ASYNC_INITIALIZED) {
+=======
+	state->read_status_mask &= ~UART_LSR_DR;
+	if (port->flags & ASYNC_INITIALIZED) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	state->read_status_mask &= ~UART_LSR_DR;
+	if (port->flags & ASYNC_INITIALIZED) {
+>>>>>>> refs/remotes/origin/master
 	        /* disable receive interrupts */
 	        custom.intena = IF_RBF;
 		mb();
@@ -1504,6 +2442,8 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
 		 * has completely drained; this is especially
 		 * important if there is a transmit FIFO!
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rs_wait_until_sent(tty, info->timeout);
 	}
 	shutdown(info);
@@ -1522,6 +2462,22 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
 	info->flags &= ~(ASYNC_NORMAL_ACTIVE|ASYNC_CLOSING);
 	wake_up_interruptible(&info->close_wait);
 	local_irq_restore(flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		rs_wait_until_sent(tty, state->timeout);
+	}
+	shutdown(tty, state);
+	rs_flush_buffer(tty);
+		
+	tty_ldisc_flush(tty);
+	port->tty = NULL;
+
+	tty_port_close_end(port, tty);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1529,9 +2485,19 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
  */
 static void rs_wait_until_sent(struct tty_struct *tty, int timeout)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct * info = tty->driver_data;
 	unsigned long orig_jiffies, char_time;
 	int tty_was_locked = tty_locked();
+=======
+	struct serial_state *info = tty->driver_data;
+	unsigned long orig_jiffies, char_time;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+	unsigned long orig_jiffies, char_time;
+>>>>>>> refs/remotes/origin/master
 	int lsr;
 
 	if (serial_paranoia_check(info, tty->name, "rs_wait_until_sent"))
@@ -1543,12 +2509,18 @@ static void rs_wait_until_sent(struct tty_struct *tty, int timeout)
 	orig_jiffies = jiffies;
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * tty_wait_until_sent is called from lots of places,
 	 * with or without the BTM.
 	 */
 	if (!tty_was_locked)
 		tty_lock();
 	/*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Set the check interval to be 1/5 of the estimated time to
 	 * send a single character, and make it at least 1.  The check
 	 * interval should also be less than the timeout.
@@ -1588,8 +2560,16 @@ static void rs_wait_until_sent(struct tty_struct *tty, int timeout)
 			break;
 	}
 	__set_current_state(TASK_RUNNING);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!tty_was_locked)
 		tty_unlock();
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #ifdef SERIAL_DEBUG_RS_WAIT_UNTIL_SENT
 	printk("lsr = %d (jiff=%lu)...done\n", lsr, jiffies);
 #endif
@@ -1600,12 +2580,22 @@ static void rs_wait_until_sent(struct tty_struct *tty, int timeout)
  */
 static void rs_hangup(struct tty_struct *tty)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct * info = tty->driver_data;
 	struct serial_state *state = info->state;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 
 	if (serial_paranoia_check(info, tty->name, "rs_hangup"))
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	state = info->state;
 
 	rs_flush_buffer(tty);
@@ -1767,6 +2757,19 @@ static int get_async_struct(int line, struct async_struct **ret_info)
 	}
 	*ret_info = sstate->info = info;
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rs_flush_buffer(tty);
+	shutdown(tty, info);
+	info->tport.count = 0;
+	info->tport.flags &= ~ASYNC_NORMAL_ACTIVE;
+	info->tport.tty = NULL;
+	wake_up_interruptible(&info->tport.open_wait);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1777,6 +2780,8 @@ static int get_async_struct(int line, struct async_struct **ret_info)
  */
 static int rs_open(struct tty_struct *tty, struct file * filp)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct	*info;
 	int 			retval, line;
 
@@ -1817,10 +2822,36 @@ static int rs_open(struct tty_struct *tty, struct file * filp)
 	 * Start up serial port
 	 */
 	retval = startup(info);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct serial_state *info = rs_table + tty->index;
+	struct tty_port *port = &info->tport;
+	int retval;
+
+	port->count++;
+	port->tty = tty;
+	tty->driver_data = info;
+	tty->port = port;
+	if (serial_paranoia_check(info, tty->name, "rs_open"))
+		return -ENODEV;
+
+<<<<<<< HEAD
+	tty->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+
+	retval = startup(tty, info);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	port->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+
+	retval = startup(tty, info);
+>>>>>>> refs/remotes/origin/master
 	if (retval) {
 		return retval;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = block_til_ready(tty, filp, info);
 	if (retval) {
 #ifdef SERIAL_DEBUG_OPEN
@@ -1834,12 +2865,20 @@ static int rs_open(struct tty_struct *tty, struct file * filp)
 	printk("rs_open %s successful...", tty->name);
 #endif
 	return 0;
+=======
+	return tty_port_block_til_ready(port, tty, filp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return tty_port_block_til_ready(port, tty, filp);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * /proc fs routines....
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void line_info(struct seq_file *m, struct serial_state *state)
 {
 	struct async_struct *info = state->info, scr_info;
@@ -1862,6 +2901,24 @@ static inline void line_info(struct seq_file *m, struct serial_state *state)
 	local_irq_save(flags);
 	status = ciab.pra;
 	control = info ? info->MCR : status;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void line_info(struct seq_file *m, int line,
+		struct serial_state *state)
+{
+	char	stat_buf[30], control, status;
+	unsigned long flags;
+
+	seq_printf(m, "%d: uart:amiga_builtin", line);
+
+	local_irq_save(flags);
+	status = ciab.pra;
+	control = (state->tport.flags & ASYNC_INITIALIZED) ? state->MCR : status;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 
 	stat_buf[0] = 0;
@@ -1877,9 +2934,19 @@ static inline void line_info(struct seq_file *m, struct serial_state *state)
 	if(!(status & SER_DCD))
 		strcat(stat_buf, "|CD");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (info->quot) {
 		seq_printf(m, " baud:%d", state->baud_base / info->quot);
 	}
+=======
+	if (state->quot)
+		seq_printf(m, " baud:%d", state->baud_base / state->quot);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (state->quot)
+		seq_printf(m, " baud:%d", state->baud_base / state->quot);
+>>>>>>> refs/remotes/origin/master
 
 	seq_printf(m, " tx:%d rx:%d", state->icount.tx, state->icount.rx);
 
@@ -1904,7 +2971,15 @@ static inline void line_info(struct seq_file *m, struct serial_state *state)
 static int rs_proc_show(struct seq_file *m, void *v)
 {
 	seq_printf(m, "serinfo:1.0 driver:%s\n", serial_version);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	line_info(m, &rs_table[0]);
+=======
+	line_info(m, 0, &rs_table[0]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	line_info(m, 0, &rs_table[0]);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1965,6 +3040,41 @@ static const struct tty_operations serial_ops = {
 	.proc_fops = &rs_proc_fops,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int amiga_carrier_raised(struct tty_port *port)
+{
+	return !(ciab.pra & SER_DCD);
+}
+
+static void amiga_dtr_rts(struct tty_port *port, int raise)
+{
+	struct serial_state *info = container_of(port, struct serial_state,
+			tport);
+	unsigned long flags;
+
+	if (raise)
+		info->MCR |= SER_DTR|SER_RTS;
+	else
+		info->MCR &= ~(SER_DTR|SER_RTS);
+
+	local_irq_save(flags);
+	rtsdtr_ctrl(info->MCR);
+	local_irq_restore(flags);
+}
+
+static const struct tty_port_operations amiga_port_ops = {
+	.carrier_raised = amiga_carrier_raised,
+	.dtr_rts = amiga_dtr_rts,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The serial driver boot-time initialization code!
  */
@@ -1974,17 +3084,36 @@ static int __init amiga_serial_probe(struct platform_device *pdev)
 	struct serial_state * state;
 	int error;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	serial_driver = alloc_tty_driver(1);
 	if (!serial_driver)
 		return -ENOMEM;
 
 	IRQ_ports = NULL;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	serial_driver = alloc_tty_driver(NR_PORTS);
+	if (!serial_driver)
+		return -ENOMEM;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	show_serial_version();
 
 	/* Initialize the tty_driver structure */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	serial_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	serial_driver->driver_name = "amiserial";
 	serial_driver->name = "ttyS";
 	serial_driver->major = TTY_MAJOR;
@@ -1997,25 +3126,55 @@ static int __init amiga_serial_probe(struct platform_device *pdev)
 	serial_driver->flags = TTY_DRIVER_REAL_RAW;
 	tty_set_operations(serial_driver, &serial_ops);
 
+<<<<<<< HEAD
 	error = tty_register_driver(serial_driver);
 	if (error)
 		goto fail_put_tty_driver;
 
 	state = rs_table;
+<<<<<<< HEAD
 	state->magic = SSTATE_MAGIC;
 	state->port = (int)&custom.serdatr; /* Just to give it a value */
 	state->line = 0;
 	state->custom_divisor = 0;
 	state->close_delay = 5*HZ/10;
 	state->closing_wait = 30*HZ;
+=======
+	state->port = (int)&custom.serdatr; /* Just to give it a value */
+	state->custom_divisor = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	state = rs_table;
+	state->port = (int)&custom.serdatr; /* Just to give it a value */
+	state->custom_divisor = 0;
+>>>>>>> refs/remotes/origin/master
 	state->icount.cts = state->icount.dsr = 
 	  state->icount.rng = state->icount.dcd = 0;
 	state->icount.rx = state->icount.tx = 0;
 	state->icount.frame = state->icount.parity = 0;
 	state->icount.overrun = state->icount.brk = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	printk(KERN_INFO "ttyS%d is the amiga builtin serial port\n",
 		       state->line);
+=======
+	tty_port_init(&state->tport);
+	state->tport.ops = &amiga_port_ops;
+
+	printk(KERN_INFO "ttyS0 is the amiga builtin serial port\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tty_port_init(&state->tport);
+	state->tport.ops = &amiga_port_ops;
+	tty_port_link_device(&state->tport, serial_driver, 0);
+
+	error = tty_register_driver(serial_driver);
+	if (error)
+		goto fail_put_tty_driver;
+
+	printk(KERN_INFO "ttyS0 is the amiga builtin serial port\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* Hardware set up */
 
@@ -2027,7 +3186,15 @@ static int __init amiga_serial_probe(struct platform_device *pdev)
 	if (error)
 		goto fail_unregister;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	error = request_irq(IRQ_AMIGA_RBF, ser_rx_int, IRQF_DISABLED,
+=======
+	error = request_irq(IRQ_AMIGA_RBF, ser_rx_int, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = request_irq(IRQ_AMIGA_RBF, ser_rx_int, 0,
+>>>>>>> refs/remotes/origin/master
 			    "serial RX", state);
 	if (error)
 		goto fail_free_irq;
@@ -2060,6 +3227,10 @@ fail_free_irq:
 fail_unregister:
 	tty_unregister_driver(serial_driver);
 fail_put_tty_driver:
+<<<<<<< HEAD
+=======
+	tty_port_destroy(&state->tport);
+>>>>>>> refs/remotes/origin/master
 	put_tty_driver(serial_driver);
 	return error;
 }
@@ -2068,22 +3239,44 @@ static int __exit amiga_serial_remove(struct platform_device *pdev)
 {
 	int error;
 	struct serial_state *state = platform_get_drvdata(pdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct async_struct *info = state->info;
 
 	/* printk("Unloading %s: version %s\n", serial_name, serial_version); */
 	tasklet_kill(&info->tlet);
+=======
+
+	/* printk("Unloading %s: version %s\n", serial_name, serial_version); */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* printk("Unloading %s: version %s\n", serial_name, serial_version); */
+>>>>>>> refs/remotes/origin/master
 	if ((error = tty_unregister_driver(serial_driver)))
 		printk("SERIAL: failed to unregister serial driver (%d)\n",
 		       error);
 	put_tty_driver(serial_driver);
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 	rs_table[0].info = NULL;
 	kfree(info);
 
 	free_irq(IRQ_AMIGA_TBE, rs_table);
 	free_irq(IRQ_AMIGA_RBF, rs_table);
+=======
+	free_irq(IRQ_AMIGA_TBE, state);
+	free_irq(IRQ_AMIGA_RBF, state);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	platform_set_drvdata(pdev, NULL);
+=======
+	tty_port_destroy(&state->tport);
+
+	free_irq(IRQ_AMIGA_TBE, state);
+	free_irq(IRQ_AMIGA_RBF, state);
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 }
@@ -2096,6 +3289,7 @@ static struct platform_driver amiga_serial_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init amiga_serial_init(void)
 {
 	return platform_driver_probe(&amiga_serial_driver, amiga_serial_probe);
@@ -2109,6 +3303,9 @@ static void __exit amiga_serial_exit(void)
 }
 
 module_exit(amiga_serial_exit);
+=======
+module_platform_driver_probe(amiga_serial_driver, amiga_serial_probe);
+>>>>>>> refs/remotes/origin/master
 
 
 #if defined(CONFIG_SERIAL_CONSOLE) && !defined(MODULE)
@@ -2167,6 +3364,12 @@ static struct console sercons = {
  */
 static int __init amiserial_console_init(void)
 {
+<<<<<<< HEAD
+=======
+	if (!MACH_IS_AMIGA)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	register_console(&sercons);
 	return 0;
 }

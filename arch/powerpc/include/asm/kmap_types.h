@@ -10,6 +10,7 @@
  * 2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
 enum km_type {
 	KM_BOUNCE_READ,
 	KM_SKB_SUNRPC_DATA,
@@ -40,6 +41,9 @@ enum km_type {
 #define KM_NMI_PTE	(-1)
 #define KM_IRQ_PTE	(-1)
 #endif
+=======
+#define KM_TYPE_NR 16
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __KERNEL__ */
 #endif	/* _ASM_POWERPC_KMAP_TYPES_H */

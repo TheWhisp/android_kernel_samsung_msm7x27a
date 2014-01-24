@@ -75,7 +75,10 @@ obj-$(CONFIG_SCSI_AIC94XX)	+= aic94xx/
 obj-$(CONFIG_SCSI_PM8001)	+= pm8001/
 obj-$(CONFIG_SCSI_ISCI)		+= isci/
 obj-$(CONFIG_SCSI_IPS)		+= ips.o
+<<<<<<< HEAD
 obj-$(CONFIG_SCSI_FD_MCS)	+= fd_mcs.o
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SCSI_FUTURE_DOMAIN)+= fdomain.o
 obj-$(CONFIG_SCSI_IN2000)	+= in2000.o
 obj-$(CONFIG_SCSI_GENERIC_NCR5380) += g_NCR5380.o
@@ -91,6 +94,10 @@ obj-$(CONFIG_SCSI_QLA_FC)	+= qla2xxx/
 obj-$(CONFIG_SCSI_QLA_ISCSI)	+= libiscsi.o qla4xxx/
 obj-$(CONFIG_SCSI_LPFC)		+= lpfc/
 obj-$(CONFIG_SCSI_BFA_FC)	+= bfa/
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SCSI_CHELSIO_FCOE)	+= csiostor/
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SCSI_PAS16)	+= pas16.o
 obj-$(CONFIG_SCSI_T128)		+= t128.o
 obj-$(CONFIG_SCSI_DMX3191D)	+= dmx3191d.o
@@ -100,7 +107,10 @@ obj-$(CONFIG_SCSI_SYM53C8XX_2)	+= sym53c8xx_2/
 obj-$(CONFIG_SCSI_ZALON)	+= zalon7xx.o
 obj-$(CONFIG_SCSI_EATA_PIO)	+= eata_pio.o
 obj-$(CONFIG_SCSI_7000FASST)	+= wd7000.o
+<<<<<<< HEAD
 obj-$(CONFIG_SCSI_IBMMCA)	+= ibmmca.o
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SCSI_EATA)		+= eata.o
 obj-$(CONFIG_SCSI_DC395x)	+= dc395x.o
 obj-$(CONFIG_SCSI_DC390T)	+= tmscsim.o
@@ -108,6 +118,15 @@ obj-$(CONFIG_MEGARAID_LEGACY)	+= megaraid.o
 obj-$(CONFIG_MEGARAID_NEWGEN)	+= megaraid/
 obj-$(CONFIG_MEGARAID_SAS)	+= megaraid/
 obj-$(CONFIG_SCSI_MPT2SAS)	+= mpt2sas/
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SCSI_UFSHCD)	+= ufs/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_SCSI_MPT3SAS)	+= mpt3sas/
+obj-$(CONFIG_SCSI_UFSHCD)	+= ufs/
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SCSI_ACARD)	+= atp870u.o
 obj-$(CONFIG_SCSI_SUNESP)	+= esp_scsi.o	sun_esp.o
 obj-$(CONFIG_SCSI_GDTH)		+= gdth.o
@@ -134,13 +153,35 @@ obj-$(CONFIG_SCSI_IBMVFC)	+= ibmvscsi/
 obj-$(CONFIG_SCSI_HPTIOP)	+= hptiop.o
 obj-$(CONFIG_SCSI_STEX)		+= stex.o
 obj-$(CONFIG_SCSI_MVSAS)	+= mvsas/
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SCSI_MVUMI)	+= mvumi.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_SCSI_MVUMI)	+= mvumi.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_PS3_ROM)		+= ps3rom.o
 obj-$(CONFIG_SCSI_CXGB3_ISCSI)	+= libiscsi.o libiscsi_tcp.o cxgbi/
 obj-$(CONFIG_SCSI_CXGB4_ISCSI)	+= libiscsi.o libiscsi_tcp.o cxgbi/
 obj-$(CONFIG_SCSI_BNX2_ISCSI)	+= libiscsi.o bnx2i/
 obj-$(CONFIG_BE2ISCSI)		+= libiscsi.o be2iscsi/
+<<<<<<< HEAD
 obj-$(CONFIG_SCSI_PMCRAID)	+= pmcraid.o
+<<<<<<< HEAD
 obj-$(CONFIG_VMWARE_PVSCSI)	+= vmw_pvscsi.o
+=======
+obj-$(CONFIG_SCSI_VIRTIO)	+= virtio_scsi.o
+obj-$(CONFIG_VMWARE_PVSCSI)	+= vmw_pvscsi.o
+obj-$(CONFIG_HYPERV_STORAGE)	+= hv_storvsc.o
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_SCSI_ESAS2R)	+= esas2r/
+obj-$(CONFIG_SCSI_PMCRAID)	+= pmcraid.o
+obj-$(CONFIG_SCSI_VIRTIO)	+= virtio_scsi.o
+obj-$(CONFIG_VMWARE_PVSCSI)	+= vmw_pvscsi.o
+obj-$(CONFIG_HYPERV_STORAGE)	+= hv_storvsc.o
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_ARM)		+= arm/
 
@@ -157,8 +198,11 @@ obj-$(CONFIG_SCSI_OSD_INITIATOR) += osd/
 # This goes last, so that "real" scsi devices probe earlier
 obj-$(CONFIG_SCSI_DEBUG)	+= scsi_debug.o
 
+<<<<<<< HEAD
 obj-$(CONFIG_SCSI_WAIT_SCAN)	+= scsi_wait_scan.o
 
+=======
+>>>>>>> refs/remotes/origin/master
 scsi_mod-y			+= scsi.o hosts.o scsi_ioctl.o constants.o \
 				   scsicam.o scsi_error.o scsi_lib.o
 scsi_mod-$(CONFIG_SCSI_DMA)	+= scsi_lib_dma.o
@@ -169,6 +213,16 @@ scsi_mod-$(CONFIG_SCSI_PROC_FS)	+= scsi_proc.o
 scsi_mod-y			+= scsi_trace.o
 scsi_mod-$(CONFIG_PM)		+= scsi_pm.o
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+hv_storvsc-y			:= storvsc_drv.o
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+hv_storvsc-y			:= storvsc_drv.o
+
+>>>>>>> refs/remotes/origin/master
 scsi_tgt-y			+= scsi_tgt_lib.o scsi_tgt_if.o
 
 sd_mod-objs	:= sd.o

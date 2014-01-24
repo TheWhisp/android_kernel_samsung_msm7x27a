@@ -21,6 +21,10 @@
 #include <linux/posix-clock.h>
 #include <linux/poll.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ptp_private.h"
 
@@ -33,9 +37,19 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
 {
 	struct ptp_clock_caps caps;
 	struct ptp_clock_request req;
+<<<<<<< HEAD
 	struct ptp_clock *ptp = container_of(pc, struct ptp_clock, clock);
 	struct ptp_clock_info *ops = ptp->info;
 	int enable, err = 0;
+=======
+	struct ptp_sys_offset *sysoff = NULL;
+	struct ptp_clock *ptp = container_of(pc, struct ptp_clock, clock);
+	struct ptp_clock_info *ops = ptp->info;
+	struct ptp_clock_time *pct;
+	struct timespec ts;
+	int enable, err = 0;
+	unsigned int i;
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 
@@ -88,10 +102,51 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
 		err = ops->enable(ops, &req, enable);
 		break;
 
+<<<<<<< HEAD
+=======
+	case PTP_SYS_OFFSET:
+		sysoff = kmalloc(sizeof(*sysoff), GFP_KERNEL);
+		if (!sysoff) {
+			err = -ENOMEM;
+			break;
+		}
+		if (copy_from_user(sysoff, (void __user *)arg,
+				   sizeof(*sysoff))) {
+			err = -EFAULT;
+			break;
+		}
+		if (sysoff->n_samples > PTP_MAX_SAMPLES) {
+			err = -EINVAL;
+			break;
+		}
+		pct = &sysoff->ts[0];
+		for (i = 0; i < sysoff->n_samples; i++) {
+			getnstimeofday(&ts);
+			pct->sec = ts.tv_sec;
+			pct->nsec = ts.tv_nsec;
+			pct++;
+			ptp->info->gettime(ptp->info, &ts);
+			pct->sec = ts.tv_sec;
+			pct->nsec = ts.tv_nsec;
+			pct++;
+		}
+		getnstimeofday(&ts);
+		pct->sec = ts.tv_sec;
+		pct->nsec = ts.tv_nsec;
+		if (copy_to_user((void __user *)arg, sysoff, sizeof(*sysoff)))
+			err = -EFAULT;
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	default:
 		err = -ENOTTY;
 		break;
 	}
+<<<<<<< HEAD
+=======
+
+	kfree(sysoff);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -104,20 +159,37 @@ unsigned int ptp_poll(struct posix_clock *pc, struct file *fp, poll_table *wait)
 	return queue_cnt(&ptp->tsevq) ? POLLIN : 0;
 }
 
+<<<<<<< HEAD
+=======
+#define EXTTS_BUFSIZE (PTP_BUF_TIMESTAMPS * sizeof(struct ptp_extts_event))
+
+>>>>>>> refs/remotes/origin/master
 ssize_t ptp_read(struct posix_clock *pc,
 		 uint rdflags, char __user *buf, size_t cnt)
 {
 	struct ptp_clock *ptp = container_of(pc, struct ptp_clock, clock);
 	struct timestamp_event_queue *queue = &ptp->tsevq;
+<<<<<<< HEAD
 	struct ptp_extts_event event[PTP_BUF_TIMESTAMPS];
 	unsigned long flags;
 	size_t qcnt, i;
+=======
+	struct ptp_extts_event *event;
+	unsigned long flags;
+	size_t qcnt, i;
+	int result;
+>>>>>>> refs/remotes/origin/master
 
 	if (cnt % sizeof(struct ptp_extts_event) != 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (cnt > sizeof(event))
 		cnt = sizeof(event);
+=======
+	if (cnt > EXTTS_BUFSIZE)
+		cnt = EXTTS_BUFSIZE;
+>>>>>>> refs/remotes/origin/master
 
 	cnt = cnt / sizeof(struct ptp_extts_event);
 
@@ -135,6 +207,15 @@ ssize_t ptp_read(struct posix_clock *pc,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+=======
+	event = kmalloc(EXTTS_BUFSIZE, GFP_KERNEL);
+	if (!event) {
+		mutex_unlock(&ptp->tsevq_mux);
+		return -ENOMEM;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&queue->lock, flags);
 
 	qcnt = queue_cnt(queue);
@@ -153,8 +234,17 @@ ssize_t ptp_read(struct posix_clock *pc,
 
 	mutex_unlock(&ptp->tsevq_mux);
 
+<<<<<<< HEAD
 	if (copy_to_user(buf, event, cnt))
 		return -EFAULT;
 
 	return cnt;
+=======
+	result = cnt;
+	if (copy_to_user(buf, event, cnt))
+		result = -EFAULT;
+
+	kfree(event);
+	return result;
+>>>>>>> refs/remotes/origin/master
 }

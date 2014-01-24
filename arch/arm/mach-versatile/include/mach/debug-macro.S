@@ -11,7 +11,11 @@
  *
 */
 
+<<<<<<< HEAD
 		.macro	addruart, rp, rv
+=======
+		.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 		mov	\rp,      #0x001F0000
 		orr	\rp, \rp, #0x00001000
 		orr	\rv, \rp, #0xf1000000	@ virtual base

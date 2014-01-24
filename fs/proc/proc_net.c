@@ -26,6 +26,13 @@
 
 #include "internal.h"
 
+<<<<<<< HEAD
+=======
+static inline struct net *PDE_NET(struct proc_dir_entry *pde)
+{
+	return pde->parent->data;
+}
+>>>>>>> refs/remotes/origin/master
 
 static struct net *get_proc_net(const struct inode *inode)
 {
@@ -119,7 +126,11 @@ static struct net *get_proc_task_net(struct inode *dir)
 }
 
 static struct dentry *proc_tgid_net_lookup(struct inode *dir,
+<<<<<<< HEAD
 		struct dentry *dentry, struct nameidata *nd)
+=======
+		struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dentry *de;
 	struct net *net;
@@ -156,16 +167,26 @@ const struct inode_operations proc_net_inode_operations = {
 	.getattr	= proc_tgid_net_getattr,
 };
 
+<<<<<<< HEAD
 static int proc_tgid_net_readdir(struct file *filp, void *dirent,
 		filldir_t filldir)
+=======
+static int proc_tgid_net_readdir(struct file *file, struct dir_context *ctx)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct net *net;
 
 	ret = -EINVAL;
+<<<<<<< HEAD
 	net = get_proc_task_net(filp->f_path.dentry->d_inode);
 	if (net != NULL) {
 		ret = proc_readdir_de(net->proc_net, filp, dirent, filldir);
+=======
+	net = get_proc_task_net(file_inode(file));
+	if (net != NULL) {
+		ret = proc_readdir_de(net->proc_net, file, ctx);
+>>>>>>> refs/remotes/origin/master
 		put_net(net);
 	}
 	return ret;
@@ -174,12 +195,17 @@ static int proc_tgid_net_readdir(struct file *filp, void *dirent,
 const struct file_operations proc_net_operations = {
 	.llseek		= generic_file_llseek,
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= proc_tgid_net_readdir,
 };
 
 
 struct proc_dir_entry *proc_net_fops_create(struct net *net,
+<<<<<<< HEAD
 	const char *name, mode_t mode, const struct file_operations *fops)
+=======
+	const char *name, umode_t mode, const struct file_operations *fops)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return proc_create(name, mode, net->proc_net, fops);
 }
@@ -191,21 +217,46 @@ void proc_net_remove(struct net *net, const char *name)
 }
 EXPORT_SYMBOL_GPL(proc_net_remove);
 
+=======
+	.iterate	= proc_tgid_net_readdir,
+};
+
+>>>>>>> refs/remotes/origin/master
 static __net_init int proc_net_ns_init(struct net *net)
 {
 	struct proc_dir_entry *netd, *net_statd;
 	int err;
 
 	err = -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	netd = kzalloc(sizeof(*netd), GFP_KERNEL);
+=======
+	netd = kzalloc(sizeof(*netd) + 4, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netd = kzalloc(sizeof(*netd) + 4, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!netd)
 		goto out;
 
 	netd->data = net;
 	netd->nlink = 2;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	netd->name = "net";
 	netd->namelen = 3;
 	netd->parent = &proc_root;
+=======
+	netd->namelen = 3;
+	netd->parent = &proc_root;
+	memcpy(netd->name, "net", 4);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netd->namelen = 3;
+	netd->parent = &proc_root;
+	memcpy(netd->name, "net", 4);
+>>>>>>> refs/remotes/origin/master
 
 	err = -EEXIST;
 	net_statd = proc_net_mkdir(net, "stat", netd);

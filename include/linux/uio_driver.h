@@ -14,16 +14,42 @@
 #ifndef _UIO_DRIVER_H_
 #define _UIO_DRIVER_H_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/interrupt.h>
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/fs.h>
+#include <linux/interrupt.h>
+
+struct module;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct uio_map;
 
 /**
  * struct uio_mem - description of a UIO memory region
  * @name:		name of the memory region for identification
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @addr:		address of the device's memory
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @addr:		address of the device's memory (phys_addr is used since
+ * 			addr can be logical, virtual, or physical & phys_addr_t
+ * 			should always be large enough to handle any of the
+ * 			address types)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @size:		size of IO
  * @memtype:		type of memory addr points to
  * @internal_addr:	ioremap-ped version of addr, for driver internal use
@@ -31,7 +57,15 @@ struct uio_map;
  */
 struct uio_mem {
 	const char		*name;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long		addr;
+=======
+	phys_addr_t		addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phys_addr_t		addr;
+>>>>>>> refs/remotes/origin/master
 	unsigned long		size;
 	int			memtype;
 	void __iomem		*internal_addr;
@@ -98,11 +132,25 @@ extern int __must_check
 	__uio_register_device(struct module *owner,
 			      struct device *parent,
 			      struct uio_info *info);
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int __must_check
 	uio_register_device(struct device *parent, struct uio_info *info)
 {
 	return __uio_register_device(THIS_MODULE, parent, info);
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/* use a define to avoid include chaining to get THIS_MODULE */
+#define uio_register_device(parent, info) \
+	__uio_register_device(THIS_MODULE, parent, info)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void uio_unregister_device(struct uio_info *info);
 extern void uio_event_notify(struct uio_info *info);
 

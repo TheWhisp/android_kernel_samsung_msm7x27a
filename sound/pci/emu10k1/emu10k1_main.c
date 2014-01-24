@@ -35,6 +35,14 @@
 #include <linux/kthread.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/pci.h>
 #include <linux/slab.h>
@@ -656,14 +664,21 @@ static int snd_emu10k1_cardbus_init(struct snd_emu10k1 *emu)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int snd_emu1010_load_firmware(struct snd_emu10k1 *emu, const char *filename)
 {
 	int err;
+=======
+static int snd_emu1010_load_firmware(struct snd_emu10k1 *emu,
+				     const struct firmware *fw_entry)
+{
+>>>>>>> refs/remotes/origin/master
 	int n, i;
 	int reg;
 	int value;
 	unsigned int write_post;
 	unsigned long flags;
+<<<<<<< HEAD
 	const struct firmware *fw_entry;
 
 	err = request_firmware(&fw_entry, filename, &emu->pci->dev);
@@ -672,6 +687,11 @@ static int snd_emu1010_load_firmware(struct snd_emu10k1 *emu, const char *filena
 		return err;
 	}
 	snd_printk(KERN_INFO "firmware size = 0x%zx\n", fw_entry->size);
+=======
+
+	if (!fw_entry)
+		return -EIO;
+>>>>>>> refs/remotes/origin/master
 
 	/* The FPGA is a Xilinx Spartan IIE XC2S50E */
 	/* GPIO7 -> FPGA PGMN
@@ -704,7 +724,10 @@ static int snd_emu1010_load_firmware(struct snd_emu10k1 *emu, const char *filena
 	write_post = inl(emu->port + A_IOCFG);
 	spin_unlock_irqrestore(&emu->emu_lock, flags);
 
+<<<<<<< HEAD
 	release_firmware(fw_entry);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -719,6 +742,13 @@ static int emu1010_firmware_thread(void *data)
 		msleep_interruptible(1000);
 		if (kthread_should_stop())
 			break;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+		if (emu->suspend)
+			continue;
+#endif
+>>>>>>> refs/remotes/origin/master
 		snd_emu1010_fpga_read(emu, EMU_HANA_IRQ_STATUS, &tmp); /* IRQ Status */
 		snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg); /* OPTIONS: Which cards are attached to the EMU */
 		if (reg & EMU_HANA_OPTION_DOCK_OFFLINE) {
@@ -726,6 +756,7 @@ static int emu1010_firmware_thread(void *data)
 			/* Return to Audio Dock programming mode */
 			snd_printk(KERN_INFO "emu1010: Loading Audio Dock Firmware\n");
 			snd_emu1010_fpga_write(emu, EMU_HANA_FPGA_CONFIG, EMU_HANA_FPGA_CONFIG_AUDIODOCK);
+<<<<<<< HEAD
 			if (emu->card_capabilities->emu_model ==
 			    EMU_MODEL_EMU1010) {
 				err = snd_emu1010_load_firmware(emu, DOCK_FILENAME);
@@ -740,6 +771,34 @@ static int emu1010_firmware_thread(void *data)
 				   EMU_MODEL_EMU1616) {
 				err = snd_emu1010_load_firmware(emu, MICRO_DOCK_FILENAME);
 				if (err != 0)
+=======
+
+			if (!emu->dock_fw) {
+				const char *filename = NULL;
+				switch (emu->card_capabilities->emu_model) {
+				case EMU_MODEL_EMU1010:
+					filename = DOCK_FILENAME;
+					break;
+				case EMU_MODEL_EMU1010B:
+					filename = MICRO_DOCK_FILENAME;
+					break;
+				case EMU_MODEL_EMU1616:
+					filename = MICRO_DOCK_FILENAME;
+					break;
+				}
+				if (filename) {
+					err = request_firmware(&emu->dock_fw,
+							       filename,
+							       &emu->pci->dev);
+					if (err)
+						continue;
+				}
+			}
+
+			if (emu->dock_fw) {
+				err = snd_emu1010_load_firmware(emu, emu->dock_fw);
+				if (err)
+>>>>>>> refs/remotes/origin/master
 					continue;
 			}
 
@@ -806,7 +865,10 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
 	unsigned int i;
 	u32 tmp, tmp2, reg;
 	int err;
+<<<<<<< HEAD
 	const char *filename = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	snd_printk(KERN_INFO "emu1010: Special config.\n");
 	/* AC97 2.1, Any 16Meg of 4Gig address, Auto-Mute, EMU32 Slave,
@@ -848,6 +910,7 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
 		return -ENODEV;
 	}
 	snd_printk(KERN_INFO "emu1010: EMU_HANA_ID = 0x%x\n", reg);
+<<<<<<< HEAD
 	switch (emu->card_capabilities->emu_model) {
 	case EMU_MODEL_EMU1010:
 		filename = HANA_FILENAME;
@@ -872,6 +935,40 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
 		snd_printk(
 			KERN_INFO "emu1010: Loading Firmware file %s failed\n",
 			filename);
+=======
+
+	if (!emu->firmware) {
+		const char *filename;
+		switch (emu->card_capabilities->emu_model) {
+		case EMU_MODEL_EMU1010:
+			filename = HANA_FILENAME;
+			break;
+		case EMU_MODEL_EMU1010B:
+			filename = EMU1010B_FILENAME;
+			break;
+		case EMU_MODEL_EMU1616:
+			filename = EMU1010_NOTEBOOK_FILENAME;
+			break;
+		case EMU_MODEL_EMU0404:
+			filename = EMU0404_FILENAME;
+			break;
+		default:
+			return -ENODEV;
+		}
+
+		err = request_firmware(&emu->firmware, filename, &emu->pci->dev);
+		if (err != 0) {
+			snd_printk(KERN_ERR "emu1010: firmware: %s not found. Err = %d\n", filename, err);
+			return err;
+		}
+		snd_printk(KERN_INFO "emu1010: firmware file = %s, size = 0x%zx\n",
+			   filename, emu->firmware->size);
+	}
+
+	err = snd_emu1010_load_firmware(emu, emu->firmware);
+	if (err != 0) {
+		snd_printk(KERN_INFO "emu1010: Loading Firmware failed\n");
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -1240,7 +1337,11 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
  *  Create the EMU10K1 instance
  */
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int alloc_pm_buffer(struct snd_emu10k1 *emu);
 static void free_pm_buffer(struct snd_emu10k1 *emu);
 #endif
@@ -1258,6 +1359,13 @@ static int snd_emu10k1_free(struct snd_emu10k1 *emu)
 	}
 	if (emu->emu1010.firmware_thread)
 		kthread_stop(emu->emu1010.firmware_thread);
+<<<<<<< HEAD
+=======
+	if (emu->firmware)
+		release_firmware(emu->firmware);
+	if (emu->dock_fw)
+		release_firmware(emu->dock_fw);
+>>>>>>> refs/remotes/origin/master
 	if (emu->irq >= 0)
 		free_irq(emu->irq, emu);
 	/* remove reserved page */
@@ -1274,7 +1382,11 @@ static int snd_emu10k1_free(struct snd_emu10k1 *emu)
 		snd_dma_free_pages(&emu->ptb_pages);
 	vfree(emu->page_ptr_table);
 	vfree(emu->page_addr_table);
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	free_pm_buffer(emu);
 #endif
 	if (emu->port)
@@ -1488,6 +1600,27 @@ static struct snd_emu_chip_details emu_chip_details[] = {
 	 .spdif_bug = 1,
 	 .invert_shared_spdif = 1,	/* digital/analog switch swapped */
 	 .ac97_chip = 1} ,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* 0x20051102 also has SB0350 written on it, treated as Audigy 2 ZS by
+	   Creative's Windows driver */
+	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x20051102,
+	 .driver = "Audigy2", .name = "SB Audigy 2 ZS [SB0350a]",
+	 .id = "Audigy2",
+	 .emu10k2_chip = 1,
+	 .ca0102_chip = 1,
+	 .ca0151_chip = 1,
+	 .spk71 = 1,
+	 .spdif_bug = 1,
+	 .invert_shared_spdif = 1,	/* digital/analog switch swapped */
+	 .ac97_chip = 1} ,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x20021102,
 	 .driver = "Audigy2", .name = "SB Audigy 2 ZS [SB0350]",
 	 .id = "Audigy2",
@@ -1725,7 +1858,11 @@ static struct snd_emu_chip_details emu_chip_details[] = {
 	{ } /* terminator */
 };
 
+<<<<<<< HEAD
 int __devinit snd_emu10k1_create(struct snd_card *card,
+=======
+int snd_emu10k1_create(struct snd_card *card,
+>>>>>>> refs/remotes/origin/master
 		       struct pci_dev *pci,
 		       unsigned short extin_mask,
 		       unsigned short extout_mask,
@@ -1921,7 +2058,15 @@ int __devinit snd_emu10k1_create(struct snd_card *card,
 
 	/* irq handler must be registered after I/O ports are activated */
 	if (request_irq(pci->irq, snd_emu10k1_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"EMU10K1", emu)) {
+=======
+			KBUILD_MODNAME, emu)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, emu)) {
+>>>>>>> refs/remotes/origin/master
 		err = -EBUSY;
 		goto error;
 	}
@@ -1967,7 +2112,11 @@ int __devinit snd_emu10k1_create(struct snd_card *card,
 	err = snd_emu10k1_init(emu, enable_ir, 0);
 	if (err < 0)
 		goto error;
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	err = alloc_pm_buffer(emu);
 	if (err < 0)
 		goto error;
@@ -1996,7 +2145,11 @@ int __devinit snd_emu10k1_create(struct snd_card *card,
 	return err;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static unsigned char saved_regs[] = {
 	CPF, PTRX, CVCF, VTFT, Z1, Z2, PSST, DSL, CCCA, CCR, CLP,
 	FXRT, MAPA, MAPB, ENVVOL, ATKHLDV, DCYSUSV, LFOVAL1, ENVVAL,
@@ -2012,7 +2165,11 @@ static unsigned char saved_regs_audigy[] = {
 	0xff /* end */
 };
 
+<<<<<<< HEAD
 static int __devinit alloc_pm_buffer(struct snd_emu10k1 *emu)
+=======
+static int alloc_pm_buffer(struct snd_emu10k1 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	int size;
 

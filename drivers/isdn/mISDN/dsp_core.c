@@ -218,20 +218,44 @@ dsp_rx_off_member(struct dsp *dsp)
 	if (!dsp->ch.peer) {
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: no peer, no rx_off\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__);
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	cq.op = MISDN_CTRL_RX_OFF;
 	cq.p1 = rx_off;
 	if (dsp->ch.peer->ctrl(dsp->ch.peer, CONTROL_CHANNEL, &cq)) {
 		printk(KERN_DEBUG "%s: 2nd CONTROL_CHANNEL failed\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			__func__);
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	dsp->rx_is_off = rx_off;
 	if (dsp_debug & DEBUG_DSP_CORE)
 		printk(KERN_DEBUG "%s: %s set rx_off = %d\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			__func__, dsp->name, rx_off);
+=======
+		       __func__, dsp->name, rx_off);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, dsp->name, rx_off);
+>>>>>>> refs/remotes/origin/master
 }
 static void
 dsp_rx_off(struct dsp *dsp)
@@ -263,19 +287,46 @@ dsp_fill_empty(struct dsp *dsp)
 	if (!dsp->ch.peer) {
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: no peer, no fill_empty\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__);
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	cq.op = MISDN_CTRL_FILL_EMPTY;
 	cq.p1 = 1;
+<<<<<<< HEAD
 	if (dsp->ch.peer->ctrl(dsp->ch.peer, CONTROL_CHANNEL, &cq)) {
 		printk(KERN_DEBUG "%s: CONTROL_CHANNEL failed\n",
+<<<<<<< HEAD
 			__func__);
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cq.p2 = dsp_silence;
+	if (dsp->ch.peer->ctrl(dsp->ch.peer, CONTROL_CHANNEL, &cq)) {
+		printk(KERN_DEBUG "%s: CONTROL_CHANNEL failed\n",
+		       __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	if (dsp_debug & DEBUG_DSP_CORE)
 		printk(KERN_DEBUG "%s: %s set fill_empty = 1\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			__func__, dsp->name);
+=======
+		       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -287,8 +338,15 @@ dsp_control_req(struct dsp *dsp, struct mISDNhead *hh, struct sk_buff *skb)
 	u8 *data;
 	int len;
 
+<<<<<<< HEAD
 	if (skb->len < sizeof(int))
 		printk(KERN_ERR "%s: PH_CONTROL message too short\n", __func__);
+=======
+	if (skb->len < sizeof(int)) {
+		printk(KERN_ERR "%s: PH_CONTROL message too short\n", __func__);
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 	cont = *((int *)skb->data);
 	len = skb->len - sizeof(int);
 	data = skb->data + sizeof(int);
@@ -304,7 +362,15 @@ dsp_control_req(struct dsp *dsp, struct mISDNhead *hh, struct sk_buff *skb)
 		if (len == sizeof(int)) {
 			if (dsp_debug & DEBUG_DSP_CORE)
 				printk(KERN_NOTICE "changing DTMF Threshold "
+<<<<<<< HEAD
+<<<<<<< HEAD
 					"to %d\n", *((int *)data));
+=======
+				       "to %d\n", *((int *)data));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       "to %d\n", *((int *)data));
+>>>>>>> refs/remotes/origin/master
 			dsp->dtmf.treshold = (*(int *)data) * 10000;
 		}
 		dsp->dtmf.enable = 1;
@@ -331,19 +397,45 @@ dsp_control_req(struct dsp *dsp, struct mISDNhead *hh, struct sk_buff *skb)
 			goto conf_split;
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: join conference %d\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, *((u32 *)data));
 		ret = dsp_cmx_conf(dsp, *((u32 *)data));
 			/* dsp_cmx_hardware will also be called here */
+=======
+			       __func__, *((u32 *)data));
+		ret = dsp_cmx_conf(dsp, *((u32 *)data));
+		/* dsp_cmx_hardware will also be called here */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, *((u32 *)data));
+		ret = dsp_cmx_conf(dsp, *((u32 *)data));
+		/* dsp_cmx_hardware will also be called here */
+>>>>>>> refs/remotes/origin/master
 		dsp_rx_off(dsp);
 		if (dsp_debug & DEBUG_DSP_CMX)
 			dsp_cmx_debug(dsp);
 		break;
 	case DSP_CONF_SPLIT: /* remove from conference */
+<<<<<<< HEAD
+<<<<<<< HEAD
 conf_split:
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: release conference\n", __func__);
 		ret = dsp_cmx_conf(dsp, 0);
 			/* dsp_cmx_hardware will also be called here */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	conf_split:
+		if (dsp_debug & DEBUG_DSP_CORE)
+			printk(KERN_DEBUG "%s: release conference\n", __func__);
+		ret = dsp_cmx_conf(dsp, 0);
+		/* dsp_cmx_hardware will also be called here */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dsp_debug & DEBUG_DSP_CMX)
 			dsp_cmx_debug(dsp);
 		dsp_rx_off(dsp);
@@ -359,7 +451,15 @@ conf_split:
 		}
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: turn tone 0x%x on\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, *((int *)skb->data));
+=======
+			       __func__, *((int *)skb->data));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, *((int *)skb->data));
+>>>>>>> refs/remotes/origin/master
 		ret = dsp_tone(dsp, *((int *)data));
 		if (!ret) {
 			dsp_cmx_hardware(dsp->conf, dsp);
@@ -379,7 +479,15 @@ conf_split:
 		dsp_cmx_hardware(dsp->conf, dsp);
 		dsp_rx_off(dsp);
 		/* reset tx buffers (user space data) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 tone_off:
+=======
+	tone_off:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tone_off:
+>>>>>>> refs/remotes/origin/master
 		dsp->rx_W = 0;
 		dsp->rx_R = 0;
 		break;
@@ -395,7 +503,15 @@ tone_off:
 		dsp->tx_volume = *((int *)data);
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: change tx vol to %d\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, dsp->tx_volume);
+=======
+			       __func__, dsp->tx_volume);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, dsp->tx_volume);
+>>>>>>> refs/remotes/origin/master
 		dsp_cmx_hardware(dsp->conf, dsp);
 		dsp_dtmf_hardware(dsp);
 		dsp_rx_off(dsp);
@@ -412,7 +528,15 @@ tone_off:
 		dsp->rx_volume = *((int *)data);
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: change rx vol to %d\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, dsp->tx_volume);
+=======
+			       __func__, dsp->tx_volume);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, dsp->tx_volume);
+>>>>>>> refs/remotes/origin/master
 		dsp_cmx_hardware(dsp->conf, dsp);
 		dsp_dtmf_hardware(dsp);
 		dsp_rx_off(dsp);
@@ -439,14 +563,30 @@ tone_off:
 	case DSP_RECEIVE_ON: /* enable receive to user space */
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: enable receive to user "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"space\n", __func__);
+=======
+			       "space\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "space\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		dsp->rx_disabled = 0;
 		dsp_rx_off(dsp);
 		break;
 	case DSP_RECEIVE_OFF: /* disable receive to user space */
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: disable receive to "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"user space\n", __func__);
+=======
+			       "user space\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "user space\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		dsp->rx_disabled = 1;
 		dsp_rx_off(dsp);
 		break;
@@ -457,7 +597,15 @@ tone_off:
 		}
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: enable mixing of "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"tx-data with conf mebers\n", __func__);
+=======
+			       "tx-data with conf mebers\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "tx-data with conf mebers\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		dsp->tx_mix = 1;
 		dsp_cmx_hardware(dsp->conf, dsp);
 		dsp_rx_off(dsp);
@@ -471,7 +619,15 @@ tone_off:
 		}
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: disable mixing of "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"tx-data with conf mebers\n", __func__);
+=======
+			       "tx-data with conf mebers\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "tx-data with conf mebers\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		dsp->tx_mix = 0;
 		dsp_cmx_hardware(dsp->conf, dsp);
 		dsp_rx_off(dsp);
@@ -507,6 +663,8 @@ tone_off:
 			break;
 		}
 		dsp->cmx_delay = (*((int *)data)) << 3;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			/* milliseconds to samples */
 		if (dsp->cmx_delay >= (CMX_BUFF_HALF>>1))
 			/* clip to half of maximum usable buffer
@@ -519,6 +677,25 @@ tone_off:
 		break;
 	case DSP_JITTER: /* use dynamic jitter algorithm instead of
 		    delay algorithm */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/* milliseconds to samples */
+		if (dsp->cmx_delay >= (CMX_BUFF_HALF >> 1))
+			/* clip to half of maximum usable buffer
+			   (half of half buffer) */
+			dsp->cmx_delay = (CMX_BUFF_HALF >> 1) - 1;
+		if (dsp_debug & DEBUG_DSP_CORE)
+			printk(KERN_DEBUG "%s: use delay algorithm to "
+			       "compensate jitter (%d samples)\n",
+			       __func__, dsp->cmx_delay);
+		break;
+	case DSP_JITTER: /* use dynamic jitter algorithm instead of
+			    delay algorithm */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dsp->hdlc) {
 			ret = -EINVAL;
 			break;
@@ -526,7 +703,15 @@ tone_off:
 		dsp->cmx_delay = 0;
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: use jitter algorithm to "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"compensate jitter\n", __func__);
+=======
+			       "compensate jitter\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "compensate jitter\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case DSP_TX_DEJITTER: /* use dynamic jitter algorithm for tx-buffer */
 		if (dsp->hdlc) {
@@ -536,7 +721,15 @@ tone_off:
 		dsp->tx_dejitter = 1;
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: use dejitter on TX "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"buffer\n", __func__);
+=======
+			       "buffer\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "buffer\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case DSP_TX_DEJ_OFF: /* use tx-buffer without dejittering*/
 		if (dsp->hdlc) {
@@ -546,7 +739,15 @@ tone_off:
 		dsp->tx_dejitter = 0;
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: use TX buffer without "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"dejittering\n", __func__);
+=======
+			       "dejittering\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "dejittering\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case DSP_PIPELINE_CFG:
 		if (dsp->hdlc) {
@@ -555,13 +756,29 @@ tone_off:
 		}
 		if (len > 0 && ((char *)data)[len - 1]) {
 			printk(KERN_DEBUG "%s: pipeline config string "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"is not NULL terminated!\n", __func__);
+=======
+			       "is not NULL terminated!\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "is not NULL terminated!\n", __func__);
+>>>>>>> refs/remotes/origin/master
 			ret = -EINVAL;
 		} else {
 			dsp->pipeline.inuse = 1;
 			dsp_cmx_hardware(dsp->conf, dsp);
 			ret = dsp_pipeline_build(&dsp->pipeline,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				len > 0 ? data : NULL);
+=======
+						 len > 0 ? data : NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 len > 0 ? data : NULL);
+>>>>>>> refs/remotes/origin/master
 			dsp_cmx_hardware(dsp->conf, dsp);
 			dsp_rx_off(dsp);
 		}
@@ -577,7 +794,15 @@ tone_off:
 		}
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: turn blowfish on (key "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"not shown)\n", __func__);
+=======
+			       "not shown)\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "not shown)\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		ret = dsp_bf_init(dsp, (u8 *)data, len);
 		/* set new cont */
 		if (!ret)
@@ -586,7 +811,15 @@ tone_off:
 			cont = DSP_BF_REJECT;
 		/* send indication if it worked to set it */
 		nskb = _alloc_mISDN_skb(PH_CONTROL_IND, MISDN_ID_ANY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			sizeof(int), &cont, GFP_ATOMIC);
+=======
+					sizeof(int), &cont, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					sizeof(int), &cont, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		if (nskb) {
 			if (dsp->up) {
 				if (dsp->up->send(dsp->up, nskb))
@@ -615,7 +848,15 @@ tone_off:
 	default:
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: ctrl req %x unhandled\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, cont);
+=======
+			       __func__, cont);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, cont);
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 	}
 	return ret;
@@ -630,14 +871,30 @@ get_features(struct mISDNchannel *ch)
 	if (!ch->peer) {
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: no peer, no features\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__);
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	memset(&cq, 0, sizeof(cq));
 	cq.op = MISDN_CTRL_GETOP;
 	if (ch->peer->ctrl(ch->peer, CONTROL_CHANNEL, &cq) < 0) {
 		printk(KERN_DEBUG "%s: CONTROL_CHANNEL failed\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			__func__);
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	if (cq.op & MISDN_CTRL_RX_OFF)
@@ -651,12 +908,28 @@ get_features(struct mISDNchannel *ch)
 		*((u_long *)&cq.p1) = (u_long)&dsp->features;
 		if (ch->peer->ctrl(ch->peer, CONTROL_CHANNEL, &cq)) {
 			printk(KERN_DEBUG "%s: 2nd CONTROL_CHANNEL failed\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__);
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: features not supported for %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, dsp->name);
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -670,7 +943,15 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 
 	hh = mISDN_HEAD_P(skb);
 	switch (hh->prim) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* FROM DOWN */
+=======
+		/* FROM DOWN */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* FROM DOWN */
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA_CNF):
 		dsp->data_pending = 0;
 		/* trigger next hdlc frame, if any */
@@ -690,8 +971,18 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 		if (dsp->rx_is_off) {
 			if (dsp_debug & DEBUG_DSP_CORE)
 				printk(KERN_DEBUG "%s: rx-data during rx_off"
+<<<<<<< HEAD
+<<<<<<< HEAD
 					" for %s\n",
 				__func__, dsp->name);
+=======
+				       " for %s\n",
+				       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       " for %s\n",
+				       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		}
 		if (dsp->hdlc) {
 			/* hdlc */
@@ -716,14 +1007,30 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 		/* pipeline */
 		if (dsp->pipeline.inuse)
 			dsp_pipeline_process_rx(&dsp->pipeline, skb->data,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				skb->len, hh->id);
+=======
+						skb->len, hh->id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						skb->len, hh->id);
+>>>>>>> refs/remotes/origin/master
 		/* change volume if requested */
 		if (dsp->rx_volume)
 			dsp_change_volume(skb, dsp->rx_volume);
 		/* check if dtmf soft decoding is turned on */
 		if (dsp->dtmf.software) {
 			digits = dsp_dtmf_goertzel_decode(dsp, skb->data,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				skb->len, (dsp_options&DSP_OPT_ULAW) ? 1 : 0);
+=======
+							  skb->len, (dsp_options & DSP_OPT_ULAW) ? 1 : 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+							  skb->len, (dsp_options & DSP_OPT_ULAW) ? 1 : 0);
+>>>>>>> refs/remotes/origin/master
 		}
 		/* we need to process receive data if software */
 		if (dsp->conf && dsp->conf->software) {
@@ -740,6 +1047,8 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 				struct sk_buff *nskb;
 				if (dsp_debug & DEBUG_DSP_DTMF)
 					printk(KERN_DEBUG "%s: digit"
+<<<<<<< HEAD
+<<<<<<< HEAD
 					    "(%c) to layer %s\n",
 					    __func__, *digits, dsp->name);
 				k = *digits | DTMF_TONE_VAL;
@@ -750,6 +1059,23 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 					if (dsp->up) {
 						if (dsp->up->send(
 						    dsp->up, nskb))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					       "(%c) to layer %s\n",
+					       __func__, *digits, dsp->name);
+				k = *digits | DTMF_TONE_VAL;
+				nskb = _alloc_mISDN_skb(PH_CONTROL_IND,
+							MISDN_ID_ANY, sizeof(int), &k,
+							GFP_ATOMIC);
+				if (nskb) {
+					if (dsp->up) {
+						if (dsp->up->send(
+							    dsp->up, nskb))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 							dev_kfree_skb(nskb);
 					} else
 						dev_kfree_skb(nskb);
@@ -768,24 +1094,51 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 	case (PH_CONTROL_IND):
 		if (dsp_debug & DEBUG_DSP_DTMFCOEFF)
 			printk(KERN_DEBUG "%s: PH_CONTROL INDICATION "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"received: %x (len %d) %s\n", __func__,
 				hh->id, skb->len, dsp->name);
+=======
+			       "received: %x (len %d) %s\n", __func__,
+			       hh->id, skb->len, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "received: %x (len %d) %s\n", __func__,
+			       hh->id, skb->len, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		switch (hh->id) {
 		case (DTMF_HFC_COEF): /* getting coefficients */
 			if (!dsp->dtmf.hardware) {
 				if (dsp_debug & DEBUG_DSP_DTMFCOEFF)
 					printk(KERN_DEBUG "%s: ignoring DTMF "
+<<<<<<< HEAD
+<<<<<<< HEAD
 						"coefficients from HFC\n",
 						__func__);
 				break;
 			}
 			digits = dsp_dtmf_goertzel_decode(dsp, skb->data,
 				skb->len, 2);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					       "coefficients from HFC\n",
+					       __func__);
+				break;
+			}
+			digits = dsp_dtmf_goertzel_decode(dsp, skb->data,
+							  skb->len, 2);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			while (*digits) {
 				int k;
 				struct sk_buff *nskb;
 				if (dsp_debug & DEBUG_DSP_DTMF)
 					printk(KERN_DEBUG "%s: digit"
+<<<<<<< HEAD
+<<<<<<< HEAD
 					    "(%c) to layer %s\n",
 					    __func__, *digits, dsp->name);
 				k = *digits | DTMF_TONE_VAL;
@@ -796,6 +1149,23 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 					if (dsp->up) {
 						if (dsp->up->send(
 						    dsp->up, nskb))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					       "(%c) to layer %s\n",
+					       __func__, *digits, dsp->name);
+				k = *digits | DTMF_TONE_VAL;
+				nskb = _alloc_mISDN_skb(PH_CONTROL_IND,
+							MISDN_ID_ANY, sizeof(int), &k,
+							GFP_ATOMIC);
+				if (nskb) {
+					if (dsp->up) {
+						if (dsp->up->send(
+							    dsp->up, nskb))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 							dev_kfree_skb(nskb);
 					} else
 						dev_kfree_skb(nskb);
@@ -812,7 +1182,15 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 			dsp->tx_volume = *((int *)skb->data);
 			if (dsp_debug & DEBUG_DSP_CORE)
 				printk(KERN_DEBUG "%s: change tx volume to "
+<<<<<<< HEAD
+<<<<<<< HEAD
 					"%d\n", __func__, dsp->tx_volume);
+=======
+				       "%d\n", __func__, dsp->tx_volume);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       "%d\n", __func__, dsp->tx_volume);
+>>>>>>> refs/remotes/origin/master
 			dsp_cmx_hardware(dsp->conf, dsp);
 			dsp_dtmf_hardware(dsp);
 			dsp_rx_off(dsp);
@@ -821,7 +1199,15 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 		default:
 			if (dsp_debug & DEBUG_DSP_CORE)
 				printk(KERN_DEBUG "%s: ctrl ind %x unhandled "
+<<<<<<< HEAD
+<<<<<<< HEAD
 					"%s\n", __func__, hh->id, dsp->name);
+=======
+				       "%s\n", __func__, hh->id, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       "%s\n", __func__, hh->id, dsp->name);
+>>>>>>> refs/remotes/origin/master
 			ret = -EINVAL;
 		}
 		break;
@@ -829,13 +1215,29 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 	case (PH_ACTIVATE_CNF):
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: b_channel is now active %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, dsp->name);
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		/* bchannel now active */
 		spin_lock_irqsave(&dsp_lock, flags);
 		dsp->b_active = 1;
 		dsp->data_pending = 0;
 		dsp->rx_init = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			/* rx_W and rx_R will be adjusted on first frame */
+=======
+		/* rx_W and rx_R will be adjusted on first frame */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* rx_W and rx_R will be adjusted on first frame */
+>>>>>>> refs/remotes/origin/master
 		dsp->rx_W = 0;
 		dsp->rx_R = 0;
 		memset(dsp->rx_buff, 0, sizeof(dsp->rx_buff));
@@ -845,8 +1247,18 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 		spin_unlock_irqrestore(&dsp_lock, flags);
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: done with activation, sending "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"confirm to user space. %s\n", __func__,
 				dsp->name);
+=======
+			       "confirm to user space. %s\n", __func__,
+			       dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "confirm to user space. %s\n", __func__,
+			       dsp->name);
+>>>>>>> refs/remotes/origin/master
 		/* send activation to upper layer */
 		hh->prim = DL_ESTABLISH_CNF;
 		if (dsp->up)
@@ -856,7 +1268,15 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 	case (PH_DEACTIVATE_CNF):
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: b_channel is now inactive %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, dsp->name);
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		/* bchannel now inactive */
 		spin_lock_irqsave(&dsp_lock, flags);
 		dsp->b_active = 0;
@@ -868,7 +1288,15 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 		if (dsp->up)
 			return dsp->up->send(dsp->up, skb);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* FROM UP */
+=======
+		/* FROM UP */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* FROM UP */
+>>>>>>> refs/remotes/origin/master
 	case (DL_DATA_REQ):
 	case (PH_DATA_REQ):
 		if (skb->len < 1) {
@@ -904,7 +1332,15 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 	case (PH_ACTIVATE_REQ):
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: activating b_channel %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, dsp->name);
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		if (dsp->dtmf.hardware || dsp->dtmf.software)
 			dsp_dtmf_goertzel_init(dsp);
 		get_features(ch);
@@ -920,7 +1356,15 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 	case (PH_DEACTIVATE_REQ):
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: releasing b_channel %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, dsp->name);
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&dsp_lock, flags);
 		dsp->tone.tone = 0;
 		dsp->tone.hardware = 0;
@@ -939,7 +1383,15 @@ dsp_function(struct mISDNchannel *ch,  struct sk_buff *skb)
 	default:
 		if (dsp_debug & DEBUG_DSP_CORE)
 			printk(KERN_DEBUG "%s: msg %x unhandled %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, hh->prim, dsp->name);
+=======
+			       __func__, hh->prim, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, hh->prim, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 	}
 	if (!ret)
@@ -978,7 +1430,15 @@ dsp_ctrl(struct mISDNchannel *ch, u_int cmd, void *arg)
 		skb_queue_purge(&dsp->sendq);
 		if (dsp_debug & DEBUG_DSP_CTRL)
 			printk(KERN_DEBUG "%s: releasing member %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, dsp->name);
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		dsp->b_active = 0;
 		dsp_cmx_conf(dsp, 0); /* dsp_cmx_hardware will also be called
 					 here */
@@ -986,13 +1446,29 @@ dsp_ctrl(struct mISDNchannel *ch, u_int cmd, void *arg)
 
 		if (dsp_debug & DEBUG_DSP_CTRL)
 			printk(KERN_DEBUG "%s: remove & destroy object %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, dsp->name);
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 		list_del(&dsp->list);
 		spin_unlock_irqrestore(&dsp_lock, flags);
 
 		if (dsp_debug & DEBUG_DSP_CTRL)
 			printk(KERN_DEBUG "%s: dsp instance released\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__);
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/master
 		vfree(dsp);
 		module_put(THIS_MODULE);
 		break;
@@ -1016,7 +1492,15 @@ dsp_send_bh(struct work_struct *work)
 		if (dsp->data_pending) {
 			if (dsp_debug & DEBUG_DSP_CORE)
 				printk(KERN_DEBUG "%s: fifo full %s, this is "
+<<<<<<< HEAD
+<<<<<<< HEAD
 					"no bug!\n", __func__, dsp->name);
+=======
+				       "no bug!\n", __func__, dsp->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       "no bug!\n", __func__, dsp->name);
+>>>>>>> refs/remotes/origin/master
 			/* flush transparent data, if not acked */
 			dev_kfree_skb(skb);
 			continue;
@@ -1050,14 +1534,32 @@ dspcreate(struct channel_req *crq)
 	u_long		flags;
 
 	if (crq->protocol != ISDN_P_B_L2DSP
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 && crq->protocol != ISDN_P_B_L2DSPHDLC)
 		return -EPROTONOSUPPORT;
 	ndsp = vmalloc(sizeof(struct dsp));
+=======
+	    && crq->protocol != ISDN_P_B_L2DSPHDLC)
+		return -EPROTONOSUPPORT;
+	ndsp = vzalloc(sizeof(struct dsp));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    && crq->protocol != ISDN_P_B_L2DSPHDLC)
+		return -EPROTONOSUPPORT;
+	ndsp = vzalloc(sizeof(struct dsp));
+>>>>>>> refs/remotes/origin/master
 	if (!ndsp) {
 		printk(KERN_ERR "%s: vmalloc struct dsp failed\n", __func__);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(ndsp, 0, sizeof(struct dsp));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dsp_debug & DEBUG_DSP_CTRL)
 		printk(KERN_DEBUG "%s: creating new dsp instance\n", __func__);
 
@@ -1077,7 +1579,15 @@ dspcreate(struct channel_req *crq)
 	}
 	if (!try_module_get(THIS_MODULE))
 		printk(KERN_WARNING "%s:cannot get module\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			__func__);
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/master
 
 	sprintf(ndsp->name, "DSP_C%x(0x%p)",
 		ndsp->up->st->dev->id + 1, ndsp);
@@ -1096,7 +1606,15 @@ dspcreate(struct channel_req *crq)
 
 	if (dtmfthreshold < 20 || dtmfthreshold > 500)
 		dtmfthreshold = 200;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ndsp->dtmf.treshold = dtmfthreshold*10000;
+=======
+	ndsp->dtmf.treshold = dtmfthreshold * 10000;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ndsp->dtmf.treshold = dtmfthreshold * 10000;
+>>>>>>> refs/remotes/origin/master
 
 	/* init pipeline append to list */
 	spin_lock_irqsave(&dsp_lock, flags);
@@ -1110,7 +1628,15 @@ dspcreate(struct channel_req *crq)
 
 static struct Bprotocol DSP = {
 	.Bprotocols = (1 << (ISDN_P_B_L2DSP & ISDN_P_B_MASK))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		| (1 << (ISDN_P_B_L2DSPHDLC & ISDN_P_B_MASK)),
+=======
+	| (1 << (ISDN_P_B_L2DSPHDLC & ISDN_P_B_MASK)),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	| (1 << (ISDN_P_B_L2DSPHDLC & ISDN_P_B_MASK)),
+>>>>>>> refs/remotes/origin/master
 	.name = "dsp",
 	.create = dspcreate
 };
@@ -1120,7 +1646,15 @@ static int __init dsp_init(void)
 	int err;
 	int tics;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "DSP modul %s\n", mISDN_dsp_revision);
+=======
+	printk(KERN_INFO "DSP module %s\n", mISDN_dsp_revision);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_INFO "DSP module %s\n", mISDN_dsp_revision);
+>>>>>>> refs/remotes/origin/master
 
 	dsp_options = options;
 	dsp_debug = debug;
@@ -1130,21 +1664,47 @@ static int __init dsp_init(void)
 	if (dsp_poll) {
 		if (dsp_poll > MAX_POLL) {
 			printk(KERN_ERR "%s: Wrong poll value (%d), use %d "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"maximum.\n", __func__, poll, MAX_POLL);
+=======
+			       "maximum.\n", __func__, poll, MAX_POLL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "maximum.\n", __func__, poll, MAX_POLL);
+>>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
 			return err;
 		}
 		if (dsp_poll < 8) {
 			printk(KERN_ERR "%s: Wrong poll value (%d), use 8 "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"minimum.\n", __func__, dsp_poll);
+=======
+			       "minimum.\n", __func__, dsp_poll);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "minimum.\n", __func__, dsp_poll);
+>>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
 			return err;
 		}
 		dsp_tics = poll * HZ / 8000;
 		if (dsp_tics * 8000 != poll * HZ) {
 			printk(KERN_INFO "mISDN_dsp: Cannot clock every %d "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"samples (0,125 ms). It is not a multiple of "
 				"%d HZ.\n", poll, HZ);
+=======
+			       "samples (0,125 ms). It is not a multiple of "
+			       "%d HZ.\n", poll, HZ);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "samples (0,125 ms). It is not a multiple of "
+			       "%d HZ.\n", poll, HZ);
+>>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
 			return err;
 		}
@@ -1163,14 +1723,34 @@ static int __init dsp_init(void)
 	}
 	if (dsp_poll == 0) {
 		printk(KERN_INFO "mISDN_dsp: There is no multiple of kernel "
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"clock that equals exactly the duration of 8-256 "
 			"samples. (Choose kernel clock speed like 100, 250, "
 			"300, 1000)\n");
+=======
+		       "clock that equals exactly the duration of 8-256 "
+		       "samples. (Choose kernel clock speed like 100, 250, "
+		       "300, 1000)\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "clock that equals exactly the duration of 8-256 "
+		       "samples. (Choose kernel clock speed like 100, 250, "
+		       "300, 1000)\n");
+>>>>>>> refs/remotes/origin/master
 		err = -EINVAL;
 		return err;
 	}
 	printk(KERN_INFO "mISDN_dsp: DSP clocks every %d samples. This equals "
+<<<<<<< HEAD
+<<<<<<< HEAD
 		"%d jiffies.\n", dsp_poll, dsp_tics);
+=======
+	       "%d jiffies.\n", dsp_poll, dsp_tics);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       "%d jiffies.\n", dsp_poll, dsp_tics);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&dsp_lock);
 	INIT_LIST_HEAD(&dsp_ilist);
@@ -1178,8 +1758,18 @@ static int __init dsp_init(void)
 
 	/* init conversion tables */
 	dsp_audio_generate_law_tables();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dsp_silence = (dsp_options&DSP_OPT_ULAW) ? 0xff : 0x2a;
 	dsp_audio_law_to_s32 = (dsp_options&DSP_OPT_ULAW) ?
+=======
+	dsp_silence = (dsp_options & DSP_OPT_ULAW) ? 0xff : 0x2a;
+	dsp_audio_law_to_s32 = (dsp_options & DSP_OPT_ULAW) ?
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dsp_silence = (dsp_options & DSP_OPT_ULAW) ? 0xff : 0x2a;
+	dsp_audio_law_to_s32 = (dsp_options & DSP_OPT_ULAW) ?
+>>>>>>> refs/remotes/origin/master
 		dsp_audio_ulaw_to_s32 : dsp_audio_alaw_to_s32;
 	dsp_audio_generate_s2law_table();
 	dsp_audio_generate_seven();
@@ -1191,7 +1781,15 @@ static int __init dsp_init(void)
 	err = dsp_pipeline_module_init();
 	if (err) {
 		printk(KERN_ERR "mISDN_dsp: Can't initialize pipeline, "
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"error(%d)\n", err);
+=======
+		       "error(%d)\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "error(%d)\n", err);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -1217,16 +1815,34 @@ static void __exit dsp_cleanup(void)
 {
 	mISDN_unregister_Bprotocol(&DSP);
 
+<<<<<<< HEAD
 	if (timer_pending(&dsp_spl_tl))
 		del_timer(&dsp_spl_tl);
 
 	if (!list_empty(&dsp_ilist)) {
 		printk(KERN_ERR "mISDN_dsp: Audio DSP object inst list not "
+<<<<<<< HEAD
 			"empty.\n");
 	}
 	if (!list_empty(&conf_ilist)) {
 		printk(KERN_ERR "mISDN_dsp: Conference list not empty. Not "
 			"all memory freed.\n");
+=======
+=======
+	del_timer_sync(&dsp_spl_tl);
+
+	if (!list_empty(&dsp_ilist)) {
+		printk(KERN_ERR "mISDN_dsp: Audio DSP object inst list not "
+>>>>>>> refs/remotes/origin/master
+		       "empty.\n");
+	}
+	if (!list_empty(&conf_ilist)) {
+		printk(KERN_ERR "mISDN_dsp: Conference list not empty. Not "
+		       "all memory freed.\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dsp_pipeline_module_exit();
@@ -1234,4 +1850,10 @@ static void __exit dsp_cleanup(void)
 
 module_init(dsp_init);
 module_exit(dsp_cleanup);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

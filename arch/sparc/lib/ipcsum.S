@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 	.text
 	.align	32
 	.globl	ip_fast_csum
 	.type	ip_fast_csum,#function
 ip_fast_csum:	/* %o0 = iph, %o1 = ihl */
+=======
+#include <linux/linkage.h>
+
+	.text
+ENTRY(ip_fast_csum) /* %o0 = iph, %o1 = ihl */
+>>>>>>> refs/remotes/origin/master
 	sub	%o1, 4, %g7
 	lduw	[%o0 + 0x00], %o2
 	lduw	[%o0 + 0x04], %g2
@@ -31,4 +38,8 @@ ip_fast_csum:	/* %o0 = iph, %o1 = ihl */
 	set	0xffff, %o1
 	retl
 	 and	%o2, %o1, %o0
+<<<<<<< HEAD
 	.size	ip_fast_csum, .-ip_fast_csum
+=======
+ENDPROC(ip_fast_csum)
+>>>>>>> refs/remotes/origin/master

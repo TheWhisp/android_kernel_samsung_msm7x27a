@@ -22,6 +22,8 @@
 #ifndef _FMDRV_TX_H
 #define _FMDRV_TX_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fm_tx_set_freq(struct fmdev *, u32);
 u32 fm_tx_set_pwr_lvl(struct fmdev *, u8);
 u32 fm_tx_set_region(struct fmdev *, u8);
@@ -32,6 +34,23 @@ u32 fm_tx_set_radio_text(struct fmdev *, u8 *, u8);
 u32 fm_tx_set_af(struct fmdev *, u32);
 u32 fm_tx_set_preemph_filter(struct fmdev *, u32);
 u32 fm_tx_get_tune_cap_val(struct fmdev *);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int fm_tx_set_freq(struct fmdev *, u32);
+int fm_tx_set_pwr_lvl(struct fmdev *, u8);
+int fm_tx_set_region(struct fmdev *, u8);
+int fm_tx_set_mute_mode(struct fmdev *, u8);
+int fm_tx_set_stereo_mono(struct fmdev *, u16);
+int fm_tx_set_rds_mode(struct fmdev *, u8);
+int fm_tx_set_radio_text(struct fmdev *, u8 *, u8);
+int fm_tx_set_af(struct fmdev *, u32);
+int fm_tx_set_preemph_filter(struct fmdev *, u32);
+int fm_tx_get_tune_cap_val(struct fmdev *);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

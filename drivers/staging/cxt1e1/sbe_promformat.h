@@ -1,7 +1,13 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * $Id: sbe_promformat.h,v 2.2 2005/09/28 00:10:09 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _INC_SBE_PROMFORMAT_H_
 #define _INC_SBE_PROMFORMAT_H_
 
@@ -24,6 +30,8 @@
  * SBE, Inc.  San Ramon, California  U.S.A.
  *
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 2.2 $
  * Last changed on $Date: 2005/09/28 00:10:09 $
@@ -37,6 +45,10 @@
  * Initial CI.
  *
  *-----------------------------------------------------------------------------
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 
@@ -85,12 +97,18 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __cplusplus
 extern      "C"
 {
 #endif
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define STRUCT_OFFSET(type, symbol)  ((long)&(((type *)0)->symbol))
 
 /*------------------------------------------------------------------------
@@ -150,8 +168,14 @@ extern      "C"
         FLD_TYPE2   fldType2;
     }           PROMFORMAT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __cplusplus
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif                          /*** _INC_SBE_PROMFORMAT_H_ ***/

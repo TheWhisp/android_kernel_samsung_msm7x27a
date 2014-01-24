@@ -1,7 +1,13 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * $Id: sbecom_inline_linux.h,v 1.2 2007/08/15 22:51:35 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _INC_SBECOM_INLNX_H_
 #define _INC_SBECOM_INLNX_H_
 
@@ -24,6 +30,8 @@
  * For further information, contact via email: support@onestopsystems.com
  * One Stop Systems, Inc.  Escondido, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.2 $
  * Last changed on $Date: 2007/08/15 22:51:35 $
@@ -63,11 +71,25 @@
 #endif
 #endif
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ */
+
+
+#include <linux/types.h>
+#include <linux/module.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>       /* resolves kmalloc references */
 #include <linux/skbuff.h>       /* resolves skb references */
 #include <linux/netdevice.h>    /* resolves dev_kree_skb_any */
 #include <asm/byteorder.h>      /* resolves cpu_to_le32 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if 0
 
 /*** PORT POINT WARNING
@@ -113,12 +135,22 @@ pci_write_32 (u_int32_t *p, u_int32_t v)
                                      * writing routines. */
 }
 #else
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* forward reference */
 u_int32_t   pci_read_32 (u_int32_t *p);
 void        pci_write_32 (u_int32_t *p, u_int32_t v);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * system dependent callbacks
@@ -158,7 +190,11 @@ OS_mem_token_alloc (size_t size)
     if (!skb)
     {
         //pr_warning("no mem in OS_mem_token_alloc !\n");
+<<<<<<< HEAD
         return 0;
+=======
+        return NULL;
+>>>>>>> refs/remotes/origin/master
     }
     return skb;
 }
@@ -188,7 +224,11 @@ OS_mem_token_data (void *token)
 static inline void *
 OS_mem_token_next (void *token)
 {
+<<<<<<< HEAD
     return 0;
+=======
+    return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -262,7 +302,11 @@ struct watchdog
 
 
 static inline int
+<<<<<<< HEAD
 OS_start_watchdog (struct watchdog * wd)
+=======
+OS_start_watchdog (struct watchdog *wd)
+>>>>>>> refs/remotes/origin/master
 {
     wd->h.expires = jiffies + wd->ticks;
     add_timer (&wd->h);
@@ -271,7 +315,11 @@ OS_start_watchdog (struct watchdog * wd)
 
 
 static inline int
+<<<<<<< HEAD
 OS_stop_watchdog (struct watchdog * wd)
+=======
+OS_stop_watchdog (struct watchdog *wd)
+>>>>>>> refs/remotes/origin/master
 {
     del_timer_sync (&wd->h);
     return 0;
@@ -279,7 +327,11 @@ OS_stop_watchdog (struct watchdog * wd)
 
 
 static inline int
+<<<<<<< HEAD
 OS_free_watchdog (struct watchdog * wd)
+=======
+OS_free_watchdog (struct watchdog *wd)
+>>>>>>> refs/remotes/origin/master
 {
     OS_stop_watchdog (wd);
     OS_kfree (wd);

@@ -13,13 +13,20 @@
 
 #include <mach/dove.h>
 
+<<<<<<< HEAD
 #define CPU_CONFIG		(BRIDGE_VIRT_BASE | 0x0000)
 
 #define CPU_CONTROL		(BRIDGE_VIRT_BASE | 0x0104)
+=======
+#define CPU_CONFIG		(BRIDGE_VIRT_BASE + 0x0000)
+
+#define CPU_CONTROL		(BRIDGE_VIRT_BASE + 0x0104)
+>>>>>>> refs/remotes/origin/master
 #define  CPU_CTRL_PCIE0_LINK	0x00000001
 #define  CPU_RESET		0x00000002
 #define  CPU_CTRL_PCIE1_LINK	0x00000008
 
+<<<<<<< HEAD
 #define RSTOUTn_MASK		(BRIDGE_VIRT_BASE | 0x0108)
 #define  SOFT_RESET_OUT_EN	0x00000004
 
@@ -29,6 +36,18 @@
 #define  BRIDGE_INT_TIMER1_CLR	(~0x0004)
 
 #define IRQ_VIRT_BASE		(BRIDGE_VIRT_BASE | 0x0200)
+=======
+#define RSTOUTn_MASK		(BRIDGE_VIRT_BASE + 0x0108)
+#define  SOFT_RESET_OUT_EN	0x00000004
+
+#define SYSTEM_SOFT_RESET	(BRIDGE_VIRT_BASE + 0x010c)
+#define  SOFT_RESET		0x00000001
+
+#define BRIDGE_CAUSE		(BRIDGE_VIRT_BASE + 0x0110)
+#define  BRIDGE_INT_TIMER1_CLR	(~0x0004)
+
+#define IRQ_VIRT_BASE		(BRIDGE_VIRT_BASE + 0x0200)
+>>>>>>> refs/remotes/origin/master
 #define IRQ_CAUSE_LOW_OFF	0x0000
 #define IRQ_MASK_LOW_OFF	0x0004
 #define FIQ_MASK_LOW_OFF	0x0008
@@ -47,8 +66,23 @@
 #define ENDPOINT_MASK_HIGH	(IRQ_VIRT_BASE + ENDPOINT_MASK_HIGH_OFF)
 #define PCIE_INTERRUPT_MASK	(IRQ_VIRT_BASE + PCIE_INTERRUPT_MASK_OFF)
 
+<<<<<<< HEAD
 #define POWER_MANAGEMENT	(BRIDGE_VIRT_BASE | 0x011c)
 
 #define TIMER_VIRT_BASE		(BRIDGE_VIRT_BASE | 0x0300)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define TIMER_PHYS_BASE         (BRIDGE_PHYS_BASE | 0x0300)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define POWER_MANAGEMENT	(BRIDGE_VIRT_BASE + 0x011c)
+
+#define TIMER_VIRT_BASE		(BRIDGE_VIRT_BASE + 0x0300)
+#define TIMER_PHYS_BASE         (BRIDGE_PHYS_BASE + 0x0300)
+>>>>>>> refs/remotes/origin/master
+=======
+#define TIMER_PHYS_BASE         (BRIDGE_PHYS_BASE | 0x0300)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif

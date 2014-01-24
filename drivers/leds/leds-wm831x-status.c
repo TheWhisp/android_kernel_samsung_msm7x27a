@@ -18,6 +18,14 @@
 #include <linux/mfd/wm831x/core.h>
 #include <linux/mfd/wm831x/pdata.h>
 #include <linux/mfd/wm831x/status.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 
 struct wm831x_status {
@@ -156,7 +164,11 @@ static int wm831x_status_blink_set(struct led_classdev *led_cdev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static const char *led_src_texts[] = {
+=======
+static const char * const led_src_texts[] = {
+>>>>>>> refs/remotes/origin/master
 	"otp",
 	"power",
 	"charger",
@@ -229,23 +241,47 @@ static int wm831x_status_probe(struct platform_device *pdev)
 	int id = pdev->id % ARRAY_SIZE(chip_pdata->status);
 	int ret;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
 	if (res == NULL) {
 		dev_err(&pdev->dev, "No I/O resource\n");
+=======
+	res = platform_get_resource(pdev, IORESOURCE_REG, 0);
+	if (res == NULL) {
+		dev_err(&pdev->dev, "No register resource\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	drvdata = kzalloc(sizeof(struct wm831x_status), GFP_KERNEL);
+=======
+	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_status),
+			       GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!drvdata)
 		return -ENOMEM;
 	dev_set_drvdata(&pdev->dev, drvdata);
+=======
+	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_status),
+			       GFP_KERNEL);
+	if (!drvdata)
+		return -ENOMEM;
+	platform_set_drvdata(pdev, drvdata);
+>>>>>>> refs/remotes/origin/master
 
 	drvdata->wm831x = wm831x;
 	drvdata->reg = res->start;
 
+<<<<<<< HEAD
 	if (wm831x->dev->platform_data)
 		chip_pdata = wm831x->dev->platform_data;
+=======
+	if (dev_get_platdata(wm831x->dev))
+		chip_pdata = dev_get_platdata(wm831x->dev);
+>>>>>>> refs/remotes/origin/master
 	else
 		chip_pdata = NULL;
 
@@ -299,7 +335,13 @@ static int wm831x_status_probe(struct platform_device *pdev)
 
 err_led:
 	led_classdev_unregister(&drvdata->cdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(drvdata);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err:
 	return ret;
 }
@@ -310,7 +352,13 @@ static int wm831x_status_remove(struct platform_device *pdev)
 
 	device_remove_file(drvdata->cdev.dev, &dev_attr_src);
 	led_classdev_unregister(&drvdata->cdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(drvdata);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -324,6 +372,8 @@ static struct platform_driver wm831x_status_driver = {
 	.remove = wm831x_status_remove,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit wm831x_status_init(void)
 {
 	return platform_driver_register(&wm831x_status_driver);
@@ -335,6 +385,12 @@ static void wm831x_status_exit(void)
 	platform_driver_unregister(&wm831x_status_driver);
 }
 module_exit(wm831x_status_exit);
+=======
+module_platform_driver(wm831x_status_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(wm831x_status_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 MODULE_DESCRIPTION("WM831x status LED driver");

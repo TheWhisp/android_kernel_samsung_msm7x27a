@@ -91,7 +91,11 @@ static void handle_buttons(struct input_polled_dev *dev)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit sgi_buttons_probe(struct platform_device *pdev)
+=======
+static int sgi_buttons_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct buttons_dev *bdev;
 	struct input_polled_dev *poll_dev;
@@ -128,7 +132,11 @@ static int __devinit sgi_buttons_probe(struct platform_device *pdev)
 	__clear_bit(KEY_RESERVED, input->keybit);
 
 	bdev->poll_dev = poll_dev;
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, bdev);
+=======
+	platform_set_drvdata(pdev, bdev);
+>>>>>>> refs/remotes/origin/master
 
 	error = input_register_polled_device(poll_dev);
 	if (error)
@@ -139,6 +147,7 @@ static int __devinit sgi_buttons_probe(struct platform_device *pdev)
  err_free_mem:
 	input_free_polled_device(poll_dev);
 	kfree(bdev);
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, NULL);
 	return error;
 }
@@ -147,23 +156,40 @@ static int __devexit sgi_buttons_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct buttons_dev *bdev = dev_get_drvdata(dev);
+=======
+	return error;
+}
+
+static int sgi_buttons_remove(struct platform_device *pdev)
+{
+	struct buttons_dev *bdev = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	input_unregister_polled_device(bdev->poll_dev);
 	input_free_polled_device(bdev->poll_dev);
 	kfree(bdev);
+<<<<<<< HEAD
 	dev_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver sgi_buttons_driver = {
 	.probe	= sgi_buttons_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(sgi_buttons_remove),
+=======
+	.remove	= sgi_buttons_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= "sgibtns",
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init sgi_buttons_init(void)
 {
@@ -178,3 +204,13 @@ static void __exit sgi_buttons_exit(void)
 MODULE_LICENSE("GPL");
 module_init(sgi_buttons_init);
 module_exit(sgi_buttons_exit);
+=======
+module_platform_driver(sgi_buttons_driver);
+
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(sgi_buttons_driver);
+
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

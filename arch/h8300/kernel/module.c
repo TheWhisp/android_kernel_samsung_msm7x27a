@@ -11,6 +11,7 @@
 #define DEBUGP(fmt...)
 #endif
 
+<<<<<<< HEAD
 void *module_alloc(unsigned long size)
 {
 	if (size == 0)
@@ -45,6 +46,8 @@ int apply_relocate(Elf32_Shdr *sechdrs,
 	return -ENOEXEC;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int apply_relocate_add(Elf32_Shdr *sechdrs,
 		       const char *strtab,
 		       unsigned int symindex,
@@ -107,6 +110,7 @@ int apply_relocate_add(Elf32_Shdr *sechdrs,
 	       me->name, rela[i].r_offset);
 	return -ENOEXEC;
 }
+<<<<<<< HEAD
 
 int module_finalize(const Elf_Ehdr *hdr,
 		    const Elf_Shdr *sechdrs,
@@ -118,3 +122,5 @@ int module_finalize(const Elf_Ehdr *hdr,
 void module_arch_cleanup(struct module *mod)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

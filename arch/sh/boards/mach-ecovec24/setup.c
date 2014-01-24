@@ -15,10 +15,19 @@
 #include <linux/mmc/sh_mmcif.h>
 #include <linux/mmc/sh_mobile_sdhi.h>
 #include <linux/mtd/physmap.h>
+<<<<<<< HEAD
+=======
+#include <linux/mfd/tmio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/regulator/fixed.h>
+#include <linux/regulator/machine.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb/r8a66597.h>
 #include <linux/usb/renesas_usbhs.h>
 #include <linux/i2c.h>
@@ -28,6 +37,8 @@
 #include <linux/spi/mmc_spi.h>
 #include <linux/input.h>
 #include <linux/input/sh_keysc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <video/sh_mobile_lcdc.h>
 #include <sound/sh_fsi.h>
 #include <media/sh_mobile_ceu.h>
@@ -35,6 +46,29 @@
 #include <media/mt9t112.h>
 #include <asm/heartbeat.h>
 #include <asm/sh_eth.h>
+=======
+#include <linux/sh_eth.h>
+#include <linux/videodev2.h>
+#include <video/sh_mobile_lcdc.h>
+#include <sound/sh_fsi.h>
+=======
+#include <linux/platform_data/gpio_backlight.h>
+#include <linux/sh_eth.h>
+#include <linux/sh_intc.h>
+#include <linux/videodev2.h>
+#include <video/sh_mobile_lcdc.h>
+#include <sound/sh_fsi.h>
+#include <sound/simple_card.h>
+>>>>>>> refs/remotes/origin/master
+#include <media/sh_mobile_ceu.h>
+#include <media/soc_camera.h>
+#include <media/tw9910.h>
+#include <media/mt9t112.h>
+#include <asm/heartbeat.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/clock.h>
 #include <asm/suspend.h>
 #include <cpu/sh7724.h>
@@ -64,6 +98,19 @@
  *                                  OFF-ON : MMC
  */
 
+<<<<<<< HEAD
+=======
+/*
+ * FSI - DA7210
+ *
+ * it needs amixer settings for playing
+ *
+ * amixer set 'HeadPhone' 80
+ * amixer set 'Out Mixer Left DAC Left' on
+ * amixer set 'Out Mixer Right DAC Right' on
+ */
+
+>>>>>>> refs/remotes/origin/master
 /* Heartbeat */
 static unsigned char led_pos[] = { 0, 1, 2, 3 };
 
@@ -135,7 +182,11 @@ static struct resource sh_eth_resources[] = {
 		.flags = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start = 91,
+=======
+		.start = evt2irq(0xd60),
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHLEVEL,
 	},
 };
@@ -143,22 +194,36 @@ static struct resource sh_eth_resources[] = {
 static struct sh_eth_plat_data sh_eth_plat = {
 	.phy = 0x1f, /* SMSC LAN8700 */
 	.edmac_endian = EDMAC_LITTLE_ENDIAN,
+<<<<<<< HEAD
 	.register_type = SH_ETH_REG_FAST_SH4,
+=======
+>>>>>>> refs/remotes/origin/master
 	.phy_interface = PHY_INTERFACE_MODE_MII,
 	.ether_link_active_low = 1
 };
 
 static struct platform_device sh_eth_device = {
+<<<<<<< HEAD
 	.name = "sh-eth",
 	.id	= 0,
+=======
+	.name = "sh7724-ether",
+	.id = 0,
+>>>>>>> refs/remotes/origin/master
 	.dev = {
 		.platform_data = &sh_eth_plat,
 	},
 	.num_resources = ARRAY_SIZE(sh_eth_resources),
 	.resource = sh_eth_resources,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_ETHER,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* USB0 host */
@@ -179,8 +244,13 @@ static struct resource usb0_host_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 65,
 		.end	= 65,
+=======
+		.start	= evt2irq(0xa20),
+		.end	= evt2irq(0xa20),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IRQF_TRIGGER_LOW,
 	},
 };
@@ -215,8 +285,13 @@ static struct resource usb1_common_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 66,
 		.end	= 66,
+=======
+		.start	= evt2irq(0xa40),
+		.end	= evt2irq(0xa40),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IRQF_TRIGGER_LOW,
 	},
 };
@@ -241,13 +316,42 @@ static int usbhs_get_id(struct platform_device *pdev)
 	return gpio_get_value(GPIO_PTB3);
 }
 
+<<<<<<< HEAD
 static struct renesas_usbhs_platform_info usbhs_info = {
 	.platform_callback = {
 		.get_id		= usbhs_get_id,
+=======
+static int usbhs_phy_reset(struct platform_device *pdev)
+{
+	/* enable vbus if HOST */
+	if (!gpio_get_value(GPIO_PTB3))
+		gpio_set_value(GPIO_PTB5, 1);
+
+	return 0;
+}
+
+static struct renesas_usbhs_platform_info usbhs_info = {
+	.platform_callback = {
+		.get_id		= usbhs_get_id,
+		.phy_reset	= usbhs_phy_reset,
+>>>>>>> refs/remotes/origin/master
 	},
 	.driver_param = {
 		.buswait_bwait		= 4,
 		.detection_delay	= 5,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.d0_tx_id = SHDMA_SLAVE_USB1D0_TX,
+		.d0_rx_id = SHDMA_SLAVE_USB1D0_RX,
+		.d1_tx_id = SHDMA_SLAVE_USB1D1_TX,
+		.d1_rx_id = SHDMA_SLAVE_USB1D1_RX,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -258,8 +362,13 @@ static struct resource usbhs_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 66,
 		.end	= 66,
+=======
+		.start	= evt2irq(0xa40),
+		.end	= evt2irq(0xa40),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -274,6 +383,8 @@ static struct platform_device usbhs_device = {
 	},
 	.num_resources	= ARRAY_SIZE(usbhs_resources),
 	.resource	= usbhs_resources,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_USB1,
 	},
@@ -281,6 +392,18 @@ static struct platform_device usbhs_device = {
 
 /* LCDC */
 const static struct fb_videomode ecovec_lcd_modes[] = {
+=======
+};
+
+/* LCDC */
+static const struct fb_videomode ecovec_lcd_modes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+/* LCDC and backlight */
+static const struct fb_videomode ecovec_lcd_modes[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name		= "Panel",
 		.xres		= 800,
@@ -295,7 +418,15 @@ const static struct fb_videomode ecovec_lcd_modes[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 const static struct fb_videomode ecovec_dvi_modes[] = {
+=======
+static const struct fb_videomode ecovec_dvi_modes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct fb_videomode ecovec_dvi_modes[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name		= "DVI",
 		.xres		= 1280,
@@ -310,22 +441,35 @@ const static struct fb_videomode ecovec_dvi_modes[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ecovec24_set_brightness(void *board_data, int brightness)
+=======
+static int ecovec24_set_brightness(int brightness)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	gpio_set_value(GPIO_PTR1, brightness);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ecovec24_get_brightness(void *board_data)
+=======
+static int ecovec24_get_brightness(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return gpio_get_value(GPIO_PTR1);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sh_mobile_lcdc_info lcdc_info = {
 	.ch[0] = {
 		.interface_type = RGB18,
 		.chan = LCDC_CHAN_MAINLCD,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.bpp = 16,
 		.lcd_size_cfg = { /* 7.0 inch */
 			.width = 152,
@@ -338,7 +482,24 @@ static struct sh_mobile_lcdc_info lcdc_info = {
 		.bl_info = {
 			.name = "sh_mobile_lcdc_bl",
 			.max_brightness = 1,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.fourcc = V4L2_PIX_FMT_RGB565,
+		.panel_cfg = { /* 7.0 inch */
+			.width = 152,
+			.height = 91,
 		},
+<<<<<<< HEAD
+		.bl_info = {
+			.name = "sh_mobile_lcdc_bl",
+			.max_brightness = 1,
+			.set_brightness = ecovec24_set_brightness,
+			.get_brightness = ecovec24_get_brightness,
+>>>>>>> refs/remotes/origin/cm-10.0
+		},
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
@@ -350,7 +511,11 @@ static struct resource lcdc_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 106,
+=======
+		.start	= evt2irq(0xf40),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -362,9 +527,29 @@ static struct platform_device lcdc_device = {
 	.dev		= {
 		.platform_data	= &lcdc_info,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_LCDC,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+static struct gpio_backlight_platform_data gpio_backlight_data = {
+	.fbdev = &lcdc_device.dev,
+	.gpio = GPIO_PTR1,
+	.def_value = 1,
+	.name = "backlight",
+};
+
+static struct platform_device gpio_backlight_device = {
+	.name = "gpio-backlight",
+	.dev = {
+		.platform_data = &gpio_backlight_data,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 /* CEU0 */
@@ -380,7 +565,11 @@ static struct resource ceu0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 52,
+=======
+		.start  = evt2irq(0x880),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 	[2] = {
@@ -396,9 +585,15 @@ static struct platform_device ceu0_device = {
 	.dev	= {
 		.platform_data	= &sh_mobile_ceu0_info,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_CEU0,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* CEU1 */
@@ -414,7 +609,11 @@ static struct resource ceu1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 63,
+=======
+		.start  = evt2irq(0x9e0),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 	[2] = {
@@ -430,9 +629,15 @@ static struct platform_device ceu1_device = {
 	.dev	= {
 		.platform_data	= &sh_mobile_ceu1_info,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_CEU1,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* I2C device */
@@ -448,7 +653,11 @@ static struct i2c_board_info i2c1_devices[] = {
 	},
 	{
 		I2C_BOARD_INFO("lis3lv02d", 0x1c),
+<<<<<<< HEAD
 		.irq = 33,
+=======
+		.irq = evt2irq(0x620),
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
@@ -474,7 +683,11 @@ static struct resource keysc_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 79,
+=======
+		.start  = evt2irq(0xbe0),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -487,13 +700,24 @@ static struct platform_device keysc_device = {
 	.dev	= {
 		.platform_data	= &keysc_info,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_KEYSC,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* TouchScreen */
 #define IRQ0 32
+=======
+};
+
+/* TouchScreen */
+#define IRQ0 evt2irq(0x600)
+
+>>>>>>> refs/remotes/origin/master
 static int ts_get_pendown_state(void)
 {
 	int val = 0;
@@ -529,6 +753,7 @@ static struct i2c_board_info ts_i2c_clients = {
 	.irq		= IRQ0,
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_MMC_SDHI) || defined(CONFIG_MMC_SDHI_MODULE)
 /* SDHI0 */
 static void sdhi0_set_pwr(struct platform_device *pdev, int state)
@@ -536,11 +761,98 @@ static void sdhi0_set_pwr(struct platform_device *pdev, int state)
 	gpio_set_value(GPIO_PTB6, state);
 }
 
+<<<<<<< HEAD
+=======
+static int sdhi0_get_cd(struct platform_device *pdev)
+{
+	return !gpio_get_value(GPIO_PTY7);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct sh_mobile_sdhi_info sdhi0_info = {
 	.dma_slave_tx	= SHDMA_SLAVE_SDHI0_TX,
 	.dma_slave_rx	= SHDMA_SLAVE_SDHI0_RX,
 	.set_pwr	= sdhi0_set_pwr,
+<<<<<<< HEAD
 	.tmio_caps      = MMC_CAP_SDIO_IRQ | MMC_CAP_POWER_OFF_CARD,
+=======
+	.tmio_caps      = MMC_CAP_SDIO_IRQ | MMC_CAP_POWER_OFF_CARD |
+			  MMC_CAP_NEEDS_POLL,
+	.get_cd		= sdhi0_get_cd,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct regulator_consumer_supply cn12_power_consumers[] =
+{
+	REGULATOR_SUPPLY("vmmc", "sh_mmcif.0"),
+	REGULATOR_SUPPLY("vqmmc", "sh_mmcif.0"),
+	REGULATOR_SUPPLY("vmmc", "sh_mobile_sdhi.1"),
+	REGULATOR_SUPPLY("vqmmc", "sh_mobile_sdhi.1"),
+};
+
+static struct regulator_init_data cn12_power_init_data = {
+	.constraints = {
+		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
+	},
+	.num_consumer_supplies  = ARRAY_SIZE(cn12_power_consumers),
+	.consumer_supplies      = cn12_power_consumers,
+};
+
+static struct fixed_voltage_config cn12_power_info = {
+	.supply_name = "CN12 SD/MMC Vdd",
+	.microvolts = 3300000,
+	.gpio = GPIO_PTB7,
+	.enable_high = 1,
+	.init_data = &cn12_power_init_data,
+};
+
+static struct platform_device cn12_power = {
+	.name = "reg-fixed-voltage",
+	.id   = 0,
+	.dev  = {
+		.platform_data = &cn12_power_info,
+	},
+};
+
+#if defined(CONFIG_MMC_SDHI) || defined(CONFIG_MMC_SDHI_MODULE)
+/* SDHI0 */
+static struct regulator_consumer_supply sdhi0_power_consumers[] =
+{
+	REGULATOR_SUPPLY("vmmc", "sh_mobile_sdhi.0"),
+	REGULATOR_SUPPLY("vqmmc", "sh_mobile_sdhi.0"),
+};
+
+static struct regulator_init_data sdhi0_power_init_data = {
+	.constraints = {
+		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
+	},
+	.num_consumer_supplies  = ARRAY_SIZE(sdhi0_power_consumers),
+	.consumer_supplies      = sdhi0_power_consumers,
+};
+
+static struct fixed_voltage_config sdhi0_power_info = {
+	.supply_name = "CN11 SD/MMC Vdd",
+	.microvolts = 3300000,
+	.gpio = GPIO_PTB6,
+	.enable_high = 1,
+	.init_data = &sdhi0_power_init_data,
+};
+
+static struct platform_device sdhi0_power = {
+	.name = "reg-fixed-voltage",
+	.id   = 1,
+	.dev  = {
+		.platform_data = &sdhi0_power_info,
+	},
+};
+
+static struct sh_mobile_sdhi_info sdhi0_info = {
+	.dma_slave_tx	= SHDMA_SLAVE_SDHI0_TX,
+	.dma_slave_rx	= SHDMA_SLAVE_SDHI0_RX,
+	.tmio_caps      = MMC_CAP_SDIO_IRQ | MMC_CAP_POWER_OFF_CARD |
+			  MMC_CAP_NEEDS_POLL,
+	.tmio_flags	= TMIO_MMC_USE_GPIO_CD,
+	.cd_gpio	= GPIO_PTY7,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource sdhi0_resources[] = {
@@ -551,7 +863,11 @@ static struct resource sdhi0_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 100,
+=======
+		.start  = evt2irq(0xe80),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -564,23 +880,52 @@ static struct platform_device sdhi0_device = {
 	.dev	= {
 		.platform_data	= &sdhi0_info,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_SDHI0,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #if !defined(CONFIG_MMC_SH_MMCIF) && !defined(CONFIG_MMC_SH_MMCIF_MODULE)
 /* SDHI1 */
+<<<<<<< HEAD
 static void sdhi1_set_pwr(struct platform_device *pdev, int state)
 {
 	gpio_set_value(GPIO_PTB7, state);
 }
 
+<<<<<<< HEAD
 static struct sh_mobile_sdhi_info sdhi1_info = {
 	.dma_slave_tx	= SHDMA_SLAVE_SDHI1_TX,
 	.dma_slave_rx	= SHDMA_SLAVE_SDHI1_RX,
 	.tmio_caps      = MMC_CAP_SDIO_IRQ | MMC_CAP_POWER_OFF_CARD,
 	.set_pwr	= sdhi1_set_pwr,
+=======
+static int sdhi1_get_cd(struct platform_device *pdev)
+{
+	return !gpio_get_value(GPIO_PTW7);
+}
+
+=======
+>>>>>>> refs/remotes/origin/master
+static struct sh_mobile_sdhi_info sdhi1_info = {
+	.dma_slave_tx	= SHDMA_SLAVE_SDHI1_TX,
+	.dma_slave_rx	= SHDMA_SLAVE_SDHI1_RX,
+	.tmio_caps      = MMC_CAP_SDIO_IRQ | MMC_CAP_POWER_OFF_CARD |
+			  MMC_CAP_NEEDS_POLL,
+<<<<<<< HEAD
+	.set_pwr	= sdhi1_set_pwr,
+	.get_cd		= sdhi1_get_cd,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.tmio_flags	= TMIO_MMC_USE_GPIO_CD,
+	.cd_gpio	= GPIO_PTW7,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource sdhi1_resources[] = {
@@ -591,7 +936,11 @@ static struct resource sdhi1_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 23,
+=======
+		.start  = evt2irq(0x4e0),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -604,15 +953,22 @@ static struct platform_device sdhi1_device = {
 	.dev	= {
 		.platform_data	= &sdhi1_info,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_SDHI1,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif /* CONFIG_MMC_SH_MMCIF */
 
 #else
 
 /* MMC SPI */
+<<<<<<< HEAD
 static int mmc_spi_get_ro(struct device *dev)
 {
 	return gpio_get_value(GPIO_PTY6);
@@ -623,17 +979,29 @@ static int mmc_spi_get_cd(struct device *dev)
 	return !gpio_get_value(GPIO_PTY7);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void mmc_spi_setpower(struct device *dev, unsigned int maskval)
 {
 	gpio_set_value(GPIO_PTB6, maskval ? 1 : 0);
 }
 
 static struct mmc_spi_platform_data mmc_spi_info = {
+<<<<<<< HEAD
 	.get_ro = mmc_spi_get_ro,
 	.get_cd = mmc_spi_get_cd,
 	.caps = MMC_CAP_NEEDS_POLL,
 	.ocr_mask = MMC_VDD_32_33 | MMC_VDD_33_34, /* 3.3V only */
 	.setpower = mmc_spi_setpower,
+=======
+	.caps = MMC_CAP_NEEDS_POLL,
+	.caps2 = MMC_CAP2_RO_ACTIVE_HIGH,
+	.ocr_mask = MMC_VDD_32_33 | MMC_VDD_33_34, /* 3.3V only */
+	.setpower = mmc_spi_setpower,
+	.flags = MMC_SPI_USE_CD_GPIO | MMC_SPI_USE_RO_GPIO,
+	.cd_gpio = GPIO_PTY7,
+	.ro_gpio = GPIO_PTY6,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct spi_board_info spi_bus[] = {
@@ -659,7 +1027,11 @@ static struct resource msiof0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 84,
+=======
+		.start	= evt2irq(0xc80),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -672,9 +1044,15 @@ static struct platform_device msiof0_device = {
 	},
 	.num_resources	= ARRAY_SIZE(msiof0_resources),
 	.resource	= msiof0_resources,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_MSIOF0,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif
@@ -789,10 +1167,19 @@ static struct platform_device camera_devices[] = {
 };
 
 /* FSI */
+<<<<<<< HEAD
 static struct sh_fsi_platform_info fsi_info = {
+<<<<<<< HEAD
 	.portb_flags = SH_FSI_BRS_INV,
+=======
+	.port_b = {
+		.flags = SH_FSI_BRS_INV,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource fsi_resources[] = {
 	[0] = {
 		.name	= "FSI",
@@ -801,7 +1188,11 @@ static struct resource fsi_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 108,
+=======
+		.start  = evt2irq(0xf80),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -811,14 +1202,46 @@ static struct platform_device fsi_device = {
 	.id		= 0,
 	.num_resources	= ARRAY_SIZE(fsi_resources),
 	.resource	= fsi_resources,
+<<<<<<< HEAD
 	.dev	= {
 		.platform_data	= &fsi_info,
 	},
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_SPU, /* FSI needs SPU hwblk */
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+};
+
+static struct asoc_simple_card_info fsi_da7210_info = {
+	.name		= "DA7210",
+	.card		= "FSIB-DA7210",
+	.codec		= "da7210.0-001a",
+	.platform	= "sh_fsi.0",
+	.daifmt		= SND_SOC_DAIFMT_I2S,
+	.cpu_dai = {
+		.name	= "fsib-dai",
+		.fmt	= SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_IB_NF,
+	},
+	.codec_dai = {
+		.name	= "da7210-hifi",
+		.fmt	= SND_SOC_DAIFMT_CBM_CFM,
+	},
+};
+
+static struct platform_device fsi_da7210_device = {
+	.name	= "asoc-simple-card",
+	.dev	= {
+		.platform_data	= &fsi_da7210_info,
+	},
+};
+
+
+>>>>>>> refs/remotes/origin/master
 /* IrDA */
 static struct resource irda_resources[] = {
 	[0] = {
@@ -828,7 +1251,11 @@ static struct resource irda_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 20,
+=======
+		.start  = evt2irq(0x480),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -865,7 +1292,11 @@ static struct resource sh_vou_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 55,
+=======
+		.start  = evt2irq(0x8e0),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -878,13 +1309,20 @@ static struct platform_device vou_device = {
 	.dev		= {
 		.platform_data	= &sh_vou_pdata,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata	= {
 		.hwblk_id	= HWBLK_VOU,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #if defined(CONFIG_MMC_SH_MMCIF) || defined(CONFIG_MMC_SH_MMCIF_MODULE)
 /* SH_MMCIF */
+<<<<<<< HEAD
 static void mmcif_set_pwr(struct platform_device *pdev, int state)
 {
 	gpio_set_value(GPIO_PTB7, state);
@@ -895,6 +1333,8 @@ static void mmcif_down_pwr(struct platform_device *pdev)
 	gpio_set_value(GPIO_PTB7, 0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource sh_mmcif_resources[] = {
 	[0] = {
 		.name	= "SH_MMCIF",
@@ -904,19 +1344,30 @@ static struct resource sh_mmcif_resources[] = {
 	},
 	[1] = {
 		/* MMC2I */
+<<<<<<< HEAD
 		.start	= 29,
+=======
+		.start	= evt2irq(0x5a0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 	[2] = {
 		/* MMC3I */
+<<<<<<< HEAD
 		.start	= 30,
+=======
+		.start	= evt2irq(0x5c0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
 static struct sh_mmcif_plat_data sh_mmcif_plat = {
+<<<<<<< HEAD
 	.set_pwr	= mmcif_set_pwr,
 	.down_pwr	= mmcif_down_pwr,
+=======
+>>>>>>> refs/remotes/origin/master
 	.sup_pclk	= 0, /* SH7724: Max Pclk/2 */
 	.caps		= MMC_CAP_4_BIT_DATA |
 			  MMC_CAP_8_BIT_DATA |
@@ -932,9 +1383,15 @@ static struct platform_device sh_mmcif_device = {
 	},
 	.num_resources	= ARRAY_SIZE(sh_mmcif_resources),
 	.resource	= sh_mmcif_resources,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_MMC,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -946,10 +1403,20 @@ static struct platform_device *ecovec_devices[] __initdata = {
 	&usb1_common_device,
 	&usbhs_device,
 	&lcdc_device,
+<<<<<<< HEAD
 	&ceu0_device,
 	&ceu1_device,
 	&keysc_device,
 #if defined(CONFIG_MMC_SDHI) || defined(CONFIG_MMC_SDHI_MODULE)
+=======
+	&gpio_backlight_device,
+	&ceu0_device,
+	&ceu1_device,
+	&keysc_device,
+	&cn12_power,
+#if defined(CONFIG_MMC_SDHI) || defined(CONFIG_MMC_SDHI_MODULE)
+	&sdhi0_power,
+>>>>>>> refs/remotes/origin/master
 	&sdhi0_device,
 #if !defined(CONFIG_MMC_SH_MMCIF) && !defined(CONFIG_MMC_SH_MMCIF_MODULE)
 	&sdhi1_device,
@@ -961,6 +1428,10 @@ static struct platform_device *ecovec_devices[] __initdata = {
 	&camera_devices[1],
 	&camera_devices[2],
 	&fsi_device,
+<<<<<<< HEAD
+=======
+	&fsi_da7210_device,
+>>>>>>> refs/remotes/origin/master
 	&irda_device,
 	&vou_device,
 #if defined(CONFIG_MMC_SH_MMCIF) || defined(CONFIG_MMC_SH_MMCIF_MODULE)
@@ -1031,6 +1502,14 @@ extern char ecovec24_sdram_leave_end;
 static int __init arch_setup(void)
 {
 	struct clk *clk;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool cn12_enabled = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool cn12_enabled = false;
+>>>>>>> refs/remotes/origin/master
 
 	/* register board specific self-refresh code */
 	sh_mobile_register_self_refresh(SUSP_SH_STANDBY | SUSP_SH_SF |
@@ -1132,11 +1611,17 @@ static int __init arch_setup(void)
 
 	gpio_request(GPIO_PTE6, NULL);
 	gpio_request(GPIO_PTU1, NULL);
+<<<<<<< HEAD
 	gpio_request(GPIO_PTR1, NULL);
 	gpio_request(GPIO_PTA2, NULL);
 	gpio_direction_input(GPIO_PTE6);
 	gpio_direction_output(GPIO_PTU1, 0);
 	gpio_direction_output(GPIO_PTR1, 0);
+=======
+	gpio_request(GPIO_PTA2, NULL);
+	gpio_direction_input(GPIO_PTE6);
+	gpio_direction_output(GPIO_PTU1, 0);
+>>>>>>> refs/remotes/origin/master
 	gpio_direction_output(GPIO_PTA2, 0);
 
 	/* I/O buffer drive ability is high */
@@ -1146,8 +1631,21 @@ static int __init arch_setup(void)
 		/* DVI */
 		lcdc_info.clock_source			= LCDC_CLK_EXTERNAL;
 		lcdc_info.ch[0].clock_divider		= 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		lcdc_info.ch[0].lcd_cfg			= ecovec_dvi_modes;
 		lcdc_info.ch[0].num_cfg			= ARRAY_SIZE(ecovec_dvi_modes);
+=======
+		lcdc_info.ch[0].lcd_modes		= ecovec_dvi_modes;
+		lcdc_info.ch[0].num_modes		= ARRAY_SIZE(ecovec_dvi_modes);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		lcdc_info.ch[0].lcd_modes		= ecovec_dvi_modes;
+		lcdc_info.ch[0].num_modes		= ARRAY_SIZE(ecovec_dvi_modes);
+
+		/* No backlight */
+		gpio_backlight_data.fbdev = NULL;
+>>>>>>> refs/remotes/origin/master
 
 		gpio_set_value(GPIO_PTA2, 1);
 		gpio_set_value(GPIO_PTU1, 1);
@@ -1155,10 +1653,20 @@ static int __init arch_setup(void)
 		/* Panel */
 		lcdc_info.clock_source			= LCDC_CLK_PERIPHERAL;
 		lcdc_info.ch[0].clock_divider		= 2;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		lcdc_info.ch[0].lcd_cfg			= ecovec_lcd_modes;
 		lcdc_info.ch[0].num_cfg			= ARRAY_SIZE(ecovec_lcd_modes);
+=======
+		lcdc_info.ch[0].lcd_modes		= ecovec_lcd_modes;
+		lcdc_info.ch[0].num_modes		= ARRAY_SIZE(ecovec_lcd_modes);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		gpio_set_value(GPIO_PTR1, 1);
+=======
+		lcdc_info.ch[0].lcd_modes		= ecovec_lcd_modes;
+		lcdc_info.ch[0].num_modes		= ARRAY_SIZE(ecovec_lcd_modes);
+>>>>>>> refs/remotes/origin/master
 
 		/* FIXME
 		 *
@@ -1231,9 +1739,25 @@ static int __init arch_setup(void)
 	gpio_direction_input(GPIO_PTR5);
 	gpio_direction_input(GPIO_PTR6);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MMC_SDHI) || defined(CONFIG_MMC_SDHI_MODULE)
 	/* enable SDHI0 on CN11 (needs DS2.4 set to ON) */
 	gpio_request(GPIO_FN_SDHI0CD,  NULL);
+=======
+	/* SD-card slot CN11 */
+	/* Card-detect, used on CN11, either with SDHI0 or with SPI */
+	gpio_request(GPIO_PTY7, NULL);
+	gpio_direction_input(GPIO_PTY7);
+
+#if defined(CONFIG_MMC_SDHI) || defined(CONFIG_MMC_SDHI_MODULE)
+	/* enable SDHI0 on CN11 (needs DS2.4 set to ON) */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* SD-card slot CN11 */
+#if defined(CONFIG_MMC_SDHI) || defined(CONFIG_MMC_SDHI_MODULE)
+	/* enable SDHI0 on CN11 (needs DS2.4 set to ON) */
+>>>>>>> refs/remotes/origin/master
 	gpio_request(GPIO_FN_SDHI0WP,  NULL);
 	gpio_request(GPIO_FN_SDHI0CMD, NULL);
 	gpio_request(GPIO_FN_SDHI0CLK, NULL);
@@ -1241,8 +1765,10 @@ static int __init arch_setup(void)
 	gpio_request(GPIO_FN_SDHI0D2,  NULL);
 	gpio_request(GPIO_FN_SDHI0D1,  NULL);
 	gpio_request(GPIO_FN_SDHI0D0,  NULL);
+<<<<<<< HEAD
 	gpio_request(GPIO_PTB6, NULL);
 	gpio_direction_output(GPIO_PTB6, 0);
+<<<<<<< HEAD
 
 #if !defined(CONFIG_MMC_SH_MMCIF) && !defined(CONFIG_MMC_SH_MMCIF_MODULE)
 	/* enable SDHI1 on CN12 (needs DS2.6,7 set to ON,OFF) */
@@ -1260,6 +1786,10 @@ static int __init arch_setup(void)
 	/* I/O buffer drive ability is high for SDHI1 */
 	__raw_writew((__raw_readw(IODRIVEA) & ~0x3000) | 0x2000 , IODRIVEA);
 #endif /* CONFIG_MMC_SH_MMCIF */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 	/* enable MSIOF0 on CN11 (needs DS2.4 set to OFF) */
 	gpio_request(GPIO_FN_MSIOF0_TXD, NULL);
@@ -1269,14 +1799,76 @@ static int __init arch_setup(void)
 	gpio_direction_output(GPIO_PTM4, 1); /* active low CS */
 	gpio_request(GPIO_PTB6, NULL); /* 3.3V power control */
 	gpio_direction_output(GPIO_PTB6, 0); /* disable power by default */
+<<<<<<< HEAD
 	gpio_request(GPIO_PTY6, NULL); /* write protect */
 	gpio_direction_input(GPIO_PTY6);
+<<<<<<< HEAD
 	gpio_request(GPIO_PTY7, NULL); /* card detect */
 	gpio_direction_input(GPIO_PTY7);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spi_register_board_info(spi_bus, ARRAY_SIZE(spi_bus));
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* MMC/SD-card slot CN12 */
+#if defined(CONFIG_MMC_SH_MMCIF) || defined(CONFIG_MMC_SH_MMCIF_MODULE)
+	/* enable MMCIF (needs DS2.6,7 set to OFF,ON) */
+	gpio_request(GPIO_FN_MMC_D7, NULL);
+	gpio_request(GPIO_FN_MMC_D6, NULL);
+	gpio_request(GPIO_FN_MMC_D5, NULL);
+	gpio_request(GPIO_FN_MMC_D4, NULL);
+	gpio_request(GPIO_FN_MMC_D3, NULL);
+	gpio_request(GPIO_FN_MMC_D2, NULL);
+	gpio_request(GPIO_FN_MMC_D1, NULL);
+	gpio_request(GPIO_FN_MMC_D0, NULL);
+	gpio_request(GPIO_FN_MMC_CLK, NULL);
+	gpio_request(GPIO_FN_MMC_CMD, NULL);
+<<<<<<< HEAD
+	gpio_request(GPIO_PTB7, NULL);
+	gpio_direction_output(GPIO_PTB7, 0);
+=======
+>>>>>>> refs/remotes/origin/master
+
+	cn12_enabled = true;
+#elif defined(CONFIG_MMC_SDHI) || defined(CONFIG_MMC_SDHI_MODULE)
+	/* enable SDHI1 on CN12 (needs DS2.6,7 set to ON,OFF) */
+	gpio_request(GPIO_FN_SDHI1WP,  NULL);
+	gpio_request(GPIO_FN_SDHI1CMD, NULL);
+	gpio_request(GPIO_FN_SDHI1CLK, NULL);
+	gpio_request(GPIO_FN_SDHI1D3,  NULL);
+	gpio_request(GPIO_FN_SDHI1D2,  NULL);
+	gpio_request(GPIO_FN_SDHI1D1,  NULL);
+	gpio_request(GPIO_FN_SDHI1D0,  NULL);
+<<<<<<< HEAD
+	gpio_request(GPIO_PTB7, NULL);
+	gpio_direction_output(GPIO_PTB7, 0);
+
+	/* Card-detect, used on CN12 with SDHI1 */
+	gpio_request(GPIO_PTW7, NULL);
+	gpio_direction_input(GPIO_PTW7);
+=======
+>>>>>>> refs/remotes/origin/master
+
+	cn12_enabled = true;
+#endif
+
+	if (cn12_enabled)
+		/* I/O buffer drive ability is high for CN12 */
+		__raw_writew((__raw_readw(IODRIVEA) & ~0x3000) | 0x2000,
+			     IODRIVEA);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* enable Video */
 	gpio_request(GPIO_PTU2, NULL);
 	gpio_direction_output(GPIO_PTU2, 1);
@@ -1335,6 +1927,8 @@ static int __init arch_setup(void)
 	gpio_request(GPIO_PTU5, NULL);
 	gpio_direction_output(GPIO_PTU5, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MMC_SH_MMCIF) || defined(CONFIG_MMC_SH_MMCIF_MODULE)
 	/* enable MMCIF (needs DS2.6,7 set to OFF,ON) */
 	gpio_request(GPIO_FN_MMC_D7, NULL);
@@ -1354,6 +1948,10 @@ static int __init arch_setup(void)
 	__raw_writew((__raw_readw(IODRIVEA) & ~0x3000) | 0x2000 , IODRIVEA);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* enable I2C device */
 	i2c_register_board_info(0, i2c0_devices,
 				ARRAY_SIZE(i2c0_devices));

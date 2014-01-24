@@ -19,6 +19,14 @@
 #include <linux/uwb.h>
 #include <linux/slab.h>
 #include <linux/random.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "uwb-internal.h"
 
@@ -230,13 +238,21 @@ void uwb_rsv_backoff_win_increment(struct uwb_rc *rc)
 		return;
 
 	bow->window <<= 1;
+<<<<<<< HEAD
 	bow->n = random32() & (bow->window - 1);
+=======
+	bow->n = prandom_u32() & (bow->window - 1);
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(dev, "new_window=%d, n=%d\n: ", bow->window, bow->n);
 
 	/* reset the timer associated variables */
 	timeout_us = bow->n * UWB_SUPERFRAME_LENGTH_US;
 	bow->total_expired = 0;
+<<<<<<< HEAD
 	mod_timer(&bow->timer, jiffies + usecs_to_jiffies(timeout_us));		
+=======
+	mod_timer(&bow->timer, jiffies + usecs_to_jiffies(timeout_us));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void uwb_rsv_stroke_timer(struct uwb_rsv *rsv)
@@ -256,7 +272,11 @@ static void uwb_rsv_stroke_timer(struct uwb_rsv *rsv)
 			sframes = 1;
 		if (rsv->state == UWB_RSV_STATE_O_ESTABLISHED)
 			sframes = 0;
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (sframes > 0) {
@@ -556,7 +576,11 @@ int uwb_rsv_establish(struct uwb_rsv *rsv)
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 	rsv->tiebreaker = random32() & 1;
+=======
+	rsv->tiebreaker = prandom_u32() & 1;
+>>>>>>> refs/remotes/origin/master
 	/* get available mas bitmap */
 	uwb_drp_available(rc, &available);
 
@@ -610,7 +634,11 @@ int uwb_rsv_try_move(struct uwb_rsv *rsv, struct uwb_mas_bm *available)
 	struct device *dev = &rc->uwb_dev.dev;
 	struct uwb_rsv_move *mv;
 	int ret = 0;
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (bow->can_reserve_extra_mases == false)
 		return -EBUSY;
 
@@ -627,7 +655,11 @@ int uwb_rsv_try_move(struct uwb_rsv *rsv, struct uwb_mas_bm *available)
 	} else {
 		dev_dbg(dev, "new allocation not found\n");
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -639,7 +671,11 @@ void uwb_rsv_handle_drp_avail_change(struct uwb_rc *rc)
 	struct uwb_drp_backoff_win *bow = &rc->bow;
 	struct uwb_rsv *rsv;
 	struct uwb_mas_bm mas;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (bow->can_reserve_extra_mases == false)
 		return;
 
@@ -651,7 +687,11 @@ void uwb_rsv_handle_drp_avail_change(struct uwb_rc *rc)
 			uwb_rsv_try_move(rsv, &mas);
 		}
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -871,7 +911,11 @@ void uwb_rsv_queue_update(struct uwb_rc *rc)
  */
 void uwb_rsv_sched_update(struct uwb_rc *rc)
 {
+<<<<<<< HEAD
 	spin_lock_bh(&rc->rsvs_lock);
+=======
+	spin_lock_irq(&rc->rsvs_lock);
+>>>>>>> refs/remotes/origin/master
 	if (!delayed_work_pending(&rc->rsv_update_work)) {
 		if (rc->set_drp_ie_pending > 0) {
 			rc->set_drp_ie_pending++;
@@ -880,7 +924,11 @@ void uwb_rsv_sched_update(struct uwb_rc *rc)
 		uwb_rsv_queue_update(rc);
 	}
 unlock:
+<<<<<<< HEAD
 	spin_unlock_bh(&rc->rsvs_lock);
+=======
+	spin_unlock_irq(&rc->rsvs_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -915,10 +963,17 @@ static void uwb_rsv_alien_bp_work(struct work_struct *work)
 	struct uwb_rsv *rsv;
 
 	mutex_lock(&rc->rsvs_mutex);
+<<<<<<< HEAD
 	
 	list_for_each_entry(rsv, &rc->reservations, rc_node) {
 		if (rsv->type != UWB_DRP_TYPE_ALIEN_BP) {
 			rsv->callback(rsv);
+=======
+
+	list_for_each_entry(rsv, &rc->reservations, rc_node) {
+		if (rsv->type != UWB_DRP_TYPE_ALIEN_BP) {
+			uwb_rsv_callback(rsv);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 

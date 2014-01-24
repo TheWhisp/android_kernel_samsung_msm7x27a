@@ -15,7 +15,11 @@
 
 #include <linux/types.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <linux/rtc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgtable.h>
 #include <asm/machdep.h>
 #include <asm/MC68EZ328.h>
@@ -25,7 +29,11 @@
 
 /***************************************************************************/
 
+<<<<<<< HEAD
 void m68328_timer_gettod(int *year, int *mon, int *day, int *hour, int *min, int *sec);
+=======
+int m68328_hwclk(int set, struct rtc_time *t);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /***************************************************************************/
 
@@ -69,7 +77,11 @@ void config_BSP(char *command, int len)
   else command[0] = 0;
 #endif
  
+<<<<<<< HEAD
   mach_gettod = m68328_timer_gettod;
+=======
+  mach_hwclk = m68328_hwclk;
+>>>>>>> refs/remotes/origin/cm-10.0
   mach_reset = m68ez328_reset;
 }
 

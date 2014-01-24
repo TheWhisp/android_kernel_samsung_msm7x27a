@@ -10,7 +10,15 @@
 
 #include <linux/interrupt.h>
 #include <mach/dma.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/blackfin.h>
 #include <asm/page.h>
 #include <asm-generic/dma.h>
@@ -22,12 +30,31 @@
 #define DATA_SIZE_8			0
 #define DATA_SIZE_16		1
 #define DATA_SIZE_32		2
+<<<<<<< HEAD
 
 #define DMA_FLOW_STOP		0
 #define DMA_FLOW_AUTO		1
 #define DMA_FLOW_ARRAY		4
 #define DMA_FLOW_SMALL		6
 #define DMA_FLOW_LARGE		7
+=======
+#ifdef CONFIG_BF60x
+#define DATA_SIZE_64		3
+#endif
+
+#define DMA_FLOW_STOP		0
+#define DMA_FLOW_AUTO		1
+#ifdef CONFIG_BF60x
+#define DMA_FLOW_LIST		4
+#define DMA_FLOW_ARRAY		5
+#define DMA_FLOW_LIST_DEMAND	6
+#define DMA_FLOW_ARRAY_DEMAND	7
+#else
+#define DMA_FLOW_ARRAY		4
+#define DMA_FLOW_SMALL		6
+#define DMA_FLOW_LARGE		7
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #define DIMENSION_LINEAR	0
 #define DIMENSION_2D		1
@@ -36,12 +63,19 @@
 #define DIR_WRITE			1
 
 #define INTR_DISABLE		0
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BF60x
+#define INTR_ON_PERI			1
+#endif
+>>>>>>> refs/remotes/origin/master
 #define INTR_ON_BUF			2
 #define INTR_ON_ROW			3
 
 #define DMA_NOSYNC_KEEP_DMA_BUF	0
 #define DMA_SYNC_RESTART		1
 
+<<<<<<< HEAD
 struct dmasg {
 	void *next_desc_addr;
 	unsigned long start_addr;
@@ -50,12 +84,77 @@ struct dmasg {
 	short x_modify;
 	unsigned short y_count;
 	short y_modify;
+=======
+#ifdef DMA_MMR_SIZE_32
+#define DMA_MMR_SIZE_TYPE long
+#define DMA_MMR_READ bfin_read32
+#define DMA_MMR_WRITE bfin_write32
+#else
+#define DMA_MMR_SIZE_TYPE short
+#define DMA_MMR_READ bfin_read16
+#define DMA_MMR_WRITE bfin_write16
+#endif
+
+struct dma_desc_array {
+	unsigned long start_addr;
+	unsigned DMA_MMR_SIZE_TYPE cfg;
+	unsigned DMA_MMR_SIZE_TYPE x_count;
+	DMA_MMR_SIZE_TYPE x_modify;
+} __attribute__((packed));
+
+struct dmasg {
+	void *next_desc_addr;
+	unsigned long start_addr;
+	unsigned DMA_MMR_SIZE_TYPE cfg;
+	unsigned DMA_MMR_SIZE_TYPE x_count;
+	DMA_MMR_SIZE_TYPE x_modify;
+	unsigned DMA_MMR_SIZE_TYPE y_count;
+	DMA_MMR_SIZE_TYPE y_modify;
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 struct dma_register {
 	void *next_desc_ptr;	/* DMA Next Descriptor Pointer register */
 	unsigned long start_addr;	/* DMA Start address  register */
+<<<<<<< HEAD
 
+=======
+#ifdef CONFIG_BF60x
+	unsigned long cfg;	/* DMA Configuration register */
+
+	unsigned long x_count;	/* DMA x_count register */
+
+	long x_modify;	/* DMA x_modify register */
+
+	unsigned long y_count;	/* DMA y_count register */
+
+	long y_modify;	/* DMA y_modify register */
+
+	unsigned long reserved;
+	unsigned long reserved2;
+
+	void *curr_desc_ptr;	/* DMA Current Descriptor Pointer
+					   register */
+	void *prev_desc_ptr;	/* DMA previous initial Descriptor Pointer
+					   register */
+	unsigned long curr_addr_ptr;	/* DMA Current Address Pointer
+						   register */
+	unsigned long irq_status;	/* DMA irq status register */
+
+	unsigned long curr_x_count;	/* DMA Current x-count register */
+
+	unsigned long curr_y_count;	/* DMA Current y-count register */
+
+	unsigned long reserved3;
+
+	unsigned long bw_limit_count;	/* DMA band width limit count register */
+	unsigned long curr_bw_limit_count;	/* DMA Current band width limit
+							count register */
+	unsigned long bw_monitor_count;	/* DMA band width limit count register */
+	unsigned long curr_bw_monitor_count;	/* DMA Current band width limit
+							count register */
+#else
+>>>>>>> refs/remotes/origin/master
 	unsigned short cfg;	/* DMA Configuration register */
 	unsigned short dummy1;	/* DMA Configuration register */
 
@@ -92,6 +191,10 @@ struct dma_register {
 	unsigned short dummy9;
 
 	unsigned long reserved3;
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 };
 
@@ -131,6 +234,7 @@ static inline void set_dma_curr_desc_addr(unsigned int channel, void *addr)
 {
 	dma_ch[channel].regs->curr_desc_ptr = addr;
 }
+<<<<<<< HEAD
 static inline void set_dma_x_count(unsigned int channel, unsigned short x_count)
 {
 	dma_ch[channel].regs->x_count = x_count;
@@ -148,6 +252,25 @@ static inline void set_dma_y_modify(unsigned int channel, short y_modify)
 	dma_ch[channel].regs->y_modify = y_modify;
 }
 static inline void set_dma_config(unsigned int channel, unsigned short config)
+=======
+static inline void set_dma_x_count(unsigned int channel, unsigned DMA_MMR_SIZE_TYPE x_count)
+{
+	dma_ch[channel].regs->x_count = x_count;
+}
+static inline void set_dma_y_count(unsigned int channel, unsigned DMA_MMR_SIZE_TYPE y_count)
+{
+	dma_ch[channel].regs->y_count = y_count;
+}
+static inline void set_dma_x_modify(unsigned int channel, DMA_MMR_SIZE_TYPE x_modify)
+{
+	dma_ch[channel].regs->x_modify = x_modify;
+}
+static inline void set_dma_y_modify(unsigned int channel, DMA_MMR_SIZE_TYPE y_modify)
+{
+	dma_ch[channel].regs->y_modify = y_modify;
+}
+static inline void set_dma_config(unsigned int channel, unsigned DMA_MMR_SIZE_TYPE config)
+>>>>>>> refs/remotes/origin/master
 {
 	dma_ch[channel].regs->cfg = config;
 }
@@ -156,6 +279,7 @@ static inline void set_dma_curr_addr(unsigned int channel, unsigned long addr)
 	dma_ch[channel].regs->curr_addr_ptr = addr;
 }
 
+<<<<<<< HEAD
 static inline unsigned short
 set_bfin_dma_config(char direction, char flow_mode,
 		    char intr_mode, char dma_mode, char width, char syncmode)
@@ -173,6 +297,57 @@ static inline unsigned short get_dma_curr_xcount(unsigned int channel)
 	return dma_ch[channel].regs->curr_x_count;
 }
 static inline unsigned short get_dma_curr_ycount(unsigned int channel)
+=======
+#ifdef CONFIG_BF60x
+static inline unsigned long
+set_bfin_dma_config2(char direction, char flow_mode, char intr_mode,
+		     char dma_mode, char mem_width, char syncmode, char peri_width)
+{
+	unsigned long config = 0;
+
+	switch (intr_mode) {
+	case INTR_ON_BUF:
+		if (dma_mode == DIMENSION_2D)
+			config = DI_EN_Y;
+		else
+			config = DI_EN_X;
+		break;
+	case INTR_ON_ROW:
+		config = DI_EN_X;
+		break;
+	case INTR_ON_PERI:
+		config = DI_EN_P;
+		break;
+	};
+
+	return config | (direction << 1) | (mem_width << 8) | (dma_mode << 26) |
+		(flow_mode << 12) | (syncmode << 2) | (peri_width << 4);
+}
+#endif
+
+static inline unsigned DMA_MMR_SIZE_TYPE
+set_bfin_dma_config(char direction, char flow_mode,
+		    char intr_mode, char dma_mode, char mem_width, char syncmode)
+{
+#ifdef CONFIG_BF60x
+	return set_bfin_dma_config2(direction, flow_mode, intr_mode, dma_mode,
+		mem_width, syncmode, mem_width);
+#else
+	return (direction << 1) | (mem_width << 2) | (dma_mode << 4) |
+		(intr_mode << 6) | (flow_mode << 12) | (syncmode << 5);
+#endif
+}
+
+static inline unsigned DMA_MMR_SIZE_TYPE get_dma_curr_irqstat(unsigned int channel)
+{
+	return dma_ch[channel].regs->irq_status;
+}
+static inline unsigned DMA_MMR_SIZE_TYPE get_dma_curr_xcount(unsigned int channel)
+{
+	return dma_ch[channel].regs->curr_x_count;
+}
+static inline unsigned DMA_MMR_SIZE_TYPE get_dma_curr_ycount(unsigned int channel)
+>>>>>>> refs/remotes/origin/master
 {
 	return dma_ch[channel].regs->curr_y_count;
 }
@@ -184,7 +359,11 @@ static inline void *get_dma_curr_desc_ptr(unsigned int channel)
 {
 	return dma_ch[channel].regs->curr_desc_ptr;
 }
+<<<<<<< HEAD
 static inline unsigned short get_dma_config(unsigned int channel)
+=======
+static inline unsigned DMA_MMR_SIZE_TYPE get_dma_config(unsigned int channel)
+>>>>>>> refs/remotes/origin/master
 {
 	return dma_ch[channel].regs->cfg;
 }
@@ -203,8 +382,13 @@ static inline void set_dma_sg(unsigned int channel, struct dmasg *sg, int ndsize
 
 	dma_ch[channel].regs->next_desc_ptr = sg;
 	dma_ch[channel].regs->cfg =
+<<<<<<< HEAD
 		(dma_ch[channel].regs->cfg & ~(0xf << 8)) |
 		((ndsize & 0xf) << 8);
+=======
+		(dma_ch[channel].regs->cfg & ~NDSIZE) |
+		((ndsize << NDSIZE_OFFSET) & NDSIZE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int dma_channel_active(unsigned int channel)
@@ -239,7 +423,11 @@ static inline void dma_enable_irq(unsigned int channel)
 }
 static inline void clear_dma_irqstat(unsigned int channel)
 {
+<<<<<<< HEAD
 	dma_ch[channel].regs->irq_status = DMA_DONE | DMA_ERR;
+=======
+	dma_ch[channel].regs->irq_status = DMA_DONE | DMA_ERR | DMA_PIRQ;
+>>>>>>> refs/remotes/origin/master
 }
 
 void *dma_memcpy(void *dest, const void *src, size_t count);

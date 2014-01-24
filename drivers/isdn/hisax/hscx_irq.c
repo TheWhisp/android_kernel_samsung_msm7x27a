@@ -4,7 +4,15 @@
  *
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -75,7 +83,11 @@ hscx_empty_fifo(struct BCState *bcs, int count)
 		t += sprintf(t, "hscx_empty_fifo %c cnt %d",
 			     bcs->hw.hscx.hscx ? 'B' : 'A', count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, bcs->blog);
+=======
+		debugl1(cs, "%s", bcs->blog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -84,7 +96,15 @@ hscx_fill_fifo(struct BCState *bcs)
 {
 	struct IsdnCardState *cs = bcs->cs;
 	int more, count;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags)? 64: 32;
+=======
+	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags) ? 64 : 32;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags) ? 64 : 32;
+>>>>>>> refs/remotes/origin/master
 	u_char *ptr;
 
 	if ((cs->debug & L1_DEB_HSCX) && !(cs->debug & L1_DEB_HSCX_FIFO))
@@ -115,7 +135,11 @@ hscx_fill_fifo(struct BCState *bcs)
 		t += sprintf(t, "hscx_fill_fifo %c cnt %d",
 			     bcs->hw.hscx.hscx ? 'B' : 'A', count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, bcs->blog);
+=======
+		debugl1(cs, "%s", bcs->blog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -125,7 +149,15 @@ hscx_interrupt(struct IsdnCardState *cs, u_char val, u_char hscx)
 	u_char r;
 	struct BCState *bcs = cs->bcs + hscx;
 	struct sk_buff *skb;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags)? 64: 32;
+=======
+	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags) ? 64 : 32;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags) ? 64 : 32;
+>>>>>>> refs/remotes/origin/master
 	int count;
 
 	if (!test_bit(BC_FLG_INIT, &bcs->Flag))
@@ -159,7 +191,15 @@ hscx_interrupt(struct IsdnCardState *cs, u_char val, u_char hscx)
 			WriteHSCXCMDR(cs, hscx, 0x80);
 		} else {
 			count = READHSCX(cs, hscx, HSCX_RBCL) & (
+<<<<<<< HEAD
+<<<<<<< HEAD
 				test_bit(HW_IPAC, &cs->HW_Flags)? 0x3f: 0x1f);
+=======
+				test_bit(HW_IPAC, &cs->HW_Flags) ? 0x3f : 0x1f);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				test_bit(HW_IPAC, &cs->HW_Flags) ? 0x3f : 0x1f);
+>>>>>>> refs/remotes/origin/master
 			if (count == 0)
 				count = fifo_size;
 			hscx_empty_fifo(bcs, count);
@@ -197,8 +237,18 @@ hscx_interrupt(struct IsdnCardState *cs, u_char val, u_char hscx)
 				hscx_fill_fifo(bcs);
 				return;
 			} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (test_bit(FLG_LLI_L1WAKEUP,&bcs->st->lli.flag) &&
 					(PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+=======
+				if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+				    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+				    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+>>>>>>> refs/remotes/origin/master
 					u_long	flags;
 					spin_lock_irqsave(&bcs->aclock, flags);
 					bcs->ackcnt += bcs->hw.hscx.count;
@@ -206,7 +256,15 @@ hscx_interrupt(struct IsdnCardState *cs, u_char val, u_char hscx)
 					schedule_event(bcs, B_ACKPENDING);
 				}
 				dev_kfree_skb_irq(bcs->tx_skb);
+<<<<<<< HEAD
+<<<<<<< HEAD
 				bcs->hw.hscx.count = 0; 
+=======
+				bcs->hw.hscx.count = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				bcs->hw.hscx.count = 0;
+>>>>>>> refs/remotes/origin/master
 				bcs->tx_skb = NULL;
 			}
 		}
@@ -239,7 +297,15 @@ hscx_int_main(struct IsdnCardState *cs, u_char val)
 				bcs->err_tx++;
 #endif
 				/* Here we lost an TX interrupt, so
+<<<<<<< HEAD
+<<<<<<< HEAD
 				   * restart transmitting the whole frame.
+=======
+				 * restart transmitting the whole frame.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 * restart transmitting the whole frame.
+>>>>>>> refs/remotes/origin/master
 				 */
 				if (bcs->tx_skb) {
 					skb_push(bcs->tx_skb, bcs->hw.hscx.count);
@@ -266,7 +332,15 @@ hscx_int_main(struct IsdnCardState *cs, u_char val)
 				hscx_fill_fifo(bcs);
 			else {
 				/* Here we lost an TX interrupt, so
+<<<<<<< HEAD
+<<<<<<< HEAD
 				   * restart transmitting the whole frame.
+=======
+				 * restart transmitting the whole frame.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 * restart transmitting the whole frame.
+>>>>>>> refs/remotes/origin/master
 				 */
 #ifdef ERROR_STATISTIC
 				bcs->err_tx++;

@@ -303,6 +303,10 @@ void __init spear310_init(struct pmx_mode *pmx_mode, struct pmx_dev **pmx_devs,
 
 	ret = pmx_register(&pmx_driver);
 	if (ret)
+<<<<<<< HEAD
 		printk(KERN_ERR "padmux: registeration failed. err no: %d\n",
+=======
+		printk(KERN_ERR "padmux: registration failed. err no: %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				ret);
 }

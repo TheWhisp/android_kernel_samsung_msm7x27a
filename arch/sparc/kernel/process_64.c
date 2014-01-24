@@ -12,7 +12,15 @@
 #include <stdarg.h>
 
 #include <linux/errno.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
@@ -27,12 +35,25 @@
 #include <linux/tick.h>
 #include <linux/init.h>
 #include <linux/cpu.h>
+<<<<<<< HEAD
 #include <linux/elfcore.h>
 #include <linux/sysrq.h>
 #include <linux/nmi.h>
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/perf_event.h>
+#include <linux/elfcore.h>
+#include <linux/sysrq.h>
+#include <linux/nmi.h>
+#include <linux/context_tracking.h>
+
+#include <asm/uaccess.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/pgalloc.h>
 #include <asm/pgtable.h>
@@ -48,6 +69,7 @@
 #include <asm/syscalls.h>
 #include <asm/irq_regs.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
 
 #include "kstack.h"
 
@@ -65,6 +87,23 @@ static void sparc64_yield(int cpu)
 		unsigned long pstate;
 
 		/* Disable interrupts. */
+=======
+#include <asm/pcr.h>
+
+#include "kstack.h"
+
+/* Idle loop support on sparc64. */
+void arch_cpu_idle(void)
+{
+	if (tlb_type != hypervisor) {
+		touch_nmi_watchdog();
+	} else {
+		unsigned long pstate;
+
+                /* The sun4v sleeping code requires that we have PSTATE.IE cleared over
+                 * the cpu sleep hypervisor call.
+                 */
+>>>>>>> refs/remotes/origin/master
 		__asm__ __volatile__(
 			"rdpr %%pstate, %0\n\t"
 			"andn %0, %1, %0\n\t"
@@ -72,7 +111,11 @@ static void sparc64_yield(int cpu)
 			: "=&r" (pstate)
 			: "i" (PSTATE_IE));
 
+<<<<<<< HEAD
 		if (!need_resched() && !cpu_is_offline(cpu))
+=======
+		if (!need_resched() && !cpu_is_offline(smp_processor_id()))
+>>>>>>> refs/remotes/origin/master
 			sun4v_cpu_yield();
 
 		/* Re-enable interrupts. */
@@ -83,6 +126,7 @@ static void sparc64_yield(int cpu)
 			: "=&r" (pstate)
 			: "i" (PSTATE_IE));
 	}
+<<<<<<< HEAD
 
 	set_thread_flag(TIF_POLLING_NRFLAG);
 }
@@ -95,11 +139,17 @@ void cpu_idle(void)
 	set_thread_flag(TIF_POLLING_NRFLAG);
 
 	while(1) {
+<<<<<<< HEAD
 		tick_nohz_stop_sched_tick(1);
+=======
+		tick_nohz_idle_enter();
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		while (!need_resched() && !cpu_is_offline(cpu))
 			sparc64_yield(cpu);
 
+<<<<<<< HEAD
 		tick_nohz_restart_sched_tick();
 
 		preempt_enable_no_resched();
@@ -111,8 +161,32 @@ void cpu_idle(void)
 
 		schedule();
 		preempt_disable();
+=======
+		rcu_idle_exit();
+		tick_nohz_idle_exit();
+
+#ifdef CONFIG_HOTPLUG_CPU
+		if (cpu_is_offline(cpu)) {
+			sched_preempt_enable_no_resched();
+			cpu_play_dead();
+		}
+#endif
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
+=======
+	local_irq_enable();
+}
+
+#ifdef CONFIG_HOTPLUG_CPU
+void arch_cpu_idle_dead()
+{
+	sched_preempt_enable_no_resched();
+	cpu_play_dead();
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_COMPAT
 static void show_regwindow32(struct pt_regs *regs)
@@ -185,6 +259,11 @@ static void show_regwindow(struct pt_regs *regs)
 
 void show_regs(struct pt_regs *regs)
 {
+<<<<<<< HEAD
+=======
+	show_regs_print_info(KERN_DEFAULT);
+
+>>>>>>> refs/remotes/origin/master
 	printk("TSTATE: %016lx TPC: %016lx TNPC: %016lx Y: %08x    %s\n", regs->tstate,
 	       regs->tpc, regs->tnpc, regs->y, print_tainted());
 	printk("TPC: <%pS>\n", (void *) regs->tpc);
@@ -205,18 +284,36 @@ void show_regs(struct pt_regs *regs)
 	show_stack(current, (unsigned long *) regs->u_regs[UREG_FP]);
 }
 
+<<<<<<< HEAD
 struct global_reg_snapshot global_reg_snapshot[NR_CPUS];
 static DEFINE_SPINLOCK(global_reg_snapshot_lock);
+=======
+union global_cpu_snapshot global_cpu_snapshot[NR_CPUS];
+static DEFINE_SPINLOCK(global_cpu_snapshot_lock);
+>>>>>>> refs/remotes/origin/master
 
 static void __global_reg_self(struct thread_info *tp, struct pt_regs *regs,
 			      int this_cpu)
 {
+<<<<<<< HEAD
 	flushw_all();
 
 	global_reg_snapshot[this_cpu].tstate = regs->tstate;
 	global_reg_snapshot[this_cpu].tpc = regs->tpc;
 	global_reg_snapshot[this_cpu].tnpc = regs->tnpc;
 	global_reg_snapshot[this_cpu].o7 = regs->u_regs[UREG_I7];
+=======
+	struct global_reg_snapshot *rp;
+
+	flushw_all();
+
+	rp = &global_cpu_snapshot[this_cpu].reg;
+
+	rp->tstate = regs->tstate;
+	rp->tpc = regs->tpc;
+	rp->tnpc = regs->tnpc;
+	rp->o7 = regs->u_regs[UREG_I7];
+>>>>>>> refs/remotes/origin/master
 
 	if (regs->tstate & TSTATE_PRIV) {
 		struct reg_window *rw;
@@ -224,6 +321,7 @@ static void __global_reg_self(struct thread_info *tp, struct pt_regs *regs,
 		rw = (struct reg_window *)
 			(regs->u_regs[UREG_FP] + STACK_BIAS);
 		if (kstack_valid(tp, (unsigned long) rw)) {
+<<<<<<< HEAD
 			global_reg_snapshot[this_cpu].i7 = rw->ins[7];
 			rw = (struct reg_window *)
 				(rw->ins[6] + STACK_BIAS);
@@ -235,6 +333,19 @@ static void __global_reg_self(struct thread_info *tp, struct pt_regs *regs,
 		global_reg_snapshot[this_cpu].rpc = 0;
 	}
 	global_reg_snapshot[this_cpu].thread = tp;
+=======
+			rp->i7 = rw->ins[7];
+			rw = (struct reg_window *)
+				(rw->ins[6] + STACK_BIAS);
+			if (kstack_valid(tp, (unsigned long) rw))
+				rp->rpc = rw->ins[7];
+		}
+	} else {
+		rp->i7 = 0;
+		rp->rpc = 0;
+	}
+	rp->thread = tp;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* In order to avoid hangs we do not try to synchronize with the
@@ -262,9 +373,15 @@ void arch_trigger_all_cpu_backtrace(void)
 	if (!regs)
 		regs = tp->kregs;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&global_reg_snapshot_lock, flags);
 
 	memset(global_reg_snapshot, 0, sizeof(global_reg_snapshot));
+=======
+	spin_lock_irqsave(&global_cpu_snapshot_lock, flags);
+
+	memset(global_cpu_snapshot, 0, sizeof(global_cpu_snapshot));
+>>>>>>> refs/remotes/origin/master
 
 	this_cpu = raw_smp_processor_id();
 
@@ -273,7 +390,11 @@ void arch_trigger_all_cpu_backtrace(void)
 	smp_fetch_global_regs();
 
 	for_each_online_cpu(cpu) {
+<<<<<<< HEAD
 		struct global_reg_snapshot *gp = &global_reg_snapshot[cpu];
+=======
+		struct global_reg_snapshot *gp = &global_cpu_snapshot[cpu].reg;
+>>>>>>> refs/remotes/origin/master
 
 		__global_reg_poll(gp);
 
@@ -296,9 +417,15 @@ void arch_trigger_all_cpu_backtrace(void)
 		}
 	}
 
+<<<<<<< HEAD
 	memset(global_reg_snapshot, 0, sizeof(global_reg_snapshot));
 
 	spin_unlock_irqrestore(&global_reg_snapshot_lock, flags);
+=======
+	memset(global_cpu_snapshot, 0, sizeof(global_cpu_snapshot));
+
+	spin_unlock_irqrestore(&global_cpu_snapshot_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_MAGIC_SYSRQ
@@ -310,6 +437,7 @@ static void sysrq_handle_globreg(int key)
 
 static struct sysrq_key_op sparc_globalreg_op = {
 	.handler	= sysrq_handle_globreg,
+<<<<<<< HEAD
 	.help_msg	= "Globalregs",
 	.action_msg	= "Show Global CPU Regs",
 };
@@ -320,6 +448,92 @@ static int __init sparc_globreg_init(void)
 }
 
 core_initcall(sparc_globreg_init);
+=======
+	.help_msg	= "global-regs(y)",
+	.action_msg	= "Show Global CPU Regs",
+};
+
+static void __global_pmu_self(int this_cpu)
+{
+	struct global_pmu_snapshot *pp;
+	int i, num;
+
+	pp = &global_cpu_snapshot[this_cpu].pmu;
+
+	num = 1;
+	if (tlb_type == hypervisor &&
+	    sun4v_chip_type >= SUN4V_CHIP_NIAGARA4)
+		num = 4;
+
+	for (i = 0; i < num; i++) {
+		pp->pcr[i] = pcr_ops->read_pcr(i);
+		pp->pic[i] = pcr_ops->read_pic(i);
+	}
+}
+
+static void __global_pmu_poll(struct global_pmu_snapshot *pp)
+{
+	int limit = 0;
+
+	while (!pp->pcr[0] && ++limit < 100) {
+		barrier();
+		udelay(1);
+	}
+}
+
+static void pmu_snapshot_all_cpus(void)
+{
+	unsigned long flags;
+	int this_cpu, cpu;
+
+	spin_lock_irqsave(&global_cpu_snapshot_lock, flags);
+
+	memset(global_cpu_snapshot, 0, sizeof(global_cpu_snapshot));
+
+	this_cpu = raw_smp_processor_id();
+
+	__global_pmu_self(this_cpu);
+
+	smp_fetch_global_pmu();
+
+	for_each_online_cpu(cpu) {
+		struct global_pmu_snapshot *pp = &global_cpu_snapshot[cpu].pmu;
+
+		__global_pmu_poll(pp);
+
+		printk("%c CPU[%3d]: PCR[%08lx:%08lx:%08lx:%08lx] PIC[%08lx:%08lx:%08lx:%08lx]\n",
+		       (cpu == this_cpu ? '*' : ' '), cpu,
+		       pp->pcr[0], pp->pcr[1], pp->pcr[2], pp->pcr[3],
+		       pp->pic[0], pp->pic[1], pp->pic[2], pp->pic[3]);
+	}
+
+	memset(global_cpu_snapshot, 0, sizeof(global_cpu_snapshot));
+
+	spin_unlock_irqrestore(&global_cpu_snapshot_lock, flags);
+}
+
+static void sysrq_handle_globpmu(int key)
+{
+	pmu_snapshot_all_cpus();
+}
+
+static struct sysrq_key_op sparc_globalpmu_op = {
+	.handler	= sysrq_handle_globpmu,
+	.help_msg	= "global-pmu(x)",
+	.action_msg	= "Show Global PMU Regs",
+};
+
+static int __init sparc_sysrq_init(void)
+{
+	int ret = register_sysrq_key('y', &sparc_globalreg_op);
+
+	if (!ret)
+		ret = register_sysrq_key('x', &sparc_globalpmu_op);
+	return ret;
+}
+
+core_initcall(sparc_sysrq_init);
+>>>>>>> refs/remotes/origin/master
 
 #endif
 
@@ -368,21 +582,39 @@ void flush_thread(void)
 
 	/* Clear FPU register state. */
 	t->fpsaved[0] = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
 	if (get_thread_current_ds() != ASI_AIUS)
 		set_fs(USER_DS);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* It's a bit more tricky when 64-bit tasks are involved... */
 static unsigned long clone_stackframe(unsigned long csp, unsigned long psp)
 {
+<<<<<<< HEAD
 	unsigned long fp, distance, rval;
 
 	if (!(test_thread_flag(TIF_32BIT))) {
+=======
+	bool stack_64bit = test_thread_64bit_stack(psp);
+	unsigned long fp, distance, rval;
+
+	if (stack_64bit) {
+>>>>>>> refs/remotes/origin/master
 		csp += STACK_BIAS;
 		psp += STACK_BIAS;
 		__get_user(fp, &(((struct reg_window __user *)psp)->ins[6]));
 		fp += STACK_BIAS;
+<<<<<<< HEAD
+=======
+		if (test_thread_flag(TIF_32BIT))
+			fp &= 0xffffffff;
+>>>>>>> refs/remotes/origin/master
 	} else
 		__get_user(fp, &(((struct reg_window32 __user *)psp)->ins[6]));
 
@@ -396,7 +628,11 @@ static unsigned long clone_stackframe(unsigned long csp, unsigned long psp)
 	rval = (csp - distance);
 	if (copy_in_user((void __user *) rval, (void __user *) psp, distance))
 		rval = 0;
+<<<<<<< HEAD
 	else if (test_thread_flag(TIF_32BIT)) {
+=======
+	else if (!stack_64bit) {
+>>>>>>> refs/remotes/origin/master
 		if (put_user(((u32)csp),
 			     &(((struct reg_window32 __user *)rval)->ins[6])))
 			rval = 0;
@@ -431,6 +667,7 @@ void synchronize_user_stack(void)
 
 	flush_user_windows();
 	if ((window = get_thread_wsaved()) != 0) {
+<<<<<<< HEAD
 		int winsize = sizeof(struct reg_window);
 		int bias = 0;
 
@@ -443,6 +680,20 @@ void synchronize_user_stack(void)
 		do {
 			unsigned long sp = (t->rwbuf_stkptrs[window] + bias);
 			struct reg_window *rwin = &t->reg_window[window];
+=======
+		window -= 1;
+		do {
+			struct reg_window *rwin = &t->reg_window[window];
+			int winsize = sizeof(struct reg_window);
+			unsigned long sp;
+
+			sp = t->rwbuf_stkptrs[window];
+
+			if (test_thread_64bit_stack(sp))
+				sp += STACK_BIAS;
+			else
+				winsize = sizeof(struct reg_window32);
+>>>>>>> refs/remotes/origin/master
 
 			if (!copy_to_user((char __user *)sp, rwin, winsize)) {
 				shift_window_buffer(window, get_thread_wsaved() - 1, t);
@@ -468,6 +719,7 @@ void fault_in_user_windows(void)
 {
 	struct thread_info *t = current_thread_info();
 	unsigned long window;
+<<<<<<< HEAD
 	int winsize = sizeof(struct reg_window);
 	int bias = 0;
 
@@ -475,6 +727,8 @@ void fault_in_user_windows(void)
 		winsize = sizeof(struct reg_window32);
 	else
 		bias = STACK_BIAS;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	flush_user_windows();
 	window = get_thread_wsaved();
@@ -482,8 +736,21 @@ void fault_in_user_windows(void)
 	if (likely(window != 0)) {
 		window -= 1;
 		do {
+<<<<<<< HEAD
 			unsigned long sp = (t->rwbuf_stkptrs[window] + bias);
 			struct reg_window *rwin = &t->reg_window[window];
+=======
+			struct reg_window *rwin = &t->reg_window[window];
+			int winsize = sizeof(struct reg_window);
+			unsigned long sp;
+
+			sp = t->rwbuf_stkptrs[window];
+
+			if (test_thread_64bit_stack(sp))
+				sp += STACK_BIAS;
+			else
+				winsize = sizeof(struct reg_window32);
+>>>>>>> refs/remotes/origin/master
 
 			if (unlikely(sp & 0x7UL))
 				stack_unaligned(sp);
@@ -498,6 +765,10 @@ void fault_in_user_windows(void)
 
 barf:
 	set_thread_wsaved(window + 1);
+<<<<<<< HEAD
+=======
+	user_exit();
+>>>>>>> refs/remotes/origin/master
 	do_exit(SIGILL);
 }
 
@@ -521,8 +792,12 @@ asmlinkage long sparc_do_fork(unsigned long clone_flags,
 		child_tid_ptr = (int __user *) regs->u_regs[UREG_I4];
 	}
 
+<<<<<<< HEAD
 	ret = do_fork(clone_flags, stack_start,
 		      regs, stack_size,
+=======
+	ret = do_fork(clone_flags, stack_start, stack_size,
+>>>>>>> refs/remotes/origin/master
 		      parent_tid_ptr, child_tid_ptr);
 
 	/* If we get an error and potentially restart the system
@@ -542,6 +817,7 @@ asmlinkage long sparc_do_fork(unsigned long clone_flags,
  * Child  -->  %o0 == parents pid, %o1 == 1
  */
 int copy_thread(unsigned long clone_flags, unsigned long sp,
+<<<<<<< HEAD
 		unsigned long unused,
 		struct task_struct *p, struct pt_regs *regs)
 {
@@ -564,12 +840,28 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 	t->flags = (t->flags & ~((0xffUL << TI_FLAG_CWP_SHIFT) |
 				 (0xffUL << TI_FLAG_CURRENT_DS_SHIFT))) |
 		(((regs->tstate + 1) & TSTATE_CWP) << TI_FLAG_CWP_SHIFT);
+=======
+		unsigned long arg, struct task_struct *p)
+{
+	struct thread_info *t = task_thread_info(p);
+	struct pt_regs *regs = current_pt_regs();
+	struct sparc_stackf *parent_sf;
+	unsigned long child_stack_sz;
+	char *child_trap_frame;
+
+	/* Calculate offset to stack_frame & pt_regs */
+	child_stack_sz = (STACKFRAME_SZ + TRACEREG_SZ);
+	child_trap_frame = (task_stack_page(p) +
+			    (THREAD_SIZE - child_stack_sz));
+
+>>>>>>> refs/remotes/origin/master
 	t->new_child = 1;
 	t->ksp = ((unsigned long) child_trap_frame) - STACK_BIAS;
 	t->kregs = (struct pt_regs *) (child_trap_frame +
 				       sizeof(struct sparc_stackf));
 	t->fpsaved[0] = 0;
 
+<<<<<<< HEAD
 	if (kernel_thread) {
 		struct sparc_stackf *child_sf = (struct sparc_stackf *)
 			(child_trap_frame + (STACKFRAME_SZ + TRACEREG_SZ));
@@ -600,6 +892,38 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 		if (t->utraps)
 			t->utraps[0]++;
 	}
+=======
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(child_trap_frame, 0, child_stack_sz);
+		__thread_flag_byte_ptr(t)[TI_FLAG_BYTE_CWP] = 
+			(current_pt_regs()->tstate + 1) & TSTATE_CWP;
+		t->current_ds = ASI_P;
+		t->kregs->u_regs[UREG_G1] = sp; /* function */
+		t->kregs->u_regs[UREG_G2] = arg;
+		return 0;
+	}
+
+	parent_sf = ((struct sparc_stackf *) regs) - 1;
+	memcpy(child_trap_frame, parent_sf, child_stack_sz);
+	if (t->flags & _TIF_32BIT) {
+		sp &= 0x00000000ffffffffUL;
+		regs->u_regs[UREG_FP] &= 0x00000000ffffffffUL;
+	}
+	t->kregs->u_regs[UREG_FP] = sp;
+	__thread_flag_byte_ptr(t)[TI_FLAG_BYTE_CWP] = 
+		(regs->tstate + 1) & TSTATE_CWP;
+	t->current_ds = ASI_AIUS;
+	if (sp != regs->u_regs[UREG_FP]) {
+		unsigned long csp;
+
+		csp = clone_stackframe(sp, regs->u_regs[UREG_FP]);
+		if (!csp)
+			return -EFAULT;
+		t->kregs->u_regs[UREG_FP] = csp;
+	}
+	if (t->utraps)
+		t->utraps[0]++;
+>>>>>>> refs/remotes/origin/master
 
 	/* Set the return value for the child. */
 	t->kregs->u_regs[UREG_I0] = current->pid;
@@ -614,6 +938,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * This is the mechanism for creating a new kernel thread.
  *
@@ -653,6 +978,8 @@ pid_t kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 }
 EXPORT_SYMBOL(kernel_thread);
 
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct {
 	union {
 		unsigned int	pr_regs[32];
@@ -719,6 +1046,7 @@ int dump_fpu (struct pt_regs * regs, elf_fpregset_t * fpregs)
 }
 EXPORT_SYMBOL(dump_fpu);
 
+<<<<<<< HEAD
 /*
  * sparc_execve() executes a new program after the asm stub has set
  * things up for us.  This should basically do what I want it to.
@@ -754,6 +1082,8 @@ out:
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long get_wchan(struct task_struct *task)
 {
 	unsigned long pc, fp, bias = 0;

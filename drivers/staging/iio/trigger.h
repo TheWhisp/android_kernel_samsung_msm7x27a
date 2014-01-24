@@ -7,6 +7,10 @@
  * the Free Software Foundation.
  */
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef _IIO_TRIGGER_H_
 #define _IIO_TRIGGER_H_
@@ -16,6 +20,30 @@ struct iio_subirq {
 };
 
 /**
+<<<<<<< HEAD
+=======
+ * struct iio_trigger_ops - operations structure for an iio_trigger.
+ * @owner:		used to monitor usage count of the trigger.
+ * @set_trigger_state:	switch on/off the trigger on demand
+ * @try_reenable:	function to reenable the trigger when the
+ *			use count is zero (may be NULL)
+ * @validate_device:	function to validate the device when the
+ *			current trigger gets changed.
+ *
+ * This is typically static const within a driver and shared by
+ * instances of a given device.
+ **/
+struct iio_trigger_ops {
+	struct module			*owner;
+	int (*set_trigger_state)(struct iio_trigger *trig, bool state);
+	int (*try_reenable)(struct iio_trigger *trig);
+	int (*validate_device)(struct iio_trigger *trig,
+			       struct iio_dev *indio_dev);
+};
+
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * struct iio_trigger - industrial I/O trigger device
  *
  * @id:			[INTERN] unique id number
@@ -24,11 +52,15 @@ struct iio_subirq {
  * @private_data:	[DRIVER] device specific data
  * @list:		[INTERN] used in maintenance of global trigger list
  * @alloc_list:		[DRIVER] used for driver specific trigger list
+<<<<<<< HEAD
  * @owner:		[DRIVER] used to monitor usage count of the trigger.
  * @use_count:		use count for the trigger
  * @set_trigger_state:	[DRIVER] switch on/off the trigger on demand
  * @try_reenable:	function to reenable the trigger when the
  *			use count is zero (may be NULL)
+=======
+ * @use_count:		use count for the trigger
+>>>>>>> refs/remotes/origin/cm-10.0
  * @subirq_chip:	[INTERN] associate 'virtual' irq chip.
  * @subirq_base:	[INTERN] base number for irqs provided by trigger.
  * @subirqs:		[INTERN] information about the 'child' irqs.
@@ -36,6 +68,10 @@ struct iio_subirq {
  * @pool_lock:		[INTERN] protection of the irq pool.
  **/
 struct iio_trigger {
+<<<<<<< HEAD
+=======
+	const struct iio_trigger_ops	*ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int				id;
 	const char			*name;
 	struct device			dev;
@@ -43,12 +79,17 @@ struct iio_trigger {
 	void				*private_data;
 	struct list_head		list;
 	struct list_head		alloc_list;
+<<<<<<< HEAD
 	struct module			*owner;
 	int use_count;
 
 	int (*set_trigger_state)(struct iio_trigger *trig, bool state);
 	int (*try_reenable)(struct iio_trigger *trig);
 
+=======
+	int use_count;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct irq_chip			subirq_chip;
 	int				subirq_base;
 
@@ -57,6 +98,10 @@ struct iio_trigger {
 	struct mutex			pool_lock;
 };
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline struct iio_trigger *to_iio_trigger(struct device *d)
 {
 	return container_of(d, struct iio_trigger, dev);
@@ -64,14 +109,24 @@ static inline struct iio_trigger *to_iio_trigger(struct device *d)
 
 static inline void iio_put_trigger(struct iio_trigger *trig)
 {
+<<<<<<< HEAD
 	put_device(&trig->dev);
 	module_put(trig->owner);
+=======
+	module_put(trig->ops->owner);
+	put_device(&trig->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static inline void iio_get_trigger(struct iio_trigger *trig)
 {
+<<<<<<< HEAD
 	__module_get(trig->owner);
 	get_device(&trig->dev);
+=======
+	get_device(&trig->dev);
+	__module_get(trig->ops->owner);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -87,6 +142,7 @@ int iio_trigger_register(struct iio_trigger *trig_info);
 void iio_trigger_unregister(struct iio_trigger *trig_info);
 
 /**
+<<<<<<< HEAD
  * iio_trigger_attach_poll_func() - add a function pair to be run on trigger
  * @trig:	trigger to which the function pair are being added
  * @pf:		poll function pair
@@ -104,6 +160,8 @@ int iio_trigger_dettach_poll_func(struct iio_trigger *trig,
 				  struct iio_poll_func *pf);
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * iio_trigger_poll() - called on a trigger occurring
  * @trig: trigger which occurred
  *
@@ -111,6 +169,7 @@ int iio_trigger_dettach_poll_func(struct iio_trigger *trig,
  **/
 void iio_trigger_poll(struct iio_trigger *trig, s64 time);
 void iio_trigger_poll_chained(struct iio_trigger *trig, s64 time);
+<<<<<<< HEAD
 void iio_trigger_notify_done(struct iio_trigger *trig);
 
 irqreturn_t iio_trigger_generic_data_rdy_poll(int irq, void *private);
@@ -179,6 +238,12 @@ int iio_triggered_ring_predisable(struct iio_dev *indio_dev);
 
 struct iio_trigger *iio_allocate_trigger(const char *fmt, ...)
 	__attribute__((format(printf, 1, 2)));
+=======
+
+irqreturn_t iio_trigger_generic_data_rdy_poll(int irq, void *private);
+
+__printf(1, 2) struct iio_trigger *iio_allocate_trigger(const char *fmt, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 void iio_free_trigger(struct iio_trigger *trig);
 
 #endif /* _IIO_TRIGGER_H_ */

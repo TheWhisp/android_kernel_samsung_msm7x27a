@@ -26,6 +26,7 @@ static struct buffer_head *bfs_find_entry(struct inode *dir,
 				const unsigned char *name, int namelen,
 				struct bfs_dirent **res_dir);
 
+<<<<<<< HEAD
 static int bfs_readdir(struct file *f, void *dirent, filldir_t filldir)
 {
 	struct inode *dir = f->f_path.dentry->d_inode;
@@ -51,21 +52,52 @@ static int bfs_readdir(struct file *f, void *dirent, filldir_t filldir)
 		bh = sb_bread(dir->i_sb, block);
 		if (!bh) {
 			f->f_pos += BFS_BSIZE - offset;
+=======
+static int bfs_readdir(struct file *f, struct dir_context *ctx)
+{
+	struct inode *dir = file_inode(f);
+	struct buffer_head *bh;
+	struct bfs_dirent *de;
+	unsigned int offset;
+	int block;
+
+	if (ctx->pos & (BFS_DIRENT_SIZE - 1)) {
+		printf("Bad f_pos=%08lx for %s:%08lx\n",
+					(unsigned long)ctx->pos,
+					dir->i_sb->s_id, dir->i_ino);
+		return -EINVAL;
+	}
+
+	while (ctx->pos < dir->i_size) {
+		offset = ctx->pos & (BFS_BSIZE - 1);
+		block = BFS_I(dir)->i_sblock + (ctx->pos >> BFS_BSIZE_BITS);
+		bh = sb_bread(dir->i_sb, block);
+		if (!bh) {
+			ctx->pos += BFS_BSIZE - offset;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		do {
 			de = (struct bfs_dirent *)(bh->b_data + offset);
 			if (de->ino) {
 				int size = strnlen(de->name, BFS_NAMELEN);
+<<<<<<< HEAD
 				if (filldir(dirent, de->name, size, f->f_pos,
 						le16_to_cpu(de->ino),
 						DT_UNKNOWN) < 0) {
 					brelse(bh);
 					mutex_unlock(&info->bfs_lock);
+=======
+				if (!dir_emit(ctx, de->name, size,
+						le16_to_cpu(de->ino),
+						DT_UNKNOWN)) {
+					brelse(bh);
+>>>>>>> refs/remotes/origin/master
 					return 0;
 				}
 			}
 			offset += BFS_DIRENT_SIZE;
+<<<<<<< HEAD
 			f->f_pos += BFS_DIRENT_SIZE;
 		} while ((offset < BFS_BSIZE) && (f->f_pos < dir->i_size));
 		brelse(bh);
@@ -73,19 +105,39 @@ static int bfs_readdir(struct file *f, void *dirent, filldir_t filldir)
 
 	mutex_unlock(&info->bfs_lock);
 	return 0;	
+=======
+			ctx->pos += BFS_DIRENT_SIZE;
+		} while ((offset < BFS_BSIZE) && (ctx->pos < dir->i_size));
+		brelse(bh);
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 const struct file_operations bfs_dir_operations = {
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= bfs_readdir,
+=======
+	.iterate	= bfs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.fsync		= generic_file_fsync,
 	.llseek		= generic_file_llseek,
 };
 
 extern void dump_imap(const char *, struct super_block *);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int bfs_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int bfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 						struct nameidata *nd)
+=======
+static int bfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+						bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct inode *inode;
@@ -133,7 +185,11 @@ static int bfs_create(struct inode *dir, struct dentry *dentry, int mode,
 }
 
 static struct dentry *bfs_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 						struct nameidata *nd)
+=======
+						unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = NULL;
 	struct buffer_head *bh;
@@ -199,7 +255,15 @@ static int bfs_unlink(struct inode *dir, struct dentry *dentry)
 		printf("unlinking non-existent file %s:%lu (nlink=%d)\n",
 					inode->i_sb->s_id, inode->i_ino,
 					inode->i_nlink);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 1;
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/master
 	}
 	de->ino = 0;
 	mark_buffer_dirty_inode(bh, dir);

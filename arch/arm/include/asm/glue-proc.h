@@ -23,6 +23,7 @@
  * CPU_NAME - the prefix for CPU related functions
  */
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_ARM610
 # ifdef CPU_NAME
 #  undef  MULTI_CPU
@@ -32,6 +33,8 @@
 # endif
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CPU_ARM7TDMI
 # ifdef CPU_NAME
 #  undef  MULTI_CPU
@@ -41,6 +44,7 @@
 # endif
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_ARM710
 # ifdef CPU_NAME
 #  undef  MULTI_CPU
@@ -50,6 +54,8 @@
 # endif
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CPU_ARM720T
 # ifdef CPU_NAME
 #  undef  MULTI_CPU
@@ -248,6 +254,27 @@
 # endif
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CPU_V7M
+# ifdef CPU_NAME
+#  undef  MULTI_CPU
+#  define MULTI_CPU
+# else
+#  define CPU_NAME cpu_v7m
+# endif
+#endif
+
+#ifdef CONFIG_CPU_PJ4B
+# ifdef CPU_NAME
+#  undef  MULTI_CPU
+#  define MULTI_CPU
+# else
+#  define CPU_NAME cpu_pj4b
+# endif
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifndef MULTI_CPU
 #define cpu_proc_init			__glue(CPU_NAME,_proc_init)
 #define cpu_proc_fin			__glue(CPU_NAME,_proc_fin)

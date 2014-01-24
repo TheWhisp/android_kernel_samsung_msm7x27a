@@ -14,7 +14,10 @@ TODO:
 	- use net_device_ops
 	- use dev->stats rather than adapter->stats
 	- don't cast netdev_priv it is already void
+<<<<<<< HEAD
 	- use compare_ether_addr
+=======
+>>>>>>> refs/remotes/origin/master
 	- GET RID OF MACROS
 	- work on all architectures
 	   - without CONFIG_X86_64 confusion
@@ -42,7 +45,15 @@ TODO:
 
 
 Please send patches to:
+<<<<<<< HEAD
+<<<<<<< HEAD
         Greg Kroah-Hartman <gregkh@suse.de>
+=======
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>>>> refs/remotes/origin/master
 and Cc: Lior Dotan <liodot@gmail.com> and Christopher Harrer
 <charrer@alacritech.com> as well as they are also able to test out any
 changes.

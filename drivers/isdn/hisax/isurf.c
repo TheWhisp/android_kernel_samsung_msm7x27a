@@ -4,7 +4,15 @@
  *
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -19,7 +27,15 @@
 
 static const char *ISurf_revision = "$Revision: 1.12.2.4 $";
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/master
 #define bytein(addr) inb(addr)
 
 #define ISURF_ISAR_RESET	1
@@ -46,7 +62,15 @@ WriteISAC(struct IsdnCardState *cs, u_char offset, u_char value)
 }
 
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	register int i;
 	for (i = 0; i < size; i++)
@@ -54,11 +78,25 @@ ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 }
 
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 {
 	register int i;
 	for (i = 0; i < size; i++){
 		writeb(data[i], cs->hw.isurf.isac);mb();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+{
+	register int i;
+	for (i = 0; i < size; i++) {
+		writeb(data[i], cs->hw.isurf.isac); mb();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -67,17 +105,39 @@ WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
  * mode = 1 access with IRQ off
  * mode = 2 access with IRQ off and using last offset
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
   
 static u_char
 ReadISAR(struct IsdnCardState *cs, int mode, u_char offset)
 {	
 	return(readb(cs->hw.isurf.isar + offset));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static u_char
+ReadISAR(struct IsdnCardState *cs, int mode, u_char offset)
+{
+	return (readb(cs->hw.isurf.isar + offset));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 WriteISAR(struct IsdnCardState *cs, int mode, u_char offset, u_char value)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writeb(value, cs->hw.isurf.isar + offset);mb();
+=======
+	writeb(value, cs->hw.isurf.isar + offset); mb();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writeb(value, cs->hw.isurf.isar + offset); mb();
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t
@@ -90,11 +150,25 @@ isurf_interrupt(int intno, void *dev_id)
 
 	spin_lock_irqsave(&cs->lock, flags);
 	val = readb(cs->hw.isurf.isar + ISAR_IRQBIT);
+<<<<<<< HEAD
+<<<<<<< HEAD
       Start_ISAR:
 	if (val & ISAR_IRQSTA)
 		isar_int_main(cs);
 	val = readb(cs->hw.isurf.isac + ISAC_ISTA);
       Start_ISAC:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+Start_ISAR:
+	if (val & ISAR_IRQSTA)
+		isar_int_main(cs);
+	val = readb(cs->hw.isurf.isac + ISAC_ISTA);
+Start_ISAC:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (val)
 		isac_interrupt(cs, val);
 	val = readb(cs->hw.isurf.isar + ISAR_IRQBIT);
@@ -113,8 +187,18 @@ isurf_interrupt(int intno, void *dev_id)
 		printk(KERN_WARNING "ISurf IRQ LOOP\n");
 
 	writeb(0, cs->hw.isurf.isar + ISAR_IRQBIT); mb();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	writeb(0xFF, cs->hw.isurf.isac + ISAC_MASK);mb();
 	writeb(0, cs->hw.isurf.isac + ISAC_MASK);mb();
+=======
+	writeb(0xFF, cs->hw.isurf.isac + ISAC_MASK); mb();
+	writeb(0, cs->hw.isurf.isac + ISAC_MASK); mb();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writeb(0xFF, cs->hw.isurf.isac + ISAC_MASK); mb();
+	writeb(0, cs->hw.isurf.isac + ISAC_MASK); mb();
+>>>>>>> refs/remotes/origin/master
 	writeb(ISAR_IRQMSK, cs->hw.isurf.isar + ISAR_IRQBIT); mb();
 	spin_unlock_irqrestore(&cs->lock, flags);
 	return IRQ_HANDLED;
@@ -145,6 +229,8 @@ ISurf_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	u_long flags;
 
 	switch (mt) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
 			reset_isurf(cs, ISURF_RESET);
@@ -170,6 +256,38 @@ ISurf_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 			return(0);
 	}
 	return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case CARD_RESET:
+		spin_lock_irqsave(&cs->lock, flags);
+		reset_isurf(cs, ISURF_RESET);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		return (0);
+	case CARD_RELEASE:
+		release_io_isurf(cs);
+		return (0);
+	case CARD_INIT:
+		spin_lock_irqsave(&cs->lock, flags);
+		reset_isurf(cs, ISURF_RESET);
+		clear_pending_isac_ints(cs);
+		writeb(0, cs->hw.isurf.isar + ISAR_IRQBIT); mb();
+		initisac(cs);
+		initisar(cs);
+		/* Reenable ISAC IRQ */
+		cs->writeisac(cs, ISAC_MASK, 0);
+		/* RESET Receiver and Transmitter */
+		cs->writeisac(cs, ISAC_CMDR, 0x41);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		return (0);
+	case CARD_TEST:
+		return (0);
+	}
+	return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -182,15 +300,30 @@ isurf_auxcmd(struct IsdnCardState *cs, isdn_ctrl *ic) {
 		spin_lock_irqsave(&cs->lock, flags);
 		if (!ret) {
 			reset_isurf(cs, ISURF_ISAR_EA | ISURF_ISAC_RESET |
+<<<<<<< HEAD
+<<<<<<< HEAD
 				ISURF_ARCOFI_RESET);
+=======
+				    ISURF_ARCOFI_RESET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    ISURF_ARCOFI_RESET);
+>>>>>>> refs/remotes/origin/master
 			initisac(cs);
 			cs->writeisac(cs, ISAC_MASK, 0);
 			cs->writeisac(cs, ISAC_CMDR, 0x41);
 		}
 		spin_unlock_irqrestore(&cs->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return(ret);
 	}
 	return(isar_auxcmd(cs, ic));
+=======
+		return (ret);
+	}
+	return (isar_auxcmd(cs, ic));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef __ISAPNP__
@@ -199,6 +332,18 @@ static struct pnp_card *pnp_c __devinitdata = NULL;
 
 int __devinit
 setup_isurf(struct IsdnCard *card)
+=======
+		return (ret);
+	}
+	return (isar_auxcmd(cs, ic));
+}
+
+#ifdef __ISAPNP__
+static struct pnp_card *pnp_c = NULL;
+#endif
+
+int setup_isurf(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int ver;
 	struct IsdnCardState *cs = card->cs;
@@ -206,9 +351,21 @@ setup_isurf(struct IsdnCard *card)
 
 	strcpy(tmp, ISurf_revision);
 	printk(KERN_INFO "HiSax: ISurf driver Rev. %s\n", HiSax_getrev(tmp));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
  	if (cs->typ != ISDN_CTYPE_ISURF)
  		return(0);
+=======
+
+	if (cs->typ != ISDN_CTYPE_ISURF)
+		return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (cs->typ != ISDN_CTYPE_ISURF)
+		return (0);
+>>>>>>> refs/remotes/origin/master
 	if (card->para[1] && card->para[2]) {
 		cs->hw.isurf.reset = card->para[1];
 		cs->hw.isurf.phymem = card->para[2];
@@ -221,21 +378,45 @@ setup_isurf(struct IsdnCard *card)
 
 			cs->subtyp = 0;
 			if ((pnp_c = pnp_find_card(
+<<<<<<< HEAD
+<<<<<<< HEAD
 				ISAPNP_VENDOR('S', 'I', 'E'),
 				ISAPNP_FUNCTION(0x0010), pnp_c))) {
 				if (!(pnp_d = pnp_find_dev(pnp_c,
 					ISAPNP_VENDOR('S', 'I', 'E'),
 					ISAPNP_FUNCTION(0x0010), pnp_d))) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				     ISAPNP_VENDOR('S', 'I', 'E'),
+				     ISAPNP_FUNCTION(0x0010), pnp_c))) {
+				if (!(pnp_d = pnp_find_dev(pnp_c,
+							   ISAPNP_VENDOR('S', 'I', 'E'),
+							   ISAPNP_FUNCTION(0x0010), pnp_d))) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					printk(KERN_ERR "ISurfPnP: PnP error card found, no device\n");
 					return (0);
 				}
 				pnp_disable_dev(pnp_d);
 				err = pnp_activate_dev(pnp_d);
+<<<<<<< HEAD
+=======
+				if (err < 0) {
+					pr_warn("%s: pnp_activate_dev ret=%d\n",
+						__func__, err);
+					return 0;
+				}
+>>>>>>> refs/remotes/origin/master
 				cs->hw.isurf.reset = pnp_port_start(pnp_d, 0);
 				cs->hw.isurf.phymem = pnp_mem_start(pnp_d, 1);
 				cs->irq = pnp_irq(pnp_d, 0);
 				if (!cs->irq || !cs->hw.isurf.reset || !cs->hw.isurf.phymem) {
 					printk(KERN_ERR "ISurfPnP:some resources are missing %d/%x/%lx\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 						cs->irq, cs->hw.isurf.reset, cs->hw.isurf.phymem);
 					pnp_disable_dev(pnp_d);
 					return(0);
@@ -247,6 +428,24 @@ setup_isurf(struct IsdnCard *card)
 		} else {
 			printk(KERN_INFO "ISurfPnP: no ISAPnP bus found\n");
 			return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					       cs->irq, cs->hw.isurf.reset, cs->hw.isurf.phymem);
+					pnp_disable_dev(pnp_d);
+					return (0);
+				}
+			} else {
+				printk(KERN_INFO "ISurfPnP: no ISAPnP card found\n");
+				return (0);
+			}
+		} else {
+			printk(KERN_INFO "ISurfPnP: no ISAPnP bus found\n");
+			return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 #else
 		printk(KERN_WARNING "HiSax: Siemens I-Surf port/mem not set\n");
@@ -255,6 +454,8 @@ setup_isurf(struct IsdnCard *card)
 	}
 	if (!request_region(cs->hw.isurf.reset, 1, "isurf isdn")) {
 		printk(KERN_WARNING
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"HiSax: Siemens I-Surf config port %x already in use\n",
 			cs->hw.isurf.reset);
 			return (0);
@@ -264,6 +465,22 @@ setup_isurf(struct IsdnCard *card)
 			"%lx-%lx already in use\n",
 			cs->hw.isurf.phymem,
 			cs->hw.isurf.phymem + ISURF_IOMEM_SIZE);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		       "HiSax: Siemens I-Surf config port %x already in use\n",
+		       cs->hw.isurf.reset);
+		return (0);
+	}
+	if (!request_region(cs->hw.isurf.phymem, ISURF_IOMEM_SIZE, "isurf iomem")) {
+		printk(KERN_WARNING "HiSax: Siemens I-Surf memory region "
+		       "%lx-%lx already in use\n",
+		       cs->hw.isurf.phymem,
+		       cs->hw.isurf.phymem + ISURF_IOMEM_SIZE);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		release_region(cs->hw.isurf.reset, 1);
 		return (0);
 	}
@@ -293,7 +510,15 @@ setup_isurf(struct IsdnCard *card)
 	ver = ISARVersion(cs, "ISurf:");
 	if (ver < 0) {
 		printk(KERN_WARNING
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"ISurf: wrong ISAR version (ret = %d)\n", ver);
+=======
+		       "ISurf: wrong ISAR version (ret = %d)\n", ver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "ISurf: wrong ISAR version (ret = %d)\n", ver);
+>>>>>>> refs/remotes/origin/master
 		release_io_isurf(cs);
 		return (0);
 	}

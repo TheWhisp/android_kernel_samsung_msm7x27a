@@ -1,6 +1,7 @@
 #ifndef _RDMA_NETLINK_H
 #define _RDMA_NETLINK_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 enum {
@@ -39,6 +40,23 @@ struct rdma_cm_id_stats {
 
 struct ibnl_client_cbs {
 	int (*dump)(struct sk_buff *skb, struct netlink_callback *nlcb);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct module *module;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <linux/netlink.h>
+#include <uapi/rdma/rdma_netlink.h>
+
+struct ibnl_client_cbs {
+	int (*dump)(struct sk_buff *skb, struct netlink_callback *nlcb);
+	struct module *module;
+>>>>>>> refs/remotes/origin/master
+=======
+	struct module *module;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 int ibnl_init(void);
@@ -87,6 +105,9 @@ void *ibnl_put_msg(struct sk_buff *skb, struct nlmsghdr **nlh, int seq,
 int ibnl_put_attr(struct sk_buff *skb, struct nlmsghdr *nlh,
 		  int len, void *data, int type);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _RDMA_NETLINK_H */

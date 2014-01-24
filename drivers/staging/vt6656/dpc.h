@@ -29,6 +29,7 @@
 #ifndef __DPC_H__
 #define __DPC_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 #include "device.h"
 #include "wcmd.h"
@@ -57,5 +58,18 @@ RXbBulkInProcessData(
      PRCB             pRCB,
      unsigned long            BytesToIndicate
     );
+=======
+#include "device.h"
+#include "wcmd.h"
+
+void RXvWorkItem(struct work_struct *work);
+
+void RXvMngWorkItem(struct work_struct *work);
+
+void RXvFreeRCB(struct vnt_rcb *pRCB, int bReAllocSkb);
+
+int RXbBulkInProcessData(struct vnt_private *, struct vnt_rcb *pRCB,
+	unsigned long BytesToIndicate);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __RXTX_H__ */

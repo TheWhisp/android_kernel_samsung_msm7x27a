@@ -53,6 +53,14 @@
 #define USB_CDC_DMM_TYPE		0x14
 #define USB_CDC_OBEX_TYPE		0x15
 #define USB_CDC_NCM_TYPE		0x1a
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define USB_CDC_MBB_TYPE		0x1b	/* mbb_desc */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define USB_CDC_MBB_TYPE		0x1b	/* mbb_desc */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* "Header Functional Descriptor" from CDC spec  5.2.3.1 */
 struct usb_cdc_header_desc {
@@ -187,6 +195,30 @@ struct usb_cdc_ncm_desc {
 	__le16	bcdNcmVersion;
 	__u8	bmNetworkCapabilities;
 } __attribute__ ((packed));
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+/* "MBIM Functional Descriptor" */
+struct usb_cdc_mbb_desc {
+	__u8	bLength;
+	__u8	bDescriptorType;
+	__u8	bDescriptorSubType;
+
+	__le16	bcdMbbVersion;
+	__le16	wMaxControlMessage;
+	__u8	bNumberFilters;
+	__u8	bMaxFilterSize;
+	__le16	wMaxSegmentSize;
+	__u8	bmNetworkCapabilities;
+} __packed;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*-------------------------------------------------------------------------*/
 
 /*
@@ -201,6 +233,14 @@ struct usb_cdc_ncm_desc {
 
 #define USB_CDC_SEND_ENCAPSULATED_COMMAND	0x00
 #define USB_CDC_GET_ENCAPSULATED_RESPONSE	0x01
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define USB_CDC_RESET_FUNCTION			0x05
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define USB_CDC_RESET_FUNCTION			0x05
+>>>>>>> refs/remotes/origin/cm-11.0
 #define USB_CDC_REQ_SET_LINE_CODING		0x20
 #define USB_CDC_REQ_GET_LINE_CODING		0x21
 #define USB_CDC_REQ_SET_CONTROL_LINE_STATE	0x22

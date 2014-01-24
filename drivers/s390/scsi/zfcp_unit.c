@@ -4,7 +4,11 @@
  * Tracking of manually configured LUNs and helper functions to
  * register the LUNs with the SCSI midlayer.
  *
+<<<<<<< HEAD
  * Copyright IBM Corporation 2010
+=======
+ * Copyright IBM Corp. 2010
+>>>>>>> refs/remotes/origin/master
  */
 
 #include "zfcp_def.h"
@@ -145,6 +149,10 @@ int zfcp_unit_add(struct zfcp_port *port, u64 fcp_lun)
 	unit->fcp_lun = fcp_lun;
 	unit->dev.parent = &port->dev;
 	unit->dev.release = zfcp_unit_release;
+<<<<<<< HEAD
+=======
+	unit->dev.groups = zfcp_unit_attr_groups;
+>>>>>>> refs/remotes/origin/master
 	INIT_WORK(&unit->scsi_work, zfcp_unit_scsi_scan_work);
 
 	if (dev_set_name(&unit->dev, "0x%016llx",
@@ -160,12 +168,18 @@ int zfcp_unit_add(struct zfcp_port *port, u64 fcp_lun)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (sysfs_create_group(&unit->dev.kobj, &zfcp_sysfs_unit_attrs)) {
 		device_unregister(&unit->dev);
 		retval = -EINVAL;
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_inc(&port->units); /* under zfcp_sysfs_port_units_mutex ! */
 
 	write_lock_irq(&port->unit_list_lock);
@@ -254,7 +268,11 @@ int zfcp_unit_remove(struct zfcp_port *port, u64 fcp_lun)
 
 	put_device(&unit->dev);
 
+<<<<<<< HEAD
 	zfcp_device_unregister(&unit->dev, &zfcp_sysfs_unit_attrs);
+=======
+	device_unregister(&unit->dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

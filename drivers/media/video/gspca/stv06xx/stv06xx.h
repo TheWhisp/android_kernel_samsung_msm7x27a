@@ -37,6 +37,11 @@
 
 #define STV_ISOC_ENDPOINT_ADDR		0x81
 
+<<<<<<< HEAD
+=======
+#define STV_R                           0x0509
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define STV_REG23			0x0423
 
 /* Control registers of the STV0600 ASIC */
@@ -61,7 +66,13 @@
 
 /* Refers to the CIF 352x288 and QCIF 176x144 */
 /* 1: 288 lines, 2: 144 lines */
+<<<<<<< HEAD
 #define STV_Y_CTRL			0x15c3
+=======
+#define STV_Y_CTRL		        0x15c3
+
+#define STV_RESET                       0x1620
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* 0xa: 352 columns, 0x6: 176 columns */
 #define STV_X_CTRL			0x1680

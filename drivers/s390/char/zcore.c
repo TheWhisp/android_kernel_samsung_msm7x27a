@@ -5,7 +5,11 @@
  *
  * For more information please refer to Documentation/s390/zfcpdump.txt
  *
+<<<<<<< HEAD
  * Copyright IBM Corp. 2003,2008
+=======
+ * Copyright IBM Corp. 2003, 2008
+>>>>>>> refs/remotes/origin/master
  * Author(s): Michael Holzheu
  */
 
@@ -16,11 +20,25 @@
 #include <linux/slab.h>
 #include <linux/miscdevice.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 #include <asm/ipl.h>
 #include <asm/sclp.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/sigp.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/debug.h>
 #include <asm/processor.h>
@@ -30,8 +48,13 @@
 
 #define TRACE(x...) debug_sprintf_event(zcore_dbf, 1, x)
 
+<<<<<<< HEAD
 #define TO_USER		0
 #define TO_KERNEL	1
+=======
+#define TO_USER		1
+#define TO_KERNEL	0
+>>>>>>> refs/remotes/origin/master
 #define CHUNK_INFO_SIZE	34 /* 2 16-byte char, each followed by blank */
 
 enum arch_id {
@@ -62,6 +85,10 @@ static struct dentry *zcore_dir;
 static struct dentry *zcore_file;
 static struct dentry *zcore_memmap_file;
 static struct dentry *zcore_reipl_file;
+<<<<<<< HEAD
+=======
+static struct dentry *zcore_hsa_file;
+>>>>>>> refs/remotes/origin/master
 static struct ipl_parameter_block *ipl_block;
 
 /*
@@ -72,11 +99,20 @@ static struct ipl_parameter_block *ipl_block;
  * @count: Size of buffer, which should be copied
  * @mode:  Either TO_KERNEL or TO_USER
  */
+<<<<<<< HEAD
 static int memcpy_hsa(void *dest, unsigned long src, size_t count, int mode)
+=======
+int memcpy_hsa(void *dest, unsigned long src, size_t count, int mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int offs, blk_num;
 	static char buf[PAGE_SIZE] __attribute__((__aligned__(PAGE_SIZE)));
 
+<<<<<<< HEAD
+=======
+	if (!hsa_available)
+		return -ENODATA;
+>>>>>>> refs/remotes/origin/master
 	if (count == 0)
 		return 0;
 
@@ -124,7 +160,11 @@ static int memcpy_hsa(void *dest, unsigned long src, size_t count, int mode)
 	}
 	if (mode == TO_USER) {
 		if (copy_to_user((__force __user void*) dest + offs, buf,
+<<<<<<< HEAD
 				 PAGE_SIZE))
+=======
+				 count - offs))
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 	} else
 		memcpy(dest + offs, buf, count - offs);
@@ -142,6 +182,8 @@ static int memcpy_hsa_kernel(void *dest, unsigned long src, size_t count)
 	return memcpy_hsa(dest, src, count, TO_KERNEL);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int memcpy_real_user(void __user *dest, unsigned long src, size_t count)
 {
 	static char buf[4096];
@@ -158,13 +200,21 @@ static int memcpy_real_user(void __user *dest, unsigned long src, size_t count)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init init_cpu_info(enum arch_id arch)
 {
 	struct save_area *sa;
 
 	/* get info for boot cpu from lowcore, stored in the HSA */
 
+<<<<<<< HEAD
 	sa = kmalloc(sizeof(*sa), GFP_KERNEL);
+=======
+	sa = dump_save_area_create(0);
+>>>>>>> refs/remotes/origin/master
 	if (!sa)
 		return -ENOMEM;
 	if (memcpy_hsa_kernel(sa, sys_info.sa_base, sys_info.sa_size) < 0) {
@@ -172,7 +222,10 @@ static int __init init_cpu_info(enum arch_id arch)
 		kfree(sa);
 		return -EIO;
 	}
+<<<<<<< HEAD
 	zfcpdump_save_areas[0] = sa;
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -259,24 +312,42 @@ static int copy_lc(void __user *buf, void *sa, int sa_off, int len)
 static int zcore_add_lc(char __user *buf, unsigned long start, size_t count)
 {
 	unsigned long end;
+<<<<<<< HEAD
 	int i = 0;
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	if (count == 0)
 		return 0;
 
 	end = start + count;
+<<<<<<< HEAD
 	while (zfcpdump_save_areas[i]) {
+=======
+	for (i = 0; i < dump_save_areas.count; i++) {
+>>>>>>> refs/remotes/origin/master
 		unsigned long cp_start, cp_end; /* copy range */
 		unsigned long sa_start, sa_end; /* save area range */
 		unsigned long prefix;
 		unsigned long sa_off, len, buf_off;
+<<<<<<< HEAD
 
 		prefix = zfcpdump_save_areas[i]->pref_reg;
+=======
+		struct save_area *save_area = dump_save_areas.areas[i];
+
+		prefix = save_area->pref_reg;
+>>>>>>> refs/remotes/origin/master
 		sa_start = prefix + sys_info.sa_base;
 		sa_end = prefix + sys_info.sa_base + sys_info.sa_size;
 
 		if ((end < sa_start) || (start > sa_end))
+<<<<<<< HEAD
 			goto next;
+=======
+			continue;
+>>>>>>> refs/remotes/origin/master
 		cp_start = max(start, sa_start);
 		cp_end = min(end, sa_end);
 
@@ -285,15 +356,32 @@ static int zcore_add_lc(char __user *buf, unsigned long start, size_t count)
 		len = cp_end - cp_start;
 
 		TRACE("copy_lc for: %lx\n", start);
+<<<<<<< HEAD
 		if (copy_lc(buf + buf_off, zfcpdump_save_areas[i], sa_off, len))
 			return -EFAULT;
 next:
 		i++;
+=======
+		if (copy_lc(buf + buf_off, save_area, sa_off, len))
+			return -EFAULT;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Release the HSA
+ */
+static void release_hsa(void)
+{
+	diag308(DIAG308_REL_HSA, NULL);
+	hsa_available = 0;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Read routine for zcore character device
  * First 4K are dump header
  * Next 32MB are HSA Memory
@@ -334,9 +422,15 @@ static ssize_t zcore_read(struct file *file, char __user *buf, size_t count,
 	mem_offs = 0;
 
 	/* Copy from HSA data */
+<<<<<<< HEAD
 	if (*ppos < (ZFCPDUMP_HSA_SIZE + HEADER_SIZE)) {
 		size = min((count - hdr_count), (size_t) (ZFCPDUMP_HSA_SIZE
 			   - mem_start));
+=======
+	if (*ppos < sclp_get_hsa_size() + HEADER_SIZE) {
+		size = min((count - hdr_count),
+			   (size_t) (sclp_get_hsa_size() - mem_start));
+>>>>>>> refs/remotes/origin/master
 		rc = memcpy_hsa_user(buf + hdr_count, mem_start, size);
 		if (rc)
 			goto fail;
@@ -346,8 +440,18 @@ static ssize_t zcore_read(struct file *file, char __user *buf, size_t count,
 
 	/* Copy from real mem */
 	size = count - mem_offs - hdr_count;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = memcpy_real_user(buf + hdr_count + mem_offs, mem_start + mem_offs,
 			      size);
+=======
+	rc = copy_to_user_real(buf + hdr_count + mem_offs,
+			       (void *) mem_start + mem_offs, size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = copy_to_user_real(buf + hdr_count + mem_offs,
+			       (void *) mem_start + mem_offs, size);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto fail;
 
@@ -379,8 +483,13 @@ static int zcore_open(struct inode *inode, struct file *filp)
 
 static int zcore_release(struct inode *inode, struct file *filep)
 {
+<<<<<<< HEAD
 	diag308(DIAG308_REL_HSA, NULL);
 	hsa_available = 0;
+=======
+	if (hsa_available)
+		release_hsa();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -430,7 +539,11 @@ static int zcore_memmap_open(struct inode *inode, struct file *filp)
 			      GFP_KERNEL);
 	if (!chunk_array)
 		return -ENOMEM;
+<<<<<<< HEAD
 	detect_memory_layout(chunk_array);
+=======
+	detect_memory_layout(chunk_array, 0);
+>>>>>>> refs/remotes/origin/master
 	buf = kzalloc(MEMORY_CHUNKS * CHUNK_INFO_SIZE, GFP_KERNEL);
 	if (!buf) {
 		kfree(chunk_array);
@@ -490,6 +603,44 @@ static const struct file_operations zcore_reipl_fops = {
 	.llseek		= no_llseek,
 };
 
+<<<<<<< HEAD
+=======
+static ssize_t zcore_hsa_read(struct file *filp, char __user *buf,
+			      size_t count, loff_t *ppos)
+{
+	static char str[18];
+
+	if (hsa_available)
+		snprintf(str, sizeof(str), "%lx\n", sclp_get_hsa_size());
+	else
+		snprintf(str, sizeof(str), "0\n");
+	return simple_read_from_buffer(buf, count, ppos, str, strlen(str));
+}
+
+static ssize_t zcore_hsa_write(struct file *filp, const char __user *buf,
+			       size_t count, loff_t *ppos)
+{
+	char value;
+
+	if (*ppos != 0)
+		return -EPIPE;
+	if (copy_from_user(&value, buf, 1))
+		return -EFAULT;
+	if (value != '0')
+		return -EINVAL;
+	release_hsa();
+	return count;
+}
+
+static const struct file_operations zcore_hsa_fops = {
+	.owner		= THIS_MODULE,
+	.write		= zcore_hsa_write,
+	.read		= zcore_hsa_read,
+	.open		= nonseekable_open,
+	.llseek		= no_llseek,
+};
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_32BIT
 
 static void __init set_lc_mask(struct save_area *map)
@@ -526,7 +677,11 @@ static void __init set_lc_mask(struct save_area *map)
 /*
  * Initialize dump globals for a given architecture
  */
+<<<<<<< HEAD
 static int __init sys_info_init(enum arch_id arch)
+=======
+static int __init sys_info_init(enum arch_id arch, unsigned long mem_end)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
@@ -548,13 +703,18 @@ static int __init sys_info_init(enum arch_id arch)
 	rc = init_cpu_info(arch);
 	if (rc)
 		return rc;
+<<<<<<< HEAD
 	sys_info.mem_size = real_memory_size;
+=======
+	sys_info.mem_size = mem_end;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int __init check_sdias(void)
 {
+<<<<<<< HEAD
 	int rc, act_hsa_size;
 
 	rc = sclp_sdias_blk_count();
@@ -566,11 +726,20 @@ static int __init check_sdias(void)
 	if (act_hsa_size < ZFCPDUMP_HSA_SIZE) {
 		TRACE("HSA size too small: %i\n", act_hsa_size);
 		return -EINVAL;
+=======
+	if (!sclp_get_hsa_size()) {
+		TRACE("Could not determine HSA size\n");
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __init get_mem_size(unsigned long *mem)
+=======
+static int __init get_mem_info(unsigned long *mem, unsigned long *end)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct mem_chunk *chunk_array;
@@ -579,26 +748,43 @@ static int __init get_mem_size(unsigned long *mem)
 			      GFP_KERNEL);
 	if (!chunk_array)
 		return -ENOMEM;
+<<<<<<< HEAD
 	detect_memory_layout(chunk_array);
+=======
+	detect_memory_layout(chunk_array, 0);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < MEMORY_CHUNKS; i++) {
 		if (chunk_array[i].size == 0)
 			break;
 		*mem += chunk_array[i].size;
+<<<<<<< HEAD
+=======
+		*end = max(*end, chunk_array[i].addr + chunk_array[i].size);
+>>>>>>> refs/remotes/origin/master
 	}
 	kfree(chunk_array);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __init zcore_header_init(int arch, struct zcore_header *hdr)
 {
 	int rc, i;
 	unsigned long memory = 0;
 	u32 prefix;
+=======
+static void __init zcore_header_init(int arch, struct zcore_header *hdr,
+				     unsigned long mem_size)
+{
+	u32 prefix;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	if (arch == ARCH_S390X)
 		hdr->arch_id = DUMP_ARCH_S390X;
 	else
 		hdr->arch_id = DUMP_ARCH_S390;
+<<<<<<< HEAD
 	rc = get_mem_size(&memory);
 	if (rc)
 		return rc;
@@ -610,13 +796,26 @@ static int __init zcore_header_init(int arch, struct zcore_header *hdr)
 	get_cpu_id(&hdr->cpu_id);
 	for (i = 0; zfcpdump_save_areas[i]; i++) {
 		prefix = zfcpdump_save_areas[i]->pref_reg;
+=======
+	hdr->mem_size = mem_size;
+	hdr->rmem_size = mem_size;
+	hdr->mem_end = sys_info.mem_size;
+	hdr->num_pages = mem_size / PAGE_SIZE;
+	hdr->tod = get_tod_clock();
+	get_cpu_id(&hdr->cpu_id);
+	for (i = 0; i < dump_save_areas.count; i++) {
+		prefix = dump_save_areas.areas[i]->pref_reg;
+>>>>>>> refs/remotes/origin/master
 		hdr->real_cpu_cnt++;
 		if (!prefix)
 			continue;
 		hdr->lc_vec[hdr->cpu_cnt] = prefix;
 		hdr->cpu_cnt++;
 	}
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -636,7 +835,11 @@ static int __init zcore_reipl_init(void)
 	ipl_block = (void *) __get_free_page(GFP_KERNEL);
 	if (!ipl_block)
 		return -ENOMEM;
+<<<<<<< HEAD
 	if (ipib_info.ipib < ZFCPDUMP_HSA_SIZE)
+=======
+	if (ipib_info.ipib < sclp_get_hsa_size())
+>>>>>>> refs/remotes/origin/master
 		rc = memcpy_hsa_kernel(ipl_block, ipib_info.ipib, PAGE_SIZE);
 	else
 		rc = memcpy_real(ipl_block, (void *) ipib_info.ipib, PAGE_SIZE);
@@ -651,11 +854,28 @@ static int __init zcore_reipl_init(void)
 
 static int __init zcore_init(void)
 {
+<<<<<<< HEAD
 	unsigned char arch;
 	int rc;
 
 	if (ipl_info.type != IPL_TYPE_FCP_DUMP)
 		return -ENODATA;
+<<<<<<< HEAD
+=======
+	if (OLDMEM_BASE)
+		return -ENODATA;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long mem_size, mem_end;
+	unsigned char arch;
+	int rc;
+
+	mem_size = mem_end = 0;
+	if (ipl_info.type != IPL_TYPE_FCP_DUMP)
+		return -ENODATA;
+	if (OLDMEM_BASE)
+		return -ENODATA;
+>>>>>>> refs/remotes/origin/master
 
 	zcore_dbf = debug_register("zcore", 4, 1, 4 * sizeof(long));
 	debug_register_view(zcore_dbf, &debug_sprintf_view);
@@ -672,6 +892,10 @@ static int __init zcore_init(void)
 	rc = check_sdias();
 	if (rc)
 		goto fail;
+<<<<<<< HEAD
+=======
+	hsa_available = 1;
+>>>>>>> refs/remotes/origin/master
 
 	rc = memcpy_hsa_kernel(&arch, __LC_AR_MODE_ID, 1);
 	if (rc)
@@ -693,6 +917,7 @@ static int __init zcore_init(void)
 	}
 #endif /* CONFIG_64BIT */
 
+<<<<<<< HEAD
 	rc = sys_info_init(arch);
 	if (rc)
 		goto fail;
@@ -700,6 +925,16 @@ static int __init zcore_init(void)
 	rc = zcore_header_init(arch, &zcore_header);
 	if (rc)
 		goto fail;
+=======
+	rc = get_mem_info(&mem_size, &mem_end);
+	if (rc)
+		goto fail;
+
+	rc = sys_info_init(arch, mem_end);
+	if (rc)
+		goto fail;
+	zcore_header_init(arch, &zcore_header, mem_size);
+>>>>>>> refs/remotes/origin/master
 
 	rc = zcore_reipl_init();
 	if (rc)
@@ -728,9 +963,22 @@ static int __init zcore_init(void)
 		rc = -ENOMEM;
 		goto fail_memmap_file;
 	}
+<<<<<<< HEAD
 	hsa_available = 1;
 	return 0;
 
+=======
+	zcore_hsa_file = debugfs_create_file("hsa", S_IRUSR|S_IWUSR, zcore_dir,
+					     NULL, &zcore_hsa_fops);
+	if (!zcore_hsa_file) {
+		rc = -ENOMEM;
+		goto fail_reipl_file;
+	}
+	return 0;
+
+fail_reipl_file:
+	debugfs_remove(zcore_reipl_file);
+>>>>>>> refs/remotes/origin/master
 fail_memmap_file:
 	debugfs_remove(zcore_memmap_file);
 fail_file:
@@ -747,6 +995,10 @@ static void __exit zcore_exit(void)
 	debug_unregister(zcore_dbf);
 	sclp_sdias_exit();
 	free_page((unsigned long) ipl_block);
+<<<<<<< HEAD
+=======
+	debugfs_remove(zcore_hsa_file);
+>>>>>>> refs/remotes/origin/master
 	debugfs_remove(zcore_reipl_file);
 	debugfs_remove(zcore_memmap_file);
 	debugfs_remove(zcore_file);

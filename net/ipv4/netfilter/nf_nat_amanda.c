@@ -70,14 +70,22 @@ static unsigned int help(struct sk_buff *skb,
 
 static void __exit nf_nat_amanda_fini(void)
 {
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_nat_amanda_hook, NULL);
+=======
+	RCU_INIT_POINTER(nf_nat_amanda_hook, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	synchronize_rcu();
 }
 
 static int __init nf_nat_amanda_init(void)
 {
 	BUG_ON(nf_nat_amanda_hook != NULL);
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_nat_amanda_hook, help);
+=======
+	RCU_INIT_POINTER(nf_nat_amanda_hook, help);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

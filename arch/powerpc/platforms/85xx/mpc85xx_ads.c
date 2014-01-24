@@ -19,7 +19,13 @@
 #include <linux/seq_file.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -35,6 +41,16 @@
 #include <sysdev/cpm2_pic.h>
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "mpc85xx.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "mpc85xx.h"
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PCI
 static int mpc85xx_exclude_device(struct pci_controller *hose,
 				   u_char bus, u_char devfn)
@@ -46,6 +62,8 @@ static int mpc85xx_exclude_device(struct pci_controller *hose,
 }
 #endif /* CONFIG_PCI */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_CPM2
 
 static void cpm2_cascade(unsigned int irq, struct irq_desc *desc)
@@ -103,6 +121,21 @@ static void __init mpc85xx_ads_pic_init(void)
 	of_node_put(np);
 	irq_set_chained_handler(irq, cpm2_cascade);
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void __init mpc85xx_ads_pic_init(void)
+{
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+	mpic_init(mpic);
+
+	mpc85xx_cpm2_pic_init();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -185,10 +218,13 @@ static void __init init_ioports(void)
 
 static void __init mpc85xx_ads_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ppc_md.progress)
 		ppc_md.progress("mpc85xx_ads_setup_arch()", 0);
 
@@ -198,11 +234,18 @@ static void __init mpc85xx_ads_setup_arch(void)
 #endif
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 	for_each_compatible_node(np, "pci", "fsl,mpc8540-pci")
 		fsl_add_bridge(np, 1);
 
 	ppc_md.pci_exclude_device = mpc85xx_exclude_device;
 #endif
+=======
+	ppc_md.pci_exclude_device = mpc85xx_exclude_device;
+#endif
+
+	fsl_pci_assign_primary();
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mpc85xx_ads_show_cpuinfo(struct seq_file *m)
@@ -221,6 +264,8 @@ static void mpc85xx_ads_show_cpuinfo(struct seq_file *m)
 	seq_printf(m, "PLL setting\t: 0x%x\n", ((phid1 >> 24) & 0x3f));
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_device_id __initdata of_bus_ids[] = {
 	{ .name = "soc", },
 	{ .type = "soc", },
@@ -238,6 +283,12 @@ static int __init declare_of_platform_devices(void)
 	return 0;
 }
 machine_device_initcall(mpc85xx_ads, declare_of_platform_devices);
+=======
+machine_device_initcall(mpc85xx_ads, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_arch_initcall(mpc85xx_ads, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, device-tree isn't unflattened

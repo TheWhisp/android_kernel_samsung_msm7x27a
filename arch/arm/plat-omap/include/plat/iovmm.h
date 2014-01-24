@@ -13,8 +13,15 @@
 #ifndef __IOMMU_MMAP_H
 #define __IOMMU_MMAP_H
 
+<<<<<<< HEAD
 struct iovm_struct {
 	struct iommu		*iommu;	/* iommu object which this belongs to */
+=======
+#include <linux/iommu.h>
+
+struct iovm_struct {
+	struct omap_iommu	*iommu;	/* iommu object which this belongs to */
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32			da_start; /* area definition */
 	u32			da_end;
 	u32			flags; /* IOVMF_: see below */
@@ -70,6 +77,7 @@ struct iovm_struct {
 #define IOVMF_DA_FIXED		(1 << (4 + IOVMF_SW_SHIFT))
 
 
+<<<<<<< HEAD
 extern struct iovm_struct *find_iovm_area(struct iommu *obj, u32 da);
 extern u32 iommu_vmap(struct iommu *obj, u32 da,
 			const struct sg_table *sgt, u32 flags);
@@ -85,5 +93,20 @@ extern u32 iommu_kmalloc(struct iommu *obj, u32 da, size_t bytes,
 extern void iommu_kfree(struct iommu *obj, u32 da);
 
 extern void *da_to_va(struct iommu *obj, u32 da);
+=======
+extern struct iovm_struct *omap_find_iovm_area(struct device *dev, u32 da);
+extern u32
+omap_iommu_vmap(struct iommu_domain *domain, struct device *dev, u32 da,
+			const struct sg_table *sgt, u32 flags);
+extern struct sg_table *omap_iommu_vunmap(struct iommu_domain *domain,
+				struct device *dev, u32 da);
+extern u32
+omap_iommu_vmalloc(struct iommu_domain *domain, struct device *dev,
+				u32 da, size_t bytes, u32 flags);
+extern void
+omap_iommu_vfree(struct iommu_domain *domain, struct device *dev,
+				const u32 da);
+extern void *omap_da_to_va(struct device *dev, u32 da);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __IOMMU_MMAP_H */

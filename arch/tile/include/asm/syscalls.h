@@ -24,12 +24,15 @@
 #include <linux/types.h>
 #include <linux/compat.h>
 
+<<<<<<< HEAD
 /* The array of function pointers for syscalls. */
 extern void *sys_call_table[];
 #ifdef CONFIG_COMPAT
 extern void *compat_sys_call_table[];
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Note that by convention, any syscall which requires the current
  * register set takes an additional "struct pt_regs *" pointer; a
@@ -43,15 +46,24 @@ long sys32_fadvise64(int fd, u32 offset_lo, u32 offset_hi,
 		     u32 len, int advice);
 int sys32_fadvise64_64(int fd, u32 offset_lo, u32 offset_hi,
 		       u32 len_lo, u32 len_hi, int advice);
+<<<<<<< HEAD
 long sys_flush_cache(void);
+=======
+long sys_cacheflush(unsigned long addr, unsigned long len,
+		    unsigned long flags);
+>>>>>>> refs/remotes/origin/master
 #ifndef __tilegx__  /* No mmap() in the 32-bit kernel. */
 #define sys_mmap sys_mmap
 #endif
 
 #ifndef __tilegx__
 /* mm/fault.c */
+<<<<<<< HEAD
 long sys_cmpxchg_badaddr(unsigned long address, struct pt_regs *);
 long _sys_cmpxchg_badaddr(unsigned long address);
+=======
+long sys_cmpxchg_badaddr(unsigned long address);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_COMPAT
@@ -62,6 +74,7 @@ long sys_truncate64(const char __user *path, loff_t length);
 long sys_ftruncate64(unsigned int fd, loff_t length);
 #endif
 
+<<<<<<< HEAD
 /* These are the intvec*.S trampolines. */
 long _sys_sigaltstack(const stack_t __user *, stack_t __user *);
 long _sys_rt_sigreturn(void);
@@ -70,6 +83,16 @@ long _sys_clone(unsigned long clone_flags, unsigned long newsp,
 long _sys_execve(const char __user *filename,
 		 const char __user *const __user *argv,
 		 const char __user *const __user *envp);
+=======
+/* Provide versions of standard syscalls that use current_pt_regs(). */
+long sys_rt_sigreturn(void);
+#define sys_rt_sigreturn sys_rt_sigreturn
+
+/* These are the intvec*.S trampolines. */
+long _sys_rt_sigreturn(void);
+long _sys_clone(unsigned long clone_flags, unsigned long newsp,
+		void __user *parent_tid, void __user *child_tid);
+>>>>>>> refs/remotes/origin/master
 
 #include <asm-generic/syscalls.h>
 

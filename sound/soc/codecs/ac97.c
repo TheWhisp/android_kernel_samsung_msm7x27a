@@ -16,12 +16,21 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/ac97_codec.h>
 #include <sound/initval.h>
 #include <sound/soc.h>
 
+<<<<<<< HEAD
 static int ac97_prepare(struct snd_pcm_substream *substream,
 			struct snd_soc_dai *dai)
 {
@@ -32,13 +41,41 @@ static int ac97_prepare(struct snd_pcm_substream *substream,
 	int reg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
 		  AC97_PCM_FRONT_DAC_RATE : AC97_PCM_LR_ADC_RATE;
 	return snd_ac97_set_rate(codec->ac97, reg, runtime->rate);
+=======
+static const struct snd_soc_dapm_widget ac97_widgets[] = {
+	SND_SOC_DAPM_INPUT("RX"),
+	SND_SOC_DAPM_OUTPUT("TX"),
+};
+
+static const struct snd_soc_dapm_route ac97_routes[] = {
+	{ "AC97 Capture", NULL, "RX" },
+	{ "TX", NULL, "AC97 Playback" },
+};
+
+static int ac97_prepare(struct snd_pcm_substream *substream,
+			struct snd_soc_dai *dai)
+{
+	struct snd_soc_codec *codec = dai->codec;
+
+	int reg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+		  AC97_PCM_FRONT_DAC_RATE : AC97_PCM_LR_ADC_RATE;
+	return snd_ac97_set_rate(codec->ac97, reg, substream->runtime->rate);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define STD_AC97_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
 		SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 |\
 		SNDRV_PCM_RATE_48000)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops ac97_dai_ops = {
+=======
+static const struct snd_soc_dai_ops ac97_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops ac97_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.prepare	= ac97_prepare,
 };
 
@@ -63,13 +100,21 @@ static struct snd_soc_dai_driver ac97_dai = {
 static unsigned int ac97_read(struct snd_soc_codec *codec,
 	unsigned int reg)
 {
+<<<<<<< HEAD
 	return soc_ac97_ops.read(codec->ac97, reg);
+=======
+	return soc_ac97_ops->read(codec->ac97, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
 	unsigned int val)
 {
+<<<<<<< HEAD
 	soc_ac97_ops.write(codec->ac97, reg, val);
+=======
+	soc_ac97_ops->write(codec->ac97, reg, val);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -80,7 +125,12 @@ static int ac97_soc_probe(struct snd_soc_codec *codec)
 	int ret;
 
 	/* add codec as bus device for standard ac97 */
+<<<<<<< HEAD
 	ret = snd_ac97_bus(codec->card->snd_card, 0, &soc_ac97_ops, NULL, &ac97_bus);
+=======
+	ret = snd_ac97_bus(codec->card->snd_card, 0, soc_ac97_ops, NULL,
+			   &ac97_bus);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
@@ -92,13 +142,22 @@ static int ac97_soc_probe(struct snd_soc_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ac97_soc_remove(struct snd_soc_codec *codec)
 {
 	return 0;
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 static int ac97_soc_suspend(struct snd_soc_codec *codec, pm_message_t msg)
+=======
+static int ac97_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM
+static int ac97_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_ac97_suspend(codec->ac97);
 
@@ -120,18 +179,35 @@ static struct snd_soc_codec_driver soc_codec_dev_ac97 = {
 	.write =	ac97_write,
 	.read =		ac97_read,
 	.probe = 	ac97_soc_probe,
+<<<<<<< HEAD
 	.remove = 	ac97_soc_remove,
 	.suspend =	ac97_soc_suspend,
 	.resume =	ac97_soc_resume,
 };
 
 static __devinit int ac97_probe(struct platform_device *pdev)
+=======
+	.suspend =	ac97_soc_suspend,
+	.resume =	ac97_soc_resume,
+
+	.dapm_widgets = ac97_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(ac97_widgets),
+	.dapm_routes = ac97_routes,
+	.num_dapm_routes = ARRAY_SIZE(ac97_routes),
+};
+
+static int ac97_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_codec(&pdev->dev,
 			&soc_codec_dev_ac97, &ac97_dai, 1);
 }
 
+<<<<<<< HEAD
 static int __devexit ac97_remove(struct platform_device *pdev)
+=======
+static int ac97_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_codec(&pdev->dev);
 	return 0;
@@ -144,9 +220,11 @@ static struct platform_driver ac97_codec_driver = {
 	},
 
 	.probe = ac97_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ac97_remove),
 };
 
+<<<<<<< HEAD
 static int __init ac97_init(void)
 {
 	return platform_driver_register(&ac97_codec_driver);
@@ -158,6 +236,15 @@ static void __exit ac97_exit(void)
 	platform_driver_unregister(&ac97_codec_driver);
 }
 module_exit(ac97_exit);
+=======
+module_platform_driver(ac97_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = ac97_remove,
+};
+
+module_platform_driver(ac97_codec_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Soc Generic AC97 driver");
 MODULE_AUTHOR("Liam Girdwood");

@@ -11,7 +11,11 @@
  * the Free Software Foundation; either version 2 of the License.
 */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
@@ -299,6 +303,12 @@ static int s3c_pwm_probe(struct platform_device *pdev)
 		goto err_clk_tin;
 	}
 
+<<<<<<< HEAD
+=======
+	clk_enable(pwm->clk);
+	clk_enable(pwm->clk_div);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_save(flags);
 
 	tcon = __raw_readl(S3C2410_TCON);
@@ -326,6 +336,11 @@ static int s3c_pwm_probe(struct platform_device *pdev)
 	return 0;
 
  err_clk_tdiv:
+<<<<<<< HEAD
+=======
+	clk_disable(pwm->clk_div);
+	clk_disable(pwm->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_put(pwm->clk_div);
 
  err_clk_tin:
@@ -340,6 +355,11 @@ static int __devexit s3c_pwm_remove(struct platform_device *pdev)
 {
 	struct pwm_device *pwm = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
+=======
+	clk_disable(pwm->clk_div);
+	clk_disable(pwm->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_put(pwm->clk_div);
 	clk_put(pwm->clk);
 	kfree(pwm);

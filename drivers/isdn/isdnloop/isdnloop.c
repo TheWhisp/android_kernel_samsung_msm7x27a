@@ -34,7 +34,15 @@ static int isdnloop_addcard(char *);
  *   channel = channel number
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_free_queue(isdnloop_card * card, int channel)
+=======
+isdnloop_free_queue(isdnloop_card *card, int channel)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_free_queue(isdnloop_card *card, int channel)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff_head *queue = &card->bqueue[channel];
 
@@ -51,7 +59,15 @@ isdnloop_free_queue(isdnloop_card * card, int channel)
  *   ch   = channel number (0-based)
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_bchan_send(isdnloop_card * card, int ch)
+=======
+isdnloop_bchan_send(isdnloop_card *card, int ch)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_bchan_send(isdnloop_card *card, int ch)
+>>>>>>> refs/remotes/origin/master
 {
 	isdnloop_card *rcard = card->rcard[ch];
 	int rch = card->rch[ch], len, ack;
@@ -65,7 +81,15 @@ isdnloop_bchan_send(isdnloop_card * card, int ch)
 			ack = *(skb->head); /* used as scratch area */
 			cmd.driver = card->myid;
 			cmd.arg = ch;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (rcard){
+=======
+			if (rcard) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (rcard) {
+>>>>>>> refs/remotes/origin/master
 				rcard->interface.rcvcallb_skb(rcard->myid, rch, skb);
 			} else {
 				printk(KERN_WARNING "isdnloop: no rcard, skb dropped\n");
@@ -118,7 +142,15 @@ isdnloop_pollbchan(unsigned long data)
  *   cmd   = pointer to struct to be filled.
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_parse_setup(char *setup, isdn_ctrl * cmd)
+=======
+isdnloop_parse_setup(char *setup, isdn_ctrl *cmd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_parse_setup(char *setup, isdn_ctrl *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	char *t = setup;
 	char *s = strchr(t, ',');
@@ -137,7 +169,15 @@ isdnloop_parse_setup(char *setup, isdn_ctrl * cmd)
 		cmd->parm.setup.si2 = 0;
 	else
 		cmd->parm.setup.si2 =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    simple_strtoul(t, NULL, 10);
+=======
+			simple_strtoul(t, NULL, 10);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			simple_strtoul(t, NULL, 10);
+>>>>>>> refs/remotes/origin/master
 	strlcpy(cmd->parm.setup.eazmsn, s, sizeof(cmd->parm.setup.eazmsn));
 	cmd->parm.setup.plan = 0;
 	cmd->parm.setup.screen = 0;
@@ -165,7 +205,15 @@ static isdnloop_stat isdnloop_stat_table[] =
 	{"E_L1: ACT FAIL", ISDN_STAT_BHUP,  8}, /* Layer-1 activation failed  */
 	{"E_L2: DATA LIN", ISDN_STAT_BHUP,  8}, /* Layer-2 data link lost     */
 	{"E_L1: ACTIVATION FAILED",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   ISDN_STAT_BHUP,  8},         /* Layer-1 activation failed  */
+=======
+	 ISDN_STAT_BHUP,  8},         /* Layer-1 activation failed  */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 ISDN_STAT_BHUP,  8},         /* Layer-1 activation failed  */
+>>>>>>> refs/remotes/origin/master
 	{NULL, 0, -1}
 };
 /* *INDENT-ON* */
@@ -182,7 +230,15 @@ static isdnloop_stat isdnloop_stat_table[] =
  *   card    = card where message comes from.
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_parse_status(u_char * status, int channel, isdnloop_card * card)
+=======
+isdnloop_parse_status(u_char *status, int channel, isdnloop_card *card)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_parse_status(u_char *status, int channel, isdnloop_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	isdnloop_stat *s = isdnloop_stat_table;
 	int action = -1;
@@ -201,6 +257,8 @@ isdnloop_parse_status(u_char * status, int channel, isdnloop_card * card)
 	cmd.driver = card->myid;
 	cmd.arg = channel;
 	switch (action) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case 1:
 			/* BCON_x */
 			card->flags |= (channel) ?
@@ -264,6 +322,76 @@ isdnloop_parse_status(u_char * status, int channel, isdnloop_card * card)
 			cmd.arg = 1;
 			cmd.driver = card->myid;
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case 1:
+		/* BCON_x */
+		card->flags |= (channel) ?
+			ISDNLOOP_FLAGS_B2ACTIVE : ISDNLOOP_FLAGS_B1ACTIVE;
+		break;
+	case 2:
+		/* BDIS_x */
+		card->flags &= ~((channel) ?
+				 ISDNLOOP_FLAGS_B2ACTIVE : ISDNLOOP_FLAGS_B1ACTIVE);
+		isdnloop_free_queue(card, channel);
+		break;
+	case 3:
+		/* DCAL_I and DSCA_I */
+		isdnloop_parse_setup(status + 6, &cmd);
+		break;
+	case 4:
+		/* FCALL */
+		sprintf(cmd.parm.setup.phone, "LEASED%d", card->myid);
+		sprintf(cmd.parm.setup.eazmsn, "%d", channel + 1);
+		cmd.parm.setup.si1 = 7;
+		cmd.parm.setup.si2 = 0;
+		cmd.parm.setup.plan = 0;
+		cmd.parm.setup.screen = 0;
+		break;
+	case 5:
+		/* CIF */
+		strlcpy(cmd.parm.num, status + 3, sizeof(cmd.parm.num));
+		break;
+	case 6:
+		/* AOC */
+		snprintf(cmd.parm.num, sizeof(cmd.parm.num), "%d",
+			 (int) simple_strtoul(status + 7, NULL, 16));
+		break;
+	case 7:
+		/* CAU */
+		status += 3;
+		if (strlen(status) == 4)
+			snprintf(cmd.parm.num, sizeof(cmd.parm.num), "%s%c%c",
+				 status + 2, *status, *(status + 1));
+		else
+			strlcpy(cmd.parm.num, status + 1, sizeof(cmd.parm.num));
+		break;
+	case 8:
+		/* Misc Errors on L1 and L2 */
+		card->flags &= ~ISDNLOOP_FLAGS_B1ACTIVE;
+		isdnloop_free_queue(card, 0);
+		cmd.arg = 0;
+		cmd.driver = card->myid;
+		card->interface.statcallb(&cmd);
+		cmd.command = ISDN_STAT_DHUP;
+		cmd.arg = 0;
+		cmd.driver = card->myid;
+		card->interface.statcallb(&cmd);
+		cmd.command = ISDN_STAT_BHUP;
+		card->flags &= ~ISDNLOOP_FLAGS_B2ACTIVE;
+		isdnloop_free_queue(card, 1);
+		cmd.arg = 1;
+		cmd.driver = card->myid;
+		card->interface.statcallb(&cmd);
+		cmd.command = ISDN_STAT_DHUP;
+		cmd.arg = 1;
+		cmd.driver = card->myid;
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	card->interface.statcallb(&cmd);
 }
@@ -276,7 +404,15 @@ isdnloop_parse_status(u_char * status, int channel, isdnloop_card * card)
  *   c    = char to store.
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_putmsg(isdnloop_card * card, unsigned char c)
+=======
+isdnloop_putmsg(isdnloop_card *card, unsigned char c)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_putmsg(isdnloop_card *card, unsigned char c)
+>>>>>>> refs/remotes/origin/master
 {
 	ulong flags;
 
@@ -334,7 +470,15 @@ isdnloop_polldchan(unsigned long data)
 			card->imsg[card->iptr] = 0;
 			card->iptr = 0;
 			if (card->imsg[0] == '0' && card->imsg[1] >= '0' &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  card->imsg[1] <= '2' && card->imsg[2] == ';') {
+=======
+			    card->imsg[1] <= '2' && card->imsg[2] == ';') {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    card->imsg[1] <= '2' && card->imsg[2] == ';') {
+>>>>>>> refs/remotes/origin/master
 				ch = (card->imsg[1] - '0') - 1;
 				p = &card->imsg[3];
 				isdnloop_parse_status(p, ch, card);
@@ -396,7 +540,15 @@ isdnloop_polldchan(unsigned long data)
  *   Number of bytes transferred, -E??? on error
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_sendbuf(int channel, struct sk_buff *skb, isdnloop_card * card)
+=======
+isdnloop_sendbuf(int channel, struct sk_buff *skb, isdnloop_card *card)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_sendbuf(int channel, struct sk_buff *skb, isdnloop_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int len = skb->len;
 	unsigned long flags;
@@ -439,7 +591,15 @@ isdnloop_sendbuf(int channel, struct sk_buff *skb, isdnloop_card * card)
  *   number of bytes actually transferred.
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_readstatus(u_char __user *buf, int len, isdnloop_card * card)
+=======
+isdnloop_readstatus(u_char __user *buf, int len, isdnloop_card *card)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_readstatus(u_char __user *buf, int len, isdnloop_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int count;
 	u_char __user *p;
@@ -467,7 +627,15 @@ isdnloop_readstatus(u_char __user *buf, int len, isdnloop_card * card)
  *   0 on success, 1 on memory squeeze.
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_fake(isdnloop_card * card, char *s, int ch)
+=======
+isdnloop_fake(isdnloop_card *card, char *s, int ch)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_fake(isdnloop_card *card, char *s, int ch)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *skb;
 	int len = strlen(s) + ((ch >= 0) ? 3 : 0);
@@ -516,7 +684,15 @@ static isdnloop_stat isdnloop_cmd_table[] =
  *   card = pointer to card struct.
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_fake_err(isdnloop_card * card)
+=======
+isdnloop_fake_err(isdnloop_card *card)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_fake_err(isdnloop_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	char buf[60];
 
@@ -542,11 +718,21 @@ static u_char ctable_1t[] =
  *   Pointer to buffer containing the assembled message.
  */
 static char *
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_unicause(isdnloop_card * card, int loc, int cau)
+=======
+isdnloop_unicause(isdnloop_card *card, int loc, int cau)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_unicause(isdnloop_card *card, int loc, int cau)
+>>>>>>> refs/remotes/origin/master
 {
 	static char buf[6];
 
 	switch (card->ptype) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case ISDN_PTYPE_EURO:
 			sprintf(buf, "E%02X%02X", (loc) ? 4 : 2, ctable_eu[cau]);
 			break;
@@ -555,6 +741,21 @@ isdnloop_unicause(isdnloop_card * card, int loc, int cau)
 			break;
 		default:
 			return ("0000");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case ISDN_PTYPE_EURO:
+		sprintf(buf, "E%02X%02X", (loc) ? 4 : 2, ctable_eu[cau]);
+		break;
+	case ISDN_PTYPE_1TR6:
+		sprintf(buf, "%02X44", ctable_1t[cau]);
+		break;
+	default:
+		return ("0000");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return (buf);
 }
@@ -568,7 +769,15 @@ isdnloop_unicause(isdnloop_card * card, int loc, int cau)
  *   ch   = channel (0-based)
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_atimeout(isdnloop_card * card, int ch)
+=======
+isdnloop_atimeout(isdnloop_card *card, int ch)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_atimeout(isdnloop_card *card, int ch)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	char buf[60];
@@ -614,7 +823,15 @@ isdnloop_atimeout1(unsigned long data)
  *   ch   = channel to watch for.
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_start_ctimer(isdnloop_card * card, int ch)
+=======
+isdnloop_start_ctimer(isdnloop_card *card, int ch)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_start_ctimer(isdnloop_card *card, int ch)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -638,7 +855,15 @@ isdnloop_start_ctimer(isdnloop_card * card, int ch)
  *   ch   = channel (0-based).
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_kill_ctimer(isdnloop_card * card, int ch)
+=======
+isdnloop_kill_ctimer(isdnloop_card *card, int ch)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_kill_ctimer(isdnloop_card *card, int ch)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -667,7 +892,15 @@ static u_char bit2si[] =
  *   3 = found matching number but SI does not match.
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_try_call(isdnloop_card * card, char *p, int lch, isdn_ctrl * cmd)
+=======
+isdnloop_try_call(isdnloop_card *card, char *p, int lch, isdn_ctrl *cmd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_try_call(isdnloop_card *card, char *p, int lch, isdn_ctrl *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	isdnloop_card *cc = cards;
 	unsigned long flags;
@@ -685,6 +918,8 @@ isdnloop_try_call(isdnloop_card * card, char *p, int lch, isdn_ctrl * cmd)
 				continue;
 			num_match = 0;
 			switch (cc->ptype) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				case ISDN_PTYPE_EURO:
 					for (i = 0; i < 3; i++)
 						if (!(strcmp(cc->s0num[i], cmd->parm.setup.phone)))
@@ -698,6 +933,26 @@ isdnloop_try_call(isdnloop_card * card, char *p, int lch, isdn_ctrl * cmd)
 							num_match = 1;
 						e++;
 					}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			case ISDN_PTYPE_EURO:
+				for (i = 0; i < 3; i++)
+					if (!(strcmp(cc->s0num[i], cmd->parm.setup.phone)))
+						num_match = 1;
+				break;
+			case ISDN_PTYPE_1TR6:
+				e = cc->eazlist[ch];
+				while (*e) {
+					sprintf(nbuf, "%s%c", cc->s0num[0], *e);
+					if (!(strcmp(nbuf, cmd->parm.setup.phone)))
+						num_match = 1;
+					e++;
+				}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			if (num_match) {
 				spin_lock_irqsave(&card->isdnloop_lock, flags);
@@ -740,7 +995,15 @@ isdnloop_try_call(isdnloop_card * card, char *p, int lch, isdn_ctrl * cmd)
  *   pointer to new phone number.
  */
 static char *
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_vstphone(isdnloop_card * card, char *phone, int caller)
+=======
+isdnloop_vstphone(isdnloop_card *card, char *phone, int caller)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_vstphone(isdnloop_card *card, char *phone, int caller)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	static char nphone[30];
@@ -750,6 +1013,8 @@ isdnloop_vstphone(isdnloop_card * card, char *phone, int caller)
 		return "";
 	}
 	switch (card->ptype) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case ISDN_PTYPE_EURO:
 			if (caller) {
 				for (i = 0; i < 2; i++)
@@ -766,6 +1031,29 @@ isdnloop_vstphone(isdnloop_card * card, char *phone, int caller)
 			} else
 				return (&phone[strlen(phone) - 1]);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case ISDN_PTYPE_EURO:
+		if (caller) {
+			for (i = 0; i < 2; i++)
+				if (!(strcmp(card->s0num[i], phone)))
+					return (phone);
+			return (card->s0num[0]);
+		}
+		return (phone);
+		break;
+	case ISDN_PTYPE_1TR6:
+		if (caller) {
+			sprintf(nphone, "%s%c", card->s0num[0], phone[0]);
+			return (nphone);
+		} else
+			return (&phone[strlen(phone) - 1]);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return "";
 }
@@ -778,7 +1066,15 @@ isdnloop_vstphone(isdnloop_card * card, char *phone, int caller)
  *   card = pointer to card struct.
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_parse_cmd(isdnloop_card * card)
+=======
+isdnloop_parse_cmd(isdnloop_card *card)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_parse_cmd(isdnloop_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	char *p = card->omsg;
 	isdn_ctrl cmd;
@@ -812,6 +1108,8 @@ isdnloop_parse_cmd(isdnloop_card * card)
 	if (action == -1)
 		return;
 	switch (action) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case 1:
 			/* 0x;BCON_R */
 			if (card->rcard[ch - 1]) {
@@ -947,6 +1245,148 @@ isdnloop_parse_cmd(isdnloop_card * card)
 		case 15:
 			/* 00;FV2OFF */
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case 1:
+		/* 0x;BCON_R */
+		if (card->rcard[ch - 1]) {
+			isdnloop_fake(card->rcard[ch - 1], "BCON_I",
+				      card->rch[ch - 1] + 1);
+			isdnloop_fake(card, "BCON_C", ch);
+		}
+		break;
+	case 17:
+		/* 0x;BCON_I */
+		if (card->rcard[ch - 1]) {
+			isdnloop_fake(card->rcard[ch - 1], "BCON_C",
+				      card->rch[ch - 1] + 1);
+		}
+		break;
+	case 2:
+		/* 0x;BDIS_R */
+		isdnloop_fake(card, "BDIS_C", ch);
+		if (card->rcard[ch - 1]) {
+			isdnloop_fake(card->rcard[ch - 1], "BDIS_I",
+				      card->rch[ch - 1] + 1);
+		}
+		break;
+	case 16:
+		/* 0x;DCON_R */
+		isdnloop_kill_ctimer(card, ch - 1);
+		if (card->rcard[ch - 1]) {
+			isdnloop_kill_ctimer(card->rcard[ch - 1], card->rch[ch - 1]);
+			isdnloop_fake(card->rcard[ch - 1], "DCON_C",
+				      card->rch[ch - 1] + 1);
+			isdnloop_fake(card, "DCON_C", ch);
+		}
+		break;
+	case 3:
+		/* 0x;DDIS_R */
+		isdnloop_kill_ctimer(card, ch - 1);
+		if (card->rcard[ch - 1]) {
+			isdnloop_kill_ctimer(card->rcard[ch - 1], card->rch[ch - 1]);
+			isdnloop_fake(card->rcard[ch - 1], "DDIS_I",
+				      card->rch[ch - 1] + 1);
+			card->rcard[ch - 1] = NULL;
+		}
+		isdnloop_fake(card, "DDIS_C", ch);
+		break;
+	case 4:
+		/* 0x;DSCA_Rdd,yy,zz,oo */
+		if (card->ptype != ISDN_PTYPE_1TR6) {
+			isdnloop_fake_err(card);
+			return;
+		}
+		/* Fall through */
+	case 5:
+		/* 0x;DCAL_Rdd,yy,zz,oo */
+		p += 6;
+		switch (isdnloop_try_call(card, p, ch - 1, &cmd)) {
+		case 0:
+			/* Alerting */
+			sprintf(buf, "D%s_I%s,%02d,%02d,%s",
+				(action == 4) ? "SCA" : "CAL",
+				isdnloop_vstphone(card, cmd.parm.setup.eazmsn, 1),
+				cmd.parm.setup.si1,
+				cmd.parm.setup.si2,
+				isdnloop_vstphone(card->rcard[ch - 1],
+						  cmd.parm.setup.phone, 0));
+			isdnloop_fake(card->rcard[ch - 1], buf, card->rch[ch - 1] + 1);
+			/* Fall through */
+		case 3:
+			/* si1 does not match, don't alert but start timer */
+			isdnloop_start_ctimer(card, ch - 1);
+			break;
+		case 1:
+			/* Remote busy */
+			isdnloop_fake(card, "DDIS_I", ch);
+			sprintf(buf, "CAU%s", isdnloop_unicause(card, 1, 1));
+			isdnloop_fake(card, buf, ch);
+			break;
+		case 2:
+			/* No such user */
+			isdnloop_fake(card, "DDIS_I", ch);
+			sprintf(buf, "CAU%s", isdnloop_unicause(card, 1, 2));
+			isdnloop_fake(card, buf, ch);
+			break;
+		}
+		break;
+	case 6:
+		/* 0x;EAZC */
+		card->eazlist[ch - 1][0] = '\0';
+		break;
+	case 7:
+		/* 0x;EAZ */
+		p += 3;
+		strcpy(card->eazlist[ch - 1], p);
+		break;
+	case 8:
+		/* 0x;SEEAZ */
+		sprintf(buf, "EAZ-LIST: %s", card->eazlist[ch - 1]);
+		isdnloop_fake(card, buf, ch + 1);
+		break;
+	case 9:
+		/* 0x;MSN */
+		break;
+	case 10:
+		/* 0x;MSNALL */
+		break;
+	case 11:
+		/* 0x;SETSIL */
+		p += 6;
+		i = 0;
+		while (strchr("0157", *p)) {
+			if (i)
+				card->sil[ch - 1] |= si2bit[*p - '0'];
+			i = (*p++ == '0');
+		}
+		if (*p)
+			isdnloop_fake_err(card);
+		break;
+	case 12:
+		/* 0x;SEESIL */
+		sprintf(buf, "SIN-LIST: ");
+		p = buf + 10;
+		for (i = 0; i < 3; i++)
+			if (card->sil[ch - 1] & (1 << i))
+				p += sprintf(p, "%02d", bit2si[i]);
+		isdnloop_fake(card, buf, ch + 1);
+		break;
+	case 13:
+		/* 0x;SILC */
+		card->sil[ch - 1] = 0;
+		break;
+	case 14:
+		/* 00;FV2ON */
+		break;
+	case 15:
+		/* 00;FV2OFF */
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -965,7 +1405,15 @@ isdnloop_parse_cmd(isdnloop_card * card)
  *   number of bytes transferred (currently always equals len).
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_writecmd(const u_char * buf, int len, int user, isdnloop_card * card)
+=======
+isdnloop_writecmd(const u_char *buf, int len, int user, isdnloop_card *card)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_writecmd(const u_char *buf, int len, int user, isdnloop_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int xcount = 0;
 	int ocount = 1;
@@ -1015,7 +1463,15 @@ isdnloop_writecmd(const u_char * buf, int len, int user, isdnloop_card * card)
  * Delete card's pending timers, send STOP to linklevel
  */
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_stopcard(isdnloop_card * card)
+=======
+isdnloop_stopcard(isdnloop_card *card)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_stopcard(isdnloop_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	isdn_ctrl cmd;
@@ -1060,7 +1516,15 @@ isdnloop_stopallcards(void)
  *   0 on success, -E??? otherwise.
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_start(isdnloop_card * card, isdnloop_sdef * sdefp)
+=======
+isdnloop_start(isdnloop_card *card, isdnloop_sdef *sdefp)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_start(isdnloop_card *card, isdnloop_sdef *sdefp)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	isdnloop_sdef sdef;
@@ -1072,6 +1536,8 @@ isdnloop_start(isdnloop_card * card, isdnloop_sdef * sdefp)
 		return -EFAULT;
 	spin_lock_irqsave(&card->isdnloop_lock, flags);
 	switch (sdef.ptype) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case ISDN_PTYPE_EURO:
 			if (isdnloop_fake(card, "DRV1.23EC-Q.931-CAPI-CNS-BASIS-20.02.96",
 					  -1)) {
@@ -1106,6 +1572,68 @@ isdnloop_start(isdnloop_card * card, isdnloop_sdef * sdefp)
 			printk(KERN_WARNING "isdnloop: Illegal D-channel protocol %d\n",
 			       sdef.ptype);
 			return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case ISDN_PTYPE_EURO:
+		if (isdnloop_fake(card, "DRV1.23EC-Q.931-CAPI-CNS-BASIS-20.02.96",
+				  -1)) {
+			spin_unlock_irqrestore(&card->isdnloop_lock, flags);
+			return -ENOMEM;
+		}
+		card->sil[0] = card->sil[1] = 4;
+		if (isdnloop_fake(card, "TEI OK", 0)) {
+			spin_unlock_irqrestore(&card->isdnloop_lock, flags);
+			return -ENOMEM;
+		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+		for (i = 0; i < 3; i++)
+			strcpy(card->s0num[i], sdef.num[i]);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		for (i = 0; i < 3; i++) {
+			strlcpy(card->s0num[i], sdef.num[i],
+				sizeof(card->s0num[0]));
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		break;
+	case ISDN_PTYPE_1TR6:
+		if (isdnloop_fake(card, "DRV1.04TC-1TR6-CAPI-CNS-BASIS-29.11.95",
+				  -1)) {
+			spin_unlock_irqrestore(&card->isdnloop_lock, flags);
+			return -ENOMEM;
+		}
+		card->sil[0] = card->sil[1] = 4;
+		if (isdnloop_fake(card, "TEI OK", 0)) {
+			spin_unlock_irqrestore(&card->isdnloop_lock, flags);
+			return -ENOMEM;
+		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+		strcpy(card->s0num[0], sdef.num[0]);
+=======
+		strlcpy(card->s0num[0], sdef.num[0], sizeof(card->s0num[0]));
+>>>>>>> refs/remotes/origin/master
+=======
+		strlcpy(card->s0num[0], sdef.num[0], sizeof(card->s0num[0]));
+>>>>>>> refs/remotes/origin/cm-11.0
+		card->s0num[1][0] = '\0';
+		card->s0num[2][0] = '\0';
+		break;
+	default:
+		spin_unlock_irqrestore(&card->isdnloop_lock, flags);
+		printk(KERN_WARNING "isdnloop: Illegal D-channel protocol %d\n",
+		       sdef.ptype);
+		return -EINVAL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	init_timer(&card->st_timer);
 	card->st_timer.expires = jiffies + ISDNLOOP_TIMER_DCREAD;
@@ -1121,7 +1649,15 @@ isdnloop_start(isdnloop_card * card, isdnloop_sdef * sdefp)
  * Main handler for commands sent by linklevel.
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 isdnloop_command(isdn_ctrl * c, isdnloop_card * card)
+=======
+isdnloop_command(isdn_ctrl *c, isdnloop_card *card)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdnloop_command(isdn_ctrl *c, isdnloop_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	ulong a;
 	int i;
@@ -1130,6 +1666,8 @@ isdnloop_command(isdn_ctrl * c, isdnloop_card * card)
 	isdnloop_cdef cdef;
 
 	switch (c->command) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case ISDN_CMD_IOCTL:
 			memcpy(&a, c->parm.num, sizeof(ulong));
 			switch (c->arg) {
@@ -1210,10 +1748,150 @@ isdnloop_command(isdn_ctrl * c, isdnloop_card * card)
 			}
 			break;
 		case ISDN_CMD_ACCEPTD:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case ISDN_CMD_IOCTL:
+		memcpy(&a, c->parm.num, sizeof(ulong));
+		switch (c->arg) {
+		case ISDNLOOP_IOCTL_DEBUGVAR:
+			return (ulong) card;
+		case ISDNLOOP_IOCTL_STARTUP:
+			if (!access_ok(VERIFY_READ, (void *) a, sizeof(isdnloop_sdef)))
+				return -EFAULT;
+			return (isdnloop_start(card, (isdnloop_sdef *) a));
+			break;
+		case ISDNLOOP_IOCTL_ADDCARD:
+			if (copy_from_user((char *)&cdef,
+					   (char *)a,
+					   sizeof(cdef)))
+				return -EFAULT;
+			return (isdnloop_addcard(cdef.id1));
+			break;
+		case ISDNLOOP_IOCTL_LEASEDCFG:
+			if (a) {
+				if (!card->leased) {
+					card->leased = 1;
+					while (card->ptype == ISDN_PTYPE_UNKNOWN)
+						schedule_timeout_interruptible(10);
+					schedule_timeout_interruptible(10);
+					sprintf(cbuf, "00;FV2ON\n01;EAZ1\n02;EAZ2\n");
+					i = isdnloop_writecmd(cbuf, strlen(cbuf), 0, card);
+					printk(KERN_INFO
+					       "isdnloop: (%s) Leased-line mode enabled\n",
+					       CID);
+					cmd.command = ISDN_STAT_RUN;
+					cmd.driver = card->myid;
+					cmd.arg = 0;
+					card->interface.statcallb(&cmd);
+				}
+			} else {
+				if (card->leased) {
+					card->leased = 0;
+					sprintf(cbuf, "00;FV2OFF\n");
+					i = isdnloop_writecmd(cbuf, strlen(cbuf), 0, card);
+					printk(KERN_INFO
+					       "isdnloop: (%s) Leased-line mode disabled\n",
+					       CID);
+					cmd.command = ISDN_STAT_RUN;
+					cmd.driver = card->myid;
+					cmd.arg = 0;
+					card->interface.statcallb(&cmd);
+				}
+			}
+			return 0;
+		default:
+			return -EINVAL;
+		}
+		break;
+	case ISDN_CMD_DIAL:
+		if (!(card->flags & ISDNLOOP_FLAGS_RUNNING))
+			return -ENODEV;
+		if (card->leased)
+			break;
+		if ((c->arg & 255) < ISDNLOOP_BCH) {
+			char *p;
+			char dial[50];
+			char dcode[4];
+
+			a = c->arg;
+			p = c->parm.setup.phone;
+			if (*p == 's' || *p == 'S') {
+				/* Dial for SPV */
+				p++;
+				strcpy(dcode, "SCA");
+			} else
+				/* Normal Dial */
+				strcpy(dcode, "CAL");
+			strcpy(dial, p);
+			sprintf(cbuf, "%02d;D%s_R%s,%02d,%02d,%s\n", (int) (a + 1),
+				dcode, dial, c->parm.setup.si1,
+				c->parm.setup.si2, c->parm.setup.eazmsn);
+			i = isdnloop_writecmd(cbuf, strlen(cbuf), 0, card);
+		}
+		break;
+	case ISDN_CMD_ACCEPTD:
+		if (!(card->flags & ISDNLOOP_FLAGS_RUNNING))
+			return -ENODEV;
+		if (c->arg < ISDNLOOP_BCH) {
+			a = c->arg + 1;
+			cbuf[0] = 0;
+			switch (card->l2_proto[a - 1]) {
+			case ISDN_PROTO_L2_X75I:
+				sprintf(cbuf, "%02d;BX75\n", (int) a);
+				break;
+#ifdef CONFIG_ISDN_X25
+			case ISDN_PROTO_L2_X25DTE:
+				sprintf(cbuf, "%02d;BX2T\n", (int) a);
+				break;
+			case ISDN_PROTO_L2_X25DCE:
+				sprintf(cbuf, "%02d;BX2C\n", (int) a);
+				break;
+#endif
+			case ISDN_PROTO_L2_HDLC:
+				sprintf(cbuf, "%02d;BTRA\n", (int) a);
+				break;
+			}
+			if (strlen(cbuf))
+				i = isdnloop_writecmd(cbuf, strlen(cbuf), 0, card);
+			sprintf(cbuf, "%02d;DCON_R\n", (int) a);
+			i = isdnloop_writecmd(cbuf, strlen(cbuf), 0, card);
+		}
+		break;
+	case ISDN_CMD_ACCEPTB:
+		if (!(card->flags & ISDNLOOP_FLAGS_RUNNING))
+			return -ENODEV;
+		if (c->arg < ISDNLOOP_BCH) {
+			a = c->arg + 1;
+			switch (card->l2_proto[a - 1]) {
+			case ISDN_PROTO_L2_X75I:
+				sprintf(cbuf, "%02d;BCON_R,BX75\n", (int) a);
+				break;
+#ifdef CONFIG_ISDN_X25
+			case ISDN_PROTO_L2_X25DTE:
+				sprintf(cbuf, "%02d;BCON_R,BX2T\n", (int) a);
+				break;
+			case ISDN_PROTO_L2_X25DCE:
+				sprintf(cbuf, "%02d;BCON_R,BX2C\n", (int) a);
+				break;
+#endif
+			case ISDN_PROTO_L2_HDLC:
+				sprintf(cbuf, "%02d;BCON_R,BTRA\n", (int) a);
+				break;
+			default:
+				sprintf(cbuf, "%02d;BCON_R\n", (int) a);
+			}
+			printk(KERN_DEBUG "isdnloop writecmd '%s'\n", cbuf);
+			i = isdnloop_writecmd(cbuf, strlen(cbuf), 0, card);
+			break;
+		case ISDN_CMD_HANGUP:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (!(card->flags & ISDNLOOP_FLAGS_RUNNING))
 				return -ENODEV;
 			if (c->arg < ISDNLOOP_BCH) {
 				a = c->arg + 1;
+<<<<<<< HEAD
 				cbuf[0] = 0;
 				switch (card->l2_proto[a - 1]) {
 					case ISDN_PROTO_L2_X75I:
@@ -1238,10 +1916,13 @@ isdnloop_command(isdn_ctrl * c, isdnloop_card * card)
 			}
 			break;
 		case ISDN_CMD_ACCEPTB:
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!(card->flags & ISDNLOOP_FLAGS_RUNNING))
 				return -ENODEV;
 			if (c->arg < ISDNLOOP_BCH) {
 				a = c->arg + 1;
+<<<<<<< HEAD
 				switch (card->l2_proto[a - 1]) {
 					case ISDN_PROTO_L2_X75I:
 						sprintf(cbuf, "%02d;BCON_R,BX75\n", (int) a);
@@ -1339,6 +2020,84 @@ isdnloop_command(isdn_ctrl * c, isdnloop_card * card)
 		default:
 				return -EINVAL;
 			}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				sprintf(cbuf, "%02d;BDIS_R\n%02d;DDIS_R\n", (int) a, (int) a);
+				i = isdnloop_writecmd(cbuf, strlen(cbuf), 0, card);
+			}
+			break;
+		case ISDN_CMD_SETEAZ:
+			if (!(card->flags & ISDNLOOP_FLAGS_RUNNING))
+				return -ENODEV;
+			if (card->leased)
+				break;
+			if (c->arg < ISDNLOOP_BCH) {
+				a = c->arg + 1;
+				if (card->ptype == ISDN_PTYPE_EURO) {
+					sprintf(cbuf, "%02d;MS%s%s\n", (int) a,
+						c->parm.num[0] ? "N" : "ALL", c->parm.num);
+				} else
+					sprintf(cbuf, "%02d;EAZ%s\n", (int) a,
+						c->parm.num[0] ? c->parm.num : (u_char *) "0123456789");
+				i = isdnloop_writecmd(cbuf, strlen(cbuf), 0, card);
+			}
+			break;
+		case ISDN_CMD_CLREAZ:
+			if (!(card->flags & ISDNLOOP_FLAGS_RUNNING))
+				return -ENODEV;
+			if (card->leased)
+				break;
+			if (c->arg < ISDNLOOP_BCH) {
+				a = c->arg + 1;
+				if (card->ptype == ISDN_PTYPE_EURO)
+					sprintf(cbuf, "%02d;MSNC\n", (int) a);
+				else
+					sprintf(cbuf, "%02d;EAZC\n", (int) a);
+				i = isdnloop_writecmd(cbuf, strlen(cbuf), 0, card);
+			}
+			break;
+		case ISDN_CMD_SETL2:
+			if (!(card->flags & ISDNLOOP_FLAGS_RUNNING))
+				return -ENODEV;
+			if ((c->arg & 255) < ISDNLOOP_BCH) {
+				a = c->arg;
+				switch (a >> 8) {
+				case ISDN_PROTO_L2_X75I:
+					sprintf(cbuf, "%02d;BX75\n", (int) (a & 255) + 1);
+					break;
+#ifdef CONFIG_ISDN_X25
+				case ISDN_PROTO_L2_X25DTE:
+					sprintf(cbuf, "%02d;BX2T\n", (int) (a & 255) + 1);
+					break;
+				case ISDN_PROTO_L2_X25DCE:
+					sprintf(cbuf, "%02d;BX2C\n", (int) (a & 255) + 1);
+					break;
+#endif
+				case ISDN_PROTO_L2_HDLC:
+					sprintf(cbuf, "%02d;BTRA\n", (int) (a & 255) + 1);
+					break;
+				case ISDN_PROTO_L2_TRANS:
+					sprintf(cbuf, "%02d;BTRA\n", (int) (a & 255) + 1);
+					break;
+				default:
+					return -EINVAL;
+				}
+				i = isdnloop_writecmd(cbuf, strlen(cbuf), 0, card);
+				card->l2_proto[a & 255] = (a >> 8);
+			}
+			break;
+		case ISDN_CMD_SETL3:
+			if (!(card->flags & ISDNLOOP_FLAGS_RUNNING))
+				return -ENODEV;
+			return 0;
+		default:
+			return -EINVAL;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -1363,7 +2122,15 @@ isdnloop_findcard(int driverid)
  * Wrapper functions for interface to linklevel
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 if_command(isdn_ctrl * c)
+=======
+if_command(isdn_ctrl *c)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+if_command(isdn_ctrl *c)
+>>>>>>> refs/remotes/origin/master
 {
 	isdnloop_card *card = isdnloop_findcard(c->driver);
 
@@ -1433,12 +2200,28 @@ isdnloop_initcard(char *id)
 
 	if (!(card = kzalloc(sizeof(isdnloop_card), GFP_KERNEL))) {
 		printk(KERN_WARNING
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 "isdnloop: (%s) Could not allocate card-struct.\n", id);
+=======
+		       "isdnloop: (%s) Could not allocate card-struct.\n", id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "isdnloop: (%s) Could not allocate card-struct.\n", id);
+>>>>>>> refs/remotes/origin/master
 		return (isdnloop_card *) 0;
 	}
 	card->interface.owner = THIS_MODULE;
 	card->interface.channels = ISDNLOOP_BCH;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	card->interface.hl_hdrlen  = 1; /* scratch area for storing ack flag*/ 
+=======
+	card->interface.hl_hdrlen  = 1; /* scratch area for storing ack flag*/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->interface.hl_hdrlen  = 1; /* scratch area for storing ack flag*/
+>>>>>>> refs/remotes/origin/master
 	card->interface.maxbufsize = 4000;
 	card->interface.command = if_command;
 	card->interface.writebuf_skb = if_sendbuf;
@@ -1446,12 +2229,27 @@ isdnloop_initcard(char *id)
 	card->interface.readstat = if_readstatus;
 	card->interface.features = ISDN_FEATURE_L2_X75I |
 #ifdef CONFIG_ISDN_X25
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    ISDN_FEATURE_L2_X25DTE |
 	    ISDN_FEATURE_L2_X25DCE |
 #endif
 	    ISDN_FEATURE_L2_HDLC |
 	    ISDN_FEATURE_L3_TRANS |
 	    ISDN_FEATURE_P_UNKNOWN;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ISDN_FEATURE_L2_X25DTE |
+		ISDN_FEATURE_L2_X25DCE |
+#endif
+		ISDN_FEATURE_L2_HDLC |
+		ISDN_FEATURE_L3_TRANS |
+		ISDN_FEATURE_P_UNKNOWN;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	card->ptype = ISDN_PTYPE_UNKNOWN;
 	strlcpy(card->interface.id, id, sizeof(card->interface.id));
 	card->msg_buf_write = card->msg_buf;

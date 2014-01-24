@@ -15,6 +15,11 @@
 #ifndef __MFD_WM831X_AUXADC_H__
 #define __MFD_WM831X_AUXADC_H__
 
+<<<<<<< HEAD
+=======
+struct wm831x;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * R16429 (0x402D) - AuxADC Data
  */

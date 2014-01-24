@@ -8,7 +8,13 @@
 
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
@@ -17,9 +23,20 @@
 #include <linux/slab.h>
 #include <linux/sysfs.h>
 #include <linux/list.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "../iio.h"
 #include "../sysfs.h"
+=======
+#include <linux/module.h>
+
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+>>>>>>> refs/remotes/origin/master
 #include "meter.h"
 #include "ade7754.h"
 
@@ -28,8 +45,17 @@ static int ade7754_spi_write_reg_8(struct device *dev,
 		u8 val)
 {
 	int ret;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7754_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7754_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7754_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&st->buf_lock);
 	st->tx[0] = ADE7754_WRITE_REG(reg_address);
@@ -46,8 +72,17 @@ static int ade7754_spi_write_reg_16(struct device *dev,
 		u16 value)
 {
 	int ret;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7754_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7754_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7754_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&st->buf_lock);
 	st->tx[0] = ADE7754_WRITE_REG(reg_address);
@@ -63,8 +98,17 @@ static int ade7754_spi_read_reg_8(struct device *dev,
 		u8 reg_address,
 		u8 *val)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7754_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7754_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7754_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = spi_w8r8(st->us, ADE7754_READ_REG(reg_address));
@@ -82,11 +126,23 @@ static int ade7754_spi_read_reg_16(struct device *dev,
 		u8 reg_address,
 		u16 *val)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7754_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7754_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	ret = spi_w8r16(st->us, ADE7754_READ_REG(reg_address));
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7754_state *st = iio_priv(indio_dev);
+	int ret;
+
+	ret = spi_w8r16be(st->us, ADE7754_READ_REG(reg_address));
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(&st->us->dev, "problem when reading 16 bit register 0x%02X",
 			reg_address);
@@ -94,7 +150,10 @@ static int ade7754_spi_read_reg_16(struct device *dev,
 	}
 
 	*val = ret;
+<<<<<<< HEAD
 	*val = be16_to_cpup(val);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -103,9 +162,18 @@ static int ade7754_spi_read_reg_24(struct device *dev,
 		u8 reg_address,
 		u32 *val)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7754_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7754_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7754_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct spi_transfer xfers[] = {
 		{
@@ -122,9 +190,13 @@ static int ade7754_spi_read_reg_24(struct device *dev,
 	st->tx[2] = 0;
 	st->tx[3] = 0;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(xfers, &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&st->us->dev, "problem when reading 24 bit register 0x%02X",
 				reg_address);
@@ -189,9 +261,15 @@ static ssize_t ade7754_write_8bit(struct device *dev,
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret;
+<<<<<<< HEAD
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	u8 val;
+
+	ret = kstrtou8(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = ade7754_spi_write_reg_8(dev, this_attr->address, val);
@@ -207,9 +285,15 @@ static ssize_t ade7754_write_16bit(struct device *dev,
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret;
+<<<<<<< HEAD
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	u16 val;
+
+	ret = kstrtou16(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = ade7754_spi_write_reg_16(dev, this_attr->address, val);
@@ -227,6 +311,7 @@ static int ade7754_reset(struct device *dev)
 	return ade7754_spi_write_reg_8(dev, ADE7754_OPMODE, val);
 }
 
+<<<<<<< HEAD
 
 static ssize_t ade7754_write_reset(struct device *dev,
 		struct device_attribute *attr,
@@ -243,6 +328,8 @@ static ssize_t ade7754_write_reset(struct device *dev,
 	return -1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static IIO_DEV_ATTR_AENERGY(ade7754_read_24bit, ADE7754_AENERGY);
 static IIO_DEV_ATTR_LAENERGY(ade7754_read_24bit, ADE7754_LAENERGY);
 static IIO_DEV_ATTR_VAENERGY(ade7754_read_24bit, ADE7754_VAENERGY);
@@ -388,10 +475,24 @@ static int ade7754_stop_device(struct device *dev)
 	return ade7754_spi_write_reg_8(dev, ADE7754_OPMODE, val);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ade7754_initial_setup(struct ade7754_state *st)
 {
 	int ret;
 	struct device *dev = &st->indio_dev->dev;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int ade7754_initial_setup(struct iio_dev *indio_dev)
+{
+	int ret;
+	struct ade7754_state *st = iio_priv(indio_dev);
+	struct device *dev = &indio_dev->dev;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* use low spi speed for init */
 	st->us->mode = SPI_MODE_3;
@@ -435,8 +536,13 @@ static ssize_t ade7754_write_frequency(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7754_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7754_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long val;
 	int ret;
 	u8 reg, t;
@@ -444,6 +550,19 @@ static ssize_t ade7754_write_frequency(struct device *dev,
 	ret = strict_strtol(buf, 10, &val);
 	if (ret)
 		return ret;
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7754_state *st = iio_priv(indio_dev);
+	u16 val;
+	int ret;
+	u8 reg, t;
+
+	ret = kstrtou16(buf, 10, &val);
+	if (ret)
+		return ret;
+	if (val == 0)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&indio_dev->mlock);
 
@@ -471,24 +590,51 @@ out:
 	return ret ? ret : len;
 }
 static IIO_DEV_ATTR_TEMP_RAW(ade7754_read_8bit);
+<<<<<<< HEAD
+<<<<<<< HEAD
 static IIO_CONST_ATTR(temp_offset, "129 C");
 static IIO_CONST_ATTR(temp_scale, "4 C");
+=======
+static IIO_CONST_ATTR(in_temp_offset, "129 C");
+static IIO_CONST_ATTR(in_temp_scale, "4 C");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static IIO_CONST_ATTR(in_temp_offset, "129 C");
+static IIO_CONST_ATTR(in_temp_scale, "4 C");
+>>>>>>> refs/remotes/origin/master
 
 static IIO_DEV_ATTR_SAMP_FREQ(S_IWUSR | S_IRUGO,
 		ade7754_read_frequency,
 		ade7754_write_frequency);
 
+<<<<<<< HEAD
 static IIO_DEV_ATTR_RESET(ade7754_write_reset);
 
 static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("26000 13000 65000 33000");
 
 static struct attribute *ade7754_attributes[] = {
+<<<<<<< HEAD
 	&iio_dev_attr_temp_raw.dev_attr.attr,
 	&iio_const_attr_temp_offset.dev_attr.attr,
 	&iio_const_attr_temp_scale.dev_attr.attr,
+=======
+	&iio_dev_attr_in_temp_raw.dev_attr.attr,
+	&iio_const_attr_in_temp_offset.dev_attr.attr,
+	&iio_const_attr_in_temp_scale.dev_attr.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 	&iio_dev_attr_sampling_frequency.dev_attr.attr,
 	&iio_const_attr_sampling_frequency_available.dev_attr.attr,
 	&iio_dev_attr_reset.dev_attr.attr,
+=======
+static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("26000 13000 65000 33000");
+
+static struct attribute *ade7754_attributes[] = {
+	&iio_dev_attr_in_temp_raw.dev_attr.attr,
+	&iio_const_attr_in_temp_offset.dev_attr.attr,
+	&iio_const_attr_in_temp_scale.dev_attr.attr,
+	&iio_dev_attr_sampling_frequency.dev_attr.attr,
+	&iio_const_attr_sampling_frequency_available.dev_attr.attr,
+>>>>>>> refs/remotes/origin/master
 	&iio_dev_attr_aenergy.dev_attr.attr,
 	&iio_dev_attr_laenergy.dev_attr.attr,
 	&iio_dev_attr_vaenergy.dev_attr.attr,
@@ -532,8 +678,10 @@ static const struct iio_info ade7754_info = {
 	.driver_module = THIS_MODULE,
 };
 
+<<<<<<< HEAD
 static int __devinit ade7754_probe(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	int ret, regdone = 0;
 	struct ade7754_state *st = kzalloc(sizeof *st, GFP_KERNEL);
 	if (!st) {
@@ -591,21 +739,85 @@ error_free_rx:
 	kfree(st->rx);
 error_free_st:
 	kfree(st);
+=======
+=======
+static int ade7754_probe(struct spi_device *spi)
+{
+>>>>>>> refs/remotes/origin/master
+	int ret;
+	struct ade7754_state *st;
+	struct iio_dev *indio_dev;
+
+	/* setup the industrialio driver allocated elements */
+<<<<<<< HEAD
+	indio_dev = iio_allocate_device(sizeof(*st));
+	if (indio_dev == NULL) {
+		ret = -ENOMEM;
+		goto error_ret;
+	}
+=======
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+	if (!indio_dev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
+	/* this is only used for removal purposes */
+	spi_set_drvdata(spi, indio_dev);
+
+	st = iio_priv(indio_dev);
+	st->us = spi;
+	mutex_init(&st->buf_lock);
+
+	indio_dev->name = spi->dev.driver->name;
+	indio_dev->dev.parent = &spi->dev;
+	indio_dev->info = &ade7754_info;
+	indio_dev->modes = INDIO_DIRECT_MODE;
+
+	/* Get the device into a sane initial state */
+	ret = ade7754_initial_setup(indio_dev);
+	if (ret)
+<<<<<<< HEAD
+		goto error_free_dev;
+	ret = iio_device_register(indio_dev);
+	if (ret)
+		goto error_free_dev;
+
+	return 0;
+
+error_free_dev:
+	iio_free_device(indio_dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
 	return ret;
+=======
+		return ret;
+	ret = iio_device_register(indio_dev);
+	if (ret)
+		return ret;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* fixme, confirm ordering in this function */
 static int ade7754_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	int ret;
+<<<<<<< HEAD
 	struct ade7754_state *st = spi_get_drvdata(spi);
 	struct iio_dev *indio_dev = st->indio_dev;
 
+=======
+	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+
+	iio_device_unregister(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = ade7754_stop_device(&(indio_dev->dev));
 	if (ret)
 		goto err_ret;
 
+<<<<<<< HEAD
 	iio_device_unregister(indio_dev);
 	kfree(st->tx);
 	kfree(st->rx);
@@ -615,6 +827,21 @@ static int ade7754_remove(struct spi_device *spi)
 
 err_ret:
 	return ret;
+=======
+	iio_free_device(indio_dev);
+
+err_ret:
+	return ret;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+
+	iio_device_unregister(indio_dev);
+	ade7754_stop_device(&indio_dev->dev);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct spi_driver ade7754_driver = {
@@ -623,8 +850,10 @@ static struct spi_driver ade7754_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = ade7754_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ade7754_remove),
 };
+<<<<<<< HEAD
 
 static __init int ade7754_init(void)
 {
@@ -637,7 +866,23 @@ static __exit void ade7754_exit(void)
 	spi_unregister_driver(&ade7754_driver);
 }
 module_exit(ade7754_exit);
+=======
+module_spi_driver(ade7754_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = ade7754_remove,
+};
+module_spi_driver(ade7754_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
 MODULE_DESCRIPTION("Analog Devices ADE7754 Polyphase Multifunction Energy Metering IC Driver");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("spi:ad7754");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("spi:ad7754");
+>>>>>>> refs/remotes/origin/master

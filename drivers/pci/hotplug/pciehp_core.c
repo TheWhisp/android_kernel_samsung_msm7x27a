@@ -38,12 +38,28 @@
 #include <linux/time.h>
 
 /* Global variables */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int pciehp_debug;
 int pciehp_poll_mode;
 int pciehp_poll_time;
 int pciehp_force;
 struct workqueue_struct *pciehp_wq;
 struct workqueue_struct *pciehp_ordered_wq;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+bool pciehp_debug;
+bool pciehp_poll_mode;
+int pciehp_poll_time;
+bool pciehp_force;
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DRIVER_VERSION	"0.4"
 #define DRIVER_AUTHOR	"Dan Zink <dan.zink@compaq.com>, Greg Kroah-Hartman <greg@kroah.com>, Dely Sy <dely.l.sy@intel.com>"
@@ -71,6 +87,10 @@ static int get_power_status	(struct hotplug_slot *slot, u8 *value);
 static int get_attention_status	(struct hotplug_slot *slot, u8 *value);
 static int get_latch_status	(struct hotplug_slot *slot, u8 *value);
 static int get_adapter_status	(struct hotplug_slot *slot, u8 *value);
+<<<<<<< HEAD
+=======
+static int reset_slot		(struct hotplug_slot *slot, int probe);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * release_slot - free up the memory used by a slot
@@ -113,6 +133,10 @@ static int init_slot(struct controller *ctrl)
 	ops->disable_slot = disable_slot;
 	ops->get_power_status = get_power_status;
 	ops->get_adapter_status = get_adapter_status;
+<<<<<<< HEAD
+=======
+	ops->reset_slot = reset_slot;
+>>>>>>> refs/remotes/origin/master
 	if (MRL_SENS(ctrl))
 		ops->get_latch_status = get_latch_status;
 	if (ATTN_LED(ctrl)) {
@@ -225,6 +249,19 @@ static int get_adapter_status(struct hotplug_slot *hotplug_slot, u8 *value)
 	return pciehp_get_adapter_status(slot, value);
 }
 
+<<<<<<< HEAD
+=======
+static int reset_slot(struct hotplug_slot *hotplug_slot, int probe)
+{
+	struct slot *slot = hotplug_slot->private;
+
+	ctrl_dbg(slot->ctrl, "%s: physical_slot = %s\n",
+		 __func__, slot_name(slot));
+
+	return pciehp_reset_slot(slot, probe);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int pciehp_probe(struct pcie_device *dev)
 {
 	int rc;
@@ -295,12 +332,16 @@ static void pciehp_remove(struct pcie_device *dev)
 #ifdef CONFIG_PM
 static int pciehp_suspend (struct pcie_device *dev)
 {
+<<<<<<< HEAD
 	dev_info(&dev->device, "%s ENTRY\n", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int pciehp_resume (struct pcie_device *dev)
 {
+<<<<<<< HEAD
 	dev_info(&dev->device, "%s ENTRY\n", __func__);
 	if (pciehp_force) {
 		struct controller *ctrl = get_service_data(dev);
@@ -319,6 +360,25 @@ static int pciehp_resume (struct pcie_device *dev)
 		else
 			pciehp_disable_slot(slot);
 	}
+=======
+	struct controller *ctrl;
+	struct slot *slot;
+	u8 status;
+
+	ctrl = get_service_data(dev);
+
+	/* reinitialize the chipset's event detection logic */
+	pcie_enable_notification(ctrl);
+
+	slot = ctrl->slot;
+
+	/* Check if slot is occupied */
+	pciehp_get_adapter_status(slot, &status);
+	if (status)
+		pciehp_enable_slot(slot);
+	else
+		pciehp_disable_slot(slot);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #endif /* PM */
@@ -341,6 +401,9 @@ static int __init pcied_init(void)
 {
 	int retval = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pciehp_wq = alloc_workqueue("pciehp", 0, 0);
 	if (!pciehp_wq)
 		return -ENOMEM;
@@ -351,23 +414,57 @@ static int __init pcied_init(void)
 		return -ENOMEM;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pciehp_firmware_init();
 	retval = pcie_port_service_register(&hpdriver_portdrv);
  	dbg("pcie_port_service_register = %d\n", retval);
   	info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
  	if (retval) {
 		destroy_workqueue(pciehp_ordered_wq);
 		destroy_workqueue(pciehp_wq);
 		dbg("Failure to register service\n");
 	}
+=======
+	if (retval)
+		dbg("Failure to register service\n");
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pciehp_firmware_init();
+	retval = pcie_port_service_register(&hpdriver_portdrv);
+	dbg("pcie_port_service_register = %d\n", retval);
+	info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
+	if (retval)
+		dbg("Failure to register service\n");
+
+>>>>>>> refs/remotes/origin/master
+=======
+	if (retval)
+		dbg("Failure to register service\n");
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return retval;
 }
 
 static void __exit pcied_cleanup(void)
 {
 	dbg("unload_pciehpd()\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	destroy_workqueue(pciehp_ordered_wq);
 	destroy_workqueue(pciehp_wq);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pcie_port_service_unregister(&hpdriver_portdrv);
 	info(DRIVER_DESC " version: " DRIVER_VERSION " unloaded\n");
 }

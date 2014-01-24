@@ -7,9 +7,25 @@ config M32R
 	select HAVE_KERNEL_GZIP
 	select HAVE_KERNEL_BZIP2
 	select HAVE_KERNEL_LZMA
+<<<<<<< HEAD
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_PROBE
 	select GENERIC_IRQ_SHOW
+<<<<<<< HEAD
+=======
+	select GENERIC_ATOMIC64
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_WANT_IPC_PARSE_VERSION
+	select HAVE_DEBUG_BUGVERBOSE
+	select VIRT_TO_BUS
+	select GENERIC_IRQ_PROBE
+	select GENERIC_IRQ_SHOW
+	select GENERIC_ATOMIC64
+	select ARCH_USES_GETTIMEOFFSET
+	select MODULES_USE_ELF_RELA
+	select HAVE_DEBUG_STACKOVERFLOW
+>>>>>>> refs/remotes/origin/master
 
 config SBUS
 	bool
@@ -32,9 +48,12 @@ config HZ
 	int
 	default 100
 
+<<<<<<< HEAD
 config ARCH_USES_GETTIMEOFFSET
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/master
 source "init/Kconfig"
 
 source "kernel/Kconfig.freezer"
@@ -268,6 +287,8 @@ config SCHED_OMIT_FRAME_POINTER
         bool
         default y
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config PREEMPT
 	bool "Preemptible Kernel"
 	help
@@ -279,10 +300,19 @@ config PREEMPT
 
 	  Say Y here if you are building a kernel for a desktop, embedded
 	  or real-time system.  Say N if you are unsure.
+=======
+source "kernel/Kconfig.preempt"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SMP
 	bool "Symmetric multi-processing support"
 	select USE_GENERIC_SMP_HELPERS
+=======
+source "kernel/Kconfig.preempt"
+
+config SMP
+	bool "Symmetric multi-processing support"
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This enables support for systems with more than one CPU. If you have
 	  a system with only one CPU, like most personal computers, say N. If
@@ -332,6 +362,8 @@ config NODES_SHIFT
 	default "1"
 	depends on NEED_MULTIPLE_NODES
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 # turning this on wastes a bunch of space.
 # Summit needs it only when NUMA is on
 config BOOT_IOREMAP
@@ -339,6 +371,10 @@ config BOOT_IOREMAP
 	depends on NUMA
 	default n
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endmenu
 
 

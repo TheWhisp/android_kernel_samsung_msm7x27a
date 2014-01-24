@@ -173,6 +173,10 @@ struct p54_common {
 	struct sk_buff_head tx_pending;
 	struct sk_buff_head tx_queue;
 	struct mutex conf_mutex;
+<<<<<<< HEAD
+=======
+	bool registered;
+>>>>>>> refs/remotes/origin/master
 
 	/* memory management (as seen by the firmware) */
 	u32 rx_start;
@@ -199,6 +203,31 @@ struct p54_common {
 	u8 tx_diversity_mask;
 	unsigned int output_power;
 	struct p54_rssi_db_entry *cur_rssi;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct ieee80211_channel *curchan;
+	struct survey_info *survey;
+	unsigned int chan_num;
+	struct completion stat_comp;
+	bool update_stats;
+	struct {
+		unsigned int timestamp;
+		unsigned int cached_cca;
+		unsigned int cached_tx;
+		unsigned int cached_rssi;
+		u64 active;
+		u64 cca;
+		u64 tx;
+		u64 rssi;
+	} survey_raw;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int noise;
 	/* calibration, output power limit and rssi<->dBm conversation data */
 	struct pda_iq_autocal_entry *iq_autocal;
@@ -220,6 +249,16 @@ struct p54_common {
 	u32 basic_rate_mask;
 	u16 aid;
 	u8 coverage_class;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool phy_idle;
+	bool phy_ps;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool phy_idle;
+	bool phy_ps;
+>>>>>>> refs/remotes/origin/master
 	bool powersave_override;
 	__le32 beacon_req_id;
 	struct completion beacon_comp;

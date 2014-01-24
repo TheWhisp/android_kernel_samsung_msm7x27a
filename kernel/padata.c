@@ -1,6 +1,16 @@
 /*
  * padata.c - generic interface to process data streams in parallel
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * See Documentation/padata.txt for an api documentation.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/padata.txt for an api documentation.
+ *
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2008, 2009 secunet Security Networks AG
  * Copyright (C) 2008, 2009 Steffen Klassert <steffen.klassert@secunet.com>
  *
@@ -18,7 +28,15 @@
  * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/cpumask.h>
 #include <linux/err.h>
 #include <linux/cpu.h>
@@ -29,7 +47,13 @@
 #include <linux/sysfs.h>
 #include <linux/rcupdate.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_SEQ_NR (INT_MAX - NR_CPUS)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MAX_OBJ_NUM 1000
 
 static int padata_index_to_cpu(struct parallel_data *pd, int cpu_index)
@@ -43,18 +67,45 @@ static int padata_index_to_cpu(struct parallel_data *pd, int cpu_index)
 	return target_cpu;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int padata_cpu_hash(struct padata_priv *padata)
 {
 	int cpu_index;
 	struct parallel_data *pd;
 
 	pd =  padata->pd;
+=======
+static int padata_cpu_hash(struct parallel_data *pd)
+{
+	int cpu_index;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int padata_cpu_hash(struct parallel_data *pd)
+{
+	unsigned int seq_nr;
+	int cpu_index;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Hash the sequence numbers to the cpus by taking
 	 * seq_nr mod. number of cpus in use.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_index =  padata->seq_nr % cpumask_weight(pd->cpumask.pcpu);
+=======
+
+	spin_lock(&pd->seq_lock);
+	cpu_index =  pd->seq_nr % cpumask_weight(pd->cpumask.pcpu);
+	pd->seq_nr++;
+	spin_unlock(&pd->seq_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	seq_nr = atomic_inc_return(&pd->seq_nr);
+	cpu_index = seq_nr % cpumask_weight(pd->cpumask.pcpu);
+>>>>>>> refs/remotes/origin/master
 
 	return padata_index_to_cpu(pd, cpu_index);
 }
@@ -132,12 +183,20 @@ int padata_do_parallel(struct padata_instance *pinst,
 	padata->pd = pd;
 	padata->cb_cpu = cb_cpu;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(atomic_read(&pd->seq_nr) == pd->max_seq_nr))
 		atomic_set(&pd->seq_nr, -1);
 
 	padata->seq_nr = atomic_inc_return(&pd->seq_nr);
 
 	target_cpu = padata_cpu_hash(padata);
+=======
+	target_cpu = padata_cpu_hash(pd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	target_cpu = padata_cpu_hash(pd);
+>>>>>>> refs/remotes/origin/master
 	queue = per_cpu_ptr(pd->pqueue, target_cpu);
 
 	spin_lock(&queue->parallel.lock);
@@ -173,8 +232,17 @@ EXPORT_SYMBOL(padata_do_parallel);
 static struct padata_priv *padata_get_next(struct parallel_data *pd)
 {
 	int cpu, num_cpus;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int next_nr, next_index;
+=======
+	unsigned int next_nr, next_index;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct padata_parallel_queue *queue, *next_queue;
+=======
+	unsigned int next_nr, next_index;
+	struct padata_parallel_queue *next_queue;
+>>>>>>> refs/remotes/origin/master
 	struct padata_priv *padata;
 	struct padata_list *reorder;
 
@@ -189,6 +257,8 @@ static struct padata_priv *padata_get_next(struct parallel_data *pd)
 	cpu = padata_index_to_cpu(pd, next_index);
 	next_queue = per_cpu_ptr(pd->pqueue, cpu);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(next_nr > pd->max_seq_nr)) {
 		next_nr = next_nr - pd->max_seq_nr - 1;
 		next_index = next_nr % num_cpus;
@@ -197,6 +267,10 @@ static struct padata_priv *padata_get_next(struct parallel_data *pd)
 		pd->processed = 0;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	padata = NULL;
 
 	reorder = &next_queue->reorder;
@@ -205,8 +279,14 @@ static struct padata_priv *padata_get_next(struct parallel_data *pd)
 		padata = list_entry(reorder->list.next,
 				    struct padata_priv, list);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		BUG_ON(next_nr != padata->seq_nr);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&reorder->lock);
 		list_del_init(&padata->list);
 		atomic_dec(&pd->reorder_objects);
@@ -217,8 +297,12 @@ static struct padata_priv *padata_get_next(struct parallel_data *pd)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	queue = per_cpu_ptr(pd->pqueue, smp_processor_id());
 	if (queue->cpu_index == next_queue->cpu_index) {
+=======
+	if (__this_cpu_read(pd->pqueue->cpu_index) == next_queue->cpu_index) {
+>>>>>>> refs/remotes/origin/master
 		padata = ERR_PTR(-ENODATA);
 		goto out;
 	}
@@ -230,6 +314,14 @@ out:
 
 static void padata_reorder(struct parallel_data *pd)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int cb_cpu;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int cb_cpu;
+>>>>>>> refs/remotes/origin/master
 	struct padata_priv *padata;
 	struct padata_serial_queue *squeue;
 	struct padata_instance *pinst = pd->pinst;
@@ -270,13 +362,31 @@ static void padata_reorder(struct parallel_data *pd)
 			return;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		squeue = per_cpu_ptr(pd->squeue, padata->cb_cpu);
+=======
+		cb_cpu = padata->cb_cpu;
+		squeue = per_cpu_ptr(pd->squeue, cb_cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cb_cpu = padata->cb_cpu;
+		squeue = per_cpu_ptr(pd->squeue, cb_cpu);
+>>>>>>> refs/remotes/origin/master
 
 		spin_lock(&squeue->serial.lock);
 		list_add_tail(&padata->list, &squeue->serial.list);
 		spin_unlock(&squeue->serial.lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		queue_work_on(padata->cb_cpu, pinst->wq, &squeue->work);
+=======
+		queue_work_on(cb_cpu, pinst->wq, &squeue->work);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		queue_work_on(cb_cpu, pinst->wq, &squeue->work);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_unlock_bh(&pd->lock);
@@ -367,13 +477,29 @@ static int padata_setup_cpumasks(struct parallel_data *pd,
 	if (!alloc_cpumask_var(&pd->cpumask.pcpu, GFP_KERNEL))
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpumask_and(pd->cpumask.pcpu, pcpumask, cpu_active_mask);
+=======
+	cpumask_and(pd->cpumask.pcpu, pcpumask, cpu_online_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpumask_and(pd->cpumask.pcpu, pcpumask, cpu_online_mask);
+>>>>>>> refs/remotes/origin/master
 	if (!alloc_cpumask_var(&pd->cpumask.cbcpu, GFP_KERNEL)) {
 		free_cpumask_var(pd->cpumask.cbcpu);
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpumask_and(pd->cpumask.cbcpu, cbcpumask, cpu_active_mask);
+=======
+	cpumask_and(pd->cpumask.cbcpu, cbcpumask, cpu_online_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpumask_and(pd->cpumask.cbcpu, cbcpumask, cpu_online_mask);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -400,7 +526,15 @@ static void padata_init_squeues(struct parallel_data *pd)
 /* Initialize all percpu queues used by parallel workers */
 static void padata_init_pqueues(struct parallel_data *pd)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int cpu_index, num_cpus, cpu;
+=======
+	int cpu_index, cpu;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int cpu_index, cpu;
+>>>>>>> refs/remotes/origin/master
 	struct padata_parallel_queue *pqueue;
 
 	cpu_index = 0;
@@ -415,9 +549,15 @@ static void padata_init_pqueues(struct parallel_data *pd)
 		INIT_WORK(&pqueue->work, padata_parallel_worker);
 		atomic_set(&pqueue->num_obj, 0);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	num_cpus = cpumask_weight(pd->cpumask.pcpu);
 	pd->max_seq_nr = num_cpus ? (MAX_SEQ_NR / num_cpus) * num_cpus - 1 : 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Allocate and initialize the internal cpumask dependend resources. */
@@ -444,7 +584,15 @@ static struct parallel_data *padata_alloc_pd(struct padata_instance *pinst,
 	padata_init_pqueues(pd);
 	padata_init_squeues(pd);
 	setup_timer(&pd->timer, padata_reorder_timer, (unsigned long)pd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	atomic_set(&pd->seq_nr, -1);
+=======
+	pd->seq_nr = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&pd->seq_nr, -1);
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&pd->reorder_objects, 0);
 	atomic_set(&pd->refcnt, 0);
 	pd->pinst = pinst;
@@ -580,7 +728,15 @@ EXPORT_SYMBOL(padata_unregister_cpumask_notifier);
 static bool padata_validate_cpumask(struct padata_instance *pinst,
 				    const struct cpumask *cpumask)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cpumask_intersects(cpumask, cpu_active_mask)) {
+=======
+	if (!cpumask_intersects(cpumask, cpu_online_mask)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cpumask_intersects(cpumask, cpu_online_mask)) {
+>>>>>>> refs/remotes/origin/master
 		pinst->flags |= PADATA_INVALID;
 		return false;
 	}
@@ -694,7 +850,15 @@ static int __padata_add_cpu(struct padata_instance *pinst, int cpu)
 {
 	struct parallel_data *pd;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpumask_test_cpu(cpu, cpu_active_mask)) {
+=======
+	if (cpumask_test_cpu(cpu, cpu_online_mask)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpumask_test_cpu(cpu, cpu_online_mask)) {
+>>>>>>> refs/remotes/origin/master
 		pd = padata_alloc_pd(pinst, pinst->cpumask.pcpu,
 				     pinst->cpumask.cbcpu);
 		if (!pd)
@@ -762,6 +926,18 @@ static int __padata_remove_cpu(struct padata_instance *pinst, int cpu)
 			return -ENOMEM;
 
 		padata_replace(pinst, pd);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+		cpumask_clear_cpu(cpu, pd->cpumask.cbcpu);
+		cpumask_clear_cpu(cpu, pd->cpumask.pcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		cpumask_clear_cpu(cpu, pd->cpumask.cbcpu);
+		cpumask_clear_cpu(cpu, pd->cpumask.pcpu);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -858,6 +1034,11 @@ static int padata_cpu_callback(struct notifier_block *nfb,
 	switch (action) {
 	case CPU_ONLINE:
 	case CPU_ONLINE_FROZEN:
+<<<<<<< HEAD
+=======
+	case CPU_DOWN_FAILED:
+	case CPU_DOWN_FAILED_FROZEN:
+>>>>>>> refs/remotes/origin/master
 		if (!pinst_has_cpu(pinst, cpu))
 			break;
 		mutex_lock(&pinst->lock);
@@ -869,6 +1050,11 @@ static int padata_cpu_callback(struct notifier_block *nfb,
 
 	case CPU_DOWN_PREPARE:
 	case CPU_DOWN_PREPARE_FROZEN:
+<<<<<<< HEAD
+=======
+	case CPU_UP_CANCELED:
+	case CPU_UP_CANCELED_FROZEN:
+>>>>>>> refs/remotes/origin/master
 		if (!pinst_has_cpu(pinst, cpu))
 			break;
 		mutex_lock(&pinst->lock);
@@ -877,6 +1063,7 @@ static int padata_cpu_callback(struct notifier_block *nfb,
 		if (err)
 			return notifier_from_errno(err);
 		break;
+<<<<<<< HEAD
 
 	case CPU_UP_CANCELED:
 	case CPU_UP_CANCELED_FROZEN:
@@ -893,6 +1080,8 @@ static int padata_cpu_callback(struct notifier_block *nfb,
 		mutex_lock(&pinst->lock);
 		__padata_add_cpu(pinst, cpu);
 		mutex_unlock(&pinst->lock);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return NOTIFY_OK;
@@ -1098,18 +1287,30 @@ struct padata_instance *padata_alloc(struct workqueue_struct *wq,
 
 	pinst->flags = 0;
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG_CPU
 	pinst->cpu_notifier.notifier_call = padata_cpu_callback;
 	pinst->cpu_notifier.priority = 0;
 	register_hotcpu_notifier(&pinst->cpu_notifier);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	put_online_cpus();
 
 	BLOCKING_INIT_NOTIFIER_HEAD(&pinst->cpumask_change_notifier);
 	kobject_init(&pinst->kobj, &padata_attr_type);
 	mutex_init(&pinst->lock);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HOTPLUG_CPU
+	pinst->cpu_notifier.notifier_call = padata_cpu_callback;
+	pinst->cpu_notifier.priority = 0;
+	register_hotcpu_notifier(&pinst->cpu_notifier);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	return pinst;
 
 err_free_masks:

@@ -1,7 +1,12 @@
 #ifndef	_I386_HW_BREAKPOINT_H
 #define	_I386_HW_BREAKPOINT_H
 
+<<<<<<< HEAD
 #ifdef	__KERNEL__
+=======
+#include <uapi/asm/hw_breakpoint.h>
+
+>>>>>>> refs/remotes/origin/master
 #define	__ARCH_HW_BREAKPOINT_H
 
 /*
@@ -71,6 +76,10 @@ extern int arch_bp_generic_fields(int x86_len, int x86_type,
 
 extern struct pmu perf_ops_bp;
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 #endif	/* _I386_HW_BREAKPOINT_H */
 
+=======
+#endif	/* _I386_HW_BREAKPOINT_H */
+>>>>>>> refs/remotes/origin/master

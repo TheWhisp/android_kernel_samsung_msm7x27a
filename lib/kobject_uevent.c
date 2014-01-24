@@ -17,7 +17,17 @@
 #include <linux/spinlock.h>
 #include <linux/string.h>
 #include <linux/kobject.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+#include <linux/kmod.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/kmod.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/user_namespace.h>
 #include <linux/socket.h>
@@ -258,6 +268,18 @@ int kobject_uevent_env(struct kobject *kobj, enum kobject_action action,
 		struct sk_buff *skb;
 		size_t len;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (!netlink_has_listeners(uevent_sock, 1))
+			continue;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!netlink_has_listeners(uevent_sock, 1))
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		/* allocate message with the maximum possible size */
 		len = strlen(action_string) + strlen(devpath) + 2;
 		skb = alloc_skb(len + env->buflen, GFP_KERNEL);
@@ -369,13 +391,24 @@ EXPORT_SYMBOL_GPL(add_uevent_var);
 static int uevent_net_init(struct net *net)
 {
 	struct uevent_sock *ue_sk;
+<<<<<<< HEAD
+=======
+	struct netlink_kernel_cfg cfg = {
+		.groups	= 1,
+		.flags	= NL_CFG_F_NONROOT_RECV,
+	};
+>>>>>>> refs/remotes/origin/master
 
 	ue_sk = kzalloc(sizeof(*ue_sk), GFP_KERNEL);
 	if (!ue_sk)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	ue_sk->sk = netlink_kernel_create(net, NETLINK_KOBJECT_UEVENT,
 					  1, NULL, NULL, THIS_MODULE);
+=======
+	ue_sk->sk = netlink_kernel_create(net, NETLINK_KOBJECT_UEVENT, &cfg);
+>>>>>>> refs/remotes/origin/master
 	if (!ue_sk->sk) {
 		printk(KERN_ERR
 		       "kobject_uevent: unable to create netlink socket!\n");
@@ -415,7 +448,10 @@ static struct pernet_operations uevent_net_ops = {
 
 static int __init kobject_uevent_init(void)
 {
+<<<<<<< HEAD
 	netlink_set_nonroot(NETLINK_KOBJECT_UEVENT, NL_NONROOT_RECV);
+=======
+>>>>>>> refs/remotes/origin/master
 	return register_pernet_subsys(&uevent_net_ops);
 }
 

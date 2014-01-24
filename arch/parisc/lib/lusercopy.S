@@ -61,6 +61,7 @@
 	.endm
 
 	/*
+<<<<<<< HEAD
 	 * long lstrncpy_from_user(char *dst, const char *src, long n)
 	 *
 	 * Returns -EFAULT if exception before terminator,
@@ -102,6 +103,8 @@ ENDPROC(lstrncpy_from_user)
 	.procend
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * unsigned long lclear_user(void *to, unsigned long n)
 	 *
 	 * Returns 0 for success.
@@ -129,9 +132,13 @@ ENDPROC(lclear_user)
 	ldo        1(%r25),%r25
 	.previous
 
+<<<<<<< HEAD
 	.section __ex_table,"aw"
 	ASM_ULONG_INSN 1b,2b
 	.previous
+=======
+	ASM_EXCEPTIONTABLE_ENTRY(1b,2b)
+>>>>>>> refs/remotes/origin/master
 
 	.procend
 
@@ -170,10 +177,15 @@ ENDPROC(lstrnlen_user)
 	copy        %r24,%r26    /* reset r26 so 0 is returned on fault */
 	.previous
 
+<<<<<<< HEAD
 	.section __ex_table,"aw"
 	ASM_ULONG_INSN 1b,3b
 	ASM_ULONG_INSN 2b,3b
 	.previous
+=======
+	ASM_EXCEPTIONTABLE_ENTRY(1b,3b)
+	ASM_EXCEPTIONTABLE_ENTRY(2b,3b)
+>>>>>>> refs/remotes/origin/master
 
 	.procend
 

@@ -28,6 +28,11 @@
 #include <linux/interrupt.h>
 #include <linux/pci.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include "pmac.h"
 #include <sound/pcm_params.h>
@@ -702,7 +707,11 @@ static struct snd_pcm_ops snd_pmac_capture_ops = {
 	.pointer =	snd_pmac_capture_pointer,
 };
 
+<<<<<<< HEAD
 int __devinit snd_pmac_pcm_new(struct snd_pmac *chip)
+=======
+int snd_pmac_pcm_new(struct snd_pmac *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -881,8 +890,16 @@ static int snd_pmac_free(struct snd_pmac *chip)
 		for (i = 0; i < 3; i++) {
 			if (chip->requested & (1 << i))
 				release_mem_region(chip->rsrc[i].start,
+<<<<<<< HEAD
+<<<<<<< HEAD
 						   chip->rsrc[i].end -
 						   chip->rsrc[i].start + 1);
+=======
+						   resource_size(&chip->rsrc[i]));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						   resource_size(&chip->rsrc[i]));
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -908,7 +925,11 @@ static int snd_pmac_dev_free(struct snd_device *device)
  * check the machine support byteswap (little-endian)
  */
 
+<<<<<<< HEAD
 static void __devinit detect_byte_swap(struct snd_pmac *chip)
+=======
+static void detect_byte_swap(struct snd_pmac *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *mio;
 
@@ -934,7 +955,11 @@ static void __devinit detect_byte_swap(struct snd_pmac *chip)
 /*
  * detect a sound chip
  */
+<<<<<<< HEAD
 static int __devinit snd_pmac_detect(struct snd_pmac *chip)
+=======
+static int snd_pmac_detect(struct snd_pmac *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *sound;
 	struct device_node *dn;
@@ -1147,7 +1172,11 @@ static int pmac_hp_detect_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new auto_mute_controls[] __devinitdata = {
+=======
+static struct snd_kcontrol_new auto_mute_controls[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	  .name = "Auto Mute Switch",
 	  .info = snd_pmac_boolean_mono_info,
@@ -1162,7 +1191,11 @@ static struct snd_kcontrol_new auto_mute_controls[] __devinitdata = {
 	},
 };
 
+<<<<<<< HEAD
 int __devinit snd_pmac_add_automute(struct snd_pmac *chip)
+=======
+int snd_pmac_add_automute(struct snd_pmac *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	chip->auto_mute = 1;
@@ -1179,7 +1212,11 @@ int __devinit snd_pmac_add_automute(struct snd_pmac *chip)
 /*
  * create and detect a pmac chip record
  */
+<<<<<<< HEAD
 int __devinit snd_pmac_new(struct snd_card *card, struct snd_pmac **chip_return)
+=======
+int snd_pmac_new(struct snd_card *card, struct snd_pmac **chip_return)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pmac *chip;
 	struct device_node *np;
@@ -1228,8 +1265,16 @@ int __devinit snd_pmac_new(struct snd_card *card, struct snd_pmac **chip_return)
 				goto __error;
 			}
 			if (request_mem_region(chip->rsrc[i].start,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					       chip->rsrc[i].end -
 					       chip->rsrc[i].start + 1,
+=======
+					       resource_size(&chip->rsrc[i]),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       resource_size(&chip->rsrc[i]),
+>>>>>>> refs/remotes/origin/master
 					       rnames[i]) == NULL) {
 				printk(KERN_ERR "snd: can't request rsrc "
 				       " %d (%s: %pR)\n",
@@ -1254,8 +1299,16 @@ int __devinit snd_pmac_new(struct snd_card *card, struct snd_pmac **chip_return)
 				goto __error;
 			}
 			if (request_mem_region(chip->rsrc[i].start,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					       chip->rsrc[i].end -
 					       chip->rsrc[i].start + 1,
+=======
+					       resource_size(&chip->rsrc[i]),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       resource_size(&chip->rsrc[i]),
+>>>>>>> refs/remotes/origin/master
 					       rnames[i]) == NULL) {
 				printk(KERN_ERR "snd: can't request rsrc "
 				       " %d (%s: %pR)\n",

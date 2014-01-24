@@ -2,13 +2,21 @@
  *
  * Copyright (C) 2008 Red Hat, Inc.
  * Author:
+<<<<<<< HEAD
  * 	Chris Wright
+=======
+ *	Chris Wright
+>>>>>>> refs/remotes/origin/master
  *
  * This work is licensed under the terms of the GNU GPL, version 2.
  *
  * Usage is simple, allocate a new id to the stub driver and bind the
  * device to it.  For example:
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * # echo "8086 10f5" > /sys/bus/pci/drivers/pci-stub/new_id
  * # echo -n 0000:00:19.0 > /sys/bus/pci/drivers/e1000e/unbind
  * # echo -n 0000:00:19.0 > /sys/bus/pci/drivers/pci-stub/bind
@@ -28,7 +36,11 @@ MODULE_PARM_DESC(ids, "Initial PCI IDs to add to the stub driver, format is "
 
 static int pci_stub_probe(struct pci_dev *dev, const struct pci_device_id *id)
 {
+<<<<<<< HEAD
 	dev_printk(KERN_INFO, &dev->dev, "claimed by stub\n");
+=======
+	dev_info(&dev->dev, "claimed by stub\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

@@ -8,6 +8,7 @@
  * for more details.
  */
 
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/gpio.h>
@@ -1232,11 +1233,31 @@ static struct pinmux_info sh7720_pinmux_info = {
 
 	.gpio_data = pinmux_data,
 	.gpio_data_size = ARRAY_SIZE(pinmux_data),
+=======
+#include <linux/bug.h>
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/ioport.h>
+#include <cpu/pfc.h>
+
+static struct resource sh7720_pfc_resources[] = {
+	[0] = {
+		.start	= 0xa4050100,
+		.end	= 0xa405016f,
+		.flags	= IORESOURCE_MEM,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init plat_pinmux_setup(void)
 {
+<<<<<<< HEAD
 	return register_pinmux(&sh7720_pinmux_info);
 }
 
+=======
+	return sh_pfc_register("pfc-sh7720", sh7720_pfc_resources,
+			       ARRAY_SIZE(sh7720_pfc_resources));
+}
+>>>>>>> refs/remotes/origin/master
 arch_initcall(plat_pinmux_setup);

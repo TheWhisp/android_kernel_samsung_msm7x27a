@@ -37,7 +37,15 @@ void __init coyote_pci_preinit(void)
 	ixp4xx_pci_preinit();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init coyote_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int __init coyote_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init coyote_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	if (slot == SLOT0_DEVID)
 		return IXP4XX_GPIO_IRQ(SLOT0_INTA);
@@ -48,10 +56,16 @@ static int __init coyote_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 
 struct hw_pci coyote_pci __initdata = {
 	.nr_controllers = 1,
+<<<<<<< HEAD
 	.preinit =        coyote_pci_preinit,
 	.swizzle =        pci_std_swizzle,
 	.setup =          ixp4xx_setup,
 	.scan =           ixp4xx_scan_bus,
+=======
+	.ops		= &ixp4xx_ops,
+	.preinit =        coyote_pci_preinit,
+	.setup =          ixp4xx_setup,
+>>>>>>> refs/remotes/origin/master
 	.map_irq =        coyote_map_irq,
 };
 

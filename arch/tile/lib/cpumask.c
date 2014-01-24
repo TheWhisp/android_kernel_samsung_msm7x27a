@@ -16,6 +16,10 @@
 #include <linux/ctype.h>
 #include <linux/errno.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Allow cropping out bits beyond the end of the array.
@@ -50,3 +54,7 @@ int bitmap_parselist_crop(const char *bp, unsigned long *maskp, int nmaskbits)
 	} while (*bp != '\0' && *bp != '\n');
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(bitmap_parselist_crop);
+>>>>>>> refs/remotes/origin/master

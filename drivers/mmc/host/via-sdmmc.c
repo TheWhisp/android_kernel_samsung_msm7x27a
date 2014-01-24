@@ -9,6 +9,14 @@
  */
 
 #include <linux/pci.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/highmem.h>
 #include <linux/delay.h>
@@ -1081,7 +1089,11 @@ static void via_init_mmc_host(struct via_crdr_mmc_host *host)
 	msleep(1);
 }
 
+<<<<<<< HEAD
 static int __devinit via_sd_probe(struct pci_dev *pcidev,
+=======
+static int via_sd_probe(struct pci_dev *pcidev,
+>>>>>>> refs/remotes/origin/master
 				    const struct pci_device_id *id)
 {
 	struct mmc_host *mmc;
@@ -1175,7 +1187,11 @@ disable:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit via_sd_remove(struct pci_dev *pcidev)
+=======
+static void via_sd_remove(struct pci_dev *pcidev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct via_crdr_mmc_host *sdhost = pci_get_drvdata(pcidev);
 	unsigned long flags;
@@ -1191,7 +1207,15 @@ static void __devexit via_sd_remove(struct pci_dev *pcidev)
 	mmiowb();
 
 	if (sdhost->mrq) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Controller removed during "
+=======
+		pr_err("%s: Controller removed during "
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Controller removed during "
+>>>>>>> refs/remotes/origin/master
 			"transfer\n", mmc_hostname(sdhost->mmc));
 
 		/* make sure all DMA is stopped */
@@ -1268,21 +1292,31 @@ static void via_init_sdc_pm(struct via_crdr_mmc_host *host)
 static int via_sd_suspend(struct pci_dev *pcidev, pm_message_t state)
 {
 	struct via_crdr_mmc_host *host;
+<<<<<<< HEAD
 	int ret = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	host = pci_get_drvdata(pcidev);
 
 	via_save_pcictrlreg(host);
 	via_save_sdcreg(host);
 
+<<<<<<< HEAD
 	ret = mmc_suspend_host(host->mmc);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_save_state(pcidev);
 	pci_enable_wake(pcidev, pci_choose_state(pcidev, state), 0);
 	pci_disable_device(pcidev);
 	pci_set_power_state(pcidev, pci_choose_state(pcidev, state));
 
+<<<<<<< HEAD
 	return ret;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int via_sd_resume(struct pci_dev *pcidev)
@@ -1315,8 +1349,11 @@ static int via_sd_resume(struct pci_dev *pcidev)
 	via_restore_pcictrlreg(sdhost);
 	via_init_sdc_pm(sdhost);
 
+<<<<<<< HEAD
 	ret = mmc_resume_host(sdhost->mmc);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1331,11 +1368,16 @@ static struct pci_driver via_sd_driver = {
 	.name = DRV_NAME,
 	.id_table = via_ids,
 	.probe = via_sd_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(via_sd_remove),
+=======
+	.remove = via_sd_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = via_sd_suspend,
 	.resume = via_sd_resume,
 };
 
+<<<<<<< HEAD
 static int __init via_sd_drv_init(void)
 {
 	pr_info(DRV_NAME ": VIA SD/MMC Card Reader driver "
@@ -1351,6 +1393,9 @@ static void __exit via_sd_drv_exit(void)
 
 module_init(via_sd_drv_init);
 module_exit(via_sd_drv_exit);
+=======
+module_pci_driver(via_sd_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("VIA Technologies Inc.");

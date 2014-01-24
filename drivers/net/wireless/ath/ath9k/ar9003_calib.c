@@ -17,8 +17,21 @@
 #include "hw.h"
 #include "hw-ops.h"
 #include "ar9003_phy.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #define MAX_MEASUREMENT	8
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include "ar9003_rtt.h"
+#include "ar9003_mci.h"
+
+#define MAX_MEASUREMENT	MAX_IQCAL_MEASUREMENT
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MAX_MAG_DELTA	11
 #define MAX_PHS_DELTA	10
 
@@ -30,7 +43,10 @@ struct coeff {
 
 enum ar9003_cal_types {
 	IQ_MISMATCH_CAL = BIT(0),
+<<<<<<< HEAD
 	TEMP_COMP_CAL = BIT(1),
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void ar9003_hw_setup_calibration(struct ath_hw *ah,
@@ -47,23 +63,43 @@ static void ar9003_hw_setup_calibration(struct ath_hw *ah,
 		 */
 		REG_RMW_FIELD(ah, AR_PHY_TIMING4,
 			      AR_PHY_TIMING4_IQCAL_LOG_COUNT_MAX,
+<<<<<<< HEAD
 		currCal->calData->calCountMax);
 		REG_WRITE(ah, AR_PHY_CALMODE, AR_PHY_CALMODE_IQ);
 
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      currCal->calData->calCountMax);
+		REG_WRITE(ah, AR_PHY_CALMODE, AR_PHY_CALMODE_IQ);
+
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 			"starting IQ Mismatch Calibration\n");
 
 		/* Kick-off cal */
 		REG_SET_BIT(ah, AR_PHY_TIMING4, AR_PHY_TIMING4_DO_CAL);
 		break;
+<<<<<<< HEAD
 	case TEMP_COMP_CAL:
 		REG_RMW_FIELD(ah, AR_PHY_65NM_CH0_THERM,
 			      AR_PHY_65NM_CH0_THERM_LOCAL, 1);
 		REG_RMW_FIELD(ah, AR_PHY_65NM_CH0_THERM,
 			      AR_PHY_65NM_CH0_THERM_START, 1);
 
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"starting Temperature Compensation Calibration\n");
+=======
+	default:
+		ath_err(common, "Invalid calibration type\n");
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -157,6 +193,7 @@ static bool ar9003_hw_calibrate(struct ath_hw *ah,
 		}
 	}
 
+<<<<<<< HEAD
 	/* Do NF cal only at longer intervals */
 	if (longcal) {
 		/*
@@ -165,6 +202,13 @@ static bool ar9003_hw_calibrate(struct ath_hw *ah,
 		 */
 		ath9k_hw_getnf(ah, chan);
 
+=======
+	/*
+	 * Do NF cal only at longer intervals. Get the value from
+	 * the previous NF cal and update history buffer.
+	 */
+	if (longcal && ath9k_hw_getnf(ah, chan)) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Load the NF from history buffer of the current channel.
 		 * NF is slow time-variant, so it is OK to use a historical
@@ -192,7 +236,15 @@ static void ar9003_hw_iqcal_collect(struct ath_hw *ah)
 				REG_READ(ah, AR_PHY_CAL_MEAS_1(i));
 			ah->totalIqCorrMeas[i] +=
 				(int32_t) REG_READ(ah, AR_PHY_CAL_MEAS_2(i));
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(ath9k_hw_common(ah), ATH_DBG_CALIBRATE,
+=======
+			ath_dbg(ath9k_hw_common(ah), CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(ath9k_hw_common(ah), CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 				"%d: Chn %d pmi=0x%08x;pmq=0x%08x;iqcm=0x%08x;\n",
 				ah->cal_samples, i, ah->totalPowerMeasI[i],
 				ah->totalPowerMeasQ[i],
@@ -219,12 +271,26 @@ static void ar9003_hw_iqcalibrate(struct ath_hw *ah, u8 numChains)
 		powerMeasQ = ah->totalPowerMeasQ[i];
 		iqCorrMeas = ah->totalIqCorrMeas[i];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
 			"Starting IQ Cal and Correction for Chain %d\n",
 			i);
 
 		ath_dbg(common, ATH_DBG_CALIBRATE,
 			"Orignal: Chn %diq_corr_meas = 0x%08x\n",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ath_dbg(common, CALIBRATE,
+			"Starting IQ Cal and Correction for Chain %d\n", i);
+
+		ath_dbg(common, CALIBRATE,
+			"Original: Chn %d iq_corr_meas = 0x%08x\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			i, ah->totalIqCorrMeas[i]);
 
 		iqCorrNeg = 0;
@@ -234,12 +300,26 @@ static void ar9003_hw_iqcalibrate(struct ath_hw *ah, u8 numChains)
 			iqCorrNeg = 1;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
 			"Chn %d pwr_meas_i = 0x%08x\n", i, powerMeasI);
 		ath_dbg(common, ATH_DBG_CALIBRATE,
 			"Chn %d pwr_meas_q = 0x%08x\n", i, powerMeasQ);
 		ath_dbg(common, ATH_DBG_CALIBRATE, "iqCorrNeg is 0x%08x\n",
 			iqCorrNeg);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ath_dbg(common, CALIBRATE, "Chn %d pwr_meas_i = 0x%08x\n",
+			i, powerMeasI);
+		ath_dbg(common, CALIBRATE, "Chn %d pwr_meas_q = 0x%08x\n",
+			i, powerMeasQ);
+		ath_dbg(common, CALIBRATE, "iqCorrNeg is 0x%08x\n", iqCorrNeg);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		iCoffDenom = (powerMeasI / 2 + powerMeasQ / 2) / 256;
 		qCoffDenom = powerMeasQ / 64;
@@ -247,10 +327,23 @@ static void ar9003_hw_iqcalibrate(struct ath_hw *ah, u8 numChains)
 		if ((iCoffDenom != 0) && (qCoffDenom != 0)) {
 			iCoff = iqCorrMeas / iCoffDenom;
 			qCoff = powerMeasI / qCoffDenom - 64;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_CALIBRATE,
 				"Chn %d iCoff = 0x%08x\n", i, iCoff);
 			ath_dbg(common, ATH_DBG_CALIBRATE,
 				"Chn %d qCoff = 0x%08x\n", i, qCoff);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			ath_dbg(common, CALIBRATE, "Chn %d iCoff = 0x%08x\n",
+				i, iCoff);
+			ath_dbg(common, CALIBRATE, "Chn %d qCoff = 0x%08x\n",
+				i, qCoff);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			/* Force bounds on iCoff */
 			if (iCoff >= 63)
@@ -271,39 +364,92 @@ static void ar9003_hw_iqcalibrate(struct ath_hw *ah, u8 numChains)
 			iCoff = iCoff & 0x7f;
 			qCoff = qCoff & 0x7f;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_CALIBRATE,
 				"Chn %d : iCoff = 0x%x  qCoff = 0x%x\n",
 				i, iCoff, qCoff);
 			ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			ath_dbg(common, CALIBRATE,
+				"Chn %d : iCoff = 0x%x  qCoff = 0x%x\n",
+				i, iCoff, qCoff);
+			ath_dbg(common, CALIBRATE,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				"Register offset (0x%04x) before update = 0x%x\n",
 				offset_array[i],
 				REG_READ(ah, offset_array[i]));
 
+<<<<<<< HEAD
+=======
+			if (AR_SREV_9565(ah) &&
+			    (iCoff == 63 || qCoff == 63 ||
+			     iCoff == -63 || qCoff == -63))
+				return;
+
+>>>>>>> refs/remotes/origin/master
 			REG_RMW_FIELD(ah, offset_array[i],
 				      AR_PHY_RX_IQCAL_CORR_IQCORR_Q_I_COFF,
 				      iCoff);
 			REG_RMW_FIELD(ah, offset_array[i],
 				      AR_PHY_RX_IQCAL_CORR_IQCORR_Q_Q_COFF,
 				      qCoff);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 				"Register offset (0x%04x) QI COFF (bitfields 0x%08x) after update = 0x%x\n",
 				offset_array[i],
 				AR_PHY_RX_IQCAL_CORR_IQCORR_Q_I_COFF,
 				REG_READ(ah, offset_array[i]));
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 				"Register offset (0x%04x) QQ COFF (bitfields 0x%08x) after update = 0x%x\n",
 				offset_array[i],
 				AR_PHY_RX_IQCAL_CORR_IQCORR_Q_Q_COFF,
 				REG_READ(ah, offset_array[i]));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 				"IQ Cal and Correction done for Chain %d\n", i);
 		}
 	}
 
 	REG_SET_BIT(ah, AR_PHY_RX_IQCAL_CORR_B0,
 		    AR_PHY_RX_IQCAL_CORR_IQCORR_ENABLE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+	ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 		"IQ Cal and Correction (offset 0x%04x) enabled (bit position 0x%08x). New Value 0x%08x\n",
 		(unsigned) (AR_PHY_RX_IQCAL_CORR_B0),
 		AR_PHY_RX_IQCAL_CORR_IQCORR_ENABLE,
@@ -321,6 +467,17 @@ static const struct ath9k_percal_data iq_cal_single_sample = {
 static void ar9003_hw_init_cal_settings(struct ath_hw *ah)
 {
 	ah->iq_caldata.calData = &iq_cal_single_sample;
+<<<<<<< HEAD
+=======
+
+	if (AR_SREV_9300_20_OR_LATER(ah)) {
+		ah->enabled_cals |= TX_IQ_CAL;
+		if (AR_SREV_9485_OR_LATER(ah) && !AR_SREV_9340(ah))
+			ah->enabled_cals |= TX_IQ_ON_AGC_CAL;
+	}
+
+	ah->supp_cals = IQ_MISMATCH_CAL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -347,7 +504,15 @@ static bool ar9003_hw_solve_iq_cal(struct ath_hw *ah,
 	f2 = (f1 * f1 + f3 * f3) / result_shift;
 
 	if (!f2) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE, "Divide by 0\n");
+=======
+		ath_dbg(common, CALIBRATE, "Divide by 0\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CALIBRATE, "Divide by 0\n");
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 
@@ -468,7 +633,15 @@ static bool ar9003_hw_calc_iq_corr(struct ath_hw *ah,
 
 	if ((i2_p_q2_a0_d0 == 0) || (i2_p_q2_a0_d1 == 0) ||
 	    (i2_p_q2_a1_d0 == 0) || (i2_p_q2_a1_d1 == 0)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 			"Divide by 0:\n"
 			"a0_d0=%d\n"
 			"a0_d1=%d\n"
@@ -508,8 +681,16 @@ static bool ar9003_hw_calc_iq_corr(struct ath_hw *ah,
 	mag2 = ar9003_hw_find_mag_approx(ah, cos_2phi_2, sin_2phi_2);
 
 	if ((mag1 == 0) || (mag2 == 0)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
 			"Divide by 0: mag1=%d, mag2=%d\n",
+=======
+		ath_dbg(common, CALIBRATE, "Divide by 0: mag1=%d, mag2=%d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CALIBRATE, "Divide by 0: mag1=%d, mag2=%d\n",
+>>>>>>> refs/remotes/origin/master
 			mag1, mag2);
 		return false;
 	}
@@ -527,8 +708,18 @@ static bool ar9003_hw_calc_iq_corr(struct ath_hw *ah,
 			     mag_a0_d0, phs_a0_d0,
 			     mag_a1_d0,
 			     phs_a1_d0, solved_eq)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
 			"Call to ar9003_hw_solve_iq_cal() failed.\n");
+=======
+		ath_dbg(common, CALIBRATE,
+			"Call to ar9003_hw_solve_iq_cal() failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CALIBRATE,
+			"Call to ar9003_hw_solve_iq_cal() failed\n");
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 
@@ -537,12 +728,28 @@ static bool ar9003_hw_calc_iq_corr(struct ath_hw *ah,
 	mag_rx = solved_eq[2];
 	phs_rx = solved_eq[3];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+	ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 		"chain %d: mag mismatch=%d phase mismatch=%d\n",
 		chain_idx, mag_tx/res_scale, phs_tx/res_scale);
 
 	if (res_scale == mag_tx) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 			"Divide by 0: mag_tx=%d, res_scale=%d\n",
 			mag_tx, res_scale);
 		return false;
@@ -555,8 +762,16 @@ static bool ar9003_hw_calc_iq_corr(struct ath_hw *ah,
 	q_q_coff = (mag_corr_tx * 128 / res_scale);
 	q_i_coff = (phs_corr_tx * 256 / res_scale);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CALIBRATE,
 		"tx chain %d: mag corr=%d  phase corr=%d\n",
+=======
+	ath_dbg(common, CALIBRATE, "tx chain %d: mag corr=%d  phase corr=%d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CALIBRATE, "tx chain %d: mag corr=%d  phase corr=%d\n",
+>>>>>>> refs/remotes/origin/master
 		chain_idx, q_q_coff, q_i_coff);
 
 	if (q_i_coff < -63)
@@ -570,12 +785,26 @@ static bool ar9003_hw_calc_iq_corr(struct ath_hw *ah,
 
 	iqc_coeff[0] = (q_q_coff * 128) + q_i_coff;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CALIBRATE,
 		"tx chain %d: iq corr coeff=%x\n",
 		chain_idx, iqc_coeff[0]);
 
 	if (-mag_rx == res_scale) {
 		ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ath_dbg(common, CALIBRATE, "tx chain %d: iq corr coeff=%x\n",
+		chain_idx, iqc_coeff[0]);
+
+	if (-mag_rx == res_scale) {
+		ath_dbg(common, CALIBRATE,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			"Divide by 0: mag_rx=%d, res_scale=%d\n",
 			mag_rx, res_scale);
 		return false;
@@ -588,8 +817,16 @@ static bool ar9003_hw_calc_iq_corr(struct ath_hw *ah,
 	q_q_coff = (mag_corr_rx * 128 / res_scale);
 	q_i_coff = (phs_corr_rx * 256 / res_scale);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CALIBRATE,
 		"rx chain %d: mag corr=%d  phase corr=%d\n",
+=======
+	ath_dbg(common, CALIBRATE, "rx chain %d: mag corr=%d  phase corr=%d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CALIBRATE, "rx chain %d: mag corr=%d  phase corr=%d\n",
+>>>>>>> refs/remotes/origin/master
 		chain_idx, q_q_coff, q_i_coff);
 
 	if (q_i_coff < -63)
@@ -603,8 +840,16 @@ static bool ar9003_hw_calc_iq_corr(struct ath_hw *ah,
 
 	iqc_coeff[1] = (q_q_coff * 128) + q_i_coff;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CALIBRATE,
 		"rx chain %d: iq corr coeff=%x\n",
+=======
+	ath_dbg(common, CALIBRATE, "rx chain %d: iq corr coeff=%x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CALIBRATE, "rx chain %d: iq corr coeff=%x\n",
+>>>>>>> refs/remotes/origin/master
 		chain_idx, iqc_coeff[1]);
 
 	return true;
@@ -615,11 +860,24 @@ static void ar9003_hw_detect_outlier(int *mp_coeff, int nmeasurement,
 {
 	int mp_max = -64, max_idx = 0;
 	int mp_min = 63, min_idx = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int mp_avg = 0, i, outlier_idx = 0;
 
 	/* find min/max mismatch across all calibrated gains */
 	for (i = 0; i < nmeasurement; i++) {
 		mp_avg += mp_coeff[i];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int mp_avg = 0, i, outlier_idx = 0, mp_count = 0;
+
+	/* find min/max mismatch across all calibrated gains */
+	for (i = 0; i < nmeasurement; i++) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (mp_coeff[i] > mp_max) {
 			mp_max = mp_coeff[i];
 			max_idx = i;
@@ -632,10 +890,33 @@ static void ar9003_hw_detect_outlier(int *mp_coeff, int nmeasurement,
 	/* find average (exclude max abs value) */
 	for (i = 0; i < nmeasurement; i++) {
 		if ((abs(mp_coeff[i]) < abs(mp_max)) ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    (abs(mp_coeff[i]) < abs(mp_min)))
 			mp_avg += mp_coeff[i];
 	}
 	mp_avg /= (nmeasurement - 1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		    (abs(mp_coeff[i]) < abs(mp_min))) {
+			mp_avg += mp_coeff[i];
+			mp_count++;
+		}
+	}
+
+	/*
+	 * finding mean magnitude/phase if possible, otherwise
+	 * just use the last value as the mean
+	 */
+	if (mp_count)
+		mp_avg /= mp_count;
+	else
+		mp_avg = mp_coeff[nmeasurement - 1];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* detect outlier */
 	if (abs(mp_max - mp_min) > max_delta) {
@@ -649,11 +930,26 @@ static void ar9003_hw_detect_outlier(int *mp_coeff, int nmeasurement,
 }
 
 static void ar9003_hw_tx_iqcal_load_avg_2_passes(struct ath_hw *ah,
+<<<<<<< HEAD
 						 u8 num_chains,
+<<<<<<< HEAD
 						 struct coeff *coeff)
 {
 	int i, im, nmeasurement;
 	u32 tx_corr_coeff[MAX_MEASUREMENT][AR9300_MAX_CHAINS];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+						 struct coeff *coeff,
+						 bool is_reusable)
+{
+	int i, im, nmeasurement;
+	u32 tx_corr_coeff[MAX_MEASUREMENT][AR9300_MAX_CHAINS];
+	struct ath9k_hw_cal_data *caldata = ah->caldata;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	memset(tx_corr_coeff, 0, sizeof(tx_corr_coeff));
 	for (i = 0; i < MAX_MEASUREMENT / 2; i++) {
@@ -671,7 +967,13 @@ static void ar9003_hw_tx_iqcal_load_avg_2_passes(struct ath_hw *ah,
 	}
 
 	/* Load the average of 2 passes */
+<<<<<<< HEAD
 	for (i = 0; i < num_chains; i++) {
+=======
+	for (i = 0; i < AR9300_MAX_CHAINS; i++) {
+		if (!(ah->txchainmask & (1 << i)))
+			continue;
+>>>>>>> refs/remotes/origin/master
 		nmeasurement = REG_READ_FIELD(ah,
 				AR_PHY_TX_IQCAL_STATUS_B0,
 				AR_PHY_CALIBRATED_GAINS_0);
@@ -703,7 +1005,23 @@ static void ar9003_hw_tx_iqcal_load_avg_2_passes(struct ath_hw *ah,
 				REG_RMW_FIELD(ah, tx_corr_coeff[im][i],
 					AR_PHY_TX_IQCAL_CORR_COEFF_01_COEFF_TABLE,
 					coeff->iqc_coeff[0]);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+			if (caldata)
+				caldata->tx_corr_coeff[im][i] =
+					coeff->iqc_coeff[0];
+		}
+		if (caldata)
+			caldata->num_measures[i] = nmeasurement;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	REG_RMW_FIELD(ah, AR_PHY_TX_IQCAL_CONTROL_3,
@@ -711,8 +1029,26 @@ static void ar9003_hw_tx_iqcal_load_avg_2_passes(struct ath_hw *ah,
 	REG_RMW_FIELD(ah, AR_PHY_RX_IQCAL_CORR_B0,
 		      AR_PHY_RX_IQCAL_CORR_B0_LOOPBACK_IQCORR_EN, 0x1);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return;
 
+=======
+	if (caldata)
+		caldata->done_txiqcal_once = is_reusable;
+
+	return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (caldata) {
+		if (is_reusable)
+			set_bit(TXIQCAL_DONE, &caldata->cal_flags);
+		else
+			clear_bit(TXIQCAL_DONE, &caldata->cal_flags);
+	}
+
+	return;
+>>>>>>> refs/remotes/origin/master
 }
 
 static bool ar9003_hw_tx_iq_cal_run(struct ath_hw *ah)
@@ -732,14 +1068,30 @@ static bool ar9003_hw_tx_iq_cal_run(struct ath_hw *ah)
 	if (!ath9k_hw_wait(ah, AR_PHY_TX_IQCAL_START,
 			AR_PHY_TX_IQCAL_START_DO_CAL, 0,
 			AH_WAIT_TIMEOUT)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
 			"Tx IQ Cal is not completed.\n");
+=======
+		ath_dbg(common, CALIBRATE, "Tx IQ Cal is not completed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CALIBRATE, "Tx IQ Cal is not completed\n");
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 	return true;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void ar9003_hw_tx_iq_cal_post_proc(struct ath_hw *ah)
+=======
+static void ar9003_hw_tx_iq_cal_post_proc(struct ath_hw *ah, bool is_reusable)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ar9003_hw_tx_iq_cal_post_proc(struct ath_hw *ah, bool is_reusable)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath_common *common = ath9k_hw_common(ah);
 	const u32 txiqcal_status[AR9300_MAX_CHAINS] = {
@@ -754,16 +1106,25 @@ static void ar9003_hw_tx_iq_cal_post_proc(struct ath_hw *ah)
 	};
 	struct coeff coeff;
 	s32 iq_res[6];
+<<<<<<< HEAD
 	u8 num_chains = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i, im, j;
 	int nmeasurement;
 
 	for (i = 0; i < AR9300_MAX_CHAINS; i++) {
+<<<<<<< HEAD
 		if (ah->txchainmask & (1 << i))
 			num_chains++;
 	}
 
 	for (i = 0; i < num_chains; i++) {
+=======
+		if (!(ah->txchainmask & (1 << i)))
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		nmeasurement = REG_READ_FIELD(ah,
 				AR_PHY_TX_IQCAL_STATUS_B0,
 				AR_PHY_CALIBRATED_GAINS_0);
@@ -771,6 +1132,8 @@ static void ar9003_hw_tx_iq_cal_post_proc(struct ath_hw *ah)
 			nmeasurement = MAX_MEASUREMENT;
 
 		for (im = 0; im < nmeasurement; im++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_CALIBRATE,
 				"Doing Tx IQ Cal for chain %d.\n", i);
 
@@ -778,6 +1141,20 @@ static void ar9003_hw_tx_iq_cal_post_proc(struct ath_hw *ah)
 					AR_PHY_TX_IQCAL_STATUS_FAILED) {
 				ath_dbg(common, ATH_DBG_CALIBRATE,
 					"Tx IQ Cal failed for chain %d.\n", i);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			ath_dbg(common, CALIBRATE,
+				"Doing Tx IQ Cal for chain %d\n", i);
+
+			if (REG_READ(ah, txiqcal_status[i]) &
+					AR_PHY_TX_IQCAL_STATUS_FAILED) {
+				ath_dbg(common, CALIBRATE,
+					"Tx IQ Cal failed for chain %d\n", i);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				goto tx_iqcal_fail;
 			}
 
@@ -803,18 +1180,38 @@ static void ar9003_hw_tx_iq_cal_post_proc(struct ath_hw *ah)
 				iq_res[idx + 1] = 0xffff & REG_READ(ah,
 						chan_info_tab[i] + offset);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 				ath_dbg(common, ATH_DBG_CALIBRATE,
 					"IQ RES[%d]=0x%x"
 					"IQ_RES[%d]=0x%x\n",
+=======
+				ath_dbg(common, CALIBRATE,
+					"IQ_RES[%d]=0x%x IQ_RES[%d]=0x%x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ath_dbg(common, CALIBRATE,
+					"IQ_RES[%d]=0x%x IQ_RES[%d]=0x%x\n",
+>>>>>>> refs/remotes/origin/master
 					idx, iq_res[idx], idx + 1,
 					iq_res[idx + 1]);
 			}
 
 			if (!ar9003_hw_calc_iq_corr(ah, i, iq_res,
 						coeff.iqc_coeff)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				ath_dbg(common, ATH_DBG_CALIBRATE,
 					"Failed in calculation of \
 					IQ correction.\n");
+=======
+				ath_dbg(common, CALIBRATE,
+					"Failed in calculation of IQ correction\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ath_dbg(common, CALIBRATE,
+					"Failed in calculation of IQ correction\n");
+>>>>>>> refs/remotes/origin/master
 				goto tx_iqcal_fail;
 			}
 
@@ -828,18 +1225,257 @@ static void ar9003_hw_tx_iq_cal_post_proc(struct ath_hw *ah)
 				coeff.phs_coeff[i][im] -= 128;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ar9003_hw_tx_iqcal_load_avg_2_passes(ah, num_chains, &coeff);
+=======
+	ar9003_hw_tx_iqcal_load_avg_2_passes(ah, num_chains,
+					     &coeff, is_reusable);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ar9003_hw_tx_iqcal_load_avg_2_passes(ah, &coeff, is_reusable);
+>>>>>>> refs/remotes/origin/master
 
 	return;
 
 tx_iqcal_fail:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CALIBRATE, "Tx IQ Cal failed\n");
 	return;
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ath_dbg(common, CALIBRATE, "Tx IQ Cal failed\n");
+	return;
+}
+
+static void ar9003_hw_tx_iq_cal_reload(struct ath_hw *ah)
+{
+	struct ath9k_hw_cal_data *caldata = ah->caldata;
+	u32 tx_corr_coeff[MAX_MEASUREMENT][AR9300_MAX_CHAINS];
+	int i, im;
+
+	memset(tx_corr_coeff, 0, sizeof(tx_corr_coeff));
+	for (i = 0; i < MAX_MEASUREMENT / 2; i++) {
+		tx_corr_coeff[i * 2][0] = tx_corr_coeff[(i * 2) + 1][0] =
+					AR_PHY_TX_IQCAL_CORR_COEFF_B0(i);
+		if (!AR_SREV_9485(ah)) {
+			tx_corr_coeff[i * 2][1] =
+			tx_corr_coeff[(i * 2) + 1][1] =
+					AR_PHY_TX_IQCAL_CORR_COEFF_B1(i);
+
+			tx_corr_coeff[i * 2][2] =
+			tx_corr_coeff[(i * 2) + 1][2] =
+					AR_PHY_TX_IQCAL_CORR_COEFF_B2(i);
+		}
+	}
+
+	for (i = 0; i < AR9300_MAX_CHAINS; i++) {
+		if (!(ah->txchainmask & (1 << i)))
+			continue;
+
+		for (im = 0; im < caldata->num_measures[i]; im++) {
+			if ((im % 2) == 0)
+				REG_RMW_FIELD(ah, tx_corr_coeff[im][i],
+				     AR_PHY_TX_IQCAL_CORR_COEFF_00_COEFF_TABLE,
+				     caldata->tx_corr_coeff[im][i]);
+			else
+				REG_RMW_FIELD(ah, tx_corr_coeff[im][i],
+				     AR_PHY_TX_IQCAL_CORR_COEFF_01_COEFF_TABLE,
+				     caldata->tx_corr_coeff[im][i]);
+		}
+	}
+
+	REG_RMW_FIELD(ah, AR_PHY_TX_IQCAL_CONTROL_3,
+		      AR_PHY_TX_IQCAL_CONTROL_3_IQCORR_EN, 0x1);
+	REG_RMW_FIELD(ah, AR_PHY_RX_IQCAL_CORR_B0,
+		      AR_PHY_RX_IQCAL_CORR_B0_LOOPBACK_IQCORR_EN, 0x1);
+}
+
+<<<<<<< HEAD
+static bool ar9003_hw_rtt_restore(struct ath_hw *ah, struct ath9k_channel *chan)
+{
+	struct ath9k_rtt_hist *hist;
+	u32 *table;
+	int i;
+	bool restore;
+
+	if (!ah->caldata)
+		return false;
+
+	hist = &ah->caldata->rtt_hist;
+	if (!hist->num_readings)
+		return false;
+
+	ar9003_hw_rtt_enable(ah);
+	ar9003_hw_rtt_set_mask(ah, 0x00);
+	for (i = 0; i < AR9300_MAX_CHAINS; i++) {
+		if (!(ah->rxchainmask & (1 << i)))
+			continue;
+		table = &hist->table[i][hist->num_readings][0];
+		ar9003_hw_rtt_load_hist(ah, i, table);
+	}
+	restore = ar9003_hw_rtt_force_restore(ah);
+	ar9003_hw_rtt_disable(ah);
+
+	return restore;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ar9003_hw_manual_peak_cal(struct ath_hw *ah, u8 chain, bool is_2g)
+{
+	int offset[8], total = 0, test;
+	int agc_out, i;
+
+	REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_GAINSTAGES(chain),
+		      AR_PHY_65NM_RXRF_GAINSTAGES_RX_OVERRIDE, 0x1);
+	REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_GAINSTAGES(chain),
+		      AR_PHY_65NM_RXRF_GAINSTAGES_LNAON_CALDC, 0x0);
+	if (is_2g)
+		REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_GAINSTAGES(chain),
+			      AR_PHY_65NM_RXRF_GAINSTAGES_LNA2G_GAIN_OVR, 0x0);
+	else
+		REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_GAINSTAGES(chain),
+			      AR_PHY_65NM_RXRF_GAINSTAGES_LNA5G_GAIN_OVR, 0x0);
+
+	REG_RMW_FIELD(ah, AR_PHY_65NM_RXTX2(chain),
+		      AR_PHY_65NM_RXTX2_RXON_OVR, 0x1);
+	REG_RMW_FIELD(ah, AR_PHY_65NM_RXTX2(chain),
+		      AR_PHY_65NM_RXTX2_RXON, 0x0);
+
+	REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+		      AR_PHY_65NM_RXRF_AGC_AGC_OVERRIDE, 0x1);
+	REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+		      AR_PHY_65NM_RXRF_AGC_AGC_ON_OVR, 0x1);
+	REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+		      AR_PHY_65NM_RXRF_AGC_AGC_CAL_OVR, 0x1);
+	if (is_2g)
+		REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+			      AR_PHY_65NM_RXRF_AGC_AGC2G_DBDAC_OVR, 0x0);
+	else
+		REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+			      AR_PHY_65NM_RXRF_AGC_AGC5G_DBDAC_OVR, 0x0);
+
+	for (i = 6; i > 0; i--) {
+		offset[i] = BIT(i - 1);
+		test = total + offset[i];
+
+		if (is_2g)
+			REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+				      AR_PHY_65NM_RXRF_AGC_AGC2G_CALDAC_OVR,
+				      test);
+		else
+			REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+				      AR_PHY_65NM_RXRF_AGC_AGC5G_CALDAC_OVR,
+				      test);
+		udelay(100);
+		agc_out = REG_READ_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+					 AR_PHY_65NM_RXRF_AGC_AGC_OUT);
+		offset[i] = (agc_out) ? 0 : 1;
+		total += (offset[i] << (i - 1));
+	}
+
+	if (is_2g)
+		REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+			      AR_PHY_65NM_RXRF_AGC_AGC2G_CALDAC_OVR, total);
+	else
+		REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+			      AR_PHY_65NM_RXRF_AGC_AGC5G_CALDAC_OVR, total);
+
+	REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_GAINSTAGES(chain),
+		      AR_PHY_65NM_RXRF_GAINSTAGES_RX_OVERRIDE, 0);
+	REG_RMW_FIELD(ah, AR_PHY_65NM_RXTX2(chain),
+		      AR_PHY_65NM_RXTX2_RXON_OVR, 0);
+	REG_RMW_FIELD(ah, AR_PHY_65NM_RXRF_AGC(chain),
+		      AR_PHY_65NM_RXRF_AGC_AGC_CAL_OVR, 0);
+}
+
+static void ar9003_hw_do_manual_peak_cal(struct ath_hw *ah,
+					 struct ath9k_channel *chan,
+					 bool run_rtt_cal)
+{
+	struct ath9k_hw_cal_data *caldata = ah->caldata;
+	int i;
+
+	if (!AR_SREV_9462(ah) && !AR_SREV_9565(ah) && !AR_SREV_9485(ah))
+		return;
+
+	if ((ah->caps.hw_caps & ATH9K_HW_CAP_RTT) && !run_rtt_cal)
+		return;
+
+	for (i = 0; i < AR9300_MAX_CHAINS; i++) {
+		if (!(ah->rxchainmask & (1 << i)))
+			continue;
+		ar9003_hw_manual_peak_cal(ah, i, IS_CHAN_2GHZ(chan));
+	}
+
+	if (caldata)
+		set_bit(SW_PKDET_DONE, &caldata->cal_flags);
+
+	if ((ah->caps.hw_caps & ATH9K_HW_CAP_RTT) && caldata) {
+		if (IS_CHAN_2GHZ(chan)){
+			caldata->caldac[0] = REG_READ_FIELD(ah,
+						    AR_PHY_65NM_RXRF_AGC(0),
+						    AR_PHY_65NM_RXRF_AGC_AGC2G_CALDAC_OVR);
+			caldata->caldac[1] = REG_READ_FIELD(ah,
+						    AR_PHY_65NM_RXRF_AGC(1),
+						    AR_PHY_65NM_RXRF_AGC_AGC2G_CALDAC_OVR);
+		} else {
+			caldata->caldac[0] = REG_READ_FIELD(ah,
+						    AR_PHY_65NM_RXRF_AGC(0),
+						    AR_PHY_65NM_RXRF_AGC_AGC5G_CALDAC_OVR);
+			caldata->caldac[1] = REG_READ_FIELD(ah,
+						    AR_PHY_65NM_RXRF_AGC(1),
+						    AR_PHY_65NM_RXRF_AGC_AGC5G_CALDAC_OVR);
+		}
+	}
+}
+
+static void ar9003_hw_cl_cal_post_proc(struct ath_hw *ah, bool is_reusable)
+{
+	u32 cl_idx[AR9300_MAX_CHAINS] = { AR_PHY_CL_TAB_0,
+					  AR_PHY_CL_TAB_1,
+					  AR_PHY_CL_TAB_2 };
+	struct ath9k_hw_cal_data *caldata = ah->caldata;
+	bool txclcal_done = false;
+	int i, j;
+
+	if (!caldata || !(ah->enabled_cals & TX_CL_CAL))
+		return;
+
+	txclcal_done = !!(REG_READ(ah, AR_PHY_AGC_CONTROL) &
+			  AR_PHY_AGC_CONTROL_CLC_SUCCESS);
+
+	if (test_bit(TXCLCAL_DONE, &caldata->cal_flags)) {
+		for (i = 0; i < AR9300_MAX_CHAINS; i++) {
+			if (!(ah->txchainmask & (1 << i)))
+				continue;
+			for (j = 0; j < MAX_CL_TAB_ENTRY; j++)
+				REG_WRITE(ah, CL_TAB_ENTRY(cl_idx[i]),
+					  caldata->tx_clcal[i][j]);
+		}
+	} else if (is_reusable && txclcal_done) {
+		for (i = 0; i < AR9300_MAX_CHAINS; i++) {
+			if (!(ah->txchainmask & (1 << i)))
+				continue;
+			for (j = 0; j < MAX_CL_TAB_ENTRY; j++)
+				caldata->tx_clcal[i][j] =
+					REG_READ(ah, CL_TAB_ENTRY(cl_idx[i]));
+		}
+		set_bit(TXCLCAL_DONE, &caldata->cal_flags);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static bool ar9003_hw_init_cal(struct ath_hw *ah,
 			       struct ath9k_channel *chan)
 {
 	struct ath_common *common = ath9k_hw_common(ah);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ath9k_hw_capabilities *pCap = &ah->caps;
 	int val;
 	bool txiqcal_done = false;
@@ -853,6 +1489,108 @@ static bool ar9003_hw_init_cal(struct ath_hw *ah,
 	else
 		ar9003_hw_set_chain_masks(ah, pCap->rx_chainmask,
 					  pCap->tx_chainmask);
+=======
+	struct ath9k_hw_cal_data *caldata = ah->caldata;
+	bool txiqcal_done = false, txclcal_done = false;
+	bool is_reusable = true, status = true;
+	bool run_rtt_cal = false, run_agc_cal;
+	bool rtt = !!(ah->caps.hw_caps & ATH9K_HW_CAP_RTT);
+	bool mci = !!(ah->caps.hw_caps & ATH9K_HW_CAP_MCI);
+	u32 agc_ctrl = 0, agc_supp_cals = AR_PHY_AGC_CONTROL_OFFSET_CAL |
+					  AR_PHY_AGC_CONTROL_FLTR_CAL   |
+					  AR_PHY_AGC_CONTROL_PKDET_CAL;
+	int i, j;
+	u32 cl_idx[AR9300_MAX_CHAINS] = { AR_PHY_CL_TAB_0,
+					  AR_PHY_CL_TAB_1,
+					  AR_PHY_CL_TAB_2 };
+=======
+	struct ath9k_hw_cal_data *caldata = ah->caldata;
+	bool txiqcal_done = false;
+	bool is_reusable = true, status = true;
+	bool run_rtt_cal = false, run_agc_cal, sep_iq_cal = false;
+	bool rtt = !!(ah->caps.hw_caps & ATH9K_HW_CAP_RTT);
+	u32 rx_delay = 0;
+	u32 agc_ctrl = 0, agc_supp_cals = AR_PHY_AGC_CONTROL_OFFSET_CAL |
+					  AR_PHY_AGC_CONTROL_FLTR_CAL   |
+					  AR_PHY_AGC_CONTROL_PKDET_CAL;
+>>>>>>> refs/remotes/origin/master
+
+	/* Use chip chainmask only for calibration */
+	ar9003_hw_set_chain_masks(ah, ah->caps.rx_chainmask, ah->caps.tx_chainmask);
+
+	/* Use chip chainmask only for calibration */
+	ar9003_hw_set_chain_masks(ah, ah->caps.rx_chainmask, ah->caps.tx_chainmask);
+
+	if (rtt) {
+		if (!ar9003_hw_rtt_restore(ah, chan))
+			run_rtt_cal = true;
+
+<<<<<<< HEAD
+		ath_dbg(common, CALIBRATE, "RTT restore %s\n",
+			run_rtt_cal ? "failed" : "succeed");
+	}
+=======
+		if (run_rtt_cal)
+			ath_dbg(common, CALIBRATE, "RTT calibration to be done\n");
+	}
+
+>>>>>>> refs/remotes/origin/master
+	run_agc_cal = run_rtt_cal;
+
+	if (run_rtt_cal) {
+		ar9003_hw_rtt_enable(ah);
+		ar9003_hw_rtt_set_mask(ah, 0x00);
+		ar9003_hw_rtt_clear_hist(ah);
+	}
+
+<<<<<<< HEAD
+	if (rtt && !run_rtt_cal) {
+		agc_ctrl = REG_READ(ah, AR_PHY_AGC_CONTROL);
+		agc_supp_cals &= agc_ctrl;
+		agc_ctrl &= ~(AR_PHY_AGC_CONTROL_OFFSET_CAL |
+			     AR_PHY_AGC_CONTROL_FLTR_CAL |
+			     AR_PHY_AGC_CONTROL_PKDET_CAL);
+		REG_WRITE(ah, AR_PHY_AGC_CONTROL, agc_ctrl);
+	}
+
+	if (ah->enabled_cals & TX_CL_CAL) {
+		if (caldata && caldata->done_txclcal_once)
+=======
+	if (rtt) {
+		if (!run_rtt_cal) {
+			agc_ctrl = REG_READ(ah, AR_PHY_AGC_CONTROL);
+			agc_supp_cals &= agc_ctrl;
+			agc_ctrl &= ~(AR_PHY_AGC_CONTROL_OFFSET_CAL |
+				      AR_PHY_AGC_CONTROL_FLTR_CAL |
+				      AR_PHY_AGC_CONTROL_PKDET_CAL);
+			REG_WRITE(ah, AR_PHY_AGC_CONTROL, agc_ctrl);
+		} else {
+			if (ah->ah_flags & AH_FASTCC)
+				run_agc_cal = true;
+		}
+	}
+
+	if (ah->enabled_cals & TX_CL_CAL) {
+		if (caldata && test_bit(TXCLCAL_DONE, &caldata->cal_flags))
+>>>>>>> refs/remotes/origin/master
+			REG_CLR_BIT(ah, AR_PHY_CL_CAL_CTL,
+				    AR_PHY_CL_CAL_ENABLE);
+		else {
+			REG_SET_BIT(ah, AR_PHY_CL_CAL_CTL,
+				    AR_PHY_CL_CAL_ENABLE);
+			run_agc_cal = true;
+		}
+	}
+
+<<<<<<< HEAD
+	if (!(ah->enabled_cals & TX_IQ_CAL))
+		goto skip_tx_iqcal;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((IS_CHAN_HALF_RATE(chan) || IS_CHAN_QUARTER_RATE(chan)) ||
+	    !(ah->enabled_cals & TX_IQ_CAL))
+		goto skip_tx_iqcal;
+>>>>>>> refs/remotes/origin/master
 
 	/* Do Tx IQ Calibration */
 	REG_RMW_FIELD(ah, AR_PHY_TX_IQCAL_CONTROL_1,
@@ -863,6 +1601,8 @@ static bool ar9003_hw_init_cal(struct ath_hw *ah,
 	 * For AR9485 or later chips, TxIQ cal runs as part of
 	 * AGC calibration
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (AR_SREV_9485_OR_LATER(ah))
 		txiqcal_done = true;
 	else {
@@ -881,17 +1621,193 @@ static bool ar9003_hw_init_cal(struct ath_hw *ah,
 	if (!ath9k_hw_wait(ah, AR_PHY_AGC_CONTROL, AR_PHY_AGC_CONTROL_CAL,
 			   0, AH_WAIT_TIMEOUT)) {
 		ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+	if (ah->enabled_cals & TX_IQ_ON_AGC_CAL) {
+		if (caldata && !caldata->done_txiqcal_once)
+=======
+	if (ah->enabled_cals & TX_IQ_ON_AGC_CAL) {
+		if (caldata && !test_bit(TXIQCAL_DONE, &caldata->cal_flags))
+>>>>>>> refs/remotes/origin/master
+			REG_SET_BIT(ah, AR_PHY_TX_IQCAL_CONTROL_0,
+				    AR_PHY_TX_IQCAL_CONTROL_0_ENABLE_TXIQ_CAL);
+		else
+			REG_CLR_BIT(ah, AR_PHY_TX_IQCAL_CONTROL_0,
+				    AR_PHY_TX_IQCAL_CONTROL_0_ENABLE_TXIQ_CAL);
+		txiqcal_done = run_agc_cal = true;
+<<<<<<< HEAD
+		goto skip_tx_iqcal;
+	} else if (caldata && !caldata->done_txiqcal_once)
+		run_agc_cal = true;
+
+	if (mci && IS_CHAN_2GHZ(chan) && run_agc_cal)
+		ar9003_mci_init_cal_req(ah, &is_reusable);
+
+	txiqcal_done = ar9003_hw_tx_iq_cal_run(ah);
+	REG_WRITE(ah, AR_PHY_ACTIVE, AR_PHY_ACTIVE_DIS);
+	udelay(5);
+	REG_WRITE(ah, AR_PHY_ACTIVE, AR_PHY_ACTIVE_EN);
+
+skip_tx_iqcal:
+=======
+	} else if (caldata && !test_bit(TXIQCAL_DONE, &caldata->cal_flags)) {
+		run_agc_cal = true;
+		sep_iq_cal = true;
+	}
+
+skip_tx_iqcal:
+	if (ath9k_hw_mci_is_enabled(ah) && IS_CHAN_2GHZ(chan) && run_agc_cal)
+		ar9003_mci_init_cal_req(ah, &is_reusable);
+
+	if (sep_iq_cal) {
+		txiqcal_done = ar9003_hw_tx_iq_cal_run(ah);
+		REG_WRITE(ah, AR_PHY_ACTIVE, AR_PHY_ACTIVE_DIS);
+		udelay(5);
+		REG_WRITE(ah, AR_PHY_ACTIVE, AR_PHY_ACTIVE_EN);
+	}
+
+	if (REG_READ(ah, AR_PHY_CL_CAL_CTL) & AR_PHY_CL_CAL_ENABLE) {
+		rx_delay = REG_READ(ah, AR_PHY_RX_DELAY);
+		/* Disable BB_active */
+		REG_WRITE(ah, AR_PHY_ACTIVE, AR_PHY_ACTIVE_DIS);
+		udelay(5);
+		REG_WRITE(ah, AR_PHY_RX_DELAY, AR_PHY_RX_DELAY_DELAY);
+		REG_WRITE(ah, AR_PHY_ACTIVE, AR_PHY_ACTIVE_EN);
+	}
+
+>>>>>>> refs/remotes/origin/master
+	if (run_agc_cal || !(ah->ah_flags & AH_FASTCC)) {
+		/* Calibrate the AGC */
+		REG_WRITE(ah, AR_PHY_AGC_CONTROL,
+			  REG_READ(ah, AR_PHY_AGC_CONTROL) |
+			  AR_PHY_AGC_CONTROL_CAL);
+
+		/* Poll for offset calibration complete */
+		status = ath9k_hw_wait(ah, AR_PHY_AGC_CONTROL,
+				       AR_PHY_AGC_CONTROL_CAL,
+				       0, AH_WAIT_TIMEOUT);
+<<<<<<< HEAD
+	}
+
+	if (mci && IS_CHAN_2GHZ(chan) && run_agc_cal)
+=======
+
+		ar9003_hw_do_manual_peak_cal(ah, chan, run_rtt_cal);
+	}
+
+	if (REG_READ(ah, AR_PHY_CL_CAL_CTL) & AR_PHY_CL_CAL_ENABLE) {
+		REG_WRITE(ah, AR_PHY_RX_DELAY, rx_delay);
+		udelay(5);
+	}
+
+	if (ath9k_hw_mci_is_enabled(ah) && IS_CHAN_2GHZ(chan) && run_agc_cal)
+>>>>>>> refs/remotes/origin/master
+		ar9003_mci_init_cal_done(ah);
+
+	if (rtt && !run_rtt_cal) {
+		agc_ctrl |= agc_supp_cals;
+		REG_WRITE(ah, AR_PHY_AGC_CONTROL, agc_ctrl);
+	}
+
+	if (!status) {
+		if (run_rtt_cal)
+			ar9003_hw_rtt_disable(ah);
+
+		ath_dbg(common, CALIBRATE,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 			"offset calibration failed to complete in 1ms; noisy environment?\n");
+=======
+			"offset calibration failed to complete in %d ms; noisy environment?\n",
+			AH_WAIT_TIMEOUT / 1000);
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 
 	if (txiqcal_done)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ar9003_hw_tx_iq_cal_post_proc(ah);
 
 	/* Revert chainmasks to their original values before NF cal */
 	ar9003_hw_set_chain_masks(ah, ah->rxchainmask, ah->txchainmask);
 
 	ath9k_hw_start_nfcal(ah, true);
+=======
+		ar9003_hw_tx_iq_cal_post_proc(ah, is_reusable);
+	else if (caldata && caldata->done_txiqcal_once)
+		ar9003_hw_tx_iq_cal_reload(ah);
+
+#define CL_TAB_ENTRY(reg_base)	(reg_base + (4 * j))
+	if (caldata && (ah->enabled_cals & TX_CL_CAL)) {
+		txclcal_done = !!(REG_READ(ah, AR_PHY_AGC_CONTROL) &
+					   AR_PHY_AGC_CONTROL_CLC_SUCCESS);
+		if (caldata->done_txclcal_once) {
+			for (i = 0; i < AR9300_MAX_CHAINS; i++) {
+				if (!(ah->txchainmask & (1 << i)))
+					continue;
+				for (j = 0; j < MAX_CL_TAB_ENTRY; j++)
+					REG_WRITE(ah, CL_TAB_ENTRY(cl_idx[i]),
+						  caldata->tx_clcal[i][j]);
+			}
+		} else if (is_reusable && txclcal_done) {
+			for (i = 0; i < AR9300_MAX_CHAINS; i++) {
+				if (!(ah->txchainmask & (1 << i)))
+					continue;
+				for (j = 0; j < MAX_CL_TAB_ENTRY; j++)
+					caldata->tx_clcal[i][j] =
+						REG_READ(ah,
+						  CL_TAB_ENTRY(cl_idx[i]));
+			}
+			caldata->done_txclcal_once = true;
+		}
+	}
+#undef CL_TAB_ENTRY
+
+	if (run_rtt_cal && caldata) {
+		struct ath9k_rtt_hist *hist = &caldata->rtt_hist;
+		if (is_reusable && (hist->num_readings < RTT_HIST_MAX)) {
+			u32 *table;
+
+			hist->num_readings++;
+			for (i = 0; i < AR9300_MAX_CHAINS; i++) {
+				if (!(ah->rxchainmask & (1 << i)))
+					continue;
+				table = &hist->table[i][hist->num_readings][0];
+				ar9003_hw_rtt_fill_hist(ah, i, table);
+			}
+=======
+		ar9003_hw_tx_iq_cal_post_proc(ah, is_reusable);
+	else if (caldata && test_bit(TXIQCAL_DONE, &caldata->cal_flags))
+		ar9003_hw_tx_iq_cal_reload(ah);
+
+	ar9003_hw_cl_cal_post_proc(ah, is_reusable);
+
+	if (run_rtt_cal && caldata) {
+		if (is_reusable) {
+			if (!ath9k_hw_rfbus_req(ah)) {
+				ath_err(ath9k_hw_common(ah),
+					"Could not stop baseband\n");
+			} else {
+				ar9003_hw_rtt_fill_hist(ah);
+
+				if (test_bit(SW_PKDET_DONE, &caldata->cal_flags))
+					ar9003_hw_rtt_load_hist(ah);
+			}
+
+			ath9k_hw_rfbus_done(ah);
+>>>>>>> refs/remotes/origin/master
+		}
+
+		ar9003_hw_rtt_disable(ah);
+	}
+
+	/* Revert chainmask to runtime parameters */
+	ar9003_hw_set_chain_masks(ah, ah->rxchainmask, ah->txchainmask);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Initialize list pointers */
 	ah->cal_list = ah->cal_list_last = ah->cal_list_curr = NULL;
@@ -900,16 +1816,34 @@ static bool ar9003_hw_init_cal(struct ath_hw *ah,
 	if (ah->supp_cals & IQ_MISMATCH_CAL) {
 		INIT_CAL(&ah->iq_caldata);
 		INSERT_CAL(ah, &ah->iq_caldata);
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
 			"enabling IQ Calibration.\n");
+=======
+		ath_dbg(common, CALIBRATE, "enabling IQ Calibration\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (ah->supp_cals & TEMP_COMP_CAL) {
 		INIT_CAL(&ah->tempCompCalData);
 		INSERT_CAL(ah, &ah->tempCompCalData);
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
 			"enabling Temperature Compensation Calibration.\n");
+=======
+		ath_dbg(common, CALIBRATE,
+			"enabling Temperature Compensation Calibration\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+
+	/* Initialize list pointers */
+	ah->cal_list = ah->cal_list_last = ah->cal_list_curr = NULL;
+
+	INIT_CAL(&ah->iq_caldata);
+	INSERT_CAL(ah, &ah->iq_caldata);
+	ath_dbg(common, CALIBRATE, "enabling IQ Calibration\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize current pointer to first element in list */
 	ah->cal_list_curr = ah->cal_list;
@@ -917,8 +1851,18 @@ static bool ar9003_hw_init_cal(struct ath_hw *ah,
 	if (ah->cal_list_curr)
 		ath9k_hw_reset_calibration(ah, ah->cal_list_curr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ah->caldata)
 		ah->caldata->CalValid = 0;
+=======
+	if (caldata)
+		caldata->CalValid = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (caldata)
+		caldata->CalValid = 0;
+>>>>>>> refs/remotes/origin/master
 
 	return true;
 }

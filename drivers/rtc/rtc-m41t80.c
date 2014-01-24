@@ -168,7 +168,11 @@ static int m41t80_set_datetime(struct i2c_client *client, struct rtc_time *tm)
 	buf[M41T80_REG_MIN] =
 		bin2bcd(tm->tm_min) | (buf[M41T80_REG_MIN] & ~0x7f);
 	buf[M41T80_REG_HOUR] =
+<<<<<<< HEAD
 		bin2bcd(tm->tm_hour) | (buf[M41T80_REG_HOUR] & ~0x3f) ;
+=======
+		bin2bcd(tm->tm_hour) | (buf[M41T80_REG_HOUR] & ~0x3f);
+>>>>>>> refs/remotes/origin/master
 	buf[M41T80_REG_WDAY] =
 		(tm->tm_wday & 0x07) | (buf[M41T80_REG_WDAY] & ~0x07);
 	buf[M41T80_REG_DAY] =
@@ -213,6 +217,7 @@ static int m41t80_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	return m41t80_set_datetime(to_i2c_client(dev), tm);
 }
 
+<<<<<<< HEAD
 static int m41t80_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -370,6 +375,16 @@ static struct rtc_class_ops m41t80_rtc_ops = {
 	 *
 	.alarm_irq_enable = m41t80_rtc_alarm_irq_enable,
 	*/
+=======
+/*
+ * XXX - m41t80 alarm functionality is reported broken.
+ * until it is fixed, don't register alarm functions.
+ */
+static struct rtc_class_ops m41t80_rtc_ops = {
+	.read_time = m41t80_rtc_read_time,
+	.set_time = m41t80_rtc_set_time,
+	.proc = m41t80_rtc_proc,
+>>>>>>> refs/remotes/origin/master
 };
 
 #if defined(CONFIG_RTC_INTF_SYSFS) || defined(CONFIG_RTC_INTF_SYSFS_MODULE)
@@ -786,7 +801,12 @@ static int m41t80_probe(struct i2c_client *client,
 	dev_info(&client->dev,
 		 "chip found, driver version " DRV_VERSION "\n");
 
+<<<<<<< HEAD
 	clientdata = kzalloc(sizeof(*clientdata), GFP_KERNEL);
+=======
+	clientdata = devm_kzalloc(&client->dev, sizeof(*clientdata),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!clientdata) {
 		rc = -ENOMEM;
 		goto exit;
@@ -795,8 +815,13 @@ static int m41t80_probe(struct i2c_client *client,
 	clientdata->features = id->driver_data;
 	i2c_set_clientdata(client, clientdata);
 
+<<<<<<< HEAD
 	rtc = rtc_device_register(client->name, &client->dev,
 				  &m41t80_rtc_ops, THIS_MODULE);
+=======
+	rtc = devm_rtc_device_register(&client->dev, client->name,
+					&m41t80_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rtc)) {
 		rc = PTR_ERR(rtc);
 		rtc = NULL;
@@ -867,26 +892,38 @@ ht_err:
 	goto exit;
 
 exit:
+<<<<<<< HEAD
 	if (rtc)
 		rtc_device_unregister(rtc);
 	kfree(clientdata);
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 static int m41t80_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	struct m41t80_data *clientdata = i2c_get_clientdata(client);
 	struct rtc_device *rtc = clientdata->rtc;
 
 #ifdef CONFIG_RTC_DRV_M41T80_WDT
+=======
+#ifdef CONFIG_RTC_DRV_M41T80_WDT
+	struct m41t80_data *clientdata = i2c_get_clientdata(client);
+
+>>>>>>> refs/remotes/origin/master
 	if (clientdata->features & M41T80_FEATURE_HT) {
 		misc_deregister(&wdt_dev);
 		unregister_reboot_notifier(&wdt_notifier);
 	}
 #endif
+<<<<<<< HEAD
 	if (rtc)
 		rtc_device_unregister(rtc);
 	kfree(clientdata);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -900,6 +937,8 @@ static struct i2c_driver m41t80_driver = {
 	.id_table = m41t80_id,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init m41t80_rtc_init(void)
 {
 	return i2c_add_driver(&m41t80_driver);
@@ -909,11 +948,23 @@ static void __exit m41t80_rtc_exit(void)
 {
 	i2c_del_driver(&m41t80_driver);
 }
+=======
+module_i2c_driver(m41t80_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(m41t80_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alexander Bigga <ab@mycable.de>");
 MODULE_DESCRIPTION("ST Microelectronics M41T80 series RTC I2C Client Driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(m41t80_rtc_init);
 module_exit(m41t80_rtc_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

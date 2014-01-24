@@ -44,7 +44,17 @@ __init_begin = .;
 	. = ALIGN(PAGE_SIZE);
 	__init_end = .;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   BSS_SECTION(0, 0, 0)
+=======
+  _sbss = .;
+  BSS_SECTION(0, 0, 0)
+  _ebss = .;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  BSS_SECTION(0, 0, 0)
+>>>>>>> refs/remotes/origin/master
 
   _end = . ;
 

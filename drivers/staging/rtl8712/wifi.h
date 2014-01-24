@@ -1,7 +1,49 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/******************************************************************************
+ *
+ * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of version 2 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ * Modifications for inclusion into the Linux staging tree are
+ * Copyright(c) 2010 Larry Finger. All rights reserved.
+ *
+ * Contact information:
+ * WLAN FAE <wlanfae@realtek.com>
+ * Larry Finger <Larry.Finger@lwfinger.net>
+ *
+ ******************************************************************************/
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _WIFI_H_
 #define _WIFI_H_
 
 #include "rtl871x_byteorder.h"
+<<<<<<< HEAD
+=======
+#include <linux/compiler.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef _WIFI_H_
+#define _WIFI_H_
+
+#include <linux/compiler.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef BIT
 #undef BIT
@@ -134,14 +176,21 @@ enum WIFI_REG_DOMAIN {
 #define _PRIVACY_	BIT(14)
 #define _ORDER_		BIT(15)
 
+<<<<<<< HEAD
 #define SetToDs(pbuf)	\
 	do	{	\
 		*(unsigned short *)(pbuf) |= cpu_to_le16(_TO_DS_); \
 	} while (0)
+=======
+#define SetToDs(pbuf) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16(_TO_DS_); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define GetToDs(pbuf)	(((*(unsigned short *)(pbuf)) & \
 			le16_to_cpu(_TO_DS_)) != 0)
 
+<<<<<<< HEAD
 #define ClearToDs(pbuf)	\
 	do	{	\
 		*(unsigned short *)(pbuf) &= (~cpu_to_le16(_TO_DS_)); \
@@ -151,26 +200,48 @@ enum WIFI_REG_DOMAIN {
 	do	{	\
 		*(unsigned short *)(pbuf) |= cpu_to_le16(_FROM_DS_); \
 	} while (0)
+=======
+#define ClearToDs(pbuf)	({ \
+	*(unsigned short *)(pbuf) &= (~cpu_to_le16(_TO_DS_)); \
+})
+
+#define SetFrDs(pbuf) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16(_FROM_DS_); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define GetFrDs(pbuf)	(((*(unsigned short *)(pbuf)) & \
 			le16_to_cpu(_FROM_DS_)) != 0)
 
+<<<<<<< HEAD
 #define ClearFrDs(pbuf)	\
 	do	{	\
 		*(unsigned short *)(pbuf) &= (~cpu_to_le16(_FROM_DS_)); \
 	} while (0)
+=======
+#define ClearFrDs(pbuf)	({ \
+	*(unsigned short *)(pbuf) &= (~cpu_to_le16(_FROM_DS_)); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define get_tofr_ds(pframe)	((GetToDs(pframe) << 1) | GetFrDs(pframe))
 
 
+<<<<<<< HEAD
 #define SetMFrag(pbuf)	\
 	do	{	\
 		*(unsigned short *)(pbuf) |= cpu_to_le16(_MORE_FRAG_); \
 	} while (0)
+=======
+#define SetMFrag(pbuf) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16(_MORE_FRAG_); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define GetMFrag(pbuf)	(((*(unsigned short *)(pbuf)) & \
 			le16_to_cpu(_MORE_FRAG_)) != 0)
 
+<<<<<<< HEAD
 #define ClearMFrag(pbuf)	\
 	do	{	\
 		*(unsigned short *)(pbuf) &= (~cpu_to_le16(_MORE_FRAG_)); \
@@ -180,10 +251,20 @@ enum WIFI_REG_DOMAIN {
 	do	{	\
 		*(unsigned short *)(pbuf) |= cpu_to_le16(_RETRY_); \
 	} while (0)
+=======
+#define ClearMFrag(pbuf) ({ \
+	*(unsigned short *)(pbuf) &= (~cpu_to_le16(_MORE_FRAG_)); \
+})
+
+#define SetRetry(pbuf) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16(_RETRY_); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define GetRetry(pbuf)	(((*(unsigned short *)(pbuf)) & \
 			le16_to_cpu(_RETRY_)) != 0)
 
+<<<<<<< HEAD
 #define ClearRetry(pbuf)	\
 	do	{	\
 		*(unsigned short *)(pbuf) &= (~cpu_to_le16(_RETRY_)); \
@@ -193,10 +274,20 @@ enum WIFI_REG_DOMAIN {
 	do	{	\
 		*(unsigned short *)(pbuf) |= cpu_to_le16(_PWRMGT_); \
 	} while (0)
+=======
+#define ClearRetry(pbuf) ({ \
+	*(unsigned short *)(pbuf) &= (~cpu_to_le16(_RETRY_)); \
+})
+
+#define SetPwrMgt(pbuf) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16(_PWRMGT_); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define GetPwrMgt(pbuf)	(((*(unsigned short *)(pbuf)) & \
 			le16_to_cpu(_PWRMGT_)) != 0)
 
+<<<<<<< HEAD
 #define ClearPwrMgt(pbuf)	\
 	do	{	\
 		*(unsigned short *)(pbuf) &= (~cpu_to_le16(_PWRMGT_)); \
@@ -206,10 +297,20 @@ enum WIFI_REG_DOMAIN {
 	do	{	\
 		*(unsigned short *)(pbuf) |= cpu_to_le16(_MORE_DATA_); \
 	} while (0)
+=======
+#define ClearPwrMgt(pbuf) ({ \
+	*(unsigned short *)(pbuf) &= (~cpu_to_le16(_PWRMGT_)); \
+})
+
+#define SetMData(pbuf) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16(_MORE_DATA_); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define GetMData(pbuf)	(((*(unsigned short *)(pbuf)) & \
 			le16_to_cpu(_MORE_DATA_)) != 0)
 
+<<<<<<< HEAD
 #define ClearMData(pbuf)	\
 	do	{	\
 		*(unsigned short *)(pbuf) &= (~cpu_to_le16(_MORE_DATA_)); \
@@ -219,14 +320,29 @@ enum WIFI_REG_DOMAIN {
 	do	{	\
 		*(unsigned short *)(pbuf) |= cpu_to_le16(_PRIVACY_); \
 	} while (0)
+=======
+#define ClearMData(pbuf) ({ \
+	*(unsigned short *)(pbuf) &= (~cpu_to_le16(_MORE_DATA_)); \
+})
+
+#define SetPrivacy(pbuf) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16(_PRIVACY_); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define GetPrivacy(pbuf)	(((*(unsigned short *)(pbuf)) & \
 				le16_to_cpu(_PRIVACY_)) != 0)
 
+<<<<<<< HEAD
 #define ClearPrivacy(pbuf)	\
 	do	{	\
 		*(unsigned short *)(pbuf) &= (~cpu_to_le16(_PRIVACY_)); \
 	} while (0)
+=======
+#define ClearPrivacy(pbuf) ({ \
+	*(unsigned short *)(pbuf) &= (~cpu_to_le16(_PRIVACY_)); \
+})
+>>>>>>> refs/remotes/origin/master
 
 
 #define GetOrder(pbuf)	(((*(unsigned short *)(pbuf)) & \
@@ -262,6 +378,7 @@ enum WIFI_REG_DOMAIN {
 #define GetTupleCache(pbuf)	(cpu_to_le16(*(unsigned short *)\
 				((addr_t)(pbuf) + 22)))
 
+<<<<<<< HEAD
 #define SetFragNum(pbuf, num) \
 	do {    \
 		*(unsigned short *)((addr_t)(pbuf) + 22) = \
@@ -295,15 +412,51 @@ enum WIFI_REG_DOMAIN {
 	do	{	\
 		*(unsigned short *)(pbuf) |= cpu_to_le16((ack & 3) << 5); \
 	} while (0)
+=======
+#define SetFragNum(pbuf, num) ({ \
+	*(unsigned short *)((addr_t)(pbuf) + 22) = \
+	((*(unsigned short *)((addr_t)(pbuf) + 22)) & \
+	le16_to_cpu(~(0x000f))) | \
+	cpu_to_le16(0x0f & (num));     \
+})
+
+#define SetSeqNum(pbuf, num) ({ \
+	*(unsigned short *)((addr_t)(pbuf) + 22) = \
+	((*(unsigned short *)((addr_t)(pbuf) + 22)) & \
+	le16_to_cpu((unsigned short)0x000f)) | \
+	le16_to_cpu((unsigned short)(0xfff0 & (num << 4))); \
+})
+
+#define SetDuration(pbuf, dur) ({ \
+	*(unsigned short *)((addr_t)(pbuf) + 2) |= \
+	cpu_to_le16(0xffff & (dur)); \
+})
+
+#define SetPriority(pbuf, tid) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16(tid & 0xf); \
+})
+
+#define GetPriority(pbuf)	((le16_to_cpu(*(unsigned short *)(pbuf))) & 0xf)
+
+#define SetAckpolicy(pbuf, ack) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16((ack & 3) << 5); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define GetAckpolicy(pbuf) (((le16_to_cpu(*(unsigned short *)pbuf)) >> 5) & 0x3)
 
 #define GetAMsdu(pbuf) (((le16_to_cpu(*(unsigned short *)pbuf)) >> 7) & 0x1)
 
+<<<<<<< HEAD
 #define SetAMsdu(pbuf, amsdu)	\
 	do	{	\
 		*(unsigned short *)(pbuf) |= cpu_to_le16((amsdu & 1) << 7); \
 	} while (0)
+=======
+#define SetAMsdu(pbuf, amsdu) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16((amsdu & 1) << 7); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define GetAid(pbuf)	(cpu_to_le16(*(unsigned short *)((addr_t)(pbuf) + 2)) \
 			& 0x3fff)
@@ -432,11 +585,15 @@ static inline unsigned char *get_hdr_bssid(unsigned char *pframe)
 #define _SSID_IE_		0
 #define _SUPPORTEDRATES_IE_	1
 #define _DSSET_IE_		3
+<<<<<<< HEAD
 #define _TIM_IE_		5
 #define _IBSS_PARA_IE_		6
 #define _CHLGETXT_IE_		16
 #define _RSN_IE_2_		48`
 #define _SSN_IE_1_		221
+=======
+#define _IBSS_PARA_IE_		6
+>>>>>>> refs/remotes/origin/master
 #define _ERPINFO_IE_		42
 #define _EXT_SUPPORTEDRATES_IE_	50
 
@@ -501,10 +658,16 @@ static inline unsigned char *get_hdr_bssid(unsigned char *pframe)
 #define IEEE80211_DELBA_PARAM_TID_MASK 0xF000
 #define IEEE80211_DELBA_PARAM_INITIATOR_MASK 0x0800
 
+<<<<<<< HEAD
 #define SetOrderBit(pbuf)	\
 	do	{	\
 		*(unsigned short *)(pbuf) |= cpu_to_le16(_ORDER_); \
 	} while (0)
+=======
+#define SetOrderBit(pbuf) ({ \
+	*(unsigned short *)(pbuf) |= cpu_to_le16(_ORDER_); \
+})
+>>>>>>> refs/remotes/origin/master
 
 #define GetOrderBit(pbuf)	(((*(unsigned short *)(pbuf)) & \
 				le16_to_cpu(_ORDER_)) != 0)
@@ -523,7 +686,15 @@ struct ieee80211_bar {
 	unsigned char ta[6];
 	unsigned short control;
 	unsigned short start_seq_num;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /* 802.11 BAR control masks */
 #define IEEE80211_BAR_CTRL_ACK_POLICY_NORMAL     0x0000
@@ -544,7 +715,15 @@ struct ieee80211_ht_cap {
 	unsigned short	extended_ht_cap_info;
 	unsigned int		tx_BF_cap_info;
 	unsigned char	       antenna_selection_info;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct ieee80211_ht_cap - HT additional information
@@ -558,7 +737,15 @@ struct ieee80211_ht_addt_info {
 	unsigned short	operation_mode;
 	unsigned short	stbc_param;
 	unsigned char		basic_set[16];
+<<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /* 802.11n HT capabilities masks */
 #define IEEE80211_HT_CAP_SUP_WIDTH		0x0002

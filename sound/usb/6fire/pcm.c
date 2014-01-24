@@ -5,7 +5,13 @@
  *
  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
  * Created:	Jan 01, 2011
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Version:	0.3.0
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright:	(C) Torsten Schenk
  *
  * This program is free software; you can redistribute it and/or modify
@@ -136,6 +142,12 @@ static void usb6fire_pcm_stream_stop(struct pcm_runtime *rt)
 	struct control_runtime *ctrl_rt = rt->chip->control;
 
 	if (rt->stream_state != STREAM_DISABLED) {
+<<<<<<< HEAD
+=======
+
+		rt->stream_state = STREAM_STOPPING;
+
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < PCM_N_URBS; i++) {
 			usb_kill_urb(&rt->in_urbs[i].instance);
 			usb_kill_urb(&rt->out_urbs[i].instance);
@@ -448,13 +460,22 @@ static int usb6fire_pcm_close(struct snd_pcm_substream *alsa_sub)
 static int usb6fire_pcm_hw_params(struct snd_pcm_substream *alsa_sub,
 		struct snd_pcm_hw_params *hw_params)
 {
+<<<<<<< HEAD
 	return snd_pcm_lib_malloc_pages(alsa_sub,
 			params_buffer_bytes(hw_params));
+=======
+	return snd_pcm_lib_alloc_vmalloc_buffer(alsa_sub,
+						params_buffer_bytes(hw_params));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usb6fire_pcm_hw_free(struct snd_pcm_substream *alsa_sub)
 {
+<<<<<<< HEAD
 	return snd_pcm_lib_free_pages(alsa_sub);
+=======
+	return snd_pcm_lib_free_vmalloc_buffer(alsa_sub);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usb6fire_pcm_prepare(struct snd_pcm_substream *alsa_sub)
@@ -558,11 +579,21 @@ static struct snd_pcm_ops pcm_ops = {
 	.prepare = usb6fire_pcm_prepare,
 	.trigger = usb6fire_pcm_trigger,
 	.pointer = usb6fire_pcm_pointer,
+<<<<<<< HEAD
 };
 
 static void __devinit usb6fire_pcm_init_urb(struct pcm_urb *urb,
 		struct sfire_chip *chip, bool in, int ep,
 		void (*handler)(struct urb *))
+=======
+	.page = snd_pcm_lib_get_vmalloc_page,
+	.mmap = snd_pcm_lib_mmap_vmalloc,
+};
+
+static void usb6fire_pcm_init_urb(struct pcm_urb *urb,
+				  struct sfire_chip *chip, bool in, int ep,
+				  void (*handler)(struct urb *))
+>>>>>>> refs/remotes/origin/master
 {
 	urb->chip = chip;
 	usb_init_urb(&urb->instance);
@@ -573,13 +604,47 @@ static void __devinit usb6fire_pcm_init_urb(struct pcm_urb *urb,
 	urb->instance.pipe = in ? usb_rcvisocpipe(chip->dev, ep)
 			: usb_sndisocpipe(chip->dev, ep);
 	urb->instance.interval = 1;
+<<<<<<< HEAD
 	urb->instance.transfer_flags = URB_ISO_ASAP;
+=======
+>>>>>>> refs/remotes/origin/master
 	urb->instance.complete = handler;
 	urb->instance.context = urb;
 	urb->instance.number_of_packets = PCM_N_PACKETS_PER_URB;
 }
 
+<<<<<<< HEAD
 int __devinit usb6fire_pcm_init(struct sfire_chip *chip)
+=======
+static int usb6fire_pcm_buffers_init(struct pcm_runtime *rt)
+{
+	int i;
+
+	for (i = 0; i < PCM_N_URBS; i++) {
+		rt->out_urbs[i].buffer = kzalloc(PCM_N_PACKETS_PER_URB
+				* PCM_MAX_PACKET_SIZE, GFP_KERNEL);
+		if (!rt->out_urbs[i].buffer)
+			return -ENOMEM;
+		rt->in_urbs[i].buffer = kzalloc(PCM_N_PACKETS_PER_URB
+				* PCM_MAX_PACKET_SIZE, GFP_KERNEL);
+		if (!rt->in_urbs[i].buffer)
+			return -ENOMEM;
+	}
+	return 0;
+}
+
+static void usb6fire_pcm_buffers_destroy(struct pcm_runtime *rt)
+{
+	int i;
+
+	for (i = 0; i < PCM_N_URBS; i++) {
+		kfree(rt->out_urbs[i].buffer);
+		kfree(rt->in_urbs[i].buffer);
+	}
+}
+
+int usb6fire_pcm_init(struct sfire_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int ret;
@@ -590,6 +655,16 @@ int __devinit usb6fire_pcm_init(struct sfire_chip *chip)
 	if (!rt)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	ret = usb6fire_pcm_buffers_init(rt);
+	if (ret) {
+		usb6fire_pcm_buffers_destroy(rt);
+		kfree(rt);
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	rt->chip = chip;
 	rt->stream_state = STREAM_DISABLED;
 	rt->rate = ARRAY_SIZE(rates);
@@ -611,6 +686,10 @@ int __devinit usb6fire_pcm_init(struct sfire_chip *chip)
 
 	ret = snd_pcm_new(chip->card, "DMX6FireUSB", 0, 1, 1, &pcm);
 	if (ret < 0) {
+<<<<<<< HEAD
+=======
+		usb6fire_pcm_buffers_destroy(rt);
+>>>>>>> refs/remotes/origin/master
 		kfree(rt);
 		snd_printk(KERN_ERR PREFIX "cannot create pcm instance.\n");
 		return ret;
@@ -621,11 +700,16 @@ int __devinit usb6fire_pcm_init(struct sfire_chip *chip)
 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_ops);
 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_ops);
 
+<<<<<<< HEAD
 	ret = snd_pcm_lib_preallocate_pages_for_all(pcm,
 			SNDRV_DMA_TYPE_CONTINUOUS,
 			snd_dma_continuous_data(GFP_KERNEL),
 			MAX_BUFSIZE, MAX_BUFSIZE);
 	if (ret) {
+=======
+	if (ret) {
+		usb6fire_pcm_buffers_destroy(rt);
+>>>>>>> refs/remotes/origin/master
 		kfree(rt);
 		snd_printk(KERN_ERR PREFIX
 				"error preallocating pcm buffers.\n");
@@ -640,17 +724,37 @@ int __devinit usb6fire_pcm_init(struct sfire_chip *chip)
 void usb6fire_pcm_abort(struct sfire_chip *chip)
 {
 	struct pcm_runtime *rt = chip->pcm;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (rt) {
 		rt->panic = true;
 
+<<<<<<< HEAD
 		if (rt->playback.instance)
 			snd_pcm_stop(rt->playback.instance,
 					SNDRV_PCM_STATE_XRUN);
 		if (rt->capture.instance)
 			snd_pcm_stop(rt->capture.instance,
 					SNDRV_PCM_STATE_XRUN);
+=======
+		if (rt->playback.instance) {
+			snd_pcm_stream_lock_irqsave(rt->playback.instance, flags);
+			snd_pcm_stop(rt->playback.instance,
+					SNDRV_PCM_STATE_XRUN);
+			snd_pcm_stream_unlock_irqrestore(rt->playback.instance, flags);
+		}
+
+		if (rt->capture.instance) {
+			snd_pcm_stream_lock_irqsave(rt->capture.instance, flags);
+			snd_pcm_stop(rt->capture.instance,
+					SNDRV_PCM_STATE_XRUN);
+			snd_pcm_stream_unlock_irqrestore(rt->capture.instance, flags);
+		}
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 0; i < PCM_N_URBS; i++) {
 			usb_poison_urb(&rt->in_urbs[i].instance);
@@ -662,6 +766,13 @@ void usb6fire_pcm_abort(struct sfire_chip *chip)
 
 void usb6fire_pcm_destroy(struct sfire_chip *chip)
 {
+<<<<<<< HEAD
 	kfree(chip->pcm);
+=======
+	struct pcm_runtime *rt = chip->pcm;
+
+	usb6fire_pcm_buffers_destroy(rt);
+	kfree(rt);
+>>>>>>> refs/remotes/origin/master
 	chip->pcm = NULL;
 }

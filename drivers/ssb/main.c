@@ -3,7 +3,15 @@
  * Subsystem core
  *
  * Copyright 2005, Broadcom Corporation
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2006, 2007, Michael Buesch <mb@bu3sch.de>
+=======
+ * Copyright 2006, 2007, Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2006, 2007, Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GNU/GPL. See COPYING for details.
  */
@@ -12,6 +20,15 @@
 
 #include <linux/delay.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ssb/ssb.h>
 #include <linux/ssb/ssb_regs.h>
 #include <linux/ssb/ssb_driver_gige.h>
@@ -139,6 +156,8 @@ static void ssb_device_put(struct ssb_device *dev)
 		put_device(dev->dev);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct ssb_driver *ssb_driver_get(struct ssb_driver *drv)
 {
 	if (drv)
@@ -152,6 +171,10 @@ static inline void ssb_driver_put(struct ssb_driver *drv)
 		put_driver(&drv->drv);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ssb_device_resume(struct device *dev)
 {
 	struct ssb_device *ssb_dev = dev_to_ssb_dev(dev);
@@ -249,11 +272,23 @@ int ssb_devices_freeze(struct ssb_bus *bus, struct ssb_freeze_context *ctx)
 			ssb_device_put(sdev);
 			continue;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sdrv = ssb_driver_get(drv_to_ssb_drv(sdev->dev->driver));
 		if (!sdrv || SSB_WARN_ON(!sdrv->remove)) {
 			ssb_device_put(sdev);
 			continue;
 		}
+=======
+		sdrv = drv_to_ssb_drv(sdev->dev->driver);
+		if (SSB_WARN_ON(!sdrv->remove))
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sdrv = drv_to_ssb_drv(sdev->dev->driver);
+		if (SSB_WARN_ON(!sdrv->remove))
+			continue;
+>>>>>>> refs/remotes/origin/master
 		sdrv->remove(sdev);
 		ctx->device_frozen[i] = 1;
 	}
@@ -288,11 +323,21 @@ int ssb_devices_thaw(struct ssb_freeze_context *ctx)
 
 		err = sdrv->probe(sdev, &sdev->id);
 		if (err) {
+<<<<<<< HEAD
 			ssb_printk(KERN_ERR PFX "Failed to thaw device %s\n",
 				   dev_name(sdev->dev));
 			result = err;
 		}
+<<<<<<< HEAD
 		ssb_driver_put(sdrv);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ssb_err("Failed to thaw device %s\n",
+				dev_name(sdev->dev));
+			result = err;
+		}
+>>>>>>> refs/remotes/origin/master
 		ssb_device_put(sdev);
 	}
 
@@ -388,7 +433,12 @@ static ssize_t \
 attrib##_show(struct device *dev, struct device_attribute *attr, char *buf) \
 { \
 	return sprintf(buf, format_string, dev_to_ssb_dev(dev)->field); \
+<<<<<<< HEAD
 }
+=======
+} \
+static DEVICE_ATTR_RO(attrib);
+>>>>>>> refs/remotes/origin/master
 
 ssb_config_attr(core_num, core_index, "%u\n")
 ssb_config_attr(coreid, id.coreid, "0x%04x\n")
@@ -401,6 +451,7 @@ name_show(struct device *dev, struct device_attribute *attr, char *buf)
 	return sprintf(buf, "%s\n",
 		       ssb_core_name(dev_to_ssb_dev(dev)->id.coreid));
 }
+<<<<<<< HEAD
 
 static struct device_attribute ssb_device_attrs[] = {
 	__ATTR_RO(name),
@@ -411,6 +462,20 @@ static struct device_attribute ssb_device_attrs[] = {
 	__ATTR_RO(irq),
 	__ATTR_NULL,
 };
+=======
+static DEVICE_ATTR_RO(name);
+
+static struct attribute *ssb_device_attrs[] = {
+	&dev_attr_name.attr,
+	&dev_attr_core_num.attr,
+	&dev_attr_coreid.attr,
+	&dev_attr_vendor.attr,
+	&dev_attr_revision.attr,
+	&dev_attr_irq.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(ssb_device);
+>>>>>>> refs/remotes/origin/master
 
 static struct bus_type ssb_bustype = {
 	.name		= "ssb",
@@ -421,7 +486,11 @@ static struct bus_type ssb_bustype = {
 	.suspend	= ssb_device_suspend,
 	.resume		= ssb_device_resume,
 	.uevent		= ssb_device_uevent,
+<<<<<<< HEAD
 	.dev_attrs	= ssb_device_attrs,
+=======
+	.dev_groups	= ssb_device_groups,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void ssb_buses_lock(void)
@@ -448,10 +517,29 @@ static void ssb_devices_unregister(struct ssb_bus *bus)
 		if (sdev->dev)
 			device_unregister(sdev->dev);
 	}
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_SSB_EMBEDDED
+	if (bus->bustype == SSB_BUSTYPE_SSB)
+		platform_device_unregister(bus->watchdog);
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 void ssb_bus_unregister(struct ssb_bus *bus)
 {
+<<<<<<< HEAD
+=======
+	int err;
+
+	err = ssb_gpio_unregister(bus);
+	if (err == -EBUSY)
+		ssb_dbg("Some GPIOs are still in use\n");
+	else if (err)
+		ssb_dbg("Can not unregister GPIO driver: %i\n", err);
+
+>>>>>>> refs/remotes/origin/master
 	ssb_buses_lock();
 	ssb_devices_unregister(bus);
 	list_del(&bus->list);
@@ -497,8 +585,12 @@ static int ssb_devices_register(struct ssb_bus *bus)
 
 		devwrap = kzalloc(sizeof(*devwrap), GFP_KERNEL);
 		if (!devwrap) {
+<<<<<<< HEAD
 			ssb_printk(KERN_ERR PFX
 				   "Could not allocate device\n");
+=======
+			ssb_err("Could not allocate device\n");
+>>>>>>> refs/remotes/origin/master
 			err = -ENOMEM;
 			goto error;
 		}
@@ -537,9 +629,13 @@ static int ssb_devices_register(struct ssb_bus *bus)
 		sdev->dev = dev;
 		err = device_register(dev);
 		if (err) {
+<<<<<<< HEAD
 			ssb_printk(KERN_ERR PFX
 				   "Could not register %s\n",
 				   dev_name(dev));
+=======
+			ssb_err("Could not register %s\n", dev_name(dev));
+>>>>>>> refs/remotes/origin/master
 			/* Set dev to NULL to not unregister
 			 * dev on error unwinding. */
 			sdev->dev = NULL;
@@ -549,6 +645,25 @@ static int ssb_devices_register(struct ssb_bus *bus)
 		dev_idx++;
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SSB_DRIVER_MIPS
+	if (bus->mipscore.pflash.present) {
+		err = platform_device_register(&ssb_pflash_dev);
+		if (err)
+			pr_err("Error registering parallel flash\n");
+	}
+#endif
+
+#ifdef CONFIG_SSB_SFLASH
+	if (bus->mipscore.sflash.present) {
+		err = platform_device_register(&ssb_sflash_dev);
+		if (err)
+			pr_err("Error registering serial flash\n");
+	}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 error:
 	/* Unwind the already registered devices. */
@@ -557,7 +672,15 @@ error:
 }
 
 /* Needs ssb_buses_lock() */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ssb_attach_queued_buses(void)
+=======
+static int __devinit ssb_attach_queued_buses(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ssb_attach_queued_buses(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ssb_bus *bus, *n;
 	int err = 0;
@@ -576,6 +699,11 @@ static int ssb_attach_queued_buses(void)
 		if (err)
 			goto error;
 		ssb_pcicore_init(&bus->pcicore);
+<<<<<<< HEAD
+=======
+		if (bus->bustype == SSB_BUSTYPE_SSB)
+			ssb_watchdog_register(bus);
+>>>>>>> refs/remotes/origin/master
 		ssb_bus_may_powerdown(bus);
 
 		err = ssb_devices_register(bus);
@@ -768,9 +896,21 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ssb_bus_register(struct ssb_bus *bus,
 			    ssb_invariants_func_t get_invariants,
 			    unsigned long baseaddr)
+=======
+static int __devinit ssb_bus_register(struct ssb_bus *bus,
+				      ssb_invariants_func_t get_invariants,
+				      unsigned long baseaddr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ssb_bus_register(struct ssb_bus *bus,
+			    ssb_invariants_func_t get_invariants,
+			    unsigned long baseaddr)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -811,7 +951,17 @@ static int ssb_bus_register(struct ssb_bus *bus,
 	if (err)
 		goto err_pcmcia_exit;
 	ssb_chipcommon_init(&bus->chipco);
+<<<<<<< HEAD
 	ssb_mipscore_init(&bus->mipscore);
+=======
+	ssb_extif_init(&bus->extif);
+	ssb_mipscore_init(&bus->mipscore);
+	err = ssb_gpio_init(bus);
+	if (err == -ENOTSUPP)
+		ssb_dbg("GPIO driver not activated\n");
+	else if (err)
+		ssb_dbg("Error registering GPIO driver: %i\n", err);
+>>>>>>> refs/remotes/origin/master
 	err = ssb_fetch_invariants(bus, get_invariants);
 	if (err) {
 		ssb_bus_may_powerdown(bus);
@@ -851,8 +1001,17 @@ err_disable_xtal:
 }
 
 #ifdef CONFIG_SSB_PCIHOST
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ssb_bus_pcibus_register(struct ssb_bus *bus,
 			    struct pci_dev *host_pci)
+=======
+int __devinit ssb_bus_pcibus_register(struct ssb_bus *bus,
+				      struct pci_dev *host_pci)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ssb_bus_pcibus_register(struct ssb_bus *bus, struct pci_dev *host_pci)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -862,11 +1021,19 @@ int ssb_bus_pcibus_register(struct ssb_bus *bus,
 
 	err = ssb_bus_register(bus, ssb_pci_get_invariants, 0);
 	if (!err) {
+<<<<<<< HEAD
 		ssb_printk(KERN_INFO PFX "Sonics Silicon Backplane found on "
 			   "PCI device %s\n", dev_name(&host_pci->dev));
 	} else {
 		ssb_printk(KERN_ERR PFX "Failed to register PCI version"
 			   " of SSB with error %d\n", err);
+=======
+		ssb_info("Sonics Silicon Backplane found on PCI device %s\n",
+			 dev_name(&host_pci->dev));
+	} else {
+		ssb_err("Failed to register PCI version of SSB with error %d\n",
+			err);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return err;
@@ -875,9 +1042,21 @@ EXPORT_SYMBOL(ssb_bus_pcibus_register);
 #endif /* CONFIG_SSB_PCIHOST */
 
 #ifdef CONFIG_SSB_PCMCIAHOST
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ssb_bus_pcmciabus_register(struct ssb_bus *bus,
 			       struct pcmcia_device *pcmcia_dev,
 			       unsigned long baseaddr)
+=======
+int __devinit ssb_bus_pcmciabus_register(struct ssb_bus *bus,
+					 struct pcmcia_device *pcmcia_dev,
+					 unsigned long baseaddr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ssb_bus_pcmciabus_register(struct ssb_bus *bus,
+			       struct pcmcia_device *pcmcia_dev,
+			       unsigned long baseaddr)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -887,8 +1066,13 @@ int ssb_bus_pcmciabus_register(struct ssb_bus *bus,
 
 	err = ssb_bus_register(bus, ssb_pcmcia_get_invariants, baseaddr);
 	if (!err) {
+<<<<<<< HEAD
 		ssb_printk(KERN_INFO PFX "Sonics Silicon Backplane found on "
 			   "PCMCIA device %s\n", pcmcia_dev->devname);
+=======
+		ssb_info("Sonics Silicon Backplane found on PCMCIA device %s\n",
+			 pcmcia_dev->devname);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return err;
@@ -897,8 +1081,19 @@ EXPORT_SYMBOL(ssb_bus_pcmciabus_register);
 #endif /* CONFIG_SSB_PCMCIAHOST */
 
 #ifdef CONFIG_SSB_SDIOHOST
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ssb_bus_sdiobus_register(struct ssb_bus *bus, struct sdio_func *func,
 			     unsigned int quirks)
+=======
+int __devinit ssb_bus_sdiobus_register(struct ssb_bus *bus,
+				       struct sdio_func *func,
+				       unsigned int quirks)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ssb_bus_sdiobus_register(struct ssb_bus *bus, struct sdio_func *func,
+			     unsigned int quirks)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -909,8 +1104,13 @@ int ssb_bus_sdiobus_register(struct ssb_bus *bus, struct sdio_func *func,
 
 	err = ssb_bus_register(bus, ssb_sdio_get_invariants, ~0);
 	if (!err) {
+<<<<<<< HEAD
 		ssb_printk(KERN_INFO PFX "Sonics Silicon Backplane found on "
 			   "SDIO device %s\n", sdio_func_id(func));
+=======
+		ssb_info("Sonics Silicon Backplane found on SDIO device %s\n",
+			 sdio_func_id(func));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return err;
@@ -918,9 +1118,20 @@ int ssb_bus_sdiobus_register(struct ssb_bus *bus, struct sdio_func *func,
 EXPORT_SYMBOL(ssb_bus_sdiobus_register);
 #endif /* CONFIG_SSB_PCMCIAHOST */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ssb_bus_ssbbus_register(struct ssb_bus *bus,
 			    unsigned long baseaddr,
 			    ssb_invariants_func_t get_invariants)
+=======
+int __devinit ssb_bus_ssbbus_register(struct ssb_bus *bus,
+				      unsigned long baseaddr,
+				      ssb_invariants_func_t get_invariants)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ssb_bus_ssbbus_register(struct ssb_bus *bus, unsigned long baseaddr,
+			    ssb_invariants_func_t get_invariants)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -929,8 +1140,13 @@ int ssb_bus_ssbbus_register(struct ssb_bus *bus,
 
 	err = ssb_bus_register(bus, get_invariants, baseaddr);
 	if (!err) {
+<<<<<<< HEAD
 		ssb_printk(KERN_INFO PFX "Sonics Silicon Backplane found at "
 			   "address 0x%08lX\n", baseaddr);
+=======
+		ssb_info("Sonics Silicon Backplane found at address 0x%08lX\n",
+			 baseaddr);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return err;
@@ -1001,8 +1217,18 @@ u32 ssb_calc_clock_rate(u32 plltype, u32 n, u32 m)
 	switch (plltype) {
 	case SSB_PLLTYPE_6: /* 100/200 or 120/240 only */
 		if (m & SSB_CHIPCO_CLK_T6_MMASK)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return SSB_CHIPCO_CLK_T6_M0;
 		return SSB_CHIPCO_CLK_T6_M1;
+=======
+			return SSB_CHIPCO_CLK_T6_M1;
+		return SSB_CHIPCO_CLK_T6_M0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return SSB_CHIPCO_CLK_T6_M1;
+		return SSB_CHIPCO_CLK_T6_M0;
+>>>>>>> refs/remotes/origin/master
 	case SSB_PLLTYPE_1: /* 48Mhz base, 3 dividers */
 	case SSB_PLLTYPE_3: /* 25Mhz, 2 dividers */
 	case SSB_PLLTYPE_4: /* 48Mhz, 4 dividers */
@@ -1092,6 +1318,18 @@ u32 ssb_clockspeed(struct ssb_bus *bus)
 	u32 plltype;
 	u32 clkctl_n, clkctl_m;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (bus->chipco.capabilities & SSB_CHIPCO_CAP_PMU)
+		return ssb_pmu_get_controlclock(&bus->chipco);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bus->chipco.capabilities & SSB_CHIPCO_CAP_PMU)
+		return ssb_pmu_get_controlclock(&bus->chipco);
+
+>>>>>>> refs/remotes/origin/master
 	if (ssb_extif_available(&bus->extif))
 		ssb_extif_get_clockcontrol(&bus->extif, &plltype,
 					   &clkctl_n, &clkctl_m);
@@ -1129,8 +1367,12 @@ static u32 ssb_tmslow_reject_bitmask(struct ssb_device *dev)
 	case SSB_IDLOW_SSBREV_27:     /* same here */
 		return SSB_TMSLOW_REJECT;	/* this is a guess */
 	default:
+<<<<<<< HEAD
 		printk(KERN_INFO "ssb: Backplane Revision 0x%.8X\n", rev);
 		WARN_ON(1);
+=======
+		WARN(1, KERN_INFO "ssb: Backplane Revision 0x%.8X\n", rev);
+>>>>>>> refs/remotes/origin/master
 	}
 	return (SSB_TMSLOW_REJECT | SSB_TMSLOW_REJECT_23);
 }
@@ -1259,13 +1501,53 @@ void ssb_device_disable(struct ssb_device *dev, u32 core_specific_flags)
 }
 EXPORT_SYMBOL(ssb_device_disable);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* Some chipsets need routing known for PCIe and 64-bit DMA */
+static bool ssb_dma_translation_special_bit(struct ssb_device *dev)
+{
+	u16 chip_id = dev->bus->chip_id;
+
+	if (dev->id.coreid == SSB_DEV_80211) {
+		return (chip_id == 0x4322 || chip_id == 43221 ||
+			chip_id == 43231 || chip_id == 43222);
+	}
+
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 u32 ssb_dma_translation(struct ssb_device *dev)
 {
 	switch (dev->bus->bustype) {
 	case SSB_BUSTYPE_SSB:
 		return 0;
 	case SSB_BUSTYPE_PCI:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return SSB_PCI_DMA;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (pci_is_pcie(dev->bus->host_pci) &&
+		    ssb_read32(dev, SSB_TMSHIGH) & SSB_TMSHIGH_DMA64) {
+			return SSB_PCIE_DMA_H32;
+		} else {
+			if (ssb_dma_translation_special_bit(dev))
+				return SSB_PCIE_DMA_H32;
+			else
+				return SSB_PCI_DMA;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		__ssb_dma_not_implemented(dev);
 	}
@@ -1301,7 +1583,11 @@ out:
 #endif
 	return err;
 error:
+<<<<<<< HEAD
 	ssb_printk(KERN_ERR PFX "Bus powerdown failed\n");
+=======
+	ssb_err("Bus powerdown failed\n");
+>>>>>>> refs/remotes/origin/master
 	goto out;
 }
 EXPORT_SYMBOL(ssb_bus_may_powerdown);
@@ -1324,7 +1610,11 @@ int ssb_bus_powerup(struct ssb_bus *bus, bool dynamic_pctl)
 
 	return 0;
 error:
+<<<<<<< HEAD
 	ssb_printk(KERN_ERR PFX "Bus powerup failed\n");
+=======
+	ssb_err("Bus powerup failed\n");
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 EXPORT_SYMBOL(ssb_bus_powerup);
@@ -1432,15 +1722,23 @@ static int __init ssb_modinit(void)
 
 	err = b43_pci_ssb_bridge_init();
 	if (err) {
+<<<<<<< HEAD
 		ssb_printk(KERN_ERR "Broadcom 43xx PCI-SSB-bridge "
 			   "initialization failed\n");
+=======
+		ssb_err("Broadcom 43xx PCI-SSB-bridge initialization failed\n");
+>>>>>>> refs/remotes/origin/master
 		/* don't fail SSB init because of this */
 		err = 0;
 	}
 	err = ssb_gige_init();
 	if (err) {
+<<<<<<< HEAD
 		ssb_printk(KERN_ERR "SSB Broadcom Gigabit Ethernet "
 			   "driver initialization failed\n");
+=======
+		ssb_err("SSB Broadcom Gigabit Ethernet driver initialization failed\n");
+>>>>>>> refs/remotes/origin/master
 		/* don't fail SSB init because of this */
 		err = 0;
 	}

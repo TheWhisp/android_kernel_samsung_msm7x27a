@@ -8,4 +8,8 @@ gspca_m5602-objs := m5602_core.o \
 		    m5602_s5k83a.o \
 		    m5602_s5k4aa.o
 
+<<<<<<< HEAD
 EXTRA_CFLAGS += -Idrivers/media/video/gspca
+=======
+ccflags-y += -I$(srctree)/drivers/media/video/gspca
+>>>>>>> refs/remotes/origin/cm-10.0

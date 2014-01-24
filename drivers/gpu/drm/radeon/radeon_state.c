@@ -25,6 +25,7 @@
  * Authors:
  *    Gareth Hughes <gareth@valinux.com>
  *    Kevin E. Martin <martin@valinux.com>
+<<<<<<< HEAD
  */
 
 #include "drmP.h"
@@ -32,6 +33,15 @@
 #include "drm_buffer.h"
 #include "drm_sarea.h"
 #include "radeon_drm.h"
+=======
+ *
+ * ------------------------ This file is DEPRECATED! -------------------------
+ */
+
+#include <drm/drmP.h>
+#include <drm/drm_buffer.h>
+#include <drm/radeon_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon_drv.h"
 
 /* ================================================================
@@ -272,12 +282,27 @@ static __inline__ int radeon_check_and_fixup_packets(drm_radeon_private_t *
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static __inline__ int radeon_check_and_fixup_packet3(drm_radeon_private_t *
 						     dev_priv,
 						     struct drm_file *file_priv,
 						     drm_radeon_kcmd_buffer_t *
 						     cmdbuf,
 						     unsigned int *cmdsz)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int radeon_check_and_fixup_packet3(drm_radeon_private_t *
+					  dev_priv,
+					  struct drm_file *file_priv,
+					  drm_radeon_kcmd_buffer_t *
+					  cmdbuf,
+					  unsigned int *cmdsz)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 *cmd = drm_buffer_pointer_to_dword(cmdbuf->buffer, 0);
 	u32 offset, narrays;
@@ -446,8 +471,18 @@ static __inline__ int radeon_check_and_fixup_packet3(drm_radeon_private_t *
  * CP hardware state programming functions
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static __inline__ void radeon_emit_clip_rect(drm_radeon_private_t * dev_priv,
 					     struct drm_clip_rect * box)
+=======
+static void radeon_emit_clip_rect(drm_radeon_private_t * dev_priv,
+				  struct drm_clip_rect * box)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void radeon_emit_clip_rect(drm_radeon_private_t * dev_priv,
+				  struct drm_clip_rect * box)
+>>>>>>> refs/remotes/origin/master
 {
 	RING_LOCALS;
 

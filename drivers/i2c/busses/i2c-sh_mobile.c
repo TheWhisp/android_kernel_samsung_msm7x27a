@@ -37,21 +37,33 @@
 /* Transmit operation:                                                      */
 /*                                                                          */
 /* 0 byte transmit                                                          */
+<<<<<<< HEAD
 /* BUS:     S     A8     ACK   P                                            */
+=======
+/* BUS:     S     A8     ACK   P(*)                                         */
+>>>>>>> refs/remotes/origin/master
 /* IRQ:       DTE   WAIT                                                    */
 /* ICIC:                                                                    */
 /* ICCR: 0x94 0x90                                                          */
 /* ICDR:      A8                                                            */
 /*                                                                          */
 /* 1 byte transmit                                                          */
+<<<<<<< HEAD
 /* BUS:     S     A8     ACK   D8(1)   ACK   P                              */
+=======
+/* BUS:     S     A8     ACK   D8(1)   ACK   P(*)                           */
+>>>>>>> refs/remotes/origin/master
 /* IRQ:       DTE   WAIT         WAIT                                       */
 /* ICIC:      -DTE                                                          */
 /* ICCR: 0x94       0x90                                                    */
 /* ICDR:      A8    D8(1)                                                   */
 /*                                                                          */
 /* 2 byte transmit                                                          */
+<<<<<<< HEAD
 /* BUS:     S     A8     ACK   D8(1)   ACK   D8(2)   ACK   P                */
+=======
+/* BUS:     S     A8     ACK   D8(1)   ACK   D8(2)   ACK   P(*)             */
+>>>>>>> refs/remotes/origin/master
 /* IRQ:       DTE   WAIT         WAIT          WAIT                         */
 /* ICIC:      -DTE                                                          */
 /* ICCR: 0x94                    0x90                                       */
@@ -65,20 +77,32 @@
 /* 0 byte receive - not supported since slave may hold SDA low              */
 /*                                                                          */
 /* 1 byte receive       [TX] | [RX]                                         */
+<<<<<<< HEAD
 /* BUS:     S     A8     ACK | D8(1)   ACK   P                              */
+=======
+/* BUS:     S     A8     ACK | D8(1)   ACK   P(*)                           */
+>>>>>>> refs/remotes/origin/master
 /* IRQ:       DTE   WAIT     |   WAIT     DTE                               */
 /* ICIC:      -DTE           |   +DTE                                       */
 /* ICCR: 0x94       0x81     |   0xc0                                       */
 /* ICDR:      A8             |            D8(1)                             */
 /*                                                                          */
 /* 2 byte receive        [TX]| [RX]                                         */
+<<<<<<< HEAD
 /* BUS:     S     A8     ACK | D8(1)   ACK   D8(2)   ACK   P                */
+=======
+/* BUS:     S     A8     ACK | D8(1)   ACK   D8(2)   ACK   P(*)             */
+>>>>>>> refs/remotes/origin/master
 /* IRQ:       DTE   WAIT     |   WAIT          WAIT     DTE                 */
 /* ICIC:      -DTE           |                 +DTE                         */
 /* ICCR: 0x94       0x81     |                 0xc0                         */
 /* ICDR:      A8             |                 D8(1)    D8(2)               */
 /*                                                                          */
+<<<<<<< HEAD
 /* 3 byte receive       [TX] | [RX]                                         */
+=======
+/* 3 byte receive       [TX] | [RX]                                     (*) */
+>>>>>>> refs/remotes/origin/master
 /* BUS:     S     A8     ACK | D8(1)   ACK   D8(2)   ACK   D8(3)   ACK    P */
 /* IRQ:       DTE   WAIT     |   WAIT          WAIT         WAIT      DTE   */
 /* ICIC:      -DTE           |                              +DTE            */
@@ -93,7 +117,11 @@
 /* SDA ___\___XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXAAAAAAAAA___/                 */
 /* SCL      \_/1\_/2\_/3\_/4\_/5\_/6\_/7\_/8\___/9\_____/                   */
 /*                                                                          */
+<<<<<<< HEAD
 /*        S   D7  D6  D5  D4  D3  D2  D1  D0              P                 */
+=======
+/*        S   D7  D6  D5  D4  D3  D2  D1  D0              P(*)              */
+>>>>>>> refs/remotes/origin/master
 /*                                           ___                            */
 /* WAIT IRQ ________________________________/   \___________                */
 /* TACK IRQ ____________________________________/   \_______                */
@@ -102,6 +130,14 @@
 /*         _______________________________________________                  */
 /* BUSY __/                                               \_                */
 /*                                                                          */
+<<<<<<< HEAD
+=======
+/* (*) The STOP condition is only sent by the master at the end of the last */
+/* I2C message or if the I2C_M_STOP flag is set. Similarly, the BUSY bit is */
+/* only cleared after the STOP condition, so, between messages we have to   */
+/* poll for the DTE bit.                                                    */
+/*                                                                          */
+>>>>>>> refs/remotes/origin/master
 
 enum sh_mobile_i2c_op {
 	OP_START = 0,
@@ -119,22 +155,40 @@ struct sh_mobile_i2c_data {
 	void __iomem *reg;
 	struct i2c_adapter adap;
 	unsigned long bus_speed;
+<<<<<<< HEAD
 	struct clk *clk;
 	u_int8_t icic;
 	u_int8_t iccl;
 	u_int8_t icch;
 	u_int8_t flags;
+=======
+	unsigned int clks_per_count;
+	struct clk *clk;
+	u_int8_t icic;
+	u_int8_t flags;
+	u_int16_t iccl;
+	u_int16_t icch;
+>>>>>>> refs/remotes/origin/master
 
 	spinlock_t lock;
 	wait_queue_head_t wait;
 	struct i2c_msg *msg;
 	int pos;
 	int sr;
+<<<<<<< HEAD
+=======
+	bool send_stop;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define IIC_FLAG_HAS_ICIC67	(1 << 0)
 
+<<<<<<< HEAD
 #define NORMAL_SPEED		100000 /* FAST_SPEED 400000 */
+=======
+#define STANDARD_MODE		100000
+#define FAST_MODE		400000
+>>>>>>> refs/remotes/origin/master
 
 /* Register offsets */
 #define ICDR			0x00
@@ -186,6 +240,7 @@ static void iic_set_clr(struct sh_mobile_i2c_data *pd, int offs,
 	iic_wr(pd, offs, (iic_rd(pd, offs) | set) & ~clr);
 }
 
+<<<<<<< HEAD
 static void activate_ch(struct sh_mobile_i2c_data *pd)
 {
 	unsigned long i2c_clk;
@@ -237,6 +292,92 @@ static void activate_ch(struct sh_mobile_i2c_data *pd)
 		else
 			pd->icic &= ~ICIC_ICCHB8;
 	}
+=======
+static u32 sh_mobile_i2c_iccl(unsigned long count_khz, u32 tLOW, u32 tf, int offset)
+{
+	/*
+	 * Conditional expression:
+	 *   ICCL >= COUNT_CLK * (tLOW + tf)
+	 *
+	 * SH-Mobile IIC hardware starts counting the LOW period of
+	 * the SCL signal (tLOW) as soon as it pulls the SCL line.
+	 * In order to meet the tLOW timing spec, we need to take into
+	 * account the fall time of SCL signal (tf).  Default tf value
+	 * should be 0.3 us, for safety.
+	 */
+	return (((count_khz * (tLOW + tf)) + 5000) / 10000) + offset;
+}
+
+static u32 sh_mobile_i2c_icch(unsigned long count_khz, u32 tHIGH, u32 tf, int offset)
+{
+	/*
+	 * Conditional expression:
+	 *   ICCH >= COUNT_CLK * (tHIGH + tf)
+	 *
+	 * SH-Mobile IIC hardware is aware of SCL transition period 'tr',
+	 * and can ignore it.  SH-Mobile IIC controller starts counting
+	 * the HIGH period of the SCL signal (tHIGH) after the SCL input
+	 * voltage increases at VIH.
+	 *
+	 * Afterward it turned out calculating ICCH using only tHIGH spec
+	 * will result in violation of the tHD;STA timing spec.  We need
+	 * to take into account the fall time of SDA signal (tf) at START
+	 * condition, in order to meet both tHIGH and tHD;STA specs.
+	 */
+	return (((count_khz * (tHIGH + tf)) + 5000) / 10000) + offset;
+}
+
+static void sh_mobile_i2c_init(struct sh_mobile_i2c_data *pd)
+{
+	unsigned long i2c_clk_khz;
+	u32 tHIGH, tLOW, tf;
+	int offset;
+
+	/* Get clock rate after clock is enabled */
+	clk_prepare_enable(pd->clk);
+	i2c_clk_khz = clk_get_rate(pd->clk) / 1000;
+	i2c_clk_khz /= pd->clks_per_count;
+
+	if (pd->bus_speed == STANDARD_MODE) {
+		tLOW	= 47;	/* tLOW = 4.7 us */
+		tHIGH	= 40;	/* tHD;STA = tHIGH = 4.0 us */
+		tf	= 3;	/* tf = 0.3 us */
+		offset	= 0;	/* No offset */
+	} else if (pd->bus_speed == FAST_MODE) {
+		tLOW	= 13;	/* tLOW = 1.3 us */
+		tHIGH	= 6;	/* tHD;STA = tHIGH = 0.6 us */
+		tf	= 3;	/* tf = 0.3 us */
+		offset	= 0;	/* No offset */
+	} else {
+		dev_err(pd->dev, "unrecognized bus speed %lu Hz\n",
+			pd->bus_speed);
+		goto out;
+	}
+
+	pd->iccl = sh_mobile_i2c_iccl(i2c_clk_khz, tLOW, tf, offset);
+	/* one more bit of ICCL in ICIC */
+	if ((pd->iccl > 0xff) && (pd->flags & IIC_FLAG_HAS_ICIC67))
+		pd->icic |= ICIC_ICCLB8;
+	else
+		pd->icic &= ~ICIC_ICCLB8;
+
+	pd->icch = sh_mobile_i2c_icch(i2c_clk_khz, tHIGH, tf, offset);
+	/* one more bit of ICCH in ICIC */
+	if ((pd->icch > 0xff) && (pd->flags & IIC_FLAG_HAS_ICIC67))
+		pd->icic |= ICIC_ICCHB8;
+	else
+		pd->icic &= ~ICIC_ICCHB8;
+
+out:
+	clk_disable_unprepare(pd->clk);
+}
+
+static void activate_ch(struct sh_mobile_i2c_data *pd)
+{
+	/* Wake up device and enable clock */
+	pm_runtime_get_sync(pd->dev);
+	clk_prepare_enable(pd->clk);
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable channel and configure rx ack */
 	iic_set_clr(pd, ICCR, ICCR_ICE, 0);
@@ -245,8 +386,13 @@ static void activate_ch(struct sh_mobile_i2c_data *pd)
 	iic_wr(pd, ICIC, 0);
 
 	/* Set the clock */
+<<<<<<< HEAD
 	iic_wr(pd, ICCL, pd->iccl);
 	iic_wr(pd, ICCH, pd->icch);
+=======
+	iic_wr(pd, ICCL, pd->iccl & 0xff);
+	iic_wr(pd, ICCH, pd->icch & 0xff);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void deactivate_ch(struct sh_mobile_i2c_data *pd)
@@ -259,7 +405,11 @@ static void deactivate_ch(struct sh_mobile_i2c_data *pd)
 	iic_set_clr(pd, ICCR, 0, ICCR_ICE);
 
 	/* Disable clock and mark device as idle */
+<<<<<<< HEAD
 	clk_disable(pd->clk);
+=======
+	clk_disable_unprepare(pd->clk);
+>>>>>>> refs/remotes/origin/master
 	pm_runtime_put_sync(pd->dev);
 }
 
@@ -286,7 +436,11 @@ static unsigned char i2c_op(struct sh_mobile_i2c_data *pd,
 		break;
 	case OP_TX_STOP: /* write data and issue a stop afterwards */
 		iic_wr(pd, ICDR, data);
+<<<<<<< HEAD
 		iic_wr(pd, ICCR, 0x90);
+=======
+		iic_wr(pd, ICCR, pd->send_stop ? 0x90 : 0x94);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case OP_TX_TO_RX: /* select read mode */
 		iic_wr(pd, ICCR, 0x81);
@@ -313,6 +467,7 @@ static unsigned char i2c_op(struct sh_mobile_i2c_data *pd,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int sh_mobile_i2c_is_first_byte(struct sh_mobile_i2c_data *pd)
 {
 	if (pd->pos == -1)
@@ -327,6 +482,16 @@ static int sh_mobile_i2c_is_last_byte(struct sh_mobile_i2c_data *pd)
 		return 1;
 
 	return 0;
+=======
+static bool sh_mobile_i2c_is_first_byte(struct sh_mobile_i2c_data *pd)
+{
+	return pd->pos == -1;
+}
+
+static bool sh_mobile_i2c_is_last_byte(struct sh_mobile_i2c_data *pd)
+{
+	return pd->pos == pd->msg->len - 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sh_mobile_i2c_get_data(struct sh_mobile_i2c_data *pd,
@@ -433,16 +598,28 @@ static irqreturn_t sh_mobile_i2c_isr(int irq, void *dev_id)
 		wake_up(&pd->wait);
 	}
 
+<<<<<<< HEAD
 	return IRQ_HANDLED;
 }
 
 static int start_ch(struct sh_mobile_i2c_data *pd, struct i2c_msg *usr_msg)
+=======
+	/* defeat write posting to avoid spurious WAIT interrupts */
+	iic_rd(pd, ICSR);
+
+	return IRQ_HANDLED;
+}
+
+static int start_ch(struct sh_mobile_i2c_data *pd, struct i2c_msg *usr_msg,
+		    bool do_init)
+>>>>>>> refs/remotes/origin/master
 {
 	if (usr_msg->len == 0 && (usr_msg->flags & I2C_M_RD)) {
 		dev_err(pd->dev, "Unsupported zero length i2c read\n");
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	/* Initialize channel registers */
 	iic_set_clr(pd, ICCR, 0, ICCR_ICE);
 
@@ -452,6 +629,19 @@ static int start_ch(struct sh_mobile_i2c_data *pd, struct i2c_msg *usr_msg)
 	/* Set the clock */
 	iic_wr(pd, ICCL, pd->iccl);
 	iic_wr(pd, ICCH, pd->icch);
+=======
+	if (do_init) {
+		/* Initialize channel registers */
+		iic_set_clr(pd, ICCR, 0, ICCR_ICE);
+
+		/* Enable channel and configure rx ack */
+		iic_set_clr(pd, ICCR, ICCR_ICE, 0);
+
+		/* Set the clock */
+		iic_wr(pd, ICCL, pd->iccl & 0xff);
+		iic_wr(pd, ICCH, pd->icch & 0xff);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	pd->msg = usr_msg;
 	pd->pos = -1;
@@ -462,6 +652,64 @@ static int start_ch(struct sh_mobile_i2c_data *pd, struct i2c_msg *usr_msg)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int poll_dte(struct sh_mobile_i2c_data *pd)
+{
+	int i;
+
+	for (i = 1000; i; i--) {
+		u_int8_t val = iic_rd(pd, ICSR);
+
+		if (val & ICSR_DTE)
+			break;
+
+		if (val & ICSR_TACK)
+			return -EIO;
+
+		udelay(10);
+	}
+
+	if (!i) {
+		dev_warn(pd->dev, "Timeout polling for DTE!\n");
+		return -ETIMEDOUT;
+	}
+
+	return 0;
+}
+
+static int poll_busy(struct sh_mobile_i2c_data *pd)
+{
+	int i;
+
+	for (i = 1000; i; i--) {
+		u_int8_t val = iic_rd(pd, ICSR);
+
+		dev_dbg(pd->dev, "val 0x%02x pd->sr 0x%02x\n", val, pd->sr);
+
+		/* the interrupt handler may wake us up before the
+		 * transfer is finished, so poll the hardware
+		 * until we're done.
+		 */
+		if (!(val & ICSR_BUSY)) {
+			/* handle missing acknowledge and arbitration lost */
+			if ((val | pd->sr) & (ICSR_TACK | ICSR_AL))
+				return -EIO;
+			break;
+		}
+
+		udelay(10);
+	}
+
+	if (!i) {
+		dev_err(pd->dev, "Polling timed out\n");
+		return -ETIMEDOUT;
+	}
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
 			      struct i2c_msg *msgs,
 			      int num)
@@ -469,13 +717,18 @@ static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
 	struct sh_mobile_i2c_data *pd = i2c_get_adapdata(adapter);
 	struct i2c_msg	*msg;
 	int err = 0;
+<<<<<<< HEAD
 	u_int8_t val;
 	int i, k, retry_count;
+=======
+	int i, k;
+>>>>>>> refs/remotes/origin/master
 
 	activate_ch(pd);
 
 	/* Process all messages */
 	for (i = 0; i < num; i++) {
+<<<<<<< HEAD
 		msg = &msgs[i];
 
 		err = start_ch(pd, msg);
@@ -483,11 +736,24 @@ static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
 			break;
 
 		i2c_op(pd, OP_START, 0);
+=======
+		bool do_start = pd->send_stop || !i;
+		msg = &msgs[i];
+		pd->send_stop = i == num - 1 || msg->flags & I2C_M_STOP;
+
+		err = start_ch(pd, msg, do_start);
+		if (err)
+			break;
+
+		if (do_start)
+			i2c_op(pd, OP_START, 0);
+>>>>>>> refs/remotes/origin/master
 
 		/* The interrupt handler takes care of the rest... */
 		k = wait_event_timeout(pd->wait,
 				       pd->sr & (ICSR_TACK | SW_DONE),
 				       5 * HZ);
+<<<<<<< HEAD
 		if (!k)
 			dev_err(pd->dev, "Transfer request timed out\n");
 
@@ -516,6 +782,20 @@ again:
 			err = -EIO;
 			break;
 		}
+=======
+		if (!k) {
+			dev_err(pd->dev, "Transfer request timed out\n");
+			err = -ETIMEDOUT;
+			break;
+		}
+
+		if (pd->send_stop)
+			err = poll_busy(pd);
+		else
+			err = poll_dte(pd);
+		if (err < 0)
+			break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	deactivate_ch(pd);
@@ -527,7 +807,11 @@ again:
 
 static u32 sh_mobile_i2c_func(struct i2c_adapter *adapter)
 {
+<<<<<<< HEAD
 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
+=======
+	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL | I2C_FUNC_PROTOCOL_MANGLING;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct i2c_algorithm sh_mobile_i2c_algorithm = {
@@ -543,7 +827,15 @@ static int sh_mobile_i2c_hook_irqs(struct platform_device *dev, int hook)
 
 	while ((res = platform_get_resource(dev, IORESOURCE_IRQ, k))) {
 		for (n = res->start; hook && n <= res->end; n++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (request_irq(n, sh_mobile_i2c_isr, IRQF_DISABLED,
+=======
+			if (request_irq(n, sh_mobile_i2c_isr, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (request_irq(n, sh_mobile_i2c_isr, 0,
+>>>>>>> refs/remotes/origin/master
 					dev_name(&dev->dev), dev)) {
 				for (n--; n >= res->start; n--)
 					free_irq(n, dev);
@@ -575,7 +867,11 @@ static int sh_mobile_i2c_hook_irqs(struct platform_device *dev, int hook)
 
 static int sh_mobile_i2c_probe(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	struct i2c_sh_mobile_platform_data *pdata = dev->dev.platform_data;
+=======
+	struct i2c_sh_mobile_platform_data *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct sh_mobile_i2c_data *pd;
 	struct i2c_adapter *adap;
 	struct resource *res;
@@ -620,10 +916,20 @@ static int sh_mobile_i2c_probe(struct platform_device *dev)
 		goto err_irq;
 	}
 
+<<<<<<< HEAD
 	/* Use platformd data bus speed or NORMAL_SPEED */
 	pd->bus_speed = NORMAL_SPEED;
 	if (pdata && pdata->bus_speed)
 		pd->bus_speed = pdata->bus_speed;
+=======
+	/* Use platform data bus speed or STANDARD_MODE */
+	pd->bus_speed = STANDARD_MODE;
+	if (pdata && pdata->bus_speed)
+		pd->bus_speed = pdata->bus_speed;
+	pd->clks_per_count = 1;
+	if (pdata && pdata->clks_per_count)
+		pd->clks_per_count = pdata->clks_per_count;
+>>>>>>> refs/remotes/origin/master
 
 	/* The IIC blocks on SH-Mobile ARM processors
 	 * come with two new bits in ICIC.
@@ -631,6 +937,11 @@ static int sh_mobile_i2c_probe(struct platform_device *dev)
 	if (size > 0x17)
 		pd->flags |= IIC_FLAG_HAS_ICIC67;
 
+<<<<<<< HEAD
+=======
+	sh_mobile_i2c_init(pd);
+
+>>>>>>> refs/remotes/origin/master
 	/* Enable Runtime PM for this device.
 	 *
 	 * Also tell the Runtime PM core to ignore children
@@ -653,6 +964,10 @@ static int sh_mobile_i2c_probe(struct platform_device *dev)
 	adap->dev.parent = &dev->dev;
 	adap->retries = 5;
 	adap->nr = dev->id;
+<<<<<<< HEAD
+=======
+	adap->dev.of_node = dev->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 
 	strlcpy(adap->name, dev->name, sizeof(adap->name));
 
@@ -665,8 +980,15 @@ static int sh_mobile_i2c_probe(struct platform_device *dev)
 		goto err_all;
 	}
 
+<<<<<<< HEAD
 	dev_info(&dev->dev, "I2C adapter %d with bus speed %lu Hz\n",
 		 adap->nr, pd->bus_speed);
+=======
+	dev_info(&dev->dev,
+		 "I2C adapter %d with bus speed %lu Hz (L/H=%x/%x)\n",
+		 adap->nr, pd->bus_speed, pd->iccl, pd->icch);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  err_all:
@@ -710,11 +1032,24 @@ static const struct dev_pm_ops sh_mobile_i2c_dev_pm_ops = {
 	.runtime_resume = sh_mobile_i2c_runtime_nop,
 };
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id sh_mobile_i2c_dt_ids[] = {
+	{ .compatible = "renesas,rmobile-iic", },
+	{},
+};
+MODULE_DEVICE_TABLE(of, sh_mobile_i2c_dt_ids);
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver sh_mobile_i2c_driver = {
 	.driver		= {
 		.name		= "i2c-sh_mobile",
 		.owner		= THIS_MODULE,
 		.pm		= &sh_mobile_i2c_dev_pm_ops,
+<<<<<<< HEAD
+=======
+		.of_match_table = sh_mobile_i2c_dt_ids,
+>>>>>>> refs/remotes/origin/master
 	},
 	.probe		= sh_mobile_i2c_probe,
 	.remove		= sh_mobile_i2c_remove,

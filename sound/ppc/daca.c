@@ -244,7 +244,11 @@ static void daca_cleanup(struct snd_pmac *chip)
 }
 
 /* exported */
+<<<<<<< HEAD
 int __devinit snd_pmac_daca_init(struct snd_pmac *chip)
+=======
+int snd_pmac_daca_init(struct snd_pmac *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err;
 	struct pmac_daca *mix;

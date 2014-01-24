@@ -92,6 +92,7 @@ static unsigned long queue_counter;
 
 static struct scsi_host_template driver_template;
 
+<<<<<<< HEAD
 /*
  * eata_proc_info
  * inout : decides on the direction of the dataflow and the meaning of the 
@@ -144,6 +145,24 @@ stop_output:
 	DBG(DBG_PROC, printk("3pos: %ld offset: %ld len: %d\n", pos, offset, len));
     
 	return len;
+=======
+static int eata_pio_show_info(struct seq_file *m, struct Scsi_Host *shost)
+{
+	seq_printf(m, "EATA (Extended Attachment) PIO driver version: "
+		   "%d.%d%s\n",VER_MAJOR, VER_MINOR, VER_SUB);
+	seq_printf(m, "queued commands:     %10ld\n"
+		   "processed interrupts:%10ld\n", queue_counter, int_counter);
+	seq_printf(m, "\nscsi%-2d: HBA %.10s\n",
+		   shost->host_no, SD(shost)->name);
+	seq_printf(m, "Firmware revision: v%s\n",
+		   SD(shost)->revision);
+	seq_printf(m, "IO: PIO\n");
+	seq_printf(m, "Base IO : %#.4x\n", (u32) shost->base);
+	seq_printf(m, "Host Bus: %s\n",
+		   (SD(shost)->bustype == 'P')?"PCI ":
+		   (SD(shost)->bustype == 'E')?"EISA":"ISA ");
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int eata_pio_release(struct Scsi_Host *sh)
@@ -955,7 +974,11 @@ static int eata_pio_detect(struct scsi_host_template *tpnt)
 	find_pio_EISA(&gc);
 	find_pio_ISA(&gc);
 
+<<<<<<< HEAD
 	for (i = 0; i <= MAXIRQ; i++)
+=======
+	for (i = 0; i < MAXIRQ; i++)
+>>>>>>> refs/remotes/origin/master
 		if (reg_IRQ[i])
 			request_irq(i, do_eata_pio_int_handler, IRQF_DISABLED, "EATA-PIO", NULL);
 
@@ -985,7 +1008,11 @@ static int eata_pio_detect(struct scsi_host_template *tpnt)
 static struct scsi_host_template driver_template = {
 	.proc_name		= "eata_pio",
 	.name              	= "EATA (Extended Attachment) PIO driver",
+<<<<<<< HEAD
 	.proc_info         	= eata_pio_proc_info,
+=======
+	.show_info         	= eata_pio_show_info,
+>>>>>>> refs/remotes/origin/master
 	.detect            	= eata_pio_detect,
 	.release           	= eata_pio_release,
 	.queuecommand      	= eata_pio_queue,

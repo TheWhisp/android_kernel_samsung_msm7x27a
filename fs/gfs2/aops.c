@@ -20,6 +20,10 @@
 #include <linux/swap.h>
 #include <linux/gfs2_ondisk.h>
 #include <linux/backing-dev.h>
+<<<<<<< HEAD
+=======
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "gfs2.h"
 #include "incore.h"
@@ -36,8 +40,13 @@
 #include "glops.h"
 
 
+<<<<<<< HEAD
 void gfs2_page_add_databufs(struct gfs2_inode *ip, struct page *page,
 			    unsigned int from, unsigned int to)
+=======
+static void gfs2_page_add_databufs(struct gfs2_inode *ip, struct page *page,
+				   unsigned int from, unsigned int to)
+>>>>>>> refs/remotes/origin/master
 {
 	struct buffer_head *head = page_buffers(page);
 	unsigned int bsize = head->b_size;
@@ -51,7 +60,11 @@ void gfs2_page_add_databufs(struct gfs2_inode *ip, struct page *page,
 			continue;
 		if (gfs2_is_jdata(ip))
 			set_buffer_uptodate(bh);
+<<<<<<< HEAD
 		gfs2_trans_add_bh(ip->i_gl, bh, 0);
+=======
+		gfs2_trans_add_data(ip->i_gl, bh);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -109,7 +122,11 @@ static int gfs2_writepage_common(struct page *page,
 	/* Is the page fully outside i_size? (truncate in progress) */
 	offset = i_size & (PAGE_CACHE_SIZE-1);
 	if (page->index > end_index || (page->index == end_index && !offset)) {
+<<<<<<< HEAD
 		page->mapping->a_ops->invalidatepage(page, 0);
+=======
+		page->mapping->a_ops->invalidatepage(page, 0, PAGE_CACHE_SIZE);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	return 1;
@@ -121,14 +138,22 @@ out:
 }
 
 /**
+<<<<<<< HEAD
  * gfs2_writeback_writepage - Write page for writeback mappings
+=======
+ * gfs2_writepage - Write page for writeback mappings
+>>>>>>> refs/remotes/origin/master
  * @page: The page
  * @wbc: The writeback control
  *
  */
 
+<<<<<<< HEAD
 static int gfs2_writeback_writepage(struct page *page,
 				    struct writeback_control *wbc)
+=======
+static int gfs2_writepage(struct page *page, struct writeback_control *wbc)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -140,6 +165,7 @@ static int gfs2_writeback_writepage(struct page *page,
 }
 
 /**
+<<<<<<< HEAD
  * gfs2_ordered_writepage - Write page for ordered data files
  * @page: The page to write
  * @wbc: The writeback control
@@ -166,6 +192,8 @@ static int gfs2_ordered_writepage(struct page *page,
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * __gfs2_jdata_writepage - The core of jdata writepage
  * @page: The page to write
  * @wbc: The writeback control
@@ -230,6 +258,7 @@ out_ignore:
 }
 
 /**
+<<<<<<< HEAD
  * gfs2_writeback_writepages - Write a bunch of dirty pages back to disk
  * @mapping: The mapping to write
  * @wbc: Write-back control
@@ -240,6 +269,16 @@ out_ignore:
  */
 static int gfs2_writeback_writepages(struct address_space *mapping,
 				     struct writeback_control *wbc)
+=======
+ * gfs2_writepages - Write a bunch of dirty pages back to disk
+ * @mapping: The mapping to write
+ * @wbc: Write-back control
+ *
+ * Used for both ordered and writeback modes.
+ */
+static int gfs2_writepages(struct address_space *mapping,
+			   struct writeback_control *wbc)
+>>>>>>> refs/remotes/origin/master
 {
 	return mpage_writepages(mapping, wbc, gfs2_get_block_noalloc);
 }
@@ -300,7 +339,12 @@ static int gfs2_write_jdata_pagevec(struct address_space *mapping,
 
 		/* Is the page fully outside i_size? (truncate in progress) */
 		if (page->index > end_index || (page->index == end_index && !offset)) {
+<<<<<<< HEAD
 			page->mapping->a_ops->invalidatepage(page, 0);
+=======
+			page->mapping->a_ops->invalidatepage(page, 0,
+							     PAGE_CACHE_SIZE);
+>>>>>>> refs/remotes/origin/master
 			unlock_page(page);
 			continue;
 		}
@@ -434,12 +478,28 @@ static int stuffed_readpage(struct gfs2_inode *ip, struct page *page)
 	if (error)
 		return error;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(page, KM_USER0);
+=======
+	kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 	if (dsize > (dibh->b_size - sizeof(struct gfs2_dinode)))
 		dsize = (dibh->b_size - sizeof(struct gfs2_dinode));
 	memcpy(kaddr, dibh->b_data + sizeof(struct gfs2_dinode), dsize);
 	memset(kaddr + dsize, 0, PAGE_CACHE_SIZE - dsize);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	flush_dcache_page(page);
 	brelse(dibh);
 	SetPageUptodate(page);
@@ -517,15 +577,23 @@ out:
 /**
  * gfs2_internal_read - read an internal file
  * @ip: The gfs2 inode
+<<<<<<< HEAD
  * @ra_state: The readahead state (or NULL for no readahead)
+=======
+>>>>>>> refs/remotes/origin/master
  * @buf: The buffer to fill
  * @pos: The file position
  * @size: The amount to read
  *
  */
 
+<<<<<<< HEAD
 int gfs2_internal_read(struct gfs2_inode *ip, struct file_ra_state *ra_state,
                        char *buf, loff_t *pos, unsigned size)
+=======
+int gfs2_internal_read(struct gfs2_inode *ip, char *buf, loff_t *pos,
+                       unsigned size)
+>>>>>>> refs/remotes/origin/master
 {
 	struct address_space *mapping = ip->i_inode.i_mapping;
 	unsigned long index = *pos / PAGE_CACHE_SIZE;
@@ -542,9 +610,21 @@ int gfs2_internal_read(struct gfs2_inode *ip, struct file_ra_state *ra_state,
 		page = read_cache_page(mapping, index, __gfs2_readpage, NULL);
 		if (IS_ERR(page))
 			return PTR_ERR(page);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		p = kmap_atomic(page, KM_USER0);
 		memcpy(buf + copied, p + offset, amt);
 		kunmap_atomic(p, KM_USER0);
+=======
+		p = kmap_atomic(page);
+		memcpy(buf + copied, p + offset, amt);
+		kunmap_atomic(p);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p = kmap_atomic(page);
+		memcpy(buf + copied, p + offset, amt);
+		kunmap_atomic(p);
+>>>>>>> refs/remotes/origin/master
 		mark_page_accessed(page);
 		page_cache_release(page);
 		copied += amt;
@@ -613,9 +693,19 @@ static int gfs2_write_begin(struct file *file, struct address_space *mapping,
 	struct gfs2_sbd *sdp = GFS2_SB(mapping->host);
 	struct gfs2_inode *m_ip = GFS2_I(sdp->sd_statfs_inode);
 	unsigned int data_blocks = 0, ind_blocks = 0, rblocks;
+<<<<<<< HEAD
 	int alloc_required;
 	int error = 0;
+<<<<<<< HEAD
 	struct gfs2_alloc *al = NULL;
+=======
+	struct gfs2_qadata *qa = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned requested = 0;
+	int alloc_required;
+	int error = 0;
+>>>>>>> refs/remotes/origin/master
 	pgoff_t index = pos >> PAGE_CACHE_SHIFT;
 	unsigned from = pos & (PAGE_CACHE_SIZE - 1);
 	struct page *page;
@@ -639,8 +729,14 @@ static int gfs2_write_begin(struct file *file, struct address_space *mapping,
 		gfs2_write_calc_reserv(ip, len, &data_blocks, &ind_blocks);
 
 	if (alloc_required) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		al = gfs2_alloc_get(ip);
 		if (!al) {
+=======
+		qa = gfs2_qadata_get(ip);
+		if (!qa) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			error = -ENOMEM;
 			goto out_unlock;
 		}
@@ -649,8 +745,22 @@ static int gfs2_write_begin(struct file *file, struct address_space *mapping,
 		if (error)
 			goto out_alloc_put;
 
+<<<<<<< HEAD
 		al->al_requested = data_blocks + ind_blocks;
 		error = gfs2_inplace_reserve(ip);
+=======
+		error = gfs2_inplace_reserve(ip, data_blocks + ind_blocks);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct gfs2_alloc_parms ap = { .aflags = 0, };
+		error = gfs2_quota_lock_check(ip);
+		if (error)
+			goto out_unlock;
+
+		requested = data_blocks + ind_blocks;
+		ap.target = requested;
+		error = gfs2_inplace_reserve(ip, &ap);
+>>>>>>> refs/remotes/origin/master
 		if (error)
 			goto out_qunlock;
 	}
@@ -663,7 +773,15 @@ static int gfs2_write_begin(struct file *file, struct address_space *mapping,
 	if (&ip->i_inode == sdp->sd_rindex)
 		rblocks += 2 * RES_STATFS;
 	if (alloc_required)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rblocks += gfs2_rg_blocks(al);
+=======
+		rblocks += gfs2_rg_blocks(ip);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rblocks += gfs2_rg_blocks(ip, requested);
+>>>>>>> refs/remotes/origin/master
 
 	error = gfs2_trans_begin(sdp, rblocks,
 				 PAGE_CACHE_SIZE/sdp->sd_sb.sb_bsize);
@@ -710,8 +828,15 @@ out_trans_fail:
 		gfs2_inplace_release(ip);
 out_qunlock:
 		gfs2_quota_unlock(ip);
+<<<<<<< HEAD
 out_alloc_put:
+<<<<<<< HEAD
 		gfs2_alloc_put(ip);
+=======
+		gfs2_qadata_put(ip);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 out_unlock:
 	if (&ip->i_inode == sdp->sd_rindex) {
@@ -787,6 +912,8 @@ static int gfs2_stuffed_write_end(struct inode *inode, struct buffer_head *dibh,
 	u64 to = pos + copied;
 	void *kaddr;
 	unsigned char *buf = dibh->b_data + sizeof(struct gfs2_dinode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct gfs2_dinode *di = (struct gfs2_dinode *)dibh->b_data;
 
 	BUG_ON((pos + len) > (dibh->b_size - sizeof(struct gfs2_dinode)));
@@ -795,6 +922,20 @@ static int gfs2_stuffed_write_end(struct inode *inode, struct buffer_head *dibh,
 	memset(kaddr + pos + copied, 0, len - copied);
 	flush_dcache_page(page);
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	BUG_ON((pos + len) > (dibh->b_size - sizeof(struct gfs2_dinode)));
+	kaddr = kmap_atomic(page);
+	memcpy(buf + pos, kaddr + pos, copied);
+	memset(kaddr + pos + copied, 0, len - copied);
+	flush_dcache_page(page);
+	kunmap_atomic(kaddr);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!PageUptodate(page))
 		SetPageUptodate(page);
@@ -804,13 +945,27 @@ static int gfs2_stuffed_write_end(struct inode *inode, struct buffer_head *dibh,
 	if (copied) {
 		if (inode->i_size < to)
 			i_size_write(inode, to);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		gfs2_dinode_out(ip, di);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		mark_inode_dirty(inode);
 	}
 
 	if (inode == sdp->sd_rindex) {
 		adjust_fs_space(inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ip->i_gh.gh_flags |= GL_NOCACHE;
+=======
+		sdp->sd_rindex_uptodate = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sdp->sd_rindex_uptodate = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	brelse(dibh);
@@ -850,10 +1005,22 @@ static int gfs2_write_end(struct file *file, struct address_space *mapping,
 	struct gfs2_sbd *sdp = GFS2_SB(inode);
 	struct gfs2_inode *m_ip = GFS2_I(sdp->sd_statfs_inode);
 	struct buffer_head *dibh;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct gfs2_alloc *al = ip->i_alloc;
+=======
+	struct gfs2_qadata *qa = ip->i_qadata;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int from = pos & (PAGE_CACHE_SIZE - 1);
 	unsigned int to = from + len;
 	int ret;
+=======
+	unsigned int from = pos & (PAGE_CACHE_SIZE - 1);
+	unsigned int to = from + len;
+	int ret;
+	struct gfs2_trans *tr = current->journal_info;
+	BUG_ON(!tr);
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(gfs2_glock_is_locked_by_me(ip->i_gl) == NULL);
 
@@ -864,8 +1031,11 @@ static int gfs2_write_end(struct file *file, struct address_space *mapping,
 		goto failed;
 	}
 
+<<<<<<< HEAD
 	gfs2_trans_add_bh(ip->i_gl, dibh, 1);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (gfs2_is_stuffed(ip))
 		return gfs2_stuffed_write_end(inode, dibh, pos, len, copied, page);
 
@@ -873,6 +1043,8 @@ static int gfs2_write_end(struct file *file, struct address_space *mapping,
 		gfs2_page_add_databufs(ip, page, from, to);
 
 	ret = generic_write_end(file, mapping, pos, len, copied, page, fsdata);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret > 0) {
 		gfs2_dinode_out(ip, dibh->b_data);
 		mark_inode_dirty(inode);
@@ -881,16 +1053,46 @@ static int gfs2_write_end(struct file *file, struct address_space *mapping,
 	if (inode == sdp->sd_rindex) {
 		adjust_fs_space(inode);
 		ip->i_gh.gh_flags |= GL_NOCACHE;
+=======
+=======
+	if (tr->tr_num_buf_new)
+		__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
+	else
+		gfs2_trans_add_meta(ip->i_gl, dibh);
+
+>>>>>>> refs/remotes/origin/master
+
+	if (inode == sdp->sd_rindex) {
+		adjust_fs_space(inode);
+		sdp->sd_rindex_uptodate = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	brelse(dibh);
 failed:
 	gfs2_trans_end(sdp);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (al) {
 		gfs2_inplace_release(ip);
 		gfs2_quota_unlock(ip);
 		gfs2_alloc_put(ip);
+=======
+	if (ip->i_res)
+		gfs2_inplace_release(ip);
+	if (qa) {
+		gfs2_quota_unlock(ip);
+		gfs2_qadata_put(ip);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	gfs2_inplace_release(ip);
+	if (ip->i_res->rs_qa_qd_num)
+		gfs2_quota_unlock(ip);
+>>>>>>> refs/remotes/origin/master
 	if (inode == sdp->sd_rindex) {
 		gfs2_glock_dq(&m_ip->i_gh);
 		gfs2_holder_uninit(&m_ip->i_gh);
@@ -949,8 +1151,13 @@ static void gfs2_discard(struct gfs2_sbd *sdp, struct buffer_head *bh)
 	clear_buffer_dirty(bh);
 	bd = bh->b_private;
 	if (bd) {
+<<<<<<< HEAD
 		if (!list_empty(&bd->bd_le.le_list) && !buffer_pinned(bh))
 			list_del_init(&bd->bd_le.le_list);
+=======
+		if (!list_empty(&bd->bd_list) && !buffer_pinned(bh))
+			list_del_init(&bd->bd_list);
+>>>>>>> refs/remotes/origin/master
 		else
 			gfs2_remove_from_journal(bh, current->journal_info, 0);
 	}
@@ -962,27 +1169,50 @@ static void gfs2_discard(struct gfs2_sbd *sdp, struct buffer_head *bh)
 	unlock_buffer(bh);
 }
 
+<<<<<<< HEAD
 static void gfs2_invalidatepage(struct page *page, unsigned long offset)
 {
 	struct gfs2_sbd *sdp = GFS2_SB(page->mapping->host);
+=======
+static void gfs2_invalidatepage(struct page *page, unsigned int offset,
+				unsigned int length)
+{
+	struct gfs2_sbd *sdp = GFS2_SB(page->mapping->host);
+	unsigned int stop = offset + length;
+	int partial_page = (offset || length < PAGE_CACHE_SIZE);
+>>>>>>> refs/remotes/origin/master
 	struct buffer_head *bh, *head;
 	unsigned long pos = 0;
 
 	BUG_ON(!PageLocked(page));
+<<<<<<< HEAD
 	if (offset == 0)
+=======
+	if (!partial_page)
+>>>>>>> refs/remotes/origin/master
 		ClearPageChecked(page);
 	if (!page_has_buffers(page))
 		goto out;
 
 	bh = head = page_buffers(page);
 	do {
+<<<<<<< HEAD
+=======
+		if (pos + bh->b_size > stop)
+			return;
+
+>>>>>>> refs/remotes/origin/master
 		if (offset <= pos)
 			gfs2_discard(sdp, bh);
 		pos += bh->b_size;
 		bh = bh->b_this_page;
 	} while (bh != head);
 out:
+<<<<<<< HEAD
 	if (offset == 0)
+=======
+	if (!partial_page)
+>>>>>>> refs/remotes/origin/master
 		try_to_release_page(page, 0);
 }
 
@@ -1018,6 +1248,18 @@ static ssize_t gfs2_direct_IO(int rw, struct kiocb *iocb,
 {
 	struct file *file = iocb->ki_filp;
 	struct inode *inode = file->f_mapping->host;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+	struct address_space *mapping = inode->i_mapping;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct address_space *mapping = inode->i_mapping;
+>>>>>>> refs/remotes/origin/master
+=======
+	struct address_space *mapping = inode->i_mapping;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct gfs2_inode *ip = GFS2_I(inode);
 	struct gfs2_holder gh;
 	int rv;
@@ -1038,11 +1280,67 @@ static ssize_t gfs2_direct_IO(int rw, struct kiocb *iocb,
 	if (rv != 1)
 		goto out; /* dio not valid, fall back to buffered i/o */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/*
+	 * Now since we are holding a deferred (CW) lock at this point, you
+	 * might be wondering why this is ever needed. There is a case however
+	 * where we've granted a deferred local lock against a cached exclusive
+	 * glock. That is ok provided all granted local locks are deferred, but
+	 * it also means that it is possible to encounter pages which are
+	 * cached and possibly also mapped. So here we check for that and sort
+	 * them out ahead of the dio. The glock state machine will take care of
+	 * everything else.
+	 *
+	 * If in fact the cached glock state (gl->gl_state) is deferred (CW) in
+	 * the first place, mapping->nr_pages will always be zero.
+	 */
+	if (mapping->nrpages) {
+		loff_t lstart = offset & (PAGE_CACHE_SIZE - 1);
+		loff_t len = iov_length(iov, nr_segs);
+		loff_t end = PAGE_ALIGN(offset + len) - 1;
+
+		rv = 0;
+		if (len == 0)
+			goto out;
+		if (test_and_clear_bit(GIF_SW_PAGED, &ip->i_flags))
+			unmap_shared_mapping_range(ip->i_inode.i_mapping, offset, len);
+		rv = filemap_write_and_wait_range(mapping, lstart, end);
+		if (rv)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			return rv;
+		truncate_inode_pages_range(mapping, lstart, end);
+	}
+
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto out;
+		if (rw == WRITE)
+			truncate_inode_pages_range(mapping, lstart, end);
+	}
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	rv = __blockdev_direct_IO(rw, iocb, inode, inode->i_sb->s_bdev, iov,
 				  offset, nr_segs, gfs2_get_block_direct,
 				  NULL, NULL, 0);
 out:
+<<<<<<< HEAD
 	gfs2_glock_dq_m(1, &gh);
+=======
+	gfs2_glock_dq(&gh);
+>>>>>>> refs/remotes/origin/master
 	gfs2_holder_uninit(&gh);
 	return rv;
 }
@@ -1075,13 +1373,18 @@ int gfs2_releasepage(struct page *page, gfp_t gfp_mask)
 		if (atomic_read(&bh->b_count))
 			goto cannot_release;
 		bd = bh->b_private;
+<<<<<<< HEAD
 		if (bd && bd->bd_ail)
+=======
+		if (bd && bd->bd_tr)
+>>>>>>> refs/remotes/origin/master
 			goto cannot_release;
 		if (buffer_pinned(bh) || buffer_dirty(bh))
 			goto not_possible;
 		bh = bh->b_this_page;
 	} while(bh != head);
 	spin_unlock(&sdp->sd_ail_lock);
+<<<<<<< HEAD
 	gfs2_log_unlock(sdp);
 
 	head = bh = page_buffers(page);
@@ -1107,6 +1410,24 @@ int gfs2_releasepage(struct page *page, gfp_t gfp_mask)
 
 		bh = bh->b_this_page;
 	} while (bh != head);
+=======
+
+	head = bh = page_buffers(page);
+	do {
+		bd = bh->b_private;
+		if (bd) {
+			gfs2_assert_warn(sdp, bd->bd_bh == bh);
+			if (!list_empty(&bd->bd_list))
+				list_del_init(&bd->bd_list);
+			bd->bd_bh = NULL;
+			bh->b_private = NULL;
+			kmem_cache_free(gfs2_bufdata_cachep, bd);
+		}
+
+		bh = bh->b_this_page;
+	} while (bh != head);
+	gfs2_log_unlock(sdp);
+>>>>>>> refs/remotes/origin/master
 
 	return try_to_free_buffers(page);
 
@@ -1120,8 +1441,13 @@ cannot_release:
 }
 
 static const struct address_space_operations gfs2_writeback_aops = {
+<<<<<<< HEAD
 	.writepage = gfs2_writeback_writepage,
 	.writepages = gfs2_writeback_writepages,
+=======
+	.writepage = gfs2_writepage,
+	.writepages = gfs2_writepages,
+>>>>>>> refs/remotes/origin/master
 	.readpage = gfs2_readpage,
 	.readpages = gfs2_readpages,
 	.write_begin = gfs2_write_begin,
@@ -1136,7 +1462,12 @@ static const struct address_space_operations gfs2_writeback_aops = {
 };
 
 static const struct address_space_operations gfs2_ordered_aops = {
+<<<<<<< HEAD
 	.writepage = gfs2_ordered_writepage,
+=======
+	.writepage = gfs2_writepage,
+	.writepages = gfs2_writepages,
+>>>>>>> refs/remotes/origin/master
 	.readpage = gfs2_readpage,
 	.readpages = gfs2_readpages,
 	.write_begin = gfs2_write_begin,

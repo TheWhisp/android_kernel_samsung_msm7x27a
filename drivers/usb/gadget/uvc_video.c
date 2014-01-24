@@ -8,7 +8,13 @@
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation; either version 2 of the License, or
  *	(at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/kernel.h>
@@ -33,7 +39,11 @@ uvc_video_encode_header(struct uvc_video *video, struct uvc_buffer *buf,
 	data[0] = 2;
 	data[1] = UVC_STREAM_EOH | video->fid;
 
+<<<<<<< HEAD
 	if (buf->buf.bytesused - video->queue.buf_used <= len - 2)
+=======
+	if (buf->bytesused - video->queue.buf_used <= len - 2)
+>>>>>>> refs/remotes/origin/master
 		data[1] |= UVC_STREAM_EOF;
 
 	return 2;
@@ -48,8 +58,13 @@ uvc_video_encode_data(struct uvc_video *video, struct uvc_buffer *buf,
 	void *mem;
 
 	/* Copy video data to the USB buffer. */
+<<<<<<< HEAD
 	mem = queue->mem + buf->buf.m.offset + queue->buf_used;
 	nbytes = min((unsigned int)len, buf->buf.bytesused - queue->buf_used);
+=======
+	mem = buf->mem + queue->buf_used;
+	nbytes = min((unsigned int)len, buf->bytesused - queue->buf_used);
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(data, mem, nbytes);
 	queue->buf_used += nbytes;
@@ -83,7 +98,11 @@ uvc_video_encode_bulk(struct usb_request *req, struct uvc_video *video,
 	req->length = video->req_size - len;
 	req->zero = video->payload_size == video->max_payload_size;
 
+<<<<<<< HEAD
 	if (buf->buf.bytesused == video->queue.buf_used) {
+=======
+	if (buf->bytesused == video->queue.buf_used) {
+>>>>>>> refs/remotes/origin/master
 		video->queue.buf_used = 0;
 		buf->state = UVC_BUF_STATE_DONE;
 		uvc_queue_next_buffer(&video->queue, buf);
@@ -93,7 +112,11 @@ uvc_video_encode_bulk(struct usb_request *req, struct uvc_video *video,
 	}
 
 	if (video->payload_size == video->max_payload_size ||
+<<<<<<< HEAD
 	    buf->buf.bytesused == video->queue.buf_used)
+=======
+	    buf->bytesused == video->queue.buf_used)
+>>>>>>> refs/remotes/origin/master
 		video->payload_size = 0;
 }
 
@@ -116,7 +139,11 @@ uvc_video_encode_isoc(struct usb_request *req, struct uvc_video *video,
 
 	req->length = video->req_size - len;
 
+<<<<<<< HEAD
 	if (buf->buf.bytesused == video->queue.buf_used) {
+=======
+	if (buf->bytesused == video->queue.buf_used) {
+>>>>>>> refs/remotes/origin/master
 		video->queue.buf_used = 0;
 		buf->state = UVC_BUF_STATE_DONE;
 		uvc_queue_next_buffer(&video->queue, buf);
@@ -162,6 +189,10 @@ static void
 uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct uvc_video *video = req->context;
+<<<<<<< HEAD
+=======
+	struct uvc_video_queue *queue = &video->queue;
+>>>>>>> refs/remotes/origin/master
 	struct uvc_buffer *buf;
 	unsigned long flags;
 	int ret;
@@ -170,13 +201,23 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
 	case 0:
 		break;
 
+<<<<<<< HEAD
 	case -ESHUTDOWN:
 		printk(KERN_INFO "VS request cancelled.\n");
+=======
+	case -ESHUTDOWN:	/* disconnect from host. */
+		printk(KERN_INFO "VS request cancelled.\n");
+		uvc_queue_cancel(queue, 1);
+>>>>>>> refs/remotes/origin/master
 		goto requeue;
 
 	default:
 		printk(KERN_INFO "VS request completed with status %d.\n",
 			req->status);
+<<<<<<< HEAD
+=======
+		uvc_queue_cancel(queue, 0);
+>>>>>>> refs/remotes/origin/master
 		goto requeue;
 	}
 
@@ -230,13 +271,26 @@ uvc_video_free_requests(struct uvc_video *video)
 static int
 uvc_video_alloc_requests(struct uvc_video *video)
 {
+<<<<<<< HEAD
+=======
+	unsigned int req_size;
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 	int ret = -ENOMEM;
 
 	BUG_ON(video->req_size);
 
+<<<<<<< HEAD
 	for (i = 0; i < UVC_NUM_REQUESTS; ++i) {
 		video->req_buffer[i] = kmalloc(video->ep->maxpacket, GFP_KERNEL);
+=======
+	req_size = video->ep->maxpacket
+		 * max_t(unsigned int, video->ep->maxburst, 1)
+		 * (video->ep->mult + 1);
+
+	for (i = 0; i < UVC_NUM_REQUESTS; ++i) {
+		video->req_buffer[i] = kmalloc(req_size, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (video->req_buffer[i] == NULL)
 			goto error;
 
@@ -246,14 +300,22 @@ uvc_video_alloc_requests(struct uvc_video *video)
 
 		video->req[i]->buf = video->req_buffer[i];
 		video->req[i]->length = 0;
+<<<<<<< HEAD
 		video->req[i]->dma = DMA_ADDR_INVALID;
+=======
+>>>>>>> refs/remotes/origin/master
 		video->req[i]->complete = uvc_video_complete;
 		video->req[i]->context = video;
 
 		list_add_tail(&video->req[i]->list, &video->req_free);
 	}
 
+<<<<<<< HEAD
 	video->req_size = video->ep->maxpacket;
+=======
+	video->req_size = req_size;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 error:
@@ -310,7 +372,12 @@ uvc_video_pump(struct uvc_video *video)
 		video->encode(req, video, buf);
 
 		/* Queue the USB request */
+<<<<<<< HEAD
 		if ((ret = usb_ep_queue(video->ep, req, GFP_KERNEL)) < 0) {
+=======
+		ret = usb_ep_queue(video->ep, req, GFP_ATOMIC);
+		if (ret < 0) {
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_INFO "Failed to queue request (%d)\n", ret);
 			usb_ep_set_halt(video->ep);
 			spin_unlock_irqrestore(&video->queue.irqlock, flags);

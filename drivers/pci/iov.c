@@ -11,6 +11,14 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/delay.h>
 #include <linux/pci-ats.h>
@@ -32,7 +40,10 @@ static inline u8 virtfn_devfn(struct pci_dev *dev, int id)
 
 static struct pci_bus *virtfn_add_bus(struct pci_bus *bus, int busnr)
 {
+<<<<<<< HEAD
 	int rc;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_bus *child;
 
 	if (bus->number == busnr)
@@ -46,6 +57,7 @@ static struct pci_bus *virtfn_add_bus(struct pci_bus *bus, int busnr)
 	if (!child)
 		return NULL;
 
+<<<<<<< HEAD
 	child->subordinate = busnr;
 	child->dev.parent = bus->bridge;
 	rc = pci_bus_add_child(child);
@@ -53,10 +65,14 @@ static struct pci_bus *virtfn_add_bus(struct pci_bus *bus, int busnr)
 		pci_remove_bus(child);
 		return NULL;
 	}
+=======
+	pci_bus_insert_busn_res(child, busnr, busnr);
+>>>>>>> refs/remotes/origin/master
 
 	return child;
 }
 
+<<<<<<< HEAD
 static void virtfn_remove_bus(struct pci_bus *bus, int busnr)
 {
 	struct pci_bus *child;
@@ -69,17 +85,28 @@ static void virtfn_remove_bus(struct pci_bus *bus, int busnr)
 
 	if (list_empty(&child->devices))
 		pci_remove_bus(child);
+=======
+static void virtfn_remove_bus(struct pci_bus *physbus, struct pci_bus *virtbus)
+{
+	if (physbus != virtbus && list_empty(&virtbus->devices))
+		pci_remove_bus(virtbus);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int virtfn_add(struct pci_dev *dev, int id, int reset)
 {
 	int i;
+<<<<<<< HEAD
 	int rc;
+=======
+	int rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	u64 size;
 	char buf[VIRTFN_ID_LEN];
 	struct pci_dev *virtfn;
 	struct resource *res;
 	struct pci_sriov *iov = dev->sriov;
+<<<<<<< HEAD
 
 	virtfn = alloc_pci_dev();
 	if (!virtfn)
@@ -92,11 +119,29 @@ static int virtfn_add(struct pci_dev *dev, int id, int reset)
 		mutex_unlock(&iov->dev->sriov->lock);
 		return -ENOMEM;
 	}
+=======
+	struct pci_bus *bus;
+
+	mutex_lock(&iov->dev->sriov->lock);
+	bus = virtfn_add_bus(dev->bus, virtfn_bus(dev, id));
+	if (!bus)
+		goto failed;
+
+	virtfn = pci_alloc_dev(bus);
+	if (!virtfn)
+		goto failed0;
+
+>>>>>>> refs/remotes/origin/master
 	virtfn->devfn = virtfn_devfn(dev, id);
 	virtfn->vendor = dev->vendor;
 	pci_read_config_word(dev, iov->pos + PCI_SRIOV_VF_DID, &virtfn->device);
 	pci_setup_device(virtfn);
 	virtfn->dev.parent = dev->dev.parent;
+<<<<<<< HEAD
+=======
+	virtfn->physfn = pci_dev_get(dev);
+	virtfn->is_virtfn = 1;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < PCI_SRIOV_NUM_BARS; i++) {
 		res = dev->resource + PCI_IOV_RESOURCES + i;
@@ -105,7 +150,11 @@ static int virtfn_add(struct pci_dev *dev, int id, int reset)
 		virtfn->resource[i].name = pci_name(virtfn);
 		virtfn->resource[i].flags = res->flags;
 		size = resource_size(res);
+<<<<<<< HEAD
 		do_div(size, iov->total);
+=======
+		do_div(size, iov->total_VFs);
+>>>>>>> refs/remotes/origin/master
 		virtfn->resource[i].start = res->start + size * id;
 		virtfn->resource[i].end = virtfn->resource[i].start + size - 1;
 		rc = request_resource(res, &virtfn->resource[i]);
@@ -118,12 +167,16 @@ static int virtfn_add(struct pci_dev *dev, int id, int reset)
 	pci_device_add(virtfn, virtfn->bus);
 	mutex_unlock(&iov->dev->sriov->lock);
 
+<<<<<<< HEAD
 	virtfn->physfn = pci_dev_get(dev);
 	virtfn->is_virtfn = 1;
 
 	rc = pci_bus_add_device(virtfn);
 	if (rc)
 		goto failed1;
+=======
+	rc = pci_bus_add_device(virtfn);
+>>>>>>> refs/remotes/origin/master
 	sprintf(buf, "virtfn%u", id);
 	rc = sysfs_create_link(&dev->dev.kobj, &virtfn->dev.kobj, buf);
 	if (rc)
@@ -141,8 +194,19 @@ failed2:
 failed1:
 	pci_dev_put(dev);
 	mutex_lock(&iov->dev->sriov->lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_remove_bus_device(virtfn);
+=======
+	pci_stop_and_remove_bus_device(virtfn);
+>>>>>>> refs/remotes/origin/cm-10.0
 	virtfn_remove_bus(dev->bus, virtfn_bus(dev, id));
+=======
+	pci_stop_and_remove_bus_device(virtfn);
+failed0:
+	virtfn_remove_bus(dev->bus, bus);
+failed:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&iov->dev->sriov->lock);
 
 	return rc;
@@ -151,6 +215,7 @@ failed1:
 static void virtfn_remove(struct pci_dev *dev, int id, int reset)
 {
 	char buf[VIRTFN_ID_LEN];
+<<<<<<< HEAD
 	struct pci_bus *bus;
 	struct pci_dev *virtfn;
 	struct pci_sriov *iov = dev->sriov;
@@ -165,6 +230,17 @@ static void virtfn_remove(struct pci_dev *dev, int id, int reset)
 
 	pci_dev_put(virtfn);
 
+=======
+	struct pci_dev *virtfn;
+	struct pci_sriov *iov = dev->sriov;
+
+	virtfn = pci_get_domain_bus_and_slot(pci_domain_nr(dev->bus),
+					     virtfn_bus(dev, id),
+					     virtfn_devfn(dev, id));
+	if (!virtfn)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if (reset) {
 		device_release_driver(&virtfn->dev);
 		__pci_reset_function(virtfn);
@@ -172,13 +248,37 @@ static void virtfn_remove(struct pci_dev *dev, int id, int reset)
 
 	sprintf(buf, "virtfn%u", id);
 	sysfs_remove_link(&dev->dev.kobj, buf);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sysfs_remove_link(&virtfn->dev.kobj, "physfn");
 
 	mutex_lock(&iov->dev->sriov->lock);
 	pci_remove_bus_device(virtfn);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * pci_stop_dev() could have been called for this virtfn already,
+	 * so the directory for the virtfn may have been removed before.
+	 * Double check to avoid spurious sysfs warnings.
+	 */
+	if (virtfn->dev.kobj.sd)
+		sysfs_remove_link(&virtfn->dev.kobj, "physfn");
+
+	mutex_lock(&iov->dev->sriov->lock);
+	pci_stop_and_remove_bus_device(virtfn);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	virtfn_remove_bus(dev->bus, virtfn_bus(dev, id));
 	mutex_unlock(&iov->dev->sriov->lock);
 
+=======
+	virtfn_remove_bus(dev->bus, virtfn->bus);
+	mutex_unlock(&iov->dev->sriov->lock);
+
+	/* balance pci_get_domain_bus_and_slot() */
+	pci_dev_put(virtfn);
+>>>>>>> refs/remotes/origin/master
 	pci_dev_put(dev);
 }
 
@@ -187,7 +287,11 @@ static int sriov_migration(struct pci_dev *dev)
 	u16 status;
 	struct pci_sriov *iov = dev->sriov;
 
+<<<<<<< HEAD
 	if (!iov->nr_virtfn)
+=======
+	if (!iov->num_VFs)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (!(iov->cap & PCI_SRIOV_CAP_VFM))
@@ -209,7 +313,11 @@ static void sriov_migration_task(struct work_struct *work)
 	u16 status;
 	struct pci_sriov *iov = container_of(work, struct pci_sriov, mtask);
 
+<<<<<<< HEAD
 	for (i = iov->initial; i < iov->nr_virtfn; i++) {
+=======
+	for (i = iov->initial_VFs; i < iov->num_VFs; i++) {
+>>>>>>> refs/remotes/origin/master
 		state = readb(iov->mstate + i);
 		if (state == PCI_SRIOV_VFM_MI) {
 			writeb(PCI_SRIOV_VFM_AV, iov->mstate + i);
@@ -237,7 +345,11 @@ static int sriov_enable_migration(struct pci_dev *dev, int nr_virtfn)
 	resource_size_t pa;
 	struct pci_sriov *iov = dev->sriov;
 
+<<<<<<< HEAD
 	if (nr_virtfn <= iov->initial)
+=======
+	if (nr_virtfn <= iov->initial_VFs)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	pci_read_config_dword(dev, iov->pos + PCI_SRIOV_VFM, &table);
@@ -282,10 +394,19 @@ static int sriov_enable(struct pci_dev *dev, int nr_virtfn)
 	struct resource *res;
 	struct pci_dev *pdev;
 	struct pci_sriov *iov = dev->sriov;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int bars = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int bars = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!nr_virtfn)
 		return 0;
 
+<<<<<<< HEAD
 	if (iov->nr_virtfn)
 		return -EINVAL;
 
@@ -299,6 +420,20 @@ static int sriov_enable(struct pci_dev *dev, int nr_virtfn)
 		return -EINVAL;
 
 	pci_write_config_word(dev, iov->pos + PCI_SRIOV_NUM_VF, nr_virtfn);
+=======
+	if (iov->num_VFs)
+		return -EINVAL;
+
+	pci_read_config_word(dev, iov->pos + PCI_SRIOV_INITIAL_VF, &initial);
+	if (initial > iov->total_VFs ||
+	    (!(iov->cap & PCI_SRIOV_CAP_VFM) && (initial != iov->total_VFs)))
+		return -EIO;
+
+	if (nr_virtfn < 0 || nr_virtfn > iov->total_VFs ||
+	    (!(iov->cap & PCI_SRIOV_CAP_VFM) && (nr_virtfn > initial)))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	pci_read_config_word(dev, iov->pos + PCI_SRIOV_VF_OFFSET, &offset);
 	pci_read_config_word(dev, iov->pos + PCI_SRIOV_VF_STRIDE, &stride);
 	if (!offset || (nr_virtfn > 1 && !stride))
@@ -306,6 +441,14 @@ static int sriov_enable(struct pci_dev *dev, int nr_virtfn)
 
 	nres = 0;
 	for (i = 0; i < PCI_SRIOV_NUM_BARS; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		bars |= (1 << (i + PCI_IOV_RESOURCES));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bars |= (1 << (i + PCI_IOV_RESOURCES));
+>>>>>>> refs/remotes/origin/master
 		res = dev->resource + PCI_IOV_RESOURCES + i;
 		if (res->parent)
 			nres++;
@@ -318,16 +461,35 @@ static int sriov_enable(struct pci_dev *dev, int nr_virtfn)
 	iov->offset = offset;
 	iov->stride = stride;
 
+<<<<<<< HEAD
 	if (virtfn_bus(dev, nr_virtfn - 1) > dev->bus->subordinate) {
+=======
+	if (virtfn_bus(dev, nr_virtfn - 1) > dev->bus->busn_res.end) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&dev->dev, "SR-IOV: bus number out of range\n");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (pci_enable_resources(dev, bars)) {
+		dev_err(&dev->dev, "SR-IOV: IOV BARS not allocated\n");
+		return -ENOMEM;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (iov->link != dev->devfn) {
 		pdev = pci_get_slot(dev->bus, iov->link);
 		if (!pdev)
 			return -ENODEV;
 
+<<<<<<< HEAD
 		pci_dev_put(pdev);
 
 		if (!pdev->is_physfn)
@@ -335,17 +497,44 @@ static int sriov_enable(struct pci_dev *dev, int nr_virtfn)
 
 		rc = sysfs_create_link(&dev->dev.kobj,
 					&pdev->dev.kobj, "dep_link");
+=======
+		if (!pdev->is_physfn) {
+			pci_dev_put(pdev);
+			return -ENOSYS;
+		}
+
+		rc = sysfs_create_link(&dev->dev.kobj,
+					&pdev->dev.kobj, "dep_link");
+		pci_dev_put(pdev);
+>>>>>>> refs/remotes/origin/master
 		if (rc)
 			return rc;
 	}
 
+<<<<<<< HEAD
 	iov->ctrl |= PCI_SRIOV_CTRL_VFE | PCI_SRIOV_CTRL_MSE;
+<<<<<<< HEAD
 	pci_block_user_cfg_access(dev);
 	pci_write_config_word(dev, iov->pos + PCI_SRIOV_CTRL, iov->ctrl);
 	msleep(100);
 	pci_unblock_user_cfg_access(dev);
+=======
+=======
+	pci_write_config_word(dev, iov->pos + PCI_SRIOV_NUM_VF, nr_virtfn);
+	iov->ctrl |= PCI_SRIOV_CTRL_VFE | PCI_SRIOV_CTRL_MSE;
+>>>>>>> refs/remotes/origin/master
+	pci_cfg_access_lock(dev);
+	pci_write_config_word(dev, iov->pos + PCI_SRIOV_CTRL, iov->ctrl);
+	msleep(100);
+	pci_cfg_access_unlock(dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	iov->initial = initial;
+=======
+
+	iov->initial_VFs = initial;
+>>>>>>> refs/remotes/origin/master
 	if (nr_virtfn < initial)
 		initial = nr_virtfn;
 
@@ -362,7 +551,11 @@ static int sriov_enable(struct pci_dev *dev, int nr_virtfn)
 	}
 
 	kobject_uevent(&dev->dev.kobj, KOBJ_CHANGE);
+<<<<<<< HEAD
 	iov->nr_virtfn = nr_virtfn;
+=======
+	iov->num_VFs = nr_virtfn;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -371,10 +564,25 @@ failed:
 		virtfn_remove(dev, j, 0);
 
 	iov->ctrl &= ~(PCI_SRIOV_CTRL_VFE | PCI_SRIOV_CTRL_MSE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_block_user_cfg_access(dev);
 	pci_write_config_word(dev, iov->pos + PCI_SRIOV_CTRL, iov->ctrl);
 	ssleep(1);
 	pci_unblock_user_cfg_access(dev);
+=======
+	pci_cfg_access_lock(dev);
+	pci_write_config_word(dev, iov->pos + PCI_SRIOV_CTRL, iov->ctrl);
+	ssleep(1);
+	pci_cfg_access_unlock(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_cfg_access_lock(dev);
+	pci_write_config_word(dev, iov->pos + PCI_SRIOV_CTRL, iov->ctrl);
+	pci_write_config_word(dev, iov->pos + PCI_SRIOV_NUM_VF, 0);
+	ssleep(1);
+	pci_cfg_access_unlock(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (iov->link != dev->devfn)
 		sysfs_remove_link(&dev->dev.kobj, "dep_link");
@@ -387,25 +595,51 @@ static void sriov_disable(struct pci_dev *dev)
 	int i;
 	struct pci_sriov *iov = dev->sriov;
 
+<<<<<<< HEAD
 	if (!iov->nr_virtfn)
+=======
+	if (!iov->num_VFs)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (iov->cap & PCI_SRIOV_CAP_VFM)
 		sriov_disable_migration(dev);
 
+<<<<<<< HEAD
 	for (i = 0; i < iov->nr_virtfn; i++)
 		virtfn_remove(dev, i, 0);
 
 	iov->ctrl &= ~(PCI_SRIOV_CTRL_VFE | PCI_SRIOV_CTRL_MSE);
+<<<<<<< HEAD
 	pci_block_user_cfg_access(dev);
 	pci_write_config_word(dev, iov->pos + PCI_SRIOV_CTRL, iov->ctrl);
 	ssleep(1);
 	pci_unblock_user_cfg_access(dev);
+=======
+=======
+	for (i = 0; i < iov->num_VFs; i++)
+		virtfn_remove(dev, i, 0);
+
+	iov->ctrl &= ~(PCI_SRIOV_CTRL_VFE | PCI_SRIOV_CTRL_MSE);
+>>>>>>> refs/remotes/origin/master
+	pci_cfg_access_lock(dev);
+	pci_write_config_word(dev, iov->pos + PCI_SRIOV_CTRL, iov->ctrl);
+	ssleep(1);
+	pci_cfg_access_unlock(dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (iov->link != dev->devfn)
 		sysfs_remove_link(&dev->dev.kobj, "dep_link");
 
+<<<<<<< HEAD
 	iov->nr_virtfn = 0;
+=======
+	iov->num_VFs = 0;
+	pci_write_config_word(dev, iov->pos + PCI_SRIOV_NUM_VF, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int sriov_init(struct pci_dev *dev, int pos)
@@ -419,8 +653,13 @@ static int sriov_init(struct pci_dev *dev, int pos)
 	struct resource *res;
 	struct pci_dev *pdev;
 
+<<<<<<< HEAD
 	if (dev->pcie_type != PCI_EXP_TYPE_RC_END &&
 	    dev->pcie_type != PCI_EXP_TYPE_ENDPOINT)
+=======
+	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_END &&
+	    pci_pcie_type(dev) != PCI_EXP_TYPE_ENDPOINT)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	pci_read_config_word(dev, pos + PCI_SRIOV_CTRL, &ctrl);
@@ -444,7 +683,13 @@ static int sriov_init(struct pci_dev *dev, int pos)
 
 found:
 	pci_write_config_word(dev, pos + PCI_SRIOV_CTRL, ctrl);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_write_config_word(dev, pos + PCI_SRIOV_NUM_VF, total);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_read_config_word(dev, pos + PCI_SRIOV_VF_OFFSET, &offset);
 	pci_read_config_word(dev, pos + PCI_SRIOV_VF_STRIDE, &stride);
 	if (!offset || (total > 1 && !stride))
@@ -483,14 +728,22 @@ found:
 	iov->pos = pos;
 	iov->nres = nres;
 	iov->ctrl = ctrl;
+<<<<<<< HEAD
 	iov->total = total;
+=======
+	iov->total_VFs = total;
+>>>>>>> refs/remotes/origin/master
 	iov->offset = offset;
 	iov->stride = stride;
 	iov->pgsz = pgsz;
 	iov->self = dev;
 	pci_read_config_dword(dev, pos + PCI_SRIOV_CAP, &iov->cap);
 	pci_read_config_byte(dev, pos + PCI_SRIOV_FUNC_LINK, &iov->link);
+<<<<<<< HEAD
 	if (dev->pcie_type == PCI_EXP_TYPE_RC_END)
+=======
+	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END)
+>>>>>>> refs/remotes/origin/master
 		iov->link = PCI_DEVFN(PCI_SLOT(dev->devfn), iov->link);
 
 	if (pdev)
@@ -516,7 +769,11 @@ failed:
 
 static void sriov_release(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	BUG_ON(dev->sriov->nr_virtfn);
+=======
+	BUG_ON(dev->sriov->num_VFs);
+>>>>>>> refs/remotes/origin/master
 
 	if (dev != dev->sriov->dev)
 		pci_dev_put(dev->sriov->dev);
@@ -541,7 +798,11 @@ static void sriov_restore_state(struct pci_dev *dev)
 		pci_update_resource(dev, i);
 
 	pci_write_config_dword(dev, iov->pos + PCI_SRIOV_SYS_PGSIZE, iov->pgsz);
+<<<<<<< HEAD
 	pci_write_config_word(dev, iov->pos + PCI_SRIOV_NUM_VF, iov->nr_virtfn);
+=======
+	pci_write_config_word(dev, iov->pos + PCI_SRIOV_NUM_VF, iov->num_VFs);
+>>>>>>> refs/remotes/origin/master
 	pci_write_config_word(dev, iov->pos + PCI_SRIOV_CTRL, iov->ctrl);
 	if (iov->ctrl & PCI_SRIOV_CTRL_VFE)
 		msleep(100);
@@ -614,7 +875,11 @@ resource_size_t pci_sriov_resource_alignment(struct pci_dev *dev, int resno)
 	struct resource tmp;
 	enum pci_bar_type type;
 	int reg = pci_iov_resource_bar(dev, resno, &type);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (!reg)
 		return 0;
 
@@ -648,7 +913,11 @@ int pci_iov_bus_range(struct pci_bus *bus)
 	list_for_each_entry(dev, &bus->devices, bus_list) {
 		if (!dev->is_physfn)
 			continue;
+<<<<<<< HEAD
 		busnr = virtfn_bus(dev, dev->sriov->total - 1);
+=======
+		busnr = virtfn_bus(dev, dev->sriov->total_VFs - 1);
+>>>>>>> refs/remotes/origin/master
 		if (busnr > max)
 			max = busnr;
 	}
@@ -668,7 +937,11 @@ int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn)
 	might_sleep();
 
 	if (!dev->is_physfn)
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		return -ENOSYS;
+>>>>>>> refs/remotes/origin/master
 
 	return sriov_enable(dev, nr_virtfn);
 }
@@ -716,12 +989,14 @@ EXPORT_SYMBOL_GPL(pci_sriov_migration);
  */
 int pci_num_vf(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	if (!dev || !dev->is_physfn)
 		return 0;
 	else
 		return dev->sriov->nr_virtfn;
 }
 EXPORT_SYMBOL_GPL(pci_num_vf);
+<<<<<<< HEAD
 
 static int ats_alloc_one(struct pci_dev *dev, int ps)
 {
@@ -864,3 +1139,104 @@ int pci_ats_queue_depth(struct pci_dev *dev)
 	return PCI_ATS_CAP_QDEP(cap) ? PCI_ATS_CAP_QDEP(cap) :
 				       PCI_ATS_MAX_QDEP;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dev->is_physfn)
+		return 0;
+
+	return dev->sriov->num_VFs;
+}
+EXPORT_SYMBOL_GPL(pci_num_vf);
+
+/**
+ * pci_vfs_assigned - returns number of VFs are assigned to a guest
+ * @dev: the PCI device
+ *
+ * Returns number of VFs belonging to this device that are assigned to a guest.
+ * If device is not a physical function returns 0.
+ */
+int pci_vfs_assigned(struct pci_dev *dev)
+{
+	struct pci_dev *vfdev;
+	unsigned int vfs_assigned = 0;
+	unsigned short dev_id;
+
+	/* only search if we are a PF */
+	if (!dev->is_physfn)
+		return 0;
+
+	/*
+	 * determine the device ID for the VFs, the vendor ID will be the
+	 * same as the PF so there is no need to check for that one
+	 */
+	pci_read_config_word(dev, dev->sriov->pos + PCI_SRIOV_VF_DID, &dev_id);
+
+	/* loop through all the VFs to see if we own any that are assigned */
+	vfdev = pci_get_device(dev->vendor, dev_id, NULL);
+	while (vfdev) {
+		/*
+		 * It is considered assigned if it is a virtual function with
+		 * our dev as the physical function and the assigned bit is set
+		 */
+		if (vfdev->is_virtfn && (vfdev->physfn == dev) &&
+		    (vfdev->dev_flags & PCI_DEV_FLAGS_ASSIGNED))
+			vfs_assigned++;
+
+		vfdev = pci_get_device(dev->vendor, dev_id, vfdev);
+	}
+
+	return vfs_assigned;
+}
+EXPORT_SYMBOL_GPL(pci_vfs_assigned);
+
+/**
+ * pci_sriov_set_totalvfs -- reduce the TotalVFs available
+ * @dev: the PCI PF device
+ * @numvfs: number that should be used for TotalVFs supported
+ *
+ * Should be called from PF driver's probe routine with
+ * device's mutex held.
+ *
+ * Returns 0 if PF is an SRIOV-capable device and
+ * value of numvfs valid. If not a PF return -ENOSYS;
+ * if numvfs is invalid return -EINVAL;
+ * if VFs already enabled, return -EBUSY.
+ */
+int pci_sriov_set_totalvfs(struct pci_dev *dev, u16 numvfs)
+{
+	if (!dev->is_physfn)
+		return -ENOSYS;
+	if (numvfs > dev->sriov->total_VFs)
+		return -EINVAL;
+
+	/* Shouldn't change if VFs already enabled */
+	if (dev->sriov->ctrl & PCI_SRIOV_CTRL_VFE)
+		return -EBUSY;
+	else
+		dev->sriov->driver_max_VFs = numvfs;
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(pci_sriov_set_totalvfs);
+
+/**
+ * pci_sriov_get_totalvfs -- get total VFs supported on this device
+ * @dev: the PCI PF device
+ *
+ * For a PCIe device with SRIOV support, return the PCIe
+ * SRIOV capability value of TotalVFs or the value of driver_max_VFs
+ * if the driver reduced it.  Otherwise 0.
+ */
+int pci_sriov_get_totalvfs(struct pci_dev *dev)
+{
+	if (!dev->is_physfn)
+		return 0;
+
+	if (dev->sriov->driver_max_VFs)
+		return dev->sriov->driver_max_VFs;
+
+	return dev->sriov->total_VFs;
+}
+EXPORT_SYMBOL_GPL(pci_sriov_get_totalvfs);
+>>>>>>> refs/remotes/origin/master

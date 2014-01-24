@@ -12,6 +12,10 @@
 #define cpu_has_vtag_icache	0
 #define cpu_has_ic_fills_f_dc	0
 #define cpu_has_dsp	0
+<<<<<<< HEAD
+=======
+#define cpu_has_dsp2		0
+>>>>>>> refs/remotes/origin/master
 #define cpu_has_mipsmt	0
 #define cpu_has_userlocal	0
 

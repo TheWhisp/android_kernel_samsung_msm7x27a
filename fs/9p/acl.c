@@ -23,6 +23,10 @@
 #include "acl.h"
 #include "v9fs.h"
 #include "v9fs_vfs.h"
+<<<<<<< HEAD
+=======
+#include "fid.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct posix_acl *__v9fs_get_acl(struct p9_fid *fid, char *name)
 {
@@ -37,7 +41,11 @@ static struct posix_acl *__v9fs_get_acl(struct p9_fid *fid, char *name)
 			return ERR_PTR(-ENOMEM);
 		size = v9fs_fid_xattr_get(fid, name, value, size);
 		if (size > 0) {
+<<<<<<< HEAD
 			acl = posix_acl_from_xattr(value, size);
+=======
+			acl = posix_acl_from_xattr(&init_user_ns, value, size);
+>>>>>>> refs/remotes/origin/master
 			if (IS_ERR(acl))
 				goto err_out;
 		}
@@ -96,6 +104,8 @@ static struct posix_acl *v9fs_get_cached_acl(struct inode *inode, int type)
 	return acl;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int v9fs_check_acl(struct inode *inode, int mask, unsigned int flags)
 {
 	struct posix_acl *acl;
@@ -104,6 +114,17 @@ int v9fs_check_acl(struct inode *inode, int mask, unsigned int flags)
 	if (flags & IPERM_FLAG_RCU)
 		return -ECHILD;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type)
+{
+	struct v9fs_session_info *v9ses;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	v9ses = v9fs_inode2v9ses(inode);
 	if (((v9ses->flags & V9FS_ACCESS_MASK) != V9FS_ACCESS_CLIENT) ||
 			((v9ses->flags & V9FS_ACL_MASK) != V9FS_POSIX_ACL)) {
@@ -111,6 +132,8 @@ int v9fs_check_acl(struct inode *inode, int mask, unsigned int flags)
 		 * On access = client  and acl = on mode get the acl
 		 * values from the server
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 	}
 	acl = v9fs_get_cached_acl(inode, ACL_TYPE_ACCESS);
@@ -123,18 +146,35 @@ int v9fs_check_acl(struct inode *inode, int mask, unsigned int flags)
 		return error;
 	}
 	return -EAGAIN;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		return NULL;
+	}
+	return v9fs_get_cached_acl(inode, type);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int v9fs_set_acl(struct dentry *dentry, int type, struct posix_acl *acl)
+=======
+}
+
+static int v9fs_set_acl(struct p9_fid *fid, int type, struct posix_acl *acl)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 	char *name;
 	size_t size;
 	void *buffer;
+<<<<<<< HEAD
 	struct inode *inode = dentry->d_inode;
 
 	set_cached_acl(inode, type, acl);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!acl)
 		return 0;
 
@@ -143,7 +183,11 @@ static int v9fs_set_acl(struct dentry *dentry, int type, struct posix_acl *acl)
 	buffer = kmalloc(size, GFP_KERNEL);
 	if (!buffer)
 		return -ENOMEM;
+<<<<<<< HEAD
 	retval = posix_acl_to_xattr(acl, buffer, size);
+=======
+	retval = posix_acl_to_xattr(&init_user_ns, acl, buffer, size);
+>>>>>>> refs/remotes/origin/master
 	if (retval < 0)
 		goto err_free_out;
 	switch (type) {
@@ -156,22 +200,39 @@ static int v9fs_set_acl(struct dentry *dentry, int type, struct posix_acl *acl)
 	default:
 		BUG();
 	}
+<<<<<<< HEAD
 	retval = v9fs_xattr_set(dentry, name, buffer, size, 0);
+=======
+	retval = v9fs_fid_xattr_set(fid, name, buffer, size, 0);
+>>>>>>> refs/remotes/origin/master
 err_free_out:
 	kfree(buffer);
 	return retval;
 }
 
+<<<<<<< HEAD
 int v9fs_acl_chmod(struct dentry *dentry)
 {
 	int retval = 0;
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
+=======
+	struct posix_acl *acl;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct inode *inode = dentry->d_inode;
+=======
+int v9fs_acl_chmod(struct inode *inode, struct p9_fid *fid)
+{
+	int retval = 0;
+	struct posix_acl *acl;
+>>>>>>> refs/remotes/origin/master
 
 	if (S_ISLNK(inode->i_mode))
 		return -EOPNOTSUPP;
 	acl = v9fs_get_cached_acl(inode, ACL_TYPE_ACCESS);
 	if (acl) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		clone = posix_acl_clone(acl, GFP_KERNEL);
 		posix_acl_release(acl);
 		if (!clone)
@@ -180,10 +241,26 @@ int v9fs_acl_chmod(struct dentry *dentry)
 		if (!retval)
 			retval = v9fs_set_acl(dentry, ACL_TYPE_ACCESS, clone);
 		posix_acl_release(clone);
+=======
+		retval = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+		if (retval)
+			return retval;
+		retval = v9fs_set_acl(dentry, ACL_TYPE_ACCESS, acl);
+		posix_acl_release(acl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		retval = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+		if (retval)
+			return retval;
+		set_cached_acl(inode, ACL_TYPE_ACCESS, acl);
+		retval = v9fs_set_acl(fid, ACL_TYPE_ACCESS, acl);
+		posix_acl_release(acl);
+>>>>>>> refs/remotes/origin/master
 	}
 	return retval;
 }
 
+<<<<<<< HEAD
 int v9fs_set_create_acl(struct dentry *dentry,
 			struct posix_acl **dpacl, struct posix_acl **pacl)
 {
@@ -197,11 +274,41 @@ int v9fs_set_create_acl(struct dentry *dentry,
 	return 0;
 }
 
+<<<<<<< HEAD
 int v9fs_acl_mode(struct inode *dir, mode_t *modep,
 		  struct posix_acl **dpacl, struct posix_acl **pacl)
 {
 	int retval = 0;
 	mode_t mode = *modep;
+=======
+=======
+int v9fs_set_create_acl(struct inode *inode, struct p9_fid *fid,
+			struct posix_acl *dacl, struct posix_acl *acl)
+{
+	set_cached_acl(inode, ACL_TYPE_DEFAULT, dacl);
+	set_cached_acl(inode, ACL_TYPE_ACCESS, acl);
+	v9fs_set_acl(fid, ACL_TYPE_DEFAULT, dacl);
+	v9fs_set_acl(fid, ACL_TYPE_ACCESS, acl);
+	return 0;
+}
+
+void v9fs_put_acl(struct posix_acl *dacl,
+		  struct posix_acl *acl)
+{
+	posix_acl_release(dacl);
+	posix_acl_release(acl);
+}
+
+>>>>>>> refs/remotes/origin/master
+int v9fs_acl_mode(struct inode *dir, umode_t *modep,
+		  struct posix_acl **dpacl, struct posix_acl **pacl)
+{
+	int retval = 0;
+	umode_t mode = *modep;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct posix_acl *acl = NULL;
 
 	if (!S_ISLNK(mode)) {
@@ -212,6 +319,8 @@ int v9fs_acl_mode(struct inode *dir, mode_t *modep,
 			mode &= ~current_umask();
 	}
 	if (acl) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct posix_acl *clone;
 
 		if (S_ISDIR(mode))
@@ -236,6 +345,25 @@ int v9fs_acl_mode(struct inode *dir, mode_t *modep,
 cleanup:
 	return retval;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (S_ISDIR(mode))
+			*dpacl = posix_acl_dup(acl);
+		retval = posix_acl_create(&acl, GFP_NOFS, &mode);
+		if (retval < 0)
+			return retval;
+		if (retval > 0)
+			*pacl = acl;
+		else
+			posix_acl_release(acl);
+	}
+	*modep  = mode;
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int v9fs_remote_get_acl(struct dentry *dentry, const char *name,
@@ -278,7 +406,11 @@ static int v9fs_xattr_get_acl(struct dentry *dentry, const char *name,
 		return PTR_ERR(acl);
 	if (acl == NULL)
 		return -ENODATA;
+<<<<<<< HEAD
 	error = posix_acl_to_xattr(acl, buffer, size);
+=======
+	error = posix_acl_to_xattr(&init_user_ns, acl, buffer, size);
+>>>>>>> refs/remotes/origin/master
 	posix_acl_release(acl);
 
 	return error;
@@ -331,7 +463,11 @@ static int v9fs_xattr_set_acl(struct dentry *dentry, const char *name,
 		return -EPERM;
 	if (value) {
 		/* update the cached acl value */
+<<<<<<< HEAD
 		acl = posix_acl_from_xattr(value, size);
+=======
+		acl = posix_acl_from_xattr(&init_user_ns, value, size);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(acl))
 			return PTR_ERR(acl);
 		else if (acl) {
@@ -346,7 +482,15 @@ static int v9fs_xattr_set_acl(struct dentry *dentry, const char *name,
 	case ACL_TYPE_ACCESS:
 		name = POSIX_ACL_XATTR_ACCESS;
 		if (acl) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			mode_t mode = inode->i_mode;
+=======
+			umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/master
 			retval = posix_acl_equiv_mode(acl, &mode);
 			if (retval < 0)
 				goto err_out;

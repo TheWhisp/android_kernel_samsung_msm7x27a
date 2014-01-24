@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 /**
  * arch/s390/oprofile/backtrace.c
  *
  * S390 Version
  *   Copyright (C) 2005 IBM Corporation, IBM Deutschland Entwicklung GmbH.
+=======
+/*
+ * S390 Version
+ *   Copyright IBM Corp. 2005
+>>>>>>> refs/remotes/origin/master
  *   Author(s): Andreas Krebbel <Andreas.Krebbel@de.ibm.com>
  */
 
@@ -60,7 +66,11 @@ void s390_backtrace(struct pt_regs * const regs, unsigned int depth)
 	unsigned long head;
 	struct stack_frame* head_sf;
 
+<<<<<<< HEAD
 	if (user_mode (regs))
+=======
+	if (user_mode(regs))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	head = regs->gprs[15];

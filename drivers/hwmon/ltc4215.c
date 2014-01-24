@@ -19,6 +19,10 @@
 #include <linux/i2c.h>
 #include <linux/hwmon.h>
 #include <linux/hwmon-sysfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Here are names of the chip's registers (a.k.a. commands) */
 enum ltc4215_cmd {
@@ -91,8 +95,21 @@ static int ltc4215_get_voltage(struct device *dev, u8 reg)
 		voltage = regval * 605 / 10;
 		break;
 	case LTC4215_ADIN:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* The ADIN input is divided by 12.5, and has 4.82 mV
 		 * per increment, so we have the additional multiply */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * The ADIN input is divided by 12.5, and has 4.82 mV
+		 * per increment, so we have the additional multiply
+		 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		voltage = regval * 482 * 125 / 1000;
 		break;
 	default:
@@ -109,7 +126,17 @@ static unsigned int ltc4215_get_current(struct device *dev)
 {
 	struct ltc4215_data *data = ltc4215_update_device(dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* The strange looking conversions that follow are fixed-point
+=======
+	/*
+	 * The strange looking conversions that follow are fixed-point
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * The strange looking conversions that follow are fixed-point
+>>>>>>> refs/remotes/origin/master
 	 * math, since we cannot do floating point in the kernel.
 	 *
 	 * Step 1: convert sense register to microVolts
@@ -168,6 +195,7 @@ static ssize_t ltc4215_show_alarm(struct device *dev,
 					  struct device_attribute *da,
 					  char *buf)
 {
+<<<<<<< HEAD
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(da);
 	struct ltc4215_data *data = ltc4215_update_device(dev);
 	const u8 reg = data->regs[attr->index];
@@ -176,11 +204,29 @@ static ssize_t ltc4215_show_alarm(struct device *dev,
 	return snprintf(buf, PAGE_SIZE, "%u\n", (reg & mask) ? 1 : 0);
 }
 
+<<<<<<< HEAD
 /* These macros are used below in constructing device attribute objects
+=======
+/*
+ * These macros are used below in constructing device attribute objects
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct ltc4215_data *data = ltc4215_update_device(dev);
+	const u8 reg = data->regs[LTC4215_STATUS];
+	const u32 mask = attr->index;
+
+	return snprintf(buf, PAGE_SIZE, "%u\n", !!(reg & mask));
+}
+
+/*
+ * These macros are used below in constructing device attribute objects
+>>>>>>> refs/remotes/origin/master
  * for use with sysfs_create_group() to make a sysfs device file
  * for each register.
  */
 
+<<<<<<< HEAD
 #define LTC4215_VOLTAGE(name, ltc4215_cmd_idx) \
 	static SENSOR_DEVICE_ATTR(name, S_IRUGO, \
 	ltc4215_show_voltage, NULL, ltc4215_cmd_idx)
@@ -215,7 +261,40 @@ LTC4215_ALARM(in1_min_alarm,	(1 << 1),	LTC4215_STATUS);
 LTC4215_VOLTAGE(in2_input,			LTC4215_SOURCE);
 LTC4215_ALARM(in2_min_alarm,	(1 << 3),	LTC4215_STATUS);
 
+<<<<<<< HEAD
 /* Finally, construct an array of pointers to members of the above objects,
+=======
+/*
+ * Finally, construct an array of pointers to members of the above objects,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Construct a sensor_device_attribute structure for each register */
+
+/* Current */
+static SENSOR_DEVICE_ATTR(curr1_input, S_IRUGO, ltc4215_show_current, NULL, 0);
+static SENSOR_DEVICE_ATTR(curr1_max_alarm, S_IRUGO, ltc4215_show_alarm, NULL,
+			  1 << 2);
+
+/* Power (virtual) */
+static SENSOR_DEVICE_ATTR(power1_input, S_IRUGO, ltc4215_show_power, NULL, 0);
+
+/* Input Voltage */
+static SENSOR_DEVICE_ATTR(in1_input, S_IRUGO, ltc4215_show_voltage, NULL,
+			  LTC4215_ADIN);
+static SENSOR_DEVICE_ATTR(in1_max_alarm, S_IRUGO, ltc4215_show_alarm, NULL,
+			  1 << 0);
+static SENSOR_DEVICE_ATTR(in1_min_alarm, S_IRUGO, ltc4215_show_alarm, NULL,
+			  1 << 1);
+
+/* Output Voltage */
+static SENSOR_DEVICE_ATTR(in2_input, S_IRUGO, ltc4215_show_voltage, NULL,
+			  LTC4215_SOURCE);
+static SENSOR_DEVICE_ATTR(in2_min_alarm, S_IRUGO, ltc4215_show_alarm, NULL,
+			  1 << 3);
+
+/*
+ * Finally, construct an array of pointers to members of the above objects,
+>>>>>>> refs/remotes/origin/master
  * as required for sysfs_create_group()
  */
 static struct attribute *ltc4215_attributes[] = {
@@ -248,11 +327,17 @@ static int ltc4215_probe(struct i2c_client *client,
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
 	if (!data) {
 		ret = -ENOMEM;
 		goto out_kzalloc;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->update_lock);
@@ -263,7 +348,11 @@ static int ltc4215_probe(struct i2c_client *client,
 	/* Register sysfs hooks */
 	ret = sysfs_create_group(&client->dev.kobj, &ltc4215_group);
 	if (ret)
+<<<<<<< HEAD
 		goto out_sysfs_create_group;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -275,9 +364,12 @@ static int ltc4215_probe(struct i2c_client *client,
 
 out_hwmon_device_register:
 	sysfs_remove_group(&client->dev.kobj, &ltc4215_group);
+<<<<<<< HEAD
 out_sysfs_create_group:
 	kfree(data);
 out_kzalloc:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -288,8 +380,11 @@ static int ltc4215_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &ltc4215_group);
 
+<<<<<<< HEAD
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -309,6 +404,8 @@ static struct i2c_driver ltc4215_driver = {
 	.id_table	= ltc4215_id,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init ltc4215_init(void)
 {
 	return i2c_add_driver(&ltc4215_driver);
@@ -318,10 +415,22 @@ static void __exit ltc4215_exit(void)
 {
 	i2c_del_driver(&ltc4215_driver);
 }
+=======
+module_i2c_driver(ltc4215_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(ltc4215_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ira W. Snyder <iws@ovro.caltech.edu>");
 MODULE_DESCRIPTION("LTC4215 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(ltc4215_init);
 module_exit(ltc4215_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

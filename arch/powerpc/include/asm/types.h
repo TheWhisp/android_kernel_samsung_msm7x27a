@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef _ASM_POWERPC_TYPES_H
 #define _ASM_POWERPC_TYPES_H
 
@@ -5,8 +6,16 @@
  * This is here because we used to use l64 for 64bit powerpc
  * and we don't want to impact user mode with our change to ll64
  * in the kernel.
+<<<<<<< HEAD
  */
 #if defined(__powerpc64__) && !defined(__KERNEL__)
+=======
+ *
+ * However, some user programs are fine with this.  They can
+ * flag __SANE_USERSPACE_TYPES__ to get int-ll64.h here.
+ */
+#if !defined(__SANE_USERSPACE_TYPES__) && defined(__powerpc64__) && !defined(__KERNEL__)
+>>>>>>> refs/remotes/origin/cm-10.0
 # include <asm-generic/int-l64.h>
 #else
 # include <asm-generic/int-ll64.h>
@@ -14,6 +23,8 @@
 
 #ifndef __ASSEMBLY__
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This file is never included by application software unless
  * explicitly requested (e.g., via linux/types.h) in which case the
@@ -26,13 +37,17 @@
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 #ifdef __powerpc64__
 typedef unsigned int umode_t;
 #else
 typedef unsigned short umode_t;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 typedef struct {
 	__u32 u[4];
 } __attribute__((aligned(16))) __vector128;
@@ -40,6 +55,13 @@ typedef struct {
 #endif /* __ASSEMBLY__ */
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_POWERPC_TYPES_H
+#define _ASM_POWERPC_TYPES_H
+
+#include <uapi/asm/types.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 typedef __vector128 vector128;
@@ -52,6 +74,9 @@ typedef struct {
 
 #endif /* __ASSEMBLY__ */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_POWERPC_TYPES_H */

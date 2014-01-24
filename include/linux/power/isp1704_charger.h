@@ -24,6 +24,10 @@
 
 struct isp1704_charger_data {
 	void		(*set_power)(bool on);
+<<<<<<< HEAD
+=======
+	int		enable_gpio;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

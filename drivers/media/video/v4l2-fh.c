@@ -24,11 +24,16 @@
 
 #include <linux/bitops.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/v4l2-dev.h>
 #include <media/v4l2-fh.h>
 #include <media/v4l2-event.h>
 #include <media/v4l2-ioctl.h>
 
+<<<<<<< HEAD
 int v4l2_fh_init(struct v4l2_fh *fh, struct video_device *vdev)
 {
 	fh->vdev = vdev;
@@ -46,6 +51,20 @@ int v4l2_fh_init(struct v4l2_fh *fh, struct video_device *vdev)
 	fh->events = NULL;
 
 	return 0;
+=======
+void v4l2_fh_init(struct v4l2_fh *fh, struct video_device *vdev)
+{
+	fh->vdev = vdev;
+	/* Inherit from video_device. May be overridden by the driver. */
+	fh->ctrl_handler = vdev->ctrl_handler;
+	INIT_LIST_HEAD(&fh->list);
+	set_bit(V4L2_FL_USES_V4L2_FH, &fh->vdev->flags);
+	fh->prio = V4L2_PRIORITY_UNSET;
+	init_waitqueue_head(&fh->wait);
+	INIT_LIST_HEAD(&fh->available);
+	INIT_LIST_HEAD(&fh->subscribed);
+	fh->sequence = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(v4l2_fh_init);
 
@@ -91,10 +110,15 @@ void v4l2_fh_exit(struct v4l2_fh *fh)
 {
 	if (fh->vdev == NULL)
 		return;
+<<<<<<< HEAD
 
 	fh->vdev = NULL;
 
 	v4l2_event_free(fh);
+=======
+	v4l2_event_unsubscribe_all(fh);
+	fh->vdev = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(v4l2_fh_exit);
 

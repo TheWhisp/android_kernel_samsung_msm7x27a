@@ -23,20 +23,32 @@ struct resource {
 	struct resource *parent, *sibling, *child;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct resource_list {
 	struct resource_list *next;
 	struct resource *res;
 	struct pci_dev *dev;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * IO resources have these defined flags.
  */
 #define IORESOURCE_BITS		0x000000ff	/* Bus-specific bits */
 
 #define IORESOURCE_TYPE_BITS	0x00001f00	/* Resource type */
+<<<<<<< HEAD
 #define IORESOURCE_IO		0x00000100
 #define IORESOURCE_MEM		0x00000200
+=======
+#define IORESOURCE_IO		0x00000100	/* PCI/ISA I/O ports */
+#define IORESOURCE_MEM		0x00000200
+#define IORESOURCE_REG		0x00000300	/* Register offsets */
+>>>>>>> refs/remotes/origin/master
 #define IORESOURCE_IRQ		0x00000400
 #define IORESOURCE_DMA		0x00000800
 #define IORESOURCE_BUS		0x00001000
@@ -109,14 +121,61 @@ struct resource_list {
 /* PCI control bits.  Shares IORESOURCE_BITS with above PCI ROM.  */
 #define IORESOURCE_PCI_FIXED		(1<<4)	/* Do not move resource */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/* helpers to define resources */
+#define DEFINE_RES_NAMED(_start, _size, _name, _flags)			\
+	{								\
+		.start = (_start),					\
+		.end = (_start) + (_size) - 1,				\
+		.name = (_name),					\
+		.flags = (_flags),					\
+	}
+
+#define DEFINE_RES_IO_NAMED(_start, _size, _name)			\
+	DEFINE_RES_NAMED((_start), (_size), (_name), IORESOURCE_IO)
+#define DEFINE_RES_IO(_start, _size)					\
+	DEFINE_RES_IO_NAMED((_start), (_size), NULL)
+
+#define DEFINE_RES_MEM_NAMED(_start, _size, _name)			\
+	DEFINE_RES_NAMED((_start), (_size), (_name), IORESOURCE_MEM)
+#define DEFINE_RES_MEM(_start, _size)					\
+	DEFINE_RES_MEM_NAMED((_start), (_size), NULL)
+
+#define DEFINE_RES_IRQ_NAMED(_irq, _name)				\
+	DEFINE_RES_NAMED((_irq), 1, (_name), IORESOURCE_IRQ)
+#define DEFINE_RES_IRQ(_irq)						\
+	DEFINE_RES_IRQ_NAMED((_irq), NULL)
+
+#define DEFINE_RES_DMA_NAMED(_dma, _name)				\
+	DEFINE_RES_NAMED((_dma), 1, (_name), IORESOURCE_DMA)
+#define DEFINE_RES_DMA(_dma)						\
+	DEFINE_RES_DMA_NAMED((_dma), NULL)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* PC/ISA/whatever - the normal PC address spaces: IO and memory */
 extern struct resource ioport_resource;
 extern struct resource iomem_resource;
 
 extern struct resource *request_resource_conflict(struct resource *root, struct resource *new);
 extern int request_resource(struct resource *root, struct resource *new);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern struct resource *locate_resource(struct resource *root,
 	struct resource *search);
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+extern struct resource *locate_resource(struct resource *root,
+	struct resource *search);
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int release_resource(struct resource *new);
 void release_child_resources(struct resource *new);
 extern void reserve_region_with_split(struct resource *root,
@@ -134,6 +193,14 @@ extern int allocate_resource(struct resource *root, struct resource *new,
 						       resource_size_t,
 						       resource_size_t),
 			     void *alignf_data);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct resource *lookup_resource(struct resource *root, resource_size_t start);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct resource *lookup_resource(struct resource *root, resource_size_t start);
+>>>>>>> refs/remotes/origin/master
 int adjust_resource(struct resource *res, resource_size_t start,
 		    resource_size_t size);
 resource_size_t resource_alignment(struct resource *res);
@@ -168,6 +235,13 @@ extern struct resource * __request_region(struct resource *,
 extern int __check_region(struct resource *, resource_size_t, resource_size_t);
 extern void __release_region(struct resource *, resource_size_t,
 				resource_size_t);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MEMORY_HOTREMOVE
+extern int release_mem_region_adjustable(struct resource *, resource_size_t,
+				resource_size_t);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static inline int __deprecated check_region(resource_size_t s,
 						resource_size_t n)
@@ -200,5 +274,15 @@ extern int
 walk_system_ram_range(unsigned long start_pfn, unsigned long nr_pages,
 		void *arg, int (*func)(unsigned long, unsigned long, void *));
 
+<<<<<<< HEAD
+=======
+/* True if any part of r1 overlaps r2 */
+static inline bool resource_overlaps(struct resource *r1, struct resource *r2)
+{
+       return (r1->start <= r2->end && r1->end >= r2->start);
+}
+
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 #endif	/* _LINUX_IOPORT_H */

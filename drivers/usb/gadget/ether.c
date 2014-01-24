@@ -9,6 +9,8 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,13 +20,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /* #define VERBOSE_DEBUG */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/utsname.h>
 
+=======
+#include <linux/netdevice.h>
+>>>>>>> refs/remotes/origin/master
 
 #if defined USB_ETH_RNDIS
 #  undef USB_ETH_RNDIS
@@ -102,6 +112,7 @@ static inline bool has_rndis(void)
 #endif
 }
 
+<<<<<<< HEAD
 /*-------------------------------------------------------------------------*/
 
 /*
@@ -126,6 +137,24 @@ static inline bool has_rndis(void)
 #include "u_ether.c"
 
 /*-------------------------------------------------------------------------*/
+=======
+#include <linux/module.h>
+
+#include "u_ecm.h"
+#include "u_gether.h"
+#ifdef	USB_ETH_RNDIS
+#include "u_rndis.h"
+#include "rndis.h"
+#else
+#define rndis_borrow_net(...) do {} while (0)
+#endif
+#include "u_eem.h"
+
+/*-------------------------------------------------------------------------*/
+USB_GADGET_COMPOSITE_OPTIONS();
+
+USB_ETHERNET_MODULE_PARAMETERS();
+>>>>>>> refs/remotes/origin/master
 
 /* DO NOT REUSE THESE IDs with a protocol-incompatible driver!!  Ever!!
  * Instead:  allocate your own, using normal USB-IF procedures.
@@ -204,6 +233,7 @@ static const struct usb_descriptor_header *otg_desc[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 
 /* string IDs are assigned dynamically */
 
@@ -215,6 +245,12 @@ static char manufacturer[50];
 static struct usb_string strings_dev[] = {
 	[STRING_MANUFACTURER_IDX].s = manufacturer,
 	[STRING_PRODUCT_IDX].s = PREFIX DRIVER_DESC,
+=======
+static struct usb_string strings_dev[] = {
+	[USB_GADGET_MANUFACTURER_IDX].s = "",
+	[USB_GADGET_PRODUCT_IDX].s = PREFIX DRIVER_DESC,
+	[USB_GADGET_SERIAL_IDX].s = "",
+>>>>>>> refs/remotes/origin/master
 	{  } /* end of list */
 };
 
@@ -228,7 +264,21 @@ static struct usb_gadget_strings *dev_strings[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 static u8 hostaddr[ETH_ALEN];
+=======
+static struct usb_function_instance *fi_ecm;
+static struct usb_function *f_ecm;
+
+static struct usb_function_instance *fi_eem;
+static struct usb_function *f_eem;
+
+static struct usb_function_instance *fi_geth;
+static struct usb_function *f_geth;
+
+static struct usb_function_instance *fi_rndis;
+static struct usb_function *f_rndis;
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
@@ -239,6 +289,11 @@ static u8 hostaddr[ETH_ALEN];
  */
 static int __init rndis_do_config(struct usb_configuration *c)
 {
+<<<<<<< HEAD
+=======
+	int status;
+
+>>>>>>> refs/remotes/origin/master
 	/* FIXME alloc iConfiguration string, set it in c->strings */
 
 	if (gadget_is_otg(c->cdev->gadget)) {
@@ -246,7 +301,19 @@ static int __init rndis_do_config(struct usb_configuration *c)
 		c->bmAttributes |= USB_CONFIG_ATT_WAKEUP;
 	}
 
+<<<<<<< HEAD
 	return rndis_bind_config(c, hostaddr);
+=======
+	f_rndis = usb_get_function(fi_rndis);
+	if (IS_ERR(f_rndis))
+		return PTR_ERR(f_rndis);
+
+	status = usb_add_function(c, f_rndis);
+	if (status < 0)
+		usb_put_function(f_rndis);
+
+	return status;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct usb_configuration rndis_config_driver = {
@@ -259,9 +326,21 @@ static struct usb_configuration rndis_config_driver = {
 /*-------------------------------------------------------------------------*/
 
 #ifdef CONFIG_USB_ETH_EEM
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int use_eem = 1;
 #else
 static int use_eem;
+=======
+static bool use_eem = 1;
+#else
+static bool use_eem;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool use_eem = 1;
+#else
+static bool use_eem;
+>>>>>>> refs/remotes/origin/master
 #endif
 module_param(use_eem, bool, 0);
 MODULE_PARM_DESC(use_eem, "use CDC EEM mode");
@@ -271,6 +350,11 @@ MODULE_PARM_DESC(use_eem, "use CDC EEM mode");
  */
 static int __init eth_do_config(struct usb_configuration *c)
 {
+<<<<<<< HEAD
+=======
+	int status = 0;
+
+>>>>>>> refs/remotes/origin/master
 	/* FIXME alloc iConfiguration string, set it in c->strings */
 
 	if (gadget_is_otg(c->cdev->gadget)) {
@@ -278,12 +362,47 @@ static int __init eth_do_config(struct usb_configuration *c)
 		c->bmAttributes |= USB_CONFIG_ATT_WAKEUP;
 	}
 
+<<<<<<< HEAD
 	if (use_eem)
 		return eem_bind_config(c);
 	else if (can_support_ecm(c->cdev->gadget))
 		return ecm_bind_config(c, hostaddr);
 	else
 		return geth_bind_config(c, hostaddr);
+=======
+	if (use_eem) {
+		f_eem = usb_get_function(fi_eem);
+		if (IS_ERR(f_eem))
+			return PTR_ERR(f_eem);
+
+		status = usb_add_function(c, f_eem);
+		if (status < 0)
+			usb_put_function(f_eem);
+
+		return status;
+	} else if (can_support_ecm(c->cdev->gadget)) {
+		f_ecm = usb_get_function(fi_ecm);
+		if (IS_ERR(f_ecm))
+			return PTR_ERR(f_ecm);
+
+		status = usb_add_function(c, f_ecm);
+		if (status < 0)
+			usb_put_function(f_ecm);
+
+		return status;
+	} else {
+		f_geth = usb_get_function(fi_geth);
+		if (IS_ERR(f_geth))
+			return PTR_ERR(f_geth);
+
+		status = usb_add_function(c, f_geth);
+		if (status < 0)
+			usb_put_function(f_geth);
+
+		return status;
+	}
+
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct usb_configuration eth_config_driver = {
@@ -297,6 +416,7 @@ static struct usb_configuration eth_config_driver = {
 
 static int __init eth_bind(struct usb_composite_dev *cdev)
 {
+<<<<<<< HEAD
 	int			gcnum;
 	struct usb_gadget	*gadget = cdev->gadget;
 	int			status;
@@ -317,6 +437,53 @@ static int __init eth_bind(struct usb_composite_dev *cdev)
 		eth_config_driver.label = "CDC Ethernet (ECM)";
 	} else {
 		/* CDC Subset */
+=======
+	struct usb_gadget	*gadget = cdev->gadget;
+	struct f_eem_opts	*eem_opts = NULL;
+	struct f_ecm_opts	*ecm_opts = NULL;
+	struct f_gether_opts	*geth_opts = NULL;
+	struct net_device	*net;
+	int			status;
+
+	/* set up main config label and device descriptor */
+	if (use_eem) {
+		/* EEM */
+		fi_eem = usb_get_function_instance("eem");
+		if (IS_ERR(fi_eem))
+			return PTR_ERR(fi_eem);
+
+		eem_opts = container_of(fi_eem, struct f_eem_opts, func_inst);
+
+		net = eem_opts->net;
+
+		eth_config_driver.label = "CDC Ethernet (EEM)";
+		device_desc.idVendor = cpu_to_le16(EEM_VENDOR_NUM);
+		device_desc.idProduct = cpu_to_le16(EEM_PRODUCT_NUM);
+	} else if (can_support_ecm(gadget)) {
+		/* ECM */
+
+		fi_ecm = usb_get_function_instance("ecm");
+		if (IS_ERR(fi_ecm))
+			return PTR_ERR(fi_ecm);
+
+		ecm_opts = container_of(fi_ecm, struct f_ecm_opts, func_inst);
+
+		net = ecm_opts->net;
+
+		eth_config_driver.label = "CDC Ethernet (ECM)";
+	} else {
+		/* CDC Subset */
+
+		fi_geth = usb_get_function_instance("geth");
+		if (IS_ERR(fi_geth))
+			return PTR_ERR(fi_geth);
+
+		geth_opts = container_of(fi_geth, struct f_gether_opts,
+					 func_inst);
+
+		net = geth_opts->net;
+
+>>>>>>> refs/remotes/origin/master
 		eth_config_driver.label = "CDC Subset/SAFE";
 
 		device_desc.idVendor = cpu_to_le16(SIMPLE_VENDOR_NUM);
@@ -325,13 +492,45 @@ static int __init eth_bind(struct usb_composite_dev *cdev)
 			device_desc.bDeviceClass = USB_CLASS_VENDOR_SPEC;
 	}
 
+<<<<<<< HEAD
 	if (has_rndis()) {
 		/* RNDIS plus ECM-or-Subset */
+=======
+	gether_set_qmult(net, qmult);
+	if (!gether_set_host_addr(net, host_addr))
+		pr_info("using host ethernet address: %s", host_addr);
+	if (!gether_set_dev_addr(net, dev_addr))
+		pr_info("using self ethernet address: %s", dev_addr);
+
+	if (has_rndis()) {
+		/* RNDIS plus ECM-or-Subset */
+		gether_set_gadget(net, cdev->gadget);
+		status = gether_register_netdev(net);
+		if (status)
+			goto fail;
+
+		if (use_eem)
+			eem_opts->bound = true;
+		else if (can_support_ecm(gadget))
+			ecm_opts->bound = true;
+		else
+			geth_opts->bound = true;
+
+		fi_rndis = usb_get_function_instance("rndis");
+		if (IS_ERR(fi_rndis)) {
+			status = PTR_ERR(fi_rndis);
+			goto fail;
+		}
+
+		rndis_borrow_net(fi_rndis, net);
+
+>>>>>>> refs/remotes/origin/master
 		device_desc.idVendor = cpu_to_le16(RNDIS_VENDOR_NUM);
 		device_desc.idProduct = cpu_to_le16(RNDIS_PRODUCT_NUM);
 		device_desc.bNumConfigurations = 2;
 	}
 
+<<<<<<< HEAD
 	gcnum = usb_gadget_controller_number(gadget);
 	if (gcnum >= 0)
 		device_desc.bcdDevice = cpu_to_le16(0x0300 | gcnum);
@@ -349,10 +548,13 @@ static int __init eth_bind(struct usb_composite_dev *cdev)
 	}
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Allocate string descriptor numbers ... note that string
 	 * contents can be overridden by the composite_dev glue.
 	 */
 
+<<<<<<< HEAD
 	/* device descriptor strings: manufacturer, product */
 	snprintf(manufacturer, sizeof manufacturer, "%s %s with %s",
 		init_utsname()->sysname, init_utsname()->release,
@@ -368,31 +570,62 @@ static int __init eth_bind(struct usb_composite_dev *cdev)
 		goto fail;
 	strings_dev[STRING_PRODUCT_IDX].id = status;
 	device_desc.iProduct = status;
+=======
+	status = usb_string_ids_tab(cdev, strings_dev);
+	if (status < 0)
+		goto fail1;
+	device_desc.iManufacturer = strings_dev[USB_GADGET_MANUFACTURER_IDX].id;
+	device_desc.iProduct = strings_dev[USB_GADGET_PRODUCT_IDX].id;
+>>>>>>> refs/remotes/origin/master
 
 	/* register our configuration(s); RNDIS first, if it's used */
 	if (has_rndis()) {
 		status = usb_add_config(cdev, &rndis_config_driver,
 				rndis_do_config);
 		if (status < 0)
+<<<<<<< HEAD
 			goto fail;
+=======
+			goto fail1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	status = usb_add_config(cdev, &eth_config_driver, eth_do_config);
 	if (status < 0)
+<<<<<<< HEAD
 		goto fail;
 
+=======
+		goto fail1;
+
+	usb_composite_overwrite_options(cdev, &coverwrite);
+>>>>>>> refs/remotes/origin/master
 	dev_info(&gadget->dev, "%s, version: " DRIVER_VERSION "\n",
 			DRIVER_DESC);
 
 	return 0;
 
+<<<<<<< HEAD
 fail:
 	gether_cleanup();
+=======
+fail1:
+	if (has_rndis())
+		usb_put_function_instance(fi_rndis);
+fail:
+	if (use_eem)
+		usb_put_function_instance(fi_eem);
+	else if (can_support_ecm(gadget))
+		usb_put_function_instance(fi_ecm);
+	else
+		usb_put_function_instance(fi_geth);
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
 static int __exit eth_unbind(struct usb_composite_dev *cdev)
 {
+<<<<<<< HEAD
 	gether_cleanup();
 	return 0;
 }
@@ -401,6 +634,35 @@ static struct usb_composite_driver eth_driver = {
 	.name		= "g_ether",
 	.dev		= &device_desc,
 	.strings	= dev_strings,
+<<<<<<< HEAD
+=======
+	.max_speed	= USB_SPEED_SUPER,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (has_rndis()) {
+		usb_put_function(f_rndis);
+		usb_put_function_instance(fi_rndis);
+	}
+	if (use_eem) {
+		usb_put_function(f_eem);
+		usb_put_function_instance(fi_eem);
+	} else if (can_support_ecm(cdev->gadget)) {
+		usb_put_function(f_ecm);
+		usb_put_function_instance(fi_ecm);
+	} else {
+		usb_put_function(f_geth);
+		usb_put_function_instance(fi_geth);
+	}
+	return 0;
+}
+
+static __refdata struct usb_composite_driver eth_driver = {
+	.name		= "g_ether",
+	.dev		= &device_desc,
+	.strings	= dev_strings,
+	.max_speed	= USB_SPEED_SUPER,
+	.bind		= eth_bind,
+>>>>>>> refs/remotes/origin/master
 	.unbind		= __exit_p(eth_unbind),
 };
 
@@ -410,7 +672,11 @@ MODULE_LICENSE("GPL");
 
 static int __init init(void)
 {
+<<<<<<< HEAD
 	return usb_composite_probe(&eth_driver, eth_bind);
+=======
+	return usb_composite_probe(&eth_driver);
+>>>>>>> refs/remotes/origin/master
 }
 module_init(init);
 

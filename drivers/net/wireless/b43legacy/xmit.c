@@ -6,7 +6,15 @@
 
   Copyright (C) 2005 Martin Langer <martin-langer@gmx.de>
   Copyright (C) 2005 Stefano Brivio <stefano.brivio@polimi.it>
+<<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (C) 2005, 2006 Michael Buesch <mb@bu3sch.de>
+=======
+  Copyright (C) 2005, 2006 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Copyright (C) 2005, 2006 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
   Copyright (C) 2005 Danny van Dyk <kugelfang@gentoo.org>
   Copyright (C) 2005 Andreas Jaggi <andreas.jaggi@waterwave.ch>
   Copyright (C) 2007 Larry Finger <Larry.Finger@lwfinger.net>
@@ -215,7 +223,11 @@ static int generate_txhdr_fw3(struct b43legacy_wldev *dev,
 	rate_fb_ofdm = b43legacy_is_ofdm_rate(rate_fb->hw_value);
 
 	txhdr->mac_frame_ctl = wlhdr->frame_control;
+<<<<<<< HEAD
 	memcpy(txhdr->tx_receiver, wlhdr->addr1, 6);
+=======
+	memcpy(txhdr->tx_receiver, wlhdr->addr1, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	/* Calculate duration for fallback rate */
 	if ((rate_fb->hw_value == rate) ||
@@ -228,6 +240,10 @@ static int generate_txhdr_fw3(struct b43legacy_wldev *dev,
 	} else {
 		txhdr->dur_fb = ieee80211_generic_frame_duration(dev->wl->hw,
 							 info->control.vif,
+<<<<<<< HEAD
+=======
+							 info->band,
+>>>>>>> refs/remotes/origin/master
 							 fragment_len,
 							 rate_fb);
 	}
@@ -268,8 +284,12 @@ static int generate_txhdr_fw3(struct b43legacy_wldev *dev,
 	b43legacy_generate_plcp_hdr((struct b43legacy_plcp_hdr4 *)
 				    (&txhdr->plcp), plcp_fragment_len,
 				    rate);
+<<<<<<< HEAD
 	b43legacy_generate_plcp_hdr((struct b43legacy_plcp_hdr4 *)
 				    (&txhdr->plcp_fb), plcp_fragment_len,
+=======
+	b43legacy_generate_plcp_hdr(&txhdr->plcp_fb, plcp_fragment_len,
+>>>>>>> refs/remotes/origin/master
 				    rate_fb->hw_value);
 
 	/* PHY TX Control word */
@@ -277,6 +297,7 @@ static int generate_txhdr_fw3(struct b43legacy_wldev *dev,
 		phy_ctl |= B43legacy_TX4_PHY_ENC_OFDM;
 	if (info->control.rates[0].flags & IEEE80211_TX_RC_USE_SHORT_PREAMBLE)
 		phy_ctl |= B43legacy_TX4_PHY_SHORTPRMBL;
+<<<<<<< HEAD
 	switch (info->antenna_sel_tx) {
 	case 0:
 		phy_ctl |= B43legacy_TX4_PHY_ANTLAST;
@@ -290,6 +311,9 @@ static int generate_txhdr_fw3(struct b43legacy_wldev *dev,
 	default:
 		B43legacy_BUG_ON(1);
 	}
+=======
+	phy_ctl |= B43legacy_TX4_PHY_ANTLAST;
+>>>>>>> refs/remotes/origin/master
 
 	/* MAC control */
 	rates = info->control.rates;
@@ -321,11 +345,23 @@ static int generate_txhdr_fw3(struct b43legacy_wldev *dev,
 		struct ieee80211_hdr *hdr;
 		int rts_rate;
 		int rts_rate_fb;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int rts_rate_ofdm;
 		int rts_rate_fb_ofdm;
 
 		rts_rate = ieee80211_get_rts_cts_rate(dev->wl->hw, info)->hw_value;
 		rts_rate_ofdm = b43legacy_is_ofdm_rate(rts_rate);
+=======
+		int rts_rate_fb_ofdm;
+
+		rts_rate = ieee80211_get_rts_cts_rate(dev->wl->hw, info)->hw_value;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int rts_rate_fb_ofdm;
+
+		rts_rate = ieee80211_get_rts_cts_rate(dev->wl->hw, info)->hw_value;
+>>>>>>> refs/remotes/origin/master
 		rts_rate_fb = b43legacy_calc_fallback_rate(rts_rate);
 		rts_rate_fb_ofdm = b43legacy_is_ofdm_rate(rts_rate_fb);
 		if (rts_rate_fb_ofdm)
@@ -353,8 +389,12 @@ static int generate_txhdr_fw3(struct b43legacy_wldev *dev,
 		b43legacy_generate_plcp_hdr((struct b43legacy_plcp_hdr4 *)
 					    (&txhdr->rts_plcp),
 					    len, rts_rate);
+<<<<<<< HEAD
 		b43legacy_generate_plcp_hdr((struct b43legacy_plcp_hdr4 *)
 					    (&txhdr->rts_plcp_fb),
+=======
+		b43legacy_generate_plcp_hdr(&txhdr->rts_plcp_fb,
+>>>>>>> refs/remotes/origin/master
 					    len, rts_rate_fb);
 		hdr = (struct ieee80211_hdr *)(&txhdr->rts_frame);
 		txhdr->rts_dur_fb = hdr->duration_id;
@@ -572,7 +612,11 @@ void b43legacy_rx(struct b43legacy_wldev *dev,
 		status.mactime += mactime;
 		if (low_mactime_now <= mactime)
 			status.mactime -= 0x10000;
+<<<<<<< HEAD
 		status.flag |= RX_FLAG_MACTIME_MPDU;
+=======
+		status.flag |= RX_FLAG_MACTIME_START;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	chanid = (chanstat & B43legacy_RX_CHAN_ID) >>

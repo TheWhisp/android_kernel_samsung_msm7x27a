@@ -12,12 +12,24 @@
 #ifndef __OV772X_H__
 #define __OV772X_H__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <media/soc_camera.h>
 
 /* for flags */
 #define OV772X_FLAG_VFLIP	(1 << 0) /* Vertical flip image */
 #define OV772X_FLAG_HFLIP	(1 << 1) /* Horizontal flip image */
 #define OV772X_FLAG_8BIT	(1 << 2) /* default 10 bit */
+=======
+/* for flags */
+#define OV772X_FLAG_VFLIP	(1 << 0) /* Vertical flip image */
+#define OV772X_FLAG_HFLIP	(1 << 1) /* Horizontal flip image */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* for flags */
+#define OV772X_FLAG_VFLIP	(1 << 0) /* Vertical flip image */
+#define OV772X_FLAG_HFLIP	(1 << 1) /* Horizontal flip image */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * for Edge ctrl
@@ -32,6 +44,8 @@ struct ov772x_edge_ctrl {
 	unsigned char lower;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define OV772X_MANUAL_EDGE_CTRL	0x80 /* un-used bit of strength */
 #define EDGE_STRENGTH_MASK	0x1F
 #define EDGE_THRESHOLD_MASK	0x0F
@@ -48,6 +62,30 @@ struct ov772x_edge_ctrl {
 {									\
 	.strength  = (s & EDGE_STRENGTH_MASK) | OV772X_MANUAL_EDGE_CTRL,\
 	.threshold = (t & EDGE_THRESHOLD_MASK),				\
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define OV772X_MANUAL_EDGE_CTRL		0x80 /* un-used bit of strength */
+#define OV772X_EDGE_STRENGTH_MASK	0x1F
+#define OV772X_EDGE_THRESHOLD_MASK	0x0F
+#define OV772X_EDGE_UPPER_MASK		0xFF
+#define OV772X_EDGE_LOWER_MASK		0xFF
+
+#define OV772X_AUTO_EDGECTRL(u, l)	\
+{					\
+	.upper = (u & OV772X_EDGE_UPPER_MASK),	\
+	.lower = (l & OV772X_EDGE_LOWER_MASK),	\
+}
+
+#define OV772X_MANUAL_EDGECTRL(s, t)			\
+{							\
+	.strength  = (s & OV772X_EDGE_STRENGTH_MASK) |	\
+			OV772X_MANUAL_EDGE_CTRL,	\
+	.threshold = (t & OV772X_EDGE_THRESHOLD_MASK),	\
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

@@ -11,6 +11,7 @@
 #ifndef _LINUX_RTC_H_
 #define _LINUX_RTC_H_
 
+<<<<<<< HEAD
 /*
  * The struct used to pass data via the following ioctl. Similar to the
  * struct tm in <time.h>, but it needs to be here so that the kernel
@@ -104,6 +105,12 @@ struct rtc_pll_info {
 
 #include <linux/types.h>
 #include <linux/interrupt.h>
+=======
+
+#include <linux/types.h>
+#include <linux/interrupt.h>
+#include <uapi/linux/rtc.h>
+>>>>>>> refs/remotes/origin/master
 
 extern int rtc_month_days(unsigned int month, unsigned int year);
 extern int rtc_year_days(unsigned int day, unsigned int month, unsigned int year);
@@ -202,7 +209,17 @@ struct rtc_device
 	struct hrtimer pie_timer; /* sub second exp, so needs hrtimer */
 	int pie_enabled;
 	struct work_struct irqwork;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	/* Some hardware can't support UIE mode */
+	int uie_unsupported;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Some hardware can't support UIE mode */
+	int uie_unsupported;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_RTC_INTF_DEV_UIE_EMUL
 	struct work_struct uie_task;
@@ -221,11 +238,25 @@ extern struct rtc_device *rtc_device_register(const char *name,
 					struct device *dev,
 					const struct rtc_class_ops *ops,
 					struct module *owner);
+<<<<<<< HEAD
 extern void rtc_device_unregister(struct rtc_device *rtc);
+=======
+extern struct rtc_device *devm_rtc_device_register(struct device *dev,
+					const char *name,
+					const struct rtc_class_ops *ops,
+					struct module *owner);
+extern void rtc_device_unregister(struct rtc_device *rtc);
+extern void devm_rtc_device_unregister(struct device *dev,
+					struct rtc_device *rtc);
+>>>>>>> refs/remotes/origin/master
 
 extern int rtc_read_time(struct rtc_device *rtc, struct rtc_time *tm);
 extern int rtc_set_time(struct rtc_device *rtc, struct rtc_time *tm);
 extern int rtc_set_mmss(struct rtc_device *rtc, unsigned long secs);
+<<<<<<< HEAD
+=======
+extern int rtc_set_ntp_time(struct timespec now);
+>>>>>>> refs/remotes/origin/master
 int __rtc_read_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm);
 extern int rtc_read_alarm(struct rtc_device *rtc,
 			struct rtc_wkalrm *alrm);
@@ -236,7 +267,11 @@ extern int rtc_initialize_alarm(struct rtc_device *rtc,
 extern void rtc_update_irq(struct rtc_device *rtc,
 			unsigned long num, unsigned long events);
 
+<<<<<<< HEAD
 extern struct rtc_device *rtc_class_open(char *name);
+=======
+extern struct rtc_device *rtc_class_open(const char *name);
+>>>>>>> refs/remotes/origin/master
 extern void rtc_class_close(struct rtc_device *rtc);
 
 extern int rtc_irq_register(struct rtc_device *rtc,
@@ -272,12 +307,19 @@ static inline bool is_leap_year(unsigned int year)
 	return (!(year % 4) && (year % 100)) || !(year % 400);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_HCTOSYS
+=======
+#ifdef CONFIG_RTC_HCTOSYS_DEVICE
+>>>>>>> refs/remotes/origin/master
 extern int rtc_hctosys_ret;
 #else
 #define rtc_hctosys_ret -ENODEV
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_RTC_H_ */

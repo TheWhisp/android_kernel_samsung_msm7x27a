@@ -2,8 +2,18 @@
 #define __LINUX_DEBUG_LOCKING_H
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 
 struct task_struct;
 
@@ -27,7 +37,11 @@ extern int debug_locks_off(void);
 									\
 	if (!oops_in_progress && unlikely(c)) {				\
 		if (debug_locks_off() && !debug_locks_silent)		\
+<<<<<<< HEAD
 			WARN_ON(1);					\
+=======
+			WARN(1, "DEBUG_LOCKS_WARN_ON(%s)", #c);		\
+>>>>>>> refs/remotes/origin/master
 		__ret = 1;						\
 	}								\
 	__ret;								\
@@ -51,7 +65,11 @@ struct task_struct;
 extern void debug_show_all_locks(void);
 extern void debug_show_held_locks(struct task_struct *task);
 extern void debug_check_no_locks_freed(const void *from, unsigned long len);
+<<<<<<< HEAD
 extern void debug_check_no_locks_held(struct task_struct *task);
+=======
+extern void debug_check_no_locks_held(void);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline void debug_show_all_locks(void)
 {
@@ -67,7 +85,11 @@ debug_check_no_locks_freed(const void *from, unsigned long len)
 }
 
 static inline void
+<<<<<<< HEAD
 debug_check_no_locks_held(struct task_struct *task)
+=======
+debug_check_no_locks_held(void)
+>>>>>>> refs/remotes/origin/master
 {
 }
 #endif

@@ -23,7 +23,13 @@
 #include <linux/device.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/string.h>
 #include <linux/mm.h>
@@ -45,7 +51,11 @@
 
 
 /*
+<<<<<<< HEAD
  * Xilinx calls it "PLB TFT LCD Controller" though it can also be used for
+=======
+ * Xilinx calls it "TFT LCD Controller" though it can also be used for
+>>>>>>> refs/remotes/origin/master
  * the VGA port on the Xilinx ML40x board. This is a hardware display
  * controller for a 640x480 resolution TFT or VGA screen.
  *
@@ -55,11 +65,19 @@
  * don't start thinking about scrolling).  The second allows the LCD to
  * be turned on or off as well as rotated 180 degrees.
  *
+<<<<<<< HEAD
  * In case of direct PLB access the second control register will be at
  * an offset of 4 as compared to the DCR access where the offset is 1
  * i.e. REG_CTRL. So this is taken care in the function
  * xilinx_fb_out_be32 where it left shifts the offset 2 times in case of
  * direct PLB access.
+=======
+ * In case of direct BUS access the second control register will be at
+ * an offset of 4 as compared to the DCR access where the offset is 1
+ * i.e. REG_CTRL. So this is taken care in the function
+ * xilinx_fb_out32 where it left shifts the offset 2 times in case of
+ * direct BUS access.
+>>>>>>> refs/remotes/origin/master
  */
 #define NUM_REGS	2
 #define REG_FB_ADDR	0
@@ -117,7 +135,12 @@ static struct fb_var_screeninfo xilinx_fb_var = {
 };
 
 
+<<<<<<< HEAD
 #define PLB_ACCESS_FLAG	0x1		/* 1 = PLB, 0 = DCR */
+=======
+#define BUS_ACCESS_FLAG		0x1 /* 1 = BUS, 0 = DCR */
+#define LITTLE_ENDIAN_ACCESS	0x2 /* LITTLE ENDIAN IO functions */
+>>>>>>> refs/remotes/origin/master
 
 struct xilinxfb_drvdata {
 
@@ -147,6 +170,7 @@ struct xilinxfb_drvdata {
 	container_of(_info, struct xilinxfb_drvdata, info)
 
 /*
+<<<<<<< HEAD
  * The XPS TFT Controller can be accessed through PLB or DCR interface.
  * To perform the read/write on the registers we need to check on
  * which bus its connected and call the appropriate write API.
@@ -156,12 +180,45 @@ static void xilinx_fb_out_be32(struct xilinxfb_drvdata *drvdata, u32 offset,
 {
 	if (drvdata->flags & PLB_ACCESS_FLAG)
 		out_be32(drvdata->regs + (offset << 2), val);
+=======
+ * The XPS TFT Controller can be accessed through BUS or DCR interface.
+ * To perform the read/write on the registers we need to check on
+ * which bus its connected and call the appropriate write API.
+ */
+static void xilinx_fb_out32(struct xilinxfb_drvdata *drvdata, u32 offset,
+				u32 val)
+{
+	if (drvdata->flags & BUS_ACCESS_FLAG) {
+		if (drvdata->flags & LITTLE_ENDIAN_ACCESS)
+			iowrite32(val, drvdata->regs + (offset << 2));
+		else
+			iowrite32be(val, drvdata->regs + (offset << 2));
+	}
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC_DCR
 	else
 		dcr_write(drvdata->dcr_host, offset, val);
 #endif
 }
 
+<<<<<<< HEAD
+=======
+static u32 xilinx_fb_in32(struct xilinxfb_drvdata *drvdata, u32 offset)
+{
+	if (drvdata->flags & BUS_ACCESS_FLAG) {
+		if (drvdata->flags & LITTLE_ENDIAN_ACCESS)
+			return ioread32(drvdata->regs + (offset << 2));
+		else
+			return ioread32be(drvdata->regs + (offset << 2));
+	}
+#ifdef CONFIG_PPC_DCR
+	else
+		return dcr_read(drvdata->dcr_host, offset);
+#endif
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int
 xilinx_fb_setcolreg(unsigned regno, unsigned red, unsigned green, unsigned blue,
 	unsigned transp, struct fb_info *fbi)
@@ -198,7 +255,11 @@ xilinx_fb_blank(int blank_mode, struct fb_info *fbi)
 	switch (blank_mode) {
 	case FB_BLANK_UNBLANK:
 		/* turn on panel */
+<<<<<<< HEAD
 		xilinx_fb_out_be32(drvdata, REG_CTRL, drvdata->reg_ctrl_default);
+=======
+		xilinx_fb_out32(drvdata, REG_CTRL, drvdata->reg_ctrl_default);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case FB_BLANK_NORMAL:
@@ -206,7 +267,11 @@ xilinx_fb_blank(int blank_mode, struct fb_info *fbi)
 	case FB_BLANK_HSYNC_SUSPEND:
 	case FB_BLANK_POWERDOWN:
 		/* turn off panel */
+<<<<<<< HEAD
 		xilinx_fb_out_be32(drvdata, REG_CTRL, 0);
+=======
+		xilinx_fb_out32(drvdata, REG_CTRL, 0);
+>>>>>>> refs/remotes/origin/master
 	default:
 		break;
 
@@ -228,6 +293,7 @@ static struct fb_ops xilinxfb_ops =
  * Bus independent setup/teardown
  */
 
+<<<<<<< HEAD
 static int xilinxfb_assign(struct device *dev,
 			   struct xilinxfb_drvdata *drvdata,
 			   unsigned long physaddr,
@@ -256,6 +322,25 @@ static int xilinxfb_assign(struct device *dev,
 			rc = -ENODEV;
 			goto err_map;
 		}
+=======
+static int xilinxfb_assign(struct platform_device *pdev,
+			   struct xilinxfb_drvdata *drvdata,
+			   struct xilinxfb_platform_data *pdata)
+{
+	int rc;
+	struct device *dev = &pdev->dev;
+	int fbsize = pdata->xvirt * pdata->yvirt * BYTES_PER_PIXEL;
+
+	if (drvdata->flags & BUS_ACCESS_FLAG) {
+		struct resource *res;
+
+		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+		drvdata->regs = devm_ioremap_resource(&pdev->dev, res);
+		if (IS_ERR(drvdata->regs))
+			return PTR_ERR(drvdata->regs);
+
+		drvdata->regs_phys = res->start;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Allocate the framebuffer memory */
@@ -270,24 +355,42 @@ static int xilinxfb_assign(struct device *dev,
 
 	if (!drvdata->fb_virt) {
 		dev_err(dev, "Could not allocate frame buffer memory\n");
+<<<<<<< HEAD
 		rc = -ENOMEM;
 		if (drvdata->flags & PLB_ACCESS_FLAG)
 			goto err_fbmem;
 		else
 			goto err_region;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Clear (turn to black) the framebuffer */
 	memset_io((void __iomem *)drvdata->fb_virt, 0, fbsize);
 
 	/* Tell the hardware where the frame buffer is */
+<<<<<<< HEAD
 	xilinx_fb_out_be32(drvdata, REG_FB_ADDR, drvdata->fb_phys);
+=======
+	xilinx_fb_out32(drvdata, REG_FB_ADDR, drvdata->fb_phys);
+	rc = xilinx_fb_in32(drvdata, REG_FB_ADDR);
+	/* Endianess detection */
+	if (rc != drvdata->fb_phys) {
+		drvdata->flags |= LITTLE_ENDIAN_ACCESS;
+		xilinx_fb_out32(drvdata, REG_FB_ADDR, drvdata->fb_phys);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Turn on the display */
 	drvdata->reg_ctrl_default = REG_CTRL_ENABLE;
 	if (pdata->rotate_screen)
 		drvdata->reg_ctrl_default |= REG_CTRL_ROTATE;
+<<<<<<< HEAD
 	xilinx_fb_out_be32(drvdata, REG_CTRL,
+=======
+	xilinx_fb_out32(drvdata, REG_CTRL,
+>>>>>>> refs/remotes/origin/master
 					drvdata->reg_ctrl_default);
 
 	/* Fill struct fb_info */
@@ -324,10 +427,17 @@ static int xilinxfb_assign(struct device *dev,
 		goto err_regfb;
 	}
 
+<<<<<<< HEAD
 	if (drvdata->flags & PLB_ACCESS_FLAG) {
 		/* Put a banner in the log (for DEBUG) */
 		dev_dbg(dev, "regs: phys=%lx, virt=%p\n", physaddr,
 					drvdata->regs);
+=======
+	if (drvdata->flags & BUS_ACCESS_FLAG) {
+		/* Put a banner in the log (for DEBUG) */
+		dev_dbg(dev, "regs: phys=%pa, virt=%p\n",
+			&drvdata->regs_phys, drvdata->regs);
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Put a banner in the log (for DEBUG) */
 	dev_dbg(dev, "fb: phys=%llx, virt=%p, size=%x\n",
@@ -346,6 +456,7 @@ err_cmap:
 		iounmap(drvdata->fb_virt);
 
 	/* Turn off the display */
+<<<<<<< HEAD
 	xilinx_fb_out_be32(drvdata, REG_CTRL, 0);
 
 err_fbmem:
@@ -359,6 +470,9 @@ err_map:
 err_region:
 	kfree(drvdata);
 	dev_set_drvdata(dev, NULL);
+=======
+	xilinx_fb_out32(drvdata, REG_CTRL, 0);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -382,6 +496,7 @@ static int xilinxfb_release(struct device *dev)
 		iounmap(drvdata->fb_virt);
 
 	/* Turn off the display */
+<<<<<<< HEAD
 	xilinx_fb_out_be32(drvdata, REG_CTRL, 0);
 
 	/* Release the resources, as allocated based on interface */
@@ -397,6 +512,16 @@ static int xilinxfb_release(struct device *dev)
 	kfree(drvdata);
 	dev_set_drvdata(dev, NULL);
 
+=======
+	xilinx_fb_out32(drvdata, REG_CTRL, 0);
+
+#ifdef CONFIG_PPC_DCR
+	/* Release the resources, as allocated based on interface */
+	if (!(drvdata->flags & BUS_ACCESS_FLAG))
+		dcr_unmap(drvdata->dcr_host, drvdata->dcr_len);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -404,6 +529,7 @@ static int xilinxfb_release(struct device *dev)
  * OF bus binding
  */
 
+<<<<<<< HEAD
 static int __devinit xilinxfb_of_probe(struct platform_device *op)
 {
 	const u32 *prop;
@@ -412,12 +538,21 @@ static int __devinit xilinxfb_of_probe(struct platform_device *op)
 	struct xilinxfb_platform_data pdata;
 	struct resource res;
 	int size, rc;
+=======
+static int xilinxfb_of_probe(struct platform_device *pdev)
+{
+	const u32 *prop;
+	u32 tft_access = 0;
+	struct xilinxfb_platform_data pdata;
+	int size;
+>>>>>>> refs/remotes/origin/master
 	struct xilinxfb_drvdata *drvdata;
 
 	/* Copy with the default pdata (not a ptr reference!) */
 	pdata = xilinx_fb_default_pdata;
 
 	/* Allocate the driver data region */
+<<<<<<< HEAD
 	drvdata = kzalloc(sizeof(*drvdata), GFP_KERNEL);
 	if (!drvdata) {
 		dev_err(&op->dev, "Couldn't allocate device private record\n");
@@ -442,10 +577,30 @@ static int __devinit xilinxfb_of_probe(struct platform_device *op)
 			dev_err(&op->dev, "invalid address\n");
 			goto err;
 		}
+=======
+	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
+	if (!drvdata)
+		return -ENOMEM;
+
+	/*
+	 * To check whether the core is connected directly to DCR or BUS
+	 * interface and initialize the tft_access accordingly.
+	 */
+	of_property_read_u32(pdev->dev.of_node, "xlnx,dcr-splb-slave-if",
+			     &tft_access);
+
+	/*
+	 * Fill the resource structure if its direct BUS interface
+	 * otherwise fill the dcr_host structure.
+	 */
+	if (tft_access) {
+		drvdata->flags |= BUS_ACCESS_FLAG;
+>>>>>>> refs/remotes/origin/master
 	}
 #ifdef CONFIG_PPC_DCR
 	else {
 		int start;
+<<<<<<< HEAD
 		res.start = 0;
 		start = dcr_resource_start(op->dev.of_node, 0);
 		drvdata->dcr_len = dcr_resource_len(op->dev.of_node, 0);
@@ -453,28 +608,49 @@ static int __devinit xilinxfb_of_probe(struct platform_device *op)
 		if (!DCR_MAP_OK(drvdata->dcr_host)) {
 			dev_err(&op->dev, "invalid DCR address\n");
 			goto err;
+=======
+		start = dcr_resource_start(pdev->dev.of_node, 0);
+		drvdata->dcr_len = dcr_resource_len(pdev->dev.of_node, 0);
+		drvdata->dcr_host = dcr_map(pdev->dev.of_node, start, drvdata->dcr_len);
+		if (!DCR_MAP_OK(drvdata->dcr_host)) {
+			dev_err(&pdev->dev, "invalid DCR address\n");
+			return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #endif
 
+<<<<<<< HEAD
 	prop = of_get_property(op->dev.of_node, "phys-size", &size);
+=======
+	prop = of_get_property(pdev->dev.of_node, "phys-size", &size);
+>>>>>>> refs/remotes/origin/master
 	if ((prop) && (size >= sizeof(u32)*2)) {
 		pdata.screen_width_mm = prop[0];
 		pdata.screen_height_mm = prop[1];
 	}
 
+<<<<<<< HEAD
 	prop = of_get_property(op->dev.of_node, "resolution", &size);
+=======
+	prop = of_get_property(pdev->dev.of_node, "resolution", &size);
+>>>>>>> refs/remotes/origin/master
 	if ((prop) && (size >= sizeof(u32)*2)) {
 		pdata.xres = prop[0];
 		pdata.yres = prop[1];
 	}
 
+<<<<<<< HEAD
 	prop = of_get_property(op->dev.of_node, "virtual-resolution", &size);
+=======
+	prop = of_get_property(pdev->dev.of_node, "virtual-resolution", &size);
+>>>>>>> refs/remotes/origin/master
 	if ((prop) && (size >= sizeof(u32)*2)) {
 		pdata.xvirt = prop[0];
 		pdata.yvirt = prop[1];
 	}
 
+<<<<<<< HEAD
 	if (of_find_property(op->dev.of_node, "rotate-display", NULL))
 		pdata.rotate_screen = 1;
 
@@ -487,12 +663,26 @@ static int __devinit xilinxfb_of_probe(struct platform_device *op)
 }
 
 static int __devexit xilinxfb_of_remove(struct platform_device *op)
+=======
+	if (of_find_property(pdev->dev.of_node, "rotate-display", NULL))
+		pdata.rotate_screen = 1;
+
+	dev_set_drvdata(&pdev->dev, drvdata);
+	return xilinxfb_assign(pdev, drvdata, &pdata);
+}
+
+static int xilinxfb_of_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	return xilinxfb_release(&op->dev);
 }
 
 /* Match table for of_platform binding */
+<<<<<<< HEAD
 static struct of_device_id xilinxfb_of_match[] __devinitdata = {
+=======
+static struct of_device_id xilinxfb_of_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "xlnx,xps-tft-1.00.a", },
 	{ .compatible = "xlnx,xps-tft-2.00.a", },
 	{ .compatible = "xlnx,xps-tft-2.01.a", },
@@ -504,7 +694,11 @@ MODULE_DEVICE_TABLE(of, xilinxfb_of_match);
 
 static struct platform_driver xilinxfb_of_driver = {
 	.probe = xilinxfb_of_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(xilinxfb_of_remove),
+=======
+	.remove = xilinxfb_of_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = DRIVER_NAME,
 		.owner = THIS_MODULE,
@@ -512,6 +706,8 @@ static struct platform_driver xilinxfb_of_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /* ---------------------------------------------------------------------
  * Module setup and teardown
@@ -531,6 +727,12 @@ xilinxfb_cleanup(void)
 
 module_init(xilinxfb_init);
 module_exit(xilinxfb_cleanup);
+=======
+module_platform_driver(xilinxfb_of_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(xilinxfb_of_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("MontaVista Software, Inc. <source@mvista.com>");
 MODULE_DESCRIPTION("Xilinx TFT frame buffer driver");

@@ -136,6 +136,20 @@ struct pci_dev *vga_default_device(void)
 {
 	return vga_default;
 }
+<<<<<<< HEAD
+=======
+
+EXPORT_SYMBOL_GPL(vga_default_device);
+
+void vga_set_default_device(struct pci_dev *pdev)
+{
+	if (vga_default == pdev)
+		return;
+
+	pci_dev_put(vga_default);
+	vga_default = pci_dev_get(pdev);
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static inline void vga_irq_set_state(struct vga_device *vgadev, bool state)
@@ -246,9 +260,15 @@ static struct vga_device *__vga_tryget(struct vga_device *vgadev,
 		if (!conflict->bridge_has_one_vga) {
 			vga_irq_set_state(conflict, false);
 			flags |= PCI_VGA_STATE_CHANGE_DECODES;
+<<<<<<< HEAD
 			if (lwants & (VGA_RSRC_LEGACY_MEM|VGA_RSRC_NORMAL_MEM))
 				pci_bits |= PCI_COMMAND_MEMORY;
 			if (lwants & (VGA_RSRC_LEGACY_IO|VGA_RSRC_NORMAL_IO))
+=======
+			if (match & (VGA_RSRC_LEGACY_MEM|VGA_RSRC_NORMAL_MEM))
+				pci_bits |= PCI_COMMAND_MEMORY;
+			if (match & (VGA_RSRC_LEGACY_IO|VGA_RSRC_NORMAL_IO))
+>>>>>>> refs/remotes/origin/master
 				pci_bits |= PCI_COMMAND_IO;
 		}
 
@@ -256,11 +276,19 @@ static struct vga_device *__vga_tryget(struct vga_device *vgadev,
 			flags |= PCI_VGA_STATE_CHANGE_BRIDGE;
 
 		pci_set_vga_state(conflict->pdev, false, pci_bits, flags);
+<<<<<<< HEAD
 		conflict->owns &= ~lwants;
 		/* If he also owned non-legacy, that is no longer the case */
 		if (lwants & VGA_RSRC_LEGACY_MEM)
 			conflict->owns &= ~VGA_RSRC_NORMAL_MEM;
 		if (lwants & VGA_RSRC_LEGACY_IO)
+=======
+		conflict->owns &= ~match;
+		/* If he also owned non-legacy, that is no longer the case */
+		if (match & VGA_RSRC_LEGACY_MEM)
+			conflict->owns &= ~VGA_RSRC_NORMAL_MEM;
+		if (match & VGA_RSRC_LEGACY_IO)
+>>>>>>> refs/remotes/origin/master
 			conflict->owns &= ~VGA_RSRC_NORMAL_IO;
 	}
 
@@ -465,6 +493,8 @@ static void vga_arbiter_check_bridge_sharing(struct vga_device *vgadev)
 	while (new_bus) {
 		new_bridge = new_bus->self;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (new_bridge) {
 			/* go through list of devices already registered */
 			list_for_each_entry(same_bridge_vgadev, &vga_list, list) {
@@ -490,6 +520,36 @@ static void vga_arbiter_check_bridge_sharing(struct vga_device *vgadev)
 					}
 					bus = bus->parent;
 				}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/* go through list of devices already registered */
+		list_for_each_entry(same_bridge_vgadev, &vga_list, list) {
+			bus = same_bridge_vgadev->pdev->bus;
+			bridge = bus->self;
+
+			/* see if the share a bridge with this device */
+			if (new_bridge == bridge) {
+				/* if their direct parent bridge is the same
+				   as any bridge of this device then it can't be used
+				   for that device */
+				same_bridge_vgadev->bridge_has_one_vga = false;
+			}
+
+			/* now iterate the previous devices bridge hierarchy */
+			/* if the new devices parent bridge is in the other devices
+			   hierarchy then we can't use it to control this device */
+			while (bus) {
+				bridge = bus->self;
+				if (bridge) {
+					if (bridge == vgadev->pdev->bus->self)
+						vgadev->bridge_has_one_vga = false;
+				}
+				bus = bus->parent;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		new_bus = new_bus->parent;
@@ -572,7 +632,11 @@ static bool vga_arbiter_add_pci_device(struct pci_dev *pdev)
 #ifndef __ARCH_HAS_VGA_DEFAULT_DEVICE
 	if (vga_default == NULL &&
 	    ((vgadev->owns & VGA_RSRC_LEGACY_MASK) == VGA_RSRC_LEGACY_MASK))
+<<<<<<< HEAD
 		vga_default = pci_dev_get(pdev);
+=======
+		vga_set_default_device(pdev);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	vga_arbiter_check_bridge_sharing(vgadev);
@@ -607,10 +671,17 @@ static bool vga_arbiter_del_pci_device(struct pci_dev *pdev)
 		goto bail;
 	}
 
+<<<<<<< HEAD
 	if (vga_default == pdev) {
 		pci_dev_put(vga_default);
 		vga_default = NULL;
 	}
+=======
+#ifndef __ARCH_HAS_VGA_DEFAULT_DEVICE
+	if (vga_default == pdev)
+		vga_set_default_device(NULL);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	if (vgadev->decodes & (VGA_RSRC_LEGACY_IO | VGA_RSRC_LEGACY_MEM))
 		vga_decode_count--;
@@ -635,10 +706,19 @@ bail:
 static inline void vga_update_device_decodes(struct vga_device *vgadev,
 					     int new_decodes)
 {
+<<<<<<< HEAD
 	int old_decodes;
 	struct vga_device *new_vgadev, *conflict;
 
 	old_decodes = vgadev->decodes;
+=======
+	int old_decodes, decodes_removed, decodes_unlocked;
+
+	old_decodes = vgadev->decodes;
+	decodes_removed = ~new_decodes & old_decodes;
+	decodes_unlocked = vgadev->locks & decodes_removed;
+	vgadev->owns &= ~decodes_removed;
+>>>>>>> refs/remotes/origin/master
 	vgadev->decodes = new_decodes;
 
 	pr_info("vgaarb: device changed decodes: PCI:%s,olddecodes=%s,decodes=%s:owns=%s\n",
@@ -647,6 +727,7 @@ static inline void vga_update_device_decodes(struct vga_device *vgadev,
 		vga_iostate_to_str(vgadev->decodes),
 		vga_iostate_to_str(vgadev->owns));
 
+<<<<<<< HEAD
 
 	/* if we own the decodes we should move them along to
 	   another card */
@@ -672,6 +753,24 @@ static inline void vga_update_device_decodes(struct vga_device *vgadev,
 		else
 			vga_decode_count--;
 	}
+=======
+	/* if we removed locked decodes, lock count goes to zero, and release */
+	if (decodes_unlocked) {
+		if (decodes_unlocked & VGA_RSRC_LEGACY_IO)
+			vgadev->io_lock_cnt = 0;
+		if (decodes_unlocked & VGA_RSRC_LEGACY_MEM)
+			vgadev->mem_lock_cnt = 0;
+		__vga_put(vgadev, decodes_unlocked);
+	}
+
+	/* change decodes counter */
+	if (old_decodes & VGA_RSRC_LEGACY_MASK &&
+	    !(new_decodes & VGA_RSRC_LEGACY_MASK))
+		vga_decode_count--;
+	if (!(old_decodes & VGA_RSRC_LEGACY_MASK) &&
+	    new_decodes & VGA_RSRC_LEGACY_MASK)
+		vga_decode_count++;
+>>>>>>> refs/remotes/origin/master
 	pr_debug("vgaarb: decoding count now is: %d\n", vga_decode_count);
 }
 
@@ -993,6 +1092,8 @@ static ssize_t vga_arb_write(struct file *file, const char __user * buf,
 				uc = &priv->cards[i];
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!uc)
 			return -EINVAL;
 
@@ -1001,6 +1102,27 @@ static ssize_t vga_arb_write(struct file *file, const char __user * buf,
 
 		if (io_state & VGA_RSRC_LEGACY_MEM && uc->mem_cnt == 0)
 			return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (!uc) {
+			ret_val = -EINVAL;
+			goto done;
+		}
+
+		if (io_state & VGA_RSRC_LEGACY_IO && uc->io_cnt == 0) {
+			ret_val = -EINVAL;
+			goto done;
+		}
+
+		if (io_state & VGA_RSRC_LEGACY_MEM && uc->mem_cnt == 0) {
+			ret_val = -EINVAL;
+			goto done;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		vga_put(pdev, io_state);
 
@@ -1053,7 +1175,10 @@ static ssize_t vga_arb_write(struct file *file, const char __user * buf,
 		}
 
 	} else if (strncmp(curr_pos, "target ", 7) == 0) {
+<<<<<<< HEAD
 		struct pci_bus *pbus;
+=======
+>>>>>>> refs/remotes/origin/master
 		unsigned int domain, bus, devfn;
 		struct vga_device *vgadev;
 
@@ -1072,6 +1197,7 @@ static ssize_t vga_arb_write(struct file *file, const char __user * buf,
 			pr_debug("vgaarb: %s ==> %x:%x:%x.%x\n", curr_pos,
 				domain, bus, PCI_SLOT(devfn), PCI_FUNC(devfn));
 
+<<<<<<< HEAD
 			pbus = pci_find_bus(domain, bus);
 			pr_debug("vgaarb: pbus %p\n", pbus);
 			if (pbus == NULL) {
@@ -1085,6 +1211,13 @@ static ssize_t vga_arb_write(struct file *file, const char __user * buf,
 			if (!pdev) {
 				pr_err("vgaarb: invalid PCI address %x:%x\n",
 					bus, devfn);
+=======
+			pdev = pci_get_domain_bus_and_slot(domain, bus, devfn);
+			pr_debug("vgaarb: pdev %p\n", pdev);
+			if (!pdev) {
+				pr_err("vgaarb: invalid PCI address %x:%x:%x\n",
+					domain, bus, devfn);
+>>>>>>> refs/remotes/origin/master
 				ret_val = -ENODEV;
 				goto done;
 			}
@@ -1171,10 +1304,22 @@ static int vga_arb_open(struct inode *inode, struct file *file)
 
 	pr_debug("%s\n", __func__);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	priv = kmalloc(sizeof(struct vga_arb_private), GFP_KERNEL);
 	if (priv == NULL)
 		return -ENOMEM;
 	memset(priv, 0, sizeof(*priv));
+=======
+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+	if (priv == NULL)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+	if (priv == NULL)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&priv->lock);
 	file->private_data = priv;
 

@@ -24,12 +24,17 @@
  *
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/ktime.h>
 #include <linux/hrtimer.h>
 
+<<<<<<< HEAD
 #include "nouveau_drv.h"
 #include "nouveau_ramht.h"
 #include "nouveau_dma.h"
@@ -93,6 +98,7 @@ nouveau_fence_update(struct nouveau_channel *chan)
 	}
 
 	list_for_each_entry_safe(fence, tmp, &chan->fence.pending, entry) {
+<<<<<<< HEAD
 		sequence = fence->sequence;
 		fence->signalled = true;
 		list_del(&fence->entry);
@@ -105,6 +111,19 @@ nouveau_fence_update(struct nouveau_channel *chan)
 		if (sequence == chan->fence.sequence_ack)
 			break;
 	}
+=======
+		if (fence->sequence > chan->fence.sequence_ack)
+			break;
+
+		fence->signalled = true;
+		list_del(&fence->entry);
+		if (fence->work)
+			fence->work(fence->priv, true);
+
+		kref_put(&fence->refcount, nouveau_fence_del);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	spin_unlock(&chan->fence.lock);
 }
@@ -165,9 +184,15 @@ nouveau_fence_emit(struct nouveau_fence *fence)
 
 	if (USE_REFCNT(dev)) {
 		if (dev_priv->card_type < NV_C0)
+<<<<<<< HEAD
 			BEGIN_RING(chan, NvSubSw, 0x0050, 1);
 		else
 			BEGIN_NVC0(chan, 2, NvSubM2MF, 0x0050, 1);
+=======
+			BEGIN_RING(chan, 0, NV10_SUBCHAN_REF_CNT, 1);
+		else
+			BEGIN_NVC0(chan, 2, 0, NV10_SUBCHAN_REF_CNT, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		BEGIN_RING(chan, NvSubSw, 0x0150, 1);
 	}
@@ -232,21 +257,243 @@ int
 __nouveau_fence_wait(void *sync_obj, void *sync_arg, bool lazy, bool intr)
 {
 	unsigned long timeout = jiffies + (3 * DRM_HZ);
+=======
+#include "nouveau_drm.h"
+#include "nouveau_dma.h"
+#include "nouveau_fence.h"
+
+#include <engine/fifo.h>
+
+struct fence_work {
+	struct work_struct base;
+	struct list_head head;
+	void (*func)(void *);
+	void *data;
+};
+
+static void
+nouveau_fence_signal(struct nouveau_fence *fence)
+{
+	struct fence_work *work, *temp;
+
+	list_for_each_entry_safe(work, temp, &fence->work, head) {
+		schedule_work(&work->base);
+		list_del(&work->head);
+	}
+
+	fence->channel = NULL;
+	list_del(&fence->head);
+}
+
+void
+nouveau_fence_context_del(struct nouveau_fence_chan *fctx)
+{
+	struct nouveau_fence *fence, *fnext;
+	spin_lock(&fctx->lock);
+	list_for_each_entry_safe(fence, fnext, &fctx->pending, head) {
+		nouveau_fence_signal(fence);
+	}
+	spin_unlock(&fctx->lock);
+}
+
+void
+nouveau_fence_context_new(struct nouveau_fence_chan *fctx)
+{
+	INIT_LIST_HEAD(&fctx->flip);
+	INIT_LIST_HEAD(&fctx->pending);
+	spin_lock_init(&fctx->lock);
+}
+
+static void
+nouveau_fence_work_handler(struct work_struct *kwork)
+{
+	struct fence_work *work = container_of(kwork, typeof(*work), base);
+	work->func(work->data);
+	kfree(work);
+}
+
+void
+nouveau_fence_work(struct nouveau_fence *fence,
+		   void (*func)(void *), void *data)
+{
+	struct nouveau_channel *chan = fence->channel;
+	struct nouveau_fence_chan *fctx;
+	struct fence_work *work = NULL;
+
+	if (nouveau_fence_done(fence)) {
+		func(data);
+		return;
+	}
+
+	fctx = chan->fence;
+	work = kmalloc(sizeof(*work), GFP_KERNEL);
+	if (!work) {
+		WARN_ON(nouveau_fence_wait(fence, false, false));
+		func(data);
+		return;
+	}
+
+	spin_lock(&fctx->lock);
+	if (!fence->channel) {
+		spin_unlock(&fctx->lock);
+		kfree(work);
+		func(data);
+		return;
+	}
+
+	INIT_WORK(&work->base, nouveau_fence_work_handler);
+	work->func = func;
+	work->data = data;
+	list_add(&work->head, &fence->work);
+	spin_unlock(&fctx->lock);
+}
+
+static void
+nouveau_fence_update(struct nouveau_channel *chan)
+{
+	struct nouveau_fence_chan *fctx = chan->fence;
+	struct nouveau_fence *fence, *fnext;
+
+	spin_lock(&fctx->lock);
+	list_for_each_entry_safe(fence, fnext, &fctx->pending, head) {
+		if (fctx->read(chan) < fence->sequence)
+			break;
+
+		nouveau_fence_signal(fence);
+		nouveau_fence_unref(&fence);
+	}
+	spin_unlock(&fctx->lock);
+}
+
+int
+nouveau_fence_emit(struct nouveau_fence *fence, struct nouveau_channel *chan)
+{
+	struct nouveau_fence_chan *fctx = chan->fence;
+	int ret;
+
+	fence->channel  = chan;
+	fence->timeout  = jiffies + (15 * DRM_HZ);
+	fence->sequence = ++fctx->sequence;
+
+	ret = fctx->emit(fence);
+	if (!ret) {
+		kref_get(&fence->kref);
+		spin_lock(&fctx->lock);
+		list_add_tail(&fence->head, &fctx->pending);
+		spin_unlock(&fctx->lock);
+	}
+
+	return ret;
+}
+
+bool
+nouveau_fence_done(struct nouveau_fence *fence)
+{
+	if (fence->channel)
+		nouveau_fence_update(fence->channel);
+	return !fence->channel;
+}
+
+static int
+nouveau_fence_wait_uevent_handler(void *data, int index)
+{
+	struct nouveau_fence_priv *priv = data;
+	wake_up_all(&priv->waiting);
+	return NVKM_EVENT_KEEP;
+}
+
+static int
+nouveau_fence_wait_uevent(struct nouveau_fence *fence, bool intr)
+
+{
+	struct nouveau_channel *chan = fence->channel;
+	struct nouveau_fifo *pfifo = nouveau_fifo(chan->drm->device);
+	struct nouveau_fence_priv *priv = chan->drm->fence;
+	struct nouveau_eventh *handler;
+	int ret = 0;
+
+	ret = nouveau_event_new(pfifo->uevent, 0,
+				nouveau_fence_wait_uevent_handler,
+				priv, &handler);
+	if (ret)
+		return ret;
+
+	nouveau_event_get(handler);
+
+	if (fence->timeout) {
+		unsigned long timeout = fence->timeout - jiffies;
+
+		if (time_before(jiffies, fence->timeout)) {
+			if (intr) {
+				ret = wait_event_interruptible_timeout(
+						priv->waiting,
+						nouveau_fence_done(fence),
+						timeout);
+			} else {
+				ret = wait_event_timeout(priv->waiting,
+						nouveau_fence_done(fence),
+						timeout);
+			}
+		}
+
+		if (ret >= 0) {
+			fence->timeout = jiffies + ret;
+			if (time_after_eq(jiffies, fence->timeout))
+				ret = -EBUSY;
+		}
+	} else {
+		if (intr) {
+			ret = wait_event_interruptible(priv->waiting,
+					nouveau_fence_done(fence));
+		} else {
+			wait_event(priv->waiting, nouveau_fence_done(fence));
+		}
+	}
+
+	nouveau_event_ref(NULL, &handler);
+	if (unlikely(ret < 0))
+		return ret;
+
+	return 0;
+}
+
+int
+nouveau_fence_wait(struct nouveau_fence *fence, bool lazy, bool intr)
+{
+	struct nouveau_channel *chan = fence->channel;
+	struct nouveau_fence_priv *priv = chan ? chan->drm->fence : NULL;
+>>>>>>> refs/remotes/origin/master
 	unsigned long sleep_time = NSEC_PER_MSEC / 1000;
 	ktime_t t;
 	int ret = 0;
 
+<<<<<<< HEAD
 	while (1) {
 		if (__nouveau_fence_signalled(sync_obj, sync_arg))
 			break;
 
 		if (time_after_eq(jiffies, timeout)) {
+=======
+	while (priv && priv->uevent && lazy && !nouveau_fence_done(fence)) {
+		ret = nouveau_fence_wait_uevent(fence, intr);
+		if (ret < 0)
+			return ret;
+	}
+
+	while (!nouveau_fence_done(fence)) {
+		if (fence->timeout && time_after_eq(jiffies, fence->timeout)) {
+>>>>>>> refs/remotes/origin/master
 			ret = -EBUSY;
 			break;
 		}
 
+<<<<<<< HEAD
 		__set_current_state(intr ? TASK_INTERRUPTIBLE
 			: TASK_UNINTERRUPTIBLE);
+=======
+		__set_current_state(intr ? TASK_INTERRUPTIBLE :
+					   TASK_UNINTERRUPTIBLE);
+>>>>>>> refs/remotes/origin/master
 		if (lazy) {
 			t = ktime_set(0, sleep_time);
 			schedule_hrtimeout(&t, HRTIMER_MODE_REL);
@@ -262,6 +509,7 @@ __nouveau_fence_wait(void *sync_obj, void *sync_arg, bool lazy, bool intr)
 	}
 
 	__set_current_state(TASK_RUNNING);
+<<<<<<< HEAD
 
 	return ret;
 }
@@ -336,6 +584,10 @@ semaphore_acquire(struct nouveau_channel *chan, struct nouveau_semaphore *sema)
 {
 	struct drm_nouveau_private *dev_priv = chan->dev->dev_private;
 	struct nouveau_fence *fence = NULL;
+<<<<<<< HEAD
+=======
+	u64 offset = chan->fence.vma.offset + sema->mem->start;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	if (dev_priv->chipset < 0x84) {
@@ -343,6 +595,7 @@ semaphore_acquire(struct nouveau_channel *chan, struct nouveau_semaphore *sema)
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 		BEGIN_RING(chan, NvSubSw, NV_SW_DMA_SEMAPHORE, 3);
 		OUT_RING  (chan, NvSema);
 		OUT_RING  (chan, sema->mem->start);
@@ -352,26 +605,47 @@ semaphore_acquire(struct nouveau_channel *chan, struct nouveau_semaphore *sema)
 		struct nouveau_vma *vma = &dev_priv->fence.bo->vma;
 		u64 offset = vma->offset + sema->mem->start;
 
+=======
+		BEGIN_RING(chan, 0, NV11_SUBCHAN_DMA_SEMAPHORE, 3);
+		OUT_RING  (chan, NvSema);
+		OUT_RING  (chan, offset);
+		OUT_RING  (chan, 1);
+	} else
+	if (dev_priv->chipset < 0xc0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = RING_SPACE(chan, 7);
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 		BEGIN_RING(chan, NvSubSw, NV_SW_DMA_SEMAPHORE, 1);
 		OUT_RING  (chan, chan->vram_handle);
 		BEGIN_RING(chan, NvSubSw, 0x0010, 4);
+=======
+		BEGIN_RING(chan, 0, NV11_SUBCHAN_DMA_SEMAPHORE, 1);
+		OUT_RING  (chan, chan->vram_handle);
+		BEGIN_RING(chan, 0, NV84_SUBCHAN_SEMAPHORE_ADDRESS_HIGH, 4);
+>>>>>>> refs/remotes/origin/cm-10.0
 		OUT_RING  (chan, upper_32_bits(offset));
 		OUT_RING  (chan, lower_32_bits(offset));
 		OUT_RING  (chan, 1);
 		OUT_RING  (chan, 1); /* ACQUIRE_EQ */
 	} else {
+<<<<<<< HEAD
 		struct nouveau_vma *vma = &dev_priv->fence.bo->vma;
 		u64 offset = vma->offset + sema->mem->start;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = RING_SPACE(chan, 5);
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 		BEGIN_NVC0(chan, 2, NvSubM2MF, 0x0010, 4);
+=======
+		BEGIN_NVC0(chan, 2, 0, NV84_SUBCHAN_SEMAPHORE_ADDRESS_HIGH, 4);
+>>>>>>> refs/remotes/origin/cm-10.0
 		OUT_RING  (chan, upper_32_bits(offset));
 		OUT_RING  (chan, lower_32_bits(offset));
 		OUT_RING  (chan, 1);
@@ -394,6 +668,10 @@ semaphore_release(struct nouveau_channel *chan, struct nouveau_semaphore *sema)
 {
 	struct drm_nouveau_private *dev_priv = chan->dev->dev_private;
 	struct nouveau_fence *fence = NULL;
+<<<<<<< HEAD
+=======
+	u64 offset = chan->fence.vma.offset + sema->mem->start;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	if (dev_priv->chipset < 0x84) {
@@ -401,6 +679,7 @@ semaphore_release(struct nouveau_channel *chan, struct nouveau_semaphore *sema)
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 		BEGIN_RING(chan, NvSubSw, NV_SW_DMA_SEMAPHORE, 2);
 		OUT_RING  (chan, NvSema);
 		OUT_RING  (chan, sema->mem->start);
@@ -411,26 +690,48 @@ semaphore_release(struct nouveau_channel *chan, struct nouveau_semaphore *sema)
 		struct nouveau_vma *vma = &dev_priv->fence.bo->vma;
 		u64 offset = vma->offset + sema->mem->start;
 
+=======
+		BEGIN_RING(chan, 0, NV11_SUBCHAN_DMA_SEMAPHORE, 2);
+		OUT_RING  (chan, NvSema);
+		OUT_RING  (chan, offset);
+		BEGIN_RING(chan, 0, NV11_SUBCHAN_SEMAPHORE_RELEASE, 1);
+		OUT_RING  (chan, 1);
+	} else
+	if (dev_priv->chipset < 0xc0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = RING_SPACE(chan, 7);
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 		BEGIN_RING(chan, NvSubSw, NV_SW_DMA_SEMAPHORE, 1);
 		OUT_RING  (chan, chan->vram_handle);
 		BEGIN_RING(chan, NvSubSw, 0x0010, 4);
+=======
+		BEGIN_RING(chan, 0, NV11_SUBCHAN_DMA_SEMAPHORE, 1);
+		OUT_RING  (chan, chan->vram_handle);
+		BEGIN_RING(chan, 0, NV84_SUBCHAN_SEMAPHORE_ADDRESS_HIGH, 4);
+>>>>>>> refs/remotes/origin/cm-10.0
 		OUT_RING  (chan, upper_32_bits(offset));
 		OUT_RING  (chan, lower_32_bits(offset));
 		OUT_RING  (chan, 1);
 		OUT_RING  (chan, 2); /* RELEASE */
 	} else {
+<<<<<<< HEAD
 		struct nouveau_vma *vma = &dev_priv->fence.bo->vma;
 		u64 offset = vma->offset + sema->mem->start;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = RING_SPACE(chan, 5);
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 		BEGIN_NVC0(chan, 2, NvSubM2MF, 0x0010, 4);
+=======
+		BEGIN_NVC0(chan, 2, 0, NV84_SUBCHAN_SEMAPHORE_ADDRESS_HIGH, 4);
+>>>>>>> refs/remotes/origin/cm-10.0
 		OUT_RING  (chan, upper_32_bits(offset));
 		OUT_RING  (chan, lower_32_bits(offset));
 		OUT_RING  (chan, 1);
@@ -520,7 +821,11 @@ nouveau_fence_channel_init(struct nouveau_channel *chan)
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 		BEGIN_RING(chan, NvSubSw, 0, 1);
+=======
+		BEGIN_RING(chan, NvSubSw, NV01_SUBCHAN_OBJECT, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 		OUT_RING  (chan, NvSw);
 		FIRE_RING (chan);
 	}
@@ -529,7 +834,11 @@ nouveau_fence_channel_init(struct nouveau_channel *chan)
 	if (USE_SEMA(dev) && dev_priv->chipset < 0x84) {
 		struct ttm_mem_reg *mem = &dev_priv->fence.bo->bo.mem;
 
+<<<<<<< HEAD
 		ret = nouveau_gpuobj_dma_new(chan, NV_CLASS_DMA_IN_MEMORY,
+=======
+		ret = nouveau_gpuobj_dma_new(chan, NV_CLASS_DMA_FROM_MEMORY,
+>>>>>>> refs/remotes/origin/cm-10.0
 					     mem->start << PAGE_SHIFT,
 					     mem->size, NV_MEM_ACCESS_RW,
 					     NV_MEM_TARGET_VRAM, &obj);
@@ -540,6 +849,16 @@ nouveau_fence_channel_init(struct nouveau_channel *chan)
 		nouveau_gpuobj_ref(NULL, &obj);
 		if (ret)
 			return ret;
+<<<<<<< HEAD
+=======
+	} else
+	if (USE_SEMA(dev)) {
+		/* map fence bo into channel's vm */
+		ret = nouveau_bo_vma_add(dev_priv->fence.bo, chan->vm,
+					 &chan->fence.vma);
+		if (ret)
+			return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	atomic_set(&chan->fence.last_sequence_irq, 0);
@@ -549,10 +868,17 @@ nouveau_fence_channel_init(struct nouveau_channel *chan)
 void
 nouveau_fence_channel_fini(struct nouveau_channel *chan)
 {
+<<<<<<< HEAD
 	struct nouveau_fence *tmp, *fence;
 
 	spin_lock(&chan->fence.lock);
 
+=======
+	struct drm_nouveau_private *dev_priv = chan->dev->dev_private;
+	struct nouveau_fence *tmp, *fence;
+
+	spin_lock(&chan->fence.lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_for_each_entry_safe(fence, tmp, &chan->fence.pending, entry) {
 		fence->signalled = true;
 		list_del(&fence->entry);
@@ -562,8 +888,14 @@ nouveau_fence_channel_fini(struct nouveau_channel *chan)
 
 		kref_put(&fence->refcount, nouveau_fence_del);
 	}
+<<<<<<< HEAD
 
 	spin_unlock(&chan->fence.lock);
+=======
+	spin_unlock(&chan->fence.lock);
+
+	nouveau_bo_vma_del(dev_priv->fence.bo, &chan->fence.vma);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int
@@ -575,7 +907,11 @@ nouveau_fence_init(struct drm_device *dev)
 
 	/* Create a shared VRAM heap for cross-channel sync. */
 	if (USE_SEMA(dev)) {
+<<<<<<< HEAD
 		ret = nouveau_bo_new(dev, NULL, size, 0, TTM_PL_FLAG_VRAM,
+=======
+		ret = nouveau_bo_new(dev, size, 0, TTM_PL_FLAG_VRAM,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     0, 0, &dev_priv->fence.bo);
 		if (ret)
 			return ret;
@@ -615,3 +951,75 @@ nouveau_fence_fini(struct drm_device *dev)
 		nouveau_bo_ref(NULL, &dev_priv->fence.bo);
 	}
 }
+=======
+	return ret;
+}
+
+int
+nouveau_fence_sync(struct nouveau_fence *fence, struct nouveau_channel *chan)
+{
+	struct nouveau_fence_chan *fctx = chan->fence;
+	struct nouveau_channel *prev;
+	int ret = 0;
+
+	prev = fence ? fence->channel : NULL;
+	if (prev) {
+		if (unlikely(prev != chan && !nouveau_fence_done(fence))) {
+			ret = fctx->sync(fence, prev, chan);
+			if (unlikely(ret))
+				ret = nouveau_fence_wait(fence, true, false);
+		}
+	}
+
+	return ret;
+}
+
+static void
+nouveau_fence_del(struct kref *kref)
+{
+	struct nouveau_fence *fence = container_of(kref, typeof(*fence), kref);
+	kfree(fence);
+}
+
+void
+nouveau_fence_unref(struct nouveau_fence **pfence)
+{
+	if (*pfence)
+		kref_put(&(*pfence)->kref, nouveau_fence_del);
+	*pfence = NULL;
+}
+
+struct nouveau_fence *
+nouveau_fence_ref(struct nouveau_fence *fence)
+{
+	if (fence)
+		kref_get(&fence->kref);
+	return fence;
+}
+
+int
+nouveau_fence_new(struct nouveau_channel *chan, bool sysmem,
+		  struct nouveau_fence **pfence)
+{
+	struct nouveau_fence *fence;
+	int ret = 0;
+
+	if (unlikely(!chan->fence))
+		return -ENODEV;
+
+	fence = kzalloc(sizeof(*fence), GFP_KERNEL);
+	if (!fence)
+		return -ENOMEM;
+
+	INIT_LIST_HEAD(&fence->work);
+	fence->sysmem = sysmem;
+	kref_init(&fence->kref);
+
+	ret = nouveau_fence_emit(fence, chan);
+	if (ret)
+		nouveau_fence_unref(&fence);
+
+	*pfence = fence;
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master

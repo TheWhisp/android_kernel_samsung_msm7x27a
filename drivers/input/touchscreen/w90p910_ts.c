@@ -215,7 +215,11 @@ static void w90p910_close(struct input_dev *dev)
 	clk_disable(w90p910_ts->clk);
 }
 
+<<<<<<< HEAD
 static int __devinit w90x900ts_probe(struct platform_device *pdev)
+=======
+static int w90x900ts_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct w90p910_ts *w90p910_ts;
 	struct input_dev *input_dev;
@@ -279,7 +283,15 @@ static int __devinit w90x900ts_probe(struct platform_device *pdev)
 
 	w90p910_ts->irq_num = platform_get_irq(pdev, 0);
 	if (request_irq(w90p910_ts->irq_num, w90p910_ts_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED, "w90p910ts", w90p910_ts)) {
+=======
+			0, "w90p910ts", w90p910_ts)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			0, "w90p910ts", w90p910_ts)) {
+>>>>>>> refs/remotes/origin/master
 		err = -EBUSY;
 		goto fail4;
 	}
@@ -301,7 +313,11 @@ fail1:	input_free_device(input_dev);
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit w90x900ts_remove(struct platform_device *pdev)
+=======
+static int w90x900ts_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct w90p910_ts *w90p910_ts = platform_get_drvdata(pdev);
 	struct resource *res;
@@ -318,19 +334,28 @@ static int __devexit w90x900ts_remove(struct platform_device *pdev)
 	input_unregister_device(w90p910_ts->input);
 	kfree(w90p910_ts);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver w90x900ts_driver = {
 	.probe		= w90x900ts_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(w90x900ts_remove),
+=======
+	.remove		= w90x900ts_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "nuc900-ts",
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init w90x900ts_init(void)
 {
@@ -344,6 +369,12 @@ static void __exit w90x900ts_exit(void)
 
 module_init(w90x900ts_init);
 module_exit(w90x900ts_exit);
+=======
+module_platform_driver(w90x900ts_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(w90x900ts_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
 MODULE_DESCRIPTION("w90p910 touch screen driver!");

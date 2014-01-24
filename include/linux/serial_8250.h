@@ -35,8 +35,19 @@ struct plat_serial8250_port {
 	void		(*set_termios)(struct uart_port *,
 			               struct ktermios *new,
 			               struct ktermios *old);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int		(*handle_irq)(struct uart_port *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	void		(*pm)(struct uart_port *, unsigned int state,
 			      unsigned old);
+=======
+	int		(*handle_irq)(struct uart_port *);
+	void		(*pm)(struct uart_port *, unsigned int state,
+			      unsigned old);
+	void		(*handle_break)(struct uart_port *);
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -53,20 +64,69 @@ enum {
 	PLAT8250_DEV_BOCA,
 	PLAT8250_DEV_EXAR_ST16C554,
 	PLAT8250_DEV_HUB6,
+<<<<<<< HEAD
 	PLAT8250_DEV_MCA,
+=======
+>>>>>>> refs/remotes/origin/master
 	PLAT8250_DEV_AU1X00,
 	PLAT8250_DEV_SM501,
 };
 
+<<<<<<< HEAD
+=======
+struct uart_8250_dma;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This should be used by drivers which want to register
  * their own 8250 ports without registering their own
  * platform device.  Using these will make your driver
  * dependent on the 8250 driver.
  */
+<<<<<<< HEAD
 struct uart_port;
+<<<<<<< HEAD
+=======
+struct uart_8250_port;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int serial8250_register_port(struct uart_port *);
+=======
+
+struct uart_8250_port {
+	struct uart_port	port;
+	struct timer_list	timer;		/* "no irq" timer */
+	struct list_head	list;		/* ports on this IRQ */
+	unsigned short		capabilities;	/* port capabilities */
+	unsigned short		bugs;		/* port bugs */
+	unsigned int		tx_loadsz;	/* transmit fifo load size */
+	unsigned char		acr;
+	unsigned char		ier;
+	unsigned char		lcr;
+	unsigned char		mcr;
+	unsigned char		mcr_mask;	/* mask of user bits */
+	unsigned char		mcr_force;	/* mask of forced bits */
+	unsigned char		cur_iotype;	/* Running I/O type */
+
+	/*
+	 * Some bits in registers are cleared on a read, so they must
+	 * be saved whenever the register is read but the bits will not
+	 * be immediately processed.
+	 */
+#define LSR_SAVE_FLAGS UART_LSR_BRK_ERROR_BITS
+	unsigned char		lsr_saved_flags;
+#define MSR_SAVE_FLAGS UART_MSR_ANY_DELTA
+	unsigned char		msr_saved_flags;
+
+	struct uart_8250_dma	*dma;
+
+	/* 8250 specific callbacks */
+	int			(*dl_read)(struct uart_8250_port *);
+	void			(*dl_write)(struct uart_8250_port *, int);
+};
+
+int serial8250_register_8250_port(struct uart_8250_port *);
+>>>>>>> refs/remotes/origin/master
 void serial8250_unregister_port(int line);
 void serial8250_suspend_port(int line);
 void serial8250_resume_port(int line);
@@ -75,11 +135,30 @@ extern int early_serial_setup(struct uart_port *port);
 
 extern int serial8250_find_port(struct uart_port *p);
 extern int serial8250_find_port_for_earlycon(void);
+<<<<<<< HEAD
+=======
+extern unsigned int serial8250_early_in(struct uart_port *port, int offset);
+extern void serial8250_early_out(struct uart_port *port, int offset, int value);
+>>>>>>> refs/remotes/origin/master
 extern int setup_early_serial8250_console(char *cmdline);
 extern void serial8250_do_set_termios(struct uart_port *port,
 		struct ktermios *termios, struct ktermios *old);
 extern void serial8250_do_pm(struct uart_port *port, unsigned int state,
 			     unsigned int oldstate);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern int fsl8250_handle_irq(struct uart_port *port);
+int serial8250_handle_irq(struct uart_port *port, unsigned int iir);
+unsigned char serial8250_rx_chars(struct uart_8250_port *up, unsigned char lsr);
+void serial8250_tx_chars(struct uart_8250_port *up);
+unsigned int serial8250_modem_status(struct uart_8250_port *up);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern void serial8250_set_isa_configurator(void (*v)
 					(int port, struct uart_port *up,

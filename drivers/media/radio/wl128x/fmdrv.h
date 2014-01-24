@@ -28,14 +28,30 @@
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <linux/timer.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/v4l2-ioctl.h>
 #include <media/v4l2-common.h>
 #include <media/v4l2-ctrls.h>
 
+<<<<<<< HEAD
 #define FM_DRV_VERSION            "0.10"
 /* Should match with FM_DRV_VERSION */
 #define FM_DRV_RADIO_VERSION      KERNEL_VERSION(0, 0, 1)
+=======
+#define FM_DRV_VERSION            "0.1.1"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <media/v4l2-ioctl.h>
+#include <media/v4l2-common.h>
+#include <media/v4l2-device.h>
+#include <media/v4l2-ctrls.h>
+
+#define FM_DRV_VERSION            "0.1.1"
+>>>>>>> refs/remotes/origin/master
 #define FM_DRV_NAME               "ti_fmdrv"
 #define FM_DRV_CARD_SHORT_NAME    "TI FM Radio"
 #define FM_DRV_CARD_LONG_NAME     "Texas Instruments FM Radio"
@@ -63,7 +79,11 @@
 #define fmdbg(format, ...) \
 	printk(KERN_DEBUG "fmdrv: " format, ## __VA_ARGS__)
 #else /* DEBUG */
+<<<<<<< HEAD
 #define fmdbg(format, ...)
+=======
+#define fmdbg(format, ...) do {} while(0)
+>>>>>>> refs/remotes/origin/master
 #endif
 enum {
 	FM_MODE_OFF,
@@ -205,6 +225,10 @@ struct fmtx_data {
 /* FM driver operation structure */
 struct fmdev {
 	struct video_device *radio_dev;	/* V4L2 video device pointer */
+<<<<<<< HEAD
+=======
+	struct v4l2_device v4l2_dev;	/* V4L2 top level struct */
+>>>>>>> refs/remotes/origin/master
 	struct snd_card *card;	/* Card which holds FM mixer controls */
 	u16 asci_id;
 	spinlock_t rds_buff_lock; /* To protect access to RDS buffer */

@@ -14,15 +14,26 @@
  */
 #include <linux/kernel.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/clk.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/board.h>
 #include <plat/mux.h>
 
 #include <plat/clock.h>
 
+=======
+#include <plat/hardware.h>
+#include <plat/board.h>
+#include <plat/mux.h>
+#include <plat/clock.h>
+
+#include "iomap.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "sdrc.h"
 #include "control.h"
 
@@ -45,17 +56,33 @@ static void __init __omap2_set_globals(struct omap_globals *omap2_globals)
 static struct omap_globals omap242x_globals = {
 	.class	= OMAP242X_CLASS,
 	.tap	= OMAP2_L4_IO_ADDRESS(0x48014000),
+<<<<<<< HEAD
 	.sdrc	= OMAP2420_SDRC_BASE,
 	.sms	= OMAP2420_SMS_BASE,
 	.ctrl	= OMAP242X_CTRL_BASE,
 	.prm	= OMAP2420_PRM_BASE,
 	.cm	= OMAP2420_CM_BASE,
+=======
+	.sdrc	= OMAP2_L3_IO_ADDRESS(OMAP2420_SDRC_BASE),
+	.sms	= OMAP2_L3_IO_ADDRESS(OMAP2420_SMS_BASE),
+	.ctrl	= OMAP2_L4_IO_ADDRESS(OMAP242X_CTRL_BASE),
+	.prm	= OMAP2_L4_IO_ADDRESS(OMAP2420_PRM_BASE),
+	.cm	= OMAP2_L4_IO_ADDRESS(OMAP2420_CM_BASE),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 void __init omap2_set_globals_242x(void)
 {
 	__omap2_set_globals(&omap242x_globals);
 }
+<<<<<<< HEAD
+=======
+
+void __init omap242x_map_io(void)
+{
+	omap242x_map_common_io();
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #if defined(CONFIG_SOC_OMAP2430)
@@ -63,17 +90,33 @@ void __init omap2_set_globals_242x(void)
 static struct omap_globals omap243x_globals = {
 	.class	= OMAP243X_CLASS,
 	.tap	= OMAP2_L4_IO_ADDRESS(0x4900a000),
+<<<<<<< HEAD
 	.sdrc	= OMAP243X_SDRC_BASE,
 	.sms	= OMAP243X_SMS_BASE,
 	.ctrl	= OMAP243X_CTRL_BASE,
 	.prm	= OMAP2430_PRM_BASE,
 	.cm	= OMAP2430_CM_BASE,
+=======
+	.sdrc	= OMAP2_L3_IO_ADDRESS(OMAP243X_SDRC_BASE),
+	.sms	= OMAP2_L3_IO_ADDRESS(OMAP243X_SMS_BASE),
+	.ctrl	= OMAP2_L4_IO_ADDRESS(OMAP243X_CTRL_BASE),
+	.prm	= OMAP2_L4_IO_ADDRESS(OMAP2430_PRM_BASE),
+	.cm	= OMAP2_L4_IO_ADDRESS(OMAP2430_CM_BASE),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 void __init omap2_set_globals_243x(void)
 {
 	__omap2_set_globals(&omap243x_globals);
 }
+<<<<<<< HEAD
+=======
+
+void __init omap243x_map_io(void)
+{
+	omap243x_map_common_io();
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #if defined(CONFIG_ARCH_OMAP3)
@@ -81,11 +124,19 @@ void __init omap2_set_globals_243x(void)
 static struct omap_globals omap3_globals = {
 	.class	= OMAP343X_CLASS,
 	.tap	= OMAP2_L4_IO_ADDRESS(0x4830A000),
+<<<<<<< HEAD
 	.sdrc	= OMAP343X_SDRC_BASE,
 	.sms	= OMAP343X_SMS_BASE,
 	.ctrl	= OMAP343X_CTRL_BASE,
 	.prm	= OMAP3430_PRM_BASE,
 	.cm	= OMAP3430_CM_BASE,
+=======
+	.sdrc	= OMAP2_L3_IO_ADDRESS(OMAP343X_SDRC_BASE),
+	.sms	= OMAP2_L3_IO_ADDRESS(OMAP343X_SMS_BASE),
+	.ctrl	= OMAP2_L4_IO_ADDRESS(OMAP343X_CTRL_BASE),
+	.prm	= OMAP2_L4_IO_ADDRESS(OMAP3430_PRM_BASE),
+	.cm	= OMAP2_L4_IO_ADDRESS(OMAP3430_CM_BASE),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 void __init omap2_set_globals_3xxx(void)
@@ -95,12 +146,16 @@ void __init omap2_set_globals_3xxx(void)
 
 void __init omap3_map_io(void)
 {
+<<<<<<< HEAD
 	omap2_set_globals_3xxx();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap34xx_map_common_io();
 }
 
 /*
  * Adjust TAP register base such that omap3_check_revision accesses the correct
+<<<<<<< HEAD
  * TI816X register for checking device ID (it adds 0x204 to tap base while
  * TI816X DEVICE ID register is at offset 0x600 from control base).
  */
@@ -118,6 +173,51 @@ static struct omap_globals ti816x_globals = {
 void __init omap2_set_globals_ti816x(void)
 {
 	__omap2_set_globals(&ti816x_globals);
+=======
+ * TI81XX register for checking device ID (it adds 0x204 to tap base while
+ * TI81XX DEVICE ID register is at offset 0x600 from control base).
+ */
+#define TI81XX_TAP_BASE		(TI81XX_CTRL_BASE + \
+				TI81XX_CONTROL_DEVICE_ID - 0x204)
+
+static struct omap_globals ti81xx_globals = {
+	.class  = OMAP343X_CLASS,
+	.tap    = OMAP2_L4_IO_ADDRESS(TI81XX_TAP_BASE),
+	.ctrl   = OMAP2_L4_IO_ADDRESS(TI81XX_CTRL_BASE),
+	.prm    = OMAP2_L4_IO_ADDRESS(TI81XX_PRCM_BASE),
+	.cm     = OMAP2_L4_IO_ADDRESS(TI81XX_PRCM_BASE),
+};
+
+void __init omap2_set_globals_ti81xx(void)
+{
+	__omap2_set_globals(&ti81xx_globals);
+}
+
+void __init ti81xx_map_io(void)
+{
+	omapti81xx_map_common_io();
+}
+
+#define AM33XX_TAP_BASE		(AM33XX_CTRL_BASE + \
+				TI81XX_CONTROL_DEVICE_ID - 0x204)
+
+static struct omap_globals am33xx_globals = {
+	.class  = AM335X_CLASS,
+	.tap    = AM33XX_L4_WK_IO_ADDRESS(AM33XX_TAP_BASE),
+	.ctrl   = AM33XX_L4_WK_IO_ADDRESS(AM33XX_CTRL_BASE),
+	.prm    = AM33XX_L4_WK_IO_ADDRESS(AM33XX_PRCM_BASE),
+	.cm     = AM33XX_L4_WK_IO_ADDRESS(AM33XX_PRCM_BASE),
+};
+
+void __init omap2_set_globals_am33xx(void)
+{
+	__omap2_set_globals(&am33xx_globals);
+}
+
+void __init am33xx_map_io(void)
+{
+	omapam33xx_map_common_io();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif
 
@@ -125,11 +225,19 @@ void __init omap2_set_globals_ti816x(void)
 static struct omap_globals omap4_globals = {
 	.class	= OMAP443X_CLASS,
 	.tap	= OMAP2_L4_IO_ADDRESS(OMAP443X_SCM_BASE),
+<<<<<<< HEAD
 	.ctrl	= OMAP443X_SCM_BASE,
 	.ctrl_pad	= OMAP443X_CTRL_BASE,
 	.prm	= OMAP4430_PRM_BASE,
 	.cm	= OMAP4430_CM_BASE,
 	.cm2	= OMAP4430_CM2_BASE,
+=======
+	.ctrl	= OMAP2_L4_IO_ADDRESS(OMAP443X_SCM_BASE),
+	.ctrl_pad	= OMAP2_L4_IO_ADDRESS(OMAP443X_CTRL_BASE),
+	.prm	= OMAP2_L4_IO_ADDRESS(OMAP4430_PRM_BASE),
+	.cm	= OMAP2_L4_IO_ADDRESS(OMAP4430_CM_BASE),
+	.cm2	= OMAP2_L4_IO_ADDRESS(OMAP4430_CM2_BASE),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 void __init omap2_set_globals_443x(void)
@@ -138,5 +246,35 @@ void __init omap2_set_globals_443x(void)
 	omap2_set_globals_control(&omap4_globals);
 	omap2_set_globals_prcm(&omap4_globals);
 }
+<<<<<<< HEAD
+=======
+
+void __init omap4_map_io(void)
+{
+	omap44xx_map_common_io();
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
+=======
+#include <linux/platform_data/dsp-omap.h>
+
+#include "common.h"
+#include "omap-secure.h"
+
+/*
+ * Stub function for OMAP2 so that common files
+ * continue to build when custom builds are used
+ */
+int __weak omap_secure_ram_reserve_memblock(void)
+{
+	return 0;
+}
+
+void __init omap_reserve(void)
+{
+	omap_dsp_reserve_sdram_memblock();
+	omap_secure_ram_reserve_memblock();
+	omap_barrier_reserve_memblock();
+}
+>>>>>>> refs/remotes/origin/master

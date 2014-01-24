@@ -27,7 +27,11 @@
 #define OCFS2_SYMLINK_H
 
 extern const struct inode_operations ocfs2_symlink_inode_operations;
+<<<<<<< HEAD
 extern const struct inode_operations ocfs2_fast_symlink_inode_operations;
+=======
+extern const struct address_space_operations ocfs2_fast_symlink_aops;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Test whether an inode is a fast symlink.

@@ -53,9 +53,25 @@ struct msm_rotator_platform_data {
 	unsigned int number_of_clocks;
 	unsigned int hardware_version_number;
 	struct msm_rot_clocks *rotator_clks;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const char *regulator_name;
 #ifdef CONFIG_MSM_BUS_SCALING
 	struct msm_bus_scale_pdata *bus_scale_table;
 #endif
 };
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef CONFIG_MSM_BUS_SCALING
+	struct msm_bus_scale_pdata *bus_scale_table;
+#endif
+	char rot_iommu_split_domain;
+};
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

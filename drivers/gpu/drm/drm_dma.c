@@ -33,7 +33,16 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
+=======
+#include <linux/export.h>
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Initialize the DMA data.
@@ -43,10 +52,25 @@
  *
  * Allocate and initialize a drm_device_dma structure.
  */
+<<<<<<< HEAD
 int drm_dma_setup(struct drm_device *dev)
 {
 	int i;
 
+=======
+int drm_legacy_dma_setup(struct drm_device *dev)
+{
+	int i;
+
+	if (!drm_core_check_feature(dev, DRIVER_HAVE_DMA) ||
+	    drm_core_check_feature(dev, DRIVER_MODESET)) {
+		return 0;
+	}
+
+	dev->buf_use = 0;
+	atomic_set(&dev->buf_alloc, 0);
+
+>>>>>>> refs/remotes/origin/master
 	dev->dma = kzalloc(sizeof(*dev->dma), GFP_KERNEL);
 	if (!dev->dma)
 		return -ENOMEM;
@@ -65,11 +89,23 @@ int drm_dma_setup(struct drm_device *dev)
  * Free all pages associated with DMA buffers, the buffers and pages lists, and
  * finally the drm_device::dma structure itself.
  */
+<<<<<<< HEAD
 void drm_dma_takedown(struct drm_device *dev)
+=======
+void drm_legacy_dma_takedown(struct drm_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct drm_device_dma *dma = dev->dma;
 	int i, j;
 
+<<<<<<< HEAD
+=======
+	if (!drm_core_check_feature(dev, DRIVER_HAVE_DMA) ||
+	    drm_core_check_feature(dev, DRIVER_MODESET)) {
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (!dma)
 		return;
 
@@ -119,11 +155,14 @@ void drm_free_buffer(struct drm_device *dev, struct drm_buf * buf)
 	buf->pending = 0;
 	buf->file_priv = NULL;
 	buf->used = 0;
+<<<<<<< HEAD
 
 	if (drm_core_check_feature(dev, DRIVER_DMA_QUEUE)
 	    && waitqueue_active(&buf->dma_wait)) {
 		wake_up_interruptible(&buf->dma_wait);
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**

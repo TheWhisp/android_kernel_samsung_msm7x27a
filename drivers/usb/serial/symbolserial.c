@@ -1,6 +1,10 @@
 /*
  * Symbol USB barcode to serial driver
  *
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2013 Johan Hovold <jhovold@gmail.com>
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2009 Greg Kroah-Hartman <gregkh@suse.de>
  * Copyright (C) 2009 Novell Inc.
  *
@@ -10,7 +14,10 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/tty.h>
 #include <linux/slab.h>
 #include <linux/tty_driver.h>
@@ -20,14 +27,22 @@
 #include <linux/usb/serial.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct usb_device_id id_table[] = {
 	{ USB_DEVICE(0x05e0, 0x0600) },
 	{ },
 };
 MODULE_DEVICE_TABLE(usb, id_table);
 
+<<<<<<< HEAD
 /* This structure holds all of the individual device information */
 struct symbol_private {
 	struct usb_device *udev;
@@ -42,10 +57,17 @@ struct symbol_private {
 	bool throttled;
 	bool actually_throttled;
 	bool rts;
+=======
+struct symbol_private {
+	spinlock_t lock;	/* protects the following flags */
+	bool throttled;
+	bool actually_throttled;
+>>>>>>> refs/remotes/origin/master
 };
 
 static void symbol_int_callback(struct urb *urb)
 {
+<<<<<<< HEAD
 	struct symbol_private *priv = urb->context;
 	unsigned char *data = urb->transfer_buffer;
 	struct usb_serial_port *port = priv->port;
@@ -56,6 +78,15 @@ static void symbol_int_callback(struct urb *urb)
 
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+	struct usb_serial_port *port = urb->context;
+	struct symbol_private *priv = usb_get_serial_port_data(port);
+	unsigned char *data = urb->transfer_buffer;
+	int status = urb->status;
+	int result;
+	int data_length;
+
+>>>>>>> refs/remotes/origin/master
 	switch (status) {
 	case 0:
 		/* success */
@@ -64,6 +95,7 @@ static void symbol_int_callback(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d",
 		    __func__, status);
 		return;
@@ -75,6 +107,18 @@ static void symbol_int_callback(struct urb *urb)
 
 	usb_serial_debug_data(debug, &port->dev, __func__, urb->actual_length,
 			      data);
+=======
+		dev_dbg(&port->dev, "%s - urb shutting down with status: %d\n",
+			__func__, status);
+		return;
+	default:
+		dev_dbg(&port->dev, "%s - nonzero urb status received: %d\n",
+			__func__, status);
+		goto exit;
+	}
+
+	usb_serial_debug_data(&port->dev, __func__, urb->actual_length, data);
+>>>>>>> refs/remotes/origin/master
 
 	if (urb->actual_length > 1) {
 		data_length = urb->actual_length - 1;
@@ -87,6 +131,7 @@ static void symbol_int_callback(struct urb *urb)
 		 * we pretty much just ignore the size and send everything
 		 * else to the tty layer.
 		 */
+<<<<<<< HEAD
 		tty = tty_port_tty_get(&port->port);
 		if (tty) {
 			tty_insert_flip_string(tty, &data[1], data_length);
@@ -95,6 +140,12 @@ static void symbol_int_callback(struct urb *urb)
 		}
 	} else {
 		dev_dbg(&priv->udev->dev,
+=======
+		tty_insert_flip_string(&port->port, &data[1], data_length);
+		tty_flip_buffer_push(&port->port);
+	} else {
+		dev_dbg(&port->dev,
+>>>>>>> refs/remotes/origin/master
 			"Improper amount of data received from the device, "
 			"%d bytes", urb->actual_length);
 	}
@@ -104,12 +155,16 @@ exit:
 
 	/* Continue trying to always read if we should */
 	if (!priv->throttled) {
+<<<<<<< HEAD
 		usb_fill_int_urb(priv->int_urb, priv->udev,
 				 usb_rcvintpipe(priv->udev,
 				 		priv->int_address),
 				 priv->int_buffer, priv->buffer_size,
 				 symbol_int_callback, priv, priv->bInterval);
 		result = usb_submit_urb(priv->int_urb, GFP_ATOMIC);
+=======
+		result = usb_submit_urb(port->interrupt_in_urb, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		if (result)
 			dev_err(&port->dev,
 			    "%s - failed resubmitting read urb, error %d\n",
@@ -125,6 +180,7 @@ static int symbol_open(struct tty_struct *tty, struct usb_serial_port *port)
 	unsigned long flags;
 	int result = 0;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
 	spin_lock_irqsave(&priv->lock, flags);
@@ -139,6 +195,15 @@ static int symbol_open(struct tty_struct *tty, struct usb_serial_port *port)
 			 priv->int_buffer, priv->buffer_size,
 			 symbol_int_callback, priv, priv->bInterval);
 	result = usb_submit_urb(priv->int_urb, GFP_KERNEL);
+=======
+	spin_lock_irqsave(&priv->lock, flags);
+	priv->throttled = false;
+	priv->actually_throttled = false;
+	spin_unlock_irqrestore(&priv->lock, flags);
+
+	/* Start reading from the device */
+	result = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (result)
 		dev_err(&port->dev,
 			"%s - failed resubmitting read urb, error %d\n",
@@ -148,12 +213,16 @@ static int symbol_open(struct tty_struct *tty, struct usb_serial_port *port)
 
 static void symbol_close(struct usb_serial_port *port)
 {
+<<<<<<< HEAD
 	struct symbol_private *priv = usb_get_serial_data(port->serial);
 
 	dbg("%s - port %d", __func__, port->number);
 
 	/* shutdown our urbs */
 	usb_kill_urb(priv->int_urb);
+=======
+	usb_kill_urb(port->interrupt_in_urb);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void symbol_throttle(struct tty_struct *tty)
@@ -161,7 +230,10 @@ static void symbol_throttle(struct tty_struct *tty)
 	struct usb_serial_port *port = tty->driver_data;
 	struct symbol_private *priv = usb_get_serial_data(port->serial);
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&priv->lock);
 	priv->throttled = true;
 	spin_unlock_irq(&priv->lock);
@@ -174,17 +246,28 @@ static void symbol_unthrottle(struct tty_struct *tty)
 	int result;
 	bool was_throttled;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&priv->lock);
 	priv->throttled = false;
 	was_throttled = priv->actually_throttled;
 	priv->actually_throttled = false;
 	spin_unlock_irq(&priv->lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	priv->int_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (was_throttled) {
 		result = usb_submit_urb(priv->int_urb, GFP_KERNEL);
+=======
+	if (was_throttled) {
+		result = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (result)
 			dev_err(&port->dev,
 				"%s - failed submitting read urb, error %d\n",
@@ -194,6 +277,7 @@ static void symbol_unthrottle(struct tty_struct *tty)
 
 static int symbol_startup(struct usb_serial *serial)
 {
+<<<<<<< HEAD
 	struct symbol_private *priv;
 	struct usb_host_interface *intf;
 	int i;
@@ -226,7 +310,11 @@ static int symbol_startup(struct usb_serial *serial)
 			goto error;
 		}
 
+<<<<<<< HEAD
 		priv->buffer_size = le16_to_cpu(endpoint->wMaxPacketSize) * 2;
+=======
+		priv->buffer_size = usb_endpoint_maxp(endpoint) * 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->int_buffer = kmalloc(priv->buffer_size, GFP_KERNEL);
 		if (!priv->int_buffer) {
 			dev_err(&priv->udev->dev, "out of memory\n");
@@ -288,8 +376,44 @@ static struct usb_driver symbol_driver = {
 	.probe =		usb_serial_probe,
 	.disconnect =		usb_serial_disconnect,
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
+=======
+	if (!serial->num_interrupt_in) {
+		dev_err(&serial->dev->dev, "no interrupt-in endpoint\n");
+		return -ENODEV;
+	}
+
+	return 0;
+}
+
+static int symbol_port_probe(struct usb_serial_port *port)
+{
+	struct symbol_private *priv;
+
+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	spin_lock_init(&priv->lock);
+
+	usb_set_serial_port_data(port, priv);
+
+	return 0;
+}
+
+static int symbol_port_remove(struct usb_serial_port *port)
+{
+	struct symbol_private *priv = usb_get_serial_port_data(port);
+
+	kfree(priv);
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 static struct usb_serial_driver symbol_device = {
 	.driver = {
@@ -297,7 +421,11 @@ static struct usb_serial_driver symbol_device = {
 		.name =		"symbol",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver = 		&symbol_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_ports =		1,
 	.attach =		symbol_startup,
 	.open =			symbol_open,
@@ -308,6 +436,7 @@ static struct usb_serial_driver symbol_device = {
 	.unthrottle =		symbol_unthrottle,
 };
 
+<<<<<<< HEAD
 static int __init symbol_init(void)
 {
 	int retval;
@@ -329,7 +458,34 @@ static void __exit symbol_exit(void)
 
 module_init(symbol_init);
 module_exit(symbol_exit);
+=======
+=======
+	.num_ports =		1,
+	.attach =		symbol_startup,
+	.port_probe =		symbol_port_probe,
+	.port_remove =		symbol_port_remove,
+	.open =			symbol_open,
+	.close =		symbol_close,
+	.throttle = 		symbol_throttle,
+	.unthrottle =		symbol_unthrottle,
+	.read_int_callback =	symbol_int_callback,
+};
+
+>>>>>>> refs/remotes/origin/master
+static struct usb_serial_driver * const serial_drivers[] = {
+	&symbol_device, NULL
+};
+
+<<<<<<< HEAD
+module_usb_serial_driver(symbol_driver, serial_drivers);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");
 
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
+=======
+module_usb_serial_driver(serial_drivers, id_table);
+
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

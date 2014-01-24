@@ -170,6 +170,7 @@ __asm__ __volatile__( \
 
 extern void __put_user_unknown(void);
 
+<<<<<<< HEAD
 static inline int
 __strncpy_from_user(unsigned long __dest, unsigned long __user __src, int __count)
 {
@@ -245,4 +246,6 @@ static inline long __strnlen_user(const char __user *__s, long __n)
 	return res;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_SH_UACCESS_32_H */

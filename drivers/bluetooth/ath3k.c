@@ -30,6 +30,13 @@
 #include <net/bluetooth/bluetooth.h>
 
 #define VERSION "1.0"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define ATH3K_FIRMWARE	"ath3k-1.fw"
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define ATH3K_DNLOAD				0x01
 #define ATH3K_GETSTATE				0x05
@@ -56,22 +63,91 @@ struct ath3k_version {
 	unsigned char	reserved[0x07];
 };
 
+<<<<<<< HEAD
 static struct usb_device_id ath3k_table[] = {
+=======
+static const struct usb_device_id ath3k_table[] = {
+>>>>>>> refs/remotes/origin/master
 	/* Atheros AR3011 */
 	{ USB_DEVICE(0x0CF3, 0x3000) },
 
 	/* Atheros AR3011 with sflash firmware*/
 	{ USB_DEVICE(0x0CF3, 0x3002) },
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+	{ USB_DEVICE(0x0CF3, 0xE019) },
+>>>>>>> refs/remotes/origin/master
+	{ USB_DEVICE(0x13d3, 0x3304) },
+	{ USB_DEVICE(0x0930, 0x0215) },
+	{ USB_DEVICE(0x0489, 0xE03D) },
+	{ USB_DEVICE(0x0489, 0xE027) },
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Atheros AR9285 Malbec with sflash firmware */
 	{ USB_DEVICE(0x03F0, 0x311D) },
 
 	/* Atheros AR3012 with sflash firmware*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ USB_DEVICE(0x0CF3, 0x3004) },
+<<<<<<< HEAD
+=======
+	{ USB_DEVICE(0x0CF3, 0x0036) },
+	{ USB_DEVICE(0x0CF3, 0x3004) },
+	{ USB_DEVICE(0x0CF3, 0x311D) },
+	{ USB_DEVICE(0x0CF3, 0x817a) },
+	{ USB_DEVICE(0x13d3, 0x3375) },
+	{ USB_DEVICE(0x04CA, 0x3005) },
+	{ USB_DEVICE(0x13d3, 0x3362) },
+	{ USB_DEVICE(0x0CF3, 0xE004) },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(0x0CF3, 0x0036) },
+	{ USB_DEVICE(0x0CF3, 0x3004) },
+	{ USB_DEVICE(0x0CF3, 0x3008) },
+	{ USB_DEVICE(0x0CF3, 0x311D) },
+	{ USB_DEVICE(0x0CF3, 0x817a) },
+	{ USB_DEVICE(0x13d3, 0x3375) },
+	{ USB_DEVICE(0x04CA, 0x3004) },
+	{ USB_DEVICE(0x04CA, 0x3005) },
+	{ USB_DEVICE(0x04CA, 0x3006) },
+	{ USB_DEVICE(0x04CA, 0x3008) },
+	{ USB_DEVICE(0x13d3, 0x3362) },
+	{ USB_DEVICE(0x0CF3, 0xE004) },
+	{ USB_DEVICE(0x0CF3, 0xE005) },
+	{ USB_DEVICE(0x0930, 0x0219) },
+	{ USB_DEVICE(0x0930, 0x0220) },
+	{ USB_DEVICE(0x0489, 0xe057) },
+	{ USB_DEVICE(0x13d3, 0x3393) },
+	{ USB_DEVICE(0x0489, 0xe04e) },
+	{ USB_DEVICE(0x0489, 0xe056) },
+	{ USB_DEVICE(0x0489, 0xe04d) },
+	{ USB_DEVICE(0x04c5, 0x1330) },
+	{ USB_DEVICE(0x13d3, 0x3402) },
+	{ USB_DEVICE(0x0cf3, 0x3121) },
+	{ USB_DEVICE(0x0cf3, 0xe003) },
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Atheros AR5BBU12 with sflash firmware */
 	{ USB_DEVICE(0x0489, 0xE02C) },
 
+<<<<<<< HEAD
+=======
+	/* Atheros AR5BBU22 with sflash firmware */
+	{ USB_DEVICE(0x0489, 0xE03C) },
+	{ USB_DEVICE(0x0489, 0xE036) },
+
+>>>>>>> refs/remotes/origin/master
 	{ }	/* Terminating entry */
 };
 
@@ -80,10 +156,58 @@ MODULE_DEVICE_TABLE(usb, ath3k_table);
 #define BTUSB_ATH3012		0x80
 /* This table is to load patch and sysconfig files
  * for AR3012 */
+<<<<<<< HEAD
 static struct usb_device_id ath3k_blist_tbl[] = {
 
 	/* Atheros AR3012 with sflash firmware*/
+<<<<<<< HEAD
 	{ USB_DEVICE(0x0cf3, 0x3004), .driver_info = BTUSB_ATH3012 },
+=======
+	{ USB_DEVICE(0x0CF3, 0x0036), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0cf3, 0x3004), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0cf3, 0x311D), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0CF3, 0x817a), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x13d3, 0x3375), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x04ca, 0x3005), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x13d3, 0x3362), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0cf3, 0xe004), .driver_info = BTUSB_ATH3012 },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct usb_device_id ath3k_blist_tbl[] = {
+
+	/* Atheros AR3012 with sflash firmware*/
+	{ USB_DEVICE(0x0CF3, 0x0036), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0cf3, 0x3004), .driver_info = BTUSB_ATH3012 },
+<<<<<<< HEAD
+	{ USB_DEVICE(0x0cf3, 0x3008), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0cf3, 0x311D), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0CF3, 0x817a), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x13d3, 0x3375), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x04ca, 0x3004), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x04ca, 0x3005), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x04ca, 0x3006), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x04ca, 0x3008), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x13d3, 0x3362), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0cf3, 0xe004), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0cf3, 0xe005), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0930, 0x0219), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0930, 0x0220), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0489, 0xe057), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x13d3, 0x3393), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0489, 0xe04e), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0489, 0xe056), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0489, 0xe04d), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x04c5, 0x1330), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x13d3, 0x3402), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0cf3, 0x3121), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0cf3, 0xe003), .driver_info = BTUSB_ATH3012 },
+
+	/* Atheros AR5BBU22 with sflash firmware */
+	{ USB_DEVICE(0x0489, 0xE03C), .driver_info = BTUSB_ATH3012 },
+	{ USB_DEVICE(0x0489, 0xE036), .driver_info = BTUSB_ATH3012 },
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	{ }	/* Terminating entry */
 };
@@ -103,7 +227,15 @@ static int ath3k_load_firmware(struct usb_device *udev,
 
 	pipe = usb_sndctrlpipe(udev, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	send_buf = kmalloc(BULK_SIZE, GFP_ATOMIC);
+=======
+	send_buf = kmalloc(BULK_SIZE, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
+=======
+	send_buf = kmalloc(BULK_SIZE, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!send_buf) {
 		BT_ERR("Can't allocate memory chunk for firmware");
 		return -ENOMEM;
@@ -145,17 +277,37 @@ error:
 
 static int ath3k_get_state(struct usb_device *udev, unsigned char *state)
 {
+<<<<<<< HEAD
 	int pipe = 0;
 
 	pipe = usb_rcvctrlpipe(udev, 0);
 	return usb_control_msg(udev, pipe, ATH3K_GETSTATE,
 			USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
 			state, 0x01, USB_CTRL_SET_TIMEOUT);
+=======
+	int ret, pipe = 0;
+	char *buf;
+
+	buf = kmalloc(sizeof(*buf), GFP_KERNEL);
+	if (!buf)
+		return -ENOMEM;
+
+	pipe = usb_rcvctrlpipe(udev, 0);
+	ret = usb_control_msg(udev, pipe, ATH3K_GETSTATE,
+			      USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
+			      buf, sizeof(*buf), USB_CTRL_SET_TIMEOUT);
+
+	*state = *buf;
+	kfree(buf);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ath3k_get_version(struct usb_device *udev,
 			struct ath3k_version *version)
 {
+<<<<<<< HEAD
 	int pipe = 0;
 
 	pipe = usb_rcvctrlpipe(udev, 0);
@@ -163,6 +315,25 @@ static int ath3k_get_version(struct usb_device *udev,
 			USB_TYPE_VENDOR | USB_DIR_IN, 0, 0, version,
 			sizeof(struct ath3k_version),
 			USB_CTRL_SET_TIMEOUT);
+=======
+	int ret, pipe = 0;
+	struct ath3k_version *buf;
+	const int size = sizeof(*buf);
+
+	buf = kmalloc(size, GFP_KERNEL);
+	if (!buf)
+		return -ENOMEM;
+
+	pipe = usb_rcvctrlpipe(udev, 0);
+	ret = usb_control_msg(udev, pipe, ATH3K_GETVERSION,
+			      USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
+			      buf, size, USB_CTRL_SET_TIMEOUT);
+
+	memcpy(version, buf, size);
+	kfree(buf);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ath3k_load_fwfile(struct usb_device *udev,
@@ -174,7 +345,15 @@ static int ath3k_load_fwfile(struct usb_device *udev,
 
 	count = firmware->size;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	send_buf = kmalloc(BULK_SIZE, GFP_ATOMIC);
+=======
+	send_buf = kmalloc(BULK_SIZE, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
+=======
+	send_buf = kmalloc(BULK_SIZE, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!send_buf) {
 		BT_ERR("Can't allocate memory chunk for firmware");
 		return -ENOMEM;
@@ -311,7 +490,11 @@ static int ath3k_load_syscfg(struct usb_device *udev)
 
 	ret = ath3k_get_state(udev, &fw_state);
 	if (ret < 0) {
+<<<<<<< HEAD
 		BT_ERR("Can't get state to change to load configration err");
+=======
+		BT_ERR("Can't get state to change to load configuration err");
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
@@ -398,9 +581,27 @@ static int ath3k_probe(struct usb_interface *intf,
 		return 0;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_firmware(&firmware, "ath3k-1.fw", &udev->dev) < 0) {
 		BT_ERR("Error loading firmware");
 		return -EIO;
+=======
+	ret = request_firmware(&firmware, ATH3K_FIRMWARE, &udev->dev);
+	if (ret < 0) {
+		if (ret == -ENOENT)
+			BT_ERR("Firmware file \"%s\" not found",
+							ATH3K_FIRMWARE);
+		else
+			BT_ERR("Firmware file \"%s\" request failed (err=%d)",
+							ATH3K_FIRMWARE, ret);
+		return ret;
+>>>>>>> refs/remotes/origin/master
+=======
+	if (request_firmware(&firmware, "ath3k-1.fw", &udev->dev) < 0) {
+		BT_ERR("Error loading firmware");
+		return -EIO;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	ret = ath3k_load_firmware(udev, firmware);
@@ -419,6 +620,7 @@ static struct usb_driver ath3k_driver = {
 	.probe		= ath3k_probe,
 	.disconnect	= ath3k_disconnect,
 	.id_table	= ath3k_table,
+<<<<<<< HEAD
 };
 
 static int __init ath3k_init(void)
@@ -434,9 +636,39 @@ static void __exit ath3k_exit(void)
 
 module_init(ath3k_init);
 module_exit(ath3k_exit);
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+<<<<<<< HEAD
+module_usb_driver(ath3k_driver);
+>>>>>>> refs/remotes/origin/master
+=======
+static int __init ath3k_init(void)
+{
+	BT_INFO("Atheros AR30xx firmware driver ver %s", VERSION);
+	return usb_register(&ath3k_driver);
+}
+
+static void __exit ath3k_exit(void)
+{
+	usb_deregister(&ath3k_driver);
+}
+
+module_init(ath3k_init);
+module_exit(ath3k_exit);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_AUTHOR("Atheros Communications");
 MODULE_DESCRIPTION("Atheros AR30xx firmware driver");
 MODULE_VERSION(VERSION);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_FIRMWARE("ath3k-1.fw");
+=======
+MODULE_FIRMWARE(ATH3K_FIRMWARE);
+>>>>>>> refs/remotes/origin/master
+=======
+MODULE_FIRMWARE("ath3k-1.fw");
+>>>>>>> refs/remotes/origin/cm-11.0

@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * 	connector.c
+=======
+ *	connector.c
+>>>>>>> refs/remotes/origin/master
  *
  * 2004+ Copyright (c) Evgeniy Polyakov <zbr@ioremap.net>
  * All rights reserved.
@@ -23,7 +27,11 @@
 #include <linux/module.h>
 #include <linux/list.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #include <linux/netlink.h>
+=======
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/moduleparam.h>
 #include <linux/connector.h>
 #include <linux/slab.h>
@@ -95,6 +103,7 @@ int cn_netlink_send(struct cn_msg *msg, u32 __group, gfp_t gfp_mask)
 	if (!netlink_has_listeners(dev->nls, group))
 		return -ESRCH;
 
+<<<<<<< HEAD
 	size = NLMSG_SPACE(sizeof(*msg) + msg->len);
 
 	skb = alloc_skb(size, gfp_mask);
@@ -106,14 +115,34 @@ int cn_netlink_send(struct cn_msg *msg, u32 __group, gfp_t gfp_mask)
 	data = NLMSG_DATA(nlh);
 
 	memcpy(data, msg, sizeof(*data) + msg->len);
+=======
+	size = sizeof(*msg) + msg->len;
+
+	skb = nlmsg_new(size, gfp_mask);
+	if (!skb)
+		return -ENOMEM;
+
+	nlh = nlmsg_put(skb, 0, msg->seq, NLMSG_DONE, size, 0);
+	if (!nlh) {
+		kfree_skb(skb);
+		return -EMSGSIZE;
+	}
+
+	data = nlmsg_data(nlh);
+
+	memcpy(data, msg, size);
+>>>>>>> refs/remotes/origin/master
 
 	NETLINK_CB(skb).dst_group = group;
 
 	return netlink_broadcast(dev->nls, skb, 0, group, gfp_mask);
+<<<<<<< HEAD
 
 nlmsg_failure:
 	kfree_skb(skb);
 	return -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(cn_netlink_send);
 
@@ -124,7 +153,11 @@ static int cn_call_callback(struct sk_buff *skb)
 {
 	struct cn_callback_entry *i, *cbq = NULL;
 	struct cn_dev *dev = &cdev;
+<<<<<<< HEAD
 	struct cn_msg *msg = NLMSG_DATA(nlmsg_hdr(skb));
+=======
+	struct cn_msg *msg = nlmsg_data(nlmsg_hdr(skb));
+>>>>>>> refs/remotes/origin/master
 	struct netlink_skb_parms *nsp = &NETLINK_CB(skb);
 	int err = -ENODEV;
 
@@ -157,17 +190,56 @@ static int cn_call_callback(struct sk_buff *skb)
 static void cn_rx_skb(struct sk_buff *__skb)
 {
 	struct nlmsghdr *nlh;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int err;
 	struct sk_buff *skb;
+=======
+	struct sk_buff *skb;
+	int len, err;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sk_buff *skb;
+	int len, err;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	skb = skb_get(__skb);
 
 	if (skb->len >= NLMSG_SPACE(0)) {
 		nlh = nlmsg_hdr(skb);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		len = nlmsg_len(nlh);
+>>>>>>> refs/remotes/origin/cm-11.0
 
-		if (nlh->nlmsg_len < sizeof(struct cn_msg) ||
+		if (len < (int)sizeof(struct cn_msg) ||
 		    skb->len < nlh->nlmsg_len ||
+<<<<<<< HEAD
 		    nlh->nlmsg_len > CONNECTOR_MAX_MSG_SIZE) {
+=======
+=======
+	struct sk_buff *skb;
+	int len, err;
+
+	skb = skb_get(__skb);
+
+	if (skb->len >= NLMSG_HDRLEN) {
+		nlh = nlmsg_hdr(skb);
+>>>>>>> refs/remotes/origin/master
+		len = nlmsg_len(nlh);
+
+		if (len < (int)sizeof(struct cn_msg) ||
+		    skb->len < nlh->nlmsg_len ||
+		    len > CONNECTOR_MAX_MSG_SIZE) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+		    len > CONNECTOR_MAX_MSG_SIZE) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			kfree_skb(skb);
 			return;
 		}
@@ -185,7 +257,12 @@ static void cn_rx_skb(struct sk_buff *__skb)
  * May sleep.
  */
 int cn_add_callback(struct cb_id *id, const char *name,
+<<<<<<< HEAD
 		    void (*callback)(struct cn_msg *, struct netlink_skb_parms *))
+=======
+		    void (*callback)(struct cn_msg *,
+				     struct netlink_skb_parms *))
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct cn_dev *dev = &cdev;
@@ -251,6 +328,7 @@ static const struct file_operations cn_file_ops = {
 	.release = single_release
 };
 
+<<<<<<< HEAD
 static int __devinit cn_init(void)
 {
 	struct cn_dev *dev = &cdev;
@@ -260,6 +338,21 @@ static int __devinit cn_init(void)
 	dev->nls = netlink_kernel_create(&init_net, NETLINK_CONNECTOR,
 					 CN_NETLINK_USERS + 0xf,
 					 dev->input, NULL, THIS_MODULE);
+=======
+static struct cn_dev cdev = {
+	.input   = cn_rx_skb,
+};
+
+static int cn_init(void)
+{
+	struct cn_dev *dev = &cdev;
+	struct netlink_kernel_cfg cfg = {
+		.groups	= CN_NETLINK_USERS + 0xf,
+		.input	= dev->input,
+	};
+
+	dev->nls = netlink_kernel_create(&init_net, NETLINK_CONNECTOR, &cfg);
+>>>>>>> refs/remotes/origin/master
 	if (!dev->nls)
 		return -EIO;
 
@@ -271,18 +364,30 @@ static int __devinit cn_init(void)
 
 	cn_already_initialized = 1;
 
+<<<<<<< HEAD
 	proc_net_fops_create(&init_net, "connector", S_IRUGO, &cn_file_ops);
+=======
+	proc_create("connector", S_IRUGO, init_net.proc_net, &cn_file_ops);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit cn_fini(void)
+=======
+static void cn_fini(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cn_dev *dev = &cdev;
 
 	cn_already_initialized = 0;
 
+<<<<<<< HEAD
 	proc_net_remove(&init_net, "connector");
+=======
+	remove_proc_entry("connector", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 
 	cn_queue_free_dev(dev->cbdev);
 	netlink_kernel_release(dev->nls);

@@ -16,12 +16,20 @@
 typedef struct minix_dir_entry minix_dirent;
 typedef struct minix3_dir_entry minix3_dirent;
 
+<<<<<<< HEAD
 static int minix_readdir(struct file *, void *, filldir_t);
+=======
+static int minix_readdir(struct file *, struct dir_context *);
+>>>>>>> refs/remotes/origin/master
 
 const struct file_operations minix_dir_operations = {
 	.llseek		= generic_file_llseek,
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= minix_readdir,
+=======
+	.iterate	= minix_readdir,
+>>>>>>> refs/remotes/origin/master
 	.fsync		= generic_file_fsync,
 };
 
@@ -82,6 +90,7 @@ static inline void *minix_next_entry(void *de, struct minix_sb_info *sbi)
 	return (void*)((char*)de + sbi->s_dirsize);
 }
 
+<<<<<<< HEAD
 static int minix_readdir(struct file * filp, void * dirent, filldir_t filldir)
 {
 	unsigned long pos = filp->f_pos;
@@ -98,6 +107,25 @@ static int minix_readdir(struct file * filp, void * dirent, filldir_t filldir)
 	pos = (pos + chunk_size-1) & ~(chunk_size-1);
 	if (pos >= inode->i_size)
 		goto done;
+=======
+static int minix_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct inode *inode = file_inode(file);
+	struct super_block *sb = inode->i_sb;
+	struct minix_sb_info *sbi = minix_sb(sb);
+	unsigned chunk_size = sbi->s_dirsize;
+	unsigned long npages = dir_pages(inode);
+	unsigned long pos = ctx->pos;
+	unsigned offset;
+	unsigned long n;
+
+	ctx->pos = pos = ALIGN(pos, chunk_size);
+	if (pos >= inode->i_size)
+		return 0;
+
+	offset = pos & ~PAGE_CACHE_MASK;
+	n = pos >> PAGE_CACHE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	for ( ; n < npages; n++, offset = 0) {
 		char *p, *kaddr, *limit;
@@ -109,6 +137,11 @@ static int minix_readdir(struct file * filp, void * dirent, filldir_t filldir)
 		p = kaddr+offset;
 		limit = kaddr + minix_last_byte(inode, n) - chunk_size;
 		for ( ; p <= limit; p = minix_next_entry(p, sbi)) {
+<<<<<<< HEAD
+=======
+			const char *name;
+			__u32 inumber;
+>>>>>>> refs/remotes/origin/master
 			if (sbi->s_version == MINIX_V3) {
 				minix3_dirent *de3 = (minix3_dirent *)p;
 				name = de3->name;
@@ -119,6 +152,7 @@ static int minix_readdir(struct file * filp, void * dirent, filldir_t filldir)
 				inumber = de->inode;
 			}
 			if (inumber) {
+<<<<<<< HEAD
 				int over;
 
 				unsigned l = strnlen(name, sbi->s_namelen);
@@ -137,6 +171,19 @@ static int minix_readdir(struct file * filp, void * dirent, filldir_t filldir)
 
 done:
 	filp->f_pos = (n << PAGE_CACHE_SHIFT) | offset;
+=======
+				unsigned l = strnlen(name, sbi->s_namelen);
+				if (!dir_emit(ctx, name, l,
+					      inumber, DT_UNKNOWN)) {
+					dir_put_page(page);
+					return 0;
+				}
+			}
+			ctx->pos += chunk_size;
+		}
+		dir_put_page(page);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -335,7 +382,15 @@ int minix_make_empty(struct inode *inode, struct inode *dir)
 		goto fail;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(page, KM_USER0);
+=======
+	kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 	memset(kaddr, 0, PAGE_CACHE_SIZE);
 
 	if (sbi->s_version == MINIX_V3) {
@@ -355,7 +410,15 @@ int minix_make_empty(struct inode *inode, struct inode *dir)
 		de->inode = dir->i_ino;
 		strcpy(de->name, "..");
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	err = dir_commit_chunk(page, 0, 2 * sbi->s_dirsize);
 fail:

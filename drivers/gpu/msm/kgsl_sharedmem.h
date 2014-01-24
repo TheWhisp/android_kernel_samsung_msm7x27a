@@ -29,6 +29,8 @@ struct kgsl_process_private;
 
 /** Set if the memdesc describes cached memory */
 #define KGSL_MEMFLAGS_CACHED    0x00000001
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 extern struct kgsl_memdesc_ops kgsl_vmalloc_ops;
 
@@ -36,6 +38,22 @@ int kgsl_sharedmem_vmalloc(struct kgsl_memdesc *memdesc,
 			   struct kgsl_pagetable *pagetable, size_t size);
 
 int kgsl_sharedmem_vmalloc_user(struct kgsl_memdesc *memdesc,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/** Set if the memdesc is mapped into all pagetables */
+#define KGSL_MEMFLAGS_GLOBAL    0x00000002
+
+extern struct kgsl_memdesc_ops kgsl_page_alloc_ops;
+
+int kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
+			   struct kgsl_pagetable *pagetable, size_t size);
+
+int kgsl_sharedmem_page_alloc_user(struct kgsl_memdesc *memdesc,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				struct kgsl_pagetable *pagetable,
 				size_t size, int flags);
 
@@ -98,8 +116,24 @@ static inline void *kgsl_sg_alloc(unsigned int sglen)
 {
 	if ((sglen * sizeof(struct scatterlist)) <  PAGE_SIZE)
 		return kzalloc(sglen * sizeof(struct scatterlist), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		return vmalloc(sglen * sizeof(struct scatterlist));
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	else {
+		void *ptr = vmalloc(sglen * sizeof(struct scatterlist));
+		if (ptr)
+			memset(ptr, 0, sglen * sizeof(struct scatterlist));
+
+		return ptr;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline void kgsl_sg_free(void *ptr, unsigned int sglen)
@@ -132,7 +166,15 @@ kgsl_allocate(struct kgsl_memdesc *memdesc,
 {
 	if (kgsl_mmu_get_mmutype() == KGSL_MMU_TYPE_NONE)
 		return kgsl_sharedmem_ebimem(memdesc, pagetable, size);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return kgsl_sharedmem_vmalloc(memdesc, pagetable, size);
+=======
+	return kgsl_sharedmem_page_alloc(memdesc, pagetable, size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return kgsl_sharedmem_page_alloc(memdesc, pagetable, size);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline int
@@ -143,7 +185,15 @@ kgsl_allocate_user(struct kgsl_memdesc *memdesc,
 	if (kgsl_mmu_get_mmutype() == KGSL_MMU_TYPE_NONE)
 		return kgsl_sharedmem_ebimem_user(memdesc, pagetable, size,
 						  flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return kgsl_sharedmem_vmalloc_user(memdesc, pagetable, size, flags);
+=======
+	return kgsl_sharedmem_page_alloc_user(memdesc, pagetable, size, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return kgsl_sharedmem_page_alloc_user(memdesc, pagetable, size, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static inline int
@@ -155,4 +205,24 @@ kgsl_allocate_contiguous(struct kgsl_memdesc *memdesc, size_t size)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static inline int kgsl_sg_size(struct scatterlist *sg, int sglen)
+{
+	int i, size = 0;
+	struct scatterlist *s;
+
+	for_each_sg(sg, s, sglen, i) {
+		size += s->length;
+	}
+
+	return size;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __KGSL_SHAREDMEM_H */

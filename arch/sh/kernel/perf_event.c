@@ -25,6 +25,14 @@
 #include <linux/io.h>
 #include <linux/irq.h>
 #include <linux/perf_event.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 
 struct cpu_hw_events {
@@ -309,6 +317,19 @@ static int sh_pmu_event_init(struct perf_event *event)
 {
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* does not support taken branch sampling */
+	if (has_branch_stack(event))
+		return -EOPNOTSUPP;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (event->attr.type) {
 	case PERF_TYPE_RAW:
 	case PERF_TYPE_HW_CACHE:
@@ -362,7 +383,11 @@ static void sh_pmu_setup(int cpu)
 	memset(cpuhw, 0, sizeof(struct cpu_hw_events));
 }
 
+<<<<<<< HEAD
 static int __cpuinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 sh_pmu_notifier(struct notifier_block *self, unsigned long action, void *hcpu)
 {
 	unsigned int cpu = (long)hcpu;
@@ -379,7 +404,11 @@ sh_pmu_notifier(struct notifier_block *self, unsigned long action, void *hcpu)
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 int __cpuinit register_sh_pmu(struct sh_pmu *_pmu)
+=======
+int register_sh_pmu(struct sh_pmu *_pmu)
+>>>>>>> refs/remotes/origin/master
 {
 	if (sh_pmu)
 		return -EBUSY;

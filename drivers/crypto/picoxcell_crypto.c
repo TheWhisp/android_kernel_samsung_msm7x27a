@@ -34,6 +34,14 @@
 #include <linux/io.h>
 #include <linux/list.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/pm.h>
 #include <linux/rtnetlink.h>
@@ -494,6 +502,7 @@ static int spacc_aead_setkey(struct crypto_aead *tfm, const u8 *key,
 {
 	struct spacc_aead_ctx *ctx = crypto_aead_ctx(tfm);
 	struct spacc_alg *alg = to_spacc_alg(tfm->base.__crt_alg);
+<<<<<<< HEAD
 	struct rtattr *rta = (void *)key;
 	struct crypto_authenc_key_param *param;
 	unsigned int authkeylen, enckeylen;
@@ -520,19 +529,42 @@ static int spacc_aead_setkey(struct crypto_aead *tfm, const u8 *key,
 	authkeylen = keylen - enckeylen;
 
 	if (enckeylen > AES_MAX_KEY_SIZE)
+=======
+	struct crypto_authenc_keys keys;
+	int err = -EINVAL;
+
+	if (crypto_authenc_extractkeys(&keys, key, keylen) != 0)
+		goto badkey;
+
+	if (keys.enckeylen > AES_MAX_KEY_SIZE)
+		goto badkey;
+
+	if (keys.authkeylen > sizeof(ctx->hash_ctx))
+>>>>>>> refs/remotes/origin/master
 		goto badkey;
 
 	if ((alg->ctrl_default & SPACC_CRYPTO_ALG_MASK) ==
 	    SPA_CTRL_CIPH_ALG_AES)
+<<<<<<< HEAD
 		err = spacc_aead_aes_setkey(tfm, key + authkeylen, enckeylen);
 	else
 		err = spacc_aead_des_setkey(tfm, key + authkeylen, enckeylen);
+=======
+		err = spacc_aead_aes_setkey(tfm, keys.enckey, keys.enckeylen);
+	else
+		err = spacc_aead_des_setkey(tfm, keys.enckey, keys.enckeylen);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		goto badkey;
 
+<<<<<<< HEAD
 	memcpy(ctx->hash_ctx, key, authkeylen);
 	ctx->hash_key_len = authkeylen;
+=======
+	memcpy(ctx->hash_ctx, keys.authkey, keys.authkeylen);
+	ctx->hash_key_len = keys.authkeylen;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -872,7 +904,15 @@ static int spacc_aes_setkey(struct crypto_ablkcipher *cipher, const u8 *key,
 	 * request for any other size (192 bits) then we need to do a software
 	 * fallback.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((len != AES_KEYSIZE_128 || len != AES_KEYSIZE_256) &&
+=======
+	if (len != AES_KEYSIZE_128 && len != AES_KEYSIZE_256 &&
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (len != AES_KEYSIZE_128 && len != AES_KEYSIZE_256 &&
+>>>>>>> refs/remotes/origin/master
 	    ctx->sw_cipher) {
 		/*
 		 * Set the fallback transform to use the same request flags as
@@ -885,7 +925,15 @@ static int spacc_aes_setkey(struct crypto_ablkcipher *cipher, const u8 *key,
 		err = crypto_ablkcipher_setkey(ctx->sw_cipher, key, len);
 		if (err)
 			goto sw_setkey_failed;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else if ((len != AES_KEYSIZE_128 || len != AES_KEYSIZE_256) &&
+=======
+	} else if (len != AES_KEYSIZE_128 && len != AES_KEYSIZE_256 &&
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (len != AES_KEYSIZE_128 && len != AES_KEYSIZE_256 &&
+>>>>>>> refs/remotes/origin/master
 		   !ctx->sw_cipher)
 		err = -EINVAL;
 
@@ -1241,8 +1289,18 @@ static void spacc_spacc_complete(unsigned long data)
 	spin_unlock_irqrestore(&engine->hw_lock, flags);
 
 	list_for_each_entry_safe(req, tmp, &completed, list) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		req->complete(req);
 		list_del(&req->list);
+=======
+		list_del(&req->list);
+		req->complete(req);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_del(&req->list);
+		req->complete(req);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1297,7 +1355,11 @@ static ssize_t spacc_stat_irq_thresh_store(struct device *dev,
 	struct spacc_engine *engine = spacc_dev_to_engine(dev);
 	unsigned long thresh;
 
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 0, &thresh))
+=======
+	if (kstrtoul(buf, 0, &thresh))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	thresh = clamp(thresh, 1UL, engine->fifo_sz - 1);
@@ -1321,6 +1383,14 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_driver_name = "cbc-aes-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
 			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				     CRYPTO_ALG_KERN_DRIVER_ONLY |
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     CRYPTO_ALG_KERN_DRIVER_ONLY |
+>>>>>>> refs/remotes/origin/master
 				     CRYPTO_ALG_ASYNC |
 				     CRYPTO_ALG_NEED_FALLBACK,
 			.cra_blocksize = AES_BLOCK_SIZE,
@@ -1348,6 +1418,14 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_driver_name = "ecb-aes-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
 			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				CRYPTO_ALG_KERN_DRIVER_ONLY |
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				CRYPTO_ALG_KERN_DRIVER_ONLY |
+>>>>>>> refs/remotes/origin/master
 				CRYPTO_ALG_ASYNC | CRYPTO_ALG_NEED_FALLBACK,
 			.cra_blocksize = AES_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_ablk_ctx),
@@ -1372,7 +1450,19 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_name = "cbc(des)",
 			.cra_driver_name = "cbc-des-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = DES_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_ablk_ctx),
 			.cra_type = &crypto_ablkcipher_type,
@@ -1397,7 +1487,19 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_name = "ecb(des)",
 			.cra_driver_name = "ecb-des-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = DES_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_ablk_ctx),
 			.cra_type = &crypto_ablkcipher_type,
@@ -1421,7 +1523,19 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_name = "cbc(des3_ede)",
 			.cra_driver_name = "cbc-des3-ede-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = DES3_EDE_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_ablk_ctx),
 			.cra_type = &crypto_ablkcipher_type,
@@ -1446,7 +1560,19 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_name = "ecb(des3_ede)",
 			.cra_driver_name = "ecb-des3-ede-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = DES3_EDE_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_ablk_ctx),
 			.cra_type = &crypto_ablkcipher_type,
@@ -1471,7 +1597,19 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_name = "authenc(hmac(sha1),cbc(aes))",
 			.cra_driver_name = "authenc-hmac-sha1-cbc-aes-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_AEAD | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = AES_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_aead_ctx),
 			.cra_type = &crypto_aead_type,
@@ -1499,7 +1637,19 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_name = "authenc(hmac(sha256),cbc(aes))",
 			.cra_driver_name = "authenc-hmac-sha256-cbc-aes-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_AEAD | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = AES_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_aead_ctx),
 			.cra_type = &crypto_aead_type,
@@ -1526,7 +1676,19 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_name = "authenc(hmac(md5),cbc(aes))",
 			.cra_driver_name = "authenc-hmac-md5-cbc-aes-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_AEAD | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = AES_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_aead_ctx),
 			.cra_type = &crypto_aead_type,
@@ -1553,7 +1715,19 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_name = "authenc(hmac(sha1),cbc(des3_ede))",
 			.cra_driver_name = "authenc-hmac-sha1-cbc-3des-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_AEAD | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = DES3_EDE_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_aead_ctx),
 			.cra_type = &crypto_aead_type,
@@ -1581,7 +1755,19 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_name = "authenc(hmac(sha256),cbc(des3_ede))",
 			.cra_driver_name = "authenc-hmac-sha256-cbc-3des-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_AEAD | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = DES3_EDE_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_aead_ctx),
 			.cra_type = &crypto_aead_type,
@@ -1608,7 +1794,19 @@ static struct spacc_alg ipsec_engine_algs[] = {
 			.cra_name = "authenc(hmac(md5),cbc(des3_ede))",
 			.cra_driver_name = "authenc-hmac-md5-cbc-3des-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_AEAD | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_AEAD |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = DES3_EDE_BLOCK_SIZE,
 			.cra_ctxsize = sizeof(struct spacc_aead_ctx),
 			.cra_type = &crypto_aead_type,
@@ -1638,7 +1836,19 @@ static struct spacc_alg l2_engine_algs[] = {
 			.cra_name = "f8(kasumi)",
 			.cra_driver_name = "f8-kasumi-picoxcell",
 			.cra_priority = SPACC_CRYPTO_ALG_PRIORITY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.cra_flags = CRYPTO_ALG_TYPE_GIVCIPHER | CRYPTO_ALG_ASYNC,
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_GIVCIPHER |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.cra_flags = CRYPTO_ALG_TYPE_GIVCIPHER |
+					CRYPTO_ALG_ASYNC |
+					CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 			.cra_blocksize = 8,
 			.cra_ctxsize = sizeof(struct spacc_ablk_ctx),
 			.cra_type = &crypto_ablkcipher_type,
@@ -1657,10 +1867,50 @@ static struct spacc_alg l2_engine_algs[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit spacc_probe(struct platform_device *pdev,
 				 unsigned max_ctxs, size_t cipher_pg_sz,
 				 size_t hash_pg_sz, size_t fifo_sz,
 				 struct spacc_alg *algs, size_t num_algs)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_OF
+static const struct of_device_id spacc_of_id_table[] = {
+	{ .compatible = "picochip,spacc-ipsec" },
+	{ .compatible = "picochip,spacc-l2" },
+	{}
+};
+<<<<<<< HEAD
+#else /* CONFIG_OF */
+#define spacc_of_id_table NULL
+=======
+>>>>>>> refs/remotes/origin/master
+#endif /* CONFIG_OF */
+
+static bool spacc_is_compatible(struct platform_device *pdev,
+				const char *spacc_type)
+{
+	const struct platform_device_id *platid = platform_get_device_id(pdev);
+
+	if (platid && !strcmp(platid->name, spacc_type))
+		return true;
+
+#ifdef CONFIG_OF
+	if (of_device_is_compatible(pdev->dev.of_node, spacc_type))
+		return true;
+#endif /* CONFIG_OF */
+
+	return false;
+}
+
+<<<<<<< HEAD
+static int __devinit spacc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int spacc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err, ret = -EINVAL;
 	struct resource *mem, *irq;
@@ -1669,6 +1919,8 @@ static int __devinit spacc_probe(struct platform_device *pdev,
 	if (!engine)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	engine->max_ctxs	= max_ctxs;
 	engine->cipher_pg_sz	= cipher_pg_sz;
 	engine->hash_pg_sz	= hash_pg_sz;
@@ -1676,6 +1928,32 @@ static int __devinit spacc_probe(struct platform_device *pdev,
 	engine->algs		= algs;
 	engine->num_algs	= num_algs;
 	engine->name		= dev_name(&pdev->dev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (spacc_is_compatible(pdev, "picochip,spacc-ipsec")) {
+		engine->max_ctxs	= SPACC_CRYPTO_IPSEC_MAX_CTXS;
+		engine->cipher_pg_sz	= SPACC_CRYPTO_IPSEC_CIPHER_PG_SZ;
+		engine->hash_pg_sz	= SPACC_CRYPTO_IPSEC_HASH_PG_SZ;
+		engine->fifo_sz		= SPACC_CRYPTO_IPSEC_FIFO_SZ;
+		engine->algs		= ipsec_engine_algs;
+		engine->num_algs	= ARRAY_SIZE(ipsec_engine_algs);
+	} else if (spacc_is_compatible(pdev, "picochip,spacc-l2")) {
+		engine->max_ctxs	= SPACC_CRYPTO_L2_MAX_CTXS;
+		engine->cipher_pg_sz	= SPACC_CRYPTO_L2_CIPHER_PG_SZ;
+		engine->hash_pg_sz	= SPACC_CRYPTO_L2_HASH_PG_SZ;
+		engine->fifo_sz		= SPACC_CRYPTO_L2_FIFO_SZ;
+		engine->algs		= l2_engine_algs;
+		engine->num_algs	= ARRAY_SIZE(l2_engine_algs);
+	} else {
+		return -EINVAL;
+	}
+
+	engine->name = dev_name(&pdev->dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
@@ -1711,7 +1989,15 @@ static int __devinit spacc_probe(struct platform_device *pdev,
 
 	spin_lock_init(&engine->hw_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	engine->clk = clk_get(&pdev->dev, NULL);
+=======
+	engine->clk = clk_get(&pdev->dev, "ref");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	engine->clk = clk_get(&pdev->dev, "ref");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(engine->clk)) {
 		dev_info(&pdev->dev, "clk unavailable\n");
 		device_remove_file(&pdev->dev, &dev_attr_stat_irq_thresh);
@@ -1781,7 +2067,11 @@ static int __devinit spacc_probe(struct platform_device *pdev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit spacc_remove(struct platform_device *pdev)
+=======
+static int spacc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spacc_alg *alg, *next;
 	struct spacc_engine *engine = platform_get_drvdata(pdev);
@@ -1800,6 +2090,8 @@ static int __devexit spacc_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit ipsec_probe(struct platform_device *pdev)
 {
 	return spacc_probe(pdev, SPACC_CRYPTO_IPSEC_MAX_CTXS,
@@ -1868,6 +2160,44 @@ static void __exit spacc_exit(void)
 	platform_driver_unregister(&l2_driver);
 }
 module_exit(spacc_exit);
+=======
+static const struct platform_device_id spacc_id_table[] = {
+	{ "picochip,spacc-ipsec", },
+	{ "picochip,spacc-l2", },
+=======
+static const struct platform_device_id spacc_id_table[] = {
+	{ "picochip,spacc-ipsec", },
+	{ "picochip,spacc-l2", },
+	{ }
+>>>>>>> refs/remotes/origin/master
+};
+
+static struct platform_driver spacc_driver = {
+	.probe		= spacc_probe,
+<<<<<<< HEAD
+	.remove		= __devexit_p(spacc_remove),
+=======
+	.remove		= spacc_remove,
+>>>>>>> refs/remotes/origin/master
+	.driver		= {
+		.name	= "picochip,spacc",
+#ifdef CONFIG_PM
+		.pm	= &spacc_pm_ops,
+#endif /* CONFIG_PM */
+<<<<<<< HEAD
+		.of_match_table	= spacc_of_id_table,
+=======
+		.of_match_table	= of_match_ptr(spacc_of_id_table),
+>>>>>>> refs/remotes/origin/master
+	},
+	.id_table	= spacc_id_table,
+};
+
+module_platform_driver(spacc_driver);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jamie Iles");

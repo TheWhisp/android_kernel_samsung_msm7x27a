@@ -70,6 +70,7 @@ void fscache_objlist_add(struct fscache_object *obj)
 	write_unlock(&fscache_object_list_lock);
 }
 
+<<<<<<< HEAD
 /**
  * fscache_object_destroy - Note that a cache object is about to be destroyed
  * @object: The object to be destroyed
@@ -77,6 +78,12 @@ void fscache_objlist_add(struct fscache_object *obj)
  * Note the imminent destruction and deallocation of a cache object record.
  */
 void fscache_object_destroy(struct fscache_object *obj)
+=======
+/*
+ * Remove an object from the object list.
+ */
+void fscache_objlist_remove(struct fscache_object *obj)
+>>>>>>> refs/remotes/origin/master
 {
 	write_lock(&fscache_object_list_lock);
 
@@ -85,7 +92,10 @@ void fscache_object_destroy(struct fscache_object *obj)
 
 	write_unlock(&fscache_object_list_lock);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(fscache_object_destroy);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * find the object in the tree on or after the specified index
@@ -166,15 +176,25 @@ static int fscache_objlist_show(struct seq_file *m, void *v)
 {
 	struct fscache_objlist_data *data = m->private;
 	struct fscache_object *obj = v;
+<<<<<<< HEAD
 	unsigned long config = data->config;
 	uint16_t keylen, auxlen;
 	char _type[3], *type;
 	bool no_cookie;
+=======
+	struct fscache_cookie *cookie;
+	unsigned long config = data->config;
+	char _type[3], *type;
+>>>>>>> refs/remotes/origin/master
 	u8 *buf = data->buf, *p;
 
 	if ((unsigned long) v == 1) {
 		seq_puts(m, "OBJECT   PARENT   STAT CHLDN OPS OOP IPR EX READS"
+<<<<<<< HEAD
 			 " EM EV F S"
+=======
+			 " EM EV FL S"
+>>>>>>> refs/remotes/origin/master
 			 " | NETFS_COOKIE_DEF TY FL NETFS_DATA");
 		if (config & (FSCACHE_OBJLIST_CONFIG_KEY |
 			      FSCACHE_OBJLIST_CONFIG_AUX))
@@ -193,7 +213,11 @@ static int fscache_objlist_show(struct seq_file *m, void *v)
 
 	if ((unsigned long) v == 2) {
 		seq_puts(m, "======== ======== ==== ===== === === === == ====="
+<<<<<<< HEAD
 			 " == == = ="
+=======
+			 " == == == ="
+>>>>>>> refs/remotes/origin/master
 			 " | ================ == == ================");
 		if (config & (FSCACHE_OBJLIST_CONFIG_KEY |
 			      FSCACHE_OBJLIST_CONFIG_AUX))
@@ -216,10 +240,18 @@ static int fscache_objlist_show(struct seq_file *m, void *v)
 		}							\
 	} while(0)
 
+<<<<<<< HEAD
 	if (~config) {
 		FILTER(obj->cookie,
 		       COOKIE, NOCOOKIE);
 		FILTER(obj->state != FSCACHE_OBJECT_ACTIVE ||
+=======
+	cookie = obj->cookie;
+	if (~config) {
+		FILTER(cookie->def,
+		       COOKIE, NOCOOKIE);
+		FILTER(fscache_object_is_active(obj) ||
+>>>>>>> refs/remotes/origin/master
 		       obj->n_ops != 0 ||
 		       obj->n_obj_ops != 0 ||
 		       obj->flags ||
@@ -235,21 +267,33 @@ static int fscache_objlist_show(struct seq_file *m, void *v)
 	}
 
 	seq_printf(m,
+<<<<<<< HEAD
 		   "%8x %8x %s %5u %3u %3u %3u %2u %5u %2lx %2lx %1lx %1x | ",
 		   obj->debug_id,
 		   obj->parent ? obj->parent->debug_id : -1,
 		   fscache_object_states_short[obj->state],
+=======
+		   "%8x %8x %s %5u %3u %3u %3u %2u %5u %2lx %2lx %2lx %1x | ",
+		   obj->debug_id,
+		   obj->parent ? obj->parent->debug_id : -1,
+		   obj->state->short_name,
+>>>>>>> refs/remotes/origin/master
 		   obj->n_children,
 		   obj->n_ops,
 		   obj->n_obj_ops,
 		   obj->n_in_progress,
 		   obj->n_exclusive,
 		   atomic_read(&obj->n_reads),
+<<<<<<< HEAD
 		   obj->event_mask & FSCACHE_OBJECT_EVENTS_MASK,
+=======
+		   obj->event_mask,
+>>>>>>> refs/remotes/origin/master
 		   obj->events,
 		   obj->flags,
 		   work_busy(&obj->work));
 
+<<<<<<< HEAD
 	no_cookie = true;
 	keylen = auxlen = 0;
 	if (obj->cookie) {
@@ -292,6 +336,42 @@ static int fscache_objlist_show(struct seq_file *m, void *v)
 		spin_unlock(&obj->lock);
 
 		if (!no_cookie && (keylen > 0 || auxlen > 0)) {
+=======
+	if (fscache_use_cookie(obj)) {
+		uint16_t keylen = 0, auxlen = 0;
+
+		switch (cookie->def->type) {
+		case 0:
+			type = "IX";
+			break;
+		case 1:
+			type = "DT";
+			break;
+		default:
+			sprintf(_type, "%02u", cookie->def->type);
+			type = _type;
+			break;
+		}
+
+		seq_printf(m, "%-16s %s %2lx %16p",
+			   cookie->def->name,
+			   type,
+			   cookie->flags,
+			   cookie->netfs_data);
+
+		if (cookie->def->get_key &&
+		    config & FSCACHE_OBJLIST_CONFIG_KEY)
+			keylen = cookie->def->get_key(cookie->netfs_data,
+						      buf, 400);
+
+		if (cookie->def->get_aux &&
+		    config & FSCACHE_OBJLIST_CONFIG_AUX)
+			auxlen = cookie->def->get_aux(cookie->netfs_data,
+						      buf + keylen, 512 - keylen);
+		fscache_unuse_cookie(obj);
+
+		if (keylen > 0 || auxlen > 0) {
+>>>>>>> refs/remotes/origin/master
 			seq_printf(m, " ");
 			for (p = buf; keylen > 0; keylen--)
 				seq_printf(m, "%02x", *p++);
@@ -302,12 +382,20 @@ static int fscache_objlist_show(struct seq_file *m, void *v)
 					seq_printf(m, "%02x", *p++);
 			}
 		}
+<<<<<<< HEAD
 	}
 
 	if (no_cookie)
 		seq_printf(m, "<no_cookie>\n");
 	else
 		seq_printf(m, "\n");
+=======
+
+		seq_printf(m, "\n");
+	} else {
+		seq_printf(m, "<no_netfs>\n");
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

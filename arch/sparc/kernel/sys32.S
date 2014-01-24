@@ -36,6 +36,7 @@ STUB:	sra	REG1, 0, REG1; \
 	jmpl	%g1 + %lo(SYSCALL), %g0; \
 	sra	REG3, 0, REG3
 
+<<<<<<< HEAD
 #define SIGN4(STUB,SYSCALL,REG1,REG2,REG3,REG4) \
 	.align	32; \
 	.globl	STUB; \
@@ -81,12 +82,21 @@ SIGN2(sys32_fadvise64, compat_sys_fadvise64, %o0, %o4)
 SIGN2(sys32_fadvise64_64, compat_sys_fadvise64_64, %o0, %o5)
 SIGN2(sys32_bdflush, sys_bdflush, %o0, %o1)
 SIGN1(sys32_mlockall, sys_mlockall, %o0)
+<<<<<<< HEAD
 SIGN1(sys32_nfsservctl, compat_sys_nfsservctl, %o0)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+SIGN1(sys32_readahead, compat_sys_readahead, %o0)
+SIGN2(sys32_fadvise64, compat_sys_fadvise64, %o0, %o4)
+SIGN2(sys32_fadvise64_64, compat_sys_fadvise64_64, %o0, %o5)
+>>>>>>> refs/remotes/origin/master
 SIGN1(sys32_clock_nanosleep, compat_sys_clock_nanosleep, %o1)
 SIGN1(sys32_timer_settime, compat_sys_timer_settime, %o1)
 SIGN1(sys32_io_submit, compat_sys_io_submit, %o1)
 SIGN1(sys32_mq_open, compat_sys_mq_open, %o1)
 SIGN1(sys32_select, compat_sys_select, %o0)
+<<<<<<< HEAD
 SIGN1(sys32_mkdir, sys_mkdir, %o1)
 SIGN3(sys32_futex, compat_sys_futex, %o1, %o2, %o5)
 SIGN1(sys32_sysfs, compat_sys_sysfs, %o0)
@@ -139,6 +149,12 @@ SIGN2(sys32_tee, sys_tee, %o0, %o1)
 SIGN1(sys32_vmsplice, compat_sys_vmsplice, %o0)
 SIGN1(sys32_truncate, sys_truncate, %o1)
 SIGN1(sys32_ftruncate, sys_ftruncate, %o1)
+=======
+SIGN3(sys32_futex, compat_sys_futex, %o1, %o2, %o5)
+SIGN1(sys32_recvfrom, compat_sys_recvfrom, %o0)
+SIGN1(sys32_recvmsg, compat_sys_recvmsg, %o0)
+SIGN1(sys32_sendmsg, compat_sys_sendmsg, %o0)
+>>>>>>> refs/remotes/origin/master
 
 	.globl		sys32_mmap2
 sys32_mmap2:
@@ -330,6 +346,7 @@ do_sys_accept4: /* sys_accept4(int, struct sockaddr *, int *, int) */
 	nop
 	nop
 
+<<<<<<< HEAD
 	.globl		sys32_fanotify_mark
 sys32_fanotify_mark:
 	sethi		%hi(sys_fanotify_mark), %g1
@@ -339,6 +356,8 @@ sys32_fanotify_mark:
 	jmpl		%g1 + %lo(sys_fanotify_mark), %g0
 	 mov		%o5, %o4
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.section	__ex_table,"a"
 	.align		4
 	.word		1b, __retl_efault, 2b, __retl_efault

@@ -6,9 +6,16 @@
  * License as published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <linux/acpi.h>
 #include <linux/delay.h>
 #include <linux/pci.h>
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/acpi.h>
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <asm/olpc.h>
 
@@ -60,6 +67,7 @@ static int dcon_was_irq(void)
 static int dcon_init_xo_1_5(struct dcon_priv *dcon)
 {
 	unsigned int irq;
+<<<<<<< HEAD
 	u_int8_t tmp;
 	struct pci_dev *pdev;
 
@@ -87,6 +95,8 @@ static int dcon_init_xo_1_5(struct dcon_priv *dcon)
 	pci_write_config_byte(pdev, 0xe1, tmp & ~BIT_GPIO12);
 	pci_read_config_byte(pdev, 0xe0, &tmp);
 	pci_write_config_byte(pdev, 0xe0, tmp & ~BIT_GPIO12);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dcon_clear_irq();
 
@@ -99,12 +109,19 @@ static int dcon_init_xo_1_5(struct dcon_priv *dcon)
 			DCON_SOURCE_CPU : DCON_SOURCE_DCON;
 	dcon->pending_src = dcon->curr_src;
 
+<<<<<<< HEAD
 	pci_dev_put(pdev);
 
 	/* we're sharing the IRQ with ACPI */
 	irq = acpi_gbl_FADT.sci_interrupt;
 	if (request_irq(irq, &dcon_interrupt, IRQF_SHARED, "DCON", dcon)) {
 		printk(KERN_ERR PREFIX "DCON (IRQ%d) allocation failed\n", irq);
+=======
+	/* we're sharing the IRQ with ACPI */
+	irq = acpi_gbl_FADT.sci_interrupt;
+	if (request_irq(irq, &dcon_interrupt, IRQF_SHARED, "DCON", dcon)) {
+		pr_err("DCON (IRQ%d) allocation failed\n", irq);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
@@ -167,20 +184,45 @@ static void dcon_set_dconload_xo_1_5(int val)
 	gpio_set_value(VX855_GPIO(1), val);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u8 dcon_read_status_xo_1_5(void)
 {
 	u8 status;
 
+=======
+static int dcon_read_status_xo_1_5(u8 *status)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int dcon_read_status_xo_1_5(u8 *status)
+{
+>>>>>>> refs/remotes/origin/master
 	if (!dcon_was_irq())
 		return -1;
 
 	/* i believe this is the same as "inb(0x44b) & 3" */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	status = gpio_get_value(VX855_GPI(10));
 	status |= gpio_get_value(VX855_GPI(11)) << 1;
 
 	dcon_clear_irq();
 
 	return status;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	*status = gpio_get_value(VX855_GPI(10));
+	*status |= gpio_get_value(VX855_GPI(11)) << 1;
+
+	dcon_clear_irq();
+
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 struct dcon_platform_data dcon_pdata_xo_1_5 = {

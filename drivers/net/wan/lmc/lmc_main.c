@@ -497,7 +497,13 @@ int lmc_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd) /*fold00*/
 
                     data = kmalloc(xc.len, GFP_KERNEL);
                     if (!data) {
+<<<<<<< HEAD
+<<<<<<< HEAD
                             printk(KERN_WARNING "%s: Failed to allocate memory for copy\n", dev->name);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
                             ret = -ENOMEM;
                             break;
                     }
@@ -817,8 +823,12 @@ static const struct net_device_ops lmc_ops = {
 	.ndo_get_stats  = lmc_get_stats,
 };
 
+<<<<<<< HEAD
 static int __devinit lmc_init_one(struct pci_dev *pdev,
 				  const struct pci_device_id *ent)
+=======
+static int lmc_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	lmc_softc_t *sc;
 	struct net_device *dev;
@@ -987,7 +997,11 @@ err_req_io:
 /*
  * Called from pci when removing module.
  */
+<<<<<<< HEAD
 static void __devexit lmc_remove_one(struct pci_dev *pdev)
+=======
+static void lmc_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 
@@ -1121,7 +1135,11 @@ static void lmc_running_reset (struct net_device *dev) /*fold00*/
 {
     lmc_softc_t *sc = dev_to_sc(dev);
 
+<<<<<<< HEAD
     lmc_trace(dev, "lmc_runnig_reset in");
+=======
+    lmc_trace(dev, "lmc_running_reset in");
+>>>>>>> refs/remotes/origin/master
 
     /* stop interrupts */
     /* Clear the interrupt mask */
@@ -1734,6 +1752,7 @@ static struct pci_driver lmc_driver = {
 	.name		= "lmc",
 	.id_table	= lmc_pci_tbl,
 	.probe		= lmc_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(lmc_remove_one),
 };
 
@@ -1749,6 +1768,12 @@ static void __exit exit_lmc(void)
 
 module_init(init_lmc);
 module_exit(exit_lmc);
+=======
+	.remove		= lmc_remove_one,
+};
+
+module_pci_driver(lmc_driver);
+>>>>>>> refs/remotes/origin/master
 
 unsigned lmc_mii_readreg (lmc_softc_t * const sc, unsigned devaddr, unsigned regno) /*fold00*/
 {

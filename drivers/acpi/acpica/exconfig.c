@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,6 +56,10 @@
 #include "actables.h"
 #include "acdispat.h"
 #include "acevents.h"
+<<<<<<< HEAD
+=======
+#include "amlcode.h"
+>>>>>>> refs/remotes/origin/master
 
 #define _COMPONENT          ACPI_EXECUTER
 ACPI_MODULE_NAME("exconfig")
@@ -66,7 +78,11 @@ acpi_ex_region_read(union acpi_operand_object *obj_desc,
  *
  * FUNCTION:    acpi_ex_add_table
  *
+<<<<<<< HEAD
  * PARAMETERS:  Table               - Pointer to raw table
+=======
+ * PARAMETERS:  table               - Pointer to raw table
+>>>>>>> refs/remotes/origin/master
  *              parent_node         - Where to load the table (scope)
  *              ddb_handle          - Where to return the table handle.
  *
@@ -120,8 +136,16 @@ acpi_ex_add_table(u32 table_index,
 	acpi_ns_exec_module_code_list();
 	acpi_ex_enter_interpreter();
 
+<<<<<<< HEAD
 	/* Update GPEs for any new _Lxx/_Exx methods. Ignore errors */
 
+=======
+	/*
+	 * Update GPEs for any new _Lxx/_Exx methods. Ignore errors. The host is
+	 * responsible for discovering any new wake GPEs by running _PRW methods
+	 * that may have been loaded by this table.
+	 */
+>>>>>>> refs/remotes/origin/master
 	status = acpi_tb_get_owner_id(table_index, &owner_id);
 	if (ACPI_SUCCESS(status)) {
 		acpi_ev_update_gpes(owner_id);
@@ -158,12 +182,20 @@ acpi_ex_load_table_op(struct acpi_walk_state *walk_state,
 
 	ACPI_FUNCTION_TRACE(ex_load_table_op);
 
+<<<<<<< HEAD
 	/* Validate lengths for the signature_string, OEMIDString, OEMtable_iD */
+=======
+	/* Validate lengths for the Signature, oem_id, and oem_table_id strings */
+>>>>>>> refs/remotes/origin/master
 
 	if ((operand[0]->string.length > ACPI_NAME_SIZE) ||
 	    (operand[1]->string.length > ACPI_OEM_ID_SIZE) ||
 	    (operand[2]->string.length > ACPI_OEM_TABLE_ID_SIZE)) {
+<<<<<<< HEAD
 		return_ACPI_STATUS(AE_BAD_PARAMETER);
+=======
+		return_ACPI_STATUS(AE_AML_STRING_LIMIT);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Find the ACPI table in the RSDT/XSDT */
@@ -210,8 +242,13 @@ acpi_ex_load_table_op(struct acpi_walk_state *walk_state,
 	/* parameter_path (optional parameter) */
 
 	if (operand[4]->string.length > 0) {
+<<<<<<< HEAD
 		if ((operand[4]->string.pointer[0] != '\\') &&
 		    (operand[4]->string.pointer[0] != '^')) {
+=======
+		if ((operand[4]->string.pointer[0] != AML_ROOT_PREFIX) &&
+		    (operand[4]->string.pointer[0] != AML_PARENT_PREFIX)) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Path is not absolute, so it will be relative to the node
 			 * referenced by the root_path_string (or the NS root if omitted)
@@ -276,8 +313,13 @@ acpi_ex_load_table_op(struct acpi_walk_state *walk_state,
  * FUNCTION:    acpi_ex_region_read
  *
  * PARAMETERS:  obj_desc        - Region descriptor
+<<<<<<< HEAD
  *              Length          - Number of bytes to read
  *              Buffer          - Pointer to where to put the data
+=======
+ *              length          - Number of bytes to read
+ *              buffer          - Pointer to where to put the data
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -297,11 +339,25 @@ acpi_ex_region_read(union acpi_operand_object *obj_desc, u32 length, u8 *buffer)
 	/* Bytewise reads */
 
 	for (i = 0; i < length; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		status = acpi_ev_address_space_dispatch(obj_desc, ACPI_READ,
 							region_offset, 8,
 							&value);
+=======
+		status =
+		    acpi_ev_address_space_dispatch(obj_desc, NULL, ACPI_READ,
+						   region_offset, 8, &value);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ACPI_FAILURE(status)) {
 			return status;
+=======
+		status =
+		    acpi_ev_address_space_dispatch(obj_desc, NULL, ACPI_READ,
+						   region_offset, 8, &value);
+		if (ACPI_FAILURE(status)) {
+			return (status);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		*buffer = (u8)value;
@@ -309,7 +365,11 @@ acpi_ex_region_read(union acpi_operand_object *obj_desc, u32 length, u8 *buffer)
 		region_offset++;
 	}
 
+<<<<<<< HEAD
 	return AE_OK;
+=======
+	return (AE_OK);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
@@ -318,7 +378,11 @@ acpi_ex_region_read(union acpi_operand_object *obj_desc, u32 length, u8 *buffer)
  *
  * PARAMETERS:  obj_desc        - Region or Buffer/Field where the table will be
  *                                obtained
+<<<<<<< HEAD
  *              Target          - Where a handle to the table will be stored
+=======
+ *              target          - Where a handle to the table will be stored
+>>>>>>> refs/remotes/origin/master
  *              walk_state      - Current state
  *
  * RETURN:      Status
@@ -476,6 +540,10 @@ acpi_ex_load_op(union acpi_operand_object *obj_desc,
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
 	}
 
@@ -584,7 +652,11 @@ acpi_status acpi_ex_unload_table(union acpi_operand_object *ddb_handle)
 	    (ACPI_GET_DESCRIPTOR_TYPE(ddb_handle) != ACPI_DESC_TYPE_OPERAND) ||
 	    (ddb_handle->common.type != ACPI_TYPE_LOCAL_REFERENCE) ||
 	    (!(ddb_handle->common.flags & AOPOBJ_DATA_VALID))) {
+<<<<<<< HEAD
 		return_ACPI_STATUS(AE_BAD_PARAMETER);
+=======
+		return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Get the table index from the ddb_handle */

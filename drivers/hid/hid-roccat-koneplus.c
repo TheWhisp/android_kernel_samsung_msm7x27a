@@ -14,6 +14,10 @@
 /*
  * Roccat Kone[+] is an updated/improved version of the Kone with more memory
  * and functionality and without the non-standard behaviours the Kone had.
+<<<<<<< HEAD
+=======
+ * KoneXTD has same capabilities but updated sensor.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/device.h>
@@ -39,18 +43,27 @@ static void koneplus_profile_activated(struct koneplus_device *koneplus,
 static int koneplus_send_control(struct usb_device *usb_dev, uint value,
 		enum koneplus_control_requests request)
 {
+<<<<<<< HEAD
 	struct koneplus_control control;
+=======
+	struct roccat_common2_control control;
+>>>>>>> refs/remotes/origin/master
 
 	if ((request == KONEPLUS_CONTROL_REQUEST_PROFILE_SETTINGS ||
 			request == KONEPLUS_CONTROL_REQUEST_PROFILE_BUTTONS) &&
 			value > 4)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	control.command = KONEPLUS_COMMAND_CONTROL;
 	control.value = value;
 	control.request = request;
 
+<<<<<<< HEAD
 	return roccat_common_send(usb_dev, KONEPLUS_USB_COMMAND_CONTROL,
+=======
+	return roccat_common_send(usb_dev, KONEPLUS_COMMAND_CONTROL,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&control, sizeof(struct koneplus_control));
 }
 
@@ -60,7 +73,11 @@ static int koneplus_receive_control_status(struct usb_device *usb_dev)
 	struct koneplus_control control;
 
 	do {
+<<<<<<< HEAD
 		retval = roccat_common_receive(usb_dev, KONEPLUS_USB_COMMAND_CONTROL,
+=======
+		retval = roccat_common_receive(usb_dev, KONEPLUS_COMMAND_CONTROL,
+>>>>>>> refs/remotes/origin/cm-10.0
 				&control, sizeof(struct koneplus_control));
 
 		/* check if we get a completely wrong answer */
@@ -120,7 +137,11 @@ static int koneplus_select_profile(struct usb_device *usb_dev, uint number,
 static int koneplus_get_info(struct usb_device *usb_dev,
 		struct koneplus_info *buf)
 {
+<<<<<<< HEAD
 	return roccat_common_receive(usb_dev, KONEPLUS_USB_COMMAND_INFO,
+=======
+	return roccat_common_receive(usb_dev, KONEPLUS_COMMAND_INFO,
+>>>>>>> refs/remotes/origin/cm-10.0
 			buf, sizeof(struct koneplus_info));
 }
 
@@ -134,14 +155,22 @@ static int koneplus_get_profile_settings(struct usb_device *usb_dev,
 	if (retval)
 		return retval;
 
+<<<<<<< HEAD
 	return roccat_common_receive(usb_dev, KONEPLUS_USB_COMMAND_PROFILE_SETTINGS,
+=======
+	return roccat_common_receive(usb_dev, KONEPLUS_COMMAND_PROFILE_SETTINGS,
+>>>>>>> refs/remotes/origin/cm-10.0
 			buf, sizeof(struct koneplus_profile_settings));
 }
 
 static int koneplus_set_profile_settings(struct usb_device *usb_dev,
 		struct koneplus_profile_settings const *settings)
 {
+<<<<<<< HEAD
 	return koneplus_send(usb_dev, KONEPLUS_USB_COMMAND_PROFILE_SETTINGS,
+=======
+	return koneplus_send(usb_dev, KONEPLUS_COMMAND_PROFILE_SETTINGS,
+>>>>>>> refs/remotes/origin/cm-10.0
 			settings, sizeof(struct koneplus_profile_settings));
 }
 
@@ -155,16 +184,35 @@ static int koneplus_get_profile_buttons(struct usb_device *usb_dev,
 	if (retval)
 		return retval;
 
+<<<<<<< HEAD
 	return roccat_common_receive(usb_dev, KONEPLUS_USB_COMMAND_PROFILE_BUTTONS,
+=======
+	return roccat_common_receive(usb_dev, KONEPLUS_COMMAND_PROFILE_BUTTONS,
+>>>>>>> refs/remotes/origin/cm-10.0
 			buf, sizeof(struct koneplus_profile_buttons));
 }
 
 static int koneplus_set_profile_buttons(struct usb_device *usb_dev,
 		struct koneplus_profile_buttons const *buttons)
 {
+<<<<<<< HEAD
 	return koneplus_send(usb_dev, KONEPLUS_USB_COMMAND_PROFILE_BUTTONS,
+=======
+	return koneplus_send(usb_dev, KONEPLUS_COMMAND_PROFILE_BUTTONS,
+>>>>>>> refs/remotes/origin/cm-10.0
 			buttons, sizeof(struct koneplus_profile_buttons));
 }
+=======
+	control.command = ROCCAT_COMMON_COMMAND_CONTROL;
+	control.value = value;
+	control.request = request;
+
+	return roccat_common2_send_with_status(usb_dev,
+			ROCCAT_COMMON_COMMAND_CONTROL,
+			&control, sizeof(struct roccat_common2_control));
+}
+
+>>>>>>> refs/remotes/origin/master
 
 /* retval is 0-4 on success, < 0 on error */
 static int koneplus_get_actual_profile(struct usb_device *usb_dev)
@@ -172,8 +220,17 @@ static int koneplus_get_actual_profile(struct usb_device *usb_dev)
 	struct koneplus_actual_profile buf;
 	int retval;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = roccat_common_receive(usb_dev, KONEPLUS_USB_COMMAND_ACTUAL_PROFILE,
+=======
+	retval = roccat_common_receive(usb_dev, KONEPLUS_COMMAND_ACTUAL_PROFILE,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&buf, sizeof(struct koneplus_actual_profile));
+=======
+	retval = roccat_common2_receive(usb_dev, KONEPLUS_COMMAND_ACTUAL_PROFILE,
+			&buf, KONEPLUS_SIZE_ACTUAL_PROFILE);
+>>>>>>> refs/remotes/origin/master
 
 	return retval ? retval : buf.actual_profile;
 }
@@ -184,11 +241,24 @@ static int koneplus_set_actual_profile(struct usb_device *usb_dev,
 	struct koneplus_actual_profile buf;
 
 	buf.command = KONEPLUS_COMMAND_ACTUAL_PROFILE;
+<<<<<<< HEAD
 	buf.size = sizeof(struct koneplus_actual_profile);
 	buf.actual_profile = new_profile;
 
+<<<<<<< HEAD
 	return koneplus_send(usb_dev, KONEPLUS_USB_COMMAND_ACTUAL_PROFILE,
+=======
+	return koneplus_send(usb_dev, KONEPLUS_COMMAND_ACTUAL_PROFILE,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&buf, sizeof(struct koneplus_actual_profile));
+=======
+	buf.size = KONEPLUS_SIZE_ACTUAL_PROFILE;
+	buf.actual_profile = new_profile;
+
+	return roccat_common2_send_with_status(usb_dev,
+			KONEPLUS_COMMAND_ACTUAL_PROFILE,
+			&buf, KONEPLUS_SIZE_ACTUAL_PROFILE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t koneplus_sysfs_read(struct file *fp, struct kobject *kobj,
@@ -208,7 +278,11 @@ static ssize_t koneplus_sysfs_read(struct file *fp, struct kobject *kobj,
 		return -EINVAL;
 
 	mutex_lock(&koneplus->koneplus_lock);
+<<<<<<< HEAD
 	retval = roccat_common_receive(usb_dev, command, buf, real_size);
+=======
+	retval = roccat_common2_receive(usb_dev, command, buf, real_size);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&koneplus->koneplus_lock);
 
 	if (retval)
@@ -231,7 +305,12 @@ static ssize_t koneplus_sysfs_write(struct file *fp, struct kobject *kobj,
 		return -EINVAL;
 
 	mutex_lock(&koneplus->koneplus_lock);
+<<<<<<< HEAD
 	retval = koneplus_send(usb_dev, command, buf, real_size);
+=======
+	retval = roccat_common2_send_with_status(usb_dev, command,
+			buf, real_size);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&koneplus->koneplus_lock);
 
 	if (retval)
@@ -240,12 +319,28 @@ static ssize_t koneplus_sysfs_write(struct file *fp, struct kobject *kobj,
 	return real_size;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static ssize_t koneplus_sysfs_write_talk(struct file *fp,
+		struct kobject *kobj, struct bin_attribute *attr, char *buf,
+		loff_t off, size_t count)
+{
+	return koneplus_sysfs_write(fp, kobj, buf, off, count,
+			sizeof(struct koneplus_talk), KONEPLUS_COMMAND_TALK);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t koneplus_sysfs_write_macro(struct file *fp,
 		struct kobject *kobj, struct bin_attribute *attr, char *buf,
 		loff_t off, size_t count)
 {
 	return koneplus_sysfs_write(fp, kobj, buf, off, count,
+<<<<<<< HEAD
 			sizeof(struct koneplus_macro), KONEPLUS_USB_COMMAND_MACRO);
+=======
+			sizeof(struct koneplus_macro), KONEPLUS_COMMAND_MACRO);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static ssize_t koneplus_sysfs_read_sensor(struct file *fp,
@@ -253,7 +348,11 @@ static ssize_t koneplus_sysfs_read_sensor(struct file *fp,
 		loff_t off, size_t count)
 {
 	return koneplus_sysfs_read(fp, kobj, buf, off, count,
+<<<<<<< HEAD
 			sizeof(struct koneplus_sensor), KONEPLUS_USB_COMMAND_SENSOR);
+=======
+			sizeof(struct koneplus_sensor), KONEPLUS_COMMAND_SENSOR);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static ssize_t koneplus_sysfs_write_sensor(struct file *fp,
@@ -261,7 +360,11 @@ static ssize_t koneplus_sysfs_write_sensor(struct file *fp,
 		loff_t off, size_t count)
 {
 	return koneplus_sysfs_write(fp, kobj, buf, off, count,
+<<<<<<< HEAD
 			sizeof(struct koneplus_sensor), KONEPLUS_USB_COMMAND_SENSOR);
+=======
+			sizeof(struct koneplus_sensor), KONEPLUS_COMMAND_SENSOR);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static ssize_t koneplus_sysfs_write_tcu(struct file *fp,
@@ -269,7 +372,11 @@ static ssize_t koneplus_sysfs_write_tcu(struct file *fp,
 		loff_t off, size_t count)
 {
 	return koneplus_sysfs_write(fp, kobj, buf, off, count,
+<<<<<<< HEAD
 			sizeof(struct koneplus_tcu), KONEPLUS_USB_COMMAND_TCU);
+=======
+			sizeof(struct koneplus_tcu), KONEPLUS_COMMAND_TCU);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static ssize_t koneplus_sysfs_read_tcu_image(struct file *fp,
@@ -277,8 +384,69 @@ static ssize_t koneplus_sysfs_read_tcu_image(struct file *fp,
 		loff_t off, size_t count)
 {
 	return koneplus_sysfs_read(fp, kobj, buf, off, count,
+<<<<<<< HEAD
 			sizeof(struct koneplus_tcu_image), KONEPLUS_USB_COMMAND_TCU);
+=======
+			sizeof(struct koneplus_tcu_image), KONEPLUS_COMMAND_TCU);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
+=======
+#define KONEPLUS_SYSFS_W(thingy, THINGY) \
+static ssize_t koneplus_sysfs_write_ ## thingy(struct file *fp, \
+		struct kobject *kobj, struct bin_attribute *attr, char *buf, \
+		loff_t off, size_t count) \
+{ \
+	return koneplus_sysfs_write(fp, kobj, buf, off, count, \
+			KONEPLUS_SIZE_ ## THINGY, KONEPLUS_COMMAND_ ## THINGY); \
+}
+
+#define KONEPLUS_SYSFS_R(thingy, THINGY) \
+static ssize_t koneplus_sysfs_read_ ## thingy(struct file *fp, \
+		struct kobject *kobj, struct bin_attribute *attr, char *buf, \
+		loff_t off, size_t count) \
+{ \
+	return koneplus_sysfs_read(fp, kobj, buf, off, count, \
+			KONEPLUS_SIZE_ ## THINGY, KONEPLUS_COMMAND_ ## THINGY); \
+}
+
+#define KONEPLUS_SYSFS_RW(thingy, THINGY) \
+KONEPLUS_SYSFS_W(thingy, THINGY) \
+KONEPLUS_SYSFS_R(thingy, THINGY)
+
+#define KONEPLUS_BIN_ATTRIBUTE_RW(thingy, THINGY) \
+KONEPLUS_SYSFS_RW(thingy, THINGY); \
+static struct bin_attribute bin_attr_##thingy = { \
+	.attr = { .name = #thingy, .mode = 0660 }, \
+	.size = KONEPLUS_SIZE_ ## THINGY, \
+	.read = koneplus_sysfs_read_ ## thingy, \
+	.write = koneplus_sysfs_write_ ## thingy \
+}
+
+#define KONEPLUS_BIN_ATTRIBUTE_R(thingy, THINGY) \
+KONEPLUS_SYSFS_R(thingy, THINGY); \
+static struct bin_attribute bin_attr_##thingy = { \
+	.attr = { .name = #thingy, .mode = 0440 }, \
+	.size = KONEPLUS_SIZE_ ## THINGY, \
+	.read = koneplus_sysfs_read_ ## thingy, \
+}
+
+#define KONEPLUS_BIN_ATTRIBUTE_W(thingy, THINGY) \
+KONEPLUS_SYSFS_W(thingy, THINGY); \
+static struct bin_attribute bin_attr_##thingy = { \
+	.attr = { .name = #thingy, .mode = 0220 }, \
+	.size = KONEPLUS_SIZE_ ## THINGY, \
+	.write = koneplus_sysfs_write_ ## thingy \
+}
+KONEPLUS_BIN_ATTRIBUTE_W(control, CONTROL);
+KONEPLUS_BIN_ATTRIBUTE_W(talk, TALK);
+KONEPLUS_BIN_ATTRIBUTE_W(macro, MACRO);
+KONEPLUS_BIN_ATTRIBUTE_R(tcu_image, TCU_IMAGE);
+KONEPLUS_BIN_ATTRIBUTE_RW(info, INFO);
+KONEPLUS_BIN_ATTRIBUTE_RW(sensor, SENSOR);
+KONEPLUS_BIN_ATTRIBUTE_RW(tcu, TCU);
+KONEPLUS_BIN_ATTRIBUTE_RW(profile_settings, PROFILE_SETTINGS);
+KONEPLUS_BIN_ATTRIBUTE_RW(profile_buttons, PROFILE_BUTTONS);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t koneplus_sysfs_read_profilex_settings(struct file *fp,
 		struct kobject *kobj, struct bin_attribute *attr, char *buf,
@@ -286,6 +454,7 @@ static ssize_t koneplus_sysfs_read_profilex_settings(struct file *fp,
 {
 	struct device *dev =
 			container_of(kobj, struct device, kobj)->parent->parent;
+<<<<<<< HEAD
 	struct koneplus_device *koneplus = hid_get_drvdata(dev_get_drvdata(dev));
 
 	if (off >= sizeof(struct koneplus_profile_settings))
@@ -337,6 +506,19 @@ static ssize_t koneplus_sysfs_write_profile_settings(struct file *fp,
 		return retval;
 
 	return sizeof(struct koneplus_profile_settings);
+=======
+	struct usb_device *usb_dev = interface_to_usbdev(to_usb_interface(dev));
+	ssize_t retval;
+
+	retval = koneplus_send_control(usb_dev, *(uint *)(attr->private),
+			KONEPLUS_CONTROL_REQUEST_PROFILE_SETTINGS);
+	if (retval)
+		return retval;
+
+	return koneplus_sysfs_read(fp, kobj, buf, off, count,
+			KONEPLUS_SIZE_PROFILE_SETTINGS,
+			KONEPLUS_COMMAND_PROFILE_SETTINGS);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t koneplus_sysfs_read_profilex_buttons(struct file *fp,
@@ -345,6 +527,7 @@ static ssize_t koneplus_sysfs_read_profilex_buttons(struct file *fp,
 {
 	struct device *dev =
 			container_of(kobj, struct device, kobj)->parent->parent;
+<<<<<<< HEAD
 	struct koneplus_device *koneplus = hid_get_drvdata(dev_get_drvdata(dev));
 
 	if (off >= sizeof(struct koneplus_profile_buttons))
@@ -397,6 +580,39 @@ static ssize_t koneplus_sysfs_write_profile_buttons(struct file *fp,
 
 	return sizeof(struct koneplus_profile_buttons);
 }
+=======
+	struct usb_device *usb_dev = interface_to_usbdev(to_usb_interface(dev));
+	ssize_t retval;
+
+	retval = koneplus_send_control(usb_dev, *(uint *)(attr->private),
+			KONEPLUS_CONTROL_REQUEST_PROFILE_BUTTONS);
+	if (retval)
+		return retval;
+
+	return koneplus_sysfs_read(fp, kobj, buf, off, count,
+			KONEPLUS_SIZE_PROFILE_BUTTONS,
+			KONEPLUS_COMMAND_PROFILE_BUTTONS);
+}
+
+#define PROFILE_ATTR(number)						\
+static struct bin_attribute bin_attr_profile##number##_settings = {	\
+	.attr = { .name = "profile" #number "_settings", .mode = 0440 },	\
+	.size = KONEPLUS_SIZE_PROFILE_SETTINGS,				\
+	.read = koneplus_sysfs_read_profilex_settings,			\
+	.private = &profile_numbers[number-1],				\
+};									\
+static struct bin_attribute bin_attr_profile##number##_buttons = {	\
+	.attr = { .name = "profile" #number "_buttons", .mode = 0440 },	\
+	.size = KONEPLUS_SIZE_PROFILE_BUTTONS,				\
+	.read = koneplus_sysfs_read_profilex_buttons,			\
+	.private = &profile_numbers[number-1],				\
+};
+PROFILE_ATTR(1);
+PROFILE_ATTR(2);
+PROFILE_ATTR(3);
+PROFILE_ATTR(4);
+PROFILE_ATTR(5);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t koneplus_sysfs_show_actual_profile(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -419,10 +635,26 @@ static ssize_t koneplus_sysfs_set_actual_profile(struct device *dev,
 	koneplus = hid_get_drvdata(dev_get_drvdata(dev));
 	usb_dev = interface_to_usbdev(to_usb_interface(dev));
 
+<<<<<<< HEAD
 	retval = strict_strtoul(buf, 10, &profile);
 	if (retval)
 		return retval;
 
+<<<<<<< HEAD
+=======
+	if (profile > 4)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = kstrtoul(buf, 10, &profile);
+	if (retval)
+		return retval;
+
+	if (profile > 4)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&koneplus->koneplus_lock);
 
 	retval = koneplus_set_actual_profile(usb_dev, profile);
@@ -431,7 +663,15 @@ static ssize_t koneplus_sysfs_set_actual_profile(struct device *dev,
 		return retval;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	koneplus->actual_profile = profile;
+=======
+	koneplus_profile_activated(koneplus, profile);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	koneplus_profile_activated(koneplus, profile);
+>>>>>>> refs/remotes/origin/master
 
 	roccat_report.type = KONEPLUS_MOUSE_REPORT_BUTTON_TYPE_PROFILE;
 	roccat_report.data1 = profile + 1;
@@ -444,10 +684,20 @@ static ssize_t koneplus_sysfs_set_actual_profile(struct device *dev,
 
 	return size;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(actual_profile, 0660,
+		   koneplus_sysfs_show_actual_profile,
+		   koneplus_sysfs_set_actual_profile);
+static DEVICE_ATTR(startup_profile, 0660,
+		   koneplus_sysfs_show_actual_profile,
+		   koneplus_sysfs_set_actual_profile);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t koneplus_sysfs_show_firmware_version(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	struct koneplus_device *koneplus =
 			hid_get_drvdata(dev_get_drvdata(dev->parent->parent));
 	return snprintf(buf, PAGE_SIZE, "%d\n", koneplus->info.firmware_version);
@@ -557,12 +807,79 @@ static struct bin_attribute koneplus_bin_attributes[] = {
 		.size = sizeof(struct koneplus_macro),
 		.write = koneplus_sysfs_write_macro
 	},
+<<<<<<< HEAD
+=======
+	{
+		.attr = { .name = "talk", .mode = 0220 },
+		.size = sizeof(struct koneplus_talk),
+		.write = koneplus_sysfs_write_talk
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 	__ATTR_NULL
+=======
+	struct koneplus_device *koneplus;
+	struct usb_device *usb_dev;
+	struct koneplus_info info;
+
+	dev = dev->parent->parent;
+	koneplus = hid_get_drvdata(dev_get_drvdata(dev));
+	usb_dev = interface_to_usbdev(to_usb_interface(dev));
+
+	mutex_lock(&koneplus->koneplus_lock);
+	roccat_common2_receive(usb_dev, KONEPLUS_COMMAND_INFO,
+			&info, KONEPLUS_SIZE_INFO);
+	mutex_unlock(&koneplus->koneplus_lock);
+
+	return snprintf(buf, PAGE_SIZE, "%d\n", info.firmware_version);
+}
+static DEVICE_ATTR(firmware_version, 0440,
+		   koneplus_sysfs_show_firmware_version, NULL);
+
+static struct attribute *koneplus_attrs[] = {
+	&dev_attr_actual_profile.attr,
+	&dev_attr_startup_profile.attr,
+	&dev_attr_firmware_version.attr,
+	NULL,
+};
+
+static struct bin_attribute *koneplus_bin_attributes[] = {
+	&bin_attr_control,
+	&bin_attr_talk,
+	&bin_attr_macro,
+	&bin_attr_tcu_image,
+	&bin_attr_info,
+	&bin_attr_sensor,
+	&bin_attr_tcu,
+	&bin_attr_profile_settings,
+	&bin_attr_profile_buttons,
+	&bin_attr_profile1_settings,
+	&bin_attr_profile2_settings,
+	&bin_attr_profile3_settings,
+	&bin_attr_profile4_settings,
+	&bin_attr_profile5_settings,
+	&bin_attr_profile1_buttons,
+	&bin_attr_profile2_buttons,
+	&bin_attr_profile3_buttons,
+	&bin_attr_profile4_buttons,
+	&bin_attr_profile5_buttons,
+	NULL,
+};
+
+static const struct attribute_group koneplus_group = {
+	.attrs = koneplus_attrs,
+	.bin_attrs = koneplus_bin_attributes,
+};
+
+static const struct attribute_group *koneplus_groups[] = {
+	&koneplus_group,
+	NULL,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int koneplus_init_koneplus_device_struct(struct usb_device *usb_dev,
 		struct koneplus_device *koneplus)
 {
+<<<<<<< HEAD
 	int retval, i;
 	static uint wait = 200;
 
@@ -587,6 +904,12 @@ static int koneplus_init_koneplus_device_struct(struct usb_device *usb_dev,
 	}
 
 	msleep(wait);
+=======
+	int retval;
+
+	mutex_init(&koneplus->koneplus_lock);
+
+>>>>>>> refs/remotes/origin/master
 	retval = koneplus_get_actual_profile(usb_dev);
 	if (retval < 0)
 		return retval;
@@ -738,6 +1061,18 @@ static int koneplus_raw_event(struct hid_device *hdev,
 			!= USB_INTERFACE_PROTOCOL_MOUSE)
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (koneplus == NULL)
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (koneplus == NULL)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	koneplus_keep_values_up_to_date(koneplus, data);
 
 	if (koneplus->roccat_claimed)
@@ -748,6 +1083,10 @@ static int koneplus_raw_event(struct hid_device *hdev,
 
 static const struct hid_device_id koneplus_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_ROCCAT, USB_DEVICE_ID_ROCCAT_KONEPLUS) },
+<<<<<<< HEAD
+=======
+	{ HID_USB_DEVICE(USB_VENDOR_ID_ROCCAT, USB_DEVICE_ID_ROCCAT_KONEXTD) },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 
@@ -769,8 +1108,12 @@ static int __init koneplus_init(void)
 	koneplus_class = class_create(THIS_MODULE, "koneplus");
 	if (IS_ERR(koneplus_class))
 		return PTR_ERR(koneplus_class);
+<<<<<<< HEAD
 	koneplus_class->dev_attrs = koneplus_attributes;
 	koneplus_class->dev_bin_attrs = koneplus_bin_attributes;
+=======
+	koneplus_class->dev_groups = koneplus_groups;
+>>>>>>> refs/remotes/origin/master
 
 	retval = hid_register_driver(&koneplus_driver);
 	if (retval)
@@ -788,5 +1131,9 @@ module_init(koneplus_init);
 module_exit(koneplus_exit);
 
 MODULE_AUTHOR("Stefan Achatz");
+<<<<<<< HEAD
 MODULE_DESCRIPTION("USB Roccat Kone[+] driver");
+=======
+MODULE_DESCRIPTION("USB Roccat Kone[+]/XTD driver");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL v2");

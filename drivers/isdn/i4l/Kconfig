@@ -6,7 +6,15 @@ if ISDN_I4L
 
 config ISDN_PPP
 	bool "Support synchronous PPP"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	depends on INET
+=======
+	depends on INET && NETDEVICES
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on INET
+>>>>>>> refs/remotes/origin/master
 	select SLHC
 	help
 	  Over digital connections such as ISDN, there is no need to

@@ -45,6 +45,14 @@
 #include <linux/slab.h>
 #include <linux/spi/spi.h>
 #include <linux/spi/ad7877.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 
 #define	TS_PEN_UP_TIMEOUT	msecs_to_jiffies(100)
@@ -272,7 +280,11 @@ static int ad7877_write(struct spi_device *spi, u16 reg, u16 val)
 
 static int ad7877_read_adc(struct spi_device *spi, unsigned command)
 {
+<<<<<<< HEAD
 	struct ad7877 *ts = dev_get_drvdata(&spi->dev);
+=======
+	struct ad7877 *ts = spi_get_drvdata(spi);
+>>>>>>> refs/remotes/origin/master
 	struct ser_req *req;
 	int status;
 	int sample;
@@ -487,10 +499,23 @@ static ssize_t ad7877_disable_store(struct device *dev,
 				     const char *buf, size_t count)
 {
 	struct ad7877 *ts = dev_get_drvdata(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val;
 	int error;
 
 	error = strict_strtoul(buf, 10, &val);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned int val;
+	int error;
+
+	error = kstrtouint(buf, 10, &val);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return error;
 
@@ -517,10 +542,23 @@ static ssize_t ad7877_dac_store(struct device *dev,
 				     const char *buf, size_t count)
 {
 	struct ad7877 *ts = dev_get_drvdata(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val;
 	int error;
 
 	error = strict_strtoul(buf, 10, &val);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned int val;
+	int error;
+
+	error = kstrtouint(buf, 10, &val);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return error;
 
@@ -547,10 +585,23 @@ static ssize_t ad7877_gpio3_store(struct device *dev,
 				     const char *buf, size_t count)
 {
 	struct ad7877 *ts = dev_get_drvdata(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val;
 	int error;
 
 	error = strict_strtoul(buf, 10, &val);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned int val;
+	int error;
+
+	error = kstrtouint(buf, 10, &val);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return error;
 
@@ -578,10 +629,23 @@ static ssize_t ad7877_gpio4_store(struct device *dev,
 				     const char *buf, size_t count)
 {
 	struct ad7877 *ts = dev_get_drvdata(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val;
 	int error;
 
 	error = strict_strtoul(buf, 10, &val);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned int val;
+	int error;
+
+	error = kstrtouint(buf, 10, &val);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return error;
 
@@ -611,10 +675,23 @@ static struct attribute *ad7877_attributes[] = {
 	NULL
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t ad7877_attr_is_visible(struct kobject *kobj,
 				     struct attribute *attr, int n)
 {
 	mode_t mode = attr->mode;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static umode_t ad7877_attr_is_visible(struct kobject *kobj,
+				     struct attribute *attr, int n)
+{
+	umode_t mode = attr->mode;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (attr == &dev_attr_aux3.attr) {
 		if (gpio3)
@@ -681,7 +758,11 @@ static void ad7877_setup_ts_def_msg(struct spi_device *spi, struct ad7877 *ts)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit ad7877_probe(struct spi_device *spi)
+=======
+static int ad7877_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ad7877			*ts;
 	struct input_dev		*input_dev;
@@ -719,7 +800,11 @@ static int __devinit ad7877_probe(struct spi_device *spi)
 		goto err_free_mem;
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, ts);
+=======
+	spi_set_drvdata(spi, ts);
+>>>>>>> refs/remotes/origin/master
 	ts->spi = spi;
 	ts->input = input_dev;
 
@@ -805,6 +890,7 @@ err_free_irq:
 err_free_mem:
 	input_free_device(input_dev);
 	kfree(ts);
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, NULL);
 	return err;
 }
@@ -812,6 +898,14 @@ err_free_mem:
 static int __devexit ad7877_remove(struct spi_device *spi)
 {
 	struct ad7877 *ts = dev_get_drvdata(&spi->dev);
+=======
+	return err;
+}
+
+static int ad7877_remove(struct spi_device *spi)
+{
+	struct ad7877 *ts = spi_get_drvdata(spi);
+>>>>>>> refs/remotes/origin/master
 
 	sysfs_remove_group(&spi->dev.kobj, &ad7877_attr_group);
 
@@ -822,7 +916,10 @@ static int __devexit ad7877_remove(struct spi_device *spi)
 	kfree(ts);
 
 	dev_dbg(&spi->dev, "unregistered touchscreen\n");
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -852,14 +949,22 @@ static SIMPLE_DEV_PM_OPS(ad7877_pm, ad7877_suspend, ad7877_resume);
 static struct spi_driver ad7877_driver = {
 	.driver = {
 		.name	= "ad7877",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.owner	= THIS_MODULE,
 		.pm	= &ad7877_pm,
 	},
 	.probe		= ad7877_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ad7877_remove),
 };
 
+<<<<<<< HEAD
 static int __init ad7877_init(void)
 {
 	return spi_register_driver(&ad7877_driver);
@@ -871,6 +976,15 @@ static void __exit ad7877_exit(void)
 	spi_unregister_driver(&ad7877_driver);
 }
 module_exit(ad7877_exit);
+=======
+module_spi_driver(ad7877_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= ad7877_remove,
+};
+
+module_spi_driver(ad7877_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("AD7877 touchscreen Driver");

@@ -1,11 +1,25 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland / sjur.brandeland@stericsson.com
  * License terms: GNU General Public License (GPL) version 2
  */
 
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/version.h>
+=======
+#include <linux/hardirq.h>
+#include <linux/init.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author:	Sjur Brendeland
+ * License terms: GNU General Public License (GPL) version 2
+ */
+
+#include <linux/hardirq.h>
+#include <linux/init.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/types.h>
@@ -21,7 +35,11 @@
 #include <linux/debugfs.h>
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_AUTHOR("Sjur Brendeland<sjur.brandeland@stericsson.com>");
+=======
+MODULE_AUTHOR("Sjur Brendeland");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("CAIF serial device TTY line discipline");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS_LDISC(N_CAIF);
@@ -35,9 +53,11 @@ MODULE_ALIAS_LDISC(N_CAIF);
 #define OFF 0
 #define CAIF_MAX_MTU 4096
 
+<<<<<<< HEAD
 /*This list is protected by the rtnl lock. */
 static LIST_HEAD(ser_list);
 
+<<<<<<< HEAD
 static int ser_loop;
 module_param(ser_loop, bool, S_IRUGO);
 MODULE_PARM_DESC(ser_loop, "Run in simulated loopback mode.");
@@ -47,6 +67,26 @@ module_param(ser_use_stx, bool, S_IRUGO);
 MODULE_PARM_DESC(ser_use_stx, "STX enabled or not.");
 
 static int ser_use_fcs = 1;
+=======
+=======
+static DEFINE_SPINLOCK(ser_lock);
+static LIST_HEAD(ser_list);
+static LIST_HEAD(ser_release_list);
+
+>>>>>>> refs/remotes/origin/master
+static bool ser_loop;
+module_param(ser_loop, bool, S_IRUGO);
+MODULE_PARM_DESC(ser_loop, "Run in simulated loopback mode.");
+
+static bool ser_use_stx = true;
+module_param(ser_use_stx, bool, S_IRUGO);
+MODULE_PARM_DESC(ser_use_stx, "STX enabled or not.");
+
+static bool ser_use_fcs = true;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 module_param(ser_use_fcs, bool, S_IRUGO);
 MODULE_PARM_DESC(ser_use_fcs, "FCS enabled or not.");
@@ -88,11 +128,17 @@ static inline void update_tty_status(struct ser_device *ser)
 {
 	ser->tty_status =
 		ser->tty->stopped << 5 |
+<<<<<<< HEAD
 		ser->tty->hw_stopped << 4 |
 		ser->tty->flow_stopped << 3 |
 		ser->tty->packet << 2 |
 		ser->tty->low_latency << 1 |
 		ser->tty->warned;
+=======
+		ser->tty->flow_stopped << 3 |
+		ser->tty->packet << 2 |
+		ser->tty->port->low_latency << 1;
+>>>>>>> refs/remotes/origin/master
 }
 static inline void debugfs_init(struct ser_device *ser, struct tty_struct *tty)
 {
@@ -261,7 +307,15 @@ static int handle_tx(struct ser_device *ser)
 		skb_pull(skb, tty_wr);
 		if (skb->len == 0) {
 			struct sk_buff *tmp = skb_dequeue(&ser->head);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			BUG_ON(tmp != skb);
+=======
+			WARN_ON(tmp != skb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			WARN_ON(tmp != skb);
+>>>>>>> refs/remotes/origin/master
 			if (in_interrupt())
 				dev_kfree_skb_irq(skb);
 			else
@@ -305,11 +359,44 @@ static void ldisc_tx_wakeup(struct tty_struct *tty)
 
 	ser = tty->disc_data;
 	BUG_ON(ser == NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(ser->tty != tty);
+=======
+	WARN_ON(ser->tty != tty);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(ser->tty != tty);
+>>>>>>> refs/remotes/origin/master
 	handle_tx(ser);
 }
 
 
+<<<<<<< HEAD
+=======
+static void ser_release(struct work_struct *work)
+{
+	struct list_head list;
+	struct ser_device *ser, *tmp;
+
+	spin_lock(&ser_lock);
+	list_replace_init(&ser_release_list, &list);
+	spin_unlock(&ser_lock);
+
+	if (!list_empty(&list)) {
+		rtnl_lock();
+		list_for_each_entry_safe(ser, tmp, &list, node) {
+			dev_close(ser->dev);
+			unregister_netdevice(ser->dev);
+			debugfs_deinit(ser);
+		}
+		rtnl_unlock();
+	}
+}
+
+static DECLARE_WORK(ser_release_work, ser_release);
+
+>>>>>>> refs/remotes/origin/master
 static int ldisc_open(struct tty_struct *tty)
 {
 	struct ser_device *ser;
@@ -323,7 +410,16 @@ static int ldisc_open(struct tty_struct *tty)
 	if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_TTY_CONFIG))
 		return -EPERM;
 
+<<<<<<< HEAD
 	sprintf(name, "cf%s", tty->name);
+=======
+	/* release devices to avoid name collision */
+	ser_release(NULL);
+
+	result = snprintf(name, sizeof(name), "cf%s", tty->name);
+	if (result >= IFNAMSIZ)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	dev = alloc_netdev(sizeof(*ser), name, caifdev_setup);
 	if (!dev)
 		return -ENOMEM;
@@ -343,7 +439,13 @@ static int ldisc_open(struct tty_struct *tty)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	list_add(&ser->node, &ser_list);
+=======
+	spin_lock(&ser_lock);
+	list_add(&ser->node, &ser_list);
+	spin_unlock(&ser_lock);
+>>>>>>> refs/remotes/origin/master
 	rtnl_unlock();
 	netif_stop_queue(dev);
 	update_tty_status(ser);
@@ -353,6 +455,7 @@ static int ldisc_open(struct tty_struct *tty)
 static void ldisc_close(struct tty_struct *tty)
 {
 	struct ser_device *ser = tty->disc_data;
+<<<<<<< HEAD
 	/* Remove may be called inside or outside of rtnl_lock */
 	int islocked = rtnl_is_locked();
 
@@ -366,6 +469,15 @@ static void ldisc_close(struct tty_struct *tty)
 	tty_kref_put(ser->tty);
 	if (!islocked)
 		rtnl_unlock();
+=======
+
+	tty_kref_put(ser->tty);
+
+	spin_lock(&ser_lock);
+	list_move(&ser->node, &ser_release_list);
+	spin_unlock(&ser_lock);
+	schedule_work(&ser_release_work);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* The line discipline structure. */
@@ -440,6 +552,7 @@ static int __init caif_ser_init(void)
 
 static void __exit caif_ser_exit(void)
 {
+<<<<<<< HEAD
 	struct ser_device *ser = NULL;
 	struct list_head *node;
 	struct list_head *_tmp;
@@ -450,6 +563,13 @@ static void __exit caif_ser_exit(void)
 		unregister_netdevice(ser->dev);
 		list_del(node);
 	}
+=======
+	spin_lock(&ser_lock);
+	list_splice(&ser_list, &ser_release_list);
+	spin_unlock(&ser_lock);
+	ser_release(NULL);
+	cancel_work_sync(&ser_release_work);
+>>>>>>> refs/remotes/origin/master
 	tty_unregister_ldisc(N_CAIF);
 	debugfs_remove_recursive(debugfsdir);
 }

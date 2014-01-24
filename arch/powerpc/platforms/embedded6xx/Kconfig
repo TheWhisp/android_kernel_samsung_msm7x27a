@@ -9,7 +9,10 @@ config LINKSTATION
 	select FSL_SOC
 	select PPC_UDBG_16550 if SERIAL_8250
 	select DEFAULT_UIMAGE
+<<<<<<< HEAD
 	select MPC10X_OPENPIC
+=======
+>>>>>>> refs/remotes/origin/master
 	select MPC10X_BRIDGE
 	help
 	  Select LINKSTATION if configuring for one of PPC- (MPC8241)
@@ -24,7 +27,10 @@ config STORCENTER
 	select MPIC
 	select FSL_SOC
 	select PPC_UDBG_16550 if SERIAL_8250
+<<<<<<< HEAD
 	select MPC10X_OPENPIC
+=======
+>>>>>>> refs/remotes/origin/master
 	select MPC10X_BRIDGE
 	help
 	  Select STORCENTER if configuring for the iomega StorCenter
@@ -84,13 +90,19 @@ config MV64X60
 	select PPC_INDIRECT_PCI
 	select CHECK_CACHE_COHERENCY
 
+<<<<<<< HEAD
 config MPC10X_OPENPIC
 	bool
 
+<<<<<<< HEAD
 config MPC10X_STORE_GATHERING
 	bool "Enable MPC10x store gathering"
 	depends on MPC10X_BRIDGE
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config GAMECUBE_COMMON
 	bool
 

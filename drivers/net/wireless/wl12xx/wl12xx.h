@@ -35,6 +35,7 @@
 #include "conf.h"
 #include "ini.h"
 
+<<<<<<< HEAD
 #define DRIVER_NAME "wl1271"
 #define DRIVER_PREFIX DRIVER_NAME ": "
 
@@ -134,6 +135,16 @@ extern u32 wl12xx_debug_level;
 #define WL128X_FW_NAME "ti-connectivity/wl128x-fw.bin"
 #define WL127X_AP_FW_NAME "ti-connectivity/wl1271-fw-ap.bin"
 #define WL128X_AP_FW_NAME "ti-connectivity/wl128x-fw-ap.bin"
+=======
+#define WL127X_FW_NAME_MULTI "ti-connectivity/wl127x-fw-4-mr.bin"
+#define WL127X_FW_NAME_SINGLE "ti-connectivity/wl127x-fw-4-sr.bin"
+
+#define WL128X_FW_NAME_MULTI "ti-connectivity/wl128x-fw-4-mr.bin"
+#define WL128X_FW_NAME_SINGLE "ti-connectivity/wl128x-fw-4-sr.bin"
+
+#define WL127X_PLT_FW_NAME "ti-connectivity/wl127x-fw-4-plt.bin"
+#define WL128X_PLT_FW_NAME "ti-connectivity/wl128x-fw-4-plt.bin"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * wl127x and wl128x are using the same NVS file name. However, the
@@ -144,6 +155,10 @@ extern u32 wl12xx_debug_level;
 
 #define WL1271_TX_SECURITY_LO16(s) ((u16)((s) & 0xffff))
 #define WL1271_TX_SECURITY_HI32(s) ((u32)(((s) >> 16) & 0xffffffff))
+<<<<<<< HEAD
+=======
+#define WL1271_TX_SQN_POST_RECOVERY_PADDING 0xff
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define WL1271_CIPHER_SUITE_GEM 0x00147201
 
@@ -156,6 +171,7 @@ extern u32 wl12xx_debug_level;
 #define WL1271_DEFAULT_BEACON_INT  100
 #define WL1271_DEFAULT_DTIM_PERIOD 1
 
+<<<<<<< HEAD
 #define WL1271_AP_GLOBAL_HLID      0
 #define WL1271_AP_BROADCAST_HLID   1
 #define WL1271_AP_STA_HLID_START   2
@@ -176,13 +192,49 @@ extern u32 wl12xx_debug_level;
 #define WL1271_AP_DEF_BEACON_EXP   20
 
 #define ACX_TX_DESCRIPTORS         32
+=======
+#define WL12XX_MAX_ROLES           4
+#define WL12XX_MAX_LINKS           12
+#define WL12XX_INVALID_ROLE_ID     0xff
+#define WL12XX_INVALID_LINK_ID     0xff
+
+#define WL12XX_MAX_RATE_POLICIES 16
+
+/* Defined by FW as 0. Will not be freed or allocated. */
+#define WL12XX_SYSTEM_HLID         0
+
+/*
+ * When in AP-mode, we allow (at least) this number of packets
+ * to be transmitted to FW for a STA in PS-mode. Only when packets are
+ * present in the FW buffers it will wake the sleeping STA. We want to put
+ * enough packets for the driver to transmit all of its buffered data before
+ * the STA goes to sleep again. But we don't want to take too much memory
+ * as it might hurt the throughput of active STAs.
+ */
+#define WL1271_PS_STA_MAX_PACKETS  2
+
+#define WL1271_AP_BSS_INDEX        0
+#define WL1271_AP_DEF_BEACON_EXP   20
+
+#define ACX_TX_DESCRIPTORS         16
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define WL1271_AGGR_BUFFER_SIZE (4 * PAGE_SIZE)
 
 enum wl1271_state {
 	WL1271_STATE_OFF,
 	WL1271_STATE_ON,
+<<<<<<< HEAD
 	WL1271_STATE_PLT,
+=======
+};
+
+enum wl12xx_fw_type {
+	WL12XX_FW_TYPE_NONE,
+	WL12XX_FW_TYPE_NORMAL,
+	WL12XX_FW_TYPE_MULTI,
+	WL12XX_FW_TYPE_PLT,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum wl1271_partition_type {
@@ -226,6 +278,11 @@ enum {
 #define FW_VER_MINOR_1_SPARE_STA_MIN 58
 #define FW_VER_MINOR_1_SPARE_AP_MIN  47
 
+<<<<<<< HEAD
+=======
+#define FW_VER_MINOR_FWLOG_STA_MIN 70
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct wl1271_chip {
 	u32 id;
 	char fw_ver_str[ETHTOOL_BUSINFO_LEN];
@@ -243,6 +300,7 @@ struct wl1271_stats {
 #define NUM_TX_QUEUES              4
 #define NUM_RX_PKT_DESC            8
 
+<<<<<<< HEAD
 #define AP_MAX_STATIONS            5
 
 /* Broadcast and Global links + links to stations */
@@ -250,12 +308,19 @@ struct wl1271_stats {
 
 /* FW status registers common for AP/STA */
 struct wl1271_fw_common_status {
+=======
+#define AP_MAX_STATIONS            8
+
+/* FW status registers */
+struct wl12xx_fw_status {
+>>>>>>> refs/remotes/origin/cm-10.0
 	__le32 intr;
 	u8  fw_rx_counter;
 	u8  drv_rx_counter;
 	u8  reserved;
 	u8  tx_results_counter;
 	__le32 rx_pkt_descs[NUM_RX_PKT_DESC];
+<<<<<<< HEAD
 	__le32 tx_released_blks[NUM_TX_QUEUES];
 	__le32 fw_localtime;
 } __packed;
@@ -265,6 +330,9 @@ struct wl1271_fw_ap_status {
 	struct wl1271_fw_common_status common;
 
 	/* Next fields valid only in AP FW */
+=======
+	__le32 fw_localtime;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * A bitmap (where each bit represents a single HLID)
@@ -272,6 +340,7 @@ struct wl1271_fw_ap_status {
 	 */
 	__le32 link_ps_bitmap;
 
+<<<<<<< HEAD
 	/* Number of freed MBs per HLID */
 	u8 tx_lnk_free_blks[AP_MAX_LINKS];
 	u8 padding_1[1];
@@ -296,6 +365,31 @@ struct wl1271_fw_full_status {
 	};
 } __packed;
 
+=======
+	/*
+	 * A bitmap (where each bit represents a single HLID) to indicate
+	 * if the station is in Fast mode
+	 */
+	__le32 link_fast_bitmap;
+
+	/* Cumulative counter of total released mem blocks since FW-reset */
+	__le32 total_released_blks;
+
+	/* Size (in Memory Blocks) of TX pool */
+	__le32 tx_total;
+
+	/* Cumulative counter of released packets per AC */
+	u8 tx_released_pkts[NUM_TX_QUEUES];
+
+	/* Cumulative counter of freed packets per HLID */
+	u8 tx_lnk_free_pkts[WL12XX_MAX_LINKS];
+
+	/* Cumulative counter of released Voice memory blocks */
+	u8 tx_voice_released_blks;
+	u8 padding_1[3];
+	__le32 log_start_addr;
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct wl1271_rx_mem_pool_addr {
 	u32 addr;
@@ -308,11 +402,16 @@ struct wl1271_scan {
 	unsigned long scanned_ch[BITS_TO_LONGS(WL1271_MAX_CHANNELS)];
 	bool failed;
 	u8 state;
+<<<<<<< HEAD
 	u8 ssid[IW_ESSID_MAX_SIZE+1];
+=======
+	u8 ssid[IEEE80211_MAX_SSID_LEN+1];
+>>>>>>> refs/remotes/origin/cm-10.0
 	size_t ssid_len;
 };
 
 struct wl1271_if_operations {
+<<<<<<< HEAD
 	void (*read)(struct wl1271 *wl, int addr, void *buf, size_t len,
 		     bool fixed);
 	void (*write)(struct wl1271 *wl, int addr, void *buf, size_t len,
@@ -324,6 +423,16 @@ struct wl1271_if_operations {
 	void (*enable_irq)(struct wl1271 *wl);
 	void (*disable_irq)(struct wl1271 *wl);
 	void (*set_block_size) (struct wl1271 *wl, unsigned int blksz);
+=======
+	void (*read)(struct device *child, int addr, void *buf, size_t len,
+		     bool fixed);
+	void (*write)(struct device *child, int addr, void *buf, size_t len,
+		     bool fixed);
+	void (*reset)(struct device *child);
+	void (*init)(struct device *child);
+	int (*power)(struct device *child, bool enable);
+	void (*set_block_size) (struct device *child, unsigned int blksz);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define MAX_NUM_KEYS 14
@@ -340,13 +449,17 @@ struct wl1271_ap_key {
 };
 
 enum wl12xx_flags {
+<<<<<<< HEAD
 	WL1271_FLAG_STA_ASSOCIATED,
 	WL1271_FLAG_JOINED,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	WL1271_FLAG_GPIO_POWER,
 	WL1271_FLAG_TX_QUEUE_STOPPED,
 	WL1271_FLAG_TX_PENDING,
 	WL1271_FLAG_IN_ELP,
 	WL1271_FLAG_ELP_REQUESTED,
+<<<<<<< HEAD
 	WL1271_FLAG_PSM,
 	WL1271_FLAG_PSM_REQUESTED,
 	WL1271_FLAG_IRQ_RUNNING,
@@ -359,12 +472,39 @@ enum wl12xx_flags {
 	WL1271_FLAG_DUMMY_PACKET_PENDING,
 	WL1271_FLAG_SUSPENDED,
 	WL1271_FLAG_PENDING_WORK,
+=======
+	WL1271_FLAG_IRQ_RUNNING,
+	WL1271_FLAG_FW_TX_BUSY,
+	WL1271_FLAG_DUMMY_PACKET_PENDING,
+	WL1271_FLAG_SUSPENDED,
+	WL1271_FLAG_PENDING_WORK,
+	WL1271_FLAG_SOFT_GEMINI,
+	WL1271_FLAG_RECOVERY_IN_PROGRESS,
+	WL1271_FLAG_VIF_CHANGE_IN_PROGRESS,
+	WL1271_FLAG_INTENDED_FW_RECOVERY,
+};
+
+enum wl12xx_vif_flags {
+	WLVIF_FLAG_INITIALIZED,
+	WLVIF_FLAG_STA_ASSOCIATED,
+	WLVIF_FLAG_STA_AUTHORIZED,
+	WLVIF_FLAG_IBSS_JOINED,
+	WLVIF_FLAG_AP_STARTED,
+	WLVIF_FLAG_IN_PS,
+	WLVIF_FLAG_STA_STATE_SENT,
+	WLVIF_FLAG_RX_STREAMING_STARTED,
+	WLVIF_FLAG_PSPOLL_FAILURE,
+	WLVIF_FLAG_CS_PROGRESS,
+	WLVIF_FLAG_AP_PROBE_RESP_SET,
+	WLVIF_FLAG_IN_USE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct wl1271_link {
 	/* AP-mode - TX queue per AC in link */
 	struct sk_buff_head tx_queue[NUM_TX_QUEUES];
 
+<<<<<<< HEAD
 	/* accounting for allocated / available TX blocks in FW */
 	u8 allocated_blks;
 	u8 prev_freed_blks;
@@ -377,6 +517,24 @@ struct wl1271 {
 	struct ieee80211_hw *hw;
 	bool mac80211_registered;
 
+=======
+	/* accounting for allocated / freed packets in FW */
+	u8 allocated_pkts;
+	u8 prev_freed_pkts;
+
+	u8 addr[ETH_ALEN];
+
+	/* bitmap of TIDs where RX BA sessions are active for this link */
+	u8 ba_bitmap;
+};
+
+struct wl1271 {
+	struct ieee80211_hw *hw;
+	bool mac80211_registered;
+
+	struct device *dev;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *if_priv;
 
 	struct wl1271_if_operations *if_ops;
@@ -388,6 +546,12 @@ struct wl1271 {
 	spinlock_t wl_lock;
 
 	enum wl1271_state state;
+<<<<<<< HEAD
+=======
+	enum wl12xx_fw_type fw_type;
+	bool plt;
+	u8 last_vif_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mutex mutex;
 
 	unsigned long flags;
@@ -401,12 +565,16 @@ struct wl1271 {
 
 	u8 *fw;
 	size_t fw_len;
+<<<<<<< HEAD
 	u8 fw_bss_type;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *nvs;
 	size_t nvs_len;
 
 	s8 hw_pg_ver;
 
+<<<<<<< HEAD
 	u8 bssid[ETH_ALEN];
 	u8 mac_addr[ETH_ALEN];
 	u8 bss_type;
@@ -414,27 +582,68 @@ struct wl1271 {
 	u8 ssid[IW_ESSID_MAX_SIZE + 1];
 	u8 ssid_len;
 	int channel;
+=======
+	/* address read from the fuse ROM */
+	u32 fuse_oui_addr;
+	u32 fuse_nic_addr;
+
+	/* we have up to 2 MAC addresses */
+	struct mac_address addresses[2];
+	int channel;
+	u8 system_hlid;
+
+	unsigned long links_map[BITS_TO_LONGS(WL12XX_MAX_LINKS)];
+	unsigned long roles_map[BITS_TO_LONGS(WL12XX_MAX_ROLES)];
+	unsigned long roc_map[BITS_TO_LONGS(WL12XX_MAX_ROLES)];
+	unsigned long rate_policies_map[
+			BITS_TO_LONGS(WL12XX_MAX_RATE_POLICIES)];
+
+	struct list_head wlvif_list;
+
+	u8 sta_count;
+	u8 ap_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct wl1271_acx_mem_map *target_mem_map;
 
 	/* Accounting for allocated / available TX blocks on HW */
+<<<<<<< HEAD
 	u32 tx_blocks_freed[NUM_TX_QUEUES];
+=======
+	u32 tx_blocks_freed;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 tx_blocks_available;
 	u32 tx_allocated_blocks;
 	u32 tx_results_count;
 
+<<<<<<< HEAD
+=======
+	/* amount of spare TX blocks to use */
+	u32 tx_spare_blocks;
+
+	/* Accounting for allocated / available Tx packets in HW */
+	u32 tx_pkts_freed[NUM_TX_QUEUES];
+	u32 tx_allocated_pkts[NUM_TX_QUEUES];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Transmitted TX packets counter for chipset interface */
 	u32 tx_packets_count;
 
 	/* Time-offset between host and chipset clocks */
 	s64 time_offset;
 
+<<<<<<< HEAD
 	/* Session counter for the chipset */
 	int session_counter;
 
 	/* Frames scheduled for transmission, not handled yet */
 	struct sk_buff_head tx_queue[NUM_TX_QUEUES];
 	int tx_queue_count;
+=======
+	/* Frames scheduled for transmission, not handled yet */
+	int tx_queue_count[NUM_TX_QUEUES];
+	long stopped_queues_map;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Frames received, not handled yet by mac80211 */
 	struct sk_buff_head deferred_rx_queue;
@@ -443,16 +652,23 @@ struct wl1271 {
 	struct sk_buff_head deferred_tx_queue;
 
 	struct work_struct tx_work;
+<<<<<<< HEAD
+=======
+	struct workqueue_struct *freezable_wq;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Pending TX frames */
 	unsigned long tx_frames_map[BITS_TO_LONGS(ACX_TX_DESCRIPTORS)];
 	struct sk_buff *tx_frames[ACX_TX_DESCRIPTORS];
 	int tx_frames_cnt;
 
+<<<<<<< HEAD
 	/* Security sequence number counters */
 	u8 tx_security_last_seq;
 	s64 tx_security_seq;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* FW Rx counter */
 	u32 rx_counter;
 
@@ -468,6 +684,18 @@ struct wl1271 {
 	/* Network stack work  */
 	struct work_struct netstack_work;
 
+<<<<<<< HEAD
+=======
+	/* FW log buffer */
+	u8 *fwlog;
+
+	/* Number of valid bytes in the FW log buffer */
+	ssize_t fwlog_size;
+
+	/* Sysfs FW log entry readers wait queue */
+	wait_queue_head_t fwlog_waitq;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Hardware recovery work */
 	struct work_struct recovery_work;
 
@@ -478,11 +706,16 @@ struct wl1271 {
 	u32 mbox_ptr[2];
 
 	/* Are we currently scanning */
+<<<<<<< HEAD
+=======
+	struct ieee80211_vif *scan_vif;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct wl1271_scan scan;
 	struct delayed_work scan_complete_work;
 
 	bool sched_scanning;
 
+<<<<<<< HEAD
 	/* probe-req template for the current AP */
 	struct sk_buff *probereq;
 
@@ -522,24 +755,40 @@ struct wl1271 {
 
 	/* retry counter for PSM entries */
 	u8 psm_entry_retry;
+=======
+	/* The current band */
+	enum ieee80211_band band;
+
+	struct completion *elp_compl;
+	struct delayed_work elp_work;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* in dBm */
 	int power_level;
 
+<<<<<<< HEAD
 	int rssi_thold;
 	int last_rssi_event;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct wl1271_stats stats;
 
 	__le32 buffer_32;
 	u32 buffer_cmd;
 	u32 buffer_busyword[WL1271_BUSY_WORD_CNT];
 
+<<<<<<< HEAD
 	struct wl1271_fw_full_status *fw_status;
 	struct wl1271_tx_hw_res_if *tx_res_if;
 
 	struct ieee80211_vif *vif;
 
+=======
+	struct wl12xx_fw_status *fw_status;
+	struct wl1271_tx_hw_res_if *tx_res_if;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Current chipset configuration */
 	struct conf_drv_settings conf;
 
@@ -547,6 +796,7 @@ struct wl1271 {
 
 	bool enable_11a;
 
+<<<<<<< HEAD
 	struct list_head list;
 
 	/* Most recently reported noise in dBm */
@@ -565,6 +815,14 @@ struct wl1271 {
 	bool ba_support;
 	u8 ba_rx_bitmap;
 
+=======
+	/* Most recently reported noise in dBm */
+	s8 noise;
+
+	/* bands supported by this instance of wl12xx */
+	struct ieee80211_supported_band bands[IEEE80211_NUM_BANDS];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	int tcxo_clock;
 
 	/*
@@ -572,15 +830,23 @@ struct wl1271 {
 	 * (currently, only "ANY" trigger is supported)
 	 */
 	bool wow_enabled;
+<<<<<<< HEAD
+=======
+	bool irq_wake_enabled;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * AP-mode - links indexed by HLID. The global and broadcast links
 	 * are always active.
 	 */
+<<<<<<< HEAD
 	struct wl1271_link links[AP_MAX_LINKS];
 
 	/* the hlid of the link where the last transmitted skb came from */
 	int last_tx_hlid;
+=======
+	struct wl1271_link links[WL12XX_MAX_LINKS];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* AP-mode - a bitmap of links currently in PS mode according to FW */
 	u32 ap_fw_ps_map;
@@ -593,12 +859,28 @@ struct wl1271 {
 
 	/* Platform limitations */
 	unsigned int platform_quirks;
+<<<<<<< HEAD
+=======
+
+	/* number of currently active RX BA sessions */
+	int ba_rx_session_count;
+
+	/* AP-mode - number of currently connected stations */
+	int active_sta_count;
+
+	/* last wlvif we transmitted from */
+	struct wl12xx_vif *last_wlvif;
+
+	/* work to fire when Tx is stuck */
+	struct delayed_work tx_watchdog_work;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct wl1271_station {
 	u8 hlid;
 };
 
+<<<<<<< HEAD
 int wl1271_plt_start(struct wl1271 *wl);
 int wl1271_plt_stop(struct wl1271 *wl);
 
@@ -610,6 +892,171 @@ int wl1271_plt_stop(struct wl1271 *wl);
 
 #define WL1271_TX_QUEUE_LOW_WATERMARK  10
 #define WL1271_TX_QUEUE_HIGH_WATERMARK 25
+=======
+struct wl12xx_vif {
+	struct wl1271 *wl;
+	struct list_head list;
+	unsigned long flags;
+	u8 bss_type;
+	u8 p2p; /* we are using p2p role */
+	u8 role_id;
+
+	/* sta/ibss specific */
+	u8 dev_role_id;
+	u8 dev_hlid;
+
+	union {
+		struct {
+			u8 hlid;
+			u8 ba_rx_bitmap;
+
+			u8 basic_rate_idx;
+			u8 ap_rate_idx;
+			u8 p2p_rate_idx;
+
+			bool qos;
+		} sta;
+		struct {
+			u8 global_hlid;
+			u8 bcast_hlid;
+
+			/* HLIDs bitmap of associated stations */
+			unsigned long sta_hlid_map[BITS_TO_LONGS(
+							WL12XX_MAX_LINKS)];
+
+			/* recoreded keys - set here before AP startup */
+			struct wl1271_ap_key *recorded_keys[MAX_NUM_KEYS];
+
+			u8 mgmt_rate_idx;
+			u8 bcast_rate_idx;
+			u8 ucast_rate_idx[CONF_TX_MAX_AC_COUNT];
+		} ap;
+	};
+
+	/* the hlid of the last transmitted skb */
+	int last_tx_hlid;
+
+	unsigned long links_map[BITS_TO_LONGS(WL12XX_MAX_LINKS)];
+
+	u8 ssid[IEEE80211_MAX_SSID_LEN + 1];
+	u8 ssid_len;
+
+	/* The current band */
+	enum ieee80211_band band;
+	int channel;
+
+	u32 bitrate_masks[IEEE80211_NUM_BANDS];
+	u32 basic_rate_set;
+
+	/*
+	 * currently configured rate set:
+	 *	bits  0-15 - 802.11abg rates
+	 *	bits 16-23 - 802.11n   MCS index mask
+	 * support only 1 stream, thus only 8 bits for the MCS rates (0-7).
+	 */
+	u32 basic_rate;
+	u32 rate_set;
+
+	/* probe-req template for the current AP */
+	struct sk_buff *probereq;
+
+	/* Beaconing interval (needed for ad-hoc) */
+	u32 beacon_int;
+
+	/* Default key (for WEP) */
+	u32 default_key;
+
+	/* Our association ID */
+	u16 aid;
+
+	/* Session counter for the chipset */
+	int session_counter;
+
+	/* retry counter for PSM entries */
+	u8 psm_entry_retry;
+
+	/* in dBm */
+	int power_level;
+
+	int rssi_thold;
+	int last_rssi_event;
+
+	/* save the current encryption type for auto-arp config */
+	u8 encryption_type;
+	__be32 ip_addr;
+
+	/* RX BA constraint value */
+	bool ba_support;
+	bool ba_allowed;
+
+	/* Rx Streaming */
+	struct work_struct rx_streaming_enable_work;
+	struct work_struct rx_streaming_disable_work;
+	struct timer_list rx_streaming_timer;
+
+	/*
+	 * This struct must be last!
+	 * data that has to be saved acrossed reconfigs (e.g. recovery)
+	 * should be declared in this struct.
+	 */
+	struct {
+		u8 persistent[0];
+		/*
+		 * Security sequence number
+		 *     bits 0-15: lower 16 bits part of sequence number
+		 *     bits 16-47: higher 32 bits part of sequence number
+		 *     bits 48-63: not in use
+		 */
+		u64 tx_security_seq;
+
+		/* 8 bits of the last sequence number in use */
+		u8 tx_security_last_seq_lsb;
+	};
+};
+
+static inline struct wl12xx_vif *wl12xx_vif_to_data(struct ieee80211_vif *vif)
+{
+	return (struct wl12xx_vif *)vif->drv_priv;
+}
+
+static inline
+struct ieee80211_vif *wl12xx_wlvif_to_vif(struct wl12xx_vif *wlvif)
+{
+	return container_of((void *)wlvif, struct ieee80211_vif, drv_priv);
+}
+
+#define wl12xx_for_each_wlvif(wl, wlvif) \
+		list_for_each_entry(wlvif, &wl->wlvif_list, list)
+
+#define wl12xx_for_each_wlvif_continue(wl, wlvif) \
+		list_for_each_entry_continue(wlvif, &wl->wlvif_list, list)
+
+#define wl12xx_for_each_wlvif_bss_type(wl, wlvif, _bss_type)	\
+		wl12xx_for_each_wlvif(wl, wlvif)		\
+			if (wlvif->bss_type == _bss_type)
+
+#define wl12xx_for_each_wlvif_sta(wl, wlvif)	\
+		wl12xx_for_each_wlvif_bss_type(wl, wlvif, BSS_TYPE_STA_BSS)
+
+#define wl12xx_for_each_wlvif_ap(wl, wlvif)	\
+		wl12xx_for_each_wlvif_bss_type(wl, wlvif, BSS_TYPE_AP_BSS)
+
+int wl1271_plt_start(struct wl1271 *wl);
+int wl1271_plt_stop(struct wl1271 *wl);
+int wl1271_recalc_rx_streaming(struct wl1271 *wl, struct wl12xx_vif *wlvif);
+void wl12xx_queue_recovery_work(struct wl1271 *wl);
+size_t wl12xx_copy_fwlog(struct wl1271 *wl, u8 *memblock, size_t maxlen);
+
+#define JOIN_TIMEOUT 5000 /* 5000 milliseconds to join */
+
+#define SESSION_COUNTER_MAX 6 /* maximum value for the session counter */
+#define SESSION_COUNTER_INVALID 7 /* used with dummy_packet */
+
+#define WL1271_DEFAULT_POWER_LEVEL 0
+
+#define WL1271_TX_QUEUE_LOW_WATERMARK  32
+#define WL1271_TX_QUEUE_HIGH_WATERMARK 256
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define WL1271_DEFERRED_QUEUE_LIMIT    64
 
@@ -627,6 +1074,7 @@ int wl1271_plt_stop(struct wl1271 *wl);
 /* Each RX/TX transaction requires an end-of-transaction transfer */
 #define WL12XX_QUIRK_END_OF_TRANSACTION		BIT(0)
 
+<<<<<<< HEAD
 /*
  * Older firmwares use 2 spare TX blocks
  * (for STA < 6.1.3.50.58 or for AP < 6.2.0.0.47)
@@ -635,5 +1083,14 @@ int wl1271_plt_stop(struct wl1271 *wl);
 
 /* WL128X requires aggregated packets to be aligned to the SDIO block size */
 #define WL12XX_QUIRK_BLOCKSIZE_ALIGNMENT	BIT(2)
+=======
+/* wl127x and SPI don't support SDIO block size alignment */
+#define WL12XX_QUIRK_NO_BLOCKSIZE_ALIGNMENT	BIT(2)
+
+/* Older firmwares did not implement the FW logger over bus feature */
+#define WL12XX_QUIRK_FWLOG_NOT_IMPLEMENTED	BIT(4)
+
+#define WL12XX_HW_BLOCK_SIZE	256
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

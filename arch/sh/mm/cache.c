@@ -95,7 +95,15 @@ void copy_user_highpage(struct page *to, struct page *from,
 {
 	void *vfrom, *vto;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vto = kmap_atomic(to, KM_USER1);
+=======
+	vto = kmap_atomic(to);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vto = kmap_atomic(to);
+>>>>>>> refs/remotes/origin/master
 
 	if (boot_cpu_data.dcache.n_aliases && page_mapped(from) &&
 	    test_bit(PG_dcache_clean, &from->flags)) {
@@ -103,16 +111,36 @@ void copy_user_highpage(struct page *to, struct page *from,
 		copy_page(vto, vfrom);
 		kunmap_coherent(vfrom);
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		vfrom = kmap_atomic(from, KM_USER0);
 		copy_page(vto, vfrom);
 		kunmap_atomic(vfrom, KM_USER0);
+=======
+		vfrom = kmap_atomic(from);
+		copy_page(vto, vfrom);
+		kunmap_atomic(vfrom);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		vfrom = kmap_atomic(from);
+		copy_page(vto, vfrom);
+		kunmap_atomic(vfrom);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (pages_do_alias((unsigned long)vto, vaddr & PAGE_MASK) ||
 	    (vma->vm_flags & VM_EXEC))
 		__flush_purge_region(vto, PAGE_SIZE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(vto, KM_USER1);
+=======
+	kunmap_atomic(vto);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(vto);
+>>>>>>> refs/remotes/origin/master
 	/* Make sure this page is cleared on other CPU's too before using it */
 	smp_wmb();
 }
@@ -120,14 +148,30 @@ EXPORT_SYMBOL(copy_user_highpage);
 
 void clear_user_highpage(struct page *page, unsigned long vaddr)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void *kaddr = kmap_atomic(page, KM_USER0);
+=======
+	void *kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 
 	clear_page(kaddr);
 
 	if (pages_do_alias((unsigned long)kaddr, vaddr & PAGE_MASK))
 		__flush_purge_region(kaddr, PAGE_SIZE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(clear_user_highpage);
 

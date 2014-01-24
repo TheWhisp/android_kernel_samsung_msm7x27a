@@ -28,6 +28,14 @@
 #define to_sysdev(k) container_of(k, struct sys_device, kobj)
 #define to_sysdev_attr(a) container_of(a, struct sysdev_attribute, attr)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern struct kset *system_kset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct kset *system_kset;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static ssize_t
 sysdev_show(struct kobject *kobj, struct attribute *attr, char *buffer)
@@ -126,8 +134,14 @@ void sysdev_class_remove_file(struct sysdev_class *c,
 }
 EXPORT_SYMBOL_GPL(sysdev_class_remove_file);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct kset *system_kset;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int sysdev_class_register(struct sysdev_class *cls)
 {
 	int retval;
@@ -331,6 +345,8 @@ void sysdev_unregister(struct sys_device *sysdev)
 EXPORT_SYMBOL_GPL(sysdev_register);
 EXPORT_SYMBOL_GPL(sysdev_unregister);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __init system_bus_init(void)
 {
 	system_kset = kset_create_and_add("system", NULL, &devices_kset->kobj);
@@ -339,6 +355,10 @@ int __init system_bus_init(void)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define to_ext_attr(x) container_of(x, struct sysdev_ext_attribute, attr)
 
 ssize_t sysdev_store_ulong(struct sys_device *sysdev,

@@ -444,7 +444,15 @@ static unsigned long __init
 find_bootmap_pfn(const struct resource *mem)
 {
 	unsigned long bootmap_pages, bootmap_len;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long node_pages = PFN_UP(mem->end - mem->start + 1);
+=======
+	unsigned long node_pages = PFN_UP(resource_size(mem));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long node_pages = PFN_UP(resource_size(mem));
+>>>>>>> refs/remotes/origin/master
 	unsigned long bootmap_start;
 
 	bootmap_pages = bootmem_bootmap_pages(node_pages);
@@ -541,10 +549,23 @@ static void __init setup_bootmem(void)
 			 */
 			if (res->start >= PFN_PHYS(first_pfn)
 			    && res->end < PFN_PHYS(max_pfn))
+<<<<<<< HEAD
+<<<<<<< HEAD
 				reserve_bootmem_node(
 					NODE_DATA(node), res->start,
 					res->end - res->start + 1,
 					BOOTMEM_DEFAULT);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				reserve_bootmem_node(NODE_DATA(node),
+						     res->start,
+						     resource_size(res),
+						     BOOTMEM_DEFAULT);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		node_set_online(node);
@@ -555,7 +576,11 @@ void __init setup_arch (char **cmdline_p)
 {
 	struct clk *cpu_clk;
 
+<<<<<<< HEAD
 	init_mm.start_code = (unsigned long)_text;
+=======
+	init_mm.start_code = (unsigned long)_stext;
+>>>>>>> refs/remotes/origin/master
 	init_mm.end_code = (unsigned long)_etext;
 	init_mm.end_data = (unsigned long)_edata;
 	init_mm.brk = (unsigned long)_end;

@@ -4,9 +4,21 @@
  * Provides type definitions and function prototypes used to link the
  * DHD OS, bus, and protocol modules.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -24,7 +36,15 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: dhd_proto.h,v 1.8.10.6 2010-12-22 23:47:24 Exp $
+=======
+ * $Id: dhd_proto.h 303834 2011-12-20 06:17:39Z $
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: dhd_proto.h 303834 2011-12-20 06:17:39Z $
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #ifndef _dhd_proto_h_
@@ -34,8 +54,18 @@
 #include <wlioctl.h>
 
 #ifndef IOCTL_RESP_TIMEOUT
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IOCTL_RESP_TIMEOUT  2000 /* In milli second */
 #endif
+=======
+#define IOCTL_RESP_TIMEOUT  20000 /* In milli second */
+#endif /* IOCTL_RESP_TIMEOUT */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IOCTL_RESP_TIMEOUT  20000 /* In milli second */
+#endif /* IOCTL_RESP_TIMEOUT */
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * Exported from the dhd protocol module (dhd_cdc, dhd_rndis)
@@ -61,7 +91,15 @@ extern void dhd_prot_stop(dhd_pub_t *dhdp);
 extern void dhd_prot_hdrpush(dhd_pub_t *, int ifidx, void *txp);
 
 /* Remove any protocol-specific data header. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int dhd_prot_hdrpull(dhd_pub_t *, int *ifidx, void *rxp);
+=======
+extern int dhd_prot_hdrpull(dhd_pub_t *, int *ifidx, void *rxp, uchar *buf, uint *len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int dhd_prot_hdrpull(dhd_pub_t *, int *ifidx, void *rxp, uchar *buf, uint *len);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Use protocol to issue ioctl to dongle */
 extern int dhd_prot_ioctl(dhd_pub_t *dhd, int ifidx, wl_ioctl_t * ioc, void * buf, int len);
@@ -89,6 +127,19 @@ extern int dhd_wlfc_commit_packets(void* state, f_commitpkt_t fcommit, void* com
 extern void dhd_wlfc_cleanup(dhd_pub_t *dhd);
 #endif /* PROP_TXSTATUS */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+extern int dhd_process_pkt_reorder_info(dhd_pub_t *dhd, uchar *reorder_info_buf,
+	uint reorder_info_len, void **pkt, uint32 *free_buf_count);
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /********************************
  * For version-string expansion *
  */

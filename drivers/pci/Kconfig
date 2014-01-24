@@ -1,6 +1,7 @@
 #
 # PCI configuration
 #
+<<<<<<< HEAD
 config ARCH_SUPPORTS_MSI
 	bool
 	default n
@@ -9,6 +10,11 @@ config PCI_MSI
 	bool "Message Signaled Interrupts (MSI and MSI-X)"
 	depends on PCI
 	depends on ARCH_SUPPORTS_MSI
+=======
+config PCI_MSI
+	bool "Message Signaled Interrupts (MSI and MSI-X)"
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	help
 	   This allows device drivers to enable MSI (Message Signaled
 	   Interrupts).  Message Signaled Interrupts enable a device to
@@ -31,6 +37,28 @@ config PCI_DEBUG
 
 	  When in doubt, say N.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config PCI_REALLOC_ENABLE_AUTO
+	bool "Enable PCI resource re-allocation detection"
+	depends on PCI
+	help
+	  Say Y here if you want the PCI core to detect if PCI resource
+	  re-allocation needs to be enabled. You can always use pci=realloc=on
+          or pci=realloc=off to override it.  Note this feature is a no-op
+          unless PCI_IOV support is also enabled; in that case it will
+          automatically re-allocate PCI resources if SR-IOV BARs have not
+          been allocated by the BIOS.
+
+	  When in doubt, say N.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config PCI_STUB
 	tristate "PCI Stub driver"
 	depends on PCI
@@ -43,7 +71,10 @@ config PCI_STUB
 config XEN_PCIDEV_FRONTEND
         tristate "Xen PCI Frontend"
         depends on PCI && X86 && XEN
+<<<<<<< HEAD
         select HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
         select PCI_XEN
 	select XEN_XENBUS_FRONTEND
         default y
@@ -51,6 +82,8 @@ config XEN_PCIDEV_FRONTEND
           The PCI device frontend driver allows the kernel to import arbitrary
           PCI devices from a PCI backend to support PCI driver domains.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config XEN_PCIDEV_FE_DEBUG
         bool "Xen PCI Frontend debugging"
         depends on XEN_PCIDEV_FRONTEND && PCI_DEBUG
@@ -62,6 +95,10 @@ config XEN_PCIDEV_FE_DEBUG
 
 	  When in doubt, say N.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config HT_IRQ
 	bool "Interrupts on hypertransport devices"
 	default y
@@ -71,9 +108,25 @@ config HT_IRQ
 
 	   If unsure say Y.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config PCI_IOV
 	bool "PCI IOV support"
 	depends on PCI
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config PCI_ATS
+	bool
+
+config PCI_IOV
+	bool "PCI IOV support"
+	depends on PCI
+	select PCI_ATS
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  I/O Virtualization is a PCI feature supported by some devices
 	  which allows them to create virtual devices which share their
@@ -81,13 +134,57 @@ config PCI_IOV
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config PCI_IOAPIC
 	bool
 	depends on PCI
 	depends on ACPI
 	depends on HOTPLUG
 	default y
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config PCI_PRI
+	bool "PCI PRI support"
+	depends on PCI
+	select PCI_ATS
+	help
+	  PRI is the PCI Page Request Interface. It allows PCI devices that are
+	  behind an IOMMU to recover from page faults.
+
+	  If unsure, say N.
+
+config PCI_PASID
+	bool "PCI PASID support"
+	depends on PCI
+	select PCI_ATS
+	help
+	  Process Address Space Identifiers (PASIDs) can be used by PCI devices
+	  to access more than one IO address space at the same time. To make
+	  use of this feature an IOMMU is required which also supports PASIDs.
+	  Select this option if you have such an IOMMU and want to compile the
+	  driver for it into your kernel.
+
+	  If unsure, say N.
+
+config PCI_IOAPIC
+	tristate "PCI IO-APIC hotplug support" if X86
+	depends on PCI
+	depends on ACPI
+<<<<<<< HEAD
+	depends on HOTPLUG
+	default !X86
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default !X86
+>>>>>>> refs/remotes/origin/master
 
 config PCI_LABEL
 	def_bool y if (DMI || ACPI)
 	select NLS
+<<<<<<< HEAD
+=======
+
+source "drivers/pci/host/Kconfig"
+>>>>>>> refs/remotes/origin/master

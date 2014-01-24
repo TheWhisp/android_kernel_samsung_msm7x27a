@@ -28,6 +28,16 @@
 #ifndef _CRYSTALHD_MISC_H_
 #define _CRYSTALHD_MISC_H_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "crystalhd.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "crystalhd.h"
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/errno.h>
@@ -35,7 +45,13 @@
 #include <linux/ioctl.h>
 #include <linux/dma-mapping.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "bc_dts_glob_lnx.h"
 
 /* Global log level variable defined in crystal_misc.c file */
@@ -126,12 +142,25 @@ uint32_t crystalhd_reg_rd(struct crystalhd_adp *, uint32_t);
 void crystalhd_reg_wr(struct crystalhd_adp *, uint32_t, uint32_t);
 
 /*========= Decoder (7412) memory access routines..=================*/
+<<<<<<< HEAD
 enum BC_STATUS crystalhd_mem_rd(struct crystalhd_adp *, uint32_t, uint32_t, uint32_t *);
 enum BC_STATUS crystalhd_mem_wr(struct crystalhd_adp *, uint32_t, uint32_t, uint32_t *);
 
 /*==========Link (70012) PCIe Config access routines.================*/
 enum BC_STATUS crystalhd_pci_cfg_rd(struct crystalhd_adp *, uint32_t, uint32_t, uint32_t *);
 enum BC_STATUS crystalhd_pci_cfg_wr(struct crystalhd_adp *, uint32_t, uint32_t, uint32_t);
+=======
+enum BC_STATUS crystalhd_mem_rd(struct crystalhd_adp *,
+			 uint32_t, uint32_t, uint32_t *);
+enum BC_STATUS crystalhd_mem_wr(struct crystalhd_adp *,
+			 uint32_t, uint32_t, uint32_t *);
+
+/*==========Link (70012) PCIe Config access routines.================*/
+enum BC_STATUS crystalhd_pci_cfg_rd(struct crystalhd_adp *,
+			 uint32_t, uint32_t, uint32_t *);
+enum BC_STATUS crystalhd_pci_cfg_wr(struct crystalhd_adp *,
+			 uint32_t, uint32_t, uint32_t);
+>>>>>>> refs/remotes/origin/master
 
 /*========= Linux Kernel Interface routines. ======================= */
 void *bc_kern_dma_alloc(struct crystalhd_adp *, uint32_t, dma_addr_t *);
@@ -167,6 +196,7 @@ do {									\
 /*================ Direct IO mapping routines ==================*/
 extern int crystalhd_create_dio_pool(struct crystalhd_adp *, uint32_t);
 extern void crystalhd_destroy_dio_pool(struct crystalhd_adp *);
+<<<<<<< HEAD
 extern enum BC_STATUS crystalhd_map_dio(struct crystalhd_adp *, void *, uint32_t,
 				   uint32_t, bool, bool, struct crystalhd_dio_req**);
 
@@ -181,6 +211,28 @@ extern enum BC_STATUS crystalhd_dioq_add(struct crystalhd_dioq *ioq, void *data,
 extern void *crystalhd_dioq_fetch(struct crystalhd_dioq *ioq);
 extern void *crystalhd_dioq_find_and_fetch(struct crystalhd_dioq *ioq, uint32_t tag);
 extern void *crystalhd_dioq_fetch_wait(struct crystalhd_dioq *ioq, uint32_t to_secs, uint32_t *sig_pend);
+=======
+extern enum BC_STATUS crystalhd_map_dio(struct crystalhd_adp *, void *,
+		 uint32_t, uint32_t, bool, bool, struct crystalhd_dio_req**);
+
+extern enum BC_STATUS crystalhd_unmap_dio(struct crystalhd_adp *,
+					 struct crystalhd_dio_req*);
+#define crystalhd_get_sgle_paddr(_dio, _ix) (sg_dma_address(&_dio->sg[_ix]))
+#define crystalhd_get_sgle_len(_dio, _ix) (sg_dma_len(&_dio->sg[_ix]))
+
+/*================ General Purpose Queues ==================*/
+extern enum BC_STATUS crystalhd_create_dioq(struct crystalhd_adp *,
+		 struct crystalhd_dioq **, crystalhd_data_free_cb , void *);
+extern void crystalhd_delete_dioq(struct crystalhd_adp *,
+		 struct crystalhd_dioq *);
+extern enum BC_STATUS crystalhd_dioq_add(struct crystalhd_dioq *ioq,
+		 void *data, bool wake, uint32_t tag);
+extern void *crystalhd_dioq_fetch(struct crystalhd_dioq *ioq);
+extern void *crystalhd_dioq_find_and_fetch(struct crystalhd_dioq *ioq,
+		 uint32_t tag);
+extern void *crystalhd_dioq_fetch_wait(struct crystalhd_dioq *ioq,
+		 uint32_t to_secs, uint32_t *sig_pend);
+>>>>>>> refs/remotes/origin/master
 
 #define crystalhd_dioq_count(_ioq)	((_ioq) ? _ioq->count : 0)
 
@@ -189,17 +241,28 @@ extern void crystalhd_delete_elem_pool(struct crystalhd_adp *);
 
 
 /*================ Debug routines/macros .. ================================*/
+<<<<<<< HEAD
 extern void crystalhd_show_buffer(uint32_t off, uint8_t *buff, uint32_t dwcount);
+=======
+extern void crystalhd_show_buffer(uint32_t off, uint8_t *buff,
+		 uint32_t dwcount);
+>>>>>>> refs/remotes/origin/master
 
 enum _chd_log_levels {
 	BCMLOG_ERROR		= 0x80000000,	/* Don't disable this option */
 	BCMLOG_DATA		= 0x40000000,	/* Data, enable by default */
+<<<<<<< HEAD
 	BCMLOG_SPINLOCK		= 0x20000000,	/* Spcial case for Spin locks*/
+=======
+	BCMLOG_SPINLOCK		= 0x20000000,	/* Special case for Spin locks*/
+>>>>>>> refs/remotes/origin/master
 
 	/* Following are allowed only in debug mode */
 	BCMLOG_INFO		= 0x00000001,	/* Generic informational */
 	BCMLOG_DBG		= 0x00000002,	/* First level Debug info */
 	BCMLOG_SSTEP		= 0x00000004,	/* Stepping information */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BCMLOG_ENTER_LEAVE	= 0x00000008,	/* stack tracking */
 };
 
@@ -224,5 +287,28 @@ do {									\
 		printk("*ERR*:%s:%d: "fmt, __FILE__, __LINE__, ##args);	\
 	}								\
 } while (0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+};
+
+
+#define BCMLOG(trace, fmt, args...)	\
+do {					\
+	if (g_linklog_level & trace)	\
+		printk(fmt, ##args);	\
+} while (0)
+
+
+#define BCMLOG_ERR(fmt, args...)				\
+do {								\
+	if (g_linklog_level & BCMLOG_ERROR)			\
+		printk(KERN_ERR "*ERR*:%s:%d: "fmt,		\
+				__FILE__, __LINE__, ##args);	\
+} while (0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

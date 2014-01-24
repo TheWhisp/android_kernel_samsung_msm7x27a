@@ -61,7 +61,15 @@
 #include "scsiglue.h"
 
 MODULE_DESCRIPTION("Driver for In-System Design, Inc. ISD200 ASIC");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_AUTHOR("Bj�rn Stenberg <bjorn@haxx.se>");
+=======
+MODULE_AUTHOR("Björn Stenberg <bjorn@haxx.se>");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_AUTHOR("Björn Stenberg <bjorn@haxx.se>");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 
 static int isd200_Initialization(struct us_data *us);
@@ -74,16 +82,29 @@ static int isd200_Initialization(struct us_data *us);
 		    vendorName, productName, useProtocol, useTransport, \
 		    initFunction, flags) \
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
+<<<<<<< HEAD
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
+<<<<<<< HEAD
 struct usb_device_id isd200_usb_ids[] = {
+=======
+static struct usb_device_id isd200_usb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  .driver_info = (flags) }
+
+static struct usb_device_id isd200_usb_ids[] = {
+>>>>>>> refs/remotes/origin/master
 #	include "unusual_isd200.h"
 	{ }		/* Terminating entry */
 };
 MODULE_DEVICE_TABLE(usb, isd200_usb_ids);
 
 #undef UNUSUAL_DEV
+<<<<<<< HEAD
 #undef USUAL_DEV
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The flags table
@@ -105,8 +126,11 @@ static struct us_unusual_dev isd200_unusual_dev_list[] = {
 };
 
 #undef UNUSUAL_DEV
+<<<<<<< HEAD
 #undef USUAL_DEV
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Timeout defines (in Seconds) */
 
@@ -506,7 +530,11 @@ static int isd200_action( struct us_data *us, int action,
 
 	switch ( action ) {
 	case ACTION_READ_STATUS:
+<<<<<<< HEAD
 		US_DEBUGP("   isd200_action(READ_STATUS)\n");
+=======
+		usb_stor_dbg(us, "   isd200_action(READ_STATUS)\n");
+>>>>>>> refs/remotes/origin/master
 		ata.generic.ActionSelect = ACTION_SELECT_0|ACTION_SELECT_2;
 		ata.generic.RegisterSelect =
 		  REG_CYLINDER_LOW | REG_CYLINDER_HIGH |
@@ -515,7 +543,11 @@ static int isd200_action( struct us_data *us, int action,
 		break;
 
 	case ACTION_ENUM:
+<<<<<<< HEAD
 		US_DEBUGP("   isd200_action(ENUM,0x%02x)\n",value);
+=======
+		usb_stor_dbg(us, "   isd200_action(ENUM,0x%02x)\n", value);
+>>>>>>> refs/remotes/origin/master
 		ata.generic.ActionSelect = ACTION_SELECT_1|ACTION_SELECT_2|
 					   ACTION_SELECT_3|ACTION_SELECT_4|
 					   ACTION_SELECT_5;
@@ -525,7 +557,11 @@ static int isd200_action( struct us_data *us, int action,
 		break;
 
 	case ACTION_RESET:
+<<<<<<< HEAD
 		US_DEBUGP("   isd200_action(RESET)\n");
+=======
+		usb_stor_dbg(us, "   isd200_action(RESET)\n");
+>>>>>>> refs/remotes/origin/master
 		ata.generic.ActionSelect = ACTION_SELECT_1|ACTION_SELECT_2|
 					   ACTION_SELECT_3|ACTION_SELECT_4;
 		ata.generic.RegisterSelect = REG_DEVICE_CONTROL;
@@ -534,7 +570,11 @@ static int isd200_action( struct us_data *us, int action,
 		break;
 
 	case ACTION_REENABLE:
+<<<<<<< HEAD
 		US_DEBUGP("   isd200_action(REENABLE)\n");
+=======
+		usb_stor_dbg(us, "   isd200_action(REENABLE)\n");
+>>>>>>> refs/remotes/origin/master
 		ata.generic.ActionSelect = ACTION_SELECT_1|ACTION_SELECT_2|
 					   ACTION_SELECT_3|ACTION_SELECT_4;
 		ata.generic.RegisterSelect = REG_DEVICE_CONTROL;
@@ -543,7 +583,11 @@ static int isd200_action( struct us_data *us, int action,
 		break;
 
 	case ACTION_SOFT_RESET:
+<<<<<<< HEAD
 		US_DEBUGP("   isd200_action(SOFT_RESET)\n");
+=======
+		usb_stor_dbg(us, "   isd200_action(SOFT_RESET)\n");
+>>>>>>> refs/remotes/origin/master
 		ata.generic.ActionSelect = ACTION_SELECT_1|ACTION_SELECT_5;
 		ata.generic.RegisterSelect = REG_DEVICE_HEAD | REG_COMMAND;
 		ata.write.DeviceHeadByte = info->DeviceHead;
@@ -552,7 +596,11 @@ static int isd200_action( struct us_data *us, int action,
 		break;
 
 	case ACTION_IDENTIFY:
+<<<<<<< HEAD
 		US_DEBUGP("   isd200_action(IDENTIFY)\n");
+=======
+		usb_stor_dbg(us, "   isd200_action(IDENTIFY)\n");
+>>>>>>> refs/remotes/origin/master
 		ata.generic.RegisterSelect = REG_COMMAND;
 		ata.write.CommandByte = ATA_CMD_ID_ATA;
 		isd200_set_srb(info, DMA_FROM_DEVICE, info->id,
@@ -560,7 +608,11 @@ static int isd200_action( struct us_data *us, int action,
 		break;
 
 	default:
+<<<<<<< HEAD
 		US_DEBUGP("Error: Undefined action %d\n",action);
+=======
+		usb_stor_dbg(us, "Error: Undefined action %d\n", action);
+>>>>>>> refs/remotes/origin/master
 		return ISD200_ERROR;
 	}
 
@@ -570,7 +622,12 @@ static int isd200_action( struct us_data *us, int action,
 	if (status == USB_STOR_TRANSPORT_GOOD)
 		status = ISD200_GOOD;
 	else {
+<<<<<<< HEAD
 		US_DEBUGP("   isd200_action(0x%02x) error: %d\n",action,status);
+=======
+		usb_stor_dbg(us, "   isd200_action(0x%02x) error: %d\n",
+			     action, status);
+>>>>>>> refs/remotes/origin/master
 		status = ISD200_ERROR;
 		/* need to reset device here */
 	}
@@ -592,17 +649,30 @@ static int isd200_read_regs( struct us_data *us )
 	int retStatus = ISD200_GOOD;
 	int transferStatus;
 
+<<<<<<< HEAD
 	US_DEBUGP("Entering isd200_IssueATAReadRegs\n");
+=======
+	usb_stor_dbg(us, "Entering isd200_IssueATAReadRegs\n");
+>>>>>>> refs/remotes/origin/master
 
 	transferStatus = isd200_action( us, ACTION_READ_STATUS,
 				    info->RegsBuf, sizeof(info->ATARegs) );
 	if (transferStatus != ISD200_TRANSPORT_GOOD) {
+<<<<<<< HEAD
 		US_DEBUGP("   Error reading ATA registers\n");
 		retStatus = ISD200_ERROR;
 	} else {
 		memcpy(info->ATARegs, info->RegsBuf, sizeof(info->ATARegs));
 		US_DEBUGP("   Got ATA Register[ATA_REG_ERROR_OFFSET] = 0x%x\n",
 			  info->ATARegs[ATA_REG_ERROR_OFFSET]);
+=======
+		usb_stor_dbg(us, "   Error reading ATA registers\n");
+		retStatus = ISD200_ERROR;
+	} else {
+		memcpy(info->ATARegs, info->RegsBuf, sizeof(info->ATARegs));
+		usb_stor_dbg(us, "   Got ATA Register[ATA_REG_ERROR_OFFSET] = 0x%x\n",
+			     info->ATARegs[ATA_REG_ERROR_OFFSET]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return retStatus;
@@ -632,7 +702,11 @@ static void isd200_invoke_transport( struct us_data *us,
 	 * short-circuit all other processing
 	 */
 	if (test_bit(US_FLIDX_TIMED_OUT, &us->dflags)) {
+<<<<<<< HEAD
 		US_DEBUGP("-- command was aborted\n");
+=======
+		usb_stor_dbg(us, "-- command was aborted\n");
+>>>>>>> refs/remotes/origin/master
 		goto Handle_Abort;
 	}
 
@@ -644,23 +718,39 @@ static void isd200_invoke_transport( struct us_data *us,
 		break;
 
 	case USB_STOR_TRANSPORT_NO_SENSE:
+<<<<<<< HEAD
 		US_DEBUGP("-- transport indicates protocol failure\n");
+=======
+		usb_stor_dbg(us, "-- transport indicates protocol failure\n");
+>>>>>>> refs/remotes/origin/master
 		srb->result = SAM_STAT_CHECK_CONDITION;
 		return;
 
 	case USB_STOR_TRANSPORT_FAILED:
+<<<<<<< HEAD
 		US_DEBUGP("-- transport indicates command failure\n");
+=======
+		usb_stor_dbg(us, "-- transport indicates command failure\n");
+>>>>>>> refs/remotes/origin/master
 		need_auto_sense = 1;
 		break;
 
 	case USB_STOR_TRANSPORT_ERROR:
+<<<<<<< HEAD
 		US_DEBUGP("-- transport indicates transport error\n");
+=======
+		usb_stor_dbg(us, "-- transport indicates transport error\n");
+>>>>>>> refs/remotes/origin/master
 		srb->result = DID_ERROR << 16;
 		/* Need reset here */
 		return;
     
 	default:
+<<<<<<< HEAD
 		US_DEBUGP("-- transport indicates unknown error\n");   
+=======
+		usb_stor_dbg(us, "-- transport indicates unknown error\n");
+>>>>>>> refs/remotes/origin/master
 		srb->result = DID_ERROR << 16;
 		/* Need reset here */
 		return;
@@ -672,14 +762,22 @@ static void isd200_invoke_transport( struct us_data *us,
 	      (srb->cmnd[0] == MODE_SENSE) ||
 	      (srb->cmnd[0] == LOG_SENSE) ||
 	      (srb->cmnd[0] == MODE_SENSE_10))) {
+<<<<<<< HEAD
 		US_DEBUGP("-- unexpectedly short transfer\n");
+=======
+		usb_stor_dbg(us, "-- unexpectedly short transfer\n");
+>>>>>>> refs/remotes/origin/master
 		need_auto_sense = 1;
 	}
 
 	if (need_auto_sense) {
 		result = isd200_read_regs(us);
 		if (test_bit(US_FLIDX_TIMED_OUT, &us->dflags)) {
+<<<<<<< HEAD
 			US_DEBUGP("-- auto-sense aborted\n");
+=======
+			usb_stor_dbg(us, "-- auto-sense aborted\n");
+>>>>>>> refs/remotes/origin/master
 			goto Handle_Abort;
 		}
 		if (result == ISD200_GOOD) {
@@ -713,6 +811,7 @@ static void isd200_invoke_transport( struct us_data *us,
 }
 
 #ifdef CONFIG_USB_STORAGE_DEBUG
+<<<<<<< HEAD
 static void isd200_log_config( struct isd200_info* info )
 {
 	US_DEBUGP("      Event Notification: 0x%x\n", 
@@ -747,6 +846,42 @@ static void isd200_log_config( struct isd200_info* info )
 		  info->ConfigData.ATAExtraConfig & ATACFGE_LAST_LUN);
 	US_DEBUGP("      SRST Enable: 0x%x\n", 
 		  info->ConfigData.ATAExtraConfig & CFG_CAPABILITY_SRST);
+=======
+static void isd200_log_config(struct us_data *us, struct isd200_info *info)
+{
+	usb_stor_dbg(us, "      Event Notification: 0x%x\n",
+		     info->ConfigData.EventNotification);
+	usb_stor_dbg(us, "      External Clock: 0x%x\n",
+		     info->ConfigData.ExternalClock);
+	usb_stor_dbg(us, "      ATA Init Timeout: 0x%x\n",
+		     info->ConfigData.ATAInitTimeout);
+	usb_stor_dbg(us, "      ATAPI Command Block Size: 0x%x\n",
+		     (info->ConfigData.ATAConfig & ATACFG_BLOCKSIZE) >> 6);
+	usb_stor_dbg(us, "      Master/Slave Selection: 0x%x\n",
+		     info->ConfigData.ATAConfig & ATACFG_MASTER);
+	usb_stor_dbg(us, "      ATAPI Reset: 0x%x\n",
+		     info->ConfigData.ATAConfig & ATACFG_ATAPI_RESET);
+	usb_stor_dbg(us, "      ATA Timing: 0x%x\n",
+		     info->ConfigData.ATAConfig & ATACFG_TIMING);
+	usb_stor_dbg(us, "      ATA Major Command: 0x%x\n",
+		     info->ConfigData.ATAMajorCommand);
+	usb_stor_dbg(us, "      ATA Minor Command: 0x%x\n",
+		     info->ConfigData.ATAMinorCommand);
+	usb_stor_dbg(us, "      Init Status: 0x%x\n",
+		     info->ConfigData.ATAExtraConfig & ATACFGE_INIT_STATUS);
+	usb_stor_dbg(us, "      Config Descriptor 2: 0x%x\n",
+		     info->ConfigData.ATAExtraConfig & ATACFGE_CONF_DESC2);
+	usb_stor_dbg(us, "      Skip Device Boot: 0x%x\n",
+		     info->ConfigData.ATAExtraConfig & ATACFGE_SKIP_BOOT);
+	usb_stor_dbg(us, "      ATA 3 State Supsend: 0x%x\n",
+		     info->ConfigData.ATAExtraConfig & ATACFGE_STATE_SUSPEND);
+	usb_stor_dbg(us, "      Descriptor Override: 0x%x\n",
+		     info->ConfigData.ATAExtraConfig & ATACFGE_DESC_OVERRIDE);
+	usb_stor_dbg(us, "      Last LUN Identifier: 0x%x\n",
+		     info->ConfigData.ATAExtraConfig & ATACFGE_LAST_LUN);
+	usb_stor_dbg(us, "      SRST Enable: 0x%x\n",
+		     info->ConfigData.ATAExtraConfig & CFG_CAPABILITY_SRST);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -765,9 +900,15 @@ static int isd200_write_config( struct us_data *us )
 	int result;
 
 #ifdef CONFIG_USB_STORAGE_DEBUG
+<<<<<<< HEAD
 	US_DEBUGP("Entering isd200_write_config\n");
 	US_DEBUGP("   Writing the following ISD200 Config Data:\n");
 	isd200_log_config(info);
+=======
+	usb_stor_dbg(us, "Entering isd200_write_config\n");
+	usb_stor_dbg(us, "   Writing the following ISD200 Config Data:\n");
+	isd200_log_config(us, info);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* let's send the command via the control pipe */
@@ -782,6 +923,7 @@ static int isd200_write_config( struct us_data *us )
 		sizeof(info->ConfigData));
 
 	if (result >= 0) {
+<<<<<<< HEAD
 		US_DEBUGP("   ISD200 Config Data was written successfully\n");
 	} else {
 		US_DEBUGP("   Request to write ISD200 Config Data failed!\n");
@@ -789,6 +931,15 @@ static int isd200_write_config( struct us_data *us )
 	}
 
 	US_DEBUGP("Leaving isd200_write_config %08X\n", retStatus);
+=======
+		usb_stor_dbg(us, "   ISD200 Config Data was written successfully\n");
+	} else {
+		usb_stor_dbg(us, "   Request to write ISD200 Config Data failed!\n");
+		retStatus = ISD200_ERROR;
+	}
+
+	usb_stor_dbg(us, "Leaving isd200_write_config %08X\n", retStatus);
+>>>>>>> refs/remotes/origin/master
 	return retStatus;
 }
 
@@ -807,7 +958,11 @@ static int isd200_read_config( struct us_data *us )
 	int retStatus = ISD200_GOOD;
 	int result;
 
+<<<<<<< HEAD
 	US_DEBUGP("Entering isd200_read_config\n");
+=======
+	usb_stor_dbg(us, "Entering isd200_read_config\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* read the configuration information from ISD200.  Use this to */
 	/* determine what the special ATA CDB bytes are.		*/
@@ -824,6 +979,7 @@ static int isd200_read_config( struct us_data *us )
 
 
 	if (result >= 0) {
+<<<<<<< HEAD
 		US_DEBUGP("   Retrieved the following ISD200 Config Data:\n");
 #ifdef CONFIG_USB_STORAGE_DEBUG
 		isd200_log_config(info);
@@ -834,6 +990,18 @@ static int isd200_read_config( struct us_data *us )
 	}
 
 	US_DEBUGP("Leaving isd200_read_config %08X\n", retStatus);
+=======
+		usb_stor_dbg(us, "   Retrieved the following ISD200 Config Data:\n");
+#ifdef CONFIG_USB_STORAGE_DEBUG
+		isd200_log_config(us, info);
+#endif
+	} else {
+		usb_stor_dbg(us, "   Request to get ISD200 Config Data failed!\n");
+		retStatus = ISD200_ERROR;
+	}
+
+	usb_stor_dbg(us, "Leaving isd200_read_config %08X\n", retStatus);
+>>>>>>> refs/remotes/origin/master
 	return retStatus;
 }
 
@@ -851,6 +1019,7 @@ static int isd200_atapi_soft_reset( struct us_data *us )
 	int retStatus = ISD200_GOOD;
 	int transferStatus;
 
+<<<<<<< HEAD
 	US_DEBUGP("Entering isd200_atapi_soft_reset\n");
 
 	transferStatus = isd200_action( us, ACTION_SOFT_RESET, NULL, 0 );
@@ -860,6 +1029,17 @@ static int isd200_atapi_soft_reset( struct us_data *us )
 	}
 
 	US_DEBUGP("Leaving isd200_atapi_soft_reset %08X\n", retStatus);
+=======
+	usb_stor_dbg(us, "Entering isd200_atapi_soft_reset\n");
+
+	transferStatus = isd200_action( us, ACTION_SOFT_RESET, NULL, 0 );
+	if (transferStatus != ISD200_TRANSPORT_GOOD) {
+		usb_stor_dbg(us, "   Error issuing Atapi Soft Reset\n");
+		retStatus = ISD200_ERROR;
+	}
+
+	usb_stor_dbg(us, "Leaving isd200_atapi_soft_reset %08X\n", retStatus);
+>>>>>>> refs/remotes/origin/master
 	return retStatus;
 }
 
@@ -877,13 +1057,21 @@ static int isd200_srst( struct us_data *us )
 	int retStatus = ISD200_GOOD;
 	int transferStatus;
 
+<<<<<<< HEAD
 	US_DEBUGP("Entering isd200_SRST\n");
+=======
+	usb_stor_dbg(us, "Entering isd200_SRST\n");
+>>>>>>> refs/remotes/origin/master
 
 	transferStatus = isd200_action( us, ACTION_RESET, NULL, 0 );
 
 	/* check to see if this request failed */
 	if (transferStatus != ISD200_TRANSPORT_GOOD) {
+<<<<<<< HEAD
 		US_DEBUGP("   Error issuing SRST\n");
+=======
+		usb_stor_dbg(us, "   Error issuing SRST\n");
+>>>>>>> refs/remotes/origin/master
 		retStatus = ISD200_ERROR;
 	} else {
 		/* delay 10ms to give the drive a chance to see it */
@@ -891,7 +1079,11 @@ static int isd200_srst( struct us_data *us )
 
 		transferStatus = isd200_action( us, ACTION_REENABLE, NULL, 0 );
 		if (transferStatus != ISD200_TRANSPORT_GOOD) {
+<<<<<<< HEAD
 			US_DEBUGP("   Error taking drive out of reset\n");
+=======
+			usb_stor_dbg(us, "   Error taking drive out of reset\n");
+>>>>>>> refs/remotes/origin/master
 			retStatus = ISD200_ERROR;
 		} else {
 			/* delay 50ms to give the drive a chance to recover after SRST */
@@ -899,7 +1091,11 @@ static int isd200_srst( struct us_data *us )
 		}
 	}
 
+<<<<<<< HEAD
 	US_DEBUGP("Leaving isd200_srst %08X\n", retStatus);
+=======
+	usb_stor_dbg(us, "Leaving isd200_srst %08X\n", retStatus);
+>>>>>>> refs/remotes/origin/master
 	return retStatus;
 }
 
@@ -929,10 +1125,13 @@ static int isd200_try_enum(struct us_data *us, unsigned char master_slave,
 
 	/* loop until we detect !BSY or timeout */
 	while(1) {
+<<<<<<< HEAD
 #ifdef CONFIG_USB_STORAGE_DEBUG
 		char* mstr = master_slave == ATA_ADDRESS_DEVHEAD_STD ?
 			"Master" : "Slave";
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 		status = isd200_action( us, ACTION_ENUM, NULL, master_slave );
 		if ( status != ISD200_GOOD )
@@ -945,9 +1144,19 @@ static int isd200_try_enum(struct us_data *us, unsigned char master_slave,
 
 		if (!detect) {
 			if (regs[ATA_REG_STATUS_OFFSET] & ATA_BUSY) {
+<<<<<<< HEAD
 				US_DEBUGP("   %s status is still BSY, try again...\n",mstr);
 			} else {
 				US_DEBUGP("   %s status !BSY, continue with next operation\n",mstr);
+=======
+				usb_stor_dbg(us, "   %s status is still BSY, try again...\n",
+					     master_slave == ATA_ADDRESS_DEVHEAD_STD ?
+					     "Master" : "Slave");
+			} else {
+				usb_stor_dbg(us, "   %s status !BSY, continue with next operation\n",
+					     master_slave == ATA_ADDRESS_DEVHEAD_STD ?
+					     "Master" : "Slave");
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 		}
@@ -956,11 +1165,19 @@ static int isd200_try_enum(struct us_data *us, unsigned char master_slave,
 		/* ATA_ERR (workaround for Archos CD-ROM) */
 		else if (regs[ATA_REG_STATUS_OFFSET] &
 			 (ATA_BUSY | ATA_DF | ATA_ERR)) {
+<<<<<<< HEAD
 			US_DEBUGP("   Status indicates it is not ready, try again...\n");
 		}
 		/* check for DRDY, ATA devices set DRDY after SRST */
 		else if (regs[ATA_REG_STATUS_OFFSET] & ATA_DRDY) {
 			US_DEBUGP("   Identified ATA device\n");
+=======
+			usb_stor_dbg(us, "   Status indicates it is not ready, try again...\n");
+		}
+		/* check for DRDY, ATA devices set DRDY after SRST */
+		else if (regs[ATA_REG_STATUS_OFFSET] & ATA_DRDY) {
+			usb_stor_dbg(us, "   Identified ATA device\n");
+>>>>>>> refs/remotes/origin/master
 			info->DeviceFlags |= DF_ATA_DEVICE;
 			info->DeviceHead = master_slave;
 			break;
@@ -981,27 +1198,45 @@ static int isd200_try_enum(struct us_data *us, unsigned char master_slave,
 			*/
 			if ((master_slave & ATA_ADDRESS_DEVHEAD_SLAVE) &&
 			    !recheckAsMaster) {
+<<<<<<< HEAD
 				US_DEBUGP("   Identified ATAPI device as slave.  Rechecking again as master\n");
 				recheckAsMaster = 1;
 				master_slave = ATA_ADDRESS_DEVHEAD_STD;
 			} else {
 				US_DEBUGP("   Identified ATAPI device\n");
+=======
+				usb_stor_dbg(us, "   Identified ATAPI device as slave.  Rechecking again as master\n");
+				recheckAsMaster = 1;
+				master_slave = ATA_ADDRESS_DEVHEAD_STD;
+			} else {
+				usb_stor_dbg(us, "   Identified ATAPI device\n");
+>>>>>>> refs/remotes/origin/master
 				info->DeviceHead = master_slave;
 			      
 				status = isd200_atapi_soft_reset(us);
 				break;
 			}
 		} else {
+<<<<<<< HEAD
  			US_DEBUGP("   Not ATA, not ATAPI. Weird.\n");
+=======
+			usb_stor_dbg(us, "   Not ATA, not ATAPI - Weird\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
 		/* check for timeout on this request */
 		if (time_after_eq(jiffies, endTime)) {
 			if (!detect)
+<<<<<<< HEAD
 				US_DEBUGP("   BSY check timeout, just continue with next operation...\n");
 			else
 				US_DEBUGP("   Device detect timeout!\n");
+=======
+				usb_stor_dbg(us, "   BSY check timeout, just continue with next operation...\n");
+			else
+				usb_stor_dbg(us, "   Device detect timeout!\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -1023,7 +1258,11 @@ static int isd200_manual_enum(struct us_data *us)
 	struct isd200_info *info = (struct isd200_info *)us->extra;
 	int retStatus = ISD200_GOOD;
 
+<<<<<<< HEAD
 	US_DEBUGP("Entering isd200_manual_enum\n");
+=======
+	usb_stor_dbg(us, "Entering isd200_manual_enum\n");
+>>>>>>> refs/remotes/origin/master
 
 	retStatus = isd200_read_config(us);
 	if (retStatus == ISD200_GOOD) {
@@ -1042,14 +1281,23 @@ static int isd200_manual_enum(struct us_data *us)
 
 		isslave = (info->DeviceHead & ATA_ADDRESS_DEVHEAD_SLAVE) ? 1 : 0;
 		if (!(info->ConfigData.ATAConfig & ATACFG_MASTER)) {
+<<<<<<< HEAD
 			US_DEBUGP("   Setting Master/Slave selection to %d\n", isslave);
+=======
+			usb_stor_dbg(us, "   Setting Master/Slave selection to %d\n",
+				     isslave);
+>>>>>>> refs/remotes/origin/master
 			info->ConfigData.ATAConfig &= 0x3f;
 			info->ConfigData.ATAConfig |= (isslave<<6);
 			retStatus = isd200_write_config(us);
 		}
 	}
 
+<<<<<<< HEAD
 	US_DEBUGP("Leaving isd200_manual_enum %08X\n", retStatus);
+=======
+	usb_stor_dbg(us, "Leaving isd200_manual_enum %08X\n", retStatus);
+>>>>>>> refs/remotes/origin/master
 	return(retStatus);
 }
 
@@ -1067,6 +1315,7 @@ static void isd200_fix_driveid(u16 *id)
 #endif
 }
 
+<<<<<<< HEAD
 static void isd200_dump_driveid(u16 *id)
 {
 	US_DEBUGP("   Identify Data Structure:\n");
@@ -1096,6 +1345,37 @@ static void isd200_dump_driveid(u16 *id)
 	US_DEBUGP("      lba_capacity = 0x%x\n",  ata_id_u32(id, ATA_ID_LBA_CAPACITY));
 	US_DEBUGP("      command_set_1 = 0x%x\n", id[ATA_ID_COMMAND_SET_1]);
 	US_DEBUGP("      command_set_2 = 0x%x\n", id[ATA_ID_COMMAND_SET_2]);
+=======
+static void isd200_dump_driveid(struct us_data *us, u16 *id)
+{
+	usb_stor_dbg(us, "   Identify Data Structure:\n");
+	usb_stor_dbg(us, "      config = 0x%x\n",	id[ATA_ID_CONFIG]);
+	usb_stor_dbg(us, "      cyls = 0x%x\n",		id[ATA_ID_CYLS]);
+	usb_stor_dbg(us, "      heads = 0x%x\n",	id[ATA_ID_HEADS]);
+	usb_stor_dbg(us, "      track_bytes = 0x%x\n",	id[4]);
+	usb_stor_dbg(us, "      sector_bytes = 0x%x\n", id[5]);
+	usb_stor_dbg(us, "      sectors = 0x%x\n",	id[ATA_ID_SECTORS]);
+	usb_stor_dbg(us, "      serial_no[0] = 0x%x\n", *(char *)&id[ATA_ID_SERNO]);
+	usb_stor_dbg(us, "      buf_type = 0x%x\n",	id[20]);
+	usb_stor_dbg(us, "      buf_size = 0x%x\n",	id[ATA_ID_BUF_SIZE]);
+	usb_stor_dbg(us, "      ecc_bytes = 0x%x\n",	id[22]);
+	usb_stor_dbg(us, "      fw_rev[0] = 0x%x\n",	*(char *)&id[ATA_ID_FW_REV]);
+	usb_stor_dbg(us, "      model[0] = 0x%x\n",	*(char *)&id[ATA_ID_PROD]);
+	usb_stor_dbg(us, "      max_multsect = 0x%x\n", id[ATA_ID_MAX_MULTSECT] & 0xff);
+	usb_stor_dbg(us, "      dword_io = 0x%x\n",	id[ATA_ID_DWORD_IO]);
+	usb_stor_dbg(us, "      capability = 0x%x\n",	id[ATA_ID_CAPABILITY] >> 8);
+	usb_stor_dbg(us, "      tPIO = 0x%x\n",	  id[ATA_ID_OLD_PIO_MODES] >> 8);
+	usb_stor_dbg(us, "      tDMA = 0x%x\n",	  id[ATA_ID_OLD_DMA_MODES] >> 8);
+	usb_stor_dbg(us, "      field_valid = 0x%x\n",	id[ATA_ID_FIELD_VALID]);
+	usb_stor_dbg(us, "      cur_cyls = 0x%x\n",	id[ATA_ID_CUR_CYLS]);
+	usb_stor_dbg(us, "      cur_heads = 0x%x\n",	id[ATA_ID_CUR_HEADS]);
+	usb_stor_dbg(us, "      cur_sectors = 0x%x\n",	id[ATA_ID_CUR_SECTORS]);
+	usb_stor_dbg(us, "      cur_capacity = 0x%x\n", ata_id_u32(id, 57));
+	usb_stor_dbg(us, "      multsect = 0x%x\n",	id[ATA_ID_MULTSECT] & 0xff);
+	usb_stor_dbg(us, "      lba_capacity = 0x%x\n", ata_id_u32(id, ATA_ID_LBA_CAPACITY));
+	usb_stor_dbg(us, "      command_set_1 = 0x%x\n", id[ATA_ID_COMMAND_SET_1]);
+	usb_stor_dbg(us, "      command_set_2 = 0x%x\n", id[ATA_ID_COMMAND_SET_2]);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**************************************************************************
@@ -1112,7 +1392,11 @@ static int isd200_get_inquiry_data( struct us_data *us )
 	int retStatus = ISD200_GOOD;
 	u16 *id = info->id;
 
+<<<<<<< HEAD
 	US_DEBUGP("Entering isd200_get_inquiry_data\n");
+=======
+	usb_stor_dbg(us, "Entering isd200_get_inquiry_data\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* set default to Master */
 	info->DeviceHead = ATA_ADDRESS_DEVHEAD_STD;
@@ -1130,7 +1414,11 @@ static int isd200_get_inquiry_data( struct us_data *us )
 							id, ATA_ID_WORDS * 2);
 			if (transferStatus != ISD200_TRANSPORT_GOOD) {
 				/* Error issuing ATA Command Identify */
+<<<<<<< HEAD
 				US_DEBUGP("   Error issuing ATA Command Identify\n");
+=======
+				usb_stor_dbg(us, "   Error issuing ATA Command Identify\n");
+>>>>>>> refs/remotes/origin/master
 				retStatus = ISD200_ERROR;
 			} else {
 				/* ATA Command Identify successful */
@@ -1139,7 +1427,11 @@ static int isd200_get_inquiry_data( struct us_data *us )
 				__u16 *dest;
 
 				isd200_fix_driveid(id);
+<<<<<<< HEAD
 				isd200_dump_driveid(id);
+=======
+				isd200_dump_driveid(us, id);
+>>>>>>> refs/remotes/origin/master
 
 				memset(&info->InquiryData, 0, sizeof(info->InquiryData));
 
@@ -1173,7 +1465,11 @@ static int isd200_get_inquiry_data( struct us_data *us )
 
 				/* determine if it supports Media Status Notification */
 				if (id[ATA_ID_COMMAND_SET_2] & COMMANDSET_MEDIA_STATUS) {
+<<<<<<< HEAD
 					US_DEBUGP("   Device supports Media Status Notification\n");
+=======
+					usb_stor_dbg(us, "   Device supports Media Status Notification\n");
+>>>>>>> refs/remotes/origin/master
 
 					/* Indicate that it is enabled, even though it is not
 					 * This allows the lock/unlock of the media to work
@@ -1193,7 +1489,12 @@ static int isd200_get_inquiry_data( struct us_data *us )
 			us->protocol_name = "Transparent SCSI";
 			us->proto_handler = usb_stor_transparent_scsi_command;
 
+<<<<<<< HEAD
 			US_DEBUGP("Protocol changed to: %s\n", us->protocol_name);
+=======
+			usb_stor_dbg(us, "Protocol changed to: %s\n",
+				     us->protocol_name);
+>>>>>>> refs/remotes/origin/master
 	    
 			/* Free driver structure */	    
 			us->extra_destructor(info);
@@ -1203,7 +1504,11 @@ static int isd200_get_inquiry_data( struct us_data *us )
 		}
 	}
 
+<<<<<<< HEAD
 	US_DEBUGP("Leaving isd200_get_inquiry_data %08X\n", retStatus);
+=======
+	usb_stor_dbg(us, "Leaving isd200_get_inquiry_data %08X\n", retStatus);
+>>>>>>> refs/remotes/origin/master
 
 	return(retStatus);
 }
@@ -1234,7 +1539,11 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
 	/* SCSI Command */
 	switch (srb->cmnd[0]) {
 	case INQUIRY:
+<<<<<<< HEAD
 		US_DEBUGP("   ATA OUT - INQUIRY\n");
+=======
+		usb_stor_dbg(us, "   ATA OUT - INQUIRY\n");
+>>>>>>> refs/remotes/origin/master
 
 		/* copy InquiryData */
 		usb_stor_set_xfer_buf((unsigned char *) &info->InquiryData,
@@ -1244,7 +1553,11 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
 		break;
 
 	case MODE_SENSE:
+<<<<<<< HEAD
 		US_DEBUGP("   ATA OUT - SCSIOP_MODE_SENSE\n");
+=======
+		usb_stor_dbg(us, "   ATA OUT - SCSIOP_MODE_SENSE\n");
+>>>>>>> refs/remotes/origin/master
 
 		/* Initialize the return buffer */
 		usb_stor_set_xfer_buf(senseData, sizeof(senseData), srb);
@@ -1258,14 +1571,22 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
 			ataCdb->write.CommandByte = ATA_COMMAND_GET_MEDIA_STATUS;
 			isd200_srb_set_bufflen(srb, 0);
 		} else {
+<<<<<<< HEAD
 			US_DEBUGP("   Media Status not supported, just report okay\n");
+=======
+			usb_stor_dbg(us, "   Media Status not supported, just report okay\n");
+>>>>>>> refs/remotes/origin/master
 			srb->result = SAM_STAT_GOOD;
 			sendToTransport = 0;
 		}
 		break;
 
 	case TEST_UNIT_READY:
+<<<<<<< HEAD
 		US_DEBUGP("   ATA OUT - SCSIOP_TEST_UNIT_READY\n");
+=======
+		usb_stor_dbg(us, "   ATA OUT - SCSIOP_TEST_UNIT_READY\n");
+>>>>>>> refs/remotes/origin/master
 
 		if (info->DeviceFlags & DF_MEDIA_STATUS_ENABLED)
 		{
@@ -1276,7 +1597,11 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
 			ataCdb->write.CommandByte = ATA_COMMAND_GET_MEDIA_STATUS;
 			isd200_srb_set_bufflen(srb, 0);
 		} else {
+<<<<<<< HEAD
 			US_DEBUGP("   Media Status not supported, just report okay\n");
+=======
+			usb_stor_dbg(us, "   Media Status not supported, just report okay\n");
+>>>>>>> refs/remotes/origin/master
 			srb->result = SAM_STAT_GOOD;
 			sendToTransport = 0;
 		}
@@ -1287,7 +1612,11 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
 		unsigned long capacity;
 		struct read_capacity_data readCapacityData;
 
+<<<<<<< HEAD
 		US_DEBUGP("   ATA OUT - SCSIOP_READ_CAPACITY\n");
+=======
+		usb_stor_dbg(us, "   ATA OUT - SCSIOP_READ_CAPACITY\n");
+>>>>>>> refs/remotes/origin/master
 
 		if (ata_id_has_lba(id))
 			capacity = ata_id_u32(id, ATA_ID_LBA_CAPACITY) - 1;
@@ -1306,7 +1635,11 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
 	break;
 
 	case READ_10:
+<<<<<<< HEAD
 		US_DEBUGP("   ATA OUT - SCSIOP_READ\n");
+=======
+		usb_stor_dbg(us, "   ATA OUT - SCSIOP_READ\n");
+>>>>>>> refs/remotes/origin/master
 
 		lba = be32_to_cpu(*(__be32 *)&srb->cmnd[2]);
 		blockCount = (unsigned long)srb->cmnd[7]<<8 | (unsigned long)srb->cmnd[8];
@@ -1338,7 +1671,11 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
 		break;
 
 	case WRITE_10:
+<<<<<<< HEAD
 		US_DEBUGP("   ATA OUT - SCSIOP_WRITE\n");
+=======
+		usb_stor_dbg(us, "   ATA OUT - SCSIOP_WRITE\n");
+>>>>>>> refs/remotes/origin/master
 
 		lba = be32_to_cpu(*(__be32 *)&srb->cmnd[2]);
 		blockCount = (unsigned long)srb->cmnd[7]<<8 | (unsigned long)srb->cmnd[8];
@@ -1370,10 +1707,18 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
 		break;
 
 	case ALLOW_MEDIUM_REMOVAL:
+<<<<<<< HEAD
 		US_DEBUGP("   ATA OUT - SCSIOP_MEDIUM_REMOVAL\n");
 
 		if (info->DeviceFlags & DF_REMOVABLE_MEDIA) {
 			US_DEBUGP("   srb->cmnd[4] = 0x%X\n", srb->cmnd[4]);
+=======
+		usb_stor_dbg(us, "   ATA OUT - SCSIOP_MEDIUM_REMOVAL\n");
+
+		if (info->DeviceFlags & DF_REMOVABLE_MEDIA) {
+			usb_stor_dbg(us, "   srb->cmnd[4] = 0x%X\n",
+				     srb->cmnd[4]);
+>>>>>>> refs/remotes/origin/master
 	    
 			ataCdb->generic.SignatureByte0 = info->ConfigData.ATAMajorCommand;
 			ataCdb->generic.SignatureByte1 = info->ConfigData.ATAMinorCommand;
@@ -1383,25 +1728,41 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
 				ATA_CMD_MEDIA_LOCK : ATA_CMD_MEDIA_UNLOCK;
 			isd200_srb_set_bufflen(srb, 0);
 		} else {
+<<<<<<< HEAD
 			US_DEBUGP("   Not removeable media, just report okay\n");
+=======
+			usb_stor_dbg(us, "   Not removeable media, just report okay\n");
+>>>>>>> refs/remotes/origin/master
 			srb->result = SAM_STAT_GOOD;
 			sendToTransport = 0;
 		}
 		break;
 
 	case START_STOP:    
+<<<<<<< HEAD
 		US_DEBUGP("   ATA OUT - SCSIOP_START_STOP_UNIT\n");
 		US_DEBUGP("   srb->cmnd[4] = 0x%X\n", srb->cmnd[4]);
 
 		if ((srb->cmnd[4] & 0x3) == 0x2) {
 			US_DEBUGP("   Media Eject\n");
+=======
+		usb_stor_dbg(us, "   ATA OUT - SCSIOP_START_STOP_UNIT\n");
+		usb_stor_dbg(us, "   srb->cmnd[4] = 0x%X\n", srb->cmnd[4]);
+
+		if ((srb->cmnd[4] & 0x3) == 0x2) {
+			usb_stor_dbg(us, "   Media Eject\n");
+>>>>>>> refs/remotes/origin/master
 			ataCdb->generic.SignatureByte0 = info->ConfigData.ATAMajorCommand;
 			ataCdb->generic.SignatureByte1 = info->ConfigData.ATAMinorCommand;
 			ataCdb->generic.TransferBlockSize = 0;
 			ataCdb->generic.RegisterSelect = REG_COMMAND;
 			ataCdb->write.CommandByte = ATA_COMMAND_MEDIA_EJECT;
 		} else if ((srb->cmnd[4] & 0x3) == 0x1) {
+<<<<<<< HEAD
 			US_DEBUGP("   Get Media Status\n");
+=======
+			usb_stor_dbg(us, "   Get Media Status\n");
+>>>>>>> refs/remotes/origin/master
 			ataCdb->generic.SignatureByte0 = info->ConfigData.ATAMajorCommand;
 			ataCdb->generic.SignatureByte1 = info->ConfigData.ATAMinorCommand;
 			ataCdb->generic.TransferBlockSize = 1;
@@ -1409,14 +1770,23 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
 			ataCdb->write.CommandByte = ATA_COMMAND_GET_MEDIA_STATUS;
 			isd200_srb_set_bufflen(srb, 0);
 		} else {
+<<<<<<< HEAD
 			US_DEBUGP("   Nothing to do, just report okay\n");
+=======
+			usb_stor_dbg(us, "   Nothing to do, just report okay\n");
+>>>>>>> refs/remotes/origin/master
 			srb->result = SAM_STAT_GOOD;
 			sendToTransport = 0;
 		}
 		break;
 
 	default:
+<<<<<<< HEAD
 		US_DEBUGP("Unsupported SCSI command - 0x%X\n", srb->cmnd[0]);
+=======
+		usb_stor_dbg(us, "Unsupported SCSI command - 0x%X\n",
+			     srb->cmnd[0]);
+>>>>>>> refs/remotes/origin/master
 		srb->result = DID_ERROR << 16;
 		sendToTransport = 0;
 		break;
@@ -1460,8 +1830,12 @@ static int isd200_init_info(struct us_data *us)
 		retStatus = ISD200_ERROR;
 	else {
 		info->id = kzalloc(ATA_ID_WORDS * 2, GFP_KERNEL);
+<<<<<<< HEAD
 		info->RegsBuf = (unsigned char *)
 				kmalloc(sizeof(info->ATARegs), GFP_KERNEL);
+=======
+		info->RegsBuf = kmalloc(sizeof(info->ATARegs), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		info->srb.sense_buffer =
 				kmalloc(SCSI_SENSE_BUFFERSIZE, GFP_KERNEL);
 		if (!info->id || !info->RegsBuf || !info->srb.sense_buffer) {
@@ -1474,8 +1848,12 @@ static int isd200_init_info(struct us_data *us)
 	if (retStatus == ISD200_GOOD) {
 		us->extra = info;
 		us->extra_destructor = isd200_free_info_ptrs;
+<<<<<<< HEAD
 	} else
 		US_DEBUGP("ERROR - kmalloc failure\n");
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return retStatus;
 }
@@ -1486,19 +1864,33 @@ static int isd200_init_info(struct us_data *us)
 
 static int isd200_Initialization(struct us_data *us)
 {
+<<<<<<< HEAD
 	US_DEBUGP("ISD200 Initialization...\n");
+=======
+	usb_stor_dbg(us, "ISD200 Initialization...\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize ISD200 info struct */
 
 	if (isd200_init_info(us) == ISD200_ERROR) {
+<<<<<<< HEAD
 		US_DEBUGP("ERROR Initializing ISD200 Info struct\n");
+=======
+		usb_stor_dbg(us, "ERROR Initializing ISD200 Info struct\n");
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* Get device specific data */
 
 		if (isd200_get_inquiry_data(us) != ISD200_GOOD)
+<<<<<<< HEAD
 			US_DEBUGP("ISD200 Initialization Failure\n");
 		else
 			US_DEBUGP("ISD200 Initialization complete\n");
+=======
+			usb_stor_dbg(us, "ISD200 Initialization Failure\n");
+		else
+			usb_stor_dbg(us, "ISD200 Initialization complete\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -1523,7 +1915,11 @@ static void isd200_ata_command(struct scsi_cmnd *srb, struct us_data *us)
 	/* Make sure driver was initialized */
 
 	if (us->extra == NULL)
+<<<<<<< HEAD
 		US_DEBUGP("ERROR Driver not initialized\n");
+=======
+		usb_stor_dbg(us, "ERROR Driver not initialized\n");
+>>>>>>> refs/remotes/origin/master
 
 	scsi_set_resid(srb, 0);
 	/* scsi_bufflen might change in protocol translation to ata */
@@ -1566,6 +1962,8 @@ static struct usb_driver isd200_driver = {
 	.post_reset =	usb_stor_post_reset,
 	.id_table =	isd200_usb_ids,
 	.soft_unbind =	1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static int __init isd200_init(void)
@@ -1580,3 +1978,14 @@ static void __exit isd200_exit(void)
 
 module_init(isd200_init);
 module_exit(isd200_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.no_dynamic_id = 1,
+};
+
+module_usb_driver(isd200_driver);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

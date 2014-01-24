@@ -85,12 +85,32 @@ struct cmd_buf {
 };
 
 #define HIF_USB_START BIT(0)
+<<<<<<< HEAD
 
 struct hif_device_usb {
+<<<<<<< HEAD
 	u16 device_id;
 	struct usb_device *udev;
 	struct usb_interface *interface;
 	const struct firmware *firmware;
+=======
+	struct usb_device *udev;
+	struct usb_interface *interface;
+	const struct usb_device_id *usb_device_id;
+	const struct firmware *firmware;
+	struct completion fw_done;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HIF_USB_READY BIT(1)
+
+struct hif_device_usb {
+	struct usb_device *udev;
+	struct usb_interface *interface;
+	const struct usb_device_id *usb_device_id;
+	const void *fw_data;
+	size_t fw_size;
+	struct completion fw_done;
+>>>>>>> refs/remotes/origin/master
 	struct htc_target *htc_handle;
 	struct hif_usb_tx tx;
 	struct usb_anchor regout_submitted;

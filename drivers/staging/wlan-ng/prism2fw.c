@@ -123,6 +123,7 @@ struct imgchunk {
 /* s-record image processing */
 
 /* Data records */
+<<<<<<< HEAD
 unsigned int ns3data;
 struct s3datarec s3data[S3DATA_MAX];
 
@@ -144,6 +145,29 @@ u32 startaddr;
 /* Load image chunks */
 unsigned int nfchunks;
 struct imgchunk fchunk[CHUNKS_MAX];
+=======
+static unsigned int ns3data;
+static struct s3datarec s3data[S3DATA_MAX];
+
+/* Plug records */
+static unsigned int ns3plug;
+static struct s3plugrec s3plug[S3PLUG_MAX];
+
+/* CRC records */
+static unsigned int ns3crc;
+static struct s3crcrec s3crc[S3CRC_MAX];
+
+/* Info records */
+static unsigned int ns3info;
+static struct s3inforec s3info[S3INFO_MAX];
+
+/* S7 record (there _better_ be only one) */
+static u32 startaddr;
+
+/* Load image chunks */
+static unsigned int nfchunks;
+static struct imgchunk fchunk[CHUNKS_MAX];
+>>>>>>> refs/remotes/origin/master
 
 /* Note that for the following pdrec_t arrays, the len and code */
 /*   fields are stored in HOST byte order. The mkpdrlist() function */
@@ -151,11 +175,19 @@ struct imgchunk fchunk[CHUNKS_MAX];
 /*----------------------------------------------------------------*/
 /* PDA, built from [card|newfile]+[addfile1+addfile2...] */
 
+<<<<<<< HEAD
 struct pda pda;
 hfa384x_compident_t nicid;
 hfa384x_caplevel_t rfid;
 hfa384x_caplevel_t macid;
 hfa384x_caplevel_t priid;
+=======
+static struct pda pda;
+static hfa384x_compident_t nicid;
+static hfa384x_caplevel_t rfid;
+static hfa384x_caplevel_t macid;
+static hfa384x_caplevel_t priid;
+>>>>>>> refs/remotes/origin/master
 
 /*================================================================*/
 /* Local Function Declarations */
@@ -172,7 +204,11 @@ static int read_cardpda(struct pda *pda, wlandevice_t *wlandev);
 static int mkpdrlist(struct pda *pda);
 
 static int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
+<<<<<<< HEAD
 	      struct s3plugrec *s3plug, unsigned int ns3plug, struct pda * pda);
+=======
+	      struct s3plugrec *s3plug, unsigned int ns3plug, struct pda *pda);
+>>>>>>> refs/remotes/origin/master
 
 static int crcimage(struct imgchunk *fchunk, unsigned int nfchunks,
 	     struct s3crcrec *s3crc, unsigned int ns3crc);
@@ -207,7 +243,12 @@ int prism2_fwtry(struct usb_device *udev, wlandevice_t *wlandev)
 
 	printk(KERN_INFO "prism2_usb: Checking for firmware %s\n",
 	       PRISM2_USB_FWFILE);
+<<<<<<< HEAD
 	if (request_ihex_firmware(&fw_entry, PRISM2_USB_FWFILE, &udev->dev) != 0) {
+=======
+	if (request_ihex_firmware(&fw_entry,
+				  PRISM2_USB_FWFILE, &udev->dev) != 0) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_INFO
 		       "prism2_usb: Firmware not available, but not essential\n");
 		printk(KERN_INFO
@@ -236,7 +277,11 @@ int prism2_fwtry(struct usb_device *udev, wlandevice_t *wlandev)
 *	0	- success
 *	~0	- failure
 ----------------------------------------------------------------*/
+<<<<<<< HEAD
 int prism2_fwapply(const struct ihex_binrec *rfptr, wlandevice_t *wlandev)
+=======
+static int prism2_fwapply(const struct ihex_binrec *rfptr, wlandevice_t *wlandev)
+>>>>>>> refs/remotes/origin/master
 {
 	signed int result = 0;
 	struct p80211msg_dot11req_mibget getmsg;
@@ -375,7 +420,11 @@ int prism2_fwapply(const struct ihex_binrec *rfptr, wlandevice_t *wlandev)
 *	0	success
 *	~0	failure
 ----------------------------------------------------------------*/
+<<<<<<< HEAD
 int crcimage(struct imgchunk *fchunk, unsigned int nfchunks,
+=======
+static int crcimage(struct imgchunk *fchunk, unsigned int nfchunks,
+>>>>>>> refs/remotes/origin/master
 	     struct s3crcrec *s3crc, unsigned int ns3crc)
 {
 	int result = 0;
@@ -439,12 +488,27 @@ int crcimage(struct imgchunk *fchunk, unsigned int nfchunks,
 * Returns:
 *	nothing
 ----------------------------------------------------------------*/
+<<<<<<< HEAD
 void free_chunks(struct imgchunk *fchunk, unsigned int *nfchunks)
 {
 	int i;
+<<<<<<< HEAD
 	for (i = 0; i < *nfchunks; i++) {
 		kfree(fchunk[i].data);
 	}
+=======
+	for (i = 0; i < *nfchunks; i++)
+		kfree(fchunk[i].data);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void free_chunks(struct imgchunk *fchunk, unsigned int *nfchunks)
+{
+	int i;
+	for (i = 0; i < *nfchunks; i++)
+		kfree(fchunk[i].data);
+
+>>>>>>> refs/remotes/origin/master
 	*nfchunks = 0;
 	memset(fchunk, 0, sizeof(*fchunk));
 
@@ -461,7 +525,11 @@ void free_chunks(struct imgchunk *fchunk, unsigned int *nfchunks)
 * Returns:
 *	nothing
 ----------------------------------------------------------------*/
+<<<<<<< HEAD
 void free_srecs(void)
+=======
+static void free_srecs(void)
+>>>>>>> refs/remotes/origin/master
 {
 	ns3data = 0;
 	memset(s3data, 0, sizeof(s3data));
@@ -488,7 +556,11 @@ void free_srecs(void)
 *	0	- success
 *	~0	- failure (probably an errno)
 ----------------------------------------------------------------*/
+<<<<<<< HEAD
 int mkimage(struct imgchunk *clist, unsigned int *ccnt)
+=======
+static int mkimage(struct imgchunk *clist, unsigned int *ccnt)
+>>>>>>> refs/remotes/origin/master
 {
 	int result = 0;
 	int i;
@@ -581,7 +653,11 @@ int mkimage(struct imgchunk *clist, unsigned int *ccnt)
 *	0	- success
 *	~0	- failure (probably an errno)
 ----------------------------------------------------------------*/
+<<<<<<< HEAD
 int mkpdrlist(struct pda *pda)
+=======
+static int mkpdrlist(struct pda *pda)
+>>>>>>> refs/remotes/origin/master
 {
 	int result = 0;
 	u16 *pda16 = (u16 *) pda->buf;
@@ -593,7 +669,12 @@ int mkpdrlist(struct pda *pda)
 	       le16_to_cpu(pda16[curroff + 1]) != HFA384x_PDR_END_OF_PDA) {
 		pda->rec[pda->nrec] = (hfa384x_pdrec_t *) &(pda16[curroff]);
 
+<<<<<<< HEAD
 		if (le16_to_cpu(pda->rec[pda->nrec]->code) == HFA384x_PDR_NICID) {
+=======
+		if (le16_to_cpu(pda->rec[pda->nrec]->code) ==
+		    HFA384x_PDR_NICID) {
+>>>>>>> refs/remotes/origin/master
 			memcpy(&nicid, &pda->rec[pda->nrec]->data.nicid,
 			       sizeof(nicid));
 			nicid.id = le16_to_cpu(nicid.id);
@@ -654,8 +735,13 @@ int mkpdrlist(struct pda *pda)
 *	0	success
 *	~0	failure
 ----------------------------------------------------------------*/
+<<<<<<< HEAD
 int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
 	      struct s3plugrec *s3plug, unsigned int ns3plug, struct pda * pda)
+=======
+static int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
+	      struct s3plugrec *s3plug, unsigned int ns3plug, struct pda *pda)
+>>>>>>> refs/remotes/origin/master
 {
 	int result = 0;
 	int i;			/* plug index */
@@ -762,7 +848,11 @@ int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
 *	0	- success
 *	~0	- failure (probably an errno)
 ----------------------------------------------------------------*/
+<<<<<<< HEAD
 int read_cardpda(struct pda *pda, wlandevice_t *wlandev)
+=======
+static int read_cardpda(struct pda *pda, wlandevice_t *wlandev)
+>>>>>>> refs/remotes/origin/master
 {
 	int result = 0;
 	struct p80211msg_p2req_readpda msg;
@@ -804,7 +894,11 @@ int read_cardpda(struct pda *pda, wlandevice_t *wlandev)
 *
 * Note also that the start address record, originally an S7 record in
 * the srec file, is expected in the fw file to be like a data record but
+<<<<<<< HEAD
 * with a certain address to make it identiable.
+=======
+* with a certain address to make it identifiable.
+>>>>>>> refs/remotes/origin/master
 *
 * Here's the SREC format that the fw should have come from:
 * S[37]nnaaaaaaaaddd...dddcc
@@ -852,7 +946,11 @@ int read_cardpda(struct pda *pda, wlandevice_t *wlandev)
 *	0	- success
 *	~0	- failure (probably an errno)
 ----------------------------------------------------------------*/
+<<<<<<< HEAD
 int read_fwfile(const struct ihex_binrec *record)
+=======
+static int read_fwfile(const struct ihex_binrec *record)
+>>>>>>> refs/remotes/origin/master
 {
 	int		i;
 	int		rcnt = 0;
@@ -976,6 +1074,7 @@ int read_fwfile(const struct ihex_binrec *record)
 *	0	success
 *	~0	failure
 ----------------------------------------------------------------*/
+<<<<<<< HEAD
 int writeimage(wlandevice_t *wlandev, struct imgchunk *fchunk,
 	       unsigned int nfchunks)
 {
@@ -983,6 +1082,14 @@ int writeimage(wlandevice_t *wlandev, struct imgchunk *fchunk,
 	struct p80211msg_p2req_ramdl_state rstatemsg;
 	struct p80211msg_p2req_ramdl_write rwritemsg;
 	struct p80211msg *msgp;
+=======
+static int writeimage(wlandevice_t *wlandev, struct imgchunk *fchunk,
+	       unsigned int nfchunks)
+{
+	int result = 0;
+	struct p80211msg_p2req_ramdl_state *rstmsg;
+	struct p80211msg_p2req_ramdl_write *rwrmsg;
+>>>>>>> refs/remotes/origin/master
 	u32 resultcode;
 	int i;
 	int j;
@@ -991,6 +1098,7 @@ int writeimage(wlandevice_t *wlandev, struct imgchunk *fchunk,
 	u32 currlen;
 	u32 currdaddr;
 
+<<<<<<< HEAD
 	/* Initialize the messages */
 	memset(&rstatemsg, 0, sizeof(rstatemsg));
 	strcpy(rstatemsg.devname, wlandev->name);
@@ -1030,18 +1138,80 @@ int writeimage(wlandevice_t *wlandev, struct imgchunk *fchunk,
 
 	msgp = (struct p80211msg *) &rstatemsg;
 	result = prism2mgmt_ramdl_state(wlandev, msgp);
+=======
+	rstmsg = kmalloc(sizeof(*rstmsg), GFP_KERNEL);
+	rwrmsg = kmalloc(sizeof(*rwrmsg), GFP_KERNEL);
+	if (!rstmsg || !rwrmsg) {
+		kfree(rstmsg);
+		kfree(rwrmsg);
+		printk(KERN_ERR
+		       "writeimage: no memory for firmware download, "
+		       "aborting download\n");
+		return -ENOMEM;
+	}
+
+	/* Initialize the messages */
+	memset(rstmsg, 0, sizeof(*rstmsg));
+	strcpy(rstmsg->devname, wlandev->name);
+	rstmsg->msgcode = DIDmsg_p2req_ramdl_state;
+	rstmsg->msglen = sizeof(*rstmsg);
+	rstmsg->enable.did = DIDmsg_p2req_ramdl_state_enable;
+	rstmsg->exeaddr.did = DIDmsg_p2req_ramdl_state_exeaddr;
+	rstmsg->resultcode.did = DIDmsg_p2req_ramdl_state_resultcode;
+	rstmsg->enable.status = P80211ENUM_msgitem_status_data_ok;
+	rstmsg->exeaddr.status = P80211ENUM_msgitem_status_data_ok;
+	rstmsg->resultcode.status = P80211ENUM_msgitem_status_no_value;
+	rstmsg->enable.len = sizeof(u32);
+	rstmsg->exeaddr.len = sizeof(u32);
+	rstmsg->resultcode.len = sizeof(u32);
+
+	memset(rwrmsg, 0, sizeof(*rwrmsg));
+	strcpy(rwrmsg->devname, wlandev->name);
+	rwrmsg->msgcode = DIDmsg_p2req_ramdl_write;
+	rwrmsg->msglen = sizeof(*rwrmsg);
+	rwrmsg->addr.did = DIDmsg_p2req_ramdl_write_addr;
+	rwrmsg->len.did = DIDmsg_p2req_ramdl_write_len;
+	rwrmsg->data.did = DIDmsg_p2req_ramdl_write_data;
+	rwrmsg->resultcode.did = DIDmsg_p2req_ramdl_write_resultcode;
+	rwrmsg->addr.status = P80211ENUM_msgitem_status_data_ok;
+	rwrmsg->len.status = P80211ENUM_msgitem_status_data_ok;
+	rwrmsg->data.status = P80211ENUM_msgitem_status_data_ok;
+	rwrmsg->resultcode.status = P80211ENUM_msgitem_status_no_value;
+	rwrmsg->addr.len = sizeof(u32);
+	rwrmsg->len.len = sizeof(u32);
+	rwrmsg->data.len = WRITESIZE_MAX;
+	rwrmsg->resultcode.len = sizeof(u32);
+
+	/* Send xxx_state(enable) */
+	pr_debug("Sending dl_state(enable) message.\n");
+	rstmsg->enable.data = P80211ENUM_truth_true;
+	rstmsg->exeaddr.data = startaddr;
+
+	result = prism2mgmt_ramdl_state(wlandev, rstmsg);
+>>>>>>> refs/remotes/origin/master
 	if (result) {
 		printk(KERN_ERR
 		       "writeimage state enable failed w/ result=%d, "
 		       "aborting download\n", result);
+<<<<<<< HEAD
 		return result;
 	}
 	resultcode = rstatemsg.resultcode.data;
+=======
+		goto free_result;
+	}
+	resultcode = rstmsg->resultcode.data;
+>>>>>>> refs/remotes/origin/master
 	if (resultcode != P80211ENUM_resultcode_success) {
 		printk(KERN_ERR
 		       "writeimage()->xxxdl_state msg indicates failure, "
 		       "w/ resultcode=%d, aborting download.\n", resultcode);
+<<<<<<< HEAD
 		return 1;
+=======
+		result = 1;
+		goto free_result;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Now, loop through the data chunks and send WRITESIZE_MAX data */
@@ -1059,9 +1229,15 @@ int writeimage(wlandevice_t *wlandev, struct imgchunk *fchunk,
 			curroff = j * WRITESIZE_MAX;
 			currdaddr = fchunk[i].addr + curroff;
 			/* Setup the message */
+<<<<<<< HEAD
 			rwritemsg.addr.data = currdaddr;
 			rwritemsg.len.data = currlen;
 			memcpy(rwritemsg.data.data,
+=======
+			rwrmsg->addr.data = currdaddr;
+			rwrmsg->len.data = currlen;
+			memcpy(rwrmsg->data.data,
+>>>>>>> refs/remotes/origin/master
 			       fchunk[i].data + curroff, currlen);
 
 			/* Send flashdl_write(pda) */
@@ -1069,23 +1245,38 @@ int writeimage(wlandevice_t *wlandev, struct imgchunk *fchunk,
 			    ("Sending xxxdl_write message addr=%06x len=%d.\n",
 			     currdaddr, currlen);
 
+<<<<<<< HEAD
 			msgp = (struct p80211msg *) &rwritemsg;
 			result = prism2mgmt_ramdl_write(wlandev, msgp);
+=======
+			result = prism2mgmt_ramdl_write(wlandev, rwrmsg);
+>>>>>>> refs/remotes/origin/master
 
 			/* Check the results */
 			if (result) {
 				printk(KERN_ERR
 				       "writeimage chunk write failed w/ result=%d, "
 				       "aborting download\n", result);
+<<<<<<< HEAD
 				return result;
 			}
 			resultcode = rstatemsg.resultcode.data;
+=======
+				goto free_result;
+			}
+			resultcode = rstmsg->resultcode.data;
+>>>>>>> refs/remotes/origin/master
 			if (resultcode != P80211ENUM_resultcode_success) {
 				printk(KERN_ERR
 				       "writeimage()->xxxdl_write msg indicates failure, "
 				       "w/ resultcode=%d, aborting download.\n",
 				       resultcode);
+<<<<<<< HEAD
 				return 1;
+=======
+				result = 1;
+				goto free_result;
+>>>>>>> refs/remotes/origin/master
 			}
 
 		}
@@ -1093,28 +1284,55 @@ int writeimage(wlandevice_t *wlandev, struct imgchunk *fchunk,
 
 	/* Send xxx_state(disable) */
 	pr_debug("Sending dl_state(disable) message.\n");
+<<<<<<< HEAD
 	rstatemsg.enable.data = P80211ENUM_truth_false;
 	rstatemsg.exeaddr.data = 0;
 
 	msgp = (struct p80211msg *) &rstatemsg;
 	result = prism2mgmt_ramdl_state(wlandev, msgp);
+=======
+	rstmsg->enable.data = P80211ENUM_truth_false;
+	rstmsg->exeaddr.data = 0;
+
+	result = prism2mgmt_ramdl_state(wlandev, rstmsg);
+>>>>>>> refs/remotes/origin/master
 	if (result) {
 		printk(KERN_ERR
 		       "writeimage state disable failed w/ result=%d, "
 		       "aborting download\n", result);
+<<<<<<< HEAD
 		return result;
 	}
 	resultcode = rstatemsg.resultcode.data;
+=======
+		goto free_result;
+	}
+	resultcode = rstmsg->resultcode.data;
+>>>>>>> refs/remotes/origin/master
 	if (resultcode != P80211ENUM_resultcode_success) {
 		printk(KERN_ERR
 		       "writeimage()->xxxdl_state msg indicates failure, "
 		       "w/ resultcode=%d, aborting download.\n", resultcode);
+<<<<<<< HEAD
 		return 1;
 	}
 	return result;
 }
 
 int validate_identity(void)
+=======
+		result = 1;
+		goto free_result;
+	}
+
+free_result:
+	kfree(rstmsg);
+	kfree(rwrmsg);
+	return result;
+}
+
+static int validate_identity(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int result = 1;

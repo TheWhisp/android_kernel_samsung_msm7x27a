@@ -3,7 +3,15 @@
  * Copyright (C) 2007 David S. Miller <davem@davemloft.net>
  */
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 
 #include <asm/hypervisor.h>
@@ -45,6 +53,10 @@ static struct api_info api_table[] = {
 	{ .group = HV_GRP_NIU,					},
 	{ .group = HV_GRP_VF_CPU,				},
 	{ .group = HV_GRP_KT_CPU,				},
+<<<<<<< HEAD
+=======
+	{ .group = HV_GRP_VT_CPU,				},
+>>>>>>> refs/remotes/origin/master
 	{ .group = HV_GRP_DIAG,		.flags = FLAG_PRE_API	},
 };
 
@@ -193,7 +205,11 @@ void __init sun4v_hvapi_init(void)
 
 bad:
 	prom_printf("HVAPI: Cannot register API group "
+<<<<<<< HEAD
 		    "%lx with major(%u) minor(%u)\n",
+=======
+		    "%lx with major(%lu) minor(%lu)\n",
+>>>>>>> refs/remotes/origin/master
 		    group, major, minor);
 	prom_halt();
 }

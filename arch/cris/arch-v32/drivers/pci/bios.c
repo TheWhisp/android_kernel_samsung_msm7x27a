@@ -2,6 +2,7 @@
 #include <linux/kernel.h>
 #include <arch/hwregs/intr_vect.h>
 
+<<<<<<< HEAD
 void __devinit  pcibios_fixup_bus(struct pci_bus *b)
 {
 }
@@ -11,6 +12,12 @@ char * __devinit  pcibios_setup(char *str)
 	return NULL;
 }
 
+=======
+void pcibios_fixup_bus(struct pci_bus *b)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 void pcibios_set_master(struct pci_dev *dev)
 {
 	u8 lat;
@@ -102,6 +109,7 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
 		pcibios_enable_irq(dev);
 	return 0;
 }
+<<<<<<< HEAD
 
 int pcibios_assign_resources(void)
 {
@@ -127,3 +135,5 @@ int pcibios_assign_resources(void)
 }
 
 EXPORT_SYMBOL(pcibios_assign_resources);
+=======
+>>>>>>> refs/remotes/origin/master

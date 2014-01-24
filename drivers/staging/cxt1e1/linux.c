@@ -16,6 +16,14 @@
 
 #include <linux/types.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/hdlc.h>
 #include <linux/if_arp.h>
 #include <linux/init.h>
@@ -51,12 +59,15 @@
 
 /*****************************************************************************************/
 
+<<<<<<< HEAD
 #ifdef SBE_INCLUDE_SYMBOLS
 #define STATIC
 #else
 #define STATIC  static
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define CHANNAME "hdlc"
 
 /*******************************************************************/
@@ -138,12 +149,20 @@ getuserbychan (int channum)
     mch_t      *ch;
 
     ch = c4_find_chan (channum);
+<<<<<<< HEAD
     return ch ? ch->user : 0;
+=======
+    return ch ? ch->user : NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 
 char       *
+<<<<<<< HEAD
 get_hdlc_name (hdlc_device * hdlc)
+=======
+get_hdlc_name (hdlc_device *hdlc)
+>>>>>>> refs/remotes/origin/master
 {
     struct c4_priv *priv = hdlc->priv;
     struct net_device *dev = getuserbychan (priv->channum);
@@ -184,7 +203,11 @@ mkret (int bsd)
  * within a port's group.
  */
 void
+<<<<<<< HEAD
 c4_wk_chan_restart (mch_t * ch)
+=======
+c4_wk_chan_restart (mch_t *ch)
+>>>>>>> refs/remotes/origin/master
 {
     mpi_t      *pi = ch->up;
 
@@ -202,7 +225,11 @@ c4_wk_chan_restart (mch_t * ch)
 }
 
 status_t
+<<<<<<< HEAD
 c4_wk_chan_init (mpi_t * pi, mch_t * ch)
+=======
+c4_wk_chan_init (mpi_t *pi, mch_t *ch)
+>>>>>>> refs/remotes/origin/master
 {
     /*
      * this will be used to restart a stopped channel
@@ -217,7 +244,11 @@ c4_wk_chan_init (mpi_t * pi, mch_t * ch)
 }
 
 status_t
+<<<<<<< HEAD
 c4_wq_port_init (mpi_t * pi)
+=======
+c4_wq_port_init (mpi_t *pi)
+>>>>>>> refs/remotes/origin/master
 {
 
     char        name[16], *np;  /* NOTE: name of the queue limited by system
@@ -235,12 +266,20 @@ c4_wq_port_init (mpi_t * pi)
             __func__, name, pi->portnum); /* RLD DEBUG */
 #endif
     if (!(pi->wq_port = create_singlethread_workqueue (name)))
+<<<<<<< HEAD
         return ENOMEM;
+=======
+        return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
     return 0;                       /* success */
 }
 
 void
+<<<<<<< HEAD
 c4_wq_port_cleanup (mpi_t * pi)
+=======
+c4_wq_port_cleanup (mpi_t *pi)
+>>>>>>> refs/remotes/origin/master
 {
     /*
      * PORT POINT: cannot call this if WQ is statically allocated w/in
@@ -250,7 +289,11 @@ c4_wq_port_cleanup (mpi_t * pi)
     {
         destroy_workqueue (pi->wq_port);        /* this also calls
                                                  * flush_workqueue() */
+<<<<<<< HEAD
         pi->wq_port = 0;
+=======
+        pi->wq_port = NULL;
+>>>>>>> refs/remotes/origin/master
     }
 }
 
@@ -277,15 +320,24 @@ c4_ebus_interrupt (int irq, void *dev_instance)
 
 
 static int
+<<<<<<< HEAD
 void_open (struct net_device * ndev)
+=======
+void_open (struct net_device *ndev)
+>>>>>>> refs/remotes/origin/master
 {
     pr_info("%s: trying to open master device !\n", ndev->name);
     return -1;
 }
 
 
+<<<<<<< HEAD
 STATIC int
 chan_open (struct net_device * ndev)
+=======
+static int
+chan_open (struct net_device *ndev)
+>>>>>>> refs/remotes/origin/master
 {
     hdlc_device *hdlc = dev_to_hdlc (ndev);
     const struct c4_priv *priv = hdlc->priv;
@@ -304,8 +356,13 @@ chan_open (struct net_device * ndev)
 }
 
 
+<<<<<<< HEAD
 STATIC int
 chan_close (struct net_device * ndev)
+=======
+static int
+chan_close (struct net_device *ndev)
+>>>>>>> refs/remotes/origin/master
 {
     hdlc_device *hdlc = dev_to_hdlc (ndev);
     const struct c4_priv *priv = hdlc->priv;
@@ -318,23 +375,38 @@ chan_close (struct net_device * ndev)
 }
 
 
+<<<<<<< HEAD
 STATIC int
 chan_dev_ioctl (struct net_device * dev, struct ifreq * ifr, int cmd)
+=======
+static int
+chan_dev_ioctl (struct net_device *dev, struct ifreq *ifr, int cmd)
+>>>>>>> refs/remotes/origin/master
 {
     return hdlc_ioctl (dev, ifr, cmd);
 }
 
 
+<<<<<<< HEAD
 STATIC int
 chan_attach_noop (struct net_device * ndev, unsigned short foo_1, unsigned short foo_2)
+=======
+static int
+chan_attach_noop (struct net_device *ndev, unsigned short foo_1, unsigned short foo_2)
+>>>>>>> refs/remotes/origin/master
 {
     return 0;                   /* our driver has nothing to do here, show's
                                  * over, go home */
 }
 
 
+<<<<<<< HEAD
 STATIC struct net_device_stats *
 chan_get_stats (struct net_device * ndev)
+=======
+static struct net_device_stats *
+chan_get_stats (struct net_device *ndev)
+>>>>>>> refs/remotes/origin/master
 {
     mch_t      *ch;
     struct net_device_stats *nstats;
@@ -387,14 +459,23 @@ chan_get_stats (struct net_device * ndev)
 
 
 static ci_t *
+<<<<<<< HEAD
 get_ci_by_dev (struct net_device * ndev)
+=======
+get_ci_by_dev (struct net_device *ndev)
+>>>>>>> refs/remotes/origin/master
 {
     return (ci_t *)(netdev_priv(ndev));
 }
 
 
+<<<<<<< HEAD
 STATIC int
 c4_linux_xmit (struct sk_buff * skb, struct net_device * ndev)
+=======
+static int
+c4_linux_xmit (struct sk_buff *skb, struct net_device *ndev)
+>>>>>>> refs/remotes/origin/master
 {
     const struct c4_priv *priv;
     int         rval;
@@ -404,7 +485,11 @@ c4_linux_xmit (struct sk_buff * skb, struct net_device * ndev)
     priv = hdlc->priv;
 
     rval = musycc_start_xmit (priv->ci, priv->channum, skb);
+<<<<<<< HEAD
     return -rval;
+=======
+    return rval;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct net_device_ops chan_ops = {
@@ -415,9 +500,15 @@ static const struct net_device_ops chan_ops = {
        .ndo_get_stats  = chan_get_stats,
 };
 
+<<<<<<< HEAD
 STATIC struct net_device *
 create_chan (struct net_device * ndev, ci_t * ci,
              struct sbecom_chan_param * cp)
+=======
+static struct net_device *
+create_chan (struct net_device *ndev, ci_t *ci,
+             struct sbecom_chan_param *cp)
+>>>>>>> refs/remotes/origin/master
 {
     hdlc_device *hdlc;
     struct net_device *dev;
@@ -425,7 +516,11 @@ create_chan (struct net_device * ndev, ci_t * ci,
     int         ret;
 
     if (c4_find_chan (cp->channum))
+<<<<<<< HEAD
         return 0;                   /* channel already exists */
+=======
+        return NULL;                   /* channel already exists */
+>>>>>>> refs/remotes/origin/master
 
     {
         struct c4_priv *priv;
@@ -435,14 +530,22 @@ create_chan (struct net_device * ndev, ci_t * ci,
         if (!priv)
         {
             pr_warning("%s: no memory for net_device !\n", ci->devname);
+<<<<<<< HEAD
             return 0;
+=======
+	    return NULL;
+>>>>>>> refs/remotes/origin/master
         }
         dev = alloc_hdlcdev (priv);
         if (!dev)
         {
             pr_warning("%s: no memory for hdlc_device !\n", ci->devname);
             OS_kfree (priv);
+<<<<<<< HEAD
             return 0;
+=======
+	    return NULL;
+>>>>>>> refs/remotes/origin/master
         }
         priv->ci = ci;
         priv->channum = cp->channum;
@@ -501,15 +604,24 @@ create_chan (struct net_device * ndev, ci_t * ci,
             pr_info("%s: create_chan[%d] registration error = %d.\n",
                     ci->devname, cp->channum, ret);
         free_netdev (dev);          /* cleanup */
+<<<<<<< HEAD
         return 0;                   /* failed to register */
+=======
+	return NULL;		/* failed to register */
+>>>>>>> refs/remotes/origin/master
     }
     return dev;
 }
 
 
 /* the idea here is to get port information and pass it back (using pointer) */
+<<<<<<< HEAD
 STATIC      status_t
 do_get_port (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_get_port (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     int         ret;
     ci_t       *ci;             /* ci stands for card information */
@@ -533,8 +645,13 @@ do_get_port (struct net_device * ndev, void *data)
 }
 
 /* this function copys the user data and then calls the real action function */
+<<<<<<< HEAD
 STATIC      status_t
 do_set_port (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_set_port (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     ci_t       *ci;             /* ci stands for card information */
     struct sbecom_port_param pp;/* copy data to kernel land */
@@ -555,8 +672,13 @@ do_set_port (struct net_device * ndev, void *data)
 }
 
 /* work the port loopback mode as per directed */
+<<<<<<< HEAD
 STATIC      status_t
 do_port_loop (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_port_loop (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     struct sbecom_port_param pp;
     ci_t       *ci;
@@ -570,8 +692,13 @@ do_port_loop (struct net_device * ndev, void *data)
 }
 
 /* set the specified register with the given value / or just read it */
+<<<<<<< HEAD
 STATIC      status_t
 do_framer_rw (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_framer_rw (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     struct sbecom_port_param pp;
     ci_t       *ci;
@@ -591,8 +718,13 @@ do_framer_rw (struct net_device * ndev, void *data)
 }
 
 /* set the specified register with the given value / or just read it */
+<<<<<<< HEAD
 STATIC      status_t
 do_pld_rw (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_pld_rw (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     struct sbecom_port_param pp;
     ci_t       *ci;
@@ -612,8 +744,13 @@ do_pld_rw (struct net_device * ndev, void *data)
 }
 
 /* set the specified register with the given value / or just read it */
+<<<<<<< HEAD
 STATIC      status_t
 do_musycc_rw (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_musycc_rw (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     struct c4_musycc_param mp;
     ci_t       *ci;
@@ -632,8 +769,13 @@ do_musycc_rw (struct net_device * ndev, void *data)
     return 0;
 }
 
+<<<<<<< HEAD
 STATIC      status_t
 do_get_chan (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_get_chan (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     struct sbecom_chan_param cp;
     int         ret;
@@ -650,8 +792,13 @@ do_get_chan (struct net_device * ndev, void *data)
     return 0;
 }
 
+<<<<<<< HEAD
 STATIC      status_t
 do_set_chan (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_set_chan (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     struct sbecom_chan_param cp;
     int         ret;
@@ -671,8 +818,13 @@ do_set_chan (struct net_device * ndev, void *data)
     }
 }
 
+<<<<<<< HEAD
 STATIC      status_t
 do_create_chan (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_create_chan (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     ci_t       *ci;
     struct net_device *dev;
@@ -698,8 +850,13 @@ do_create_chan (struct net_device * ndev, void *data)
     return ret;
 }
 
+<<<<<<< HEAD
 STATIC      status_t
 do_get_chan_stats (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_get_chan_stats (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     struct c4_chan_stats_wrap ccs;
     int         ret;
@@ -719,8 +876,13 @@ do_get_chan_stats (struct net_device * ndev, void *data)
         return -EFAULT;
     return 0;
 }
+<<<<<<< HEAD
 STATIC      status_t
 do_set_loglevel (struct net_device * ndev, void *data)
+=======
+static      status_t
+do_set_loglevel (struct net_device *ndev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     unsigned int cxt1e1_log_level;
 
@@ -730,8 +892,13 @@ do_set_loglevel (struct net_device * ndev, void *data)
     return 0;
 }
 
+<<<<<<< HEAD
 STATIC      status_t
 do_deluser (struct net_device * ndev, int lockit)
+=======
+static      status_t
+do_deluser (struct net_device *ndev, int lockit)
+>>>>>>> refs/remotes/origin/master
 {
     if (ndev->flags & IFF_UP)
         return -EBUSY;
@@ -749,7 +916,11 @@ do_deluser (struct net_device * ndev, int lockit)
         ch = c4_find_chan (channum);
         if (ch == NULL)
             return -ENOENT;
+<<<<<<< HEAD
         ch->user = 0;               /* will be freed, below */
+=======
+	ch->user = NULL;	/* will be freed, below */
+>>>>>>> refs/remotes/origin/master
     }
 
     if (lockit)
@@ -762,7 +933,11 @@ do_deluser (struct net_device * ndev, int lockit)
 }
 
 int
+<<<<<<< HEAD
 do_del_chan (struct net_device * musycc_dev, void *data)
+=======
+do_del_chan (struct net_device *musycc_dev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     struct sbecom_chan_param cp;
     char        buf[sizeof (CHANNAME) + 3];
@@ -772,7 +947,13 @@ do_del_chan (struct net_device * musycc_dev, void *data)
     if (copy_from_user (&cp, data,
                         sizeof (struct sbecom_chan_param)))
         return -EFAULT;
+<<<<<<< HEAD
     sprintf (buf, CHANNAME "%d", cp.channum);
+=======
+    if (cp.channum > 999)
+        return -EINVAL;
+    snprintf (buf, sizeof(buf), CHANNAME "%d", cp.channum);
+>>>>>>> refs/remotes/origin/master
     if (!(dev = dev_get_by_name (&init_net, buf)))
         return -ENOENT;
     dev_put (dev);
@@ -784,7 +965,11 @@ do_del_chan (struct net_device * musycc_dev, void *data)
 int         c4_reset_board (void *);
 
 int
+<<<<<<< HEAD
 do_reset (struct net_device * musycc_dev, void *data)
+=======
+do_reset (struct net_device *musycc_dev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     const struct c4_priv *priv;
     int         i;
@@ -813,7 +998,11 @@ do_reset (struct net_device * musycc_dev, void *data)
 }
 
 int
+<<<<<<< HEAD
 do_reset_chan_stats (struct net_device * musycc_dev, void *data)
+=======
+do_reset_chan_stats (struct net_device *musycc_dev, void *data)
+>>>>>>> refs/remotes/origin/master
 {
     struct sbecom_chan_param cp;
 
@@ -823,8 +1012,13 @@ do_reset_chan_stats (struct net_device * musycc_dev, void *data)
     return mkret (c4_del_chan_stats (cp.channum));
 }
 
+<<<<<<< HEAD
 STATIC      status_t
 c4_ioctl (struct net_device * ndev, struct ifreq * ifr, int cmd)
+=======
+static      status_t
+c4_ioctl (struct net_device *ndev, struct ifreq *ifr, int cmd)
+>>>>>>> refs/remotes/origin/master
 {
     ci_t       *ci;
     void       *data;
@@ -951,7 +1145,11 @@ static void c4_setup(struct net_device *dev)
 }
 
 struct net_device *__init
+<<<<<<< HEAD
 c4_add_dev (hdw_info_t * hi, int brdno, unsigned long f0, unsigned long f1,
+=======
+c4_add_dev (hdw_info_t *hi, int brdno, unsigned long f0, unsigned long f1,
+>>>>>>> refs/remotes/origin/master
             int irq0, int irq1)
 {
     struct net_device *ndev;
@@ -962,7 +1160,11 @@ c4_add_dev (hdw_info_t * hi, int brdno, unsigned long f0, unsigned long f1,
     {
         pr_warning("%s: no memory for struct net_device !\n", hi->devname);
         error_flag = ENOMEM;
+<<<<<<< HEAD
         return 0;
+=======
+	return NULL;
+>>>>>>> refs/remotes/origin/master
     }
     ci = (ci_t *)(netdev_priv(ndev));
     ndev->irq = irq0;
@@ -973,7 +1175,11 @@ c4_add_dev (hdw_info_t * hi, int brdno, unsigned long f0, unsigned long f1,
     c4_list = ci;
     ci->brdno = ci->next ? ci->next->brdno + 1 : 0;
 
+<<<<<<< HEAD
     if (CI == 0)
+=======
+    if (!CI)
+>>>>>>> refs/remotes/origin/master
         CI = ci;                    /* DEBUG, only board 0 usage */
 
     strcpy (ci->devname, hi->devname);
@@ -999,7 +1205,11 @@ c4_add_dev (hdw_info_t * hi, int brdno, unsigned long f0, unsigned long f1,
         OS_kfree (netdev_priv(ndev));
         OS_kfree (ndev);
         error_flag = ENODEV;
+<<<<<<< HEAD
         return 0;
+=======
+	return NULL;
+>>>>>>> refs/remotes/origin/master
     }
     /*************************************************************
      *  int request_irq(unsigned int irq,
@@ -1017,6 +1227,8 @@ c4_add_dev (hdw_info_t * hi, int brdno, unsigned long f0, unsigned long f1,
      **************************************************************/
 
     if (request_irq (irq0, &c4_linux_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(SBE_ISR_TASKLET)
                      IRQF_DISABLED | IRQF_SHARED,
 #elif defined(SBE_ISR_IMMEDIATE)
@@ -1024,6 +1236,12 @@ c4_add_dev (hdw_info_t * hi, int brdno, unsigned long f0, unsigned long f1,
 #elif defined(SBE_ISR_INLINE)
                      IRQF_SHARED,
 #endif
+=======
+                     IRQF_SHARED,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+                     IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
                      ndev->name, ndev))
     {
         pr_warning("%s: MUSYCC could not get irq: %d\n", ndev->name, irq0);
@@ -1031,7 +1249,11 @@ c4_add_dev (hdw_info_t * hi, int brdno, unsigned long f0, unsigned long f1,
         OS_kfree (netdev_priv(ndev));
         OS_kfree (ndev);
         error_flag = EIO;
+<<<<<<< HEAD
         return 0;
+=======
+	return NULL;
+>>>>>>> refs/remotes/origin/master
     }
 #ifdef CONFIG_SBE_PMCC4_NCOMM
     if (request_irq (irq1, &c4_ebus_interrupt, IRQF_SHARED, ndev->name, ndev))
@@ -1042,7 +1264,11 @@ c4_add_dev (hdw_info_t * hi, int brdno, unsigned long f0, unsigned long f1,
         OS_kfree (netdev_priv(ndev));
         OS_kfree (ndev);
         error_flag = EIO;
+<<<<<<< HEAD
         return 0;
+=======
+	return NULL;
+>>>>>>> refs/remotes/origin/master
     }
 #endif
 
@@ -1100,12 +1326,20 @@ c4_add_dev (hdw_info_t * hi, int brdno, unsigned long f0, unsigned long f1,
         free_irq (irq0, ndev);
         OS_kfree (netdev_priv(ndev));
         OS_kfree (ndev);
+<<<<<<< HEAD
         return 0;                   /* failure, error_flag is set */
+=======
+	return NULL;		/* failure, error_flag is set */
+>>>>>>> refs/remotes/origin/master
     }
     return ndev;
 }
 
+<<<<<<< HEAD
 STATIC int  __init
+=======
+static int  __init
+>>>>>>> refs/remotes/origin/master
 c4_mod_init (void)
 {
     int         rtn;
@@ -1147,7 +1381,11 @@ c4_mod_init (void)
   * do_deluser()
   */
 
+<<<<<<< HEAD
 STATIC void __exit
+=======
+static void __exit
+>>>>>>> refs/remotes/origin/master
 cleanup_hdlc (void)
 {
     hdw_info_t *hi;
@@ -1171,6 +1409,7 @@ cleanup_hdlc (void)
 }
 
 
+<<<<<<< HEAD
 STATIC void __exit
 c4_mod_remove (void)
 {
@@ -1179,6 +1418,16 @@ c4_mod_remove (void)
     c4_cleanup ();
     cleanup_ioremap ();
     pr_info("SBE - driver removed.\n");
+=======
+static void __exit
+c4_mod_remove (void)
+{
+	cleanup_hdlc();            /* delete any missed channels */
+	cleanup_devs();
+	c4_cleanup();
+	cleanup_ioremap();
+	pr_info("SBE - driver removed.\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init (c4_mod_init);

@@ -1,5 +1,6 @@
 #ifndef _XGIFB_MAIN
 #define _XGIFB_MAIN
+<<<<<<< HEAD
 
 
 /* ------------------- Constant Definitions ------------------------- */
@@ -7,10 +8,15 @@
 
 #include "XGIfb.h"
 #include "vb_struct.h"
+<<<<<<< HEAD
+=======
+#include "../../video/sis/sis.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "vb_def.h"
 
 #define XGIFAIL(x) do { printk(x "\n"); return -EINVAL; } while (0)
 
+<<<<<<< HEAD
 #define VER_MAJOR                 0
 #define VER_MINOR                 8
 #define VER_LEVEL                 1
@@ -52,12 +58,44 @@ static DEFINE_PCI_DEVICE_TABLE(xgifb_pci_table) = {
 	 0, 0, 2},
 	{PCI_VENDOR_ID_XG, PCI_DEVICE_ID_XG_42, PCI_ANY_ID, PCI_ANY_ID,
 	 0, 0, 3},
+=======
+#ifndef PCI_DEVICE_ID_XGI_41
+#define PCI_DEVICE_ID_XGI_41      0x041
+#endif
+=======
+/* ------------------- Constant Definitions ------------------------- */
+#include "XGIfb.h"
+#include "vb_def.h"
+
+>>>>>>> refs/remotes/origin/master
+#ifndef PCI_DEVICE_ID_XGI_42
+#define PCI_DEVICE_ID_XGI_42      0x042
+#endif
+#ifndef PCI_DEVICE_ID_XGI_27
+#define PCI_DEVICE_ID_XGI_27      0x027
+#endif
+
+<<<<<<< HEAD
+static DEFINE_PCI_DEVICE_TABLE(xgifb_pci_table) = {
+=======
+static const struct pci_device_id xgifb_pci_table[] = {
+>>>>>>> refs/remotes/origin/master
+	{PCI_DEVICE(PCI_VENDOR_ID_XGI, PCI_DEVICE_ID_XGI_20)},
+	{PCI_DEVICE(PCI_VENDOR_ID_XGI, PCI_DEVICE_ID_XGI_27)},
+	{PCI_DEVICE(PCI_VENDOR_ID_XGI, PCI_DEVICE_ID_XGI_40)},
+	{PCI_DEVICE(PCI_VENDOR_ID_XGI, PCI_DEVICE_ID_XGI_42)},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{0}
 };
 
 MODULE_DEVICE_TABLE(pci, xgifb_pci_table);
 
 /* To be included in fb.h */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef FB_ACCEL_XGI_GLAMOUR_2
 #define FB_ACCEL_XGI_GLAMOUR_2  40	/* XGI 315, 650, 740		*/
 #endif
@@ -113,6 +151,24 @@ MODULE_DEVICE_TABLE(pci, xgifb_pci_table);
 #define IND_XGI_POWER_ON_TRAP2    0x39
 #define IND_XGI_CMDQUEUE_SET      0x26
 #define IND_XGI_CMDQUEUE_THRESHOLD  0x27
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define XGISR			  (xgifb_info->dev_info.P3c4)
+#define XGICR			  (xgifb_info->dev_info.P3d4)
+#define XGIDACA			  (xgifb_info->dev_info.P3c8)
+#define XGIDACD			  (xgifb_info->dev_info.P3c9)
+#define XGIPART1		  (xgifb_info->dev_info.Part1Port)
+#define XGIPART2		  (xgifb_info->dev_info.Part2Port)
+#define XGIPART3		  (xgifb_info->dev_info.Part3Port)
+#define XGIPART4		  (xgifb_info->dev_info.Part4Port)
+#define XGIPART5		  (xgifb_info->dev_info.Part5Port)
+#define XGIDAC2A                  XGIPART5
+#define XGIDAC2D                  (XGIPART5 + 1)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define IND_XGI_SCRATCH_REG_CR30  0x30  /* CRs */
 #define IND_XGI_SCRATCH_REG_CR31  0x31
@@ -120,6 +176,8 @@ MODULE_DEVICE_TABLE(pci, xgifb_pci_table);
 #define IND_XGI_SCRATCH_REG_CR33  0x33
 #define IND_XGI_LCD_PANEL         0x36
 #define IND_XGI_SCRATCH_REG_CR37  0x37
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IND_XGI_AGP_IO_PAD        0x48
 
 #define IND_BRI_DRAM_STATUS       0x63 /* PCI config memory size offset */
@@ -137,6 +195,10 @@ MODULE_DEVICE_TABLE(pci, xgifb_pci_table);
 #define XGI_15BPP_COLOR_MODE      0x1
 #define XGI_16BPP_COLOR_MODE      0x2
 #define XGI_32BPP_COLOR_MODE      0x4
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define XGI_DRAM_SIZE_MASK     0xF0  /*SR14 */
 #define XGI_DRAM_SIZE_1MB      0x00
@@ -148,6 +210,8 @@ MODULE_DEVICE_TABLE(pci, xgifb_pci_table);
 #define XGI_DRAM_SIZE_64MB     0x06
 #define XGI_DRAM_SIZE_128MB    0x07
 #define XGI_DRAM_SIZE_256MB    0x08
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define XGI_DATA_BUS_MASK      0x02
 #define XGI_DATA_BUS_64        0x00
 #define XGI_DATA_BUS_128       0x01
@@ -284,11 +348,32 @@ static int XGIfb_ypan = -1;
 
 static int XGIfb_CRT2_write_enable = 0;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/* ------------------- Global Variables ----------------------------- */
+
+/* display status */
+static int XGIfb_crt1off;
+static int XGIfb_forcecrt1 = -1;
+
+/* global flags */
+static int XGIfb_tvmode;
+static int enable_dstn;
+static int XGIfb_ypan = -1;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* TW: CRT2 type (for overriding autodetection) */
 static int XGIfb_crt2type = -1;
 /* PR: Tv plug type (for overriding autodetection) */
 static int XGIfb_tvplug = -1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned char XGIfb_detectedpdc = 0;
 
 static unsigned char XGIfb_detectedlcda = 0xff;
@@ -305,27 +390,46 @@ static struct xgi_hw_device_info XGIhw_ext;
 /* TW: XGI private structure */
 static struct vb_device_info  XGI_Pr;
 
+=======
+/* TW: For ioctl XGIFB_GET_INFO */
+/* XGIfb_info XGIfbinfo; */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MD_XGI300 1
 #define MD_XGI315 2
 
 /* mode table */
+<<<<<<< HEAD
 /* NOT const - will be patched for 1280x960 mode number chaos reasons */
 static struct _XGIbios_mode {
+=======
+static const struct _XGIbios_mode {
+>>>>>>> refs/remotes/origin/cm-10.0
 	char name[15];
+=======
+#define MD_XGI315 1
+
+/* mode table */
+static const struct _XGIbios_mode {
+>>>>>>> refs/remotes/origin/master
 	u8 mode_no;
 	u16 vesa_mode_no_1;  /* "XGI defined" VESA mode number */
 	u16 vesa_mode_no_2;  /* Real VESA mode numbers */
 	u16 xres;
 	u16 yres;
 	u16 bpp;
+<<<<<<< HEAD
 	u16 rate_idx;
 	u16 cols;
 	u16 rows;
 	u8  chipset;
 } XGIbios_mode[] = {
+<<<<<<< HEAD
 #define MODE_INDEX_NONE           0  /* TW: index for mode=none */
 	{"none",         0xFF, 0x0000, 0x0000,    0,    0,  0, 0,   0,  0,
 	 MD_XGI300|MD_XGI315},  /* TW: for mode "none" */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	{"320x240x16",   0x56, 0x0000, 0x0000,  320,  240, 16, 1,  40, 15,
 	 MD_XGI315},
 	{"320x480x8",    0x5A, 0x0000, 0x0000,  320,  480,  8, 1,  40, 30,
@@ -365,11 +469,17 @@ static struct _XGIbios_mode {
 	 MD_XGI300|MD_XGI315},
 	{"800x480x32",   0x76, 0x0000, 0x0000,  800,  480, 32, 1, 100, 30,
 	 MD_XGI300|MD_XGI315},
+<<<<<<< HEAD
 #define DEFAULT_MODE              21 /* TW: index for 800x600x8 */
 #define DEFAULT_LCDMODE           21 /* TW: index for 800x600x8 */
 #define DEFAULT_TVMODE            21 /* TW: index for 800x600x8 */
 	{"800x600x8",    0x30, 0x0103, 0x0103,  800,  600,  8, 1, 100, 37,
 	 MD_XGI300|MD_XGI315},
+=======
+	{"800x600x8",    0x30, 0x0103, 0x0103,  800,  600,  8, 1, 100, 37,
+	 MD_XGI300|MD_XGI315},
+#define DEFAULT_MODE              20 /* index for 800x600x16 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{"800x600x16",   0x47, 0x0114, 0x0114,  800,  600, 16, 1, 100, 37,
 	 MD_XGI300|MD_XGI315},
 	{"800x600x24",   0x63, 0x013b, 0x0115,  800,  600, 32, 1, 100, 37,
@@ -424,9 +534,14 @@ static struct _XGIbios_mode {
 	 MD_XGI315},
 	{"1280x768x32",  0x25, 0x0000, 0x0000, 1280,  768, 32, 1, 160, 48,
 	 MD_XGI315},
+<<<<<<< HEAD
 #define MODEINDEX_1280x960 48
 	{"1280x960x8",   0x7C, 0x0000, 0x0000, 1280,  960,  8, 1, 160, 60,
 	 MD_XGI300|MD_XGI315},  /* TW: Modenumbers being patched */
+=======
+	{"1280x960x8",   0x7C, 0x0000, 0x0000, 1280,  960,  8, 1, 160, 60,
+	 MD_XGI300|MD_XGI315},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{"1280x960x16",  0x7D, 0x0000, 0x0000, 1280,  960, 16, 1, 160, 60,
 	 MD_XGI300|MD_XGI315},
 	{"1280x960x24",  0x7E, 0x0000, 0x0000, 1280,  960, 32, 1, 160, 60,
@@ -476,6 +591,7 @@ static struct _XGIbios_mode {
 	{"\0", 0x00, 0, 0, 0, 0, 0, 0, 0}
 };
 
+<<<<<<< HEAD
 /* mode-related variables */
 #ifdef MODULE
 static int xgifb_mode_idx = 1;
@@ -486,6 +602,8 @@ static int xgifb_mode_idx = -1; /* Use a default mode if we are
 static u8  XGIfb_mode_no  = 0;
 static u8  XGIfb_rate_idx = 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* TW: CR36 evaluation */
 static const unsigned short XGI300paneltype[] = {
 	 LCD_UNKNOWN,  LCD_800x600, LCD_1024x768, LCD_1280x1024,
@@ -493,6 +611,71 @@ static const unsigned short XGI300paneltype[] = {
 	LCD_1024x768, LCD_1024x768, LCD_1024x768,
 	LCD_1024x768, LCD_1024x768, LCD_1024x768, LCD_1024x768};
 
+=======
+	u8  chipset;
+} XGIbios_mode[] = {
+	{ 0x56, 0x0000, 0x0000,  320,  240, 16, MD_XGI315 },
+	{ 0x5A, 0x0000, 0x0000,  320,  480,  8, MD_XGI315 },
+	{ 0x5B, 0x0000, 0x0000,  320,  480, 16, MD_XGI315 },
+	{ 0x2E, 0x0101, 0x0101,  640,  480,  8, MD_XGI315 },
+	{ 0x44, 0x0111, 0x0111,  640,  480, 16, MD_XGI315 },
+	{ 0x62, 0x013a, 0x0112,  640,  480, 32, MD_XGI315 },
+	{ 0x31, 0x0000, 0x0000,  720,  480,  8, MD_XGI315 },
+	{ 0x33, 0x0000, 0x0000,  720,  480, 16, MD_XGI315 },
+	{ 0x35, 0x0000, 0x0000,  720,  480, 32, MD_XGI315 },
+	{ 0x32, 0x0000, 0x0000,  720,  576,  8, MD_XGI315 },
+	{ 0x34, 0x0000, 0x0000,  720,  576, 16, MD_XGI315 },
+	{ 0x36, 0x0000, 0x0000,  720,  576, 32, MD_XGI315 },
+	{ 0x36, 0x0000, 0x0000,  720,  576, 32, MD_XGI315 },
+	{ 0x70, 0x0000, 0x0000,  800,  480,  8, MD_XGI315 },
+	{ 0x7a, 0x0000, 0x0000,  800,  480, 16, MD_XGI315 },
+	{ 0x76, 0x0000, 0x0000,  800,  480, 32, MD_XGI315 },
+	{ 0x30, 0x0103, 0x0103,  800,  600,  8, MD_XGI315 },
+#define DEFAULT_MODE              17 /* index for 800x600x16 */
+	{ 0x47, 0x0114, 0x0114,  800,  600, 16, MD_XGI315 },
+	{ 0x63, 0x013b, 0x0115,  800,  600, 32, MD_XGI315 },
+	{ 0x71, 0x0000, 0x0000, 1024,  576,  8, MD_XGI315 },
+	{ 0x74, 0x0000, 0x0000, 1024,  576, 16, MD_XGI315 },
+	{ 0x77, 0x0000, 0x0000, 1024,  576, 32, MD_XGI315 },
+	{ 0x77, 0x0000, 0x0000, 1024,  576, 32, MD_XGI315 },
+	{ 0x20, 0x0000, 0x0000, 1024,  600,  8, },
+	{ 0x21, 0x0000, 0x0000, 1024,  600, 16, },
+	{ 0x22, 0x0000, 0x0000, 1024,  600, 32, },
+	{ 0x38, 0x0105, 0x0105, 1024,  768,  8, MD_XGI315 },
+	{ 0x4A, 0x0117, 0x0117, 1024,  768, 16, MD_XGI315 },
+	{ 0x64, 0x013c, 0x0118, 1024,  768, 32, MD_XGI315 },
+	{ 0x64, 0x013c, 0x0118, 1024,  768, 32, MD_XGI315 },
+	{ 0x23, 0x0000, 0x0000, 1152,  768,  8, },
+	{ 0x24, 0x0000, 0x0000, 1152,  768, 16, },
+	{ 0x25, 0x0000, 0x0000, 1152,  768, 32, },
+	{ 0x79, 0x0000, 0x0000, 1280,  720,  8, MD_XGI315 },
+	{ 0x75, 0x0000, 0x0000, 1280,  720, 16, MD_XGI315 },
+	{ 0x78, 0x0000, 0x0000, 1280,  720, 32, MD_XGI315 },
+	{ 0x23, 0x0000, 0x0000, 1280,  768,  8, MD_XGI315 },
+	{ 0x24, 0x0000, 0x0000, 1280,  768, 16, MD_XGI315 },
+	{ 0x25, 0x0000, 0x0000, 1280,  768, 32, MD_XGI315 },
+	{ 0x7C, 0x0000, 0x0000, 1280,  960,  8, MD_XGI315 },
+	{ 0x7D, 0x0000, 0x0000, 1280,  960, 16, MD_XGI315 },
+	{ 0x7E, 0x0000, 0x0000, 1280,  960, 32, MD_XGI315 },
+	{ 0x3A, 0x0107, 0x0107, 1280, 1024,  8, MD_XGI315 },
+	{ 0x4D, 0x011a, 0x011a, 1280, 1024, 16, MD_XGI315 },
+	{ 0x65, 0x013d, 0x011b, 1280, 1024, 32, MD_XGI315 },
+	{ 0x26, 0x0000, 0x0000, 1400, 1050,  8, MD_XGI315 },
+	{ 0x27, 0x0000, 0x0000, 1400, 1050, 16, MD_XGI315 },
+	{ 0x28, 0x0000, 0x0000, 1400, 1050, 32, MD_XGI315 },
+	{ 0x3C, 0x0130, 0x011c, 1600, 1200,  8, MD_XGI315 },
+	{ 0x3D, 0x0131, 0x011e, 1600, 1200, 16, MD_XGI315 },
+	{ 0x66, 0x013e, 0x011f, 1600, 1200, 32, MD_XGI315 },
+	{ 0x68, 0x013f, 0x0000, 1920, 1440,  8, MD_XGI315 },
+	{ 0x69, 0x0140, 0x0000, 1920, 1440, 16, MD_XGI315 },
+	{ 0x6B, 0x0141, 0x0000, 1920, 1440, 32, MD_XGI315 },
+	{ 0x6c, 0x0000, 0x0000, 2048, 1536,  8, MD_XGI315 },
+	{ 0x6d, 0x0000, 0x0000, 2048, 1536, 16, MD_XGI315 },
+	{ 0x6e, 0x0000, 0x0000, 2048, 1536, 32, MD_XGI315 },
+	{ 0 },
+};
+
+>>>>>>> refs/remotes/origin/master
 static const unsigned short XGI310paneltype[] = {
 	 LCD_UNKNOWN,   LCD_800x600, LCD_1024x768, LCD_1280x1024,
 	 LCD_640x480,  LCD_1024x600, LCD_1152x864, LCD_1280x960,
@@ -505,6 +688,8 @@ static const struct _XGI_crt2type {
 	int tvplug_no;
 } XGI_crt2type[] = {
 	{"NONE",	0,		-1},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{"LCD",		DISPTYPE_LCD,	-1},
 	{"TV",		DISPTYPE_TV,	-1},
 	{"VGA",		DISPTYPE_CRT2,	-1},
@@ -518,6 +703,26 @@ static const struct _XGI_crt2type {
 	{"svideo",	DISPTYPE_TV,	TVPLUG_SVIDEO},
 	{"composite",	DISPTYPE_TV,	TVPLUG_COMPOSITE},
 	{"scart",	DISPTYPE_TV,	TVPLUG_SCART},
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	{"LCD",		XGIFB_DISP_LCD,	-1},
+	{"TV",		XGIFB_DISP_TV,	-1},
+	{"VGA",		XGIFB_DISP_CRT,	-1},
+	{"SVIDEO",	XGIFB_DISP_TV,	TVPLUG_SVIDEO},
+	{"COMPOSITE",	XGIFB_DISP_TV,	TVPLUG_COMPOSITE},
+	{"SCART",	XGIFB_DISP_TV,	TVPLUG_SCART},
+	{"none",	0,		-1},
+	{"lcd",		XGIFB_DISP_LCD,	-1},
+	{"tv",		XGIFB_DISP_TV,	-1},
+	{"vga",		XGIFB_DISP_CRT,	-1},
+	{"svideo",	XGIFB_DISP_TV,	TVPLUG_SVIDEO},
+	{"composite",	XGIFB_DISP_TV,	TVPLUG_COMPOSITE},
+	{"scart",	XGIFB_DISP_TV,	TVPLUG_SCART},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{"\0",		-1,		-1}
 };
 
@@ -579,6 +784,7 @@ static const struct _XGI_vrate {
 	{0, 0, 0, 0}
 };
 
+<<<<<<< HEAD
 static const struct _chswtable {
 	int subsysVendor;
 	int subsysCard;
@@ -590,6 +796,8 @@ static const struct _chswtable {
 };
 
 /* Eden Chen */
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct _XGI_TV_filter {
 	u8 filter[9][4];
 } XGI_TV_filter[] = {
@@ -740,6 +948,12 @@ static const struct _XGI_TV_filter {
 };
 
 static int           filter = -1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned char filter_tb;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

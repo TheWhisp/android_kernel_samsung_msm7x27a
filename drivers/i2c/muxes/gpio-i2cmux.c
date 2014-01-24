@@ -165,6 +165,7 @@ static struct platform_driver gpiomux_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init gpiomux_init(void)
 {
 	return platform_driver_register(&gpiomux_driver);
@@ -177,6 +178,9 @@ static void __exit gpiomux_exit(void)
 
 module_init(gpiomux_init);
 module_exit(gpiomux_exit);
+=======
+module_platform_driver(gpiomux_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("GPIO-based I2C multiplexer driver");
 MODULE_AUTHOR("Peter Korsgaard <peter.korsgaard@barco.com>");

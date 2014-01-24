@@ -11,6 +11,11 @@
 
 #ifndef __ASM_SH_SE7721_H
 #define __ASM_SH_SE7721_H
+<<<<<<< HEAD
+=======
+
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/addrspace.h>
 
 /* Box specific addresses. */
@@ -49,9 +54,15 @@
 #define MRSHPC_PCIC_INFO	(PA_MRSHPC + 30)
 
 #define PA_LED		0xB6800000	/* 8bit LED */
+<<<<<<< HEAD
 #define PA_FPGA		0xB7000000 	/* FPGA base address */
 
 #define MRSHPC_IRQ0	10
+=======
+#define PA_FPGA		0xB7000000	/* FPGA base address */
+
+#define MRSHPC_IRQ0	evt2irq(0x340)
+>>>>>>> refs/remotes/origin/master
 
 #define FPGA_ILSR1	(PA_FPGA + 0x02)
 #define FPGA_ILSR2	(PA_FPGA + 0x03)

@@ -28,26 +28,57 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/acpi.h>
 #include <linux/cper.h>
 #include <acpi/apei.h>
+<<<<<<< HEAD
+=======
+#include <acpi/ghes.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mce.h>
 
 #include "mce-internal.h"
 
+<<<<<<< HEAD
 void apei_mce_report_mem_error(int corrected, struct cper_sec_mem_err *mem_err)
 {
 	struct mce m;
 
 	/* Only corrected MC is reported */
 	if (!corrected)
+=======
+void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
+{
+	struct mce m;
+
+	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	mce_setup(&m);
 	m.bank = 1;
+<<<<<<< HEAD
 	/* Fake a memory read corrected error with unknown channel */
 	m.status = MCI_STATUS_VAL | MCI_STATUS_EN | MCI_STATUS_ADDRV | 0x9f;
+=======
+	/* Fake a memory read error with unknown channel */
+	m.status = MCI_STATUS_VAL | MCI_STATUS_EN | MCI_STATUS_ADDRV | 0x9f;
+
+	if (severity >= GHES_SEV_RECOVERABLE)
+		m.status |= MCI_STATUS_UC;
+	if (severity >= GHES_SEV_PANIC)
+		m.status |= MCI_STATUS_PCC;
+
+>>>>>>> refs/remotes/origin/master
 	m.addr = mem_err->physical_addr;
 	mce_log(&m);
 	mce_notify_irq();

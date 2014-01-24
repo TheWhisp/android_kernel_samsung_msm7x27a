@@ -25,9 +25,15 @@
  * POSIX_FADV_WILLNEED could set PG_Referenced, and POSIX_FADV_NOREUSE could
  * deactivate the pages and clear PG_Referenced.
  */
+<<<<<<< HEAD
 SYSCALL_DEFINE(fadvise64_64)(int fd, loff_t offset, loff_t len, int advice)
 {
 	struct file *file = fget(fd);
+=======
+SYSCALL_DEFINE4(fadvise64_64, int, fd, loff_t, offset, loff_t, len, int, advice)
+{
+	struct fd f = fdget(fd);
+>>>>>>> refs/remotes/origin/master
 	struct address_space *mapping;
 	struct backing_dev_info *bdi;
 	loff_t endbyte;			/* inclusive */
@@ -36,15 +42,26 @@ SYSCALL_DEFINE(fadvise64_64)(int fd, loff_t offset, loff_t len, int advice)
 	unsigned long nrpages;
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (!file)
 		return -EBADF;
 
 	if (S_ISFIFO(file->f_path.dentry->d_inode->i_mode)) {
+=======
+	if (!f.file)
+		return -EBADF;
+
+	if (S_ISFIFO(file_inode(f.file)->i_mode)) {
+>>>>>>> refs/remotes/origin/master
 		ret = -ESPIPE;
 		goto out;
 	}
 
+<<<<<<< HEAD
 	mapping = file->f_mapping;
+=======
+	mapping = f.file->f_mapping;
+>>>>>>> refs/remotes/origin/master
 	if (!mapping || len < 0) {
 		ret = -EINVAL;
 		goto out;
@@ -77,6 +94,7 @@ SYSCALL_DEFINE(fadvise64_64)(int fd, loff_t offset, loff_t len, int advice)
 
 	switch (advice) {
 	case POSIX_FADV_NORMAL:
+<<<<<<< HEAD
 		file->f_ra.ra_pages = bdi->ra_pages;
 		spin_lock(&file->f_lock);
 		file->f_mode &= ~FMODE_RANDOM;
@@ -99,6 +117,25 @@ SYSCALL_DEFINE(fadvise64_64)(int fd, loff_t offset, loff_t len, int advice)
 			break;
 		}
 
+=======
+		f.file->f_ra.ra_pages = bdi->ra_pages;
+		spin_lock(&f.file->f_lock);
+		f.file->f_mode &= ~FMODE_RANDOM;
+		spin_unlock(&f.file->f_lock);
+		break;
+	case POSIX_FADV_RANDOM:
+		spin_lock(&f.file->f_lock);
+		f.file->f_mode |= FMODE_RANDOM;
+		spin_unlock(&f.file->f_lock);
+		break;
+	case POSIX_FADV_SEQUENTIAL:
+		f.file->f_ra.ra_pages = bdi->ra_pages * 2;
+		spin_lock(&f.file->f_lock);
+		f.file->f_mode &= ~FMODE_RANDOM;
+		spin_unlock(&f.file->f_lock);
+		break;
+	case POSIX_FADV_WILLNEED:
+>>>>>>> refs/remotes/origin/master
 		/* First and last PARTIAL page! */
 		start_index = offset >> PAGE_CACHE_SHIFT;
 		end_index = endbyte >> PAGE_CACHE_SHIFT;
@@ -107,18 +144,38 @@ SYSCALL_DEFINE(fadvise64_64)(int fd, loff_t offset, loff_t len, int advice)
 		nrpages = end_index - start_index + 1;
 		if (!nrpages)
 			nrpages = ~0UL;
+<<<<<<< HEAD
 		
 		ret = force_page_cache_readahead(mapping, file,
 				start_index,
 				nrpages);
 		if (ret > 0)
 			ret = 0;
+=======
+
+		/*
+		 * Ignore return value because fadvise() shall return
+		 * success even if filesystem can't retrieve a hint,
+		 */
+		force_page_cache_readahead(mapping, f.file, start_index,
+					   nrpages);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case POSIX_FADV_NOREUSE:
 		break;
 	case POSIX_FADV_DONTNEED:
 		if (!bdi_write_congested(mapping->backing_dev_info))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			filemap_flush(mapping);
+=======
+			__filemap_fdatawrite_range(mapping, offset, endbyte,
+						   WB_SYNC_NONE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			__filemap_fdatawrite_range(mapping, offset, endbyte,
+						   WB_SYNC_NONE);
+>>>>>>> refs/remotes/origin/master
 
 		/* First and last FULL page! */
 		start_index = (offset+(PAGE_CACHE_SIZE-1)) >> PAGE_CACHE_SHIFT;
@@ -145,6 +202,7 @@ SYSCALL_DEFINE(fadvise64_64)(int fd, loff_t offset, loff_t len, int advice)
 		ret = -EINVAL;
 	}
 out:
+<<<<<<< HEAD
 	fput(file);
 	return ret;
 }
@@ -169,5 +227,17 @@ asmlinkage long SyS_fadvise64(long fd, loff_t offset, long len, long advice)
 }
 SYSCALL_ALIAS(sys_fadvise64, SyS_fadvise64);
 #endif
+=======
+	fdput(f);
+	return ret;
+}
+
+#ifdef __ARCH_WANT_SYS_FADVISE64
+
+SYSCALL_DEFINE4(fadvise64, int, fd, loff_t, offset, size_t, len, int, advice)
+{
+	return sys_fadvise64_64(fd, offset, len, advice);
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif

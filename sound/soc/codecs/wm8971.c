@@ -19,7 +19,14 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -35,7 +42,10 @@ static struct workqueue_struct *wm8971_workq = NULL;
 
 /* codec private data */
 struct wm8971_priv {
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int sysclk;
 };
 
@@ -44,6 +54,7 @@ struct wm8971_priv {
  * We can't read the WM8971 register space when we
  * are using 2 wire for device control, so we cache them instead.
  */
+<<<<<<< HEAD
 static const u16 wm8971_reg[] = {
 	0x0097, 0x0097, 0x0079, 0x0079,  /*  0 */
 	0x0000, 0x0008, 0x0000, 0x000a,  /*  4 */
@@ -56,6 +67,52 @@ static const u16 wm8971_reg[] = {
 	0x0000, 0x0000, 0x0050, 0x0050,  /* 32 */
 	0x0050, 0x0050, 0x0050, 0x0050,  /* 36 */
 	0x0079, 0x0079, 0x0079,          /* 40 */
+=======
+static const struct reg_default wm8971_reg_defaults[] = {
+	{  0, 0x0097 },
+	{  1, 0x0097 },
+	{  2, 0x0079 },
+	{  3, 0x0079 },
+	{  4, 0x0000 },
+	{  5, 0x0008 },
+	{  6, 0x0000 },
+	{  7, 0x000a },
+	{  8, 0x0000 },
+	{  9, 0x0000 },
+	{ 10, 0x00ff },
+	{ 11, 0x00ff },
+	{ 12, 0x000f },
+	{ 13, 0x000f },
+	{ 14, 0x0000 },
+	{ 15, 0x0000 },
+	{ 16, 0x0000 },
+	{ 17, 0x007b },
+	{ 18, 0x0000 },
+	{ 19, 0x0032 },
+	{ 20, 0x0000 },
+	{ 21, 0x00c3 },
+	{ 22, 0x00c3 },
+	{ 23, 0x00c0 },
+	{ 24, 0x0000 },
+	{ 25, 0x0000 },
+	{ 26, 0x0000 },
+	{ 27, 0x0000 },
+	{ 28, 0x0000 },
+	{ 29, 0x0000 },
+	{ 30, 0x0000 },
+	{ 31, 0x0000 },
+	{ 32, 0x0000 },
+	{ 33, 0x0000 },
+	{ 34, 0x0050 },
+	{ 35, 0x0050 },
+	{ 36, 0x0050 },
+	{ 37, 0x0050 },
+	{ 38, 0x0050 },
+	{ 39, 0x0050 },
+	{ 40, 0x0079 },
+	{ 41, 0x0079 },
+	{ 42, 0x0079 },
+>>>>>>> refs/remotes/origin/master
 };
 
 #define wm8971_reset(c)	snd_soc_write(c, WM8971_RESET, 0)
@@ -224,7 +281,15 @@ static const struct snd_soc_dapm_widget wm8971_dapm_widgets[] = {
 	SND_SOC_DAPM_DAC("Left DAC", "Left Playback", WM8971_PWR2, 8, 0),
 	SND_SOC_DAPM_PGA("Mono Out 1", WM8971_PWR2, 2, 0, NULL, 0),
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	SND_SOC_DAPM_MICBIAS("Mic Bias", WM8971_PWR1, 1, 0),
+=======
+	SND_SOC_DAPM_SUPPLY("Mic Bias", WM8971_PWR1, 1, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SND_SOC_DAPM_SUPPLY("Mic Bias", WM8971_PWR1, 1, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/master
 	SND_SOC_DAPM_ADC("Right ADC", "Right Capture", WM8971_PWR1, 2, 0),
 	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", WM8971_PWR1, 3, 0),
 
@@ -253,7 +318,15 @@ static const struct snd_soc_dapm_widget wm8971_dapm_widgets[] = {
 	SND_SOC_DAPM_INPUT("MIC"),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route wm8971_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route wm8971_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 	/* left mixer */
 	{"Left Mixer", "Playback Switch", "Left DAC"},
 	{"Left Mixer", "Left Bypass Switch", "Left Line Mux"},
@@ -330,6 +403,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"Right ADC", NULL, "Right ADC Mux"},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8971_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -341,6 +416,10 @@ static int wm8971_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct _coeff_div {
 	u32 mclk;
 	u32 rate;
@@ -490,8 +569,12 @@ static int wm8971_pcm_hw_params(struct snd_pcm_substream *substream,
 	struct snd_pcm_hw_params *params,
 	struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
 	u16 iface = snd_soc_read(codec, WM8971_IFACE) & 0x1f3;
 	u16 srate = snd_soc_read(codec, WM8971_SRATE) & 0x1c0;
@@ -546,6 +629,18 @@ static int wm8971_set_bias_level(struct snd_soc_codec *codec,
 	case SND_SOC_BIAS_PREPARE:
 		break;
 	case SND_SOC_BIAS_STANDBY:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
+			snd_soc_cache_sync(codec);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
+			snd_soc_cache_sync(codec);
+
+>>>>>>> refs/remotes/origin/master
 		/* mute dac and set vmid to 500k, enable VREF */
 		snd_soc_write(codec, WM8971_PWR1, pwr_reg | 0x0140);
 		break;
@@ -564,7 +659,15 @@ static int wm8971_set_bias_level(struct snd_soc_codec *codec,
 #define WM8971_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
 	SNDRV_PCM_FMTBIT_S24_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8971_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8971_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8971_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= wm8971_pcm_hw_params,
 	.digital_mute	= wm8971_mute,
 	.set_fmt	= wm8971_set_dai_fmt,
@@ -597,7 +700,15 @@ static void wm8971_work(struct work_struct *work)
 	wm8971_set_bias_level(codec, codec->dapm.bias_level);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8971_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8971_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8971_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -605,6 +716,8 @@ static int wm8971_suspend(struct snd_soc_codec *codec, pm_message_t state)
 
 static int wm8971_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 	u8 data[2];
 	u16 *cache = codec->reg_cache;
@@ -619,6 +732,14 @@ static int wm8971_resume(struct snd_soc_codec *codec)
 		codec->hw_write(codec->control_data, data, 2);
 	}
 
+=======
+	u16 reg;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 reg;
+
+>>>>>>> refs/remotes/origin/master
 	wm8971_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
 	/* charge wm8971 caps */
@@ -635,11 +756,18 @@ static int wm8971_resume(struct snd_soc_codec *codec)
 
 static int wm8971_probe(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
 	int ret = 0;
 	u16 reg;
 
 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8971->control_type);
+=======
+	int ret = 0;
+	u16 reg;
+
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		printk(KERN_ERR "wm8971: failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -660,6 +788,8 @@ static int wm8971_probe(struct snd_soc_codec *codec)
 		msecs_to_jiffies(1000));
 
 	/* set the update bits */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reg = snd_soc_read(codec, WM8971_LDAC);
 	snd_soc_write(codec, WM8971_LDAC, reg | 0x0100);
 	reg = snd_soc_read(codec, WM8971_RDAC);
@@ -683,6 +813,21 @@ static int wm8971_probe(struct snd_soc_codec *codec)
 	snd_soc_add_controls(codec, wm8971_snd_controls,
 				ARRAY_SIZE(wm8971_snd_controls));
 	wm8971_add_widgets(codec);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	snd_soc_update_bits(codec, WM8971_LDAC, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8971_RDAC, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8971_LOUT1V, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8971_ROUT1V, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8971_LOUT2V, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8971_ROUT2V, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8971_LINVOL, 0x0100, 0x0100);
+	snd_soc_update_bits(codec, WM8971_RINVOL, 0x0100, 0x0100);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -704,36 +849,102 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8971 = {
 	.suspend =	wm8971_suspend,
 	.resume =	wm8971_resume,
 	.set_bias_level = wm8971_set_bias_level,
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8971_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8971_reg,
+<<<<<<< HEAD
 };
 
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	.controls = wm8971_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8971_snd_controls),
+	.dapm_widgets = wm8971_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8971_dapm_widgets),
+	.dapm_routes = wm8971_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8971_dapm_routes),
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static __devinit int wm8971_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
 {
 	struct wm8971_priv *wm8971;
 	int ret;
 
+<<<<<<< HEAD
 	wm8971 = kzalloc(sizeof(struct wm8971_priv), GFP_KERNEL);
+=======
+	wm8971 = devm_kzalloc(&i2c->dev, sizeof(struct wm8971_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (wm8971 == NULL)
 		return -ENOMEM;
 
 	wm8971->control_type = SND_SOC_I2C;
+=======
+static const struct regmap_config wm8971_regmap = {
+	.reg_bits = 7,
+	.val_bits = 9,
+	.max_register = WM8971_MOUTV,
+
+	.reg_defaults = wm8971_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8971_reg_defaults),
+	.cache_type = REGCACHE_RBTREE,
+};
+
+static int wm8971_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+{
+	struct wm8971_priv *wm8971;
+	struct regmap *regmap;
+	int ret;
+
+	wm8971 = devm_kzalloc(&i2c->dev, sizeof(struct wm8971_priv),
+			      GFP_KERNEL);
+	if (wm8971 == NULL)
+		return -ENOMEM;
+
+	regmap = devm_regmap_init_i2c(i2c, &wm8971_regmap);
+	if (IS_ERR(regmap))
+		return PTR_ERR(regmap);
+
+>>>>>>> refs/remotes/origin/master
 	i2c_set_clientdata(i2c, wm8971);
 
 	ret = snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm8971, &wm8971_dai, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8971);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int wm8971_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
+<<<<<<< HEAD
 	kfree(i2c_get_clientdata(client));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return ret;
+}
+
+static int wm8971_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -745,36 +956,65 @@ MODULE_DEVICE_TABLE(i2c, wm8971_i2c_id);
 
 static struct i2c_driver wm8971_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8971-codec",
+=======
+		.name = "wm8971",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm8971_i2c_probe,
 	.remove =   __devexit_p(wm8971_i2c_remove),
 	.id_table = wm8971_i2c_id,
 };
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init wm8971_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = i2c_add_driver(&wm8971_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register WM8971 I2C driver: %d\n",
 		       ret);
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 module_init(wm8971_modinit);
 
 static void __exit wm8971_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 	i2c_del_driver(&wm8971_i2c_driver);
 #endif
+=======
+	i2c_del_driver(&wm8971_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 module_exit(wm8971_exit);
+=======
+		.name = "wm8971",
+		.owner = THIS_MODULE,
+	},
+	.probe =    wm8971_i2c_probe,
+	.remove =   wm8971_i2c_remove,
+	.id_table = wm8971_i2c_id,
+};
+
+module_i2c_driver(wm8971_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC WM8971 driver");
 MODULE_AUTHOR("Lab126");

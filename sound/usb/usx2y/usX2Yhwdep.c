@@ -82,7 +82,11 @@ static int snd_us428ctls_mmap(struct snd_hwdep * hw, struct file *filp, struct v
 		us428->us428ctls_sharedmem->CtlSnapShotLast = -2;
 	}
 	area->vm_ops = &us428ctls_vm_ops;
+<<<<<<< HEAD
 	area->vm_flags |= VM_RESERVED | VM_DONTEXPAND;
+=======
+	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 	area->vm_private_data = hw->private_data;
 	return 0;
 }

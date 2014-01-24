@@ -32,6 +32,14 @@
 #include <linux/spi/pxa2xx_spi.h>
 #include <linux/mtd/sharpsl.h>
 #include <linux/input/matrix_keypad.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <video/w100fb.h>
 
 #include <asm/setup.h>
@@ -39,15 +47,26 @@
 #include <asm/mach-types.h>
 #include <mach/hardware.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
 
 #include <mach/pxa25x.h>
+<<<<<<< HEAD
 #include <mach/irda.h>
 #include <mach/mmc.h>
+=======
+#include <linux/platform_data/irda-pxaficp.h>
+#include <linux/platform_data/mmc-pxamci.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/udc.h>
 #include <mach/corgi.h>
 #include <mach/sharpsl_pm.h>
@@ -435,6 +454,23 @@ static struct platform_device corgiled_device = {
 };
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Corgi Audio
+ */
+static struct platform_device corgi_audio_device = {
+	.name	= "corgi-audio",
+	.id	= -1,
+};
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * MMC/SD Device
  *
  * The card detect interrupt isn't debounced so we delay it by 250ms
@@ -530,7 +566,15 @@ static struct spi_board_info corgi_spi_devices[] = {
 		.chip_select	= 0,
 		.platform_data	= &corgi_ads7846_info,
 		.controller_data= &corgi_ads7846_chip,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(CORGI_GPIO_TP_INT),
+=======
+		.irq		= PXA_GPIO_TO_IRQ(CORGI_GPIO_TP_INT),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(CORGI_GPIO_TP_INT),
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.modalias	= "corgi-lcd",
 		.max_speed_hz	= 50000,
@@ -640,6 +684,14 @@ static struct platform_device *devices[] __initdata = {
 	&corgifb_device,
 	&corgikbd_device,
 	&corgiled_device,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	&corgi_audio_device,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&corgi_audio_device,
+>>>>>>> refs/remotes/origin/master
 	&sharpsl_nand_device,
 	&sharpsl_rom_device,
 };
@@ -654,22 +706,47 @@ static void corgi_poweroff(void)
 		/* Green LED off tells the bootloader to halt */
 		gpio_set_value(CORGI_GPIO_LED_GREEN, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	arm_machine_restart('h', NULL);
+=======
+	pxa_restart('h', NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void corgi_restart(char mode, const char *cmd)
+=======
+	pxa_restart(REBOOT_HARD, NULL);
+}
+
+static void corgi_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!machine_is_corgi())
 		/* Green LED on tells the bootloader to reboot */
 		gpio_set_value(CORGI_GPIO_LED_GREEN, 1);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	arm_machine_restart('h', cmd);
+=======
+	pxa_restart('h', cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pxa_restart(REBOOT_HARD, cmd);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init corgi_init(void)
 {
 	pm_power_off = corgi_poweroff;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	arm_pm_restart = corgi_restart;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Stop 3.6MHz and drive HIGH to PCMCIA and CS */
 	PCFR |= PCFR_OPDE;
@@ -705,8 +782,18 @@ static void __init corgi_init(void)
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __init fixup_corgi(struct machine_desc *desc,
 		struct tag *tags, char **cmdline, struct meminfo *mi)
+=======
+static void __init fixup_corgi(struct tag *tags, char **cmdline,
+			       struct meminfo *mi)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init fixup_corgi(struct tag *tags, char **cmdline,
+			       struct meminfo *mi)
+>>>>>>> refs/remotes/origin/master
 {
 	sharpsl_save_param();
 	mi->nr_banks=1;
@@ -721,9 +808,26 @@ static void __init fixup_corgi(struct machine_desc *desc,
 MACHINE_START(CORGI, "SHARP Corgi")
 	.fixup		= fixup_corgi,
 	.map_io		= pxa25x_map_io,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.init_irq	= pxa25x_init_irq,
 	.init_machine	= corgi_init,
 	.timer		= &pxa_timer,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa25x_init_irq,
+	.handle_irq	= pxa25x_handle_irq,
+	.init_machine	= corgi_init,
+<<<<<<< HEAD
+	.timer		= &pxa_timer,
+	.restart	= corgi_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= corgi_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -731,9 +835,26 @@ MACHINE_END
 MACHINE_START(SHEPHERD, "SHARP Shepherd")
 	.fixup		= fixup_corgi,
 	.map_io		= pxa25x_map_io,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.init_irq	= pxa25x_init_irq,
 	.init_machine	= corgi_init,
 	.timer		= &pxa_timer,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa25x_init_irq,
+	.handle_irq	= pxa25x_handle_irq,
+	.init_machine	= corgi_init,
+<<<<<<< HEAD
+	.timer		= &pxa_timer,
+	.restart	= corgi_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= corgi_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -741,9 +862,26 @@ MACHINE_END
 MACHINE_START(HUSKY, "SHARP Husky")
 	.fixup		= fixup_corgi,
 	.map_io		= pxa25x_map_io,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.init_irq	= pxa25x_init_irq,
 	.init_machine	= corgi_init,
 	.timer		= &pxa_timer,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa25x_init_irq,
+	.handle_irq	= pxa25x_handle_irq,
+	.init_machine	= corgi_init,
+<<<<<<< HEAD
+	.timer		= &pxa_timer,
+	.restart	= corgi_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= corgi_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 

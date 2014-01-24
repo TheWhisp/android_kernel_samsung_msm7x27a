@@ -22,6 +22,10 @@ config SND_SOC_SH4_SSI
 
 config SND_SOC_SH4_FSI
 	tristate "SH4 FSI support"
+<<<<<<< HEAD
+=======
+	select SND_SIMPLE_CARD
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option enables FSI sound support
 
@@ -33,6 +37,16 @@ config SND_SOC_SH4_SIU
 	select SH_DMAE
 	select FW_LOADER
 
+<<<<<<< HEAD
+=======
+config SND_SOC_RCAR
+	tristate "R-Car series SRU/SCU/SSIU/SSI support"
+	select SND_SIMPLE_CARD
+	select REGMAP
+	help
+	  This option enables R-Car SUR/SCU/SSIU/SSI sound support
+
+>>>>>>> refs/remotes/origin/master
 ##
 ## Boards
 ##
@@ -46,6 +60,7 @@ config SND_SH7760_AC97
 	  This option enables generic sound support for the first
 	  AC97 unit of the SH7760.
 
+<<<<<<< HEAD
 config SND_FSI_AK4642
 	tristate "FSI-AK4642 sound support"
 	depends on SND_SOC_SH4_FSI && I2C
@@ -69,6 +84,8 @@ config SND_FSI_HDMI
 	  This option enables generic sound support for the
 	  FSI - HDMI unit
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SND_SIU_MIGOR
 	tristate "SIU sound support on Migo-R"
 	depends on SH_MIGOR

@@ -27,9 +27,12 @@ void *module_alloc(unsigned long size)
 	struct vm_struct *area;
 
 	size = PAGE_ALIGN(size);
+<<<<<<< HEAD
 	if (!size)
 		return NULL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	area = __get_vm_area(size, VM_ALLOC, MODULES_VADDR, MODULES_END);
 	if (!area)
 		return NULL;
@@ -37,6 +40,8 @@ void *module_alloc(unsigned long size)
 	return __vmalloc_area(area, GFP_KERNEL, PAGE_KERNEL_EXEC);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void module_free(struct module *module, void *region)
 {
 	vfree(region);
@@ -50,6 +55,10 @@ int module_frob_arch_sections(Elf_Ehdr *hdr,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int
 apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 	       unsigned int relindex, struct module *module)
@@ -128,6 +137,8 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 	}
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 int
 apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
@@ -150,3 +161,7 @@ void
 module_arch_cleanup(struct module *mod)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

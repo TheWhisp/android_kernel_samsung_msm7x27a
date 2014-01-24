@@ -15,7 +15,13 @@
 
 #include <asm/fpu.h>
 #include <asm/mipsregs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/r4kcache.h>
 #include <asm/hazards.h>
 
@@ -38,7 +44,11 @@
 /*
  * Different semantics to the set_c0_* function built by __BUILD_SET_C0
  */
+<<<<<<< HEAD
 static __cpuinit unsigned int bis_c0_errctl(unsigned int set)
+=======
+static unsigned int bis_c0_errctl(unsigned int set)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int res;
 	res = read_c0_errctl();
@@ -46,7 +56,11 @@ static __cpuinit unsigned int bis_c0_errctl(unsigned int set)
 	return res;
 }
 
+<<<<<<< HEAD
 static __cpuinit void ispram_store_tag(unsigned int offset, unsigned int data)
+=======
+static void ispram_store_tag(unsigned int offset, unsigned int data)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int errctl;
 
@@ -65,7 +79,11 @@ static __cpuinit void ispram_store_tag(unsigned int offset, unsigned int data)
 }
 
 
+<<<<<<< HEAD
 static __cpuinit unsigned int ispram_load_tag(unsigned int offset)
+=======
+static unsigned int ispram_load_tag(unsigned int offset)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int data;
 	unsigned int errctl;
@@ -83,7 +101,11 @@ static __cpuinit unsigned int ispram_load_tag(unsigned int offset)
 	return data;
 }
 
+<<<<<<< HEAD
 static __cpuinit void dspram_store_tag(unsigned int offset, unsigned int data)
+=======
+static void dspram_store_tag(unsigned int offset, unsigned int data)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int errctl;
 
@@ -99,7 +121,11 @@ static __cpuinit void dspram_store_tag(unsigned int offset, unsigned int data)
 }
 
 
+<<<<<<< HEAD
 static __cpuinit unsigned int dspram_load_tag(unsigned int offset)
+=======
+static unsigned int dspram_load_tag(unsigned int offset)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int data;
 	unsigned int errctl;
@@ -116,7 +142,11 @@ static __cpuinit unsigned int dspram_load_tag(unsigned int offset)
 	return data;
 }
 
+<<<<<<< HEAD
 static __cpuinit void probe_spram(char *type,
+=======
+static void probe_spram(char *type,
+>>>>>>> refs/remotes/origin/master
 	    unsigned int base,
 	    unsigned int (*read)(unsigned int),
 	    void (*write)(unsigned int, unsigned int))
@@ -197,7 +227,11 @@ static __cpuinit void probe_spram(char *type,
 		offset += 2 * SPRAM_TAG_STRIDE;
 	}
 }
+<<<<<<< HEAD
 void __cpuinit spram_config(void)
+=======
+void spram_config(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cpuinfo_mips *c = &current_cpu_data;
 	unsigned int config0;

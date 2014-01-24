@@ -100,7 +100,11 @@ static int __init mv64x60_pci_fixup(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit mv64x60_pci_err_probe(struct platform_device *pdev)
+=======
+static int mv64x60_pci_err_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct edac_pci_ctl_info *pci;
 	struct mv64x60_pci_pdata *pdata;
@@ -169,7 +173,11 @@ static int __devinit mv64x60_pci_err_probe(struct platform_device *pdev)
 		 MV64X60_PCIx_ERR_MASK_VAL);
 
 	if (edac_pci_add_device(pci, pdata->edac_idx) > 0) {
+<<<<<<< HEAD
 		debugf3("%s(): failed edac_pci_add_device()\n", __func__);
+=======
+		edac_dbg(3, "failed edac_pci_add_device()\n");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -194,7 +202,11 @@ static int __devinit mv64x60_pci_err_probe(struct platform_device *pdev)
 	devres_remove_group(&pdev->dev, mv64x60_pci_err_probe);
 
 	/* get this far and it's successful */
+<<<<<<< HEAD
 	debugf3("%s(): success\n", __func__);
+=======
+	edac_dbg(3, "success\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -210,7 +222,11 @@ static int mv64x60_pci_err_remove(struct platform_device *pdev)
 {
 	struct edac_pci_ctl_info *pci = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	debugf0("%s()\n", __func__);
+=======
+	edac_dbg(0, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	edac_pci_del_device(&pdev->dev);
 
@@ -221,7 +237,11 @@ static int mv64x60_pci_err_remove(struct platform_device *pdev)
 
 static struct platform_driver mv64x60_pci_err_driver = {
 	.probe = mv64x60_pci_err_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(mv64x60_pci_err_remove),
+=======
+	.remove = mv64x60_pci_err_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		   .name = "mv64x60_pci_err",
 	}
@@ -271,7 +291,11 @@ static irqreturn_t mv64x60_sram_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit mv64x60_sram_err_probe(struct platform_device *pdev)
+=======
+static int mv64x60_sram_err_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct edac_device_ctl_info *edac_dev;
 	struct mv64x60_sram_pdata *pdata;
@@ -336,7 +360,11 @@ static int __devinit mv64x60_sram_err_probe(struct platform_device *pdev)
 	pdata->edac_idx = edac_dev_idx++;
 
 	if (edac_device_add_device(edac_dev) > 0) {
+<<<<<<< HEAD
 		debugf3("%s(): failed edac_device_add_device()\n", __func__);
+=======
+		edac_dbg(3, "failed edac_device_add_device()\n");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -363,7 +391,11 @@ static int __devinit mv64x60_sram_err_probe(struct platform_device *pdev)
 	devres_remove_group(&pdev->dev, mv64x60_sram_err_probe);
 
 	/* get this far and it's successful */
+<<<<<<< HEAD
 	debugf3("%s(): success\n", __func__);
+=======
+	edac_dbg(3, "success\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -379,7 +411,11 @@ static int mv64x60_sram_err_remove(struct platform_device *pdev)
 {
 	struct edac_device_ctl_info *edac_dev = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	debugf0("%s()\n", __func__);
+=======
+	edac_dbg(0, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	edac_device_del_device(&pdev->dev);
 	edac_device_free_ctl_info(edac_dev);
@@ -439,7 +475,11 @@ static irqreturn_t mv64x60_cpu_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit mv64x60_cpu_err_probe(struct platform_device *pdev)
+=======
+static int mv64x60_cpu_err_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct edac_device_ctl_info *edac_dev;
 	struct resource *r;
@@ -531,7 +571,11 @@ static int __devinit mv64x60_cpu_err_probe(struct platform_device *pdev)
 	pdata->edac_idx = edac_dev_idx++;
 
 	if (edac_device_add_device(edac_dev) > 0) {
+<<<<<<< HEAD
 		debugf3("%s(): failed edac_device_add_device()\n", __func__);
+=======
+		edac_dbg(3, "failed edac_device_add_device()\n");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -558,7 +602,11 @@ static int __devinit mv64x60_cpu_err_probe(struct platform_device *pdev)
 	devres_remove_group(&pdev->dev, mv64x60_cpu_err_probe);
 
 	/* get this far and it's successful */
+<<<<<<< HEAD
 	debugf3("%s(): success\n", __func__);
+=======
+	edac_dbg(3, "success\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -574,7 +622,11 @@ static int mv64x60_cpu_err_remove(struct platform_device *pdev)
 {
 	struct edac_device_ctl_info *edac_dev = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	debugf0("%s()\n", __func__);
+=======
+	edac_dbg(0, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	edac_device_del_device(&pdev->dev);
 	edac_device_free_ctl_info(edac_dev);
@@ -611,12 +663,26 @@ static void mv64x60_mc_check(struct mem_ctl_info *mci)
 
 	/* first bit clear in ECC Err Reg, 1 bit error, correctable by HW */
 	if (!(reg & 0x1))
+<<<<<<< HEAD
 		edac_mc_handle_ce(mci, err_addr >> PAGE_SHIFT,
 				  err_addr & PAGE_MASK, syndrome, 0, 0,
 				  mci->ctl_name);
 	else	/* 2 bit error, UE */
 		edac_mc_handle_ue(mci, err_addr >> PAGE_SHIFT,
 				  err_addr & PAGE_MASK, 0, mci->ctl_name);
+=======
+		edac_mc_handle_error(HW_EVENT_ERR_CORRECTED, mci, 1,
+				     err_addr >> PAGE_SHIFT,
+				     err_addr & PAGE_MASK, syndrome,
+				     0, 0, -1,
+				     mci->ctl_name, "");
+	else	/* 2 bit error, UE */
+		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci, 1,
+				     err_addr >> PAGE_SHIFT,
+				     err_addr & PAGE_MASK, 0,
+				     0, 0, -1,
+				     mci->ctl_name, "");
+>>>>>>> refs/remotes/origin/master
 
 	/* clear the error */
 	out_le32(pdata->mc_vbase + MV64X60_SDRAM_ERR_ADDR, 0);
@@ -656,6 +722,11 @@ static void mv64x60_init_csrows(struct mem_ctl_info *mci,
 				struct mv64x60_mc_pdata *pdata)
 {
 	struct csrow_info *csrow;
+<<<<<<< HEAD
+=======
+	struct dimm_info *dimm;
+
+>>>>>>> refs/remotes/origin/master
 	u32 devtype;
 	u32 ctl;
 
@@ -663,6 +734,7 @@ static void mv64x60_init_csrows(struct mem_ctl_info *mci,
 
 	ctl = in_le32(pdata->mc_vbase + MV64X60_SDRAM_CONFIG);
 
+<<<<<<< HEAD
 	csrow = &mci->csrows[0];
 	csrow->first_page = 0;
 	csrow->nr_pages = pdata->total_mem >> PAGE_SHIFT;
@@ -670,10 +742,20 @@ static void mv64x60_init_csrows(struct mem_ctl_info *mci,
 	csrow->grain = 8;
 
 	csrow->mtype = (ctl & MV64X60_SDRAM_REGISTERED) ? MEM_RDDR : MEM_DDR;
+=======
+	csrow = mci->csrows[0];
+	dimm = csrow->channels[0]->dimm;
+
+	dimm->nr_pages = pdata->total_mem >> PAGE_SHIFT;
+	dimm->grain = 8;
+
+	dimm->mtype = (ctl & MV64X60_SDRAM_REGISTERED) ? MEM_RDDR : MEM_DDR;
+>>>>>>> refs/remotes/origin/master
 
 	devtype = (ctl >> 20) & 0x3;
 	switch (devtype) {
 	case 0x0:
+<<<<<<< HEAD
 		csrow->dtype = DEV_X32;
 		break;
 	case 0x2:		/* could be X8 too, but no way to tell */
@@ -693,6 +775,28 @@ static void mv64x60_init_csrows(struct mem_ctl_info *mci,
 static int __devinit mv64x60_mc_err_probe(struct platform_device *pdev)
 {
 	struct mem_ctl_info *mci;
+=======
+		dimm->dtype = DEV_X32;
+		break;
+	case 0x2:		/* could be X8 too, but no way to tell */
+		dimm->dtype = DEV_X16;
+		break;
+	case 0x3:
+		dimm->dtype = DEV_X4;
+		break;
+	default:
+		dimm->dtype = DEV_UNKNOWN;
+		break;
+	}
+
+	dimm->edac_mode = EDAC_SECDED;
+}
+
+static int mv64x60_mc_err_probe(struct platform_device *pdev)
+{
+	struct mem_ctl_info *mci;
+	struct edac_mc_layer layers[2];
+>>>>>>> refs/remotes/origin/master
 	struct mv64x60_mc_pdata *pdata;
 	struct resource *r;
 	u32 ctl;
@@ -701,7 +805,18 @@ static int __devinit mv64x60_mc_err_probe(struct platform_device *pdev)
 	if (!devres_open_group(&pdev->dev, mv64x60_mc_err_probe, GFP_KERNEL))
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	mci = edac_mc_alloc(sizeof(struct mv64x60_mc_pdata), 1, 1, edac_mc_idx);
+=======
+	layers[0].type = EDAC_MC_LAYER_CHIP_SELECT;
+	layers[0].size = 1;
+	layers[0].is_virt_csrow = true;
+	layers[1].type = EDAC_MC_LAYER_CHANNEL;
+	layers[1].size = 1;
+	layers[1].is_virt_csrow = false;
+	mci = edac_mc_alloc(edac_mc_idx, ARRAY_SIZE(layers), layers,
+			    sizeof(struct mv64x60_mc_pdata));
+>>>>>>> refs/remotes/origin/master
 	if (!mci) {
 		printk(KERN_ERR "%s: No memory for CPU err\n", __func__);
 		devres_release_group(&pdev->dev, mv64x60_mc_err_probe);
@@ -709,7 +824,11 @@ static int __devinit mv64x60_mc_err_probe(struct platform_device *pdev)
 	}
 
 	pdata = mci->pvt_info;
+<<<<<<< HEAD
 	mci->dev = &pdev->dev;
+=======
+	mci->pdev = &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	platform_set_drvdata(pdev, mci);
 	pdata->name = "mv64x60_mc_err";
 	pdata->irq = NO_IRQ;
@@ -751,7 +870,11 @@ static int __devinit mv64x60_mc_err_probe(struct platform_device *pdev)
 		goto err2;
 	}
 
+<<<<<<< HEAD
 	debugf3("%s(): init mci\n", __func__);
+=======
+	edac_dbg(3, "init mci\n");
+>>>>>>> refs/remotes/origin/master
 	mci->mtype_cap = MEM_FLAG_RDDR | MEM_FLAG_DDR;
 	mci->edac_ctl_cap = EDAC_FLAG_NONE | EDAC_FLAG_SECDED;
 	mci->edac_cap = EDAC_FLAG_SECDED;
@@ -775,7 +898,11 @@ static int __devinit mv64x60_mc_err_probe(struct platform_device *pdev)
 	out_le32(pdata->mc_vbase + MV64X60_SDRAM_ERR_ECC_CNTL, ctl);
 
 	if (edac_mc_add_mc(mci)) {
+<<<<<<< HEAD
 		debugf3("%s(): failed edac_mc_add_mc()\n", __func__);
+=======
+		edac_dbg(3, "failed edac_mc_add_mc()\n");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -800,7 +927,11 @@ static int __devinit mv64x60_mc_err_probe(struct platform_device *pdev)
 	}
 
 	/* get this far and it's successful */
+<<<<<<< HEAD
 	debugf3("%s(): success\n", __func__);
+=======
+	edac_dbg(3, "success\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -816,7 +947,11 @@ static int mv64x60_mc_err_remove(struct platform_device *pdev)
 {
 	struct mem_ctl_info *mci = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	debugf0("%s()\n", __func__);
+=======
+	edac_dbg(0, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	edac_mc_del_mc(&pdev->dev);
 	edac_mc_free(mci);

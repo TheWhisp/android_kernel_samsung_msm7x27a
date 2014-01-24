@@ -20,6 +20,14 @@
 #include <crypto/gf128mul.h>
 #include <crypto/internal/hash.h>
 #include <asm/i387.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/master
 
 #define GHASH_BLOCK_SIZE	16
 #define GHASH_DIGEST_SIZE	16
@@ -149,7 +157,10 @@ static struct shash_alg ghash_alg = {
 		.cra_blocksize		= GHASH_BLOCK_SIZE,
 		.cra_ctxsize		= sizeof(struct ghash_ctx),
 		.cra_module		= THIS_MODULE,
+<<<<<<< HEAD
 		.cra_list		= LIST_HEAD_INIT(ghash_alg.base.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -245,7 +256,15 @@ static int ghash_async_setkey(struct crypto_ahash *tfm, const u8 *key,
 	crypto_ahash_set_flags(tfm, crypto_ahash_get_flags(child)
 			       & CRYPTO_TFM_RES_MASK);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
+=======
+	return err;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ghash_async_init_tfm(struct crypto_tfm *tfm)
@@ -287,22 +306,50 @@ static struct ahash_alg ghash_async_alg = {
 			.cra_blocksize		= GHASH_BLOCK_SIZE,
 			.cra_type		= &crypto_ahash_type,
 			.cra_module		= THIS_MODULE,
+<<<<<<< HEAD
 			.cra_list		= LIST_HEAD_INIT(ghash_async_alg.halg.base.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 			.cra_init		= ghash_async_init_tfm,
 			.cra_exit		= ghash_async_exit_tfm,
 		},
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct x86_cpu_id pcmul_cpu_id[] = {
+	X86_FEATURE_MATCH(X86_FEATURE_PCLMULQDQ), /* Pickle-Mickle-Duck */
+	{}
+};
+MODULE_DEVICE_TABLE(x86cpu, pcmul_cpu_id);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init ghash_pclmulqdqni_mod_init(void)
 {
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cpu_has_pclmulqdq) {
 		printk(KERN_INFO "Intel PCLMULQDQ-NI instructions are not"
 		       " detected.\n");
 		return -ENODEV;
 	}
+=======
+	if (!x86_match_cpu(pcmul_cpu_id))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!x86_match_cpu(pcmul_cpu_id))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	err = crypto_register_shash(&ghash_alg);
 	if (err)

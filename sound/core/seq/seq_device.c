@@ -37,6 +37,14 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/info.h>
 #include <sound/seq_device.h>
@@ -65,7 +73,11 @@ struct ops_list {
 	/* operators */
 	struct snd_seq_dev_ops ops;
 
+<<<<<<< HEAD
 	/* registred devices */
+=======
+	/* registered devices */
+>>>>>>> refs/remotes/origin/master
 	struct list_head dev_list;	/* list of devices */
 	int num_devices;	/* number of associated devices */
 	int num_init_devices;	/* number of initialized devices */
@@ -568,5 +580,12 @@ EXPORT_SYMBOL(snd_seq_device_load_drivers);
 EXPORT_SYMBOL(snd_seq_device_new);
 EXPORT_SYMBOL(snd_seq_device_register_driver);
 EXPORT_SYMBOL(snd_seq_device_unregister_driver);
+<<<<<<< HEAD
 EXPORT_SYMBOL(snd_seq_autoload_lock);
 EXPORT_SYMBOL(snd_seq_autoload_unlock);
+=======
+#ifdef CONFIG_MODULES
+EXPORT_SYMBOL(snd_seq_autoload_lock);
+EXPORT_SYMBOL(snd_seq_autoload_unlock);
+#endif
+>>>>>>> refs/remotes/origin/master

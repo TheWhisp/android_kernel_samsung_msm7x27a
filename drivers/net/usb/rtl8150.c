@@ -85,6 +85,8 @@
 #define INT_CRERR_CNT		0x06
 #define INT_COL_CNT		0x07
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Transmit status register errors */
 #define TSR_ECOL		(1<<5)
 #define TSR_LCOL		(1<<4)
@@ -111,6 +113,10 @@
 #define INT_CRERR_CNT		0x06
 #define INT_COL_CNT		0x07
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define	RTL8150_MTU		1540
 #define	RTL8150_TX_TIMEOUT	(HZ)
@@ -156,19 +162,28 @@ struct rtl8150 {
 	struct usb_device *udev;
 	struct tasklet_struct tl;
 	struct net_device *netdev;
+<<<<<<< HEAD
 	struct urb *rx_urb, *tx_urb, *intr_urb, *ctrl_urb;
+=======
+	struct urb *rx_urb, *tx_urb, *intr_urb;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *tx_skb, *rx_skb;
 	struct sk_buff *rx_skb_pool[RX_SKB_POOL_SIZE];
 	spinlock_t rx_pool_lock;
 	struct usb_ctrlrequest dr;
 	int intr_interval;
+<<<<<<< HEAD
 	__le16 rx_creg;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 *intr_buff;
 	u8 phy;
 };
 
 typedef struct rtl8150 rtl8150_t;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void fill_skb_pool(rtl8150_t *);
 static void free_skb_pool(rtl8150_t *);
 static inline struct sk_buff *pull_skb(rtl8150_t *);
@@ -189,6 +204,19 @@ static struct usb_driver rtl8150_driver = {
 	.resume =	rtl8150_resume
 };
 
+=======
+static const char driver_name [] = "rtl8150";
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct async_req {
+	struct usb_ctrlrequest dr;
+	u16 rx_creg;
+};
+
+static const char driver_name [] = "rtl8150";
+
+>>>>>>> refs/remotes/origin/master
 /*
 **
 **	device related part of the code
@@ -208,6 +236,7 @@ static int set_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
 			       indx, 0, data, size, 500);
 }
 
+<<<<<<< HEAD
 static void ctrl_callback(struct urb *urb)
 {
 	rtl8150_t *dev;
@@ -252,6 +281,49 @@ static int async_set_registers(rtl8150_t * dev, u16 indx, u16 size)
 		set_bit(RX_REG_SET, &dev->flags);
 
 	return ret;
+=======
+static void async_set_reg_cb(struct urb *urb)
+{
+	struct async_req *req = (struct async_req *)urb->context;
+	int status = urb->status;
+
+	if (status < 0)
+		dev_dbg(&urb->dev->dev, "%s failed with %d", __func__, status);
+	kfree(req);
+	usb_free_urb(urb);
+}
+
+static int async_set_registers(rtl8150_t *dev, u16 indx, u16 size, u16 reg)
+{
+	int res = -ENOMEM;
+	struct urb *async_urb;
+	struct async_req *req;
+
+	req = kmalloc(sizeof(struct async_req), GFP_ATOMIC);
+	if (req == NULL)
+		return res;
+	async_urb = usb_alloc_urb(0, GFP_ATOMIC);
+	if (async_urb == NULL) {
+		kfree(req);
+		return res;
+	}
+	req->rx_creg = cpu_to_le16(reg);
+	req->dr.bRequestType = RTL8150_REQT_WRITE;
+	req->dr.bRequest = RTL8150_REQ_SET_REGS;
+	req->dr.wIndex = 0;
+	req->dr.wValue = cpu_to_le16(indx);
+	req->dr.wLength = cpu_to_le16(size);
+	usb_fill_control_urb(async_urb, dev->udev,
+	                     usb_sndctrlpipe(dev->udev, 0), (void *)&req->dr,
+			     &req->rx_creg, size, async_set_reg_cb, req);
+	res = usb_submit_urb(async_urb, GFP_ATOMIC);
+	if (res) {
+		if (res == -ENODEV)
+			netif_device_detach(dev->netdev);
+		dev_err(&dev->udev->dev, "%s failed with %d\n", __func__, res);
+	}
+	return res;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int read_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 * reg)
@@ -318,7 +390,11 @@ static int rtl8150_set_mac_address(struct net_device *netdev, void *p)
 		return -EBUSY;
 
 	memcpy(netdev->dev_addr, addr->sa_data, netdev->addr_len);
+<<<<<<< HEAD
 	dbg("%s: Setting MAC address to %pM\n", netdev->name, netdev->dev_addr);
+=======
+	netdev_dbg(netdev, "Setting MAC address to %pM\n", netdev->dev_addr);
+>>>>>>> refs/remotes/origin/master
 	/* Set the IDR registers. */
 	set_registers(dev, IDR, netdev->addr_len, netdev->dev_addr);
 #ifdef EEPROM_WRITE
@@ -333,7 +409,15 @@ static int rtl8150_set_mac_address(struct net_device *netdev, void *p)
 	/* Write the MAC address into eeprom. Eeprom writes must be word-sized,
 	   so we need to split them up. */
 	for (i = 0; i * 2 < netdev->addr_len; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		set_registers(dev, IDR_EEPROM + (i * 2), 2, 
+=======
+		set_registers(dev, IDR_EEPROM + (i * 2), 2,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_registers(dev, IDR_EEPROM + (i * 2), 2,
+>>>>>>> refs/remotes/origin/master
 		netdev->dev_addr + (i * 2));
 	}
 	/* Clear the WEPROM bit (preventing accidental eeprom writes). */
@@ -373,6 +457,7 @@ static int alloc_all_urbs(rtl8150_t * dev)
 		usb_free_urb(dev->tx_urb);
 		return 0;
 	}
+<<<<<<< HEAD
 	dev->ctrl_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!dev->ctrl_urb) {
 		usb_free_urb(dev->rx_urb);
@@ -380,6 +465,8 @@ static int alloc_all_urbs(rtl8150_t * dev)
 		usb_free_urb(dev->intr_urb);
 		return 0;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -389,7 +476,10 @@ static void free_all_urbs(rtl8150_t * dev)
 	usb_free_urb(dev->rx_urb);
 	usb_free_urb(dev->tx_urb);
 	usb_free_urb(dev->intr_urb);
+<<<<<<< HEAD
 	usb_free_urb(dev->ctrl_urb);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void unlink_all_urbs(rtl8150_t * dev)
@@ -397,7 +487,10 @@ static void unlink_all_urbs(rtl8150_t * dev)
 	usb_kill_urb(dev->rx_urb);
 	usb_kill_urb(dev->tx_urb);
 	usb_kill_urb(dev->intr_urb);
+<<<<<<< HEAD
 	usb_kill_urb(dev->ctrl_urb);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct sk_buff *pull_skb(rtl8150_t *dev)
@@ -490,6 +583,8 @@ resched:
 	tasklet_schedule(&dev->tl);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void rx_fixup(unsigned long data)
 {
 	rtl8150_t *dev;
@@ -528,6 +623,10 @@ tlsched:
 	tasklet_schedule(&dev->tl);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void write_bulk_callback(struct urb *urb)
 {
 	rtl8150_t *dev;
@@ -584,12 +683,20 @@ static void intr_callback(struct urb *urb)
 	if ((d[INT_MSR] & MSR_LINK) == 0) {
 		if (netif_carrier_ok(dev->netdev)) {
 			netif_carrier_off(dev->netdev);
+<<<<<<< HEAD
 			dbg("%s: LINK LOST\n", __func__);
+=======
+			netdev_dbg(dev->netdev, "%s: LINK LOST\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		if (!netif_carrier_ok(dev->netdev)) {
 			netif_carrier_on(dev->netdev);
+<<<<<<< HEAD
 			dbg("%s: LINK CAME BACK\n", __func__);
+=======
+			netdev_dbg(dev->netdev, "%s: LINK CAME BACK\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -598,9 +705,15 @@ resubmit:
 	if (res == -ENODEV)
 		netif_device_detach(dev->netdev);
 	else if (res)
+<<<<<<< HEAD
 		err ("can't resubmit intr, %s-%s/input0, status %d",
 				dev->udev->bus->bus_name,
 				dev->udev->devpath, res);
+=======
+		dev_err(&dev->udev->dev,
+			"can't resubmit intr, %s-%s/input0, status %d\n",
+			dev->udev->bus->bus_name, dev->udev->devpath, res);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int rtl8150_suspend(struct usb_interface *intf, pm_message_t message)
@@ -665,6 +778,51 @@ static void free_skb_pool(rtl8150_t *dev)
 			dev_kfree_skb(dev->rx_skb_pool[i]);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void rx_fixup(unsigned long data)
+{
+	struct rtl8150 *dev = (struct rtl8150 *)data;
+	struct sk_buff *skb;
+	int status;
+
+	spin_lock_irq(&dev->rx_pool_lock);
+	fill_skb_pool(dev);
+	spin_unlock_irq(&dev->rx_pool_lock);
+	if (test_bit(RX_URB_FAIL, &dev->flags))
+		if (dev->rx_skb)
+			goto try_again;
+	spin_lock_irq(&dev->rx_pool_lock);
+	skb = pull_skb(dev);
+	spin_unlock_irq(&dev->rx_pool_lock);
+	if (skb == NULL)
+		goto tlsched;
+	dev->rx_skb = skb;
+	usb_fill_bulk_urb(dev->rx_urb, dev->udev, usb_rcvbulkpipe(dev->udev, 1),
+		      dev->rx_skb->data, RTL8150_MTU, read_bulk_callback, dev);
+try_again:
+	status = usb_submit_urb(dev->rx_urb, GFP_ATOMIC);
+	if (status == -ENODEV) {
+		netif_device_detach(dev->netdev);
+	} else if (status) {
+		set_bit(RX_URB_FAIL, &dev->flags);
+		goto tlsched;
+	} else {
+		clear_bit(RX_URB_FAIL, &dev->flags);
+	}
+
+	return;
+tlsched:
+	tasklet_schedule(&dev->tl);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int enable_net_traffic(rtl8150_t * dev)
 {
 	u8 cr, tcr, rcr, msr;
@@ -674,7 +832,10 @@ static int enable_net_traffic(rtl8150_t * dev)
 	}
 	/* RCR bit7=1 attach Rx info at the end;  =0 HW CRC (which is broken) */
 	rcr = 0x9e;
+<<<<<<< HEAD
 	dev->rx_creg = cpu_to_le16(rcr);
+=======
+>>>>>>> refs/remotes/origin/master
 	tcr = 0xd8;
 	cr = 0x0c;
 	if (!(rcr & 0x80))
@@ -707,6 +868,7 @@ static void rtl8150_tx_timeout(struct net_device *netdev)
 static void rtl8150_set_multicast(struct net_device *netdev)
 {
 	rtl8150_t *dev = netdev_priv(netdev);
+<<<<<<< HEAD
 	netif_stop_queue(netdev);
 	if (netdev->flags & IFF_PROMISC) {
 		dev->rx_creg |= cpu_to_le16(0x0001);
@@ -721,6 +883,24 @@ static void rtl8150_set_multicast(struct net_device *netdev)
 		dev->rx_creg &= cpu_to_le16(0x00fc);
 	}
 	async_set_registers(dev, RCR, 2);
+=======
+	u16 rx_creg = 0x9e;
+
+	netif_stop_queue(netdev);
+	if (netdev->flags & IFF_PROMISC) {
+		rx_creg |= 0x0001;
+		dev_info(&netdev->dev, "%s: promiscuous mode\n", netdev->name);
+	} else if (!netdev_mc_empty(netdev) ||
+		   (netdev->flags & IFF_ALLMULTI)) {
+		rx_creg &= 0xfffe;
+		rx_creg |= 0x0002;
+		dev_info(&netdev->dev, "%s: allmulti set\n", netdev->name);
+	} else {
+		/* ~RX_MULTICAST, ~RX_PROMISCUOUS */
+		rx_creg &= 0x00fc;
+	}
+	async_set_registers(dev, RCR, sizeof(rx_creg), rx_creg);
+>>>>>>> refs/remotes/origin/master
 	netif_wake_queue(netdev);
 }
 
@@ -778,7 +958,15 @@ static int rtl8150_open(struct net_device *netdev)
 		return -ENOMEM;
 
 	set_registers(dev, IDR, 6, netdev->dev_addr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	usb_fill_bulk_urb(dev->rx_urb, dev->udev, usb_rcvbulkpipe(dev->udev, 1),
 		      dev->rx_skb->data, RTL8150_MTU, read_bulk_callback, dev);
 	if ((res = usb_submit_urb(dev->rx_urb, GFP_KERNEL))) {
@@ -821,9 +1009,15 @@ static void rtl8150_get_drvinfo(struct net_device *netdev, struct ethtool_drvinf
 {
 	rtl8150_t *dev = netdev_priv(netdev);
 
+<<<<<<< HEAD
 	strncpy(info->driver, driver_name, ETHTOOL_BUSINFO_LEN);
 	strncpy(info->version, DRIVER_VERSION, ETHTOOL_BUSINFO_LEN);
 	usb_make_path(dev->udev, info->bus_info, sizeof info->bus_info);
+=======
+	strlcpy(info->driver, driver_name, sizeof(info->driver));
+	strlcpy(info->version, DRIVER_VERSION, sizeof(info->version));
+	usb_make_path(dev->udev, info->bus_info, sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int rtl8150_get_settings(struct net_device *netdev, struct ethtool_cmd *ecmd)
@@ -898,8 +1092,18 @@ static const struct net_device_ops rtl8150_netdev_ops = {
 	.ndo_stop		= rtl8150_close,
 	.ndo_do_ioctl		= rtl8150_ioctl,
 	.ndo_start_xmit		= rtl8150_start_xmit,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_tx_timeout 	= rtl8150_tx_timeout,
 	.ndo_set_multicast_list = rtl8150_set_multicast,
+=======
+	.ndo_tx_timeout		= rtl8150_tx_timeout,
+	.ndo_set_rx_mode	= rtl8150_set_multicast,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_tx_timeout		= rtl8150_tx_timeout,
+	.ndo_set_rx_mode	= rtl8150_set_multicast,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= rtl8150_set_mac_address,
 
 	.ndo_change_mtu		= eth_change_mtu,
@@ -914,10 +1118,20 @@ static int rtl8150_probe(struct usb_interface *intf,
 	struct net_device *netdev;
 
 	netdev = alloc_etherdev(sizeof(rtl8150_t));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!netdev) {
 		err("Out of memory");
 		return -ENOMEM;
 	}
+=======
+	if (!netdev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!netdev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	dev = netdev_priv(netdev);
 
@@ -929,7 +1143,15 @@ static int rtl8150_probe(struct usb_interface *intf,
 
 	tasklet_init(&dev->tl, rx_fixup, (unsigned long)dev);
 	spin_lock_init(&dev->rx_pool_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	dev->udev = udev;
 	dev->netdev = netdev;
 	netdev->netdev_ops = &rtl8150_netdev_ops;
@@ -938,20 +1160,40 @@ static int rtl8150_probe(struct usb_interface *intf,
 	dev->intr_interval = 100;	/* 100ms */
 
 	if (!alloc_all_urbs(dev)) {
+<<<<<<< HEAD
 		err("out of memory");
 		goto out;
 	}
 	if (!rtl8150_reset(dev)) {
 		err("couldn't reset the device");
+=======
+		dev_err(&intf->dev, "out of memory\n");
+		goto out;
+	}
+	if (!rtl8150_reset(dev)) {
+		dev_err(&intf->dev, "couldn't reset the device\n");
+>>>>>>> refs/remotes/origin/master
 		goto out1;
 	}
 	fill_skb_pool(dev);
 	set_ethernet_addr(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_set_intfdata(intf, dev);
 	SET_NETDEV_DEV(netdev, &intf->dev);
 	if (register_netdev(netdev) != 0) {
 		err("couldn't register the device");
+=======
+
+	usb_set_intfdata(intf, dev);
+	SET_NETDEV_DEV(netdev, &intf->dev);
+	if (register_netdev(netdev) != 0) {
+		dev_err(&intf->dev, "couldn't register the device\n");
+>>>>>>> refs/remotes/origin/master
 		goto out2;
 	}
 
@@ -989,6 +1231,8 @@ static void rtl8150_disconnect(struct usb_interface *intf)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usb_rtl8150_init(void)
 {
 	printk(KERN_INFO KBUILD_MODNAME ": " DRIVER_VERSION ":"
@@ -1003,6 +1247,28 @@ static void __exit usb_rtl8150_exit(void)
 
 module_init(usb_rtl8150_init);
 module_exit(usb_rtl8150_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct usb_driver rtl8150_driver = {
+	.name		= driver_name,
+	.probe		= rtl8150_probe,
+	.disconnect	= rtl8150_disconnect,
+	.id_table	= rtl8150_table,
+	.suspend	= rtl8150_suspend,
+<<<<<<< HEAD
+	.resume		= rtl8150_resume
+};
+
+module_usb_driver(rtl8150_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.resume		= rtl8150_resume,
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(rtl8150_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

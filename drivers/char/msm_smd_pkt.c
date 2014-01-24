@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2008-2010, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -9,6 +17,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+ *
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 /*
  * SMD Packet Driver -- Provides userspace interface to SMD packet ports.
@@ -374,9 +393,19 @@ static int __init smd_pkt_init(void)
 	for (i = 0; i < NUM_SMD_PKT_PORTS; ++i) {
 		smd_pkt_devp[i] = kzalloc(sizeof(struct smd_pkt_dev),
 					  GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (IS_ERR(smd_pkt_devp[i])) {
 			r = PTR_ERR(smd_pkt_devp[i]);
 			pr_err("kmalloc() failed %d\n", r);
+=======
+		if (!smd_pkt_devp[i]) {
+			pr_err("kmalloc() failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!smd_pkt_devp[i]) {
+			pr_err("kmalloc() failed\n");
+>>>>>>> refs/remotes/origin/master
 			goto clean_cdevs;
 		}
 

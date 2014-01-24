@@ -25,7 +25,11 @@
  *  Added preprocessor hacks to map to Linux kernel diagnostics.
  *
  *  Kevin D. Kissell, kevink@mips.com and Carsten Langgaard, carstenl@mips.com
+<<<<<<< HEAD
  *  Copyright (C) 2000 MIPS Technologies, Inc.  All rights reserved.
+=======
+ *  Copyright (C) 2000 MIPS Technologies, Inc.	All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *************************************************************************/
 
 #include <linux/kernel.h>

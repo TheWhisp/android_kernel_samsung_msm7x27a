@@ -3,10 +3,24 @@
 #
 
 # Common support
+<<<<<<< HEAD
 obj-y := io.o id.o sram.o time.o irq.o mux.o flash.o serial.o devices.o dma.o
+<<<<<<< HEAD
 obj-y += clock.o clock_data.o opp_data.o reset.o pm_bus.o
 
 obj-$(CONFIG_OMAP_MCBSP) += mcbsp.o
+=======
+=======
+obj-y := io.o id.o sram-init.o sram.o time.o irq.o mux.o flash.o \
+	 serial.o devices.o dma.o fb.o
+>>>>>>> refs/remotes/origin/master
+obj-y += clock.o clock_data.o opp_data.o reset.o pm_bus.o timer.o
+
+ifneq ($(CONFIG_SND_OMAP_SOC_MCBSP),)
+obj-y += mcbsp.o
+endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 obj-$(CONFIG_OMAP_32K_TIMER)	+= timer32k.o
 
@@ -17,6 +31,17 @@ obj-$(CONFIG_PM) += pm.o sleep.o
 obj-$(CONFIG_OMAP_MBOX_FWK)	+= mailbox_mach.o
 mailbox_mach-objs		:= mailbox.o
 
+=======
+
+obj-$(CONFIG_OMAP_32K_TIMER)	+= timer32k.o
+
+# OCPI interconnect support for 1710, 1610 and 5912
+obj-$(CONFIG_ARCH_OMAP16XX) += ocpi.o
+
+# Power Management
+obj-$(CONFIG_PM) += pm.o sleep.o
+
+>>>>>>> refs/remotes/origin/master
 i2c-omap-$(CONFIG_I2C_OMAP)		:= i2c.o
 obj-y					+= $(i2c-omap-m) $(i2c-omap-y)
 
@@ -26,6 +51,7 @@ usb-fs-$(CONFIG_USB)			:= usb.o
 obj-y					+= $(usb-fs-m) $(usb-fs-y)
 
 # Specific board support
+<<<<<<< HEAD
 obj-$(CONFIG_MACH_OMAP_H2)		+= board-h2.o board-h2-mmc.o
 obj-$(CONFIG_MACH_OMAP_INNOVATOR)	+= board-innovator.o
 obj-$(CONFIG_MACH_OMAP_GENERIC)		+= board-generic.o
@@ -33,6 +59,17 @@ obj-$(CONFIG_MACH_OMAP_PERSEUS2)	+= board-perseus2.o
 obj-$(CONFIG_MACH_OMAP_FSAMPLE)		+= board-fsample.o
 obj-$(CONFIG_MACH_OMAP_OSK)		+= board-osk.o
 obj-$(CONFIG_MACH_OMAP_H3)		+= board-h3.o board-h3-mmc.o
+=======
+obj-$(CONFIG_MACH_OMAP_H2)		+= board-h2.o board-h2-mmc.o \
+					   board-nand.o
+obj-$(CONFIG_MACH_OMAP_INNOVATOR)	+= board-innovator.o
+obj-$(CONFIG_MACH_OMAP_GENERIC)		+= board-generic.o
+obj-$(CONFIG_MACH_OMAP_PERSEUS2)	+= board-perseus2.o board-nand.o
+obj-$(CONFIG_MACH_OMAP_FSAMPLE)		+= board-fsample.o board-nand.o
+obj-$(CONFIG_MACH_OMAP_OSK)		+= board-osk.o
+obj-$(CONFIG_MACH_OMAP_H3)		+= board-h3.o board-h3-mmc.o \
+					   board-nand.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_MACH_VOICEBLUE)		+= board-voiceblue.o
 obj-$(CONFIG_MACH_OMAP_PALMTE)		+= board-palmte.o
 obj-$(CONFIG_MACH_OMAP_PALMZ71)		+= board-palmz71.o
@@ -54,6 +91,7 @@ obj-$(CONFIG_ARCH_OMAP850)		+= gpio7xx.o
 obj-$(CONFIG_ARCH_OMAP15XX)		+= gpio15xx.o
 obj-$(CONFIG_ARCH_OMAP16XX)		+= gpio16xx.o
 
+<<<<<<< HEAD
 # LEDs support
 led-$(CONFIG_MACH_OMAP_H2)		+= leds-h2p2-debug.o
 led-$(CONFIG_MACH_OMAP_H3)		+= leds-h2p2-debug.o
@@ -62,6 +100,8 @@ led-$(CONFIG_MACH_OMAP_PERSEUS2)	+= leds-h2p2-debug.o
 led-$(CONFIG_MACH_OMAP_OSK)		+= leds-osk.o
 obj-$(CONFIG_LEDS)			+= $(led-y)
 
+=======
+>>>>>>> refs/remotes/origin/master
 ifneq ($(CONFIG_FB_OMAP),)
 obj-y += lcd_dma.o
 endif

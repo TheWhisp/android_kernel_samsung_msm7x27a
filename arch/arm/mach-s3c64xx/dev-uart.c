@@ -31,12 +31,14 @@
 /* 64xx uarts are closer together */
 
 static struct resource s3c64xx_uart0_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start	= S3C_PA_UART0,
 		.end	= S3C_PA_UART0 + 0x100,
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= IRQ_S3CUART_RX0,
 		.end	= IRQ_S3CUART_RX0,
 		.flags	= IORESOURCE_IRQ,
@@ -52,6 +54,12 @@ static struct resource s3c64xx_uart0_resource[] = {
 		.end	= IRQ_S3CUART_ERR0,
 		.flags	= IORESOURCE_IRQ,
 	}
+=======
+		.start	= IRQ_UART0,
+		.end	= IRQ_UART0,
+		.flags	= IORESOURCE_IRQ,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct resource s3c64xx_uart1_resource[] = {
@@ -61,6 +69,7 @@ static struct resource s3c64xx_uart1_resource[] = {
 		.flags = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= IRQ_S3CUART_RX1,
 		.end	= IRQ_S3CUART_RX1,
 		.flags	= IORESOURCE_IRQ,
@@ -74,6 +83,10 @@ static struct resource s3c64xx_uart1_resource[] = {
 	[3] = {
 		.start	= IRQ_S3CUART_ERR1,
 		.end	= IRQ_S3CUART_ERR1,
+=======
+		.start	= IRQ_UART1,
+		.end	= IRQ_UART1,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -85,6 +98,7 @@ static struct resource s3c6xx_uart2_resource[] = {
 		.flags = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= IRQ_S3CUART_RX2,
 		.end	= IRQ_S3CUART_RX2,
 		.flags	= IORESOURCE_IRQ,
@@ -98,6 +112,10 @@ static struct resource s3c6xx_uart2_resource[] = {
 	[3] = {
 		.start	= IRQ_S3CUART_ERR2,
 		.end	= IRQ_S3CUART_ERR2,
+=======
+		.start	= IRQ_UART2,
+		.end	= IRQ_UART2,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -109,6 +127,7 @@ static struct resource s3c64xx_uart3_resource[] = {
 		.flags = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= IRQ_S3CUART_RX3,
 		.end	= IRQ_S3CUART_RX3,
 		.flags	= IORESOURCE_IRQ,
@@ -122,8 +141,31 @@ static struct resource s3c64xx_uart3_resource[] = {
 	[3] = {
 		.start	= IRQ_S3CUART_ERR3,
 		.end	= IRQ_S3CUART_ERR3,
+=======
+		.start	= IRQ_UART3,
+		.end	= IRQ_UART3,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S3C_PA_UART0, SZ_256),
+	[1] = DEFINE_RES_IRQ(IRQ_UART0),
+};
+
+static struct resource s3c64xx_uart1_resource[] = {
+	[0] = DEFINE_RES_MEM(S3C_PA_UART1, SZ_256),
+	[1] = DEFINE_RES_IRQ(IRQ_UART1),
+};
+
+static struct resource s3c6xx_uart2_resource[] = {
+	[0] = DEFINE_RES_MEM(S3C_PA_UART2, SZ_256),
+	[1] = DEFINE_RES_IRQ(IRQ_UART2),
+};
+
+static struct resource s3c64xx_uart3_resource[] = {
+	[0] = DEFINE_RES_MEM(S3C_PA_UART3, SZ_256),
+	[1] = DEFINE_RES_IRQ(IRQ_UART3),
+>>>>>>> refs/remotes/origin/master
 };
 
 

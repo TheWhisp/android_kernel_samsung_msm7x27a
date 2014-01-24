@@ -1,7 +1,11 @@
 /*
  *  bcu.c, Bus Control Unit routines for the NEC VR4100 series.
  *
+<<<<<<< HEAD
  *  Copyright (C) 2002  MontaVista Software Inc.
+=======
+ *  Copyright (C) 2002	MontaVista Software Inc.
+>>>>>>> refs/remotes/origin/master
  *    Author: Yoichi Yuasa <source@mvista.com>
  *  Copyright (C) 2003-2005  Yoichi Yuasa <yuasa@linux-mips.org>
  *
@@ -176,7 +180,11 @@ static inline unsigned long calculate_vtclock(uint16_t clkspeed, unsigned long p
 }
 
 static inline unsigned long calculate_tclock(uint16_t clkspeed, unsigned long pclock,
+<<<<<<< HEAD
                                              unsigned long vtclock)
+=======
+					     unsigned long vtclock)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long tclock = 0;
 

@@ -14,7 +14,11 @@
 		.equ	io_virt, IO_BASE
 		.equ	io_phys, IO_START
 
+<<<<<<< HEAD
 		.macro	addruart, rp, rv
+=======
+		.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 		mov	\rp, #0x00044000	@ UART1
 @		mov	\rp, #0x00045000	@ UART2
 		add	\rv, \rp, #io_virt	@ virtual address

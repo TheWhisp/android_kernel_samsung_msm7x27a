@@ -1,3 +1,11 @@
 boot/compressed/vmlinux
 tools/test_get_len
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+tools/insn_sanity
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+tools/insn_sanity
+>>>>>>> refs/remotes/origin/master
 

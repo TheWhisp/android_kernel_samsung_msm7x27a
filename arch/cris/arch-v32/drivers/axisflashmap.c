@@ -329,7 +329,10 @@ static int __init init_axis_flash(void)
 	}
 #endif
 
+<<<<<<< HEAD
 #ifndef CONFIG_ETRAX_VCS_SIM
+=======
+>>>>>>> refs/remotes/origin/master
 	main_mtd = flash_probe();
 	if (main_mtd)
 		printk(KERN_INFO "%s: 0x%08x bytes of NOR flash memory.\n",
@@ -404,8 +407,16 @@ static int __init init_axis_flash(void)
 		 */
 		int blockstat;
 		do {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			blockstat = main_mtd->block_isbad(main_mtd,
 				ptable_sector);
+=======
+			blockstat = mtd_block_isbad(main_mtd, ptable_sector);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			blockstat = mtd_block_isbad(main_mtd, ptable_sector);
+>>>>>>> refs/remotes/origin/master
 			if (blockstat < 0)
 				ptable_sector = 0; /* read error */
 			else if (blockstat)
@@ -413,8 +424,18 @@ static int __init init_axis_flash(void)
 		} while (blockstat && ptable_sector);
 #endif
 		if (ptable_sector) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			main_mtd->read(main_mtd, ptable_sector, PAGESIZE,
 				&len, page);
+=======
+			mtd_read(main_mtd, ptable_sector, PAGESIZE, &len,
+				 page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mtd_read(main_mtd, ptable_sector, PAGESIZE, &len,
+				 page);
+>>>>>>> refs/remotes/origin/master
 			ptable_head = &((struct partitiontable *) page)->head;
 		}
 
@@ -604,6 +625,7 @@ static int __init init_axis_flash(void)
 					"partition %d\n", part);
 		}
 	}
+<<<<<<< HEAD
 #endif /* CONFIG_EXTRAX_VCS_SIM */
 
 #ifdef CONFIG_ETRAX_VCS_SIM
@@ -632,6 +654,9 @@ static int __init init_axis_flash(void)
 #endif /* CONFIG_EXTRAX_VCS_SIM */
 
 #ifndef CONFIG_ETRAX_VCS_SIM
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (aux_mtd) {
 		aux_partition.size = aux_mtd->size;
 		err = mtd_device_register(aux_mtd, &aux_partition, 1);
@@ -640,7 +665,10 @@ static int __init init_axis_flash(void)
 			      "aux mtd device!\n");
 
 	}
+<<<<<<< HEAD
 #endif /* CONFIG_EXTRAX_VCS_SIM */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

@@ -19,7 +19,13 @@
 
 #include <linux/device.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <asm/uaccess.h>
@@ -36,12 +42,27 @@
 #include <asm/mipsmtregs.h>
 #include <asm/mips_mt.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/cpu.h>
 #include <asm/processor.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+#include <asm/cpu.h>
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/vpe.h>
 #include <asm/rtlx.h>
+=======
+#include <linux/atomic.h>
+#include <asm/cpu.h>
+#include <asm/processor.h>
+#include <asm/vpe.h>
+#include <asm/rtlx.h>
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct rtlx_info *rtlx;
 static int major;
@@ -173,8 +194,14 @@ int rtlx_open(int index, int can_sleep)
 	if (rtlx == NULL) {
 		if( (p = vpe_get_shared(tclimit)) == NULL) {
 		    if (can_sleep) {
+<<<<<<< HEAD
 			__wait_event_interruptible(channel_wqs[index].lx_queue,
 				(p = vpe_get_shared(tclimit)), ret);
+=======
+			ret = __wait_event_interruptible(
+					channel_wqs[index].lx_queue,
+					(p = vpe_get_shared(tclimit)));
+>>>>>>> refs/remotes/origin/master
 			if (ret)
 				goto out_fail;
 		    } else {
@@ -254,21 +281,37 @@ int rtlx_release(int index)
 
 unsigned int rtlx_read_poll(int index, int can_sleep)
 {
+<<<<<<< HEAD
  	struct rtlx_channel *chan;
 
  	if (rtlx == NULL)
  		return 0;
 
  	chan = &rtlx->channel[index];
+=======
+	struct rtlx_channel *chan;
+
+	if (rtlx == NULL)
+		return 0;
+
+	chan = &rtlx->channel[index];
+>>>>>>> refs/remotes/origin/master
 
 	/* data available to read? */
 	if (chan->lx_read == chan->lx_write) {
 		if (can_sleep) {
+<<<<<<< HEAD
 			int ret = 0;
 
 			__wait_event_interruptible(channel_wqs[index].lx_queue,
 				(chan->lx_read != chan->lx_write) ||
 				sp_stopping, ret);
+=======
+			int ret = __wait_event_interruptible(
+				channel_wqs[index].lx_queue,
+				(chan->lx_read != chan->lx_write) ||
+				sp_stopping);
+>>>>>>> refs/remotes/origin/master
 			if (ret)
 				return ret;
 
@@ -401,11 +444,17 @@ static int file_release(struct inode *inode, struct file *filp)
 
 static unsigned int file_poll(struct file *file, poll_table * wait)
 {
+<<<<<<< HEAD
 	int minor;
 	unsigned int mask = 0;
 
 	minor = iminor(file->f_path.dentry->d_inode);
 
+=======
+	int minor = iminor(file_inode(file));
+	unsigned int mask = 0;
+
+>>>>>>> refs/remotes/origin/master
 	poll_wait(file, &channel_wqs[minor].rt_queue, wait);
 	poll_wait(file, &channel_wqs[minor].lx_queue, wait);
 
@@ -426,7 +475,11 @@ static unsigned int file_poll(struct file *file, poll_table * wait)
 static ssize_t file_read(struct file *file, char __user * buffer, size_t count,
 			 loff_t * ppos)
 {
+<<<<<<< HEAD
 	int minor = iminor(file->f_path.dentry->d_inode);
+=======
+	int minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 
 	/* data available? */
 	if (!rtlx_read_poll(minor, (file->f_flags & O_NONBLOCK) ? 0 : 1)) {
@@ -439,6 +492,7 @@ static ssize_t file_read(struct file *file, char __user * buffer, size_t count,
 static ssize_t file_write(struct file *file, const char __user * buffer,
 			  size_t count, loff_t * ppos)
 {
+<<<<<<< HEAD
 	int minor;
 	struct rtlx_channel *rt;
 
@@ -448,13 +502,25 @@ static ssize_t file_write(struct file *file, const char __user * buffer,
 	/* any space left... */
 	if (!rtlx_write_poll(minor)) {
 		int ret = 0;
+=======
+	int minor = iminor(file_inode(file));
+
+	/* any space left... */
+	if (!rtlx_write_poll(minor)) {
+		int ret;
+>>>>>>> refs/remotes/origin/master
 
 		if (file->f_flags & O_NONBLOCK)
 			return -EAGAIN;
 
+<<<<<<< HEAD
 		__wait_event_interruptible(channel_wqs[minor].rt_queue,
 		                           rtlx_write_poll(minor),
 		                           ret);
+=======
+		ret = __wait_event_interruptible(channel_wqs[minor].rt_queue,
+					   rtlx_write_poll(minor));
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			return ret;
 	}
@@ -464,17 +530,31 @@ static ssize_t file_write(struct file *file, const char __user * buffer,
 
 static const struct file_operations rtlx_fops = {
 	.owner =   THIS_MODULE,
+<<<<<<< HEAD
 	.open =    file_open,
 	.release = file_release,
 	.write =   file_write,
 	.read =    file_read,
 	.poll =    file_poll,
+=======
+	.open =	   file_open,
+	.release = file_release,
+	.write =   file_write,
+	.read =	   file_read,
+	.poll =	   file_poll,
+>>>>>>> refs/remotes/origin/master
 	.llseek =  noop_llseek,
 };
 
 static struct irqaction rtlx_irq = {
 	.handler	= rtlx_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.name		= "RTLX",
 };
 

@@ -111,10 +111,22 @@ int __must_check __umc_driver_register(struct umc_driver *umc_drv,
  * umc_driver_register - register a UMC capabiltity driver.
  * @umc_drv:  pointer to the driver.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int __must_check umc_driver_register(struct umc_driver *umc_drv)
 {
 	return __umc_driver_register(umc_drv, THIS_MODULE, KBUILD_MODNAME);
 }
+=======
+#define umc_driver_register(umc_drv) \
+	__umc_driver_register(umc_drv, THIS_MODULE, KBUILD_MODNAME)
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define umc_driver_register(umc_drv) \
+	__umc_driver_register(umc_drv, THIS_MODULE, KBUILD_MODNAME)
+
+>>>>>>> refs/remotes/origin/master
 void umc_driver_unregister(struct umc_driver *umc_drv);
 
 /*
@@ -144,7 +156,11 @@ int umc_match_pci_id(struct umc_driver *umc_drv, struct umc_dev *umc);
 static inline struct pci_dev *umc_parent_pci_dev(struct umc_dev *umc_dev)
 {
 	struct pci_dev *pci_dev = NULL;
+<<<<<<< HEAD
 	if (umc_dev->dev.parent->bus == &pci_bus_type)
+=======
+	if (dev_is_pci(umc_dev->dev.parent))
+>>>>>>> refs/remotes/origin/master
 		pci_dev = to_pci_dev(umc_dev->dev.parent);
 	return pci_dev;
 }

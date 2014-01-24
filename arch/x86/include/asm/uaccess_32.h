@@ -184,6 +184,7 @@ __copy_from_user_inatomic_nocache(void *to, const void __user *from,
        return __copy_from_user_ll_nocache_nozero(to, from, n);
 }
 
+<<<<<<< HEAD
 unsigned long __must_check copy_to_user(void __user *to,
 					const void *from, unsigned long n);
 unsigned long __must_check _copy_from_user(void *to,
@@ -213,11 +214,14 @@ static inline unsigned long __must_check copy_from_user(void *to,
 	return n;
 }
 
+<<<<<<< HEAD
 long __must_check strncpy_from_user(char *dst, const char __user *src,
 				    long count);
 long __must_check __strncpy_from_user(char *dst,
 				      const char __user *src, long count);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * strlen_user: - Get the size of a string in user space.
  * @str: The string to measure.
@@ -238,4 +242,6 @@ long strnlen_user(const char __user *str, long n);
 unsigned long __must_check clear_user(void __user *mem, unsigned long len);
 unsigned long __must_check __clear_user(void __user *mem, unsigned long len);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_UACCESS_32_H */

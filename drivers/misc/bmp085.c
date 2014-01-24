@@ -1,4 +1,5 @@
 /*  Copyright (c) 2010  Christoph Mair <christoph.mair@gmail.com>
+<<<<<<< HEAD
 
     This driver supports the bmp085 digital barometric pressure
     and temperature sensor from Bosch Sensortec. The datasheet
@@ -57,6 +58,68 @@
 #define BMP085_CALIBRATION_DATA_LENGTH	11	/* 16 bit values */
 #define BMP085_CHIP_ID_REG		0xD0
 #define BMP085_VERSION_REG		0xD1
+=======
+ *  Copyright (c) 2012  Bosch Sensortec GmbH
+ *  Copyright (c) 2012  Unixphere AB
+ *
+ *  This driver supports the bmp085 and bmp18x digital barometric pressure
+ *  and temperature sensors from Bosch Sensortec. The datasheets
+ *  are available from their website:
+ *  http://www.bosch-sensortec.com/content/language1/downloads/BST-BMP085-DS000-05.pdf
+ *  http://www.bosch-sensortec.com/content/language1/downloads/BST-BMP180-DS000-07.pdf
+ *
+ *  A pressure measurement is issued by reading from pressure0_input.
+ *  The return value ranges from 30000 to 110000 pascal with a resulution
+ *  of 1 pascal (0.01 millibar) which enables measurements from 9000m above
+ *  to 500m below sea level.
+ *
+ *  The temperature can be read from temp0_input. Values range from
+ *  -400 to 850 representing the ambient temperature in degree celsius
+ *  multiplied by 10.The resolution is 0.1 celsius.
+ *
+ *  Because ambient pressure is temperature dependent, a temperature
+ *  measurement will be executed automatically even if the user is reading
+ *  from pressure0_input. This happens if the last temperature measurement
+ *  has been executed more then one second ago.
+ *
+ *  To decrease RMS noise from pressure measurements, the bmp085 can
+ *  autonomously calculate the average of up to eight samples. This is
+ *  set up by writing to the oversampling sysfs file. Accepted values
+ *  are 0, 1, 2 and 3. 2^x when x is the value written to this file
+ *  specifies the number of samples used to calculate the ambient pressure.
+ *  RMS noise is specified with six pascal (without averaging) and decreases
+ *  down to 3 pascal when using an oversampling setting of 3.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <linux/module.h>
+#include <linux/device.h>
+#include <linux/init.h>
+#include <linux/slab.h>
+#include <linux/of.h>
+#include "bmp085.h"
+#include <linux/interrupt.h>
+#include <linux/completion.h>
+#include <linux/gpio.h>
+
+#define BMP085_CHIP_ID			0x55
+#define BMP085_CALIBRATION_DATA_START	0xAA
+#define BMP085_CALIBRATION_DATA_LENGTH	11	/* 16 bit values */
+#define BMP085_CHIP_ID_REG		0xD0
+>>>>>>> refs/remotes/origin/master
 #define BMP085_CTRL_REG			0xF4
 #define BMP085_TEMP_MEASUREMENT		0x2E
 #define BMP085_PRESSURE_MEASUREMENT	0x34
@@ -65,12 +128,15 @@
 #define BMP085_CONVERSION_REGISTER_XLSB	0xF8
 #define BMP085_TEMP_CONVERSION_TIME	5
 
+<<<<<<< HEAD
 #define BMP085_CLIENT_NAME		"bmp085"
 
 
 static const unsigned short normal_i2c[] = { BMP085_I2C_ADDRESS,
 							I2C_CLIENT_END };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct bmp085_calibration_data {
 	s16 AC1, AC2, AC3;
 	u16 AC4, AC5, AC6;
@@ -78,6 +144,7 @@ struct bmp085_calibration_data {
 	s16 MB, MC, MD;
 };
 
+<<<<<<< HEAD
 
 /* Each client has this additional data */
 struct bmp085_data {
@@ -87,7 +154,11 @@ struct bmp085_data {
 	u32 raw_temperature;
 	u32 raw_pressure;
 	unsigned char oversampling_setting;
+<<<<<<< HEAD
 	u32 last_temp_measurement;
+=======
+	unsigned long last_temp_measurement;
+>>>>>>> refs/remotes/origin/cm-10.0
 	s32 b6; /* calculated temperature correction coefficient */
 };
 
@@ -107,6 +178,43 @@ static s32 bmp085_read_calibration_data(struct i2c_client *client)
 	if (status != BMP085_CALIBRATION_DATA_LENGTH*sizeof(u16))
 		return -EIO;
 
+=======
+struct bmp085_data {
+	struct	device *dev;
+	struct  regmap *regmap;
+	struct	mutex lock;
+	struct	bmp085_calibration_data calibration;
+	u8	oversampling_setting;
+	u32	raw_temperature;
+	u32	raw_pressure;
+	u32	temp_measurement_period;
+	unsigned long last_temp_measurement;
+	u8	chip_id;
+	s32	b6; /* calculated temperature correction coefficient */
+	int	irq;
+	struct	completion done;
+};
+
+static irqreturn_t bmp085_eoc_isr(int irq, void *devid)
+{
+	struct bmp085_data *data = devid;
+
+	complete(&data->done);
+
+	return IRQ_HANDLED;
+}
+
+static s32 bmp085_read_calibration_data(struct bmp085_data *data)
+{
+	u16 tmp[BMP085_CALIBRATION_DATA_LENGTH];
+	struct bmp085_calibration_data *cali = &(data->calibration);
+	s32 status = regmap_bulk_read(data->regmap,
+				BMP085_CALIBRATION_DATA_START, (u8 *)tmp,
+				(BMP085_CALIBRATION_DATA_LENGTH << 1));
+	if (status < 0)
+		return status;
+
+>>>>>>> refs/remotes/origin/master
 	cali->AC1 =  be16_to_cpu(tmp[0]);
 	cali->AC2 =  be16_to_cpu(tmp[1]);
 	cali->AC3 =  be16_to_cpu(tmp[2]);
@@ -121,13 +229,17 @@ static s32 bmp085_read_calibration_data(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static s32 bmp085_update_raw_temperature(struct bmp085_data *data)
 {
 	u16 tmp;
 	s32 status;
 
 	mutex_lock(&data->lock);
+<<<<<<< HEAD
 	status = i2c_smbus_write_byte_data(data->client, BMP085_CTRL_REG,
 						BMP085_TEMP_MEASUREMENT);
 	if (status != 0) {
@@ -145,6 +257,26 @@ static s32 bmp085_update_raw_temperature(struct bmp085_data *data)
 		dev_err(&data->client->dev,
 			"Error while reading temperature measurement result\n");
 		status = -EIO;
+=======
+
+	init_completion(&data->done);
+
+	status = regmap_write(data->regmap, BMP085_CTRL_REG,
+			      BMP085_TEMP_MEASUREMENT);
+	if (status < 0) {
+		dev_err(data->dev,
+			"Error while requesting temperature measurement.\n");
+		goto exit;
+	}
+	wait_for_completion_timeout(&data->done, 1 + msecs_to_jiffies(
+					    BMP085_TEMP_CONVERSION_TIME));
+
+	status = regmap_bulk_read(data->regmap, BMP085_CONVERSION_REGISTER_MSB,
+				 &tmp, sizeof(tmp));
+	if (status < 0) {
+		dev_err(data->dev,
+			"Error while reading temperature measurement result\n");
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 	data->raw_temperature = be16_to_cpu(tmp);
@@ -162,15 +294,27 @@ static s32 bmp085_update_raw_pressure(struct bmp085_data *data)
 	s32 status;
 
 	mutex_lock(&data->lock);
+<<<<<<< HEAD
 	status = i2c_smbus_write_byte_data(data->client, BMP085_CTRL_REG,
 		BMP085_PRESSURE_MEASUREMENT + (data->oversampling_setting<<6));
 	if (status != 0) {
 		dev_err(&data->client->dev,
+=======
+
+	init_completion(&data->done);
+
+	status = regmap_write(data->regmap, BMP085_CTRL_REG,
+			BMP085_PRESSURE_MEASUREMENT +
+			(data->oversampling_setting << 6));
+	if (status < 0) {
+		dev_err(data->dev,
+>>>>>>> refs/remotes/origin/master
 			"Error while requesting pressure measurement.\n");
 		goto exit;
 	}
 
 	/* wait for the end of conversion */
+<<<<<<< HEAD
 	msleep(2+(3 << data->oversampling_setting));
 
 	/* copy data into a u32 (4 bytes), but skip the first byte. */
@@ -182,6 +326,16 @@ static s32 bmp085_update_raw_pressure(struct bmp085_data *data)
 		dev_err(&data->client->dev,
 			"Error while reading pressure measurement results\n");
 		status = -EIO;
+=======
+	wait_for_completion_timeout(&data->done, 1 + msecs_to_jiffies(
+					2+(3 << data->oversampling_setting)));
+	/* copy data into a u32 (4 bytes), but skip the first byte. */
+	status = regmap_bulk_read(data->regmap, BMP085_CONVERSION_REGISTER_MSB,
+				 ((u8 *)&tmp)+1, 3);
+	if (status < 0) {
+		dev_err(data->dev,
+			"Error while reading pressure measurement results\n");
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 	data->raw_pressure = be32_to_cpu((tmp));
@@ -193,7 +347,10 @@ exit:
 	return status;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This function starts the temperature measurement and returns the value
  * in tenth of a degree celsius.
@@ -205,7 +362,11 @@ static s32 bmp085_get_temperature(struct bmp085_data *data, int *temperature)
 	int status;
 
 	status = bmp085_update_raw_temperature(data);
+<<<<<<< HEAD
 	if (status != 0)
+=======
+	if (status < 0)
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 
 	x1 = ((data->raw_temperature - cali->AC6) * cali->AC5) >> 15;
@@ -216,14 +377,29 @@ static s32 bmp085_get_temperature(struct bmp085_data *data, int *temperature)
 		*temperature = (x1+x2+8) >> 4;
 
 exit:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return status;;
+=======
+	return status;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return status;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * This function starts the pressure measurement and returns the value
  * in millibar. Since the pressure depends on the ambient temperature,
+<<<<<<< HEAD
  * a temperature measurement is executed if the last known value is older
  * than one second.
+=======
+ * a temperature measurement is executed according to the given temperature
+ * measurement period (default is 1 sec boundary). This period could vary
+ * and needs to be adjusted according to the sensor environment, i.e. if big
+ * temperature variations then the temperature needs to be read out often.
+>>>>>>> refs/remotes/origin/master
  */
 static s32 bmp085_get_pressure(struct bmp085_data *data, int *pressure)
 {
@@ -234,7 +410,13 @@ static s32 bmp085_get_pressure(struct bmp085_data *data, int *pressure)
 	int status;
 
 	/* alt least every second force an update of the ambient temperature */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (data->last_temp_measurement + 1*HZ < jiffies) {
+=======
+	if (data->last_temp_measurement == 0 ||
+			time_is_before_jiffies(data->last_temp_measurement + 1*HZ)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		status = bmp085_get_temperature(data, NULL);
 		if (status != 0)
 			goto exit;
@@ -243,6 +425,18 @@ static s32 bmp085_get_pressure(struct bmp085_data *data, int *pressure)
 	status = bmp085_update_raw_pressure(data);
 	if (status != 0)
 		goto exit;
+=======
+	if ((data->last_temp_measurement == 0) ||
+	    time_is_before_jiffies(data->last_temp_measurement + 1*HZ)) {
+		status = bmp085_get_temperature(data, NULL);
+		if (status < 0)
+			return status;
+	}
+
+	status = bmp085_update_raw_pressure(data);
+	if (status < 0)
+		return status;
+>>>>>>> refs/remotes/origin/master
 
 	x1 = (data->b6 * data->b6) >> 12;
 	x1 *= cali->B2;
@@ -273,15 +467,23 @@ static s32 bmp085_get_pressure(struct bmp085_data *data, int *pressure)
 
 	*pressure = p;
 
+<<<<<<< HEAD
 exit:
 	return status;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * This function sets the chip-internal oversampling. Valid values are 0..3.
  * The chip will use 2^oversampling samples for internal averaging.
  * This influences the measurement time and the accuracy; larger values
+<<<<<<< HEAD
  * increase both. The datasheet gives on overview on how measurement time,
+=======
+ * increase both. The datasheet gives an overview on how measurement time,
+>>>>>>> refs/remotes/origin/master
  * accuracy and noise correlate.
  */
 static void bmp085_set_oversampling(struct bmp085_data *data,
@@ -305,6 +507,7 @@ static ssize_t set_oversampling(struct device *dev,
 				struct device_attribute *attr,
 				const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct bmp085_data *data = i2c_get_clientdata(client);
 	unsigned long oversampling;
@@ -314,13 +517,32 @@ static ssize_t set_oversampling(struct device *dev,
 		return count;
 	}
 	return success;
+=======
+	struct bmp085_data *data = dev_get_drvdata(dev);
+	unsigned long oversampling;
+	int err = kstrtoul(buf, 10, &oversampling);
+
+	if (err == 0) {
+		mutex_lock(&data->lock);
+		bmp085_set_oversampling(data, oversampling);
+		mutex_unlock(&data->lock);
+		return count;
+	}
+
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_oversampling(struct device *dev,
 				 struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct bmp085_data *data = i2c_get_clientdata(client);
+=======
+	struct bmp085_data *data = dev_get_drvdata(dev);
+
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%u\n", bmp085_get_oversampling(data));
 }
 static DEVICE_ATTR(oversampling, S_IWUSR | S_IRUGO,
@@ -332,11 +554,18 @@ static ssize_t show_temperature(struct device *dev,
 {
 	int temperature;
 	int status;
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct bmp085_data *data = i2c_get_clientdata(client);
 
 	status = bmp085_get_temperature(data, &temperature);
 	if (status != 0)
+=======
+	struct bmp085_data *data = dev_get_drvdata(dev);
+
+	status = bmp085_get_temperature(data, &temperature);
+	if (status < 0)
+>>>>>>> refs/remotes/origin/master
 		return status;
 	else
 		return sprintf(buf, "%d\n", temperature);
@@ -349,11 +578,18 @@ static ssize_t show_pressure(struct device *dev,
 {
 	int pressure;
 	int status;
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct bmp085_data *data = i2c_get_clientdata(client);
 
 	status = bmp085_get_pressure(data, &pressure);
 	if (status != 0)
+=======
+	struct bmp085_data *data = dev_get_drvdata(dev);
+
+	status = bmp085_get_pressure(data, &pressure);
+	if (status < 0)
+>>>>>>> refs/remotes/origin/master
 		return status;
 	else
 		return sprintf(buf, "%d\n", pressure);
@@ -372,16 +608,31 @@ static const struct attribute_group bmp085_attr_group = {
 	.attrs = bmp085_attributes,
 };
 
+<<<<<<< HEAD
 static int bmp085_detect(struct i2c_client *client, struct i2c_board_info *info)
 {
 	if (client->addr != BMP085_I2C_ADDRESS)
 		return -ENODEV;
 
 	if (i2c_smbus_read_byte_data(client, BMP085_CHIP_ID_REG) != BMP085_CHIP_ID)
+=======
+int bmp085_detect(struct device *dev)
+{
+	struct bmp085_data *data = dev_get_drvdata(dev);
+	unsigned int id;
+	int ret;
+
+	ret = regmap_read(data->regmap, BMP085_CHIP_ID_REG, &id);
+	if (ret < 0)
+		return ret;
+
+	if (id != data->chip_id)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static int bmp085_init_client(struct i2c_client *client)
 {
@@ -404,6 +655,57 @@ exit:
 
 static int __devinit bmp085_probe(struct i2c_client *client,
 			 const struct i2c_device_id *id)
+=======
+EXPORT_SYMBOL_GPL(bmp085_detect);
+
+static void bmp085_get_of_properties(struct bmp085_data *data)
+{
+#ifdef CONFIG_OF
+	struct device_node *np = data->dev->of_node;
+	u32 prop;
+
+	if (!np)
+		return;
+
+	if (!of_property_read_u32(np, "chip-id", &prop))
+		data->chip_id = prop & 0xff;
+
+	if (!of_property_read_u32(np, "temp-measurement-period", &prop))
+		data->temp_measurement_period = (prop/100)*HZ;
+
+	if (!of_property_read_u32(np, "default-oversampling", &prop))
+		data->oversampling_setting = prop & 0xff;
+#endif
+}
+
+static int bmp085_init_client(struct bmp085_data *data)
+{
+	int status = bmp085_read_calibration_data(data);
+
+	if (status < 0)
+		return status;
+
+	/* default settings */
+	data->chip_id = BMP085_CHIP_ID;
+	data->last_temp_measurement = 0;
+	data->temp_measurement_period = 1*HZ;
+	data->oversampling_setting = 3;
+
+	bmp085_get_of_properties(data);
+
+	mutex_init(&data->lock);
+
+	return 0;
+}
+
+struct regmap_config bmp085_regmap_config = {
+	.reg_bits = 8,
+	.val_bits = 8
+};
+EXPORT_SYMBOL_GPL(bmp085_regmap_config);
+
+int bmp085_probe(struct device *dev, struct regmap *regmap, int irq)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bmp085_data *data;
 	int err = 0;
@@ -414,6 +716,7 @@ static int __devinit bmp085_probe(struct i2c_client *client,
 		goto exit;
 	}
 
+<<<<<<< HEAD
 	/* default settings after POR */
 	data->oversampling_setting = 0x00;
 
@@ -431,12 +734,47 @@ static int __devinit bmp085_probe(struct i2c_client *client,
 
 	dev_info(&data->client->dev, "Successfully initialized bmp085!\n");
 	goto exit;
+=======
+	dev_set_drvdata(dev, data);
+	data->dev = dev;
+	data->regmap = regmap;
+	data->irq = irq;
+
+	if (data->irq > 0) {
+		err = devm_request_irq(dev, data->irq, bmp085_eoc_isr,
+					      IRQF_TRIGGER_RISING, "bmp085",
+					      data);
+		if (err < 0)
+			goto exit_free;
+	}
+
+	/* Initialize the BMP085 chip */
+	err = bmp085_init_client(data);
+	if (err < 0)
+		goto exit_free;
+
+	err = bmp085_detect(dev);
+	if (err < 0) {
+		dev_err(dev, "%s: chip_id failed!\n", BMP085_NAME);
+		goto exit_free;
+	}
+
+	/* Register sysfs hooks */
+	err = sysfs_create_group(&dev->kobj, &bmp085_attr_group);
+	if (err)
+		goto exit_free;
+
+	dev_info(dev, "Successfully initialized %s!\n", BMP085_NAME);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 
 exit_free:
 	kfree(data);
 exit:
 	return err;
 }
+<<<<<<< HEAD
 
 static int __devexit bmp085_remove(struct i2c_client *client)
 {
@@ -464,6 +802,7 @@ static struct i2c_driver bmp085_driver = {
 	.address_list	= normal_i2c
 };
 
+<<<<<<< HEAD
 static int __init bmp085_init(void)
 {
 	return i2c_add_driver(&bmp085_driver);
@@ -474,10 +813,34 @@ static void __exit bmp085_exit(void)
 	i2c_del_driver(&bmp085_driver);
 }
 
+=======
+module_i2c_driver(bmp085_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Christoph Mair <christoph.mair@gmail.com");
 MODULE_DESCRIPTION("BMP085 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(bmp085_init);
 module_exit(bmp085_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(bmp085_probe);
+
+int bmp085_remove(struct device *dev)
+{
+	struct bmp085_data *data = dev_get_drvdata(dev);
+
+	sysfs_remove_group(&data->dev->kobj, &bmp085_attr_group);
+	kfree(data);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(bmp085_remove);
+
+MODULE_AUTHOR("Christoph Mair <christoph.mair@gmail.com>");
+MODULE_DESCRIPTION("BMP085 driver");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

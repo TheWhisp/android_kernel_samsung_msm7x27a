@@ -15,7 +15,15 @@
  *	JAN/99 -- coded full program relocation (gerg@snapgear.com)
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/mm.h>
@@ -37,7 +45,13 @@
 #include <linux/syscalls.h>
 
 #include <asm/byteorder.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/unaligned.h>
 #include <asm/cacheflush.h>
@@ -89,7 +103,11 @@ struct lib_info {
 static int load_flat_shared_library(int id, struct lib_info *p);
 #endif
 
+<<<<<<< HEAD
 static int load_flat_binary(struct linux_binprm *, struct pt_regs * regs);
+=======
+static int load_flat_binary(struct linux_binprm *);
+>>>>>>> refs/remotes/origin/master
 static int flat_core_dump(struct coredump_params *cprm);
 
 static struct linux_binfmt flat_format = {
@@ -108,7 +126,11 @@ static struct linux_binfmt flat_format = {
 static int flat_core_dump(struct coredump_params *cprm)
 {
 	printk("Process %s:%d received signr %d and should have core dumped\n",
+<<<<<<< HEAD
 			current->comm, current->pid, (int) cprm->signr);
+=======
+			current->comm, current->pid, (int) cprm->siginfo->si_signo);
+>>>>>>> refs/remotes/origin/master
 	return(1);
 }
 
@@ -208,11 +230,19 @@ static int decompress_exec(
 
 	/* Read in first chunk of data and parse gzip header. */
 	fpos = offset;
+<<<<<<< HEAD
 	ret = bprm->file->f_op->read(bprm->file, buf, LBUFSIZE, &fpos);
+=======
+	ret = kernel_read(bprm->file, offset, buf, LBUFSIZE);
+>>>>>>> refs/remotes/origin/master
 
 	strm.next_in = buf;
 	strm.avail_in = ret;
 	strm.total_in = 0;
+<<<<<<< HEAD
+=======
+	fpos += ret;
+>>>>>>> refs/remotes/origin/master
 
 	retval = -ENOEXEC;
 
@@ -278,7 +308,11 @@ static int decompress_exec(
 	}
 
 	while ((ret = zlib_inflate(&strm, Z_NO_FLUSH)) == Z_OK) {
+<<<<<<< HEAD
 		ret = bprm->file->f_op->read(bprm->file, buf, LBUFSIZE, &fpos);
+=======
+		ret = kernel_read(bprm->file, fpos, buf, LBUFSIZE);
+>>>>>>> refs/remotes/origin/master
 		if (ret <= 0)
 			break;
 		len -= ret;
@@ -286,6 +320,10 @@ static int decompress_exec(
 		strm.next_in = buf;
 		strm.avail_in = ret;
 		strm.total_in = 0;
+<<<<<<< HEAD
+=======
+		fpos += ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ret < 0) {
@@ -429,6 +467,10 @@ static int load_flat_file(struct linux_binprm * bprm,
 	unsigned long textpos = 0, datapos = 0, result;
 	unsigned long realdatastart = 0;
 	unsigned long text_len, data_len, bss_len, stack_len, flags;
+<<<<<<< HEAD
+=======
+	unsigned long full_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned long len, memp = 0;
 	unsigned long memp_size, extra, rlim;
 	unsigned long *reloc = 0, *rp;
@@ -439,7 +481,11 @@ static int load_flat_file(struct linux_binprm * bprm,
 	int ret;
 
 	hdr = ((struct flat_hdr *) bprm->buf);		/* exec-header */
+<<<<<<< HEAD
 	inode = bprm->file->f_path.dentry->d_inode;
+=======
+	inode = file_inode(bprm->file);
+>>>>>>> refs/remotes/origin/master
 
 	text_len  = ntohl(hdr->data_start);
 	data_len  = ntohl(hdr->data_end) - ntohl(hdr->data_start);
@@ -452,6 +498,10 @@ static int load_flat_file(struct linux_binprm * bprm,
 	relocs    = ntohl(hdr->reloc_count);
 	flags     = ntohl(hdr->flags);
 	rev       = ntohl(hdr->rev);
+<<<<<<< HEAD
+=======
+	full_data = data_len + relocs * sizeof(unsigned long);
+>>>>>>> refs/remotes/origin/master
 
 	if (strncmp(hdr->magic, "bFLT", 4)) {
 		/*
@@ -543,10 +593,20 @@ static int load_flat_file(struct linux_binprm * bprm,
 		 */
 		DBG_FLT("BINFMT_FLAT: ROM mapping of file (we hope)\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		down_write(&current->mm->mmap_sem);
 		textpos = do_mmap(bprm->file, 0, text_len, PROT_READ|PROT_EXEC,
 				  MAP_PRIVATE|MAP_EXECUTABLE, 0);
 		up_write(&current->mm->mmap_sem);
+=======
+		textpos = vm_mmap(bprm->file, 0, text_len, PROT_READ|PROT_EXEC,
+				  MAP_PRIVATE|MAP_EXECUTABLE, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		textpos = vm_mmap(bprm->file, 0, text_len, PROT_READ|PROT_EXEC,
+				  MAP_PRIVATE|MAP_EXECUTABLE, 0);
+>>>>>>> refs/remotes/origin/master
 		if (!textpos || IS_ERR_VALUE(textpos)) {
 			if (!textpos)
 				textpos = (unsigned long) -ENOMEM;
@@ -557,17 +617,31 @@ static int load_flat_file(struct linux_binprm * bprm,
 
 		len = data_len + extra + MAX_SHARED_LIBS * sizeof(unsigned long);
 		len = PAGE_ALIGN(len);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		down_write(&current->mm->mmap_sem);
 		realdatastart = do_mmap(0, 0, len,
 			PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE, 0);
 		up_write(&current->mm->mmap_sem);
+=======
+		realdatastart = vm_mmap(0, 0, len,
+			PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		realdatastart = vm_mmap(0, 0, len,
+			PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE, 0);
+>>>>>>> refs/remotes/origin/master
 
 		if (realdatastart == 0 || IS_ERR_VALUE(realdatastart)) {
 			if (!realdatastart)
 				realdatastart = (unsigned long) -ENOMEM;
 			printk("Unable to allocate RAM for process data, errno %d\n",
 					(int)-realdatastart);
+<<<<<<< HEAD
 			do_munmap(current->mm, textpos, text_len);
+=======
+			vm_munmap(textpos, text_len);
+>>>>>>> refs/remotes/origin/master
 			ret = realdatastart;
 			goto err;
 		}
@@ -582,6 +656,7 @@ static int load_flat_file(struct linux_binprm * bprm,
 #ifdef CONFIG_BINFMT_ZFLAT
 		if (flags & FLAT_FLAG_GZDATA) {
 			result = decompress_exec(bprm, fpos, (char *) datapos, 
+<<<<<<< HEAD
 						 data_len + (relocs * sizeof(unsigned long)), 0);
 		} else
 #endif
@@ -593,6 +668,19 @@ static int load_flat_file(struct linux_binprm * bprm,
 			printk("Unable to read data+bss, errno %d\n", (int)-result);
 			do_munmap(current->mm, textpos, text_len);
 			do_munmap(current->mm, realdatastart, len);
+=======
+						 full_data, 0);
+		} else
+#endif
+		{
+			result = read_code(bprm->file, datapos, fpos,
+					full_data);
+		}
+		if (IS_ERR_VALUE(result)) {
+			printk("Unable to read data+bss, errno %d\n", (int)-result);
+			vm_munmap(textpos, text_len);
+			vm_munmap(realdatastart, len);
+>>>>>>> refs/remotes/origin/master
 			ret = result;
 			goto err;
 		}
@@ -604,10 +692,20 @@ static int load_flat_file(struct linux_binprm * bprm,
 
 		len = text_len + data_len + extra + MAX_SHARED_LIBS * sizeof(unsigned long);
 		len = PAGE_ALIGN(len);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		down_write(&current->mm->mmap_sem);
 		textpos = do_mmap(0, 0, len,
 			PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE, 0);
 		up_write(&current->mm->mmap_sem);
+=======
+		textpos = vm_mmap(0, 0, len,
+			PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		textpos = vm_mmap(0, 0, len,
+			PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE, 0);
+>>>>>>> refs/remotes/origin/master
 
 		if (!textpos || IS_ERR_VALUE(textpos)) {
 			if (!textpos)
@@ -634,6 +732,7 @@ static int load_flat_file(struct linux_binprm * bprm,
 		if (flags & FLAT_FLAG_GZIP) {
 			result = decompress_exec(bprm, sizeof (struct flat_hdr),
 					 (((char *) textpos) + sizeof (struct flat_hdr)),
+<<<<<<< HEAD
 					 (text_len + data_len + (relocs * sizeof(unsigned long))
 						  - sizeof (struct flat_hdr)),
 					 0);
@@ -646,10 +745,23 @@ static int load_flat_file(struct linux_binprm * bprm,
 			if (!IS_ERR_VALUE(result))
 				result = decompress_exec(bprm, text_len, (char *) datapos,
 						 data_len + (relocs * sizeof(unsigned long)), 0);
+=======
+					 (text_len + full_data
+						  - sizeof (struct flat_hdr)),
+					 0);
+			memmove((void *) datapos, (void *) realdatastart,
+					full_data);
+		} else if (flags & FLAT_FLAG_GZDATA) {
+			result = read_code(bprm->file, textpos, 0, text_len);
+			if (!IS_ERR_VALUE(result))
+				result = decompress_exec(bprm, text_len, (char *) datapos,
+						 full_data, 0);
+>>>>>>> refs/remotes/origin/master
 		}
 		else
 #endif
 		{
+<<<<<<< HEAD
 			fpos = 0;
 			result = bprm->file->f_op->read(bprm->file,
 					(char *) textpos, text_len, &fpos);
@@ -662,6 +774,17 @@ static int load_flat_file(struct linux_binprm * bprm,
 		if (IS_ERR_VALUE(result)) {
 			printk("Unable to read code+data+bss, errno %d\n",(int)-result);
 			do_munmap(current->mm, textpos, text_len + data_len + extra +
+=======
+			result = read_code(bprm->file, textpos, 0, text_len);
+			if (!IS_ERR_VALUE(result))
+				result = read_code(bprm->file, datapos,
+						   ntohl(hdr->data_start),
+						   full_data);
+		}
+		if (IS_ERR_VALUE(result)) {
+			printk("Unable to read code+data+bss, errno %d\n",(int)-result);
+			vm_munmap(textpos, text_len + data_len + extra +
+>>>>>>> refs/remotes/origin/master
 				MAX_SHARED_LIBS * sizeof(unsigned long));
 			ret = result;
 			goto err;
@@ -865,9 +988,16 @@ out:
  * libraries.  There is no binary dependent code anywhere else.
  */
 
+<<<<<<< HEAD
 static int load_flat_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 {
 	struct lib_info libinfo;
+=======
+static int load_flat_binary(struct linux_binprm * bprm)
+{
+	struct lib_info libinfo;
+	struct pt_regs *regs = current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 	unsigned long p = bprm->p;
 	unsigned long stack_len;
 	unsigned long start_addr;
@@ -902,7 +1032,13 @@ static int load_flat_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 						libinfo.lib_list[j].start_data:UNLOADED_LIB;
 
 	install_exec_creds(bprm);
+<<<<<<< HEAD
+<<<<<<< HEAD
  	current->flags &= ~PF_FORKNOEXEC;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	set_binfmt(&flat_format);
 
@@ -950,7 +1086,17 @@ static int load_flat_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 
 static int __init init_flat_binfmt(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return register_binfmt(&flat_format);
+=======
+	register_binfmt(&flat_format);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	register_binfmt(&flat_format);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /****************************************************************************/

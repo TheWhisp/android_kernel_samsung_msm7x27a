@@ -403,8 +403,13 @@ static int friio_frontend_attach(struct dvb_usb_adapter *adap)
 	if (friio_initialize(adap->dev) < 0)
 		return -EIO;
 
+<<<<<<< HEAD
 	adap->fe = jdvbt90502_attach(adap->dev);
 	if (adap->fe == NULL)
+=======
+	adap->fe_adap[0].fe = jdvbt90502_attach(adap->dev);
+	if (adap->fe_adap[0].fe == NULL)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 
 	return 0;
@@ -473,6 +478,11 @@ static struct dvb_usb_device_properties friio_properties = {
 		/* caps:0 =>  no pid filter, 188B TS packet */
 		/* GL861 has a HW pid filter, but no info available. */
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.caps  = 0,
 
 			.frontend_attach  = friio_frontend_attach,
@@ -490,6 +500,10 @@ static struct dvb_usb_device_properties friio_properties = {
 					}
 				}
 			},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 	.i2c_algo = &gl861_i2c_algo,
@@ -511,6 +525,7 @@ static struct usb_driver friio_driver = {
 	.id_table	= friio_table,
 };
 
+<<<<<<< HEAD
 
 /* module stuff */
 static int __init friio_module_init(void)
@@ -533,6 +548,9 @@ static void __exit friio_module_exit(void)
 
 module_init(friio_module_init);
 module_exit(friio_module_exit);
+=======
+module_usb_driver(friio_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Akihiro Tsukada <tskd2@yahoo.co.jp>");
 MODULE_DESCRIPTION("Driver for Friio ISDB-T USB2.0 Receiver");

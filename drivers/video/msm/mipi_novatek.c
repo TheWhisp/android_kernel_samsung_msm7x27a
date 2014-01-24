@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -14,6 +22,14 @@
 #ifdef CONFIG_SPI_QUP
 #include <linux/spi/spi.h>
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/leds.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/leds.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "msm_fb.h"
 #include "mipi_dsi.h"
 #include "mipi_novatek.h"
@@ -26,6 +42,16 @@ static struct dsi_buf novatek_tx_buf;
 static struct dsi_buf novatek_rx_buf;
 static int mipi_novatek_lcd_init(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int wled_trigger_initialized;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wled_trigger_initialized;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MIPI_DSI_NOVATEK_SPI_DEVICE_NAME	"dsi_novatek_3d_panel_spi"
 #define HPCI_FPGA_READ_CMD	0x84
 #define HPCI_FPGA_WRITE_CMD	0x04
@@ -422,6 +448,16 @@ static int mipi_novatek_lcd_off(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+DEFINE_LED_TRIGGER(bkl_led_trigger);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+DEFINE_LED_TRIGGER(bkl_led_trigger);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static char led_pwm1[2] = {0x51, 0x0};	/* DTYPE_DCS_WRITE1 */
 static struct dsi_cmd_desc backlight_cmd = {
 	DTYPE_DCS_LWRITE, 1, 0, 0, 1, sizeof(led_pwm1), led_pwm1};
@@ -430,6 +466,22 @@ struct dcs_cmd_req cmdreq;
 
 static void mipi_novatek_set_backlight(struct msm_fb_data_type *mfd)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if ((mipi_novatek_pdata->enable_wled_bl_ctrl)
+	    && (wled_trigger_initialized)) {
+		led_trigger_event(bkl_led_trigger, mfd->bl_level);
+		return;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	led_pwm1[1] = (unsigned char)mfd->bl_level;
 
 	cmdreq.cmds = &backlight_cmd;
@@ -628,6 +680,19 @@ static int mipi_novatek_lcd_init(void)
 		pr_info("%s: SUCCESS (SPI)\n", __func__);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	led_trigger_register_simple("bkl_trigger", &bkl_led_trigger);
+	pr_info("%s: SUCCESS (WLED TRIGGER)\n", __func__);
+	wled_trigger_initialized = 1;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mipi_dsi_buf_alloc(&novatek_tx_buf, DSI_BUF_SIZE);
 	mipi_dsi_buf_alloc(&novatek_rx_buf, DSI_BUF_SIZE);
 

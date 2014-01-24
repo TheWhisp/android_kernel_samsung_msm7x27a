@@ -14,10 +14,20 @@
  */
 
 #include <linux/if_arp.h>
+<<<<<<< HEAD
 #include <linux/if_tr.h>
 #include <linux/netdevice.h>
 #include <linux/trdevice.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/netdevice.h>
+#include <linux/skbuff.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/llc.h>
 #include <net/llc_pdu.h>
 
@@ -36,7 +46,10 @@ int llc_mac_hdr_init(struct sk_buff *skb,
 	int rc = -EINVAL;
 
 	switch (skb->dev->type) {
+<<<<<<< HEAD
 	case ARPHRD_IEEE802_TR:
+=======
+>>>>>>> refs/remotes/origin/master
 	case ARPHRD_ETHER:
 	case ARPHRD_LOOPBACK:
 		rc = dev_hard_header(skb, skb->dev, ETH_P_802_2, da, sa,

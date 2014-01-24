@@ -16,6 +16,14 @@
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 struct virtual_consumer_data {
 	struct mutex lock;
@@ -120,7 +128,11 @@ static ssize_t set_min_uV(struct device *dev, struct device_attribute *attr,
 	struct virtual_consumer_data *data = dev_get_drvdata(dev);
 	long val;
 
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val) != 0)
+=======
+	if (kstrtol(buf, 10, &val) != 0)
+>>>>>>> refs/remotes/origin/master
 		return count;
 
 	mutex_lock(&data->lock);
@@ -146,7 +158,11 @@ static ssize_t set_max_uV(struct device *dev, struct device_attribute *attr,
 	struct virtual_consumer_data *data = dev_get_drvdata(dev);
 	long val;
 
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val) != 0)
+=======
+	if (kstrtol(buf, 10, &val) != 0)
+>>>>>>> refs/remotes/origin/master
 		return count;
 
 	mutex_lock(&data->lock);
@@ -172,7 +188,11 @@ static ssize_t set_min_uA(struct device *dev, struct device_attribute *attr,
 	struct virtual_consumer_data *data = dev_get_drvdata(dev);
 	long val;
 
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val) != 0)
+=======
+	if (kstrtol(buf, 10, &val) != 0)
+>>>>>>> refs/remotes/origin/master
 		return count;
 
 	mutex_lock(&data->lock);
@@ -198,7 +218,11 @@ static ssize_t set_max_uA(struct device *dev, struct device_attribute *attr,
 	struct virtual_consumer_data *data = dev_get_drvdata(dev);
 	long val;
 
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val) != 0)
+=======
+	if (kstrtol(buf, 10, &val) != 0)
+>>>>>>> refs/remotes/origin/master
 		return count;
 
 	mutex_lock(&data->lock);
@@ -284,6 +308,7 @@ static const struct attribute_group regulator_virtual_attr_group = {
 	.attrs	= regulator_virtual_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit regulator_virtual_probe(struct platform_device *pdev)
 {
 	char *reg_id = pdev->dev.platform_data;
@@ -291,17 +316,35 @@ static int __devinit regulator_virtual_probe(struct platform_device *pdev)
 	int ret;
 
 	drvdata = kzalloc(sizeof(struct virtual_consumer_data), GFP_KERNEL);
+=======
+static int regulator_virtual_probe(struct platform_device *pdev)
+{
+	char *reg_id = dev_get_platdata(&pdev->dev);
+	struct virtual_consumer_data *drvdata;
+	int ret;
+
+	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct virtual_consumer_data),
+			       GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (drvdata == NULL)
 		return -ENOMEM;
 
 	mutex_init(&drvdata->lock);
 
+<<<<<<< HEAD
 	drvdata->regulator = regulator_get(&pdev->dev, reg_id);
+=======
+	drvdata->regulator = devm_regulator_get(&pdev->dev, reg_id);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(drvdata->regulator)) {
 		ret = PTR_ERR(drvdata->regulator);
 		dev_err(&pdev->dev, "Failed to obtain supply '%s': %d\n",
 			reg_id, ret);
+<<<<<<< HEAD
 		goto err;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = sysfs_create_group(&pdev->dev.kobj,
@@ -309,7 +352,11 @@ static int __devinit regulator_virtual_probe(struct platform_device *pdev)
 	if (ret != 0) {
 		dev_err(&pdev->dev,
 			"Failed to create attribute group: %d\n", ret);
+<<<<<<< HEAD
 		goto err_regulator;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	drvdata->mode = regulator_get_mode(drvdata->regulator);
@@ -317,6 +364,7 @@ static int __devinit regulator_virtual_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, drvdata);
 
 	return 0;
+<<<<<<< HEAD
 
 err_regulator:
 	regulator_put(drvdata->regulator);
@@ -326,6 +374,11 @@ err:
 }
 
 static int __devexit regulator_virtual_remove(struct platform_device *pdev)
+=======
+}
+
+static int regulator_virtual_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct virtual_consumer_data *drvdata = platform_get_drvdata(pdev);
 
@@ -333,24 +386,33 @@ static int __devexit regulator_virtual_remove(struct platform_device *pdev)
 
 	if (drvdata->enabled)
 		regulator_disable(drvdata->regulator);
+<<<<<<< HEAD
 	regulator_put(drvdata->regulator);
 
 	kfree(drvdata);
 
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver regulator_virtual_consumer_driver = {
 	.probe		= regulator_virtual_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(regulator_virtual_remove),
+=======
+	.remove		= regulator_virtual_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name		= "reg-virt-consumer",
 		.owner		= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init regulator_virtual_consumer_init(void)
 {
 	return platform_driver_register(&regulator_virtual_consumer_driver);
@@ -362,6 +424,12 @@ static void __exit regulator_virtual_consumer_exit(void)
 	platform_driver_unregister(&regulator_virtual_consumer_driver);
 }
 module_exit(regulator_virtual_consumer_exit);
+=======
+module_platform_driver(regulator_virtual_consumer_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(regulator_virtual_consumer_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 MODULE_DESCRIPTION("Virtual regulator consumer");

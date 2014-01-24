@@ -5,7 +5,15 @@
  * 				Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/jiffies.h>
@@ -22,6 +30,13 @@ static const u16 nla_attr_minlen[NLA_TYPE_MAX+1] = {
 	[NLA_U64]	= sizeof(u64),
 	[NLA_MSECS]	= sizeof(u64),
 	[NLA_NESTED]	= NLA_HDRLEN,
+<<<<<<< HEAD
+=======
+	[NLA_S8]	= sizeof(s8),
+	[NLA_S16]	= sizeof(s16),
+	[NLA_S32]	= sizeof(s32),
+	[NLA_S64]	= sizeof(s64),
+>>>>>>> refs/remotes/origin/master
 };
 
 static int validate_nla(const struct nlattr *nla, int maxtype,

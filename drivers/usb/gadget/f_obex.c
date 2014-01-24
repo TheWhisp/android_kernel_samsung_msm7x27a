@@ -10,6 +10,8 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,6 +21,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /* #define VERBOSE_DEBUG */
@@ -26,6 +32,14 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "u_serial.h"
 #include "gadget_chips.h"
@@ -39,20 +53,32 @@
  * ready to handle the commands.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct obex_ep_descs {
 	struct usb_endpoint_descriptor	*obex_in;
 	struct usb_endpoint_descriptor	*obex_out;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct f_obex {
 	struct gserial			port;
 	u8				ctrl_id;
 	u8				data_id;
 	u8				port_num;
 	u8				can_activate;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	struct obex_ep_descs		fs;
 	struct obex_ep_descs		hs;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct f_obex *func_to_obex(struct usb_function *f)
@@ -88,7 +114,11 @@ static struct usb_gadget_strings *obex_strings[] = {
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static struct usb_interface_descriptor obex_control_intf __initdata = {
+=======
+static struct usb_interface_descriptor obex_control_intf = {
+>>>>>>> refs/remotes/origin/master
 	.bLength		= sizeof(obex_control_intf),
 	.bDescriptorType	= USB_DT_INTERFACE,
 	.bInterfaceNumber	= 0,
@@ -99,7 +129,11 @@ static struct usb_interface_descriptor obex_control_intf __initdata = {
 	.bInterfaceSubClass	= USB_CDC_SUBCLASS_OBEX,
 };
 
+<<<<<<< HEAD
 static struct usb_interface_descriptor obex_data_nop_intf __initdata = {
+=======
+static struct usb_interface_descriptor obex_data_nop_intf = {
+>>>>>>> refs/remotes/origin/master
 	.bLength		= sizeof(obex_data_nop_intf),
 	.bDescriptorType	= USB_DT_INTERFACE,
 	.bInterfaceNumber	= 1,
@@ -109,7 +143,11 @@ static struct usb_interface_descriptor obex_data_nop_intf __initdata = {
 	.bInterfaceClass	= USB_CLASS_CDC_DATA,
 };
 
+<<<<<<< HEAD
 static struct usb_interface_descriptor obex_data_intf __initdata = {
+=======
+static struct usb_interface_descriptor obex_data_intf = {
+>>>>>>> refs/remotes/origin/master
 	.bLength		= sizeof(obex_data_intf),
 	.bDescriptorType	= USB_DT_INTERFACE,
 	.bInterfaceNumber	= 2,
@@ -119,14 +157,22 @@ static struct usb_interface_descriptor obex_data_intf __initdata = {
 	.bInterfaceClass	= USB_CLASS_CDC_DATA,
 };
 
+<<<<<<< HEAD
 static struct usb_cdc_header_desc obex_cdc_header_desc __initdata = {
+=======
+static struct usb_cdc_header_desc obex_cdc_header_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength		= sizeof(obex_cdc_header_desc),
 	.bDescriptorType	= USB_DT_CS_INTERFACE,
 	.bDescriptorSubType	= USB_CDC_HEADER_TYPE,
 	.bcdCDC			= cpu_to_le16(0x0120),
 };
 
+<<<<<<< HEAD
 static struct usb_cdc_union_desc obex_cdc_union_desc __initdata = {
+=======
+static struct usb_cdc_union_desc obex_cdc_union_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength		= sizeof(obex_cdc_union_desc),
 	.bDescriptorType	= USB_DT_CS_INTERFACE,
 	.bDescriptorSubType	= USB_CDC_UNION_TYPE,
@@ -134,7 +180,11 @@ static struct usb_cdc_union_desc obex_cdc_union_desc __initdata = {
 	.bSlaveInterface0	= 2,
 };
 
+<<<<<<< HEAD
 static struct usb_cdc_obex_desc obex_desc __initdata = {
+=======
+static struct usb_cdc_obex_desc obex_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength		= sizeof(obex_desc),
 	.bDescriptorType	= USB_DT_CS_INTERFACE,
 	.bDescriptorSubType	= USB_CDC_OBEX_TYPE,
@@ -143,7 +193,11 @@ static struct usb_cdc_obex_desc obex_desc __initdata = {
 
 /* High-Speed Support */
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor obex_hs_ep_out_desc __initdata = {
+=======
+static struct usb_endpoint_descriptor obex_hs_ep_out_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength		= USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType	= USB_DT_ENDPOINT,
 
@@ -152,7 +206,11 @@ static struct usb_endpoint_descriptor obex_hs_ep_out_desc __initdata = {
 	.wMaxPacketSize		= cpu_to_le16(512),
 };
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor obex_hs_ep_in_desc __initdata = {
+=======
+static struct usb_endpoint_descriptor obex_hs_ep_in_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength		= USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType	= USB_DT_ENDPOINT,
 
@@ -161,7 +219,11 @@ static struct usb_endpoint_descriptor obex_hs_ep_in_desc __initdata = {
 	.wMaxPacketSize		= cpu_to_le16(512),
 };
 
+<<<<<<< HEAD
 static struct usb_descriptor_header *hs_function[] __initdata = {
+=======
+static struct usb_descriptor_header *hs_function[] = {
+>>>>>>> refs/remotes/origin/master
 	(struct usb_descriptor_header *) &obex_control_intf,
 	(struct usb_descriptor_header *) &obex_cdc_header_desc,
 	(struct usb_descriptor_header *) &obex_desc,
@@ -176,7 +238,11 @@ static struct usb_descriptor_header *hs_function[] __initdata = {
 
 /* Full-Speed Support */
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor obex_fs_ep_in_desc __initdata = {
+=======
+static struct usb_endpoint_descriptor obex_fs_ep_in_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength		= USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType	= USB_DT_ENDPOINT,
 
@@ -184,7 +250,11 @@ static struct usb_endpoint_descriptor obex_fs_ep_in_desc __initdata = {
 	.bmAttributes		= USB_ENDPOINT_XFER_BULK,
 };
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor obex_fs_ep_out_desc __initdata = {
+=======
+static struct usb_endpoint_descriptor obex_fs_ep_out_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength		= USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType	= USB_DT_ENDPOINT,
 
@@ -192,7 +262,11 @@ static struct usb_endpoint_descriptor obex_fs_ep_out_desc __initdata = {
 	.bmAttributes		= USB_ENDPOINT_XFER_BULK,
 };
 
+<<<<<<< HEAD
 static struct usb_descriptor_header *fs_function[] __initdata = {
+=======
+static struct usb_descriptor_header *fs_function[] = {
+>>>>>>> refs/remotes/origin/master
 	(struct usb_descriptor_header *) &obex_control_intf,
 	(struct usb_descriptor_header *) &obex_cdc_header_desc,
 	(struct usb_descriptor_header *) &obex_desc,
@@ -227,12 +301,31 @@ static int obex_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			gserial_disconnect(&obex->port);
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!obex->port.in_desc) {
 			DBG(cdev, "init obex ttyGS%d\n", obex->port_num);
 			obex->port.in_desc = ep_choose(cdev->gadget,
 					obex->hs.obex_in, obex->fs.obex_in);
 			obex->port.out_desc = ep_choose(cdev->gadget,
 					obex->hs.obex_out, obex->fs.obex_out);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (!obex->port.in->desc || !obex->port.out->desc) {
+			DBG(cdev, "init obex ttyGS%d\n", obex->port_num);
+			if (config_ep_by_speed(cdev->gadget, f,
+					       obex->port.in) ||
+			    config_ep_by_speed(cdev->gadget, f,
+					       obex->port.out)) {
+				obex->port.out->desc = NULL;
+				obex->port.in->desc = NULL;
+				goto fail;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (alt == 1) {
@@ -302,6 +395,7 @@ static void obex_disconnect(struct gserial *g)
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __init
 obex_bind(struct usb_configuration *c, struct usb_function *f)
 {
@@ -310,6 +404,42 @@ obex_bind(struct usb_configuration *c, struct usb_function *f)
 	int			status;
 	struct usb_ep		*ep;
 
+=======
+/* Some controllers can't support CDC OBEX ... */
+static inline bool can_support_obex(struct usb_configuration *c)
+{
+	/* Since the first interface is a NOP, we can ignore the
+	 * issue of multi-interface support on most controllers.
+	 *
+	 * Altsettings are mandatory, however...
+	 */
+	if (!gadget_supports_altsettings(c->cdev->gadget))
+		return false;
+
+	/* everything else is *probably* fine ... */
+	return true;
+}
+
+static int obex_bind(struct usb_configuration *c, struct usb_function *f)
+{
+	struct usb_composite_dev *cdev = c->cdev;
+	struct f_obex		*obex = func_to_obex(f);
+	struct usb_string	*us;
+	int			status;
+	struct usb_ep		*ep;
+
+	if (!can_support_obex(c))
+		return -EINVAL;
+
+	us = usb_gstrings_attach(cdev, obex_strings,
+				 ARRAY_SIZE(obex_string_defs));
+	if (IS_ERR(us))
+		return PTR_ERR(us);
+	obex_control_intf.iInterface = us[OBEX_CTRL_IDX].id;
+	obex_data_nop_intf.iInterface = us[OBEX_DATA_IDX].id;
+	obex_data_intf.iInterface = us[OBEX_DATA_IDX].id;
+
+>>>>>>> refs/remotes/origin/master
 	/* allocate instance-specific interface IDs, and patch descriptors */
 
 	status = usb_interface_id(c, f);
@@ -331,6 +461,10 @@ obex_bind(struct usb_configuration *c, struct usb_function *f)
 
 	/* allocate instance-specific endpoints */
 
+<<<<<<< HEAD
+=======
+	status = -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	ep = usb_ep_autoconfig(cdev->gadget, &obex_fs_ep_in_desc);
 	if (!ep)
 		goto fail;
@@ -343,18 +477,25 @@ obex_bind(struct usb_configuration *c, struct usb_function *f)
 	obex->port.out = ep;
 	ep->driver_data = cdev;	/* claim */
 
+<<<<<<< HEAD
 	/* copy descriptors, and track endpoint copies */
 	f->descriptors = usb_copy_descriptors(fs_function);
 
+<<<<<<< HEAD
 	obex->fs.obex_in = usb_find_endpoint(fs_function,
 			f->descriptors, &obex_fs_ep_in_desc);
 	obex->fs.obex_out = usb_find_endpoint(fs_function,
 			f->descriptors, &obex_fs_ep_out_desc);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* support all relevant hardware speeds... we expect that when
 	 * hardware is dual speed, all bulk-capable endpoints work at
 	 * both speeds
 	 */
+<<<<<<< HEAD
 	if (gadget_is_dualspeed(c->cdev->gadget)) {
 
 		obex_hs_ep_in_desc.bEndpointAddress =
@@ -364,12 +505,26 @@ obex_bind(struct usb_configuration *c, struct usb_function *f)
 
 		/* copy descriptors, and track endpoint copies */
 		f->hs_descriptors = usb_copy_descriptors(hs_function);
+<<<<<<< HEAD
 
 		obex->hs.obex_in = usb_find_endpoint(hs_function,
 				f->hs_descriptors, &obex_hs_ep_in_desc);
 		obex->hs.obex_out = usb_find_endpoint(hs_function,
 				f->hs_descriptors, &obex_hs_ep_out_desc);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+
+	obex_hs_ep_in_desc.bEndpointAddress =
+		obex_fs_ep_in_desc.bEndpointAddress;
+	obex_hs_ep_out_desc.bEndpointAddress =
+		obex_fs_ep_out_desc.bEndpointAddress;
+
+	status = usb_assign_descriptors(f, fs_function, hs_function, NULL);
+	if (status)
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 
 	/* Avoid letting this gadget enumerate until the userspace
 	 * OBEX server is active.
@@ -390,6 +545,10 @@ obex_bind(struct usb_configuration *c, struct usb_function *f)
 	return 0;
 
 fail:
+<<<<<<< HEAD
+=======
+	usb_free_all_descriptors(f);
+>>>>>>> refs/remotes/origin/master
 	/* we might as well release our claims on endpoints */
 	if (obex->port.out)
 		obex->port.out->driver_data = NULL;
@@ -401,6 +560,7 @@ fail:
 	return status;
 }
 
+<<<<<<< HEAD
 static void
 obex_unbind(struct usb_configuration *c, struct usb_function *f)
 {
@@ -469,18 +629,133 @@ int __init obex_bind_config(struct usb_configuration *c, u8 port_num)
 		return -ENOMEM;
 
 	obex->port_num = port_num;
+=======
+static inline struct f_serial_opts *to_f_serial_opts(struct config_item *item)
+{
+	return container_of(to_config_group(item), struct f_serial_opts,
+			    func_inst.group);
+}
+
+CONFIGFS_ATTR_STRUCT(f_serial_opts);
+static ssize_t f_obex_attr_show(struct config_item *item,
+				struct configfs_attribute *attr,
+				char *page)
+{
+	struct f_serial_opts *opts = to_f_serial_opts(item);
+	struct f_serial_opts_attribute *f_serial_opts_attr =
+		container_of(attr, struct f_serial_opts_attribute, attr);
+	ssize_t ret = 0;
+
+	if (f_serial_opts_attr->show)
+		ret = f_serial_opts_attr->show(opts, page);
+
+	return ret;
+}
+
+static void obex_attr_release(struct config_item *item)
+{
+	struct f_serial_opts *opts = to_f_serial_opts(item);
+
+	usb_put_function_instance(&opts->func_inst);
+}
+
+static struct configfs_item_operations obex_item_ops = {
+	.release	= obex_attr_release,
+	.show_attribute = f_obex_attr_show,
+};
+
+static ssize_t f_obex_port_num_show(struct f_serial_opts *opts, char *page)
+{
+	return sprintf(page, "%u\n", opts->port_num);
+}
+
+static struct f_serial_opts_attribute f_obex_port_num =
+	__CONFIGFS_ATTR_RO(port_num, f_obex_port_num_show);
+
+static struct configfs_attribute *acm_attrs[] = {
+	&f_obex_port_num.attr,
+	NULL,
+};
+
+static struct config_item_type obex_func_type = {
+	.ct_item_ops	= &obex_item_ops,
+	.ct_attrs	= acm_attrs,
+	.ct_owner	= THIS_MODULE,
+};
+
+static void obex_free_inst(struct usb_function_instance *f)
+{
+	struct f_serial_opts *opts;
+
+	opts = container_of(f, struct f_serial_opts, func_inst);
+	gserial_free_line(opts->port_num);
+	kfree(opts);
+}
+
+static struct usb_function_instance *obex_alloc_inst(void)
+{
+	struct f_serial_opts *opts;
+	int ret;
+
+	opts = kzalloc(sizeof(*opts), GFP_KERNEL);
+	if (!opts)
+		return ERR_PTR(-ENOMEM);
+
+	opts->func_inst.free_func_inst = obex_free_inst;
+	ret = gserial_alloc_line(&opts->port_num);
+	if (ret) {
+		kfree(opts);
+		return ERR_PTR(ret);
+	}
+	config_group_init_type_name(&opts->func_inst.group, "",
+				    &obex_func_type);
+
+	return &opts->func_inst;
+}
+
+static void obex_free(struct usb_function *f)
+{
+	struct f_obex *obex;
+
+	obex = func_to_obex(f);
+	kfree(obex);
+}
+
+static void obex_unbind(struct usb_configuration *c, struct usb_function *f)
+{
+	usb_free_all_descriptors(f);
+}
+
+static struct usb_function *obex_alloc(struct usb_function_instance *fi)
+{
+	struct f_obex	*obex;
+	struct f_serial_opts *opts;
+
+	/* allocate and initialize one new instance */
+	obex = kzalloc(sizeof(*obex), GFP_KERNEL);
+	if (!obex)
+		return ERR_PTR(-ENOMEM);
+
+	opts = container_of(fi, struct f_serial_opts, func_inst);
+
+	obex->port_num = opts->port_num;
+>>>>>>> refs/remotes/origin/master
 
 	obex->port.connect = obex_connect;
 	obex->port.disconnect = obex_disconnect;
 
 	obex->port.func.name = "obex";
+<<<<<<< HEAD
 	obex->port.func.strings = obex_strings;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* descriptors are per-instance copies */
 	obex->port.func.bind = obex_bind;
 	obex->port.func.unbind = obex_unbind;
 	obex->port.func.set_alt = obex_set_alt;
 	obex->port.func.get_alt = obex_get_alt;
 	obex->port.func.disable = obex_disable;
+<<<<<<< HEAD
 
 	status = usb_add_function(c, &obex->port.func);
 	if (status)
@@ -489,5 +764,13 @@ int __init obex_bind_config(struct usb_configuration *c, u8 port_num)
 	return status;
 }
 
+=======
+	obex->port.func.free_func = obex_free;
+
+	return &obex->port.func;
+}
+
+DECLARE_USB_FUNCTION_INIT(obex, obex_alloc_inst, obex_alloc);
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Felipe Balbi");
 MODULE_LICENSE("GPL");

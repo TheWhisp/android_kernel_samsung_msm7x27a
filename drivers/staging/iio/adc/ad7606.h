@@ -42,7 +42,11 @@ struct ad7606_platform_data {
 
 /**
  * struct ad7606_chip_info - chip specifc information
+<<<<<<< HEAD
  * @name:		indentification string for chip
+=======
+ * @name:		identification string for chip
+>>>>>>> refs/remotes/origin/master
  * @int_vref_mv:	the internal reference voltage
  * @channels:		channel specification
  * @num_channels:	number of channels
@@ -50,10 +54,18 @@ struct ad7606_platform_data {
 
 struct ad7606_chip_info {
 	const char			*name;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8				bits;
 	char				sign;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16				int_vref_mv;
 	struct iio_chan_spec		*channels;
+=======
+	u16				int_vref_mv;
+	const struct iio_chan_spec	*channels;
+>>>>>>> refs/remotes/origin/master
 	unsigned			num_channels;
 };
 
@@ -68,6 +80,8 @@ struct ad7606_state {
 	struct regulator		*reg;
 	struct work_struct		poll_work;
 	wait_queue_head_t		wq_data_avail;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	size_t				d_size;
 	const struct ad7606_bus_ops	*bops;
 	int				irq;
@@ -80,6 +94,18 @@ struct ad7606_state {
 	bool				have_stby;
 	bool				have_reset;
 	bool				have_range;
+=======
+	const struct ad7606_bus_ops	*bops;
+	unsigned			range;
+	unsigned			oversampling;
+	bool				done;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct ad7606_bus_ops	*bops;
+	unsigned			range;
+	unsigned			oversampling;
+	bool				done;
+>>>>>>> refs/remotes/origin/master
 	void __iomem			*base_address;
 
 	/*
@@ -100,7 +126,15 @@ void ad7606_resume(struct iio_dev *indio_dev);
 struct iio_dev *ad7606_probe(struct device *dev, int irq,
 			      void __iomem *base_address, unsigned id,
 			      const struct ad7606_bus_ops *bops);
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ad7606_remove(struct iio_dev *indio_dev);
+=======
+int ad7606_remove(struct iio_dev *indio_dev, int irq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ad7606_remove(struct iio_dev *indio_dev, int irq);
+>>>>>>> refs/remotes/origin/master
 int ad7606_reset(struct ad7606_state *st);
 
 enum ad7606_supported_device_ids {
@@ -109,7 +143,13 @@ enum ad7606_supported_device_ids {
 	ID_AD7606_4
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ad7606_scan_from_ring(struct iio_dev *indio_dev, unsigned ch);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int ad7606_register_ring_funcs_and_init(struct iio_dev *indio_dev);
 void ad7606_ring_cleanup(struct iio_dev *indio_dev);
 #endif /* IIO_ADC_AD7606_H_ */

@@ -7,7 +7,13 @@
 #error only <linux/bitops.h> can be included directly
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* For __swab32 */
 #include <asm/byteorder.h>
 

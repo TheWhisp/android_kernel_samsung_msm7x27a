@@ -20,7 +20,13 @@
 #include <linux/smp.h>
 #include <linux/interrupt.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/uaccess.h>
 #include <asm/pgalloc.h>

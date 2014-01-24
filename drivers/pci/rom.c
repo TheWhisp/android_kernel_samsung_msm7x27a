@@ -7,6 +7,14 @@
  * PCI ROM access routines
  */
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/slab.h>
 
@@ -166,6 +174,7 @@ void __iomem *pci_map_rom(struct pci_dev *pdev, size_t *size)
 	return rom;
 }
 
+<<<<<<< HEAD
 #if 0
 /**
  * pci_map_rom_copy - map a PCI ROM to kernel space, create a copy
@@ -204,6 +213,8 @@ void __iomem *pci_map_rom_copy(struct pci_dev *pdev, size_t *size)
 }
 #endif  /*  0  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * pci_unmap_rom - unmap the ROM from kernel space
  * @pdev: pointer to pci device struct
@@ -225,6 +236,7 @@ void pci_unmap_rom(struct pci_dev *pdev, void __iomem *rom)
 		pci_disable_rom(pdev);
 }
 
+<<<<<<< HEAD
 #if 0
 /**
  * pci_remove_rom - disable the ROM and remove its sysfs attribute
@@ -246,6 +258,8 @@ void pci_remove_rom(struct pci_dev *pdev)
 }
 #endif  /*  0  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * pci_cleanup_rom - free the ROM copy created by pci_map_rom_copy
  * @pdev: pointer to pci device struct
@@ -263,7 +277,30 @@ void pci_cleanup_rom(struct pci_dev *pdev)
 	}
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * pci_platform_rom - provides a pointer to any ROM image provided by the
+ * platform
+ * @pdev: pointer to pci device struct
+ * @size: pointer to receive size of pci window over ROM
+ */
+void __iomem *pci_platform_rom(struct pci_dev *pdev, size_t *size)
+{
+	if (pdev->rom && pdev->romlen) {
+		*size = pdev->romlen;
+		return phys_to_virt((phys_addr_t)pdev->rom);
+	}
+
+	return NULL;
+}
+
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(pci_map_rom);
 EXPORT_SYMBOL(pci_unmap_rom);
 EXPORT_SYMBOL_GPL(pci_enable_rom);
 EXPORT_SYMBOL_GPL(pci_disable_rom);
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(pci_platform_rom);
+>>>>>>> refs/remotes/origin/master

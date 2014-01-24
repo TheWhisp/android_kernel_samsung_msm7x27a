@@ -12,11 +12,23 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/irq.h>
 #include <linux/ioport.h>
 #include <linux/syscore_ops.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/irq.h>
 
 #include "generic.h"
@@ -221,11 +233,21 @@ static struct irq_chip sa1100_normal_chip = {
 	.irq_set_wake	= sa1100_set_wake,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct resource irq_resource = {
 	.name	= "irqs",
 	.start	= 0x90050000,
 	.end	= 0x9005ffff,
 };
+=======
+static struct resource irq_resource =
+	DEFINE_RES_MEM_NAMED(0x90050000, SZ_64K, "irqs");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct resource irq_resource =
+	DEFINE_RES_MEM_NAMED(0x90050000, SZ_64K, "irqs");
+>>>>>>> refs/remotes/origin/master
 
 static struct sa1100irq_state {
 	unsigned int	saved;

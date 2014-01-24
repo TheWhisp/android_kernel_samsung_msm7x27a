@@ -17,7 +17,17 @@
 
 #include <asm/cacheflush.h>
 #include <asm/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#include <asm/io.h>
+
+#include <mach/common.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/da8xx.h>
 #include <mach/sram.h>
 #include <mach/pm.h>
@@ -151,8 +161,15 @@ static struct platform_driver davinci_pm_driver = {
 	.remove = __exit_p(davinci_pm_remove),
 };
 
+<<<<<<< HEAD
 static int __init davinci_pm_init(void)
 {
 	return platform_driver_probe(&davinci_pm_driver, davinci_pm_probe);
 }
 late_initcall(davinci_pm_init);
+=======
+int __init davinci_pm_init(void)
+{
+	return platform_driver_probe(&davinci_pm_driver, davinci_pm_probe);
+}
+>>>>>>> refs/remotes/origin/master

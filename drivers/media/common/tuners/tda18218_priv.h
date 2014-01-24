@@ -100,6 +100,11 @@ struct tda18218_priv {
 	struct tda18218_config *cfg;
 	struct i2c_adapter *i2c;
 
+<<<<<<< HEAD
+=======
+	u32 if_frequency;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 regs[TDA18218_NUM_REGS];
 };
 

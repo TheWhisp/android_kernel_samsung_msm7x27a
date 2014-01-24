@@ -36,12 +36,24 @@
 #include <linux/fs.h>
 #include <linux/time.h>
 #include <linux/backing-dev.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "common.h"
 
 /* FIXME: Remove once pnfs hits mainline
  * #include <linux/exportfs/pnfs_osd_xdr.h>
  */
 #include "pnfs.h"
+=======
+#include <scsi/osd_ore.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <scsi/osd_ore.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 #define EXOFS_ERR(fmt, a...) printk(KERN_ERR "exofs: " fmt, ##a)
 
@@ -56,6 +68,8 @@
 /* u64 has problems with printk this will cast it to unsigned long long */
 #define _LLU(x) (unsigned long long)(x)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct exofs_layout {
 	osd_id		s_pid;			/* partition ID of file system*/
 
@@ -73,10 +87,33 @@ struct exofs_layout {
 	struct osd_dev	*s_ods[0];		/* Variable length            */
 };
 
+=======
+struct exofs_dev {
+	struct ore_dev ored;
+	unsigned did;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct exofs_dev {
+	struct ore_dev ored;
+	unsigned did;
+	unsigned urilen;
+	uint8_t *uri;
+	struct kobject ed_kobj;
+};
+>>>>>>> refs/remotes/origin/master
 /*
  * our extension to the in-memory superblock
  */
 struct exofs_sb_info {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct backing_dev_info bdi;		/* register our bdi with VFS  */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct backing_dev_info bdi;		/* register our bdi with VFS  */
+>>>>>>> refs/remotes/origin/master
 	struct exofs_sb_stats s_ess;		/* Written often, pre-allocate*/
 	int		s_timeout;		/* timeout for OSD operations */
 	uint64_t	s_nextid;		/* highest object ID used     */
@@ -84,6 +121,8 @@ struct exofs_sb_info {
 	spinlock_t	s_next_gen_lock;	/* spinlock for gen # update  */
 	u32		s_next_generation;	/* next gen # to use          */
 	atomic_t	s_curr_pending;		/* number of pending commands */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t		s_cred[OSD_CAP_LEN];	/* credential for the fscb    */
 	struct 		backing_dev_info bdi;	/* register our bdi with VFS  */
 
@@ -95,6 +134,18 @@ struct exofs_sb_info {
 						 * contains the variable osd_dev
 						 * array. Keep last */
 	struct osd_dev	*_min_one_dev[1];	/* Place holder for one dev   */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	struct ore_layout	layout;		/* Default files layout       */
+	struct ore_comp one_comp;		/* id & cred of partition id=0*/
+	struct ore_components oc;		/* comps for the partition    */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct kobject	s_kobj;			/* holds per-sbi kobject      */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -107,7 +158,17 @@ struct exofs_i_info {
 	uint32_t       i_data[EXOFS_IDATA];/*short symlink names and device #s*/
 	uint32_t       i_dir_start_lookup; /* which page to start lookup      */
 	uint64_t       i_commit_size;      /* the object's written length     */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t        i_cred[OSD_CAP_LEN];/* all-powerful credential         */
+=======
+	struct ore_comp one_comp;	   /* same component for all devices  */
+	struct ore_components oc;	   /* inode view of the device table  */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ore_comp one_comp;	   /* same component for all devices  */
+	struct ore_components oc;	   /* inode view of the device table  */
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline osd_id exofs_oi_objno(struct exofs_i_info *oi)
@@ -115,6 +176,8 @@ static inline osd_id exofs_oi_objno(struct exofs_i_info *oi)
 	return oi->vfs_inode.i_ino + EXOFS_OBJ_OFF;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct exofs_io_state;
 typedef void (*exofs_io_done_fn)(struct exofs_io_state *or, void *private);
 
@@ -161,6 +224,10 @@ static inline unsigned exofs_io_state_size(unsigned numdevs)
 		sizeof(struct exofs_per_dev_state) * numdevs;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * our inode flags
  */
@@ -205,12 +272,18 @@ static inline struct exofs_i_info *exofs_i(struct inode *inode)
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Given a layout, object_number and stripe_index return the associated global
  * dev_index
  */
 unsigned exofs_layout_od_id(struct exofs_layout *layout,
 			    osd_id obj_no, unsigned layout_index);
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Maximum count of links to a file
  */
 #define EXOFS_LINK_MAX           32000
@@ -219,6 +292,8 @@ unsigned exofs_layout_od_id(struct exofs_layout *layout,
  * function declarations *
  *************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* ios.c */
 void exofs_make_credential(u8 cred_a[OSD_CAP_LEN],
 			   const struct osd_obj_id *obj);
@@ -257,13 +332,29 @@ static inline int exofs_oi_read(struct exofs_i_info *oi,
 
 /* inode.c               */
 unsigned exofs_max_io_pages(struct exofs_layout *layout,
+=======
+/* inode.c               */
+unsigned exofs_max_io_pages(struct ore_layout *layout,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* inode.c               */
+unsigned exofs_max_io_pages(struct ore_layout *layout,
+>>>>>>> refs/remotes/origin/master
 			    unsigned expected_pages);
 int exofs_setattr(struct dentry *, struct iattr *);
 int exofs_write_begin(struct file *file, struct address_space *mapping,
 		loff_t pos, unsigned len, unsigned flags,
 		struct page **pagep, void **fsdata);
 extern struct inode *exofs_iget(struct super_block *, unsigned long);
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct inode *exofs_new_inode(struct inode *, int);
+=======
+struct inode *exofs_new_inode(struct inode *, umode_t);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct inode *exofs_new_inode(struct inode *, umode_t);
+>>>>>>> refs/remotes/origin/master
 extern int exofs_write_inode(struct inode *, struct writeback_control *wbc);
 extern void exofs_evict_inode(struct inode *);
 
@@ -281,8 +372,30 @@ int exofs_set_link(struct inode *, struct exofs_dir_entry *, struct page *,
 		    struct inode *);
 
 /* super.c               */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void exofs_make_credential(u8 cred_a[OSD_CAP_LEN],
+			   const struct osd_obj_id *obj);
+>>>>>>> refs/remotes/origin/cm-10.0
 int exofs_sbi_write_stats(struct exofs_sb_info *sbi);
 
+=======
+void exofs_make_credential(u8 cred_a[OSD_CAP_LEN],
+			   const struct osd_obj_id *obj);
+int exofs_sbi_write_stats(struct exofs_sb_info *sbi);
+
+/* sys.c                 */
+int exofs_sysfs_init(void);
+void exofs_sysfs_uninit(void);
+int exofs_sysfs_sb_add(struct exofs_sb_info *sbi,
+		       struct exofs_dt_device_info *dt_dev);
+void exofs_sysfs_sb_del(struct exofs_sb_info *sbi);
+int exofs_sysfs_odev_add(struct exofs_dev *edev,
+			 struct exofs_sb_info *sbi);
+void exofs_sysfs_dbg_print(void);
+
+>>>>>>> refs/remotes/origin/master
 /*********************
  * operation vectors *
  *********************/
@@ -295,7 +408,13 @@ extern const struct file_operations exofs_file_operations;
 
 /* inode.c           */
 extern const struct address_space_operations exofs_aops;
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern const struct osd_attr g_attr_logical_length;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* namei.c           */
 extern const struct inode_operations exofs_dir_inode_operations;
@@ -305,4 +424,44 @@ extern const struct inode_operations exofs_special_inode_operations;
 extern const struct inode_operations exofs_symlink_inode_operations;
 extern const struct inode_operations exofs_fast_symlink_inode_operations;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* exofs_init_comps will initialize an ore_components device array
+ * pointing to a single ore_comp struct, and a round-robin view
+ * of the device table.
+ * The first device of each inode is the [inode->ino % num_devices]
+ * and the rest of the devices sequentially following where the
+ * first device is after the last device.
+ * It is assumed that the global device array at @sbi is twice
+ * bigger and that the device table repeats twice.
+ * See: exofs_read_lookup_dev_table()
+ */
+static inline void exofs_init_comps(struct ore_components *oc,
+				    struct ore_comp *one_comp,
+				    struct exofs_sb_info *sbi, osd_id oid)
+{
+	unsigned dev_mod = (unsigned)oid, first_dev;
+
+	one_comp->obj.partition = sbi->one_comp.obj.partition;
+	one_comp->obj.id = oid;
+	exofs_make_credential(one_comp->cred, &one_comp->obj);
+
+	oc->first_dev = 0;
+	oc->numdevs = sbi->layout.group_width * sbi->layout.mirrors_p1 *
+							sbi->layout.group_count;
+	oc->single_comp = EC_SINGLE_COMP;
+	oc->comps = one_comp;
+
+	/* Round robin device view of the table */
+	first_dev = (dev_mod * sbi->layout.mirrors_p1) % sbi->oc.numdevs;
+	oc->ods = &sbi->oc.ods[first_dev];
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

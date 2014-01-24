@@ -19,6 +19,8 @@
 	.section .altinstr_replacement, "ax", @progbits
 .Lmemset_c:
 	movq %rdi,%r9
+<<<<<<< HEAD
+<<<<<<< HEAD
 	movl %edx,%r8d
 	andl $7,%r8d
 	movl %edx,%ecx
@@ -29,6 +31,22 @@
 	mulq %rsi		/* with rax, clobbers rdx */
 	rep stosq
 	movl %r8d,%ecx
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	movq %rdx,%rcx
+	andl $7,%edx
+	shrq $3,%rcx
+	/* expand byte value  */
+	movzbl %sil,%esi
+	movabs $0x0101010101010101,%rax
+	imulq %rsi,%rax
+	rep stosq
+	movl %edx,%ecx
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rep stosb
 	movq %r9,%rax
 	ret
@@ -50,7 +68,15 @@
 .Lmemset_c_e:
 	movq %rdi,%r9
 	movb %sil,%al
+<<<<<<< HEAD
+<<<<<<< HEAD
 	movl %edx,%ecx
+=======
+	movq %rdx,%rcx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	movq %rdx,%rcx
+>>>>>>> refs/remotes/origin/master
 	rep stosb
 	movq %r9,%rax
 	ret
@@ -61,12 +87,26 @@ ENTRY(memset)
 ENTRY(__memset)
 	CFI_STARTPROC
 	movq %rdi,%r10
+<<<<<<< HEAD
+<<<<<<< HEAD
 	movq %rdx,%r11
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* expand byte value  */
 	movzbl %sil,%ecx
 	movabs $0x0101010101010101,%rax
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mul    %rcx		/* with rax, clobbers rdx */
+=======
+	imulq  %rcx,%rax
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imulq  %rcx,%rax
+>>>>>>> refs/remotes/origin/master
 
 	/* align dst */
 	movl  %edi,%r9d
@@ -75,13 +115,31 @@ ENTRY(__memset)
 	CFI_REMEMBER_STATE
 .Lafter_bad_alignment:
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	movl %r11d,%ecx
 	shrl $6,%ecx
+=======
+	movq  %rdx,%rcx
+	shrq  $6,%rcx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	movq  %rdx,%rcx
+	shrq  $6,%rcx
+>>>>>>> refs/remotes/origin/master
 	jz	 .Lhandle_tail
 
 	.p2align 4
 .Lloop_64:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	decl   %ecx
+=======
+	decq  %rcx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	decq  %rcx
+>>>>>>> refs/remotes/origin/master
 	movq  %rax,(%rdi)
 	movq  %rax,8(%rdi)
 	movq  %rax,16(%rdi)
@@ -97,7 +155,15 @@ ENTRY(__memset)
 	   to predict jump tables. */
 	.p2align 4
 .Lhandle_tail:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	movl	%r11d,%ecx
+=======
+	movl	%edx,%ecx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	movl	%edx,%ecx
+>>>>>>> refs/remotes/origin/master
 	andl    $63&(~7),%ecx
 	jz 		.Lhandle_7
 	shrl	$3,%ecx
@@ -109,12 +175,26 @@ ENTRY(__memset)
 	jnz    .Lloop_8
 
 .Lhandle_7:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	movl	%r11d,%ecx
 	andl	$7,%ecx
 	jz      .Lende
 	.p2align 4
 .Lloop_1:
 	decl    %ecx
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	andl	$7,%edx
+	jz      .Lende
+	.p2align 4
+.Lloop_1:
+	decl    %edx
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	movb 	%al,(%rdi)
 	leaq	1(%rdi),%rdi
 	jnz     .Lloop_1
@@ -125,13 +205,29 @@ ENTRY(__memset)
 
 	CFI_RESTORE_STATE
 .Lbad_alignment:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cmpq $7,%r11
+=======
+	cmpq $7,%rdx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmpq $7,%rdx
+>>>>>>> refs/remotes/origin/master
 	jbe	.Lhandle_7
 	movq %rax,(%rdi)	/* unaligned store */
 	movq $8,%r8
 	subq %r9,%r8
 	addq %r8,%rdi
+<<<<<<< HEAD
+<<<<<<< HEAD
 	subq %r8,%r11
+=======
+	subq %r8,%rdx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	subq %r8,%rdx
+>>>>>>> refs/remotes/origin/master
 	jmp .Lafter_bad_alignment
 .Lfinal:
 	CFI_ENDPROC

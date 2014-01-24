@@ -1,7 +1,11 @@
 /*
  *  sata_sx4.c - Promise SATA
  *
+<<<<<<< HEAD
  *  Maintained by:  Jeff Garzik <jgarzik@pobox.com>
+=======
+ *  Maintained by:  Tejun Heo <tj@kernel.org>
+>>>>>>> refs/remotes/origin/master
  *  		    Please ALWAYS copy linux-ide@vger.kernel.org
  *		    on emails.
  *
@@ -315,9 +319,14 @@ static int pdc_port_start(struct ata_port *ap)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline void pdc20621_ata_sg(struct ata_taskfile *tf, u8 *buf,
 				   unsigned int portno,
 					   unsigned int total_len)
+=======
+static inline void pdc20621_ata_sg(u8 *buf, unsigned int portno,
+				   unsigned int total_len)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 addr;
 	unsigned int dw = PDC_DIMM_APKT_PRD >> 2;
@@ -337,9 +346,14 @@ static inline void pdc20621_ata_sg(struct ata_taskfile *tf, u8 *buf,
 		buf32[dw], buf32[dw + 1]);
 }
 
+<<<<<<< HEAD
 static inline void pdc20621_host_sg(struct ata_taskfile *tf, u8 *buf,
 				    unsigned int portno,
 					    unsigned int total_len)
+=======
+static inline void pdc20621_host_sg(u8 *buf, unsigned int portno,
+				    unsigned int total_len)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 addr;
 	unsigned int dw = PDC_DIMM_HPKT_PRD >> 2;
@@ -486,10 +500,17 @@ static void pdc20621_dma_prep(struct ata_queued_cmd *qc)
 	/*
 	 * Build ATA, host DMA packets
 	 */
+<<<<<<< HEAD
 	pdc20621_host_sg(&qc->tf, &pp->dimm_buf[0], portno, total_len);
 	pdc20621_host_pkt(&qc->tf, &pp->dimm_buf[0], portno);
 
 	pdc20621_ata_sg(&qc->tf, &pp->dimm_buf[0], portno, total_len);
+=======
+	pdc20621_host_sg(&pp->dimm_buf[0], portno, total_len);
+	pdc20621_host_pkt(&qc->tf, &pp->dimm_buf[0], portno);
+
+	pdc20621_ata_sg(&pp->dimm_buf[0], portno, total_len);
+>>>>>>> refs/remotes/origin/master
 	i = pdc20621_ata_pkt(&qc->tf, qc->dev->devno, &pp->dimm_buf[0], portno);
 
 	if (qc->tf.flags & ATA_TFLAG_LBA48)
@@ -1440,15 +1461,29 @@ static void pdc_20621_init(struct ata_host *host)
 static int pdc_sata_init_one(struct pci_dev *pdev,
 			     const struct pci_device_id *ent)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct ata_port_info *ppi[] =
 		{ &pdc_port_info[ent->driver_data], NULL };
 	struct ata_host *host;
 	struct pdc_host_priv *hpriv;
 	int i, rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/* allocate host */
 	host = ata_host_alloc_pinfo(&pdev->dev, ppi, 4);
@@ -1500,6 +1535,7 @@ static int pdc_sata_init_one(struct pci_dev *pdev,
 				 IRQF_SHARED, &pdc_sata_sht);
 }
 
+<<<<<<< HEAD
 
 static int __init pdc_sata_init(void)
 {
@@ -1512,12 +1548,18 @@ static void __exit pdc_sata_exit(void)
 	pci_unregister_driver(&pdc_sata_pci_driver);
 }
 
+=======
+module_pci_driver(pdc_sata_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jeff Garzik");
 MODULE_DESCRIPTION("Promise SATA low-level driver");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, pdc_sata_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(pdc_sata_init);
 module_exit(pdc_sata_exit);
+=======
+>>>>>>> refs/remotes/origin/master

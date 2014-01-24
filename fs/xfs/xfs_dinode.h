@@ -19,7 +19,11 @@
 #define	__XFS_DINODE_H__
 
 #define	XFS_DINODE_MAGIC		0x494e	/* 'IN' */
+<<<<<<< HEAD
 #define XFS_DINODE_GOOD_VERSION(v)	(((v) == 1 || (v) == 2))
+=======
+#define XFS_DINODE_GOOD_VERSION(v)	((v) >= 1 && (v) <= 3)
+>>>>>>> refs/remotes/origin/master
 
 typedef struct xfs_timestamp {
 	__be32		t_sec;		/* timestamp seconds */
@@ -33,12 +37,22 @@ typedef struct xfs_timestamp {
  * variable size the leftover area split into a data and an attribute fork.
  * The format of the data and attribute fork depends on the format of the
  * inode as indicated by di_format and di_aformat.  To access the data and
+<<<<<<< HEAD
  * attribute use the XFS_DFORK_PTR, XFS_DFORK_DPTR, and XFS_DFORK_PTR macros
+=======
+ * attribute use the XFS_DFORK_DPTR, XFS_DFORK_APTR, and XFS_DFORK_PTR macros
+>>>>>>> refs/remotes/origin/master
  * below.
  *
  * There is a very similar struct icdinode in xfs_inode which matches the
  * layout of the first 96 bytes of this structure, but is kept in native
  * format instead of big endian.
+<<<<<<< HEAD
+=======
+ *
+ * Note: di_flushiter is only used by v1/2 inodes - it's effectively a zeroed
+ * padding field for v3 inodes.
+>>>>>>> refs/remotes/origin/master
  */
 typedef struct xfs_dinode {
 	__be16		di_magic;	/* inode magic # = XFS_DINODE_MAGIC */
@@ -70,11 +84,43 @@ typedef struct xfs_dinode {
 
 	/* di_next_unlinked is the only non-core field in the old dinode */
 	__be32		di_next_unlinked;/* agi unlinked list ptr */
+<<<<<<< HEAD
 } __attribute__((packed)) xfs_dinode_t;
+=======
+
+	/* start of the extended dinode, writable fields */
+	__le32		di_crc;		/* CRC of the inode */
+	__be64		di_changecount;	/* number of attribute changes */
+	__be64		di_lsn;		/* flush sequence */
+	__be64		di_flags2;	/* more random flags */
+	__u8		di_pad2[16];	/* more padding for future expansion */
+
+	/* fields only written to during inode creation */
+	xfs_timestamp_t	di_crtime;	/* time created */
+	__be64		di_ino;		/* inode number */
+	uuid_t		di_uuid;	/* UUID of the filesystem */
+
+	/* structure must be padded to 64 bit alignment */
+} xfs_dinode_t;
+>>>>>>> refs/remotes/origin/master
 
 #define DI_MAX_FLUSH 0xffff
 
 /*
+<<<<<<< HEAD
+=======
+ * Size of the core inode on disk.  Version 1 and 2 inodes have
+ * the same size, but version 3 has grown a few additional fields.
+ */
+static inline uint xfs_dinode_size(int version)
+{
+	if (version == 3)
+		return sizeof(struct xfs_dinode);
+	return offsetof(struct xfs_dinode, di_crc);
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * The 32 bit link count in the inode theoretically maxes out at UINT_MAX.
  * Since the pathconf interface is signed, we use 2^31 - 1 instead.
  * The old inode format had a 16 bit link count, so its maximum is USHRT_MAX.
@@ -104,11 +150,16 @@ typedef enum xfs_dinode_fmt {
 /*
  * Inode size for given fs.
  */
+<<<<<<< HEAD
 #define XFS_LITINO(mp) \
 	((int)(((mp)->m_sb.sb_inodesize) - sizeof(struct xfs_dinode)))
 
 #define	XFS_BROOT_SIZE_ADJ	\
 	(XFS_BTREE_LBLOCK_LEN - sizeof(xfs_bmdr_block_t))
+=======
+#define XFS_LITINO(mp, version) \
+	((int)(((mp)->m_sb.sb_inodesize) - xfs_dinode_size(version)))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Inode data & attribute fork sizes, per inode.
@@ -119,10 +170,17 @@ typedef enum xfs_dinode_fmt {
 #define XFS_DFORK_DSIZE(dip,mp) \
 	(XFS_DFORK_Q(dip) ? \
 		XFS_DFORK_BOFF(dip) : \
+<<<<<<< HEAD
 		XFS_LITINO(mp))
 #define XFS_DFORK_ASIZE(dip,mp) \
 	(XFS_DFORK_Q(dip) ? \
 		XFS_LITINO(mp) - XFS_DFORK_BOFF(dip) : \
+=======
+		XFS_LITINO(mp, (dip)->di_version))
+#define XFS_DFORK_ASIZE(dip,mp) \
+	(XFS_DFORK_Q(dip) ? \
+		XFS_LITINO(mp, (dip)->di_version) - XFS_DFORK_BOFF(dip) : \
+>>>>>>> refs/remotes/origin/master
 		0)
 #define XFS_DFORK_SIZE(dip,mp,w) \
 	((w) == XFS_DATA_FORK ? \
@@ -133,7 +191,11 @@ typedef enum xfs_dinode_fmt {
  * Return pointers to the data or attribute forks.
  */
 #define XFS_DFORK_DPTR(dip) \
+<<<<<<< HEAD
 	((char *)(dip) + sizeof(struct xfs_dinode))
+=======
+	((char *)dip + xfs_dinode_size(dip->di_version))
+>>>>>>> refs/remotes/origin/master
 #define XFS_DFORK_APTR(dip)	\
 	(XFS_DFORK_DPTR(dip) + XFS_DFORK_BOFF(dip))
 #define XFS_DFORK_PTR(dip,w)	\
@@ -148,7 +210,15 @@ typedef enum xfs_dinode_fmt {
 		be32_to_cpu((dip)->di_nextents) : \
 		be16_to_cpu((dip)->di_anextents))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define	XFS_BUF_TO_DINODE(bp)	((xfs_dinode_t *)XFS_BUF_PTR(bp))
+=======
+#define	XFS_BUF_TO_DINODE(bp)	((xfs_dinode_t *)((bp)->b_addr))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	XFS_BUF_TO_DINODE(bp)	((xfs_dinode_t *)((bp)->b_addr))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * For block and character special files the 32bit dev_t is stored at the

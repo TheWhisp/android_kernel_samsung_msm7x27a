@@ -27,6 +27,11 @@
 
 #include <linux/crc16.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/random.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ubifs.h"
 
 #ifdef CONFIG_UBIFS_FS_DEBUG
@@ -34,6 +39,12 @@ static int dbg_populate_lsave(struct ubifs_info *c);
 #else
 #define dbg_populate_lsave(c) 0
 #endif
+=======
+#include <linux/random.h>
+#include "ubifs.h"
+
+static int dbg_populate_lsave(struct ubifs_info *c);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * first_dirty_cnode - find first dirty cnode.
@@ -116,8 +127,18 @@ static int get_cnodes_to_commit(struct ubifs_info *c)
 		return 0;
 	cnt += 1;
 	while (1) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ubifs_assert(!test_bit(COW_ZNODE, &cnode->flags));
 		__set_bit(COW_ZNODE, &cnode->flags);
+=======
+		ubifs_assert(!test_bit(COW_CNODE, &cnode->flags));
+		__set_bit(COW_CNODE, &cnode->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ubifs_assert(!test_bit(COW_CNODE, &cnode->flags));
+		__set_bit(COW_CNODE, &cnode->flags);
+>>>>>>> refs/remotes/origin/master
 		cnext = next_dirty_cnode(cnode);
 		if (!cnext) {
 			cnode->cnext = c->lpt_cnext;
@@ -323,11 +344,18 @@ static int layout_cnodes(struct ubifs_info *c)
 	return 0;
 
 no_space:
+<<<<<<< HEAD
 	ubifs_err("LPT out of space");
 	dbg_err("LPT out of space at LEB %d:%d needing %d, done_ltab %d, "
 		"done_lsave %d", lnum, offs, len, done_ltab, done_lsave);
 	dbg_dump_lpt_info(c);
 	dbg_dump_lpt_lebs(c);
+=======
+	ubifs_err("LPT out of space at LEB %d:%d needing %d, done_ltab %d, done_lsave %d",
+		  lnum, offs, len, done_ltab, done_lsave);
+	ubifs_dump_lpt_info(c);
+	ubifs_dump_lpt_lebs(c);
+>>>>>>> refs/remotes/origin/master
 	dump_stack();
 	return err;
 }
@@ -420,7 +448,11 @@ static int write_cnodes(struct ubifs_info *c)
 				alen = ALIGN(wlen, c->min_io_size);
 				memset(buf + offs, 0xff, alen - wlen);
 				err = ubifs_leb_write(c, lnum, buf + from, from,
+<<<<<<< HEAD
 						       alen, UBI_SHORTTERM);
+=======
+						       alen);
+>>>>>>> refs/remotes/origin/master
 				if (err)
 					return err;
 			}
@@ -465,7 +497,15 @@ static int write_cnodes(struct ubifs_info *c)
 		 */
 		clear_bit(DIRTY_CNODE, &cnode->flags);
 		smp_mb__before_clear_bit();
+<<<<<<< HEAD
+<<<<<<< HEAD
 		clear_bit(COW_ZNODE, &cnode->flags);
+=======
+		clear_bit(COW_CNODE, &cnode->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clear_bit(COW_CNODE, &cnode->flags);
+>>>>>>> refs/remotes/origin/master
 		smp_mb__after_clear_bit();
 		offs += len;
 		dbg_chk_lpt_sz(c, 1, len);
@@ -478,8 +518,12 @@ static int write_cnodes(struct ubifs_info *c)
 			wlen = offs - from;
 			alen = ALIGN(wlen, c->min_io_size);
 			memset(buf + offs, 0xff, alen - wlen);
+<<<<<<< HEAD
 			err = ubifs_leb_write(c, lnum, buf + from, from, alen,
 					      UBI_SHORTTERM);
+=======
+			err = ubifs_leb_write(c, lnum, buf + from, from, alen);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				return err;
 			dbg_chk_lpt_sz(c, 2, c->leb_size - offs);
@@ -505,8 +549,12 @@ static int write_cnodes(struct ubifs_info *c)
 			wlen = offs - from;
 			alen = ALIGN(wlen, c->min_io_size);
 			memset(buf + offs, 0xff, alen - wlen);
+<<<<<<< HEAD
 			err = ubifs_leb_write(c, lnum, buf + from, from, alen,
 					      UBI_SHORTTERM);
+=======
+			err = ubifs_leb_write(c, lnum, buf + from, from, alen);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				return err;
 			dbg_chk_lpt_sz(c, 2, c->leb_size - offs);
@@ -530,7 +578,11 @@ static int write_cnodes(struct ubifs_info *c)
 	wlen = offs - from;
 	alen = ALIGN(wlen, c->min_io_size);
 	memset(buf + offs, 0xff, alen - wlen);
+<<<<<<< HEAD
 	err = ubifs_leb_write(c, lnum, buf + from, from, alen, UBI_SHORTTERM);
+=======
+	err = ubifs_leb_write(c, lnum, buf + from, from, alen);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -551,11 +603,18 @@ static int write_cnodes(struct ubifs_info *c)
 	return 0;
 
 no_space:
+<<<<<<< HEAD
 	ubifs_err("LPT out of space mismatch");
 	dbg_err("LPT out of space mismatch at LEB %d:%d needing %d, done_ltab "
 		"%d, done_lsave %d", lnum, offs, len, done_ltab, done_lsave);
 	dbg_dump_lpt_info(c);
 	dbg_dump_lpt_lebs(c);
+=======
+	ubifs_err("LPT out of space mismatch at LEB %d:%d needing %d, done_ltab %d, done_lsave %d",
+		  lnum, offs, len, done_ltab, done_lsave);
+	ubifs_dump_lpt_info(c);
+	ubifs_dump_lpt_lebs(c);
+>>>>>>> refs/remotes/origin/master
 	dump_stack();
 	return err;
 }
@@ -1160,11 +1219,25 @@ static int lpt_gc_lnum(struct ubifs_info *c, int lnum)
 	void *buf = c->lpt_buf;
 
 	dbg_lp("LEB %d", lnum);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, buf, 0, c->leb_size);
 	if (err) {
 		ubifs_err("cannot read LEB %d, error %d", lnum, err);
 		return err;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	err = ubifs_leb_read(c, lnum, buf, 0, c->leb_size, 1);
+	if (err)
+		return err;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		if (!is_a_node(c, buf, len)) {
 			int pad_len;
@@ -1496,7 +1569,13 @@ void ubifs_lpt_free(struct ubifs_info *c, int wr_only)
 	kfree(c->lpt_nod_buf);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
+=======
+/*
+ * Everything below is related to debugging.
+ */
+>>>>>>> refs/remotes/origin/master
 
 /**
  * dbg_is_all_ff - determine if a buffer contains only 0xFF bytes.
@@ -1640,7 +1719,15 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
 	int ret;
 	void *buf, *p;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	buf = p = __vmalloc(c->leb_size, GFP_NOFS, PAGE_KERNEL);
@@ -1650,11 +1737,25 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
 	}
 
 	dbg_lp("LEB %d", lnum);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, buf, 0, c->leb_size);
 	if (err) {
 		dbg_msg("ubi_read failed, LEB %d, error %d", lnum, err);
 		goto out;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	err = ubifs_leb_read(c, lnum, buf, 0, c->leb_size, 1);
+	if (err)
+		goto out;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		if (!is_a_node(c, p, len)) {
 			int i, pad_len;
@@ -1667,12 +1768,18 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
 				continue;
 			}
 			if (!dbg_is_all_ff(p, len)) {
+<<<<<<< HEAD
 				dbg_msg("invalid empty space in LEB %d at %d",
 					lnum, c->leb_size - len);
+=======
+				ubifs_err("invalid empty space in LEB %d at %d",
+					  lnum, c->leb_size - len);
+>>>>>>> refs/remotes/origin/master
 				err = -EINVAL;
 			}
 			i = lnum - c->lpt_first;
 			if (len != c->ltab[i].free) {
+<<<<<<< HEAD
 				dbg_msg("invalid free space in LEB %d "
 					"(free %d, expected %d)",
 					lnum, len, c->ltab[i].free);
@@ -1682,6 +1789,15 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
 				dbg_msg("invalid dirty space in LEB %d "
 					"(dirty %d, expected %d)",
 					lnum, dirty, c->ltab[i].dirty);
+=======
+				ubifs_err("invalid free space in LEB %d (free %d, expected %d)",
+					  lnum, len, c->ltab[i].free);
+				err = -EINVAL;
+			}
+			if (dirty != c->ltab[i].dirty) {
+				ubifs_err("invalid dirty space in LEB %d (dirty %d, expected %d)",
+					  lnum, dirty, c->ltab[i].dirty);
+>>>>>>> refs/remotes/origin/master
 				err = -EINVAL;
 			}
 			goto out;
@@ -1711,7 +1827,15 @@ int dbg_check_ltab(struct ubifs_info *c)
 {
 	int lnum, err, i, cnt;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/* Bring the entire tree into memory */
@@ -1734,7 +1858,11 @@ int dbg_check_ltab(struct ubifs_info *c)
 	for (lnum = c->lpt_first; lnum <= c->lpt_last; lnum++) {
 		err = dbg_check_ltab_lnum(c, lnum);
 		if (err) {
+<<<<<<< HEAD
 			dbg_err("failed at LEB %d", lnum);
+=======
+			ubifs_err("failed at LEB %d", lnum);
+>>>>>>> refs/remotes/origin/master
 			return err;
 		}
 	}
@@ -1754,7 +1882,15 @@ int dbg_chk_lpt_free_spc(struct ubifs_info *c)
 	long long free = 0;
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	for (i = 0; i < c->lpt_lebs; i++) {
@@ -1766,10 +1902,17 @@ int dbg_chk_lpt_free_spc(struct ubifs_info *c)
 			free += c->leb_size;
 	}
 	if (free < c->lpt_sz) {
+<<<<<<< HEAD
 		dbg_err("LPT space error: free %lld lpt_sz %lld",
 			free, c->lpt_sz);
 		dbg_dump_lpt_info(c);
 		dbg_dump_lpt_lebs(c);
+=======
+		ubifs_err("LPT space error: free %lld lpt_sz %lld",
+			  free, c->lpt_sz);
+		ubifs_dump_lpt_info(c);
+		ubifs_dump_lpt_lebs(c);
+>>>>>>> refs/remotes/origin/master
 		dump_stack();
 		return -EINVAL;
 	}
@@ -1796,7 +1939,15 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
 	long long chk_lpt_sz, lpt_sz;
 	int err = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	switch (action) {
@@ -1806,6 +1957,7 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
 		d->chk_lpt_lebs = 0;
 		d->chk_lpt_wastage = 0;
 		if (c->dirty_pn_cnt > c->pnode_cnt) {
+<<<<<<< HEAD
 			dbg_err("dirty pnodes %d exceed max %d",
 				c->dirty_pn_cnt, c->pnode_cnt);
 			err = -EINVAL;
@@ -1813,6 +1965,15 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
 		if (c->dirty_nn_cnt > c->nnode_cnt) {
 			dbg_err("dirty nnodes %d exceed max %d",
 				c->dirty_nn_cnt, c->nnode_cnt);
+=======
+			ubifs_err("dirty pnodes %d exceed max %d",
+				  c->dirty_pn_cnt, c->pnode_cnt);
+			err = -EINVAL;
+		}
+		if (c->dirty_nn_cnt > c->nnode_cnt) {
+			ubifs_err("dirty nnodes %d exceed max %d",
+				  c->dirty_nn_cnt, c->nnode_cnt);
+>>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
 		}
 		return err;
@@ -1829,6 +1990,7 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
 		chk_lpt_sz *= d->chk_lpt_lebs;
 		chk_lpt_sz += len - c->nhead_offs;
 		if (d->chk_lpt_sz != chk_lpt_sz) {
+<<<<<<< HEAD
 			dbg_err("LPT wrote %lld but space used was %lld",
 				d->chk_lpt_sz, chk_lpt_sz);
 			err = -EINVAL;
@@ -1846,6 +2008,25 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
 		if (d->chk_lpt_sz2 && d->new_nhead_offs != len) {
 			dbg_err("LPT new nhead offs: expected %d was %d",
 				d->new_nhead_offs, len);
+=======
+			ubifs_err("LPT wrote %lld but space used was %lld",
+				  d->chk_lpt_sz, chk_lpt_sz);
+			err = -EINVAL;
+		}
+		if (d->chk_lpt_sz > c->lpt_sz) {
+			ubifs_err("LPT wrote %lld but lpt_sz is %lld",
+				  d->chk_lpt_sz, c->lpt_sz);
+			err = -EINVAL;
+		}
+		if (d->chk_lpt_sz2 && d->chk_lpt_sz != d->chk_lpt_sz2) {
+			ubifs_err("LPT layout size %lld but wrote %lld",
+				  d->chk_lpt_sz, d->chk_lpt_sz2);
+			err = -EINVAL;
+		}
+		if (d->chk_lpt_sz2 && d->new_nhead_offs != len) {
+			ubifs_err("LPT new nhead offs: expected %d was %d",
+				  d->new_nhead_offs, len);
+>>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
 		}
 		lpt_sz = (long long)c->pnode_cnt * c->pnode_sz;
@@ -1854,6 +2035,7 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
 		if (c->big_lpt)
 			lpt_sz += c->lsave_sz;
 		if (d->chk_lpt_sz - d->chk_lpt_wastage > lpt_sz) {
+<<<<<<< HEAD
 			dbg_err("LPT chk_lpt_sz %lld + waste %lld exceeds %lld",
 				d->chk_lpt_sz, d->chk_lpt_wastage, lpt_sz);
 			err = -EINVAL;
@@ -1861,6 +2043,15 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
 		if (err) {
 			dbg_dump_lpt_info(c);
 			dbg_dump_lpt_lebs(c);
+=======
+			ubifs_err("LPT chk_lpt_sz %lld + waste %lld exceeds %lld",
+				  d->chk_lpt_sz, d->chk_lpt_wastage, lpt_sz);
+			err = -EINVAL;
+		}
+		if (err) {
+			ubifs_dump_lpt_info(c);
+			ubifs_dump_lpt_lebs(c);
+>>>>>>> refs/remotes/origin/master
 			dump_stack();
 		}
 		d->chk_lpt_sz2 = d->chk_lpt_sz;
@@ -1879,7 +2070,11 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
 }
 
 /**
+<<<<<<< HEAD
  * dbg_dump_lpt_leb - dump an LPT LEB.
+=======
+ * ubifs_dump_lpt_leb - dump an LPT LEB.
+>>>>>>> refs/remotes/origin/master
  * @c: UBIFS file-system description object
  * @lnum: LEB number to dump
  *
@@ -1893,19 +2088,36 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
 	int err, len = c->leb_size, node_type, node_num, node_len, offs;
 	void *buf, *p;
 
+<<<<<<< HEAD
 	printk(KERN_DEBUG "(pid %d) start dumping LEB %d\n",
 	       current->pid, lnum);
+=======
+	pr_err("(pid %d) start dumping LEB %d\n", current->pid, lnum);
+>>>>>>> refs/remotes/origin/master
 	buf = p = __vmalloc(c->leb_size, GFP_NOFS, PAGE_KERNEL);
 	if (!buf) {
 		ubifs_err("cannot allocate memory to dump LPT");
 		return;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, buf, 0, c->leb_size);
 	if (err) {
 		ubifs_err("cannot read LEB %d, error %d", lnum, err);
 		goto out;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	err = ubifs_leb_read(c, lnum, buf, 0, c->leb_size, 1);
+	if (err)
+		goto out;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		offs = c->leb_size - len;
 		if (!is_a_node(c, p, len)) {
@@ -1913,14 +2125,22 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
 
 			pad_len = get_pad_len(c, p, len);
 			if (pad_len) {
+<<<<<<< HEAD
 				printk(KERN_DEBUG "LEB %d:%d, pad %d bytes\n",
+=======
+				pr_err("LEB %d:%d, pad %d bytes\n",
+>>>>>>> refs/remotes/origin/master
 				       lnum, offs, pad_len);
 				p += pad_len;
 				len -= pad_len;
 				continue;
 			}
 			if (len)
+<<<<<<< HEAD
 				printk(KERN_DEBUG "LEB %d:%d, free %d bytes\n",
+=======
+				pr_err("LEB %d:%d, free %d bytes\n",
+>>>>>>> refs/remotes/origin/master
 				       lnum, offs, len);
 			break;
 		}
@@ -1931,11 +2151,18 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
 		{
 			node_len = c->pnode_sz;
 			if (c->big_lpt)
+<<<<<<< HEAD
 				printk(KERN_DEBUG "LEB %d:%d, pnode num %d\n",
 				       lnum, offs, node_num);
 			else
 				printk(KERN_DEBUG "LEB %d:%d, pnode\n",
 				       lnum, offs);
+=======
+				pr_err("LEB %d:%d, pnode num %d\n",
+				       lnum, offs, node_num);
+			else
+				pr_err("LEB %d:%d, pnode\n", lnum, offs);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		case UBIFS_LPT_NNODE:
@@ -1945,6 +2172,7 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
 
 			node_len = c->nnode_sz;
 			if (c->big_lpt)
+<<<<<<< HEAD
 				printk(KERN_DEBUG "LEB %d:%d, nnode num %d, ",
 				       lnum, offs, node_num);
 			else
@@ -1958,16 +2186,39 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
 					printk(KERN_CONT ", ");
 			}
 			printk(KERN_CONT "\n");
+=======
+				pr_err("LEB %d:%d, nnode num %d, ",
+				       lnum, offs, node_num);
+			else
+				pr_err("LEB %d:%d, nnode, ",
+				       lnum, offs);
+			err = ubifs_unpack_nnode(c, p, &nnode);
+			for (i = 0; i < UBIFS_LPT_FANOUT; i++) {
+				pr_cont("%d:%d", nnode.nbranch[i].lnum,
+				       nnode.nbranch[i].offs);
+				if (i != UBIFS_LPT_FANOUT - 1)
+					pr_cont(", ");
+			}
+			pr_cont("\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		case UBIFS_LPT_LTAB:
 			node_len = c->ltab_sz;
+<<<<<<< HEAD
 			printk(KERN_DEBUG "LEB %d:%d, ltab\n",
 			       lnum, offs);
 			break;
 		case UBIFS_LPT_LSAVE:
 			node_len = c->lsave_sz;
 			printk(KERN_DEBUG "LEB %d:%d, lsave len\n", lnum, offs);
+=======
+			pr_err("LEB %d:%d, ltab\n", lnum, offs);
+			break;
+		case UBIFS_LPT_LSAVE:
+			node_len = c->lsave_sz;
+			pr_err("LEB %d:%d, lsave len\n", lnum, offs);
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			ubifs_err("LPT node type %d not recognized", node_type);
@@ -1978,20 +2229,29 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
 		len -= node_len;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_DEBUG "(pid %d) finish dumping LEB %d\n",
 	       current->pid, lnum);
+=======
+	pr_err("(pid %d) finish dumping LEB %d\n", current->pid, lnum);
+>>>>>>> refs/remotes/origin/master
 out:
 	vfree(buf);
 	return;
 }
 
 /**
+<<<<<<< HEAD
  * dbg_dump_lpt_lebs - dump LPT lebs.
+=======
+ * ubifs_dump_lpt_lebs - dump LPT lebs.
+>>>>>>> refs/remotes/origin/master
  * @c: UBIFS file-system description object
  *
  * This function dumps all LPT LEBs. The caller has to make sure the LPT is
  * locked.
  */
+<<<<<<< HEAD
 void dbg_dump_lpt_lebs(const struct ubifs_info *c)
 {
 	int i;
@@ -2002,6 +2262,16 @@ void dbg_dump_lpt_lebs(const struct ubifs_info *c)
 		dump_lpt_leb(c, i + c->lpt_first);
 	printk(KERN_DEBUG "(pid %d) finish dumping all LPT LEBs\n",
 	       current->pid);
+=======
+void ubifs_dump_lpt_lebs(const struct ubifs_info *c)
+{
+	int i;
+
+	pr_err("(pid %d) start dumping all LPT LEBs\n", current->pid);
+	for (i = 0; i < c->lpt_lebs; i++)
+		dump_lpt_leb(c, i + c->lpt_first);
+	pr_err("(pid %d) finish dumping all LPT LEBs\n", current->pid);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2019,15 +2289,26 @@ static int dbg_populate_lsave(struct ubifs_info *c)
 	struct ubifs_lpt_heap *heap;
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_GEN))
+=======
+	if (!dbg_is_chk_gen(c))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	if (random32() & 3)
+=======
+	if (!dbg_is_chk_gen(c))
+		return 0;
+	if (prandom_u32() & 3)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	for (i = 0; i < c->lsave_cnt; i++)
 		c->lsave[i] = c->main_first;
 
 	list_for_each_entry(lprops, &c->empty_list, list)
+<<<<<<< HEAD
 		c->lsave[random32() % c->lsave_cnt] = lprops->lnum;
 	list_for_each_entry(lprops, &c->freeable_list, list)
 		c->lsave[random32() % c->lsave_cnt] = lprops->lnum;
@@ -2048,3 +2329,23 @@ static int dbg_populate_lsave(struct ubifs_info *c)
 }
 
 #endif /* CONFIG_UBIFS_FS_DEBUG */
+=======
+		c->lsave[prandom_u32() % c->lsave_cnt] = lprops->lnum;
+	list_for_each_entry(lprops, &c->freeable_list, list)
+		c->lsave[prandom_u32() % c->lsave_cnt] = lprops->lnum;
+	list_for_each_entry(lprops, &c->frdi_idx_list, list)
+		c->lsave[prandom_u32() % c->lsave_cnt] = lprops->lnum;
+
+	heap = &c->lpt_heap[LPROPS_DIRTY_IDX - 1];
+	for (i = 0; i < heap->cnt; i++)
+		c->lsave[prandom_u32() % c->lsave_cnt] = heap->arr[i]->lnum;
+	heap = &c->lpt_heap[LPROPS_DIRTY - 1];
+	for (i = 0; i < heap->cnt; i++)
+		c->lsave[prandom_u32() % c->lsave_cnt] = heap->arr[i]->lnum;
+	heap = &c->lpt_heap[LPROPS_FREE - 1];
+	for (i = 0; i < heap->cnt; i++)
+		c->lsave[prandom_u32() % c->lsave_cnt] = heap->arr[i]->lnum;
+
+	return 1;
+}
+>>>>>>> refs/remotes/origin/master

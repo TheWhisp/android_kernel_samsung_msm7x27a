@@ -6,6 +6,10 @@
 snd-adlib-objs := adlib.o
 snd-als100-objs := als100.o
 snd-azt2320-objs := azt2320.o
+<<<<<<< HEAD
+=======
+snd-cmi8328-objs := cmi8328.o
+>>>>>>> refs/remotes/origin/master
 snd-cmi8330-objs := cmi8330.o
 snd-es18xx-objs := es18xx.o
 snd-opl3sa2-objs := opl3sa2.o
@@ -16,6 +20,10 @@ snd-sscape-objs := sscape.o
 obj-$(CONFIG_SND_ADLIB) += snd-adlib.o
 obj-$(CONFIG_SND_ALS100) += snd-als100.o
 obj-$(CONFIG_SND_AZT2320) += snd-azt2320.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SND_CMI8328) += snd-cmi8328.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SND_CMI8330) += snd-cmi8330.o
 obj-$(CONFIG_SND_ES18XX) += snd-es18xx.o
 obj-$(CONFIG_SND_OPL3SA2) += snd-opl3sa2.o

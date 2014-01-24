@@ -12,15 +12,28 @@
 #include <linux/errno.h>
 #include <linux/smp.h>
 
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/smp_plat.h>
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern volatile int pen_release;
+=======
+#include <asm/smp_plat.h>
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline void cpu_enter_lowpower(void)
 {
 	unsigned int v;
 
+<<<<<<< HEAD
 	flush_cache_all();
+=======
+>>>>>>> refs/remotes/origin/master
 	asm volatile(
 		"mcr	p15, 0, %1, c7, c5, 0\n"
 	"	mcr	p15, 0, %1, c7, c10, 4\n"
@@ -62,6 +75,8 @@ static inline void platform_do_lowpower(unsigned int cpu, int *spurious)
 	 * code will have already disabled interrupts
 	 */
 	for (;;) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/*
 		 * here's the WFI
 		 */
@@ -71,6 +86,16 @@ static inline void platform_do_lowpower(unsigned int cpu, int *spurious)
 		    : "memory", "cc");
 
 		if (pen_release == cpu) {
+=======
+		wfi();
+
+		if (pen_release == cpu_logical_map(cpu)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wfi();
+
+		if (pen_release == cpu_logical_map(cpu)) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * OK, proper wakeup, we're done
 			 */
@@ -88,17 +113,24 @@ static inline void platform_do_lowpower(unsigned int cpu, int *spurious)
 	}
 }
 
+<<<<<<< HEAD
 int platform_cpu_kill(unsigned int cpu)
 {
 	return 1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * platform-specific code to shutdown a CPU
  *
  * Called with IRQs disabled
  */
+<<<<<<< HEAD
 void platform_cpu_die(unsigned int cpu)
+=======
+void __ref vexpress_cpu_die(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int spurious = 0;
 
@@ -117,6 +149,7 @@ void platform_cpu_die(unsigned int cpu)
 	if (spurious)
 		pr_warn("CPU%u: %u spurious wakeup calls\n", cpu, spurious);
 }
+<<<<<<< HEAD
 
 int platform_cpu_disable(unsigned int cpu)
 {
@@ -126,3 +159,5 @@ int platform_cpu_disable(unsigned int cpu)
 	 */
 	return cpu == 0 ? -EPERM : 0;
 }
+=======
+>>>>>>> refs/remotes/origin/master

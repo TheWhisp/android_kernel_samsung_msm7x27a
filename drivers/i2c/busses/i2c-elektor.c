@@ -205,7 +205,11 @@ static struct i2c_adapter pcf_isa_ops = {
 	.name		= "i2c-elektor",
 };
 
+<<<<<<< HEAD
 static int __devinit elektor_match(struct device *dev, unsigned int id)
+=======
+static int elektor_match(struct device *dev, unsigned int id)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef __alpha__
 	/* check to see we have memory mapped PCF8584 connected to the
@@ -264,7 +268,11 @@ static int __devinit elektor_match(struct device *dev, unsigned int id)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit elektor_probe(struct device *dev, unsigned int id)
+=======
+static int elektor_probe(struct device *dev, unsigned int id)
+>>>>>>> refs/remotes/origin/master
 {
 	init_waitqueue_head(&pcf_wait);
 	if (pcf_isa_init())
@@ -293,7 +301,11 @@ static int __devinit elektor_probe(struct device *dev, unsigned int id)
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int __devexit elektor_remove(struct device *dev, unsigned int id)
+=======
+static int elektor_remove(struct device *dev, unsigned int id)
+>>>>>>> refs/remotes/origin/master
 {
 	i2c_del_adapter(&pcf_isa_ops);
 
@@ -316,7 +328,11 @@ static int __devexit elektor_remove(struct device *dev, unsigned int id)
 static struct isa_driver i2c_elektor_driver = {
 	.match		= elektor_match,
 	.probe		= elektor_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(elektor_remove),
+=======
+	.remove		= elektor_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.owner	= THIS_MODULE,
 		.name	= "i2c-elektor",

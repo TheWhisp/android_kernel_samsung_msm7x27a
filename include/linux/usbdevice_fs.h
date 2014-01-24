@@ -25,6 +25,7 @@
  */
 
 /*****************************************************************************/
+<<<<<<< HEAD
 
 #ifndef _LINUX_USBDEVICE_FS_H
 #define _LINUX_USBDEVICE_FS_H
@@ -126,6 +127,13 @@ struct usbdevfs_hub_portinfo {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_USBDEVICE_FS_H
+#define _LINUX_USBDEVICE_FS_H
+
+#include <uapi/linux/usbdevice_fs.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 #include <linux/compat.h>
 
@@ -173,6 +181,7 @@ struct usbdevfs_ioctl32 {
 	compat_caddr_t data;
 };
 #endif
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #define USBDEVFS_CONTROL           _IOWR('U', 0, struct usbdevfs_ctrltransfer)
@@ -204,4 +213,6 @@ struct usbdevfs_ioctl32 {
 #define USBDEVFS_CONNECT           _IO('U', 23)
 #define USBDEVFS_CLAIM_PORT        _IOR('U', 24, unsigned int)
 #define USBDEVFS_RELEASE_PORT      _IOR('U', 25, unsigned int)
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_USBDEVICE_FS_H */

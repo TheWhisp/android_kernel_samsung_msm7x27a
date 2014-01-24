@@ -23,12 +23,19 @@
 #ifdef __KERNEL__
 
 /* PAGE_SHIFT determines the page size */
+<<<<<<< HEAD
 #if defined(CONFIG_MICROBLAZE_32K_PAGES)
 #define PAGE_SHIFT		15
 #elif defined(CONFIG_MICROBLAZE_16K_PAGES)
 #define PAGE_SHIFT		14
 #elif defined(CONFIG_MICROBLAZE_8K_PAGES)
 #define PAGE_SHIFT		13
+=======
+#if defined(CONFIG_MICROBLAZE_64K_PAGES)
+#define PAGE_SHIFT		16
+#elif defined(CONFIG_MICROBLAZE_16K_PAGES)
+#define PAGE_SHIFT		14
+>>>>>>> refs/remotes/origin/master
 #else
 #define PAGE_SHIFT		12
 #endif
@@ -37,6 +44,11 @@
 
 #define LOAD_OFFSET	ASM_CONST((CONFIG_KERNEL_START-CONFIG_KERNEL_BASE_ADDR))
 
+<<<<<<< HEAD
+=======
+#define PTE_SHIFT	(PAGE_SHIFT - 2)	/* 1024 ptes per page */
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 /* MS be sure that SLAB allocates aligned objects */
@@ -71,7 +83,10 @@ extern unsigned int __page_offset;
  * The basic type of a PTE - 32 bit physical addressing.
  */
 typedef unsigned long pte_basic_t;
+<<<<<<< HEAD
 #define PTE_SHIFT	(PAGE_SHIFT - 2)	/* 1024 ptes per page */
+=======
+>>>>>>> refs/remotes/origin/master
 #define PTE_FMT		"%.8lx"
 
 #endif /* CONFIG_MMU */
@@ -135,8 +150,21 @@ extern unsigned long min_low_pfn;
 extern unsigned long max_pfn;
 
 extern unsigned long memory_start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned long memory_end;
 extern unsigned long memory_size;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern unsigned long memory_size;
+extern unsigned long lowmem_size;
+
+extern unsigned long kernel_tlb;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern int page_is_ram(unsigned long pfn);
 
@@ -167,13 +195,18 @@ extern int page_is_ram(unsigned long pfn);
 #  else /* CONFIG_MMU */
 #  define ARCH_PFN_OFFSET	(memory_start >> PAGE_SHIFT)
 #  define pfn_valid(pfn)	((pfn) < (max_mapnr + ARCH_PFN_OFFSET))
+<<<<<<< HEAD
 #  define VALID_PAGE(page) 	((page - mem_map) < max_mapnr)
+=======
+>>>>>>> refs/remotes/origin/master
 #  endif /* CONFIG_MMU */
 
 # endif /* __ASSEMBLY__ */
 
 #define	virt_addr_valid(vaddr)	(pfn_valid(virt_to_pfn(vaddr)))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #  ifndef CONFIG_MMU
 #  define __pa(vaddr)	((unsigned long) (vaddr))
@@ -183,6 +216,14 @@ extern int page_is_ram(unsigned long pfn);
 #  define __va(x)	((void *)__phys_to_virt((unsigned long)(x)))
 #  endif /* CONFIG_MMU */
 
+=======
+# define __pa(x)	__virt_to_phys((unsigned long)(x))
+# define __va(x)	((void *)__phys_to_virt((unsigned long)(x)))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+# define __pa(x)	__virt_to_phys((unsigned long)(x))
+# define __va(x)	((void *)__phys_to_virt((unsigned long)(x)))
+>>>>>>> refs/remotes/origin/master
 
 /* Convert between virtual and physical address for MMU. */
 /* Handle MicroBlaze processor with virtual memory. */

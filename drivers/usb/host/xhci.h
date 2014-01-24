@@ -28,6 +28,20 @@
 #include <linux/kernel.h>
 #include <linux/usb/hcd.h>
 
+<<<<<<< HEAD
+=======
+/*
+ * Registers should always be accessed with double word or quad word accesses.
+ *
+ * Some xHCI implementations may support 64-bit address pointers.  Registers
+ * with 64-bit address pointers should be written to with dword accesses by
+ * writing the low dword first (ptr[0]), then the high dword (ptr[1]) second.
+ * xHCI implementations that do not support 64-bit address pointers will ignore
+ * the high dword, and write order is irrelevant.
+ */
+#include <asm-generic/io-64-nonatomic-lo-hi.h>
+
+>>>>>>> refs/remotes/origin/master
 /* Code sharing between pci-quirks and xhci hcd */
 #include	"xhci-ext-caps.h"
 #include "pci-quirks.h"
@@ -132,6 +146,14 @@ struct xhci_cap_regs {
 /* Number of registers per port */
 #define	NUM_PORT_REGS	4
 
+<<<<<<< HEAD
+=======
+#define PORTSC		0
+#define PORTPMSC	1
+#define PORTLI		2
+#define PORTHLPMC	3
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct xhci_op_regs - xHCI Host Controller Operational Registers.
  * @command:		USBCMD - xHC command register
@@ -276,6 +298,14 @@ struct xhci_op_regs {
  */
 #define PORT_PLS_MASK	(0xf << 5)
 #define XDEV_U0		(0x0 << 5)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define XDEV_U2		(0x2 << 5)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define XDEV_U2		(0x2 << 5)
+>>>>>>> refs/remotes/origin/master
 #define XDEV_U3		(0x3 << 5)
 #define XDEV_RESUME	(0xf << 5)
 /* true: port has power (see HCC_PPC) */
@@ -340,7 +370,27 @@ struct xhci_op_regs {
 #define PORT_PLC	(1 << 22)
 /* port configure error change - port failed to configure its link partner */
 #define PORT_CEC	(1 << 23)
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* bit 24 reserved */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* Cold Attach Status - xHC can set this bit to report device attached during
+ * Sx state. Warm port reset should be perfomed to clear this bit and move port
+ * to connected state.
+ */
+#define PORT_CAS	(1 << 24)
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* wake on connect (enable) */
 #define PORT_WKCONN_E	(1 << 25)
 /* wake on disconnect (enable) */
@@ -361,12 +411,59 @@ struct xhci_op_regs {
  * Timeout can be up to 127us.  0xFF means an infinite timeout.
  */
 #define PORT_U1_TIMEOUT(p)	((p) & 0xff)
+<<<<<<< HEAD
 /* Inactivity timer value for transitions into U2 */
 #define PORT_U2_TIMEOUT(p)	(((p) & 0xff) << 8)
 /* Bits 24:31 for port testing */
 
 /* USB2 Protocol PORTSPMSC */
+<<<<<<< HEAD
 #define PORT_RWE	(1 << 0x3)
+=======
+=======
+#define PORT_U1_TIMEOUT_MASK	0xff
+/* Inactivity timer value for transitions into U2 */
+#define PORT_U2_TIMEOUT(p)	(((p) & 0xff) << 8)
+#define PORT_U2_TIMEOUT_MASK	(0xff << 8)
+/* Bits 24:31 for port testing */
+
+/* USB2 Protocol PORTSPMSC */
+>>>>>>> refs/remotes/origin/master
+#define	PORT_L1S_MASK		7
+#define	PORT_L1S_SUCCESS	1
+#define	PORT_RWE		(1 << 3)
+#define	PORT_HIRD(p)		(((p) & 0xf) << 4)
+#define	PORT_HIRD_MASK		(0xf << 4)
+<<<<<<< HEAD
+#define	PORT_L1DS(p)		(((p) & 0xff) << 8)
+#define	PORT_HLE		(1 << 16)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	PORT_L1DS_MASK		(0xff << 8)
+#define	PORT_L1DS(p)		(((p) & 0xff) << 8)
+#define	PORT_HLE		(1 << 16)
+
+
+/* USB2 Protocol PORTHLPMC */
+#define PORT_HIRDM(p)((p) & 3)
+#define PORT_L1_TIMEOUT(p)(((p) & 0xff) << 2)
+#define PORT_BESLD(p)(((p) & 0xf) << 10)
+
+/* use 512 microseconds as USB2 LPM L1 default timeout. */
+#define XHCI_L1_TIMEOUT		512
+
+/* Set default HIRD/BESL value to 4 (350/400us) for USB2 L1 LPM resume latency.
+ * Safe to use with mixed HIRD and BESL systems (host and device) and is used
+ * by other operating systems.
+ *
+ * XHCI 1.0 errata 8/14/12 Table 13 notes:
+ * "Software should choose xHC BESL/BESLD field values that do not violate a
+ * device's resume latency requirements,
+ * e.g. not program values > '4' if BLC = '1' and a HIRD device is attached,
+ * or not program values < '4' if BLC = '0' and a BESL device is attached.
+ */
+#define XHCI_DEFAULT_BESL	4
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct xhci_intr_reg - Interrupt Register Set
@@ -615,11 +712,27 @@ struct xhci_ep_ctx {
 #define EP_STATE_ERROR		4
 /* Mult - Max number of burtst within an interval, in EP companion desc. */
 #define EP_MULT(p)		(((p) & 0x3) << 8)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define CTX_TO_EP_MULT(p)	(((p) >> 8) & 0x3)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CTX_TO_EP_MULT(p)	(((p) >> 8) & 0x3)
+>>>>>>> refs/remotes/origin/master
 /* bits 10:14 are Max Primary Streams */
 /* bit 15 is Linear Stream Array */
 /* Interval - period between requests to an endpoint - 125u increments. */
 #define EP_INTERVAL(p)		(((p) & 0xff) << 16)
 #define EP_INTERVAL_TO_UFRAMES(p)		(1 << (((p) >> 16) & 0xff))
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define CTX_TO_EP_INTERVAL(p)	(((p) >> 16) & 0xff)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CTX_TO_EP_INTERVAL(p)	(((p) >> 16) & 0xff)
+>>>>>>> refs/remotes/origin/master
 #define EP_MAXPSTREAMS_MASK	(0x1f << 10)
 #define EP_MAXPSTREAMS(p)	(((p) << 10) & EP_MAXPSTREAMS_MASK)
 /* Endpoint is set up with a Linear Stream Array (vs. Secondary Stream Array) */
@@ -644,6 +757,14 @@ struct xhci_ep_ctx {
 /* bit 6 reserved */
 /* bit 7 is Host Initiate Disable - for disabling stream selection */
 #define MAX_BURST(p)	(((p)&0xff) << 8)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define CTX_TO_MAX_BURST(p)	(((p) >> 8) & 0xff)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CTX_TO_MAX_BURST(p)	(((p) >> 8) & 0xff)
+>>>>>>> refs/remotes/origin/master
 #define MAX_PACKET(p)	(((p)&0xffff) << 16)
 #define MAX_PACKET_MASK		(0xffff << 16)
 #define MAX_PACKET_DECODED(p)	(((p) >> 16) & 0xffff)
@@ -656,6 +777,14 @@ struct xhci_ep_ctx {
 /* tx_info bitmasks */
 #define AVG_TRB_LENGTH_FOR_EP(p)	((p) & 0xffff)
 #define MAX_ESIT_PAYLOAD_FOR_EP(p)	(((p) & 0xffff) << 16)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define CTX_TO_MAX_ESIT_PAYLOAD(p)	(((p) >> 16) & 0xffff)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CTX_TO_MAX_ESIT_PAYLOAD(p)	(((p) >> 16) & 0xffff)
+>>>>>>> refs/remotes/origin/master
 
 /* deq bitmasks */
 #define EP_CTX_CYCLE_MASK		(1 << 0)
@@ -674,6 +803,20 @@ struct xhci_input_control_ctx {
 	__le32	rsvd2[6];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define	EP_IS_ADDED(ctrl_ctx, i) \
+	(le32_to_cpu(ctrl_ctx->add_flags) & (1 << (i + 1)))
+#define	EP_IS_DROPPED(ctrl_ctx, i)       \
+	(le32_to_cpu(ctrl_ctx->drop_flags) & (1 << (i + 1)))
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Represents everything that is needed to issue a command on the command ring.
  * It's useful to pre-allocate these for commands that cannot fail due to
  * out-of-memory errors, like freeing streams.
@@ -703,7 +846,11 @@ struct xhci_stream_ctx {
 };
 
 /* Stream Context Types (section 6.4.1) - bits 3:1 of stream ctx deq ptr */
+<<<<<<< HEAD
 #define	SCT_FOR_CTX(p)		(((p) << 1) & 0x7)
+=======
+#define	SCT_FOR_CTX(p)		(((p) & 0x7) << 1)
+>>>>>>> refs/remotes/origin/master
 /* Secondary stream array type, dequeue pointer is to a transfer ring */
 #define	SCT_SEC_TR		0
 /* Primary stream array type, dequeue pointer is to a transfer ring */
@@ -735,6 +882,76 @@ struct xhci_stream_info {
 #define	SMALL_STREAM_ARRAY_SIZE		256
 #define	MEDIUM_STREAM_ARRAY_SIZE	1024
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* Some Intel xHCI host controllers need software to keep track of the bus
+ * bandwidth.  Keep track of endpoint info here.  Each root port is allocated
+ * the full bus bandwidth.  We must also treat TTs (including each port under a
+ * multi-TT hub) as a separate bandwidth domain.  The direct memory interface
+ * (DMI) also limits the total bandwidth (across all domains) that can be used.
+ */
+struct xhci_bw_info {
+	/* ep_interval is zero-based */
+	unsigned int		ep_interval;
+	/* mult and num_packets are one-based */
+	unsigned int		mult;
+	unsigned int		num_packets;
+	unsigned int		max_packet_size;
+	unsigned int		max_esit_payload;
+	unsigned int		type;
+};
+
+/* "Block" sizes in bytes the hardware uses for different device speeds.
+ * The logic in this part of the hardware limits the number of bits the hardware
+ * can use, so must represent bandwidth in a less precise manner to mimic what
+ * the scheduler hardware computes.
+ */
+#define	FS_BLOCK	1
+#define	HS_BLOCK	4
+#define	SS_BLOCK	16
+#define	DMI_BLOCK	32
+
+/* Each device speed has a protocol overhead (CRC, bit stuffing, etc) associated
+ * with each byte transferred.  SuperSpeed devices have an initial overhead to
+ * set up bursts.  These are in blocks, see above.  LS overhead has already been
+ * translated into FS blocks.
+ */
+#define DMI_OVERHEAD 8
+#define DMI_OVERHEAD_BURST 4
+#define SS_OVERHEAD 8
+#define SS_OVERHEAD_BURST 32
+#define HS_OVERHEAD 26
+#define FS_OVERHEAD 20
+#define LS_OVERHEAD 128
+/* The TTs need to claim roughly twice as much bandwidth (94 bytes per
+ * microframe ~= 24Mbps) of the HS bus as the devices can actually use because
+ * of overhead associated with split transfers crossing microframe boundaries.
+ * 31 blocks is pure protocol overhead.
+ */
+#define TT_HS_OVERHEAD (31 + 94)
+#define TT_DMI_OVERHEAD (25 + 12)
+
+/* Bandwidth limits in blocks */
+#define FS_BW_LIMIT		1285
+#define TT_BW_LIMIT		1320
+#define HS_BW_LIMIT		1607
+#define SS_BW_LIMIT_IN		3906
+#define DMI_BW_LIMIT_IN		3906
+#define SS_BW_LIMIT_OUT		3906
+#define DMI_BW_LIMIT_OUT	3906
+
+/* Percentage of bus bandwidth reserved for non-periodic transfers */
+#define FS_BW_RESERVED		10
+#define HS_BW_RESERVED		20
+#define SS_BW_RESERVED		10
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct xhci_virt_ep {
 	struct xhci_ring		*ring;
 	/* Related to endpoints that are configured to use stream IDs only */
@@ -776,8 +993,50 @@ struct xhci_virt_ep {
 	 * process the missed tds on the endpoint ring.
 	 */
 	bool			skip;
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Bandwidth checking storage */
+	struct xhci_bw_info	bw_info;
+	struct list_head	bw_endpoint_list;
+};
+
+enum xhci_overhead_type {
+	LS_OVERHEAD_TYPE = 0,
+	FS_OVERHEAD_TYPE,
+	HS_OVERHEAD_TYPE,
+};
+
+struct xhci_interval_bw {
+	unsigned int		num_packets;
+	/* Sorted by max packet size.
+	 * Head of the list is the greatest max packet size.
+	 */
+	struct list_head	endpoints;
+	/* How many endpoints of each speed are present. */
+	unsigned int		overhead[3];
+};
+
+#define	XHCI_MAX_INTERVAL	16
+
+struct xhci_interval_bw_table {
+	unsigned int		interval0_esit_payload;
+	struct xhci_interval_bw	interval_bw[XHCI_MAX_INTERVAL];
+	/* Includes reserved bandwidth for async endpoints */
+	unsigned int		bw_used;
+	unsigned int		ss_bw_in;
+	unsigned int		ss_bw_out;
+};
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct xhci_virt_device {
 	struct usb_device		*udev;
 	/*
@@ -794,15 +1053,58 @@ struct xhci_virt_device {
 	/* Rings saved to ensure old alt settings can be re-instated */
 	struct xhci_ring		**ring_cache;
 	int				num_rings_cached;
+<<<<<<< HEAD
 	/* Store xHC assigned device address */
 	int				address;
+=======
+>>>>>>> refs/remotes/origin/master
 #define	XHCI_MAX_RINGS_CACHED	31
 	struct xhci_virt_ep		eps[31];
 	struct completion		cmd_completion;
 	/* Status of the last command issued for this device */
 	u32				cmd_status;
 	struct list_head		cmd_list;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8				port;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u8				fake_port;
+	u8				real_port;
+	struct xhci_interval_bw_table	*bw_table;
+	struct xhci_tt_bw_info		*tt_info;
+<<<<<<< HEAD
+=======
+	/* The current max exit latency for the enabled USB3 link states. */
+	u16				current_mel;
+>>>>>>> refs/remotes/origin/master
+};
+
+/*
+ * For each roothub, keep track of the bandwidth information for each periodic
+ * interval.
+ *
+ * If a high speed hub is attached to the roothub, each TT associated with that
+ * hub is a separate bandwidth domain.  The interval information for the
+ * endpoints on the devices under that TT will appear in the TT structure.
+ */
+struct xhci_root_port_bw_info {
+	struct list_head		tts;
+	unsigned int			num_active_tts;
+	struct xhci_interval_bw_table	bw_table;
+};
+
+struct xhci_tt_bw_info {
+	struct list_head		tt_list;
+	int				slot_id;
+	int				ttport;
+	struct xhci_interval_bw_table	bw_table;
+	int				active_eps;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -931,6 +1233,17 @@ struct xhci_event_cmd {
 };
 
 /* flags bitmasks */
+<<<<<<< HEAD
+=======
+
+/* Address device - disable SetAddress */
+#define TRB_BSR		(1<<9)
+enum xhci_setup_dev {
+	SETUP_CONTEXT_ONLY,
+	SETUP_CONTEXT_ADDRESS,
+};
+
+>>>>>>> refs/remotes/origin/master
 /* bits 16:23 are the virtual function ID */
 /* bits 24:31 are the slot ID */
 #define TRB_TO_SLOT_ID(p)	(((p) & (0xff<<24)) >> 24)
@@ -1074,14 +1387,36 @@ union xhci_trb {
 #define TRB_MFINDEX_WRAP	39
 /* TRB IDs 40-47 reserved, 48-63 is vendor-defined */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define TRB_TYPE_LINK_LE32(x)   (((x) & cpu_to_le32(TRB_TYPE_BITMASK)) == \
 		cpu_to_le32(TRB_TYPE(TRB_LINK)))
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Nec vendor-specific command completion event. */
 #define	TRB_NEC_CMD_COMP	48
 /* Get NEC firmware revision. */
 #define	TRB_NEC_GET_FW		49
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define TRB_TYPE_LINK(x)	(((x) & TRB_TYPE_BITMASK) == TRB_TYPE(TRB_LINK))
+/* Above, but for __le32 types -- can avoid work by swapping constants: */
+#define TRB_TYPE_LINK_LE32(x)	(((x) & cpu_to_le32(TRB_TYPE_BITMASK)) == \
+				 cpu_to_le32(TRB_TYPE(TRB_LINK)))
+#define TRB_TYPE_NOOP_LE32(x)	(((x) & cpu_to_le32(TRB_TYPE_BITMASK)) == \
+				 cpu_to_le32(TRB_TYPE(TRB_TR_NOOP)))
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define NEC_FW_MINOR(p)		(((p) >> 0) & 0xff)
 #define NEC_FW_MAJOR(p)		(((p) >> 8) & 0xff)
 
@@ -1090,14 +1425,26 @@ union xhci_trb {
  * since the command ring is 64-byte aligned.
  * It must also be greater than 16.
  */
+<<<<<<< HEAD
 #define TRBS_PER_SEGMENT	64
 /* Allow two commands + a link TRB, along with any reserved command TRBs */
 #define MAX_RSVD_CMD_TRBS	(TRBS_PER_SEGMENT - 3)
 #define SEGMENT_SIZE		(TRBS_PER_SEGMENT*16)
+<<<<<<< HEAD
 /* SEGMENT_SHIFT should be log2(SEGMENT_SIZE).
  * Change this if you change TRBS_PER_SEGMENT!
  */
 #define SEGMENT_SHIFT		10
+=======
+#define SEGMENT_SHIFT		(__ffs(SEGMENT_SIZE))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TRBS_PER_SEGMENT	256
+/* Allow two commands + a link TRB, along with any reserved command TRBs */
+#define MAX_RSVD_CMD_TRBS	(TRBS_PER_SEGMENT - 3)
+#define TRB_SEGMENT_SIZE	(TRBS_PER_SEGMENT*16)
+#define TRB_SEGMENT_SHIFT	(ilog2(TRB_SEGMENT_SIZE))
+>>>>>>> refs/remotes/origin/master
 /* TRB buffer pointers can't cross 64KB boundaries */
 #define TRB_MAX_BUFF_SHIFT		16
 #define TRB_MAX_BUFF_SIZE	(1 << TRB_MAX_BUFF_SHIFT)
@@ -1119,7 +1466,19 @@ struct xhci_td {
 };
 
 /* xHCI command default timeout value */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define XHCI_CMD_DEFAULT_TIMEOUT       (5 * HZ)
+=======
+#define XHCI_CMD_DEFAULT_TIMEOUT	(5 * HZ)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define XHCI_CMD_DEFAULT_TIMEOUT	(5 * HZ)
+>>>>>>> refs/remotes/origin/master
+=======
+#define XHCI_CMD_DEFAULT_TIMEOUT	(5 * HZ)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* command descriptor */
 struct xhci_cd {
@@ -1134,8 +1493,30 @@ struct xhci_dequeue_state {
 	int new_cycle_state;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct xhci_ring {
 	struct xhci_segment	*first_seg;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum xhci_ring_type {
+	TYPE_CTRL = 0,
+	TYPE_ISOC,
+	TYPE_BULK,
+	TYPE_INTR,
+	TYPE_STREAM,
+	TYPE_COMMAND,
+	TYPE_EVENT,
+};
+
+struct xhci_ring {
+	struct xhci_segment	*first_seg;
+	struct xhci_segment	*last_seg;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union  xhci_trb		*enqueue;
 	struct xhci_segment	*enq_seg;
 	unsigned int		enq_updates;
@@ -1150,6 +1531,19 @@ struct xhci_ring {
 	 */
 	u32			cycle_state;
 	unsigned int		stream_id;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned int		num_segs;
+	unsigned int		num_trbs_free;
+	unsigned int		num_trbs_free_temp;
+	enum xhci_ring_type	type;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bool			last_td_was_short;
 };
 
@@ -1211,6 +1605,21 @@ struct s3_save {
 	u64	erst_dequeue;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* Use for lpm */
+struct dev_info {
+	u32			dev_id;
+	struct	list_head	list;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct xhci_bus_state {
 	unsigned long		bus_suspended;
 	unsigned long		next_statechange;
@@ -1219,9 +1628,32 @@ struct xhci_bus_state {
 	/* ports suspend status arrays - max 31 ports for USB2, 15 for USB3 */
 	u32			port_c_suspend;
 	u32			suspended_ports;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u32			port_remote_wakeup;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long		resume_done[USB_MAXCHILDREN];
 };
 
+=======
+	u32			port_remote_wakeup;
+	unsigned long		resume_done[USB_MAXCHILDREN];
+	/* which ports have started to resume */
+	unsigned long		resuming_ports;
+	/* Which ports are waiting on RExit to U0 transition. */
+	unsigned long		rexit_ports;
+	struct completion	rexit_done[USB_MAXCHILDREN];
+};
+
+
+/*
+ * It can take up to 20 ms to transition from RExit to U0 on the
+ * Intel Lynx Point LP xHCI host.
+ */
+#define	XHCI_MAX_REXIT_TIMEOUT	(20 * 1000)
+
+>>>>>>> refs/remotes/origin/master
 static inline unsigned int hcd_index(struct usb_hcd *hcd)
 {
 	if (hcd->speed == HCD_USB3)
@@ -1230,7 +1662,15 @@ static inline unsigned int hcd_index(struct usb_hcd *hcd)
 		return 1;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* There is one ehci_hci structure per controller */
+=======
+/* There is one xhci_hcd structure per controller */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* There is one xhci_hcd structure per controller */
+>>>>>>> refs/remotes/origin/master
 struct xhci_hcd {
 	struct usb_hcd *main_hcd;
 	struct usb_hcd *shared_hcd;
@@ -1279,12 +1719,36 @@ struct xhci_hcd {
 	struct xhci_erst	erst;
 	/* Scratchpad */
 	struct xhci_scratchpad  *scratchpad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* Store LPM test failed devices' information */
+	struct list_head	lpm_failed_devs;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Store LPM test failed devices' information */
+	struct list_head	lpm_failed_devs;
+>>>>>>> refs/remotes/origin/master
 
 	/* slot enabling and address device helpers */
 	struct completion	addr_dev;
 	int slot_id;
+<<<<<<< HEAD
 	/* Internal mirror of the HW's dcbaa */
 	struct xhci_virt_device	*devs[MAX_HC_SLOTS];
+<<<<<<< HEAD
+=======
+	/* For keeping track of bandwidth domains per roothub. */
+	struct xhci_root_port_bw_info	*rh_bw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* For USB 3.0 LPM enable/disable. */
+	struct xhci_command		*lpm_command;
+	/* Internal mirror of the HW's dcbaa */
+	struct xhci_virt_device	*devs[MAX_HC_SLOTS];
+	/* For keeping track of bandwidth domains per roothub. */
+	struct xhci_root_port_bw_info	*rh_bw;
+>>>>>>> refs/remotes/origin/master
 
 	/* DMA pools */
 	struct dma_pool	*device_pool;
@@ -1292,11 +1756,14 @@ struct xhci_hcd {
 	struct dma_pool	*small_streams_pool;
 	struct dma_pool	*medium_streams_pool;
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_XHCI_HCD_DEBUGGING
 	/* Poll the rings - for debugging */
 	struct timer_list	event_ring_timer;
 	int			zombie;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Host controller watchdog timer structures */
 	unsigned int		xhc_state;
 
@@ -1336,10 +1803,39 @@ struct xhci_hcd {
 #define XHCI_EP_LIMIT_QUIRK	(1 << 5)
 #define XHCI_BROKEN_MSI		(1 << 6)
 #define XHCI_RESET_ON_RESUME	(1 << 7)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define XHCI_AMD_0x96_HOST	(1 << 9)
 #define XHCI_TRUST_TX_LENGTH	(1 << 10)
 #define XHCI_SPURIOUS_REBOOT	(1 << 13)
 #define XHCI_AVOID_BEI		(1 << 15)
+=======
+#define	XHCI_SW_BW_CHECKING	(1 << 8)
+#define XHCI_AMD_0x96_HOST	(1 << 9)
+#define XHCI_TRUST_TX_LENGTH	(1 << 10)
+=======
+#define	XHCI_SW_BW_CHECKING	(1 << 8)
+#define XHCI_AMD_0x96_HOST	(1 << 9)
+#define XHCI_TRUST_TX_LENGTH	(1 << 10)
+<<<<<<< HEAD
+#define XHCI_LPM_SUPPORT	(1 << 11)
+#define XHCI_INTEL_HOST		(1 << 12)
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define XHCI_SPURIOUS_REBOOT	(1 << 13)
+#define XHCI_COMP_MODE_QUIRK	(1 << 14)
+#define XHCI_AVOID_BEI		(1 << 15)
+#define XHCI_PLAT		(1 << 16)
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define XHCI_SLOW_SUSPEND	(1 << 17)
+#define XHCI_SPURIOUS_WAKEUP	(1 << 18)
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned int		num_active_eps;
 	unsigned int		limit_active_eps;
 	/* There are two roothubs to keep track of bus suspend info for */
@@ -1352,6 +1848,36 @@ struct xhci_hcd {
 	/* Array of pointers to USB 2.0 PORTSC registers */
 	__le32 __iomem		**usb2_ports;
 	unsigned int		num_usb2_ports;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* support xHCI 0.96 spec USB2 software LPM */
+	unsigned		sw_lpm_support:1;
+	/* support xHCI 1.0 spec USB2 hardware LPM */
+	unsigned		hw_lpm_support:1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* cached usb2 extened protocol capabilites */
+	u32                     *ext_caps;
+	unsigned int            num_ext_caps;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* Compliance Mode Recovery Data */
+	struct timer_list	comp_mode_recovery_timer;
+	u32			port_status_u0;
+/* Compliance Mode Timer Triggered every 2 seconds */
+#define COMP_MODE_RCVRY_MSECS 2000
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 /* convert between an HCD pointer and the corresponding EHCI_HCD */
@@ -1365,6 +1891,7 @@ static inline struct usb_hcd *xhci_to_hcd(struct xhci_hcd *xhci)
 	return xhci->main_hcd;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_XHCI_HCD_DEBUGGING
 #define XHCI_DEBUG	1
 #else
@@ -1375,10 +1902,15 @@ static inline struct usb_hcd *xhci_to_hcd(struct xhci_hcd *xhci)
 	do { if (XHCI_DEBUG) dev_dbg(xhci_to_hcd(xhci)->self.controller , fmt , ## args); } while (0)
 #define xhci_info(xhci, fmt, args...) \
 	do { if (XHCI_DEBUG) dev_info(xhci_to_hcd(xhci)->self.controller , fmt , ## args); } while (0)
+=======
+#define xhci_dbg(xhci, fmt, args...) \
+	dev_dbg(xhci_to_hcd(xhci)->self.controller , fmt , ## args)
+>>>>>>> refs/remotes/origin/master
 #define xhci_err(xhci, fmt, args...) \
 	dev_err(xhci_to_hcd(xhci)->self.controller , fmt , ## args)
 #define xhci_warn(xhci, fmt, args...) \
 	dev_warn(xhci_to_hcd(xhci)->self.controller , fmt , ## args)
+<<<<<<< HEAD
 
 /* TODO: copied from ehci.h - can be refactored? */
 /* xHCI spec says all registers are little endian */
@@ -1423,9 +1955,21 @@ static inline void xhci_write_64(struct xhci_hcd *xhci,
 
 static inline int xhci_link_trb_quirk(struct xhci_hcd *xhci)
 {
+<<<<<<< HEAD
 	u32 temp = xhci_readl(xhci, &xhci->cap_regs->hc_capbase);
 	return ((HC_VERSION(temp) == 0x95) &&
 			(xhci->quirks & XHCI_LINK_TRB_QUIRK));
+=======
+	return xhci->quirks & XHCI_LINK_TRB_QUIRK;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define xhci_warn_ratelimited(xhci, fmt, args...) \
+	dev_warn_ratelimited(xhci_to_hcd(xhci)->self.controller , fmt , ## args)
+
+static inline int xhci_link_trb_quirk(struct xhci_hcd *xhci)
+{
+	return xhci->quirks & XHCI_LINK_TRB_QUIRK;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* xHCI debugging */
@@ -1446,6 +1990,11 @@ char *xhci_get_slot_state(struct xhci_hcd *xhci,
 void xhci_dbg_ep_rings(struct xhci_hcd *xhci,
 		unsigned int slot_id, unsigned int ep_index,
 		struct xhci_virt_ep *ep);
+<<<<<<< HEAD
+=======
+void xhci_dbg_trace(struct xhci_hcd *xhci, void (*trace)(struct va_format *),
+			const char *fmt, ...);
+>>>>>>> refs/remotes/origin/master
 
 /* xHCI memory management */
 void xhci_mem_cleanup(struct xhci_hcd *xhci);
@@ -1456,10 +2005,37 @@ int xhci_setup_addressable_virt_dev(struct xhci_hcd *xhci, struct usb_device *ud
 void xhci_copy_ep0_dequeue_into_input_ctx(struct xhci_hcd *xhci,
 		struct usb_device *udev);
 unsigned int xhci_get_endpoint_index(struct usb_endpoint_descriptor *desc);
+<<<<<<< HEAD
+=======
+unsigned int xhci_get_endpoint_address(unsigned int ep_index);
+>>>>>>> refs/remotes/origin/master
 unsigned int xhci_get_endpoint_flag(struct usb_endpoint_descriptor *desc);
 unsigned int xhci_get_endpoint_flag_from_index(unsigned int ep_index);
 unsigned int xhci_last_valid_endpoint(u32 added_ctxs);
 void xhci_endpoint_zero(struct xhci_hcd *xhci, struct xhci_virt_device *virt_dev, struct usb_host_endpoint *ep);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void xhci_drop_ep_from_interval_table(struct xhci_hcd *xhci,
+		struct xhci_bw_info *ep_bw,
+		struct xhci_interval_bw_table *bw_table,
+		struct usb_device *udev,
+		struct xhci_virt_ep *virt_ep,
+		struct xhci_tt_bw_info *tt_info);
+void xhci_update_tt_active_eps(struct xhci_hcd *xhci,
+		struct xhci_virt_device *virt_dev,
+		int old_active_eps);
+void xhci_clear_endpoint_bw_info(struct xhci_bw_info *bw_info);
+void xhci_update_bw_info(struct xhci_hcd *xhci,
+		struct xhci_container_ctx *in_ctx,
+		struct xhci_input_control_ctx *ctrl_ctx,
+		struct xhci_virt_device *virt_dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void xhci_endpoint_copy(struct xhci_hcd *xhci,
 		struct xhci_container_ctx *in_ctx,
 		struct xhci_container_ctx *out_ctx,
@@ -1471,6 +2047,16 @@ int xhci_endpoint_init(struct xhci_hcd *xhci, struct xhci_virt_device *virt_dev,
 		struct usb_device *udev, struct usb_host_endpoint *ep,
 		gfp_t mem_flags);
 void xhci_ring_free(struct xhci_hcd *xhci, struct xhci_ring *ring);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int xhci_ring_expansion(struct xhci_hcd *xhci, struct xhci_ring *ring,
+				unsigned int num_trbs, gfp_t flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int xhci_ring_expansion(struct xhci_hcd *xhci, struct xhci_ring *ring,
+				unsigned int num_trbs, gfp_t flags);
+>>>>>>> refs/remotes/origin/master
 void xhci_free_or_cache_endpoint_ring(struct xhci_hcd *xhci,
 		struct xhci_virt_device *virt_dev,
 		unsigned int ep_index);
@@ -1505,10 +2091,56 @@ void xhci_free_command(struct xhci_hcd *xhci,
 /* xHCI PCI glue */
 int xhci_register_pci(void);
 void xhci_unregister_pci(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
 /* xHCI host controller glue */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#else
+static inline int xhci_register_pci(void) { return 0; }
+static inline void xhci_unregister_pci(void) {}
+#endif
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+struct xhci_plat_data {
+	unsigned vendor;
+	unsigned revision;
+};
+
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#if defined(CONFIG_USB_XHCI_PLATFORM) \
+	|| defined(CONFIG_USB_XHCI_PLATFORM_MODULE)
+int xhci_register_plat(void);
+void xhci_unregister_plat(void);
+#else
+static inline int xhci_register_plat(void)
+{ return 0; }
+static inline void xhci_unregister_plat(void)
+{  }
+#endif
+
+/* xHCI host controller glue */
+typedef void (*xhci_get_quirks_t)(struct device *, struct xhci_hcd *);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 int handshake(struct xhci_hcd *xhci, void __iomem *ptr,
+=======
+int xhci_handshake(struct xhci_hcd *xhci, void __iomem *ptr,
+>>>>>>> refs/remotes/origin/master
+=======
+int handshake(struct xhci_hcd *xhci, void __iomem *ptr,
+>>>>>>> refs/remotes/origin/cm-11.0
 		u32 mask, u32 done, int usec);
 void xhci_quiesce(struct xhci_hcd *xhci);
 int xhci_halt(struct xhci_hcd *xhci);
@@ -1517,6 +2149,14 @@ int xhci_init(struct usb_hcd *hcd);
 int xhci_run(struct usb_hcd *hcd);
 void xhci_stop(struct usb_hcd *hcd);
 void xhci_shutdown(struct usb_hcd *hcd);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef	CONFIG_PM
 int xhci_suspend(struct xhci_hcd *xhci);
@@ -1528,9 +2168,25 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated);
 
 int xhci_get_frame(struct usb_hcd *hcd);
 irqreturn_t xhci_irq(struct usb_hcd *hcd);
+<<<<<<< HEAD
 irqreturn_t xhci_msi_irq(int irq, struct usb_hcd *hcd);
 int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev);
 void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev);
+<<<<<<< HEAD
+=======
+=======
+irqreturn_t xhci_msi_irq(int irq, void *hcd);
+int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev);
+void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev);
+>>>>>>> refs/remotes/origin/master
+int xhci_alloc_tt_info(struct xhci_hcd *xhci,
+		struct xhci_virt_device *virt_dev,
+		struct usb_device *hdev,
+		struct usb_tt *tt, gfp_t mem_flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int xhci_alloc_streams(struct usb_hcd *hcd, struct usb_device *udev,
 		struct usb_host_endpoint **eps, unsigned int num_eps,
 		unsigned int num_streams, gfp_t mem_flags);
@@ -1538,6 +2194,19 @@ int xhci_free_streams(struct usb_hcd *hcd, struct usb_device *udev,
 		struct usb_host_endpoint **eps, unsigned int num_eps,
 		gfp_t mem_flags);
 int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int xhci_update_device(struct usb_hcd *hcd, struct usb_device *udev);
+int xhci_set_usb2_hardware_lpm(struct usb_hcd *hcd,
+				struct usb_device *udev, int enable);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int xhci_enable_device(struct usb_hcd *hcd, struct usb_device *udev);
+int xhci_update_device(struct usb_hcd *hcd, struct usb_device *udev);
+int xhci_set_usb2_hardware_lpm(struct usb_hcd *hcd,
+				struct usb_device *udev, int enable);
+>>>>>>> refs/remotes/origin/master
 int xhci_update_hub_device(struct usb_hcd *hcd, struct usb_device *hdev,
 			struct usb_tt *tt, gfp_t mem_flags);
 int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flags);
@@ -1558,7 +2227,11 @@ int xhci_is_vendor_info_code(struct xhci_hcd *xhci, unsigned int trb_comp_code);
 void xhci_ring_cmd_db(struct xhci_hcd *xhci);
 int xhci_queue_slot_control(struct xhci_hcd *xhci, u32 trb_type, u32 slot_id);
 int xhci_queue_address_device(struct xhci_hcd *xhci, dma_addr_t in_ctx_ptr,
+<<<<<<< HEAD
 		u32 slot_id);
+=======
+		u32 slot_id, enum xhci_setup_dev);
+>>>>>>> refs/remotes/origin/master
 int xhci_queue_vendor_command(struct xhci_hcd *xhci,
 		u32 field1, u32 field2, u32 field3, u32 field4);
 int xhci_queue_stop_endpoint(struct xhci_hcd *xhci, int slot_id,
@@ -1574,7 +2247,11 @@ int xhci_queue_isoc_tx_prepare(struct xhci_hcd *xhci, gfp_t mem_flags,
 int xhci_queue_configure_endpoint(struct xhci_hcd *xhci, dma_addr_t in_ctx_ptr,
 		u32 slot_id, bool command_must_succeed);
 int xhci_queue_evaluate_context(struct xhci_hcd *xhci, dma_addr_t in_ctx_ptr,
+<<<<<<< HEAD
 		u32 slot_id);
+=======
+		u32 slot_id, bool command_must_succeed);
+>>>>>>> refs/remotes/origin/master
 int xhci_queue_reset_ep(struct xhci_hcd *xhci, int slot_id,
 		unsigned int ep_index);
 int xhci_queue_reset_device(struct xhci_hcd *xhci, u32 slot_id);
@@ -1596,13 +2273,38 @@ int xhci_cancel_cmd(struct xhci_hcd *xhci, struct xhci_command *command,
 		union xhci_trb *cmd_trb);
 void xhci_ring_ep_doorbell(struct xhci_hcd *xhci, unsigned int slot_id,
 		unsigned int ep_index, unsigned int stream_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /* xHCI roothub code */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+union xhci_trb *xhci_find_next_enqueue(struct xhci_ring *ring);
+
+/* xHCI roothub code */
+void xhci_set_link_state(struct xhci_hcd *xhci, __le32 __iomem **port_array,
+				int port_id, u32 link_state);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int xhci_enable_usb3_lpm_timeout(struct usb_hcd *hcd,
+			struct usb_device *udev, enum usb3_link_state state);
+int xhci_disable_usb3_lpm_timeout(struct usb_hcd *hcd,
+			struct usb_device *udev, enum usb3_link_state state);
+>>>>>>> refs/remotes/origin/master
 void xhci_test_and_clear_bit(struct xhci_hcd *xhci, __le32 __iomem **port_array,
 				int port_id, u32 port_bit);
 int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue, u16 wIndex,
 		char *buf, u16 wLength);
 int xhci_hub_status_data(struct usb_hcd *hcd, char *buf);
+<<<<<<< HEAD
+=======
+int xhci_find_raw_port_number(struct usb_hcd *hcd, int port1);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PM
 int xhci_bus_suspend(struct usb_hcd *hcd);
@@ -1622,4 +2324,10 @@ struct xhci_input_control_ctx *xhci_get_input_control_ctx(struct xhci_hcd *xhci,
 struct xhci_slot_ctx *xhci_get_slot_ctx(struct xhci_hcd *xhci, struct xhci_container_ctx *ctx);
 struct xhci_ep_ctx *xhci_get_ep_ctx(struct xhci_hcd *xhci, struct xhci_container_ctx *ctx, unsigned int ep_index);
 
+<<<<<<< HEAD
+=======
+/* xHCI quirks */
+bool xhci_compliance_mode_recovery_timer_quirk_check(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_XHCI_HCD_H */

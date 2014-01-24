@@ -279,13 +279,20 @@ struct qib_base_info {
  * may not be implemented; the user code must deal with this if it
  * cares, or it must abort after initialization reports the difference.
  */
+<<<<<<< HEAD
 #define QIB_USER_SWMINOR 11
+=======
+#define QIB_USER_SWMINOR 13
+>>>>>>> refs/remotes/origin/master
 
 #define QIB_USER_SWVERSION ((QIB_USER_SWMAJOR << 16) | QIB_USER_SWMINOR)
 
 #ifndef QIB_KERN_TYPE
 #define QIB_KERN_TYPE 0
+<<<<<<< HEAD
 #define QIB_IDSTR "QLogic kernel.org driver"
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -302,6 +309,22 @@ struct qib_base_info {
 #define QIB_KERN_SWVERSION ((QIB_KERN_TYPE << 31) | QIB_USER_SWVERSION)
 
 /*
+<<<<<<< HEAD
+=======
+ * Define the driver version number.  This is something that refers only
+ * to the driver itself, not the software interfaces it supports.
+ */
+#define QIB_DRIVER_VERSION_BASE "1.11"
+
+/* create the final driver version string */
+#ifdef QIB_IDSTR
+#define QIB_DRIVER_VERSION QIB_DRIVER_VERSION_BASE " " QIB_IDSTR
+#else
+#define QIB_DRIVER_VERSION QIB_DRIVER_VERSION_BASE
+#endif
+
+/*
+>>>>>>> refs/remotes/origin/master
  * If the unit is specified via open, HCA choice is fixed.  If port is
  * specified, it's also fixed.  Otherwise we try to spread contexts
  * across ports and HCAs, using different algorithims.  WITHIN is
@@ -689,7 +712,41 @@ struct qib_message_header {
 	__be32 bth[3];
 	/* fields below this point are in host byte order */
 	struct qib_header iph;
+<<<<<<< HEAD
 	__u8 sub_opcode;
+=======
+	/* fields below are simplified, but should match PSM */
+	/* some are accessed by driver when packet spliting is needed */
+	__u8 sub_opcode;
+	__u8 flags;
+	__u16 commidx;
+	__u32 ack_seq_num;
+	__u8 flowid;
+	__u8 hdr_dlen;
+	__u16 mqhdr;
+	__u32 uwords[4];
+};
+
+/* sequence number bits for message */
+union qib_seqnum {
+	struct {
+		__u32 seq:11;
+		__u32 gen:8;
+		__u32 flow:5;
+	};
+	struct {
+		__u32 pkt:16;
+		__u32 msg:8;
+	};
+	__u32 val;
+};
+
+/* qib receiving-dma tid-session-member */
+struct qib_tid_session_member {
+	__u16 tid;
+	__u16 offset;
+	__u16 length;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* IB - LRH header consts */

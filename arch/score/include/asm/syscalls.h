@@ -1,9 +1,12 @@
 #ifndef _ASM_SCORE_SYSCALLS_H
 #define _ASM_SCORE_SYSCALLS_H
 
+<<<<<<< HEAD
 asmlinkage long score_clone(struct pt_regs *regs);
 asmlinkage long score_execve(struct pt_regs *regs);
 asmlinkage long score_sigaltstack(struct pt_regs *regs);
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage long score_rt_sigreturn(struct pt_regs *regs);
 
 #include <asm-generic/syscalls.h>

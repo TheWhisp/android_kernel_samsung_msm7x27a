@@ -174,7 +174,11 @@ static int snd_at73c213_set_bitrate(struct snd_at73c213 *chip)
 		dac_rate_new = 8 * (ssc_rate / ssc_div);
 
 		status = clk_round_rate(chip->board->dac_clk, dac_rate_new);
+<<<<<<< HEAD
 		if (status < 0)
+=======
+		if (status <= 0)
+>>>>>>> refs/remotes/origin/master
 			return status;
 
 		/* Ignore difference smaller than 256 Hz. */
@@ -330,7 +334,11 @@ static struct snd_pcm_ops at73c213_playback_ops = {
 	.pointer	= snd_at73c213_pcm_pointer,
 };
 
+<<<<<<< HEAD
 static int __devinit snd_at73c213_pcm_new(struct snd_at73c213 *chip, int device)
+=======
+static int snd_at73c213_pcm_new(struct snd_at73c213 *chip, int device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int retval;
@@ -665,7 +673,11 @@ static int snd_at73c213_aux_capture_volume_info(
 			| (mask << 24) | (invert << 22))		\
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_at73c213_controls[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_at73c213_controls[] = {
+>>>>>>> refs/remotes/origin/master
 AT73C213_STEREO("Master Playback Volume", 0, DAC_LMPG, DAC_RMPG, 0, 0, 0x1f, 1),
 AT73C213_STEREO("Master Playback Switch", 0, DAC_LMPG, DAC_RMPG, 5, 5, 1, 1),
 AT73C213_STEREO("PCM Playback Volume", 0, DAC_LLOG, DAC_RLOG, 0, 0, 0x1f, 1),
@@ -709,7 +721,11 @@ AT73C213_MONO_SWITCH("Aux Capture Switch", 0, DAC_CTRL, DAC_CTRL_ONAUXIN,
 AT73C213_MONO_SWITCH("Line Capture Switch", 0, DAC_CTRL, 0, 0x03, 0),
 };
 
+<<<<<<< HEAD
 static int __devinit snd_at73c213_mixer(struct snd_at73c213 *chip)
+=======
+static int snd_at73c213_mixer(struct snd_at73c213 *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	int errval, idx;
@@ -744,7 +760,11 @@ cleanup:
 /*
  * Device functions
  */
+<<<<<<< HEAD
 static int __devinit snd_at73c213_ssc_init(struct snd_at73c213 *chip)
+=======
+static int snd_at73c213_ssc_init(struct snd_at73c213 *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Continuous clock output.
@@ -774,7 +794,11 @@ static int __devinit snd_at73c213_ssc_init(struct snd_at73c213 *chip)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_at73c213_chip_init(struct snd_at73c213 *chip)
+=======
+static int snd_at73c213_chip_init(struct snd_at73c213 *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 	unsigned char dac_ctrl = 0;
@@ -879,8 +903,13 @@ static int snd_at73c213_dev_free(struct snd_device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_at73c213_dev_init(struct snd_card *card,
 					 struct spi_device *spi)
+=======
+static int snd_at73c213_dev_init(struct snd_card *card,
+				 struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	static struct snd_device_ops ops = {
 		.dev_free	= snd_at73c213_dev_free,
@@ -940,7 +969,11 @@ out:
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_at73c213_probe(struct spi_device *spi)
+=======
+static int snd_at73c213_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card			*card;
 	struct snd_at73c213		*chip;
@@ -1007,7 +1040,11 @@ out:
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_at73c213_remove(struct spi_device *spi)
+=======
+static int snd_at73c213_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = dev_get_drvdata(&spi->dev);
 	struct snd_at73c213 *chip = card->private_data;
@@ -1070,15 +1107,26 @@ out:
 
 	ssc_free(chip->ssc);
 	snd_card_free(card);
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int snd_at73c213_suspend(struct spi_device *spi, pm_message_t msg)
 {
 	struct snd_card *card = dev_get_drvdata(&spi->dev);
+=======
+#ifdef CONFIG_PM_SLEEP
+
+static int snd_at73c213_suspend(struct device *dev)
+{
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct snd_at73c213 *chip = card->private_data;
 
 	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXDIS));
@@ -1087,9 +1135,15 @@ static int snd_at73c213_suspend(struct spi_device *spi, pm_message_t msg)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int snd_at73c213_resume(struct spi_device *spi)
 {
 	struct snd_card *card = dev_get_drvdata(&spi->dev);
+=======
+static int snd_at73c213_resume(struct device *dev)
+{
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct snd_at73c213 *chip = card->private_data;
 
 	clk_enable(chip->board->dac_clk);
@@ -1097,14 +1151,25 @@ static int snd_at73c213_resume(struct spi_device *spi)
 
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define snd_at73c213_suspend NULL
 #define snd_at73c213_resume NULL
+=======
+
+static SIMPLE_DEV_PM_OPS(at73c213_pm_ops, snd_at73c213_suspend,
+		snd_at73c213_resume);
+#define AT73C213_PM_OPS (&at73c213_pm_ops)
+
+#else
+#define AT73C213_PM_OPS NULL
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static struct spi_driver at73c213_driver = {
 	.driver		= {
 		.name	= "at73c213",
+<<<<<<< HEAD
 	},
 	.probe		= snd_at73c213_probe,
 	.suspend	= snd_at73c213_suspend,
@@ -1112,6 +1177,7 @@ static struct spi_driver at73c213_driver = {
 	.remove		= __devexit_p(snd_at73c213_remove),
 };
 
+<<<<<<< HEAD
 static int __init at73c213_init(void)
 {
 	return spi_register_driver(&at73c213_driver);
@@ -1123,6 +1189,18 @@ static void __exit at73c213_exit(void)
 	spi_unregister_driver(&at73c213_driver);
 }
 module_exit(at73c213_exit);
+=======
+module_spi_driver(at73c213_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= AT73C213_PM_OPS,
+	},
+	.probe		= snd_at73c213_probe,
+	.remove		= snd_at73c213_remove,
+};
+
+module_spi_driver(at73c213_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Hans-Christian Egtvedt <egtvedt@samfundet.no>");
 MODULE_DESCRIPTION("Sound driver for AT73C213 with Atmel SSC");

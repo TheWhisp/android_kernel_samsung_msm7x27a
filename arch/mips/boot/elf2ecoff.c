@@ -29,7 +29,11 @@
 /* elf2ecoff.c
 
    This program converts an elf executable to an ECOFF executable.
+<<<<<<< HEAD
    No symbol table is retained.   This is useful primarily in building
+=======
+   No symbol table is retained.	  This is useful primarily in building
+>>>>>>> refs/remotes/origin/master
    net-bootable kernels for machines (e.g., DECstation and Alpha) which
    only support the ECOFF object file format. */
 
@@ -341,7 +345,11 @@ int main(int argc, char *argv[])
 
 	/* Figure out if we can cram the program header into an ECOFF
 	   header...  Basically, we can't handle anything but loadable
+<<<<<<< HEAD
 	   segments, but we can ignore some kinds of segments.  We can't
+=======
+	   segments, but we can ignore some kinds of segments.	We can't
+>>>>>>> refs/remotes/origin/master
 	   handle holes in the address space.  Segments may be out of order,
 	   so we sort them first. */
 
@@ -514,7 +522,11 @@ int main(int argc, char *argv[])
 
 		for (i = 0; i < nosecs; i++) {
 			printf
+<<<<<<< HEAD
 			    ("Section %d: %s phys %lx  size %lx  file offset %lx\n",
+=======
+			    ("Section %d: %s phys %lx  size %lx	 file offset %lx\n",
+>>>>>>> refs/remotes/origin/master
 			     i, esecs[i].s_name, esecs[i].s_paddr,
 			     esecs[i].s_size, esecs[i].s_scnptr);
 		}
@@ -551,7 +563,11 @@ int main(int argc, char *argv[])
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Copy the loadable sections.   Zero-fill any gaps less than 64k;
+=======
+	 * Copy the loadable sections.	 Zero-fill any gaps less than 64k;
+>>>>>>> refs/remotes/origin/master
 	 * complain about any zero-filling, and die if we're asked to zero-fill
 	 * more than 64k.
 	 */

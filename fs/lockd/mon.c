@@ -7,18 +7,30 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <linux/utsname.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/ktime.h>
 #include <linux/slab.h>
 
 #include <linux/sunrpc/clnt.h>
+<<<<<<< HEAD
+=======
+#include <linux/sunrpc/addr.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sunrpc/xprtsock.h>
 #include <linux/sunrpc/svc.h>
 #include <linux/lockd/lockd.h>
 
 #include <asm/unaligned.h>
 
+<<<<<<< HEAD
+=======
+#include "netns.h"
+
+>>>>>>> refs/remotes/origin/master
 #define NLMDBG_FACILITY		NLMDBG_MONITOR
 #define NSM_PROGRAM		100024
 #define NSM_VERSION		1
@@ -40,6 +52,18 @@ struct nsm_args {
 	u32			proc;
 
 	char			*mon_name;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	char			*nodename;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char			*nodename;
+>>>>>>> refs/remotes/origin/master
+=======
+	char			*nodename;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct nsm_res {
@@ -47,7 +71,15 @@ struct nsm_res {
 	u32			state;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_program	nsm_program;
+=======
+static const struct rpc_program	nsm_program;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct rpc_program	nsm_program;
+>>>>>>> refs/remotes/origin/master
 static				LIST_HEAD(nsm_handles);
 static				DEFINE_SPINLOCK(nsm_lock);
 
@@ -55,22 +87,47 @@ static				DEFINE_SPINLOCK(nsm_lock);
  * Local NSM state
  */
 u32	__read_mostly		nsm_local_state;
+<<<<<<< HEAD
+<<<<<<< HEAD
 int	__read_mostly		nsm_use_hostnames;
+=======
+bool	__read_mostly		nsm_use_hostnames;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool	__read_mostly		nsm_use_hostnames;
+>>>>>>> refs/remotes/origin/master
 
 static inline struct sockaddr *nsm_addr(const struct nsm_handle *nsm)
 {
 	return (struct sockaddr *)&nsm->sm_addr;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_clnt *nsm_create(void)
+=======
+static struct rpc_clnt *nsm_create(struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct rpc_clnt *nsm_create(struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sockaddr_in sin = {
 		.sin_family		= AF_INET,
 		.sin_addr.s_addr	= htonl(INADDR_LOOPBACK),
 	};
 	struct rpc_create_args args = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.net			= &init_net,
+=======
+		.net			= net,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.protocol		= XPRT_TRANSPORT_UDP,
+=======
+		.net			= net,
+		.protocol		= XPRT_TRANSPORT_TCP,
+>>>>>>> refs/remotes/origin/master
 		.address		= (struct sockaddr *)&sin,
 		.addrsize		= sizeof(sin),
 		.servername		= "rpc.statd",
@@ -83,9 +140,72 @@ static struct rpc_clnt *nsm_create(void)
 	return rpc_create(&args);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nsm_mon_unmon(struct nsm_handle *nsm, u32 proc, struct nsm_res *res)
+=======
+static int nsm_mon_unmon(struct nsm_handle *nsm, u32 proc, struct nsm_res *res,
+			 struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct rpc_clnt	*clnt;
+=======
+static struct rpc_clnt *nsm_client_set(struct lockd_net *ln,
+		struct rpc_clnt *clnt)
+{
+	spin_lock(&ln->nsm_clnt_lock);
+	if (ln->nsm_users == 0) {
+		if (clnt == NULL)
+			goto out;
+		ln->nsm_clnt = clnt;
+	}
+	clnt = ln->nsm_clnt;
+	ln->nsm_users++;
+out:
+	spin_unlock(&ln->nsm_clnt_lock);
+	return clnt;
+}
+
+static struct rpc_clnt *nsm_client_get(struct net *net)
+{
+	struct rpc_clnt	*clnt, *new;
+	struct lockd_net *ln = net_generic(net, lockd_net_id);
+
+	clnt = nsm_client_set(ln, NULL);
+	if (clnt != NULL)
+		goto out;
+
+	clnt = new = nsm_create(net);
+	if (IS_ERR(clnt))
+		goto out;
+
+	clnt = nsm_client_set(ln, new);
+	if (clnt != new)
+		rpc_shutdown_client(new);
+out:
+	return clnt;
+}
+
+static void nsm_client_put(struct net *net)
+{
+	struct lockd_net *ln = net_generic(net, lockd_net_id);
+	struct rpc_clnt	*clnt = NULL;
+
+	spin_lock(&ln->nsm_clnt_lock);
+	ln->nsm_users--;
+	if (ln->nsm_users == 0) {
+		clnt = ln->nsm_clnt;
+		ln->nsm_clnt = NULL;
+	}
+	spin_unlock(&ln->nsm_clnt_lock);
+	if (clnt != NULL)
+		rpc_shutdown_client(clnt);
+}
+
+static int nsm_mon_unmon(struct nsm_handle *nsm, u32 proc, struct nsm_res *res,
+			 struct rpc_clnt *clnt)
+{
+>>>>>>> refs/remotes/origin/master
 	int		status;
 	struct nsm_args args = {
 		.priv		= &nsm->sm_priv,
@@ -93,13 +213,30 @@ static int nsm_mon_unmon(struct nsm_handle *nsm, u32 proc, struct nsm_res *res)
 		.vers		= 3,
 		.proc		= NLMPROC_NSM_NOTIFY,
 		.mon_name	= nsm->sm_mon_name,
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.nodename	= utsname()->nodename,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.nodename	= clnt->cl_nodename,
+>>>>>>> refs/remotes/origin/master
+=======
+		.nodename	= utsname()->nodename,
+>>>>>>> refs/remotes/origin/cm-11.0
 	};
 	struct rpc_message msg = {
 		.rpc_argp	= &args,
 		.rpc_resp	= res,
 	};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clnt = nsm_create();
+=======
+	clnt = nsm_create(net);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(clnt)) {
 		status = PTR_ERR(clnt);
 		dprintk("lockd: failed to create NSM upcall transport, "
@@ -111,13 +248,22 @@ static int nsm_mon_unmon(struct nsm_handle *nsm, u32 proc, struct nsm_res *res)
 
 	msg.rpc_proc = &clnt->cl_procinfo[proc];
 	status = rpc_call_sync(clnt, &msg, 0);
+=======
+	memset(res, 0, sizeof(*res));
+
+	msg.rpc_proc = &clnt->cl_procinfo[proc];
+	status = rpc_call_sync(clnt, &msg, RPC_TASK_SOFTCONN);
+>>>>>>> refs/remotes/origin/master
 	if (status < 0)
 		dprintk("lockd: NSM upcall RPC failed, status=%d\n",
 				status);
 	else
 		status = 0;
+<<<<<<< HEAD
 	rpc_shutdown_client(clnt);
  out:
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -137,6 +283,10 @@ int nsm_monitor(const struct nlm_host *host)
 	struct nsm_handle *nsm = host->h_nsmhandle;
 	struct nsm_res	res;
 	int		status;
+<<<<<<< HEAD
+=======
+	struct rpc_clnt *clnt;
+>>>>>>> refs/remotes/origin/master
 
 	dprintk("lockd: nsm_monitor(%s)\n", nsm->sm_name);
 
@@ -149,7 +299,23 @@ int nsm_monitor(const struct nlm_host *host)
 	 */
 	nsm->sm_mon_name = nsm_use_hostnames ? nsm->sm_name : nsm->sm_addrbuf;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	status = nsm_mon_unmon(nsm, NSMPROC_MON, &res);
+=======
+	status = nsm_mon_unmon(nsm, NSMPROC_MON, &res, host->net);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clnt = nsm_client_get(host->net);
+	if (IS_ERR(clnt)) {
+		status = PTR_ERR(clnt);
+		dprintk("lockd: failed to create NSM upcall transport, "
+				"status=%d, net=%p\n", status, host->net);
+		return status;
+	}
+
+	status = nsm_mon_unmon(nsm, NSMPROC_MON, &res, clnt);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(res.status != 0))
 		status = -EIO;
 	if (unlikely(status < 0)) {
@@ -181,9 +347,21 @@ void nsm_unmonitor(const struct nlm_host *host)
 
 	if (atomic_read(&nsm->sm_count) == 1
 	 && nsm->sm_monitored && !nsm->sm_sticky) {
+<<<<<<< HEAD
 		dprintk("lockd: nsm_unmonitor(%s)\n", nsm->sm_name);
 
+<<<<<<< HEAD
 		status = nsm_mon_unmon(nsm, NSMPROC_UNMON, &res);
+=======
+		status = nsm_mon_unmon(nsm, NSMPROC_UNMON, &res, host->net);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct lockd_net *ln = net_generic(host->net, lockd_net_id);
+
+		dprintk("lockd: nsm_unmonitor(%s)\n", nsm->sm_name);
+
+		status = nsm_mon_unmon(nsm, NSMPROC_UNMON, &res, ln->nsm_clnt);
+>>>>>>> refs/remotes/origin/master
 		if (res.status != 0)
 			status = -EIO;
 		if (status < 0)
@@ -191,6 +369,11 @@ void nsm_unmonitor(const struct nlm_host *host)
 					nsm->sm_name);
 		else
 			nsm->sm_monitored = 0;
+<<<<<<< HEAD
+=======
+
+		nsm_client_put(host->net);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -406,7 +589,10 @@ static void encode_nsm_string(struct xdr_stream *xdr, const char *string)
 	const u32 len = strlen(string);
 	__be32 *p;
 
+<<<<<<< HEAD
 	BUG_ON(len > SM_MAXSTRLEN);
+=======
+>>>>>>> refs/remotes/origin/master
 	p = xdr_reserve_space(xdr, 4 + len);
 	xdr_encode_opaque(p, string, len);
 }
@@ -429,7 +615,19 @@ static void encode_my_id(struct xdr_stream *xdr, const struct nsm_args *argp)
 {
 	__be32 *p;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	encode_nsm_string(xdr, utsname()->nodename);
+=======
+	encode_nsm_string(xdr, argp->nodename);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	encode_nsm_string(xdr, argp->nodename);
+>>>>>>> refs/remotes/origin/master
+=======
+	encode_nsm_string(xdr, argp->nodename);
+>>>>>>> refs/remotes/origin/cm-11.0
 	p = xdr_reserve_space(xdr, 4 + 4 + 4);
 	*p++ = cpu_to_be32(argp->prog);
 	*p++ = cpu_to_be32(argp->vers);
@@ -534,19 +732,43 @@ static struct rpc_procinfo	nsm_procedures[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_version	nsm_version1 = {
+=======
+static const struct rpc_version nsm_version1 = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct rpc_version nsm_version1 = {
+>>>>>>> refs/remotes/origin/master
 		.number		= 1,
 		.nrprocs	= ARRAY_SIZE(nsm_procedures),
 		.procs		= nsm_procedures
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_version *	nsm_version[] = {
+=======
+static const struct rpc_version *nsm_version[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct rpc_version *nsm_version[] = {
+>>>>>>> refs/remotes/origin/master
 	[1] = &nsm_version1,
 };
 
 static struct rpc_stat		nsm_stats;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_program	nsm_program = {
+=======
+static const struct rpc_program nsm_program = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct rpc_program nsm_program = {
+>>>>>>> refs/remotes/origin/master
 		.name		= "statd",
 		.number		= NSM_PROGRAM,
 		.nrvers		= ARRAY_SIZE(nsm_version),

@@ -34,7 +34,15 @@ static ssize_t show_name(struct device *dev,
 	return sprintf(buf, "wm8350\n");
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const char *input_names[] = {
+=======
+static const char * const input_names[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char * const input_names[] = {
+>>>>>>> refs/remotes/origin/master
 	[WM8350_AUXADC_USB]  = "USB",
 	[WM8350_AUXADC_LINE] = "Line",
 	[WM8350_AUXADC_BATT] = "Battery",
@@ -91,7 +99,11 @@ static const struct attribute_group wm8350_attr_group = {
 	.attrs	= wm8350_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit wm8350_hwmon_probe(struct platform_device *pdev)
+=======
+static int wm8350_hwmon_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8350 *wm8350 = platform_get_drvdata(pdev);
 	int ret;
@@ -114,7 +126,11 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit wm8350_hwmon_remove(struct platform_device *pdev)
+=======
+static int wm8350_hwmon_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8350 *wm8350 = platform_get_drvdata(pdev);
 
@@ -126,13 +142,19 @@ static int __devexit wm8350_hwmon_remove(struct platform_device *pdev)
 
 static struct platform_driver wm8350_hwmon_driver = {
 	.probe = wm8350_hwmon_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(wm8350_hwmon_remove),
+=======
+	.remove = wm8350_hwmon_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "wm8350-hwmon",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init wm8350_hwmon_init(void)
 {
 	return platform_driver_register(&wm8350_hwmon_driver);
@@ -144,6 +166,12 @@ static void __exit wm8350_hwmon_exit(void)
 	platform_driver_unregister(&wm8350_hwmon_driver);
 }
 module_exit(wm8350_hwmon_exit);
+=======
+module_platform_driver(wm8350_hwmon_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(wm8350_hwmon_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 MODULE_DESCRIPTION("WM8350 Hardware Monitoring");

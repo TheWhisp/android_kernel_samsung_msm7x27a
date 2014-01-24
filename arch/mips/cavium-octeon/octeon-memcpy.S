@@ -79,11 +79,14 @@
 /*
  * Only on the 64-bit kernel we can made use of 64-bit registers.
  */
+<<<<<<< HEAD
 #ifdef CONFIG_64BIT
 #define USE_DOUBLE
 #endif
 
 #ifdef USE_DOUBLE
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define LOAD   ld
 #define LOADL  ldl
@@ -119,6 +122,7 @@
 #define t6	$14
 #define t7	$15
 
+<<<<<<< HEAD
 #else
 
 #define LOAD   lw
@@ -150,6 +154,19 @@
 #define LDREST  LOADR
 #define STFIRST STOREL
 #define STREST  STORER
+=======
+#ifdef CONFIG_CPU_LITTLE_ENDIAN
+#define LDFIRST LOADR
+#define LDREST	LOADL
+#define STFIRST STORER
+#define STREST	STOREL
+#define SHIFT_DISCARD SLLV
+#else
+#define LDFIRST LOADL
+#define LDREST	LOADR
+#define STFIRST STOREL
+#define STREST	STORER
+>>>>>>> refs/remotes/origin/master
 #define SHIFT_DISCARD SRLV
 #endif
 
@@ -164,6 +181,17 @@
 	.set	noat
 
 /*
+<<<<<<< HEAD
+=======
+ * t7 is used as a flag to note inatomic mode.
+ */
+LEAF(__copy_user_inatomic)
+	b	__copy_user_common
+	 li	t7, 1
+	END(__copy_user_inatomic)
+
+/*
+>>>>>>> refs/remotes/origin/master
  * A combined memcpy/__copy_user
  * __copy_user sets len to 0 for success; else to an upper bound of
  * the number of uncopied bytes.
@@ -174,6 +202,11 @@ LEAF(memcpy)					/* a0=dst a1=src a2=len */
 	move	v0, dst				/* return value */
 __memcpy:
 FEXPORT(__copy_user)
+<<<<<<< HEAD
+=======
+	li	t7, 0				/* not inatomic */
+__copy_user_common:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Note: dst & src may be unaligned, len may be 0
 	 * Temps
@@ -331,9 +364,15 @@ EXC(	 STORE	t0, -8(dst),		s_exc_p1u)
 
 src_unaligned:
 #define rem t8
+<<<<<<< HEAD
 	SRL	t0, len, LOG_NBYTES+2    # +2 for 4 units/iter
 	beqz	t0, cleanup_src_unaligned
 	 and	rem, len, (4*NBYTES-1)   # rem = len % 4*NBYTES
+=======
+	SRL	t0, len, LOG_NBYTES+2	 # +2 for 4 units/iter
+	beqz	t0, cleanup_src_unaligned
+	 and	rem, len, (4*NBYTES-1)	 # rem = len % 4*NBYTES
+>>>>>>> refs/remotes/origin/master
 1:
 /*
  * Avoid consecutive LD*'s to the same register since some mips
@@ -341,6 +380,7 @@ src_unaligned:
  * It's OK to load FIRST(N+1) before REST(N) because the two addresses
  * are to the same unit (unless src is aligned, but it's not).
  */
+<<<<<<< HEAD
 EXC(	LDFIRST	t0, FIRST(0)(src),	l_exc)
 EXC(	LDFIRST	t1, FIRST(1)(src),	l_exc_copy)
 	SUB     len, len, 4*NBYTES
@@ -348,6 +388,15 @@ EXC(	LDREST	t0, REST(0)(src),	l_exc_copy)
 EXC(	LDREST	t1, REST(1)(src),	l_exc_copy)
 EXC(	LDFIRST	t2, FIRST(2)(src),	l_exc_copy)
 EXC(	LDFIRST	t3, FIRST(3)(src),	l_exc_copy)
+=======
+EXC(	LDFIRST t0, FIRST(0)(src),	l_exc)
+EXC(	LDFIRST t1, FIRST(1)(src),	l_exc_copy)
+	SUB	len, len, 4*NBYTES
+EXC(	LDREST	t0, REST(0)(src),	l_exc_copy)
+EXC(	LDREST	t1, REST(1)(src),	l_exc_copy)
+EXC(	LDFIRST t2, FIRST(2)(src),	l_exc_copy)
+EXC(	LDFIRST t3, FIRST(3)(src),	l_exc_copy)
+>>>>>>> refs/remotes/origin/master
 EXC(	LDREST	t2, REST(2)(src),	l_exc_copy)
 EXC(	LDREST	t3, REST(3)(src),	l_exc_copy)
 	ADD	src, src, 4*NBYTES
@@ -385,12 +434,18 @@ EXC(	 sb	t0, N(dst), s_exc_p1)
 
 	COPY_BYTE(0)
 	COPY_BYTE(1)
+<<<<<<< HEAD
 #ifdef USE_DOUBLE
+=======
+>>>>>>> refs/remotes/origin/master
 	COPY_BYTE(2)
 	COPY_BYTE(3)
 	COPY_BYTE(4)
 	COPY_BYTE(5)
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 EXC(	lb	t0, NBYTES-2(src), l_exc)
 	SUB	len, len, 1
 	jr	ra
@@ -412,7 +467,10 @@ l_exc_copy:
 	 * Assumes src < THREAD_BUADDR($28)
 	 */
 	LOAD	t0, TI_TASK($28)
+<<<<<<< HEAD
 	 nop
+=======
+>>>>>>> refs/remotes/origin/master
 	LOAD	t0, THREAD_BUADDR(t0)
 1:
 EXC(	lb	t1, 0(src),	l_exc)
@@ -422,10 +480,16 @@ EXC(	lb	t1, 0(src),	l_exc)
 	 ADD	dst, dst, 1
 l_exc:
 	LOAD	t0, TI_TASK($28)
+<<<<<<< HEAD
 	 nop
 	LOAD	t0, THREAD_BUADDR(t0)	# t0 is just past last good address
 	 nop
 	SUB	len, AT, t0		# len number of uncopied bytes
+=======
+	LOAD	t0, THREAD_BUADDR(t0)	# t0 is just past last good address
+	SUB	len, AT, t0		# len number of uncopied bytes
+	bnez	t7, 2f		/* Skip the zeroing out part if inatomic */
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Here's where we rely on src and dst being incremented in tandem,
 	 *   See (3) above.
@@ -443,7 +507,11 @@ l_exc:
 	ADD	dst, dst, 1
 	bnez	src, 1b
 	 SUB	src, src, 1
+<<<<<<< HEAD
 	jr	ra
+=======
+2:	jr	ra
+>>>>>>> refs/remotes/origin/master
 	 nop
 
 

@@ -121,7 +121,11 @@ static int atlas_acpi_button_add(struct acpi_device *device)
 	return err;
 }
 
+<<<<<<< HEAD
 static int atlas_acpi_button_remove(struct acpi_device *device, int type)
+=======
+static int atlas_acpi_button_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 
@@ -151,6 +155,7 @@ static struct acpi_driver atlas_acpi_driver = {
 		.remove	= atlas_acpi_button_remove,
 	},
 };
+<<<<<<< HEAD
 
 static int __init atlas_acpi_init(void)
 {
@@ -167,6 +172,9 @@ static void __exit atlas_acpi_exit(void)
 
 module_init(atlas_acpi_init);
 module_exit(atlas_acpi_exit);
+=======
+module_acpi_driver(atlas_acpi_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jaya Kumar");
 MODULE_LICENSE("GPL");

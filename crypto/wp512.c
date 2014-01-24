@@ -762,11 +762,31 @@ static const u64 C7[256] = {
 	0x86228644a411c286ULL,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const u64 rc[WHIRLPOOL_ROUNDS + 1] = {
 	0x0000000000000000ULL, 0x1823c6e887b8014fULL, 0x36a6d2f5796f9152ULL,
 	0x60bc9b8ea30c7b35ULL, 0x1de0d7c22e4bfe57ULL, 0x157737e59ff04adaULL,
 	0x58c9290ab1a06b85ULL, 0xbd5d10f4cb3e0567ULL, 0xe427418ba77d95d8ULL,
 	0xfbee7c66dd17479eULL, 0xca2dbf07ad5a8333ULL,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const u64 rc[WHIRLPOOL_ROUNDS] = {
+	0x1823c6e887b8014fULL,
+	0x36a6d2f5796f9152ULL,
+	0x60bc9b8ea30c7b35ULL,
+	0x1de0d7c22e4bfe57ULL,
+	0x157737e59ff04adaULL,
+	0x58c9290ab1a06b85ULL,
+	0xbd5d10f4cb3e0567ULL,
+	0xe427418ba77d95d8ULL,
+	0xfbee7c66dd17479eULL,
+	0xca2dbf07ad5a8333ULL,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -793,7 +813,15 @@ static void wp512_process_buffer(struct wp512_ctx *wctx) {
 	state[6] = block[6] ^ (K[6] = wctx->hash[6]);
 	state[7] = block[7] ^ (K[7] = wctx->hash[7]);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (r = 1; r <= WHIRLPOOL_ROUNDS; r++) {
+=======
+	for (r = 0; r < WHIRLPOOL_ROUNDS; r++) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (r = 0; r < WHIRLPOOL_ROUNDS; r++) {
+>>>>>>> refs/remotes/origin/master
 
 		L[0] = C0[(int)(K[0] >> 56)       ] ^
 			   C1[(int)(K[7] >> 48) & 0xff] ^
@@ -1113,7 +1141,11 @@ static int wp256_final(struct shash_desc *desc, u8 *out)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct shash_alg wp512 = {
+=======
+static struct shash_alg wp_algs[3] = { {
+>>>>>>> refs/remotes/origin/master
 	.digestsize	=	WP512_DIGEST_SIZE,
 	.init		=	wp512_init,
 	.update		=	wp512_update,
@@ -1125,9 +1157,13 @@ static struct shash_alg wp512 = {
 		.cra_blocksize	=	WP512_BLOCK_SIZE,
 		.cra_module	=	THIS_MODULE,
 	}
+<<<<<<< HEAD
 };
 
 static struct shash_alg wp384 = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.digestsize	=	WP384_DIGEST_SIZE,
 	.init		=	wp512_init,
 	.update		=	wp512_update,
@@ -1139,9 +1175,13 @@ static struct shash_alg wp384 = {
 		.cra_blocksize	=	WP512_BLOCK_SIZE,
 		.cra_module	=	THIS_MODULE,
 	}
+<<<<<<< HEAD
 };
 
 static struct shash_alg wp256 = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.digestsize	=	WP256_DIGEST_SIZE,
 	.init		=	wp512_init,
 	.update		=	wp512_update,
@@ -1153,6 +1193,7 @@ static struct shash_alg wp256 = {
 		.cra_blocksize	=	WP512_BLOCK_SIZE,
 		.cra_module	=	THIS_MODULE,
 	}
+<<<<<<< HEAD
 };
 
 static int __init wp512_mod_init(void)
@@ -1179,13 +1220,24 @@ static int __init wp512_mod_init(void)
 	}
 out:
 	return ret;
+=======
+} };
+
+static int __init wp512_mod_init(void)
+{
+	return crypto_register_shashes(wp_algs, ARRAY_SIZE(wp_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit wp512_mod_fini(void)
 {
+<<<<<<< HEAD
 	crypto_unregister_shash(&wp512);
 	crypto_unregister_shash(&wp384);
 	crypto_unregister_shash(&wp256);
+=======
+	crypto_unregister_shashes(wp_algs, ARRAY_SIZE(wp_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 MODULE_ALIAS("wp384");

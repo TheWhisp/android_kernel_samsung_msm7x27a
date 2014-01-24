@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  *  Copyright (c) 2000-2010 LSI Corporation.
+=======
+ *  Copyright (c) 2000-2013 LSI Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  *
  *           Name:  mpi2_sas.h

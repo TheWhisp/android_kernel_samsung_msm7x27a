@@ -23,7 +23,13 @@
 
 #include <linux/slab.h>
 #include <linux/wl12xx.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/export.h>
+
+#include "debug.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "acx.h"
 #include "reg.h"
 #include "boot.h"
@@ -31,6 +37,7 @@
 #include "event.h"
 #include "rx.h"
 
+<<<<<<< HEAD
 static struct wl1271_partition_set part_table[PART_TABLE_LEN] = {
 	[PART_DOWN] = {
 		.mem = {
@@ -90,6 +97,8 @@ static struct wl1271_partition_set part_table[PART_TABLE_LEN] = {
 	}
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void wl1271_boot_set_ecpu_ctrl(struct wl1271 *wl, u32 flag)
 {
 	u32 cpu_ctrl;
@@ -102,6 +111,26 @@ static void wl1271_boot_set_ecpu_ctrl(struct wl1271 *wl, u32 flag)
 	wl1271_write32(wl, ACX_REG_ECPU_CONTROL, cpu_ctrl);
 }
 
+<<<<<<< HEAD
+=======
+static unsigned int wl12xx_get_fw_ver_quirks(struct wl1271 *wl)
+{
+	unsigned int quirks = 0;
+	unsigned int *fw_ver = wl->chip.fw_ver;
+
+	/* Only new station firmwares support routing fw logs to the host */
+	if ((fw_ver[FW_VER_IF_TYPE] == FW_VER_IF_TYPE_STA) &&
+	    (fw_ver[FW_VER_MINOR] < FW_VER_MINOR_FWLOG_STA_MIN))
+		quirks |= WL12XX_QUIRK_FWLOG_NOT_IMPLEMENTED;
+
+	/* This feature is not yet supported for AP mode */
+	if (fw_ver[FW_VER_IF_TYPE] == FW_VER_IF_TYPE_AP)
+		quirks |= WL12XX_QUIRK_FWLOG_NOT_IMPLEMENTED;
+
+	return quirks;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void wl1271_parse_fw_ver(struct wl1271 *wl)
 {
 	int ret;
@@ -116,6 +145,12 @@ static void wl1271_parse_fw_ver(struct wl1271 *wl)
 		memset(wl->chip.fw_ver, 0, sizeof(wl->chip.fw_ver));
 		return;
 	}
+<<<<<<< HEAD
+=======
+
+	/* Check if any quirks are needed with older fw versions */
+	wl->quirks |= wl12xx_get_fw_ver_quirks(wl);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void wl1271_boot_fw_version(struct wl1271 *wl)
@@ -159,13 +194,21 @@ static int wl1271_boot_upload_firmware_chunk(struct wl1271 *wl, void *buf,
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	memcpy(&partition, &part_table[PART_DOWN], sizeof(partition));
+=======
+	memcpy(&partition, &wl12xx_part_table[PART_DOWN], sizeof(partition));
+>>>>>>> refs/remotes/origin/cm-10.0
 	partition.mem.start = dest;
 	wl1271_set_partition(wl, &partition);
 
 	/* 10.1 set partition limit and chunk num */
 	chunk_num = 0;
+<<<<<<< HEAD
 	partition_limit = part_table[PART_DOWN].mem.size;
+=======
+	partition_limit = wl12xx_part_table[PART_DOWN].mem.size;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	while (chunk_num < fw_data_len / CHUNK_SIZE) {
 		/* 10.2 update partition, if needed */
@@ -173,7 +216,11 @@ static int wl1271_boot_upload_firmware_chunk(struct wl1271 *wl, void *buf,
 		if (addr > partition_limit) {
 			addr = dest + chunk_num * CHUNK_SIZE;
 			partition_limit = chunk_num * CHUNK_SIZE +
+<<<<<<< HEAD
 				part_table[PART_DOWN].mem.size;
+=======
+				wl12xx_part_table[PART_DOWN].mem.size;
+>>>>>>> refs/remotes/origin/cm-10.0
 			partition.mem.start = addr;
 			wl1271_set_partition(wl, &partition);
 		}
@@ -274,9 +321,13 @@ static int wl1271_boot_upload_nvs(struct wl1271 *wl)
 		 */
 		if (wl->nvs_len == sizeof(struct wl1271_nvs_file) ||
 		    wl->nvs_len == WL1271_INI_LEGACY_NVS_FILE_SIZE) {
+<<<<<<< HEAD
 			/* for now 11a is unsupported in AP mode */
 			if (wl->bss_type != BSS_TYPE_AP_BSS &&
 			    nvs->general_params.dual_mode_select)
+=======
+			if (nvs->general_params.dual_mode_select)
+>>>>>>> refs/remotes/origin/cm-10.0
 				wl->enable_11a = true;
 		}
 
@@ -297,12 +348,21 @@ static int wl1271_boot_upload_nvs(struct wl1271 *wl)
 	}
 
 	/* update current MAC address to NVS */
+<<<<<<< HEAD
 	nvs_ptr[11] = wl->mac_addr[0];
 	nvs_ptr[10] = wl->mac_addr[1];
 	nvs_ptr[6] = wl->mac_addr[2];
 	nvs_ptr[5] = wl->mac_addr[3];
 	nvs_ptr[4] = wl->mac_addr[4];
 	nvs_ptr[3] = wl->mac_addr[5];
+=======
+	nvs_ptr[11] = wl->addresses[0].addr[0];
+	nvs_ptr[10] = wl->addresses[0].addr[1];
+	nvs_ptr[6] = wl->addresses[0].addr[2];
+	nvs_ptr[5] = wl->addresses[0].addr[3];
+	nvs_ptr[4] = wl->addresses[0].addr[4];
+	nvs_ptr[3] = wl->addresses[0].addr[5];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Layout before the actual NVS tables:
@@ -363,7 +423,11 @@ static int wl1271_boot_upload_nvs(struct wl1271 *wl)
 	nvs_len -= nvs_ptr - (u8 *)wl->nvs;
 
 	/* Now we must set the partition correctly */
+<<<<<<< HEAD
 	wl1271_set_partition(wl, &part_table[PART_WORK]);
+=======
+	wl1271_set_partition(wl, &wl12xx_part_table[PART_WORK]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Copy the NVS tables to a new block to ensure alignment */
 	nvs_aligned = kmemdup(nvs_ptr, nvs_len, GFP_KERNEL);
@@ -472,7 +536,11 @@ static int wl1271_boot_run_firmware(struct wl1271 *wl)
 	wl->event_box_addr = wl1271_read32(wl, REG_EVENT_MAILBOX_PTR);
 
 	/* set the working partition to its "running" mode offset */
+<<<<<<< HEAD
 	wl1271_set_partition(wl, &part_table[PART_WORK]);
+=======
+	wl1271_set_partition(wl, &wl12xx_part_table[PART_WORK]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	wl1271_debug(DEBUG_MAILBOX, "cmd_box_addr 0x%x event_box_addr 0x%x",
 		     wl->cmd_box_addr, wl->event_box_addr);
@@ -487,19 +555,34 @@ static int wl1271_boot_run_firmware(struct wl1271 *wl)
 	/* unmask required mbox events  */
 	wl->event_mask = BSS_LOSE_EVENT_ID |
 		SCAN_COMPLETE_EVENT_ID |
+<<<<<<< HEAD
 		PS_REPORT_EVENT_ID |
 		JOIN_EVENT_COMPLETE_ID |
 		DISCONNECT_EVENT_COMPLETE_ID |
+=======
+		ROLE_STOP_COMPLETE_EVENT_ID |
+>>>>>>> refs/remotes/origin/cm-10.0
 		RSSI_SNR_TRIGGER_0_EVENT_ID |
 		PSPOLL_DELIVERY_FAILURE_EVENT_ID |
 		SOFT_GEMINI_SENSE_EVENT_ID |
 		PERIODIC_SCAN_REPORT_EVENT_ID |
+<<<<<<< HEAD
 		PERIODIC_SCAN_COMPLETE_EVENT_ID;
 
 	if (wl->bss_type == BSS_TYPE_AP_BSS)
 		wl->event_mask |= STA_REMOVE_COMPLETE_EVENT_ID;
 	else
 		wl->event_mask |= DUMMY_PACKET_EVENT_ID;
+=======
+		PERIODIC_SCAN_COMPLETE_EVENT_ID |
+		DUMMY_PACKET_EVENT_ID |
+		PEER_REMOVE_COMPLETE_EVENT_ID |
+		BA_SESSION_RX_CONSTRAINT_EVENT_ID |
+		REMAIN_ON_CHANNEL_COMPLETE_EVENT_ID |
+		INACTIVE_STA_EVENT_ID |
+		MAX_TX_RETRY_EVENT_ID |
+		CHANNEL_SWITCH_COMPLETE_EVENT_ID;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = wl1271_event_unmask(wl);
 	if (ret < 0) {
@@ -526,6 +609,7 @@ static int wl1271_boot_write_irq_polarity(struct wl1271 *wl)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void wl1271_boot_hw_version(struct wl1271 *wl)
 {
 	u32 fuse;
@@ -539,6 +623,8 @@ static void wl1271_boot_hw_version(struct wl1271 *wl)
 		wl->quirks |= WL12XX_QUIRK_END_OF_TRANSACTION;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int wl128x_switch_tcxo_to_fref(struct wl1271 *wl)
 {
 	u16 spare_reg;
@@ -677,7 +763,12 @@ static int wl127x_boot_clk(struct wl1271 *wl)
 	u32 pause;
 	u32 clk;
 
+<<<<<<< HEAD
 	wl1271_boot_hw_version(wl);
+=======
+	if (WL127X_PG_GET_MAJOR(wl->hw_pg_ver) < 3)
+		wl->quirks |= WL12XX_QUIRK_END_OF_TRANSACTION;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (wl->ref_clock == CONF_REF_CLK_19_2_E ||
 	    wl->ref_clock == CONF_REF_CLK_38_4_E ||
@@ -745,7 +836,11 @@ int wl1271_load_firmware(struct wl1271 *wl)
 	wl1271_write32(wl, WELP_ARM_COMMAND, WELP_ARM_COMMAND_VAL);
 	udelay(500);
 
+<<<<<<< HEAD
 	wl1271_set_partition(wl, &part_table[PART_DRPW]);
+=======
+	wl1271_set_partition(wl, &wl12xx_part_table[PART_DRPW]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Read-modify-write DRPW_SCRATCH_START register (see next state)
 	   to be used by DRPw FW. The RTRIM value will be added by the FW
@@ -764,7 +859,11 @@ int wl1271_load_firmware(struct wl1271 *wl)
 
 	wl1271_write32(wl, DRPW_SCRATCH_START, clk);
 
+<<<<<<< HEAD
 	wl1271_set_partition(wl, &part_table[PART_WORK]);
+=======
+	wl1271_set_partition(wl, &wl12xx_part_table[PART_WORK]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Disable interrupts */
 	wl1271_write32(wl, ACX_REG_INTERRUPT_MASK, WL1271_ACX_INTR_ALL);
@@ -830,9 +929,12 @@ int wl1271_boot(struct wl1271 *wl)
 	/* Enable firmware interrupts now */
 	wl1271_boot_enable_interrupts(wl);
 
+<<<<<<< HEAD
 	/* set the wl1271 default filters */
 	wl1271_set_default_filters(wl);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	wl1271_event_mbox_config(wl);
 
 out:

@@ -50,8 +50,13 @@ static void devres_log(struct device *dev, struct devres_node *node,
 		       const char *op)
 {
 	if (unlikely(log_devres))
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, dev, "DEVRES %3s %p %s (%lu bytes)\n",
 			   op, node, node->name, (unsigned long)node->size);
+=======
+		dev_err(dev, "DEVRES %3s %p %s (%lu bytes)\n",
+			op, node, node->name, (unsigned long)node->size);
+>>>>>>> refs/remotes/origin/master
 }
 #else /* CONFIG_DEBUG_DEVRES */
 #define set_node_dbginfo(node, n, s)	do {} while (0)
@@ -91,7 +96,12 @@ static __always_inline struct devres * alloc_dr(dr_release_t release,
 	if (unlikely(!dr))
 		return NULL;
 
+<<<<<<< HEAD
 	memset(dr, 0, tot_size);
+=======
+	memset(dr, 0, offsetof(struct devres, data));
+
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&dr->node.entry);
 	dr->node.release = release;
 	return dr;
@@ -110,7 +120,11 @@ void * __devres_alloc(dr_release_t release, size_t size, gfp_t gfp,
 {
 	struct devres *dr;
 
+<<<<<<< HEAD
 	dr = alloc_dr(release, size, gfp);
+=======
+	dr = alloc_dr(release, size, gfp | __GFP_ZERO);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(!dr))
 		return NULL;
 	set_node_dbginfo(&dr->node, name, size);
@@ -135,7 +149,11 @@ void * devres_alloc(dr_release_t release, size_t size, gfp_t gfp)
 {
 	struct devres *dr;
 
+<<<<<<< HEAD
 	dr = alloc_dr(release, size, gfp);
+=======
+	dr = alloc_dr(release, size, gfp | __GFP_ZERO);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(!dr))
 		return NULL;
 	return dr->data;
@@ -144,6 +162,51 @@ EXPORT_SYMBOL_GPL(devres_alloc);
 #endif
 
 /**
+<<<<<<< HEAD
+=======
+ * devres_for_each_res - Resource iterator
+ * @dev: Device to iterate resource from
+ * @release: Look for resources associated with this release function
+ * @match: Match function (optional)
+ * @match_data: Data for the match function
+ * @fn: Function to be called for each matched resource.
+ * @data: Data for @fn, the 3rd parameter of @fn
+ *
+ * Call @fn for each devres of @dev which is associated with @release
+ * and for which @match returns 1.
+ *
+ * RETURNS:
+ * 	void
+ */
+void devres_for_each_res(struct device *dev, dr_release_t release,
+			dr_match_t match, void *match_data,
+			void (*fn)(struct device *, void *, void *),
+			void *data)
+{
+	struct devres_node *node;
+	struct devres_node *tmp;
+	unsigned long flags;
+
+	if (!fn)
+		return;
+
+	spin_lock_irqsave(&dev->devres_lock, flags);
+	list_for_each_entry_safe_reverse(node, tmp,
+			&dev->devres_head, entry) {
+		struct devres *dr = container_of(node, struct devres, node);
+
+		if (node->release != release)
+			continue;
+		if (match && !match(dev, dr->data, match_data))
+			continue;
+		fn(dev, dr->data, data);
+	}
+	spin_unlock_irqrestore(&dev->devres_lock, flags);
+}
+EXPORT_SYMBOL_GPL(devres_for_each_res);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * devres_free - Free device resource data
  * @res: Pointer to devres data to free
  *
@@ -309,6 +372,13 @@ EXPORT_SYMBOL_GPL(devres_remove);
  * which @match returns 1.  If @match is NULL, it's considered to
  * match all.  If found, the resource is removed atomically and freed.
  *
+<<<<<<< HEAD
+=======
+ * Note that the release function for the resource will not be called,
+ * only the devres-allocated data will be freed.  The caller becomes
+ * responsible for freeing any other data.
+ *
+>>>>>>> refs/remotes/origin/master
  * RETURNS:
  * 0 if devres is found and freed, -ENOENT if not found.
  */
@@ -326,6 +396,40 @@ int devres_destroy(struct device *dev, dr_release_t release,
 }
 EXPORT_SYMBOL_GPL(devres_destroy);
 
+<<<<<<< HEAD
+=======
+
+/**
+ * devres_release - Find a device resource and destroy it, calling release
+ * @dev: Device to find resource from
+ * @release: Look for resources associated with this release function
+ * @match: Match function (optional)
+ * @match_data: Data for the match function
+ *
+ * Find the latest devres of @dev associated with @release and for
+ * which @match returns 1.  If @match is NULL, it's considered to
+ * match all.  If found, the resource is removed atomically, the
+ * release function called and the resource freed.
+ *
+ * RETURNS:
+ * 0 if devres is found and freed, -ENOENT if not found.
+ */
+int devres_release(struct device *dev, dr_release_t release,
+		   dr_match_t match, void *match_data)
+{
+	void *res;
+
+	res = devres_remove(dev, release, match, match_data);
+	if (unlikely(!res))
+		return -ENOENT;
+
+	(*release)(dev, res);
+	devres_free(res);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(devres_release);
+
+>>>>>>> refs/remotes/origin/master
 static int remove_nodes(struct device *dev,
 			struct list_head *first, struct list_head *end,
 			struct list_head *todo)
@@ -397,6 +501,14 @@ static int remove_nodes(struct device *dev,
 
 static int release_nodes(struct device *dev, struct list_head *first,
 			 struct list_head *end, unsigned long flags)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	__releases(&dev->devres_lock)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__releases(&dev->devres_lock)
+>>>>>>> refs/remotes/origin/master
 {
 	LIST_HEAD(todo);
 	int cnt;
@@ -593,58 +705,181 @@ int devres_release_group(struct device *dev, void *id)
 EXPORT_SYMBOL_GPL(devres_release_group);
 
 /*
+<<<<<<< HEAD
  * Managed kzalloc/kfree
  */
 static void devm_kzalloc_release(struct device *dev, void *res)
+=======
+ * Custom devres actions allow inserting a simple function call
+ * into the teadown sequence.
+ */
+
+struct action_devres {
+	void *data;
+	void (*action)(void *);
+};
+
+static int devm_action_match(struct device *dev, void *res, void *p)
+{
+	struct action_devres *devres = res;
+	struct action_devres *target = p;
+
+	return devres->action == target->action &&
+	       devres->data == target->data;
+}
+
+static void devm_action_release(struct device *dev, void *res)
+{
+	struct action_devres *devres = res;
+
+	devres->action(devres->data);
+}
+
+/**
+ * devm_add_action() - add a custom action to list of managed resources
+ * @dev: Device that owns the action
+ * @action: Function that should be called
+ * @data: Pointer to data passed to @action implementation
+ *
+ * This adds a custom action to the list of managed resources so that
+ * it gets executed as part of standard resource unwinding.
+ */
+int devm_add_action(struct device *dev, void (*action)(void *), void *data)
+{
+	struct action_devres *devres;
+
+	devres = devres_alloc(devm_action_release,
+			      sizeof(struct action_devres), GFP_KERNEL);
+	if (!devres)
+		return -ENOMEM;
+
+	devres->data = data;
+	devres->action = action;
+
+	devres_add(dev, devres);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(devm_add_action);
+
+/**
+ * devm_remove_action() - removes previously added custom action
+ * @dev: Device that owns the action
+ * @action: Function implementing the action
+ * @data: Pointer to data passed to @action implementation
+ *
+ * Removes instance of @action previously added by devm_add_action().
+ * Both action and data should match one of the existing entries.
+ */
+void devm_remove_action(struct device *dev, void (*action)(void *), void *data)
+{
+	struct action_devres devres = {
+		.data = data,
+		.action = action,
+	};
+
+	WARN_ON(devres_destroy(dev, devm_action_release, devm_action_match,
+			       &devres));
+
+}
+EXPORT_SYMBOL_GPL(devm_remove_action);
+
+/*
+ * Managed kmalloc/kfree
+ */
+static void devm_kmalloc_release(struct device *dev, void *res)
+>>>>>>> refs/remotes/origin/master
 {
 	/* noop */
 }
 
+<<<<<<< HEAD
 static int devm_kzalloc_match(struct device *dev, void *res, void *data)
+=======
+static int devm_kmalloc_match(struct device *dev, void *res, void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	return res == data;
 }
 
 /**
+<<<<<<< HEAD
  * devm_kzalloc - Resource-managed kzalloc
+=======
+ * devm_kmalloc - Resource-managed kmalloc
+>>>>>>> refs/remotes/origin/master
  * @dev: Device to allocate memory for
  * @size: Allocation size
  * @gfp: Allocation gfp flags
  *
+<<<<<<< HEAD
  * Managed kzalloc.  Memory allocated with this function is
+=======
+ * Managed kmalloc.  Memory allocated with this function is
+>>>>>>> refs/remotes/origin/master
  * automatically freed on driver detach.  Like all other devres
  * resources, guaranteed alignment is unsigned long long.
  *
  * RETURNS:
  * Pointer to allocated memory on success, NULL on failure.
  */
+<<<<<<< HEAD
 void * devm_kzalloc(struct device *dev, size_t size, gfp_t gfp)
+=======
+void * devm_kmalloc(struct device *dev, size_t size, gfp_t gfp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct devres *dr;
 
 	/* use raw alloc_dr for kmalloc caller tracing */
+<<<<<<< HEAD
 	dr = alloc_dr(devm_kzalloc_release, size, gfp);
 	if (unlikely(!dr))
 		return NULL;
 
+=======
+	dr = alloc_dr(devm_kmalloc_release, size, gfp);
+	if (unlikely(!dr))
+		return NULL;
+
+	/*
+	 * This is named devm_kzalloc_release for historical reasons
+	 * The initial implementation did not support kmalloc, only kzalloc
+	 */
+>>>>>>> refs/remotes/origin/master
 	set_node_dbginfo(&dr->node, "devm_kzalloc_release", size);
 	devres_add(dev, dr->data);
 	return dr->data;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(devm_kzalloc);
+=======
+EXPORT_SYMBOL_GPL(devm_kmalloc);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * devm_kfree - Resource-managed kfree
  * @dev: Device this memory belongs to
  * @p: Memory to free
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Free memory allocated with dev_kzalloc().
+=======
+ * Free memory allocated with devm_kzalloc().
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Free memory allocated with devm_kmalloc().
+>>>>>>> refs/remotes/origin/master
  */
 void devm_kfree(struct device *dev, void *p)
 {
 	int rc;
 
+<<<<<<< HEAD
 	rc = devres_destroy(dev, devm_kzalloc_release, devm_kzalloc_match, p);
+=======
+	rc = devres_destroy(dev, devm_kmalloc_release, devm_kmalloc_match, p);
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(rc);
 }
 EXPORT_SYMBOL_GPL(devm_kfree);

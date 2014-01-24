@@ -9,9 +9,15 @@
  *
  * Reference: AMD Geode(TM) CS5536 Companion Device Data Book
  *
+<<<<<<< HEAD
  *  This program is free software; you can redistribute  it and/or modify it
  *  under  the terms of  the GNU General  Public License as published by the
  *  Free Software Foundation;  either version 2 of the  License, or (at your
+=======
+ *  This program is free software; you can redistribute	 it and/or modify it
+ *  under  the terms of	 the GNU General  Public License as published by the
+ *  Free Software Foundation;  either version 2 of the	License, or (at your
+>>>>>>> refs/remotes/origin/master
  *  option) any later version.
  */
 
@@ -111,7 +117,15 @@ static irqreturn_t timer_interrupt(int irq, void *dev_id)
 
 static struct irqaction irq5 = {
 	.handler = timer_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags = IRQF_DISABLED | IRQF_NOBALANCING | IRQF_TIMER,
+=======
+	.flags = IRQF_NOBALANCING | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = IRQF_NOBALANCING | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 	.name = "timer"
 };
 

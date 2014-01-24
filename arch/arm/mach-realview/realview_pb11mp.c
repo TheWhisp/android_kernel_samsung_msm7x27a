@@ -21,12 +21,21 @@
 
 #include <linux/init.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/amba/bus.h>
 #include <linux/amba/pl061.h>
 #include <linux/amba/mmci.h>
 #include <linux/amba/pl022.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <asm/irq.h>
@@ -36,7 +45,23 @@
 #include <asm/pgtable.h>
 #include <asm/hardware/gic.h>
 #include <asm/hardware/cache-l2x0.h>
+<<<<<<< HEAD
 #include <asm/localtimer.h>
+=======
+#include <asm/smp_twd.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irqchip/arm-gic.h>
+#include <linux/platform_data/clk-realview.h>
+#include <linux/reboot.h>
+
+#include <mach/hardware.h>
+#include <asm/irq.h>
+#include <asm/mach-types.h>
+#include <asm/pgtable.h>
+#include <asm/hardware/cache-l2x0.h>
+#include <asm/smp_twd.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/arch.h>
 #include <asm/mach/flash.h>
@@ -64,6 +89,8 @@ static struct map_desc realview_pb11mp_io_desc[] __initdata = {
 		.pfn		= __phys_to_pfn(REALVIEW_PB11MP_GIC_DIST_BASE),
 		.length		= SZ_4K,
 		.type		= MT_DEVICE,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}, {
 		.virtual	= IO_ADDRESS(REALVIEW_TC11MP_GIC_CPU_BASE),
 		.pfn		= __phys_to_pfn(REALVIEW_TC11MP_GIC_CPU_BASE),
@@ -73,6 +100,17 @@ static struct map_desc realview_pb11mp_io_desc[] __initdata = {
 		.virtual	= IO_ADDRESS(REALVIEW_TC11MP_GIC_DIST_BASE),
 		.pfn		= __phys_to_pfn(REALVIEW_TC11MP_GIC_DIST_BASE),
 		.length		= SZ_4K,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	}, {	/* Maps the SCU, GIC CPU interface, TWD, GIC DIST */
+		.virtual	= IO_ADDRESS(REALVIEW_TC11MP_PRIV_MEM_BASE),
+		.pfn		= __phys_to_pfn(REALVIEW_TC11MP_PRIV_MEM_BASE),
+		.length		= REALVIEW_TC11MP_PRIV_MEM_SIZE,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.type		= MT_DEVICE,
 	}, {
 		.virtual	= IO_ADDRESS(REALVIEW_SCTL_BASE),
@@ -112,17 +150,35 @@ static void __init realview_pb11mp_map_io(void)
 
 static struct pl061_platform_data gpio0_plat_data = {
 	.gpio_base	= 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.irq_base	= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct pl061_platform_data gpio1_plat_data = {
 	.gpio_base	= 8,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.irq_base	= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct pl061_platform_data gpio2_plat_data = {
 	.gpio_base	= 16,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.irq_base	= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct pl022_ssp_controller ssp0_plat_data = {
@@ -135,6 +191,8 @@ static struct pl022_ssp_controller ssp0_plat_data = {
  * RealView PB11MPCore AMBA devices
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define GPIO2_IRQ		{ IRQ_PB11MP_GPIO2, NO_IRQ }
 #define GPIO3_IRQ		{ IRQ_PB11MP_GPIO3, NO_IRQ }
 #define AACI_IRQ		{ IRQ_TC11MP_AACI, NO_IRQ }
@@ -181,6 +239,59 @@ AMBA_DEVICE(ssp0,	"dev:ssp0",	PB11MP_SSP,	&ssp0_plat_data);
 /* Primecells on the NEC ISSP chip */
 AMBA_DEVICE(clcd,	"issp:clcd",	PB11MP_CLCD,	&clcd_plat_data);
 AMBA_DEVICE(dmac,	"issp:dmac",	DMAC,		NULL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define GPIO2_IRQ		{ IRQ_PB11MP_GPIO2 }
+#define GPIO3_IRQ		{ IRQ_PB11MP_GPIO3 }
+#define AACI_IRQ		{ IRQ_TC11MP_AACI }
+#define MMCI0_IRQ		{ IRQ_TC11MP_MMCI0A, IRQ_TC11MP_MMCI0B }
+#define KMI0_IRQ		{ IRQ_TC11MP_KMI0 }
+#define KMI1_IRQ		{ IRQ_TC11MP_KMI1 }
+#define PB11MP_SMC_IRQ		{ }
+#define MPMC_IRQ		{ }
+#define PB11MP_CLCD_IRQ		{ IRQ_PB11MP_CLCD }
+#define DMAC_IRQ		{ IRQ_PB11MP_DMAC }
+#define SCTL_IRQ		{ }
+#define PB11MP_WATCHDOG_IRQ	{ IRQ_PB11MP_WATCHDOG }
+#define PB11MP_GPIO0_IRQ	{ IRQ_PB11MP_GPIO0 }
+#define GPIO1_IRQ		{ IRQ_PB11MP_GPIO1 }
+#define PB11MP_RTC_IRQ		{ IRQ_TC11MP_RTC }
+#define SCI_IRQ			{ IRQ_PB11MP_SCI }
+#define PB11MP_UART0_IRQ	{ IRQ_TC11MP_UART0 }
+#define PB11MP_UART1_IRQ	{ IRQ_TC11MP_UART1 }
+#define PB11MP_UART2_IRQ	{ IRQ_PB11MP_UART2 }
+#define PB11MP_UART3_IRQ	{ IRQ_PB11MP_UART3 }
+#define PB11MP_SSP_IRQ		{ IRQ_PB11MP_SSP }
+
+/* FPGA Primecells */
+APB_DEVICE(aaci,	"fpga:aaci",	AACI,		NULL);
+APB_DEVICE(mmc0,	"fpga:mmc0",	MMCI0,		&realview_mmc0_plat_data);
+APB_DEVICE(kmi0,	"fpga:kmi0",	KMI0,		NULL);
+APB_DEVICE(kmi1,	"fpga:kmi1",	KMI1,		NULL);
+APB_DEVICE(uart3,	"fpga:uart3",	PB11MP_UART3,	NULL);
+
+/* DevChip Primecells */
+AHB_DEVICE(smc,		"dev:smc",	PB11MP_SMC,	NULL);
+AHB_DEVICE(sctl,	"dev:sctl",	SCTL,		NULL);
+APB_DEVICE(wdog,	"dev:wdog",	PB11MP_WATCHDOG, NULL);
+APB_DEVICE(gpio0,	"dev:gpio0",	PB11MP_GPIO0,	&gpio0_plat_data);
+APB_DEVICE(gpio1,	"dev:gpio1",	GPIO1,		&gpio1_plat_data);
+APB_DEVICE(gpio2,	"dev:gpio2",	GPIO2,		&gpio2_plat_data);
+APB_DEVICE(rtc,		"dev:rtc",	PB11MP_RTC,	NULL);
+APB_DEVICE(sci0,	"dev:sci0",	SCI,		NULL);
+APB_DEVICE(uart0,	"dev:uart0",	PB11MP_UART0,	NULL);
+APB_DEVICE(uart1,	"dev:uart1",	PB11MP_UART1,	NULL);
+APB_DEVICE(uart2,	"dev:uart2",	PB11MP_UART2,	NULL);
+APB_DEVICE(ssp0,	"dev:ssp0",	PB11MP_SSP,	&ssp0_plat_data);
+
+/* Primecells on the NEC ISSP chip */
+AHB_DEVICE(clcd,	"issp:clcd",	PB11MP_CLCD,	&clcd_plat_data);
+AHB_DEVICE(dmac,	"issp:dmac",	DMAC,		NULL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct amba_device *amba_devs[] __initdata = {
 	&dmac_device,
@@ -271,7 +382,11 @@ static struct resource pmu_resources[] = {
 
 static struct platform_device pmu_device = {
 	.name			= "arm-pmu",
+<<<<<<< HEAD
 	.id			= ARM_PMU_DEVICE_CPU,
+=======
+	.id			= -1,
+>>>>>>> refs/remotes/origin/master
 	.num_resources		= ARRAY_SIZE(pmu_resources),
 	.resource		= pmu_resources,
 };
@@ -298,6 +413,30 @@ static void __init gic_init_irq(void)
 	gic_cascade_irq(1, IRQ_TC11MP_PB_IRQ1);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_HAVE_ARM_TWD
+static DEFINE_TWD_LOCAL_TIMER(twd_local_timer,
+			      REALVIEW_TC11MP_TWD_BASE,
+			      IRQ_LOCALTIMER);
+
+static void __init realview_pb11mp_twd_init(void)
+{
+	int err = twd_local_timer_register(&twd_local_timer);
+	if (err)
+		pr_err("twd_local_timer_register failed %d\n", err);
+}
+#else
+#define realview_pb11mp_twd_init()	do {} while(0)
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init realview_pb11mp_timer_init(void)
 {
 	timer0_va_base = __io_address(REALVIEW_PB11MP_TIMER0_1_BASE);
@@ -305,17 +444,35 @@ static void __init realview_pb11mp_timer_init(void)
 	timer2_va_base = __io_address(REALVIEW_PB11MP_TIMER2_3_BASE);
 	timer3_va_base = __io_address(REALVIEW_PB11MP_TIMER2_3_BASE) + 0x20;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_LOCAL_TIMERS
 	twd_base = __io_address(REALVIEW_TC11MP_TWD_BASE);
 #endif
 	realview_timer_init(IRQ_TC11MP_TIMER0_1);
+=======
+	realview_timer_init(IRQ_TC11MP_TIMER0_1);
+	realview_pb11mp_twd_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct sys_timer realview_pb11mp_timer = {
 	.init		= realview_pb11mp_timer_init,
 };
 
+<<<<<<< HEAD
 static void realview_pb11mp_reset(char mode)
+=======
+static void realview_pb11mp_restart(char mode, const char *cmd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	realview_clk_init(__io_address(REALVIEW_SYS_BASE), false);
+	realview_timer_init(IRQ_TC11MP_TIMER0_1);
+	realview_pb11mp_twd_init();
+}
+
+static void realview_pb11mp_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *reset_ctrl = __io_address(REALVIEW_SYS_RESETCTL);
 	void __iomem *lock_ctrl = __io_address(REALVIEW_SYS_LOCK);
@@ -327,6 +484,14 @@ static void realview_pb11mp_reset(char mode)
 	__raw_writel(REALVIEW_SYS_LOCK_VAL, lock_ctrl);
 	__raw_writel(0x0000, reset_ctrl);
 	__raw_writel(0x0004, reset_ctrl);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dsb();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dsb();
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init realview_pb11mp_init(void)
@@ -351,20 +516,51 @@ static void __init realview_pb11mp_init(void)
 		struct amba_device *d = amba_devs[i];
 		amba_device_register(d, &iomem_resource);
 	}
+<<<<<<< HEAD
 
 #ifdef CONFIG_LEDS
 	leds_event = realview_leds_event;
 #endif
+<<<<<<< HEAD
 	realview_reset = realview_pb11mp_reset;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(REALVIEW_PB11MP, "ARM-RealView PB11MPCore")
 	/* Maintainer: ARM Ltd/Deep Blue Solutions Ltd */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= PLAT_PHYS_OFFSET + 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.smp		= smp_ops(realview_smp_ops),
+>>>>>>> refs/remotes/origin/master
 	.fixup		= realview_fixup,
 	.map_io		= realview_pb11mp_map_io,
 	.init_early	= realview_init_early,
 	.init_irq	= gic_init_irq,
+<<<<<<< HEAD
 	.timer		= &realview_pb11mp_timer,
+<<<<<<< HEAD
 	.init_machine	= realview_pb11mp_init,
+=======
+	.handle_irq	= gic_handle_irq,
+=======
+	.init_time	= realview_pb11mp_timer_init,
+>>>>>>> refs/remotes/origin/master
+	.init_machine	= realview_pb11mp_init,
+#ifdef CONFIG_ZONE_DMA
+	.dma_zone_size	= SZ_256M,
+#endif
+	.restart	= realview_pb11mp_restart,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

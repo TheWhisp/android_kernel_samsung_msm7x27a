@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 /**
  * arch/s390/oprofile/hwsampler.c
  *
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * Copyright IBM Corp. 2010
  * Author: Heinz Graalfs <graalfs@de.ibm.com>
  */
@@ -18,23 +22,44 @@
 #include <linux/oom.h>
 #include <linux/oprofile.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/lowcore.h>
 #include <asm/irq.h>
 
 #include "hwsampler.h"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/facility.h>
+#include <asm/cpu_mf.h>
+#include <asm/irq.h>
+
+#include "hwsampler.h"
+#include "op_counter.h"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_NUM_SDB 511
 #define MIN_NUM_SDB 1
 
+<<<<<<< HEAD
 #define ALERT_REQ_MASK   0x4000000000000000ul
 #define BUFFER_FULL_MASK 0x8000000000000000ul
 
+<<<<<<< HEAD
 #define EI_IEA      (1 << 31)	/* invalid entry address              */
 #define EI_ISE      (1 << 30)	/* incorrect SDBT entry               */
 #define EI_PRA      (1 << 29)	/* program request alert              */
 #define EI_SACA     (1 << 23)	/* sampler authorization change alert */
 #define EI_LSDA     (1 << 22)	/* loss of sample data alert          */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 DECLARE_PER_CPU(struct hws_cpu_buffer, sampler_cpu_buffer);
 
 struct hws_execute_parms {
@@ -50,6 +75,10 @@ static DEFINE_MUTEX(hws_sem_oom);
 
 static unsigned char hws_flush_all;
 static unsigned int hws_oom;
+<<<<<<< HEAD
+=======
+static unsigned int hws_alert;
+>>>>>>> refs/remotes/origin/master
 static struct workqueue_struct *hws_wq;
 
 static unsigned int hws_state;
@@ -71,6 +100,7 @@ static unsigned long interval;
 static unsigned long min_sampler_rate;
 static unsigned long max_sampler_rate;
 
+<<<<<<< HEAD
 static int ssctl(void *buffer)
 {
 	int cc;
@@ -108,6 +138,8 @@ static int qsi(void *buffer)
 	return cc ? -EINVAL : 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void execute_qsi(void *parms)
 {
 	struct hws_execute_parms *ep = parms;
@@ -119,7 +151,11 @@ static void execute_ssctl(void *parms)
 {
 	struct hws_execute_parms *ep = parms;
 
+<<<<<<< HEAD
 	ep->rc = ssctl(ep->buffer);
+=======
+	ep->rc = lsctl(ep->buffer);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int smp_ctl_ssctl_stop(int cpu)
@@ -220,6 +256,7 @@ static int smp_ctl_qsi(int cpu)
 	return ep.rc;
 }
 
+<<<<<<< HEAD
 static inline unsigned long *trailer_entry_ptr(unsigned long v)
 {
 	void *ret;
@@ -231,9 +268,38 @@ static inline unsigned long *trailer_entry_ptr(unsigned long v)
 	return (unsigned long *) ret;
 }
 
+<<<<<<< HEAD
 /* prototypes for external interrupt handler and worker */
 static void hws_ext_handler(unsigned int ext_int_code,
 				unsigned int param32, unsigned long param64);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void hws_ext_handler(struct ext_code ext_code,
+			    unsigned int param32, unsigned long param64)
+{
+	struct hws_cpu_buffer *cb = &__get_cpu_var(sampler_cpu_buffer);
+
+	if (!(param32 & CPU_MF_INT_SF_MASK))
+		return;
+
+<<<<<<< HEAD
+	kstat_cpu(smp_processor_id()).irqs[EXTINT_CPM]++;
+=======
+	if (!hws_alert)
+		return;
+
+	inc_irq_stat(IRQEXT_CMS);
+>>>>>>> refs/remotes/origin/master
+	atomic_xchg(&cb->ext_params, atomic_read(&cb->ext_params) | param32);
+
+	if (hws_wq)
+		queue_work(hws_wq, &cb->worker);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void worker(struct work_struct *work);
 
@@ -251,6 +317,7 @@ static void init_all_cpu_buffers(void)
 	}
 }
 
+<<<<<<< HEAD
 static int is_link_entry(unsigned long *s)
 {
 	return *s & 0x1ul ? 1 : 0;
@@ -261,6 +328,8 @@ static unsigned long *get_next_sdbt(unsigned long *s)
 	return (unsigned long *) (*s & ~0x1ul);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int prepare_cpu_buffers(void)
 {
 	int cpu;
@@ -348,7 +417,11 @@ static int allocate_sdbt(int cpu)
 			}
 			*sdbt = sdb;
 			trailer = trailer_entry_ptr(*sdbt);
+<<<<<<< HEAD
 			*trailer = ALERT_REQ_MASK;
+=======
+			*trailer = SDB_TE_ALERT_REQ_MASK;
+>>>>>>> refs/remotes/origin/master
 			sdbt++;
 			mutex_unlock(&hws_sem_oom);
 		}
@@ -672,6 +745,8 @@ int hwsampler_activate(unsigned int cpu)
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void hws_ext_handler(unsigned int ext_int_code,
 			    unsigned int param32, unsigned long param64)
 {
@@ -684,6 +759,10 @@ static void hws_ext_handler(unsigned int ext_int_code,
 		queue_work(hws_wq, &cb->worker);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int check_qsi_on_setup(void)
 {
 	int rc;
@@ -759,6 +838,8 @@ static int worker_check_error(unsigned int cpu, int ext_params)
 	if (!sdbt || !*sdbt)
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ext_params & EI_PRA)
 		cb->req_alert++;
 
@@ -766,16 +847,46 @@ static int worker_check_error(unsigned int cpu, int ext_params)
 		cb->loss_of_sample_data++;
 
 	if (ext_params & EI_IEA) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (ext_params & CPU_MF_INT_SF_PRA)
+		cb->req_alert++;
+
+	if (ext_params & CPU_MF_INT_SF_LSDA)
+		cb->loss_of_sample_data++;
+
+	if (ext_params & CPU_MF_INT_SF_IAE) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cb->invalid_entry_address++;
 		rc = -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ext_params & EI_ISE) {
+=======
+	if (ext_params & CPU_MF_INT_SF_ISE) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ext_params & CPU_MF_INT_SF_ISE) {
+>>>>>>> refs/remotes/origin/master
 		cb->incorrect_sdbt_entry++;
 		rc = -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ext_params & EI_SACA) {
+=======
+	if (ext_params & CPU_MF_INT_SF_SACA) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ext_params & CPU_MF_INT_SF_SACA) {
+>>>>>>> refs/remotes/origin/master
 		cb->sample_auth_change_alert++;
 		rc = -EINVAL;
 	}
@@ -836,7 +947,11 @@ static void worker_on_interrupt(unsigned int cpu)
 
 		trailer = trailer_entry_ptr(*sdbt);
 		/* leave loop if no more work to do */
+<<<<<<< HEAD
 		if (!(*trailer & BUFFER_FULL_MASK)) {
+=======
+		if (!(*trailer & SDB_TE_BUFFER_FULL_MASK)) {
+>>>>>>> refs/remotes/origin/master
 			done = 1;
 			if (!hws_flush_all)
 				continue;
@@ -863,7 +978,11 @@ static void worker_on_interrupt(unsigned int cpu)
 static void add_samples_to_oprofile(unsigned int cpu, unsigned long *sdbt,
 		unsigned long *dear)
 {
+<<<<<<< HEAD
 	struct hws_data_entry *sample_data_ptr;
+=======
+	struct hws_basic_entry *sample_data_ptr;
+>>>>>>> refs/remotes/origin/master
 	unsigned long *trailer;
 
 	trailer = trailer_entry_ptr(*sdbt);
@@ -873,7 +992,11 @@ static void add_samples_to_oprofile(unsigned int cpu, unsigned long *sdbt,
 		trailer = dear;
 	}
 
+<<<<<<< HEAD
 	sample_data_ptr = (struct hws_data_entry *)(*sdbt);
+=======
+	sample_data_ptr = (struct hws_basic_entry *)(*sdbt);
+>>>>>>> refs/remotes/origin/master
 
 	while ((unsigned long *)sample_data_ptr < trailer) {
 		struct pt_regs *regs = NULL;
@@ -896,6 +1019,16 @@ static void add_samples_to_oprofile(unsigned int cpu, unsigned long *sdbt,
 		if (sample_data_ptr->P == 1) {
 			/* userspace sample */
 			unsigned int pid = sample_data_ptr->prim_asn;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			if (!counter_config.user)
+				goto skip_sample;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!counter_config.user)
+				goto skip_sample;
+>>>>>>> refs/remotes/origin/master
 			rcu_read_lock();
 			tsk = pid_task(find_vpid(pid), PIDTYPE_PID);
 			if (tsk)
@@ -903,6 +1036,16 @@ static void add_samples_to_oprofile(unsigned int cpu, unsigned long *sdbt,
 			rcu_read_unlock();
 		} else {
 			/* kernelspace sample */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			if (!counter_config.kernel)
+				goto skip_sample;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!counter_config.kernel)
+				goto skip_sample;
+>>>>>>> refs/remotes/origin/master
 			regs = task_pt_regs(current);
 		}
 
@@ -910,7 +1053,15 @@ static void add_samples_to_oprofile(unsigned int cpu, unsigned long *sdbt,
 		oprofile_add_ext_hw_sample(sample_data_ptr->ia, regs, 0,
 				!sample_data_ptr->P, tsk);
 		mutex_unlock(&hws_sem);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	skip_sample:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skip_sample:
+>>>>>>> refs/remotes/origin/master
 		sample_data_ptr++;
 	}
 }
@@ -994,7 +1145,15 @@ allocate_error:
  *
  * Returns 0 on success, !0 on failure.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int hwsampler_deallocate()
+=======
+int hwsampler_deallocate(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hwsampler_deallocate(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
@@ -1004,7 +1163,16 @@ int hwsampler_deallocate()
 	if (hws_state != HWS_STOPPED)
 		goto deallocate_exit;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ctl_clear_bit(0, 5); /* set bit 58 CR0 off */
+=======
+	measurement_alert_subclass_unregister();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_subclass_unregister(IRQ_SUBCLASS_MEASUREMENT_ALERT);
+	hws_alert = 0;
+>>>>>>> refs/remotes/origin/master
 	deallocate_sdbt();
 
 	hws_state = HWS_DEALLOCATED;
@@ -1035,7 +1203,15 @@ unsigned long hwsampler_get_sample_overflow_count(unsigned int cpu)
 	return cb->sample_overflow;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int hwsampler_setup()
+=======
+int hwsampler_setup(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hwsampler_setup(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	int cpu;
@@ -1102,7 +1278,15 @@ setup_exit:
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int hwsampler_shutdown()
+=======
+int hwsampler_shutdown(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hwsampler_shutdown(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
@@ -1118,7 +1302,16 @@ int hwsampler_shutdown()
 		mutex_lock(&hws_sem);
 
 		if (hws_state == HWS_STOPPED) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ctl_clear_bit(0, 5); /* set bit 58 CR0 off */
+=======
+			measurement_alert_subclass_unregister();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			irq_subclass_unregister(IRQ_SUBCLASS_MEASUREMENT_ALERT);
+			hws_alert = 0;
+>>>>>>> refs/remotes/origin/master
 			deallocate_sdbt();
 		}
 		if (hws_wq) {
@@ -1193,7 +1386,16 @@ start_all_exit:
 	hws_oom = 1;
 	hws_flush_all = 0;
 	/* now let them in, 1407 CPUMF external interrupts */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ctl_set_bit(0, 5); /* set CR0 bit 58 */
+=======
+	measurement_alert_subclass_register();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hws_alert = 1;
+	irq_subclass_register(IRQ_SUBCLASS_MEASUREMENT_ALERT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1203,7 +1405,15 @@ start_all_exit:
  *
  * Returns 0 on success, !0 on failure.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int hwsampler_stop_all()
+=======
+int hwsampler_stop_all(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hwsampler_stop_all(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int tmp_rc, rc, cpu;
 	struct hws_cpu_buffer *cb;

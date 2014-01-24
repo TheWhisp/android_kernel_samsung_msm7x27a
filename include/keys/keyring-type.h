@@ -1,6 +1,10 @@
 /* Keyring key type
  *
+<<<<<<< HEAD
  * Copyright (C) 2008 Red Hat, Inc. All Rights Reserved.
+=======
+ * Copyright (C) 2008, 2013 Red Hat, Inc. All Rights Reserved.
+>>>>>>> refs/remotes/origin/master
  * Written by David Howells (dhowells@redhat.com)
  *
  * This program is free software; you can redistribute it and/or
@@ -13,6 +17,7 @@
 #define _KEYS_KEYRING_TYPE_H
 
 #include <linux/key.h>
+<<<<<<< HEAD
 #include <linux/rcupdate.h>
 
 /*
@@ -27,5 +32,8 @@ struct keyring_list {
 	struct key	*keys[0];
 };
 
+=======
+#include <linux/assoc_array.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _KEYS_KEYRING_TYPE_H */

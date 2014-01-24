@@ -12,6 +12,7 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  */
+<<<<<<< HEAD
 
 #ifndef __IF_TUN_H
 #define __IF_TUN_H
@@ -92,6 +93,13 @@ struct tun_filter {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef __IF_TUN_H
+#define __IF_TUN_H
+
+#include <uapi/linux/if_tun.h>
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_TUN) || defined(CONFIG_TUN_MODULE)
 struct socket *tun_get_socket(struct file *);
 #else
@@ -104,5 +112,8 @@ static inline struct socket *tun_get_socket(struct file *f)
 	return ERR_PTR(-EINVAL);
 }
 #endif /* CONFIG_TUN */
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __IF_TUN_H */

@@ -69,7 +69,15 @@ static int h4_open(struct hci_uart *hu)
 
 	BT_DBG("hu %p", hu);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	h4 = kzalloc(sizeof(*h4), GFP_ATOMIC);
+=======
+	h4 = kzalloc(sizeof(*h4), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
+=======
+	h4 = kzalloc(sizeof(*h4), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!h4)
 		return -ENOMEM;
 
@@ -124,6 +132,7 @@ static int h4_enqueue(struct hci_uart *hu, struct sk_buff *skb)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int h4_check_data_len(struct h4_struct *h4, int len)
 {
 	register int room = skb_tailroom(h4->rx_skb);
@@ -148,11 +157,19 @@ static inline int h4_check_data_len(struct h4_struct *h4, int len)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Recv data */
 static int h4_recv(struct hci_uart *hu, void *data, int count)
 {
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (!test_bit(HCI_UART_REGISTERED, &hu->flags))
+		return -EUNATCH;
+
+>>>>>>> refs/remotes/origin/master
 	ret = hci_recv_stream_fragment(hu->hdev, data, count);
 	if (ret < 0) {
 		BT_ERR("Frame Reassembly Failed");

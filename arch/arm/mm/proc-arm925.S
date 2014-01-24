@@ -108,6 +108,14 @@ ENTRY(cpu_arm925_proc_fin)
  * loc: location to jump to for soft reset
  */
 	.align	5
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_arm925_reset)
 	/* Send software reset to MPU and DSP */
 	mov	ip, #0xff000000
@@ -115,6 +123,16 @@ ENTRY(cpu_arm925_reset)
 	orr	ip, ip, #0x0000ce00
 	mov	r4, #1
 	strh	r4, [ip, #0x10]
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_arm925_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_arm925_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -255,6 +273,10 @@ ENTRY(arm925_coherent_user_range)
 	cmp	r0, r1
 	blo	1b
 	mcr	p15, 0, r0, c7, c10, 4		@ drain WB
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -372,6 +394,8 @@ ENTRY(arm925_dma_unmap_area)
 	mov	pc, lr
 ENDPROC(arm925_dma_unmap_area)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(arm925_cache_fns)
 	.long	arm925_flush_icache_all
 	.long	arm925_flush_kern_cache_all
@@ -383,6 +407,17 @@ ENTRY(arm925_cache_fns)
 	.long	arm925_dma_map_area
 	.long	arm925_dma_unmap_area
 	.long	arm925_dma_flush_range
+=======
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm925
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	arm925_flush_kern_cache_louis
+	.equ	arm925_flush_kern_cache_louis, arm925_flush_kern_cache_all
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm925
+>>>>>>> refs/remotes/origin/master
 
 ENTRY(cpu_arm925_dcache_clean_area)
 #ifndef CONFIG_CPU_DCACHE_WRITETHROUGH
@@ -440,8 +475,11 @@ ENTRY(cpu_arm925_set_pte_ext)
 #endif /* CONFIG_MMU */
 	mov	pc, lr
 
+<<<<<<< HEAD
 	__CPUINIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.type	__arm925_setup, #function
 __arm925_setup:
 	mov	r0, #0
@@ -487,6 +525,8 @@ arm925_crval:
 	crval	clear=0x00007f3f, mmuset=0x0000313d, ucset=0x00001130
 
 	__INITDATA
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * Purpose : Function pointers used to access above functions - all calls
@@ -524,15 +564,42 @@ cpu_elf_name:
 cpu_arm925_name:
 	.asciz	"ARM925T"
 	.size	cpu_arm925_name, . - cpu_arm925_name
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions arm925, dabort=v4t_early_abort, pabort=legacy_pabort
+
+	.section ".rodata"
+
+	string	cpu_arch_name, "armv4t"
+	string	cpu_elf_name, "v4"
+	string	cpu_arm925_name, "ARM925T"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align
 
 	.section ".proc.info.init", #alloc, #execinstr
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.type	__arm925_proc_info,#object
 __arm925_proc_info:
 	.long	0x54029250
 	.long	0xfffffff0
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+.macro arm925_proc_info name:req, cpu_val:req, cpu_mask:req, cpu_name:req, cache
+	.type	__\name\()_proc_info,#object
+__\name\()_proc_info:
+	.long	\cpu_val
+	.long	\cpu_mask
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	.long   PMD_TYPE_SECT | \
 		PMD_BIT4 | \
 		PMD_SECT_AP_WRITE | \
@@ -550,12 +617,15 @@ __arm925_proc_info:
 	.long	v4wbi_tlb_fns
 	.long	v4wb_user_fns
 	.long	arm925_cache_fns
+<<<<<<< HEAD
 	.size	__arm925_proc_info, . - __arm925_proc_info
 
 	.type	__arm915_proc_info,#object
 __arm915_proc_info:
 	.long	0x54029150
 	.long	0xfffffff0
+=======
+>>>>>>> refs/remotes/origin/master
 	.long   PMD_TYPE_SECT | \
 		PMD_BIT4 | \
 		PMD_SECT_AP_WRITE | \
@@ -573,4 +643,17 @@ __arm915_proc_info:
 	.long	v4wbi_tlb_fns
 	.long	v4wb_user_fns
 	.long	arm925_cache_fns
+<<<<<<< HEAD
 	.size	__arm925_proc_info, . - __arm925_proc_info
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.size	__\name\()_proc_info, . - __\name\()_proc_info
+.endm
+
+	arm925_proc_info arm925, 0x54029250, 0xfffffff0, cpu_arm925_name
+	arm925_proc_info arm915, 0x54029150, 0xfffffff0, cpu_arm925_name
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

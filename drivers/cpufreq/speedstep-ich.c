@@ -25,6 +25,16 @@
 #include <linux/pci.h>
 #include <linux/sched.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/cpu_device_id.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "speedstep-lib.h"
 
 
@@ -201,7 +211,11 @@ static unsigned int speedstep_detect_chipset(void)
 	if (speedstep_chipset_dev) {
 		/* speedstep.c causes lockups on Dell Inspirons 8000 and
 		 * 8100 which use a pretty old revision of the 82815
+<<<<<<< HEAD
 		 * host brige. Abort on these systems.
+=======
+		 * host bridge. Abort on these systems.
+>>>>>>> refs/remotes/origin/master
 		 */
 		static struct pci_dev *hostbridge;
 
@@ -249,6 +263,7 @@ static unsigned int speedstep_get(unsigned int cpu)
 /**
  * speedstep_target - set a new CPUFreq policy
  * @policy: new policy
+<<<<<<< HEAD
  * @target_freq: the target frequency
  * @relation: how that frequency relates to achieved frequency
  *	(CPUFREQ_RELATION_L or CPUFREQ_RELATION_H)
@@ -291,10 +306,26 @@ static int speedstep_target(struct cpufreq_policy *policy,
 		cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
 	}
 
+=======
+ * @index: index of target frequency
+ *
+ * Sets a new CPUFreq policy.
+ */
+static int speedstep_target(struct cpufreq_policy *policy, unsigned int index)
+{
+	unsigned int policy_cpu;
+
+	policy_cpu = cpumask_any_and(policy->cpus, cpu_online_mask);
+
+	smp_call_function_single(policy_cpu, _speedstep_set_state, &index,
+				 true);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 
+<<<<<<< HEAD
 /**
  * speedstep_verify - verifies a new CPUFreq policy
  * @policy: new policy
@@ -307,6 +338,8 @@ static int speedstep_verify(struct cpufreq_policy *policy)
 	return cpufreq_frequency_table_verify(policy, &speedstep_freqs[0]);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct get_freqs {
 	struct cpufreq_policy *policy;
 	int ret;
@@ -326,8 +359,12 @@ static void get_freqs_on_cpu(void *_get_freqs)
 
 static int speedstep_cpu_init(struct cpufreq_policy *policy)
 {
+<<<<<<< HEAD
 	int result;
 	unsigned int policy_cpu, speed;
+=======
+	unsigned int policy_cpu;
+>>>>>>> refs/remotes/origin/master
 	struct get_freqs gf;
 
 	/* only run on CPU to be set, or on its sibling */
@@ -342,6 +379,7 @@ static int speedstep_cpu_init(struct cpufreq_policy *policy)
 	if (gf.ret)
 		return gf.ret;
 
+<<<<<<< HEAD
 	/* get current speed setting */
 	speed = speedstep_get(policy_cpu);
 	if (!speed)
@@ -388,6 +426,38 @@ static struct cpufreq_driver speedstep_driver = {
 	.attr	= speedstep_attr,
 };
 
+<<<<<<< HEAD
+=======
+=======
+	return cpufreq_table_validate_and_show(policy, speedstep_freqs);
+}
+
+
+static struct cpufreq_driver speedstep_driver = {
+	.name	= "speedstep-ich",
+	.verify	= cpufreq_generic_frequency_table_verify,
+	.target_index = speedstep_target,
+	.init	= speedstep_cpu_init,
+	.exit	= cpufreq_generic_exit,
+	.get	= speedstep_get,
+	.attr	= cpufreq_generic_attr,
+};
+
+>>>>>>> refs/remotes/origin/master
+static const struct x86_cpu_id ss_smi_ids[] = {
+	{ X86_VENDOR_INTEL, 6, 0xb, },
+	{ X86_VENDOR_INTEL, 6, 0x8, },
+	{ X86_VENDOR_INTEL, 15, 2 },
+	{}
+};
+#if 0
+/* Autoload or not? Do not for now. */
+MODULE_DEVICE_TABLE(x86cpu, ss_smi_ids);
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * speedstep_init - initializes the SpeedStep CPUFreq driver
@@ -398,6 +468,18 @@ static struct cpufreq_driver speedstep_driver = {
  */
 static int __init speedstep_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!x86_match_cpu(ss_smi_ids))
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!x86_match_cpu(ss_smi_ids))
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	/* detect processor */
 	speedstep_processor = speedstep_detect_processor();
 	if (!speedstep_processor) {

@@ -30,6 +30,7 @@
 #ifndef __FIRMWARE_H__
 #define __FIRMWARE_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 #include "device.h"
 
@@ -55,5 +56,12 @@ BOOL
 FIRMWAREbCheckVersion(
      PSDevice pDevice
     );
+=======
+#include "device.h"
+
+int FIRMWAREbDownload(struct vnt_private *);
+int FIRMWAREbBrach2Sram(struct vnt_private *);
+int FIRMWAREbCheckVersion(struct vnt_private *);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __FIRMWARE_H__ */

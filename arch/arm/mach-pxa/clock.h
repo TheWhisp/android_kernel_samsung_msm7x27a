@@ -5,6 +5,14 @@ struct clkops {
 	void			(*enable)(struct clk *);
 	void			(*disable)(struct clk *);
 	unsigned long		(*getrate)(struct clk *);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int			(*setrate)(struct clk *, unsigned long);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			(*setrate)(struct clk *, unsigned long);
+>>>>>>> refs/remotes/origin/master
 };
 
 struct clk {
@@ -56,7 +64,11 @@ void clk_pxa2xx_cken_disable(struct clk *clk);
 
 extern struct syscore_ops pxa2xx_clock_syscore_ops;
 
+<<<<<<< HEAD
 #if defined(CONFIG_PXA3xx) || defined(CONFIG_PXA95x)
+=======
+#if defined(CONFIG_PXA3xx)
+>>>>>>> refs/remotes/origin/master
 #define DEFINE_PXA3_CKEN(_name, _cken, _rate, _delay)	\
 struct clk clk_##_name = {				\
 		.ops	= &clk_pxa3xx_cken_ops,		\

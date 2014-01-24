@@ -345,8 +345,12 @@ static void __exit pc8736x_gpio_cleanup(void)
 	unregister_chrdev_region(MKDEV(major,0), PC8736X_GPIO_CT);
 	release_region(pc8736x_gpio_base, PC8736X_GPIO_RANGE);
 
+<<<<<<< HEAD
 	platform_device_del(pdev);
 	platform_device_put(pdev);
+=======
+	platform_device_unregister(pdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(pc8736x_gpio_init);

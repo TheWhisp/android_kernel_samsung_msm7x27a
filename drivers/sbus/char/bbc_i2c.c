@@ -233,6 +233,8 @@ int bbc_i2c_write_buf(struct bbc_i2c_client *client,
 	int ret = 0;
 
 	while (len > 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int err = bbc_i2c_writeb(client, *buf, off);
 
 		if (err < 0) {
@@ -240,6 +242,16 @@ int bbc_i2c_write_buf(struct bbc_i2c_client *client,
 			break;
 		}
 
+=======
+		ret = bbc_i2c_writeb(client, *buf, off);
+		if (ret < 0)
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = bbc_i2c_writeb(client, *buf, off);
+		if (ret < 0)
+			break;
+>>>>>>> refs/remotes/origin/master
 		len--;
 		buf++;
 		off++;
@@ -253,11 +265,23 @@ int bbc_i2c_read_buf(struct bbc_i2c_client *client,
 	int ret = 0;
 
 	while (len > 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int err = bbc_i2c_readb(client, buf, off);
 		if (err < 0) {
 			ret = err;
 			break;
 		}
+=======
+		ret = bbc_i2c_readb(client, buf, off);
+		if (ret < 0)
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = bbc_i2c_readb(client, buf, off);
+		if (ret < 0)
+			break;
+>>>>>>> refs/remotes/origin/master
 		len--;
 		buf++;
 		off++;
@@ -288,7 +312,11 @@ static irqreturn_t bbc_i2c_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static void __init reset_one_i2c(struct bbc_i2c_bus *bp)
+=======
+static void reset_one_i2c(struct bbc_i2c_bus *bp)
+>>>>>>> refs/remotes/origin/master
 {
 	writeb(I2C_PCF_PIN, bp->i2c_control_regs + 0x0);
 	writeb(bp->own, bp->i2c_control_regs + 0x1);
@@ -297,7 +325,11 @@ static void __init reset_one_i2c(struct bbc_i2c_bus *bp)
 	writeb(I2C_PCF_IDLE, bp->i2c_control_regs + 0x0);
 }
 
+<<<<<<< HEAD
 static struct bbc_i2c_bus * __init attach_one_i2c(struct platform_device *op, int index)
+=======
+static struct bbc_i2c_bus * attach_one_i2c(struct platform_device *op, int index)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bbc_i2c_bus *bp;
 	struct device_node *dp;
@@ -361,7 +393,11 @@ fail:
 extern int bbc_envctrl_init(struct bbc_i2c_bus *bp);
 extern void bbc_envctrl_cleanup(struct bbc_i2c_bus *bp);
 
+<<<<<<< HEAD
 static int __devinit bbc_i2c_probe(struct platform_device *op)
+=======
+static int bbc_i2c_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bbc_i2c_bus *bp;
 	int err, index = 0;
@@ -385,7 +421,11 @@ static int __devinit bbc_i2c_probe(struct platform_device *op)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit bbc_i2c_remove(struct platform_device *op)
+=======
+static int bbc_i2c_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bbc_i2c_bus *bp = dev_get_drvdata(&op->dev);
 
@@ -419,9 +459,11 @@ static struct platform_driver bbc_i2c_driver = {
 		.of_match_table = bbc_i2c_match,
 	},
 	.probe		= bbc_i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(bbc_i2c_remove),
 };
 
+<<<<<<< HEAD
 static int __init bbc_i2c_init(void)
 {
 	return platform_driver_register(&bbc_i2c_driver);
@@ -434,5 +476,14 @@ static void __exit bbc_i2c_exit(void)
 
 module_init(bbc_i2c_init);
 module_exit(bbc_i2c_exit);
+=======
+module_platform_driver(bbc_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= bbc_i2c_remove,
+};
+
+module_platform_driver(bbc_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

@@ -1,7 +1,15 @@
 /*
  *	w1_smem.c
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/master
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -32,8 +40,19 @@
 #include "../w1_family.h"
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_AUTHOR("Evgeniy Polyakov <johnpol@2ka.mipt.ru>");
+=======
+MODULE_AUTHOR("Evgeniy Polyakov <zbr@ioremap.net>");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("Driver for 1-wire Dallas network protocol, 64bit memory family.");
+=======
+MODULE_AUTHOR("Evgeniy Polyakov <zbr@ioremap.net>");
+MODULE_DESCRIPTION("Driver for 1-wire Dallas network protocol, 64bit memory family.");
+MODULE_ALIAS("w1-family-" __stringify(W1_FAMILY_SMEM_01));
+MODULE_ALIAS("w1-family-" __stringify(W1_FAMILY_SMEM_81));
+>>>>>>> refs/remotes/origin/master
 
 static struct w1_family w1_smem_family_01 = {
 	.fid = W1_FAMILY_SMEM_01,

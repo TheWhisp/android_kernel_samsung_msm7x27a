@@ -14,7 +14,15 @@
  *  Copyright (C) 2004-2005 Trusted Computer Solutions, Inc.
  *			    <dgoeddel@trustedcs.com>
  *  Copyright (C) 2006, 2007, 2009 Hewlett-Packard Development Company, L.P.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	Paul Moore <paul.moore@hp.com>
+=======
+ *	Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *  Copyright (C) 2007 Hitachi Software Engineering Co., Ltd.
  *		       Yuichi Nakamura <ynakam@hitachisoft.jp>
  *
@@ -28,7 +36,13 @@
 #include <linux/kernel.h>
 #include <linux/tracehook.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/ext2_fs.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/security.h>
 #include <linux/xattr.h>
@@ -52,16 +66,41 @@
 #include <linux/tty.h>
 #include <net/icmp.h>
 #include <net/ip.h>		/* for local_port_range[] */
+<<<<<<< HEAD
 #include <net/tcp.h>		/* struct or_callable used in sock_rcv_skb */
+<<<<<<< HEAD
+#include <net/inet_connection_sock.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/sock.h>
+#include <net/tcp.h>		/* struct or_callable used in sock_rcv_skb */
+#include <net/inet_connection_sock.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <net/net_namespace.h>
 #include <net/netlabel.h>
 #include <linux/uaccess.h>
 #include <asm/ioctls.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/bitops.h>
 #include <linux/interrupt.h>
 #include <linux/netdevice.h>	/* for network interface checks */
 #include <linux/netlink.h>
+=======
+#include <linux/atomic.h>
+#include <linux/bitops.h>
+#include <linux/interrupt.h>
+#include <linux/netdevice.h>	/* for network interface checks */
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/tcp.h>
 #include <linux/udp.h>
 #include <linux/dccp.h>
@@ -80,6 +119,18 @@
 #include <linux/posix-timers.h>
 #include <linux/syslog.h>
 #include <linux/user_namespace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/msg.h>
+#include <linux/shm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/msg.h>
+#include <linux/shm.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "avc.h"
 #include "objsec.h"
@@ -89,6 +140,8 @@
 #include "xfrm.h"
 #include "netlabel.h"
 #include "audit.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #define NUM_SEL_MNT_OPTS 5
 
@@ -97,6 +150,23 @@ extern struct security_operations *security_ops;
 
 /* SECMARK reference count */
 atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
+=======
+#include "avc_ss.h"
+
+#define NUM_SEL_MNT_OPTS 5
+
+=======
+#include "avc_ss.h"
+
+>>>>>>> refs/remotes/origin/master
+extern struct security_operations *security_ops;
+
+/* SECMARK reference count */
+static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SECURITY_SELINUX_DEVELOP
 int selinux_enforcing;
@@ -135,12 +205,36 @@ static struct kmem_cache *sel_inode_cache;
  * This function checks the SECMARK reference counter to see if any SECMARK
  * targets are currently configured, if the reference counter is greater than
  * zero SECMARK is considered to be enabled.  Returns true (1) if SECMARK is
+<<<<<<< HEAD
  * enabled, false (0) if SECMARK is disabled.
+=======
+ * enabled, false (0) if SECMARK is disabled.  If the always_check_network
+ * policy capability is enabled, SECMARK is always considered enabled.
+>>>>>>> refs/remotes/origin/master
  *
  */
 static int selinux_secmark_enabled(void)
 {
+<<<<<<< HEAD
 	return (atomic_read(&selinux_secmark_refcount) > 0);
+=======
+	return (selinux_policycap_alwaysnetwork || atomic_read(&selinux_secmark_refcount));
+}
+
+/**
+ * selinux_peerlbl_enabled - Check to see if peer labeling is currently enabled
+ *
+ * Description:
+ * This function checks if NetLabel or labeled IPSEC is enabled.  Returns true
+ * (1) if any are enabled or false (0) if neither are enabled.  If the
+ * always_check_network policy capability is enabled, peer labeling
+ * is always considered enabled.
+ *
+ */
+static int selinux_peerlbl_enabled(void)
+{
+	return (selinux_policycap_alwaysnetwork || netlbl_enabled() || selinux_xfrm_enabled());
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -215,6 +309,17 @@ static int inode_alloc_security(struct inode *inode)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void inode_free_rcu(struct rcu_head *head)
+{
+	struct inode_security_struct *isec;
+
+	isec = container_of(head, struct inode_security_struct, rcu);
+	kmem_cache_free(sel_inode_cache, isec);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void inode_free_security(struct inode *inode)
 {
 	struct inode_security_struct *isec = inode->i_security;
@@ -225,8 +330,21 @@ static void inode_free_security(struct inode *inode)
 		list_del_init(&isec->list);
 	spin_unlock(&sbsec->isec_lock);
 
+<<<<<<< HEAD
 	inode->i_security = NULL;
 	kmem_cache_free(sel_inode_cache, isec);
+=======
+	/*
+	 * The inode may still be referenced in a path walk and
+	 * a call to selinux_inode_permission() can be made
+	 * after inode_free_security() is called. Ideally, the VFS
+	 * wouldn't do this, but fixing that is a much harder
+	 * job. For now, simply free the i_security via RCU, and
+	 * leave the current inode->i_security pointer intact.
+	 * The inode will be freed after the RCU grace period too.
+	 */
+	call_rcu(&isec->rcu, inode_free_rcu);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int file_alloc_security(struct file *file)
@@ -279,19 +397,32 @@ static void superblock_free_security(struct super_block *sb)
 	kfree(sbsec);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* The security server must be initialized before
    any labeling or access decisions can be provided. */
 extern int ss_initialized;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* The file system's label must be initialized prior to use. */
 
 static const char *labeling_behaviors[6] = {
+=======
+/* The file system's label must be initialized prior to use. */
+
+static const char *labeling_behaviors[7] = {
+>>>>>>> refs/remotes/origin/master
 	"uses xattr",
 	"uses transition SIDs",
 	"uses task SIDs",
 	"uses genfs_contexts",
 	"not configured for labeling",
 	"uses mountpoint labeling",
+<<<<<<< HEAD
+=======
+	"uses native labeling",
+>>>>>>> refs/remotes/origin/master
 };
 
 static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dentry);
@@ -308,8 +439,16 @@ enum {
 	Opt_defcontext = 3,
 	Opt_rootcontext = 4,
 	Opt_labelsupport = 5,
+<<<<<<< HEAD
 };
 
+=======
+	Opt_nextmntopt = 6,
+};
+
+#define NUM_SEL_MNT_OPTS	(Opt_nextmntopt - 1)
+
+>>>>>>> refs/remotes/origin/master
 static const match_table_t tokens = {
 	{Opt_context, CONTEXT_STR "%s"},
 	{Opt_fscontext, FSCONTEXT_STR "%s"},
@@ -354,6 +493,32 @@ static int may_context_mount_inode_relabel(u32 sid,
 	return rc;
 }
 
+<<<<<<< HEAD
+=======
+static int selinux_is_sblabel_mnt(struct super_block *sb)
+{
+	struct superblock_security_struct *sbsec = sb->s_security;
+
+	if (sbsec->behavior == SECURITY_FS_USE_XATTR ||
+	    sbsec->behavior == SECURITY_FS_USE_TRANS ||
+	    sbsec->behavior == SECURITY_FS_USE_TASK)
+		return 1;
+
+	/* Special handling for sysfs. Is genfs but also has setxattr handler*/
+	if (strncmp(sb->s_type->name, "sysfs", sizeof("sysfs")) == 0)
+		return 1;
+
+	/*
+	 * Special handling for rootfs. Is genfs but supports
+	 * setting SELinux context on in-core inodes.
+	 */
+	if (strncmp(sb->s_type->name, "rootfs", sizeof("rootfs")) == 0)
+		return 1;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int sb_finish_set_opts(struct super_block *sb)
 {
 	struct superblock_security_struct *sbsec = sb->s_security;
@@ -387,8 +552,11 @@ static int sb_finish_set_opts(struct super_block *sb)
 		}
 	}
 
+<<<<<<< HEAD
 	sbsec->flags |= (SE_SBINITIALIZED | SE_SBLABELSUPP);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (sbsec->behavior > ARRAY_SIZE(labeling_behaviors))
 		printk(KERN_ERR "SELinux: initialized (dev %s, type %s), unknown behavior\n",
 		       sb->s_id, sb->s_type->name);
@@ -397,6 +565,7 @@ static int sb_finish_set_opts(struct super_block *sb)
 		       sb->s_id, sb->s_type->name,
 		       labeling_behaviors[sbsec->behavior-1]);
 
+<<<<<<< HEAD
 	if (sbsec->behavior == SECURITY_FS_USE_GENFS ||
 	    sbsec->behavior == SECURITY_FS_USE_MNTPOINT ||
 	    sbsec->behavior == SECURITY_FS_USE_NONE ||
@@ -405,6 +574,18 @@ static int sb_finish_set_opts(struct super_block *sb)
 
 	/* Special handling for sysfs. Is genfs but also has setxattr handler*/
 	if (strncmp(sb->s_type->name, "sysfs", sizeof("sysfs")) == 0)
+		sbsec->flags |= SE_SBLABELSUPP;
+=======
+	sbsec->flags |= SE_SBINITIALIZED;
+	if (selinux_is_sblabel_mnt(sb))
+		sbsec->flags |= SBLABEL_MNT;
+>>>>>>> refs/remotes/origin/master
+
+	/*
+	 * Special handling for rootfs. Is genfs but supports
+	 * setting SELinux context on in-core inodes.
+	 */
+	if (strncmp(sb->s_type->name, "rootfs", sizeof("rootfs")) == 0)
 		sbsec->flags |= SE_SBLABELSUPP;
 
 	/* Initialize the root inode. */
@@ -459,15 +640,28 @@ static int selinux_get_mnt_opts(const struct super_block *sb,
 	if (!ss_initialized)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	tmp = sbsec->flags & SE_MNTMASK;
 	/* count the number of mount options for this sb */
 	for (i = 0; i < 8; i++) {
+=======
+	/* make sure we always check enough bits to cover the mask */
+	BUILD_BUG_ON(SE_MNTMASK >= (1 << NUM_SEL_MNT_OPTS));
+
+	tmp = sbsec->flags & SE_MNTMASK;
+	/* count the number of mount options for this sb */
+	for (i = 0; i < NUM_SEL_MNT_OPTS; i++) {
+>>>>>>> refs/remotes/origin/master
 		if (tmp & 0x01)
 			opts->num_mnt_opts++;
 		tmp >>= 1;
 	}
 	/* Check if the Label support flag is set */
+<<<<<<< HEAD
 	if (sbsec->flags & SE_SBLABELSUPP)
+=======
+	if (sbsec->flags & SBLABEL_MNT)
+>>>>>>> refs/remotes/origin/master
 		opts->num_mnt_opts++;
 
 	opts->mnt_opts = kcalloc(opts->num_mnt_opts, sizeof(char *), GFP_ATOMIC);
@@ -514,9 +708,15 @@ static int selinux_get_mnt_opts(const struct super_block *sb,
 		opts->mnt_opts[i] = context;
 		opts->mnt_opts_flags[i++] = ROOTCONTEXT_MNT;
 	}
+<<<<<<< HEAD
 	if (sbsec->flags & SE_SBLABELSUPP) {
 		opts->mnt_opts[i] = NULL;
 		opts->mnt_opts_flags[i++] = SE_SBLABELSUPP;
+=======
+	if (sbsec->flags & SBLABEL_MNT) {
+		opts->mnt_opts[i] = NULL;
+		opts->mnt_opts_flags[i++] = SBLABEL_MNT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	BUG_ON(i != opts->num_mnt_opts);
@@ -553,7 +753,13 @@ static int bad_option(struct superblock_security_struct *sbsec, char flag,
  * labeling information.
  */
 static int selinux_set_mnt_opts(struct super_block *sb,
+<<<<<<< HEAD
 				struct security_mnt_opts *opts)
+=======
+				struct security_mnt_opts *opts,
+				unsigned long kern_flags,
+				unsigned long *set_kern_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct cred *cred = current_cred();
 	int rc = 0, i;
@@ -581,6 +787,15 @@ static int selinux_set_mnt_opts(struct super_block *sb,
 			"before the security server is initialized\n");
 		goto out;
 	}
+<<<<<<< HEAD
+=======
+	if (kern_flags && !set_kern_flags) {
+		/* Specifying internal flags without providing a place to
+		 * place the results is not allowed */
+		rc = -EINVAL;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Binary mount data FS will come through this function twice.  Once
@@ -605,7 +820,11 @@ static int selinux_set_mnt_opts(struct super_block *sb,
 	for (i = 0; i < num_opts; i++) {
 		u32 sid;
 
+<<<<<<< HEAD
 		if (flags[i] == SE_SBLABELSUPP)
+=======
+		if (flags[i] == SBLABEL_MNT)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		rc = security_context_to_sid(mount_options[i],
 					     strlen(mount_options[i]), &sid);
@@ -671,6 +890,7 @@ static int selinux_set_mnt_opts(struct super_block *sb,
 	if (strcmp(sb->s_type->name, "proc") == 0)
 		sbsec->flags |= SE_SBPROC;
 
+<<<<<<< HEAD
 	/* Determine the labeling behavior to use for this filesystem type. */
 	rc = security_fs_use((sbsec->flags & SE_SBPROC) ? "proc" : sb->s_type->name, &sbsec->behavior, &sbsec->sid);
 	if (rc) {
@@ -679,6 +899,21 @@ static int selinux_set_mnt_opts(struct super_block *sb,
 		goto out;
 	}
 
+=======
+	if (!sbsec->behavior) {
+		/*
+		 * Determine the labeling behavior to use for this
+		 * filesystem type.
+		 */
+		rc = security_fs_use(sb);
+		if (rc) {
+			printk(KERN_WARNING
+				"%s: security_fs_use(%s) returned %d\n",
+					__func__, sb->s_type->name, rc);
+			goto out;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	/* sets the context of the superblock for the fs being mounted. */
 	if (fscontext_sid) {
 		rc = may_context_mount_sb_relabel(fscontext_sid, sbsec, cred);
@@ -693,6 +928,14 @@ static int selinux_set_mnt_opts(struct super_block *sb,
 	 * sets the label used on all file below the mountpoint, and will set
 	 * the superblock context if not already set.
 	 */
+<<<<<<< HEAD
+=======
+	if (kern_flags & SECURITY_LSM_NATIVE_LABELS && !context_sid) {
+		sbsec->behavior = SECURITY_FS_USE_NATIVE;
+		*set_kern_flags |= SECURITY_LSM_NATIVE_LABELS;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (context_sid) {
 		if (!fscontext_sid) {
 			rc = may_context_mount_sb_relabel(context_sid, sbsec,
@@ -724,7 +967,12 @@ static int selinux_set_mnt_opts(struct super_block *sb,
 	}
 
 	if (defcontext_sid) {
+<<<<<<< HEAD
 		if (sbsec->behavior != SECURITY_FS_USE_XATTR) {
+=======
+		if (sbsec->behavior != SECURITY_FS_USE_XATTR &&
+			sbsec->behavior != SECURITY_FS_USE_NATIVE) {
+>>>>>>> refs/remotes/origin/master
 			rc = -EINVAL;
 			printk(KERN_WARNING "SELinux: defcontext option is "
 			       "invalid for this filesystem type\n");
@@ -752,7 +1000,41 @@ out_double_mount:
 	goto out;
 }
 
+<<<<<<< HEAD
 static void selinux_sb_clone_mnt_opts(const struct super_block *oldsb,
+=======
+static int selinux_cmp_sb_context(const struct super_block *oldsb,
+				    const struct super_block *newsb)
+{
+	struct superblock_security_struct *old = oldsb->s_security;
+	struct superblock_security_struct *new = newsb->s_security;
+	char oldflags = old->flags & SE_MNTMASK;
+	char newflags = new->flags & SE_MNTMASK;
+
+	if (oldflags != newflags)
+		goto mismatch;
+	if ((oldflags & FSCONTEXT_MNT) && old->sid != new->sid)
+		goto mismatch;
+	if ((oldflags & CONTEXT_MNT) && old->mntpoint_sid != new->mntpoint_sid)
+		goto mismatch;
+	if ((oldflags & DEFCONTEXT_MNT) && old->def_sid != new->def_sid)
+		goto mismatch;
+	if (oldflags & ROOTCONTEXT_MNT) {
+		struct inode_security_struct *oldroot = oldsb->s_root->d_inode->i_security;
+		struct inode_security_struct *newroot = newsb->s_root->d_inode->i_security;
+		if (oldroot->sid != newroot->sid)
+			goto mismatch;
+	}
+	return 0;
+mismatch:
+	printk(KERN_WARNING "SELinux: mount invalid.  Same superblock, "
+			    "different security settings for (dev %s, "
+			    "type %s)\n", newsb->s_id, newsb->s_type->name);
+	return -EBUSY;
+}
+
+static int selinux_sb_clone_mnt_opts(const struct super_block *oldsb,
+>>>>>>> refs/remotes/origin/master
 					struct super_block *newsb)
 {
 	const struct superblock_security_struct *oldsbsec = oldsb->s_security;
@@ -767,14 +1049,24 @@ static void selinux_sb_clone_mnt_opts(const struct super_block *oldsb,
 	 * mount options.  thus we can safely deal with this superblock later
 	 */
 	if (!ss_initialized)
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* how can we clone if the old one wasn't set up?? */
 	BUG_ON(!(oldsbsec->flags & SE_SBINITIALIZED));
 
+<<<<<<< HEAD
 	/* if fs is reusing a sb, just let its options stand... */
 	if (newsbsec->flags & SE_SBINITIALIZED)
 		return;
+=======
+	/* if fs is reusing a sb, make sure that the contexts match */
+	if (newsbsec->flags & SE_SBINITIALIZED)
+		return selinux_cmp_sb_context(oldsb, newsb);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&newsbsec->lock);
 
@@ -807,6 +1099,10 @@ static void selinux_sb_clone_mnt_opts(const struct super_block *oldsb,
 
 	sb_finish_set_opts(newsb);
 	mutex_unlock(&newsbsec->lock);
+<<<<<<< HEAD
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int selinux_parse_opts_str(char *options,
@@ -950,7 +1246,11 @@ static int superblock_doinit(struct super_block *sb, void *data)
 		goto out_err;
 
 out:
+<<<<<<< HEAD
 	rc = selinux_set_mnt_opts(sb, &opts);
+=======
+	rc = selinux_set_mnt_opts(sb, &opts, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 
 out_err:
 	security_free_mnt_opts(&opts);
@@ -984,7 +1284,11 @@ static void selinux_write_opts(struct seq_file *m,
 		case DEFCONTEXT_MNT:
 			prefix = DEFCONTEXT_STR;
 			break;
+<<<<<<< HEAD
 		case SE_SBLABELSUPP:
+=======
+		case SBLABEL_MNT:
+>>>>>>> refs/remotes/origin/master
 			seq_putc(m, ',');
 			seq_puts(m, LABELSUPP_STR);
 			continue;
@@ -1093,7 +1397,15 @@ static inline u16 socket_type_to_security_class(int family, int type, int protoc
 			return SECCLASS_NETLINK_ROUTE_SOCKET;
 		case NETLINK_FIREWALL:
 			return SECCLASS_NETLINK_FIREWALL_SOCKET;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case NETLINK_INET_DIAG:
+=======
+		case NETLINK_SOCK_DIAG:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case NETLINK_SOCK_DIAG:
+>>>>>>> refs/remotes/origin/master
 			return SECCLASS_NETLINK_TCPDIAG_SOCKET;
 		case NETLINK_NFLOG:
 			return SECCLASS_NETLINK_NFLOG_SOCKET;
@@ -1192,6 +1504,11 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
 	}
 
 	switch (sbsec->behavior) {
+<<<<<<< HEAD
+=======
+	case SECURITY_FS_USE_NATIVE:
+		break;
+>>>>>>> refs/remotes/origin/master
 	case SECURITY_FS_USE_XATTR:
 		if (!inode->i_op->getxattr) {
 			isec->sid = sbsec->def_sid;
@@ -1418,19 +1735,42 @@ static int current_has_perm(const struct task_struct *tsk,
 #endif
 
 /* Check whether a task is allowed to use a capability. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int task_has_capability(struct task_struct *tsk,
 			       const struct cred *cred,
 			       int cap, int audit)
 {
 	struct common_audit_data ad;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int cred_has_capability(const struct cred *cred,
+			       int cap, int audit)
+{
+	struct common_audit_data ad;
+<<<<<<< HEAD
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct av_decision avd;
 	u16 sclass;
 	u32 sid = cred_sid(cred);
 	u32 av = CAP_TO_MASK(cap);
 	int rc;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, CAP);
+<<<<<<< HEAD
 	ad.tsk = tsk;
+=======
+	ad.selinux_audit_data = &sad;
+	ad.tsk = current;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_CAP;
+>>>>>>> refs/remotes/origin/master
 	ad.u.cap = cap;
 
 	switch (CAP_TO_INDEX(cap)) {
@@ -1449,7 +1789,11 @@ static int task_has_capability(struct task_struct *tsk,
 
 	rc = avc_has_perm_noaudit(sid, sid, sclass, av, 0, &avd);
 	if (audit == SECURITY_CAP_AUDIT) {
+<<<<<<< HEAD
 		int rc2 = avc_audit(sid, sid, sclass, av, &avd, rc, &ad, 0);
+=======
+		int rc2 = avc_audit(sid, sid, sclass, av, &avd, rc, &ad);
+>>>>>>> refs/remotes/origin/master
 		if (rc2)
 			return rc2;
 	}
@@ -1472,8 +1816,12 @@ static int task_has_system(struct task_struct *tsk,
 static int inode_has_perm(const struct cred *cred,
 			  struct inode *inode,
 			  u32 perms,
+<<<<<<< HEAD
 			  struct common_audit_data *adp,
 			  unsigned flags)
+=======
+			  struct common_audit_data *adp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode_security_struct *isec;
 	u32 sid;
@@ -1486,6 +1834,7 @@ static int inode_has_perm(const struct cred *cred,
 	sid = cred_sid(cred);
 	isec = inode->i_security;
 
+<<<<<<< HEAD
 	return avc_has_perm_flags(sid, isec->sid, isec->sclass, perms, adp, flags);
 }
 
@@ -1495,10 +1844,21 @@ static int inode_has_perm_noadp(const struct cred *cred,
 				unsigned flags)
 {
 	struct common_audit_data ad;
+<<<<<<< HEAD
 
 	COMMON_AUDIT_DATA_INIT(&ad, INODE);
 	ad.u.inode = inode;
+=======
+	struct selinux_audit_data sad = {0,};
+
+	COMMON_AUDIT_DATA_INIT(&ad, INODE);
+	ad.u.inode = inode;
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return inode_has_perm(cred, inode, perms, &ad, flags);
+=======
+	return avc_has_perm(sid, isec->sid, isec->sclass, perms, adp);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Same as inode_has_perm, but pass explicit audit data containing
@@ -1510,10 +1870,25 @@ static inline int dentry_has_perm(const struct cred *cred,
 {
 	struct inode *inode = dentry->d_inode;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	COMMON_AUDIT_DATA_INIT(&ad, DENTRY);
 	ad.u.dentry = dentry;
+=======
+	struct selinux_audit_data sad = {0,};
+
+	COMMON_AUDIT_DATA_INIT(&ad, DENTRY);
+	ad.u.dentry = dentry;
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return inode_has_perm(cred, inode, av, &ad, 0);
+=======
+
+	ad.type = LSM_AUDIT_DATA_DENTRY;
+	ad.u.dentry = dentry;
+	return inode_has_perm(cred, inode, av, &ad);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Same as inode_has_perm, but pass explicit audit data containing
@@ -1525,10 +1900,37 @@ static inline int path_has_perm(const struct cred *cred,
 {
 	struct inode *inode = path->dentry->d_inode;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	COMMON_AUDIT_DATA_INIT(&ad, PATH);
 	ad.u.path = *path;
+=======
+	struct selinux_audit_data sad = {0,};
+
+	COMMON_AUDIT_DATA_INIT(&ad, PATH);
+	ad.u.path = *path;
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return inode_has_perm(cred, inode, av, &ad, 0);
+=======
+
+	ad.type = LSM_AUDIT_DATA_PATH;
+	ad.u.path = *path;
+	return inode_has_perm(cred, inode, av, &ad);
+}
+
+/* Same as path_has_perm, but uses the inode from the file struct. */
+static inline int file_path_has_perm(const struct cred *cred,
+				     struct file *file,
+				     u32 av)
+{
+	struct common_audit_data ad;
+
+	ad.type = LSM_AUDIT_DATA_PATH;
+	ad.u.path = file->f_path;
+	return inode_has_perm(cred, file_inode(file), av, &ad);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Check whether a task can use an open file descriptor to
@@ -1544,13 +1946,31 @@ static int file_has_perm(const struct cred *cred,
 			 u32 av)
 {
 	struct file_security_struct *fsec = file->f_security;
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 sid = cred_sid(cred);
 	int rc;
 
 	COMMON_AUDIT_DATA_INIT(&ad, PATH);
 	ad.u.path = file->f_path;
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *inode = file_inode(file);
+	struct common_audit_data ad;
+	u32 sid = cred_sid(cred);
+	int rc;
+
+	ad.type = LSM_AUDIT_DATA_PATH;
+	ad.u.path = file->f_path;
+>>>>>>> refs/remotes/origin/master
 
 	if (sid != fsec->sid) {
 		rc = avc_has_perm(sid, fsec->sid,
@@ -1564,7 +1984,11 @@ static int file_has_perm(const struct cred *cred,
 	/* av is zero if only checking access to the descriptor. */
 	rc = 0;
 	if (av)
+<<<<<<< HEAD
 		rc = inode_has_perm(cred, inode, av, &ad, 0);
+=======
+		rc = inode_has_perm(cred, inode, av, &ad);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return rc;
@@ -1580,6 +2004,13 @@ static int may_create(struct inode *dir,
 	struct superblock_security_struct *sbsec;
 	u32 sid, newsid;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	dsec = dir->i_security;
@@ -1588,8 +2019,17 @@ static int may_create(struct inode *dir,
 	sid = tsec->sid;
 	newsid = tsec->create_sid;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, DENTRY);
 	ad.u.dentry = dentry;
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_DENTRY;
+	ad.u.dentry = dentry;
+>>>>>>> refs/remotes/origin/master
 
 	rc = avc_has_perm(sid, dsec->sid, SECCLASS_DIR,
 			  DIR__ADD_NAME | DIR__SEARCH,
@@ -1597,7 +2037,11 @@ static int may_create(struct inode *dir,
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 	if (!newsid || !(sbsec->flags & SE_SBLABELSUPP)) {
+=======
+	if (!newsid || !(sbsec->flags & SBLABEL_MNT)) {
+>>>>>>> refs/remotes/origin/master
 		rc = security_transition_sid(sid, dsec->sid, tclass,
 					     &dentry->d_name, &newsid);
 		if (rc)
@@ -1634,6 +2078,13 @@ static int may_link(struct inode *dir,
 {
 	struct inode_security_struct *dsec, *isec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = current_sid();
 	u32 av;
 	int rc;
@@ -1641,8 +2092,17 @@ static int may_link(struct inode *dir,
 	dsec = dir->i_security;
 	isec = dentry->d_inode->i_security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, DENTRY);
 	ad.u.dentry = dentry;
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_DENTRY;
+	ad.u.dentry = dentry;
+>>>>>>> refs/remotes/origin/master
 
 	av = DIR__SEARCH;
 	av |= (kind ? DIR__REMOVE_NAME : DIR__ADD_NAME);
@@ -1677,6 +2137,13 @@ static inline int may_rename(struct inode *old_dir,
 {
 	struct inode_security_struct *old_dsec, *new_dsec, *old_isec, *new_isec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = current_sid();
 	u32 av;
 	int old_is_dir, new_is_dir;
@@ -1687,7 +2154,15 @@ static inline int may_rename(struct inode *old_dir,
 	old_is_dir = S_ISDIR(old_dentry->d_inode->i_mode);
 	new_dsec = new_dir->i_security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, DENTRY);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_DENTRY;
+>>>>>>> refs/remotes/origin/master
 
 	ad.u.dentry = old_dentry;
 	rc = avc_has_perm(sid, old_dsec->sid, SECCLASS_DIR,
@@ -1743,7 +2218,15 @@ static inline u32 file_mask_to_av(int mode, int mask)
 {
 	u32 av = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((mode & S_IFMT) != S_IFDIR) {
+=======
+	if (!S_ISDIR(mode)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!S_ISDIR(mode)) {
+>>>>>>> refs/remotes/origin/master
 		if (mask & MAY_EXEC)
 			av |= FILE__EXECUTE;
 		if (mask & MAY_READ)
@@ -1805,6 +2288,67 @@ static inline u32 open_file_to_av(struct file *file)
 
 /* Hook functions begin here. */
 
+static int selinux_binder_set_context_mgr(struct task_struct *mgr)
+{
+	u32 mysid = current_sid();
+	u32 mgrsid = task_sid(mgr);
+
+	return avc_has_perm(mysid, mgrsid, SECCLASS_BINDER, BINDER__SET_CONTEXT_MGR, NULL);
+}
+
+static int selinux_binder_transaction(struct task_struct *from, struct task_struct *to)
+{
+	u32 mysid = current_sid();
+	u32 fromsid = task_sid(from);
+	u32 tosid = task_sid(to);
+	int rc;
+
+	if (mysid != fromsid) {
+		rc = avc_has_perm(mysid, fromsid, SECCLASS_BINDER, BINDER__IMPERSONATE, NULL);
+		if (rc)
+			return rc;
+	}
+
+	return avc_has_perm(fromsid, tosid, SECCLASS_BINDER, BINDER__CALL, NULL);
+}
+
+static int selinux_binder_transfer_binder(struct task_struct *from, struct task_struct *to)
+{
+	u32 fromsid = task_sid(from);
+	u32 tosid = task_sid(to);
+	return avc_has_perm(fromsid, tosid, SECCLASS_BINDER, BINDER__TRANSFER, NULL);
+}
+
+static int selinux_binder_transfer_file(struct task_struct *from, struct task_struct *to, struct file *file)
+{
+	u32 sid = task_sid(to);
+	struct file_security_struct *fsec = file->f_security;
+	struct inode *inode = file->f_path.dentry->d_inode;
+	struct inode_security_struct *isec = inode->i_security;
+	struct common_audit_data ad;
+	struct selinux_audit_data sad = {0,};
+	int rc;
+
+	COMMON_AUDIT_DATA_INIT(&ad, PATH);
+	ad.u.path = file->f_path;
+	ad.selinux_audit_data = &sad;
+
+	if (sid != fsec->sid) {
+		rc = avc_has_perm(sid, fsec->sid,
+				  SECCLASS_FD,
+				  FD__USE,
+				  &ad);
+		if (rc)
+			return rc;
+	}
+
+	if (unlikely(IS_PRIVATE(inode)))
+		return 0;
+
+	return avc_has_perm(sid, isec->sid, isec->sclass, file_to_av(file),
+			    &ad);
+}
+
 static int selinux_ptrace_access_check(struct task_struct *child,
 				     unsigned int mode)
 {
@@ -1814,7 +2358,15 @@ static int selinux_ptrace_access_check(struct task_struct *child,
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (mode == PTRACE_MODE_READ) {
+=======
+	if (mode & PTRACE_MODE_READ) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mode & PTRACE_MODE_READ) {
+>>>>>>> refs/remotes/origin/master
 		u32 sid = current_sid();
 		u32 csid = task_sid(child);
 		return avc_has_perm(sid, csid, SECCLASS_FILE, FILE__READ, NULL);
@@ -1871,6 +2423,8 @@ static int selinux_capset(struct cred *new, const struct cred *old,
  * the CAP_SETUID and CAP_SETGID capabilities using the capable hook.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int selinux_capable(struct task_struct *tsk, const struct cred *cred,
 			   struct user_namespace *ns, int cap, int audit)
 {
@@ -1881,6 +2435,23 @@ static int selinux_capable(struct task_struct *tsk, const struct cred *cred,
 		return rc;
 
 	return task_has_capability(tsk, cred, cap, audit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int selinux_capable(const struct cred *cred, struct user_namespace *ns,
+			   int cap, int audit)
+{
+	int rc;
+
+	rc = cap_capable(cred, ns, cap, audit);
+	if (rc)
+		return rc;
+
+	return cred_has_capability(cred, cap, audit);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int selinux_quotactl(int cmds, int type, int id, struct super_block *sb)
@@ -1957,8 +2528,16 @@ static int selinux_vm_enough_memory(struct mm_struct *mm, long pages)
 {
 	int rc, cap_sys_admin = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = selinux_capable(current, current_cred(),
 			     &init_user_ns, CAP_SYS_ADMIN,
+=======
+	rc = selinux_capable(current_cred(), &init_user_ns, CAP_SYS_ADMIN,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = selinux_capable(current_cred(), &init_user_ns, CAP_SYS_ADMIN,
+>>>>>>> refs/remotes/origin/master
 			     SECURITY_CAP_NOAUDIT);
 	if (rc == 0)
 		cap_sys_admin = 1;
@@ -1974,7 +2553,15 @@ static int selinux_bprm_set_creds(struct linux_binprm *bprm)
 	struct task_security_struct *new_tsec;
 	struct inode_security_struct *isec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct inode *inode = bprm->file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(bprm->file);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = cap_bprm_set_creds(bprm);
@@ -2003,6 +2590,16 @@ static int selinux_bprm_set_creds(struct linux_binprm *bprm)
 		new_tsec->sid = old_tsec->exec_sid;
 		/* Reset exec SID on execve. */
 		new_tsec->exec_sid = 0;
+<<<<<<< HEAD
+=======
+
+		/*
+		 * Minimize confusion: if no_new_privs and a transition is
+		 * explicitly requested, then fail the exec.
+		 */
+		if (bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS)
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* Check for a default transition on this program. */
 		rc = security_transition_sid(old_tsec->sid, isec->sid,
@@ -2012,10 +2609,22 @@ static int selinux_bprm_set_creds(struct linux_binprm *bprm)
 			return rc;
 	}
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, PATH);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ad.u.path = bprm->file->f_path;
 
 	if (bprm->file->f_path.mnt->mnt_flags & MNT_NOSUID)
+=======
+	ad.type = LSM_AUDIT_DATA_PATH;
+	ad.u.path = bprm->file->f_path;
+
+	if ((bprm->file->f_path.mnt->mnt_flags & MNT_NOSUID) ||
+	    (bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS))
+>>>>>>> refs/remotes/origin/master
 		new_tsec->sid = old_tsec->sid;
 
 	if (new_tsec->sid == old_tsec->sid) {
@@ -2053,7 +2662,15 @@ static int selinux_bprm_set_creds(struct linux_binprm *bprm)
 			u32 ptsid = 0;
 
 			rcu_read_lock();
+<<<<<<< HEAD
+<<<<<<< HEAD
 			tracer = tracehook_tracer_task(current);
+=======
+			tracer = ptrace_parent(current);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tracer = ptrace_parent(current);
+>>>>>>> refs/remotes/origin/master
 			if (likely(tracer != NULL)) {
 				sec = __task_cred(tracer)->security;
 				ptsid = sec->sid;
@@ -2097,25 +2714,48 @@ static int selinux_bprm_secureexec(struct linux_binprm *bprm)
 	return (atsecure || cap_bprm_secureexec(bprm));
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern struct vfsmount *selinuxfs_mount;
 extern struct dentry *selinux_null;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int match_file(const void *p, struct file *file, unsigned fd)
+{
+	return file_has_perm(p, file, file_to_av(file)) ? fd + 1 : 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Derived from fs/exec.c:flush_old_files. */
 static inline void flush_unauthorized_files(const struct cred *cred,
 					    struct files_struct *files)
 {
+<<<<<<< HEAD
 	struct common_audit_data ad;
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct file *file, *devnull = NULL;
 	struct tty_struct *tty;
 	struct fdtable *fdt;
 	long j = -1;
 	int drop_tty = 0;
+=======
+	struct file *file, *devnull = NULL;
+	struct tty_struct *tty;
+	int drop_tty = 0;
+	unsigned n;
+>>>>>>> refs/remotes/origin/master
 
 	tty = get_current_tty();
 	if (tty) {
 		spin_lock(&tty_files_lock);
 		if (!list_empty(&tty->tty_files)) {
 			struct tty_file_private *file_priv;
+<<<<<<< HEAD
 			struct inode *inode;
 
 			/* Revalidate access to controlling tty.
@@ -2131,6 +2771,19 @@ static inline void flush_unauthorized_files(const struct cred *cred,
 					   FILE__READ | FILE__WRITE, 0)) {
 				drop_tty = 1;
 			}
+=======
+
+			/* Revalidate access to controlling tty.
+			   Use file_path_has_perm on the tty path directly
+			   rather than using file_has_perm, as this particular
+			   open file may belong to another process and we are
+			   only interested in the inode-based check here. */
+			file_priv = list_first_entry(&tty->tty_files,
+						struct tty_file_private, list);
+			file = file_priv->file;
+			if (file_path_has_perm(cred, file, FILE__READ | FILE__WRITE))
+				drop_tty = 1;
+>>>>>>> refs/remotes/origin/master
 		}
 		spin_unlock(&tty_files_lock);
 		tty_kref_put(tty);
@@ -2140,8 +2793,13 @@ static inline void flush_unauthorized_files(const struct cred *cred,
 		no_tty();
 
 	/* Revalidate access to inherited open files. */
+<<<<<<< HEAD
 
 	COMMON_AUDIT_DATA_INIT(&ad, INODE);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock(&files->file_lock);
 	for (;;) {
@@ -2149,11 +2807,23 @@ static inline void flush_unauthorized_files(const struct cred *cred,
 		int fd;
 
 		j++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		i = j * __NFDBITS;
+=======
+		i = j * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-11.0
 		fdt = files_fdtable(files);
 		if (i >= fdt->max_fds)
 			break;
 		set = fdt->open_fds->fds_bits[j];
+=======
+		i = j * BITS_PER_LONG;
+		fdt = files_fdtable(files);
+		if (i >= fdt->max_fds)
+			break;
+		set = fdt->open_fds[j];
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!set)
 			continue;
 		spin_unlock(&files->file_lock);
@@ -2196,6 +2866,21 @@ static inline void flush_unauthorized_files(const struct cred *cred,
 
 	}
 	spin_unlock(&files->file_lock);
+=======
+	n = iterate_fd(files, 0, match_file, cred);
+	if (!n) /* none found? */
+		return;
+
+	devnull = dentry_open(&selinux_null, O_RDWR, cred);
+	if (IS_ERR(devnull))
+		devnull = NULL;
+	/* replace all the matching ones with this */
+	do {
+		replace_fd(n - 1, devnull, 0);
+	} while ((n = iterate_fd(files, n, match_file, cred)) != 0);
+	if (devnull)
+		fput(devnull);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2425,7 +3110,11 @@ static int selinux_sb_remount(struct super_block *sb, void *data)
 		u32 sid;
 		size_t len;
 
+<<<<<<< HEAD
 		if (flags[i] == SE_SBLABELSUPP)
+=======
+		if (flags[i] == SBLABEL_MNT)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		len = strlen(mount_options[i]);
 		rc = security_context_to_sid(mount_options[i], len, &sid);
@@ -2479,6 +3168,13 @@ static int selinux_sb_kern_mount(struct super_block *sb, int flags, void *data)
 {
 	const struct cred *cred = current_cred();
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = superblock_doinit(sb, data);
@@ -2489,7 +3185,15 @@ static int selinux_sb_kern_mount(struct super_block *sb, int flags, void *data)
 	if (flags & MS_KERNMOUNT)
 		return 0;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, DENTRY);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_DENTRY;
+>>>>>>> refs/remotes/origin/master
 	ad.u.dentry = sb->s_root;
 	return superblock_has_perm(cred, sb, FILESYSTEM__MOUNT, &ad);
 }
@@ -2498,22 +3202,48 @@ static int selinux_sb_statfs(struct dentry *dentry)
 {
 	const struct cred *cred = current_cred();
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	COMMON_AUDIT_DATA_INIT(&ad, DENTRY);
+=======
+	struct selinux_audit_data sad = {0,};
+
+	COMMON_AUDIT_DATA_INIT(&ad, DENTRY);
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	ad.type = LSM_AUDIT_DATA_DENTRY;
+>>>>>>> refs/remotes/origin/master
 	ad.u.dentry = dentry->d_sb->s_root;
 	return superblock_has_perm(cred, dentry->d_sb, FILESYSTEM__GETATTR, &ad);
 }
 
+<<<<<<< HEAD
 static int selinux_mount(char *dev_name,
 			 struct path *path,
 			 char *type,
+=======
+static int selinux_mount(const char *dev_name,
+			 struct path *path,
+			 const char *type,
+>>>>>>> refs/remotes/origin/master
 			 unsigned long flags,
 			 void *data)
 {
 	const struct cred *cred = current_cred();
 
 	if (flags & MS_REMOUNT)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return superblock_has_perm(cred, path->mnt->mnt_sb,
+=======
+		return superblock_has_perm(cred, path->dentry->d_sb,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return superblock_has_perm(cred, path->dentry->d_sb,
+>>>>>>> refs/remotes/origin/master
 					   FILESYSTEM__REMOUNT, NULL);
 	else
 		return path_has_perm(cred, path, FILE__MOUNTON);
@@ -2539,8 +3269,48 @@ static void selinux_inode_free_security(struct inode *inode)
 	inode_free_security(inode);
 }
 
+<<<<<<< HEAD
 static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
 				       const struct qstr *qstr, char **name,
+=======
+static int selinux_dentry_init_security(struct dentry *dentry, int mode,
+					struct qstr *name, void **ctx,
+					u32 *ctxlen)
+{
+	const struct cred *cred = current_cred();
+	struct task_security_struct *tsec;
+	struct inode_security_struct *dsec;
+	struct superblock_security_struct *sbsec;
+	struct inode *dir = dentry->d_parent->d_inode;
+	u32 newsid;
+	int rc;
+
+	tsec = cred->security;
+	dsec = dir->i_security;
+	sbsec = dir->i_sb->s_security;
+
+	if (tsec->create_sid && sbsec->behavior != SECURITY_FS_USE_MNTPOINT) {
+		newsid = tsec->create_sid;
+	} else {
+		rc = security_transition_sid(tsec->sid, dsec->sid,
+					     inode_mode_to_security_class(mode),
+					     name,
+					     &newsid);
+		if (rc) {
+			printk(KERN_WARNING
+				"%s: security_transition_sid failed, rc=%d\n",
+			       __func__, -rc);
+			return rc;
+		}
+	}
+
+	return security_sid_to_context(newsid, (char **)ctx, ctxlen);
+}
+
+static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
+				       const struct qstr *qstr,
+				       const char **name,
+>>>>>>> refs/remotes/origin/master
 				       void **value, size_t *len)
 {
 	const struct task_security_struct *tsec = current_security();
@@ -2548,7 +3318,11 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
 	struct superblock_security_struct *sbsec;
 	u32 sid, newsid, clen;
 	int rc;
+<<<<<<< HEAD
 	char *namep = NULL, *context;
+=======
+	char *context;
+>>>>>>> refs/remotes/origin/master
 
 	dsec = dir->i_security;
 	sbsec = dir->i_sb->s_security;
@@ -2559,7 +3333,11 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
 	if ((sbsec->flags & SE_SBINITIALIZED) &&
 	    (sbsec->behavior == SECURITY_FS_USE_MNTPOINT))
 		newsid = sbsec->mntpoint_sid;
+<<<<<<< HEAD
 	else if (!newsid || !(sbsec->flags & SE_SBLABELSUPP)) {
+=======
+	else if (!newsid || !(sbsec->flags & SBLABEL_MNT)) {
+>>>>>>> refs/remotes/origin/master
 		rc = security_transition_sid(sid, dsec->sid,
 					     inode_mode_to_security_class(inode->i_mode),
 					     qstr, &newsid);
@@ -2581,6 +3359,7 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
 		isec->initialized = 1;
 	}
 
+<<<<<<< HEAD
 	if (!ss_initialized || !(sbsec->flags & SE_SBLABELSUPP))
 		return -EOPNOTSUPP;
 
@@ -2597,6 +3376,18 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
 			kfree(namep);
 			return rc;
 		}
+=======
+	if (!ss_initialized || !(sbsec->flags & SBLABEL_MNT))
+		return -EOPNOTSUPP;
+
+	if (name)
+		*name = XATTR_SELINUX_SUFFIX;
+
+	if (value && len) {
+		rc = security_sid_to_context_force(newsid, &context, &clen);
+		if (rc)
+			return rc;
+>>>>>>> refs/remotes/origin/master
 		*value = context;
 		*len = clen;
 	}
@@ -2604,7 +3395,15 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int selinux_inode_create(struct inode *dir, struct dentry *dentry, int mask)
+=======
+static int selinux_inode_create(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int selinux_inode_create(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return may_create(dir, dentry, SECCLASS_FILE);
 }
@@ -2624,7 +3423,15 @@ static int selinux_inode_symlink(struct inode *dir, struct dentry *dentry, const
 	return may_create(dir, dentry, SECCLASS_LNK_FILE);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int selinux_inode_mkdir(struct inode *dir, struct dentry *dentry, int mask)
+=======
+static int selinux_inode_mkdir(struct inode *dir, struct dentry *dentry, umode_t mask)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int selinux_inode_mkdir(struct inode *dir, struct dentry *dentry, umode_t mask)
+>>>>>>> refs/remotes/origin/master
 {
 	return may_create(dir, dentry, SECCLASS_DIR);
 }
@@ -2634,7 +3441,15 @@ static int selinux_inode_rmdir(struct inode *dir, struct dentry *dentry)
 	return may_link(dir, dentry, MAY_RMDIR);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int selinux_inode_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t dev)
+=======
+static int selinux_inode_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int selinux_inode_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return may_create(dir, dentry, inode_mode_to_security_class(mode));
 }
@@ -2659,12 +3474,55 @@ static int selinux_inode_follow_link(struct dentry *dentry, struct nameidata *na
 	return dentry_has_perm(cred, dentry, FILE__READ);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int selinux_inode_permission(struct inode *inode, int mask, unsigned flags)
 {
 	const struct cred *cred = current_cred();
 	struct common_audit_data ad;
 	u32 perms;
 	bool from_access;
+=======
+static int selinux_inode_permission(struct inode *inode, int mask)
+{
+	const struct cred *cred = current_cred();
+	struct common_audit_data ad;
+	struct selinux_audit_data sad = {0,};
+	u32 perms;
+	bool from_access;
+	unsigned flags = mask & MAY_NOT_BLOCK;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static noinline int audit_inode_permission(struct inode *inode,
+					   u32 perms, u32 audited, u32 denied,
+					   unsigned flags)
+{
+	struct common_audit_data ad;
+	struct inode_security_struct *isec = inode->i_security;
+	int rc;
+
+	ad.type = LSM_AUDIT_DATA_INODE;
+	ad.u.inode = inode;
+
+	rc = slow_avc_audit(current_sid(), isec->sid, isec->sclass, perms,
+			    audited, denied, &ad, flags);
+	if (rc)
+		return rc;
+	return 0;
+}
+
+static int selinux_inode_permission(struct inode *inode, int mask)
+{
+	const struct cred *cred = current_cred();
+	u32 perms;
+	bool from_access;
+	unsigned flags = mask & MAY_NOT_BLOCK;
+	struct inode_security_struct *isec;
+	u32 sid;
+	struct av_decision avd;
+	int rc, rc2;
+	u32 audited, denied;
+>>>>>>> refs/remotes/origin/master
 
 	from_access = mask & MAY_ACCESS;
 	mask &= (MAY_READ|MAY_WRITE|MAY_EXEC|MAY_APPEND);
@@ -2673,21 +3531,57 @@ static int selinux_inode_permission(struct inode *inode, int mask, unsigned flag
 	if (!mask)
 		return 0;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, INODE);
+<<<<<<< HEAD
 	ad.u.inode = inode;
 
 	if (from_access)
 		ad.selinux_audit_data.auditdeny |= FILE__AUDIT_ACCESS;
+=======
+	ad.selinux_audit_data = &sad;
+	ad.u.inode = inode;
+
+	if (from_access)
+		ad.selinux_audit_data->auditdeny |= FILE__AUDIT_ACCESS;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	perms = file_mask_to_av(inode->i_mode, mask);
 
 	return inode_has_perm(cred, inode, perms, &ad, flags);
+=======
+	validate_creds(cred);
+
+	if (unlikely(IS_PRIVATE(inode)))
+		return 0;
+
+	perms = file_mask_to_av(inode->i_mode, mask);
+
+	sid = cred_sid(cred);
+	isec = inode->i_security;
+
+	rc = avc_has_perm_noaudit(sid, isec->sid, isec->sclass, perms, 0, &avd);
+	audited = avc_audit_required(perms, &avd, rc,
+				     from_access ? FILE__AUDIT_ACCESS : 0,
+				     &denied);
+	if (likely(!audited))
+		return rc;
+
+	rc2 = audit_inode_permission(inode, perms, audited, denied, flags);
+	if (rc2)
+		return rc2;
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int selinux_inode_setattr(struct dentry *dentry, struct iattr *iattr)
 {
 	const struct cred *cred = current_cred();
 	unsigned int ia_valid = iattr->ia_valid;
+<<<<<<< HEAD
+=======
+	__u32 av = FILE__WRITE;
+>>>>>>> refs/remotes/origin/master
 
 	/* ATTR_FORCE is just used for ATTR_KILL_S[UG]ID. */
 	if (ia_valid & ATTR_FORCE) {
@@ -2701,7 +3595,14 @@ static int selinux_inode_setattr(struct dentry *dentry, struct iattr *iattr)
 			ATTR_ATIME_SET | ATTR_MTIME_SET | ATTR_TIMES_SET))
 		return dentry_has_perm(cred, dentry, FILE__SETATTR);
 
+<<<<<<< HEAD
 	return dentry_has_perm(cred, dentry, FILE__WRITE);
+=======
+	if (selinux_policycap_openperm && (ia_valid & ATTR_SIZE))
+		av |= FILE__OPEN;
+
+	return dentry_has_perm(cred, dentry, av);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int selinux_inode_getattr(struct vfsmount *mnt, struct dentry *dentry)
@@ -2743,6 +3644,13 @@ static int selinux_inode_setxattr(struct dentry *dentry, const char *name,
 	struct inode_security_struct *isec = inode->i_security;
 	struct superblock_security_struct *sbsec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 newsid, sid = current_sid();
 	int rc = 0;
 
@@ -2750,13 +3658,25 @@ static int selinux_inode_setxattr(struct dentry *dentry, const char *name,
 		return selinux_inode_setotherxattr(dentry, name);
 
 	sbsec = inode->i_sb->s_security;
+<<<<<<< HEAD
 	if (!(sbsec->flags & SE_SBLABELSUPP))
+=======
+	if (!(sbsec->flags & SBLABEL_MNT))
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 
 	if (!inode_owner_or_capable(inode))
 		return -EPERM;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, DENTRY);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_DENTRY;
+>>>>>>> refs/remotes/origin/master
 	ad.u.dentry = dentry;
 
 	rc = avc_has_perm(sid, isec->sid, isec->sclass,
@@ -2766,8 +3686,35 @@ static int selinux_inode_setxattr(struct dentry *dentry, const char *name,
 
 	rc = security_context_to_sid(value, size, &newsid);
 	if (rc == -EINVAL) {
+<<<<<<< HEAD
 		if (!capable(CAP_MAC_ADMIN))
 			return rc;
+=======
+		if (!capable(CAP_MAC_ADMIN)) {
+			struct audit_buffer *ab;
+			size_t audit_size;
+			const char *str;
+
+			/* We strip a nul only if it is at the end, otherwise the
+			 * context contains a nul and we should audit that */
+			if (value) {
+				str = value;
+				if (str[size - 1] == '\0')
+					audit_size = size - 1;
+				else
+					audit_size = size;
+			} else {
+				str = "";
+				audit_size = 0;
+			}
+			ab = audit_log_start(current->audit_context, GFP_ATOMIC, AUDIT_SELINUX_ERR);
+			audit_log_format(ab, "op=setxattr invalid_context=");
+			audit_log_n_untrustedstring(ab, value, audit_size);
+			audit_log_end(ab);
+
+			return rc;
+		}
+>>>>>>> refs/remotes/origin/master
 		rc = security_context_to_sid_force(value, size, &newsid);
 	}
 	if (rc)
@@ -2812,7 +3759,14 @@ static void selinux_inode_post_setxattr(struct dentry *dentry, const char *name,
 		return;
 	}
 
+<<<<<<< HEAD
 	isec->sid = newsid;
+=======
+	isec->sclass = inode_mode_to_security_class(inode->i_mode);
+	isec->sid = newsid;
+	isec->initialized = 1;
+
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
@@ -2864,8 +3818,16 @@ static int selinux_inode_getsecurity(const struct inode *inode, const char *name
 	 * and lack of permission just means that we fall back to the
 	 * in-core context value, not a denial.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	error = selinux_capable(current, current_cred(),
 				&init_user_ns, CAP_MAC_ADMIN,
+=======
+	error = selinux_capable(current_cred(), &init_user_ns, CAP_MAC_ADMIN,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = selinux_capable(current_cred(), &init_user_ns, CAP_MAC_ADMIN,
+>>>>>>> refs/remotes/origin/master
 				SECURITY_CAP_NOAUDIT);
 	if (!error)
 		error = security_sid_to_context_force(isec->sid, &context,
@@ -2901,6 +3863,10 @@ static int selinux_inode_setsecurity(struct inode *inode, const char *name,
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
+=======
+	isec->sclass = inode_mode_to_security_class(inode->i_mode);
+>>>>>>> refs/remotes/origin/master
 	isec->sid = newsid;
 	isec->initialized = 1;
 	return 0;
@@ -2925,7 +3891,11 @@ static void selinux_inode_getsecid(const struct inode *inode, u32 *secid)
 static int selinux_revalidate_file_permission(struct file *file, int mask)
 {
 	const struct cred *cred = current_cred();
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 
 	/* file_mask_to_av won't add FILE__WRITE if MAY_APPEND is set */
 	if ((file->f_flags & O_APPEND) && (mask & MAY_WRITE))
@@ -2937,7 +3907,11 @@ static int selinux_revalidate_file_permission(struct file *file, int mask)
 
 static int selinux_file_permission(struct file *file, int mask)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct file_security_struct *fsec = file->f_security;
 	struct inode_security_struct *isec = inode->i_security;
 	u32 sid = current_sid();
@@ -2948,7 +3922,11 @@ static int selinux_file_permission(struct file *file, int mask)
 
 	if (sid == fsec->sid && fsec->isid == isec->sid &&
 	    fsec->pseqno == avc_policy_seqno())
+<<<<<<< HEAD
 		/* No change since dentry_open check. */
+=======
+		/* No change since file_open check. */
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	return selinux_revalidate_file_permission(file, mask);
@@ -2977,6 +3955,8 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
 	/* fall through */
 	case FIGETBSZ:
 	/* fall through */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case EXT2_IOC_GETFLAGS:
 	/* fall through */
 	case EXT2_IOC_GETVERSION:
@@ -2986,6 +3966,22 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
 	case EXT2_IOC_SETFLAGS:
 	/* fall through */
 	case EXT2_IOC_SETVERSION:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case FS_IOC_GETFLAGS:
+	/* fall through */
+	case FS_IOC_GETVERSION:
+		error = file_has_perm(cred, file, FILE__GETATTR);
+		break;
+
+	case FS_IOC_SETFLAGS:
+	/* fall through */
+	case FS_IOC_SETVERSION:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		error = file_has_perm(cred, file, FILE__SETATTR);
 		break;
 
@@ -2998,8 +3994,18 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
 
 	case KDSKBENT:
 	case KDSKBSENT:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = task_has_capability(current, cred, CAP_SYS_TTY_CONFIG,
 					SECURITY_CAP_AUDIT);
+=======
+		error = cred_has_capability(cred, CAP_SYS_TTY_CONFIG,
+					    SECURITY_CAP_AUDIT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = cred_has_capability(cred, CAP_SYS_TTY_CONFIG,
+					    SECURITY_CAP_AUDIT);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	/* default case assumes that the command will go
@@ -3048,9 +4054,13 @@ error:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int selinux_file_mmap(struct file *file, unsigned long reqprot,
 			     unsigned long prot, unsigned long flags,
 			     unsigned long addr, unsigned long addr_only)
+=======
+static int selinux_mmap_addr(unsigned long addr)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc = 0;
 	u32 sid = current_sid();
@@ -3069,10 +4079,19 @@ static int selinux_file_mmap(struct file *file, unsigned long reqprot,
 	}
 
 	/* do DAC check on address space usage */
+<<<<<<< HEAD
 	rc = cap_file_mmap(file, reqprot, prot, flags, addr, addr_only);
 	if (rc || addr_only)
 		return rc;
 
+=======
+	return cap_mmap_addr(addr);
+}
+
+static int selinux_mmap_file(struct file *file, unsigned long reqprot,
+			     unsigned long prot, unsigned long flags)
+{
+>>>>>>> refs/remotes/origin/master
 	if (selinux_checkreqprot)
 		prot = reqprot;
 
@@ -3131,11 +4150,14 @@ static int selinux_file_fcntl(struct file *file, unsigned int cmd,
 
 	switch (cmd) {
 	case F_SETFL:
+<<<<<<< HEAD
 		if (!file->f_path.dentry || !file->f_path.dentry->d_inode) {
 			err = -EINVAL;
 			break;
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if ((file->f_flags & O_APPEND) && !(arg & O_APPEND)) {
 			err = file_has_perm(cred, file, FILE__WRITE);
 			break;
@@ -3146,6 +4168,10 @@ static int selinux_file_fcntl(struct file *file, unsigned int cmd,
 	case F_GETFL:
 	case F_GETOWN:
 	case F_GETSIG:
+<<<<<<< HEAD
+=======
+	case F_GETOWNER_UIDS:
+>>>>>>> refs/remotes/origin/master
 		/* Just check FD__USE permission */
 		err = file_has_perm(cred, file, 0);
 		break;
@@ -3157,10 +4183,13 @@ static int selinux_file_fcntl(struct file *file, unsigned int cmd,
 	case F_SETLK64:
 	case F_SETLKW64:
 #endif
+<<<<<<< HEAD
 		if (!file->f_path.dentry || !file->f_path.dentry->d_inode) {
 			err = -EINVAL;
 			break;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 		err = file_has_perm(cred, file, FILE__LOCK);
 		break;
 	}
@@ -3207,6 +4236,7 @@ static int selinux_file_receive(struct file *file)
 	return file_has_perm(cred, file, file_to_av(file));
 }
 
+<<<<<<< HEAD
 static int selinux_dentry_open(struct file *file, const struct cred *cred)
 {
 	struct file_security_struct *fsec;
@@ -3216,6 +4246,15 @@ static int selinux_dentry_open(struct file *file, const struct cred *cred)
 	inode = file->f_path.dentry->d_inode;
 	fsec = file->f_security;
 	isec = inode->i_security;
+=======
+static int selinux_file_open(struct file *file, const struct cred *cred)
+{
+	struct file_security_struct *fsec;
+	struct inode_security_struct *isec;
+
+	fsec = file->f_security;
+	isec = file_inode(file)->i_security;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Save inode label and policy sequence number
 	 * at open-time so that selinux_file_permission
@@ -3233,7 +4272,11 @@ static int selinux_dentry_open(struct file *file, const struct cred *cred)
 	 * new inode label or new policy.
 	 * This check is not redundant - do not remove.
 	 */
+<<<<<<< HEAD
 	return inode_has_perm_noadp(cred, inode, open_file_to_av(file), 0);
+=======
+	return file_path_has_perm(cred, file, open_file_to_av(file));
+>>>>>>> refs/remotes/origin/master
 }
 
 /* task security operations */
@@ -3352,10 +4395,25 @@ static int selinux_kernel_module_request(char *kmod_name)
 {
 	u32 sid;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sid = task_sid(current);
 
 	COMMON_AUDIT_DATA_INIT(&ad, KMOD);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	sid = task_sid(current);
+
+	ad.type = LSM_AUDIT_DATA_KMOD;
+>>>>>>> refs/remotes/origin/master
 	ad.u.kmod_name = kmod_name;
 
 	return avc_has_perm(sid, SECINITSID_KERNEL, SECCLASS_SYSTEM,
@@ -3494,8 +4552,18 @@ static int selinux_parse_skb_ipv4(struct sk_buff *skb,
 	if (ihlen < sizeof(_iph))
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ad->u.net.v4info.saddr = ih->saddr;
 	ad->u.net.v4info.daddr = ih->daddr;
+=======
+	ad->u.net->v4info.saddr = ih->saddr;
+	ad->u.net->v4info.daddr = ih->daddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad->u.net->v4info.saddr = ih->saddr;
+	ad->u.net->v4info.daddr = ih->daddr;
+>>>>>>> refs/remotes/origin/master
 	ret = 0;
 
 	if (proto)
@@ -3513,8 +4581,18 @@ static int selinux_parse_skb_ipv4(struct sk_buff *skb,
 		if (th == NULL)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ad->u.net.sport = th->source;
 		ad->u.net.dport = th->dest;
+=======
+		ad->u.net->sport = th->source;
+		ad->u.net->dport = th->dest;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ad->u.net->sport = th->source;
+		ad->u.net->dport = th->dest;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -3529,8 +4607,18 @@ static int selinux_parse_skb_ipv4(struct sk_buff *skb,
 		if (uh == NULL)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ad->u.net.sport = uh->source;
 		ad->u.net.dport = uh->dest;
+=======
+		ad->u.net->sport = uh->source;
+		ad->u.net->dport = uh->dest;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ad->u.net->sport = uh->source;
+		ad->u.net->dport = uh->dest;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -3545,8 +4633,18 @@ static int selinux_parse_skb_ipv4(struct sk_buff *skb,
 		if (dh == NULL)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ad->u.net.sport = dh->dccph_sport;
 		ad->u.net.dport = dh->dccph_dport;
+=======
+		ad->u.net->sport = dh->dccph_sport;
+		ad->u.net->dport = dh->dccph_dport;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ad->u.net->sport = dh->dccph_sport;
+		ad->u.net->dport = dh->dccph_dport;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -3566,19 +4664,45 @@ static int selinux_parse_skb_ipv6(struct sk_buff *skb,
 	u8 nexthdr;
 	int ret = -EINVAL, offset;
 	struct ipv6hdr _ipv6h, *ip6;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	__be16 frag_off;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__be16 frag_off;
+>>>>>>> refs/remotes/origin/master
 
 	offset = skb_network_offset(skb);
 	ip6 = skb_header_pointer(skb, offset, sizeof(_ipv6h), &_ipv6h);
 	if (ip6 == NULL)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&ad->u.net.v6info.saddr, &ip6->saddr);
 	ipv6_addr_copy(&ad->u.net.v6info.daddr, &ip6->daddr);
+=======
+	ad->u.net->v6info.saddr = ip6->saddr;
+	ad->u.net->v6info.daddr = ip6->daddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad->u.net->v6info.saddr = ip6->saddr;
+	ad->u.net->v6info.daddr = ip6->daddr;
+>>>>>>> refs/remotes/origin/master
 	ret = 0;
 
 	nexthdr = ip6->nexthdr;
 	offset += sizeof(_ipv6h);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	offset = ipv6_skip_exthdr(skb, offset, &nexthdr);
+=======
+	offset = ipv6_skip_exthdr(skb, offset, &nexthdr, &frag_off);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	offset = ipv6_skip_exthdr(skb, offset, &nexthdr, &frag_off);
+>>>>>>> refs/remotes/origin/master
 	if (offset < 0)
 		goto out;
 
@@ -3593,8 +4717,18 @@ static int selinux_parse_skb_ipv6(struct sk_buff *skb,
 		if (th == NULL)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ad->u.net.sport = th->source;
 		ad->u.net.dport = th->dest;
+=======
+		ad->u.net->sport = th->source;
+		ad->u.net->dport = th->dest;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ad->u.net->sport = th->source;
+		ad->u.net->dport = th->dest;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -3605,8 +4739,18 @@ static int selinux_parse_skb_ipv6(struct sk_buff *skb,
 		if (uh == NULL)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ad->u.net.sport = uh->source;
 		ad->u.net.dport = uh->dest;
+=======
+		ad->u.net->sport = uh->source;
+		ad->u.net->dport = uh->dest;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ad->u.net->sport = uh->source;
+		ad->u.net->dport = uh->dest;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -3617,8 +4761,18 @@ static int selinux_parse_skb_ipv6(struct sk_buff *skb,
 		if (dh == NULL)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ad->u.net.sport = dh->dccph_sport;
 		ad->u.net.dport = dh->dccph_dport;
+=======
+		ad->u.net->sport = dh->dccph_sport;
+		ad->u.net->dport = dh->dccph_dport;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ad->u.net->sport = dh->dccph_sport;
+		ad->u.net->dport = dh->dccph_dport;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -3638,13 +4792,31 @@ static int selinux_parse_skb(struct sk_buff *skb, struct common_audit_data *ad,
 	char *addrp;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch (ad->u.net.family) {
+=======
+	switch (ad->u.net->family) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (ad->u.net->family) {
+>>>>>>> refs/remotes/origin/master
 	case PF_INET:
 		ret = selinux_parse_skb_ipv4(skb, ad, proto);
 		if (ret)
 			goto parse_error;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		addrp = (char *)(src ? &ad->u.net.v4info.saddr :
 				       &ad->u.net.v4info.daddr);
+=======
+		addrp = (char *)(src ? &ad->u.net->v4info.saddr :
+				       &ad->u.net->v4info.daddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		addrp = (char *)(src ? &ad->u.net->v4info.saddr :
+				       &ad->u.net->v4info.daddr);
+>>>>>>> refs/remotes/origin/master
 		goto okay;
 
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
@@ -3652,8 +4824,18 @@ static int selinux_parse_skb(struct sk_buff *skb, struct common_audit_data *ad,
 		ret = selinux_parse_skb_ipv6(skb, ad, proto);
 		if (ret)
 			goto parse_error;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		addrp = (char *)(src ? &ad->u.net.v6info.saddr :
 				       &ad->u.net.v6info.daddr);
+=======
+		addrp = (char *)(src ? &ad->u.net->v6info.saddr :
+				       &ad->u.net->v6info.daddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		addrp = (char *)(src ? &ad->u.net->v6info.saddr :
+				       &ad->u.net->v6info.daddr);
+>>>>>>> refs/remotes/origin/master
 		goto okay;
 #endif	/* IPV6 */
 	default:
@@ -3695,8 +4877,25 @@ static int selinux_skb_peerlbl_sid(struct sk_buff *skb, u16 family, u32 *sid)
 	u32 nlbl_sid;
 	u32 nlbl_type;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+	selinux_xfrm_skb_sid(skb, &xfrm_sid);
+=======
 	selinux_skb_xfrm_sid(skb, &xfrm_sid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	selinux_xfrm_skb_sid(skb, &xfrm_sid);
+>>>>>>> refs/remotes/origin/cm-11.0
 	selinux_netlbl_skbuff_getsid(skb, family, &nlbl_type, &nlbl_sid);
+=======
+	err = selinux_xfrm_skb_sid(skb, &xfrm_sid);
+	if (unlikely(err))
+		return -EACCES;
+	err = selinux_netlbl_skbuff_getsid(skb, family, &nlbl_type, &nlbl_sid);
+	if (unlikely(err))
+		return -EACCES;
+>>>>>>> refs/remotes/origin/master
 
 	err = security_net_peersid_resolve(nlbl_sid, nlbl_type, xfrm_sid, sid);
 	if (unlikely(err)) {
@@ -3709,6 +4908,45 @@ static int selinux_skb_peerlbl_sid(struct sk_buff *skb, u16 family, u32 *sid)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/**
+ * selinux_conn_sid - Determine the child socket label for a connection
+ * @sk_sid: the parent socket's SID
+ * @skb_sid: the packet's SID
+ * @conn_sid: the resulting connection SID
+ *
+ * If @skb_sid is valid then the user:role:type information from @sk_sid is
+ * combined with the MLS information from @skb_sid in order to create
+ * @conn_sid.  If @skb_sid is not valid then then @conn_sid is simply a copy
+ * of @sk_sid.  Returns zero on success, negative values on failure.
+ *
+ */
+static int selinux_conn_sid(u32 sk_sid, u32 skb_sid, u32 *conn_sid)
+{
+	int err = 0;
+
+	if (skb_sid != SECSID_NULL)
+		err = security_sid_mls_copy(sk_sid, skb_sid, conn_sid);
+	else
+		*conn_sid = sk_sid;
+
+	return err;
+}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* socket security operations */
 
 static int socket_sockcreate_sid(const struct task_security_struct *tsec,
@@ -3727,13 +4965,34 @@ static int sock_has_perm(struct task_struct *task, struct sock *sk, u32 perms)
 {
 	struct sk_security_struct *sksec = sk->sk_security;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+	struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/master
 	u32 tsid = task_sid(task);
 
 	if (sksec->sid == SECINITSID_KERNEL)
 		return 0;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, NET);
+<<<<<<< HEAD
 	ad.u.net.sk = sk;
+=======
+	ad.selinux_audit_data = &sad;
+	ad.u.net = &net;
+	ad.u.net->sk = sk;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_NET;
+	ad.u.net = &net;
+	ad.u.net->sk = sk;
+>>>>>>> refs/remotes/origin/master
 
 	return avc_has_perm(tsid, sksec->sid, sksec->sclass, perms, &ad);
 }
@@ -3811,6 +5070,15 @@ static int selinux_socket_bind(struct socket *sock, struct sockaddr *address, in
 		char *addrp;
 		struct sk_security_struct *sksec = sk->sk_security;
 		struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		struct selinux_audit_data sad = {0,};
+		struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/master
 		struct sockaddr_in *addr4 = NULL;
 		struct sockaddr_in6 *addr6 = NULL;
 		unsigned short snum;
@@ -3829,16 +5097,34 @@ static int selinux_socket_bind(struct socket *sock, struct sockaddr *address, in
 		if (snum) {
 			int low, high;
 
+<<<<<<< HEAD
 			inet_get_local_port_range(&low, &high);
+=======
+			inet_get_local_port_range(sock_net(sk), &low, &high);
+>>>>>>> refs/remotes/origin/master
 
 			if (snum < max(PROT_SOCK, low) || snum > high) {
 				err = sel_netport_sid(sk->sk_protocol,
 						      snum, &sid);
 				if (err)
 					goto out;
+<<<<<<< HEAD
 				COMMON_AUDIT_DATA_INIT(&ad, NET);
+<<<<<<< HEAD
 				ad.u.net.sport = htons(snum);
 				ad.u.net.family = family;
+=======
+				ad.selinux_audit_data = &sad;
+				ad.u.net = &net;
+				ad.u.net->sport = htons(snum);
+				ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ad.type = LSM_AUDIT_DATA_NET;
+				ad.u.net = &net;
+				ad.u.net->sport = htons(snum);
+				ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/master
 				err = avc_has_perm(sksec->sid, sid,
 						   sksec->sclass,
 						   SOCKET__NAME_BIND, &ad);
@@ -3869,7 +5155,9 @@ static int selinux_socket_bind(struct socket *sock, struct sockaddr *address, in
 		if (err)
 			goto out;
 
+<<<<<<< HEAD
 		COMMON_AUDIT_DATA_INIT(&ad, NET);
+<<<<<<< HEAD
 		ad.u.net.sport = htons(snum);
 		ad.u.net.family = family;
 
@@ -3877,6 +5165,23 @@ static int selinux_socket_bind(struct socket *sock, struct sockaddr *address, in
 			ad.u.net.v4info.saddr = addr4->sin_addr.s_addr;
 		else
 			ipv6_addr_copy(&ad.u.net.v6info.saddr, &addr6->sin6_addr);
+=======
+		ad.selinux_audit_data = &sad;
+=======
+		ad.type = LSM_AUDIT_DATA_NET;
+>>>>>>> refs/remotes/origin/master
+		ad.u.net = &net;
+		ad.u.net->sport = htons(snum);
+		ad.u.net->family = family;
+
+		if (family == PF_INET)
+			ad.u.net->v4info.saddr = addr4->sin_addr.s_addr;
+		else
+			ad.u.net->v6info.saddr = addr6->sin6_addr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		err = avc_has_perm(sksec->sid, sid,
 				   sksec->sclass, node_perm, &ad);
@@ -3903,6 +5208,15 @@ static int selinux_socket_connect(struct socket *sock, struct sockaddr *address,
 	if (sksec->sclass == SECCLASS_TCP_SOCKET ||
 	    sksec->sclass == SECCLASS_DCCP_SOCKET) {
 		struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		struct selinux_audit_data sad = {0,};
+		struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/master
 		struct sockaddr_in *addr4 = NULL;
 		struct sockaddr_in6 *addr6 = NULL;
 		unsigned short snum;
@@ -3927,9 +5241,23 @@ static int selinux_socket_connect(struct socket *sock, struct sockaddr *address,
 		perm = (sksec->sclass == SECCLASS_TCP_SOCKET) ?
 		       TCP_SOCKET__NAME_CONNECT : DCCP_SOCKET__NAME_CONNECT;
 
+<<<<<<< HEAD
 		COMMON_AUDIT_DATA_INIT(&ad, NET);
+<<<<<<< HEAD
 		ad.u.net.dport = htons(snum);
 		ad.u.net.family = sk->sk_family;
+=======
+		ad.selinux_audit_data = &sad;
+		ad.u.net = &net;
+		ad.u.net->dport = htons(snum);
+		ad.u.net->family = sk->sk_family;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ad.type = LSM_AUDIT_DATA_NET;
+		ad.u.net = &net;
+		ad.u.net->dport = htons(snum);
+		ad.u.net->family = sk->sk_family;
+>>>>>>> refs/remotes/origin/master
 		err = avc_has_perm(sksec->sid, sid, sksec->sclass, perm, &ad);
 		if (err)
 			goto out;
@@ -4018,10 +5346,30 @@ static int selinux_socket_unix_stream_connect(struct sock *sock,
 	struct sk_security_struct *sksec_other = other->sk_security;
 	struct sk_security_struct *sksec_new = newsk->sk_security;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int err;
 
 	COMMON_AUDIT_DATA_INIT(&ad, NET);
 	ad.u.net.sk = other;
+=======
+	struct selinux_audit_data sad = {0,};
+	struct lsm_network_audit net = {0,};
+	int err;
+
+	COMMON_AUDIT_DATA_INIT(&ad, NET);
+	ad.selinux_audit_data = &sad;
+	ad.u.net = &net;
+	ad.u.net->sk = other;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct lsm_network_audit net = {0,};
+	int err;
+
+	ad.type = LSM_AUDIT_DATA_NET;
+	ad.u.net = &net;
+	ad.u.net->sk = other;
+>>>>>>> refs/remotes/origin/master
 
 	err = avc_has_perm(sksec_sock->sid, sksec_other->sid,
 			   sksec_other->sclass,
@@ -4048,9 +5396,27 @@ static int selinux_socket_unix_may_send(struct socket *sock,
 	struct sk_security_struct *ssec = sock->sk->sk_security;
 	struct sk_security_struct *osec = other->sk->sk_security;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	COMMON_AUDIT_DATA_INIT(&ad, NET);
 	ad.u.net.sk = other->sk;
+=======
+	struct selinux_audit_data sad = {0,};
+	struct lsm_network_audit net = {0,};
+
+	COMMON_AUDIT_DATA_INIT(&ad, NET);
+	ad.selinux_audit_data = &sad;
+	ad.u.net = &net;
+	ad.u.net->sk = other->sk;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct lsm_network_audit net = {0,};
+
+	ad.type = LSM_AUDIT_DATA_NET;
+	ad.u.net = &net;
+	ad.u.net->sk = other->sk;
+>>>>>>> refs/remotes/origin/master
 
 	return avc_has_perm(ssec->sid, osec->sid, osec->sclass, SOCKET__SENDTO,
 			    &ad);
@@ -4086,11 +5452,33 @@ static int selinux_sock_rcv_skb_compat(struct sock *sk, struct sk_buff *skb,
 	struct sk_security_struct *sksec = sk->sk_security;
 	u32 sk_sid = sksec->sid;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	char *addrp;
 
 	COMMON_AUDIT_DATA_INIT(&ad, NET);
 	ad.u.net.netif = skb->skb_iif;
 	ad.u.net.family = family;
+=======
+	struct selinux_audit_data sad = {0,};
+	struct lsm_network_audit net = {0,};
+	char *addrp;
+
+	COMMON_AUDIT_DATA_INIT(&ad, NET);
+	ad.selinux_audit_data = &sad;
+	ad.u.net = &net;
+	ad.u.net->netif = skb->skb_iif;
+	ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct lsm_network_audit net = {0,};
+	char *addrp;
+
+	ad.type = LSM_AUDIT_DATA_NET;
+	ad.u.net = &net;
+	ad.u.net->netif = skb->skb_iif;
+	ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/master
 	err = selinux_parse_skb(skb, &ad, &addrp, 1, NULL);
 	if (err)
 		return err;
@@ -4117,6 +5505,15 @@ static int selinux_socket_sock_rcv_skb(struct sock *sk, struct sk_buff *skb)
 	u16 family = sk->sk_family;
 	u32 sk_sid = sksec->sid;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+	struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/master
 	char *addrp;
 	u8 secmark_active;
 	u8 peerlbl_active;
@@ -4136,13 +5533,31 @@ static int selinux_socket_sock_rcv_skb(struct sock *sk, struct sk_buff *skb)
 		return selinux_sock_rcv_skb_compat(sk, skb, family);
 
 	secmark_active = selinux_secmark_enabled();
+<<<<<<< HEAD
 	peerlbl_active = netlbl_enabled() || selinux_xfrm_enabled();
 	if (!secmark_active && !peerlbl_active)
 		return 0;
 
 	COMMON_AUDIT_DATA_INIT(&ad, NET);
+<<<<<<< HEAD
 	ad.u.net.netif = skb->skb_iif;
 	ad.u.net.family = family;
+=======
+	ad.selinux_audit_data = &sad;
+	ad.u.net = &net;
+	ad.u.net->netif = skb->skb_iif;
+	ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	peerlbl_active = selinux_peerlbl_enabled();
+	if (!secmark_active && !peerlbl_active)
+		return 0;
+
+	ad.type = LSM_AUDIT_DATA_NET;
+	ad.u.net = &net;
+	ad.u.net->netif = skb->skb_iif;
+	ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/master
 	err = selinux_parse_skb(skb, &ad, &addrp, 1, NULL);
 	if (err)
 		return err;
@@ -4161,8 +5576,28 @@ static int selinux_socket_sock_rcv_skb(struct sock *sk, struct sk_buff *skb)
 		}
 		err = avc_has_perm(sk_sid, peer_sid, SECCLASS_PEER,
 				   PEER__RECV, &ad);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+		if (err) {
+			selinux_netlbl_err(skb, err, 0);
+			return err;
+		}
+<<<<<<< HEAD
+=======
 		if (err)
 			selinux_netlbl_err(skb, err, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+		if (err) {
+			selinux_netlbl_err(skb, err, 0);
+			return err;
+		}
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (secmark_active) {
@@ -4299,8 +5734,17 @@ static int selinux_inet_conn_request(struct sock *sk, struct sk_buff *skb,
 {
 	struct sk_security_struct *sksec = sk->sk_security;
 	int err;
+<<<<<<< HEAD
 	u16 family = sk->sk_family;
+<<<<<<< HEAD
+<<<<<<< HEAD
+	u32 connsid;
+=======
 	u32 newsid;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 connsid;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 peersid;
 
 	/* handle mapped IPv4 packets arriving via IPv6 sockets */
@@ -4310,6 +5754,27 @@ static int selinux_inet_conn_request(struct sock *sk, struct sk_buff *skb,
 	err = selinux_skb_peerlbl_sid(skb, family, &peersid);
 	if (err)
 		return err;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u16 family = req->rsk_ops->family;
+	u32 connsid;
+	u32 peersid;
+
+	err = selinux_skb_peerlbl_sid(skb, family, &peersid);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	err = selinux_conn_sid(sksec->sid, peersid, &connsid);
+	if (err)
+		return err;
+	req->secid = connsid;
+	req->peer_secid = peersid;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 	if (peersid == SECSID_NULL) {
 		req->secid = sksec->sid;
 		req->peer_secid = SECSID_NULL;
@@ -4320,6 +5785,11 @@ static int selinux_inet_conn_request(struct sock *sk, struct sk_buff *skb,
 		req->secid = newsid;
 		req->peer_secid = peersid;
 	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return selinux_netlbl_inet_conn_request(req, family);
 }
@@ -4353,6 +5823,14 @@ static void selinux_inet_conn_established(struct sock *sk, struct sk_buff *skb)
 	selinux_skb_peerlbl_sid(skb, family, &sksec->peer_sid);
 }
 
+<<<<<<< HEAD
+=======
+static void selinux_skb_owned_by(struct sk_buff *skb, struct sock *sk)
+{
+	skb_set_owner_w(skb, sk);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int selinux_secmark_relabel_packet(u32 sid)
 {
 	const struct task_security_struct *__tsec;
@@ -4380,6 +5858,27 @@ static void selinux_req_classify_flow(const struct request_sock *req,
 	fl->flowi_secid = req->secid;
 }
 
+<<<<<<< HEAD
+=======
+static int selinux_tun_dev_alloc_security(void **security)
+{
+	struct tun_security_struct *tunsec;
+
+	tunsec = kzalloc(sizeof(*tunsec), GFP_KERNEL);
+	if (!tunsec)
+		return -ENOMEM;
+	tunsec->sid = current_sid();
+
+	*security = tunsec;
+	return 0;
+}
+
+static void selinux_tun_dev_free_security(void *security)
+{
+	kfree(security);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int selinux_tun_dev_create(void)
 {
 	u32 sid = current_sid();
@@ -4395,8 +5894,22 @@ static int selinux_tun_dev_create(void)
 			    NULL);
 }
 
+<<<<<<< HEAD
 static void selinux_tun_dev_post_create(struct sock *sk)
 {
+=======
+static int selinux_tun_dev_attach_queue(void *security)
+{
+	struct tun_security_struct *tunsec = security;
+
+	return avc_has_perm(current_sid(), tunsec->sid, SECCLASS_TUN_SOCKET,
+			    TUN_SOCKET__ATTACH_QUEUE, NULL);
+}
+
+static int selinux_tun_dev_attach(struct sock *sk, void *security)
+{
+	struct tun_security_struct *tunsec = security;
+>>>>>>> refs/remotes/origin/master
 	struct sk_security_struct *sksec = sk->sk_security;
 
 	/* we don't currently perform any NetLabel based labeling here and it
@@ -4406,6 +5919,7 @@ static void selinux_tun_dev_post_create(struct sock *sk)
 	 * cause confusion to the TUN user that had no idea network labeling
 	 * protocols were being used */
 
+<<<<<<< HEAD
 	/* see the comments in selinux_tun_dev_create() about why we don't use
 	 * the sockcreate SID here */
 
@@ -4420,6 +5934,21 @@ static int selinux_tun_dev_attach(struct sock *sk)
 	int err;
 
 	err = avc_has_perm(sid, sksec->sid, SECCLASS_TUN_SOCKET,
+=======
+	sksec->sid = tunsec->sid;
+	sksec->sclass = SECCLASS_TUN_SOCKET;
+
+	return 0;
+}
+
+static int selinux_tun_dev_open(void *security)
+{
+	struct tun_security_struct *tunsec = security;
+	u32 sid = current_sid();
+	int err;
+
+	err = avc_has_perm(sid, tunsec->sid, SECCLASS_TUN_SOCKET,
+>>>>>>> refs/remotes/origin/master
 			   TUN_SOCKET__RELABELFROM, NULL);
 	if (err)
 		return err;
@@ -4427,8 +5956,12 @@ static int selinux_tun_dev_attach(struct sock *sk)
 			   TUN_SOCKET__RELABELTO, NULL);
 	if (err)
 		return err;
+<<<<<<< HEAD
 
 	sksec->sid = sid;
+=======
+	tunsec->sid = sid;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -4440,7 +5973,11 @@ static int selinux_nlmsg_perm(struct sock *sk, struct sk_buff *skb)
 	struct nlmsghdr *nlh;
 	struct sk_security_struct *sksec = sk->sk_security;
 
+<<<<<<< HEAD
 	if (skb->len < NLMSG_SPACE(0)) {
+=======
+	if (skb->len < NLMSG_HDRLEN) {
+>>>>>>> refs/remotes/origin/master
 		err = -EINVAL;
 		goto out;
 	}
@@ -4477,6 +6014,15 @@ static unsigned int selinux_ip_forward(struct sk_buff *skb, int ifindex,
 	char *addrp;
 	u32 peer_sid;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+	struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/master
 	u8 secmark_active;
 	u8 netlbl_active;
 	u8 peerlbl_active;
@@ -4486,16 +6032,34 @@ static unsigned int selinux_ip_forward(struct sk_buff *skb, int ifindex,
 
 	secmark_active = selinux_secmark_enabled();
 	netlbl_active = netlbl_enabled();
+<<<<<<< HEAD
 	peerlbl_active = netlbl_active || selinux_xfrm_enabled();
+=======
+	peerlbl_active = selinux_peerlbl_enabled();
+>>>>>>> refs/remotes/origin/master
 	if (!secmark_active && !peerlbl_active)
 		return NF_ACCEPT;
 
 	if (selinux_skb_peerlbl_sid(skb, family, &peer_sid) != 0)
 		return NF_DROP;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, NET);
+<<<<<<< HEAD
 	ad.u.net.netif = ifindex;
 	ad.u.net.family = family;
+=======
+	ad.selinux_audit_data = &sad;
+	ad.u.net = &net;
+	ad.u.net->netif = ifindex;
+	ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_NET;
+	ad.u.net = &net;
+	ad.u.net->netif = ifindex;
+	ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/master
 	if (selinux_parse_skb(skb, &ad, &addrp, 1, NULL) != 0)
 		return NF_DROP;
 
@@ -4524,7 +6088,11 @@ static unsigned int selinux_ip_forward(struct sk_buff *skb, int ifindex,
 	return NF_ACCEPT;
 }
 
+<<<<<<< HEAD
 static unsigned int selinux_ipv4_forward(unsigned int hooknum,
+=======
+static unsigned int selinux_ipv4_forward(const struct nf_hook_ops *ops,
+>>>>>>> refs/remotes/origin/master
 					 struct sk_buff *skb,
 					 const struct net_device *in,
 					 const struct net_device *out,
@@ -4534,7 +6102,11 @@ static unsigned int selinux_ipv4_forward(unsigned int hooknum,
 }
 
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+<<<<<<< HEAD
 static unsigned int selinux_ipv6_forward(unsigned int hooknum,
+=======
+static unsigned int selinux_ipv6_forward(const struct nf_hook_ops *ops,
+>>>>>>> refs/remotes/origin/master
 					 struct sk_buff *skb,
 					 const struct net_device *in,
 					 const struct net_device *out,
@@ -4547,6 +6119,18 @@ static unsigned int selinux_ipv6_forward(unsigned int hooknum,
 static unsigned int selinux_ip_output(struct sk_buff *skb,
 				      u16 family)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+	struct sock *sk;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sock *sk;
+>>>>>>> refs/remotes/origin/master
+=======
+	struct sock *sk;
+>>>>>>> refs/remotes/origin/cm-11.0
 	u32 sid;
 
 	if (!netlbl_enabled())
@@ -4555,8 +6139,44 @@ static unsigned int selinux_ip_output(struct sk_buff *skb,
 	/* we do this in the LOCAL_OUT path and not the POST_ROUTING path
 	 * because we want to make sure we apply the necessary labeling
 	 * before IPsec is applied so we can leverage AH protection */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	sk = skb->sk;
+	if (sk) {
+		struct sk_security_struct *sksec;
+
+		if (sk->sk_state == TCP_LISTEN)
+			/* if the socket is the listening state then this
+			 * packet is a SYN-ACK packet which means it needs to
+			 * be labeled based on the connection/request_sock and
+			 * not the parent socket.  unfortunately, we can't
+			 * lookup the request_sock yet as it isn't queued on
+			 * the parent socket until after the SYN-ACK is sent.
+			 * the "solution" is to simply pass the packet as-is
+			 * as any IP option based labeling should be copied
+			 * from the initial connection request (in the IP
+			 * layer).  it is far from ideal, but until we get a
+			 * security label in the packet itself this is the
+			 * best we can do. */
+			return NF_ACCEPT;
+
+		/* standard practice, label using the parent socket */
+		sksec = sk->sk_security;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 	if (skb->sk) {
 		struct sk_security_struct *sksec = skb->sk->sk_security;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		sid = sksec->sid;
 	} else
 		sid = SECINITSID_KERNEL;
@@ -4566,7 +6186,11 @@ static unsigned int selinux_ip_output(struct sk_buff *skb,
 	return NF_ACCEPT;
 }
 
+<<<<<<< HEAD
 static unsigned int selinux_ipv4_output(unsigned int hooknum,
+=======
+static unsigned int selinux_ipv4_output(const struct nf_hook_ops *ops,
+>>>>>>> refs/remotes/origin/master
 					struct sk_buff *skb,
 					const struct net_device *in,
 					const struct net_device *out,
@@ -4582,6 +6206,15 @@ static unsigned int selinux_ip_postroute_compat(struct sk_buff *skb,
 	struct sock *sk = skb->sk;
 	struct sk_security_struct *sksec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+	struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/master
 	char *addrp;
 	u8 proto;
 
@@ -4589,9 +6222,23 @@ static unsigned int selinux_ip_postroute_compat(struct sk_buff *skb,
 		return NF_ACCEPT;
 	sksec = sk->sk_security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, NET);
+<<<<<<< HEAD
 	ad.u.net.netif = ifindex;
 	ad.u.net.family = family;
+=======
+	ad.selinux_audit_data = &sad;
+	ad.u.net = &net;
+	ad.u.net->netif = ifindex;
+	ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_NET;
+	ad.u.net = &net;
+	ad.u.net->netif = ifindex;
+	ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/master
 	if (selinux_parse_skb(skb, &ad, &addrp, 0, &proto))
 		return NF_DROP;
 
@@ -4613,6 +6260,15 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 	u32 peer_sid;
 	struct sock *sk;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+	struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct lsm_network_audit net = {0,};
+>>>>>>> refs/remotes/origin/master
 	char *addrp;
 	u8 secmark_active;
 	u8 peerlbl_active;
@@ -4623,27 +6279,87 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 	 * as fast and as clean as possible. */
 	if (!selinux_policycap_netpeer)
 		return selinux_ip_postroute_compat(skb, ifindex, family);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+	secmark_active = selinux_secmark_enabled();
+	peerlbl_active = netlbl_enabled() || selinux_xfrm_enabled();
+=======
+
+	secmark_active = selinux_secmark_enabled();
+	peerlbl_active = selinux_peerlbl_enabled();
+>>>>>>> refs/remotes/origin/master
+=======
+
+	secmark_active = selinux_secmark_enabled();
+	peerlbl_active = netlbl_enabled() || selinux_xfrm_enabled();
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!secmark_active && !peerlbl_active)
+		return NF_ACCEPT;
+
+	sk = skb->sk;
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_XFRM
 	/* If skb->dst->xfrm is non-NULL then the packet is undergoing an IPsec
 	 * packet transformation so allow the packet to pass without any checks
 	 * since we'll have another chance to perform access control checks
 	 * when the packet is on it's final way out.
 	 * NOTE: there appear to be some IPv6 multicast cases where skb->dst
-	 *       is NULL, in this case go ahead and apply access control. */
-	if (skb_dst(skb) != NULL && skb_dst(skb)->xfrm != NULL)
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+	 *       is NULL, in this case go ahead and apply access control.
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	 *       is NULL, in this case go ahead and apply access control.
+>>>>>>> refs/remotes/origin/cm-11.0
+	 *       is NULL, in this case go ahead and apply access control.
+	 * NOTE: if this is a local socket (skb->sk != NULL) that is in the
+	 *       TCP listening state we cannot wait until the XFRM processing
+	 *       is done as we will miss out on the SA label if we do;
+	 *       unfortunately, this means more work, but it is only once per
+	 *       connection. */
+	if (skb_dst(skb) != NULL && skb_dst(skb)->xfrm != NULL &&
+	    !(sk != NULL && sk->sk_state == TCP_LISTEN))
+<<<<<<< HEAD
 		return NF_ACCEPT;
 #endif
-	secmark_active = selinux_secmark_enabled();
-	peerlbl_active = netlbl_enabled() || selinux_xfrm_enabled();
-	if (!secmark_active && !peerlbl_active)
-		return NF_ACCEPT;
 
-	/* if the packet is being forwarded then get the peer label from the
-	 * packet itself; otherwise check to see if it is from a local
-	 * application or the kernel, if from an application get the peer label
-	 * from the sending socket, otherwise use the kernel's sid */
-	sk = skb->sk;
 	if (sk == NULL) {
+		/* Without an associated socket the packet is either coming
+		 * from the kernel or it is being forwarded; check the packet
+		 * to determine which and if the packet is being forwarded
+		 * query the packet directly to determine the security label. */
+<<<<<<< HEAD
+=======
+	 *       is NULL, in this case go ahead and apply access control. */
+	if (skb_dst(skb) != NULL && skb_dst(skb)->xfrm != NULL)
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		return NF_ACCEPT;
+#endif
+
+	if (sk == NULL) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+		/* Without an associated socket the packet is either coming
+		 * from the kernel or it is being forwarded; check the packet
+		 * to determine which and if the packet is being forwarded
+		 * query the packet directly to determine the security label. */
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (skb->skb_iif) {
 			secmark_perm = PACKET__FORWARD_OUT;
 			if (selinux_skb_peerlbl_sid(skb, family, &peer_sid))
@@ -4652,15 +6368,83 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 			secmark_perm = PACKET__SEND;
 			peer_sid = SECINITSID_KERNEL;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	} else if (sk->sk_state == TCP_LISTEN) {
+		/* Locally generated packet but the associated socket is in the
+		 * listening state which means this is a SYN-ACK packet.  In
+		 * this particular case the correct security label is assigned
+		 * to the connection/request_sock but unfortunately we can't
+		 * query the request_sock as it isn't queued on the parent
+		 * socket until after the SYN-ACK packet is sent; the only
+		 * viable choice is to regenerate the label like we do in
+		 * selinux_inet_conn_request().  See also selinux_ip_output()
+		 * for similar problems. */
+		u32 skb_sid;
+		struct sk_security_struct *sksec = sk->sk_security;
+		if (selinux_skb_peerlbl_sid(skb, family, &skb_sid))
+			return NF_DROP;
+		/* At this point, if the returned skb peerlbl is SECSID_NULL
+		 * and the packet has been through at least one XFRM
+		 * transformation then we must be dealing with the "final"
+		 * form of labeled IPsec packet; since we've already applied
+		 * all of our access controls on this packet we can safely
+		 * pass the packet. */
+		if (skb_sid == SECSID_NULL) {
+			switch (family) {
+			case PF_INET:
+				if (IPCB(skb)->flags & IPSKB_XFRM_TRANSFORMED)
+					return NF_ACCEPT;
+				break;
+			case PF_INET6:
+				if (IP6CB(skb)->flags & IP6SKB_XFRM_TRANSFORMED)
+					return NF_ACCEPT;
+			default:
+				return NF_DROP_ERR(-ECONNREFUSED);
+			}
+		}
+		if (selinux_conn_sid(sksec->sid, skb_sid, &peer_sid))
+			return NF_DROP;
+		secmark_perm = PACKET__SEND;
 	} else {
+		/* Locally generated packet, fetch the security label from the
+		 * associated socket. */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	} else {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		struct sk_security_struct *sksec = sk->sk_security;
 		peer_sid = sksec->sid;
 		secmark_perm = PACKET__SEND;
 	}
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, NET);
+<<<<<<< HEAD
 	ad.u.net.netif = ifindex;
 	ad.u.net.family = family;
+=======
+	ad.selinux_audit_data = &sad;
+	ad.u.net = &net;
+	ad.u.net->netif = ifindex;
+	ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_NET;
+	ad.u.net = &net;
+	ad.u.net->netif = ifindex;
+	ad.u.net->family = family;
+>>>>>>> refs/remotes/origin/master
 	if (selinux_parse_skb(skb, &ad, &addrp, 0, NULL))
 		return NF_DROP;
 
@@ -4689,7 +6473,11 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb, int ifindex,
 	return NF_ACCEPT;
 }
 
+<<<<<<< HEAD
 static unsigned int selinux_ipv4_postroute(unsigned int hooknum,
+=======
+static unsigned int selinux_ipv4_postroute(const struct nf_hook_ops *ops,
+>>>>>>> refs/remotes/origin/master
 					   struct sk_buff *skb,
 					   const struct net_device *in,
 					   const struct net_device *out,
@@ -4699,7 +6487,11 @@ static unsigned int selinux_ipv4_postroute(unsigned int hooknum,
 }
 
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+<<<<<<< HEAD
 static unsigned int selinux_ipv6_postroute(unsigned int hooknum,
+=======
+static unsigned int selinux_ipv6_postroute(const struct nf_hook_ops *ops,
+>>>>>>> refs/remotes/origin/master
 					   struct sk_buff *skb,
 					   const struct net_device *in,
 					   const struct net_device *out,
@@ -4722,6 +6514,8 @@ static int selinux_netlink_send(struct sock *sk, struct sk_buff *skb)
 	return selinux_nlmsg_perm(sk, skb);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int selinux_netlink_recv(struct sk_buff *skb, int capability)
 {
 	int err;
@@ -4740,6 +6534,10 @@ static int selinux_netlink_recv(struct sk_buff *skb, int capability)
 			    CAP_TO_MASK(capability), &ad);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ipc_alloc_security(struct task_struct *task,
 			      struct kern_ipc_perm *perm,
 			      u16 sclass)
@@ -4793,11 +6591,26 @@ static int ipc_has_perm(struct kern_ipc_perm *ipc_perms,
 {
 	struct ipc_security_struct *isec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = current_sid();
 
 	isec = ipc_perms->security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, IPC);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_IPC;
+>>>>>>> refs/remotes/origin/master
 	ad.u.ipc_id = ipc_perms->key;
 
 	return avc_has_perm(sid, isec->sid, isec->sclass, perms, &ad);
@@ -4818,6 +6631,13 @@ static int selinux_msg_queue_alloc_security(struct msg_queue *msq)
 {
 	struct ipc_security_struct *isec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = current_sid();
 	int rc;
 
@@ -4827,7 +6647,15 @@ static int selinux_msg_queue_alloc_security(struct msg_queue *msq)
 
 	isec = msq->q_perm.security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, IPC);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_IPC;
+>>>>>>> refs/remotes/origin/master
 	ad.u.ipc_id = msq->q_perm.key;
 
 	rc = avc_has_perm(sid, isec->sid, SECCLASS_MSGQ,
@@ -4848,11 +6676,26 @@ static int selinux_msg_queue_associate(struct msg_queue *msq, int msqflg)
 {
 	struct ipc_security_struct *isec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = current_sid();
 
 	isec = msq->q_perm.security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, IPC);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_IPC;
+>>>>>>> refs/remotes/origin/master
 	ad.u.ipc_id = msq->q_perm.key;
 
 	return avc_has_perm(sid, isec->sid, SECCLASS_MSGQ,
@@ -4892,6 +6735,13 @@ static int selinux_msg_queue_msgsnd(struct msg_queue *msq, struct msg_msg *msg, 
 	struct ipc_security_struct *isec;
 	struct msg_security_struct *msec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = current_sid();
 	int rc;
 
@@ -4912,7 +6762,15 @@ static int selinux_msg_queue_msgsnd(struct msg_queue *msq, struct msg_msg *msg, 
 			return rc;
 	}
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, IPC);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_IPC;
+>>>>>>> refs/remotes/origin/master
 	ad.u.ipc_id = msq->q_perm.key;
 
 	/* Can this process write to the queue? */
@@ -4937,13 +6795,28 @@ static int selinux_msg_queue_msgrcv(struct msg_queue *msq, struct msg_msg *msg,
 	struct ipc_security_struct *isec;
 	struct msg_security_struct *msec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = task_sid(target);
 	int rc;
 
 	isec = msq->q_perm.security;
 	msec = msg->security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, IPC);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_IPC;
+>>>>>>> refs/remotes/origin/master
 	ad.u.ipc_id = msq->q_perm.key;
 
 	rc = avc_has_perm(sid, isec->sid,
@@ -4959,6 +6832,13 @@ static int selinux_shm_alloc_security(struct shmid_kernel *shp)
 {
 	struct ipc_security_struct *isec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = current_sid();
 	int rc;
 
@@ -4968,7 +6848,15 @@ static int selinux_shm_alloc_security(struct shmid_kernel *shp)
 
 	isec = shp->shm_perm.security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, IPC);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_IPC;
+>>>>>>> refs/remotes/origin/master
 	ad.u.ipc_id = shp->shm_perm.key;
 
 	rc = avc_has_perm(sid, isec->sid, SECCLASS_SHM,
@@ -4989,11 +6877,26 @@ static int selinux_shm_associate(struct shmid_kernel *shp, int shmflg)
 {
 	struct ipc_security_struct *isec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = current_sid();
 
 	isec = shp->shm_perm.security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, IPC);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_IPC;
+>>>>>>> refs/remotes/origin/master
 	ad.u.ipc_id = shp->shm_perm.key;
 
 	return avc_has_perm(sid, isec->sid, SECCLASS_SHM,
@@ -5051,6 +6954,13 @@ static int selinux_sem_alloc_security(struct sem_array *sma)
 {
 	struct ipc_security_struct *isec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = current_sid();
 	int rc;
 
@@ -5060,7 +6970,15 @@ static int selinux_sem_alloc_security(struct sem_array *sma)
 
 	isec = sma->sem_perm.security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, IPC);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_IPC;
+>>>>>>> refs/remotes/origin/master
 	ad.u.ipc_id = sma->sem_perm.key;
 
 	rc = avc_has_perm(sid, isec->sid, SECCLASS_SEM,
@@ -5081,11 +6999,26 @@ static int selinux_sem_associate(struct sem_array *sma, int semflg)
 {
 	struct ipc_security_struct *isec;
 	struct common_audit_data ad;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct selinux_audit_data sad = {0,};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sid = current_sid();
 
 	isec = sma->sem_perm.security;
 
+<<<<<<< HEAD
 	COMMON_AUDIT_DATA_INIT(&ad, IPC);
+<<<<<<< HEAD
+=======
+	ad.selinux_audit_data = &sad;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad.type = LSM_AUDIT_DATA_IPC;
+>>>>>>> refs/remotes/origin/master
 	ad.u.ipc_id = sma->sem_perm.key;
 
 	return avc_has_perm(sid, isec->sid, SECCLASS_SEM,
@@ -5265,8 +7198,28 @@ static int selinux_setprocattr(struct task_struct *p,
 		}
 		error = security_context_to_sid(value, size, &sid);
 		if (error == -EINVAL && !strcmp(name, "fscreate")) {
+<<<<<<< HEAD
 			if (!capable(CAP_MAC_ADMIN))
 				return error;
+=======
+			if (!capable(CAP_MAC_ADMIN)) {
+				struct audit_buffer *ab;
+				size_t audit_size;
+
+				/* We strip a nul only if it is at the end, otherwise the
+				 * context contains a nul and we should audit that */
+				if (str[size - 1] == '\0')
+					audit_size = size - 1;
+				else
+					audit_size = size;
+				ab = audit_log_start(current->audit_context, GFP_ATOMIC, AUDIT_SELINUX_ERR);
+				audit_log_format(ab, "op=fscreate invalid_context=");
+				audit_log_n_untrustedstring(ab, value, audit_size);
+				audit_log_end(ab);
+
+				return error;
+			}
+>>>>>>> refs/remotes/origin/master
 			error = security_context_to_sid_force(value, size,
 							      &sid);
 		}
@@ -5318,11 +7271,40 @@ static int selinux_setprocattr(struct task_struct *p,
 		/* Check for ptracing, and update the task SID if ok.
 		   Otherwise, leave SID unchanged and fail. */
 		ptsid = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		task_lock(p);
 		tracer = tracehook_tracer_task(p);
+=======
+		rcu_read_lock();
+		tracer = ptrace_parent(p);
+>>>>>>> fcfe545... Squashed update of kernel from 3.4.75 to 3.4.76
+		if (tracer)
+			ptsid = task_sid(tracer);
+		rcu_read_unlock();
+=======
+		task_lock(p);
+		tracer = ptrace_parent(p);
 		if (tracer)
 			ptsid = task_sid(tracer);
 		task_unlock(p);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rcu_read_lock();
+		tracer = ptrace_parent(p);
+		if (tracer)
+			ptsid = task_sid(tracer);
+		rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
+=======
+		rcu_read_lock();
+		tracer = ptrace_parent(p);
+		if (tracer)
+			ptsid = task_sid(tracer);
+		rcu_read_unlock();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (tracer) {
 			error = avc_has_perm(ptsid, sid, SECCLASS_PROCESS,
@@ -5345,6 +7327,14 @@ abort_change:
 	return error;
 }
 
+<<<<<<< HEAD
+=======
+static int selinux_ismaclabel(const char *name)
+{
+	return (strcmp(name, XATTR_SELINUX_SUFFIX) == 0);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int selinux_secid_to_secctx(u32 secid, char **secdata, u32 *seclen)
 {
 	return security_sid_to_context(secid, secdata, seclen);
@@ -5457,6 +7447,11 @@ static int selinux_key_getsecurity(struct key *key, char **_buffer)
 static struct security_operations selinux_ops = {
 	.name =				"selinux",
 
+	.binder_set_context_mgr =	selinux_binder_set_context_mgr,
+	.binder_transaction =		selinux_binder_transaction,
+	.binder_transfer_binder =	selinux_binder_transfer_binder,
+	.binder_transfer_file =		selinux_binder_transfer_file,
+
 	.ptrace_access_check =		selinux_ptrace_access_check,
 	.ptrace_traceme =		selinux_ptrace_traceme,
 	.capget =			selinux_capget,
@@ -5468,7 +7463,13 @@ static struct security_operations selinux_ops = {
 	.vm_enough_memory =		selinux_vm_enough_memory,
 
 	.netlink_send =			selinux_netlink_send,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.netlink_recv =			selinux_netlink_recv,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.bprm_set_creds =		selinux_bprm_set_creds,
 	.bprm_committing_creds =	selinux_bprm_committing_creds,
@@ -5488,6 +7489,10 @@ static struct security_operations selinux_ops = {
 	.sb_clone_mnt_opts =		selinux_sb_clone_mnt_opts,
 	.sb_parse_opts_str = 		selinux_parse_opts_str,
 
+<<<<<<< HEAD
+=======
+	.dentry_init_security =		selinux_dentry_init_security,
+>>>>>>> refs/remotes/origin/master
 
 	.inode_alloc_security =		selinux_inode_alloc_security,
 	.inode_free_security =		selinux_inode_free_security,
@@ -5519,7 +7524,12 @@ static struct security_operations selinux_ops = {
 	.file_alloc_security =		selinux_file_alloc_security,
 	.file_free_security =		selinux_file_free_security,
 	.file_ioctl =			selinux_file_ioctl,
+<<<<<<< HEAD
 	.file_mmap =			selinux_file_mmap,
+=======
+	.mmap_file =			selinux_mmap_file,
+	.mmap_addr =			selinux_mmap_addr,
+>>>>>>> refs/remotes/origin/master
 	.file_mprotect =		selinux_file_mprotect,
 	.file_lock =			selinux_file_lock,
 	.file_fcntl =			selinux_file_fcntl,
@@ -5527,7 +7537,11 @@ static struct security_operations selinux_ops = {
 	.file_send_sigiotask =		selinux_file_send_sigiotask,
 	.file_receive =			selinux_file_receive,
 
+<<<<<<< HEAD
 	.dentry_open =			selinux_dentry_open,
+=======
+	.file_open =			selinux_file_open,
+>>>>>>> refs/remotes/origin/master
 
 	.task_create =			selinux_task_create,
 	.cred_alloc_blank =		selinux_cred_alloc_blank,
@@ -5582,6 +7596,10 @@ static struct security_operations selinux_ops = {
 	.getprocattr =			selinux_getprocattr,
 	.setprocattr =			selinux_setprocattr,
 
+<<<<<<< HEAD
+=======
+	.ismaclabel =			selinux_ismaclabel,
+>>>>>>> refs/remotes/origin/master
 	.secid_to_secctx =		selinux_secid_to_secctx,
 	.secctx_to_secid =		selinux_secctx_to_secid,
 	.release_secctx =		selinux_release_secctx,
@@ -5620,16 +7638,31 @@ static struct security_operations selinux_ops = {
 	.secmark_refcount_inc =		selinux_secmark_refcount_inc,
 	.secmark_refcount_dec =		selinux_secmark_refcount_dec,
 	.req_classify_flow =		selinux_req_classify_flow,
+<<<<<<< HEAD
 	.tun_dev_create =		selinux_tun_dev_create,
 	.tun_dev_post_create = 		selinux_tun_dev_post_create,
 	.tun_dev_attach =		selinux_tun_dev_attach,
+=======
+	.tun_dev_alloc_security =	selinux_tun_dev_alloc_security,
+	.tun_dev_free_security =	selinux_tun_dev_free_security,
+	.tun_dev_create =		selinux_tun_dev_create,
+	.tun_dev_attach_queue =		selinux_tun_dev_attach_queue,
+	.tun_dev_attach =		selinux_tun_dev_attach,
+	.tun_dev_open =			selinux_tun_dev_open,
+	.skb_owned_by =			selinux_skb_owned_by,
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SECURITY_NETWORK_XFRM
 	.xfrm_policy_alloc_security =	selinux_xfrm_policy_alloc,
 	.xfrm_policy_clone_security =	selinux_xfrm_policy_clone,
 	.xfrm_policy_free_security =	selinux_xfrm_policy_free,
 	.xfrm_policy_delete_security =	selinux_xfrm_policy_delete,
+<<<<<<< HEAD
 	.xfrm_state_alloc_security =	selinux_xfrm_state_alloc,
+=======
+	.xfrm_state_alloc =		selinux_xfrm_state_alloc,
+	.xfrm_state_alloc_acquire =	selinux_xfrm_state_alloc_acquire,
+>>>>>>> refs/remotes/origin/master
 	.xfrm_state_free_security =	selinux_xfrm_state_free,
 	.xfrm_state_delete_security =	selinux_xfrm_state_delete,
 	.xfrm_policy_lookup =		selinux_xfrm_policy_lookup,
@@ -5711,21 +7744,33 @@ static struct nf_hook_ops selinux_ipv4_ops[] = {
 	{
 		.hook =		selinux_ipv4_postroute,
 		.owner =	THIS_MODULE,
+<<<<<<< HEAD
 		.pf =		PF_INET,
+=======
+		.pf =		NFPROTO_IPV4,
+>>>>>>> refs/remotes/origin/master
 		.hooknum =	NF_INET_POST_ROUTING,
 		.priority =	NF_IP_PRI_SELINUX_LAST,
 	},
 	{
 		.hook =		selinux_ipv4_forward,
 		.owner =	THIS_MODULE,
+<<<<<<< HEAD
 		.pf =		PF_INET,
+=======
+		.pf =		NFPROTO_IPV4,
+>>>>>>> refs/remotes/origin/master
 		.hooknum =	NF_INET_FORWARD,
 		.priority =	NF_IP_PRI_SELINUX_FIRST,
 	},
 	{
 		.hook =		selinux_ipv4_output,
 		.owner =	THIS_MODULE,
+<<<<<<< HEAD
 		.pf =		PF_INET,
+=======
+		.pf =		NFPROTO_IPV4,
+>>>>>>> refs/remotes/origin/master
 		.hooknum =	NF_INET_LOCAL_OUT,
 		.priority =	NF_IP_PRI_SELINUX_FIRST,
 	}
@@ -5737,14 +7782,22 @@ static struct nf_hook_ops selinux_ipv6_ops[] = {
 	{
 		.hook =		selinux_ipv6_postroute,
 		.owner =	THIS_MODULE,
+<<<<<<< HEAD
 		.pf =		PF_INET6,
+=======
+		.pf =		NFPROTO_IPV6,
+>>>>>>> refs/remotes/origin/master
 		.hooknum =	NF_INET_POST_ROUTING,
 		.priority =	NF_IP6_PRI_SELINUX_LAST,
 	},
 	{
 		.hook =		selinux_ipv6_forward,
 		.owner =	THIS_MODULE,
+<<<<<<< HEAD
 		.pf =		PF_INET6,
+=======
+		.pf =		NFPROTO_IPV6,
+>>>>>>> refs/remotes/origin/master
 		.hooknum =	NF_INET_FORWARD,
 		.priority =	NF_IP6_PRI_SELINUX_FIRST,
 	}
@@ -5802,8 +7855,14 @@ static int selinux_disabled;
 
 int selinux_disable(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	extern void exit_sel_fs(void);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ss_initialized) {
 		/* Not permitted after initial policy load. */
 		return -EINVAL;

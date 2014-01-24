@@ -7,7 +7,11 @@
 
 	/* Magic words identifying a software image */
 	.word	LASAT_K_MAGIC0_VAL
+<<<<<<< HEAD
 	.word 	LASAT_K_MAGIC1_VAL
+=======
+	.word	LASAT_K_MAGIC1_VAL
+>>>>>>> refs/remotes/origin/master
 
 	/* Image header version */
 	.word	0x00000002

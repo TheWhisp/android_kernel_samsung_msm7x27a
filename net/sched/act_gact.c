@@ -58,8 +58,14 @@ static const struct nla_policy gact_policy[TCA_GACT_MAX + 1] = {
 	[TCA_GACT_PROB]		= { .len = sizeof(struct tc_gact_p) },
 };
 
+<<<<<<< HEAD
 static int tcf_gact_init(struct nlattr *nla, struct nlattr *est,
 			 struct tc_action *a, int ovr, int bind)
+=======
+static int tcf_gact_init(struct net *net, struct nlattr *nla,
+			 struct nlattr *est, struct tc_action *a,
+			 int ovr, int bind)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nlattr *tb[TCA_GACT_MAX + 1];
 	struct tc_gact *parm;
@@ -101,10 +107,18 @@ static int tcf_gact_init(struct nlattr *nla, struct nlattr *est,
 			return PTR_ERR(pc);
 		ret = ACT_P_CREATED;
 	} else {
+<<<<<<< HEAD
 		if (!ovr) {
 			tcf_hash_release(pc, bind, &gact_hash_info);
 			return -EEXIST;
 		}
+=======
+		if (bind)/* dont override defaults */
+			return 0;
+		tcf_hash_release(pc, bind, &gact_hash_info);
+		if (!ovr)
+			return -EEXIST;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	gact = to_gact(pc);
@@ -133,7 +147,17 @@ static int tcf_gact_cleanup(struct tc_action *a, int bind)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int tcf_gact(struct sk_buff *skb, struct tc_action *a, struct tcf_result *res)
+=======
+static int tcf_gact(struct sk_buff *skb, const struct tc_action *a,
+		    struct tcf_result *res)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tcf_gact(struct sk_buff *skb, const struct tc_action *a,
+		    struct tcf_result *res)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcf_gact *gact = a->priv;
 	int action = TC_ACT_SHOT;
@@ -169,7 +193,12 @@ static int tcf_gact_dump(struct sk_buff *skb, struct tc_action *a, int bind, int
 	};
 	struct tcf_t t;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_GACT_PARMS, sizeof(opt), &opt);
+=======
+	if (nla_put(skb, TCA_GACT_PARMS, sizeof(opt), &opt))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_GACT_PROB
 	if (gact->tcfg_ptype) {
 		struct tc_gact_p p_opt = {
@@ -178,13 +207,23 @@ static int tcf_gact_dump(struct sk_buff *skb, struct tc_action *a, int bind, int
 			.ptype   = gact->tcfg_ptype,
 		};
 
+<<<<<<< HEAD
 		NLA_PUT(skb, TCA_GACT_PROB, sizeof(p_opt), &p_opt);
+=======
+		if (nla_put(skb, TCA_GACT_PROB, sizeof(p_opt), &p_opt))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 	t.install = jiffies_to_clock_t(jiffies - gact->tcf_tm.install);
 	t.lastuse = jiffies_to_clock_t(jiffies - gact->tcf_tm.lastuse);
 	t.expires = jiffies_to_clock_t(gact->tcf_tm.expires);
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_GACT_TM, sizeof(t), &t);
+=======
+	if (nla_put(skb, TCA_GACT_TM, sizeof(t), &t))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return skb->len;
 
 nla_put_failure:
@@ -201,9 +240,13 @@ static struct tc_action_ops act_gact_ops = {
 	.act		=	tcf_gact,
 	.dump		=	tcf_gact_dump,
 	.cleanup	=	tcf_gact_cleanup,
+<<<<<<< HEAD
 	.lookup		=	tcf_hash_search,
 	.init		=	tcf_gact_init,
 	.walk		=	tcf_generic_walker
+=======
+	.init		=	tcf_gact_init,
+>>>>>>> refs/remotes/origin/master
 };
 
 MODULE_AUTHOR("Jamal Hadi Salim(2002-4)");

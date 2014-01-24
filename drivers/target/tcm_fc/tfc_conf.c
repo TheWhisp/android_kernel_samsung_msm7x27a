@@ -23,7 +23,13 @@
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <generated/utsrelease.h>
 #include <linux/utsname.h>
 #include <linux/init.h>
@@ -32,6 +38,14 @@
 #include <linux/types.h>
 #include <linux/string.h>
 #include <linux/configfs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ctype.h>
 #include <asm/unaligned.h>
 #include <scsi/scsi.h>
@@ -41,6 +55,8 @@
 #include <scsi/libfc.h>
 
 #include <target/target_core_base.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <target/target_core_transport.h>
 #include <target/target_core_fabric_ops.h>
 #include <target/target_core_fabric_configfs.h>
@@ -49,6 +65,16 @@
 #include <target/target_core_tpg.h>
 #include <target/target_core_configfs.h>
 #include <target/target_core_base.h>
+=======
+#include <target/target_core_fabric.h>
+#include <target/target_core_fabric_configfs.h>
+#include <target/target_core_configfs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <target/target_core_fabric.h>
+#include <target/target_core_fabric_configfs.h>
+#include <target/target_core_configfs.h>
+>>>>>>> refs/remotes/origin/master
 #include <target/configfs_macros.h>
 
 #include "tcm_fc.h"
@@ -72,10 +98,23 @@ static ssize_t ft_parse_wwn(const char *name, u64 *wwn, int strict)
 {
 	const char *cp;
 	char c;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 nibble;
 	u32 byte = 0;
 	u32 pos = 0;
 	u32 err;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u32 byte = 0;
+	u32 pos = 0;
+	u32 err;
+	int val;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	*wwn = 0;
 	for (cp = name; cp < &name[FT_NAMELEN - 1]; cp++) {
@@ -96,6 +135,8 @@ static ssize_t ft_parse_wwn(const char *name, u64 *wwn, int strict)
 			return cp - name;
 		}
 		err = 3;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (isdigit(c))
 			nibble = c - '0';
 		else if (isxdigit(c) && (islower(c) || !strict))
@@ -107,6 +148,21 @@ static ssize_t ft_parse_wwn(const char *name, u64 *wwn, int strict)
 	err = 4;
 fail:
 	FT_CONF_DBG("err %u len %zu pos %u byte %u\n",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		val = hex_to_bin(c);
+		if (val < 0 || (strict && isupper(c)))
+			goto fail;
+		*wwn = (*wwn << 4) | val;
+	}
+	err = 4;
+fail:
+	pr_debug("err %u len %zu pos %u byte %u\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		    err, cp - name, pos, byte);
 	return -1;
 }
@@ -216,14 +272,30 @@ static struct se_node_acl *ft_add_acl(
 	u64 wwpn;
 	u32 q_depth;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	FT_CONF_DBG("add acl %s\n", name);
+=======
+	pr_debug("add acl %s\n", name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("add acl %s\n", name);
+>>>>>>> refs/remotes/origin/master
 	tpg = container_of(se_tpg, struct ft_tpg, se_tpg);
 
 	if (ft_parse_wwn(name, &wwpn, 1) < 0)
 		return ERR_PTR(-EINVAL);
 
 	acl = kzalloc(sizeof(struct ft_node_acl), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(acl))
+=======
+	if (!acl)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!acl)
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOMEM);
 	acl->node_auth.port_name = wwpn;
 
@@ -239,11 +311,25 @@ static void ft_del_acl(struct se_node_acl *se_acl)
 	struct ft_node_acl *acl = container_of(se_acl,
 				struct ft_node_acl, se_node_acl);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	FT_CONF_DBG("del acl %s\n",
 		config_item_name(&se_acl->acl_group.cg_item));
 
 	tpg = container_of(se_tpg, struct ft_tpg, se_tpg);
 	FT_CONF_DBG("del acl %p se_acl %p tpg %p se_tpg %p\n",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pr_debug("del acl %s\n",
+		config_item_name(&se_acl->acl_group.cg_item));
+
+	tpg = container_of(se_tpg, struct ft_tpg, se_tpg);
+	pr_debug("del acl %p se_acl %p tpg %p se_tpg %p\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		    acl, se_acl, tpg, &tpg->se_tpg);
 
 	core_tpg_del_initiator_node_acl(&tpg->se_tpg, se_acl, 1);
@@ -257,6 +343,8 @@ struct ft_node_acl *ft_acl_get(struct ft_tpg *tpg, struct fc_rport_priv *rdata)
 	struct se_portal_group *se_tpg = &tpg->se_tpg;
 	struct se_node_acl *se_acl;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_bh(&se_tpg->acl_node_lock);
 	list_for_each_entry(se_acl, &se_tpg->acl_node_list, acl_list) {
 		acl = container_of(se_acl, struct ft_node_acl, se_node_acl);
@@ -265,13 +353,36 @@ struct ft_node_acl *ft_acl_get(struct ft_tpg *tpg, struct fc_rport_priv *rdata)
 		if (acl->node_auth.port_name == rdata->ids.port_name ||
 		    acl->node_auth.node_name == rdata->ids.node_name) {
 			FT_CONF_DBG("acl %p port_name %llx matched\n", acl,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_lock_irq(&se_tpg->acl_node_lock);
+	list_for_each_entry(se_acl, &se_tpg->acl_node_list, acl_list) {
+		acl = container_of(se_acl, struct ft_node_acl, se_node_acl);
+		pr_debug("acl %p port_name %llx\n",
+			acl, (unsigned long long)acl->node_auth.port_name);
+		if (acl->node_auth.port_name == rdata->ids.port_name ||
+		    acl->node_auth.node_name == rdata->ids.node_name) {
+			pr_debug("acl %p port_name %llx matched\n", acl,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				    (unsigned long long)rdata->ids.port_name);
 			found = acl;
 			/* XXX need to hold onto ACL */
 			break;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&se_tpg->acl_node_lock);
+=======
+	spin_unlock_irq(&se_tpg->acl_node_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irq(&se_tpg->acl_node_lock);
+>>>>>>> refs/remotes/origin/master
 	return found;
 }
 
@@ -280,11 +391,25 @@ struct se_node_acl *ft_tpg_alloc_fabric_acl(struct se_portal_group *se_tpg)
 	struct ft_node_acl *acl;
 
 	acl = kzalloc(sizeof(*acl), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(acl)) {
 		printk(KERN_ERR "Unable to allocate struct ft_node_acl\n");
 		return NULL;
 	}
 	FT_CONF_DBG("acl %p\n", acl);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!acl) {
+		pr_err("Unable to allocate struct ft_node_acl\n");
+		return NULL;
+	}
+	pr_debug("acl %p\n", acl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return &acl->se_node_acl;
 }
 
@@ -294,7 +419,15 @@ static void ft_tpg_release_fabric_acl(struct se_portal_group *se_tpg,
 	struct ft_node_acl *acl = container_of(se_acl,
 				struct ft_node_acl, se_node_acl);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	FT_CONF_DBG(KERN_INFO "acl %p\n", acl);
+=======
+	pr_debug("acl %p\n", acl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("acl %p\n", acl);
+>>>>>>> refs/remotes/origin/master
 	kfree(acl);
 }
 
@@ -308,17 +441,39 @@ static struct se_portal_group *ft_add_tpg(
 {
 	struct ft_lport_acl *lacl;
 	struct ft_tpg *tpg;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long index;
 	int ret;
 
 	FT_CONF_DBG("tcm_fc: add tpg %s\n", name);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct workqueue_struct *wq;
+	unsigned long index;
+	int ret;
+
+	pr_debug("tcm_fc: add tpg %s\n", name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Name must be "tpgt_" followed by the index.
 	 */
 	if (strstr(name, "tpgt_") != name)
 		return NULL;
+<<<<<<< HEAD
 	if (strict_strtoul(name + 5, 10, &index) || index > UINT_MAX)
+=======
+
+	ret = kstrtoul(name + 5, 10, &index);
+	if (ret)
+		return NULL;
+	if (index > UINT_MAX)
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	lacl = container_of(wwn, struct ft_lport_acl, fc_lport_wwn);
@@ -328,20 +483,49 @@ static struct se_portal_group *ft_add_tpg(
 	tpg->index = index;
 	tpg->lport_acl = lacl;
 	INIT_LIST_HEAD(&tpg->lun_list);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	transport_init_queue_obj(&tpg->qobj);
 
 	ret = core_tpg_register(&ft_configfs->tf_ops, wwn, &tpg->se_tpg,
 				(void *)tpg, TRANSPORT_TPG_TYPE_NORMAL);
 	if (ret < 0) {
+=======
+
+	wq = alloc_workqueue("tcm_fc", 0, 1);
+	if (!wq) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	wq = alloc_workqueue("tcm_fc", 0, 1);
+	if (!wq) {
+>>>>>>> refs/remotes/origin/master
 		kfree(tpg);
 		return NULL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tpg->thread = kthread_run(ft_thread, tpg, "ft_tpg%lu", index);
 	if (IS_ERR(tpg->thread)) {
 		kfree(tpg);
 		return NULL;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = core_tpg_register(&ft_configfs->tf_ops, wwn, &tpg->se_tpg,
+				tpg, TRANSPORT_TPG_TYPE_NORMAL);
+	if (ret < 0) {
+		destroy_workqueue(wq);
+		kfree(tpg);
+		return NULL;
+	}
+	tpg->workqueue = wq;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&ft_lport_lock);
 	list_add_tail(&tpg->list, &lacl->tpg_list);
@@ -354,10 +538,23 @@ static void ft_del_tpg(struct se_portal_group *se_tpg)
 {
 	struct ft_tpg *tpg = container_of(se_tpg, struct ft_tpg, se_tpg);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	FT_CONF_DBG("del tpg %s\n",
 		    config_item_name(&tpg->se_tpg.tpg_group.cg_item));
 
 	kthread_stop(tpg->thread);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pr_debug("del tpg %s\n",
+		    config_item_name(&tpg->se_tpg.tpg_group.cg_item));
+
+	destroy_workqueue(tpg->workqueue);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Wait for sessions to be freed thru RCU, for BUG_ON below */
 	synchronize_rcu();
@@ -412,7 +609,15 @@ static struct se_wwn *ft_add_lport(
 	struct ft_lport_acl *old_lacl;
 	u64 wwpn;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	FT_CONF_DBG("add lport %s\n", name);
+=======
+	pr_debug("add lport %s\n", name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("add lport %s\n", name);
+>>>>>>> refs/remotes/origin/master
 	if (ft_parse_wwn(name, &wwpn, 1) < 0)
 		return NULL;
 	lacl = kzalloc(sizeof(*lacl), GFP_KERNEL);
@@ -441,8 +646,16 @@ static void ft_del_lport(struct se_wwn *wwn)
 	struct ft_lport_acl *lacl = container_of(wwn,
 				struct ft_lport_acl, fc_lport_wwn);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	FT_CONF_DBG("del lport %s\n",
 			config_item_name(&wwn->wwn_group.cg_item));
+=======
+	pr_debug("del lport %s\n", lacl->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("del lport %s\n", lacl->name);
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&ft_lport_lock);
 	list_del(&lacl->list);
 	mutex_unlock(&ft_lport_lock);
@@ -502,6 +715,7 @@ static void ft_set_default_node_attr(struct se_node_acl *se_nacl)
 {
 }
 
+<<<<<<< HEAD
 static u16 ft_get_fabric_sense_len(void)
 {
 	return 0;
@@ -512,6 +726,8 @@ static u16 ft_set_fabric_sense_len(struct se_cmd *se_cmd, u32 sense_len)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 ft_tpg_get_inst_index(struct se_portal_group *se_tpg)
 {
 	struct ft_tpg *tpg = se_tpg->se_tpg_fabric_ptr;
@@ -536,6 +752,8 @@ static struct target_core_fabric_ops ft_fabric_ops = {
 	.tpg_release_fabric_acl =	ft_tpg_release_fabric_acl,
 	.tpg_get_inst_index =		ft_tpg_get_inst_index,
 	.check_stop_free =		ft_check_stop_free,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.release_cmd_to_pool =		ft_release_cmd,
 	.release_cmd_direct =		ft_release_cmd,
 	.shutdown_session =		ft_sess_shutdown,
@@ -543,6 +761,16 @@ static struct target_core_fabric_ops ft_fabric_ops = {
 	.stop_session =			ft_sess_stop,
 	.fall_back_to_erl0 =		ft_sess_set_erl0,
 	.sess_logged_in =		ft_sess_logged_in,
+=======
+	.release_cmd =			ft_release_cmd,
+	.shutdown_session =		ft_sess_shutdown,
+	.close_session =		ft_sess_close,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.release_cmd =			ft_release_cmd,
+	.shutdown_session =		ft_sess_shutdown,
+	.close_session =		ft_sess_close,
+>>>>>>> refs/remotes/origin/master
 	.sess_get_index =		ft_sess_get_index,
 	.sess_get_initiator_sid =	NULL,
 	.write_pending =		ft_write_pending,
@@ -550,13 +778,25 @@ static struct target_core_fabric_ops ft_fabric_ops = {
 	.set_default_node_attributes =	ft_set_default_node_attr,
 	.get_task_tag =			ft_get_task_tag,
 	.get_cmd_state =		ft_get_cmd_state,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.new_cmd_failure =		ft_new_cmd_failure,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.queue_data_in =		ft_queue_data_in,
 	.queue_status =			ft_queue_status,
 	.queue_tm_rsp =			ft_queue_tm_resp,
 	.get_fabric_sense_len =		ft_get_fabric_sense_len,
 	.set_fabric_sense_len =		ft_set_fabric_sense_len,
+<<<<<<< HEAD
 	.is_state_remove =		ft_is_state_remove,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.queue_data_in =		ft_queue_data_in,
+	.queue_status =			ft_queue_status,
+	.queue_tm_rsp =			ft_queue_tm_resp,
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Setup function pointers for generic logic in
 	 * target_core_fabric_configfs.c
@@ -582,10 +822,21 @@ int ft_register_configfs(void)
 	 * Register the top level struct config_item_type with TCM core
 	 */
 	fabric = target_fabric_configfs_init(THIS_MODULE, "fc");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!fabric) {
 		printk(KERN_INFO "%s: target_fabric_configfs_init() failed!\n",
 		       __func__);
 		return -1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(fabric)) {
+		pr_err("%s: target_fabric_configfs_init() failed!\n",
+		       __func__);
+		return PTR_ERR(fabric);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	fabric->tf_ops = ft_fabric_ops;
 
@@ -605,16 +856,44 @@ int ft_register_configfs(void)
 	TF_CIT_TMPL(fabric)->tfc_tpg_nacl_attrib_cit.ct_attrs = NULL;
 	TF_CIT_TMPL(fabric)->tfc_tpg_nacl_auth_cit.ct_attrs = NULL;
 	TF_CIT_TMPL(fabric)->tfc_tpg_nacl_param_cit.ct_attrs = NULL;
+=======
+	}
+	fabric->tf_ops = ft_fabric_ops;
+
+	/*
+	 * Setup default attribute lists for various fabric->tf_cit_tmpl
+	 */
+	fabric->tf_cit_tmpl.tfc_wwn_cit.ct_attrs = ft_wwn_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_base_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_attrib_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_param_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_np_base_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_base_cit.ct_attrs =
+						    ft_nacl_base_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_attrib_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_auth_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_param_cit.ct_attrs = NULL;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * register the fabric for use within TCM
 	 */
 	ret = target_fabric_configfs_register(fabric);
 	if (ret < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		FT_CONF_DBG("target_fabric_configfs_register() for"
 			    " FC Target failed!\n");
 		printk(KERN_INFO
 		       "%s: target_fabric_configfs_register() failed!\n",
 		       __func__);
+=======
+		pr_debug("target_fabric_configfs_register() for"
+			    " FC Target failed!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("target_fabric_configfs_register() for"
+			    " FC Target failed!\n");
+>>>>>>> refs/remotes/origin/master
 		target_fabric_configfs_free(fabric);
 		return -1;
 	}
@@ -661,9 +940,21 @@ static void __exit ft_exit(void)
 	synchronize_rcu();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef MODULE
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("FC TCM fabric driver " FT_VERSION);
 MODULE_LICENSE("GPL");
 module_init(ft_init);
 module_exit(ft_exit);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* MODULE */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

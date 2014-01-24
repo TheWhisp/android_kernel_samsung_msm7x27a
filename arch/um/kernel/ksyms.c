@@ -3,6 +3,8 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "linux/module.h"
 #include "linux/syscalls.h"
 #include "asm/tlbflush.h"
@@ -30,6 +32,20 @@ EXPORT_SYMBOL(copy_to_user);
 EXPORT_SYMBOL(copy_from_user);
 EXPORT_SYMBOL(clear_user);
 EXPORT_SYMBOL(uml_strdup);
+=======
+#include <linux/module.h>
+#include "os.h"
+
+EXPORT_SYMBOL(set_signals);
+EXPORT_SYMBOL(get_signals);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <os.h>
+
+EXPORT_SYMBOL(set_signals);
+EXPORT_SYMBOL(get_signals);
+>>>>>>> refs/remotes/origin/master
 
 EXPORT_SYMBOL(os_stat_fd);
 EXPORT_SYMBOL(os_stat_file);
@@ -57,13 +73,21 @@ EXPORT_SYMBOL(os_connect_socket);
 EXPORT_SYMBOL(os_accept_connection);
 EXPORT_SYMBOL(os_rcv_fd);
 EXPORT_SYMBOL(run_helper);
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(start_thread);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(os_major);
 EXPORT_SYMBOL(os_minor);
 EXPORT_SYMBOL(os_makedev);
 
 EXPORT_SYMBOL(add_sigio_fd);
 EXPORT_SYMBOL(ignore_sigio_fd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(deactivate_fd);
 EXPORT_SYMBOL(sigio_broken);
 
@@ -78,3 +102,9 @@ extern void __read_lock_failed(rwlock_t *rw);
 EXPORT_SYMBOL(__read_lock_failed);
 
 #endif
+=======
+EXPORT_SYMBOL(sigio_broken);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(sigio_broken);
+>>>>>>> refs/remotes/origin/master

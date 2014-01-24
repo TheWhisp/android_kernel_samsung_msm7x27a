@@ -10,7 +10,10 @@
 #define __XEN_PUBLIC_XEN_H__
 
 #include <asm/xen/interface.h>
+<<<<<<< HEAD
 #include <asm/pvclock-abi.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * XEN "SYSTEM CALLS" (a.k.a. HYPERCALLS).
@@ -80,6 +83,10 @@
 #define VIRQ_CONSOLE    2  /* (DOM0) Bytes received on emergency console. */
 #define VIRQ_DOM_EXC    3  /* (DOM0) Exceptional event for some domain.   */
 #define VIRQ_DEBUGGER   6  /* (DOM0) A domain has paused for debugging.   */
+<<<<<<< HEAD
+=======
+#define VIRQ_PCPU_STATE 9  /* (DOM0) PCPU state changed                   */
+>>>>>>> refs/remotes/origin/master
 
 /* Architecture-specific VIRQ definitions. */
 #define VIRQ_ARCH_0    16
@@ -189,7 +196,11 @@ struct mmuext_op {
 	unsigned int cmd;
 	union {
 		/* [UN]PIN_TABLE, NEW_BASEPTR, NEW_USER_BASEPTR */
+<<<<<<< HEAD
 		unsigned long mfn;
+=======
+		xen_pfn_t mfn;
+>>>>>>> refs/remotes/origin/master
 		/* INVLPG_LOCAL, INVLPG_ALL, SET_LDT */
 		unsigned long linear_addr;
 	} arg1;
@@ -285,7 +296,11 @@ DEFINE_GUEST_HANDLE_STRUCT(multicall_entry);
  * Event channel endpoints per domain:
  *  1024 if a long is 32 bits; 4096 if a long is 64 bits.
  */
+<<<<<<< HEAD
 #define NR_EVENT_CHANNELS (sizeof(unsigned long) * sizeof(unsigned long) * 64)
+=======
+#define NR_EVENT_CHANNELS (sizeof(xen_ulong_t) * sizeof(xen_ulong_t) * 64)
+>>>>>>> refs/remotes/origin/master
 
 struct vcpu_time_info {
 	/*
@@ -341,7 +356,11 @@ struct vcpu_info {
 	 */
 	uint8_t evtchn_upcall_pending;
 	uint8_t evtchn_upcall_mask;
+<<<<<<< HEAD
 	unsigned long evtchn_pending_sel;
+=======
+	xen_ulong_t evtchn_pending_sel;
+>>>>>>> refs/remotes/origin/master
 	struct arch_vcpu_info arch;
 	struct pvclock_vcpu_time_info time;
 }; /* 64 bytes (x86) */
@@ -384,8 +403,13 @@ struct shared_info {
 	 * per-vcpu selector word to be set. Each bit in the selector covers a
 	 * 'C long' in the PENDING bitfield array.
 	 */
+<<<<<<< HEAD
 	unsigned long evtchn_pending[sizeof(unsigned long) * 8];
 	unsigned long evtchn_mask[sizeof(unsigned long) * 8];
+=======
+	xen_ulong_t evtchn_pending[sizeof(xen_ulong_t) * 8];
+	xen_ulong_t evtchn_mask[sizeof(xen_ulong_t) * 8];
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Wallclock time: updated only by control software. Guests should base
@@ -429,11 +453,19 @@ struct start_info {
 	unsigned long nr_pages;     /* Total pages allocated to this domain.  */
 	unsigned long shared_info;  /* MACHINE address of shared info struct. */
 	uint32_t flags;             /* SIF_xxx flags.                         */
+<<<<<<< HEAD
 	unsigned long store_mfn;    /* MACHINE page number of shared page.    */
 	uint32_t store_evtchn;      /* Event channel for store communication. */
 	union {
 		struct {
 			unsigned long mfn;  /* MACHINE page number of console page.   */
+=======
+	xen_pfn_t store_mfn;        /* MACHINE page number of shared page.    */
+	uint32_t store_evtchn;      /* Event channel for store communication. */
+	union {
+		struct {
+			xen_pfn_t mfn;      /* MACHINE page number of console page.   */
+>>>>>>> refs/remotes/origin/master
 			uint32_t  evtchn;   /* Event channel for console page.        */
 		} domU;
 		struct {
@@ -454,6 +486,10 @@ struct dom0_vga_console_info {
 	uint8_t video_type;
 #define XEN_VGATYPE_TEXT_MODE_3 0x03
 #define XEN_VGATYPE_VESA_LFB    0x23
+<<<<<<< HEAD
+=======
+#define XEN_VGATYPE_EFI_LFB     0x70
+>>>>>>> refs/remotes/origin/master
 
 	union {
 		struct {
@@ -492,6 +528,14 @@ struct dom0_vga_console_info {
 /* These flags are passed in the 'flags' field of start_info_t. */
 #define SIF_PRIVILEGED    (1<<0)  /* Is the domain privileged? */
 #define SIF_INITDOMAIN    (1<<1)  /* Is this the initial control domain? */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define SIF_PM_MASK       (0xFF<<8) /* reserve 1 byte for xen-pm options */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SIF_PM_MASK       (0xFF<<8) /* reserve 1 byte for xen-pm options */
+>>>>>>> refs/remotes/origin/master
 
 typedef uint64_t cpumap_t;
 
@@ -522,6 +566,16 @@ struct tmem_op {
 	} u;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+DEFINE_GUEST_HANDLE(u64);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+DEFINE_GUEST_HANDLE(u64);
+
+>>>>>>> refs/remotes/origin/master
 #else /* __ASSEMBLY__ */
 
 /* In assembly code we cannot use C numeric constant suffixes. */

@@ -35,10 +35,15 @@
  * \author Gareth Hughes <gareth@valinux.com>
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "drm_sarea.h"
 #include "mga_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/mga_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "mga_drv.h"
 
 #define MGA_DEFAULT_USEC_TIMEOUT	10000
@@ -403,6 +408,12 @@ int mga_driver_load(struct drm_device *dev, unsigned long flags)
 	dev_priv->usec_timeout = MGA_DEFAULT_USEC_TIMEOUT;
 	dev_priv->chipset = flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pci_set_master(dev->pdev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_priv->mmio_base = pci_resource_start(dev->pdev, 1);
 	dev_priv->mmio_size = pci_resource_len(dev->pdev, 1);
 
@@ -411,6 +422,13 @@ int mga_driver_load(struct drm_device *dev, unsigned long flags)
 	dev->types[7] = _DRM_STAT_PRIMARY;
 	dev->types[8] = _DRM_STAT_SECONDARY;
 
+=======
+	pci_set_master(dev->pdev);
+
+	dev_priv->mmio_base = pci_resource_start(dev->pdev, 1);
+	dev_priv->mmio_size = pci_resource_len(dev->pdev, 1);
+
+>>>>>>> refs/remotes/origin/master
 	ret = drm_vblank_init(dev, 1);
 
 	if (ret) {

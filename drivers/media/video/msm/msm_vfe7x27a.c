@@ -15,7 +15,15 @@
 #include <linux/fs.h>
 #include <linux/android_pmem.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/delay.h>
 #include <linux/wait.h>
 #include <mach/msm_adsp.h>

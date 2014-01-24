@@ -17,6 +17,16 @@
 #include <asm/pgtable.h>
 #include <asm/ptrace.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "proc-macros.S"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "proc-macros.S"
+
+>>>>>>> refs/remotes/origin/master
 	.text
 /*
  * cpu_arm9tdmi_proc_init()
@@ -43,10 +53,24 @@ ENTRY(cpu_arm9tdmi_proc_fin)
  * Params  : loc(r0)	address to jump to
  * Purpose : Sets up everything for a reset and jump to the location for soft reset.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(cpu_arm9tdmi_reset)
 		mov	pc, r0
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.pushsection	.idmap.text, "ax"
+ENTRY(cpu_arm9tdmi_reset)
+		mov	pc, r0
+ENDPROC(cpu_arm9tdmi_reset)
+		.popsection
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		__CPUINIT
+=======
+>>>>>>> refs/remotes/origin/master
 
 		.type	__arm9tdmi_setup, #function
 __arm9tdmi_setup:
@@ -55,6 +79,8 @@ __arm9tdmi_setup:
 
 		__INITDATA
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
  *	     come through these
@@ -96,26 +122,62 @@ cpu_arm9tdmi_name:
 cpu_p2001_name:
 		.asciz	"P2001"
 		.size	cpu_p2001_name, . - cpu_p2001_name
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+		define_processor_functions arm9tdmi, dabort=nommu_early_abort, pabort=legacy_pabort, nommu=1
+
+		.section ".rodata"
+
+		string	cpu_arch_name, "armv4t"
+		string	cpu_elf_name, "v4"
+		string	cpu_arm9tdmi_name, "ARM9TDMI"
+		string	cpu_p2001_name, "P2001"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		.align
 
 		.section ".proc.info.init", #alloc, #execinstr
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.type	__arm9tdmi_proc_info, #object
 __arm9tdmi_proc_info:
 		.long	0x41009900
 		.long	0xfff8ff00
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+.macro arm9tdmi_proc_info name:req, cpu_val:req, cpu_mask:req, cpu_name:req
+		.type	__\name\()_proc_info, #object
+__\name\()_proc_info:
+		.long	\cpu_val
+		.long	\cpu_mask
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.long	0
 		.long	0
 		b	__arm9tdmi_setup
 		.long	cpu_arch_name
 		.long	cpu_elf_name
 		.long	HWCAP_SWP | HWCAP_THUMB | HWCAP_26BIT
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.long	cpu_arm9tdmi_name
+=======
+		.long	\cpu_name
+>>>>>>> refs/remotes/origin/cm-10.0
 		.long	arm9tdmi_processor_functions
 		.long	0
 		.long	0
 		.long	v4_cache_fns
+<<<<<<< HEAD
 		.size	__arm9tdmi_proc_info, . - __arm9tdmi_proc_info
 
 		.type	__p2001_proc_info, #object
@@ -129,8 +191,24 @@ __p2001_proc_info:
 		.long	cpu_elf_name
 		.long	HWCAP_SWP | HWCAP_THUMB | HWCAP_26BIT
 		.long	cpu_p2001_name
+=======
+		.long	\cpu_name
+>>>>>>> refs/remotes/origin/master
 		.long	arm9tdmi_processor_functions
 		.long	0
 		.long	0
 		.long	v4_cache_fns
+<<<<<<< HEAD
 		.size	__p2001_proc_info, . - __p2001_proc_info
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.size	__\name\()_proc_info, . - __\name\()_proc_info
+.endm
+
+	arm9tdmi_proc_info arm9tdmi, 0x41009900, 0xfff8ff00, cpu_arm9tdmi_name
+	arm9tdmi_proc_info p2001, 0x41029000, 0xffffffff, cpu_p2001_name
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -7,9 +7,24 @@
 #define ASM_OFFSETS_C
 
 #include <linux/kbuild.h>
+<<<<<<< HEAD
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <asm/vdso.h>
 #include <asm/sigp.h>
+=======
+#include <asm/cputime.h>
+#include <asm/timer.h>
+#include <asm/vdso.h>
+#include <asm/pgtable.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kvm_host.h>
+#include <linux/sched.h>
+#include <asm/cputime.h>
+#include <asm/vdso.h>
+#include <asm/pgtable.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Make sure that the compiler is new enough. We want a compiler that
@@ -27,16 +42,32 @@ int main(void)
 	BLANK();
 	DEFINE(__TASK_pid, offsetof(struct task_struct, pid));
 	BLANK();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DEFINE(__THREAD_per_cause,
 	       offsetof(struct task_struct, thread.per_event.cause));
 	DEFINE(__THREAD_per_address,
 	       offsetof(struct task_struct, thread.per_event.address));
 	DEFINE(__THREAD_per_paid,
 	       offsetof(struct task_struct, thread.per_event.paid));
+=======
+	DEFINE(__THREAD_per_cause, offsetof(struct task_struct, thread.per_event.cause));
+	DEFINE(__THREAD_per_address, offsetof(struct task_struct, thread.per_event.address));
+	DEFINE(__THREAD_per_paid, offsetof(struct task_struct, thread.per_event.paid));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEFINE(__THREAD_per_cause, offsetof(struct task_struct, thread.per_event.cause));
+	DEFINE(__THREAD_per_address, offsetof(struct task_struct, thread.per_event.address));
+	DEFINE(__THREAD_per_paid, offsetof(struct task_struct, thread.per_event.paid));
+>>>>>>> refs/remotes/origin/master
 	BLANK();
 	DEFINE(__TI_task, offsetof(struct thread_info, task));
 	DEFINE(__TI_domain, offsetof(struct thread_info, exec_domain));
 	DEFINE(__TI_flags, offsetof(struct thread_info, flags));
+<<<<<<< HEAD
+=======
+	DEFINE(__TI_sysc_table, offsetof(struct thread_info, sys_call_table));
+>>>>>>> refs/remotes/origin/master
 	DEFINE(__TI_cpu, offsetof(struct thread_info, cpu));
 	DEFINE(__TI_precount, offsetof(struct thread_info, preempt_count));
 	DEFINE(__TI_user_timer, offsetof(struct thread_info, user_timer));
@@ -47,8 +78,19 @@ int main(void)
 	DEFINE(__PT_PSW, offsetof(struct pt_regs, psw));
 	DEFINE(__PT_GPRS, offsetof(struct pt_regs, gprs));
 	DEFINE(__PT_ORIG_GPR2, offsetof(struct pt_regs, orig_gpr2));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DEFINE(__PT_ILC, offsetof(struct pt_regs, ilc));
 	DEFINE(__PT_SVCNR, offsetof(struct pt_regs, svcnr));
+=======
+	DEFINE(__PT_INT_CODE, offsetof(struct pt_regs, int_code));
+	DEFINE(__PT_INT_PARM_LONG, offsetof(struct pt_regs, int_parm_long));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEFINE(__PT_INT_CODE, offsetof(struct pt_regs, int_code));
+	DEFINE(__PT_INT_PARM, offsetof(struct pt_regs, int_parm));
+	DEFINE(__PT_INT_PARM_LONG, offsetof(struct pt_regs, int_parm_long));
+>>>>>>> refs/remotes/origin/master
 	DEFINE(__PT_SIZE, sizeof(struct pt_regs));
 	BLANK();
 	DEFINE(__SF_BACKCHAIN, offsetof(struct stack_frame, back_chain));
@@ -64,14 +106,21 @@ int main(void)
 	DEFINE(__VDSO_WTOM_NSEC, offsetof(struct vdso_data, wtom_clock_nsec));
 	DEFINE(__VDSO_TIMEZONE, offsetof(struct vdso_data, tz_minuteswest));
 	DEFINE(__VDSO_ECTG_OK, offsetof(struct vdso_data, ectg_available));
+<<<<<<< HEAD
 	DEFINE(__VDSO_NTP_MULT, offsetof(struct vdso_data, ntp_mult));
+=======
+	DEFINE(__VDSO_TK_MULT, offsetof(struct vdso_data, tk_mult));
+	DEFINE(__VDSO_TK_SHIFT, offsetof(struct vdso_data, tk_shift));
+>>>>>>> refs/remotes/origin/master
 	DEFINE(__VDSO_ECTG_BASE, offsetof(struct vdso_per_cpu_data, ectg_timer_base));
 	DEFINE(__VDSO_ECTG_USER, offsetof(struct vdso_per_cpu_data, ectg_user_time));
 	/* constants used by the vdso */
 	DEFINE(__CLOCK_REALTIME, CLOCK_REALTIME);
 	DEFINE(__CLOCK_MONOTONIC, CLOCK_MONOTONIC);
+<<<<<<< HEAD
 	DEFINE(__CLOCK_REALTIME_RES, MONOTONIC_RES_NSEC);
 	BLANK();
+<<<<<<< HEAD
 	/* constants for SIGP */
 	DEFINE(__SIGP_STOP, sigp_stop);
 	DEFINE(__SIGP_RESTART, sigp_restart);
@@ -81,6 +130,30 @@ int main(void)
 	/* lowcore offsets */
 	DEFINE(__LC_EXT_PARAMS, offsetof(struct _lowcore, ext_params));
 	DEFINE(__LC_CPU_ADDRESS, offsetof(struct _lowcore, cpu_addr));
+=======
+	/* idle data offsets */
+	DEFINE(__IDLE_ENTER, offsetof(struct s390_idle_data, idle_enter));
+	DEFINE(__IDLE_EXIT, offsetof(struct s390_idle_data, idle_exit));
+	/* vtimer queue offsets */
+	DEFINE(__VQ_IDLE_ENTER, offsetof(struct vtimer_queue, idle_enter));
+	DEFINE(__VQ_IDLE_EXIT, offsetof(struct vtimer_queue, idle_exit));
+	/* lowcore offsets */
+	DEFINE(__LC_EXT_PARAMS, offsetof(struct _lowcore, ext_params));
+	DEFINE(__LC_EXT_CPU_ADDR, offsetof(struct _lowcore, ext_cpu_addr));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEFINE(__CLOCK_THREAD_CPUTIME_ID, CLOCK_THREAD_CPUTIME_ID);
+	DEFINE(__CLOCK_REALTIME_RES, MONOTONIC_RES_NSEC);
+	BLANK();
+	/* idle data offsets */
+	DEFINE(__CLOCK_IDLE_ENTER, offsetof(struct s390_idle_data, clock_idle_enter));
+	DEFINE(__CLOCK_IDLE_EXIT, offsetof(struct s390_idle_data, clock_idle_exit));
+	DEFINE(__TIMER_IDLE_ENTER, offsetof(struct s390_idle_data, timer_idle_enter));
+	DEFINE(__TIMER_IDLE_EXIT, offsetof(struct s390_idle_data, timer_idle_exit));
+	/* lowcore offsets */
+	DEFINE(__LC_EXT_PARAMS, offsetof(struct _lowcore, ext_params));
+	DEFINE(__LC_EXT_CPU_ADDR, offsetof(struct _lowcore, ext_cpu_addr));
+>>>>>>> refs/remotes/origin/master
 	DEFINE(__LC_EXT_INT_CODE, offsetof(struct _lowcore, ext_int_code));
 	DEFINE(__LC_SVC_ILC, offsetof(struct _lowcore, svc_ilc));
 	DEFINE(__LC_SVC_INT_CODE, offsetof(struct _lowcore, svc_code));
@@ -97,21 +170,48 @@ int main(void)
 	DEFINE(__LC_IO_INT_WORD, offsetof(struct _lowcore, io_int_word));
 	DEFINE(__LC_STFL_FAC_LIST, offsetof(struct _lowcore, stfl_fac_list));
 	DEFINE(__LC_MCCK_CODE, offsetof(struct _lowcore, mcck_interruption_code));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DEFINE(__LC_DUMP_REIPL, offsetof(struct _lowcore, ipib));
 	BLANK();
 	DEFINE(__LC_RST_NEW_PSW, offsetof(struct _lowcore, restart_psw));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	DEFINE(__LC_RST_OLD_PSW, offsetof(struct _lowcore, restart_old_psw));
 	DEFINE(__LC_EXT_OLD_PSW, offsetof(struct _lowcore, external_old_psw));
 	DEFINE(__LC_SVC_OLD_PSW, offsetof(struct _lowcore, svc_old_psw));
 	DEFINE(__LC_PGM_OLD_PSW, offsetof(struct _lowcore, program_old_psw));
 	DEFINE(__LC_MCK_OLD_PSW, offsetof(struct _lowcore, mcck_old_psw));
 	DEFINE(__LC_IO_OLD_PSW, offsetof(struct _lowcore, io_old_psw));
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	DEFINE(__LC_RST_NEW_PSW, offsetof(struct _lowcore, restart_psw));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEFINE(__LC_RST_NEW_PSW, offsetof(struct _lowcore, restart_psw));
+>>>>>>> refs/remotes/origin/master
 	DEFINE(__LC_EXT_NEW_PSW, offsetof(struct _lowcore, external_new_psw));
 	DEFINE(__LC_SVC_NEW_PSW, offsetof(struct _lowcore, svc_new_psw));
 	DEFINE(__LC_PGM_NEW_PSW, offsetof(struct _lowcore, program_new_psw));
 	DEFINE(__LC_MCK_NEW_PSW, offsetof(struct _lowcore, mcck_new_psw));
 	DEFINE(__LC_IO_NEW_PSW, offsetof(struct _lowcore, io_new_psw));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DEFINE(__LC_SAVE_AREA, offsetof(struct _lowcore, save_area));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	BLANK();
+	DEFINE(__LC_SAVE_AREA_SYNC, offsetof(struct _lowcore, save_area_sync));
+	DEFINE(__LC_SAVE_AREA_ASYNC, offsetof(struct _lowcore, save_area_async));
+	DEFINE(__LC_SAVE_AREA_RESTART, offsetof(struct _lowcore, save_area_restart));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	DEFINE(__LC_RETURN_PSW, offsetof(struct _lowcore, return_psw));
 	DEFINE(__LC_RETURN_MCCK_PSW, offsetof(struct _lowcore, return_mcck_psw));
 	DEFINE(__LC_SYNC_ENTER_TIMER, offsetof(struct _lowcore, sync_enter_timer));
@@ -129,11 +229,35 @@ int main(void)
 	DEFINE(__LC_KERNEL_STACK, offsetof(struct _lowcore, kernel_stack));
 	DEFINE(__LC_ASYNC_STACK, offsetof(struct _lowcore, async_stack));
 	DEFINE(__LC_PANIC_STACK, offsetof(struct _lowcore, panic_stack));
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	DEFINE(__LC_RESTART_STACK, offsetof(struct _lowcore, restart_stack));
+	DEFINE(__LC_RESTART_FN, offsetof(struct _lowcore, restart_fn));
+	DEFINE(__LC_USER_ASCE, offsetof(struct _lowcore, user_asce));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEFINE(__LC_RESTART_STACK, offsetof(struct _lowcore, restart_stack));
+	DEFINE(__LC_RESTART_FN, offsetof(struct _lowcore, restart_fn));
+	DEFINE(__LC_RESTART_DATA, offsetof(struct _lowcore, restart_data));
+	DEFINE(__LC_RESTART_SOURCE, offsetof(struct _lowcore, restart_source));
+	DEFINE(__LC_USER_ASCE, offsetof(struct _lowcore, user_asce));
+>>>>>>> refs/remotes/origin/master
 	DEFINE(__LC_INT_CLOCK, offsetof(struct _lowcore, int_clock));
 	DEFINE(__LC_MCCK_CLOCK, offsetof(struct _lowcore, mcck_clock));
 	DEFINE(__LC_MACHINE_FLAGS, offsetof(struct _lowcore, machine_flags));
 	DEFINE(__LC_FTRACE_FUNC, offsetof(struct _lowcore, ftrace_func));
 	DEFINE(__LC_IRB, offsetof(struct _lowcore, irb));
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	DEFINE(__LC_DUMP_REIPL, offsetof(struct _lowcore, ipib));
+	BLANK();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEFINE(__LC_DUMP_REIPL, offsetof(struct _lowcore, ipib));
+	BLANK();
+>>>>>>> refs/remotes/origin/master
 	DEFINE(__LC_CPU_TIMER_SAVE_AREA, offsetof(struct _lowcore, cpu_timer_save_area));
 	DEFINE(__LC_CLOCK_COMP_SAVE_AREA, offsetof(struct _lowcore, clock_comp_save_area));
 	DEFINE(__LC_PSW_SAVE_AREA, offsetof(struct _lowcore, psw_save_area));
@@ -151,8 +275,22 @@ int main(void)
 	DEFINE(__LC_FP_CREG_SAVE_AREA, offsetof(struct _lowcore, fpt_creg_save_area));
 	DEFINE(__LC_LAST_BREAK, offsetof(struct _lowcore, breaking_event_addr));
 	DEFINE(__LC_VDSO_PER_CPU, offsetof(struct _lowcore, vdso_per_cpu_data));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DEFINE(__LC_SIE_HOOK, offsetof(struct _lowcore, sie_hook));
 	DEFINE(__LC_CMF_HPP, offsetof(struct _lowcore, cmf_hpp));
+=======
+	DEFINE(__LC_GMAP, offsetof(struct _lowcore, gmap));
+	DEFINE(__GMAP_ASCE, offsetof(struct gmap, asce));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEFINE(__LC_GMAP, offsetof(struct _lowcore, gmap));
+	DEFINE(__LC_PGM_TDB, offsetof(struct _lowcore, pgm_tdb));
+	DEFINE(__THREAD_trap_tdb, offsetof(struct task_struct, thread.trap_tdb));
+	DEFINE(__GMAP_ASCE, offsetof(struct gmap, asce));
+	DEFINE(__SIE_PROG0C, offsetof(struct kvm_s390_sie_block, prog0c));
+	DEFINE(__SIE_PROG20, offsetof(struct kvm_s390_sie_block, prog20));
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_32BIT */
 	return 0;
 }

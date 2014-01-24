@@ -216,7 +216,11 @@ static inline unsigned long fast_get_dcookie(struct path *path)
 }
 
 
+<<<<<<< HEAD
 /* Look up the dcookie for the task's first VM_EXECUTABLE mapping,
+=======
+/* Look up the dcookie for the task's mm->exe_file,
+>>>>>>> refs/remotes/origin/master
  * which corresponds loosely to "application name". This is
  * not strictly necessary but allows oprofile to associate
  * shared-library samples with particular applications
@@ -224,6 +228,7 @@ static inline unsigned long fast_get_dcookie(struct path *path)
 static unsigned long get_exec_dcookie(struct mm_struct *mm)
 {
 	unsigned long cookie = NO_COOKIE;
+<<<<<<< HEAD
 	struct vm_area_struct *vma;
 
 	if (!mm)
@@ -239,6 +244,12 @@ static unsigned long get_exec_dcookie(struct mm_struct *mm)
 	}
 
 out:
+=======
+
+	if (mm && mm->exe_file)
+		cookie = fast_get_dcookie(&mm->exe_file->f_path);
+
+>>>>>>> refs/remotes/origin/master
 	return cookie;
 }
 

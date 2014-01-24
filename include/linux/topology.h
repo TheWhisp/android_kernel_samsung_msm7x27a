@@ -70,7 +70,10 @@ int arch_update_cpu_topology(void);
  * Below are the 3 major initializers used in building sched_domains:
  * SD_SIBLING_INIT, for SMT domains
  * SD_CPU_INIT, for SMP domains
+<<<<<<< HEAD
  * SD_NODE_INIT, for NUMA domains
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Any architecture that cares to do any tuning to these values should do so
  * by defining their own arch-specific initializer in include/asm/topology.h.
@@ -99,7 +102,10 @@ int arch_update_cpu_topology(void);
 				| 0*SD_BALANCE_WAKE			\
 				| 1*SD_WAKE_AFFINE			\
 				| 1*SD_SHARE_CPUPOWER			\
+<<<<<<< HEAD
 				| 0*SD_POWERSAVINGS_BALANCE		\
+=======
+>>>>>>> refs/remotes/origin/master
 				| 1*SD_SHARE_PKG_RESOURCES		\
 				| 0*SD_SERIALIZE			\
 				| 0*SD_PREFER_SIBLING			\
@@ -108,6 +114,11 @@ int arch_update_cpu_topology(void);
 	.last_balance		= jiffies,				\
 	.balance_interval	= 1,					\
 	.smt_gain		= 1178,	/* 15% */			\
+<<<<<<< HEAD
+=======
+	.max_newidle_lb_cost	= 0,					\
+	.next_decay_max_lb_cost	= jiffies,				\
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 #endif /* CONFIG_SCHED_SMT */
@@ -131,6 +142,7 @@ int arch_update_cpu_topology(void);
 				| 1*SD_BALANCE_FORK			\
 				| 0*SD_BALANCE_WAKE			\
 				| 1*SD_WAKE_AFFINE			\
+<<<<<<< HEAD
 				| 0*SD_PREFER_LOCAL			\
 				| 0*SD_SHARE_CPUPOWER			\
 				| 1*SD_SHARE_PKG_RESOURCES		\
@@ -140,6 +152,16 @@ int arch_update_cpu_topology(void);
 				,					\
 	.last_balance		= jiffies,				\
 	.balance_interval	= 1,					\
+=======
+				| 0*SD_SHARE_CPUPOWER			\
+				| 1*SD_SHARE_PKG_RESOURCES		\
+				| 0*SD_SERIALIZE			\
+				,					\
+	.last_balance		= jiffies,				\
+	.balance_interval	= 1,					\
+	.max_newidle_lb_cost	= 0,					\
+	.next_decay_max_lb_cost	= jiffies,				\
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 #endif /* CONFIG_SCHED_MC */
@@ -164,6 +186,7 @@ int arch_update_cpu_topology(void);
 				| 1*SD_BALANCE_FORK			\
 				| 0*SD_BALANCE_WAKE			\
 				| 1*SD_WAKE_AFFINE			\
+<<<<<<< HEAD
 				| 0*SD_PREFER_LOCAL			\
 				| 0*SD_SHARE_CPUPOWER			\
 				| 0*SD_SHARE_PKG_RESOURCES		\
@@ -201,12 +224,34 @@ int arch_update_cpu_topology(void);
 	.balance_interval	= 64,					\
 }
 
+<<<<<<< HEAD
+=======
+#ifndef SD_NODES_PER_DOMAIN
+#define SD_NODES_PER_DOMAIN 16
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				| 0*SD_SHARE_CPUPOWER			\
+				| 0*SD_SHARE_PKG_RESOURCES		\
+				| 0*SD_SERIALIZE			\
+				| 1*SD_PREFER_SIBLING			\
+				,					\
+	.last_balance		= jiffies,				\
+	.balance_interval	= 1,					\
+	.max_newidle_lb_cost	= 0,					\
+	.next_decay_max_lb_cost	= jiffies,				\
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SCHED_BOOK
 #ifndef SD_BOOK_INIT
 #error Please define an appropriate SD_BOOK_INIT in include/asm/topology.h!!!
 #endif
 #endif /* CONFIG_SCHED_BOOK */
 
+<<<<<<< HEAD
 #ifdef CONFIG_NUMA
 #ifndef SD_NODE_INIT
 #error Please define an appropriate SD_NODE_INIT in include/asm/topology.h!!!
@@ -214,6 +259,8 @@ int arch_update_cpu_topology(void);
 
 #endif /* CONFIG_NUMA */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
 DECLARE_PER_CPU(int, numa_node);
 
@@ -235,7 +282,11 @@ static inline int cpu_to_node(int cpu)
 #ifndef set_numa_node
 static inline void set_numa_node(int node)
 {
+<<<<<<< HEAD
 	percpu_write(numa_node, node);
+=======
+	this_cpu_write(numa_node, node);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -270,7 +321,11 @@ DECLARE_PER_CPU(int, _numa_mem_);
 #ifndef set_numa_mem
 static inline void set_numa_mem(int node)
 {
+<<<<<<< HEAD
 	percpu_write(_numa_mem_, node);
+=======
+	this_cpu_write(_numa_mem_, node);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 

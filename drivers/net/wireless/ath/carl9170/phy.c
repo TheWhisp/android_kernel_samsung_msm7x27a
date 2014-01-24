@@ -578,11 +578,24 @@ static int carl9170_init_phy(struct ar9170 *ar, enum ieee80211_band band)
 	if (err)
 		return err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* XXX: remove magic! */
 	if (is_2ghz)
 		err = carl9170_write_reg(ar, AR9170_PWR_REG_PLL_ADDAC, 0x5163);
 	else
 		err = carl9170_write_reg(ar, AR9170_PWR_REG_PLL_ADDAC, 0x5143);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!ar->fw.hw_counters) {
+		err = carl9170_write_reg(ar, AR9170_PWR_REG_PLL_ADDAC,
+					 is_2ghz ? 0x5163 : 0x5143);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -1098,7 +1111,15 @@ static u8 carl9170_interpolate_u8(u8 x, u8 x1, u8 y1, u8 x2, u8 y2)
 	 *	Isn't it just DIV_ROUND_UP(y, 1<<SHIFT)?
 	 *	Can we rely on the compiler to optimise away the div?
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return (y >> SHIFT) + ((y & (1<<(SHIFT-1))) >> (SHIFT - 1));
+=======
+	return (y >> SHIFT) + ((y & (1 << (SHIFT - 1))) >> (SHIFT - 1));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (y >> SHIFT) + ((y & (1 << (SHIFT - 1))) >> (SHIFT - 1));
+>>>>>>> refs/remotes/origin/master
 #undef SHIFT
 }
 
@@ -1332,7 +1353,11 @@ static void carl9170_calc_ctl(struct ar9170 *ar, u32 freq, enum carl9170_bw bw)
 	 * CTL_ETSI for 2GHz and CTL_FCC for 5GHz.
 	 */
 	ctl_grp = ath_regd_get_band_ctl(&ar->common.regulatory,
+<<<<<<< HEAD
 					ar->hw->conf.channel->band);
+=======
+					ar->hw->conf.chandef.chan->band);
+>>>>>>> refs/remotes/origin/master
 
 	/* ctl group not found - either invalid band (NO_CTL) or ww roaming */
 	if (ctl_grp == NO_CTL || ctl_grp == SD_NO_CTL)
@@ -1342,7 +1367,11 @@ static void carl9170_calc_ctl(struct ar9170 *ar, u32 freq, enum carl9170_bw bw)
 		/* skip CTL and heavy clip for CTL_MKK and CTL_ETSI */
 		return;
 
+<<<<<<< HEAD
 	if (ar->hw->conf.channel->band == IEEE80211_BAND_2GHZ) {
+=======
+	if (ar->hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ) {
+>>>>>>> refs/remotes/origin/master
 		modes = mode_list_2ghz;
 		nr_modes = ARRAY_SIZE(mode_list_2ghz);
 	} else {
@@ -1379,7 +1408,15 @@ static void carl9170_calc_ctl(struct ar9170 *ar, u32 freq, enum carl9170_bw bw)
 
 			modes[i].max_power =
 				carl9170_get_max_edge_power(ar,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					freq+f_off, EDGES(ctl_idx, 1));
+=======
+					freq + f_off, EDGES(ctl_idx, 1));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					freq + f_off, EDGES(ctl_idx, 1));
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * TODO: check if the regulatory max. power is
@@ -1427,21 +1464,47 @@ static void carl9170_calc_ctl(struct ar9170 *ar, u32 freq, enum carl9170_bw bw)
 #undef EDGES
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int carl9170_set_power_cal(struct ar9170 *ar, u32 freq,
 				  enum carl9170_bw bw)
+=======
+static void carl9170_set_power_cal(struct ar9170 *ar, u32 freq,
+				   enum carl9170_bw bw)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void carl9170_set_power_cal(struct ar9170 *ar, u32 freq,
+				   enum carl9170_bw bw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ar9170_calibration_target_power_legacy *ctpl;
 	struct ar9170_calibration_target_power_ht *ctph;
 	u8 *ctpres;
 	int ntargets;
 	int idx, i, n;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 ackpower, ackchains, f;
+=======
+	u8 f;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 f;
+>>>>>>> refs/remotes/origin/master
 	u8 pwr_freqs[AR5416_MAX_NUM_TGT_PWRS];
 
 	if (freq < 3000)
 		f = freq - 2300;
 	else
+<<<<<<< HEAD
+<<<<<<< HEAD
 		f = (freq - 4800)/5;
+=======
+		f = (freq - 4800) / 5;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		f = (freq - 4800) / 5;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * cycle through the various modes
@@ -1524,6 +1587,8 @@ static int carl9170_set_power_cal(struct ar9170 *ar, u32 freq,
 
 	/* calc. conformance test limits and apply to ar->power*[] */
 	carl9170_calc_ctl(ar, freq, bw);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* set ACK/CTS TX power */
 	carl9170_regwrite_begin(ar);
@@ -1550,6 +1615,10 @@ static int carl9170_set_power_cal(struct ar9170 *ar, u32 freq,
 
 	carl9170_regwrite_finish();
 	return carl9170_regwrite_result();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int carl9170_get_noisefloor(struct ar9170 *ar)
@@ -1574,6 +1643,18 @@ int carl9170_get_noisefloor(struct ar9170 *ar)
 			AR9170_PHY_EXT_CCA_MIN_PWR, phy_res[i + 2]), 8);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (ar->channel)
+		ar->survey[ar->channel->hw_value].noise = ar->noise[0];
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ar->channel)
+		ar->survey[ar->channel->hw_value].noise = ar->noise[0];
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1593,16 +1674,26 @@ static enum carl9170_bw nl80211_to_carl(enum nl80211_channel_type type)
 }
 
 int carl9170_set_channel(struct ar9170 *ar, struct ieee80211_channel *channel,
+<<<<<<< HEAD
 			 enum nl80211_channel_type _bw,
 			 enum carl9170_rf_init_mode rfi)
+=======
+			 enum nl80211_channel_type _bw)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct carl9170_phy_freq_params *freqpar;
 	struct carl9170_rf_init_result rf_res;
 	struct carl9170_rf_init rf;
+<<<<<<< HEAD
 	u32 cmd, tmp, offs = 0, new_ht = 0;
 	int err;
 	enum carl9170_bw bw;
 	bool warm_reset;
+=======
+	u32 tmp, offs = 0, new_ht = 0;
+	int err;
+	enum carl9170_bw bw;
+>>>>>>> refs/remotes/origin/master
 	struct ieee80211_channel *old_channel = NULL;
 
 	bw = nl80211_to_carl(_bw);
@@ -1616,6 +1707,7 @@ int carl9170_set_channel(struct ar9170 *ar, struct ieee80211_channel *channel,
 	/* may be NULL at first setup */
 	if (ar->channel) {
 		old_channel = ar->channel;
+<<<<<<< HEAD
 		warm_reset = (old_channel->band != channel->band) ||
 			     (old_channel->center_freq ==
 			      channel->center_freq) ||
@@ -1661,6 +1753,29 @@ int carl9170_set_channel(struct ar9170 *ar, struct ieee80211_channel *channel,
 	} else {
 		cmd = CARL9170_CMD_FREQUENCY;
 	}
+=======
+		ar->channel = NULL;
+	}
+
+	/* cold reset BB/ADDA */
+	err = carl9170_write_reg(ar, AR9170_PWR_REG_RESET,
+				 AR9170_PWR_RESET_BB_COLD_RESET);
+	if (err)
+		return err;
+
+	err = carl9170_write_reg(ar, AR9170_PWR_REG_RESET, 0x0);
+	if (err)
+		return err;
+
+	err = carl9170_init_phy(ar, channel->band);
+	if (err)
+		return err;
+
+	err = carl9170_init_rf_banks_0_7(ar,
+					 channel->band == IEEE80211_BAND_5GHZ);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	err = carl9170_exec_cmd(ar, CARL9170_CMD_FREQ_START, 0, NULL, 0, NULL);
 	if (err)
@@ -1672,8 +1787,13 @@ int carl9170_set_channel(struct ar9170 *ar, struct ieee80211_channel *channel,
 		return err;
 
 	err = carl9170_init_rf_bank4_pwr(ar,
+<<<<<<< HEAD
 		channel->band == IEEE80211_BAND_5GHZ,
 		channel->center_freq, bw);
+=======
+					 channel->band == IEEE80211_BAND_5GHZ,
+					 channel->center_freq, bw);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -1710,7 +1830,19 @@ int carl9170_set_channel(struct ar9170 *ar, struct ieee80211_channel *channel,
 	if (err)
 		return err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = carl9170_set_power_cal(ar, channel->center_freq, bw);
+=======
+	carl9170_set_power_cal(ar, channel->center_freq, bw);
+
+	err = carl9170_set_mac_tpc(ar, channel);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	carl9170_set_power_cal(ar, channel->center_freq, bw);
+
+	err = carl9170_set_mac_tpc(ar, channel);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -1725,6 +1857,7 @@ int carl9170_set_channel(struct ar9170 *ar, struct ieee80211_channel *channel,
 	rf.delta_slope_coeff_man = cpu_to_le32(freqpar->coeff_man);
 	rf.delta_slope_coeff_exp_shgi = cpu_to_le32(freqpar->coeff_exp_shgi);
 	rf.delta_slope_coeff_man_shgi = cpu_to_le32(freqpar->coeff_man_shgi);
+<<<<<<< HEAD
 
 	if (rfi != CARL9170_RFI_NONE)
 		rf.finiteLoopCount = cpu_to_le32(2000);
@@ -1732,6 +1865,10 @@ int carl9170_set_channel(struct ar9170 *ar, struct ieee80211_channel *channel,
 		rf.finiteLoopCount = cpu_to_le32(1000);
 
 	err = carl9170_exec_cmd(ar, cmd, sizeof(rf), &rf,
+=======
+	rf.finiteLoopCount = cpu_to_le32(2000);
+	err = carl9170_exec_cmd(ar, CARL9170_CMD_RF_INIT, sizeof(rf), &rf,
+>>>>>>> refs/remotes/origin/master
 				sizeof(rf_res), &rf_res);
 	if (err)
 		return err;
@@ -1746,9 +1883,14 @@ int carl9170_set_channel(struct ar9170 *ar, struct ieee80211_channel *channel,
 			  old_channel->center_freq : -1, channel->center_freq,
 			  err);
 
+<<<<<<< HEAD
 		if ((rfi == CARL9170_RFI_COLD) || (ar->chan_fail > 3)) {
 			/*
 			 * We have tried very hard to change to _another_
+=======
+		if (ar->chan_fail > 3) {
+			/* We have tried very hard to change to _another_
+>>>>>>> refs/remotes/origin/master
 			 * channel and we've failed to do so!
 			 * Chances are that the PHY/RF is no longer
 			 * operable (due to corruptions/fatal events/bugs?)
@@ -1758,18 +1900,28 @@ int carl9170_set_channel(struct ar9170 *ar, struct ieee80211_channel *channel,
 			return 0;
 		}
 
+<<<<<<< HEAD
 		err = carl9170_set_channel(ar, channel, _bw,
 					   CARL9170_RFI_COLD);
+=======
+		err = carl9170_set_channel(ar, channel, _bw);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 	} else {
 		ar->chan_fail = 0;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = carl9170_get_noisefloor(ar);
 	if (err)
 		return err;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ar->heavy_clip) {
 		err = carl9170_write_reg(ar, AR9170_PHY_REG_HEAVY_CLIP_ENABLE,
 					 0x200 | ar->heavy_clip);
@@ -1783,12 +1935,18 @@ int carl9170_set_channel(struct ar9170 *ar, struct ieee80211_channel *channel,
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* FIXME: PSM does not work in 5GHz Band */
 	if (channel->band == IEEE80211_BAND_5GHZ)
 		ar->ps.off_override |= PS_OFF_5GHZ;
 	else
 		ar->ps.off_override &= ~PS_OFF_5GHZ;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ar->channel = channel;
 	ar->ht_settings = new_ht;
 	return 0;

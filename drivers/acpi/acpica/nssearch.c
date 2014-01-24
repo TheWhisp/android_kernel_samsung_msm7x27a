@@ -5,7 +5,15 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +73,11 @@ acpi_ns_search_parent_tree(u32 target_name,
  *
  * PARAMETERS:  target_name     - Ascii ACPI name to search for
  *              parent_node     - Starting node where search will begin
+<<<<<<< HEAD
  *              Type            - Object type to match
+=======
+ *              type            - Object type to match
+>>>>>>> refs/remotes/origin/master
  *              return_node     - Where the matched Named obj is returned
  *
  * RETURN:      Status
@@ -175,8 +187,13 @@ acpi_ns_search_one_scope(u32 target_name,
  * FUNCTION:    acpi_ns_search_parent_tree
  *
  * PARAMETERS:  target_name     - Ascii ACPI name to search for
+<<<<<<< HEAD
  *              Node            - Starting node where search will begin
  *              Type            - Object type to match
+=======
+ *              node            - Starting node where search will begin
+ *              type            - Object type to match
+>>>>>>> refs/remotes/origin/master
  *              return_node     - Where the matched Node is returned
  *
  * RETURN:      Status
@@ -264,11 +281,19 @@ acpi_ns_search_parent_tree(u32 target_name,
  *
  * PARAMETERS:  target_name         - Ascii ACPI name to search for (4 chars)
  *              walk_state          - Current state of the walk
+<<<<<<< HEAD
  *              Node                - Starting node where search will begin
  *              interpreter_mode    - Add names only in ACPI_MODE_LOAD_PASS_x.
  *                                    Otherwise,search only.
  *              Type                - Object type to match
  *              Flags               - Flags describing the search restrictions
+=======
+ *              node                - Starting node where search will begin
+ *              interpreter_mode    - Add names only in ACPI_MODE_LOAD_PASS_x.
+ *                                    Otherwise,search only.
+ *              type                - Object type to match
+ *              flags               - Flags describing the search restrictions
+>>>>>>> refs/remotes/origin/master
  *              return_node         - Where the Node is returned
  *
  * RETURN:      Status
@@ -314,6 +339,7 @@ acpi_ns_search_and_enter(u32 target_name,
 	 * this problem, and we want to be able to enable ACPI support for them,
 	 * even though there are a few bad names.
 	 */
+<<<<<<< HEAD
 	if (!acpi_ut_valid_acpi_name(target_name)) {
 		target_name =
 		    acpi_ut_repair_name(ACPI_CAST_PTR(char, &target_name));
@@ -330,6 +356,9 @@ acpi_ns_search_and_enter(u32 target_name,
 					  ACPI_CAST_PTR(char, &target_name)));
 		}
 	}
+=======
+	acpi_ut_repair_name(ACPI_CAST_PTR(char, &target_name));
+>>>>>>> refs/remotes/origin/master
 
 	/* Try to find the name in the namespace level specified by the caller */
 
@@ -343,6 +372,14 @@ acpi_ns_search_and_enter(u32 target_name,
 		if ((status == AE_OK) && (flags & ACPI_NS_ERROR_IF_FOUND)) {
 			status = AE_ALREADY_EXISTS;
 		}
+<<<<<<< HEAD
+=======
+#ifdef ACPI_ASL_COMPILER
+		if (*return_node && (*return_node)->type == ACPI_TYPE_ANY) {
+			(*return_node)->flags |= ANOBJ_IS_EXTERNAL;
+		}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 		/* Either found it or there was an error: finished either way */
 
@@ -391,7 +428,12 @@ acpi_ns_search_and_enter(u32 target_name,
 
 	/* Node is an object defined by an External() statement */
 
+<<<<<<< HEAD
 	if (flags & ACPI_NS_EXTERNAL) {
+=======
+	if (flags & ACPI_NS_EXTERNAL ||
+	    (walk_state && walk_state->opcode == AML_SCOPE_OP)) {
+>>>>>>> refs/remotes/origin/master
 		new_node->flags |= ANOBJ_IS_EXTERNAL;
 	}
 #endif

@@ -44,6 +44,11 @@
  *
  *************************************************************************/
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/pktcdvd.h>
 #include <linux/module.h>
 #include <linux/types.h>
@@ -69,6 +74,7 @@
 
 #define DRIVER_NAME	"pktcdvd"
 
+<<<<<<< HEAD
 #if PACKET_DEBUG
 #define DPRINTK(fmt, args...) printk(KERN_NOTICE fmt, ##args)
 #else
@@ -85,6 +91,26 @@
 
 #define ZONE(sector, pd) (((sector) + (pd)->offset) & ~((pd)->settings.size - 1))
 
+=======
+#define pkt_err(pd, fmt, ...)						\
+	pr_err("%s: " fmt, pd->name, ##__VA_ARGS__)
+#define pkt_notice(pd, fmt, ...)					\
+	pr_notice("%s: " fmt, pd->name, ##__VA_ARGS__)
+#define pkt_info(pd, fmt, ...)						\
+	pr_info("%s: " fmt, pd->name, ##__VA_ARGS__)
+
+#define pkt_dbg(level, pd, fmt, ...)					\
+do {									\
+	if (level == 2 && PACKET_DEBUG >= 2)				\
+		pr_notice("%s: %s():" fmt,				\
+			  pd->name, __func__, ##__VA_ARGS__);		\
+	else if (level == 1 && PACKET_DEBUG >= 1)			\
+		pr_notice("%s: " fmt, pd->name, ##__VA_ARGS__);		\
+} while (0)
+
+#define MAX_SPEED 0xffff
+
+>>>>>>> refs/remotes/origin/master
 static DEFINE_MUTEX(pktcdvd_mutex);
 static struct pktcdvd_device *pkt_devs[MAX_WRITERS];
 static struct proc_dir_entry *pkt_proc;
@@ -102,7 +128,14 @@ static int pkt_setup_dev(dev_t dev, dev_t* pkt_dev);
 static int pkt_remove_dev(dev_t pkt_dev);
 static int pkt_seq_show(struct seq_file *m, void *p);
 
+<<<<<<< HEAD
 
+=======
+static sector_t get_zone(sector_t sector, struct pktcdvd_device *pd)
+{
+	return (sector + pd->offset) & ~(sector_t)(pd->settings.size - 1);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * create and register a pktcdvd kernel object.
@@ -423,7 +456,11 @@ static int pkt_sysfs_init(void)
 	if (ret) {
 		kfree(class_pktcdvd);
 		class_pktcdvd = NULL;
+<<<<<<< HEAD
 		printk(DRIVER_NAME": failed to create class pktcdvd\n");
+=======
+		pr_err("failed to create class pktcdvd\n");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 	return 0;
@@ -466,6 +503,7 @@ static void pkt_debugfs_dev_new(struct pktcdvd_device *pd)
 {
 	if (!pkt_debugfs_root)
 		return;
+<<<<<<< HEAD
 	pd->dfs_f_info = NULL;
 	pd->dfs_d_root = debugfs_create_dir(pd->name, pkt_debugfs_root);
 	if (IS_ERR(pd->dfs_d_root)) {
@@ -478,33 +516,53 @@ static void pkt_debugfs_dev_new(struct pktcdvd_device *pd)
 		pd->dfs_f_info = NULL;
 		return;
 	}
+=======
+	pd->dfs_d_root = debugfs_create_dir(pd->name, pkt_debugfs_root);
+	if (!pd->dfs_d_root)
+		return;
+
+	pd->dfs_f_info = debugfs_create_file("info", S_IRUGO,
+				pd->dfs_d_root, pd, &debug_fops);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pkt_debugfs_dev_remove(struct pktcdvd_device *pd)
 {
 	if (!pkt_debugfs_root)
 		return;
+<<<<<<< HEAD
 	if (pd->dfs_f_info)
 		debugfs_remove(pd->dfs_f_info);
 	pd->dfs_f_info = NULL;
 	if (pd->dfs_d_root)
 		debugfs_remove(pd->dfs_d_root);
+=======
+	debugfs_remove(pd->dfs_f_info);
+	debugfs_remove(pd->dfs_d_root);
+	pd->dfs_f_info = NULL;
+>>>>>>> refs/remotes/origin/master
 	pd->dfs_d_root = NULL;
 }
 
 static void pkt_debugfs_init(void)
 {
 	pkt_debugfs_root = debugfs_create_dir(DRIVER_NAME, NULL);
+<<<<<<< HEAD
 	if (IS_ERR(pkt_debugfs_root)) {
 		pkt_debugfs_root = NULL;
 		return;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pkt_debugfs_cleanup(void)
 {
+<<<<<<< HEAD
 	if (!pkt_debugfs_root)
 		return;
+=======
+>>>>>>> refs/remotes/origin/master
 	debugfs_remove(pkt_debugfs_root);
 	pkt_debugfs_root = NULL;
 }
@@ -516,12 +574,17 @@ static void pkt_bio_finished(struct pktcdvd_device *pd)
 {
 	BUG_ON(atomic_read(&pd->cdrw.pending_bios) <= 0);
 	if (atomic_dec_and_test(&pd->cdrw.pending_bios)) {
+<<<<<<< HEAD
 		VPRINTK(DRIVER_NAME": queue empty\n");
+=======
+		pkt_dbg(2, pd, "queue empty\n");
+>>>>>>> refs/remotes/origin/master
 		atomic_set(&pd->iosched.attention, 1);
 		wake_up(&pd->wqueue);
 	}
 }
 
+<<<<<<< HEAD
 static void pkt_bio_destructor(struct bio *bio)
 {
 	kfree(bio->bi_io_vec);
@@ -554,6 +617,8 @@ static struct bio *pkt_bio_alloc(int nr_iovecs)
 	return NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Allocate a packet_data struct
  */
@@ -567,7 +632,11 @@ static struct packet_data *pkt_alloc_packet_data(int frames)
 		goto no_pkt;
 
 	pkt->frames = frames;
+<<<<<<< HEAD
 	pkt->w_bio = pkt_bio_alloc(frames);
+=======
+	pkt->w_bio = bio_kmalloc(GFP_KERNEL, frames);
+>>>>>>> refs/remotes/origin/master
 	if (!pkt->w_bio)
 		goto no_bio;
 
@@ -581,9 +650,16 @@ static struct packet_data *pkt_alloc_packet_data(int frames)
 	bio_list_init(&pkt->orig_bios);
 
 	for (i = 0; i < frames; i++) {
+<<<<<<< HEAD
 		struct bio *bio = pkt_bio_alloc(1);
 		if (!bio)
 			goto no_rd_bio;
+=======
+		struct bio *bio = bio_kmalloc(GFP_KERNEL, 1);
+		if (!bio)
+			goto no_rd_bio;
+
+>>>>>>> refs/remotes/origin/master
 		pkt->r_bios[i] = bio;
 	}
 
@@ -764,10 +840,25 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static const char *sense_key_string(__u8 index)
+{
+	static const char * const info[] = {
+		"No sense", "Recovered error", "Not ready",
+		"Medium error", "Hardware error", "Illegal request",
+		"Unit attention", "Data protect", "Blank check",
+	};
+
+	return index < ARRAY_SIZE(info) ? info[index] : "INVALID";
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * A generic sense dump / resolve mechanism should be implemented across
  * all ATAPI + SCSI devices.
  */
+<<<<<<< HEAD
 static void pkt_dump_sense(struct packet_command *cgc)
 {
 	static char *info[9] = { "No sense", "Recovered error", "Not ready",
@@ -794,6 +885,20 @@ static void pkt_dump_sense(struct packet_command *cgc)
 	}
 
 	printk(" (%s)\n", info[sense->sense_key]);
+=======
+static void pkt_dump_sense(struct pktcdvd_device *pd,
+			   struct packet_command *cgc)
+{
+	struct request_sense *sense = cgc->sense;
+
+	if (sense)
+		pkt_err(pd, "%*ph - sense %02x.%02x.%02x (%s)\n",
+			CDROM_PACKET_SIZE, cgc->cmd,
+			sense->sense_key, sense->asc, sense->ascq,
+			sense_key_string(sense->sense_key));
+	else
+		pkt_err(pd, "%*ph - no sense\n", CDROM_PACKET_SIZE, cgc->cmd);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -836,7 +941,11 @@ static noinline_for_stack int pkt_set_speed(struct pktcdvd_device *pd,
 	cgc.cmd[5] = write_speed & 0xff;
 
 	if ((ret = pkt_generic_packet(pd, &cgc)))
+<<<<<<< HEAD
 		pkt_dump_sense(&cgc);
+=======
+		pkt_dump_sense(pd, &cgc);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -902,7 +1011,11 @@ static void pkt_iosched_process_queue(struct pktcdvd_device *pd)
 				need_write_seek = 0;
 			if (need_write_seek && reads_queued) {
 				if (atomic_read(&pd->cdrw.pending_bios) > 0) {
+<<<<<<< HEAD
 					VPRINTK(DRIVER_NAME": write, waiting\n");
+=======
+					pkt_dbg(2, pd, "write, waiting\n");
+>>>>>>> refs/remotes/origin/master
 					break;
 				}
 				pkt_flush_cache(pd);
@@ -911,7 +1024,11 @@ static void pkt_iosched_process_queue(struct pktcdvd_device *pd)
 		} else {
 			if (!reads_queued && writes_queued) {
 				if (atomic_read(&pd->cdrw.pending_bios) > 0) {
+<<<<<<< HEAD
 					VPRINTK(DRIVER_NAME": read, waiting\n");
+=======
+					pkt_dbg(2, pd, "read, waiting\n");
+>>>>>>> refs/remotes/origin/master
 					break;
 				}
 				pd->iosched.writing = 1;
@@ -932,7 +1049,11 @@ static void pkt_iosched_process_queue(struct pktcdvd_device *pd)
 			pd->iosched.successive_reads += bio->bi_size >> 10;
 		else {
 			pd->iosched.successive_reads = 0;
+<<<<<<< HEAD
 			pd->iosched.last_write = bio->bi_sector + bio_sectors(bio);
+=======
+			pd->iosched.last_write = bio_end_sector(bio);
+>>>>>>> refs/remotes/origin/master
 		}
 		if (pd->iosched.successive_reads >= HI_SPEED_SWITCH) {
 			if (pd->read_speed == pd->write_speed) {
@@ -973,12 +1094,17 @@ static int pkt_set_segment_merging(struct pktcdvd_device *pd, struct request_que
 		set_bit(PACKET_MERGE_SEGS, &pd->flags);
 		return 0;
 	} else {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": cdrom max_phys_segments too small\n");
+=======
+		pkt_err(pd, "cdrom max_phys_segments too small\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 }
 
 /*
+<<<<<<< HEAD
  * Copy CD_FRAMESIZE bytes from src_bio into a destination page
  */
 static void pkt_copy_bio_data(struct bio *src_bio, int seg, int offs, struct page *dst_page, int dst_offs)
@@ -987,14 +1113,22 @@ static void pkt_copy_bio_data(struct bio *src_bio, int seg, int offs, struct pag
 
 	while (copy_size > 0) {
 		struct bio_vec *src_bvl = bio_iovec_idx(src_bio, seg);
+<<<<<<< HEAD
 		void *vfrom = kmap_atomic(src_bvl->bv_page, KM_USER0) +
+=======
+		void *vfrom = kmap_atomic(src_bvl->bv_page) +
+>>>>>>> refs/remotes/origin/cm-10.0
 			src_bvl->bv_offset + offs;
 		void *vto = page_address(dst_page) + dst_offs;
 		int len = min_t(int, copy_size, src_bvl->bv_len - offs);
 
 		BUG_ON(len < 0);
 		memcpy(vto, vfrom, len);
+<<<<<<< HEAD
 		kunmap_atomic(vfrom, KM_USER0);
+=======
+		kunmap_atomic(vfrom);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		seg++;
 		offs = 0;
@@ -1004,6 +1138,8 @@ static void pkt_copy_bio_data(struct bio *src_bio, int seg, int offs, struct pag
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Copy all data for this packet to pkt->pages[], so that
  * a) The number of required segments for the write bio is minimized, which
  *    is necessary for some scsi controllers.
@@ -1019,10 +1155,23 @@ static void pkt_make_local_copy(struct packet_data *pkt, struct bio_vec *bvec)
 	offs = 0;
 	for (f = 0; f < pkt->frames; f++) {
 		if (bvec[f].bv_page != pkt->pages[p]) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			void *vfrom = kmap_atomic(bvec[f].bv_page, KM_USER0) + bvec[f].bv_offset;
 			void *vto = page_address(pkt->pages[p]) + offs;
 			memcpy(vto, vfrom, CD_FRAMESIZE);
 			kunmap_atomic(vfrom, KM_USER0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			void *vfrom = kmap_atomic(bvec[f].bv_page) + bvec[f].bv_offset;
+			void *vto = page_address(pkt->pages[p]) + offs;
+			memcpy(vto, vfrom, CD_FRAMESIZE);
+			kunmap_atomic(vfrom);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			bvec[f].bv_page = pkt->pages[p];
 			bvec[f].bv_offset = offs;
 		} else {
@@ -1042,8 +1191,14 @@ static void pkt_end_io_read(struct bio *bio, int err)
 	struct pktcdvd_device *pd = pkt->pd;
 	BUG_ON(!pd);
 
+<<<<<<< HEAD
 	VPRINTK("pkt_end_io_read: bio=%p sec0=%llx sec=%llx err=%d\n", bio,
 		(unsigned long long)pkt->sector, (unsigned long long)bio->bi_sector, err);
+=======
+	pkt_dbg(2, pd, "bio=%p sec0=%llx sec=%llx err=%d\n",
+		bio, (unsigned long long)pkt->sector,
+		(unsigned long long)bio->bi_sector, err);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		atomic_inc(&pkt->io_errors);
@@ -1060,7 +1215,11 @@ static void pkt_end_io_packet_write(struct bio *bio, int err)
 	struct pktcdvd_device *pd = pkt->pd;
 	BUG_ON(!pd);
 
+<<<<<<< HEAD
 	VPRINTK("pkt_end_io_packet_write: id=%d, err=%d\n", pkt->id, err);
+=======
+	pkt_dbg(2, pd, "id=%d, err=%d\n", pkt->id, err);
+>>>>>>> refs/remotes/origin/master
 
 	pd->stats.pkt_ended++;
 
@@ -1102,7 +1261,11 @@ static void pkt_gather_data(struct pktcdvd_device *pd, struct packet_data *pkt)
 	spin_unlock(&pkt->lock);
 
 	if (pkt->cache_valid) {
+<<<<<<< HEAD
 		VPRINTK("pkt_gather_data: zone %llx cached\n",
+=======
+		pkt_dbg(2, pd, "zone %llx cached\n",
+>>>>>>> refs/remotes/origin/master
 			(unsigned long long)pkt->sector);
 		goto out_account;
 	}
@@ -1111,6 +1274,7 @@ static void pkt_gather_data(struct pktcdvd_device *pd, struct packet_data *pkt)
 	 * Schedule reads for missing parts of the packet.
 	 */
 	for (f = 0; f < pkt->frames; f++) {
+<<<<<<< HEAD
 		struct bio_vec *vec;
 
 		int p, offset;
@@ -1120,16 +1284,32 @@ static void pkt_gather_data(struct pktcdvd_device *pd, struct packet_data *pkt)
 		vec = bio->bi_io_vec;
 		bio_init(bio);
 		bio->bi_max_vecs = 1;
+=======
+		int p, offset;
+
+		if (written[f])
+			continue;
+
+		bio = pkt->r_bios[f];
+		bio_reset(bio);
+>>>>>>> refs/remotes/origin/master
 		bio->bi_sector = pkt->sector + f * (CD_FRAMESIZE >> 9);
 		bio->bi_bdev = pd->bdev;
 		bio->bi_end_io = pkt_end_io_read;
 		bio->bi_private = pkt;
+<<<<<<< HEAD
 		bio->bi_io_vec = vec;
 		bio->bi_destructor = pkt_bio_destructor;
 
 		p = (f * CD_FRAMESIZE) / PAGE_SIZE;
 		offset = (f * CD_FRAMESIZE) % PAGE_SIZE;
 		VPRINTK("pkt_gather_data: Adding frame %d, page:%p offs:%d\n",
+=======
+
+		p = (f * CD_FRAMESIZE) / PAGE_SIZE;
+		offset = (f * CD_FRAMESIZE) % PAGE_SIZE;
+		pkt_dbg(2, pd, "Adding frame %d, page:%p offs:%d\n",
+>>>>>>> refs/remotes/origin/master
 			f, pkt->pages[p], offset);
 		if (!bio_add_page(bio, pkt->pages[p], CD_FRAMESIZE, offset))
 			BUG();
@@ -1141,7 +1321,11 @@ static void pkt_gather_data(struct pktcdvd_device *pd, struct packet_data *pkt)
 	}
 
 out_account:
+<<<<<<< HEAD
 	VPRINTK("pkt_gather_data: need %d frames for zone %llx\n",
+=======
+	pkt_dbg(2, pd, "need %d frames for zone %llx\n",
+>>>>>>> refs/remotes/origin/master
 		frames_read, (unsigned long long)pkt->sector);
 	pd->stats.pkt_started++;
 	pd->stats.secs_rg += frames_read * (CD_FRAMESIZE >> 9);
@@ -1206,7 +1390,15 @@ static int pkt_start_recovery(struct packet_data *pkt)
 	if (!sb)
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sb->s_op || !sb->s_op->relocate_blocks)
+=======
+	if (!sb->s_op->relocate_blocks)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!sb->s_op->relocate_blocks)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	old_block = pkt->sector / (CD_FRAMESIZE >> 9);
@@ -1216,6 +1408,7 @@ static int pkt_start_recovery(struct packet_data *pkt)
 	new_sector = new_block * (CD_FRAMESIZE >> 9);
 	pkt->sector = new_sector;
 
+<<<<<<< HEAD
 	pkt->bio->bi_sector = new_sector;
 	pkt->bio->bi_next = NULL;
 	pkt->bio->bi_flags = 1 << BIO_UPTODATE;
@@ -1226,6 +1419,17 @@ static int pkt_start_recovery(struct packet_data *pkt)
 	BUG_ON(pkt->bio->bi_size != pkt->frames * CD_FRAMESIZE);
 	BUG_ON(pkt->bio->bi_end_io != pkt_end_io_packet_write);
 	BUG_ON(pkt->bio->bi_private != pkt);
+=======
+	bio_reset(pkt->bio);
+	pkt->bio->bi_bdev = pd->bdev;
+	pkt->bio->bi_rw = REQ_WRITE;
+	pkt->bio->bi_sector = new_sector;
+	pkt->bio->bi_size = pkt->frames * CD_FRAMESIZE;
+	pkt->bio->bi_vcnt = pkt->frames;
+
+	pkt->bio->bi_end_io = pkt_end_io_packet_write;
+	pkt->bio->bi_private = pkt;
+>>>>>>> refs/remotes/origin/master
 
 	drop_super(sb);
 	return 1;
@@ -1243,7 +1447,12 @@ static inline void pkt_set_state(struct packet_data *pkt, enum packet_data_state
 		"IDLE", "WAITING", "READ_WAIT", "WRITE_WAIT", "RECOVERY", "FINISHED"
 	};
 	enum packet_data_state old_state = pkt->state;
+<<<<<<< HEAD
 	VPRINTK("pkt %2d : s=%6llx %s -> %s\n", pkt->id, (unsigned long long)pkt->sector,
+=======
+	pkt_dbg(2, pd, "pkt %2d : s=%6llx %s -> %s\n",
+		pkt->id, (unsigned long long)pkt->sector,
+>>>>>>> refs/remotes/origin/master
 		state_name[old_state], state_name[state]);
 #endif
 	pkt->state = state;
@@ -1262,12 +1471,19 @@ static int pkt_handle_queue(struct pktcdvd_device *pd)
 	struct rb_node *n;
 	int wakeup;
 
+<<<<<<< HEAD
 	VPRINTK("handle_queue\n");
 
 	atomic_set(&pd->scan_queue, 0);
 
 	if (list_empty(&pd->cdrw.pkt_free_list)) {
 		VPRINTK("handle_queue: no pkt\n");
+=======
+	atomic_set(&pd->scan_queue, 0);
+
+	if (list_empty(&pd->cdrw.pkt_free_list)) {
+		pkt_dbg(2, pd, "no pkt\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -1284,7 +1500,11 @@ static int pkt_handle_queue(struct pktcdvd_device *pd)
 	node = first_node;
 	while (node) {
 		bio = node->bio;
+<<<<<<< HEAD
 		zone = ZONE(bio->bi_sector, pd);
+=======
+		zone = get_zone(bio->bi_sector, pd);
+>>>>>>> refs/remotes/origin/master
 		list_for_each_entry(p, &pd->cdrw.pkt_active_list, list) {
 			if (p->sector == zone) {
 				bio = NULL;
@@ -1304,7 +1524,11 @@ try_next_bio:
 	}
 	spin_unlock(&pd->lock);
 	if (!bio) {
+<<<<<<< HEAD
 		VPRINTK("handle_queue: no bio\n");
+=======
+		pkt_dbg(2, pd, "no bio\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -1320,12 +1544,21 @@ try_next_bio:
 	 * to this packet.
 	 */
 	spin_lock(&pd->lock);
+<<<<<<< HEAD
 	VPRINTK("pkt_handle_queue: looking for zone %llx\n", (unsigned long long)zone);
 	while ((node = pkt_rbtree_find(pd, zone)) != NULL) {
 		bio = node->bio;
 		VPRINTK("pkt_handle_queue: found zone=%llx\n",
 			(unsigned long long)ZONE(bio->bi_sector, pd));
 		if (ZONE(bio->bi_sector, pd) != zone)
+=======
+	pkt_dbg(2, pd, "looking for zone %llx\n", (unsigned long long)zone);
+	while ((node = pkt_rbtree_find(pd, zone)) != NULL) {
+		bio = node->bio;
+		pkt_dbg(2, pd, "found zone=%llx\n",
+			(unsigned long long)get_zone(bio->bi_sector, pd));
+		if (get_zone(bio->bi_sector, pd) != zone)
+>>>>>>> refs/remotes/origin/master
 			break;
 		pkt_rbtree_erase(pd, node);
 		spin_lock(&pkt->lock);
@@ -1360,6 +1593,7 @@ try_next_bio:
  */
 static void pkt_start_write(struct pktcdvd_device *pd, struct packet_data *pkt)
 {
+<<<<<<< HEAD
 	struct bio *bio;
 	int f;
 	int frames_write;
@@ -1369,10 +1603,30 @@ static void pkt_start_write(struct pktcdvd_device *pd, struct packet_data *pkt)
 		bvec[f].bv_page = pkt->pages[(f * CD_FRAMESIZE) / PAGE_SIZE];
 		bvec[f].bv_offset = (f * CD_FRAMESIZE) % PAGE_SIZE;
 	}
+=======
+	int f;
+	struct bio_vec *bvec = pkt->w_bio->bi_io_vec;
+
+	bio_reset(pkt->w_bio);
+	pkt->w_bio->bi_sector = pkt->sector;
+	pkt->w_bio->bi_bdev = pd->bdev;
+	pkt->w_bio->bi_end_io = pkt_end_io_packet_write;
+	pkt->w_bio->bi_private = pkt;
+
+	/* XXX: locking? */
+	for (f = 0; f < pkt->frames; f++) {
+		bvec[f].bv_page = pkt->pages[(f * CD_FRAMESIZE) / PAGE_SIZE];
+		bvec[f].bv_offset = (f * CD_FRAMESIZE) % PAGE_SIZE;
+		if (!bio_add_page(pkt->w_bio, bvec[f].bv_page, CD_FRAMESIZE, bvec[f].bv_offset))
+			BUG();
+	}
+	pkt_dbg(2, pd, "vcnt=%d\n", pkt->w_bio->bi_vcnt);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Fill-in bvec with data from orig_bios.
 	 */
+<<<<<<< HEAD
 	frames_write = 0;
 	spin_lock(&pkt->lock);
 	bio_list_for_each(bio, &pkt->orig_bios) {
@@ -1409,6 +1663,16 @@ static void pkt_start_write(struct pktcdvd_device *pd, struct packet_data *pkt)
 	VPRINTK("pkt_start_write: Writing %d frames for zone %llx\n",
 		frames_write, (unsigned long long)pkt->sector);
 	BUG_ON(frames_write != pkt->write_size);
+=======
+	spin_lock(&pkt->lock);
+	bio_copy_data(pkt->w_bio, pkt->orig_bios.head);
+
+	pkt_set_state(pkt, PACKET_WRITE_WAIT_STATE);
+	spin_unlock(&pkt->lock);
+
+	pkt_dbg(2, pd, "Writing %d frames for zone %llx\n",
+		pkt->write_size, (unsigned long long)pkt->sector);
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(PACKET_MERGE_SEGS, &pd->flags) || (pkt->write_size < pkt->frames)) {
 		pkt_make_local_copy(pkt, bvec);
@@ -1418,6 +1682,7 @@ static void pkt_start_write(struct pktcdvd_device *pd, struct packet_data *pkt)
 	}
 
 	/* Start the write request */
+<<<<<<< HEAD
 	bio_init(pkt->w_bio);
 	pkt->w_bio->bi_max_vecs = PACKET_MAX_SIZE;
 	pkt->w_bio->bi_sector = pkt->sector;
@@ -1431,6 +1696,8 @@ static void pkt_start_write(struct pktcdvd_device *pd, struct packet_data *pkt)
 			BUG();
 	VPRINTK(DRIVER_NAME": vcnt=%d\n", pkt->w_bio->bi_vcnt);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&pkt->io_wait, 1);
 	pkt->w_bio->bi_rw = WRITE;
 	pkt_queue_bio(pd, pkt->w_bio);
@@ -1452,7 +1719,11 @@ static void pkt_run_state_machine(struct pktcdvd_device *pd, struct packet_data 
 {
 	int uptodate;
 
+<<<<<<< HEAD
 	VPRINTK("run_state_machine: pkt %d\n", pkt->id);
+=======
+	pkt_dbg(2, pd, "pkt %d\n", pkt->id);
+>>>>>>> refs/remotes/origin/master
 
 	for (;;) {
 		switch (pkt->state) {
@@ -1491,7 +1762,11 @@ static void pkt_run_state_machine(struct pktcdvd_device *pd, struct packet_data 
 			if (pkt_start_recovery(pkt)) {
 				pkt_start_write(pd, pkt);
 			} else {
+<<<<<<< HEAD
 				VPRINTK("No recovery possible\n");
+=======
+				pkt_dbg(2, pd, "No recovery possible\n");
+>>>>>>> refs/remotes/origin/master
 				pkt_set_state(pkt, PACKET_FINISHED_STATE);
 			}
 			break;
@@ -1512,8 +1787,11 @@ static void pkt_handle_packets(struct pktcdvd_device *pd)
 {
 	struct packet_data *pkt, *next;
 
+<<<<<<< HEAD
 	VPRINTK("pkt_handle_packets\n");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Run state machine for active packets
 	 */
@@ -1595,9 +1873,15 @@ static int kcdrwd(void *foobar)
 			if (PACKET_DEBUG > 1) {
 				int states[PACKET_NUM_STATES];
 				pkt_count_states(pd, states);
+<<<<<<< HEAD
 				VPRINTK("kcdrwd: i:%d ow:%d rw:%d ww:%d rec:%d fin:%d\n",
 					states[0], states[1], states[2], states[3],
 					states[4], states[5]);
+=======
+				pkt_dbg(2, pd, "i:%d ow:%d rw:%d ww:%d rec:%d fin:%d\n",
+					states[0], states[1], states[2],
+					states[3], states[4], states[5]);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			min_sleep_time = MAX_SCHEDULE_TIMEOUT;
@@ -1606,9 +1890,15 @@ static int kcdrwd(void *foobar)
 					min_sleep_time = pkt->sleep_time;
 			}
 
+<<<<<<< HEAD
 			VPRINTK("kcdrwd: sleeping\n");
 			residue = schedule_timeout(min_sleep_time);
 			VPRINTK("kcdrwd: wake up\n");
+=======
+			pkt_dbg(2, pd, "sleeping\n");
+			residue = schedule_timeout(min_sleep_time);
+			pkt_dbg(2, pd, "wake up\n");
+>>>>>>> refs/remotes/origin/master
 
 			/* make swsusp happy with our thread */
 			try_to_freeze();
@@ -1656,9 +1946,16 @@ work_to_do:
 
 static void pkt_print_settings(struct pktcdvd_device *pd)
 {
+<<<<<<< HEAD
 	printk(DRIVER_NAME": %s packets, ", pd->settings.fp ? "Fixed" : "Variable");
 	printk("%u blocks, ", pd->settings.size >> 2);
 	printk("Mode-%c disc\n", pd->settings.block_mode == 8 ? '1' : '2');
+=======
+	pkt_info(pd, "%s packets, %u blocks, Mode-%c disc\n",
+		 pd->settings.fp ? "Fixed" : "Variable",
+		 pd->settings.size >> 2,
+		 pd->settings.block_mode == 8 ? '1' : '2');
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pkt_mode_sense(struct pktcdvd_device *pd, struct packet_command *cgc, int page_code, int page_control)
@@ -1792,7 +2089,11 @@ static noinline_for_stack int pkt_set_write_settings(struct pktcdvd_device *pd)
 	init_cdrom_command(&cgc, buffer, sizeof(*wp), CGC_DATA_READ);
 	cgc.sense = &sense;
 	if ((ret = pkt_mode_sense(pd, &cgc, GPMODE_WRITE_PARMS_PAGE, 0))) {
+<<<<<<< HEAD
 		pkt_dump_sense(&cgc);
+=======
+		pkt_dump_sense(pd, &cgc);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -1807,7 +2108,11 @@ static noinline_for_stack int pkt_set_write_settings(struct pktcdvd_device *pd)
 	init_cdrom_command(&cgc, buffer, size, CGC_DATA_READ);
 	cgc.sense = &sense;
 	if ((ret = pkt_mode_sense(pd, &cgc, GPMODE_WRITE_PARMS_PAGE, 0))) {
+<<<<<<< HEAD
 		pkt_dump_sense(&cgc);
+=======
+		pkt_dump_sense(pd, &cgc);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -1842,14 +2147,22 @@ static noinline_for_stack int pkt_set_write_settings(struct pktcdvd_device *pd)
 		/*
 		 * paranoia
 		 */
+<<<<<<< HEAD
 		printk(DRIVER_NAME": write mode wrong %d\n", wp->data_block_type);
+=======
+		pkt_err(pd, "write mode wrong %d\n", wp->data_block_type);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 	wp->packet_size = cpu_to_be32(pd->settings.size >> 2);
 
 	cgc.buflen = cgc.cmd[8] = size;
 	if ((ret = pkt_mode_select(pd, &cgc))) {
+<<<<<<< HEAD
 		pkt_dump_sense(&cgc);
+=======
+		pkt_dump_sense(pd, &cgc);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -1886,7 +2199,11 @@ static int pkt_writable_track(struct pktcdvd_device *pd, track_information *ti)
 	if (ti->rt == 1 && ti->blank == 0)
 		return 1;
 
+<<<<<<< HEAD
 	printk(DRIVER_NAME": bad state %d-%d-%d\n", ti->rt, ti->blank, ti->packet);
+=======
+	pkt_err(pd, "bad state %d-%d-%d\n", ti->rt, ti->blank, ti->packet);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1904,7 +2221,12 @@ static int pkt_writable_disc(struct pktcdvd_device *pd, disc_information *di)
 		case 0x12: /* DVD-RAM */
 			return 1;
 		default:
+<<<<<<< HEAD
 			VPRINTK(DRIVER_NAME": Wrong disc profile (%x)\n", pd->mmc3_profile);
+=======
+			pkt_dbg(2, pd, "Wrong disc profile (%x)\n",
+				pd->mmc3_profile);
+>>>>>>> refs/remotes/origin/master
 			return 0;
 	}
 
@@ -1913,22 +2235,38 @@ static int pkt_writable_disc(struct pktcdvd_device *pd, disc_information *di)
 	 * but i'm not sure, should we leave this to user apps? probably.
 	 */
 	if (di->disc_type == 0xff) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": Unknown disc. No track?\n");
+=======
+		pkt_notice(pd, "unknown disc - no track?\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	if (di->disc_type != 0x20 && di->disc_type != 0) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": Wrong disc type (%x)\n", di->disc_type);
+=======
+		pkt_err(pd, "wrong disc type (%x)\n", di->disc_type);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	if (di->erasable == 0) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": Disc not erasable\n");
+=======
+		pkt_notice(pd, "disc not erasable\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	if (di->border_status == PACKET_SESSION_RESERVED) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": Can't write to last track (reserved)\n");
+=======
+		pkt_err(pd, "can't write to last track (reserved)\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -1953,7 +2291,11 @@ static noinline_for_stack int pkt_probe_settings(struct pktcdvd_device *pd)
 	memset(&ti, 0, sizeof(track_information));
 
 	if ((ret = pkt_get_disc_info(pd, &di))) {
+<<<<<<< HEAD
 		printk("failed get_disc\n");
+=======
+		pkt_err(pd, "failed get_disc\n");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -1964,12 +2306,20 @@ static noinline_for_stack int pkt_probe_settings(struct pktcdvd_device *pd)
 
 	track = 1; /* (di.last_track_msb << 8) | di.last_track_lsb; */
 	if ((ret = pkt_get_track_info(pd, track, 1, &ti))) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": failed get_track\n");
+=======
+		pkt_err(pd, "failed get_track\n");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	if (!pkt_writable_track(pd, &ti)) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": can't write to this track\n");
+=======
+		pkt_err(pd, "can't write to this track\n");
+>>>>>>> refs/remotes/origin/master
 		return -EROFS;
 	}
 
@@ -1979,11 +2329,19 @@ static noinline_for_stack int pkt_probe_settings(struct pktcdvd_device *pd)
 	 */
 	pd->settings.size = be32_to_cpu(ti.fixed_packet_size) << 2;
 	if (pd->settings.size == 0) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": detected zero packet size!\n");
 		return -ENXIO;
 	}
 	if (pd->settings.size > PACKET_MAX_SECTORS) {
 		printk(DRIVER_NAME": packet size is too big\n");
+=======
+		pkt_notice(pd, "detected zero packet size!\n");
+		return -ENXIO;
+	}
+	if (pd->settings.size > PACKET_MAX_SECTORS) {
+		pkt_err(pd, "packet size is too big\n");
+>>>>>>> refs/remotes/origin/master
 		return -EROFS;
 	}
 	pd->settings.fp = ti.fp;
@@ -2025,7 +2383,11 @@ static noinline_for_stack int pkt_probe_settings(struct pktcdvd_device *pd)
 			pd->settings.block_mode = PACKET_BLOCK_MODE2;
 			break;
 		default:
+<<<<<<< HEAD
 			printk(DRIVER_NAME": unknown data mode\n");
+=======
+			pkt_err(pd, "unknown data mode\n");
+>>>>>>> refs/remotes/origin/master
 			return -EROFS;
 	}
 	return 0;
@@ -2059,10 +2421,17 @@ static noinline_for_stack int pkt_write_caching(struct pktcdvd_device *pd,
 	cgc.buflen = cgc.cmd[8] = 2 + ((buf[0] << 8) | (buf[1] & 0xff));
 	ret = pkt_mode_select(pd, &cgc);
 	if (ret) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": write caching control failed\n");
 		pkt_dump_sense(&cgc);
 	} else if (!ret && set)
 		printk(DRIVER_NAME": enabled write caching on %s\n", pd->name);
+=======
+		pkt_err(pd, "write caching control failed\n");
+		pkt_dump_sense(pd, &cgc);
+	} else if (!ret && set)
+		pkt_notice(pd, "enabled write caching\n");
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2098,7 +2467,11 @@ static noinline_for_stack int pkt_get_max_speed(struct pktcdvd_device *pd,
 			     sizeof(struct mode_page_header);
 		ret = pkt_mode_sense(pd, &cgc, GPMODE_CAPABILITIES_PAGE, 0);
 		if (ret) {
+<<<<<<< HEAD
 			pkt_dump_sense(&cgc);
+=======
+			pkt_dump_sense(pd, &cgc);
+>>>>>>> refs/remotes/origin/master
 			return ret;
 		}
 	}
@@ -2157,7 +2530,11 @@ static noinline_for_stack int pkt_media_speed(struct pktcdvd_device *pd,
 	cgc.cmd[8] = 2;
 	ret = pkt_generic_packet(pd, &cgc);
 	if (ret) {
+<<<<<<< HEAD
 		pkt_dump_sense(&cgc);
+=======
+		pkt_dump_sense(pd, &cgc);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 	size = ((unsigned int) buf[0]<<8) + buf[1] + 2;
@@ -2172,16 +2549,28 @@ static noinline_for_stack int pkt_media_speed(struct pktcdvd_device *pd,
 	cgc.cmd[8] = size;
 	ret = pkt_generic_packet(pd, &cgc);
 	if (ret) {
+<<<<<<< HEAD
 		pkt_dump_sense(&cgc);
+=======
+		pkt_dump_sense(pd, &cgc);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	if (!(buf[6] & 0x40)) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": Disc type is not CD-RW\n");
 		return 1;
 	}
 	if (!(buf[6] & 0x4)) {
 		printk(DRIVER_NAME": A1 values on media are not valid, maybe not CDRW?\n");
+=======
+		pkt_notice(pd, "disc type is not CD-RW\n");
+		return 1;
+	}
+	if (!(buf[6] & 0x4)) {
+		pkt_notice(pd, "A1 values on media are not valid, maybe not CDRW?\n");
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
@@ -2201,6 +2590,7 @@ static noinline_for_stack int pkt_media_speed(struct pktcdvd_device *pd,
 			*speed = us_clv_to_speed[sp];
 			break;
 		default:
+<<<<<<< HEAD
 			printk(DRIVER_NAME": Unknown disc sub-type %d\n",st);
 			return 1;
 	}
@@ -2209,6 +2599,16 @@ static noinline_for_stack int pkt_media_speed(struct pktcdvd_device *pd,
 		return 0;
 	} else {
 		printk(DRIVER_NAME": Unknown speed %d for sub-type %d\n",sp,st);
+=======
+			pkt_notice(pd, "unknown disc sub-type %d\n", st);
+			return 1;
+	}
+	if (*speed) {
+		pkt_info(pd, "maximum media speed: %d\n", *speed);
+		return 0;
+	} else {
+		pkt_notice(pd, "unknown speed %d for sub-type %d\n", sp, st);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 }
@@ -2219,7 +2619,11 @@ static noinline_for_stack int pkt_perform_opc(struct pktcdvd_device *pd)
 	struct request_sense sense;
 	int ret;
 
+<<<<<<< HEAD
 	VPRINTK(DRIVER_NAME": Performing OPC\n");
+=======
+	pkt_dbg(2, pd, "Performing OPC\n");
+>>>>>>> refs/remotes/origin/master
 
 	init_cdrom_command(&cgc, NULL, 0, CGC_DATA_NONE);
 	cgc.sense = &sense;
@@ -2227,7 +2631,11 @@ static noinline_for_stack int pkt_perform_opc(struct pktcdvd_device *pd)
 	cgc.cmd[0] = GPCMD_SEND_OPC;
 	cgc.cmd[1] = 1;
 	if ((ret = pkt_generic_packet(pd, &cgc)))
+<<<<<<< HEAD
 		pkt_dump_sense(&cgc);
+=======
+		pkt_dump_sense(pd, &cgc);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2237,12 +2645,20 @@ static int pkt_open_write(struct pktcdvd_device *pd)
 	unsigned int write_speed, media_write_speed, read_speed;
 
 	if ((ret = pkt_probe_settings(pd))) {
+<<<<<<< HEAD
 		VPRINTK(DRIVER_NAME": %s failed probe\n", pd->name);
+=======
+		pkt_dbg(2, pd, "failed probe\n");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	if ((ret = pkt_set_write_settings(pd))) {
+<<<<<<< HEAD
 		DPRINTK(DRIVER_NAME": %s failed saving write settings\n", pd->name);
+=======
+		pkt_dbg(1, pd, "failed saving write settings\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -2254,26 +2670,42 @@ static int pkt_open_write(struct pktcdvd_device *pd)
 		case 0x13: /* DVD-RW */
 		case 0x1a: /* DVD+RW */
 		case 0x12: /* DVD-RAM */
+<<<<<<< HEAD
 			DPRINTK(DRIVER_NAME": write speed %ukB/s\n", write_speed);
+=======
+			pkt_dbg(1, pd, "write speed %ukB/s\n", write_speed);
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			if ((ret = pkt_media_speed(pd, &media_write_speed)))
 				media_write_speed = 16;
 			write_speed = min(write_speed, media_write_speed * 177);
+<<<<<<< HEAD
 			DPRINTK(DRIVER_NAME": write speed %ux\n", write_speed / 176);
+=======
+			pkt_dbg(1, pd, "write speed %ux\n", write_speed / 176);
+>>>>>>> refs/remotes/origin/master
 			break;
 	}
 	read_speed = write_speed;
 
 	if ((ret = pkt_set_speed(pd, write_speed, read_speed))) {
+<<<<<<< HEAD
 		DPRINTK(DRIVER_NAME": %s couldn't set write speed\n", pd->name);
+=======
+		pkt_dbg(1, pd, "couldn't set write speed\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 	pd->write_speed = write_speed;
 	pd->read_speed = read_speed;
 
 	if ((ret = pkt_perform_opc(pd))) {
+<<<<<<< HEAD
 		DPRINTK(DRIVER_NAME": %s Optimum Power Calibration failed\n", pd->name);
+=======
+		pkt_dbg(1, pd, "Optimum Power Calibration failed\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -2298,7 +2730,11 @@ static int pkt_open_dev(struct pktcdvd_device *pd, fmode_t write)
 		goto out;
 
 	if ((ret = pkt_get_last_written(pd, &lba))) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": pkt_get_last_written failed\n");
+=======
+		pkt_err(pd, "pkt_get_last_written failed\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_putdev;
 	}
 
@@ -2328,11 +2764,19 @@ static int pkt_open_dev(struct pktcdvd_device *pd, fmode_t write)
 
 	if (write) {
 		if (!pkt_grow_pktlist(pd, CONFIG_CDROM_PKTCDVD_BUFFERS)) {
+<<<<<<< HEAD
 			printk(DRIVER_NAME": not enough memory for buffers\n");
 			ret = -ENOMEM;
 			goto out_putdev;
 		}
 		printk(DRIVER_NAME": %lukB available on disc\n", lba << 1);
+=======
+			pkt_err(pd, "not enough memory for buffers\n");
+			ret = -ENOMEM;
+			goto out_putdev;
+		}
+		pkt_info(pd, "%lukB available on disc\n", lba << 1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -2350,7 +2794,11 @@ out:
 static void pkt_release_dev(struct pktcdvd_device *pd, int flush)
 {
 	if (flush && pkt_flush_cache(pd))
+<<<<<<< HEAD
 		DPRINTK(DRIVER_NAME": %s not flushing cache\n", pd->name);
+=======
+		pkt_dbg(1, pd, "not flushing cache\n");
+>>>>>>> refs/remotes/origin/master
 
 	pkt_lock_door(pd, 0);
 
@@ -2372,8 +2820,11 @@ static int pkt_open(struct block_device *bdev, fmode_t mode)
 	struct pktcdvd_device *pd = NULL;
 	int ret;
 
+<<<<<<< HEAD
 	VPRINTK(DRIVER_NAME": entering open\n");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&pktcdvd_mutex);
 	mutex_lock(&ctl_mutex);
 	pd = pkt_find_dev_from_minor(MINOR(bdev->bd_dev));
@@ -2408,16 +2859,25 @@ static int pkt_open(struct block_device *bdev, fmode_t mode)
 out_dec:
 	pd->refcnt--;
 out:
+<<<<<<< HEAD
 	VPRINTK(DRIVER_NAME": failed open (%d)\n", ret);
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&ctl_mutex);
 	mutex_unlock(&pktcdvd_mutex);
 	return ret;
 }
 
+<<<<<<< HEAD
 static int pkt_close(struct gendisk *disk, fmode_t mode)
 {
 	struct pktcdvd_device *pd = disk->private_data;
 	int ret = 0;
+=======
+static void pkt_close(struct gendisk *disk, fmode_t mode)
+{
+	struct pktcdvd_device *pd = disk->private_data;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&pktcdvd_mutex);
 	mutex_lock(&ctl_mutex);
@@ -2429,7 +2889,10 @@ static int pkt_close(struct gendisk *disk, fmode_t mode)
 	}
 	mutex_unlock(&ctl_mutex);
 	mutex_unlock(&pktcdvd_mutex);
+<<<<<<< HEAD
 	return ret;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2444,7 +2907,15 @@ static void pkt_end_io_read_cloned(struct bio *bio, int err)
 	pkt_bio_finished(pd);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int pkt_make_request(struct request_queue *q, struct bio *bio)
+=======
+static void pkt_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void pkt_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pktcdvd_device *pd;
 	char b[BDEVNAME_SIZE];
@@ -2455,7 +2926,12 @@ static int pkt_make_request(struct request_queue *q, struct bio *bio)
 
 	pd = q->queuedata;
 	if (!pd) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": %s incorrect request queue\n", bdevname(bio->bi_bdev, b));
+=======
+		pr_err("%s incorrect request queue\n",
+		       bdevname(bio->bi_bdev, b));
+>>>>>>> refs/remotes/origin/master
 		goto end_io;
 	}
 
@@ -2471,28 +2947,54 @@ static int pkt_make_request(struct request_queue *q, struct bio *bio)
 		cloned_bio->bi_bdev = pd->bdev;
 		cloned_bio->bi_private = psd;
 		cloned_bio->bi_end_io = pkt_end_io_read_cloned;
+<<<<<<< HEAD
 		pd->stats.secs_r += bio->bi_size >> 9;
 		pkt_queue_bio(pd, cloned_bio);
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (!test_bit(PACKET_WRITABLE, &pd->flags)) {
 		printk(DRIVER_NAME": WRITE for ro device %s (%llu)\n",
 			pd->name, (unsigned long long)bio->bi_sector);
+=======
+		pd->stats.secs_r += bio_sectors(bio);
+		pkt_queue_bio(pd, cloned_bio);
+		return;
+	}
+
+	if (!test_bit(PACKET_WRITABLE, &pd->flags)) {
+		pkt_notice(pd, "WRITE for ro device (%llu)\n",
+			   (unsigned long long)bio->bi_sector);
+>>>>>>> refs/remotes/origin/master
 		goto end_io;
 	}
 
 	if (!bio->bi_size || (bio->bi_size % CD_FRAMESIZE)) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": wrong bio size\n");
+=======
+		pkt_err(pd, "wrong bio size\n");
+>>>>>>> refs/remotes/origin/master
 		goto end_io;
 	}
 
 	blk_queue_bounce(q, &bio);
 
+<<<<<<< HEAD
 	zone = ZONE(bio->bi_sector, pd);
 	VPRINTK("pkt_make_request: start = %6llx stop = %6llx\n",
 		(unsigned long long)bio->bi_sector,
 		(unsigned long long)(bio->bi_sector + bio_sectors(bio)));
+=======
+	zone = get_zone(bio->bi_sector, pd);
+	pkt_dbg(2, pd, "start = %6llx stop = %6llx\n",
+		(unsigned long long)bio->bi_sector,
+		(unsigned long long)bio_end_sector(bio));
+>>>>>>> refs/remotes/origin/master
 
 	/* Check if we have to split the bio */
 	{
@@ -2500,7 +3002,11 @@ static int pkt_make_request(struct request_queue *q, struct bio *bio)
 		sector_t last_zone;
 		int first_sectors;
 
+<<<<<<< HEAD
 		last_zone = ZONE(bio->bi_sector + bio_sectors(bio) - 1, pd);
+=======
+		last_zone = get_zone(bio_end_sector(bio) - 1, pd);
+>>>>>>> refs/remotes/origin/master
 		if (last_zone != zone) {
 			BUG_ON(last_zone != zone + pd->settings.size);
 			first_sectors = last_zone - bio->bi_sector;
@@ -2509,7 +3015,15 @@ static int pkt_make_request(struct request_queue *q, struct bio *bio)
 			pkt_make_request(q, &bp->bio1);
 			pkt_make_request(q, &bp->bio2);
 			bio_pair_release(bp);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return 0;
+=======
+			return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -2533,7 +3047,15 @@ static int pkt_make_request(struct request_queue *q, struct bio *bio)
 				}
 				spin_unlock(&pkt->lock);
 				spin_unlock(&pd->cdrw.active_list_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 				return 0;
+=======
+				return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				return;
+>>>>>>> refs/remotes/origin/master
 			} else {
 				blocked_bio = 1;
 			}
@@ -2584,10 +3106,22 @@ static int pkt_make_request(struct request_queue *q, struct bio *bio)
 		 */
 		wake_up(&pd->wqueue);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 end_io:
 	bio_io_error(bio);
 	return 0;
+=======
+	return;
+end_io:
+	bio_io_error(bio);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return;
+end_io:
+	bio_io_error(bio);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2596,7 +3130,11 @@ static int pkt_merge_bvec(struct request_queue *q, struct bvec_merge_data *bmd,
 			  struct bio_vec *bvec)
 {
 	struct pktcdvd_device *pd = q->queuedata;
+<<<<<<< HEAD
 	sector_t zone = ZONE(bmd->bi_sector, pd);
+=======
+	sector_t zone = get_zone(bmd->bi_sector, pd);
+>>>>>>> refs/remotes/origin/master
 	int used = ((bmd->bi_sector - zone) << 9) + bmd->bi_size;
 	int remaining = (pd->settings.size << 9) - used;
 	int remaining2;
@@ -2687,7 +3225,11 @@ static int pkt_seq_show(struct seq_file *m, void *p)
 
 static int pkt_seq_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, pkt_seq_show, PDE(inode)->data);
+=======
+	return single_open(file, pkt_seq_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations pkt_proc_fops = {
@@ -2705,7 +3247,11 @@ static int pkt_new_dev(struct pktcdvd_device *pd, dev_t dev)
 	struct block_device *bdev;
 
 	if (pd->pkt_dev == dev) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": Recursive setup not allowed\n");
+=======
+		pkt_err(pd, "recursive setup not allowed\n");
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 	for (i = 0; i < MAX_WRITERS; i++) {
@@ -2713,11 +3259,20 @@ static int pkt_new_dev(struct pktcdvd_device *pd, dev_t dev)
 		if (!pd2)
 			continue;
 		if (pd2->bdev->bd_dev == dev) {
+<<<<<<< HEAD
 			printk(DRIVER_NAME": %s already setup\n", bdevname(pd2->bdev, b));
 			return -EBUSY;
 		}
 		if (pd2->pkt_dev == dev) {
 			printk(DRIVER_NAME": Can't chain pktcdvd devices\n");
+=======
+			pkt_err(pd, "%s already setup\n",
+				bdevname(pd2->bdev, b));
+			return -EBUSY;
+		}
+		if (pd2->pkt_dev == dev) {
+			pkt_err(pd, "can't chain pktcdvd devices\n");
+>>>>>>> refs/remotes/origin/master
 			return -EBUSY;
 		}
 	}
@@ -2740,13 +3295,21 @@ static int pkt_new_dev(struct pktcdvd_device *pd, dev_t dev)
 	atomic_set(&pd->cdrw.pending_bios, 0);
 	pd->cdrw.thread = kthread_run(kcdrwd, pd, "%s", pd->name);
 	if (IS_ERR(pd->cdrw.thread)) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": can't start kernel thread\n");
+=======
+		pkt_err(pd, "can't start kernel thread\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto out_mem;
 	}
 
 	proc_create_data(pd->name, 0, pkt_proc, &pkt_proc_fops, pd);
+<<<<<<< HEAD
 	DPRINTK(DRIVER_NAME": writer %s mapped to %s\n", pd->name, bdevname(bdev, b));
+=======
+	pkt_dbg(1, pd, "writer mapped to %s\n", bdevname(bdev, b));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out_mem:
@@ -2761,8 +3324,13 @@ static int pkt_ioctl(struct block_device *bdev, fmode_t mode, unsigned int cmd, 
 	struct pktcdvd_device *pd = bdev->bd_disk->private_data;
 	int ret;
 
+<<<<<<< HEAD
 	VPRINTK("pkt_ioctl: cmd %x, dev %d:%d\n", cmd,
 		MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev));
+=======
+	pkt_dbg(2, pd, "cmd %x, dev %d:%d\n",
+		cmd, MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev));
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&pktcdvd_mutex);
 	switch (cmd) {
@@ -2786,7 +3354,11 @@ static int pkt_ioctl(struct block_device *bdev, fmode_t mode, unsigned int cmd, 
 		break;
 
 	default:
+<<<<<<< HEAD
 		VPRINTK(DRIVER_NAME": Unknown ioctl for %s (%x)\n", pd->name, cmd);
+=======
+		pkt_dbg(2, pd, "Unknown ioctl (%x)\n", cmd);
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOTTY;
 	}
 	mutex_unlock(&pktcdvd_mutex);
@@ -2818,7 +3390,15 @@ static const struct block_device_operations pktcdvd_ops = {
 	.check_events =		pkt_check_events,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char *pktcdvd_devnode(struct gendisk *gd, mode_t *mode)
+=======
+static char *pktcdvd_devnode(struct gendisk *gd, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *pktcdvd_devnode(struct gendisk *gd, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return kasprintf(GFP_KERNEL, "pktcdvd/%s", gd->disk_name);
 }
@@ -2839,7 +3419,11 @@ static int pkt_setup_dev(dev_t dev, dev_t* pkt_dev)
 		if (!pkt_devs[idx])
 			break;
 	if (idx == MAX_WRITERS) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": max %d writers supported\n", MAX_WRITERS);
+=======
+		pr_err("max %d writers supported\n", MAX_WRITERS);
+>>>>>>> refs/remotes/origin/master
 		ret = -EBUSY;
 		goto out_mutex;
 	}
@@ -2914,7 +3498,11 @@ out_mem:
 	kfree(pd);
 out_mutex:
 	mutex_unlock(&ctl_mutex);
+<<<<<<< HEAD
 	printk(DRIVER_NAME": setup of pktcdvd device failed\n");
+=======
+	pr_err("setup of pktcdvd device failed\n");
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2935,7 +3523,11 @@ static int pkt_remove_dev(dev_t pkt_dev)
 			break;
 	}
 	if (idx == MAX_WRITERS) {
+<<<<<<< HEAD
 		DPRINTK(DRIVER_NAME": dev not setup\n");
+=======
+		pr_debug("dev not setup\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENXIO;
 		goto out;
 	}
@@ -2955,7 +3547,11 @@ static int pkt_remove_dev(dev_t pkt_dev)
 	blkdev_put(pd->bdev, FMODE_READ | FMODE_NDELAY);
 
 	remove_proc_entry(pd->name, pkt_proc);
+<<<<<<< HEAD
 	DPRINTK(DRIVER_NAME": writer %s unmapped\n", pd->name);
+=======
+	pkt_dbg(1, pd, "writer unmapped\n");
+>>>>>>> refs/remotes/origin/master
 
 	del_gendisk(pd->disk);
 	blk_cleanup_queue(pd->disk->queue);
@@ -3065,7 +3661,11 @@ static int __init pkt_init(void)
 
 	ret = register_blkdev(pktdev_major, DRIVER_NAME);
 	if (ret < 0) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": Unable to register block device\n");
+=======
+		pr_err("unable to register block device\n");
+>>>>>>> refs/remotes/origin/master
 		goto out2;
 	}
 	if (!pktdev_major)
@@ -3079,7 +3679,11 @@ static int __init pkt_init(void)
 
 	ret = misc_register(&pkt_misc);
 	if (ret) {
+<<<<<<< HEAD
 		printk(DRIVER_NAME": Unable to register misc device\n");
+=======
+		pr_err("unable to register misc device\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_misc;
 	}
 

@@ -2,7 +2,15 @@
  *
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -17,6 +25,8 @@
 
 #include "audio_utils_aio.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void q6_audio_mp3_cb(uint32_t opcode, uint32_t token,
 		uint32_t *payload, void *priv)
 {
@@ -35,6 +45,10 @@ static void q6_audio_mp3_cb(uint32_t opcode, uint32_t token,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DEBUG_FS
 static const struct file_operations audio_mp3_debug_fops = {
 	.read = audio_aio_debug_read,
@@ -103,7 +117,15 @@ static int audio_open(struct inode *inode, struct file *file)
 
 	audio->pcm_cfg.buffer_size = PCM_BUFSZ_MIN;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	audio->ac = q6asm_audio_client_alloc((app_cb) q6_audio_mp3_cb,
+=======
+	audio->ac = q6asm_audio_client_alloc((app_cb) q6_audio_cb,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audio->ac = q6asm_audio_client_alloc((app_cb) q6_audio_cb,
+>>>>>>> refs/remotes/origin/cm-11.0
 					     (void *)audio);
 
 	if (!audio->ac) {
@@ -127,19 +149,42 @@ static int audio_open(struct inode *inode, struct file *file)
 		audio->buf_cfg.meta_info_enable = 0x01;
 	} else if ((file->f_mode & FMODE_WRITE) &&
 			!(file->f_mode & FMODE_READ)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Tunnel Mode not supported\n", __func__);
 		return -EACCES;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		rc = q6asm_open_write(audio->ac, FORMAT_MP3);
+		if (rc < 0) {
+			pr_err("T mode Open failed rc=%d\n", rc);
+			rc = -ENODEV;
+			goto fail;
+		}
+		audio->feedback = TUNNEL_MODE;
+		audio->buf_cfg.meta_info_enable = 0x00;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		pr_err("Not supported mode\n");
 		rc = -EACCES;
 		goto fail;
 	}
 	rc = audio_aio_open(audio, file);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_ERR_OR_NULL(audio)) {
 		pr_err("%s: audio_aio_open failed\n", __func__);
 		rc = -EACCES;
 		goto fail;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_DEBUG_FS
 	snprintf(name, sizeof name, "msm_mp3_%04x", audio->ac->session);

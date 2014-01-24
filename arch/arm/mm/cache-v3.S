@@ -93,6 +93,7 @@ ENTRY(v3_flush_kern_dcache_area)
 	/* FALLTHROUGH */
 
 /*
+<<<<<<< HEAD
  *	dma_inv_range(start, end)
  *
  *	Invalidate (discard) the specified virtual address range.
@@ -107,6 +108,8 @@ ENTRY(v3_dma_inv_range)
 	/* FALLTHROUGH */
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *	dma_flush_range(start, end)
  *
  *	Clean and invalidate the specified virtual address range.
@@ -117,6 +120,7 @@ ENTRY(v3_dma_inv_range)
 ENTRY(v3_dma_flush_range)
 	mov	r0, #0
 	mcr	p15, 0, r0, c7, c0, 0		@ flush ID cache
+<<<<<<< HEAD
 	/* FALLTHROUGH */
 
 /*
@@ -128,6 +132,8 @@ ENTRY(v3_dma_flush_range)
  *	- end	 - virtual end address
  */
 ENTRY(v3_dma_clean_range)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov	pc, lr
 
 /*
@@ -138,7 +144,11 @@ ENTRY(v3_dma_clean_range)
  */
 ENTRY(v3_dma_unmap_area)
 	teq	r2, #DMA_TO_DEVICE
+<<<<<<< HEAD
 	bne	v3_dma_inv_range
+=======
+	bne	v3_dma_flush_range
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* FALLTHROUGH */
 
 /*
@@ -154,6 +164,7 @@ ENDPROC(v3_dma_map_area)
 
 	__INITDATA
 
+<<<<<<< HEAD
 	.type	v3_cache_fns, #object
 ENTRY(v3_cache_fns)
 	.long	v3_flush_icache_all
@@ -169,3 +180,7 @@ ENTRY(v3_cache_fns)
 	.long	v3_dma_clean_range
 	.long	v3_dma_flush_range
 	.size	v3_cache_fns, . - v3_cache_fns
+=======
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions v3
+>>>>>>> refs/remotes/origin/cm-10.0

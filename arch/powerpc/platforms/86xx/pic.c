@@ -10,9 +10,18 @@
 #include <linux/stddef.h>
 #include <linux/kernel.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_irq.h>
+#include <linux/of_platform.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mpic.h>
 #include <asm/i8259.h>
 
@@ -31,14 +40,26 @@ static void mpc86xx_8259_cascade(unsigned int irq, struct irq_desc *desc)
 
 void __init mpc86xx_init_irq(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct mpic *mpic;
 	struct device_node *np;
 	struct resource res;
 #ifdef CONFIG_PPC_I8259
+=======
+#ifdef CONFIG_PPC_I8259
+	struct device_node *np;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PPC_I8259
+	struct device_node *np;
+>>>>>>> refs/remotes/origin/master
 	struct device_node *cascade_node = NULL;
 	int cascade_irq;
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Determine PIC address. */
 	np = of_find_node_by_type(NULL, "open-pic");
 	if (np == NULL)
@@ -51,6 +72,16 @@ void __init mpc86xx_init_irq(void)
 			MPIC_SINGLE_DEST_CPU,
 			0, 256, " MPIC     ");
 	of_node_put(np);
+=======
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN |
+			MPIC_SINGLE_DEST_CPU,
+			0, 256, " MPIC     ");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN |
+			MPIC_SINGLE_DEST_CPU,
+			0, 256, " MPIC     ");
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(mpic == NULL);
 
 	mpic_init(mpic);

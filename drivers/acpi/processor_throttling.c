@@ -211,9 +211,16 @@ err_ret:
  */
 void acpi_processor_throttling_init(void)
 {
+<<<<<<< HEAD
 	if (acpi_processor_update_tsd_coord())
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
 			"Assume no T-state coordination\n"));
+=======
+	if (acpi_processor_update_tsd_coord()) {
+		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+			"Assume no T-state coordination\n"));
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return;
 }
@@ -769,7 +776,15 @@ static int acpi_read_throttling_status(struct acpi_processor *pr,
 					u64 *value)
 {
 	u32 bit_width, bit_offset;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u64 ptc_value;
+=======
+	u32 ptc_value;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 ptc_value;
+>>>>>>> refs/remotes/origin/master
 	u64 ptc_mask;
 	struct acpi_processor_throttling *throttling;
 	int ret = -1;
@@ -777,12 +792,26 @@ static int acpi_read_throttling_status(struct acpi_processor *pr,
 	throttling = &pr->throttling;
 	switch (throttling->status_register.space_id) {
 	case ACPI_ADR_SPACE_SYSTEM_IO:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ptc_value = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bit_width = throttling->status_register.bit_width;
 		bit_offset = throttling->status_register.bit_offset;
 
 		acpi_os_read_port((acpi_io_address) throttling->status_register.
+<<<<<<< HEAD
+<<<<<<< HEAD
 				  address, (u32 *) &ptc_value,
+=======
+				  address, &ptc_value,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  address, &ptc_value,
+>>>>>>> refs/remotes/origin/master
 				  (u32) (bit_width + bit_offset));
 		ptc_mask = (1 << bit_width) - 1;
 		*value = (u64) ((ptc_value >> bit_offset) & ptc_mask);

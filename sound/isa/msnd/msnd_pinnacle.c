@@ -73,12 +73,28 @@
 #ifdef MSND_CLASSIC
 #  include "msnd_classic.h"
 #  define LOGNAME			"msnd_classic"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#  define DEV_NAME			"msnd-classic"
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 #  include "msnd_pinnacle.h"
 #  define LOGNAME			"snd_msnd_pinnacle"
+#  define DEV_NAME			"msnd-pinnacle"
 #endif
 
 static void __devinit set_default_audio_parameters(struct snd_msnd *chip)
+=======
+#  define DEV_NAME			"msnd-classic"
+#else
+#  include "msnd_pinnacle.h"
+#  define LOGNAME			"snd_msnd_pinnacle"
+#  define DEV_NAME			"msnd-pinnacle"
+#endif
+
+static void set_default_audio_parameters(struct snd_msnd *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	chip->play_sample_size = DEFSAMPLESIZE;
 	chip->play_sample_rate = DEFSAMPLERATE;
@@ -213,7 +229,11 @@ static int snd_msnd_reset_dsp(long io, unsigned char *info)
 	return -EIO;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_probe(struct snd_card *card)
+=======
+static int snd_msnd_probe(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_msnd *chip = card->private_data;
 	unsigned char info;
@@ -497,7 +517,11 @@ static int snd_msnd_send_dsp_cmd_chk(struct snd_msnd *chip, u8 cmd)
 	return snd_msnd_send_dsp_cmd(chip, cmd);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_calibrate_adc(struct snd_msnd *chip, u16 srate)
+=======
+static int snd_msnd_calibrate_adc(struct snd_msnd *chip, u16 srate)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_printdd("snd_msnd_calibrate_adc(%i)\n", srate);
 	writew(srate, chip->SMA + SMA_wCalFreqAtoD);
@@ -535,7 +559,11 @@ static void snd_msnd_mpu401_close(struct snd_mpu401 *mpu)
 static long mpu_io[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;
 static int mpu_irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_attach(struct snd_card *card)
+=======
+static int snd_msnd_attach(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_msnd *chip = card->private_data;
 	int err;
@@ -600,7 +628,15 @@ static int __devinit snd_msnd_attach(struct snd_card *card)
 					  mpu_io[0],
 					  MPU401_MODE_INPUT |
 					  MPU401_MODE_OUTPUT,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					  mpu_irq[0], IRQF_DISABLED,
+=======
+					  mpu_irq[0],
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  mpu_irq[0],
+>>>>>>> refs/remotes/origin/master
 					  &chip->rmidi);
 		if (err < 0) {
 			printk(KERN_ERR LOGNAME
@@ -634,7 +670,11 @@ err_release_region:
 }
 
 
+<<<<<<< HEAD
 static void __devexit snd_msnd_unload(struct snd_card *card)
+=======
+static void snd_msnd_unload(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_msnd *chip = card->private_data;
 
@@ -649,7 +689,11 @@ static void __devexit snd_msnd_unload(struct snd_card *card)
 
 /* Pinnacle/Fiji Logical Device Configuration */
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_write_cfg(int cfg, int reg, int value)
+=======
+static int snd_msnd_write_cfg(int cfg, int reg, int value)
+>>>>>>> refs/remotes/origin/master
 {
 	outb(reg, cfg);
 	outb(value, cfg + 1);
@@ -660,7 +704,11 @@ static int __devinit snd_msnd_write_cfg(int cfg, int reg, int value)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_write_cfg_io0(int cfg, int num, u16 io)
+=======
+static int snd_msnd_write_cfg_io0(int cfg, int num, u16 io)
+>>>>>>> refs/remotes/origin/master
 {
 	if (snd_msnd_write_cfg(cfg, IREG_LOGDEVICE, num))
 		return -EIO;
@@ -671,7 +719,11 @@ static int __devinit snd_msnd_write_cfg_io0(int cfg, int num, u16 io)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_write_cfg_io1(int cfg, int num, u16 io)
+=======
+static int snd_msnd_write_cfg_io1(int cfg, int num, u16 io)
+>>>>>>> refs/remotes/origin/master
 {
 	if (snd_msnd_write_cfg(cfg, IREG_LOGDEVICE, num))
 		return -EIO;
@@ -682,7 +734,11 @@ static int __devinit snd_msnd_write_cfg_io1(int cfg, int num, u16 io)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_write_cfg_irq(int cfg, int num, u16 irq)
+=======
+static int snd_msnd_write_cfg_irq(int cfg, int num, u16 irq)
+>>>>>>> refs/remotes/origin/master
 {
 	if (snd_msnd_write_cfg(cfg, IREG_LOGDEVICE, num))
 		return -EIO;
@@ -693,7 +749,11 @@ static int __devinit snd_msnd_write_cfg_irq(int cfg, int num, u16 irq)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_write_cfg_mem(int cfg, int num, int mem)
+=======
+static int snd_msnd_write_cfg_mem(int cfg, int num, int mem)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 wmem;
 
@@ -711,7 +771,11 @@ static int __devinit snd_msnd_write_cfg_mem(int cfg, int num, int mem)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_activate_logical(int cfg, int num)
+=======
+static int snd_msnd_activate_logical(int cfg, int num)
+>>>>>>> refs/remotes/origin/master
 {
 	if (snd_msnd_write_cfg(cfg, IREG_LOGDEVICE, num))
 		return -EIO;
@@ -720,8 +784,13 @@ static int __devinit snd_msnd_activate_logical(int cfg, int num)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_write_cfg_logical(int cfg, int num, u16 io0,
 						u16 io1, u16 irq, int mem)
+=======
+static int snd_msnd_write_cfg_logical(int cfg, int num, u16 io0,
+				      u16 io1, u16 irq, int mem)
+>>>>>>> refs/remotes/origin/master
 {
 	if (snd_msnd_write_cfg(cfg, IREG_LOGDEVICE, num))
 		return -EIO;
@@ -738,7 +807,11 @@ static int __devinit snd_msnd_write_cfg_logical(int cfg, int num, u16 io0,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_pinnacle_cfg_reset(int cfg)
+=======
+static int snd_msnd_pinnacle_cfg_reset(int cfg)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -785,7 +858,15 @@ static int write_ndelay[SNDRV_CARDS] = { [0 ... (SNDRV_CARDS-1)] = 1 };
 static int calibrate_signal;
 
 #ifdef CONFIG_PNP
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int isapnp[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+=======
+static bool isapnp[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool isapnp[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 module_param_array(isapnp, bool, NULL, 0444);
 MODULE_PARM_DESC(isapnp, "ISA PnP detection for specified soundcard.");
 #define has_isapnp(x) isapnp[x]
@@ -818,7 +899,11 @@ module_param_array(joystick_io, long, NULL, S_IRUGO);
 #endif
 
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_isa_match(struct device *pdev, unsigned int i)
+=======
+static int snd_msnd_isa_match(struct device *pdev, unsigned int i)
+>>>>>>> refs/remotes/origin/master
 {
 	if (io[i] == SNDRV_AUTO_PORT)
 		return 0;
@@ -888,7 +973,11 @@ static int __devinit snd_msnd_isa_match(struct device *pdev, unsigned int i)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_msnd_isa_probe(struct device *pdev, unsigned int idx)
+=======
+static int snd_msnd_isa_probe(struct device *pdev, unsigned int idx)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct snd_card *card;
@@ -1061,6 +1150,7 @@ cfg_error:
 #endif
 }
 
+<<<<<<< HEAD
 static int __devexit snd_msnd_isa_remove(struct device *pdev, unsigned int dev)
 {
 	snd_msnd_unload(dev_get_drvdata(pdev));
@@ -1068,12 +1158,22 @@ static int __devexit snd_msnd_isa_remove(struct device *pdev, unsigned int dev)
 	return 0;
 }
 
-#define DEV_NAME "msnd-pinnacle"
-
 static struct isa_driver snd_msnd_driver = {
 	.match		= snd_msnd_isa_match,
 	.probe		= snd_msnd_isa_probe,
 	.remove		= __devexit_p(snd_msnd_isa_remove),
+=======
+static int snd_msnd_isa_remove(struct device *pdev, unsigned int dev)
+{
+	snd_msnd_unload(dev_get_drvdata(pdev));
+	return 0;
+}
+
+static struct isa_driver snd_msnd_driver = {
+	.match		= snd_msnd_isa_match,
+	.probe		= snd_msnd_isa_probe,
+	.remove		= snd_msnd_isa_remove,
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: suspend, resume */
 	.driver		= {
 		.name	= DEV_NAME
@@ -1081,8 +1181,13 @@ static struct isa_driver snd_msnd_driver = {
 };
 
 #ifdef CONFIG_PNP
+<<<<<<< HEAD
 static int __devinit snd_msnd_pnp_detect(struct pnp_card_link *pcard,
 					 const struct pnp_card_device_id *pid)
+=======
+static int snd_msnd_pnp_detect(struct pnp_card_link *pcard,
+			       const struct pnp_card_device_id *pid)
+>>>>>>> refs/remotes/origin/master
 {
 	static int idx;
 	struct pnp_dev *pnp_dev;
@@ -1185,7 +1290,11 @@ _release_card:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_msnd_pnp_remove(struct pnp_card_link *pcard)
+=======
+static void snd_msnd_pnp_remove(struct pnp_card_link *pcard)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_msnd_unload(pnp_get_card_drvdata(pcard));
 	pnp_set_card_drvdata(pcard, NULL);
@@ -1207,7 +1316,11 @@ static struct pnp_card_driver msnd_pnpc_driver = {
 	.name = "msnd_pinnacle",
 	.id_table = msnd_pnpids,
 	.probe = snd_msnd_pnp_detect,
+<<<<<<< HEAD
 	.remove = __devexit_p(snd_msnd_pnp_remove),
+=======
+	.remove = snd_msnd_pnp_remove,
+>>>>>>> refs/remotes/origin/master
 };
 #endif /* CONFIG_PNP */
 

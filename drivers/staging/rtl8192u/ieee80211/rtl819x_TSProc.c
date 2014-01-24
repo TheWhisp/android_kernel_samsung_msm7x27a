@@ -27,7 +27,11 @@ void RxPktPendingTimeout(unsigned long data)
 	PRX_TS_RECORD	pRxTs = (PRX_TS_RECORD)data;
 	struct ieee80211_device *ieee = container_of(pRxTs, struct ieee80211_device, RxTsRecord[pRxTs->num]);
 
+<<<<<<< HEAD
 	PRX_REORDER_ENTRY 	pReorderEntry = NULL;
+=======
+	PRX_REORDER_ENTRY	pReorderEntry = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	//u32 flags = 0;
 	unsigned long flags = 0;
@@ -234,12 +238,21 @@ void AdmitTS(struct ieee80211_device *ieee, PTS_COMMON_INFO pTsCommonInfo, u32 I
 }
 
 
+<<<<<<< HEAD
 PTS_COMMON_INFO SearchAdmitTRStream(struct ieee80211_device *ieee, u8*	Addr, u8 TID, TR_SELECT	TxRxSelect)
 {
 	//DIRECTION_VALUE 	dir;
 	u8 	dir;
 	bool				search_dir[4] = {0, 0, 0, 0};
 	struct list_head*		psearch_list; //FIXME
+=======
+PTS_COMMON_INFO SearchAdmitTRStream(struct ieee80211_device *ieee, u8 *Addr, u8 TID, TR_SELECT	TxRxSelect)
+{
+	//DIRECTION_VALUE	dir;
+	u8	dir;
+	bool				search_dir[4] = {0, 0, 0, 0};
+	struct list_head		*psearch_list; //FIXME
+>>>>>>> refs/remotes/origin/master
 	PTS_COMMON_INFO	pRet = NULL;
 	if(ieee->iw_mode == IW_MODE_MASTER) //ap mode
 	{
@@ -250,14 +263,22 @@ PTS_COMMON_INFO SearchAdmitTRStream(struct ieee80211_device *ieee, u8*	Addr, u8 
 		}
 		else
 		{
+<<<<<<< HEAD
 			search_dir[DIR_UP] 	= true;
+=======
+			search_dir[DIR_UP]	= true;
+>>>>>>> refs/remotes/origin/master
 			search_dir[DIR_BI_DIR]= true;
 		}
 	}
 	else if(ieee->iw_mode == IW_MODE_ADHOC)
 	{
 		if(TxRxSelect == TX_DIR)
+<<<<<<< HEAD
 			search_dir[DIR_UP] 	= true;
+=======
+			search_dir[DIR_UP]	= true;
+>>>>>>> refs/remotes/origin/master
 		else
 			search_dir[DIR_DOWN] = true;
 	}
@@ -265,7 +286,11 @@ PTS_COMMON_INFO SearchAdmitTRStream(struct ieee80211_device *ieee, u8*	Addr, u8 
 	{
 		if(TxRxSelect == TX_DIR)
 		{
+<<<<<<< HEAD
 			search_dir[DIR_UP] 	= true;
+=======
+			search_dir[DIR_UP]	= true;
+>>>>>>> refs/remotes/origin/master
 			search_dir[DIR_BI_DIR]= true;
 			search_dir[DIR_DIRECT]= true;
 		}
@@ -311,7 +336,11 @@ PTS_COMMON_INFO SearchAdmitTRStream(struct ieee80211_device *ieee, u8*	Addr, u8 
 
 void MakeTSEntry(
 		PTS_COMMON_INFO	pTsCommonInfo,
+<<<<<<< HEAD
 		u8*		Addr,
+=======
+		u8		*Addr,
+>>>>>>> refs/remotes/origin/master
 		PTSPEC_BODY	pTSPEC,
 		PQOS_TCLAS	pTCLAS,
 		u8		TCLAS_Num,
@@ -326,10 +355,17 @@ void MakeTSEntry(
 	memcpy(pTsCommonInfo->Addr, Addr, 6);
 
 	if(pTSPEC != NULL)
+<<<<<<< HEAD
 		memcpy((u8*)(&(pTsCommonInfo->TSpec)), (u8*)pTSPEC, sizeof(TSPEC_BODY));
 
 	for(count = 0; count < TCLAS_Num; count++)
 		memcpy((u8*)(&(pTsCommonInfo->TClass[count])), (u8*)pTCLAS, sizeof(QOS_TCLAS));
+=======
+		memcpy((u8 *)(&(pTsCommonInfo->TSpec)), (u8 *)pTSPEC, sizeof(TSPEC_BODY));
+
+	for(count = 0; count < TCLAS_Num; count++)
+		memcpy((u8 *)(&(pTsCommonInfo->TClass[count])), (u8 *)pTCLAS, sizeof(QOS_TCLAS));
+>>>>>>> refs/remotes/origin/master
 
 	pTsCommonInfo->TClasProc = TCLAS_Proc;
 	pTsCommonInfo->TClasNum = TCLAS_Num;
@@ -337,9 +373,15 @@ void MakeTSEntry(
 
 
 bool GetTs(
+<<<<<<< HEAD
 	struct ieee80211_device*	ieee,
 	PTS_COMMON_INFO			*ppTS,
 	u8*				Addr,
+=======
+	struct ieee80211_device		*ieee,
+	PTS_COMMON_INFO			*ppTS,
+	u8				*Addr,
+>>>>>>> refs/remotes/origin/master
 	u8				TID,
 	TR_SELECT			TxRxSelect,  //Rx:1, Tx:0
 	bool				bAddNewTs
@@ -350,7 +392,11 @@ bool GetTs(
 	// We do not build any TS for Broadcast or Multicast stream.
 	// So reject these kinds of search here.
 	//
+<<<<<<< HEAD
 	if(is_broadcast_ether_addr(Addr) || is_multicast_ether_addr(Addr))
+=======
+	if (is_multicast_ether_addr(Addr))
+>>>>>>> refs/remotes/origin/master
 	{
 		IEEE80211_DEBUG(IEEE80211_DL_ERR, "get TS for Broadcast or Multicast\n");
 		return false;
@@ -367,7 +413,11 @@ bool GetTs(
 			return false;
 		}
 
+<<<<<<< HEAD
 		switch(TID)
+=======
+		switch (TID)
+>>>>>>> refs/remotes/origin/master
 		{
 		case 0:
 		case 3:
@@ -416,12 +466,20 @@ bool GetTs(
 			//
 			TSPEC_BODY	TSpec;
 			PQOS_TSINFO		pTSInfo = &TSpec.f.TSInfo;
+<<<<<<< HEAD
 			struct list_head*	pUnusedList =
+=======
+			struct list_head	*pUnusedList =
+>>>>>>> refs/remotes/origin/master
 								(TxRxSelect == TX_DIR)?
 								(&ieee->Tx_TS_Unused_List):
 								(&ieee->Rx_TS_Unused_List);
 
+<<<<<<< HEAD
 			struct list_head*	pAddmitList =
+=======
+			struct list_head	*pAddmitList =
+>>>>>>> refs/remotes/origin/master
 								(TxRxSelect == TX_DIR)?
 								(&ieee->Tx_TS_Admit_List):
 								(&ieee->Rx_TS_Admit_List);
@@ -450,8 +508,13 @@ bool GetTs(
 				pTSInfo->field.ucTSID = UP;			// TSID
 				pTSInfo->field.ucDirection = Dir;			// Direction: if there is DirectLink, this need additional consideration.
 				pTSInfo->field.ucAccessPolicy = 1;		// Access policy
+<<<<<<< HEAD
 				pTSInfo->field.ucAggregation = 0; 		// Aggregation
 				pTSInfo->field.ucPSB = 0; 				// Aggregation
+=======
+				pTSInfo->field.ucAggregation = 0;		// Aggregation
+				pTSInfo->field.ucPSB = 0;				// Aggregation
+>>>>>>> refs/remotes/origin/master
 				pTSInfo->field.ucUP = UP;				// User priority
 				pTSInfo->field.ucTSInfoAckPolicy = 0;		// Ack policy
 				pTSInfo->field.ucSchedule = 0;			// Schedule
@@ -473,7 +536,11 @@ bool GetTs(
 }
 
 void RemoveTsEntry(
+<<<<<<< HEAD
 	struct ieee80211_device*	ieee,
+=======
+	struct ieee80211_device		*ieee,
+>>>>>>> refs/remotes/origin/master
 	PTS_COMMON_INFO			pTs,
 	TR_SELECT			TxRxSelect
 	)
@@ -488,7 +555,11 @@ void RemoveTsEntry(
 	{
 //#ifdef TO_DO_LIST
 		PRX_REORDER_ENTRY	pRxReorderEntry;
+<<<<<<< HEAD
 		PRX_TS_RECORD 		pRxTS = (PRX_TS_RECORD)pTs;
+=======
+		PRX_TS_RECORD		pRxTS = (PRX_TS_RECORD)pTs;
+>>>>>>> refs/remotes/origin/master
 		if(timer_pending(&pRxTS->RxPktPendingTimer))
 			del_timer_sync(&pRxTS->RxPktPendingTimer);
 
@@ -501,7 +572,11 @@ void RemoveTsEntry(
 			list_del_init(&pRxReorderEntry->List);
 			{
 				int i = 0;
+<<<<<<< HEAD
 				struct ieee80211_rxb * prxb = pRxReorderEntry->prxb;
+=======
+				struct ieee80211_rxb *prxb = pRxReorderEntry->prxb;
+>>>>>>> refs/remotes/origin/master
 				if (unlikely(!prxb))
 				{
 					spin_unlock_irqrestore(&(ieee->reorder_spinlock), flags);
@@ -527,7 +602,11 @@ void RemoveTsEntry(
 	}
 }
 
+<<<<<<< HEAD
 void RemovePeerTS(struct ieee80211_device* ieee, u8* Addr)
+=======
+void RemovePeerTS(struct ieee80211_device *ieee, u8 *Addr)
+>>>>>>> refs/remotes/origin/master
 {
 	PTS_COMMON_INFO	pTS, pTmpTS;
 
@@ -574,7 +653,11 @@ void RemovePeerTS(struct ieee80211_device* ieee, u8* Addr)
 	}
 }
 
+<<<<<<< HEAD
 void RemoveAllTS(struct ieee80211_device* ieee)
+=======
+void RemoveAllTS(struct ieee80211_device *ieee)
+>>>>>>> refs/remotes/origin/master
 {
 	PTS_COMMON_INFO pTS, pTmpTS;
 
@@ -607,7 +690,11 @@ void RemoveAllTS(struct ieee80211_device* ieee)
 	}
 }
 
+<<<<<<< HEAD
 void TsStartAddBaProcess(struct ieee80211_device* ieee, PTX_TS_RECORD	pTxTS)
+=======
+void TsStartAddBaProcess(struct ieee80211_device *ieee, PTX_TS_RECORD	pTxTS)
+>>>>>>> refs/remotes/origin/master
 {
 	if(pTxTS->bAddBaReqInProgress == false)
 	{

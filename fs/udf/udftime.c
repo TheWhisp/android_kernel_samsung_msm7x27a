@@ -34,9 +34,22 @@
  * http://www.boulder.nist.gov/timefreq/pubs/bulletin/leapsecond.htm
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include "udfdecl.h"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include "udfdecl.h"
+
+#include <linux/types.h>
+#include <linux/kernel.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define EPOCH_YEAR 1970
 

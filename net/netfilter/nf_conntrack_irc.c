@@ -1,6 +1,10 @@
 /* IRC extension for IP connection tracking, Version 1.21
  * (C) 2000-2002 by Harald Welte <laforge@gnumonks.org>
  * based on RR's ip_conntrack_ftp.c
+<<<<<<< HEAD
+=======
+ * (C) 2006-2012 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,6 +37,10 @@ static DEFINE_SPINLOCK(irc_buffer_lock);
 
 unsigned int (*nf_nat_irc_hook)(struct sk_buff *skb,
 				enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+				unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 				unsigned int matchoff,
 				unsigned int matchlen,
 				struct nf_conntrack_expect *exp) __read_mostly;
@@ -185,16 +193,27 @@ static int help(struct sk_buff *skb, unsigned int protoff,
 			tuple = &ct->tuplehash[dir].tuple;
 			if (tuple->src.u3.ip != dcc_ip &&
 			    tuple->dst.u3.ip != dcc_ip) {
+<<<<<<< HEAD
 				if (net_ratelimit())
 					printk(KERN_WARNING
 						"Forged DCC command from %pI4: %pI4:%u\n",
 						&tuple->src.u3.ip,
 						&dcc_ip, dcc_port);
+=======
+				net_warn_ratelimited("Forged DCC command from %pI4: %pI4:%u\n",
+						     &tuple->src.u3.ip,
+						     &dcc_ip, dcc_port);
+>>>>>>> refs/remotes/origin/master
 				continue;
 			}
 
 			exp = nf_ct_expect_alloc(ct);
 			if (exp == NULL) {
+<<<<<<< HEAD
+=======
+				nf_ct_helper_log(skb, ct,
+						 "cannot alloc expectation");
+>>>>>>> refs/remotes/origin/master
 				ret = NF_DROP;
 				goto out;
 			}
@@ -207,12 +226,24 @@ static int help(struct sk_buff *skb, unsigned int protoff,
 
 			nf_nat_irc = rcu_dereference(nf_nat_irc_hook);
 			if (nf_nat_irc && ct->status & IPS_NAT_MASK)
+<<<<<<< HEAD
 				ret = nf_nat_irc(skb, ctinfo,
 						 addr_beg_p - ib_ptr,
 						 addr_end_p - addr_beg_p,
 						 exp);
 			else if (nf_ct_expect_related(exp) != 0)
 				ret = NF_DROP;
+=======
+				ret = nf_nat_irc(skb, ctinfo, protoff,
+						 addr_beg_p - ib_ptr,
+						 addr_end_p - addr_beg_p,
+						 exp);
+			else if (nf_ct_expect_related(exp) != 0) {
+				nf_ct_helper_log(skb, ct,
+						 "cannot add expectation");
+				ret = NF_DROP;
+			}
+>>>>>>> refs/remotes/origin/master
 			nf_ct_expect_put(exp);
 			goto out;
 		}
@@ -223,7 +254,10 @@ static int help(struct sk_buff *skb, unsigned int protoff,
 }
 
 static struct nf_conntrack_helper irc[MAX_PORTS] __read_mostly;
+<<<<<<< HEAD
 static char irc_names[MAX_PORTS][sizeof("irc-65535")] __read_mostly;
+=======
+>>>>>>> refs/remotes/origin/master
 static struct nf_conntrack_expect_policy irc_exp_policy;
 
 static void nf_conntrack_irc_fini(void);
@@ -231,7 +265,10 @@ static void nf_conntrack_irc_fini(void);
 static int __init nf_conntrack_irc_init(void)
 {
 	int i, ret;
+<<<<<<< HEAD
 	char *tmpname;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (max_dcc_channels < 1) {
 		printk(KERN_ERR "nf_ct_irc: max_dcc_channels must not be zero\n");
@@ -257,12 +294,19 @@ static int __init nf_conntrack_irc_init(void)
 		irc[i].me = THIS_MODULE;
 		irc[i].help = help;
 
+<<<<<<< HEAD
 		tmpname = &irc_names[i][0];
 		if (ports[i] == IRC_PORT)
 			sprintf(tmpname, "irc");
 		else
 			sprintf(tmpname, "irc-%u", i);
 		irc[i].name = tmpname;
+=======
+		if (ports[i] == IRC_PORT)
+			sprintf(irc[i].name, "irc");
+		else
+			sprintf(irc[i].name, "irc-%u", i);
+>>>>>>> refs/remotes/origin/master
 
 		ret = nf_conntrack_helper_register(&irc[i]);
 		if (ret) {

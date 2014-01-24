@@ -12,11 +12,30 @@ Fn keys (hotkeys):
 ------------------
 Some models report hotkeys through the SNC or SPIC devices, such events are
 reported both through the ACPI subsystem as acpi events and through the INPUT
+<<<<<<< HEAD
 subsystem. See the logs of acpid or /proc/acpi/event and
 /proc/bus/input/devices to find out what those events are and which input
 devices are created by the driver. Additionally, loading the driver with the
 debug option will report all events in the kernel log.
 
+<<<<<<< HEAD
+=======
+=======
+subsystem. See the logs of /proc/bus/input/devices to find out what those
+events are and which input devices are created by the driver.
+Additionally, loading the driver with the debug option will report all events
+in the kernel log.
+
+>>>>>>> refs/remotes/origin/master
+The "scancodes" passed to the input system (that can be remapped with udev)
+are indexes to the table "sony_laptop_input_keycode_map" in the sony-laptop.c
+module.  For example the "FN/E" key combination (EJECTCD on some models)
+generates the scancode 20 (0x14).
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Backlight control:
 ------------------
 If your laptop model supports it, you will find sysfs files in the

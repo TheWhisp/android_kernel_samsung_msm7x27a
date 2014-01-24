@@ -48,9 +48,12 @@
 #define DBG(LEVEL, ...)
 #endif
 	
+<<<<<<< HEAD
 
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* gcc will complain if a pointer is cast to an integer of different
  * size.  If you really need to do this (and we do for an ELF32 user
  * application in an ELF64 kernel) then you have to do a cast to an
@@ -59,6 +62,7 @@
 #define A(__x)	((unsigned long)(__x))
 
 /*
+<<<<<<< HEAD
  * Atomically swap in the new signal mask, and wait for a signal.
  */
 #ifdef CONFIG_64BIT
@@ -66,6 +70,8 @@
 #endif
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Do a signal return - restore sigcontext.
  */
 
@@ -88,7 +94,11 @@ restore_sigcontext(struct sigcontext __user *sc, struct pt_regs *regs)
 	err |= __copy_from_user(regs->iaoq, sc->sc_iaoq, sizeof(regs->iaoq));
 	err |= __copy_from_user(regs->iasq, sc->sc_iasq, sizeof(regs->iasq));
 	err |= __get_user(regs->sar, &sc->sc_sar);
+<<<<<<< HEAD
 	DBG(2,"restore_sigcontext: iaoq is 0x%#lx / 0x%#lx\n", 
+=======
+	DBG(2,"restore_sigcontext: iaoq is %#lx / %#lx\n",
+>>>>>>> refs/remotes/origin/master
 			regs->iaoq[0],regs->iaoq[1]);
 	DBG(2,"restore_sigcontext: r28 is %ld\n", regs->gr[28]);
 	return err;
@@ -109,12 +119,21 @@ sys_rt_sigreturn(struct pt_regs *regs, int in_syscall)
 		sigframe_size = PARISC_RT_SIGFRAME_SIZE32;
 #endif
 
+<<<<<<< HEAD
+=======
+	current_thread_info()->restart_block.fn = do_no_restart_syscall;
+>>>>>>> refs/remotes/origin/master
 
 	/* Unwind the user stack to get the rt_sigframe structure. */
 	frame = (struct rt_sigframe __user *)
 		(usp - sigframe_size);
 	DBG(2,"sys_rt_sigreturn: frame is %p\n", frame);
 
+<<<<<<< HEAD
+=======
+	regs->orig_r28 = 1; /* no restarts for sigreturn */
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_64BIT
 	compat_frame = (struct compat_rt_sigframe __user *)frame;
 	
@@ -130,11 +149,15 @@ sys_rt_sigreturn(struct pt_regs *regs, int in_syscall)
 			goto give_sigsegv;
 	}
 		
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	/* Good thing we saved the old gr[30], eh? */
 #ifdef CONFIG_64BIT
@@ -147,7 +170,11 @@ sys_rt_sigreturn(struct pt_regs *regs, int in_syscall)
 			goto give_sigsegv;
 		DBG(1,"sys_rt_sigreturn: usp %#08lx stack 0x%p\n", 
 				usp, &compat_frame->uc.uc_stack);
+<<<<<<< HEAD
 		if (do_sigaltstack32(&compat_frame->uc.uc_stack, NULL, usp) == -EFAULT)
+=======
+		if (compat_restore_altstack(&compat_frame->uc.uc_stack))
+>>>>>>> refs/remotes/origin/master
 			goto give_sigsegv;
 	} else
 #endif
@@ -158,7 +185,11 @@ sys_rt_sigreturn(struct pt_regs *regs, int in_syscall)
 			goto give_sigsegv;
 		DBG(1,"sys_rt_sigreturn: usp %#08lx stack 0x%p\n", 
 				usp, &frame->uc.uc_stack);
+<<<<<<< HEAD
 		if (do_sigaltstack(&frame->uc.uc_stack, NULL, usp) == -EFAULT)
+=======
+		if (restore_altstack(&frame->uc.uc_stack))
+>>>>>>> refs/remotes/origin/master
 			goto give_sigsegv;
 	}
 		
@@ -194,8 +225,15 @@ get_sigframe(struct k_sigaction *ka, unsigned long sp, size_t frame_size)
 	DBG(1,"get_sigframe: ka = %#lx, sp = %#lx, frame_size = %#lx\n",
 			(unsigned long)ka, sp, frame_size);
 	
+<<<<<<< HEAD
 	if ((ka->sa.sa_flags & SA_ONSTACK) != 0 && ! sas_ss_flags(sp))
 		sp = current->sas_ss_sp; /* Stacks grow up! */
+=======
+	/* Align alternate stack and reserve 64 bytes for the signal
+	   handler's frame marker.  */
+	if ((ka->sa.sa_flags & SA_ONSTACK) != 0 && ! sas_ss_flags(sp))
+		sp = (current->sas_ss_sp + 0x7f) & ~0x3f; /* Stacks grow up! */
+>>>>>>> refs/remotes/origin/master
 
 	DBG(1,"get_sigframe: Returning sp = %#lx\n", (unsigned long)sp);
 	return (void __user *) sp; /* Stacks grow up.  Fun. */
@@ -244,7 +282,10 @@ setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	unsigned long haddr, sigframe_size;
 	int err = 0;
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
 	compat_int_t compat_val;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct compat_rt_sigframe __user * compat_frame;
 	compat_sigset_t compat_set;
 #endif
@@ -264,6 +305,7 @@ setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	if (is_compat_task()) {
 		DBG(1,"setup_rt_frame: frame->info = 0x%p\n", &compat_frame->info);
 		err |= copy_siginfo_to_user32(&compat_frame->info, info);
+<<<<<<< HEAD
 		DBG(1,"SETUP_RT_FRAME: 1\n");
 		compat_val = (compat_int_t)current->sas_ss_sp;
 		err |= __put_user(compat_val, &compat_frame->uc.uc_stack.ss_sp);
@@ -273,6 +315,9 @@ setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 		DBG(1,"SETUP_RT_FRAME: 3\n");
 		compat_val = sas_ss_flags(regs->gr[30]);		
 		err |= __put_user(compat_val, &compat_frame->uc.uc_stack.ss_flags);		
+=======
+		err |= __compat_save_altstack( &compat_frame->uc.uc_stack, regs->gr[30]);
+>>>>>>> refs/remotes/origin/master
 		DBG(1,"setup_rt_frame: frame->uc = 0x%p\n", &compat_frame->uc);
 		DBG(1,"setup_rt_frame: frame->uc.uc_mcontext = 0x%p\n", &compat_frame->uc.uc_mcontext);
 		err |= setup_sigcontext32(&compat_frame->uc.uc_mcontext, 
@@ -284,10 +329,14 @@ setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	{	
 		DBG(1,"setup_rt_frame: frame->info = 0x%p\n", &frame->info);
 		err |= copy_siginfo_to_user(&frame->info, info);
+<<<<<<< HEAD
 		err |= __put_user(current->sas_ss_sp, &frame->uc.uc_stack.ss_sp);
 		err |= __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_size);
 		err |= __put_user(sas_ss_flags(regs->gr[30]),
 				  &frame->uc.uc_stack.ss_flags);
+=======
+		err |= __save_altstack(&frame->uc.uc_stack, regs->gr[30]);
+>>>>>>> refs/remotes/origin/master
 		DBG(1,"setup_rt_frame: frame->uc = 0x%p\n", &frame->uc);
 		DBG(1,"setup_rt_frame: frame->uc.uc_mcontext = 0x%p\n", &frame->uc.uc_mcontext);
 		err |= setup_sigcontext(&frame->uc.uc_mcontext, regs, in_syscall);
@@ -314,7 +363,11 @@ setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 #if DEBUG_SIG
 	/* Assert that we're flushing in the correct space... */
 	{
+<<<<<<< HEAD
 		int sid;
+=======
+		unsigned long sid;
+>>>>>>> refs/remotes/origin/master
 		asm ("mfsp %%sr3,%0" : "=r" (sid));
 		DBG(1,"setup_rt_frame: Flushing 64 bytes at space %#x offset %p\n",
 		       sid, frame->tramp);
@@ -443,15 +496,24 @@ give_sigsegv:
  * OK, we're invoking a handler.
  */	
 
+<<<<<<< HEAD
 static long
 handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 		sigset_t *oldset, struct pt_regs *regs, int in_syscall)
 {
+=======
+static void
+handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
+		struct pt_regs *regs, int in_syscall)
+{
+	sigset_t *oldset = sigmask_to_save();
+>>>>>>> refs/remotes/origin/master
 	DBG(1,"handle_signal: sig=%ld, ka=%p, info=%p, oldset=%p, regs=%p\n",
 	       sig, ka, info, oldset, regs);
 	
 	/* Set up the stack frame */
 	if (!setup_rt_frame(sig, ka, info, oldset, regs, in_syscall))
+<<<<<<< HEAD
 		return 0;
 
 	spin_lock_irq(&current->sighand->siglock);
@@ -466,16 +528,35 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 		test_thread_flag(TIF_BLOCKSTEP));
 
 	return 1;
+=======
+		return;
+
+	signal_delivered(sig, info, ka, regs, 
+		test_thread_flag(TIF_SINGLESTEP) ||
+		test_thread_flag(TIF_BLOCKSTEP));
+
+	DBG(1,KERN_DEBUG "do_signal: Exit (success), regs->gr[28] = %ld\n",
+		regs->gr[28]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
 syscall_restart(struct pt_regs *regs, struct k_sigaction *ka)
 {
+<<<<<<< HEAD
 	/* Check the return code */
 	switch (regs->gr[28]) {
 	case -ERESTART_RESTARTBLOCK:
 		current_thread_info()->restart_block.fn =
 			do_no_restart_syscall;
+=======
+	if (regs->orig_r28)
+		return;
+	regs->orig_r28 = 1; /* no more restarts */
+	/* Check the return code */
+	switch (regs->gr[28]) {
+	case -ERESTART_RESTARTBLOCK:
+>>>>>>> refs/remotes/origin/master
 	case -ERESTARTNOHAND:
 		DBG(1,"ERESTARTNOHAND: returning -EINTR\n");
 		regs->gr[28] = -EINTR;
@@ -493,8 +574,11 @@ syscall_restart(struct pt_regs *regs, struct k_sigaction *ka)
 		 * we have to do is fiddle the return pointer.
 		 */
 		regs->gr[31] -= 8; /* delayed branching */
+<<<<<<< HEAD
 		/* Preserve original r28. */
 		regs->gr[28] = regs->orig_r28;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -502,6 +586,12 @@ syscall_restart(struct pt_regs *regs, struct k_sigaction *ka)
 static inline void
 insert_restart_trampoline(struct pt_regs *regs)
 {
+<<<<<<< HEAD
+=======
+	if (regs->orig_r28)
+		return;
+	regs->orig_r28 = 1; /* no more restarts */
+>>>>>>> refs/remotes/origin/master
 	switch(regs->gr[28]) {
 	case -ERESTART_RESTARTBLOCK: {
 		/* Restart the system call - no handlers present */
@@ -536,9 +626,12 @@ insert_restart_trampoline(struct pt_regs *regs)
 		flush_user_icache_range(regs->gr[30], regs->gr[30] + 4);
 
 		regs->gr[31] = regs->gr[30] + 8;
+<<<<<<< HEAD
 		/* Preserve original r28. */
 		regs->gr[28] = regs->orig_r28;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	case -ERESTARTNOHAND:
@@ -550,9 +643,12 @@ insert_restart_trampoline(struct pt_regs *regs)
 		 * slot of the branch external instruction.
 		 */
 		regs->gr[31] -= 8;
+<<<<<<< HEAD
 		/* Preserve original r28. */
 		regs->gr[28] = regs->orig_r28;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	default:
@@ -577,6 +673,7 @@ do_signal(struct pt_regs *regs, long in_syscall)
 	siginfo_t info;
 	struct k_sigaction ka;
 	int signr;
+<<<<<<< HEAD
 	sigset_t *oldset;
 
 	DBG(1,"\ndo_signal: oldset=0x%p, regs=0x%p, sr7 %#lx, in_syscall=%d\n",
@@ -605,10 +702,21 @@ do_signal(struct pt_regs *regs, long in_syscall)
 		if (signr <= 0)
 		  break;
 		
+=======
+
+	DBG(1,"\ndo_signal: regs=0x%p, sr7 %#lx, in_syscall=%d\n",
+	       regs, regs->sr[7], in_syscall);
+
+	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+	DBG(3,"do_signal: signr = %d, regs->gr[28] = %ld\n", signr, regs->gr[28]); 
+	
+	if (signr > 0) {
+>>>>>>> refs/remotes/origin/master
 		/* Restart a system call if necessary. */
 		if (in_syscall)
 			syscall_restart(regs, &ka);
 
+<<<<<<< HEAD
 		/* Whee!  Actually deliver the signal.  If the
 		   delivery failed, we need to continue to iterate in
 		   this loop so we can deliver the SIGSEGV... */
@@ -622,6 +730,11 @@ do_signal(struct pt_regs *regs, long in_syscall)
 		}
 	}
 	/* end of while(1) looping forever if we can't force a signal */
+=======
+		handle_signal(signr, &info, &ka, regs, in_syscall);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Did we come from a system call? */
 	if (in_syscall)
@@ -630,24 +743,35 @@ do_signal(struct pt_regs *regs, long in_syscall)
 	DBG(1,"do_signal: Exit (not delivered), regs->gr[28] = %ld\n", 
 		regs->gr[28]);
 
+<<<<<<< HEAD
 	if (test_thread_flag(TIF_RESTORE_SIGMASK)) {
 		clear_thread_flag(TIF_RESTORE_SIGMASK);
 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
 	}
 
 	return;
+=======
+	restore_saved_sigmask();
+>>>>>>> refs/remotes/origin/master
 }
 
 void do_notify_resume(struct pt_regs *regs, long in_syscall)
 {
+<<<<<<< HEAD
 	if (test_thread_flag(TIF_SIGPENDING) ||
 	    test_thread_flag(TIF_RESTORE_SIGMASK))
+=======
+	if (test_thread_flag(TIF_SIGPENDING))
+>>>>>>> refs/remotes/origin/master
 		do_signal(regs, in_syscall);
 
 	if (test_thread_flag(TIF_NOTIFY_RESUME)) {
 		clear_thread_flag(TIF_NOTIFY_RESUME);
 		tracehook_notify_resume(regs);
+<<<<<<< HEAD
 		if (current->replacement_session_keyring)
 			key_replace_session_keyring();
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }

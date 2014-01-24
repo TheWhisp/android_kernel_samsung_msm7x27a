@@ -12,27 +12,63 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
+=======
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/gpio-pxa.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pm.h>
 #include <linux/platform_device.h>
 #include <linux/irq.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/syscore_ops.h>
 #include <linux/i2c/pxa-i2c.h>
 
 #include <asm/mach/map.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/gpio.h>
+=======
+#include <asm/suspend.h>
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/pxa3xx-regs.h>
 #include <mach/reset.h>
 #include <mach/ohci.h>
 #include <mach/pm.h>
 #include <mach/dma.h>
+<<<<<<< HEAD
 #include <mach/regs-intc.h>
 #include <mach/smemc.h>
+=======
+#include <mach/smemc.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/suspend.h>
+#include <mach/hardware.h>
+#include <mach/pxa3xx-regs.h>
+#include <mach/reset.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <mach/pm.h>
+#include <mach/dma.h>
+#include <mach/smemc.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 #include "devices.h"
@@ -41,6 +77,11 @@
 #define PECR_IE(n)	((1 << ((n) * 2)) << 28)
 #define PECR_IS(n)	((1 << ((n) * 2)) << 29)
 
+<<<<<<< HEAD
+=======
+extern void __init pxa_dt_irq_init(int (*fn)(struct irq_data *, unsigned int));
+
+>>>>>>> refs/remotes/origin/master
 static DEFINE_PXA3_CKEN(pxa3xx_ffuart, FFUART, 14857000, 1);
 static DEFINE_PXA3_CKEN(pxa3xx_btuart, BTUART, 14857000, 1);
 static DEFINE_PXA3_CKEN(pxa3xx_stuart, STUART, 14857000, 1);
@@ -57,6 +98,14 @@ static DEFINE_PXA3_CKEN(pxa3xx_pwm0, PWM0, 13000000, 0);
 static DEFINE_PXA3_CKEN(pxa3xx_pwm1, PWM1, 13000000, 0);
 static DEFINE_PXA3_CKEN(pxa3xx_mmc1, MMC1, 19500000, 0);
 static DEFINE_PXA3_CKEN(pxa3xx_mmc2, MMC2, 19500000, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static DEFINE_PXA3_CKEN(pxa3xx_gpio, GPIO, 13000000, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_PXA3_CKEN(pxa3xx_gpio, GPIO, 13000000, 0);
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_CK(pxa3xx_lcd, LCD, &clk_pxa3xx_hsio_ops);
 static DEFINE_CK(pxa3xx_smemc, SMC, &clk_pxa3xx_smemc_ops);
@@ -89,6 +138,17 @@ static struct clk_lookup pxa3xx_clkregs[] = {
 	INIT_CLKREG(&clk_pxa3xx_mmc1, "pxa2xx-mci.0", NULL),
 	INIT_CLKREG(&clk_pxa3xx_mmc2, "pxa2xx-mci.1", NULL),
 	INIT_CLKREG(&clk_pxa3xx_smemc, "pxa2xx-pcmcia", NULL),
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	INIT_CLKREG(&clk_pxa3xx_gpio, "pxa-gpio", NULL),
+	INIT_CLKREG(&clk_dummy, "sa1100-rtc", NULL),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_CLKREG(&clk_pxa3xx_gpio, "pxa3xx-gpio", NULL),
+	INIT_CLKREG(&clk_pxa3xx_gpio, "pxa93x-gpio", NULL),
+	INIT_CLKREG(&clk_dummy, "sa1100-rtc", NULL),
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_PM
@@ -141,8 +201,24 @@ static void pxa3xx_cpu_pm_suspend(void)
 {
 	volatile unsigned long *p = (volatile void *)0xc0000000;
 	unsigned long saved_data = *p;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	extern void pxa3xx_cpu_suspend(long);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifndef CONFIG_IWMMXT
+	u64 acc0;
+
+	asm volatile("mra %Q0, %R0, acc0" : "=r" (acc0));
+#endif
+
+	extern int pxa3xx_finish_suspend(unsigned long);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* resuming from D2 requires the HSIO2/BOOT/TPM clocks enabled */
 	CKENA |= (1 << CKEN_BOOT) | (1 << CKEN_TPM);
@@ -162,11 +238,32 @@ static void pxa3xx_cpu_pm_suspend(void)
 	/* overwrite with the resume address */
 	*p = virt_to_phys(cpu_resume);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pxa3xx_cpu_suspend(PLAT_PHYS_OFFSET - PAGE_OFFSET);
+=======
+	cpu_suspend(0, pxa3xx_finish_suspend);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpu_suspend(0, pxa3xx_finish_suspend);
+>>>>>>> refs/remotes/origin/master
 
 	*p = saved_data;
 
 	AD3ER = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#ifndef CONFIG_IWMMXT
+	asm volatile("mar acc0, %Q0, %R0" : "=r" (acc0));
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pxa3xx_cpu_pm_enter(suspend_state_t state)
@@ -328,13 +425,29 @@ static void pxa_ack_ext_wakeup(struct irq_data *d)
 
 static void pxa_mask_ext_wakeup(struct irq_data *d)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ICMR2 &= ~(1 << ((d->irq - PXA_IRQ(0)) & 0x1f));
+=======
+	pxa_mask_irq(d);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pxa_mask_irq(d);
+>>>>>>> refs/remotes/origin/master
 	PECR &= ~PECR_IE(d->irq - IRQ_WAKEUP0);
 }
 
 static void pxa_unmask_ext_wakeup(struct irq_data *d)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ICMR2 |= 1 << ((d->irq - PXA_IRQ(0)) & 0x1f);
+=======
+	pxa_unmask_irq(d);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pxa_unmask_irq(d);
+>>>>>>> refs/remotes/origin/master
 	PECR |= PECR_IE(d->irq - IRQ_WAKEUP0);
 }
 
@@ -357,7 +470,17 @@ static struct irq_chip pxa_ext_wakeup_chip = {
 	.irq_set_type	= pxa_set_ext_wakeup_type,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __init pxa_init_ext_wakeup_irq(set_wake_t fn)
+=======
+static void __init pxa_init_ext_wakeup_irq(int (*fn)(struct irq_data *,
+					   unsigned int))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init pxa_init_ext_wakeup_irq(int (*fn)(struct irq_data *,
+					   unsigned int))
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 
@@ -370,7 +493,11 @@ static void __init pxa_init_ext_wakeup_irq(set_wake_t fn)
 	pxa_ext_wakeup_chip.irq_set_wake = fn;
 }
 
+<<<<<<< HEAD
 void __init pxa3xx_init_irq(void)
+=======
+static void __init __pxa3xx_init_irq(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* enable CP6 access */
 	u32 value;
@@ -378,14 +505,44 @@ void __init pxa3xx_init_irq(void)
 	value |= (1 << 6);
 	__asm__ __volatile__("mcr p15, 0, %0, c15, c1, 0\n": :"r"(value));
 
+<<<<<<< HEAD
 	pxa_init_irq(56, pxa3xx_set_wake);
 	pxa_init_ext_wakeup_irq(pxa3xx_set_wake);
+<<<<<<< HEAD
 	pxa_init_gpio(IRQ_GPIO_2_x, 2, 127, NULL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct map_desc pxa3xx_io_desc[] __initdata = {
 	{	/* Mem Ctl */
+<<<<<<< HEAD
 		.virtual	= SMEMC_VIRT,
+=======
+		.virtual	= (unsigned long)SMEMC_VIRT,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pxa_init_ext_wakeup_irq(pxa3xx_set_wake);
+}
+
+void __init pxa3xx_init_irq(void)
+{
+	__pxa3xx_init_irq();
+	pxa_init_irq(56, pxa3xx_set_wake);
+}
+
+#ifdef CONFIG_OF
+void __init pxa3xx_dt_init_irq(void)
+{
+	__pxa3xx_init_irq();
+	pxa_dt_irq_init(pxa3xx_set_wake);
+}
+#endif	/* CONFIG_OF */
+
+static struct map_desc pxa3xx_io_desc[] __initdata = {
+	{	/* Mem Ctl */
+		.virtual	= (unsigned long)SMEMC_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(PXA3XX_SMEMC_BASE),
 		.length		= 0x00200000,
 		.type		= MT_DEVICE
@@ -408,7 +565,19 @@ void __init pxa3xx_set_i2c_power_info(struct i2c_pxa_platform_data *info)
 	pxa_register_device(&pxa3xx_device_i2c_power, info);
 }
 
+<<<<<<< HEAD
 static struct platform_device *devices[] __initdata = {
+<<<<<<< HEAD
+=======
+	&pxa_device_gpio,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct pxa_gpio_platform_data pxa3xx_gpio_pdata = {
+	.irq_base	= PXA_GPIO_TO_IRQ(0),
+};
+
+static struct platform_device *devices[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	&pxa27x_device_udc,
 	&pxa_device_pmu,
 	&pxa_device_i2s,
@@ -452,10 +621,30 @@ static int __init pxa3xx_init(void)
 
 		register_syscore_ops(&pxa_irq_syscore_ops);
 		register_syscore_ops(&pxa3xx_mfp_syscore_ops);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		register_syscore_ops(&pxa_gpio_syscore_ops);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		register_syscore_ops(&pxa3xx_clock_syscore_ops);
 
 		ret = platform_add_devices(devices, ARRAY_SIZE(devices));
+=======
+		register_syscore_ops(&pxa3xx_clock_syscore_ops);
+
+		if (of_have_populated_dt())
+			return 0;
+
+		ret = platform_add_devices(devices, ARRAY_SIZE(devices));
+		if (ret)
+			return ret;
+		if (cpu_is_pxa300() || cpu_is_pxa310() || cpu_is_pxa320()) {
+			platform_device_add_data(&pxa3xx_device_gpio,
+						 &pxa3xx_gpio_pdata,
+						 sizeof(pxa3xx_gpio_pdata));
+			ret = platform_device_register(&pxa3xx_device_gpio);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;

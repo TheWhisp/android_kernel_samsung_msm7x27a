@@ -114,7 +114,11 @@ MODULE_DESCRIPTION("NCR Dual700 SCSI Driver");
 MODULE_LICENSE("GPL");
 module_param(NCR_D700, charp, 0);
 
+<<<<<<< HEAD
 static __u8 __devinitdata id_array[2*(MCA_MAX_SLOT_NR + 1)] =
+=======
+static __u8 id_array[2*(MCA_MAX_SLOT_NR + 1)] =
+>>>>>>> refs/remotes/origin/master
 	{ [0 ... 2*(MCA_MAX_SLOT_NR + 1)-1] = 7 };
 
 #ifdef MODULE
@@ -173,7 +177,11 @@ struct NCR_D700_private {
 	char			pad;
 };
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 NCR_D700_probe_one(struct NCR_D700_private *p, int siop, int irq,
 		   int slot, u32 region, int differential)
 {
@@ -243,7 +251,11 @@ NCR_D700_intr(int irq, void *data)
  * essentially connectecd to the MCA bus independently, it is easier
  * to set them up as two separate host adapters, rather than one
  * adapter with two channels */
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 NCR_D700_probe(struct device *dev)
 {
 	struct NCR_D700_private *p;
@@ -349,7 +361,11 @@ NCR_D700_probe(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 NCR_D700_remove_one(struct Scsi_Host *host)
 {
 	scsi_remove_host(host);
@@ -359,7 +375,11 @@ NCR_D700_remove_one(struct Scsi_Host *host)
 	release_region(host->base, 64);
 }
 
+<<<<<<< HEAD
 static int __devexit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 NCR_D700_remove(struct device *dev)
 {
 	struct NCR_D700_private *p = dev_get_drvdata(dev);
@@ -380,7 +400,11 @@ static struct mca_driver NCR_D700_driver = {
 		.name		= "NCR_D700",
 		.bus		= &mca_bus_type,
 		.probe		= NCR_D700_probe,
+<<<<<<< HEAD
 		.remove		= __devexit_p(NCR_D700_remove),
+=======
+		.remove		= NCR_D700_remove,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

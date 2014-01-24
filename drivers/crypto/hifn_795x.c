@@ -821,8 +821,13 @@ static int hifn_register_rng(struct hifn_device *dev)
 	/*
 	 * We must wait at least 256 Pk_clk cycles between two reads of the rng.
 	 */
+<<<<<<< HEAD
 	dev->rng_wait_time	= DIV_ROUND_UP(NSEC_PER_SEC, dev->pk_clk_freq) *
 				  256;
+=======
+	dev->rng_wait_time	= DIV_ROUND_UP_ULL(NSEC_PER_SEC,
+						   dev->pk_clk_freq) * 256;
+>>>>>>> refs/remotes/origin/master
 
 	dev->rng.name		= dev->name;
 	dev->rng.data_present	= hifn_rng_data_present,
@@ -1731,9 +1736,21 @@ static int ablkcipher_get(void *saddr, unsigned int *srestp, unsigned int offset
 	while (size) {
 		copy = min3(srest, dst->length, size);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		daddr = kmap_atomic(sg_page(dst), KM_IRQ0);
 		memcpy(daddr + dst->offset + offset, saddr, copy);
 		kunmap_atomic(daddr, KM_IRQ0);
+=======
+		daddr = kmap_atomic(sg_page(dst));
+		memcpy(daddr + dst->offset + offset, saddr, copy);
+		kunmap_atomic(daddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		daddr = kmap_atomic(sg_page(dst));
+		memcpy(daddr + dst->offset + offset, saddr, copy);
+		kunmap_atomic(daddr);
+>>>>>>> refs/remotes/origin/master
 
 		nbytes -= copy;
 		size -= copy;
@@ -1793,17 +1810,41 @@ static void hifn_process_ready(struct ablkcipher_request *req, int error)
 				continue;
 			}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			saddr = kmap_atomic(sg_page(t), KM_SOFTIRQ0);
+=======
+			saddr = kmap_atomic(sg_page(t));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			saddr = kmap_atomic(sg_page(t));
+>>>>>>> refs/remotes/origin/master
 
 			err = ablkcipher_get(saddr, &t->length, t->offset,
 					dst, nbytes, &nbytes);
 			if (err < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				kunmap_atomic(saddr, KM_SOFTIRQ0);
+=======
+				kunmap_atomic(saddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				kunmap_atomic(saddr);
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 
 			idx += err;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(saddr, KM_SOFTIRQ0);
+=======
+			kunmap_atomic(saddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(saddr);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		hifn_cipher_walk_exit(&rctx->walk);
@@ -2494,7 +2535,17 @@ static int hifn_alg_alloc(struct hifn_device *dev, struct hifn_alg_template *t)
 		 t->drv_name, dev->name);
 
 	alg->alg.cra_priority = 300;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	alg->alg.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER | CRYPTO_ALG_ASYNC;
+=======
+	alg->alg.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+				CRYPTO_ALG_KERN_DRIVER_ONLY | CRYPTO_ALG_ASYNC;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alg->alg.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+				CRYPTO_ALG_KERN_DRIVER_ONLY | CRYPTO_ALG_ASYNC;
+>>>>>>> refs/remotes/origin/master
 	alg->alg.cra_blocksize = t->bsize;
 	alg->alg.cra_ctxsize = sizeof(struct hifn_context);
 	alg->alg.cra_alignmask = 0;
@@ -2560,7 +2611,11 @@ static void hifn_tasklet_callback(unsigned long data)
 		hifn_process_queue(dev);
 }
 
+<<<<<<< HEAD
 static int __devinit hifn_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+=======
+static int hifn_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, i;
 	struct hifn_device *dev;
@@ -2610,14 +2665,25 @@ static int __devinit hifn_probe(struct pci_dev *pdev, const struct pci_device_id
 		size = pci_resource_len(pdev, i);
 
 		dev->bar[i] = ioremap_nocache(addr, size);
+<<<<<<< HEAD
 		if (!dev->bar[i])
 			goto err_out_unmap_bars;
+=======
+		if (!dev->bar[i]) {
+			err = -ENOMEM;
+			goto err_out_unmap_bars;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev->desc_virt = pci_alloc_consistent(pdev, sizeof(struct hifn_dma),
 			&dev->desc_dma);
 	if (!dev->desc_virt) {
 		dprintk("Failed to allocate descriptor rings.\n");
+<<<<<<< HEAD
+=======
+		err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto err_out_unmap_bars;
 	}
 	memset(dev->desc_virt, 0, sizeof(struct hifn_dma));
@@ -2672,7 +2738,11 @@ err_out_stop_device:
 	hifn_reset_dma(dev, 1);
 	hifn_stop_device(dev);
 err_out_free_irq:
+<<<<<<< HEAD
 	free_irq(dev->irq, dev->name);
+=======
+	free_irq(dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 	tasklet_kill(&dev->tasklet);
 err_out_free_desc:
 	pci_free_consistent(pdev, sizeof(struct hifn_dma),
@@ -2692,7 +2762,11 @@ err_out_disable_pci_device:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit hifn_remove(struct pci_dev *pdev)
+=======
+static void hifn_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct hifn_device *dev;
@@ -2707,7 +2781,11 @@ static void __devexit hifn_remove(struct pci_dev *pdev)
 		hifn_reset_dma(dev, 1);
 		hifn_stop_device(dev);
 
+<<<<<<< HEAD
 		free_irq(dev->irq, dev->name);
+=======
+		free_irq(dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 		tasklet_kill(&dev->tasklet);
 
 		hifn_flush(dev);
@@ -2736,7 +2814,11 @@ static struct pci_driver hifn_pci_driver = {
 	.name     = "hifn795x",
 	.id_table = hifn_pci_tbl,
 	.probe    = hifn_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(hifn_remove),
+=======
+	.remove   = hifn_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init hifn_init(void)
@@ -2744,10 +2826,20 @@ static int __init hifn_init(void)
 	unsigned int freq;
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (sizeof(dma_addr_t) > 4) {
 		printk(KERN_INFO "HIFN supports only 32-bit addresses.\n");
 		return -EINVAL;
 	}
+=======
+	/* HIFN supports only 32-bit addresses */
+	BUILD_BUG_ON(sizeof(dma_addr_t) != 4);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* HIFN supports only 32-bit addresses */
+	BUILD_BUG_ON(sizeof(dma_addr_t) != 4);
+>>>>>>> refs/remotes/origin/master
 
 	if (strncmp(hifn_pll_ref, "ext", 3) &&
 	    strncmp(hifn_pll_ref, "pci", 3)) {

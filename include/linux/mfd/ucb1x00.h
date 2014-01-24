@@ -10,9 +10,20 @@
 #ifndef UCB1200_H
 #define UCB1200_H
 
+<<<<<<< HEAD
 #include <linux/mfd/mcp.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
 #include <linux/semaphore.h>
+=======
+#include <linux/mutex.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+#include <linux/mfd/mcp.h>
+#include <linux/gpio.h>
+#include <linux/mutex.h>
+>>>>>>> refs/remotes/origin/master
 
 #define UCB_IO_DATA	0x00
 #define UCB_IO_DIR	0x01
@@ -104,6 +115,8 @@
 #define UCB_MODE_DYN_VFLAG_ENA	(1 << 12)
 #define UCB_MODE_AUD_OFF_CAN	(1 << 13)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 struct ucb1x00_irq {
 	void *devid;
@@ -115,6 +128,34 @@ struct ucb1x00 {
 	struct mcp		*mcp;
 	unsigned int		irq;
 	struct semaphore	adc_sem;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum ucb1x00_reset {
+	UCB_RST_PROBE,
+	UCB_RST_RESUME,
+	UCB_RST_SUSPEND,
+	UCB_RST_REMOVE,
+	UCB_RST_PROBE_FAIL,
+};
+
+struct ucb1x00_plat_data {
+	void			(*reset)(enum ucb1x00_reset);
+	unsigned		irq_base;
+	int			gpio_base;
+	unsigned		can_wakeup;
+};
+
+struct ucb1x00 {
+	raw_spinlock_t		irq_lock;
+	struct mcp		*mcp;
+	unsigned int		irq;
+	int			irq_base;
+	struct mutex		adc_mutex;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spinlock_t		io_lock;
 	u16			id;
 	u16			io_dir;
@@ -122,7 +163,17 @@ struct ucb1x00 {
 	u16			adc_cr;
 	u16			irq_fal_enbl;
 	u16			irq_ris_enbl;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ucb1x00_irq	irq_handler[16];
+=======
+	u16			irq_mask;
+	u16			irq_wake;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16			irq_mask;
+	u16			irq_wake;
+>>>>>>> refs/remotes/origin/master
 	struct device		dev;
 	struct list_head	node;
 	struct list_head	devs;
@@ -144,7 +195,15 @@ struct ucb1x00_driver {
 	struct list_head	devs;
 	int	(*add)(struct ucb1x00_dev *dev);
 	void	(*remove)(struct ucb1x00_dev *dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int	(*suspend)(struct ucb1x00_dev *dev, pm_message_t state);
+=======
+	int	(*suspend)(struct ucb1x00_dev *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int	(*suspend)(struct ucb1x00_dev *dev);
+>>>>>>> refs/remotes/origin/master
 	int	(*resume)(struct ucb1x00_dev *dev);
 };
 
@@ -245,6 +304,8 @@ unsigned int ucb1x00_adc_read(struct ucb1x00 *ucb, int adc_channel, int sync);
 void ucb1x00_adc_enable(struct ucb1x00 *ucb);
 void ucb1x00_adc_disable(struct ucb1x00 *ucb);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Which edges of the IRQ do you want to control today?
  */
@@ -256,4 +317,8 @@ void ucb1x00_enable_irq(struct ucb1x00 *ucb, unsigned int idx, int edges);
 void ucb1x00_disable_irq(struct ucb1x00 *ucb, unsigned int idx, int edges);
 int ucb1x00_free_irq(struct ucb1x00 *ucb, unsigned int idx, void *devid);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -379,8 +379,18 @@ extern spinlock_t shca_list_lock;
 
 extern int ehca_static_rate;
 extern int ehca_port_act_time;
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int ehca_use_hp_mr;
 extern int ehca_scaling_code;
+=======
+extern bool ehca_use_hp_mr;
+extern bool ehca_scaling_code;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern bool ehca_use_hp_mr;
+extern bool ehca_scaling_code;
+>>>>>>> refs/remotes/origin/master
 extern int ehca_lock_hcalls;
 extern int ehca_nr_ports;
 extern int ehca_max_cq;

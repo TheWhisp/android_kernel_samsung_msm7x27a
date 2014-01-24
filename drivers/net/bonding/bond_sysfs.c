@@ -26,7 +26,13 @@
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/types.h>
 #include <linux/string.h>
@@ -41,6 +47,10 @@
 #include <net/net_namespace.h>
 #include <net/netns/generic.h>
 #include <linux/nsproxy.h>
+<<<<<<< HEAD
+=======
+#include <linux/reciprocal_div.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "bonding.h"
 
@@ -55,8 +65,18 @@ static ssize_t bonding_show_bonds(struct class *cls,
 				  struct class_attribute *attr,
 				  char *buf)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct net *net = current->nsproxy->net_ns;
 	struct bond_net *bn = net_generic(net, bond_net_id);
+=======
+	struct bond_net *bn =
+		container_of(attr, struct bond_net, class_attr_bonding_masters);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bond_net *bn =
+		container_of(attr, struct bond_net, class_attr_bonding_masters);
+>>>>>>> refs/remotes/origin/master
 	int res = 0;
 	struct bonding *bond;
 
@@ -79,9 +99,19 @@ static ssize_t bonding_show_bonds(struct class *cls,
 	return res;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct net_device *bond_get_by_name(struct net *net, const char *ifname)
 {
 	struct bond_net *bn = net_generic(net, bond_net_id);
+=======
+static struct net_device *bond_get_by_name(struct bond_net *bn, const char *ifname)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct net_device *bond_get_by_name(struct bond_net *bn, const char *ifname)
+{
+>>>>>>> refs/remotes/origin/master
 	struct bonding *bond;
 
 	list_for_each_entry(bond, &bn->dev_list, bond_list) {
@@ -103,7 +133,17 @@ static ssize_t bonding_store_bonds(struct class *cls,
 				   struct class_attribute *attr,
 				   const char *buffer, size_t count)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct net *net = current->nsproxy->net_ns;
+=======
+	struct bond_net *bn =
+		container_of(attr, struct bond_net, class_attr_bonding_masters);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bond_net *bn =
+		container_of(attr, struct bond_net, class_attr_bonding_masters);
+>>>>>>> refs/remotes/origin/master
 	char command[IFNAMSIZ + 1] = {0, };
 	char *ifname;
 	int rv, res = count;
@@ -116,7 +156,15 @@ static ssize_t bonding_store_bonds(struct class *cls,
 
 	if (command[0] == '+') {
 		pr_info("%s is being created...\n", ifname);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rv = bond_create(net, ifname);
+=======
+		rv = bond_create(bn->net, ifname);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rv = bond_create(bn->net, ifname);
+>>>>>>> refs/remotes/origin/master
 		if (rv) {
 			if (rv == -EEXIST)
 				pr_info("%s already exists.\n", ifname);
@@ -128,7 +176,15 @@ static ssize_t bonding_store_bonds(struct class *cls,
 		struct net_device *bond_dev;
 
 		rtnl_lock();
+<<<<<<< HEAD
+<<<<<<< HEAD
 		bond_dev = bond_get_by_name(net, ifname);
+=======
+		bond_dev = bond_get_by_name(bn, ifname);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bond_dev = bond_get_by_name(bn, ifname);
+>>>>>>> refs/remotes/origin/master
 		if (bond_dev) {
 			pr_info("%s is being deleted...\n", ifname);
 			unregister_netdevice(bond_dev);
@@ -150,9 +206,34 @@ err_no_cmd:
 	return -EPERM;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* class attribute for bond_masters file.  This ends up in /sys/class/net */
 static CLASS_ATTR(bonding_masters,  S_IWUSR | S_IRUGO,
 		  bonding_show_bonds, bonding_store_bonds);
+=======
+static const void *bonding_namespace(struct class *cls,
+				     const struct class_attribute *attr)
+{
+	const struct bond_net *bn =
+		container_of(attr, struct bond_net, class_attr_bonding_masters);
+	return bn->net;
+}
+
+=======
+>>>>>>> refs/remotes/origin/master
+/* class attribute for bond_masters file.  This ends up in /sys/class/net */
+static const struct class_attribute class_attr_bonding_masters = {
+	.attr = {
+		.name = "bonding_masters",
+		.mode = S_IWUSR | S_IRUGO,
+	},
+	.show = bonding_show_bonds,
+	.store = bonding_store_bonds,
+<<<<<<< HEAD
+	.namespace = bonding_namespace,
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int bond_create_slave_symlinks(struct net_device *master,
 			       struct net_device *slave)
@@ -169,6 +250,20 @@ int bond_create_slave_symlinks(struct net_device *master,
 	sprintf(linkname, "slave_%s", slave->name);
 	ret = sysfs_create_link(&(master->dev.kobj), &(slave->dev.kobj),
 				linkname);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	/* free the master link created earlier in case of error */
+	if (ret)
+		sysfs_remove_link(&(slave->dev.kobj), "master");
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 
 }
@@ -183,6 +278,9 @@ void bond_destroy_slave_symlinks(struct net_device *master,
 	sysfs_remove_link(&(master->dev.kobj), linkname);
 }
 
+=======
+};
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Show the slaves in the current bond.
@@ -190,12 +288,24 @@ void bond_destroy_slave_symlinks(struct net_device *master,
 static ssize_t bonding_show_slaves(struct device *d,
 				   struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	struct slave *slave;
 	int i, res = 0;
 	struct bonding *bond = to_bond(d);
 
 	read_lock(&bond->lock);
 	bond_for_each_slave(bond, slave, i) {
+=======
+	struct bonding *bond = to_bond(d);
+	struct list_head *iter;
+	struct slave *slave;
+	int res = 0;
+
+	if (!rtnl_trylock())
+		return restart_syscall();
+
+	bond_for_each_slave(bond, slave, iter) {
+>>>>>>> refs/remotes/origin/master
 		if (res > (PAGE_SIZE - IFNAMSIZ)) {
 			/* not enough space for another interface name */
 			if ((PAGE_SIZE - res) > 10)
@@ -205,15 +315,28 @@ static ssize_t bonding_show_slaves(struct device *d,
 		}
 		res += sprintf(buf + res, "%s ", slave->dev->name);
 	}
+<<<<<<< HEAD
 	read_unlock(&bond->lock);
 	if (res)
 		buf[res-1] = '\n'; /* eat the leftover space */
+=======
+
+	rtnl_unlock();
+
+	if (res)
+		buf[res-1] = '\n'; /* eat the leftover space */
+
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
 /*
+<<<<<<< HEAD
  * Set the slaves in the current bond.  The bond interface must be
  * up for this to succeed.
+=======
+ * Set the slaves in the current bond.
+>>>>>>> refs/remotes/origin/master
  * This is supposed to be only thin wrapper for bond_enslave and bond_release.
  * All hard work should be done there.
  */
@@ -294,6 +417,7 @@ static ssize_t bonding_store_mode(struct device *d,
 				  struct device_attribute *attr,
 				  const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	int new_value, ret = count;
 	struct bonding *bond = to_bond(d);
 
@@ -304,10 +428,26 @@ static ssize_t bonding_store_mode(struct device *d,
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+	if (bond->slave_cnt > 0) {
+		pr_err("unable to update mode of %s because it has slaves.\n",
+			bond->dev->name);
+		ret = -EPERM;
+		goto out;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int new_value, ret;
+	struct bonding *bond = to_bond(d);
+
+>>>>>>> refs/remotes/origin/master
 	new_value = bond_parse_parm(buf, bond_mode_tbl);
 	if (new_value < 0)  {
 		pr_err("%s: Ignoring invalid mode value %.*s.\n",
 		       bond->dev->name, (int)strlen(buf) - 1, buf);
+<<<<<<< HEAD
 		ret = -EINVAL;
 		goto out;
 	}
@@ -326,6 +466,22 @@ static ssize_t bonding_store_mode(struct device *d,
 		bond->dev->name, bond_mode_tbl[new_value].modename,
 		new_value);
 out:
+=======
+		return -EINVAL;
+	}
+	if (!rtnl_trylock())
+		return restart_syscall();
+
+	ret = bond_option_mode_set(bond, new_value);
+	if (!ret) {
+		pr_info("%s: setting mode to %s (%d).\n",
+			bond->dev->name, bond_mode_tbl[new_value].modename,
+			new_value);
+		ret = count;
+	}
+
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 static DEVICE_ATTR(mode, S_IRUGO | S_IWUSR,
@@ -333,7 +489,10 @@ static DEVICE_ATTR(mode, S_IRUGO | S_IWUSR,
 
 /*
  * Show and set the bonding transmit hash method.
+<<<<<<< HEAD
  * The bond interface must be down to change the xmit hash policy.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static ssize_t bonding_show_xmit_hash(struct device *d,
 				      struct device_attribute *attr,
@@ -353,6 +512,7 @@ static ssize_t bonding_store_xmit_hash(struct device *d,
 	int new_value, ret = count;
 	struct bonding *bond = to_bond(d);
 
+<<<<<<< HEAD
 	if (bond->dev->flags & IFF_UP) {
 		pr_err("%s: Interface is up. Unable to update xmit policy.\n",
 		       bond->dev->name);
@@ -360,21 +520,32 @@ static ssize_t bonding_store_xmit_hash(struct device *d,
 		goto out;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	new_value = bond_parse_parm(buf, xmit_hashtype_tbl);
 	if (new_value < 0)  {
 		pr_err("%s: Ignoring invalid xmit hash policy value %.*s.\n",
 		       bond->dev->name,
 		       (int)strlen(buf) - 1, buf);
 		ret = -EINVAL;
+<<<<<<< HEAD
 		goto out;
 	} else {
 		bond->params.xmit_policy = new_value;
 		bond_set_mode_ops(bond, bond->params.mode);
+=======
+	} else {
+		bond->params.xmit_policy = new_value;
+>>>>>>> refs/remotes/origin/master
 		pr_info("%s: setting xmit hash policy to %s (%d).\n",
 			bond->dev->name,
 			xmit_hashtype_tbl[new_value].modename, new_value);
 	}
+<<<<<<< HEAD
 out:
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 static DEVICE_ATTR(xmit_hash_policy, S_IRUGO | S_IWUSR,
@@ -398,31 +569,105 @@ static ssize_t bonding_store_arp_validate(struct device *d,
 					  struct device_attribute *attr,
 					  const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	int new_value;
 	struct bonding *bond = to_bond(d);
 
+=======
+	struct bonding *bond = to_bond(d);
+	int new_value, ret = count;
+
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/master
 	new_value = bond_parse_parm(buf, arp_validate_tbl);
 	if (new_value < 0) {
 		pr_err("%s: Ignoring invalid arp_validate value %s\n",
 		       bond->dev->name, buf);
+<<<<<<< HEAD
 		return -EINVAL;
 	}
 	if (new_value && (bond->params.mode != BOND_MODE_ACTIVEBACKUP)) {
 		pr_err("%s: arp_validate only supported in active-backup mode.\n",
 		       bond->dev->name);
 		return -EINVAL;
+=======
+		ret = -EINVAL;
+		goto out;
+	}
+	if (bond->params.mode != BOND_MODE_ACTIVEBACKUP) {
+		pr_err("%s: arp_validate only supported in active-backup mode.\n",
+		       bond->dev->name);
+		ret = -EINVAL;
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 	pr_info("%s: setting arp_validate to %s (%d).\n",
 		bond->dev->name, arp_validate_tbl[new_value].modename,
 		new_value);
 
+<<<<<<< HEAD
 	bond->params.arp_validate = new_value;
 
 	return count;
+=======
+	if (bond->dev->flags & IFF_UP) {
+		if (!new_value)
+			bond->recv_probe = NULL;
+		else if (bond->params.arp_interval)
+			bond->recv_probe = bond_arp_rcv;
+	}
+	bond->params.arp_validate = new_value;
+out:
+	rtnl_unlock();
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static DEVICE_ATTR(arp_validate, S_IRUGO | S_IWUSR, bonding_show_arp_validate,
 		   bonding_store_arp_validate);
+<<<<<<< HEAD
+=======
+/*
+ * Show and set arp_all_targets.
+ */
+static ssize_t bonding_show_arp_all_targets(struct device *d,
+					 struct device_attribute *attr,
+					 char *buf)
+{
+	struct bonding *bond = to_bond(d);
+	int value = bond->params.arp_all_targets;
+
+	return sprintf(buf, "%s %d\n", arp_all_targets_tbl[value].modename,
+		       value);
+}
+
+static ssize_t bonding_store_arp_all_targets(struct device *d,
+					  struct device_attribute *attr,
+					  const char *buf, size_t count)
+{
+	struct bonding *bond = to_bond(d);
+	int new_value;
+
+	new_value = bond_parse_parm(buf, arp_all_targets_tbl);
+	if (new_value < 0) {
+		pr_err("%s: Ignoring invalid arp_all_targets value %s\n",
+		       bond->dev->name, buf);
+		return -EINVAL;
+	}
+	pr_info("%s: setting arp_all_targets to %s (%d).\n",
+		bond->dev->name, arp_all_targets_tbl[new_value].modename,
+		new_value);
+
+	bond->params.arp_all_targets = new_value;
+
+	return count;
+}
+
+static DEVICE_ATTR(arp_all_targets, S_IRUGO | S_IWUSR,
+		   bonding_show_arp_all_targets, bonding_store_arp_all_targets);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Show and store fail_over_mac.  User only allowed to change the
@@ -443,6 +688,7 @@ static ssize_t bonding_store_fail_over_mac(struct device *d,
 					   struct device_attribute *attr,
 					   const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	int new_value;
 	struct bonding *bond = to_bond(d);
 
@@ -450,13 +696,31 @@ static ssize_t bonding_store_fail_over_mac(struct device *d,
 		pr_err("%s: Can't alter fail_over_mac with slaves in bond.\n",
 		       bond->dev->name);
 		return -EPERM;
+=======
+	int new_value, ret = count;
+	struct bonding *bond = to_bond(d);
+
+	if (!rtnl_trylock())
+		return restart_syscall();
+
+	if (bond_has_slaves(bond)) {
+		pr_err("%s: Can't alter fail_over_mac with slaves in bond.\n",
+		       bond->dev->name);
+		ret = -EPERM;
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	new_value = bond_parse_parm(buf, fail_over_mac_tbl);
 	if (new_value < 0) {
 		pr_err("%s: Ignoring invalid fail_over_mac value %s.\n",
 		       bond->dev->name, buf);
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		ret = -EINVAL;
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	bond->params.fail_over_mac = new_value;
@@ -464,7 +728,13 @@ static ssize_t bonding_store_fail_over_mac(struct device *d,
 		bond->dev->name, fail_over_mac_tbl[new_value].modename,
 		new_value);
 
+<<<<<<< HEAD
 	return count;
+=======
+out:
+	rtnl_unlock();
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static DEVICE_ATTR(fail_over_mac, S_IRUGO | S_IWUSR,
@@ -489,9 +759,27 @@ static ssize_t bonding_store_arp_interval(struct device *d,
 					  struct device_attribute *attr,
 					  const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	int new_value, ret = count;
 	struct bonding *bond = to_bond(d);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bonding *bond = to_bond(d);
+	int new_value, ret = count;
+
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/master
+=======
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sscanf(buf, "%d", &new_value) != 1) {
 		pr_err("%s: no arp_interval value specified.\n",
 		       bond->dev->name);
@@ -499,14 +787,37 @@ static ssize_t bonding_store_arp_interval(struct device *d,
 		goto out;
 	}
 	if (new_value < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Invalid arp_interval value %d not in range 1-%d; rejected.\n",
+=======
+		pr_err("%s: Invalid arp_interval value %d not in range 0-%d; rejected.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Invalid arp_interval value %d not in range 0-%d; rejected.\n",
+>>>>>>> refs/remotes/origin/master
+=======
+		pr_err("%s: Invalid arp_interval value %d not in range 0-%d; rejected.\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 		       bond->dev->name, new_value, INT_MAX);
 		ret = -EINVAL;
 		goto out;
 	}
+<<<<<<< HEAD
 	if (bond->params.mode == BOND_MODE_ALB ||
+<<<<<<< HEAD
 	    bond->params.mode == BOND_MODE_TLB) {
 		pr_info("%s: ARP monitoring cannot be used with ALB/TLB. Only MII monitoring is supported on %s.\n",
+=======
+	if (BOND_NO_USES_ARP(bond->params.mode)) {
+		pr_info("%s: ARP monitoring cannot be used with ALB/TLB/802.3ad. Only MII monitoring is supported on %s.\n",
+>>>>>>> refs/remotes/origin/master
+=======
+	    bond->params.mode == BOND_MODE_TLB ||
+	    bond->params.mode == BOND_MODE_8023AD) {
+		pr_info("%s: ARP monitoring cannot be used with ALB/TLB/802.3ad. Only MII monitoring is supported on %s.\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			bond->dev->name, bond->dev->name);
 		ret = -EINVAL;
 		goto out;
@@ -514,6 +825,9 @@ static ssize_t bonding_store_arp_interval(struct device *d,
 	pr_info("%s: Setting ARP monitoring interval to %d.\n",
 		bond->dev->name, new_value);
 	bond->params.arp_interval = new_value;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (bond->params.miimon) {
 		pr_info("%s: ARP monitoring cannot be used with MII monitoring. %s Disabling MII monitoring.\n",
 			bond->dev->name, bond->dev->name);
@@ -526,6 +840,33 @@ static ssize_t bonding_store_arp_interval(struct device *d,
 	if (!bond->params.arp_targets[0]) {
 		pr_info("%s: ARP monitoring has been set up, but no ARP targets have been specified.\n",
 			bond->dev->name);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (new_value) {
+		if (bond->params.miimon) {
+			pr_info("%s: ARP monitoring cannot be used with MII monitoring. %s Disabling MII monitoring.\n",
+				bond->dev->name, bond->dev->name);
+			bond->params.miimon = 0;
+		}
+		if (!bond->params.arp_targets[0])
+			pr_info("%s: ARP monitoring has been set up, but no ARP targets have been specified.\n",
+				bond->dev->name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	if (new_value) {
+		if (bond->params.miimon) {
+			pr_info("%s: ARP monitoring cannot be used with MII monitoring. %s Disabling MII monitoring.\n",
+				bond->dev->name, bond->dev->name);
+			bond->params.miimon = 0;
+		}
+		if (!bond->params.arp_targets[0])
+			pr_info("%s: ARP monitoring has been set up, but no ARP targets have been specified.\n",
+				bond->dev->name);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (bond->dev->flags & IFF_UP) {
 		/* If the interface is up, we may need to fire off
@@ -533,6 +874,9 @@ static ssize_t bonding_store_arp_interval(struct device *d,
 		 * timer will get fired off when the open function
 		 * is called.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!delayed_work_pending(&bond->arp_work)) {
 			if (bond->params.mode == BOND_MODE_ACTIVEBACKUP)
 				INIT_DELAYED_WORK(&bond->arp_work,
@@ -541,11 +885,44 @@ static ssize_t bonding_store_arp_interval(struct device *d,
 				INIT_DELAYED_WORK(&bond->arp_work,
 						  bond_loadbalance_arp_mon);
 
+=======
+		if (!new_value) {
+			cancel_delayed_work_sync(&bond->arp_work);
+		} else {
+			cancel_delayed_work_sync(&bond->mii_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 			queue_delayed_work(bond->wq, &bond->arp_work, 0);
 		}
 	}
-
 out:
+<<<<<<< HEAD
+=======
+		if (!new_value) {
+			cancel_delayed_work_sync(&bond->arp_work);
+		} else {
+=======
+		if (!new_value) {
+			if (bond->params.arp_validate)
+				bond->recv_probe = NULL;
+			cancel_delayed_work_sync(&bond->arp_work);
+		} else {
+			/* arp_validate can be set only in active-backup mode */
+			if (bond->params.arp_validate)
+				bond->recv_probe = bond_arp_rcv;
+>>>>>>> refs/remotes/origin/master
+			cancel_delayed_work_sync(&bond->mii_work);
+			queue_delayed_work(bond->wq, &bond->arp_work, 0);
+		}
+	}
+out:
+	rtnl_unlock();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 static DEVICE_ATTR(arp_interval, S_IRUGO | S_IWUSR,
@@ -575,6 +952,7 @@ static ssize_t bonding_store_arp_targets(struct device *d,
 					 struct device_attribute *attr,
 					 const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	__be32 newtarget;
 	int i = 0, done = 0, ret = count;
 	struct bonding *bond = to_bond(d);
@@ -638,6 +1016,75 @@ static ssize_t bonding_store_arp_targets(struct device *d,
 			ret = -EINVAL;
 			goto out;
 		}
+=======
+	struct bonding *bond = to_bond(d);
+	struct list_head *iter;
+	struct slave *slave;
+	__be32 newtarget, *targets;
+	unsigned long *targets_rx;
+	int ind, i, j, ret = -EINVAL;
+
+	if (!rtnl_trylock())
+		return restart_syscall();
+
+	targets = bond->params.arp_targets;
+	if (!in4_pton(buf + 1, -1, (u8 *)&newtarget, -1, NULL) ||
+	    IS_IP_TARGET_UNUSABLE_ADDRESS(newtarget)) {
+		pr_err("%s: invalid ARP target %pI4 specified for addition\n",
+		       bond->dev->name, &newtarget);
+		goto out;
+	}
+	/* look for adds */
+	if (buf[0] == '+') {
+		if (bond_get_targets_ip(targets, newtarget) != -1) { /* dup */
+			pr_err("%s: ARP target %pI4 is already present\n",
+			       bond->dev->name, &newtarget);
+			goto out;
+		}
+
+		ind = bond_get_targets_ip(targets, 0); /* first free slot */
+		if (ind == -1) {
+			pr_err("%s: ARP target table is full!\n",
+			       bond->dev->name);
+			goto out;
+		}
+
+		pr_info("%s: adding ARP target %pI4.\n", bond->dev->name,
+			 &newtarget);
+		/* not to race with bond_arp_rcv */
+		write_lock_bh(&bond->lock);
+		bond_for_each_slave(bond, slave, iter)
+			slave->target_last_arp_rx[ind] = jiffies;
+		targets[ind] = newtarget;
+		write_unlock_bh(&bond->lock);
+	} else if (buf[0] == '-')	{
+		ind = bond_get_targets_ip(targets, newtarget);
+		if (ind == -1) {
+			pr_err("%s: unable to remove nonexistent ARP target %pI4.\n",
+				bond->dev->name, &newtarget);
+			goto out;
+		}
+
+		if (ind == 0 && !targets[1] && bond->params.arp_interval)
+			pr_warn("%s: removing last arp target with arp_interval on\n",
+				bond->dev->name);
+
+		pr_info("%s: removing ARP target %pI4.\n", bond->dev->name,
+			&newtarget);
+
+		write_lock_bh(&bond->lock);
+		bond_for_each_slave(bond, slave, iter) {
+			targets_rx = slave->target_last_arp_rx;
+			j = ind;
+			for (; (j < BOND_MAX_ARP_TARGETS-1) && targets[j+1]; j++)
+				targets_rx[j] = targets_rx[j+1];
+			targets_rx[j] = 0;
+		}
+		for (i = ind; (i < BOND_MAX_ARP_TARGETS-1) && targets[i+1]; i++)
+			targets[i] = targets[i+1];
+		targets[i] = 0;
+		write_unlock_bh(&bond->lock);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		pr_err("no command found in arp_ip_targets file for bond %s. Use +<addr> or -<addr>.\n",
 		       bond->dev->name);
@@ -645,7 +1092,13 @@ static ssize_t bonding_store_arp_targets(struct device *d,
 		goto out;
 	}
 
+<<<<<<< HEAD
 out:
+=======
+	ret = count;
+out:
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 static DEVICE_ATTR(arp_ip_target, S_IRUGO | S_IWUSR , bonding_show_arp_targets, bonding_store_arp_targets);
@@ -671,6 +1124,16 @@ static ssize_t bonding_store_downdelay(struct device *d,
 	int new_value, ret = count;
 	struct bonding *bond = to_bond(d);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/master
+=======
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!(bond->params.miimon)) {
 		pr_err("%s: Unable to set down delay as MII monitoring is disabled\n",
 		       bond->dev->name);
@@ -685,7 +1148,19 @@ static ssize_t bonding_store_downdelay(struct device *d,
 	}
 	if (new_value < 0) {
 		pr_err("%s: Invalid down delay value %d not in range %d-%d; rejected.\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       bond->dev->name, new_value, 1, INT_MAX);
+=======
+		       bond->dev->name, new_value, 0, INT_MAX);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       bond->dev->name, new_value, 0, INT_MAX);
+>>>>>>> refs/remotes/origin/master
+=======
+		       bond->dev->name, new_value, 0, INT_MAX);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -EINVAL;
 		goto out;
 	} else {
@@ -704,6 +1179,14 @@ static ssize_t bonding_store_downdelay(struct device *d,
 	}
 
 out:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
+=======
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 static DEVICE_ATTR(downdelay, S_IRUGO | S_IWUSR,
@@ -726,6 +1209,16 @@ static ssize_t bonding_store_updelay(struct device *d,
 	int new_value, ret = count;
 	struct bonding *bond = to_bond(d);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/master
+=======
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!(bond->params.miimon)) {
 		pr_err("%s: Unable to set up delay as MII monitoring is disabled\n",
 		       bond->dev->name);
@@ -740,8 +1233,23 @@ static ssize_t bonding_store_updelay(struct device *d,
 		goto out;
 	}
 	if (new_value < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: Invalid down delay value %d not in range %d-%d; rejected.\n",
 		       bond->dev->name, new_value, 1, INT_MAX);
+=======
+		pr_err("%s: Invalid up delay value %d not in range %d-%d; rejected.\n",
+		       bond->dev->name, new_value, 0, INT_MAX);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Invalid up delay value %d not in range %d-%d; rejected.\n",
+		       bond->dev->name, new_value, 0, INT_MAX);
+>>>>>>> refs/remotes/origin/master
+=======
+		pr_err("%s: Invalid up delay value %d not in range %d-%d; rejected.\n",
+		       bond->dev->name, new_value, 0, INT_MAX);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -EINVAL;
 		goto out;
 	} else {
@@ -759,6 +1267,14 @@ static ssize_t bonding_store_updelay(struct device *d,
 	}
 
 out:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
+=======
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 static DEVICE_ATTR(updelay, S_IRUGO | S_IWUSR,
@@ -783,8 +1299,16 @@ static ssize_t bonding_store_lacp(struct device *d,
 				  struct device_attribute *attr,
 				  const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	int new_value, ret = count;
 	struct bonding *bond = to_bond(d);
+=======
+	struct bonding *bond = to_bond(d);
+	int new_value, ret = count;
+
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/master
 
 	if (bond->dev->flags & IFF_UP) {
 		pr_err("%s: Unable to update LACP rate because interface is up.\n",
@@ -804,6 +1328,14 @@ static ssize_t bonding_store_lacp(struct device *d,
 
 	if ((new_value == 1) || (new_value == 0)) {
 		bond->params.lacp_fast = new_value;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		bond_3ad_update_lacp_rate(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bond_3ad_update_lacp_rate(bond);
+>>>>>>> refs/remotes/origin/master
 		pr_info("%s: Setting LACP rate to %s (%d).\n",
 			bond->dev->name, bond_lacp_tbl[new_value].modename,
 			new_value);
@@ -813,11 +1345,57 @@ static ssize_t bonding_store_lacp(struct device *d,
 		ret = -EINVAL;
 	}
 out:
+<<<<<<< HEAD
+=======
+	rtnl_unlock();
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 static DEVICE_ATTR(lacp_rate, S_IRUGO | S_IWUSR,
 		   bonding_show_lacp, bonding_store_lacp);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static ssize_t bonding_show_min_links(struct device *d,
+				      struct device_attribute *attr,
+				      char *buf)
+{
+	struct bonding *bond = to_bond(d);
+
+	return sprintf(buf, "%d\n", bond->params.min_links);
+}
+
+static ssize_t bonding_store_min_links(struct device *d,
+				       struct device_attribute *attr,
+				       const char *buf, size_t count)
+{
+	struct bonding *bond = to_bond(d);
+	int ret;
+	unsigned int new_value;
+
+	ret = kstrtouint(buf, 0, &new_value);
+	if (ret < 0) {
+		pr_err("%s: Ignoring invalid min links value %s.\n",
+		       bond->dev->name, buf);
+		return ret;
+	}
+
+	pr_info("%s: Setting min links value to %u\n",
+		bond->dev->name, new_value);
+	bond->params.min_links = new_value;
+	return count;
+}
+static DEVICE_ATTR(min_links, S_IRUGO | S_IWUSR,
+		   bonding_show_min_links, bonding_store_min_links);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t bonding_show_ad_select(struct device *d,
 				      struct device_attribute *attr,
 				      char *buf)
@@ -908,6 +1486,21 @@ static ssize_t bonding_store_miimon(struct device *d,
 	int new_value, ret = count;
 	struct bonding *bond = to_bond(d);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/master
+=======
+	if (!rtnl_trylock())
+		return restart_syscall();
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (sscanf(buf, "%d", &new_value) != 1) {
 		pr_err("%s: no miimon value specified.\n",
 		       bond->dev->name);
@@ -916,50 +1509,96 @@ static ssize_t bonding_store_miimon(struct device *d,
 	}
 	if (new_value < 0) {
 		pr_err("%s: Invalid miimon value %d not in range %d-%d; rejected.\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       bond->dev->name, new_value, 1, INT_MAX);
+=======
+		       bond->dev->name, new_value, 0, INT_MAX);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -EINVAL;
 		goto out;
-	} else {
-		pr_info("%s: Setting MII monitoring interval to %d.\n",
-			bond->dev->name, new_value);
-		bond->params.miimon = new_value;
-		if (bond->params.updelay)
-			pr_info("%s: Note: Updating updelay (to %d) since it is a multiple of the miimon value.\n",
-				bond->dev->name,
-				bond->params.updelay * bond->params.miimon);
-		if (bond->params.downdelay)
-			pr_info("%s: Note: Updating downdelay (to %d) since it is a multiple of the miimon value.\n",
-				bond->dev->name,
-				bond->params.downdelay * bond->params.miimon);
-		if (bond->params.arp_interval) {
-			pr_info("%s: MII monitoring cannot be used with ARP monitoring. Disabling ARP monitoring...\n",
-				bond->dev->name);
-			bond->params.arp_interval = 0;
-			if (bond->params.arp_validate) {
-				bond->params.arp_validate =
-					BOND_ARP_VALIDATE_NONE;
-			}
-			if (delayed_work_pending(&bond->arp_work)) {
-				cancel_delayed_work(&bond->arp_work);
-				flush_workqueue(bond->wq);
-			}
-		}
-
-		if (bond->dev->flags & IFF_UP) {
-			/* If the interface is up, we may need to fire off
-			 * the MII timer. If the interface is down, the
-			 * timer will get fired off when the open function
-			 * is called.
-			 */
-			if (!delayed_work_pending(&bond->mii_work)) {
-				INIT_DELAYED_WORK(&bond->mii_work,
-						  bond_mii_monitor);
-				queue_delayed_work(bond->wq,
-						   &bond->mii_work, 0);
-			}
+	}
+	pr_info("%s: Setting MII monitoring interval to %d.\n",
+		bond->dev->name, new_value);
+	bond->params.miimon = new_value;
+	if (bond->params.updelay)
+		pr_info("%s: Note: Updating updelay (to %d) since it is a multiple of the miimon value.\n",
+			bond->dev->name,
+			bond->params.updelay * bond->params.miimon);
+	if (bond->params.downdelay)
+		pr_info("%s: Note: Updating downdelay (to %d) since it is a multiple of the miimon value.\n",
+			bond->dev->name,
+			bond->params.downdelay * bond->params.miimon);
+	if (new_value && bond->params.arp_interval) {
+		pr_info("%s: MII monitoring cannot be used with ARP monitoring. Disabling ARP monitoring...\n",
+			bond->dev->name);
+		bond->params.arp_interval = 0;
+		if (bond->params.arp_validate)
+			bond->params.arp_validate = BOND_ARP_VALIDATE_NONE;
+	}
+	if (bond->dev->flags & IFF_UP) {
+		/* If the interface is up, we may need to fire off
+		 * the MII timer. If the interface is down, the
+		 * timer will get fired off when the open function
+		 * is called.
+		 */
+		if (!new_value) {
+			cancel_delayed_work_sync(&bond->mii_work);
+		} else {
+			cancel_delayed_work_sync(&bond->arp_work);
+			queue_delayed_work(bond->wq, &bond->mii_work, 0);
 		}
 	}
 out:
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		       bond->dev->name, new_value, 0, INT_MAX);
+		ret = -EINVAL;
+		goto out;
+	}
+	pr_info("%s: Setting MII monitoring interval to %d.\n",
+		bond->dev->name, new_value);
+	bond->params.miimon = new_value;
+	if (bond->params.updelay)
+		pr_info("%s: Note: Updating updelay (to %d) since it is a multiple of the miimon value.\n",
+			bond->dev->name,
+			bond->params.updelay * bond->params.miimon);
+	if (bond->params.downdelay)
+		pr_info("%s: Note: Updating downdelay (to %d) since it is a multiple of the miimon value.\n",
+			bond->dev->name,
+			bond->params.downdelay * bond->params.miimon);
+	if (new_value && bond->params.arp_interval) {
+		pr_info("%s: MII monitoring cannot be used with ARP monitoring. Disabling ARP monitoring...\n",
+			bond->dev->name);
+		bond->params.arp_interval = 0;
+		if (bond->params.arp_validate)
+			bond->params.arp_validate = BOND_ARP_VALIDATE_NONE;
+	}
+	if (bond->dev->flags & IFF_UP) {
+		/* If the interface is up, we may need to fire off
+		 * the MII timer. If the interface is down, the
+		 * timer will get fired off when the open function
+		 * is called.
+		 */
+		if (!new_value) {
+			cancel_delayed_work_sync(&bond->mii_work);
+		} else {
+			cancel_delayed_work_sync(&bond->arp_work);
+			queue_delayed_work(bond->wq, &bond->mii_work, 0);
+		}
+	}
+out:
+	rtnl_unlock();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 static DEVICE_ATTR(miimon, S_IRUGO | S_IWUSR,
@@ -989,10 +1628,17 @@ static ssize_t bonding_store_primary(struct device *d,
 				     struct device_attribute *attr,
 				     const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	int i;
 	struct slave *slave;
 	struct bonding *bond = to_bond(d);
 	char ifname[IFNAMSIZ];
+=======
+	struct bonding *bond = to_bond(d);
+	struct list_head *iter;
+	char ifname[IFNAMSIZ];
+	struct slave *slave;
+>>>>>>> refs/remotes/origin/master
 
 	if (!rtnl_trylock())
 		return restart_syscall();
@@ -1006,18 +1652,30 @@ static ssize_t bonding_store_primary(struct device *d,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	sscanf(buf, "%16s", ifname); /* IFNAMSIZ */
+=======
+	sscanf(buf, "%15s", ifname); /* IFNAMSIZ */
+>>>>>>> refs/remotes/origin/master
 
 	/* check to see if we are clearing primary */
 	if (!strlen(ifname) || buf[0] == '\n') {
 		pr_info("%s: Setting primary slave to None.\n",
 			bond->dev->name);
 		bond->primary_slave = NULL;
+<<<<<<< HEAD
+=======
+		memset(bond->params.primary, 0, sizeof(bond->params.primary));
+>>>>>>> refs/remotes/origin/master
 		bond_select_active_slave(bond);
 		goto out;
 	}
 
+<<<<<<< HEAD
 	bond_for_each_slave(bond, slave, i) {
+=======
+	bond_for_each_slave(bond, slave, iter) {
+>>>>>>> refs/remotes/origin/master
 		if (strncmp(slave->dev->name, ifname, IFNAMSIZ) == 0) {
 			pr_info("%s: Setting %s as primary slave.\n",
 				bond->dev->name, slave->dev->name);
@@ -1028,8 +1686,17 @@ static ssize_t bonding_store_primary(struct device *d,
 		}
 	}
 
+<<<<<<< HEAD
 	pr_info("%s: Unable to set %.*s as primary slave.\n",
 		bond->dev->name, (int)strlen(buf) - 1, buf);
+=======
+	strncpy(bond->params.primary, ifname, IFNAMSIZ);
+	bond->params.primary[IFNAMSIZ - 1] = 0;
+
+	pr_info("%s: Recording %s as primary, "
+		"but it has not been enslaved to %s yet.\n",
+		bond->dev->name, ifname, bond->dev->name);
+>>>>>>> refs/remotes/origin/master
 out:
 	write_unlock_bh(&bond->curr_slave_lock);
 	read_unlock(&bond->lock);
@@ -1142,6 +1809,7 @@ static ssize_t bonding_show_active_slave(struct device *d,
 					 struct device_attribute *attr,
 					 char *buf)
 {
+<<<<<<< HEAD
 	struct slave *curr;
 	struct bonding *bond = to_bond(d);
 	int count = 0;
@@ -1152,6 +1820,18 @@ static ssize_t bonding_show_active_slave(struct device *d,
 
 	if (USES_PRIMARY(bond->params.mode) && curr)
 		count = sprintf(buf, "%s\n", curr->dev->name);
+=======
+	struct bonding *bond = to_bond(d);
+	struct net_device *slave_dev;
+	int count = 0;
+
+	rcu_read_lock();
+	slave_dev = bond_option_active_slave_get_rcu(bond);
+	if (slave_dev)
+		count = sprintf(buf, "%s\n", slave_dev->name);
+	rcu_read_unlock();
+
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -1159,16 +1839,24 @@ static ssize_t bonding_store_active_slave(struct device *d,
 					  struct device_attribute *attr,
 					  const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	int i;
 	struct slave *slave;
 	struct slave *old_active = NULL;
 	struct slave *new_active = NULL;
 	struct bonding *bond = to_bond(d);
 	char ifname[IFNAMSIZ];
+=======
+	int ret;
+	struct bonding *bond = to_bond(d);
+	char ifname[IFNAMSIZ];
+	struct net_device *dev;
+>>>>>>> refs/remotes/origin/master
 
 	if (!rtnl_trylock())
 		return restart_syscall();
 
+<<<<<<< HEAD
 	block_netpoll_tx();
 	read_lock(&bond->lock);
 	write_lock_bh(&bond->curr_slave_lock);
@@ -1237,6 +1925,27 @@ static ssize_t bonding_store_active_slave(struct device *d,
 	rtnl_unlock();
 
 	return count;
+=======
+	sscanf(buf, "%15s", ifname); /* IFNAMSIZ */
+	if (!strlen(ifname) || buf[0] == '\n') {
+		dev = NULL;
+	} else {
+		dev = __dev_get_by_name(dev_net(bond->dev), ifname);
+		if (!dev) {
+			ret = -ENODEV;
+			goto out;
+		}
+	}
+
+	ret = bond_option_active_slave_set(bond, dev);
+	if (!ret)
+		ret = count;
+
+ out:
+	rtnl_unlock();
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 
 }
 static DEVICE_ATTR(active_slave, S_IRUGO | S_IWUSR,
@@ -1250,6 +1959,7 @@ static ssize_t bonding_show_mii_status(struct device *d,
 				       struct device_attribute *attr,
 				       char *buf)
 {
+<<<<<<< HEAD
 	struct slave *curr;
 	struct bonding *bond = to_bond(d);
 
@@ -1262,6 +1972,14 @@ static ssize_t bonding_show_mii_status(struct device *d,
 static DEVICE_ATTR(mii_status, S_IRUGO, bonding_show_mii_status, NULL);
 
 
+=======
+	struct bonding *bond = to_bond(d);
+
+	return sprintf(buf, "%s\n", bond->curr_active_slave ? "up" : "down");
+}
+static DEVICE_ATTR(mii_status, S_IRUGO, bonding_show_mii_status, NULL);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Show current 802.3ad aggregator ID.
  */
@@ -1275,7 +1993,11 @@ static ssize_t bonding_show_ad_aggregator(struct device *d,
 	if (bond->params.mode == BOND_MODE_8023AD) {
 		struct ad_info ad_info;
 		count = sprintf(buf, "%d\n",
+<<<<<<< HEAD
 				(bond_3ad_get_active_agg_info(bond, &ad_info))
+=======
+				bond_3ad_get_active_agg_info(bond, &ad_info)
+>>>>>>> refs/remotes/origin/master
 				?  0 : ad_info.aggregator_id);
 	}
 
@@ -1297,7 +2019,11 @@ static ssize_t bonding_show_ad_num_ports(struct device *d,
 	if (bond->params.mode == BOND_MODE_8023AD) {
 		struct ad_info ad_info;
 		count = sprintf(buf, "%d\n",
+<<<<<<< HEAD
 				(bond_3ad_get_active_agg_info(bond, &ad_info))
+=======
+				bond_3ad_get_active_agg_info(bond, &ad_info)
+>>>>>>> refs/remotes/origin/master
 				?  0 : ad_info.ports);
 	}
 
@@ -1319,7 +2045,11 @@ static ssize_t bonding_show_ad_actor_key(struct device *d,
 	if (bond->params.mode == BOND_MODE_8023AD) {
 		struct ad_info ad_info;
 		count = sprintf(buf, "%d\n",
+<<<<<<< HEAD
 				(bond_3ad_get_active_agg_info(bond, &ad_info))
+=======
+				bond_3ad_get_active_agg_info(bond, &ad_info)
+>>>>>>> refs/remotes/origin/master
 				?  0 : ad_info.actor_key);
 	}
 
@@ -1341,7 +2071,11 @@ static ssize_t bonding_show_ad_partner_key(struct device *d,
 	if (bond->params.mode == BOND_MODE_8023AD) {
 		struct ad_info ad_info;
 		count = sprintf(buf, "%d\n",
+<<<<<<< HEAD
 				(bond_3ad_get_active_agg_info(bond, &ad_info))
+=======
+				bond_3ad_get_active_agg_info(bond, &ad_info)
+>>>>>>> refs/remotes/origin/master
 				?  0 : ad_info.partner_key);
 	}
 
@@ -1377,15 +2111,26 @@ static ssize_t bonding_show_queue_id(struct device *d,
 				     struct device_attribute *attr,
 				     char *buf)
 {
+<<<<<<< HEAD
 	struct slave *slave;
 	int i, res = 0;
 	struct bonding *bond = to_bond(d);
+=======
+	struct bonding *bond = to_bond(d);
+	struct list_head *iter;
+	struct slave *slave;
+	int res = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!rtnl_trylock())
 		return restart_syscall();
 
+<<<<<<< HEAD
 	read_lock(&bond->lock);
 	bond_for_each_slave(bond, slave, i) {
+=======
+	bond_for_each_slave(bond, slave, iter) {
+>>>>>>> refs/remotes/origin/master
 		if (res > (PAGE_SIZE - IFNAMSIZ - 6)) {
 			/* not enough space for another interface_name:queue_id pair */
 			if ((PAGE_SIZE - res) > 10)
@@ -1396,10 +2141,18 @@ static ssize_t bonding_show_queue_id(struct device *d,
 		res += sprintf(buf + res, "%s:%d ",
 			       slave->dev->name, slave->queue_id);
 	}
+<<<<<<< HEAD
 	read_unlock(&bond->lock);
 	if (res)
 		buf[res-1] = '\n'; /* eat the leftover space */
 	rtnl_unlock();
+=======
+	if (res)
+		buf[res-1] = '\n'; /* eat the leftover space */
+
+	rtnl_unlock();
+
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -1413,8 +2166,14 @@ static ssize_t bonding_store_queue_id(struct device *d,
 {
 	struct slave *slave, *update_slave;
 	struct bonding *bond = to_bond(d);
+<<<<<<< HEAD
 	u16 qid;
 	int i, ret = count;
+=======
+	struct list_head *iter;
+	u16 qid;
+	int ret = count;
+>>>>>>> refs/remotes/origin/master
 	char *delim;
 	struct net_device *sdev = NULL;
 
@@ -1437,7 +2196,11 @@ static ssize_t bonding_store_queue_id(struct device *d,
 	/* Check buffer length, valid ifname and queue id */
 	if (strlen(buffer) > IFNAMSIZ ||
 	    !dev_valid_name(buffer) ||
+<<<<<<< HEAD
 	    qid > bond->params.tx_queues)
+=======
+	    qid > bond->dev->real_num_tx_queues)
+>>>>>>> refs/remotes/origin/master
 		goto err_no_cmd;
 
 	/* Get the pointer to that interface if it exists */
@@ -1445,11 +2208,17 @@ static ssize_t bonding_store_queue_id(struct device *d,
 	if (!sdev)
 		goto err_no_cmd;
 
+<<<<<<< HEAD
 	read_lock(&bond->lock);
 
 	/* Search for thes slave and check for duplicate qids */
 	update_slave = NULL;
 	bond_for_each_slave(bond, slave, i) {
+=======
+	/* Search for thes slave and check for duplicate qids */
+	update_slave = NULL;
+	bond_for_each_slave(bond, slave, iter) {
+>>>>>>> refs/remotes/origin/master
 		if (sdev == slave->dev)
 			/*
 			 * We don't need to check the matching
@@ -1457,23 +2226,37 @@ static ssize_t bonding_store_queue_id(struct device *d,
 			 */
 			update_slave = slave;
 		else if (qid && qid == slave->queue_id) {
+<<<<<<< HEAD
 			goto err_no_cmd_unlock;
+=======
+			goto err_no_cmd;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (!update_slave)
+<<<<<<< HEAD
 		goto err_no_cmd_unlock;
+=======
+		goto err_no_cmd;
+>>>>>>> refs/remotes/origin/master
 
 	/* Actually set the qids for the slave */
 	update_slave->queue_id = qid;
 
+<<<<<<< HEAD
 	read_unlock(&bond->lock);
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	rtnl_unlock();
 	return ret;
 
+<<<<<<< HEAD
 err_no_cmd_unlock:
 	read_unlock(&bond->lock);
+=======
+>>>>>>> refs/remotes/origin/master
 err_no_cmd:
 	pr_info("invalid input for queue_id set for %s.\n",
 		bond->dev->name);
@@ -1501,10 +2284,21 @@ static ssize_t bonding_store_slaves_active(struct device *d,
 					   struct device_attribute *attr,
 					   const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	int i, new_value, ret = count;
 	struct bonding *bond = to_bond(d);
 	struct slave *slave;
 
+=======
+	struct bonding *bond = to_bond(d);
+	int new_value, ret = count;
+	struct list_head *iter;
+	struct slave *slave;
+
+	if (!rtnl_trylock())
+		return restart_syscall();
+
+>>>>>>> refs/remotes/origin/master
 	if (sscanf(buf, "%d", &new_value) != 1) {
 		pr_err("%s: no all_slaves_active value specified.\n",
 		       bond->dev->name);
@@ -1524,8 +2318,15 @@ static ssize_t bonding_store_slaves_active(struct device *d,
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	read_lock(&bond->lock);
 	bond_for_each_slave(bond, slave, i) {
+=======
+	bond_for_each_slave(bond, slave, iter) {
+>>>>>>> refs/remotes/origin/master
 		if (!bond_is_active_slave(slave)) {
 			if (new_value)
 				slave->inactive = 0;
@@ -1533,8 +2334,17 @@ static ssize_t bonding_store_slaves_active(struct device *d,
 				slave->inactive = 1;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	read_unlock(&bond->lock);
 out:
+=======
+=======
+	read_unlock(&bond->lock);
+>>>>>>> refs/remotes/origin/cm-11.0
+out:
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 static DEVICE_ATTR(all_slaves_active, S_IRUGO | S_IWUSR,
@@ -1583,11 +2393,103 @@ out:
 static DEVICE_ATTR(resend_igmp, S_IRUGO | S_IWUSR,
 		   bonding_show_resend_igmp, bonding_store_resend_igmp);
 
+<<<<<<< HEAD
+=======
+
+static ssize_t bonding_show_lp_interval(struct device *d,
+					struct device_attribute *attr,
+					char *buf)
+{
+	struct bonding *bond = to_bond(d);
+	return sprintf(buf, "%d\n", bond->params.lp_interval);
+}
+
+static ssize_t bonding_store_lp_interval(struct device *d,
+					 struct device_attribute *attr,
+					 const char *buf, size_t count)
+{
+	struct bonding *bond = to_bond(d);
+	int new_value, ret = count;
+
+	if (sscanf(buf, "%d", &new_value) != 1) {
+		pr_err("%s: no lp interval value specified.\n",
+			bond->dev->name);
+		ret = -EINVAL;
+		goto out;
+	}
+
+	if (new_value <= 0) {
+		pr_err ("%s: lp_interval must be between 1 and %d\n",
+			bond->dev->name, INT_MAX);
+		ret = -EINVAL;
+		goto out;
+	}
+
+	bond->params.lp_interval = new_value;
+out:
+	return ret;
+}
+
+static DEVICE_ATTR(lp_interval, S_IRUGO | S_IWUSR,
+		   bonding_show_lp_interval, bonding_store_lp_interval);
+
+static ssize_t bonding_show_packets_per_slave(struct device *d,
+					      struct device_attribute *attr,
+					      char *buf)
+{
+	struct bonding *bond = to_bond(d);
+	unsigned int packets_per_slave = bond->params.packets_per_slave;
+
+	if (packets_per_slave > 1)
+		packets_per_slave = reciprocal_value(packets_per_slave);
+
+	return sprintf(buf, "%u\n", packets_per_slave);
+}
+
+static ssize_t bonding_store_packets_per_slave(struct device *d,
+					       struct device_attribute *attr,
+					       const char *buf, size_t count)
+{
+	struct bonding *bond = to_bond(d);
+	int new_value, ret = count;
+
+	if (sscanf(buf, "%d", &new_value) != 1) {
+		pr_err("%s: no packets_per_slave value specified.\n",
+		       bond->dev->name);
+		ret = -EINVAL;
+		goto out;
+	}
+	if (new_value < 0 || new_value > USHRT_MAX) {
+		pr_err("%s: packets_per_slave must be between 0 and %u\n",
+		       bond->dev->name, USHRT_MAX);
+		ret = -EINVAL;
+		goto out;
+	}
+	if (bond->params.mode != BOND_MODE_ROUNDROBIN)
+		pr_warn("%s: Warning: packets_per_slave has effect only in balance-rr mode\n",
+			bond->dev->name);
+	if (new_value > 1)
+		bond->params.packets_per_slave = reciprocal_value(new_value);
+	else
+		bond->params.packets_per_slave = new_value;
+out:
+	return ret;
+}
+
+static DEVICE_ATTR(packets_per_slave, S_IRUGO | S_IWUSR,
+		   bonding_show_packets_per_slave,
+		   bonding_store_packets_per_slave);
+
+>>>>>>> refs/remotes/origin/master
 static struct attribute *per_bond_attrs[] = {
 	&dev_attr_slaves.attr,
 	&dev_attr_mode.attr,
 	&dev_attr_fail_over_mac.attr,
 	&dev_attr_arp_validate.attr,
+<<<<<<< HEAD
+=======
+	&dev_attr_arp_all_targets.attr,
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_arp_interval.attr,
 	&dev_attr_arp_ip_target.attr,
 	&dev_attr_downdelay.attr,
@@ -1611,6 +2513,16 @@ static struct attribute *per_bond_attrs[] = {
 	&dev_attr_queue_id.attr,
 	&dev_attr_all_slaves_active.attr,
 	&dev_attr_resend_igmp.attr,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	&dev_attr_min_links.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_min_links.attr,
+	&dev_attr_lp_interval.attr,
+	&dev_attr_packets_per_slave.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -1623,11 +2535,30 @@ static struct attribute_group bonding_group = {
  * Initialize sysfs.  This sets up the bonding_masters file in
  * /sys/class/net.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int bond_create_sysfs(void)
 {
 	int ret;
 
 	ret = netdev_class_create_file(&class_attr_bonding_masters);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int bond_create_sysfs(struct bond_net *bn)
+{
+	int ret;
+
+	bn->class_attr_bonding_masters = class_attr_bonding_masters;
+	sysfs_attr_init(&bn->class_attr_bonding_masters.attr);
+
+<<<<<<< HEAD
+	ret = netdev_class_create_file(&bn->class_attr_bonding_masters);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = netdev_class_create_file_ns(&bn->class_attr_bonding_masters,
+					  bn->net);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Permit multiple loads of the module by ignoring failures to
 	 * create the bonding_masters sysfs file.  Bonding devices
@@ -1641,7 +2572,15 @@ int bond_create_sysfs(void)
 	 */
 	if (ret == -EEXIST) {
 		/* Is someone being kinky and naming a device bonding_master? */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (__dev_get_by_name(&init_net,
+=======
+		if (__dev_get_by_name(bn->net,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (__dev_get_by_name(bn->net,
+>>>>>>> refs/remotes/origin/master
 				      class_attr_bonding_masters.attr.name))
 			pr_err("network device named %s already exists in sysfs",
 			       class_attr_bonding_masters.attr.name);
@@ -1655,9 +2594,21 @@ int bond_create_sysfs(void)
 /*
  * Remove /sys/class/net/bonding_masters.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void bond_destroy_sysfs(void)
 {
 	netdev_class_remove_file(&class_attr_bonding_masters);
+=======
+void bond_destroy_sysfs(struct bond_net *bn)
+{
+	netdev_class_remove_file(&bn->class_attr_bonding_masters);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void bond_destroy_sysfs(struct bond_net *bn)
+{
+	netdev_class_remove_file_ns(&bn->class_attr_bonding_masters, bn->net);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

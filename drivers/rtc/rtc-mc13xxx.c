@@ -309,14 +309,26 @@ static irqreturn_t mc13xxx_rtc_reset_handler(int irq, void *dev)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit mc13xxx_rtc_probe(struct platform_device *pdev)
+=======
+static int __init mc13xxx_rtc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init mc13xxx_rtc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct mc13xxx_rtc *priv;
 	struct mc13xxx *mc13xxx;
 	int rtcrst_pending;
 
+<<<<<<< HEAD
 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+=======
+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!priv)
 		return -ENOMEM;
 
@@ -351,8 +363,13 @@ static int __devinit mc13xxx_rtc_probe(struct platform_device *pdev)
 
 	mc13xxx_unlock(mc13xxx);
 
+<<<<<<< HEAD
 	priv->rtc = rtc_device_register(pdev->name,
 			&pdev->dev, &mc13xxx_rtc_ops, THIS_MODULE);
+=======
+	priv->rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+					&mc13xxx_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(priv->rtc)) {
 		ret = PTR_ERR(priv->rtc);
 
@@ -370,28 +387,43 @@ err_reset_irq_status:
 err_reset_irq_request:
 
 		mc13xxx_unlock(mc13xxx);
+<<<<<<< HEAD
 
 		platform_set_drvdata(pdev, NULL);
 		kfree(priv);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __devexit mc13xxx_rtc_remove(struct platform_device *pdev)
+=======
+static int __exit mc13xxx_rtc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __exit mc13xxx_rtc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mc13xxx_rtc *priv = platform_get_drvdata(pdev);
 
 	mc13xxx_lock(priv->mc13xxx);
 
+<<<<<<< HEAD
 	rtc_device_unregister(priv->rtc);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mc13xxx_irq_free(priv->mc13xxx, MC13XXX_IRQ_TODA, priv);
 	mc13xxx_irq_free(priv->mc13xxx, MC13XXX_IRQ_1HZ, priv);
 	mc13xxx_irq_free(priv->mc13xxx, MC13XXX_IRQ_RTCRST, priv);
 
 	mc13xxx_unlock(priv->mc13xxx);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
 	kfree(priv);
@@ -399,24 +431,52 @@ static int __devexit mc13xxx_rtc_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 const struct platform_device_id mc13xxx_rtc_idtable[] = {
+=======
+static const struct platform_device_id mc13xxx_rtc_idtable[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+static const struct platform_device_id mc13xxx_rtc_idtable[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "mc13783-rtc",
 	}, {
 		.name = "mc13892-rtc",
+<<<<<<< HEAD
 	},
 	{ }
 };
 
 static struct platform_driver mc13xxx_rtc_driver = {
 	.id_table = mc13xxx_rtc_idtable,
+<<<<<<< HEAD
 	.remove = __devexit_p(mc13xxx_rtc_remove),
+=======
+	.remove = __exit_p(mc13xxx_rtc_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}, {
+		.name = "mc34708-rtc",
+	},
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(platform, mc13xxx_rtc_idtable);
+
+static struct platform_driver mc13xxx_rtc_driver = {
+	.id_table = mc13xxx_rtc_idtable,
+	.remove = __exit_p(mc13xxx_rtc_remove),
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = DRIVER_NAME,
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static int __init mc13xxx_rtc_init(void)
 {
 	return platform_driver_probe(&mc13xxx_rtc_driver, &mc13xxx_rtc_probe);
@@ -428,8 +488,14 @@ static void __exit mc13xxx_rtc_exit(void)
 	platform_driver_unregister(&mc13xxx_rtc_driver);
 }
 module_exit(mc13xxx_rtc_exit);
+=======
+module_platform_driver_probe(mc13xxx_rtc_driver, &mc13xxx_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
 MODULE_DESCRIPTION("RTC driver for Freescale MC13XXX PMIC");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 MODULE_ALIAS("platform:" DRIVER_NAME);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -10,6 +10,8 @@
 #include <linux/pci.h>
 #include <linux/list.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 struct device_node;
 
@@ -62,6 +64,17 @@ static inline int ppc_pci_has_flag(int flag)
 #endif
 
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm-generic/pci-bridge.h>
+
+struct device_node;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Structure of a PCI controller (host bridge)
  */
@@ -78,6 +91,10 @@ struct pci_controller {
 	int first_busno;
 	int last_busno;
 	int self_busno;
+<<<<<<< HEAD
+=======
+	struct resource busn;
+>>>>>>> refs/remotes/origin/master
 
 	void __iomem *io_base_virt;
 #ifdef CONFIG_PPC64
@@ -86,11 +103,14 @@ struct pci_controller {
 	resource_size_t io_base_phys;
 	resource_size_t pci_io_size;
 
+<<<<<<< HEAD
 	/* Some machines (PReP) have a non 1:1 mapping of
 	 * the PCI memory space in the CPU bus space
 	 */
 	resource_size_t pci_mem_offset;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Some machines have a special region to forward the ISA
 	 * "memory" cycles such as VGA memory regions. Left to 0
 	 * if unsupported
@@ -117,6 +137,11 @@ struct pci_controller {
 	 *  BIG_ENDIAN - cfg_addr is a big endian register
 	 *  BROKEN_MRM - the 440EPx/GRx chips have an errata that causes hangs on
 	 *   the PLB4.  Effectively disable MRM commands by setting this.
+<<<<<<< HEAD
+=======
+	 *  FSL_CFG_REG_LINK - Freescale controller version in which the PCIe
+	 *   link status is in a RC PCIe cfg register (vs being a SoC register)
+>>>>>>> refs/remotes/origin/master
 	 */
 #define PPC_INDIRECT_TYPE_SET_CFG_TYPE		0x00000001
 #define PPC_INDIRECT_TYPE_EXT_REG		0x00000002
@@ -124,12 +149,20 @@ struct pci_controller {
 #define PPC_INDIRECT_TYPE_NO_PCIE_LINK		0x00000008
 #define PPC_INDIRECT_TYPE_BIG_ENDIAN		0x00000010
 #define PPC_INDIRECT_TYPE_BROKEN_MRM		0x00000020
+<<<<<<< HEAD
+=======
+#define PPC_INDIRECT_TYPE_FSL_CFG_REG_LINK	0x00000040
+>>>>>>> refs/remotes/origin/master
 	u32 indirect_type;
 	/* Currently, we limit ourselves to 1 IO range and 3 mem
 	 * ranges since the common pci_bus structure can't handle more
 	 */
 	struct resource	io_resource;
 	struct resource mem_resources[3];
+<<<<<<< HEAD
+=======
+	resource_size_t mem_offset[3];
+>>>>>>> refs/remotes/origin/master
 	int global_number;		/* PCI domain number */
 
 	resource_size_t dma_window_base_cur;
@@ -137,9 +170,15 @@ struct pci_controller {
 
 #ifdef CONFIG_PPC64
 	unsigned long buid;
+<<<<<<< HEAD
 
 	void *private_data;
 #endif	/* CONFIG_PPC64 */
+=======
+#endif	/* CONFIG_PPC64 */
+
+	void *private_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* These are used for config access before all the PCI probing
@@ -164,6 +203,15 @@ extern void setup_indirect_pci(struct pci_controller* hose,
 			       resource_size_t cfg_addr,
 			       resource_size_t cfg_data, u32 flags);
 
+<<<<<<< HEAD
+=======
+extern int indirect_read_config(struct pci_bus *bus, unsigned int devfn,
+				int offset, int len, u32 *val);
+
+extern int indirect_write_config(struct pci_bus *bus, unsigned int devfn,
+				 int offset, int len, u32 val);
+
+>>>>>>> refs/remotes/origin/master
 static inline struct pci_controller *pci_bus_to_host(const struct pci_bus *bus)
 {
 	return bus->sysdata;
@@ -171,6 +219,8 @@ static inline struct pci_controller *pci_bus_to_host(const struct pci_bus *bus)
 
 #ifndef CONFIG_PPC64
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct device_node *pci_bus_to_OF_node(struct pci_bus *bus)
 {
 	struct pci_controller *host;
@@ -180,6 +230,16 @@ static inline struct device_node *pci_bus_to_OF_node(struct pci_bus *bus)
 	host = pci_bus_to_host(bus);
 	return host ? host->dn : NULL;
 }
+=======
+extern int pci_device_from_OF_node(struct device_node *node,
+				   u8 *bus, u8 *devfn);
+extern void pci_create_OF_bus_map(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int pci_device_from_OF_node(struct device_node *node,
+				   u8 *bus, u8 *devfn);
+extern void pci_create_OF_bus_map(void);
+>>>>>>> refs/remotes/origin/master
 
 static inline int isa_vaddr_is_ioport(void __iomem *address)
 {
@@ -207,6 +267,8 @@ struct pci_dn {
 
 	int	pci_ext_config_space;	/* for pci devices */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_EEH
 	struct	pci_dev *pcidev;	/* back-pointer to the pci device */
 	int	class_code;		/* pci device class */
@@ -217,12 +279,30 @@ struct pci_dn {
 	int	eeh_freeze_count;	/* # times this device froze up. */
 	int	eeh_false_positives;	/* # times this device reported #ff's */
 	u32	config_space[16];	/* saved PCI config space */
+=======
+=======
+	bool	force_32bit_msi;
+
+>>>>>>> refs/remotes/origin/master
+	struct	pci_dev *pcidev;	/* back-pointer to the pci device */
+#ifdef CONFIG_EEH
+	struct eeh_dev *edev;		/* eeh device */
+#endif
+#define IODA_INVALID_PE		(-1)
+#ifdef CONFIG_PPC_POWERNV
+	int	pe_number;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 
 /* Get the pointer to a device_node's pci_dn */
 #define PCI_DN(dn)	((struct pci_dn *) (dn)->data)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern struct device_node *fetch_dev_dn(struct pci_dev *dev);
 extern void * update_dn_pci_info(struct device_node *dn, void *data);
 
@@ -234,6 +314,16 @@ static inline struct device_node *pci_device_to_OF_node(struct pci_dev *dev)
 	return dev->dev.of_node ? dev->dev.of_node : fetch_dev_dn(dev);
 }
 
+=======
+extern void * update_dn_pci_info(struct device_node *dn, void *data);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct pci_dn *pci_get_pdn(struct pci_dev *pdev);
+
+extern void * update_dn_pci_info(struct device_node *dn, void *data);
+
+>>>>>>> refs/remotes/origin/master
 static inline int pci_device_from_OF_node(struct device_node *np,
 					  u8 *bus, u8 *devfn)
 {
@@ -244,6 +334,8 @@ static inline int pci_device_from_OF_node(struct device_node *np,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct device_node *pci_bus_to_OF_node(struct pci_bus *bus)
 {
 	if (bus->self)
@@ -251,6 +343,30 @@ static inline struct device_node *pci_bus_to_OF_node(struct pci_bus *bus)
 	else
 		return bus->dev.of_node; /* Must be root bus (PHB) */
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if defined(CONFIG_EEH)
+static inline struct eeh_dev *of_node_to_eeh_dev(struct device_node *dn)
+{
+	/*
+	 * For those OF nodes whose parent isn't PCI bridge, they
+	 * don't have PCI_DN actually. So we have to skip them for
+	 * any EEH operations.
+	 */
+	if (!dn || !PCI_DN(dn))
+		return NULL;
+
+	return PCI_DN(dn)->edev;
+}
+<<<<<<< HEAD
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else
+#define of_node_to_eeh_dev(x) (NULL)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /** Find the bus corresponding to the indicated device node */
 extern struct pci_bus *pcibios_find_pci_bus(struct device_node *dn);
@@ -293,7 +409,13 @@ extern void pci_process_bridge_OF_ranges(struct pci_controller *hose,
 /* Allocate & free a PCI host bridge structure */
 extern struct pci_controller *pcibios_alloc_controller(struct device_node *dev);
 extern void pcibios_free_controller(struct pci_controller *phb);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void pcibios_setup_phb_resources(struct pci_controller *hose);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PCI
 extern int pcibios_vaddr_is_ioport(void __iomem *address);

@@ -12,6 +12,8 @@
 #ifndef	__AMBA_PL330_H_
 #define	__AMBA_PL330_H_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/hardware/pl330.h>
 
 struct dma_pl330_peri {
@@ -26,6 +28,12 @@ struct dma_pl330_peri {
 	int burst_sz; /* in power of 2 */
 	dma_addr_t fifo_addr;
 };
+=======
+#include <linux/dmaengine.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dmaengine.h>
+>>>>>>> refs/remotes/origin/master
 
 struct dma_pl330_platdata {
 	/*
@@ -37,9 +45,29 @@ struct dma_pl330_platdata {
 	 */
 	u8 nr_valid_peri;
 	/* Array of valid peripherals */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct dma_pl330_peri *peri;
+=======
+	u8 *peri_id;
+	/* Operational capabilities */
+	dma_cap_mask_t cap_mask;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 *peri_id;
+	/* Operational capabilities */
+	dma_cap_mask_t cap_mask;
+>>>>>>> refs/remotes/origin/master
 	/* Bytes to allocate for MC buffer */
 	unsigned mcbuf_sz;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern bool pl330_filter(struct dma_chan *chan, void *param);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern bool pl330_filter(struct dma_chan *chan, void *param);
+>>>>>>> refs/remotes/origin/master
 #endif	/* __AMBA_PL330_H_ */

@@ -6,7 +6,10 @@
  */
 
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -46,10 +49,17 @@
 #define FULLPWRBIT          0x00000080
 #define NEXT_BOARD_POWER_BIT        0x00000004
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Version Information */
 #define DRIVER_VERSION "v0.1"
+=======
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_DESC "Quatech SSU-100 USB to Serial Driver"
 
 #define	USB_VENDOR_ID_QUATECH	0x061d	/* Quatech VID */
@@ -59,6 +69,7 @@ static const struct usb_device_id id_table[] = {
 	{USB_DEVICE(USB_VENDOR_ID_QUATECH, QUATECH_SSU100)},
 	{}			/* Terminating entry */
 };
+<<<<<<< HEAD
 
 MODULE_DEVICE_TABLE(usb, id_table);
 
@@ -70,14 +81,22 @@ static struct usb_driver ssu100_driver = {
 	.id_table		       = id_table,
 	.suspend		       = usb_serial_suspend,
 	.resume			       = usb_serial_resume,
+<<<<<<< HEAD
 	.no_dynamic_id		       = 1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.supports_autosuspend	       = 1,
 };
 
+=======
+MODULE_DEVICE_TABLE(usb, id_table);
+
+>>>>>>> refs/remotes/origin/master
 struct ssu100_port_private {
 	spinlock_t status_lock;
 	u8 shadowLSR;
 	u8 shadowMSR;
+<<<<<<< HEAD
 	wait_queue_head_t delta_msr_wait; /* Used for TIOCMIWAIT */
 	struct async_icount icount;
 };
@@ -90,6 +109,10 @@ static void ssu100_release(struct usb_serial *serial)
 	kfree(priv);
 }
 
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline int ssu100_control_msg(struct usb_device *dev,
 				     u8 request, u16 data, u16 index)
 {
@@ -149,7 +172,11 @@ static inline int update_mctrl(struct usb_device *dev, unsigned int set,
 	int result;
 
 	if (((set | clear) & (TIOCM_DTR | TIOCM_RTS)) == 0) {
+<<<<<<< HEAD
 		dbg("%s - DTR|RTS not being set|cleared", __func__);
+=======
+		dev_dbg(&dev->dev, "%s - DTR|RTS not being set|cleared\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return 0;	/* no change */
 	}
 
@@ -162,7 +189,11 @@ static inline int update_mctrl(struct usb_device *dev, unsigned int set,
 
 	result = ssu100_setregister(dev, 0, UART_MCR, urb_value);
 	if (result < 0)
+<<<<<<< HEAD
 		dbg("%s Error from MODEM_CTRL urb", __func__);
+=======
+		dev_dbg(&dev->dev, "%s Error from MODEM_CTRL urb\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
@@ -172,15 +203,22 @@ static int ssu100_initdevice(struct usb_device *dev)
 	u8 *data;
 	int result = 0;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	data = kzalloc(3, GFP_KERNEL);
 	if (!data)
 		return -ENOMEM;
 
 	result = ssu100_getdevice(dev, data);
 	if (result < 0) {
+<<<<<<< HEAD
 		dbg("%s - get_device failed %i", __func__, result);
+=======
+		dev_dbg(&dev->dev, "%s - get_device failed %i\n", __func__, result);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -188,25 +226,41 @@ static int ssu100_initdevice(struct usb_device *dev)
 
 	result = ssu100_setdevice(dev, data);
 	if (result < 0) {
+<<<<<<< HEAD
 		dbg("%s - setdevice failed %i", __func__, result);
+=======
+		dev_dbg(&dev->dev, "%s - setdevice failed %i\n", __func__, result);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	result = ssu100_control_msg(dev, QT_GET_SET_PREBUF_TRIG_LVL, 128, 0);
 	if (result < 0) {
+<<<<<<< HEAD
 		dbg("%s - set prebuffer level failed %i", __func__, result);
+=======
+		dev_dbg(&dev->dev, "%s - set prebuffer level failed %i\n", __func__, result);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	result = ssu100_control_msg(dev, QT_SET_ATF, ATC_DISABLED, 0);
 	if (result < 0) {
+<<<<<<< HEAD
 		dbg("%s - set ATFprebuffer level failed %i", __func__, result);
+=======
+		dev_dbg(&dev->dev, "%s - set ATFprebuffer level failed %i\n", __func__, result);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	result = ssu100_getdevice(dev, data);
 	if (result < 0) {
+<<<<<<< HEAD
 		dbg("%s - get_device failed %i", __func__, result);
+=======
+		dev_dbg(&dev->dev, "%s - get_device failed %i\n", __func__, result);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -217,7 +271,11 @@ static int ssu100_initdevice(struct usb_device *dev)
 
 	result = ssu100_setdevice(dev, data);
 	if (result < 0) {
+<<<<<<< HEAD
 		dbg("%s - setdevice failed %i", __func__, result);
+=======
+		dev_dbg(&dev->dev, "%s - setdevice failed %i\n", __func__, result);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -232,14 +290,21 @@ static void ssu100_set_termios(struct tty_struct *tty,
 			       struct ktermios *old_termios)
 {
 	struct usb_device *dev = port->serial->dev;
+<<<<<<< HEAD
 	struct ktermios *termios = tty->termios;
+=======
+	struct ktermios *termios = &tty->termios;
+>>>>>>> refs/remotes/origin/master
 	u16 baud, divisor, remainder;
 	unsigned int cflag = termios->c_cflag;
 	u16 urb_value = 0; /* will hold the new flags */
 	int result;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cflag & PARENB) {
 		if (cflag & PARODD)
 			urb_value |= UART_LCR_PARITY;
@@ -267,7 +332,11 @@ static void ssu100_set_termios(struct tty_struct *tty,
 	if (!baud)
 		baud = 9600;
 
+<<<<<<< HEAD
 	dbg("%s - got baud = %d\n", __func__, baud);
+=======
+	dev_dbg(&port->dev, "%s - got baud = %d\n", __func__, baud);
+>>>>>>> refs/remotes/origin/master
 
 
 	divisor = MAX_BAUD_RATE / baud;
@@ -279,7 +348,11 @@ static void ssu100_set_termios(struct tty_struct *tty,
 
 	result = ssu100_control_msg(dev, QT_GET_SET_UART, divisor, urb_value);
 	if (result < 0)
+<<<<<<< HEAD
 		dbg("%s - set uart failed", __func__);
+=======
+		dev_dbg(&port->dev, "%s - set uart failed\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	if (cflag & CRTSCTS)
 		result = ssu100_control_msg(dev, QT_HW_FLOW_CONTROL_MASK,
@@ -288,7 +361,11 @@ static void ssu100_set_termios(struct tty_struct *tty,
 		result = ssu100_control_msg(dev, QT_HW_FLOW_CONTROL_MASK,
 					    0, 0);
 	if (result < 0)
+<<<<<<< HEAD
 		dbg("%s - set HW flow control failed", __func__);
+=======
+		dev_dbg(&port->dev, "%s - set HW flow control failed\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	if (I_IXOFF(tty) || I_IXON(tty)) {
 		u16 x = ((u16)(START_CHAR(tty) << 8) | (u16)(STOP_CHAR(tty)));
@@ -300,7 +377,11 @@ static void ssu100_set_termios(struct tty_struct *tty,
 					    0, 0);
 
 	if (result < 0)
+<<<<<<< HEAD
 		dbg("%s - set SW flow control failed", __func__);
+=======
+		dev_dbg(&port->dev, "%s - set SW flow control failed\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -313,8 +394,11 @@ static int ssu100_open(struct tty_struct *tty, struct usb_serial_port *port)
 	int result;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	data = kzalloc(2, GFP_KERNEL);
 	if (!data)
 		return -ENOMEM;
@@ -324,7 +408,11 @@ static int ssu100_open(struct tty_struct *tty, struct usb_serial_port *port)
 				 QT_TRANSFER_IN, 0x01,
 				 0, data, 2, 300);
 	if (result < 0) {
+<<<<<<< HEAD
 		dbg("%s - open failed %i", __func__, result);
+=======
+		dev_dbg(&port->dev, "%s - open failed %i\n", __func__, result);
+>>>>>>> refs/remotes/origin/master
 		kfree(data);
 		return result;
 	}
@@ -339,20 +427,30 @@ static int ssu100_open(struct tty_struct *tty, struct usb_serial_port *port)
 /* set to 9600 */
 	result = ssu100_control_msg(dev, QT_GET_SET_UART, 0x30, 0x0300);
 	if (result < 0)
+<<<<<<< HEAD
 		dbg("%s - set uart failed", __func__);
 
 	if (tty)
 		ssu100_set_termios(tty, port, tty->termios);
+=======
+		dev_dbg(&port->dev, "%s - set uart failed\n", __func__);
+
+	if (tty)
+		ssu100_set_termios(tty, port, &tty->termios);
+>>>>>>> refs/remotes/origin/master
 
 	return usb_serial_generic_open(tty, port);
 }
 
+<<<<<<< HEAD
 static void ssu100_close(struct usb_serial_port *port)
 {
 	dbg("%s", __func__);
 	usb_serial_generic_close(port);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int get_serial_info(struct usb_serial_port *port,
 			   struct serial_struct __user *retinfo)
 {
@@ -362,7 +460,11 @@ static int get_serial_info(struct usb_serial_port *port,
 		return -EFAULT;
 
 	memset(&tmp, 0, sizeof(tmp));
+<<<<<<< HEAD
 	tmp.line		= port->serial->minor;
+=======
+	tmp.line		= port->minor;
+>>>>>>> refs/remotes/origin/master
 	tmp.port		= 0;
 	tmp.irq			= 0;
 	tmp.flags		= ASYNC_SKIP_TEST | ASYNC_AUTO_IRQ;
@@ -376,6 +478,7 @@ static int get_serial_info(struct usb_serial_port *port,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int wait_modem_info(struct usb_serial_port *port, unsigned int arg)
 {
 	struct ssu100_port_private *priv = usb_get_serial_port_data(port);
@@ -439,32 +542,44 @@ static int ssu100_get_icount(struct tty_struct *tty,
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ssu100_ioctl(struct tty_struct *tty,
 		    unsigned int cmd, unsigned long arg)
 {
 	struct usb_serial_port *port = tty->driver_data;
 
+<<<<<<< HEAD
 	dbg("%s cmd 0x%04x", __func__, cmd);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (cmd) {
 	case TIOCGSERIAL:
 		return get_serial_info(port,
 				       (struct serial_struct __user *) arg);
+<<<<<<< HEAD
 
 	case TIOCMIWAIT:
 		return wait_modem_info(port, arg);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		break;
 	}
 
+<<<<<<< HEAD
 	dbg("%s arg not supported", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return -ENOIOCTLCMD;
 }
 
 static int ssu100_attach(struct usb_serial *serial)
 {
+<<<<<<< HEAD
 	struct ssu100_port_private *priv;
 	struct usb_serial_port *port = *serial->port;
 
@@ -482,6 +597,34 @@ static int ssu100_attach(struct usb_serial *serial)
 	usb_set_serial_port_data(port, priv);
 
 	return ssu100_initdevice(serial->dev);
+=======
+	return ssu100_initdevice(serial->dev);
+}
+
+static int ssu100_port_probe(struct usb_serial_port *port)
+{
+	struct ssu100_port_private *priv;
+
+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	spin_lock_init(&priv->status_lock);
+
+	usb_set_serial_port_data(port, priv);
+
+	return 0;
+}
+
+static int ssu100_port_remove(struct usb_serial_port *port)
+{
+	struct ssu100_port_private *priv;
+
+	priv = usb_get_serial_port_data(port);
+	kfree(priv);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ssu100_tiocmget(struct tty_struct *tty)
@@ -491,8 +634,11 @@ static int ssu100_tiocmget(struct tty_struct *tty)
 	u8 *d;
 	int r;
 
+<<<<<<< HEAD
 	dbg("%s\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	d = kzalloc(2, GFP_KERNEL);
 	if (!d)
 		return -ENOMEM;
@@ -523,7 +669,10 @@ static int ssu100_tiocmset(struct tty_struct *tty,
 	struct usb_serial_port *port = tty->driver_data;
 	struct usb_device *dev = port->serial->dev;
 
+<<<<<<< HEAD
 	dbg("%s\n", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 	return update_mctrl(dev, set, clear);
 }
 
@@ -531,21 +680,47 @@ static void ssu100_dtr_rts(struct usb_serial_port *port, int on)
 {
 	struct usb_device *dev = port->serial->dev;
 
+<<<<<<< HEAD
 	dbg("%s\n", __func__);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&port->serial->disc_mutex);
 	if (!port->serial->disconnected) {
 		/* Disable flow control */
 		if (!on &&
 		    ssu100_setregister(dev, 0, UART_MCR, 0) < 0)
+=======
+	/* Disable flow control */
+	if (!on) {
+		if (ssu100_setregister(dev, 0, UART_MCR, 0) < 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 			dev_err(&port->dev, "error from flowcontrol urb\n");
-		/* drop RTS and DTR */
-		if (on)
-			set_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
-		else
-			clear_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
 	}
+<<<<<<< HEAD
 	mutex_unlock(&port->serial->disc_mutex);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Disable flow control */
+	if (!on) {
+		if (ssu100_setregister(dev, 0, UART_MCR, 0) < 0)
+			dev_err(&port->dev, "error from flowcontrol urb\n");
+	}
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* drop RTS and DTR */
+	if (on)
+		set_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
+	else
+		clear_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void ssu100_update_msr(struct usb_serial_port *port, u8 msr)
@@ -560,6 +735,7 @@ static void ssu100_update_msr(struct usb_serial_port *port, u8 msr)
 	if (msr & UART_MSR_ANY_DELTA) {
 		/* update input line counters */
 		if (msr & UART_MSR_DCTS)
+<<<<<<< HEAD
 			priv->icount.cts++;
 		if (msr & UART_MSR_DDSR)
 			priv->icount.dsr++;
@@ -568,6 +744,16 @@ static void ssu100_update_msr(struct usb_serial_port *port, u8 msr)
 		if (msr & UART_MSR_TERI)
 			priv->icount.rng++;
 		wake_up_interruptible(&priv->delta_msr_wait);
+=======
+			port->icount.cts++;
+		if (msr & UART_MSR_DDSR)
+			port->icount.dsr++;
+		if (msr & UART_MSR_DDCD)
+			port->icount.dcd++;
+		if (msr & UART_MSR_TERI)
+			port->icount.rng++;
+		wake_up_interruptible(&port->port.delta_msr_wait);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -586,22 +772,38 @@ static void ssu100_update_lsr(struct usb_serial_port *port, u8 lsr,
 		/* we always want to update icount, but we only want to
 		 * update tty_flag for one case */
 		if (lsr & UART_LSR_BI) {
+<<<<<<< HEAD
 			priv->icount.brk++;
+=======
+			port->icount.brk++;
+>>>>>>> refs/remotes/origin/master
 			*tty_flag = TTY_BREAK;
 			usb_serial_handle_break(port);
 		}
 		if (lsr & UART_LSR_PE) {
+<<<<<<< HEAD
 			priv->icount.parity++;
+=======
+			port->icount.parity++;
+>>>>>>> refs/remotes/origin/master
 			if (*tty_flag == TTY_NORMAL)
 				*tty_flag = TTY_PARITY;
 		}
 		if (lsr & UART_LSR_FE) {
+<<<<<<< HEAD
 			priv->icount.frame++;
+=======
+			port->icount.frame++;
+>>>>>>> refs/remotes/origin/master
 			if (*tty_flag == TTY_NORMAL)
 				*tty_flag = TTY_FRAME;
 		}
 		if (lsr & UART_LSR_OE){
+<<<<<<< HEAD
 			priv->icount.overrun++;
+=======
+			port->icount.overrun++;
+>>>>>>> refs/remotes/origin/master
 			if (*tty_flag == TTY_NORMAL)
 				*tty_flag = TTY_OVERRUN;
 		}
@@ -609,8 +811,12 @@ static void ssu100_update_lsr(struct usb_serial_port *port, u8 lsr,
 
 }
 
+<<<<<<< HEAD
 static int ssu100_process_packet(struct urb *urb,
 				 struct tty_struct *tty)
+=======
+static void ssu100_process_read_urb(struct urb *urb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_serial_port *port = urb->context;
 	char *packet = (char *)urb->transfer_buffer;
@@ -619,15 +825,23 @@ static int ssu100_process_packet(struct urb *urb,
 	int i;
 	char *ch;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((len >= 4) &&
 	    (packet[0] == 0x1b) && (packet[1] == 0x1b) &&
 	    ((packet[2] == 0x00) || (packet[2] == 0x01))) {
 		if (packet[2] == 0x00) {
 			ssu100_update_lsr(port, packet[3], &flag);
 			if (flag == TTY_OVERRUN)
+<<<<<<< HEAD
 				tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+=======
+				tty_insert_flip_char(&port->port, 0,
+						TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 		}
 		if (packet[2] == 0x01)
 			ssu100_update_msr(port, packet[3]);
@@ -638,11 +852,16 @@ static int ssu100_process_packet(struct urb *urb,
 		ch = packet;
 
 	if (!len)
+<<<<<<< HEAD
 		return 0;	/* status only */
+=======
+		return;	/* status only */
+>>>>>>> refs/remotes/origin/master
 
 	if (port->port.console && port->sysrq) {
 		for (i = 0; i < len; i++, ch++) {
 			if (!usb_serial_handle_sysrq_char(port, *ch))
+<<<<<<< HEAD
 				tty_insert_flip_char(tty, *ch, flag);
 		}
 	} else
@@ -668,6 +887,14 @@ static void ssu100_process_read_urb(struct urb *urb)
 	if (count)
 		tty_flip_buffer_push(tty);
 	tty_kref_put(tty);
+=======
+				tty_insert_flip_char(&port->port, *ch, flag);
+		}
+	} else
+		tty_insert_flip_string_fixed_flag(&port->port, ch, flag, len);
+
+	tty_flip_buffer_push(&port->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct usb_serial_driver ssu100_device = {
@@ -677,22 +904,35 @@ static struct usb_serial_driver ssu100_device = {
 	},
 	.description	     = DRIVER_DESC,
 	.id_table	     = id_table,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver	     = &ssu100_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_ports	     = 1,
 	.open		     = ssu100_open,
 	.close		     = ssu100_close,
 	.attach              = ssu100_attach,
 	.release             = ssu100_release,
+=======
+	.num_ports	     = 1,
+	.open		     = ssu100_open,
+	.attach              = ssu100_attach,
+	.port_probe          = ssu100_port_probe,
+	.port_remove         = ssu100_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.dtr_rts             = ssu100_dtr_rts,
 	.process_read_urb    = ssu100_process_read_urb,
 	.tiocmget            = ssu100_tiocmget,
 	.tiocmset            = ssu100_tiocmset,
+<<<<<<< HEAD
 	.get_icount	     = ssu100_get_icount,
 	.ioctl               = ssu100_ioctl,
 	.set_termios         = ssu100_set_termios,
 	.disconnect          = usb_serial_generic_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init ssu100_init(void)
 {
 	int retval;
@@ -728,9 +968,31 @@ static void __exit ssu100_exit(void)
 
 module_init(ssu100_init);
 module_exit(ssu100_exit);
+=======
+=======
+	.tiocmiwait          = usb_serial_generic_tiocmiwait,
+	.get_icount	     = usb_serial_generic_get_icount,
+	.ioctl               = ssu100_ioctl,
+	.set_termios         = ssu100_set_termios,
+};
+
+>>>>>>> refs/remotes/origin/master
+static struct usb_serial_driver * const serial_drivers[] = {
+	&ssu100_device, NULL
+};
+
+<<<<<<< HEAD
+module_usb_serial_driver(ssu100_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
 
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
+=======
+module_usb_serial_driver(serial_drivers, id_table);
+
+MODULE_DESCRIPTION(DRIVER_DESC);
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

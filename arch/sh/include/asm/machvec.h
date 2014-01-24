@@ -17,7 +17,10 @@
 struct sh_machine_vector {
 	void (*mv_setup)(char **cmdline_p);
 	const char *mv_name;
+<<<<<<< HEAD
 	int mv_nr_irqs;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	int (*mv_irq_demux)(int irq);
 	void (*mv_init_irq)(void);

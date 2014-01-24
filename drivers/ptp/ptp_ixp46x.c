@@ -259,8 +259,20 @@ static struct ixp_clock ixp_clock;
 static int setup_interrupt(int gpio)
 {
 	int irq;
+<<<<<<< HEAD
 
 	gpio_line_config(gpio, IXP4XX_GPIO_IN);
+=======
+	int err;
+
+	err = gpio_request(gpio, "ixp4-ptp");
+	if (err)
+		return err;
+
+	err = gpio_direction_input(gpio);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	irq = gpio_to_irq(gpio);
 
@@ -284,6 +296,10 @@ static void __exit ptp_ixp_exit(void)
 {
 	free_irq(MASTER_IRQ, &ixp_clock);
 	free_irq(SLAVE_IRQ, &ixp_clock);
+<<<<<<< HEAD
+=======
+	ixp46x_phc_index = -1;
+>>>>>>> refs/remotes/origin/master
 	ptp_clock_unregister(ixp_clock.ptp_clock);
 }
 
@@ -297,11 +313,20 @@ static int __init ptp_ixp_init(void)
 
 	ixp_clock.caps = ptp_ixp_caps;
 
+<<<<<<< HEAD
 	ixp_clock.ptp_clock = ptp_clock_register(&ixp_clock.caps);
+=======
+	ixp_clock.ptp_clock = ptp_clock_register(&ixp_clock.caps, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(ixp_clock.ptp_clock))
 		return PTR_ERR(ixp_clock.ptp_clock);
 
+<<<<<<< HEAD
+=======
+	ixp46x_phc_index = ptp_clock_index(ixp_clock.ptp_clock);
+
+>>>>>>> refs/remotes/origin/master
 	__raw_writel(DEFAULT_ADDEND, &ixp_clock.regs->addend);
 	__raw_writel(1, &ixp_clock.regs->trgt_lo);
 	__raw_writel(0, &ixp_clock.regs->trgt_hi);
@@ -327,6 +352,14 @@ no_master:
 module_init(ptp_ixp_init);
 module_exit(ptp_ixp_exit);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_AUTHOR("Richard Cochran <richard.cochran@omicron.at>");
+=======
+MODULE_AUTHOR("Richard Cochran <richardcochran@gmail.com>");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_AUTHOR("Richard Cochran <richardcochran@gmail.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("PTP clock using the IXP46X timer");
 MODULE_LICENSE("GPL");

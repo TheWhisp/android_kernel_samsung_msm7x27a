@@ -21,16 +21,33 @@
 #include <linux/kernel.h>
 #include <linux/interrupt.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/cpu.h>
 #include <asm/system.h>
+=======
+#include <linux/sched.h>	/* for idle_task_exit */
+#include <linux/cpu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>	/* for idle_task_exit */
+#include <linux/cpu.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/prom.h>
 #include <asm/rtas.h>
 #include <asm/firmware.h>
 #include <asm/machdep.h>
 #include <asm/vdso_datapage.h>
+<<<<<<< HEAD
 #include <asm/pSeries_reconfig.h>
 #include <asm/xics.h>
 #include "plpar_wrappers.h"
+=======
+#include <asm/xics.h>
+#include <asm/plpar_wrappers.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "offline_states.h"
 
 /* This version can't take the spinlock, because it never returns */
@@ -123,6 +140,7 @@ static void pseries_mach_cpu_die(void)
 		cede_latency_hint = 2;
 
 		get_lppaca()->idle = 1;
+<<<<<<< HEAD
 		if (!get_lppaca()->shared_proc)
 			get_lppaca()->donate_dedicated_cpu = 1;
 
@@ -131,12 +149,39 @@ static void pseries_mach_cpu_die(void)
 		}
 
 		if (!get_lppaca()->shared_proc)
+=======
+		if (!lppaca_shared_proc(get_lppaca()))
+			get_lppaca()->donate_dedicated_cpu = 1;
+
+		while (get_preferred_offline_state(cpu) == CPU_STATE_INACTIVE) {
+			while (!prep_irq_for_idle()) {
+				local_irq_enable();
+				local_irq_disable();
+			}
+
+			extended_cede_processor(cede_latency_hint);
+		}
+
+		local_irq_disable();
+
+		if (!lppaca_shared_proc(get_lppaca()))
+>>>>>>> refs/remotes/origin/master
 			get_lppaca()->donate_dedicated_cpu = 0;
 		get_lppaca()->idle = 0;
 
 		if (get_preferred_offline_state(cpu) == CPU_STATE_ONLINE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			unregister_slb_shadow(hwcpu, __pa(get_slb_shadow()));
+=======
+			unregister_slb_shadow(hwcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+			unregister_slb_shadow(hwcpu);
+
+			hard_irq_disable();
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Call to start_secondary_resume() will not return.
 			 * Kernel stack will be reset and start_secondary()
@@ -150,7 +195,15 @@ static void pseries_mach_cpu_die(void)
 	WARN_ON(get_preferred_offline_state(cpu) != CPU_STATE_OFFLINE);
 
 	set_cpu_current_state(cpu, CPU_STATE_OFFLINE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unregister_slb_shadow(hwcpu, __pa(get_slb_shadow()));
+=======
+	unregister_slb_shadow(hwcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unregister_slb_shadow(hwcpu);
+>>>>>>> refs/remotes/origin/master
 	rtas_stop_self();
 
 	/* Should never get here... */
@@ -330,21 +383,48 @@ static void pseries_remove_processor(struct device_node *np)
 static int pseries_smp_notifier(struct notifier_block *nb,
 				unsigned long action, void *node)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int err = NOTIFY_OK;
 
 	switch (action) {
 	case PSERIES_RECONFIG_ADD:
 		if (pseries_add_processor(node))
 			err = NOTIFY_BAD;
+=======
+	int err = 0;
+
+	switch (action) {
+	case PSERIES_RECONFIG_ADD:
+		err = pseries_add_processor(node);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case PSERIES_RECONFIG_REMOVE:
 		pseries_remove_processor(node);
 		break;
+<<<<<<< HEAD
 	default:
 		err = NOTIFY_DONE;
 		break;
 	}
 	return err;
+=======
+	}
+	return notifier_from_errno(err);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err = 0;
+
+	switch (action) {
+	case OF_RECONFIG_ATTACH_NODE:
+		err = pseries_add_processor(node);
+		break;
+	case OF_RECONFIG_DETACH_NODE:
+		pseries_remove_processor(node);
+		break;
+	}
+	return notifier_from_errno(err);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct notifier_block pseries_smp_nb = {
@@ -403,7 +483,11 @@ static int __init pseries_cpu_hotplug_init(void)
 
 	/* Processors can be added/removed only on LPAR */
 	if (firmware_has_feature(FW_FEATURE_LPAR)) {
+<<<<<<< HEAD
 		pSeries_reconfig_notifier_register(&pseries_smp_nb);
+=======
+		of_reconfig_notifier_register(&pseries_smp_nb);
+>>>>>>> refs/remotes/origin/master
 		cpu_maps_update_begin();
 		if (cede_offline_enabled && parse_cede_parameters() == 0) {
 			default_offline_state = CPU_STATE_INACTIVE;

@@ -1,7 +1,14 @@
 /*
+<<<<<<< HEAD
  *  Cobalt server LCD frame buffer driver.
  *
  *  Copyright (C) 2008  Yoichi Yuasa <yuasa@linux-mips.org>
+=======
+ *  Cobalt/SEAD3 LCD frame buffer driver.
+ *
+ *  Copyright (C) 2008  Yoichi Yuasa <yuasa@linux-mips.org>
+ *  Copyright (C) 2012  MIPS Technologies, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +31,14 @@
 #include <linux/ioport.h>
 #include <linux/uaccess.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Cursor position address
@@ -61,6 +76,10 @@
 #define LCD_CUR_POS(x)		((x) & LCD_CUR_POS_MASK)
 #define LCD_TEXT_POS(x)		((x) | LCD_TEXT_MODE)
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MIPS_COBALT
+>>>>>>> refs/remotes/origin/master
 static inline void lcd_write_control(struct fb_info *info, u8 control)
 {
 	writel((u32)control << 24, info->screen_base);
@@ -80,6 +99,50 @@ static inline u8 lcd_read_data(struct fb_info *info)
 {
 	return readl(info->screen_base + LCD_DATA_REG_OFFSET) >> 24;
 }
+<<<<<<< HEAD
+=======
+#else
+
+#define LCD_CTL			0x00
+#define LCD_DATA		0x08
+#define CPLD_STATUS		0x10
+#define CPLD_DATA		0x18
+
+static inline void cpld_wait(struct fb_info *info)
+{
+	do {
+	} while (readl(info->screen_base + CPLD_STATUS) & 1);
+}
+
+static inline void lcd_write_control(struct fb_info *info, u8 control)
+{
+	cpld_wait(info);
+	writel(control, info->screen_base + LCD_CTL);
+}
+
+static inline u8 lcd_read_control(struct fb_info *info)
+{
+	cpld_wait(info);
+	readl(info->screen_base + LCD_CTL);
+	cpld_wait(info);
+	return readl(info->screen_base + CPLD_DATA) & 0xff;
+}
+
+static inline void lcd_write_data(struct fb_info *info, u8 data)
+{
+	cpld_wait(info);
+	writel(data, info->screen_base + LCD_DATA);
+}
+
+static inline u8 lcd_read_data(struct fb_info *info)
+{
+	cpld_wait(info);
+	readl(info->screen_base + LCD_DATA);
+	cpld_wait(info);
+	return readl(info->screen_base + CPLD_DATA) & 0xff;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static int lcd_busy_wait(struct fb_info *info)
 {
@@ -123,7 +186,11 @@ static void lcd_clear(struct fb_info *info)
 	lcd_write_control(info, LCD_RESET);
 }
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo cobalt_lcdfb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo cobalt_lcdfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id		= "cobalt-lcd",
 	.type		= FB_TYPE_TEXT,
 	.type_aux	= FB_AUX_TEXT_MDA,
@@ -287,7 +354,11 @@ static struct fb_ops cobalt_lcd_fbops = {
 	.fb_cursor	= cobalt_lcdfb_cursor,
 };
 
+<<<<<<< HEAD
 static int __devinit cobalt_lcdfb_probe(struct platform_device *dev)
+=======
+static int cobalt_lcdfb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	struct resource *res;
@@ -303,8 +374,18 @@ static int __devinit cobalt_lcdfb_probe(struct platform_device *dev)
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info->screen_size = res->end - res->start + 1;
+=======
+	info->screen_size = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	info->screen_base = ioremap(res->start, info->screen_size);
+=======
+	info->screen_size = resource_size(res);
+	info->screen_base = devm_ioremap(&dev->dev, res->start,
+					 info->screen_size);
+>>>>>>> refs/remotes/origin/master
 	info->fbops = &cobalt_lcd_fbops;
 	info->fix = cobalt_lcdfb_fix;
 	info->fix.smem_start = res->start;
@@ -315,7 +396,10 @@ static int __devinit cobalt_lcdfb_probe(struct platform_device *dev)
 
 	retval = register_framebuffer(info);
 	if (retval < 0) {
+<<<<<<< HEAD
 		iounmap(info->screen_base);
+=======
+>>>>>>> refs/remotes/origin/master
 		framebuffer_release(info);
 		return retval;
 	}
@@ -324,19 +408,30 @@ static int __devinit cobalt_lcdfb_probe(struct platform_device *dev)
 
 	lcd_clear(info);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: Cobalt server LCD frame buffer device\n",
 		info->node);
+=======
+	fb_info(info, "Cobalt server LCD frame buffer device\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit cobalt_lcdfb_remove(struct platform_device *dev)
+=======
+static int cobalt_lcdfb_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 
 	info = platform_get_drvdata(dev);
 	if (info) {
+<<<<<<< HEAD
 		iounmap(info->screen_base);
+=======
+>>>>>>> refs/remotes/origin/master
 		unregister_framebuffer(info);
 		framebuffer_release(info);
 	}
@@ -346,12 +441,17 @@ static int __devexit cobalt_lcdfb_remove(struct platform_device *dev)
 
 static struct platform_driver cobalt_lcdfb_driver = {
 	.probe	= cobalt_lcdfb_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(cobalt_lcdfb_remove),
+=======
+	.remove	= cobalt_lcdfb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= "cobalt-lcd",
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 
 static int __init cobalt_lcdfb_init(void)
 {
@@ -365,6 +465,9 @@ static void __exit cobalt_lcdfb_exit(void)
 
 module_init(cobalt_lcdfb_init);
 module_exit(cobalt_lcdfb_exit);
+=======
+module_platform_driver(cobalt_lcdfb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Yoichi Yuasa");

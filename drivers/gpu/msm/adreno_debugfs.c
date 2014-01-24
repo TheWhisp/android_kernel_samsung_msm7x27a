@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2002,2008-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2002,2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2002,2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -11,6 +19,14 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/delay.h>
 #include <linux/debugfs.h>
 #include <linux/uaccess.h>
@@ -23,8 +39,18 @@
 #include "a2xx_reg.h"
 
 unsigned int kgsl_cff_dump_enable;
+<<<<<<< HEAD
+<<<<<<< HEAD
 int kgsl_pm_regs_enabled;
 int adreno_ib_dump_on_pagef_enabled;
+=======
+int adreno_pm_regs_enabled;
+int adreno_pm_ib_enabled;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int adreno_pm_regs_enabled;
+int adreno_pm_ib_enabled;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct dentry *pm_d_debugfs;
 
@@ -47,12 +73,22 @@ DEFINE_SIMPLE_ATTRIBUTE(pm_dump_fops,
 
 static int pm_regs_enabled_set(void *data, u64 val)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kgsl_pm_regs_enabled = val ? 1 : 0;
+=======
+	adreno_pm_regs_enabled = val ? 1 : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	adreno_pm_regs_enabled = val ? 1 : 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static int pm_regs_enabled_get(void *data, u64 *val)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*val = kgsl_pm_regs_enabled;
 	return 0;
 }
@@ -76,6 +112,38 @@ static int ib_dump_on_pagef_enabled_set(void *data, u64 val)
 DEFINE_SIMPLE_ATTRIBUTE(ib_dump_on_pagef_enabled_fops,
 			ib_dump_on_pagef_enabled_get,
 			ib_dump_on_pagef_enabled_set, "%llu\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	*val = adreno_pm_regs_enabled;
+	return 0;
+}
+
+static int pm_ib_enabled_set(void *data, u64 val)
+{
+	adreno_pm_ib_enabled = val ? 1 : 0;
+	return 0;
+}
+
+static int pm_ib_enabled_get(void *data, u64 *val)
+{
+	*val = adreno_pm_ib_enabled;
+	return 0;
+}
+
+
+DEFINE_SIMPLE_ATTRIBUTE(pm_regs_enabled_fops,
+			pm_regs_enabled_get,
+			pm_regs_enabled_set, "%llu\n");
+
+DEFINE_SIMPLE_ATTRIBUTE(pm_ib_enabled_fops,
+			pm_ib_enabled_get,
+			pm_ib_enabled_set, "%llu\n");
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int kgsl_cff_dump_enable_set(void *data, u64 val)
 {
@@ -96,6 +164,8 @@ static int kgsl_cff_dump_enable_get(void *data, u64 *val)
 DEFINE_SIMPLE_ATTRIBUTE(kgsl_cff_dump_enable_fops, kgsl_cff_dump_enable_get,
 			kgsl_cff_dump_enable_set, "%llu\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int kgsl_dbgfs_open(struct inode *inode, struct file *file)
 {
 	file->f_mode &= ~(FMODE_PREAD | FMODE_PWRITE);
@@ -341,6 +411,16 @@ static const struct file_operations kgsl_mh_debug_fops = {
 	.release = kgsl_dbgfs_release,
 	.read = kgsl_mh_debug_read,
 };
+=======
+typedef void (*reg_read_init_t)(struct kgsl_device *device);
+typedef void (*reg_read_fill_t)(struct kgsl_device *device, int i,
+	unsigned int *vals, int linec);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+typedef void (*reg_read_init_t)(struct kgsl_device *device);
+typedef void (*reg_read_fill_t)(struct kgsl_device *device, int i,
+	unsigned int *vals, int linec);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 void adreno_debugfs_init(struct kgsl_device *device)
 {
@@ -349,6 +429,8 @@ void adreno_debugfs_init(struct kgsl_device *device)
 	if (!device->d_debugfs || IS_ERR(device->d_debugfs))
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	debugfs_create_file("istore",   0400, device->d_debugfs, device,
 			    &kgsl_istore_fops);
 	debugfs_create_file("sx_debug", 0400, device->d_debugfs, device,
@@ -357,6 +439,10 @@ void adreno_debugfs_init(struct kgsl_device *device)
 			    &kgsl_cp_debug_fops);
 	debugfs_create_file("mh_debug", 0400, device->d_debugfs, device,
 			    &kgsl_mh_debug_fops);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	debugfs_create_file("cff_dump", 0644, device->d_debugfs, device,
 			    &kgsl_cff_dump_enable_fops);
 	debugfs_create_u32("wait_timeout", 0644, device->d_debugfs,
@@ -380,7 +466,17 @@ void adreno_debugfs_init(struct kgsl_device *device)
 			    &pm_dump_fops);
 	debugfs_create_file("regs_enabled", 0644, pm_d_debugfs, device,
 			    &pm_regs_enabled_fops);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	debugfs_create_file("ib_dump_on_pagefault", 0644, device->d_debugfs,
 				device, &ib_dump_on_pagef_enabled_fops);
+=======
+	debugfs_create_file("ib_enabled", 0644, pm_d_debugfs, device,
+				    &pm_ib_enabled_fops);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	debugfs_create_file("ib_enabled", 0644, pm_d_debugfs, device,
+				    &pm_ib_enabled_fops);
+>>>>>>> refs/remotes/origin/cm-11.0
 }

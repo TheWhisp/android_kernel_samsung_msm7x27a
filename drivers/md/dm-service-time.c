@@ -12,6 +12,14 @@
 #include "dm-path-selector.h"
 
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DM_MSG_PREFIX	"multipath service-time"
 #define ST_MIN_IO	1
@@ -109,6 +117,14 @@ static int st_add_path(struct path_selector *ps, struct dm_path *path,
 	struct path_info *pi;
 	unsigned repeat_count = ST_MIN_IO;
 	unsigned relative_throughput = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Arguments: [<repeat_count> [<relative_throughput>]]
@@ -127,13 +143,29 @@ static int st_add_path(struct path_selector *ps, struct dm_path *path,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (argc && (sscanf(argv[0], "%u", &repeat_count) != 1)) {
+=======
+	if (argc && (sscanf(argv[0], "%u%c", &repeat_count, &dummy) != 1)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (argc && (sscanf(argv[0], "%u%c", &repeat_count, &dummy) != 1)) {
+>>>>>>> refs/remotes/origin/master
 		*error = "service-time ps: invalid repeat count";
 		return -EINVAL;
 	}
 
 	if ((argc == 2) &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    (sscanf(argv[1], "%u", &relative_throughput) != 1 ||
+=======
+	    (sscanf(argv[1], "%u%c", &relative_throughput, &dummy) != 1 ||
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (sscanf(argv[1], "%u%c", &relative_throughput, &dummy) != 1 ||
+>>>>>>> refs/remotes/origin/master
 	     relative_throughput > ST_MAX_RELATIVE_THROUGHPUT)) {
 		*error = "service-time ps: invalid relative_throughput value";
 		return -EINVAL;

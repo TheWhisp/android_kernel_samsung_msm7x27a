@@ -39,6 +39,9 @@ static inline void flush(void)
  */
 #define arch_decomp_setup()
 
+<<<<<<< HEAD
 #define arch_decomp_wdog()
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __MACH_UNCOMPRESS_H */

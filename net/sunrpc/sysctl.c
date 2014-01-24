@@ -20,6 +20,16 @@
 #include <linux/sunrpc/stats.h>
 #include <linux/sunrpc/svc_xprt.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "netns.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "netns.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Declare the debug flags here
  */
@@ -38,7 +48,11 @@ EXPORT_SYMBOL_GPL(nlm_debug);
 #ifdef RPC_DEBUG
 
 static struct ctl_table_header *sunrpc_table_header;
+<<<<<<< HEAD
 static ctl_table		sunrpc_table[];
+=======
+static struct ctl_table sunrpc_table[];
+>>>>>>> refs/remotes/origin/master
 
 void
 rpc_register_sysctl(void)
@@ -56,7 +70,11 @@ rpc_unregister_sysctl(void)
 	}
 }
 
+<<<<<<< HEAD
 static int proc_do_xprt(ctl_table *table, int write,
+=======
+static int proc_do_xprt(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 			void __user *buffer, size_t *lenp, loff_t *ppos)
 {
 	char tmpbuf[256];
@@ -71,7 +89,11 @@ static int proc_do_xprt(ctl_table *table, int write,
 }
 
 static int
+<<<<<<< HEAD
 proc_dodebug(ctl_table *table, int write,
+=======
+proc_dodebug(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 				void __user *buffer, size_t *lenp, loff_t *ppos)
 {
 	char		tmpbuf[20], c, *s;
@@ -110,7 +132,15 @@ proc_dodebug(ctl_table *table, int write,
 		*(unsigned int *) table->data = value;
 		/* Display the RPC tasks on writing to rpc_debug */
 		if (strcmp(table->procname, "rpc_debug") == 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			rpc_show_tasks();
+=======
+			rpc_show_tasks(&init_net);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rpc_show_tasks(&init_net);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (!access_ok(VERIFY_WRITE, buffer, left))
 			return -EFAULT;
@@ -133,7 +163,11 @@ done:
 }
 
 
+<<<<<<< HEAD
 static ctl_table debug_table[] = {
+=======
+static struct ctl_table debug_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "rpc_debug",
 		.data		= &rpc_debug,
@@ -171,7 +205,11 @@ static ctl_table debug_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static ctl_table sunrpc_table[] = {
+=======
+static struct ctl_table sunrpc_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "sunrpc",
 		.mode		= 0555,

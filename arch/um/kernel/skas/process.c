@@ -3,12 +3,21 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "linux/init.h"
 #include "linux/sched.h"
 #include "as-layout.h"
 #include "kern.h"
 #include "os.h"
 #include "skas.h"
+=======
+#include <linux/init.h>
+#include <linux/sched.h>
+#include <as-layout.h>
+#include <kern.h>
+#include <os.h>
+#include <skas.h>
+>>>>>>> refs/remotes/origin/master
 
 int new_mm(unsigned long stack)
 {
@@ -41,7 +50,15 @@ static int __init start_kernel_proc(void *unused)
 	cpu_tasks[0].pid = pid;
 	cpu_tasks[0].task = current;
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_online_map = cpumask_of_cpu(0);
+=======
+	init_cpu_online(get_cpu_mask(0));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_cpu_online(get_cpu_mask(0));
+>>>>>>> refs/remotes/origin/master
 #endif
 	start_kernel();
 	return 0;

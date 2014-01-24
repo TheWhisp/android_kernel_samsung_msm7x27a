@@ -19,6 +19,10 @@
 #include <linux/slab.h>
 #include <linux/videodev2.h>
 #include <linux/v4l2-mediabus.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <media/mt9v032.h>
 #include <media/v4l2-ctrls.h>
@@ -31,6 +35,7 @@
 #define MT9V032_CHIP_VERSION				0x00
 #define		MT9V032_CHIP_ID_REV1			0x1311
 #define		MT9V032_CHIP_ID_REV3			0x1313
+<<<<<<< HEAD
 #define MT9V032_ROW_START				0x01
 #define		MT9V032_ROW_START_MIN			4
 #define		MT9V032_ROW_START_DEF			10
@@ -39,6 +44,16 @@
 #define		MT9V032_COLUMN_START_MIN		1
 #define		MT9V032_COLUMN_START_DEF		2
 #define		MT9V032_COLUMN_START_MAX		752
+=======
+#define MT9V032_COLUMN_START				0x01
+#define		MT9V032_COLUMN_START_MIN		1
+#define		MT9V032_COLUMN_START_DEF		1
+#define		MT9V032_COLUMN_START_MAX		752
+#define MT9V032_ROW_START				0x02
+#define		MT9V032_ROW_START_MIN			4
+#define		MT9V032_ROW_START_DEF			5
+#define		MT9V032_ROW_START_MAX			482
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MT9V032_WINDOW_HEIGHT				0x03
 #define		MT9V032_WINDOW_HEIGHT_MIN		1
 #define		MT9V032_WINDOW_HEIGHT_DEF		480
@@ -138,10 +153,17 @@ static struct mt9v032 *to_mt9v032(struct v4l2_subdev *sd)
 
 static int mt9v032_read(struct i2c_client *client, const u8 reg)
 {
+<<<<<<< HEAD
 	s32 data = i2c_smbus_read_word_data(client, reg);
 	dev_dbg(&client->dev, "%s: read 0x%04x from 0x%02x\n", __func__,
 		swab16(data), reg);
 	return data < 0 ? data : swab16(data);
+=======
+	s32 data = i2c_smbus_read_word_swapped(client, reg);
+	dev_dbg(&client->dev, "%s: read 0x%04x from 0x%02x\n", __func__,
+		data, reg);
+	return data;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int mt9v032_write(struct i2c_client *client, const u8 reg,
@@ -149,7 +171,11 @@ static int mt9v032_write(struct i2c_client *client, const u8 reg,
 {
 	dev_dbg(&client->dev, "%s: writing 0x%04x to 0x%02x\n", __func__,
 		data, reg);
+<<<<<<< HEAD
 	return i2c_smbus_write_word_data(client, reg, swab16(data));
+=======
+	return i2c_smbus_write_word_swapped(client, reg, data);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int mt9v032_set_chip_control(struct mt9v032 *mt9v032, u16 clear, u16 set)
@@ -420,6 +446,7 @@ static int mt9v032_set_crop(struct v4l2_subdev *subdev,
 	struct v4l2_rect *__crop;
 	struct v4l2_rect rect;
 
+<<<<<<< HEAD
 	/* Clamp the crop rectangle boundaries and align them to a multiple of 2
 	 * pixels.
 	 */
@@ -427,6 +454,15 @@ static int mt9v032_set_crop(struct v4l2_subdev *subdev,
 			  MT9V032_COLUMN_START_MIN,
 			  MT9V032_COLUMN_START_MAX);
 	rect.top = clamp(ALIGN(crop->rect.top, 2),
+=======
+	/* Clamp the crop rectangle boundaries and align them to a non multiple
+	 * of 2 pixels to ensure a GRBG Bayer pattern.
+	 */
+	rect.left = clamp(ALIGN(crop->rect.left + 1, 2) - 1,
+			  MT9V032_COLUMN_START_MIN,
+			  MT9V032_COLUMN_START_MAX);
+	rect.top = clamp(ALIGN(crop->rect.top + 1, 2) - 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 MT9V032_ROW_START_MIN,
 			 MT9V032_ROW_START_MAX);
 	rect.width = clamp(ALIGN(crop->rect.width, 2),
@@ -755,6 +791,7 @@ static struct i2c_driver mt9v032_driver = {
 	.id_table	= mt9v032_id,
 };
 
+<<<<<<< HEAD
 static int __init mt9v032_init(void)
 {
 	return i2c_add_driver(&mt9v032_driver);
@@ -767,6 +804,9 @@ static void __exit mt9v032_exit(void)
 
 module_init(mt9v032_init);
 module_exit(mt9v032_exit);
+=======
+module_i2c_driver(mt9v032_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Aptina MT9V032 Camera driver");
 MODULE_AUTHOR("Laurent Pinchart <laurent.pinchart@ideasonboard.com>");

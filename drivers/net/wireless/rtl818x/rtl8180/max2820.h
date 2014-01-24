@@ -4,7 +4,11 @@
 /*
  * Radio tuning for Maxim max2820 on RTL8180
  *
+<<<<<<< HEAD
  * Copyright 2007 Andrea Merello <andreamrl@tiscali.it>
+=======
+ * Copyright 2007 Andrea Merello <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Code from the BSD driver and the rtl8181 project have been
  * very useful to understand certain things

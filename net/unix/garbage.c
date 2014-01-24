@@ -99,7 +99,11 @@ unsigned int unix_tot_inflight;
 struct sock *unix_get_socket(struct file *filp)
 {
 	struct sock *u_sock = NULL;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *	Socket ?
@@ -185,7 +189,11 @@ static void scan_inflight(struct sock *x, void (*func)(struct unix_sock *),
 					 * have been added to the queues after
 					 * starting the garbage collection
 					 */
+<<<<<<< HEAD
 					if (u->gc_candidate) {
+=======
+					if (test_bit(UNIX_GC_CANDIDATE, &u->gc_flags)) {
+>>>>>>> refs/remotes/origin/master
 						hit = true;
 						func(u);
 					}
@@ -254,7 +262,11 @@ static void inc_inflight_move_tail(struct unix_sock *u)
 	 * of the list, so that it's checked even if it was already
 	 * passed over
 	 */
+<<<<<<< HEAD
 	if (u->gc_maybe_cycle)
+=======
+	if (test_bit(UNIX_GC_MAYBE_CYCLE, &u->gc_flags))
+>>>>>>> refs/remotes/origin/master
 		list_move_tail(&u->link, &gc_candidates);
 }
 
@@ -315,8 +327,13 @@ void unix_gc(void)
 		BUG_ON(total_refs < inflight_refs);
 		if (total_refs == inflight_refs) {
 			list_move_tail(&u->link, &gc_candidates);
+<<<<<<< HEAD
 			u->gc_candidate = 1;
 			u->gc_maybe_cycle = 1;
+=======
+			__set_bit(UNIX_GC_CANDIDATE, &u->gc_flags);
+			__set_bit(UNIX_GC_MAYBE_CYCLE, &u->gc_flags);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -344,7 +361,11 @@ void unix_gc(void)
 
 		if (atomic_long_read(&u->inflight) > 0) {
 			list_move_tail(&u->link, &not_cycle_list);
+<<<<<<< HEAD
 			u->gc_maybe_cycle = 0;
+=======
+			__clear_bit(UNIX_GC_MAYBE_CYCLE, &u->gc_flags);
+>>>>>>> refs/remotes/origin/master
 			scan_children(&u->sk, inc_inflight_move_tail, NULL);
 		}
 	}
@@ -356,7 +377,11 @@ void unix_gc(void)
 	 */
 	while (!list_empty(&not_cycle_list)) {
 		u = list_entry(not_cycle_list.next, struct unix_sock, link);
+<<<<<<< HEAD
 		u->gc_candidate = 0;
+=======
+		__clear_bit(UNIX_GC_CANDIDATE, &u->gc_flags);
+>>>>>>> refs/remotes/origin/master
 		list_move_tail(&u->link, &gc_inflight_list);
 	}
 

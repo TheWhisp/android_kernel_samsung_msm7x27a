@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2007-2011 B.A.T.M.A.N. contributors:
+=======
+ * Copyright (C) 2007-2012 B.A.T.M.A.N. contributors:
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Marek Lindner
  *
@@ -23,6 +27,10 @@
 #define _NET_BATMAN_ADV_RING_BUFFER_H_
 
 void ring_buffer_set(uint8_t lq_recv[], uint8_t *lq_index, uint8_t value);
+<<<<<<< HEAD
 uint8_t ring_buffer_avg(uint8_t lq_recv[]);
+=======
+uint8_t ring_buffer_avg(const uint8_t lq_recv[]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _NET_BATMAN_ADV_RING_BUFFER_H_ */

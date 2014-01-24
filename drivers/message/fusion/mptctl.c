@@ -597,6 +597,7 @@ mptctl_event_process(MPT_ADAPTER *ioc, EventNotificationReply_t *pEvReply)
 }
 
 static int
+<<<<<<< HEAD
 mptctl_release(struct inode *inode, struct file *filep)
 {
 	fasync_helper(-1, filep, 0, &async_queue);
@@ -604,6 +605,8 @@ mptctl_release(struct inode *inode, struct file *filep)
 }
 
 static int
+=======
+>>>>>>> refs/remotes/origin/master
 mptctl_fasync(int fd, struct file *filep, int mode)
 {
 	MPT_ADAPTER	*ioc;
@@ -1250,7 +1253,10 @@ mptctl_getiocinfo (unsigned long arg, unsigned int data_size)
 	int			iocnum;
 	unsigned int		port;
 	int			cim_rev;
+<<<<<<< HEAD
 	u8			revision;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct scsi_device 	*sdev;
 	VirtDevice		*vdevice;
 
@@ -1324,8 +1330,12 @@ mptctl_getiocinfo (unsigned long arg, unsigned int data_size)
 	pdev = (struct pci_dev *) ioc->pcidev;
 
 	karg->pciId = pdev->device;
+<<<<<<< HEAD
 	pci_read_config_byte(pdev, PCI_CLASS_REVISION, &revision);
 	karg->hwRev = revision;
+=======
+	karg->hwRev = pdev->revision;
+>>>>>>> refs/remotes/origin/master
 	karg->subSystemDevice = pdev->subsystem_device;
 	karg->subSystemVendor = pdev->subsystem_vendor;
 
@@ -2824,7 +2834,10 @@ static const struct file_operations mptctl_fops = {
 	.llseek =	no_llseek,
 	.fasync = 	mptctl_fasync,
 	.unlocked_ioctl = mptctl_ioctl,
+<<<<<<< HEAD
 	.release =	mptctl_release,
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 	.compat_ioctl = compat_mpctl_ioctl,
 #endif

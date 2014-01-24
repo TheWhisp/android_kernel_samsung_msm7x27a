@@ -12,9 +12,21 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/input-polldev.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio_mouse.h>
 
 #include <asm/gpio.h>
+=======
+#include <linux/gpio.h>
+#include <linux/gpio_mouse.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+#include <linux/gpio_mouse.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Timer function which is run every scan_ms ms when the device is opened.
@@ -46,7 +58,11 @@ static void gpio_mouse_scan(struct input_polled_dev *dev)
 	input_sync(input);
 }
 
+<<<<<<< HEAD
 static int __devinit gpio_mouse_probe(struct platform_device *pdev)
+=======
+static int gpio_mouse_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gpio_mouse_platform_data *pdata = pdev->dev.platform_data;
 	struct input_polled_dev *input_poll;
@@ -138,7 +154,10 @@ static int __devinit gpio_mouse_probe(struct platform_device *pdev)
 
  out_free_polldev:
 	input_free_polled_device(input_poll);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
  out_free_gpios:
 	while (--i >= 0) {
@@ -150,7 +169,11 @@ static int __devinit gpio_mouse_probe(struct platform_device *pdev)
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit gpio_mouse_remove(struct platform_device *pdev)
+=======
+static int gpio_mouse_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_polled_dev *input = platform_get_drvdata(pdev);
 	struct gpio_mouse_platform_data *pdata = input->private;
@@ -165,19 +188,28 @@ static int __devexit gpio_mouse_remove(struct platform_device *pdev)
 			gpio_free(pin);
 	}
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver gpio_mouse_device_driver = {
 	.probe		= gpio_mouse_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(gpio_mouse_remove),
+=======
+	.remove		= gpio_mouse_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "gpio_mouse",
 		.owner	= THIS_MODULE,
 	}
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init gpio_mouse_init(void)
 {
@@ -192,6 +224,16 @@ static void __exit gpio_mouse_exit(void)
 module_exit(gpio_mouse_exit);
 
 MODULE_AUTHOR("Hans-Christian Egtvedt <hcegtvedt@atmel.com>");
+=======
+module_platform_driver(gpio_mouse_device_driver);
+
+MODULE_AUTHOR("Hans-Christian Egtvedt <egtvedt@samfundet.no>");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(gpio_mouse_device_driver);
+
+MODULE_AUTHOR("Hans-Christian Egtvedt <egtvedt@samfundet.no>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("GPIO mouse driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:gpio_mouse"); /* work with hotplug and coldplug */

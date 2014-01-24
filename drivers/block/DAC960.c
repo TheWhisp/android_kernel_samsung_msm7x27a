@@ -6473,7 +6473,11 @@ static int dac960_initial_status_proc_show(struct seq_file *m, void *v)
 
 static int dac960_initial_status_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, dac960_initial_status_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, dac960_initial_status_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations dac960_initial_status_proc_fops = {
@@ -6519,7 +6523,11 @@ static int dac960_current_status_proc_show(struct seq_file *m, void *v)
 
 static int dac960_current_status_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, dac960_current_status_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, dac960_current_status_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations dac960_current_status_proc_fops = {
@@ -6540,14 +6548,22 @@ static int dac960_user_command_proc_show(struct seq_file *m, void *v)
 
 static int dac960_user_command_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, dac960_user_command_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, dac960_user_command_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t dac960_user_command_proc_write(struct file *file,
 				       const char __user *Buffer,
 				       size_t Count, loff_t *pos)
 {
+<<<<<<< HEAD
   DAC960_Controller_T *Controller = (DAC960_Controller_T *) PDE(file->f_path.dentry->d_inode)->data;
+=======
+  DAC960_Controller_T *Controller = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
   unsigned char CommandBuffer[80];
   int Length;
   if (Count > sizeof(CommandBuffer)-1) return -EINVAL;
@@ -6580,6 +6596,8 @@ static const struct file_operations dac960_user_command_proc_fops = {
 
 static void DAC960_CreateProcEntries(DAC960_Controller_T *Controller)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct proc_dir_entry *StatusProcEntry;
 	struct proc_dir_entry *ControllerProcEntry;
 	struct proc_dir_entry *UserCommandProcEntry;
@@ -6598,6 +6616,28 @@ static void DAC960_CreateProcEntries(DAC960_Controller_T *Controller)
       proc_create_data("current_status", 0, ControllerProcEntry, &dac960_current_status_proc_fops, Controller);
       UserCommandProcEntry = proc_create_data("user_command", S_IWUSR | S_IRUSR, ControllerProcEntry, &dac960_user_command_proc_fops, Controller);
       Controller->ControllerProcEntry = ControllerProcEntry;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct proc_dir_entry *ControllerProcEntry;
+
+	if (DAC960_ProcDirectoryEntry == NULL) {
+		DAC960_ProcDirectoryEntry = proc_mkdir("rd", NULL);
+		proc_create("status", 0, DAC960_ProcDirectoryEntry,
+			    &dac960_proc_fops);
+	}
+
+	sprintf(Controller->ControllerName, "c%d", Controller->ControllerNumber);
+	ControllerProcEntry = proc_mkdir(Controller->ControllerName,
+					 DAC960_ProcDirectoryEntry);
+	proc_create_data("initial_status", 0, ControllerProcEntry, &dac960_initial_status_proc_fops, Controller);
+	proc_create_data("current_status", 0, ControllerProcEntry, &dac960_current_status_proc_fops, Controller);
+	proc_create_data("user_command", S_IWUSR | S_IRUSR, ControllerProcEntry, &dac960_user_command_proc_fops, Controller);
+	Controller->ControllerProcEntry = ControllerProcEntry;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -7057,6 +7097,10 @@ static long DAC960_gam_ioctl(struct file *file, unsigned int Request,
 	else
 		ErrorCode =  0;
       }
+<<<<<<< HEAD
+=======
+      break;
+>>>>>>> refs/remotes/origin/master
       default:
 	ErrorCode = -ENOTTY;
     }

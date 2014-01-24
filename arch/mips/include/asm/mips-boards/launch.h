@@ -16,11 +16,19 @@ struct cpulaunch {
 #else
 
 #define LOG2CPULAUNCH	5
+<<<<<<< HEAD
 #define	LAUNCH_PC	0
 #define	LAUNCH_GP	4
 #define	LAUNCH_SP	8
 #define	LAUNCH_A0	12
 #define	LAUNCH_FLAGS	28
+=======
+#define LAUNCH_PC	0
+#define LAUNCH_GP	4
+#define LAUNCH_SP	8
+#define LAUNCH_A0	12
+#define LAUNCH_FLAGS	28
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

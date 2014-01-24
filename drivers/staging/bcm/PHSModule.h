@@ -1,6 +1,7 @@
 #ifndef BCM_MINIPORT_PHSMODULE_H
 #define BCM_MINIPORT_PHSMODULE_H
 
+<<<<<<< HEAD
 int PHSTransmit(PMINI_ADAPTER Adapter,
 					struct sk_buff **pPacket,
 					 USHORT Vcid,
@@ -9,7 +10,22 @@ int PHSTransmit(PMINI_ADAPTER Adapter,
 					 PUINT PacketLen,
 					 UCHAR bEthCSSupport);
 
+<<<<<<< HEAD
 int PHSRecieve(PMINI_ADAPTER Adapter,
+=======
+int PHSReceive(PMINI_ADAPTER Adapter,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int PHSTransmit(struct bcm_mini_adapter *Adapter,
+					struct sk_buff **pPacket,
+					 USHORT Vcid,
+					 B_UINT16 uiClassifierRuleID,
+					 bool bHeaderSuppressionEnabled,
+					 PUINT PacketLen,
+					 UCHAR bEthCSSupport);
+
+int PHSReceive(struct bcm_mini_adapter *Adapter,
+>>>>>>> refs/remotes/origin/master
 					USHORT usVcid,
 					struct sk_buff *packet,
 					UINT *punPacketLen,
@@ -22,6 +38,7 @@ void DumpDataPacketHeader(PUCHAR pPkt);
 
 void DumpFullPacket(UCHAR *pBuf,UINT nPktLen);
 
+<<<<<<< HEAD
 void DumpPhsRules(PPHS_DEVICE_EXTENSION pDeviceExtension);
 
 
@@ -31,6 +48,17 @@ int PhsCleanup(PPHS_DEVICE_EXTENSION pPHSDeviceExt);
 
 //Utility Functions
 ULONG PhsUpdateClassifierRule(void* pvContext,B_UINT16 uiVcid,B_UINT16 uiClsId,S_PHS_RULE *psPhsRule,B_UINT8  u8AssociatedPHSI );
+=======
+void DumpPhsRules(struct bcm_phs_extension *pDeviceExtension);
+
+
+int phs_init(struct bcm_phs_extension *pPhsdeviceExtension,struct bcm_mini_adapter *Adapter);
+
+int PhsCleanup(struct bcm_phs_extension *pPHSDeviceExt);
+
+//Utility Functions
+ULONG PhsUpdateClassifierRule(void* pvContext,B_UINT16 uiVcid,B_UINT16 uiClsId, struct bcm_phs_rule *psPhsRule,B_UINT8  u8AssociatedPHSI );
+>>>>>>> refs/remotes/origin/master
 
 ULONG PhsDeletePHSRule(void* pvContext,B_UINT16 uiVcid,B_UINT8 u8PHSI);
 
@@ -39,12 +67,21 @@ ULONG PhsDeleteClassifierRule(void* pvContext, B_UINT16 uiVcid ,B_UINT16  uiClsI
 ULONG PhsDeleteSFRules(void* pvContext,B_UINT16 uiVcid) ;
 
 
+<<<<<<< HEAD
 BOOLEAN ValidatePHSRule(S_PHS_RULE *psPhsRule);
 
 UINT GetServiceFlowEntry(S_SERVICEFLOW_TABLE *psServiceFlowTable,B_UINT16 uiVcid,S_SERVICEFLOW_ENTRY **ppstServiceFlowEntry);
 
 
 void DumpPhsRules(PPHS_DEVICE_EXTENSION pDeviceExtension);
+=======
+bool ValidatePHSRule(struct bcm_phs_rule *psPhsRule);
+
+UINT GetServiceFlowEntry(struct bcm_phs_table *psServiceFlowTable,B_UINT16 uiVcid, struct bcm_phs_entry **ppstServiceFlowEntry);
+
+
+void DumpPhsRules(struct bcm_phs_extension *pDeviceExtension);
+>>>>>>> refs/remotes/origin/master
 
 
 #endif

@@ -132,7 +132,11 @@ u8 libipw_freq_to_channel(struct libipw_device * ieee, u32 freq)
 	return 0;
 }
 
+<<<<<<< HEAD
 int libipw_set_geo(struct libipw_device *ieee,
+=======
+void libipw_set_geo(struct libipw_device *ieee,
+>>>>>>> refs/remotes/origin/master
 		      const struct libipw_geo *geo)
 {
 	memcpy(ieee->geo.name, geo->name, 3);
@@ -143,7 +147,10 @@ int libipw_set_geo(struct libipw_device *ieee,
 	       sizeof(struct libipw_channel));
 	memcpy(ieee->geo.a, geo->a, ieee->geo.a_channels *
 	       sizeof(struct libipw_channel));
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 const struct libipw_geo *libipw_get_geo(struct libipw_device *ieee)

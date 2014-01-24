@@ -34,8 +34,18 @@ MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds. "
 			  __MODULE_STRING(TS72XX_WDT_DEFAULT_TIMEOUT)
 			  ")");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Disable watchdog shutdown on close");
 
 /**
@@ -192,7 +202,11 @@ static int ts72xx_wdt_open(struct inode *inode, struct file *file)
 		dev_err(&wdt->pdev->dev,
 			"failed to convert timeout (%d) to register value\n",
 			timeout);
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return regval;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (mutex_lock_interruptible(&wdt->lock))
@@ -305,7 +319,12 @@ static long ts72xx_wdt_ioctl(struct file *file, unsigned int cmd,
 
 	switch (cmd) {
 	case WDIOC_GETSUPPORT:
+<<<<<<< HEAD
 		error = copy_to_user(argp, &winfo, sizeof(winfo));
+=======
+		if (copy_to_user(argp, &winfo, sizeof(winfo)))
+			error = -EFAULT;
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case WDIOC_GETSTATUS:
@@ -320,10 +339,16 @@ static long ts72xx_wdt_ioctl(struct file *file, unsigned int cmd,
 	case WDIOC_SETOPTIONS: {
 		int options;
 
+<<<<<<< HEAD
 		if (get_user(options, p)) {
 			error = -EFAULT;
 			break;
 		}
+=======
+		error = get_user(options, p);
+		if (error)
+			break;
+>>>>>>> refs/remotes/origin/master
 
 		error = -EINVAL;
 
@@ -341,6 +366,7 @@ static long ts72xx_wdt_ioctl(struct file *file, unsigned int cmd,
 
 	case WDIOC_SETTIMEOUT: {
 		int new_timeout;
+<<<<<<< HEAD
 
 		if (get_user(new_timeout, p)) {
 			error = -EFAULT;
@@ -359,12 +385,33 @@ static long ts72xx_wdt_ioctl(struct file *file, unsigned int cmd,
 		if (error)
 			break;
 
+=======
+		int regval;
+
+		error = get_user(new_timeout, p);
+		if (error)
+			break;
+
+		regval = timeout_to_regval(new_timeout);
+		if (regval < 0) {
+			error = regval;
+			break;
+		}
+		ts72xx_wdt_stop(wdt);
+		wdt->regval = regval;
+		ts72xx_wdt_start(wdt);
+
+>>>>>>> refs/remotes/origin/master
 		/*FALLTHROUGH*/
 	}
 
 	case WDIOC_GETTIMEOUT:
+<<<<<<< HEAD
 		if (put_user(regval_to_timeout(wdt->regval), p))
 			error = -EFAULT;
+=======
+		error = put_user(regval_to_timeout(wdt->regval), p);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -391,19 +438,28 @@ static struct miscdevice ts72xx_wdt_miscdev = {
 	.fops		= &ts72xx_wdt_fops,
 };
 
+<<<<<<< HEAD
 static __devinit int ts72xx_wdt_probe(struct platform_device *pdev)
+=======
+static int ts72xx_wdt_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ts72xx_wdt *wdt;
 	struct resource *r1, *r2;
 	int error = 0;
 
+<<<<<<< HEAD
 	wdt = kzalloc(sizeof(struct ts72xx_wdt), GFP_KERNEL);
+=======
+	wdt = devm_kzalloc(&pdev->dev, sizeof(struct ts72xx_wdt), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!wdt) {
 		dev_err(&pdev->dev, "failed to allocate memory\n");
 		return -ENOMEM;
 	}
 
 	r1 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!r1) {
 		dev_err(&pdev->dev, "failed to get memory resource\n");
 		error = -ENODEV;
@@ -444,6 +500,16 @@ static __devinit int ts72xx_wdt_probe(struct platform_device *pdev)
 		error = -ENODEV;
 		goto fail_free_feed;
 	}
+=======
+	wdt->control_reg = devm_ioremap_resource(&pdev->dev, r1);
+	if (IS_ERR(wdt->control_reg))
+		return PTR_ERR(wdt->control_reg);
+
+	r2 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+	wdt->feed_reg = devm_ioremap_resource(&pdev->dev, r2);
+	if (IS_ERR(wdt->feed_reg))
+		return PTR_ERR(wdt->feed_reg);
+>>>>>>> refs/remotes/origin/master
 
 	platform_set_drvdata(pdev, wdt);
 	ts72xx_wdt_pdev = pdev;
@@ -456,12 +522,17 @@ static __devinit int ts72xx_wdt_probe(struct platform_device *pdev)
 	error = misc_register(&ts72xx_wdt_miscdev);
 	if (error) {
 		dev_err(&pdev->dev, "failed to register miscdev\n");
+<<<<<<< HEAD
 		goto fail_unmap_feed;
+=======
+		return error;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev_info(&pdev->dev, "TS-72xx Watchdog driver\n");
 
 	return 0;
+<<<<<<< HEAD
 
 fail_unmap_feed:
 	platform_set_drvdata(pdev, NULL);
@@ -495,18 +566,34 @@ static __devexit int ts72xx_wdt_remove(struct platform_device *pdev)
 	release_mem_region(res->start, resource_size(res));
 
 	kfree(wdt);
+=======
+}
+
+static int ts72xx_wdt_remove(struct platform_device *pdev)
+{
+	int error;
+
+	error = misc_deregister(&ts72xx_wdt_miscdev);
+
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
 static struct platform_driver ts72xx_wdt_driver = {
 	.probe		= ts72xx_wdt_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ts72xx_wdt_remove),
+=======
+	.remove		= ts72xx_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "ts72xx-wdt",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static __init int ts72xx_wdt_init(void)
 {
 	return platform_driver_register(&ts72xx_wdt_driver);
@@ -518,6 +605,12 @@ static __exit void ts72xx_wdt_exit(void)
 	platform_driver_unregister(&ts72xx_wdt_driver);
 }
 module_exit(ts72xx_wdt_exit);
+=======
+module_platform_driver(ts72xx_wdt_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(ts72xx_wdt_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mika Westerberg <mika.westerberg@iki.fi>");
 MODULE_DESCRIPTION("TS-72xx SBC Watchdog");

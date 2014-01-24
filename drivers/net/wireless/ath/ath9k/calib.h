@@ -19,9 +19,29 @@
 
 #include "hw.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR_PHY_CCA_FILTERWINDOW_LENGTH_INIT     3
 #define AR_PHY_CCA_FILTERWINDOW_LENGTH          5
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define AR_PHY_CCA_FILTERWINDOW_LENGTH          5
+
+/* Internal noise floor can vary by about 6db depending on the frequency */
+#define ATH9K_NF_CAL_NOISE_THRESH		6
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+/* Internal noise floor can vary by about 6db depending on the frequency */
+#define ATH9K_NF_CAL_NOISE_THRESH		6
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define NUM_NF_READINGS       6
 #define ATH9K_NF_CAL_HIST_MAX 5
 
@@ -31,10 +51,23 @@ struct ar5416IniArray {
 	u32 ia_columns;
 };
 
+<<<<<<< HEAD
 #define INIT_INI_ARRAY(iniarray, array, rows, columns) do {	\
 		(iniarray)->ia_array = (u32 *)(array);		\
 		(iniarray)->ia_rows = (rows);			\
 		(iniarray)->ia_columns = (columns);		\
+=======
+#define STATIC_INI_ARRAY(array) {			\
+		.ia_array = (u32 *)(array),		\
+		.ia_rows = ARRAY_SIZE(array),		\
+		.ia_columns = ARRAY_SIZE(array[0]),	\
+	}
+
+#define INIT_INI_ARRAY(iniarray, array) do {	\
+		(iniarray)->ia_array = (u32 *)(array);		\
+		(iniarray)->ia_rows = ARRAY_SIZE(array);	\
+		(iniarray)->ia_columns = ARRAY_SIZE(array[0]);	\
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 
 #define INI_RA(iniarray, row, column) \
@@ -108,6 +141,15 @@ void ath9k_init_nfcal_hist_buffer(struct ath_hw *ah,
 void ath9k_hw_bstuck_nfcal(struct ath_hw *ah);
 void ath9k_hw_reset_calibration(struct ath_hw *ah,
 				struct ath9k_cal_list *currCal);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+s16 ath9k_hw_getchan_noise(struct ath_hw *ah, struct ath9k_channel *chan);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+s16 ath9k_hw_getchan_noise(struct ath_hw *ah, struct ath9k_channel *chan,
+			   s16 nf);
+>>>>>>> refs/remotes/origin/master
 
 
 #endif /* CALIB_H */

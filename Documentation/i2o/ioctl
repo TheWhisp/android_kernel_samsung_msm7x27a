@@ -110,7 +110,15 @@ V. Getting Logical Configuration Table
       ENOBUFS     Buffer not large enough.  If this occurs, the required
                   buffer length is written into *(lct->reslen)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 VI. Settting Parameters
+=======
+VI. Setting Parameters
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+VI. Setting Parameters
+>>>>>>> refs/remotes/origin/master
 
    SYNOPSIS
 
@@ -138,7 +146,15 @@ VI. Settting Parameters
 
    The return value is the size in bytes of the data written into
    ops->resbuf if no errors occur.  If an error occurs, -1 is returned
+<<<<<<< HEAD
+<<<<<<< HEAD
    and errno is set appropriatly:
+=======
+   and errno is set appropriately:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       EFAULT      Invalid user space pointer was passed
       ENXIO       Invalid IOP number
@@ -222,7 +238,15 @@ VIII. Downloading Software
    RETURNS
 
    This function returns 0 no errors occur. If an error occurs, -1
+<<<<<<< HEAD
+<<<<<<< HEAD
    is returned and errno is set appropriatly:
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       EFAULT      Invalid user space pointer was passed
       ENXIO       Invalid IOP number
@@ -264,7 +288,15 @@ IX. Uploading Software
    RETURNS
 
    This function returns 0 if no errors occur.  If an error occurs, -1
+<<<<<<< HEAD
+<<<<<<< HEAD
    is returned and errno is set appropriatly:
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       EFAULT      Invalid user space pointer was passed
       ENXIO       Invalid IOP number
@@ -301,7 +333,15 @@ X. Removing Software
    RETURNS
 
    This function returns 0 if no errors occur.  If an error occurs, -1
+<<<<<<< HEAD
+<<<<<<< HEAD
    is returned and errno is set appropriatly:
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       EFAULT      Invalid user space pointer was passed
       ENXIO       Invalid IOP number
@@ -325,7 +365,15 @@ X. Validating Configuration
    RETURNS
 
    This function returns 0 if no erro occur.  If an error occurs, -1 is
+<<<<<<< HEAD
+<<<<<<< HEAD
    returned and errno is set appropriatly:
+=======
+   returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       ETIMEDOUT   Timeout waiting for reply message
       ENXIO       Invalid IOP number
@@ -360,7 +408,15 @@ XI. Configuration Dialog
    RETURNS
 
    This function returns 0 if no error occur. If an error occurs, -1
+<<<<<<< HEAD
+<<<<<<< HEAD
    is returned and errno is set appropriatly:
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       EFAULT      Invalid user space pointer was passed
       ENXIO       Invalid IOP number

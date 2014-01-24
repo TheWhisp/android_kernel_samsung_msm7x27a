@@ -19,19 +19,33 @@
 
 static void putc(char c)
 {
+<<<<<<< HEAD
 	while (!(__raw_readl(KS8695_UART_PA + KS8695_URLS) & URLS_URTHRE))
 		barrier();
 
 	__raw_writel(c, KS8695_UART_PA + KS8695_URTH);
+=======
+	while (!(__raw_readl((void __iomem*)KS8695_UART_PA + KS8695_URLS) & URLS_URTHRE))
+		barrier();
+
+	__raw_writel(c, (void __iomem*)KS8695_UART_PA + KS8695_URTH);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void flush(void)
 {
+<<<<<<< HEAD
 	while (!(__raw_readl(KS8695_UART_PA + KS8695_URLS) & URLS_URTE))
+=======
+	while (!(__raw_readl((void __iomem*)KS8695_UART_PA + KS8695_URLS) & URLS_URTE))
+>>>>>>> refs/remotes/origin/master
 		barrier();
 }
 
 #define arch_decomp_setup()
+<<<<<<< HEAD
 #define arch_decomp_wdog()
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

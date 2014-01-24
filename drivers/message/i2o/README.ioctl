@@ -138,7 +138,11 @@ VI. Setting Parameters
 
    The return value is the size in bytes of the data written into
    ops->resbuf if no errors occur.  If an error occurs, -1 is returned 
+<<<<<<< HEAD
    and errno is set appropriatly:
+=======
+   and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       EFAULT      Invalid user space pointer was passed
       ENXIO       Invalid IOP number
@@ -222,7 +226,11 @@ VIII. Downloading Software
    RETURNS
 
    This function returns 0 no errors occur. If an error occurs, -1 
+<<<<<<< HEAD
    is returned and errno is set appropriatly:
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       EFAULT      Invalid user space pointer was passed
       ENXIO       Invalid IOP number
@@ -264,7 +272,11 @@ IX. Uploading Software
    RETURNS
 
    This function returns 0 if no errors occur.  If an error occurs, -1
+<<<<<<< HEAD
    is returned and errno is set appropriatly:
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       EFAULT      Invalid user space pointer was passed
       ENXIO       Invalid IOP number
@@ -301,7 +313,11 @@ X. Removing Software
    RETURNS
 
    This function returns 0 if no errors occur.  If an error occurs, -1
+<<<<<<< HEAD
    is returned and errno is set appropriatly:
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       EFAULT      Invalid user space pointer was passed
       ENXIO       Invalid IOP number
@@ -325,7 +341,11 @@ X. Validating Configuration
    RETURNS
 
    This function returns 0 if no erro occur.  If an error occurs, -1 is
+<<<<<<< HEAD
    returned and errno is set appropriatly:
+=======
+   returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       ETIMEDOUT   Timeout waiting for reply message
       ENXIO       Invalid IOP number
@@ -360,7 +380,11 @@ XI. Configuration Dialog
    RETURNS
 
    This function returns 0 if no error occur. If an error occurs, -1
+<<<<<<< HEAD
    is returned and errno is set appropriatly:
+=======
+   is returned and errno is set appropriately:
+>>>>>>> refs/remotes/origin/master
 
       EFAULT      Invalid user space pointer was passed
       ENXIO       Invalid IOP number

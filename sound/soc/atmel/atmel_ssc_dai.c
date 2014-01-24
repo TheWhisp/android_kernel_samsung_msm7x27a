@@ -42,17 +42,24 @@
 #include <sound/initval.h>
 #include <sound/soc.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include "atmel-pcm.h"
 #include "atmel_ssc_dai.h"
 
 
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_AT91SAM9260) || defined(CONFIG_ARCH_AT91SAM9G20)
 #define NUM_SSC_DEVICES		1
 #else
 #define NUM_SSC_DEVICES		3
 #endif
+=======
+#define NUM_SSC_DEVICES		3
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SSC PDC registers required by the PCM DMA engine.
@@ -79,6 +86,10 @@ static struct atmel_ssc_mask ssc_tx_mask = {
 	.ssc_disable	= SSC_BIT(CR_TXDIS),
 	.ssc_endx	= SSC_BIT(SR_ENDTX),
 	.ssc_endbuf	= SSC_BIT(SR_TXBUFE),
+<<<<<<< HEAD
+=======
+	.ssc_error	= SSC_BIT(SR_OVRUN),
+>>>>>>> refs/remotes/origin/master
 	.pdc_enable	= ATMEL_PDC_TXTEN,
 	.pdc_disable	= ATMEL_PDC_TXTDIS,
 };
@@ -88,6 +99,10 @@ static struct atmel_ssc_mask ssc_rx_mask = {
 	.ssc_disable	= SSC_BIT(CR_RXDIS),
 	.ssc_endx	= SSC_BIT(SR_ENDRX),
 	.ssc_endbuf	= SSC_BIT(SR_RXBUFF),
+<<<<<<< HEAD
+=======
+	.ssc_error	= SSC_BIT(SR_OVRUN),
+>>>>>>> refs/remotes/origin/master
 	.pdc_enable	= ATMEL_PDC_RXTEN,
 	.pdc_disable	= ATMEL_PDC_RXTDIS,
 };
@@ -107,7 +122,10 @@ static struct atmel_pcm_dma_params ssc_dma_params[NUM_SSC_DEVICES][2] = {
 	.pdc		= &pdc_rx_reg,
 	.mask		= &ssc_rx_mask,
 	} },
+<<<<<<< HEAD
 #if NUM_SSC_DEVICES == 3
+=======
+>>>>>>> refs/remotes/origin/master
 	{{
 	.name		= "SSC1 PCM out",
 	.pdc		= &pdc_tx_reg,
@@ -128,7 +146,10 @@ static struct atmel_pcm_dma_params ssc_dma_params[NUM_SSC_DEVICES][2] = {
 	.pdc		= &pdc_rx_reg,
 	.mask		= &ssc_rx_mask,
 	} },
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -139,7 +160,10 @@ static struct atmel_ssc_info ssc_info[NUM_SSC_DEVICES] = {
 	.dir_mask	= SSC_DIR_MASK_UNUSED,
 	.initialized	= 0,
 	},
+<<<<<<< HEAD
 #if NUM_SSC_DEVICES == 3
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 	.name		= "ssc1",
 	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[1].lock),
@@ -152,7 +176,10 @@ static struct atmel_ssc_info ssc_info[NUM_SSC_DEVICES] = {
 	.dir_mask	= SSC_DIR_MASK_UNUSED,
 	.initialized	= 0,
 	},
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -206,15 +233,38 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
 			     struct snd_soc_dai *dai)
 {
 	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
+<<<<<<< HEAD
 	int dir_mask;
+=======
+	struct atmel_pcm_dma_params *dma_params;
+	int dir, dir_mask;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("atmel_ssc_startup: SSC_SR=0x%u\n",
 		ssc_readl(ssc_p->ssc->regs, SR));
 
+<<<<<<< HEAD
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 		dir_mask = SSC_DIR_MASK_PLAYBACK;
 	else
 		dir_mask = SSC_DIR_MASK_CAPTURE;
+=======
+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+		dir = 0;
+		dir_mask = SSC_DIR_MASK_PLAYBACK;
+	} else {
+		dir = 1;
+		dir_mask = SSC_DIR_MASK_CAPTURE;
+	}
+
+	dma_params = &ssc_dma_params[dai->id][dir];
+	dma_params->ssc = ssc_p->ssc;
+	dma_params->substream = substream;
+
+	ssc_p->dma_params[dir] = dma_params;
+
+	snd_soc_dai_set_dma_data(dai, substream, dma_params);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irq(&ssc_p->lock);
 	if (ssc_p->dir_mask & dir_mask) {
@@ -335,7 +385,10 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
 	struct snd_pcm_hw_params *params,
 	struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+=======
+>>>>>>> refs/remotes/origin/master
 	int id = dai->id;
 	struct atmel_ssc_info *ssc_p = &ssc_info[id];
 	struct atmel_pcm_dma_params *dma_params;
@@ -354,6 +407,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
 	else
 		dir = 1;
 
+<<<<<<< HEAD
 	dma_params = &ssc_dma_params[id][dir];
 	dma_params->ssc = ssc_p->ssc;
 	dma_params->substream = substream;
@@ -367,6 +421,9 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
 	 * as it is common to all substreams.
 	 */
 	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_params);
+=======
+	dma_params = ssc_p->dma_params[dir];
+>>>>>>> refs/remotes/origin/master
 
 	channels = params_channels(params);
 
@@ -402,7 +459,15 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
 	if ((ssc_p->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_I2S
 		&& bits > 16) {
 		printk(KERN_WARNING
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"atmel_ssc_dai: sample size %d"
+=======
+				"atmel_ssc_dai: sample size %d "
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				"atmel_ssc_dai: sample size %d "
+>>>>>>> refs/remotes/origin/master
 				"is too large for I2S\n", bits);
 		return -EINVAL;
 	}
@@ -543,6 +608,52 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
 		break;
 
 	case SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBM_CFM:
+<<<<<<< HEAD
+=======
+		/*
+		 * DSP/PCM Mode A format, CODEC supplies BCLK and LRC clocks.
+		 *
+		 * The SSC transmit clock is obtained from the BCLK signal on
+		 * on the TK line, and the SSC receive clock is
+		 * generated from the transmit clock.
+		 *
+		 * Data is transferred on first BCLK after LRC pulse rising
+		 * edge.If stereo, the right channel data is contiguous with
+		 * the left channel data.
+		 */
+		rcmr =	  SSC_BF(RCMR_PERIOD, 0)
+			| SSC_BF(RCMR_STTDLY, START_DELAY)
+			| SSC_BF(RCMR_START, SSC_START_RISING_RF)
+			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
+			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
+			| SSC_BF(RCMR_CKS, SSC_CKS_PIN);
+
+		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
+			| SSC_BF(RFMR_FSOS, SSC_FSOS_NONE)
+			| SSC_BF(RFMR_FSLEN, 0)
+			| SSC_BF(RFMR_DATNB, (channels - 1))
+			| SSC_BIT(RFMR_MSBF)
+			| SSC_BF(RFMR_LOOP, 0)
+			| SSC_BF(RFMR_DATLEN, (bits - 1));
+
+		tcmr =	  SSC_BF(TCMR_PERIOD, 0)
+			| SSC_BF(TCMR_STTDLY, START_DELAY)
+			| SSC_BF(TCMR_START, SSC_START_RISING_RF)
+			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
+			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
+			| SSC_BF(TCMR_CKS, SSC_CKS_PIN);
+
+		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
+			| SSC_BF(TFMR_FSDEN, 0)
+			| SSC_BF(TFMR_FSOS, SSC_FSOS_NONE)
+			| SSC_BF(TFMR_FSLEN, 0)
+			| SSC_BF(TFMR_DATNB, (channels - 1))
+			| SSC_BIT(TFMR_MSBF)
+			| SSC_BF(TFMR_DATDEF, 0)
+			| SSC_BF(TFMR_DATLEN, (bits - 1));
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	default:
 		printk(KERN_WARNING "atmel_ssc_dai: unsupported DAI format 0x%x\n",
 			ssc_p->daifmt);
@@ -614,7 +725,12 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
 
 	dma_params = ssc_p->dma_params[dir];
 
+<<<<<<< HEAD
 	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_enable);
+=======
+	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
+	ssc_writel(ssc_p->ssc->regs, IDR, dma_params->mask->ssc_error);
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s enabled SSC_SR=0x%08x\n",
 			dir ? "receive" : "transmit",
@@ -622,6 +738,36 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
+			     int cmd, struct snd_soc_dai *dai)
+{
+	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
+	struct atmel_pcm_dma_params *dma_params;
+	int dir;
+
+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+		dir = 0;
+	else
+		dir = 1;
+
+	dma_params = ssc_p->dma_params[dir];
+
+	switch (cmd) {
+	case SNDRV_PCM_TRIGGER_START:
+	case SNDRV_PCM_TRIGGER_RESUME:
+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+		ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_enable);
+		break;
+	default:
+		ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
+		break;
+	}
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PM
 static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
@@ -687,6 +833,7 @@ static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
 #  define atmel_ssc_resume	NULL
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
 static int atmel_ssc_probe(struct snd_soc_dai *dai)
 {
 	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
@@ -714,20 +861,35 @@ static int atmel_ssc_remove(struct snd_soc_dai *dai)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define ATMEL_SSC_RATES (SNDRV_PCM_RATE_8000_96000)
 
 #define ATMEL_SSC_FORMATS (SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_S16_LE |\
 			  SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+=======
+static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.startup	= atmel_ssc_startup,
 	.shutdown	= atmel_ssc_shutdown,
 	.prepare	= atmel_ssc_prepare,
+=======
+static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+	.startup	= atmel_ssc_startup,
+	.shutdown	= atmel_ssc_shutdown,
+	.prepare	= atmel_ssc_prepare,
+	.trigger	= atmel_ssc_trigger,
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= atmel_ssc_hw_params,
 	.set_fmt	= atmel_ssc_set_dai_fmt,
 	.set_clkdiv	= atmel_ssc_set_dai_clkdiv,
 };
 
+<<<<<<< HEAD
 static struct snd_soc_dai_driver atmel_ssc_dai[NUM_SSC_DEVICES] = {
 	{
 		.name = "atmel-ssc-dai.0",
@@ -752,6 +914,9 @@ static struct snd_soc_dai_driver atmel_ssc_dai[NUM_SSC_DEVICES] = {
 		.name = "atmel-ssc-dai.1",
 		.probe = atmel_ssc_probe,
 		.remove = atmel_ssc_remove,
+=======
+static struct snd_soc_dai_driver atmel_ssc_dai = {
+>>>>>>> refs/remotes/origin/master
 		.suspend = atmel_ssc_suspend,
 		.resume = atmel_ssc_resume,
 		.playback = {
@@ -765,6 +930,7 @@ static struct snd_soc_dai_driver atmel_ssc_dai[NUM_SSC_DEVICES] = {
 			.rates = ATMEL_SSC_RATES,
 			.formats = ATMEL_SSC_FORMATS,},
 		.ops = &atmel_ssc_dai_ops,
+<<<<<<< HEAD
 	},
 	{
 		.name = "atmel-ssc-dai.2",
@@ -809,6 +975,57 @@ static struct platform_driver asoc_ssc_driver = {
 	.probe = asoc_ssc_probe,
 	.remove = __devexit_p(asoc_ssc_remove),
 };
+=======
+};
+
+static const struct snd_soc_component_driver atmel_ssc_component = {
+	.name		= "atmel-ssc",
+};
+
+static int asoc_ssc_init(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+	struct ssc_device *ssc = platform_get_drvdata(pdev);
+	int ret;
+
+	ret = snd_soc_register_component(dev, &atmel_ssc_component,
+					 &atmel_ssc_dai, 1);
+	if (ret) {
+		dev_err(dev, "Could not register DAI: %d\n", ret);
+		goto err;
+	}
+
+	if (ssc->pdata->use_dma)
+		ret = atmel_pcm_dma_platform_register(dev);
+	else
+		ret = atmel_pcm_pdc_platform_register(dev);
+
+	if (ret) {
+		dev_err(dev, "Could not register PCM: %d\n", ret);
+		goto err_unregister_dai;
+	}
+
+	return 0;
+
+err_unregister_dai:
+	snd_soc_unregister_component(dev);
+err:
+	return ret;
+}
+
+static void asoc_ssc_exit(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+	struct ssc_device *ssc = platform_get_drvdata(pdev);
+
+	if (ssc->pdata->use_dma)
+		atmel_pcm_dma_platform_unregister(dev);
+	else
+		atmel_pcm_pdc_platform_unregister(dev);
+
+	snd_soc_unregister_component(dev);
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * atmel_ssc_set_audio - Allocate the specified SSC for audio use.
@@ -816,6 +1033,7 @@ static struct platform_driver asoc_ssc_driver = {
 int atmel_ssc_set_audio(int ssc_id)
 {
 	struct ssc_device *ssc;
+<<<<<<< HEAD
 	static struct platform_device *dma_pdev;
 	struct platform_device *ssc_pdev;
 	int ret;
@@ -838,10 +1056,15 @@ int atmel_ssc_set_audio(int ssc_id)
 	}
 
 	ssc_pdev = platform_device_alloc("atmel-ssc-dai", ssc_id);
+<<<<<<< HEAD
 	if (!ssc_pdev) {
 		ssc_free(ssc);
 		return -ENOMEM;
 	}
+=======
+	if (!ssc_pdev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* If we can grab the SSC briefly to parent the DAI device off it */
 	ssc = ssc_request(ssc_id);
@@ -856,11 +1079,28 @@ int atmel_ssc_set_audio(int ssc_id)
 	ret = platform_device_add(ssc_pdev);
 	if (ret < 0)
 		platform_device_put(ssc_pdev);
+=======
+	int ret;
+
+	/* If we can grab the SSC briefly to parent the DAI device off it */
+	ssc = ssc_request(ssc_id);
+	if (IS_ERR(ssc)) {
+		pr_err("Unable to parent ASoC SSC DAI on SSC: %ld\n",
+			PTR_ERR(ssc));
+		return PTR_ERR(ssc);
+	} else {
+		ssc_info[ssc_id].ssc = ssc;
+	}
+
+	ret = asoc_ssc_init(&ssc->pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init snd_atmel_ssc_init(void)
 {
 	return platform_driver_register(&asoc_ssc_driver);
@@ -872,6 +1112,19 @@ static void __exit snd_atmel_ssc_exit(void)
 	platform_driver_unregister(&asoc_ssc_driver);
 }
 module_exit(snd_atmel_ssc_exit);
+=======
+module_platform_driver(asoc_ssc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void atmel_ssc_put_audio(int ssc_id)
+{
+	struct ssc_device *ssc = ssc_info[ssc_id].ssc;
+
+	asoc_ssc_exit(&ssc->pdev->dev);
+	ssc_free(ssc);
+}
+EXPORT_SYMBOL_GPL(atmel_ssc_put_audio);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Sedji Gaouaou, sedji.gaouaou@atmel.com, www.atmel.com");

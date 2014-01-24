@@ -30,6 +30,14 @@
 
 #include <linux/workqueue.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/wait.h>
 #include <linux/errno.h>
 #include <linux/kobject.h>
@@ -41,7 +49,15 @@
  * @do_shrink: The callback function.
  *
  * Arguments to the do_shrink functions are intended to be passed using
+<<<<<<< HEAD
+<<<<<<< HEAD
  * inheritance. That is, the argument class derives from struct ttm_mem_srink,
+=======
+ * inheritance. That is, the argument class derives from struct ttm_mem_shrink,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * inheritance. That is, the argument class derives from struct ttm_mem_shrink,
+>>>>>>> refs/remotes/origin/master
  * and can be accessed using container_of().
  */
 
@@ -59,7 +75,10 @@ struct ttm_mem_shrink {
  * for the GPU, and this will otherwise block other workqueue tasks(?)
  * At this point we use only a single-threaded workqueue.
  * @work: The workqueue callback for the shrink queue.
+<<<<<<< HEAD
  * @queue: Wait queue for processes suspended waiting for memory.
+=======
+>>>>>>> refs/remotes/origin/master
  * @lock: Lock to protect the @shrink - and the memory accounting members,
  * that is, essentially the whole structure with some exceptions.
  * @zones: Array of pointers to accounting zones.
@@ -79,7 +98,10 @@ struct ttm_mem_global {
 	struct ttm_mem_shrink *shrink;
 	struct workqueue_struct *swap_queue;
 	struct work_struct work;
+<<<<<<< HEAD
 	wait_queue_head_t queue;
+=======
+>>>>>>> refs/remotes/origin/master
 	spinlock_t lock;
 	struct ttm_mem_zone *zones[TTM_MEM_MAX_ZONES];
 	unsigned int num_zones;

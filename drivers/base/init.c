@@ -31,7 +31,13 @@ void __init driver_init(void)
 	 * core core pieces.
 	 */
 	platform_bus_init();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	system_bus_init();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cpu_dev_init();
 	memory_dev_init();
 }

@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/workqueue.h>
 #include <linux/rtnetlink.h>
 #include <linux/cache.h>
@@ -8,8 +13,20 @@
 #include <linux/idr.h>
 #include <linux/rculist.h>
 #include <linux/nsproxy.h>
+<<<<<<< HEAD
 #include <linux/proc_fs.h>
 #include <linux/file.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/fs.h>
+#include <linux/proc_ns.h>
+#include <linux/file.h>
+#include <linux/export.h>
+#include <linux/user_namespace.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/net_namespace.h>
 #include <net/netns/generic.h>
 
@@ -142,7 +159,11 @@ static void ops_free_list(const struct pernet_operations *ops,
 /*
  * setup_net runs the initializers for the network namespace object.
  */
+<<<<<<< HEAD
 static __net_init int setup_net(struct net *net)
+=======
+static __net_init int setup_net(struct net *net, struct user_namespace *user_ns)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Must be called with net_mutex held */
 	const struct pernet_operations *ops, *saved_ops;
@@ -151,6 +172,15 @@ static __net_init int setup_net(struct net *net)
 
 	atomic_set(&net->count, 1);
 	atomic_set(&net->passive, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	net->dev_base_seq = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	net->dev_base_seq = 1;
+	net->user_ns = user_ns;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef NETNS_REFCNT_DEBUG
 	atomic_set(&net->use_count, 0);
@@ -212,8 +242,13 @@ static void net_free(struct net *net)
 {
 #ifdef NETNS_REFCNT_DEBUG
 	if (unlikely(atomic_read(&net->use_count) != 0)) {
+<<<<<<< HEAD
 		printk(KERN_EMERG "network namespace not free! Usage: %d\n",
 			atomic_read(&net->use_count));
+=======
+		pr_emerg("network namespace not free! Usage: %d\n",
+			 atomic_read(&net->use_count));
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 #endif
@@ -228,7 +263,12 @@ void net_drop_ns(void *p)
 		net_free(ns);
 }
 
+<<<<<<< HEAD
 struct net *copy_net_ns(unsigned long flags, struct net *old_net)
+=======
+struct net *copy_net_ns(unsigned long flags,
+			struct user_namespace *user_ns, struct net *old_net)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net *net;
 	int rv;
@@ -239,8 +279,16 @@ struct net *copy_net_ns(unsigned long flags, struct net *old_net)
 	net = net_alloc();
 	if (!net)
 		return ERR_PTR(-ENOMEM);
+<<<<<<< HEAD
 	mutex_lock(&net_mutex);
 	rv = setup_net(net);
+=======
+
+	get_user_ns(user_ns);
+
+	mutex_lock(&net_mutex);
+	rv = setup_net(net, user_ns);
+>>>>>>> refs/remotes/origin/master
 	if (rv == 0) {
 		rtnl_lock();
 		list_add_tail_rcu(&net->list, &net_namespace_list);
@@ -248,6 +296,10 @@ struct net *copy_net_ns(unsigned long flags, struct net *old_net)
 	}
 	mutex_unlock(&net_mutex);
 	if (rv < 0) {
+<<<<<<< HEAD
+=======
+		put_user_ns(user_ns);
+>>>>>>> refs/remotes/origin/master
 		net_drop_ns(net);
 		return ERR_PTR(rv);
 	}
@@ -304,6 +356,10 @@ static void cleanup_net(struct work_struct *work)
 	/* Finally it is safe to free my network namespace structure */
 	list_for_each_entry_safe(net, tmp, &net_exit_list, exit_list) {
 		list_del_init(&net->exit_list);
+<<<<<<< HEAD
+=======
+		put_user_ns(net->user_ns);
+>>>>>>> refs/remotes/origin/master
 		net_drop_ns(net);
 	}
 }
@@ -324,7 +380,11 @@ EXPORT_SYMBOL_GPL(__put_net);
 
 struct net *get_net_ns_by_fd(int fd)
 {
+<<<<<<< HEAD
 	struct proc_inode *ei;
+=======
+	struct proc_ns *ei;
+>>>>>>> refs/remotes/origin/master
 	struct file *file;
 	struct net *net;
 
@@ -332,7 +392,11 @@ struct net *get_net_ns_by_fd(int fd)
 	if (IS_ERR(file))
 		return ERR_CAST(file);
 
+<<<<<<< HEAD
 	ei = PROC_I(file->f_dentry->d_inode);
+=======
+	ei = get_proc_ns(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	if (ei->ns_ops == &netns_operations)
 		net = get_net(ei->ns);
 	else
@@ -343,6 +407,7 @@ struct net *get_net_ns_by_fd(int fd)
 }
 
 #else
+<<<<<<< HEAD
 struct net *copy_net_ns(unsigned long flags, struct net *old_net)
 {
 	if (flags & CLONE_NEWNET)
@@ -350,6 +415,8 @@ struct net *copy_net_ns(unsigned long flags, struct net *old_net)
 	return old_net;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct net *get_net_ns_by_fd(int fd)
 {
 	return ERR_PTR(-EINVAL);
@@ -376,6 +443,24 @@ struct net *get_net_ns_by_pid(pid_t pid)
 }
 EXPORT_SYMBOL_GPL(get_net_ns_by_pid);
 
+<<<<<<< HEAD
+=======
+static __net_init int net_ns_net_init(struct net *net)
+{
+	return proc_alloc_inum(&net->proc_inum);
+}
+
+static __net_exit void net_ns_net_exit(struct net *net)
+{
+	proc_free_inum(net->proc_inum);
+}
+
+static struct pernet_operations __net_initdata net_ns_ops = {
+	.init = net_ns_net_init,
+	.exit = net_ns_net_exit,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int __init net_ns_init(void)
 {
 	struct net_generic *ng;
@@ -398,7 +483,11 @@ static int __init net_ns_init(void)
 	rcu_assign_pointer(init_net.gen, ng);
 
 	mutex_lock(&net_mutex);
+<<<<<<< HEAD
 	if (setup_net(&init_net))
+=======
+	if (setup_net(&init_net, &init_user_ns))
+>>>>>>> refs/remotes/origin/master
 		panic("Could not setup the initial network namespace");
 
 	rtnl_lock();
@@ -407,6 +496,11 @@ static int __init net_ns_init(void)
 
 	mutex_unlock(&net_mutex);
 
+<<<<<<< HEAD
+=======
+	register_pernet_subsys(&net_ns_ops);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -625,16 +719,40 @@ static void netns_put(void *ns)
 
 static int netns_install(struct nsproxy *nsproxy, void *ns)
 {
+<<<<<<< HEAD
 	put_net(nsproxy->net_ns);
 	nsproxy->net_ns = get_net(ns);
 	return 0;
 }
 
+=======
+	struct net *net = ns;
+
+	if (!ns_capable(net->user_ns, CAP_SYS_ADMIN) ||
+	    !ns_capable(current_user_ns(), CAP_SYS_ADMIN))
+		return -EPERM;
+
+	put_net(nsproxy->net_ns);
+	nsproxy->net_ns = get_net(net);
+	return 0;
+}
+
+static unsigned int netns_inum(void *ns)
+{
+	struct net *net = ns;
+	return net->proc_inum;
+}
+
+>>>>>>> refs/remotes/origin/master
 const struct proc_ns_operations netns_operations = {
 	.name		= "net",
 	.type		= CLONE_NEWNET,
 	.get		= netns_get,
 	.put		= netns_put,
 	.install	= netns_install,
+<<<<<<< HEAD
+=======
+	.inum		= netns_inum,
+>>>>>>> refs/remotes/origin/master
 };
 #endif

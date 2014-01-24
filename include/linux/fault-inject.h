@@ -5,7 +5,15 @@
 
 #include <linux/types.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * For explanation of the elements of this struct, see
@@ -25,6 +33,8 @@ struct fault_attr {
 	unsigned long reject_end;
 
 	unsigned long count;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
 
@@ -45,6 +55,10 @@ struct fault_attr {
 	} dentries;
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define FAULT_ATTR_INITIALIZER {				\
@@ -57,11 +71,19 @@ struct fault_attr {
 
 #define DECLARE_FAULT_ATTR(name) struct fault_attr name = FAULT_ATTR_INITIALIZER
 int setup_fault_attr(struct fault_attr *attr, char *str);
+<<<<<<< HEAD
+<<<<<<< HEAD
 void should_fail_srandom(unsigned long entropy);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 bool should_fail(struct fault_attr *attr, ssize_t size);
 
 #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int init_fault_attr_dentries(struct fault_attr *attr, const char *name);
 void cleanup_fault_attr_dentries(struct fault_attr *attr);
 
@@ -75,6 +97,22 @@ static inline int init_fault_attr_dentries(struct fault_attr *attr,
 
 static inline void cleanup_fault_attr_dentries(struct fault_attr *attr)
 {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct dentry *fault_create_debugfs_attr(const char *name,
+			struct dentry *parent, struct fault_attr *attr);
+
+#else /* CONFIG_FAULT_INJECTION_DEBUG_FS */
+
+static inline struct dentry *fault_create_debugfs_attr(const char *name,
+			struct dentry *parent, struct fault_attr *attr)
+{
+	return ERR_PTR(-ENODEV);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* CONFIG_FAULT_INJECTION_DEBUG_FS */

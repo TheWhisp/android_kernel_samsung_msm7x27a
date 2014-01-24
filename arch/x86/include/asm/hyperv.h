@@ -189,5 +189,9 @@
 #define HV_STATUS_INVALID_HYPERCALL_CODE	2
 #define HV_STATUS_INVALID_HYPERCALL_INPUT	3
 #define HV_STATUS_INVALID_ALIGNMENT		4
+<<<<<<< HEAD
+=======
+#define HV_STATUS_INSUFFICIENT_BUFFERS		19
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

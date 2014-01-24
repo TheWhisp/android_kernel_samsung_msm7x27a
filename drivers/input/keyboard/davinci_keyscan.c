@@ -36,7 +36,11 @@
 
 #include <mach/hardware.h>
 #include <mach/irqs.h>
+<<<<<<< HEAD
 #include <mach/keyscan.h>
+=======
+#include <linux/platform_data/keyscan-davinci.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Key scan registers */
 #define DAVINCI_KEYSCAN_KEYCTRL		0x0000
@@ -271,7 +275,15 @@ static int __init davinci_ks_probe(struct platform_device *pdev)
 	}
 
 	error = request_irq(davinci_ks->irq, davinci_ks_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  IRQF_DISABLED, pdev->name, davinci_ks);
+=======
+			  0, pdev->name, davinci_ks);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  0, pdev->name, davinci_ks);
+>>>>>>> refs/remotes/origin/master
 	if (error < 0) {
 		dev_err(dev, "unable to register davinci key scan interrupt\n");
 		goto fail5;
@@ -303,7 +315,11 @@ fail1:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit davinci_ks_remove(struct platform_device *pdev)
+=======
+static int davinci_ks_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct davinci_ks *davinci_ks = platform_get_drvdata(pdev);
 
@@ -314,8 +330,11 @@ static int __devexit davinci_ks_remove(struct platform_device *pdev)
 	iounmap(davinci_ks->base);
 	release_mem_region(davinci_ks->pbase, davinci_ks->base_size);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(davinci_ks);
 
 	return 0;
@@ -326,6 +345,7 @@ static struct platform_driver davinci_ks_driver = {
 		.name = "davinci_keyscan",
 		.owner = THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.remove	= __devexit_p(davinci_ks_remove),
 };
 
@@ -340,6 +360,12 @@ static void __exit davinci_ks_exit(void)
 	platform_driver_unregister(&davinci_ks_driver);
 }
 module_exit(davinci_ks_exit);
+=======
+	.remove	= davinci_ks_remove,
+};
+
+module_platform_driver_probe(davinci_ks_driver, davinci_ks_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Miguel Aguilar");
 MODULE_DESCRIPTION("Texas Instruments DaVinci Key Scan Driver");

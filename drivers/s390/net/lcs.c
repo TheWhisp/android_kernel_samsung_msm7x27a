@@ -26,12 +26,21 @@
 #define KMSG_COMPONENT		"lcs"
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/kernel_stat.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/if.h>
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
+<<<<<<< HEAD
 #include <linux/trdevice.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fddidevice.h>
 #include <linux/inetdevice.h>
 #include <linux/in.h>
@@ -51,8 +60,16 @@
 #include "lcs.h"
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if !defined(CONFIG_NET_ETHERNET) && \
+=======
+#if !defined(CONFIG_ETHERNET) && \
+>>>>>>> refs/remotes/origin/cm-10.0
     !defined(CONFIG_TR) && !defined(CONFIG_FDDI)
+=======
+#if !defined(CONFIG_ETHERNET) && !defined(CONFIG_FDDI)
+>>>>>>> refs/remotes/origin/master
 #error Cannot compile lcs.c without some net devices switched on.
 #endif
 
@@ -285,7 +302,11 @@ lcs_setup_write_ccws(struct lcs_card *card)
 
 	LCS_DBF_TEXT(3, setup, "iwritccw");
 	/* Setup write ccws. */
+<<<<<<< HEAD
 	memset(card->write.ccws, 0, sizeof(struct ccw1) * LCS_NUM_BUFFS + 1);
+=======
+	memset(card->write.ccws, 0, sizeof(struct ccw1) * (LCS_NUM_BUFFS + 1));
+>>>>>>> refs/remotes/origin/master
 	for (cnt = 0; cnt < LCS_NUM_BUFFS; cnt++) {
 		card->write.ccws[cnt].cmd_code = LCS_CCW_WRITE;
 		card->write.ccws[cnt].count = 0;
@@ -1167,10 +1188,14 @@ static void
 lcs_get_mac_for_ipm(__be32 ipm, char *mac, struct net_device *dev)
 {
 	LCS_DBF_TEXT(4,trace, "getmac");
+<<<<<<< HEAD
 	if (dev->type == ARPHRD_IEEE802_TR)
 		ip_tr_mc_map(ipm, mac);
 	else
 		ip_eth_mc_map(ipm, mac);
+=======
+	ip_eth_mc_map(ipm, mac);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1399,7 +1424,13 @@ lcs_irq(struct ccw_device *cdev, unsigned long intparm, struct irb *irb)
 	int rc, index;
 	int cstat, dstat;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[IOINT_LCS]++;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (lcs_check_irb_error(cdev, irb))
 		return;
 
@@ -1636,19 +1667,30 @@ lcs_startlan_auto(struct lcs_card *card)
 	int rc;
 
 	LCS_DBF_TEXT(2, trace, "strtauto");
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NET_ETHERNET
+=======
+#ifdef CONFIG_ETHERNET
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_ETHERNET
+>>>>>>> refs/remotes/origin/master
 	card->lan_type = LCS_FRAME_TYPE_ENET;
 	rc = lcs_send_startlan(card, LCS_INITIATOR_TCPIP);
 	if (rc == 0)
 		return 0;
 
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_TR
 	card->lan_type = LCS_FRAME_TYPE_TR;
 	rc = lcs_send_startlan(card, LCS_INITIATOR_TCPIP);
 	if (rc == 0)
 		return 0;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FDDI
 	card->lan_type = LCS_FRAME_TYPE_FDDI;
 	rc = lcs_send_startlan(card, LCS_INITIATOR_TCPIP);
@@ -1972,7 +2014,15 @@ lcs_portno_store (struct device *dev, struct device_attribute *attr, const char 
 
 static DEVICE_ATTR(portno, 0644, lcs_portno_show, lcs_portno_store);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 const char *lcs_type[] = {
+=======
+static const char *lcs_type[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char *lcs_type[] = {
+>>>>>>> refs/remotes/origin/master
 	"not a channel",
 	"2216 parallel",
 	"2216 channel",
@@ -2053,10 +2103,24 @@ static struct attribute * lcs_attrs[] = {
 	&dev_attr_recover.attr,
 	NULL,
 };
+<<<<<<< HEAD
 
 static struct attribute_group lcs_attr_group = {
 	.attrs = lcs_attrs,
 };
+=======
+static struct attribute_group lcs_attr_group = {
+	.attrs = lcs_attrs,
+};
+static const struct attribute_group *lcs_attr_groups[] = {
+	&lcs_attr_group,
+	NULL,
+};
+static const struct device_type lcs_devtype = {
+	.name = "lcs",
+	.groups = lcs_attr_groups,
+};
+>>>>>>> refs/remotes/origin/master
 
 /**
  * lcs_probe_device is called on establishing a new ccwgroup_device.
@@ -2065,7 +2129,10 @@ static int
 lcs_probe_device(struct ccwgroup_device *ccwgdev)
 {
 	struct lcs_card *card;
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!get_device(&ccwgdev->dev))
 		return -ENODEV;
@@ -2077,12 +2144,15 @@ lcs_probe_device(struct ccwgroup_device *ccwgdev)
 		put_device(&ccwgdev->dev);
                 return -ENOMEM;
         }
+<<<<<<< HEAD
 	ret = sysfs_create_group(&ccwgdev->dev.kobj, &lcs_attr_group);
 	if (ret) {
 		lcs_free_card(card);
 		put_device(&ccwgdev->dev);
 		return ret;
         }
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(&ccwgdev->dev, card);
 	ccwgdev->cdev[0]->handler = lcs_irq;
 	ccwgdev->cdev[1]->handler = lcs_irq;
@@ -2091,7 +2161,13 @@ lcs_probe_device(struct ccwgroup_device *ccwgdev)
 	card->thread_start_mask = 0;
 	card->thread_allowed_mask = 0;
 	card->thread_running_mask = 0;
+<<<<<<< HEAD
         return 0;
+=======
+	ccwgdev->dev.type = &lcs_devtype;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -2122,7 +2198,15 @@ static const struct net_device_ops lcs_mc_netdev_ops = {
 	.ndo_stop		= lcs_stop_device,
 	.ndo_get_stats		= lcs_getstats,
 	.ndo_start_xmit		= lcs_start_xmit,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list = lcs_set_multicast_list,
+=======
+	.ndo_set_rx_mode	= lcs_set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= lcs_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int
@@ -2168,18 +2252,29 @@ lcs_new_device(struct ccwgroup_device *ccwgdev)
 		goto netdev_out;
 	}
 	switch (card->lan_type) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NET_ETHERNET
+=======
+#ifdef CONFIG_ETHERNET
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_ETHERNET
+>>>>>>> refs/remotes/origin/master
 	case LCS_FRAME_TYPE_ENET:
 		card->lan_type_trans = eth_type_trans;
 		dev = alloc_etherdev(0);
 		break;
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_TR
 	case LCS_FRAME_TYPE_TR:
 		card->lan_type_trans = tr_type_trans;
 		dev = alloc_trdev(0);
 		break;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FDDI
 	case LCS_FRAME_TYPE_FDDI:
 		card->lan_type_trans = fddi_type_trans;
@@ -2242,7 +2337,15 @@ __lcs_shutdown_device(struct ccwgroup_device *ccwgdev, int recovery_mode)
 {
 	struct lcs_card *card;
 	enum lcs_dev_states recover_state;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret = 0, ret2 = 0, ret3 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0, ret2 = 0, ret3 = 0;
+>>>>>>> refs/remotes/origin/master
 
 	LCS_DBF_TEXT(3, setup, "shtdndev");
 	card = dev_get_drvdata(&ccwgdev->dev);
@@ -2257,6 +2360,8 @@ __lcs_shutdown_device(struct ccwgroup_device *ccwgdev, int recovery_mode)
 	recover_state = card->state;
 
 	ret = lcs_stop_device(card->dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = ccw_device_set_offline(card->read.ccwdev);
 	ret = ccw_device_set_offline(card->write.ccwdev);
 	if (recover_state == DEV_STATE_UP) {
@@ -2264,6 +2369,22 @@ __lcs_shutdown_device(struct ccwgroup_device *ccwgdev, int recovery_mode)
 	}
 	if (ret)
 		return ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret2 = ccw_device_set_offline(card->read.ccwdev);
+	ret3 = ccw_device_set_offline(card->write.ccwdev);
+	if (!ret)
+		ret = (ret2) ? ret2 : ret3;
+	if (ret)
+		LCS_DBF_TEXT_(3, setup, "1err:%d", ret);
+	if (recover_state == DEV_STATE_UP) {
+		card->state = DEV_STATE_RECOVER;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2323,9 +2444,15 @@ lcs_remove_device(struct ccwgroup_device *ccwgdev)
 	}
 	if (card->dev)
 		unregister_netdev(card->dev);
+<<<<<<< HEAD
 	sysfs_remove_group(&ccwgdev->dev.kobj, &lcs_attr_group);
 	lcs_cleanup_card(card);
 	lcs_free_card(card);
+=======
+	lcs_cleanup_card(card);
+	lcs_free_card(card);
+	dev_set_drvdata(&ccwgdev->dev, NULL);
+>>>>>>> refs/remotes/origin/master
 	put_device(&ccwgdev->dev);
 }
 
@@ -2399,6 +2526,14 @@ static struct ccw_driver lcs_ccw_driver = {
 	.ids	= lcs_ids,
 	.probe	= ccwgroup_probe_ccwdev,
 	.remove	= ccwgroup_remove_ccwdev,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.int_class = IOINT_LCS,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.int_class = IRQIO_LCS,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -2409,9 +2544,13 @@ static struct ccwgroup_driver lcs_group_driver = {
 		.owner	= THIS_MODULE,
 		.name	= "lcs",
 	},
+<<<<<<< HEAD
 	.max_slaves  = 2,
 	.driver_id   = 0xD3C3E2,
 	.probe       = lcs_probe_device,
+=======
+	.setup	     = lcs_probe_device,
+>>>>>>> refs/remotes/origin/master
 	.remove      = lcs_remove_device,
 	.set_online  = lcs_new_device,
 	.set_offline = lcs_shutdown_device,
@@ -2422,6 +2561,7 @@ static struct ccwgroup_driver lcs_group_driver = {
 	.restore     = lcs_restore,
 };
 
+<<<<<<< HEAD
 static ssize_t
 lcs_driver_group_store(struct device_driver *ddrv, const char *buf,
 		       size_t count)
@@ -2446,6 +2586,26 @@ static struct attribute_group lcs_group_attr_group = {
 
 static const struct attribute_group *lcs_group_attr_groups[] = {
 	&lcs_group_attr_group,
+=======
+static ssize_t lcs_driver_group_store(struct device_driver *ddrv,
+				      const char *buf, size_t count)
+{
+	int err;
+	err = ccwgroup_create_dev(lcs_root_dev, &lcs_group_driver, 2, buf);
+	return err ? err : count;
+}
+static DRIVER_ATTR(group, 0200, NULL, lcs_driver_group_store);
+
+static struct attribute *lcs_drv_attrs[] = {
+	&driver_attr_group.attr,
+	NULL,
+};
+static struct attribute_group lcs_drv_attr_group = {
+	.attrs = lcs_drv_attrs,
+};
+static const struct attribute_group *lcs_drv_attr_groups[] = {
+	&lcs_drv_attr_group,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -2463,13 +2623,21 @@ __init lcs_init_module(void)
 	if (rc)
 		goto out_err;
 	lcs_root_dev = root_device_register("lcs");
+<<<<<<< HEAD
 	rc = IS_ERR(lcs_root_dev) ? PTR_ERR(lcs_root_dev) : 0;
+=======
+	rc = PTR_RET(lcs_root_dev);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto register_err;
 	rc = ccw_driver_register(&lcs_ccw_driver);
 	if (rc)
 		goto ccw_err;
+<<<<<<< HEAD
 	lcs_group_driver.driver.groups = lcs_group_attr_groups;
+=======
+	lcs_group_driver.driver.groups = lcs_drv_attr_groups;
+>>>>>>> refs/remotes/origin/master
 	rc = ccwgroup_driver_register(&lcs_group_driver);
 	if (rc)
 		goto ccwgroup_err;
@@ -2495,8 +2663,11 @@ __exit lcs_cleanup_module(void)
 {
 	pr_info("Terminating lcs module.\n");
 	LCS_DBF_TEXT(0, trace, "cleanup");
+<<<<<<< HEAD
 	driver_remove_file(&lcs_group_driver.driver,
 			   &driver_attr_group);
+=======
+>>>>>>> refs/remotes/origin/master
 	ccwgroup_driver_unregister(&lcs_group_driver);
 	ccw_driver_unregister(&lcs_ccw_driver);
 	root_device_unregister(lcs_root_dev);

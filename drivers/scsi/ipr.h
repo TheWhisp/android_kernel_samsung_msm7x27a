@@ -32,14 +32,28 @@
 #include <linux/libata.h>
 #include <linux/list.h>
 #include <linux/kref.h>
+<<<<<<< HEAD
+=======
+#include <linux/blk-iopoll.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>
 
 /*
  * Literals
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IPR_DRIVER_VERSION "2.5.2"
 #define IPR_DRIVER_DATE "(April 27, 2011)"
+=======
+#define IPR_DRIVER_VERSION "2.5.3"
+#define IPR_DRIVER_DATE "(March 10, 2012)"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IPR_DRIVER_VERSION "2.6.0"
+#define IPR_DRIVER_DATE "(November 16, 2012)"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * IPR_MAX_CMD_PER_LUN: This defines the maximum number of outstanding
@@ -53,12 +67,28 @@
  * IPR_NUM_BASE_CMD_BLKS: This defines the maximum number of
  *	ops the mid-layer can send to the adapter.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IPR_NUM_BASE_CMD_BLKS				100
+=======
+#define IPR_NUM_BASE_CMD_BLKS			(ioa_cfg->max_cmds)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IPR_NUM_BASE_CMD_BLKS			(ioa_cfg->max_cmds)
+>>>>>>> refs/remotes/origin/master
 
 #define PCI_DEVICE_ID_IBM_OBSIDIAN_E	0x0339
 
 #define PCI_DEVICE_ID_IBM_CROC_FPGA_E2          0x033D
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PCI_DEVICE_ID_IBM_CROC_ASIC_E2          0x034A
+=======
+#define PCI_DEVICE_ID_IBM_CROCODILE             0x034A
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PCI_DEVICE_ID_IBM_CROCODILE             0x034A
+>>>>>>> refs/remotes/origin/master
 
 #define IPR_SUBS_DEV_ID_2780	0x0264
 #define IPR_SUBS_DEV_ID_5702	0x0266
@@ -82,6 +112,15 @@
 
 #define IPR_SUBS_DEV_ID_57B4    0x033B
 #define IPR_SUBS_DEV_ID_57B2    0x035F
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define IPR_SUBS_DEV_ID_57C3    0x0353
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IPR_SUBS_DEV_ID_57C0    0x0352
+#define IPR_SUBS_DEV_ID_57C3    0x0353
+>>>>>>> refs/remotes/origin/master
 #define IPR_SUBS_DEV_ID_57C4    0x0354
 #define IPR_SUBS_DEV_ID_57C6    0x0357
 #define IPR_SUBS_DEV_ID_57CC    0x035C
@@ -91,8 +130,28 @@
 #define IPR_SUBS_DEV_ID_57B1    0x0355
 
 #define IPR_SUBS_DEV_ID_574D    0x0356
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IPR_SUBS_DEV_ID_575D    0x035D
+=======
+#define IPR_SUBS_DEV_ID_57C8    0x035D
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#define IPR_SUBS_DEV_ID_57C8    0x035D
+
+#define IPR_SUBS_DEV_ID_57D5    0x03FB
+#define IPR_SUBS_DEV_ID_57D6    0x03FC
+#define IPR_SUBS_DEV_ID_57D7    0x03FF
+#define IPR_SUBS_DEV_ID_57D8    0x03FE
+#define IPR_SUBS_DEV_ID_57D9    0x046D
+#define IPR_SUBS_DEV_ID_57EB    0x0474
+#define IPR_SUBS_DEV_ID_57EC    0x0475
+#define IPR_SUBS_DEV_ID_57ED    0x0499
+#define IPR_SUBS_DEV_ID_57EE    0x049A
+#define IPR_SUBS_DEV_ID_57EF    0x049B
+#define IPR_SUBS_DEV_ID_57F0    0x049C
+>>>>>>> refs/remotes/origin/master
 #define IPR_NAME				"ipr"
 
 /*
@@ -152,7 +211,15 @@
 #define IPR_NUM_INTERNAL_CMD_BLKS	(IPR_NUM_HCAMS + \
                                      ((IPR_NUM_RESET_RELOAD_RETRIES + 1) * 2) + 4)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IPR_MAX_COMMANDS		IPR_NUM_BASE_CMD_BLKS
+=======
+#define IPR_MAX_COMMANDS		100
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IPR_MAX_COMMANDS		100
+>>>>>>> refs/remotes/origin/master
 #define IPR_NUM_CMD_BLKS		(IPR_NUM_BASE_CMD_BLKS + \
 						IPR_NUM_INTERNAL_CMD_BLKS)
 
@@ -208,7 +275,15 @@
 #define IPR_CANCEL_ALL_TIMEOUT		(ipr_fastfail ? 10 * HZ : 30 * HZ)
 #define IPR_ABORT_TASK_TIMEOUT		(ipr_fastfail ? 10 * HZ : 30 * HZ)
 #define IPR_INTERNAL_TIMEOUT			(ipr_fastfail ? 10 * HZ : 30 * HZ)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IPR_WRITE_BUFFER_TIMEOUT		(10 * 60 * HZ)
+=======
+#define IPR_WRITE_BUFFER_TIMEOUT		(30 * 60 * HZ)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IPR_WRITE_BUFFER_TIMEOUT		(30 * 60 * HZ)
+>>>>>>> refs/remotes/origin/master
 #define IPR_SET_SUP_DEVICE_TIMEOUT		(2 * 60 * HZ)
 #define IPR_REQUEST_SENSE_TIMEOUT		(10 * HZ)
 #define IPR_OPERATIONAL_TIMEOUT		(5 * 60)
@@ -297,6 +372,12 @@ IPR_PCII_NO_HOST_RRQ | IPR_PCII_IOARRIN_LOST | IPR_PCII_MMIO_ERROR)
  * Misc literals
  */
 #define IPR_NUM_IOADL_ENTRIES			IPR_MAX_SGLIST
+<<<<<<< HEAD
+=======
+#define IPR_MAX_MSIX_VECTORS		0x5
+#define IPR_MAX_HRRQ_NUM		0x10
+#define IPR_INIT_HRRQ			0x0
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Adapter interface types
@@ -403,7 +484,11 @@ struct ipr_config_table_entry64 {
 	__be64 dev_id;
 	__be64 lun;
 	__be64 lun_wwn[2];
+<<<<<<< HEAD
 #define IPR_MAX_RES_PATH_LENGTH		24
+=======
+#define IPR_MAX_RES_PATH_LENGTH		48
+>>>>>>> refs/remotes/origin/master
 	__be64 res_path;
 	struct ipr_std_inq_data std_inq_data;
 	u8 reserved2[4];
@@ -458,9 +543,46 @@ struct ipr_supported_device {
 	u8 reserved2[16];
 }__attribute__((packed, aligned (4)));
 
+<<<<<<< HEAD
 /* Command packet structure */
 struct ipr_cmd_pkt {
 	__be16 reserved;		/* Reserved by IOA */
+=======
+struct ipr_hrr_queue {
+	struct ipr_ioa_cfg *ioa_cfg;
+	__be32 *host_rrq;
+	dma_addr_t host_rrq_dma;
+#define IPR_HRRQ_REQ_RESP_HANDLE_MASK	0xfffffffc
+#define IPR_HRRQ_RESP_BIT_SET		0x00000002
+#define IPR_HRRQ_TOGGLE_BIT		0x00000001
+#define IPR_HRRQ_REQ_RESP_HANDLE_SHIFT	2
+#define IPR_ID_HRRQ_SELE_ENABLE		0x02
+	volatile __be32 *hrrq_start;
+	volatile __be32 *hrrq_end;
+	volatile __be32 *hrrq_curr;
+
+	struct list_head hrrq_free_q;
+	struct list_head hrrq_pending_q;
+	spinlock_t _lock;
+	spinlock_t *lock;
+
+	volatile u32 toggle_bit;
+	u32 size;
+	u32 min_cmd_id;
+	u32 max_cmd_id;
+	u8 allow_interrupts:1;
+	u8 ioa_is_dead:1;
+	u8 allow_cmds:1;
+	u8 removing_ioa:1;
+
+	struct blk_iopoll iopoll;
+};
+
+/* Command packet structure */
+struct ipr_cmd_pkt {
+	u8 reserved;		/* Reserved by IOA */
+	u8 hrrq_id;
+>>>>>>> refs/remotes/origin/master
 	u8 request_type;
 #define IPR_RQTYPE_SCSICDB		0x00
 #define IPR_RQTYPE_IOACMD		0x01
@@ -511,7 +633,11 @@ struct ipr_ioarcb_ata_regs {	/* 22 bytes */
 	u8 hob_lbam;
 	u8 hob_lbah;
 	u8 ctl;
+<<<<<<< HEAD
 }__attribute__ ((packed, aligned(4)));
+=======
+}__attribute__ ((packed, aligned(2)));
+>>>>>>> refs/remotes/origin/master
 
 struct ipr_ioadl_desc {
 	__be32 flags_and_data_len;
@@ -1021,6 +1147,13 @@ struct ipr_hostrcb64_fabric_desc {
 	struct ipr_hostrcb64_config_element elem[1];
 }__attribute__((packed, aligned (8)));
 
+<<<<<<< HEAD
+=======
+#define for_each_hrrq(hrrq, ioa_cfg) \
+		for (hrrq = (ioa_cfg)->hrrq; \
+			hrrq < ((ioa_cfg)->hrrq + (ioa_cfg)->hrrq_num); hrrq++)
+
+>>>>>>> refs/remotes/origin/master
 #define for_each_fabric_cfg(fabric, cfg) \
 		for (cfg = (fabric)->elem; \
 			cfg < ((fabric)->elem + be16_to_cpu((fabric)->num_entries)); \
@@ -1304,7 +1437,20 @@ struct ipr_interrupts {
 
 struct ipr_chip_cfg_t {
 	u32 mailbox;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 cache_line_size;
+=======
+	u16 max_cmds;
+	u8 cache_line_size;
+	u8 clear_isr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 max_cmds;
+	u8 cache_line_size;
+	u8 clear_isr;
+	u32 iopoll_weight;
+>>>>>>> refs/remotes/origin/master
 	struct ipr_interrupt_offsets regs;
 };
 
@@ -1314,6 +1460,10 @@ struct ipr_chip_t {
 	u16 intr_type;
 #define IPR_USE_LSI			0x00
 #define IPR_USE_MSI			0x01
+<<<<<<< HEAD
+=======
+#define IPR_USE_MSIX			0x02
+>>>>>>> refs/remotes/origin/master
 	u16 sis_type;
 #define IPR_SIS32			0x00
 #define IPR_SIS64			0x01
@@ -1360,6 +1510,14 @@ enum ipr_sdt_state {
 	INACTIVE,
 	WAIT_FOR_DUMP,
 	GET_DUMP,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	READ_DUMP,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	READ_DUMP,
+>>>>>>> refs/remotes/origin/master
 	ABORT_DUMP,
 	DUMP_OBTAINED
 };
@@ -1371,6 +1529,7 @@ struct ipr_ioa_cfg {
 
 	struct list_head queue;
 
+<<<<<<< HEAD
 	u8 allow_interrupts:1;
 	u8 in_reset_reload:1;
 	u8 in_ioa_bringdown:1;
@@ -1378,21 +1537,45 @@ struct ipr_ioa_cfg {
 	u8 ioa_is_dead:1;
 	u8 dump_taken:1;
 	u8 allow_cmds:1;
+=======
+	u8 in_reset_reload:1;
+	u8 in_ioa_bringdown:1;
+	u8 ioa_unit_checked:1;
+	u8 dump_taken:1;
+>>>>>>> refs/remotes/origin/master
 	u8 allow_ml_add_del:1;
 	u8 needs_hard_reset:1;
 	u8 dual_raid:1;
 	u8 needs_warm_reset:1;
 	u8 msi_received:1;
 	u8 sis64:1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8 dump_timeout:1;
+	u8 cfg_locked:1;
+	u8 clear_isr:1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 dump_timeout:1;
+	u8 cfg_locked:1;
+	u8 clear_isr:1;
+>>>>>>> refs/remotes/origin/master
 
 	u8 revid;
 
 	/*
 	 * Bitmaps for SIS64 generated target values
 	 */
+<<<<<<< HEAD
 	unsigned long *target_ids;
 	unsigned long *array_ids;
 	unsigned long *vset_ids;
+=======
+	unsigned long target_ids[BITS_TO_LONGS(IPR_MAX_SIS64_DEVS)];
+	unsigned long array_ids[BITS_TO_LONGS(IPR_MAX_SIS64_DEVS)];
+	unsigned long vset_ids[BITS_TO_LONGS(IPR_MAX_SIS64_DEVS)];
+>>>>>>> refs/remotes/origin/master
 
 	u16 type; /* CCIN of the card */
 
@@ -1406,6 +1589,7 @@ struct ipr_ioa_cfg {
 	char trace_start[8];
 #define IPR_TRACE_START_LABEL			"trace"
 	struct ipr_trace_entry *trace;
+<<<<<<< HEAD
 	u32 trace_index:IPR_NUM_TRACE_INDEX_BITS;
 
 	/*
@@ -1421,6 +1605,9 @@ struct ipr_ioa_cfg {
 	char ipr_pending_label[8];
 #define IPR_PENDQ_LABEL			"pend-q"
 	struct list_head pending_q;
+=======
+	atomic_t trace_index;
+>>>>>>> refs/remotes/origin/master
 
 	char cfg_table_start[8];
 #define IPR_CFG_TBL_START		"cfg"
@@ -1445,6 +1632,7 @@ struct ipr_ioa_cfg {
 	struct list_head hostrcb_free_q;
 	struct list_head hostrcb_pending_q;
 
+<<<<<<< HEAD
 	__be32 *host_rrq;
 	dma_addr_t host_rrq_dma;
 #define IPR_HRRQ_REQ_RESP_HANDLE_MASK	0xfffffffc
@@ -1455,6 +1643,12 @@ struct ipr_ioa_cfg {
 	volatile __be32 *hrrq_end;
 	volatile __be32 *hrrq_curr;
 	volatile u32 toggle_bit;
+=======
+	struct ipr_hrr_queue hrrq[IPR_MAX_HRRQ_NUM];
+	u32 hrrq_num;
+	atomic_t  hrrq_index;
+	u16 identify_hrrq_index;
+>>>>>>> refs/remotes/origin/master
 
 	struct ipr_bus_attributes bus_attr[IPR_MAX_NUM_BUSES];
 
@@ -1497,8 +1691,31 @@ struct ipr_ioa_cfg {
 	struct ata_host ata_host;
 	char ipr_cmd_label[8];
 #define IPR_CMD_LABEL		"ipr_cmd"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ipr_cmnd *ipr_cmnd_list[IPR_NUM_CMD_BLKS];
 	dma_addr_t ipr_cmnd_list_dma[IPR_NUM_CMD_BLKS];
+=======
+	u32 max_cmds;
+	struct ipr_cmnd **ipr_cmnd_list;
+	dma_addr_t *ipr_cmnd_list_dma;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 max_cmds;
+	struct ipr_cmnd **ipr_cmnd_list;
+	dma_addr_t *ipr_cmnd_list_dma;
+
+	u16 intr_flag;
+	unsigned int nvectors;
+
+	struct {
+		unsigned short vec;
+		char desc[22];
+	} vectors_info[IPR_MAX_MSIX_VECTORS];
+
+	u32 iopoll_weight;
+
+>>>>>>> refs/remotes/origin/master
 }; /* struct ipr_ioa_cfg */
 
 struct ipr_cmnd {
@@ -1517,6 +1734,10 @@ struct ipr_cmnd {
 	struct ata_queued_cmd *qc;
 	struct completion completion;
 	struct timer_list timer;
+<<<<<<< HEAD
+=======
+	void (*fast_done) (struct ipr_cmnd *);
+>>>>>>> refs/remotes/origin/master
 	void (*done) (struct ipr_cmnd *);
 	int (*job_step) (struct ipr_cmnd *);
 	int (*job_step_failed) (struct ipr_cmnd *);
@@ -1535,6 +1756,10 @@ struct ipr_cmnd {
 		struct scsi_device *sdev;
 	} u;
 
+<<<<<<< HEAD
+=======
+	struct ipr_hrr_queue *hrrq;
+>>>>>>> refs/remotes/origin/master
 	struct ipr_ioa_cfg *ioa_cfg;
 };
 
@@ -1708,7 +1933,12 @@ struct ipr_ucode_image_header {
 	if (ipr_is_device(hostrcb)) {					\
 		if ((hostrcb)->ioa_cfg->sis64) {			\
 			printk(KERN_ERR IPR_NAME ": %s: " fmt, 		\
+<<<<<<< HEAD
 				ipr_format_res_path(hostrcb->hcam.u.error64.fd_res_path, \
+=======
+				ipr_format_res_path(hostrcb->ioa_cfg,	\
+					hostrcb->hcam.u.error64.fd_res_path, \
+>>>>>>> refs/remotes/origin/master
 					hostrcb->rp_buffer,		\
 					sizeof(hostrcb->rp_buffer)),	\
 				__VA_ARGS__);				\

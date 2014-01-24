@@ -27,6 +27,7 @@ static ssize_t clock_name_show(struct device *dev,
 	struct ptp_clock *ptp = dev_get_drvdata(dev);
 	return snprintf(page, PAGE_SIZE-1, "%s\n", ptp->info->name);
 }
+<<<<<<< HEAD
 
 #define PTP_SHOW_INT(name)						\
 static ssize_t name##_show(struct device *dev,				\
@@ -57,6 +58,45 @@ struct device_attribute ptp_dev_attrs[] = {
 	__ATTR_NULL,
 };
 
+=======
+static DEVICE_ATTR(clock_name, 0444, clock_name_show, NULL);
+
+#define PTP_SHOW_INT(name, var)						\
+static ssize_t var##_show(struct device *dev,				\
+			   struct device_attribute *attr, char *page)	\
+{									\
+	struct ptp_clock *ptp = dev_get_drvdata(dev);			\
+	return snprintf(page, PAGE_SIZE-1, "%d\n", ptp->info->var);	\
+}									\
+static DEVICE_ATTR(name, 0444, var##_show, NULL);
+
+PTP_SHOW_INT(max_adjustment, max_adj);
+PTP_SHOW_INT(n_alarms, n_alarm);
+PTP_SHOW_INT(n_external_timestamps, n_ext_ts);
+PTP_SHOW_INT(n_periodic_outputs, n_per_out);
+PTP_SHOW_INT(pps_available, pps);
+
+static struct attribute *ptp_attrs[] = {
+	&dev_attr_clock_name.attr,
+	&dev_attr_max_adjustment.attr,
+	&dev_attr_n_alarms.attr,
+	&dev_attr_n_external_timestamps.attr,
+	&dev_attr_n_periodic_outputs.attr,
+	&dev_attr_pps_available.attr,
+	NULL,
+};
+
+static const struct attribute_group ptp_group = {
+	.attrs = ptp_attrs,
+};
+
+const struct attribute_group *ptp_groups[] = {
+	&ptp_group,
+	NULL,
+};
+
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t extts_enable_store(struct device *dev,
 				  struct device_attribute *attr,
 				  const char *buf, size_t count)

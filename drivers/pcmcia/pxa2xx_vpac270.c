@@ -17,19 +17,35 @@
 
 #include <asm/mach-types.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/vpac270.h>
 
 #include "soc_common.h"
 
 static struct gpio vpac270_pcmcia_gpios[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ GPIO84_VPAC270_PCMCIA_CD,	GPIOF_IN,	"PCMCIA Card Detect" },
 	{ GPIO35_VPAC270_PCMCIA_RDY,	GPIOF_IN,	"PCMCIA Ready" },
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ GPIO107_VPAC270_PCMCIA_PPEN,	GPIOF_INIT_LOW,	"PCMCIA PPEN" },
 	{ GPIO11_VPAC270_PCMCIA_RESET,	GPIOF_INIT_LOW,	"PCMCIA Reset" },
 };
 
 static struct gpio vpac270_cf_gpios[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ GPIO17_VPAC270_CF_CD,		GPIOF_IN,	"CF Card Detect" },
 	{ GPIO12_VPAC270_CF_RDY,	GPIOF_IN,	"CF Ready" },
 	{ GPIO16_VPAC270_CF_RESET,	GPIOF_INIT_LOW,	"CF Reset" },
@@ -48,6 +64,16 @@ static struct pcmcia_irqs cd_irqs[] = {
 	},
 };
 
+=======
+	{ GPIO16_VPAC270_CF_RESET,	GPIOF_INIT_LOW,	"CF Reset" },
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ GPIO16_VPAC270_CF_RESET,	GPIOF_INIT_LOW,	"CF Reset" },
+};
+
+>>>>>>> refs/remotes/origin/master
 static int vpac270_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
 	int ret;
@@ -56,18 +82,44 @@ static int vpac270_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 		ret = gpio_request_array(vpac270_pcmcia_gpios,
 				ARRAY_SIZE(vpac270_pcmcia_gpios));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		skt->socket.pci_irq = gpio_to_irq(GPIO35_VPAC270_PCMCIA_RDY);
 
 		if (!ret)
 			ret = soc_pcmcia_request_irqs(skt, &cd_irqs[0], 1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		skt->stat[SOC_STAT_CD].gpio = GPIO84_VPAC270_PCMCIA_CD;
+		skt->stat[SOC_STAT_CD].name = "PCMCIA CD";
+		skt->stat[SOC_STAT_RDY].gpio = GPIO35_VPAC270_PCMCIA_RDY;
+		skt->stat[SOC_STAT_RDY].name = "PCMCIA Ready";
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		ret = gpio_request_array(vpac270_cf_gpios,
 				ARRAY_SIZE(vpac270_cf_gpios));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		skt->socket.pci_irq = gpio_to_irq(GPIO12_VPAC270_CF_RDY);
 
 		if (!ret)
 			ret = soc_pcmcia_request_irqs(skt, &cd_irqs[1], 1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		skt->stat[SOC_STAT_CD].gpio = GPIO17_VPAC270_CF_CD;
+		skt->stat[SOC_STAT_CD].name = "CF CD";
+		skt->stat[SOC_STAT_RDY].gpio = GPIO12_VPAC270_CF_RDY;
+		skt->stat[SOC_STAT_RDY].name = "CF Ready";
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -86,6 +138,8 @@ static void vpac270_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 static void vpac270_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 					struct pcmcia_state *state)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (skt->nr == 0) {
 		state->detect = !gpio_get_value(GPIO84_VPAC270_PCMCIA_CD);
 		state->ready  = !!gpio_get_value(GPIO35_VPAC270_PCMCIA_RDY);
@@ -96,6 +150,10 @@ static void vpac270_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 	state->bvd1   = 1;
 	state->bvd2   = 1;
 	state->wrprot = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	state->vs_3v  = 1;
 	state->vs_Xv  = 0;
 }
@@ -117,6 +175,8 @@ vpac270_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void vpac270_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
 }
@@ -125,6 +185,10 @@ static void vpac270_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pcmcia_low_level vpac270_pcmcia_ops = {
 	.owner			= THIS_MODULE,
 
@@ -136,9 +200,15 @@ static struct pcmcia_low_level vpac270_pcmcia_ops = {
 
 	.socket_state		= vpac270_pcmcia_socket_state,
 	.configure_socket	= vpac270_pcmcia_configure_socket,
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	.socket_init		= vpac270_pcmcia_socket_init,
 	.socket_suspend		= vpac270_pcmcia_socket_suspend,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *vpac270_pcmcia_device;

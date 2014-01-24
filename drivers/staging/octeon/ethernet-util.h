@@ -25,10 +25,16 @@
  * Contact Cavium Networks for more information
 *********************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DEBUGPRINT(format, ...) do { if (printk_ratelimit()) 		\
 					printk(format, ##__VA_ARGS__);	\
 				} while (0)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * cvm_oct_get_buffer_ptr - convert packet data address to pointer
  * @packet_ptr: Packet data hardware address
@@ -42,7 +48,11 @@ static inline void *cvm_oct_get_buffer_ptr(union cvmx_buf_ptr packet_ptr)
 }
 
 /**
+<<<<<<< HEAD
  * INTERFACE - convert IPD port to locgical interface
+=======
+ * INTERFACE - convert IPD port to logical interface
+>>>>>>> refs/remotes/origin/master
  * @ipd_port: Port to check
  *
  * Returns Logical interface

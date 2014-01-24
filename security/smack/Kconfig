@@ -1,6 +1,14 @@
 config SECURITY_SMACK
 	bool "Simplified Mandatory Access Control Kernel Support"
+<<<<<<< HEAD
 	depends on NETLABEL && SECURITY_NETWORK
+=======
+	depends on NET
+	depends on INET
+	depends on SECURITY
+	select NETLABEL
+	select SECURITY_NETWORK
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 	  This selects the Simplified Mandatory Access Control Kernel.

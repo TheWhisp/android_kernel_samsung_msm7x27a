@@ -52,6 +52,7 @@ static void authenc_request_complete(struct aead_request *req, int err)
 		aead_request_complete(req, err);
 }
 
+<<<<<<< HEAD
 static int crypto_authenc_setkey(struct crypto_aead *authenc, const u8 *key,
 				 unsigned int keylen)
 {
@@ -73,19 +74,65 @@ static int crypto_authenc_setkey(struct crypto_aead *authenc, const u8 *key,
 
 	param = RTA_DATA(rta);
 	enckeylen = be32_to_cpu(param->enckeylen);
+=======
+int crypto_authenc_extractkeys(struct crypto_authenc_keys *keys, const u8 *key,
+			       unsigned int keylen)
+{
+	struct rtattr *rta = (struct rtattr *)key;
+	struct crypto_authenc_key_param *param;
+
+	if (!RTA_OK(rta, keylen))
+		return -EINVAL;
+	if (rta->rta_type != CRYPTO_AUTHENC_KEYA_PARAM)
+		return -EINVAL;
+	if (RTA_PAYLOAD(rta) < sizeof(*param))
+		return -EINVAL;
+
+	param = RTA_DATA(rta);
+	keys->enckeylen = be32_to_cpu(param->enckeylen);
+>>>>>>> refs/remotes/origin/master
 
 	key += RTA_ALIGN(rta->rta_len);
 	keylen -= RTA_ALIGN(rta->rta_len);
 
+<<<<<<< HEAD
 	if (keylen < enckeylen)
 		goto badkey;
 
 	authkeylen = keylen - enckeylen;
+=======
+	if (keylen < keys->enckeylen)
+		return -EINVAL;
+
+	keys->authkeylen = keylen - keys->enckeylen;
+	keys->authkey = key;
+	keys->enckey = key + keys->authkeylen;
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(crypto_authenc_extractkeys);
+
+static int crypto_authenc_setkey(struct crypto_aead *authenc, const u8 *key,
+				 unsigned int keylen)
+{
+	struct crypto_authenc_ctx *ctx = crypto_aead_ctx(authenc);
+	struct crypto_ahash *auth = ctx->auth;
+	struct crypto_ablkcipher *enc = ctx->enc;
+	struct crypto_authenc_keys keys;
+	int err = -EINVAL;
+
+	if (crypto_authenc_extractkeys(&keys, key, keylen) != 0)
+		goto badkey;
+>>>>>>> refs/remotes/origin/master
 
 	crypto_ahash_clear_flags(auth, CRYPTO_TFM_REQ_MASK);
 	crypto_ahash_set_flags(auth, crypto_aead_get_flags(authenc) &
 				    CRYPTO_TFM_REQ_MASK);
+<<<<<<< HEAD
 	err = crypto_ahash_setkey(auth, key, authkeylen);
+=======
+	err = crypto_ahash_setkey(auth, keys.authkey, keys.authkeylen);
+>>>>>>> refs/remotes/origin/master
 	crypto_aead_set_flags(authenc, crypto_ahash_get_flags(auth) &
 				       CRYPTO_TFM_RES_MASK);
 
@@ -95,7 +142,11 @@ static int crypto_authenc_setkey(struct crypto_aead *authenc, const u8 *key,
 	crypto_ablkcipher_clear_flags(enc, CRYPTO_TFM_REQ_MASK);
 	crypto_ablkcipher_set_flags(enc, crypto_aead_get_flags(authenc) &
 					 CRYPTO_TFM_REQ_MASK);
+<<<<<<< HEAD
 	err = crypto_ablkcipher_setkey(enc, key + authkeylen, enckeylen);
+=======
+	err = crypto_ablkcipher_setkey(enc, keys.enckey, keys.enckeylen);
+>>>>>>> refs/remotes/origin/master
 	crypto_aead_set_flags(authenc, crypto_ablkcipher_get_flags(enc) &
 				       CRYPTO_TFM_RES_MASK);
 
@@ -188,7 +239,11 @@ static void authenc_verify_ahash_update_done(struct crypto_async_request *areq,
 	scatterwalk_map_and_copy(ihash, areq_ctx->sg, areq_ctx->cryptlen,
 				 authsize, 0);
 
+<<<<<<< HEAD
 	err = memcmp(ihash, ahreq->result, authsize) ? -EBADMSG : 0;
+=======
+	err = crypto_memneq(ihash, ahreq->result, authsize) ? -EBADMSG : 0;
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 
@@ -227,7 +282,11 @@ static void authenc_verify_ahash_done(struct crypto_async_request *areq,
 	scatterwalk_map_and_copy(ihash, areq_ctx->sg, areq_ctx->cryptlen,
 				 authsize, 0);
 
+<<<<<<< HEAD
 	err = memcmp(ihash, ahreq->result, authsize) ? -EBADMSG : 0;
+=======
+	err = crypto_memneq(ihash, ahreq->result, authsize) ? -EBADMSG : 0;
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 
@@ -336,7 +395,11 @@ static int crypto_authenc_genicv(struct aead_request *req, u8 *iv,
 		cryptlen += ivsize;
 	}
 
+<<<<<<< HEAD
 	if (sg_is_last(assoc)) {
+=======
+	if (req->assoclen && sg_is_last(assoc)) {
+>>>>>>> refs/remotes/origin/master
 		authenc_ahash_fn = crypto_authenc_ahash;
 		sg_init_table(asg, 2);
 		sg_set_page(asg, sg_page(assoc), assoc->length, assoc->offset);
@@ -368,11 +431,37 @@ static void crypto_authenc_encrypt_done(struct crypto_async_request *req,
 	if (!err) {
 		struct crypto_aead *authenc = crypto_aead_reqtfm(areq);
 		struct crypto_authenc_ctx *ctx = crypto_aead_ctx(authenc);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+	        struct authenc_request_ctx *areq_ctx = aead_request_ctx(areq);
+                struct ablkcipher_request *abreq = (void *)(areq_ctx->tail
+                        ctx->reqoff);
+                u8 *iv = (u8 *)abreq - crypto_ablkcipher_ivsize(ctx->enc)
+                
+		err = crypto_authenc_genicv(areq, iv, 0);
+		
+=======
 		struct ablkcipher_request *abreq = aead_request_ctx(areq);
 		u8 *iv = (u8 *)(abreq + 1) +
 			 crypto_ablkcipher_reqsize(ctx->enc);
+=======
+		struct authenc_request_ctx *areq_ctx = aead_request_ctx(areq);
+		struct ablkcipher_request *abreq = (void *)(areq_ctx->tail
+							    + ctx->reqoff);
+		u8 *iv = (u8 *)abreq - crypto_ablkcipher_ivsize(ctx->enc);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		err = crypto_authenc_genicv(areq, iv, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct authenc_request_ctx *areq_ctx = aead_request_ctx(areq);
+		struct ablkcipher_request *abreq = (void *)(areq_ctx->tail
+							    + ctx->reqoff);
+		u8 *iv = (u8 *)abreq - crypto_ablkcipher_ivsize(ctx->enc);
+
+		err = crypto_authenc_genicv(areq, iv, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	authenc_request_complete(areq, err);
@@ -462,7 +551,11 @@ static int crypto_authenc_verify(struct aead_request *req,
 	ihash = ohash + authsize;
 	scatterwalk_map_and_copy(ihash, areq_ctx->sg, areq_ctx->cryptlen,
 				 authsize, 0);
+<<<<<<< HEAD
 	return memcmp(ihash, ohash, authsize) ? -EBADMSG : 0;
+=======
+	return crypto_memneq(ihash, ohash, authsize) ? -EBADMSG : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int crypto_authenc_iverify(struct aead_request *req, u8 *iv,
@@ -490,7 +583,11 @@ static int crypto_authenc_iverify(struct aead_request *req, u8 *iv,
 		cryptlen += ivsize;
 	}
 
+<<<<<<< HEAD
 	if (sg_is_last(assoc)) {
+=======
+	if (req->assoclen && sg_is_last(assoc)) {
+>>>>>>> refs/remotes/origin/master
 		authenc_ahash_fn = crypto_authenc_ahash;
 		sg_init_table(asg, 2);
 		sg_set_page(asg, sg_page(assoc), assoc->length, assoc->offset);
@@ -592,9 +689,14 @@ static struct crypto_instance *crypto_authenc_alloc(struct rtattr **tb)
 	int err;
 
 	algt = crypto_get_attr_type(tb);
+<<<<<<< HEAD
 	err = PTR_ERR(algt);
 	if (IS_ERR(algt))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(algt))
+		return ERR_CAST(algt);
+>>>>>>> refs/remotes/origin/master
 
 	if ((algt->type ^ CRYPTO_ALG_TYPE_AEAD) & algt->mask)
 		return ERR_PTR(-EINVAL);

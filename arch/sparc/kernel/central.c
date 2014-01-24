@@ -6,6 +6,14 @@
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/init.h>
 #include <linux/of_device.h>
@@ -32,7 +40,11 @@ struct fhc {
 	struct platform_device	leds_pdev;
 };
 
+<<<<<<< HEAD
 static int __devinit clock_board_calc_nslots(struct clock_board *p)
+=======
+static int clock_board_calc_nslots(struct clock_board *p)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 reg = upa_readb(p->clock_regs + CLOCK_STAT1) & 0xc0;
 
@@ -59,7 +71,11 @@ static int __devinit clock_board_calc_nslots(struct clock_board *p)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit clock_board_probe(struct platform_device *op)
+=======
+static int clock_board_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct clock_board *p = kzalloc(sizeof(*p), GFP_KERNEL);
 	int err = -ENOMEM;
@@ -156,7 +172,11 @@ static struct platform_driver clock_board_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit fhc_probe(struct platform_device *op)
+=======
+static int fhc_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fhc *p = kzalloc(sizeof(*p), GFP_KERNEL);
 	int err = -ENOMEM;

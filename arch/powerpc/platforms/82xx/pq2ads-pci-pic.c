@@ -16,7 +16,10 @@
 #include <linux/spinlock.h>
 #include <linux/irq.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <linux/bootmem.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 
 #include <asm/io.h>
@@ -29,7 +32,15 @@ static DEFINE_RAW_SPINLOCK(pci_pic_lock);
 
 struct pq2ads_pci_pic {
 	struct device_node *node;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct irq_host *host;
+=======
+	struct irq_domain *host;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_domain *host;
+>>>>>>> refs/remotes/origin/master
 
 	struct {
 		u32 stat;
@@ -103,7 +114,15 @@ static void pq2ads_pci_irq_demux(unsigned int irq, struct irq_desc *desc)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int pci_pic_host_map(struct irq_host *h, unsigned int virq,
+=======
+static int pci_pic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pci_pic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			    irq_hw_number_t hw)
 {
 	irq_set_status_flags(virq, IRQ_LEVEL);
@@ -112,14 +131,30 @@ static int pci_pic_host_map(struct irq_host *h, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host_ops pci_pic_host_ops = {
+=======
+static const struct irq_domain_ops pci_pic_host_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct irq_domain_ops pci_pic_host_ops = {
+>>>>>>> refs/remotes/origin/master
 	.map = pci_pic_host_map,
 };
 
 int __init pq2ads_pci_init_irq(void)
 {
 	struct pq2ads_pci_pic *priv;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct irq_host *host;
+=======
+	struct irq_domain *host;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_domain *host;
+>>>>>>> refs/remotes/origin/master
 	struct device_node *np;
 	int ret = -ENODEV;
 	int irq;
@@ -149,24 +184,44 @@ int __init pq2ads_pci_init_irq(void)
 	priv->regs = of_iomap(np, 0);
 	if (!priv->regs) {
 		printk(KERN_ERR "Cannot map PCI PIC registers.\n");
+<<<<<<< HEAD
 		goto out_free_bootmem;
+=======
+		goto out_free_kmalloc;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* mask all PCI interrupts */
 	out_be32(&priv->regs->mask, ~0);
 	mb();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	host = irq_alloc_host(np, IRQ_HOST_MAP_LINEAR, NUM_IRQS,
 	                      &pci_pic_host_ops, NUM_IRQS);
+=======
+	host = irq_domain_add_linear(np, NUM_IRQS, &pci_pic_host_ops, priv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	host = irq_domain_add_linear(np, NUM_IRQS, &pci_pic_host_ops, priv);
+>>>>>>> refs/remotes/origin/master
 	if (!host) {
 		ret = -ENOMEM;
 		goto out_unmap_regs;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	host->host_data = priv;
 
 	priv->host = host;
 	host->host_data = priv;
+=======
+	priv->host = host;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->host = host;
+>>>>>>> refs/remotes/origin/master
 	irq_set_handler_data(irq, priv);
 	irq_set_chained_handler(irq, pq2ads_pci_irq_demux);
 
@@ -175,9 +230,14 @@ int __init pq2ads_pci_init_irq(void)
 
 out_unmap_regs:
 	iounmap(priv->regs);
+<<<<<<< HEAD
 out_free_bootmem:
 	free_bootmem((unsigned long)priv,
 	             sizeof(struct pq2ads_pci_pic));
+=======
+out_free_kmalloc:
+	kfree(priv);
+>>>>>>> refs/remotes/origin/master
 	of_node_put(np);
 out_unmap_irq:
 	irq_dispose_mapping(irq);

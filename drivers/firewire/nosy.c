@@ -36,8 +36,18 @@
 #include <linux/timex.h>
 #include <linux/uaccess.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/atomic.h>
+=======
+#include <linux/dma-mapping.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-mapping.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 
 #include "nosy.h"
@@ -529,14 +539,26 @@ remove_card(struct pci_dev *dev)
 
 #define RCV_BUFFER_SIZE (16 * 1024)
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 add_card(struct pci_dev *dev, const struct pci_device_id *unused)
 {
 	struct pcilynx *lynx;
 	u32 p, end;
 	int ret, i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (pci_set_dma_mask(dev, 0xffffffff)) {
+=======
+	if (pci_set_dma_mask(dev, DMA_BIT_MASK(32))) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pci_set_dma_mask(dev, DMA_BIT_MASK(32))) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&dev->dev,
 		    "DMA address limits not supported for PCILynx hardware\n");
 		return -ENXIO;
@@ -683,7 +705,11 @@ fail_disable:
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct pci_device_id pci_table[] __devinitdata = {
+=======
+static struct pci_device_id pci_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.vendor =    PCI_VENDOR_ID_TI,
 		.device =    PCI_DEVICE_ID_TI_PCILYNX,
@@ -693,6 +719,11 @@ static struct pci_device_id pci_table[] __devinitdata = {
 	{ }	/* Terminating entry */
 };
 
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(pci, pci_table);
+
+>>>>>>> refs/remotes/origin/master
 static struct pci_driver lynx_pci_driver = {
 	.name =		driver_name,
 	.id_table =	pci_table,
@@ -700,6 +731,7 @@ static struct pci_driver lynx_pci_driver = {
 	.remove =	remove_card,
 };
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Kristian Hoegsberg");
 MODULE_DESCRIPTION("Snoop mode driver for TI pcilynx 1394 controllers");
 MODULE_LICENSE("GPL");
@@ -719,3 +751,10 @@ static void __exit nosy_cleanup(void)
 
 module_init(nosy_init);
 module_exit(nosy_cleanup);
+=======
+module_pci_driver(lynx_pci_driver);
+
+MODULE_AUTHOR("Kristian Hoegsberg");
+MODULE_DESCRIPTION("Snoop mode driver for TI pcilynx 1394 controllers");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

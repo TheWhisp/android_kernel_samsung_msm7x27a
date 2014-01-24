@@ -49,6 +49,7 @@ static struct hid_driver keytouch_driver = {
 	.id_table = keytouch_devices,
 	.report_fixup = keytouch_report_fixup,
 };
+<<<<<<< HEAD
 
 static int __init keytouch_init(void)
 {
@@ -62,5 +63,9 @@ static void __exit keytouch_exit(void)
 
 module_init(keytouch_init);
 module_exit(keytouch_exit);
+=======
+module_hid_driver(keytouch_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jiri Kosina");

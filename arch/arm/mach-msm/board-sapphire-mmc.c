@@ -27,13 +27,27 @@
 
 #include <mach/vreg.h>
 #include <mach/htc_pwrsink.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <asm/mach/mmc.h>
 
 #include "devices.h"
 #include "gpio_chip.h"
 #include "board-sapphire.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "proc_comm.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define DEBUG_SDSLOT_VDD 0
 

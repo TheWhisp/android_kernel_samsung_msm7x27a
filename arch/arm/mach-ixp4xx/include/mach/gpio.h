@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * arch/arm/mach-ixp4xx/include/mach/gpio.h
  *
@@ -73,4 +75,10 @@ extern int gpio_to_irq(int gpio);
 extern int irq_to_gpio(unsigned int irq);
 
 #endif
+=======
+/* empty */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* empty */
+>>>>>>> refs/remotes/origin/cm-11.0
 

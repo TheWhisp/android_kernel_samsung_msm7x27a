@@ -137,9 +137,19 @@ static int init_alauda(struct us_data *us);
 		    vendorName, productName, useProtocol, useTransport, \
 		    initFunction, flags) \
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
+<<<<<<< HEAD
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
+<<<<<<< HEAD
 struct usb_device_id alauda_usb_ids[] = {
+=======
+static struct usb_device_id alauda_usb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  .driver_info = (flags) }
+
+static struct usb_device_id alauda_usb_ids[] = {
+>>>>>>> refs/remotes/origin/master
 #	include "unusual_alauda.h"
 	{ }		/* Terminating entry */
 };
@@ -249,11 +259,15 @@ static void nand_init_ecc(void) {
 /* compute 3-byte ecc on 256 bytes */
 static void nand_compute_ecc(unsigned char *data, unsigned char *ecc) {
 	int i, j, a;
+<<<<<<< HEAD
 	unsigned char par, bit, bits[8];
 
 	par = 0;
 	for (j = 0; j < 8; j++)
 		bits[j] = 0;
+=======
+	unsigned char par = 0, bit, bits[8] = {0};
+>>>>>>> refs/remotes/origin/master
 
 	/* collect 16 checksum bits */
 	for (i = 0; i < 256; i++) {
@@ -326,8 +340,12 @@ static int alauda_get_media_status(struct us_data *us, unsigned char *data)
 	rc = usb_stor_ctrl_transfer(us, us->recv_ctrl_pipe,
 		command, 0xc0, 0, 1, data, 2);
 
+<<<<<<< HEAD
 	US_DEBUGP("alauda_get_media_status: Media status %02X %02X\n",
 		data[0], data[1]);
+=======
+	usb_stor_dbg(us, "Media status %02X %02X\n", data[0], data[1]);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -402,7 +420,11 @@ static int alauda_init_media(struct us_data *us)
 			ready = 1;
 	}
 
+<<<<<<< HEAD
 	US_DEBUGP("alauda_init_media: We are ready for action!\n");
+=======
+	usb_stor_dbg(us, "We are ready for action!\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (alauda_ack_media(us) != USB_STOR_XFER_GOOD)
 		return USB_STOR_TRANSPORT_ERROR;
@@ -413,15 +435,24 @@ static int alauda_init_media(struct us_data *us)
 		return USB_STOR_TRANSPORT_ERROR;
 
 	if (data[0] != 0x14) {
+<<<<<<< HEAD
 		US_DEBUGP("alauda_init_media: Media not ready after ack\n");
+=======
+		usb_stor_dbg(us, "Media not ready after ack\n");
+>>>>>>> refs/remotes/origin/master
 		return USB_STOR_TRANSPORT_ERROR;
 	}
 
 	if (alauda_get_media_signature(us, data) != USB_STOR_XFER_GOOD)
 		return USB_STOR_TRANSPORT_ERROR;
 
+<<<<<<< HEAD
 	US_DEBUGP("alauda_init_media: Media signature: %02X %02X %02X %02X\n",
 		data[0], data[1], data[2], data[3]);
+=======
+	usb_stor_dbg(us, "Media signature: %02X %02X %02X %02X\n",
+		     data[0], data[1], data[2], data[3]);
+>>>>>>> refs/remotes/origin/master
 	media_info = alauda_card_find_id(data[1]);
 	if (media_info == NULL) {
 		printk(KERN_WARNING
@@ -432,8 +463,13 @@ static int alauda_init_media(struct us_data *us)
 	}
 
 	MEDIA_INFO(us).capacity = 1 << media_info->chipshift;
+<<<<<<< HEAD
 	US_DEBUGP("Found media with capacity: %ldMB\n",
 		MEDIA_INFO(us).capacity >> 20);
+=======
+	usb_stor_dbg(us, "Found media with capacity: %ldMB\n",
+		     MEDIA_INFO(us).capacity >> 20);
+>>>>>>> refs/remotes/origin/master
 
 	MEDIA_INFO(us).pageshift = media_info->pageshift;
 	MEDIA_INFO(us).blockshift = media_info->blockshift;
@@ -472,7 +508,11 @@ static int alauda_check_media(struct us_data *us)
 	/* Check for no media or door open */
 	if ((status[0] & 0x80) || ((status[0] & 0x1F) == 0x10)
 		|| ((status[1] & 0x01) == 0)) {
+<<<<<<< HEAD
 		US_DEBUGP("alauda_check_media: No media, or door open\n");
+=======
+		usb_stor_dbg(us, "No media, or door open\n");
+>>>>>>> refs/remotes/origin/master
 		alauda_free_maps(&MEDIA_INFO(us));
 		info->sense_key = 0x02;
 		info->sense_asc = 0x3A;
@@ -482,7 +522,11 @@ static int alauda_check_media(struct us_data *us)
 
 	/* Check for media change */
 	if (status[0] & 0x08) {
+<<<<<<< HEAD
 		US_DEBUGP("alauda_check_media: Media change detected\n");
+=======
+		usb_stor_dbg(us, "Media change detected\n");
+>>>>>>> refs/remotes/origin/master
 		alauda_free_maps(&MEDIA_INFO(us));
 		alauda_init_media(us);
 
@@ -518,7 +562,11 @@ static int alauda_check_status2(struct us_data *us)
 	if (rc != USB_STOR_XFER_GOOD)
 		return rc;
 
+<<<<<<< HEAD
 	US_DEBUGP("alauda_check_status2: %02X %02X %02X\n", data[0], data[1], data[2]);
+=======
+	usb_stor_dbg(us, "%02X %02X %02X\n", data[0], data[1], data[2]);
+>>>>>>> refs/remotes/origin/master
 	if (data[0] & ALAUDA_STATUS_ERROR)
 		return USB_STOR_XFER_ERROR;
 
@@ -584,7 +632,11 @@ static int alauda_read_map(struct us_data *us, unsigned int zone)
 		goto error;
 	}
 
+<<<<<<< HEAD
 	US_DEBUGP("alauda_read_map: Mapping blocks for zone %d\n", zone);
+=======
+	usb_stor_dbg(us, "Mapping blocks for zone %d\n", zone);
+>>>>>>> refs/remotes/origin/master
 
 	/* 1024 PBA's per zone */
 	for (i = 0; i < zonesize; i++)
@@ -604,7 +656,11 @@ static int alauda_read_map(struct us_data *us, unsigned int zone)
 			if (data[j] != 0)
 				goto nonz;
 		pba_to_lba[i] = UNUSABLE;
+<<<<<<< HEAD
 		US_DEBUGP("alauda_read_map: PBA %d has no logical mapping\n", blocknum);
+=======
+		usb_stor_dbg(us, "PBA %d has no logical mapping\n", blocknum);
+>>>>>>> refs/remotes/origin/master
 		continue;
 
 	nonz:
@@ -617,19 +673,32 @@ static int alauda_read_map(struct us_data *us, unsigned int zone)
 	nonff:
 		/* normal PBAs start with six FFs */
 		if (j < 6) {
+<<<<<<< HEAD
 			US_DEBUGP("alauda_read_map: PBA %d has no logical mapping: "
 			       "reserved area = %02X%02X%02X%02X "
 			       "data status %02X block status %02X\n",
 			       blocknum, data[0], data[1], data[2], data[3],
 			       data[4], data[5]);
+=======
+			usb_stor_dbg(us, "PBA %d has no logical mapping: reserved area = %02X%02X%02X%02X data status %02X block status %02X\n",
+				     blocknum,
+				     data[0], data[1], data[2], data[3],
+				     data[4], data[5]);
+>>>>>>> refs/remotes/origin/master
 			pba_to_lba[i] = UNUSABLE;
 			continue;
 		}
 
 		if ((data[6] >> 4) != 0x01) {
+<<<<<<< HEAD
 			US_DEBUGP("alauda_read_map: PBA %d has invalid address "
 			       "field %02X%02X/%02X%02X\n",
 			       blocknum, data[6], data[7], data[11], data[12]);
+=======
+			usb_stor_dbg(us, "PBA %d has invalid address field %02X%02X/%02X%02X\n",
+				     blocknum, data[6], data[7],
+				     data[11], data[12]);
+>>>>>>> refs/remotes/origin/master
 			pba_to_lba[i] = UNUSABLE;
 			continue;
 		}
@@ -711,7 +780,11 @@ static int alauda_erase_block(struct us_data *us, u16 pba)
 	};
 	unsigned char buf[2];
 
+<<<<<<< HEAD
 	US_DEBUGP("alauda_erase_block: Erasing PBA %d\n", pba);
+=======
+	usb_stor_dbg(us, "Erasing PBA %d\n", pba);
+>>>>>>> refs/remotes/origin/master
 
 	rc = usb_stor_bulk_transfer_buf(us, us->send_bulk_pipe,
 		command, 9, NULL);
@@ -723,8 +796,12 @@ static int alauda_erase_block(struct us_data *us, u16 pba)
 	if (rc != USB_STOR_XFER_GOOD)
 		return rc;
 
+<<<<<<< HEAD
 	US_DEBUGP("alauda_erase_block: Erase result: %02X %02X\n",
 		buf[0], buf[1]);
+=======
+	usb_stor_dbg(us, "Erase result: %02X %02X\n", buf[0], buf[1]);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -741,8 +818,12 @@ static int alauda_read_block_raw(struct us_data *us, u16 pba,
 		PBA_ZONE(pba), 0, PBA_LO(pba) + page, pages, 0, MEDIA_PORT(us)
 	};
 
+<<<<<<< HEAD
 	US_DEBUGP("alauda_read_block: pba %d page %d count %d\n",
 		pba, page, pages);
+=======
+	usb_stor_dbg(us, "pba %d page %d count %d\n", pba, page, pages);
+>>>>>>> refs/remotes/origin/master
 
 	rc = usb_stor_bulk_transfer_buf(us, us->send_bulk_pipe,
 		command, 9, NULL);
@@ -793,7 +874,11 @@ static int alauda_write_block(struct us_data *us, u16 pba, unsigned char *data)
 		PBA_ZONE(pba), 0, PBA_LO(pba), 32, 0, MEDIA_PORT(us)
 	};
 
+<<<<<<< HEAD
 	US_DEBUGP("alauda_write_block: pba %d\n", pba);
+=======
+	usb_stor_dbg(us, "pba %d\n", pba);
+>>>>>>> refs/remotes/origin/master
 
 	rc = usb_stor_bulk_transfer_buf(us, us->send_bulk_pipe,
 		command, 9, NULL);
@@ -866,14 +951,24 @@ static int alauda_write_lba(struct us_data *us, u16 lba,
 		cptr = bptr + pagesize;
 		nand_compute_ecc(bptr, ecc);
 		if (!nand_compare_ecc(cptr+13, ecc)) {
+<<<<<<< HEAD
 			US_DEBUGP("Warning: bad ecc in page %d- of pba %d\n",
 				  i, pba);
+=======
+			usb_stor_dbg(us, "Warning: bad ecc in page %d- of pba %d\n",
+				     i, pba);
+>>>>>>> refs/remotes/origin/master
 			nand_store_ecc(cptr+13, ecc);
 		}
 		nand_compute_ecc(bptr + (pagesize / 2), ecc);
 		if (!nand_compare_ecc(cptr+8, ecc)) {
+<<<<<<< HEAD
 			US_DEBUGP("Warning: bad ecc in page %d+ of pba %d\n",
 				  i, pba);
+=======
+			usb_stor_dbg(us, "Warning: bad ecc in page %d+ of pba %d\n",
+				     i, pba);
+>>>>>>> refs/remotes/origin/master
 			nand_store_ecc(cptr+8, ecc);
 		}
 		cptr[6] = cptr[11] = MSB_of(lbap);
@@ -900,8 +995,12 @@ static int alauda_write_lba(struct us_data *us, u16 lba,
 	new_pba_offset = new_pba - (zone * zonesize);
 	MEDIA_INFO(us).pba_to_lba[zone][new_pba_offset] = lba;
 	MEDIA_INFO(us).lba_to_pba[zone][lba_offset] = new_pba;
+<<<<<<< HEAD
 	US_DEBUGP("alauda_write_lba: Remapped LBA %d to PBA %d\n",
 		lba, new_pba);
+=======
+	usb_stor_dbg(us, "Remapped LBA %d to PBA %d\n", lba, new_pba);
+>>>>>>> refs/remotes/origin/master
 
 	if (pba != UNDEF) {
 		unsigned int pba_offset = pba - (zone * zonesize);
@@ -964,8 +1063,13 @@ static int alauda_read_data(struct us_data *us, unsigned long address,
 
 		/* Not overflowing capacity? */
 		if (lba >= max_lba) {
+<<<<<<< HEAD
 			US_DEBUGP("Error: Requested lba %u exceeds "
 				  "maximum %u\n", lba, max_lba);
+=======
+			usb_stor_dbg(us, "Error: Requested lba %u exceeds maximum %u\n",
+				     lba, max_lba);
+>>>>>>> refs/remotes/origin/master
 			result = USB_STOR_TRANSPORT_ERROR;
 			break;
 		}
@@ -978,8 +1082,13 @@ static int alauda_read_data(struct us_data *us, unsigned long address,
 		pba = MEDIA_INFO(us).lba_to_pba[zone][lba_offset];
 
 		if (pba == UNDEF) {	/* this lba was never written */
+<<<<<<< HEAD
 			US_DEBUGP("Read %d zero pages (LBA %d) page %d\n",
 				  pages, lba, page);
+=======
+			usb_stor_dbg(us, "Read %d zero pages (LBA %d) page %d\n",
+				     pages, lba, page);
+>>>>>>> refs/remotes/origin/master
 
 			/* This is not really an error. It just means
 			   that the block has never been written.
@@ -988,9 +1097,14 @@ static int alauda_read_data(struct us_data *us, unsigned long address,
 
 			memset(buffer, 0, len);
 		} else {
+<<<<<<< HEAD
 			US_DEBUGP("Read %d pages, from PBA %d"
 				  " (LBA %d) page %d\n",
 				  pages, pba, lba, page);
+=======
+			usb_stor_dbg(us, "Read %d pages, from PBA %d (LBA %d) page %d\n",
+				     pages, pba, lba, page);
+>>>>>>> refs/remotes/origin/master
 
 			result = alauda_read_block(us, pba, page, pages, buffer);
 			if (result != USB_STOR_TRANSPORT_GOOD)
@@ -1066,8 +1180,13 @@ static int alauda_write_data(struct us_data *us, unsigned long address,
 
 		/* Not overflowing capacity? */
 		if (lba >= max_lba) {
+<<<<<<< HEAD
 			US_DEBUGP("alauda_write_data: Requested lba %u exceeds "
 				  "maximum %u\n", lba, max_lba);
+=======
+			usb_stor_dbg(us, "Requested lba %u exceeds maximum %u\n",
+				     lba, max_lba);
+>>>>>>> refs/remotes/origin/master
 			result = USB_STOR_TRANSPORT_ERROR;
 			break;
 		}
@@ -1122,11 +1241,17 @@ static int init_alauda(struct us_data *us)
 	nand_init_ecc();
 
 	us->extra = kzalloc(sizeof(struct alauda_info), GFP_NOIO);
+<<<<<<< HEAD
 	if (!us->extra) {
 		US_DEBUGP("init_alauda: Gah! Can't allocate storage for"
 			"alauda info struct!\n");
 		return USB_STOR_TRANSPORT_ERROR;
 	}
+=======
+	if (!us->extra)
+		return USB_STOR_TRANSPORT_ERROR;
+
+>>>>>>> refs/remotes/origin/master
 	info = (struct alauda_info *) us->extra;
 	us->extra_destructor = alauda_info_destructor;
 
@@ -1147,15 +1272,23 @@ static int alauda_transport(struct scsi_cmnd *srb, struct us_data *us)
 	};
 
 	if (srb->cmnd[0] == INQUIRY) {
+<<<<<<< HEAD
 		US_DEBUGP("alauda_transport: INQUIRY. "
 			"Returning bogus response.\n");
+=======
+		usb_stor_dbg(us, "INQUIRY - Returning bogus response\n");
+>>>>>>> refs/remotes/origin/master
 		memcpy(ptr, inquiry_response, sizeof(inquiry_response));
 		fill_inquiry_response(us, ptr, 36);
 		return USB_STOR_TRANSPORT_GOOD;
 	}
 
 	if (srb->cmnd[0] == TEST_UNIT_READY) {
+<<<<<<< HEAD
 		US_DEBUGP("alauda_transport: TEST_UNIT_READY.\n");
+=======
+		usb_stor_dbg(us, "TEST_UNIT_READY\n");
+>>>>>>> refs/remotes/origin/master
 		return alauda_check_media(us);
 	}
 
@@ -1193,8 +1326,12 @@ static int alauda_transport(struct scsi_cmnd *srb, struct us_data *us)
 		page |= short_pack(srb->cmnd[5], srb->cmnd[4]);
 		pages = short_pack(srb->cmnd[8], srb->cmnd[7]);
 
+<<<<<<< HEAD
 		US_DEBUGP("alauda_transport: READ_10: page %d pagect %d\n",
 			  page, pages);
+=======
+		usb_stor_dbg(us, "READ_10: page %d pagect %d\n", page, pages);
+>>>>>>> refs/remotes/origin/master
 
 		return alauda_read_data(us, page, pages);
 	}
@@ -1211,14 +1348,22 @@ static int alauda_transport(struct scsi_cmnd *srb, struct us_data *us)
 		page |= short_pack(srb->cmnd[5], srb->cmnd[4]);
 		pages = short_pack(srb->cmnd[8], srb->cmnd[7]);
 
+<<<<<<< HEAD
 		US_DEBUGP("alauda_transport: WRITE_10: page %d pagect %d\n",
 			  page, pages);
+=======
+		usb_stor_dbg(us, "WRITE_10: page %d pagect %d\n", page, pages);
+>>>>>>> refs/remotes/origin/master
 
 		return alauda_write_data(us, page, pages);
 	}
 
 	if (srb->cmnd[0] == REQUEST_SENSE) {
+<<<<<<< HEAD
 		US_DEBUGP("alauda_transport: REQUEST_SENSE.\n");
+=======
+		usb_stor_dbg(us, "REQUEST_SENSE\n");
+>>>>>>> refs/remotes/origin/master
 
 		memset(ptr, 0, 18);
 		ptr[0] = 0xF0;
@@ -1237,8 +1382,13 @@ static int alauda_transport(struct scsi_cmnd *srb, struct us_data *us)
 		return USB_STOR_TRANSPORT_GOOD;
 	}
 
+<<<<<<< HEAD
 	US_DEBUGP("alauda_transport: Gah! Unknown command: %d (0x%x)\n",
 		srb->cmnd[0], srb->cmnd[0]);
+=======
+	usb_stor_dbg(us, "Gah! Unknown command: %d (0x%x)\n",
+		     srb->cmnd[0], srb->cmnd[0]);
+>>>>>>> refs/remotes/origin/master
 	info->sense_key = 0x05;
 	info->sense_asc = 0x20;
 	info->sense_ascq = 0x00;
@@ -1276,6 +1426,8 @@ static struct usb_driver alauda_driver = {
 	.post_reset =	usb_stor_post_reset,
 	.id_table =	alauda_usb_ids,
 	.soft_unbind =	1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static int __init alauda_init(void)
@@ -1290,3 +1442,14 @@ static void __exit alauda_exit(void)
 
 module_init(alauda_init);
 module_exit(alauda_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.no_dynamic_id = 1,
+};
+
+module_usb_driver(alauda_driver);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

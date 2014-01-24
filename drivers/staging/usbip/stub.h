@@ -17,6 +17,18 @@
  * USA.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifndef __USBIP_STUB_H
+#define __USBIP_STUB_H
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef __USBIP_STUB_H
+#define __USBIP_STUB_H
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
@@ -32,7 +44,13 @@
 struct stub_device {
 	struct usb_interface *interface;
 	struct usb_device *udev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head list;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct usbip_device ud;
 	__u32 devid;
@@ -76,7 +94,19 @@ struct stub_unlink {
 	__u32 status;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define BUSID_SIZE 20
+=======
+/* same as SYSFS_BUS_ID_SIZE */
+#define BUSID_SIZE 32
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* same as SYSFS_BUS_ID_SIZE */
+#define BUSID_SIZE 32
+
+>>>>>>> refs/remotes/origin/master
 struct bus_id_priv {
 	char name[BUSID_SIZE];
 	char status;
@@ -104,3 +134,13 @@ void stub_enqueue_ret_unlink(struct stub_device *sdev, __u32 seqnum,
 			     __u32 status);
 void stub_complete(struct urb *urb);
 int stub_tx_loop(void *data);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+#endif /* __USBIP_STUB_H */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#endif /* __USBIP_STUB_H */
+>>>>>>> refs/remotes/origin/master

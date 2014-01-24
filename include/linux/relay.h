@@ -15,13 +15,24 @@
 #include <linux/timer.h>
 #include <linux/wait.h>
 #include <linux/list.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/poll.h>
 #include <linux/kref.h>
 
+<<<<<<< HEAD
 /* Needs a _much_ better name... */
 #define FIX_SIZE(x) ((((x) - 1) & PAGE_MASK) + PAGE_SIZE)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Tracks changes to rchan/rchan_buf structs
  */
@@ -144,7 +155,15 @@ struct rchan_callbacks
 	 */
 	struct dentry *(*create_buf_file)(const char *filename,
 					  struct dentry *parent,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					  int mode,
+=======
+					  umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  umode_t mode,
+>>>>>>> refs/remotes/origin/master
 					  struct rchan_buf *buf,
 					  int *is_global);
 

@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/net/qeth_l3_sys.c
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *    Copyright IBM Corp. 2007
  *    Author(s): Utz Bacher <utz.bacher@de.ibm.com>,
  *		 Frank Pavlic <fpavlic@de.ibm.com>,
@@ -9,7 +12,15 @@
  */
 
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <asm/ebcdic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/ebcdic.h>
+>>>>>>> refs/remotes/origin/master
 #include "qeth_l3.h"
 
 #define QETH_DEVICE_ATTR(_id, _name, _mode, _show, _store) \
@@ -89,6 +100,11 @@ static ssize_t qeth_l3_dev_route_store(struct qeth_card *card,
 			rc = qeth_l3_setrouting_v6(card);
 	}
 out:
+<<<<<<< HEAD
+=======
+	if (rc)
+		route->type = old_route_type;
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&card->conf_mutex);
 	return rc ? rc : count;
 }
@@ -175,6 +191,7 @@ out:
 static DEVICE_ATTR(fake_broadcast, 0644, qeth_l3_dev_fake_broadcast_show,
 		   qeth_l3_dev_fake_broadcast_store);
 
+<<<<<<< HEAD
 static ssize_t qeth_l3_dev_broadcast_mode_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
 {
@@ -285,6 +302,8 @@ out:
 static DEVICE_ATTR(canonical_macaddr, 0644, qeth_l3_dev_canonical_macaddr_show,
 		   qeth_l3_dev_canonical_macaddr_store);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t qeth_l3_dev_sniffer_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -308,6 +327,16 @@ static ssize_t qeth_l3_dev_sniffer_store(struct device *dev,
 
 	if (card->info.type != QETH_CARD_TYPE_IQD)
 		return -EPERM;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (card->options.cq == QETH_CQ_ENABLED)
+		return -EPERM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (card->options.cq == QETH_CQ_ENABLED)
+		return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&card->conf_mutex);
 	if ((card->state != CARD_STATE_DOWN) &&
@@ -316,7 +345,11 @@ static ssize_t qeth_l3_dev_sniffer_store(struct device *dev,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	rc = strict_strtoul(buf, 16, &i);
+=======
+	rc = kstrtoul(buf, 16, &i);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		rc = -EINVAL;
 		goto out;
@@ -333,10 +366,23 @@ static ssize_t qeth_l3_dev_sniffer_store(struct device *dev,
 					QETH_IN_BUF_COUNT_MAX)
 				qeth_realloc_buffer_pool(card,
 					QETH_IN_BUF_COUNT_MAX);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			break;
 		} else
 			rc = -EPERM;
 	default:   /* fall through */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		} else
+			rc = -EPERM;
+		break;
+	default:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = -EINVAL;
 	}
 out:
@@ -347,13 +393,141 @@ out:
 static DEVICE_ATTR(sniffer, 0644, qeth_l3_dev_sniffer_show,
 		qeth_l3_dev_sniffer_store);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static ssize_t qeth_l3_dev_hsuid_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	struct qeth_card *card = dev_get_drvdata(dev);
+	char tmp_hsuid[9];
+
+	if (!card)
+		return -EINVAL;
+
+	if (card->info.type != QETH_CARD_TYPE_IQD)
+		return -EPERM;
+
+	if (card->state == CARD_STATE_DOWN)
+		return -EPERM;
+
+	memcpy(tmp_hsuid, card->options.hsuid, sizeof(tmp_hsuid));
+	EBCASC(tmp_hsuid, 8);
+	return sprintf(buf, "%s\n", tmp_hsuid);
+}
+
+static ssize_t qeth_l3_dev_hsuid_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	struct qeth_card *card = dev_get_drvdata(dev);
+	struct qeth_ipaddr *addr;
+	char *tmp;
+	int i;
+
+	if (!card)
+		return -EINVAL;
+
+	if (card->info.type != QETH_CARD_TYPE_IQD)
+		return -EPERM;
+	if (card->state != CARD_STATE_DOWN &&
+	    card->state != CARD_STATE_RECOVER)
+		return -EPERM;
+	if (card->options.sniffer)
+		return -EPERM;
+	if (card->options.cq == QETH_CQ_NOTAVAILABLE)
+		return -EPERM;
+
+	tmp = strsep((char **)&buf, "\n");
+	if (strlen(tmp) > 8)
+		return -EINVAL;
+
+	if (card->options.hsuid[0]) {
+		/* delete old ip address */
+		addr = qeth_l3_get_addr_buffer(QETH_PROT_IPV6);
+		if (addr != NULL) {
+			addr->u.a6.addr.s6_addr32[0] = 0xfe800000;
+			addr->u.a6.addr.s6_addr32[1] = 0x00000000;
+			for (i = 8; i < 16; i++)
+				addr->u.a6.addr.s6_addr[i] =
+					card->options.hsuid[i - 8];
+			addr->u.a6.pfxlen = 0;
+			addr->type = QETH_IP_TYPE_NORMAL;
+		} else
+			return -ENOMEM;
+		if (!qeth_l3_delete_ip(card, addr))
+			kfree(addr);
+		qeth_l3_set_ip_addr_list(card);
+	}
+
+	if (strlen(tmp) == 0) {
+		/* delete ip address only */
+		card->options.hsuid[0] = '\0';
+		if (card->dev)
+			memcpy(card->dev->perm_addr, card->options.hsuid, 9);
+		qeth_configure_cq(card, QETH_CQ_DISABLED);
+		return count;
+	}
+
+	if (qeth_configure_cq(card, QETH_CQ_ENABLED))
+		return -EPERM;
+
+<<<<<<< HEAD
+	for (i = 0; i < 8; i++)
+		card->options.hsuid[i] = ' ';
+	card->options.hsuid[8] = '\0';
+	strncpy(card->options.hsuid, tmp, strlen(tmp));
+=======
+	snprintf(card->options.hsuid, sizeof(card->options.hsuid),
+		 "%-8s", tmp);
+>>>>>>> refs/remotes/origin/master
+	ASCEBC(card->options.hsuid, 8);
+	if (card->dev)
+		memcpy(card->dev->perm_addr, card->options.hsuid, 9);
+
+	addr = qeth_l3_get_addr_buffer(QETH_PROT_IPV6);
+	if (addr != NULL) {
+		addr->u.a6.addr.s6_addr32[0] = 0xfe800000;
+		addr->u.a6.addr.s6_addr32[1] = 0x00000000;
+		for (i = 8; i < 16; i++)
+			addr->u.a6.addr.s6_addr[i] = card->options.hsuid[i - 8];
+		addr->u.a6.pfxlen = 0;
+		addr->type = QETH_IP_TYPE_NORMAL;
+	} else
+		return -ENOMEM;
+	if (!qeth_l3_add_ip(card, addr))
+		kfree(addr);
+	qeth_l3_set_ip_addr_list(card);
+
+	return count;
+}
+
+static DEVICE_ATTR(hsuid, 0644, qeth_l3_dev_hsuid_show,
+		   qeth_l3_dev_hsuid_store);
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct attribute *qeth_l3_device_attrs[] = {
 	&dev_attr_route4.attr,
 	&dev_attr_route6.attr,
 	&dev_attr_fake_broadcast.attr,
+<<<<<<< HEAD
 	&dev_attr_broadcast_mode.attr,
 	&dev_attr_canonical_macaddr.attr,
 	&dev_attr_sniffer.attr,
+<<<<<<< HEAD
+=======
+	&dev_attr_hsuid.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_sniffer.attr,
+	&dev_attr_hsuid.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 

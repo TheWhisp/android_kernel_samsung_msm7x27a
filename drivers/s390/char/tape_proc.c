@@ -1,9 +1,16 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/tape.c
  *    tape device driver for S/390 and zSeries tapes.
  *
  *  S390 and zSeries version
  *    Copyright (C) 2001 IBM Corporation
+=======
+ *    tape device driver for S/390 and zSeries tapes.
+ *
+ *  S390 and zSeries version
+ *    Copyright IBM Corp. 2001
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Carsten Otte <cotte@de.ibm.com>
  *		 Michael Holzheu <holzheu@de.ibm.com>
  *		 Tuan Ngo-Anh <ngoanh@de.ibm.com>

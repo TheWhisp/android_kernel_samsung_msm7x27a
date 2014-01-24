@@ -6,7 +6,11 @@
  * License.  See the file "COPYING" in the main directory of this archive
  * for more details.
  *
+<<<<<<< HEAD
  * Copyright (C) 2001 - 2005 Tensilica Inc.
+=======
+ * Copyright (C) 2001 - 2010 Tensilica Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Chris Zankel <chris@zankel.net>
  * Joe Taylor	<joe@tensilica.com, joetylr@yahoo.com>
@@ -19,7 +23,13 @@
 #include <asm/cacheflush.h>
 #include <asm/hardirq.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgalloc.h>
 
 unsigned long asid_cache = ASID_USER_FIRST;
@@ -45,6 +55,10 @@ void do_page_fault(struct pt_regs *regs)
 
 	int is_write, is_exec;
 	int fault;
+<<<<<<< HEAD
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+>>>>>>> refs/remotes/origin/master
 
 	info.si_code = SEGV_MAPERR;
 
@@ -72,6 +86,12 @@ void do_page_fault(struct pt_regs *regs)
 	       address, exccause, regs->pc, is_write? "w":"", is_exec? "x":"");
 #endif
 
+<<<<<<< HEAD
+=======
+	if (user_mode(regs))
+		flags |= FAULT_FLAG_USER;
+retry:
+>>>>>>> refs/remotes/origin/master
 	down_read(&mm->mmap_sem);
 	vma = find_vma(mm, address);
 
@@ -94,6 +114,10 @@ good_area:
 	if (is_write) {
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
+=======
+		flags |= FAULT_FLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 	} else if (is_exec) {
 		if (!(vma->vm_flags & VM_EXEC))
 			goto bad_area;
@@ -105,7 +129,15 @@ good_area:
 	 * make sure we exit gracefully rather than endlessly redo
 	 * the fault.
 	 */
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, is_write ? FAULT_FLAG_WRITE : 0);
+=======
+	fault = handle_mm_fault(mm, vma, address, flags);
+
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
@@ -113,10 +145,30 @@ good_area:
 			goto do_sigbus;
 		BUG();
 	}
+<<<<<<< HEAD
 	if (fault & VM_FAULT_MAJOR)
 		current->maj_flt++;
 	else
 		current->min_flt++;
+=======
+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+		if (fault & VM_FAULT_MAJOR)
+			current->maj_flt++;
+		else
+			current->min_flt++;
+		if (fault & VM_FAULT_RETRY) {
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+			flags |= FAULT_FLAG_TRIED;
+
+			 /* No need to up_read(&mm->mmap_sem) as we would
+			 * have already released it in __lock_page_or_retry
+			 * in mm/filemap.c.
+			 */
+
+			goto retry;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	up_read(&mm->mmap_sem);
 	return;
@@ -167,6 +219,10 @@ do_sigbus:
 	/* Kernel mode? Handle exceptions or die */
 	if (!user_mode(regs))
 		bad_page_fault(regs, address, SIGBUS);
+<<<<<<< HEAD
+=======
+	return;
+>>>>>>> refs/remotes/origin/master
 
 vmalloc_fault:
 	{
@@ -234,4 +290,7 @@ bad_page_fault(struct pt_regs *regs, unsigned long address, int sig)
 	die("Oops", regs, sig);
 	do_exit(sig);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

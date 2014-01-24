@@ -14,6 +14,16 @@
  *    Moxa C101 User's Manual
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/capability.h>
@@ -313,16 +323,34 @@ static int __init c101_run(unsigned long irq, unsigned long winbase)
 	int result;
 
 	if (irq<3 || irq>15 || irq == 6) /* FIXME */ {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "c101: invalid IRQ value\n");
+=======
+		pr_err("invalid IRQ value\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("invalid IRQ value\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	if (winbase < 0xC0000 || winbase > 0xDFFFF || (winbase & 0x3FFF) !=0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "c101: invalid RAM value\n");
+=======
+		pr_err("invalid RAM value\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("invalid RAM value\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	card = kzalloc(sizeof(card_t), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (card == NULL) {
 		printk(KERN_ERR "c101: unable to allocate memory\n");
 		return -ENOBUFS;
@@ -331,26 +359,63 @@ static int __init c101_run(unsigned long irq, unsigned long winbase)
 	card->dev = alloc_hdlcdev(card);
 	if (!card->dev) {
 		printk(KERN_ERR "c101: unable to allocate memory\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (card == NULL)
+		return -ENOBUFS;
+
+	card->dev = alloc_hdlcdev(card);
+	if (!card->dev) {
+		pr_err("unable to allocate memory\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(card);
 		return -ENOBUFS;
 	}
 
 	if (request_irq(irq, sca_intr, 0, devname, card)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "c101: could not allocate IRQ\n");
+=======
+		pr_err("could not allocate IRQ\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("could not allocate IRQ\n");
+>>>>>>> refs/remotes/origin/master
 		c101_destroy_card(card);
 		return -EBUSY;
 	}
 	card->irq = irq;
 
 	if (!request_mem_region(winbase, C101_MAPPED_RAM_SIZE, devname)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "c101: could not request RAM window\n");
+=======
+		pr_err("could not request RAM window\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("could not request RAM window\n");
+>>>>>>> refs/remotes/origin/master
 		c101_destroy_card(card);
 		return -EBUSY;
 	}
 	card->phy_winbase = winbase;
 	card->win0base = ioremap(winbase, C101_MAPPED_RAM_SIZE);
 	if (!card->win0base) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "c101: could not map I/O address\n");
+=======
+		pr_err("could not map I/O address\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("could not map I/O address\n");
+>>>>>>> refs/remotes/origin/master
 		c101_destroy_card(card);
 		return -EFAULT;
 	}
@@ -381,7 +446,15 @@ static int __init c101_run(unsigned long irq, unsigned long winbase)
 
 	result = register_hdlc_device(dev);
 	if (result) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "c101: unable to register hdlc device\n");
+=======
+		pr_warn("unable to register hdlc device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("unable to register hdlc device\n");
+>>>>>>> refs/remotes/origin/master
 		c101_destroy_card(card);
 		return result;
 	}
@@ -389,10 +462,20 @@ static int __init c101_run(unsigned long irq, unsigned long winbase)
 	sca_init_port(card); /* Set up C101 memory */
 	set_carrier(card);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: Moxa C101 on IRQ%u,"
 	       " using %u TX + %u RX packets rings\n",
 	       dev->name, card->irq,
 	       card->tx_ring_buffers, card->rx_ring_buffers);
+=======
+	netdev_info(dev, "Moxa C101 on IRQ%u, using %u TX + %u RX packets rings\n",
+		    card->irq, card->tx_ring_buffers, card->rx_ring_buffers);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_info(dev, "Moxa C101 on IRQ%u, using %u TX + %u RX packets rings\n",
+		    card->irq, card->tx_ring_buffers, card->rx_ring_buffers);
+>>>>>>> refs/remotes/origin/master
 
 	*new_card = card;
 	new_card = &card->next_card;
@@ -405,12 +488,28 @@ static int __init c101_init(void)
 {
 	if (hw == NULL) {
 #ifdef MODULE
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "c101: no card initialized\n");
+=======
+		pr_info("no card initialized\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("no card initialized\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 		return -EINVAL;	/* no parameters specified, abort */
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s\n", version);
+=======
+	pr_info("%s\n", version);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("%s\n", version);
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		unsigned long irq, ram;
@@ -428,7 +527,15 @@ static int __init c101_init(void)
 			return first_card ? 0 : -EINVAL;
 	}while(*hw++ == ':');
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR "c101: invalid hardware parameters\n");
+=======
+	pr_err("invalid hardware parameters\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("invalid hardware parameters\n");
+>>>>>>> refs/remotes/origin/master
 	return first_card ? 0 : -EINVAL;
 }
 

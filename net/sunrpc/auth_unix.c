@@ -12,13 +12,22 @@
 #include <linux/module.h>
 #include <linux/sunrpc/clnt.h>
 #include <linux/sunrpc/auth.h>
+<<<<<<< HEAD
+=======
+#include <linux/user_namespace.h>
+>>>>>>> refs/remotes/origin/master
 
 #define NFS_NGROUPS	16
 
 struct unx_cred {
 	struct rpc_cred		uc_base;
+<<<<<<< HEAD
 	gid_t			uc_gid;
 	gid_t			uc_gids[NFS_NGROUPS];
+=======
+	kgid_t			uc_gid;
+	kgid_t			uc_gids[NFS_NGROUPS];
+>>>>>>> refs/remotes/origin/master
 };
 #define uc_uid			uc_base.cr_uid
 
@@ -32,7 +41,11 @@ static struct rpc_auth		unix_auth;
 static const struct rpc_credops	unix_credops;
 
 static struct rpc_auth *
+<<<<<<< HEAD
 unx_create(struct rpc_clnt *clnt, rpc_authflavor_t flavor)
+=======
+unx_create(struct rpc_auth_create_args *args, struct rpc_clnt *clnt)
+>>>>>>> refs/remotes/origin/master
 {
 	dprintk("RPC:       creating UNIX authenticator for client %p\n",
 			clnt);
@@ -64,7 +77,12 @@ unx_create_cred(struct rpc_auth *auth, struct auth_cred *acred, int flags)
 	unsigned int i;
 
 	dprintk("RPC:       allocating UNIX cred for uid %d gid %d\n",
+<<<<<<< HEAD
 			acred->uid, acred->gid);
+=======
+			from_kuid(&init_user_ns, acred->uid),
+			from_kgid(&init_user_ns, acred->gid));
+>>>>>>> refs/remotes/origin/master
 
 	if (!(cred = kmalloc(sizeof(*cred), GFP_NOFS)))
 		return ERR_PTR(-ENOMEM);
@@ -81,7 +99,11 @@ unx_create_cred(struct rpc_auth *auth, struct auth_cred *acred, int flags)
 	for (i = 0; i < groups; i++)
 		cred->uc_gids[i] = GROUP_AT(acred->group_info, i);
 	if (i < NFS_NGROUPS)
+<<<<<<< HEAD
 		cred->uc_gids[i] = NOGROUP;
+=======
+		cred->uc_gids[i] = INVALID_GID;
+>>>>>>> refs/remotes/origin/master
 
 	return &cred->uc_base;
 }
@@ -119,7 +141,11 @@ unx_match(struct auth_cred *acred, struct rpc_cred *rcred, int flags)
 	unsigned int i;
 
 
+<<<<<<< HEAD
 	if (cred->uc_uid != acred->uid || cred->uc_gid != acred->gid)
+=======
+	if (!uid_eq(cred->uc_uid, acred->uid) || !gid_eq(cred->uc_gid, acred->gid))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (acred->group_info != NULL)
@@ -127,10 +153,16 @@ unx_match(struct auth_cred *acred, struct rpc_cred *rcred, int flags)
 	if (groups > NFS_NGROUPS)
 		groups = NFS_NGROUPS;
 	for (i = 0; i < groups ; i++)
+<<<<<<< HEAD
 		if (cred->uc_gids[i] != GROUP_AT(acred->group_info, i))
 			return 0;
 	if (groups < NFS_NGROUPS &&
 	    cred->uc_gids[groups] != NOGROUP)
+=======
+		if (!gid_eq(cred->uc_gids[i], GROUP_AT(acred->group_info, i)))
+			return 0;
+	if (groups < NFS_NGROUPS && gid_valid(cred->uc_gids[groups]))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	return 1;
 }
@@ -156,11 +188,19 @@ unx_marshal(struct rpc_task *task, __be32 *p)
 	 */
 	p = xdr_encode_array(p, clnt->cl_nodename, clnt->cl_nodelen);
 
+<<<<<<< HEAD
 	*p++ = htonl((u32) cred->uc_uid);
 	*p++ = htonl((u32) cred->uc_gid);
 	hold = p++;
 	for (i = 0; i < 16 && cred->uc_gids[i] != (gid_t) NOGROUP; i++)
 		*p++ = htonl((u32) cred->uc_gids[i]);
+=======
+	*p++ = htonl((u32) from_kuid(&init_user_ns, cred->uc_uid));
+	*p++ = htonl((u32) from_kgid(&init_user_ns, cred->uc_gid));
+	hold = p++;
+	for (i = 0; i < 16 && gid_valid(cred->uc_gids[i]); i++)
+		*p++ = htonl((u32) from_kgid(&init_user_ns, cred->uc_gids[i]));
+>>>>>>> refs/remotes/origin/master
 	*hold = htonl(p - hold - 1);		/* gid array length */
 	*base = htonl((p - base - 1) << 2);	/* cred length */
 
@@ -191,13 +231,21 @@ unx_validate(struct rpc_task *task, __be32 *p)
 	    flavor != RPC_AUTH_UNIX &&
 	    flavor != RPC_AUTH_SHORT) {
 		printk("RPC: bad verf flavor: %u\n", flavor);
+<<<<<<< HEAD
 		return NULL;
+=======
+		return ERR_PTR(-EIO);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	size = ntohl(*p++);
 	if (size > RPC_MAX_AUTH_SIZE) {
 		printk("RPC: giant verf size: %u\n", size);
+<<<<<<< HEAD
 		return NULL;
+=======
+		return ERR_PTR(-EIO);
+>>>>>>> refs/remotes/origin/master
 	}
 	task->tk_rqstp->rq_cred->cr_auth->au_rslack = (size >> 2) + 2;
 	p += (size >> 2);

@@ -46,6 +46,14 @@ const struct imx_imx_keypad_data imx51_imx_keypad_data __initconst =
 	imx_imx_keypad_data_entry_single(MX51, SZ_16);
 #endif /* ifdef CONFIG_SOC_IMX51 */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SOC_IMX53
+const struct imx_imx_keypad_data imx53_imx_keypad_data __initconst =
+	imx_imx_keypad_data_entry_single(MX53, SZ_16);
+#endif /* ifdef CONFIG_SOC_IMX53 */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct platform_device *__init imx_add_imx_keypad(
 		const struct imx_imx_keypad_data *data,
 		const struct matrix_keymap_data *pdata)

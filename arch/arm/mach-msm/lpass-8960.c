@@ -31,6 +31,14 @@
 
 #define SCM_Q6_NMI_CMD                  0x1
 #define MODULE_NAME			"lpass_8960"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define MAX_BUF_SIZE			0x51
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_BUF_SIZE			0x51
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Subsystem restart: QDSP6 data, functions */
 static void lpass_fatal_fn(struct work_struct *);
@@ -64,10 +72,77 @@ static struct notifier_block rnb = {
 	.notifier_call = riva_notifier_cb,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int modem_notifier_cb(struct notifier_block *this, unsigned long code,
+								void *ss_handle)
+{
+	int ret;
+	switch (code) {
+	case SUBSYS_BEFORE_SHUTDOWN:
+		pr_debug("%s: M-Notify: Shutdown started\n", __func__);
+		ret = sysmon_send_event(SYSMON_SS_LPASS, "modem",
+				SUBSYS_BEFORE_SHUTDOWN);
+		if (ret < 0)
+			pr_err("%s: sysmon_send_event error %d", __func__,
+				ret);
+		break;
+	}
+	return NOTIFY_DONE;
+}
+
+static void *ssr_modem_notif_hdle;
+static struct notifier_block mnb = {
+	.notifier_call = modem_notifier_cb,
+};
+
+static void lpass_log_failure_reason(void)
+{
+	char *reason;
+	char buffer[MAX_BUF_SIZE];
+	unsigned size;
+
+	reason = smem_get_entry(SMEM_SSR_REASON_LPASS0, &size);
+
+	if (!reason) {
+		pr_err("%s: subsystem failure reason: (unknown, smem_get_entry failed).",
+			 MODULE_NAME);
+		return;
+	}
+
+	if (reason[0] == '\0') {
+		pr_err("%s: subsystem failure reason: (unknown, init value found)",
+			 MODULE_NAME);
+		return;
+	}
+
+	size = size < MAX_BUF_SIZE ? size : (MAX_BUF_SIZE-1);
+	memcpy(buffer, reason, size);
+	buffer[size] = '\0';
+	pr_err("%s: subsystem failure reason: %s", MODULE_NAME, buffer);
+	memset((void *)reason, 0x0, size);
+	wmb();
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void lpass_fatal_fn(struct work_struct *work)
 {
 	pr_err("%s %s: Watchdog bite received from Q6!\n", MODULE_NAME,
 		__func__);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	lpass_log_failure_reason();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lpass_log_failure_reason();
+>>>>>>> refs/remotes/origin/cm-11.0
 	panic(MODULE_NAME ": Resetting the SoC");
 }
 
@@ -82,6 +157,14 @@ static void lpass_smsm_state_cb(void *data, uint32_t old_state,
 		pr_err("%s: LPASS SMSM state changed to SMSM_RESET,"
 			" new_state = 0x%x, old_state = 0x%x\n", __func__,
 			new_state, old_state);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		lpass_log_failure_reason();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		lpass_log_failure_reason();
+>>>>>>> refs/remotes/origin/cm-11.0
 		panic(MODULE_NAME ": Resetting the SoC");
 	}
 }
@@ -202,6 +285,26 @@ static int __init lpass_fatal_init(void)
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	ssr_modem_notif_hdle = subsys_notif_register_notifier("modem",
+							&mnb);
+	if (IS_ERR(ssr_modem_notif_hdle) < 0) {
+		ret = PTR_ERR(ssr_modem_notif_hdle);
+		pr_err("%s: subsys_register_notifier for Modem: err = %d\n",
+			__func__, ret);
+		subsys_notif_unregister_notifier(ssr_notif_hdle, &rnb);
+		free_irq(LPASS_Q6SS_WDOG_EXPIRED, NULL);
+		goto out;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_info("%s: lpass SSR driver init'ed.\n", __func__);
 out:
 	return ret;
@@ -210,6 +313,14 @@ out:
 static void __exit lpass_fatal_exit(void)
 {
 	subsys_notif_unregister_notifier(ssr_notif_hdle, &rnb);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	subsys_notif_unregister_notifier(ssr_modem_notif_hdle, &mnb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	subsys_notif_unregister_notifier(ssr_modem_notif_hdle, &mnb);
+>>>>>>> refs/remotes/origin/cm-11.0
 	free_irq(LPASS_Q6SS_WDOG_EXPIRED, NULL);
 }
 

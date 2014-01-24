@@ -258,6 +258,7 @@ range_to_mtrr(unsigned int reg, unsigned long range_startk,
 
 		/* Compute the maximum size with which we can make a range: */
 		if (range_startk)
+<<<<<<< HEAD
 			max_align = ffs(range_startk) - 1;
 		else
 			max_align = 32;
@@ -267,6 +268,17 @@ range_to_mtrr(unsigned int reg, unsigned long range_startk,
 			align = max_align;
 
 		sizek = 1 << align;
+=======
+			max_align = __ffs(range_startk);
+		else
+			max_align = BITS_PER_LONG - 1;
+
+		align = __fls(range_sizek);
+		if (align > max_align)
+			align = max_align;
+
+		sizek = 1UL << align;
+>>>>>>> refs/remotes/origin/master
 		if (debug_print) {
 			char start_factor = 'K', size_factor = 'K';
 			unsigned long start_base, size_base;
@@ -714,15 +726,26 @@ int __init mtrr_cleanup(unsigned address_bits)
 	if (mtrr_tom2)
 		x_remove_size = (mtrr_tom2 >> PAGE_SHIFT) - x_remove_base;
 
+<<<<<<< HEAD
 	nr_range = x86_get_mtrr_mem_range(range, 0, x_remove_base, x_remove_size);
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * [0, 1M) should always be covered by var mtrr with WB
 	 * and fixed mtrrs should take effect before var mtrr for it:
 	 */
+<<<<<<< HEAD
 	nr_range = add_range_with_merge(range, RANGE_NUM, nr_range, 0,
 					1ULL<<(20 - PAGE_SHIFT));
 	/* Sort the ranges: */
 	sort_range(range, nr_range);
+=======
+	nr_range = add_range_with_merge(range, RANGE_NUM, 0, 0,
+					1ULL<<(20 - PAGE_SHIFT));
+	/* add from var mtrr at last */
+	nr_range = x86_get_mtrr_mem_range(range, nr_range,
+					  x_remove_base, x_remove_size);
+>>>>>>> refs/remotes/origin/master
 
 	range_sums = sum_ranges(range, nr_range);
 	printk(KERN_INFO "total RAM covered: %ldM\n",

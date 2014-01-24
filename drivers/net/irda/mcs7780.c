@@ -191,8 +191,13 @@ static inline int mcs_setup_transceiver_vishay(struct mcs_cb *mcs)
 		goto error;
 
 	ret = 0;
+<<<<<<< HEAD
 	error:
 		return ret;
+=======
+error:
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Setup a communication between mcs7780 and agilent chip. */
@@ -501,8 +506,16 @@ static inline int mcs_setup_urbs(struct mcs_cb *mcs)
 		return 0;
 
 	mcs->rx_urb = usb_alloc_urb(0, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!mcs->rx_urb)
 		return 0;
+=======
+	if (!mcs->rx_urb) {
+		usb_free_urb(mcs->tx_urb);
+		mcs->tx_urb = NULL;
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -643,9 +656,15 @@ static int mcs_speed_change(struct mcs_cb *mcs)
 	ret = mcs_set_reg(mcs, MCS_MODE_REG, rval);
 
 	mcs->speed = mcs->new_speed;
+<<<<<<< HEAD
 	error:
 		mcs->new_speed = 0;
 		return ret;
+=======
+error:
+	mcs->new_speed = 0;
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Ioctl calls not supported at this time.  Can be an area of future work. */
@@ -738,17 +757,33 @@ static int mcs_net_open(struct net_device *netdev)
 
 	ret = mcs_receive_start(mcs);
 	if (ret)
+<<<<<<< HEAD
 		goto error3;
+=======
+		goto error4;
+>>>>>>> refs/remotes/origin/master
 
 	netif_start_queue(netdev);
 	return 0;
 
+<<<<<<< HEAD
 	error3:
 		irlap_close(mcs->irlap);
 	error2:
 		kfree_skb(mcs->rx_buff.skb);
 	error1:
 		return ret;
+=======
+error4:
+	usb_free_urb(mcs->rx_urb);
+	usb_free_urb(mcs->tx_urb);
+error3:
+	irlap_close(mcs->irlap);
+error2:
+	kfree_skb(mcs->rx_buff.skb);
+error1:
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Receive callback function.  */
@@ -920,8 +955,15 @@ static int mcs_probe(struct usb_interface *intf,
 
 	ndev->netdev_ops = &mcs_netdev_ops;
 
+<<<<<<< HEAD
 	if (!intf->cur_altsetting)
 		goto error2;
+=======
+	if (!intf->cur_altsetting) {
+		ret = -ENOMEM;
+		goto error2;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ret = mcs_find_endpoints(mcs, intf->cur_altsetting->endpoint,
 				 intf->cur_altsetting->desc.bNumEndpoints);
@@ -944,11 +986,19 @@ static int mcs_probe(struct usb_interface *intf,
 	usb_set_intfdata(intf, mcs);
 	return 0;
 
+<<<<<<< HEAD
 	error2:
 		free_netdev(ndev);
 
 	error1:
 		return ret;
+=======
+error2:
+	free_netdev(ndev);
+
+error1:
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* The current device is removed, the USB layer tells us to shut down. */
@@ -968,6 +1018,8 @@ static void mcs_disconnect(struct usb_interface *intf)
 	IRDA_DEBUG(0, "MCS7780 now disconnected.\n");
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Module insertion */
 static int __init mcs_init(void)
 {
@@ -990,3 +1042,9 @@ static void __exit mcs_exit(void)
 }
 module_exit(mcs_exit);
 
+=======
+module_usb_driver(mcs_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(mcs_driver);
+>>>>>>> refs/remotes/origin/master

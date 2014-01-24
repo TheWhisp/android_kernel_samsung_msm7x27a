@@ -33,9 +33,15 @@ struct latch_addr_flash_info {
 	/* cache; could be found out of res */
 	unsigned long		win_mask;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int			nr_parts;
 	struct mtd_partition	*parts;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spinlock_t		lock;
 };
 
@@ -97,8 +103,14 @@ static void lf_copy_from(struct map_info *map, void *to,
 
 static char *rom_probe_types[] = { "cfi_probe", NULL };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char *part_probe_types[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int latch_addr_flash_remove(struct platform_device *dev)
 {
 	struct latch_addr_flash_info *info;
@@ -107,13 +119,23 @@ static int latch_addr_flash_remove(struct platform_device *dev)
 	info = platform_get_drvdata(dev);
 	if (info == NULL)
 		return 0;
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
 
 	latch_addr_data = dev->dev.platform_data;
 
 	if (info->mtd != NULL) {
+<<<<<<< HEAD
 		if (info->nr_parts)
 			kfree(info->parts);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	latch_addr_data = dev_get_platdata(&dev->dev);
+
+	if (info->mtd != NULL) {
+>>>>>>> refs/remotes/origin/master
 		mtd_device_unregister(info->mtd);
 		map_destroy(info->mtd);
 	}
@@ -132,7 +154,11 @@ static int latch_addr_flash_remove(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit latch_addr_flash_probe(struct platform_device *dev)
+=======
+static int latch_addr_flash_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct latch_addr_flash_data *latch_addr_data;
 	struct latch_addr_flash_info *info;
@@ -142,7 +168,11 @@ static int __devinit latch_addr_flash_probe(struct platform_device *dev)
 	int chipsel;
 	int err;
 
+<<<<<<< HEAD
 	latch_addr_data = dev->dev.platform_data;
+=======
+	latch_addr_data = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (latch_addr_data == NULL)
 		return -ENODEV;
 
@@ -206,6 +236,8 @@ static int __devinit latch_addr_flash_probe(struct platform_device *dev)
 	}
 	info->mtd->owner = THIS_MODULE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = parse_mtd_partitions(info->mtd, (const char **)part_probe_types,
 				   &info->parts, 0);
 	if (err > 0) {
@@ -221,6 +253,16 @@ static int __devinit latch_addr_flash_probe(struct platform_device *dev)
 	}
 
 	mtd_device_register(info->mtd, NULL, 0);
+=======
+	mtd_device_parse_register(info->mtd, NULL, NULL,
+				  latch_addr_data->parts,
+				  latch_addr_data->nr_parts);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_device_parse_register(info->mtd, NULL, NULL,
+				  latch_addr_data->parts,
+				  latch_addr_data->nr_parts);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 iounmap:
@@ -237,12 +279,18 @@ done:
 
 static struct platform_driver latch_addr_flash_driver = {
 	.probe		= latch_addr_flash_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(latch_addr_flash_remove),
+=======
+	.remove		= latch_addr_flash_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= DRIVER_NAME,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init latch_addr_flash_init(void)
 {
 	return platform_driver_register(&latch_addr_flash_driver);
@@ -254,6 +302,12 @@ static void __exit latch_addr_flash_exit(void)
 	platform_driver_unregister(&latch_addr_flash_driver);
 }
 module_exit(latch_addr_flash_exit);
+=======
+module_platform_driver(latch_addr_flash_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(latch_addr_flash_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("David Griego <dgriego@mvista.com>");
 MODULE_DESCRIPTION("MTD map driver for flashes addressed physically with upper "

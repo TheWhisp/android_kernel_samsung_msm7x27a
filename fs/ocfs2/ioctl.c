@@ -7,6 +7,10 @@
 
 #include <linux/fs.h>
 #include <linux/mount.h>
+<<<<<<< HEAD
+=======
+#include <linux/blkdev.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/compat.h>
 
 #include <cluster/masklog.h>
@@ -28,8 +32,14 @@
 #include "suballoc.h"
 #include "move_extents.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/ext2_fs.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define o2info_from_user(a, b)	\
 		copy_from_user(&(a), (b), sizeof(a))
 #define o2info_to_user(a, b)	\
@@ -103,6 +113,7 @@ static int ocfs2_set_inode_attr(struct inode *inode, unsigned flags,
 	if (!S_ISDIR(inode->i_mode))
 		flags &= ~OCFS2_DIRSYNC_FL;
 
+<<<<<<< HEAD
 	handle = ocfs2_start_trans(osb, OCFS2_INODE_UPDATE_CREDITS);
 	if (IS_ERR(handle)) {
 		status = PTR_ERR(handle);
@@ -110,6 +121,8 @@ static int ocfs2_set_inode_attr(struct inode *inode, unsigned flags,
 		goto bail_unlock;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	oldflags = ocfs2_inode->ip_attr;
 	flags = flags & mask;
 	flags |= oldflags & ~mask;
@@ -122,7 +135,22 @@ static int ocfs2_set_inode_attr(struct inode *inode, unsigned flags,
 	if ((oldflags & OCFS2_IMMUTABLE_FL) || ((flags ^ oldflags) &
 		(OCFS2_APPEND_FL | OCFS2_IMMUTABLE_FL))) {
 		if (!capable(CAP_LINUX_IMMUTABLE))
+<<<<<<< HEAD
+<<<<<<< HEAD
 			goto bail_unlock;
+=======
+			goto bail_commit;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto bail_unlock;
+	}
+
+	handle = ocfs2_start_trans(osb, OCFS2_INODE_UPDATE_CREDITS);
+	if (IS_ERR(handle)) {
+		status = PTR_ERR(handle);
+		mlog_errno(status);
+		goto bail_unlock;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ocfs2_inode->ip_attr = flags;
@@ -132,7 +160,16 @@ static int ocfs2_set_inode_attr(struct inode *inode, unsigned flags,
 	if (status < 0)
 		mlog_errno(status);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+bail_commit:
+>>>>>>> refs/remotes/origin/cm-10.0
 	ocfs2_commit_trans(osb, handle);
+=======
+	ocfs2_commit_trans(osb, handle);
+
+>>>>>>> refs/remotes/origin/master
 bail_unlock:
 	ocfs2_inode_unlock(inode, 1);
 bail:
@@ -304,7 +341,11 @@ int ocfs2_info_handle_journal_size(struct inode *inode,
 	if (o2info_from_user(oij, req))
 		goto bail;
 
+<<<<<<< HEAD
 	oij.ij_journal_size = osb->journal->j_inode->i_size;
+=======
+	oij.ij_journal_size = i_size_read(osb->journal->j_inode);
+>>>>>>> refs/remotes/origin/master
 
 	o2info_set_request_filled(&oij.ij_req);
 
@@ -381,7 +422,15 @@ int ocfs2_info_handle_freeinode(struct inode *inode,
 	if (!oifi) {
 		status = -ENOMEM;
 		mlog_errno(status);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto bail;
+=======
+		goto out_err;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (o2info_from_user(*oifi, req))
@@ -431,7 +480,15 @@ bail:
 		o2info_set_request_error(&oifi->ifi_req, req);
 
 	kfree(oifi);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+out_err:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_err:
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -666,7 +723,15 @@ int ocfs2_info_handle_freefrag(struct inode *inode,
 	if (!oiff) {
 		status = -ENOMEM;
 		mlog_errno(status);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto bail;
+=======
+		goto out_err;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (o2info_from_user(*oiff, req))
@@ -707,8 +772,15 @@ int ocfs2_info_handle_freefrag(struct inode *inode,
 
 	o2info_set_request_filled(&oiff->iff_req);
 
+<<<<<<< HEAD
 	if (o2info_to_user(*oiff, req))
 		goto bail;
+=======
+	if (o2info_to_user(*oiff, req)) {
+		status = -EFAULT;
+		goto bail;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	status = 0;
 bail:
@@ -716,7 +788,15 @@ bail:
 		o2info_set_request_error(&oiff->iff_req, req);
 
 	kfree(oiff);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+out_err:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_err:
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -865,7 +945,11 @@ int ocfs2_info_handle(struct inode *inode, struct ocfs2_info *info,
 		if (status)
 			break;
 
+<<<<<<< HEAD
 		reqp = (struct ocfs2_info_request *)(unsigned long)req_addr;
+=======
+		reqp = (struct ocfs2_info_request __user *)(unsigned long)req_addr;
+>>>>>>> refs/remotes/origin/master
 		if (!reqp) {
 			status = -EINVAL;
 			goto bail;
@@ -882,16 +966,28 @@ bail:
 
 long ocfs2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	unsigned int flags;
 	int new_clusters;
 	int status;
 	struct ocfs2_space_resv sr;
 	struct ocfs2_new_group_input input;
 	struct reflink_arguments args;
+<<<<<<< HEAD
 	const char *old_path, *new_path;
 	bool preserve;
 	struct ocfs2_info info;
+=======
+	const char __user *old_path;
+	const char __user *new_path;
+	bool preserve;
+	struct ocfs2_info info;
+	void __user *argp = (void __user *)arg;
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case OCFS2_IOC_GETFLAGS:
@@ -905,12 +1001,28 @@ long ocfs2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		if (get_user(flags, (int __user *) arg))
 			return -EFAULT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		status = mnt_want_write(filp->f_path.mnt);
+=======
+		status = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		status = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		if (status)
 			return status;
 		status = ocfs2_set_inode_attr(inode, flags,
 			OCFS2_FL_MODIFIABLE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mnt_drop_write(filp->f_path.mnt);
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		return status;
 	case OCFS2_IOC_RESVSP:
 	case OCFS2_IOC_RESVSP64:
@@ -927,7 +1039,16 @@ long ocfs2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		if (get_user(new_clusters, (int __user *)arg))
 			return -EFAULT;
 
+<<<<<<< HEAD
 		return ocfs2_group_extend(inode, new_clusters);
+=======
+		status = mnt_want_write_file(filp);
+		if (status)
+			return status;
+		status = ocfs2_group_extend(inode, new_clusters);
+		mnt_drop_write_file(filp);
+		return status;
+>>>>>>> refs/remotes/origin/master
 	case OCFS2_IOC_GROUP_ADD:
 	case OCFS2_IOC_GROUP_ADD64:
 		if (!capable(CAP_SYS_RESOURCE))
@@ -936,6 +1057,7 @@ long ocfs2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		if (copy_from_user(&input, (int __user *) arg, sizeof(input)))
 			return -EFAULT;
 
+<<<<<<< HEAD
 		return ocfs2_group_add(inode, &input);
 	case OCFS2_IOC_REFLINK:
 		if (copy_from_user(&args, (struct reflink_arguments *)arg,
@@ -943,40 +1065,80 @@ long ocfs2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			return -EFAULT;
 		old_path = (const char *)(unsigned long)args.old_path;
 		new_path = (const char *)(unsigned long)args.new_path;
+=======
+		status = mnt_want_write_file(filp);
+		if (status)
+			return status;
+		status = ocfs2_group_add(inode, &input);
+		mnt_drop_write_file(filp);
+		return status;
+	case OCFS2_IOC_REFLINK:
+		if (copy_from_user(&args, argp, sizeof(args)))
+			return -EFAULT;
+		old_path = (const char __user *)(unsigned long)args.old_path;
+		new_path = (const char __user *)(unsigned long)args.new_path;
+>>>>>>> refs/remotes/origin/master
 		preserve = (args.preserve != 0);
 
 		return ocfs2_reflink_ioctl(inode, old_path, new_path, preserve);
 	case OCFS2_IOC_INFO:
+<<<<<<< HEAD
 		if (copy_from_user(&info, (struct ocfs2_info __user *)arg,
 				   sizeof(struct ocfs2_info)))
+=======
+		if (copy_from_user(&info, argp, sizeof(struct ocfs2_info)))
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 
 		return ocfs2_info_handle(inode, &info, 0);
 	case FITRIM:
 	{
 		struct super_block *sb = inode->i_sb;
+<<<<<<< HEAD
+=======
+		struct request_queue *q = bdev_get_queue(sb->s_bdev);
+>>>>>>> refs/remotes/origin/master
 		struct fstrim_range range;
 		int ret = 0;
 
 		if (!capable(CAP_SYS_ADMIN))
 			return -EPERM;
 
+<<<<<<< HEAD
 		if (copy_from_user(&range, (struct fstrim_range *)arg,
 		    sizeof(range)))
 			return -EFAULT;
 
+=======
+		if (!blk_queue_discard(q))
+			return -EOPNOTSUPP;
+
+		if (copy_from_user(&range, argp, sizeof(range)))
+			return -EFAULT;
+
+		range.minlen = max_t(u64, q->limits.discard_granularity,
+				     range.minlen);
+>>>>>>> refs/remotes/origin/master
 		ret = ocfs2_trim_fs(sb, &range);
 		if (ret < 0)
 			return ret;
 
+<<<<<<< HEAD
 		if (copy_to_user((struct fstrim_range *)arg, &range,
 		    sizeof(range)))
+=======
+		if (copy_to_user(argp, &range, sizeof(range)))
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 
 		return 0;
 	}
 	case OCFS2_IOC_MOVE_EXT:
+<<<<<<< HEAD
 		return ocfs2_ioctl_move_extents(filp, (void __user *)arg);
+=======
+		return ocfs2_ioctl_move_extents(filp, argp);
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -ENOTTY;
 	}
@@ -987,8 +1149,14 @@ long ocfs2_compat_ioctl(struct file *file, unsigned cmd, unsigned long arg)
 {
 	bool preserve;
 	struct reflink_arguments args;
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
 	struct ocfs2_info info;
+=======
+	struct inode *inode = file_inode(file);
+	struct ocfs2_info info;
+	void __user *argp = (void __user *)arg;
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case OCFS2_IOC32_GETFLAGS:
@@ -1007,16 +1175,24 @@ long ocfs2_compat_ioctl(struct file *file, unsigned cmd, unsigned long arg)
 	case FITRIM:
 		break;
 	case OCFS2_IOC_REFLINK:
+<<<<<<< HEAD
 		if (copy_from_user(&args, (struct reflink_arguments *)arg,
 				   sizeof(args)))
+=======
+		if (copy_from_user(&args, argp, sizeof(args)))
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 		preserve = (args.preserve != 0);
 
 		return ocfs2_reflink_ioctl(inode, compat_ptr(args.old_path),
 					   compat_ptr(args.new_path), preserve);
 	case OCFS2_IOC_INFO:
+<<<<<<< HEAD
 		if (copy_from_user(&info, (struct ocfs2_info __user *)arg,
 				   sizeof(struct ocfs2_info)))
+=======
+		if (copy_from_user(&info, argp, sizeof(struct ocfs2_info)))
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 
 		return ocfs2_info_handle(inode, &info, 1);

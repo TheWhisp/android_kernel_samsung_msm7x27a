@@ -23,22 +23,37 @@ struct ncp_mount_data_kernel {
 	unsigned long    flags;		/* NCP_MOUNT_* flags */
 	unsigned int	 int_flags;	/* internal flags */
 #define NCP_IMOUNT_LOGGEDIN_POSSIBLE	0x0001
+<<<<<<< HEAD
 	__kernel_uid32_t mounted_uid;	/* Who may umount() this filesystem? */
+=======
+	kuid_t		 mounted_uid;	/* Who may umount() this filesystem? */
+>>>>>>> refs/remotes/origin/master
 	struct pid      *wdog_pid;	/* Who cares for our watchdog packets? */
 	unsigned int     ncp_fd;	/* The socket to the ncp port */
 	unsigned int     time_out;	/* How long should I wait after
 					   sending a NCP request? */
 	unsigned int     retry_count;	/* And how often should I retry? */
 	unsigned char	 mounted_vol[NCP_VOLNAME_LEN + 1];
+<<<<<<< HEAD
 	__kernel_uid32_t uid;
 	__kernel_gid32_t gid;
 	__kernel_mode_t  file_mode;
 	__kernel_mode_t  dir_mode;
+=======
+	kuid_t		 uid;
+	kgid_t		 gid;
+	umode_t		 file_mode;
+	umode_t		 dir_mode;
+>>>>>>> refs/remotes/origin/master
 	int		 info_fd;
 };
 
 struct ncp_server {
+<<<<<<< HEAD
 
+=======
+	struct rcu_head rcu;
+>>>>>>> refs/remotes/origin/master
 	struct ncp_mount_data_kernel m;	/* Nearly all of the mount data is of
 					   interest for us later, so we store
 					   it completely. */

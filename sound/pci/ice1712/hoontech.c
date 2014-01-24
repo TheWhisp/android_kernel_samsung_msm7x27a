@@ -21,7 +21,10 @@
  *
  */      
 
+<<<<<<< HEAD
 #include <asm/io.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
@@ -40,7 +43,11 @@ struct hoontech_spec {
 	unsigned short boxconfig[4];
 };
 
+<<<<<<< HEAD
 static void __devinit snd_ice1712_stdsp24_gpio_write(struct snd_ice1712 *ice, unsigned char byte)
+=======
+static void snd_ice1712_stdsp24_gpio_write(struct snd_ice1712 *ice, unsigned char byte)
+>>>>>>> refs/remotes/origin/master
 {
 	byte |= ICE1712_STDSP24_CLOCK_BIT;
 	udelay(100);
@@ -53,7 +60,11 @@ static void __devinit snd_ice1712_stdsp24_gpio_write(struct snd_ice1712 *ice, un
 	snd_ice1712_write(ice, ICE1712_IREG_GPIO_DATA, byte);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_ice1712_stdsp24_darear(struct snd_ice1712 *ice, int activate)
+=======
+static void snd_ice1712_stdsp24_darear(struct snd_ice1712 *ice, int activate)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hoontech_spec *spec = ice->spec;
 	mutex_lock(&ice->gpio_mutex);
@@ -62,7 +73,11 @@ static void __devinit snd_ice1712_stdsp24_darear(struct snd_ice1712 *ice, int ac
 	mutex_unlock(&ice->gpio_mutex);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_ice1712_stdsp24_mute(struct snd_ice1712 *ice, int activate)
+=======
+static void snd_ice1712_stdsp24_mute(struct snd_ice1712 *ice, int activate)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hoontech_spec *spec = ice->spec;
 	mutex_lock(&ice->gpio_mutex);
@@ -71,7 +86,11 @@ static void __devinit snd_ice1712_stdsp24_mute(struct snd_ice1712 *ice, int acti
 	mutex_unlock(&ice->gpio_mutex);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_ice1712_stdsp24_insel(struct snd_ice1712 *ice, int activate)
+=======
+static void snd_ice1712_stdsp24_insel(struct snd_ice1712 *ice, int activate)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hoontech_spec *spec = ice->spec;
 	mutex_lock(&ice->gpio_mutex);
@@ -80,7 +99,11 @@ static void __devinit snd_ice1712_stdsp24_insel(struct snd_ice1712 *ice, int act
 	mutex_unlock(&ice->gpio_mutex);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_ice1712_stdsp24_box_channel(struct snd_ice1712 *ice, int box, int chn, int activate)
+=======
+static void snd_ice1712_stdsp24_box_channel(struct snd_ice1712 *ice, int box, int chn, int activate)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hoontech_spec *spec = ice->spec;
 
@@ -130,7 +153,11 @@ static void __devinit snd_ice1712_stdsp24_box_channel(struct snd_ice1712 *ice, i
 	mutex_unlock(&ice->gpio_mutex);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_ice1712_stdsp24_box_midi(struct snd_ice1712 *ice, int box, int master)
+=======
+static void snd_ice1712_stdsp24_box_midi(struct snd_ice1712 *ice, int box, int master)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hoontech_spec *spec = ice->spec;
 
@@ -158,7 +185,11 @@ static void __devinit snd_ice1712_stdsp24_box_midi(struct snd_ice1712 *ice, int 
 	mutex_unlock(&ice->gpio_mutex);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_ice1712_stdsp24_midi2(struct snd_ice1712 *ice, int activate)
+=======
+static void snd_ice1712_stdsp24_midi2(struct snd_ice1712 *ice, int activate)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hoontech_spec *spec = ice->spec;
 	mutex_lock(&ice->gpio_mutex);
@@ -167,7 +198,11 @@ static void __devinit snd_ice1712_stdsp24_midi2(struct snd_ice1712 *ice, int act
 	mutex_unlock(&ice->gpio_mutex);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_ice1712_hoontech_init(struct snd_ice1712 *ice)
+=======
+static int snd_ice1712_hoontech_init(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hoontech_spec *spec;
 	int box, chn;
@@ -267,10 +302,17 @@ static void stdsp24_ak4524_lock(struct snd_akm4xxx *ak, int chip)
 	snd_ice1712_write(ice, ICE1712_IREG_GPIO_WRITE_MASK, ~tmp);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_ice1712_value_init(struct snd_ice1712 *ice)
 {
 	/* Hoontech STDSP24 with modified hardware */
 	static struct snd_akm4xxx akm_stdsp24_mv __devinitdata = {
+=======
+static int snd_ice1712_value_init(struct snd_ice1712 *ice)
+{
+	/* Hoontech STDSP24 with modified hardware */
+	static struct snd_akm4xxx akm_stdsp24_mv = {
+>>>>>>> refs/remotes/origin/master
 		.num_adcs = 2,
 		.num_dacs = 2,
 		.type = SND_AK4524,
@@ -279,7 +321,11 @@ static int __devinit snd_ice1712_value_init(struct snd_ice1712 *ice)
 		}
 	};
 
+<<<<<<< HEAD
 	static struct snd_ak4xxx_private akm_stdsp24_mv_priv __devinitdata = {
+=======
+	static struct snd_ak4xxx_private akm_stdsp24_mv_priv = {
+>>>>>>> refs/remotes/origin/master
 		.caddr = 2,
 		.cif = 1, /* CIF high */
 		.data_mask = ICE1712_STDSP24_SERIAL_DATA,
@@ -317,7 +363,11 @@ static int __devinit snd_ice1712_value_init(struct snd_ice1712 *ice)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_ice1712_ez8_init(struct snd_ice1712 *ice)
+=======
+static int snd_ice1712_ez8_init(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	ice->gpio.write_mask = ice->eeprom.gpiomask;
 	ice->gpio.direction = ice->eeprom.gpiodir;
@@ -329,7 +379,11 @@ static int __devinit snd_ice1712_ez8_init(struct snd_ice1712 *ice)
 
 
 /* entry point */
+<<<<<<< HEAD
 struct snd_ice1712_card_info snd_ice1712_hoontech_cards[] __devinitdata = {
+=======
+struct snd_ice1712_card_info snd_ice1712_hoontech_cards[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.subvendor = ICE1712_SUBDEVICE_STDSP24,
 		.name = "Hoontech SoundTrack Audio DSP24",

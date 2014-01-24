@@ -40,13 +40,29 @@ static int ext2_release_file (struct inode * inode, struct file * filp)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ext2_fsync(struct file *file, int datasync)
+=======
+int ext2_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ext2_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct super_block *sb = file->f_mapping->host->i_sb;
 	struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = generic_file_fsync(file, datasync);
+=======
+	ret = generic_file_fsync(file, start, end, datasync);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = generic_file_fsync(file, start, end, datasync);
+>>>>>>> refs/remotes/origin/master
 	if (ret == -EIO || test_and_clear_bit(AS_EIO, &mapping->flags)) {
 		/* We don't really know where the IO error happened... */
 		ext2_error(sb, __func__,
@@ -102,6 +118,14 @@ const struct inode_operations ext2_file_inode_operations = {
 	.removexattr	= generic_removexattr,
 #endif
 	.setattr	= ext2_setattr,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.check_acl	= ext2_check_acl,
+=======
+	.get_acl	= ext2_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_acl	= ext2_get_acl,
+>>>>>>> refs/remotes/origin/master
 	.fiemap		= ext2_fiemap,
 };

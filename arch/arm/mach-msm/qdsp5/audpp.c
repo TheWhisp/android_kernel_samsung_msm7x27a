@@ -4,7 +4,15 @@
  * common code to deal with the AUDPP dsp task (audio postproc)
  *
  * Copyright (C) 2008 Google, Inc.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009-2010, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009-2010, 2012-2013 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2009-2010, 2012-2013 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -34,6 +42,16 @@
 
 #include <mach/qdsp5/qdsp5audppcmdi.h>
 #include <mach/qdsp5/qdsp5audppmsg.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <mach/qdsp5/qdsp5audpp.h>
+#include <mach/qdsp5v2/audio_acdbi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/qdsp5/qdsp5audpp.h>
+#include <mach/qdsp5v2/audio_acdbi.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/debug_mm.h>
 
 #include "evlog.h"
@@ -85,6 +103,8 @@ static DEFINE_MUTEX(audpp_dec_lock);
 #define AUDPP_CMD_IIR_FLAG_DIS	  0x0000
 #define AUDPP_CMD_IIR_FLAG_ENA	  -1
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AUDPP_CMD_VOLUME_PAN		0
 #define AUDPP_CMD_IIR_TUNING_FILTER	1
 #define AUDPP_CMD_EQUALIZER		2
@@ -98,6 +118,12 @@ static DEFINE_MUTEX(audpp_dec_lock);
 #define AUDPP_CMD_MBADRC		10
 
 #define MAX_EVENT_CALLBACK_CLIENTS 	1
+=======
+#define MAX_EVENT_CALLBACK_CLIENTS	2
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_EVENT_CALLBACK_CLIENTS	2
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define AUDPP_CONCURRENCY_DEFAULT 6	/* All non tunnel mode */
 #define AUDPP_MAX_DECODER_CNT 5
@@ -132,6 +158,16 @@ struct audpp_state {
 	uint16_t avsync[CH_COUNT * AUDPP_CLNT_MAX_COUNT + 1];
 	struct audpp_event_callback *cb_tbl[MAX_EVENT_CALLBACK_CLIENTS];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	spinlock_t avsync_lock;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t avsync_lock;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	wait_queue_head_t event_wait;
 };
 
@@ -184,12 +220,30 @@ int audpp_register_event_callback(struct audpp_event_callback *ecb)
 	struct audpp_state *audpp = &the_audpp_state;
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_EVENT_CALLBACK_CLIENTS; ++i) {
 		if (NULL == audpp->cb_tbl[i]) {
 			audpp->cb_tbl[i] = ecb;
 			return 0;
 		}
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	mutex_lock(audpp->lock);
+	for (i = 0; i < MAX_EVENT_CALLBACK_CLIENTS; ++i) {
+		if (NULL == audpp->cb_tbl[i]) {
+			audpp->cb_tbl[i] = ecb;
+			mutex_unlock(audpp->lock);
+			return 0;
+		}
+	}
+	mutex_unlock(audpp->lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return -1;
 }
 EXPORT_SYMBOL(audpp_register_event_callback);
@@ -199,12 +253,30 @@ int audpp_unregister_event_callback(struct audpp_event_callback *ecb)
 	struct audpp_state *audpp = &the_audpp_state;
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_EVENT_CALLBACK_CLIENTS; ++i) {
 		if (ecb == audpp->cb_tbl[i]) {
 			audpp->cb_tbl[i] = NULL;
 			return 0;
 		}
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	mutex_lock(audpp->lock);
+	for (i = 0; i < MAX_EVENT_CALLBACK_CLIENTS; ++i) {
+		if (ecb == audpp->cb_tbl[i]) {
+			audpp->cb_tbl[i] = NULL;
+			mutex_unlock(audpp->lock);
+			return 0;
+		}
+	}
+	mutex_unlock(audpp->lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return -1;
 }
 EXPORT_SYMBOL(audpp_unregister_event_callback);
@@ -213,9 +285,25 @@ static void audpp_broadcast(struct audpp_state *audpp, unsigned id,
 			    uint16_t *msg)
 {
 	unsigned n;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (n = 0; n < AUDPP_CLNT_MAX_COUNT; n++) {
 		if (audpp->func[n])
 			audpp->func[n] (audpp->private[n], id, msg);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if ((id != AUDPP_MSG_PP_DISABLE_FEEDBACK) &&
+		(id != AUDPP_MSG_PP_FEATS_RE_ENABLE)) {
+		for (n = 0; n < AUDPP_CLNT_MAX_COUNT; n++) {
+			if (audpp->func[n])
+				audpp->func[n] (audpp->private[n], id, msg);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	for (n = 0; n < MAX_EVENT_CALLBACK_CLIENTS; ++n)
@@ -245,13 +333,45 @@ static void audpp_handle_pcmdmamiss(struct audpp_state *audpp,
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void audpp_fake_event(struct audpp_state *audpp, int id,
+			     unsigned event, unsigned arg)
+{
+	uint16_t msg[1];
+	msg[0] = arg;
+	audpp->func[id] (audpp->private[id], event, msg);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void audpp_dsp_event(void *data, unsigned id, size_t len,
 			    void (*getevent) (void *ptr, size_t len))
 {
 	struct audpp_state *audpp = data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint16_t msg[8];
 
 	if (id == AUDPP_MSG_AVSYNC_MSG) {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	unsigned long flags;
+	uint16_t msg[8];
+	int cid = 0;
+
+	if (id == AUDPP_MSG_AVSYNC_MSG) {
+		spin_lock_irqsave(&audpp->avsync_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		getevent(audpp->avsync, sizeof(audpp->avsync));
 
 		/* mask off any channels we're not watching to avoid
@@ -260,6 +380,14 @@ static void audpp_dsp_event(void *data, unsigned id, size_t len,
 		 * we next read...
 		 */
 		audpp->avsync[0] &= audpp->avsync_mask;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		spin_unlock_irqrestore(&audpp->avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock_irqrestore(&audpp->avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return;
 	}
 
@@ -286,6 +414,8 @@ static void audpp_dsp_event(void *data, unsigned id, size_t len,
 	case AUDPP_MSG_CFG_MSG:
 		if (msg[0] == AUDPP_MSG_ENA_ENA) {
 			MM_INFO("ENABLE\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 			audpp->enabled = 1;
 			audpp_broadcast(audpp, id, msg);
 		} else if (msg[0] == AUDPP_MSG_ENA_DIS) {
@@ -293,6 +423,36 @@ static void audpp_dsp_event(void *data, unsigned id, size_t len,
 			audpp->enabled = 0;
 			wake_up(&audpp->event_wait);
 			audpp_broadcast(audpp, id, msg);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			if (!audpp->enabled) {
+				audpp->enabled = 1;
+				wake_up(&audpp->event_wait);
+				audpp_broadcast(audpp, id, msg);
+			} else {
+				cid = msg[1];
+				audpp_fake_event(audpp, cid,
+					id, AUDPP_MSG_ENA_ENA);
+			}
+
+		} else if (msg[0] == AUDPP_MSG_ENA_DIS) {
+			if (audpp->open_count == 0) {
+				MM_INFO("DISABLE\n");
+				audpp->enabled = 0;
+				wake_up(&audpp->event_wait);
+				audpp_broadcast(audpp, id, msg);
+			} else {
+				cid = msg[1];
+				audpp_fake_event(audpp, cid,
+					id, AUDPP_MSG_ENA_DIS);
+				audpp->func[cid] = NULL;
+				audpp->private[cid] = NULL;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else {
 			MM_ERR("invalid config msg %d\n", msg[0]);
 		}
@@ -306,6 +466,28 @@ static void audpp_dsp_event(void *data, unsigned id, size_t len,
 	case ADSP_MESSAGE_ID:
 		MM_DBG("Received ADSP event: module enable/disable(audpptask)");
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	case AUDPP_MSG_FEAT_QUERY_DM_DONE:
+		MM_INFO(" RTC ACK --> %x %x %x\n", msg[0],\
+			msg[1], msg[2]);
+		acdb_rtc_set_err(msg[2]);
+		break;
+	case AUDPP_MSG_PP_DISABLE_FEEDBACK:
+		MM_DBG("PP Disable feedback due to mips limitation");
+		audpp_broadcast(audpp, id, msg);
+		break;
+	case AUDPP_MSG_PP_FEATS_RE_ENABLE:
+		MM_DBG("Re-enable the disabled PP features");
+		audpp_broadcast(audpp, id, msg);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		MM_ERR("unhandled msg id %x\n", id);
 	}
@@ -315,6 +497,8 @@ static struct msm_adsp_ops adsp_ops = {
 	.event = audpp_dsp_event,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void audpp_fake_event(struct audpp_state *audpp, int id,
 			     unsigned event, unsigned arg)
 {
@@ -327,6 +511,19 @@ int audpp_enable(int id, audpp_event_func func, void *private)
 {
 	struct audpp_state *audpp = &the_audpp_state;
 	int res = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int audpp_enable(int id, audpp_event_func func, void *private)
+{
+	struct audpp_state *audpp = &the_audpp_state;
+	uint16_t msg[8];
+	int res = 0;
+	int rc;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (id < -1 || id > 4)
 		return -EINVAL;
@@ -357,6 +554,8 @@ int audpp_enable(int id, audpp_event_func func, void *private)
 		LOG(EV_ENABLE, 2);
 		msm_adsp_enable(audpp->mod);
 		audpp_dsp_config(1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 		unsigned long flags;
 		local_irq_save(flags);
@@ -364,6 +563,28 @@ int audpp_enable(int id, audpp_event_func func, void *private)
 			audpp_fake_event(audpp, id,
 					 AUDPP_MSG_CFG_MSG, AUDPP_MSG_ENA_ENA);
 		local_irq_restore(flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		rc = wait_event_timeout(audpp->event_wait,
+					(audpp->enabled == 1),
+					3 * HZ);
+		if (rc == 0)
+			msm_adsp_dump(audpp->mod);
+	} else {
+		if (audpp->enabled) {
+			msg[0] = AUDPP_MSG_ENA_ENA;
+			msg[1] = id;
+			res = msm_adsp_generate_event(audpp, audpp->mod,
+					 AUDPP_MSG_CFG_MSG, sizeof(msg),
+					 sizeof(uint16_t), (void *)msg);
+			if (res < 0)
+				goto out;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	res = 0;
@@ -376,7 +597,15 @@ EXPORT_SYMBOL(audpp_enable);
 void audpp_disable(int id, void *private)
 {
 	struct audpp_state *audpp = &the_audpp_state;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+	uint16_t msg[8];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint16_t msg[8];
+>>>>>>> refs/remotes/origin/cm-11.0
 	int rc;
 
 	if (id < -1 || id > 4)
@@ -392,16 +621,34 @@ void audpp_disable(int id, void *private)
 	if (audpp->private[id] != private)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_save(flags);
 	audpp_fake_event(audpp, id, AUDPP_MSG_CFG_MSG, AUDPP_MSG_ENA_DIS);
 	audpp->func[id] = NULL;
 	audpp->private[id] = NULL;
 	local_irq_restore(flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msg[0] = AUDPP_MSG_ENA_DIS;
+	msg[1] = id;
+	rc = msm_adsp_generate_event(audpp, audpp->mod,
+				 AUDPP_MSG_CFG_MSG, sizeof(msg),
+				 sizeof(uint16_t), (void *)msg);
+	if (rc < 0)
+		goto out;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (--audpp->open_count == 0) {
 		MM_DBG("disable\n");
 		LOG(EV_DISABLE, 2);
 		audpp_dsp_config(0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rc = wait_event_interruptible(audpp->event_wait,
 				(audpp->enabled == 0));
 		if (audpp->enabled == 0)
@@ -409,6 +656,25 @@ void audpp_disable(int id, void *private)
 		else
 			MM_ERR("Didn't receive CFG_MSG DISABLE \
 					message from ADSP\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		rc = wait_event_timeout(audpp->event_wait,
+					(audpp->enabled == 0),
+					3 * HZ);
+		if (audpp->enabled == 0)
+			MM_INFO("Received CFG_MSG_DISABLE from ADSP\n");
+		else {
+			MM_ERR("Didn't receive CFG_MSG DISABLE \
+					message from ADSP\n");
+			if (rc == 0)
+				msm_adsp_dump(audpp->mod);
+		}
+		audpp->enabled = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		msm_adsp_disable(audpp->mod);
 		msm_adsp_put(audpp->mod);
 		audpp->mod = NULL;
@@ -428,13 +694,29 @@ void audpp_avsync(int id, unsigned rate)
 	if (BAD_ID(id))
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_save(flags);
+=======
+	spin_lock_irqsave(&the_audpp_state.avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&the_audpp_state.avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (rate)
 		the_audpp_state.avsync_mask |= (1 << id);
 	else
 		the_audpp_state.avsync_mask &= (~(1 << id));
 	the_audpp_state.avsync[0] &= the_audpp_state.avsync_mask;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_restore(flags);
+=======
+	spin_unlock_irqrestore(&the_audpp_state.avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&the_audpp_state.avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	cmd.cmd_id = AUDPP_CMD_AVSYNC;
 	cmd.object_number = id;
@@ -446,7 +728,17 @@ EXPORT_SYMBOL(audpp_avsync);
 
 unsigned audpp_avsync_sample_count(int id)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint16_t *avsync = the_audpp_state.avsync;
+=======
+	struct audpp_state *audpp = &the_audpp_state;
+	uint16_t *avsync = audpp->avsync;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct audpp_state *audpp = &the_audpp_state;
+	uint16_t *avsync = audpp->avsync;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned val;
 	unsigned long flags;
 	unsigned mask;
@@ -456,12 +748,28 @@ unsigned audpp_avsync_sample_count(int id)
 
 	mask = 1 << id;
 	id = id * AUDPP_AVSYNC_INFO_SIZE + 2;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_save(flags);
+=======
+	spin_lock_irqsave(&audpp->avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&audpp->avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (avsync[0] & mask)
 		val = (avsync[id] << 16) | avsync[id + 1];
 	else
 		val = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_restore(flags);
+=======
+	spin_unlock_irqrestore(&audpp->avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&audpp->avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return val;
 }
@@ -469,7 +777,17 @@ EXPORT_SYMBOL(audpp_avsync_sample_count);
 
 unsigned audpp_avsync_byte_count(int id)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint16_t *avsync = the_audpp_state.avsync;
+=======
+	struct audpp_state *audpp = &the_audpp_state;
+	uint16_t *avsync = audpp->avsync;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct audpp_state *audpp = &the_audpp_state;
+	uint16_t *avsync = audpp->avsync;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned val;
 	unsigned long flags;
 	unsigned mask;
@@ -479,12 +797,28 @@ unsigned audpp_avsync_byte_count(int id)
 
 	mask = 1 << id;
 	id = id * AUDPP_AVSYNC_INFO_SIZE + 5;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_save(flags);
+=======
+	spin_lock_irqsave(&audpp->avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&audpp->avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (avsync[0] & mask)
 		val = (avsync[id] << 16) | avsync[id + 1];
 	else
 		val = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_restore(flags);
+=======
+	spin_unlock_irqrestore(&audpp->avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&audpp->avsync_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return val;
 }
@@ -936,6 +1270,16 @@ static int audpp_probe(struct platform_device *pdev)
 
 	init_waitqueue_head(&audpp->event_wait);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	spin_lock_init(&audpp->avsync_lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&audpp->avsync_lock);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (idx = 0; idx < audpp->dec_database->num_dec; idx++) {
 		audpp->dec_info_table[idx].codec = -1;
 		audpp->dec_info_table[idx].pid = 0;

@@ -17,6 +17,14 @@
  */
 #include <linux/kernel.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/uwb/umc.h>
 
 #include "../../wusbcore/wusbhc.h"
@@ -133,7 +141,11 @@ static int whc_urb_enqueue(struct usb_hcd *usb_hcd, struct urb *urb,
 	default:
 		ret = asl_urb_enqueue(whc, urb, mem_flags);
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -159,7 +171,11 @@ static int whc_urb_dequeue(struct usb_hcd *usb_hcd, struct urb *urb, int status)
 	default:
 		ret = asl_urb_dequeue(whc, urb, status);
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -230,23 +246,37 @@ static struct hc_driver whc_hc_driver = {
 
 	.hub_status_data = wusbhc_rh_status_data,
 	.hub_control = wusbhc_rh_control,
+<<<<<<< HEAD
 	.bus_suspend = wusbhc_rh_suspend,
 	.bus_resume = wusbhc_rh_resume,
+=======
+>>>>>>> refs/remotes/origin/master
 	.start_port_reset = wusbhc_rh_start_port_reset,
 };
 
 static int whc_probe(struct umc_dev *umc)
 {
+<<<<<<< HEAD
 	int ret = -ENOMEM;
 	struct usb_hcd *usb_hcd;
 	struct wusbhc *wusbhc = NULL;
 	struct whc *whc = NULL;
+=======
+	int ret;
+	struct usb_hcd *usb_hcd;
+	struct wusbhc *wusbhc;
+	struct whc *whc;
+>>>>>>> refs/remotes/origin/master
 	struct device *dev = &umc->dev;
 
 	usb_hcd = usb_create_hcd(&whc_hc_driver, dev, "whci");
 	if (usb_hcd == NULL) {
 		dev_err(dev, "unable to create hcd\n");
+<<<<<<< HEAD
 		goto error;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	usb_hcd->wireless = 1;
@@ -294,6 +324,10 @@ static int whc_probe(struct umc_dev *umc)
 		dev_err(dev, "cannot add HCD: %d\n", ret);
 		goto error_usb_add_hcd;
 	}
+<<<<<<< HEAD
+=======
+	device_wakeup_enable(usb_hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 
 	ret = wusbhc_b_create(wusbhc);
 	if (ret) {

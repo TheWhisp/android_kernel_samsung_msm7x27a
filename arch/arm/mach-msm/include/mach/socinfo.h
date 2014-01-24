@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -32,6 +40,8 @@
 #define SOCINFO_VERSION_MINOR(ver) (ver & 0x0000ffff)
 
 #ifdef CONFIG_OF
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define early_machine_is_copper()	\
 	of_flat_dt_is_compatible(of_get_flat_dt_root(), "qcom,msmcopper")
 #define machine_is_copper()		\
@@ -41,6 +51,36 @@
 #define machine_is_copper()		0
 #endif
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define early_machine_is_msm8974()	\
+	of_flat_dt_is_compatible(of_get_flat_dt_root(), "qcom,msm8974")
+#define machine_is_msm8974()		\
+	of_machine_is_compatible("qcom,msm8974")
+#define machine_is_msm8974_sim()		\
+	of_machine_is_compatible("qcom,msm8974-sim")
+#define machine_is_msm8974_rumi()	\
+	of_machine_is_compatible("qcom,msm8974-rumi")
+#define early_machine_is_msm9625()	\
+	of_flat_dt_is_compatible(of_get_flat_dt_root(), "qcom,msm9625")
+#define machine_is_msm9625()		\
+	of_machine_is_compatible("qcom,msm9625")
+#else
+#define early_machine_is_msm8974()	0
+#define machine_is_msm8974()		0
+#define machine_is_msm8974_sim()	0
+#define machine_is_msm8974_rumi()	0
+#define early_machine_is_msm9625()	0
+#define machine_is_msm9625()		0
+#endif
+
+#define PLATFORM_SUBTYPE_SGLTE	6
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 enum msm_cpu {
 	MSM_CPU_UNKNOWN = 0,
 	MSM_CPU_7X01,
@@ -52,25 +92,88 @@ enum msm_cpu {
 	MSM_CPU_8X55,
 	MSM_CPU_8X60,
 	MSM_CPU_8960,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	MSM_CPU_8960AB,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MSM_CPU_8960AB,
+>>>>>>> refs/remotes/origin/cm-11.0
 	MSM_CPU_7X27A,
 	FSM_CPU_9XXX,
 	MSM_CPU_7X25A,
 	MSM_CPU_7X25AA,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	MSM_CPU_8064,
 	MSM_CPU_8930,
 	MSM_CPU_7X27AA,
 	MSM_CPU_9615,
 	MSM_CPU_COPPER,
 	MSM_CPU_8627,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	MSM_CPU_7X25AB,
+	MSM_CPU_8064,
+	MSM_CPU_8930,
+	MSM_CPU_8930AA,
+	MSM_CPU_7X27AA,
+	MSM_CPU_9615,
+	MSM_CPU_8974,
+	MSM_CPU_8627,
+	MSM_CPU_8625,
+	MSM_CPU_9625,
+	MSM_CPU_8625Q,
+};
+
+enum pmic_model {
+	PMIC_MODEL_PM8058	= 13,
+	PMIC_MODEL_PM8028	= 14,
+	PMIC_MODEL_PM8901	= 15,
+	PMIC_MODEL_PM8027	= 16,
+	PMIC_MODEL_ISL_9519	= 17,
+	PMIC_MODEL_PM8921	= 18,
+	PMIC_MODEL_PM8018	= 19,
+	PMIC_MODEL_PM8015	= 20,
+	PMIC_MODEL_PM8014	= 21,
+	PMIC_MODEL_PM8821	= 22,
+	PMIC_MODEL_PM8038	= 23,
+	PMIC_MODEL_PM8922	= 24,
+	PMIC_MODEL_PM8917	= 25,
+	PMIC_MODEL_UNKNOWN	= 0xFFFFFFFF
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 enum msm_cpu socinfo_get_msm_cpu(void);
 uint32_t socinfo_get_id(void);
 uint32_t socinfo_get_version(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+uint32_t socinfo_get_raw_id(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+uint32_t socinfo_get_raw_id(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 char *socinfo_get_build_id(void);
 uint32_t socinfo_get_platform_type(void);
 uint32_t socinfo_get_platform_subtype(void);
 uint32_t socinfo_get_platform_version(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+enum pmic_model socinfo_get_pmic_model(void);
+uint32_t socinfo_get_pmic_die_revision(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum pmic_model socinfo_get_pmic_model(void);
+uint32_t socinfo_get_pmic_die_revision(void);
+>>>>>>> refs/remotes/origin/cm-11.0
 int __init socinfo_init(void) __must_check;
 const int read_msm_cpu_type(void);
 const int get_core_count(void);
@@ -102,7 +205,15 @@ static inline int cpu_is_msm7x25(void)
 
 static inline int cpu_is_msm7x27(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM7X27
+=======
+#if defined(CONFIG_ARCH_MSM7X27) && !defined(CONFIG_ARCH_MSM7X27A)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_ARCH_MSM7X27) && !defined(CONFIG_ARCH_MSM7X27A)
+>>>>>>> refs/remotes/origin/cm-11.0
 	enum msm_cpu cpu = socinfo_get_msm_cpu();
 
 	BUG_ON(cpu == MSM_CPU_UNKNOWN);
@@ -160,6 +271,27 @@ static inline int cpu_is_msm7x25aa(void)
 #endif
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static inline int cpu_is_msm7x25ab(void)
+{
+#ifdef CONFIG_ARCH_MSM7X27A
+	enum msm_cpu cpu = socinfo_get_msm_cpu();
+
+	BUG_ON(cpu == MSM_CPU_UNKNOWN);
+	return cpu == MSM_CPU_7X25AB;
+#else
+	return 0;
+#endif
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int cpu_is_msm7x30(void)
 {
 #ifdef CONFIG_ARCH_MSM7X30
@@ -214,6 +346,24 @@ static inline int cpu_is_msm8960(void)
 #endif
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static inline int cpu_is_msm8960ab(void)
+{
+#ifdef CONFIG_ARCH_MSM8960
+	return read_msm_cpu_type() == MSM_CPU_8960AB;
+#else
+	return 0;
+#endif
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int cpu_is_apq8064(void)
 {
 #ifdef CONFIG_ARCH_APQ8064
@@ -226,8 +376,27 @@ static inline int cpu_is_apq8064(void)
 static inline int cpu_is_msm8930(void)
 {
 #ifdef CONFIG_ARCH_MSM8930
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return (read_msm_cpu_type() == MSM_CPU_8930) ||
 	       (read_msm_cpu_type() == MSM_CPU_8627);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	return read_msm_cpu_type() == MSM_CPU_8930;
+#else
+	return 0;
+#endif
+}
+
+static inline int cpu_is_msm8930aa(void)
+{
+#ifdef CONFIG_ARCH_MSM8930
+	return read_msm_cpu_type() == MSM_CPU_8930AA;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 	return 0;
 #endif
@@ -266,4 +435,38 @@ static inline int cpu_is_msm9615(void)
 	return 0;
 #endif
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+static inline int cpu_is_msm8625(void)
+{
+#ifdef CONFIG_ARCH_MSM8625
+	enum msm_cpu cpu = socinfo_get_msm_cpu();
+
+	BUG_ON(cpu == MSM_CPU_UNKNOWN);
+	return cpu == MSM_CPU_8625;
+#else
+	return 0;
+#endif
+}
+
+static inline int cpu_is_msm8625q(void)
+{
+#ifdef CONFIG_ARCH_MSM8625
+	enum msm_cpu cpu = socinfo_get_msm_cpu();
+
+	BUG_ON(cpu == MSM_CPU_UNKNOWN);
+	return cpu == MSM_CPU_8625Q;
+#else
+	return 0;
+#endif
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

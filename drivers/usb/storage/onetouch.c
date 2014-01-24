@@ -30,7 +30,10 @@
 
 #include <linux/kernel.h>
 #include <linux/input.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/usb/input.h>
@@ -67,9 +70,19 @@ struct usb_onetouch {
 		    vendorName, productName, useProtocol, useTransport, \
 		    initFunction, flags) \
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
+<<<<<<< HEAD
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
+<<<<<<< HEAD
 struct usb_device_id onetouch_usb_ids[] = {
+=======
+static struct usb_device_id onetouch_usb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  .driver_info = (flags) }
+
+static struct usb_device_id onetouch_usb_ids[] = {
+>>>>>>> refs/remotes/origin/master
 #	include "unusual_onetouch.h"
 	{ }		/* Terminating entry */
 };
@@ -195,6 +208,10 @@ static int onetouch_connect_input(struct us_data *ss)
 
 	pipe = usb_rcvintpipe(udev, endpoint->bEndpointAddress);
 	maxp = usb_maxpacket(udev, pipe, usb_pipeout(pipe));
+<<<<<<< HEAD
+=======
+	maxp = min(maxp, ONETOUCH_PKT_LEN);
+>>>>>>> refs/remotes/origin/master
 
 	onetouch = kzalloc(sizeof(struct usb_onetouch), GFP_KERNEL);
 	input_dev = input_allocate_device();
@@ -245,8 +262,12 @@ static int onetouch_connect_input(struct us_data *ss)
 	input_dev->open = usb_onetouch_open;
 	input_dev->close = usb_onetouch_close;
 
+<<<<<<< HEAD
 	usb_fill_int_urb(onetouch->irq, udev, pipe, onetouch->data,
 			 (maxp > 8 ? 8 : maxp),
+=======
+	usb_fill_int_urb(onetouch->irq, udev, pipe, onetouch->data, maxp,
+>>>>>>> refs/remotes/origin/master
 			 usb_onetouch_irq, onetouch, endpoint->bInterval);
 	onetouch->irq->transfer_dma = onetouch->data_dma;
 	onetouch->irq->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
@@ -312,6 +333,8 @@ static struct usb_driver onetouch_driver = {
 	.post_reset =	usb_stor_post_reset,
 	.id_table =	onetouch_usb_ids,
 	.soft_unbind =	1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static int __init onetouch_init(void)
@@ -326,3 +349,14 @@ static void __exit onetouch_exit(void)
 
 module_init(onetouch_init);
 module_exit(onetouch_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.no_dynamic_id = 1,
+};
+
+module_usb_driver(onetouch_driver);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

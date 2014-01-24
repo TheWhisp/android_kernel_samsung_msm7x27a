@@ -36,6 +36,13 @@ struct snd_usb_audio {
 	struct snd_card *card;
 	struct usb_interface *pm_intf;
 	u32 usb_id;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct mutex mutex;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct rw_semaphore shutdown_rwsem;
 	unsigned int shutdown:1;
 	unsigned int probing:1;
@@ -46,6 +53,10 @@ struct snd_usb_audio {
 	int num_suspended_intf;
 
 	struct list_head pcm_list;	/* list of pcm streams */
+<<<<<<< HEAD
+=======
+	struct list_head ep_list;	/* list of audio-related endpoints */
+>>>>>>> refs/remotes/origin/master
 	int pcm_devs;
 
 	struct list_head midi_list;	/* list of midi interfaces */
@@ -53,8 +64,12 @@ struct snd_usb_audio {
 	struct list_head mixer_list;	/* list of mixer interfaces */
 
 	int setup;			/* from the 'device_setup' module param */
+<<<<<<< HEAD
 	int nrpacks;			/* from the 'nrpacks' module param */
 	int async_unlink;		/* from the 'async_unlink' module param */
+=======
+	bool autoclock;			/* from the 'autoclock' module param */
+>>>>>>> refs/remotes/origin/master
 
 	struct usb_host_interface *ctrl_intf;	/* the audio control interface */
 };
@@ -70,9 +85,17 @@ struct snd_usb_audio {
 enum quirk_type {
 	QUIRK_IGNORE_INTERFACE,
 	QUIRK_COMPOSITE,
+<<<<<<< HEAD
 	QUIRK_MIDI_STANDARD_INTERFACE,
 	QUIRK_MIDI_FIXED_ENDPOINT,
 	QUIRK_MIDI_YAMAHA,
+=======
+	QUIRK_AUTODETECT,
+	QUIRK_MIDI_STANDARD_INTERFACE,
+	QUIRK_MIDI_FIXED_ENDPOINT,
+	QUIRK_MIDI_YAMAHA,
+	QUIRK_MIDI_ROLAND,
+>>>>>>> refs/remotes/origin/master
 	QUIRK_MIDI_MIDIMAN,
 	QUIRK_MIDI_NOVATION,
 	QUIRK_MIDI_RAW_BYTES,
@@ -80,6 +103,14 @@ enum quirk_type {
 	QUIRK_MIDI_CME,
 	QUIRK_MIDI_AKAI,
 	QUIRK_MIDI_US122L,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	QUIRK_MIDI_FTDI,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	QUIRK_MIDI_FTDI,
+>>>>>>> refs/remotes/origin/master
 	QUIRK_AUDIO_STANDARD_INTERFACE,
 	QUIRK_AUDIO_FIXED_ENDPOINT,
 	QUIRK_AUDIO_EDIROL_UAXX,

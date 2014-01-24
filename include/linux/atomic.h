@@ -1,8 +1,50 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* Atomic operations usable in machine independent code */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Atomic operations usable in machine independent code */
+>>>>>>> refs/remotes/origin/master
 #ifndef _LINUX_ATOMIC_H
 #define _LINUX_ATOMIC_H
 #include <asm/atomic.h>
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * atomic_add_unless - add unless the number is already a given value
+ * @v: pointer of type atomic_t
+ * @a: the amount to add to v...
+ * @u: ...unless v is equal to u.
+ *
+ * Atomically adds @a to @v, so long as @v was not already @u.
+ * Returns non-zero if @v was not @u, and zero otherwise.
+ */
+static inline int atomic_add_unless(atomic_t *v, int a, int u)
+{
+	return __atomic_add_unless(v, a, u) != u;
+}
+
+/**
+ * atomic_inc_not_zero - increment unless the number is zero
+ * @v: pointer of type atomic_t
+ *
+ * Atomically increments @v by 1, so long as @v is non-zero.
+ * Returns non-zero if @v was non-zero, and zero otherwise.
+ */
+#ifndef atomic_inc_not_zero
+#define atomic_inc_not_zero(v)		atomic_add_unless((v), 1, 0)
+#endif
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * atomic_inc_not_zero_hint - increment if not null
  * @v: pointer of type atomic_t
  * @hint: probable value of the atomic before the increment
@@ -34,6 +76,66 @@ static inline int atomic_inc_not_zero_hint(atomic_t *v, int hint)
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifndef atomic_inc_unless_negative
+static inline int atomic_inc_unless_negative(atomic_t *p)
+{
+	int v, v1;
+	for (v = 0; v >= 0; v = v1) {
+		v1 = atomic_cmpxchg(p, v, v + 1);
+		if (likely(v1 == v))
+			return 1;
+	}
+	return 0;
+}
+#endif
+
+#ifndef atomic_dec_unless_positive
+static inline int atomic_dec_unless_positive(atomic_t *p)
+{
+	int v, v1;
+	for (v = 0; v <= 0; v = v1) {
+		v1 = atomic_cmpxchg(p, v, v - 1);
+		if (likely(v1 == v))
+			return 1;
+	}
+	return 0;
+}
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * atomic_dec_if_positive - decrement by 1 if old value positive
+ * @v: pointer of type atomic_t
+ *
+ * The function returns the old value of *v minus 1, even if
+ * the atomic variable, v, was not decremented.
+ */
+#ifndef atomic_dec_if_positive
+static inline int atomic_dec_if_positive(atomic_t *v)
+{
+	int c, old, dec;
+	c = atomic_read(v);
+	for (;;) {
+		dec = c - 1;
+		if (unlikely(dec < 0))
+			break;
+		old = atomic_cmpxchg((v), c, dec);
+		if (likely(old == c))
+			break;
+		c = old;
+	}
+	return dec;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_ARCH_HAS_ATOMIC_OR
 static inline void atomic_or(int i, atomic_t *v)
 {
@@ -47,4 +149,17 @@ static inline void atomic_or(int i, atomic_t *v)
 }
 #endif /* #ifndef CONFIG_ARCH_HAS_ATOMIC_OR */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm-generic/atomic-long.h>
+#ifdef CONFIG_GENERIC_ATOMIC64
+#include <asm-generic/atomic64.h>
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_ATOMIC_H */

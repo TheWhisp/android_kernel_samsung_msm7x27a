@@ -15,7 +15,11 @@
 sys_call_table:
 	.long	sys_restart_syscall
 	.long	sys_exit
+<<<<<<< HEAD
 	.long	__sys_fork
+=======
+	.long	sys_fork
+>>>>>>> refs/remotes/origin/master
 	.long	sys_read
 	.long	sys_write
 	.long	sys_open		/* 5 */
@@ -24,7 +28,11 @@ sys_call_table:
 	.long	sys_creat
 	.long	sys_link
 	.long	sys_unlink		/* 10 */
+<<<<<<< HEAD
 	.long	__sys_execve
+=======
+	.long	sys_execve
+>>>>>>> refs/remotes/origin/master
 	.long	sys_chdir
 	.long	sys_time
 	.long	sys_mknod
@@ -57,7 +65,11 @@ sys_call_table:
 	.long	sys_dup
 	.long	sys_pipe
 	.long	sys_times
+<<<<<<< HEAD
 	.long	__sys_clone
+=======
+	.long	sys_clone
+>>>>>>> refs/remotes/origin/master
 	.long	sys_brk			/* 45 */
 	.long	sys_setgid
 	.long	sys_getgid
@@ -115,7 +127,11 @@ sys_call_table:
 	.long	sys_statfs
 	.long	sys_fstatfs		/* 100 */
 	.long	sys_vhangup
+<<<<<<< HEAD
 	.long	__sys_sigaltstack
+=======
+	.long	sys_sigaltstack
+>>>>>>> refs/remotes/origin/master
 	.long	sys_syslog
 	.long	sys_setitimer
 	.long	sys_getitimer		/* 105 */
@@ -127,7 +143,11 @@ sys_call_table:
 	.long	sys_newuname
 	.long	sys_adjtimex
 	.long	sys_mprotect
+<<<<<<< HEAD
 	.long	__sys_vfork
+=======
+	.long	sys_vfork
+>>>>>>> refs/remotes/origin/master
 	.long	sys_init_module		/* 115 */
 	.long	sys_delete_module
 	.long	sys_quotactl
@@ -158,7 +178,15 @@ sys_call_table:
 	.long	sys_sched_rr_get_interval
 	.long	sys_nanosleep
 	.long	sys_poll
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.long	sys_nfsservctl		/* 145 */
+=======
+	.long	sys_ni_syscall		/* 145 was nfsservctl */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long	sys_ni_syscall		/* 145 was nfsservctl */
+>>>>>>> refs/remotes/origin/master
 	.long	sys_setresgid
 	.long	sys_getresgid
 	.long	sys_prctl

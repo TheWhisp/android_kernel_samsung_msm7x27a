@@ -3,6 +3,10 @@
 
 #include <linux/list.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <asm-generic/module.h>
+>>>>>>> refs/remotes/origin/master
 
 struct mod_arch_specific {
 	/* Data Bus Error exception tables */
@@ -13,11 +17,14 @@ struct mod_arch_specific {
 
 typedef uint8_t Elf64_Byte;		/* Type for a 8-bit quantity. */
 
+<<<<<<< HEAD
 #define Elf_Shdr	Elf32_Shdr
 #define Elf_Sym		Elf32_Sym
 #define Elf_Ehdr	Elf32_Ehdr
 #define Elf_Addr	Elf32_Addr
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Given an address, look for it in the exception tables. */
 #ifdef CONFIG_MODULES
 const struct exception_table_entry *search_module_dbetables(unsigned long addr);

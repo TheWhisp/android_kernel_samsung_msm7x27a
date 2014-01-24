@@ -30,6 +30,7 @@
 #ifndef __INT_H__
 #define __INT_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 #include "device.h"
 
@@ -67,6 +68,40 @@ SINTData, *PSINTData;
 /*---------------------  Export Functions  --------------------------*/
 
 void INTvWorkItem(void *Context);
+<<<<<<< HEAD
 int INTnsProcessData(PSDevice pDevice);
+=======
+void INTnsProcessData(PSDevice pDevice);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "device.h"
+
+typedef struct tagSINTData {
+	u8 byTSR0;
+	u8 byPkt0;
+	u16 wTime0;
+	u8 byTSR1;
+	u8 byPkt1;
+	u16 wTime1;
+	u8 byTSR2;
+	u8 byPkt2;
+	u16 wTime2;
+	u8 byTSR3;
+	u8 byPkt3;
+	u16 wTime3;
+	u64 qwTSF;
+	u8 byISR0;
+	u8 byISR1;
+	u8 byRTSSuccess;
+	u8 byRTSFail;
+	u8 byACKFail;
+	u8 byFCSErr;
+	u8 abySW[2];
+} __attribute__ ((__packed__))
+SINTData, *PSINTData;
+
+void INTvWorkItem(struct vnt_private *);
+void INTnsProcessData(struct vnt_private *);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __INT_H__ */

@@ -1,12 +1,17 @@
 #ifndef _M68K_SIGNAL_H
 #define _M68K_SIGNAL_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 /* Avoid too many header ordering problems.  */
 struct siginfo;
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/signal.h>
+
+>>>>>>> refs/remotes/origin/master
 /* Most things should be clean enough to redefine this at will, if care
    is taken to make libc match.  */
 
@@ -20,6 +25,7 @@ typedef struct {
 	unsigned long sig[_NSIG_WORDS];
 } sigset_t;
 
+<<<<<<< HEAD
 #else
 /* Here we must cater to libcs that poke about in kernel headers.  */
 
@@ -151,7 +157,18 @@ typedef struct sigaltstack {
 #ifdef __KERNEL__
 #include <asm/sigcontext.h>
 
+<<<<<<< HEAD
 #ifndef __uClinux__
+=======
+#ifndef CONFIG_CPU_HAS_NO_BITFIELDS
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __ARCH_HAS_SA_RESTORER
+
+#include <asm/sigcontext.h>
+
+#ifndef CONFIG_CPU_HAS_NO_BITFIELDS
+>>>>>>> refs/remotes/origin/master
 #define __HAVE_ARCH_SIG_BITOPS
 
 static inline void sigaddset(sigset_t *set, int _sig)
@@ -200,6 +217,8 @@ static inline int sigfindinword(unsigned long word)
 	return word ^ 31;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct pt_regs;
 extern void ptrace_signal_deliver(struct pt_regs *regs, void *cookie);
 
@@ -211,4 +230,25 @@ extern void ptrace_signal_deliver(struct pt_regs *regs, void *cookie);
 #endif /* __uClinux__ */
 #endif /* __KERNEL__ */
 
+=======
+#endif /* !CONFIG_CPU_HAS_NO_BITFIELDS */
+
+#ifdef __uClinux__
+#define ptrace_signal_deliver(regs, cookie) do { } while (0)
+#else
+struct pt_regs;
+extern void ptrace_signal_deliver(struct pt_regs *regs, void *cookie);
+#endif /* __uClinux__ */
+
+#endif /* __KERNEL__ */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* !CONFIG_CPU_HAS_NO_BITFIELDS */
+
+#ifndef __uClinux__
+extern void ptrace_signal_deliver(void);
+#define ptrace_signal_deliver ptrace_signal_deliver
+#endif /* __uClinux__ */
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _M68K_SIGNAL_H */

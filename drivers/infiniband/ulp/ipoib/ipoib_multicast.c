@@ -34,6 +34,14 @@
 
 #include <linux/skbuff.h>
 #include <linux/rtnetlink.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ip.h>
 #include <linux/in.h>
 #include <linux/igmp.h>
@@ -68,13 +76,17 @@ struct ipoib_mcast_iter {
 static void ipoib_mcast_free(struct ipoib_mcast *mcast)
 {
 	struct net_device *dev = mcast->dev;
+<<<<<<< HEAD
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 	struct ipoib_neigh *neigh, *tmp;
+=======
+>>>>>>> refs/remotes/origin/master
 	int tx_dropped = 0;
 
 	ipoib_dbg_mcast(netdev_priv(dev), "deleting multicast group %pI6\n",
 			mcast->mcmember.mgid.raw);
 
+<<<<<<< HEAD
 	spin_lock_irq(&priv->lock);
 
 	list_for_each_entry_safe(neigh, tmp, &mcast->neigh_list, list) {
@@ -90,6 +102,10 @@ static void ipoib_mcast_free(struct ipoib_mcast *mcast)
 	}
 
 	spin_unlock_irq(&priv->lock);
+=======
+	/* remove all neigh connected to this mcast */
+	ipoib_del_neighs_by_gid(dev, mcast->mcmember.mgid.raw);
+>>>>>>> refs/remotes/origin/master
 
 	if (mcast->ah)
 		ipoib_put_ah(mcast->ah);
@@ -248,8 +264,22 @@ static int ipoib_mcast_join_finish(struct ipoib_mcast *mcast,
 		av.grh.dgid = mcast->mcmember.mgid;
 
 		ah = ipoib_create_ah(dev, priv->pd, &av);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!ah) {
 			ipoib_warn(priv, "ib_address_create failed\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (IS_ERR(ah)) {
+			ipoib_warn(priv, "ib_address_create failed %ld\n",
+				-PTR_ERR(ah));
+			/* use original error */
+			return PTR_ERR(ah);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			spin_lock_irq(&priv->lock);
 			mcast->ah = ah;
@@ -271,7 +301,13 @@ static int ipoib_mcast_join_finish(struct ipoib_mcast *mcast,
 		netif_tx_unlock_bh(dev);
 
 		skb->dev = dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dev_queue_xmit(skb))
 			ipoib_warn(priv, "dev_queue_xmit failed to requeue packet\n");
 
@@ -398,8 +434,15 @@ static int ipoib_mcast_join_complete(int status,
 			mcast->mcmember.mgid.raw, status);
 
 	/* We trap for port events ourselves. */
+<<<<<<< HEAD
 	if (status == -ENETRESET)
 		return 0;
+=======
+	if (status == -ENETRESET) {
+		status = 0;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (!status)
 		status = ipoib_mcast_join_finish(mcast, &multicast->rec);
@@ -419,7 +462,12 @@ static int ipoib_mcast_join_complete(int status,
 		if (mcast == priv->broadcast)
 			queue_work(ipoib_workqueue, &priv->carrier_on_task);
 
+<<<<<<< HEAD
 		return 0;
+=======
+		status = 0;
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (mcast->logcount++ < 20) {
@@ -446,7 +494,12 @@ static int ipoib_mcast_join_complete(int status,
 				   mcast->backoff * HZ);
 	spin_unlock_irq(&priv->lock);
 	mutex_unlock(&mcast_mutex);
+<<<<<<< HEAD
 
+=======
+out:
+	complete(&mcast->done);
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -496,11 +549,21 @@ static void ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast,
 	}
 
 	set_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
+<<<<<<< HEAD
+=======
+	init_completion(&mcast->done);
+	set_bit(IPOIB_MCAST_JOIN_STARTED, &mcast->flags);
+
+>>>>>>> refs/remotes/origin/master
 	mcast->mc = ib_sa_join_multicast(&ipoib_sa_client, priv->ca, priv->port,
 					 &rec, comp_mask, GFP_KERNEL,
 					 ipoib_mcast_join_complete, mcast);
 	if (IS_ERR(mcast->mc)) {
 		clear_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
+<<<<<<< HEAD
+=======
+		complete(&mcast->done);
+>>>>>>> refs/remotes/origin/master
 		ret = PTR_ERR(mcast->mc);
 		ipoib_warn(priv, "ib_sa_join_multicast failed, status %d\n", ret);
 
@@ -522,10 +585,24 @@ void ipoib_mcast_join_task(struct work_struct *work)
 	struct ipoib_dev_priv *priv =
 		container_of(work, struct ipoib_dev_priv, mcast_task.work);
 	struct net_device *dev = priv->dev;
+<<<<<<< HEAD
+=======
+	struct ib_port_attr port_attr;
+>>>>>>> refs/remotes/origin/master
 
 	if (!test_bit(IPOIB_MCAST_RUN, &priv->flags))
 		return;
 
+<<<<<<< HEAD
+=======
+	if (ib_query_port(priv->ca, priv->port, &port_attr) ||
+	    port_attr.state != IB_PORT_ACTIVE) {
+		ipoib_dbg(priv, "port state is not ACTIVE (state = %d) suspending join task\n",
+			  port_attr.state);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (ib_query_gid(priv->ca, priv->port, 0, &priv->local_gid))
 		ipoib_warn(priv, "ib_query_gid() failed\n");
 	else
@@ -653,11 +730,19 @@ static int ipoib_mcast_leave(struct net_device *dev, struct ipoib_mcast *mcast)
 	return 0;
 }
 
+<<<<<<< HEAD
 void ipoib_mcast_send(struct net_device *dev, void *mgid, struct sk_buff *skb)
+=======
+void ipoib_mcast_send(struct net_device *dev, u8 *daddr, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 	struct ipoib_mcast *mcast;
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	void *mgid = daddr + 4;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&priv->lock, flags);
 
@@ -713,25 +798,46 @@ void ipoib_mcast_send(struct net_device *dev, void *mgid, struct sk_buff *skb)
 
 out:
 	if (mcast && mcast->ah) {
+<<<<<<< HEAD
 		struct dst_entry *dst = skb_dst(skb);
 		struct neighbour *n = NULL;
 
 		rcu_read_lock();
 		if (dst)
+<<<<<<< HEAD
 			n = dst_get_neighbour(dst);
+=======
+			n = dst_get_neighbour_noref(dst);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (n && !*to_ipoib_neigh(n)) {
 			struct ipoib_neigh *neigh = ipoib_neigh_alloc(n,
 								      skb->dev);
 
+=======
+		struct ipoib_neigh *neigh;
+
+		spin_unlock_irqrestore(&priv->lock, flags);
+		neigh = ipoib_neigh_get(dev, daddr);
+		spin_lock_irqsave(&priv->lock, flags);
+		if (!neigh) {
+			neigh = ipoib_neigh_alloc(daddr, dev);
+>>>>>>> refs/remotes/origin/master
 			if (neigh) {
 				kref_get(&mcast->ah->ref);
 				neigh->ah	= mcast->ah;
 				list_add_tail(&neigh->list, &mcast->neigh_list);
 			}
 		}
+<<<<<<< HEAD
 		rcu_read_unlock();
 		spin_unlock_irqrestore(&priv->lock, flags);
 		ipoib_send(dev, skb, mcast->ah, IB_MULTICAST_QPN);
+=======
+		spin_unlock_irqrestore(&priv->lock, flags);
+		ipoib_send(dev, skb, mcast->ah, IB_MULTICAST_QPN);
+		if (neigh)
+			ipoib_neigh_put(neigh);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -764,6 +870,14 @@ void ipoib_mcast_dev_flush(struct net_device *dev)
 
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
+=======
+	/* seperate between the wait to the leave*/
+	list_for_each_entry_safe(mcast, tmcast, &remove_list, list)
+		if (test_bit(IPOIB_MCAST_JOIN_STARTED, &mcast->flags))
+			wait_for_completion(&mcast->done);
+
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(mcast, tmcast, &remove_list, list) {
 		ipoib_mcast_leave(dev, mcast);
 		ipoib_mcast_free(mcast);

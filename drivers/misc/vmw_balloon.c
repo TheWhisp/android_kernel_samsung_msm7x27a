@@ -45,7 +45,15 @@
 
 MODULE_AUTHOR("VMware, Inc.");
 MODULE_DESCRIPTION("VMware Memory Control (Balloon) Driver");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_VERSION("1.2.1.2-k");
+=======
+MODULE_VERSION("1.2.1.3-k");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_VERSION("1.2.1.3-k");
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("dmi:*:svnVMware*:*");
 MODULE_ALIAS("vmware_vmmemctl");
 MODULE_LICENSE("GPL");
@@ -133,7 +141,11 @@ MODULE_LICENSE("GPL");
 #define VMWARE_BALLOON_CMD(cmd, data, result)		\
 ({							\
 	unsigned long __stat, __dummy1, __dummy2;	\
+<<<<<<< HEAD
 	__asm__ __volatile__ ("inl (%%dx)" :		\
+=======
+	__asm__ __volatile__ ("inl %%dx" :		\
+>>>>>>> refs/remotes/origin/master
 		"=a"(__stat),				\
 		"=c"(__dummy1),				\
 		"=d"(__dummy2),				\
@@ -151,7 +163,15 @@ MODULE_LICENSE("GPL");
 struct vmballoon_stats {
 	unsigned int timer;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* allocation statustics */
+=======
+	/* allocation statistics */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* allocation statistics */
+>>>>>>> refs/remotes/origin/master
 	unsigned int alloc;
 	unsigned int alloc_fail;
 	unsigned int sleep_alloc;
@@ -215,7 +235,13 @@ struct vmballoon {
 };
 
 static struct vmballoon balloon;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct workqueue_struct *vmballoon_wq;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Send "start" command to the host, communicating supported version
@@ -315,7 +341,15 @@ static bool vmballoon_send_get_target(struct vmballoon *b, u32 *new_target)
  * fear that guest will need it. Host may reject some pages, we need to
  * check the return value and maybe submit a different page.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static bool vmballoon_send_lock_page(struct vmballoon *b, unsigned long pfn,
+=======
+static int vmballoon_send_lock_page(struct vmballoon *b, unsigned long pfn,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int vmballoon_send_lock_page(struct vmballoon *b, unsigned long pfn,
+>>>>>>> refs/remotes/origin/master
 				     unsigned int *hv_status)
 {
 	unsigned long status, dummy;
@@ -323,17 +357,39 @@ static bool vmballoon_send_lock_page(struct vmballoon *b, unsigned long pfn,
 
 	pfn32 = (u32)pfn;
 	if (pfn32 != pfn)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return false;
+=======
+		return -1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -1;
+>>>>>>> refs/remotes/origin/master
 
 	STATS_INC(b->stats.lock);
 
 	*hv_status = status = VMWARE_BALLOON_CMD(LOCK, pfn, dummy);
 	if (vmballoon_check_status(b, status))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return true;
 
 	pr_debug("%s - ppn %lx, hv returns %ld\n", __func__, pfn, status);
 	STATS_INC(b->stats.lock_fail);
 	return false;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		return 0;
+
+	pr_debug("%s - ppn %lx, hv returns %ld\n", __func__, pfn, status);
+	STATS_INC(b->stats.lock_fail);
+	return 1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -412,7 +468,17 @@ static int vmballoon_reserve_page(struct vmballoon *b, bool can_sleep)
 	struct page *page;
 	gfp_t flags;
 	unsigned int hv_status;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bool locked = false;
+=======
+	int locked;
+	flags = can_sleep ? VMW_PAGE_ALLOC_CANSLEEP : VMW_PAGE_ALLOC_NOSLEEP;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int locked;
+	flags = can_sleep ? VMW_PAGE_ALLOC_CANSLEEP : VMW_PAGE_ALLOC_NOSLEEP;
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		if (!can_sleep)
@@ -420,7 +486,13 @@ static int vmballoon_reserve_page(struct vmballoon *b, bool can_sleep)
 		else
 			STATS_INC(b->stats.sleep_alloc);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		flags = can_sleep ? VMW_PAGE_ALLOC_CANSLEEP : VMW_PAGE_ALLOC_NOSLEEP;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		page = alloc_page(flags);
 		if (!page) {
 			if (!can_sleep)
@@ -432,7 +504,15 @@ static int vmballoon_reserve_page(struct vmballoon *b, bool can_sleep)
 
 		/* inform monitor */
 		locked = vmballoon_send_lock_page(b, page_to_pfn(page), &hv_status);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!locked) {
+=======
+		if (locked > 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (locked > 0) {
+>>>>>>> refs/remotes/origin/master
 			STATS_INC(b->stats.refused_alloc);
 
 			if (hv_status == VMW_BALLOON_ERROR_RESET ||
@@ -450,7 +530,15 @@ static int vmballoon_reserve_page(struct vmballoon *b, bool can_sleep)
 			if (++b->n_refused_pages >= VMW_BALLOON_MAX_REFUSED)
 				return -EIO;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} while (!locked);
+=======
+	} while (locked != 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} while (locked != 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* track allocated page */
 	list_add(&page->lru, &b->pages);
@@ -674,7 +762,22 @@ static void vmballoon_work(struct work_struct *work)
 			vmballoon_deflate(b);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	queue_delayed_work(vmballoon_wq, dwork, round_jiffies_relative(HZ));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * We are using a freezable workqueue so that balloon operations are
+	 * stopped while the system transitions to/from sleep/hibernation.
+	 */
+	queue_delayed_work(system_freezable_wq,
+			   dwork, round_jiffies_relative(HZ));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -785,12 +888,18 @@ static int __init vmballoon_init(void)
 	if (x86_hyper != &x86_hyper_vmware)
 		return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vmballoon_wq = create_freezable_workqueue("vmmemctl");
 	if (!vmballoon_wq) {
 		pr_err("failed to create workqueue\n");
 		return -ENOMEM;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&balloon.pages);
 	INIT_LIST_HEAD(&balloon.refused_pages);
 
@@ -805,18 +914,36 @@ static int __init vmballoon_init(void)
 	 */
 	if (!vmballoon_send_start(&balloon)) {
 		pr_err("failed to send start command to the host\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = -EIO;
 		goto fail;
+=======
+		return -EIO;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EIO;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!vmballoon_send_guest_id(&balloon)) {
 		pr_err("failed to send guest ID to the host\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = -EIO;
 		goto fail;
+=======
+		return -EIO;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EIO;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	error = vmballoon_debugfs_init(&balloon);
 	if (error)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto fail;
 
 	queue_delayed_work(vmballoon_wq, &balloon.dwork, 0);
@@ -826,13 +953,31 @@ static int __init vmballoon_init(void)
 fail:
 	destroy_workqueue(vmballoon_wq);
 	return error;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		return error;
+
+	queue_delayed_work(system_freezable_wq, &balloon.dwork, 0);
+
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 module_init(vmballoon_init);
 
 static void __exit vmballoon_exit(void)
 {
 	cancel_delayed_work_sync(&balloon.dwork);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	destroy_workqueue(vmballoon_wq);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	vmballoon_debugfs_exit(&balloon);
 

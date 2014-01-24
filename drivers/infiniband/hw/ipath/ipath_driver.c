@@ -41,6 +41,14 @@
 #include <linux/vmalloc.h>
 #include <linux/bitmap.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ipath_kernel.h"
 #include "ipath_verbs.h"
@@ -126,9 +134,14 @@ const char *ipath_ibcstatus_str[] = {
 	"LTState1C", "LTState1D", "LTState1E", "LTState1F"
 };
 
+<<<<<<< HEAD
 static void __devexit ipath_remove_one(struct pci_dev *);
 static int __devinit ipath_init_one(struct pci_dev *,
 				    const struct pci_device_id *);
+=======
+static void ipath_remove_one(struct pci_dev *);
+static int ipath_init_one(struct pci_dev *, const struct pci_device_id *);
+>>>>>>> refs/remotes/origin/master
 
 /* Only needed for registration, nothing else needs this info */
 #define PCI_VENDOR_ID_PATHSCALE 0x1fc1
@@ -147,7 +160,11 @@ MODULE_DEVICE_TABLE(pci, ipath_pci_tbl);
 static struct pci_driver ipath_driver = {
 	.name = IPATH_DRV_NAME,
 	.probe = ipath_init_one,
+<<<<<<< HEAD
 	.remove = __devexit_p(ipath_remove_one),
+=======
+	.remove = ipath_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.id_table = ipath_pci_tbl,
 	.driver = {
 		.groups = ipath_driver_attr_groups,
@@ -194,11 +211,14 @@ static struct ipath_devdata *ipath_alloc_devdata(struct pci_dev *pdev)
 	struct ipath_devdata *dd;
 	int ret;
 
+<<<<<<< HEAD
 	if (!idr_pre_get(&unit_table, GFP_KERNEL)) {
 		dd = ERR_PTR(-ENOMEM);
 		goto bail;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	dd = vzalloc(sizeof(*dd));
 	if (!dd) {
 		dd = ERR_PTR(-ENOMEM);
@@ -206,9 +226,16 @@ static struct ipath_devdata *ipath_alloc_devdata(struct pci_dev *pdev)
 	}
 	dd->ipath_unit = -1;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&ipath_devs_lock, flags);
 
 	ret = idr_get_new(&unit_table, dd, &dd->ipath_unit);
+=======
+	idr_preload(GFP_KERNEL);
+	spin_lock_irqsave(&ipath_devs_lock, flags);
+
+	ret = idr_alloc(&unit_table, dd, 0, 0, GFP_NOWAIT);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		printk(KERN_ERR IPATH_DRV_NAME
 		       ": Could not allocate unit ID: error %d\n", -ret);
@@ -216,6 +243,10 @@ static struct ipath_devdata *ipath_alloc_devdata(struct pci_dev *pdev)
 		dd = ERR_PTR(ret);
 		goto bail_unlock;
 	}
+<<<<<<< HEAD
+=======
+	dd->ipath_unit = ret;
+>>>>>>> refs/remotes/origin/master
 
 	dd->pcidev = pdev;
 	pci_set_drvdata(pdev, dd);
@@ -224,7 +255,11 @@ static struct ipath_devdata *ipath_alloc_devdata(struct pci_dev *pdev)
 
 bail_unlock:
 	spin_unlock_irqrestore(&ipath_devs_lock, flags);
+<<<<<<< HEAD
 
+=======
+	idr_preload_end();
+>>>>>>> refs/remotes/origin/master
 bail:
 	return dd;
 }
@@ -391,8 +426,12 @@ done:
 
 static void cleanup_device(struct ipath_devdata *dd);
 
+<<<<<<< HEAD
 static int __devinit ipath_init_one(struct pci_dev *pdev,
 				    const struct pci_device_id *ent)
+=======
+static int ipath_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret, len, j;
 	struct ipath_devdata *dd;
@@ -736,7 +775,11 @@ static void cleanup_device(struct ipath_devdata *dd)
 	kfree(tmp);
 }
 
+<<<<<<< HEAD
 static void __devexit ipath_remove_one(struct pci_dev *pdev)
+=======
+static void ipath_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipath_devdata *dd = pci_get_drvdata(pdev);
 
@@ -2504,11 +2547,14 @@ static int __init infinipath_init(void)
 	 * the PCI subsystem.
 	 */
 	idr_init(&unit_table);
+<<<<<<< HEAD
 	if (!idr_pre_get(&unit_table, GFP_KERNEL)) {
 		printk(KERN_ERR IPATH_DRV_NAME ": idr_pre_get() failed\n");
 		ret = -ENOMEM;
 		goto bail;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = pci_register_driver(&ipath_driver);
 	if (ret < 0) {

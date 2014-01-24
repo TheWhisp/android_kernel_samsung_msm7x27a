@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 #config BUBINGA
 #	bool "Bubinga"
 #	depends on 40x
@@ -14,6 +16,10 @@
 #	help
 #	  This option enables support for the CPCI405 board.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config ACADIA
 	bool "Acadia"
 	depends on 40x
@@ -32,6 +38,8 @@ config EP405
 	help
 	  This option enables support for the EP405/EP405PC boards.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config HCU4
 	bool "Hcu4"
 	depends on 40x
@@ -40,11 +48,18 @@ config HCU4
 	help
 	  This option enables support for the Nestal Maschinen HCU4 board.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config HOTFOOT
         bool "Hotfoot"
 	depends on 40x
 	default n
+<<<<<<< HEAD
 	select 405EP
+=======
+>>>>>>> refs/remotes/origin/master
 	select PPC40x_SIMPLE
 	select PCI
         help
@@ -73,6 +88,8 @@ config MAKALU
 	help
 	  This option enables support for the AMCC PPC405EX board.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #config SYCAMORE
 #	bool "Sycamore"
 #	depends on 40x
@@ -81,6 +98,10 @@ config MAKALU
 #	help
 #	  This option enables support for the IBM PPC405GPr evaluation board.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config WALNUT
 	bool "Walnut"
 	depends on 40x
@@ -108,6 +129,25 @@ config XILINX_VIRTEX_GENERIC_BOARD
 	  Most Virtex designs should use this unless it needs to do some
 	  special configuration at board probe time.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config OBS600
+	bool "OpenBlockS 600"
+	depends on 40x
+	default n
+	select 405EX
+	select PPC40x_SIMPLE
+	help
+	  This option enables support for PlatHome OpenBlockS 600 server
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config PPC40x_SIMPLE
 	bool "Simple PowerPC 40x board support"
 	depends on 40x
@@ -115,11 +155,17 @@ config PPC40x_SIMPLE
 	help
 	  This option enables the simple PowerPC 40x platform support.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 # 40x specific CPU modules, selected based on the board above.
 config NP405H
 	bool
 	#depends on ASH
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # OAK doesn't exist but wanted to keep this around for any future 403GCX boards
 config 403GCX
 	bool
@@ -130,13 +176,19 @@ config 405GP
 	bool
 	select IBM405_ERR77
 	select IBM405_ERR51
+<<<<<<< HEAD
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_ZMII
+=======
+	select IBM_EMAC_ZMII
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config 405EP
 	bool
 
 config 405EX
 	bool
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_EMAC4
 	select IBM_NEW_EMAC_RGMII
 
@@ -145,9 +197,28 @@ config 405EZ
 	select IBM_NEW_EMAC_NO_FLOW_CTRL
 	select IBM_NEW_EMAC_MAL_CLR_ICINTSTAT
 	select IBM_NEW_EMAC_MAL_COMMON_ERR
+=======
+=======
+	select IBM_EMAC_ZMII
+
+config 405EX
+	bool
+>>>>>>> refs/remotes/origin/master
+	select IBM_EMAC_EMAC4
+	select IBM_EMAC_RGMII
+
+config 405EZ
+	bool
+	select IBM_EMAC_NO_FLOW_CTRL
+	select IBM_EMAC_MAL_CLR_ICINTSTAT
+	select IBM_EMAC_MAL_COMMON_ERR
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config 405GPR
 	bool
+=======
+>>>>>>> refs/remotes/origin/master
 
 config XILINX_VIRTEX
 	bool
@@ -172,7 +243,10 @@ config PPC4xx_GPIO
 	bool "PPC4xx GPIO support"
 	depends on 40x
 	select ARCH_REQUIRE_GPIOLIB
+<<<<<<< HEAD
 	select GENERIC_GPIO
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enable gpiolib support for ppc40x based boards
 
@@ -186,6 +260,8 @@ config IBM405_ERR77
 config IBM405_ERR51
 	bool
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #config BIOS_FIXUP
 #	bool
 #	depends on BUBINGA || EP405 || SYCAMORE || WALNUT
@@ -199,3 +275,18 @@ config IBM405_ERR51
 #	bool
 #	depends on !STB03xxx && PPC4xx_DMA
 #	default y
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config APM8018X
+	bool "APM8018X"
+	depends on 40x
+	default n
+	select PPC40x_SIMPLE
+	help
+	  This option enables support for the AppliedMicro APM8018X evaluation
+	  board.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

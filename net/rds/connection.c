@@ -33,6 +33,14 @@
 #include <linux/kernel.h>
 #include <linux/list.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/inet_hashtables.h>
 
 #include "rds.h"
@@ -50,10 +58,23 @@ static struct kmem_cache *rds_conn_slab;
 
 static struct hlist_head *rds_conn_bucket(__be32 laddr, __be32 faddr)
 {
+<<<<<<< HEAD
 	/* Pass NULL, don't need struct net for hash */
 	unsigned long hash = inet_ehashfn(NULL,
 					  be32_to_cpu(laddr), 0,
 					  be32_to_cpu(faddr), 0);
+=======
+	static u32 rds_hash_secret __read_mostly;
+
+	unsigned long hash;
+
+	net_get_random_once(&rds_hash_secret, sizeof(rds_hash_secret));
+
+	/* Pass NULL, don't need struct net for hash */
+	hash = __inet_ehashfn(be32_to_cpu(laddr), 0,
+			      be32_to_cpu(faddr), 0,
+			      rds_hash_secret);
+>>>>>>> refs/remotes/origin/master
 	return &rds_conn_hash[hash & RDS_CONNECTION_HASH_MASK];
 }
 
@@ -68,9 +89,14 @@ static struct rds_connection *rds_conn_lookup(struct hlist_head *head,
 					      struct rds_transport *trans)
 {
 	struct rds_connection *conn, *ret = NULL;
+<<<<<<< HEAD
 	struct hlist_node *pos;
 
 	hlist_for_each_entry_rcu(conn, pos, head, c_hash_node) {
+=======
+
+	hlist_for_each_entry_rcu(conn, head, c_hash_node) {
+>>>>>>> refs/remotes/origin/master
 		if (conn->c_faddr == faddr && conn->c_laddr == laddr &&
 				conn->c_trans == trans) {
 			ret = conn;
@@ -375,7 +401,10 @@ static void rds_conn_message_info(struct socket *sock, unsigned int len,
 				  int want_send)
 {
 	struct hlist_head *head;
+<<<<<<< HEAD
 	struct hlist_node *pos;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head *list;
 	struct rds_connection *conn;
 	struct rds_message *rm;
@@ -389,7 +418,11 @@ static void rds_conn_message_info(struct socket *sock, unsigned int len,
 
 	for (i = 0, head = rds_conn_hash; i < ARRAY_SIZE(rds_conn_hash);
 	     i++, head++) {
+<<<<<<< HEAD
 		hlist_for_each_entry_rcu(conn, pos, head, c_hash_node) {
+=======
+		hlist_for_each_entry_rcu(conn, head, c_hash_node) {
+>>>>>>> refs/remotes/origin/master
 			if (want_send)
 				list = &conn->c_send_queue;
 			else
@@ -438,7 +471,10 @@ void rds_for_each_conn_info(struct socket *sock, unsigned int len,
 {
 	uint64_t buffer[(item_len + 7) / 8];
 	struct hlist_head *head;
+<<<<<<< HEAD
 	struct hlist_node *pos;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rds_connection *conn;
 	size_t i;
 
@@ -449,7 +485,11 @@ void rds_for_each_conn_info(struct socket *sock, unsigned int len,
 
 	for (i = 0, head = rds_conn_hash; i < ARRAY_SIZE(rds_conn_hash);
 	     i++, head++) {
+<<<<<<< HEAD
 		hlist_for_each_entry_rcu(conn, pos, head, c_hash_node) {
+=======
+		hlist_for_each_entry_rcu(conn, head, c_hash_node) {
+>>>>>>> refs/remotes/origin/master
 
 			/* XXX no c_lock usage.. */
 			if (!visitor(conn, buffer))

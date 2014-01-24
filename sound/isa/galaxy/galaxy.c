@@ -35,7 +35,15 @@ MODULE_LICENSE("GPL");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for " CRD_NAME " soundcard.");
@@ -84,7 +92,11 @@ MODULE_PARM_DESC(dma2, "Capture DMA # for " CRD_NAME " driver.");
 
 #define DSP_COMMAND_GET_VERSION	0xe1
 
+<<<<<<< HEAD
 static int __devinit dsp_get_byte(void __iomem *port, u8 *val)
+=======
+static int dsp_get_byte(void __iomem *port, u8 *val)
+>>>>>>> refs/remotes/origin/master
 {
 	int loops = 1000;
 
@@ -97,7 +109,11 @@ static int __devinit dsp_get_byte(void __iomem *port, u8 *val)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit dsp_reset(void __iomem *port)
+=======
+static int dsp_reset(void __iomem *port)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 val;
 
@@ -111,7 +127,11 @@ static int __devinit dsp_reset(void __iomem *port)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit dsp_command(void __iomem *port, u8 cmd)
+=======
+static int dsp_command(void __iomem *port, u8 cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	int loops = 1000;
 
@@ -124,7 +144,11 @@ static int __devinit dsp_command(void __iomem *port, u8 cmd)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit dsp_get_version(void __iomem *port, u8 *major, u8 *minor)
+=======
+static int dsp_get_version(void __iomem *port, u8 *major, u8 *minor)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -161,7 +185,11 @@ static int __devinit dsp_get_version(void __iomem *port, u8 *major, u8 *minor)
 
 #define WSS_SIGNATURE		4
 
+<<<<<<< HEAD
 static int __devinit wss_detect(void __iomem *wss_port)
+=======
+static int wss_detect(void __iomem *wss_port)
+>>>>>>> refs/remotes/origin/master
 {
 	if ((ioread8(wss_port + WSS_PORT_SIGNATURE) & 0x3f) != WSS_SIGNATURE)
 		return -ENODEV;
@@ -204,7 +232,11 @@ struct snd_galaxy {
 static u32 config[SNDRV_CARDS];
 static u8 wss_config[SNDRV_CARDS];
 
+<<<<<<< HEAD
 static int __devinit snd_galaxy_match(struct device *dev, unsigned int n)
+=======
+static int snd_galaxy_match(struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!enable[n])
 		return 0;
@@ -379,7 +411,11 @@ fm:
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit galaxy_init(struct snd_galaxy *galaxy, u8 *type)
+=======
+static int galaxy_init(struct snd_galaxy *galaxy, u8 *type)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 major;
 	u8 minor;
@@ -411,7 +447,11 @@ static int __devinit galaxy_init(struct snd_galaxy *galaxy, u8 *type)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit galaxy_set_mode(struct snd_galaxy *galaxy, u8 mode)
+=======
+static int galaxy_set_mode(struct snd_galaxy *galaxy, u8 mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -449,7 +489,11 @@ static void galaxy_set_config(struct snd_galaxy *galaxy, u32 config)
 	msleep(10);
 }
 
+<<<<<<< HEAD
 static void __devinit galaxy_config(struct snd_galaxy *galaxy, u32 config)
+=======
+static void galaxy_config(struct snd_galaxy *galaxy, u32 config)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -461,7 +505,11 @@ static void __devinit galaxy_config(struct snd_galaxy *galaxy, u32 config)
 	galaxy_set_config(galaxy, config);
 }
 
+<<<<<<< HEAD
 static int __devinit galaxy_wss_config(struct snd_galaxy *galaxy, u8 wss_config)
+=======
+static int galaxy_wss_config(struct snd_galaxy *galaxy, u8 wss_config)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -498,7 +546,11 @@ static void snd_galaxy_free(struct snd_card *card)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit snd_galaxy_probe(struct device *dev, unsigned int n)
+=======
+static int snd_galaxy_probe(struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_galaxy *galaxy;
 	struct snd_wss *chip;
@@ -585,8 +637,16 @@ static int __devinit snd_galaxy_probe(struct device *dev, unsigned int n)
 
 	if (mpu_port[n] >= 0) {
 		err = snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					  mpu_port[n], 0, mpu_irq[n],
 					  IRQF_DISABLED, NULL);
+=======
+					  mpu_port[n], 0, mpu_irq[n], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  mpu_port[n], 0, mpu_irq[n], NULL);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			goto error;
 	}
@@ -621,17 +681,27 @@ error:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_galaxy_remove(struct device *dev, unsigned int n)
 {
 	snd_card_free(dev_get_drvdata(dev));
 	dev_set_drvdata(dev, NULL);
+=======
+static int snd_galaxy_remove(struct device *dev, unsigned int n)
+{
+	snd_card_free(dev_get_drvdata(dev));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct isa_driver snd_galaxy_driver = {
 	.match		= snd_galaxy_match,
 	.probe		= snd_galaxy_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_galaxy_remove),
+=======
+	.remove		= snd_galaxy_remove,
+>>>>>>> refs/remotes/origin/master
 
 	.driver		= {
 		.name	= DEV_NAME

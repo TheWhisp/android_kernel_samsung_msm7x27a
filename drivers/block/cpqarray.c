@@ -160,7 +160,11 @@ static int sendcmd(
 	unsigned int log_unit );
 
 static int ida_unlocked_open(struct block_device *bdev, fmode_t mode);
+<<<<<<< HEAD
 static int ida_release(struct gendisk *disk, fmode_t mode);
+=======
+static void ida_release(struct gendisk *disk, fmode_t mode);
+>>>>>>> refs/remotes/origin/master
 static int ida_ioctl(struct block_device *bdev, fmode_t mode, unsigned int cmd, unsigned long arg);
 static int ida_getgeo(struct block_device *bdev, struct hd_geometry *geo);
 static int ida_ctlr_ioctl(ctlr_info_t *h, int dsk, ida_ioctl_t *io);
@@ -296,7 +300,11 @@ static int ida_proc_show(struct seq_file *m, void *v)
 
 static int ida_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ida_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ida_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations ida_proc_fops = {
@@ -320,7 +328,11 @@ static void release_io_mem(ctlr_info_t *c)
 	c->io_mem_length = 0;
 }
 
+<<<<<<< HEAD
 static void __devexit cpqarray_remove_one(int i)
+=======
+static void cpqarray_remove_one(int i)
+>>>>>>> refs/remotes/origin/master
 {
 	int j;
 	char buff[4];
@@ -352,7 +364,11 @@ static void __devexit cpqarray_remove_one(int i)
 	free_hba(i);
 }
 
+<<<<<<< HEAD
 static void __devexit cpqarray_remove_one_pci (struct pci_dev *pdev)
+=======
+static void cpqarray_remove_one_pci(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	ctlr_info_t *tmp_ptr;
@@ -377,7 +393,11 @@ static void __devexit cpqarray_remove_one_pci (struct pci_dev *pdev)
 /* removing an instance that was not removed automatically..
  * must be an eisa card.
  */
+<<<<<<< HEAD
 static void __devexit cpqarray_remove_one_eisa (int i)
+=======
+static void cpqarray_remove_one_eisa(int i)
+>>>>>>> refs/remotes/origin/master
 {
 	if (hba[i] == NULL) {
 		printk(KERN_ERR "cpqarray: controller %d appears to have"
@@ -388,7 +408,11 @@ static void __devexit cpqarray_remove_one_eisa (int i)
 }
 
 /* pdev is NULL for eisa */
+<<<<<<< HEAD
 static int __devinit cpqarray_register_ctlr( int i, struct pci_dev *pdev)
+=======
+static int cpqarray_register_ctlr(int i, struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct request_queue *q;
 	int j;
@@ -505,8 +529,13 @@ Enomem4:
 	return -1;
 }
 
+<<<<<<< HEAD
 static int __devinit cpqarray_init_one( struct pci_dev *pdev,
 	const struct pci_device_id *ent)
+=======
+static int cpqarray_init_one(struct pci_dev *pdev,
+			     const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -536,7 +565,11 @@ static int __devinit cpqarray_init_one( struct pci_dev *pdev,
 static struct pci_driver cpqarray_pci_driver = {
 	.name = "cpqarray",
 	.probe = cpqarray_init_one,
+<<<<<<< HEAD
 	.remove = __devexit_p(cpqarray_remove_one_pci),
+=======
+	.remove = cpqarray_remove_one_pci,
+>>>>>>> refs/remotes/origin/master
 	.id_table = cpqarray_pci_device_id,
 };
 
@@ -620,6 +653,14 @@ static int cpqarray_pci_init(ctlr_info_t *c, struct pci_dev *pdev)
 	}
 	vendor_id = pdev->vendor;
 	device_id = pdev->device;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	revision  = pdev->revision;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	revision  = pdev->revision;
+>>>>>>> refs/remotes/origin/master
 	irq = pdev->irq;
 
 	for(i=0; i<6; i++)
@@ -632,7 +673,13 @@ static int cpqarray_pci_init(ctlr_info_t *c, struct pci_dev *pdev)
 	}
 
 	pci_read_config_word(pdev, PCI_COMMAND, &command);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_read_config_byte(pdev, PCI_CLASS_REVISION, &revision);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_read_config_byte(pdev, PCI_CACHE_LINE_SIZE, &cache_line_size);
 	pci_read_config_byte(pdev, PCI_LATENCY_TIMER, &latency_timer);
 
@@ -742,7 +789,11 @@ __setup("smart2=", cpqarray_setup);
 /*
  * Find an EISA controller's signature.  Set up an hba if we find it.
  */
+<<<<<<< HEAD
 static int __devinit cpqarray_eisa_detect(void)
+=======
+static int cpqarray_eisa_detect(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i=0, j;
 	__u32 board_id;
@@ -856,7 +907,11 @@ static int ida_unlocked_open(struct block_device *bdev, fmode_t mode)
 /*
  * Close.  Sync first.
  */
+<<<<<<< HEAD
 static int ida_release(struct gendisk *disk, fmode_t mode)
+=======
+static void ida_release(struct gendisk *disk, fmode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	ctlr_info_t *host;
 
@@ -864,8 +919,11 @@ static int ida_release(struct gendisk *disk, fmode_t mode)
 	host = get_host(disk);
 	host->usage_count--;
 	mutex_unlock(&cpqarray_mutex);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

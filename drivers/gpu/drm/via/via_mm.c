@@ -25,18 +25,43 @@
  * Authors: Thomas Hellström <thomas-at-tungstengraphics-dot-com>
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "via_drm.h"
 #include "via_drv.h"
+<<<<<<< HEAD
 #include "drm_sman.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <drm/drmP.h>
+#include <drm/via_drm.h>
+#include "via_drv.h"
+>>>>>>> refs/remotes/origin/master
 
 #define VIA_MM_ALIGN_SHIFT 4
 #define VIA_MM_ALIGN_MASK ((1 << VIA_MM_ALIGN_SHIFT) - 1)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct via_memblock {
+	struct drm_mm_node mm_node;
+	struct list_head owner_list;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int via_agp_init(struct drm_device *dev, void *data, struct drm_file *file_priv)
 {
 	drm_via_agp_t *agp = data;
 	drm_via_private_t *dev_priv = (drm_via_private_t *) dev->dev_private;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	mutex_lock(&dev->struct_mutex);
@@ -48,6 +73,16 @@ int via_agp_init(struct drm_device *dev, void *data, struct drm_file *file_priv)
 		mutex_unlock(&dev->struct_mutex);
 		return ret;
 	}
+=======
+
+	mutex_lock(&dev->struct_mutex);
+	drm_mm_init(&dev_priv->agp_mm, 0, agp->size >> VIA_MM_ALIGN_SHIFT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	mutex_lock(&dev->struct_mutex);
+	drm_mm_init(&dev_priv->agp_mm, 0, agp->size >> VIA_MM_ALIGN_SHIFT);
+>>>>>>> refs/remotes/origin/master
 
 	dev_priv->agp_initialized = 1;
 	dev_priv->agp_offset = agp->offset;
@@ -61,6 +96,8 @@ int via_fb_init(struct drm_device *dev, void *data, struct drm_file *file_priv)
 {
 	drm_via_fb_t *fb = data;
 	drm_via_private_t *dev_priv = (drm_via_private_t *) dev->dev_private;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	mutex_lock(&dev->struct_mutex);
@@ -72,6 +109,16 @@ int via_fb_init(struct drm_device *dev, void *data, struct drm_file *file_priv)
 		mutex_unlock(&dev->struct_mutex);
 		return ret;
 	}
+=======
+
+	mutex_lock(&dev->struct_mutex);
+	drm_mm_init(&dev_priv->vram_mm, 0, fb->size >> VIA_MM_ALIGN_SHIFT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	mutex_lock(&dev->struct_mutex);
+	drm_mm_init(&dev_priv->vram_mm, 0, fb->size >> VIA_MM_ALIGN_SHIFT);
+>>>>>>> refs/remotes/origin/master
 
 	dev_priv->vram_initialized = 1;
 	dev_priv->vram_offset = fb->offset;
@@ -91,7 +138,11 @@ int via_final_context(struct drm_device *dev, int context)
 
 	/* Linux specific until context tracking code gets ported to BSD */
 	/* Last context, perform cleanup */
+<<<<<<< HEAD
 	if (dev->ctx_count == 1 && dev->dev_private) {
+=======
+	if (list_is_singular(&dev->ctxlist) && dev->dev_private) {
+>>>>>>> refs/remotes/origin/master
 		DRM_DEBUG("Last Context\n");
 		drm_irq_uninstall(dev);
 		via_cleanup_futex(dev_priv);
@@ -108,19 +159,52 @@ void via_lastclose(struct drm_device *dev)
 		return;
 
 	mutex_lock(&dev->struct_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	drm_sman_cleanup(&dev_priv->sman);
 	dev_priv->vram_initialized = 0;
 	dev_priv->agp_initialized = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (dev_priv->vram_initialized) {
+		drm_mm_takedown(&dev_priv->vram_mm);
+		dev_priv->vram_initialized = 0;
+	}
+	if (dev_priv->agp_initialized) {
+		drm_mm_takedown(&dev_priv->agp_mm);
+		dev_priv->agp_initialized = 0;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&dev->struct_mutex);
 }
 
 int via_mem_alloc(struct drm_device *dev, void *data,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		  struct drm_file *file_priv)
 {
 	drm_via_mem_t *mem = data;
 	int retval = 0;
 	struct drm_memblock_item *item;
 	drm_via_private_t *dev_priv = (drm_via_private_t *) dev->dev_private;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		  struct drm_file *file)
+{
+	drm_via_mem_t *mem = data;
+	int retval = 0, user_key;
+	struct via_memblock *item;
+	drm_via_private_t *dev_priv = (drm_via_private_t *) dev->dev_private;
+	struct via_file_private *file_priv = file->driver_priv;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long tmpSize;
 
 	if (mem->type > VIA_MEM_AGP) {
@@ -136,6 +220,8 @@ int via_mem_alloc(struct drm_device *dev, void *data,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	tmpSize = (mem->size + VIA_MM_ALIGN_MASK) >> VIA_MM_ALIGN_SHIFT;
 	item = drm_sman_alloc(&dev_priv->sman, mem->type, tmpSize, 0,
 			      (unsigned long)file_priv);
@@ -154,6 +240,79 @@ int via_mem_alloc(struct drm_device *dev, void *data,
 		retval = -ENOMEM;
 	}
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	item = kzalloc(sizeof(*item), GFP_KERNEL);
+	if (!item) {
+		retval = -ENOMEM;
+		goto fail_alloc;
+	}
+
+	tmpSize = (mem->size + VIA_MM_ALIGN_MASK) >> VIA_MM_ALIGN_SHIFT;
+	if (mem->type == VIA_MEM_AGP)
+		retval = drm_mm_insert_node(&dev_priv->agp_mm,
+					    &item->mm_node,
+<<<<<<< HEAD
+					    tmpSize, 0);
+	else
+		retval = drm_mm_insert_node(&dev_priv->vram_mm,
+					    &item->mm_node,
+					    tmpSize, 0);
+	if (retval)
+		goto fail_alloc;
+
+again:
+	if (idr_pre_get(&dev_priv->object_idr, GFP_KERNEL) == 0) {
+		retval = -ENOMEM;
+		goto fail_idr;
+	}
+
+	retval = idr_get_new_above(&dev_priv->object_idr, item, 1, &user_key);
+	if (retval == -EAGAIN)
+		goto again;
+	if (retval)
+		goto fail_idr;
+=======
+					    tmpSize, 0, DRM_MM_SEARCH_DEFAULT);
+	else
+		retval = drm_mm_insert_node(&dev_priv->vram_mm,
+					    &item->mm_node,
+					    tmpSize, 0, DRM_MM_SEARCH_DEFAULT);
+	if (retval)
+		goto fail_alloc;
+
+	retval = idr_alloc(&dev_priv->object_idr, item, 1, 0, GFP_KERNEL);
+	if (retval < 0)
+		goto fail_idr;
+	user_key = retval;
+>>>>>>> refs/remotes/origin/master
+
+	list_add(&item->owner_list, &file_priv->obj_list);
+	mutex_unlock(&dev->struct_mutex);
+
+	mem->offset = ((mem->type == VIA_MEM_VIDEO) ?
+		      dev_priv->vram_offset : dev_priv->agp_offset) +
+	    ((item->mm_node.start) << VIA_MM_ALIGN_SHIFT);
+	mem->index = user_key;
+
+	return 0;
+
+fail_idr:
+	drm_mm_remove_node(&item->mm_node);
+fail_alloc:
+	kfree(item);
+	mutex_unlock(&dev->struct_mutex);
+
+	mem->offset = 0;
+	mem->size = 0;
+	mem->index = 0;
+	DRM_DEBUG("Video memory allocation failed\n");
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -161,6 +320,8 @@ int via_mem_free(struct drm_device *dev, void *data, struct drm_file *file_priv)
 {
 	drm_via_private_t *dev_priv = dev->dev_private;
 	drm_via_mem_t *mem = data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	mutex_lock(&dev->struct_mutex);
@@ -169,16 +330,55 @@ int via_mem_free(struct drm_device *dev, void *data, struct drm_file *file_priv)
 	DRM_DEBUG("free = 0x%lx\n", mem->index);
 
 	return ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct via_memblock *obj;
+
+	mutex_lock(&dev->struct_mutex);
+	obj = idr_find(&dev_priv->object_idr, mem->index);
+	if (obj == NULL) {
+		mutex_unlock(&dev->struct_mutex);
+		return -EINVAL;
+	}
+
+	idr_remove(&dev_priv->object_idr, mem->index);
+	list_del(&obj->owner_list);
+	drm_mm_remove_node(&obj->mm_node);
+	kfree(obj);
+	mutex_unlock(&dev->struct_mutex);
+
+	DRM_DEBUG("free = 0x%lx\n", mem->index);
+
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 void via_reclaim_buffers_locked(struct drm_device *dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				struct drm_file *file_priv)
 {
 	drm_via_private_t *dev_priv = dev->dev_private;
 
 	mutex_lock(&dev->struct_mutex);
 	if (drm_sman_owner_clean(&dev_priv->sman, (unsigned long)file_priv)) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				struct drm_file *file)
+{
+	struct via_file_private *file_priv = file->driver_priv;
+	struct via_memblock *entry, *next;
+
+<<<<<<< HEAD
+	mutex_lock(&dev->struct_mutex);
+	if (list_empty(&file_priv->obj_list)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		mutex_unlock(&dev->struct_mutex);
 		return;
 	}
@@ -186,7 +386,40 @@ void via_reclaim_buffers_locked(struct drm_device *dev,
 	if (dev->driver->dma_quiescent)
 		dev->driver->dma_quiescent(dev);
 
+<<<<<<< HEAD
 	drm_sman_owner_cleanup(&dev_priv->sman, (unsigned long)file_priv);
+=======
+=======
+	if (!(file->minor->master && file->master->lock.hw_lock))
+		return;
+
+	drm_idlelock_take(&file->master->lock);
+
+	mutex_lock(&dev->struct_mutex);
+	if (list_empty(&file_priv->obj_list)) {
+		mutex_unlock(&dev->struct_mutex);
+		drm_idlelock_release(&file->master->lock);
+
+		return;
+	}
+
+	via_driver_dma_quiescent(dev);
+
+>>>>>>> refs/remotes/origin/master
+	list_for_each_entry_safe(entry, next, &file_priv->obj_list,
+				 owner_list) {
+		list_del(&entry->owner_list);
+		drm_mm_remove_node(&entry->mm_node);
+		kfree(entry);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&dev->struct_mutex);
+=======
+	mutex_unlock(&dev->struct_mutex);
+
+	drm_idlelock_release(&file->master->lock);
+
+>>>>>>> refs/remotes/origin/master
 	return;
 }

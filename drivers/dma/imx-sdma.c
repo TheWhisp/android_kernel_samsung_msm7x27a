@@ -18,11 +18,27 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/types.h>
+=======
+#include <linux/module.h>
+#include <linux/types.h>
+#include <linux/bitops.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mm.h>
 #include <linux/interrupt.h>
 #include <linux/clk.h>
 #include <linux/wait.h>
+=======
+#include <linux/module.h>
+#include <linux/types.h>
+#include <linux/bitops.h>
+#include <linux/mm.h>
+#include <linux/interrupt.h>
+#include <linux/clk.h>
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/semaphore.h>
 #include <linux/spinlock.h>
@@ -32,12 +48,35 @@
 #include <linux/slab.h>
 #include <linux/platform_device.h>
 #include <linux/dmaengine.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/irq.h>
 #include <mach/sdma.h>
 #include <mach/dma.h>
 #include <mach/hardware.h>
 
+<<<<<<< HEAD
+=======
+#include "dmaengine.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/of_dma.h>
+
+#include <asm/irq.h>
+#include <linux/platform_data/dma-imx-sdma.h>
+#include <linux/platform_data/dma-imx.h>
+
+#include "dmaengine.h"
+
+>>>>>>> refs/remotes/origin/master
 /* SDMA registers */
 #define SDMA_H_C0PTR		0x000
 #define SDMA_H_INTR		0x004
@@ -65,8 +104,18 @@
 #define SDMA_ONCE_RTB		0x060
 #define SDMA_XTRIG_CONF1	0x070
 #define SDMA_XTRIG_CONF2	0x074
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SDMA_CHNENBL0_V2	0x200
 #define SDMA_CHNENBL0_V1	0x080
+=======
+#define SDMA_CHNENBL0_IMX35	0x200
+#define SDMA_CHNENBL0_IMX31	0x080
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SDMA_CHNENBL0_IMX35	0x200
+#define SDMA_CHNENBL0_IMX31	0x080
+>>>>>>> refs/remotes/origin/master
 #define SDMA_CHNPRI_0		0x100
 
 /*
@@ -237,36 +286,79 @@ struct sdma_engine;
  * @event_id1		for channels that use 2 events
  * @word_size		peripheral access size
  * @buf_tail		ID of the buffer that was processed
+<<<<<<< HEAD
  * @done		channel completion
+=======
+>>>>>>> refs/remotes/origin/master
  * @num_bd		max NUM_BD. number of descriptors currently handling
  */
 struct sdma_channel {
 	struct sdma_engine		*sdma;
 	unsigned int			channel;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	enum dma_data_direction		direction;
+=======
+	enum dma_transfer_direction		direction;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum dma_transfer_direction		direction;
+>>>>>>> refs/remotes/origin/master
 	enum sdma_peripheral_type	peripheral_type;
 	unsigned int			event_id0;
 	unsigned int			event_id1;
 	enum dma_slave_buswidth		word_size;
 	unsigned int			buf_tail;
+<<<<<<< HEAD
 	struct completion		done;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int			num_bd;
 	struct sdma_buffer_descriptor	*bd;
 	dma_addr_t			bd_phys;
 	unsigned int			pc_from_device, pc_to_device;
 	unsigned long			flags;
 	dma_addr_t			per_address;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32				event_mask0, event_mask1;
 	u32				watermark_level;
+=======
+	unsigned long			event_mask[2];
+	unsigned long			watermark_level;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long			event_mask[2];
+	unsigned long			watermark_level;
+>>>>>>> refs/remotes/origin/master
 	u32				shp_addr, per_addr;
 	struct dma_chan			chan;
 	spinlock_t			lock;
 	struct dma_async_tx_descriptor	desc;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dma_cookie_t			last_completed;
 	enum dma_status			status;
 };
 
 #define IMX_DMA_SG_LOOP		(1 << 0)
+=======
+	enum dma_status			status;
+	unsigned int			chn_count;
+	unsigned int			chn_real_count;
+};
+
+#define IMX_DMA_SG_LOOP		BIT(0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum dma_status			status;
+	unsigned int			chn_count;
+	unsigned int			chn_real_count;
+	struct tasklet_struct		tasklet;
+};
+
+#define IMX_DMA_SG_LOOP		BIT(0)
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_DMA_CHANNELS 32
 #define MXC_SDMA_DEFAULT_PRIORITY 1
@@ -299,30 +391,222 @@ struct sdma_firmware_header {
 	u32	ram_code_size;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+enum sdma_devtype {
+	IMX31_SDMA,	/* runs on i.mx31 */
+	IMX35_SDMA,	/* runs on i.mx35 and later */
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sdma_driver_data {
+	int chnenbl0;
+	int num_events;
+	struct sdma_script_start_addrs	*script_addrs;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct sdma_engine {
 	struct device			*dev;
 	struct device_dma_parameters	dma_parms;
 	struct sdma_channel		channel[MAX_DMA_CHANNELS];
 	struct sdma_channel_control	*channel_control;
 	void __iomem			*regs;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int			version;
+=======
+	enum sdma_devtype		devtype;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int			num_events;
 	struct sdma_context_data	*context;
 	dma_addr_t			context_phys;
 	struct dma_device		dma_device;
 	struct clk			*clk;
+<<<<<<< HEAD
 	struct sdma_script_start_addrs	*script_addrs;
 };
 
 #define SDMA_H_CONFIG_DSPDMA	(1 << 12) /* indicates if the DSPDMA is used */
 #define SDMA_H_CONFIG_RTD_PINS	(1 << 11) /* indicates if Real-Time Debug pins are enabled */
 #define SDMA_H_CONFIG_ACR	(1 << 4)  /* indicates if AHB freq /core freq = 2 or 1 */
+=======
+	struct mutex			channel_0_lock;
+	struct sdma_script_start_addrs	*script_addrs;
+=======
+	struct sdma_context_data	*context;
+	dma_addr_t			context_phys;
+	struct dma_device		dma_device;
+	struct clk			*clk_ipg;
+	struct clk			*clk_ahb;
+	spinlock_t			channel_0_lock;
+	struct sdma_script_start_addrs	*script_addrs;
+	const struct sdma_driver_data	*drvdata;
+};
+
+static struct sdma_driver_data sdma_imx31 = {
+	.chnenbl0 = SDMA_CHNENBL0_IMX31,
+	.num_events = 32,
+};
+
+static struct sdma_script_start_addrs sdma_script_imx25 = {
+	.ap_2_ap_addr = 729,
+	.uart_2_mcu_addr = 904,
+	.per_2_app_addr = 1255,
+	.mcu_2_app_addr = 834,
+	.uartsh_2_mcu_addr = 1120,
+	.per_2_shp_addr = 1329,
+	.mcu_2_shp_addr = 1048,
+	.ata_2_mcu_addr = 1560,
+	.mcu_2_ata_addr = 1479,
+	.app_2_per_addr = 1189,
+	.app_2_mcu_addr = 770,
+	.shp_2_per_addr = 1407,
+	.shp_2_mcu_addr = 979,
+};
+
+static struct sdma_driver_data sdma_imx25 = {
+	.chnenbl0 = SDMA_CHNENBL0_IMX35,
+	.num_events = 48,
+	.script_addrs = &sdma_script_imx25,
+};
+
+static struct sdma_driver_data sdma_imx35 = {
+	.chnenbl0 = SDMA_CHNENBL0_IMX35,
+	.num_events = 48,
+};
+
+static struct sdma_script_start_addrs sdma_script_imx51 = {
+	.ap_2_ap_addr = 642,
+	.uart_2_mcu_addr = 817,
+	.mcu_2_app_addr = 747,
+	.mcu_2_shp_addr = 961,
+	.ata_2_mcu_addr = 1473,
+	.mcu_2_ata_addr = 1392,
+	.app_2_per_addr = 1033,
+	.app_2_mcu_addr = 683,
+	.shp_2_per_addr = 1251,
+	.shp_2_mcu_addr = 892,
+};
+
+static struct sdma_driver_data sdma_imx51 = {
+	.chnenbl0 = SDMA_CHNENBL0_IMX35,
+	.num_events = 48,
+	.script_addrs = &sdma_script_imx51,
+};
+
+static struct sdma_script_start_addrs sdma_script_imx53 = {
+	.ap_2_ap_addr = 642,
+	.app_2_mcu_addr = 683,
+	.mcu_2_app_addr = 747,
+	.uart_2_mcu_addr = 817,
+	.shp_2_mcu_addr = 891,
+	.mcu_2_shp_addr = 960,
+	.uartsh_2_mcu_addr = 1032,
+	.spdif_2_mcu_addr = 1100,
+	.mcu_2_spdif_addr = 1134,
+	.firi_2_mcu_addr = 1193,
+	.mcu_2_firi_addr = 1290,
+};
+
+static struct sdma_driver_data sdma_imx53 = {
+	.chnenbl0 = SDMA_CHNENBL0_IMX35,
+	.num_events = 48,
+	.script_addrs = &sdma_script_imx53,
+};
+
+static struct sdma_script_start_addrs sdma_script_imx6q = {
+	.ap_2_ap_addr = 642,
+	.uart_2_mcu_addr = 817,
+	.mcu_2_app_addr = 747,
+	.per_2_per_addr = 6331,
+	.uartsh_2_mcu_addr = 1032,
+	.mcu_2_shp_addr = 960,
+	.app_2_mcu_addr = 683,
+	.shp_2_mcu_addr = 891,
+	.spdif_2_mcu_addr = 1100,
+	.mcu_2_spdif_addr = 1134,
+};
+
+static struct sdma_driver_data sdma_imx6q = {
+	.chnenbl0 = SDMA_CHNENBL0_IMX35,
+	.num_events = 48,
+	.script_addrs = &sdma_script_imx6q,
+>>>>>>> refs/remotes/origin/master
+};
+
+static struct platform_device_id sdma_devtypes[] = {
+	{
+<<<<<<< HEAD
+		.name = "imx31-sdma",
+		.driver_data = IMX31_SDMA,
+	}, {
+		.name = "imx35-sdma",
+		.driver_data = IMX35_SDMA,
+=======
+		.name = "imx25-sdma",
+		.driver_data = (unsigned long)&sdma_imx25,
+	}, {
+		.name = "imx31-sdma",
+		.driver_data = (unsigned long)&sdma_imx31,
+	}, {
+		.name = "imx35-sdma",
+		.driver_data = (unsigned long)&sdma_imx35,
+	}, {
+		.name = "imx51-sdma",
+		.driver_data = (unsigned long)&sdma_imx51,
+	}, {
+		.name = "imx53-sdma",
+		.driver_data = (unsigned long)&sdma_imx53,
+	}, {
+		.name = "imx6q-sdma",
+		.driver_data = (unsigned long)&sdma_imx6q,
+>>>>>>> refs/remotes/origin/master
+	}, {
+		/* sentinel */
+	}
+};
+MODULE_DEVICE_TABLE(platform, sdma_devtypes);
+
+static const struct of_device_id sdma_dt_ids[] = {
+<<<<<<< HEAD
+	{ .compatible = "fsl,imx31-sdma", .data = &sdma_devtypes[IMX31_SDMA], },
+	{ .compatible = "fsl,imx35-sdma", .data = &sdma_devtypes[IMX35_SDMA], },
+=======
+	{ .compatible = "fsl,imx6q-sdma", .data = &sdma_imx6q, },
+	{ .compatible = "fsl,imx53-sdma", .data = &sdma_imx53, },
+	{ .compatible = "fsl,imx51-sdma", .data = &sdma_imx51, },
+	{ .compatible = "fsl,imx35-sdma", .data = &sdma_imx35, },
+	{ .compatible = "fsl,imx31-sdma", .data = &sdma_imx31, },
+>>>>>>> refs/remotes/origin/master
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(of, sdma_dt_ids);
+
+#define SDMA_H_CONFIG_DSPDMA	BIT(12) /* indicates if the DSPDMA is used */
+#define SDMA_H_CONFIG_RTD_PINS	BIT(11) /* indicates if Real-Time Debug pins are enabled */
+#define SDMA_H_CONFIG_ACR	BIT(4)  /* indicates if AHB freq /core freq = 2 or 1 */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SDMA_H_CONFIG_CSM	(3)       /* indicates which context switch mode is selected*/
 
 static inline u32 chnenbl_ofs(struct sdma_engine *sdma, unsigned int event)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 chnenbl0 = (sdma->version == 2 ? SDMA_CHNENBL0_V2 : SDMA_CHNENBL0_V1);
 
+=======
+	u32 chnenbl0 = (sdma->devtype == IMX31_SDMA ? SDMA_CHNENBL0_IMX31 :
+						      SDMA_CHNENBL0_IMX35);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 chnenbl0 = sdma->drvdata->chnenbl0;
+>>>>>>> refs/remotes/origin/master
 	return chnenbl0 + event * 4;
 }
 
@@ -331,11 +615,21 @@ static int sdma_config_ownership(struct sdma_channel *sdmac,
 {
 	struct sdma_engine *sdma = sdmac->sdma;
 	int channel = sdmac->channel;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 evt, mcu, dsp;
+=======
+	unsigned long evt, mcu, dsp;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long evt, mcu, dsp;
+>>>>>>> refs/remotes/origin/master
 
 	if (event_override && mcu_override && dsp_override)
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	evt = __raw_readl(sdma->regs + SDMA_H_EVTOVR);
 	mcu = __raw_readl(sdma->regs + SDMA_H_HOSTOVR);
 	dsp = __raw_readl(sdma->regs + SDMA_H_DSPOVR);
@@ -358,10 +652,51 @@ static int sdma_config_ownership(struct sdma_channel *sdmac,
 	__raw_writel(evt, sdma->regs + SDMA_H_EVTOVR);
 	__raw_writel(mcu, sdma->regs + SDMA_H_HOSTOVR);
 	__raw_writel(dsp, sdma->regs + SDMA_H_DSPOVR);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	evt = readl_relaxed(sdma->regs + SDMA_H_EVTOVR);
+	mcu = readl_relaxed(sdma->regs + SDMA_H_HOSTOVR);
+	dsp = readl_relaxed(sdma->regs + SDMA_H_DSPOVR);
+
+	if (dsp_override)
+		__clear_bit(channel, &dsp);
+	else
+		__set_bit(channel, &dsp);
+
+	if (event_override)
+		__clear_bit(channel, &evt);
+	else
+		__set_bit(channel, &evt);
+
+	if (mcu_override)
+		__clear_bit(channel, &mcu);
+	else
+		__set_bit(channel, &mcu);
+
+	writel_relaxed(evt, sdma->regs + SDMA_H_EVTOVR);
+	writel_relaxed(mcu, sdma->regs + SDMA_H_HOSTOVR);
+	writel_relaxed(dsp, sdma->regs + SDMA_H_DSPOVR);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void sdma_enable_channel(struct sdma_engine *sdma, int channel)
+{
+	writel(BIT(channel), sdma->regs + SDMA_H_START);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * sdma_run_channel - run a channel and wait till it's done
  */
@@ -373,9 +708,37 @@ static int sdma_run_channel(struct sdma_channel *sdmac)
 
 	init_completion(&sdmac->done);
 
+<<<<<<< HEAD
 	__raw_writel(1 << channel, sdma->regs + SDMA_H_START);
+=======
+	sdma_enable_channel(sdma, channel);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = wait_for_completion_timeout(&sdmac->done, HZ);
+=======
+/*
+ * sdma_run_channel0 - run a channel and wait till it's done
+ */
+static int sdma_run_channel0(struct sdma_engine *sdma)
+{
+	int ret;
+	unsigned long timeout = 500;
+
+	sdma_enable_channel(sdma, 0);
+
+	while (!(ret = readl_relaxed(sdma->regs + SDMA_H_INTR) & 1)) {
+		if (timeout-- <= 0)
+			break;
+		udelay(1);
+	}
+
+	if (ret) {
+		/* Clear the interrupt status */
+		writel_relaxed(ret, sdma->regs + SDMA_H_INTR);
+	} else {
+		dev_err(sdma->dev, "Timeout waiting for CH0 ready\n");
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret ? 0 : -ETIMEDOUT;
 }
@@ -387,12 +750,35 @@ static int sdma_load_script(struct sdma_engine *sdma, void *buf, int size,
 	void *buf_virt;
 	dma_addr_t buf_phys;
 	int ret;
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 	buf_virt = dma_alloc_coherent(NULL,
 			size,
 			&buf_phys, GFP_KERNEL);
 	if (!buf_virt)
 		return -ENOMEM;
+=======
+	mutex_lock(&sdma->channel_0_lock);
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
+
+	buf_virt = dma_alloc_coherent(NULL,
+			size,
+			&buf_phys, GFP_KERNEL);
+	if (!buf_virt) {
+<<<<<<< HEAD
+		ret = -ENOMEM;
+		goto err_out;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENOMEM;
+	}
+
+	spin_lock_irqsave(&sdma->channel_0_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	bd0->mode.command = C0_SETPM;
 	bd0->mode.status = BD_DONE | BD_INTR | BD_WRAP | BD_EXTD;
@@ -402,10 +788,25 @@ static int sdma_load_script(struct sdma_engine *sdma, void *buf, int size,
 
 	memcpy(buf_virt, buf, size);
 
+<<<<<<< HEAD
 	ret = sdma_run_channel(&sdma->channel[0]);
 
 	dma_free_coherent(NULL, size, buf_virt, buf_phys);
 
+<<<<<<< HEAD
+=======
+err_out:
+	mutex_unlock(&sdma->channel_0_lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = sdma_run_channel0(sdma);
+
+	spin_unlock_irqrestore(&sdma->channel_0_lock, flags);
+
+	dma_free_coherent(NULL, size, buf_virt, buf_phys);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -413,12 +814,27 @@ static void sdma_event_enable(struct sdma_channel *sdmac, unsigned int event)
 {
 	struct sdma_engine *sdma = sdmac->sdma;
 	int channel = sdmac->channel;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val;
 	u32 chnenbl = chnenbl_ofs(sdma, event);
 
 	val = __raw_readl(sdma->regs + chnenbl);
 	val |= (1 << channel);
 	__raw_writel(val, sdma->regs + chnenbl);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+	u32 chnenbl = chnenbl_ofs(sdma, event);
+
+	val = readl_relaxed(sdma->regs + chnenbl);
+	__set_bit(channel, &val);
+	writel_relaxed(val, sdma->regs + chnenbl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sdma_event_disable(struct sdma_channel *sdmac, unsigned int event)
@@ -426,11 +842,25 @@ static void sdma_event_disable(struct sdma_channel *sdmac, unsigned int event)
 	struct sdma_engine *sdma = sdmac->sdma;
 	int channel = sdmac->channel;
 	u32 chnenbl = chnenbl_ofs(sdma, event);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val;
 
 	val = __raw_readl(sdma->regs + chnenbl);
 	val &= ~(1 << channel);
 	__raw_writel(val, sdma->regs + chnenbl);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long val;
+
+	val = readl_relaxed(sdma->regs + chnenbl);
+	__clear_bit(channel, &val);
+	writel_relaxed(val, sdma->regs + chnenbl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sdma_handle_channel_loop(struct sdma_channel *sdmac)
@@ -466,6 +896,14 @@ static void mxc_sdma_handle_channel_normal(struct sdma_channel *sdmac)
 	struct sdma_buffer_descriptor *bd;
 	int i, error = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	sdmac->chn_real_count = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sdmac->chn_real_count = 0;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * non loop mode. Iterate over all descriptors, collect
 	 * errors and call callback function
@@ -475,16 +913,31 @@ static void mxc_sdma_handle_channel_normal(struct sdma_channel *sdmac)
 
 		 if (bd->mode.status & (BD_DONE | BD_RROR))
 			error = -EIO;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		 sdmac->chn_real_count += bd->mode.count;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 sdmac->chn_real_count += bd->mode.count;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (error)
 		sdmac->status = DMA_ERROR;
 	else
+<<<<<<< HEAD
 		sdmac->status = DMA_SUCCESS;
 
+<<<<<<< HEAD
 	if (sdmac->desc.callback)
 		sdmac->desc.callback(sdmac->desc.callback_param);
 	sdmac->last_completed = sdmac->desc.cookie;
+=======
+	dma_cookie_complete(&sdmac->desc);
+	if (sdmac->desc.callback)
+		sdmac->desc.callback(sdmac->desc.callback_param);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void mxc_sdma_handle_channel(struct sdma_channel *sdmac)
@@ -494,6 +947,18 @@ static void mxc_sdma_handle_channel(struct sdma_channel *sdmac)
 	/* not interested in channel 0 interrupts */
 	if (sdmac->channel == 0)
 		return;
+=======
+		sdmac->status = DMA_COMPLETE;
+
+	dma_cookie_complete(&sdmac->desc);
+	if (sdmac->desc.callback)
+		sdmac->desc.callback(sdmac->desc.callback_param);
+}
+
+static void sdma_tasklet(unsigned long data)
+{
+	struct sdma_channel *sdmac = (struct sdma_channel *) data;
+>>>>>>> refs/remotes/origin/master
 
 	if (sdmac->flags & IMX_DMA_SG_LOOP)
 		sdma_handle_channel_loop(sdmac);
@@ -504,18 +969,44 @@ static void mxc_sdma_handle_channel(struct sdma_channel *sdmac)
 static irqreturn_t sdma_int_handler(int irq, void *dev_id)
 {
 	struct sdma_engine *sdma = dev_id;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 stat;
 
 	stat = __raw_readl(sdma->regs + SDMA_H_INTR);
 	__raw_writel(stat, sdma->regs + SDMA_H_INTR);
+=======
+	unsigned long stat;
+
+	stat = readl_relaxed(sdma->regs + SDMA_H_INTR);
+	writel_relaxed(stat, sdma->regs + SDMA_H_INTR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long stat;
+
+	stat = readl_relaxed(sdma->regs + SDMA_H_INTR);
+	/* not interested in channel 0 interrupts */
+	stat &= ~1;
+	writel_relaxed(stat, sdma->regs + SDMA_H_INTR);
+>>>>>>> refs/remotes/origin/master
 
 	while (stat) {
 		int channel = fls(stat) - 1;
 		struct sdma_channel *sdmac = &sdma->channel[channel];
 
+<<<<<<< HEAD
 		mxc_sdma_handle_channel(sdmac);
 
+<<<<<<< HEAD
 		stat &= ~(1 << channel);
+=======
+		__clear_bit(channel, &stat);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tasklet_schedule(&sdmac->tasklet);
+
+		__clear_bit(channel, &stat);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return IRQ_HANDLED;
@@ -612,8 +1103,18 @@ static int sdma_load_context(struct sdma_channel *sdmac)
 	struct sdma_context_data *context = sdma->context;
 	struct sdma_buffer_descriptor *bd0 = sdma->channel[0].bd;
 	int ret;
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 	if (sdmac->direction == DMA_FROM_DEVICE) {
+=======
+	if (sdmac->direction == DMA_DEV_TO_MEM) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+
+	if (sdmac->direction == DMA_DEV_TO_MEM) {
+>>>>>>> refs/remotes/origin/master
 		load_address = sdmac->pc_from_device;
 	} else {
 		load_address = sdmac->pc_to_device;
@@ -623,11 +1124,28 @@ static int sdma_load_context(struct sdma_channel *sdmac)
 		return load_address;
 
 	dev_dbg(sdma->dev, "load_address = %d\n", load_address);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(sdma->dev, "wml = 0x%08x\n", sdmac->watermark_level);
 	dev_dbg(sdma->dev, "shp_addr = 0x%08x\n", sdmac->shp_addr);
 	dev_dbg(sdma->dev, "per_addr = 0x%08x\n", sdmac->per_addr);
 	dev_dbg(sdma->dev, "event_mask0 = 0x%08x\n", sdmac->event_mask0);
 	dev_dbg(sdma->dev, "event_mask1 = 0x%08x\n", sdmac->event_mask1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	dev_dbg(sdma->dev, "wml = 0x%08x\n", (u32)sdmac->watermark_level);
+	dev_dbg(sdma->dev, "shp_addr = 0x%08x\n", sdmac->shp_addr);
+	dev_dbg(sdma->dev, "per_addr = 0x%08x\n", sdmac->per_addr);
+	dev_dbg(sdma->dev, "event_mask0 = 0x%08x\n", (u32)sdmac->event_mask[0]);
+	dev_dbg(sdma->dev, "event_mask1 = 0x%08x\n", (u32)sdmac->event_mask[1]);
+
+<<<<<<< HEAD
+	mutex_lock(&sdma->channel_0_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&sdma->channel_0_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	memset(context, 0, sizeof(*context));
 	context->channel_state.pc = load_address;
@@ -635,8 +1153,18 @@ static int sdma_load_context(struct sdma_channel *sdmac)
 	/* Send by context the event mask,base address for peripheral
 	 * and watermark level
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	context->gReg[0] = sdmac->event_mask1;
 	context->gReg[1] = sdmac->event_mask0;
+=======
+	context->gReg[0] = sdmac->event_mask[1];
+	context->gReg[1] = sdmac->event_mask[0];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	context->gReg[0] = sdmac->event_mask[1];
+	context->gReg[1] = sdmac->event_mask[0];
+>>>>>>> refs/remotes/origin/master
 	context->gReg[2] = sdmac->per_addr;
 	context->gReg[6] = sdmac->shp_addr;
 	context->gReg[7] = sdmac->watermark_level;
@@ -646,9 +1174,21 @@ static int sdma_load_context(struct sdma_channel *sdmac)
 	bd0->mode.count = sizeof(*context) / 4;
 	bd0->buffer_addr = sdma->context_phys;
 	bd0->ext_buffer_addr = 2048 + (sizeof(*context) / 4) * channel;
+<<<<<<< HEAD
 
 	ret = sdma_run_channel(&sdma->channel[0]);
 
+<<<<<<< HEAD
+=======
+	mutex_unlock(&sdma->channel_0_lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = sdma_run_channel0(sdma);
+
+	spin_unlock_irqrestore(&sdma->channel_0_lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -657,7 +1197,15 @@ static void sdma_disable_channel(struct sdma_channel *sdmac)
 	struct sdma_engine *sdma = sdmac->sdma;
 	int channel = sdmac->channel;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(1 << channel, sdma->regs + SDMA_H_STATSTOP);
+=======
+	writel_relaxed(BIT(channel), sdma->regs + SDMA_H_STATSTOP);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel_relaxed(BIT(channel), sdma->regs + SDMA_H_STATSTOP);
+>>>>>>> refs/remotes/origin/master
 	sdmac->status = DMA_ERROR;
 }
 
@@ -667,13 +1215,31 @@ static int sdma_config_channel(struct sdma_channel *sdmac)
 
 	sdma_disable_channel(sdmac);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sdmac->event_mask0 = 0;
 	sdmac->event_mask1 = 0;
+=======
+	sdmac->event_mask[0] = 0;
+	sdmac->event_mask[1] = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sdmac->event_mask[0] = 0;
+	sdmac->event_mask[1] = 0;
+>>>>>>> refs/remotes/origin/master
 	sdmac->shp_addr = 0;
 	sdmac->per_addr = 0;
 
 	if (sdmac->event_id0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (sdmac->event_id0 > 32)
+=======
+		if (sdmac->event_id0 >= sdmac->sdma->num_events)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (sdmac->event_id0 >= sdmac->sdma->drvdata->num_events)
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		sdma_event_enable(sdmac, sdmac->event_id0);
 	}
@@ -696,6 +1262,8 @@ static int sdma_config_channel(struct sdma_channel *sdmac)
 			(sdmac->peripheral_type != IMX_DMATYPE_DSP)) {
 		/* Handle multiple event channels differently */
 		if (sdmac->event_id1) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			sdmac->event_mask1 = 1 << (sdmac->event_id1 % 32);
 			if (sdmac->event_id1 > 31)
 				sdmac->watermark_level |= 1 << 31;
@@ -705,6 +1273,21 @@ static int sdma_config_channel(struct sdma_channel *sdmac)
 		} else {
 			sdmac->event_mask0 = 1 << sdmac->event_id0;
 			sdmac->event_mask1 = 1 << (sdmac->event_id0 - 32);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			sdmac->event_mask[1] = BIT(sdmac->event_id1 % 32);
+			if (sdmac->event_id1 > 31)
+				__set_bit(31, &sdmac->watermark_level);
+			sdmac->event_mask[0] = BIT(sdmac->event_id0 % 32);
+			if (sdmac->event_id0 > 31)
+				__set_bit(30, &sdmac->watermark_level);
+		} else {
+			__set_bit(sdmac->event_id0, sdmac->event_mask);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		/* Watermark Level */
 		sdmac->watermark_level |= sdmac->watermark_level;
@@ -730,7 +1313,15 @@ static int sdma_set_channel_priority(struct sdma_channel *sdmac,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(priority, sdma->regs + SDMA_CHNPRI_0 + 4 * channel);
+=======
+	writel_relaxed(priority, sdma->regs + SDMA_CHNPRI_0 + 4 * channel);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel_relaxed(priority, sdma->regs + SDMA_CHNPRI_0 + 4 * channel);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -752,20 +1343,29 @@ static int sdma_request_channel(struct sdma_channel *sdmac)
 	sdma->channel_control[channel].base_bd_ptr = sdmac->bd_phys;
 	sdma->channel_control[channel].current_bd_ptr = sdmac->bd_phys;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(sdma->clk);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	sdma_set_channel_priority(sdmac, MXC_SDMA_DEFAULT_PRIORITY);
 
 	init_completion(&sdmac->done);
 
 	sdmac->buf_tail = 0;
 
+=======
+	sdma_set_channel_priority(sdmac, MXC_SDMA_DEFAULT_PRIORITY);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 out:
 
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void sdma_enable_channel(struct sdma_engine *sdma, int channel)
 {
 	__raw_writel(1 << channel, sdma->regs + SDMA_H_START);
@@ -784,6 +1384,10 @@ static dma_cookie_t sdma_assign_cookie(struct sdma_channel *sdmac)
 	return cookie;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sdma_channel *to_sdma_chan(struct dma_chan *chan)
 {
 	return container_of(chan, struct sdma_channel, chan);
@@ -791,6 +1395,8 @@ static struct sdma_channel *to_sdma_chan(struct dma_chan *chan)
 
 static dma_cookie_t sdma_tx_submit(struct dma_async_tx_descriptor *tx)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sdma_channel *sdmac = to_sdma_chan(tx->chan);
 	struct sdma_engine *sdma = sdmac->sdma;
 	dma_cookie_t cookie;
@@ -802,6 +1408,22 @@ static dma_cookie_t sdma_tx_submit(struct dma_async_tx_descriptor *tx)
 	sdma_enable_channel(sdma, sdmac->channel);
 
 	spin_unlock_irq(&sdmac->lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned long flags;
+	struct sdma_channel *sdmac = to_sdma_chan(tx->chan);
+	dma_cookie_t cookie;
+
+	spin_lock_irqsave(&sdmac->lock, flags);
+
+	cookie = dma_cookie_assign(tx);
+
+	spin_unlock_irqrestore(&sdmac->lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return cookie;
 }
@@ -830,11 +1452,31 @@ static int sdma_alloc_chan_resources(struct dma_chan *chan)
 
 	sdmac->peripheral_type = data->peripheral_type;
 	sdmac->event_id0 = data->dma_request;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = sdma_set_channel_priority(sdmac, prio);
 	if (ret)
 		return ret;
 
 	ret = sdma_request_channel(sdmac);
+=======
+
+	clk_enable(sdmac->sdma->clk);
+=======
+
+	clk_enable(sdmac->sdma->clk_ipg);
+	clk_enable(sdmac->sdma->clk_ahb);
+>>>>>>> refs/remotes/origin/master
+
+	ret = sdma_request_channel(sdmac);
+	if (ret)
+		return ret;
+
+	ret = sdma_set_channel_priority(sdmac, prio);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -865,13 +1507,28 @@ static void sdma_free_chan_resources(struct dma_chan *chan)
 
 	dma_free_coherent(NULL, PAGE_SIZE, sdmac->bd, sdmac->bd_phys);
 
+<<<<<<< HEAD
 	clk_disable(sdma->clk);
+=======
+	clk_disable(sdma->clk_ipg);
+	clk_disable(sdma->clk_ahb);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct dma_async_tx_descriptor *sdma_prep_slave_sg(
 		struct dma_chan *chan, struct scatterlist *sgl,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned int sg_len, enum dma_data_direction direction,
 		unsigned long flags)
+=======
+		unsigned int sg_len, enum dma_transfer_direction direction,
+		unsigned long flags, void *context)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned int sg_len, enum dma_transfer_direction direction,
+		unsigned long flags, void *context)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sdma_channel *sdmac = to_sdma_chan(chan);
 	struct sdma_engine *sdma = sdmac->sdma;
@@ -885,6 +1542,11 @@ static struct dma_async_tx_descriptor *sdma_prep_slave_sg(
 
 	sdmac->flags = 0;
 
+<<<<<<< HEAD
+=======
+	sdmac->buf_tail = 0;
+
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(sdma->dev, "setting up %d entries for channel %d.\n",
 			sg_len, channel);
 
@@ -900,13 +1562,25 @@ static struct dma_async_tx_descriptor *sdma_prep_slave_sg(
 		goto err_out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	sdmac->chn_count = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sdmac->chn_count = 0;
+>>>>>>> refs/remotes/origin/master
 	for_each_sg(sgl, sg, sg_len, i) {
 		struct sdma_buffer_descriptor *bd = &sdmac->bd[i];
 		int param;
 
 		bd->buffer_addr = sg->dma_address;
 
+<<<<<<< HEAD
 		count = sg->length;
+=======
+		count = sg_dma_len(sg);
+>>>>>>> refs/remotes/origin/master
 
 		if (count > 0xffff) {
 			dev_err(sdma->dev, "SDMA channel %d: maximum bytes for sg entry exceeded: %d > %d\n",
@@ -916,6 +1590,14 @@ static struct dma_async_tx_descriptor *sdma_prep_slave_sg(
 		}
 
 		bd->mode.count = count;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		sdmac->chn_count += count;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sdmac->chn_count += count;
+>>>>>>> refs/remotes/origin/master
 
 		if (sdmac->word_size > DMA_SLAVE_BUSWIDTH_4_BYTES) {
 			ret =  -EINVAL;
@@ -948,8 +1630,13 @@ static struct dma_async_tx_descriptor *sdma_prep_slave_sg(
 			param &= ~BD_CONT;
 		}
 
+<<<<<<< HEAD
 		dev_dbg(sdma->dev, "entry %d: count: %d dma: 0x%08x %s%s\n",
 				i, count, sg->dma_address,
+=======
+		dev_dbg(sdma->dev, "entry %d: count: %d dma: %#llx %s%s\n",
+				i, count, (u64)sg->dma_address,
+>>>>>>> refs/remotes/origin/master
 				param & BD_WRAP ? "wrap" : "",
 				param & BD_INTR ? " intr" : "");
 
@@ -967,7 +1654,17 @@ err_out:
 
 static struct dma_async_tx_descriptor *sdma_prep_dma_cyclic(
 		struct dma_chan *chan, dma_addr_t dma_addr, size_t buf_len,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		size_t period_len, enum dma_data_direction direction)
+=======
+		size_t period_len, enum dma_transfer_direction direction,
+		void *context)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		size_t period_len, enum dma_transfer_direction direction,
+		unsigned long flags, void *context)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sdma_channel *sdmac = to_sdma_chan(chan);
 	struct sdma_engine *sdma = sdmac->sdma;
@@ -982,6 +1679,11 @@ static struct dma_async_tx_descriptor *sdma_prep_dma_cyclic(
 
 	sdmac->status = DMA_IN_PROGRESS;
 
+<<<<<<< HEAD
+=======
+	sdmac->buf_tail = 0;
+
+>>>>>>> refs/remotes/origin/master
 	sdmac->flags |= IMX_DMA_SG_LOOP;
 	sdmac->direction = direction;
 	ret = sdma_load_context(sdmac);
@@ -1019,8 +1721,13 @@ static struct dma_async_tx_descriptor *sdma_prep_dma_cyclic(
 		if (i + 1 == num_periods)
 			param |= BD_WRAP;
 
+<<<<<<< HEAD
 		dev_dbg(sdma->dev, "entry %d: count: %d dma: 0x%08x %s%s\n",
 				i, period_len, dma_addr,
+=======
+		dev_dbg(sdma->dev, "entry %d: count: %d dma: %#llx %s%s\n",
+				i, period_len, (u64)dma_addr,
+>>>>>>> refs/remotes/origin/master
 				param & BD_WRAP ? "wrap" : "",
 				param & BD_INTR ? " intr" : "");
 
@@ -1052,6 +1759,8 @@ static int sdma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 		sdma_disable_channel(sdmac);
 		return 0;
 	case DMA_SLAVE_CONFIG:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (dmaengine_cfg->direction == DMA_FROM_DEVICE) {
 			sdmac->per_address = dmaengine_cfg->src_addr;
 			sdmac->watermark_level = dmaengine_cfg->src_maxburst;
@@ -1061,6 +1770,25 @@ static int sdma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 			sdmac->watermark_level = dmaengine_cfg->dst_maxburst;
 			sdmac->word_size = dmaengine_cfg->dst_addr_width;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (dmaengine_cfg->direction == DMA_DEV_TO_MEM) {
+			sdmac->per_address = dmaengine_cfg->src_addr;
+			sdmac->watermark_level = dmaengine_cfg->src_maxburst *
+						dmaengine_cfg->src_addr_width;
+			sdmac->word_size = dmaengine_cfg->src_addr_width;
+		} else {
+			sdmac->per_address = dmaengine_cfg->dst_addr;
+			sdmac->watermark_level = dmaengine_cfg->dst_maxburst *
+						dmaengine_cfg->dst_addr_width;
+			sdmac->word_size = dmaengine_cfg->dst_addr_width;
+		}
+		sdmac->direction = dmaengine_cfg->direction;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return sdma_config_channel(sdmac);
 	default:
 		return -ENOSYS;
@@ -1070,6 +1798,7 @@ static int sdma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 }
 
 static enum dma_status sdma_tx_status(struct dma_chan *chan,
+<<<<<<< HEAD
 					    dma_cookie_t cookie,
 					    struct dma_tx_state *txstate)
 {
@@ -1078,16 +1807,44 @@ static enum dma_status sdma_tx_status(struct dma_chan *chan,
 
 	last_used = chan->cookie;
 
+<<<<<<< HEAD
 	dma_set_tx_state(txstate, sdmac->last_completed, last_used, 0);
+=======
+	dma_set_tx_state(txstate, chan->completed_cookie, last_used,
+			sdmac->chn_count - sdmac->chn_real_count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      dma_cookie_t cookie,
+				      struct dma_tx_state *txstate)
+{
+	struct sdma_channel *sdmac = to_sdma_chan(chan);
+
+	dma_set_tx_state(txstate, chan->completed_cookie, chan->cookie,
+			sdmac->chn_count - sdmac->chn_real_count);
+>>>>>>> refs/remotes/origin/master
 
 	return sdmac->status;
 }
 
 static void sdma_issue_pending(struct dma_chan *chan)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Nothing to do. We only have a single descriptor
 	 */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sdma_channel *sdmac = to_sdma_chan(chan);
+	struct sdma_engine *sdma = sdmac->sdma;
+
+	if (sdmac->status == DMA_IN_PROGRESS)
+		sdma_enable_channel(sdma, sdmac->channel);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1	34
@@ -1104,6 +1861,8 @@ static void sdma_add_scripts(struct sdma_engine *sdma,
 			saddr_arr[i] = addr_arr[i];
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sdma_get_firmware(struct sdma_engine *sdma,
 		const char *cpu_name, int to_version)
 {
@@ -1124,6 +1883,24 @@ static int __init sdma_get_firmware(struct sdma_engine *sdma,
 		return ret;
 	}
 	kfree(fwname);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void sdma_load_firmware(const struct firmware *fw, void *context)
+{
+	struct sdma_engine *sdma = context;
+	const struct sdma_firmware_header *header;
+	const struct sdma_script_start_addrs *addr;
+	unsigned short *ram_code;
+
+	if (!fw) {
+		dev_err(sdma->dev, "firmware not found\n");
+		return;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (fw->size < sizeof(*header))
 		goto err_firmware;
@@ -1138,12 +1915,22 @@ static int __init sdma_get_firmware(struct sdma_engine *sdma,
 	addr = (void *)header + header->script_addrs_start;
 	ram_code = (void *)header + header->ram_code_start;
 
+<<<<<<< HEAD
 	clk_enable(sdma->clk);
+=======
+	clk_enable(sdma->clk_ipg);
+	clk_enable(sdma->clk_ahb);
+>>>>>>> refs/remotes/origin/master
 	/* download the RAM image for SDMA */
 	sdma_load_script(sdma, ram_code,
 			header->ram_code_size,
 			addr->ram_code_start_addr);
+<<<<<<< HEAD
 	clk_disable(sdma->clk);
+=======
+	clk_disable(sdma->clk_ipg);
+	clk_disable(sdma->clk_ahb);
+>>>>>>> refs/remotes/origin/master
 
 	sdma_add_scripts(sdma, addr);
 
@@ -1153,6 +1940,25 @@ static int __init sdma_get_firmware(struct sdma_engine *sdma,
 
 err_firmware:
 	release_firmware(fw);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+}
+
+static int __init sdma_get_firmware(struct sdma_engine *sdma,
+		const char *fw_name)
+{
+	int ret;
+
+	ret = request_firmware_nowait(THIS_MODULE,
+			FW_ACTION_HOTPLUG, fw_name, sdma->dev,
+			GFP_KERNEL, sdma, sdma_load_firmware);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -1162,6 +1968,8 @@ static int __init sdma_init(struct sdma_engine *sdma)
 	int i, ret;
 	dma_addr_t ccb_phys;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch (sdma->version) {
 	case 1:
 		sdma->num_events = 32;
@@ -1171,13 +1979,36 @@ static int __init sdma_init(struct sdma_engine *sdma)
 		break;
 	default:
 		dev_err(sdma->dev, "Unknown version %d. aborting\n", sdma->version);
+=======
+	switch (sdma->devtype) {
+	case IMX31_SDMA:
+		sdma->num_events = 32;
+		break;
+	case IMX35_SDMA:
+		sdma->num_events = 48;
+		break;
+	default:
+		dev_err(sdma->dev, "Unknown sdma type %d. aborting\n",
+			sdma->devtype);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
 	clk_enable(sdma->clk);
 
 	/* Be sure SDMA has not started yet */
+<<<<<<< HEAD
 	__raw_writel(0, sdma->regs + SDMA_H_C0PTR);
+=======
+	writel_relaxed(0, sdma->regs + SDMA_H_C0PTR);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_enable(sdma->clk_ipg);
+	clk_enable(sdma->clk_ahb);
+
+	/* Be sure SDMA has not started yet */
+	writel_relaxed(0, sdma->regs + SDMA_H_C0PTR);
+>>>>>>> refs/remotes/origin/master
 
 	sdma->channel_control = dma_alloc_coherent(NULL,
 			MAX_DMA_CHANNELS * sizeof (struct sdma_channel_control) +
@@ -1199,12 +2030,27 @@ static int __init sdma_init(struct sdma_engine *sdma)
 			MAX_DMA_CHANNELS * sizeof (struct sdma_channel_control));
 
 	/* disable all channels */
+<<<<<<< HEAD
 	for (i = 0; i < sdma->num_events; i++)
+<<<<<<< HEAD
 		__raw_writel(0, sdma->regs + chnenbl_ofs(sdma, i));
 
 	/* All channels have priority 0 */
 	for (i = 0; i < MAX_DMA_CHANNELS; i++)
 		__raw_writel(0, sdma->regs + SDMA_CHNPRI_0 + i * 4);
+=======
+=======
+	for (i = 0; i < sdma->drvdata->num_events; i++)
+>>>>>>> refs/remotes/origin/master
+		writel_relaxed(0, sdma->regs + chnenbl_ofs(sdma, i));
+
+	/* All channels have priority 0 */
+	for (i = 0; i < MAX_DMA_CHANNELS; i++)
+		writel_relaxed(0, sdma->regs + SDMA_CHNPRI_0 + i * 4);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = sdma_request_channel(&sdma->channel[0]);
 	if (ret)
@@ -1213,6 +2059,8 @@ static int __init sdma_init(struct sdma_engine *sdma)
 	sdma_config_ownership(&sdma->channel[0], false, true, false);
 
 	/* Set Command Channel (Channel Zero) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(0x4050, sdma->regs + SDMA_CHN0ADDR);
 
 	/* Set bits of CONFIG register but with static context switching */
@@ -1223,38 +2071,155 @@ static int __init sdma_init(struct sdma_engine *sdma)
 
 	/* Set bits of CONFIG register with given context switching mode */
 	__raw_writel(SDMA_H_CONFIG_CSM, sdma->regs + SDMA_H_CONFIG);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	writel_relaxed(0x4050, sdma->regs + SDMA_CHN0ADDR);
+
+	/* Set bits of CONFIG register but with static context switching */
+	/* FIXME: Check whether to set ACR bit depending on clock ratios */
+	writel_relaxed(0, sdma->regs + SDMA_H_CONFIG);
+
+	writel_relaxed(ccb_phys, sdma->regs + SDMA_H_C0PTR);
+
+	/* Set bits of CONFIG register with given context switching mode */
+	writel_relaxed(SDMA_H_CONFIG_CSM, sdma->regs + SDMA_H_CONFIG);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Initializes channel's priorities */
 	sdma_set_channel_priority(&sdma->channel[0], 7);
 
+<<<<<<< HEAD
 	clk_disable(sdma->clk);
+=======
+	clk_disable(sdma->clk_ipg);
+	clk_disable(sdma->clk_ahb);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 err_dma_alloc:
+<<<<<<< HEAD
 	clk_disable(sdma->clk);
+=======
+	clk_disable(sdma->clk_ipg);
+	clk_disable(sdma->clk_ahb);
+>>>>>>> refs/remotes/origin/master
 	dev_err(sdma->dev, "initialisation failed with %d\n", ret);
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __init sdma_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
+=======
+=======
+static bool sdma_filter_fn(struct dma_chan *chan, void *fn_param)
+{
+	struct imx_dma_data *data = fn_param;
+
+	if (!imx_dma_is_general_purpose(chan))
+		return false;
+
+	chan->private = data;
+
+	return true;
+}
+
+static struct dma_chan *sdma_xlate(struct of_phandle_args *dma_spec,
+				   struct of_dma *ofdma)
+{
+	struct sdma_engine *sdma = ofdma->of_dma_data;
+	dma_cap_mask_t mask = sdma->dma_device.cap_mask;
+	struct imx_dma_data data;
+
+	if (dma_spec->args_count != 3)
+		return NULL;
+
+	data.dma_request = dma_spec->args[0];
+	data.peripheral_type = dma_spec->args[1];
+	data.priority = dma_spec->args[2];
+
+	return dma_request_channel(mask, sdma_filter_fn, &data);
+}
+
+static int __init sdma_probe(struct platform_device *pdev)
+{
+>>>>>>> refs/remotes/origin/master
+	const struct of_device_id *of_id =
+			of_match_device(sdma_dt_ids, &pdev->dev);
+	struct device_node *np = pdev->dev.of_node;
+	const char *fw_name;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 	int irq;
 	struct resource *iores;
 	struct sdma_platform_data *pdata = pdev->dev.platform_data;
 	int i;
 	struct sdma_engine *sdma;
+<<<<<<< HEAD
+=======
+	s32 *saddr_arr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+	int irq;
+	struct resource *iores;
+	struct sdma_platform_data *pdata = dev_get_platdata(&pdev->dev);
+	int i;
+	struct sdma_engine *sdma;
+	s32 *saddr_arr;
+	const struct sdma_driver_data *drvdata = NULL;
+
+	if (of_id)
+		drvdata = of_id->data;
+	else if (pdev->id_entry)
+		drvdata = (void *)pdev->id_entry->driver_data;
+
+	if (!drvdata) {
+		dev_err(&pdev->dev, "unable to find driver data\n");
+		return -EINVAL;
+	}
+
+	ret = dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	sdma = kzalloc(sizeof(*sdma), GFP_KERNEL);
 	if (!sdma)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mutex_init(&sdma->channel_0_lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	sdma->dev = &pdev->dev;
 
 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	irq = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
 	if (!iores || irq < 0 || !pdata) {
+=======
+	if (!iores || irq < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&sdma->channel_0_lock);
+
+	sdma->dev = &pdev->dev;
+	sdma->drvdata = drvdata;
+
+	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	irq = platform_get_irq(pdev, 0);
+	if (!iores || irq < 0) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err_irq;
 	}
@@ -1264,12 +2229,30 @@ static int __init sdma_probe(struct platform_device *pdev)
 		goto err_request_region;
 	}
 
+<<<<<<< HEAD
 	sdma->clk = clk_get(&pdev->dev, NULL);
 	if (IS_ERR(sdma->clk)) {
 		ret = PTR_ERR(sdma->clk);
 		goto err_clk;
 	}
 
+=======
+	sdma->clk_ipg = devm_clk_get(&pdev->dev, "ipg");
+	if (IS_ERR(sdma->clk_ipg)) {
+		ret = PTR_ERR(sdma->clk_ipg);
+		goto err_clk;
+	}
+
+	sdma->clk_ahb = devm_clk_get(&pdev->dev, "ahb");
+	if (IS_ERR(sdma->clk_ahb)) {
+		ret = PTR_ERR(sdma->clk_ahb);
+		goto err_clk;
+	}
+
+	clk_prepare(sdma->clk_ipg);
+	clk_prepare(sdma->clk_ahb);
+
+>>>>>>> refs/remotes/origin/master
 	sdma->regs = ioremap(iores->start, resource_size(iores));
 	if (!sdma->regs) {
 		ret = -ENOMEM;
@@ -1281,11 +2264,33 @@ static int __init sdma_probe(struct platform_device *pdev)
 		goto err_request_irq;
 
 	sdma->script_addrs = kzalloc(sizeof(*sdma->script_addrs), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sdma->script_addrs)
 		goto err_alloc;
 
 	sdma->version = pdata->sdma_version;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!sdma->script_addrs) {
+		ret = -ENOMEM;
+		goto err_alloc;
+	}
 
+	/* initially no scripts available */
+	saddr_arr = (s32 *)sdma->script_addrs;
+	for (i = 0; i < SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1; i++)
+		saddr_arr[i] = -EINVAL;
+
+<<<<<<< HEAD
+	if (of_id)
+		pdev->id_entry = of_id->data;
+	sdma->devtype = pdev->id_entry->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+
+=======
+>>>>>>> refs/remotes/origin/master
 	dma_cap_set(DMA_SLAVE, sdma->dma_device.cap_mask);
 	dma_cap_set(DMA_CYCLIC, sdma->dma_device.cap_mask);
 
@@ -1298,8 +2303,20 @@ static int __init sdma_probe(struct platform_device *pdev)
 		spin_lock_init(&sdmac->lock);
 
 		sdmac->chan.device = &sdma->dma_device;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		dma_cookie_init(&sdmac->chan);
+>>>>>>> refs/remotes/origin/cm-10.0
 		sdmac->channel = i;
 
+=======
+		dma_cookie_init(&sdmac->chan);
+		sdmac->channel = i;
+
+		tasklet_init(&sdmac->tasklet, sdma_tasklet,
+			     (unsigned long) sdmac);
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Add the channel to the DMAC list. Do not add channel 0 though
 		 * because we need it internally in the SDMA driver. This also means
@@ -1314,10 +2331,44 @@ static int __init sdma_probe(struct platform_device *pdev)
 	if (ret)
 		goto err_init;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (pdata->script_addrs)
 		sdma_add_scripts(sdma, pdata->script_addrs);
 
 	sdma_get_firmware(sdma, pdata->cpu_name, pdata->to_version);
+=======
+=======
+	if (sdma->drvdata->script_addrs)
+		sdma_add_scripts(sdma, sdma->drvdata->script_addrs);
+>>>>>>> refs/remotes/origin/master
+	if (pdata && pdata->script_addrs)
+		sdma_add_scripts(sdma, pdata->script_addrs);
+
+	if (pdata) {
+		ret = sdma_get_firmware(sdma, pdata->fw_name);
+		if (ret)
+			dev_warn(&pdev->dev, "failed to get firmware from platform data\n");
+	} else {
+		/*
+		 * Because that device tree does not encode ROM script address,
+		 * the RAM script in firmware is mandatory for device tree
+		 * probe, otherwise it fails.
+		 */
+		ret = of_property_read_string(np, "fsl,sdma-ram-script-name",
+					      &fw_name);
+		if (ret)
+			dev_warn(&pdev->dev, "failed to get firmware name\n");
+		else {
+			ret = sdma_get_firmware(sdma, fw_name);
+			if (ret)
+				dev_warn(&pdev->dev, "failed to get firmware from device tree\n");
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sdma->dma_device.dev = &pdev->dev;
 
@@ -1337,10 +2388,26 @@ static int __init sdma_probe(struct platform_device *pdev)
 		goto err_init;
 	}
 
+<<<<<<< HEAD
+=======
+	if (np) {
+		ret = of_dma_controller_register(np, sdma_xlate, sdma);
+		if (ret) {
+			dev_err(&pdev->dev, "failed to register controller\n");
+			goto err_register;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(sdma->dev, "initialized\n");
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+err_register:
+	dma_async_device_unregister(&sdma->dma_device);
+>>>>>>> refs/remotes/origin/master
 err_init:
 	kfree(sdma->script_addrs);
 err_alloc:
@@ -1348,7 +2415,10 @@ err_alloc:
 err_request_irq:
 	iounmap(sdma->regs);
 err_ioremap:
+<<<<<<< HEAD
 	clk_put(sdma->clk);
+=======
+>>>>>>> refs/remotes/origin/master
 err_clk:
 	release_mem_region(iores->start, resource_size(iores));
 err_request_region:
@@ -1357,7 +2427,11 @@ err_irq:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __exit sdma_remove(struct platform_device *pdev)
+=======
+static int sdma_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return -EBUSY;
 }
@@ -1365,8 +2439,21 @@ static int __exit sdma_remove(struct platform_device *pdev)
 static struct platform_driver sdma_driver = {
 	.driver		= {
 		.name	= "imx-sdma",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	},
+=======
+		.of_match_table = sdma_dt_ids,
+	},
+	.id_table	= sdma_devtypes,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.remove		= __exit_p(sdma_remove),
+=======
+		.of_match_table = sdma_dt_ids,
+	},
+	.id_table	= sdma_devtypes,
+	.remove		= sdma_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init sdma_module_init(void)

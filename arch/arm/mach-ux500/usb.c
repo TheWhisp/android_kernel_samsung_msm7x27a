@@ -6,6 +6,11 @@
  */
 #include <linux/platform_device.h>
 #include <linux/usb/musb.h>
+<<<<<<< HEAD
+=======
+#include <linux/dma-mapping.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/ste_dma40.h>
 #include <mach/hardware.h>
 #include <mach/usb.h>
@@ -94,6 +99,7 @@ static struct musb_hdrc_config musb_hdrc_config = {
 };
 
 static struct musb_hdrc_platform_data musb_platform_data = {
+<<<<<<< HEAD
 #if defined(CONFIG_USB_MUSB_OTG)
 	.mode = MUSB_OTG,
 #elif defined(CONFIG_USB_MUSB_PERIPHERAL)
@@ -101,6 +107,9 @@ static struct musb_hdrc_platform_data musb_platform_data = {
 #else /* defined(CONFIG_USB_MUSB_HOST) */
 	.mode = MUSB_HOST,
 #endif
+=======
+	.mode = MUSB_OTG,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.config = &musb_hdrc_config,
 	.board_data = &musb_board_data,
 };
@@ -145,8 +154,13 @@ static inline void ux500_usb_dma_update_tx_ch_config(int *dst_dev_type)
 		musb_dma_tx_ch[idx].dst_dev_type = dst_dev_type[idx];
 }
 
+<<<<<<< HEAD
 void ux500_add_usb(resource_size_t base, int irq, int *dma_rx_cfg,
 	int *dma_tx_cfg)
+=======
+void ux500_add_usb(struct device *parent, resource_size_t base, int irq,
+		   int *dma_rx_cfg, int *dma_tx_cfg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	ux500_musb_device.resource[0].start = base;
 	ux500_musb_device.resource[0].end = base + SZ_64K - 1;
@@ -156,5 +170,10 @@ void ux500_add_usb(resource_size_t base, int irq, int *dma_rx_cfg,
 	ux500_usb_dma_update_rx_ch_config(dma_rx_cfg);
 	ux500_usb_dma_update_tx_ch_config(dma_tx_cfg);
 
+<<<<<<< HEAD
+=======
+	ux500_musb_device.dev.parent = parent;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_device_register(&ux500_musb_device);
 }

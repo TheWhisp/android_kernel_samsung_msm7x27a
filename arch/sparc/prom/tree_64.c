@@ -39,7 +39,11 @@ inline phandle __prom_getchild(phandle node)
 	return prom_node_to_node("child", node);
 }
 
+<<<<<<< HEAD
 inline phandle prom_getchild(phandle node)
+=======
+phandle prom_getchild(phandle node)
+>>>>>>> refs/remotes/origin/master
 {
 	phandle cnode;
 
@@ -72,7 +76,11 @@ inline phandle __prom_getsibling(phandle node)
 	return prom_node_to_node(prom_peer_name, node);
 }
 
+<<<<<<< HEAD
 inline phandle prom_getsibling(phandle node)
+=======
+phandle prom_getsibling(phandle node)
+>>>>>>> refs/remotes/origin/master
 {
 	phandle sibnode;
 
@@ -89,7 +97,11 @@ EXPORT_SYMBOL(prom_getsibling);
 /* Return the length in bytes of property 'prop' at node 'node'.
  * Return -1 on error.
  */
+<<<<<<< HEAD
 inline int prom_getproplen(phandle node, const char *prop)
+=======
+int prom_getproplen(phandle node, const char *prop)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long args[6];
 
@@ -113,8 +125,13 @@ EXPORT_SYMBOL(prom_getproplen);
  * 'buffer' which has a size of 'bufsize'.  If the acquisition
  * was successful the length will be returned, else -1 is returned.
  */
+<<<<<<< HEAD
 inline int prom_getproperty(phandle node, const char *prop,
 			    char *buffer, int bufsize)
+=======
+int prom_getproperty(phandle node, const char *prop,
+		     char *buffer, int bufsize)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long args[8];
 	int plen;
@@ -141,7 +158,11 @@ EXPORT_SYMBOL(prom_getproperty);
 /* Acquire an integer property and return its value.  Returns -1
  * on failure.
  */
+<<<<<<< HEAD
 inline int prom_getint(phandle node, const char *prop)
+=======
+int prom_getint(phandle node, const char *prop)
+>>>>>>> refs/remotes/origin/master
 {
 	int intprop;
 
@@ -235,7 +256,11 @@ static const char *prom_nextprop_name = "nextprop";
 /* Return the first property type for node 'node'.
  * buffer should be at least 32B in length
  */
+<<<<<<< HEAD
 inline char *prom_firstprop(phandle node, char *buffer)
+=======
+char *prom_firstprop(phandle node, char *buffer)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long args[7];
 
@@ -261,7 +286,11 @@ EXPORT_SYMBOL(prom_firstprop);
  * at node 'node' .  Returns NULL string if no more
  * property types for this node.
  */
+<<<<<<< HEAD
 inline char *prom_nextprop(phandle node, const char *oprop, char *buffer)
+=======
+char *prom_nextprop(phandle node, const char *oprop, char *buffer)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long args[7];
 	char buf[32];

@@ -18,8 +18,14 @@
 
 struct platform_device; /* don't need the contents */
 
+<<<<<<< HEAD
 #include <plat/iic.h>
 #include <plat/gpio-cfg.h>
+=======
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <plat/gpio-cfg.h>
+#include <mach/gpio-samsung.h>
+>>>>>>> refs/remotes/origin/master
 
 void s3c_i2c1_cfg_gpio(struct platform_device *dev)
 {

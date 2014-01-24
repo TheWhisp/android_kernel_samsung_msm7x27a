@@ -16,6 +16,14 @@
 
 #include <linux/module.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/init.h>
 #include <linux/serial.h>
@@ -77,7 +85,10 @@ static void apbuart_enable_ms(struct uart_port *port)
 
 static void apbuart_rx_chars(struct uart_port *port)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty = port->state->port.tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int status, ch, rsr, flag;
 	unsigned int max_chars = port->fifosize;
 
@@ -125,7 +136,13 @@ static void apbuart_rx_chars(struct uart_port *port)
 		status = UART_GET_STATUS(port);
 	}
 
+<<<<<<< HEAD
 	tty_flip_buffer_push(tty);
+=======
+	spin_unlock(&port->lock);
+	tty_flip_buffer_push(&port->state->port);
+	spin_lock(&port->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void apbuart_tx_chars(struct uart_port *port)
@@ -553,7 +570,11 @@ static struct uart_driver grlib_apbuart_driver = {
 /* OF Platform Driver                                                       */
 /* ======================================================================== */
 
+<<<<<<< HEAD
 static int __devinit apbuart_probe(struct platform_device *op)
+=======
+static int apbuart_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct uart_port *port = NULL;
@@ -576,7 +597,15 @@ static int __devinit apbuart_probe(struct platform_device *op)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_device_id __initdata apbuart_match[] = {
+=======
+static struct of_device_id apbuart_match[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct of_device_id apbuart_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 	 .name = "GAISLER_APBUART",
 	 },
@@ -596,7 +625,15 @@ static struct platform_driver grlib_apbuart_of_driver = {
 };
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int grlib_apbuart_configure(void)
+=======
+static int __init grlib_apbuart_configure(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init grlib_apbuart_configure(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np;
 	int line = 0;

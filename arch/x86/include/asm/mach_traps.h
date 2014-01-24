@@ -17,7 +17,15 @@
 #define NMI_REASON_CLEAR_IOCHK	0x08
 #define NMI_REASON_CLEAR_MASK	0x0f
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned char get_nmi_reason(void)
+=======
+static inline unsigned char default_get_nmi_reason(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline unsigned char default_get_nmi_reason(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return inb(NMI_REASON_PORT);
 }

@@ -640,7 +640,11 @@ out:
 /* This function handles ioctl for the character device */
 static long twa_chrdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	long timeout;
 	unsigned long *cpu_addr, data_buffer_length_adjusted = 0, flags = 0;
 	dma_addr_t dma_handle;
@@ -2025,11 +2029,20 @@ static struct scsi_host_template driver_template = {
 	.cmd_per_lun		= TW_MAX_CMDS_PER_LUN,
 	.use_clustering		= ENABLE_CLUSTERING,
 	.shost_attrs		= twa_host_attrs,
+<<<<<<< HEAD
 	.emulated		= 1
 };
 
 /* This function will probe and initialize a card */
 static int __devinit twa_probe(struct pci_dev *pdev, const struct pci_device_id *dev_id)
+=======
+	.emulated		= 1,
+	.no_write_same		= 1,
+};
+
+/* This function will probe and initialize a card */
+static int twa_probe(struct pci_dev *pdev, const struct pci_device_id *dev_id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = NULL;
 	TW_Device_Extension *tw_dev;
@@ -2305,7 +2318,11 @@ out_disable_device:
 #endif
 
 /* PCI Devices supported by this driver */
+<<<<<<< HEAD
 static struct pci_device_id twa_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id twa_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VENDOR_ID_3WARE, PCI_DEVICE_ID_3WARE_9000,
 	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{ PCI_VENDOR_ID_3WARE, PCI_DEVICE_ID_3WARE_9550SX,

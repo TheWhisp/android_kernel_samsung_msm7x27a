@@ -20,7 +20,11 @@
 #include <linux/platform_device.h>
 #include <linux/io.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/i2c/at24.h>
+=======
+#include <linux/platform_data/at24.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/spi/spi.h>
 #include <linux/spi/eeprom.h>
@@ -32,15 +36,28 @@
 
 #include <asm/mach/arch.h>
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/hardware.h>
 #include <mach/iomux-mx27.h>
 #include <asm/mach/time.h>
+<<<<<<< HEAD
 #include <mach/audmux.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/irqs.h>
 #include <mach/ulpi.h>
 
 #include "devices-imx27.h"
+=======
+#include <asm/mach/time.h>
+
+#include "common.h"
+#include "devices-imx27.h"
+#include "hardware.h"
+#include "iomux-mx27.h"
+#include "ulpi.h"
+>>>>>>> refs/remotes/origin/master
 
 #define OTG_PHY_CS_GPIO (GPIO_PORTB + 23)
 #define USBH2_PHY_CS_GPIO (GPIO_PORTB + 24)
@@ -246,7 +263,11 @@ static int pca100_sdhc2_init(struct device *dev, irq_handler_t detect_irq,
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = request_irq(IRQ_GPIOC(29), detect_irq,
+=======
+	ret = request_irq(gpio_to_irq(IMX_GPIO_NR(3, 29)), detect_irq,
+>>>>>>> refs/remotes/origin/master
 			  IRQF_DISABLED | IRQF_TRIGGER_FALLING,
 			  "imx-mmc-detect", data);
 	if (ret)
@@ -258,7 +279,11 @@ static int pca100_sdhc2_init(struct device *dev, irq_handler_t detect_irq,
 
 static void pca100_sdhc2_exit(struct device *dev, void *data)
 {
+<<<<<<< HEAD
 	free_irq(IRQ_GPIOC(29), data);
+=======
+	free_irq(gpio_to_irq(IMX_GPIO_NR(3, 29)), data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct imxmmc_platform_data sdhc_pdata __initconst = {
@@ -299,11 +324,16 @@ static const struct fsl_usb2_platform_data otg_device_pdata __initconst = {
 	.phy_mode       = FSL_USB2_PHY_ULPI,
 };
 
+<<<<<<< HEAD
 static int otg_mode_host;
+=======
+static bool otg_mode_host __initdata;
+>>>>>>> refs/remotes/origin/master
 
 static int __init pca100_otg_mode(char *options)
 {
 	if (!strcmp(options, "host"))
+<<<<<<< HEAD
 		otg_mode_host = 1;
 	else if (!strcmp(options, "device"))
 		otg_mode_host = 0;
@@ -311,6 +341,15 @@ static int __init pca100_otg_mode(char *options)
 		pr_info("otg_mode neither \"host\" nor \"device\". "
 			"Defaulting to device\n");
 	return 0;
+=======
+		otg_mode_host = true;
+	else if (!strcmp(options, "device"))
+		otg_mode_host = false;
+	else
+		pr_info("otg_mode neither \"host\" nor \"device\". "
+			"Defaulting to device\n");
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 __setup("otg_mode=", pca100_otg_mode);
 
@@ -357,6 +396,8 @@ static void __init pca100_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* SSI unit */
 	mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
 				  MXC_AUDMUX_V1_PCR_SYN | /* 4wire mode */
@@ -368,6 +409,12 @@ static void __init pca100_init(void)
 				  MXC_AUDMUX_V1_PCR_TFCSEL(0) |
 				  MXC_AUDMUX_V1_PCR_TFSDIR |
 				  MXC_AUDMUX_V1_PCR_RXDSEL(0));
+=======
+	imx27_soc_init();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx27_soc_init();
+>>>>>>> refs/remotes/origin/master
 
 	ret = mxc_gpio_setup_multiple_pins(pca100_pins,
 			ARRAY_SIZE(pca100_pins), "PCA100");
@@ -410,8 +457,13 @@ static void __init pca100_init(void)
 		imx27_add_fsl_usb2_udc(&otg_device_pdata);
 	}
 
+<<<<<<< HEAD
 	usbh2_pdata.otg = otg_ulpi_create(&mxc_ulpi_access_ops,
 				ULPI_OTG_DRVVBUS | ULPI_OTG_DRVVBUS_EXT);
+=======
+	usbh2_pdata.otg = imx_otg_ulpi_create(
+			ULPI_OTG_DRVVBUS | ULPI_OTG_DRVVBUS_EXT);
+>>>>>>> refs/remotes/origin/master
 
 	if (usbh2_pdata.otg)
 		imx27_add_mxc_ehci_hs(2, &usbh2_pdata);
@@ -419,8 +471,13 @@ static void __init pca100_init(void)
 	imx27_add_imx_fb(&pca100_fb_data);
 
 	imx27_add_fec(NULL);
+<<<<<<< HEAD
 	imx27_add_imx2_wdt(NULL);
 	imx27_add_mxc_w1(NULL);
+=======
+	imx27_add_imx2_wdt();
+	imx27_add_mxc_w1();
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init pca100_timer_init(void)
@@ -428,15 +485,35 @@ static void __init pca100_timer_init(void)
 	mx27_clocks_init(26000000);
 }
 
+<<<<<<< HEAD
 static struct sys_timer pca100_timer = {
 	.init = pca100_timer_init,
 };
 
 MACHINE_START(PCA100, "phyCARD-i.MX27")
+<<<<<<< HEAD
 	.boot_params = MX27_PHYS_OFFSET + 0x100,
 	.map_io = mx27_map_io,
 	.init_early = imx27_init_early,
 	.init_irq = mx27_init_irq,
 	.init_machine = pca100_init,
 	.timer = &pca100_timer,
+=======
+=======
+MACHINE_START(PCA100, "phyCARD-i.MX27")
+>>>>>>> refs/remotes/origin/master
+	.atag_offset = 0x100,
+	.map_io = mx27_map_io,
+	.init_early = imx27_init_early,
+	.init_irq = mx27_init_irq,
+	.handle_irq = imx27_handle_irq,
+	.init_machine = pca100_init,
+<<<<<<< HEAD
+	.timer = &pca100_timer,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pca100_timer_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

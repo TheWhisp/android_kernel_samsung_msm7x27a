@@ -41,12 +41,18 @@
  *
  */
 
+<<<<<<< HEAD
 int v9fs_fid_add(struct dentry *dentry, struct p9_fid *fid)
 {
 	struct v9fs_dentry *dent;
 
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "fid %d dentry %s\n",
 					fid->fid, dentry->d_name.name);
+=======
+	p9_debug(P9_DEBUG_VFS, "fid %d dentry %s\n",
+		 fid->fid, dentry->d_name.name);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dent = dentry->d_fsdata;
 	if (!dent) {
@@ -64,6 +70,18 @@ int v9fs_fid_add(struct dentry *dentry, struct p9_fid *fid)
 	spin_unlock(&dent->lock);
 
 	return 0;
+=======
+static inline void __add_fid(struct dentry *dentry, struct p9_fid *fid)
+{
+	hlist_add_head(&fid->dlist, (struct hlist_head *)&dentry->d_fsdata);
+}
+
+void v9fs_fid_add(struct dentry *dentry, struct p9_fid *fid)
+{
+	spin_lock(&dentry->d_lock);
+	__add_fid(dentry, fid);
+	spin_unlock(&dentry->d_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -74,24 +92,50 @@ int v9fs_fid_add(struct dentry *dentry, struct p9_fid *fid)
  *
  */
 
+<<<<<<< HEAD
 static struct p9_fid *v9fs_fid_find(struct dentry *dentry, u32 uid, int any)
 {
 	struct v9fs_dentry *dent;
 	struct p9_fid *fid, *ret;
 
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, " dentry: %s (%p) uid %d any %d\n",
 		dentry->d_name.name, dentry, uid, any);
+=======
+	p9_debug(P9_DEBUG_VFS, " dentry: %s (%p) uid %d any %d\n",
+		 dentry->d_name.name, dentry, uid, any);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dent = (struct v9fs_dentry *) dentry->d_fsdata;
 	ret = NULL;
 	if (dent) {
 		spin_lock(&dent->lock);
 		list_for_each_entry(fid, &dent->fidlist, dlist) {
 			if (any || fid->uid == uid) {
+=======
+static struct p9_fid *v9fs_fid_find(struct dentry *dentry, kuid_t uid, int any)
+{
+	struct p9_fid *fid, *ret;
+
+	p9_debug(P9_DEBUG_VFS, " dentry: %s (%p) uid %d any %d\n",
+		 dentry->d_name.name, dentry, from_kuid(&init_user_ns, uid),
+		 any);
+	ret = NULL;
+	/* we'll recheck under lock if there's anything to look in */
+	if (dentry->d_fsdata) {
+		struct hlist_head *h = (struct hlist_head *)&dentry->d_fsdata;
+		spin_lock(&dentry->d_lock);
+		hlist_for_each_entry(fid, h, dlist) {
+			if (any || uid_eq(fid->uid, uid)) {
+>>>>>>> refs/remotes/origin/master
 				ret = fid;
 				break;
 			}
 		}
+<<<<<<< HEAD
 		spin_unlock(&dent->lock);
+=======
+		spin_unlock(&dentry->d_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -126,7 +170,11 @@ err_out:
 }
 
 static struct p9_fid *v9fs_fid_lookup_with_uid(struct dentry *dentry,
+<<<<<<< HEAD
 					       uid_t uid, int any)
+=======
+					       kuid_t uid, int any)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dentry *ds;
 	char **wnames, *uname;
@@ -214,8 +262,22 @@ static struct p9_fid *v9fs_fid_lookup_with_uid(struct dentry *dentry,
 	}
 	kfree(wnames);
 fid_out:
+<<<<<<< HEAD
 	if (!IS_ERR(fid))
 		v9fs_fid_add(dentry, fid);
+=======
+	if (!IS_ERR(fid)) {
+		spin_lock(&dentry->d_lock);
+		if (d_unhashed(dentry)) {
+			spin_unlock(&dentry->d_lock);
+			p9_client_clunk(fid);
+			fid = ERR_PTR(-ENOENT);
+		} else {
+			__add_fid(dentry, fid);
+			spin_unlock(&dentry->d_lock);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 err_out:
 	up_read(&v9ses->rename_sem);
 	return fid;
@@ -233,7 +295,11 @@ err_out:
 
 struct p9_fid *v9fs_fid_lookup(struct dentry *dentry)
 {
+<<<<<<< HEAD
 	uid_t uid;
+=======
+	kuid_t uid;
+>>>>>>> refs/remotes/origin/master
 	int  any, access;
 	struct v9fs_session_info *v9ses;
 
@@ -253,7 +319,11 @@ struct p9_fid *v9fs_fid_lookup(struct dentry *dentry)
 		break;
 
 	default:
+<<<<<<< HEAD
 		uid = ~0;
+=======
+		uid = INVALID_UID;
+>>>>>>> refs/remotes/origin/master
 		any = 0;
 		break;
 	}
@@ -272,7 +342,11 @@ struct p9_fid *v9fs_fid_clone(struct dentry *dentry)
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct p9_fid *v9fs_fid_clone_with_uid(struct dentry *dentry, uid_t uid)
+=======
+static struct p9_fid *v9fs_fid_clone_with_uid(struct dentry *dentry, kuid_t uid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct p9_fid *fid, *ret;
 
@@ -289,7 +363,11 @@ struct p9_fid *v9fs_writeback_fid(struct dentry *dentry)
 	int err;
 	struct p9_fid *fid;
 
+<<<<<<< HEAD
 	fid = v9fs_fid_clone_with_uid(dentry, 0);
+=======
+	fid = v9fs_fid_clone_with_uid(dentry, GLOBAL_ROOT_UID);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(fid))
 		goto error_out;
 	/*

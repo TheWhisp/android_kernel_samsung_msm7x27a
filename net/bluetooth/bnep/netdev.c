@@ -25,6 +25,7 @@
    SOFTWARE IS DISCLAIMED.
 */
 
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/interrupt.h>
 #include <linux/slab.h>
@@ -36,6 +37,9 @@
 #include <linux/wait.h>
 
 #include <asm/unaligned.h>
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
@@ -44,6 +48,15 @@
 #include "bnep.h"
 
 #define BNEP_TX_QUEUE_LEN 20
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* As this feature is dummy for BNEP net device
+** disabling support */
+#undef CONFIG_BT_BNEP_MC_FILTER
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int bnep_net_open(struct net_device *dev)
 {
@@ -129,7 +142,11 @@ static void bnep_net_timeout(struct net_device *dev)
 }
 
 #ifdef CONFIG_BT_BNEP_MC_FILTER
+<<<<<<< HEAD
 static inline int bnep_net_mc_filter(struct sk_buff *skb, struct bnep_session *s)
+=======
+static int bnep_net_mc_filter(struct sk_buff *skb, struct bnep_session *s)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ethhdr *eh = (void *) skb->data;
 
@@ -141,12 +158,20 @@ static inline int bnep_net_mc_filter(struct sk_buff *skb, struct bnep_session *s
 
 #ifdef CONFIG_BT_BNEP_PROTO_FILTER
 /* Determine ether protocol. Based on eth_type_trans. */
+<<<<<<< HEAD
 static inline u16 bnep_net_eth_proto(struct sk_buff *skb)
+=======
+static u16 bnep_net_eth_proto(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ethhdr *eh = (void *) skb->data;
 	u16 proto = ntohs(eh->h_proto);
 
+<<<<<<< HEAD
 	if (proto >= 1536)
+=======
+	if (proto >= ETH_P_802_3_MIN)
+>>>>>>> refs/remotes/origin/master
 		return proto;
 
 	if (get_unaligned((__be16 *) skb->data) == htons(0xFFFF))
@@ -155,7 +180,11 @@ static inline u16 bnep_net_eth_proto(struct sk_buff *skb)
 	return ETH_P_802_2;
 }
 
+<<<<<<< HEAD
 static inline int bnep_net_proto_filter(struct sk_buff *skb, struct bnep_session *s)
+=======
+static int bnep_net_proto_filter(struct sk_buff *skb, struct bnep_session *s)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 proto = bnep_net_eth_proto(skb);
 	struct bnep_proto_filter *f = s->proto_filter;

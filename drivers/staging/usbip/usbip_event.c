@@ -18,6 +18,14 @@
  */
 
 #include <linux/kthread.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "usbip_common.h"
 
@@ -84,7 +92,11 @@ int usbip_start_eh(struct usbip_device *ud)
 
 	ud->eh = kthread_run(event_handler_loop, ud, "usbip_eh");
 	if (IS_ERR(ud->eh)) {
+<<<<<<< HEAD
 		pr_warning("Unable to start control thread\n");
+=======
+		pr_warn("Unable to start control thread\n");
+>>>>>>> refs/remotes/origin/master
 		return PTR_ERR(ud->eh);
 	}
 
@@ -104,10 +116,19 @@ EXPORT_SYMBOL_GPL(usbip_stop_eh);
 
 void usbip_event_add(struct usbip_device *ud, unsigned long event)
 {
+<<<<<<< HEAD
 	spin_lock(&ud->lock);
 	ud->event |= event;
 	wake_up(&ud->eh_waitq);
 	spin_unlock(&ud->lock);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&ud->lock, flags);
+	ud->event |= event;
+	wake_up(&ud->eh_waitq);
+	spin_unlock_irqrestore(&ud->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(usbip_event_add);
 

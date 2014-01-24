@@ -22,6 +22,14 @@
 #include <linux/bootmem.h>
 #include <linux/nodemask.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmzone.h>
 #include <asm/numa.h>
 #include <asm/cpu.h>
@@ -134,11 +142,19 @@ struct cpu_cache_info {
 	struct kobject kobj;
 };
 
+<<<<<<< HEAD
 static struct cpu_cache_info	all_cpu_cache_info[NR_CPUS] __cpuinitdata;
 #define LEAF_KOBJECT_PTR(x,y)    (&all_cpu_cache_info[x].cache_leaves[y])
 
 #ifdef CONFIG_SMP
 static void __cpuinit cache_shared_cpu_map_setup( unsigned int cpu,
+=======
+static struct cpu_cache_info	all_cpu_cache_info[NR_CPUS];
+#define LEAF_KOBJECT_PTR(x,y)    (&all_cpu_cache_info[x].cache_leaves[y])
+
+#ifdef CONFIG_SMP
+static void cache_shared_cpu_map_setup(unsigned int cpu,
+>>>>>>> refs/remotes/origin/master
 		struct cache_info * this_leaf)
 {
 	pal_cache_shared_info_t	csi;
@@ -173,7 +189,11 @@ static void __cpuinit cache_shared_cpu_map_setup( unsigned int cpu,
 				&csi) == PAL_STATUS_SUCCESS);
 }
 #else
+<<<<<<< HEAD
 static void __cpuinit cache_shared_cpu_map_setup(unsigned int cpu,
+=======
+static void cache_shared_cpu_map_setup(unsigned int cpu,
+>>>>>>> refs/remotes/origin/master
 		struct cache_info * this_leaf)
 {
 	cpu_set(cpu, this_leaf->shared_cpu_map);
@@ -219,7 +239,17 @@ static ssize_t show_shared_cpu_map(struct cache_info *this_leaf, char *buf)
 	ssize_t	len;
 	cpumask_t shared_cpu_map;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpus_and(shared_cpu_map, this_leaf->shared_cpu_map, cpu_online_map);
+=======
+	cpumask_and(&shared_cpu_map,
+				&this_leaf->shared_cpu_map, cpu_online_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpumask_and(&shared_cpu_map,
+				&this_leaf->shared_cpu_map, cpu_online_mask);
+>>>>>>> refs/remotes/origin/master
 	len = cpumask_scnprintf(buf, NR_CPUS+1, &shared_cpu_map);
 	len += sprintf(buf+len, "\n");
 	return len;
@@ -273,7 +303,11 @@ static struct attribute * cache_default_attrs[] = {
 #define to_object(k) container_of(k, struct cache_info, kobj)
 #define to_attr(a) container_of(a, struct cache_attr, attr)
 
+<<<<<<< HEAD
 static ssize_t cache_show(struct kobject * kobj, struct attribute * attr, char * buf)
+=======
+static ssize_t ia64_cache_show(struct kobject * kobj, struct attribute * attr, char * buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cache_attr *fattr = to_attr(attr);
 	struct cache_info *this_leaf = to_object(kobj);
@@ -284,7 +318,11 @@ static ssize_t cache_show(struct kobject * kobj, struct attribute * attr, char *
 }
 
 static const struct sysfs_ops cache_sysfs_ops = {
+<<<<<<< HEAD
 	.show   = cache_show
+=======
+	.show   = ia64_cache_show
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct kobj_type cache_ktype = {
@@ -296,7 +334,11 @@ static struct kobj_type cache_ktype_percpu_entry = {
 	.sysfs_ops	= &cache_sysfs_ops,
 };
 
+<<<<<<< HEAD
 static void __cpuinit cpu_cache_sysfs_exit(unsigned int cpu)
+=======
+static void cpu_cache_sysfs_exit(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	kfree(all_cpu_cache_info[cpu].cache_leaves);
 	all_cpu_cache_info[cpu].cache_leaves = NULL;
@@ -305,7 +347,11 @@ static void __cpuinit cpu_cache_sysfs_exit(unsigned int cpu)
 	return;
 }
 
+<<<<<<< HEAD
 static int __cpuinit cpu_cache_sysfs_init(unsigned int cpu)
+=======
+static int cpu_cache_sysfs_init(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long i, levels, unique_caches;
 	pal_cache_config_info_t cci;
@@ -349,7 +395,15 @@ static int __cpuinit cpu_cache_sysfs_init(unsigned int cpu)
 }
 
 /* Add cache interface for CPU device */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __cpuinit cache_add_dev(struct sys_device * sys_dev)
+=======
+static int __cpuinit cache_add_dev(struct device * sys_dev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cache_add_dev(struct device *sys_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = sys_dev->id;
 	unsigned long i, j;
@@ -399,7 +453,15 @@ static int __cpuinit cache_add_dev(struct sys_device * sys_dev)
 }
 
 /* Remove cache interface for CPU device */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __cpuinit cache_remove_dev(struct sys_device * sys_dev)
+=======
+static int __cpuinit cache_remove_dev(struct device * sys_dev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cache_remove_dev(struct device *sys_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = sys_dev->id;
 	unsigned long i;
@@ -423,13 +485,29 @@ static int __cpuinit cache_remove_dev(struct sys_device * sys_dev)
  * When a cpu is hot-plugged, do a check and initiate
  * cache kobject if necessary
  */
+<<<<<<< HEAD
 static int __cpuinit cache_cpu_callback(struct notifier_block *nfb,
 		unsigned long action, void *hcpu)
 {
 	unsigned int cpu = (unsigned long)hcpu;
+<<<<<<< HEAD
 	struct sys_device *sys_dev;
 
 	sys_dev = get_cpu_sysdev(cpu);
+=======
+	struct device *sys_dev;
+
+	sys_dev = get_cpu_device(cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cache_cpu_callback(struct notifier_block *nfb,
+		unsigned long action, void *hcpu)
+{
+	unsigned int cpu = (unsigned long)hcpu;
+	struct device *sys_dev;
+
+	sys_dev = get_cpu_device(cpu);
+>>>>>>> refs/remotes/origin/master
 	switch (action) {
 	case CPU_ONLINE:
 	case CPU_ONLINE_FROZEN:
@@ -443,7 +521,11 @@ static int __cpuinit cache_cpu_callback(struct notifier_block *nfb,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata cache_cpu_notifier =
+=======
+static struct notifier_block cache_cpu_notifier =
+>>>>>>> refs/remotes/origin/master
 {
 	.notifier_call = cache_cpu_callback
 };
@@ -453,7 +535,15 @@ static int __init cache_sysfs_init(void)
 	int i;
 
 	for_each_online_cpu(i) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct sys_device *sys_dev = get_cpu_sysdev((unsigned int)i);
+=======
+		struct device *sys_dev = get_cpu_device((unsigned int)i);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct device *sys_dev = get_cpu_device((unsigned int)i);
+>>>>>>> refs/remotes/origin/master
 		cache_add_dev(sys_dev);
 	}
 

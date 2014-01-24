@@ -21,8 +21,13 @@
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+<<<<<<< HEAD
 #include "drmP.h"
 #include "via_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/via_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "via_drv.h"
 
 static int via_do_init_map(struct drm_device *dev, drm_via_init_t *init)
@@ -100,10 +105,25 @@ int via_driver_load(struct drm_device *dev, unsigned long chipset)
 	if (dev_priv == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	idr_init(&dev_priv->object_idr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	idr_init(&dev_priv->object_idr);
+>>>>>>> refs/remotes/origin/master
+=======
+	idr_init(&dev_priv->object_idr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->dev_private = (void *)dev_priv;
 
 	dev_priv->chipset = chipset;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = drm_sman_init(&dev_priv->sman, 2, 12, 8);
 	if (ret) {
 		kfree(dev_priv);
@@ -113,6 +133,19 @@ int via_driver_load(struct drm_device *dev, unsigned long chipset)
 	ret = drm_vblank_init(dev, 1);
 	if (ret) {
 		drm_sman_takedown(&dev_priv->sman);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	pci_set_master(dev->pdev);
+
+	ret = drm_vblank_init(dev, 1);
+	if (ret) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(dev_priv);
 		return ret;
 	}
@@ -124,7 +157,16 @@ int via_driver_unload(struct drm_device *dev)
 {
 	drm_via_private_t *dev_priv = dev->dev_private;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	drm_sman_takedown(&dev_priv->sman);
+=======
+	idr_remove_all(&dev_priv->object_idr);
+	idr_destroy(&dev_priv->object_idr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	idr_destroy(&dev_priv->object_idr);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(dev_priv);
 

@@ -17,6 +17,11 @@
  * this warranty disclaimer.
  */
 
+<<<<<<< HEAD
+=======
+#include <uapi/linux/ipv6.h>
+#include <net/ndisc.h>
+>>>>>>> refs/remotes/origin/master
 #include "decl.h"
 #include "ioctl.h"
 #include "util.h"
@@ -25,6 +30,49 @@
 #include "11n_aggr.h"
 #include "11n_rxreorder.h"
 
+<<<<<<< HEAD
+=======
+/* This function checks if a frame is IPv4 ARP or IPv6 Neighbour advertisement
+ * frame. If frame has both source and destination mac address as same, this
+ * function drops such gratuitous frames.
+ */
+static bool
+mwifiex_discard_gratuitous_arp(struct mwifiex_private *priv,
+			       struct sk_buff *skb)
+{
+	const struct mwifiex_arp_eth_header *arp;
+	struct ethhdr *eth_hdr;
+	struct ipv6hdr *ipv6;
+	struct icmp6hdr *icmpv6;
+
+	eth_hdr = (struct ethhdr *)skb->data;
+	switch (ntohs(eth_hdr->h_proto)) {
+	case ETH_P_ARP:
+		arp = (void *)(skb->data + sizeof(struct ethhdr));
+		if (arp->hdr.ar_op == htons(ARPOP_REPLY) ||
+		    arp->hdr.ar_op == htons(ARPOP_REQUEST)) {
+			if (!memcmp(arp->ar_sip, arp->ar_tip, 4))
+				return true;
+		}
+		break;
+	case ETH_P_IPV6:
+		ipv6 = (void *)(skb->data + sizeof(struct ethhdr));
+		icmpv6 = (void *)(skb->data + sizeof(struct ethhdr) +
+				  sizeof(struct ipv6hdr));
+		if (NDISC_NEIGHBOUR_ADVERTISEMENT == icmpv6->icmp6_type) {
+			if (!memcmp(&ipv6->saddr, &ipv6->daddr,
+				    sizeof(struct in6_addr)))
+				return true;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This function processes the received packet and forwards it
  * to kernel/upper layer.
@@ -38,12 +86,25 @@
  *
  * The completion callback is called after processing in complete.
  */
+<<<<<<< HEAD
 int mwifiex_process_rx_packet(struct mwifiex_adapter *adapter,
 			      struct sk_buff *skb)
 {
 	int ret;
 	struct mwifiex_rxinfo *rx_info = MWIFIEX_SKB_RXCB(skb);
+<<<<<<< HEAD
 	struct mwifiex_private *priv = adapter->priv[rx_info->bss_index];
+=======
+	struct mwifiex_private *priv =
+			mwifiex_get_priv_by_id(adapter, rx_info->bss_num,
+					       rx_info->bss_type);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int mwifiex_process_rx_packet(struct mwifiex_private *priv,
+			      struct sk_buff *skb)
+{
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	struct rx_packet_hdr *rx_pkt_hdr;
 	struct rxpd *local_rx_pd;
 	int hdr_chop;
@@ -52,8 +113,13 @@ int mwifiex_process_rx_packet(struct mwifiex_adapter *adapter,
 
 	local_rx_pd = (struct rxpd *) (skb->data);
 
+<<<<<<< HEAD
 	rx_pkt_hdr = (struct rx_packet_hdr *) ((u8 *) local_rx_pd +
 				local_rx_pd->rx_pkt_offset);
+=======
+	rx_pkt_hdr = (void *)local_rx_pd +
+		     le16_to_cpu(local_rx_pd->rx_pkt_offset);
+>>>>>>> refs/remotes/origin/master
 
 	if (!memcmp(&rx_pkt_hdr->rfc1042_hdr,
 		    rfc1042_eth_hdr, sizeof(rfc1042_eth_hdr))) {
@@ -92,13 +158,29 @@ int mwifiex_process_rx_packet(struct mwifiex_adapter *adapter,
 	   either the reconstructed EthII frame or the 802.2/llc/snap frame */
 	skb_pull(skb, hdr_chop);
 
+<<<<<<< HEAD
+=======
+	if (priv->hs2_enabled &&
+	    mwifiex_discard_gratuitous_arp(priv, skb)) {
+		dev_dbg(priv->adapter->dev, "Bypassed Gratuitous ARP\n");
+		dev_kfree_skb_any(skb);
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	priv->rxpd_rate = local_rx_pd->rx_rate;
 
 	priv->rxpd_htinfo = local_rx_pd->ht_info;
 
+<<<<<<< HEAD
 	ret = mwifiex_recv_packet(adapter, skb);
 	if (ret == -1)
 		dev_err(adapter->dev, "recv packet failed\n");
+=======
+	ret = mwifiex_recv_packet(priv, skb);
+	if (ret == -1)
+		dev_err(priv->adapter->dev, "recv packet failed\n");
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -115,6 +197,7 @@ int mwifiex_process_rx_packet(struct mwifiex_adapter *adapter,
  *
  * The completion callback is called after processing in complete.
  */
+<<<<<<< HEAD
 int mwifiex_process_sta_rx_packet(struct mwifiex_adapter *adapter,
 				  struct sk_buff *skb)
 {
@@ -124,7 +207,16 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_adapter *adapter,
 	struct rx_packet_hdr *rx_pkt_hdr;
 	u8 ta[ETH_ALEN];
 	u16 rx_pkt_type;
+<<<<<<< HEAD
 	struct mwifiex_private *priv = adapter->priv[rx_info->bss_index];
+=======
+	struct mwifiex_private *priv =
+			mwifiex_get_priv_by_id(adapter, rx_info->bss_num,
+					       rx_info->bss_type);
+
+	if (!priv)
+		return -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	local_rx_pd = (struct rxpd *) (skb->data);
 	rx_pkt_type = local_rx_pd->rx_pkt_type;
@@ -143,24 +235,84 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_adapter *adapter,
 	}
 
 	if (local_rx_pd->rx_pkt_type == PKT_TYPE_AMSDU) {
+=======
+int mwifiex_process_sta_rx_packet(struct mwifiex_private *priv,
+				  struct sk_buff *skb)
+{
+	struct mwifiex_adapter *adapter = priv->adapter;
+	int ret = 0;
+	struct rxpd *local_rx_pd;
+	struct rx_packet_hdr *rx_pkt_hdr;
+	u8 ta[ETH_ALEN];
+	u16 rx_pkt_type, rx_pkt_offset, rx_pkt_length, seq_num;
+
+	local_rx_pd = (struct rxpd *) (skb->data);
+	rx_pkt_type = le16_to_cpu(local_rx_pd->rx_pkt_type);
+	rx_pkt_offset = le16_to_cpu(local_rx_pd->rx_pkt_offset);
+	rx_pkt_length = le16_to_cpu(local_rx_pd->rx_pkt_length);
+	seq_num = le16_to_cpu(local_rx_pd->seq_num);
+
+	rx_pkt_hdr = (void *)local_rx_pd + rx_pkt_offset;
+
+	if ((rx_pkt_offset + rx_pkt_length) > (u16) skb->len) {
+		dev_err(adapter->dev,
+			"wrong rx packet: len=%d, rx_pkt_offset=%d, rx_pkt_length=%d\n",
+			skb->len, rx_pkt_offset, rx_pkt_length);
+		priv->stats.rx_dropped++;
+
+		if (adapter->if_ops.data_complete)
+			adapter->if_ops.data_complete(adapter, skb);
+		else
+			dev_kfree_skb_any(skb);
+
+		return ret;
+	}
+
+	if (rx_pkt_type == PKT_TYPE_AMSDU) {
+>>>>>>> refs/remotes/origin/master
 		struct sk_buff_head list;
 		struct sk_buff *rx_skb;
 
 		__skb_queue_head_init(&list);
 
+<<<<<<< HEAD
 		skb_pull(skb, local_rx_pd->rx_pkt_offset);
 		skb_trim(skb, local_rx_pd->rx_pkt_length);
 
 		ieee80211_amsdu_to_8023s(skb, &list, priv->curr_addr,
+<<<<<<< HEAD
 				priv->wdev->iftype, 0, false);
+=======
+					 priv->wdev->iftype, 0, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		while (!skb_queue_empty(&list)) {
 			rx_skb = __skb_dequeue(&list);
 			ret = mwifiex_recv_packet(adapter, rx_skb);
+=======
+		skb_pull(skb, rx_pkt_offset);
+		skb_trim(skb, rx_pkt_length);
+
+		ieee80211_amsdu_to_8023s(skb, &list, priv->curr_addr,
+					 priv->wdev->iftype, 0, false);
+
+		while (!skb_queue_empty(&list)) {
+			rx_skb = __skb_dequeue(&list);
+			ret = mwifiex_recv_packet(priv, rx_skb);
+>>>>>>> refs/remotes/origin/master
 			if (ret == -1)
 				dev_err(adapter->dev, "Rx of A-MSDU failed");
 		}
 		return 0;
+<<<<<<< HEAD
+=======
+	} else if (rx_pkt_type == PKT_TYPE_MGMT) {
+		ret = mwifiex_process_mgmt_packet(priv, skb);
+		if (ret)
+			dev_err(adapter->dev, "Rx of mgmt packet failed");
+		dev_kfree_skb_any(skb);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -169,7 +321,11 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_adapter *adapter,
 	 */
 	if (!IS_11N_ENABLED(priv) ||
 	    memcmp(priv->curr_addr, rx_pkt_hdr->eth803_hdr.h_dest, ETH_ALEN)) {
+<<<<<<< HEAD
 		mwifiex_process_rx_packet(adapter, skb);
+=======
+		mwifiex_process_rx_packet(priv, skb);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -177,16 +333,22 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_adapter *adapter,
 		memcpy(ta, rx_pkt_hdr->eth803_hdr.h_source, ETH_ALEN);
 	} else {
 		if (rx_pkt_type != PKT_TYPE_BAR)
+<<<<<<< HEAD
 			priv->rx_seq[local_rx_pd->priority] =
 						local_rx_pd->seq_num;
+=======
+			priv->rx_seq[local_rx_pd->priority] = seq_num;
+>>>>>>> refs/remotes/origin/master
 		memcpy(ta, priv->curr_bss_params.bss_descriptor.mac_address,
 		       ETH_ALEN);
 	}
 
 	/* Reorder and send to OS */
+<<<<<<< HEAD
 	ret = mwifiex_11n_rx_reorder_pkt(priv, local_rx_pd->seq_num,
 					     local_rx_pd->priority, ta,
 					     (u8) local_rx_pd->rx_pkt_type,
+<<<<<<< HEAD
 						(void *) skb);
 
 	if (ret || (rx_pkt_type == PKT_TYPE_BAR)) {
@@ -195,6 +357,29 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_adapter *adapter,
 
 		dev_kfree_skb_any(skb);
 	}
+=======
+					     skb);
+
+	if (ret || (rx_pkt_type == PKT_TYPE_BAR))
+		dev_kfree_skb_any(skb);
+
+	if (ret)
+		priv->stats.rx_dropped++;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mwifiex_11n_rx_reorder_pkt(priv, seq_num, local_rx_pd->priority,
+					 ta, (u8) rx_pkt_type, skb);
+
+	if (ret || (rx_pkt_type == PKT_TYPE_BAR)) {
+		if (adapter->if_ops.data_complete)
+			adapter->if_ops.data_complete(adapter, skb);
+		else
+			dev_kfree_skb_any(skb);
+	}
+
+	if (ret)
+		priv->stats.rx_dropped++;
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }

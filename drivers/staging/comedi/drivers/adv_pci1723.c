@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /*******************************************************************************
+=======
+/*
+>>>>>>> refs/remotes/origin/master
    comedi/drivers/pci1723.c
 
    COMEDI - Linux Control and Measurement Device Interface
@@ -13,12 +17,16 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+<<<<<<< HEAD
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 *******************************************************************************/
+=======
+*/
+>>>>>>> refs/remotes/origin/master
 /*
 Driver: adv_pci1723
 Description: Advantech PCI-1723
@@ -48,6 +56,7 @@ TODO:
 3. Implement calibration.
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include "comedi_pci.h"
@@ -58,6 +67,12 @@ TODO:
 #define TYPE_PCI1723 0
 
 #define IORANGE_1723  0x2A
+=======
+#include <linux/module.h>
+#include <linux/pci.h>
+
+#include "../comedidev.h"
+>>>>>>> refs/remotes/origin/master
 
 /* all the registers for the pci1723 board */
 #define PCI1723_DA(N)   ((N)<<1)	/* W: D/A register N (0 to 7) */
@@ -114,6 +129,7 @@ TODO:
 
 #define PCI1723_SELECT_CALIBRATION 0x28	/* Select the calibration Ref_V */
 
+<<<<<<< HEAD
 /* static unsigned short pci_list_builded=0;      =1 list of card is know */
 
 static const struct comedi_lrange range_pci1723 = { 1, {
@@ -195,13 +211,25 @@ struct pci1723_private {
 
 #define this_board boardtypes
 
+=======
+struct pci1723_private {
+	unsigned char da_range[8];	/* D/A output range for each channel */
+	unsigned short ao_data[8];	/* data output buffer */
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The pci1723 card reset;
  */
 static int pci1723_reset(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 	int i;
 	DPRINTK("adv_pci1723 EDBG: BGN: pci1723_reset(...)\n");
+=======
+	struct pci1723_private *devpriv = dev->private;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	outw(0x01, dev->iobase + PCI1723_SYN_SET);
 					       /* set synchronous output mode */
@@ -223,7 +251,10 @@ static int pci1723_reset(struct comedi_device *dev)
 	/* set asynchronous output mode */
 	outw(0, dev->iobase + PCI1723_SYN_SET);
 
+<<<<<<< HEAD
 	DPRINTK("adv_pci1723 EDBG: END: pci1723_reset(...)\n");
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -231,10 +262,21 @@ static int pci1723_insn_read_ao(struct comedi_device *dev,
 				struct comedi_subdevice *s,
 				struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	int n, chan;
 
 	chan = CR_CHAN(insn->chanspec);
+<<<<<<< HEAD
 	DPRINTK(" adv_PCI1723 DEBUG: pci1723_insn_read_ao() ----- \n");
+=======
+	DPRINTK(" adv_PCI1723 DEBUG: pci1723_insn_read_ao() -----\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci1723_private *devpriv = dev->private;
+	int n, chan;
+
+	chan = CR_CHAN(insn->chanspec);
+>>>>>>> refs/remotes/origin/master
 	for (n = 0; n < insn->n; n++)
 		data[n] = devpriv->ao_data[chan];
 
@@ -248,11 +290,18 @@ static int pci1723_ao_write_winsn(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
 				  struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	int n, chan;
 	chan = CR_CHAN(insn->chanspec);
 
 	DPRINTK("PCI1723: the pci1723_ao_write_winsn() ------\n");
 
+=======
+	struct pci1723_private *devpriv = dev->private;
+	int n, chan;
+	chan = CR_CHAN(insn->chanspec);
+
+>>>>>>> refs/remotes/origin/master
 	for (n = 0; n < insn->n; n++) {
 
 		devpriv->ao_data[chan] = data[n];
@@ -269,6 +318,7 @@ static int pci1723_dio_insn_config(struct comedi_device *dev,
 				   struct comedi_subdevice *s,
 				   struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	unsigned int mask;
 	unsigned int bits;
 	unsigned short dio_mode;
@@ -487,10 +537,114 @@ static int pci1723_detach(struct comedi_device *dev)
 			pci_dev_put(devpriv->pcidev);
 		}
 	}
+=======
+	unsigned int chan = CR_CHAN(insn->chanspec);
+	unsigned int mask;
+	unsigned short mode;
+	int ret;
+
+	if (chan < 8)
+		mask = 0x00ff;
+	else
+		mask = 0xff00;
+
+	ret = comedi_dio_insn_config(dev, s, insn, data, mask);
+	if (ret)
+		return ret;
+
+	/* update hardware DIO mode */
+	mode = 0x0000;			/* assume output */
+	if (!(s->io_bits & 0x00ff))
+		mode |= 0x0001;		/* low byte input */
+	if (!(s->io_bits & 0xff00))
+		mode |= 0x0002;		/* high byte input */
+	outw(mode, dev->iobase + PCI1723_DIGITAL_IO_PORT_SET);
+
+	return insn->n;
+}
+
+static int pci1723_dio_insn_bits(struct comedi_device *dev,
+				 struct comedi_subdevice *s,
+				 struct comedi_insn *insn,
+				 unsigned int *data)
+{
+	if (comedi_dio_update_state(s, data))
+		outw(s->state, dev->iobase + PCI1723_WRITE_DIGITAL_OUTPUT_CMD);
+
+	data[1] = inw(dev->iobase + PCI1723_READ_DIGITAL_INPUT_DATA);
+
+	return insn->n;
+}
+
+static int pci1723_auto_attach(struct comedi_device *dev,
+					 unsigned long context_unused)
+{
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	struct pci1723_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	ret = comedi_pci_enable(dev);
+	if (ret)
+		return ret;
+	dev->iobase = pci_resource_start(pcidev, 2);
+
+	ret = comedi_alloc_subdevices(dev, 2);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+	dev->write_subdev = s;
+	s->type		= COMEDI_SUBD_AO;
+	s->subdev_flags	= SDF_WRITEABLE | SDF_GROUND | SDF_COMMON;
+	s->n_chan	= 8;
+	s->maxdata	= 0xffff;
+	s->len_chanlist	= 8;
+	s->range_table	= &range_bipolar10;
+	s->insn_write	= pci1723_ao_write_winsn;
+	s->insn_read	= pci1723_insn_read_ao;
+
+	s = &dev->subdevices[1];
+	s->type		= COMEDI_SUBD_DIO;
+	s->subdev_flags	= SDF_READABLE | SDF_WRITABLE;
+	s->n_chan	= 16;
+	s->maxdata	= 1;
+	s->len_chanlist	= 16;
+	s->range_table	= &range_digital;
+	s->insn_config	= pci1723_dio_insn_config;
+	s->insn_bits	= pci1723_dio_insn_bits;
+
+	/* read DIO config */
+	switch (inw(dev->iobase + PCI1723_DIGITAL_IO_PORT_MODE) & 0x03) {
+	case 0x00:	/* low byte output, high byte output */
+		s->io_bits = 0xFFFF;
+		break;
+	case 0x01:	/* low byte input, high byte output */
+		s->io_bits = 0xFF00;
+		break;
+	case 0x02:	/* low byte output, high byte input */
+		s->io_bits = 0x00FF;
+		break;
+	case 0x03:	/* low byte input, high byte input */
+		s->io_bits = 0x0000;
+		break;
+	}
+	/* read DIO port state */
+	s->state = inw(dev->iobase + PCI1723_READ_DIGITAL_INPUT_DATA);
+
+	pci1723_reset(dev);
+
+	dev_info(dev->class_dev, "%s attached\n", dev->board_name);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * A convenient macro that defines init_module() and cleanup_module(),
  * as necessary.
@@ -532,6 +686,42 @@ static void __exit driver_pci1723_cleanup_module(void)
 
 module_init(driver_pci1723_init_module);
 module_exit(driver_pci1723_cleanup_module);
+=======
+static void pci1723_detach(struct comedi_device *dev)
+{
+	if (dev->iobase)
+		pci1723_reset(dev);
+	comedi_pci_disable(dev);
+}
+
+static struct comedi_driver adv_pci1723_driver = {
+	.driver_name	= "adv_pci1723",
+	.module		= THIS_MODULE,
+	.auto_attach	= pci1723_auto_attach,
+	.detach		= pci1723_detach,
+};
+
+static int adv_pci1723_pci_probe(struct pci_dev *dev,
+				 const struct pci_device_id *id)
+{
+	return comedi_pci_auto_config(dev, &adv_pci1723_driver,
+				      id->driver_data);
+}
+
+static const struct pci_device_id adv_pci1723_pci_table[] = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_ADVANTECH, 0x1723) },
+	{ 0 }
+};
+MODULE_DEVICE_TABLE(pci, adv_pci1723_pci_table);
+
+static struct pci_driver adv_pci1723_pci_driver = {
+	.name		= "adv_pci1723",
+	.id_table	= adv_pci1723_pci_table,
+	.probe		= adv_pci1723_pci_probe,
+	.remove		= comedi_pci_auto_unconfig,
+};
+module_comedi_pci_driver(adv_pci1723_driver, adv_pci1723_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

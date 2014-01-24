@@ -3,6 +3,14 @@
 
 /* Caches aren't brain-dead on the intel. */
 #include <asm-generic/cacheflush.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/special_insns.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/special_insns.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_PAT
 /*

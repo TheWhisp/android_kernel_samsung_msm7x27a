@@ -31,11 +31,16 @@
 #ifndef __WPA_H__
 #define __WPA_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 #include "80211hdr.h"
 
 /*---------------------  Export Definitions -------------------------*/
 
+=======
+#include "80211hdr.h"
+
+>>>>>>> refs/remotes/origin/master
 #define WPA_NONE            0
 #define WPA_WEP40           1
 #define WPA_TKIP            2
@@ -49,6 +54,7 @@
 #define WPA_REPLAYBITSSHIFT 2
 #define WPA_REPLAYBITS      0x03
 
+<<<<<<< HEAD
 /*---------------------  Export Classes  ----------------------------*/
 
 /*---------------------  Export Variables  --------------------------*/
@@ -58,6 +64,8 @@
 
 /*---------------------  Export Functions  --------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/master
 void
 WPA_ClearRSN(
      PKnownBSS        pBSSList
@@ -69,6 +77,7 @@ WPA_ParseRSN(
      PWLAN_IE_RSN_EXT pRSN
     );
 
+<<<<<<< HEAD
 BOOL
 WPA_SearchRSN(
     BYTE                byCmd,
@@ -77,6 +86,16 @@ WPA_SearchRSN(
     );
 
 BOOL
+=======
+bool
+WPA_SearchRSN(
+    u8                byCmd,
+    u8                byEncrypt,
+     PKnownBSS        pBSSList
+    );
+
+bool
+>>>>>>> refs/remotes/origin/master
 WPAb_Is_RSN(
      PWLAN_IE_RSN_EXT pRSN
     );

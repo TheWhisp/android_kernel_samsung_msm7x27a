@@ -1,6 +1,7 @@
 #ifndef BLKTRACE_H
 #define BLKTRACE_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #ifdef __KERNEL__
 #include <linux/blkdev.h>
@@ -14,7 +15,11 @@
 enum blktrace_cat {
 	BLK_TC_READ	= 1 << 0,	/* reads */
 	BLK_TC_WRITE	= 1 << 1,	/* writes */
+<<<<<<< HEAD
 	BLK_TC_BARRIER	= 1 << 2,	/* barrier */
+=======
+	BLK_TC_FLUSH	= 1 << 2,	/* flush */
+>>>>>>> refs/remotes/origin/cm-10.0
 	BLK_TC_SYNC	= 1 << 3,	/* sync IO */
 	BLK_TC_SYNCIO	= BLK_TC_SYNC,
 	BLK_TC_QUEUE	= 1 << 4,	/* queueing/merging */
@@ -28,8 +33,14 @@ enum blktrace_cat {
 	BLK_TC_META	= 1 << 12,	/* metadata */
 	BLK_TC_DISCARD	= 1 << 13,	/* discard requests */
 	BLK_TC_DRV_DATA	= 1 << 14,	/* binary per-driver data */
+<<<<<<< HEAD
 
 	BLK_TC_END	= 1 << 15,	/* only 16-bits, reminder */
+=======
+	BLK_TC_FUA	= 1 << 15,	/* fua requests */
+
+	BLK_TC_END	= 1 << 15,	/* we've run out of bits! */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define BLK_TC_SHIFT		(16)
@@ -144,6 +155,14 @@ struct blk_user_trace_setup {
 };
 
 #ifdef __KERNEL__
+=======
+#include <linux/blkdev.h>
+#include <linux/relay.h>
+#include <linux/compat.h>
+#include <uapi/linux/blktrace_api.h>
+#include <linux/list.h>
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_BLK_DEV_IO_TRACE)
 
 #include <linux/sysfs.h>
@@ -161,6 +180,10 @@ struct blk_trace {
 	struct dentry *dir;
 	struct dentry *dropped_file;
 	struct dentry *msg_file;
+<<<<<<< HEAD
+=======
+	struct list_head running_list;
+>>>>>>> refs/remotes/origin/master
 	atomic_t dropped;
 };
 
@@ -169,7 +192,15 @@ extern void blk_trace_shutdown(struct request_queue *);
 extern int do_blk_trace_setup(struct request_queue *q, char *name,
 			      dev_t dev, struct block_device *bdev,
 			      struct blk_user_trace_setup *buts);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern __attribute__((format(printf, 2, 3)))
+=======
+extern __printf(2, 3)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern __printf(2, 3)
+>>>>>>> refs/remotes/origin/master
 void __trace_note_message(struct blk_trace *, const char *fmt, ...);
 
 /**
@@ -225,7 +256,11 @@ static inline int blk_trace_init_sysfs(struct device *dev)
 #ifdef CONFIG_COMPAT
 
 struct compat_blk_user_trace_setup {
+<<<<<<< HEAD
 	char name[32];
+=======
+	char name[BLKTRACE_BDEV_SIZE];
+>>>>>>> refs/remotes/origin/master
 	u16 act_mask;
 	u32 buf_size;
 	u32 buf_nr;
@@ -249,5 +284,8 @@ extern void blk_fill_rwbs(char *rwbs, u32 rw, int bytes);
 
 #endif /* CONFIG_EVENT_TRACING && CONFIG_BLOCK */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

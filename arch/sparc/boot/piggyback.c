@@ -81,18 +81,30 @@ static void usage(void)
 
 static int start_line(const char *line)
 {
+<<<<<<< HEAD
 	if (strcmp(line + 8, " T _start\n") == 0)
 		return 1;
 	else if (strcmp(line + 16, " T _start\n") == 0)
+=======
+	if (strcmp(line + 10, " _start\n") == 0)
+		return 1;
+	else if (strcmp(line + 18, " _start\n") == 0)
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	return 0;
 }
 
 static int end_line(const char *line)
 {
+<<<<<<< HEAD
 	if (strcmp(line + 8, " A _end\n") == 0)
 		return 1;
 	else if (strcmp (line + 16, " A _end\n") == 0)
+=======
+	if (strcmp(line + 10, " _end\n") == 0)
+		return 1;
+	else if (strcmp (line + 18, " _end\n") == 0)
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	return 0;
 }
@@ -100,8 +112,13 @@ static int end_line(const char *line)
 /*
  * Find address for start and end in System.map.
  * The file looks like this:
+<<<<<<< HEAD
  * f0004000 T _start
  * f0379f79 A _end
+=======
+ * f0004000 ... _start
+ * f0379f79 ... _end
+>>>>>>> refs/remotes/origin/master
  * 1234567890123456
  * ^coloumn 1
  * There is support for 64 bit addresses too.

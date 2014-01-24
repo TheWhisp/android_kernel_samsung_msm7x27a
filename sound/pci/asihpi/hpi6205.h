@@ -1,7 +1,15 @@
 /*****************************************************************************
 
     AudioScience HPI driver
+<<<<<<< HEAD
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -70,15 +78,49 @@ The Host located memory buffer that the 6205 will bus master
 in and out of.
 ************************************************************/
 #define HPI6205_SIZEOF_DATA (16*1024)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+struct message_buffer_6205 {
+	struct hpi_message message;
+	char data[256];
+};
+
+struct response_buffer_6205 {
+	struct hpi_response response;
+	char data[256];
+};
+
+union buffer_6205 {
+	struct message_buffer_6205 message_buffer;
+	struct response_buffer_6205 response_buffer;
+	u8 b_data[HPI6205_SIZEOF_DATA];
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct bus_master_interface {
 	u32 host_cmd;
 	u32 dsp_ack;
 	u32 transfer_size_in_bytes;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	union {
 		struct hpi_message_header message_buffer;
 		struct hpi_response_header response_buffer;
 		u8 b_data[HPI6205_SIZEOF_DATA];
 	} u;
+=======
+	union buffer_6205 u;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	union buffer_6205 u;
+>>>>>>> refs/remotes/origin/master
 	struct controlcache_6205 control_cache;
 	struct async_event_buffer_6205 async_buffer;
 	struct hpi_hostbuffer_status

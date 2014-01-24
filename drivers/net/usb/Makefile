@@ -6,11 +6,23 @@ obj-$(CONFIG_USB_CATC)		+= catc.o
 obj-$(CONFIG_USB_KAWETH)	+= kaweth.o
 obj-$(CONFIG_USB_PEGASUS)	+= pegasus.o
 obj-$(CONFIG_USB_RTL8150)	+= rtl8150.o
+<<<<<<< HEAD
 obj-$(CONFIG_USB_HSO)		+= hso.o
 obj-$(CONFIG_USB_NET_AX8817X)	+= asix.o
 obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o
 obj-$(CONFIG_USB_NET_CDC_EEM)	+= cdc_eem.o
 obj-$(CONFIG_USB_NET_DM9601)	+= dm9601.o
+=======
+obj-$(CONFIG_USB_RTL8152)	+= r8152.o
+obj-$(CONFIG_USB_HSO)		+= hso.o
+obj-$(CONFIG_USB_NET_AX8817X)	+= asix.o
+asix-y := asix_devices.o asix_common.o ax88172a.o
+obj-$(CONFIG_USB_NET_AX88179_178A)      += ax88179_178a.o
+obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o r815x.o
+obj-$(CONFIG_USB_NET_CDC_EEM)	+= cdc_eem.o
+obj-$(CONFIG_USB_NET_DM9601)	+= dm9601.o
+obj-$(CONFIG_USB_NET_SR9700)	+= sr9700.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_USB_NET_SMSC75XX)	+= smsc75xx.o
 obj-$(CONFIG_USB_NET_SMSC95XX)	+= smsc95xx.o
 obj-$(CONFIG_USB_NET_GL620A)	+= gl620a.o
@@ -28,6 +40,21 @@ obj-$(CONFIG_USB_IPHETH)	+= ipheth.o
 obj-$(CONFIG_USB_SIERRA_NET)	+= sierra_net.o
 obj-$(CONFIG_USB_NET_CX82310_ETH)	+= cx82310_eth.o
 obj-$(CONFIG_USB_NET_CDC_NCM)	+= cdc_ncm.o
+<<<<<<< HEAD
 obj-$(CONFIG_USB_VL600)		+= lg-vl600.o
 rmnet_usb-y			:= rmnet_usb_ctrl.o rmnet_usb_data.o
 obj-$(CONFIG_MSM_RMNET_USB)	+= rmnet_usb.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_USB_NET_QMI_WWAN)	+= qmi_wwan.o
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_USB_NET_HUAWEI_CDC_NCM)	+= huawei_cdc_ncm.o
+obj-$(CONFIG_USB_VL600)		+= lg-vl600.o
+rmnet_usb-y			:= rmnet_usb_ctrl.o rmnet_usb_data.o
+obj-$(CONFIG_MSM_RMNET_USB)	+= rmnet_usb.o
+obj-$(CONFIG_USB_NET_QMI_WWAN)	+= qmi_wwan.o
+obj-$(CONFIG_USB_NET_CDC_MBIM)	+= cdc_mbim.o
+
+>>>>>>> refs/remotes/origin/master

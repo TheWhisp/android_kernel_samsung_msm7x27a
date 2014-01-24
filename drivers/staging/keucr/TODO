@@ -9,4 +9,12 @@ TODO:
 	- smcommon.h & smilsub.c: use kernel hweight8(), hweight16()
 
 Please send any patches for this driver to Al Cho <acho@novell.com> and
+<<<<<<< HEAD
+<<<<<<< HEAD
 Greg Kroah-Hartman <gregkh@suse.de>.
+=======
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>.
+>>>>>>> refs/remotes/origin/master

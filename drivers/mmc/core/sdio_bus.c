@@ -13,8 +13,19 @@
 
 #include <linux/device.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/pm_runtime.h>
+=======
+#include <linux/export.h>
+#include <linux/slab.h>
+#include <linux/pm_runtime.h>
+#include <linux/acpi.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mmc/card.h>
 #include <linux/mmc/host.h>
@@ -23,10 +34,19 @@
 #include "sdio_cis.h"
 #include "sdio_bus.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 #include <linux/mmc/host.h>
 #endif
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* show configuration fields */
 #define sdio_config_attr(field, format_string)				\
 static ssize_t								\
@@ -36,7 +56,12 @@ field##_show(struct device *dev, struct device_attribute *attr, char *buf)				\
 									\
 	func = dev_to_sdio_func (dev);					\
 	return sprintf (buf, format_string, func->field);		\
+<<<<<<< HEAD
 }
+=======
+}									\
+static DEVICE_ATTR_RO(field)
+>>>>>>> refs/remotes/origin/master
 
 sdio_config_attr(class, "0x%02x\n");
 sdio_config_attr(vendor, "0x%04x\n");
@@ -49,6 +74,7 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr, 
 	return sprintf(buf, "sdio:c%02Xv%04Xd%04X\n",
 			func->class, func->vendor, func->device);
 }
+<<<<<<< HEAD
 
 static struct device_attribute sdio_dev_attrs[] = {
 	__ATTR_RO(class),
@@ -57,6 +83,18 @@ static struct device_attribute sdio_dev_attrs[] = {
 	__ATTR_RO(modalias),
 	__ATTR_NULL,
 };
+=======
+static DEVICE_ATTR_RO(modalias);
+
+static struct attribute *sdio_dev_attrs[] = {
+	&dev_attr_class.attr,
+	&dev_attr_vendor.attr,
+	&dev_attr_device.attr,
+	&dev_attr_modalias.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(sdio_dev);
+>>>>>>> refs/remotes/origin/master
 
 static const struct sdio_device_id *sdio_match_one(struct sdio_func *func,
 	const struct sdio_device_id *id)
@@ -140,7 +178,11 @@ static int sdio_bus_probe(struct device *dev)
 	if (func->card->host->caps & MMC_CAP_POWER_OFF_CARD) {
 		ret = pm_runtime_get_sync(dev);
 		if (ret < 0)
+<<<<<<< HEAD
 			goto out;
+=======
+			goto disable_runtimepm;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Set the default block size so the driver is sure it's something
@@ -160,7 +202,10 @@ static int sdio_bus_probe(struct device *dev)
 disable_runtimepm:
 	if (func->card->host->caps & MMC_CAP_POWER_OFF_CARD)
 		pm_runtime_put_noidle(dev);
+<<<<<<< HEAD
 out:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -171,16 +216,34 @@ static int sdio_bus_remove(struct device *dev)
 	int ret = 0;
 
 	/* Make sure card is powered before invoking ->remove() */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (func->card->host->caps & MMC_CAP_POWER_OFF_CARD) {
 		ret = pm_runtime_get_sync(dev);
 		if (ret < 0)
 			goto out;
 	}
+=======
+	if (func->card->host->caps & MMC_CAP_POWER_OFF_CARD)
+		pm_runtime_get_sync(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (func->card->host->caps & MMC_CAP_POWER_OFF_CARD)
+		pm_runtime_get_sync(dev);
+>>>>>>> refs/remotes/origin/master
 
 	drv->remove(func);
 
 	if (func->irq_handler) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "WARNING: driver %s did not remove "
+=======
+		pr_warning("WARNING: driver %s did not remove "
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warning("WARNING: driver %s did not remove "
+>>>>>>> refs/remotes/origin/master
 			"its interrupt handler!\n", drv->name);
 		sdio_claim_host(func);
 		sdio_release_irq(func);
@@ -195,6 +258,8 @@ static int sdio_bus_remove(struct device *dev)
 	if (func->card->host->caps & MMC_CAP_POWER_OFF_CARD)
 		pm_runtime_put_sync(dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 out:
 	return ret;
 }
@@ -202,24 +267,79 @@ out:
 #ifdef CONFIG_PM_RUNTIME
 
 static const struct dev_pm_ops sdio_bus_pm_ops = {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	return ret;
+}
+
+#ifdef CONFIG_PM
+
+<<<<<<< HEAD
+static int pm_no_operation(struct device *dev)
+{
+	return 0;
+}
+
+static const struct dev_pm_ops sdio_bus_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(pm_no_operation, pm_no_operation)
+>>>>>>> refs/remotes/origin/cm-10.0
 	SET_RUNTIME_PM_OPS(
 		pm_generic_runtime_suspend,
 		pm_generic_runtime_resume,
 		pm_generic_runtime_idle
+=======
+#ifdef CONFIG_PM_SLEEP
+static int pm_no_operation(struct device *dev)
+{
+	/*
+	 * Prevent the PM core from calling SDIO device drivers' suspend
+	 * callback routines, which it is not supposed to do, by using this
+	 * empty function as the bus type suspend callaback for SDIO.
+	 */
+	return 0;
+}
+#endif
+
+static const struct dev_pm_ops sdio_bus_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(pm_no_operation, pm_no_operation)
+	SET_RUNTIME_PM_OPS(
+		pm_generic_runtime_suspend,
+		pm_generic_runtime_resume,
+		NULL
+>>>>>>> refs/remotes/origin/master
 	)
 };
 
 #define SDIO_PM_OPS_PTR	(&sdio_bus_pm_ops)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else /* !CONFIG_PM_RUNTIME */
 
 #define SDIO_PM_OPS_PTR	NULL
 
 #endif /* !CONFIG_PM_RUNTIME */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#else /* !CONFIG_PM */
+
+#define SDIO_PM_OPS_PTR	NULL
+
+#endif /* !CONFIG_PM */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct bus_type sdio_bus_type = {
 	.name		= "sdio",
 	.dev_attrs	= sdio_dev_attrs,
+=======
+
+static struct bus_type sdio_bus_type = {
+	.name		= "sdio",
+	.dev_groups	= sdio_dev_groups,
+>>>>>>> refs/remotes/origin/master
 	.match		= sdio_bus_match,
 	.uevent		= sdio_bus_uevent,
 	.probe		= sdio_bus_probe,
@@ -264,6 +384,10 @@ static void sdio_release_func(struct device *dev)
 {
 	struct sdio_func *func = dev_to_sdio_func(dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 	/*
 	 * If this device is embedded then we never allocated
@@ -275,6 +399,11 @@ static void sdio_release_func(struct device *dev)
 
 	if (func->info)
 		kfree(func->info);
+=======
+	sdio_free_func_cis(func);
+
+	kfree(func->info);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(func);
 }
@@ -301,6 +430,21 @@ struct sdio_func *sdio_alloc_func(struct mmc_card *card)
 	return func;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ACPI
+static void sdio_acpi_set_handle(struct sdio_func *func)
+{
+	struct mmc_host *host = func->card->host;
+	u64 addr = (host->slotno << 16) | func->num;
+
+	acpi_preset_companion(&func->dev, ACPI_HANDLE(host->parent), addr);
+}
+#else
+static inline void sdio_acpi_set_handle(struct sdio_func *func) {}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Register a new SDIO function with the driver model.
  */
@@ -310,9 +454,18 @@ int sdio_add_func(struct sdio_func *func)
 
 	dev_set_name(&func->dev, "%s:%d", mmc_card_id(func->card), func->num);
 
+<<<<<<< HEAD
 	ret = device_add(&func->dev);
 	if (ret == 0)
 		sdio_func_set_present(func);
+=======
+	sdio_acpi_set_handle(func);
+	ret = device_add(&func->dev);
+	if (ret == 0) {
+		sdio_func_set_present(func);
+		acpi_dev_pm_attach(&func->dev, false);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -328,6 +481,10 @@ void sdio_remove_func(struct sdio_func *func)
 	if (!sdio_func_present(func))
 		return;
 
+<<<<<<< HEAD
+=======
+	acpi_dev_pm_detach(&func->dev, false);
+>>>>>>> refs/remotes/origin/master
 	device_del(&func->dev);
 	put_device(&func->dev);
 }

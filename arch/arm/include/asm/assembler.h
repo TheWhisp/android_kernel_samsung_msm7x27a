@@ -22,7 +22,19 @@
 
 #include <asm/ptrace.h>
 #include <asm/domain.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+#define IOMEM(x)	(x)
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/opcodes-virt.h>
+
+#define IOMEM(x)	(x)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Endian independent macros for shifting bytes within registers.
  */
@@ -50,6 +62,16 @@
 #define put_byte_3      lsl #0
 #endif
 
+<<<<<<< HEAD
+=======
+/* Select code for any configuration running in BE8 mode */
+#ifdef CONFIG_CPU_ENDIAN_BE8
+#define ARM_BE8(code...) code
+#else
+#define ARM_BE8(code...)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Data preload for architectures that support it
  */
@@ -133,7 +155,15 @@
  * assumes FIQs are enabled, and that the processor is in SVC mode.
  */
 	.macro	save_and_disable_irqs, oldcpsr
+<<<<<<< HEAD
 	mrs	\oldcpsr, cpsr
+=======
+#ifdef CONFIG_CPU_V7M
+	mrs	\oldcpsr, primask
+#else
+	mrs	\oldcpsr, cpsr
+#endif
+>>>>>>> refs/remotes/origin/master
 	disable_irq
 	.endm
 
@@ -147,7 +177,15 @@
  * guarantee that this will preserve the flags.
  */
 	.macro	restore_irqs_notrace, oldcpsr
+<<<<<<< HEAD
 	msr	cpsr_c, \oldcpsr
+=======
+#ifdef CONFIG_CPU_V7M
+	msr	primask, \oldcpsr
+#else
+	msr	cpsr_c, \oldcpsr
+#endif
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 	.macro restore_irqs, oldcpsr
@@ -192,15 +230,41 @@
 #endif
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Instruction barrier
+ */
+	.macro	instr_sync
+#if __LINUX_ARM_ARCH__ >= 7
+	isb
+#elif __LINUX_ARM_ARCH__ == 6
+	mcr	p15, 0, r0, c7, c5, 4
+#endif
+	.endm
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * SMP data memory barrier
  */
 	.macro	smp_dmb mode
 #ifdef CONFIG_SMP
 #if __LINUX_ARM_ARCH__ >= 7
 	.ifeqs "\mode","arm"
+<<<<<<< HEAD
 	ALT_SMP(dmb)
 	.else
 	ALT_SMP(W(dmb))
+=======
+	ALT_SMP(dmb	ish)
+	.else
+	ALT_SMP(W(dmb)	ish)
+>>>>>>> refs/remotes/origin/master
 	.endif
 #elif __LINUX_ARM_ARCH__ == 6
 	ALT_SMP(mcr	p15, 0, r0, c7, c10, 5)	@ dmb
@@ -215,7 +279,18 @@
 #endif
 	.endm
 
+<<<<<<< HEAD
 #ifdef CONFIG_THUMB2_KERNEL
+=======
+#if defined(CONFIG_CPU_V7M)
+	/*
+	 * setmode is used to assert to be in svc mode during boot. For v7-M
+	 * this is done in __v7m_setup, so setmode can be empty here.
+	 */
+	.macro	setmode, mode, reg
+	.endm
+#elif defined(CONFIG_THUMB2_KERNEL)
+>>>>>>> refs/remotes/origin/master
 	.macro	setmode, mode, reg
 	mov	\reg, #\mode
 	msr	cpsr_c, \reg
@@ -227,11 +302,54 @@
 #endif
 
 /*
+<<<<<<< HEAD
+=======
+ * Helper macro to enter SVC mode cleanly and mask interrupts. reg is
+ * a scratch register for the macro to overwrite.
+ *
+ * This macro is intended for forcing the CPU into SVC mode at boot time.
+ * you cannot return to the original mode.
+ */
+.macro safe_svcmode_maskall reg:req
+#if __LINUX_ARM_ARCH__ >= 6
+	mrs	\reg , cpsr
+	eor	\reg, \reg, #HYP_MODE
+	tst	\reg, #MODE_MASK
+	bic	\reg , \reg , #MODE_MASK
+	orr	\reg , \reg , #PSR_I_BIT | PSR_F_BIT | SVC_MODE
+THUMB(	orr	\reg , \reg , #PSR_T_BIT	)
+	bne	1f
+	orr	\reg, \reg, #PSR_A_BIT
+	adr	lr, BSYM(2f)
+	msr	spsr_cxsf, \reg
+	__MSR_ELR_HYP(14)
+	__ERET
+1:	msr	cpsr_c, \reg
+2:
+#else
+/*
+ * workaround for possibly broken pre-v6 hardware
+ * (akita, Sharp Zaurus C-1000, PXA270-based)
+ */
+	setmode	PSR_F_BIT | PSR_I_BIT | SVC_MODE, \reg
+#endif
+.endm
+
+/*
+>>>>>>> refs/remotes/origin/master
  * STRT/LDRT access macros with ARM and Thumb-2 variants
  */
 #ifdef CONFIG_THUMB2_KERNEL
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.macro	usraccoff, instr, reg, ptr, inc, off, cond, abort, t=T()
+=======
+	.macro	usraccoff, instr, reg, ptr, inc, off, cond, abort, t=TUSER()
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.macro	usraccoff, instr, reg, ptr, inc, off, cond, abort, t=TUSER()
+>>>>>>> refs/remotes/origin/master
 9999:
 	.if	\inc == 1
 	\instr\cond\()b\()\t\().w \reg, [\ptr, #\off]
@@ -271,7 +389,15 @@
 
 #else	/* !CONFIG_THUMB2_KERNEL */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.macro	usracc, instr, reg, ptr, inc, cond, rept, abort, t=T()
+=======
+	.macro	usracc, instr, reg, ptr, inc, cond, rept, abort, t=TUSER()
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.macro	usracc, instr, reg, ptr, inc, cond, rept, abort, t=TUSER()
+>>>>>>> refs/remotes/origin/master
 	.rept	\rept
 9999:
 	.if	\inc == 1
@@ -298,4 +424,33 @@
 	.macro	ldrusr, reg, ptr, inc, cond=al, rept=1, abort=9001f
 	usracc	ldr, \reg, \ptr, \inc, \cond, \rept, \abort
 	.endm
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/* Utility macro for declaring string literals */
+	.macro	string name:req, string
+	.type \name , #object
+\name:
+	.asciz "\string"
+	.size \name , . - \name
+	.endm
+
+	.macro check_uaccess, addr:req, size:req, limit:req, tmp:req, bad:req
+#ifndef CONFIG_CPU_USE_DOMAINS
+	adds	\tmp, \addr, #\size - 1
+	sbcccs	\tmp, \tmp, \limit
+	bcs	\bad
+#endif
+	.endm
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif /* __ASM_ASSEMBLER_H__ */

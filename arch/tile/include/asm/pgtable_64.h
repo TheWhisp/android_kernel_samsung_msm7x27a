@@ -21,17 +21,31 @@
 #define PGDIR_SIZE	HV_L1_SPAN
 #define PGDIR_MASK	(~(PGDIR_SIZE-1))
 #define PTRS_PER_PGD	HV_L0_ENTRIES
+<<<<<<< HEAD
 #define SIZEOF_PGD	(PTRS_PER_PGD * sizeof(pgd_t))
+=======
+#define PGD_INDEX(va)	HV_L0_INDEX(va)
+#define SIZEOF_PGD	HV_L0_SIZE
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The level-1 index is defined by the huge page size.  A PMD is composed
  * of PTRS_PER_PMD pgd_t's and is the middle level of the page table.
  */
+<<<<<<< HEAD
 #define PMD_SHIFT	HV_LOG2_PAGE_SIZE_LARGE
 #define PMD_SIZE	HV_PAGE_SIZE_LARGE
 #define PMD_MASK	(~(PMD_SIZE-1))
 #define PTRS_PER_PMD	(1 << (PGDIR_SHIFT - PMD_SHIFT))
 #define SIZEOF_PMD	(PTRS_PER_PMD * sizeof(pmd_t))
+=======
+#define PMD_SHIFT	HPAGE_SHIFT
+#define PMD_SIZE	HPAGE_SIZE
+#define PMD_MASK	(~(PMD_SIZE-1))
+#define PTRS_PER_PMD	_HV_L1_ENTRIES(HPAGE_SHIFT)
+#define PMD_INDEX(va)	_HV_L1_INDEX(va, HPAGE_SHIFT)
+#define SIZEOF_PMD	_HV_L1_SIZE(HPAGE_SHIFT)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The level-2 index is defined by the difference between the huge
@@ -40,6 +54,7 @@
  * Note that the hypervisor docs use PTE for what we call pte_t, so
  * this nomenclature is somewhat confusing.
  */
+<<<<<<< HEAD
 #define PTRS_PER_PTE (1 << (HV_LOG2_PAGE_SIZE_LARGE - HV_LOG2_PAGE_SIZE_SMALL))
 #define SIZEOF_PTE	(PTRS_PER_PTE * sizeof(pte_t))
 
@@ -53,12 +68,39 @@
 #define VMALLOC_START	(_VMALLOC_START + PAGE_SIZE)
 
 #define HUGE_VMAP_END	(HUGE_VMAP_BASE + PGDIR_SIZE)
+=======
+#define PTRS_PER_PTE	_HV_L2_ENTRIES(HPAGE_SHIFT, PAGE_SHIFT)
+#define PTE_INDEX(va)	_HV_L2_INDEX(va, HPAGE_SHIFT, PAGE_SHIFT)
+#define SIZEOF_PTE	_HV_L2_SIZE(HPAGE_SHIFT, PAGE_SHIFT)
+
+/*
+ * Align the vmalloc area to an L2 page table.  Omit guard pages at
+ * the beginning and end for simplicity (particularly in the per-cpu
+ * memory allocation code).  The vmalloc code puts in an internal
+ * guard page between each allocation.
+ */
+#define _VMALLOC_END	MEM_SV_START
+#define VMALLOC_END	_VMALLOC_END
+#define VMALLOC_START	_VMALLOC_START
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
 /* We have no pud since we are a three-level page table. */
 #include <asm-generic/pgtable-nopud.h>
 
+<<<<<<< HEAD
+=======
+/*
+ * pmds are the same as pgds and ptes, so converting is a no-op.
+ */
+#define pmd_pte(pmd) (pmd)
+#define pmdp_ptep(pmdp) (pmdp)
+#define pte_pmd(pte) (pte)
+
+#define pud_pte(pud) ((pud).pgd)
+
+>>>>>>> refs/remotes/origin/master
 static inline int pud_none(pud_t pud)
 {
 	return pud_val(pud) == 0;
@@ -69,6 +111,14 @@ static inline int pud_present(pud_t pud)
 	return pud_val(pud) & _PAGE_PRESENT;
 }
 
+<<<<<<< HEAD
+=======
+static inline int pud_huge_page(pud_t pud)
+{
+	return pud_val(pud) & _PAGE_HUGE_PAGE;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define pmd_ERROR(e) \
 	pr_err("%s:%d: bad pmd 0x%016llx.\n", __FILE__, __LINE__, pmd_val(e))
 
@@ -85,6 +135,12 @@ static inline int pud_bad(pud_t pud)
 /* Return the page-table frame number (ptfn) that a pud_t points at. */
 #define pud_ptfn(pud) hv_pte_get_ptfn((pud).pgd)
 
+<<<<<<< HEAD
+=======
+/* Return the page frame number (pfn) that a pud_t points at. */
+#define pud_pfn(pud) pte_pfn(pud_pte(pud))
+
+>>>>>>> refs/remotes/origin/master
 /*
  * A given kernel pud_t maps to a kernel pmd_t table at a specific
  * virtual address.  Since kernel pmd_t tables can be aligned at
@@ -98,7 +154,11 @@ static inline int pud_bad(pud_t pud)
  * A pud_t points to a pmd_t array.  Since we can have multiple per
  * page, we don't have a one-to-one mapping of pud_t's to pages.
  */
+<<<<<<< HEAD
 #define pud_page(pud) pfn_to_page(HV_PTFN_TO_PFN(pud_ptfn(pud)))
+=======
+#define pud_page(pud) pfn_to_page(PFN_DOWN(HV_PTFN_TO_CPA(pud_ptfn(pud))))
+>>>>>>> refs/remotes/origin/master
 
 static inline unsigned long pud_index(unsigned long address)
 {
@@ -108,6 +168,7 @@ static inline unsigned long pud_index(unsigned long address)
 #define pmd_offset(pud, address) \
 	((pmd_t *)pud_page_vaddr(*(pud)) + pmd_index(address))
 
+<<<<<<< HEAD
 static inline void __set_pmd(pmd_t *pmdp, pmd_t pmdval)
 {
 	set_pte(pmdp, pmdval);
@@ -130,6 +191,8 @@ static inline void pmd_clear(pmd_t *pmdp)
 	__pte_clear(pmdp);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Normalize an address to having the correct high bits set. */
 #define pgd_addr_normalize pgd_addr_normalize
 static inline unsigned long pgd_addr_normalize(unsigned long addr)
@@ -141,8 +204,12 @@ static inline unsigned long pgd_addr_normalize(unsigned long addr)
 /* We don't define any pgds for these addresses. */
 static inline int pgd_addr_invalid(unsigned long addr)
 {
+<<<<<<< HEAD
 	return addr >= MEM_HV_START ||
 		(addr > MEM_LOW_END && addr < MEM_HIGH_START);
+=======
+	return addr >= KERNEL_HIGH_VADDR || addr != pgd_addr_normalize(addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

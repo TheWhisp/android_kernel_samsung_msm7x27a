@@ -29,6 +29,7 @@ const char inet_csk_timer_bug_msg[] = "inet_csk BUG: unknown timer value\n";
 EXPORT_SYMBOL(inet_csk_timer_bug_msg);
 #endif
 
+<<<<<<< HEAD
 /*
  * This struct holds the first and last local port number.
  */
@@ -49,15 +50,39 @@ void inet_get_local_port_range(int *low, int *high)
 		*low = sysctl_local_ports.range[0];
 		*high = sysctl_local_ports.range[1];
 	} while (read_seqretry(&sysctl_local_ports.lock, seq));
+=======
+unsigned long *sysctl_local_reserved_ports;
+EXPORT_SYMBOL(sysctl_local_reserved_ports);
+
+void inet_get_local_port_range(struct net *net, int *low, int *high)
+{
+	unsigned int seq;
+
+	do {
+		seq = read_seqbegin(&net->ipv4.sysctl_local_ports.lock);
+
+		*low = net->ipv4.sysctl_local_ports.range[0];
+		*high = net->ipv4.sysctl_local_ports.range[1];
+	} while (read_seqretry(&net->ipv4.sysctl_local_ports.lock, seq));
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(inet_get_local_port_range);
 
 int inet_csk_bind_conflict(const struct sock *sk,
+<<<<<<< HEAD
 			   const struct inet_bind_bucket *tb)
 {
 	struct sock *sk2;
 	struct hlist_node *node;
 	int reuse = sk->sk_reuse;
+=======
+			   const struct inet_bind_bucket *tb, bool relax)
+{
+	struct sock *sk2;
+	int reuse = sk->sk_reuse;
+	int reuseport = sk->sk_reuseport;
+	kuid_t uid = sock_i_uid((struct sock *)sk);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Unlike other sk lookup places we do not check
@@ -66,22 +91,48 @@ int inet_csk_bind_conflict(const struct sock *sk,
 	 * one this bucket belongs to.
 	 */
 
+<<<<<<< HEAD
 	sk_for_each_bound(sk2, node, &tb->owners) {
+=======
+	sk_for_each_bound(sk2, &tb->owners) {
+>>>>>>> refs/remotes/origin/master
 		if (sk != sk2 &&
 		    !inet_v6_ipv6only(sk2) &&
 		    (!sk->sk_bound_dev_if ||
 		     !sk2->sk_bound_dev_if ||
 		     sk->sk_bound_dev_if == sk2->sk_bound_dev_if)) {
+<<<<<<< HEAD
 			if (!reuse || !sk2->sk_reuse ||
 			    sk2->sk_state == TCP_LISTEN) {
 				const __be32 sk2_rcv_saddr = sk_rcv_saddr(sk2);
 				if (!sk2_rcv_saddr || !sk_rcv_saddr(sk) ||
 				    sk2_rcv_saddr == sk_rcv_saddr(sk))
+=======
+			if ((!reuse || !sk2->sk_reuse ||
+			    sk2->sk_state == TCP_LISTEN) &&
+			    (!reuseport || !sk2->sk_reuseport ||
+			    (sk2->sk_state != TCP_TIME_WAIT &&
+			     !uid_eq(uid, sock_i_uid(sk2))))) {
+
+				if (!sk2->sk_rcv_saddr || !sk->sk_rcv_saddr ||
+				    sk2->sk_rcv_saddr == sk->sk_rcv_saddr)
+					break;
+			}
+			if (!relax && reuse && sk2->sk_reuse &&
+			    sk2->sk_state != TCP_LISTEN) {
+
+				if (!sk2->sk_rcv_saddr || !sk->sk_rcv_saddr ||
+				    sk2->sk_rcv_saddr == sk->sk_rcv_saddr)
+>>>>>>> refs/remotes/origin/master
 					break;
 			}
 		}
 	}
+<<<<<<< HEAD
 	return node != NULL;
+=======
+	return sk2 != NULL;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(inet_csk_bind_conflict);
 
@@ -92,18 +143,29 @@ int inet_csk_get_port(struct sock *sk, unsigned short snum)
 {
 	struct inet_hashinfo *hashinfo = sk->sk_prot->h.hashinfo;
 	struct inet_bind_hashbucket *head;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct inet_bind_bucket *tb;
 	int ret, attempts = 5;
 	struct net *net = sock_net(sk);
 	int smallest_size = -1, smallest_rover;
+<<<<<<< HEAD
+=======
+	kuid_t uid = sock_i_uid(sk);
+>>>>>>> refs/remotes/origin/master
 
 	local_bh_disable();
 	if (!snum) {
 		int remaining, rover, low, high;
 
 again:
+<<<<<<< HEAD
 		inet_get_local_port_range(&low, &high);
+=======
+		inet_get_local_port_range(net, &low, &high);
+>>>>>>> refs/remotes/origin/master
 		remaining = (high - low) + 1;
 		smallest_rover = rover = net_random() % remaining + low;
 
@@ -114,6 +176,7 @@ again:
 			head = &hashinfo->bhash[inet_bhashfn(net, rover,
 					hashinfo->bhash_size)];
 			spin_lock(&head->lock);
+<<<<<<< HEAD
 			inet_bind_bucket_for_each(tb, node, &head->chain)
 				if (net_eq(ib_net(tb), net) && tb->port == rover) {
 					if (tb->fastreuse > 0 &&
@@ -123,11 +186,44 @@ again:
 						smallest_size = tb->num_owners;
 						smallest_rover = rover;
 						if (atomic_read(&hashinfo->bsockets) > (high - low) + 1) {
+<<<<<<< HEAD
 							spin_unlock(&head->lock);
 							snum = smallest_rover;
 							goto have_snum;
 						}
 					}
+=======
+=======
+			inet_bind_bucket_for_each(tb, &head->chain)
+				if (net_eq(ib_net(tb), net) && tb->port == rover) {
+					if (((tb->fastreuse > 0 &&
+					      sk->sk_reuse &&
+					      sk->sk_state != TCP_LISTEN) ||
+					     (tb->fastreuseport > 0 &&
+					      sk->sk_reuseport &&
+					      uid_eq(tb->fastuid, uid))) &&
+					    (tb->num_owners < smallest_size || smallest_size == -1)) {
+						smallest_size = tb->num_owners;
+						smallest_rover = rover;
+						if (atomic_read(&hashinfo->bsockets) > (high - low) + 1 &&
+						    !inet_csk(sk)->icsk_af_ops->bind_conflict(sk, tb, false)) {
+>>>>>>> refs/remotes/origin/master
+							snum = smallest_rover;
+							goto tb_found;
+						}
+					}
+<<<<<<< HEAD
+					if (!inet_csk(sk)->icsk_af_ops->bind_conflict(sk, tb)) {
+						snum = rover;
+						goto tb_found;
+					}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					if (!inet_csk(sk)->icsk_af_ops->bind_conflict(sk, tb, false)) {
+						snum = rover;
+						goto tb_found;
+					}
+>>>>>>> refs/remotes/origin/master
 					goto next;
 				}
 			break;
@@ -161,7 +257,11 @@ have_snum:
 		head = &hashinfo->bhash[inet_bhashfn(net, snum,
 				hashinfo->bhash_size)];
 		spin_lock(&head->lock);
+<<<<<<< HEAD
 		inet_bind_bucket_for_each(tb, node, &head->chain)
+=======
+		inet_bind_bucket_for_each(tb, &head->chain)
+>>>>>>> refs/remotes/origin/master
 			if (net_eq(ib_net(tb), net) && tb->port == snum)
 				goto tb_found;
 	}
@@ -169,18 +269,39 @@ have_snum:
 	goto tb_not_found;
 tb_found:
 	if (!hlist_empty(&tb->owners)) {
+<<<<<<< HEAD
 		if (tb->fastreuse > 0 &&
 		    sk->sk_reuse && sk->sk_state != TCP_LISTEN &&
+=======
+		if (sk->sk_reuse == SK_FORCE_REUSE)
+			goto success;
+
+		if (((tb->fastreuse > 0 &&
+		      sk->sk_reuse && sk->sk_state != TCP_LISTEN) ||
+		     (tb->fastreuseport > 0 &&
+		      sk->sk_reuseport && uid_eq(tb->fastuid, uid))) &&
+>>>>>>> refs/remotes/origin/master
 		    smallest_size == -1) {
 			goto success;
 		} else {
 			ret = 1;
+<<<<<<< HEAD
 			if (inet_csk(sk)->icsk_af_ops->bind_conflict(sk, tb)) {
 				if (sk->sk_reuse && sk->sk_state != TCP_LISTEN &&
+=======
+			if (inet_csk(sk)->icsk_af_ops->bind_conflict(sk, tb, true)) {
+				if (((sk->sk_reuse && sk->sk_state != TCP_LISTEN) ||
+				     (tb->fastreuseport > 0 &&
+				      sk->sk_reuseport && uid_eq(tb->fastuid, uid))) &&
+>>>>>>> refs/remotes/origin/master
 				    smallest_size != -1 && --attempts >= 0) {
 					spin_unlock(&head->lock);
 					goto again;
 				}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 				goto fail_unlock;
 			}
 		}
@@ -195,9 +316,25 @@ tb_not_found:
 			tb->fastreuse = 1;
 		else
 			tb->fastreuse = 0;
+<<<<<<< HEAD
 	} else if (tb->fastreuse &&
 		   (!sk->sk_reuse || sk->sk_state == TCP_LISTEN))
 		tb->fastreuse = 0;
+=======
+		if (sk->sk_reuseport) {
+			tb->fastreuseport = 1;
+			tb->fastuid = uid;
+		} else
+			tb->fastreuseport = 0;
+	} else {
+		if (tb->fastreuse &&
+		    (!sk->sk_reuse || sk->sk_state == TCP_LISTEN))
+			tb->fastreuse = 0;
+		if (tb->fastreuseport &&
+		    (!sk->sk_reuseport || !uid_eq(tb->fastuid, uid)))
+			tb->fastreuseport = 0;
+	}
+>>>>>>> refs/remotes/origin/master
 success:
 	if (!inet_csk(sk)->icsk_bind_hash)
 		inet_bind_hash(sk, tb, snum);
@@ -266,7 +403,13 @@ static int inet_csk_wait_for_connect(struct sock *sk, long timeo)
 struct sock *inet_csk_accept(struct sock *sk, int flags, int *err)
 {
 	struct inet_connection_sock *icsk = inet_csk(sk);
+<<<<<<< HEAD
 	struct sock *newsk;
+=======
+	struct request_sock_queue *queue = &icsk->icsk_accept_queue;
+	struct sock *newsk;
+	struct request_sock *req;
+>>>>>>> refs/remotes/origin/master
 	int error;
 
 	lock_sock(sk);
@@ -279,7 +422,11 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err)
 		goto out_err;
 
 	/* Find already established connection */
+<<<<<<< HEAD
 	if (reqsk_queue_empty(&icsk->icsk_accept_queue)) {
+=======
+	if (reqsk_queue_empty(queue)) {
+>>>>>>> refs/remotes/origin/master
 		long timeo = sock_rcvtimeo(sk, flags & O_NONBLOCK);
 
 		/* If this is a non blocking socket don't sleep */
@@ -291,6 +438,7 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err)
 		if (error)
 			goto out_err;
 	}
+<<<<<<< HEAD
 
 	newsk = reqsk_queue_get_child(&icsk->icsk_accept_queue, sk);
 	WARN_ON(newsk->sk_state == TCP_SYN_RECV);
@@ -299,6 +447,34 @@ out:
 	return newsk;
 out_err:
 	newsk = NULL;
+=======
+	req = reqsk_queue_remove(queue);
+	newsk = req->sk;
+
+	sk_acceptq_removed(sk);
+	if (sk->sk_protocol == IPPROTO_TCP && queue->fastopenq != NULL) {
+		spin_lock_bh(&queue->fastopenq->lock);
+		if (tcp_rsk(req)->listener) {
+			/* We are still waiting for the final ACK from 3WHS
+			 * so can't free req now. Instead, we set req->sk to
+			 * NULL to signify that the child socket is taken
+			 * so reqsk_fastopen_remove() will free the req
+			 * when 3WHS finishes (or is aborted).
+			 */
+			req->sk = NULL;
+			req = NULL;
+		}
+		spin_unlock_bh(&queue->fastopenq->lock);
+	}
+out:
+	release_sock(sk);
+	if (req)
+		__reqsk_free(req);
+	return newsk;
+out_err:
+	newsk = NULL;
+	req = NULL;
+>>>>>>> refs/remotes/origin/master
 	*err = error;
 	goto out;
 }
@@ -357,17 +533,32 @@ struct dst_entry *inet_csk_route_req(struct sock *sk,
 	const struct inet_request_sock *ireq = inet_rsk(req);
 	struct ip_options_rcu *opt = inet_rsk(req)->opt;
 	struct net *net = sock_net(sk);
+<<<<<<< HEAD
 
 	flowi4_init_output(fl4, sk->sk_bound_dev_if, sk->sk_mark,
 			   RT_CONN_FLAGS(sk), RT_SCOPE_UNIVERSE,
 			   sk->sk_protocol, inet_sk_flowi_flags(sk),
 			   (opt && opt->opt.srr) ? opt->opt.faddr : ireq->rmt_addr,
 			   ireq->loc_addr, ireq->rmt_port, inet_sk(sk)->inet_sport);
+=======
+	int flags = inet_sk_flowi_flags(sk);
+
+	flowi4_init_output(fl4, sk->sk_bound_dev_if, sk->sk_mark,
+			   RT_CONN_FLAGS(sk), RT_SCOPE_UNIVERSE,
+			   sk->sk_protocol,
+			   flags,
+			   (opt && opt->opt.srr) ? opt->opt.faddr : ireq->ir_rmt_addr,
+			   ireq->ir_loc_addr, ireq->ir_rmt_port, inet_sk(sk)->inet_sport);
+>>>>>>> refs/remotes/origin/master
 	security_req_classify_flow(req, flowi4_to_flowi(fl4));
 	rt = ip_route_output_flow(net, fl4, sk);
 	if (IS_ERR(rt))
 		goto no_route;
+<<<<<<< HEAD
 	if (opt && opt->opt.is_strictroute && fl4->daddr != rt->rt_gateway)
+=======
+	if (opt && opt->opt.is_strictroute && rt->rt_uses_gateway)
+>>>>>>> refs/remotes/origin/master
 		goto route_err;
 	return &rt->dst;
 
@@ -385,28 +576,53 @@ struct dst_entry *inet_csk_route_child_sock(struct sock *sk,
 {
 	const struct inet_request_sock *ireq = inet_rsk(req);
 	struct inet_sock *newinet = inet_sk(newsk);
+<<<<<<< HEAD
 	struct ip_options_rcu *opt = ireq->opt;
+=======
+	struct ip_options_rcu *opt;
+>>>>>>> refs/remotes/origin/master
 	struct net *net = sock_net(sk);
 	struct flowi4 *fl4;
 	struct rtable *rt;
 
 	fl4 = &newinet->cork.fl.u.ip4;
+<<<<<<< HEAD
 	flowi4_init_output(fl4, sk->sk_bound_dev_if, sk->sk_mark,
 			   RT_CONN_FLAGS(sk), RT_SCOPE_UNIVERSE,
 			   sk->sk_protocol, inet_sk_flowi_flags(sk),
 			   (opt && opt->opt.srr) ? opt->opt.faddr : ireq->rmt_addr,
 			   ireq->loc_addr, ireq->rmt_port, inet_sk(sk)->inet_sport);
+=======
+
+	rcu_read_lock();
+	opt = rcu_dereference(newinet->inet_opt);
+	flowi4_init_output(fl4, sk->sk_bound_dev_if, sk->sk_mark,
+			   RT_CONN_FLAGS(sk), RT_SCOPE_UNIVERSE,
+			   sk->sk_protocol, inet_sk_flowi_flags(sk),
+			   (opt && opt->opt.srr) ? opt->opt.faddr : ireq->ir_rmt_addr,
+			   ireq->ir_loc_addr, ireq->ir_rmt_port, inet_sk(sk)->inet_sport);
+>>>>>>> refs/remotes/origin/master
 	security_req_classify_flow(req, flowi4_to_flowi(fl4));
 	rt = ip_route_output_flow(net, fl4, sk);
 	if (IS_ERR(rt))
 		goto no_route;
+<<<<<<< HEAD
 	if (opt && opt->opt.is_strictroute && fl4->daddr != rt->rt_gateway)
 		goto route_err;
+=======
+	if (opt && opt->opt.is_strictroute && rt->rt_uses_gateway)
+		goto route_err;
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	return &rt->dst;
 
 route_err:
 	ip_rt_put(rt);
 no_route:
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	IP_INC_STATS_BH(net, IPSTATS_MIB_OUTNOROUTES);
 	return NULL;
 }
@@ -418,7 +634,15 @@ static inline u32 inet_synq_hash(const __be32 raddr, const __be16 rport,
 	return jhash_2words((__force u32)raddr, (__force u32)rport, rnd) & (synq_hsize - 1);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 #define AF_INET_FAMILY(fam) ((fam) == AF_INET)
 #else
 #define AF_INET_FAMILY(fam) 1
@@ -439,9 +663,15 @@ struct request_sock *inet_csk_search_req(const struct sock *sk,
 	     prev = &req->dl_next) {
 		const struct inet_request_sock *ireq = inet_rsk(req);
 
+<<<<<<< HEAD
 		if (ireq->rmt_port == rport &&
 		    ireq->rmt_addr == raddr &&
 		    ireq->loc_addr == laddr &&
+=======
+		if (ireq->ir_rmt_port == rport &&
+		    ireq->ir_rmt_addr == raddr &&
+		    ireq->ir_loc_addr == laddr &&
+>>>>>>> refs/remotes/origin/master
 		    AF_INET_FAMILY(req->rsk_ops->family)) {
 			WARN_ON(req->sk);
 			*prevp = prev;
@@ -458,7 +688,12 @@ void inet_csk_reqsk_queue_hash_add(struct sock *sk, struct request_sock *req,
 {
 	struct inet_connection_sock *icsk = inet_csk(sk);
 	struct listen_sock *lopt = icsk->icsk_accept_queue.listen_opt;
+<<<<<<< HEAD
 	const u32 h = inet_synq_hash(inet_rsk(req)->rmt_addr, inet_rsk(req)->rmt_port,
+=======
+	const u32 h = inet_synq_hash(inet_rsk(req)->ir_rmt_addr,
+				     inet_rsk(req)->ir_rmt_port,
+>>>>>>> refs/remotes/origin/master
 				     lopt->hash_rnd, lopt->nr_table_entries);
 
 	reqsk_queue_hash_req(&icsk->icsk_accept_queue, h, req, timeout);
@@ -477,20 +712,44 @@ static inline void syn_ack_recalc(struct request_sock *req, const int thresh,
 				  int *expire, int *resend)
 {
 	if (!rskq_defer_accept) {
+<<<<<<< HEAD
 		*expire = req->retrans >= thresh;
 		*resend = 1;
 		return;
 	}
 	*expire = req->retrans >= thresh &&
 		  (!inet_rsk(req)->acked || req->retrans >= max_retries);
+=======
+		*expire = req->num_timeout >= thresh;
+		*resend = 1;
+		return;
+	}
+	*expire = req->num_timeout >= thresh &&
+		  (!inet_rsk(req)->acked || req->num_timeout >= max_retries);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Do not resend while waiting for data after ACK,
 	 * start to resend on end of deferring period to give
 	 * last chance for data or ACK to create established socket.
 	 */
 	*resend = !inet_rsk(req)->acked ||
+<<<<<<< HEAD
 		  req->retrans >= rskq_defer_accept - 1;
 }
+=======
+		  req->num_timeout >= rskq_defer_accept - 1;
+}
+
+int inet_rtx_syn_ack(struct sock *parent, struct request_sock *req)
+{
+	int err = req->rsk_ops->rtx_syn_ack(parent, req);
+
+	if (!err)
+		req->num_retrans++;
+	return err;
+}
+EXPORT_SYMBOL(inet_rtx_syn_ack);
+>>>>>>> refs/remotes/origin/master
 
 void inet_csk_reqsk_queue_prune(struct sock *parent,
 				const unsigned long interval,
@@ -511,7 +770,11 @@ void inet_csk_reqsk_queue_prune(struct sock *parent,
 
 	/* Normally all the openreqs are young and become mature
 	 * (i.e. converted to established socket) for first timeout.
+<<<<<<< HEAD
 	 * If synack was not acknowledged for 3 seconds, it means
+=======
+	 * If synack was not acknowledged for 1 second, it means
+>>>>>>> refs/remotes/origin/master
 	 * one of the following things: synack was lost, ack was lost,
 	 * rtt is high or nobody planned to ack (i.e. synflood).
 	 * When server is a bit loaded, queue is populated with old
@@ -552,6 +815,7 @@ void inet_csk_reqsk_queue_prune(struct sock *parent,
 				syn_ack_recalc(req, thresh, max_retries,
 					       queue->rskq_defer_accept,
 					       &expire, &resend);
+<<<<<<< HEAD
 				if (req->rsk_ops->syn_ack_timeout)
 					req->rsk_ops->syn_ack_timeout(parent, req);
 				if (!expire &&
@@ -563,6 +827,19 @@ void inet_csk_reqsk_queue_prune(struct sock *parent,
 					if (req->retrans++ == 0)
 						lopt->qlen_young--;
 					timeo = min((timeout << req->retrans), max_rto);
+=======
+				req->rsk_ops->syn_ack_timeout(parent, req);
+				if (!expire &&
+				    (!resend ||
+				     !inet_rtx_syn_ack(parent, req) ||
+				     inet_rsk(req)->acked)) {
+					unsigned long timeo;
+
+					if (req->num_timeout++ == 0)
+						lopt->qlen_young--;
+					timeo = min(timeout << req->num_timeout,
+						    max_rto);
+>>>>>>> refs/remotes/origin/master
 					req->expires = now + timeo;
 					reqp = &req->dl_next;
 					continue;
@@ -588,10 +865,32 @@ void inet_csk_reqsk_queue_prune(struct sock *parent,
 }
 EXPORT_SYMBOL_GPL(inet_csk_reqsk_queue_prune);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct sock *inet_csk_clone(struct sock *sk, const struct request_sock *req,
 			    const gfp_t priority)
 {
 	struct sock *newsk = sk_clone(sk, priority);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ *	inet_csk_clone_lock - clone an inet socket, and lock its clone
+ *	@sk: the socket to clone
+ *	@req: request_sock
+ *	@priority: for allocation (%GFP_KERNEL, %GFP_ATOMIC, etc)
+ *
+ *	Caller must unlock socket even in error path (bh_unlock_sock(newsk))
+ */
+struct sock *inet_csk_clone_lock(const struct sock *sk,
+				 const struct request_sock *req,
+				 const gfp_t priority)
+{
+	struct sock *newsk = sk_clone_lock(sk, priority);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (newsk != NULL) {
 		struct inet_connection_sock *newicsk = inet_csk(newsk);
@@ -599,9 +898,15 @@ struct sock *inet_csk_clone(struct sock *sk, const struct request_sock *req,
 		newsk->sk_state = TCP_SYN_RECV;
 		newicsk->icsk_bind_hash = NULL;
 
+<<<<<<< HEAD
 		inet_sk(newsk)->inet_dport = inet_rsk(req)->rmt_port;
 		inet_sk(newsk)->inet_num = ntohs(inet_rsk(req)->loc_port);
 		inet_sk(newsk)->inet_sport = inet_rsk(req)->loc_port;
+=======
+		inet_sk(newsk)->inet_dport = inet_rsk(req)->ir_rmt_port;
+		inet_sk(newsk)->inet_num = inet_rsk(req)->ir_num;
+		inet_sk(newsk)->inet_sport = htons(inet_rsk(req)->ir_num);
+>>>>>>> refs/remotes/origin/master
 		newsk->sk_write_space = sk_stream_write_space;
 
 		newicsk->icsk_retransmits = 0;
@@ -615,7 +920,15 @@ struct sock *inet_csk_clone(struct sock *sk, const struct request_sock *req,
 	}
 	return newsk;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(inet_csk_clone);
+=======
+EXPORT_SYMBOL_GPL(inet_csk_clone_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(inet_csk_clone_lock);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * At this point, there should be no process reference to this
@@ -647,6 +960,44 @@ void inet_csk_destroy_sock(struct sock *sk)
 }
 EXPORT_SYMBOL(inet_csk_destroy_sock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* This function allows to force a closure of a socket after the call to
+ * tcp/dccp_create_openreq_child().
+ */
+void inet_csk_prepare_forced_close(struct sock *sk)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	__releases(&sk->sk_lock.slock)
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+{
+	/* sk_clone_lock locked the socket and set refcnt to 2 */
+	bh_unlock_sock(sk);
+	sock_put(sk);
+
+	/* The below has to be done to allow calling inet_csk_destroy_sock */
+	sock_set_flag(sk, SOCK_DEAD);
+	percpu_counter_inc(sk->sk_prot->orphan_count);
+	inet_sk(sk)->inet_num = 0;
+}
+EXPORT_SYMBOL(inet_csk_prepare_forced_close);
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int inet_csk_listen_start(struct sock *sk, const int nr_table_entries)
 {
 	struct inet_sock *inet = inet_sk(sk);
@@ -688,13 +1039,21 @@ EXPORT_SYMBOL_GPL(inet_csk_listen_start);
 void inet_csk_listen_stop(struct sock *sk)
 {
 	struct inet_connection_sock *icsk = inet_csk(sk);
+<<<<<<< HEAD
+=======
+	struct request_sock_queue *queue = &icsk->icsk_accept_queue;
+>>>>>>> refs/remotes/origin/master
 	struct request_sock *acc_req;
 	struct request_sock *req;
 
 	inet_csk_delete_keepalive_timer(sk);
 
 	/* make all the listen_opt local to us */
+<<<<<<< HEAD
 	acc_req = reqsk_queue_yank_acceptq(&icsk->icsk_accept_queue);
+=======
+	acc_req = reqsk_queue_yank_acceptq(queue);
+>>>>>>> refs/remotes/origin/master
 
 	/* Following specs, it would be better either to send FIN
 	 * (and enter FIN-WAIT-1, it is normal close)
@@ -704,7 +1063,11 @@ void inet_csk_listen_stop(struct sock *sk)
 	 * To be honest, we are not able to make either
 	 * of the variants now.			--ANK
 	 */
+<<<<<<< HEAD
 	reqsk_queue_destroy(&icsk->icsk_accept_queue);
+=======
+	reqsk_queue_destroy(queue);
+>>>>>>> refs/remotes/origin/master
 
 	while ((req = acc_req) != NULL) {
 		struct sock *child = req->sk;
@@ -722,6 +1085,22 @@ void inet_csk_listen_stop(struct sock *sk)
 
 		percpu_counter_inc(sk->sk_prot->orphan_count);
 
+<<<<<<< HEAD
+=======
+		if (sk->sk_protocol == IPPROTO_TCP && tcp_rsk(req)->listener) {
+			BUG_ON(tcp_sk(child)->fastopen_rsk != req);
+			BUG_ON(sk != tcp_rsk(req)->listener);
+
+			/* Paranoid, to prevent race condition if
+			 * an inbound pkt destined for child is
+			 * blocked by sock lock in tcp_v4_rcv().
+			 * Also to satisfy an assertion in
+			 * tcp_v4_destroy_sock().
+			 */
+			tcp_sk(child)->fastopen_rsk = NULL;
+			sock_put(sk);
+		}
+>>>>>>> refs/remotes/origin/master
 		inet_csk_destroy_sock(child);
 
 		bh_unlock_sock(child);
@@ -731,6 +1110,20 @@ void inet_csk_listen_stop(struct sock *sk)
 		sk_acceptq_removed(sk);
 		__reqsk_free(req);
 	}
+<<<<<<< HEAD
+=======
+	if (queue->fastopenq != NULL) {
+		/* Free all the reqs queued in rskq_rst_head. */
+		spin_lock_bh(&queue->fastopenq->lock);
+		acc_req = queue->fastopenq->rskq_rst_head;
+		queue->fastopenq->rskq_rst_head = NULL;
+		spin_unlock_bh(&queue->fastopenq->lock);
+		while ((req = acc_req) != NULL) {
+			acc_req = req->dl_next;
+			__reqsk_free(req);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(sk->sk_ack_backlog);
 }
 EXPORT_SYMBOL_GPL(inet_csk_listen_stop);
@@ -773,3 +1166,52 @@ int inet_csk_compat_setsockopt(struct sock *sk, int level, int optname,
 }
 EXPORT_SYMBOL_GPL(inet_csk_compat_setsockopt);
 #endif
+<<<<<<< HEAD
+=======
+
+static struct dst_entry *inet_csk_rebuild_route(struct sock *sk, struct flowi *fl)
+{
+	const struct inet_sock *inet = inet_sk(sk);
+	const struct ip_options_rcu *inet_opt;
+	__be32 daddr = inet->inet_daddr;
+	struct flowi4 *fl4;
+	struct rtable *rt;
+
+	rcu_read_lock();
+	inet_opt = rcu_dereference(inet->inet_opt);
+	if (inet_opt && inet_opt->opt.srr)
+		daddr = inet_opt->opt.faddr;
+	fl4 = &fl->u.ip4;
+	rt = ip_route_output_ports(sock_net(sk), fl4, sk, daddr,
+				   inet->inet_saddr, inet->inet_dport,
+				   inet->inet_sport, sk->sk_protocol,
+				   RT_CONN_FLAGS(sk), sk->sk_bound_dev_if);
+	if (IS_ERR(rt))
+		rt = NULL;
+	if (rt)
+		sk_setup_caps(sk, &rt->dst);
+	rcu_read_unlock();
+
+	return &rt->dst;
+}
+
+struct dst_entry *inet_csk_update_pmtu(struct sock *sk, u32 mtu)
+{
+	struct dst_entry *dst = __sk_dst_check(sk, 0);
+	struct inet_sock *inet = inet_sk(sk);
+
+	if (!dst) {
+		dst = inet_csk_rebuild_route(sk, &inet->cork.fl);
+		if (!dst)
+			goto out;
+	}
+	dst->ops->update_pmtu(dst, sk, NULL, mtu);
+
+	dst = __sk_dst_check(sk, 0);
+	if (!dst)
+		dst = inet_csk_rebuild_route(sk, &inet->cork.fl);
+out:
+	return dst;
+}
+EXPORT_SYMBOL_GPL(inet_csk_update_pmtu);
+>>>>>>> refs/remotes/origin/master

@@ -39,6 +39,12 @@ config HAVE_DYNAMIC_FTRACE
 	help
 	  See Documentation/trace/ftrace-design.txt
 
+<<<<<<< HEAD
+=======
+config HAVE_DYNAMIC_FTRACE_WITH_REGS
+	bool
+
+>>>>>>> refs/remotes/origin/master
 config HAVE_FTRACE_MCOUNT_RECORD
 	bool
 	help
@@ -49,6 +55,14 @@ config HAVE_SYSCALL_TRACEPOINTS
 	help
 	  See Documentation/trace/ftrace-design.txt
 
+<<<<<<< HEAD
+=======
+config HAVE_FENTRY
+	bool
+	help
+	  Arch supports the gcc options -pg with -mfentry
+
+>>>>>>> refs/remotes/origin/master
 config HAVE_C_RECORDMCOUNT
 	bool
 	help
@@ -57,8 +71,18 @@ config HAVE_C_RECORDMCOUNT
 config TRACER_MAX_TRACE
 	bool
 
+<<<<<<< HEAD
 config RING_BUFFER
 	bool
+=======
+config TRACE_CLOCK
+	bool
+
+config RING_BUFFER
+	bool
+	select TRACE_CLOCK
+	select IRQ_WORK
+>>>>>>> refs/remotes/origin/master
 
 config FTRACE_NMI_ENTER
        bool
@@ -69,6 +93,7 @@ config EVENT_TRACING
 	select CONTEXT_SWITCH_TRACER
 	bool
 
+<<<<<<< HEAD
 config EVENT_POWER_TRACING_DEPRECATED
 	depends on EVENT_TRACING
 	bool "Deprecated power event trace API, to be removed"
@@ -82,8 +107,14 @@ config EVENT_POWER_TRACING_DEPRECATED
 	  power:power_frequency
 	  This is for userspace compatibility
 	  and will vanish after 5 kernel iterations,
+<<<<<<< HEAD
 	  namely 2.6.41.
+=======
+	  namely 3.1.
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 config CONTEXT_SWITCH_TRACER
 	bool
 
@@ -109,6 +140,10 @@ config TRACING
 	select NOP_TRACER
 	select BINARY_PRINTF
 	select EVENT_TRACING
+<<<<<<< HEAD
+=======
+	select TRACE_CLOCK
+>>>>>>> refs/remotes/origin/master
 
 config GENERIC_TRACER
 	bool
@@ -141,7 +176,14 @@ if FTRACE
 config FUNCTION_TRACER
 	bool "Kernel Function Tracer"
 	depends on HAVE_FUNCTION_TRACER
+<<<<<<< HEAD
+<<<<<<< HEAD
 	select FRAME_POINTER if !ARM_UNWIND && !S390 && !MICROBLAZE
+=======
+	select FRAME_POINTER if !ARM_UNWIND && !PPC && !S390 && !MICROBLAZE
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select KALLSYMS
 	select GENERIC_TRACER
 	select CONTEXT_SWITCH_TRACER
@@ -178,6 +220,11 @@ config IRQSOFF_TRACER
 	select GENERIC_TRACER
 	select TRACER_MAX_TRACE
 	select RING_BUFFER_ALLOW_SWAP
+<<<<<<< HEAD
+=======
+	select TRACER_SNAPSHOT
+	select TRACER_SNAPSHOT_PER_CPU_SWAP
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option measures the time spent in irqs-off critical
 	  sections, with microsecond accuracy.
@@ -200,6 +247,11 @@ config PREEMPT_TRACER
 	select GENERIC_TRACER
 	select TRACER_MAX_TRACE
 	select RING_BUFFER_ALLOW_SWAP
+<<<<<<< HEAD
+=======
+	select TRACER_SNAPSHOT
+	select TRACER_SNAPSHOT_PER_CPU_SWAP
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option measures the time spent in preemption-off critical
 	  sections, with microsecond accuracy.
@@ -219,6 +271,10 @@ config SCHED_TRACER
 	select GENERIC_TRACER
 	select CONTEXT_SWITCH_TRACER
 	select TRACER_MAX_TRACE
+<<<<<<< HEAD
+=======
+	select TRACER_SNAPSHOT
+>>>>>>> refs/remotes/origin/master
 	help
 	  This tracer tracks the latency of the highest priority task
 	  to be scheduled in, starting from the point it has woken up.
@@ -240,6 +296,40 @@ config FTRACE_SYSCALLS
 	help
 	  Basic tracer to catch the syscall entry and exit events.
 
+<<<<<<< HEAD
+=======
+config TRACER_SNAPSHOT
+	bool "Create a snapshot trace buffer"
+	select TRACER_MAX_TRACE
+	help
+	  Allow tracing users to take snapshot of the current buffer using the
+	  ftrace interface, e.g.:
+
+	      echo 1 > /sys/kernel/debug/tracing/snapshot
+	      cat snapshot
+
+config TRACER_SNAPSHOT_PER_CPU_SWAP
+        bool "Allow snapshot to swap per CPU"
+	depends on TRACER_SNAPSHOT
+	select RING_BUFFER_ALLOW_SWAP
+	help
+	  Allow doing a snapshot of a single CPU buffer instead of a
+	  full swap (all buffers). If this is set, then the following is
+	  allowed:
+
+	      echo 1 > /sys/kernel/debug/tracing/per_cpu/cpu2/snapshot
+
+	  After which, only the tracing buffer for CPU 2 was swapped with
+	  the main tracing buffer, and the other CPU buffers remain the same.
+
+	  When this is enabled, this adds a little more overhead to the
+	  trace recording, as it needs to add some checks to synchronize
+	  recording with swaps. But this does not affect the performance
+	  of the overall system. This is enabled by default when the preempt
+	  or irq latency tracers are enabled, as those need to swap as well
+	  and already adds the overhead (plus a lot more).
+
+>>>>>>> refs/remotes/origin/master
 config TRACE_BRANCH_PROFILING
 	bool
 	select GENERIC_TRACER
@@ -272,7 +362,11 @@ config PROFILE_ANNOTATED_BRANCHES
 	bool "Trace likely/unlikely profiler"
 	select TRACE_BRANCH_PROFILING
 	help
+<<<<<<< HEAD
 	  This tracer profiles all the the likely and unlikely macros
+=======
+	  This tracer profiles all likely and unlikely macros
+>>>>>>> refs/remotes/origin/master
 	  in the kernel. It will display the results in:
 
 	  /sys/kernel/debug/tracing/trace_stat/branch_annotated
@@ -373,6 +467,10 @@ config KPROBE_EVENT
 	depends on HAVE_REGS_AND_STACK_ACCESS_API
 	bool "Enable kprobes-based dynamic events"
 	select TRACING
+<<<<<<< HEAD
+=======
+	select PROBE_EVENTS
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 	  This allows the user to add tracing events (similar to tracepoints)
@@ -385,6 +483,28 @@ config KPROBE_EVENT
 	  This option is also required by perf-probe subcommand of perf tools.
 	  If you want to use perf tools, this option is strongly recommended.
 
+<<<<<<< HEAD
+=======
+config UPROBE_EVENT
+	bool "Enable uprobes-based dynamic events"
+	depends on ARCH_SUPPORTS_UPROBES
+	depends on MMU
+	select UPROBES
+	select PROBE_EVENTS
+	select TRACING
+	default n
+	help
+	  This allows the user to add tracing events on top of userspace
+	  dynamic events (similar to tracepoints) on the fly via the trace
+	  events interface. Those events can be inserted wherever uprobes
+	  can probe, and record various registers.
+	  This option is required if you plan to use perf-probe subcommand
+	  of perf tools on user space applications.
+
+config PROBE_EVENTS
+	def_bool n
+
+>>>>>>> refs/remotes/origin/master
 config DYNAMIC_FTRACE
 	bool "enable/disable function tracing dynamically"
 	depends on FUNCTION_TRACER
@@ -408,6 +528,17 @@ config DYNAMIC_FTRACE
 	  This way a CONFIG_FUNCTION_TRACER kernel is slightly larger, but
 	  otherwise has native performance as long as no tracing is active.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+config DYNAMIC_FTRACE_WITH_REGS
+	def_bool y
+	depends on DYNAMIC_FTRACE
+	depends on HAVE_DYNAMIC_FTRACE_WITH_REGS
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config FUNCTION_PROFILER
 	bool "Kernel function profiler"
 	depends on FUNCTION_TRACER
@@ -491,6 +622,32 @@ config RING_BUFFER_BENCHMARK
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
+=======
+config RING_BUFFER_STARTUP_TEST
+       bool "Ring buffer startup self test"
+       depends on RING_BUFFER
+       help
+         Run a simple self test on the ring buffer on boot up. Late in the
+	 kernel boot sequence, the test will start that kicks off
+	 a thread per cpu. Each thread will write various size events
+	 into the ring buffer. Another thread is created to send IPIs
+	 to each of the threads, where the IPI handler will also write
+	 to the ring buffer, to test/stress the nesting ability.
+	 If any anomalies are discovered, a warning will be displayed
+	 and all ring buffers will be disabled.
+
+	 The test runs for 10 seconds. This will slow your boot time
+	 by at least 10 more seconds.
+
+	 At the end of the test, statics and more checks are done.
+	 It will output the stats of each per cpu buffer. What
+	 was written, the sizes, what was read, what was lost, and
+	 other similar details.
+
+	 If unsure, say N
+
+>>>>>>> refs/remotes/origin/master
 endif # FTRACE
 
 endif # TRACING_SUPPORT

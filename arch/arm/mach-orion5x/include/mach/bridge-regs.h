@@ -13,6 +13,7 @@
 
 #include <mach/orion5x.h>
 
+<<<<<<< HEAD
 #define CPU_CONF		(ORION5X_BRIDGE_VIRT_BASE | 0x100)
 
 #define CPU_CTRL		(ORION5X_BRIDGE_VIRT_BASE | 0x104)
@@ -35,5 +36,35 @@
 #define MAIN_IRQ_MASK		(ORION5X_BRIDGE_VIRT_BASE | 0x204)
 
 #define TIMER_VIRT_BASE		(ORION5X_BRIDGE_VIRT_BASE | 0x300)
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#define TIMER_PHYS_BASE		(ORION5X_BRIDGE_PHYS_BASE | 0x300)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CPU_CONF		(ORION5X_BRIDGE_VIRT_BASE + 0x100)
+
+#define CPU_CTRL		(ORION5X_BRIDGE_VIRT_BASE + 0x104)
+
+#define RSTOUTn_MASK		(ORION5X_BRIDGE_VIRT_BASE + 0x108)
+
+#define CPU_SOFT_RESET		(ORION5X_BRIDGE_VIRT_BASE + 0x10c)
+
+#define BRIDGE_CAUSE		(ORION5X_BRIDGE_VIRT_BASE + 0x110)
+
+#define POWER_MNG_CTRL_REG	(ORION5X_BRIDGE_VIRT_BASE + 0x11C)
+
+#define BRIDGE_INT_TIMER1_CLR	(~0x0004)
+
+#define MAIN_IRQ_CAUSE		(ORION5X_BRIDGE_VIRT_BASE + 0x200)
+
+#define MAIN_IRQ_MASK		(ORION5X_BRIDGE_VIRT_BASE + 0x204)
+
+#define TIMER_VIRT_BASE		(ORION5X_BRIDGE_VIRT_BASE + 0x300)
+#define TIMER_PHYS_BASE		(ORION5X_BRIDGE_PHYS_BASE + 0x300)
+>>>>>>> refs/remotes/origin/master
+=======
+#define TIMER_PHYS_BASE		(ORION5X_BRIDGE_PHYS_BASE | 0x300)
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

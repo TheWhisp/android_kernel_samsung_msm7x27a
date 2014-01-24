@@ -21,7 +21,15 @@
 
 static int xfrm_output2(struct sk_buff *skb);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int xfrm_state_check_space(struct xfrm_state *x, struct sk_buff *skb)
+=======
+static int xfrm_skb_check_space(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int xfrm_skb_check_space(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dst_entry *dst = skb_dst(skb);
 	int nhead = dst->header_len + LL_RESERVED_SPACE(dst->dev)
@@ -48,7 +56,15 @@ static int xfrm_output_one(struct sk_buff *skb, int err)
 		goto resume;
 
 	do {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = xfrm_state_check_space(x, skb);
+=======
+		err = xfrm_skb_check_space(skb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = xfrm_skb_check_space(skb);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			XFRM_INC_STATS(net, LINUX_MIB_XFRMOUTERROR);
 			goto error_nolock;
@@ -61,6 +77,16 @@ static int xfrm_output_one(struct sk_buff *skb, int err)
 		}
 
 		spin_lock_bh(&x->lock);
+<<<<<<< HEAD
+=======
+
+		if (unlikely(x->km.state != XFRM_STATE_VALID)) {
+			XFRM_INC_STATS(net, LINUX_MIB_XFRMOUTSTATEINVALID);
+			err = -EINVAL;
+			goto error;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		err = xfrm_state_check_expire(x);
 		if (err) {
 			XFRM_INC_STATS(net, LINUX_MIB_XFRMOUTSTATEEXPIRED);
@@ -82,7 +108,11 @@ static int xfrm_output_one(struct sk_buff *skb, int err)
 
 		err = x->type->output(x, skb);
 		if (err == -EINPROGRESS)
+<<<<<<< HEAD
 			goto out_exit;
+=======
+			goto out;
+>>>>>>> refs/remotes/origin/master
 
 resume:
 		if (err) {
@@ -100,15 +130,25 @@ resume:
 		x = dst->xfrm;
 	} while (x && !(x->outer_mode->flags & XFRM_MODE_FLAG_TUNNEL));
 
+<<<<<<< HEAD
 	err = 0;
 
 out_exit:
 	return err;
+=======
+	return 0;
+
+>>>>>>> refs/remotes/origin/master
 error:
 	spin_unlock_bh(&x->lock);
 error_nolock:
 	kfree_skb(skb);
+<<<<<<< HEAD
 	goto out_exit;
+=======
+out:
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 int xfrm_output_resume(struct sk_buff *skb, int err)
@@ -208,5 +248,31 @@ int xfrm_inner_extract_output(struct xfrm_state *x, struct sk_buff *skb)
 	return inner_mode->afinfo->extract_output(x, skb);
 }
 
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(xfrm_output);
 EXPORT_SYMBOL_GPL(xfrm_inner_extract_output);
+=======
+void xfrm_local_error(struct sk_buff *skb, int mtu)
+{
+	unsigned int proto;
+	struct xfrm_state_afinfo *afinfo;
+
+	if (skb->protocol == htons(ETH_P_IP))
+		proto = AF_INET;
+	else if (skb->protocol == htons(ETH_P_IPV6))
+		proto = AF_INET6;
+	else
+		return;
+
+	afinfo = xfrm_state_get_afinfo(proto);
+	if (!afinfo)
+		return;
+
+	afinfo->local_error(skb, mtu);
+	xfrm_state_put_afinfo(afinfo);
+}
+
+EXPORT_SYMBOL_GPL(xfrm_output);
+EXPORT_SYMBOL_GPL(xfrm_inner_extract_output);
+EXPORT_SYMBOL_GPL(xfrm_local_error);
+>>>>>>> refs/remotes/origin/master

@@ -19,6 +19,7 @@
 **   Redesign of the boot information structure; moved boot information
 **   structure to bootinfo.h
 */
+<<<<<<< HEAD
 
 #ifndef _M68K_SETUP_H
 #define _M68K_SETUP_H
@@ -40,11 +41,24 @@
 #define MACH_HP300    9
 #define MACH_Q40     10
 #define MACH_SUN3X   11
+<<<<<<< HEAD
+=======
+#define MACH_M54XX   12
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define COMMAND_LINE_SIZE 256
 
 #ifdef __KERNEL__
 
+=======
+#ifndef _M68K_SETUP_H
+#define _M68K_SETUP_H
+
+#include <uapi/asm/bootinfo.h>
+#include <uapi/asm/setup.h>
+
+
+>>>>>>> refs/remotes/origin/master
 #define CL_SIZE COMMAND_LINE_SIZE
 
 #ifndef __ASSEMBLY__
@@ -193,6 +207,7 @@ extern unsigned long m68k_machtype;
 #  define MACH_TYPE (m68k_machtype)
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 
@@ -211,23 +226,39 @@ extern unsigned long m68k_machtype;
 #define CPUB_68030     1
 #define CPUB_68040     2
 #define CPUB_68060     3
+<<<<<<< HEAD
+=======
+#define CPUB_COLDFIRE  4
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CPU_68020      (1<<CPUB_68020)
 #define CPU_68030      (1<<CPUB_68030)
 #define CPU_68040      (1<<CPUB_68040)
 #define CPU_68060      (1<<CPUB_68060)
+<<<<<<< HEAD
+=======
+#define CPU_COLDFIRE   (1<<CPUB_COLDFIRE)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define FPUB_68881     0
 #define FPUB_68882     1
 #define FPUB_68040     2                       /* Internal FPU */
 #define FPUB_68060     3                       /* Internal FPU */
 #define FPUB_SUNFPA    4                       /* Sun-3 FPA */
+<<<<<<< HEAD
+=======
+#define FPUB_COLDFIRE  5                       /* ColdFire FPU */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define FPU_68881      (1<<FPUB_68881)
 #define FPU_68882      (1<<FPUB_68882)
 #define FPU_68040      (1<<FPUB_68040)
 #define FPU_68060      (1<<FPUB_68060)
 #define FPU_SUNFPA     (1<<FPUB_SUNFPA)
+<<<<<<< HEAD
+=======
+#define FPU_COLDFIRE   (1<<FPUB_COLDFIRE)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MMUB_68851     0
 #define MMUB_68030     1                       /* Internal MMU */
@@ -235,6 +266,10 @@ extern unsigned long m68k_machtype;
 #define MMUB_68060     3                       /* Internal MMU */
 #define MMUB_APOLLO    4                       /* Custom Apollo */
 #define MMUB_SUN3      5                       /* Custom Sun-3 */
+<<<<<<< HEAD
+=======
+#define MMUB_COLDFIRE  6                       /* Internal MMU */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MMU_68851      (1<<MMUB_68851)
 #define MMU_68030      (1<<MMUB_68030)
@@ -242,8 +277,14 @@ extern unsigned long m68k_machtype;
 #define MMU_68060      (1<<MMUB_68060)
 #define MMU_SUN3       (1<<MMUB_SUN3)
 #define MMU_APOLLO     (1<<MMUB_APOLLO)
+<<<<<<< HEAD
+=======
+#define MMU_COLDFIRE   (1<<MMUB_COLDFIRE)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 extern unsigned long m68k_cputype;
@@ -341,6 +382,22 @@ extern int m68k_is040or060;
 #  endif
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if !defined(CONFIG_COLDFIRE)
+#  define CPU_IS_COLDFIRE (0)
+#else
+#  define CPU_IS_COLDFIRE (1)
+#  define MMU_IS_COLDFIRE (1)
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CPU_TYPE (m68k_cputype)
 
 #ifdef CONFIG_M68KFPU_EMU
@@ -361,16 +418,26 @@ extern int m68k_is040or060;
 #define NUM_MEMINFO	4
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 struct mem_info {
+=======
+struct m68k_mem_info {
+>>>>>>> refs/remotes/origin/master
 	unsigned long addr;		/* physical address of memory chunk */
 	unsigned long size;		/* length of memory chunk (in bytes) */
 };
 
 extern int m68k_num_memory;		/* # of memory blocks found (and used) */
 extern int m68k_realnum_memory;		/* real # of memory blocks found */
+<<<<<<< HEAD
 extern struct mem_info m68k_memory[NUM_MEMINFO];/* memory description */
 #endif
 
 #endif /* __KERNEL__ */
 
+=======
+extern struct m68k_mem_info m68k_memory[NUM_MEMINFO];/* memory description */
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _M68K_SETUP_H */

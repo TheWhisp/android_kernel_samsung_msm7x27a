@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,6 +57,7 @@
  *
  * Note: The order of these include files is important.
  */
+<<<<<<< HEAD
 #include "platform/acenv.h"	/* Environment-specific items */
 #include "acnames.h"		/* Common ACPI names and strings */
 #include "actypes.h"		/* ACPICA data types and structures */
@@ -62,5 +67,16 @@
 #include "acrestyp.h"		/* Resource Descriptor structs */
 #include "acpiosxf.h"		/* OSL interfaces (ACPICA-to-OS) */
 #include "acpixf.h"		/* ACPI core subsystem external interfaces */
+=======
+#include <acpi/platform/acenv.h>	/* Environment-specific items */
+#include <acpi/acnames.h>		/* Common ACPI names and strings */
+#include <acpi/actypes.h>		/* ACPICA data types and structures */
+#include <acpi/acexcep.h>		/* ACPICA exceptions */
+#include <acpi/actbl.h>		/* ACPI table definitions */
+#include <acpi/acoutput.h>		/* Error output and Debug macros */
+#include <acpi/acrestyp.h>		/* Resource Descriptor structs */
+#include <acpi/acpiosxf.h>		/* OSL interfaces (ACPICA-to-OS) */
+#include <acpi/acpixf.h>		/* ACPI core subsystem external interfaces */
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* __ACPI_H__ */

@@ -549,6 +549,7 @@ asmlinkage int sys_getpagesize(void)
 	return PAGE_SIZE;
 }
 
+<<<<<<< HEAD
 /*
  * Do a system call from kernel instead of calling sys_execve so we
  * end up with proper pt_regs.
@@ -566,6 +567,8 @@ int kernel_execve(const char *filename,
 	return __res;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage unsigned long sys_get_thread_area(void)
 {
 	return current_thread_info()->tp_value;

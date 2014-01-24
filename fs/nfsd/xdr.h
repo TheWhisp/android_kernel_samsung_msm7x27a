@@ -167,7 +167,11 @@ int nfssvc_encode_entry(void *, const char *name,
 int nfssvc_release_fhandle(struct svc_rqst *, __be32 *, struct nfsd_fhandle *);
 
 /* Helper functions for NFSv2 ACL code */
+<<<<<<< HEAD
 __be32 *nfs2svc_encode_fattr(struct svc_rqst *rqstp, __be32 *p, struct svc_fh *fhp);
+=======
+__be32 *nfs2svc_encode_fattr(struct svc_rqst *rqstp, __be32 *p, struct svc_fh *fhp, struct kstat *stat);
+>>>>>>> refs/remotes/origin/master
 __be32 *nfs2svc_decode_fh(__be32 *p, struct svc_fh *fhp);
 
 #endif /* LINUX_NFSD_H */

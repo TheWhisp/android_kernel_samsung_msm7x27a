@@ -21,7 +21,10 @@
 #include <asm/setup.h>
 #include <asm/prom.h>
 
+<<<<<<< HEAD
 static u32 early_console_initialized;
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 base_addr;
 
 #ifdef CONFIG_SERIAL_UARTLITE_CONSOLE
@@ -35,7 +38,15 @@ static void early_printk_uartlite_putc(char c)
 	 * we'll never timeout on a working UART.
 	 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned retries = 10000;
+=======
+	unsigned retries = 1000000;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned retries = 1000000;
+>>>>>>> refs/remotes/origin/master
 	/* read status bit - 0x8 offset */
 	while (--retries && (in_be32(base_addr + 8) & (1 << 3)))
 		;
@@ -50,9 +61,21 @@ static void early_printk_uartlite_write(struct console *unused,
 					const char *s, unsigned n)
 {
 	while (*s && n-- > 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		early_printk_uartlite_putc(*s);
 		if (*s == '\n')
 			early_printk_uartlite_putc('\r');
+=======
+		if (*s == '\n')
+			early_printk_uartlite_putc('\r');
+		early_printk_uartlite_putc(*s);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (*s == '\n')
+			early_printk_uartlite_putc('\r');
+		early_printk_uartlite_putc(*s);
+>>>>>>> refs/remotes/origin/master
 		s++;
 	}
 }
@@ -60,7 +83,15 @@ static void early_printk_uartlite_write(struct console *unused,
 static struct console early_serial_uartlite_console = {
 	.name = "earlyser",
 	.write = early_printk_uartlite_write,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags = CON_PRINTBUFFER,
+=======
+	.flags = CON_PRINTBUFFER | CON_BOOT,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = CON_PRINTBUFFER | CON_BOOT,
+>>>>>>> refs/remotes/origin/master
 	.index = -1,
 };
 #endif /* CONFIG_SERIAL_UARTLITE_CONSOLE */
@@ -94,9 +125,21 @@ static void early_printk_uart16550_write(struct console *unused,
 					const char *s, unsigned n)
 {
 	while (*s && n-- > 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		early_printk_uart16550_putc(*s);
 		if (*s == '\n')
 			early_printk_uart16550_putc('\r');
+=======
+		if (*s == '\n')
+			early_printk_uart16550_putc('\r');
+		early_printk_uart16550_putc(*s);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (*s == '\n')
+			early_printk_uart16550_putc('\r');
+		early_printk_uart16550_putc(*s);
+>>>>>>> refs/remotes/origin/master
 		s++;
 	}
 }
@@ -104,11 +147,20 @@ static void early_printk_uart16550_write(struct console *unused,
 static struct console early_serial_uart16550_console = {
 	.name = "earlyser",
 	.write = early_printk_uart16550_write,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags = CON_PRINTBUFFER,
+=======
+	.flags = CON_PRINTBUFFER | CON_BOOT,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = CON_PRINTBUFFER | CON_BOOT,
+>>>>>>> refs/remotes/origin/master
 	.index = -1,
 };
 #endif /* CONFIG_SERIAL_8250_CONSOLE */
 
+<<<<<<< HEAD
 static struct console *early_console;
 
 void early_printk(const char *fmt, ...)
@@ -127,6 +179,7 @@ void early_printk(const char *fmt, ...)
 
 int __init setup_early_printk(char *opt)
 {
+<<<<<<< HEAD
 	if (early_console_initialized)
 		return 1;
 
@@ -169,6 +222,107 @@ int __init setup_early_printk(char *opt)
 	return 1;
 }
 
+=======
+	int version = 0;
+
+	if (early_console_initialized)
+=======
+int __init setup_early_printk(char *opt)
+{
+	int version = 0;
+
+	if (early_console)
+>>>>>>> refs/remotes/origin/master
+		return 1;
+
+	base_addr = of_early_console(&version);
+	if (base_addr) {
+#ifdef CONFIG_MMU
+		early_console_reg_tlb_alloc(base_addr);
+#endif
+		switch (version) {
+#ifdef CONFIG_SERIAL_UARTLITE_CONSOLE
+		case UARTLITE:
+<<<<<<< HEAD
+			printk(KERN_INFO "Early console on uartlite "
+						"at 0x%08x\n", base_addr);
+=======
+			pr_info("Early console on uartlite at 0x%08x\n",
+								base_addr);
+>>>>>>> refs/remotes/origin/master
+			early_console = &early_serial_uartlite_console;
+			break;
+#endif
+#ifdef CONFIG_SERIAL_8250_CONSOLE
+		case UART16550:
+<<<<<<< HEAD
+			printk(KERN_INFO "Early console on uart16650 "
+						"at 0x%08x\n", base_addr);
+=======
+			pr_info("Early console on uart16650 at 0x%08x\n",
+								base_addr);
+>>>>>>> refs/remotes/origin/master
+			early_console = &early_serial_uart16550_console;
+			break;
+#endif
+		default:
+<<<<<<< HEAD
+			printk(KERN_INFO  "Unsupported early console %d\n",
+=======
+			pr_info("Unsupported early console %d\n",
+>>>>>>> refs/remotes/origin/master
+								version);
+			return 1;
+		}
+
+		register_console(early_console);
+<<<<<<< HEAD
+		early_console_initialized = 1;
+=======
+>>>>>>> refs/remotes/origin/master
+		return 0;
+	}
+	return 1;
+}
+
+/* Remap early console to virtual address and do not allocate one TLB
+ * only for early console because of performance degression */
+void __init remap_early_printk(void)
+{
+<<<<<<< HEAD
+	if (!early_console_initialized || !early_console)
+		return;
+	printk(KERN_INFO "early_printk_console remapping from 0x%x to ",
+								base_addr);
+	base_addr = (u32) ioremap(base_addr, PAGE_SIZE);
+	printk(KERN_CONT "0x%x\n", base_addr);
+=======
+	if (!early_console)
+		return;
+	pr_info("early_printk_console remapping from 0x%x to ", base_addr);
+	base_addr = (u32) ioremap(base_addr, PAGE_SIZE);
+	pr_cont("0x%x\n", base_addr);
+>>>>>>> refs/remotes/origin/master
+
+#ifdef CONFIG_MMU
+	/*
+	 * Early console is on the top of skipped TLB entries
+	 * decrease tlb_skip size ensure that hardcoded TLB entry will be
+	 * used by generic algorithm
+	 * FIXME check if early console mapping is on the top by rereading
+	 * TLB entry and compare baseaddr
+	 *  mts  rtlbx, (tlb_skip - 1)
+	 *  nop
+	 *  mfs  rX, rtlblo
+	 *  nop
+	 *  cmp rX, orig_base_addr
+	 */
+	tlb_skip -= 1;
+#endif
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init disable_early_printk(void)
 {
 	if (!early_console_initialized || !early_console)
@@ -176,4 +330,13 @@ void __init disable_early_printk(void)
 	printk(KERN_WARNING "disabling early console\n");
 	unregister_console(early_console);
 	early_console_initialized = 0;
+=======
+void __init disable_early_printk(void)
+{
+	if (!early_console)
+		return;
+	pr_warn("disabling early console\n");
+	unregister_console(early_console);
+	early_console = NULL;
+>>>>>>> refs/remotes/origin/master
 }

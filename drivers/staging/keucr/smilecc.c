@@ -139,7 +139,11 @@ BYTE correct_data(BYTE *data, BYTE *eccdata, BYTE ecc1, BYTE ecc2, BYTE ecc3)
 	BYTE bit; /* Bit address of cor. DATA */
 
 	d1 = ecc1^eccdata[1]; d2 = ecc2^eccdata[0]; /* Compare LP's */
+<<<<<<< HEAD
 	d3 = ecc3^eccdata[2]; /* Comapre CP's */
+=======
+	d3 = ecc3^eccdata[2]; /* Compare CP's */
+>>>>>>> refs/remotes/origin/master
 	d = ((DWORD)d1<<16) /* Result of comparison */
 	+((DWORD)d2<<8)
 	+(DWORD)d3;

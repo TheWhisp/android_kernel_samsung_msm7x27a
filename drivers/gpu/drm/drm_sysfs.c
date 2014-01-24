@@ -16,6 +16,11 @@
 #include <linux/kdev_t.h>
 #include <linux/gfp.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "drm_sysfs.h"
 #include "drm_core.h"
@@ -23,20 +28,38 @@
 
 #define to_drm_minor(d) container_of(d, struct drm_minor, kdev)
 #define to_drm_connector(d) container_of(d, struct drm_connector, kdev)
+=======
+#include <linux/export.h>
+
+#include <drm/drm_sysfs.h>
+#include <drm/drm_core.h>
+#include <drm/drmP.h>
+
+#define to_drm_minor(d) dev_get_drvdata(d)
+#define to_drm_connector(d) dev_get_drvdata(d)
+>>>>>>> refs/remotes/origin/master
 
 static struct device_type drm_sysfs_device_minor = {
 	.name = "drm_minor"
 };
 
 /**
+<<<<<<< HEAD
  * drm_class_suspend - DRM class suspend hook
+=======
+ * __drm_class_suspend - internal DRM class suspend routine
+>>>>>>> refs/remotes/origin/master
  * @dev: Linux device to suspend
  * @state: power state to enter
  *
  * Just figures out what the actual struct drm_device associated with
  * @dev is and calls its suspend hook, if present.
  */
+<<<<<<< HEAD
 static int drm_class_suspend(struct device *dev, pm_message_t state)
+=======
+static int __drm_class_suspend(struct device *dev, pm_message_t state)
+>>>>>>> refs/remotes/origin/master
 {
 	if (dev->type == &drm_sysfs_device_minor) {
 		struct drm_minor *drm_minor = to_drm_minor(dev);
@@ -51,6 +74,29 @@ static int drm_class_suspend(struct device *dev, pm_message_t state)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * drm_class_suspend - internal DRM class suspend hook. Simply calls
+ * __drm_class_suspend() with the correct pm state.
+ * @dev: Linux device to suspend
+ */
+static int drm_class_suspend(struct device *dev)
+{
+	return __drm_class_suspend(dev, PMSG_SUSPEND);
+}
+
+/**
+ * drm_class_freeze - internal DRM class freeze hook. Simply calls
+ * __drm_class_suspend() with the correct pm state.
+ * @dev: Linux device to freeze
+ */
+static int drm_class_freeze(struct device *dev)
+{
+	return __drm_class_suspend(dev, PMSG_FREEZE);
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * drm_class_resume - DRM class resume hook
  * @dev: Linux device to resume
  *
@@ -71,7 +117,21 @@ static int drm_class_resume(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char *drm_devnode(struct device *dev, mode_t *mode)
+=======
+static char *drm_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct dev_pm_ops drm_class_dev_pm_ops = {
+	.suspend	= drm_class_suspend,
+	.resume		= drm_class_resume,
+	.freeze		= drm_class_freeze,
+};
+
+static char *drm_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return kasprintf(GFP_KERNEL, "dri/%s", dev_name(dev));
 }
@@ -105,8 +165,12 @@ struct class *drm_sysfs_create(struct module *owner, char *name)
 		goto err_out;
 	}
 
+<<<<<<< HEAD
 	class->suspend = drm_class_suspend;
 	class->resume = drm_class_resume;
+=======
+	class->pm = &drm_class_dev_pm_ops;
+>>>>>>> refs/remotes/origin/master
 
 	err = class_create_file(class, &class_attr_version.attr);
 	if (err)
@@ -133,6 +197,7 @@ void drm_sysfs_destroy(void)
 		return;
 	class_remove_file(drm_class, &class_attr_version.attr);
 	class_destroy(drm_class);
+<<<<<<< HEAD
 }
 
 /**
@@ -147,6 +212,9 @@ static void drm_sysfs_device_release(struct device *dev)
 {
 	memset(dev, 0, sizeof(struct device));
 	return;
+=======
+	drm_class = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -180,7 +248,11 @@ static ssize_t dpms_show(struct device *device,
 	uint64_t dpms_status;
 	int ret;
 
+<<<<<<< HEAD
 	ret = drm_connector_property_get_value(connector,
+=======
+	ret = drm_object_property_get_value(&connector->base,
+>>>>>>> refs/remotes/origin/master
 					    dev->mode_config.dpms_property,
 					    &dpms_status);
 	if (ret)
@@ -275,7 +347,11 @@ static ssize_t subconnector_show(struct device *device,
 		return 0;
 	}
 
+<<<<<<< HEAD
 	ret = drm_connector_property_get_value(connector, prop, &subconnector);
+=======
+	ret = drm_object_property_get_value(&connector->base, prop, &subconnector);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return 0;
 
@@ -316,7 +392,11 @@ static ssize_t select_subconnector_show(struct device *device,
 		return 0;
 	}
 
+<<<<<<< HEAD
 	ret = drm_connector_property_get_value(connector, prop, &subconnector);
+=======
+	ret = drm_object_property_get_value(&connector->base, prop, &subconnector);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return 0;
 
@@ -346,6 +426,7 @@ static struct bin_attribute edid_attr = {
 };
 
 /**
+<<<<<<< HEAD
  * drm_sysfs_connector_add - add an connector to sysfs
  * @connector: connector to add
  *
@@ -358,6 +439,15 @@ static struct bin_attribute edid_attr = {
  * This routine should only be called *once* for each DRM minor registered.
  * A second call for an already registered device will trigger the BUG_ON
  * below.
+=======
+ * drm_sysfs_connector_add - add a connector to sysfs
+ * @connector: connector to add
+ *
+ * Create a connector device in sysfs, along with its associated connector
+ * properties (so far, connection status, dpms, mode list & edid) and
+ * generate a hotplug event so userspace knows there's a new connector
+ * available.
+>>>>>>> refs/remotes/origin/master
  */
 int drm_sysfs_connector_add(struct drm_connector *connector)
 {
@@ -365,6 +455,7 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
 	int attr_cnt = 0;
 	int opt_cnt = 0;
 	int i;
+<<<<<<< HEAD
 	int ret = 0;
 
 	/* We shouldn't get called more than once for the same connector */
@@ -383,13 +474,33 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
 
 	if (ret) {
 		DRM_ERROR("failed to register connector device: %d\n", ret);
+=======
+	int ret;
+
+	if (connector->kdev)
+		return 0;
+
+	connector->kdev = device_create(drm_class, dev->primary->kdev,
+					0, connector, "card%d-%s",
+					dev->primary->index, drm_get_connector_name(connector));
+	DRM_DEBUG("adding \"%s\" to sysfs\n",
+		  drm_get_connector_name(connector));
+
+	if (IS_ERR(connector->kdev)) {
+		DRM_ERROR("failed to register connector device: %ld\n", PTR_ERR(connector->kdev));
+		ret = PTR_ERR(connector->kdev);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	/* Standard attributes */
 
 	for (attr_cnt = 0; attr_cnt < ARRAY_SIZE(connector_attrs); attr_cnt++) {
+<<<<<<< HEAD
 		ret = device_create_file(&connector->kdev, &connector_attrs[attr_cnt]);
+=======
+		ret = device_create_file(connector->kdev, &connector_attrs[attr_cnt]);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			goto err_out_files;
 	}
@@ -406,7 +517,11 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
 		case DRM_MODE_CONNECTOR_Component:
 		case DRM_MODE_CONNECTOR_TV:
 			for (opt_cnt = 0; opt_cnt < ARRAY_SIZE(connector_attrs_opt1); opt_cnt++) {
+<<<<<<< HEAD
 				ret = device_create_file(&connector->kdev, &connector_attrs_opt1[opt_cnt]);
+=======
+				ret = device_create_file(connector->kdev, &connector_attrs_opt1[opt_cnt]);
+>>>>>>> refs/remotes/origin/master
 				if (ret)
 					goto err_out_files;
 			}
@@ -415,7 +530,11 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
 			break;
 	}
 
+<<<<<<< HEAD
 	ret = sysfs_create_bin_file(&connector->kdev.kobj, &edid_attr);
+=======
+	ret = sysfs_create_bin_file(&connector->kdev->kobj, &edid_attr);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_out_files;
 
@@ -426,10 +545,17 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
 
 err_out_files:
 	for (i = 0; i < opt_cnt; i++)
+<<<<<<< HEAD
 		device_remove_file(&connector->kdev, &connector_attrs_opt1[i]);
 	for (i = 0; i < attr_cnt; i++)
 		device_remove_file(&connector->kdev, &connector_attrs[i]);
 	device_unregister(&connector->kdev);
+=======
+		device_remove_file(connector->kdev, &connector_attrs_opt1[i]);
+	for (i = 0; i < attr_cnt; i++)
+		device_remove_file(connector->kdev, &connector_attrs[i]);
+	device_unregister(connector->kdev);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return ret;
@@ -453,13 +579,34 @@ void drm_sysfs_connector_remove(struct drm_connector *connector)
 {
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!connector->kdev.parent)
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!connector->kdev)
+		return;
+>>>>>>> refs/remotes/origin/master
 	DRM_DEBUG("removing \"%s\" from sysfs\n",
 		  drm_get_connector_name(connector));
 
 	for (i = 0; i < ARRAY_SIZE(connector_attrs); i++)
+<<<<<<< HEAD
 		device_remove_file(&connector->kdev, &connector_attrs[i]);
 	sysfs_remove_bin_file(&connector->kdev.kobj, &edid_attr);
 	device_unregister(&connector->kdev);
+<<<<<<< HEAD
+=======
+	connector->kdev.parent = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		device_remove_file(connector->kdev, &connector_attrs[i]);
+	sysfs_remove_bin_file(&connector->kdev->kobj, &edid_attr);
+	device_unregister(connector->kdev);
+	connector->kdev = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(drm_sysfs_connector_remove);
 
@@ -478,10 +625,22 @@ void drm_sysfs_hotplug_event(struct drm_device *dev)
 
 	DRM_DEBUG("generating hotplug event\n");
 
+<<<<<<< HEAD
 	kobject_uevent_env(&dev->primary->kdev.kobj, KOBJ_CHANGE, envp);
 }
 EXPORT_SYMBOL(drm_sysfs_hotplug_event);
 
+=======
+	kobject_uevent_env(&dev->primary->kdev->kobj, KOBJ_CHANGE, envp);
+}
+EXPORT_SYMBOL(drm_sysfs_hotplug_event);
+
+static void drm_sysfs_release(struct device *dev)
+{
+	kfree(dev);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * drm_sysfs_device_add - adds a class device to sysfs for a character driver
  * @dev: DRM device to be added
@@ -493,6 +652,7 @@ EXPORT_SYMBOL(drm_sysfs_hotplug_event);
  */
 int drm_sysfs_device_add(struct drm_minor *minor)
 {
+<<<<<<< HEAD
 	int err;
 	char *minor_str;
 
@@ -502,6 +662,11 @@ int drm_sysfs_device_add(struct drm_minor *minor)
 	minor->kdev.release = drm_sysfs_device_release;
 	minor->kdev.devt = minor->device;
 	minor->kdev.type = &drm_sysfs_device_minor;
+=======
+	char *minor_str;
+	int r;
+
+>>>>>>> refs/remotes/origin/master
 	if (minor->type == DRM_MINOR_CONTROL)
 		minor_str = "controlD%d";
         else if (minor->type == DRM_MINOR_RENDER)
@@ -509,6 +674,7 @@ int drm_sysfs_device_add(struct drm_minor *minor)
         else
                 minor_str = "card%d";
 
+<<<<<<< HEAD
 	dev_set_name(&minor->kdev, minor_str, minor->index);
 
 	err = device_register(&minor->kdev);
@@ -521,6 +687,36 @@ int drm_sysfs_device_add(struct drm_minor *minor)
 
 err_out:
 	return err;
+=======
+	minor->kdev = kzalloc(sizeof(*minor->kdev), GFP_KERNEL);
+	if (!minor->kdev) {
+		r = -ENOMEM;
+		goto error;
+	}
+
+	device_initialize(minor->kdev);
+	minor->kdev->devt = MKDEV(DRM_MAJOR, minor->index);
+	minor->kdev->class = drm_class;
+	minor->kdev->type = &drm_sysfs_device_minor;
+	minor->kdev->parent = minor->dev->dev;
+	minor->kdev->release = drm_sysfs_release;
+	dev_set_drvdata(minor->kdev, minor);
+
+	r = dev_set_name(minor->kdev, minor_str, minor->index);
+	if (r < 0)
+		goto error;
+
+	r = device_add(minor->kdev);
+	if (r < 0)
+		goto error;
+
+	return 0;
+
+error:
+	DRM_ERROR("device create failed %d\n", r);
+	put_device(minor->kdev);
+	return r;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -532,7 +728,19 @@ err_out:
  */
 void drm_sysfs_device_remove(struct drm_minor *minor)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	device_unregister(&minor->kdev);
+=======
+	if (minor->kdev.parent)
+		device_unregister(&minor->kdev);
+	minor->kdev.parent = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (minor->kdev)
+		device_unregister(minor->kdev);
+	minor->kdev = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -548,6 +756,12 @@ void drm_sysfs_device_remove(struct drm_minor *minor)
 
 int drm_class_device_register(struct device *dev)
 {
+<<<<<<< HEAD
+=======
+	if (!drm_class || IS_ERR(drm_class))
+		return -ENOENT;
+
+>>>>>>> refs/remotes/origin/master
 	dev->class = drm_class;
 	return device_register(dev);
 }

@@ -1,6 +1,10 @@
 #include "util.h"
 #include "parse-options.h"
 #include "cache.h"
+<<<<<<< HEAD
+=======
+#include "header.h"
+>>>>>>> refs/remotes/origin/master
 
 #define OPT_SHORT 1
 #define OPT_UNSET 2
@@ -77,6 +81,11 @@ static int get_value(struct parse_opt_ctx_t *p,
 
 	case OPTION_BOOLEAN:
 		*(bool *)opt->value = unset ? false : true;
+<<<<<<< HEAD
+=======
+		if (opt->set)
+			*(bool *)opt->set = true;
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	case OPTION_INCR:
@@ -223,6 +232,27 @@ static int parse_long_opt(struct parse_opt_ctx_t *p, const char *arg,
 			return 0;
 		}
 		if (!rest) {
+<<<<<<< HEAD
+=======
+			if (!prefixcmp(options->long_name, "no-")) {
+				/*
+				 * The long name itself starts with "no-", so
+				 * accept the option without "no-" so that users
+				 * do not have to enter "no-no-" to get the
+				 * negation.
+				 */
+				rest = skip_prefix(arg, options->long_name + 3);
+				if (rest) {
+					flags |= OPT_UNSET;
+					goto match;
+				}
+				/* Abbreviated case */
+				if (!prefixcmp(options->long_name + 3, arg)) {
+					flags |= OPT_UNSET;
+					goto is_abbreviated;
+				}
+			}
+>>>>>>> refs/remotes/origin/master
 			/* abbreviated? */
 			if (!strncmp(options->long_name, arg, arg_end - arg)) {
 is_abbreviated:
@@ -258,6 +288,10 @@ is_abbreviated:
 			if (!rest)
 				continue;
 		}
+<<<<<<< HEAD
+=======
+match:
+>>>>>>> refs/remotes/origin/master
 		if (*rest) {
 			if (*rest != '=')
 				continue;
@@ -338,10 +372,17 @@ int parse_options_step(struct parse_opt_ctx_t *ctx,
 		if (arg[1] != '-') {
 			ctx->opt = arg + 1;
 			if (internal_help && *ctx->opt == 'h')
+<<<<<<< HEAD
 				return parse_options_usage(usagestr, options);
 			switch (parse_short_opt(ctx, options)) {
 			case -1:
 				return parse_options_usage(usagestr, options);
+=======
+				return usage_with_options_internal(usagestr, options, 0);
+			switch (parse_short_opt(ctx, options)) {
+			case -1:
+				return parse_options_usage(usagestr, options, arg + 1, 1);
+>>>>>>> refs/remotes/origin/master
 			case -2:
 				goto unknown;
 			default:
@@ -351,10 +392,18 @@ int parse_options_step(struct parse_opt_ctx_t *ctx,
 				check_typos(arg + 1, options);
 			while (ctx->opt) {
 				if (internal_help && *ctx->opt == 'h')
+<<<<<<< HEAD
 					return parse_options_usage(usagestr, options);
 				switch (parse_short_opt(ctx, options)) {
 				case -1:
 					return parse_options_usage(usagestr, options);
+=======
+					return usage_with_options_internal(usagestr, options, 0);
+				arg = ctx->opt;
+				switch (parse_short_opt(ctx, options)) {
+				case -1:
+					return parse_options_usage(usagestr, options, arg, 1);
+>>>>>>> refs/remotes/origin/master
 				case -2:
 					/* fake a short option thing to hide the fact that we may have
 					 * started to parse aggregated stuff
@@ -382,10 +431,19 @@ int parse_options_step(struct parse_opt_ctx_t *ctx,
 		if (internal_help && !strcmp(arg + 2, "help-all"))
 			return usage_with_options_internal(usagestr, options, 1);
 		if (internal_help && !strcmp(arg + 2, "help"))
+<<<<<<< HEAD
 			return parse_options_usage(usagestr, options);
 		switch (parse_long_opt(ctx, arg + 2, options)) {
 		case -1:
 			return parse_options_usage(usagestr, options);
+=======
+			return usage_with_options_internal(usagestr, options, 0);
+		if (!strcmp(arg + 2, "list-opts"))
+			return PARSE_OPT_LIST;
+		switch (parse_long_opt(ctx, arg + 2, options)) {
+		case -1:
+			return parse_options_usage(usagestr, options, arg + 2, 0);
+>>>>>>> refs/remotes/origin/master
 		case -2:
 			goto unknown;
 		default:
@@ -413,12 +471,26 @@ int parse_options(int argc, const char **argv, const struct option *options,
 {
 	struct parse_opt_ctx_t ctx;
 
+<<<<<<< HEAD
+=======
+	perf_header__set_cmdline(argc, argv);
+
+>>>>>>> refs/remotes/origin/master
 	parse_options_start(&ctx, argc, argv, flags);
 	switch (parse_options_step(&ctx, options, usagestr)) {
 	case PARSE_OPT_HELP:
 		exit(129);
 	case PARSE_OPT_DONE:
 		break;
+<<<<<<< HEAD
+=======
+	case PARSE_OPT_LIST:
+		while (options->type != OPTION_END) {
+			printf("--%s ", options->long_name);
+			options++;
+		}
+		exit(130);
+>>>>>>> refs/remotes/origin/master
 	default: /* PARSE_OPT_UNKNOWN */
 		if (ctx.argv[0][1] == '-') {
 			error("unknown option `%s'", ctx.argv[0] + 2);
@@ -434,6 +506,92 @@ int parse_options(int argc, const char **argv, const struct option *options,
 #define USAGE_OPTS_WIDTH 24
 #define USAGE_GAP         2
 
+<<<<<<< HEAD
+=======
+static void print_option_help(const struct option *opts, int full)
+{
+	size_t pos;
+	int pad;
+
+	if (opts->type == OPTION_GROUP) {
+		fputc('\n', stderr);
+		if (*opts->help)
+			fprintf(stderr, "%s\n", opts->help);
+		return;
+	}
+	if (!full && (opts->flags & PARSE_OPT_HIDDEN))
+		return;
+
+	pos = fprintf(stderr, "    ");
+	if (opts->short_name)
+		pos += fprintf(stderr, "-%c", opts->short_name);
+	else
+		pos += fprintf(stderr, "    ");
+
+	if (opts->long_name && opts->short_name)
+		pos += fprintf(stderr, ", ");
+	if (opts->long_name)
+		pos += fprintf(stderr, "--%s", opts->long_name);
+
+	switch (opts->type) {
+	case OPTION_ARGUMENT:
+		break;
+	case OPTION_LONG:
+	case OPTION_U64:
+	case OPTION_INTEGER:
+	case OPTION_UINTEGER:
+		if (opts->flags & PARSE_OPT_OPTARG)
+			if (opts->long_name)
+				pos += fprintf(stderr, "[=<n>]");
+			else
+				pos += fprintf(stderr, "[<n>]");
+		else
+			pos += fprintf(stderr, " <n>");
+		break;
+	case OPTION_CALLBACK:
+		if (opts->flags & PARSE_OPT_NOARG)
+			break;
+		/* FALLTHROUGH */
+	case OPTION_STRING:
+		if (opts->argh) {
+			if (opts->flags & PARSE_OPT_OPTARG)
+				if (opts->long_name)
+					pos += fprintf(stderr, "[=<%s>]", opts->argh);
+				else
+					pos += fprintf(stderr, "[<%s>]", opts->argh);
+			else
+				pos += fprintf(stderr, " <%s>", opts->argh);
+		} else {
+			if (opts->flags & PARSE_OPT_OPTARG)
+				if (opts->long_name)
+					pos += fprintf(stderr, "[=...]");
+				else
+					pos += fprintf(stderr, "[...]");
+			else
+				pos += fprintf(stderr, " ...");
+		}
+		break;
+	default: /* OPTION_{BIT,BOOLEAN,SET_UINT,SET_PTR} */
+	case OPTION_END:
+	case OPTION_GROUP:
+	case OPTION_BIT:
+	case OPTION_BOOLEAN:
+	case OPTION_INCR:
+	case OPTION_SET_UINT:
+	case OPTION_SET_PTR:
+		break;
+	}
+
+	if (pos <= USAGE_OPTS_WIDTH)
+		pad = USAGE_OPTS_WIDTH - pos;
+	else {
+		fputc('\n', stderr);
+		pad = USAGE_OPTS_WIDTH;
+	}
+	fprintf(stderr, "%*s%s\n", pad + USAGE_GAP, "", opts->help);
+}
+
+>>>>>>> refs/remotes/origin/master
 int usage_with_options_internal(const char * const *usagestr,
 				const struct option *opts, int full)
 {
@@ -453,6 +611,7 @@ int usage_with_options_internal(const char * const *usagestr,
 	if (opts->type != OPTION_GROUP)
 		fputc('\n', stderr);
 
+<<<<<<< HEAD
 	for (; opts->type != OPTION_END; opts++) {
 		size_t pos;
 		int pad;
@@ -534,6 +693,11 @@ int usage_with_options_internal(const char * const *usagestr,
 		}
 		fprintf(stderr, "%*s%s\n", pad + USAGE_GAP, "", opts->help);
 	}
+=======
+	for (  ; opts->type != OPTION_END; opts++)
+		print_option_help(opts, full);
+
+>>>>>>> refs/remotes/origin/master
 	fputc('\n', stderr);
 
 	return PARSE_OPT_HELP;
@@ -548,6 +712,7 @@ void usage_with_options(const char * const *usagestr,
 }
 
 int parse_options_usage(const char * const *usagestr,
+<<<<<<< HEAD
 			const struct option *opts)
 {
 	return usage_with_options_internal(usagestr, opts, 0);
@@ -555,6 +720,52 @@ int parse_options_usage(const char * const *usagestr,
 
 
 int parse_opt_verbosity_cb(const struct option *opt, const char *arg __used,
+=======
+			const struct option *opts,
+			const char *optstr, bool short_opt)
+{
+	if (!usagestr)
+		goto opt;
+
+	fprintf(stderr, "\n usage: %s\n", *usagestr++);
+	while (*usagestr && **usagestr)
+		fprintf(stderr, "    or: %s\n", *usagestr++);
+	while (*usagestr) {
+		fprintf(stderr, "%s%s\n",
+				**usagestr ? "    " : "",
+				*usagestr);
+		usagestr++;
+	}
+	fputc('\n', stderr);
+
+opt:
+	for (  ; opts->type != OPTION_END; opts++) {
+		if (short_opt) {
+			if (opts->short_name == *optstr)
+				break;
+			continue;
+		}
+
+		if (opts->long_name == NULL)
+			continue;
+
+		if (!prefixcmp(optstr, opts->long_name))
+			break;
+		if (!prefixcmp(optstr, "no-") &&
+		    !prefixcmp(optstr + 3, opts->long_name))
+			break;
+	}
+
+	if (opts->type != OPTION_END)
+		print_option_help(opts, 0);
+
+	return PARSE_OPT_HELP;
+}
+
+
+int parse_opt_verbosity_cb(const struct option *opt,
+			   const char *arg __maybe_unused,
+>>>>>>> refs/remotes/origin/master
 			   int unset)
 {
 	int *target = opt->value;

@@ -1,6 +1,7 @@
 #ifndef __LINUX_BRIDGE_NETFILTER_H
 #define __LINUX_BRIDGE_NETFILTER_H
 
+<<<<<<< HEAD
 /* bridge-specific defines for netfilter. 
  */
 
@@ -25,6 +26,10 @@
 #define NF_BR_NUMHOOKS		6
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/netfilter_bridge.h>
+
+>>>>>>> refs/remotes/origin/master
 
 enum nf_br_hook_priorities {
 	NF_BR_PRI_FIRST = INT_MIN,
@@ -47,7 +52,11 @@ enum nf_br_hook_priorities {
 #define BRNF_PPPoE			0x20
 
 /* Only used in br_forward.c */
+<<<<<<< HEAD
 extern int nf_bridge_copy_header(struct sk_buff *skb);
+=======
+int nf_bridge_copy_header(struct sk_buff *skb);
+>>>>>>> refs/remotes/origin/master
 static inline int nf_bridge_maybe_copy_header(struct sk_buff *skb)
 {
 	if (skb->nf_bridge &&
@@ -75,7 +84,11 @@ static inline unsigned int nf_bridge_mtu_reduction(const struct sk_buff *skb)
 	return 0;
 }
 
+<<<<<<< HEAD
 extern int br_handle_frame_finish(struct sk_buff *skb);
+=======
+int br_handle_frame_finish(struct sk_buff *skb);
+>>>>>>> refs/remotes/origin/master
 /* Only used in br_device.c */
 static inline int br_nf_pre_routing_finish_bridge_slow(struct sk_buff *skb)
 {
@@ -104,10 +117,33 @@ struct bridge_skb_cb {
 	} daddr;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else
 #define nf_bridge_maybe_copy_header(skb)	(0)
 #define nf_bridge_pad(skb)			(0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void br_drop_fake_rtable(struct sk_buff *skb)
+{
+	struct dst_entry *dst = skb_dst(skb);
+
+	if (dst && (dst->flags & DST_FAKE_RTABLE))
+		skb_dst_drop(skb);
+}
+
+#else
+#define nf_bridge_maybe_copy_header(skb)	(0)
+#define nf_bridge_pad(skb)			(0)
+#define br_drop_fake_rtable(skb)	        do { } while (0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_BRIDGE_NETFILTER */
 
 #endif /* __KERNEL__ */
+=======
+#endif /* CONFIG_BRIDGE_NETFILTER */
+
+>>>>>>> refs/remotes/origin/master
 #endif

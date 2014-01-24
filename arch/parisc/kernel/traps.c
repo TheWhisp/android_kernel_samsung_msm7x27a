@@ -27,13 +27,27 @@
 #include <linux/bug.h>
 
 #include <asm/assembly.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/traps.h>
 #include <asm/unaligned.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/smp.h>
 #include <asm/pdc.h>
 #include <asm/pdc_chassis.h>
@@ -127,6 +141,11 @@ void show_regs(struct pt_regs *regs)
 	user = user_mode(regs);
 	level = user ? KERN_DEBUG : KERN_CRIT;
 
+<<<<<<< HEAD
+=======
+	show_regs_print_info(level);
+
+>>>>>>> refs/remotes/origin/master
 	print_gr(level, regs);
 
 	for (i = 0; i < 8; i += 4)
@@ -159,6 +178,7 @@ void show_regs(struct pt_regs *regs)
 	}
 }
 
+<<<<<<< HEAD
 
 void dump_stack(void)
 {
@@ -167,6 +187,8 @@ void dump_stack(void)
 
 EXPORT_SYMBOL(dump_stack);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void do_show_stack(struct unwind_frame_info *info)
 {
 	int i = 1;
@@ -283,7 +305,11 @@ void die_if_kernel(char *str, struct pt_regs *regs, long err)
 
 	show_regs(regs);
 	dump_stack();
+<<<<<<< HEAD
 	add_taint(TAINT_DIE);
+=======
+	add_taint(TAINT_DIE, LOCKDEP_NOW_UNRELIABLE);
+>>>>>>> refs/remotes/origin/master
 
 	if (in_interrupt())
 		panic("Fatal exception in interrupt");
@@ -298,11 +324,14 @@ void die_if_kernel(char *str, struct pt_regs *regs, long err)
 	do_exit(SIGSEGV);
 }
 
+<<<<<<< HEAD
 int syscall_ipi(int (*syscall) (struct pt_regs *), struct pt_regs *regs)
 {
 	return syscall(regs);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* gdb uses break 4,8 */
 #define GDB_BREAK_INSN 0x10004
 static void handle_gdb_break(struct pt_regs *regs, int wot)
@@ -529,10 +558,17 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
 	 */
 	if (((unsigned long)regs->iaoq[0] & 3) &&
 	    ((unsigned long)regs->iasq[0] != (unsigned long)regs->sr[7])) { 
+<<<<<<< HEAD
 	  	/* Kill the user process later */
 	  	regs->iaoq[0] = 0 | 3;
 		regs->iaoq[1] = regs->iaoq[0] + 4;
 	 	regs->iasq[0] = regs->iasq[1] = regs->sr[7];
+=======
+		/* Kill the user process later */
+		regs->iaoq[0] = 0 | 3;
+		regs->iaoq[1] = regs->iaoq[0] + 4;
+		regs->iasq[0] = regs->iasq[1] = regs->sr[7];
+>>>>>>> refs/remotes/origin/master
 		regs->gr[0] &= ~PSW_B;
 		return;
 	}
@@ -548,8 +584,13 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
 		
 		/* set up a new led state on systems shipped with a LED State panel */
 		pdc_chassis_send_status(PDC_CHASSIS_DIRECT_HPMC);
+<<<<<<< HEAD
 		    
 	    	parisc_terminate("High Priority Machine Check (HPMC)",
+=======
+
+		parisc_terminate("High Priority Machine Check (HPMC)",
+>>>>>>> refs/remotes/origin/master
 				regs, code, 0);
 		/* NOT REACHED */
 		
@@ -591,13 +632,21 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
 		/* Break instruction trap */
 		handle_break(regs);
 		return;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	case 10:
 		/* Privileged operation trap */
 		die_if_kernel("Privileged operation", regs, code);
 		si.si_code = ILL_PRVOPC;
 		goto give_sigill;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	case 11:
 		/* Privileged register trap */
 		if ((regs->iir & 0xffdfffe0) == 0x034008a0) {
@@ -641,7 +690,11 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
 		if(user_mode(regs)){
 			si.si_signo = SIGFPE;
 			/* Set to zero, and let the userspace app figure it out from
+<<<<<<< HEAD
 		   	   the insn pointed to by si_addr */
+=======
+			   the insn pointed to by si_addr */
+>>>>>>> refs/remotes/origin/master
 			si.si_code = 0;
 			si.si_addr = (void __user *) regs->iaoq[0];
 			force_sig_info(SIGFPE, &si, current);
@@ -653,9 +706,16 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
 	case 14:
 		/* Assist Exception Trap, i.e. floating point exception. */
 		die_if_kernel("Floating point exception", regs, 0); /* quiet */
+<<<<<<< HEAD
 		handle_fpe(regs);
 		return;
 		
+=======
+		__inc_irq_stat(irq_fpassist_count);
+		handle_fpe(regs);
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	case 15:
 		/* Data TLB miss fault/Data page fault */
 		/* Fall through */
@@ -667,15 +727,24 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
 	case 17:
 		/* Non-access data TLB miss fault/Non-access data page fault */
 		/* FIXME: 
+<<<<<<< HEAD
 		 	 Still need to add slow path emulation code here!
 		         If the insn used a non-shadow register, then the tlb
+=======
+			 Still need to add slow path emulation code here!
+			 If the insn used a non-shadow register, then the tlb
+>>>>>>> refs/remotes/origin/master
 			 handlers could not have their side-effect (e.g. probe
 			 writing to a target register) emulated since rfir would
 			 erase the changes to said register. Instead we have to
 			 setup everything, call this function we are in, and emulate
 			 by hand. Technically we need to emulate:
 			 fdc,fdce,pdc,"fic,4f",prober,probeir,probew, probeiw
+<<<<<<< HEAD
 		*/			  
+=======
+		*/
+>>>>>>> refs/remotes/origin/master
 		fault_address = regs->ior;
 		fault_space = regs->isr;
 		break;

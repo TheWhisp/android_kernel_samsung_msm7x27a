@@ -29,7 +29,12 @@ MODULE_LICENSE("GPL");
 /* AIC26 driver private data */
 struct aic26 {
 	struct spi_device *spi;
+<<<<<<< HEAD
 	struct snd_soc_codec codec;
+=======
+	struct regmap *regmap;
+	struct snd_soc_codec *codec;
+>>>>>>> refs/remotes/origin/master
 	int master;
 	int datfm;
 	int mclk;
@@ -40,6 +45,7 @@ struct aic26 {
 	int keyclick_len;
 };
 
+<<<<<<< HEAD
 /* ---------------------------------------------------------------------
  * Register access routines
  */
@@ -118,6 +124,23 @@ static int aic26_reg_write(struct snd_soc_codec *codec, unsigned int reg,
 	cache[reg] = value;
 	return 0;
 }
+=======
+static const struct snd_soc_dapm_widget tlv320aic26_dapm_widgets[] = {
+SND_SOC_DAPM_INPUT("MICIN"),
+SND_SOC_DAPM_INPUT("AUX"),
+
+SND_SOC_DAPM_OUTPUT("HPL"),
+SND_SOC_DAPM_OUTPUT("HPR"),
+};
+
+static const struct snd_soc_dapm_route tlv320aic26_dapm_routes[] = {
+	{ "Capture", NULL, "MICIN" },
+	{ "Capture", NULL, "AUX" },
+
+	{ "HPL", NULL, "Playback" },
+	{ "HPR", NULL, "Playback" },
+};
+>>>>>>> refs/remotes/origin/master
 
 /* ---------------------------------------------------------------------
  * Digital Audio Interface Operations
@@ -126,8 +149,12 @@ static int aic26_hw_params(struct snd_pcm_substream *substream,
 			   struct snd_pcm_hw_params *params,
 			   struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct aic26 *aic26 = snd_soc_codec_get_drvdata(codec);
 	int fsref, divisor, wlen, pval, jval, dval, qval;
 	u16 reg;
@@ -175,6 +202,7 @@ static int aic26_hw_params(struct snd_pcm_substream *substream,
 	dev_dbg(&aic26->spi->dev, "Setting PLLM to %d.%04d\n", jval, dval);
 	qval = 0;
 	reg = 0x8000 | qval << 11 | pval << 8 | jval << 2;
+<<<<<<< HEAD
 	aic26_reg_write(codec, AIC26_REG_PLL_PROG1, reg);
 	reg = dval << 2;
 	aic26_reg_write(codec, AIC26_REG_PLL_PROG2, reg);
@@ -193,6 +221,22 @@ static int aic26_hw_params(struct snd_pcm_substream *substream,
 	reg &= ~0x0fff;
 	reg |= wlen | aic26->datfm | (divisor << 3) | divisor;
 	aic26_reg_write(codec, AIC26_REG_AUDIO_CTRL1, reg);
+=======
+	snd_soc_write(codec, AIC26_REG_PLL_PROG1, reg);
+	reg = dval << 2;
+	snd_soc_write(codec, AIC26_REG_PLL_PROG2, reg);
+
+	/* Audio Control 3 (master mode, fsref rate) */
+	if (aic26->master)
+		reg = 0x0800;
+	if (fsref == 48000)
+		reg = 0x2000;
+	snd_soc_update_bits(codec, AIC26_REG_AUDIO_CTRL3, 0xf800, reg);
+
+	/* Audio Control 1 (FSref divisor) */
+	reg = wlen | aic26->datfm | (divisor << 3) | divisor;
+	snd_soc_update_bits(codec, AIC26_REG_AUDIO_CTRL1, 0xfff, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -204,16 +248,27 @@ static int aic26_mute(struct snd_soc_dai *dai, int mute)
 {
 	struct snd_soc_codec *codec = dai->codec;
 	struct aic26 *aic26 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	u16 reg = aic26_reg_read_cache(codec, AIC26_REG_DAC_GAIN);
+=======
+	u16 reg;
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&aic26->spi->dev, "aic26_mute(dai=%p, mute=%i)\n",
 		dai, mute);
 
 	if (mute)
+<<<<<<< HEAD
 		reg |= 0x8080;
 	else
 		reg &= ~0x8080;
 	aic26_reg_write(codec, AIC26_REG_DAC_GAIN, reg);
+=======
+		reg = 0x8080;
+	else
+		reg = 0;
+	snd_soc_update_bits(codec, AIC26_REG_DAC_GAIN, 0x8000, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -275,7 +330,15 @@ static int aic26_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
 #define AIC26_FORMATS	(SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_S16_BE |\
 			 SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S32_BE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops aic26_dai_ops = {
+=======
+static const struct snd_soc_dai_ops aic26_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops aic26_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= aic26_hw_params,
 	.digital_mute	= aic26_mute,
 	.set_sysclk	= aic26_set_sysclk,
@@ -331,7 +394,11 @@ static ssize_t aic26_keyclick_show(struct device *dev,
 	struct aic26 *aic26 = dev_get_drvdata(dev);
 	int val, amp, freq, len;
 
+<<<<<<< HEAD
 	val = aic26_reg_read_cache(&aic26->codec, AIC26_REG_AUDIO_CTRL2);
+=======
+	val = snd_soc_read(aic26->codec, AIC26_REG_AUDIO_CTRL2);
+>>>>>>> refs/remotes/origin/master
 	amp = (val >> 12) & 0x7;
 	freq = (125 << ((val >> 8) & 0x7)) >> 1;
 	len = 2 * (1 + ((val >> 4) & 0xf));
@@ -345,11 +412,17 @@ static ssize_t aic26_keyclick_set(struct device *dev,
 				  const char *buf, size_t count)
 {
 	struct aic26 *aic26 = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	int val;
 
 	val = aic26_reg_read_cache(&aic26->codec, AIC26_REG_AUDIO_CTRL2);
 	val |= 0x8000;
 	aic26_reg_write(&aic26->codec, AIC26_REG_AUDIO_CTRL2, val);
+=======
+
+	snd_soc_update_bits(aic26->codec, AIC26_REG_AUDIO_CTRL2,
+			    0x8000, 0x800);
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 }
@@ -361,6 +434,7 @@ static DEVICE_ATTR(keyclick, 0644, aic26_keyclick_show, aic26_keyclick_set);
  */
 static int aic26_probe(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	int ret, err, i, reg;
 
 	dev_info(codec->dev, "Probing AIC26 SoC CODEC driver\n");
@@ -380,6 +454,26 @@ static int aic26_probe(struct snd_soc_codec *codec)
 	/* Fill register cache */
 	for (i = 0; i < codec->driver->reg_cache_size; i++)
 		aic26_reg_read(codec, i);
+=======
+	struct aic26 *aic26 = dev_get_drvdata(codec->dev);
+	int ret, reg;
+
+	snd_soc_codec_set_cache_io(codec, 16, 16, SND_SOC_REGMAP);
+
+	aic26->codec = codec;
+
+	/* Reset the codec to power on defaults */
+	snd_soc_write(codec, AIC26_REG_RESET, 0xBB00);
+
+	/* Power up CODEC */
+	snd_soc_write(codec, AIC26_REG_POWER_CTRL, 0);
+
+	/* Audio Control 3 (master mode, fsref rate) */
+	reg = snd_soc_read(codec, AIC26_REG_AUDIO_CTRL3);
+	reg &= ~0xf800;
+	reg |= 0x0800; /* set master mode */
+	snd_soc_write(codec, AIC26_REG_AUDIO_CTRL3, reg);
+>>>>>>> refs/remotes/origin/master
 
 	/* Register the sysfs files for debugging */
 	/* Create SysFS files */
@@ -387,21 +481,42 @@ static int aic26_probe(struct snd_soc_codec *codec)
 	if (ret)
 		dev_info(codec->dev, "error creating sysfs files\n");
 
+<<<<<<< HEAD
 	/* register controls */
 	dev_dbg(codec->dev, "Registering controls\n");
+<<<<<<< HEAD
 	err = snd_soc_add_controls(codec, aic26_snd_controls,
+=======
+	err = snd_soc_add_codec_controls(codec, aic26_snd_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 			ARRAY_SIZE(aic26_snd_controls));
 	WARN_ON(err < 0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct snd_soc_codec_driver aic26_soc_codec_dev = {
 	.probe = aic26_probe,
+<<<<<<< HEAD
 	.read = aic26_reg_read,
 	.write = aic26_reg_write,
 	.reg_cache_size = AIC26_NUM_REGS,
 	.reg_word_size = sizeof(u16),
+=======
+	.controls = aic26_snd_controls,
+	.num_controls = ARRAY_SIZE(aic26_snd_controls),
+	.dapm_widgets = tlv320aic26_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(tlv320aic26_dapm_widgets),
+	.dapm_routes = tlv320aic26_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(tlv320aic26_dapm_routes),
+};
+
+static const struct regmap_config aic26_regmap = {
+	.reg_bits = 16,
+	.val_bits = 16,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ---------------------------------------------------------------------
@@ -416,10 +531,25 @@ static int aic26_spi_probe(struct spi_device *spi)
 	dev_dbg(&spi->dev, "probing tlv320aic26 spi device\n");
 
 	/* Allocate driver data */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	aic26 = kzalloc(sizeof *aic26, GFP_KERNEL);
+=======
+	aic26 = devm_kzalloc(&spi->dev, sizeof *aic26, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!aic26)
 		return -ENOMEM;
 
+=======
+	aic26 = devm_kzalloc(&spi->dev, sizeof *aic26, GFP_KERNEL);
+	if (!aic26)
+		return -ENOMEM;
+
+	aic26->regmap = devm_regmap_init_spi(spi, &aic26_regmap);
+	if (IS_ERR(aic26->regmap))
+		return PTR_ERR(aic26->regmap);
+
+>>>>>>> refs/remotes/origin/master
 	/* Initialize the driver data */
 	aic26->spi = spi;
 	dev_set_drvdata(&spi->dev, aic26);
@@ -427,18 +557,32 @@ static int aic26_spi_probe(struct spi_device *spi)
 
 	ret = snd_soc_register_codec(&spi->dev,
 			&aic26_soc_codec_dev, &aic26_dai, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(aic26);
 	return ret;
 
 	dev_dbg(&spi->dev, "SPI device initialized\n");
 	return 0;
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int aic26_spi_remove(struct spi_device *spi)
 {
 	snd_soc_unregister_codec(&spi->dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(spi_get_drvdata(spi));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -451,6 +595,7 @@ static struct spi_driver aic26_spi = {
 	.remove = aic26_spi_remove,
 };
 
+<<<<<<< HEAD
 static int __init aic26_init(void)
 {
 	return spi_register_driver(&aic26_spi);
@@ -462,3 +607,6 @@ static void __exit aic26_exit(void)
 	spi_unregister_driver(&aic26_spi);
 }
 module_exit(aic26_exit);
+=======
+module_spi_driver(aic26_spi);
+>>>>>>> refs/remotes/origin/master

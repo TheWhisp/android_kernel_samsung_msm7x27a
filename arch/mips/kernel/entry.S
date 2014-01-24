@@ -36,6 +36,14 @@ FEXPORT(ret_from_exception)
 FEXPORT(ret_from_irq)
 	LONG_S	s0, TI_REGS($28)
 FEXPORT(__ret_from_irq)
+<<<<<<< HEAD
+=======
+/*
+ * We can be coming here from a syscall done in the kernel space,
+ * e.g. a failed kernel_execve().
+ */
+resume_userspace_check:
+>>>>>>> refs/remotes/origin/master
 	LONG_L	t0, PT_STATUS(sp)		# returning to kernel mode?
 	andi	t0, t0, KU_USER
 	beqz	t0, resume_kernel
@@ -65,6 +73,15 @@ need_resched:
 	b	need_resched
 #endif
 
+<<<<<<< HEAD
+=======
+FEXPORT(ret_from_kernel_thread)
+	jal	schedule_tail		# a0 = struct task_struct *prev
+	move	a0, s1
+	jal	s0
+	j	syscall_exit
+
+>>>>>>> refs/remotes/origin/master
 FEXPORT(ret_from_fork)
 	jal	schedule_tail		# a0 = struct task_struct *prev
 
@@ -77,7 +94,11 @@ FEXPORT(syscall_exit)
 	and	t0, a2, t0
 	bnez	t0, syscall_exit_work
 
+<<<<<<< HEAD
 FEXPORT(restore_all)			# restore full frame
+=======
+restore_all:				# restore full frame
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MIPS_MT_SMTC
 #ifdef CONFIG_MIPS_MT_SMTC_IM_BACKSTOP
 /* Re-arm any temporarily masked interrupts not explicitly "acked" */
@@ -117,7 +138,11 @@ FEXPORT(restore_all)			# restore full frame
 	RESTORE_TEMP
 	RESTORE_AT
 	RESTORE_STATIC
+<<<<<<< HEAD
 FEXPORT(restore_partial)		# restore partial frame
+=======
+restore_partial:		# restore partial frame
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TRACE_IRQFLAGS
 	SAVE_STATIC
 	SAVE_AT
@@ -162,11 +187,28 @@ work_notifysig:				# deal with pending signals and
 	move	a0, sp
 	li	a1, 0
 	jal	do_notify_resume	# a2 already loaded
+<<<<<<< HEAD
 	j	resume_userspace
 
 FEXPORT(syscall_exit_work_partial)
 	SAVE_STATIC
 syscall_exit_work:
+=======
+	j	resume_userspace_check
+
+FEXPORT(syscall_exit_partial)
+	local_irq_disable		# make sure need_resched doesn't
+					# change between and return
+	LONG_L	a2, TI_FLAGS($28)	# current->work
+	li	t0, _TIF_ALLWORK_MASK
+	and	t0, a2
+	beqz	t0, restore_partial
+	SAVE_STATIC
+syscall_exit_work:
+	LONG_L	t0, PT_STATUS(sp)		# returning to kernel mode?
+	andi	t0, t0, KU_USER
+	beqz	t0, resume_kernel
+>>>>>>> refs/remotes/origin/master
 	li	t0, _TIF_WORK_SYSCALL_EXIT
 	and	t0, a2			# a2 is preloaded with TI_FLAGS
 	beqz	t0, work_pending	# trace bit set?

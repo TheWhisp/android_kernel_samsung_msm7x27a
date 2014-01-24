@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * OMAP4 SMP source file. It contains platform specific fucntions
+=======
+ * OMAP4 SMP source file. It contains platform specific functions
+>>>>>>> refs/remotes/origin/master
  * needed for the linux smp kernel.
  *
  * Copyright (C) 2009 Texas Instruments, Inc.
@@ -19,26 +23,98 @@
 #include <linux/device.h>
 #include <linux/smp.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
 #include <asm/cacheflush.h>
 #include <asm/hardware/gic.h>
 #include <asm/smp_scu.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/omap4-common.h>
+=======
+
+#include <mach/hardware.h>
+#include <mach/omap-secure.h>
+
+#include "iomap.h"
+#include "common.h"
+#include "clockdomain.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irqchip/arm-gic.h>
+
+#include <asm/smp_scu.h>
+
+#include "omap-secure.h"
+#include "omap-wakeupgen.h"
+#include <asm/cputype.h>
+
+#include "soc.h"
+#include "iomap.h"
+#include "common.h"
+#include "clockdomain.h"
+#include "pm.h"
+
+#define CPU_MASK		0xff0ffff0
+#define CPU_CORTEX_A9		0x410FC090
+#define CPU_CORTEX_A15		0x410FC0F0
+
+#define OMAP5_CORE_COUNT	0x2
+
+u16 pm44xx_errata;
+>>>>>>> refs/remotes/origin/master
 
 /* SCU base address */
 static void __iomem *scu_base;
 
 static DEFINE_SPINLOCK(boot_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __cpuinit platform_secondary_init(unsigned int cpu)
 {
 	/*
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void __iomem *omap4_get_scu_base(void)
+{
+	return scu_base;
+}
+
+<<<<<<< HEAD
+void __cpuinit platform_secondary_init(unsigned int cpu)
+=======
+static void omap4_secondary_init(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
+{
+	/*
+	 * Configure ACTRL and enable NS SMP bit access on CPU1 on HS device.
+	 * OMAP44XX EMU/HS devices - CPU0 SMP bit access is enabled in PPA
+	 * init and for CPU1, a secure PPA API provided. CPU0 must be ON
+	 * while executing NS_SMP API on CPU1 and PPA version must be 1.4.0+.
+	 * OMAP443X GP devices- SMP bit isn't accessible.
+	 * OMAP446X GP devices - SMP bit access is enabled on both CPUs.
+	 */
+	if (cpu_is_omap443x() && (omap_type() != OMAP2_DEVICE_TYPE_GP))
+		omap_secure_dispatcher(OMAP4_PPA_CPU_ACTRL_SMP_INDEX,
+							4, 0, 0, 0, 0, 0);
+
+	/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * If any interrupts are already enabled for the primary
 	 * core (e.g. timer irq), then they will not have been enabled
 	 * for us: do so
 	 */
 	gic_secondary_init(0);
+=======
+	 * Configure the CNTFRQ register for the secondary cpu's which
+	 * indicates the frequency of the cpu local timers.
+	 */
+	if (soc_is_omap54xx() || soc_is_dra7xx())
+		set_cntfreq();
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Synchronise with the boot thread.
@@ -47,8 +123,23 @@ void __cpuinit platform_secondary_init(unsigned int cpu)
 	spin_unlock(&boot_lock);
 }
 
+<<<<<<< HEAD
 int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 {
+<<<<<<< HEAD
+=======
+	static struct clockdomain *cpu1_clkdm;
+	static bool booted;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int omap4_boot_secondary(unsigned int cpu, struct task_struct *idle)
+{
+	static struct clockdomain *cpu1_clkdm;
+	static bool booted;
+	static struct powerdomain *cpu1_pwrdm;
+	void __iomem *base = omap_get_wakeupgen_base();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Set synchronisation state between this boot processor
 	 * and the secondary one
@@ -57,6 +148,7 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 
 	/*
 	 * Update the AuxCoreBoot0 with boot state for secondary core.
+<<<<<<< HEAD
 	 * omap_secondary_startup() routine will hold the secondary core till
 	 * the AuxCoreBoot1 register is updated with cpu state
 	 * A barrier is added to ensure that write buffer is drained
@@ -64,7 +156,92 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 	omap_modify_auxcoreboot0(0x200, 0xfffffdff);
 	flush_cache_all();
 	smp_wmb();
+<<<<<<< HEAD
+=======
+
+	if (!cpu1_clkdm)
+		cpu1_clkdm = clkdm_lookup("mpu1_clkdm");
+=======
+	 * omap4_secondary_startup() routine will hold the secondary core till
+	 * the AuxCoreBoot1 register is updated with cpu state
+	 * A barrier is added to ensure that write buffer is drained
+	 */
+	if (omap_secure_apis_support())
+		omap_modify_auxcoreboot0(0x200, 0xfffffdff);
+	else
+		__raw_writel(0x20, base + OMAP_AUX_CORE_BOOT_0);
+
+	if (!cpu1_clkdm && !cpu1_pwrdm) {
+		cpu1_clkdm = clkdm_lookup("mpu1_clkdm");
+		cpu1_pwrdm = pwrdm_lookup("cpu1_pwrdm");
+	}
+>>>>>>> refs/remotes/origin/master
+
+	/*
+	 * The SGI(Software Generated Interrupts) are not wakeup capable
+	 * from low power states. This is known limitation on OMAP4 and
+	 * needs to be worked around by using software forced clockdomain
+	 * wake-up. To wakeup CPU1, CPU0 forces the CPU1 clockdomain to
+	 * software force wakeup. The clockdomain is then put back to
+	 * hardware supervised mode.
+	 * More details can be found in OMAP4430 TRM - Version J
+	 * Section :
+	 *	4.3.4.2 Power States of CPU0 and CPU1
+	 */
+<<<<<<< HEAD
+	if (booted) {
+		clkdm_wakeup(cpu1_clkdm);
+		clkdm_allow_idle(cpu1_clkdm);
+=======
+	if (booted && cpu1_pwrdm && cpu1_clkdm) {
+		/*
+		 * GIC distributor control register has changed between
+		 * CortexA9 r1pX and r2pX. The Control Register secure
+		 * banked version is now composed of 2 bits:
+		 * bit 0 == Secure Enable
+		 * bit 1 == Non-Secure Enable
+		 * The Non-Secure banked register has not changed
+		 * Because the ROM Code is based on the r1pX GIC, the CPU1
+		 * GIC restoration will cause a problem to CPU0 Non-Secure SW.
+		 * The workaround must be:
+		 * 1) Before doing the CPU1 wakeup, CPU0 must disable
+		 * the GIC distributor
+		 * 2) CPU1 must re-enable the GIC distributor on
+		 * it's wakeup path.
+		 */
+		if (IS_PM44XX_ERRATUM(PM_OMAP4_ROM_SMP_BOOT_ERRATUM_GICD)) {
+			local_irq_disable();
+			gic_dist_disable();
+		}
+
+		/*
+		 * Ensure that CPU power state is set to ON to avoid CPU
+		 * powerdomain transition on wfi
+		 */
+		clkdm_wakeup(cpu1_clkdm);
+		omap_set_pwrdm_state(cpu1_pwrdm, PWRDM_POWER_ON);
+		clkdm_allow_idle(cpu1_clkdm);
+
+		if (IS_PM44XX_ERRATUM(PM_OMAP4_ROM_SMP_BOOT_ERRATUM_GICD)) {
+			while (gic_dist_disabled()) {
+				udelay(1);
+				cpu_relax();
+			}
+			gic_timer_retrigger();
+			local_irq_enable();
+		}
+>>>>>>> refs/remotes/origin/master
+	} else {
+		dsb_sev();
+		booted = true;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	gic_raise_softirq(cpumask_of(cpu), 1);
+=======
+	arch_send_wakeup_ipi_mask(cpumask_of(cpu));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Now the secondary core is starting up let it run its
@@ -75,6 +252,7 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __init wakeup_secondary(void)
 {
 	/*
@@ -94,37 +272,81 @@ static void __init wakeup_secondary(void)
 	mb();
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialise the CPU possible map early - this describes the CPUs
  * which may be present or become present in the system.
  */
+<<<<<<< HEAD
 void __init smp_init_cpus(void)
 {
 	unsigned int i, ncores;
 
+<<<<<<< HEAD
 	/* Never released */
 	scu_base = ioremap(OMAP44XX_SCU_BASE, SZ_256);
+=======
+	/*
+	 * Currently we can't call ioremap here because
+	 * SoC detection won't work until after init_early.
+	 */
+	scu_base =  OMAP2_L4_IO_ADDRESS(OMAP44XX_SCU_BASE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(!scu_base);
 
 	ncores = scu_get_core_count(scu_base);
 
 	/* sanity check */
+<<<<<<< HEAD
 	if (ncores > NR_CPUS) {
 		printk(KERN_WARNING
 		       "OMAP4: no. of cores (%d) greater than configured "
 		       "maximum of %d - clipping\n",
 		       ncores, NR_CPUS);
 		ncores = NR_CPUS;
+=======
+=======
+static void __init omap4_smp_init_cpus(void)
+{
+	unsigned int i = 0, ncores = 1, cpu_id;
+
+	/* Use ARM cpuid check here, as SoC detection will not work so early */
+	cpu_id = read_cpuid_id() & CPU_MASK;
+	if (cpu_id == CPU_CORTEX_A9) {
+		/*
+		 * Currently we can't call ioremap here because
+		 * SoC detection won't work until after init_early.
+		 */
+		scu_base =  OMAP2_L4_IO_ADDRESS(scu_a9_get_base());
+		BUG_ON(!scu_base);
+		ncores = scu_get_core_count(scu_base);
+	} else if (cpu_id == CPU_CORTEX_A15) {
+		ncores = OMAP5_CORE_COUNT;
+	}
+
+	/* sanity check */
+>>>>>>> refs/remotes/origin/master
+	if (ncores > nr_cpu_ids) {
+		pr_warn("SMP: %u cores greater than maximum (%u), clipping\n",
+			ncores, nr_cpu_ids);
+		ncores = nr_cpu_ids;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < ncores; i++)
 		set_cpu_possible(i, true);
+<<<<<<< HEAD
 
 	set_smp_cross_call(gic_raise_softirq);
 }
 
 void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 {
+<<<<<<< HEAD
 	int i;
 
 	/*
@@ -133,6 +355,8 @@ void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 	 */
 	for (i = 0; i < max_cpus; i++)
 		set_cpu_present(i, true);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Initialise the SCU and wake up the secondary core using
@@ -141,3 +365,47 @@ void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 	scu_enable(scu_base);
 	wakeup_secondary();
 }
+=======
+}
+
+static void __init omap4_smp_prepare_cpus(unsigned int max_cpus)
+{
+	void *startup_addr = omap4_secondary_startup;
+	void __iomem *base = omap_get_wakeupgen_base();
+
+	/*
+	 * Initialise the SCU and wake up the secondary core using
+	 * wakeup_secondary().
+	 */
+	if (scu_base)
+		scu_enable(scu_base);
+
+	if (cpu_is_omap446x()) {
+		startup_addr = omap4460_secondary_startup;
+		pm44xx_errata |= PM_OMAP4_ROM_SMP_BOOT_ERRATUM_GICD;
+	}
+
+	/*
+	 * Write the address of secondary startup routine into the
+	 * AuxCoreBoot1 where ROM code will jump and start executing
+	 * on secondary core once out of WFE
+	 * A barrier is added to ensure that write buffer is drained
+	 */
+	if (omap_secure_apis_support())
+		omap_auxcoreboot_addr(virt_to_phys(startup_addr));
+	else
+		__raw_writel(virt_to_phys(omap5_secondary_startup),
+						base + OMAP_AUX_CORE_BOOT_1);
+
+}
+
+struct smp_operations omap4_smp_ops __initdata = {
+	.smp_init_cpus		= omap4_smp_init_cpus,
+	.smp_prepare_cpus	= omap4_smp_prepare_cpus,
+	.smp_secondary_init	= omap4_secondary_init,
+	.smp_boot_secondary	= omap4_boot_secondary,
+#ifdef CONFIG_HOTPLUG_CPU
+	.cpu_die		= omap4_cpu_die,
+#endif
+};
+>>>>>>> refs/remotes/origin/master

@@ -14,6 +14,10 @@
 #include <asm/cacheflush.h>
 #include <asm/r4kcache.h>
 #include <asm/reboot.h>
+<<<<<<< HEAD
+=======
+#include <asm/smp-ops.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 
 #include <msp_prom.h>
@@ -208,7 +212,11 @@ void __init prom_init(void)
 	default:
 		/* we don't recognize the machine */
 		mips_machtype  = MACH_UNKNOWN;
+<<<<<<< HEAD
 		panic("***Bogosity factor five***, exiting\n");
+=======
+		panic("***Bogosity factor five***, exiting");
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 
@@ -228,6 +236,7 @@ void __init prom_init(void)
 	 */
 	msp_serial_setup();
 
+<<<<<<< HEAD
 #ifdef CONFIG_MIPS_MT_SMP
 	register_smp_ops(&vsmp_smp_ops);
 #endif
@@ -235,6 +244,13 @@ void __init prom_init(void)
 #ifdef CONFIG_MIPS_MT_SMTC
 	register_smp_ops(&msp_smtc_smp_ops);
 #endif
+=======
+	if (register_vsmp_smp_ops()) {
+#ifdef CONFIG_MIPS_MT_SMTC
+		register_smp_ops(&msp_smtc_smp_ops);
+#endif
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_PMCTWILED
 	/*

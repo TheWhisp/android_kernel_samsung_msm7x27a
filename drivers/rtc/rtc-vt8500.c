@@ -23,6 +23,10 @@
 #include <linux/bcd.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Register definitions
@@ -74,6 +78,16 @@
 #define VT8500_RTC_CR_SM_SEC	(1 << 3)	/* 0: 1Hz/60, 1: 1Hz */
 #define VT8500_RTC_CR_CALIB	(1 << 4)	/* Enable calibration */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define VT8500_RTC_IS_ALARM	(1 << 0)	/* Alarm interrupt status */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VT8500_RTC_IS_ALARM	(1 << 0)	/* Alarm interrupt status */
+
+>>>>>>> refs/remotes/origin/master
 struct vt8500_rtc {
 	void __iomem		*regbase;
 	struct resource		*res;
@@ -96,7 +110,15 @@ static irqreturn_t vt8500_rtc_irq(int irq, void *dev_id)
 
 	spin_unlock(&vt8500_rtc->lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (isr & 1)
+=======
+	if (isr & VT8500_RTC_IS_ALARM)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (isr & VT8500_RTC_IS_ALARM)
+>>>>>>> refs/remotes/origin/master
 		events |= RTC_AF | RTC_IRQF;
 
 	rtc_update_irq(vt8500_rtc->rtc, 1, events);
@@ -134,7 +156,14 @@ static int vt8500_rtc_set_time(struct device *dev, struct rtc_time *tm)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	writel((bin2bcd(tm->tm_year - 100) << DATE_YEAR_S)
+<<<<<<< HEAD
+=======
+	writel((bin2bcd(tm->tm_year % 100) << DATE_YEAR_S)
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		| (bin2bcd(tm->tm_mon + 1) << DATE_MONTH_S)
 		| (bin2bcd(tm->tm_mday))
 		| ((tm->tm_year >= 200) << DATE_CENTURY_S),
@@ -162,8 +191,18 @@ static int vt8500_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
 	alrm->time.tm_sec = bcd2bin((alarm & TIME_SEC_MASK));
 
 	alrm->enabled = (alarm & ALARM_ENABLE_MASK) ? 1 : 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	alrm->pending = (isr & 1) ? 1 : 0;
+=======
+	alrm->pending = (isr & VT8500_RTC_IS_ALARM) ? 1 : 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alrm->pending = (isr & VT8500_RTC_IS_ALARM) ? 1 : 0;
+
+>>>>>>> refs/remotes/origin/master
 	return rtc_valid_tm(&alrm->time);
 }
 
@@ -203,12 +242,21 @@ static const struct rtc_class_ops vt8500_rtc_ops = {
 	.alarm_irq_enable = vt8500_alarm_irq_enable,
 };
 
+<<<<<<< HEAD
 static int __devinit vt8500_rtc_probe(struct platform_device *pdev)
+=======
+static int vt8500_rtc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vt8500_rtc *vt8500_rtc;
 	int ret;
 
+<<<<<<< HEAD
 	vt8500_rtc = kzalloc(sizeof(struct vt8500_rtc), GFP_KERNEL);
+=======
+	vt8500_rtc = devm_kzalloc(&pdev->dev,
+			   sizeof(struct vt8500_rtc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!vt8500_rtc)
 		return -ENOMEM;
 
@@ -218,13 +266,18 @@ static int __devinit vt8500_rtc_probe(struct platform_device *pdev)
 	vt8500_rtc->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!vt8500_rtc->res) {
 		dev_err(&pdev->dev, "No I/O memory resource defined\n");
+<<<<<<< HEAD
 		ret = -ENXIO;
 		goto err_free;
+=======
+		return -ENXIO;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	vt8500_rtc->irq_alarm = platform_get_irq(pdev, 0);
 	if (vt8500_rtc->irq_alarm < 0) {
 		dev_err(&pdev->dev, "No alarm IRQ resource defined\n");
+<<<<<<< HEAD
 		ret = -ENXIO;
 		goto err_free;
 	}
@@ -239,23 +292,47 @@ static int __devinit vt8500_rtc_probe(struct platform_device *pdev)
 	}
 
 	vt8500_rtc->regbase = ioremap(vt8500_rtc->res->start,
+=======
+		return vt8500_rtc->irq_alarm;
+	}
+
+	vt8500_rtc->res = devm_request_mem_region(&pdev->dev,
+					vt8500_rtc->res->start,
+					resource_size(vt8500_rtc->res),
+					"vt8500-rtc");
+	if (vt8500_rtc->res == NULL) {
+		dev_err(&pdev->dev, "failed to request I/O memory\n");
+		return -EBUSY;
+	}
+
+	vt8500_rtc->regbase = devm_ioremap(&pdev->dev, vt8500_rtc->res->start,
+>>>>>>> refs/remotes/origin/master
 				      resource_size(vt8500_rtc->res));
 	if (!vt8500_rtc->regbase) {
 		dev_err(&pdev->dev, "Unable to map RTC I/O memory\n");
 		ret = -EBUSY;
+<<<<<<< HEAD
 		goto err_release;
+=======
+		goto err_return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Enable RTC and set it to 24-hour mode */
 	writel(VT8500_RTC_CR_ENABLE,
 	       vt8500_rtc->regbase + VT8500_RTC_CR);
 
+<<<<<<< HEAD
 	vt8500_rtc->rtc = rtc_device_register("vt8500-rtc", &pdev->dev,
+=======
+	vt8500_rtc->rtc = devm_rtc_device_register(&pdev->dev, "vt8500-rtc",
+>>>>>>> refs/remotes/origin/master
 					      &vt8500_rtc_ops, THIS_MODULE);
 	if (IS_ERR(vt8500_rtc->rtc)) {
 		ret = PTR_ERR(vt8500_rtc->rtc);
 		dev_err(&pdev->dev,
 			"Failed to register RTC device -> %d\n", ret);
+<<<<<<< HEAD
 		goto err_unmap;
 	}
 
@@ -265,10 +342,22 @@ static int __devinit vt8500_rtc_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "can't get irq %i, err %d\n",
 			vt8500_rtc->irq_alarm, ret);
 		goto err_unreg;
+=======
+		goto err_return;
+	}
+
+	ret = devm_request_irq(&pdev->dev, vt8500_rtc->irq_alarm,
+				vt8500_rtc_irq, 0, "rtc alarm", vt8500_rtc);
+	if (ret < 0) {
+		dev_err(&pdev->dev, "can't get irq %i, err %d\n",
+			vt8500_rtc->irq_alarm, ret);
+		goto err_return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
+<<<<<<< HEAD
 err_unreg:
 	rtc_device_unregister(vt8500_rtc->rtc);
 err_unmap:
@@ -297,10 +386,23 @@ static int __devexit vt8500_rtc_remove(struct platform_device *pdev)
 
 	kfree(vt8500_rtc);
 	platform_set_drvdata(pdev, NULL);
+=======
+err_return:
+	return ret;
+}
+
+static int vt8500_rtc_remove(struct platform_device *pdev)
+{
+	struct vt8500_rtc *vt8500_rtc = platform_get_drvdata(pdev);
+
+	/* Disable alarm matching */
+	writel(0, vt8500_rtc->regbase + VT8500_RTC_IS);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver vt8500_rtc_driver = {
 	.probe		= vt8500_rtc_probe,
 	.remove		= __devexit_p(vt8500_rtc_remove),
@@ -310,6 +412,7 @@ static struct platform_driver vt8500_rtc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init vt8500_rtc_init(void)
 {
 	return platform_driver_register(&vt8500_rtc_driver);
@@ -321,8 +424,33 @@ static void __exit vt8500_rtc_exit(void)
 	platform_driver_unregister(&vt8500_rtc_driver);
 }
 module_exit(vt8500_rtc_exit);
+=======
+module_platform_driver(vt8500_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Alexey Charkov <alchark@gmail.com>");
 MODULE_DESCRIPTION("VIA VT8500 SoC Realtime Clock Driver (RTC)");
 MODULE_LICENSE("GPL");
+=======
+static const struct of_device_id wmt_dt_ids[] = {
+	{ .compatible = "via,vt8500-rtc", },
+	{}
+};
+
+static struct platform_driver vt8500_rtc_driver = {
+	.probe		= vt8500_rtc_probe,
+	.remove		= vt8500_rtc_remove,
+	.driver		= {
+		.name	= "vt8500-rtc",
+		.owner	= THIS_MODULE,
+		.of_match_table = wmt_dt_ids,
+	},
+};
+
+module_platform_driver(vt8500_rtc_driver);
+
+MODULE_AUTHOR("Alexey Charkov <alchark@gmail.com>");
+MODULE_DESCRIPTION("VIA VT8500 SoC Realtime Clock Driver (RTC)");
+MODULE_LICENSE("GPL v2");
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:vt8500-rtc");

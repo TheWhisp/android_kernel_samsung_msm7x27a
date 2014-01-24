@@ -5,6 +5,7 @@
 
 #include <linux/types.h>
 
+<<<<<<< HEAD
 /*
    apollo models
 */
@@ -17,6 +18,13 @@ extern u_long apollo_model;
 #define APOLLO_DN3500 (3)
 #define APOLLO_DN4000 (4)
 #define APOLLO_DN4500 (5)
+=======
+#include <asm/bootinfo-apollo.h>
+
+
+extern u_long apollo_model;
+
+>>>>>>> refs/remotes/origin/master
 
 /*
    see scn2681 data sheet for more info.
@@ -46,6 +54,7 @@ struct SCN2681 {
 
 };
 
+<<<<<<< HEAD
 #if 0
 struct mc146818 {
 
@@ -58,6 +67,8 @@ struct mc146818 {
 };
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct mc146818 {
         unsigned char second, alarm_second;
         unsigned char minute, alarm_minute;
@@ -98,7 +109,11 @@ extern u_long timer_physaddr;
 #define cpuctrl (*(volatile unsigned int *)(IO_BASE + cpuctrl_physaddr))
 #define pica (IO_BASE + pica_physaddr)
 #define picb (IO_BASE + picb_physaddr)
+<<<<<<< HEAD
 #define timer (IO_BASE + timer_physaddr)
+=======
+#define apollo_timer (IO_BASE + timer_physaddr)
+>>>>>>> refs/remotes/origin/master
 #define addr_xlat_map ((unsigned short *)(IO_BASE + 0x17000))
 
 #define isaIO2mem(x) (((((x) & 0x3f8)  << 7) | (((x) & 0xfc00) >> 6) | ((x) & 0x7)) + 0x40000 + IO_BASE)

@@ -17,6 +17,7 @@
  * Types and defines in this file are either specific to version 1.0 of
  * this standard or common for newer versions.
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_USB_AUDIO_H
 #define __LINUX_USB_AUDIO_H
@@ -175,6 +176,14 @@ struct uac1_ac_header_descriptor_##n {			\
 	__u8  baInterfaceNr[n];					\
 } __attribute__ ((packed))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+DECLARE_UAC_AC_HEADER_DESCRIPTOR(2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+DECLARE_UAC_AC_HEADER_DESCRIPTOR(2);
+>>>>>>> refs/remotes/origin/cm-11.0
 /* 4.3.2.1 Input Terminal Descriptor */
 struct uac_input_terminal_descriptor {
 	__u8  bLength;			/* in bytes: 12 */
@@ -456,6 +465,14 @@ struct uac_format_type_i_discrete_descriptor_##n {		\
 	__u8  tSamFreq[n][3];					\
 } __attribute__ ((packed))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+DECLARE_UAC_FORMAT_TYPE_I_DISCRETE_DESC(1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+DECLARE_UAC_FORMAT_TYPE_I_DISCRETE_DESC(1);
+>>>>>>> refs/remotes/origin/cm-11.0
 #define UAC_FORMAT_TYPE_I_DISCRETE_DESC_SIZE(n)	(8 + (n * 3))
 
 struct uac_format_type_i_ext_descriptor {
@@ -544,6 +561,13 @@ struct uac1_status_word {
 } __attribute__((packed));
 
 #ifdef __KERNEL__
+=======
+#ifndef __LINUX_USB_AUDIO_H
+#define __LINUX_USB_AUDIO_H
+
+#include <uapi/linux/usb/audio.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct usb_audio_control {
 	struct list_head list;
@@ -563,6 +587,9 @@ struct usb_audio_control_selector {
 	struct usb_descriptor_header *desc;
 };
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_USB_AUDIO_H */

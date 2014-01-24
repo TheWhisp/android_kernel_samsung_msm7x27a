@@ -27,7 +27,11 @@
 	early_printk("ERROR: Microblaze " x "-different for PVR and DTS\n");
 #else
 #define err_printk(x) \
+<<<<<<< HEAD
 	printk(KERN_INFO "ERROR: Microblaze " x "-different for PVR and DTS\n");
+=======
+	pr_info("ERROR: Microblaze " x "-different for PVR and DTS\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 
 void set_cpuinfo_pvr_full(struct cpuinfo *ci, struct device_node *cpu)
@@ -38,12 +42,20 @@ void set_cpuinfo_pvr_full(struct cpuinfo *ci, struct device_node *cpu)
 
 	CI(ver_code, VERSION);
 	if (!ci->ver_code) {
+<<<<<<< HEAD
 		printk(KERN_ERR "ERROR: MB has broken PVR regs "
 						"-> use DTS setting\n");
 		return;
 	}
 
 	temp = PVR_USE_BARREL(pvr) | PVR_USE_MSR_INSTR(pvr) |\
+=======
+		pr_err("ERROR: MB has broken PVR regs -> use DTS setting\n");
+		return;
+	}
+
+	temp = PVR_USE_BARREL(pvr) | PVR_USE_MSR_INSTR(pvr) |
+>>>>>>> refs/remotes/origin/master
 		PVR_USE_PCMP_INSTR(pvr) | PVR_USE_DIV(pvr);
 	if (ci->use_instr != temp)
 		err_printk("BARREL, MSR, PCMP or DIV");
@@ -59,6 +71,7 @@ void set_cpuinfo_pvr_full(struct cpuinfo *ci, struct device_node *cpu)
 		err_printk("HW_FPU");
 	ci->use_fpu = temp;
 
+<<<<<<< HEAD
 	ci->use_exc = PVR_OPCODE_0x0_ILLEGAL(pvr) |\
 			PVR_UNALIGNED_EXCEPTION(pvr) |\
 			PVR_ILL_OPCODE_EXCEPTION(pvr) |\
@@ -66,12 +79,29 @@ void set_cpuinfo_pvr_full(struct cpuinfo *ci, struct device_node *cpu)
 			PVR_DOPB_BUS_EXCEPTION(pvr) |\
 			PVR_DIV_ZERO_EXCEPTION(pvr) |\
 			PVR_FPU_EXCEPTION(pvr) |\
+=======
+	ci->use_exc = PVR_OPCODE_0x0_ILLEGAL(pvr) |
+			PVR_UNALIGNED_EXCEPTION(pvr) |
+			PVR_ILL_OPCODE_EXCEPTION(pvr) |
+			PVR_IOPB_BUS_EXCEPTION(pvr) |
+			PVR_DOPB_BUS_EXCEPTION(pvr) |
+			PVR_DIV_ZERO_EXCEPTION(pvr) |
+			PVR_FPU_EXCEPTION(pvr) |
+>>>>>>> refs/remotes/origin/master
 			PVR_FSL_EXCEPTION(pvr);
 
 	CI(pvr_user1, USER1);
 	CI(pvr_user2, USER2);
 
 	CI(mmu, USE_MMU);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	CI(mmu_privins, MMU_PRIVINS);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CI(mmu_privins, MMU_PRIVINS);
+>>>>>>> refs/remotes/origin/master
 	CI(endian, ENDIAN);
 
 	CI(use_icache, USE_ICACHE);

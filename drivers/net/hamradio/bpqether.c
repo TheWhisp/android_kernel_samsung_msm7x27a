@@ -69,7 +69,13 @@
 #include <linux/if_arp.h>
 #include <linux/skbuff.h>
 #include <net/sock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>
@@ -88,7 +94,11 @@
 
 #include <linux/bpqether.h>
 
+<<<<<<< HEAD
 static const char banner[] __initdata = KERN_INFO \
+=======
+static const char banner[] __initconst = KERN_INFO \
+>>>>>>> refs/remotes/origin/master
 	"AX.25: bpqether driver version 004\n";
 
 static char bcast_addr[6]={0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
@@ -104,7 +114,11 @@ static struct packet_type bpq_packet_type __read_mostly = {
 };
 
 static struct notifier_block bpq_dev_notifier = {
+<<<<<<< HEAD
 	.notifier_call =bpq_device_event,
+=======
+	.notifier_call = bpq_device_event,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -545,9 +559,16 @@ static void bpq_free_device(struct net_device *ndev)
 /*
  *	Handle device status changes.
  */
+<<<<<<< HEAD
 static int bpq_device_event(struct notifier_block *this,unsigned long event, void *ptr)
 {
 	struct net_device *dev = (struct net_device *)ptr;
+=======
+static int bpq_device_event(struct notifier_block *this,
+			    unsigned long event, void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	if (!net_eq(dev_net(dev), &init_net))
 		return NOTIFY_DONE;
@@ -587,7 +608,12 @@ static int bpq_device_event(struct notifier_block *this,unsigned long event, voi
 static int __init bpq_init_driver(void)
 {
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 	if (!proc_net_fops_create(&init_net, "bpqether", S_IRUGO, &bpq_info_fops)) {
+=======
+	if (!proc_create("bpqether", S_IRUGO, init_net.proc_net,
+			 &bpq_info_fops)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR
 			"bpq: cannot create /proc/net/bpqether entry.\n");
 		return -ENOENT;
@@ -611,7 +637,11 @@ static void __exit bpq_cleanup_driver(void)
 
 	unregister_netdevice_notifier(&bpq_dev_notifier);
 
+<<<<<<< HEAD
 	proc_net_remove(&init_net, "bpqether");
+=======
+	remove_proc_entry("bpqether", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 
 	rtnl_lock();
 	while (!list_empty(&bpq_devices)) {

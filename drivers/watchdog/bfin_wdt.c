@@ -11,6 +11,16 @@
  * Licensed under the GPL-2 or later.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -28,6 +38,8 @@
 #define stamp(fmt, args...) \
 	pr_debug("%s:%i: " fmt "\n", __func__, __LINE__, ## args)
 #define stampit() stamp("here i am")
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define pr_devinit(fmt, args...) \
 	({ static const __devinitconst char __fmt[] = fmt; \
 	printk(__fmt, ## args); })
@@ -37,6 +49,14 @@
 
 #define WATCHDOG_NAME "bfin-wdt"
 #define PFX WATCHDOG_NAME ": "
+=======
+
+#define WATCHDOG_NAME "bfin-wdt"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define WATCHDOG_NAME "bfin-wdt"
+>>>>>>> refs/remotes/origin/master
 
 /* The BF561 has two watchdogs (one per core), but since Linux
  * only runs on core A, we'll just work with that one.
@@ -54,7 +74,15 @@
 #define WATCHDOG_TIMEOUT 20
 
 static unsigned int timeout = WATCHDOG_TIMEOUT;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/master
 static const struct watchdog_info bfin_wdt_info;
 static unsigned long open_check;
 static char expect_close;
@@ -126,7 +154,15 @@ static int bfin_wdt_set_timeout(unsigned long t)
 	stamp("maxtimeout=%us newtimeout=%lus (cnt=%#x)", max_t, t, cnt);
 
 	if (t > max_t) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING PFX "timeout value is too large\n");
+=======
+		pr_warn("timeout value is too large\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("timeout value is too large\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -182,8 +218,16 @@ static int bfin_wdt_release(struct inode *inode, struct file *file)
 	if (expect_close == 42)
 		bfin_wdt_stop();
 	else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 			"Unexpected close, not stopping watchdog!\n");
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		bfin_wdt_keepalive();
 	}
 	expect_close = 0;
@@ -362,12 +406,18 @@ static const struct watchdog_info bfin_wdt_info = {
  *	Registers the misc device.  Actual device
  *	initialization is handled by bfin_wdt_open().
  */
+<<<<<<< HEAD
 static int __devinit bfin_wdt_probe(struct platform_device *pdev)
+=======
+static int bfin_wdt_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
 	ret = misc_register(&bfin_wdt_miscdev);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_devinit(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 				WATCHDOG_MINOR, ret);
@@ -376,6 +426,20 @@ static int __devinit bfin_wdt_probe(struct platform_device *pdev)
 
 	pr_devinit(KERN_INFO PFX "initialized: timeout=%d sec (nowayout=%d)\n",
 	       timeout, nowayout);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+		return ret;
+	}
+
+	pr_info("initialized: timeout=%d sec (nowayout=%d)\n",
+		timeout, nowayout);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -386,7 +450,11 @@ static int __devinit bfin_wdt_probe(struct platform_device *pdev)
  *	Unregisters the misc device.  Actual device
  *	deinitialization is handled by bfin_wdt_close().
  */
+<<<<<<< HEAD
 static int __devexit bfin_wdt_remove(struct platform_device *pdev)
+=======
+static int bfin_wdt_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	misc_deregister(&bfin_wdt_miscdev);
 	return 0;
@@ -408,7 +476,11 @@ static struct platform_device *bfin_wdt_device;
 
 static struct platform_driver bfin_wdt_driver = {
 	.probe     = bfin_wdt_probe,
+<<<<<<< HEAD
 	.remove    = __devexit_p(bfin_wdt_remove),
+=======
+	.remove    = bfin_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown  = bfin_wdt_shutdown,
 	.suspend   = bfin_wdt_suspend,
 	.resume    = bfin_wdt_resume,
@@ -439,14 +511,30 @@ static int __init bfin_wdt_init(void)
 	 */
 	ret = platform_driver_register(&bfin_wdt_driver);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_init(KERN_ERR PFX "unable to register driver\n");
+=======
+		pr_err("unable to register driver\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("unable to register driver\n");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	bfin_wdt_device = platform_device_register_simple(WATCHDOG_NAME,
 								-1, NULL, 0);
 	if (IS_ERR(bfin_wdt_device)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_init(KERN_ERR PFX "unable to register device\n");
+=======
+		pr_err("unable to register device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("unable to register device\n");
+>>>>>>> refs/remotes/origin/master
 		platform_driver_unregister(&bfin_wdt_driver);
 		return PTR_ERR(bfin_wdt_device);
 	}
@@ -472,14 +560,25 @@ module_exit(bfin_wdt_exit);
 MODULE_AUTHOR("Michele d'Amico, Mike Frysinger <vapier@gentoo.org>");
 MODULE_DESCRIPTION("Blackfin Watchdog Device Driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 
 module_param(timeout, uint, 0);
 MODULE_PARM_DESC(timeout,
 	"Watchdog timeout in seconds. (1<=timeout<=((2^32)/SCLK), default="
 		__MODULE_STRING(WATCHDOG_TIMEOUT) ")");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 		__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");

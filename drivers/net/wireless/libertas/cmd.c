@@ -3,10 +3,26 @@
  * It prepares command and sends it to firmware when it is ready.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kfifo.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/if_arp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "decl.h"
 #include "cfg.h"
@@ -731,6 +747,7 @@ int lbs_get_rssi(struct lbs_private *priv, s8 *rssi, s8 *nf)
  *  to the firmware
  *
  *  @priv:	pointer to &struct lbs_private
+<<<<<<< HEAD
  *  @request:	cfg80211 regulatory request structure
  *  @bands:	the device's supported bands and channels
  *
@@ -740,6 +757,15 @@ int lbs_set_11d_domain_info(struct lbs_private *priv,
 			    struct regulatory_request *request,
 			    struct ieee80211_supported_band **bands)
 {
+=======
+ *
+ *  returns:	0 on success, error code on failure
+*/
+int lbs_set_11d_domain_info(struct lbs_private *priv)
+{
+	struct wiphy *wiphy = priv->wdev->wiphy;
+	struct ieee80211_supported_band **bands = wiphy->bands;
+>>>>>>> refs/remotes/origin/master
 	struct cmd_ds_802_11d_domain_info cmd;
 	struct mrvl_ie_domain_param_set *domain = &cmd.domain;
 	struct ieee80211_country_ie_triplet *t;
@@ -750,21 +776,38 @@ int lbs_set_11d_domain_info(struct lbs_private *priv,
 	u8 first_channel = 0, next_chan = 0, max_pwr = 0;
 	u8 i, flag = 0;
 	size_t triplet_size;
+<<<<<<< HEAD
 	int ret;
 
 	lbs_deb_enter(LBS_DEB_11D);
+=======
+	int ret = 0;
+
+	lbs_deb_enter(LBS_DEB_11D);
+	if (!priv->country_code[0])
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	memset(&cmd, 0, sizeof(cmd));
 	cmd.action = cpu_to_le16(CMD_ACT_SET);
 
 	lbs_deb_11d("Setting country code '%c%c'\n",
+<<<<<<< HEAD
 		    request->alpha2[0], request->alpha2[1]);
+=======
+		    priv->country_code[0], priv->country_code[1]);
+>>>>>>> refs/remotes/origin/master
 
 	domain->header.type = cpu_to_le16(TLV_TYPE_DOMAIN);
 
 	/* Set country code */
+<<<<<<< HEAD
 	domain->country_code[0] = request->alpha2[0];
 	domain->country_code[1] = request->alpha2[1];
+=======
+	domain->country_code[0] = priv->country_code[0];
+	domain->country_code[1] = priv->country_code[1];
+>>>>>>> refs/remotes/origin/master
 	domain->country_code[2] = ' ';
 
 	/* Now set up the channel triplets; firmware is somewhat picky here
@@ -846,6 +889,10 @@ int lbs_set_11d_domain_info(struct lbs_private *priv,
 
 	ret = lbs_cmd_with_response(priv, CMD_802_11D_DOMAIN_INFO, &cmd);
 
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	lbs_deb_leave_args(LBS_DEB_11D, "ret %d", ret);
 	return ret;
 }
@@ -873,6 +920,14 @@ int lbs_get_reg(struct lbs_private *priv, u16 reg, u16 offset, u32 *value)
 	memset(&cmd, 0, sizeof(cmd));
 	cmd.hdr.size = cpu_to_le16(sizeof(cmd));
 	cmd.action = cpu_to_le16(CMD_ACT_GET);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cmd.offset = cpu_to_le16(offset);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmd.offset = cpu_to_le16(offset);
+>>>>>>> refs/remotes/origin/master
 
 	if (reg != CMD_MAC_REG_ACCESS &&
 	    reg != CMD_BBP_REG_ACCESS &&
@@ -882,7 +937,15 @@ int lbs_get_reg(struct lbs_private *priv, u16 reg, u16 offset, u32 *value)
 	}
 
 	ret = lbs_cmd_with_response(priv, reg, &cmd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret) {
+=======
+	if (!ret) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ret) {
+>>>>>>> refs/remotes/origin/master
 		if (reg == CMD_BBP_REG_ACCESS || reg == CMD_RF_REG_ACCESS)
 			*value = cmd.value.bbp_rf;
 		else if (reg == CMD_MAC_REG_ACCESS)
@@ -915,6 +978,14 @@ int lbs_set_reg(struct lbs_private *priv, u16 reg, u16 offset, u32 value)
 	memset(&cmd, 0, sizeof(cmd));
 	cmd.hdr.size = cpu_to_le16(sizeof(cmd));
 	cmd.action = cpu_to_le16(CMD_ACT_SET);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cmd.offset = cpu_to_le16(offset);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmd.offset = cpu_to_le16(offset);
+>>>>>>> refs/remotes/origin/master
 
 	if (reg == CMD_BBP_REG_ACCESS || reg == CMD_RF_REG_ACCESS)
 		cmd.value.bbp_rf = (u8) (value & 0xFF);
@@ -1015,9 +1086,15 @@ static void lbs_submit_command(struct lbs_private *priv,
 	if (ret) {
 		netdev_info(priv->dev, "DNLD_CMD: hw_host_to_card failed: %d\n",
 			    ret);
+<<<<<<< HEAD
 		/* Let the timer kick in and retry, and potentially reset
 		   the whole thing if the condition persists */
 		timeo = HZ/4;
+=======
+		/* Reset dnld state machine, report failure */
+		priv->dnld_sent = DNLD_RES_RECEIVED;
+		lbs_complete_command(priv, cmdnode, ret);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (command == CMD_802_11_DEEP_SLEEP) {
@@ -1067,16 +1144,58 @@ static void lbs_cleanup_and_insert_cmd(struct lbs_private *priv,
 	spin_unlock_irqrestore(&priv->driver_lock, flags);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void lbs_complete_command(struct lbs_private *priv, struct cmd_ctrl_node *cmd,
 			  int result)
 {
 	cmd->result = result;
 	cmd->cmdwaitqwoken = 1;
 	wake_up_interruptible(&cmd->cmdwait_q);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void __lbs_complete_command(struct lbs_private *priv, struct cmd_ctrl_node *cmd,
+			    int result)
+{
+	/*
+	 * Normally, commands are removed from cmdpendingq before being
+	 * submitted. However, we can arrive here on alternative codepaths
+	 * where the command is still pending. Make sure the command really
+	 * isn't part of a list at this point.
+	 */
+	list_del_init(&cmd->list);
+
+	cmd->result = result;
+	cmd->cmdwaitqwoken = 1;
+	wake_up(&cmd->cmdwait_q);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!cmd->callback || cmd->callback == lbs_cmd_async_callback)
 		__lbs_cleanup_and_insert_cmd(priv, cmd);
 	priv->cur_cmd = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	wake_up(&priv->waitq);
+}
+
+void lbs_complete_command(struct lbs_private *priv, struct cmd_ctrl_node *cmd,
+			  int result)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&priv->driver_lock, flags);
+	__lbs_complete_command(priv, cmd, result);
+	spin_unlock_irqrestore(&priv->driver_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int lbs_set_radio(struct lbs_private *priv, u8 preamble, u8 radio_on)
@@ -1136,6 +1255,25 @@ void lbs_set_mac_control(struct lbs_private *priv)
 	lbs_deb_leave(LBS_DEB_CMD);
 }
 
+<<<<<<< HEAD
+=======
+int lbs_set_mac_control_sync(struct lbs_private *priv)
+{
+	struct cmd_ds_mac_control cmd;
+	int ret = 0;
+
+	lbs_deb_enter(LBS_DEB_CMD);
+
+	cmd.hdr.size = cpu_to_le16(sizeof(cmd));
+	cmd.action = cpu_to_le16(priv->mac_control);
+	cmd.reserved = 0;
+	ret = lbs_cmd_with_response(priv, CMD_MAC_CONTROL, &cmd);
+
+	lbs_deb_leave(LBS_DEB_CMD);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  *  lbs_allocate_cmd_buffer - allocates the command buffer and links
  *  it to command free queue
@@ -1248,7 +1386,15 @@ static struct cmd_ctrl_node *lbs_get_free_cmd_node(struct lbs_private *priv)
 	if (!list_empty(&priv->cmdfreeq)) {
 		tempnode = list_first_entry(&priv->cmdfreeq,
 					    struct cmd_ctrl_node, list);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		list_del(&tempnode->list);
+=======
+		list_del_init(&tempnode->list);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_del_init(&tempnode->list);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		lbs_deb_host("GET_CMD_NODE: cmd_ctrl_node is not available\n");
 		tempnode = NULL;
@@ -1356,10 +1502,18 @@ int lbs_execute_next_command(struct lbs_private *priv)
 				    cpu_to_le16(PS_MODE_ACTION_EXIT_PS)) {
 					lbs_deb_host(
 					       "EXEC_NEXT_CMD: ignore ENTER_PS cmd\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 					spin_lock_irqsave(&priv->driver_lock, flags);
 					list_del(&cmdnode->list);
 					lbs_complete_command(priv, cmdnode, 0);
 					spin_unlock_irqrestore(&priv->driver_lock, flags);
+=======
+					lbs_complete_command(priv, cmdnode, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					lbs_complete_command(priv, cmdnode, 0);
+>>>>>>> refs/remotes/origin/master
 
 					ret = 0;
 					goto done;
@@ -1369,10 +1523,18 @@ int lbs_execute_next_command(struct lbs_private *priv)
 				    (priv->psstate == PS_STATE_PRE_SLEEP)) {
 					lbs_deb_host(
 					       "EXEC_NEXT_CMD: ignore EXIT_PS cmd in sleep\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 					spin_lock_irqsave(&priv->driver_lock, flags);
 					list_del(&cmdnode->list);
 					lbs_complete_command(priv, cmdnode, 0);
 					spin_unlock_irqrestore(&priv->driver_lock, flags);
+=======
+					lbs_complete_command(priv, cmdnode, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					lbs_complete_command(priv, cmdnode, 0);
+>>>>>>> refs/remotes/origin/master
 					priv->needtowakeup = 1;
 
 					ret = 0;
@@ -1384,7 +1546,15 @@ int lbs_execute_next_command(struct lbs_private *priv)
 			}
 		}
 		spin_lock_irqsave(&priv->driver_lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		list_del(&cmdnode->list);
+=======
+		list_del_init(&cmdnode->list);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_del_init(&cmdnode->list);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&priv->driver_lock, flags);
 		lbs_deb_host("EXEC_NEXT_CMD: sending command 0x%04x\n",
 			    le16_to_cpu(cmd->command));
@@ -1612,7 +1782,15 @@ struct cmd_ctrl_node *__lbs_cmd_async(struct lbs_private *priv,
 		lbs_deb_host("PREP_CMD: cmdnode is NULL\n");
 
 		/* Wake up main thread to execute next command */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		wake_up_interruptible(&priv->waitq);
+=======
+		wake_up(&priv->waitq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wake_up(&priv->waitq);
+>>>>>>> refs/remotes/origin/master
 		cmdnode = ERR_PTR(-ENOBUFS);
 		goto done;
 	}
@@ -1632,7 +1810,15 @@ struct cmd_ctrl_node *__lbs_cmd_async(struct lbs_private *priv,
 
 	cmdnode->cmdwaitqwoken = 0;
 	lbs_queue_cmd(priv, cmdnode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up_interruptible(&priv->waitq);
+=======
+	wake_up(&priv->waitq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wake_up(&priv->waitq);
+>>>>>>> refs/remotes/origin/master
 
  done:
 	lbs_deb_leave_args(LBS_DEB_HOST, "ret %p", cmdnode);
@@ -1667,7 +1853,23 @@ int __lbs_cmd(struct lbs_private *priv, uint16_t command,
 	}
 
 	might_sleep();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wait_event_interruptible(cmdnode->cmdwait_q, cmdnode->cmdwaitqwoken);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/*
+	 * Be careful with signals here. A signal may be received as the system
+	 * goes into suspend or resume. We do not want this to interrupt the
+	 * command, so we perform an uninterruptible sleep.
+	 */
+	wait_event(cmdnode->cmdwait_q, cmdnode->cmdwaitqwoken);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&priv->driver_lock, flags);
 	ret = cmdnode->result;

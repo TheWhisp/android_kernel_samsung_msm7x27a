@@ -690,6 +690,7 @@ static int si21xx_setacquire(struct dvb_frontend *fe, int symbrate,
 	return status;
 }
 
+<<<<<<< HEAD
 static int si21xx_set_property(struct dvb_frontend *fe, struct dtv_property *p)
 {
 	dprintk("%s(..)\n", __func__);
@@ -704,6 +705,9 @@ static int si21xx_get_property(struct dvb_frontend *fe, struct dtv_property *p)
 
 static int si21xx_set_frontend(struct dvb_frontend *fe,
 					struct dvb_frontend_parameters *dfp)
+=======
+static int si21xx_set_frontend(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct si21xx_state *state = fe->demodulator_priv;
 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
@@ -877,10 +881,16 @@ static void si21xx_release(struct dvb_frontend *fe)
 }
 
 static struct dvb_frontend_ops si21xx_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		.name			= "SL SI21XX DVB-S",
 		.type			= FE_QPSK,
+=======
+	.delsys = { SYS_DVBS },
+	.info = {
+		.name			= "SL SI21XX DVB-S",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min		= 950000,
 		.frequency_max		= 2150000,
 		.frequency_stepsize	= 125,	 /* kHz for QPSK frontends */
@@ -908,8 +918,11 @@ static struct dvb_frontend_ops si21xx_ops = {
 	.set_tone = si21xx_set_tone,
 	.set_voltage = si21xx_set_voltage,
 
+<<<<<<< HEAD
 	.set_property = si21xx_set_property,
 	.get_property = si21xx_get_property,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set_frontend = si21xx_set_frontend,
 };
 

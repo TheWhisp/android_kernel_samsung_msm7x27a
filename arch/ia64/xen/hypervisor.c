@@ -21,6 +21,10 @@
  */
 
 #include <linux/efi.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/xen/hypervisor.h>
 #include <asm/xen/privop.h>
 

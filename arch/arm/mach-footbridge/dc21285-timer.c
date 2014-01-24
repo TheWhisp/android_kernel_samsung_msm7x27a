@@ -14,6 +14,14 @@
 
 #include <asm/hardware/dec21285.h>
 #include <asm/mach/time.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/system_info.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/system_info.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "common.h"
 
@@ -92,6 +100,7 @@ static struct irqaction footbridge_timer_irq = {
 /*
  * Set up timer interrupt.
  */
+<<<<<<< HEAD
 static void __init footbridge_timer_init(void)
 {
 	struct clock_event_device *ce = &ckevt_dc21285;
@@ -111,3 +120,17 @@ static void __init footbridge_timer_init(void)
 struct sys_timer footbridge_timer = {
 	.init		= footbridge_timer_init,
 };
+=======
+void __init footbridge_timer_init(void)
+{
+	struct clock_event_device *ce = &ckevt_dc21285;
+	unsigned rate = DIV_ROUND_CLOSEST(mem_fclk_21285, 16);
+
+	clocksource_register_hz(&cksrc_dc21285, rate);
+
+	setup_irq(ce->irq, &footbridge_timer_irq);
+
+	ce->cpumask = cpumask_of(smp_processor_id());
+	clockevents_config_and_register(ce, rate, 0x4, 0xffffff);
+}
+>>>>>>> refs/remotes/origin/master

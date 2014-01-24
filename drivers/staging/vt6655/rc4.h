@@ -35,9 +35,15 @@
 /*---------------------  Export Definitions -------------------------*/
 /*---------------------  Export Types  ------------------------------*/
 typedef struct {
+<<<<<<< HEAD
     unsigned int ux;
     unsigned int uy;
     unsigned char abystate[256];
+=======
+	unsigned int ux;
+	unsigned int uy;
+	unsigned char abystate[256];
+>>>>>>> refs/remotes/origin/master
 } RC4Ext, *PRC4Ext;
 
 void rc4_init(PRC4Ext pRC4, unsigned char *pbyKey, unsigned int cbKey_len);

@@ -8,11 +8,24 @@
  * that.
  */
 #include <unistd.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <byteswap.h>
 #include <errno.h>
 #include <string.h>
 #include <arpa/inet.h>
 #include <asm/types.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <errno.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <endian.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "cow.h"
 #include "cow_sys.h"
 
@@ -186,7 +199,21 @@ static int absolutize(char *to, int size, char *from)
 		strcat(to, "/");
 		strcat(to, from);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	chdir(save_cwd);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (chdir(save_cwd)) {
+		cow_printf("absolutize : Can't cd to '%s' - "
+			   "errno = %d\n", save_cwd, errno);
+		return -1;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -210,8 +237,18 @@ int write_cow_header(char *cow_file, int fd, char *backing_file,
 			   "header\n");
 		goto out;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	header->magic = htonl(COW_MAGIC);
 	header->version = htonl(COW_VERSION);
+=======
+	header->magic = htobe32(COW_MAGIC);
+	header->version = htobe32(COW_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	header->magic = htobe32(COW_MAGIC);
+	header->version = htobe32(COW_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	err = -EINVAL;
 	if (strlen(backing_file) > sizeof(header->backing_file) - 1) {
@@ -242,10 +279,23 @@ int write_cow_header(char *cow_file, int fd, char *backing_file,
 		goto out_free;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	header->mtime = htonl(modtime);
 	header->size = htonll(*size);
 	header->sectorsize = htonl(sectorsize);
 	header->alignment = htonl(alignment);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	header->mtime = htobe32(modtime);
+	header->size = htobe64(*size);
+	header->sectorsize = htobe32(sectorsize);
+	header->alignment = htobe32(alignment);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	header->cow_format = COW_BITMAP;
 
 	err = cow_write_file(fd, header, sizeof(*header));
@@ -297,8 +347,18 @@ int read_cow_header(int (*reader)(__u64, char *, int, void *), void *arg,
 	magic = header->v1.magic;
 	if (magic == COW_MAGIC)
 		version = header->v1.version;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	else if (magic == ntohl(COW_MAGIC))
 		version = ntohl(header->v1.version);
+=======
+	else if (magic == be32toh(COW_MAGIC))
+		version = be32toh(header->v1.version);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (magic == be32toh(COW_MAGIC))
+		version = be32toh(header->v1.version);
+>>>>>>> refs/remotes/origin/master
 	/* No error printed because the non-COW case comes through here */
 	else goto out;
 
@@ -323,9 +383,21 @@ int read_cow_header(int (*reader)(__u64, char *, int, void *), void *arg,
 				   "header\n");
 			goto out;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		*mtime_out = ntohl(header->v2.mtime);
 		*size_out = ntohll(header->v2.size);
 		*sectorsize_out = ntohl(header->v2.sectorsize);
+=======
+		*mtime_out = be32toh(header->v2.mtime);
+		*size_out = be64toh(header->v2.size);
+		*sectorsize_out = be32toh(header->v2.sectorsize);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*mtime_out = be32toh(header->v2.mtime);
+		*size_out = be64toh(header->v2.size);
+		*sectorsize_out = be32toh(header->v2.sectorsize);
+>>>>>>> refs/remotes/origin/master
 		*bitmap_offset_out = sizeof(header->v2);
 		*align_out = *sectorsize_out;
 		file = header->v2.backing_file;
@@ -337,10 +409,23 @@ int read_cow_header(int (*reader)(__u64, char *, int, void *), void *arg,
 				   "header\n");
 			goto out;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		*mtime_out = ntohl(header->v3.mtime);
 		*size_out = ntohll(header->v3.size);
 		*sectorsize_out = ntohl(header->v3.sectorsize);
 		*align_out = ntohl(header->v3.alignment);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		*mtime_out = be32toh(header->v3.mtime);
+		*size_out = be64toh(header->v3.size);
+		*sectorsize_out = be32toh(header->v3.sectorsize);
+		*align_out = be32toh(header->v3.alignment);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (*align_out == 0) {
 			cow_printf("read_cow_header - invalid COW header, "
 				   "align == 0\n");
@@ -362,16 +447,38 @@ int read_cow_header(int (*reader)(__u64, char *, int, void *), void *arg,
 		 * this was used until Dec2005 - 64bits are needed to represent
 		 * 2038+. I.e. we can safely do this truncating cast.
 		 *
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * Additionally, we must use ntohl() instead of ntohll(), since
+=======
+		 * Additionally, we must use be32toh() instead of be64toh(), since
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * Additionally, we must use be32toh() instead of be64toh(), since
+>>>>>>> refs/remotes/origin/master
 		 * the program used to use the former (tested - I got mtime
 		 * mismatch "0 vs whatever").
 		 *
 		 * Ever heard about bug-to-bug-compatibility ? ;-) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		*mtime_out = (time32_t) ntohl(header->v3_b.mtime);
 
 		*size_out = ntohll(header->v3_b.size);
 		*sectorsize_out = ntohl(header->v3_b.sectorsize);
 		*align_out = ntohl(header->v3_b.alignment);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		*mtime_out = (time32_t) be32toh(header->v3_b.mtime);
+
+		*size_out = be64toh(header->v3_b.size);
+		*sectorsize_out = be32toh(header->v3_b.sectorsize);
+		*align_out = be32toh(header->v3_b.alignment);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (*align_out == 0) {
 			cow_printf("read_cow_header - invalid COW header, "
 				   "align == 0\n");

@@ -76,7 +76,11 @@ static int irq_affinity_list_proc_show(struct seq_file *m, void *v)
 static ssize_t write_irq_affinity(int type, struct file *file,
 		const char __user *buffer, size_t count, loff_t *pos)
 {
+<<<<<<< HEAD
 	unsigned int irq = (int)(long)PDE(file->f_path.dentry->d_inode)->data;
+=======
+	unsigned int irq = (int)(long)PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	cpumask_var_t new_value;
 	int err;
 
@@ -131,17 +135,29 @@ static ssize_t irq_affinity_list_proc_write(struct file *file,
 
 static int irq_affinity_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, irq_affinity_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, irq_affinity_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int irq_affinity_list_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, irq_affinity_list_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, irq_affinity_list_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int irq_affinity_hint_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, irq_affinity_hint_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, irq_affinity_hint_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations irq_affinity_proc_fops = {
@@ -212,7 +228,11 @@ out:
 
 static int default_affinity_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, default_affinity_show, PDE(inode)->data);
+=======
+	return single_open(file, default_affinity_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations default_affinity_proc_fops = {
@@ -233,7 +253,11 @@ static int irq_node_proc_show(struct seq_file *m, void *v)
 
 static int irq_node_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, irq_node_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, irq_node_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations irq_node_proc_fops = {
@@ -256,7 +280,11 @@ static int irq_spurious_proc_show(struct seq_file *m, void *v)
 
 static int irq_spurious_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, irq_spurious_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, irq_spurious_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations irq_spurious_proc_fops = {
@@ -366,11 +394,15 @@ void unregister_irq_proc(unsigned int irq, struct irq_desc *desc)
 
 void unregister_handler_proc(unsigned int irq, struct irqaction *action)
 {
+<<<<<<< HEAD
 	if (action->dir) {
 		struct irq_desc *desc = irq_to_desc(irq);
 
 		remove_proc_entry(action->dir->name, desc->dir);
 	}
+=======
+	proc_remove(action->dir);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void register_default_affinity_proc(void)
@@ -466,6 +498,11 @@ int show_interrupts(struct seq_file *p, void *v)
 	} else {
 		seq_printf(p, " %8s", "None");
 	}
+<<<<<<< HEAD
+=======
+	if (desc->irq_data.domain)
+		seq_printf(p, " %*d", prec, (int) desc->irq_data.hwirq);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_GENERIC_IRQ_SHOW_LEVEL
 	seq_printf(p, " %-8s", irqd_is_level_type(&desc->irq_data) ? "Level" : "Edge");
 #endif

@@ -10,7 +10,13 @@
  */
 
 //#include <linux/config.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/slab.h>
@@ -39,7 +45,11 @@ struct prism2_wep_data {
 };
 
 
+<<<<<<< HEAD
 static void * prism2_wep_init(int keyidx)
+=======
+static void *prism2_wep_init(int keyidx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct prism2_wep_data *priv;
 
@@ -254,7 +264,11 @@ static int prism2_wep_get_key(void *key, int len, u8 *seq, void *priv)
 }
 
 
+<<<<<<< HEAD
 static char * prism2_wep_print_stats(char *p, void *priv)
+=======
+static char *prism2_wep_print_stats(char *p, void *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct prism2_wep_data *wep = priv;
 	p += sprintf(p, "key[%d] alg=WEP len=%d\n",

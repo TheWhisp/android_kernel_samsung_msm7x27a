@@ -48,6 +48,7 @@ static struct platform_device rm200_serial8250_device = {
 };
 
 static struct resource rm200_ds1216_rsrc[] = {
+<<<<<<< HEAD
         {
                 .start = 0x1cd41ffc,
                 .end   = 0x1cd41fff,
@@ -59,6 +60,19 @@ static struct platform_device rm200_ds1216_device = {
         .name           = "rtc-ds1216",
         .num_resources  = ARRAY_SIZE(rm200_ds1216_rsrc),
         .resource       = rm200_ds1216_rsrc
+=======
+	{
+		.start = 0x1cd41ffc,
+		.end   = 0x1cd41fff,
+		.flags = IORESOURCE_MEM
+	}
+};
+
+static struct platform_device rm200_ds1216_device = {
+	.name		= "rtc-ds1216",
+	.num_resources	= ARRAY_SIZE(rm200_ds1216_rsrc),
+	.resource	= rm200_ds1216_rsrc
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource snirm_82596_rm200_rsrc[] = {
@@ -88,9 +102,15 @@ static struct resource snirm_82596_rm200_rsrc[] = {
 };
 
 static struct platform_device snirm_82596_rm200_pdev = {
+<<<<<<< HEAD
 	.name           = "snirm_82596",
 	.num_resources  = ARRAY_SIZE(snirm_82596_rm200_rsrc),
 	.resource       = snirm_82596_rm200_rsrc
+=======
+	.name		= "snirm_82596",
+	.num_resources	= ARRAY_SIZE(snirm_82596_rm200_rsrc),
+	.resource	= snirm_82596_rm200_rsrc
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource snirm_53c710_rm200_rsrc[] = {
@@ -107,9 +127,15 @@ static struct resource snirm_53c710_rm200_rsrc[] = {
 };
 
 static struct platform_device snirm_53c710_rm200_pdev = {
+<<<<<<< HEAD
 	.name           = "snirm_53c710",
 	.num_resources  = ARRAY_SIZE(snirm_53c710_rm200_rsrc),
 	.resource       = snirm_53c710_rm200_rsrc
+=======
+	.name		= "snirm_53c710",
+	.num_resources	= ARRAY_SIZE(snirm_53c710_rm200_rsrc),
+	.resource	= snirm_53c710_rm200_rsrc
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init snirm_setup_devinit(void)
@@ -134,9 +160,15 @@ device_initcall(snirm_setup_devinit);
  */
 
 static DEFINE_RAW_SPINLOCK(sni_rm200_i8259A_lock);
+<<<<<<< HEAD
 #define PIC_CMD    0x00
 #define PIC_IMR    0x01
 #define PIC_ISR    PIC_CMD
+=======
+#define PIC_CMD	   0x00
+#define PIC_IMR	   0x01
+#define PIC_ISR	   PIC_CMD
+>>>>>>> refs/remotes/origin/master
 #define PIC_POLL   PIC_ISR
 #define PIC_OCW3   PIC_ISR
 
@@ -359,6 +391,14 @@ void sni_rm200_init_8259A(void)
 static struct irqaction sni_rm200_irq2 = {
 	.handler = no_action,
 	.name = "cascade",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource sni_rm200_pic1_resource = {
@@ -420,8 +460,13 @@ void __init sni_rm200_i8259_irqs(void)
 }
 
 
+<<<<<<< HEAD
 #define SNI_RM200_INT_STAT_REG  CKSEG1ADDR(0xbc000000)
 #define SNI_RM200_INT_ENA_REG   CKSEG1ADDR(0xbc080000)
+=======
+#define SNI_RM200_INT_STAT_REG	CKSEG1ADDR(0xbc000000)
+#define SNI_RM200_INT_ENA_REG	CKSEG1ADDR(0xbc080000)
+>>>>>>> refs/remotes/origin/master
 
 #define SNI_RM200_INT_START  24
 #define SNI_RM200_INT_END    28

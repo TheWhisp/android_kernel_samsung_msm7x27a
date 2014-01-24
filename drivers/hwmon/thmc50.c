@@ -1,4 +1,6 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
     thmc50.c - Part of lm_sensors, Linux kernel modules for hardware
              monitoring
     Copyright (C) 2007 Krzysztof Helt <krzysztof.h1@wp.pl>
@@ -19,6 +21,33 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * thmc50.c - Part of lm_sensors, Linux kernel modules for hardware
+ *	      monitoring
+ * Copyright (C) 2007 Krzysztof Helt <krzysztof.h1@wp.pl>
+ * Based on 2.4 driver by Frodo Looijaard <frodol@dds.nl> and
+ * Philip Edelbrock <phil@netroedge.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -28,6 +57,10 @@
 #include <linux/hwmon-sysfs.h>
 #include <linux/err.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 
@@ -40,8 +73,13 @@ enum chips { thmc50, adm1022 };
 static unsigned short adm1022_temp3[16];
 static unsigned int adm1022_temp3_num;
 module_param_array(adm1022_temp3, ushort, &adm1022_temp3_num, 0);
+<<<<<<< HEAD
 MODULE_PARM_DESC(adm1022_temp3, "List of adapter,address pairs "
 			"to enable 3rd temperature (ADM1022 only)");
+=======
+MODULE_PARM_DESC(adm1022_temp3,
+		 "List of adapter,address pairs to enable 3rd temperature (ADM1022 only)");
+>>>>>>> refs/remotes/origin/master
 
 /* Many THMC50 constants specified below */
 
@@ -124,11 +162,30 @@ static ssize_t set_analog_out(struct device *dev,
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct thmc50_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int tmp = simple_strtoul(buf, NULL, 10);
 	int config;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int config;
+	unsigned long tmp;
+	int err;
+
+	err = kstrtoul(buf, 10, &tmp);
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->analog_out = SENSORS_LIMIT(tmp, 0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->analog_out = clamp_val(tmp, 0, 255);
+>>>>>>> refs/remotes/origin/master
 	i2c_smbus_write_byte_data(client, THMC50_REG_ANALOG_OUT,
 				  data->analog_out);
 
@@ -173,10 +230,28 @@ static ssize_t set_temp_min(struct device *dev, struct device_attribute *attr,
 	int nr = to_sensor_dev_attr(attr)->index;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct thmc50_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	long val;
+	int err;
+
+	err = kstrtol(buf, 10, &val);
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_min[nr] = SENSORS_LIMIT(val / 1000, -128, 127);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->temp_min[nr] = clamp_val(val / 1000, -128, 127);
+>>>>>>> refs/remotes/origin/master
 	i2c_smbus_write_byte_data(client, THMC50_REG_TEMP_MIN[nr],
 				  data->temp_min[nr]);
 	mutex_unlock(&data->update_lock);
@@ -197,10 +272,28 @@ static ssize_t set_temp_max(struct device *dev, struct device_attribute *attr,
 	int nr = to_sensor_dev_attr(attr)->index;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct thmc50_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	long val;
+	int err;
+
+	err = kstrtol(buf, 10, &val);
+	if (err)
+		return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_max[nr] = SENSORS_LIMIT(val / 1000, -128, 127);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->temp_max[nr] = clamp_val(val / 1000, -128, 127);
+>>>>>>> refs/remotes/origin/master
 	i2c_smbus_write_byte_data(client, THMC50_REG_TEMP_MAX[nr],
 				  data->temp_max[nr]);
 	mutex_unlock(&data->update_lock);
@@ -296,8 +389,12 @@ static int thmc50_detect(struct i2c_client *client,
 	const char *type_name;
 
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA)) {
+<<<<<<< HEAD
 		pr_debug("thmc50: detect failed, "
 			 "smbus byte data not supported!\n");
+=======
+		pr_debug("thmc50: detect failed, smbus byte data not supported!\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -346,12 +443,19 @@ static int thmc50_probe(struct i2c_client *client,
 	struct thmc50_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct thmc50_data), GFP_KERNEL);
 	if (!data) {
 		pr_debug("thmc50: detect failed, kzalloc failed!\n");
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct thmc50_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	data->type = id->driver_data;
@@ -360,6 +464,8 @@ static int thmc50_probe(struct i2c_client *client,
 	thmc50_init_client(client);
 
 	/* Register sysfs hooks */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&client->dev.kobj, &thmc50_group)))
 		goto exit_free;
 
@@ -368,6 +474,26 @@ static int thmc50_probe(struct i2c_client *client,
 		if ((err = sysfs_create_group(&client->dev.kobj,
 					      &temp3_group)))
 			goto exit_remove_sysfs_thmc50;
+=======
+	err = sysfs_create_group(&client->dev.kobj, &thmc50_group);
+	if (err)
+		goto exit_free;
+=======
+	err = sysfs_create_group(&client->dev.kobj, &thmc50_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
+
+	/* Register ADM1022 sysfs hooks */
+	if (data->has_temp3) {
+		err = sysfs_create_group(&client->dev.kobj, &temp3_group);
+		if (err)
+			goto exit_remove_sysfs_thmc50;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Register a new directory entry with module sensors */
 	data->hwmon_dev = hwmon_device_register(&client->dev);
@@ -383,9 +509,12 @@ exit_remove_sysfs:
 		sysfs_remove_group(&client->dev.kobj, &temp3_group);
 exit_remove_sysfs_thmc50:
 	sysfs_remove_group(&client->dev.kobj, &thmc50_group);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -398,8 +527,11 @@ static int thmc50_remove(struct i2c_client *client)
 	if (data->has_temp3)
 		sysfs_remove_group(&client->dev.kobj, &temp3_group);
 
+<<<<<<< HEAD
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -465,6 +597,8 @@ static struct thmc50_data *thmc50_update_device(struct device *dev)
 	return data;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sm_thmc50_init(void)
 {
 	return i2c_add_driver(&thmc50_driver);
@@ -480,3 +614,14 @@ MODULE_DESCRIPTION("THMC50 driver");
 
 module_init(sm_thmc50_init);
 module_exit(sm_thmc50_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+module_i2c_driver(thmc50_driver);
+
+MODULE_AUTHOR("Krzysztof Helt <krzysztof.h1@wp.pl>");
+MODULE_DESCRIPTION("THMC50 driver");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

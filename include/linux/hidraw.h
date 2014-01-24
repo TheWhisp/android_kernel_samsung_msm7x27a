@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef _HIDRAW_H
 #define _HIDRAW_H
 
@@ -5,6 +6,11 @@
  *  Copyright (c) 2007 Jiri Kosina
  */
 
+=======
+/*
+ *  Copyright (c) 2007 Jiri Kosina
+ */
+>>>>>>> refs/remotes/origin/master
 /*
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -14,6 +20,7 @@
  * this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
  */
+<<<<<<< HEAD
 
 #include <linux/hid.h>
 #include <linux/types.h>
@@ -47,6 +54,13 @@ struct hidraw_devinfo {
 
 /* kernel-only API declarations */
 #ifdef __KERNEL__
+=======
+#ifndef _HIDRAW_H
+#define _HIDRAW_H
+
+#include <uapi/linux/hidraw.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct hidraw {
 	unsigned int minor;
@@ -55,6 +69,10 @@ struct hidraw {
 	wait_queue_head_t wait;
 	struct hid_device *hid;
 	struct device *dev;
+<<<<<<< HEAD
+=======
+	spinlock_t list_lock;
+>>>>>>> refs/remotes/origin/master
 	struct list_head list;
 };
 
@@ -76,17 +94,28 @@ struct hidraw_list {
 #ifdef CONFIG_HIDRAW
 int hidraw_init(void);
 void hidraw_exit(void);
+<<<<<<< HEAD
 void hidraw_report_event(struct hid_device *, u8 *, int);
+=======
+int hidraw_report_event(struct hid_device *, u8 *, int);
+>>>>>>> refs/remotes/origin/master
 int hidraw_connect(struct hid_device *);
 void hidraw_disconnect(struct hid_device *);
 #else
 static inline int hidraw_init(void) { return 0; }
 static inline void hidraw_exit(void) { }
+<<<<<<< HEAD
 static inline void hidraw_report_event(struct hid_device *hid, u8 *data, int len) { }
+=======
+static inline int hidraw_report_event(struct hid_device *hid, u8 *data, int len) { return 0; }
+>>>>>>> refs/remotes/origin/master
 static inline int hidraw_connect(struct hid_device *hid) { return -1; }
 static inline void hidraw_disconnect(struct hid_device *hid) { }
 #endif
 
 #endif
+<<<<<<< HEAD
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

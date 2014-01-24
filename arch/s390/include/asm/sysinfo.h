@@ -1,7 +1,11 @@
 /*
  * definition for store system information stsi
  *
+<<<<<<< HEAD
  * Copyright IBM Corp. 2001,2008
+=======
+ * Copyright IBM Corp. 2001, 2008
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License (version 2 only)
@@ -17,7 +21,14 @@
 #include <asm/bitsperlong.h>
 
 struct sysinfo_1_1_1 {
+<<<<<<< HEAD
 	unsigned short :16;
+=======
+	unsigned char p:1;
+	unsigned char :6;
+	unsigned char t:1;
+	unsigned char :8;
+>>>>>>> refs/remotes/origin/master
 	unsigned char ccr;
 	unsigned char cai;
 	char reserved_0[28];
@@ -30,9 +41,20 @@ struct sysinfo_1_1_1 {
 	char model[16];
 	char model_perm_cap[16];
 	char model_temp_cap[16];
+<<<<<<< HEAD
 	char model_cap_rating[4];
 	char model_perm_cap_rating[4];
 	char model_temp_cap_rating[4];
+=======
+	unsigned int model_cap_rating;
+	unsigned int model_perm_cap_rating;
+	unsigned int model_temp_cap_rating;
+	unsigned char typepct[5];
+	unsigned char reserved_2[3];
+	unsigned int ncr;
+	unsigned int npr;
+	unsigned int ntr;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sysinfo_1_2_1 {
@@ -47,8 +69,14 @@ struct sysinfo_1_2_2 {
 	char format;
 	char reserved_0[1];
 	unsigned short acc_offset;
+<<<<<<< HEAD
 	char reserved_1[24];
 	unsigned int secondary_capability;
+=======
+	char reserved_1[20];
+	unsigned int nominal_cap;
+	unsigned int secondary_cap;
+>>>>>>> refs/remotes/origin/master
 	unsigned int capability;
 	unsigned short cpus_total;
 	unsigned short cpus_configured;
@@ -109,6 +137,11 @@ struct sysinfo_3_2_2 {
 	char reserved_544[3552];
 };
 
+<<<<<<< HEAD
+=======
+extern int topology_max_mnest;
+
+>>>>>>> refs/remotes/origin/master
 #define TOPOLOGY_CPU_BITS	64
 #define TOPOLOGY_NR_MAG		6
 
@@ -142,6 +175,7 @@ struct sysinfo_15_1_x {
 	union topology_entry tle[0];
 };
 
+<<<<<<< HEAD
 static inline int stsi(void *sysinfo, int fc, int sel1, int sel2)
 {
 	register int r0 asm("0") = (fc << 28) | sel1;
@@ -157,6 +191,9 @@ static inline int stsi(void *sysinfo, int fc, int sel1, int sel2)
 		: "cc", "memory");
 	return r0;
 }
+=======
+int stsi(void *sysinfo, int fc, int sel1, int sel2);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Service level reporting interface.

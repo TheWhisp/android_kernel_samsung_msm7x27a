@@ -19,8 +19,18 @@
 #include <linux/init.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/irq.h>
 #include <mach/hardware.h>
+=======
+#include <mach/hardware.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/hardware.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/hardware/ssp.h>
 
 #define TIMEOUT 100000

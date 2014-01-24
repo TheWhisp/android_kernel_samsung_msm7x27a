@@ -37,8 +37,16 @@
 /* Random magic number */
 #define CONFIGFS_MAGIC 0x62656570
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct vfsmount * configfs_mount = NULL;
 struct super_block * configfs_sb = NULL;
+=======
+static struct vfsmount *configfs_mount = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct vfsmount *configfs_mount = NULL;
+>>>>>>> refs/remotes/origin/master
 struct kmem_cache *configfs_dir_cachep;
 static int configfs_mnt_count = 0;
 
@@ -77,12 +85,26 @@ static int configfs_fill_super(struct super_block *sb, void *data, int silent)
 	sb->s_magic = CONFIGFS_MAGIC;
 	sb->s_op = &configfs_ops;
 	sb->s_time_gran = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	configfs_sb = sb;
 
 	inode = configfs_new_inode(S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO,
 				   &configfs_root);
 	if (inode) {
 		inode->i_op = &configfs_dir_inode_operations;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	inode = configfs_new_inode(S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO,
+				   &configfs_root, sb);
+	if (inode) {
+		inode->i_op = &configfs_root_inode_operations;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		inode->i_fop = &configfs_dir_operations;
 		/* directory inodes start off with i_nlink == 2 (for "." entry) */
 		inc_nlink(inode);
@@ -91,10 +113,22 @@ static int configfs_fill_super(struct super_block *sb, void *data, int silent)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	root = d_alloc_root(inode);
 	if (!root) {
 		pr_debug("%s: could not get root dentry!\n",__func__);
 		iput(inode);
+=======
+	root = d_make_root(inode);
+	if (!root) {
+		pr_debug("%s: could not get root dentry!\n",__func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	root = d_make_root(inode);
+	if (!root) {
+		pr_debug("%s: could not get root dentry!\n",__func__);
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	config_group_init(&configfs_root_group);
@@ -117,11 +151,27 @@ static struct file_system_type configfs_fs_type = {
 	.mount		= configfs_do_mount,
 	.kill_sb	= kill_litter_super,
 };
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 int configfs_pin_fs(void)
 {
 	return simple_pin_fs(&configfs_fs_type, &configfs_mount,
 			     &configfs_mnt_count);
+=======
+=======
+MODULE_ALIAS_FS("configfs");
+
+>>>>>>> refs/remotes/origin/master
+struct dentry *configfs_pin_fs(void)
+{
+	int err = simple_pin_fs(&configfs_fs_type, &configfs_mount,
+			     &configfs_mnt_count);
+	return err ? ERR_PTR(err) : configfs_mount->mnt_root;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void configfs_release_fs(void)
@@ -143,6 +193,8 @@ static int __init configfs_init(void)
 		goto out;
 
 	config_kobj = kobject_create_and_add("config", kernel_kobj);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!config_kobj) {
 		kmem_cache_destroy(configfs_dir_cachep);
 		configfs_dir_cachep = NULL;
@@ -165,6 +217,33 @@ static int __init configfs_init(void)
 		kmem_cache_destroy(configfs_dir_cachep);
 		configfs_dir_cachep = NULL;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!config_kobj)
+		goto out2;
+
+	err = configfs_inode_init();
+	if (err)
+		goto out3;
+
+	err = register_filesystem(&configfs_fs_type);
+	if (err)
+		goto out4;
+
+	return 0;
+out4:
+	printk(KERN_ERR "configfs: Unable to register filesystem!\n");
+	configfs_inode_exit();
+out3:
+	kobject_put(config_kobj);
+out2:
+	kmem_cache_destroy(configfs_dir_cachep);
+	configfs_dir_cachep = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }

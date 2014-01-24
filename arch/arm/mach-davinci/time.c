@@ -18,12 +18,31 @@
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <asm/mach/irq.h>
 #include <asm/mach/time.h>
 #include <mach/cputype.h>
 #include <mach/time.h>
+=======
+#include <asm/sched_clock.h>
+=======
+#include <linux/sched_clock.h>
+
+>>>>>>> refs/remotes/origin/master
+#include <asm/mach/irq.h>
+#include <asm/mach/time.h>
+
+#include <mach/cputype.h>
+#include <mach/hardware.h>
+#include <mach/time.h>
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "clock.h"
 
 static struct clock_event_device clockevent_davinci;
@@ -178,7 +197,11 @@ static struct timer_s timers[] = {
 		.name      = "clockevent",
 		.opts      = TIMER_OPTS_DISABLED,
 		.irqaction = {
+<<<<<<< HEAD
 			.flags   = IRQF_DISABLED | IRQF_TIMER,
+=======
+			.flags   = IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 			.handler = timer_interrupt,
 		}
 	},
@@ -187,7 +210,11 @@ static struct timer_s timers[] = {
 		.period     = ~0,
 		.opts       = TIMER_OPTS_PERIODIC,
 		.irqaction = {
+<<<<<<< HEAD
 			.flags   = IRQF_DISABLED | IRQF_TIMER,
+=======
+			.flags   = IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 			.handler = freerun_interrupt,
 		}
 	},
@@ -272,6 +299,8 @@ static cycle_t read_cycles(struct clocksource *cs)
 	return (cycles_t)timer32_read(t);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Kernel assumes that sched_clock can be called early but may not have
  * things ready yet.
@@ -285,6 +314,16 @@ static cycle_t read_dummy(struct clocksource *cs)
 static struct clocksource clocksource_davinci = {
 	.rating		= 300,
 	.read		= read_dummy,
+=======
+static struct clocksource clocksource_davinci = {
+	.rating		= 300,
+	.read		= read_cycles,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct clocksource clocksource_davinci = {
+	.rating		= 300,
+	.read		= read_cycles,
+>>>>>>> refs/remotes/origin/master
 	.mask		= CLOCKSOURCE_MASK(32),
 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
 };
@@ -292,12 +331,24 @@ static struct clocksource clocksource_davinci = {
 /*
  * Overwrite weak default sched_clock with something more precise
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long long notrace sched_clock(void)
 {
 	const cycle_t cyc = clocksource_davinci.read(&clocksource_davinci);
 
 	return clocksource_cyc2ns(cyc, clocksource_davinci.mult,
 				clocksource_davinci.shift);
+=======
+static u32 notrace davinci_read_sched_clock(void)
+{
+	return timer32_read(&timers[TID_CLOCKSOURCE]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 notrace davinci_read_sched_clock(void)
+{
+	return timer32_read(&timers[TID_CLOCKSOURCE]);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -341,13 +392,20 @@ static void davinci_set_mode(enum clock_event_mode mode,
 
 static struct clock_event_device clockevent_davinci = {
 	.features       = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
+<<<<<<< HEAD
 	.shift		= 32,
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_next_event	= davinci_set_next_event,
 	.set_mode	= davinci_set_mode,
 };
 
 
+<<<<<<< HEAD
 static void __init davinci_timer_init(void)
+=======
+void __init davinci_timer_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct clk *timer_clk;
 	struct davinci_soc_info *soc_info = &davinci_soc_info;
@@ -389,7 +447,11 @@ static void __init davinci_timer_init(void)
 
 	timer_clk = clk_get(NULL, "timer0");
 	BUG_ON(IS_ERR(timer_clk));
+<<<<<<< HEAD
 	clk_enable(timer_clk);
+=======
+	clk_prepare_enable(timer_clk);
+>>>>>>> refs/remotes/origin/master
 
 	/* init timer hw */
 	timer_init();
@@ -397,12 +459,25 @@ static void __init davinci_timer_init(void)
 	davinci_clock_tick_rate = clk_get_rate(timer_clk);
 
 	/* setup clocksource */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clocksource_davinci.read = read_cycles;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	clocksource_davinci.name = id_to_name[clocksource_id];
 	if (clocksource_register_hz(&clocksource_davinci,
 				    davinci_clock_tick_rate))
 		printk(err, clocksource_davinci.name);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	setup_sched_clock(davinci_read_sched_clock, 32,
+			  davinci_clock_tick_rate);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* setup clockevent */
 	clockevent_davinci.name = id_to_name[timers[TID_CLOCKEVENT].id];
 	clockevent_davinci.mult = div_sc(davinci_clock_tick_rate, NSEC_PER_SEC,
@@ -413,16 +488,30 @@ static void __init davinci_timer_init(void)
 
 	clockevent_davinci.cpumask = cpumask_of(0);
 	clockevents_register_device(&clockevent_davinci);
+=======
+	setup_sched_clock(davinci_read_sched_clock, 32,
+			  davinci_clock_tick_rate);
+
+	/* setup clockevent */
+	clockevent_davinci.name = id_to_name[timers[TID_CLOCKEVENT].id];
+
+	clockevent_davinci.cpumask = cpumask_of(0);
+	clockevents_config_and_register(&clockevent_davinci,
+					davinci_clock_tick_rate, 1, 0xfffffffe);
+>>>>>>> refs/remotes/origin/master
 
 	for (i=0; i< ARRAY_SIZE(timers); i++)
 		timer32_config(&timers[i]);
 }
 
+<<<<<<< HEAD
 struct sys_timer davinci_timer = {
 	.init   = davinci_timer_init,
 };
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* reset board using watchdog timer */
 void davinci_watchdog_reset(struct platform_device *pdev)
 {
@@ -437,7 +526,11 @@ void davinci_watchdog_reset(struct platform_device *pdev)
 	wd_clk = clk_get(&pdev->dev, NULL);
 	if (WARN_ON(IS_ERR(wd_clk)))
 		return;
+<<<<<<< HEAD
 	clk_enable(wd_clk);
+=======
+	clk_prepare_enable(wd_clk);
+>>>>>>> refs/remotes/origin/master
 
 	/* disable, internal clock source */
 	__raw_writel(0, base + TCR);

@@ -12,7 +12,13 @@
 #include <linux/init.h>
 #include <linux/smp.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "op_impl.h"
 

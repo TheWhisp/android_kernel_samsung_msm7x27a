@@ -26,9 +26,15 @@
 #include <asm/prom.h>
 #include <asm/mpc52xx.h>
 
+<<<<<<< HEAD
 #include <sysdev/bestcomm/bestcomm.h>
 #include <sysdev/bestcomm/bestcomm_priv.h>
 #include <sysdev/bestcomm/ata.h>
+=======
+#include <linux/fsl/bestcomm/bestcomm.h>
+#include <linux/fsl/bestcomm/bestcomm_priv.h>
+#include <linux/fsl/bestcomm/ata.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_NAME	"mpc52xx_ata"
 
@@ -621,9 +627,16 @@ static struct ata_port_operations mpc52xx_ata_port_ops = {
 	.qc_prep		= ata_noop_qc_prep,
 };
 
+<<<<<<< HEAD
 static int __devinit
 mpc52xx_ata_init_one(struct device *dev, struct mpc52xx_ata_priv *priv,
 		     unsigned long raw_ata_regs, int mwdma_mask, int udma_mask)
+=======
+static int mpc52xx_ata_init_one(struct device *dev,
+				struct mpc52xx_ata_priv *priv,
+				unsigned long raw_ata_regs,
+				int mwdma_mask, int udma_mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ata_host *host;
 	struct ata_port *ap;
@@ -663,6 +676,7 @@ mpc52xx_ata_init_one(struct device *dev, struct mpc52xx_ata_priv *priv,
 				 &mpc52xx_ata_sht);
 }
 
+<<<<<<< HEAD
 static struct mpc52xx_ata_priv *
 mpc52xx_ata_remove_one(struct device *dev)
 {
@@ -675,23 +689,43 @@ mpc52xx_ata_remove_one(struct device *dev)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* ======================================================================== */
 /* OF Platform driver                                                       */
 /* ======================================================================== */
 
+<<<<<<< HEAD
 static int __devinit
 mpc52xx_ata_probe(struct platform_device *op)
+=======
+static int mpc52xx_ata_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int ipb_freq;
 	struct resource res_mem;
 	int ata_irq = 0;
 	struct mpc52xx_ata __iomem *ata_regs;
 	struct mpc52xx_ata_priv *priv = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int rv, ret, task_irq = 0;
 	int mwdma_mask = 0, udma_mask = 0;
 	const __be32 *prop;
 	int proplen;
 	struct bcom_task *dmatsk = NULL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int rv, task_irq;
+	int mwdma_mask = 0, udma_mask = 0;
+	const __be32 *prop;
+	int proplen;
+	struct bcom_task *dmatsk;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Get ipb frequency */
 	ipb_freq = mpc5xxx_get_bus_frequency(op->dev.of_node);
@@ -717,8 +751,16 @@ mpc52xx_ata_probe(struct platform_device *op)
 	ata_regs = devm_ioremap(&op->dev, res_mem.start, sizeof(*ata_regs));
 	if (!ata_regs) {
 		dev_err(&op->dev, "error mapping device registers\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rv = -ENOMEM;
 		goto err;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -753,7 +795,15 @@ mpc52xx_ata_probe(struct platform_device *op)
 	if (!priv) {
 		dev_err(&op->dev, "error allocating private structure\n");
 		rv = -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto err;
+=======
+		goto err1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	priv->ipb_period = 1000000000 / (ipb_freq / 1000);
@@ -776,6 +826,8 @@ mpc52xx_ata_probe(struct platform_device *op)
 	if (!dmatsk) {
 		dev_err(&op->dev, "bestcomm initialization failed\n");
 		rv = -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto err;
 	}
 
@@ -785,6 +837,22 @@ mpc52xx_ata_probe(struct platform_device *op)
 	if (ret) {
 		dev_err(&op->dev, "error requesting DMA IRQ\n");
 		goto err;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		goto err1;
+	}
+
+	task_irq = bcom_get_task_irq(dmatsk);
+	rv = devm_request_irq(&op->dev, task_irq, &mpc52xx_ata_task_irq, 0,
+				"ATA task", priv);
+	if (rv) {
+		dev_err(&op->dev, "error requesting DMA IRQ\n");
+		goto err2;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	priv->dmatsk = dmatsk;
 
@@ -792,7 +860,15 @@ mpc52xx_ata_probe(struct platform_device *op)
 	rv = mpc52xx_ata_hw_init(priv);
 	if (rv) {
 		dev_err(&op->dev, "error initializing hardware\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto err;
+=======
+		goto err2;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err2;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Register ourselves to libata */
@@ -800,11 +876,21 @@ mpc52xx_ata_probe(struct platform_device *op)
 				  mwdma_mask, udma_mask);
 	if (rv) {
 		dev_err(&op->dev, "error registering with ATA layer\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto err;
+=======
+		goto err2;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err2;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
  err:
 	devm_release_mem_region(&op->dev, res_mem.start, sizeof(*ata_regs));
 	if (ata_irq)
@@ -817,17 +903,38 @@ mpc52xx_ata_probe(struct platform_device *op)
 		devm_iounmap(&op->dev, ata_regs);
 	if (priv)
 		devm_kfree(&op->dev, priv);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ err2:
+	irq_dispose_mapping(task_irq);
+	bcom_ata_release(dmatsk);
+ err1:
+	irq_dispose_mapping(ata_irq);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rv;
 }
 
 static int
 mpc52xx_ata_remove(struct platform_device *op)
 {
+<<<<<<< HEAD
 	struct mpc52xx_ata_priv *priv;
 	int task_irq;
 
 	/* Deregister the ATA interface */
 	priv = mpc52xx_ata_remove_one(&op->dev);
+=======
+	struct ata_host *host = platform_get_drvdata(op);
+	struct mpc52xx_ata_priv *priv = host->private_data;
+	int task_irq;
+
+	/* Deregister the ATA interface */
+	ata_platform_remove_one(op);
+>>>>>>> refs/remotes/origin/master
 
 	/* Clean up DMA */
 	task_irq = bcom_get_task_irq(priv->dmatsk);
@@ -835,12 +942,18 @@ mpc52xx_ata_remove(struct platform_device *op)
 	bcom_ata_release(priv->dmatsk);
 	irq_dispose_mapping(priv->ata_irq);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Clear up IO allocations */
 	devm_iounmap(&op->dev, priv->ata_regs);
 	devm_release_mem_region(&op->dev, priv->ata_regs_pa,
 				sizeof(*priv->ata_regs));
 	devm_kfree(&op->dev, priv);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -850,7 +963,11 @@ mpc52xx_ata_remove(struct platform_device *op)
 static int
 mpc52xx_ata_suspend(struct platform_device *op, pm_message_t state)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&op->dev);
+=======
+	struct ata_host *host = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 
 	return ata_host_suspend(host, state);
 }
@@ -858,7 +975,11 @@ mpc52xx_ata_suspend(struct platform_device *op, pm_message_t state)
 static int
 mpc52xx_ata_resume(struct platform_device *op)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&op->dev);
+=======
+	struct ata_host *host = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	struct mpc52xx_ata_priv *priv = host->private_data;
 	int rv;
 
@@ -897,6 +1018,8 @@ static struct platform_driver mpc52xx_ata_of_platform_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /* ======================================================================== */
 /* Module                                                                   */
@@ -917,6 +1040,12 @@ mpc52xx_ata_exit(void)
 
 module_init(mpc52xx_ata_init);
 module_exit(mpc52xx_ata_exit);
+=======
+module_platform_driver(mpc52xx_ata_of_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(mpc52xx_ata_of_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Sylvain Munaut <tnt@246tNt.com>");
 MODULE_DESCRIPTION("Freescale MPC52xx IDE/ATA libata driver");

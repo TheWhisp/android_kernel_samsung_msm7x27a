@@ -22,7 +22,15 @@
 #include <linux/ppp_channel.h>
 #include <linux/ppp_defs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/if_ppp.h>
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/skbuff.h>
 
 #include "network.h"
@@ -274,7 +282,16 @@ static void do_go_online(struct work_struct *work_go_online)
 		network->xaccm[0] = ~0U;
 		network->xaccm[3] = 0x60000000U;
 		network->raccm = ~0U;
+<<<<<<< HEAD
 		ppp_register_channel(channel);
+=======
+		if (ppp_register_channel(channel) < 0) {
+			printk(KERN_ERR IPWIRELESS_PCCARD_NAME
+					": unable to register PPP channel\n");
+			kfree(channel);
+			return;
+		}
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&network->lock, flags);
 		network->ppp_channel = channel;
 	}
@@ -347,6 +364,11 @@ static struct sk_buff *ipw_packet_received_skb(unsigned char *data,
 	}
 
 	skb = dev_alloc_skb(length + 4);
+<<<<<<< HEAD
+=======
+	if (skb == NULL)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	skb_reserve(skb, 2);
 	memcpy(skb_put(skb, length), data, length);
 
@@ -392,7 +414,12 @@ void ipwireless_network_packet_received(struct ipw_network *network,
 
 				/* Send the data to the ppp_generic module. */
 				skb = ipw_packet_received_skb(data, length);
+<<<<<<< HEAD
 				ppp_input(network->ppp_channel, skb);
+=======
+				if (skb)
+					ppp_input(network->ppp_channel, skb);
+>>>>>>> refs/remotes/origin/master
 			} else
 				spin_unlock_irqrestore(&network->lock,
 						flags);
@@ -430,8 +457,13 @@ void ipwireless_network_free(struct ipw_network *network)
 	network->shutting_down = 1;
 
 	ipwireless_ppp_close(network);
+<<<<<<< HEAD
 	flush_work_sync(&network->work_go_online);
 	flush_work_sync(&network->work_go_offline);
+=======
+	flush_work(&network->work_go_online);
+	flush_work(&network->work_go_offline);
+>>>>>>> refs/remotes/origin/master
 
 	ipwireless_stop_interrupts(network->hardware);
 	ipwireless_associate_network(network->hardware, NULL);

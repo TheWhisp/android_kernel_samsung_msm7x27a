@@ -17,7 +17,15 @@
 #include <linux/init.h>
 
 #include <asm/hwrpb.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/irq_regs.h>
 #include <asm/pal.h>
@@ -83,6 +91,11 @@ struct alpha_pmu_t {
 	long pmc_left[3];
 	 /* Subroutine for allocation of PMCs.  Enforces constraints. */
 	int (*check_constraints)(struct perf_event **, unsigned long *, int);
+<<<<<<< HEAD
+=======
+	/* Subroutine for checking validity of a raw event for this PMU. */
+	int (*raw_event_valid)(u64 config);
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -203,6 +216,15 @@ success:
 }
 
 
+<<<<<<< HEAD
+=======
+static int ev67_raw_event_valid(u64 config)
+{
+	return config >= EV67_CYCLES && config < EV67_LAST_ET;
+};
+
+
+>>>>>>> refs/remotes/origin/master
 static const struct alpha_pmu_t ev67_pmu = {
 	.event_map = ev67_perfmon_event_map,
 	.max_events = ARRAY_SIZE(ev67_perfmon_event_map),
@@ -211,7 +233,12 @@ static const struct alpha_pmu_t ev67_pmu = {
 	.pmc_count_mask = {EV67_PCTR_0_COUNT_MASK,  EV67_PCTR_1_COUNT_MASK,  0},
 	.pmc_max_period = {(1UL<<20) - 1, (1UL<<20) - 1, 0},
 	.pmc_left = {16, 4, 0},
+<<<<<<< HEAD
 	.check_constraints = ev67_check_constraints
+=======
+	.check_constraints = ev67_check_constraints,
+	.raw_event_valid = ev67_raw_event_valid,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -609,7 +636,13 @@ static int __hw_perf_event_init(struct perf_event *event)
 	} else if (attr->type == PERF_TYPE_HW_CACHE) {
 		return -EOPNOTSUPP;
 	} else if (attr->type == PERF_TYPE_RAW) {
+<<<<<<< HEAD
 		ev = attr->config & 0xff;
+=======
+		if (!alpha_pmu->raw_event_valid(attr->config))
+			return -EINVAL;
+		ev = attr->config;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		return -EOPNOTSUPP;
 	}
@@ -685,6 +718,19 @@ static int alpha_pmu_event_init(struct perf_event *event)
 {
 	int err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* does not support taken branch sampling */
+	if (has_branch_stack(event))
+		return -EOPNOTSUPP;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (event->attr.type) {
 	case PERF_TYPE_RAW:
 	case PERF_TYPE_HARDWARE:
@@ -820,7 +866,10 @@ static void alpha_perf_event_irq_handler(unsigned long la_ptr,
 
 	idx = la_ptr;
 
+<<<<<<< HEAD
 	perf_sample_data_init(&data, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 	for (j = 0; j < cpuc->n_events; j++) {
 		if (cpuc->current_idx[j] == idx)
 			break;
@@ -844,10 +893,21 @@ static void alpha_perf_event_irq_handler(unsigned long la_ptr,
 
 	hwc = &event->hw;
 	alpha_perf_event_update(event, hwc, idx, alpha_pmu->pmc_max_period[idx]+1);
+<<<<<<< HEAD
 	data.period = event->hw.last_period;
 
 	if (alpha_perf_event_set_period(event, hwc, idx)) {
+<<<<<<< HEAD
 		if (perf_event_overflow(event, 1, &data, regs)) {
+=======
+		if (perf_event_overflow(event, &data, regs)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	perf_sample_data_init(&data, 0, hwc->last_period);
+
+	if (alpha_perf_event_set_period(event, hwc, idx)) {
+		if (perf_event_overflow(event, &data, regs)) {
+>>>>>>> refs/remotes/origin/master
 			/* Interrupts coming too quickly; "throttle" the
 			 * counter, i.e., disable it for a little while.
 			 */

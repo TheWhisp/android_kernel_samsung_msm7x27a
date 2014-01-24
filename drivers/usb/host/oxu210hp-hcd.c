@@ -29,7 +29,10 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 #include <linux/list.h>
 #include <linux/interrupt.h>
@@ -40,7 +43,13 @@
 #include <linux/io.h>
 
 #include <asm/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 
 #include <linux/irq.h>
@@ -61,6 +70,13 @@
 #define oxu_info(oxu, fmt, args...) \
 		dev_info(oxu_to_hcd(oxu)->self.controller , fmt , ## args)
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DYNAMIC_DEBUG
+#define DEBUG
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static inline struct usb_hcd *oxu_to_hcd(struct oxu_hcd *oxu)
 {
 	return container_of((void *) oxu, struct usb_hcd, hcd_priv);
@@ -233,7 +249,15 @@ module_param(park, uint, S_IRUGO);
 MODULE_PARM_DESC(park, "park setting; 1-3 back-to-back async packets");
 
 /* For flakey hardware, ignore overcurrent indicators */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ignore_oc;
+=======
+static bool ignore_oc;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool ignore_oc;
+>>>>>>> refs/remotes/origin/master
 module_param(ignore_oc, bool, S_IRUGO);
 MODULE_PARM_DESC(ignore_oc, "ignore bogus hardware overcurrent indications");
 
@@ -1400,8 +1424,13 @@ static struct ehci_qh *qh_make(struct oxu_hcd *oxu,
 				 * But interval 1 scheduling is simpler, and
 				 * includes high bandwidth.
 				 */
+<<<<<<< HEAD
 				dbg("intr period %d uframes, NYET!",
 						urb->interval);
+=======
+				oxu_dbg(oxu, "intr period %d uframes, NYET!\n",
+					urb->interval);
+>>>>>>> refs/remotes/origin/master
 				goto done;
 			}
 		} else {
@@ -1472,7 +1501,11 @@ static struct ehci_qh *qh_make(struct oxu_hcd *oxu,
 		}
 		break;
 	default:
+<<<<<<< HEAD
 		dbg("bogus dev %p speed %d", urb->dev, urb->dev->speed);
+=======
+		oxu_dbg(oxu, "bogus dev %p speed %d\n", urb->dev, urb->dev->speed);
+>>>>>>> refs/remotes/origin/master
 done:
 		qh_put(qh);
 		return NULL;
@@ -2308,7 +2341,11 @@ restart:
 				qh_put(temp.qh);
 				break;
 			default:
+<<<<<<< HEAD
 				dbg("corrupt type %d frame %d shadow %p",
+=======
+				oxu_dbg(oxu, "corrupt type %d frame %d shadow %p\n",
+>>>>>>> refs/remotes/origin/master
 					type, frame, q.ptr);
 				q.ptr = NULL;
 			}
@@ -2992,8 +3029,14 @@ static int oxu_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 				/* shouldn't happen often, but ...
 				 * FIXME kill those tds' urbs
 				 */
+<<<<<<< HEAD
 				err("can't reschedule qh %p, err %d",
 					qh, status);
+=======
+				dev_err(hcd->self.controller,
+					"can't reschedule qh %p, err %d\n", qh,
+					status);
+>>>>>>> refs/remotes/origin/master
 			}
 			return status;
 		}
@@ -3084,7 +3127,11 @@ static int oxu_hub_status_data(struct usb_hcd *hcd, char *buf)
 	int ports, i, retval = 1;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	/* if !USB_SUSPEND, root hub timers won't get shut down ... */
+=======
+	/* if !PM_RUNTIME, root hub timers won't get shut down ... */
+>>>>>>> refs/remotes/origin/master
 	if (!HC_IS_RUNNING(hcd->state))
 		return 0;
 
@@ -3747,6 +3794,10 @@ static struct usb_hcd *oxu_create(struct platform_device *pdev,
 	if (ret < 0)
 		return ERR_PTR(ret);
 
+<<<<<<< HEAD
+=======
+	device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 	return hcd;
 }
 
@@ -3828,7 +3879,15 @@ static int oxu_drv_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 	memstart = res->start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memlen = res->end - res->start + 1;
+=======
+	memlen = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memlen = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(&pdev->dev, "MEM resource %lx-%lx\n", memstart, memlen);
 	if (!request_mem_region(memstart, memlen,
 				oxu_hc_driver.description)) {
@@ -3874,7 +3933,10 @@ static int oxu_drv_probe(struct platform_device *pdev)
 
 error_init:
 	kfree(info);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 error_alloc:
 	iounmap(base);
@@ -3907,7 +3969,10 @@ static int oxu_drv_remove(struct platform_device *pdev)
 	release_mem_region(memstart, memlen);
 
 	kfree(info);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -3951,6 +4016,8 @@ static struct platform_driver oxu_driver = {
 	}
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init oxu_module_init(void)
 {
 	int retval = 0;
@@ -3969,6 +4036,12 @@ static void __exit oxu_module_cleanup(void)
 
 module_init(oxu_module_init);
 module_exit(oxu_module_cleanup);
+=======
+module_platform_driver(oxu_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(oxu_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Oxford OXU210HP HCD driver - ver. " DRIVER_VERSION);
 MODULE_AUTHOR("Rodolfo Giometti <giometti@linux.it>");

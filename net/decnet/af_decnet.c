@@ -119,7 +119,13 @@ Version 0.0.6    2.1.110   07-aug-98   Eduardo Marcelo Serrat
 #include <net/sock.h>
 #include <net/tcp_states.h>
 #include <net/flow.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/ioctls.h>
 #include <linux/capability.h>
 #include <linux/mm.h>
@@ -176,12 +182,19 @@ static struct hlist_head *dn_find_list(struct sock *sk)
 static int check_port(__le16 port)
 {
 	struct sock *sk;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (port == 0)
 		return -1;
 
+<<<<<<< HEAD
 	sk_for_each(sk, node, &dn_sk_hash[le16_to_cpu(port) & DN_SK_HASH_MASK]) {
+=======
+	sk_for_each(sk, &dn_sk_hash[le16_to_cpu(port) & DN_SK_HASH_MASK]) {
+>>>>>>> refs/remotes/origin/master
 		struct dn_scp *scp = DN_SK(sk);
 		if (scp->addrloc == port)
 			return -1;
@@ -251,7 +264,11 @@ static void dn_unhash_sock_bh(struct sock *sk)
 static struct hlist_head *listen_hash(struct sockaddr_dn *addr)
 {
 	int i;
+<<<<<<< HEAD
 	unsigned hash = addr->sdn_objnum;
+=======
+	unsigned int hash = addr->sdn_objnum;
+>>>>>>> refs/remotes/origin/master
 
 	if (hash == 0) {
 		hash = addr->sdn_objnamel;
@@ -291,6 +308,8 @@ int dn_sockaddr2username(struct sockaddr_dn *sdn, unsigned char *buf, unsigned c
 
 	*buf++ = type;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(type) {
 		case 0:
 			*buf++ = sdn->sdn_objnum;
@@ -308,6 +327,30 @@ int dn_sockaddr2username(struct sockaddr_dn *sdn, unsigned char *buf, unsigned c
 			memcpy(buf, sdn->sdn_objname, le16_to_cpu(sdn->sdn_objnamel));
 			len = 7 + le16_to_cpu(sdn->sdn_objnamel);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (type) {
+	case 0:
+		*buf++ = sdn->sdn_objnum;
+		break;
+	case 1:
+		*buf++ = 0;
+		*buf++ = le16_to_cpu(sdn->sdn_objnamel);
+		memcpy(buf, sdn->sdn_objname, le16_to_cpu(sdn->sdn_objnamel));
+		len = 3 + le16_to_cpu(sdn->sdn_objnamel);
+		break;
+	case 2:
+		memset(buf, 0, 5);
+		buf += 5;
+		*buf++ = le16_to_cpu(sdn->sdn_objnamel);
+		memcpy(buf, sdn->sdn_objname, le16_to_cpu(sdn->sdn_objnamel));
+		len = 7 + le16_to_cpu(sdn->sdn_objnamel);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return len;
@@ -337,6 +380,8 @@ int dn_username2sockaddr(unsigned char *data, int len, struct sockaddr_dn *sdn, 
 	*fmt = *data++;
 	type = *data++;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(*fmt) {
 		case 0:
 			sdn->sdn_objnum = type;
@@ -354,6 +399,30 @@ int dn_username2sockaddr(unsigned char *data, int len, struct sockaddr_dn *sdn, 
 			break;
 		default:
 			return -1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (*fmt) {
+	case 0:
+		sdn->sdn_objnum = type;
+		return 2;
+	case 1:
+		namel = 16;
+		break;
+	case 2:
+		len  -= 4;
+		data += 4;
+		break;
+	case 4:
+		len  -= 8;
+		data += 8;
+		break;
+	default:
+		return -1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	len -= 1;
@@ -375,11 +444,18 @@ int dn_username2sockaddr(unsigned char *data, int len, struct sockaddr_dn *sdn, 
 struct sock *dn_sklist_find_listener(struct sockaddr_dn *addr)
 {
 	struct hlist_head *list = listen_hash(addr);
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct sock *sk;
 
 	read_lock(&dn_hash_lock);
 	sk_for_each(sk, node, list) {
+=======
+	struct sock *sk;
+
+	read_lock(&dn_hash_lock);
+	sk_for_each(sk, list) {
+>>>>>>> refs/remotes/origin/master
 		struct dn_scp *scp = DN_SK(sk);
 		if (sk->sk_state != TCP_LISTEN)
 			continue;
@@ -415,11 +491,18 @@ struct sock *dn_find_by_skb(struct sk_buff *skb)
 {
 	struct dn_skb_cb *cb = DN_SKB_CB(skb);
 	struct sock *sk;
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct dn_scp *scp;
 
 	read_lock(&dn_hash_lock);
 	sk_for_each(sk, node, &dn_sk_hash[le16_to_cpu(cb->dst_port) & DN_SK_HASH_MASK]) {
+=======
+	struct dn_scp *scp;
+
+	read_lock(&dn_hash_lock);
+	sk_for_each(sk, &dn_sk_hash[le16_to_cpu(cb->dst_port) & DN_SK_HASH_MASK]) {
+>>>>>>> refs/remotes/origin/master
 		scp = DN_SK(sk);
 		if (cb->src != dn_saddr2dn(&scp->peer))
 			continue;
@@ -575,6 +658,8 @@ int dn_destroy_timer(struct sock *sk)
 
 	scp->persist = dn_nsp_persist(sk);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(scp->state) {
 		case DN_DI:
 			dn_nsp_send_disc(sk, NSP_DISCINIT, 0, GFP_ATOMIC);
@@ -594,6 +679,33 @@ int dn_destroy_timer(struct sock *sk)
 				dn_nsp_send_disc(sk, NSP_DISCCONF, NSP_REASON_DC, GFP_ATOMIC);
 				return 0;
 			}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (scp->state) {
+	case DN_DI:
+		dn_nsp_send_disc(sk, NSP_DISCINIT, 0, GFP_ATOMIC);
+		if (scp->nsp_rxtshift >= decnet_di_count)
+			scp->state = DN_CN;
+		return 0;
+
+	case DN_DR:
+		dn_nsp_send_disc(sk, NSP_DISCINIT, 0, GFP_ATOMIC);
+		if (scp->nsp_rxtshift >= decnet_dr_count)
+			scp->state = DN_DRC;
+		return 0;
+
+	case DN_DN:
+		if (scp->nsp_rxtshift < decnet_dn_count) {
+			/* printk(KERN_DEBUG "dn_destroy_timer: DN\n"); */
+			dn_nsp_send_disc(sk, NSP_DISCCONF, NSP_REASON_DC,
+					 GFP_ATOMIC);
+			return 0;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	scp->persist = (HZ * decnet_time_wait);
@@ -623,6 +735,8 @@ static void dn_destroy_sock(struct sock *sk)
 
 	sk->sk_state = TCP_CLOSE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(scp->state) {
 		case DN_DN:
 			dn_nsp_send_disc(sk, NSP_DISCCONF, NSP_REASON_DC,
@@ -659,6 +773,49 @@ disc_reject:
 			sock_put(sk);
 
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (scp->state) {
+	case DN_DN:
+		dn_nsp_send_disc(sk, NSP_DISCCONF, NSP_REASON_DC,
+				 sk->sk_allocation);
+		scp->persist_fxn = dn_destroy_timer;
+		scp->persist = dn_nsp_persist(sk);
+		break;
+	case DN_CR:
+		scp->state = DN_DR;
+		goto disc_reject;
+	case DN_RUN:
+		scp->state = DN_DI;
+	case DN_DI:
+	case DN_DR:
+disc_reject:
+		dn_nsp_send_disc(sk, NSP_DISCINIT, 0, sk->sk_allocation);
+	case DN_NC:
+	case DN_NR:
+	case DN_RJ:
+	case DN_DIC:
+	case DN_CN:
+	case DN_DRC:
+	case DN_CI:
+	case DN_CD:
+		scp->persist_fxn = dn_destroy_timer;
+		scp->persist = dn_nsp_persist(sk);
+		break;
+	default:
+		printk(KERN_DEBUG "DECnet: dn_destroy_sock passed socket in invalid state\n");
+	case DN_O:
+		dn_stop_slow_timer(sk);
+
+		dn_unhash_sock_bh(sk);
+		sock_put(sk);
+
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -683,6 +840,8 @@ static int dn_create(struct net *net, struct socket *sock, int protocol,
 	if (!net_eq(net, &init_net))
 		return -EAFNOSUPPORT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(sock->type) {
 		case SOCK_SEQPACKET:
 			if (protocol != DNPROTO_NSP)
@@ -692,6 +851,22 @@ static int dn_create(struct net *net, struct socket *sock, int protocol,
 			break;
 		default:
 			return -ESOCKTNOSUPPORT;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (sock->type) {
+	case SOCK_SEQPACKET:
+		if (protocol != DNPROTO_NSP)
+			return -EPROTONOSUPPORT;
+		break;
+	case SOCK_STREAM:
+		break;
+	default:
+		return -ESOCKTNOSUPPORT;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 
@@ -909,6 +1084,10 @@ static int __dn_connect(struct sock *sk, struct sockaddr_dn *addr, int addrlen, 
 	struct dn_scp *scp = DN_SK(sk);
 	int err = -EISCONN;
 	struct flowidn fld;
+<<<<<<< HEAD
+=======
+	struct dst_entry *dst;
+>>>>>>> refs/remotes/origin/master
 
 	if (sock->state == SS_CONNECTED)
 		goto out;
@@ -955,10 +1134,18 @@ static int __dn_connect(struct sock *sk, struct sockaddr_dn *addr, int addrlen, 
 	fld.flowidn_proto = DNPROTO_NSP;
 	if (dn_route_output_sock(&sk->sk_dst_cache, &fld, sk, flags) < 0)
 		goto out;
+<<<<<<< HEAD
 	sk->sk_route_caps = sk->sk_dst_cache->dev->features;
 	sock->state = SS_CONNECTING;
 	scp->state = DN_CI;
 	scp->segsize_loc = dst_metric_advmss(sk->sk_dst_cache);
+=======
+	dst = __sk_dst_get(sk);
+	sk->sk_route_caps = dst->dev->features;
+	sock->state = SS_CONNECTING;
+	scp->state = DN_CI;
+	scp->segsize_loc = dst_metric_advmss(dst);
+>>>>>>> refs/remotes/origin/master
 
 	dn_nsp_send_conninit(sk, NSP_CI);
 	err = -EINPROGRESS;
@@ -987,6 +1174,8 @@ static inline int dn_check_state(struct sock *sk, struct sockaddr_dn *addr, int 
 {
 	struct dn_scp *scp = DN_SK(sk);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(scp->state) {
 		case DN_RUN:
 			return 0;
@@ -997,6 +1186,23 @@ static inline int dn_check_state(struct sock *sk, struct sockaddr_dn *addr, int 
 			return dn_wait_run(sk, timeo);
 		case DN_O:
 			return __dn_connect(sk, addr, addrlen, timeo, flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (scp->state) {
+	case DN_RUN:
+		return 0;
+	case DN_CR:
+		return dn_confirm_accept(sk, timeo, sk->sk_allocation);
+	case DN_CI:
+	case DN_CC:
+		return dn_wait_run(sk, timeo);
+	case DN_O:
+		return __dn_connect(sk, addr, addrlen, timeo, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -EINVAL;
@@ -1313,10 +1519,17 @@ static int dn_shutdown(struct socket *sock, int how)
 	if (scp->state == DN_O)
 		goto out;
 
+<<<<<<< HEAD
 	if (how != SHUTDOWN_MASK)
 		goto out;
 
 	sk->sk_shutdown = how;
+=======
+	if (how != SHUT_RDWR)
+		goto out;
+
+	sk->sk_shutdown = SHUTDOWN_MASK;
+>>>>>>> refs/remotes/origin/master
 	dn_destroy_sock(sk);
 	err = 0;
 
@@ -1363,6 +1576,8 @@ static int __dn_setsockopt(struct socket *sock, int level,int optname, char __us
 	if (copy_from_user(&u, optval, optlen))
 		return -EFAULT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(optname) {
 		case DSO_CONDATA:
 			if (sock->state == SS_CONNECTED)
@@ -1498,6 +1713,147 @@ static int __dn_setsockopt(struct socket *sock, int level,int optname, char __us
 				return -EINVAL;
 			scp->info_loc = u.info;
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (optname) {
+	case DSO_CONDATA:
+		if (sock->state == SS_CONNECTED)
+			return -EISCONN;
+		if ((scp->state != DN_O) && (scp->state != DN_CR))
+			return -EINVAL;
+
+		if (optlen != sizeof(struct optdata_dn))
+			return -EINVAL;
+
+		if (le16_to_cpu(u.opt.opt_optl) > 16)
+			return -EINVAL;
+
+		memcpy(&scp->conndata_out, &u.opt, optlen);
+		break;
+
+	case DSO_DISDATA:
+		if (sock->state != SS_CONNECTED &&
+		    scp->accept_mode == ACC_IMMED)
+			return -ENOTCONN;
+
+		if (optlen != sizeof(struct optdata_dn))
+			return -EINVAL;
+
+		if (le16_to_cpu(u.opt.opt_optl) > 16)
+			return -EINVAL;
+
+		memcpy(&scp->discdata_out, &u.opt, optlen);
+		break;
+
+	case DSO_CONACCESS:
+		if (sock->state == SS_CONNECTED)
+			return -EISCONN;
+		if (scp->state != DN_O)
+			return -EINVAL;
+
+		if (optlen != sizeof(struct accessdata_dn))
+			return -EINVAL;
+
+		if ((u.acc.acc_accl > DN_MAXACCL) ||
+		    (u.acc.acc_passl > DN_MAXACCL) ||
+		    (u.acc.acc_userl > DN_MAXACCL))
+			return -EINVAL;
+
+		memcpy(&scp->accessdata, &u.acc, optlen);
+		break;
+
+	case DSO_ACCEPTMODE:
+		if (sock->state == SS_CONNECTED)
+			return -EISCONN;
+		if (scp->state != DN_O)
+			return -EINVAL;
+
+		if (optlen != sizeof(int))
+			return -EINVAL;
+
+		if ((u.mode != ACC_IMMED) && (u.mode != ACC_DEFER))
+			return -EINVAL;
+
+		scp->accept_mode = (unsigned char)u.mode;
+		break;
+
+	case DSO_CONACCEPT:
+		if (scp->state != DN_CR)
+			return -EINVAL;
+		timeo = sock_rcvtimeo(sk, 0);
+		err = dn_confirm_accept(sk, &timeo, sk->sk_allocation);
+		return err;
+
+	case DSO_CONREJECT:
+		if (scp->state != DN_CR)
+			return -EINVAL;
+
+		scp->state = DN_DR;
+		sk->sk_shutdown = SHUTDOWN_MASK;
+		dn_nsp_send_disc(sk, 0x38, 0, sk->sk_allocation);
+		break;
+
+	default:
+#ifdef CONFIG_NETFILTER
+		return nf_setsockopt(sk, PF_DECnet, optname, optval, optlen);
+#endif
+	case DSO_LINKINFO:
+	case DSO_STREAM:
+	case DSO_SEQPACKET:
+		return -ENOPROTOOPT;
+
+	case DSO_MAXWINDOW:
+		if (optlen != sizeof(unsigned long))
+			return -EINVAL;
+		if (u.win > NSP_MAX_WINDOW)
+			u.win = NSP_MAX_WINDOW;
+		if (u.win == 0)
+			return -EINVAL;
+		scp->max_window = u.win;
+		if (scp->snd_window > u.win)
+			scp->snd_window = u.win;
+		break;
+
+	case DSO_NODELAY:
+		if (optlen != sizeof(int))
+			return -EINVAL;
+		if (scp->nonagle == 2)
+			return -EINVAL;
+		scp->nonagle = (u.val == 0) ? 0 : 1;
+		/* if (scp->nonagle == 1) { Push pending frames } */
+		break;
+
+	case DSO_CORK:
+		if (optlen != sizeof(int))
+			return -EINVAL;
+		if (scp->nonagle == 1)
+			return -EINVAL;
+		scp->nonagle = (u.val == 0) ? 0 : 2;
+		/* if (scp->nonagle == 0) { Push pending frames } */
+		break;
+
+	case DSO_SERVICES:
+		if (optlen != sizeof(unsigned char))
+			return -EINVAL;
+		if ((u.services & ~NSP_FC_MASK) != 0x01)
+			return -EINVAL;
+		if ((u.services & NSP_FC_MASK) == NSP_FC_MASK)
+			return -EINVAL;
+		scp->services_loc = u.services;
+		break;
+
+	case DSO_INFO:
+		if (optlen != sizeof(unsigned char))
+			return -EINVAL;
+		if (u.info & 0xfc)
+			return -EINVAL;
+		scp->info_loc = u.info;
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -1527,6 +1883,8 @@ static int __dn_getsockopt(struct socket *sock, int level,int optname, char __us
 	if(get_user(r_len , optlen))
 		return -EFAULT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(optname) {
 		case DSO_CONDATA:
 			if (r_len > sizeof(struct optdata_dn))
@@ -1628,6 +1986,113 @@ static int __dn_getsockopt(struct socket *sock, int level,int optname, char __us
 				r_len = sizeof(unsigned char);
 			r_data = &scp->info_rem;
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (optname) {
+	case DSO_CONDATA:
+		if (r_len > sizeof(struct optdata_dn))
+			r_len = sizeof(struct optdata_dn);
+		r_data = &scp->conndata_in;
+		break;
+
+	case DSO_DISDATA:
+		if (r_len > sizeof(struct optdata_dn))
+			r_len = sizeof(struct optdata_dn);
+		r_data = &scp->discdata_in;
+		break;
+
+	case DSO_CONACCESS:
+		if (r_len > sizeof(struct accessdata_dn))
+			r_len = sizeof(struct accessdata_dn);
+		r_data = &scp->accessdata;
+		break;
+
+	case DSO_ACCEPTMODE:
+		if (r_len > sizeof(unsigned char))
+			r_len = sizeof(unsigned char);
+		r_data = &scp->accept_mode;
+		break;
+
+	case DSO_LINKINFO:
+		if (r_len > sizeof(struct linkinfo_dn))
+			r_len = sizeof(struct linkinfo_dn);
+
+		memset(&link, 0, sizeof(link));
+
+		switch (sock->state) {
+		case SS_CONNECTING:
+			link.idn_linkstate = LL_CONNECTING;
+			break;
+		case SS_DISCONNECTING:
+			link.idn_linkstate = LL_DISCONNECTING;
+			break;
+		case SS_CONNECTED:
+			link.idn_linkstate = LL_RUNNING;
+			break;
+		default:
+			link.idn_linkstate = LL_INACTIVE;
+		}
+
+		link.idn_segsize = scp->segsize_rem;
+		r_data = &link;
+		break;
+
+	default:
+#ifdef CONFIG_NETFILTER
+	{
+		int ret, len;
+
+		if (get_user(len, optlen))
+			return -EFAULT;
+
+		ret = nf_getsockopt(sk, PF_DECnet, optname, optval, &len);
+		if (ret >= 0)
+			ret = put_user(len, optlen);
+		return ret;
+	}
+#endif
+	case DSO_STREAM:
+	case DSO_SEQPACKET:
+	case DSO_CONACCEPT:
+	case DSO_CONREJECT:
+		return -ENOPROTOOPT;
+
+	case DSO_MAXWINDOW:
+		if (r_len > sizeof(unsigned long))
+			r_len = sizeof(unsigned long);
+		r_data = &scp->max_window;
+		break;
+
+	case DSO_NODELAY:
+		if (r_len > sizeof(int))
+			r_len = sizeof(int);
+		val = (scp->nonagle == 1);
+		r_data = &val;
+		break;
+
+	case DSO_CORK:
+		if (r_len > sizeof(int))
+			r_len = sizeof(int);
+		val = (scp->nonagle == 2);
+		r_data = &val;
+		break;
+
+	case DSO_SERVICES:
+		if (r_len > sizeof(unsigned char))
+			r_len = sizeof(unsigned char);
+		r_data = &scp->services_rem;
+		break;
+
+	case DSO_INFO:
+		if (r_len > sizeof(unsigned char))
+			r_len = sizeof(unsigned char);
+		r_data = &scp->info_rem;
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (r_data) {
@@ -1846,9 +2311,15 @@ static inline int dn_queue_too_long(struct dn_scp *scp, struct sk_buff_head *que
  * inclusion (or not) of the two 16 bit acknowledgement fields so it doesn't
  * make much practical difference.
  */
+<<<<<<< HEAD
 unsigned dn_mss_from_pmtu(struct net_device *dev, int mtu)
 {
 	unsigned mss = 230 - DN_MAX_NSP_DATA_HEADER;
+=======
+unsigned int dn_mss_from_pmtu(struct net_device *dev, int mtu)
+{
+	unsigned int mss = 230 - DN_MAX_NSP_DATA_HEADER;
+>>>>>>> refs/remotes/origin/master
 	if (dev) {
 		struct dn_dev *dn_db = rcu_dereference_raw(dev->dn_ptr);
 		mtu -= LL_RESERVED_SPACE(dev);
@@ -2081,13 +2552,21 @@ out_err:
 }
 
 static int dn_device_event(struct notifier_block *this, unsigned long event,
+<<<<<<< HEAD
 			void *ptr)
 {
 	struct net_device *dev = (struct net_device *)ptr;
+=======
+			   void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	if (!net_eq(dev_net(dev), &init_net))
 		return NOTIFY_DONE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(event) {
 		case NETDEV_UP:
 			dn_dev_up(dev);
@@ -2097,6 +2576,22 @@ static int dn_device_event(struct notifier_block *this, unsigned long event,
 			break;
 		default:
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (event) {
+	case NETDEV_UP:
+		dn_dev_up(dev);
+		break;
+	case NETDEV_DOWN:
+		dn_dev_down(dev);
+		break;
+	default:
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return NOTIFY_DONE;
@@ -2209,6 +2704,8 @@ static void dn_printable_object(struct sockaddr_dn *dn, unsigned char *buf)
 	int i;
 
 	switch (le16_to_cpu(dn->sdn_objnamel)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case 0:
 			sprintf(buf, "%d", dn->sdn_objnum);
 			break;
@@ -2219,11 +2716,30 @@ static void dn_printable_object(struct sockaddr_dn *dn, unsigned char *buf)
 					buf[i] = '.';
 			}
 			buf[i] = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case 0:
+		sprintf(buf, "%d", dn->sdn_objnum);
+		break;
+	default:
+		for (i = 0; i < le16_to_cpu(dn->sdn_objnamel); i++) {
+			buf[i] = dn->sdn_objname[i];
+			if (IS_NOT_PRINTABLE(buf[i]))
+				buf[i] = '.';
+		}
+		buf[i] = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static char *dn_state2asc(unsigned char state)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(state) {
 		case DN_O:
 			return "OPEN";
@@ -2257,6 +2773,46 @@ static char *dn_state2asc(unsigned char state)
 			return "  CL";
 		case DN_CN:
 			return "  CN";
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (state) {
+	case DN_O:
+		return "OPEN";
+	case DN_CR:
+		return "  CR";
+	case DN_DR:
+		return "  DR";
+	case DN_DRC:
+		return " DRC";
+	case DN_CC:
+		return "  CC";
+	case DN_CI:
+		return "  CI";
+	case DN_NR:
+		return "  NR";
+	case DN_NC:
+		return "  NC";
+	case DN_CD:
+		return "  CD";
+	case DN_RJ:
+		return "  RJ";
+	case DN_RUN:
+		return " RUN";
+	case DN_DI:
+		return "  DI";
+	case DN_DIC:
+		return " DIC";
+	case DN_DN:
+		return "  DN";
+	case DN_CL:
+		return "  CL";
+	case DN_CN:
+		return "  CN";
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return "????";
@@ -2355,8 +2911,14 @@ static const struct proto_ops dn_proto_ops = {
 	.sendpage =	sock_no_sendpage,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void dn_register_sysctl_skeleton(void);
 void dn_unregister_sysctl_skeleton(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void dn_register_sysctl(void);
 void dn_unregister_sysctl(void);
 
@@ -2377,7 +2939,13 @@ static int __init decnet_init(void)
 	if (rc != 0)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dn_register_sysctl_skeleton();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dn_neigh_init();
 	dn_dev_init();
 	dn_route_init();
@@ -2387,7 +2955,11 @@ static int __init decnet_init(void)
 	dev_add_pack(&dn_dix_packet_type);
 	register_netdevice_notifier(&dn_dev_notifier);
 
+<<<<<<< HEAD
 	proc_net_fops_create(&init_net, "decnet", S_IRUGO, &dn_socket_seq_fops);
+=======
+	proc_create("decnet", S_IRUGO, init_net.proc_net, &dn_socket_seq_fops);
+>>>>>>> refs/remotes/origin/master
 	dn_register_sysctl();
 out:
 	return rc;
@@ -2416,8 +2988,15 @@ static void __exit decnet_exit(void)
 	dn_neigh_cleanup();
 	dn_fib_cleanup();
 
+<<<<<<< HEAD
 	proc_net_remove(&init_net, "decnet");
+<<<<<<< HEAD
 	dn_unregister_sysctl_skeleton();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	remove_proc_entry("decnet", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 
 	proto_unregister(&dn_proto);
 

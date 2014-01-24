@@ -60,7 +60,10 @@ static struct regulator_consumer_supply supply_ldo_c[] = {
  */
 static struct regulator_consumer_supply supply_ldo_d[] = {
 	{
+<<<<<<< HEAD
 		.dev = NULL,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.supply = "vana15", /* Powers the SoC (CPU etc) */
 	},
 };
@@ -92,7 +95,10 @@ static struct regulator_consumer_supply supply_ldo_k[] = {
  */
 static struct regulator_consumer_supply supply_ldo_ext[] = {
 	{
+<<<<<<< HEAD
 		.dev = NULL,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.supply = "vext", /* External power */
 	},
 };
@@ -148,9 +154,12 @@ static struct ab3100_platform_data ab3100_plf_data = {
 				.min_uV = 1800000,
 				.max_uV = 1800000,
 				.valid_modes_mask = REGULATOR_MODE_NORMAL,
+<<<<<<< HEAD
 				.valid_ops_mask =
 				REGULATOR_CHANGE_VOLTAGE |
 				REGULATOR_CHANGE_STATUS,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 				.always_on = 1,
 				.boot_on = 1,
 			},
@@ -162,9 +171,12 @@ static struct ab3100_platform_data ab3100_plf_data = {
 				.min_uV = 2500000,
 				.max_uV = 2500000,
 				.valid_modes_mask = REGULATOR_MODE_NORMAL,
+<<<<<<< HEAD
 				.valid_ops_mask =
 				REGULATOR_CHANGE_VOLTAGE |
 				REGULATOR_CHANGE_STATUS,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 				.always_on = 1,
 				.boot_on = 1,
 			},
@@ -232,8 +244,12 @@ static struct ab3100_platform_data ab3100_plf_data = {
 				.max_uV = 1800000,
 				.valid_modes_mask = REGULATOR_MODE_NORMAL,
 				.valid_ops_mask =
+<<<<<<< HEAD
 				REGULATOR_CHANGE_VOLTAGE |
 				REGULATOR_CHANGE_STATUS,
+=======
+				REGULATOR_CHANGE_VOLTAGE,
+>>>>>>> refs/remotes/origin/cm-10.0
 				.always_on = 1,
 				.boot_on = 1,
 			},
@@ -256,6 +272,7 @@ static struct ab3100_platform_data ab3100_plf_data = {
 };
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_AB3550_CORE
 static struct abx500_init_settings ab3550_init_settings[] = {
 	{
@@ -307,6 +324,10 @@ static struct i2c_board_info __initdata bus0_i2c_board_info[] = {
 		.platform_data = &ab3550_plf_data,
 	},
 #elif defined(CONFIG_AB3100_CORE)
+=======
+static struct i2c_board_info __initdata bus0_i2c_board_info[] = {
+#ifdef CONFIG_AB3100_CORE
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.type = "ab3100",
 		.addr = 0x48,

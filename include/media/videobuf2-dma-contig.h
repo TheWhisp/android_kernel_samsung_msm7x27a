@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * videobuf2-dma-coherent.h - DMA coherent memory allocator for videobuf2
+=======
+ * videobuf2-dma-contig.h - DMA contig memory allocator for videobuf2
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2010 Samsung Electronics
  *
@@ -10,18 +14,37 @@
  * the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #ifndef _MEDIA_VIDEOBUF2_DMA_COHERENT_H
 #define _MEDIA_VIDEOBUF2_DMA_COHERENT_H
+=======
+#ifndef _MEDIA_VIDEOBUF2_DMA_CONTIG_H
+#define _MEDIA_VIDEOBUF2_DMA_CONTIG_H
+>>>>>>> refs/remotes/origin/master
 
 #include <media/videobuf2-core.h>
 #include <linux/dma-mapping.h>
 
 static inline dma_addr_t
+<<<<<<< HEAD
+<<<<<<< HEAD
 vb2_dma_contig_plane_paddr(struct vb2_buffer *vb, unsigned int plane_no)
 {
 	dma_addr_t *paddr = vb2_plane_cookie(vb, plane_no);
 
 	return *paddr;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+vb2_dma_contig_plane_dma_addr(struct vb2_buffer *vb, unsigned int plane_no)
+{
+	dma_addr_t *addr = vb2_plane_cookie(vb, plane_no);
+
+	return *addr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void *vb2_dma_contig_init_ctx(struct device *dev);

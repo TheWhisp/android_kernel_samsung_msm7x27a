@@ -13,7 +13,11 @@
 
 #ifdef CONFIG_MAC80211_LEDS
 void ieee80211_led_rx(struct ieee80211_local *local);
+<<<<<<< HEAD
 void ieee80211_led_tx(struct ieee80211_local *local, int q);
+=======
+void ieee80211_led_tx(struct ieee80211_local *local);
+>>>>>>> refs/remotes/origin/master
 void ieee80211_led_assoc(struct ieee80211_local *local,
 			 bool associated);
 void ieee80211_led_radio(struct ieee80211_local *local,
@@ -27,7 +31,11 @@ void ieee80211_mod_tpt_led_trig(struct ieee80211_local *local,
 static inline void ieee80211_led_rx(struct ieee80211_local *local)
 {
 }
+<<<<<<< HEAD
 static inline void ieee80211_led_tx(struct ieee80211_local *local, int q)
+=======
+static inline void ieee80211_led_tx(struct ieee80211_local *local)
+>>>>>>> refs/remotes/origin/master
 {
 }
 static inline void ieee80211_led_assoc(struct ieee80211_local *local,

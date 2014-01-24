@@ -175,7 +175,11 @@ static int_handler_prototype int_handler_table[] = {
 	fm_irq_handle_intmsk_cmd_resp
 };
 
+<<<<<<< HEAD
 long (*g_st_write) (struct sk_buff *skb);
+=======
+static long (*g_st_write) (struct sk_buff *skb);
+>>>>>>> refs/remotes/origin/master
 static struct completion wait_for_fmdrv_reg_comp;
 
 static inline void fm_irq_call(struct fmdev *fmdev)
@@ -387,7 +391,15 @@ static void send_tasklet(unsigned long arg)
  * Queues FM Channel-8 packet to FM TX queue and schedules FM TX tasklet for
  * transmission
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u32 fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
+=======
+static int fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
+>>>>>>> refs/remotes/origin/master
 		int payload_len, struct completion *wait_completion)
 {
 	struct sk_buff *skb;
@@ -456,13 +468,29 @@ static u32 fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
 }
 
 /* Sends FM Channel-8 command to the chip and waits for the response */
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type, void *payload,
+=======
+int fmc_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type, void *payload,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fmc_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type, void *payload,
+>>>>>>> refs/remotes/origin/master
 		unsigned int payload_len, void *response, int *response_len)
 {
 	struct sk_buff *skb;
 	struct fm_event_msg_hdr *evt_hdr;
 	unsigned long flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 ret;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	init_completion(&fmdev->maintask_comp);
 	ret = fm_send_cmd(fmdev, fm_op, type, payload, payload_len,
@@ -470,8 +498,18 @@ u32 fmc_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type, void *payload,
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = wait_for_completion_timeout(&fmdev->maintask_comp, FM_DRV_TX_TIMEOUT);
 	if (!ret) {
+=======
+	if (!wait_for_completion_timeout(&fmdev->maintask_comp,
+					 FM_DRV_TX_TIMEOUT)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!wait_for_completion_timeout(&fmdev->maintask_comp,
+					 FM_DRV_TX_TIMEOUT)) {
+>>>>>>> refs/remotes/origin/master
 		fmerr("Timeout(%d sec),didn't get reg"
 			   "completion signal from RX tasklet\n",
 			   jiffies_to_msecs(FM_DRV_TX_TIMEOUT) / 1000);
@@ -508,7 +546,15 @@ u32 fmc_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type, void *payload,
 }
 
 /* --- Helper functions used in FM interrupt handlers ---*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline u32 check_cmdresp_status(struct fmdev *fmdev,
+=======
+static inline int check_cmdresp_status(struct fmdev *fmdev,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int check_cmdresp_status(struct fmdev *fmdev,
+>>>>>>> refs/remotes/origin/master
 		struct sk_buff **skb)
 {
 	struct fm_event_msg_hdr *fm_evt_hdr;
@@ -715,7 +761,11 @@ static void fm_irq_handle_rdsdata_getcmd_resp(struct fmdev *fmdev)
 	struct fm_rdsdata_format rds_fmt;
 	struct fm_rds *rds = &fmdev->rx.rds;
 	unsigned long group_idx, flags;
+<<<<<<< HEAD
 	u8 *rds_data, meta_data, tmpbuf[3];
+=======
+	u8 *rds_data, meta_data, tmpbuf[FM_RDS_BLK_SIZE];
+>>>>>>> refs/remotes/origin/master
 	u8 type, blk_idx;
 	u16 cur_picode;
 	u32 rds_len;
@@ -742,7 +792,11 @@ static void fm_irq_handle_rdsdata_getcmd_resp(struct fmdev *fmdev)
 		if ((meta_data & FM_RDS_STATUS_ERR_MASK) != 0)
 			break;
 
+<<<<<<< HEAD
 		if (blk_idx < FM_RDS_BLK_IDX_A || blk_idx > FM_RDS_BLK_IDX_D) {
+=======
+		if (blk_idx > FM_RDS_BLK_IDX_D) {
+>>>>>>> refs/remotes/origin/master
 			fmdbg("Block sequence mismatch\n");
 			rds->last_blk_idx = -1;
 			break;
@@ -1058,7 +1112,15 @@ static void fm_irq_handle_intmsk_cmd_resp(struct fmdev *fmdev)
 }
 
 /* Returns availability of RDS data in internel buffer */
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_is_rds_data_available(struct fmdev *fmdev, struct file *file,
+=======
+int fmc_is_rds_data_available(struct fmdev *fmdev, struct file *file,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fmc_is_rds_data_available(struct fmdev *fmdev, struct file *file,
+>>>>>>> refs/remotes/origin/master
 				struct poll_table_struct *pts)
 {
 	poll_wait(file, &fmdev->rx.rds.read_queue, pts);
@@ -1069,10 +1131,22 @@ u32 fmc_is_rds_data_available(struct fmdev *fmdev, struct file *file,
 }
 
 /* Copies RDS data from internal buffer to user buffer */
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_transfer_rds_from_internal_buff(struct fmdev *fmdev, struct file *file,
+=======
+int fmc_transfer_rds_from_internal_buff(struct fmdev *fmdev, struct file *file,
+>>>>>>> refs/remotes/origin/cm-10.0
 		u8 __user *buf, size_t count)
 {
 	u32 block_count;
+=======
+int fmc_transfer_rds_from_internal_buff(struct fmdev *fmdev, struct file *file,
+		u8 __user *buf, size_t count)
+{
+	u32 block_count;
+	u8 tmpbuf[FM_RDS_BLK_SIZE];
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int ret;
 
@@ -1087,6 +1161,7 @@ u32 fmc_transfer_rds_from_internal_buff(struct fmdev *fmdev, struct file *file,
 	}
 
 	/* Calculate block count from byte count */
+<<<<<<< HEAD
 	count /= 3;
 	block_count = 0;
 	ret = 0;
@@ -1101,19 +1176,53 @@ u32 fmc_transfer_rds_from_internal_buff(struct fmdev *fmdev, struct file *file,
 					FM_RDS_BLK_SIZE))
 			break;
 
+=======
+	count /= FM_RDS_BLK_SIZE;
+	block_count = 0;
+	ret = 0;
+
+	while (block_count < count) {
+		spin_lock_irqsave(&fmdev->rds_buff_lock, flags);
+
+		if (fmdev->rx.rds.wr_idx == fmdev->rx.rds.rd_idx) {
+			spin_unlock_irqrestore(&fmdev->rds_buff_lock, flags);
+			break;
+		}
+		memcpy(tmpbuf, &fmdev->rx.rds.buff[fmdev->rx.rds.rd_idx],
+					FM_RDS_BLK_SIZE);
+>>>>>>> refs/remotes/origin/master
 		fmdev->rx.rds.rd_idx += FM_RDS_BLK_SIZE;
 		if (fmdev->rx.rds.rd_idx >= fmdev->rx.rds.buf_size)
 			fmdev->rx.rds.rd_idx = 0;
 
+<<<<<<< HEAD
+=======
+		spin_unlock_irqrestore(&fmdev->rds_buff_lock, flags);
+
+		if (copy_to_user(buf, tmpbuf, FM_RDS_BLK_SIZE))
+			break;
+
+>>>>>>> refs/remotes/origin/master
 		block_count++;
 		buf += FM_RDS_BLK_SIZE;
 		ret += FM_RDS_BLK_SIZE;
 	}
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&fmdev->rds_buff_lock, flags);
 	return ret;
 }
 
+<<<<<<< HEAD
 u32 fmc_set_freq(struct fmdev *fmdev, u32 freq_to_set)
+=======
+int fmc_set_freq(struct fmdev *fmdev, u32 freq_to_set)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+
+int fmc_set_freq(struct fmdev *fmdev, u32 freq_to_set)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (fmdev->curr_fmmode) {
 	case FM_MODE_RX:
@@ -1127,7 +1236,15 @@ u32 fmc_set_freq(struct fmdev *fmdev, u32 freq_to_set)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_get_freq(struct fmdev *fmdev, u32 *cur_tuned_frq)
+=======
+int fmc_get_freq(struct fmdev *fmdev, u32 *cur_tuned_frq)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fmc_get_freq(struct fmdev *fmdev, u32 *cur_tuned_frq)
+>>>>>>> refs/remotes/origin/master
 {
 	if (fmdev->rx.freq == FM_UNDEFINED_FREQ) {
 		fmerr("RX frequency is not set\n");
@@ -1153,7 +1270,15 @@ u32 fmc_get_freq(struct fmdev *fmdev, u32 *cur_tuned_frq)
 
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_set_region(struct fmdev *fmdev, u8 region_to_set)
+=======
+int fmc_set_region(struct fmdev *fmdev, u8 region_to_set)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fmc_set_region(struct fmdev *fmdev, u8 region_to_set)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (fmdev->curr_fmmode) {
 	case FM_MODE_RX:
@@ -1167,7 +1292,15 @@ u32 fmc_set_region(struct fmdev *fmdev, u8 region_to_set)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_set_mute_mode(struct fmdev *fmdev, u8 mute_mode_toset)
+=======
+int fmc_set_mute_mode(struct fmdev *fmdev, u8 mute_mode_toset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fmc_set_mute_mode(struct fmdev *fmdev, u8 mute_mode_toset)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (fmdev->curr_fmmode) {
 	case FM_MODE_RX:
@@ -1181,7 +1314,15 @@ u32 fmc_set_mute_mode(struct fmdev *fmdev, u8 mute_mode_toset)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_set_stereo_mono(struct fmdev *fmdev, u16 mode)
+=======
+int fmc_set_stereo_mono(struct fmdev *fmdev, u16 mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fmc_set_stereo_mono(struct fmdev *fmdev, u16 mode)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (fmdev->curr_fmmode) {
 	case FM_MODE_RX:
@@ -1195,7 +1336,15 @@ u32 fmc_set_stereo_mono(struct fmdev *fmdev, u16 mode)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_set_rds_mode(struct fmdev *fmdev, u8 rds_en_dis)
+=======
+int fmc_set_rds_mode(struct fmdev *fmdev, u8 rds_en_dis)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fmc_set_rds_mode(struct fmdev *fmdev, u8 rds_en_dis)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (fmdev->curr_fmmode) {
 	case FM_MODE_RX:
@@ -1210,10 +1359,23 @@ u32 fmc_set_rds_mode(struct fmdev *fmdev, u8 rds_en_dis)
 }
 
 /* Sends power off command to the chip */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u32 fm_power_down(struct fmdev *fmdev)
 {
 	u16 payload;
 	u32 ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int fm_power_down(struct fmdev *fmdev)
+{
+	u16 payload;
+	int ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!test_bit(FM_CORE_READY, &fmdev->flag)) {
 		fmerr("FM core is not ready\n");
@@ -1234,7 +1396,15 @@ static u32 fm_power_down(struct fmdev *fmdev)
 }
 
 /* Reads init command from FM firmware file and loads to the chip */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u32 fm_download_firmware(struct fmdev *fmdev, const u8 *fw_name)
+=======
+static int fm_download_firmware(struct fmdev *fmdev, const u8 *fw_name)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int fm_download_firmware(struct fmdev *fmdev, const u8 *fw_name)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct firmware *fw_entry;
 	struct bts_header *fw_header;
@@ -1299,7 +1469,15 @@ rel_fw:
 }
 
 /* Loads default RX configuration to the chip */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u32 load_default_rx_configuration(struct fmdev *fmdev)
+=======
+static int load_default_rx_configuration(struct fmdev *fmdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int load_default_rx_configuration(struct fmdev *fmdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -1311,7 +1489,15 @@ static u32 load_default_rx_configuration(struct fmdev *fmdev)
 }
 
 /* Does FM power on sequence */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u32 fm_power_up(struct fmdev *fmdev, u8 mode)
+=======
+static int fm_power_up(struct fmdev *fmdev, u8 mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int fm_power_up(struct fmdev *fmdev, u8 mode)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 payload, asic_id, asic_ver;
 	int resp_len, ret;
@@ -1374,7 +1560,15 @@ rel:
 }
 
 /* Set FM Modes(TX, RX, OFF) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_set_mode(struct fmdev *fmdev, u8 fm_mode)
+=======
+int fmc_set_mode(struct fmdev *fmdev, u8 fm_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fmc_set_mode(struct fmdev *fmdev, u8 fm_mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 
@@ -1427,7 +1621,15 @@ u32 fmc_set_mode(struct fmdev *fmdev, u8 fm_mode)
 }
 
 /* Returns current FM mode (TX, RX, OFF) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_get_mode(struct fmdev *fmdev, u8 *fmmode)
+=======
+int fmc_get_mode(struct fmdev *fmdev, u8 *fmmode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fmc_get_mode(struct fmdev *fmdev, u8 *fmmode)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!test_bit(FM_CORE_READY, &fmdev->flag)) {
 		fmerr("FM core is not ready\n");
@@ -1483,10 +1685,23 @@ static void fm_st_reg_comp_cb(void *arg, char data)
  * This function will be called from FM V4L2 open function.
  * Register with ST driver and initialize driver data.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_prepare(struct fmdev *fmdev)
 {
 	static struct st_proto_s fm_st_proto;
 	u32 ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int fmc_prepare(struct fmdev *fmdev)
+{
+	static struct st_proto_s fm_st_proto;
+	int ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(FM_CORE_READY, &fmdev->flag)) {
 		fmdbg("FM Core is already up\n");
@@ -1512,10 +1727,20 @@ u32 fmc_prepare(struct fmdev *fmdev)
 		fmdev->streg_cbdata = -EINPROGRESS;
 		fmdbg("%s waiting for ST reg completion signal\n", __func__);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = wait_for_completion_timeout(&wait_for_fmdrv_reg_comp,
 				FM_ST_REG_TIMEOUT);
 
 		if (!ret) {
+=======
+		if (!wait_for_completion_timeout(&wait_for_fmdrv_reg_comp,
+						 FM_ST_REG_TIMEOUT)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!wait_for_completion_timeout(&wait_for_fmdrv_reg_comp,
+						 FM_ST_REG_TIMEOUT)) {
+>>>>>>> refs/remotes/origin/master
 			fmerr("Timeout(%d sec), didn't get reg "
 					"completion signal from ST\n",
 					jiffies_to_msecs(FM_ST_REG_TIMEOUT) / 1000);
@@ -1565,8 +1790,12 @@ u32 fmc_prepare(struct fmdev *fmdev)
 	fmdev->irq_info.mask = FM_MAL_EVENT;
 
 	/* Region info */
+<<<<<<< HEAD
 	memcpy(&fmdev->rx.region, &region_configs[default_radio_region],
 			sizeof(struct region_info));
+=======
+	fmdev->rx.region = region_configs[default_radio_region];
+>>>>>>> refs/remotes/origin/master
 
 	fmdev->rx.mute_mode = FM_MUTE_OFF;
 	fmdev->rx.rf_depend_mute = FM_RX_RF_DEPENDENT_MUTE_OFF;
@@ -1589,10 +1818,23 @@ u32 fmc_prepare(struct fmdev *fmdev)
  * This function will be called from FM V4L2 release function.
  * Unregister from ST driver.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 fmc_release(struct fmdev *fmdev)
 {
 	static struct st_proto_s fm_st_proto;
 	u32 ret;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int fmc_release(struct fmdev *fmdev)
+{
+	static struct st_proto_s fm_st_proto;
+	int ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!test_bit(FM_CORE_READY, &fmdev->flag)) {
 		fmdbg("FM Core is already down\n");
@@ -1631,7 +1873,15 @@ u32 fmc_release(struct fmdev *fmdev)
 static int __init fm_drv_init(void)
 {
 	struct fmdev *fmdev = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 ret = -ENOMEM;
+=======
+	int ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	fmdbg("FM driver version %s\n", FM_DRV_VERSION);
 

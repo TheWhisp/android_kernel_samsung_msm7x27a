@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef __CRIS_IPCBUF_H__
 #define __CRIS_IPCBUF_H__
 
@@ -27,3 +28,6 @@ struct ipc64_perm
 };
 
 #endif /* __CRIS_IPCBUF_H__ */
+=======
+#include <asm-generic/ipcbuf.h>
+>>>>>>> refs/remotes/origin/cm-10.0

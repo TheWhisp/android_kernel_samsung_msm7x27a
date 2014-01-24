@@ -1,4 +1,21 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_SUP_AMD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/perf_event.h>
+#include <linux/export.h>
+#include <linux/types.h>
+#include <linux/init.h>
+#include <linux/slab.h>
+#include <asm/apicdef.h>
+
+#include "perf_event.h"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static __initconst const u64 amd_hw_cache_event_ids
 				[PERF_COUNT_HW_CACHE_MAX]
@@ -89,6 +106,29 @@ static __initconst const u64 amd_hw_cache_event_ids
 		[ C(RESULT_MISS)   ] = -1,
 	},
  },
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ [ C(NODE) ] = {
+	[ C(OP_READ) ] = {
+		[ C(RESULT_ACCESS) ] = 0xb8e9, /* CPU Request to Memory, l+r */
+		[ C(RESULT_MISS)   ] = 0x98e9, /* CPU Request to Memory, r   */
+	},
+	[ C(OP_WRITE) ] = {
+		[ C(RESULT_ACCESS) ] = -1,
+		[ C(RESULT_MISS)   ] = -1,
+	},
+	[ C(OP_PREFETCH) ] = {
+		[ C(RESULT_ACCESS) ] = -1,
+		[ C(RESULT_MISS)   ] = -1,
+	},
+ },
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -111,6 +151,7 @@ static u64 amd_pmu_event_map(int hw_event)
 	return amd_perfmon_event_map[hw_event];
 }
 
+<<<<<<< HEAD
 static int amd_pmu_hw_config(struct perf_event *event)
 {
 	int ret = x86_pmu_hw_config(event);
@@ -118,10 +159,80 @@ static int amd_pmu_hw_config(struct perf_event *event)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
+=======
+	if (has_branch_stack(event))
+		return -EOPNOTSUPP;
+
+=======
+/*
+ * Previously calculated offsets
+ */
+static unsigned int event_offsets[X86_PMC_IDX_MAX] __read_mostly;
+static unsigned int count_offsets[X86_PMC_IDX_MAX] __read_mostly;
+
+/*
+ * Legacy CPUs:
+ *   4 counters starting at 0xc0010000 each offset by 1
+ *
+ * CPUs with core performance counter extensions:
+ *   6 counters starting at 0xc0010200 each offset by 2
+ */
+static inline int amd_pmu_addr_offset(int index, bool eventsel)
+{
+	int offset;
+
+	if (!index)
+		return index;
+
+	if (eventsel)
+		offset = event_offsets[index];
+	else
+		offset = count_offsets[index];
+
+	if (offset)
+		return offset;
+
+	if (!cpu_has_perfctr_core)
+		offset = index;
+	else
+		offset = index << 1;
+
+	if (eventsel)
+		event_offsets[index] = offset;
+	else
+		count_offsets[index] = offset;
+
+	return offset;
+}
+
+static int amd_core_hw_config(struct perf_event *event)
+{
+>>>>>>> refs/remotes/origin/master
+	if (event->attr.exclude_host && event->attr.exclude_guest)
+		/*
+		 * When HO == GO == 1 the hardware treats that as GO == HO == 0
+		 * and will count in both modes. We don't want to count in that
+		 * case so we emulate no-counting by setting US = OS = 0.
+		 */
+		event->hw.config &= ~(ARCH_PERFMON_EVENTSEL_USR |
+				      ARCH_PERFMON_EVENTSEL_OS);
+	else if (event->attr.exclude_host)
+<<<<<<< HEAD
+		event->hw.config |= AMD_PERFMON_EVENTSEL_GUESTONLY;
+	else if (event->attr.exclude_guest)
+		event->hw.config |= AMD_PERFMON_EVENTSEL_HOSTONLY;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (event->attr.type != PERF_TYPE_RAW)
 		return 0;
 
 	event->hw.config |= event->attr.config & AMD64_RAW_EVENT_MASK;
+=======
+		event->hw.config |= AMD64_EVENTSEL_GUESTONLY;
+	else if (event->attr.exclude_guest)
+		event->hw.config |= AMD64_EVENTSEL_HOSTONLY;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -146,20 +257,50 @@ static inline int amd_has_nb(struct cpu_hw_events *cpuc)
 	return nb && nb->nb_id != -1;
 }
 
+<<<<<<< HEAD
 static void amd_put_event_constraints(struct cpu_hw_events *cpuc,
 				      struct perf_event *event)
 {
 	struct hw_perf_event *hwc = &event->hw;
+=======
+static int amd_pmu_hw_config(struct perf_event *event)
+{
+	int ret;
+
+	/* pass precise event sampling to ibs: */
+	if (event->attr.precise_ip && get_ibs_caps())
+		return -ENOENT;
+
+	if (has_branch_stack(event))
+		return -EOPNOTSUPP;
+
+	ret = x86_pmu_hw_config(event);
+	if (ret)
+		return ret;
+
+	if (event->attr.type == PERF_TYPE_RAW)
+		event->hw.config |= event->attr.config & AMD64_RAW_EVENT_MASK;
+
+	return amd_core_hw_config(event);
+}
+
+static void __amd_put_nb_event_constraints(struct cpu_hw_events *cpuc,
+					   struct perf_event *event)
+{
+>>>>>>> refs/remotes/origin/master
 	struct amd_nb *nb = cpuc->amd_nb;
 	int i;
 
 	/*
+<<<<<<< HEAD
 	 * only care about NB events
 	 */
 	if (!(amd_has_nb(cpuc) && amd_is_nb_event(hwc)))
 		return;
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * need to scan whole list because event may not have
 	 * been assigned during scheduling
 	 *
@@ -168,10 +309,15 @@ static void amd_put_event_constraints(struct cpu_hw_events *cpuc,
 	 * when we come here
 	 */
 	for (i = 0; i < x86_pmu.num_counters; i++) {
+<<<<<<< HEAD
 		if (nb->owners[i] == event) {
 			cmpxchg(nb->owners+i, event, NULL);
 			break;
 		}
+=======
+		if (cmpxchg(nb->owners + i, event, NULL) == event)
+			break;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -207,11 +353,16 @@ static void amd_put_event_constraints(struct cpu_hw_events *cpuc,
   *
   * Given that resources are allocated (cmpxchg), they must be
   * eventually freed for others to use. This is accomplished by
+<<<<<<< HEAD
   * calling amd_put_event_constraints().
+=======
+  * calling __amd_put_nb_event_constraints()
+>>>>>>> refs/remotes/origin/master
   *
   * Non NB events are not impacted by this restriction.
   */
 static struct event_constraint *
+<<<<<<< HEAD
 amd_get_event_constraints(struct cpu_hw_events *cpuc, struct perf_event *event)
 {
 	struct hw_perf_event *hwc = &event->hw;
@@ -225,6 +376,21 @@ amd_get_event_constraints(struct cpu_hw_events *cpuc, struct perf_event *event)
 	 */
 	if (!(amd_has_nb(cpuc) && amd_is_nb_event(hwc)))
 		return &unconstrained;
+=======
+__amd_get_nb_event_constraints(struct cpu_hw_events *cpuc, struct perf_event *event,
+			       struct event_constraint *c)
+{
+	struct hw_perf_event *hwc = &event->hw;
+	struct amd_nb *nb = cpuc->amd_nb;
+	struct perf_event *old;
+	int idx, new = -1;
+
+	if (!c)
+		c = &unconstrained;
+
+	if (cpuc->is_fake)
+		return c;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * detect if already present, if so reuse
@@ -236,6 +402,7 @@ amd_get_event_constraints(struct cpu_hw_events *cpuc, struct perf_event *event)
 	 * because of successive calls to x86_schedule_events() from
 	 * hw_perf_group_sched_in() without hw_perf_enable()
 	 */
+<<<<<<< HEAD
 	for (i = 0; i < max; i++) {
 		/*
 		 * keep track of first free slot
@@ -278,6 +445,35 @@ done:
 		return &nb->event_constraints[i];
 
 	return &emptyconstraint;
+=======
+	for_each_set_bit(idx, c->idxmsk, x86_pmu.num_counters) {
+		if (new == -1 || hwc->idx == idx)
+			/* assign free slot, prefer hwc->idx */
+			old = cmpxchg(nb->owners + idx, NULL, event);
+		else if (nb->owners[idx] == event)
+			/* event already present */
+			old = event;
+		else
+			continue;
+
+		if (old && old != event)
+			continue;
+
+		/* reassign to this slot */
+		if (new != -1)
+			cmpxchg(nb->owners + new, event, NULL);
+		new = idx;
+
+		/* already present, reuse */
+		if (old == event)
+			break;
+	}
+
+	if (new == -1)
+		return &emptyconstraint;
+
+	return &nb->event_constraints[new];
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct amd_nb *amd_alloc_nb(int cpu)
@@ -285,8 +481,12 @@ static struct amd_nb *amd_alloc_nb(int cpu)
 	struct amd_nb *nb;
 	int i;
 
+<<<<<<< HEAD
 	nb = kmalloc_node(sizeof(struct amd_nb), GFP_KERNEL | __GFP_ZERO,
 			  cpu_to_node(cpu));
+=======
+	nb = kzalloc_node(sizeof(struct amd_nb), GFP_KERNEL, cpu_to_node(cpu));
+>>>>>>> refs/remotes/origin/master
 	if (!nb)
 		return NULL;
 
@@ -324,7 +524,19 @@ static void amd_pmu_cpu_starting(int cpu)
 	struct amd_nb *nb;
 	int i, nb_id;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (boot_cpu_data.x86_max_cores < 2)
+=======
+	cpuc->perf_ctr_virt_mask = AMD_PERFMON_EVENTSEL_HOSTONLY;
+
+	if (boot_cpu_data.x86_max_cores < 2 || boot_cpu_data.x86 == 0x15)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpuc->perf_ctr_virt_mask = AMD64_EVENTSEL_HOSTONLY;
+
+	if (boot_cpu_data.x86_max_cores < 2)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	nb_id = amd_get_nb_id(cpu);
@@ -336,7 +548,15 @@ static void amd_pmu_cpu_starting(int cpu)
 			continue;
 
 		if (nb->nb_id == nb_id) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			kfree(cpuc->amd_nb);
+=======
+			cpuc->kfree_on_online = cpuc->amd_nb;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			cpuc->kfree_on_online = cpuc->amd_nb;
+>>>>>>> refs/remotes/origin/master
 			cpuc->amd_nb = nb;
 			break;
 		}
@@ -365,6 +585,47 @@ static void amd_pmu_cpu_dead(int cpu)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+static struct event_constraint *
+amd_get_event_constraints(struct cpu_hw_events *cpuc, struct perf_event *event)
+{
+	/*
+	 * if not NB event or no NB, then no constraints
+	 */
+	if (!(amd_has_nb(cpuc) && amd_is_nb_event(&event->hw)))
+		return &unconstrained;
+
+	return __amd_get_nb_event_constraints(cpuc, event, NULL);
+}
+
+static void amd_put_event_constraints(struct cpu_hw_events *cpuc,
+				      struct perf_event *event)
+{
+	if (amd_has_nb(cpuc) && amd_is_nb_event(&event->hw))
+		__amd_put_nb_event_constraints(cpuc, event);
+}
+
+>>>>>>> refs/remotes/origin/master
+PMU_FORMAT_ATTR(event,	"config:0-7,32-35");
+PMU_FORMAT_ATTR(umask,	"config:8-15"	);
+PMU_FORMAT_ATTR(edge,	"config:18"	);
+PMU_FORMAT_ATTR(inv,	"config:23"	);
+PMU_FORMAT_ATTR(cmask,	"config:24-31"	);
+
+static struct attribute *amd_format_attr[] = {
+	&format_attr_event.attr,
+	&format_attr_umask.attr,
+	&format_attr_edge.attr,
+	&format_attr_inv.attr,
+	&format_attr_cmask.attr,
+	NULL,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static __initconst const struct x86_pmu amd_pmu = {
 	.name			= "AMD",
 	.handle_irq		= x86_pmu_handle_irq,
@@ -378,7 +639,11 @@ static __initconst const struct x86_pmu amd_pmu = {
 	.perfctr		= MSR_K7_PERFCTR0,
 	.event_map		= amd_pmu_event_map,
 	.max_events		= ARRAY_SIZE(amd_perfmon_event_map),
+<<<<<<< HEAD
 	.num_counters		= 4,
+=======
+	.num_counters		= AMD64_NUM_COUNTERS,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.cntval_bits		= 48,
 	.cntval_mask		= (1ULL << 48) - 1,
 	.apic			= 1,
@@ -387,11 +652,18 @@ static __initconst const struct x86_pmu amd_pmu = {
 	.get_event_constraints	= amd_get_event_constraints,
 	.put_event_constraints	= amd_put_event_constraints,
 
+<<<<<<< HEAD
+=======
+	.format_attrs		= amd_format_attr,
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	.cpu_prepare		= amd_pmu_cpu_prepare,
 	.cpu_starting		= amd_pmu_cpu_starting,
 	.cpu_dead		= amd_pmu_cpu_dead,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* AMD Family 15h */
 
 #define AMD_EVENT_TYPE_MASK	0x000000F0ULL
@@ -437,7 +709,14 @@ static __initconst const struct x86_pmu amd_pmu = {
  * 0x023	DE	PERF_CTL[2:0]
  * 0x02D	LS	PERF_CTL[3]
  * 0x02E	LS	PERF_CTL[3,0]
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 0x031	LS	PERF_CTL[2:0] (**)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * 0x031	LS	PERF_CTL[2:0] (**)
+>>>>>>> refs/remotes/origin/master
  * 0x043	CU	PERF_CTL[2:0]
  * 0x045	CU	PERF_CTL[2:0]
  * 0x046	CU	PERF_CTL[2:0]
@@ -451,18 +730,39 @@ static __initconst const struct x86_pmu amd_pmu = {
  * 0x0DD	LS	PERF_CTL[5:0]
  * 0x0DE	LS	PERF_CTL[5:0]
  * 0x0DF	LS	PERF_CTL[5:0]
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
  * 0x1C0	EX	PERF_CTL[5:3]
  * 0x1D6	EX	PERF_CTL[5:0]
  * 0x1D8	EX	PERF_CTL[5:0]
  *
  * (*)  depending on the umask all FPU counters may be used
  * (**) only one unitmask enabled at a time
+<<<<<<< HEAD
+=======
+ * 0x1D6	EX	PERF_CTL[5:0]
+ * 0x1D8	EX	PERF_CTL[5:0]
+ *
+ * (*) depending on the umask all FPU counters may be used
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 static struct event_constraint amd_f15_PMC0  = EVENT_CONSTRAINT(0, 0x01, 0);
 static struct event_constraint amd_f15_PMC20 = EVENT_CONSTRAINT(0, 0x07, 0);
 static struct event_constraint amd_f15_PMC3  = EVENT_CONSTRAINT(0, 0x08, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct event_constraint amd_f15_PMC30 = EVENT_CONSTRAINT(0, 0x09, 0);
+=======
+static struct event_constraint amd_f15_PMC30 = EVENT_CONSTRAINT_OVERLAP(0, 0x09, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct event_constraint amd_f15_PMC30 = EVENT_CONSTRAINT_OVERLAP(0, 0x09, 0);
+>>>>>>> refs/remotes/origin/master
 static struct event_constraint amd_f15_PMC50 = EVENT_CONSTRAINT(0, 0x3F, 0);
 static struct event_constraint amd_f15_PMC53 = EVENT_CONSTRAINT(0, 0x38, 0);
 
@@ -506,12 +806,21 @@ amd_get_event_constraints_f15h(struct cpu_hw_events *cpuc, struct perf_event *ev
 			return &amd_f15_PMC3;
 		case 0x02E:
 			return &amd_f15_PMC30;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 		case 0x031:
 			if (hweight_long(hwc->config & ARCH_PERFMON_EVENTSEL_UMASK) <= 1)
 				return &amd_f15_PMC20;
 			return &emptyconstraint;
 		case 0x1C0:
 			return &amd_f15_PMC53;
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		default:
 			return &amd_f15_PMC50;
 		}
@@ -531,15 +840,32 @@ amd_get_event_constraints_f15h(struct cpu_hw_events *cpuc, struct perf_event *ev
 			return &amd_f15_PMC20;
 		}
 	case AMD_EVENT_NB:
+<<<<<<< HEAD
 		/* not yet implemented */
+=======
+		/* moved to perf_event_amd_uncore.c */
+>>>>>>> refs/remotes/origin/master
 		return &emptyconstraint;
 	default:
 		return &emptyconstraint;
 	}
 }
 
+<<<<<<< HEAD
 static __initconst const struct x86_pmu amd_pmu_f15h = {
 	.name			= "AMD Family 15h",
+=======
+static ssize_t amd_event_sysfs_show(char *page, u64 config)
+{
+	u64 event = (config & ARCH_PERFMON_EVENTSEL_EVENT) |
+		    (config & AMD64_EVENTSEL_EVENT) >> 24;
+
+	return x86_event_sysfs_show(page, config, event);
+}
+
+static __initconst const struct x86_pmu amd_pmu = {
+	.name			= "AMD",
+>>>>>>> refs/remotes/origin/master
 	.handle_irq		= x86_pmu_handle_irq,
 	.disable_all		= x86_pmu_disable_all,
 	.enable_all		= x86_pmu_enable_all,
@@ -547,28 +873,52 @@ static __initconst const struct x86_pmu amd_pmu_f15h = {
 	.disable		= x86_pmu_disable_event,
 	.hw_config		= amd_pmu_hw_config,
 	.schedule_events	= x86_schedule_events,
+<<<<<<< HEAD
 	.eventsel		= MSR_F15H_PERF_CTL,
 	.perfctr		= MSR_F15H_PERF_CTR,
 	.event_map		= amd_pmu_event_map,
 	.max_events		= ARRAY_SIZE(amd_perfmon_event_map),
+<<<<<<< HEAD
 	.num_counters		= 6,
+=======
+	.num_counters		= AMD64_NUM_COUNTERS_F15H,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.eventsel		= MSR_K7_EVNTSEL0,
+	.perfctr		= MSR_K7_PERFCTR0,
+	.addr_offset            = amd_pmu_addr_offset,
+	.event_map		= amd_pmu_event_map,
+	.max_events		= ARRAY_SIZE(amd_perfmon_event_map),
+	.num_counters		= AMD64_NUM_COUNTERS,
+>>>>>>> refs/remotes/origin/master
 	.cntval_bits		= 48,
 	.cntval_mask		= (1ULL << 48) - 1,
 	.apic			= 1,
 	/* use highest bit to detect overflow */
 	.max_period		= (1ULL << 47) - 1,
+<<<<<<< HEAD
 	.get_event_constraints	= amd_get_event_constraints_f15h,
 	/* nortbridge counters not yet implemented: */
 #if 0
 	.put_event_constraints	= amd_put_event_constraints,
 
 	.cpu_prepare		= amd_pmu_cpu_prepare,
+<<<<<<< HEAD
 	.cpu_starting		= amd_pmu_cpu_starting,
 	.cpu_dead		= amd_pmu_cpu_dead,
 #endif
 };
 
 static __init int amd_pmu_init(void)
+=======
+	.cpu_dead		= amd_pmu_cpu_dead,
+#endif
+	.cpu_starting		= amd_pmu_cpu_starting,
+	.format_attrs		= amd_format_attr,
+};
+
+__init int amd_pmu_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* Performance-monitoring supported from K7 and later: */
 	if (boot_cpu_data.x86 < 6)
@@ -598,6 +948,7 @@ static __init int amd_pmu_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 #else /* CONFIG_CPU_SUP_AMD */
 
 static int amd_pmu_init(void)
@@ -606,3 +957,104 @@ static int amd_pmu_init(void)
 }
 
 #endif
+=======
+=======
+	.get_event_constraints	= amd_get_event_constraints,
+	.put_event_constraints	= amd_put_event_constraints,
+
+	.format_attrs		= amd_format_attr,
+	.events_sysfs_show	= amd_event_sysfs_show,
+
+	.cpu_prepare		= amd_pmu_cpu_prepare,
+	.cpu_starting		= amd_pmu_cpu_starting,
+	.cpu_dead		= amd_pmu_cpu_dead,
+};
+
+static int __init amd_core_pmu_init(void)
+{
+	if (!cpu_has_perfctr_core)
+		return 0;
+
+	switch (boot_cpu_data.x86) {
+	case 0x15:
+		pr_cont("Fam15h ");
+		x86_pmu.get_event_constraints = amd_get_event_constraints_f15h;
+		break;
+
+	default:
+		pr_err("core perfctr but no constraints; unknown hardware!\n");
+		return -ENODEV;
+	}
+
+	/*
+	 * If core performance counter extensions exists, we must use
+	 * MSR_F15H_PERF_CTL/MSR_F15H_PERF_CTR msrs. See also
+	 * amd_pmu_addr_offset().
+	 */
+	x86_pmu.eventsel	= MSR_F15H_PERF_CTL;
+	x86_pmu.perfctr		= MSR_F15H_PERF_CTR;
+	x86_pmu.num_counters	= AMD64_NUM_COUNTERS_CORE;
+
+	pr_cont("core perfctr, ");
+	return 0;
+}
+
+__init int amd_pmu_init(void)
+{
+	int ret;
+
+	/* Performance-monitoring supported from K7 and later: */
+	if (boot_cpu_data.x86 < 6)
+		return -ENODEV;
+
+	x86_pmu = amd_pmu;
+
+	ret = amd_core_pmu_init();
+	if (ret)
+		return ret;
+
+	/* Events are common for all AMDs */
+	memcpy(hw_cache_event_ids, amd_hw_cache_event_ids,
+	       sizeof(hw_cache_event_ids));
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
+void amd_pmu_enable_virt(void)
+{
+	struct cpu_hw_events *cpuc = &__get_cpu_var(cpu_hw_events);
+
+	cpuc->perf_ctr_virt_mask = 0;
+
+	/* Reload all events */
+	x86_pmu_disable_all();
+	x86_pmu_enable_all(0);
+}
+EXPORT_SYMBOL_GPL(amd_pmu_enable_virt);
+
+void amd_pmu_disable_virt(void)
+{
+	struct cpu_hw_events *cpuc = &__get_cpu_var(cpu_hw_events);
+
+	/*
+	 * We only mask out the Host-only bit so that host-only counting works
+	 * when SVM is disabled. If someone sets up a guest-only counter when
+	 * SVM is disabled the Guest-only bits still gets set and the counter
+	 * will not count anything.
+	 */
+<<<<<<< HEAD
+	cpuc->perf_ctr_virt_mask = AMD_PERFMON_EVENTSEL_HOSTONLY;
+=======
+	cpuc->perf_ctr_virt_mask = AMD64_EVENTSEL_HOSTONLY;
+>>>>>>> refs/remotes/origin/master
+
+	/* Reload all events */
+	x86_pmu_disable_all();
+	x86_pmu_enable_all(0);
+}
+EXPORT_SYMBOL_GPL(amd_pmu_disable_virt);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

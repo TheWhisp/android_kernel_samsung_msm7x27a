@@ -23,6 +23,10 @@
 #include <linux/sched.h>
 
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "dmxdev.h"
 #include "dvbdev.h"
@@ -75,7 +79,11 @@ static int mantis_hif_write_wait(struct mantis_ca *ca)
 		udelay(500);
 		timeout++;
 		if (timeout > 100) {
+<<<<<<< HEAD
 			dprintk(MANTIS_ERROR, 1, "Adater(%d) Slot(0): Write operation timed out!", mantis->num);
+=======
+			dprintk(MANTIS_ERROR, 1, "Adapter(%d) Slot(0): Write operation timed out!", mantis->num);
+>>>>>>> refs/remotes/origin/cm-10.0
 			rc = -ETIMEDOUT;
 			break;
 		}

@@ -29,6 +29,14 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/byteorder.h>
 
@@ -38,6 +46,7 @@
  * Isochronous DMA context management
  */
 
+<<<<<<< HEAD
 int fw_iso_buffer_init(struct fw_iso_buffer *buffer, struct fw_card *card,
 		       int page_count, enum dma_data_direction direction)
 {
@@ -84,6 +93,75 @@ int fw_iso_buffer_init(struct fw_iso_buffer *buffer, struct fw_card *card,
 EXPORT_SYMBOL(fw_iso_buffer_init);
 
 int fw_iso_buffer_map(struct fw_iso_buffer *buffer, struct vm_area_struct *vma)
+=======
+int fw_iso_buffer_alloc(struct fw_iso_buffer *buffer, int page_count)
+{
+	int i;
+
+	buffer->page_count = 0;
+	buffer->page_count_mapped = 0;
+	buffer->pages = kmalloc(page_count * sizeof(buffer->pages[0]),
+				GFP_KERNEL);
+	if (buffer->pages == NULL)
+		return -ENOMEM;
+
+	for (i = 0; i < page_count; i++) {
+		buffer->pages[i] = alloc_page(GFP_KERNEL | GFP_DMA32 | __GFP_ZERO);
+		if (buffer->pages[i] == NULL)
+			break;
+	}
+	buffer->page_count = i;
+	if (i < page_count) {
+		fw_iso_buffer_destroy(buffer, NULL);
+		return -ENOMEM;
+	}
+
+	return 0;
+}
+
+int fw_iso_buffer_map_dma(struct fw_iso_buffer *buffer, struct fw_card *card,
+			  enum dma_data_direction direction)
+{
+	dma_addr_t address;
+	int i;
+
+	buffer->direction = direction;
+
+	for (i = 0; i < buffer->page_count; i++) {
+		address = dma_map_page(card->device, buffer->pages[i],
+				       0, PAGE_SIZE, direction);
+		if (dma_mapping_error(card->device, address))
+			break;
+
+		set_page_private(buffer->pages[i], address);
+	}
+	buffer->page_count_mapped = i;
+	if (i < buffer->page_count)
+		return -ENOMEM;
+
+	return 0;
+}
+
+int fw_iso_buffer_init(struct fw_iso_buffer *buffer, struct fw_card *card,
+		       int page_count, enum dma_data_direction direction)
+{
+	int ret;
+
+	ret = fw_iso_buffer_alloc(buffer, page_count);
+	if (ret < 0)
+		return ret;
+
+	ret = fw_iso_buffer_map_dma(buffer, card, direction);
+	if (ret < 0)
+		fw_iso_buffer_destroy(buffer, card);
+
+	return ret;
+}
+EXPORT_SYMBOL(fw_iso_buffer_init);
+
+int fw_iso_buffer_map_vma(struct fw_iso_buffer *buffer,
+			  struct vm_area_struct *vma)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long uaddr;
 	int i, err;
@@ -106,6 +184,7 @@ void fw_iso_buffer_destroy(struct fw_iso_buffer *buffer,
 	int i;
 	dma_addr_t address;
 
+<<<<<<< HEAD
 	for (i = 0; i < buffer->page_count; i++) {
 		address = page_private(buffer->pages[i]);
 		dma_unmap_page(card->device, address,
@@ -115,13 +194,31 @@ void fw_iso_buffer_destroy(struct fw_iso_buffer *buffer,
 
 	kfree(buffer->pages);
 	buffer->pages = NULL;
+=======
+	for (i = 0; i < buffer->page_count_mapped; i++) {
+		address = page_private(buffer->pages[i]);
+		dma_unmap_page(card->device, address,
+			       PAGE_SIZE, buffer->direction);
+	}
+	for (i = 0; i < buffer->page_count; i++)
+		__free_page(buffer->pages[i]);
+
+	kfree(buffer->pages);
+	buffer->pages = NULL;
+	buffer->page_count = 0;
+	buffer->page_count_mapped = 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(fw_iso_buffer_destroy);
 
 /* Convert DMA address to offset into virtually contiguous buffer. */
 size_t fw_iso_buffer_lookup(struct fw_iso_buffer *buffer, dma_addr_t completed)
 {
+<<<<<<< HEAD
 	int i;
+=======
+	size_t i;
+>>>>>>> refs/remotes/origin/master
 	dma_addr_t address;
 	ssize_t offset;
 
@@ -191,6 +288,21 @@ void fw_iso_context_queue_flush(struct fw_iso_context *ctx)
 }
 EXPORT_SYMBOL(fw_iso_context_queue_flush);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int fw_iso_context_flush_completions(struct fw_iso_context *ctx)
+{
+	return ctx->card->driver->flush_iso_completions(ctx);
+}
+EXPORT_SYMBOL(fw_iso_context_flush_completions);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int fw_iso_context_stop(struct fw_iso_context *ctx)
 {
 	return ctx->card->driver->stop_iso(ctx);

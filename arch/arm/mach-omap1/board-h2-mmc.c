@@ -11,15 +11,32 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 
 #include <linux/i2c/tps65010.h>
 
 #include <plat/mmc.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "board-h2.h"
+=======
+#include <linux/gpio.h>
+#include <linux/platform_device.h>
+#include <linux/platform_data/gpio-omap.h>
+#include <linux/i2c/tps65010.h>
+
+#include "board-h2.h"
+#include "mmc.h"
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_MMC_OMAP) || defined(CONFIG_MMC_OMAP_MODULE)
 
@@ -55,7 +72,10 @@ static struct omap_mmc_platform_data mmc1_data = {
 	.nr_slots                       = 1,
 	.init				= mmc_late_init,
 	.cleanup			= mmc_cleanup,
+<<<<<<< HEAD
 	.dma_mask			= 0xffffffff,
+=======
+>>>>>>> refs/remotes/origin/master
 	.slots[0]       = {
 		.set_power              = mmc_set_power,
 		.ocr_mask               = MMC_VDD_32_33 | MMC_VDD_33_34,

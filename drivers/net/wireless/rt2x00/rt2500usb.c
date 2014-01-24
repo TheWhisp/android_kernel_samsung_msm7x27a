@@ -39,7 +39,15 @@
 /*
  * Allow hardware encryption to be disabled.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int modparam_nohwcrypt;
+=======
+static bool modparam_nohwcrypt;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool modparam_nohwcrypt;
+>>>>>>> refs/remotes/origin/master
 module_param_named(nohwcrypt, modparam_nohwcrypt, bool, S_IRUGO);
 MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption.");
 
@@ -134,8 +142,13 @@ static int rt2500usb_regbusy_read(struct rt2x00_dev *rt2x00dev,
 		udelay(REGISTER_BUSY_DELAY);
 	}
 
+<<<<<<< HEAD
 	ERROR(rt2x00dev, "Indirect register access failed: "
 	      "offset=0x%.08x, value=0x%.08x\n", offset, *reg);
+=======
+	rt2x00_err(rt2x00dev, "Indirect register access failed: offset=0x%.08x, value=0x%.08x\n",
+		   offset, *reg);
+>>>>>>> refs/remotes/origin/master
 	*reg = ~0;
 
 	return 0;
@@ -283,7 +296,15 @@ static int rt2500usb_rfkill_poll(struct rt2x00_dev *rt2x00dev)
 	u16 reg;
 
 	rt2500usb_register_read(rt2x00dev, MAC_CSR19, &reg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return rt2x00_get_field16(reg, MAC_CSR19_BIT7);
+=======
+	return rt2x00_get_field16(reg, MAC_CSR19_VAL7);
+>>>>>>> refs/remotes/origin/master
+=======
+	return rt2x00_get_field16(reg, MAC_CSR19_BIT7);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 #ifdef CONFIG_RT2X00_LIB_LEDS
@@ -916,7 +937,11 @@ static int rt2500usb_wait_bbp_ready(struct rt2x00_dev *rt2x00dev)
 		udelay(REGISTER_BUSY_DELAY);
 	}
 
+<<<<<<< HEAD
 	ERROR(rt2x00dev, "BBP register access failed, aborting.\n");
+=======
+	rt2x00_err(rt2x00dev, "BBP register access failed, aborting\n");
+>>>>>>> refs/remotes/origin/master
 	return -EACCES;
 }
 
@@ -1069,8 +1094,13 @@ static int rt2500usb_set_device_state(struct rt2x00_dev *rt2x00dev,
 	}
 
 	if (unlikely(retval))
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Device failed to enter state %d (%d).\n",
 		      state, retval);
+=======
+		rt2x00_err(rt2x00dev, "Device failed to enter state %d (%d)\n",
+			   state, retval);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -1352,8 +1382,13 @@ static int rt2500usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 	 */
 	mac = rt2x00_eeprom_addr(rt2x00dev, EEPROM_MAC_ADDR_0);
 	if (!is_valid_ether_addr(mac)) {
+<<<<<<< HEAD
 		random_ether_addr(mac);
 		EEPROM(rt2x00dev, "MAC: %pM\n", mac);
+=======
+		eth_random_addr(mac);
+		rt2x00_eeprom_dbg(rt2x00dev, "MAC: %pM\n", mac);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_ANTENNA, &word);
@@ -1369,7 +1404,11 @@ static int rt2500usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_ANTENNA_HARDWARE_RADIO, 0);
 		rt2x00_set_field16(&word, EEPROM_ANTENNA_RF_TYPE, RF2522);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_ANTENNA, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "Antenna: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "Antenna: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC, &word);
@@ -1378,7 +1417,11 @@ static int rt2500usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_NIC_DYN_BBP_TUNE, 0);
 		rt2x00_set_field16(&word, EEPROM_NIC_CCK_TX_POWER, 0);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_NIC, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "NIC: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "NIC: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_CALIBRATE_OFFSET, &word);
@@ -1386,14 +1429,23 @@ static int rt2500usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_CALIBRATE_OFFSET_RSSI,
 				   DEFAULT_RSSI_OFFSET);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_CALIBRATE_OFFSET, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "Calibrate offset: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "Calibrate offset: 0x%04x\n",
+				  word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_BBPTUNE, &word);
 	if (word == 0xffff) {
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_THRESHOLD, 45);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_BBPTUNE, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "BBPtune: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "BBPtune: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1408,7 +1460,11 @@ static int rt2500usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_VGCUPPER, 0x40);
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_VGCLOWER, bbp);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_BBPTUNE_VGC, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "BBPtune vgc: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "BBPtune vgc: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_VGCLOWER, bbp);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_BBPTUNE_VGC, word);
@@ -1419,7 +1475,11 @@ static int rt2500usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_R17_LOW, 0x48);
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_R17_HIGH, 0x41);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_BBPTUNE_R17, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "BBPtune r17: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "BBPtune r17: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_BBPTUNE_R24, &word);
@@ -1427,7 +1487,11 @@ static int rt2500usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_R24_LOW, 0x40);
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_R24_HIGH, 0x80);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_BBPTUNE_R24, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "BBPtune r24: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "BBPtune r24: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_BBPTUNE_R25, &word);
@@ -1435,7 +1499,11 @@ static int rt2500usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_R25_LOW, 0x40);
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_R25_HIGH, 0x50);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_BBPTUNE_R25, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "BBPtune r25: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "BBPtune r25: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_BBPTUNE_R61, &word);
@@ -1443,7 +1511,11 @@ static int rt2500usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_R61_LOW, 0x60);
 		rt2x00_set_field16(&word, EEPROM_BBPTUNE_R61_HIGH, 0x6d);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_BBPTUNE_R61, word);
+<<<<<<< HEAD
 		EEPROM(rt2x00dev, "BBPtune r61: 0x%04x\n", word);
+=======
+		rt2x00_eeprom_dbg(rt2x00dev, "BBPtune r61: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -1468,7 +1540,11 @@ static int rt2500usb_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	rt2x00_set_chip(rt2x00dev, RT2570, value, reg);
 
 	if (((reg & 0xfff0) != 0) || ((reg & 0x0000000f) == 0)) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Invalid RT chipset detected.\n");
+=======
+		rt2x00_err(rt2x00dev, "Invalid RT chipset detected\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -1478,7 +1554,11 @@ static int rt2500usb_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	    !rt2x00_rf(rt2x00dev, RF2525) &&
 	    !rt2x00_rf(rt2x00dev, RF2525E) &&
 	    !rt2x00_rf(rt2x00dev, RF5222)) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Invalid RF chipset detected.\n");
+=======
+		rt2x00_err(rt2x00dev, "Invalid RF chipset detected\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -1786,7 +1866,15 @@ static int rt2500usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 	 * rfkill switch GPIO pin correctly.
 	 */
 	rt2500usb_register_read(rt2x00dev, MAC_CSR19, &reg);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rt2x00_set_field16(&reg, MAC_CSR19_BIT8, 0);
+=======
+	rt2x00_set_field16(&reg, MAC_CSR19_DIR0, 0);
+>>>>>>> refs/remotes/origin/master
+=======
+	rt2x00_set_field16(&reg, MAC_CSR19_BIT8, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	rt2500usb_register_write(rt2x00dev, MAC_CSR19, reg);
 
 	/*
@@ -1836,6 +1924,14 @@ static const struct ieee80211_ops rt2500usb_mac80211_ops = {
 	.set_antenna		= rt2x00mac_set_antenna,
 	.get_antenna		= rt2x00mac_get_antenna,
 	.get_ringparam		= rt2x00mac_get_ringparam,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.tx_frames_pending	= rt2x00mac_tx_frames_pending,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.tx_frames_pending	= rt2x00mac_tx_frames_pending,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct rt2x00lib_ops rt2500usb_rt2x00_ops = {
@@ -1865,6 +1961,7 @@ static const struct rt2x00lib_ops rt2500usb_rt2x00_ops = {
 	.config			= rt2500usb_config,
 };
 
+<<<<<<< HEAD
 static const struct data_queue_desc rt2500usb_queue_rx = {
 	.entry_num		= 32,
 	.data_size		= DATA_FRAME_SIZE,
@@ -1896,15 +1993,63 @@ static const struct data_queue_desc rt2500usb_queue_atim = {
 static const struct rt2x00_ops rt2500usb_ops = {
 	.name			= KBUILD_MODNAME,
 	.max_sta_intf		= 1,
+=======
+static void rt2500usb_queue_init(struct data_queue *queue)
+{
+	switch (queue->qid) {
+	case QID_RX:
+		queue->limit = 32;
+		queue->data_size = DATA_FRAME_SIZE;
+		queue->desc_size = RXD_DESC_SIZE;
+		queue->priv_size = sizeof(struct queue_entry_priv_usb);
+		break;
+
+	case QID_AC_VO:
+	case QID_AC_VI:
+	case QID_AC_BE:
+	case QID_AC_BK:
+		queue->limit = 32;
+		queue->data_size = DATA_FRAME_SIZE;
+		queue->desc_size = TXD_DESC_SIZE;
+		queue->priv_size = sizeof(struct queue_entry_priv_usb);
+		break;
+
+	case QID_BEACON:
+		queue->limit = 1;
+		queue->data_size = MGMT_FRAME_SIZE;
+		queue->desc_size = TXD_DESC_SIZE;
+		queue->priv_size = sizeof(struct queue_entry_priv_usb_bcn);
+		break;
+
+	case QID_ATIM:
+		queue->limit = 8;
+		queue->data_size = DATA_FRAME_SIZE;
+		queue->desc_size = TXD_DESC_SIZE;
+		queue->priv_size = sizeof(struct queue_entry_priv_usb);
+		break;
+
+	default:
+		BUG();
+		break;
+	}
+}
+
+static const struct rt2x00_ops rt2500usb_ops = {
+	.name			= KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/master
 	.max_ap_intf		= 1,
 	.eeprom_size		= EEPROM_SIZE,
 	.rf_size		= RF_SIZE,
 	.tx_queues		= NUM_TX_QUEUES,
+<<<<<<< HEAD
 	.extra_tx_headroom	= TXD_DESC_SIZE,
 	.rx			= &rt2500usb_queue_rx,
 	.tx			= &rt2500usb_queue_tx,
 	.bcn			= &rt2500usb_queue_bcn,
 	.atim			= &rt2500usb_queue_atim,
+=======
+	.queue_init		= rt2500usb_queue_init,
+>>>>>>> refs/remotes/origin/master
 	.lib			= &rt2500usb_rt2x00_ops,
 	.hw			= &rt2500usb_mac80211_ops,
 #ifdef CONFIG_RT2X00_LIB_DEBUGFS
@@ -1920,7 +2065,11 @@ static struct usb_device_id rt2500usb_device_table[] = {
 	{ USB_DEVICE(0x0b05, 0x1706) },
 	{ USB_DEVICE(0x0b05, 0x1707) },
 	/* Belkin */
+<<<<<<< HEAD
 	{ USB_DEVICE(0x050d, 0x7050) },
+=======
+	{ USB_DEVICE(0x050d, 0x7050) },	/* FCC ID: K7SF5D7050A ver. 2.x */
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(0x050d, 0x7051) },
 	/* Cisco Systems */
 	{ USB_DEVICE(0x13b1, 0x000d) },
@@ -1988,8 +2137,10 @@ static struct usb_driver rt2500usb_driver = {
 	.disconnect	= rt2x00usb_disconnect,
 	.suspend	= rt2x00usb_suspend,
 	.resume		= rt2x00usb_resume,
+<<<<<<< HEAD
 };
 
+<<<<<<< HEAD
 static int __init rt2500usb_init(void)
 {
 	return usb_register(&rt2500usb_driver);
@@ -2002,3 +2153,13 @@ static void __exit rt2500usb_exit(void)
 
 module_init(rt2500usb_init);
 module_exit(rt2500usb_exit);
+=======
+module_usb_driver(rt2500usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.reset_resume	= rt2x00usb_resume,
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(rt2500usb_driver);
+>>>>>>> refs/remotes/origin/master

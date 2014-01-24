@@ -9,7 +9,18 @@
  * 2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <libio.h>
+=======
+#include <stdlib.h>
+#ifndef __UCLIBC__
+#include <libio.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <stddef.h>
+>>>>>>> refs/remotes/origin/master
 #include <dwarf-regs.h>
 
 

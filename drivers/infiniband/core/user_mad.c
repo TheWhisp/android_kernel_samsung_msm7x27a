@@ -458,8 +458,16 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
 		goto err;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (packet->mad.hdr.id < 0 ||
 	    packet->mad.hdr.id >= IB_UMAD_MAX_AGENTS) {
+=======
+	if (packet->mad.hdr.id >= IB_UMAD_MAX_AGENTS) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (packet->mad.hdr.id >= IB_UMAD_MAX_AGENTS) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err;
 	}
@@ -703,7 +711,15 @@ static int ib_umad_unreg_agent(struct ib_umad_file *file, u32 __user *arg)
 	mutex_lock(&file->port->file_mutex);
 	mutex_lock(&file->mutex);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (id < 0 || id >= IB_UMAD_MAX_AGENTS || !__get_agent(file, id)) {
+=======
+	if (id >= IB_UMAD_MAX_AGENTS || !__get_agent(file, id)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (id >= IB_UMAD_MAX_AGENTS || !__get_agent(file, id)) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto out;
 	}
@@ -1176,7 +1192,15 @@ static void ib_umad_remove_one(struct ib_device *device)
 	kref_put(&umad_dev->ref, ib_umad_release_dev);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char *umad_devnode(struct device *dev, mode_t *mode)
+=======
+static char *umad_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *umad_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return kasprintf(GFP_KERNEL, "infiniband/%s", dev_name(dev));
 }

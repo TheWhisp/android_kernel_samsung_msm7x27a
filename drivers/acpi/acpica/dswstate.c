@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,14 +59,24 @@
 ACPI_MODULE_NAME("dswstate")
 
   /* Local prototypes */
+<<<<<<< HEAD
 static acpi_status acpi_ds_result_stack_push(struct acpi_walk_state *ws);
 static acpi_status acpi_ds_result_stack_pop(struct acpi_walk_state *ws);
+=======
+static acpi_status
+acpi_ds_result_stack_push(struct acpi_walk_state *walk_state);
+static acpi_status acpi_ds_result_stack_pop(struct acpi_walk_state *walk_state);
+>>>>>>> refs/remotes/origin/master
 
 /*******************************************************************************
  *
  * FUNCTION:    acpi_ds_result_pop
  *
+<<<<<<< HEAD
  * PARAMETERS:  Object              - Where to return the popped object
+=======
+ * PARAMETERS:  object              - Where to return the popped object
+>>>>>>> refs/remotes/origin/master
  *              walk_state          - Current Walk state
  *
  * RETURN:      Status
@@ -132,7 +150,11 @@ acpi_ds_result_pop(union acpi_operand_object **object,
  *
  * FUNCTION:    acpi_ds_result_push
  *
+<<<<<<< HEAD
  * PARAMETERS:  Object              - Where to return the popped object
+=======
+ * PARAMETERS:  object              - Where to return the popped object
+>>>>>>> refs/remotes/origin/master
  *              walk_state          - Current Walk state
  *
  * RETURN:      Status
@@ -296,7 +318,11 @@ static acpi_status acpi_ds_result_stack_pop(struct acpi_walk_state *walk_state)
  *
  * FUNCTION:    acpi_ds_obj_stack_push
  *
+<<<<<<< HEAD
  * PARAMETERS:  Object              - Object to push
+=======
+ * PARAMETERS:  object              - Object to push
+>>>>>>> refs/remotes/origin/master
  *              walk_state          - Current Walk state
  *
  * RETURN:      Status
@@ -347,7 +373,11 @@ acpi_ds_obj_stack_push(void *object, struct acpi_walk_state * walk_state)
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: Pop this walk's object stack.  Objects on the stack are NOT
+=======
+ * DESCRIPTION: Pop this walk's object stack. Objects on the stack are NOT
+>>>>>>> refs/remotes/origin/master
  *              deleted by this routine.
  *
  ******************************************************************************/
@@ -433,7 +463,11 @@ acpi_ds_obj_stack_pop_and_delete(u32 pop_count,
  *
  * FUNCTION:    acpi_ds_get_current_walk_state
  *
+<<<<<<< HEAD
  * PARAMETERS:  Thread          - Get current active state for this Thread
+=======
+ * PARAMETERS:  thread          - Get current active state for this Thread
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Pointer to the current walk state
  *
@@ -462,7 +496,11 @@ struct acpi_walk_state *acpi_ds_get_current_walk_state(struct acpi_thread_state
  * FUNCTION:    acpi_ds_push_walk_state
  *
  * PARAMETERS:  walk_state      - State to push
+<<<<<<< HEAD
  *              Thread          - Thread state object
+=======
+ *              thread          - Thread state object
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -486,12 +524,20 @@ acpi_ds_push_walk_state(struct acpi_walk_state *walk_state,
  *
  * FUNCTION:    acpi_ds_pop_walk_state
  *
+<<<<<<< HEAD
  * PARAMETERS:  Thread      - Current thread state
+=======
+ * PARAMETERS:  thread      - Current thread state
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      A walk_state object popped from the thread's stack
  *
  * DESCRIPTION: Remove and return the walkstate object that is at the head of
+<<<<<<< HEAD
  *              the walk stack for the given walk list.  NULL indicates that
+=======
+ *              the walk stack for the given walk list. NULL indicates that
+>>>>>>> refs/remotes/origin/master
  *              the list is empty.
  *
  ******************************************************************************/
@@ -525,6 +571,7 @@ struct acpi_walk_state *acpi_ds_pop_walk_state(struct acpi_thread_state *thread)
  * FUNCTION:    acpi_ds_create_walk_state
  *
  * PARAMETERS:  owner_id        - ID for object creation
+<<<<<<< HEAD
  *              Origin          - Starting point for this walk
  *              method_desc     - Method object
  *              Thread          - Current thread state
@@ -532,13 +579,31 @@ struct acpi_walk_state *acpi_ds_pop_walk_state(struct acpi_thread_state *thread)
  * RETURN:      Pointer to the new walk state.
  *
  * DESCRIPTION: Allocate and initialize a new walk state.  The current walk
+=======
+ *              origin          - Starting point for this walk
+ *              method_desc     - Method object
+ *              thread          - Current thread state
+ *
+ * RETURN:      Pointer to the new walk state.
+ *
+ * DESCRIPTION: Allocate and initialize a new walk state. The current walk
+>>>>>>> refs/remotes/origin/master
  *              state is set to this new state.
  *
  ******************************************************************************/
 
+<<<<<<< HEAD
 struct acpi_walk_state *acpi_ds_create_walk_state(acpi_owner_id owner_id, union acpi_parse_object
 						  *origin, union acpi_operand_object
 						  *method_desc, struct acpi_thread_state
+=======
+struct acpi_walk_state *acpi_ds_create_walk_state(acpi_owner_id owner_id,
+						  union acpi_parse_object
+						  *origin,
+						  union acpi_operand_object
+						  *method_desc,
+						  struct acpi_thread_state
+>>>>>>> refs/remotes/origin/master
 						  *thread)
 {
 	struct acpi_walk_state *walk_state;
@@ -578,11 +643,19 @@ struct acpi_walk_state *acpi_ds_create_walk_state(acpi_owner_id owner_id, union 
  * FUNCTION:    acpi_ds_init_aml_walk
  *
  * PARAMETERS:  walk_state      - New state to be initialized
+<<<<<<< HEAD
  *              Op              - Current parse op
  *              method_node     - Control method NS node, if any
  *              aml_start       - Start of AML
  *              aml_length      - Length of AML
  *              Info            - Method info block (params, etc.)
+=======
+ *              op              - Current parse op
+ *              method_node     - Control method NS node, if any
+ *              aml_start       - Start of AML
+ *              aml_length      - Length of AML
+ *              info            - Method info block (params, etc.)
+>>>>>>> refs/remotes/origin/master
  *              pass_number     - 1, 2, or 3
  *
  * RETURN:      Status
@@ -653,7 +726,11 @@ acpi_ds_init_aml_walk(struct acpi_walk_state *walk_state,
 		/*
 		 * Setup the current scope.
 		 * Find a Named Op that has a namespace node associated with it.
+<<<<<<< HEAD
 		 * search upwards from this Op.  Current scope is the first
+=======
+		 * search upwards from this Op. Current scope is the first
+>>>>>>> refs/remotes/origin/master
 		 * Op with a namespace node.
 		 */
 		extra_op = parser_state->start_op;
@@ -704,13 +781,21 @@ void acpi_ds_delete_walk_state(struct acpi_walk_state *walk_state)
 	ACPI_FUNCTION_TRACE_PTR(ds_delete_walk_state, walk_state);
 
 	if (!walk_state) {
+<<<<<<< HEAD
 		return;
+=======
+		return_VOID;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (walk_state->descriptor_type != ACPI_DESC_TYPE_WALK) {
 		ACPI_ERROR((AE_INFO, "%p is not a valid walk state",
 			    walk_state));
+<<<<<<< HEAD
 		return;
+=======
+		return_VOID;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* There should not be any open scopes */

@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,17 +52,41 @@
 #ifndef __ACDEBUG_H__
 #define __ACDEBUG_H__
 
+<<<<<<< HEAD
 #define ACPI_DEBUG_BUFFER_SIZE  4196
 
 struct command_info {
+=======
+#define ACPI_DEBUG_BUFFER_SIZE  0x4000	/* 16K buffer for return objects */
+
+struct acpi_db_command_info {
+>>>>>>> refs/remotes/origin/master
 	char *name;		/* Command Name */
 	u8 min_args;		/* Minimum arguments required */
 };
 
+<<<<<<< HEAD
 struct argument_info {
 	char *name;		/* Argument Name */
 };
 
+=======
+struct acpi_db_command_help {
+	u8 line_count;		/* Number of help lines */
+	char *invocation;	/* Command Invocation */
+	char *description;	/* Command Description */
+};
+
+struct acpi_db_argument_info {
+	char *name;		/* Argument Name */
+};
+
+struct acpi_db_execute_walk {
+	u32 count;
+	u32 max_count;
+};
+
+>>>>>>> refs/remotes/origin/master
 #define PARAM_LIST(pl)                  pl
 #define DBTEST_OUTPUT_LEVEL(lvl)        if (acpi_gbl_db_opt_verbose)
 #define VERBOSE_PRINT(fp)               DBTEST_OUTPUT_LEVEL(lvl) {\
@@ -77,6 +109,7 @@ acpi_db_single_step(struct acpi_walk_state *walk_state,
 /*
  * dbcmds - debug commands and output routines
  */
+<<<<<<< HEAD
 acpi_status acpi_db_disassemble_method(char *name);
 
 void acpi_db_display_table_info(char *table_arg);
@@ -111,7 +144,11 @@ acpi_status acpi_db_find_name_in_namespace(char *name_arg);
 
 void acpi_db_set_scope(char *name);
 
+<<<<<<< HEAD
 acpi_status acpi_db_sleep(char *object_arg);
+=======
+ACPI_HW_DEPENDENT_RETURN_OK(acpi_status acpi_db_sleep(char *object_arg))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void acpi_db_find_references(char *object_arg);
 
@@ -119,15 +156,111 @@ void acpi_db_display_locks(void);
 
 void acpi_db_display_resources(char *object_arg);
 
+<<<<<<< HEAD
 void acpi_db_display_gpes(void);
 
 void acpi_db_check_integrity(void);
 
 void acpi_db_generate_gpe(char *gpe_arg, char *block_arg);
+=======
+ACPI_HW_DEPENDENT_RETURN_VOID(void acpi_db_display_gpes(void))
+
+void acpi_db_check_integrity(void);
+
+ACPI_HW_DEPENDENT_RETURN_VOID(void
+			      acpi_db_generate_gpe(char *gpe_arg,
+						   char *block_arg))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void acpi_db_check_predefined_names(void);
 
 void acpi_db_batch_execute(void);
+=======
+struct acpi_namespace_node *acpi_db_convert_to_node(char *in_string);
+
+void acpi_db_display_table_info(char *table_arg);
+
+void acpi_db_display_template(char *buffer_arg);
+
+void acpi_db_unload_acpi_table(char *name);
+
+void acpi_db_send_notify(char *name, u32 value);
+
+void acpi_db_display_interfaces(char *action_arg, char *interface_name_arg);
+
+acpi_status acpi_db_sleep(char *object_arg);
+
+void acpi_db_display_locks(void);
+
+void acpi_db_display_resources(char *object_arg);
+
+ACPI_HW_DEPENDENT_RETURN_VOID(void acpi_db_display_gpes(void))
+
+void acpi_db_display_handlers(void);
+
+ACPI_HW_DEPENDENT_RETURN_VOID(void
+			      acpi_db_generate_gpe(char *gpe_arg,
+						   char *block_arg))
+
+ACPI_HW_DEPENDENT_RETURN_VOID(void acpi_db_generate_sci(void))
+
+/*
+ * dbconvert - miscellaneous conversion routines
+ */
+acpi_status acpi_db_hex_char_to_value(int hex_char, u8 *return_value);
+
+acpi_status acpi_db_convert_to_package(char *string, union acpi_object *object);
+
+acpi_status
+acpi_db_convert_to_object(acpi_object_type type,
+			  char *string, union acpi_object *object);
+
+u8 *acpi_db_encode_pld_buffer(struct acpi_pld_info *pld_info);
+
+void acpi_db_dump_pld_buffer(union acpi_object *obj_desc);
+
+/*
+ * dbmethod - control method commands
+ */
+void
+acpi_db_set_method_breakpoint(char *location,
+			      struct acpi_walk_state *walk_state,
+			      union acpi_parse_object *op);
+
+void acpi_db_set_method_call_breakpoint(union acpi_parse_object *op);
+
+void acpi_db_set_method_data(char *type_arg, char *index_arg, char *value_arg);
+
+acpi_status acpi_db_disassemble_method(char *name);
+
+void acpi_db_disassemble_aml(char *statements, union acpi_parse_object *op);
+
+void acpi_db_batch_execute(char *count_arg);
+
+/*
+ * dbnames - namespace commands
+ */
+void acpi_db_set_scope(char *name);
+
+void acpi_db_dump_namespace(char *start_arg, char *depth_arg);
+
+void acpi_db_dump_namespace_paths(void);
+
+void acpi_db_dump_namespace_by_owner(char *owner_arg, char *depth_arg);
+
+acpi_status acpi_db_find_name_in_namespace(char *name_arg);
+
+void acpi_db_check_predefined_names(void);
+
+acpi_status
+acpi_db_display_objects(char *obj_type_arg, char *display_count_arg);
+
+void acpi_db_check_integrity(void);
+
+void acpi_db_find_references(char *object_arg);
+
+void acpi_db_get_bus_info(void);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * dbdisply - debug display commands
@@ -159,12 +292,22 @@ acpi_db_display_argument_object(union acpi_operand_object *obj_desc,
 /*
  * dbexec - debugger control method execution
  */
+<<<<<<< HEAD
 void acpi_db_execute(char *name, char **args, u32 flags);
+=======
+void
+acpi_db_execute(char *name, char **args, acpi_object_type * types, u32 flags);
+>>>>>>> refs/remotes/origin/master
 
 void
 acpi_db_create_execution_threads(char *num_threads_arg,
 				 char *num_loops_arg, char *method_name_arg);
 
+<<<<<<< HEAD
+=======
+void acpi_db_delete_objects(u32 count, union acpi_object *objects);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef ACPI_DBG_TRACK_ALLOCATIONS
 u32 acpi_db_get_cache_info(struct acpi_memory_list *cache);
 #endif
@@ -173,7 +316,12 @@ u32 acpi_db_get_cache_info(struct acpi_memory_list *cache);
  * dbfileio - Debugger file I/O commands
  */
 acpi_object_type
+<<<<<<< HEAD
 acpi_db_match_argument(char *user_argument, struct argument_info *arguments);
+=======
+acpi_db_match_argument(char *user_argument,
+		       struct acpi_db_argument_info *arguments);
+>>>>>>> refs/remotes/origin/master
 
 void acpi_db_close_debug_file(void);
 
@@ -196,6 +344,11 @@ void acpi_db_display_history(void);
 
 char *acpi_db_get_from_history(char *command_num_arg);
 
+<<<<<<< HEAD
+=======
+char *acpi_db_get_history_by_index(u32 commandd_num);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * dbinput - user front-end to the AML debugger
  */
@@ -206,6 +359,14 @@ acpi_db_command_dispatch(char *input_buffer,
 
 void ACPI_SYSTEM_XFACE acpi_db_execute_thread(void *context);
 
+<<<<<<< HEAD
+=======
+acpi_status acpi_db_user_commands(char prompt, union acpi_parse_object *op);
+
+char *acpi_db_get_next_token(char *string,
+			     char **next, acpi_object_type * return_type);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * dbstats - Generation and display of ACPI table statistics
  */

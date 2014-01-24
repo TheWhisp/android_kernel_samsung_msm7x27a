@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Chip specific defines for DM646x SoC
  *
@@ -92,3 +93,6 @@ void dm646x_setup_vpif(struct vpif_display_config *,
 		       struct vpif_capture_config *);
 
 #endif /* __ASM_ARCH_DM646X_H */
+=======
+/* empty, remove once unused */
+>>>>>>> refs/remotes/origin/cm-10.0

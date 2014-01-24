@@ -1,10 +1,19 @@
 #ifndef __COW_SYS_H__
 #define __COW_SYS_H__
 
+<<<<<<< HEAD
 #include "kern_util.h"
 #include "os.h"
+<<<<<<< HEAD
 #include "user.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "um_malloc.h"
+=======
+#include <kern_util.h>
+#include <os.h>
+#include <um_malloc.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline void *cow_malloc(int size)
 {

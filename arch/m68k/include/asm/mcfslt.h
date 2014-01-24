@@ -13,6 +13,7 @@
 /****************************************************************************/
 
 /*
+<<<<<<< HEAD
  *	Get address specific defines for the 547x.
  */
 #define MCFSLT_TIMER0		0x900	/* Base address of TIMER0 */
@@ -20,6 +21,8 @@
 
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  *	Define the SLT timer register set addresses.
  */
 #define MCFSLT_STCNT		0x00	/* Terminal count */

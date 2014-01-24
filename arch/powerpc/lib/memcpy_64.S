@@ -11,8 +11,17 @@
 
 	.align	7
 _GLOBAL(memcpy)
+<<<<<<< HEAD
 	std	r3,48(r1)	/* save destination pointer for return value */
 	PPC_MTOCRF	0x01,r5
+=======
+BEGIN_FTR_SECTION
+	std	r3,48(r1)	/* save destination pointer for return value */
+FTR_SECTION_ELSE
+	b	memcpy_power7
+ALT_FTR_SECTION_END_IFCLR(CPU_FTR_VMX_COPY)
+	PPC_MTOCRF(0x01,r5)
+>>>>>>> refs/remotes/origin/master
 	cmpldi	cr1,r5,16
 	neg	r6,r3		# LS 3 bits = # bytes to 8-byte dest bdry
 	andi.	r6,r6,7
@@ -154,7 +163,11 @@ END_FTR_SECTION_IFCLR(CPU_FTR_UNALIGNED_LD_STD)
 	blr
 
 .Ldst_unaligned:
+<<<<<<< HEAD
 	PPC_MTOCRF	0x01,r6		# put #bytes to 8B bdry into cr7
+=======
+	PPC_MTOCRF(0x01,r6)		# put #bytes to 8B bdry into cr7
+>>>>>>> refs/remotes/origin/master
 	subf	r5,r6,r5
 	li	r7,0
 	cmpldi	cr1,r5,16
@@ -169,7 +182,11 @@ END_FTR_SECTION_IFCLR(CPU_FTR_UNALIGNED_LD_STD)
 2:	bf	cr7*4+1,3f
 	lwzx	r0,r7,r4
 	stwx	r0,r7,r3
+<<<<<<< HEAD
 3:	PPC_MTOCRF	0x01,r5
+=======
+3:	PPC_MTOCRF(0x01,r5)
+>>>>>>> refs/remotes/origin/master
 	add	r4,r6,r4
 	add	r3,r6,r3
 	b	.Ldst_aligned

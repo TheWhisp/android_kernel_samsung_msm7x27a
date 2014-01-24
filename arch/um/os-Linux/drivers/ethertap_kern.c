@@ -9,7 +9,11 @@
 #include <linux/init.h>
 #include <linux/netdevice.h>
 #include "etap.h"
+<<<<<<< HEAD
 #include "net_kern.h"
+=======
+#include <net_kern.h>
+>>>>>>> refs/remotes/origin/master
 
 struct ethertap_init {
 	char *dev_name;

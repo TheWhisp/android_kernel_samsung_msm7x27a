@@ -30,14 +30,34 @@ enum unwind_reason_code {
 };
 
 struct unwind_idx {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long addr;
+=======
+	unsigned long addr_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long addr_offset;
+>>>>>>> refs/remotes/origin/master
 	unsigned long insn;
 };
 
 struct unwind_table {
 	struct list_head list;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct unwind_idx *start;
 	struct unwind_idx *stop;
+=======
+	const struct unwind_idx *start;
+	const struct unwind_idx *origin;
+	const struct unwind_idx *stop;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct unwind_idx *start;
+	const struct unwind_idx *origin;
+	const struct unwind_idx *stop;
+>>>>>>> refs/remotes/origin/master
 	unsigned long begin_addr;
 	unsigned long end_addr;
 };
@@ -49,6 +69,8 @@ extern struct unwind_table *unwind_table_add(unsigned long start,
 extern void unwind_table_del(struct unwind_table *tab);
 extern void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARM_UNWIND
 extern int __init unwind_init(void);
 #else
@@ -58,6 +80,10 @@ static inline int __init unwind_init(void)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* !__ASSEMBLY__ */
 
 #ifdef CONFIG_ARM_UNWIND

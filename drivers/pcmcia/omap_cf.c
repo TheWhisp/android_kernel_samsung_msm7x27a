@@ -24,8 +24,13 @@
 #include <asm/io.h>
 #include <asm/sizes.h>
 
+<<<<<<< HEAD
 #include <plat/mux.h>
 #include <plat/tc.h>
+=======
+#include <mach/mux.h>
+#include <mach/tc.h>
+>>>>>>> refs/remotes/origin/master
 
 
 /* NOTE:  don't expect this to support many I/O cards.  The 16xx chips have

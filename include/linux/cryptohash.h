@@ -3,7 +3,15 @@
 
 #define SHA_DIGEST_WORDS 5
 #define SHA_MESSAGE_BYTES (512 /*bits*/ / 8)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SHA_WORKSPACE_WORDS 80
+=======
+#define SHA_WORKSPACE_WORDS 16
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SHA_WORKSPACE_WORDS 16
+>>>>>>> refs/remotes/origin/master
 
 void sha_init(__u32 *buf);
 void sha_transform(__u32 *digest, const char *data, __u32 *W);

@@ -1,6 +1,7 @@
 #ifndef __ASM_SH73A0_H__
 #define __ASM_SH73A0_H__
 
+<<<<<<< HEAD
 /* Pin Function Controller:
  * GPIO_FN_xx - GPIO used to select pin function and MSEL switch
  * GPIO_PORTxx - GPIO mapped to real I/O pin on CPU
@@ -451,18 +452,52 @@ enum {
 	GPIO_FN_KEYIN5_PU,
 	GPIO_FN_KEYIN6_PU,
 	GPIO_FN_KEYIN7_PU,
+<<<<<<< HEAD
+=======
+	GPIO_FN_SDHICD0_PU,
+	GPIO_FN_SDHID0_0_PU,
+	GPIO_FN_SDHID0_1_PU,
+	GPIO_FN_SDHID0_2_PU,
+	GPIO_FN_SDHID0_3_PU,
+	GPIO_FN_SDHICMD0_PU,
+	GPIO_FN_SDHIWP0_PU,
+>>>>>>> refs/remotes/origin/cm-10.0
 	GPIO_FN_SDHID1_0_PU,
 	GPIO_FN_SDHID1_1_PU,
 	GPIO_FN_SDHID1_2_PU,
 	GPIO_FN_SDHID1_3_PU,
 	GPIO_FN_SDHICMD1_PU,
+<<<<<<< HEAD
 	GPIO_FN_MMCCMD0_PU,
 	GPIO_FN_MMCCMD1_PU,
+=======
+	GPIO_FN_SDHID2_0_PU,
+	GPIO_FN_SDHID2_1_PU,
+	GPIO_FN_SDHID2_2_PU,
+	GPIO_FN_SDHID2_3_PU,
+	GPIO_FN_SDHICMD2_PU,
+	GPIO_FN_MMCCMD0_PU,
+	GPIO_FN_MMCCMD1_PU,
+	GPIO_FN_MMCD0_0_PU,
+	GPIO_FN_MMCD0_1_PU,
+	GPIO_FN_MMCD0_2_PU,
+	GPIO_FN_MMCD0_3_PU,
+	GPIO_FN_MMCD0_4_PU,
+	GPIO_FN_MMCD0_5_PU,
+	GPIO_FN_MMCD0_6_PU,
+	GPIO_FN_MMCD0_7_PU,
+>>>>>>> refs/remotes/origin/cm-10.0
 	GPIO_FN_FSIACK_PU,
 	GPIO_FN_FSIAILR_PU,
 	GPIO_FN_FSIAIBT_PU,
 	GPIO_FN_FSIAISLD_PU,
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* DMA slave IDs */
 enum {
 	SHDMA_SLAVE_INVALID,
@@ -492,6 +527,74 @@ enum {
 	SHDMA_SLAVE_SDHI2_RX,
 	SHDMA_SLAVE_MMCIF_TX,
 	SHDMA_SLAVE_MMCIF_RX,
+<<<<<<< HEAD
 };
 
+<<<<<<< HEAD
+=======
+/* PINT interrupts are located at Linux IRQ 800 and up */
+#define SH73A0_PINT0_IRQ(irq) ((irq) + 800)
+#define SH73A0_PINT1_IRQ(irq) ((irq) + 832)
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SHDMA_SLAVE_FSI2A_TX,
+	SHDMA_SLAVE_FSI2A_RX,
+	SHDMA_SLAVE_FSI2B_TX,
+	SHDMA_SLAVE_FSI2B_RX,
+	SHDMA_SLAVE_FSI2C_TX,
+	SHDMA_SLAVE_FSI2C_RX,
+	SHDMA_SLAVE_FSI2D_RX,
+};
+
+/*
+ *		SH73A0 IRQ LOCATION TABLE
+ *
+ * 416	-----------------------------------------
+ *		IRQ0-IRQ15
+ * 431	-----------------------------------------
+ * ...
+ * 448	-----------------------------------------
+ *		sh73a0-intcs
+ *		sh73a0-intca-irq-pins
+ * 680	-----------------------------------------
+ * ...
+ * 700	-----------------------------------------
+ *		sh73a0-pint0
+ * 731	-----------------------------------------
+ * 732	-----------------------------------------
+ *		sh73a0-pint1
+ * 739	-----------------------------------------
+ * ...
+ * 800	-----------------------------------------
+ *		IRQ16-IRQ31
+ * 815	-----------------------------------------
+ * ...
+ * 928	-----------------------------------------
+ *		sh73a0-intca-irq-pins
+ * 943	-----------------------------------------
+ */
+
+/* PINT interrupts are located at Linux IRQ 700 and up */
+#define SH73A0_PINT0_IRQ(irq) ((irq) + 700)
+#define SH73A0_PINT1_IRQ(irq) ((irq) + 732)
+
+extern void sh73a0_init_delay(void);
+extern void sh73a0_init_irq(void);
+extern void sh73a0_init_irq_dt(void);
+extern void sh73a0_map_io(void);
+extern void sh73a0_earlytimer_init(void);
+extern void sh73a0_add_early_devices(void);
+extern void sh73a0_add_standard_devices(void);
+extern void sh73a0_add_standard_devices_dt(void);
+extern void sh73a0_clock_init(void);
+extern void sh73a0_pinmux_init(void);
+extern void sh73a0_pm_init(void);
+extern struct clk sh73a0_extal1_clk;
+extern struct clk sh73a0_extal2_clk;
+extern struct clk sh73a0_extcki_clk;
+extern struct clk sh73a0_extalr_clk;
+extern struct smp_operations sh73a0_smp_ops;
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_SH73A0_H__ */

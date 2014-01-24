@@ -34,7 +34,13 @@
 
 #include <asm/cacheflush.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/stacktrace.h>
 
 #include "setup.h"
@@ -46,6 +52,7 @@ static const char * const processor_modes[] = {
 	"UK18", "UK19", "UK1A", "EXTN", "UK1C", "UK1D", "UK1E", "SUSR"
 };
 
+<<<<<<< HEAD
 /*
  * The idle thread, has rather strange semantics for calling pm_idle,
  * but this is what x86 does and we need to do the same, so that
@@ -55,7 +62,12 @@ void cpu_idle(void)
 {
 	/* endless idle loop with no priority at all */
 	while (1) {
+<<<<<<< HEAD
 		tick_nohz_stop_sched_tick(1);
+=======
+		tick_nohz_idle_enter();
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-10.0
 		while (!need_resched()) {
 			local_irq_disable();
 			stop_critical_timings();
@@ -63,7 +75,12 @@ void cpu_idle(void)
 			local_irq_enable();
 			start_critical_timings();
 		}
+<<<<<<< HEAD
 		tick_nohz_restart_sched_tick();
+=======
+		rcu_idle_exit();
+		tick_nohz_idle_exit();
+>>>>>>> refs/remotes/origin/cm-10.0
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
@@ -80,6 +97,14 @@ int __init reboot_setup(char *str)
 
 __setup("reboot=", reboot_setup);
 
+=======
+void arch_cpu_idle(void)
+{
+	cpu_do_idle();
+	local_irq_enable();
+}
+
+>>>>>>> refs/remotes/origin/master
 void machine_halt(void)
 {
 	gpio_set_value(GPO_SOFT_OFF, 0);
@@ -107,7 +132,11 @@ void machine_restart(char *cmd)
 	 * we may need it to insert some 1:1 mappings so that
 	 * soft boot works.
 	 */
+<<<<<<< HEAD
 	setup_mm_for_reboot(reboot_mode);
+=======
+	setup_mm_for_reboot();
+>>>>>>> refs/remotes/origin/master
 
 	/* Clean and invalidate caches */
 	flush_cache_all();
@@ -121,7 +150,11 @@ void machine_restart(char *cmd)
 	/*
 	 * Now handle reboot code.
 	 */
+<<<<<<< HEAD
 	if (reboot_mode == 's') {
+=======
+	if (reboot_mode == REBOOT_SOFT) {
+>>>>>>> refs/remotes/origin/master
 		/* Jump into ROM at address 0xffff0000 */
 		cpu_reset(VECTORS_BASE);
 	} else {
@@ -163,11 +196,15 @@ void __show_regs(struct pt_regs *regs)
 	unsigned long flags;
 	char buf[64];
 
+<<<<<<< HEAD
 	printk(KERN_DEFAULT "CPU: %d    %s  (%s %.*s)\n",
 		raw_smp_processor_id(), print_tainted(),
 		init_utsname()->release,
 		(int)strcspn(init_utsname()->version, " "),
 		init_utsname()->version);
+=======
+	show_regs_print_info(KERN_DEFAULT);
+>>>>>>> refs/remotes/origin/master
 	print_symbol("PC is at %s\n", instruction_pointer(regs));
 	print_symbol("LR is at %s\n", regs->UCreg_lr);
 	printk(KERN_DEFAULT "pc : [<%08lx>]    lr : [<%08lx>]    psr: %08lx\n"
@@ -257,14 +294,23 @@ void release_thread(struct task_struct *dead_task)
 }
 
 asmlinkage void ret_from_fork(void) __asm__("ret_from_fork");
+<<<<<<< HEAD
 
 int
 copy_thread(unsigned long clone_flags, unsigned long stack_start,
 	    unsigned long stk_sz, struct task_struct *p, struct pt_regs *regs)
+=======
+asmlinkage void ret_from_kernel_thread(void) __asm__("ret_from_kernel_thread");
+
+int
+copy_thread(unsigned long clone_flags, unsigned long stack_start,
+	    unsigned long stk_sz, struct task_struct *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct thread_info *thread = task_thread_info(p);
 	struct pt_regs *childregs = task_pt_regs(p);
 
+<<<<<<< HEAD
 	*childregs = *regs;
 	childregs->UCreg_00 = 0;
 	childregs->UCreg_sp = stack_start;
@@ -276,6 +322,25 @@ copy_thread(unsigned long clone_flags, unsigned long stack_start,
 	if (clone_flags & CLONE_SETTLS)
 		childregs->UCreg_16 = regs->UCreg_03;
 
+=======
+	memset(&thread->cpu_context, 0, sizeof(struct cpu_context_save));
+	thread->cpu_context.sp = (unsigned long)childregs;
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		thread->cpu_context.pc = (unsigned long)ret_from_kernel_thread;
+		thread->cpu_context.r4 = stack_start;
+		thread->cpu_context.r5 = stk_sz;
+		memset(childregs, 0, sizeof(struct pt_regs));
+	} else {
+		thread->cpu_context.pc = (unsigned long)ret_from_fork;
+		*childregs = *current_pt_regs();
+		childregs->UCreg_00 = 0;
+		if (stack_start)
+			childregs->UCreg_sp = stack_start;
+
+		if (clone_flags & CLONE_SETTLS)
+			childregs->UCreg_16 = childregs->UCreg_03;
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -304,6 +369,7 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp)
 }
 EXPORT_SYMBOL(dump_fpu);
 
+<<<<<<< HEAD
 /*
  * Shuffle the argument into the correct register before calling the
  * thread function.  r1 is the thread argument, r2 is the pointer to
@@ -340,6 +406,8 @@ pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 }
 EXPORT_SYMBOL(kernel_thread);
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long get_wchan(struct task_struct *p)
 {
 	struct stackframe frame;
@@ -379,7 +447,15 @@ int vectors_user_mapping(void)
 	return install_special_mapping(mm, 0xffff0000, PAGE_SIZE,
 				       VM_READ | VM_EXEC |
 				       VM_MAYREAD | VM_MAYEXEC |
+<<<<<<< HEAD
+<<<<<<< HEAD
 				       VM_ALWAYSDUMP | VM_RESERVED,
+=======
+				       VM_RESERVED,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       VM_DONTEXPAND | VM_DONTDUMP,
+>>>>>>> refs/remotes/origin/master
 				       NULL);
 }
 

@@ -24,8 +24,18 @@
  * bit 1 = enable hfc hardware acceleration for all channels
  *
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DSP_OPT_ULAW		(1<<0)
 #define DSP_OPT_NOHARDWARE	(1<<1)
+=======
+#define DSP_OPT_ULAW		(1 << 0)
+#define DSP_OPT_NOHARDWARE	(1 << 1)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DSP_OPT_ULAW		(1 << 0)
+#define DSP_OPT_NOHARDWARE	(1 << 1)
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/timer.h>
 #include <linux/workqueue.h>
@@ -76,7 +86,13 @@ extern u8 dsp_silence;
 #define MAX_SECONDS_JITTER_CHECK 5
 
 extern struct timer_list dsp_spl_tl;
+<<<<<<< HEAD
 extern u32 dsp_spl_jiffies;
+=======
+
+/* the datatype need to match jiffies datatype */
+extern unsigned long dsp_spl_jiffies;
+>>>>>>> refs/remotes/origin/master
 
 /* the structure of conferences:
  *
@@ -97,12 +113,27 @@ struct dsp_conf_member {
 struct dsp_conf {
 	struct list_head	list;
 	u32			id;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				/* all cmx stacks with the same ID are
 				 connected */
 	struct list_head	mlist;
 	int			software; /* conf is processed by software */
 	int			hardware; /* conf is processed by hardware */
 				/* note: if both unset, has only one member */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* all cmx stacks with the same ID are
+	   connected */
+	struct list_head	mlist;
+	int			software; /* conf is processed by software */
+	int			hardware; /* conf is processed by hardware */
+	/* note: if both unset, has only one member */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -122,7 +153,15 @@ struct dsp_dtmf {
 	int		hardware; /* dtmf uses hardware decoding */
 	int		size; /* number of bytes in buffer */
 	signed short	buffer[DSP_DTMF_NPOINTS];
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* buffers one full dtmf frame */
+=======
+	/* buffers one full dtmf frame */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* buffers one full dtmf frame */
+>>>>>>> refs/remotes/origin/master
 	u8		lastwhat, lastdigit;
 	int		count;
 	u8		digits[16]; /* dtmf result */
@@ -189,7 +228,15 @@ struct dsp {
 	u32		conf_id;
 	struct dsp_conf	*conf;
 	struct dsp_conf_member
+<<<<<<< HEAD
+<<<<<<< HEAD
 			*member;
+=======
+	*member;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*member;
+>>>>>>> refs/remotes/origin/master
 
 	/* buffer stuff */
 	int		rx_W; /* current write pos for data without timestamp */
@@ -203,7 +250,15 @@ struct dsp {
 	u8		rx_buff[CMX_BUFF_SIZE];
 	int		last_tx; /* if set, we transmitted last poll interval */
 	int		cmx_delay; /* initial delay of buffers,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				or 0 for dynamic jitter buffer */
+=======
+				      or 0 for dynamic jitter buffer */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      or 0 for dynamic jitter buffer */
+>>>>>>> refs/remotes/origin/master
 	int		tx_dejitter; /* if set, dejitter tx buffer */
 	int		tx_data; /* enables tx-data of CMX to upper layer */
 
@@ -231,7 +286,15 @@ struct dsp {
 	int		bf_sync;
 
 	struct dsp_pipeline
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pipeline;
+=======
+	pipeline;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pipeline;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* functions */
@@ -253,7 +316,15 @@ extern int dsp_cmx_del_conf(struct dsp_conf *conf);
 extern void dsp_dtmf_goertzel_init(struct dsp *dsp);
 extern void dsp_dtmf_hardware(struct dsp *dsp);
 extern u8 *dsp_dtmf_goertzel_decode(struct dsp *dsp, u8 *data, int len,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int fmt);
+=======
+				    int fmt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    int fmt);
+>>>>>>> refs/remotes/origin/master
 
 extern int dsp_tone(struct dsp *dsp, int tone);
 extern void dsp_tone_copy(struct dsp *dsp, u8 *data, int len);
@@ -270,7 +341,19 @@ extern int  dsp_pipeline_init(struct dsp_pipeline *pipeline);
 extern void dsp_pipeline_destroy(struct dsp_pipeline *pipeline);
 extern int  dsp_pipeline_build(struct dsp_pipeline *pipeline, const char *cfg);
 extern void dsp_pipeline_process_tx(struct dsp_pipeline *pipeline, u8 *data,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int len);
 extern void dsp_pipeline_process_rx(struct dsp_pipeline *pipeline, u8 *data,
 		int len, unsigned int txlen);
 
+=======
+				    int len);
+extern void dsp_pipeline_process_rx(struct dsp_pipeline *pipeline, u8 *data,
+				    int len, unsigned int txlen);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    int len);
+extern void dsp_pipeline_process_rx(struct dsp_pipeline *pipeline, u8 *data,
+				    int len, unsigned int txlen);
+>>>>>>> refs/remotes/origin/master

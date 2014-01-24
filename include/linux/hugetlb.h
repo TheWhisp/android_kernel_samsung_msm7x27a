@@ -4,9 +4,17 @@
 #include <linux/mm_types.h>
 #include <linux/fs.h>
 #include <linux/hugetlb_inline.h>
+<<<<<<< HEAD
 
 struct ctl_table;
 struct user_struct;
+=======
+#include <linux/cgroup.h>
+
+struct ctl_table;
+struct user_struct;
+struct mmu_gather;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HUGETLB_PAGE
 
@@ -14,6 +22,32 @@ struct user_struct;
 #include <linux/shm.h>
 #include <asm/tlbflush.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct hugepage_subpool {
+	spinlock_t lock;
+	long count;
+	long max_hpages, used_hpages;
+};
+
+<<<<<<< HEAD
+struct hugepage_subpool *hugepage_new_subpool(long nr_blocks);
+void hugepage_put_subpool(struct hugepage_subpool *spool);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern spinlock_t hugetlb_lock;
+extern int hugetlb_max_hstate __read_mostly;
+#define for_each_hstate(h) \
+	for ((h) = hstates; (h) < &hstates[hugetlb_max_hstate]; (h)++)
+
+struct hugepage_subpool *hugepage_new_subpool(long nr_blocks);
+void hugepage_put_subpool(struct hugepage_subpool *spool);
+
+>>>>>>> refs/remotes/origin/master
 int PageHuge(struct page *page);
 
 void reset_vma_resv_huge_pages(struct vm_area_struct *vma);
@@ -27,6 +61,7 @@ int hugetlb_mempolicy_sysctl_handler(struct ctl_table *, int,
 #endif
 
 int copy_hugetlb_page_range(struct mm_struct *, struct mm_struct *, struct vm_area_struct *);
+<<<<<<< HEAD
 int follow_hugetlb_page(struct mm_struct *, struct vm_area_struct *,
 			struct page **, struct vm_area_struct **,
 			unsigned long *, int *, int, unsigned int flags);
@@ -37,6 +72,23 @@ void __unmap_hugepage_range(struct vm_area_struct *,
 int hugetlb_prefault(struct address_space *, struct vm_area_struct *);
 void hugetlb_report_meminfo(struct seq_file *);
 int hugetlb_report_node_meminfo(int, char *);
+=======
+long follow_hugetlb_page(struct mm_struct *, struct vm_area_struct *,
+			 struct page **, struct vm_area_struct **,
+			 unsigned long *, unsigned long *, long, unsigned int);
+void unmap_hugepage_range(struct vm_area_struct *,
+			  unsigned long, unsigned long, struct page *);
+void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+			  struct vm_area_struct *vma,
+			  unsigned long start, unsigned long end,
+			  struct page *ref_page);
+void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+				unsigned long start, unsigned long end,
+				struct page *ref_page);
+void hugetlb_report_meminfo(struct seq_file *);
+int hugetlb_report_node_meminfo(int, char *);
+void hugetlb_show_meminfo(void);
+>>>>>>> refs/remotes/origin/master
 unsigned long hugetlb_total_pages(void);
 int hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 			unsigned long address, unsigned int flags);
@@ -45,7 +97,17 @@ int hugetlb_reserve_pages(struct inode *inode, long from, long to,
 						vm_flags_t vm_flags);
 void hugetlb_unreserve_pages(struct inode *inode, long offset, long freed);
 int dequeue_hwpoisoned_huge_page(struct page *page);
+<<<<<<< HEAD
 void copy_huge_page(struct page *dst, struct page *src);
+=======
+bool isolate_huge_page(struct page *page, struct list_head *list);
+void putback_active_hugepage(struct page *page);
+bool is_hugepage_active(struct page *page);
+
+#ifdef CONFIG_ARCH_WANT_HUGE_PMD_SHARE
+pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned long hugepages_treat_as_movable;
 extern const unsigned long hugetlb_zero, hugetlb_infinity;
@@ -66,7 +128,11 @@ struct page *follow_huge_pud(struct mm_struct *mm, unsigned long address,
 				pud_t *pud, int write);
 int pmd_huge(pmd_t pmd);
 int pud_huge(pud_t pmd);
+<<<<<<< HEAD
 void hugetlb_change_protection(struct vm_area_struct *vma,
+=======
+unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+>>>>>>> refs/remotes/origin/master
 		unsigned long address, unsigned long end, pgprot_t newprot);
 
 #else /* !CONFIG_HUGETLB_PAGE */
@@ -88,12 +154,21 @@ static inline unsigned long hugetlb_total_pages(void)
 #define follow_hugetlb_page(m,v,p,vs,a,b,i,w)	({ BUG(); 0; })
 #define follow_huge_addr(mm, addr, write)	ERR_PTR(-EINVAL)
 #define copy_hugetlb_page_range(src, dst, vma)	({ BUG(); 0; })
+<<<<<<< HEAD
 #define hugetlb_prefault(mapping, vma)		({ BUG(); 0; })
 #define unmap_hugepage_range(vma, start, end, page)	BUG()
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void hugetlb_report_meminfo(struct seq_file *m)
 {
 }
 #define hugetlb_report_node_meminfo(n, buf)	0
+<<<<<<< HEAD
+=======
+static inline void hugetlb_show_meminfo(void)
+{
+}
+>>>>>>> refs/remotes/origin/master
 #define follow_huge_pmd(mm, addr, pmd, write)	NULL
 #define follow_huge_pud(mm, addr, pud, write)	NULL
 #define prepare_hugepage_range(file, addr, len)	(-EINVAL)
@@ -103,6 +178,7 @@ static inline void hugetlb_report_meminfo(struct seq_file *m)
 #define hugetlb_free_pgd_range(tlb, addr, end, floor, ceiling) ({BUG(); 0; })
 #define hugetlb_fault(mm, vma, addr, flags)	({ BUG(); 0; })
 #define huge_pte_offset(mm, address)	0
+<<<<<<< HEAD
 #define dequeue_hwpoisoned_huge_page(page)	0
 static inline void copy_huge_page(struct page *dst, struct page *src)
 {
@@ -110,11 +186,48 @@ static inline void copy_huge_page(struct page *dst, struct page *src)
 
 #define hugetlb_change_protection(vma, address, end, newprot)
 
+<<<<<<< HEAD
 #ifndef HPAGE_MASK
 #define HPAGE_MASK	PAGE_MASK		/* Keep the compiler happy */
 #define HPAGE_SIZE	PAGE_SIZE
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int dequeue_hwpoisoned_huge_page(struct page *page)
+{
+	return 0;
+}
+
+static inline bool isolate_huge_page(struct page *page, struct list_head *list)
+{
+	return false;
+}
+#define putback_active_hugepage(p)	do {} while (0)
+#define is_hugepage_active(x)	false
+
+static inline unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+		unsigned long address, unsigned long end, pgprot_t newprot)
+{
+	return 0;
+}
+
+static inline void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+			struct vm_area_struct *vma, unsigned long start,
+			unsigned long end, struct page *ref_page)
+{
+	BUG();
+}
+
+static inline void __unmap_hugepage_range(struct mmu_gather *tlb,
+			struct vm_area_struct *vma, unsigned long start,
+			unsigned long end, struct page *ref_page)
+{
+	BUG();
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* !CONFIG_HUGETLB_PAGE */
 
 #define HUGETLB_ANON_FILE "anon_hugepage"
@@ -133,6 +246,8 @@ enum {
 };
 
 #ifdef CONFIG_HUGETLBFS
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct hugetlbfs_config {
 	uid_t   uid;
 	gid_t   gid;
@@ -145,10 +260,18 @@ struct hugetlbfs_config {
 struct hugetlbfs_sb_info {
 	long	max_blocks;   /* blocks allowed */
 	long	free_blocks;  /* blocks free */
+=======
+struct hugetlbfs_sb_info {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct hugetlbfs_sb_info {
+>>>>>>> refs/remotes/origin/master
 	long	max_inodes;   /* inodes allowed */
 	long	free_inodes;  /* inodes free */
 	spinlock_t	stat_lock;
 	struct hstate *hstate;
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 
@@ -162,6 +285,16 @@ static inline struct hugetlbfs_inode_info *HUGETLBFS_I(struct inode *inode)
 	return container_of(inode, struct hugetlbfs_inode_info, vfs_inode);
 }
 
+=======
+	struct hugepage_subpool *spool;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hugepage_subpool *spool;
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline struct hugetlbfs_sb_info *HUGETLBFS_SB(struct super_block *sb)
 {
 	return sb->s_fs_info;
@@ -170,9 +303,20 @@ static inline struct hugetlbfs_sb_info *HUGETLBFS_SB(struct super_block *sb)
 extern const struct file_operations hugetlbfs_file_operations;
 extern const struct vm_operations_struct hugetlb_vm_ops;
 struct file *hugetlb_file_setup(const char *name, size_t size, vm_flags_t acct,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				struct user_struct **user, int creat_flags);
+<<<<<<< HEAD
 int hugetlb_get_quota(struct address_space *mapping, long delta);
 void hugetlb_put_quota(struct address_space *mapping, long delta);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				struct user_struct **user, int creat_flags,
+				int page_size_log);
+>>>>>>> refs/remotes/origin/master
 
 static inline int is_file_hugepages(struct file *file)
 {
@@ -184,6 +328,8 @@ static inline int is_file_hugepages(struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void set_file_hugepages(struct file *file)
 {
 	file->f_op = &hugetlbfs_file_operations;
@@ -191,9 +337,31 @@ static inline void set_file_hugepages(struct file *file)
 #else /* !CONFIG_HUGETLBFS */
 
 #define is_file_hugepages(file)			0
+<<<<<<< HEAD
 #define set_file_hugepages(file)		BUG()
 static inline struct file *hugetlb_file_setup(const char *name, size_t size,
 		vm_flags_t acctflag, struct user_struct **user, int creat_flags)
+=======
+=======
+
+>>>>>>> refs/remotes/origin/master
+#else /* !CONFIG_HUGETLBFS */
+
+#define is_file_hugepages(file)			0
+static inline struct file *
+hugetlb_file_setup(const char *name, size_t size, vm_flags_t acctflag,
+<<<<<<< HEAD
+		struct user_struct **user, int creat_flags)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct user_struct **user, int creat_flags,
+		int page_size_log)
+>>>>>>> refs/remotes/origin/master
+=======
+static inline struct file *
+hugetlb_file_setup(const char *name, size_t size, vm_flags_t acctflag,
+		struct user_struct **user, int creat_flags)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return ERR_PTR(-ENOSYS);
 }
@@ -221,19 +389,47 @@ struct hstate {
 	unsigned long resv_huge_pages;
 	unsigned long surplus_huge_pages;
 	unsigned long nr_overcommit_huge_pages;
+<<<<<<< HEAD
+=======
+	struct list_head hugepage_activelist;
+>>>>>>> refs/remotes/origin/master
 	struct list_head hugepage_freelists[MAX_NUMNODES];
 	unsigned int nr_huge_pages_node[MAX_NUMNODES];
 	unsigned int free_huge_pages_node[MAX_NUMNODES];
 	unsigned int surplus_huge_pages_node[MAX_NUMNODES];
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CGROUP_HUGETLB
+	/* cgroup control files */
+	struct cftype cgroup_files[5];
+#endif
+>>>>>>> refs/remotes/origin/master
 	char name[HSTATE_NAME_LEN];
 };
 
 struct huge_bootmem_page {
 	struct list_head list;
 	struct hstate *hstate;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HIGHMEM
+	phys_addr_t phys;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct page *alloc_huge_page_node(struct hstate *h, int nid);
+=======
+#ifdef CONFIG_HIGHMEM
+	phys_addr_t phys;
+#endif
+};
+
+struct page *alloc_huge_page_node(struct hstate *h, int nid);
+struct page *alloc_huge_page_noerr(struct vm_area_struct *vma,
+				unsigned long addr, int avoid_reserve);
+>>>>>>> refs/remotes/origin/master
 
 /* arch callback */
 int __init alloc_bootmem_huge_page(struct hstate *h);
@@ -259,7 +455,18 @@ static inline struct hstate *hstate_inode(struct inode *i)
 
 static inline struct hstate *hstate_file(struct file *f)
 {
+<<<<<<< HEAD
 	return hstate_inode(f->f_dentry->d_inode);
+=======
+	return hstate_inode(file_inode(f));
+}
+
+static inline struct hstate *hstate_sizelog(int page_size_log)
+{
+	if (!page_size_log)
+		return &default_hstate;
+	return size_to_hstate(1 << page_size_log);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct hstate *hstate_vma(struct vm_area_struct *vma)
@@ -303,8 +510,22 @@ static inline unsigned int blocks_per_huge_page(struct hstate *h)
 
 #include <asm/hugetlb.h>
 
+<<<<<<< HEAD
 static inline struct hstate *page_hstate(struct page *page)
 {
+=======
+#ifndef arch_make_huge_pte
+static inline pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
+				       struct page *page, int writable)
+{
+	return entry;
+}
+#endif
+
+static inline struct hstate *page_hstate(struct page *page)
+{
+	VM_BUG_ON(!PageHuge(page));
+>>>>>>> refs/remotes/origin/master
 	return size_to_hstate(PAGE_SIZE << compound_order(page));
 }
 
@@ -313,6 +534,17 @@ static inline unsigned hstate_index_to_shift(unsigned index)
 	return hstates[index].order + PAGE_SHIFT;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static inline int hstate_index(struct hstate *h)
+{
+	return h - hstates;
+}
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 pgoff_t __basepage_index(struct page *page);
 
 /* Return page->index in PAGE_SIZE units */
@@ -324,13 +556,56 @@ static inline pgoff_t basepage_index(struct page *page)
 	return __basepage_index(page);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else
+=======
+#else	/* CONFIG_HUGETLB_PAGE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else	/* CONFIG_HUGETLB_PAGE */
+>>>>>>> refs/remotes/origin/cm-11.0
 struct hstate {};
 #define alloc_huge_page_node(h, nid) NULL
 #define alloc_bootmem_huge_page(h) NULL
 #define hstate_file(f) NULL
 #define hstate_vma(v) NULL
 #define hstate_inode(i) NULL
+=======
+extern void dissolve_free_huge_pages(unsigned long start_pfn,
+				     unsigned long end_pfn);
+int pmd_huge_support(void);
+/*
+ * Currently hugepage migration is enabled only for pmd-based hugepage.
+ * This function will be updated when hugepage migration is more widely
+ * supported.
+ */
+static inline int hugepage_migration_support(struct hstate *h)
+{
+	return pmd_huge_support() && (huge_page_shift(h) == PMD_SHIFT);
+}
+
+static inline spinlock_t *huge_pte_lockptr(struct hstate *h,
+					   struct mm_struct *mm, pte_t *pte)
+{
+	if (huge_page_size(h) == PMD_SIZE)
+		return pmd_lockptr(mm, (pmd_t *) pte);
+	VM_BUG_ON(huge_page_size(h) == PAGE_SIZE);
+	return &mm->page_table_lock;
+}
+
+#else	/* CONFIG_HUGETLB_PAGE */
+struct hstate {};
+#define alloc_huge_page_node(h, nid) NULL
+#define alloc_huge_page_noerr(v, a, r) NULL
+#define alloc_bootmem_huge_page(h) NULL
+#define hstate_file(f) NULL
+#define hstate_sizelog(s) NULL
+#define hstate_vma(v) NULL
+#define hstate_inode(i) NULL
+#define page_hstate(page) NULL
+>>>>>>> refs/remotes/origin/master
 #define huge_page_size(h) PAGE_SIZE
 #define huge_page_mask(h) PAGE_MASK
 #define vma_kernel_pagesize(v) PAGE_SIZE
@@ -342,11 +617,44 @@ static inline unsigned int pages_per_huge_page(struct hstate *h)
 	return 1;
 }
 #define hstate_index_to_shift(index) 0
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define hstate_index(h) 0
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline pgoff_t basepage_index(struct page *page)
 {
 	return page->index;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
+=======
+#define dissolve_free_huge_pages(s, e)	do {} while (0)
+#define pmd_huge_support()	0
+#define hugepage_migration_support(h)	0
+
+static inline spinlock_t *huge_pte_lockptr(struct hstate *h,
+					   struct mm_struct *mm, pte_t *pte)
+{
+	return &mm->page_table_lock;
+}
+#endif	/* CONFIG_HUGETLB_PAGE */
+
+static inline spinlock_t *huge_pte_lock(struct hstate *h,
+					struct mm_struct *mm, pte_t *pte)
+{
+	spinlock_t *ptl;
+
+	ptl = huge_pte_lockptr(h, mm, pte);
+	spin_lock(ptl);
+	return ptl;
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_HUGETLB_H */

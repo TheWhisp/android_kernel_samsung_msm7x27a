@@ -1427,6 +1427,11 @@ static void radeon_pm_full_reset_sdram(struct radeonfb_info *rinfo)
 	mdelay( 15);
 }
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_PM)
+#if defined(CONFIG_X86) || defined(CONFIG_PPC_PMAC)
+>>>>>>> refs/remotes/origin/master
 static void radeon_pm_reset_pad_ctlr_strength(struct radeonfb_info *rinfo)
 {
 	u32 tmp, tmp2;
@@ -1939,9 +1944,16 @@ static void radeon_reinitialize_M10(struct radeonfb_info *rinfo)
 	 */
 	radeon_pm_m10_enable_lvds_spread_spectrum(rinfo);
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_PPC_OF
 
+=======
+#endif
+
+#ifdef CONFIG_PPC_OF
+#ifdef CONFIG_PPC_PMAC
+>>>>>>> refs/remotes/origin/master
 static void radeon_pm_m9p_reconfigure_mc(struct radeonfb_info *rinfo)
 {
 	OUTREG(MC_CNTL, rinfo->save_regs[46]);
@@ -2202,6 +2214,11 @@ static void radeon_reinitialize_M9P(struct radeonfb_info *rinfo)
 	radeon_pm_restore_pixel_pll(rinfo);
 	radeon_pm_m10_enable_lvds_spread_spectrum(rinfo);
 }
+<<<<<<< HEAD
+=======
+#endif
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #if 0 /* Not ready yet */
 static void radeon_reinitialize_QW(struct radeonfb_info *rinfo)
@@ -2515,6 +2532,7 @@ static void radeonfb_whack_power_state(struct radeonfb_info *rinfo, pci_power_t 
 
 	for (;;) {
 		pci_read_config_word(rinfo->pdev,
+<<<<<<< HEAD
 				     rinfo->pm_reg+PCI_PM_CTRL,
 				     &pwr_cmd);
 		if (pwr_cmd & 2)
@@ -2522,6 +2540,15 @@ static void radeonfb_whack_power_state(struct radeonfb_info *rinfo, pci_power_t 
 		pwr_cmd = (pwr_cmd & ~PCI_PM_CTRL_STATE_MASK) | 2;
 		pci_write_config_word(rinfo->pdev,
 				      rinfo->pm_reg+PCI_PM_CTRL,
+=======
+				     rinfo->pdev->pm_cap + PCI_PM_CTRL,
+				     &pwr_cmd);
+		if (pwr_cmd & state)
+			break;
+		pwr_cmd = (pwr_cmd & ~PCI_PM_CTRL_STATE_MASK) | state;
+		pci_write_config_word(rinfo->pdev,
+				      rinfo->pdev->pm_cap + PCI_PM_CTRL,
+>>>>>>> refs/remotes/origin/master
 				      pwr_cmd);
 		msleep(500);
 	}
@@ -2532,7 +2559,11 @@ static void radeon_set_suspend(struct radeonfb_info *rinfo, int suspend)
 {
 	u32 tmp;
 
+<<<<<<< HEAD
 	if (!rinfo->pm_reg)
+=======
+	if (!rinfo->pdev->pm_cap)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/* Set the chip into appropriate suspend mode (we use D2,
@@ -2804,9 +2835,12 @@ static void radeonfb_early_resume(void *data)
 
 void radeonfb_pm_init(struct radeonfb_info *rinfo, int dynclk, int ignore_devlist, int force_sleep)
 {
+<<<<<<< HEAD
 	/* Find PM registers in config space if any*/
 	rinfo->pm_reg = pci_find_capability(rinfo->pdev, PCI_CAP_ID_PM);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Enable/Disable dynamic clocks: TODO add sysfs access */
 	if (rinfo->family == CHIP_FAMILY_RS480)
 		rinfo->dynclk = -1;
@@ -2830,7 +2864,11 @@ void radeonfb_pm_init(struct radeonfb_info *rinfo, int dynclk, int ignore_devlis
 	 * reason. --BenH
 	 */
 	if (machine_is(powermac) && rinfo->of_node) {
+<<<<<<< HEAD
 		if (rinfo->is_mobility && rinfo->pm_reg &&
+=======
+		if (rinfo->is_mobility && rinfo->pdev->pm_cap &&
+>>>>>>> refs/remotes/origin/master
 		    rinfo->family <= CHIP_FAMILY_RV250)
 			rinfo->pm_mode |= radeon_pm_d2;
 

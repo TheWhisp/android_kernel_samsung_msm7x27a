@@ -24,23 +24,50 @@
 #include <linux/io.h>
 #include <linux/gpio.h>
 #include <linux/mmc/host.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
+=======
+#include <linux/platform_data/spi-omap2-mcspi.h>
+#include <linux/platform_data/omap-twl4030.h>
+#include <linux/usb/phy.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <plat/mcspi.h>
 #include <plat/board.h>
 #include <plat/usb.h>
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/dma.h>
 #include <plat/gpmc.h>
 #include <video/omapdss.h>
 #include <video/omap-panel-generic-dpi.h>
+=======
+#include "common.h"
+#include <plat/dma.h>
+#include <plat/gpmc.h>
+#include <video/omapdss.h>
+#include <video/omap-panel-dvi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/gpmc-smc91x.h>
 
+=======
+#include "common.h"
+#include <linux/omap-dma.h>
+#include <video/omapdss.h>
+#include <video/omap-panel-data.h>
+
+#include "gpmc.h"
+#include "gpmc-smc91x.h"
+
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 #include "board-flash.h"
 #include "mux.h"
 #include "sdram-qimonda-hyb18m512160af-6.h"
@@ -108,6 +135,7 @@ static struct twl4030_keypad_data sdp3430_kp_data = {
 #define SDP3430_LCD_PANEL_BACKLIGHT_GPIO	8
 #define SDP3430_LCD_PANEL_ENABLE_GPIO		5
 
+<<<<<<< HEAD
 static struct gpio sdp3430_dss_gpios[] __initdata = {
 	{SDP3430_LCD_PANEL_ENABLE_GPIO,    GPIOF_OUT_INIT_LOW, "LCD reset"    },
 	{SDP3430_LCD_PANEL_BACKLIGHT_GPIO, GPIOF_OUT_INIT_LOW, "LCD Backlight"},
@@ -116,10 +144,13 @@ static struct gpio sdp3430_dss_gpios[] __initdata = {
 static int lcd_enabled;
 static int dvi_enabled;
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init sdp3430_display_init(void)
 {
 	int r;
 
+<<<<<<< HEAD
 	r = gpio_request_array(sdp3430_dss_gpios,
 			       ARRAY_SIZE(sdp3430_dss_gpios));
 	if (r)
@@ -186,8 +217,12 @@ static struct omap_dss_device sdp3430_lcd_device = {
 	.platform_disable	= sdp3430_panel_disable_lcd,
 };
 
+<<<<<<< HEAD
 static struct panel_generic_dpi_data dvi_panel = {
 	.name			= "generic",
+=======
+static struct panel_dvi_platform_data dvi_panel = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.platform_enable	= sdp3430_panel_enable_dvi,
 	.platform_disable	= sdp3430_panel_disable_dvi,
 };
@@ -195,7 +230,11 @@ static struct panel_generic_dpi_data dvi_panel = {
 static struct omap_dss_device sdp3430_dvi_device = {
 	.name			= "dvi",
 	.type			= OMAP_DISPLAY_TYPE_DPI,
+<<<<<<< HEAD
 	.driver_name		= "generic_dpi_panel",
+=======
+	.driver_name		= "dvi",
+>>>>>>> refs/remotes/origin/cm-10.0
 	.data			= &dvi_panel,
 	.phy.dpi.data_lines	= 24,
 };
@@ -225,12 +264,92 @@ static struct omap_dss_board_info sdp3430_dss_data = {
 static struct omap_board_config_kernel sdp3430_config[] __initdata = {
 };
 
+<<<<<<< HEAD
 static void __init omap_3430sdp_init_early(void)
 {
 	omap2_init_common_infrastructure();
 	omap2_init_common_devices(hyb18m512160af6_sdrc_params, NULL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * the backlight GPIO doesn't directly go to the panel, it enables
+	 * an internal circuit on 3430sdp to create the signal V_BKL_28V,
+	 * this is connected to LED+ pin of the sharp panel. This GPIO
+	 * is left enabled in the board file, and not passed to the panel
+	 * as platform_data.
+	 */
+	r = gpio_request_one(SDP3430_LCD_PANEL_BACKLIGHT_GPIO,
+				GPIOF_OUT_INIT_HIGH, "LCD Backlight");
+	if (r)
+		pr_err("failed to get LCD Backlight GPIO\n");
+
+}
+
+static struct panel_sharp_ls037v7dw01_platform_data sdp3430_lcd_pdata = {
+	.name                   = "lcd",
+	.source                 = "dpi.0",
+
+	.data_lines		= 16,
+
+	.resb_gpio		= SDP3430_LCD_PANEL_ENABLE_GPIO,
+	.ini_gpio		= -1,
+	.mo_gpio		= -1,
+	.lr_gpio		= -1,
+	.ud_gpio		= -1,
+};
+
+static struct platform_device sdp3430_lcd_device = {
+	.name                   = "panel-sharp-ls037v7dw01",
+	.id                     = 0,
+	.dev.platform_data      = &sdp3430_lcd_pdata,
+};
+
+static struct connector_dvi_platform_data sdp3430_dvi_connector_pdata = {
+	.name                   = "dvi",
+	.source                 = "tfp410.0",
+	.i2c_bus_num            = -1,
+};
+
+static struct platform_device sdp3430_dvi_connector_device = {
+	.name                   = "connector-dvi",
+	.id                     = 0,
+	.dev.platform_data      = &sdp3430_dvi_connector_pdata,
+};
+
+static struct encoder_tfp410_platform_data sdp3430_tfp410_pdata = {
+	.name                   = "tfp410.0",
+	.source                 = "dpi.0",
+	.data_lines             = 24,
+	.power_down_gpio        = -1,
+};
+
+static struct platform_device sdp3430_tfp410_device = {
+	.name                   = "tfp410",
+	.id                     = 0,
+	.dev.platform_data      = &sdp3430_tfp410_pdata,
+};
+
+static struct connector_atv_platform_data sdp3430_tv_pdata = {
+	.name = "tv",
+	.source = "venc.0",
+	.connector_type = OMAP_DSS_VENC_TYPE_SVIDEO,
+	.invert_polarity = false,
+};
+
+static struct platform_device sdp3430_tv_connector_device = {
+	.name                   = "connector-analog-tv",
+	.id                     = 0,
+	.dev.platform_data      = &sdp3430_tv_pdata,
+};
+
+static struct omap_dss_board_info sdp3430_dss_data = {
+	.default_display_name = "lcd",
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct omap2_hsmmc_info mmc[] = {
 	{
 		.mmc		= 1,
@@ -239,15 +358,47 @@ static struct omap2_hsmmc_info mmc[] = {
 		 */
 		.caps		= MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA,
 		.gpio_wp	= 4,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.deferred	= true,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.deferred	= true,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.mmc		= 2,
 		.caps		= MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA,
 		.gpio_wp	= 7,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.deferred	= true,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.deferred	= true,
+>>>>>>> refs/remotes/origin/master
 	},
 	{}	/* Terminator */
 };
 
+<<<<<<< HEAD
+=======
+static struct omap_tw4030_pdata omap_twl4030_audio_data = {
+	.voice_connected = true,
+	.custom_routing	= true,
+
+	.has_hs		= OMAP_TWL4030_LEFT | OMAP_TWL4030_RIGHT,
+	.has_hf		= OMAP_TWL4030_LEFT | OMAP_TWL4030_RIGHT,
+
+	.has_mainmic	= true,
+	.has_submic	= true,
+	.has_hsmic	= true,
+	.has_linein	= OMAP_TWL4030_LEFT | OMAP_TWL4030_RIGHT,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int sdp3430_twl_gpio_setup(struct device *dev,
 		unsigned gpio, unsigned ngpio)
 {
@@ -256,7 +407,15 @@ static int sdp3430_twl_gpio_setup(struct device *dev,
 	 */
 	mmc[0].gpio_cd = gpio + 0;
 	mmc[1].gpio_cd = gpio + 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	omap2_hsmmc_init(mmc);
+=======
+	omap_hsmmc_late_init(mmc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	omap_hsmmc_late_init(mmc);
+>>>>>>> refs/remotes/origin/master
 
 	/* gpio + 7 is "sub_lcd_en_bkl" (output/PWM1) */
 	gpio_request_one(gpio + 7, GPIOF_OUT_INIT_LOW, "sub_lcd_en_bkl");
@@ -264,13 +423,22 @@ static int sdp3430_twl_gpio_setup(struct device *dev,
 	/* gpio + 15 is "sub_lcd_nRST" (output) */
 	gpio_request_one(gpio + 15, GPIOF_OUT_INIT_LOW, "sub_lcd_nRST");
 
+<<<<<<< HEAD
+=======
+	omap_twl4030_audio_data.jack_detect = gpio + 2;
+	omap_twl4030_audio_init("SDP3430", &omap_twl4030_audio_data);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct twl4030_gpio_platform_data sdp3430_gpio_data = {
+<<<<<<< HEAD
 	.gpio_base	= OMAP_MAX_GPIO_LINES,
 	.irq_base	= TWL4030_GPIO_IRQ_BASE,
 	.irq_end	= TWL4030_GPIO_IRQ_END,
+=======
+>>>>>>> refs/remotes/origin/master
 	.pulldowns	= BIT(2) | BIT(6) | BIT(8) | BIT(13)
 				| BIT(16) | BIT(17),
 	.setup		= sdp3430_twl_gpio_setup,
@@ -424,6 +592,12 @@ static int __init omap3430_i2c_init(void)
 	sdp3430_twldata.vpll2->constraints.apply_uV = true;
 	sdp3430_twldata.vpll2->constraints.name = "VDVI";
 
+<<<<<<< HEAD
+=======
+	sdp3430_twldata.audio->codec->hs_extmute = 1;
+	sdp3430_twldata.audio->codec->hs_extmute_gpio = -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	omap3_pmic_init("twl4030", &sdp3430_twldata);
 
 	/* i2c2 on camera connector (for sensor control) and optional isp1301 */
@@ -466,6 +640,7 @@ static void enable_board_wakeup_source(void)
 		OMAP_WAKEUP_EN | OMAP_PIN_INPUT_PULLUP);
 }
 
+<<<<<<< HEAD
 static const struct usbhs_omap_board_data usbhs_bdata __initconst = {
 
 	.port_mode[0] = OMAP_EHCI_PORT_MODE_PHY,
@@ -476,12 +651,33 @@ static const struct usbhs_omap_board_data usbhs_bdata __initconst = {
 	.reset_gpio_port[0]  = 57,
 	.reset_gpio_port[1]  = 61,
 	.reset_gpio_port[2]  = -EINVAL
+=======
+static struct usbhs_phy_data phy_data[] __initdata = {
+	{
+		.port = 1,
+		.reset_gpio = 57,
+		.vcc_gpio = -EINVAL,
+	},
+	{
+		.port = 2,
+		.reset_gpio = 61,
+		.vcc_gpio = -EINVAL,
+	},
+};
+
+static struct usbhs_omap_platform_data usbhs_bdata __initdata = {
+
+	.port_mode[0] = OMAP_EHCI_PORT_MODE_PHY,
+	.port_mode[1] = OMAP_EHCI_PORT_MODE_PHY,
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_OMAP_MUX
 static struct omap_board_mux board_mux[] __initdata = {
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static struct omap_device_pad serial1_pads[] __initdata = {
 	/*
@@ -582,6 +778,14 @@ static inline void board_serial_init(void)
 {
 	omap_serial_init();
 }
+=======
+#else
+#define board_mux	NULL
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else
+#define board_mux	NULL
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -709,26 +913,59 @@ static void __init omap_3430sdp_init(void)
 	int gpio_pendown;
 
 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
+<<<<<<< HEAD
 	omap_board_config = sdp3430_config;
 	omap_board_config_size = ARRAY_SIZE(sdp3430_config);
+<<<<<<< HEAD
+=======
+	omap_hsmmc_init(mmc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap3430_i2c_init();
 	omap_display_init(&sdp3430_dss_data);
+=======
+	omap_hsmmc_init(mmc);
+	omap3430_i2c_init();
+	omap_display_init(&sdp3430_dss_data);
+	platform_device_register(&sdp3430_lcd_device);
+	platform_device_register(&sdp3430_tfp410_device);
+	platform_device_register(&sdp3430_dvi_connector_device);
+	platform_device_register(&sdp3430_tv_connector_device);
+
+>>>>>>> refs/remotes/origin/master
 	if (omap_rev() > OMAP3430_REV_ES1_0)
 		gpio_pendown = SDP3430_TS_GPIO_IRQ_SDPV2;
 	else
 		gpio_pendown = SDP3430_TS_GPIO_IRQ_SDPV1;
 	omap_ads7846_init(1, gpio_pendown, 310, NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	board_serial_init();
+=======
+	omap_serial_init();
+	omap_sdrc_init(hyb18m512160af6_sdrc_params, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	omap_serial_init();
+	omap_sdrc_init(hyb18m512160af6_sdrc_params, NULL);
+	usb_bind_phy("musb-hdrc.0.auto", 0, "twl4030_usb");
+>>>>>>> refs/remotes/origin/master
 	usb_musb_init(NULL);
 	board_smc91x_init();
 	board_flash_init(sdp_flash_partitions, chip_sel_3430, 0);
 	sdp3430_display_init();
 	enable_board_wakeup_source();
+<<<<<<< HEAD
+=======
+
+	usbhs_init_phys(phy_data, ARRAY_SIZE(phy_data));
+>>>>>>> refs/remotes/origin/master
 	usbhs_init(&usbhs_bdata);
 }
 
 MACHINE_START(OMAP_3430SDP, "OMAP3430 3430SDP board")
 	/* Maintainer: Syed Khasim - Texas Instruments Inc */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.reserve	= omap_reserve,
 	.map_io		= omap3_map_io,
@@ -736,4 +973,23 @@ MACHINE_START(OMAP_3430SDP, "OMAP3430 3430SDP board")
 	.init_irq	= omap_init_irq,
 	.init_machine	= omap_3430sdp_init,
 	.timer		= &omap_timer,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap3_map_io,
+	.init_early	= omap3430_init_early,
+	.init_irq	= omap3_init_irq,
+	.handle_irq	= omap3_intc_handle_irq,
+	.init_machine	= omap_3430sdp_init,
+<<<<<<< HEAD
+	.timer		= &omap3_timer,
+	.restart	= omap_prcm_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_late	= omap3430_init_late,
+	.init_time	= omap3_sync32k_timer_init,
+	.restart	= omap3xxx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

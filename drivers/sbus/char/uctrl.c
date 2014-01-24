@@ -19,7 +19,13 @@
 
 #include <asm/openprom.h>
 #include <asm/oplib.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/io.h>
 #include <asm/pgtable.h>
@@ -348,7 +354,11 @@ static void uctrl_get_external_status(struct uctrl_driver *driver)
 	
 }
 
+<<<<<<< HEAD
 static int __devinit uctrl_probe(struct platform_device *op)
+=======
+static int uctrl_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uctrl_driver *p;
 	int err = -ENOMEM;
@@ -403,7 +413,11 @@ out_free:
 	goto out;
 }
 
+<<<<<<< HEAD
 static int __devexit uctrl_remove(struct platform_device *op)
+=======
+static int uctrl_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uctrl_driver *p = dev_get_drvdata(&op->dev);
 
@@ -431,10 +445,12 @@ static struct platform_driver uctrl_driver = {
 		.of_match_table = uctrl_match,
 	},
 	.probe		= uctrl_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(uctrl_remove),
 };
 
 
+<<<<<<< HEAD
 static int __init uctrl_init(void)
 {
 	return platform_driver_register(&uctrl_driver);
@@ -447,4 +463,16 @@ static void __exit uctrl_exit(void)
 
 module_init(uctrl_init);
 module_exit(uctrl_exit);
+=======
+module_platform_driver(uctrl_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= uctrl_remove,
+};
+
+
+module_platform_driver(uctrl_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

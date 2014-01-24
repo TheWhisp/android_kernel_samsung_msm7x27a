@@ -30,7 +30,15 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/math64.h>
 #include <linux/string.h>
 #include <sound/core.h>
@@ -47,7 +55,15 @@
 
 static int dsp_map[SNDRV_CARDS];
 static int adsp_map[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] = 1};
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nonblock_open = 1;
+=======
+static bool nonblock_open = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nonblock_open = 1;
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>, Abramo Bagnara <abramo@alsa-project.org>");
 MODULE_DESCRIPTION("PCM OSS emulation for ALSA.");

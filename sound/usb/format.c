@@ -43,6 +43,7 @@
  */
 static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
 				     struct audioformat *fp,
+<<<<<<< HEAD
 				     int format, void *_fmt,
 				     int protocol)
 {
@@ -50,6 +51,14 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
 	u64 pcm_formats;
 
 	switch (protocol) {
+=======
+				     unsigned int format, void *_fmt)
+{
+	int sample_width, sample_bytes;
+	u64 pcm_formats = 0;
+
+	switch (fp->protocol) {
+>>>>>>> refs/remotes/origin/master
 	case UAC_VERSION_1:
 	default: {
 		struct uac_format_type_i_discrete_descriptor *fmt = _fmt;
@@ -63,14 +72,26 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
 		struct uac_format_type_i_ext_descriptor *fmt = _fmt;
 		sample_width = fmt->bBitResolution;
 		sample_bytes = fmt->bSubslotSize;
+<<<<<<< HEAD
+=======
+
+		if (format & UAC2_FORMAT_TYPE_I_RAW_DATA)
+			pcm_formats |= SNDRV_PCM_FMTBIT_SPECIAL;
+
+>>>>>>> refs/remotes/origin/master
 		format <<= 1;
 		break;
 	}
 	}
 
+<<<<<<< HEAD
 	pcm_formats = 0;
 
 	if (format == 0 || format == (1 << UAC_FORMAT_TYPE_I_UNDEFINED)) {
+=======
+	if ((pcm_formats == 0) &&
+	    (format == 0 || format == (1 << UAC_FORMAT_TYPE_I_UNDEFINED))) {
+>>>>>>> refs/remotes/origin/master
 		/* some devices don't define this correctly... */
 		snd_printdd(KERN_INFO "%d:%u:%d : format type 0 is detected, processed as PCM\n",
 			    chip->dev->devnum, fp->iface, fp->altsetting);
@@ -133,6 +154,12 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
 		snd_printk(KERN_INFO "%d:%u:%d : unsupported format bits %#x\n",
 			   chip->dev->devnum, fp->iface, fp->altsetting, format);
 	}
+<<<<<<< HEAD
+=======
+
+	pcm_formats |= snd_usb_interface_dsd_format_quirks(chip, fp, sample_bytes);
+
+>>>>>>> refs/remotes/origin/master
 	return pcm_formats;
 }
 
@@ -155,7 +182,11 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
 	if (fmt[0] < offset + 1 + 3 * (nr_rates ? nr_rates : 2)) {
 		snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc\n",
 				   chip->dev->devnum, fp->iface, fp->altsetting);
+<<<<<<< HEAD
 		return -1;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (nr_rates) {
@@ -167,7 +198,11 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
 		fp->rate_table = kmalloc(sizeof(int) * nr_rates, GFP_KERNEL);
 		if (fp->rate_table == NULL) {
 			snd_printk(KERN_ERR "cannot malloc\n");
+<<<<<<< HEAD
 			return -1;
+=======
+			return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		fp->nr_rates = 0;
@@ -184,8 +219,15 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
 			     chip->usb_id == USB_ID(0x0ccd, 0x00b1)) &&
 			    fp->altsetting == 5 && fp->maxpacksize == 392)
 				rate = 96000;
+<<<<<<< HEAD
 			/* Creative VF0470 Live Cam reports 16 kHz instead of 8kHz */
 			if (rate == 16000 && chip->usb_id == USB_ID(0x041e, 0x4068))
+=======
+			/* Creative VF0420/VF0470 Live Cams report 16 kHz instead of 8kHz */
+			if (rate == 16000 &&
+			    (chip->usb_id == USB_ID(0x041e, 0x4064) ||
+			     chip->usb_id == USB_ID(0x041e, 0x4068)))
+>>>>>>> refs/remotes/origin/master
 				rate = 8000;
 
 			fp->rate_table[fp->nr_rates] = rate;
@@ -198,7 +240,11 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
 		}
 		if (!fp->nr_rates) {
 			hwc_debug("All rates were zero. Skipping format!\n");
+<<<<<<< HEAD
 			return -1;
+=======
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		/* continuous rates */
@@ -277,7 +323,11 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
 	struct usb_device *dev = chip->dev;
 	unsigned char tmp[2], *data;
 	int nr_triplets, data_size, ret = 0;
+<<<<<<< HEAD
 	int clock = snd_usb_clock_find_source(chip, fp->clock);
+=======
+	int clock = snd_usb_clock_find_source(chip, fp->clock, false);
+>>>>>>> refs/remotes/origin/master
 
 	if (clock < 0) {
 		snd_printk(KERN_ERR "%s(): unable to find clock source (clock %d)\n",
@@ -290,7 +340,15 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
 			      UAC2_CS_CONTROL_SAM_FREQ << 8,
 			      snd_usb_ctrl_intf(chip) | (clock << 8),
+<<<<<<< HEAD
+<<<<<<< HEAD
 			      tmp, sizeof(tmp), 1000);
+=======
+			      tmp, sizeof(tmp));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      tmp, sizeof(tmp));
+>>>>>>> refs/remotes/origin/master
 
 	if (ret < 0) {
 		snd_printk(KERN_ERR "%s(): unable to retrieve number of sample rates (clock %d)\n",
@@ -311,7 +369,15 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
 			      UAC2_CS_CONTROL_SAM_FREQ << 8,
 			      snd_usb_ctrl_intf(chip) | (clock << 8),
+<<<<<<< HEAD
+<<<<<<< HEAD
 			      data, data_size, 1000);
+=======
+			      data, data_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      data, data_size);
+>>>>>>> refs/remotes/origin/master
 
 	if (ret < 0) {
 		snd_printk(KERN_ERR "%s(): unable to retrieve sample rate range (clock %d)\n",
@@ -353,6 +419,7 @@ err:
  * parse the format type I and III descriptors
  */
 static int parse_audio_format_i(struct snd_usb_audio *chip,
+<<<<<<< HEAD
 				struct audioformat *fp, int format,
 				struct uac_format_type_i_continuous_descriptor *fmt,
 				struct usb_host_interface *iface)
@@ -360,6 +427,13 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
 	struct usb_interface_descriptor *altsd = get_iface_desc(iface);
 	int protocol = altsd->bInterfaceProtocol;
 	int pcm_format, ret;
+=======
+				struct audioformat *fp, unsigned int format,
+				struct uac_format_type_i_continuous_descriptor *fmt)
+{
+	snd_pcm_format_t pcm_format;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (fmt->bFormatType == UAC_FORMAT_TYPE_III) {
 		/* FIXME: the format type is really IECxxx
@@ -378,12 +452,20 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
 		default:
 			pcm_format = SNDRV_PCM_FORMAT_S16_LE;
 		}
+<<<<<<< HEAD
 		fp->formats = 1uLL << pcm_format;
 	} else {
 		fp->formats = parse_audio_format_i_type(chip, fp, format,
 							fmt, protocol);
 		if (!fp->formats)
 			return -1;
+=======
+		fp->formats = pcm_format_to_bits(pcm_format);
+	} else {
+		fp->formats = parse_audio_format_i_type(chip, fp, format, fmt);
+		if (!fp->formats)
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* gather possible sample rates */
@@ -391,11 +473,16 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
 	 * proprietary class specific descriptor.
 	 * audio class v2 uses class specific EP0 range requests for that.
 	 */
+<<<<<<< HEAD
 	switch (protocol) {
 	default:
 		snd_printdd(KERN_WARNING "%d:%u:%d : invalid protocol version %d, assuming v1\n",
 			   chip->dev->devnum, fp->iface, fp->altsetting, protocol);
 		/* fall through */
+=======
+	switch (fp->protocol) {
+	default:
+>>>>>>> refs/remotes/origin/master
 	case UAC_VERSION_1:
 		fp->channels = fmt->bNrChannels;
 		ret = parse_audio_format_rates_v1(chip, fp, (unsigned char *) fmt, 7);
@@ -409,7 +496,11 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
 	if (fp->channels < 1) {
 		snd_printk(KERN_ERR "%d:%u:%d : invalid channels %d\n",
 			   chip->dev->devnum, fp->iface, fp->altsetting, fp->channels);
+<<<<<<< HEAD
 		return -1;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -420,12 +511,18 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
  */
 static int parse_audio_format_ii(struct snd_usb_audio *chip,
 				 struct audioformat *fp,
+<<<<<<< HEAD
 				 int format, void *_fmt,
 				 struct usb_host_interface *iface)
 {
 	int brate, framesize, ret;
 	struct usb_interface_descriptor *altsd = get_iface_desc(iface);
 	int protocol = altsd->bInterfaceProtocol;
+=======
+				 int format, void *_fmt)
+{
+	int brate, framesize, ret;
+>>>>>>> refs/remotes/origin/master
 
 	switch (format) {
 	case UAC_FORMAT_TYPE_II_AC3:
@@ -445,11 +542,16 @@ static int parse_audio_format_ii(struct snd_usb_audio *chip,
 
 	fp->channels = 1;
 
+<<<<<<< HEAD
 	switch (protocol) {
 	default:
 		snd_printdd(KERN_WARNING "%d:%u:%d : invalid protocol version %d, assuming v1\n",
 			   chip->dev->devnum, fp->iface, fp->altsetting, protocol);
 		/* fall through */
+=======
+	switch (fp->protocol) {
+	default:
+>>>>>>> refs/remotes/origin/master
 	case UAC_VERSION_1: {
 		struct uac_format_type_ii_discrete_descriptor *fmt = _fmt;
 		brate = le16_to_cpu(fmt->wMaxBitRate);
@@ -473,19 +575,33 @@ static int parse_audio_format_ii(struct snd_usb_audio *chip,
 	return ret;
 }
 
+<<<<<<< HEAD
 int snd_usb_parse_audio_format(struct snd_usb_audio *chip, struct audioformat *fp,
 			       int format, struct uac_format_type_i_continuous_descriptor *fmt,
 			       int stream, struct usb_host_interface *iface)
+=======
+int snd_usb_parse_audio_format(struct snd_usb_audio *chip,
+			       struct audioformat *fp, unsigned int format,
+			       struct uac_format_type_i_continuous_descriptor *fmt,
+			       int stream)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
 	switch (fmt->bFormatType) {
 	case UAC_FORMAT_TYPE_I:
 	case UAC_FORMAT_TYPE_III:
+<<<<<<< HEAD
 		err = parse_audio_format_i(chip, fp, format, fmt, iface);
 		break;
 	case UAC_FORMAT_TYPE_II:
 		err = parse_audio_format_ii(chip, fp, format, fmt, iface);
+=======
+		err = parse_audio_format_i(chip, fp, format, fmt);
+		break;
+	case UAC_FORMAT_TYPE_II:
+		err = parse_audio_format_ii(chip, fp, format, fmt);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		snd_printd(KERN_INFO "%d:%u:%d : format type %d is not supported yet\n",

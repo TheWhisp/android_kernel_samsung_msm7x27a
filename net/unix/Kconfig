@@ -19,3 +19,19 @@ config UNIX
 
 	  Say Y unless you know what you are doing.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config UNIX_DIAG
+	tristate "UNIX: socket monitoring interface"
+	depends on UNIX
+	default n
+	---help---
+	  Support for UNIX socket monitoring interface used by the ss tool.
+	  If unsure, say Y.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -21,7 +21,13 @@
 #include <linux/bitops.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -191,9 +197,12 @@ static struct irq_chip clipper_irq_type = {
 static void
 dp264_device_interrupt(unsigned long vector)
 {
+<<<<<<< HEAD
 #if 1
 	printk("dp264_device_interrupt: NOT IMPLEMENTED YET!!\n");
 #else
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long pld;
 	unsigned int i;
 
@@ -211,12 +220,16 @@ dp264_device_interrupt(unsigned long vector)
 			isa_device_interrupt(vector);
 		else
 			handle_irq(16 + i);
+<<<<<<< HEAD
 #if 0
 		TSUNAMI_cchip->dir0.csr = 1UL << i; mb();
 		tmp = TSUNAMI_cchip->dir0.csr;
 #endif
 	}
 #endif
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void 
@@ -366,7 +379,15 @@ clipper_init_irq(void)
  */
 
 static int __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 isa_irq_fixup(struct pci_dev *dev, int irq)
+=======
+isa_irq_fixup(const struct pci_dev *dev, int irq)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+isa_irq_fixup(const struct pci_dev *dev, int irq)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 irq8;
 
@@ -382,7 +403,15 @@ isa_irq_fixup(struct pci_dev *dev, int irq)
 }
 
 static int __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 dp264_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+dp264_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+dp264_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	static char irq_tab[6][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */
@@ -404,7 +433,15 @@ dp264_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 }
 
 static int __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 monet_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+monet_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+monet_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	static char irq_tab[13][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */
@@ -466,7 +503,15 @@ monet_swizzle(struct pci_dev *dev, u8 *pinp)
 }
 
 static int __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 webbrick_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+webbrick_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+webbrick_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	static char irq_tab[13][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */
@@ -488,7 +533,15 @@ webbrick_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 }
 
 static int __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 clipper_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+clipper_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+clipper_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	static char irq_tab[7][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */

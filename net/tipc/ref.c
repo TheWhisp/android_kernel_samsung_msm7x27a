@@ -43,7 +43,10 @@
  * @lock: spinlock controlling access to object
  * @ref: reference value for object (combines instance & array index info)
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct reference {
 	void *object;
 	spinlock_t lock;
@@ -60,7 +63,10 @@ struct reference {
  * @index_mask: bitmask for array index portion of reference values
  * @start_mask: initial value for instance value portion of reference values
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct ref_table {
 	struct reference *entries;
 	u32 capacity;
@@ -96,7 +102,10 @@ static DEFINE_RWLOCK(ref_table_lock);
 /**
  * tipc_ref_table_init - create reference table for objects
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 int tipc_ref_table_init(u32 requested_size, u32 start)
 {
 	struct reference *table;
@@ -109,9 +118,17 @@ int tipc_ref_table_init(u32 requested_size, u32 start)
 		/* do nothing */ ;
 
 	/* allocate table & mark all entries as uninitialized */
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 	table = __vmalloc(actual_size * sizeof(struct reference),
 			  GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO, PAGE_KERNEL);
+=======
+	table = vzalloc(actual_size * sizeof(struct reference));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	table = vzalloc(actual_size * sizeof(struct reference));
+>>>>>>> refs/remotes/origin/master
 	if (table == NULL)
 		return -ENOMEM;
 
@@ -129,7 +146,10 @@ int tipc_ref_table_init(u32 requested_size, u32 start)
 /**
  * tipc_ref_table_stop - destroy reference table for objects
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void tipc_ref_table_stop(void)
 {
 	if (!tipc_ref_table.entries)
@@ -150,7 +170,10 @@ void tipc_ref_table_stop(void)
  * register a partially initialized object, without running the risk that
  * the object will be accessed before initialization is complete.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 u32 tipc_ref_acquire(void *object, spinlock_t **lock)
 {
 	u32 index;
@@ -160,16 +183,27 @@ u32 tipc_ref_acquire(void *object, spinlock_t **lock)
 	struct reference *entry = NULL;
 
 	if (!object) {
+<<<<<<< HEAD
 		err("Attempt to acquire reference to non-existent object\n");
 		return 0;
 	}
 	if (!tipc_ref_table.entries) {
 		err("Reference table not found during acquisition attempt\n");
+=======
+		pr_err("Attempt to acquire ref. to non-existent obj\n");
+		return 0;
+	}
+	if (!tipc_ref_table.entries) {
+		pr_err("Ref. table not found in acquisition attempt\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	/* take a free entry, if available; otherwise initialize a new entry */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	write_lock_bh(&ref_table_lock);
 	if (tipc_ref_table.first_free) {
 		index = tipc_ref_table.first_free;
@@ -212,7 +246,10 @@ u32 tipc_ref_acquire(void *object, spinlock_t **lock)
  * Disallow future references to an object and free up the entry for re-use.
  * Note: The entry's spin_lock may still be busy after discard
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void tipc_ref_discard(u32 ref)
 {
 	struct reference *entry;
@@ -220,7 +257,11 @@ void tipc_ref_discard(u32 ref)
 	u32 index_mask;
 
 	if (!tipc_ref_table.entries) {
+<<<<<<< HEAD
 		err("Reference table not found during discard attempt\n");
+=======
+		pr_err("Ref. table not found during discard attempt\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -231,11 +272,19 @@ void tipc_ref_discard(u32 ref)
 	write_lock_bh(&ref_table_lock);
 
 	if (!entry->object) {
+<<<<<<< HEAD
 		err("Attempt to discard reference to non-existent object\n");
 		goto exit;
 	}
 	if (entry->ref != ref) {
 		err("Attempt to discard non-existent reference\n");
+=======
+		pr_err("Attempt to discard ref. to non-existent obj\n");
+		goto exit;
+	}
+	if (entry->ref != ref) {
+		pr_err("Attempt to discard non-existent reference\n");
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -243,12 +292,18 @@ void tipc_ref_discard(u32 ref)
 	 * mark entry as unused; increment instance part of entry's reference
 	 * to invalidate any subsequent references
 	 */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	entry->object = NULL;
 	entry->ref = (ref & ~index_mask) + (index_mask + 1);
 
 	/* append entry to free entry list */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tipc_ref_table.first_free == 0)
 		tipc_ref_table.first_free = index;
 	else
@@ -262,7 +317,10 @@ exit:
 /**
  * tipc_ref_lock - lock referenced object and return pointer to it
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void *tipc_ref_lock(u32 ref)
 {
 	if (likely(tipc_ref_table.entries)) {
@@ -284,7 +342,10 @@ void *tipc_ref_lock(u32 ref)
 /**
  * tipc_ref_deref - return pointer referenced object (without locking it)
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void *tipc_ref_deref(u32 ref)
 {
 	if (likely(tipc_ref_table.entries)) {
@@ -297,4 +358,7 @@ void *tipc_ref_deref(u32 ref)
 	}
 	return NULL;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

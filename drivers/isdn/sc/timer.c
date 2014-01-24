@@ -31,7 +31,15 @@ static void setup_ports(int card)
 
 	/* And the IRQ */
 	outb((sc_adapter[card]->interrupt | 0x80),
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sc_adapter[card]->ioport[IRQ_SELECT]);
+=======
+	     sc_adapter[card]->ioport[IRQ_SELECT]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	     sc_adapter[card]->ioport[IRQ_SELECT]);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -50,18 +58,40 @@ void sc_check_reset(unsigned long data)
 	int card = (unsigned int) data;
 
 	pr_debug("%s: check_timer timer called\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sc_adapter[card]->devicename);
+=======
+		 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the io ports */
 	setup_ports(card);
 
 	spin_lock_irqsave(&sc_adapter[card]->lock, flags);
 	outb(sc_adapter[card]->ioport[sc_adapter[card]->shmem_pgport],
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(sc_adapter[card]->shmem_magic>>14) | 0x80);
 	sig = (unsigned long) *((unsigned long *)(sc_adapter[card]->rambase + SIG_OFFSET));
 
 	/* check the signature */
 	if(sig == SIGNATURE) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	     (sc_adapter[card]->shmem_magic >> 14) | 0x80);
+	sig = (unsigned long) *((unsigned long *)(sc_adapter[card]->rambase + SIG_OFFSET));
+
+	/* check the signature */
+	if (sig == SIGNATURE) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		flushreadfifo(card);
 		spin_unlock_irqrestore(&sc_adapter[card]->lock, flags);
 		/* See if we need to do a startproc */
@@ -69,8 +99,18 @@ void sc_check_reset(unsigned long data)
 			startproc(card);
 	} else  {
 		pr_debug("%s: No signature yet, waiting another %lu jiffies.\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			sc_adapter[card]->devicename, CHECKRESET_TIME);
 		mod_timer(&sc_adapter[card]->reset_timer, jiffies+CHECKRESET_TIME);
+=======
+			 sc_adapter[card]->devicename, CHECKRESET_TIME);
+		mod_timer(&sc_adapter[card]->reset_timer, jiffies + CHECKRESET_TIME);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 sc_adapter[card]->devicename, CHECKRESET_TIME);
+		mod_timer(&sc_adapter[card]->reset_timer, jiffies + CHECKRESET_TIME);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&sc_adapter[card]->lock, flags);
 	}
 }
@@ -91,19 +131,43 @@ void check_phystat(unsigned long data)
 	int card = (unsigned int) data;
 
 	pr_debug("%s: Checking status...\n", sc_adapter[card]->devicename);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* 
+=======
+	/*
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * check the results of the last PhyStat and change only if
 	 * has changed drastically
 	 */
 	if (sc_adapter[card]->nphystat && !sc_adapter[card]->phystat) {   /* All is well */
 		pr_debug("PhyStat transition to RUN\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_info("%s: Switch contacted, transmitter enabled\n", 
+=======
+		pr_info("%s: Switch contacted, transmitter enabled\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("%s: Switch contacted, transmitter enabled\n",
+>>>>>>> refs/remotes/origin/master
 			sc_adapter[card]->devicename);
 		indicate_status(card, ISDN_STAT_RUN, 0, NULL);
 	}
 	else if (!sc_adapter[card]->nphystat && sc_adapter[card]->phystat) {   /* All is not well */
 		pr_debug("PhyStat transition to STOP\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_info("%s: Switch connection lost, transmitter disabled\n", 
+=======
+		pr_info("%s: Switch connection lost, transmitter disabled\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("%s: Switch connection lost, transmitter disabled\n",
+>>>>>>> refs/remotes/origin/master
 			sc_adapter[card]->devicename);
 
 		indicate_status(card, ISDN_STAT_STOP, 0, NULL);
@@ -113,6 +177,8 @@ void check_phystat(unsigned long data)
 
 	/* Reinitialize the timer */
 	spin_lock_irqsave(&sc_adapter[card]->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mod_timer(&sc_adapter[card]->stat_timer, jiffies+CHECKSTAT_TIME);
 	spin_unlock_irqrestore(&sc_adapter[card]->lock, flags);
 
@@ -121,3 +187,17 @@ void check_phystat(unsigned long data)
 		ceReqPhyStatus,0,0,NULL);
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mod_timer(&sc_adapter[card]->stat_timer, jiffies + CHECKSTAT_TIME);
+	spin_unlock_irqrestore(&sc_adapter[card]->lock, flags);
+
+	/* Send a new cePhyStatus message */
+	sendmessage(card, CEPID, ceReqTypePhy, ceReqClass2,
+		    ceReqPhyStatus, 0, 0, NULL);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

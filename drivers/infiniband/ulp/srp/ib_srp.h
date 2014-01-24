@@ -57,6 +57,7 @@ enum {
 	SRP_MAX_LUN		= 512,
 	SRP_DEF_SG_TABLESIZE	= 12,
 
+<<<<<<< HEAD
 	SRP_RQ_SHIFT    	= 6,
 	SRP_RQ_SIZE		= 1 << SRP_RQ_SHIFT,
 
@@ -65,6 +66,13 @@ enum {
 	SRP_REQ_SQ_SIZE		= SRP_SQ_SIZE - SRP_RSP_SQ_SIZE,
 	SRP_TSK_MGMT_SQ_SIZE	= 1,
 	SRP_CMD_SQ_SIZE		= SRP_REQ_SQ_SIZE - SRP_TSK_MGMT_SQ_SIZE,
+=======
+	SRP_DEFAULT_QUEUE_SIZE	= 1 << 6,
+	SRP_RSP_SQ_SIZE		= 1,
+	SRP_TSK_MGMT_SQ_SIZE	= 1,
+	SRP_DEFAULT_CMD_SQ_SIZE = SRP_DEFAULT_QUEUE_SIZE - SRP_RSP_SQ_SIZE -
+				  SRP_TSK_MGMT_SQ_SIZE,
+>>>>>>> refs/remotes/origin/master
 
 	SRP_TAG_NO_REQ		= ~0U,
 	SRP_TAG_TSK_MGMT	= 1U << 31,
@@ -80,9 +88,13 @@ enum {
 
 enum srp_target_state {
 	SRP_TARGET_LIVE,
+<<<<<<< HEAD
 	SRP_TARGET_CONNECTING,
 	SRP_TARGET_DEAD,
 	SRP_TARGET_REMOVED
+=======
+	SRP_TARGET_REMOVED,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum srp_iu_type {
@@ -154,31 +166,61 @@ struct srp_target_port {
 	u16			io_class;
 	struct srp_host	       *srp_host;
 	struct Scsi_Host       *scsi_host;
+<<<<<<< HEAD
 	char			target_name[32];
 	unsigned int		scsi_id;
 	unsigned int		sg_tablesize;
+=======
+	struct srp_rport       *rport;
+	char			target_name[32];
+	unsigned int		scsi_id;
+	unsigned int		sg_tablesize;
+	int			queue_size;
+	int			req_ring_size;
+	int			comp_vector;
+	int			tl_retry_count;
+>>>>>>> refs/remotes/origin/master
 
 	struct ib_sa_path_rec	path;
 	__be16			orig_dgid[8];
 	struct ib_sa_query     *path_query;
 	int			path_query_id;
 
+<<<<<<< HEAD
+=======
+	u32			rq_tmo_jiffies;
+	bool			connected;
+
+>>>>>>> refs/remotes/origin/master
 	struct ib_cm_id	       *cm_id;
 
 	int			max_ti_iu_len;
 
 	int			zero_req_lim;
 
+<<<<<<< HEAD
 	struct srp_iu	       *tx_ring[SRP_SQ_SIZE];
 	struct srp_iu	       *rx_ring[SRP_RQ_SIZE];
 	struct srp_request	req_ring[SRP_CMD_SQ_SIZE];
 
 	struct work_struct	work;
+=======
+	struct srp_iu	       **tx_ring;
+	struct srp_iu	       **rx_ring;
+	struct srp_request	*req_ring;
+
+	struct work_struct	tl_err_work;
+	struct work_struct	remove_work;
+>>>>>>> refs/remotes/origin/master
 
 	struct list_head	list;
 	struct completion	done;
 	int			status;
+<<<<<<< HEAD
 	int			qp_in_error;
+=======
+	bool			qp_in_error;
+>>>>>>> refs/remotes/origin/master
 
 	struct completion	tsk_mgmt_done;
 	u8			tsk_mgmt_status;

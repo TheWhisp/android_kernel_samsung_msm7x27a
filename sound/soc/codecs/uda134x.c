@@ -159,8 +159,12 @@ static int uda134x_mute(struct snd_soc_dai *dai, int mute)
 static int uda134x_startup(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec =rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
 	struct snd_pcm_runtime *master_runtime;
 
@@ -191,8 +195,12 @@ static int uda134x_startup(struct snd_pcm_substream *substream,
 static void uda134x_shutdown(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
 
 	if (uda134x->master_substream == substream)
@@ -327,7 +335,10 @@ static int uda134x_set_dai_fmt(struct snd_soc_dai *codec_dai,
 static int uda134x_set_bias_level(struct snd_soc_codec *codec,
 				  enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
 	u8 reg;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct uda134x_platform_data *pd = codec->control_data;
 	int i;
 	u8 *cache = codec->reg_cache;
@@ -336,6 +347,7 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
+<<<<<<< HEAD
 		/* ADC, DAC on */
 		switch (pd->model) {
 		case UDA134X_UDA1340:
@@ -353,6 +365,8 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
 			       "unsupported model %d\n", pd->model);
 			return -EINVAL;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SND_SOC_BIAS_PREPARE:
 		/* power on */
@@ -364,6 +378,7 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
 		}
 		break;
 	case SND_SOC_BIAS_STANDBY:
+<<<<<<< HEAD
 		/* ADC, DAC power off */
 		switch (pd->model) {
 		case UDA134X_UDA1340:
@@ -381,6 +396,8 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
 			       "unsupported model %d\n", pd->model);
 			return -EINVAL;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SND_SOC_BIAS_OFF:
 		/* power off */
@@ -452,7 +469,46 @@ SOC_ENUM("PCM Playback De-emphasis", uda134x_mixer_enum[1]),
 SOC_SINGLE("DC Filter Enable Switch", UDA134X_STATUS0, 0, 1, 0),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops uda134x_dai_ops = {
+=======
+static const struct snd_soc_dai_ops uda134x_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* UDA1341 has the DAC/ADC power down in STATUS1 */
+static const struct snd_soc_dapm_widget uda1341_dapm_widgets[] = {
+	SND_SOC_DAPM_DAC("DAC", "Playback", UDA134X_STATUS1, 0, 0),
+	SND_SOC_DAPM_ADC("ADC", "Capture", UDA134X_STATUS1, 1, 0),
+};
+
+/* UDA1340/4/5 has the DAC/ADC pwoer down in DATA0 11 */
+static const struct snd_soc_dapm_widget uda1340_dapm_widgets[] = {
+	SND_SOC_DAPM_DAC("DAC", "Playback", UDA134X_DATA011, 0, 0),
+	SND_SOC_DAPM_ADC("ADC", "Capture", UDA134X_DATA011, 1, 0),
+};
+
+/* Common DAPM widgets */
+static const struct snd_soc_dapm_widget uda134x_dapm_widgets[] = {
+	SND_SOC_DAPM_INPUT("VINL1"),
+	SND_SOC_DAPM_INPUT("VINR1"),
+	SND_SOC_DAPM_INPUT("VINL2"),
+	SND_SOC_DAPM_INPUT("VINR2"),
+	SND_SOC_DAPM_OUTPUT("VOUTL"),
+	SND_SOC_DAPM_OUTPUT("VOUTR"),
+};
+
+static const struct snd_soc_dapm_route uda134x_dapm_routes[] = {
+	{ "ADC", NULL, "VINL1" },
+	{ "ADC", NULL, "VINR1" },
+	{ "ADC", NULL, "VINL2" },
+	{ "ADC", NULL, "VINR2" },
+	{ "VOUTL", NULL, "DAC" },
+	{ "VOUTR", NULL, "DAC" },
+};
+
+static const struct snd_soc_dai_ops uda134x_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= uda134x_startup,
 	.shutdown	= uda134x_shutdown,
 	.hw_params	= uda134x_hw_params,
@@ -487,6 +543,11 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
 {
 	struct uda134x_priv *uda134x;
 	struct uda134x_platform_data *pd = codec->card->dev->platform_data;
+<<<<<<< HEAD
+=======
+	const struct snd_soc_dapm_widget *widgets;
+	unsigned num_widgets;
+>>>>>>> refs/remotes/origin/master
 
 	int ret;
 
@@ -528,9 +589,11 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
 	else
 		uda134x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+<<<<<<< HEAD
 	switch (pd->model) {
 	case UDA134X_UDA1340:
 	case UDA134X_UDA1344:
+<<<<<<< HEAD
 		ret = snd_soc_add_controls(codec, uda1340_snd_controls,
 					ARRAY_SIZE(uda1340_snd_controls));
 	break;
@@ -540,6 +603,41 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
 	break;
 	case UDA134X_UDA1345:
 		ret = snd_soc_add_controls(codec, uda1345_snd_controls,
+=======
+=======
+	if (pd->model == UDA134X_UDA1341) {
+		widgets = uda1341_dapm_widgets;
+		num_widgets = ARRAY_SIZE(uda1341_dapm_widgets);
+	} else {
+		widgets = uda1340_dapm_widgets;
+		num_widgets = ARRAY_SIZE(uda1340_dapm_widgets);
+	}
+
+	ret = snd_soc_dapm_new_controls(&codec->dapm, widgets, num_widgets);
+	if (ret) {
+		printk(KERN_ERR "%s failed to register dapm controls: %d",
+			__func__, ret);
+		kfree(uda134x);
+		return ret;
+	}
+
+	switch (pd->model) {
+	case UDA134X_UDA1340:
+	case UDA134X_UDA1344:
+>>>>>>> refs/remotes/origin/master
+		ret = snd_soc_add_codec_controls(codec, uda1340_snd_controls,
+					ARRAY_SIZE(uda1340_snd_controls));
+	break;
+	case UDA134X_UDA1341:
+		ret = snd_soc_add_codec_controls(codec, uda1341_snd_controls,
+					ARRAY_SIZE(uda1341_snd_controls));
+	break;
+	case UDA134X_UDA1345:
+		ret = snd_soc_add_codec_controls(codec, uda1345_snd_controls,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					ARRAY_SIZE(uda1345_snd_controls));
 	break;
 	default:
@@ -571,8 +669,16 @@ static int uda134x_soc_remove(struct snd_soc_codec *codec)
 }
 
 #if defined(CONFIG_PM)
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int uda134x_soc_suspend(struct snd_soc_codec *codec,
 						pm_message_t state)
+=======
+static int uda134x_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int uda134x_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	uda134x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 	uda134x_set_bias_level(codec, SND_SOC_BIAS_OFF);
@@ -602,15 +708,29 @@ static struct snd_soc_codec_driver soc_codec_dev_uda134x = {
 	.read = uda134x_read_reg_cache,
 	.write = uda134x_write,
 	.set_bias_level = uda134x_set_bias_level,
+<<<<<<< HEAD
 };
 
 static int __devinit uda134x_codec_probe(struct platform_device *pdev)
+=======
+	.dapm_widgets = uda134x_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(uda134x_dapm_widgets),
+	.dapm_routes = uda134x_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(uda134x_dapm_routes),
+};
+
+static int uda134x_codec_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_codec(&pdev->dev,
 			&soc_codec_dev_uda134x, &uda134x_dai, 1);
 }
 
+<<<<<<< HEAD
 static int __devexit uda134x_codec_remove(struct platform_device *pdev)
+=======
+static int uda134x_codec_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_codec(&pdev->dev);
 	return 0;
@@ -622,9 +742,11 @@ static struct platform_driver uda134x_codec_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = uda134x_codec_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(uda134x_codec_remove),
 };
 
+<<<<<<< HEAD
 static int __init uda134x_codec_init(void)
 {
 	return platform_driver_register(&uda134x_codec_driver);
@@ -636,6 +758,15 @@ static void __exit uda134x_codec_exit(void)
 	platform_driver_unregister(&uda134x_codec_driver);
 }
 module_exit(uda134x_codec_exit);
+=======
+module_platform_driver(uda134x_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = uda134x_codec_remove,
+};
+
+module_platform_driver(uda134x_codec_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("UDA134X ALSA soc codec driver");
 MODULE_AUTHOR("Zoltan Devai, Christian Pellegrin <chripell@evolware.org>");

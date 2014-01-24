@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  *
  * arch/arm/mach-u300/include/mach/gpio.h
@@ -292,3 +293,6 @@ static inline unsigned irq_to_gpio(unsigned irq)
 }
 
 #endif
+=======
+/* empty */
+>>>>>>> refs/remotes/origin/cm-10.0

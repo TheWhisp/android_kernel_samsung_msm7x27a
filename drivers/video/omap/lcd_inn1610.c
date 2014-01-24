@@ -22,7 +22,15 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include "omapfb.h"
 
 #define MODULE_NAME	"omapfb-lcd_h3"
@@ -32,20 +40,44 @@ static int innovator1610_panel_init(struct lcd_panel *panel,
 {
 	int r = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (gpio_request(14, "lcd_en0")) {
+=======
+	/* configure GPIO(14, 15) as outputs */
+	if (gpio_request_one(14, GPIOF_OUT_INIT_LOW, "lcd_en0")) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* configure GPIO(14, 15) as outputs */
+	if (gpio_request_one(14, GPIOF_OUT_INIT_LOW, "lcd_en0")) {
+>>>>>>> refs/remotes/origin/master
 		pr_err(MODULE_NAME ": can't request GPIO 14\n");
 		r = -1;
 		goto exit;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (gpio_request(15, "lcd_en1")) {
+=======
+	if (gpio_request_one(15, GPIOF_OUT_INIT_LOW, "lcd_en1")) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (gpio_request_one(15, GPIOF_OUT_INIT_LOW, "lcd_en1")) {
+>>>>>>> refs/remotes/origin/master
 		pr_err(MODULE_NAME ": can't request GPIO 15\n");
 		gpio_free(14);
 		r = -1;
 		goto exit;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* configure GPIO(14, 15) as outputs */
 	gpio_direction_output(14, 0);
 	gpio_direction_output(15, 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 exit:
 	return r;
 }
@@ -122,7 +154,15 @@ static int innovator1610_panel_resume(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_driver innovator1610_panel_driver = {
+=======
+static struct platform_driver innovator1610_panel_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver innovator1610_panel_driver = {
+>>>>>>> refs/remotes/origin/master
 	.probe		= innovator1610_panel_probe,
 	.remove		= innovator1610_panel_remove,
 	.suspend	= innovator1610_panel_suspend,
@@ -133,6 +173,8 @@ struct platform_driver innovator1610_panel_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init innovator1610_panel_drv_init(void)
 {
 	return platform_driver_register(&innovator1610_panel_driver);
@@ -146,3 +188,9 @@ static void __exit innovator1610_panel_drv_cleanup(void)
 module_init(innovator1610_panel_drv_init);
 module_exit(innovator1610_panel_drv_cleanup);
 
+=======
+module_platform_driver(innovator1610_panel_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(innovator1610_panel_driver);
+>>>>>>> refs/remotes/origin/master

@@ -40,9 +40,25 @@
 #include <linux/init.h>
 #include <linux/types.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <acpi/acpi_bus.h>
 #include <acpi/acpi_drivers.h>
 #include "sleep.h"
+=======
+#include <linux/pm_runtime.h>
+=======
+#include <linux/pm_runtime.h>
+#include <linux/sysfs.h>
+>>>>>>> refs/remotes/origin/master
+#include <acpi/acpi_bus.h>
+#include <acpi/acpi_drivers.h>
+#include "sleep.h"
+#include "internal.h"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define PREFIX "ACPI: "
 
@@ -56,6 +72,7 @@ ACPI_MODULE_NAME("power");
 #define ACPI_POWER_RESOURCE_STATE_ON	0x01
 #define ACPI_POWER_RESOURCE_STATE_UNKNOWN 0xFF
 
+<<<<<<< HEAD
 static int acpi_power_add(struct acpi_device *device);
 static int acpi_power_remove(struct acpi_device *device, int type);
 static int acpi_power_resume(struct acpi_device *device);
@@ -77,6 +94,23 @@ static struct acpi_driver acpi_power_driver = {
 		},
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * A power managed device
+ * A device may rely on multiple power resources.
+ * */
+struct acpi_power_managed_device {
+	struct device *dev; /* The physical device */
+	acpi_handle *handle;
+};
+
+struct acpi_power_resource_device {
+	struct acpi_power_managed_device *device;
+	struct acpi_power_resource_device *next;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct acpi_power_resource {
 	struct acpi_device * device;
 	acpi_bus_id name;
@@ -84,14 +118,45 @@ struct acpi_power_resource {
 	u32 order;
 	unsigned int ref_count;
 	struct mutex resource_lock;
+<<<<<<< HEAD
+=======
+
+	/* List of devices relying on this power resource */
+	struct acpi_power_resource_device *devices;
+	struct mutex devices_lock;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct list_head acpi_power_resource_list;
+=======
+struct acpi_power_resource {
+	struct acpi_device device;
+	struct list_head list_node;
+	char *name;
+	u32 system_level;
+	u32 order;
+	unsigned int ref_count;
+	bool wakeup_enabled;
+	struct mutex resource_lock;
+};
+
+struct acpi_power_resource_entry {
+	struct list_head node;
+	struct acpi_power_resource *resource;
+};
+
+static LIST_HEAD(acpi_power_resource_list);
+static DEFINE_MUTEX(power_resource_list_lock);
+>>>>>>> refs/remotes/origin/master
 
 /* --------------------------------------------------------------------------
                              Power Resource Management
    -------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int
 acpi_power_get_context(acpi_handle handle,
 		       struct acpi_power_resource **resource)
@@ -116,6 +181,94 @@ acpi_power_get_context(acpi_handle handle,
 	return 0;
 }
 
+=======
+static inline
+struct acpi_power_resource *to_power_resource(struct acpi_device *device)
+{
+	return container_of(device, struct acpi_power_resource, device);
+}
+
+static struct acpi_power_resource *acpi_power_get_context(acpi_handle handle)
+{
+	struct acpi_device *device;
+
+	if (acpi_bus_get_device(handle, &device))
+		return NULL;
+
+	return to_power_resource(device);
+}
+
+static int acpi_power_resources_list_add(acpi_handle handle,
+					 struct list_head *list)
+{
+	struct acpi_power_resource *resource = acpi_power_get_context(handle);
+	struct acpi_power_resource_entry *entry;
+
+	if (!resource || !list)
+		return -EINVAL;
+
+	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+	if (!entry)
+		return -ENOMEM;
+
+	entry->resource = resource;
+	if (!list_empty(list)) {
+		struct acpi_power_resource_entry *e;
+
+		list_for_each_entry(e, list, node)
+			if (e->resource->order > resource->order) {
+				list_add_tail(&entry->node, &e->node);
+				return 0;
+			}
+	}
+	list_add_tail(&entry->node, list);
+	return 0;
+}
+
+void acpi_power_resources_list_free(struct list_head *list)
+{
+	struct acpi_power_resource_entry *entry, *e;
+
+	list_for_each_entry_safe(entry, e, list, node) {
+		list_del(&entry->node);
+		kfree(entry);
+	}
+}
+
+int acpi_extract_power_resources(union acpi_object *package, unsigned int start,
+				 struct list_head *list)
+{
+	unsigned int i;
+	int err = 0;
+
+	for (i = start; i < package->package.count; i++) {
+		union acpi_object *element = &package->package.elements[i];
+		acpi_handle rhandle;
+
+		if (element->type != ACPI_TYPE_LOCAL_REFERENCE) {
+			err = -ENODATA;
+			break;
+		}
+		rhandle = element->reference.handle;
+		if (!rhandle) {
+			err = -ENODEV;
+			break;
+		}
+		err = acpi_add_power_resource(rhandle);
+		if (err)
+			break;
+
+		err = acpi_power_resources_list_add(rhandle, list);
+		if (err)
+			break;
+	}
+	if (err)
+		acpi_power_resources_list_free(list);
+
+	return err;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int acpi_power_get_state(acpi_handle handle, int *state)
 {
 	acpi_status status = AE_OK;
@@ -143,15 +296,23 @@ static int acpi_power_get_state(acpi_handle handle, int *state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int acpi_power_get_list_state(struct acpi_handle_list *list, int *state)
 {
 	int cur_state;
 	int i = 0;
+=======
+static int acpi_power_get_list_state(struct list_head *list, int *state)
+{
+	struct acpi_power_resource_entry *entry;
+	int cur_state;
+>>>>>>> refs/remotes/origin/master
 
 	if (!list || !state)
 		return -EINVAL;
 
 	/* The state of the list is 'on' IFF all resources are 'on'. */
+<<<<<<< HEAD
 
 	for (i = 0; i < list->count; i++) {
 		struct acpi_power_resource *resource;
@@ -168,6 +329,16 @@ static int acpi_power_get_list_state(struct acpi_handle_list *list, int *state)
 
 		mutex_unlock(&resource->resource_lock);
 
+=======
+	list_for_each_entry(entry, list, node) {
+		struct acpi_power_resource *resource = entry->resource;
+		acpi_handle handle = resource->device.handle;
+		int result;
+
+		mutex_lock(&resource->resource_lock);
+		result = acpi_power_get_state(handle, &cur_state);
+		mutex_unlock(&resource->resource_lock);
+>>>>>>> refs/remotes/origin/master
 		if (result)
 			return result;
 
@@ -179,14 +350,41 @@ static int acpi_power_get_list_state(struct acpi_handle_list *list, int *state)
 			  cur_state ? "on" : "off"));
 
 	*state = cur_state;
+<<<<<<< HEAD
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/* Resume the device when all power resources in _PR0 are on */
+static void acpi_power_on_device(struct acpi_power_managed_device *device)
+{
+	struct acpi_device *acpi_dev;
+	acpi_handle handle = device->handle;
+	int state;
+
+	if (acpi_bus_get_device(handle, &acpi_dev))
+		return;
+
+	if(acpi_power_get_inferred_state(acpi_dev, &state))
+		return;
+
+	if (state == ACPI_STATE_D0 && pm_runtime_suspended(device->dev))
+		pm_request_resume(device->dev);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __acpi_power_on(struct acpi_power_resource *resource)
 {
 	acpi_status status = AE_OK;
 
+<<<<<<< HEAD
 	status = acpi_evaluate_object(resource->device->handle, "_ON", NULL, NULL);
 	if (ACPI_FAILURE(status))
 		return -ENODEV;
@@ -194,16 +392,35 @@ static int __acpi_power_on(struct acpi_power_resource *resource)
 	/* Update the power resource's _device_ power state */
 	resource->device->power.state = ACPI_STATE_D0;
 
+=======
+	status = acpi_evaluate_object(resource->device.handle, "_ON", NULL, NULL);
+	if (ACPI_FAILURE(status))
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Power resource [%s] turned on\n",
 			  resource->name));
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int acpi_power_on(acpi_handle handle)
 {
 	int result = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct acpi_power_resource *resource = NULL;
+=======
+	bool resume_device = false;
+	struct acpi_power_resource *resource = NULL;
+	struct acpi_power_resource_device *device_list;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool resume_device = false;
+	struct acpi_power_resource *resource = NULL;
+	struct acpi_power_resource_device *device_list;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	result = acpi_power_get_context(handle, &resource);
 	if (result)
@@ -214,15 +431,57 @@ static int acpi_power_on(acpi_handle handle)
 	if (resource->ref_count++) {
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
 				  "Power resource [%s] already on",
+=======
+static int acpi_power_on_unlocked(struct acpi_power_resource *resource)
+{
+	int result = 0;
+
+	if (resource->ref_count++) {
+		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+				  "Power resource [%s] already on\n",
+>>>>>>> refs/remotes/origin/master
 				  resource->name));
 	} else {
 		result = __acpi_power_on(resource);
 		if (result)
 			resource->ref_count--;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		else
+			resume_device = true;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		else
+			resume_device = true;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	mutex_unlock(&resource->resource_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!resume_device)
+		return result;
+
+	mutex_lock(&resource->devices_lock);
+
+	device_list = resource->devices;
+	while (device_list) {
+		acpi_power_on_device(device_list->device);
+		device_list = device_list->next;
+	}
+
+	mutex_unlock(&resource->devices_lock);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return result;
 }
 
@@ -243,12 +502,52 @@ static int acpi_power_off(acpi_handle handle)
 				  "Power resource [%s] already off",
 				  resource->name));
 		goto unlock;
+=======
+	}
+	return result;
+}
+
+static int acpi_power_on(struct acpi_power_resource *resource)
+{
+	int result;
+
+	mutex_lock(&resource->resource_lock);
+	result = acpi_power_on_unlocked(resource);
+	mutex_unlock(&resource->resource_lock);
+	return result;
+}
+
+static int __acpi_power_off(struct acpi_power_resource *resource)
+{
+	acpi_status status;
+
+	status = acpi_evaluate_object(resource->device.handle, "_OFF",
+				      NULL, NULL);
+	if (ACPI_FAILURE(status))
+		return -ENODEV;
+
+	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Power resource [%s] turned off\n",
+			  resource->name));
+	return 0;
+}
+
+static int acpi_power_off_unlocked(struct acpi_power_resource *resource)
+{
+	int result = 0;
+
+	if (!resource->ref_count) {
+		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+				  "Power resource [%s] already off\n",
+				  resource->name));
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (--resource->ref_count) {
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
 				  "Power resource [%s] still in use\n",
 				  resource->name));
+<<<<<<< HEAD
 		goto unlock;
 	}
 
@@ -295,10 +594,327 @@ static int acpi_power_on_list(struct acpi_handle_list *list)
 			break;
 		}
 	}
+=======
+	} else {
+		result = __acpi_power_off(resource);
+		if (result)
+			resource->ref_count++;
+	}
+	return result;
+}
+
+static int acpi_power_off(struct acpi_power_resource *resource)
+{
+	int result;
+
+	mutex_lock(&resource->resource_lock);
+	result = acpi_power_off_unlocked(resource);
+	mutex_unlock(&resource->resource_lock);
+	return result;
+}
+
+static int acpi_power_off_list(struct list_head *list)
+{
+	struct acpi_power_resource_entry *entry;
+	int result = 0;
+
+	list_for_each_entry_reverse(entry, list, node) {
+		result = acpi_power_off(entry->resource);
+		if (result)
+			goto err;
+	}
+	return 0;
+
+ err:
+	list_for_each_entry_continue(entry, list, node)
+		acpi_power_on(entry->resource);
 
 	return result;
 }
 
+static int acpi_power_on_list(struct list_head *list)
+{
+	struct acpi_power_resource_entry *entry;
+	int result = 0;
+
+	list_for_each_entry(entry, list, node) {
+		result = acpi_power_on(entry->resource);
+		if (result)
+			goto err;
+	}
+	return 0;
+
+ err:
+	list_for_each_entry_continue_reverse(entry, list, node)
+		acpi_power_off(entry->resource);
+>>>>>>> refs/remotes/origin/master
+
+	return result;
+}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static void __acpi_power_resource_unregister_device(struct device *dev,
+		acpi_handle res_handle)
+{
+	struct acpi_power_resource *resource = NULL;
+	struct acpi_power_resource_device *prev, *curr;
+
+	if (acpi_power_get_context(res_handle, &resource))
+		return;
+
+	mutex_lock(&resource->devices_lock);
+	prev = NULL;
+	curr = resource->devices;
+	while (curr) {
+		if (curr->device->dev == dev) {
+			if (!prev)
+				resource->devices = curr->next;
+			else
+				prev->next = curr->next;
+
+			kfree(curr);
+			break;
+		}
+
+		prev = curr;
+		curr = curr->next;
+	}
+	mutex_unlock(&resource->devices_lock);
+}
+
+/* Unlink dev from all power resources in _PR0 */
+void acpi_power_resource_unregister_device(struct device *dev, acpi_handle handle)
+{
+	struct acpi_device *acpi_dev;
+	struct acpi_handle_list *list;
+	int i;
+
+	if (!dev || !handle)
+		return;
+
+	if (acpi_bus_get_device(handle, &acpi_dev))
+		return;
+
+	list = &acpi_dev->power.states[ACPI_STATE_D0].resources;
+
+	for (i = 0; i < list->count; i++)
+		__acpi_power_resource_unregister_device(dev,
+			list->handles[i]);
+}
+
+static int __acpi_power_resource_register_device(
+	struct acpi_power_managed_device *powered_device, acpi_handle handle)
+{
+	struct acpi_power_resource *resource = NULL;
+	struct acpi_power_resource_device *power_resource_device;
+	int result;
+
+	result = acpi_power_get_context(handle, &resource);
+	if (result)
+		return result;
+
+	power_resource_device = kzalloc(
+		sizeof(*power_resource_device), GFP_KERNEL);
+	if (!power_resource_device)
+		return -ENOMEM;
+
+	power_resource_device->device = powered_device;
+
+	mutex_lock(&resource->devices_lock);
+	power_resource_device->next = resource->devices;
+	resource->devices = power_resource_device;
+	mutex_unlock(&resource->devices_lock);
+
+	return 0;
+}
+
+/* Link dev to all power resources in _PR0 */
+int acpi_power_resource_register_device(struct device *dev, acpi_handle handle)
+{
+	struct acpi_device *acpi_dev;
+	struct acpi_handle_list *list;
+	struct acpi_power_managed_device *powered_device;
+	int i, ret;
+
+	if (!dev || !handle)
+		return -ENODEV;
+
+	ret = acpi_bus_get_device(handle, &acpi_dev);
+	if (ret)
+		goto no_power_resource;
+
+	if (!acpi_dev->power.flags.power_resources)
+		goto no_power_resource;
+
+	powered_device = kzalloc(sizeof(*powered_device), GFP_KERNEL);
+	if (!powered_device)
+		return -ENOMEM;
+
+	powered_device->dev = dev;
+	powered_device->handle = handle;
+
+	list = &acpi_dev->power.states[ACPI_STATE_D0].resources;
+
+	for (i = 0; i < list->count; i++) {
+		ret = __acpi_power_resource_register_device(powered_device,
+			list->handles[i]);
+
+		if (ret) {
+			acpi_power_resource_unregister_device(dev, handle);
+			break;
+		}
+	}
+
+	return ret;
+
+no_power_resource:
+	printk(KERN_DEBUG PREFIX "Invalid Power Resource to register!");
+	return -ENODEV;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct attribute *attrs[] = {
+	NULL,
+};
+
+static struct attribute_group attr_groups[] = {
+	[ACPI_STATE_D0] = {
+		.name = "power_resources_D0",
+		.attrs = attrs,
+	},
+	[ACPI_STATE_D1] = {
+		.name = "power_resources_D1",
+		.attrs = attrs,
+	},
+	[ACPI_STATE_D2] = {
+		.name = "power_resources_D2",
+		.attrs = attrs,
+	},
+	[ACPI_STATE_D3_HOT] = {
+		.name = "power_resources_D3hot",
+		.attrs = attrs,
+	},
+};
+
+static struct attribute_group wakeup_attr_group = {
+	.name = "power_resources_wakeup",
+	.attrs = attrs,
+};
+
+static void acpi_power_hide_list(struct acpi_device *adev,
+				 struct list_head *resources,
+				 struct attribute_group *attr_group)
+{
+	struct acpi_power_resource_entry *entry;
+
+	if (list_empty(resources))
+		return;
+
+	list_for_each_entry_reverse(entry, resources, node) {
+		struct acpi_device *res_dev = &entry->resource->device;
+
+		sysfs_remove_link_from_group(&adev->dev.kobj,
+					     attr_group->name,
+					     dev_name(&res_dev->dev));
+	}
+	sysfs_remove_group(&adev->dev.kobj, attr_group);
+}
+
+static void acpi_power_expose_list(struct acpi_device *adev,
+				   struct list_head *resources,
+				   struct attribute_group *attr_group)
+{
+	struct acpi_power_resource_entry *entry;
+	int ret;
+
+	if (list_empty(resources))
+		return;
+
+	ret = sysfs_create_group(&adev->dev.kobj, attr_group);
+	if (ret)
+		return;
+
+	list_for_each_entry(entry, resources, node) {
+		struct acpi_device *res_dev = &entry->resource->device;
+
+		ret = sysfs_add_link_to_group(&adev->dev.kobj,
+					      attr_group->name,
+					      &res_dev->dev.kobj,
+					      dev_name(&res_dev->dev));
+		if (ret) {
+			acpi_power_hide_list(adev, resources, attr_group);
+			break;
+		}
+	}
+}
+
+static void acpi_power_expose_hide(struct acpi_device *adev,
+				   struct list_head *resources,
+				   struct attribute_group *attr_group,
+				   bool expose)
+{
+	if (expose)
+		acpi_power_expose_list(adev, resources, attr_group);
+	else
+		acpi_power_hide_list(adev, resources, attr_group);
+}
+
+void acpi_power_add_remove_device(struct acpi_device *adev, bool add)
+{
+	int state;
+
+	if (adev->wakeup.flags.valid)
+		acpi_power_expose_hide(adev, &adev->wakeup.resources,
+				       &wakeup_attr_group, add);
+
+	if (!adev->power.flags.power_resources)
+		return;
+
+	for (state = ACPI_STATE_D0; state <= ACPI_STATE_D3_HOT; state++)
+		acpi_power_expose_hide(adev,
+				       &adev->power.states[state].resources,
+				       &attr_groups[state], add);
+}
+
+int acpi_power_wakeup_list_init(struct list_head *list, int *system_level_p)
+{
+	struct acpi_power_resource_entry *entry;
+	int system_level = 5;
+
+	list_for_each_entry(entry, list, node) {
+		struct acpi_power_resource *resource = entry->resource;
+		acpi_handle handle = resource->device.handle;
+		int result;
+		int state;
+
+		mutex_lock(&resource->resource_lock);
+
+		result = acpi_power_get_state(handle, &state);
+		if (result) {
+			mutex_unlock(&resource->resource_lock);
+			return result;
+		}
+		if (state == ACPI_POWER_RESOURCE_STATE_ON) {
+			resource->ref_count++;
+			resource->wakeup_enabled = true;
+		}
+		if (system_level > resource->system_level)
+			system_level = resource->system_level;
+
+		mutex_unlock(&resource->resource_lock);
+	}
+	*system_level_p = system_level;
+	return 0;
+}
+
+/* --------------------------------------------------------------------------
+                             Device Power Management
+   -------------------------------------------------------------------------- */
+
+>>>>>>> refs/remotes/origin/master
 /**
  * acpi_device_sleep_wake - execute _DSW (Device Sleep Wake) or (deprecated in
  *                          ACPI 3.0) _PSW (Power State Wake)
@@ -350,9 +966,13 @@ int acpi_device_sleep_wake(struct acpi_device *dev,
 	}
 
 	/* Execute _PSW */
+<<<<<<< HEAD
 	arg_list.count = 1;
 	in_arg[0].integer.value = enable;
 	status = acpi_evaluate_object(dev->handle, "_PSW", &arg_list, NULL);
+=======
+	status = acpi_execute_simple_method(dev->handle, "_PSW", enable);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status) && (status != AE_NOT_FOUND)) {
 		printk(KERN_ERR PREFIX "_PSW execution failed\n");
 		dev->wakeup.flags.valid = 0;
@@ -370,7 +990,12 @@ int acpi_device_sleep_wake(struct acpi_device *dev,
  */
 int acpi_enable_wakeup_device_power(struct acpi_device *dev, int sleep_state)
 {
+<<<<<<< HEAD
 	int i, err = 0;
+=======
+	struct acpi_power_resource_entry *entry;
+	int err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev || !dev->wakeup.flags.valid)
 		return -EINVAL;
@@ -380,6 +1005,7 @@ int acpi_enable_wakeup_device_power(struct acpi_device *dev, int sleep_state)
 	if (dev->wakeup.prepare_count++)
 		goto out;
 
+<<<<<<< HEAD
 	/* Open power resource */
 	for (i = 0; i < dev->wakeup.resources.count; i++) {
 		int ret = acpi_power_on(dev->wakeup.resources.handles[i]);
@@ -398,6 +1024,33 @@ int acpi_enable_wakeup_device_power(struct acpi_device *dev, int sleep_state)
 	err = acpi_device_sleep_wake(dev, 1, sleep_state, 3);
 
  err_out:
+=======
+	list_for_each_entry(entry, &dev->wakeup.resources, node) {
+		struct acpi_power_resource *resource = entry->resource;
+
+		mutex_lock(&resource->resource_lock);
+
+		if (!resource->wakeup_enabled) {
+			err = acpi_power_on_unlocked(resource);
+			if (!err)
+				resource->wakeup_enabled = true;
+		}
+
+		mutex_unlock(&resource->resource_lock);
+
+		if (err) {
+			dev_err(&dev->dev,
+				"Cannot turn wakeup power resources on\n");
+			dev->wakeup.flags.valid = 0;
+			goto out;
+		}
+	}
+	/*
+	 * Passing 3 as the third argument below means the device may be
+	 * put into arbitrary power state afterward.
+	 */
+	err = acpi_device_sleep_wake(dev, 1, sleep_state, 3);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		dev->wakeup.prepare_count = 0;
 
@@ -414,7 +1067,12 @@ int acpi_enable_wakeup_device_power(struct acpi_device *dev, int sleep_state)
  */
 int acpi_disable_wakeup_device_power(struct acpi_device *dev)
 {
+<<<<<<< HEAD
 	int i, err = 0;
+=======
+	struct acpi_power_resource_entry *entry;
+	int err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev || !dev->wakeup.flags.valid)
 		return -EINVAL;
@@ -435,6 +1093,7 @@ int acpi_disable_wakeup_device_power(struct acpi_device *dev)
 	if (err)
 		goto out;
 
+<<<<<<< HEAD
 	/* Close power resource */
 	for (i = 0; i < dev->wakeup.resources.count; i++) {
 		int ret = acpi_power_off(dev->wakeup.resources.handles[i]);
@@ -443,6 +1102,26 @@ int acpi_disable_wakeup_device_power(struct acpi_device *dev)
 			dev->wakeup.flags.valid = 0;
 			err = -ENODEV;
 			goto out;
+=======
+	list_for_each_entry(entry, &dev->wakeup.resources, node) {
+		struct acpi_power_resource *resource = entry->resource;
+
+		mutex_lock(&resource->resource_lock);
+
+		if (resource->wakeup_enabled) {
+			err = acpi_power_off_unlocked(resource);
+			if (!err)
+				resource->wakeup_enabled = false;
+		}
+
+		mutex_unlock(&resource->resource_lock);
+
+		if (err) {
+			dev_err(&dev->dev,
+				"Cannot turn wakeup power resources off\n");
+			dev->wakeup.flags.valid = 0;
+			break;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -451,6 +1130,7 @@ int acpi_disable_wakeup_device_power(struct acpi_device *dev)
 	return err;
 }
 
+<<<<<<< HEAD
 /* --------------------------------------------------------------------------
                              Device Power Management
    -------------------------------------------------------------------------- */
@@ -459,6 +1139,11 @@ int acpi_power_get_inferred_state(struct acpi_device *device, int *state)
 {
 	int result = 0;
 	struct acpi_handle_list *list = NULL;
+=======
+int acpi_power_get_inferred_state(struct acpi_device *device, int *state)
+{
+	int result = 0;
+>>>>>>> refs/remotes/origin/master
 	int list_state = 0;
 	int i = 0;
 
@@ -469,9 +1154,20 @@ int acpi_power_get_inferred_state(struct acpi_device *device, int *state)
 	 * We know a device's inferred power state when all the resources
 	 * required for a given D-state are 'on'.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = ACPI_STATE_D0; i < ACPI_STATE_D3; i++) {
+=======
+	for (i = ACPI_STATE_D0; i < ACPI_STATE_D3_HOT; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		list = &device->power.states[i].resources;
 		if (list->count < 1)
+=======
+	for (i = ACPI_STATE_D0; i <= ACPI_STATE_D3_HOT; i++) {
+		struct list_head *list = &device->power.states[i].resources;
+
+		if (list_empty(list))
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		result = acpi_power_get_list_state(list, &list_state);
@@ -484,13 +1180,21 @@ int acpi_power_get_inferred_state(struct acpi_device *device, int *state)
 		}
 	}
 
+<<<<<<< HEAD
 	*state = ACPI_STATE_D3;
+=======
+	*state = ACPI_STATE_D3_COLD;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 int acpi_power_on_resources(struct acpi_device *device, int state)
 {
+<<<<<<< HEAD
 	if (!device || state < ACPI_STATE_D0 || state > ACPI_STATE_D3)
+=======
+	if (!device || state < ACPI_STATE_D0 || state > ACPI_STATE_D3_HOT)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	return acpi_power_on_list(&device->power.states[state].resources);
@@ -498,16 +1202,39 @@ int acpi_power_on_resources(struct acpi_device *device, int state)
 
 int acpi_power_transition(struct acpi_device *device, int state)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int result;
 
 	if (!device || (state < ACPI_STATE_D0) || (state > ACPI_STATE_D3))
+=======
+	int result = 0;
+
+	if (!device || (state < ACPI_STATE_D0) || (state > ACPI_STATE_D3_COLD))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	if (device->power.state == state)
 		return 0;
 
 	if ((device->power.state < ACPI_STATE_D0)
+<<<<<<< HEAD
 	    || (device->power.state > ACPI_STATE_D3))
+=======
+	    || (device->power.state > ACPI_STATE_D3_COLD))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int result = 0;
+
+	if (!device || (state < ACPI_STATE_D0) || (state > ACPI_STATE_D3_COLD))
+		return -EINVAL;
+
+	if (device->power.state == state || !device->flags.power_manageable)
+		return 0;
+
+	if ((device->power.state < ACPI_STATE_D0)
+	    || (device->power.state > ACPI_STATE_D3_COLD))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	/* TBD: Resources must be ordered. */
@@ -517,8 +1244,22 @@ int acpi_power_transition(struct acpi_device *device, int state)
 	 * (e.g. so the device doesn't lose power while transitioning).  Then,
 	 * we dereference all power resources used in the current list.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	result = acpi_power_on_list(&device->power.states[state].resources);
 	if (!result)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (state < ACPI_STATE_D3_COLD)
+		result = acpi_power_on_list(
+			&device->power.states[state].resources);
+
+	if (!result && device->power.state < ACPI_STATE_D3_COLD)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		acpi_power_off_list(
 			&device->power.states[device->power.state].resources);
 
@@ -528,6 +1269,7 @@ int acpi_power_transition(struct acpi_device *device, int state)
 	return result;
 }
 
+<<<<<<< HEAD
 /* --------------------------------------------------------------------------
                                 Driver Interface
    -------------------------------------------------------------------------- */
@@ -550,6 +1292,14 @@ static int acpi_power_add(struct acpi_device *device)
 
 	resource->device = device;
 	mutex_init(&resource->resource_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mutex_init(&resource->devices_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&resource->devices_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	strcpy(resource->name, device->pnp.bus_id);
 	strcpy(acpi_device_name(device), ACPI_POWER_DEVICE_NAME);
 	strcpy(acpi_device_class(device), ACPI_POWER_CLASS);
@@ -579,10 +1329,81 @@ static int acpi_power_add(struct acpi_device *device)
 		device->power.state = ACPI_STATE_UNKNOWN;
 		break;
 	}
+=======
+static void acpi_release_power_resource(struct device *dev)
+{
+	struct acpi_device *device = to_acpi_device(dev);
+	struct acpi_power_resource *resource;
+
+	resource = container_of(device, struct acpi_power_resource, device);
+
+	mutex_lock(&power_resource_list_lock);
+	list_del(&resource->list_node);
+	mutex_unlock(&power_resource_list_lock);
+
+	acpi_free_pnp_ids(&device->pnp);
+	kfree(resource);
+}
+
+static ssize_t acpi_power_in_use_show(struct device *dev,
+				      struct device_attribute *attr,
+				      char *buf) {
+	struct acpi_power_resource *resource;
+
+	resource = to_power_resource(to_acpi_device(dev));
+	return sprintf(buf, "%u\n", !!resource->ref_count);
+}
+static DEVICE_ATTR(resource_in_use, 0444, acpi_power_in_use_show, NULL);
+
+static void acpi_power_sysfs_remove(struct acpi_device *device)
+{
+	device_remove_file(&device->dev, &dev_attr_resource_in_use);
+}
+
+int acpi_add_power_resource(acpi_handle handle)
+{
+	struct acpi_power_resource *resource;
+	struct acpi_device *device = NULL;
+	union acpi_object acpi_object;
+	struct acpi_buffer buffer = { sizeof(acpi_object), &acpi_object };
+	acpi_status status;
+	int state, result = -ENODEV;
+
+	acpi_bus_get_device(handle, &device);
+	if (device)
+		return 0;
+
+	resource = kzalloc(sizeof(*resource), GFP_KERNEL);
+	if (!resource)
+		return -ENOMEM;
+
+	device = &resource->device;
+	acpi_init_device_object(device, handle, ACPI_BUS_TYPE_POWER,
+				ACPI_STA_DEFAULT);
+	mutex_init(&resource->resource_lock);
+	INIT_LIST_HEAD(&resource->list_node);
+	resource->name = device->pnp.bus_id;
+	strcpy(acpi_device_name(device), ACPI_POWER_DEVICE_NAME);
+	strcpy(acpi_device_class(device), ACPI_POWER_CLASS);
+	device->power.state = ACPI_STATE_UNKNOWN;
+
+	/* Evalute the object to get the system level and resource order. */
+	status = acpi_evaluate_object(handle, NULL, NULL, &buffer);
+	if (ACPI_FAILURE(status))
+		goto err;
+
+	resource->system_level = acpi_object.power_resource.system_level;
+	resource->order = acpi_object.power_resource.resource_order;
+
+	result = acpi_power_get_state(handle, &state);
+	if (result)
+		goto err;
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO PREFIX "%s [%s] (%s)\n", acpi_device_name(device),
 	       acpi_device_bid(device), state ? "on" : "off");
 
+<<<<<<< HEAD
       end:
 	if (result)
 		kfree(resource);
@@ -638,3 +1459,58 @@ int __init acpi_power_init(void)
 	INIT_LIST_HEAD(&acpi_power_resource_list);
 	return acpi_bus_register_driver(&acpi_power_driver);
 }
+=======
+	device->flags.match_driver = true;
+	result = acpi_device_add(device, acpi_release_power_resource);
+	if (result)
+		goto err;
+
+	if (!device_create_file(&device->dev, &dev_attr_resource_in_use))
+		device->remove = acpi_power_sysfs_remove;
+
+	mutex_lock(&power_resource_list_lock);
+	list_add(&resource->list_node, &acpi_power_resource_list);
+	mutex_unlock(&power_resource_list_lock);
+	acpi_device_add_finalize(device);
+	return 0;
+
+ err:
+	acpi_release_power_resource(&device->dev);
+	return result;
+}
+
+#ifdef CONFIG_ACPI_SLEEP
+void acpi_resume_power_resources(void)
+{
+	struct acpi_power_resource *resource;
+
+	mutex_lock(&power_resource_list_lock);
+
+	list_for_each_entry(resource, &acpi_power_resource_list, list_node) {
+		int result, state;
+
+		mutex_lock(&resource->resource_lock);
+
+		result = acpi_power_get_state(resource->device.handle, &state);
+		if (result) {
+			mutex_unlock(&resource->resource_lock);
+			continue;
+		}
+
+		if (state == ACPI_POWER_RESOURCE_STATE_OFF
+		    && resource->ref_count) {
+			dev_info(&resource->device.dev, "Turning ON\n");
+			__acpi_power_on(resource);
+		} else if (state == ACPI_POWER_RESOURCE_STATE_ON
+		    && !resource->ref_count) {
+			dev_info(&resource->device.dev, "Turning OFF\n");
+			__acpi_power_off(resource);
+		}
+
+		mutex_unlock(&resource->resource_lock);
+	}
+
+	mutex_unlock(&power_resource_list_lock);
+}
+#endif
+>>>>>>> refs/remotes/origin/master

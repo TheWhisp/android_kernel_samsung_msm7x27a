@@ -7,6 +7,7 @@
  *
  * Copyright (C) 2001 - 2005 Tensilica Inc.
  */
+<<<<<<< HEAD
 
 #ifndef _XTENSA_PARAM_H
 #define _XTENSA_PARAM_H
@@ -31,4 +32,14 @@
 
 #define MAXHOSTNAMELEN	64	/* max length of hostname */
 
+=======
+#ifndef _XTENSA_PARAM_H
+#define _XTENSA_PARAM_H
+
+#include <uapi/asm/param.h>
+
+# define HZ		CONFIG_HZ	/* internal timer frequency */
+# define USER_HZ	100		/* for user interfaces in "ticks" */
+# define CLOCKS_PER_SEC (USER_HZ)	/* frequnzy at which times() counts */
+>>>>>>> refs/remotes/origin/master
 #endif /* _XTENSA_PARAM_H */

@@ -22,8 +22,13 @@
  *
  */
 
+<<<<<<< HEAD
 #include "pcm.h"
 #include "rawmidi.h"
+=======
+#include <sound/pcm.h>
+#include <sound/rawmidi.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <asm/io.h>
 

@@ -64,6 +64,7 @@
 			reg = <0x500 0x80>;
 		};
 
+<<<<<<< HEAD
 		timer@600 {	// General Purpose Timer
 			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
 			reg = <0x600 0x10>;
@@ -72,42 +73,91 @@
 
 		timer@610 {	// General Purpose Timer
 			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+=======
+		gpt0: timer@600 {	// General Purpose Timer
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+			#gpio-cells = <2>;  // Add 'gpio-controller;' to enable gpio mode
+			reg = <0x600 0x10>;
+			interrupts = <1 9 0>;
+			// add 'fsl,has-wdt' to enable watchdog
+		};
+
+		gpt1: timer@610 {	// General Purpose Timer
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+			#gpio-cells = <2>;  // Add 'gpio-controller;' to enable gpio mode
+>>>>>>> refs/remotes/origin/master
 			reg = <0x610 0x10>;
 			interrupts = <1 10 0>;
 		};
 
+<<<<<<< HEAD
 		timer@620 {	// General Purpose Timer
 			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+=======
+		gpt2: timer@620 {	// General Purpose Timer
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+			#gpio-cells = <2>;  // Add 'gpio-controller;' to enable gpio mode
+>>>>>>> refs/remotes/origin/master
 			reg = <0x620 0x10>;
 			interrupts = <1 11 0>;
 		};
 
+<<<<<<< HEAD
 		timer@630 {	// General Purpose Timer
 			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+=======
+		gpt3: timer@630 {	// General Purpose Timer
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+			#gpio-cells = <2>;  // Add 'gpio-controller;' to enable gpio mode
+>>>>>>> refs/remotes/origin/master
 			reg = <0x630 0x10>;
 			interrupts = <1 12 0>;
 		};
 
+<<<<<<< HEAD
 		timer@640 {	// General Purpose Timer
 			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+=======
+		gpt4: timer@640 {	// General Purpose Timer
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+			#gpio-cells = <2>;  // Add 'gpio-controller;' to enable gpio mode
+>>>>>>> refs/remotes/origin/master
 			reg = <0x640 0x10>;
 			interrupts = <1 13 0>;
 		};
 
+<<<<<<< HEAD
 		timer@650 {	// General Purpose Timer
 			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+=======
+		gpt5: timer@650 {	// General Purpose Timer
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+			#gpio-cells = <2>;  // Add 'gpio-controller;' to enable gpio mode
+>>>>>>> refs/remotes/origin/master
 			reg = <0x650 0x10>;
 			interrupts = <1 14 0>;
 		};
 
+<<<<<<< HEAD
 		timer@660 {	// General Purpose Timer
 			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+=======
+		gpt6: timer@660 {	// General Purpose Timer
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+			#gpio-cells = <2>;  // Add 'gpio-controller;' to enable gpio mode
+>>>>>>> refs/remotes/origin/master
 			reg = <0x660 0x10>;
 			interrupts = <1 15 0>;
 		};
 
+<<<<<<< HEAD
 		timer@670 {	// General Purpose Timer
 			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+=======
+		gpt7: timer@670 {	// General Purpose Timer
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
+			#gpio-cells = <2>;  // Add 'gpio-controller;' to enable gpio mode
+>>>>>>> refs/remotes/origin/master
 			reg = <0x670 0x10>;
 			interrupts = <1 16 0>;
 		};
@@ -147,6 +197,16 @@
 		};
 
 		spi@f00 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			#address-cells = <1>;
+			#size-cells = <0>;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			#address-cells = <1>;
+			#size-cells = <0>;
+>>>>>>> refs/remotes/origin/master
 			compatible = "fsl,mpc5200b-spi","fsl,mpc5200-spi";
 			reg = <0xf00 0x20>;
 			interrupts = <2 13 0 2 14 0>;
@@ -229,6 +289,15 @@
 			interrupts = <2 7 0>;
 		};
 
+<<<<<<< HEAD
+=======
+		sclpc@3c00 {
+			compatible = "fsl,mpc5200-lpbfifo";
+			reg = <0x3c00 0x60>;
+			interrupts = <2 23 0>;
+		};
+
+>>>>>>> refs/remotes/origin/master
 		i2c@3d00 {
 			#address-cells = <1>;
 			#size-cells = <0>;

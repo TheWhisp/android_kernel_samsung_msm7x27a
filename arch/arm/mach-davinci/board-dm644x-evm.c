@@ -15,7 +15,11 @@
 #include <linux/gpio.h>
 #include <linux/i2c.h>
 #include <linux/i2c/pcf857x.h>
+<<<<<<< HEAD
 #include <linux/i2c/at24.h>
+=======
+#include <linux/platform_data/at24.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/nand.h>
 #include <linux/mtd/partitions.h>
@@ -23,13 +27,26 @@
 #include <linux/phy.h>
 #include <linux/clk.h>
 #include <linux/videodev2.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/v4l2-dv-timings.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <media/tvp514x.h>
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/dm644x.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/common.h>
 #include <mach/i2c.h>
 #include <mach/serial.h>
@@ -39,7 +56,27 @@
 #include <mach/usb.h>
 #include <mach/aemif.h>
 
+<<<<<<< HEAD
 #define DM644X_EVM_PHY_ID		"0:01"
+=======
+#include "davinci.h"
+
+#define DM644X_EVM_PHY_ID		"davinci_mdio-0:01"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/common.h>
+#include <linux/platform_data/i2c-davinci.h>
+#include <mach/serial.h>
+#include <mach/mux.h>
+#include <linux/platform_data/mtd-davinci.h>
+#include <linux/platform_data/mmc-davinci.h>
+#include <linux/platform_data/usb-davinci.h>
+#include <linux/platform_data/mtd-davinci-aemif.h>
+
+#include "davinci.h"
+
+#define DM644X_EVM_PHY_ID		"davinci_mdio-0:01"
+>>>>>>> refs/remotes/origin/master
 #define LXT971_PHY_ID	(0x001378e2)
 #define LXT971_PHY_MASK	(0xfffffff0)
 
@@ -150,7 +187,16 @@ static struct davinci_nand_pdata davinci_evm_nandflash_data = {
 	.parts		= davinci_evm_nandflash_partition,
 	.nr_parts	= ARRAY_SIZE(davinci_evm_nandflash_partition),
 	.ecc_mode	= NAND_ECC_HW,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.options	= NAND_USE_FLASH_BBT,
+=======
+	.bbt_options	= NAND_BBT_USE_FLASH,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ecc_bits	= 1,
+	.bbt_options	= NAND_BBT_USE_FLASH,
+>>>>>>> refs/remotes/origin/master
 	.timing		= &davinci_evm_nandflash_timing,
 };
 
@@ -188,7 +234,15 @@ static struct platform_device davinci_fb_device = {
 	.num_resources = 0,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct tvp514x_platform_data tvp5146_pdata = {
+=======
+static struct tvp514x_platform_data dm644xevm_tvp5146_pdata = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct tvp514x_platform_data dm644xevm_tvp5146_pdata = {
+>>>>>>> refs/remotes/origin/master
 	.clk_polarity = 0,
 	.hs_polarity = 1,
 	.vs_polarity = 1
@@ -196,7 +250,15 @@ static struct tvp514x_platform_data tvp5146_pdata = {
 
 #define TVP514X_STD_ALL	(V4L2_STD_NTSC | V4L2_STD_PAL)
 /* Inputs available at the TVP5146 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct v4l2_input tvp5146_inputs[] = {
+=======
+static struct v4l2_input dm644xevm_tvp5146_inputs[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct v4l2_input dm644xevm_tvp5146_inputs[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.index = 0,
 		.name = "Composite",
@@ -216,7 +278,15 @@ static struct v4l2_input tvp5146_inputs[] = {
  * ouput that goes to vpfe. There is a one to one correspondence
  * with tvp5146_inputs
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct vpfe_route tvp5146_routes[] = {
+=======
+static struct vpfe_route dm644xevm_tvp5146_routes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct vpfe_route dm644xevm_tvp5146_routes[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.input = INPUT_CVBS_VI2B,
 		.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
@@ -227,6 +297,8 @@ static struct vpfe_route tvp5146_routes[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct vpfe_subdev_info vpfe_sub_devs[] = {
 	{
 		.name = "tvp5146",
@@ -234,6 +306,20 @@ static struct vpfe_subdev_info vpfe_sub_devs[] = {
 		.num_inputs = ARRAY_SIZE(tvp5146_inputs),
 		.inputs = tvp5146_inputs,
 		.routes = tvp5146_routes,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct vpfe_subdev_info dm644xevm_vpfe_sub_devs[] = {
+	{
+		.name = "tvp5146",
+		.grp_id = 0,
+		.num_inputs = ARRAY_SIZE(dm644xevm_tvp5146_inputs),
+		.inputs = dm644xevm_tvp5146_inputs,
+		.routes = dm644xevm_tvp5146_routes,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.can_route = 1,
 		.ccdc_if_params = {
 			.if_type = VPFE_BT656,
@@ -242,15 +328,36 @@ static struct vpfe_subdev_info vpfe_sub_devs[] = {
 		},
 		.board_info = {
 			I2C_BOARD_INFO("tvp5146", 0x5d),
+<<<<<<< HEAD
+<<<<<<< HEAD
 			.platform_data = &tvp5146_pdata,
+=======
+			.platform_data = &dm644xevm_tvp5146_pdata,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.platform_data = &dm644xevm_tvp5146_pdata,
+>>>>>>> refs/remotes/origin/master
 		},
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct vpfe_config vpfe_cfg = {
 	.num_subdevs = ARRAY_SIZE(vpfe_sub_devs),
 	.i2c_adapter_id = 1,
 	.sub_devs = vpfe_sub_devs,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct vpfe_config dm644xevm_capture_cfg = {
+	.num_subdevs = ARRAY_SIZE(dm644xevm_vpfe_sub_devs),
+	.i2c_adapter_id = 1,
+	.sub_devs = dm644xevm_vpfe_sub_devs,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.card_name = "DM6446 EVM",
 	.ccdc = "DM6446 CCDC",
 };
@@ -516,13 +623,19 @@ static int dm6444evm_msp430_get_pins(void)
 	char buf[4];
 	struct i2c_msg msg[2] = {
 		{
+<<<<<<< HEAD
 			.addr = dm6446evm_msp->addr,
+=======
+>>>>>>> refs/remotes/origin/master
 			.flags = 0,
 			.len = 2,
 			.buf = (void __force *)txbuf,
 		},
 		{
+<<<<<<< HEAD
 			.addr = dm6446evm_msp->addr,
+=======
+>>>>>>> refs/remotes/origin/master
 			.flags = I2C_M_RD,
 			.len = 4,
 			.buf = buf,
@@ -533,6 +646,12 @@ static int dm6444evm_msp430_get_pins(void)
 	if (!dm6446evm_msp)
 		return -ENXIO;
 
+<<<<<<< HEAD
+=======
+	msg[0].addr = dm6446evm_msp->addr;
+	msg[1].addr = dm6446evm_msp->addr;
+
+>>>>>>> refs/remotes/origin/master
 	/* Command 4 == get input state, returns port 2 and port3 data
 	 *   S Addr W [A] len=2 [A] cmd=4 [A]
 	 *   RS Addr R [A] [len=4] A [cmd=4] A [port2] A [port3] N P
@@ -566,7 +685,10 @@ static struct davinci_mmc_config dm6446evm_mmc_config = {
 	.get_cd		= dm6444evm_mmc_get_cd,
 	.get_ro		= dm6444evm_mmc_get_ro,
 	.wires		= 4,
+<<<<<<< HEAD
 	.version	= MMC_CTLR_VERSION_1
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct i2c_board_info __initdata i2c_info[] =  {
@@ -611,11 +733,163 @@ static void __init evm_init_i2c(void)
 	i2c_register_board_info(1, i2c_info, ARRAY_SIZE(i2c_info));
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define VENC_STD_ALL	(V4L2_STD_NTSC | V4L2_STD_PAL)
+
+/* venc standard timings */
+static struct vpbe_enc_mode_info dm644xevm_enc_std_timing[] = {
+	{
+		.name		= "ntsc",
+		.timings_type	= VPBE_ENC_STD,
+<<<<<<< HEAD
+		.timings	= {V4L2_STD_525_60},
+=======
+		.std_id		= V4L2_STD_NTSC,
+>>>>>>> refs/remotes/origin/master
+		.interlaced	= 1,
+		.xres		= 720,
+		.yres		= 480,
+		.aspect		= {11, 10},
+		.fps		= {30000, 1001},
+		.left_margin	= 0x79,
+		.upper_margin	= 0x10,
+	},
+	{
+		.name		= "pal",
+		.timings_type	= VPBE_ENC_STD,
+<<<<<<< HEAD
+		.timings	= {V4L2_STD_625_50},
+=======
+		.std_id		= V4L2_STD_PAL,
+>>>>>>> refs/remotes/origin/master
+		.interlaced	= 1,
+		.xres		= 720,
+		.yres		= 576,
+		.aspect		= {54, 59},
+		.fps		= {25, 1},
+		.left_margin	= 0x7e,
+		.upper_margin	= 0x16,
+	},
+};
+
+/* venc dv preset timings */
+static struct vpbe_enc_mode_info dm644xevm_enc_preset_timing[] = {
+	{
+		.name		= "480p59_94",
+<<<<<<< HEAD
+		.timings_type	= VPBE_ENC_DV_PRESET,
+		.timings	= {V4L2_DV_480P59_94},
+=======
+		.timings_type	= VPBE_ENC_DV_TIMINGS,
+		.dv_timings	= V4L2_DV_BT_CEA_720X480P59_94,
+>>>>>>> refs/remotes/origin/master
+		.interlaced	= 0,
+		.xres		= 720,
+		.yres		= 480,
+		.aspect		= {1, 1},
+		.fps		= {5994, 100},
+		.left_margin	= 0x80,
+		.upper_margin	= 0x20,
+	},
+	{
+		.name		= "576p50",
+<<<<<<< HEAD
+		.timings_type	= VPBE_ENC_DV_PRESET,
+		.timings	= {V4L2_DV_576P50},
+=======
+		.timings_type	= VPBE_ENC_DV_TIMINGS,
+		.dv_timings	= V4L2_DV_BT_CEA_720X576P50,
+>>>>>>> refs/remotes/origin/master
+		.interlaced	= 0,
+		.xres		= 720,
+		.yres		= 576,
+		.aspect		= {1, 1},
+		.fps		= {50, 1},
+		.left_margin	= 0x7e,
+		.upper_margin	= 0x30,
+	},
+};
+
+/*
+ * The outputs available from VPBE + encoders. Keep the order same
+ * as that of encoders. First those from venc followed by that from
+ * encoders. Index in the output refers to index on a particular encoder.
+ * Driver uses this index to pass it to encoder when it supports more
+ * than one output. Userspace applications use index of the array to
+ * set an output.
+ */
+static struct vpbe_output dm644xevm_vpbe_outputs[] = {
+	{
+		.output		= {
+			.index		= 0,
+			.name		= "Composite",
+			.type		= V4L2_OUTPUT_TYPE_ANALOG,
+			.std		= VENC_STD_ALL,
+			.capabilities	= V4L2_OUT_CAP_STD,
+		},
+<<<<<<< HEAD
+		.subdev_name	= VPBE_VENC_SUBDEV_NAME,
+=======
+		.subdev_name	= DM644X_VPBE_VENC_SUBDEV_NAME,
+>>>>>>> refs/remotes/origin/master
+		.default_mode	= "ntsc",
+		.num_modes	= ARRAY_SIZE(dm644xevm_enc_std_timing),
+		.modes		= dm644xevm_enc_std_timing,
+	},
+	{
+		.output		= {
+			.index		= 1,
+			.name		= "Component",
+			.type		= V4L2_OUTPUT_TYPE_ANALOG,
+<<<<<<< HEAD
+			.capabilities	= V4L2_OUT_CAP_PRESETS,
+		},
+		.subdev_name	= VPBE_VENC_SUBDEV_NAME,
+=======
+			.capabilities	= V4L2_OUT_CAP_DV_TIMINGS,
+		},
+		.subdev_name	= DM644X_VPBE_VENC_SUBDEV_NAME,
+>>>>>>> refs/remotes/origin/master
+		.default_mode	= "480p59_94",
+		.num_modes	= ARRAY_SIZE(dm644xevm_enc_preset_timing),
+		.modes		= dm644xevm_enc_preset_timing,
+	},
+};
+
+static struct vpbe_config dm644xevm_display_cfg = {
+	.module_name	= "dm644x-vpbe-display",
+	.i2c_adapter_id	= 1,
+	.osd		= {
+<<<<<<< HEAD
+		.module_name	= VPBE_OSD_SUBDEV_NAME,
+	},
+	.venc		= {
+		.module_name	= VPBE_VENC_SUBDEV_NAME,
+=======
+		.module_name	= DM644X_VPBE_OSD_SUBDEV_NAME,
+	},
+	.venc		= {
+		.module_name	= DM644X_VPBE_VENC_SUBDEV_NAME,
+>>>>>>> refs/remotes/origin/master
+	},
+	.num_outputs	= ARRAY_SIZE(dm644xevm_vpbe_outputs),
+	.outputs	= dm644xevm_vpbe_outputs,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *davinci_evm_devices[] __initdata = {
 	&davinci_fb_device,
 	&rtc_dev,
 };
 
+<<<<<<< HEAD
 static struct davinci_uart_config uart_config __initdata = {
 	.enabled_uarts = (1 << 0),
 };
@@ -623,8 +897,16 @@ static struct davinci_uart_config uart_config __initdata = {
 static void __init
 davinci_evm_map_io(void)
 {
+<<<<<<< HEAD
 	/* setup input configuration for VPFE input devices */
 	dm644x_set_vpfe_config(&vpfe_cfg);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init
+davinci_evm_map_io(void)
+{
+>>>>>>> refs/remotes/origin/master
 	dm644x_init();
 }
 
@@ -641,6 +923,7 @@ static int davinci_phy_fixup(struct phy_device *phydev)
 	return 0;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_BLK_DEV_PALMCHIP_BK3710) || \
     defined(CONFIG_BLK_DEV_PALMCHIP_BK3710_MODULE)
 #define HAS_ATA 1
@@ -669,6 +952,26 @@ static __init void davinci_evm_init(void)
 
 	aemif_clk = clk_get(NULL, "aemif");
 	clk_enable(aemif_clk);
+=======
+#define HAS_ATA		IS_ENABLED(CONFIG_BLK_DEV_PALMCHIP_BK3710)
+
+#define HAS_NOR		IS_ENABLED(CONFIG_MTD_PHYSMAP)
+
+#define HAS_NAND	IS_ENABLED(CONFIG_MTD_NAND_DAVINCI)
+
+static __init void davinci_evm_init(void)
+{
+	int ret;
+	struct clk *aemif_clk;
+	struct davinci_soc_info *soc_info = &davinci_soc_info;
+
+	ret = dm644x_gpio_register();
+	if (ret)
+		pr_warn("%s: GPIO init failed: %d\n", __func__, ret);
+
+	aemif_clk = clk_get(NULL, "aemif");
+	clk_prepare_enable(aemif_clk);
+>>>>>>> refs/remotes/origin/master
 
 	if (HAS_ATA) {
 		if (HAS_NAND || HAS_NOR)
@@ -696,8 +999,18 @@ static __init void davinci_evm_init(void)
 	evm_init_i2c();
 
 	davinci_setup_mmc(0, &dm6446evm_mmc_config);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dm644x_init_video(&dm644xevm_capture_cfg, &dm644xevm_display_cfg);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	davinci_serial_init(&uart_config);
+=======
+	dm644x_init_video(&dm644xevm_capture_cfg, &dm644xevm_display_cfg);
+
+	davinci_serial_init(dm644x_serial_device);
+>>>>>>> refs/remotes/origin/master
 	dm644x_init_asp(&dm644x_evm_snd_data);
 
 	/* irlml6401 switches over 1A, in under 8 msec */
@@ -712,9 +1025,29 @@ static __init void davinci_evm_init(void)
 
 MACHINE_START(DAVINCI_EVM, "DaVinci DM644x EVM")
 	/* Maintainer: MontaVista Software <source@mvista.com> */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params  = (DAVINCI_DDR_BASE + 0x100),
+=======
+	.atag_offset  = 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io	      = davinci_evm_map_io,
 	.init_irq     = davinci_irq_init,
 	.timer	      = &davinci_timer,
 	.init_machine = davinci_evm_init,
+<<<<<<< HEAD
+=======
+	.dma_zone_size	= SZ_128M,
+	.restart	= davinci_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset  = 0x100,
+	.map_io	      = davinci_evm_map_io,
+	.init_irq     = davinci_irq_init,
+	.init_time	= davinci_timer_init,
+	.init_machine = davinci_evm_init,
+	.init_late	= davinci_init_late,
+	.dma_zone_size	= SZ_128M,
+	.restart	= davinci_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

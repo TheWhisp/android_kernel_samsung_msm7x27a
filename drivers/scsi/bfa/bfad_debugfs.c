@@ -16,6 +16,14 @@
  */
 
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "bfad_drv.h"
 #include "bfad_im.h"
@@ -172,6 +180,7 @@ bfad_debugfs_open_reg(struct inode *inode, struct file *file)
 static loff_t
 bfad_debugfs_lseek(struct file *file, loff_t offset, int orig)
 {
+<<<<<<< HEAD
 	struct bfad_debug_info *debug;
 	loff_t pos = file->f_pos;
 
@@ -197,6 +206,11 @@ bfad_debugfs_lseek(struct file *file, loff_t offset, int orig)
 	}
 
 	return file->f_pos;
+=======
+	struct bfad_debug_info *debug = file->private_data;
+	return fixed_size_llseek(file, offset, orig,
+				debug->buffer_len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t
@@ -214,10 +228,23 @@ bfad_debugfs_read(struct file *file, char __user *buf,
 
 #define BFA_REG_CT_ADDRSZ	(0x40000)
 #define BFA_REG_CB_ADDRSZ	(0x20000)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define BFA_REG_ADDRSZ(__bfa)	\
 	((bfa_ioc_devid(&(__bfa)->ioc) == BFA_PCI_DEVICE_ID_CT) ?	\
 		BFA_REG_CT_ADDRSZ : BFA_REG_CB_ADDRSZ)
 #define BFA_REG_ADDRMSK(__bfa)  ((u32)(BFA_REG_ADDRSZ(__bfa) - 1))
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define BFA_REG_ADDRSZ(__ioc)	\
+	((u32)(bfa_asic_id_ctc(bfa_ioc_devid(__ioc)) ?	\
+	 BFA_REG_CT_ADDRSZ : BFA_REG_CB_ADDRSZ))
+#define BFA_REG_ADDRMSK(__ioc)	(BFA_REG_ADDRSZ(__ioc) - 1)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static bfa_status_t
 bfad_reg_offset_check(struct bfa_s *bfa, u32 offset, u32 len)
@@ -236,7 +263,15 @@ bfad_reg_offset_check(struct bfa_s *bfa, u32 offset, u32 len)
 			return BFA_STATUS_EINVAL;
 	} else {
 		/* CB register space 64KB */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((offset + (len<<2)) > BFA_REG_ADDRMSK(bfa))
+=======
+		if ((offset + (len<<2)) > BFA_REG_ADDRMSK(&bfa->ioc))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((offset + (len<<2)) > BFA_REG_ADDRMSK(&bfa->ioc))
+>>>>>>> refs/remotes/origin/master
 			return BFA_STATUS_EINVAL;
 	}
 	return BFA_STATUS_OK;
@@ -317,7 +352,15 @@ bfad_debugfs_write_regrd(struct file *file, const char __user *buf,
 
 	bfad->reglen = len << 2;
 	rb = bfa_ioc_bar0(ioc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	addr &= BFA_REG_ADDRMSK(bfa);
+=======
+	addr &= BFA_REG_ADDRMSK(ioc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr &= BFA_REG_ADDRMSK(ioc);
+>>>>>>> refs/remotes/origin/master
 
 	/* offset and len sanity check */
 	rc = bfad_reg_offset_check(bfa, addr, len);
@@ -380,7 +423,15 @@ bfad_debugfs_write_regwr(struct file *file, const char __user *buf,
 	}
 	kfree(kern_buf);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	addr &= BFA_REG_ADDRMSK(bfa); /* offset only 17 bit and word align */
+=======
+	addr &= BFA_REG_ADDRMSK(ioc); /* offset only 17 bit and word align */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr &= BFA_REG_ADDRMSK(ioc); /* offset only 17 bit and word align */
+>>>>>>> refs/remotes/origin/master
 
 	/* offset and len sanity check */
 	rc = bfad_reg_offset_check(bfa, addr, 1);
@@ -471,7 +522,15 @@ static const struct file_operations bfad_debugfs_op_regwr = {
 
 struct bfad_debugfs_entry {
 	const char *name;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t	mode;
+=======
+	umode_t	mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t	mode;
+>>>>>>> refs/remotes/origin/master
 	const struct file_operations *fops;
 };
 
@@ -556,8 +615,16 @@ bfad_debugfs_exit(struct bfad_port_s *port)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Remove the pci_dev debugfs directory for the port */
+=======
+	/* Remove the pci_dev debugfs directory for the port */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Remove the pci_dev debugfs directory for the port */
+>>>>>>> refs/remotes/origin/master
 	if (port->port_debugfs_root) {
 		debugfs_remove(port->port_debugfs_root);
 		port->port_debugfs_root = NULL;

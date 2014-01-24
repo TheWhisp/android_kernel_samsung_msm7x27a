@@ -10,14 +10,23 @@
 #include <mach/common.h>
 #include <mach/irqs.h>
 #include <mach/cputype.h>
+<<<<<<< HEAD
 #include <mach/usb.h>
+=======
+#include <mach/da8xx.h>
+#include <linux/platform_data/usb-davinci.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DAVINCI_USB_OTG_BASE	0x01c64000
 
 #define DA8XX_USB0_BASE 	0x01e00000
 #define DA8XX_USB1_BASE 	0x01e25000
 
+<<<<<<< HEAD
 #if defined(CONFIG_USB_MUSB_HDRC) || defined(CONFIG_USB_MUSB_HDRC_MODULE)
+=======
+#if IS_ENABLED(CONFIG_USB_MUSB_HDRC)
+>>>>>>> refs/remotes/origin/master
 static struct musb_hdrc_eps_bits musb_eps[] = {
 	{ "ep1_tx", 8, },
 	{ "ep1_rx", 8, },
@@ -42,6 +51,7 @@ static struct musb_hdrc_config musb_config = {
 };
 
 static struct musb_hdrc_platform_data usb_data = {
+<<<<<<< HEAD
 #if defined(CONFIG_USB_MUSB_OTG)
 	/* OTG requires a Mini-AB connector */
 	.mode           = MUSB_OTG,
@@ -50,6 +60,10 @@ static struct musb_hdrc_platform_data usb_data = {
 #elif defined(CONFIG_USB_MUSB_HOST)
 	.mode           = MUSB_HOST,
 #endif
+=======
+	/* OTG requires a Mini-AB connector */
+	.mode           = MUSB_OTG,
+>>>>>>> refs/remotes/origin/master
 	.clock		= "usb",
 	.config		= &musb_config,
 };

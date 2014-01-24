@@ -103,7 +103,15 @@ static const struct hermes_ops hermes_ops_local;
 
    Callable from any context.
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_issue_cmd(hermes_t *hw, u16 cmd, u16 param0,
+=======
+static int hermes_issue_cmd(struct hermes *hw, u16 cmd, u16 param0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_issue_cmd(struct hermes *hw, u16 cmd, u16 param0,
+>>>>>>> refs/remotes/origin/master
 			    u16 param1, u16 param2)
 {
 	int k = CMD_BUSY_TIMEOUT;
@@ -132,7 +140,15 @@ static int hermes_issue_cmd(hermes_t *hw, u16 cmd, u16 param0,
  */
 
 /* For doing cmds that wipe the magic constant in SWSUPPORT0 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_doicmd_wait(hermes_t *hw, u16 cmd,
+=======
+static int hermes_doicmd_wait(struct hermes *hw, u16 cmd,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_doicmd_wait(struct hermes *hw, u16 cmd,
+>>>>>>> refs/remotes/origin/master
 			      u16 parm0, u16 parm1, u16 parm2,
 			      struct hermes_response *resp)
 {
@@ -185,7 +201,17 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void hermes_struct_init(hermes_t *hw, void __iomem *address, int reg_spacing)
+=======
+void hermes_struct_init(struct hermes *hw, void __iomem *address,
+			int reg_spacing)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void hermes_struct_init(struct hermes *hw, void __iomem *address,
+			int reg_spacing)
+>>>>>>> refs/remotes/origin/master
 {
 	hw->iobase = address;
 	hw->reg_spacing = reg_spacing;
@@ -195,7 +221,15 @@ void hermes_struct_init(hermes_t *hw, void __iomem *address, int reg_spacing)
 }
 EXPORT_SYMBOL(hermes_struct_init);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_init(hermes_t *hw)
+=======
+static int hermes_init(struct hermes *hw)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_init(struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 reg;
 	int err = 0;
@@ -249,7 +283,15 @@ static int hermes_init(hermes_t *hw)
  *     > 0 on error returned by the firmware
  *
  * Callable from any context, but locking is your problem. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_docmd_wait(hermes_t *hw, u16 cmd, u16 parm0,
+=======
+static int hermes_docmd_wait(struct hermes *hw, u16 cmd, u16 parm0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_docmd_wait(struct hermes *hw, u16 cmd, u16 parm0,
+>>>>>>> refs/remotes/origin/master
 			     struct hermes_response *resp)
 {
 	int err;
@@ -313,7 +355,15 @@ static int hermes_docmd_wait(hermes_t *hw, u16 cmd, u16 parm0,
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_allocate(hermes_t *hw, u16 size, u16 *fid)
+=======
+static int hermes_allocate(struct hermes *hw, u16 size, u16 *fid)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_allocate(struct hermes *hw, u16 size, u16 *fid)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = 0;
 	int k;
@@ -363,7 +413,15 @@ static int hermes_allocate(hermes_t *hw, u16 size, u16 *fid)
  * from firmware
  *
  * Callable from any context */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_bap_seek(hermes_t *hw, int bap, u16 id, u16 offset)
+=======
+static int hermes_bap_seek(struct hermes *hw, int bap, u16 id, u16 offset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_bap_seek(struct hermes *hw, int bap, u16 id, u16 offset)
+>>>>>>> refs/remotes/origin/master
 {
 	int sreg = bap ? HERMES_SELECT1 : HERMES_SELECT0;
 	int oreg = bap ? HERMES_OFFSET1 : HERMES_OFFSET0;
@@ -422,7 +480,15 @@ static int hermes_bap_seek(hermes_t *hw, int bap, u16 id, u16 offset)
  *       0 on success
  *     > 0 on error from firmware
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_bap_pread(hermes_t *hw, int bap, void *buf, int len,
+=======
+static int hermes_bap_pread(struct hermes *hw, int bap, void *buf, int len,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_bap_pread(struct hermes *hw, int bap, void *buf, int len,
+>>>>>>> refs/remotes/origin/master
 			    u16 id, u16 offset)
 {
 	int dreg = bap ? HERMES_DATA1 : HERMES_DATA0;
@@ -436,7 +502,15 @@ static int hermes_bap_pread(hermes_t *hw, int bap, void *buf, int len,
 		goto out;
 
 	/* Actually do the transfer */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_read_words(hw, dreg, buf, len/2);
+=======
+	hermes_read_words(hw, dreg, buf, len / 2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hermes_read_words(hw, dreg, buf, len / 2);
+>>>>>>> refs/remotes/origin/master
 
  out:
 	return err;
@@ -450,8 +524,18 @@ static int hermes_bap_pread(hermes_t *hw, int bap, void *buf, int len,
  *       0 on success
  *     > 0 on error from firmware
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_bap_pwrite(hermes_t *hw, int bap, const void *buf, int len,
 			     u16 id, u16 offset)
+=======
+static int hermes_bap_pwrite(struct hermes *hw, int bap, const void *buf,
+			     int len, u16 id, u16 offset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_bap_pwrite(struct hermes *hw, int bap, const void *buf,
+			     int len, u16 id, u16 offset)
+>>>>>>> refs/remotes/origin/master
 {
 	int dreg = bap ? HERMES_DATA1 : HERMES_DATA0;
 	int err = 0;
@@ -478,8 +562,18 @@ static int hermes_bap_pwrite(hermes_t *hw, int bap, const void *buf, int len,
  * practice.
  *
  * Callable from user or bh context.  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_read_ltv(hermes_t *hw, int bap, u16 rid, unsigned bufsize,
 			   u16 *length, void *buf)
+=======
+static int hermes_read_ltv(struct hermes *hw, int bap, u16 rid,
+			   unsigned bufsize, u16 *length, void *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_read_ltv(struct hermes *hw, int bap, u16 rid,
+			   unsigned bufsize, u16 *length, void *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = 0;
 	int dreg = bap ? HERMES_DATA1 : HERMES_DATA0;
@@ -523,7 +617,15 @@ static int hermes_read_ltv(hermes_t *hw, int bap, u16 rid, unsigned bufsize,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_write_ltv(hermes_t *hw, int bap, u16 rid,
+=======
+static int hermes_write_ltv(struct hermes *hw, int bap, u16 rid,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_write_ltv(struct hermes *hw, int bap, u16 rid,
+>>>>>>> refs/remotes/origin/master
 			    u16 length, const void *value)
 {
 	int dreg = bap ? HERMES_DATA1 : HERMES_DATA0;
@@ -553,14 +655,30 @@ static int hermes_write_ltv(hermes_t *hw, int bap, u16 rid,
 /*** Hermes AUX control ***/
 
 static inline void
+<<<<<<< HEAD
+<<<<<<< HEAD
 hermes_aux_setaddr(hermes_t *hw, u32 addr)
+=======
+hermes_aux_setaddr(struct hermes *hw, u32 addr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+hermes_aux_setaddr(struct hermes *hw, u32 addr)
+>>>>>>> refs/remotes/origin/master
 {
 	hermes_write_reg(hw, HERMES_AUXPAGE, (u16) (addr >> 7));
 	hermes_write_reg(hw, HERMES_AUXOFFSET, (u16) (addr & 0x7F));
 }
 
 static inline int
+<<<<<<< HEAD
+<<<<<<< HEAD
 hermes_aux_control(hermes_t *hw, int enabled)
+=======
+hermes_aux_control(struct hermes *hw, int enabled)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+hermes_aux_control(struct hermes *hw, int enabled)
+>>>>>>> refs/remotes/origin/master
 {
 	int desired_state = enabled ? HERMES_AUX_ENABLED : HERMES_AUX_DISABLED;
 	int action = enabled ? HERMES_AUX_ENABLE : HERMES_AUX_DISABLE;
@@ -594,7 +712,15 @@ hermes_aux_control(hermes_t *hw, int enabled)
  * wl_lkm Agere fw does
  * Don't know about intersil
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermesi_program_init(hermes_t *hw, u32 offset)
+=======
+static int hermesi_program_init(struct hermes *hw, u32 offset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermesi_program_init(struct hermes *hw, u32 offset)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -643,7 +769,15 @@ static int hermesi_program_init(hermes_t *hw, u32 offset)
  * wl_lkm Agere fw does
  * Don't know about intersil
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermesi_program_end(hermes_t *hw)
+=======
+static int hermesi_program_end(struct hermes *hw)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermesi_program_end(struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hermes_response resp;
 	int rc = 0;
@@ -684,7 +818,17 @@ static int hermes_program_bytes(struct hermes *hw, const char *data,
 }
 
 /* Read PDA from the adapter */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int hermes_read_pda(hermes_t *hw, __le16 *pda, u32 pda_addr, u16 pda_len)
+=======
+static int hermes_read_pda(struct hermes *hw, __le16 *pda, u32 pda_addr,
+			   u16 pda_len)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hermes_read_pda(struct hermes *hw, __le16 *pda, u32 pda_addr,
+			   u16 pda_len)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	u16 pda_size;

@@ -16,7 +16,11 @@
 #include <asm/cache.h>
 #include <asm/io.h>
 
+<<<<<<< HEAD
 void __cpuinit cpu_probe(void)
+=======
+void cpu_probe(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long addr0, addr1, data0, data1, data2, data3;
 

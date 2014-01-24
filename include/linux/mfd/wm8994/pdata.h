@@ -17,13 +17,25 @@
 
 #define WM8994_NUM_LDO   2
 #define WM8994_NUM_GPIO 11
+<<<<<<< HEAD
+=======
+#define WM8994_NUM_AIF   3
+>>>>>>> refs/remotes/origin/master
 
 struct wm8994_ldo_pdata {
 	/** GPIOs to enable regulator, 0 or less if not available */
 	int enable;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const char *supply;
 	struct regulator_init_data *init_data;
+=======
+	const struct regulator_init_data *init_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct regulator_init_data *init_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define WM8994_CONFIGURE_GPIO 0x10000
@@ -113,6 +125,32 @@ struct wm8958_enh_eq_cfg {
 	u16 regs[WM8958_ENH_EQ_REGS];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * Microphone detection rates, used to tune response rates and power
+ * consumption for WM8958/WM1811 microphone detection.
+ *
+ * @sysclk: System clock rate to use this configuration for.
+ * @idle: True if this configuration should use when no accessory is detected,
+ *        false otherwise.
+ * @start: Value for MICD_BIAS_START_TIME register field (not shifted).
+ * @rate: Value for MICD_RATE register field (not shifted).
+ */
+struct wm8958_micd_rate {
+	int sysclk;
+	bool idle;
+	int start;
+	int rate;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct wm8994_pdata {
 	int gpio_base;
 
@@ -125,6 +163,10 @@ struct wm8994_pdata {
 	struct wm8994_ldo_pdata ldo[WM8994_NUM_LDO];
 
 	int irq_base;  /** Base IRQ number for WM8994, required for IRQs */
+<<<<<<< HEAD
+=======
+	unsigned long irq_flags; /** user irq flags */
+>>>>>>> refs/remotes/origin/master
 
         int num_drc_cfgs;
         struct wm8994_drc_cfg *drc_cfgs;
@@ -144,6 +186,22 @@ struct wm8994_pdata {
 	int num_enh_eq_cfgs;
 	struct wm8958_enh_eq_cfg *enh_eq_cfgs;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int num_micd_rates;
+	struct wm8958_micd_rate *micd_rates;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int num_micd_rates;
+	struct wm8958_micd_rate *micd_rates;
+
+	/* Power up delays to add after microphone bias power up (ms) */
+	int micb1_delay;
+	int micb2_delay;
+
+>>>>>>> refs/remotes/origin/master
         /* LINEOUT can be differential or single ended */
         unsigned int lineout1_diff:1;
         unsigned int lineout2_diff:1;
@@ -152,6 +210,19 @@ struct wm8994_pdata {
         unsigned int lineout1fb:1;
         unsigned int lineout2fb:1;
 
+<<<<<<< HEAD
+=======
+	/* Delay between detecting a jack and starting microphone
+	 * detect (specified in ms)
+	 */
+	int micdet_delay;
+
+	/* Delay between microphone detect completing and reporting on
+	 * insert (specified in ms)
+	 */
+	int mic_id_delay;
+
+>>>>>>> refs/remotes/origin/master
 	/* IRQ for microphone detection if brought out directly as a
 	 * signal.
 	 */
@@ -165,8 +236,50 @@ struct wm8994_pdata {
         unsigned int jd_scthr:2;
         unsigned int jd_thr:2;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* WM8958 microphone bias configuration */
 	int micbias[2];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Configure WM1811 jack detection for use with external capacitor */
+	unsigned int jd_ext_cap:1;
+
+	/* WM8958 microphone bias configuration */
+	int micbias[2];
+
+	/* WM8958 microphone detection ranges */
+	u16 micd_lvl_sel;
+
+	/* Disable the internal pull downs on the LDOs if they are
+	 * always driven (eg, connected to an always on supply or
+	 * GPIO that always drives an output.  If they float power
+	 * consumption will rise.
+	 */
+	bool ldo_ena_always_driven;
+
+	/*
+	 * SPKMODE must be pulled internally by the device on this
+	 * system.
+	 */
+	bool spkmode_pu;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/**
+	 * Maximum number of channels clocks will be generated for,
+	 * useful for systems where and I2S bus with multiple data
+	 * lines is mastered.
+	 */
+	int max_channels_clocked[WM8994_NUM_AIF];
+
+	/**
+	 * GPIO for the IRQ pin if host only supports edge triggering
+	 */
+	int irq_gpio;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

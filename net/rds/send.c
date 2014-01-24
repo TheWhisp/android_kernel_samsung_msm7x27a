@@ -31,10 +31,28 @@
  *
  */
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gfp.h>
 #include <net/sock.h>
 #include <linux/in.h>
 #include <linux/list.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/ratelimit.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "rds.h"
 
@@ -1005,16 +1023,32 @@ int rds_sendmsg(struct kiocb *iocb, struct socket *sock, struct msghdr *msg,
 		goto out;
 
 	if (rm->rdma.op_active && !conn->c_trans->xmit_rdma) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (printk_ratelimit())
 			printk(KERN_NOTICE "rdma_op %p conn xmit_rdma %p\n",
+=======
+		printk_ratelimited(KERN_NOTICE "rdma_op %p conn xmit_rdma %p\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk_ratelimited(KERN_NOTICE "rdma_op %p conn xmit_rdma %p\n",
+>>>>>>> refs/remotes/origin/master
 			       &rm->rdma, conn->c_trans->xmit_rdma);
 		ret = -EOPNOTSUPP;
 		goto out;
 	}
 
 	if (rm->atomic.op_active && !conn->c_trans->xmit_atomic) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (printk_ratelimit())
 			printk(KERN_NOTICE "atomic_op %p conn xmit_atomic %p\n",
+=======
+		printk_ratelimited(KERN_NOTICE "atomic_op %p conn xmit_atomic %p\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk_ratelimited(KERN_NOTICE "atomic_op %p conn xmit_atomic %p\n",
+>>>>>>> refs/remotes/origin/master
 			       &rm->atomic, conn->c_trans->xmit_atomic);
 		ret = -EOPNOTSUPP;
 		goto out;

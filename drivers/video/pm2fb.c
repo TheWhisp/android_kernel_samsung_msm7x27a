@@ -67,7 +67,11 @@
  * Driver data
  */
 static int hwcursor = 1;
+<<<<<<< HEAD
 static char *mode_option __devinitdata;
+=======
+static char *mode_option;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The XFree GLINT driver will (I think to implement hardware cursor
@@ -78,12 +82,30 @@ static char *mode_option __devinitdata;
  * these flags allow the user to specify that requests for +ve sync
  * should be silently turned in -ve sync.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int lowhsync;
 static int lowvsync;
 static int noaccel __devinitdata;
 /* mtrr option */
 #ifdef CONFIG_MTRR
 static int nomtrr __devinitdata;
+=======
+static bool lowhsync;
+static bool lowvsync;
+static bool noaccel __devinitdata;
+/* mtrr option */
+#ifdef CONFIG_MTRR
+static bool nomtrr __devinitdata;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool lowhsync;
+static bool lowvsync;
+static bool noaccel;
+/* mtrr option */
+#ifdef CONFIG_MTRR
+static bool nomtrr;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -107,7 +129,11 @@ struct pm2fb_par
  * Here we define the default structs fb_fix_screeninfo and fb_var_screeninfo
  * if we don't use modedb.
  */
+<<<<<<< HEAD
 static struct fb_fix_screeninfo pm2fb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo pm2fb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id =		"",
 	.type =		FB_TYPE_PACKED_PIXELS,
 	.visual =	FB_VISUAL_PSEUDOCOLOR,
@@ -120,7 +146,11 @@ static struct fb_fix_screeninfo pm2fb_fix __devinitdata = {
 /*
  * Default video mode. In case the modedb doesn't work.
  */
+<<<<<<< HEAD
 static struct fb_var_screeninfo pm2fb_var __devinitdata = {
+=======
+static struct fb_var_screeninfo pm2fb_var = {
+>>>>>>> refs/remotes/origin/master
 	/* "640x480, 8 bpp @ 60 Hz */
 	.xres =			640,
 	.yres =			480,
@@ -973,8 +1003,18 @@ static int pm2fb_pan_display(struct fb_var_screeninfo *var,
 {
 	struct pm2fb_par *p = info->par;
 	u32 base;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 depth = (var->bits_per_pixel + 7) & ~7;
 	u32 xres = (var->xres + 31) & ~31;
+=======
+	u32 depth = (info->var.bits_per_pixel + 7) & ~7;
+	u32 xres = (info->var.xres + 31) & ~31;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 depth = (info->var.bits_per_pixel + 7) & ~7;
+	u32 xres = (info->var.xres + 31) & ~31;
+>>>>>>> refs/remotes/origin/master
 
 	depth = (depth > 32) ? 32 : depth;
 	base = to3264(var->yoffset * xres + var->xoffset, depth, 1);
@@ -1515,8 +1555,12 @@ static struct fb_ops pm2fb_ops = {
  * @param	pdev	PCI device.
  * @param	id	PCI device ID.
  */
+<<<<<<< HEAD
 static int __devinit pm2fb_probe(struct pci_dev *pdev,
 				 const struct pci_device_id *id)
+=======
+static int pm2fb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pm2fb_par *default_par;
 	struct fb_info *info;
@@ -1695,8 +1739,13 @@ static int __devinit pm2fb_probe(struct pci_dev *pdev,
 	if (retval < 0)
 		goto err_exit_all;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device, memory = %dK.\n",
 	       info->node, info->fix.id, pm2fb_fix.smem_len / 1024);
+=======
+	fb_info(info, "%s frame buffer device, memory = %dK\n",
+		info->fix.id, pm2fb_fix.smem_len / 1024);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Our driver data
@@ -1727,7 +1776,11 @@ static int __devinit pm2fb_probe(struct pci_dev *pdev,
  *
  * @param	pdev	PCI device to clean up.
  */
+<<<<<<< HEAD
 static void __devexit pm2fb_remove(struct pci_dev *pdev)
+=======
+static void pm2fb_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(pdev);
 	struct fb_fix_screeninfo *fix = &info->fix;
@@ -1745,7 +1798,10 @@ static void __devexit pm2fb_remove(struct pci_dev *pdev)
 	iounmap(par->v_regs);
 	release_mem_region(fix->mmio_start, fix->mmio_len);
 
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	fb_dealloc_cmap(&info->cmap);
 	kfree(info->pixmap.addr);
 	framebuffer_release(info);
@@ -1765,7 +1821,11 @@ static struct pci_driver pm2fb_driver = {
 	.name		= "pm2fb",
 	.id_table	= pm2fb_id_table,
 	.probe		= pm2fb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pm2fb_remove),
+=======
+	.remove		= pm2fb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 MODULE_DEVICE_TABLE(pci, pm2fb_id_table);
@@ -1773,7 +1833,15 @@ MODULE_DEVICE_TABLE(pci, pm2fb_id_table);
 
 #ifndef MODULE
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Parse user speficied options.
+=======
+ * Parse user specified options.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Parse user specified options.
+>>>>>>> refs/remotes/origin/master
  *
  * This is, comma-separated options following `video=pm2fb:'.
  */

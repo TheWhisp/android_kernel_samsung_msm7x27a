@@ -7,6 +7,10 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/ip.h>
 #include <linux/udp.h>
@@ -21,7 +25,11 @@ static u_int16_t udp_port_rover;
 
 static void
 udp_unique_tuple(struct nf_conntrack_tuple *tuple,
+<<<<<<< HEAD
 		 const struct nf_nat_range *range,
+=======
+		 const struct nf_nat_ipv4_range *range,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 enum nf_nat_manip_type maniptype,
 		 const struct nf_conn *ct)
 {
@@ -46,7 +54,11 @@ udp_manip_pkt(struct sk_buff *skb,
 	iph = (struct iphdr *)(skb->data + iphdroff);
 	hdr = (struct udphdr *)(skb->data + hdroff);
 
+<<<<<<< HEAD
 	if (maniptype == IP_NAT_MANIP_SRC) {
+=======
+	if (maniptype == NF_NAT_MANIP_SRC) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Get rid of src ip and src pt */
 		oldip = iph->saddr;
 		newip = tuple->src.u3.ip;
@@ -72,12 +84,18 @@ udp_manip_pkt(struct sk_buff *skb,
 
 const struct nf_nat_protocol nf_nat_protocol_udp = {
 	.protonum		= IPPROTO_UDP,
+<<<<<<< HEAD
 	.me			= THIS_MODULE,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.manip_pkt		= udp_manip_pkt,
 	.in_range		= nf_nat_proto_in_range,
 	.unique_tuple		= udp_unique_tuple,
 #if defined(CONFIG_NF_CT_NETLINK) || defined(CONFIG_NF_CT_NETLINK_MODULE)
+<<<<<<< HEAD
 	.range_to_nlattr	= nf_nat_proto_range_to_nlattr,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.nlattr_to_range	= nf_nat_proto_nlattr_to_range,
 #endif
 };

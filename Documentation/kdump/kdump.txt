@@ -17,8 +17,18 @@ You can use common commands, such as cp and scp, to copy the
 memory image to a dump file on the local disk, or across the network to
 a remote system.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 Kdump and kexec are currently supported on the x86, x86_64, ppc64 and ia64
 architectures.
+=======
+Kdump and kexec are currently supported on the x86, x86_64, ppc64, ia64,
+and s390x architectures.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+Kdump and kexec are currently supported on the x86, x86_64, ppc64, ia64,
+and s390x architectures.
+>>>>>>> refs/remotes/origin/master
 
 When the system kernel boots, it reserves a small section of memory for
 the dump-capture kernel. This ensures that ongoing Direct Memory Access
@@ -34,11 +44,32 @@ Similarly on PPC64 machines first 32KB of physical memory is needed for
 booting regardless of where the kernel is loaded and to support 64K page
 size kexec backs up the first 64KB memory.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+For s390x, when kdump is triggered, the crashkernel region is exchanged
+with the region [0, crashkernel region size] and then the kdump kernel
+runs in [0, crashkernel region size]. Therefore no relocatable kernel is
+needed for s390x.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 All of the necessary information about the system kernel's core image is
 encoded in the ELF format, and stored in a reserved area of memory
 before a crash. The physical address of the start of the ELF header is
 passed to the dump-capture kernel through the elfcorehdr= boot
+<<<<<<< HEAD
+<<<<<<< HEAD
 parameter.
+=======
+parameter. Optionally the size of the ELF header can also be passed
+when using the elfcorehdr=[size[KMG]@]offset[KMG] syntax.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 With the dump-capture kernel, you can access the memory image, or "old
 memory," in two ways:
@@ -53,6 +84,18 @@ memory," in two ways:
   you can use analysis tools such as the GNU Debugger (GDB) and the Crash
   tool to debug the dump file. This method ensures that the dump pages are
   correctly ordered.
+=======
+parameter. Optionally the size of the ELF header can also be passed
+when using the elfcorehdr=[size[KMG]@]offset[KMG] syntax.
+
+
+With the dump-capture kernel, you can access the memory image through
+/proc/vmcore. This exports the dump as an ELF-format file that you can
+write out using file copy commands such as cp or scp. Further, you can
+use analysis tools such as the GNU Debugger (GDB) and the Crash tool to
+debug the dump file. This method ensures that the dump pages are correctly
+ordered.
+>>>>>>> refs/remotes/origin/master
 
 
 Setup and Installation
@@ -79,7 +122,11 @@ There is also a gitweb interface available at
 http://www.kernel.org/git/?p=utils/kernel/kexec/kexec-tools.git
 
 More information about kexec-tools can be found at
+<<<<<<< HEAD
 http://www.kernel.org/pub/linux/utils/kernel/kexec/README.html
+=======
+http://horms.net/projects/kexec/
+>>>>>>> refs/remotes/origin/master
 
 3) Unpack the tarball with the tar command, as follows:
 
@@ -290,7 +337,22 @@ Boot into System Kernel
    On ia64, 256M@256M is a generous value that typically works.
    The region may be automatically placed on ia64, see the
    dump-capture kernel config option notes above.
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+=======
+   If use sparse memory, the size should be rounded to GRANULE boundaries.
+
+>>>>>>> refs/remotes/origin/master
+   On s390x, typically use "crashkernel=xxM". The value of xx is dependent
+   on the memory consumption of the kdump system. In general this is not
+   dependent on the memory size of the production system.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Load the Dump-capture Kernel
 ============================
 
@@ -308,6 +370,16 @@ For ppc64:
 	- Use vmlinux
 For ia64:
 	- Use vmlinux or vmlinuz.gz
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+For s390x:
+	- Use image or bzImage
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+For s390x:
+	- Use image or bzImage
+>>>>>>> refs/remotes/origin/master
 
 
 If you are using a uncompressed vmlinux image then use following command
@@ -337,6 +409,16 @@ For i386, x86_64 and ia64:
 For ppc64:
 	"1 maxcpus=1 noirqdistrib reset_devices"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+For s390x:
+	"1 maxcpus=1 cgroup_disable=memory"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+For s390x:
+	"1 maxcpus=1 cgroup_disable=memory"
+>>>>>>> refs/remotes/origin/master
 
 Notes on loading the dump-capture kernel:
 
@@ -362,6 +444,29 @@ Notes on loading the dump-capture kernel:
   dump. Hence generally it is useful either to build a UP dump-capture
   kernel or specify maxcpus=1 option while loading dump-capture kernel.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+* For s390x there are two kdump modes: If a ELF header is specified with
+  the elfcorehdr= kernel parameter, it is used by the kdump kernel as it
+  is done on all other architectures. If no elfcorehdr= kernel parameter is
+  specified, the s390x kdump kernel dynamically creates the header. The
+  second mode has the advantage that for CPU and memory hotplug, kdump has
+  not to be reloaded with kexec_load().
+
+* For s390x systems with many attached devices the "cio_ignore" kernel
+  parameter should be used for the kdump kernel in order to prevent allocation
+  of kernel memory for devices that are not relevant for kdump. The same
+  applies to systems that use SCSI/FCP devices. In that case the
+  "allow_lun_scan" zfcp module parameter should be set to zero before
+  setting FCP devices online.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Kernel Panic
 ============
 
@@ -393,6 +498,7 @@ the following command:
 
    cp /proc/vmcore <dump-file>
 
+<<<<<<< HEAD
 You can also access dumped memory as a /dev/oldmem device for a linear
 and raw view. To create the device, use the following command:
 
@@ -405,6 +511,8 @@ To see the entire memory, use the following command:
 
    dd if=/dev/oldmem of=oldmem.001
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 Analysis
 ========
@@ -431,6 +539,7 @@ format. Crash is available on Dave Anderson's site at the following URL:
    http://people.redhat.com/~anderson/
 
 
+<<<<<<< HEAD
 To Do
 =====
 
@@ -439,6 +548,8 @@ To Do
    can be used to capture the dump.
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 Contact
 =======
 

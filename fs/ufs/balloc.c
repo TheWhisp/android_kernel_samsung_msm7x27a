@@ -54,7 +54,11 @@ void ufs_free_fragments(struct inode *inode, u64 fragment, unsigned count)
 	if (ufs_fragnum(fragment) + count > uspi->s_fpg)
 		ufs_error (sb, "ufs_free_fragments", "internal error");
 	
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	
 	cgno = ufs_dtog(uspi, fragment);
 	bit = ufs_dtogd(uspi, fragment);
@@ -116,14 +120,24 @@ void ufs_free_fragments(struct inode *inode, u64 fragment, unsigned count)
 	ubh_mark_buffer_dirty (UCPI_UBH(ucpi));
 	if (sb->s_flags & MS_SYNCHRONOUS)
 		ubh_sync_block(UCPI_UBH(ucpi));
+<<<<<<< HEAD
 	sb->s_dirt = 1;
 	
 	unlock_super (sb);
+=======
+	ufs_mark_sb_dirty(sb);
+	
+	mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	UFSD("EXIT\n");
 	return;
 
 failed:
+<<<<<<< HEAD
 	unlock_super (sb);
+=======
+	mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	UFSD("EXIT (FAILED)\n");
 	return;
 }
@@ -155,7 +169,11 @@ void ufs_free_blocks(struct inode *inode, u64 fragment, unsigned count)
 		goto failed;
 	}
 
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	
 do_more:
 	overflow = 0;
@@ -214,13 +232,22 @@ do_more:
 		goto do_more;
 	}
 
+<<<<<<< HEAD
 	sb->s_dirt = 1;
 	unlock_super (sb);
+=======
+	ufs_mark_sb_dirty(sb);
+	mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	UFSD("EXIT\n");
 	return;
 
 failed_unlock:
+<<<<<<< HEAD
 	unlock_super (sb);
+=======
+	mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 failed:
 	UFSD("EXIT (FAILED)\n");
 	return;
@@ -361,7 +388,11 @@ u64 ufs_new_fragments(struct inode *inode, void *p, u64 fragment,
 	usb1 = ubh_get_usb_first(uspi);
 	*err = -ENOSPC;
 
+<<<<<<< HEAD
 	lock_super (sb);
+=======
+	mutex_lock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	tmp = ufs_data_ptr_to_cpu(sb, p);
 
 	if (count + ufs_fragnum(fragment) > uspi->s_fpb) {
@@ -382,19 +413,31 @@ u64 ufs_new_fragments(struct inode *inode, void *p, u64 fragment,
 				  "fragment %llu, tmp %llu\n",
 				  (unsigned long long)fragment,
 				  (unsigned long long)tmp);
+<<<<<<< HEAD
 			unlock_super(sb);
+=======
+			mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 			return INVBLOCK;
 		}
 		if (fragment < UFS_I(inode)->i_lastfrag) {
 			UFSD("EXIT (ALREADY ALLOCATED)\n");
+<<<<<<< HEAD
 			unlock_super (sb);
+=======
+			mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 	}
 	else {
 		if (tmp) {
 			UFSD("EXIT (ALREADY ALLOCATED)\n");
+<<<<<<< HEAD
 			unlock_super(sb);
+=======
+			mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 	}
@@ -403,7 +446,11 @@ u64 ufs_new_fragments(struct inode *inode, void *p, u64 fragment,
 	 * There is not enough space for user on the device
 	 */
 	if (!capable(CAP_SYS_RESOURCE) && ufs_freespace(uspi, UFS_MINFREE) <= 0) {
+<<<<<<< HEAD
 		unlock_super (sb);
+=======
+		mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 		UFSD("EXIT (FAILED)\n");
 		return 0;
 	}
@@ -428,7 +475,11 @@ u64 ufs_new_fragments(struct inode *inode, void *p, u64 fragment,
 			ufs_clear_frags(inode, result + oldcount,
 					newcount - oldcount, locked_page != NULL);
 		}
+<<<<<<< HEAD
 		unlock_super(sb);
+=======
+		mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 		UFSD("EXIT, result %llu\n", (unsigned long long)result);
 		return result;
 	}
@@ -443,7 +494,11 @@ u64 ufs_new_fragments(struct inode *inode, void *p, u64 fragment,
 						fragment + count);
 		ufs_clear_frags(inode, result + oldcount, newcount - oldcount,
 				locked_page != NULL);
+<<<<<<< HEAD
 		unlock_super(sb);
+=======
+		mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 		UFSD("EXIT, result %llu\n", (unsigned long long)result);
 		return result;
 	}
@@ -481,7 +536,11 @@ u64 ufs_new_fragments(struct inode *inode, void *p, u64 fragment,
 		*err = 0;
 		UFS_I(inode)->i_lastfrag = max(UFS_I(inode)->i_lastfrag,
 						fragment + count);
+<<<<<<< HEAD
 		unlock_super(sb);
+=======
+		mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 		if (newcount < request)
 			ufs_free_fragments (inode, result + newcount, request - newcount);
 		ufs_free_fragments (inode, tmp, oldcount);
@@ -489,7 +548,11 @@ u64 ufs_new_fragments(struct inode *inode, void *p, u64 fragment,
 		return result;
 	}
 
+<<<<<<< HEAD
 	unlock_super(sb);
+=======
+	mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	UFSD("EXIT (FAILED)\n");
 	return 0;
 }		
@@ -557,7 +620,11 @@ static u64 ufs_add_fragments(struct inode *inode, u64 fragment,
 	ubh_mark_buffer_dirty (UCPI_UBH(ucpi));
 	if (sb->s_flags & MS_SYNCHRONOUS)
 		ubh_sync_block(UCPI_UBH(ucpi));
+<<<<<<< HEAD
 	sb->s_dirt = 1;
+=======
+	ufs_mark_sb_dirty(sb);
+>>>>>>> refs/remotes/origin/master
 
 	UFSD("EXIT, fragment %llu\n", (unsigned long long)fragment);
 	
@@ -677,7 +744,11 @@ succed:
 	ubh_mark_buffer_dirty (UCPI_UBH(ucpi));
 	if (sb->s_flags & MS_SYNCHRONOUS)
 		ubh_sync_block(UCPI_UBH(ucpi));
+<<<<<<< HEAD
 	sb->s_dirt = 1;
+=======
+	ufs_mark_sb_dirty(sb);
+>>>>>>> refs/remotes/origin/master
 
 	result += cgno * uspi->s_fpg;
 	UFSD("EXIT3, result %llu\n", (unsigned long long)result);

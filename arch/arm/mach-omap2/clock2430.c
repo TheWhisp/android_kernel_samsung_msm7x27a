@@ -21,11 +21,26 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/clock.h>
 
+=======
+#include <plat/hardware.h>
+#include <plat/clock.h>
+
+#include "iomap.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "clock.h"
 #include "clock2xxx.h"
 #include "cm2xxx_3xxx.h"
+=======
+#include "soc.h"
+#include "iomap.h"
+#include "clock.h"
+#include "clock2xxx.h"
+#include "cm2xxx.h"
+>>>>>>> refs/remotes/origin/master
 #include "cm-regbits-24xx.h"
 
 /**
@@ -40,7 +55,11 @@
  * passes back the correct CM_IDLEST register address for I2CHS
  * modules.  No return value.
  */
+<<<<<<< HEAD
 static void omap2430_clk_i2chs_find_idlest(struct clk *clk,
+=======
+static void omap2430_clk_i2chs_find_idlest(struct clk_hw_omap *clk,
+>>>>>>> refs/remotes/origin/master
 					   void __iomem **idlest_reg,
 					   u8 *idlest_bit,
 					   u8 *idlest_val)
@@ -51,9 +70,15 @@ static void omap2430_clk_i2chs_find_idlest(struct clk *clk,
 }
 
 /* 2430 I2CHS has non-standard IDLEST register */
+<<<<<<< HEAD
 const struct clkops clkops_omap2430_i2chs_wait = {
 	.enable		= omap2_dflt_clk_enable,
 	.disable	= omap2_dflt_clk_disable,
 	.find_idlest	= omap2430_clk_i2chs_find_idlest,
 	.find_companion = omap2_clk_dflt_find_companion,
+=======
+const struct clk_hw_omap_ops clkhwops_omap2430_i2chs_wait = {
+	.find_idlest	= omap2430_clk_i2chs_find_idlest,
+	.find_companion	= omap2_clk_dflt_find_companion,
+>>>>>>> refs/remotes/origin/master
 };

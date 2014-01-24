@@ -12,16 +12,30 @@
 */
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <asm/hardware/clps7111.h>
 
+<<<<<<< HEAD
 		.macro	addruart, rp, rv
+=======
+		.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_DEBUG_CLPS711X_UART2
 		mov	\rp, #0x0000	@ UART1
 #else
 		mov	\rp, #0x1000	@ UART2
 #endif
+<<<<<<< HEAD
 		orr	\rv, \rp, #CLPS7111_VIRT_BASE
 		orr	\rp, \rp, #CLPS7111_PHYS_BASE
+=======
+		orr	\rv, \rp, #CLPS711X_VIRT_BASE
+		orr	\rp, \rp, #CLPS711X_PHYS_BASE
+>>>>>>> refs/remotes/origin/master
 		.endm
 
 		.macro	senduart,rd,rx
@@ -29,6 +43,7 @@
 		.endm
 
 		.macro	waituart,rd,rx
+<<<<<<< HEAD
 1001:		ldr	\rd, [\rx, #0x0140]	@ SYSFLGx
 		tst	\rd, #1 << 11		@ UBUSYx
 		bne	1001b
@@ -41,5 +56,13 @@
 		tst	\rd, #1 << 8		@ CTS
 		bne	1001b
 1002:
+=======
+		.endm
+
+		.macro	busyuart,rd,rx
+1001:		ldr	\rd, [\rx, #0x0140]	@ SYSFLGx
+		tst	\rd, #1 << 11		@ UBUSYx
+		bne	1001b
+>>>>>>> refs/remotes/origin/master
 		.endm
 

@@ -22,7 +22,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <ctype.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <errno.h>
 
 #include "../perf.h"
@@ -36,11 +42,23 @@ static int stop_script_unsupported(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void process_event_unsupported(union perf_event *event __unused,
 				      struct perf_sample *sample __unused,
 				      struct perf_evsel *evsel __unused,
+<<<<<<< HEAD
 				      struct perf_session *session __unused,
+=======
+				      struct machine *machine __unused,
+>>>>>>> refs/remotes/origin/cm-10.0
 				      struct thread *thread __unused)
+=======
+static void process_event_unsupported(union perf_event *event __maybe_unused,
+				      struct perf_sample *sample __maybe_unused,
+				      struct perf_evsel *evsel __maybe_unused,
+				      struct thread *thread __maybe_unused,
+				      struct addr_location *al __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
@@ -53,16 +71,29 @@ static void print_python_unsupported_msg(void)
 		"\n  etc.\n");
 }
 
+<<<<<<< HEAD
 static int python_start_script_unsupported(const char *script __unused,
 					   int argc __unused,
 					   const char **argv __unused)
+=======
+static int python_start_script_unsupported(const char *script __maybe_unused,
+					   int argc __maybe_unused,
+					   const char **argv __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	print_python_unsupported_msg();
 
 	return -1;
 }
 
+<<<<<<< HEAD
 static int python_generate_script_unsupported(const char *outfile __unused)
+=======
+static int python_generate_script_unsupported(struct pevent *pevent
+					      __maybe_unused,
+					      const char *outfile
+					      __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	print_python_unsupported_msg();
 
@@ -114,16 +145,28 @@ static void print_perl_unsupported_msg(void)
 		"\n  etc.\n");
 }
 
+<<<<<<< HEAD
 static int perl_start_script_unsupported(const char *script __unused,
 					 int argc __unused,
 					 const char **argv __unused)
+=======
+static int perl_start_script_unsupported(const char *script __maybe_unused,
+					 int argc __maybe_unused,
+					 const char **argv __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	print_perl_unsupported_msg();
 
 	return -1;
 }
 
+<<<<<<< HEAD
 static int perl_generate_script_unsupported(const char *outfile __unused)
+=======
+static int perl_generate_script_unsupported(struct pevent *pevent
+					    __maybe_unused,
+					    const char *outfile __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	print_perl_unsupported_msg();
 

@@ -40,14 +40,24 @@ void __init platform_init(bp_tag_t* bootparam)
 
 void platform_halt(void)
 {
+<<<<<<< HEAD
 	printk (" ** Called platform_halt(), looping forever! **\n");
 	while (1);
+=======
+	pr_info(" ** Called platform_halt() **\n");
+	__asm__ __volatile__("movi a2, 1\nsimcall\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 void platform_power_off(void)
 {
+<<<<<<< HEAD
 	printk (" ** Called platform_power_off(), looping forever! **\n");
 	while (1);
+=======
+	pr_info(" ** Called platform_power_off() **\n");
+	__asm__ __volatile__("movi a2, 1\nsimcall\n");
+>>>>>>> refs/remotes/origin/master
 }
 void platform_restart(void)
 {
@@ -55,6 +65,7 @@ void platform_restart(void)
 	 * jump to the reset vector. */
 
 	__asm__ __volatile__("movi	a2, 15\n\t"
+<<<<<<< HEAD
 			     "wsr	a2, " __stringify(ICOUNTLEVEL) "\n\t"
 			     "movi	a2, 0\n\t"
 			     "wsr	a2, " __stringify(ICOUNT) "\n\t"
@@ -62,6 +73,17 @@ void platform_restart(void)
 			     "wsr	a2, " __stringify(LCOUNT) "\n\t"
 			     "movi	a2, 0x1f\n\t"
 			     "wsr	a2, " __stringify(PS) "\n\t"
+=======
+			     "wsr	a2, icountlevel\n\t"
+			     "movi	a2, 0\n\t"
+			     "wsr	a2, icount\n\t"
+#if XCHAL_NUM_IBREAK > 0
+			     "wsr	a2, ibreakenable\n\t"
+#endif
+			     "wsr	a2, lcount\n\t"
+			     "movi	a2, 0x1f\n\t"
+			     "wsr	a2, ps\n\t"
+>>>>>>> refs/remotes/origin/master
 			     "isync\n\t"
 			     "jx	%0\n\t"
 			     :

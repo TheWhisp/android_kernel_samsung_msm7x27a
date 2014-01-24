@@ -24,7 +24,15 @@
 
 #include <linux/fs.h>
 #include <linux/ioctl.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pagemap.h>
 #include <linux/poll.h>
 #include <linux/ptrace.h>
@@ -149,7 +157,10 @@ static int __fops ## _open(struct inode *inode, struct file *file)	\
 	return spufs_attr_open(inode, file, __get, __set, __fmt);	\
 }									\
 static const struct file_operations __fops = {				\
+<<<<<<< HEAD
 	.owner	 = THIS_MODULE,						\
+=======
+>>>>>>> refs/remotes/origin/master
 	.open	 = __fops ## _open,					\
 	.release = spufs_attr_release,					\
 	.read	 = spufs_attr_read,					\
@@ -352,7 +363,11 @@ static unsigned long spufs_get_unmapped_area(struct file *file,
 
 	/* Else, try to obtain a 64K pages slice */
 	return slice_get_unmapped_area(addr, len, flags,
+<<<<<<< HEAD
 				       MMU_PAGE_64K, 1, 0);
+=======
+				       MMU_PAGE_64K, 1);
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_SPU_FS_64K_LS */
 
@@ -1850,9 +1865,31 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int spufs_mfc_fsync(struct file *file, int datasync)
 {
 	return spufs_mfc_flush(file, NULL);
+=======
+static int spufs_mfc_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+{
+	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+static int spufs_mfc_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+{
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
+	int err = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (!err) {
+		mutex_lock(&inode->i_mutex);
+		err = spufs_mfc_flush(file, NULL);
+		mutex_unlock(&inode->i_mutex);
+	}
+	return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int spufs_mfc_fasync(int fd, struct file *file, int on)
@@ -2494,7 +2531,11 @@ static int switch_log_sprint(struct spu_context *ctx, char *tbuf, int n)
 static ssize_t spufs_switch_log_read(struct file *file, char __user *buf,
 			     size_t len, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct spu_context *ctx = SPUFS_I(inode)->i_ctx;
 	int error = 0, cnt = 0;
 
@@ -2564,7 +2605,11 @@ static ssize_t spufs_switch_log_read(struct file *file, char __user *buf,
 
 static unsigned int spufs_switch_log_poll(struct file *file, poll_table *wait)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct spu_context *ctx = SPUFS_I(inode)->i_ctx;
 	unsigned int mask = 0;
 	int rc;
@@ -2584,7 +2629,10 @@ static unsigned int spufs_switch_log_poll(struct file *file, poll_table *wait)
 }
 
 static const struct file_operations spufs_switch_log_fops = {
+<<<<<<< HEAD
 	.owner		= THIS_MODULE,
+=======
+>>>>>>> refs/remotes/origin/master
 	.open		= spufs_switch_log_open,
 	.read		= spufs_switch_log_read,
 	.poll		= spufs_switch_log_poll,

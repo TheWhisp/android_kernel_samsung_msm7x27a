@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/tape.h
+=======
+>>>>>>> refs/remotes/origin/master
  *    tape device driver for 3480/3490E/3590 tapes.
  *
  *  S390 and zSeries version
@@ -16,7 +19,10 @@
 #include <asm/ccwdev.h>
 #include <asm/debug.h>
 #include <asm/idals.h>
+<<<<<<< HEAD
 #include <linux/blkdev.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/mtio.h>
@@ -154,12 +160,15 @@ struct tape_discipline {
 	struct tape_request *(*read_block)(struct tape_device *, size_t);
 	struct tape_request *(*write_block)(struct tape_device *, size_t);
 	void (*process_eov)(struct tape_device*);
+<<<<<<< HEAD
 #ifdef CONFIG_S390_TAPE_BLOCK
 	/* Block device stuff. */
 	struct tape_request *(*bread)(struct tape_device *, struct request *);
 	void (*check_locate)(struct tape_device *, struct tape_request *);
 	void (*free_bread)(struct tape_request *);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	/* ioctl function for additional ioctls. */
 	int (*ioctl_fn)(struct tape_device *, unsigned int, unsigned long);
 	/* Array of tape commands with TAPE_NR_MTOPS entries */
@@ -182,6 +191,7 @@ struct tape_char_data {
 	int block_size;			/*   of size block_size. */
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_S390_TAPE_BLOCK
 /* Block Frontend Data */
 struct tape_blk_data
@@ -202,6 +212,8 @@ struct tape_blk_data
 };
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Tape Info */
 struct tape_device {
 	/* entry in tape_device_list */
@@ -248,10 +260,13 @@ struct tape_device {
 
 	/* Character device frontend data */
 	struct tape_char_data		char_data;
+<<<<<<< HEAD
 #ifdef CONFIG_S390_TAPE_BLOCK
 	/* Block dev frontend data */
 	struct tape_blk_data		blk_data;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Function to start or stop the next request later. */
 	struct delayed_work		tape_dnr;
@@ -313,6 +328,7 @@ extern void tapechar_exit(void);
 extern int  tapechar_setup_device(struct tape_device *);
 extern void tapechar_cleanup_device(struct tape_device *);
 
+<<<<<<< HEAD
 /* Externals from tape_block.c */
 #ifdef CONFIG_S390_TAPE_BLOCK
 extern int tapeblock_init (void);
@@ -326,6 +342,8 @@ static inline int tapeblock_setup_device(struct tape_device *t) {return 0;}
 static inline void tapeblock_cleanup_device (struct tape_device *t) {;}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* tape initialisation functions */
 #ifdef CONFIG_PROC_FS
 extern void tape_proc_init (void);

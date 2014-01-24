@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: exresolv - AML Interpreter object resolution
@@ -6,7 +9,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -147,7 +158,11 @@ acpi_ex_resolve_object_to_value(union acpi_operand_object **stack_ptr,
 
 	stack_desc = *stack_ptr;
 
+<<<<<<< HEAD
 	/* This is a union acpi_operand_object    */
+=======
+	/* This is an object of type union acpi_operand_object */
+>>>>>>> refs/remotes/origin/master
 
 	switch (stack_desc->common.type) {
 	case ACPI_TYPE_LOCAL_REFERENCE:
@@ -157,7 +172,10 @@ acpi_ex_resolve_object_to_value(union acpi_operand_object **stack_ptr,
 		switch (ref_type) {
 		case ACPI_REFCLASS_LOCAL:
 		case ACPI_REFCLASS_ARG:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Get the local from the method's state info
 			 * Note: this increments the local's object reference count
@@ -310,6 +328,10 @@ acpi_ex_resolve_object_to_value(union acpi_operand_object **stack_ptr,
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -321,13 +343,21 @@ acpi_ex_resolve_object_to_value(union acpi_operand_object **stack_ptr,
  * FUNCTION:    acpi_ex_resolve_multiple
  *
  * PARAMETERS:  walk_state          - Current state (contains AML opcode)
+<<<<<<< HEAD
  *              Operand             - Starting point for resolution
+=======
+ *              operand             - Starting point for resolution
+>>>>>>> refs/remotes/origin/master
  *              return_type         - Where the object type is returned
  *              return_desc         - Where the resolved object is returned
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: Return the base object and type.  Traverse a reference list if
+=======
+ * DESCRIPTION: Return the base object and type. Traverse a reference list if
+>>>>>>> refs/remotes/origin/master
  *              necessary to get to the base object.
  *
  ******************************************************************************/
@@ -349,10 +379,18 @@ acpi_ex_resolve_multiple(struct acpi_walk_state *walk_state,
 
 	switch (ACPI_GET_DESCRIPTOR_TYPE(obj_desc)) {
 	case ACPI_DESC_TYPE_OPERAND:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		type = obj_desc->common.type;
 		break;
 
 	case ACPI_DESC_TYPE_NAMED:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		type = ((struct acpi_namespace_node *)obj_desc)->type;
 		obj_desc =
 		    acpi_ns_get_attached_object((struct acpi_namespace_node *)
@@ -520,7 +558,11 @@ acpi_ex_resolve_multiple(struct acpi_walk_state *walk_state,
 	 */
 	type = obj_desc->common.type;
 
+<<<<<<< HEAD
       exit:
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	/* Convert internal types to external types */
 
 	switch (type) {
@@ -539,7 +581,13 @@ acpi_ex_resolve_multiple(struct acpi_walk_state *walk_state,
 		break;
 
 	default:
+<<<<<<< HEAD
 		/* No change to Type required */
+=======
+
+		/* No change to Type required */
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 

@@ -1,5 +1,9 @@
 /*
  * IPv4 over IEEE 1394, per RFC 2734
+<<<<<<< HEAD
+=======
+ * IPv6 over IEEE 1394, per RFC 3146
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2009 Jay Fenlason <fenlason@redhat.com>
  *
@@ -7,6 +11,14 @@
  */
 
 #include <linux/bug.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/compiler.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/compiler.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/device.h>
 #include <linux/ethtool.h>
@@ -27,6 +39,10 @@
 
 #include <asm/unaligned.h>
 #include <net/arp.h>
+<<<<<<< HEAD
+=======
+#include <net/firewire.h>
+>>>>>>> refs/remotes/origin/master
 
 /* rx limits */
 #define FWNET_MAX_FRAGMENTS		30 /* arbitrary, > TX queue depth */
@@ -44,6 +60,10 @@
 
 #define IANA_SPECIFIER_ID		0x00005eU
 #define RFC2734_SW_VERSION		0x000001U
+<<<<<<< HEAD
+=======
+#define RFC3146_SW_VERSION		0x000002U
+>>>>>>> refs/remotes/origin/master
 
 #define IEEE1394_GASP_HDR_SIZE	8
 
@@ -56,6 +76,7 @@
 #define RFC2374_HDR_LASTFRAG	2	/* last fragment	*/
 #define RFC2374_HDR_INTFRAG	3	/* interior fragment	*/
 
+<<<<<<< HEAD
 #define RFC2734_HW_ADDR_LEN	16
 
 struct rfc2734_arp {
@@ -73,7 +94,11 @@ struct rfc2734_arp {
 	__be32 fifo_lo;		/* lo 32bits of sender's FIFO addr	*/
 	__be32 sip;		/* Sender's IP Address			*/
 	__be32 tip;		/* IP Address of requested hw addr	*/
+<<<<<<< HEAD
 } __attribute__((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* This header format is specific to this driver implementation. */
 #define FWNET_ALEN	8
@@ -81,7 +106,17 @@ struct rfc2734_arp {
 struct fwnet_header {
 	u8 h_dest[FWNET_ALEN];	/* destination address */
 	__be16 h_proto;		/* packet type ID field */
+<<<<<<< HEAD
 } __attribute__((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool fwnet_hwaddr_is_multicast(u8 *ha)
+{
+	return !!(*ha & 1);
+}
+>>>>>>> refs/remotes/origin/master
 
 /* IPv4 and IPv6 encapsulation header */
 struct rfc2734_header {
@@ -190,8 +225,11 @@ struct fwnet_peer {
 	struct list_head peer_link;
 	struct fwnet_device *dev;
 	u64 guid;
+<<<<<<< HEAD
 	u64 fifo;
 	__be32 ip;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* guarded by dev->lock */
 	struct list_head pd_list; /* received partial datagrams */
@@ -221,6 +259,18 @@ struct fwnet_packet_task {
 };
 
 /*
+<<<<<<< HEAD
+=======
+ * Get fifo address embedded in hwaddr
+ */
+static __u64 fwnet_hwaddr_fifo(union fwnet_hwaddr *ha)
+{
+	return (u64)get_unaligned_be16(&ha->uc.fifo_hi) << 32
+	       | get_unaligned_be32(&ha->uc.fifo_lo);
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * saddr == NULL means use device source address.
  * daddr == NULL means leave destination address (eg unresolved arp).
  */
@@ -255,22 +305,56 @@ static int fwnet_header_rebuild(struct sk_buff *skb)
 	if (get_unaligned_be16(&h->h_proto) == ETH_P_IP)
 		return arp_find((unsigned char *)&h->h_dest, skb);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fw_notify("%s: unable to resolve type %04x addresses\n",
 		  skb->dev->name, be16_to_cpu(h->h_proto));
+=======
+	dev_notice(&skb->dev->dev, "unable to resolve type %04x addresses\n",
+		   be16_to_cpu(h->h_proto));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_notice(&skb->dev->dev, "unable to resolve type %04x addresses\n",
+		   be16_to_cpu(h->h_proto));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int fwnet_header_cache(const struct neighbour *neigh,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			      struct hh_cache *hh)
+=======
+			      struct hh_cache *hh, __be16 type)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      struct hh_cache *hh, __be16 type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *net;
 	struct fwnet_header *h;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (hh->hh_type == cpu_to_be16(ETH_P_802_3))
 		return -1;
 	net = neigh->dev;
 	h = (struct fwnet_header *)((u8 *)hh->hh_data + 16 - sizeof(*h));
 	h->h_proto = hh->hh_type;
+=======
+	if (type == cpu_to_be16(ETH_P_802_3))
+		return -1;
+	net = neigh->dev;
+	h = (struct fwnet_header *)((u8 *)hh->hh_data + 16 - sizeof(*h));
+	h->h_proto = type;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (type == cpu_to_be16(ETH_P_802_3))
+		return -1;
+	net = neigh->dev;
+	h = (struct fwnet_header *)((u8 *)hh->hh_data + HH_DATA_OFF(sizeof(*h)));
+	h->h_proto = type;
+>>>>>>> refs/remotes/origin/master
 	memcpy(h->h_dest, neigh->ha, net->addr_len);
 	hh->hh_len = FWNET_HLEN;
 
@@ -281,7 +365,11 @@ static int fwnet_header_cache(const struct neighbour *neigh,
 static void fwnet_header_cache_update(struct hh_cache *hh,
 		const struct net_device *net, const unsigned char *haddr)
 {
+<<<<<<< HEAD
 	memcpy((u8 *)hh->hh_data + 16 - FWNET_HLEN, haddr, net->addr_len);
+=======
+	memcpy((u8 *)hh->hh_data + HH_DATA_OFF(FWNET_HLEN), haddr, net->addr_len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int fwnet_header_parse(const struct sk_buff *skb, unsigned char *haddr)
@@ -367,10 +455,19 @@ static struct fwnet_fragment_info *fwnet_frag_new(
 	}
 
 	new = kmalloc(sizeof(*new), GFP_ATOMIC);
+<<<<<<< HEAD
 	if (!new) {
+<<<<<<< HEAD
 		fw_error("out of memory\n");
+=======
+		dev_err(&pd->skb->dev->dev, "out of memory\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return NULL;
 	}
+=======
+	if (!new)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	new->offset = offset;
 	new->len = len;
@@ -397,11 +494,19 @@ static struct fwnet_partial_datagram *fwnet_pd_new(struct net_device *net,
 
 	new->datagram_label = datagram_label;
 	new->datagram_size = dg_size;
+<<<<<<< HEAD
 	new->skb = dev_alloc_skb(dg_size + net->hard_header_len + 15);
 	if (new->skb == NULL)
 		goto fail_w_fi;
 
 	skb_reserve(new->skb, (net->hard_header_len + 15) & ~15);
+=======
+	new->skb = dev_alloc_skb(dg_size + LL_RESERVED_SPACE(net));
+	if (new->skb == NULL)
+		goto fail_w_fi;
+
+	skb_reserve(new->skb, LL_RESERVED_SPACE(net));
+>>>>>>> refs/remotes/origin/master
 	new->pbuf = skb_put(new->skb, dg_size);
 	memcpy(new->pbuf + frag_off, frag_buf, frag_len);
 	list_add_tail(&new->pd_link, &peer->pd_list);
@@ -413,8 +518,15 @@ fail_w_fi:
 fail_w_new:
 	kfree(new);
 fail:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fw_error("out of memory\n");
+=======
+	dev_err(&net->dev, "out of memory\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -501,11 +613,19 @@ static struct fwnet_peer *fwnet_peer_find_by_node_id(struct fwnet_device *dev,
 static unsigned fwnet_max_payload(unsigned max_rec, unsigned speed)
 {
 	max_rec = min(max_rec, speed + 8);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	max_rec = min(max_rec, 0xbU); /* <= 4096 */
 	if (max_rec < 8) {
 		fw_notify("max_rec %x out of range\n", max_rec);
 		max_rec = 8;
 	}
+=======
+	max_rec = clamp(max_rec, 8U, 11U); /* 512...4096 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max_rec = clamp(max_rec, 8U, 11U); /* 512...4096 */
+>>>>>>> refs/remotes/origin/master
 
 	return (1 << (max_rec + 1)) - RFC2374_FRAG_HDR_SIZE;
 }
@@ -516,6 +636,7 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
 					bool is_broadcast, u16 ether_type)
 {
 	struct fwnet_device *dev;
+<<<<<<< HEAD
 	static const __be64 broadcast_hw = cpu_to_be64(~0ULL);
 	int status;
 	__be64 guid;
@@ -557,7 +678,11 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
 		sspd = arp1394->sspd;
 		/* Sanity check.  OS X 10.3 PPC reportedly sends 131. */
 		if (sspd > SCODE_3200) {
+<<<<<<< HEAD
 			fw_notify("sspd %x out of range\n", sspd);
+=======
+			dev_notice(&net->dev, "sspd %x out of range\n", sspd);
+>>>>>>> refs/remotes/origin/cm-10.0
 			sspd = SCODE_3200;
 		}
 		max_payload = fwnet_max_payload(arp1394->max_rec, sspd);
@@ -577,8 +702,14 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
 		spin_unlock_irqrestore(&dev->lock, flags);
 
 		if (!peer) {
+<<<<<<< HEAD
 			fw_notify("No peer for ARP packet from %016llx\n",
 				  (unsigned long long)peer_guid);
+=======
+			dev_notice(&net->dev,
+				   "no peer for ARP packet from %016llx\n",
+				   (unsigned long long)peer_guid);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto no_peer;
 		}
 
@@ -612,6 +743,34 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
 	guid = cpu_to_be64(dev->card->guid);
 	if (dev_hard_header(skb, net, ether_type,
 			   is_broadcast ? &broadcast_hw : &guid,
+=======
+	int status;
+	__be64 guid;
+
+	switch (ether_type) {
+	case ETH_P_ARP:
+	case ETH_P_IP:
+#if IS_ENABLED(CONFIG_IPV6)
+	case ETH_P_IPV6:
+#endif
+		break;
+	default:
+		goto err;
+	}
+
+	dev = netdev_priv(net);
+	/* Write metadata, and then pass to the receive level */
+	skb->dev = net;
+	skb->ip_summed = CHECKSUM_NONE;
+
+	/*
+	 * Parse the encapsulation header. This actually does the job of
+	 * converting to an ethernet-like pseudo frame header.
+	 */
+	guid = cpu_to_be64(dev->card->guid);
+	if (dev_hard_header(skb, net, ether_type,
+			   is_broadcast ? net->broadcast : net->dev_addr,
+>>>>>>> refs/remotes/origin/master
 			   NULL, skb->len) >= 0) {
 		struct fwnet_header *eth;
 		u16 *rawp;
@@ -620,7 +779,11 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
 		skb_reset_mac_header(skb);
 		skb_pull(skb, sizeof(*eth));
 		eth = (struct fwnet_header *)skb_mac_header(skb);
+<<<<<<< HEAD
 		if (*eth->h_dest & 1) {
+=======
+		if (fwnet_hwaddr_is_multicast(eth->h_dest)) {
+>>>>>>> refs/remotes/origin/master
 			if (memcmp(eth->h_dest, net->broadcast,
 				   net->addr_len) == 0)
 				skb->pkt_type = PACKET_BROADCAST;
@@ -632,7 +795,11 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
 			if (memcmp(eth->h_dest, net->dev_addr, net->addr_len))
 				skb->pkt_type = PACKET_OTHERHOST;
 		}
+<<<<<<< HEAD
 		if (ntohs(eth->h_proto) >= 1536) {
+=======
+		if (ntohs(eth->h_proto) >= ETH_P_802_3_MIN) {
+>>>>>>> refs/remotes/origin/master
 			protocol = eth->h_proto;
 		} else {
 			rawp = (u16 *)skb->data;
@@ -654,7 +821,11 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
 
 	return 0;
 
+<<<<<<< HEAD
  no_peer:
+=======
+ err:
+>>>>>>> refs/remotes/origin/master
 	net->stats.rx_errors++;
 	net->stats.rx_dropped++;
 
@@ -692,14 +863,27 @@ static int fwnet_incoming_packet(struct fwnet_device *dev, __be32 *buf, int len,
 		buf++;
 		len -= RFC2374_UNFRAG_HDR_SIZE;
 
+<<<<<<< HEAD
 		skb = dev_alloc_skb(len + net->hard_header_len + 15);
 		if (unlikely(!skb)) {
+<<<<<<< HEAD
 			fw_error("out of memory\n");
+=======
+			dev_err(&net->dev, "out of memory\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		skb = dev_alloc_skb(len + LL_RESERVED_SPACE(net));
+		if (unlikely(!skb)) {
+>>>>>>> refs/remotes/origin/master
 			net->stats.rx_dropped++;
 
 			return -ENOMEM;
 		}
+<<<<<<< HEAD
 		skb_reserve(skb, (net->hard_header_len + 15) & ~15);
+=======
+		skb_reserve(skb, LL_RESERVED_SPACE(net));
+>>>>>>> refs/remotes/origin/master
 		memcpy(skb_put(skb, len), buf, len);
 
 		return fwnet_finish_incoming_packet(net, skb, source_node_id,
@@ -817,7 +1001,15 @@ static void fwnet_receive_packet(struct fw_card *card, struct fw_request *r,
 		rcode = RCODE_TYPE_ERROR;
 	else if (fwnet_incoming_packet(dev, payload, length,
 				       source, generation, false) != 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		fw_error("Incoming packet failure\n");
+=======
+		dev_err(&dev->netdev->dev, "incoming packet failure\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&dev->netdev->dev, "incoming packet failure\n");
+>>>>>>> refs/remotes/origin/master
 		rcode = RCODE_CONFLICT_ERROR;
 	} else
 		rcode = RCODE_COMPLETE;
@@ -830,7 +1022,10 @@ static void fwnet_receive_broadcast(struct fw_iso_context *context,
 {
 	struct fwnet_device *dev;
 	struct fw_iso_packet packet;
+<<<<<<< HEAD
 	struct fw_card *card;
+=======
+>>>>>>> refs/remotes/origin/master
 	__be16 *hdr_ptr;
 	__be32 *buf_ptr;
 	int retval;
@@ -842,7 +1037,10 @@ static void fwnet_receive_broadcast(struct fw_iso_context *context,
 	unsigned long flags;
 
 	dev = data;
+<<<<<<< HEAD
 	card = dev->card;
+=======
+>>>>>>> refs/remotes/origin/master
 	hdr_ptr = header;
 	length = be16_to_cpup(hdr_ptr);
 
@@ -860,7 +1058,16 @@ static void fwnet_receive_broadcast(struct fw_iso_context *context,
 	ver = be32_to_cpu(buf_ptr[1]) & 0xffffff;
 	source_node_id = be32_to_cpu(buf_ptr[0]) >> 16;
 
+<<<<<<< HEAD
 	if (specifier_id == IANA_SPECIFIER_ID && ver == RFC2734_SW_VERSION) {
+=======
+	if (specifier_id == IANA_SPECIFIER_ID &&
+	    (ver == RFC2734_SW_VERSION
+#if IS_ENABLED(CONFIG_IPV6)
+	     || ver == RFC3146_SW_VERSION
+#endif
+	    )) {
+>>>>>>> refs/remotes/origin/master
 		buf_ptr += 2;
 		length -= IEEE1394_GASP_HDR_SIZE;
 		fwnet_incoming_packet(dev, buf_ptr, length, source_node_id,
@@ -884,7 +1091,15 @@ static void fwnet_receive_broadcast(struct fw_iso_context *context,
 	if (retval >= 0)
 		fw_iso_context_queue_flush(dev->broadcast_rcv_context);
 	else
+<<<<<<< HEAD
+<<<<<<< HEAD
 		fw_error("requeue failed\n");
+=======
+		dev_err(&dev->netdev->dev, "requeue failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&dev->netdev->dev, "requeue failed\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct kmem_cache *fwnet_packet_task_cache;
@@ -939,9 +1154,22 @@ static void fwnet_transmit_packet_done(struct fwnet_packet_task *ptask)
 		case RFC2374_HDR_LASTFRAG:
 		case RFC2374_HDR_UNFRAG:
 		default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			fw_error("Outstanding packet %x lf %x, header %x,%x\n",
 				 ptask->outstanding_pkts, lf, ptask->hdr.w0,
 				 ptask->hdr.w1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			dev_err(&dev->netdev->dev,
+				"outstanding packet %x lf %x, header %x,%x\n",
+				ptask->outstanding_pkts, lf, ptask->hdr.w0,
+				ptask->hdr.w1);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			BUG();
 
 		case RFC2374_HDR_FIRSTFRAG:
@@ -1018,8 +1246,20 @@ static void fwnet_write_complete(struct fw_card *card, int rcode,
 		fwnet_transmit_packet_failed(ptask);
 
 		if (printk_timed_ratelimit(&j,  1000) || rcode != last_rcode) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			fw_error("fwnet_write_complete: "
 				"failed: %x (skipped %d)\n", rcode, errors_skipped);
+=======
+			dev_err(&ptask->dev->netdev->dev,
+				"fwnet_write_complete failed: %x (skipped %d)\n",
+				rcode, errors_skipped);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&ptask->dev->netdev->dev,
+				"fwnet_write_complete failed: %x (skipped %d)\n",
+				rcode, errors_skipped);
+>>>>>>> refs/remotes/origin/master
 
 			errors_skipped = 0;
 			last_rcode = rcode;
@@ -1061,16 +1301,40 @@ static int fwnet_send_packet(struct fwnet_packet_task *ptask)
 		u8 *p;
 		int generation;
 		int node_id;
+<<<<<<< HEAD
+=======
+		unsigned int sw_version;
+>>>>>>> refs/remotes/origin/master
 
 		/* ptask->generation may not have been set yet */
 		generation = dev->card->generation;
 		smp_rmb();
 		node_id = dev->card->node_id;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		p = skb_push(ptask->skb, IEEE1394_GASP_HDR_SIZE);
 		put_unaligned_be32(node_id << 16 | IANA_SPECIFIER_ID >> 8, p);
 		put_unaligned_be32((IANA_SPECIFIER_ID & 0xff) << 24
 						| RFC2734_SW_VERSION, &p[4]);
+=======
+		switch (ptask->skb->protocol) {
+		default:
+			sw_version = RFC2734_SW_VERSION;
+			break;
+#if IS_ENABLED(CONFIG_IPV6)
+		case htons(ETH_P_IPV6):
+			sw_version = RFC3146_SW_VERSION;
+#endif
+		}
+
+		p = skb_push(ptask->skb, IEEE1394_GASP_HDR_SIZE);
+		put_unaligned_be32(node_id << 16 | IANA_SPECIFIER_ID >> 8, p);
+		put_unaligned_be32((IANA_SPECIFIER_ID & 0xff) << 24
+						| sw_version, &p[4]);
+>>>>>>> refs/remotes/origin/master
 
 		/* We should not transmit if broadcast_channel.valid == 0. */
 		fw_send_request(dev->card, &ptask->transaction,
@@ -1118,6 +1382,65 @@ static int fwnet_send_packet(struct fwnet_packet_task *ptask)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void fwnet_fifo_stop(struct fwnet_device *dev)
+{
+	if (dev->local_fifo == FWNET_NO_FIFO_ADDR)
+		return;
+
+	fw_core_remove_address_handler(&dev->handler);
+	dev->local_fifo = FWNET_NO_FIFO_ADDR;
+}
+
+static int fwnet_fifo_start(struct fwnet_device *dev)
+{
+	int retval;
+
+	if (dev->local_fifo != FWNET_NO_FIFO_ADDR)
+		return 0;
+
+	dev->handler.length = 4096;
+	dev->handler.address_callback = fwnet_receive_packet;
+	dev->handler.callback_data = dev;
+
+	retval = fw_core_add_address_handler(&dev->handler,
+					     &fw_high_memory_region);
+	if (retval < 0)
+		return retval;
+
+	dev->local_fifo = dev->handler.offset;
+
+	return 0;
+}
+
+static void __fwnet_broadcast_stop(struct fwnet_device *dev)
+{
+	unsigned u;
+
+	if (dev->broadcast_state != FWNET_BROADCAST_ERROR) {
+		for (u = 0; u < FWNET_ISO_PAGE_COUNT; u++)
+			kunmap(dev->broadcast_rcv_buffer.pages[u]);
+		fw_iso_buffer_destroy(&dev->broadcast_rcv_buffer, dev->card);
+	}
+	if (dev->broadcast_rcv_context) {
+		fw_iso_context_destroy(dev->broadcast_rcv_context);
+		dev->broadcast_rcv_context = NULL;
+	}
+	kfree(dev->broadcast_rcv_buffer_ptrs);
+	dev->broadcast_rcv_buffer_ptrs = NULL;
+	dev->broadcast_state = FWNET_BROADCAST_ERROR;
+}
+
+static void fwnet_broadcast_stop(struct fwnet_device *dev)
+{
+	if (dev->broadcast_state == FWNET_BROADCAST_ERROR)
+		return;
+	fw_iso_context_stop(dev->broadcast_rcv_context);
+	__fwnet_broadcast_stop(dev);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int fwnet_broadcast_start(struct fwnet_device *dev)
 {
 	struct fw_iso_context *context;
@@ -1126,29 +1449,46 @@ static int fwnet_broadcast_start(struct fwnet_device *dev)
 	unsigned max_receive;
 	struct fw_iso_packet packet;
 	unsigned long offset;
+<<<<<<< HEAD
 	unsigned u;
 
 	if (dev->local_fifo == FWNET_NO_FIFO_ADDR) {
+<<<<<<< HEAD
 		/* outside OHCI posted write area? */
 		static const struct fw_address_region region = {
 			.start = 0xffff00000000ULL,
 			.end   = CSR_REGISTER_BASE,
 		};
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev->handler.length = 4096;
 		dev->handler.address_callback = fwnet_receive_packet;
 		dev->handler.callback_data = dev;
 
+<<<<<<< HEAD
 		retval = fw_core_add_address_handler(&dev->handler, &region);
+=======
+		retval = fw_core_add_address_handler(&dev->handler,
+					&fw_high_memory_region);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (retval < 0)
 			goto failed_initial;
 
 		dev->local_fifo = dev->handler.offset;
 	}
+=======
+	void **ptrptr;
+	unsigned u;
+
+	if (dev->broadcast_state != FWNET_BROADCAST_ERROR)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	max_receive = 1U << (dev->card->max_receive + 1);
 	num_packets = (FWNET_ISO_PAGE_COUNT * PAGE_SIZE) / max_receive;
 
+<<<<<<< HEAD
 	if (!dev->broadcast_rcv_context) {
 		void **ptrptr;
 
@@ -1185,6 +1525,40 @@ static int fwnet_broadcast_start(struct fwnet_device *dev)
 	} else {
 		context = dev->broadcast_rcv_context;
 	}
+=======
+	ptrptr = kmalloc(sizeof(void *) * num_packets, GFP_KERNEL);
+	if (!ptrptr) {
+		retval = -ENOMEM;
+		goto failed;
+	}
+	dev->broadcast_rcv_buffer_ptrs = ptrptr;
+
+	context = fw_iso_context_create(dev->card, FW_ISO_CONTEXT_RECEIVE,
+					IEEE1394_BROADCAST_CHANNEL,
+					dev->card->link_speed, 8,
+					fwnet_receive_broadcast, dev);
+	if (IS_ERR(context)) {
+		retval = PTR_ERR(context);
+		goto failed;
+	}
+
+	retval = fw_iso_buffer_init(&dev->broadcast_rcv_buffer, dev->card,
+				    FWNET_ISO_PAGE_COUNT, DMA_FROM_DEVICE);
+	if (retval < 0)
+		goto failed;
+
+	dev->broadcast_state = FWNET_BROADCAST_STOPPED;
+
+	for (u = 0; u < FWNET_ISO_PAGE_COUNT; u++) {
+		void *ptr;
+		unsigned v;
+
+		ptr = kmap(dev->broadcast_rcv_buffer.pages[u]);
+		for (v = 0; v < num_packets / FWNET_ISO_PAGE_COUNT; v++)
+			*ptrptr++ = (void *) ((char *)ptr + v * max_receive);
+	}
+	dev->broadcast_rcv_context = context;
+>>>>>>> refs/remotes/origin/master
 
 	packet.payload_length = max_receive;
 	packet.interrupt = 1;
@@ -1198,7 +1572,11 @@ static int fwnet_broadcast_start(struct fwnet_device *dev)
 		retval = fw_iso_context_queue(context, &packet,
 				&dev->broadcast_rcv_buffer, offset);
 		if (retval < 0)
+<<<<<<< HEAD
 			goto failed_rcv_queue;
+=======
+			goto failed;
+>>>>>>> refs/remotes/origin/master
 
 		offset += max_receive;
 	}
@@ -1208,7 +1586,11 @@ static int fwnet_broadcast_start(struct fwnet_device *dev)
 	retval = fw_iso_context_start(context, -1, 0,
 			FW_ISO_CONTEXT_MATCH_ALL_TAGS); /* ??? sync */
 	if (retval < 0)
+<<<<<<< HEAD
 		goto failed_rcv_queue;
+=======
+		goto failed;
+>>>>>>> refs/remotes/origin/master
 
 	/* FIXME: adjust it according to the min. speed of all known peers? */
 	dev->broadcast_xmt_max_payload = IEEE1394_MAX_PAYLOAD_S100
@@ -1217,6 +1599,7 @@ static int fwnet_broadcast_start(struct fwnet_device *dev)
 
 	return 0;
 
+<<<<<<< HEAD
  failed_rcv_queue:
 	kfree(dev->broadcast_rcv_buffer_ptrs);
 	dev->broadcast_rcv_buffer_ptrs = NULL;
@@ -1230,6 +1613,10 @@ static int fwnet_broadcast_start(struct fwnet_device *dev)
  failed_initial:
 	dev->local_fifo = FWNET_NO_FIFO_ADDR;
 
+=======
+ failed:
+	__fwnet_broadcast_stop(dev);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -1247,11 +1634,18 @@ static int fwnet_open(struct net_device *net)
 	struct fwnet_device *dev = netdev_priv(net);
 	int ret;
 
+<<<<<<< HEAD
 	if (dev->broadcast_state == FWNET_BROADCAST_ERROR) {
 		ret = fwnet_broadcast_start(dev);
 		if (ret)
 			return ret;
 	}
+=======
+	ret = fwnet_broadcast_start(dev);
+	if (ret)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	netif_start_queue(net);
 
 	spin_lock_irq(&dev->lock);
@@ -1264,9 +1658,16 @@ static int fwnet_open(struct net_device *net)
 /* ifdown */
 static int fwnet_stop(struct net_device *net)
 {
+<<<<<<< HEAD
 	netif_stop_queue(net);
 
 	/* Deallocate iso context for use by other applications? */
+=======
+	struct fwnet_device *dev = netdev_priv(net);
+
+	netif_stop_queue(net);
+	fwnet_broadcast_stop(dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1306,19 +1707,40 @@ static netdev_tx_t fwnet_tx(struct sk_buff *skb, struct net_device *net)
 	 * We might need to rebuild the header on tx failure.
 	 */
 	memcpy(&hdr_buf, skb->data, sizeof(hdr_buf));
+<<<<<<< HEAD
 	skb_pull(skb, sizeof(hdr_buf));
 
 	proto = hdr_buf.h_proto;
+=======
+	proto = hdr_buf.h_proto;
+
+	switch (proto) {
+	case htons(ETH_P_ARP):
+	case htons(ETH_P_IP):
+#if IS_ENABLED(CONFIG_IPV6)
+	case htons(ETH_P_IPV6):
+#endif
+		break;
+	default:
+		goto fail;
+	}
+
+	skb_pull(skb, sizeof(hdr_buf));
+>>>>>>> refs/remotes/origin/master
 	dg_size = skb->len;
 
 	/*
 	 * Set the transmission type for the packet.  ARP packets and IP
 	 * broadcast packets are sent via GASP.
 	 */
+<<<<<<< HEAD
 	if (memcmp(hdr_buf.h_dest, net->broadcast, FWNET_ALEN) == 0
 	    || proto == htons(ETH_P_ARP)
 	    || (proto == htons(ETH_P_IP)
 		&& IN_MULTICAST(ntohl(ip_hdr(skb)->daddr)))) {
+=======
+	if (fwnet_hwaddr_is_multicast(hdr_buf.h_dest)) {
+>>>>>>> refs/remotes/origin/master
 		max_payload        = dev->broadcast_xmt_max_payload;
 		datagram_label_ptr = &dev->broadcast_xmt_datagramlabel;
 
@@ -1327,11 +1749,20 @@ static netdev_tx_t fwnet_tx(struct sk_buff *skb, struct net_device *net)
 		ptask->dest_node   = IEEE1394_ALL_NODES;
 		ptask->speed       = SCODE_100;
 	} else {
+<<<<<<< HEAD
 		__be64 guid = get_unaligned((__be64 *)hdr_buf.h_dest);
 		u8 generation;
 
 		peer = fwnet_peer_find_by_guid(dev, be64_to_cpu(guid));
 		if (!peer || peer->fifo == FWNET_NO_FIFO_ADDR)
+=======
+		union fwnet_hwaddr *ha = (union fwnet_hwaddr *)hdr_buf.h_dest;
+		__be64 guid = get_unaligned(&ha->uc.uniq_id);
+		u8 generation;
+
+		peer = fwnet_peer_find_by_guid(dev, be64_to_cpu(guid));
+		if (!peer)
+>>>>>>> refs/remotes/origin/master
 			goto fail;
 
 		generation         = peer->generation;
@@ -1339,12 +1770,17 @@ static netdev_tx_t fwnet_tx(struct sk_buff *skb, struct net_device *net)
 		max_payload        = peer->max_payload;
 		datagram_label_ptr = &peer->datagram_label;
 
+<<<<<<< HEAD
 		ptask->fifo_addr   = peer->fifo;
+=======
+		ptask->fifo_addr   = fwnet_hwaddr_fifo(ha);
+>>>>>>> refs/remotes/origin/master
 		ptask->generation  = generation;
 		ptask->dest_node   = dest_node;
 		ptask->speed       = peer->speed;
 	}
 
+<<<<<<< HEAD
 	/* If this is an ARP packet, convert it */
 	if (proto == htons(ETH_P_ARP)) {
 		struct arphdr *arp = (struct arphdr *)skb->data;
@@ -1365,6 +1801,8 @@ static netdev_tx_t fwnet_tx(struct sk_buff *skb, struct net_device *net)
 		put_unaligned(ipaddr, &arp1394->sip);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ptask->hdr.w0 = 0;
 	ptask->hdr.w1 = 0;
 	ptask->skb = skb;
@@ -1479,8 +1917,11 @@ static int fwnet_add_peer(struct fwnet_device *dev,
 
 	peer->dev = dev;
 	peer->guid = (u64)device->config_rom[3] << 32 | device->config_rom[4];
+<<<<<<< HEAD
 	peer->fifo = FWNET_NO_FIFO_ADDR;
 	peer->ip = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&peer->pd_list);
 	peer->pdg_size = 0;
 	peer->datagram_label = 0;
@@ -1500,9 +1941,15 @@ static int fwnet_add_peer(struct fwnet_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int fwnet_probe(struct device *_dev)
 {
 	struct fw_unit *unit = fw_unit(_dev);
+=======
+static int fwnet_probe(struct fw_unit *unit,
+		       const struct ieee1394_device_id *id)
+{
+>>>>>>> refs/remotes/origin/master
 	struct fw_device *device = fw_parent_device(unit);
 	struct fw_card *card = device->card;
 	struct net_device *net;
@@ -1510,6 +1957,10 @@ static int fwnet_probe(struct device *_dev)
 	struct fwnet_device *dev;
 	unsigned max_mtu;
 	int ret;
+<<<<<<< HEAD
+=======
+	union fwnet_hwaddr *ha;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&fwnet_device_mutex);
 
@@ -1540,6 +1991,14 @@ static int fwnet_probe(struct device *_dev)
 	dev->card = card;
 	dev->netdev = net;
 
+<<<<<<< HEAD
+=======
+	ret = fwnet_fifo_start(dev);
+	if (ret < 0)
+		goto out;
+	dev->local_fifo = dev->handler.offset;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Use the RFC 2734 default 1500 octets or the maximum payload
 	 * as initial MTU
@@ -1549,9 +2008,11 @@ static int fwnet_probe(struct device *_dev)
 	net->mtu = min(1500U, max_mtu);
 
 	/* Set our hardware address while we're at it */
+<<<<<<< HEAD
 	put_unaligned_be64(card->guid, net->dev_addr);
 	put_unaligned_be64(~0ULL, net->broadcast);
 	ret = register_netdev(net);
+<<<<<<< HEAD
 	if (ret) {
 		fw_error("Cannot register the driver\n");
 		goto out;
@@ -1560,21 +2021,74 @@ static int fwnet_probe(struct device *_dev)
 	list_add_tail(&dev->dev_link, &fwnet_device_list);
 	fw_notify("%s: IPv4 over FireWire on device %016llx\n",
 		  net->name, (unsigned long long)card->guid);
+=======
+=======
+	ha = (union fwnet_hwaddr *)net->dev_addr;
+	put_unaligned_be64(card->guid, &ha->uc.uniq_id);
+	ha->uc.max_rec = dev->card->max_receive;
+	ha->uc.sspd = dev->card->link_speed;
+	put_unaligned_be16(dev->local_fifo >> 32, &ha->uc.fifo_hi);
+	put_unaligned_be32(dev->local_fifo & 0xffffffff, &ha->uc.fifo_lo);
+
+	memset(net->broadcast, -1, net->addr_len);
+
+	ret = register_netdev(net);
+>>>>>>> refs/remotes/origin/master
+	if (ret)
+		goto out;
+
+	list_add_tail(&dev->dev_link, &fwnet_device_list);
+<<<<<<< HEAD
+	dev_notice(&net->dev, "IPv4 over IEEE 1394 on card %s\n",
+		   dev_name(card->device));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_notice(&net->dev, "IP over IEEE 1394 on card %s\n",
+		   dev_name(card->device));
+>>>>>>> refs/remotes/origin/master
  have_dev:
 	ret = fwnet_add_peer(dev, unit, device);
 	if (ret && allocated_netdev) {
 		unregister_netdev(net);
 		list_del(&dev->dev_link);
+<<<<<<< HEAD
 	}
  out:
 	if (ret && allocated_netdev)
 		free_netdev(net);
+=======
+ out:
+		fwnet_fifo_stop(dev);
+		free_netdev(net);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&fwnet_device_mutex);
 
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * FIXME abort partially sent fragmented datagrams,
+ * discard partially received fragmented datagrams
+ */
+static void fwnet_update(struct fw_unit *unit)
+{
+	struct fw_device *device = fw_parent_device(unit);
+	struct fwnet_peer *peer = dev_get_drvdata(&unit->device);
+	int generation;
+
+	generation = device->generation;
+
+	spin_lock_irq(&peer->dev->lock);
+	peer->node_id    = device->node_id;
+	peer->generation = generation;
+	spin_unlock_irq(&peer->dev->lock);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void fwnet_remove_peer(struct fwnet_peer *peer, struct fwnet_device *dev)
 {
 	struct fwnet_partial_datagram *pd, *pd_next;
@@ -1591,9 +2105,15 @@ static void fwnet_remove_peer(struct fwnet_peer *peer, struct fwnet_device *dev)
 	kfree(peer);
 }
 
+<<<<<<< HEAD
 static int fwnet_remove(struct device *_dev)
 {
 	struct fwnet_peer *peer = dev_get_drvdata(_dev);
+=======
+static void fwnet_remove(struct fw_unit *unit)
+{
+	struct fwnet_peer *peer = dev_get_drvdata(&unit->device);
+>>>>>>> refs/remotes/origin/master
 	struct fwnet_device *dev = peer->dev;
 	struct net_device *net;
 	int i;
@@ -1601,14 +2121,18 @@ static int fwnet_remove(struct device *_dev)
 	mutex_lock(&fwnet_device_mutex);
 
 	net = dev->netdev;
+<<<<<<< HEAD
 	if (net && peer->ip)
 		arp_invalidate(net, peer->ip);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	fwnet_remove_peer(peer, dev);
 
 	if (list_empty(&dev->peer_list)) {
 		unregister_netdev(net);
 
+<<<<<<< HEAD
 		if (dev->local_fifo != FWNET_NO_FIFO_ADDR)
 			fw_core_remove_address_handler(&dev->handler);
 		if (dev->broadcast_rcv_context) {
@@ -1617,6 +2141,10 @@ static int fwnet_remove(struct device *_dev)
 					      dev->card);
 			fw_iso_context_destroy(dev->broadcast_rcv_context);
 		}
+=======
+		fwnet_fifo_stop(dev);
+
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; dev->queued_datagrams && i < 5; i++)
 			ssleep(1);
 		WARN_ON(dev->queued_datagrams);
@@ -1626,6 +2154,7 @@ static int fwnet_remove(struct device *_dev)
 	}
 
 	mutex_unlock(&fwnet_device_mutex);
+<<<<<<< HEAD
 
 	return 0;
 }
@@ -1646,6 +2175,8 @@ static void fwnet_update(struct fw_unit *unit)
 	peer->node_id    = device->node_id;
 	peer->generation = generation;
 	spin_unlock_irq(&peer->dev->lock);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct ieee1394_device_id fwnet_id_table[] = {
@@ -1655,18 +2186,42 @@ static const struct ieee1394_device_id fwnet_id_table[] = {
 		.specifier_id = IANA_SPECIFIER_ID,
 		.version      = RFC2734_SW_VERSION,
 	},
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+	{
+		.match_flags  = IEEE1394_MATCH_SPECIFIER_ID |
+				IEEE1394_MATCH_VERSION,
+		.specifier_id = IANA_SPECIFIER_ID,
+		.version      = RFC3146_SW_VERSION,
+	},
+#endif
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 
 static struct fw_driver fwnet_driver = {
 	.driver = {
 		.owner  = THIS_MODULE,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name   = "net",
+=======
+		.name   = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.bus    = &fw_bus_type,
 		.probe  = fwnet_probe,
 		.remove = fwnet_remove,
 	},
 	.update   = fwnet_update,
+=======
+		.name   = KBUILD_MODNAME,
+		.bus    = &fw_bus_type,
+	},
+	.probe    = fwnet_probe,
+	.update   = fwnet_update,
+	.remove   = fwnet_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = fwnet_id_table,
 };
 
@@ -1692,6 +2247,33 @@ static struct fw_descriptor rfc2374_unit_directory = {
 	.data   = rfc2374_unit_directory_data
 };
 
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+static const u32 rfc3146_unit_directory_data[] = {
+	0x00040000,	/* directory_length		*/
+	0x1200005e,	/* unit_specifier_id: IANA	*/
+	0x81000003,	/* textual descriptor offset	*/
+	0x13000002,	/* unit_sw_version: RFC 3146	*/
+	0x81000005,	/* textual descriptor offset	*/
+	0x00030000,	/* descriptor_length		*/
+	0x00000000,	/* text				*/
+	0x00000000,	/* minimal ASCII, en		*/
+	0x49414e41,	/* I A N A			*/
+	0x00030000,	/* descriptor_length		*/
+	0x00000000,	/* text				*/
+	0x00000000,	/* minimal ASCII, en		*/
+	0x49507636,	/* I P v 6			*/
+};
+
+static struct fw_descriptor rfc3146_unit_directory = {
+	.length = ARRAY_SIZE(rfc3146_unit_directory_data),
+	.key    = (CSR_DIRECTORY | CSR_UNIT) << 24,
+	.data   = rfc3146_unit_directory_data
+};
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int __init fwnet_init(void)
 {
 	int err;
@@ -1700,11 +2282,24 @@ static int __init fwnet_init(void)
 	if (err)
 		return err;
 
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+	err = fw_core_add_descriptor(&rfc3146_unit_directory);
+	if (err)
+		goto out;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	fwnet_packet_task_cache = kmem_cache_create("packet_task",
 			sizeof(struct fwnet_packet_task), 0, 0, NULL);
 	if (!fwnet_packet_task_cache) {
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out2;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	err = driver_register(&fwnet_driver.driver);
@@ -1712,7 +2307,15 @@ static int __init fwnet_init(void)
 		return 0;
 
 	kmem_cache_destroy(fwnet_packet_task_cache);
+<<<<<<< HEAD
 out:
+=======
+out2:
+#if IS_ENABLED(CONFIG_IPV6)
+	fw_core_remove_descriptor(&rfc3146_unit_directory);
+out:
+#endif
+>>>>>>> refs/remotes/origin/master
 	fw_core_remove_descriptor(&rfc2374_unit_directory);
 
 	return err;
@@ -1723,11 +2326,21 @@ static void __exit fwnet_cleanup(void)
 {
 	driver_unregister(&fwnet_driver.driver);
 	kmem_cache_destroy(fwnet_packet_task_cache);
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+	fw_core_remove_descriptor(&rfc3146_unit_directory);
+#endif
+>>>>>>> refs/remotes/origin/master
 	fw_core_remove_descriptor(&rfc2374_unit_directory);
 }
 module_exit(fwnet_cleanup);
 
 MODULE_AUTHOR("Jay Fenlason <fenlason@redhat.com>");
+<<<<<<< HEAD
 MODULE_DESCRIPTION("IPv4 over IEEE1394 as per RFC 2734");
+=======
+MODULE_DESCRIPTION("IP over IEEE1394 as per RFC 2734/3146");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(ieee1394, fwnet_id_table);

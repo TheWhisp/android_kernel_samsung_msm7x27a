@@ -13,36 +13,88 @@
 #include <linux/init.h>
 #include <linux/bootmem.h>
 #include <linux/mman.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/mm.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/nodemask.h>
 #include <linux/initrd.h>
 #include <linux/of_fdt.h>
 #include <linux/highmem.h>
 #include <linux/gfp.h>
 #include <linux/memblock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sort.h>
+<<<<<<< HEAD
 
 #include <asm/mach-types.h>
+=======
+=======
+#include <linux/sort.h>
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/dma-contiguous.h>
+
+#include <asm/mach-types.h>
+#include <asm/memblock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/prom.h>
 #include <asm/sections.h>
 #include <asm/setup.h>
 #include <asm/sizes.h>
 #include <asm/tlb.h>
 #include <asm/fixmap.h>
+<<<<<<< HEAD
 #include <asm/cputype.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-contiguous.h>
+#include <linux/sizes.h>
+
+#include <asm/mach-types.h>
+#include <asm/memblock.h>
+#include <asm/prom.h>
+#include <asm/sections.h>
+#include <asm/setup.h>
+#include <asm/tlb.h>
+#include <asm/fixmap.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
 #include "mm.h"
 
+<<<<<<< HEAD
 static unsigned long phys_initrd_start __initdata = 0;
 static unsigned long phys_initrd_size __initdata = 0;
+<<<<<<< HEAD
 int msm_krait_need_wfe_fixup;
 EXPORT_SYMBOL(msm_krait_need_wfe_fixup);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init early_initrd(char *p)
 {
 	unsigned long start, size;
+=======
+static phys_addr_t phys_initrd_start __initdata = 0;
+static unsigned long phys_initrd_size __initdata = 0;
+
+static int __init early_initrd(char *p)
+{
+	phys_addr_t start;
+	unsigned long size;
+>>>>>>> refs/remotes/origin/master
 	char *endp;
 
 	start = memparse(p, &endp);
@@ -76,6 +128,7 @@ static int __init parse_tag_initrd2(const struct tag *tag)
 
 __tagtable(ATAG_INITRD2, parse_tag_initrd2);
 
+<<<<<<< HEAD
 #ifdef CONFIG_OF_FLATTREE
 void __init early_init_dt_setup_initrd_arch(unsigned long start, unsigned long end)
 {
@@ -84,6 +137,8 @@ void __init early_init_dt_setup_initrd_arch(unsigned long start, unsigned long e
 }
 #endif /* CONFIG_OF_FLATTREE */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This keeps memory configuration data used by a couple memory
  * initialization functions, as well as show_mem() for the skipping
@@ -100,6 +155,21 @@ void show_mem(unsigned int filter)
 	printk("Mem-info:\n");
 	show_free_areas(filter);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	for_each_bank (i, mi) {
 		struct membank *bank = &mi->bank[i];
 		unsigned int pfn1, pfn2;
@@ -124,14 +194,26 @@ void show_mem(unsigned int filter)
 			else
 				shared += page_count(page) - 1;
 			page++;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SPARSEMEM
 			pfn1++;
 			if (!(pfn1 % PAGES_PER_SECTION))
 				page = pfn_to_page(pfn1);
 		} while (pfn1 < pfn2);
 #else
+<<<<<<< HEAD
 		} while (page < end);
 #endif
+=======
+		} while (page < end);
+>>>>>>> refs/remotes/origin/master
+=======
+		} while (page < end);
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	printk("%d pages of RAM\n", total);
@@ -143,11 +225,21 @@ void show_mem(unsigned int filter)
 }
 
 static void __init find_limits(unsigned long *min, unsigned long *max_low,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long *max_high)
+=======
+			       unsigned long *max_high)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       unsigned long *max_high)
+>>>>>>> refs/remotes/origin/master
 {
 	struct meminfo *mi = &meminfo;
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*min = -1UL;
 	*max_low = *max_high = 0;
 
@@ -167,6 +259,20 @@ static void __init find_limits(unsigned long *min, unsigned long *max_low,
 		if (*max_low < end)
 			*max_low = end;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* This assumes the meminfo array is properly sorted */
+	*min = bank_pfn_start(&mi->bank[0]);
+	for_each_bank (i, mi)
+		if (mi->bank[i].highmem)
+				break;
+	*max_low = bank_pfn_end(&mi->bank[i - 1]);
+	*max_high = bank_pfn_end(&mi->bank[mi->nr_banks - 1]);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init arm_bootmem_init(unsigned long start_pfn,
@@ -222,6 +328,32 @@ static void __init arm_bootmem_init(unsigned long start_pfn,
 }
 
 #ifdef CONFIG_ZONE_DMA
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+unsigned long arm_dma_zone_size __read_mostly;
+=======
+
+phys_addr_t arm_dma_zone_size __read_mostly;
+>>>>>>> refs/remotes/origin/master
+EXPORT_SYMBOL(arm_dma_zone_size);
+
+/*
+ * The DMA mask corresponding to the maximum bus address allocatable
+ * using GFP_DMA.  The default here places no restriction on DMA
+ * allocations.  This must be the smallest DMA mask in the system,
+ * so a successful GFP_DMA allocation will always satisfy this.
+ */
+<<<<<<< HEAD
+u32 arm_dma_limit;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+phys_addr_t arm_dma_limit;
+unsigned long arm_dma_pfn_limit;
+
+>>>>>>> refs/remotes/origin/master
 static void __init arm_adjust_dma_zone(unsigned long *size, unsigned long *hole,
 	unsigned long dma_size)
 {
@@ -235,6 +367,35 @@ static void __init arm_adjust_dma_zone(unsigned long *size, unsigned long *hole,
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void __init setup_dma_zone(struct machine_desc *mdesc)
+=======
+void __init setup_dma_zone(const struct machine_desc *mdesc)
+>>>>>>> refs/remotes/origin/master
+=======
+void __init setup_dma_zone(struct machine_desc *mdesc)
+>>>>>>> refs/remotes/origin/cm-11.0
+{
+#ifdef CONFIG_ZONE_DMA
+	if (mdesc->dma_zone_size) {
+		arm_dma_zone_size = mdesc->dma_zone_size;
+		arm_dma_limit = PHYS_OFFSET + arm_dma_zone_size - 1;
+	} else
+		arm_dma_limit = 0xffffffff;
+<<<<<<< HEAD
+<<<<<<< HEAD
+#endif
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ARCH_POPULATES_NODE_MAP
 static void __init arm_bootmem_free_apnm(unsigned long max_low,
 	unsigned long max_high)
@@ -258,6 +419,15 @@ static void __init arm_bootmem_free_apnm(unsigned long max_low,
 }
 
 #else
+<<<<<<< HEAD
+=======
+	arm_dma_pfn_limit = arm_dma_limit >> PAGE_SHIFT;
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __init arm_bootmem_free(unsigned long min, unsigned long max_low,
 	unsigned long max_high)
 {
@@ -300,37 +470,90 @@ static void __init arm_bootmem_free(unsigned long min, unsigned long max_low,
 #endif
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef ARM_DMA_ZONE_SIZE
 #ifndef CONFIG_ZONE_DMA
 #error ARM_DMA_ZONE_SIZE set but no DMA zone to limit allocations
 #endif
 
+=======
+#ifdef CONFIG_ZONE_DMA
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_ZONE_DMA
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Adjust the sizes according to any special requirements for
 	 * this machine type.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	arm_adjust_dma_zone(zone_size, zhole_size,
 		ARM_DMA_ZONE_SIZE >> PAGE_SHIFT);
+=======
+	if (arm_dma_zone_size)
+		arm_adjust_dma_zone(zone_size, zhole_size,
+			arm_dma_zone_size >> PAGE_SHIFT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (arm_dma_zone_size)
+		arm_adjust_dma_zone(zone_size, zhole_size,
+			arm_dma_zone_size >> PAGE_SHIFT);
+>>>>>>> refs/remotes/origin/master
+=======
+	if (arm_dma_zone_size)
+		arm_adjust_dma_zone(zone_size, zhole_size,
+			arm_dma_zone_size >> PAGE_SHIFT);
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 	free_area_init_node(0, zone_size, min, zhole_size);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_HAVE_ARCH_PFN_VALID
 int pfn_valid(unsigned long pfn)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return memblock_is_memory(pfn << PAGE_SHIFT);
+=======
+	return memblock_is_memory(__pfn_to_phys(pfn));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return memblock_is_memory(__pfn_to_phys(pfn));
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(pfn_valid);
 #endif
 
 #ifndef CONFIG_SPARSEMEM
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void arm_memory_present(void)
 {
 }
 #else
 static void arm_memory_present(void)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void __init arm_memory_present(void)
+{
+}
+#else
+static void __init arm_memory_present(void)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct meminfo *mi = &meminfo;
 	int i;
@@ -341,6 +564,44 @@ static void arm_memory_present(void)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+=======
+{
+	struct meminfo *mi = &meminfo;
+	int i;
+	for_each_bank(i, mi) {
+		memory_present(0, bank_pfn_start(&mi->bank[i]),
+				bank_pfn_end(&mi->bank[i]));
+	}
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
+static bool arm_memblock_steal_permitted = true;
+
+phys_addr_t __init arm_memblock_steal(phys_addr_t size, phys_addr_t align)
+{
+	phys_addr_t phys;
+
+	BUG_ON(!arm_memblock_steal_permitted);
+
+<<<<<<< HEAD
+	phys = memblock_alloc(size, align);
+=======
+	phys = memblock_alloc_base(size, align, MEMBLOCK_ALLOC_ANYWHERE);
+>>>>>>> refs/remotes/origin/master
+	memblock_free(phys, size);
+	memblock_remove(phys, size);
+
+	return phys;
+}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init meminfo_cmp(const void *_a, const void *_b)
 {
 	const struct membank *a = _a, *b = _b;
@@ -361,8 +622,14 @@ void __init find_membank0_hole(void)
 
 	membank0_size = meminfo.bank[0].size;
 	membank1_start = meminfo.bank[1].start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	pr_info("m0 size %lx m1 start %lx\n", membank0_size, membank1_start);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 #endif
 
@@ -374,7 +641,20 @@ void __init arm_memblock_init(struct meminfo *mi, struct machine_desc *mdesc)
 	sort(&meminfo.bank, meminfo.nr_banks, sizeof(meminfo.bank[0]), meminfo_cmp, NULL);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_init();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init arm_memblock_init(struct meminfo *mi,
+	const struct machine_desc *mdesc)
+{
+	int i;
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < mi->nr_banks; i++)
 		memblock_add(mi->bank[i].start, mi->bank[i].size);
 
@@ -385,16 +665,33 @@ void __init arm_memblock_init(struct meminfo *mi, struct machine_desc *mdesc)
 	memblock_reserve(__pa(_stext), _end - _stext);
 #endif
 #ifdef CONFIG_BLK_DEV_INITRD
+<<<<<<< HEAD
 	if (phys_initrd_size &&
 	    !memblock_is_region_memory(phys_initrd_start, phys_initrd_size)) {
 		pr_err("INITRD: 0x%08lx+0x%08lx is not a memory region - disabling initrd\n",
 		       phys_initrd_start, phys_initrd_size);
+=======
+	/* FDT scan will populate initrd_start */
+	if (initrd_start) {
+		phys_initrd_start = __virt_to_phys(initrd_start);
+		phys_initrd_size = initrd_end - initrd_start;
+	}
+	if (phys_initrd_size &&
+	    !memblock_is_region_memory(phys_initrd_start, phys_initrd_size)) {
+		pr_err("INITRD: 0x%08llx+0x%08lx is not a memory region - disabling initrd\n",
+		       (u64)phys_initrd_start, phys_initrd_size);
+>>>>>>> refs/remotes/origin/master
 		phys_initrd_start = phys_initrd_size = 0;
 	}
 	if (phys_initrd_size &&
 	    memblock_is_region_reserved(phys_initrd_start, phys_initrd_size)) {
+<<<<<<< HEAD
 		pr_err("INITRD: 0x%08lx+0x%08lx overlaps in-use memory region - disabling initrd\n",
 		       phys_initrd_start, phys_initrd_size);
+=======
+		pr_err("INITRD: 0x%08llx+0x%08lx overlaps in-use memory region - disabling initrd\n",
+		       (u64)phys_initrd_start, phys_initrd_size);
+>>>>>>> refs/remotes/origin/master
 		phys_initrd_start = phys_initrd_size = 0;
 	}
 	if (phys_initrd_size) {
@@ -413,7 +710,25 @@ void __init arm_memblock_init(struct meminfo *mi, struct machine_desc *mdesc)
 	if (mdesc->reserve)
 		mdesc->reserve();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_analyze();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/*
+	 * reserve memory for DMA contigouos allocations,
+	 * must come from DMA area inside low memory
+	 */
+	dma_contiguous_reserve(min(arm_dma_limit, arm_lowmem_limit));
+
+	arm_memblock_steal_permitted = false;
+	memblock_allow_resize();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	memblock_dump_all();
 }
 
@@ -439,6 +754,14 @@ int _early_pfn_valid(unsigned long pfn)
 EXPORT_SYMBOL(_early_pfn_valid);
 #endif
 
+<<<<<<< HEAD
+=======
+	memblock_dump_all();
+}
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __init bootmem_init(void)
 {
 	unsigned long min, max_low, max_high;
@@ -460,23 +783,44 @@ void __init bootmem_init(void)
 	 */
 	sparse_init();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_POPULATES_NODE_MAP
 	arm_bootmem_free_apnm(max_low, max_high);
 #else
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_ARCH_POPULATES_NODE_MAP
+	arm_bootmem_free_apnm(max_low, max_high);
+#else
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * Now free the memory - free_area_init_node needs
 	 * the sparse mem_map arrays initialized by sparse_init()
 	 * for memmap_init_zone(), otherwise all PFNs are invalid.
 	 */
 	arm_bootmem_free(min, max_low, max_high);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
+<<<<<<< HEAD
 	high_memory = __va(((phys_addr_t)max_low << PAGE_SHIFT) - 1) + 1;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This doesn't seem to be used by the Linux memory manager any
 	 * more, but is used by ll_rw_block.  If we can get rid of it, we
 	 * also get rid of some of the stuff above as well.
+<<<<<<< HEAD
 	 *
 	 * Note: max_low_pfn and max_pfn reflect the number of _pages_ in
 	 * the system, not the maximum PFN.
@@ -501,6 +845,12 @@ static inline int free_area(unsigned long pfn, unsigned long end, char *s)
 		printk(KERN_INFO "Freeing %s memory: %dK\n", s, size);
 
 	return pages;
+=======
+	 */
+	min_low_pfn = min;
+	max_low_pfn = max_low;
+	max_pfn = max_high;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -518,7 +868,11 @@ static inline void
 free_memmap(unsigned long start_pfn, unsigned long end_pfn)
 {
 	struct page *start_pg, *end_pg;
+<<<<<<< HEAD
 	unsigned long pg, pgend;
+=======
+	phys_addr_t pg, pgend;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Convert start_pfn/end_pfn to a struct page pointer.
@@ -530,14 +884,20 @@ free_memmap(unsigned long start_pfn, unsigned long end_pfn)
 	 * Convert to physical addresses, and
 	 * round start upwards and end downwards.
 	 */
+<<<<<<< HEAD
 	pg = (unsigned long)PAGE_ALIGN(__pa(start_pg));
 	pgend = (unsigned long)__pa(end_pg) & PAGE_MASK;
+=======
+	pg = PAGE_ALIGN(__pa(start_pg));
+	pgend = __pa(end_pg) & PAGE_MASK;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If there are free pages between these,
 	 * free the section of the memmap array.
 	 */
 	if (pg < pgend)
+<<<<<<< HEAD
 		free_bootmem(pg, pgend - pg);
 }
 
@@ -546,6 +906,16 @@ free_memmap(unsigned long start_pfn, unsigned long end_pfn)
  * the mem_map that we are allowed to. The page migration code moves pages
  * in blocks that are rounded per the MAX_ORDER_NR_PAGES definition, so we
  * can't free mem_map entries that may be dereferenced in this manner.
+<<<<<<< HEAD
+=======
+		memblock_free_early(pg, pgend - pg);
+}
+
+/*
+ * The mem_map array can get very big.  Free the unused area of the memory map.
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 static void __init free_unused_memmap(struct meminfo *mi)
 {
@@ -559,8 +929,17 @@ static void __init free_unused_memmap(struct meminfo *mi)
 	for_each_bank(i, mi) {
 		struct membank *bank = &mi->bank[i];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		bank_start = round_down(bank_pfn_start(bank),
 					MAX_ORDER_NR_PAGES);
+=======
+		bank_start = bank_pfn_start(bank);
+>>>>>>> refs/remotes/origin/master
+=======
+		bank_start = round_down(bank_pfn_start(bank),
+					MAX_ORDER_NR_PAGES);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_SPARSEMEM
 		/*
@@ -584,8 +963,22 @@ static void __init free_unused_memmap(struct meminfo *mi)
 		if (prev_bank_end && prev_bank_end < bank_start)
 			free_memmap(prev_bank_end, bank_start);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		prev_bank_end = round_up(bank_pfn_end(bank),
 					 MAX_ORDER_NR_PAGES);
+=======
+		/*
+		 * Align up here since the VM subsystem insists that the
+		 * memmap entries are valid from the bank end aligned to
+		 * MAX_ORDER_NR_PAGES.
+		 */
+		prev_bank_end = ALIGN(bank_pfn_end(bank), MAX_ORDER_NR_PAGES);
+>>>>>>> refs/remotes/origin/master
+=======
+		prev_bank_end = round_up(bank_pfn_end(bank),
+					 MAX_ORDER_NR_PAGES);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 #ifdef CONFIG_SPARSEMEM
@@ -595,10 +988,25 @@ static void __init free_unused_memmap(struct meminfo *mi)
 #endif
 }
 
+<<<<<<< HEAD
 static void __init free_highpages(void)
 {
 #ifdef CONFIG_HIGHMEM
 	unsigned long max_low = max_low_pfn + PHYS_PFN_OFFSET;
+=======
+#ifdef CONFIG_HIGHMEM
+static inline void free_area_high(unsigned long pfn, unsigned long end)
+{
+	for (; pfn < end; pfn++)
+		free_highmem_page(pfn_to_page(pfn));
+}
+#endif
+
+static void __init free_highpages(void)
+{
+#ifdef CONFIG_HIGHMEM
+	unsigned long max_low = max_low_pfn;
+>>>>>>> refs/remotes/origin/master
 	struct memblock_region *mem, *res;
 
 	/* set highmem page free */
@@ -630,8 +1038,12 @@ static void __init free_highpages(void)
 			if (res_end > end)
 				res_end = end;
 			if (res_start != start)
+<<<<<<< HEAD
 				totalhigh_pages += free_area(start, res_start,
 							     NULL);
+=======
+				free_area_high(start, res_start);
+>>>>>>> refs/remotes/origin/master
 			start = res_end;
 			if (start == end)
 				break;
@@ -639,9 +1051,14 @@ static void __init free_highpages(void)
 
 		/* And now free anything which remains */
 		if (start < end)
+<<<<<<< HEAD
 			totalhigh_pages += free_area(start, end, NULL);
 	}
 	totalram_pages += totalhigh_pages;
+=======
+			free_area_high(start, end);
+	}
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -652,22 +1069,35 @@ static void __init free_highpages(void)
  */
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	unsigned long reserved_pages, free_pages;
 	struct memblock_region *reg;
 	int i;
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HAVE_TCM
 	/* These pointers are filled in on TCM detection */
 	extern u32 dtcm_end;
 	extern u32 itcm_end;
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 	struct zone *zone;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#ifdef CONFIG_FIX_MOVABLE_ZONE
+	struct zone *zone;
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	max_mapnr   = pfn_to_page(max_pfn + PHYS_PFN_OFFSET) - mem_map;
 
 	/* this will put all unused low memory onto the freelists */
 	free_unused_memmap(&meminfo);
+<<<<<<< HEAD
 
 	totalram_pages += free_all_bootmem();
 
@@ -675,10 +1105,18 @@ void __init mem_init(void)
 	/* now that our DMA memory is actually so designated, we can free it */
 	totalram_pages += free_area(PHYS_PFN_OFFSET,
 				    __phys_to_pfn(__pa(swapper_pg_dir)), NULL);
+=======
+	free_all_bootmem();
+
+#ifdef CONFIG_SA1111
+	/* now that our DMA memory is actually so designated, we can free it */
+	free_reserved_area(__va(PHYS_OFFSET), swapper_pg_dir, -1, NULL);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	free_highpages();
 
+<<<<<<< HEAD
 	reserved_pages = free_pages = 0;
 
 	for_each_bank(i, &meminfo) {
@@ -706,7 +1144,18 @@ void __init mem_init(void)
 #else
 		} while (page < end);
 #endif
+<<<<<<< HEAD
+=======
 	}
+
+#ifdef CONFIG_FIX_MOVABLE_ZONE
+	for_each_zone(zone) {
+		if (zone_idx(zone) == ZONE_MOVABLE)
+			total_unmovable_pages = totalram_pages -
+							zone->spanned_pages;
+>>>>>>> refs/remotes/origin/cm-11.0
+	}
+#endif
 
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 	for_each_zone(zone) {
@@ -735,6 +1184,9 @@ void __init mem_init(void)
 		free_pages << (PAGE_SHIFT-10),
 		reserved_pages << (PAGE_SHIFT-10),
 		totalhigh_pages << (PAGE_SHIFT-10));
+=======
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 
 #define MLK(b, t) b, t, ((t) - (b)) >> 10
 #define MLM(b, t) b, t, ((t) - (b)) >> 20
@@ -747,17 +1199,37 @@ void __init mem_init(void)
 			"    ITCM    : 0x%08lx - 0x%08lx   (%4ld kB)\n"
 #endif
 			"    fixmap  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
 			"    DMA     : 0x%08lx - 0x%08lx   (%4ld MB)\n"
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			"    vmalloc : 0x%08lx - 0x%08lx   (%4ld MB)\n"
 			"    lowmem  : 0x%08lx - 0x%08lx   (%4ld MB)\n"
 #ifdef CONFIG_HIGHMEM
 			"    pkmap   : 0x%08lx - 0x%08lx   (%4ld MB)\n"
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 			"    modules : 0x%08lx - 0x%08lx   (%4ld MB)\n"
 			"      .init : 0x%p" " - 0x%p" "   (%4d kB)\n"
 			"      .text : 0x%p" " - 0x%p" "   (%4d kB)\n"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_MODULES
+			"    modules : 0x%08lx - 0x%08lx   (%4ld MB)\n"
+#endif
+			"      .text : 0x%p" " - 0x%p" "   (%4d kB)\n"
+			"      .init : 0x%p" " - 0x%p" "   (%4d kB)\n"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			"      .data : 0x%p" " - 0x%p" "   (%4d kB)\n"
 			"       .bss : 0x%p" " - 0x%p" "   (%4d kB)\n",
 
@@ -768,19 +1240,40 @@ void __init mem_init(void)
 			MLK(ITCM_OFFSET, (unsigned long) itcm_end),
 #endif
 			MLK(FIXADDR_START, FIXADDR_TOP),
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
 			MLM(CONSISTENT_BASE, CONSISTENT_END),
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			MLM(VMALLOC_START, VMALLOC_END),
 			MLM(PAGE_OFFSET, (unsigned long)high_memory),
 #ifdef CONFIG_HIGHMEM
 			MLM(PKMAP_BASE, (PKMAP_BASE) + (LAST_PKMAP) *
 				(PAGE_SIZE)),
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 			MLM(MODULES_VADDR, MODULES_END),
 
 			MLK_ROUNDUP(__init_begin, __init_end),
 			MLK_ROUNDUP(_text, _etext),
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_MODULES
+			MLM(MODULES_VADDR, MODULES_END),
+#endif
+
+			MLK_ROUNDUP(_text, _etext),
+			MLK_ROUNDUP(__init_begin, __init_end),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			MLK_ROUNDUP(_sdata, _edata),
 			MLK_ROUNDUP(__bss_start, __bss_stop));
 
@@ -793,9 +1286,15 @@ void __init mem_init(void)
 	 * be detected at build time already.
 	 */
 #ifdef CONFIG_MMU
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BUILD_BUG_ON(VMALLOC_END			> CONSISTENT_BASE);
 	BUG_ON(VMALLOC_END				> CONSISTENT_BASE);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BUILD_BUG_ON(TASK_SIZE				> MODULES_VADDR);
 	BUG_ON(TASK_SIZE 				> MODULES_VADDR);
 #endif
@@ -805,7 +1304,11 @@ void __init mem_init(void)
 	BUG_ON(PKMAP_BASE + LAST_PKMAP * PAGE_SIZE	> PAGE_OFFSET);
 #endif
 
+<<<<<<< HEAD
 	if (PAGE_SIZE >= 16384 && num_physpages <= 128) {
+=======
+	if (PAGE_SIZE >= 16384 && get_num_physpages() <= 128) {
+>>>>>>> refs/remotes/origin/master
 		extern int sysctl_overcommit_memory;
 		/*
 		 * On a machine this small we won't get
@@ -818,18 +1321,34 @@ void __init mem_init(void)
 
 void free_initmem(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long reclaimed_initmem;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	unsigned long reclaimed_initmem;
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_HAVE_TCM
 	extern char __tcm_start, __tcm_end;
 
 	poison_init_mem(&__tcm_start, &__tcm_end - &__tcm_start);
+<<<<<<< HEAD
 	totalram_pages += free_area(__phys_to_pfn(__pa(&__tcm_start)),
 				    __phys_to_pfn(__pa(&__tcm_end)),
 				    "TCM link");
 #endif
 
+<<<<<<< HEAD
 	if (!machine_is_integrator() && !machine_is_cintegrator()) {
 		poison_init_mem(__init_begin, __init_end - __init_begin);
+=======
+	poison_init_mem(__init_begin, __init_end - __init_begin);
+	if (!machine_is_integrator() && !machine_is_cintegrator()) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		reclaimed_initmem = free_area(__phys_to_pfn(__pa(__init_begin)),
 					    __phys_to_pfn(__pa(__init_end)),
 					    "init");
@@ -867,22 +1386,63 @@ int arch_physical_low_power_memory(u64 start, u64 size)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+	free_reserved_area(&__tcm_start, &__tcm_end, -1, "TCM link");
+#endif
+
+	poison_init_mem(__init_begin, __init_end - __init_begin);
+	if (!machine_is_integrator() && !machine_is_cintegrator())
+		free_initmem_default(-1);
+}
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_BLK_DEV_INITRD
 
 static int keep_initrd;
 
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long reclaimed_initrd_mem;
+<<<<<<< HEAD
 	if (!keep_initrd) {
 		poison_init_mem((void *)start, PAGE_ALIGN(end) - start);
 		reclaimed_initrd_mem = free_area(__phys_to_pfn(__pa(start)),
 					    __phys_to_pfn(__pa(end)),
 					    "initrd");
+=======
+
+	if (!keep_initrd) {
+		poison_init_mem((void *)start, PAGE_ALIGN(end) - start);
+		reclaimed_initrd_mem = free_area(__phys_to_pfn(__pa(start)),
+						 __phys_to_pfn(__pa(end)),
+						 "initrd");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long reclaimed_initrd_mem;
+
+	if (!keep_initrd) {
+		poison_init_mem((void *)start, PAGE_ALIGN(end) - start);
+		reclaimed_initrd_mem = free_area(__phys_to_pfn(__pa(start)),
+						 __phys_to_pfn(__pa(end)),
+						 "initrd");
+>>>>>>> refs/remotes/origin/cm-11.0
 		totalram_pages += reclaimed_initrd_mem;
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 		total_unmovable_pages += reclaimed_initrd_mem;
 #endif
+<<<<<<< HEAD
+=======
+	if (!keep_initrd) {
+		poison_init_mem((void *)start, PAGE_ALIGN(end) - start);
+		free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -894,6 +1454,8 @@ static int __init keepinitrd_setup(char *__unused)
 
 __setup("keepinitrd", keepinitrd_setup);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_MSM_KRAIT_WFE_FIXUP
 static int __init msm_krait_wfe_init(void)
@@ -908,3 +1470,7 @@ static int __init msm_krait_wfe_init(void)
 }
 pure_initcall(msm_krait_wfe_init);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

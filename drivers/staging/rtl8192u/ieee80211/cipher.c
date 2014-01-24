@@ -71,8 +71,18 @@ static int crypt(struct crypto_tfm *tfm,
 		u8 *src_p, *dst_p;
 		int in_place;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		scatterwalk_map(&walk_in, 0);
 		scatterwalk_map(&walk_out, 1);
+=======
+		scatterwalk_map(&walk_in);
+		scatterwalk_map(&walk_out);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		scatterwalk_map(&walk_in);
+		scatterwalk_map(&walk_out);
+>>>>>>> refs/remotes/origin/master
 		src_p = scatterwalk_whichbuf(&walk_in, bsize, tmp_src);
 		dst_p = scatterwalk_whichbuf(&walk_out, bsize, tmp_dst);
 		in_place = scatterwalk_samebuf(&walk_in, &walk_out,
@@ -84,10 +94,23 @@ static int crypt(struct crypto_tfm *tfm,
 
 		prfn(tfm, dst_p, src_p, crfn, enc, info, in_place);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		scatterwalk_done(&walk_in, 0, nbytes);
 
 		scatterwalk_copychunks(dst_p, &walk_out, bsize, 1);
 		scatterwalk_done(&walk_out, 1, nbytes);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		scatterwalk_done(&walk_in, nbytes);
+
+		scatterwalk_copychunks(dst_p, &walk_out, bsize, 1);
+		scatterwalk_done(&walk_out, nbytes);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (!nbytes)
 			return 0;

@@ -34,6 +34,10 @@
 #include <linux/hid.h>
 #include <linux/hiddev.h>
 #include <linux/compat.h>
+<<<<<<< HEAD
+=======
+#include <linux/vmalloc.h>
+>>>>>>> refs/remotes/origin/master
 #include "usbhid.h"
 
 #ifdef CONFIG_USB_DYNAMIC_MINORS
@@ -250,13 +254,21 @@ static int hiddev_release(struct inode * inode, struct file * file)
 		} else {
 			mutex_unlock(&list->hiddev->existancelock);
 			kfree(list->hiddev);
+<<<<<<< HEAD
 			kfree(list);
+=======
+			vfree(list);
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 	}
 
 	mutex_unlock(&list->hiddev->existancelock);
+<<<<<<< HEAD
 	kfree(list);
+=======
+	vfree(list);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -278,7 +290,11 @@ static int hiddev_open(struct inode *inode, struct file *file)
 	hid = usb_get_intfdata(intf);
 	hiddev = hid->hiddev;
 
+<<<<<<< HEAD
 	if (!(list = kzalloc(sizeof(struct hiddev_list), GFP_KERNEL)))
+=======
+	if (!(list = vzalloc(sizeof(struct hiddev_list))))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	mutex_init(&list->thread_lock);
 	list->hiddev = hiddev;
@@ -322,7 +338,11 @@ bail_unlock:
 	mutex_unlock(&hiddev->existancelock);
 bail:
 	file->private_data = NULL;
+<<<<<<< HEAD
 	kfree(list);
+=======
+	vfree(list);
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -360,10 +380,13 @@ static ssize_t hiddev_read(struct file * file, char __user * buffer, size_t coun
 			prepare_to_wait(&list->hiddev->wait, &wait, TASK_INTERRUPTIBLE);
 
 			while (list->head == list->tail) {
+<<<<<<< HEAD
 				if (file->f_flags & O_NONBLOCK) {
 					retval = -EAGAIN;
 					break;
 				}
+=======
+>>>>>>> refs/remotes/origin/master
 				if (signal_pending(current)) {
 					retval = -ERESTARTSYS;
 					break;
@@ -372,6 +395,13 @@ static ssize_t hiddev_read(struct file * file, char __user * buffer, size_t coun
 					retval = -EIO;
 					break;
 				}
+<<<<<<< HEAD
+=======
+				if (file->f_flags & O_NONBLOCK) {
+					retval = -EAGAIN;
+					break;
+				}
+>>>>>>> refs/remotes/origin/master
 
 				/* let O_NONBLOCK tasks run */
 				mutex_unlock(&list->thread_lock);
@@ -624,7 +654,11 @@ static long hiddev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		break;
 
 	case HIDIOCAPPLICATION:
+<<<<<<< HEAD
 		if (arg < 0 || arg >= hid->maxapplication)
+=======
+		if (arg >= hid->maxapplication)
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		for (i = 0; i < hid->maxcollection; i++)
@@ -641,6 +675,16 @@ static long hiddev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			struct usb_device *dev = hid_to_usb_dev(hid);
 			struct usbhid_device *usbhid = hid->driver_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			memset(&dinfo, 0, sizeof(dinfo));
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			memset(&dinfo, 0, sizeof(dinfo));
+
+>>>>>>> refs/remotes/origin/master
 			dinfo.bustype = BUS_USB;
 			dinfo.busnum = dev->bus->busnum;
 			dinfo.devnum = dev->devnum;
@@ -702,8 +746,13 @@ static long hiddev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		if (report == NULL)
 			break;
 
+<<<<<<< HEAD
 		usbhid_submit_report(hid, report, USB_DIR_IN);
 		usbhid_wait_io(hid);
+=======
+		hid_hw_request(hid, report, HID_REQ_GET_REPORT);
+		hid_hw_wait(hid);
+>>>>>>> refs/remotes/origin/master
 
 		r = 0;
 		break;
@@ -721,8 +770,13 @@ static long hiddev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		if (report == NULL)
 			break;
 
+<<<<<<< HEAD
 		usbhid_submit_report(hid, report, USB_DIR_OUT);
 		usbhid_wait_io(hid);
+=======
+		hid_hw_request(hid, report, HID_REQ_SET_REPORT);
+		hid_hw_wait(hid);
+>>>>>>> refs/remotes/origin/master
 
 		r = 0;
 		break;
@@ -857,7 +911,15 @@ static const struct file_operations hiddev_fops = {
 	.llseek		= noop_llseek,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char *hiddev_devnode(struct device *dev, mode_t *mode)
+=======
+static char *hiddev_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *hiddev_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return kasprintf(GFP_KERNEL, "usb/%s", dev_name(dev));
 }
@@ -920,11 +982,25 @@ void hiddev_disconnect(struct hid_device *hid)
 	struct hiddev *hiddev = hid->hiddev;
 	struct usbhid_device *usbhid = hid->driver_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&hiddev->existancelock);
 	hiddev->exist = 0;
 
 	usb_deregister_dev(usbhid->intf, &hiddev_class);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	usb_deregister_dev(usbhid->intf, &hiddev_class);
+
+	mutex_lock(&hiddev->existancelock);
+	hiddev->exist = 0;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hiddev->open) {
 		mutex_unlock(&hiddev->existancelock);
 		usbhid_close(hiddev->hid);

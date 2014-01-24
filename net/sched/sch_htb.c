@@ -38,6 +38,10 @@
 #include <linux/workqueue.h>
 #include <linux/slab.h>
 #include <net/netlink.h>
+<<<<<<< HEAD
+=======
+#include <net/sch_generic.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/pkt_sched.h>
 
 /* HTB algorithm.
@@ -64,6 +68,13 @@ static int htb_hysteresis __read_mostly = 0; /* whether to use mode hysteresis f
 module_param    (htb_hysteresis, int, 0640);
 MODULE_PARM_DESC(htb_hysteresis, "Hysteresis mode, less CPU load, less accurate");
 
+<<<<<<< HEAD
+=======
+static int htb_rate_est = 0; /* htb classes have a default rate estimator */
+module_param(htb_rate_est, int, 0640);
+MODULE_PARM_DESC(htb_rate_est, "setup a default rate estimator (4sec 16sec) for htb classes");
+
+>>>>>>> refs/remotes/origin/master
 /* used internaly to keep status of single class */
 enum htb_cmode {
 	HTB_CANT_SEND,		/* class can't send and can't borrow */
@@ -71,6 +82,7 @@ enum htb_cmode {
 	HTB_CAN_SEND		/* class can send */
 };
 
+<<<<<<< HEAD
 /* interior & leaf nodes; props specific to leaves are marked L: */
 struct htb_class {
 	struct Qdisc_class_common common;
@@ -124,10 +136,82 @@ struct htb_class {
 	psched_tdiff_t mbuffer;	/* max wait time */
 	long tokens, ctokens;	/* current number of tokens */
 	psched_time_t t_c;	/* checkpoint time */
+=======
+struct htb_prio {
+	union {
+		struct rb_root	row;
+		struct rb_root	feed;
+	};
+	struct rb_node	*ptr;
+	/* When class changes from state 1->2 and disconnects from
+	 * parent's feed then we lost ptr value and start from the
+	 * first child again. Here we store classid of the
+	 * last valid ptr (used when ptr is NULL).
+	 */
+	u32		last_ptr_id;
+};
+
+/* interior & leaf nodes; props specific to leaves are marked L:
+ * To reduce false sharing, place mostly read fields at beginning,
+ * and mostly written ones at the end.
+ */
+struct htb_class {
+	struct Qdisc_class_common common;
+	struct psched_ratecfg	rate;
+	struct psched_ratecfg	ceil;
+	s64			buffer, cbuffer;/* token bucket depth/rate */
+	s64			mbuffer;	/* max wait time */
+	u32			prio;		/* these two are used only by leaves... */
+	int			quantum;	/* but stored for parent-to-leaf return */
+
+	struct tcf_proto	*filter_list;	/* class attached filters */
+	int			filter_cnt;
+	int			refcnt;		/* usage count of this class */
+
+	int			level;		/* our level (see above) */
+	unsigned int		children;
+	struct htb_class	*parent;	/* parent class */
+
+	struct gnet_stats_rate_est64 rate_est;
+
+	/*
+	 * Written often fields
+	 */
+	struct gnet_stats_basic_packed bstats;
+	struct gnet_stats_queue	qstats;
+	struct tc_htb_xstats	xstats;	/* our special stats */
+
+	/* token bucket parameters */
+	s64			tokens, ctokens;/* current number of tokens */
+	s64			t_c;		/* checkpoint time */
+
+	union {
+		struct htb_class_leaf {
+			struct list_head drop_list;
+			int		deficit[TC_HTB_MAXDEPTH];
+			struct Qdisc	*q;
+		} leaf;
+		struct htb_class_inner {
+			struct htb_prio clprio[TC_HTB_NUMPRIO];
+		} inner;
+	} un;
+	s64			pq_key;
+
+	int			prio_activity;	/* for which prios are we active */
+	enum htb_cmode		cmode;		/* current mode of the class */
+	struct rb_node		pq_node;	/* node for event queue */
+	struct rb_node		node[TC_HTB_NUMPRIO];	/* node for self or feed tree */
+};
+
+struct htb_level {
+	struct rb_root	wait_pq;
+	struct htb_prio hprio[TC_HTB_NUMPRIO];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct htb_sched {
 	struct Qdisc_class_hash clhash;
+<<<<<<< HEAD
 	struct list_head drops[TC_HTB_NUMPRIO];/* active leaves (for drops) */
 
 	/* self list - roots of self generating tree */
@@ -160,6 +244,34 @@ struct htb_sched {
 #define HTB_WARN_TOOMANYEVENTS	0x1
 	unsigned int warned;	/* only one warning */
 	struct work_struct work;
+=======
+	int			defcls;		/* class where unclassified flows go to */
+	int			rate2quantum;	/* quant = rate / rate2quantum */
+
+	/* filters for qdisc itself */
+	struct tcf_proto	*filter_list;
+
+#define HTB_WARN_TOOMANYEVENTS	0x1
+	unsigned int		warned;	/* only one warning */
+	int			direct_qlen;
+	struct work_struct	work;
+
+	/* non shaped skbs; let them go directly thru */
+	struct sk_buff_head	direct_queue;
+	long			direct_pkts;
+
+	struct qdisc_watchdog	watchdog;
+
+	s64			now;	/* cached dequeue time */
+	struct list_head	drops[TC_HTB_NUMPRIO];/* active leaves (for drops) */
+
+	/* time of nearest event per level (row) */
+	s64			near_ev_cache[TC_HTB_MAXDEPTH];
+
+	int			row_mask[TC_HTB_MAXDEPTH];
+
+	struct htb_level	hlevel[TC_HTB_MAXDEPTH];
+>>>>>>> refs/remotes/origin/master
 };
 
 /* find class in global hash table using given handle */
@@ -273,9 +385,15 @@ static void htb_add_to_id_tree(struct rb_root *root,
  * already in the queue.
  */
 static void htb_add_to_wait_tree(struct htb_sched *q,
+<<<<<<< HEAD
 				 struct htb_class *cl, long delay)
 {
 	struct rb_node **p = &q->wait_pq[cl->level].rb_node, *parent = NULL;
+=======
+				 struct htb_class *cl, s64 delay)
+{
+	struct rb_node **p = &q->hlevel[cl->level].wait_pq.rb_node, *parent = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	cl->pq_key = q->now + delay;
 	if (cl->pq_key == q->now)
@@ -295,7 +413,11 @@ static void htb_add_to_wait_tree(struct htb_sched *q,
 			p = &parent->rb_left;
 	}
 	rb_link_node(&cl->pq_node, parent, p);
+<<<<<<< HEAD
 	rb_insert_color(&cl->pq_node, &q->wait_pq[cl->level]);
+=======
+	rb_insert_color(&cl->pq_node, &q->hlevel[cl->level].wait_pq);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -322,7 +444,11 @@ static inline void htb_add_class_to_row(struct htb_sched *q,
 	while (mask) {
 		int prio = ffz(~mask);
 		mask &= ~(1 << prio);
+<<<<<<< HEAD
 		htb_add_to_id_tree(q->row[cl->level] + prio, cl, prio);
+=======
+		htb_add_to_id_tree(&q->hlevel[cl->level].hprio[prio].row, cl, prio);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -348,6 +474,7 @@ static inline void htb_remove_class_from_row(struct htb_sched *q,
 						 struct htb_class *cl, int mask)
 {
 	int m = 0;
+<<<<<<< HEAD
 
 	while (mask) {
 		int prio = ffz(~mask);
@@ -358,6 +485,20 @@ static inline void htb_remove_class_from_row(struct htb_sched *q,
 
 		htb_safe_rb_erase(cl->node + prio, q->row[cl->level] + prio);
 		if (!q->row[cl->level][prio].rb_node)
+=======
+	struct htb_level *hlevel = &q->hlevel[cl->level];
+
+	while (mask) {
+		int prio = ffz(~mask);
+		struct htb_prio *hprio = &hlevel->hprio[prio];
+
+		mask &= ~(1 << prio);
+		if (hprio->ptr == cl->node + prio)
+			htb_next_rb_node(&hprio->ptr);
+
+		htb_safe_rb_erase(cl->node + prio, &hprio->row);
+		if (!hprio->row.rb_node)
+>>>>>>> refs/remotes/origin/master
 			m |= 1 << prio;
 	}
 	q->row_mask[cl->level] &= ~m;
@@ -381,13 +522,21 @@ static void htb_activate_prios(struct htb_sched *q, struct htb_class *cl)
 			int prio = ffz(~m);
 			m &= ~(1 << prio);
 
+<<<<<<< HEAD
 			if (p->un.inner.feed[prio].rb_node)
+=======
+			if (p->un.inner.clprio[prio].feed.rb_node)
+>>>>>>> refs/remotes/origin/master
 				/* parent already has its feed in use so that
 				 * reset bit in mask as parent is already ok
 				 */
 				mask &= ~(1 << prio);
 
+<<<<<<< HEAD
 			htb_add_to_id_tree(p->un.inner.feed + prio, cl, prio);
+=======
+			htb_add_to_id_tree(&p->un.inner.clprio[prio].feed, cl, prio);
+>>>>>>> refs/remotes/origin/master
 		}
 		p->prio_activity |= mask;
 		cl = p;
@@ -417,11 +566,16 @@ static void htb_deactivate_prios(struct htb_sched *q, struct htb_class *cl)
 			int prio = ffz(~m);
 			m &= ~(1 << prio);
 
+<<<<<<< HEAD
 			if (p->un.inner.ptr[prio] == cl->node + prio) {
+=======
+			if (p->un.inner.clprio[prio].ptr == cl->node + prio) {
+>>>>>>> refs/remotes/origin/master
 				/* we are removing child which is pointed to from
 				 * parent feed - forget the pointer but remember
 				 * classid
 				 */
+<<<<<<< HEAD
 				p->un.inner.last_ptr_id[prio] = cl->common.classid;
 				p->un.inner.ptr[prio] = NULL;
 			}
@@ -429,6 +583,16 @@ static void htb_deactivate_prios(struct htb_sched *q, struct htb_class *cl)
 			htb_safe_rb_erase(cl->node + prio, p->un.inner.feed + prio);
 
 			if (!p->un.inner.feed[prio].rb_node)
+=======
+				p->un.inner.clprio[prio].last_ptr_id = cl->common.classid;
+				p->un.inner.clprio[prio].ptr = NULL;
+			}
+
+			htb_safe_rb_erase(cl->node + prio,
+					  &p->un.inner.clprio[prio].feed);
+
+			if (!p->un.inner.clprio[prio].feed.rb_node)
+>>>>>>> refs/remotes/origin/master
 				mask |= 1 << prio;
 		}
 
@@ -441,14 +605,22 @@ static void htb_deactivate_prios(struct htb_sched *q, struct htb_class *cl)
 		htb_remove_class_from_row(q, cl, mask);
 }
 
+<<<<<<< HEAD
 static inline long htb_lowater(const struct htb_class *cl)
+=======
+static inline s64 htb_lowater(const struct htb_class *cl)
+>>>>>>> refs/remotes/origin/master
 {
 	if (htb_hysteresis)
 		return cl->cmode != HTB_CANT_SEND ? -cl->cbuffer : 0;
 	else
 		return 0;
 }
+<<<<<<< HEAD
 static inline long htb_hiwater(const struct htb_class *cl)
+=======
+static inline s64 htb_hiwater(const struct htb_class *cl)
+>>>>>>> refs/remotes/origin/master
 {
 	if (htb_hysteresis)
 		return cl->cmode == HTB_CAN_SEND ? -cl->buffer : 0;
@@ -469,9 +641,15 @@ static inline long htb_hiwater(const struct htb_class *cl)
  * mode transitions per time unit. The speed gain is about 1/6.
  */
 static inline enum htb_cmode
+<<<<<<< HEAD
 htb_class_mode(struct htb_class *cl, long *diff)
 {
 	long toks;
+=======
+htb_class_mode(struct htb_class *cl, s64 *diff)
+{
+	s64 toks;
+>>>>>>> refs/remotes/origin/master
 
 	if ((toks = (cl->ctokens + *diff)) < htb_lowater(cl)) {
 		*diff = -toks;
@@ -495,7 +673,11 @@ htb_class_mode(struct htb_class *cl, long *diff)
  * to mode other than HTB_CAN_SEND (see htb_add_to_wait_tree).
  */
 static void
+<<<<<<< HEAD
 htb_change_class_mode(struct htb_sched *q, struct htb_class *cl, long *diff)
+=======
+htb_change_class_mode(struct htb_sched *q, struct htb_class *cl, s64 *diff)
+>>>>>>> refs/remotes/origin/master
 {
 	enum htb_cmode new_mode = htb_class_mode(cl, diff);
 
@@ -558,9 +740,13 @@ static int htb_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 			__skb_queue_tail(&q->direct_queue, skb);
 			q->direct_pkts++;
 		} else {
+<<<<<<< HEAD
 			kfree_skb(skb);
 			sch->qstats.drops++;
 			return NET_XMIT_DROP;
+=======
+			return qdisc_drop(skb, sch);
+>>>>>>> refs/remotes/origin/master
 		}
 #ifdef CONFIG_NET_CLS_ACT
 	} else if (!cl) {
@@ -576,7 +762,10 @@ static int htb_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		}
 		return ret;
 	} else {
+<<<<<<< HEAD
 		bstats_update(&cl->bstats, skb);
+=======
+>>>>>>> refs/remotes/origin/master
 		htb_activate(q, cl);
 	}
 
@@ -584,6 +773,7 @@ static int htb_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	return NET_XMIT_SUCCESS;
 }
 
+<<<<<<< HEAD
 static inline void htb_accnt_tokens(struct htb_class *cl, int bytes, long diff)
 {
 	long toks = diff + cl->tokens;
@@ -591,12 +781,22 @@ static inline void htb_accnt_tokens(struct htb_class *cl, int bytes, long diff)
 	if (toks > cl->buffer)
 		toks = cl->buffer;
 	toks -= (long) qdisc_l2t(cl->rate, bytes);
+=======
+static inline void htb_accnt_tokens(struct htb_class *cl, int bytes, s64 diff)
+{
+	s64 toks = diff + cl->tokens;
+
+	if (toks > cl->buffer)
+		toks = cl->buffer;
+	toks -= (s64) psched_l2t_ns(&cl->rate, bytes);
+>>>>>>> refs/remotes/origin/master
 	if (toks <= -cl->mbuffer)
 		toks = 1 - cl->mbuffer;
 
 	cl->tokens = toks;
 }
 
+<<<<<<< HEAD
 static inline void htb_accnt_ctokens(struct htb_class *cl, int bytes, long diff)
 {
 	long toks = diff + cl->ctokens;
@@ -604,6 +804,15 @@ static inline void htb_accnt_ctokens(struct htb_class *cl, int bytes, long diff)
 	if (toks > cl->cbuffer)
 		toks = cl->cbuffer;
 	toks -= (long) qdisc_l2t(cl->ceil, bytes);
+=======
+static inline void htb_accnt_ctokens(struct htb_class *cl, int bytes, s64 diff)
+{
+	s64 toks = diff + cl->ctokens;
+
+	if (toks > cl->cbuffer)
+		toks = cl->cbuffer;
+	toks -= (s64) psched_l2t_ns(&cl->ceil, bytes);
+>>>>>>> refs/remotes/origin/master
 	if (toks <= -cl->mbuffer)
 		toks = 1 - cl->mbuffer;
 
@@ -626,10 +835,17 @@ static void htb_charge_class(struct htb_sched *q, struct htb_class *cl,
 {
 	int bytes = qdisc_pkt_len(skb);
 	enum htb_cmode old_mode;
+<<<<<<< HEAD
 	long diff;
 
 	while (cl) {
 		diff = psched_tdiff_bounded(q->now, cl->t_c, cl->mbuffer);
+=======
+	s64 diff;
+
+	while (cl) {
+		diff = min_t(s64, q->now - cl->t_c, cl->mbuffer);
+>>>>>>> refs/remotes/origin/master
 		if (cl->level >= level) {
 			if (cl->level == level)
 				cl->xstats.lends++;
@@ -646,7 +862,11 @@ static void htb_charge_class(struct htb_sched *q, struct htb_class *cl,
 		htb_change_class_mode(q, cl, &diff);
 		if (old_mode != cl->cmode) {
 			if (old_mode != HTB_CAN_SEND)
+<<<<<<< HEAD
 				htb_safe_rb_erase(&cl->pq_node, q->wait_pq + cl->level);
+=======
+				htb_safe_rb_erase(&cl->pq_node, &q->hlevel[cl->level].wait_pq);
+>>>>>>> refs/remotes/origin/master
 			if (cl->cmode != HTB_CAN_SEND)
 				htb_add_to_wait_tree(q, cl, diff);
 		}
@@ -666,18 +886,32 @@ static void htb_charge_class(struct htb_sched *q, struct htb_class *cl,
  * next pending event (0 for no event in pq, q->now for too many events).
  * Note: Applied are events whose have cl->pq_key <= q->now.
  */
+<<<<<<< HEAD
 static psched_time_t htb_do_events(struct htb_sched *q, int level,
 				   unsigned long start)
+=======
+static s64 htb_do_events(struct htb_sched *q, const int level,
+			 unsigned long start)
+>>>>>>> refs/remotes/origin/master
 {
 	/* don't run for longer than 2 jiffies; 2 is used instead of
 	 * 1 to simplify things when jiffy is going to be incremented
 	 * too soon
 	 */
 	unsigned long stop_at = start + 2;
+<<<<<<< HEAD
 	while (time_before(jiffies, stop_at)) {
 		struct htb_class *cl;
 		long diff;
 		struct rb_node *p = rb_first(&q->wait_pq[level]);
+=======
+	struct rb_root *wait_pq = &q->hlevel[level].wait_pq;
+
+	while (time_before(jiffies, stop_at)) {
+		struct htb_class *cl;
+		s64 diff;
+		struct rb_node *p = rb_first(wait_pq);
+>>>>>>> refs/remotes/origin/master
 
 		if (!p)
 			return 0;
@@ -686,8 +920,13 @@ static psched_time_t htb_do_events(struct htb_sched *q, int level,
 		if (cl->pq_key > q->now)
 			return cl->pq_key;
 
+<<<<<<< HEAD
 		htb_safe_rb_erase(p, q->wait_pq + level);
 		diff = psched_tdiff_bounded(q->now, cl->t_c, cl->mbuffer);
+=======
+		htb_safe_rb_erase(p, wait_pq);
+		diff = min_t(s64, q->now - cl->t_c, cl->mbuffer);
+>>>>>>> refs/remotes/origin/master
 		htb_change_class_mode(q, cl, &diff);
 		if (cl->cmode != HTB_CAN_SEND)
 			htb_add_to_wait_tree(q, cl, diff);
@@ -730,8 +969,12 @@ static struct rb_node *htb_id_find_next_upper(int prio, struct rb_node *n,
  *
  * Find leaf where current feed pointers points to.
  */
+<<<<<<< HEAD
 static struct htb_class *htb_lookup_leaf(struct rb_root *tree, int prio,
 					 struct rb_node **pptr, u32 * pid)
+=======
+static struct htb_class *htb_lookup_leaf(struct htb_prio *hprio, const int prio)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct {
@@ -740,10 +983,17 @@ static struct htb_class *htb_lookup_leaf(struct rb_root *tree, int prio,
 		u32 *pid;
 	} stk[TC_HTB_MAXDEPTH], *sp = stk;
 
+<<<<<<< HEAD
 	BUG_ON(!tree->rb_node);
 	sp->root = tree->rb_node;
 	sp->pptr = pptr;
 	sp->pid = pid;
+=======
+	BUG_ON(!hprio->row.rb_node);
+	sp->root = hprio->row.rb_node;
+	sp->pptr = &hprio->ptr;
+	sp->pid = &hprio->last_ptr_id;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < 65535; i++) {
 		if (!*sp->pptr && *sp->pid) {
@@ -770,12 +1020,24 @@ static struct htb_class *htb_lookup_leaf(struct rb_root *tree, int prio,
 			}
 		} else {
 			struct htb_class *cl;
+<<<<<<< HEAD
 			cl = rb_entry(*sp->pptr, struct htb_class, node[prio]);
 			if (!cl->level)
 				return cl;
 			(++sp)->root = cl->un.inner.feed[prio].rb_node;
 			sp->pptr = cl->un.inner.ptr + prio;
 			sp->pid = cl->un.inner.last_ptr_id + prio;
+=======
+			struct htb_prio *clp;
+
+			cl = rb_entry(*sp->pptr, struct htb_class, node[prio]);
+			if (!cl->level)
+				return cl;
+			clp = &cl->un.inner.clprio[prio];
+			(++sp)->root = clp->feed.rb_node;
+			sp->pptr = &clp->ptr;
+			sp->pid = &clp->last_ptr_id;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	WARN_ON(1);
@@ -785,6 +1047,7 @@ static struct htb_class *htb_lookup_leaf(struct rb_root *tree, int prio,
 /* dequeues packet at given priority and level; call only if
  * you are sure that there is active class at prio/level
  */
+<<<<<<< HEAD
 static struct sk_buff *htb_dequeue_tree(struct htb_sched *q, int prio,
 					int level)
 {
@@ -794,6 +1057,18 @@ static struct sk_buff *htb_dequeue_tree(struct htb_sched *q, int prio,
 	start = cl = htb_lookup_leaf(q->row[level] + prio, prio,
 				     q->ptr[level] + prio,
 				     q->last_ptr_id[level] + prio);
+=======
+static struct sk_buff *htb_dequeue_tree(struct htb_sched *q, const int prio,
+					const int level)
+{
+	struct sk_buff *skb = NULL;
+	struct htb_class *cl, *start;
+	struct htb_level *hlevel = &q->hlevel[level];
+	struct htb_prio *hprio = &hlevel->hprio[prio];
+
+	/* look initial class up in the row */
+	start = cl = htb_lookup_leaf(hprio, prio);
+>>>>>>> refs/remotes/origin/master
 
 	do {
 next:
@@ -813,9 +1088,13 @@ next:
 			if ((q->row_mask[level] & (1 << prio)) == 0)
 				return NULL;
 
+<<<<<<< HEAD
 			next = htb_lookup_leaf(q->row[level] + prio,
 					       prio, q->ptr[level] + prio,
 					       q->last_ptr_id[level] + prio);
+=======
+			next = htb_lookup_leaf(hprio, prio);
+>>>>>>> refs/remotes/origin/master
 
 			if (cl == start)	/* fix start if we just deleted it */
 				start = next;
@@ -828,20 +1107,35 @@ next:
 			break;
 
 		qdisc_warn_nonwc("htb", cl->un.leaf.q);
+<<<<<<< HEAD
 		htb_next_rb_node((level ? cl->parent->un.inner.ptr : q->
 				  ptr[0]) + prio);
 		cl = htb_lookup_leaf(q->row[level] + prio, prio,
 				     q->ptr[level] + prio,
 				     q->last_ptr_id[level] + prio);
+=======
+		htb_next_rb_node(level ? &cl->parent->un.inner.clprio[prio].ptr:
+					 &q->hlevel[0].hprio[prio].ptr);
+		cl = htb_lookup_leaf(hprio, prio);
+>>>>>>> refs/remotes/origin/master
 
 	} while (cl != start);
 
 	if (likely(skb != NULL)) {
+<<<<<<< HEAD
 		cl->un.leaf.deficit[level] -= qdisc_pkt_len(skb);
 		if (cl->un.leaf.deficit[level] < 0) {
 			cl->un.leaf.deficit[level] += cl->quantum;
 			htb_next_rb_node((level ? cl->parent->un.inner.ptr : q->
 					  ptr[0]) + prio);
+=======
+		bstats_update(&cl->bstats, skb);
+		cl->un.leaf.deficit[level] -= qdisc_pkt_len(skb);
+		if (cl->un.leaf.deficit[level] < 0) {
+			cl->un.leaf.deficit[level] += cl->quantum;
+			htb_next_rb_node(level ? &cl->parent->un.inner.clprio[prio].ptr :
+						 &q->hlevel[0].hprio[prio].ptr);
+>>>>>>> refs/remotes/origin/master
 		}
 		/* this used to be after charge_class but this constelation
 		 * gives us slightly better performance
@@ -858,7 +1152,11 @@ static struct sk_buff *htb_dequeue(struct Qdisc *sch)
 	struct sk_buff *skb;
 	struct htb_sched *q = qdisc_priv(sch);
 	int level;
+<<<<<<< HEAD
 	psched_time_t next_event;
+=======
+	s64 next_event;
+>>>>>>> refs/remotes/origin/master
 	unsigned long start_at;
 
 	/* try to dequeue direct packets as high prio (!) to minimize cpu work */
@@ -873,14 +1171,25 @@ ok:
 
 	if (!sch->q.qlen)
 		goto fin;
+<<<<<<< HEAD
 	q->now = psched_get_time();
 	start_at = jiffies;
 
 	next_event = q->now + 5LLU * PSCHED_TICKS_PER_SEC;
+<<<<<<< HEAD
+=======
+	q->now = ktime_to_ns(ktime_get());
+	start_at = jiffies;
+
+	next_event = q->now + 5LLU * NSEC_PER_SEC;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (level = 0; level < TC_HTB_MAXDEPTH; level++) {
 		/* common case optimization - skip event handler quickly */
 		int m;
+<<<<<<< HEAD
 		psched_time_t event;
 
 		if (q->now >= q->near_ev_cache[level]) {
@@ -890,6 +1199,16 @@ ok:
 			q->near_ev_cache[level] = event;
 		} else
 			event = q->near_ev_cache[level];
+=======
+		s64 event = q->near_ev_cache[level];
+
+		if (q->now >= event) {
+			event = htb_do_events(q, level, start_at);
+			if (!event)
+				event = q->now + NSEC_PER_SEC;
+			q->near_ev_cache[level] = event;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if (next_event > event)
 			next_event = event;
@@ -905,10 +1224,24 @@ ok:
 		}
 	}
 	sch->qstats.overlimits++;
+<<<<<<< HEAD
 	if (likely(next_event > q->now))
 		qdisc_watchdog_schedule(&q->watchdog, next_event);
 	else
 		schedule_work(&q->work);
+=======
+	if (likely(next_event > q->now)) {
+		if (!test_bit(__QDISC_STATE_DEACTIVATED,
+			      &qdisc_root_sleeping(q->watchdog.qdisc)->state)) {
+			ktime_t time = ns_to_ktime(next_event);
+			qdisc_throttled(q->watchdog.qdisc);
+			hrtimer_start(&q->watchdog.timer, time,
+				      HRTIMER_MODE_ABS);
+		}
+	} else {
+		schedule_work(&q->work);
+	}
+>>>>>>> refs/remotes/origin/master
 fin:
 	return skb;
 }
@@ -943,11 +1276,18 @@ static void htb_reset(struct Qdisc *sch)
 {
 	struct htb_sched *q = qdisc_priv(sch);
 	struct htb_class *cl;
+<<<<<<< HEAD
 	struct hlist_node *n;
 	unsigned int i;
 
 	for (i = 0; i < q->clhash.hashsize; i++) {
 		hlist_for_each_entry(cl, n, &q->clhash.hash[i], common.hnode) {
+=======
+	unsigned int i;
+
+	for (i = 0; i < q->clhash.hashsize; i++) {
+		hlist_for_each_entry(cl, &q->clhash.hash[i], common.hnode) {
+>>>>>>> refs/remotes/origin/master
 			if (cl->level)
 				memset(&cl->un.inner, 0, sizeof(cl->un.inner));
 			else {
@@ -963,10 +1303,15 @@ static void htb_reset(struct Qdisc *sch)
 	qdisc_watchdog_cancel(&q->watchdog);
 	__skb_queue_purge(&q->direct_queue);
 	sch->q.qlen = 0;
+<<<<<<< HEAD
 	memset(q->row, 0, sizeof(q->row));
 	memset(q->row_mask, 0, sizeof(q->row_mask));
 	memset(q->wait_pq, 0, sizeof(q->wait_pq));
 	memset(q->ptr, 0, sizeof(q->ptr));
+=======
+	memset(q->hlevel, 0, sizeof(q->hlevel));
+	memset(q->row_mask, 0, sizeof(q->row_mask));
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < TC_HTB_NUMPRIO; i++)
 		INIT_LIST_HEAD(q->drops + i);
 }
@@ -976,6 +1321,12 @@ static const struct nla_policy htb_policy[TCA_HTB_MAX + 1] = {
 	[TCA_HTB_INIT]	= { .len = sizeof(struct tc_htb_glob) },
 	[TCA_HTB_CTAB]	= { .type = NLA_BINARY, .len = TC_RTAB_SIZE },
 	[TCA_HTB_RTAB]	= { .type = NLA_BINARY, .len = TC_RTAB_SIZE },
+<<<<<<< HEAD
+=======
+	[TCA_HTB_DIRECT_QLEN] = { .type = NLA_U32 },
+	[TCA_HTB_RATE64] = { .type = NLA_U64 },
+	[TCA_HTB_CEIL64] = { .type = NLA_U64 },
+>>>>>>> refs/remotes/origin/master
 };
 
 static void htb_work_func(struct work_struct *work)
@@ -989,7 +1340,11 @@ static void htb_work_func(struct work_struct *work)
 static int htb_init(struct Qdisc *sch, struct nlattr *opt)
 {
 	struct htb_sched *q = qdisc_priv(sch);
+<<<<<<< HEAD
 	struct nlattr *tb[TCA_HTB_INIT + 1];
+=======
+	struct nlattr *tb[TCA_HTB_MAX + 1];
+>>>>>>> refs/remotes/origin/master
 	struct tc_htb_glob *gopt;
 	int err;
 	int i;
@@ -997,6 +1352,7 @@ static int htb_init(struct Qdisc *sch, struct nlattr *opt)
 	if (!opt)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	err = nla_parse_nested(tb, TCA_HTB_INIT, opt, htb_policy);
 	if (err < 0)
 		return err;
@@ -1011,6 +1367,18 @@ static int htb_init(struct Qdisc *sch, struct nlattr *opt)
 		       HTB_VER >> 16, HTB_VER & 0xffff, gopt->version);
 		return -EINVAL;
 	}
+=======
+	err = nla_parse_nested(tb, TCA_HTB_MAX, opt, htb_policy);
+	if (err < 0)
+		return err;
+
+	if (!tb[TCA_HTB_INIT])
+		return -EINVAL;
+
+	gopt = nla_data(tb[TCA_HTB_INIT]);
+	if (gopt->version != HTB_VER >> 16)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	err = qdisc_class_hash_init(&q->clhash);
 	if (err < 0)
@@ -1022,10 +1390,20 @@ static int htb_init(struct Qdisc *sch, struct nlattr *opt)
 	INIT_WORK(&q->work, htb_work_func);
 	skb_queue_head_init(&q->direct_queue);
 
+<<<<<<< HEAD
 	q->direct_qlen = qdisc_dev(sch)->tx_queue_len;
 	if (q->direct_qlen < 2)	/* some devices have zero tx_queue_len */
 		q->direct_qlen = 2;
 
+=======
+	if (tb[TCA_HTB_DIRECT_QLEN])
+		q->direct_qlen = nla_get_u32(tb[TCA_HTB_DIRECT_QLEN]);
+	else {
+		q->direct_qlen = qdisc_dev(sch)->tx_queue_len;
+		if (q->direct_qlen < 2)	/* some devices have zero tx_queue_len */
+			q->direct_qlen = 2;
+	}
+>>>>>>> refs/remotes/origin/master
 	if ((q->rate2quantum = gopt->rate2quantum) < 1)
 		q->rate2quantum = 1;
 	q->defcls = gopt->defcls;
@@ -1051,7 +1429,13 @@ static int htb_dump(struct Qdisc *sch, struct sk_buff *skb)
 	nest = nla_nest_start(skb, TCA_OPTIONS);
 	if (nest == NULL)
 		goto nla_put_failure;
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_HTB_INIT, sizeof(gopt), &gopt);
+=======
+	if (nla_put(skb, TCA_HTB_INIT, sizeof(gopt), &gopt) ||
+	    nla_put_u32(skb, TCA_HTB_DIRECT_QLEN, q->direct_qlen))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	nla_nest_end(skb, nest);
 
 	spin_unlock_bh(root_lock);
@@ -1083,6 +1467,7 @@ static int htb_dump_class(struct Qdisc *sch, unsigned long arg,
 
 	memset(&opt, 0, sizeof(opt));
 
+<<<<<<< HEAD
 	opt.rate = cl->rate->rate;
 	opt.buffer = cl->buffer;
 	opt.ceil = cl->ceil->rate;
@@ -1091,6 +1476,23 @@ static int htb_dump_class(struct Qdisc *sch, unsigned long arg,
 	opt.prio = cl->prio;
 	opt.level = cl->level;
 	NLA_PUT(skb, TCA_HTB_PARMS, sizeof(opt), &opt);
+=======
+	psched_ratecfg_getrate(&opt.rate, &cl->rate);
+	opt.buffer = PSCHED_NS2TICKS(cl->buffer);
+	psched_ratecfg_getrate(&opt.ceil, &cl->ceil);
+	opt.cbuffer = PSCHED_NS2TICKS(cl->cbuffer);
+	opt.quantum = cl->quantum;
+	opt.prio = cl->prio;
+	opt.level = cl->level;
+	if (nla_put(skb, TCA_HTB_PARMS, sizeof(opt), &opt))
+		goto nla_put_failure;
+	if ((cl->rate.rate_bytes_ps >= (1ULL << 32)) &&
+	    nla_put_u64(skb, TCA_HTB_RATE64, cl->rate.rate_bytes_ps))
+		goto nla_put_failure;
+	if ((cl->ceil.rate_bytes_ps >= (1ULL << 32)) &&
+	    nla_put_u64(skb, TCA_HTB_CEIL64, cl->ceil.rate_bytes_ps))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	nla_nest_end(skb, nest);
 	spin_unlock_bh(root_lock);
@@ -1109,8 +1511,13 @@ htb_dump_class_stats(struct Qdisc *sch, unsigned long arg, struct gnet_dump *d)
 
 	if (!cl->level && cl->un.leaf.q)
 		cl->qstats.qlen = cl->un.leaf.q->q.qlen;
+<<<<<<< HEAD
 	cl->xstats.tokens = cl->tokens;
 	cl->xstats.ctokens = cl->ctokens;
+=======
+	cl->xstats.tokens = PSCHED_NS2TICKS(cl->tokens);
+	cl->xstats.ctokens = PSCHED_NS2TICKS(cl->ctokens);
+>>>>>>> refs/remotes/origin/master
 
 	if (gnet_stats_copy_basic(d, &cl->bstats) < 0 ||
 	    gnet_stats_copy_rate_est(d, NULL, &cl->rate_est) < 0 ||
@@ -1184,7 +1591,12 @@ static void htb_parent_to_leaf(struct htb_sched *q, struct htb_class *cl,
 	WARN_ON(cl->level || !cl->un.leaf.q || cl->prio_activity);
 
 	if (parent->cmode != HTB_CAN_SEND)
+<<<<<<< HEAD
 		htb_safe_rb_erase(&parent->pq_node, q->wait_pq + parent->level);
+=======
+		htb_safe_rb_erase(&parent->pq_node,
+				  &q->hlevel[parent->level].wait_pq);
+>>>>>>> refs/remotes/origin/master
 
 	parent->level = 0;
 	memset(&parent->un.inner, 0, sizeof(parent->un.inner));
@@ -1192,7 +1604,11 @@ static void htb_parent_to_leaf(struct htb_sched *q, struct htb_class *cl,
 	parent->un.leaf.q = new_q ? new_q : &noop_qdisc;
 	parent->tokens = parent->buffer;
 	parent->ctokens = parent->cbuffer;
+<<<<<<< HEAD
 	parent->t_c = psched_get_time();
+=======
+	parent->t_c = ktime_to_ns(ktime_get());
+>>>>>>> refs/remotes/origin/master
 	parent->cmode = HTB_CAN_SEND;
 }
 
@@ -1203,9 +1619,12 @@ static void htb_destroy_class(struct Qdisc *sch, struct htb_class *cl)
 		qdisc_destroy(cl->un.leaf.q);
 	}
 	gen_kill_estimator(&cl->bstats, &cl->rate_est);
+<<<<<<< HEAD
 	qdisc_put_rtab(cl->rate);
 	qdisc_put_rtab(cl->ceil);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	tcf_destroy_chain(&cl->filter_list);
 	kfree(cl);
 }
@@ -1213,7 +1632,11 @@ static void htb_destroy_class(struct Qdisc *sch, struct htb_class *cl)
 static void htb_destroy(struct Qdisc *sch)
 {
 	struct htb_sched *q = qdisc_priv(sch);
+<<<<<<< HEAD
 	struct hlist_node *n, *next;
+=======
+	struct hlist_node *next;
+>>>>>>> refs/remotes/origin/master
 	struct htb_class *cl;
 	unsigned int i;
 
@@ -1227,11 +1650,19 @@ static void htb_destroy(struct Qdisc *sch)
 	tcf_destroy_chain(&q->filter_list);
 
 	for (i = 0; i < q->clhash.hashsize; i++) {
+<<<<<<< HEAD
 		hlist_for_each_entry(cl, n, &q->clhash.hash[i], common.hnode)
 			tcf_destroy_chain(&cl->filter_list);
 	}
 	for (i = 0; i < q->clhash.hashsize; i++) {
 		hlist_for_each_entry_safe(cl, n, next, &q->clhash.hash[i],
+=======
+		hlist_for_each_entry(cl, &q->clhash.hash[i], common.hnode)
+			tcf_destroy_chain(&cl->filter_list);
+	}
+	for (i = 0; i < q->clhash.hashsize; i++) {
+		hlist_for_each_entry_safe(cl, next, &q->clhash.hash[i],
+>>>>>>> refs/remotes/origin/master
 					  common.hnode)
 			htb_destroy_class(sch, cl);
 	}
@@ -1276,7 +1707,12 @@ static int htb_delete(struct Qdisc *sch, unsigned long arg)
 		htb_deactivate(q, cl);
 
 	if (cl->cmode != HTB_CAN_SEND)
+<<<<<<< HEAD
 		htb_safe_rb_erase(&cl->pq_node, q->wait_pq + cl->level);
+=======
+		htb_safe_rb_erase(&cl->pq_node,
+				  &q->hlevel[cl->level].wait_pq);
+>>>>>>> refs/remotes/origin/master
 
 	if (last_child)
 		htb_parent_to_leaf(q, cl, new_q);
@@ -1308,8 +1744,14 @@ static int htb_change_class(struct Qdisc *sch, u32 classid,
 	struct htb_class *cl = (struct htb_class *)*arg, *parent;
 	struct nlattr *opt = tca[TCA_OPTIONS];
 	struct qdisc_rate_table *rtab = NULL, *ctab = NULL;
+<<<<<<< HEAD
 	struct nlattr *tb[__TCA_HTB_MAX];
 	struct tc_htb_opt *hopt;
+=======
+	struct nlattr *tb[TCA_HTB_MAX + 1];
+	struct tc_htb_opt *hopt;
+	u64 rate64, ceil64;
+>>>>>>> refs/remotes/origin/master
 
 	/* extract all subattrs from opt attr */
 	if (!opt)
@@ -1326,12 +1768,30 @@ static int htb_change_class(struct Qdisc *sch, u32 classid,
 	parent = parentid == TC_H_ROOT ? NULL : htb_find(parentid, sch);
 
 	hopt = nla_data(tb[TCA_HTB_PARMS]);
+<<<<<<< HEAD
 
 	rtab = qdisc_get_rtab(&hopt->rate, tb[TCA_HTB_RTAB]);
 	ctab = qdisc_get_rtab(&hopt->ceil, tb[TCA_HTB_CTAB]);
 	if (!rtab || !ctab)
 		goto failure;
 
+=======
+	if (!hopt->rate.rate || !hopt->ceil.rate)
+		goto failure;
+
+	/* Keeping backward compatible with rate_table based iproute2 tc */
+	if (hopt->rate.linklayer == TC_LINKLAYER_UNAWARE) {
+		rtab = qdisc_get_rtab(&hopt->rate, tb[TCA_HTB_RTAB]);
+		if (rtab)
+			qdisc_put_rtab(rtab);
+	}
+	if (hopt->ceil.linklayer == TC_LINKLAYER_UNAWARE) {
+		ctab = qdisc_get_rtab(&hopt->ceil, tb[TCA_HTB_CTAB]);
+		if (ctab)
+			qdisc_put_rtab(ctab);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (!cl) {		/* new class */
 		struct Qdisc *new_q;
 		int prio;
@@ -1365,12 +1825,23 @@ static int htb_change_class(struct Qdisc *sch, u32 classid,
 		if (!cl)
 			goto failure;
 
+<<<<<<< HEAD
 		err = gen_new_estimator(&cl->bstats, &cl->rate_est,
 					qdisc_root_sleeping_lock(sch),
 					tca[TCA_RATE] ? : &est.nla);
 		if (err) {
 			kfree(cl);
 			goto failure;
+=======
+		if (htb_rate_est || tca[TCA_RATE]) {
+			err = gen_new_estimator(&cl->bstats, &cl->rate_est,
+						qdisc_root_sleeping_lock(sch),
+						tca[TCA_RATE] ? : &est.nla);
+			if (err) {
+				kfree(cl);
+				goto failure;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 
 		cl->refcnt = 1;
@@ -1400,7 +1871,11 @@ static int htb_change_class(struct Qdisc *sch, u32 classid,
 
 			/* remove from evt list because of level change */
 			if (parent->cmode != HTB_CAN_SEND) {
+<<<<<<< HEAD
 				htb_safe_rb_erase(&parent->pq_node, q->wait_pq);
+=======
+				htb_safe_rb_erase(&parent->pq_node, &q->hlevel[0].wait_pq);
+>>>>>>> refs/remotes/origin/master
 				parent->cmode = HTB_CAN_SEND;
 			}
 			parent->level = (parent->parent ? parent->parent->level
@@ -1414,10 +1889,17 @@ static int htb_change_class(struct Qdisc *sch, u32 classid,
 		cl->parent = parent;
 
 		/* set class to be in HTB_CAN_SEND state */
+<<<<<<< HEAD
 		cl->tokens = hopt->buffer;
 		cl->ctokens = hopt->cbuffer;
 		cl->mbuffer = 60 * PSCHED_TICKS_PER_SEC;	/* 1min */
 		cl->t_c = psched_get_time();
+=======
+		cl->tokens = PSCHED_TICKS2NS(hopt->buffer);
+		cl->ctokens = PSCHED_TICKS2NS(hopt->cbuffer);
+		cl->mbuffer = 60ULL * NSEC_PER_SEC;	/* 1min */
+		cl->t_c = ktime_to_ns(ktime_get());
+>>>>>>> refs/remotes/origin/master
 		cl->cmode = HTB_CAN_SEND;
 
 		/* attach to the hash list and parent's family */
@@ -1435,11 +1917,29 @@ static int htb_change_class(struct Qdisc *sch, u32 classid,
 		sch_tree_lock(sch);
 	}
 
+<<<<<<< HEAD
+=======
+	rate64 = tb[TCA_HTB_RATE64] ? nla_get_u64(tb[TCA_HTB_RATE64]) : 0;
+
+	ceil64 = tb[TCA_HTB_CEIL64] ? nla_get_u64(tb[TCA_HTB_CEIL64]) : 0;
+
+	psched_ratecfg_precompute(&cl->rate, &hopt->rate, rate64);
+	psched_ratecfg_precompute(&cl->ceil, &hopt->ceil, ceil64);
+
+>>>>>>> refs/remotes/origin/master
 	/* it used to be a nasty bug here, we have to check that node
 	 * is really leaf before changing cl->un.leaf !
 	 */
 	if (!cl->level) {
+<<<<<<< HEAD
 		cl->quantum = rtab->rate.rate / q->rate2quantum;
+=======
+		u64 quantum = cl->rate.rate_bytes_ps;
+
+		do_div(quantum, q->rate2quantum);
+		cl->quantum = min_t(u64, quantum, INT_MAX);
+
+>>>>>>> refs/remotes/origin/master
 		if (!hopt->quantum && cl->quantum < 1000) {
 			pr_warning(
 			       "HTB: quantum of class %X is small. Consider r2q change.\n",
@@ -1458,6 +1958,7 @@ static int htb_change_class(struct Qdisc *sch, u32 classid,
 			cl->prio = TC_HTB_NUMPRIO - 1;
 	}
 
+<<<<<<< HEAD
 	cl->buffer = hopt->buffer;
 	cl->cbuffer = hopt->cbuffer;
 	if (cl->rate)
@@ -1466,6 +1967,11 @@ static int htb_change_class(struct Qdisc *sch, u32 classid,
 	if (cl->ceil)
 		qdisc_put_rtab(cl->ceil);
 	cl->ceil = ctab;
+=======
+	cl->buffer = PSCHED_TICKS2NS(hopt->buffer);
+	cl->cbuffer = PSCHED_TICKS2NS(hopt->cbuffer);
+
+>>>>>>> refs/remotes/origin/master
 	sch_tree_unlock(sch);
 
 	qdisc_class_hash_grow(sch, &q->clhash);
@@ -1474,10 +1980,13 @@ static int htb_change_class(struct Qdisc *sch, u32 classid,
 	return 0;
 
 failure:
+<<<<<<< HEAD
 	if (rtab)
 		qdisc_put_rtab(rtab);
 	if (ctab)
 		qdisc_put_rtab(ctab);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1521,14 +2030,21 @@ static void htb_walk(struct Qdisc *sch, struct qdisc_walker *arg)
 {
 	struct htb_sched *q = qdisc_priv(sch);
 	struct htb_class *cl;
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 
 	if (arg->stop)
 		return;
 
 	for (i = 0; i < q->clhash.hashsize; i++) {
+<<<<<<< HEAD
 		hlist_for_each_entry(cl, n, &q->clhash.hash[i], common.hnode) {
+=======
+		hlist_for_each_entry(cl, &q->clhash.hash[i], common.hnode) {
+>>>>>>> refs/remotes/origin/master
 			if (arg->count < arg->skip) {
 				arg->count++;
 				continue;

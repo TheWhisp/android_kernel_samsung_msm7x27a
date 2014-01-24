@@ -151,6 +151,7 @@ identity_mapped:
 
 	testq	%r11, %r11
 	jnz 1f
+<<<<<<< HEAD
 	xorq	%rax, %rax
 	xorq	%rbx, %rbx
 	xorq    %rcx, %rcx
@@ -166,6 +167,23 @@ identity_mapped:
 	xorq	%r13, %r13
 	xorq	%r14, %r14
 	xorq	%r15, %r15
+=======
+	xorl	%eax, %eax
+	xorl	%ebx, %ebx
+	xorl    %ecx, %ecx
+	xorl    %edx, %edx
+	xorl    %esi, %esi
+	xorl    %edi, %edi
+	xorl    %ebp, %ebp
+	xorl	%r8d, %r8d
+	xorl	%r9d, %r9d
+	xorl	%r10d, %r10d
+	xorl	%r11d, %r11d
+	xorl	%r12d, %r12d
+	xorl	%r13d, %r13d
+	xorl	%r14d, %r14d
+	xorl	%r15d, %r15d
+>>>>>>> refs/remotes/origin/master
 
 	ret
 
@@ -212,8 +230,13 @@ virtual_mapped:
 	/* Do the copies */
 swap_pages:
 	movq	%rdi, %rcx 	/* Put the page_list in %rcx */
+<<<<<<< HEAD
 	xorq	%rdi, %rdi
 	xorq	%rsi, %rsi
+=======
+	xorl	%edi, %edi
+	xorl	%esi, %esi
+>>>>>>> refs/remotes/origin/master
 	jmp	1f
 
 0:	/* top, read another word for the indirection page */

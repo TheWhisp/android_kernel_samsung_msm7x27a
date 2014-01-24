@@ -8,11 +8,19 @@ The crucial structure for device drivers in iio is iio_dev.
 
 First allocate one using:
 
+<<<<<<< HEAD
 struct iio_dev *indio_dev = iio_allocate_device(sizeof(struct chip_state));
 where chip_state is a structure of local state data for this instance of
 the chip.
 
 That data can be accessed using iio_priv(struct iio_dev *)
+=======
+struct iio_dev *indio_dev = iio_device_alloc(sizeof(struct chip_state));
+where chip_state is a structure of local state data for this instance of
+the chip.
+
+That data can be accessed using iio_priv(struct iio_dev *).
+>>>>>>> refs/remotes/origin/master
 
 Then fill in the following:
 
@@ -29,8 +37,11 @@ Then fill in the following:
 	* info->driver_module:
 		Set to THIS_MODULE. Used to ensure correct ownership
 		of various resources allocate by the core.
+<<<<<<< HEAD
 	* info->num_interrupt_lines:
 		Number of event triggering hardware lines the device has.
+=======
+>>>>>>> refs/remotes/origin/master
 	* info->event_attrs:
 		Attributes used to enable / disable hardware events.
 	* info->attrs:
@@ -41,7 +52,11 @@ Then fill in the following:
 		and for associate parameters such as offsets and scales.
 	* info->write_raw:
 		Raw value writing function. Used for writable device values such
+<<<<<<< HEAD
 		as DAC values and caliboffset.
+=======
+		as DAC values and calibbias.
+>>>>>>> refs/remotes/origin/master
 	* info->read_event_config:
 		Typically only set if there are some interrupt lines.  This
 		is used to read if an on sensor event detector is enabled.
@@ -58,11 +73,16 @@ Then fill in the following:
 
 - indio_dev->modes:
 	Specify whether direct access and / or ring buffer access is supported.
+<<<<<<< HEAD
 - indio_dev->ring:
 	An optional associated buffer.
 - indio_dev->pollfunc:
 	Poll function related elements. This controls what occurs when a trigger
+<<<<<<< HEAD
 	to which this device is attached sends and event.
+=======
+	to which this device is attached sends an event.
+>>>>>>> refs/remotes/origin/cm-10.0
 - indio_dev->channels:
 	Specification of device channels. Most attributes etc are built
 	form this spec.
@@ -70,6 +90,20 @@ Then fill in the following:
 	How many channels are there?
 
 Once these are set up, a call to iio_device_register(indio_dev),
+=======
+- indio_dev->buffer:
+	An optional associated buffer.
+- indio_dev->pollfunc:
+	Poll function related elements. This controls what occurs when a trigger
+	to which this device is attached sends an event.
+- indio_dev->channels:
+	Specification of device channels. Most attributes etc. are built
+	from this spec.
+- indio_dev->num_channels:
+	How many channels are there?
+
+Once these are set up, a call to iio_device_register(indio_dev)
+>>>>>>> refs/remotes/origin/master
 will register the device with the iio core.
 
 Worth noting here is that, if a ring buffer is to be used, it can be
@@ -78,4 +112,8 @@ be registered afterwards (otherwise the whole parentage of devices
 gets confused)
 
 On remove, iio_device_unregister(indio_dev) will remove the device from
+<<<<<<< HEAD
 the core, and iio_free_device will clean up.
+=======
+the core, and iio_device_free(indio_dev) will clean up.
+>>>>>>> refs/remotes/origin/master

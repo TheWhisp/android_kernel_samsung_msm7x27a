@@ -10,6 +10,14 @@
 
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/notifier.h>
 #include <linux/usb.h>
 #include <linux/mutex.h>
@@ -57,12 +65,21 @@ void usb_notify_remove_device(struct usb_device *udev)
 	mutex_unlock(&usbfs_mutex);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void usb_notify_config_device(struct usb_device *udev)
 {
 	blocking_notifier_call_chain(&usb_notifier_list,
 			USB_DEVICE_CONFIG, udev);
 }
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void usb_notify_add_bus(struct usb_bus *ubus)
 {
 	blocking_notifier_call_chain(&usb_notifier_list, USB_BUS_ADD, ubus);

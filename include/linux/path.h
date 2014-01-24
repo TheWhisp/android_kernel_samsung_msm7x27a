@@ -9,8 +9,13 @@ struct path {
 	struct dentry *dentry;
 };
 
+<<<<<<< HEAD
 extern void path_get(struct path *);
 extern void path_put(struct path *);
+=======
+extern void path_get(const struct path *);
+extern void path_put(const struct path *);
+>>>>>>> refs/remotes/origin/master
 
 static inline int path_equal(const struct path *path1, const struct path *path2)
 {

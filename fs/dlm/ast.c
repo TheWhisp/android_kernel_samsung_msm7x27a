@@ -14,6 +14,8 @@
 #include "dlm_internal.h"
 #include "lock.h"
 #include "user.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "ast.h"
 
 #define WAKE_ASTS  0
@@ -25,6 +27,16 @@ static struct task_struct *	astd_task;
 static unsigned long		astd_wakeflags;
 static struct mutex		astd_running;
 
+=======
+
+static uint64_t			dlm_cb_seq;
+static spinlock_t		dlm_cb_seq_spin;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static uint64_t dlm_cb_seq;
+static DEFINE_SPINLOCK(dlm_cb_seq_spin);
+>>>>>>> refs/remotes/origin/master
 
 static void dlm_dump_lkb_callbacks(struct dlm_lkb *lkb)
 {
@@ -57,6 +69,8 @@ static void dlm_dump_lkb_callbacks(struct dlm_lkb *lkb)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void dlm_del_ast(struct dlm_lkb *lkb)
 {
 	spin_lock(&ast_queue_lock);
@@ -65,13 +79,25 @@ void dlm_del_ast(struct dlm_lkb *lkb)
 	spin_unlock(&ast_queue_lock);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int dlm_add_lkb_callback(struct dlm_lkb *lkb, uint32_t flags, int mode,
 			 int status, uint32_t sbflags, uint64_t seq)
 {
 	struct dlm_ls *ls = lkb->lkb_resource->res_ls;
 	uint64_t prev_seq;
 	int prev_mode;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
+=======
+	int i, rv;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, rv;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < DLM_CALLBACKS_SIZE; i++) {
 		if (lkb->lkb_callbacks[i].seq)
@@ -100,7 +126,17 @@ int dlm_add_lkb_callback(struct dlm_lkb *lkb, uint32_t flags, int mode,
 					  mode,
 					  (unsigned long long)prev_seq,
 					  prev_mode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 				return 0;
+=======
+				rv = 0;
+				goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				rv = 0;
+				goto out;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 
@@ -109,6 +145,14 @@ int dlm_add_lkb_callback(struct dlm_lkb *lkb, uint32_t flags, int mode,
 		lkb->lkb_callbacks[i].mode = mode;
 		lkb->lkb_callbacks[i].sb_status = status;
 		lkb->lkb_callbacks[i].sb_flags = (sbflags & 0x000000FF);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		rv = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rv = 0;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -117,21 +161,52 @@ int dlm_add_lkb_callback(struct dlm_lkb *lkb, uint32_t flags, int mode,
 			  lkb->lkb_id, (unsigned long long)seq,
 			  flags, mode, status, sbflags);
 		dlm_dump_lkb_callbacks(lkb);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -1;
 	}
 
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		rv = -1;
+		goto out;
+	}
+ out:
+	return rv;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int dlm_rem_lkb_callback(struct dlm_ls *ls, struct dlm_lkb *lkb,
 			 struct dlm_callback *cb, int *resid)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 
 	*resid = 0;
 
 	if (!lkb->lkb_callbacks[0].seq)
 		return -ENOENT;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int i, rv;
+
+	*resid = 0;
+
+	if (!lkb->lkb_callbacks[0].seq) {
+		rv = -ENOENT;
+		goto out;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* oldest undelivered cb is callbacks[0] */
 
@@ -163,7 +238,17 @@ int dlm_rem_lkb_callback(struct dlm_ls *ls, struct dlm_lkb *lkb,
 				  cb->mode,
 				  (unsigned long long)lkb->lkb_last_cast.seq,
 				  lkb->lkb_last_cast.mode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return 0;
+=======
+			rv = 0;
+			goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rv = 0;
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -176,6 +261,8 @@ int dlm_rem_lkb_callback(struct dlm_ls *ls, struct dlm_lkb *lkb,
 		memcpy(&lkb->lkb_last_bast, cb, sizeof(struct dlm_callback));
 		lkb->lkb_last_bast_time = ktime_get();
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
 }
@@ -217,11 +304,67 @@ static void process_asts(void)
 	struct dlm_ls *ls = NULL;
 	struct dlm_rsb *r = NULL;
 	struct dlm_lkb *lkb;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rv = 0;
+ out:
+	return rv;
+}
+
+void dlm_add_cb(struct dlm_lkb *lkb, uint32_t flags, int mode, int status,
+		uint32_t sbflags)
+{
+	struct dlm_ls *ls = lkb->lkb_resource->res_ls;
+	uint64_t new_seq, prev_seq;
+	int rv;
+
+	spin_lock(&dlm_cb_seq_spin);
+	new_seq = ++dlm_cb_seq;
+	spin_unlock(&dlm_cb_seq_spin);
+
+	if (lkb->lkb_flags & DLM_IFL_USER) {
+		dlm_user_add_ast(lkb, flags, mode, status, sbflags, new_seq);
+		return;
+	}
+
+	mutex_lock(&lkb->lkb_cb_mutex);
+	prev_seq = lkb->lkb_callbacks[0].seq;
+
+	rv = dlm_add_lkb_callback(lkb, flags, mode, status, sbflags, new_seq);
+	if (rv < 0)
+		goto out;
+
+	if (!prev_seq) {
+		kref_get(&lkb->lkb_ref);
+
+		if (test_bit(LSFL_CB_DELAY, &ls->ls_flags)) {
+			mutex_lock(&ls->ls_cb_mutex);
+			list_add(&lkb->lkb_cb_list, &ls->ls_cb_delay);
+			mutex_unlock(&ls->ls_cb_mutex);
+		} else {
+			queue_work(ls->ls_callback_wq, &lkb->lkb_cb_work);
+		}
+	}
+ out:
+	mutex_unlock(&lkb->lkb_cb_mutex);
+}
+
+void dlm_callback_work(struct work_struct *work)
+{
+	struct dlm_lkb *lkb = container_of(work, struct dlm_lkb, lkb_cb_work);
+	struct dlm_ls *ls = lkb->lkb_resource->res_ls;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void (*castfn) (void *astparam);
 	void (*bastfn) (void *astparam, int mode);
 	struct dlm_callback callbacks[DLM_CALLBACKS_SIZE];
 	int i, rv, resid;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 repeat:
 	spin_lock(&ast_queue_lock);
 	list_for_each_entry(lkb, &ast_queue, lkb_astqueue) {
@@ -300,10 +443,79 @@ static int dlm_astd(void *data)
 		if (test_and_clear_bit(WAKE_ASTS, &astd_wakeflags))
 			process_asts();
 		mutex_unlock(&astd_running);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	memset(&callbacks, 0, sizeof(callbacks));
+
+	mutex_lock(&lkb->lkb_cb_mutex);
+	if (!lkb->lkb_callbacks[0].seq) {
+		/* no callback work exists, shouldn't happen */
+		log_error(ls, "dlm_callback_work %x no work", lkb->lkb_id);
+		dlm_print_lkb(lkb);
+		dlm_dump_lkb_callbacks(lkb);
+	}
+
+	for (i = 0; i < DLM_CALLBACKS_SIZE; i++) {
+		rv = dlm_rem_lkb_callback(ls, lkb, &callbacks[i], &resid);
+		if (rv < 0)
+			break;
+	}
+
+	if (resid) {
+		/* cbs remain, loop should have removed all, shouldn't happen */
+		log_error(ls, "dlm_callback_work %x resid %d", lkb->lkb_id,
+			  resid);
+		dlm_print_lkb(lkb);
+		dlm_dump_lkb_callbacks(lkb);
+	}
+	mutex_unlock(&lkb->lkb_cb_mutex);
+
+	castfn = lkb->lkb_astfn;
+	bastfn = lkb->lkb_bastfn;
+
+	for (i = 0; i < DLM_CALLBACKS_SIZE; i++) {
+		if (!callbacks[i].seq)
+			break;
+		if (callbacks[i].flags & DLM_CB_SKIP) {
+			continue;
+		} else if (callbacks[i].flags & DLM_CB_BAST) {
+			bastfn(lkb->lkb_astparam, callbacks[i].mode);
+		} else if (callbacks[i].flags & DLM_CB_CAST) {
+			lkb->lkb_lksb->sb_status = callbacks[i].sb_status;
+			lkb->lkb_lksb->sb_flags = callbacks[i].sb_flags;
+			castfn(lkb->lkb_astparam);
+		}
+	}
+
+	/* undo kref_get from dlm_add_callback, may cause lkb to be freed */
+	dlm_put_lkb(lkb);
+}
+
+int dlm_callback_start(struct dlm_ls *ls)
+{
+	ls->ls_callback_wq = alloc_workqueue("dlm_callback",
+<<<<<<< HEAD
+					     WQ_UNBOUND |
+					     WQ_MEM_RECLAIM |
+					     WQ_NON_REENTRANT,
+					     0);
+	if (!ls->ls_callback_wq) {
+		log_print("can't start dlm_callback workqueue");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					     WQ_UNBOUND | WQ_MEM_RECLAIM, 0);
+	if (!ls->ls_callback_wq) {
+		log_print("can't start dlm_callback workqueue");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void dlm_astd_wake(void)
 {
 	if (!no_asts()) {
@@ -342,5 +554,47 @@ void dlm_astd_suspend(void)
 void dlm_astd_resume(void)
 {
 	mutex_unlock(&astd_running);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void dlm_callback_stop(struct dlm_ls *ls)
+{
+	if (ls->ls_callback_wq)
+		destroy_workqueue(ls->ls_callback_wq);
+}
+
+void dlm_callback_suspend(struct dlm_ls *ls)
+{
+	set_bit(LSFL_CB_DELAY, &ls->ls_flags);
+
+	if (ls->ls_callback_wq)
+		flush_workqueue(ls->ls_callback_wq);
+}
+
+void dlm_callback_resume(struct dlm_ls *ls)
+{
+	struct dlm_lkb *lkb, *safe;
+	int count = 0;
+
+	clear_bit(LSFL_CB_DELAY, &ls->ls_flags);
+
+	if (!ls->ls_callback_wq)
+		return;
+
+	mutex_lock(&ls->ls_cb_mutex);
+	list_for_each_entry_safe(lkb, safe, &ls->ls_cb_delay, lkb_cb_list) {
+		list_del_init(&lkb->lkb_cb_list);
+		queue_work(ls->ls_callback_wq, &lkb->lkb_cb_work);
+		count++;
+	}
+	mutex_unlock(&ls->ls_cb_mutex);
+
+<<<<<<< HEAD
+	log_debug(ls, "dlm_callback_resume %d", count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (count)
+		log_debug(ls, "dlm_callback_resume %d", count);
+>>>>>>> refs/remotes/origin/master
 }
 

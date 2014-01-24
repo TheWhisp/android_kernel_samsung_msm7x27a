@@ -24,7 +24,11 @@ static int min_window[] = {1}, max_window[] = {7};
 
 static struct ctl_table_header *rose_table_header;
 
+<<<<<<< HEAD
 static ctl_table rose_table[] = {
+=======
+static struct ctl_table rose_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "restart_request_timeout",
 		.data		= &sysctl_rose_restart_request_timeout,
@@ -118,6 +122,7 @@ static ctl_table rose_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static struct ctl_path rose_path[] = {
 	{ .procname = "net", },
 	{ .procname = "rose", },
@@ -127,9 +132,18 @@ static struct ctl_path rose_path[] = {
 void __init rose_register_sysctl(void)
 {
 	rose_table_header = register_sysctl_paths(rose_path, rose_table);
+=======
+void __init rose_register_sysctl(void)
+{
+	rose_table_header = register_net_sysctl(&init_net, "net/rose", rose_table);
+>>>>>>> refs/remotes/origin/master
 }
 
 void rose_unregister_sysctl(void)
 {
+<<<<<<< HEAD
 	unregister_sysctl_table(rose_table_header);
+=======
+	unregister_net_sysctl_table(rose_table_header);
+>>>>>>> refs/remotes/origin/master
 }

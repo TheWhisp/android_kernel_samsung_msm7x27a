@@ -30,10 +30,21 @@ void cb710_pci_update_config_reg(struct pci_dev *pdev,
 EXPORT_SYMBOL_GPL(cb710_pci_update_config_reg);
 
 /* Some magic writes based on Windows driver init code */
+<<<<<<< HEAD
 static int __devinit cb710_pci_configure(struct pci_dev *pdev)
 {
 	unsigned int devfn = PCI_DEVFN(PCI_SLOT(pdev->devfn), 0);
+<<<<<<< HEAD
 	struct pci_dev *pdev0 = pci_get_slot(pdev->bus, devfn);
+=======
+	struct pci_dev *pdev0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cb710_pci_configure(struct pci_dev *pdev)
+{
+	unsigned int devfn = PCI_DEVFN(PCI_SLOT(pdev->devfn), 0);
+	struct pci_dev *pdev0;
+>>>>>>> refs/remotes/origin/master
 	u32 val;
 
 	cb710_pci_update_config_reg(pdev, 0x48,
@@ -43,6 +54,14 @@ static int __devinit cb710_pci_configure(struct pci_dev *pdev)
 	if (val & 0x80000000)
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pdev0 = pci_get_slot(pdev->bus, devfn);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pdev0 = pci_get_slot(pdev->bus, devfn);
+>>>>>>> refs/remotes/origin/master
 	if (!pdev0)
 		return -ENODEV;
 
@@ -95,7 +114,11 @@ static void cb710_release_slot(struct device *dev)
 #endif
 }
 
+<<<<<<< HEAD
 static int __devinit cb710_register_slot(struct cb710_chip *chip,
+=======
+static int cb710_register_slot(struct cb710_chip *chip,
+>>>>>>> refs/remotes/origin/master
 	unsigned slot_mask, unsigned io_offset, const char *name)
 {
 	int nr = chip->slots;
@@ -175,11 +198,19 @@ static int cb710_suspend(struct pci_dev *pdev, pm_message_t state)
 {
 	struct cb710_chip *chip = pci_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	free_irq(pdev->irq, chip);
 	pci_save_state(pdev);
 	pci_disable_device(pdev);
 	if (state.event & PM_EVENT_SLEEP)
 		pci_set_power_state(pdev, PCI_D3cold);
+=======
+	devm_free_irq(&pdev->dev, pdev->irq, chip);
+	pci_save_state(pdev);
+	pci_disable_device(pdev);
+	if (state.event & PM_EVENT_SLEEP)
+		pci_set_power_state(pdev, PCI_D3hot);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -200,7 +231,11 @@ static int cb710_resume(struct pci_dev *pdev)
 
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
 static int __devinit cb710_probe(struct pci_dev *pdev,
+=======
+static int cb710_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 	const struct pci_device_id *ent)
 {
 	struct cb710_chip *chip;
@@ -304,7 +339,11 @@ unreg_mmc:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit cb710_remove_one(struct pci_dev *pdev)
+=======
+static void cb710_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cb710_chip *chip = pci_get_drvdata(pdev);
 	unsigned long flags;
@@ -331,7 +370,11 @@ static struct pci_driver cb710_driver = {
 	.name = KBUILD_MODNAME,
 	.id_table = cb710_pci_tbl,
 	.probe = cb710_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(cb710_remove_one),
+=======
+	.remove = cb710_remove_one,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend = cb710_suspend,
 	.resume = cb710_resume,

@@ -626,13 +626,20 @@ int sb_dsp_detect(struct address_info *hw_config, int pci, int pciio, struct sb_
 	 */
 
 
+<<<<<<< HEAD
 	detected_devc = kmalloc(sizeof(sb_devc), GFP_KERNEL);
+=======
+	detected_devc = kmemdup(devc, sizeof(sb_devc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (detected_devc == NULL)
 	{
 		printk(KERN_ERR "sb: Can't allocate memory for device information\n");
 		return 0;
 	}
+<<<<<<< HEAD
 	memcpy(detected_devc, devc, sizeof(sb_devc));
+=======
+>>>>>>> refs/remotes/origin/master
 	MDB(printk(KERN_INFO "SB %d.%02d detected OK (%x)\n", devc->major, devc->minor, hw_config->io_base));
 	return 1;
 }

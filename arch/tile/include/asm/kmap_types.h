@@ -23,6 +23,7 @@
  * adds 4MB of required address-space.  For now we leave KM_TYPE_NR
  * set to depth 8.
  */
+<<<<<<< HEAD
 enum km_type {
 	KM_TYPE_NR = 8
 };
@@ -53,5 +54,8 @@ enum {
 	KM_NMI_PTE,
 	KM_KDB
 };
+=======
+#define	KM_TYPE_NR 8
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_TILE_KMAP_TYPES_H */

@@ -23,6 +23,8 @@
 #ifndef TPA6130A2_PLAT_H
 #define TPA6130A2_PLAT_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum tpa_model {
 	TPA6130A2,
 	TPA6140A2,
@@ -30,6 +32,12 @@ enum tpa_model {
 
 struct tpa6130a2_platform_data {
 	enum tpa_model id;
+=======
+struct tpa6130a2_platform_data {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct tpa6130a2_platform_data {
+>>>>>>> refs/remotes/origin/master
 	int power_gpio;
 };
 

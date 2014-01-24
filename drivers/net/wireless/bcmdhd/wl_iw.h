@@ -1,9 +1,21 @@
 /*
  * Linux Wireless Extensions support
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,10 +33,22 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: wl_iw.h,v 1.15.80.6 2010-12-23 01:13:23 $
  */
 
 
+=======
+ * $Id: wl_iw.h 291086 2011-10-21 01:17:24Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: wl_iw.h 291086 2011-10-21 01:17:24Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef _wl_iw_h_
 #define _wl_iw_h_
 
@@ -47,6 +71,8 @@
 #define BAND_SET_CMD				"SETBAND"
 #define DTIM_SKIP_GET_CMD			"DTIMSKIPGET"
 #define DTIM_SKIP_SET_CMD			"DTIMSKIPSET"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SETSUSPENDOPT_CMD			"SETSUSPENDOPT"
 #define SETSUSPENDMODE_CMD			"SETSUSPENDMODE"
 #define PNOSSIDCLR_SET_CMD			"PNOSSIDCLR"
@@ -56,6 +82,20 @@
 #define PNOENABLE_SET_CMD			"PNOFORCE"
 #define PNODEBUG_SET_CMD			"PNODEBUG"
 #define TXPOWER_SET_CMD				"TXPOWER"
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define SETSUSPEND_CMD				"SETSUSPENDOPT"
+#define PNOSSIDCLR_SET_CMD			"PNOSSIDCLR"
+
+#define PNOSETUP_SET_CMD			"PNOSETUP " 
+#define PNOENABLE_SET_CMD			"PNOFORCE"
+#define PNODEBUG_SET_CMD			"PNODEBUG"
+#define TXPOWER_SET_CMD			"TXPOWER"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define MAC2STR(a) (a)[0], (a)[1], (a)[2], (a)[3], (a)[4], (a)[5]
 #define MACSTR "%02x:%02x:%02x:%02x:%02x:%02x"
@@ -81,6 +121,14 @@ struct cntry_locales_custom {
 #define	WL_IW_RSSI_EXCELLENT	-57	
 #define	WL_IW_RSSI_INVALID	 0	
 #define MAX_WX_STRING 80
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define SSID_FMT_BUF_LEN	((4 * 32) + 1)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SSID_FMT_BUF_LEN	((4 * 32) + 1)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define isprint(c) bcm_isprint(c)
 #define WL_IW_SET_ACTIVE_SCAN	(SIOCIWFIRSTPRIV+1)
 #define WL_IW_GET_RSSI			(SIOCIWFIRSTPRIV+3)
@@ -90,6 +138,8 @@ struct cntry_locales_custom {
 #define WL_IW_SET_STOP				(SIOCIWFIRSTPRIV+11)
 #define WL_IW_SET_START			(SIOCIWFIRSTPRIV+13)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #define WL_SET_AP_CFG           (SIOCIWFIRSTPRIV+15)
 #define WL_AP_STA_LIST          (SIOCIWFIRSTPRIV+17)
@@ -103,15 +153,27 @@ struct cntry_locales_custom {
 
 
 #define			G_SCAN_RESULTS 8*1024
+=======
+#define 		G_SCAN_RESULTS 8*1024
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define 		G_SCAN_RESULTS 8*1024
+>>>>>>> refs/remotes/origin/cm-11.0
 #define 		WE_ADD_EVENT_FIX	0x80
 #define          G_WLAN_SET_ON	0
 #define          G_WLAN_SET_OFF	1
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define CHECK_EXTRA_FOR_NULL(extra) \
 if (!extra) { \
 	WL_ERROR(("%s: error : extra is null pointer\n", __FUNCTION__)); \
 	return -EINVAL; \
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 typedef struct wl_iw {
 	char nickname[IW_ESSID_MAX_SIZE];
@@ -119,6 +181,8 @@ typedef struct wl_iw {
 	struct iw_statistics wstats;
 
 	int spy_num;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int wpaversion;			
 	int pcipher;			
 	int gcipher;			
@@ -191,6 +255,30 @@ struct mac_list_set {
 };
 #endif   
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	uint32 pwsec;			
+	uint32 gwsec;			
+	bool privacy_invoked; 		
+	struct ether_addr spy_addr[IW_MAX_SPY];
+	struct iw_quality spy_qual[IW_MAX_SPY];
+	void  *wlinfo;
+} wl_iw_t;
+
+struct wl_ctrl {
+	struct timer_list *timer;
+	struct net_device *dev;
+	long sysioc_pid;
+	struct semaphore sysioc_sem;
+	struct completion sysioc_exited;
+};
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if WIRELESS_EXT > 12
 #include <net/iw_handler.h>
 extern const struct iw_handler_def wl_iw_handler_def;
@@ -200,6 +288,8 @@ extern int wl_iw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd);
 extern void wl_iw_event(struct net_device *dev, wl_event_msg_t *e, void* data);
 extern int wl_iw_get_wireless_stats(struct net_device *dev, struct iw_statistics *wstats);
 int wl_iw_attach(struct net_device *dev, void * dhdp);
+<<<<<<< HEAD
+<<<<<<< HEAD
 void wl_iw_detach(void);
 
 extern int net_os_wake_lock(struct net_device *dev);
@@ -210,6 +300,28 @@ extern int net_os_set_suspend_disable(struct net_device *dev, int val);
 extern int net_os_set_suspend(struct net_device *dev, int val, int force);
 extern int net_os_set_dtim_skip(struct net_device *dev, int val);
 extern void get_customized_country_code(char *country_iso_code, wl_country_t *cspec);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int wl_iw_send_priv_event(struct net_device *dev, char *flag);
+
+void wl_iw_detach(void);
+
+#define CSCAN_COMMAND				"CSCAN "
+#define CSCAN_TLV_PREFIX 			'S'
+#define CSCAN_TLV_VERSION			1
+#define CSCAN_TLV_SUBVERSION			0
+#define CSCAN_TLV_TYPE_SSID_IE          'S'
+#define CSCAN_TLV_TYPE_CHANNEL_IE   'C'
+#define CSCAN_TLV_TYPE_NPROBE_IE     'N'
+#define CSCAN_TLV_TYPE_ACTIVE_IE      'A'
+#define CSCAN_TLV_TYPE_PASSIVE_IE    'P'
+#define CSCAN_TLV_TYPE_HOME_IE         'H'
+#define CSCAN_TLV_TYPE_STYPE_IE        'T'
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
 #define IWE_STREAM_ADD_EVENT(info, stream, ends, iwe, extra) \
@@ -227,6 +339,8 @@ extern void get_customized_country_code(char *country_iso_code, wl_country_t *cs
 	iwe_stream_add_point(stream, ends, iwe, extra)
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int dhd_pno_enable(dhd_pub_t *dhd, int pfn_enabled);
 extern int dhd_pno_clean(dhd_pub_t *dhd);
 extern int dhd_pno_set(dhd_pub_t *dhd, wlc_ssid_t* ssids_local, int nssid,
@@ -316,4 +430,8 @@ extern int wl_iw_parse_channel_list(char** list_str, uint16* channel_list, int c
 #define WPS_PROBE_REQ_IE_CMD_LENGTH 21
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif 

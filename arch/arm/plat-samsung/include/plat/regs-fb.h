@@ -91,6 +91,12 @@
 #define VIDCON1_VSTATUS_BACKPORCH		(0x1 << 13)
 #define VIDCON1_VSTATUS_ACTIVE			(0x2 << 13)
 #define VIDCON1_VSTATUS_FRONTPORCH		(0x0 << 13)
+<<<<<<< HEAD
+=======
+#define VIDCON1_VCLK_MASK			(0x3 << 9)
+#define VIDCON1_VCLK_HOLD			(0x0 << 9)
+#define VIDCON1_VCLK_RUN			(0x1 << 9)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define VIDCON1_INV_VCLK			(1 << 7)
 #define VIDCON1_INV_HSYNC			(1 << 6)
@@ -164,6 +170,7 @@
 #define VIDTCON1_HSPW(_x)			((_x) << 0)
 
 #define VIDTCON2				(0x18)
+<<<<<<< HEAD
 #define VIDTCON2_LINEVAL_MASK			(0x7ff << 11)
 #define VIDTCON2_LINEVAL_SHIFT			(11)
 #define VIDTCON2_LINEVAL_LIMIT			(0x7ff)
@@ -173,6 +180,19 @@
 #define VIDTCON2_HOZVAL_SHIFT			(0)
 #define VIDTCON2_HOZVAL_LIMIT			(0x7ff)
 #define VIDTCON2_HOZVAL(_x)			((_x) << 0)
+=======
+#define VIDTCON2_LINEVAL_E(_x)			((((_x) & 0x800) >> 11) << 23)
+#define VIDTCON2_LINEVAL_MASK			(0x7ff << 11)
+#define VIDTCON2_LINEVAL_SHIFT			(11)
+#define VIDTCON2_LINEVAL_LIMIT			(0x7ff)
+#define VIDTCON2_LINEVAL(_x)			(((_x) & 0x7ff) << 11)
+
+#define VIDTCON2_HOZVAL_E(_x)			((((_x) & 0x800) >> 11) << 22)
+#define VIDTCON2_HOZVAL_MASK			(0x7ff << 0)
+#define VIDTCON2_HOZVAL_SHIFT			(0)
+#define VIDTCON2_HOZVAL_LIMIT			(0x7ff)
+#define VIDTCON2_HOZVAL(_x)			(((_x) & 0x7ff) << 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* WINCONx */
 
@@ -228,6 +248,7 @@
 /* Local input channels (windows 0-2) */
 #define SHADOWCON_CHx_LOCAL_ENABLE(_win)	(1 << (5 + (_win)))
 
+<<<<<<< HEAD
 #define VIDOSDxA_TOPLEFT_X_MASK			(0x7ff << 11)
 #define VIDOSDxA_TOPLEFT_X_SHIFT		(11)
 #define VIDOSDxA_TOPLEFT_X_LIMIT		(0x7ff)
@@ -247,6 +268,31 @@
 #define VIDOSDxB_BOTRIGHT_Y_SHIFT		(0)
 #define VIDOSDxB_BOTRIGHT_Y_LIMIT		(0x7ff)
 #define VIDOSDxB_BOTRIGHT_Y(_x)			((_x) << 0)
+=======
+#define VIDOSDxA_TOPLEFT_X_E(_x)		((((_x) & 0x800) >> 11) << 23)
+#define VIDOSDxA_TOPLEFT_X_MASK			(0x7ff << 11)
+#define VIDOSDxA_TOPLEFT_X_SHIFT		(11)
+#define VIDOSDxA_TOPLEFT_X_LIMIT		(0x7ff)
+#define VIDOSDxA_TOPLEFT_X(_x)			(((_x) & 0x7ff) << 11)
+
+#define VIDOSDxA_TOPLEFT_Y_E(_x)		((((_x) & 0x800) >> 11) << 22)
+#define VIDOSDxA_TOPLEFT_Y_MASK			(0x7ff << 0)
+#define VIDOSDxA_TOPLEFT_Y_SHIFT		(0)
+#define VIDOSDxA_TOPLEFT_Y_LIMIT		(0x7ff)
+#define VIDOSDxA_TOPLEFT_Y(_x)			(((_x) & 0x7ff) << 0)
+
+#define VIDOSDxB_BOTRIGHT_X_E(_x)		((((_x) & 0x800) >> 11) << 23)
+#define VIDOSDxB_BOTRIGHT_X_MASK		(0x7ff << 11)
+#define VIDOSDxB_BOTRIGHT_X_SHIFT		(11)
+#define VIDOSDxB_BOTRIGHT_X_LIMIT		(0x7ff)
+#define VIDOSDxB_BOTRIGHT_X(_x)			(((_x) & 0x7ff) << 11)
+
+#define VIDOSDxB_BOTRIGHT_Y_E(_x)		((((_x) & 0x800) >> 11) << 22)
+#define VIDOSDxB_BOTRIGHT_Y_MASK		(0x7ff << 0)
+#define VIDOSDxB_BOTRIGHT_Y_SHIFT		(0)
+#define VIDOSDxB_BOTRIGHT_Y_LIMIT		(0x7ff)
+#define VIDOSDxB_BOTRIGHT_Y(_x)			(((_x) & 0x7ff) << 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* For VIDOSD[1..4]C */
 #define VIDISD14C_ALPHA0_R(_x)			((_x) << 20)
@@ -278,6 +324,7 @@
 #define VIDW_BUF_END1(_buff)			(0xD4 + ((_buff) * 8))
 #define VIDW_BUF_SIZE(_buff)			(0x100 + ((_buff) * 4))
 
+<<<<<<< HEAD
 #define VIDW_BUF_SIZE_OFFSET_MASK		(0x1fff << 13)
 #define VIDW_BUF_SIZE_OFFSET_SHIFT		(13)
 #define VIDW_BUF_SIZE_OFFSET_LIMIT		(0x1fff)
@@ -287,6 +334,19 @@
 #define VIDW_BUF_SIZE_PAGEWIDTH_SHIFT		(0)
 #define VIDW_BUF_SIZE_PAGEWIDTH_LIMIT		(0x1fff)
 #define VIDW_BUF_SIZE_PAGEWIDTH(_x)		((_x) << 0)
+=======
+#define VIDW_BUF_SIZE_OFFSET_E(_x)		((((_x) & 0x2000) >> 13) << 27)
+#define VIDW_BUF_SIZE_OFFSET_MASK		(0x1fff << 13)
+#define VIDW_BUF_SIZE_OFFSET_SHIFT		(13)
+#define VIDW_BUF_SIZE_OFFSET_LIMIT		(0x1fff)
+#define VIDW_BUF_SIZE_OFFSET(_x)		(((_x) & 0x1fff) << 13)
+
+#define VIDW_BUF_SIZE_PAGEWIDTH_E(_x)		((((_x) & 0x2000) >> 13) << 26)
+#define VIDW_BUF_SIZE_PAGEWIDTH_MASK		(0x1fff << 0)
+#define VIDW_BUF_SIZE_PAGEWIDTH_SHIFT		(0)
+#define VIDW_BUF_SIZE_PAGEWIDTH_LIMIT		(0x1fff)
+#define VIDW_BUF_SIZE_PAGEWIDTH(_x)		(((_x) & 0x1fff) << 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Interrupt controls and status */
 
@@ -384,3 +444,12 @@
 #define WPALCON_W0PAL_16BPP_A555		(0x5 << 0)
 #define WPALCON_W0PAL_16BPP_565			(0x6 << 0)
 
+<<<<<<< HEAD
+=======
+/* Blending equation control */
+#define BLENDCON				(0x260)
+#define BLENDCON_NEW_MASK			(1 << 0)
+#define BLENDCON_NEW_8BIT_ALPHA_VALUE		(1 << 0)
+#define BLENDCON_NEW_4BIT_ALPHA_VALUE		(0 << 0)
+
+>>>>>>> refs/remotes/origin/cm-10.0

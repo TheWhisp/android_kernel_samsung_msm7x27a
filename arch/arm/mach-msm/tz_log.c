@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -53,8 +61,21 @@ struct tzdbg_vmid_t {
  * Boot Info Table
  */
 struct tzdbg_boot_info_t {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t entry_cnt;	/* Warmboot entry CPU Counter */
 	uint32_t exit_cnt;	/* Warmboot exit CPU Counter */
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	uint32_t wb_entry_cnt;	/* Warmboot entry CPU Counter */
+	uint32_t wb_exit_cnt;	/* Warmboot exit CPU Counter */
+	uint32_t pc_entry_cnt;	/* Power Collapse entry CPU Counter */
+	uint32_t pc_exit_cnt;	/* Power Collapse exit CPU counter */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	uint32_t warm_jmp_addr;	/* Last Warmboot Jump Address */
 	uint32_t spare;	/* Reserved for future use. */
 };
@@ -250,9 +271,24 @@ static int _disp_tz_boot_stats(void)
 				"  CPU #: %d\n"
 				"     Warmboot jump address     : 0x%x\n"
 				"     Warmboot entry CPU counter: 0x%x\n"
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"     Warmboot exit CPU counter : 0x%x\n",
 				i, ptr->warm_jmp_addr, ptr->entry_cnt,
 				ptr->exit_cnt);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+				"     Warmboot exit CPU counter : 0x%x\n"
+				"     Power Collapse entry CPU counter: 0x%x\n"
+				"     Power Collapse exit CPU counter : 0x%x\n",
+				i, ptr->warm_jmp_addr, ptr->wb_entry_cnt,
+				ptr->wb_exit_cnt, ptr->pc_entry_cnt,
+				ptr->pc_exit_cnt);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (len > (DEBUG_MAX_RW_BUF - 1)) {
 			pr_warn("%s: Cannot fit all info into the buffer\n",
@@ -531,12 +567,35 @@ static int __devexit tz_log_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct of_device_id tzlog_match[] = {
+	{	.compatible = "qcom,tz-log",
+	},
+	{}
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver tz_log_driver = {
 	.probe		= tz_log_probe,
 	.remove		= __devexit_p(tz_log_remove),
 	.driver		= {
 		.name = "tz_log",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.of_match_table = tzlog_match,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.of_match_table = tzlog_match,
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 
@@ -555,5 +614,13 @@ module_exit(tz_log_exit);
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("TZ Log driver");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_VERSION("1.0");
+=======
+MODULE_VERSION("1.1");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_VERSION("1.1");
+>>>>>>> refs/remotes/origin/cm-11.0
 MODULE_ALIAS("platform:tz_log");

@@ -36,7 +36,10 @@ TABLE OF CONTENTS
     4.1 Compiling the Driver as a Loadable Module
     4.2 Compiling the driver to support memory mode
     4.3 Compiling the driver to support Rx DMA 
+<<<<<<< HEAD
     4.4 Compiling the Driver into the Kernel
+=======
+>>>>>>> refs/remotes/origin/master
 
 5.0 TESTING AND TROUBLESHOOTING
     5.1 Known Defects and Limitations
@@ -364,6 +367,7 @@ The compile-time optionality for DMA was removed in the 2.3 kernel
 series.  DMA support is now unconditionally part of the driver.  It is
 enabled by the 'use_dma=1' module option.
 
+<<<<<<< HEAD
 4.4 COMPILING THE DRIVER INTO THE KERNEL
 
 If your Linux distribution already has support for the cs89x0 driver
@@ -442,6 +446,8 @@ into the /usr/src/linux/drivers/net directory.
 
 4.) Use the DOS 'setup' utility to disable plug and play on the NIC.
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 5.0 TESTING AND TROUBLESHOOTING
 ===============================================================================

@@ -32,6 +32,7 @@ static struct resource s5p_uart0_resource[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= IRQ_S5P_UART_RX0,
 		.end	= IRQ_S5P_UART_RX0,
 		.flags	= IORESOURCE_IRQ,
@@ -46,6 +47,12 @@ static struct resource s5p_uart0_resource[] = {
 		.end	= IRQ_S5P_UART_ERR0,
 		.flags	= IORESOURCE_IRQ,
 	}
+=======
+		.start	= IRQ_UART0,
+		.end	= IRQ_UART0,
+		.flags	= IORESOURCE_IRQ,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct resource s5p_uart1_resource[] = {
@@ -55,6 +62,7 @@ static struct resource s5p_uart1_resource[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= IRQ_S5P_UART_RX1,
 		.end	= IRQ_S5P_UART_RX1,
 		.flags	= IORESOURCE_IRQ,
@@ -67,6 +75,10 @@ static struct resource s5p_uart1_resource[] = {
 	[3] = {
 		.start	= IRQ_S5P_UART_ERR1,
 		.end	= IRQ_S5P_UART_ERR1,
+=======
+		.start	= IRQ_UART1,
+		.end	= IRQ_UART1,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -78,6 +90,7 @@ static struct resource s5p_uart2_resource[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= IRQ_S5P_UART_RX2,
 		.end	= IRQ_S5P_UART_RX2,
 		.flags	= IORESOURCE_IRQ,
@@ -90,6 +103,10 @@ static struct resource s5p_uart2_resource[] = {
 	[3] = {
 		.start	= IRQ_S5P_UART_ERR2,
 		.end	= IRQ_S5P_UART_ERR2,
+=======
+		.start	= IRQ_UART2,
+		.end	= IRQ_UART2,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -102,6 +119,7 @@ static struct resource s5p_uart3_resource[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= IRQ_S5P_UART_RX3,
 		.end	= IRQ_S5P_UART_RX3,
 		.flags	= IORESOURCE_IRQ,
@@ -114,6 +132,10 @@ static struct resource s5p_uart3_resource[] = {
 	[3] = {
 		.start	= IRQ_S5P_UART_ERR3,
 		.end	= IRQ_S5P_UART_ERR3,
+=======
+		.start	= IRQ_UART3,
+		.end	= IRQ_UART3,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
 #endif
@@ -127,6 +149,7 @@ static struct resource s5p_uart4_resource[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= IRQ_S5P_UART_RX4,
 		.end	= IRQ_S5P_UART_RX4,
 		.flags	= IORESOURCE_IRQ,
@@ -139,6 +162,10 @@ static struct resource s5p_uart4_resource[] = {
 	[3] = {
 		.start	= IRQ_S5P_UART_ERR4,
 		.end	= IRQ_S5P_UART_ERR4,
+=======
+		.start	= IRQ_UART4,
+		.end	= IRQ_UART4,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
 #endif
@@ -152,6 +179,7 @@ static struct resource s5p_uart5_resource[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= IRQ_S5P_UART_RX5,
 		.end	= IRQ_S5P_UART_RX5,
 		.flags	= IORESOURCE_IRQ,
@@ -164,6 +192,10 @@ static struct resource s5p_uart5_resource[] = {
 	[3] = {
 		.start	= IRQ_S5P_UART_ERR5,
 		.end	= IRQ_S5P_UART_ERR5,
+=======
+		.start	= IRQ_UART5,
+		.end	= IRQ_UART5,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
 #endif

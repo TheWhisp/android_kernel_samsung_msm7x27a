@@ -35,7 +35,11 @@
 #define WM831X_DCDC_MODE_IDLE    2
 #define WM831X_DCDC_MODE_STANDBY 3
 
+<<<<<<< HEAD
 #define WM831X_DCDC_MAX_NAME 6
+=======
+#define WM831X_DCDC_MAX_NAME 9
+>>>>>>> refs/remotes/origin/master
 
 /* Register offsets in control block */
 #define WM831X_DCDC_CONTROL_1     0
@@ -50,6 +54,10 @@
 
 struct wm831x_dcdc {
 	char name[WM831X_DCDC_MAX_NAME];
+<<<<<<< HEAD
+=======
+	char supply_name[WM831X_DCDC_MAX_NAME];
+>>>>>>> refs/remotes/origin/master
 	struct regulator_desc desc;
 	int base;
 	struct wm831x *wm831x;
@@ -60,6 +68,7 @@ struct wm831x_dcdc {
 	int dvs_vsel;
 };
 
+<<<<<<< HEAD
 static int wm831x_dcdc_is_enabled(struct regulator_dev *rdev)
 {
 	struct wm831x_dcdc *dcdc = rdev_get_drvdata(rdev);
@@ -95,6 +104,8 @@ static int wm831x_dcdc_disable(struct regulator_dev *rdev)
 	return wm831x_set_bits(wm831x, WM831X_DCDC_ENABLE, mask, 0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int wm831x_dcdc_get_mode(struct regulator_dev *rdev)
 
 {
@@ -249,15 +260,24 @@ static int wm831x_buckv_list_voltage(struct regulator_dev *rdev,
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int wm831x_buckv_select_min_voltage(struct regulator_dev *rdev,
 					   int min_uV, int max_uV)
+=======
+static int wm831x_buckv_map_voltage(struct regulator_dev *rdev,
+				   int min_uV, int max_uV)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 vsel;
 
 	if (min_uV < 600000)
 		vsel = 0;
 	else if (min_uV <= 1800000)
+<<<<<<< HEAD
 		vsel = ((min_uV - 600000) / 12500) + 8;
+=======
+		vsel = DIV_ROUND_UP(min_uV - 600000, 12500) + 8;
+>>>>>>> refs/remotes/origin/master
 	else
 		return -EINVAL;
 
@@ -267,6 +287,8 @@ static int wm831x_buckv_select_min_voltage(struct regulator_dev *rdev,
 	return vsel;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm831x_buckv_select_max_voltage(struct regulator_dev *rdev,
 					   int min_uV, int max_uV)
 {
@@ -284,6 +306,10 @@ static int wm831x_buckv_select_max_voltage(struct regulator_dev *rdev,
 	return vsel;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm831x_buckv_set_dvs(struct regulator_dev *rdev, int state)
 {
 	struct wm831x_dcdc *dcdc = rdev_get_drvdata(rdev);
@@ -302,13 +328,19 @@ static int wm831x_buckv_set_dvs(struct regulator_dev *rdev, int state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int wm831x_buckv_set_voltage(struct regulator_dev *rdev,
 				    int min_uV, int max_uV, unsigned *selector)
+=======
+static int wm831x_buckv_set_voltage_sel(struct regulator_dev *rdev,
+					unsigned vsel)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm831x_dcdc *dcdc = rdev_get_drvdata(rdev);
 	struct wm831x *wm831x = dcdc->wm831x;
 	int on_reg = dcdc->base + WM831X_DCDC_ON_CONFIG;
 	int dvs_reg = dcdc->base + WM831X_DCDC_DVS_CONTROL;
+<<<<<<< HEAD
 	int vsel, ret;
 
 	vsel = wm831x_buckv_select_min_voltage(rdev, min_uV, max_uV);
@@ -316,6 +348,9 @@ static int wm831x_buckv_set_voltage(struct regulator_dev *rdev,
 		return vsel;
 
 	*selector = vsel;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* If this value is already set then do a GPIO update if we can */
 	if (dcdc->dvs_gpio && dcdc->on_vsel == vsel)
@@ -338,6 +373,8 @@ static int wm831x_buckv_set_voltage(struct regulator_dev *rdev,
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Set the high voltage as the DVS voltage.  This is optimised
 	 * for CPUfreq usage, most processors will keep the maximum
 	 * voltage constant and lower the minimum with the frequency. */
@@ -360,6 +397,30 @@ static int wm831x_buckv_set_voltage(struct regulator_dev *rdev,
 		dev_warn(wm831x->dev, "Failed to set DCDC DVS VSEL: %d\n",
 			 ret);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * If this VSEL is higher than the last one we've seen then
+	 * remember it as the DVS VSEL.  This is optimised for CPUfreq
+	 * usage where we want to get to the highest voltage very
+	 * quickly.
+	 */
+	if (vsel > dcdc->dvs_vsel) {
+		ret = wm831x_set_bits(wm831x, dvs_reg,
+				      WM831X_DC1_DVS_VSEL_MASK,
+				      vsel);
+		if (ret == 0)
+			dcdc->dvs_vsel = vsel;
+		else
+			dev_warn(wm831x->dev,
+				 "Failed to set DCDC DVS VSEL: %d\n", ret);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -371,7 +432,11 @@ static int wm831x_buckv_set_suspend_voltage(struct regulator_dev *rdev,
 	u16 reg = dcdc->base + WM831X_DCDC_SLEEP_CONTROL;
 	int vsel;
 
+<<<<<<< HEAD
 	vsel = wm831x_buckv_select_min_voltage(rdev, uV, uV);
+=======
+	vsel = wm831x_buckv_map_voltage(rdev, uV, uV);
+>>>>>>> refs/remotes/origin/master
 	if (vsel < 0)
 		return vsel;
 
@@ -401,14 +466,36 @@ static int wm831x_buckv_set_current_limit(struct regulator_dev *rdev,
 	u16 reg = dcdc->base + WM831X_DCDC_CONTROL_2;
 	int i;
 
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(wm831x_dcdc_ilim); i++) {
+<<<<<<< HEAD
 		if (max_uA <= wm831x_dcdc_ilim[i])
+=======
+		if ((min_uA <= wm831x_dcdc_ilim[i]) &&
+		    (wm831x_dcdc_ilim[i] <= max_uA))
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 	}
 	if (i == ARRAY_SIZE(wm831x_dcdc_ilim))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	return wm831x_set_bits(wm831x, reg, WM831X_DC1_HC_THR_MASK, i);
+=======
+	return wm831x_set_bits(wm831x, reg, WM831X_DC1_HC_THR_MASK,
+			       i << WM831X_DC1_HC_THR_SHIFT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = ARRAY_SIZE(wm831x_dcdc_ilim) - 1; i >= 0; i--) {
+		if ((min_uA <= wm831x_dcdc_ilim[i]) &&
+		    (wm831x_dcdc_ilim[i] <= max_uA))
+			return wm831x_set_bits(wm831x, reg,
+					       WM831X_DC1_HC_THR_MASK,
+						i << WM831X_DC1_HC_THR_SHIFT);
+	}
+
+	return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wm831x_buckv_get_current_limit(struct regulator_dev *rdev)
@@ -422,20 +509,43 @@ static int wm831x_buckv_get_current_limit(struct regulator_dev *rdev)
 	if (val < 0)
 		return val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return wm831x_dcdc_ilim[val & WM831X_DC1_HC_THR_MASK];
+=======
+	val = (val & WM831X_DC1_HC_THR_MASK) >> WM831X_DC1_HC_THR_SHIFT;
+	return wm831x_dcdc_ilim[val];
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct regulator_ops wm831x_buckv_ops = {
 	.set_voltage = wm831x_buckv_set_voltage,
 	.get_voltage_sel = wm831x_buckv_get_voltage_sel,
 	.list_voltage = wm831x_buckv_list_voltage,
+=======
+	val = (val & WM831X_DC1_HC_THR_MASK) >> WM831X_DC1_HC_THR_SHIFT;
+	return wm831x_dcdc_ilim[val];
+}
+
+static struct regulator_ops wm831x_buckv_ops = {
+	.set_voltage_sel = wm831x_buckv_set_voltage_sel,
+	.get_voltage_sel = wm831x_buckv_get_voltage_sel,
+	.list_voltage = wm831x_buckv_list_voltage,
+	.map_voltage = wm831x_buckv_map_voltage,
+>>>>>>> refs/remotes/origin/master
 	.set_suspend_voltage = wm831x_buckv_set_suspend_voltage,
 	.set_current_limit = wm831x_buckv_set_current_limit,
 	.get_current_limit = wm831x_buckv_get_current_limit,
 
+<<<<<<< HEAD
 	.is_enabled = wm831x_dcdc_is_enabled,
 	.enable = wm831x_dcdc_enable,
 	.disable = wm831x_dcdc_disable,
+=======
+	.is_enabled = regulator_is_enabled_regmap,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+>>>>>>> refs/remotes/origin/master
 	.get_status = wm831x_dcdc_get_status,
 	.get_mode = wm831x_dcdc_get_mode,
 	.set_mode = wm831x_dcdc_set_mode,
@@ -446,8 +556,14 @@ static struct regulator_ops wm831x_buckv_ops = {
  * Set up DVS control.  We just log errors since we can still run
  * (with reduced performance) if we fail.
  */
+<<<<<<< HEAD
 static __devinit void wm831x_buckv_dvs_init(struct wm831x_dcdc *dcdc,
 					    struct wm831x_buckv_pdata *pdata)
+=======
+static void wm831x_buckv_dvs_init(struct platform_device *pdev,
+				  struct wm831x_dcdc *dcdc,
+				  struct wm831x_buckv_pdata *pdata)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm831x *wm831x = dcdc->wm831x;
 	int ret;
@@ -456,6 +572,8 @@ static __devinit void wm831x_buckv_dvs_init(struct wm831x_dcdc *dcdc,
 	if (!pdata || !pdata->dvs_gpio)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch (pdata->dvs_control_src) {
 	case 1:
 		ctrl = 2 << WM831X_DC1_DVS_SRC_SHIFT;
@@ -477,6 +595,8 @@ static __devinit void wm831x_buckv_dvs_init(struct wm831x_dcdc *dcdc,
 		return;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = gpio_request(pdata->dvs_gpio, "DCDC DVS");
 	if (ret < 0) {
 		dev_err(wm831x->dev, "Failed to get %s DVS GPIO: %d\n",
@@ -484,37 +604,127 @@ static __devinit void wm831x_buckv_dvs_init(struct wm831x_dcdc *dcdc,
 		return;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* gpiolib won't let us read the GPIO status so pick the higher
 	 * of the two existing voltages so we take it as platform data.
 	 */
 	dcdc->dvs_gpio_state = pdata->dvs_init_state;
 
+<<<<<<< HEAD
 	ret = gpio_direction_output(pdata->dvs_gpio, dcdc->dvs_gpio_state);
 	if (ret < 0) {
 		dev_err(wm831x->dev, "Failed to enable %s DVS GPIO: %d\n",
 			dcdc->name, ret);
 		gpio_free(pdata->dvs_gpio);
+=======
+	ret = devm_gpio_request_one(&pdev->dev, pdata->dvs_gpio,
+				    dcdc->dvs_gpio_state ? GPIOF_INIT_HIGH : 0,
+				    "DCDC DVS");
+	if (ret < 0) {
+		dev_err(wm831x->dev, "Failed to get %s DVS GPIO: %d\n",
+			dcdc->name, ret);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	dcdc->dvs_gpio = pdata->dvs_gpio;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	switch (pdata->dvs_control_src) {
+	case 1:
+		ctrl = 2 << WM831X_DC1_DVS_SRC_SHIFT;
+		break;
+	case 2:
+		ctrl = 3 << WM831X_DC1_DVS_SRC_SHIFT;
+		break;
+	default:
+		dev_err(wm831x->dev, "Invalid DVS control source %d for %s\n",
+			pdata->dvs_control_src, dcdc->name);
+		return;
+	}
+
+	/* If DVS_VSEL is set to the minimum value then raise it to ON_VSEL
+	 * to make bootstrapping a bit smoother.
+	 */
+	if (!dcdc->dvs_vsel) {
+		ret = wm831x_set_bits(wm831x,
+				      dcdc->base + WM831X_DCDC_DVS_CONTROL,
+				      WM831X_DC1_DVS_VSEL_MASK, dcdc->on_vsel);
+		if (ret == 0)
+			dcdc->dvs_vsel = dcdc->on_vsel;
+		else
+			dev_warn(wm831x->dev, "Failed to set DVS_VSEL: %d\n",
+				 ret);
+	}
+
+	ret = wm831x_set_bits(wm831x, dcdc->base + WM831X_DCDC_DVS_CONTROL,
+			      WM831X_DC1_DVS_SRC_MASK, ctrl);
+	if (ret < 0) {
+		dev_err(wm831x->dev, "Failed to set %s DVS source: %d\n",
+			dcdc->name, ret);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static __devinit int wm831x_buckv_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
 	struct wm831x_pdata *pdata = wm831x->dev->platform_data;
+<<<<<<< HEAD
 	int id = pdev->id % ARRAY_SIZE(pdata->dcdc);
+=======
+	int id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static int wm831x_buckv_probe(struct platform_device *pdev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+	struct wm831x_pdata *pdata = dev_get_platdata(wm831x->dev);
+	struct regulator_config config = { };
+	int id;
+>>>>>>> refs/remotes/origin/master
 	struct wm831x_dcdc *dcdc;
 	struct resource *res;
 	int ret, irq;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (pdata && pdata->wm831x_num)
+		id = (pdata->wm831x_num * 10) + 1;
+	else
+		id = 0;
+	id = pdev->id - id;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_dbg(&pdev->dev, "Probing DCDC%d\n", id + 1);
 
 	if (pdata == NULL || pdata->dcdc[id] == NULL)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	dcdc = kzalloc(sizeof(struct wm831x_dcdc), GFP_KERNEL);
+=======
+	dcdc = devm_kzalloc(&pdev->dev,  sizeof(struct wm831x_dcdc),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&pdev->dev, "Probing DCDC%d\n", id + 1);
+
+	dcdc = devm_kzalloc(&pdev->dev,  sizeof(struct wm831x_dcdc),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (dcdc == NULL) {
 		dev_err(&pdev->dev, "Unable to allocate private data\n");
 		return -ENOMEM;
@@ -522,9 +732,15 @@ static __devinit int wm831x_buckv_probe(struct platform_device *pdev)
 
 	dcdc->wm831x = wm831x;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
 	if (res == NULL) {
 		dev_err(&pdev->dev, "No I/O resource\n");
+=======
+	res = platform_get_resource(pdev, IORESOURCE_REG, 0);
+	if (res == NULL) {
+		dev_err(&pdev->dev, "No REG resource\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err;
 	}
@@ -532,11 +748,24 @@ static __devinit int wm831x_buckv_probe(struct platform_device *pdev)
 
 	snprintf(dcdc->name, sizeof(dcdc->name), "DCDC%d", id + 1);
 	dcdc->desc.name = dcdc->name;
+<<<<<<< HEAD
+=======
+
+	snprintf(dcdc->supply_name, sizeof(dcdc->supply_name),
+		 "DC%dVDD", id + 1);
+	dcdc->desc.supply_name = dcdc->supply_name;
+
+>>>>>>> refs/remotes/origin/master
 	dcdc->desc.id = id;
 	dcdc->desc.type = REGULATOR_VOLTAGE;
 	dcdc->desc.n_voltages = WM831X_BUCKV_MAX_SELECTOR + 1;
 	dcdc->desc.ops = &wm831x_buckv_ops;
 	dcdc->desc.owner = THIS_MODULE;
+<<<<<<< HEAD
+=======
+	dcdc->desc.enable_reg = WM831X_DCDC_ENABLE;
+	dcdc->desc.enable_mask = 1 << id;
+>>>>>>> refs/remotes/origin/master
 
 	ret = wm831x_reg_read(wm831x, dcdc->base + WM831X_DCDC_ON_CONFIG);
 	if (ret < 0) {
@@ -545,18 +774,45 @@ static __devinit int wm831x_buckv_probe(struct platform_device *pdev)
 	}
 	dcdc->on_vsel = ret & WM831X_DC1_ON_VSEL_MASK;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = wm831x_reg_read(wm831x, dcdc->base + WM831X_DCDC_ON_CONFIG);
+=======
+	ret = wm831x_reg_read(wm831x, dcdc->base + WM831X_DCDC_DVS_CONTROL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = wm831x_reg_read(wm831x, dcdc->base + WM831X_DCDC_DVS_CONTROL);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(wm831x->dev, "Failed to read DVS VSEL: %d\n", ret);
 		goto err;
 	}
 	dcdc->dvs_vsel = ret & WM831X_DC1_DVS_VSEL_MASK;
 
+<<<<<<< HEAD
 	if (pdata->dcdc[id])
 		wm831x_buckv_dvs_init(dcdc, pdata->dcdc[id]->driver_data);
 
 	dcdc->regulator = regulator_register(&dcdc->desc, &pdev->dev,
+<<<<<<< HEAD
 					     pdata->dcdc[id], dcdc);
+=======
+					     pdata->dcdc[id], dcdc, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pdata && pdata->dcdc[id])
+		wm831x_buckv_dvs_init(pdev, dcdc,
+				      pdata->dcdc[id]->driver_data);
+
+	config.dev = pdev->dev.parent;
+	if (pdata)
+		config.init_data = pdata->dcdc[id];
+	config.driver_data = dcdc;
+	config.regmap = wm831x->regmap;
+
+	dcdc->regulator = devm_regulator_register(&pdev->dev, &dcdc->desc,
+						  &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(dcdc->regulator)) {
 		ret = PTR_ERR(dcdc->regulator);
 		dev_err(wm831x->dev, "Failed to register DCDC%d: %d\n",
@@ -564,6 +820,7 @@ static __devinit int wm831x_buckv_probe(struct platform_device *pdev)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	irq = platform_get_irq_byname(pdev, "UV");
 	ret = request_threaded_irq(irq, NULL, wm831x_dcdc_uv_irq,
 				   IRQF_TRIGGER_RISING, dcdc->name, dcdc);
@@ -580,12 +837,33 @@ static __devinit int wm831x_buckv_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to request HC IRQ %d: %d\n",
 			irq, ret);
 		goto err_uv;
+=======
+	irq = wm831x_irq(wm831x, platform_get_irq_byname(pdev, "UV"));
+	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+					wm831x_dcdc_uv_irq,
+					IRQF_TRIGGER_RISING, dcdc->name, dcdc);
+	if (ret != 0) {
+		dev_err(&pdev->dev, "Failed to request UV IRQ %d: %d\n",
+			irq, ret);
+		goto err;
+	}
+
+	irq = wm831x_irq(wm831x, platform_get_irq_byname(pdev, "HC"));
+	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+					wm831x_dcdc_oc_irq,
+					IRQF_TRIGGER_RISING, dcdc->name, dcdc);
+	if (ret != 0) {
+		dev_err(&pdev->dev, "Failed to request HC IRQ %d: %d\n",
+			irq, ret);
+		goto err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, dcdc);
 
 	return 0;
 
+<<<<<<< HEAD
 err_uv:
 	free_irq(platform_get_irq_byname(pdev, "UV"), dcdc);
 err_regulator:
@@ -593,7 +871,10 @@ err_regulator:
 err:
 	if (dcdc->dvs_gpio)
 		gpio_free(dcdc->dvs_gpio);
+<<<<<<< HEAD
 	kfree(dcdc);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -608,7 +889,10 @@ static __devexit int wm831x_buckv_remove(struct platform_device *pdev)
 	regulator_unregister(dcdc->regulator);
 	if (dcdc->dvs_gpio)
 		gpio_free(dcdc->dvs_gpio);
+<<<<<<< HEAD
 	kfree(dcdc);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -616,6 +900,14 @@ static __devexit int wm831x_buckv_remove(struct platform_device *pdev)
 static struct platform_driver wm831x_buckv_driver = {
 	.probe = wm831x_buckv_probe,
 	.remove = __devexit_p(wm831x_buckv_remove),
+=======
+err:
+	return ret;
+}
+
+static struct platform_driver wm831x_buckv_driver = {
+	.probe = wm831x_buckv_probe,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "wm831x-buckv",
 		.owner	= THIS_MODULE,
@@ -626,6 +918,7 @@ static struct platform_driver wm831x_buckv_driver = {
  * BUCKP specifics
  */
 
+<<<<<<< HEAD
 static int wm831x_buckp_list_voltage(struct regulator_dev *rdev,
 				      unsigned selector)
 {
@@ -699,27 +992,90 @@ static struct regulator_ops wm831x_buckp_ops = {
 	.is_enabled = wm831x_dcdc_is_enabled,
 	.enable = wm831x_dcdc_enable,
 	.disable = wm831x_dcdc_disable,
+=======
+static int wm831x_buckp_set_suspend_voltage(struct regulator_dev *rdev, int uV)
+{
+	struct wm831x_dcdc *dcdc = rdev_get_drvdata(rdev);
+	struct wm831x *wm831x = dcdc->wm831x;
+	u16 reg = dcdc->base + WM831X_DCDC_SLEEP_CONTROL;
+	int sel;
+
+	sel = regulator_map_voltage_linear(rdev, uV, uV);
+	if (sel < 0)
+		return sel;
+
+	return wm831x_set_bits(wm831x, reg, WM831X_DC3_ON_VSEL_MASK, sel);
+}
+
+static struct regulator_ops wm831x_buckp_ops = {
+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+	.list_voltage = regulator_list_voltage_linear,
+	.map_voltage = regulator_map_voltage_linear,
+	.set_suspend_voltage = wm831x_buckp_set_suspend_voltage,
+
+	.is_enabled = regulator_is_enabled_regmap,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+>>>>>>> refs/remotes/origin/master
 	.get_status = wm831x_dcdc_get_status,
 	.get_mode = wm831x_dcdc_get_mode,
 	.set_mode = wm831x_dcdc_set_mode,
 	.set_suspend_mode = wm831x_dcdc_set_suspend_mode,
 };
 
+<<<<<<< HEAD
 static __devinit int wm831x_buckp_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
 	struct wm831x_pdata *pdata = wm831x->dev->platform_data;
+<<<<<<< HEAD
 	int id = pdev->id % ARRAY_SIZE(pdata->dcdc);
+=======
+	int id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm831x_buckp_probe(struct platform_device *pdev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+	struct wm831x_pdata *pdata = dev_get_platdata(wm831x->dev);
+	struct regulator_config config = { };
+	int id;
+>>>>>>> refs/remotes/origin/master
 	struct wm831x_dcdc *dcdc;
 	struct resource *res;
 	int ret, irq;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (pdata && pdata->wm831x_num)
+		id = (pdata->wm831x_num * 10) + 1;
+	else
+		id = 0;
+	id = pdev->id - id;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_dbg(&pdev->dev, "Probing DCDC%d\n", id + 1);
 
 	if (pdata == NULL || pdata->dcdc[id] == NULL)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	dcdc = kzalloc(sizeof(struct wm831x_dcdc), GFP_KERNEL);
+=======
+	dcdc = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_dcdc),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&pdev->dev, "Probing DCDC%d\n", id + 1);
+
+	dcdc = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_dcdc),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (dcdc == NULL) {
 		dev_err(&pdev->dev, "Unable to allocate private data\n");
 		return -ENOMEM;
@@ -727,9 +1083,15 @@ static __devinit int wm831x_buckp_probe(struct platform_device *pdev)
 
 	dcdc->wm831x = wm831x;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
 	if (res == NULL) {
 		dev_err(&pdev->dev, "No I/O resource\n");
+=======
+	res = platform_get_resource(pdev, IORESOURCE_REG, 0);
+	if (res == NULL) {
+		dev_err(&pdev->dev, "No REG resource\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err;
 	}
@@ -737,14 +1099,44 @@ static __devinit int wm831x_buckp_probe(struct platform_device *pdev)
 
 	snprintf(dcdc->name, sizeof(dcdc->name), "DCDC%d", id + 1);
 	dcdc->desc.name = dcdc->name;
+<<<<<<< HEAD
+=======
+
+	snprintf(dcdc->supply_name, sizeof(dcdc->supply_name),
+		 "DC%dVDD", id + 1);
+	dcdc->desc.supply_name = dcdc->supply_name;
+
+>>>>>>> refs/remotes/origin/master
 	dcdc->desc.id = id;
 	dcdc->desc.type = REGULATOR_VOLTAGE;
 	dcdc->desc.n_voltages = WM831X_BUCKP_MAX_SELECTOR + 1;
 	dcdc->desc.ops = &wm831x_buckp_ops;
 	dcdc->desc.owner = THIS_MODULE;
+<<<<<<< HEAD
 
 	dcdc->regulator = regulator_register(&dcdc->desc, &pdev->dev,
+<<<<<<< HEAD
 					     pdata->dcdc[id], dcdc);
+=======
+					     pdata->dcdc[id], dcdc, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dcdc->desc.vsel_reg = dcdc->base + WM831X_DCDC_ON_CONFIG;
+	dcdc->desc.vsel_mask = WM831X_DC3_ON_VSEL_MASK;
+	dcdc->desc.enable_reg = WM831X_DCDC_ENABLE;
+	dcdc->desc.enable_mask = 1 << id;
+	dcdc->desc.min_uV = 850000;
+	dcdc->desc.uV_step = 25000;
+
+	config.dev = pdev->dev.parent;
+	if (pdata)
+		config.init_data = pdata->dcdc[id];
+	config.driver_data = dcdc;
+	config.regmap = wm831x->regmap;
+
+	dcdc->regulator = devm_regulator_register(&pdev->dev, &dcdc->desc,
+						  &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(dcdc->regulator)) {
 		ret = PTR_ERR(dcdc->regulator);
 		dev_err(wm831x->dev, "Failed to register DCDC%d: %d\n",
@@ -752,6 +1144,7 @@ static __devinit int wm831x_buckp_probe(struct platform_device *pdev)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	irq = platform_get_irq_byname(pdev, "UV");
 	ret = request_threaded_irq(irq, NULL, wm831x_dcdc_uv_irq,
 				   IRQF_TRIGGER_RISING,	dcdc->name, dcdc);
@@ -759,16 +1152,30 @@ static __devinit int wm831x_buckp_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to request UV IRQ %d: %d\n",
 			irq, ret);
 		goto err_regulator;
+=======
+	irq = wm831x_irq(wm831x, platform_get_irq_byname(pdev, "UV"));
+	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+					wm831x_dcdc_uv_irq,
+					IRQF_TRIGGER_RISING, dcdc->name, dcdc);
+	if (ret != 0) {
+		dev_err(&pdev->dev, "Failed to request UV IRQ %d: %d\n",
+			irq, ret);
+		goto err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, dcdc);
 
 	return 0;
 
+<<<<<<< HEAD
 err_regulator:
 	regulator_unregister(dcdc->regulator);
 err:
+<<<<<<< HEAD
 	kfree(dcdc);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -780,7 +1187,10 @@ static __devexit int wm831x_buckp_remove(struct platform_device *pdev)
 
 	free_irq(platform_get_irq_byname(pdev, "UV"), dcdc);
 	regulator_unregister(dcdc->regulator);
+<<<<<<< HEAD
 	kfree(dcdc);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -788,6 +1198,14 @@ static __devexit int wm831x_buckp_remove(struct platform_device *pdev)
 static struct platform_driver wm831x_buckp_driver = {
 	.probe = wm831x_buckp_probe,
 	.remove = __devexit_p(wm831x_buckp_remove),
+=======
+err:
+	return ret;
+}
+
+static struct platform_driver wm831x_buckp_driver = {
+	.probe = wm831x_buckp_probe,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "wm831x-buckp",
 		.owner	= THIS_MODULE,
@@ -828,6 +1246,7 @@ static int wm831x_boostp_get_status(struct regulator_dev *rdev)
 static struct regulator_ops wm831x_boostp_ops = {
 	.get_status = wm831x_boostp_get_status,
 
+<<<<<<< HEAD
 	.is_enabled = wm831x_dcdc_is_enabled,
 	.enable = wm831x_dcdc_enable,
 	.disable = wm831x_dcdc_disable,
@@ -837,6 +1256,18 @@ static __devinit int wm831x_boostp_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
 	struct wm831x_pdata *pdata = wm831x->dev->platform_data;
+=======
+	.is_enabled = regulator_is_enabled_regmap,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+};
+
+static int wm831x_boostp_probe(struct platform_device *pdev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+	struct wm831x_pdata *pdata = dev_get_platdata(wm831x->dev);
+	struct regulator_config config = { };
+>>>>>>> refs/remotes/origin/master
 	int id = pdev->id % ARRAY_SIZE(pdata->dcdc);
 	struct wm831x_dcdc *dcdc;
 	struct resource *res;
@@ -847,7 +1278,11 @@ static __devinit int wm831x_boostp_probe(struct platform_device *pdev)
 	if (pdata == NULL || pdata->dcdc[id] == NULL)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	dcdc = kzalloc(sizeof(struct wm831x_dcdc), GFP_KERNEL);
+=======
+	dcdc = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_dcdc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (dcdc == NULL) {
 		dev_err(&pdev->dev, "Unable to allocate private data\n");
 		return -ENOMEM;
@@ -855,9 +1290,15 @@ static __devinit int wm831x_boostp_probe(struct platform_device *pdev)
 
 	dcdc->wm831x = wm831x;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
 	if (res == NULL) {
 		dev_err(&pdev->dev, "No I/O resource\n");
+=======
+	res = platform_get_resource(pdev, IORESOURCE_REG, 0);
+	if (res == NULL) {
+		dev_err(&pdev->dev, "No REG resource\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err;
 	}
@@ -869,9 +1310,27 @@ static __devinit int wm831x_boostp_probe(struct platform_device *pdev)
 	dcdc->desc.type = REGULATOR_VOLTAGE;
 	dcdc->desc.ops = &wm831x_boostp_ops;
 	dcdc->desc.owner = THIS_MODULE;
+<<<<<<< HEAD
 
 	dcdc->regulator = regulator_register(&dcdc->desc, &pdev->dev,
+<<<<<<< HEAD
 					     pdata->dcdc[id], dcdc);
+=======
+					     pdata->dcdc[id], dcdc, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dcdc->desc.enable_reg = WM831X_DCDC_ENABLE;
+	dcdc->desc.enable_mask = 1 << id;
+
+	config.dev = pdev->dev.parent;
+	if (pdata)
+		config.init_data = pdata->dcdc[id];
+	config.driver_data = dcdc;
+	config.regmap = wm831x->regmap;
+
+	dcdc->regulator = devm_regulator_register(&pdev->dev, &dcdc->desc,
+						  &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(dcdc->regulator)) {
 		ret = PTR_ERR(dcdc->regulator);
 		dev_err(wm831x->dev, "Failed to register DCDC%d: %d\n",
@@ -879,6 +1338,7 @@ static __devinit int wm831x_boostp_probe(struct platform_device *pdev)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	irq = platform_get_irq_byname(pdev, "UV");
 	ret = request_threaded_irq(irq, NULL, wm831x_dcdc_uv_irq,
 				   IRQF_TRIGGER_RISING, dcdc->name,
@@ -887,12 +1347,24 @@ static __devinit int wm831x_boostp_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to request UV IRQ %d: %d\n",
 			irq, ret);
 		goto err_regulator;
+=======
+	irq = wm831x_irq(wm831x, platform_get_irq_byname(pdev, "UV"));
+	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+					wm831x_dcdc_uv_irq,
+					IRQF_TRIGGER_RISING, dcdc->name,
+					dcdc);
+	if (ret != 0) {
+		dev_err(&pdev->dev, "Failed to request UV IRQ %d: %d\n",
+			irq, ret);
+		goto err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, dcdc);
 
 	return 0;
 
+<<<<<<< HEAD
 err_regulator:
 	regulator_unregister(dcdc->regulator);
 err:
@@ -916,6 +1388,14 @@ static __devexit int wm831x_boostp_remove(struct platform_device *pdev)
 static struct platform_driver wm831x_boostp_driver = {
 	.probe = wm831x_boostp_probe,
 	.remove = __devexit_p(wm831x_boostp_remove),
+=======
+err:
+	return ret;
+}
+
+static struct platform_driver wm831x_boostp_driver = {
+	.probe = wm831x_boostp_probe,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "wm831x-boostp",
 		.owner	= THIS_MODULE,
@@ -932,6 +1412,7 @@ static struct platform_driver wm831x_boostp_driver = {
 #define WM831X_EPE_BASE 6
 
 static struct regulator_ops wm831x_epe_ops = {
+<<<<<<< HEAD
 	.is_enabled = wm831x_dcdc_is_enabled,
 	.enable = wm831x_dcdc_enable,
 	.disable = wm831x_dcdc_disable,
@@ -942,16 +1423,33 @@ static __devinit int wm831x_epe_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
 	struct wm831x_pdata *pdata = wm831x->dev->platform_data;
+=======
+	.is_enabled = regulator_is_enabled_regmap,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+	.get_status = wm831x_dcdc_get_status,
+};
+
+static int wm831x_epe_probe(struct platform_device *pdev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+	struct wm831x_pdata *pdata = dev_get_platdata(wm831x->dev);
+	struct regulator_config config = { };
+>>>>>>> refs/remotes/origin/master
 	int id = pdev->id % ARRAY_SIZE(pdata->epe);
 	struct wm831x_dcdc *dcdc;
 	int ret;
 
 	dev_dbg(&pdev->dev, "Probing EPE%d\n", id + 1);
 
+<<<<<<< HEAD
 	if (pdata == NULL || pdata->epe[id] == NULL)
 		return -ENODEV;
 
 	dcdc = kzalloc(sizeof(struct wm831x_dcdc), GFP_KERNEL);
+=======
+	dcdc = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_dcdc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (dcdc == NULL) {
 		dev_err(&pdev->dev, "Unable to allocate private data\n");
 		return -ENOMEM;
@@ -968,9 +1466,27 @@ static __devinit int wm831x_epe_probe(struct platform_device *pdev)
 	dcdc->desc.ops = &wm831x_epe_ops;
 	dcdc->desc.type = REGULATOR_VOLTAGE;
 	dcdc->desc.owner = THIS_MODULE;
+<<<<<<< HEAD
 
 	dcdc->regulator = regulator_register(&dcdc->desc, &pdev->dev,
+<<<<<<< HEAD
 					     pdata->epe[id], dcdc);
+=======
+					     pdata->epe[id], dcdc, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dcdc->desc.enable_reg = WM831X_DCDC_ENABLE;
+	dcdc->desc.enable_mask = 1 << dcdc->desc.id;
+
+	config.dev = pdev->dev.parent;
+	if (pdata)
+		config.init_data = pdata->epe[id];
+	config.driver_data = dcdc;
+	config.regmap = wm831x->regmap;
+
+	dcdc->regulator = devm_regulator_register(&pdev->dev, &dcdc->desc,
+						  &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(dcdc->regulator)) {
 		ret = PTR_ERR(dcdc->regulator);
 		dev_err(wm831x->dev, "Failed to register EPE%d: %d\n",
@@ -983,6 +1499,7 @@ static __devinit int wm831x_epe_probe(struct platform_device *pdev)
 	return 0;
 
 err:
+<<<<<<< HEAD
 	kfree(dcdc);
 	return ret;
 }
@@ -1002,6 +1519,13 @@ static __devexit int wm831x_epe_remove(struct platform_device *pdev)
 static struct platform_driver wm831x_epe_driver = {
 	.probe = wm831x_epe_probe,
 	.remove = __devexit_p(wm831x_epe_remove),
+=======
+	return ret;
+}
+
+static struct platform_driver wm831x_epe_driver = {
+	.probe = wm831x_epe_probe,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "wm831x-epe",
 		.owner	= THIS_MODULE,
@@ -1046,3 +1570,12 @@ MODULE_DESCRIPTION("WM831x DC-DC convertor driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:wm831x-buckv");
 MODULE_ALIAS("platform:wm831x-buckp");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:wm831x-epe");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:wm831x-boostp");
+MODULE_ALIAS("platform:wm831x-epe");
+>>>>>>> refs/remotes/origin/master

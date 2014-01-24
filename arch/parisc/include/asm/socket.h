@@ -1,6 +1,7 @@
 #ifndef _ASM_SOCKET_H
 #define _ASM_SOCKET_H
 
+<<<<<<< HEAD
 #include <asm/sockios.h>
 
 /* For setsockopt(2) */
@@ -61,9 +62,28 @@
 
 #define SO_RXQ_OVFL             0x4021
 
+<<<<<<< HEAD
+=======
+#define SO_WIFI_STATUS		0x4022
+#define SCM_WIFI_STATUS		SO_WIFI_STATUS
+#define SO_PEEK_OFF		0x4023
+
+/* Instruct lower device to use last 4-bytes of skb data as FCS */
+#define SO_NOFCS		0x4024
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
  * have to define SOCK_NONBLOCK to a different value here.
  */
 #define SOCK_NONBLOCK   0x40000000
+=======
+#include <uapi/asm/socket.h>
+
+/* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
+ * have to define SOCK_NONBLOCK to a different value here.
+ */
+#define SOCK_NONBLOCK	0x40000000
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_SOCKET_H */

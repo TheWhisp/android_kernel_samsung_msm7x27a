@@ -8,6 +8,7 @@
 
 /* No more #include "asm/arch/kmap_types.h" ! */
 
+<<<<<<< HEAD
 enum km_type {
 	KM_BOUNCE_READ,
 	KM_SKB_SUNRPC_DATA,
@@ -25,5 +26,8 @@ enum km_type {
 	KM_SOFTIRQ1,
 	KM_TYPE_NR
 };
+=======
+#define KM_TYPE_NR 14
+>>>>>>> refs/remotes/origin/master
 
 #endif

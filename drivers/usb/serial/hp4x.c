@@ -41,7 +41,10 @@ static struct usb_driver hp49gp_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver hp49gp_device = {
@@ -50,6 +53,7 @@ static struct usb_serial_driver hp49gp_device = {
 		.name =		"hp4X",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.usb_driver = 		&hp49gp_driver,
 	.num_ports =		1,
 };
@@ -80,6 +84,16 @@ static void __exit hp49gp_exit(void)
 
 module_init(hp49gp_init);
 module_exit(hp49gp_exit);
+=======
+	.num_ports =		1,
+};
+
+static struct usb_serial_driver * const serial_drivers[] = {
+	&hp49gp_device, NULL
+};
+
+module_usb_serial_driver(hp49gp_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_VERSION(DRIVER_VERSION);

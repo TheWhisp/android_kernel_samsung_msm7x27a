@@ -297,7 +297,11 @@ static void da9034_touch_close(struct input_dev *dev)
 }
 
 
+<<<<<<< HEAD
 static int __devinit da9034_touch_probe(struct platform_device *pdev)
+=======
+static int da9034_touch_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct da9034_touch_pdata *pdata = pdev->dev.platform_data;
 	struct da9034_touch *touch;
@@ -361,7 +365,11 @@ err_free_touch:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit da9034_touch_remove(struct platform_device *pdev)
+=======
+static int da9034_touch_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct da9034_touch *touch = platform_get_drvdata(pdev);
 
@@ -377,8 +385,10 @@ static struct platform_driver da9034_touch_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= da9034_touch_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(da9034_touch_remove),
 };
+<<<<<<< HEAD
 
 static int __init da9034_touch_init(void)
 {
@@ -391,6 +401,14 @@ static void __exit da9034_touch_exit(void)
 	platform_driver_unregister(&da9034_touch_driver);
 }
 module_exit(da9034_touch_exit);
+=======
+module_platform_driver(da9034_touch_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= da9034_touch_remove,
+};
+module_platform_driver(da9034_touch_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Touchscreen driver for Dialog Semiconductor DA9034");
 MODULE_AUTHOR("Eric Miao <eric.miao@marvell.com>, Bin Yang <bin.yang@marvell.com>");

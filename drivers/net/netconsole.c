@@ -34,12 +34,21 @@
  *
  ****************************************************************/
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/console.h>
 #include <linux/moduleparam.h>
+<<<<<<< HEAD
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/netpoll.h>
 #include <linux/inet.h>
@@ -56,6 +65,13 @@ static char config[MAX_PARAM_LENGTH];
 module_param_string(netconsole, config, MAX_PARAM_LENGTH, 0);
 MODULE_PARM_DESC(netconsole, " netconsole=[src-port]@[src-ip]/[dev],[tgt-port]@<tgt-ip>/[tgt-macaddr]");
 
+<<<<<<< HEAD
+=======
+static bool oops_only = false;
+module_param(oops_only, bool, 0600);
+MODULE_PARM_DESC(oops_only, "Only log oops messages");
+
+>>>>>>> refs/remotes/origin/master
 #ifndef	MODULE
 static int __init option_setup(char *opt)
 {
@@ -97,6 +113,10 @@ struct netconsole_target {
 	struct config_item	item;
 #endif
 	int			enabled;
+<<<<<<< HEAD
+=======
+	struct mutex		mutex;
+>>>>>>> refs/remotes/origin/master
 	struct netpoll		np;
 };
 
@@ -169,15 +189,29 @@ static struct netconsole_target *alloc_param_target(char *target_config)
 	 * Note that these targets get their config_item fields zeroed-out.
 	 */
 	nt = kzalloc(sizeof(*nt), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!nt) {
 		printk(KERN_ERR "netconsole: failed to allocate memory\n");
 		goto fail;
 	}
+=======
+	if (!nt)
+		goto fail;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!nt)
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 
 	nt->np.name = "netconsole";
 	strlcpy(nt->np.dev_name, "eth0", IFNAMSIZ);
 	nt->np.local_port = 6665;
 	nt->np.remote_port = 6666;
+<<<<<<< HEAD
+=======
+	mutex_init(&nt->mutex);
+>>>>>>> refs/remotes/origin/master
 	memset(nt->np.remote_mac, 0xff, ETH_ALEN);
 
 	/* Parse parameters and setup netpoll */
@@ -267,12 +301,26 @@ static ssize_t show_remote_port(struct netconsole_target *nt, char *buf)
 
 static ssize_t show_local_ip(struct netconsole_target *nt, char *buf)
 {
+<<<<<<< HEAD
 	return snprintf(buf, PAGE_SIZE, "%pI4\n", &nt->np.local_ip);
+=======
+	if (nt->np.ipv6)
+		return snprintf(buf, PAGE_SIZE, "%pI6c\n", &nt->np.local_ip.in6);
+	else
+		return snprintf(buf, PAGE_SIZE, "%pI4\n", &nt->np.local_ip);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_remote_ip(struct netconsole_target *nt, char *buf)
 {
+<<<<<<< HEAD
 	return snprintf(buf, PAGE_SIZE, "%pI4\n", &nt->np.remote_ip);
+=======
+	if (nt->np.ipv6)
+		return snprintf(buf, PAGE_SIZE, "%pI6c\n", &nt->np.remote_ip.in6);
+	else
+		return snprintf(buf, PAGE_SIZE, "%pI4\n", &nt->np.remote_ip);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_local_mac(struct netconsole_target *nt, char *buf)
@@ -299,6 +347,10 @@ static ssize_t store_enabled(struct netconsole_target *nt,
 			     const char *buf,
 			     size_t count)
 {
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	int enabled;
 	int err;
 
@@ -308,13 +360,21 @@ static ssize_t store_enabled(struct netconsole_target *nt,
 	if (enabled < 0 || enabled > 1)
 		return -EINVAL;
 	if (enabled == nt->enabled) {
+<<<<<<< HEAD
 		printk(KERN_INFO "netconsole: network logging has already %s\n",
 				nt->enabled ? "started" : "stopped");
+=======
+		pr_info("network logging has already %s\n",
+			nt->enabled ? "started" : "stopped");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	if (enabled) {	/* 1 */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Skip netpoll_parse_options() -- all the attributes are
 		 * already configured via configfs. Just print them out.
@@ -325,9 +385,21 @@ static ssize_t store_enabled(struct netconsole_target *nt,
 		if (err)
 			return err;
 
+<<<<<<< HEAD
 		printk(KERN_INFO "netconsole: network logging started\n");
 
 	} else {	/* 0 */
+=======
+		pr_info("netconsole: network logging started\n");
+	} else {	/* 0 */
+		/* We need to disable the netconsole before cleaning it up
+		 * otherwise we might end up in write_msg() with
+		 * nt->np.dev == NULL and nt->enabled == 1
+		 */
+		spin_lock_irqsave(&target_list_lock, flags);
+		nt->enabled = 0;
+		spin_unlock_irqrestore(&target_list_lock, flags);
+>>>>>>> refs/remotes/origin/master
 		netpoll_cleanup(&nt->np);
 	}
 
@@ -343,9 +415,14 @@ static ssize_t store_dev_name(struct netconsole_target *nt,
 	size_t len;
 
 	if (nt->enabled) {
+<<<<<<< HEAD
 		printk(KERN_ERR "netconsole: target (%s) is enabled, "
 				"disable to update parameters\n",
 				config_item_name(&nt->item));
+=======
+		pr_err("target (%s) is enabled, disable to update parameters\n",
+		       config_item_name(&nt->item));
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -366,9 +443,14 @@ static ssize_t store_local_port(struct netconsole_target *nt,
 	int rv;
 
 	if (nt->enabled) {
+<<<<<<< HEAD
 		printk(KERN_ERR "netconsole: target (%s) is enabled, "
 				"disable to update parameters\n",
 				config_item_name(&nt->item));
+=======
+		pr_err("target (%s) is enabled, disable to update parameters\n",
+		       config_item_name(&nt->item));
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -385,9 +467,14 @@ static ssize_t store_remote_port(struct netconsole_target *nt,
 	int rv;
 
 	if (nt->enabled) {
+<<<<<<< HEAD
 		printk(KERN_ERR "netconsole: target (%s) is enabled, "
 				"disable to update parameters\n",
 				config_item_name(&nt->item));
+=======
+		pr_err("target (%s) is enabled, disable to update parameters\n",
+		       config_item_name(&nt->item));
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -402,6 +489,7 @@ static ssize_t store_local_ip(struct netconsole_target *nt,
 			      size_t count)
 {
 	if (nt->enabled) {
+<<<<<<< HEAD
 		printk(KERN_ERR "netconsole: target (%s) is enabled, "
 				"disable to update parameters\n",
 				config_item_name(&nt->item));
@@ -409,6 +497,29 @@ static ssize_t store_local_ip(struct netconsole_target *nt,
 	}
 
 	nt->np.local_ip = in_aton(buf);
+=======
+		pr_err("target (%s) is enabled, disable to update parameters\n",
+		       config_item_name(&nt->item));
+		return -EINVAL;
+	}
+
+	if (strnchr(buf, count, ':')) {
+		const char *end;
+		if (in6_pton(buf, count, nt->np.local_ip.in6.s6_addr, -1, &end) > 0) {
+			if (*end && *end != '\n') {
+				pr_err("invalid IPv6 address at: <%c>\n", *end);
+				return -EINVAL;
+			}
+			nt->np.ipv6 = true;
+		} else
+			return -EINVAL;
+	} else {
+		if (!nt->np.ipv6) {
+			nt->np.local_ip.ip = in_aton(buf);
+		} else
+			return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return strnlen(buf, count);
 }
@@ -418,6 +529,7 @@ static ssize_t store_remote_ip(struct netconsole_target *nt,
 			       size_t count)
 {
 	if (nt->enabled) {
+<<<<<<< HEAD
 		printk(KERN_ERR "netconsole: target (%s) is enabled, "
 				"disable to update parameters\n",
 				config_item_name(&nt->item));
@@ -425,6 +537,29 @@ static ssize_t store_remote_ip(struct netconsole_target *nt,
 	}
 
 	nt->np.remote_ip = in_aton(buf);
+=======
+		pr_err("target (%s) is enabled, disable to update parameters\n",
+		       config_item_name(&nt->item));
+		return -EINVAL;
+	}
+
+	if (strnchr(buf, count, ':')) {
+		const char *end;
+		if (in6_pton(buf, count, nt->np.remote_ip.in6.s6_addr, -1, &end) > 0) {
+			if (*end && *end != '\n') {
+				pr_err("invalid IPv6 address at: <%c>\n", *end);
+				return -EINVAL;
+			}
+			nt->np.ipv6 = true;
+		} else
+			return -EINVAL;
+	} else {
+		if (!nt->np.ipv6) {
+			nt->np.remote_ip.ip = in_aton(buf);
+		} else
+			return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return strnlen(buf, count);
 }
@@ -436,9 +571,14 @@ static ssize_t store_remote_mac(struct netconsole_target *nt,
 	u8 remote_mac[ETH_ALEN];
 
 	if (nt->enabled) {
+<<<<<<< HEAD
 		printk(KERN_ERR "netconsole: target (%s) is enabled, "
 				"disable to update parameters\n",
 				config_item_name(&nt->item));
+=======
+		pr_err("target (%s) is enabled, disable to update parameters\n",
+		       config_item_name(&nt->item));
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -518,8 +658,15 @@ static ssize_t netconsole_target_attr_store(struct config_item *item,
 	struct netconsole_target_attr *na =
 		container_of(attr, struct netconsole_target_attr, attr);
 
+<<<<<<< HEAD
 	if (na->store)
 		ret = na->store(nt, buf, count);
+=======
+	mutex_lock(&nt->mutex);
+	if (na->store)
+		ret = na->store(nt, buf, count);
+	mutex_unlock(&nt->mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -551,15 +698,29 @@ static struct config_item *make_netconsole_target(struct config_group *group,
 	 * Target is disabled at creation (enabled == 0).
 	 */
 	nt = kzalloc(sizeof(*nt), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!nt) {
 		printk(KERN_ERR "netconsole: failed to allocate memory\n");
 		return ERR_PTR(-ENOMEM);
 	}
+=======
+	if (!nt)
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!nt)
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/master
 
 	nt->np.name = "netconsole";
 	strlcpy(nt->np.dev_name, "eth0", IFNAMSIZ);
 	nt->np.local_port = 6665;
 	nt->np.remote_port = 6666;
+<<<<<<< HEAD
+=======
+	mutex_init(&nt->mutex);
+>>>>>>> refs/remotes/origin/master
 	memset(nt->np.remote_mac, 0xff, ETH_ALEN);
 
 	/* Initialize the config_item member */
@@ -617,12 +778,20 @@ static struct configfs_subsystem netconsole_subsys = {
 
 /* Handle network interface device notifications */
 static int netconsole_netdev_event(struct notifier_block *this,
+<<<<<<< HEAD
 				   unsigned long event,
 				   void *ptr)
 {
 	unsigned long flags;
 	struct netconsole_target *nt;
 	struct net_device *dev = ptr;
+=======
+				   unsigned long event, void *ptr)
+{
+	unsigned long flags;
+	struct netconsole_target *nt;
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 	bool stopped = false;
 
 	if (!(event == NETDEV_CHANGENAME || event == NETDEV_UNREGISTER ||
@@ -641,12 +810,34 @@ restart:
 			case NETDEV_RELEASE:
 			case NETDEV_JOIN:
 			case NETDEV_UNREGISTER:
+<<<<<<< HEAD
 				/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 				 * rtnl_lock already held
 				 * we might sleep in __netpoll_cleanup()
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+				 * we might sleep in __netpoll_cleanup()
+				 * rtnl_lock already held
+>>>>>>> refs/remotes/origin/cm-10.0
 				 */
 				spin_unlock_irqrestore(&target_list_lock, flags);
 				__netpoll_cleanup(&nt->np);
+=======
+				/* rtnl_lock already held
+				 * we might sleep in __netpoll_cleanup()
+				 */
+				spin_unlock_irqrestore(&target_list_lock, flags);
+<<<<<<< HEAD
+
+				__netpoll_cleanup(&nt->np);
+
+>>>>>>> refs/remotes/origin/master
+=======
+				__netpoll_cleanup(&nt->np);
+>>>>>>> refs/remotes/origin/cm-11.0
 				spin_lock_irqsave(&target_list_lock, flags);
 				dev_put(nt->np.dev);
 				nt->np.dev = NULL;
@@ -660,6 +851,7 @@ restart:
 	}
 	spin_unlock_irqrestore(&target_list_lock, flags);
 	if (stopped) {
+<<<<<<< HEAD
 		printk(KERN_INFO "netconsole: network logging stopped on "
 		       "interface %s as it ", dev->name);
 		switch (event) {
@@ -673,6 +865,22 @@ restart:
 			printk(KERN_CONT "is joining a master device\n");
 			break;
 		}
+=======
+		const char *msg = "had an event";
+		switch (event) {
+		case NETDEV_UNREGISTER:
+			msg = "unregistered";
+			break;
+		case NETDEV_RELEASE:
+			msg = "released slaves";
+			break;
+		case NETDEV_JOIN:
+			msg = "is joining a master device";
+			break;
+		}
+		pr_info("network logging stopped on interface %s as it %s\n",
+			dev->name, msg);
+>>>>>>> refs/remotes/origin/master
 	}
 
 done:
@@ -690,6 +898,11 @@ static void write_msg(struct console *con, const char *msg, unsigned int len)
 	struct netconsole_target *nt;
 	const char *tmp;
 
+<<<<<<< HEAD
+=======
+	if (oops_only && !oops_in_progress)
+		return;
+>>>>>>> refs/remotes/origin/master
 	/* Avoid taking lock and disabling interrupts unnecessarily */
 	if (list_empty(&target_list))
 		return;
@@ -756,7 +969,11 @@ static int __init init_netconsole(void)
 		goto undonotifier;
 
 	register_console(&netconsole);
+<<<<<<< HEAD
 	printk(KERN_INFO "netconsole: network logging started\n");
+=======
+	pr_info("network logging started\n");
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 
@@ -764,7 +981,11 @@ undonotifier:
 	unregister_netdevice_notifier(&netconsole_netdev_notifier);
 
 fail:
+<<<<<<< HEAD
 	printk(KERN_ERR "netconsole: cleaning up\n");
+=======
+	pr_err("cleaning up\n");
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Remove all targets and destroy them (only targets created
@@ -801,5 +1022,21 @@ static void __exit cleanup_netconsole(void)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_init(init_netconsole);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Use late_initcall to ensure netconsole is
+ * initialized after network device driver if built-in.
+ *
+ * late_initcall() and module_init() are identical if built as module.
+ */
+late_initcall(init_netconsole);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_exit(cleanup_netconsole);

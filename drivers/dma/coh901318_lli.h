@@ -97,7 +97,11 @@ coh901318_lli_fill_single(struct coh901318_pool *pool,
 			  struct coh901318_lli *lli,
 			  dma_addr_t buf, unsigned int size,
 			  dma_addr_t dev_addr, u32 ctrl_chained, u32 ctrl_last,
+<<<<<<< HEAD
 			  enum dma_data_direction dir);
+=======
+			  enum dma_transfer_direction dir);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * coh901318_lli_fill_single() - Prepares the lli:s for dma scatter list transfer
@@ -119,6 +123,10 @@ coh901318_lli_fill_sg(struct coh901318_pool *pool,
 		      struct scatterlist *sg, unsigned int nents,
 		      dma_addr_t dev_addr, u32 ctrl_chained,
 		      u32 ctrl, u32 ctrl_last,
+<<<<<<< HEAD
 		      enum dma_data_direction dir, u32 ctrl_irq_mask);
+=======
+		      enum dma_transfer_direction dir, u32 ctrl_irq_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* COH901318_LLI_H */

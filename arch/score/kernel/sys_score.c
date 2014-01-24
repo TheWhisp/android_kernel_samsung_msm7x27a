@@ -48,6 +48,7 @@ sys_mmap(unsigned long addr, unsigned long len, unsigned long prot,
 		return -EINVAL;
 	return sys_mmap_pgoff(addr, len, prot, flags, fd, offset >> PAGE_SHIFT);
 }
+<<<<<<< HEAD
 
 asmlinkage long
 score_fork(struct pt_regs *regs)
@@ -136,3 +137,5 @@ int kernel_execve(const char *filename,
 
 	return -__r4;
 }
+=======
+>>>>>>> refs/remotes/origin/master

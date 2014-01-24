@@ -6,6 +6,16 @@
 #include <linux/jump_label.h>
 #include <linux/memory.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/cacheflush.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cacheflush.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef HAVE_JUMP_LABEL
 
 void arch_jump_label_transform(struct jump_entry *entry,
@@ -36,6 +46,8 @@ void arch_jump_label_transform(struct jump_entry *entry,
 	put_online_cpus();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void arch_jump_label_text_poke_early(jump_label_t addr)
 {
 	u32 *insn_p = (u32 *) (unsigned long) addr;
@@ -44,4 +56,8 @@ void arch_jump_label_text_poke_early(jump_label_t addr)
 	flushi(insn_p);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

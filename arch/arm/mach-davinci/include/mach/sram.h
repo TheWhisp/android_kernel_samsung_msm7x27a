@@ -24,4 +24,10 @@
 extern void *sram_alloc(size_t len, dma_addr_t *dma);
 extern void sram_free(void *addr, size_t len);
 
+<<<<<<< HEAD
+=======
+/* Get the struct gen_pool * for use in platform data */
+extern struct gen_pool *sram_get_gen_pool(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __MACH_SRAM_H */

@@ -1,6 +1,14 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -55,7 +63,12 @@ static u8 _rtl_rc_get_highest_rix(struct rtl_priv *rtlpriv,
 	 *      1M we will not use FW rate but user rate.
 	 */
 	if (rtlmac->opmode == NL80211_IFTYPE_AP ||
+<<<<<<< HEAD
 		rtlmac->opmode == NL80211_IFTYPE_ADHOC) {
+=======
+	    rtlmac->opmode == NL80211_IFTYPE_ADHOC ||
+	    rtlmac->opmode == NL80211_IFTYPE_MESH_POINT) {
+>>>>>>> refs/remotes/origin/master
 		if (sta) {
 			sta_entry = (struct rtl_sta_info *) sta->drv_priv;
 			wireless_mode = sta_entry->wireless_mode;
@@ -115,9 +128,14 @@ static void _rtl_rc_rate_set_series(struct rtl_priv *rtlpriv,
 		if (txrc->short_preamble)
 			rate->flags |= IEEE80211_TX_RC_USE_SHORT_PREAMBLE;
 		if (mac->opmode == NL80211_IFTYPE_AP ||
+<<<<<<< HEAD
 			mac->opmode == NL80211_IFTYPE_ADHOC) {
 			if (sta && (sta->ht_cap.cap &
 			    IEEE80211_HT_CAP_SUP_WIDTH_20_40))
+=======
+		    mac->opmode == NL80211_IFTYPE_ADHOC) {
+			if (sta && (sta->bandwidth >= IEEE80211_STA_RX_BW_40))
+>>>>>>> refs/remotes/origin/master
 				rate->flags |= IEEE80211_TX_RC_40_MHZ_WIDTH;
 		} else {
 			if (mac->bw_40)
@@ -200,7 +218,15 @@ static void rtl_tx_status(void *ppriv,
 	if (sta) {
 		/* Check if aggregation has to be enabled for this tid */
 		sta_entry = (struct rtl_sta_info *) sta->drv_priv;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((sta->ht_cap.ht_supported == true) &&
+=======
+		if ((sta->ht_cap.ht_supported) &&
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((sta->ht_cap.ht_supported) &&
+>>>>>>> refs/remotes/origin/master
 				!(skb->protocol == cpu_to_be16(ETH_P_PAE))) {
 			if (ieee80211_is_data_qos(fc)) {
 				u8 tid = rtl_get_tid(skb);
@@ -218,10 +244,15 @@ static void rtl_tx_status(void *ppriv,
 
 static void rtl_rate_init(void *ppriv,
 			  struct ieee80211_supported_band *sband,
+<<<<<<< HEAD
+=======
+			  struct cfg80211_chan_def *chandef,
+>>>>>>> refs/remotes/origin/master
 			  struct ieee80211_sta *sta, void *priv_sta)
 {
 }
 
+<<<<<<< HEAD
 static void rtl_rate_update(void *ppriv,
 			    struct ieee80211_supported_band *sband,
 			    struct ieee80211_sta *sta, void *priv_sta,
@@ -230,6 +261,8 @@ static void rtl_rate_update(void *ppriv,
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void *rtl_rate_alloc(struct ieee80211_hw *hw,
 		struct dentry *debugfsdir)
 {
@@ -251,7 +284,15 @@ static void *rtl_rate_alloc_sta(void *ppriv,
 	rate_priv = kzalloc(sizeof(struct rtl_rate_priv), gfp);
 	if (!rate_priv) {
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 ("Unable to allocate private rc structure\n"));
+=======
+			 "Unable to allocate private rc structure\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "Unable to allocate private rc structure\n");
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -275,7 +316,10 @@ static struct rate_control_ops rtl_rate_ops = {
 	.alloc_sta = rtl_rate_alloc_sta,
 	.free_sta = rtl_rate_free_sta,
 	.rate_init = rtl_rate_init,
+<<<<<<< HEAD
 	.rate_update = rtl_rate_update,
+=======
+>>>>>>> refs/remotes/origin/master
 	.tx_status = rtl_tx_status,
 	.get_rate = rtl_get_rate,
 };

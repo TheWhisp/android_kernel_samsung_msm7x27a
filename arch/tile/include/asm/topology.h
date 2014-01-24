@@ -69,7 +69,10 @@ static inline const struct cpumask *cpumask_of_node(int node)
 				| 1*SD_BALANCE_FORK			\
 				| 0*SD_BALANCE_WAKE			\
 				| 0*SD_WAKE_AFFINE			\
+<<<<<<< HEAD
 				| 0*SD_PREFER_LOCAL			\
+=======
+>>>>>>> refs/remotes/origin/master
 				| 0*SD_SHARE_CPUPOWER			\
 				| 0*SD_SHARE_PKG_RESOURCES		\
 				| 0*SD_SERIALIZE			\
@@ -78,6 +81,7 @@ static inline const struct cpumask *cpumask_of_node(int node)
 	.balance_interval	= 32,					\
 }
 
+<<<<<<< HEAD
 /* sched_domains SD_NODE_INIT for TILE architecture */
 #define SD_NODE_INIT (struct sched_domain) {				\
 	.min_interval		= 16,					\
@@ -104,6 +108,8 @@ static inline const struct cpumask *cpumask_of_node(int node)
 	.balance_interval	= 128,					\
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* By definition, we create nodes based on online memory. */
 #define node_has_online_mem(nid) 1
 
@@ -116,9 +122,12 @@ static inline const struct cpumask *cpumask_of_node(int node)
 #define topology_core_id(cpu)                   (cpu)
 #define topology_core_cpumask(cpu)              ((void)(cpu), cpu_online_mask)
 #define topology_thread_cpumask(cpu)            cpumask_of(cpu)
+<<<<<<< HEAD
 
 /* indicates that pointers to the topology struct cpumask maps are valid */
 #define arch_provides_topology_pointers         yes
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* _ASM_TILE_TOPOLOGY_H */

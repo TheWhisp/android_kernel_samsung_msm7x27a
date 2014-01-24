@@ -315,18 +315,33 @@ static int tda8083_read_ucblocks(struct dvb_frontend* fe, u32* ucblocks)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tda8083_set_frontend(struct dvb_frontend* fe, struct dvb_frontend_parameters *p)
 {
 	struct tda8083_state* state = fe->demodulator_priv;
 
 	if (fe->ops.tuner_ops.set_params) {
 		fe->ops.tuner_ops.set_params(fe, p);
+=======
+static int tda8083_set_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+	struct tda8083_state* state = fe->demodulator_priv;
+
+	if (fe->ops.tuner_ops.set_params) {
+		fe->ops.tuner_ops.set_params(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (fe->ops.i2c_gate_ctrl) fe->ops.i2c_gate_ctrl(fe, 0);
 	}
 
 	tda8083_set_inversion (state, p->inversion);
+<<<<<<< HEAD
 	tda8083_set_fec (state, p->u.qpsk.fec_inner);
 	tda8083_set_symbolrate (state, p->u.qpsk.symbol_rate);
+=======
+	tda8083_set_fec(state, p->fec_inner);
+	tda8083_set_symbolrate(state, p->symbol_rate);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	tda8083_writereg (state, 0x00, 0x3c);
 	tda8083_writereg (state, 0x00, 0x04);
@@ -334,16 +349,27 @@ static int tda8083_set_frontend(struct dvb_frontend* fe, struct dvb_frontend_par
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tda8083_get_frontend(struct dvb_frontend* fe, struct dvb_frontend_parameters *p)
 {
+=======
+static int tda8083_get_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct tda8083_state* state = fe->demodulator_priv;
 
 	/*  FIXME: get symbolrate & frequency offset...*/
 	/*p->frequency = ???;*/
 	p->inversion = (tda8083_readreg (state, 0x0e) & 0x80) ?
 			INVERSION_ON : INVERSION_OFF;
+<<<<<<< HEAD
 	p->u.qpsk.fec_inner = tda8083_get_fec (state);
 	/*p->u.qpsk.symbol_rate = tda8083_get_symbolrate (state);*/
+=======
+	p->fec_inner = tda8083_get_fec(state);
+	/*p->symbol_rate = tda8083_get_symbolrate (state);*/
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -438,10 +464,16 @@ error:
 }
 
 static struct dvb_frontend_ops tda8083_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		.name			= "Philips TDA8083 DVB-S",
 		.type			= FE_QPSK,
+=======
+	.delsys = { SYS_DVBS },
+	.info = {
+		.name			= "Philips TDA8083 DVB-S",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min		= 920000,     /* TDA8060 */
 		.frequency_max		= 2200000,    /* TDA8060 */
 		.frequency_stepsize	= 125,   /* kHz for QPSK frontends */

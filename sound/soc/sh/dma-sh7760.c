@@ -89,6 +89,7 @@ struct camelot_pcm {
 #define DMABRG_PREALLOC_BUFFER		32 * 1024
 #define DMABRG_PREALLOC_BUFFER_MAX	32 * 1024
 
+<<<<<<< HEAD
 /* support everything the SSI supports */
 #define DMABRG_RATES	\
 	SNDRV_PCM_RATE_8000_192000
@@ -100,18 +101,23 @@ struct camelot_pcm {
 	 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_U24_3LE |	\
 	 SNDRV_PCM_FMTBIT_S32_LE  | SNDRV_PCM_FMTBIT_U32_LE)
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct snd_pcm_hardware camelot_pcm_hardware = {
 	.info = (SNDRV_PCM_INFO_MMAP |
 		SNDRV_PCM_INFO_INTERLEAVED |
 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
 		SNDRV_PCM_INFO_MMAP_VALID |
 		SNDRV_PCM_INFO_BATCH),
+<<<<<<< HEAD
 	.formats =	DMABRG_FMTS,
 	.rates =	DMABRG_RATES,
 	.rate_min =		8000,
 	.rate_max =		192000,
 	.channels_min =		2,
 	.channels_max =		8,		/* max of the SSI */
+=======
+>>>>>>> refs/remotes/origin/master
 	.buffer_bytes_max =	DMABRG_PERIOD_MAX,
 	.period_bytes_min =	DMABRG_PERIOD_MIN,
 	.period_bytes_max =	DMABRG_PERIOD_MAX / 2,
@@ -348,12 +354,20 @@ static struct snd_soc_platform_driver sh7760_soc_platform = {
 	.pcm_free	= camelot_pcm_free,
 };
 
+<<<<<<< HEAD
 static int __devinit sh7760_soc_platform_probe(struct platform_device *pdev)
+=======
+static int sh7760_soc_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_platform(&pdev->dev, &sh7760_soc_platform);
 }
 
+<<<<<<< HEAD
 static int __devexit sh7760_soc_platform_remove(struct platform_device *pdev)
+=======
+static int sh7760_soc_platform_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
@@ -366,9 +380,11 @@ static struct platform_driver sh7760_pcm_driver = {
 	},
 
 	.probe = sh7760_soc_platform_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(sh7760_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init snd_sh7760_pcm_init(void)
 {
 	return platform_driver_register(&sh7760_pcm_driver);
@@ -380,6 +396,15 @@ static void __exit snd_sh7760_pcm_exit(void)
 	platform_driver_unregister(&sh7760_pcm_driver);
 }
 module_exit(snd_sh7760_pcm_exit);
+=======
+module_platform_driver(sh7760_pcm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = sh7760_soc_platform_remove,
+};
+
+module_platform_driver(sh7760_pcm_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("SH7760 Audio DMA (DMABRG) driver");

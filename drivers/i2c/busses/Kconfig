@@ -3,6 +3,10 @@
 #
 
 menu "I2C Hardware Bus support"
+<<<<<<< HEAD
+=======
+	depends on HAS_IOMEM
+>>>>>>> refs/remotes/origin/master
 
 comment "PC SMBus host controller drivers"
 	depends on PCI
@@ -21,7 +25,11 @@ config I2C_ALI1535
 
 config I2C_ALI1563
 	tristate "ALI 1563"
+<<<<<<< HEAD
 	depends on PCI && EXPERIMENTAL
+=======
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes to this option, support will be included for the SMB
 	  Host controller on Acer Labs Inc. (ALI) M1563 South Bridges.  The SMB
@@ -55,7 +63,11 @@ config I2C_AMD756
 
 config I2C_AMD756_S4882
 	tristate "SMBus multiplexing on the Tyan S4882"
+<<<<<<< HEAD
 	depends on I2C_AMD756 && X86 && EXPERIMENTAL
+=======
+	depends on I2C_AMD756 && X86
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enabling this option will add specific SMBus support for the Tyan
 	  S4882 motherboard.  On this 4-CPU board, the SMBus is multiplexed
@@ -102,7 +114,27 @@ config I2C_I801
 	    6 Series (PCH)
 	    Patsburg (PCH)
 	    DH89xxCC (PCH)
+<<<<<<< HEAD
+<<<<<<< HEAD
+	    Avoton (SOC)
 	    Panther Point (PCH)
+=======
+	    Panther Point (PCH)
+	    Lynx Point (PCH)
+	    Lynx Point-LP (PCH)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    Panther Point (PCH)
+	    Lynx Point (PCH)
+	    Lynx Point-LP (PCH)
+	    Avoton (SOC)
+<<<<<<< HEAD
+	    Wellsburg (PCH)
+	    Coleto Creek (PCH)
+	    Wildcat Point-LP (PCH)
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-i801.
@@ -110,7 +142,13 @@ config I2C_I801
 config I2C_ISCH
 	tristate "Intel SCH SMBus 1.0"
 	depends on PCI
+<<<<<<< HEAD
+<<<<<<< HEAD
 	select MFD_CORE
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select LPC_SCH
 	help
 	  Say Y here if you want to use SMBus controller on the Intel SCH
@@ -119,6 +157,19 @@ config I2C_ISCH
 	  This driver can also be built as a module. If so, the module
 	  will be called i2c-isch.
 
+<<<<<<< HEAD
+=======
+config I2C_ISMT
+	tristate "Intel iSMT SMBus Controller"
+	depends on PCI && X86
+	help
+	  If you say yes to this option, support will be included for the Intel
+	  iSMT SMBus host controller interface.
+
+	  This driver can also be built as a module.  If so, the module will be
+	  called i2c-ismt.
+
+>>>>>>> refs/remotes/origin/master
 config I2C_PIIX4
 	tristate "Intel PIIX4 and compatible (ATI/AMD/Serverworks/Broadcom/SMSC)"
 	depends on PCI
@@ -133,9 +184,16 @@ config I2C_PIIX4
 	    ATI IXP300
 	    ATI IXP400
 	    ATI SB600
+<<<<<<< HEAD
 	    ATI SB700
 	    ATI SB800
 	    AMD Hudson-2
+=======
+	    ATI SB700/SP5100
+	    ATI SB800
+	    AMD Hudson-2
+	    AMD CZ
+>>>>>>> refs/remotes/origin/master
 	    Serverworks OSB4
 	    Serverworks CSB5
 	    Serverworks CSB6
@@ -143,6 +201,13 @@ config I2C_PIIX4
 	    Serverworks HT-1100
 	    SMSC Victory66
 
+<<<<<<< HEAD
+=======
+	  Some AMD chipsets contain two PIIX4-compatible SMBus
+	  controllers. This driver will attempt to use both controllers
+	  on the SB700/SP5100, if they have been initialized by the BIOS.
+
+>>>>>>> refs/remotes/origin/master
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-piix4.
 
@@ -158,7 +223,11 @@ config I2C_NFORCE2
 
 config I2C_NFORCE2_S4985
 	tristate "SMBus multiplexing on the Tyan S4985"
+<<<<<<< HEAD
 	depends on I2C_NFORCE2 && X86 && EXPERIMENTAL
+=======
+	depends on I2C_NFORCE2 && X86
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enabling this option will add specific SMBus support for the Tyan
 	  S4985 motherboard.  On this 4-CPU board, the SMBus is multiplexed
@@ -180,11 +249,19 @@ config I2C_SIS5595
 	  will be called i2c-sis5595.
 
 config I2C_SIS630
+<<<<<<< HEAD
 	tristate "SiS 630/730"
 	depends on PCI
 	help
 	  If you say yes to this option, support will be included for the
 	  SiS630 and SiS730 SMBus (a subset of I2C) interface.
+=======
+	tristate "SiS 630/730/964"
+	depends on PCI
+	help
+	  If you say yes to this option, support will be included for the
+	  SiS630, SiS730 and SiS964 SMBus (a subset of I2C) interface.
+>>>>>>> refs/remotes/origin/master
 
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-sis630.
@@ -209,7 +286,11 @@ config I2C_SIS96X
 
 config I2C_VIA
 	tristate "VIA VT82C586B"
+<<<<<<< HEAD
 	depends on PCI && EXPERIMENTAL
+=======
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	select I2C_ALGOBIT
 	help
 	  If you say yes to this option, support will be included for the VIA
@@ -219,7 +300,11 @@ config I2C_VIA
 	  will be called i2c-via.
 
 config I2C_VIAPRO
+<<<<<<< HEAD
 	tristate "VIA VT82C596/82C686/82xx and CX700/VX8xx"
+=======
+	tristate "VIA VT82C596/82C686/82xx and CX700/VX8xx/VX900"
+>>>>>>> refs/remotes/origin/master
 	depends on PCI
 	help
 	  If you say yes to this option, support will be included for the VIA
@@ -235,6 +320,10 @@ config I2C_VIAPRO
 	    CX700
 	    VX800/VX820
 	    VX855/VX875
+<<<<<<< HEAD
+=======
+	    VX900
+>>>>>>> refs/remotes/origin/master
 
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-viapro.
@@ -260,7 +349,11 @@ comment "Mac SMBus host controller drivers"
 
 config I2C_HYDRA
 	tristate "CHRP Apple Hydra Mac I/O I2C interface"
+<<<<<<< HEAD
 	depends on PCI && PPC_CHRP && EXPERIMENTAL
+=======
+	depends on PCI && PPC_CHRP
+>>>>>>> refs/remotes/origin/master
 	select I2C_ALGOBIT
 	help
 	  This supports the use of the I2C interface in the Apple Hydra Mac
@@ -286,11 +379,16 @@ comment "I2C system bus drivers (mostly embedded / system-on-chip)"
 
 config I2C_AT91
 	tristate "Atmel AT91 I2C Two-Wire interface (TWI)"
+<<<<<<< HEAD
 	depends on ARCH_AT91 && EXPERIMENTAL && BROKEN
+=======
+	depends on ARCH_AT91
+>>>>>>> refs/remotes/origin/master
 	help
 	  This supports the use of the I2C interface on Atmel AT91
 	  processors.
 
+<<<<<<< HEAD
 	  This driver is BROKEN because the controller which it uses
 	  will easily trigger RX overrun and TX underrun errors.  Using
 	  low I2C clock rates may partially work around those issues
@@ -300,15 +398,65 @@ config I2C_AT91
 	  unless your system can cope with those limitations.
 
 config I2C_AU1550
+<<<<<<< HEAD
 	tristate "Au1550/Au1200 SMBus interface"
 	depends on SOC_AU1550 || SOC_AU1200
 	help
 	  If you say yes to this option, support will be included for the
 	  Au1550 and Au1200 SMBus interface.
+=======
+=======
+	  A serious problem is that there is no documented way to issue
+	  repeated START conditions for more than two messages, as needed
+	  to support combined I2C messages.  Use the i2c-gpio driver
+	  unless your system can cope with this limitation.
+
+	  Caution! at91rm9200, at91sam9261, at91sam9260, at91sam9263 devices
+	  don't have clock stretching in transmission mode. For that reason,
+	  you can encounter underrun issues causing premature stop sendings if
+	  the latency to fill the transmission register is too long. If you
+	  are facing this situation, use the i2c-gpio driver.
+
+config I2C_AU1550
+>>>>>>> refs/remotes/origin/master
+	tristate "Au1550/Au1200/Au1300 SMBus interface"
+	depends on MIPS_ALCHEMY
+	help
+	  If you say yes to this option, support will be included for the
+	  Au1550/Au1200/Au1300 SMBus interface.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-au1550.
 
+<<<<<<< HEAD
+=======
+config I2C_BCM2835
+	tristate "Broadcom BCM2835 I2C controller"
+	depends on ARCH_BCM2835
+	help
+	  If you say yes to this option, support will be included for the
+	  BCM2835 I2C controller.
+
+	  If you don't know what to do here, say N.
+
+	  This support is also available as a module.  If so, the module
+	  will be called i2c-bcm2835.
+
+config I2C_BCM_KONA
+	tristate "BCM Kona I2C adapter"
+	depends on ARCH_BCM_MOBILE
+	default y
+	help
+	  If you say yes to this option, support will be included for the
+	  I2C interface on the Broadcom Kona family of processors.
+
+	  If you do not need KONA I2C inteface, say N.
+
+>>>>>>> refs/remotes/origin/master
 config I2C_BLACKFIN_TWI
 	tristate "Blackfin TWI I2C support"
 	depends on BLACKFIN
@@ -327,6 +475,19 @@ config I2C_BLACKFIN_TWI_CLK_KHZ
 	help
 	  The unit of the TWI clock is kHz.
 
+<<<<<<< HEAD
+=======
+config I2C_CBUS_GPIO
+	tristate "CBUS I2C driver"
+	depends on GPIOLIB
+	help
+	  Support for CBUS access using I2C API. Mostly relevant for Nokia
+	  Internet Tablets (770, N800 and N810).
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called i2c-cbus-gpio.
+
+>>>>>>> refs/remotes/origin/master
 config I2C_CPM
 	tristate "Freescale CPM1 or CPM2 (MPC8xx/826x)"
 	depends on (CPM1 || CPM2) && OF_I2C
@@ -339,7 +500,11 @@ config I2C_CPM
 
 config I2C_DAVINCI
 	tristate "DaVinci I2C driver"
+<<<<<<< HEAD
 	depends on ARCH_DAVINCI
+=======
+	depends on ARCH_DAVINCI || ARCH_KEYSTONE
+>>>>>>> refs/remotes/origin/master
 	help
 	  Support for TI DaVinci I2C controller driver.
 
@@ -350,19 +515,95 @@ config I2C_DAVINCI
 	  devices such as DaVinci NIC.
 	  For details please see http://www.ti.com/davinci
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 config I2C_DESIGNWARE
 	tristate "Synopsys DesignWare"
 	depends on HAVE_CLK
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+config I2C_DESIGNWARE_CORE
+	tristate
+
+config I2C_DESIGNWARE_PLATFORM
+<<<<<<< HEAD
+	tristate "Synopsys DesignWare Platfrom"
+	depends on HAVE_CLK
+<<<<<<< HEAD
+=======
+	tristate "Synopsys DesignWare Platform"
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	select I2C_DESIGNWARE_CORE
 	help
 	  If you say yes to this option, support will be included for the
 	  Synopsys DesignWare I2C adapter. Only master mode is supported.
 
 	  This driver can also be built as a module.  If so, the module
+	  will be called i2c-designware-platform.
+
+config I2C_DESIGNWARE_PCI
+	tristate "Synopsys DesignWare PCI"
+	depends on PCI
+	select I2C_DESIGNWARE_CORE
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	help
+	  If you say yes to this option, support will be included for the
+	  Synopsys DesignWare I2C adapter. Only master mode is supported.
+
+	  This driver can also be built as a module.  If so, the module
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  will be called i2c-designware.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	  will be called i2c-designware-pci.
+
+config I2C_EG20T
+	tristate "Intel EG20T PCH/LAPIS Semicon IOH(ML7213/ML7223/ML7831) I2C"
+	depends on PCI
+	help
+	  This driver is for PCH(Platform controller Hub) I2C of EG20T which
+	  is an IOH(Input/Output Hub) for x86 embedded processor.
+	  This driver can access PCH I2C bus device.
+
+	  This driver also can be used for LAPIS Semiconductor IOH(Input/
+	  Output Hub), ML7213, ML7223 and ML7831.
+	  ML7213 IOH is for IVI(In-Vehicle Infotainment) use, ML7223 IOH is
+	  for MP(Media Phone) use and ML7831 IOH is for general purpose use.
+	  ML7213/ML7223/ML7831 is companion chip for Intel Atom E6xx series.
+	  ML7213/ML7223/ML7831 is completely compatible for Intel EG20T PCH.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config I2C_GPIO
 	tristate "GPIO-based bitbanging I2C"
 	depends on GENERIC_GPIO
+=======
+
+config I2C_EXYNOS5
+	tristate "Exynos5 high-speed I2C driver"
+	depends on ARCH_EXYNOS5 && OF
+	help
+	  Say Y here to include support for high-speed I2C controller in the
+	  Exynos5 based Samsung SoCs.
+
+config I2C_GPIO
+	tristate "GPIO-based bitbanging I2C"
+	depends on GPIOLIB
+>>>>>>> refs/remotes/origin/master
 	select I2C_ALGOBIT
 	help
 	  This is a very simple bitbanging I2C driver utilizing the
@@ -400,6 +641,7 @@ config I2C_IMX
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-imx.
 
+<<<<<<< HEAD
 config I2C_INTEL_MID
 	tristate "Intel Moorestown/Medfield Platform I2C controller"
 	depends on PCI
@@ -410,6 +652,8 @@ config I2C_INTEL_MID
 	  This support is also available as a module. If so, the module
 	  will be called i2c-intel-mid.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config I2C_IOP3XX
 	tristate "Intel IOPx3xx and IXP4xx on-chip I2C interface"
 	depends on ARCH_IOP32X || ARCH_IOP33X || ARCH_IXP4XX || ARCH_IOP13XX
@@ -420,6 +664,7 @@ config I2C_IOP3XX
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-iop3xx.
 
+<<<<<<< HEAD
 config I2C_IXP2000
 	tristate "IXP2000 GPIO-Based I2C Interface (DEPRECATED)"
 	depends on ARCH_IXP2000
@@ -433,6 +678,17 @@ config I2C_IXP2000
 
 	  This driver is deprecated and will be dropped soon. Use i2c-gpio
 	  instead.
+=======
+config I2C_KEMPLD
+	tristate "Kontron COM I2C Controller"
+	depends on MFD_KEMPLD
+	help
+	  This enables support for the I2C bus interface on some Kontron ETX
+	  and COMexpress (ETXexpress) modules.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called i2c-kempld.
+>>>>>>> refs/remotes/origin/master
 
 config I2C_MPC
 	tristate "MPC107/824x/85xx/512x/52xx/83xx/86xx"
@@ -445,6 +701,10 @@ config I2C_MPC
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-mpc.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config I2C_MSM
 	tristate "MSM"
 	depends on I2C && (ARCH_MSM || ARCH_QSD)
@@ -477,6 +737,15 @@ config I2C_MV64XXX
 	help
 	  If you say yes to this option, support will be included for the
 	  built-in I2C interface on the Marvell 64xxx line of host bridges.
+=======
+config I2C_MV64XXX
+	tristate "Marvell mv64xxx I2C Controller"
+	depends on (MV64X60 || PLAT_ORION || ARCH_SUNXI)
+	help
+	  If you say yes to this option, support will be included for the
+	  built-in I2C interface on the Marvell 64xxx line of host bridges.
+	  This driver is also used for Allwinner SoCs I2C controllers.
+>>>>>>> refs/remotes/origin/master
 
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-mv64xxx.
@@ -484,6 +753,10 @@ config I2C_MV64XXX
 config I2C_MXS
 	tristate "Freescale i.MX28 I2C interface"
 	depends on SOC_IMX28
+<<<<<<< HEAD
+=======
+	select STMP_DEVICE
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to use the I2C bus controller on
 	  the Freescale i.MX28 processors.
@@ -493,10 +766,18 @@ config I2C_MXS
 
 config I2C_NOMADIK
 	tristate "ST-Ericsson Nomadik/Ux500 I2C Controller"
+<<<<<<< HEAD
 	depends on PLAT_NOMADIK
 	help
 	  If you say yes to this option, support will be included for the
 	  I2C interface from ST-Ericsson's Nomadik and Ux500 architectures.
+=======
+	depends on ARM_AMBA
+	help
+	  If you say yes to this option, support will be included for the
+	  I2C interface from ST-Ericsson's Nomadik and Ux500 architectures,
+	  as well as the STA2X11 PCIe I/O HUB.
+>>>>>>> refs/remotes/origin/master
 
 config I2C_NUC900
 	tristate "NUC900 I2C Driver"
@@ -507,7 +788,10 @@ config I2C_NUC900
 
 config I2C_OCORES
 	tristate "OpenCores I2C Controller"
+<<<<<<< HEAD
 	depends on EXPERIMENTAL
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes to this option, support will be included for the
 	  OpenCores I2C controller. For details see
@@ -554,7 +838,11 @@ config I2C_PMCMSP
 
 config I2C_PNX
 	tristate "I2C bus support for Philips PNX and NXP LPC targets"
+<<<<<<< HEAD
 	depends on ARCH_PNX4008 || ARCH_LPC32XX
+=======
+	depends on ARCH_LPC32XX
+>>>>>>> refs/remotes/origin/master
 	help
 	  This driver supports the Philips IP3204 I2C IP block master and/or
 	  slave controller
@@ -592,6 +880,19 @@ config I2C_PXA_SLAVE
 	  is necessary for systems where the PXA may be a target on the
 	  I2C bus.
 
+<<<<<<< HEAD
+=======
+config I2C_RIIC
+	tristate "Renesas RIIC adapter"
+	depends on ARCH_SHMOBILE || COMPILE_TEST
+	help
+	  If you say yes to this option, support will be included for the
+	  Renesas RIIC I2C interface.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called i2c-riic.
+
+>>>>>>> refs/remotes/origin/master
 config HAVE_S3C2410_I2C
 	bool
 	help
@@ -627,7 +928,11 @@ config I2C_SH7760
 
 config I2C_SH_MOBILE
 	tristate "SuperH Mobile I2C Controller"
+<<<<<<< HEAD
 	depends on SUPERH || ARCH_SHMOBILE
+=======
+	depends on SUPERH || ARCH_SHMOBILE || COMPILE_TEST
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes to this option, support will be included for the
 	  built-in I2C interface on the Renesas SH-Mobile processor.
@@ -647,6 +952,38 @@ config I2C_SIMTEC
 	  This driver can also be built as a module. If so, the module
 	  will be called i2c-simtec.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+config I2C_SIRF
+	tristate "CSR SiRFprimaII I2C interface"
+	depends on ARCH_PRIMA2
+=======
+config I2C_SIRF
+	tristate "CSR SiRFprimaII I2C interface"
+	depends on ARCH_SIRF
+>>>>>>> refs/remotes/origin/master
+	help
+	  If you say yes to this option, support will be included for the
+	  CSR SiRFprimaII I2C interface.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called i2c-sirf.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config I2C_ST
+	tristate "STMicroelectronics SSC I2C support"
+	depends on ARCH_STI
+	help
+	  Enable this option to add support for STMicroelectronics SoCs
+	  hardware SSC (Synchronous Serial Controller) as an I2C controller.
+
+	  This driver can also be built as module. If so, the module
+	  will be called i2c-st.
+
+>>>>>>> refs/remotes/origin/master
 config I2C_STU300
 	tristate "ST Microelectronics DDC I2C interface"
 	depends on MACH_U300
@@ -678,9 +1015,25 @@ config I2C_VERSATILE
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-versatile.
 
+<<<<<<< HEAD
 config I2C_OCTEON
 	tristate "Cavium OCTEON I2C bus support"
 	depends on CPU_CAVIUM_OCTEON
+=======
+config I2C_WMT
+	tristate "Wondermedia WM8xxx SoC I2C bus support"
+	depends on ARCH_VT8500
+	help
+	  Say yes if you want to support the I2C bus on Wondermedia 8xxx-series
+	  SoCs.
+
+	  This driver can also be built as a module. If so, the module will be
+	  called i2c-wmt.
+
+config I2C_OCTEON
+	tristate "Cavium OCTEON I2C bus support"
+	depends on CAVIUM_OCTEON_SOC
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say yes if you want to support the I2C serial bus on Cavium
 	  OCTEON SOC.
@@ -690,7 +1043,11 @@ config I2C_OCTEON
 
 config I2C_XILINX
 	tristate "Xilinx I2C Controller"
+<<<<<<< HEAD
 	depends on EXPERIMENTAL && HAS_IOMEM
+=======
+	depends on HAS_IOMEM
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes to this option, support will be included for the
 	  Xilinx I2C controller.
@@ -698,6 +1055,8 @@ config I2C_XILINX
 	  This driver can also be built as a module.  If so, the module
 	  will be called xilinx_i2c.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config I2C_EG20T
 	tristate "Intel EG20T PCH / OKI SEMICONDUCTOR IOH(ML7213/ML7223)"
 	depends on PCI
@@ -712,6 +1071,32 @@ config I2C_EG20T
 	  for MP(Media Phone) use.
 	  ML7213/ML7223 is companion chip for Intel Atom E6xx series.
 	  ML7213/ML7223 is completely compatible for Intel EG20T PCH.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config I2C_XLR
+	tristate "XLR I2C support"
+	depends on CPU_XLR
+	help
+	  This driver enables support for the on-chip I2C interface of
+	  the Netlogic XLR/XLS MIPS processors.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called i2c-xlr.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+config I2C_RCAR
+	tristate "Renesas R-Car I2C Controller"
+	depends on ARCH_SHMOBILE || COMPILE_TEST
+	help
+	  If you say yes to this option, support will be included for the
+	  R-Car I2C controller.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called i2c-rcar.
+>>>>>>> refs/remotes/origin/master
 
 comment "External I2C/SMBus adapter drivers"
 
@@ -774,9 +1159,25 @@ config I2C_PARPORT_LIGHT
 	  This support is also available as a module.  If so, the module
 	  will be called i2c-parport-light.
 
+<<<<<<< HEAD
 config I2C_TAOS_EVM
 	tristate "TAOS evaluation module"
 	depends on EXPERIMENTAL
+=======
+config I2C_ROBOTFUZZ_OSIF
+	tristate "RobotFuzz Open Source InterFace USB adapter"
+	depends on USB
+	help
+	  If you say yes to this option, support will be included for the
+	  RobotFuzz Open Source InterFace USB to I2C interface.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called i2c-osif.
+
+config I2C_TAOS_EVM
+	tristate "TAOS evaluation module"
+	depends on TTY
+>>>>>>> refs/remotes/origin/master
 	select SERIO
 	select SERIO_SERPORT
 	default n
@@ -801,6 +1202,19 @@ config I2C_TINY_USB
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-tiny-usb.
 
+<<<<<<< HEAD
+=======
+config I2C_VIPERBOARD
+	tristate "Viperboard I2C master support"
+	depends on MFD_VIPERBOARD && USB
+	help
+	  Say yes here to access the I2C part of the Nano River
+	  Technologies Viperboard as I2C master.
+          See viperboard API specification and Nano
+          River Tech's viperboard.h for detailed meaning
+          of the module parameters.
+
+>>>>>>> refs/remotes/origin/master
 comment "Other I2C/SMBus bus drivers"
 
 config I2C_ACORN
@@ -815,7 +1229,15 @@ config I2C_ACORN
 
 config I2C_ELEKTOR
 	tristate "Elektor ISA card"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	depends on ISA && BROKEN_ON_SMP
+=======
+	depends on ISA && HAS_IOPORT && BROKEN_ON_SMP
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ISA && HAS_IOPORT && BROKEN_ON_SMP
+>>>>>>> refs/remotes/origin/master
 	select I2C_ALGOPCF
 	help
 	  This supports the PCF8584 ISA bus I2C adapter.  Say Y if you own
@@ -847,6 +1269,7 @@ config I2C_SIBYTE
 	help
 	  Supports the SiByte SOC on-chip I2C interfaces (2 channels).
 
+<<<<<<< HEAD
 config I2C_STUB
 	tristate "I2C/SMBus Test Stub"
 	depends on EXPERIMENTAL && m
@@ -860,6 +1283,8 @@ config I2C_STUB
 
 	  If you don't know what to do here, definitely say N.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SCx200_I2C
 	tristate "NatSemi SCx200 I2C using GPIO pins (DEPRECATED)"
 	depends on SCx200_GPIO

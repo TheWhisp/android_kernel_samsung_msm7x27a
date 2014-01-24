@@ -31,7 +31,15 @@
 	 * R1 = host R1
 	 * R2 = host R2
 	 * R3 = shadow vcpu
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * all other volatile GPRS = free
+=======
+	 * all other volatile GPRS = free except R4, R6
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * all other volatile GPRS = free except R4, R6
+>>>>>>> refs/remotes/origin/master
 	 * SVCPU[CR]  = guest CR
 	 * SVCPU[XER] = guest XER
 	 * SVCPU[CTR] = guest CTR

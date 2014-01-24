@@ -10,6 +10,16 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/capability.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
@@ -39,7 +49,15 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
 	int ret;
 	int alloc_type = ALLOC_NORMAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_setattr(): ino #%lu\n", inode->i_ino));
+=======
+	jffs2_dbg(1, "%s(): ino #%lu\n", __func__, inode->i_ino);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "%s(): ino #%lu\n", __func__, inode->i_ino);
+>>>>>>> refs/remotes/origin/master
 
 	/* Special cases - we don't want more than one data node
 	   for these types on the medium at any time. So setattr
@@ -50,7 +68,17 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
 		/* For these, we don't actually need to read the old node */
 		mdatalen = jffs2_encode_dev(&dev, inode->i_rdev);
 		mdata = (char *)&dev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "jffs2_setattr(): Writing %d bytes of kdev_t\n", mdatalen));
+=======
+		jffs2_dbg(1, "%s(): Writing %d bytes of kdev_t\n",
+			  __func__, mdatalen);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		jffs2_dbg(1, "%s(): Writing %d bytes of kdev_t\n",
+			  __func__, mdatalen);
+>>>>>>> refs/remotes/origin/master
 	} else if (S_ISLNK(inode->i_mode)) {
 		mutex_lock(&f->sem);
 		mdatalen = f->metadata->size;
@@ -66,7 +94,17 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
 			return ret;
 		}
 		mutex_unlock(&f->sem);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "jffs2_setattr(): Writing %d bytes of symlink target\n", mdatalen));
+=======
+		jffs2_dbg(1, "%s(): Writing %d bytes of symlink target\n",
+			  __func__, mdatalen);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		jffs2_dbg(1, "%s(): Writing %d bytes of symlink target\n",
+			  __func__, mdatalen);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ri = jffs2_alloc_raw_inode();
@@ -80,7 +118,15 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
 				  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
 	if (ret) {
 		jffs2_free_raw_inode(ri);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (S_ISLNK(inode->i_mode & S_IFMT))
+=======
+		if (S_ISLNK(inode->i_mode))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (S_ISLNK(inode->i_mode))
+>>>>>>> refs/remotes/origin/master
 			 kfree(mdata);
 		return ret;
 	}
@@ -95,8 +141,15 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
 	ri->ino = cpu_to_je32(inode->i_ino);
 	ri->version = cpu_to_je32(++f->highest_version);
 
+<<<<<<< HEAD
 	ri->uid = cpu_to_je16((ivalid & ATTR_UID)?iattr->ia_uid:inode->i_uid);
 	ri->gid = cpu_to_je16((ivalid & ATTR_GID)?iattr->ia_gid:inode->i_gid);
+=======
+	ri->uid = cpu_to_je16((ivalid & ATTR_UID)?
+		from_kuid(&init_user_ns, iattr->ia_uid):i_uid_read(inode));
+	ri->gid = cpu_to_je16((ivalid & ATTR_GID)?
+		from_kgid(&init_user_ns, iattr->ia_gid):i_gid_read(inode));
+>>>>>>> refs/remotes/origin/master
 
 	if (ivalid & ATTR_MODE)
 		ri->mode = cpu_to_jemode(iattr->ia_mode);
@@ -143,8 +196,13 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
 	inode->i_ctime = ITIME(je32_to_cpu(ri->ctime));
 	inode->i_mtime = ITIME(je32_to_cpu(ri->mtime));
 	inode->i_mode = jemode_to_cpu(ri->mode);
+<<<<<<< HEAD
 	inode->i_uid = je16_to_cpu(ri->uid);
 	inode->i_gid = je16_to_cpu(ri->gid);
+=======
+	i_uid_write(inode, je16_to_cpu(ri->uid));
+	i_gid_write(inode, je16_to_cpu(ri->gid));
+>>>>>>> refs/remotes/origin/master
 
 
 	old_metadata = f->metadata;
@@ -233,9 +291,21 @@ void jffs2_evict_inode (struct inode *inode)
 	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_evict_inode(): ino #%lu mode %o\n", inode->i_ino, inode->i_mode));
+=======
+	jffs2_dbg(1, "%s(): ino #%lu mode %o\n",
+		  __func__, inode->i_ino, inode->i_mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	truncate_inode_pages(&inode->i_data, 0);
 	end_writeback(inode);
+=======
+	jffs2_dbg(1, "%s(): ino #%lu mode %o\n",
+		  __func__, inode->i_ino, inode->i_mode);
+	truncate_inode_pages(&inode->i_data, 0);
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	jffs2_do_clear_inode(c, f);
 }
 
@@ -249,7 +319,15 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
 	dev_t rdev = 0;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_iget(): ino == %lu\n", ino));
+=======
+	jffs2_dbg(1, "%s(): ino == %lu\n", __func__, ino);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "%s(): ino == %lu\n", __func__, ino);
+>>>>>>> refs/remotes/origin/master
 
 	inode = iget_locked(sb, ino);
 	if (!inode)
@@ -271,14 +349,27 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
 		return ERR_PTR(ret);
 	}
 	inode->i_mode = jemode_to_cpu(latest_node.mode);
+<<<<<<< HEAD
 	inode->i_uid = je16_to_cpu(latest_node.uid);
 	inode->i_gid = je16_to_cpu(latest_node.gid);
+=======
+	i_uid_write(inode, je16_to_cpu(latest_node.uid));
+	i_gid_write(inode, je16_to_cpu(latest_node.gid));
+>>>>>>> refs/remotes/origin/master
 	inode->i_size = je32_to_cpu(latest_node.isize);
 	inode->i_atime = ITIME(je32_to_cpu(latest_node.atime));
 	inode->i_mtime = ITIME(je32_to_cpu(latest_node.mtime));
 	inode->i_ctime = ITIME(je32_to_cpu(latest_node.ctime));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = f->inocache->pino_nlink;
+=======
+	set_nlink(inode, f->inocache->pino_nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, f->inocache->pino_nlink);
+>>>>>>> refs/remotes/origin/master
 
 	inode->i_blocks = (inode->i_size + 511) >> 9;
 
@@ -291,7 +382,15 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
 	case S_IFDIR:
 	{
 		struct jffs2_full_dirent *fd;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 2; /* parent and '.' */
+=======
+		set_nlink(inode, 2); /* parent and '.' */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, 2); /* parent and '.' */
+>>>>>>> refs/remotes/origin/master
 
 		for (fd=f->dents; fd; fd = fd->next) {
 			if (fd->type == DT_DIR && fd->ino)
@@ -317,6 +416,8 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
 		/* Read the device numbers from the media */
 		if (f->metadata->size != sizeof(jdev.old_id) &&
 		    f->metadata->size != sizeof(jdev.new_id)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_NOTICE "Device node has strange size %d\n", f->metadata->size);
 			goto error_io;
 		}
@@ -325,6 +426,23 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
 		if (ret < 0) {
 			/* Eep */
 			printk(KERN_NOTICE "Read device numbers for inode %lu failed\n", (unsigned long)inode->i_ino);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			pr_notice("Device node has strange size %d\n",
+				  f->metadata->size);
+			goto error_io;
+		}
+		jffs2_dbg(1, "Reading device numbers from flash\n");
+		ret = jffs2_read_dnode(c, f, f->metadata, (char *)&jdev, 0, f->metadata->size);
+		if (ret < 0) {
+			/* Eep */
+			pr_notice("Read device numbers for inode %lu failed\n",
+				  (unsigned long)inode->i_ino);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto error;
 		}
 		if (f->metadata->size == sizeof(jdev.old_id))
@@ -339,12 +457,30 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
 		break;
 
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "jffs2_read_inode(): Bogus imode %o for ino %lu\n", inode->i_mode, (unsigned long)inode->i_ino);
+=======
+		pr_warn("%s(): Bogus i_mode %o for ino %lu\n",
+			__func__, inode->i_mode, (unsigned long)inode->i_ino);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("%s(): Bogus i_mode %o for ino %lu\n",
+			__func__, inode->i_mode, (unsigned long)inode->i_ino);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&f->sem);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_read_inode() returning\n"));
+=======
+	jffs2_dbg(1, "jffs2_read_inode() returning\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "jffs2_read_inode() returning\n");
+>>>>>>> refs/remotes/origin/master
 	unlock_new_inode(inode);
 	return inode;
 
@@ -362,11 +498,27 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
 	struct iattr iattr;
 
 	if (!(inode->i_state & I_DIRTY_DATASYNC)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		D2(printk(KERN_DEBUG "jffs2_dirty_inode() not calling setattr() for ino #%lu\n", inode->i_ino));
 		return;
 	}
 
 	D1(printk(KERN_DEBUG "jffs2_dirty_inode() calling setattr() for ino #%lu\n", inode->i_ino));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		jffs2_dbg(2, "%s(): not calling setattr() for ino #%lu\n",
+			  __func__, inode->i_ino);
+		return;
+	}
+
+	jffs2_dbg(1, "%s(): calling setattr() for ino #%lu\n",
+		  __func__, inode->i_ino);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	iattr.ia_valid = ATTR_MODE|ATTR_UID|ATTR_GID|ATTR_ATIME|ATTR_MTIME|ATTR_CTIME;
 	iattr.ia_mode = inode->i_mode;
@@ -379,7 +531,15 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
 	jffs2_do_setattr(inode, &iattr);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int jffs2_remount_fs (struct super_block *sb, int *flags, char *data)
+=======
+int jffs2_do_remount_fs(struct super_block *sb, int *flags, char *data)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int jffs2_do_remount_fs(struct super_block *sb, int *flags, char *data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
 
@@ -406,7 +566,15 @@ int jffs2_remount_fs (struct super_block *sb, int *flags, char *data)
 
 /* jffs2_new_inode: allocate a new inode and inocache, add it to the hash,
    fill in the raw_inode while you're at it. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct inode *jffs2_new_inode (struct inode *dir_i, int mode, struct jffs2_raw_inode *ri)
+=======
+struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode, struct jffs2_raw_inode *ri)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode, struct jffs2_raw_inode *ri)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	struct super_block *sb = dir_i->i_sb;
@@ -414,7 +582,17 @@ struct inode *jffs2_new_inode (struct inode *dir_i, int mode, struct jffs2_raw_i
 	struct jffs2_inode_info *f;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_new_inode(): dir_i %ld, mode 0x%x\n", dir_i->i_ino, mode));
+=======
+	jffs2_dbg(1, "%s(): dir_i %ld, mode 0x%x\n",
+		  __func__, dir_i->i_ino, mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "%s(): dir_i %ld, mode 0x%x\n",
+		  __func__, dir_i->i_ino, mode);
+>>>>>>> refs/remotes/origin/master
 
 	c = JFFS2_SB_INFO(sb);
 
@@ -429,6 +607,7 @@ struct inode *jffs2_new_inode (struct inode *dir_i, int mode, struct jffs2_raw_i
 
 	memset(ri, 0, sizeof(*ri));
 	/* Set OS-specific defaults for new inodes */
+<<<<<<< HEAD
 	ri->uid = cpu_to_je16(current_fsuid());
 
 	if (dir_i->i_mode & S_ISGID) {
@@ -437,6 +616,16 @@ struct inode *jffs2_new_inode (struct inode *dir_i, int mode, struct jffs2_raw_i
 			mode |= S_ISGID;
 	} else {
 		ri->gid = cpu_to_je16(current_fsgid());
+=======
+	ri->uid = cpu_to_je16(from_kuid(&init_user_ns, current_fsuid()));
+
+	if (dir_i->i_mode & S_ISGID) {
+		ri->gid = cpu_to_je16(i_gid_read(dir_i));
+		if (S_ISDIR(mode))
+			mode |= S_ISGID;
+	} else {
+		ri->gid = cpu_to_je16(from_kgid(&init_user_ns, current_fsgid()));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* POSIX ACLs have to be processed now, at least partly.
@@ -453,11 +642,23 @@ struct inode *jffs2_new_inode (struct inode *dir_i, int mode, struct jffs2_raw_i
 		iput(inode);
 		return ERR_PTR(ret);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 1;
+=======
+	set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_ino = je32_to_cpu(ri->ino);
 	inode->i_mode = jemode_to_cpu(ri->mode);
 	inode->i_gid = je16_to_cpu(ri->gid);
 	inode->i_uid = je16_to_cpu(ri->uid);
+=======
+	set_nlink(inode, 1);
+	inode->i_ino = je32_to_cpu(ri->ino);
+	inode->i_mode = jemode_to_cpu(ri->mode);
+	i_gid_write(inode, je16_to_cpu(ri->gid));
+	i_uid_write(inode, je16_to_cpu(ri->uid));
+>>>>>>> refs/remotes/origin/master
 	inode->i_atime = inode->i_ctime = inode->i_mtime = CURRENT_TIME_SEC;
 	ri->atime = ri->mtime = ri->ctime = cpu_to_je32(I_SEC(inode->i_mtime));
 
@@ -466,7 +667,13 @@ struct inode *jffs2_new_inode (struct inode *dir_i, int mode, struct jffs2_raw_i
 
 	if (insert_inode_locked(inode) < 0) {
 		make_bad_inode(inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		unlock_new_inode(inode);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		iput(inode);
 		return ERR_PTR(-EINVAL);
 	}
@@ -503,13 +710,33 @@ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
 
 	c = JFFS2_SB_INFO(sb);
 
+<<<<<<< HEAD
 #ifndef CONFIG_JFFS2_FS_WRITEBUFFER
 	if (c->mtd->type == MTD_NANDFLASH) {
+<<<<<<< HEAD
 		printk(KERN_ERR "jffs2: Cannot operate on NAND flash unless jffs2 NAND support is compiled in.\n");
 		return -EINVAL;
 	}
 	if (c->mtd->type == MTD_DATAFLASH) {
 		printk(KERN_ERR "jffs2: Cannot operate on DataFlash unless jffs2 DataFlash support is compiled in.\n");
+=======
+=======
+	/* Do not support the MLC nand */
+	if (c->mtd->type == MTD_MLCNANDFLASH)
+		return -EINVAL;
+
+#ifndef CONFIG_JFFS2_FS_WRITEBUFFER
+	if (c->mtd->type == MTD_NANDFLASH) {
+>>>>>>> refs/remotes/origin/master
+		pr_err("Cannot operate on NAND flash unless jffs2 NAND support is compiled in\n");
+		return -EINVAL;
+	}
+	if (c->mtd->type == MTD_DATAFLASH) {
+		pr_err("Cannot operate on DataFlash unless jffs2 DataFlash support is compiled in\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 #endif
@@ -523,12 +750,30 @@ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
 	 */
 	if ((c->sector_size * blocks) != c->flash_size) {
 		c->flash_size = c->sector_size * blocks;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "jffs2: Flash size not aligned to erasesize, reducing to %dKiB\n",
+=======
+		pr_info("Flash size not aligned to erasesize, reducing to %dKiB\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("Flash size not aligned to erasesize, reducing to %dKiB\n",
+>>>>>>> refs/remotes/origin/master
 			c->flash_size / 1024);
 	}
 
 	if (c->flash_size < 5*c->sector_size) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "jffs2: Too few erase blocks (%d)\n", c->flash_size / c->sector_size);
+=======
+		pr_err("Too few erase blocks (%d)\n",
+		       c->flash_size / c->sector_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Too few erase blocks (%d)\n",
+		       c->flash_size / c->sector_size);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -551,20 +796,46 @@ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
 	if ((ret = jffs2_do_mount_fs(c)))
 		goto out_inohash;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_do_fill_super(): Getting root inode\n"));
 	root_i = jffs2_iget(sb, 1);
 	if (IS_ERR(root_i)) {
 		D1(printk(KERN_WARNING "get root inode failed\n"));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	jffs2_dbg(1, "%s(): Getting root inode\n", __func__);
+	root_i = jffs2_iget(sb, 1);
+	if (IS_ERR(root_i)) {
+		jffs2_dbg(1, "get root inode failed\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = PTR_ERR(root_i);
 		goto out_root;
 	}
 
 	ret = -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_do_fill_super(): d_alloc_root()\n"));
 	sb->s_root = d_alloc_root(root_i);
 	if (!sb->s_root)
 		goto out_root_i;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	jffs2_dbg(1, "%s(): d_make_root()\n", __func__);
+	sb->s_root = d_make_root(root_i);
+	if (!sb->s_root)
+		goto out_root;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sb->s_maxbytes = 0xFFFFFFFF;
 	sb->s_blocksize = PAGE_CACHE_SIZE;
@@ -574,8 +845,14 @@ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
 		jffs2_start_garbage_collect_thread(c);
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
  out_root_i:
 	iput(root_i);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_root:
 	jffs2_free_ino_caches(c);
 	jffs2_free_raw_node_refs(c);
@@ -621,20 +898,50 @@ struct jffs2_inode_info *jffs2_gc_fetch_inode(struct jffs2_sb_info *c,
 		*/
 		inode = ilookup(OFNI_BS_2SFFJ(c), inum);
 		if (!inode) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			D1(printk(KERN_DEBUG "ilookup() failed for ino #%u; inode is probably deleted.\n",
 				  inum));
+=======
+			jffs2_dbg(1, "ilookup() failed for ino #%u; inode is probably deleted.\n",
+				  inum);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jffs2_dbg(1, "ilookup() failed for ino #%u; inode is probably deleted.\n",
+				  inum);
+>>>>>>> refs/remotes/origin/master
 
 			spin_lock(&c->inocache_lock);
 			ic = jffs2_get_ino_cache(c, inum);
 			if (!ic) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "Inode cache for ino #%u is gone.\n", inum));
+=======
+				jffs2_dbg(1, "Inode cache for ino #%u is gone\n",
+					  inum);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "Inode cache for ino #%u is gone\n",
+					  inum);
+>>>>>>> refs/remotes/origin/master
 				spin_unlock(&c->inocache_lock);
 				return NULL;
 			}
 			if (ic->state != INO_STATE_CHECKEDABSENT) {
 				/* Wait for progress. Don't just loop */
+<<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "Waiting for ino #%u in state %d\n",
 					  ic->ino, ic->state));
+=======
+				jffs2_dbg(1, "Waiting for ino #%u in state %d\n",
+					  ic->ino, ic->state);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "Waiting for ino #%u in state %d\n",
+					  ic->ino, ic->state);
+>>>>>>> refs/remotes/origin/master
 				sleep_on_spinunlock(&c->inocache_wq, &c->inocache_lock);
 			} else {
 				spin_unlock(&c->inocache_lock);
@@ -652,8 +959,18 @@ struct jffs2_inode_info *jffs2_gc_fetch_inode(struct jffs2_sb_info *c,
 			return ERR_CAST(inode);
 	}
 	if (is_bad_inode(inode)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "Eep. read_inode() failed for ino #%u. unlinked %d\n",
 		       inum, unlinked);
+=======
+		pr_notice("Eep. read_inode() failed for ino #%u. unlinked %d\n",
+			  inum, unlinked);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_notice("Eep. read_inode() failed for ino #%u. unlinked %d\n",
+			  inum, unlinked);
+>>>>>>> refs/remotes/origin/master
 		/* NB. This will happen again. We need to do something appropriate here. */
 		iput(inode);
 		return ERR_PTR(-EIO);

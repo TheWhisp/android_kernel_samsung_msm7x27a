@@ -2,7 +2,15 @@
 #include <linux/user-return-notifier.h>
 #include <linux/percpu.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_PER_CPU(struct hlist_head, return_notifier_list);
 
@@ -34,11 +42,19 @@ EXPORT_SYMBOL_GPL(user_return_notifier_unregister);
 void fire_user_return_notifiers(void)
 {
 	struct user_return_notifier *urn;
+<<<<<<< HEAD
 	struct hlist_node *tmp1, *tmp2;
 	struct hlist_head *head;
 
 	head = &get_cpu_var(return_notifier_list);
 	hlist_for_each_entry_safe(urn, tmp1, tmp2, head, link)
+=======
+	struct hlist_node *tmp2;
+	struct hlist_head *head;
+
+	head = &get_cpu_var(return_notifier_list);
+	hlist_for_each_entry_safe(urn, tmp2, head, link)
+>>>>>>> refs/remotes/origin/master
 		urn->on_user_return(urn);
 	put_cpu_var(return_notifier_list);
 }

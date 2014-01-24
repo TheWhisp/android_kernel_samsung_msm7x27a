@@ -77,7 +77,12 @@ struct rdma_ucm_create_id {
 	__u64 uid;
 	__u64 response;
 	__u16 ps;
+<<<<<<< HEAD
 	__u8  reserved[6];
+=======
+	__u8  qp_type;
+	__u8  reserved[5];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct rdma_ucm_create_id_resp {

@@ -17,6 +17,14 @@
  */
 
 #include <linux/pci.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/acpi.h>
 #include <linux/slab.h>
 #include <acpi/acpi_bus.h>
@@ -26,7 +34,15 @@ struct ioapic {
 	u32		gsi_base;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ioapic_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+=======
+static int __devinit ioapic_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ioapic_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_handle handle;
 	acpi_status status;
@@ -36,7 +52,11 @@ static int ioapic_probe(struct pci_dev *dev, const struct pci_device_id *ent)
 	char *type;
 	struct resource *res;
 
+<<<<<<< HEAD
 	handle = DEVICE_ACPI_HANDLE(&dev->dev);
+=======
+	handle = ACPI_HANDLE(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!handle)
 		return -EINVAL;
 
@@ -87,7 +107,15 @@ exit_free:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void ioapic_remove(struct pci_dev *dev)
+=======
+static void __devexit ioapic_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ioapic_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ioapic *ioapic = pci_get_drvdata(dev);
 
@@ -98,6 +126,8 @@ static void ioapic_remove(struct pci_dev *dev)
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_device_id ioapic_devices[] = {
 	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
 	  PCI_CLASS_SYSTEM_PIC_IOAPIC << 8, 0xffff00, },
@@ -105,11 +135,25 @@ static struct pci_device_id ioapic_devices[] = {
 	  PCI_CLASS_SYSTEM_PIC_IOXAPIC << 8, 0xffff00, },
 	{ }
 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DEFINE_PCI_DEVICE_TABLE(ioapic_devices) = {
+	{ PCI_DEVICE_CLASS(PCI_CLASS_SYSTEM_PIC_IOAPIC, ~0) },
+	{ PCI_DEVICE_CLASS(PCI_CLASS_SYSTEM_PIC_IOXAPIC, ~0) },
+	{ }
+};
+MODULE_DEVICE_TABLE(pci, ioapic_devices);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_driver ioapic_driver = {
 	.name		= "ioapic",
 	.id_table	= ioapic_devices,
 	.probe		= ioapic_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ioapic_remove),
 };
 
@@ -125,3 +169,11 @@ static void __exit ioapic_exit(void)
 
 module_init(ioapic_init);
 module_exit(ioapic_exit);
+=======
+	.remove		= ioapic_remove,
+};
+
+module_pci_driver(ioapic_driver);
+
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

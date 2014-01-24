@@ -31,6 +31,15 @@
 #define R600_PCIE_PORT_INDEX                0x0038
 #define R600_PCIE_PORT_DATA                 0x003c
 
+<<<<<<< HEAD
+=======
+#define R600_RCU_INDEX                      0x0100
+#define R600_RCU_DATA                       0x0104
+
+#define R600_UVD_CTX_INDEX                  0xf4a0
+#define R600_UVD_CTX_DATA                   0xf4a4
+
+>>>>>>> refs/remotes/origin/master
 #define R600_MC_VM_FB_LOCATION			0x2180
 #define		R600_MC_FB_BASE_MASK			0x0000FFFF
 #define		R600_MC_FB_BASE_SHIFT			0
@@ -96,6 +105,18 @@
 #define R600_CONFIG_F0_BASE                                     0x542C
 #define R600_CONFIG_APER_SIZE                                   0x5430
 
+<<<<<<< HEAD
+=======
+#define	R600_BIF_FB_EN						0x5490
+#define		R600_FB_READ_EN					(1 << 0)
+#define		R600_FB_WRITE_EN				(1 << 1)
+
+#define R600_CITF_CNTL           				0x200c
+#define		R600_BLACKOUT_MASK				0x00000003
+
+#define R700_MC_CITF_CNTL           				0x25c0
+
+>>>>>>> refs/remotes/origin/master
 #define R600_ROM_CNTL                              0x1600
 #       define R600_SCK_OVERWRITE                  (1 << 1)
 #       define R600_SCK_PRESCALE_CRYSTAL_CLK_SHIFT 28
@@ -156,6 +177,7 @@
 #define R600_AUDIO_PIN_WIDGET_CNTL        0x73d4
 #define R600_AUDIO_STATUS_BITS            0x73d8
 
+<<<<<<< HEAD
 /* HDMI base register addresses */
 #define R600_HDMI_BLOCK1                  0x7400
 #define R600_HDMI_BLOCK2                  0x7700
@@ -196,5 +218,12 @@
 /* HDMI additional config base register addresses */
 #define R600_HDMI_CONFIG1                 0x7600
 #define R600_HDMI_CONFIG2                 0x7a00
+=======
+#define DCE2_HDMI_OFFSET0		(0x7400 - 0x7400)
+#define DCE2_HDMI_OFFSET1		(0x7700 - 0x7400)
+/* DCE3.2 second instance starts at 0x7800 */
+#define DCE3_HDMI_OFFSET0		(0x7400 - 0x7400)
+#define DCE3_HDMI_OFFSET1		(0x7800 - 0x7400)
+>>>>>>> refs/remotes/origin/master
 
 #endif

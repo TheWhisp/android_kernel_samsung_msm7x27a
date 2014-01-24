@@ -149,6 +149,16 @@
 #include <linux/if_arp.h>
 #include <linux/netdevice.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 #include "i2400m.h"
 
 
@@ -1344,16 +1354,23 @@ EXPORT_SYMBOL(i2400m_unknown_barker);
 int i2400m_rx_setup(struct i2400m *i2400m)
 {
 	int result = 0;
+<<<<<<< HEAD
 	struct device *dev = i2400m_dev(i2400m);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	i2400m->rx_reorder = i2400m_rx_reorder_disabled? 0 : 1;
 	if (i2400m->rx_reorder) {
 		unsigned itr;
+<<<<<<< HEAD
 		size_t size;
+=======
+>>>>>>> refs/remotes/origin/master
 		struct i2400m_roq_log *rd;
 
 		result = -ENOMEM;
 
+<<<<<<< HEAD
 		size = sizeof(i2400m->rx_roq[0]) * (I2400M_RO_CIN + 1);
 		i2400m->rx_roq = kzalloc(size, GFP_KERNEL);
 		if (i2400m->rx_roq == NULL) {
@@ -1367,6 +1384,16 @@ int i2400m_rx_setup(struct i2400m *i2400m)
 		if (rd == NULL) {
 			dev_err(dev, "RX: cannot allocate %zu bytes for "
 				"reorder queues log areas\n", size);
+=======
+		i2400m->rx_roq = kcalloc(I2400M_RO_CIN + 1,
+					 sizeof(i2400m->rx_roq[0]), GFP_KERNEL);
+		if (i2400m->rx_roq == NULL)
+			goto error_roq_alloc;
+
+		rd = kcalloc(I2400M_RO_CIN + 1, sizeof(*i2400m->rx_roq[0].log),
+			     GFP_KERNEL);
+		if (rd == NULL) {
+>>>>>>> refs/remotes/origin/master
 			result = -ENOMEM;
 			goto error_roq_log_alloc;
 		}

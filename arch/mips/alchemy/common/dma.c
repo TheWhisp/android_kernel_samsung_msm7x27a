@@ -40,8 +40,14 @@
 #include <asm/mach-au1x00/au1000.h>
 #include <asm/mach-au1x00/au1000_dma.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SOC_AU1000) || defined(CONFIG_SOC_AU1500) || \
     defined(CONFIG_SOC_AU1100)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * A note on resource allocation:
  *
@@ -88,12 +94,27 @@ static const struct dma_dev {
 	{ AU1000_AC97_PHYS_ADDR + 0x08, DMA_DW16 | DMA_DR },	/* AC97 RX c */
 	{ AU1000_UART3_PHYS_ADDR + 0x04, DMA_DW8 | DMA_NC },	/* UART3_TX */
 	{ AU1000_UART3_PHYS_ADDR + 0x00, DMA_DW8 | DMA_NC | DMA_DR }, /* UART3_RX */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ AU1000_USBD_PHYS_ADDR + 0x00, DMA_DW8 | DMA_NC | DMA_DR }, /* EP0RD */
 	{ AU1000_USBD_PHYS_ADDR + 0x04, DMA_DW8 | DMA_NC }, /* EP0WR */
 	{ AU1000_USBD_PHYS_ADDR + 0x08, DMA_DW8 | DMA_NC }, /* EP2WR */
 	{ AU1000_USBD_PHYS_ADDR + 0x0c, DMA_DW8 | DMA_NC }, /* EP3WR */
 	{ AU1000_USBD_PHYS_ADDR + 0x10, DMA_DW8 | DMA_NC | DMA_DR }, /* EP4RD */
 	{ AU1000_USBD_PHYS_ADDR + 0x14, DMA_DW8 | DMA_NC | DMA_DR }, /* EP5RD */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	{ AU1000_USB_UDC_PHYS_ADDR + 0x00, DMA_DW8 | DMA_NC | DMA_DR }, /* EP0RD */
+	{ AU1000_USB_UDC_PHYS_ADDR + 0x04, DMA_DW8 | DMA_NC }, /* EP0WR */
+	{ AU1000_USB_UDC_PHYS_ADDR + 0x08, DMA_DW8 | DMA_NC }, /* EP2WR */
+	{ AU1000_USB_UDC_PHYS_ADDR + 0x0c, DMA_DW8 | DMA_NC }, /* EP3WR */
+	{ AU1000_USB_UDC_PHYS_ADDR + 0x10, DMA_DW8 | DMA_NC | DMA_DR }, /* EP4RD */
+	{ AU1000_USB_UDC_PHYS_ADDR + 0x14, DMA_DW8 | DMA_NC | DMA_DR }, /* EP5RD */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* on Au1500, these 2 are DMA_REQ2/3 (GPIO208/209) instead! */
 	{ AU1000_I2S_PHYS_ADDR + 0x00, DMA_DW32 | DMA_NC},	/* I2S TX */
 	{ AU1000_I2S_PHYS_ADDR + 0x00, DMA_DW32 | DMA_NC | DMA_DR}, /* I2S RX */
@@ -170,6 +191,8 @@ int request_au1000_dma(int dev_id, const char *dev_str,
 	const struct dma_dev *dev;
 	int i, ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SOC_AU1100)
 	if (dev_id < 0 || dev_id >= (DMA_NUM_DEV + DMA_NUM_DEV_BANK2))
 		return -EINVAL;
@@ -177,6 +200,20 @@ int request_au1000_dma(int dev_id, const char *dev_str,
 	if (dev_id < 0 || dev_id >= DMA_NUM_DEV)
 		return -EINVAL;
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (alchemy_get_cputype() == ALCHEMY_CPU_AU1100) {
+		if (dev_id < 0 || dev_id >= (DMA_NUM_DEV + DMA_NUM_DEV_BANK2))
+			return -EINVAL;
+	} else {
+		if (dev_id < 0 || dev_id >= DMA_NUM_DEV)
+			return -EINVAL;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < NUM_AU1000_DMA_CHANNELS; i++)
 		if (au1000_dma_table[i].dev_id < 0)
@@ -239,6 +276,8 @@ EXPORT_SYMBOL(free_au1000_dma);
 
 static int __init au1000_dma_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         int base, i;
 
         switch (alchemy_get_cputype()) {
@@ -266,3 +305,35 @@ out:
 arch_initcall(au1000_dma_init);
 
 #endif /* AU1000 AU1500 AU1100 */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int base, i;
+
+	switch (alchemy_get_cputype()) {
+	case ALCHEMY_CPU_AU1000:
+		base = AU1000_DMA_INT_BASE;
+		break;
+	case ALCHEMY_CPU_AU1500:
+		base = AU1500_DMA_INT_BASE;
+		break;
+	case ALCHEMY_CPU_AU1100:
+		base = AU1100_DMA_INT_BASE;
+		break;
+	default:
+		goto out;
+	}
+
+	for (i = 0; i < NUM_AU1000_DMA_CHANNELS; i++)
+		au1000_dma_table[i].irq = base + i;
+
+	printk(KERN_INFO "Alchemy DMA initialized\n");
+
+out:
+	return 0;
+}
+arch_initcall(au1000_dma_init);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

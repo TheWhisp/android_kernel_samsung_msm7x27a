@@ -23,6 +23,14 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include "hda_beep.h"
 #include "hda_local.h"
@@ -38,13 +46,32 @@ static void snd_hda_generate_beep(struct work_struct *work)
 	struct hda_beep *beep =
 		container_of(work, struct hda_beep, beep_work);
 	struct hda_codec *codec = beep->codec;
+<<<<<<< HEAD
+=======
+	int tone;
+>>>>>>> refs/remotes/origin/master
 
 	if (!beep->enabled)
 		return;
 
+<<<<<<< HEAD
 	/* generate tone */
 	snd_hda_codec_write(codec, beep->nid, 0,
 			AC_VERB_SET_BEEP_CONTROL, beep->tone);
+=======
+	tone = beep->tone;
+	if (tone && !beep->playing) {
+		snd_hda_power_up(codec);
+		beep->playing = 1;
+	}
+	/* generate tone */
+	snd_hda_codec_write(codec, beep->nid, 0,
+			    AC_VERB_SET_BEEP_CONTROL, tone);
+	if (!tone && beep->playing) {
+		beep->playing = 0;
+		snd_hda_power_down(codec);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /* (non-standard) Linear beep tone calculation for IDT/STAC codecs 
@@ -99,6 +126,10 @@ static int snd_hda_beep_event(struct input_dev *dev, unsigned int type,
 	case SND_BELL:
 		if (hz)
 			hz = 1000;
+<<<<<<< HEAD
+=======
+		/* fallthru */
+>>>>>>> refs/remotes/origin/master
 	case SND_TONE:
 		if (beep->linear_tone)
 			beep->tone = beep_linear_tone(beep, hz);
@@ -114,14 +145,33 @@ static int snd_hda_beep_event(struct input_dev *dev, unsigned int type,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void turn_off_beep(struct hda_beep *beep)
+{
+	cancel_work_sync(&beep->beep_work);
+	if (beep->playing) {
+		/* turn off beep */
+		snd_hda_codec_write(beep->codec, beep->nid, 0,
+				    AC_VERB_SET_BEEP_CONTROL, 0);
+		beep->playing = 0;
+		snd_hda_power_down(beep->codec);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static void snd_hda_do_detach(struct hda_beep *beep)
 {
 	input_unregister_device(beep->dev);
 	beep->dev = NULL;
+<<<<<<< HEAD
 	cancel_work_sync(&beep->beep_work);
 	/* turn off beep for sure */
 	snd_hda_codec_write(beep->codec, beep->nid, 0,
 				  AC_VERB_SET_BEEP_CONTROL, 0);
+=======
+	turn_off_beep(beep);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int snd_hda_do_attach(struct hda_beep *beep)
@@ -131,10 +181,15 @@ static int snd_hda_do_attach(struct hda_beep *beep)
 	int err;
 
 	input_dev = input_allocate_device();
+<<<<<<< HEAD
 	if (!input_dev) {
 		printk(KERN_INFO "hda_beep: unable to allocate input device\n");
 		return -ENOMEM;
 	}
+=======
+	if (!input_dev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* setup digital beep device */
 	input_dev->name = "HDA Digital PCBeep";
@@ -161,6 +216,7 @@ static int snd_hda_do_attach(struct hda_beep *beep)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void snd_hda_do_register(struct work_struct *work)
 {
 	struct hda_beep *beep =
@@ -205,15 +261,35 @@ int snd_hda_enable_beep_device(struct hda_codec *codec, int enable)
 									   HZ);
 			}
 		}
+=======
+int snd_hda_enable_beep_device(struct hda_codec *codec, int enable)
+{
+	struct hda_beep *beep = codec->beep;
+	if (!beep)
+		return 0;
+	enable = !!enable;
+	if (beep->enabled != enable) {
+		beep->enabled = enable;
+		if (!enable)
+			turn_off_beep(beep);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_enable_beep_device);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_enable_beep_device);
+>>>>>>> refs/remotes/origin/master
 
 int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
 {
 	struct hda_beep *beep;
+<<<<<<< HEAD
+=======
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	if (!snd_hda_get_bool_hint(codec, "beep"))
 		return 0; /* disabled explicitly by hints */
@@ -226,11 +302,16 @@ int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
 	snprintf(beep->phys, sizeof(beep->phys),
 		"card%d/codec#%d/beep0", codec->bus->card->number, codec->addr);
 	/* enable linear scale */
+<<<<<<< HEAD
 	snd_hda_codec_write(codec, nid, 0,
+=======
+	snd_hda_codec_write_cache(codec, nid, 0,
+>>>>>>> refs/remotes/origin/master
 		AC_VERB_SET_DIGI_CONVERT_2, 0x01);
 
 	beep->nid = nid;
 	beep->codec = codec;
+<<<<<<< HEAD
 	beep->mode = codec->beep_mode;
 	codec->beep = beep;
 
@@ -246,22 +327,90 @@ int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
 			codec->beep = NULL;
 			return err;
 		}
+=======
+	codec->beep = beep;
+
+	INIT_WORK(&beep->beep_work, &snd_hda_generate_beep);
+	mutex_init(&beep->mutex);
+
+	err = snd_hda_do_attach(beep);
+	if (err < 0) {
+		kfree(beep);
+		codec->beep = NULL;
+		return err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_attach_beep_device);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_attach_beep_device);
+>>>>>>> refs/remotes/origin/master
 
 void snd_hda_detach_beep_device(struct hda_codec *codec)
 {
 	struct hda_beep *beep = codec->beep;
 	if (beep) {
+<<<<<<< HEAD
 		cancel_work_sync(&beep->register_work);
 		cancel_delayed_work(&beep->unregister_work);
+=======
+>>>>>>> refs/remotes/origin/master
 		if (beep->dev)
 			snd_hda_do_detach(beep);
 		codec->beep = NULL;
 		kfree(beep);
 	}
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_detach_beep_device);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_detach_beep_device);
+
+static bool ctl_has_mute(struct snd_kcontrol *kcontrol)
+{
+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+	return query_amp_caps(codec, get_amp_nid(kcontrol),
+			      get_amp_direction(kcontrol)) & AC_AMPCAP_MUTE;
+}
+
+/* get/put callbacks for beep mute mixer switches */
+int snd_hda_mixer_amp_switch_get_beep(struct snd_kcontrol *kcontrol,
+				      struct snd_ctl_elem_value *ucontrol)
+{
+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+	struct hda_beep *beep = codec->beep;
+	if (beep && (!beep->enabled || !ctl_has_mute(kcontrol))) {
+		ucontrol->value.integer.value[0] =
+			ucontrol->value.integer.value[1] = beep->enabled;
+		return 0;
+	}
+	return snd_hda_mixer_amp_switch_get(kcontrol, ucontrol);
+}
+EXPORT_SYMBOL_GPL(snd_hda_mixer_amp_switch_get_beep);
+
+int snd_hda_mixer_amp_switch_put_beep(struct snd_kcontrol *kcontrol,
+				      struct snd_ctl_elem_value *ucontrol)
+{
+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+	struct hda_beep *beep = codec->beep;
+	if (beep) {
+		u8 chs = get_amp_channels(kcontrol);
+		int enable = 0;
+		long *valp = ucontrol->value.integer.value;
+		if (chs & 1) {
+			enable |= *valp;
+			valp++;
+		}
+		if (chs & 2)
+			enable |= *valp;
+		snd_hda_enable_beep_device(codec, enable);
+	}
+	if (!ctl_has_mute(kcontrol))
+		return 0;
+	return snd_hda_mixer_amp_switch_put(kcontrol, ucontrol);
+}
+EXPORT_SYMBOL_GPL(snd_hda_mixer_amp_switch_put_beep);
+>>>>>>> refs/remotes/origin/master

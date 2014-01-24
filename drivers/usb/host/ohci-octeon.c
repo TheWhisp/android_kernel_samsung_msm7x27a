@@ -42,7 +42,11 @@ static void ohci_octeon_hw_stop(void)
 	octeon2_usb_clocks_stop();
 }
 
+<<<<<<< HEAD
 static int __devinit ohci_octeon_start(struct usb_hcd *hcd)
+=======
+static int ohci_octeon_start(struct usb_hcd *hcd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ohci_hcd	*ohci = hcd_to_ohci(hcd);
 	int ret;
@@ -127,15 +131,26 @@ static int ohci_octeon_drv_probe(struct platform_device *pdev)
 	}
 
 	/* Ohci is a 32-bit device. */
+<<<<<<< HEAD
 	pdev->dev.coherent_dma_mask = DMA_BIT_MASK(32);
 	pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
+=======
+	ret = dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	hcd = usb_create_hcd(&ohci_octeon_hc_driver, &pdev->dev, "octeon");
 	if (!hcd)
 		return -ENOMEM;
 
 	hcd->rsrc_start = res_mem->start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hcd->rsrc_len = res_mem->end - res_mem->start + 1;
+=======
+	hcd->rsrc_len = resource_size(res_mem);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len,
 				OCTEON_OHCI_HCD_NAME)) {
@@ -151,6 +166,16 @@ static int ohci_octeon_drv_probe(struct platform_device *pdev)
 		goto err2;
 	}
 
+=======
+	hcd->rsrc_len = resource_size(res_mem);
+
+	reg_base = devm_ioremap_resource(&pdev->dev, res_mem);
+	if (IS_ERR(reg_base)) {
+		ret = PTR_ERR(reg_base);
+		goto err1;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ohci_octeon_hw_start();
 
 	hcd->regs = reg_base;
@@ -164,22 +189,43 @@ static int ohci_octeon_drv_probe(struct platform_device *pdev)
 
 	ohci_hcd_init(ohci);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_add_hcd(hcd, irq, IRQF_DISABLED | IRQF_SHARED);
+=======
+	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_dbg(&pdev->dev, "failed to add hcd with err %d\n", ret);
 		goto err3;
 	}
 
+=======
+	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
+	if (ret) {
+		dev_dbg(&pdev->dev, "failed to add hcd with err %d\n", ret);
+		goto err2;
+	}
+
+	device_wakeup_enable(hcd->self.controller);
+
+>>>>>>> refs/remotes/origin/master
 	platform_set_drvdata(pdev, hcd);
 
 	return 0;
 
+<<<<<<< HEAD
 err3:
 	ohci_octeon_hw_stop();
 
 	iounmap(hcd->regs);
 err2:
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
+=======
+err2:
+	ohci_octeon_hw_stop();
+
+>>>>>>> refs/remotes/origin/master
 err1:
 	usb_put_hcd(hcd);
 	return ret;
@@ -192,12 +238,17 @@ static int ohci_octeon_drv_remove(struct platform_device *pdev)
 	usb_remove_hcd(hcd);
 
 	ohci_octeon_hw_stop();
+<<<<<<< HEAD
 	iounmap(hcd->regs);
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 	usb_put_hcd(hcd);
 
 	platform_set_drvdata(pdev, NULL);
 
+=======
+	usb_put_hcd(hcd);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

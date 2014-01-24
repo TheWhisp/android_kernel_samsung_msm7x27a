@@ -18,8 +18,11 @@
 #ifndef __XFS_FILESTREAM_H__
 #define __XFS_FILESTREAM_H__
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct xfs_mount;
 struct xfs_inode;
 struct xfs_perag;
@@ -69,6 +72,9 @@ xfs_inode_is_filestream(
 		(ip->i_d.di_flags & XFS_DIFLAG_FILESTREAM);
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __XFS_FILESTREAM_H__ */

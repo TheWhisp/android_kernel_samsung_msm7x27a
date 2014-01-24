@@ -6,7 +6,11 @@
 
 #include <linux/types.h>
 #include <linux/tracepoint.h>
+<<<<<<< HEAD
 #include "gfpflags.h"
+=======
+#include <trace/events/gfpflags.h>
+>>>>>>> refs/remotes/origin/master
 
 DECLARE_EVENT_CLASS(kmem_alloc,
 
@@ -147,7 +151,15 @@ DEFINE_EVENT(kmem_free, kmem_cache_free,
 	TP_ARGS(call_site, ptr)
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 TRACE_EVENT(mm_page_free_direct,
+=======
+TRACE_EVENT(mm_page_free,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+TRACE_EVENT(mm_page_free,
+>>>>>>> refs/remotes/origin/master
 
 	TP_PROTO(struct page *page, unsigned int order),
 
@@ -169,7 +181,15 @@ TRACE_EVENT(mm_page_free_direct,
 			__entry->order)
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 TRACE_EVENT(mm_pagevec_free,
+=======
+TRACE_EVENT(mm_page_free_batched,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+TRACE_EVENT(mm_page_free_batched,
+>>>>>>> refs/remotes/origin/master
 
 	TP_PROTO(struct page *page, int cold),
 
@@ -267,12 +287,21 @@ DEFINE_EVENT_PRINT(mm_page, mm_page_pcpu_drain,
 TRACE_EVENT(mm_page_alloc_extfrag,
 
 	TP_PROTO(struct page *page,
+<<<<<<< HEAD
 			int alloc_order, int fallback_order,
 			int alloc_migratetype, int fallback_migratetype),
 
 	TP_ARGS(page,
 		alloc_order, fallback_order,
 		alloc_migratetype, fallback_migratetype),
+=======
+		int alloc_order, int fallback_order,
+		int alloc_migratetype, int fallback_migratetype, int new_migratetype),
+
+	TP_ARGS(page,
+		alloc_order, fallback_order,
+		alloc_migratetype, fallback_migratetype, new_migratetype),
+>>>>>>> refs/remotes/origin/master
 
 	TP_STRUCT__entry(
 		__field(	struct page *,	page			)
@@ -280,6 +309,10 @@ TRACE_EVENT(mm_page_alloc_extfrag,
 		__field(	int,		fallback_order		)
 		__field(	int,		alloc_migratetype	)
 		__field(	int,		fallback_migratetype	)
+<<<<<<< HEAD
+=======
+		__field(	int,		change_ownership	)
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_fast_assign(
@@ -288,6 +321,10 @@ TRACE_EVENT(mm_page_alloc_extfrag,
 		__entry->fallback_order		= fallback_order;
 		__entry->alloc_migratetype	= alloc_migratetype;
 		__entry->fallback_migratetype	= fallback_migratetype;
+<<<<<<< HEAD
+=======
+		__entry->change_ownership	= (new_migratetype == alloc_migratetype);
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_printk("page=%p pfn=%lu alloc_order=%d fallback_order=%d pageblock_order=%d alloc_migratetype=%d fallback_migratetype=%d fragmenting=%d change_ownership=%d",
@@ -299,7 +336,11 @@ TRACE_EVENT(mm_page_alloc_extfrag,
 		__entry->alloc_migratetype,
 		__entry->fallback_migratetype,
 		__entry->fallback_order < pageblock_order,
+<<<<<<< HEAD
 		__entry->alloc_migratetype == __entry->fallback_migratetype)
+=======
+		__entry->change_ownership)
+>>>>>>> refs/remotes/origin/master
 );
 
 #endif /* _TRACE_KMEM_H */

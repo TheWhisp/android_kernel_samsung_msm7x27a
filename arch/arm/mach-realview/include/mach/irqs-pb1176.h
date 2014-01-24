@@ -40,6 +40,14 @@
 #define IRQ_DC1176_L2CC		(IRQ_DC1176_GIC_START + 13)
 #define IRQ_DC1176_RTC		(IRQ_DC1176_GIC_START + 14)
 #define IRQ_DC1176_CLCD		(IRQ_DC1176_GIC_START + 15)	/* CLCD controller */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define IRQ_DC1176_GPIO0	(IRQ_DC1176_GIC_START + 16)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IRQ_DC1176_GPIO0	(IRQ_DC1176_GIC_START + 16)
+>>>>>>> refs/remotes/origin/master
 #define IRQ_DC1176_SSP		(IRQ_DC1176_GIC_START + 17)	/* SSP port */
 #define IRQ_DC1176_UART0	(IRQ_DC1176_GIC_START + 18)	/* UART 0 on development chip */
 #define IRQ_DC1176_UART1	(IRQ_DC1176_GIC_START + 19)	/* UART 1 on development chip */
@@ -73,7 +81,13 @@
 #define IRQ_PB1176_DMAC		(IRQ_PB1176_GIC_START + 24)	/* DMA controller */
 #define IRQ_PB1176_RTC		(IRQ_PB1176_GIC_START + 25)	/* Real Time Clock */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IRQ_PB1176_GPIO0	-1
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define IRQ_PB1176_SCTL		-1
 
 #define NR_GIC_PB1176		2

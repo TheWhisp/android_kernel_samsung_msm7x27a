@@ -6,12 +6,28 @@
  * Copyright (c) 2005 Stefano Brivio <st3@riseup.net>
  * Copyright (c) 2005 Danny van Dyk <kugelfang@gentoo.org>
  * Copyright (c) 2005 Andreas Jaggi <andreas.jaggi@waterwave.ch>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2005-2007 Michael Buesch <mbuesch@freenet.de>
+=======
+ * Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GNU/GPL. See COPYING for details.
  */
 
 #include <linux/pci.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/ssb/ssb.h>
 
@@ -37,7 +53,11 @@ static int ssb_pcihost_resume(struct pci_dev *dev)
 	struct ssb_bus *ssb = pci_get_drvdata(dev);
 	int err;
 
+<<<<<<< HEAD
 	pci_set_power_state(dev, 0);
+=======
+	pci_set_power_state(dev, PCI_D0);
+>>>>>>> refs/remotes/origin/master
 	err = pci_enable_device(dev);
 	if (err)
 		return err;
@@ -53,8 +73,18 @@ static int ssb_pcihost_resume(struct pci_dev *dev)
 # define ssb_pcihost_resume	NULL
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ssb_pcihost_probe(struct pci_dev *dev,
 			     const struct pci_device_id *id)
+=======
+static int __devinit ssb_pcihost_probe(struct pci_dev *dev,
+				       const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ssb_pcihost_probe(struct pci_dev *dev,
+			     const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ssb_bus *ssb;
 	int err = -ENOMEM;
@@ -110,7 +140,15 @@ static void ssb_pcihost_remove(struct pci_dev *dev)
 	pci_set_drvdata(dev, NULL);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int ssb_pcihost_register(struct pci_driver *driver)
+=======
+int __devinit ssb_pcihost_register(struct pci_driver *driver)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ssb_pcihost_register(struct pci_driver *driver)
+>>>>>>> refs/remotes/origin/master
 {
 	driver->probe = ssb_pcihost_probe;
 	driver->remove = ssb_pcihost_remove;

@@ -74,13 +74,18 @@ EXPORT_SYMBOL(cvmx_sysinfo_get);
 
 /**
  * This function is used in non-simple executive environments (such as
+<<<<<<< HEAD
  * Linux kernel, u-boot, etc.)  to configure the minimal fields that
+=======
+ * Linux kernel, u-boot, etc.)	to configure the minimal fields that
+>>>>>>> refs/remotes/origin/master
  * are required to use simple executive files directly.
  *
  * Locking (if required) must be handled outside of this
  * function
  *
  * @phy_mem_desc_ptr:
+<<<<<<< HEAD
  *                   Pointer to global physical memory descriptor
  *                   (bootmem descriptor) @board_type: Octeon board
  *                   type enumeration
@@ -94,6 +99,21 @@ EXPORT_SYMBOL(cvmx_sysinfo_get);
  *
  * Returns 0: Failure
  *         1: success
+=======
+ *		     Pointer to global physical memory descriptor
+ *		     (bootmem descriptor) @board_type: Octeon board
+ *		     type enumeration
+ *
+ * @board_rev_major:
+ *		     Board major revision
+ * @board_rev_minor:
+ *		     Board minor revision
+ * @cpu_clock_hz:
+ *		     CPU clock freqency in hertz
+ *
+ * Returns 0: Failure
+ *	   1: success
+>>>>>>> refs/remotes/origin/master
  */
 int cvmx_sysinfo_minimal_initialize(void *phy_mem_desc_ptr,
 				    uint16_t board_type,

@@ -17,6 +17,14 @@
 #include <linux/fb.h>
 #include <linux/delay.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/pci.h>
@@ -278,7 +286,15 @@ static int mb862xxfb_pan(struct fb_var_screeninfo *var,
 	reg = pack(var->yoffset, var->xoffset);
 	outreg(disp, GC_L0WY_L0WX, reg);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reg = pack(var->yres_virtual, var->xres_virtual);
+=======
+	reg = pack(info->var.yres_virtual, info->var.xres_virtual);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reg = pack(info->var.yres_virtual, info->var.xres_virtual);
+>>>>>>> refs/remotes/origin/master
 	outreg(disp, GC_L0WH_L0WW, reg);
 	return 0;
 }
@@ -327,6 +343,11 @@ static int mb862xxfb_ioctl(struct fb_info *fbi, unsigned int cmd,
 	case MB862XX_L1_SET_CFG:
 		if (copy_from_user(l1_cfg, argp, sizeof(*l1_cfg)))
 			return -EFAULT;
+<<<<<<< HEAD
+=======
+		if (l1_cfg->dh == 0 || l1_cfg->dw == 0)
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		if ((l1_cfg->sw >= l1_cfg->dw) && (l1_cfg->sh >= l1_cfg->dh)) {
 			/* downscaling */
 			outreg(cap, GC_CAP_CSC,
@@ -578,7 +599,11 @@ static ssize_t mb862xxfb_show_dispregs(struct device *dev,
 
 static DEVICE_ATTR(dispregs, 0444, mb862xxfb_show_dispregs, NULL);
 
+<<<<<<< HEAD
 irqreturn_t mb862xx_intr(int irq, void *dev_id)
+=======
+static irqreturn_t mb862xx_intr(int irq, void *dev_id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mb862xxfb_par *par = (struct mb862xxfb_par *) dev_id;
 	unsigned long reg_ist, mask;
@@ -665,7 +690,11 @@ static int mb862xx_gdc_init(struct mb862xxfb_par *par)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit of_platform_mb862xx_probe(struct platform_device *ofdev)
+=======
+static int of_platform_mb862xx_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = ofdev->dev.of_node;
 	struct device *dev = &ofdev->dev;
@@ -697,7 +726,15 @@ static int __devinit of_platform_mb862xx_probe(struct platform_device *ofdev)
 		goto fbrel;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	res_size = 1 + res.end - res.start;
+=======
+	res_size = resource_size(&res);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res_size = resource_size(&res);
+>>>>>>> refs/remotes/origin/master
 	par->res = request_mem_region(res.start, res_size, DRV_NAME);
 	if (par->res == NULL) {
 		dev_err(dev, "Cannot claim framebuffer/mmio\n");
@@ -737,7 +774,15 @@ static int __devinit of_platform_mb862xx_probe(struct platform_device *ofdev)
 	if (mb862xx_gdc_init(par))
 		goto io_unmap;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(par->irq, mb862xx_intr, IRQF_DISABLED,
+=======
+	if (request_irq(par->irq, mb862xx_intr, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (request_irq(par->irq, mb862xx_intr, 0,
+>>>>>>> refs/remotes/origin/master
 			DRV_NAME, (void *)par)) {
 		dev_err(dev, "Cannot request irq\n");
 		goto io_unmap;
@@ -778,16 +823,31 @@ rel_reg:
 irqdisp:
 	irq_dispose_mapping(par->irq);
 fbrel:
+<<<<<<< HEAD
 	dev_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(info);
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit of_platform_mb862xx_remove(struct platform_device *ofdev)
 {
 	struct fb_info *fbi = dev_get_drvdata(&ofdev->dev);
 	struct mb862xxfb_par *par = fbi->par;
+<<<<<<< HEAD
 	resource_size_t res_size = 1 + par->res->end - par->res->start;
+=======
+	resource_size_t res_size = resource_size(par->res);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int of_platform_mb862xx_remove(struct platform_device *ofdev)
+{
+	struct fb_info *fbi = dev_get_drvdata(&ofdev->dev);
+	struct mb862xxfb_par *par = fbi->par;
+	resource_size_t res_size = resource_size(par->res);
+>>>>>>> refs/remotes/origin/master
 	unsigned long reg;
 
 	dev_dbg(fbi->dev, "%s release\n", fbi->fix.id);
@@ -811,7 +871,10 @@ static int __devexit of_platform_mb862xx_remove(struct platform_device *ofdev)
 	iounmap(par->mmio_base);
 	iounmap(par->fb_base);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	release_mem_region(par->res->start, res_size);
 	framebuffer_release(fbi);
 	return 0;
@@ -820,7 +883,11 @@ static int __devexit of_platform_mb862xx_remove(struct platform_device *ofdev)
 /*
  * common types
  */
+<<<<<<< HEAD
 static struct of_device_id __devinitdata of_platform_mb862xx_tbl[] = {
+=======
+static struct of_device_id of_platform_mb862xx_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "fujitsu,MB86276", },
 	{ .compatible = "fujitsu,lime", },
 	{ .compatible = "fujitsu,MB86277", },
@@ -838,7 +905,11 @@ static struct platform_driver of_platform_mb862xxfb_driver = {
 		.of_match_table = of_platform_mb862xx_tbl,
 	},
 	.probe		= of_platform_mb862xx_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(of_platform_mb862xx_remove),
+=======
+	.remove		= of_platform_mb862xx_remove,
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -981,7 +1052,11 @@ static inline int mb862xx_pci_gdc_init(struct mb862xxfb_par *par)
 #define CHIP_ID(id)	\
 	{ PCI_DEVICE(PCI_VENDOR_ID_FUJITSU_LIMITED, id) }
 
+<<<<<<< HEAD
 static struct pci_device_id mb862xx_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id mb862xx_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	/* MB86295/MB86296 */
 	CHIP_ID(PCI_DEVICE_ID_FUJITSU_CORALP),
 	CHIP_ID(PCI_DEVICE_ID_FUJITSU_CORALPA),
@@ -992,8 +1067,13 @@ static struct pci_device_id mb862xx_pci_tbl[] __devinitdata = {
 
 MODULE_DEVICE_TABLE(pci, mb862xx_pci_tbl);
 
+<<<<<<< HEAD
 static int __devinit mb862xx_pci_probe(struct pci_dev *pdev,
 				       const struct pci_device_id *ent)
+=======
+static int mb862xx_pci_probe(struct pci_dev *pdev,
+			     const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mb862xxfb_par *par;
 	struct fb_info *info;
@@ -1049,12 +1129,20 @@ static int __devinit mb862xx_pci_probe(struct pci_dev *pdev,
 		break;
 	default:
 		/* should never occur */
+<<<<<<< HEAD
+=======
+		ret = -EIO;
+>>>>>>> refs/remotes/origin/master
 		goto rel_reg;
 	}
 
 	par->fb_base = ioremap(par->fb_base_phys, par->mapped_vram);
 	if (par->fb_base == NULL) {
 		dev_err(dev, "Cannot map framebuffer\n");
+<<<<<<< HEAD
+=======
+		ret = -EIO;
+>>>>>>> refs/remotes/origin/master
 		goto rel_reg;
 	}
 
@@ -1070,11 +1158,25 @@ static int __devinit mb862xx_pci_probe(struct pci_dev *pdev,
 	dev_dbg(dev, "mmio phys 0x%llx 0x%lx\n",
 		(unsigned long long)par->mmio_base_phys, (ulong)par->mmio_len);
 
+<<<<<<< HEAD
 	if (mb862xx_pci_gdc_init(par))
 		goto io_unmap;
 
+<<<<<<< HEAD
 	if (request_irq(par->irq, mb862xx_intr, IRQF_DISABLED | IRQF_SHARED,
+=======
+	if (request_irq(par->irq, mb862xx_intr, IRQF_SHARED,
+>>>>>>> refs/remotes/origin/cm-10.0
 			DRV_NAME, (void *)par)) {
+=======
+	ret = mb862xx_pci_gdc_init(par);
+	if (ret)
+		goto io_unmap;
+
+	ret = request_irq(par->irq, mb862xx_intr, IRQF_SHARED,
+			  DRV_NAME, (void *)par);
+	if (ret) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(dev, "Cannot request irq\n");
 		goto io_unmap;
 	}
@@ -1126,7 +1228,11 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit mb862xx_pci_remove(struct pci_dev *pdev)
+=======
+static void mb862xx_pci_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *fbi = pci_get_drvdata(pdev);
 	struct mb862xxfb_par *par = fbi->par;
@@ -1150,7 +1256,10 @@ static void __devexit mb862xx_pci_remove(struct pci_dev *pdev)
 
 	device_remove_file(&pdev->dev, &dev_attr_dispregs);
 
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	unregister_framebuffer(fbi);
 	fb_dealloc_cmap(&fbi->cmap);
 
@@ -1167,11 +1276,19 @@ static struct pci_driver mb862xxfb_pci_driver = {
 	.name		= DRV_NAME,
 	.id_table	= mb862xx_pci_tbl,
 	.probe		= mb862xx_pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mb862xx_pci_remove),
 };
 #endif
 
 static int __devinit mb862xxfb_init(void)
+=======
+	.remove		= mb862xx_pci_remove,
+};
+#endif
+
+static int mb862xxfb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -ENODEV;
 

@@ -16,7 +16,11 @@
  * data and their integration with other OMAP modules and Linux.
  */
 
+<<<<<<< HEAD
 #include <plat/omap_hwmod.h>
+=======
+#include "omap_hwmod.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "omap_hwmod_common_data.h"
 
@@ -47,8 +51,10 @@ struct omap_hwmod_sysc_fields omap_hwmod_sysc_type2 = {
 	.midle_shift	= SYSC_TYPE2_MIDLEMODE_SHIFT,
 	.sidle_shift	= SYSC_TYPE2_SIDLEMODE_SHIFT,
 	.srst_shift	= SYSC_TYPE2_SOFTRESET_SHIFT,
+<<<<<<< HEAD
 };
 
+<<<<<<< HEAD
 
 /*
  * omap_hwmod class data
@@ -68,4 +74,26 @@ struct omap_hwmod_class mpu_hwmod_class = {
 
 struct omap_hwmod_class iva_hwmod_class = {
 	.name = "iva"
+=======
+struct omap_dss_dispc_dev_attr omap2_3_dss_dispc_dev_attr = {
+	.manager_count		= 2,
+	.has_framedonetv_irq	= 0
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.dmadisable_shift = SYSC_TYPE2_DMADISABLE_SHIFT,
+};
+
+/**
+ * struct omap_hwmod_sysc_type3 - TYPE3 sysconfig scheme.
+ * Used by some IPs on AM33xx
+ */
+struct omap_hwmod_sysc_fields omap_hwmod_sysc_type3 = {
+	.midle_shift	= SYSC_TYPE3_MIDLEMODE_SHIFT,
+	.sidle_shift	= SYSC_TYPE3_SIDLEMODE_SHIFT,
+};
+
+struct omap_dss_dispc_dev_attr omap2_3_dss_dispc_dev_attr = {
+	.manager_count		= 2,
+	.has_framedonetv_irq	= 0
+>>>>>>> refs/remotes/origin/master
 };

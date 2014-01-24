@@ -12,11 +12,23 @@
 
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/soc.h>
 #include <sound/pcm_params.h>
 
+<<<<<<< HEAD
 #include <plat/audio.h>
+=======
+#include <linux/platform_data/asoc-s3c.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/dma.h>
 
 #include "dma.h"
@@ -333,14 +345,30 @@ static int spdif_resume(struct snd_soc_dai *cpu_dai)
 #define spdif_resume NULL
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops spdif_dai_ops = {
+=======
+static const struct snd_soc_dai_ops spdif_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops spdif_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.set_sysclk	= spdif_set_sysclk,
 	.trigger	= spdif_trigger,
 	.hw_params	= spdif_hw_params,
 	.shutdown	= spdif_shutdown,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct snd_soc_dai_driver samsung_spdif_dai = {
+=======
+static struct snd_soc_dai_driver samsung_spdif_dai = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_soc_dai_driver samsung_spdif_dai = {
+>>>>>>> refs/remotes/origin/master
 	.name = "samsung-spdif",
 	.playback = {
 		.stream_name = "S/PDIF Playback",
@@ -356,7 +384,15 @@ struct snd_soc_dai_driver samsung_spdif_dai = {
 	.resume = spdif_resume,
 };
 
+<<<<<<< HEAD
 static __devinit int spdif_probe(struct platform_device *pdev)
+=======
+static const struct snd_soc_component_driver samsung_spdif_component = {
+	.name		= "samsung-spdif",
+};
+
+static int spdif_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c_audio_pdata *spdif_pdata;
 	struct resource *mem_res, *dma_res;
@@ -390,21 +426,35 @@ static __devinit int spdif_probe(struct platform_device *pdev)
 
 	spin_lock_init(&spdif->lock);
 
+<<<<<<< HEAD
 	spdif->pclk = clk_get(&pdev->dev, "spdif");
+=======
+	spdif->pclk = devm_clk_get(&pdev->dev, "spdif");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(spdif->pclk)) {
 		dev_err(&pdev->dev, "failed to get peri-clock\n");
 		ret = -ENOENT;
 		goto err0;
 	}
+<<<<<<< HEAD
 	clk_enable(spdif->pclk);
 
 	spdif->sclk = clk_get(&pdev->dev, "sclk_spdif");
+=======
+	clk_prepare_enable(spdif->pclk);
+
+	spdif->sclk = devm_clk_get(&pdev->dev, "sclk_spdif");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(spdif->sclk)) {
 		dev_err(&pdev->dev, "failed to get internal source clock\n");
 		ret = -ENOENT;
 		goto err1;
 	}
+<<<<<<< HEAD
 	clk_enable(spdif->sclk);
+=======
+	clk_prepare_enable(spdif->sclk);
+>>>>>>> refs/remotes/origin/master
 
 	/* Request S/PDIF Register's memory region */
 	if (!request_mem_region(mem_res->start,
@@ -423,7 +473,12 @@ static __devinit int spdif_probe(struct platform_device *pdev)
 
 	dev_set_drvdata(&pdev->dev, spdif);
 
+<<<<<<< HEAD
 	ret = snd_soc_register_dai(&pdev->dev, &samsung_spdif_dai);
+=======
+	ret = snd_soc_register_component(&pdev->dev, &samsung_spdif_component,
+					 &samsung_spdif_dai, 1);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(&pdev->dev, "fail to register dai\n");
 		goto err4;
@@ -436,28 +491,55 @@ static __devinit int spdif_probe(struct platform_device *pdev)
 
 	spdif->dma_playback = &spdif_stereo_out;
 
+<<<<<<< HEAD
 	return 0;
 
+=======
+	ret = samsung_asoc_dma_platform_register(&pdev->dev);
+	if (ret) {
+		dev_err(&pdev->dev, "failed to register DMA: %d\n", ret);
+		goto err5;
+	}
+
+	return 0;
+err5:
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 err4:
 	iounmap(spdif->regs);
 err3:
 	release_mem_region(mem_res->start, resource_size(mem_res));
 err2:
+<<<<<<< HEAD
 	clk_disable(spdif->sclk);
 	clk_put(spdif->sclk);
 err1:
 	clk_disable(spdif->pclk);
 	clk_put(spdif->pclk);
+=======
+	clk_disable_unprepare(spdif->sclk);
+err1:
+	clk_disable_unprepare(spdif->pclk);
+>>>>>>> refs/remotes/origin/master
 err0:
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devexit int spdif_remove(struct platform_device *pdev)
+=======
+static int spdif_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct samsung_spdif_info *spdif = &spdif_info;
 	struct resource *mem_res;
 
+<<<<<<< HEAD
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+	samsung_asoc_dma_platform_unregister(&pdev->dev);
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	iounmap(spdif->regs);
 
@@ -465,23 +547,38 @@ static __devexit int spdif_remove(struct platform_device *pdev)
 	if (mem_res)
 		release_mem_region(mem_res->start, resource_size(mem_res));
 
+<<<<<<< HEAD
 	clk_disable(spdif->sclk);
 	clk_put(spdif->sclk);
 	clk_disable(spdif->pclk);
 	clk_put(spdif->pclk);
+=======
+	clk_disable_unprepare(spdif->sclk);
+	clk_disable_unprepare(spdif->pclk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver samsung_spdif_driver = {
 	.probe	= spdif_probe,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.remove	= spdif_remove,
+=======
+	.remove	= __devexit_p(spdif_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= spdif_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= "samsung-spdif",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init spdif_init(void)
 {
 	return platform_driver_register(&samsung_spdif_driver);
@@ -493,6 +590,12 @@ static void __exit spdif_exit(void)
 	platform_driver_unregister(&samsung_spdif_driver);
 }
 module_exit(spdif_exit);
+=======
+module_platform_driver(samsung_spdif_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(samsung_spdif_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Seungwhan Youn, <sw.youn@samsung.com>");
 MODULE_DESCRIPTION("Samsung S/PDIF Controller Driver");

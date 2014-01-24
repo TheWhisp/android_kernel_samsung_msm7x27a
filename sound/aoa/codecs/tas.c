@@ -883,6 +883,7 @@ static void tas_exit_codec(struct aoa_codec *codec)
 }
 
 
+<<<<<<< HEAD
 static int tas_create(struct i2c_adapter *adapter,
 		       struct device_node *node,
 		       int addr)
@@ -920,6 +921,12 @@ static int tas_i2c_probe(struct i2c_client *client,
 			 const struct i2c_device_id *id)
 {
 	struct device_node *node = client->dev.platform_data;
+=======
+static int tas_i2c_probe(struct i2c_client *client,
+			 const struct i2c_device_id *id)
+{
+	struct device_node *node = client->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 	struct tas *tas;
 
 	tas = kzalloc(sizeof(struct tas), GFP_KERNEL);
@@ -953,6 +960,7 @@ static int tas_i2c_probe(struct i2c_client *client,
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int tas_i2c_attach(struct i2c_adapter *adapter)
 {
 	struct device_node *busnode, *dev = NULL;
@@ -994,6 +1002,8 @@ static int tas_i2c_attach(struct i2c_adapter *adapter)
 	return -ENODEV;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int tas_i2c_remove(struct i2c_client *client)
 {
 	struct tas *tas = i2c_get_clientdata(client);
@@ -1011,21 +1021,33 @@ static int tas_i2c_remove(struct i2c_client *client)
 }
 
 static const struct i2c_device_id tas_i2c_id[] = {
+<<<<<<< HEAD
 	{ "aoa_codec_tas", 0 },
 	{ }
 };
+=======
+	{ "MAC,tas3004", 0 },
+	{ }
+};
+MODULE_DEVICE_TABLE(i2c,tas_i2c_id);
+>>>>>>> refs/remotes/origin/master
 
 static struct i2c_driver tas_driver = {
 	.driver = {
 		.name = "aoa_codec_tas",
 		.owner = THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.attach_adapter = tas_i2c_attach,
+=======
+>>>>>>> refs/remotes/origin/master
 	.probe = tas_i2c_probe,
 	.remove = tas_i2c_remove,
 	.id_table = tas_i2c_id,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init tas_init(void)
 {
 	return i2c_add_driver(&tas_driver);
@@ -1038,3 +1060,9 @@ static void __exit tas_exit(void)
 
 module_init(tas_init);
 module_exit(tas_exit);
+=======
+module_i2c_driver(tas_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(tas_driver);
+>>>>>>> refs/remotes/origin/master

@@ -1,7 +1,10 @@
 /*********************************************************************
  *
  * Description:   Driver for the SMC Infrared Communications Controller
+<<<<<<< HEAD
  * Status:        Experimental.
+=======
+>>>>>>> refs/remotes/origin/master
  * Author:        Daniele Peri (peri@csai.unipa.it)
  * Created at:
  * Modified at:
@@ -49,6 +52,14 @@
 #include <linux/ioport.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/rtnetlink.h>
 #include <linux/serial_reg.h>
 #include <linux/dma-mapping.h>
@@ -78,7 +89,15 @@ MODULE_AUTHOR("Daniele Peri <peri@csai.unipa.it>");
 MODULE_DESCRIPTION("SMC IrCC SIR/FIR controller driver");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int smsc_nopnp = 1;
+=======
+static bool smsc_nopnp = true;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool smsc_nopnp = true;
+>>>>>>> refs/remotes/origin/master
 module_param_named(nopnp, smsc_nopnp, bool, 0);
 MODULE_PARM_DESC(nopnp, "Do not use PNP to detect controller settings, defaults to true");
 
@@ -376,8 +395,13 @@ MODULE_DEVICE_TABLE(pnp, smsc_ircc_pnp_table);
 static int pnp_driver_registered;
 
 #ifdef CONFIG_PNP
+<<<<<<< HEAD
 static int __devinit smsc_ircc_pnp_probe(struct pnp_dev *dev,
 				      const struct pnp_device_id *dev_id)
+=======
+static int smsc_ircc_pnp_probe(struct pnp_dev *dev,
+			       const struct pnp_device_id *dev_id)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int firbase, sirbase;
 	u8 dma, irq;
@@ -515,7 +539,11 @@ static const struct net_device_ops smsc_ircc_netdev_ops = {
  *    Try to open driver instance
  *
  */
+<<<<<<< HEAD
 static int __devinit smsc_ircc_open(unsigned int fir_base, unsigned int sir_base, u8 dma, u8 irq)
+=======
+static int smsc_ircc_open(unsigned int fir_base, unsigned int sir_base, u8 dma, u8 irq)
+>>>>>>> refs/remotes/origin/master
 {
 	struct smsc_ircc_cb *self;
 	struct net_device *dev;
@@ -562,6 +590,7 @@ static int __devinit smsc_ircc_open(unsigned int fir_base, unsigned int sir_base
 	self->tx_buff.truesize = SMSC_IRCC2_TX_BUFF_TRUESIZE;
 
 	self->rx_buff.head =
+<<<<<<< HEAD
 		dma_alloc_coherent(NULL, self->rx_buff.truesize,
 				   &self->rx_buff_dma, GFP_KERNEL);
 	if (self->rx_buff.head == NULL) {
@@ -581,6 +610,18 @@ static int __devinit smsc_ircc_open(unsigned int fir_base, unsigned int sir_base
 
 	memset(self->rx_buff.head, 0, self->rx_buff.truesize);
 	memset(self->tx_buff.head, 0, self->tx_buff.truesize);
+=======
+		dma_zalloc_coherent(NULL, self->rx_buff.truesize,
+				    &self->rx_buff_dma, GFP_KERNEL);
+	if (self->rx_buff.head == NULL)
+		goto err_out2;
+
+	self->tx_buff.head =
+		dma_zalloc_coherent(NULL, self->tx_buff.truesize,
+				    &self->tx_buff_dma, GFP_KERNEL);
+	if (self->tx_buff.head == NULL)
+		goto err_out3;
+>>>>>>> refs/remotes/origin/master
 
 	self->rx_buff.in_frame = FALSE;
 	self->rx_buff.state = OUTSIDE_FRAME;
@@ -2404,8 +2445,14 @@ static int __init smsc_superio_lpc(unsigned short cfg_base)
  * addresses making a subsystem device table necessary.
  */
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PCIID_VENDOR_INTEL 0x8086
 #define PCIID_VENDOR_ALI 0x10b9
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct smsc_ircc_subsystem_configuration subsystem_configurations[] __initdata = {
 	/*
 	 * Subsystems needing entries:
@@ -2415,7 +2462,15 @@ static struct smsc_ircc_subsystem_configuration subsystem_configurations[] __ini
 	 */
 	{
 		/* Guessed entry */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.vendor = PCIID_VENDOR_INTEL, /* Intel 82801DBM LPC bridge */
+=======
+		.vendor = PCI_VENDOR_ID_INTEL, /* Intel 82801DBM LPC bridge */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vendor = PCI_VENDOR_ID_INTEL, /* Intel 82801DBM LPC bridge */
+>>>>>>> refs/remotes/origin/master
 		.device = 0x24cc,
 		.subvendor = 0x103c,
 		.subdevice = 0x08bc,
@@ -2428,7 +2483,15 @@ static struct smsc_ircc_subsystem_configuration subsystem_configurations[] __ini
 		.name = "HP nx5000 family",
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.vendor = PCIID_VENDOR_INTEL, /* Intel 82801DBM LPC bridge */
+=======
+		.vendor = PCI_VENDOR_ID_INTEL, /* Intel 82801DBM LPC bridge */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vendor = PCI_VENDOR_ID_INTEL, /* Intel 82801DBM LPC bridge */
+>>>>>>> refs/remotes/origin/master
 		.device = 0x24cc,
 		.subvendor = 0x103c,
 		.subdevice = 0x088c,
@@ -2442,7 +2505,15 @@ static struct smsc_ircc_subsystem_configuration subsystem_configurations[] __ini
 		.name = "HP nc8000 family",
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.vendor = PCIID_VENDOR_INTEL, /* Intel 82801DBM LPC bridge */
+=======
+		.vendor = PCI_VENDOR_ID_INTEL, /* Intel 82801DBM LPC bridge */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vendor = PCI_VENDOR_ID_INTEL, /* Intel 82801DBM LPC bridge */
+>>>>>>> refs/remotes/origin/master
 		.device = 0x24cc,
 		.subvendor = 0x103c,
 		.subdevice = 0x0890,
@@ -2455,7 +2526,15 @@ static struct smsc_ircc_subsystem_configuration subsystem_configurations[] __ini
 		.name = "HP nc6000 family",
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.vendor = PCIID_VENDOR_INTEL, /* Intel 82801DBM LPC bridge */
+=======
+		.vendor = PCI_VENDOR_ID_INTEL, /* Intel 82801DBM LPC bridge */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vendor = PCI_VENDOR_ID_INTEL, /* Intel 82801DBM LPC bridge */
+>>>>>>> refs/remotes/origin/master
 		.device = 0x24cc,
 		.subvendor = 0x0e11,
 		.subdevice = 0x0860,
@@ -2470,7 +2549,15 @@ static struct smsc_ircc_subsystem_configuration subsystem_configurations[] __ini
 	},
 	{
 		/* Intel 82801DB/DBL (ICH4/ICH4-L) LPC Interface Bridge */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.vendor = PCIID_VENDOR_INTEL,
+=======
+		.vendor = PCI_VENDOR_ID_INTEL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vendor = PCI_VENDOR_ID_INTEL,
+>>>>>>> refs/remotes/origin/master
 		.device = 0x24c0,
 		.subvendor = 0x1179,
 		.subdevice = 0xffff, /* 0xffff is "any" */
@@ -2483,7 +2570,15 @@ static struct smsc_ircc_subsystem_configuration subsystem_configurations[] __ini
 		.name = "Toshiba laptop with Intel 82801DB/DBL LPC bridge",
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.vendor = PCIID_VENDOR_INTEL, /* Intel 82801CAM ISA bridge */
+=======
+		.vendor = PCI_VENDOR_ID_INTEL, /* Intel 82801CAM ISA bridge */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vendor = PCI_VENDOR_ID_INTEL, /* Intel 82801CAM ISA bridge */
+>>>>>>> refs/remotes/origin/master
 		.device = 0x248c,
 		.subvendor = 0x1179,
 		.subdevice = 0xffff, /* 0xffff is "any" */
@@ -2497,7 +2592,15 @@ static struct smsc_ircc_subsystem_configuration subsystem_configurations[] __ini
 	},
 	{
 		/* 82801DBM (ICH4-M) LPC Interface Bridge */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.vendor = PCIID_VENDOR_INTEL,
+=======
+		.vendor = PCI_VENDOR_ID_INTEL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vendor = PCI_VENDOR_ID_INTEL,
+>>>>>>> refs/remotes/origin/master
 		.device = 0x24cc,
 		.subvendor = 0x1179,
 		.subdevice = 0xffff, /* 0xffff is "any" */
@@ -2511,7 +2614,15 @@ static struct smsc_ircc_subsystem_configuration subsystem_configurations[] __ini
 	},
 	{
 		/* ALi M1533/M1535 PCI to ISA Bridge [Aladdin IV/V/V+] */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.vendor = PCIID_VENDOR_ALI,
+=======
+		.vendor = PCI_VENDOR_ID_AL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vendor = PCI_VENDOR_ID_AL,
+>>>>>>> refs/remotes/origin/master
 		.device = 0x1533,
 		.subvendor = 0x1179,
 		.subdevice = 0xffff, /* 0xffff is "any" */

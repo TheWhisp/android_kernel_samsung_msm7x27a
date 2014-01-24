@@ -25,9 +25,22 @@
  *
  **************************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "[TTM] " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ttm/ttm_memory.h"
 #include "ttm/ttm_module.h"
 #include "ttm/ttm_page_alloc.h"
+=======
+#define pr_fmt(fmt) "[TTM] " fmt
+
+#include <drm/ttm/ttm_memory.h>
+#include <drm/ttm/ttm_module.h>
+#include <drm/ttm/ttm_page_alloc.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/sched.h>
 #include <linux/wait.h>
@@ -74,9 +87,19 @@ static void ttm_mem_zone_kobj_release(struct kobject *kobj)
 	struct ttm_mem_zone *zone =
 		container_of(kobj, struct ttm_mem_zone, kobj);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO TTM_PFX
 	       "Zone %7s: Used memory at exit: %llu kiB.\n",
 	       zone->name, (unsigned long long) zone->used_mem >> 10);
+=======
+	pr_info("Zone %7s: Used memory at exit: %llu kiB\n",
+		zone->name, (unsigned long long)zone->used_mem >> 10);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Zone %7s: Used memory at exit: %llu kiB\n",
+		zone->name, (unsigned long long)zone->used_mem >> 10);
+>>>>>>> refs/remotes/origin/master
 	kfree(zone);
 }
 
@@ -366,7 +389,10 @@ int ttm_mem_global_init(struct ttm_mem_global *glob)
 	spin_lock_init(&glob->lock);
 	glob->swap_queue = create_singlethread_workqueue("ttm_swap");
 	INIT_WORK(&glob->work, ttm_shrink_work);
+<<<<<<< HEAD
 	init_waitqueue_head(&glob->queue);
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = kobject_init_and_add(
 		&glob->kobj, &ttm_mem_glob_kobj_type, ttm_get_kobj(), "memory_accounting");
 	if (unlikely(ret != 0)) {
@@ -390,11 +416,25 @@ int ttm_mem_global_init(struct ttm_mem_global *glob)
 #endif
 	for (i = 0; i < glob->num_zones; ++i) {
 		zone = glob->zones[i];
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO TTM_PFX
 		       "Zone %7s: Available graphics memory: %llu kiB.\n",
 		       zone->name, (unsigned long long) zone->max_mem >> 10);
 	}
 	ttm_page_alloc_init(glob, glob->zone_kernel->max_mem/(2*PAGE_SIZE));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_info("Zone %7s: Available graphics memory: %llu kiB\n",
+			zone->name, (unsigned long long)zone->max_mem >> 10);
+	}
+	ttm_page_alloc_init(glob, glob->zone_kernel->max_mem/(2*PAGE_SIZE));
+	ttm_dma_page_alloc_init(glob, glob->zone_kernel->max_mem/(2*PAGE_SIZE));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 out_no_zone:
 	ttm_mem_global_release(glob);
@@ -409,6 +449,14 @@ void ttm_mem_global_release(struct ttm_mem_global *glob)
 
 	/* let the page allocator first stop the shrink work. */
 	ttm_page_alloc_fini();
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ttm_dma_page_alloc_fini();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ttm_dma_page_alloc_fini();
+>>>>>>> refs/remotes/origin/master
 
 	flush_workqueue(glob->swap_queue);
 	destroy_workqueue(glob->swap_queue);

@@ -14,6 +14,14 @@
 #define pr_fmt(fmt) "%s: " fmt, __func__
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/string.h>
@@ -230,6 +238,39 @@ static struct mfd_cell leds_cell __devinitdata = {
 	.id		= -1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static const struct resource thermal_alarm_cell_resources[] __devinitconst = {
+	SINGLE_IRQ_RESOURCE("pm8018_tempstat_irq", PM8018_TEMPSTAT_IRQ),
+	SINGLE_IRQ_RESOURCE("pm8018_overtemp_irq", PM8018_OVERTEMP_IRQ),
+};
+
+static struct pm8xxx_tm_core_data thermal_alarm_cdata = {
+	.adc_channel =			CHANNEL_DIE_TEMP,
+	.adc_type =			PM8XXX_TM_ADC_PM8XXX_ADC,
+	.reg_addr_temp_alarm_ctrl =	REG_TEMP_ALARM_CTRL,
+	.reg_addr_temp_alarm_pwm =	REG_TEMP_ALARM_PWM,
+	.tm_name =			"pm8018_tz",
+	.irq_name_temp_stat =		"pm8018_tempstat_irq",
+	.irq_name_over_temp =		"pm8018_overtemp_irq",
+};
+
+static struct mfd_cell thermal_alarm_cell __devinitdata = {
+	.name		= PM8XXX_TM_DEV_NAME,
+	.id		= -1,
+	.resources	= thermal_alarm_cell_resources,
+	.num_resources	= ARRAY_SIZE(thermal_alarm_cell_resources),
+	.platform_data	= &thermal_alarm_cdata,
+	.pdata_size	= sizeof(struct pm8xxx_tm_core_data),
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct pm8xxx_vreg regulator_data[] = {
 	/*   name	     pc_name	    ctrl   test   hpm_min */
 	PLDO("8018_l2",      "8018_l2_pc",  0x0B0, 0x0B1, LDO_50),
@@ -260,7 +301,15 @@ static struct pm8xxx_vreg regulator_data[] = {
 #define MAX_NAME_COMPARISON_LEN 32
 
 static int __devinit match_regulator(
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct pm8xxx_regulator_core_platform_data *core_data, char *name)
+=======
+	struct pm8xxx_regulator_core_platform_data *core_data, const char *name)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pm8xxx_regulator_core_platform_data *core_data, const char *name)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	int found = 0;
 	int i;
@@ -475,6 +524,21 @@ pm8018_add_subdevices(const struct pm8018_platform_data *pdata,
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	ret = mfd_add_devices(pmic->dev, 0, &thermal_alarm_cell, 1, NULL,
+				irq_base);
+	if (ret) {
+		pr_err("Failed to add thermal alarm subdevice, ret=%d\n", ret);
+		goto bail;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 bail:
@@ -499,8 +563,18 @@ static const char * const pm8018_restart_reason[] = {
 static const char * const pm8018_rev_names[] = {
 	[PM8XXX_REVISION_8018_TEST]	= "test",
 	[PM8XXX_REVISION_8018_1p0]	= "1.0",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	[PM8XXX_REVISION_8018_1p1]	= "1.1",
 	[PM8XXX_REVISION_8018_2p0]	= "2.0",
+=======
+	[PM8XXX_REVISION_8018_2p0]	= "2.0",
+	[PM8XXX_REVISION_8018_2p1]	= "2.1",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[PM8XXX_REVISION_8018_2p0]	= "2.0",
+	[PM8XXX_REVISION_8018_2p1]	= "2.1",
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static int __devinit pm8018_probe(struct platform_device *pdev)

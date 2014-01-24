@@ -24,17 +24,24 @@
  *
  * Please send any bug reports or fixes you make to the
  * email address(es):
+<<<<<<< HEAD
  *    lksctp developers <lksctp-developers@lists.sourceforge.net>
  *
  * Or submit a bug report through the following website:
  *    http://www.sf.net/projects/lksctp
+=======
+ *    lksctp developers <linux-sctp@vger.kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Written or modified by:
  *    Jon Grimm             <jgrimm@us.ibm.com>
  *    Sridhar Samudrala     <sri@us.ibm.com>
+<<<<<<< HEAD
  *
  * Any bugs reported given to us we will try to fix... any fixes shared will
  * be incorporated into the next SCTP release.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
@@ -66,7 +73,11 @@ static void sctp_datamsg_init(struct sctp_datamsg *msg)
 }
 
 /* Allocate and initialize datamsg. */
+<<<<<<< HEAD
 SCTP_STATIC struct sctp_datamsg *sctp_datamsg_new(gfp_t gfp)
+=======
+static struct sctp_datamsg *sctp_datamsg_new(gfp_t gfp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sctp_datamsg *msg;
 	msg = kmalloc(sizeof(struct sctp_datamsg), gfp);
@@ -193,13 +204,20 @@ struct sctp_datamsg *sctp_datamsg_from_user(struct sctp_association *asoc,
 		msg->expires_at = jiffies +
 				    msecs_to_jiffies(sinfo->sinfo_timetolive);
 		msg->can_abandon = 1;
+<<<<<<< HEAD
 		SCTP_DEBUG_PRINTK("%s: msg:%p expires_at: %ld jiffies:%ld\n",
 				  __func__, msg, msg->expires_at, jiffies);
+=======
+
+		pr_debug("%s: msg:%p expires_at:%ld jiffies:%ld\n", __func__,
+			 msg, msg->expires_at, jiffies);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* This is the biggest possible DATA chunk that can fit into
 	 * the packet
 	 */
+<<<<<<< HEAD
 	max_data = asoc->pathmtu -
 		sctp_sk(asoc->base.sk)->pf->af->net_header_len -
 		sizeof(struct sctphdr) - sizeof(struct sctp_data_chunk);
@@ -207,6 +225,15 @@ struct sctp_datamsg *sctp_datamsg_from_user(struct sctp_association *asoc,
 	max = asoc->frag_point;
 	/* If the the peer requested that we authenticate DATA chunks
 	 * we need to accound for bundling of the AUTH chunks along with
+=======
+	max_data = (asoc->pathmtu -
+		sctp_sk(asoc->base.sk)->pf->af->net_header_len -
+		sizeof(struct sctphdr) - sizeof(struct sctp_data_chunk)) & ~3;
+
+	max = asoc->frag_point;
+	/* If the the peer requested that we authenticate DATA chunks
+	 * we need to account for bundling of the AUTH chunks along with
+>>>>>>> refs/remotes/origin/master
 	 * DATA.
 	 */
 	if (sctp_auth_send_cid(SCTP_CID_DATA, asoc)) {
@@ -257,7 +284,11 @@ struct sctp_datamsg *sctp_datamsg_from_user(struct sctp_association *asoc,
 	offset = 0;
 
 	if ((whole > 1) || (whole && over))
+<<<<<<< HEAD
 		SCTP_INC_STATS_USER(SCTP_MIB_FRAGUSRMSGS);
+=======
+		SCTP_INC_STATS_USER(sock_net(asoc->base.sk), SCTP_MIB_FRAGUSRMSGS);
+>>>>>>> refs/remotes/origin/master
 
 	/* Create chunks for all the full sized DATA chunks. */
 	for (i=0, len=first_len; i < whole; i++) {

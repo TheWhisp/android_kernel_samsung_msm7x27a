@@ -230,7 +230,11 @@ static int gp8psk_streaming_ctrl(struct dvb_usb_adapter *adap, int onoff)
 
 static int gp8psk_frontend_attach(struct dvb_usb_adapter *adap)
 {
+<<<<<<< HEAD
 	adap->fe = gp8psk_fe_attach(adap->dev);
+=======
+	adap->fe_adap[0].fe = gp8psk_fe_attach(adap->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -268,6 +272,11 @@ static struct dvb_usb_device_properties gp8psk_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.streaming_ctrl   = gp8psk_streaming_ctrl,
 			.frontend_attach  = gp8psk_frontend_attach,
 			/* parameter for the MPEG2-data transfer */
@@ -281,6 +290,10 @@ static struct dvb_usb_device_properties gp8psk_properties = {
 					}
 				}
 			},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 	.power_ctrl       = gp8psk_power_ctrl,
@@ -317,6 +330,7 @@ static struct usb_driver gp8psk_usb_driver = {
 	.id_table	= gp8psk_usb_table,
 };
 
+<<<<<<< HEAD
 /* module stuff */
 static int __init gp8psk_usb_module_init(void)
 {
@@ -337,6 +351,9 @@ static void __exit gp8psk_usb_module_exit(void)
 
 module_init(gp8psk_usb_module_init);
 module_exit(gp8psk_usb_module_exit);
+=======
+module_usb_driver(gp8psk_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Alan Nisota <alannisota@gamil.com>");
 MODULE_DESCRIPTION("Driver for Genpix DVB-S");

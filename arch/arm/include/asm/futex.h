@@ -19,6 +19,10 @@
 	"	.long	1b, 4f, 2b, 4f\n"			\
 	"	.popsection\n"					\
 	"	.pushsection .fixup,\"ax\"\n"			\
+<<<<<<< HEAD
+=======
+	"	.align	2\n"					\
+>>>>>>> refs/remotes/origin/master
 	"4:	mov	%0, " err_reg "\n"			\
 	"	b	3b\n"					\
 	"	.popsection"
@@ -75,9 +79,21 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
 
 #define __futex_atomic_op(insn, ret, oldval, tmp, uaddr, oparg)	\
 	__asm__ __volatile__(					\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	"1:	" T(ldr) "	%1, [%3]\n"			\
 	"	" insn "\n"					\
 	"2:	" T(str) "	%0, [%3]\n"			\
+=======
+	"1:	" TUSER(ldr) "	%1, [%3]\n"			\
+	"	" insn "\n"					\
+	"2:	" TUSER(str) "	%0, [%3]\n"			\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"1:	" TUSER(ldr) "	%1, [%3]\n"			\
+	"	" insn "\n"					\
+	"2:	" TUSER(str) "	%0, [%3]\n"			\
+>>>>>>> refs/remotes/origin/master
 	"	mov	%0, #0\n"				\
 	__futex_atomic_ex_table("%5")				\
 	: "=&r" (ret), "=&r" (oldval), "=&r" (tmp)		\
@@ -95,10 +111,23 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
 		return -EFAULT;
 
 	__asm__ __volatile__("@futex_atomic_cmpxchg_inatomic\n"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	"1:	" T(ldr) "	%1, [%4]\n"
 	"	teq	%1, %2\n"
 	"	it	eq	@ explicit IT needed for the 2b label\n"
 	"2:	" T(streq) "	%3, [%4]\n"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	"1:	" TUSER(ldr) "	%1, [%4]\n"
+	"	teq	%1, %2\n"
+	"	it	eq	@ explicit IT needed for the 2b label\n"
+	"2:	" TUSER(streq) "	%3, [%4]\n"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__futex_atomic_ex_table("%5")
 	: "+r" (ret), "=&r" (val)
 	: "r" (oldval), "r" (newval), "r" (uaddr), "Ir" (-EFAULT)

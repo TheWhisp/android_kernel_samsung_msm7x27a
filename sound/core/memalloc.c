@@ -21,6 +21,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/proc_fs.h>
 #include <linux/init.h>
@@ -56,12 +57,21 @@ struct snd_mem_list {
 /* id for pre-allocated buffers */
 #define SNDRV_DMA_DEVICE_UNUSED (unsigned int)-1
 
+=======
+#include <linux/slab.h>
+#include <linux/mm.h>
+#include <linux/dma-mapping.h>
+#include <linux/genalloc.h>
+#include <sound/memalloc.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  *
  *  Generic memory allocators
  *
  */
 
+<<<<<<< HEAD
 static long snd_allocated_pages; /* holding the number of allocated pages */
 
 static inline void inc_snd_pages(int order)
@@ -74,6 +84,8 @@ static inline void dec_snd_pages(int order)
 	snd_allocated_pages -= 1 << order;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * snd_malloc_pages - allocate pages with the given size
  * @size: the size to allocate in bytes
@@ -81,12 +93,19 @@ static inline void dec_snd_pages(int order)
  *
  * Allocates the physically contiguous pages with the given size.
  *
+<<<<<<< HEAD
  * Returns the pointer of the buffer, or NULL if no enoguh memory.
+=======
+ * Return: The pointer of the buffer, or %NULL if no enough memory.
+>>>>>>> refs/remotes/origin/master
  */
 void *snd_malloc_pages(size_t size, gfp_t gfp_flags)
 {
 	int pg;
+<<<<<<< HEAD
 	void *res;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (WARN_ON(!size))
 		return NULL;
@@ -94,9 +113,13 @@ void *snd_malloc_pages(size_t size, gfp_t gfp_flags)
 		return NULL;
 	gfp_flags |= __GFP_COMP;	/* compound page lets parts be mapped */
 	pg = get_order(size);
+<<<<<<< HEAD
 	if ((res = (void *) __get_free_pages(gfp_flags, pg)) != NULL)
 		inc_snd_pages(pg);
 	return res;
+=======
+	return (void *) __get_free_pages(gfp_flags, pg);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -113,7 +136,10 @@ void snd_free_pages(void *ptr, size_t size)
 	if (ptr == NULL)
 		return;
 	pg = get_order(size);
+<<<<<<< HEAD
 	dec_snd_pages(pg);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_pages((unsigned long) ptr, pg);
 }
 
@@ -128,7 +154,10 @@ void snd_free_pages(void *ptr, size_t size)
 static void *snd_malloc_dev_pages(struct device *dev, size_t size, dma_addr_t *dma)
 {
 	int pg;
+<<<<<<< HEAD
 	void *res;
+=======
+>>>>>>> refs/remotes/origin/master
 	gfp_t gfp_flags;
 
 	if (WARN_ON(!dma))
@@ -138,11 +167,15 @@ static void *snd_malloc_dev_pages(struct device *dev, size_t size, dma_addr_t *d
 		| __GFP_COMP	/* compound page lets parts be mapped */
 		| __GFP_NORETRY /* don't trigger OOM-killer */
 		| __GFP_NOWARN; /* no stack trace print - this call is non-critical */
+<<<<<<< HEAD
 	res = dma_alloc_coherent(dev, PAGE_SIZE << pg, dma, gfp_flags);
 	if (res != NULL)
 		inc_snd_pages(pg);
 
 	return res;
+=======
+	return dma_alloc_coherent(dev, PAGE_SIZE << pg, dma, gfp_flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* free the coherent DMA pages */
@@ -154,9 +187,55 @@ static void snd_free_dev_pages(struct device *dev, size_t size, void *ptr,
 	if (ptr == NULL)
 		return;
 	pg = get_order(size);
+<<<<<<< HEAD
 	dec_snd_pages(pg);
 	dma_free_coherent(dev, PAGE_SIZE << pg, ptr, dma);
 }
+=======
+	dma_free_coherent(dev, PAGE_SIZE << pg, ptr, dma);
+}
+
+#ifdef CONFIG_GENERIC_ALLOCATOR
+/**
+ * snd_malloc_dev_iram - allocate memory from on-chip internal ram
+ * @dmab: buffer allocation record to store the allocated data
+ * @size: number of bytes to allocate from the iram
+ *
+ * This function requires iram phandle provided via of_node
+ */
+static void snd_malloc_dev_iram(struct snd_dma_buffer *dmab, size_t size)
+{
+	struct device *dev = dmab->dev.dev;
+	struct gen_pool *pool = NULL;
+
+	dmab->area = NULL;
+	dmab->addr = 0;
+
+	if (dev->of_node)
+		pool = of_get_named_gen_pool(dev->of_node, "iram", 0);
+
+	if (!pool)
+		return;
+
+	/* Assign the pool into private_data field */
+	dmab->private_data = pool;
+
+	dmab->area = gen_pool_dma_alloc(pool, size, &dmab->addr);
+}
+
+/**
+ * snd_free_dev_iram - free allocated specific memory from on-chip internal ram
+ * @dmab: buffer allocation record to store the allocated data
+ */
+static void snd_free_dev_iram(struct snd_dma_buffer *dmab)
+{
+	struct gen_pool *pool = dmab->private_data;
+
+	if (pool && dmab->area)
+		gen_pool_free(pool, (unsigned long)dmab->area, dmab->bytes);
+}
+#endif /* CONFIG_GENERIC_ALLOCATOR */
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_HAS_DMA */
 
 /*
@@ -175,9 +254,19 @@ static void snd_free_dev_pages(struct device *dev, size_t size, void *ptr,
  *
  * Calls the memory-allocator function for the corresponding
  * buffer type.
+<<<<<<< HEAD
  * 
+<<<<<<< HEAD
  * Returns zero if the buffer with the given size is allocated successfuly,
+=======
+ * Returns zero if the buffer with the given size is allocated successfully,
+>>>>>>> refs/remotes/origin/cm-10.0
  * other a negative value at error.
+=======
+ *
+ * Return: Zero if the buffer with the given size is allocated successfully,
+ * otherwise a negative value on error.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_dma_alloc_pages(int type, struct device *device, size_t size,
 			struct snd_dma_buffer *dmab)
@@ -197,6 +286,19 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
 		dmab->addr = 0;
 		break;
 #ifdef CONFIG_HAS_DMA
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_GENERIC_ALLOCATOR
+	case SNDRV_DMA_TYPE_DEV_IRAM:
+		snd_malloc_dev_iram(dmab, size);
+		if (dmab->area)
+			break;
+		/* Internal memory might have limited size and no enough space,
+		 * so if we fail to malloc, try to fetch memory traditionally.
+		 */
+		dmab->dev.type = SNDRV_DMA_TYPE_DEV;
+#endif /* CONFIG_GENERIC_ALLOCATOR */
+>>>>>>> refs/remotes/origin/master
 	case SNDRV_DMA_TYPE_DEV:
 		dmab->area = snd_malloc_dev_pages(device, size, &dmab->addr);
 		break;
@@ -229,9 +331,19 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
  * buffer type.  When no space is left, this function reduces the size and
  * tries to allocate again.  The size actually allocated is stored in
  * res_size argument.
+<<<<<<< HEAD
  * 
+<<<<<<< HEAD
  * Returns zero if the buffer with the given size is allocated successfuly,
+=======
+ * Returns zero if the buffer with the given size is allocated successfully,
+>>>>>>> refs/remotes/origin/cm-10.0
  * other a negative value at error.
+=======
+ *
+ * Return: Zero if the buffer with the given size is allocated successfully,
+ * otherwise a negative value on error.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_dma_alloc_pages_fallback(int type, struct device *device, size_t size,
 				 struct snd_dma_buffer *dmab)
@@ -269,6 +381,14 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
 		snd_free_pages(dmab->area, dmab->bytes);
 		break;
 #ifdef CONFIG_HAS_DMA
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_GENERIC_ALLOCATOR
+	case SNDRV_DMA_TYPE_DEV_IRAM:
+		snd_free_dev_iram(dmab);
+		break;
+#endif /* CONFIG_GENERIC_ALLOCATOR */
+>>>>>>> refs/remotes/origin/master
 	case SNDRV_DMA_TYPE_DEV:
 		snd_free_dev_pages(dmab->dev.dev, dmab->bytes, dmab->area, dmab->addr);
 		break;
@@ -283,6 +403,7 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
 	}
 }
 
+<<<<<<< HEAD
 
 /**
  * snd_dma_get_reserved - get the reserved buffer for the given device
@@ -533,6 +654,8 @@ module_init(snd_mem_init)
 module_exit(snd_mem_exit)
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * exports
  */
@@ -540,8 +663,11 @@ EXPORT_SYMBOL(snd_dma_alloc_pages);
 EXPORT_SYMBOL(snd_dma_alloc_pages_fallback);
 EXPORT_SYMBOL(snd_dma_free_pages);
 
+<<<<<<< HEAD
 EXPORT_SYMBOL(snd_dma_get_reserved_buf);
 EXPORT_SYMBOL(snd_dma_reserve_buf);
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(snd_malloc_pages);
 EXPORT_SYMBOL(snd_free_pages);

@@ -15,7 +15,14 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -39,8 +46,12 @@ struct max98088_cdata {
 };
 
 struct max98088_priv {
+<<<<<<< HEAD
        enum max98088_type devtype;
+<<<<<<< HEAD
        void *control_data;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
        struct max98088_pdata *pdata;
        unsigned int sysclk;
        struct max98088_cdata dai[2];
@@ -328,6 +339,225 @@ static const u8 max98088_reg[M98088_REG_CNT] = {
        0x00, /* FD */
        0x00, /* FE */
        0x00, /* FF */
+=======
+	struct regmap *regmap;
+	enum max98088_type devtype;
+	struct max98088_pdata *pdata;
+	unsigned int sysclk;
+	struct max98088_cdata dai[2];
+	int eq_textcnt;
+	const char **eq_texts;
+	struct soc_enum eq_enum;
+	u8 ina_state;
+	u8 inb_state;
+	unsigned int ex_mode;
+	unsigned int digmic;
+	unsigned int mic1pre;
+	unsigned int mic2pre;
+	unsigned int extmic_mode;
+};
+
+static const struct reg_default max98088_reg[] = {
+	{  0xf, 0x00 }, /* 0F interrupt enable */
+
+	{ 0x10, 0x00 }, /* 10 master clock */
+	{ 0x11, 0x00 }, /* 11 DAI1 clock mode */
+	{ 0x12, 0x00 }, /* 12 DAI1 clock control */
+	{ 0x13, 0x00 }, /* 13 DAI1 clock control */
+	{ 0x14, 0x00 }, /* 14 DAI1 format */
+	{ 0x15, 0x00 }, /* 15 DAI1 clock */
+	{ 0x16, 0x00 }, /* 16 DAI1 config */
+	{ 0x17, 0x00 }, /* 17 DAI1 TDM */
+	{ 0x18, 0x00 }, /* 18 DAI1 filters */
+	{ 0x19, 0x00 }, /* 19 DAI2 clock mode */
+	{ 0x1a, 0x00 }, /* 1A DAI2 clock control */
+	{ 0x1b, 0x00 }, /* 1B DAI2 clock control */
+	{ 0x1c, 0x00 }, /* 1C DAI2 format */
+	{ 0x1d, 0x00 }, /* 1D DAI2 clock */
+	{ 0x1e, 0x00 }, /* 1E DAI2 config */
+	{ 0x1f, 0x00 }, /* 1F DAI2 TDM */
+
+	{ 0x20, 0x00 }, /* 20 DAI2 filters */
+	{ 0x21, 0x00 }, /* 21 data config */
+	{ 0x22, 0x00 }, /* 22 DAC mixer */
+	{ 0x23, 0x00 }, /* 23 left ADC mixer */
+	{ 0x24, 0x00 }, /* 24 right ADC mixer */
+	{ 0x25, 0x00 }, /* 25 left HP mixer */
+	{ 0x26, 0x00 }, /* 26 right HP mixer */
+	{ 0x27, 0x00 }, /* 27 HP control */
+	{ 0x28, 0x00 }, /* 28 left REC mixer */
+	{ 0x29, 0x00 }, /* 29 right REC mixer */
+	{ 0x2a, 0x00 }, /* 2A REC control */
+	{ 0x2b, 0x00 }, /* 2B left SPK mixer */
+	{ 0x2c, 0x00 }, /* 2C right SPK mixer */
+	{ 0x2d, 0x00 }, /* 2D SPK control */
+	{ 0x2e, 0x00 }, /* 2E sidetone */
+	{ 0x2f, 0x00 }, /* 2F DAI1 playback level */
+
+	{ 0x30, 0x00 }, /* 30 DAI1 playback level */
+	{ 0x31, 0x00 }, /* 31 DAI2 playback level */
+	{ 0x32, 0x00 }, /* 32 DAI2 playbakc level */
+	{ 0x33, 0x00 }, /* 33 left ADC level */
+	{ 0x34, 0x00 }, /* 34 right ADC level */
+	{ 0x35, 0x00 }, /* 35 MIC1 level */
+	{ 0x36, 0x00 }, /* 36 MIC2 level */
+	{ 0x37, 0x00 }, /* 37 INA level */
+	{ 0x38, 0x00 }, /* 38 INB level */
+	{ 0x39, 0x00 }, /* 39 left HP volume */
+	{ 0x3a, 0x00 }, /* 3A right HP volume */
+	{ 0x3b, 0x00 }, /* 3B left REC volume */
+	{ 0x3c, 0x00 }, /* 3C right REC volume */
+	{ 0x3d, 0x00 }, /* 3D left SPK volume */
+	{ 0x3e, 0x00 }, /* 3E right SPK volume */
+	{ 0x3f, 0x00 }, /* 3F MIC config */
+
+	{ 0x40, 0x00 }, /* 40 MIC threshold */
+	{ 0x41, 0x00 }, /* 41 excursion limiter filter */
+	{ 0x42, 0x00 }, /* 42 excursion limiter threshold */
+	{ 0x43, 0x00 }, /* 43 ALC */
+	{ 0x44, 0x00 }, /* 44 power limiter threshold */
+	{ 0x45, 0x00 }, /* 45 power limiter config */
+	{ 0x46, 0x00 }, /* 46 distortion limiter config */
+	{ 0x47, 0x00 }, /* 47 audio input */
+        { 0x48, 0x00 }, /* 48 microphone */
+	{ 0x49, 0x00 }, /* 49 level control */
+	{ 0x4a, 0x00 }, /* 4A bypass switches */
+	{ 0x4b, 0x00 }, /* 4B jack detect */
+	{ 0x4c, 0x00 }, /* 4C input enable */
+	{ 0x4d, 0x00 }, /* 4D output enable */
+	{ 0x4e, 0xF0 }, /* 4E bias control */
+	{ 0x4f, 0x00 }, /* 4F DAC power */
+
+	{ 0x50, 0x0F }, /* 50 DAC power */
+	{ 0x51, 0x00 }, /* 51 system */
+	{ 0x52, 0x00 }, /* 52 DAI1 EQ1 */
+	{ 0x53, 0x00 }, /* 53 DAI1 EQ1 */
+	{ 0x54, 0x00 }, /* 54 DAI1 EQ1 */
+	{ 0x55, 0x00 }, /* 55 DAI1 EQ1 */
+	{ 0x56, 0x00 }, /* 56 DAI1 EQ1 */
+	{ 0x57, 0x00 }, /* 57 DAI1 EQ1 */
+	{ 0x58, 0x00 }, /* 58 DAI1 EQ1 */
+	{ 0x59, 0x00 }, /* 59 DAI1 EQ1 */
+	{ 0x5a, 0x00 }, /* 5A DAI1 EQ1 */
+	{ 0x5b, 0x00 }, /* 5B DAI1 EQ1 */
+	{ 0x5c, 0x00 }, /* 5C DAI1 EQ2 */
+	{ 0x5d, 0x00 }, /* 5D DAI1 EQ2 */
+	{ 0x5e, 0x00 }, /* 5E DAI1 EQ2 */
+	{ 0x5f, 0x00 }, /* 5F DAI1 EQ2 */
+
+	{ 0x60, 0x00 }, /* 60 DAI1 EQ2 */
+	{ 0x61, 0x00 }, /* 61 DAI1 EQ2 */
+	{ 0x62, 0x00 }, /* 62 DAI1 EQ2 */
+	{ 0x63, 0x00 }, /* 63 DAI1 EQ2 */
+	{ 0x64, 0x00 }, /* 64 DAI1 EQ2 */
+	{ 0x65, 0x00 }, /* 65 DAI1 EQ2 */
+	{ 0x66, 0x00 }, /* 66 DAI1 EQ3 */
+	{ 0x67, 0x00 }, /* 67 DAI1 EQ3 */
+	{ 0x68, 0x00 }, /* 68 DAI1 EQ3 */
+	{ 0x69, 0x00 }, /* 69 DAI1 EQ3 */
+	{ 0x6a, 0x00 }, /* 6A DAI1 EQ3 */
+	{ 0x6b, 0x00 }, /* 6B DAI1 EQ3 */
+	{ 0x6c, 0x00 }, /* 6C DAI1 EQ3 */
+	{ 0x6d, 0x00 }, /* 6D DAI1 EQ3 */
+	{ 0x6e, 0x00 }, /* 6E DAI1 EQ3 */
+	{ 0x6f, 0x00 }, /* 6F DAI1 EQ3 */
+
+	{ 0x70, 0x00 }, /* 70 DAI1 EQ4 */
+	{ 0x71, 0x00 }, /* 71 DAI1 EQ4 */
+	{ 0x72, 0x00 }, /* 72 DAI1 EQ4 */
+	{ 0x73, 0x00 }, /* 73 DAI1 EQ4 */
+	{ 0x74, 0x00 }, /* 74 DAI1 EQ4 */
+	{ 0x75, 0x00 }, /* 75 DAI1 EQ4 */
+	{ 0x76, 0x00 }, /* 76 DAI1 EQ4 */
+	{ 0x77, 0x00 }, /* 77 DAI1 EQ4 */
+	{ 0x78, 0x00 }, /* 78 DAI1 EQ4 */
+	{ 0x79, 0x00 }, /* 79 DAI1 EQ4 */
+	{ 0x7a, 0x00 }, /* 7A DAI1 EQ5 */
+	{ 0x7b, 0x00 }, /* 7B DAI1 EQ5 */
+	{ 0x7c, 0x00 }, /* 7C DAI1 EQ5 */
+	{ 0x7d, 0x00 }, /* 7D DAI1 EQ5 */
+	{ 0x7e, 0x00 }, /* 7E DAI1 EQ5 */
+	{ 0x7f, 0x00 }, /* 7F DAI1 EQ5 */
+
+	{ 0x80, 0x00 }, /* 80 DAI1 EQ5 */
+	{ 0x81, 0x00 }, /* 81 DAI1 EQ5 */
+	{ 0x82, 0x00 }, /* 82 DAI1 EQ5 */
+	{ 0x83, 0x00 }, /* 83 DAI1 EQ5 */
+	{ 0x84, 0x00 }, /* 84 DAI2 EQ1 */
+	{ 0x85, 0x00 }, /* 85 DAI2 EQ1 */
+	{ 0x86, 0x00 }, /* 86 DAI2 EQ1 */
+	{ 0x87, 0x00 }, /* 87 DAI2 EQ1 */
+	{ 0x88, 0x00 }, /* 88 DAI2 EQ1 */
+	{ 0x89, 0x00 }, /* 89 DAI2 EQ1 */
+	{ 0x8a, 0x00 }, /* 8A DAI2 EQ1 */
+	{ 0x8b, 0x00 }, /* 8B DAI2 EQ1 */
+	{ 0x8c, 0x00 }, /* 8C DAI2 EQ1 */
+	{ 0x8d, 0x00 }, /* 8D DAI2 EQ1 */
+	{ 0x8e, 0x00 }, /* 8E DAI2 EQ2 */
+	{ 0x8f, 0x00 }, /* 8F DAI2 EQ2 */
+
+	{ 0x90, 0x00 }, /* 90 DAI2 EQ2 */
+	{ 0x91, 0x00 }, /* 91 DAI2 EQ2 */
+	{ 0x92, 0x00 }, /* 92 DAI2 EQ2 */
+	{ 0x93, 0x00 }, /* 93 DAI2 EQ2 */
+	{ 0x94, 0x00 }, /* 94 DAI2 EQ2 */
+	{ 0x95, 0x00 }, /* 95 DAI2 EQ2 */
+	{ 0x96, 0x00 }, /* 96 DAI2 EQ2 */
+	{ 0x97, 0x00 }, /* 97 DAI2 EQ2 */
+	{ 0x98, 0x00 }, /* 98 DAI2 EQ3 */
+	{ 0x99, 0x00 }, /* 99 DAI2 EQ3 */
+	{ 0x9a, 0x00 }, /* 9A DAI2 EQ3 */
+        { 0x9b, 0x00 }, /* 9B DAI2 EQ3 */
+	{ 0x9c, 0x00 }, /* 9C DAI2 EQ3 */
+	{ 0x9d, 0x00 }, /* 9D DAI2 EQ3 */
+	{ 0x9e, 0x00 }, /* 9E DAI2 EQ3 */
+	{ 0x9f, 0x00 }, /* 9F DAI2 EQ3 */
+
+	{ 0xa0, 0x00 }, /* A0 DAI2 EQ3 */
+	{ 0xa1, 0x00 }, /* A1 DAI2 EQ3 */
+	{ 0xa2, 0x00 }, /* A2 DAI2 EQ4 */
+	{ 0xa3, 0x00 }, /* A3 DAI2 EQ4 */
+	{ 0xa4, 0x00 }, /* A4 DAI2 EQ4 */
+	{ 0xa5, 0x00 }, /* A5 DAI2 EQ4 */
+	{ 0xa6, 0x00 }, /* A6 DAI2 EQ4 */
+	{ 0xa7, 0x00 }, /* A7 DAI2 EQ4 */
+	{ 0xa8, 0x00 }, /* A8 DAI2 EQ4 */
+	{ 0xa9, 0x00 }, /* A9 DAI2 EQ4 */
+	{ 0xaa, 0x00 }, /* AA DAI2 EQ4 */
+	{ 0xab, 0x00 }, /* AB DAI2 EQ4 */
+	{ 0xac, 0x00 }, /* AC DAI2 EQ5 */
+	{ 0xad, 0x00 }, /* AD DAI2 EQ5 */
+	{ 0xae, 0x00 }, /* AE DAI2 EQ5 */
+	{ 0xaf, 0x00 }, /* AF DAI2 EQ5 */
+
+	{ 0xb0, 0x00 }, /* B0 DAI2 EQ5 */
+	{ 0xb1, 0x00 }, /* B1 DAI2 EQ5 */
+	{ 0xb2, 0x00 }, /* B2 DAI2 EQ5 */
+	{ 0xb3, 0x00 }, /* B3 DAI2 EQ5 */
+	{ 0xb4, 0x00 }, /* B4 DAI2 EQ5 */
+	{ 0xb5, 0x00 }, /* B5 DAI2 EQ5 */
+	{ 0xb6, 0x00 }, /* B6 DAI1 biquad */
+	{ 0xb7, 0x00 }, /* B7 DAI1 biquad */
+	{ 0xb8 ,0x00 }, /* B8 DAI1 biquad */
+	{ 0xb9, 0x00 }, /* B9 DAI1 biquad */
+	{ 0xba, 0x00 }, /* BA DAI1 biquad */
+	{ 0xbb, 0x00 }, /* BB DAI1 biquad */
+	{ 0xbc, 0x00 }, /* BC DAI1 biquad */
+	{ 0xbd, 0x00 }, /* BD DAI1 biquad */
+	{ 0xbe, 0x00 }, /* BE DAI1 biquad */
+        { 0xbf, 0x00 }, /* BF DAI1 biquad */
+
+	{ 0xc0, 0x00 }, /* C0 DAI2 biquad */
+	{ 0xc1, 0x00 }, /* C1 DAI2 biquad */
+	{ 0xc2, 0x00 }, /* C2 DAI2 biquad */
+	{ 0xc3, 0x00 }, /* C3 DAI2 biquad */
+	{ 0xc4, 0x00 }, /* C4 DAI2 biquad */
+	{ 0xc5, 0x00 }, /* C5 DAI2 biquad */
+	{ 0xc6, 0x00 }, /* C6 DAI2 biquad */
+	{ 0xc7, 0x00 }, /* C7 DAI2 biquad */
+	{ 0xc8, 0x00 }, /* C8 DAI2 biquad */
+	{ 0xc9, 0x00 }, /* C9 DAI2 biquad */
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct {
@@ -608,11 +838,35 @@ static struct {
        { 0xFF, 0x00, 1 }, /* FF */
 };
 
+<<<<<<< HEAD
 static int max98088_volatile_register(struct snd_soc_codec *codec, unsigned int reg)
+=======
+static bool max98088_readable_register(struct device *dev, unsigned int reg)
+{
+       return max98088_access[reg].readable;
+}
+
+static bool max98088_volatile_register(struct device *dev, unsigned int reg)
+>>>>>>> refs/remotes/origin/master
 {
        return max98088_access[reg].vol;
 }
 
+<<<<<<< HEAD
+=======
+static const struct regmap_config max98088_regmap = {
+	.reg_bits = 8,
+	.val_bits = 8,
+
+	.readable_reg = max98088_readable_register,
+	.volatile_reg = max98088_volatile_register,
+	.max_register = 0xff,
+
+	.reg_defaults = max98088_reg,
+	.num_reg_defaults = ARRAY_SIZE(max98088_reg),
+	.cache_type = REGCACHE_RBTREE,
+};
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Load equalizer DSP coefficient configurations registers
@@ -623,8 +877,14 @@ static void m98088_eq_band(struct snd_soc_codec *codec, unsigned int dai,
        unsigned int eq_reg;
        unsigned int i;
 
+<<<<<<< HEAD
        BUG_ON(band > 4);
        BUG_ON(dai > 1);
+=======
+	if (WARN_ON(band > 4) ||
+	    WARN_ON(dai > 1))
+		return;
+>>>>>>> refs/remotes/origin/master
 
        /* Load the base register address */
        eq_reg = dai ? M98088_REG_84_DAI2_EQ_BASE : M98088_REG_52_DAI1_EQ_BASE;
@@ -741,6 +1001,7 @@ static const unsigned int max98088_micboost_tlv[] = {
        2, 2, TLV_DB_SCALE_ITEM(3000, 0, 0),
 };
 
+<<<<<<< HEAD
 static const struct snd_kcontrol_new max98088_snd_controls[] = {
 
        SOC_DOUBLE_R("Headphone Volume", M98088_REG_39_LVL_HP_L,
@@ -749,6 +1010,34 @@ static const struct snd_kcontrol_new max98088_snd_controls[] = {
                M98088_REG_3E_LVL_SPK_R, 0, 31, 0),
        SOC_DOUBLE_R("Receiver Volume", M98088_REG_3B_LVL_REC_L,
                M98088_REG_3C_LVL_REC_R, 0, 31, 0),
+=======
+static const unsigned int max98088_hp_tlv[] = {
+	TLV_DB_RANGE_HEAD(5),
+	0, 6, TLV_DB_SCALE_ITEM(-6700, 400, 0),
+	7, 14, TLV_DB_SCALE_ITEM(-4000, 300, 0),
+	15, 21, TLV_DB_SCALE_ITEM(-1700, 200, 0),
+	22, 27, TLV_DB_SCALE_ITEM(-400, 100, 0),
+	28, 31, TLV_DB_SCALE_ITEM(150, 50, 0),
+};
+
+static const unsigned int max98088_spk_tlv[] = {
+	TLV_DB_RANGE_HEAD(5),
+	0, 6, TLV_DB_SCALE_ITEM(-6200, 400, 0),
+	7, 14, TLV_DB_SCALE_ITEM(-3500, 300, 0),
+	15, 21, TLV_DB_SCALE_ITEM(-1200, 200, 0),
+	22, 27, TLV_DB_SCALE_ITEM(100, 100, 0),
+	28, 31, TLV_DB_SCALE_ITEM(650, 50, 0),
+};
+
+static const struct snd_kcontrol_new max98088_snd_controls[] = {
+
+	SOC_DOUBLE_R_TLV("Headphone Volume", M98088_REG_39_LVL_HP_L,
+			 M98088_REG_3A_LVL_HP_R, 0, 31, 0, max98088_hp_tlv),
+	SOC_DOUBLE_R_TLV("Speaker Volume", M98088_REG_3D_LVL_SPK_L,
+			 M98088_REG_3E_LVL_SPK_R, 0, 31, 0, max98088_spk_tlv),
+	SOC_DOUBLE_R_TLV("Receiver Volume", M98088_REG_3B_LVL_REC_L,
+			 M98088_REG_3C_LVL_REC_R, 0, 31, 0, max98088_spk_tlv),
+>>>>>>> refs/remotes/origin/master
 
        SOC_DOUBLE_R("Headphone Switch", M98088_REG_39_LVL_HP_L,
                M98088_REG_3A_LVL_HP_R, 7, 1, 1),
@@ -946,7 +1235,12 @@ static int max98088_line_pga(struct snd_soc_dapm_widget *w,
        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
        u8 *state;
 
+<<<<<<< HEAD
        BUG_ON(!((channel == 1) || (channel == 2)));
+=======
+	if (WARN_ON(!(channel == 1 || channel == 2)))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
        switch (line) {
        case LINE_INA:
@@ -1268,12 +1562,21 @@ static int max98088_dai1_hw_params(struct snd_pcm_substream *substream,
 
        rate = params_rate(params);
 
+<<<<<<< HEAD
        switch (params_format(params)) {
        case SNDRV_PCM_FORMAT_S16_LE:
                snd_soc_update_bits(codec, M98088_REG_14_DAI1_FORMAT,
                        M98088_DAI_WS, 0);
                break;
        case SNDRV_PCM_FORMAT_S24_LE:
+=======
+       switch (params_width(params)) {
+       case 16:
+               snd_soc_update_bits(codec, M98088_REG_14_DAI1_FORMAT,
+                       M98088_DAI_WS, 0);
+               break;
+       case 24:
+>>>>>>> refs/remotes/origin/master
                snd_soc_update_bits(codec, M98088_REG_14_DAI1_FORMAT,
                        M98088_DAI_WS, M98088_DAI_WS);
                break;
@@ -1397,8 +1700,14 @@ static int max98088_dai_set_sysclk(struct snd_soc_dai *dai,
        if (freq == max98088->sysclk)
                return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
        max98088->sysclk = freq; /* remember current sysclk */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
        /* Setup clocks for slave mode, and using the PLL
         * PSCLK = 0x01 (when master clk is 10MHz to 20MHz)
         *         0x02 (when master clk is 20MHz to 30MHz)..
@@ -1596,6 +1905,7 @@ static int max98088_dai2_digital_mute(struct snd_soc_dai *codec_dai, int mute)
        return 0;
 }
 
+<<<<<<< HEAD
 static void max98088_sync_cache(struct snd_soc_codec *codec)
 {
        u8 *reg_cache = codec->reg_cache;
@@ -1648,19 +1958,65 @@ static int max98088_set_bias_level(struct snd_soc_codec *codec,
        }
        codec->dapm.bias_level = level;
        return 0;
+=======
+static int max98088_set_bias_level(struct snd_soc_codec *codec,
+                                  enum snd_soc_bias_level level)
+{
+	struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
+
+	switch (level) {
+	case SND_SOC_BIAS_ON:
+		break;
+
+	case SND_SOC_BIAS_PREPARE:
+		break;
+
+	case SND_SOC_BIAS_STANDBY:
+		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
+			regcache_sync(max98088->regmap);
+
+		snd_soc_update_bits(codec, M98088_REG_4C_PWR_EN_IN,
+				   M98088_MBEN, M98088_MBEN);
+		break;
+
+	case SND_SOC_BIAS_OFF:
+		snd_soc_update_bits(codec, M98088_REG_4C_PWR_EN_IN,
+				    M98088_MBEN, 0);
+		regcache_mark_dirty(max98088->regmap);
+		break;
+	}
+	codec->dapm.bias_level = level;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define MAX98088_RATES SNDRV_PCM_RATE_8000_96000
 #define MAX98088_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops max98088_dai1_ops = {
+=======
+static const struct snd_soc_dai_ops max98088_dai1_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops max98088_dai1_ops = {
+>>>>>>> refs/remotes/origin/master
        .set_sysclk = max98088_dai_set_sysclk,
        .set_fmt = max98088_dai1_set_fmt,
        .hw_params = max98088_dai1_hw_params,
        .digital_mute = max98088_dai1_digital_mute,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops max98088_dai2_ops = {
+=======
+static const struct snd_soc_dai_ops max98088_dai2_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops max98088_dai2_ops = {
+>>>>>>> refs/remotes/origin/master
        .set_sysclk = max98088_dai_set_sysclk,
        .set_fmt = max98088_dai2_set_fmt,
        .hw_params = max98088_dai2_hw_params,
@@ -1699,6 +2055,8 @@ static struct snd_soc_dai_driver max98088_dai[] = {
 }
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int max98088_get_channel(const char *name)
 {
        if (strcmp(name, "EQ1 Mode") == 0)
@@ -1706,6 +2064,26 @@ static int max98088_get_channel(const char *name)
        if (strcmp(name, "EQ2 Mode") == 0)
                return 1;
        return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const char *eq_mode_name[] = {"EQ1 Mode", "EQ2 Mode"};
+
+static int max98088_get_channel(struct snd_soc_codec *codec, const char *name)
+{
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(eq_mode_name); i++)
+		if (strcmp(name, eq_mode_name[i]) == 0)
+			return i;
+
+	/* Shouldn't happen */
+	dev_err(codec->dev, "Bad EQ channel name '%s'\n", name);
+	return -EINVAL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void max98088_setup_eq1(struct snd_soc_codec *codec)
@@ -1809,10 +2187,26 @@ static int max98088_put_eq_enum(struct snd_kcontrol *kcontrol,
        struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
        struct max98088_pdata *pdata = max98088->pdata;
+<<<<<<< HEAD
+<<<<<<< HEAD
        int channel = max98088_get_channel(kcontrol->id.name);
        struct max98088_cdata *cdata;
        int sel = ucontrol->value.integer.value[0];
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+       int channel = max98088_get_channel(codec, kcontrol->id.name);
+       struct max98088_cdata *cdata;
+       int sel = ucontrol->value.integer.value[0];
+
+       if (channel < 0)
+	       return channel;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
        cdata = &max98088->dai[channel];
 
        if (sel >= pdata->eq_cfgcnt)
@@ -1837,9 +2231,24 @@ static int max98088_get_eq_enum(struct snd_kcontrol *kcontrol,
 {
        struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
+<<<<<<< HEAD
        int channel = max98088_get_channel(kcontrol->id.name);
        struct max98088_cdata *cdata;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+       int channel = max98088_get_channel(codec, kcontrol->id.name);
+       struct max98088_cdata *cdata;
+
+       if (channel < 0)
+	       return channel;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
        cdata = &max98088->dai[channel];
        ucontrol->value.enumerated.item[0] = cdata->eq_sel;
        return 0;
@@ -1854,6 +2263,8 @@ static void max98088_handle_eq_pdata(struct snd_soc_codec *codec)
        int i, j;
        const char **t;
        int ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
        struct snd_kcontrol_new controls[] = {
                SOC_ENUM_EXT("EQ1 Mode",
@@ -1861,10 +2272,31 @@ static void max98088_handle_eq_pdata(struct snd_soc_codec *codec)
                        max98088_get_eq_enum,
                        max98088_put_eq_enum),
                SOC_ENUM_EXT("EQ2 Mode",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+       struct snd_kcontrol_new controls[] = {
+               SOC_ENUM_EXT((char *)eq_mode_name[0],
+                       max98088->eq_enum,
+                       max98088_get_eq_enum,
+                       max98088_put_eq_enum),
+               SOC_ENUM_EXT((char *)eq_mode_name[1],
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
                        max98088->eq_enum,
                        max98088_get_eq_enum,
                        max98088_put_eq_enum),
        };
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+       BUILD_BUG_ON(ARRAY_SIZE(controls) != ARRAY_SIZE(eq_mode_name));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+       BUILD_BUG_ON(ARRAY_SIZE(controls) != ARRAY_SIZE(eq_mode_name));
+>>>>>>> refs/remotes/origin/master
 
        cfg = pdata->eq_cfg;
        cfgcnt = pdata->eq_cfgcnt;
@@ -1900,7 +2332,15 @@ static void max98088_handle_eq_pdata(struct snd_soc_codec *codec)
        max98088->eq_enum.texts = max98088->eq_texts;
        max98088->eq_enum.max = max98088->eq_textcnt;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
        ret = snd_soc_add_controls(codec, controls, ARRAY_SIZE(controls));
+=======
+       ret = snd_soc_add_codec_controls(codec, controls, ARRAY_SIZE(controls));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+       ret = snd_soc_add_codec_controls(codec, controls, ARRAY_SIZE(controls));
+>>>>>>> refs/remotes/origin/master
        if (ret != 0)
                dev_err(codec->dev, "Failed to add EQ control: %d\n", ret);
 }
@@ -1938,7 +2378,15 @@ static void max98088_handle_pdata(struct snd_soc_codec *codec)
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int max98088_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int max98088_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int max98088_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
        max98088_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
@@ -1962,9 +2410,15 @@ static int max98088_probe(struct snd_soc_codec *codec)
        struct max98088_cdata *cdata;
        int ret = 0;
 
+<<<<<<< HEAD
        codec->cache_sync = 1;
 
        ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
+=======
+       regcache_mark_dirty(max98088->regmap);
+
+       ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
        if (ret != 0) {
                dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
                return ret;
@@ -2022,9 +2476,16 @@ static int max98088_probe(struct snd_soc_codec *codec)
 
        max98088_handle_pdata(codec);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
        snd_soc_add_controls(codec, max98088_snd_controls,
+=======
+       snd_soc_add_codec_controls(codec, max98088_snd_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
                             ARRAY_SIZE(max98088_snd_controls));
 
+=======
+>>>>>>> refs/remotes/origin/master
 err_access:
        return ret;
 }
@@ -2040,6 +2501,7 @@ static int max98088_remove(struct snd_soc_codec *codec)
 }
 
 static struct snd_soc_codec_driver soc_codec_dev_max98088 = {
+<<<<<<< HEAD
        .probe   = max98088_probe,
        .remove  = max98088_remove,
        .suspend = max98088_suspend,
@@ -2049,6 +2511,15 @@ static struct snd_soc_codec_driver soc_codec_dev_max98088 = {
        .reg_word_size = sizeof(u8),
        .reg_cache_default = max98088_reg,
        .volatile_register = max98088_volatile_register,
+=======
+	.probe   = max98088_probe,
+	.remove  = max98088_remove,
+	.suspend = max98088_suspend,
+	.resume  = max98088_resume,
+	.set_bias_level = max98088_set_bias_level,
+	.controls = max98088_snd_controls,
+	.num_controls = ARRAY_SIZE(max98088_snd_controls),
+>>>>>>> refs/remotes/origin/master
 	.dapm_widgets = max98088_dapm_widgets,
 	.num_dapm_widgets = ARRAY_SIZE(max98088_dapm_widgets),
 	.dapm_routes = max98088_audio_map,
@@ -2056,32 +2527,74 @@ static struct snd_soc_codec_driver soc_codec_dev_max98088 = {
 };
 
 static int max98088_i2c_probe(struct i2c_client *i2c,
+<<<<<<< HEAD
                             const struct i2c_device_id *id)
+=======
+			      const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
        struct max98088_priv *max98088;
        int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
        max98088 = kzalloc(sizeof(struct max98088_priv), GFP_KERNEL);
+=======
+       max98088 = devm_kzalloc(&i2c->dev, sizeof(struct max98088_priv),
+			       GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
        if (max98088 == NULL)
                return -ENOMEM;
 
        max98088->devtype = id->driver_data;
 
        i2c_set_clientdata(i2c, max98088);
+<<<<<<< HEAD
        max98088->control_data = i2c;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+       max98088 = devm_kzalloc(&i2c->dev, sizeof(struct max98088_priv),
+			       GFP_KERNEL);
+       if (max98088 == NULL)
+               return -ENOMEM;
+
+       max98088->regmap = devm_regmap_init_i2c(i2c, &max98088_regmap);
+       if (IS_ERR(max98088->regmap))
+	       return PTR_ERR(max98088->regmap);
+
+       max98088->devtype = id->driver_data;
+
+       i2c_set_clientdata(i2c, max98088);
+>>>>>>> refs/remotes/origin/master
        max98088->pdata = i2c->dev.platform_data;
 
        ret = snd_soc_register_codec(&i2c->dev,
                        &soc_codec_dev_max98088, &max98088_dai[0], 2);
+<<<<<<< HEAD
+<<<<<<< HEAD
        if (ret < 0)
                kfree(max98088);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
        return ret;
 }
 
 static int __devexit max98088_i2c_remove(struct i2c_client *client)
 {
        snd_soc_unregister_codec(&client->dev);
+<<<<<<< HEAD
        kfree(i2c_get_clientdata(client));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+       return ret;
+}
+
+static int max98088_i2c_remove(struct i2c_client *client)
+{
+       snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
        return 0;
 }
 
@@ -2093,6 +2606,7 @@ static const struct i2c_device_id max98088_i2c_id[] = {
 MODULE_DEVICE_TABLE(i2c, max98088_i2c_id);
 
 static struct i2c_driver max98088_i2c_driver = {
+<<<<<<< HEAD
        .driver = {
                .name = "max98088",
                .owner = THIS_MODULE,
@@ -2119,6 +2633,18 @@ static void __exit max98088_exit(void)
        i2c_del_driver(&max98088_i2c_driver);
 }
 module_exit(max98088_exit);
+=======
+	.driver = {
+		.name = "max98088",
+		.owner = THIS_MODULE,
+	},
+	.probe  = max98088_i2c_probe,
+	.remove = max98088_i2c_remove,
+	.id_table = max98088_i2c_id,
+};
+
+module_i2c_driver(max98088_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ALSA SoC MAX98088 driver");
 MODULE_AUTHOR("Peter Hsiang, Jesse Marroquin");

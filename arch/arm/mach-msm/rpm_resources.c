@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -25,7 +33,15 @@
 #include <asm/mach-types.h>
 #include <linux/io.h>
 #include <mach/socinfo.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "mpm.h"
+=======
+#include <mach/mpm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/mpm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "rpm_resources.h"
 #include "spm.h"
 #include "idle.h"
@@ -65,6 +81,19 @@ static ssize_t msm_rpmrs_resource_attr_show(
 static ssize_t msm_rpmrs_resource_attr_store(struct kobject *kobj,
 	struct kobj_attribute *attr, const char *buf, size_t count);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int vdd_dig_vlevels[MSM_RPMRS_VDD_DIG_LAST];
+static int vdd_mem_vlevels[MSM_RPMRS_VDD_MEM_LAST];
+static int vdd_mask;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define MSM_RPMRS_MAX_RS_REGISTER_COUNT 2
 
 #define RPMRS_ATTR(_name) \
@@ -86,7 +115,13 @@ struct msm_rpmrs_resource {
 };
 
 static struct msm_rpmrs_resource msm_rpmrs_pxo = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.rs[0].id = MSM_RPMRS_ID_PXO_CLK,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.size = 1,
 	.name = "pxo",
 	.beyond_limits = msm_rpmrs_pxo_beyond_limits,
@@ -96,7 +131,13 @@ static struct msm_rpmrs_resource msm_rpmrs_pxo = {
 };
 
 static struct msm_rpmrs_resource msm_rpmrs_l2_cache = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.rs[0].id = MSM_RPMRS_ID_APPS_L2_CACHE_CTL,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.size = 1,
 	.name = "L2_cache",
 	.beyond_limits = msm_rpmrs_l2_cache_beyond_limits,
@@ -106,8 +147,14 @@ static struct msm_rpmrs_resource msm_rpmrs_l2_cache = {
 };
 
 static struct msm_rpmrs_resource msm_rpmrs_vdd_mem = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.rs[0].id = MSM_RPMRS_ID_VDD_MEM_0,
 	.rs[1].id = MSM_RPMRS_ID_VDD_MEM_1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.size = 2,
 	.name = "vdd_mem",
 	.beyond_limits = msm_rpmrs_vdd_mem_beyond_limits,
@@ -117,8 +164,14 @@ static struct msm_rpmrs_resource msm_rpmrs_vdd_mem = {
 };
 
 static struct msm_rpmrs_resource msm_rpmrs_vdd_dig = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.rs[0].id = MSM_RPMRS_ID_VDD_DIG_0,
 	.rs[1].id = MSM_RPMRS_ID_VDD_DIG_1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.size = 2,
 	.name = "vdd_dig",
 	.beyond_limits = msm_rpmrs_vdd_dig_beyond_limits,
@@ -128,7 +181,13 @@ static struct msm_rpmrs_resource msm_rpmrs_vdd_dig = {
 };
 
 static struct msm_rpmrs_resource msm_rpmrs_rpm_ctl = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.rs[0].id = MSM_RPMRS_ID_RPM_CTL,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.size = 1,
 	.name = "rpm_ctl",
 	.beyond_limits = NULL,
@@ -145,12 +204,27 @@ static struct msm_rpmrs_resource *msm_rpmrs_resources[] = {
 	&msm_rpmrs_rpm_ctl,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static uint32_t msm_rpmrs_buffer[MSM_RPM_ID_LAST + 1];
 static DECLARE_BITMAP(msm_rpmrs_buffered, MSM_RPM_ID_LAST + 1);
 static DECLARE_BITMAP(msm_rpmrs_listed, MSM_RPM_ID_LAST + 1);
 static DEFINE_SPINLOCK(msm_rpmrs_lock);
 
 #define MSM_RPMRS_VDD(v)  ((v) & (MSM_RPMRS_VDD_MASK))
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static uint32_t msm_rpmrs_buffer[MSM_RPM_ID_LAST];
+static DECLARE_BITMAP(msm_rpmrs_buffered, MSM_RPM_ID_LAST);
+static DECLARE_BITMAP(msm_rpmrs_listed, MSM_RPM_ID_LAST);
+static DEFINE_SPINLOCK(msm_rpmrs_lock);
+
+#define MSM_RPMRS_VDD(v)  ((v) & (vdd_mask))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /******************************************************************************
  * Attribute Definitions
@@ -290,6 +364,8 @@ static bool msm_rpmrs_vdd_mem_beyond_limits(struct msm_rpmrs_limits *limits)
 		uint32_t buffered_value = msm_rpmrs_buffer[rs->rs[0].id];
 
 		if (rs->enable_low_power == 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			vdd_mem = MSM_RPMRS_VDD_MEM_ACTIVE;
 		else if (rs->enable_low_power == 1)
 			vdd_mem = MSM_RPMRS_VDD_MEM_RET_HIGH;
@@ -304,6 +380,26 @@ static bool msm_rpmrs_vdd_mem_beyond_limits(struct msm_rpmrs_limits *limits)
 
 	return MSM_RPMRS_VDD(vdd_mem) >
 				MSM_RPMRS_VDD(limits->vdd_mem_upper_bound);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			vdd_mem = vdd_mem_vlevels[MSM_RPMRS_VDD_MEM_ACTIVE];
+		else if (rs->enable_low_power == 1)
+			vdd_mem = vdd_mem_vlevels[MSM_RPMRS_VDD_MEM_RET_HIGH];
+		else
+			vdd_mem = vdd_mem_vlevels[MSM_RPMRS_VDD_MEM_RET_LOW];
+
+		if (MSM_RPMRS_VDD(buffered_value) > MSM_RPMRS_VDD(vdd_mem))
+			vdd_mem = MSM_RPMRS_VDD(buffered_value);
+	} else {
+		vdd_mem = vdd_mem_vlevels[MSM_RPMRS_VDD_MEM_ACTIVE];
+	}
+
+	return vdd_mem > vdd_mem_vlevels[limits->vdd_mem_upper_bound];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void msm_rpmrs_aggregate_vdd_mem(struct msm_rpmrs_limits *limits)
@@ -313,9 +409,21 @@ static void msm_rpmrs_aggregate_vdd_mem(struct msm_rpmrs_limits *limits)
 
 	if (test_bit(rs->rs[0].id, msm_rpmrs_buffered)) {
 		rs->rs[0].value = *buf;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (MSM_RPMRS_VDD(limits->vdd_mem) > MSM_RPMRS_VDD(*buf)) {
 			*buf &= ~MSM_RPMRS_VDD_MASK;
 			*buf |= MSM_RPMRS_VDD(limits->vdd_mem);
+=======
+		if (vdd_mem_vlevels[limits->vdd_mem] > MSM_RPMRS_VDD(*buf)) {
+			*buf &= ~vdd_mask;
+			*buf |= vdd_mem_vlevels[limits->vdd_mem];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (vdd_mem_vlevels[limits->vdd_mem] > MSM_RPMRS_VDD(*buf)) {
+			*buf &= ~vdd_mask;
+			*buf |= vdd_mem_vlevels[limits->vdd_mem];
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		if (MSM_RPMRS_DEBUG_OUTPUT & msm_rpmrs_debug_mask)
@@ -341,6 +449,8 @@ static bool msm_rpmrs_vdd_dig_beyond_limits(struct msm_rpmrs_limits *limits)
 		uint32_t buffered_value = msm_rpmrs_buffer[rs->rs[0].id];
 
 		if (rs->enable_low_power == 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			vdd_dig = MSM_RPMRS_VDD_DIG_ACTIVE;
 		else if (rs->enable_low_power == 1)
 			vdd_dig = MSM_RPMRS_VDD_DIG_RET_HIGH;
@@ -355,6 +465,26 @@ static bool msm_rpmrs_vdd_dig_beyond_limits(struct msm_rpmrs_limits *limits)
 
 	return MSM_RPMRS_VDD(vdd_dig) >
 				MSM_RPMRS_VDD(limits->vdd_dig_upper_bound);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			vdd_dig = vdd_dig_vlevels[MSM_RPMRS_VDD_DIG_ACTIVE];
+		else if (rs->enable_low_power == 1)
+			vdd_dig = vdd_dig_vlevels[MSM_RPMRS_VDD_DIG_RET_HIGH];
+		else
+			vdd_dig = vdd_dig_vlevels[MSM_RPMRS_VDD_DIG_RET_LOW];
+
+		if (MSM_RPMRS_VDD(buffered_value) > MSM_RPMRS_VDD(vdd_dig))
+			vdd_dig = MSM_RPMRS_VDD(buffered_value);
+	} else {
+		vdd_dig = vdd_dig_vlevels[MSM_RPMRS_VDD_DIG_ACTIVE];
+	}
+
+	return vdd_dig > vdd_dig_vlevels[limits->vdd_dig_upper_bound];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void msm_rpmrs_aggregate_vdd_dig(struct msm_rpmrs_limits *limits)
@@ -364,9 +494,21 @@ static void msm_rpmrs_aggregate_vdd_dig(struct msm_rpmrs_limits *limits)
 
 	if (test_bit(rs->rs[0].id, msm_rpmrs_buffered)) {
 		rs->rs[0].value = *buf;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (MSM_RPMRS_VDD(limits->vdd_dig) > MSM_RPMRS_VDD(*buf)) {
 			*buf &= ~MSM_RPMRS_VDD_MASK;
 			*buf |= MSM_RPMRS_VDD(limits->vdd_dig);
+=======
+		if (vdd_dig_vlevels[limits->vdd_dig] > MSM_RPMRS_VDD(*buf)) {
+			*buf &= ~vdd_mask;
+			*buf |= vdd_dig_vlevels[limits->vdd_dig];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (vdd_dig_vlevels[limits->vdd_dig] > MSM_RPMRS_VDD(*buf)) {
+			*buf &= ~vdd_mask;
+			*buf |= vdd_dig_vlevels[limits->vdd_dig];
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 
@@ -392,7 +534,17 @@ static bool msm_rpmrs_irqs_detectable(struct msm_rpmrs_limits *limits,
 		bool irqs_detect, bool gpio_detect)
 {
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (limits->vdd_dig_upper_bound <= MSM_RPMRS_VDD_DIG_RET_HIGH)
+=======
+	if (vdd_dig_vlevels[limits->vdd_dig_upper_bound] <=
+			vdd_dig_vlevels[MSM_RPMRS_VDD_DIG_RET_HIGH])
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (vdd_dig_vlevels[limits->vdd_dig_upper_bound] <=
+			vdd_dig_vlevels[MSM_RPMRS_VDD_DIG_RET_HIGH])
+>>>>>>> refs/remotes/origin/cm-11.0
 		return irqs_detect;
 
 	if (limits->pxo == MSM_RPMRS_PXO_OFF)
@@ -404,7 +556,17 @@ static bool msm_rpmrs_irqs_detectable(struct msm_rpmrs_limits *limits,
 static bool msm_rpmrs_use_mpm(struct msm_rpmrs_limits *limits)
 {
 	return (limits->pxo == MSM_RPMRS_PXO_OFF) ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 		(limits->vdd_dig <= MSM_RPMRS_VDD_DIG_RET_HIGH);
+=======
+		(vdd_dig_vlevels[limits->vdd_dig] <=
+		 vdd_dig_vlevels[MSM_RPMRS_VDD_DIG_RET_HIGH]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(vdd_dig_vlevels[limits->vdd_dig] <=
+		 vdd_dig_vlevels[MSM_RPMRS_VDD_DIG_RET_HIGH]);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void msm_rpmrs_update_levels(void)
@@ -428,6 +590,14 @@ static void msm_rpmrs_update_levels(void)
 				break;
 			}
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -443,7 +613,15 @@ static int msm_rpmrs_buffer_request(struct msm_rpm_iv_pair *req, int count)
 	int i;
 
 	for (i = 0; i < count; i++)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (req[i].id > MSM_RPM_ID_LAST)
+=======
+		if (req[i].id >= MSM_RPM_ID_LAST)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (req[i].id >= MSM_RPM_ID_LAST)
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 
 	for (i = 0, listed = false; i < count; i++) {
@@ -476,7 +654,15 @@ static int msm_rpmrs_clear_buffer(struct msm_rpm_iv_pair *req, int count)
 	int i;
 
 	for (i = 0; i < count; i++)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (req[i].id > MSM_RPM_ID_LAST)
+=======
+		if (req[i].id >= MSM_RPM_ID_LAST)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (req[i].id >= MSM_RPM_ID_LAST)
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 
 	for (i = 0, listed = false; i < count; i++) {
@@ -557,7 +743,15 @@ static int msm_rpmrs_flush_buffer(
 			msm_rpmrs_resources[i]->aggregate(limits);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	count = bitmap_weight(msm_rpmrs_buffered, MSM_RPM_ID_LAST + 1);
+=======
+	count = bitmap_weight(msm_rpmrs_buffered, MSM_RPM_ID_LAST);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	count = bitmap_weight(msm_rpmrs_buffered, MSM_RPM_ID_LAST);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	req = kmalloc(sizeof(*req) * count, GFP_ATOMIC);
 	if (!req) {
@@ -566,9 +760,21 @@ static int msm_rpmrs_flush_buffer(
 	}
 
 	count = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	i = find_first_bit(msm_rpmrs_buffered, MSM_RPM_ID_LAST + 1);
 
 	while (i < MSM_RPM_ID_LAST + 1) {
+=======
+	i = find_first_bit(msm_rpmrs_buffered, MSM_RPM_ID_LAST);
+
+	while (i < MSM_RPM_ID_LAST) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i = find_first_bit(msm_rpmrs_buffered, MSM_RPM_ID_LAST);
+
+	while (i < MSM_RPM_ID_LAST) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (MSM_RPMRS_DEBUG_OUTPUT & msm_rpmrs_debug_mask)
 			pr_info("%s: reg %d: 0x%x\n",
 				__func__, i, msm_rpmrs_buffer[i]);
@@ -577,7 +783,15 @@ static int msm_rpmrs_flush_buffer(
 		req[count].value = msm_rpmrs_buffer[i];
 		count++;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		i = find_next_bit(msm_rpmrs_buffered, MSM_RPM_ID_LAST+1, i+1);
+=======
+		i = find_next_bit(msm_rpmrs_buffered, MSM_RPM_ID_LAST, i + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		i = find_next_bit(msm_rpmrs_buffered, MSM_RPM_ID_LAST, i + 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	rc = msm_rpm_set_noirq(MSM_RPM_CTX_SET_SLEEP, req, count);
@@ -587,7 +801,15 @@ static int msm_rpmrs_flush_buffer(
 		goto flush_buffer_restore;
 
 	bitmap_and(msm_rpmrs_buffered,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		msm_rpmrs_buffered, msm_rpmrs_listed, MSM_RPM_ID_LAST + 1);
+=======
+		msm_rpmrs_buffered, msm_rpmrs_listed, MSM_RPM_ID_LAST);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		msm_rpmrs_buffered, msm_rpmrs_listed, MSM_RPM_ID_LAST);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 flush_buffer_restore:
 	for (i = 0; i < ARRAY_SIZE(msm_rpmrs_resources); i++) {
@@ -664,7 +886,17 @@ static ssize_t msm_rpmrs_resource_attr_show(
 
 	spin_lock_irqsave(&msm_rpmrs_lock, flags);
 	/* special case active-set signal for MSM_RPMRS_ID_RPM_CTL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (GET_RS_FROM_ATTR(attr)->rs[0].id == MSM_RPMRS_ID_RPM_CTL)
+=======
+	if (GET_RS_FROM_ATTR(attr)->rs[0].id ==
+			msm_rpmrs_rpm_ctl.rs[0].id)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (GET_RS_FROM_ATTR(attr)->rs[0].id ==
+			msm_rpmrs_rpm_ctl.rs[0].id)
+>>>>>>> refs/remotes/origin/cm-11.0
 		temp = GET_RS_FROM_ATTR(attr)->rs[0].value;
 	else
 		temp = GET_RS_FROM_ATTR(attr)->enable_low_power;
@@ -698,9 +930,22 @@ static ssize_t msm_rpmrs_resource_attr_store(struct kobject *kobj,
 	GET_RS_FROM_ATTR(attr)->enable_low_power = temp;
 
 	/* special case active-set signal for MSM_RPMRS_ID_RPM_CTL */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (GET_RS_FROM_ATTR(attr)->rs[0].id == MSM_RPMRS_ID_RPM_CTL) {
 		struct msm_rpm_iv_pair req;
 		req.id = MSM_RPMRS_ID_RPM_CTL;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (GET_RS_FROM_ATTR(attr)->rs[0].id ==
+			msm_rpmrs_rpm_ctl.rs[0].id) {
+		struct msm_rpm_iv_pair req;
+		req.id = msm_rpmrs_rpm_ctl.rs[0].id;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		req.value = GET_RS_FROM_ATTR(attr)->enable_low_power;
 		GET_RS_FROM_ATTR(attr)->rs[0].value = req.value;
 
@@ -855,7 +1100,15 @@ void msm_rpmrs_show_resources(void)
 	spin_lock_irqsave(&msm_rpmrs_lock, flags);
 	for (i = 0; i < ARRAY_SIZE(msm_rpmrs_resources); i++) {
 		rs = msm_rpmrs_resources[i];
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (rs->rs[0].id < MSM_RPM_ID_LAST + 1)
+=======
+		if (rs->rs[0].id < MSM_RPM_ID_LAST)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (rs->rs[0].id < MSM_RPM_ID_LAST)
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_info("%s: resource %s: buffered %d, value 0x%x\n",
 				__func__, rs->name,
 				test_bit(rs->rs[0].id, msm_rpmrs_buffered),
@@ -867,15 +1120,58 @@ void msm_rpmrs_show_resources(void)
 	spin_unlock_irqrestore(&msm_rpmrs_lock, flags);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct msm_rpmrs_limits *msm_rpmrs_lowest_limits(
 	bool from_idle, enum msm_pm_sleep_mode sleep_mode, uint32_t latency_us,
 	uint32_t sleep_us)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+s32 msm_cpuidle_get_deep_idle_latency(void)
+{
+	int i;
+	struct msm_rpmrs_level *level = msm_rpmrs_levels, *best = level;
+
+	if (!level)
+		return 0;
+
+	for (i = 0; i < msm_rpmrs_level_count; i++, level++) {
+		if (!level->available)
+			continue;
+		if (level->sleep_mode != MSM_PM_SLEEP_MODE_POWER_COLLAPSE)
+			continue;
+		/* Pick the first power collapse mode by default */
+		if (best->sleep_mode != MSM_PM_SLEEP_MODE_POWER_COLLAPSE)
+			best = level;
+		/* Find the lowest latency for power collapse */
+		if (level->latency_us < best->latency_us)
+			best = level;
+	}
+	return best->latency_us - 1;
+}
+
+static void *msm_rpmrs_lowest_limits(bool from_idle,
+		enum msm_pm_sleep_mode sleep_mode, uint32_t latency_us,
+		uint32_t sleep_us, uint32_t *power)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned int cpu = smp_processor_id();
 	struct msm_rpmrs_level *best_level = NULL;
 	bool irqs_detectable = false;
 	bool gpio_detectable = false;
 	int i;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	uint32_t pwr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t pwr;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (sleep_mode == MSM_PM_SLEEP_MODE_POWER_COLLAPSE) {
 		irqs_detectable = msm_mpm_irqs_detectable(from_idle);
@@ -884,7 +1180,13 @@ struct msm_rpmrs_limits *msm_rpmrs_lowest_limits(
 
 	for (i = 0; i < msm_rpmrs_level_count; i++) {
 		struct msm_rpmrs_level *level = &msm_rpmrs_levels[i];
+<<<<<<< HEAD
+<<<<<<< HEAD
 		uint32_t power;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (!level->available)
 			continue;
@@ -895,10 +1197,24 @@ struct msm_rpmrs_limits *msm_rpmrs_lowest_limits(
 		if (latency_us < level->latency_us)
 			continue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (sleep_us <= level->time_overhead_us)
+			continue;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (sleep_us <= level->time_overhead_us)
+			continue;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!msm_rpmrs_irqs_detectable(&level->rs_limits,
 					irqs_detectable, gpio_detectable))
 			continue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (sleep_us <= 1) {
 			power = level->energy_overhead;
 		} else if (sleep_us <= level->time_overhead_us) {
@@ -917,13 +1233,53 @@ struct msm_rpmrs_limits *msm_rpmrs_lowest_limits(
 			level->rs_limits.latency_us[cpu] = level->latency_us;
 			level->rs_limits.power[cpu] = power;
 			best_level = level;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (MSM_PM_SLEEP_MODE_POWER_COLLAPSE_STANDALONE == sleep_mode)
+			if (!cpu && msm_rpm_local_request_is_outstanding())
+					break;
+
+
+		if (sleep_us <= 1) {
+			pwr = level->energy_overhead;
+		} else if (sleep_us <= level->time_overhead_us) {
+			pwr = level->energy_overhead / sleep_us;
+		} else if ((sleep_us >> 10) > level->time_overhead_us) {
+			pwr = level->steady_state_power;
+		} else {
+			pwr = level->steady_state_power;
+			pwr -= (level->time_overhead_us *
+					level->steady_state_power)/sleep_us;
+			pwr += level->energy_overhead / sleep_us;
+		}
+
+		if (!best_level ||
+				best_level->rs_limits.power[cpu] >= pwr) {
+			level->rs_limits.latency_us[cpu] = level->latency_us;
+			level->rs_limits.power[cpu] = pwr;
+			best_level = level;
+			if (power)
+				*power = pwr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
 	return best_level ? &best_level->rs_limits : NULL;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int msm_rpmrs_enter_sleep(uint32_t sclk_count, struct msm_rpmrs_limits *limits,
+=======
+static int msm_rpmrs_enter_sleep(uint32_t sclk_count, void *limits,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_rpmrs_enter_sleep(uint32_t sclk_count, void *limits,
+>>>>>>> refs/remotes/origin/cm-11.0
 		bool from_idle, bool notify_rpm)
 {
 	int rc = 0;
@@ -941,7 +1297,15 @@ int msm_rpmrs_enter_sleep(uint32_t sclk_count, struct msm_rpmrs_limits *limits,
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void msm_rpmrs_exit_sleep(struct msm_rpmrs_limits *limits, bool from_idle,
+=======
+static void msm_rpmrs_exit_sleep(void *limits, bool from_idle,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void msm_rpmrs_exit_sleep(void *limits, bool from_idle,
+>>>>>>> refs/remotes/origin/cm-11.0
 		bool notify_rpm, bool collapsed)
 {
 
@@ -978,6 +1342,8 @@ static struct notifier_block __refdata rpmrs_cpu_notifier = {
 	.notifier_call = rpmrs_cpu_callback,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __init msm_rpmrs_levels_init(struct msm_rpmrs_level *levels, int size)
 {
 	msm_rpmrs_levels = kzalloc(sizeof(struct msm_rpmrs_level) * size,
@@ -986,6 +1352,59 @@ int __init msm_rpmrs_levels_init(struct msm_rpmrs_level *levels, int size)
 		return -ENOMEM;
 	msm_rpmrs_level_count = size;
 	memcpy(msm_rpmrs_levels, levels, size * sizeof(struct msm_rpmrs_level));
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int __init msm_rpmrs_levels_init(struct msm_rpmrs_platform_data *data)
+{
+	int i, k;
+	struct msm_rpmrs_level *levels = data->levels;
+
+	msm_rpmrs_level_count = data->num_levels;
+
+	msm_rpmrs_levels = kzalloc(sizeof(struct msm_rpmrs_level) *
+			msm_rpmrs_level_count, GFP_KERNEL);
+	if (!msm_rpmrs_levels)
+		return -ENOMEM;
+
+	memcpy(msm_rpmrs_levels, levels,
+			msm_rpmrs_level_count * sizeof(struct msm_rpmrs_level));
+
+	memcpy(vdd_dig_vlevels, data->vdd_dig_levels,
+		(MSM_RPMRS_VDD_DIG_MAX + 1) * sizeof(vdd_dig_vlevels[0]));
+
+	memcpy(vdd_mem_vlevels, data->vdd_mem_levels,
+		(MSM_RPMRS_VDD_MEM_MAX + 1) * sizeof(vdd_mem_vlevels[0]));
+	vdd_mask = data->vdd_mask;
+
+	msm_rpmrs_pxo.rs[0].id = data->rpmrs_target_id[MSM_RPMRS_ID_PXO_CLK];
+	msm_rpmrs_l2_cache.rs[0].id =
+			data->rpmrs_target_id[MSM_RPMRS_ID_L2_CACHE_CTL];
+	msm_rpmrs_vdd_mem.rs[0].id =
+			data->rpmrs_target_id[MSM_RPMRS_ID_VDD_MEM_0];
+	msm_rpmrs_vdd_mem.rs[1].id =
+			data->rpmrs_target_id[MSM_RPMRS_ID_VDD_MEM_1];
+	msm_rpmrs_vdd_dig.rs[0].id =
+			data->rpmrs_target_id[MSM_RPMRS_ID_VDD_DIG_0];
+	msm_rpmrs_vdd_dig.rs[1].id =
+			data->rpmrs_target_id[MSM_RPMRS_ID_VDD_DIG_1];
+	msm_rpmrs_rpm_ctl.rs[0].id =
+			data->rpmrs_target_id[MSM_RPMRS_ID_RPM_CTL];
+
+	/* Initialize listed bitmap for valid resource IDs */
+	for (i = 0; i < ARRAY_SIZE(msm_rpmrs_resources); i++) {
+		for (k = 0; k < msm_rpmrs_resources[i]->size; k++) {
+			if (msm_rpmrs_resources[i]->rs[k].id >=
+					MSM_RPM_ID_LAST)
+				continue;
+			set_bit(msm_rpmrs_resources[i]->rs[k].id,
+				msm_rpmrs_listed);
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return 0;
 }
@@ -995,6 +1414,8 @@ static int __init msm_rpmrs_init(void)
 	struct msm_rpm_iv_pair req;
 	int rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_apq8064())
 		return -ENODEV;
 
@@ -1002,6 +1423,17 @@ static int __init msm_rpmrs_init(void)
 
 	if (cpu_is_msm8x60()) {
 		req.id = MSM_RPMRS_ID_APPS_L2_CACHE_CTL;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	BUG_ON(!msm_rpmrs_levels);
+
+	if (cpu_is_msm8x60()) {
+		req.id = msm_rpmrs_l2_cache.rs[0].id;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		req.value = 1;
 
 		rc = msm_rpm_set(MSM_RPM_CTX_SET_0, &req, 1);
@@ -1011,7 +1443,15 @@ static int __init msm_rpmrs_init(void)
 			goto init_exit;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		req.id = MSM_RPMRS_ID_APPS_L2_CACHE_CTL;
+=======
+		req.id = msm_rpmrs_l2_cache.rs[0].id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		req.id = msm_rpmrs_l2_cache.rs[0].id;
+>>>>>>> refs/remotes/origin/cm-11.0
 		req.value = 0;
 
 		rc = msm_rpmrs_set(MSM_RPM_CTX_SET_SLEEP, &req, 1);
@@ -1029,6 +1469,8 @@ init_exit:
 }
 device_initcall(msm_rpmrs_init);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init msm_rpmrs_early_init(void)
 {
 	int i, k;
@@ -1047,6 +1489,23 @@ early_initcall(msm_rpmrs_early_init);
 static int __init msm_rpmrs_l2_init(void)
 {
 	if (cpu_is_msm8960() || cpu_is_msm8930()) {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct msm_pm_sleep_ops msm_rpmrs_ops = {
+	.lowest_limits = msm_rpmrs_lowest_limits,
+	.enter_sleep = msm_rpmrs_enter_sleep,
+	.exit_sleep = msm_rpmrs_exit_sleep,
+};
+
+static int __init msm_rpmrs_l2_init(void)
+{
+	if (cpu_is_msm8960() || cpu_is_msm8930() || cpu_is_msm8930aa() ||
+	    cpu_is_apq8064() || cpu_is_msm8627()) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		msm_pm_set_l2_flush_flag(0);
 
@@ -1062,6 +1521,18 @@ static int __init msm_rpmrs_l2_init(void)
 		msm_rpmrs_l2_cache.aggregate = NULL;
 		msm_rpmrs_l2_cache.restore = NULL;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	msm_pm_set_sleep_ops(&msm_rpmrs_ops);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	msm_pm_set_sleep_ops(&msm_rpmrs_ops);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 early_initcall(msm_rpmrs_l2_init);

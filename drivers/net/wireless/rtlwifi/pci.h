@@ -1,6 +1,14 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -62,12 +70,18 @@
 	.subdevice = PCI_ANY_ID,\
 	.driver_data = (kernel_ulong_t)&(cfg)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define INTEL_VENDOR_ID				0x8086
 #define SIS_VENDOR_ID				0x1039
 #define ATI_VENDOR_ID				0x1002
 #define ATI_DEVICE_ID				0x7914
 #define AMD_VENDOR_ID				0x1022
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PCI_MAX_BRIDGE_NUMBER			255
 #define PCI_MAX_DEVICES				32
 #define PCI_MAX_FUNCTION			8
@@ -75,11 +89,17 @@
 #define PCI_CONF_ADDRESS	0x0CF8	/*PCI Configuration Space Address */
 #define PCI_CONF_DATA		0x0CFC	/*PCI Configuration Space Data */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PCI_CLASS_BRIDGE_DEV		0x06
 #define PCI_SUBCLASS_BR_PCI_TO_PCI	0x04
 #define PCI_CAPABILITY_ID_PCI_EXPRESS	0x10
 #define PCI_CAP_ID_EXP			0x10
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define U1DONTCARE			0xFF
 #define U2DONTCARE			0xFFFF
 #define U4DONTCARE			0xFFFFFFFF
@@ -90,6 +110,10 @@
 #define RTL_PCI_8173_DID	0x8173	/*8191 SE Crab */
 #define RTL_PCI_8172_DID	0x8172	/*8191 SE RE */
 #define RTL_PCI_8171_DID	0x8171	/*8191 SE Unicron */
+<<<<<<< HEAD
+=======
+#define RTL_PCI_8723AE_DID	0x8723	/*8723AE */
+>>>>>>> refs/remotes/origin/master
 #define RTL_PCI_0045_DID	0x0045	/*8190 PCI for Ceraga */
 #define RTL_PCI_0046_DID	0x0046	/*8190 Cardbus for Ceraga */
 #define RTL_PCI_0044_DID	0x0044	/*8192e PCIE for Ceraga */
@@ -104,6 +128,10 @@
 #define RTL_PCI_8192CU_DID	0x8191	/*8192ce */
 #define RTL_PCI_8192DE_DID	0x8193	/*8192de */
 #define RTL_PCI_8192DE_DID2	0x002B	/*92DE*/
+<<<<<<< HEAD
+=======
+#define RTL_PCI_8188EE_DID	0x8179  /*8188ee*/
+>>>>>>> refs/remotes/origin/master
 
 /*8192 support 16 pages of IO registers*/
 #define RTL_MEM_MAPPED_IO_RANGE_8190PCI		0x1000
@@ -163,13 +191,23 @@ struct rtl8192_rx_ring {
 
 struct rtl_pci {
 	struct pci_dev *pdev;
+<<<<<<< HEAD
+=======
+	bool irq_enabled;
+>>>>>>> refs/remotes/origin/master
 
 	bool driver_is_goingto_unload;
 	bool up_first_time;
 	bool first_init;
 	bool being_init_adapter;
 	bool init_ready;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bool irq_enabled;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*Tx */
 	struct rtl8192_tx_ring tx_ring[RTL_PCI_MAX_TX_QUEUE_COUNT];
@@ -185,6 +223,10 @@ struct rtl_pci {
 	/*irq */
 	u8 irq_alloc;
 	u32 irq_mask[2];
+<<<<<<< HEAD
+=======
+	u32 sys_irq_mask;
+>>>>>>> refs/remotes/origin/master
 
 	/*Bcn control register setting */
 	u32 reg_bcn_ctrl_val;
@@ -224,7 +266,13 @@ struct mp_adapter {
 	u16 pcibridge_vendorid;
 	u16 pcibridge_deviceid;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 pcicfg_addrport;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 num4bytes;
 
 	u8 pcibridge_pciehdr_offset;
@@ -247,12 +295,27 @@ int rtl_pci_reset_trx_ring(struct ieee80211_hw *hw);
 
 extern struct rtl_intf_ops rtl_pci_ops;
 
+<<<<<<< HEAD
 int __devinit rtl_pci_probe(struct pci_dev *pdev,
 			    const struct pci_device_id *id);
 void rtl_pci_disconnect(struct pci_dev *pdev);
+<<<<<<< HEAD
 int rtl_pci_suspend(struct pci_dev *pdev, pm_message_t state);
 int rtl_pci_resume(struct pci_dev *pdev);
 
+=======
+int rtl_pci_suspend(struct device *dev);
+int rtl_pci_resume(struct device *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int rtl_pci_probe(struct pci_dev *pdev,
+			    const struct pci_device_id *id);
+void rtl_pci_disconnect(struct pci_dev *pdev);
+#ifdef CONFIG_PM_SLEEP
+int rtl_pci_suspend(struct device *dev);
+int rtl_pci_resume(struct device *dev);
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 static inline u8 pci_read8_sync(struct rtl_priv *rtlpriv, u32 addr)
 {
 	return readb((u8 __iomem *) rtlpriv->io.pci_mem_start + addr);
@@ -285,6 +348,8 @@ static inline void pci_write32_async(struct rtl_priv *rtlpriv,
 	writel(val, (u8 __iomem *) rtlpriv->io.pci_mem_start + addr);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void rtl_pci_raw_write_port_ulong(u32 port, u32 val)
 {
 	outl(val, port);
@@ -310,4 +375,8 @@ static inline void rtl_pci_raw_read_port_ulong(u32 port, u32 *pval)
 	*pval = inl(port);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

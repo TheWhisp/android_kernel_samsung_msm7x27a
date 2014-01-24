@@ -15,10 +15,15 @@
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/i2c.h>
 #include <linux/platform_device.h>
 #include <linux/mfd/wm8350/core.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
 
 static int wm8350_i2c_read_device(struct wm8350 *wm8350, char reg,
@@ -57,13 +62,23 @@ static int wm8350_i2c_write_device(struct wm8350 *wm8350, char reg,
 	return 0;
 }
 
+=======
+#include <linux/regmap.h>
+#include <linux/slab.h>
+
+>>>>>>> refs/remotes/origin/master
 static int wm8350_i2c_probe(struct i2c_client *i2c,
 			    const struct i2c_device_id *id)
 {
 	struct wm8350 *wm8350;
+<<<<<<< HEAD
 	int ret = 0;
 
+<<<<<<< HEAD
 	wm8350 = kzalloc(sizeof(struct wm8350), GFP_KERNEL);
+=======
+	wm8350 = devm_kzalloc(&i2c->dev, sizeof(struct wm8350), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (wm8350 == NULL)
 		return -ENOMEM;
 
@@ -80,8 +95,32 @@ static int wm8350_i2c_probe(struct i2c_client *i2c,
 	return ret;
 
 err:
+<<<<<<< HEAD
 	kfree(wm8350);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
+=======
+	struct wm8350_platform_data *pdata = dev_get_platdata(&i2c->dev);
+	int ret = 0;
+
+	wm8350 = devm_kzalloc(&i2c->dev, sizeof(struct wm8350), GFP_KERNEL);
+	if (wm8350 == NULL)
+		return -ENOMEM;
+
+	wm8350->regmap = devm_regmap_init_i2c(i2c, &wm8350_regmap);
+	if (IS_ERR(wm8350->regmap)) {
+		ret = PTR_ERR(wm8350->regmap);
+		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+			ret);
+		return ret;
+	}
+
+	i2c_set_clientdata(i2c, wm8350);
+	wm8350->dev = &i2c->dev;
+
+	return wm8350_device_init(wm8350, i2c->irq, pdata);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wm8350_i2c_remove(struct i2c_client *i2c)
@@ -89,7 +128,13 @@ static int wm8350_i2c_remove(struct i2c_client *i2c)
 	struct wm8350 *wm8350 = i2c_get_clientdata(i2c);
 
 	wm8350_device_exit(wm8350);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(wm8350);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

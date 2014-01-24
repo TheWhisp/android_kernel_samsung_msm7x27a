@@ -5,7 +5,11 @@
  *
  * SGI UV APIC functions (note: not an Intel compatible APIC)
  *
+<<<<<<< HEAD
  * Copyright (C) 2007-2010 Silicon Graphics, Inc. All rights reserved.
+=======
+ * Copyright (C) 2007-2013 Silicon Graphics, Inc. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/cpumask.h>
 #include <linux/hardirq.h>
@@ -25,6 +29,10 @@
 #include <linux/kdebug.h>
 #include <linux/delay.h>
 #include <linux/crash_dump.h>
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uv/uv_mmrs.h>
 #include <asm/uv/uv_hub.h>
@@ -36,6 +44,7 @@
 #include <asm/ipi.h>
 #include <asm/smp.h>
 #include <asm/x86_init.h>
+<<<<<<< HEAD
 #include <asm/emergency-restart.h>
 #include <asm/nmi.h>
 
@@ -45,18 +54,30 @@
 #define UV_NMI_PENDING_MASK			(1UL << 63)
 DEFINE_PER_CPU(unsigned long, cpu_last_nmi_count);
 
+=======
+#include <asm/nmi.h>
+
+>>>>>>> refs/remotes/origin/master
 DEFINE_PER_CPU(int, x2apic_extra_bits);
 
 #define PR_DEVEL(fmt, args...)	pr_devel("%s: " fmt, __func__, args)
 
 static enum uv_system_type uv_system_type;
 static u64 gru_start_paddr, gru_end_paddr;
+<<<<<<< HEAD
+=======
+static u64 gru_dist_base, gru_first_node_paddr = -1LL, gru_last_node_paddr;
+static u64 gru_dist_lmask, gru_dist_umask;
+>>>>>>> refs/remotes/origin/master
 static union uvh_apicid uvh_apicid;
 int uv_min_hub_revision_id;
 EXPORT_SYMBOL_GPL(uv_min_hub_revision_id);
 unsigned int uv_apicid_hibits;
 EXPORT_SYMBOL_GPL(uv_apicid_hibits);
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(uv_nmi_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct apic apic_x2apic_uv_x;
 
@@ -72,7 +93,24 @@ static unsigned long __init uv_early_read_mmr(unsigned long addr)
 
 static inline bool is_GRU_range(u64 start, u64 end)
 {
+<<<<<<< HEAD
 	return start >= gru_start_paddr && end <= gru_end_paddr;
+=======
+	if (gru_dist_base) {
+		u64 su = start & gru_dist_umask; /* upper (incl pnode) bits */
+		u64 sl = start & gru_dist_lmask; /* base offset bits */
+		u64 eu = end & gru_dist_umask;
+		u64 el = end & gru_dist_lmask;
+
+		/* Must reside completely within a single GRU range */
+		return (sl == gru_dist_base && el == gru_dist_base &&
+			su >= gru_first_node_paddr &&
+			su <= gru_last_node_paddr &&
+			eu == su);
+	} else {
+		return start >= gru_start_paddr && end <= gru_end_paddr;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static bool uv_is_untracked_pat_range(u64 start, u64 end)
@@ -91,8 +129,26 @@ static int __init early_get_pnodeid(void)
 	m_n_config.v = uv_early_read_mmr(UVH_RH_GAM_CONFIG_MMR);
 	uv_min_hub_revision_id = node_id.s.revision;
 
+<<<<<<< HEAD
 	if (node_id.s.part_number == UV2_HUB_PART_NUMBER)
 		uv_min_hub_revision_id += UV2_HUB_REVISION_BASE - 1;
+<<<<<<< HEAD
+=======
+	if (node_id.s.part_number == UV2_HUB_PART_NUMBER_X)
+		uv_min_hub_revision_id += UV2_HUB_REVISION_BASE - 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (node_id.s.part_number) {
+	case UV2_HUB_PART_NUMBER:
+	case UV2_HUB_PART_NUMBER_X:
+		uv_min_hub_revision_id += UV2_HUB_REVISION_BASE - 1;
+		break;
+	case UV3_HUB_PART_NUMBER:
+	case UV3_HUB_PART_NUMBER_X:
+		uv_min_hub_revision_id += UV3_HUB_REVISION_BASE;
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	uv_hub_info->hub_revision = uv_min_hub_revision_id;
 	pnode = (node_id.s.node_id >> 1) & ((1 << m_n_config.s.n_skt) - 1);
@@ -128,6 +184,7 @@ static void __init uv_set_apicid_hibit(void)
 
 static int __init uv_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
 {
+<<<<<<< HEAD
 	int pnodeid, is_uv1, is_uv2;
 
 	is_uv1 = !strcmp(oem_id, "SGI");
@@ -135,6 +192,18 @@ static int __init uv_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
 	if (is_uv1 || is_uv2) {
 		uv_hub_info->hub_revision =
 			is_uv1 ? UV1_HUB_REVISION_BASE : UV2_HUB_REVISION_BASE;
+=======
+	int pnodeid, is_uv1, is_uv2, is_uv3;
+
+	is_uv1 = !strcmp(oem_id, "SGI");
+	is_uv2 = !strcmp(oem_id, "SGI2");
+	is_uv3 = !strncmp(oem_id, "SGI3", 4);	/* there are varieties of UV3 */
+	if (is_uv1 || is_uv2 || is_uv3) {
+		uv_hub_info->hub_revision =
+			(is_uv1 ? UV1_HUB_REVISION_BASE :
+			(is_uv2 ? UV2_HUB_REVISION_BASE :
+				  UV3_HUB_REVISION_BASE));
+>>>>>>> refs/remotes/origin/master
 		pnodeid = early_get_pnodeid();
 		early_get_apic_pnode_shift();
 		x86_platform.is_untracked_pat_range =  uv_is_untracked_pat_range;
@@ -183,6 +252,7 @@ EXPORT_SYMBOL_GPL(uv_possible_blades);
 unsigned long sn_rtc_cycles_per_second;
 EXPORT_SYMBOL(sn_rtc_cycles_per_second);
 
+<<<<<<< HEAD
 static const struct cpumask *uv_target_cpus(void)
 {
 	return cpu_online_mask;
@@ -195,6 +265,9 @@ static void uv_vector_allocation_domain(int cpu, struct cpumask *retmask)
 }
 
 static int __cpuinit uv_wakeup_secondary(int phys_apicid, unsigned long start_rip)
+=======
+static int uv_wakeup_secondary(int phys_apicid, unsigned long start_rip)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_SMP
 	unsigned long val;
@@ -264,6 +337,20 @@ static void uv_send_IPI_all(int vector)
 	uv_send_IPI_mask(cpu_online_mask, vector);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int uv_apic_id_valid(int apicid)
+{
+	return 1;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int uv_apic_id_registered(void)
 {
 	return 1;
@@ -273,6 +360,7 @@ static void uv_init_apic_ldr(void)
 {
 }
 
+<<<<<<< HEAD
 static unsigned int uv_cpu_mask_to_apicid(const struct cpumask *cpumask)
 {
 	/*
@@ -292,6 +380,14 @@ uv_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
 			  const struct cpumask *andmask)
 {
 	int cpu;
+=======
+static int
+uv_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
+			  const struct cpumask *andmask,
+			  unsigned int *apicid)
+{
+	int unsigned cpu;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We're using fixed IRQ delivery, can only return one phys APIC ID.
@@ -301,7 +397,17 @@ uv_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
 		if (cpumask_test_cpu(cpu, cpu_online_mask))
 			break;
 	}
+<<<<<<< HEAD
 	return per_cpu(x86_cpu_to_apicid, cpu) | uv_apicid_hibits;
+=======
+
+	if (likely(cpu < nr_cpu_ids)) {
+		*apicid = per_cpu(x86_cpu_to_apicid, cpu) | uv_apicid_hibits;
+		return 0;
+	}
+
+	return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int x2apic_get_apic_id(unsigned long x)
@@ -349,18 +455,34 @@ static struct apic __refdata apic_x2apic_uv_x = {
 	.name				= "UV large system",
 	.probe				= uv_probe,
 	.acpi_madt_oem_check		= uv_acpi_madt_oem_check,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.apic_id_valid			= uv_apic_id_valid,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.apic_id_valid			= uv_apic_id_valid,
+>>>>>>> refs/remotes/origin/master
 	.apic_id_registered		= uv_apic_id_registered,
 
 	.irq_delivery_mode		= dest_Fixed,
 	.irq_dest_mode			= 0, /* physical */
 
+<<<<<<< HEAD
 	.target_cpus			= uv_target_cpus,
+=======
+	.target_cpus			= online_target_cpus,
+>>>>>>> refs/remotes/origin/master
 	.disable_esr			= 0,
 	.dest_logical			= APIC_DEST_LOGICAL,
 	.check_apicid_used		= NULL,
 	.check_apicid_present		= NULL,
 
+<<<<<<< HEAD
 	.vector_allocation_domain	= uv_vector_allocation_domain,
+=======
+	.vector_allocation_domain	= default_vector_allocation_domain,
+>>>>>>> refs/remotes/origin/master
 	.init_apic_ldr			= uv_init_apic_ldr,
 
 	.ioapic_phys_id_map		= NULL,
@@ -378,7 +500,10 @@ static struct apic __refdata apic_x2apic_uv_x = {
 	.set_apic_id			= set_apic_id,
 	.apic_id_mask			= 0xFFFFFFFFu,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= uv_cpu_mask_to_apicid,
+=======
+>>>>>>> refs/remotes/origin/master
 	.cpu_mask_to_apicid_and		= uv_cpu_mask_to_apicid_and,
 
 	.send_IPI_mask			= uv_send_IPI_mask,
@@ -396,13 +521,21 @@ static struct apic __refdata apic_x2apic_uv_x = {
 
 	.read				= native_apic_msr_read,
 	.write				= native_apic_msr_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_msr_eoi_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_x2apic_icr_read,
 	.icr_write			= native_x2apic_icr_write,
 	.wait_icr_idle			= native_x2apic_wait_icr_idle,
 	.safe_wait_icr_idle		= native_safe_x2apic_wait_icr_idle,
 };
 
+<<<<<<< HEAD
 static __cpuinit void set_x2apic_extra_bits(int pnode)
+=======
+static void set_x2apic_extra_bits(int pnode)
+>>>>>>> refs/remotes/origin/master
 {
 	__this_cpu_write(x2apic_extra_bits, pnode << uvh_apicid.s.pnode_shift);
 }
@@ -460,26 +593,86 @@ static __init void map_high(char *id, unsigned long base, int pshift,
 
 	paddr = base << pshift;
 	bytes = (1UL << bshift) * (max_pnode + 1);
+<<<<<<< HEAD
 	printk(KERN_INFO "UV: Map %s_HI 0x%lx - 0x%lx\n", id, paddr,
 						paddr + bytes);
+=======
+	if (!paddr) {
+		pr_info("UV: Map %s_HI base address NULL\n", id);
+		return;
+	}
+	pr_debug("UV: Map %s_HI 0x%lx - 0x%lx\n", id, paddr, paddr + bytes);
+>>>>>>> refs/remotes/origin/master
 	if (map_type == map_uc)
 		init_extra_mapping_uc(paddr, bytes);
 	else
 		init_extra_mapping_wb(paddr, bytes);
+<<<<<<< HEAD
 
 }
+=======
+}
+
+static __init void map_gru_distributed(unsigned long c)
+{
+	union uvh_rh_gam_gru_overlay_config_mmr_u gru;
+	u64 paddr;
+	unsigned long bytes;
+	int nid;
+
+	gru.v = c;
+	/* only base bits 42:28 relevant in dist mode */
+	gru_dist_base = gru.v & 0x000007fff0000000UL;
+	if (!gru_dist_base) {
+		pr_info("UV: Map GRU_DIST base address NULL\n");
+		return;
+	}
+	bytes = 1UL << UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_SHFT;
+	gru_dist_lmask = ((1UL << uv_hub_info->m_val) - 1) & ~(bytes - 1);
+	gru_dist_umask = ~((1UL << uv_hub_info->m_val) - 1);
+	gru_dist_base &= gru_dist_lmask; /* Clear bits above M */
+	for_each_online_node(nid) {
+		paddr = ((u64)uv_node_to_pnode(nid) << uv_hub_info->m_val) |
+				gru_dist_base;
+		init_extra_mapping_wb(paddr, bytes);
+		gru_first_node_paddr = min(paddr, gru_first_node_paddr);
+		gru_last_node_paddr = max(paddr, gru_last_node_paddr);
+	}
+	/* Save upper (63:M) bits of address only for is_GRU_range */
+	gru_first_node_paddr &= gru_dist_umask;
+	gru_last_node_paddr &= gru_dist_umask;
+	pr_debug("UV: Map GRU_DIST base 0x%016llx  0x%016llx - 0x%016llx\n",
+		gru_dist_base, gru_first_node_paddr, gru_last_node_paddr);
+}
+
+>>>>>>> refs/remotes/origin/master
 static __init void map_gru_high(int max_pnode)
 {
 	union uvh_rh_gam_gru_overlay_config_mmr_u gru;
 	int shift = UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_SHFT;
 
 	gru.v = uv_read_local_mmr(UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR);
+<<<<<<< HEAD
 	if (gru.s.enable) {
 		map_high("GRU", gru.s.base, shift, shift, max_pnode, map_wb);
 		gru_start_paddr = ((u64)gru.s.base << shift);
 		gru_end_paddr = gru_start_paddr + (1UL << shift) * (max_pnode + 1);
 
 	}
+=======
+	if (!gru.s.enable) {
+		pr_info("UV: GRU disabled\n");
+		return;
+	}
+
+	if (is_uv3_hub() && gru.s3.mode) {
+		map_gru_distributed(gru.v);
+		return;
+	}
+	map_high("GRU", gru.s.base, shift, shift, max_pnode, map_wb);
+	gru_start_paddr = ((u64)gru.s.base << shift);
+	gru_end_paddr = gru_start_paddr + (1UL << shift) * (max_pnode + 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static __init void map_mmr_high(int max_pnode)
@@ -490,6 +683,7 @@ static __init void map_mmr_high(int max_pnode)
 	mmr.v = uv_read_local_mmr(UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR);
 	if (mmr.s.enable)
 		map_high("MMR", mmr.s.base, shift, shift, max_pnode, map_uc);
+<<<<<<< HEAD
 }
 
 static __init void map_mmioh_high(int max_pnode)
@@ -507,6 +701,148 @@ static __init void map_mmioh_high(int max_pnode)
 		shift = UV2H_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR_BASE_SHFT;
 		map_high("MMIOH", mmioh.s2.base, shift, mmioh.s2.m_io,
 			max_pnode, map_uc);
+=======
+	else
+		pr_info("UV: MMR disabled\n");
+}
+
+/*
+ * This commonality works because both 0 & 1 versions of the MMIOH OVERLAY
+ * and REDIRECT MMR regs are exactly the same on UV3.
+ */
+struct mmioh_config {
+	unsigned long overlay;
+	unsigned long redirect;
+	char *id;
+};
+
+static __initdata struct mmioh_config mmiohs[] = {
+	{
+		UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_MMR,
+		UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG0_MMR,
+		"MMIOH0"
+	},
+	{
+		UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_MMR,
+		UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG1_MMR,
+		"MMIOH1"
+	},
+};
+
+static __init void map_mmioh_high_uv3(int index, int min_pnode, int max_pnode)
+{
+	union uv3h_rh_gam_mmioh_overlay_config0_mmr_u overlay;
+	unsigned long mmr;
+	unsigned long base;
+	int i, n, shift, m_io, max_io;
+	int nasid, lnasid, fi, li;
+	char *id;
+
+	id = mmiohs[index].id;
+	overlay.v = uv_read_local_mmr(mmiohs[index].overlay);
+	pr_info("UV: %s overlay 0x%lx base:0x%x m_io:%d\n",
+		id, overlay.v, overlay.s3.base, overlay.s3.m_io);
+	if (!overlay.s3.enable) {
+		pr_info("UV: %s disabled\n", id);
+		return;
+	}
+
+	shift = UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_MMR_BASE_SHFT;
+	base = (unsigned long)overlay.s3.base;
+	m_io = overlay.s3.m_io;
+	mmr = mmiohs[index].redirect;
+	n = UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG0_MMR_DEPTH;
+	min_pnode *= 2;				/* convert to NASID */
+	max_pnode *= 2;
+	max_io = lnasid = fi = li = -1;
+
+	for (i = 0; i < n; i++) {
+		union uv3h_rh_gam_mmioh_redirect_config0_mmr_u redirect;
+
+		redirect.v = uv_read_local_mmr(mmr + i * 8);
+		nasid = redirect.s3.nasid;
+		if (nasid < min_pnode || max_pnode < nasid)
+			nasid = -1;		/* invalid NASID */
+
+		if (nasid == lnasid) {
+			li = i;
+			if (i != n-1)		/* last entry check */
+				continue;
+		}
+
+		/* check if we have a cached (or last) redirect to print */
+		if (lnasid != -1 || (i == n-1 && nasid != -1))  {
+			unsigned long addr1, addr2;
+			int f, l;
+
+			if (lnasid == -1) {
+				f = l = i;
+				lnasid = nasid;
+			} else {
+				f = fi;
+				l = li;
+			}
+			addr1 = (base << shift) +
+				f * (unsigned long)(1 << m_io);
+			addr2 = (base << shift) +
+				(l + 1) * (unsigned long)(1 << m_io);
+			pr_info("UV: %s[%03d..%03d] NASID 0x%04x ADDR 0x%016lx - 0x%016lx\n",
+				id, fi, li, lnasid, addr1, addr2);
+			if (max_io < l)
+				max_io = l;
+		}
+		fi = li = i;
+		lnasid = nasid;
+	}
+
+	pr_info("UV: %s base:0x%lx shift:%d M_IO:%d MAX_IO:%d\n",
+		id, base, shift, m_io, max_io);
+
+	if (max_io >= 0)
+		map_high(id, base, shift, m_io, max_io, map_uc);
+}
+
+static __init void map_mmioh_high(int min_pnode, int max_pnode)
+{
+	union uvh_rh_gam_mmioh_overlay_config_mmr_u mmioh;
+	unsigned long mmr, base;
+	int shift, enable, m_io, n_io;
+
+	if (is_uv3_hub()) {
+		/* Map both MMIOH Regions */
+		map_mmioh_high_uv3(0, min_pnode, max_pnode);
+		map_mmioh_high_uv3(1, min_pnode, max_pnode);
+		return;
+	}
+
+	if (is_uv1_hub()) {
+		mmr = UV1H_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR;
+		shift = UV1H_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR_BASE_SHFT;
+		mmioh.v = uv_read_local_mmr(mmr);
+		enable = !!mmioh.s1.enable;
+		base = mmioh.s1.base;
+		m_io = mmioh.s1.m_io;
+		n_io = mmioh.s1.n_io;
+	} else if (is_uv2_hub()) {
+		mmr = UV2H_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR;
+		shift = UV2H_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR_BASE_SHFT;
+		mmioh.v = uv_read_local_mmr(mmr);
+		enable = !!mmioh.s2.enable;
+		base = mmioh.s2.base;
+		m_io = mmioh.s2.m_io;
+		n_io = mmioh.s2.n_io;
+	} else
+		return;
+
+	if (enable) {
+		max_pnode &= (1 << n_io) - 1;
+		pr_info(
+		    "UV: base:0x%lx shift:%d N_IO:%d M_IO:%d max_pnode:0x%x\n",
+			base, shift, m_io, n_io, max_pnode);
+		map_high("MMIOH", base, shift, m_io, max_pnode, map_uc);
+	} else {
+		pr_info("UV: MMIOH disabled\n");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -557,7 +893,11 @@ static void uv_heartbeat(unsigned long ignored)
 	mod_timer_pinned(timer, jiffies + SCIR_CPU_HB_INTERVAL);
 }
 
+<<<<<<< HEAD
 static void __cpuinit uv_heartbeat_enable(int cpu)
+=======
+static void uv_heartbeat_enable(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	while (!uv_cpu_hub_info(cpu)->scir.enabled) {
 		struct timer_list *timer = &uv_cpu_hub_info(cpu)->scir.timer;
@@ -574,7 +914,11 @@ static void __cpuinit uv_heartbeat_enable(int cpu)
 }
 
 #ifdef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
 static void __cpuinit uv_heartbeat_disable(int cpu)
+=======
+static void uv_heartbeat_disable(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	if (uv_cpu_hub_info(cpu)->scir.enabled) {
 		uv_cpu_hub_info(cpu)->scir.enabled = 0;
@@ -586,8 +930,13 @@ static void __cpuinit uv_heartbeat_disable(int cpu)
 /*
  * cpu hotplug notifier
  */
+<<<<<<< HEAD
 static __cpuinit int uv_scir_cpu_notify(struct notifier_block *self,
 				       unsigned long action, void *hcpu)
+=======
+static int uv_scir_cpu_notify(struct notifier_block *self, unsigned long action,
+			      void *hcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	long cpu = (long)hcpu;
 
@@ -657,7 +1006,11 @@ int uv_set_vga_state(struct pci_dev *pdev, bool decode,
  * Called on each cpu to initialize the per_cpu UV data area.
  * FIXME: hotplug not supported yet
  */
+<<<<<<< HEAD
 void __cpuinit uv_cpu_init(void)
+=======
+void uv_cpu_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* CPU 0 initilization will be done via uv_system_init. */
 	if (!uv_blade_info)
@@ -669,14 +1022,20 @@ void __cpuinit uv_cpu_init(void)
 		set_x2apic_extra_bits(uv_hub_info->pnode);
 }
 
+<<<<<<< HEAD
 /*
  * When NMI is received, print a stack trace.
  */
+<<<<<<< HEAD
 int uv_handle_nmi(struct notifier_block *self, unsigned long reason, void *data)
+=======
+int uv_handle_nmi(unsigned int reason, struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long real_uv_nmi;
 	int bid;
 
+<<<<<<< HEAD
 	if (reason != DIE_NMIUNKNOWN)
 		return NOTIFY_OK;
 
@@ -684,6 +1043,8 @@ int uv_handle_nmi(struct notifier_block *self, unsigned long reason, void *data)
 		/* do nothing if entering the crash kernel */
 		return NOTIFY_OK;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Each blade has an MMR that indicates when an NMI has been sent
 	 * to cpus on the blade. If an NMI is detected, atomically
@@ -704,7 +1065,11 @@ int uv_handle_nmi(struct notifier_block *self, unsigned long reason, void *data)
 	}
 
 	if (likely(__get_cpu_var(cpu_last_nmi_count) == uv_blade_info[bid].nmi_count))
+<<<<<<< HEAD
 		return NOTIFY_DONE;
+=======
+		return NMI_DONE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__get_cpu_var(cpu_last_nmi_count) = uv_blade_info[bid].nmi_count;
 
@@ -717,6 +1082,7 @@ int uv_handle_nmi(struct notifier_block *self, unsigned long reason, void *data)
 	dump_stack();
 	spin_unlock(&uv_nmi_lock);
 
+<<<<<<< HEAD
 	return NOTIFY_STOP;
 }
 
@@ -728,6 +1094,14 @@ static struct notifier_block uv_dump_stack_nmi_nb = {
 void uv_register_nmi_notifier(void)
 {
 	if (register_die_notifier(&uv_dump_stack_nmi_nb))
+=======
+	return NMI_HANDLED;
+}
+
+void uv_register_nmi_notifier(void)
+{
+	if (register_nmi_handler(NMI_UNKNOWN, uv_handle_nmi, 0, "uv"))
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_WARNING "UV NMI handler failed to register\n");
 }
 
@@ -755,11 +1129,28 @@ void __init uv_system_init(void)
 	unsigned short pnode_mask, pnode_io_mask;
 
 	printk(KERN_INFO "UV: Found %s hub\n", is_uv1_hub() ? "UV1" : "UV2");
+=======
+void __init uv_system_init(void)
+{
+	union uvh_rh_gam_config_mmr_u  m_n_config;
+	union uvh_node_id_u node_id;
+	unsigned long gnode_upper, lowmem_redir_base, lowmem_redir_size;
+	int bytes, nid, cpu, lcpu, pnode, blade, i, j, m_val, n_val;
+	int gnode_extra, min_pnode = 999999, max_pnode = -1;
+	unsigned long mmr_base, present, paddr;
+	unsigned short pnode_mask;
+	char *hub = (is_uv1_hub() ? "UV1" :
+		    (is_uv2_hub() ? "UV2" :
+				    "UV3"));
+
+	pr_info("UV: Found %s hub\n", hub);
+>>>>>>> refs/remotes/origin/master
 	map_low_mmrs();
 
 	m_n_config.v = uv_read_local_mmr(UVH_RH_GAM_CONFIG_MMR );
 	m_val = m_n_config.s.m_skt;
 	n_val = m_n_config.s.n_skt;
+<<<<<<< HEAD
 	mmioh.v = uv_read_local_mmr(UVH_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR);
 	n_io = is_uv1_hub() ? mmioh.s1.n_io : mmioh.s2.n_io;
 	mmr_base =
@@ -767,21 +1158,38 @@ void __init uv_system_init(void)
 	    ~UV_MMR_ENABLE;
 	pnode_mask = (1 << n_val) - 1;
 	pnode_io_mask = (1 << n_io) - 1;
+=======
+	pnode_mask = (1 << n_val) - 1;
+	mmr_base =
+	    uv_read_local_mmr(UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR) &
+	    ~UV_MMR_ENABLE;
+>>>>>>> refs/remotes/origin/master
 
 	node_id.v = uv_read_local_mmr(UVH_NODE_ID);
 	gnode_extra = (node_id.s.node_id & ~((1 << n_val) - 1)) >> 1;
 	gnode_upper = ((unsigned long)gnode_extra  << m_val);
+<<<<<<< HEAD
 	printk(KERN_INFO "UV: N %d, M %d, N_IO: %d, gnode_upper 0x%lx, gnode_extra 0x%x, pnode_mask 0x%x, pnode_io_mask 0x%x\n",
 			n_val, m_val, n_io, gnode_upper, gnode_extra, pnode_mask, pnode_io_mask);
 
 	printk(KERN_DEBUG "UV: global MMR base 0x%lx\n", mmr_base);
+=======
+	pr_info("UV: N:%d M:%d pnode_mask:0x%x gnode_upper/extra:0x%lx/0x%x\n",
+			n_val, m_val, pnode_mask, gnode_upper, gnode_extra);
+
+	pr_info("UV: global MMR base 0x%lx\n", mmr_base);
+>>>>>>> refs/remotes/origin/master
 
 	for(i = 0; i < UVH_NODE_PRESENT_TABLE_DEPTH; i++)
 		uv_possible_blades +=
 		  hweight64(uv_read_local_mmr( UVH_NODE_PRESENT_TABLE + i * 8));
 
 	/* uv_num_possible_blades() is really the hub count */
+<<<<<<< HEAD
 	printk(KERN_INFO "UV: Found %d blades, %d hubs\n",
+=======
+	pr_info("UV: Found %d blades, %d hubs\n",
+>>>>>>> refs/remotes/origin/master
 			is_uv1_hub() ? uv_num_possible_blades() :
 			(uv_num_possible_blades() + 1) / 2,
 			uv_num_possible_blades());
@@ -816,6 +1224,10 @@ void __init uv_system_init(void)
 			uv_blade_info[blade].nr_possible_cpus = 0;
 			uv_blade_info[blade].nr_online_cpus = 0;
 			spin_lock_init(&uv_blade_info[blade].nmi_lock);
+<<<<<<< HEAD
+=======
+			min_pnode = min(pnode, min_pnode);
+>>>>>>> refs/remotes/origin/master
 			max_pnode = max(pnode, max_pnode);
 			blade++;
 		}
@@ -878,8 +1290,14 @@ void __init uv_system_init(void)
 
 	map_gru_high(max_pnode);
 	map_mmr_high(max_pnode);
+<<<<<<< HEAD
 	map_mmioh_high(max_pnode & pnode_io_mask);
 
+=======
+	map_mmioh_high(min_pnode, max_pnode);
+
+	uv_nmi_setup();
+>>>>>>> refs/remotes/origin/master
 	uv_cpu_init();
 	uv_scir_register_cpu_notifier();
 	uv_register_nmi_notifier();

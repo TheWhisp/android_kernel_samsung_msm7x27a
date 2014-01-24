@@ -37,9 +37,16 @@
 int __ref shpchp_configure_device(struct slot *p_slot)
 {
 	struct pci_dev *dev;
+<<<<<<< HEAD
 	struct pci_bus *parent = p_slot->ctrl->pci_dev->subordinate;
 	int num, fn;
 	struct controller *ctrl = p_slot->ctrl;
+=======
+	struct controller *ctrl = p_slot->ctrl;
+	struct pci_dev *bridge = ctrl->pci_dev;
+	struct pci_bus *parent = bridge->subordinate;
+	int num;
+>>>>>>> refs/remotes/origin/master
 
 	dev = pci_get_slot(parent, PCI_DEVFN(p_slot->device, 0));
 	if (dev) {
@@ -56,6 +63,7 @@ int __ref shpchp_configure_device(struct slot *p_slot)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	for (fn = 0; fn < 8; fn++) {
 		dev = pci_get_slot(parent, PCI_DEVFN(p_slot->device, fn));
 		if (!dev)
@@ -94,20 +102,47 @@ int __ref shpchp_configure_device(struct slot *p_slot)
 	pci_bus_assign_resources(parent);
 	pci_bus_add_devices(parent);
 	pci_enable_bridges(parent);
+=======
+	list_for_each_entry(dev, &parent->devices, bus_list) {
+		if (PCI_SLOT(dev->devfn) != p_slot->device)
+			continue;
+		if ((dev->hdr_type == PCI_HEADER_TYPE_BRIDGE) ||
+		    (dev->hdr_type == PCI_HEADER_TYPE_CARDBUS))
+			pci_hp_add_bridge(dev);
+	}
+
+	pci_assign_unassigned_bridge_resources(bridge);
+
+	list_for_each_entry(dev, &parent->devices, bus_list) {
+		if (PCI_SLOT(dev->devfn) != p_slot->device)
+			continue;
+		pci_configure_slot(dev);
+	}
+
+	pci_bus_add_devices(parent);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 int shpchp_unconfigure_device(struct slot *p_slot)
 {
 	int rc = 0;
+<<<<<<< HEAD
 	int j;
 	u8 bctl = 0;
 	struct pci_bus *parent = p_slot->ctrl->pci_dev->subordinate;
+=======
+	u8 bctl = 0;
+	struct pci_bus *parent = p_slot->ctrl->pci_dev->subordinate;
+	struct pci_dev *dev, *temp;
+>>>>>>> refs/remotes/origin/master
 	struct controller *ctrl = p_slot->ctrl;
 
 	ctrl_dbg(ctrl, "%s: domain:bus:dev = %04x:%02x:%02x\n",
 		 __func__, pci_domain_nr(parent), p_slot->bus, p_slot->device);
 
+<<<<<<< HEAD
 	for (j = 0; j < 8 ; j++) {
 		struct pci_dev *temp = pci_get_slot(parent,
 				(p_slot->device << 3) | j);
@@ -120,12 +155,35 @@ int shpchp_unconfigure_device(struct slot *p_slot)
 					 "Cannot remove display device %s\n",
 					 pci_name(temp));
 				pci_dev_put(temp);
+=======
+	list_for_each_entry_safe(dev, temp, &parent->devices, bus_list) {
+		if (PCI_SLOT(dev->devfn) != p_slot->device)
+			continue;
+
+		pci_dev_get(dev);
+		if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE) {
+			pci_read_config_byte(dev, PCI_BRIDGE_CONTROL, &bctl);
+			if (bctl & PCI_BRIDGE_CTL_VGA) {
+				ctrl_err(ctrl,
+					 "Cannot remove display device %s\n",
+					 pci_name(dev));
+				pci_dev_put(dev);
+>>>>>>> refs/remotes/origin/master
 				rc = -EINVAL;
 				break;
 			}
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pci_remove_bus_device(temp);
+=======
+		pci_stop_and_remove_bus_device(temp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		pci_dev_put(temp);
+=======
+		pci_stop_and_remove_bus_device(dev);
+		pci_dev_put(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 	return rc;
 }

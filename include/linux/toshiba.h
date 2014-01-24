@@ -16,6 +16,7 @@
  * General Public License for more details.
  *
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_TOSHIBA_H
 #define _LINUX_TOSHIBA_H
@@ -37,4 +38,12 @@ typedef struct {
 int tosh_smm(SMMRegisters *regs);
 #endif /* __KERNEL__ */
 
+=======
+#ifndef _LINUX_TOSHIBA_H
+#define _LINUX_TOSHIBA_H
+
+#include <uapi/linux/toshiba.h>
+
+int tosh_smm(SMMRegisters *regs);
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -21,7 +21,13 @@
 #include <linux/spinlock.h>
 #include <linux/quicklist.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
 #include <asm/tlb.h>
@@ -79,8 +85,18 @@ struct page *pte_alloc_one(struct mm_struct *mm, unsigned long address)
 #else
 	pte = alloc_pages(GFP_KERNEL|__GFP_REPEAT, 0);
 #endif
+<<<<<<< HEAD
 	if (pte)
 		clear_highpage(pte);
+=======
+	if (!pte)
+		return NULL;
+	clear_highpage(pte);
+	if (!pgtable_page_ctor(pte)) {
+		__free_page(pte);
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 	return pte;
 }
 
@@ -96,7 +112,11 @@ struct page *pte_alloc_one(struct mm_struct *mm, unsigned long address)
  * checks at dup_mmap(), exec(), and other mmlist addition points
  * could be used. The locking scheme was chosen on the basis of
  * manfred's recommendations and having no core impact whatsoever.
+<<<<<<< HEAD
  * -- wli
+=======
+ * -- nyc
+>>>>>>> refs/remotes/origin/master
  */
 DEFINE_SPINLOCK(pgd_lock);
 struct page *pgd_list;

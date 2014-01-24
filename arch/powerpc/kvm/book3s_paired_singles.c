@@ -24,6 +24,14 @@
 #include <asm/kvm_fpu.h>
 #include <asm/reg.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/vmalloc.h>
 
 /* #define DEBUG */
@@ -196,7 +204,17 @@ static int kvmppc_emulate_fpr_load(struct kvm_run *run, struct kvm_vcpu *vcpu,
 		kvmppc_inject_pf(vcpu, addr, false);
 		goto done_load;
 	} else if (r == EMULATE_DO_MMIO) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		emulated = kvmppc_handle_load(run, vcpu, KVM_REG_FPR | rs, len, 1);
+=======
+		emulated = kvmppc_handle_load(run, vcpu, KVM_MMIO_REG_FPR | rs,
+					      len, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		emulated = kvmppc_handle_load(run, vcpu, KVM_MMIO_REG_FPR | rs,
+					      len, 1);
+>>>>>>> refs/remotes/origin/master
 		goto done_load;
 	}
 
@@ -286,11 +304,27 @@ static int kvmppc_emulate_psq_load(struct kvm_run *run, struct kvm_vcpu *vcpu,
 		kvmppc_inject_pf(vcpu, addr, false);
 		goto done_load;
 	} else if ((r == EMULATE_DO_MMIO) && w) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		emulated = kvmppc_handle_load(run, vcpu, KVM_REG_FPR | rs, 4, 1);
 		vcpu->arch.qpr[rs] = tmp[1];
 		goto done_load;
 	} else if (r == EMULATE_DO_MMIO) {
 		emulated = kvmppc_handle_load(run, vcpu, KVM_REG_FQPR | rs, 8, 1);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		emulated = kvmppc_handle_load(run, vcpu, KVM_MMIO_REG_FPR | rs,
+					      4, 1);
+		vcpu->arch.qpr[rs] = tmp[1];
+		goto done_load;
+	} else if (r == EMULATE_DO_MMIO) {
+		emulated = kvmppc_handle_load(run, vcpu, KVM_MMIO_REG_FQPR | rs,
+					      8, 1);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto done_load;
 	}
 

@@ -93,7 +93,11 @@ struct clock_event_device cf_pit_clockevent = {
 	.set_mode	= init_cf_pit_timer,
 	.set_next_event	= cf_pit_next_event,
 	.shift		= 32,
+<<<<<<< HEAD
 	.irq		= MCFINT_VECBASE + MCFINT_PIT1,
+=======
+	.irq		= MCF_IRQ_PIT1,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -118,7 +122,11 @@ static irqreturn_t pit_tick(int irq, void *dummy)
 
 static struct irqaction pit_irq = {
 	.name	 = "timer",
+<<<<<<< HEAD
 	.flags	 = IRQF_DISABLED | IRQF_TIMER,
+=======
+	.flags	 = IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 	.handler = pit_tick,
 };
 
@@ -144,13 +152,27 @@ static struct clocksource pit_clk = {
 	.name	= "pit",
 	.rating	= 100,
 	.read	= pit_read_clk,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.shift	= 20,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.mask	= CLOCKSOURCE_MASK(32),
 };
 
 /***************************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void hw_timer_init(void)
+=======
+void hw_timer_init(irq_handler_t handler)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void hw_timer_init(irq_handler_t handler)
+>>>>>>> refs/remotes/origin/master
 {
 	cf_pit_clockevent.cpumask = cpumask_of(smp_processor_id());
 	cf_pit_clockevent.mult = div_sc(FREQ, NSEC_PER_SEC, 32);
@@ -160,10 +182,20 @@ void hw_timer_init(void)
 		clockevent_delta2ns(0x3f, &cf_pit_clockevent);
 	clockevents_register_device(&cf_pit_clockevent);
 
+<<<<<<< HEAD
 	setup_irq(MCFINT_VECBASE + MCFINT_PIT1, &pit_irq);
 
+<<<<<<< HEAD
 	pit_clk.mult = clocksource_hz2mult(FREQ, pit_clk.shift);
 	clocksource_register(&pit_clk);
+=======
+	clocksource_register_hz(&pit_clk, FREQ);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_irq(MCF_IRQ_PIT1, &pit_irq);
+
+	clocksource_register_hz(&pit_clk, FREQ);
+>>>>>>> refs/remotes/origin/master
 }
 
 /***************************************************************************/

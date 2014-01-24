@@ -56,7 +56,11 @@ static int octeon_rng_data_read(struct hwrng *rng, u32 *data)
 	return sizeof(u32);
 }
 
+<<<<<<< HEAD
 static int __devinit octeon_rng_probe(struct platform_device *pdev)
+=======
+static int octeon_rng_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res_ports;
 	struct resource *res_result;
@@ -75,23 +79,36 @@ static int __devinit octeon_rng_probe(struct platform_device *pdev)
 
 	res_ports = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res_ports)
+<<<<<<< HEAD
 		goto err_ports;
 
 	res_result = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 	if (!res_result)
 		goto err_ports;
+=======
+		return -ENOENT;
+
+	res_result = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+	if (!res_result)
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/master
 
 
 	rng->control_status = devm_ioremap_nocache(&pdev->dev,
 						   res_ports->start,
 						   sizeof(u64));
 	if (!rng->control_status)
+<<<<<<< HEAD
 		goto err_ports;
+=======
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/master
 
 	rng->result = devm_ioremap_nocache(&pdev->dev,
 					   res_result->start,
 					   sizeof(u64));
 	if (!rng->result)
+<<<<<<< HEAD
 		goto err_r;
 
 	rng->ops = ops;
@@ -100,10 +117,21 @@ static int __devinit octeon_rng_probe(struct platform_device *pdev)
 	ret = hwrng_register(&rng->ops);
 	if (ret)
 		goto err;
+=======
+		return -ENOENT;
+
+	rng->ops = ops;
+
+	platform_set_drvdata(pdev, &rng->ops);
+	ret = hwrng_register(&rng->ops);
+	if (ret)
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(&pdev->dev, "Octeon Random Number Generator\n");
 
 	return 0;
+<<<<<<< HEAD
 err:
 	devm_iounmap(&pdev->dev, rng->control_status);
 err_r:
@@ -111,11 +139,17 @@ err_r:
 err_ports:
 	devm_kfree(&pdev->dev, rng);
 	return -ENOENT;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __exit octeon_rng_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct hwrng *rng = dev_get_drvdata(&pdev->dev);
+=======
+	struct hwrng *rng = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	hwrng_unregister(rng);
 
@@ -131,6 +165,8 @@ static struct platform_driver octeon_rng_driver = {
 	.remove		= __exit_p(octeon_rng_remove),
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init octeon_rng_mod_init(void)
 {
 	return platform_driver_register(&octeon_rng_driver);
@@ -143,6 +179,12 @@ static void __exit octeon_rng_mod_exit(void)
 
 module_init(octeon_rng_mod_init);
 module_exit(octeon_rng_mod_exit);
+=======
+module_platform_driver(octeon_rng_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(octeon_rng_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("David Daney");
 MODULE_LICENSE("GPL");

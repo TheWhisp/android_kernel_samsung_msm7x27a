@@ -32,6 +32,14 @@
  */
 #include <linux/kernel.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "rds.h"
 #include "iw.h"
@@ -83,7 +91,17 @@ static int rds_iw_map_fastreg(struct rds_iw_mr_pool *pool,
 static void rds_iw_free_fastreg(struct rds_iw_mr_pool *pool, struct rds_iw_mr *ibmr);
 static unsigned int rds_iw_unmap_fastreg_list(struct rds_iw_mr_pool *pool,
 			struct list_head *unmap_list,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			struct list_head *kill_list);
+=======
+			struct list_head *kill_list,
+			int *unpinned);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			struct list_head *kill_list,
+			int *unpinned);
+>>>>>>> refs/remotes/origin/master
 static void rds_iw_destroy_fastreg(struct rds_iw_mr_pool *pool, struct rds_iw_mr *ibmr);
 
 static int rds_iw_get_device(struct rds_sock *rs, struct rds_iw_device **rds_iwdev, struct rdma_cm_id **cm_id)
@@ -475,6 +493,8 @@ void rds_iw_sync_mr(void *trans_private, int direction)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int rds_iw_flush_goal(struct rds_iw_mr_pool *pool, int free_all)
 {
 	unsigned int item_count;
@@ -486,6 +506,10 @@ static inline unsigned int rds_iw_flush_goal(struct rds_iw_mr_pool *pool, int fr
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Flush our pool of MRs.
  * At a minimum, all currently unused MRs are unmapped.
@@ -498,7 +522,15 @@ static int rds_iw_flush_mr_pool(struct rds_iw_mr_pool *pool, int free_all)
 	LIST_HEAD(unmap_list);
 	LIST_HEAD(kill_list);
 	unsigned long flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int nfreed = 0, ncleaned = 0, free_goal;
+=======
+	unsigned int nfreed = 0, ncleaned = 0, unpinned = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int nfreed = 0, ncleaned = 0, unpinned = 0;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	rds_iw_stats_inc(s_iw_rdma_mr_pool_flush);
@@ -512,8 +544,14 @@ static int rds_iw_flush_mr_pool(struct rds_iw_mr_pool *pool, int free_all)
 		list_splice_init(&pool->clean_list, &kill_list);
 	spin_unlock_irqrestore(&pool->list_lock, flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	free_goal = rds_iw_flush_goal(pool, free_all);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Batched invalidate of dirty MRs.
 	 * For FMR based MRs, the mappings on the unmap list are
 	 * actually members of an ibmr (ibmr->mapping). They either
@@ -523,7 +561,17 @@ static int rds_iw_flush_mr_pool(struct rds_iw_mr_pool *pool, int free_all)
 	 * will be destroyed by the unmap function.
 	 */
 	if (!list_empty(&unmap_list)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ncleaned = rds_iw_unmap_fastreg_list(pool, &unmap_list, &kill_list);
+=======
+		ncleaned = rds_iw_unmap_fastreg_list(pool, &unmap_list,
+						     &kill_list, &unpinned);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ncleaned = rds_iw_unmap_fastreg_list(pool, &unmap_list,
+						     &kill_list, &unpinned);
+>>>>>>> refs/remotes/origin/master
 		/* If we've been asked to destroy all MRs, move those
 		 * that were simply cleaned to the kill list */
 		if (free_all)
@@ -547,6 +595,14 @@ static int rds_iw_flush_mr_pool(struct rds_iw_mr_pool *pool, int free_all)
 		spin_unlock_irqrestore(&pool->list_lock, flags);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	atomic_sub(unpinned, &pool->free_pinned);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_sub(unpinned, &pool->free_pinned);
+>>>>>>> refs/remotes/origin/master
 	atomic_sub(ncleaned, &pool->dirty_count);
 	atomic_sub(nfreed, &pool->item_count);
 
@@ -729,8 +785,18 @@ static int rds_iw_rdma_build_fastreg(struct rds_iw_mapping *mapping)
 	failed_wr = &f_wr;
 	ret = ib_post_send(ibmr->cm_id->qp, &f_wr, &failed_wr);
 	BUG_ON(failed_wr != &f_wr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret && printk_ratelimit())
 		printk(KERN_WARNING "RDS/IW: %s:%d ib_post_send returned %d\n",
+=======
+	if (ret)
+		printk_ratelimited(KERN_WARNING "RDS/IW: %s:%d ib_post_send returned %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret)
+		printk_ratelimited(KERN_WARNING "RDS/IW: %s:%d ib_post_send returned %d\n",
+>>>>>>> refs/remotes/origin/master
 			__func__, __LINE__, ret);
 	return ret;
 }
@@ -751,8 +817,18 @@ static int rds_iw_rdma_fastreg_inv(struct rds_iw_mr *ibmr)
 
 	failed_wr = &s_wr;
 	ret = ib_post_send(ibmr->cm_id->qp, &s_wr, &failed_wr);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret && printk_ratelimit()) {
 		printk(KERN_WARNING "RDS/IW: %s:%d ib_post_send returned %d\n",
+=======
+	if (ret) {
+		printk_ratelimited(KERN_WARNING "RDS/IW: %s:%d ib_post_send returned %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret) {
+		printk_ratelimited(KERN_WARNING "RDS/IW: %s:%d ib_post_send returned %d\n",
+>>>>>>> refs/remotes/origin/master
 			__func__, __LINE__, ret);
 		goto out;
 	}
@@ -827,7 +903,17 @@ static void rds_iw_free_fastreg(struct rds_iw_mr_pool *pool,
 
 static unsigned int rds_iw_unmap_fastreg_list(struct rds_iw_mr_pool *pool,
 				struct list_head *unmap_list,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				struct list_head *kill_list)
+=======
+				struct list_head *kill_list,
+				int *unpinned)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				struct list_head *kill_list,
+				int *unpinned)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rds_iw_mapping *mapping, *next;
 	unsigned int ncleaned = 0;
@@ -854,6 +940,14 @@ static unsigned int rds_iw_unmap_fastreg_list(struct rds_iw_mr_pool *pool,
 
 		spin_lock_irqsave(&pool->list_lock, flags);
 		list_for_each_entry_safe(mapping, next, unmap_list, m_list) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			*unpinned += mapping->m_sg.len;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*unpinned += mapping->m_sg.len;
+>>>>>>> refs/remotes/origin/master
 			list_move(&mapping->m_list, &laundered);
 			ncleaned++;
 		}

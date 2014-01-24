@@ -38,6 +38,10 @@ struct rlimit;
 struct rlimit64;
 struct rusage;
 struct sched_param;
+<<<<<<< HEAD
+=======
+struct sched_attr;
+>>>>>>> refs/remotes/origin/master
 struct sel_arg_struct;
 struct semaphore;
 struct sembuf;
@@ -63,19 +67,36 @@ struct getcpu_cache;
 struct old_linux_dirent;
 struct perf_event_attr;
 struct file_handle;
+<<<<<<< HEAD
+=======
+struct sigaltstack;
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/types.h>
 #include <linux/aio_abi.h>
 #include <linux/capability.h>
+<<<<<<< HEAD
 #include <linux/list.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sem.h>
 #include <asm/siginfo.h>
 #include <asm/signal.h>
+=======
+#include <linux/signal.h>
+#include <linux/list.h>
+#include <linux/bug.h>
+#include <linux/sem.h>
+#include <asm/siginfo.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/unistd.h>
 #include <linux/quota.h>
 #include <linux/key.h>
 #include <trace/syscall.h>
 
+<<<<<<< HEAD
 #define __SC_DECL1(t1, a1)	t1 a1
 #define __SC_DECL2(t2, a2, ...) t2 a2, __SC_DECL1(__VA_ARGS__)
 #define __SC_DECL3(t3, a3, ...) t3 a3, __SC_DECL2(__VA_ARGS__)
@@ -119,6 +140,36 @@ struct file_handle;
 #define __SC_STR_TDECL4(t, a, ...)	#t, __SC_STR_TDECL3(__VA_ARGS__)
 #define __SC_STR_TDECL5(t, a, ...)	#t, __SC_STR_TDECL4(__VA_ARGS__)
 #define __SC_STR_TDECL6(t, a, ...)	#t, __SC_STR_TDECL5(__VA_ARGS__)
+=======
+/*
+ * __MAP - apply a macro to syscall arguments
+ * __MAP(n, m, t1, a1, t2, a2, ..., tn, an) will expand to
+ *    m(t1, a1), m(t2, a2), ..., m(tn, an)
+ * The first argument must be equal to the amount of type/name
+ * pairs given.  Note that this list of pairs (i.e. the arguments
+ * of __MAP starting at the third one) is in the same format as
+ * for SYSCALL_DEFINE<n>/COMPAT_SYSCALL_DEFINE<n>
+ */
+#define __MAP0(m,...)
+#define __MAP1(m,t,a) m(t,a)
+#define __MAP2(m,t,a,...) m(t,a), __MAP1(m,__VA_ARGS__)
+#define __MAP3(m,t,a,...) m(t,a), __MAP2(m,__VA_ARGS__)
+#define __MAP4(m,t,a,...) m(t,a), __MAP3(m,__VA_ARGS__)
+#define __MAP5(m,t,a,...) m(t,a), __MAP4(m,__VA_ARGS__)
+#define __MAP6(m,t,a,...) m(t,a), __MAP5(m,__VA_ARGS__)
+#define __MAP(n,...) __MAP##n(__VA_ARGS__)
+
+#define __SC_DECL(t, a)	t a
+#define __TYPE_IS_LL(t) (__same_type((t)0, 0LL) || __same_type((t)0, 0ULL))
+#define __SC_LONG(t, a) __typeof(__builtin_choose_expr(__TYPE_IS_LL(t), 0LL, 0L)) a
+#define __SC_CAST(t, a)	(t) a
+#define __SC_ARGS(t, a)	a
+#define __SC_TEST(t, a) (void)BUILD_BUG_ON_ZERO(!__TYPE_IS_LL(t) && sizeof(t) > sizeof(long))
+
+#ifdef CONFIG_FTRACE_SYSCALLS
+#define __SC_STR_ADECL(t, a)	#a
+#define __SC_STR_TDECL(t, a)	#t
+>>>>>>> refs/remotes/origin/master
 
 extern struct ftrace_event_class event_class_syscall_enter;
 extern struct ftrace_event_class event_class_syscall_exit;
@@ -133,7 +184,11 @@ extern struct trace_event_functions exit_syscall_print_funcs;
 		.class			= &event_class_syscall_enter,	\
 		.event.funcs            = &enter_syscall_print_funcs,	\
 		.data			= (void *)&__syscall_meta_##sname,\
+<<<<<<< HEAD
 		.flags			= TRACE_EVENT_FL_CAP_ANY,	\
+=======
+		.flags                  = TRACE_EVENT_FL_CAP_ANY,	\
+>>>>>>> refs/remotes/origin/master
 	};								\
 	static struct ftrace_event_call __used				\
 	  __attribute__((section("_ftrace_events")))			\
@@ -147,13 +202,27 @@ extern struct trace_event_functions exit_syscall_print_funcs;
 		.class			= &event_class_syscall_exit,	\
 		.event.funcs		= &exit_syscall_print_funcs,	\
 		.data			= (void *)&__syscall_meta_##sname,\
+<<<<<<< HEAD
 		.flags			= TRACE_EVENT_FL_CAP_ANY,	\
+=======
+		.flags                  = TRACE_EVENT_FL_CAP_ANY,	\
+>>>>>>> refs/remotes/origin/master
 	};								\
 	static struct ftrace_event_call __used				\
 	  __attribute__((section("_ftrace_events")))			\
 	*__event_exit_##sname = &event_exit_##sname;
 
+<<<<<<< HEAD
 #define SYSCALL_METADATA(sname, nb)				\
+=======
+#define SYSCALL_METADATA(sname, nb, ...)			\
+	static const char *types_##sname[] = {			\
+		__MAP(nb,__SC_STR_TDECL,__VA_ARGS__)		\
+	};							\
+	static const char *args_##sname[] = {			\
+		__MAP(nb,__SC_STR_ADECL,__VA_ARGS__)		\
+	};							\
+>>>>>>> refs/remotes/origin/master
 	SYSCALL_TRACE_ENTER_EVENT(sname);			\
 	SYSCALL_TRACE_EXIT_EVENT(sname);			\
 	static struct syscall_metadata __used			\
@@ -161,8 +230,13 @@ extern struct trace_event_functions exit_syscall_print_funcs;
 		.name 		= "sys"#sname,			\
 		.syscall_nr	= -1,	/* Filled in at boot */	\
 		.nb_args 	= nb,				\
+<<<<<<< HEAD
 		.types		= types_##sname,		\
 		.args		= args_##sname,			\
+=======
+		.types		= nb ? types_##sname : NULL,	\
+		.args		= nb ? args_##sname : NULL,	\
+>>>>>>> refs/remotes/origin/master
 		.enter_event	= &event_enter_##sname,		\
 		.exit_event	= &event_exit_##sname,		\
 		.enter_fields	= LIST_HEAD_INIT(__syscall_meta_##sname.enter_fields), \
@@ -170,6 +244,7 @@ extern struct trace_event_functions exit_syscall_print_funcs;
 	static struct syscall_metadata __used			\
 	  __attribute__((section("__syscalls_metadata")))	\
 	 *__p_syscall_meta_##sname = &__syscall_meta_##sname;
+<<<<<<< HEAD
 
 #define SYSCALL_DEFINE0(sname)					\
 	SYSCALL_TRACE_ENTER_EVENT(_##sname);			\
@@ -190,6 +265,15 @@ extern struct trace_event_functions exit_syscall_print_funcs;
 #else
 #define SYSCALL_DEFINE0(name)	   asmlinkage long sys_##name(void)
 #endif
+=======
+#else
+#define SYSCALL_METADATA(sname, nb, ...)
+#endif
+
+#define SYSCALL_DEFINE0(sname)					\
+	SYSCALL_METADATA(_##sname, 0);				\
+	asmlinkage long sys_##sname(void)
+>>>>>>> refs/remotes/origin/master
 
 #define SYSCALL_DEFINE1(name, ...) SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)
 #define SYSCALL_DEFINE2(name, ...) SYSCALL_DEFINEx(2, _##name, __VA_ARGS__)
@@ -198,6 +282,7 @@ extern struct trace_event_functions exit_syscall_print_funcs;
 #define SYSCALL_DEFINE5(name, ...) SYSCALL_DEFINEx(5, _##name, __VA_ARGS__)
 #define SYSCALL_DEFINE6(name, ...) SYSCALL_DEFINEx(6, _##name, __VA_ARGS__)
 
+<<<<<<< HEAD
 #ifdef CONFIG_PPC64
 #define SYSCALL_ALIAS(alias, name)					\
 	asm ("\t.globl " #alias "\n\t.set " #alias ", " #name "\n"	\
@@ -249,6 +334,26 @@ extern struct trace_event_functions exit_syscall_print_funcs;
 	asmlinkage long sys##name(__SC_DECL##x(__VA_ARGS__))
 
 #endif /* CONFIG_HAVE_SYSCALL_WRAPPERS */
+=======
+#define SYSCALL_DEFINEx(x, sname, ...)				\
+	SYSCALL_METADATA(sname, x, __VA_ARGS__)			\
+	__SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+
+#define __PROTECT(...) asmlinkage_protect(__VA_ARGS__)
+#define __SYSCALL_DEFINEx(x, name, ...)					\
+	asmlinkage long sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))	\
+		__attribute__((alias(__stringify(SyS##name))));		\
+	static inline long SYSC##name(__MAP(x,__SC_DECL,__VA_ARGS__));	\
+	asmlinkage long SyS##name(__MAP(x,__SC_LONG,__VA_ARGS__));	\
+	asmlinkage long SyS##name(__MAP(x,__SC_LONG,__VA_ARGS__))	\
+	{								\
+		long ret = SYSC##name(__MAP(x,__SC_CAST,__VA_ARGS__));	\
+		__MAP(x,__SC_TEST,__VA_ARGS__);				\
+		__PROTECT(x, ret,__MAP(x,__SC_ARGS,__VA_ARGS__));	\
+		return ret;						\
+	}								\
+	static inline long SYSC##name(__MAP(x,__SC_DECL,__VA_ARGS__))
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage long sys_time(time_t __user *tloc);
 asmlinkage long sys_stime(time_t __user *tptr);
@@ -298,6 +403,12 @@ asmlinkage long sys_personality(unsigned int personality);
 asmlinkage long sys_sigpending(old_sigset_t __user *set);
 asmlinkage long sys_sigprocmask(int how, old_sigset_t __user *set,
 				old_sigset_t __user *oset);
+<<<<<<< HEAD
+=======
+asmlinkage long sys_sigaltstack(const struct sigaltstack __user *uss,
+				struct sigaltstack __user *uoss);
+
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_getitimer(int which, struct itimerval __user *value);
 asmlinkage long sys_setitimer(int which,
 				struct itimerval __user *value,
@@ -329,9 +440,20 @@ asmlinkage long sys_sched_setscheduler(pid_t pid, int policy,
 					struct sched_param __user *param);
 asmlinkage long sys_sched_setparam(pid_t pid,
 					struct sched_param __user *param);
+<<<<<<< HEAD
 asmlinkage long sys_sched_getscheduler(pid_t pid);
 asmlinkage long sys_sched_getparam(pid_t pid,
 					struct sched_param __user *param);
+=======
+asmlinkage long sys_sched_setattr(pid_t pid,
+					struct sched_attr __user *attr);
+asmlinkage long sys_sched_getscheduler(pid_t pid);
+asmlinkage long sys_sched_getparam(pid_t pid,
+					struct sched_param __user *param);
+asmlinkage long sys_sched_getattr(pid_t pid,
+					struct sched_attr __user *attr,
+					unsigned int size);
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_sched_setaffinity(pid_t pid, unsigned int len,
 					unsigned long __user *user_mask_ptr);
 asmlinkage long sys_sched_getaffinity(pid_t pid, unsigned int len,
@@ -370,6 +492,30 @@ asmlinkage long sys_init_module(void __user *umod, unsigned long len,
 asmlinkage long sys_delete_module(const char __user *name_user,
 				unsigned int flags);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_OLD_SIGSUSPEND
+asmlinkage long sys_sigsuspend(old_sigset_t mask);
+#endif
+
+#ifdef CONFIG_OLD_SIGSUSPEND3
+asmlinkage long sys_sigsuspend(int unused1, int unused2, old_sigset_t mask);
+#endif
+
+asmlinkage long sys_rt_sigsuspend(sigset_t __user *unewset, size_t sigsetsize);
+
+#ifdef CONFIG_OLD_SIGACTION
+asmlinkage long sys_sigaction(int, const struct old_sigaction __user *,
+				struct old_sigaction __user *);
+#endif
+
+#ifndef CONFIG_ODD_RT_SIGACTION
+asmlinkage long sys_rt_sigaction(int,
+				 const struct sigaction __user *,
+				 struct sigaction __user *,
+				 size_t);
+#endif
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_rt_sigprocmask(int how, sigset_t __user *set,
 				sigset_t __user *oset, size_t sigsetsize);
 asmlinkage long sys_rt_sigpending(sigset_t __user *set, size_t sigsetsize);
@@ -475,7 +621,15 @@ asmlinkage long sys_mincore(unsigned long start, size_t len,
 asmlinkage long sys_pivot_root(const char __user *new_root,
 				const char __user *put_old);
 asmlinkage long sys_chroot(const char __user *filename);
+<<<<<<< HEAD
+<<<<<<< HEAD
 asmlinkage long sys_mknod(const char __user *filename, int mode,
+=======
+asmlinkage long sys_mknod(const char __user *filename, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+asmlinkage long sys_mknod(const char __user *filename, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				unsigned dev);
 asmlinkage long sys_link(const char __user *oldname,
 				const char __user *newname);
@@ -483,8 +637,18 @@ asmlinkage long sys_symlink(const char __user *old, const char __user *new);
 asmlinkage long sys_unlink(const char __user *pathname);
 asmlinkage long sys_rename(const char __user *oldname,
 				const char __user *newname);
+<<<<<<< HEAD
+<<<<<<< HEAD
 asmlinkage long sys_chmod(const char __user *filename, mode_t mode);
 asmlinkage long sys_fchmod(unsigned int fd, mode_t mode);
+=======
+asmlinkage long sys_chmod(const char __user *filename, umode_t mode);
+asmlinkage long sys_fchmod(unsigned int fd, umode_t mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+asmlinkage long sys_chmod(const char __user *filename, umode_t mode);
+asmlinkage long sys_fchmod(unsigned int fd, umode_t mode);
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage long sys_fcntl(unsigned int fd, unsigned int cmd, unsigned long arg);
 #if BITS_PER_LONG == 32
@@ -517,9 +681,21 @@ asmlinkage long sys_sendfile64(int out_fd, int in_fd,
 			       loff_t __user *offset, size_t count);
 asmlinkage long sys_readlink(const char __user *path,
 				char __user *buf, int bufsiz);
+<<<<<<< HEAD
+<<<<<<< HEAD
 asmlinkage long sys_creat(const char __user *pathname, int mode);
 asmlinkage long sys_open(const char __user *filename,
 				int flags, int mode);
+=======
+asmlinkage long sys_creat(const char __user *pathname, umode_t mode);
+asmlinkage long sys_open(const char __user *filename,
+				int flags, umode_t mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+asmlinkage long sys_creat(const char __user *pathname, umode_t mode);
+asmlinkage long sys_open(const char __user *filename,
+				int flags, umode_t mode);
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_close(unsigned int fd);
 asmlinkage long sys_access(const char __user *filename, int mode);
 asmlinkage long sys_vhangup(void);
@@ -559,10 +735,17 @@ asmlinkage long sys_utime(char __user *filename,
 asmlinkage long sys_utimes(char __user *filename,
 				struct timeval __user *utimes);
 asmlinkage long sys_lseek(unsigned int fd, off_t offset,
+<<<<<<< HEAD
 			  unsigned int origin);
 asmlinkage long sys_llseek(unsigned int fd, unsigned long offset_high,
 			unsigned long offset_low, loff_t __user *result,
 			unsigned int origin);
+=======
+			  unsigned int whence);
+asmlinkage long sys_llseek(unsigned int fd, unsigned long offset_high,
+			unsigned long offset_low, loff_t __user *result,
+			unsigned int whence);
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_read(unsigned int fd, char __user *buf, size_t count);
 asmlinkage long sys_readahead(int fd, loff_t offset, size_t count);
 asmlinkage long sys_readv(unsigned long fd,
@@ -582,7 +765,15 @@ asmlinkage long sys_preadv(unsigned long fd, const struct iovec __user *vec,
 asmlinkage long sys_pwritev(unsigned long fd, const struct iovec __user *vec,
 			    unsigned long vlen, unsigned long pos_l, unsigned long pos_h);
 asmlinkage long sys_getcwd(char __user *buf, unsigned long size);
+<<<<<<< HEAD
+<<<<<<< HEAD
 asmlinkage long sys_mkdir(const char __user *pathname, int mode);
+=======
+asmlinkage long sys_mkdir(const char __user *pathname, umode_t mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+asmlinkage long sys_mkdir(const char __user *pathname, umode_t mode);
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_chdir(const char __user *filename);
 asmlinkage long sys_fchdir(unsigned int fd);
 asmlinkage long sys_rmdir(const char __user *pathname);
@@ -624,7 +815,15 @@ asmlinkage long sys_socketpair(int, int, int, int __user *);
 asmlinkage long sys_socketcall(int call, unsigned long __user *args);
 asmlinkage long sys_listen(int, int);
 asmlinkage long sys_poll(struct pollfd __user *ufds, unsigned int nfds,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				long timeout);
+=======
+				int timeout);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				int timeout);
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_select(int n, fd_set __user *inp, fd_set __user *outp,
 			fd_set __user *exp, struct timeval __user *tvp);
 asmlinkage long sys_old_select(struct sel_arg_struct __user *arg);
@@ -668,7 +867,11 @@ asmlinkage long sys_msgctl(int msqid, int cmd, struct msqid_ds __user *buf);
 asmlinkage long sys_semget(key_t key, int nsems, int semflg);
 asmlinkage long sys_semop(int semid, struct sembuf __user *sops,
 				unsigned nsops);
+<<<<<<< HEAD
 asmlinkage long sys_semctl(int semid, int semnum, int cmd, union semun arg);
+=======
+asmlinkage long sys_semctl(int semid, int semnum, int cmd, unsigned long arg);
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_semtimedop(int semid, struct sembuf __user *sops,
 				unsigned nsops,
 				const struct timespec __user *timeout);
@@ -679,7 +882,15 @@ asmlinkage long sys_shmctl(int shmid, int cmd, struct shmid_ds __user *buf);
 asmlinkage long sys_ipc(unsigned int call, int first, unsigned long second,
 		unsigned long third, void __user *ptr, long fifth);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 asmlinkage long sys_mq_open(const char __user *name, int oflag, mode_t mode, struct mq_attr __user *attr);
+=======
+asmlinkage long sys_mq_open(const char __user *name, int oflag, umode_t mode, struct mq_attr __user *attr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+asmlinkage long sys_mq_open(const char __user *name, int oflag, umode_t mode, struct mq_attr __user *attr);
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_mq_unlink(const char __user *name);
 asmlinkage long sys_mq_timedsend(mqd_t mqdes, const char __user *msg_ptr, size_t msg_len, unsigned int msg_prio, const struct timespec __user *abs_timeout);
 asmlinkage long sys_mq_timedreceive(mqd_t mqdes, char __user *msg_ptr, size_t msg_len, unsigned int __user *msg_prio, const struct timespec __user *abs_timeout);
@@ -702,9 +913,15 @@ asmlinkage long sys_sysctl(struct __sysctl_args __user *args);
 asmlinkage long sys_sysinfo(struct sysinfo __user *info);
 asmlinkage long sys_sysfs(int option,
 				unsigned long arg1, unsigned long arg2);
+<<<<<<< HEAD
+<<<<<<< HEAD
 asmlinkage long sys_nfsservctl(int cmd,
 				struct nfsctl_arg __user *arg,
 				void __user *res);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_syslog(int type, char __user *buf, int len);
 asmlinkage long sys_uselib(const char __user *library);
 asmlinkage long sys_ni_syscall(void);
@@ -756,11 +973,25 @@ asmlinkage long sys_inotify_rm_watch(int fd, __s32 wd);
 asmlinkage long sys_spu_run(int fd, __u32 __user *unpc,
 				 __u32 __user *ustatus);
 asmlinkage long sys_spu_create(const char __user *name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned int flags, mode_t mode, int fd);
 
 asmlinkage long sys_mknodat(int dfd, const char __user * filename, int mode,
 			    unsigned dev);
 asmlinkage long sys_mkdirat(int dfd, const char __user * pathname, int mode);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		unsigned int flags, umode_t mode, int fd);
+
+asmlinkage long sys_mknodat(int dfd, const char __user * filename, umode_t mode,
+			    unsigned dev);
+asmlinkage long sys_mkdirat(int dfd, const char __user * pathname, umode_t mode);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_unlinkat(int dfd, const char __user * pathname, int flag);
 asmlinkage long sys_symlinkat(const char __user * oldname,
 			      int newdfd, const char __user * newname);
@@ -772,11 +1003,25 @@ asmlinkage long sys_futimesat(int dfd, const char __user *filename,
 			      struct timeval __user *utimes);
 asmlinkage long sys_faccessat(int dfd, const char __user *filename, int mode);
 asmlinkage long sys_fchmodat(int dfd, const char __user * filename,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			     mode_t mode);
 asmlinkage long sys_fchownat(int dfd, const char __user *filename, uid_t user,
 			     gid_t group, int flag);
 asmlinkage long sys_openat(int dfd, const char __user *filename, int flags,
 			   int mode);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			     umode_t mode);
+asmlinkage long sys_fchownat(int dfd, const char __user *filename, uid_t user,
+			     gid_t group, int flag);
+asmlinkage long sys_openat(int dfd, const char __user *filename, int flags,
+			   umode_t mode);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys_newfstatat(int dfd, const char __user *filename,
 			       struct stat __user *statbuf, int flag);
 asmlinkage long sys_fstatat64(int dfd, const char __user *filename,
@@ -829,8 +1074,29 @@ asmlinkage long sys_fanotify_mark(int fanotify_fd, unsigned int flags,
 				  const char  __user *pathname);
 asmlinkage long sys_syncfs(int fd);
 
+<<<<<<< HEAD
 int kernel_execve(const char *filename, const char *const argv[], const char *const envp[]);
 
+=======
+asmlinkage long sys_fork(void);
+asmlinkage long sys_vfork(void);
+#ifdef CONFIG_CLONE_BACKWARDS
+asmlinkage long sys_clone(unsigned long, unsigned long, int __user *, int,
+	       int __user *);
+#else
+#ifdef CONFIG_CLONE_BACKWARDS3
+asmlinkage long sys_clone(unsigned long, unsigned long, int, int __user *,
+			  int __user *, int);
+#else
+asmlinkage long sys_clone(unsigned long, unsigned long, int __user *,
+	       int __user *, int);
+#endif
+#endif
+
+asmlinkage long sys_execve(const char __user *filename,
+		const char __user *const __user *argv,
+		const char __user *const __user *envp);
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage long sys_perf_event_open(
 		struct perf_event_attr __user *attr_uptr,
@@ -847,4 +1113,29 @@ asmlinkage long sys_open_by_handle_at(int mountdirfd,
 				      struct file_handle __user *handle,
 				      int flags);
 asmlinkage long sys_setns(int fd, int nstype);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+asmlinkage long sys_process_vm_readv(pid_t pid,
+				     const struct iovec __user *lvec,
+				     unsigned long liovcnt,
+				     const struct iovec __user *rvec,
+				     unsigned long riovcnt,
+				     unsigned long flags);
+asmlinkage long sys_process_vm_writev(pid_t pid,
+				      const struct iovec __user *lvec,
+				      unsigned long liovcnt,
+				      const struct iovec __user *rvec,
+				      unsigned long riovcnt,
+				      unsigned long flags);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+asmlinkage long sys_kcmp(pid_t pid1, pid_t pid2, int type,
+			 unsigned long idx1, unsigned long idx2);
+asmlinkage long sys_finit_module(int fd, const char __user *uargs, int flags);
+>>>>>>> refs/remotes/origin/master
 #endif

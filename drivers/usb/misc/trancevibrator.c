@@ -21,7 +21,10 @@
 /* Standard include files */
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/usb.h>
@@ -137,6 +140,8 @@ static struct usb_driver tv_driver = {
 	.id_table =	id_table,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init tv_init(void)
 {
 	int retval = usb_register(&tv_driver);
@@ -157,6 +162,12 @@ static void __exit tv_exit(void)
 
 module_init (tv_init);
 module_exit (tv_exit);
+=======
+module_usb_driver(tv_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(tv_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

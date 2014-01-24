@@ -13,6 +13,7 @@
 #include <asm/sigcontext32.h>
 
 /* signal.h */
+<<<<<<< HEAD
 struct sigaction32 {
 	unsigned int  sa_handler;	/* Really a pointer, but need to deal
 					   with 32 bits */
@@ -34,15 +35,43 @@ typedef struct sigaltstack_ia32 {
 	int		ss_flags;
 	unsigned int	ss_size;
 } stack_ia32_t;
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct ucontext_ia32 {
 	unsigned int	  uc_flags;
 	unsigned int 	  uc_link;
+<<<<<<< HEAD
 	stack_ia32_t	  uc_stack;
+=======
+	compat_stack_t	  uc_stack;
+>>>>>>> refs/remotes/origin/master
 	struct sigcontext_ia32 uc_mcontext;
 	compat_sigset_t	  uc_sigmask;	/* mask last for extensibility */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct ucontext_x32 {
+	unsigned int	  uc_flags;
+	unsigned int 	  uc_link;
+	stack_ia32_t	  uc_stack;
+=======
+struct ucontext_x32 {
+	unsigned int	  uc_flags;
+	unsigned int 	  uc_link;
+	compat_stack_t	  uc_stack;
+>>>>>>> refs/remotes/origin/master
+	unsigned int	  uc__pad0;     /* needed for alignment */
+	struct sigcontext uc_mcontext;  /* the 64-bit sigcontext type */
+	compat_sigset_t	  uc_sigmask;	/* mask last for extensibility */
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* This matches struct stat64 in glibc2.2, hence the absolutely
  * insane amounts of padding around dev_t's.
  */
@@ -77,6 +106,7 @@ struct stat64 {
 	unsigned long long	st_ino;
 } __attribute__((packed));
 
+<<<<<<< HEAD
 typedef struct compat_siginfo {
 	int si_signo;
 	int si_errno;
@@ -116,6 +146,18 @@ typedef struct compat_siginfo {
 			compat_clock_t _stime;
 		} _sigchld;
 
+<<<<<<< HEAD
+=======
+		/* SIGCHLD (x32 version) */
+		struct {
+			unsigned int _pid;	/* which child */
+			unsigned int _uid;	/* sender's uid */
+			int _status;		/* exit code */
+			compat_s64 _utime;
+			compat_s64 _stime;
+		} _sigchld_x32;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS */
 		struct {
 			unsigned int _addr;	/* faulting insn/memory ref. */
@@ -129,6 +171,8 @@ typedef struct compat_siginfo {
 	} _sifields;
 } compat_siginfo_t;
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define IA32_STACK_TOP IA32_PAGE_OFFSET
 
 #ifdef __KERNEL__

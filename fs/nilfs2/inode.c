@@ -25,7 +25,11 @@
 #include <linux/gfp.h>
 #include <linux/mpage.h>
 #include <linux/writeback.h>
+<<<<<<< HEAD
 #include <linux/uio.h>
+=======
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 #include "nilfs.h"
 #include "btnode.h"
 #include "segment.h"
@@ -34,6 +38,16 @@
 #include "cpfile.h"
 #include "ifile.h"
 
+<<<<<<< HEAD
+=======
+/**
+ * struct nilfs_iget_args - arguments used during comparison between inodes
+ * @ino: inode number
+ * @cno: checkpoint number
+ * @root: pointer on NILFS root object (mounted checkpoint)
+ * @for_gc: inode for GC flag
+ */
+>>>>>>> refs/remotes/origin/master
 struct nilfs_iget_args {
 	u64 ino;
 	__u64 cno;
@@ -47,7 +61,11 @@ void nilfs_inode_add_blocks(struct inode *inode, int n)
 
 	inode_add_bytes(inode, (1 << inode->i_blkbits) * n);
 	if (root)
+<<<<<<< HEAD
 		atomic_add(n, &root->blocks_count);
+=======
+		atomic64_add(n, &root->blocks_count);
+>>>>>>> refs/remotes/origin/master
 }
 
 void nilfs_inode_sub_blocks(struct inode *inode, int n)
@@ -56,7 +74,11 @@ void nilfs_inode_sub_blocks(struct inode *inode, int n)
 
 	inode_sub_bytes(inode, (1 << inode->i_blkbits) * n);
 	if (root)
+<<<<<<< HEAD
 		atomic_sub(n, &root->blocks_count);
+=======
+		atomic64_sub(n, &root->blocks_count);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -168,6 +190,14 @@ static int nilfs_writepages(struct address_space *mapping,
 	struct inode *inode = mapping->host;
 	int err = 0;
 
+<<<<<<< HEAD
+=======
+	if (inode->i_sb->s_flags & MS_RDONLY) {
+		nilfs_clear_dirty_pages(mapping, false);
+		return -EROFS;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (wbc->sync_mode == WB_SYNC_ALL)
 		err = nilfs_construct_dsync_segment(inode->i_sb, inode,
 						    wbc->range_start,
@@ -180,6 +210,21 @@ static int nilfs_writepage(struct page *page, struct writeback_control *wbc)
 	struct inode *inode = page->mapping->host;
 	int err;
 
+<<<<<<< HEAD
+=======
+	if (inode->i_sb->s_flags & MS_RDONLY) {
+		/*
+		 * It means that filesystem was remounted in read-only
+		 * mode because of error or metadata corruption. But we
+		 * have dirty pages that try to be flushed in background.
+		 * So, here we simply discard this dirty page.
+		 */
+		nilfs_clear_dirty_page(page, false);
+		unlock_page(page);
+		return -EROFS;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	redirty_page_for_writepage(wbc, page);
 	unlock_page(page);
 
@@ -225,6 +270,19 @@ static int nilfs_set_page_dirty(struct page *page)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+void nilfs_write_failed(struct address_space *mapping, loff_t to)
+{
+	struct inode *inode = mapping->host;
+
+	if (to > inode->i_size) {
+		truncate_pagecache(inode, inode->i_size);
+		nilfs_truncate(inode);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int nilfs_write_begin(struct file *file, struct address_space *mapping,
 			     loff_t pos, unsigned len, unsigned flags,
 			     struct page **pagep, void **fsdata)
@@ -239,10 +297,14 @@ static int nilfs_write_begin(struct file *file, struct address_space *mapping,
 	err = block_write_begin(mapping, pos, len, flags, pagep,
 				nilfs_get_block);
 	if (unlikely(err)) {
+<<<<<<< HEAD
 		loff_t isize = mapping->host->i_size;
 		if (pos + len > isize)
 			vmtruncate(mapping->host, isize);
 
+=======
+		nilfs_write_failed(mapping, pos + len);
+>>>>>>> refs/remotes/origin/master
 		nilfs_transaction_abort(inode->i_sb);
 	}
 	return err;
@@ -271,6 +333,10 @@ nilfs_direct_IO(int rw, struct kiocb *iocb, const struct iovec *iov,
 		loff_t offset, unsigned long nr_segs)
 {
 	struct file *file = iocb->ki_filp;
+<<<<<<< HEAD
+=======
+	struct address_space *mapping = file->f_mapping;
+>>>>>>> refs/remotes/origin/master
 	struct inode *inode = file->f_mapping->host;
 	ssize_t size;
 
@@ -278,8 +344,18 @@ nilfs_direct_IO(int rw, struct kiocb *iocb, const struct iovec *iov,
 		return 0;
 
 	/* Needs synchronization with the cleaner */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	size = blockdev_direct_IO(rw, iocb, inode, inode->i_sb->s_bdev, iov,
 				  offset, nr_segs, nilfs_get_block, NULL);
+=======
+	size = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
+				  nilfs_get_block);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	size = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
+				  nilfs_get_block);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * In case of error extending write may have instantiated a few
@@ -290,7 +366,11 @@ nilfs_direct_IO(int rw, struct kiocb *iocb, const struct iovec *iov,
 		loff_t end = offset + iov_length(iov, nr_segs);
 
 		if (end > isize)
+<<<<<<< HEAD
 			vmtruncate(inode, isize);
+=======
+			nilfs_write_failed(mapping, end);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return size;
@@ -310,7 +390,15 @@ const struct address_space_operations nilfs_aops = {
 	.is_partially_uptodate  = block_is_partially_uptodate,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct inode *nilfs_new_inode(struct inode *dir, int mode)
+=======
+struct inode *nilfs_new_inode(struct inode *dir, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct inode *nilfs_new_inode(struct inode *dir, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = dir->i_sb;
 	struct the_nilfs *nilfs = sb->s_fs_info;
@@ -337,7 +425,11 @@ struct inode *nilfs_new_inode(struct inode *dir, int mode)
 		goto failed_ifile_create_inode;
 	/* reference count of i_bh inherits from nilfs_mdt_read_block() */
 
+<<<<<<< HEAD
 	atomic_inc(&root->inodes_count);
+=======
+	atomic64_inc(&root->inodes_count);
+>>>>>>> refs/remotes/origin/master
 	inode_init_owner(inode, dir, mode);
 	inode->i_ino = ino;
 	inode->i_mtime = inode->i_atime = inode->i_ctime = CURRENT_TIME;
@@ -373,7 +465,15 @@ struct inode *nilfs_new_inode(struct inode *dir, int mode)
 
  failed_acl:
  failed_bmap:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 0;
+=======
+	clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 	iput(inode);  /* raw_inode will be deleted through
 			 generic_delete_inode() */
 	goto failed;
@@ -413,9 +513,19 @@ int nilfs_read_inode_common(struct inode *inode,
 	int err;
 
 	inode->i_mode = le16_to_cpu(raw_inode->i_mode);
+<<<<<<< HEAD
 	inode->i_uid = (uid_t)le32_to_cpu(raw_inode->i_uid);
 	inode->i_gid = (gid_t)le32_to_cpu(raw_inode->i_gid);
+<<<<<<< HEAD
 	inode->i_nlink = le16_to_cpu(raw_inode->i_links_count);
+=======
+	set_nlink(inode, le16_to_cpu(raw_inode->i_links_count));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i_uid_write(inode, le32_to_cpu(raw_inode->i_uid));
+	i_gid_write(inode, le32_to_cpu(raw_inode->i_gid));
+	set_nlink(inode, le16_to_cpu(raw_inode->i_links_count));
+>>>>>>> refs/remotes/origin/master
 	inode->i_size = le64_to_cpu(raw_inode->i_size);
 	inode->i_atime.tv_sec = le64_to_cpu(raw_inode->i_mtime);
 	inode->i_ctime.tv_sec = le64_to_cpu(raw_inode->i_ctime);
@@ -602,8 +712,13 @@ void nilfs_write_inode_common(struct inode *inode,
 	struct nilfs_inode_info *ii = NILFS_I(inode);
 
 	raw_inode->i_mode = cpu_to_le16(inode->i_mode);
+<<<<<<< HEAD
 	raw_inode->i_uid = cpu_to_le32(inode->i_uid);
 	raw_inode->i_gid = cpu_to_le32(inode->i_gid);
+=======
+	raw_inode->i_uid = cpu_to_le32(i_uid_read(inode));
+	raw_inode->i_gid = cpu_to_le32(i_gid_read(inode));
+>>>>>>> refs/remotes/origin/master
 	raw_inode->i_links_count = cpu_to_le16(inode->i_nlink);
 	raw_inode->i_size = cpu_to_le64(inode->i_size);
 	raw_inode->i_ctime = cpu_to_le64(inode->i_ctime.tv_sec);
@@ -753,7 +868,11 @@ void nilfs_evict_inode(struct inode *inode)
 	if (inode->i_nlink || !ii->i_root || unlikely(is_bad_inode(inode))) {
 		if (inode->i_data.nrpages)
 			truncate_inode_pages(&inode->i_data, 0);
+<<<<<<< HEAD
 		end_writeback(inode);
+=======
+		clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 		nilfs_clear_inode(inode);
 		return;
 	}
@@ -765,11 +884,19 @@ void nilfs_evict_inode(struct inode *inode)
 	/* TODO: some of the following operations may fail.  */
 	nilfs_truncate_bmap(ii, 0);
 	nilfs_mark_inode_dirty(inode);
+<<<<<<< HEAD
 	end_writeback(inode);
 
 	ret = nilfs_ifile_delete_inode(ii->i_root->ifile, inode->i_ino);
 	if (!ret)
 		atomic_dec(&ii->i_root->inodes_count);
+=======
+	clear_inode(inode);
+
+	ret = nilfs_ifile_delete_inode(ii->i_root->ifile, inode->i_ino);
+	if (!ret)
+		atomic64_dec(&ii->i_root->inodes_count);
+>>>>>>> refs/remotes/origin/master
 
 	nilfs_clear_inode(inode);
 
@@ -797,9 +924,20 @@ int nilfs_setattr(struct dentry *dentry, struct iattr *iattr)
 
 	if ((iattr->ia_valid & ATTR_SIZE) &&
 	    iattr->ia_size != i_size_read(inode)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		inode_dio_wait(inode);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = vmtruncate(inode, iattr->ia_size);
 		if (unlikely(err))
 			goto out_err;
+=======
+		inode_dio_wait(inode);
+		truncate_setsize(inode, iattr->ia_size);
+		nilfs_truncate(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	setattr_copy(inode, iattr);
@@ -818,14 +956,30 @@ out_err:
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int nilfs_permission(struct inode *inode, int mask, unsigned int flags)
+=======
+int nilfs_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int nilfs_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nilfs_root *root = NILFS_I(inode)->i_root;
 	if ((mask & MAY_WRITE) && root &&
 	    root->cno != NILFS_CPTREE_CURRENT_CNO)
 		return -EROFS; /* snapshot is not writable */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return generic_permission(inode, mask, flags, NULL);
+=======
+	return generic_permission(inode, mask);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return generic_permission(inode, mask);
+>>>>>>> refs/remotes/origin/master
 }
 
 int nilfs_load_inode_block(struct inode *inode, struct buffer_head **pbh)

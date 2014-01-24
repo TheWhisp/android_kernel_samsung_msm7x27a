@@ -9,10 +9,17 @@
  * more details.
  */
 
+<<<<<<< HEAD
 //#include <linux/config.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/init.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/random.h>
 #include <linux/skbuff.h>
@@ -66,7 +73,11 @@ struct ieee80211_tkip_data {
 	u8 rx_hdr[16], tx_hdr[16];
 };
 
+<<<<<<< HEAD
 static void * ieee80211_tkip_init(int key_idx)
+=======
+static void *ieee80211_tkip_init(int key_idx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_tkip_data *priv;
 
@@ -305,8 +316,13 @@ static void tkip_mixing_phase2(u8 *WEPSeed, const u8 *TK, const u16 *TTAK,
 
 static int ieee80211_tkip_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
 {
+<<<<<<< HEAD
         struct ieee80211_tkip_data *tkey = priv;
         struct blkcipher_desc desc = {.tfm = tkey->tx_tfm_arc4};
+=======
+	struct ieee80211_tkip_data *tkey = priv;
+	struct blkcipher_desc desc = {.tfm = tkey->tx_tfm_arc4};
+>>>>>>> refs/remotes/origin/master
 	int len;
 	u8  *pos;
 	struct ieee80211_hdr_4addr *hdr;
@@ -468,6 +484,7 @@ static int ieee80211_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 	return keyidx;
 }
 
+<<<<<<< HEAD
 static int michael_mic(struct crypto_hash *tfm_michael, u8 * key, u8 * hdr,
                        u8 * data, size_t data_len, u8 * mic)
 {
@@ -478,17 +495,38 @@ static int michael_mic(struct crypto_hash *tfm_michael, u8 * key, u8 * hdr,
                 printk(KERN_WARNING "michael_mic: tfm_michael == NULL\n");
                 return -1;
         }
+=======
+static int michael_mic(struct crypto_hash *tfm_michael, u8 *key, u8 *hdr,
+			u8 *data, size_t data_len, u8 *mic)
+{
+	struct hash_desc desc;
+	struct scatterlist sg[2];
+
+	if (tfm_michael == NULL) {
+		printk(KERN_WARNING "michael_mic: tfm_michael == NULL\n");
+		return -1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	sg_init_table(sg, 2);
 	sg_set_buf(&sg[0], hdr, 16);
 	sg_set_buf(&sg[1], data, data_len);
 
+<<<<<<< HEAD
         if (crypto_hash_setkey(tfm_michael, key, 8))
                 return -1;
 
         desc.tfm = tfm_michael;
         desc.flags = 0;
         return crypto_hash_digest(&desc, sg, data_len + 16, mic);
+=======
+	if (crypto_hash_setkey(tfm_michael, key, 8))
+		return -1;
+
+	desc.tfm = tfm_michael;
+	desc.flags = 0;
+	return crypto_hash_digest(&desc, sg, data_len + 16, mic);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void michael_mic_hdr(struct sk_buff *skb, u8 *hdr)
@@ -522,7 +560,12 @@ static void michael_mic_hdr(struct sk_buff *skb, u8 *hdr)
 }
 
 
+<<<<<<< HEAD
 static int ieee80211_michael_mic_add(struct sk_buff *skb, int hdr_len, void *priv)
+=======
+static int ieee80211_michael_mic_add(struct sk_buff *skb, int hdr_len,
+				     void *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_tkip_data *tkey = priv;
 	u8 *pos;
@@ -539,12 +582,18 @@ static int ieee80211_michael_mic_add(struct sk_buff *skb, int hdr_len, void *pri
 
 	michael_mic_hdr(skb, tkey->tx_hdr);
 
+<<<<<<< HEAD
 	// { david, 2006.9.1
 	// fix the wpa process with wmm enabled.
 	if(IEEE80211_QOS_HAS_SEQ(le16_to_cpu(hdr->frame_ctl))) {
 		tkey->tx_hdr[12] = *(skb->data + hdr_len - 2) & 0x07;
 	}
 	// }
+=======
+	if(IEEE80211_QOS_HAS_SEQ(le16_to_cpu(hdr->frame_ctl))) {
+		tkey->tx_hdr[12] = *(skb->data + hdr_len - 2) & 0x07;
+	}
+>>>>>>> refs/remotes/origin/master
 	pos = skb_put(skb, 8);
 
 	if (michael_mic(tkey->tx_tfm_michael, &tkey->key[16], tkey->tx_hdr,
@@ -555,8 +604,13 @@ static int ieee80211_michael_mic_add(struct sk_buff *skb, int hdr_len, void *pri
 }
 
 static void ieee80211_michael_mic_failure(struct net_device *dev,
+<<<<<<< HEAD
 				       struct ieee80211_hdr_4addr *hdr,
 				       int keyidx)
+=======
+					  struct ieee80211_hdr_4addr *hdr,
+					  int keyidx)
+>>>>>>> refs/remotes/origin/master
 {
 	union iwreq_data wrqu;
 	struct iw_michaelmicfailure ev;
@@ -576,7 +630,11 @@ static void ieee80211_michael_mic_failure(struct net_device *dev,
 }
 
 static int ieee80211_michael_mic_verify(struct sk_buff *skb, int keyidx,
+<<<<<<< HEAD
 				     int hdr_len, void *priv)
+=======
+					int hdr_len, void *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_tkip_data *tkey = priv;
 	u8 mic[8];
@@ -588,12 +646,18 @@ static int ieee80211_michael_mic_verify(struct sk_buff *skb, int keyidx,
 		return -1;
 
 	michael_mic_hdr(skb, tkey->rx_hdr);
+<<<<<<< HEAD
 	// { david, 2006.9.1
 	// fix the wpa process with wmm enabled.
 	if(IEEE80211_QOS_HAS_SEQ(le16_to_cpu(hdr->frame_ctl))) {
 		tkey->rx_hdr[12] = *(skb->data + hdr_len - 2) & 0x07;
 	}
 	// }
+=======
+	if(IEEE80211_QOS_HAS_SEQ(le16_to_cpu(hdr->frame_ctl))) {
+		tkey->rx_hdr[12] = *(skb->data + hdr_len - 2) & 0x07;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (michael_mic(tkey->rx_tfm_michael, &tkey->key[24], tkey->rx_hdr,
 			skb->data + hdr_len, skb->len - 8 - hdr_len, mic))
@@ -689,7 +753,11 @@ static int ieee80211_tkip_get_key(void *key, int len, u8 *seq, void *priv)
 }
 
 
+<<<<<<< HEAD
 static char * ieee80211_tkip_print_stats(char *p, void *priv)
+=======
+static char *ieee80211_tkip_print_stats(char *p, void *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_tkip_data *tkip = priv;
 	p += sprintf(p, "key[%d] alg=TKIP key_set=%d "
@@ -747,6 +815,9 @@ void ieee80211_crypto_tkip_exit(void)
 
 void ieee80211_tkip_null(void)
 {
+<<<<<<< HEAD
 //    printk("============>%s()\n", __func__);
         return;
+=======
+>>>>>>> refs/remotes/origin/master
 }

@@ -27,11 +27,32 @@ long diagchar_ioctl(struct file *, unsigned int, unsigned long);
 int diag_device_write(void *, int, struct diag_request *);
 int mask_request_validate(unsigned char mask_buf[]);
 void diag_clear_reg(int);
+<<<<<<< HEAD
+<<<<<<< HEAD
 int chk_apps_only(void);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int chk_config_get_id(void);
+int chk_apps_only(void);
+int chk_apps_master(void);
+int chk_polling_response(void);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void diag_send_event_mask_update(smd_channel_t *, int num_bytes);
 void diag_send_msg_mask_update(smd_channel_t *, int ssid_first,
 					 int ssid_last, int proc);
 void diag_send_log_mask_update(smd_channel_t *, int);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void diag_update_sleeping_process(int process_id, int data_type);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void diag_update_sleeping_process(int process_id, int data_type);
+>>>>>>> refs/remotes/origin/cm-11.0
 /* State for diag forwarding */
 #ifdef CONFIG_DIAG_OVER_USB
 int diagfwd_connect(void);
@@ -40,4 +61,12 @@ int diagfwd_disconnect(void);
 extern int diag_debug_buf_idx;
 extern unsigned char diag_debug_buf[1024];
 extern int diag_event_num_bytes;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern struct platform_driver msm_diag_dci_driver;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct platform_driver msm_diag_dci_driver;
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

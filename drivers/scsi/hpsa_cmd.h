@@ -23,7 +23,15 @@
 
 /* general boundary defintions */
 #define SENSEINFOBYTES          32 /* may vary between hbas */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MAXSGENTRIES            32
+=======
+#define SG_ENTRIES_IN_CMD	32 /* Max SG entries excluding chain blocks */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SG_ENTRIES_IN_CMD	32 /* Max SG entries excluding chain blocks */
+>>>>>>> refs/remotes/origin/master
 #define HPSA_SG_CHAIN		0x80000000
 #define MAXREPLYQS              256
 
@@ -82,6 +90,32 @@
 #define TYPE_CMD				0x00
 #define TYPE_MSG				0x01
 
+<<<<<<< HEAD
+=======
+/* Message Types  */
+#define HPSA_TASK_MANAGEMENT    0x00
+#define HPSA_RESET              0x01
+#define HPSA_SCAN               0x02
+#define HPSA_NOOP               0x03
+
+#define HPSA_CTLR_RESET_TYPE    0x00
+#define HPSA_BUS_RESET_TYPE     0x01
+#define HPSA_TARGET_RESET_TYPE  0x03
+#define HPSA_LUN_RESET_TYPE     0x04
+#define HPSA_NEXUS_RESET_TYPE   0x05
+
+/* Task Management Functions */
+#define HPSA_TMF_ABORT_TASK     0x00
+#define HPSA_TMF_ABORT_TASK_SET 0x01
+#define HPSA_TMF_CLEAR_ACA      0x02
+#define HPSA_TMF_CLEAR_TASK_SET 0x03
+#define HPSA_TMF_QUERY_TASK     0x04
+#define HPSA_TMF_QUERY_TASK_SET 0x05
+#define HPSA_TMF_QUERY_ASYNCEVENT 0x06
+
+
+
+>>>>>>> refs/remotes/origin/master
 /* config space register offsets */
 #define CFG_VENDORID            0x00
 #define CFG_DEVICEID            0x02
@@ -106,6 +140,10 @@
 #define CFGTBL_Trans_Simple     0x00000002l
 #define CFGTBL_Trans_Performant 0x00000004l
 #define CFGTBL_Trans_use_short_tags 0x20000000l
+<<<<<<< HEAD
+=======
+#define CFGTBL_Trans_enable_directed_msix (1 << 30)
+>>>>>>> refs/remotes/origin/master
 
 #define CFGTBL_BusType_Ultra2   0x00000001l
 #define CFGTBL_BusType_Ultra3   0x00000002l
@@ -122,9 +160,23 @@ union u64bit {
 };
 
 /* FIXME this is a per controller value (barf!) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define HPSA_MAX_TARGETS_PER_CTLR 16
 #define HPSA_MAX_LUN 256
 #define HPSA_MAX_PHYS_LUN 1024
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define HPSA_MAX_LUN 1024
+#define HPSA_MAX_PHYS_LUN 1024
+#define MAX_EXT_TARGETS 32
+#define HPSA_MAX_DEVICES (HPSA_MAX_PHYS_LUN + HPSA_MAX_LUN + \
+	MAX_EXT_TARGETS + 1) /* + 1 is for the controller itself */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* SCSI-3 Commands */
 #pragma pack(1)
@@ -160,6 +212,18 @@ struct SenseSubsystem_info {
 #define BMIC_WRITE 0x27
 #define BMIC_CACHE_FLUSH 0xc2
 #define HPSA_CACHE_FLUSH 0x01	/* C2 was already being used by HPSA */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define BMIC_FLASH_FIRMWARE 0xF7
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BMIC_FLASH_FIRMWARE 0xF7
+>>>>>>> refs/remotes/origin/master
+=======
+#define BMIC_FLASH_FIRMWARE 0xF7
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Command List Structure */
 union SCSI3Addr {
@@ -279,7 +343,15 @@ struct CommandList {
 	struct CommandListHeader Header;
 	struct RequestBlock      Request;
 	struct ErrDescriptor     ErrDesc;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct SGDescriptor      SG[MAXSGENTRIES];
+=======
+	struct SGDescriptor      SG[SG_ENTRIES_IN_CMD];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct SGDescriptor      SG[SG_ENTRIES_IN_CMD];
+>>>>>>> refs/remotes/origin/master
 	/* information associated with the command */
 	u32			   busaddr; /* physical addr of this record */
 	struct ErrorInfo *err_info; /* pointer to the allocated mem */
@@ -335,11 +407,24 @@ struct CfgTable {
 	u32		MaxPhysicalDevices;
 	u32		MaxPhysicalDrivesPerLogicalUnit;
 	u32		MaxPerformantModeCommands;
+<<<<<<< HEAD
 	u8		reserved[0x78 - 0x58];
+=======
+	u32		MaxBlockFetch;
+	u32		PowerConservationSupport;
+	u32		PowerConservationEnable;
+	u32		TMFSupportFlags;
+	u8		TMFTagMask[8];
+	u8		reserved[0x78 - 0x70];
+>>>>>>> refs/remotes/origin/master
 	u32		misc_fw_support; /* offset 0x78 */
 #define			MISC_FW_DOORBELL_RESET (0x02)
 #define			MISC_FW_DOORBELL_RESET2 (0x010)
 	u8		driver_version[32];
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 };
 
 #define NUM_BLOCKFETCH_ENTRIES 8
@@ -349,8 +434,13 @@ struct TransTable_struct {
 	u32            RepQCount;
 	u32            RepQCtrAddrLow32;
 	u32            RepQCtrAddrHigh32;
+<<<<<<< HEAD
 	u32            RepQAddr0Low32;
 	u32            RepQAddr0High32;
+=======
+#define MAX_REPLY_QUEUES 8
+	struct vals32  RepQAddr[MAX_REPLY_QUEUES];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct hpsa_pci_info {

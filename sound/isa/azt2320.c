@@ -35,7 +35,15 @@
 #include <linux/time.h>
 #include <linux/wait.h>
 #include <linux/pnp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/wss.h>
@@ -55,7 +63,15 @@ MODULE_SUPPORTED_DEVICE("{{Aztech Systems,PRO16V},"
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this card */
+>>>>>>> refs/remotes/origin/master
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
 static long wss_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
 static long mpu_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
@@ -99,9 +115,15 @@ MODULE_DEVICE_TABLE(pnp_card, snd_azt2320_pnpids);
 
 #define	DRIVER_NAME	"snd-card-azt2320"
 
+<<<<<<< HEAD
 static int __devinit snd_card_azt2320_pnp(int dev, struct snd_card_azt2320 *acard,
 					  struct pnp_card_link *card,
 					  const struct pnp_card_device_id *id)
+=======
+static int snd_card_azt2320_pnp(int dev, struct snd_card_azt2320 *acard,
+				struct pnp_card_link *card,
+				const struct pnp_card_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pnp_dev *pdev;
 	int err;
@@ -147,7 +169,11 @@ static int __devinit snd_card_azt2320_pnp(int dev, struct snd_card_azt2320 *acar
 }
 
 /* same of snd_sbdsp_command by Jaroslav Kysela */
+<<<<<<< HEAD
 static int __devinit snd_card_azt2320_command(unsigned long port, unsigned char val)
+=======
+static int snd_card_azt2320_command(unsigned long port, unsigned char val)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	unsigned long limit;
@@ -161,7 +187,11 @@ static int __devinit snd_card_azt2320_command(unsigned long port, unsigned char 
 	return -EBUSY;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_card_azt2320_enable_wss(unsigned long port)
+=======
+static int snd_card_azt2320_enable_wss(unsigned long port)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 
@@ -174,9 +204,15 @@ static int __devinit snd_card_azt2320_enable_wss(unsigned long port)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_card_azt2320_probe(int dev,
 					    struct pnp_card_link *pcard,
 					    const struct pnp_card_device_id *pid)
+=======
+static int snd_card_azt2320_probe(int dev,
+				  struct pnp_card_link *pcard,
+				  const struct pnp_card_device_id *pid)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 	struct snd_card *card;
@@ -234,8 +270,16 @@ static int __devinit snd_card_azt2320_probe(int dev,
 	if (mpu_port[dev] > 0 && mpu_port[dev] != SNDRV_AUTO_PORT) {
 		if (snd_mpu401_uart_new(card, 0, MPU401_HW_AZT2320,
 				mpu_port[dev], 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				mpu_irq[dev], IRQF_DISABLED,
 				NULL) < 0)
+=======
+				mpu_irq[dev], NULL) < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				mpu_irq[dev], NULL) < 0)
+>>>>>>> refs/remotes/origin/master
 			snd_printk(KERN_ERR PFX "no MPU-401 device at 0x%lx\n", mpu_port[dev]);
 	}
 
@@ -265,10 +309,17 @@ static int __devinit snd_card_azt2320_probe(int dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static unsigned int __devinitdata azt2320_devices;
 
 static int __devinit snd_azt2320_pnp_detect(struct pnp_card_link *card,
 					    const struct pnp_card_device_id *id)
+=======
+static unsigned int azt2320_devices;
+
+static int snd_azt2320_pnp_detect(struct pnp_card_link *card,
+				  const struct pnp_card_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	int res;
@@ -286,7 +337,11 @@ static int __devinit snd_azt2320_pnp_detect(struct pnp_card_link *card,
         return -ENODEV;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_azt2320_pnp_remove(struct pnp_card_link * pcard)
+=======
+static void snd_azt2320_pnp_remove(struct pnp_card_link *pcard)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_card_free(pnp_get_card_drvdata(pcard));
 	pnp_set_card_drvdata(pcard, NULL);
@@ -321,7 +376,11 @@ static struct pnp_card_driver azt2320_pnpc_driver = {
 	.name           = "azt2320",
 	.id_table       = snd_azt2320_pnpids,
 	.probe          = snd_azt2320_pnp_detect,
+<<<<<<< HEAD
 	.remove         = __devexit_p(snd_azt2320_pnp_remove),
+=======
+	.remove         = snd_azt2320_pnp_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= snd_azt2320_pnp_suspend,
 	.resume		= snd_azt2320_pnp_resume,

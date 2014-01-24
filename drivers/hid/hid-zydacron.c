@@ -169,7 +169,11 @@ static int zc_probe(struct hid_device *hdev, const struct hid_device_id *id)
 	int ret;
 	struct zc_device *zc;
 
+<<<<<<< HEAD
 	zc = kzalloc(sizeof(*zc), GFP_KERNEL);
+=======
+	zc = devm_kzalloc(&hdev->dev, sizeof(*zc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (zc == NULL) {
 		hid_err(hdev, "can't alloc descriptor\n");
 		return -ENOMEM;
@@ -180,12 +184,17 @@ static int zc_probe(struct hid_device *hdev, const struct hid_device_id *id)
 	ret = hid_parse(hdev);
 	if (ret) {
 		hid_err(hdev, "parse failed\n");
+<<<<<<< HEAD
 		goto err_free;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
 	if (ret) {
 		hid_err(hdev, "hw start failed\n");
+<<<<<<< HEAD
 		goto err_free;
 	}
 
@@ -201,9 +210,19 @@ static void zc_remove(struct hid_device *hdev)
 	struct zc_device *zc = hid_get_drvdata(hdev);
 
 	hid_hw_stop(hdev);
+<<<<<<< HEAD
 
 	if (NULL != zc)
 		kfree(zc);
+=======
+	kfree(zc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ret;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct hid_device_id zc_devices[] = {
@@ -219,6 +238,7 @@ static struct hid_driver zc_driver = {
 	.input_mapping = zc_input_mapping,
 	.raw_event = zc_raw_event,
 	.probe = zc_probe,
+<<<<<<< HEAD
 	.remove = zc_remove,
 };
 
@@ -234,4 +254,9 @@ static void __exit zc_exit(void)
 
 module_init(zc_init);
 module_exit(zc_exit);
+=======
+};
+module_hid_driver(zc_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

@@ -1,5 +1,13 @@
 #ifdef __ASSEMBLY__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/asm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/asm.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/dwarf2.h>
 
 /* The annotation hides the frame from the unwinder and makes it look
@@ -7,6 +15,8 @@
    frame pointer later */
 #ifdef CONFIG_FRAME_POINTER
 	.macro FRAME
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pushl_cfi %ebp
 	CFI_REL_OFFSET ebp,0
 	movl %esp,%ebp
@@ -14,6 +24,20 @@
 	.macro ENDFRAME
 	popl_cfi %ebp
 	CFI_RESTORE ebp
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	__ASM_SIZE(push,_cfi)	%__ASM_REG(bp)
+	CFI_REL_OFFSET		__ASM_REG(bp), 0
+	__ASM_SIZE(mov)		%__ASM_REG(sp), %__ASM_REG(bp)
+	.endm
+	.macro ENDFRAME
+	__ASM_SIZE(pop,_cfi)	%__ASM_REG(bp)
+	CFI_RESTORE		__ASM_REG(bp)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.endm
 #else
 	.macro FRAME

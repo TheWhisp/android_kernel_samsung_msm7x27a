@@ -25,7 +25,10 @@
 
 
 
+<<<<<<< HEAD
 #include <linux/io.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
@@ -384,7 +387,11 @@ static int stac9460_mic_sw_put(struct snd_kcontrol *kcontrol,
 /*
  * Control tabs
  */
+<<<<<<< HEAD
 static struct snd_kcontrol_new stac9640_controls[] __devinitdata = {
+=======
+static struct snd_kcontrol_new stac9640_controls[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 		.name = "Master Playback Switch",
@@ -448,7 +455,11 @@ static struct snd_kcontrol_new stac9640_controls[] __devinitdata = {
 
 
 /*INIT*/
+<<<<<<< HEAD
 static int __devinit wtm_add_controls(struct snd_ice1712 *ice)
+=======
+static int wtm_add_controls(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 	int err;
@@ -462,7 +473,11 @@ static int __devinit wtm_add_controls(struct snd_ice1712 *ice)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit wtm_init(struct snd_ice1712 *ice)
+=======
+static int wtm_init(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	static unsigned short stac_inits_prodigy[] = {
 		STAC946X_RESET, 0,
@@ -485,7 +500,11 @@ static int __devinit wtm_init(struct snd_ice1712 *ice)
 }
 
 
+<<<<<<< HEAD
 static unsigned char wtm_eeprom[] __devinitdata = {
+=======
+static unsigned char wtm_eeprom[] = {
+>>>>>>> refs/remotes/origin/master
 	0x47,	/*SYSCONF: clock 192KHz, 4ADC, 8DAC */
 	0x80,	/* ACLINK : I2S */
 	0xf8,	/* I2S: vol; 96k, 24bit, 192k */
@@ -503,7 +522,11 @@ static unsigned char wtm_eeprom[] __devinitdata = {
 
 
 /*entry point*/
+<<<<<<< HEAD
 struct snd_ice1712_card_info snd_vt1724_wtm_cards[] __devinitdata = {
+=======
+struct snd_ice1712_card_info snd_vt1724_wtm_cards[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.subvendor = VT1724_SUBDEVICE_WTM,
 		.name = "ESI Waveterminal 192M",

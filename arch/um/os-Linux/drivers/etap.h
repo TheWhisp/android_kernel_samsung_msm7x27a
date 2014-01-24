@@ -6,7 +6,11 @@
 #ifndef __DRIVERS_ETAP_H
 #define __DRIVERS_ETAP_H
 
+<<<<<<< HEAD
 #include "net_user.h"
+=======
+#include <net_user.h>
+>>>>>>> refs/remotes/origin/master
 
 struct ethertap_data {
 	char *dev_name;

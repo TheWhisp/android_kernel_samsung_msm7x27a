@@ -20,6 +20,11 @@
 #ifndef	__LINUX_USB_RNDIS_HOST_H
 #define	__LINUX_USB_RNDIS_HOST_H
 
+<<<<<<< HEAD
+=======
+#include <linux/rndis.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * CONTROL uses CDC "encapsulated commands" with funky notifications.
  *  - control-out:  SEND_ENCAPSULATED
@@ -49,6 +54,7 @@ struct rndis_msg_hdr {
  */
 #define	RNDIS_CONTROL_TIMEOUT_MS	(5 * 1000)
 
+<<<<<<< HEAD
 #define RNDIS_MSG_COMPLETION	cpu_to_le32(0x80000000)
 
 /* codes for "msg_type" field of rndis messages;
@@ -90,6 +96,8 @@ struct rndis_msg_hdr {
 #define	RNDIS_PHYSICAL_MEDIUM_WIRELESS_WAN	cpu_to_le32(0x00000008)
 #define	RNDIS_PHYSICAL_MEDIUM_MAX		cpu_to_le32(0x00000009)
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct rndis_data_hdr {
 	__le32	msg_type;		/* RNDIS_MSG_PACKET */
 	__le32	msg_len;		/* rndis_data_hdr + data_len + pad */
@@ -222,6 +230,7 @@ struct rndis_keepalive_c {	/* IN (optionally OUT) */
 	__le32	status;
 } __attribute__ ((packed));
 
+<<<<<<< HEAD
 /* NOTE:  about 30 OIDs are "mandatory" for peripherals to support ... and
  * there are gobs more that may optionally be supported.  We'll avoid as much
  * of that mess as possible.
@@ -245,6 +254,8 @@ struct rndis_keepalive_c {	/* IN (optionally OUT) */
 #define RNDIS_PACKET_TYPE_FUNCTIONAL		cpu_to_le32(0x00004000)
 #define RNDIS_PACKET_TYPE_MAC_FRAME		cpu_to_le32(0x00008000)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* default filter used with RNDIS devices */
 #define RNDIS_DEFAULT_FILTER ( \
 	RNDIS_PACKET_TYPE_DIRECTED | \

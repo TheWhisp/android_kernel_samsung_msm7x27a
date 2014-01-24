@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
@@ -32,6 +33,21 @@
 #include "xfs_inode_item.h"
 #include "xfs_error.h"
 #include "xfs_trace.h"
+=======
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_trans.h"
+#include "xfs_inode_item.h"
+#include "xfs_error.h"
+#include "xfs_trace.h"
+#include "xfs_trans_priv.h"
+#include "xfs_dinode.h"
+>>>>>>> refs/remotes/origin/master
 
 
 kmem_zone_t	*xfs_ili_zone;		/* inode log item zone */
@@ -49,6 +65,7 @@ static inline struct xfs_inode_log_item *INODE_ITEM(struct xfs_log_item *lip)
  * inode core, and possibly one for the inode data/extents/b-tree root
  * and one for the inode attribute data/extents/b-tree root.
  */
+<<<<<<< HEAD
 STATIC uint
 xfs_inode_item_size(
 	struct xfs_log_item	*lip)
@@ -57,6 +74,7 @@ xfs_inode_item_size(
 	struct xfs_inode	*ip = iip->ili_inode;
 	uint			nvecs = 2;
 
+<<<<<<< HEAD
 	/*
 	 * Only log the data/extents/b-tree root if there is something
 	 * left to log.
@@ -130,6 +148,70 @@ xfs_inode_item_size(
 		iip->ili_format.ilf_fields &=
 			~(XFS_ILOG_DDATA | XFS_ILOG_DBROOT |
 			  XFS_ILOG_DEXT | XFS_ILOG_DEV);
+=======
+=======
+STATIC void
+xfs_inode_item_size(
+	struct xfs_log_item	*lip,
+	int			*nvecs,
+	int			*nbytes)
+{
+	struct xfs_inode_log_item *iip = INODE_ITEM(lip);
+	struct xfs_inode	*ip = iip->ili_inode;
+
+	*nvecs += 2;
+	*nbytes += sizeof(struct xfs_inode_log_format) +
+		   xfs_icdinode_size(ip->i_d.di_version);
+
+>>>>>>> refs/remotes/origin/master
+	switch (ip->i_d.di_format) {
+	case XFS_DINODE_FMT_EXTENTS:
+		if ((iip->ili_fields & XFS_ILOG_DEXT) &&
+		    ip->i_d.di_nextents > 0 &&
+<<<<<<< HEAD
+		    ip->i_df.if_bytes > 0)
+			nvecs++;
+=======
+		    ip->i_df.if_bytes > 0) {
+			/* worst case, doesn't subtract delalloc extents */
+			*nbytes += XFS_IFORK_DSIZE(ip);
+			*nvecs += 1;
+		}
+>>>>>>> refs/remotes/origin/master
+		break;
+
+	case XFS_DINODE_FMT_BTREE:
+		if ((iip->ili_fields & XFS_ILOG_DBROOT) &&
+<<<<<<< HEAD
+		    ip->i_df.if_broot_bytes > 0)
+			nvecs++;
+=======
+		    ip->i_df.if_broot_bytes > 0) {
+			*nbytes += ip->i_df.if_broot_bytes;
+			*nvecs += 1;
+		}
+>>>>>>> refs/remotes/origin/master
+		break;
+
+	case XFS_DINODE_FMT_LOCAL:
+		if ((iip->ili_fields & XFS_ILOG_DDATA) &&
+<<<<<<< HEAD
+		    ip->i_df.if_bytes > 0)
+			nvecs++;
+=======
+		    ip->i_df.if_bytes > 0) {
+			*nbytes += roundup(ip->i_df.if_bytes, 4);
+			*nvecs += 1;
+		}
+>>>>>>> refs/remotes/origin/master
+		break;
+
+	case XFS_DINODE_FMT_DEV:
+	case XFS_DINODE_FMT_UUID:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -137,6 +219,8 @@ xfs_inode_item_size(
 		break;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * If there are no attributes associated with this file,
 	 * then there cannot be anything more to log.
@@ -147,12 +231,24 @@ xfs_inode_item_size(
 			~(XFS_ILOG_ADATA | XFS_ILOG_ABROOT | XFS_ILOG_AEXT);
 		return nvecs;
 	}
+=======
+	if (!XFS_IFORK_Q(ip))
+		return nvecs;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!XFS_IFORK_Q(ip))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Log any necessary attribute data.
 	 */
 	switch (ip->i_d.di_aformat) {
 	case XFS_DINODE_FMT_EXTENTS:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		iip->ili_format.ilf_fields &=
 			~(XFS_ILOG_ADATA | XFS_ILOG_ABROOT);
 		if ((iip->ili_format.ilf_fields & XFS_ILOG_AEXT) &&
@@ -187,14 +283,58 @@ xfs_inode_item_size(
 		} else {
 			iip->ili_format.ilf_fields &= ~XFS_ILOG_ADATA;
 		}
+=======
+		if ((iip->ili_fields & XFS_ILOG_AEXT) &&
+		    ip->i_d.di_anextents > 0 &&
+		    ip->i_afp->if_bytes > 0)
+			nvecs++;
+=======
+		if ((iip->ili_fields & XFS_ILOG_AEXT) &&
+		    ip->i_d.di_anextents > 0 &&
+		    ip->i_afp->if_bytes > 0) {
+			/* worst case, doesn't subtract unused space */
+			*nbytes += XFS_IFORK_ASIZE(ip);
+			*nvecs += 1;
+		}
+>>>>>>> refs/remotes/origin/master
+		break;
+
+	case XFS_DINODE_FMT_BTREE:
+		if ((iip->ili_fields & XFS_ILOG_ABROOT) &&
+<<<<<<< HEAD
+		    ip->i_afp->if_broot_bytes > 0)
+			nvecs++;
+=======
+		    ip->i_afp->if_broot_bytes > 0) {
+			*nbytes += ip->i_afp->if_broot_bytes;
+			*nvecs += 1;
+		}
+>>>>>>> refs/remotes/origin/master
+		break;
+
+	case XFS_DINODE_FMT_LOCAL:
+		if ((iip->ili_fields & XFS_ILOG_ADATA) &&
+<<<<<<< HEAD
+		    ip->i_afp->if_bytes > 0)
+			nvecs++;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    ip->i_afp->if_bytes > 0) {
+			*nbytes += roundup(ip->i_afp->if_bytes, 4);
+			*nvecs += 1;
+		}
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
 		ASSERT(0);
 		break;
 	}
+<<<<<<< HEAD
 
 	return nvecs;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -256,6 +396,8 @@ xfs_inode_item_format(
 	vecp++;
 	nvecs	     = 1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Clear i_update_core if the timestamps (or any other
 	 * non-transactional modification) need flushing/logging
@@ -292,12 +434,24 @@ xfs_inode_item_format(
 	 */
 	xfs_synchronize_times(ip);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	vecp->i_addr = &ip->i_d;
 	vecp->i_len  = sizeof(struct xfs_icdinode);
 	vecp->i_type = XLOG_REG_TYPE_ICORE;
 	vecp++;
 	nvecs++;
+<<<<<<< HEAD
 	iip->ili_format.ilf_fields |= XFS_ILOG_CORE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vecp->i_addr = &ip->i_d;
+	vecp->i_len  = xfs_icdinode_size(ip->i_d.di_version);
+	vecp->i_type = XLOG_REG_TYPE_ICORE;
+	vecp++;
+	nvecs++;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If this is really an old format inode, then we need to
@@ -330,6 +484,8 @@ xfs_inode_item_format(
 
 	switch (ip->i_d.di_format) {
 	case XFS_DINODE_FMT_EXTENTS:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(!(iip->ili_format.ilf_fields &
 			 (XFS_ILOG_DDATA | XFS_ILOG_DBROOT |
 			  XFS_ILOG_DEV | XFS_ILOG_UUID)));
@@ -340,6 +496,24 @@ xfs_inode_item_format(
 			ASSERT(iip->ili_extents_buf == NULL);
 			ASSERT((ip->i_df.if_bytes /
 				(uint)sizeof(xfs_bmbt_rec_t)) > 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		iip->ili_fields &=
+			~(XFS_ILOG_DDATA | XFS_ILOG_DBROOT |
+			  XFS_ILOG_DEV | XFS_ILOG_UUID);
+
+		if ((iip->ili_fields & XFS_ILOG_DEXT) &&
+		    ip->i_d.di_nextents > 0 &&
+		    ip->i_df.if_bytes > 0) {
+			ASSERT(ip->i_df.if_u1.if_extents != NULL);
+			ASSERT(ip->i_df.if_bytes / sizeof(xfs_bmbt_rec_t) > 0);
+			ASSERT(iip->ili_extents_buf == NULL);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef XFS_NATIVE_HOST
                        if (ip->i_d.di_nextents == ip->i_df.if_bytes /
                                                (uint)sizeof(xfs_bmbt_rec_t)) {
@@ -361,15 +535,40 @@ xfs_inode_item_format(
 			iip->ili_format.ilf_dsize = vecp->i_len;
 			vecp++;
 			nvecs++;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		} else {
+			iip->ili_fields &= ~XFS_ILOG_DEXT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			iip->ili_fields &= ~XFS_ILOG_DEXT;
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
 	case XFS_DINODE_FMT_BTREE:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(!(iip->ili_format.ilf_fields &
 			 (XFS_ILOG_DDATA | XFS_ILOG_DEXT |
 			  XFS_ILOG_DEV | XFS_ILOG_UUID)));
 		if (iip->ili_format.ilf_fields & XFS_ILOG_DBROOT) {
 			ASSERT(ip->i_df.if_broot_bytes > 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		iip->ili_fields &=
+			~(XFS_ILOG_DDATA | XFS_ILOG_DEXT |
+			  XFS_ILOG_DEV | XFS_ILOG_UUID);
+
+		if ((iip->ili_fields & XFS_ILOG_DBROOT) &&
+		    ip->i_df.if_broot_bytes > 0) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ASSERT(ip->i_df.if_broot != NULL);
 			vecp->i_addr = ip->i_df.if_broot;
 			vecp->i_len = ip->i_df.if_broot_bytes;
@@ -377,15 +576,54 @@ xfs_inode_item_format(
 			vecp++;
 			nvecs++;
 			iip->ili_format.ilf_dsize = ip->i_df.if_broot_bytes;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		} else {
+			ASSERT(!(iip->ili_fields &
+				 XFS_ILOG_DBROOT));
+#ifdef XFS_TRANS_DEBUG
+			if (iip->ili_root_size > 0) {
+				ASSERT(iip->ili_root_size ==
+				       ip->i_df.if_broot_bytes);
+				ASSERT(memcmp(iip->ili_orig_root,
+					    ip->i_df.if_broot,
+					    iip->ili_root_size) == 0);
+			} else {
+				ASSERT(ip->i_df.if_broot_bytes == 0);
+			}
+#endif
+			iip->ili_fields &= ~XFS_ILOG_DBROOT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			ASSERT(!(iip->ili_fields &
+				 XFS_ILOG_DBROOT));
+			iip->ili_fields &= ~XFS_ILOG_DBROOT;
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
 	case XFS_DINODE_FMT_LOCAL:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(!(iip->ili_format.ilf_fields &
 			 (XFS_ILOG_DBROOT | XFS_ILOG_DEXT |
 			  XFS_ILOG_DEV | XFS_ILOG_UUID)));
 		if (iip->ili_format.ilf_fields & XFS_ILOG_DDATA) {
 			ASSERT(ip->i_df.if_bytes > 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		iip->ili_fields &=
+			~(XFS_ILOG_DEXT | XFS_ILOG_DBROOT |
+			  XFS_ILOG_DEV | XFS_ILOG_UUID);
+		if ((iip->ili_fields & XFS_ILOG_DDATA) &&
+		    ip->i_df.if_bytes > 0) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ASSERT(ip->i_df.if_u1.if_data != NULL);
 			ASSERT(ip->i_d.di_size > 0);
 
@@ -403,24 +641,60 @@ xfs_inode_item_format(
 			vecp++;
 			nvecs++;
 			iip->ili_format.ilf_dsize = (unsigned)data_bytes;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		} else {
+			iip->ili_fields &= ~XFS_ILOG_DDATA;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			iip->ili_fields &= ~XFS_ILOG_DDATA;
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
 	case XFS_DINODE_FMT_DEV:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(!(iip->ili_format.ilf_fields &
 			 (XFS_ILOG_DBROOT | XFS_ILOG_DEXT |
 			  XFS_ILOG_DDATA | XFS_ILOG_UUID)));
 		if (iip->ili_format.ilf_fields & XFS_ILOG_DEV) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		iip->ili_fields &=
+			~(XFS_ILOG_DDATA | XFS_ILOG_DBROOT |
+			  XFS_ILOG_DEXT | XFS_ILOG_UUID);
+		if (iip->ili_fields & XFS_ILOG_DEV) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			iip->ili_format.ilf_u.ilfu_rdev =
 				ip->i_df.if_u2.if_rdev;
 		}
 		break;
 
 	case XFS_DINODE_FMT_UUID:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(!(iip->ili_format.ilf_fields &
 			 (XFS_ILOG_DBROOT | XFS_ILOG_DEXT |
 			  XFS_ILOG_DDATA | XFS_ILOG_DEV)));
 		if (iip->ili_format.ilf_fields & XFS_ILOG_UUID) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		iip->ili_fields &=
+			~(XFS_ILOG_DDATA | XFS_ILOG_DBROOT |
+			  XFS_ILOG_DEXT | XFS_ILOG_DEV);
+		if (iip->ili_fields & XFS_ILOG_UUID) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			iip->ili_format.ilf_u.ilfu_uuid =
 				ip->i_df.if_u2.if_uuid;
 		}
@@ -432,6 +706,8 @@ xfs_inode_item_format(
 	}
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * If there are no attributes associated with the file,
 	 * then we're done.
 	 * Assert that no attribute-related log flags are set.
@@ -442,10 +718,25 @@ xfs_inode_item_format(
 		ASSERT(!(iip->ili_format.ilf_fields &
 			 (XFS_ILOG_ADATA | XFS_ILOG_ABROOT | XFS_ILOG_AEXT)));
 		return;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * If there are no attributes associated with the file, then we're done.
+	 */
+	if (!XFS_IFORK_Q(ip)) {
+		iip->ili_fields &=
+			~(XFS_ILOG_ADATA | XFS_ILOG_ABROOT | XFS_ILOG_AEXT);
+		goto out;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (ip->i_d.di_aformat) {
 	case XFS_DINODE_FMT_EXTENTS:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(!(iip->ili_format.ilf_fields &
 			 (XFS_ILOG_ADATA | XFS_ILOG_ABROOT)));
 		if (iip->ili_format.ilf_fields & XFS_ILOG_AEXT) {
@@ -458,6 +749,22 @@ xfs_inode_item_format(
 			ASSERT(ip->i_afp->if_u1.if_extents != NULL);
 			ASSERT(ip->i_d.di_anextents > 0);
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		iip->ili_fields &=
+			~(XFS_ILOG_ADATA | XFS_ILOG_ABROOT);
+
+		if ((iip->ili_fields & XFS_ILOG_AEXT) &&
+		    ip->i_d.di_anextents > 0 &&
+		    ip->i_afp->if_bytes > 0) {
+			ASSERT(ip->i_afp->if_bytes / sizeof(xfs_bmbt_rec_t) ==
+				ip->i_d.di_anextents);
+			ASSERT(ip->i_afp->if_u1.if_extents != NULL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef XFS_NATIVE_HOST
 			/*
 			 * There are not delayed allocation extents
@@ -474,29 +781,79 @@ xfs_inode_item_format(
 			iip->ili_format.ilf_asize = vecp->i_len;
 			vecp++;
 			nvecs++;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		} else {
+			iip->ili_fields &= ~XFS_ILOG_AEXT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			iip->ili_fields &= ~XFS_ILOG_AEXT;
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
 	case XFS_DINODE_FMT_BTREE:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(!(iip->ili_format.ilf_fields &
 			 (XFS_ILOG_ADATA | XFS_ILOG_AEXT)));
 		if (iip->ili_format.ilf_fields & XFS_ILOG_ABROOT) {
 			ASSERT(ip->i_afp->if_broot_bytes > 0);
 			ASSERT(ip->i_afp->if_broot != NULL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		iip->ili_fields &=
+			~(XFS_ILOG_ADATA | XFS_ILOG_AEXT);
+
+		if ((iip->ili_fields & XFS_ILOG_ABROOT) &&
+		    ip->i_afp->if_broot_bytes > 0) {
+			ASSERT(ip->i_afp->if_broot != NULL);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			vecp->i_addr = ip->i_afp->if_broot;
 			vecp->i_len = ip->i_afp->if_broot_bytes;
 			vecp->i_type = XLOG_REG_TYPE_IATTR_BROOT;
 			vecp++;
 			nvecs++;
 			iip->ili_format.ilf_asize = ip->i_afp->if_broot_bytes;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		} else {
+			iip->ili_fields &= ~XFS_ILOG_ABROOT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			iip->ili_fields &= ~XFS_ILOG_ABROOT;
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
 	case XFS_DINODE_FMT_LOCAL:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(!(iip->ili_format.ilf_fields &
 			 (XFS_ILOG_ABROOT | XFS_ILOG_AEXT)));
 		if (iip->ili_format.ilf_fields & XFS_ILOG_ADATA) {
 			ASSERT(ip->i_afp->if_bytes > 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		iip->ili_fields &=
+			~(XFS_ILOG_AEXT | XFS_ILOG_ABROOT);
+
+		if ((iip->ili_fields & XFS_ILOG_ADATA) &&
+		    ip->i_afp->if_bytes > 0) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ASSERT(ip->i_afp->if_u1.if_data != NULL);
 
 			vecp->i_addr = ip->i_afp->if_u1.if_data;
@@ -513,6 +870,16 @@ xfs_inode_item_format(
 			vecp++;
 			nvecs++;
 			iip->ili_format.ilf_asize = (unsigned)data_bytes;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		} else {
+			iip->ili_fields &= ~XFS_ILOG_ADATA;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			iip->ili_fields &= ~XFS_ILOG_ADATA;
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
@@ -521,7 +888,25 @@ xfs_inode_item_format(
 		break;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(nvecs == lip->li_desc->lid_size);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+out:
+	/*
+	 * Now update the log format that goes out to disk from the in-core
+	 * values.  We always write the inode core to make the arithmetic
+	 * games in recovery easier, which isn't a big deal as just about any
+	 * transaction would dirty it anyway.
+	 */
+	iip->ili_format.ilf_fields = XFS_ILOG_CORE |
+		(iip->ili_fields & ~XFS_ILOG_TIMESTAMP);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	iip->ili_format.ilf_size = nvecs;
 }
 
@@ -559,7 +944,12 @@ xfs_inode_item_unpin(
 	trace_xfs_inode_unpin(ip, _RET_IP_);
 	ASSERT(atomic_read(&ip->i_pincount) > 0);
 	if (atomic_dec_and_test(&ip->i_pincount))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		wake_up(&ip->i_ipin_wait);
+=======
+		wake_up_bit(&ip->i_flags, __XFS_IPINNED_BIT);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -581,6 +971,21 @@ xfs_inode_item_trylock(
 {
 	struct xfs_inode_log_item *iip = INODE_ITEM(lip);
 	struct xfs_inode	*ip = iip->ili_inode;
+=======
+		wake_up_bit(&ip->i_flags, __XFS_IPINNED_BIT);
+}
+
+STATIC uint
+xfs_inode_item_push(
+	struct xfs_log_item	*lip,
+	struct list_head	*buffer_list)
+{
+	struct xfs_inode_log_item *iip = INODE_ITEM(lip);
+	struct xfs_inode	*ip = iip->ili_inode;
+	struct xfs_buf		*bp = NULL;
+	uint			rval = XFS_ITEM_SUCCESS;
+	int			error;
+>>>>>>> refs/remotes/origin/master
 
 	if (xfs_ipincount(ip) > 0)
 		return XFS_ITEM_PINNED;
@@ -588,6 +993,7 @@ xfs_inode_item_trylock(
 	if (!xfs_ilock_nowait(ip, XFS_ILOCK_SHARED))
 		return XFS_ITEM_LOCKED;
 
+<<<<<<< HEAD
 	if (!xfs_iflock_nowait(ip)) {
 		/*
 		 * inode has already been flushed to the backing buffer,
@@ -600,22 +1006,75 @@ xfs_inode_item_trylock(
 	/* Stale items should force out the iclog */
 	if (ip->i_flags & XFS_ISTALE) {
 		xfs_ifunlock(ip);
+<<<<<<< HEAD
 		/*
 		 * we hold the AIL lock - notify the unlock routine of this
 		 * so it doesn't try to get the lock again.
 		 */
 		xfs_iunlock(ip, XFS_ILOCK_SHARED|XFS_IUNLOCK_NONOTIFY);
+=======
+		xfs_iunlock(ip, XFS_ILOCK_SHARED);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return XFS_ITEM_PINNED;
 	}
 
 #ifdef DEBUG
 	if (!XFS_FORCED_SHUTDOWN(ip->i_mount)) {
+<<<<<<< HEAD
 		ASSERT(iip->ili_format.ilf_fields != 0);
+=======
+		ASSERT(iip->ili_fields != 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ASSERT(iip->ili_logged == 0);
 		ASSERT(lip->li_flags & XFS_LI_IN_AIL);
 	}
 #endif
 	return XFS_ITEM_SUCCESS;
+=======
+	/*
+	 * Re-check the pincount now that we stabilized the value by
+	 * taking the ilock.
+	 */
+	if (xfs_ipincount(ip) > 0) {
+		rval = XFS_ITEM_PINNED;
+		goto out_unlock;
+	}
+
+	/*
+	 * Stale inode items should force out the iclog.
+	 */
+	if (ip->i_flags & XFS_ISTALE) {
+		rval = XFS_ITEM_PINNED;
+		goto out_unlock;
+	}
+
+	/*
+	 * Someone else is already flushing the inode.  Nothing we can do
+	 * here but wait for the flush to finish and remove the item from
+	 * the AIL.
+	 */
+	if (!xfs_iflock_nowait(ip)) {
+		rval = XFS_ITEM_FLUSHING;
+		goto out_unlock;
+	}
+
+	ASSERT(iip->ili_fields != 0 || XFS_FORCED_SHUTDOWN(ip->i_mount));
+	ASSERT(iip->ili_logged == 0 || XFS_FORCED_SHUTDOWN(ip->i_mount));
+
+	spin_unlock(&lip->li_ailp->xa_lock);
+
+	error = xfs_iflush(ip, &bp);
+	if (!error) {
+		if (!xfs_buf_delwri_queue(bp, buffer_list))
+			rval = XFS_ITEM_FLUSHING;
+		xfs_buf_relse(bp);
+	}
+
+	spin_lock(&lip->li_ailp->xa_lock);
+out_unlock:
+	xfs_iunlock(ip, XFS_ILOCK_SHARED);
+	return rval;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -632,6 +1091,8 @@ xfs_inode_item_unlock(
 	struct xfs_inode	*ip = iip->ili_inode;
 	unsigned short		lock_flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(iip->ili_inode->i_itemp != NULL);
 	ASSERT(xfs_isilocked(iip->ili_inode, XFS_ILOCK_EXCL));
 
@@ -639,6 +1100,14 @@ xfs_inode_item_unlock(
 	 * Clear the transaction pointer in the inode.
 	 */
 	ip->i_transp = NULL;
+=======
+	ASSERT(ip->i_itemp != NULL);
+	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(ip->i_itemp != NULL);
+	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If the inode needed a separate buffer with which to log
@@ -647,7 +1116,15 @@ xfs_inode_item_unlock(
 	if (iip->ili_extents_buf != NULL) {
 		ASSERT(ip->i_d.di_format == XFS_DINODE_FMT_EXTENTS);
 		ASSERT(ip->i_d.di_nextents > 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(iip->ili_format.ilf_fields & XFS_ILOG_DEXT);
+=======
+		ASSERT(iip->ili_fields & XFS_ILOG_DEXT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ASSERT(iip->ili_fields & XFS_ILOG_DEXT);
+>>>>>>> refs/remotes/origin/master
 		ASSERT(ip->i_df.if_bytes > 0);
 		kmem_free(iip->ili_extents_buf);
 		iip->ili_extents_buf = NULL;
@@ -655,7 +1132,15 @@ xfs_inode_item_unlock(
 	if (iip->ili_aextents_buf != NULL) {
 		ASSERT(ip->i_d.di_aformat == XFS_DINODE_FMT_EXTENTS);
 		ASSERT(ip->i_d.di_anextents > 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(iip->ili_format.ilf_fields & XFS_ILOG_AEXT);
+=======
+		ASSERT(iip->ili_fields & XFS_ILOG_AEXT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ASSERT(iip->ili_fields & XFS_ILOG_AEXT);
+>>>>>>> refs/remotes/origin/master
 		ASSERT(ip->i_afp->if_bytes > 0);
 		kmem_free(iip->ili_aextents_buf);
 		iip->ili_aextents_buf = NULL;
@@ -663,10 +1148,20 @@ xfs_inode_item_unlock(
 
 	lock_flags = iip->ili_lock_flags;
 	iip->ili_lock_flags = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (lock_flags) {
 		xfs_iunlock(iip->ili_inode, lock_flags);
 		IRELE(iip->ili_inode);
 	}
+=======
+	if (lock_flags)
+		xfs_iunlock(ip, lock_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (lock_flags)
+		xfs_iunlock(ip, lock_flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -707,6 +1202,7 @@ xfs_inode_item_committed(
 }
 
 /*
+<<<<<<< HEAD
  * This gets called by xfs_trans_push_ail(), when IOP_TRYLOCK
  * failed to get the inode flush lock but did get the inode locked SHARED.
  * Here we're trying to see if the inode buffer is incore, and if so whether it's
@@ -728,7 +1224,11 @@ xfs_inode_item_pushbuf(
 	 * If a flush is not in progress anymore, chances are that the
 	 * inode was taken off the AIL. So, just get out.
 	 */
+<<<<<<< HEAD
 	if (completion_done(&ip->i_flush) ||
+=======
+	if (!xfs_isiflocked(ip) ||
+>>>>>>> refs/remotes/origin/cm-10.0
 	    !(lip->li_flags & XFS_LI_IN_AIL)) {
 		xfs_iunlock(ip, XFS_ILOCK_SHARED);
 		return true;
@@ -742,7 +1242,11 @@ xfs_inode_item_pushbuf(
 		return true;
 	if (XFS_BUF_ISDELAYWRITE(bp))
 		xfs_buf_delwri_promote(bp);
+<<<<<<< HEAD
 	if (XFS_BUF_ISPINNED(bp))
+=======
+	if (xfs_buf_ispinned(bp))
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = false;
 	xfs_buf_relse(bp);
 	return ret;
@@ -761,7 +1265,11 @@ xfs_inode_item_push(
 	struct xfs_inode	*ip = iip->ili_inode;
 
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_SHARED));
+<<<<<<< HEAD
 	ASSERT(!completion_done(&ip->i_flush));
+=======
+	ASSERT(xfs_isiflocked(ip));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Since we were able to lock the inode's flush lock and
@@ -772,8 +1280,12 @@ xfs_inode_item_push(
 	 * lock without sleeping, then there must not have been
 	 * anyone in the process of flushing the inode.
 	 */
+<<<<<<< HEAD
 	ASSERT(XFS_FORCED_SHUTDOWN(ip->i_mount) ||
 	       iip->ili_format.ilf_fields != 0);
+=======
+	ASSERT(XFS_FORCED_SHUTDOWN(ip->i_mount) || iip->ili_fields != 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Push the inode to it's backing buffer. This will not remove the
@@ -788,6 +1300,8 @@ xfs_inode_item_push(
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * XXX rcc - this one really has to do something.  Probably needs
  * to stamp in a new field in the incore inode.
  */
@@ -802,16 +1316,30 @@ xfs_inode_item_committing(
 /*
  * This is the ops vector shared by all buf log items.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct xfs_item_ops xfs_inode_item_ops = {
+=======
+static const struct xfs_item_ops xfs_inode_item_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct xfs_item_ops xfs_inode_item_ops = {
+>>>>>>> refs/remotes/origin/master
 	.iop_size	= xfs_inode_item_size,
 	.iop_format	= xfs_inode_item_format,
 	.iop_pin	= xfs_inode_item_pin,
 	.iop_unpin	= xfs_inode_item_unpin,
+<<<<<<< HEAD
 	.iop_trylock	= xfs_inode_item_trylock,
 	.iop_unlock	= xfs_inode_item_unlock,
 	.iop_committed	= xfs_inode_item_committed,
 	.iop_push	= xfs_inode_item_push,
 	.iop_pushbuf	= xfs_inode_item_pushbuf,
+=======
+	.iop_unlock	= xfs_inode_item_unlock,
+	.iop_committed	= xfs_inode_item_committed,
+	.iop_push	= xfs_inode_item_push,
+>>>>>>> refs/remotes/origin/master
 	.iop_committing = xfs_inode_item_committing
 };
 
@@ -846,11 +1374,14 @@ void
 xfs_inode_item_destroy(
 	xfs_inode_t	*ip)
 {
+<<<<<<< HEAD
 #ifdef XFS_TRANS_DEBUG
 	if (ip->i_itemp->ili_root_size != 0) {
 		kmem_free(ip->i_itemp->ili_orig_root);
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_zone_free(xfs_ili_zone, ip->i_itemp);
 }
 
@@ -883,7 +1414,15 @@ xfs_iflush_done(
 	 * Scan the buffer IO completions for other inodes being completed and
 	 * attach them to the current inode log item.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	blip = XFS_BUF_FSPRIVATE(bp, xfs_log_item_t *);
+=======
+	blip = bp->b_fspriv;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	blip = bp->b_fspriv;
+>>>>>>> refs/remotes/origin/master
 	prev = NULL;
 	while (blip != NULL) {
 		if (lip->li_cb != xfs_iflush_done) {
@@ -895,7 +1434,15 @@ xfs_iflush_done(
 		/* remove from list */
 		next = blip->li_bio_list;
 		if (!prev) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			XFS_BUF_SET_FSPRIVATE(bp, next);
+=======
+			bp->b_fspriv = next;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			bp->b_fspriv = next;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			prev->li_bio_list = next;
 		}
@@ -942,7 +1489,12 @@ xfs_iflush_done(
 			ASSERT(i <= need_ail);
 		}
 		/* xfs_trans_ail_delete_bulk() drops the AIL lock. */
+<<<<<<< HEAD
 		xfs_trans_ail_delete_bulk(ailp, log_items, i);
+=======
+		xfs_trans_ail_delete_bulk(ailp, log_items, i,
+					  SHUTDOWN_CORRUPT_INCORE);
+>>>>>>> refs/remotes/origin/master
 	}
 
 
@@ -963,6 +1515,7 @@ xfs_iflush_done(
 }
 
 /*
+<<<<<<< HEAD
  * This is the inode flushing abort routine.  It is called
  * from xfs_iflush when the filesystem is shutting down to clean
  * up the inode state.
@@ -973,6 +1526,17 @@ xfs_iflush_done(
 void
 xfs_iflush_abort(
 	xfs_inode_t		*ip)
+=======
+ * This is the inode flushing abort routine.  It is called from xfs_iflush when
+ * the filesystem is shutting down to clean up the inode state.  It is
+ * responsible for removing the inode item from the AIL if it has not been
+ * re-logged, and unlocking the inode's flush lock.
+ */
+void
+xfs_iflush_abort(
+	xfs_inode_t		*ip,
+	bool			stale)
+>>>>>>> refs/remotes/origin/master
 {
 	xfs_inode_log_item_t	*iip = ip->i_itemp;
 
@@ -982,7 +1546,14 @@ xfs_iflush_abort(
 			spin_lock(&ailp->xa_lock);
 			if (iip->ili_item.li_flags & XFS_LI_IN_AIL) {
 				/* xfs_trans_ail_delete() drops the AIL lock. */
+<<<<<<< HEAD
 				xfs_trans_ail_delete(ailp, (xfs_log_item_t *)iip);
+=======
+				xfs_trans_ail_delete(ailp, &iip->ili_item,
+						stale ?
+						     SHUTDOWN_LOG_IO_ERROR :
+						     SHUTDOWN_CORRUPT_INCORE);
+>>>>>>> refs/remotes/origin/master
 			} else
 				spin_unlock(&ailp->xa_lock);
 		}
@@ -996,7 +1567,15 @@ xfs_iflush_abort(
 		 * Clear the inode logging fields so no more flushes are
 		 * attempted.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		iip->ili_format.ilf_fields = 0;
+=======
+		iip->ili_fields = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iip->ili_fields = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 	/*
 	 * Release the inode's flush lock since we're done with it.
@@ -1009,7 +1588,11 @@ xfs_istale_done(
 	struct xfs_buf		*bp,
 	struct xfs_log_item	*lip)
 {
+<<<<<<< HEAD
 	xfs_iflush_abort(INODE_ITEM(lip)->ili_inode);
+=======
+	xfs_iflush_abort(INODE_ITEM(lip)->ili_inode, true);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

@@ -14,6 +14,16 @@
  * Copyright (C) 2008 David S. Miller <davem@davemloft.net>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/fs.h>
@@ -35,7 +45,13 @@
 #include <asm/watchdog.h>
 
 #define DRIVER_NAME	"cpwd"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX		DRIVER_NAME ": "
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define WD_OBPNAME	"watchdog"
 #define WD_BADMODEL	"SUNW,501-5336"
@@ -385,8 +401,16 @@ static int cpwd_open(struct inode *inode, struct file *f)
 	if (!p->initialized) {
 		if (request_irq(p->irq, &cpwd_interrupt,
 				IRQF_SHARED, DRIVER_NAME, p)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR PFX "Cannot register IRQ %d\n",
 				p->irq);
+=======
+			pr_err("Cannot register IRQ %d\n", p->irq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("Cannot register IRQ %d\n", p->irq);
+>>>>>>> refs/remotes/origin/master
 			mutex_unlock(&cpwd_mutex);
 			return -EBUSY;
 		}
@@ -411,7 +435,11 @@ static long cpwd_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		.identity		= DRIVER_NAME,
 	};
 	void __user *argp = (void __user *)arg;
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	int index = iminor(inode) - WD0_MINOR;
 	struct cpwd *p = cpwd_device;
 	int setopt = 0;
@@ -499,7 +527,11 @@ static long cpwd_compat_ioctl(struct file *file, unsigned int cmd,
 static ssize_t cpwd_write(struct file *file, const char __user *buf,
 			  size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct cpwd *p = cpwd_device;
 	int index = iminor(inode);
 
@@ -528,7 +560,11 @@ static const struct file_operations cpwd_fops = {
 	.llseek =		no_llseek,
 };
 
+<<<<<<< HEAD
 static int __devinit cpwd_probe(struct platform_device *op)
+=======
+static int cpwd_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *options;
 	const char *str_prop;
@@ -542,7 +578,15 @@ static int __devinit cpwd_probe(struct platform_device *op)
 	p = kzalloc(sizeof(*p), GFP_KERNEL);
 	err = -ENOMEM;
 	if (!p) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Unable to allocate struct cpwd.\n");
+=======
+		pr_err("Unable to allocate struct cpwd\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Unable to allocate struct cpwd\n");
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -553,14 +597,30 @@ static int __devinit cpwd_probe(struct platform_device *op)
 	p->regs = of_ioremap(&op->resource[0], 0,
 			     4 * WD_TIMER_REGSZ, DRIVER_NAME);
 	if (!p->regs) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Unable to map registers.\n");
+=======
+		pr_err("Unable to map registers\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Unable to map registers\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_free;
 	}
 
 	options = of_find_node_by_path("/options");
 	err = -ENODEV;
 	if (!options) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Unable to find /options node.\n");
+=======
+		pr_err("Unable to find /options node\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Unable to find /options node\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_iounmap;
 	}
 
@@ -605,8 +665,18 @@ static int __devinit cpwd_probe(struct platform_device *op)
 
 		err = misc_register(&p->devs[i].misc);
 		if (err) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "Could not register misc device for "
 			       "dev %d\n", i);
+=======
+			pr_err("Could not register misc device for dev %d\n",
+			       i);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("Could not register misc device for dev %d\n",
+			       i);
+>>>>>>> refs/remotes/origin/master
 			goto out_unregister;
 		}
 	}
@@ -617,11 +687,24 @@ static int __devinit cpwd_probe(struct platform_device *op)
 		cpwd_timer.data		= (unsigned long) p;
 		cpwd_timer.expires	= WD_BTIMEOUT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX "PLD defect workaround enabled for "
 		       "model " WD_BADMODEL ".\n");
+=======
+		pr_info("PLD defect workaround enabled for model %s\n",
+			WD_BADMODEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	dev_set_drvdata(&op->dev, p);
+=======
+		pr_info("PLD defect workaround enabled for model %s\n",
+			WD_BADMODEL);
+	}
+
+	platform_set_drvdata(op, p);
+>>>>>>> refs/remotes/origin/master
 	cpwd_device = p;
 	err = 0;
 
@@ -640,9 +723,15 @@ out_free:
 	goto out;
 }
 
+<<<<<<< HEAD
 static int __devexit cpwd_remove(struct platform_device *op)
 {
 	struct cpwd *p = dev_get_drvdata(&op->dev);
+=======
+static int cpwd_remove(struct platform_device *op)
+{
+	struct cpwd *p = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = 0; i < WD_NUMDEVS; i++) {
@@ -684,9 +773,11 @@ static struct platform_driver cpwd_driver = {
 		.of_match_table = cpwd_match,
 	},
 	.probe		= cpwd_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cpwd_remove),
 };
 
+<<<<<<< HEAD
 static int __init cpwd_init(void)
 {
 	return platform_driver_register(&cpwd_driver);
@@ -699,3 +790,12 @@ static void __exit cpwd_exit(void)
 
 module_init(cpwd_init);
 module_exit(cpwd_exit);
+=======
+module_platform_driver(cpwd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= cpwd_remove,
+};
+
+module_platform_driver(cpwd_driver);
+>>>>>>> refs/remotes/origin/master

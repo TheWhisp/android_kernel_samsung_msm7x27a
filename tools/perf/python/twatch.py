@@ -19,9 +19,19 @@ def main():
 	cpus = perf.cpu_map()
 	threads = perf.thread_map()
 	evsel = perf.evsel(task = 1, comm = 1, mmap = 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   wakeup_events = 1, sample_period = 1,
+=======
+			   wakeup_events = 1, watermark = 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   sample_id_all = 1,
 			   sample_type = perf.SAMPLE_PERIOD | perf.SAMPLE_TID | perf.SAMPLE_CPU | perf.SAMPLE_TID)
+=======
+			   wakeup_events = 1, watermark = 1,
+			   sample_id_all = 1,
+			   sample_type = perf.SAMPLE_PERIOD | perf.SAMPLE_TID | perf.SAMPLE_CPU)
+>>>>>>> refs/remotes/origin/master
 	evsel.open(cpus = cpus, threads = threads);
 	evlist = perf.evlist(cpus, threads)
 	evlist.add(evsel)

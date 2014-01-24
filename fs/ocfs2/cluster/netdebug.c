@@ -47,6 +47,14 @@
 #define SC_DEBUG_NAME		"sock_containers"
 #define NST_DEBUG_NAME		"send_tracking"
 #define STATS_DEBUG_NAME	"stats"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define NODES_DEBUG_NAME	"connected_nodes"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NODES_DEBUG_NAME	"connected_nodes"
+>>>>>>> refs/remotes/origin/master
 
 #define SHOW_SOCK_CONTAINERS	0
 #define SHOW_SOCK_STATS		1
@@ -55,6 +63,14 @@ static struct dentry *o2net_dentry;
 static struct dentry *sc_dentry;
 static struct dentry *nst_dentry;
 static struct dentry *stats_dentry;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static struct dentry *nodes_dentry;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct dentry *nodes_dentry;
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_SPINLOCK(o2net_debug_lock);
 
@@ -491,6 +507,8 @@ static const struct file_operations sc_seq_fops = {
 	.release = sc_fop_release,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int o2net_debugfs_init(void)
 {
 	o2net_dentry = debugfs_create_dir(O2NET_DEBUG_DIR, NULL);
@@ -534,10 +552,103 @@ bail:
 
 void o2net_debugfs_exit(void)
 {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int o2net_fill_bitmap(char *buf, int len)
+{
+	unsigned long map[BITS_TO_LONGS(O2NM_MAX_NODES)];
+	int i = -1, out = 0;
+
+	o2net_fill_node_map(map, sizeof(map));
+
+	while ((i = find_next_bit(map, O2NM_MAX_NODES, i + 1)) < O2NM_MAX_NODES)
+		out += snprintf(buf + out, PAGE_SIZE - out, "%d ", i);
+	out += snprintf(buf + out, PAGE_SIZE - out, "\n");
+
+	return out;
+}
+
+static int nodes_fop_open(struct inode *inode, struct file *file)
+{
+	char *buf;
+
+	buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+	if (!buf)
+		return -ENOMEM;
+
+	i_size_write(inode, o2net_fill_bitmap(buf, PAGE_SIZE));
+
+	file->private_data = buf;
+
+	return 0;
+}
+
+static int o2net_debug_release(struct inode *inode, struct file *file)
+{
+	kfree(file->private_data);
+	return 0;
+}
+
+static ssize_t o2net_debug_read(struct file *file, char __user *buf,
+				size_t nbytes, loff_t *ppos)
+{
+	return simple_read_from_buffer(buf, nbytes, ppos, file->private_data,
+				       i_size_read(file->f_mapping->host));
+}
+
+static const struct file_operations nodes_fops = {
+	.open		= nodes_fop_open,
+	.release	= o2net_debug_release,
+	.read		= o2net_debug_read,
+	.llseek		= generic_file_llseek,
+};
+
+void o2net_debugfs_exit(void)
+{
+	debugfs_remove(nodes_dentry);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	debugfs_remove(stats_dentry);
 	debugfs_remove(sc_dentry);
 	debugfs_remove(nst_dentry);
 	debugfs_remove(o2net_dentry);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int o2net_debugfs_init(void)
+{
+	umode_t mode = S_IFREG|S_IRUSR;
+
+	o2net_dentry = debugfs_create_dir(O2NET_DEBUG_DIR, NULL);
+	if (o2net_dentry)
+		nst_dentry = debugfs_create_file(NST_DEBUG_NAME, mode,
+					o2net_dentry, NULL, &nst_seq_fops);
+	if (nst_dentry)
+		sc_dentry = debugfs_create_file(SC_DEBUG_NAME, mode,
+					o2net_dentry, NULL, &sc_seq_fops);
+	if (sc_dentry)
+		stats_dentry = debugfs_create_file(STATS_DEBUG_NAME, mode,
+					o2net_dentry, NULL, &stats_seq_fops);
+	if (stats_dentry)
+		nodes_dentry = debugfs_create_file(NODES_DEBUG_NAME, mode,
+					o2net_dentry, NULL, &nodes_fops);
+	if (nodes_dentry)
+		return 0;
+
+	o2net_debugfs_exit();
+	mlog_errno(-ENOMEM);
+	return -ENOMEM;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* CONFIG_DEBUG_FS */

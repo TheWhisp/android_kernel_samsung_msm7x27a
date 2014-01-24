@@ -55,6 +55,10 @@ static inline unsigned long bug_addr(const struct bug_entry *bug)
 }
 
 #ifdef CONFIG_MODULES
+<<<<<<< HEAD
+=======
+/* Updates are protected by module mutex */
+>>>>>>> refs/remotes/origin/master
 static LIST_HEAD(module_bug_list);
 
 static const struct bug_entry *module_find_bug(unsigned long bugaddr)
@@ -165,11 +169,24 @@ enum bug_trap_type report_bug(unsigned long bugaddr, struct pt_regs *regs)
 		print_modules();
 		show_regs(regs);
 		print_oops_end_marker();
+<<<<<<< HEAD
 		add_taint(BUG_GET_TAINT(bug));
 		return BUG_TRAP_TYPE_WARN;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_EMERG "------------[ cut here ]------------\n");
+=======
+	printk(KERN_DEFAULT "------------[ cut here ]------------\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Just a warning, don't kill lockdep. */
+		add_taint(BUG_GET_TAINT(bug), LOCKDEP_STILL_OK);
+		return BUG_TRAP_TYPE_WARN;
+	}
+
+	printk(KERN_DEFAULT "------------[ cut here ]------------\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (file)
 		printk(KERN_CRIT "kernel BUG at %s:%u!\n",

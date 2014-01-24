@@ -28,8 +28,17 @@
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/hardware/vic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/netx-regs.h>
 #include <mach/eth.h>
+=======
+#include <mach/netx-regs.h>
+#include <linux/platform_data/eth-netx.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 
@@ -93,9 +102,28 @@ static void __init nxdkn_init(void)
 }
 
 MACHINE_START(NXDKN, "Hilscher nxdkn")
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.map_io		= netx_map_io,
 	.init_irq	= netx_init_irq,
 	.timer		= &netx_timer,
 	.init_machine	= nxdkn_init,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= netx_map_io,
+	.init_irq	= netx_init_irq,
+	.handle_irq	= vic_handle_irq,
+	.timer		= &netx_timer,
+	.init_machine	= nxdkn_init,
+	.restart	= netx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= netx_map_io,
+	.init_irq	= netx_init_irq,
+	.init_time	= netx_timer_init,
+	.init_machine	= nxdkn_init,
+	.restart	= netx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

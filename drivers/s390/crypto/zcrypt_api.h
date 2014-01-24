@@ -1,9 +1,15 @@
 /*
+<<<<<<< HEAD
  *  linux/drivers/s390/crypto/zcrypt_api.h
  *
  *  zcrypt 2.1.0
  *
  *  Copyright (C)  2001, 2006 IBM Corporation
+=======
+ *  zcrypt 2.1.0
+ *
+ *  Copyright IBM Corp. 2001, 2012
+>>>>>>> refs/remotes/origin/master
  *  Author(s): Robert Burroughs
  *	       Eric Rossman (edrossma@us.ibm.com)
  *	       Cornelia Huck <cornelia.huck@de.ibm.com>
@@ -11,6 +17,10 @@
  *  Hotplug & misc device support: Jochen Roehrig (roehrig@de.ibm.com)
  *  Major cleanup & driver split: Martin Schwidefsky <schwidefsky@de.ibm.com>
  *				  Ralph Wuerthner <rwuerthn@de.ibm.com>
+<<<<<<< HEAD
+=======
+ *  MSGTYPE restruct:		  Holger Dengler <hd@linux.vnet.ibm.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +40,15 @@
 #ifndef _ZCRYPT_API_H_
 #define _ZCRYPT_API_H_
 
+<<<<<<< HEAD
 #include "ap_bus.h"
 #include <asm/zcrypt.h>
+=======
+#include <linux/atomic.h>
+#include <asm/debug.h>
+#include <asm/zcrypt.h>
+#include "ap_bus.h"
+>>>>>>> refs/remotes/origin/master
 
 /* deprecated status calls */
 #define ICAZ90STATUS		_IOR(ZCRYPT_IOCTL_MAGIC, 0x10, struct ica_z90_status)
@@ -73,6 +90,10 @@ struct ica_z90_status {
 #define ZCRYPT_CEX2A		6
 #define ZCRYPT_CEX3C		7
 #define ZCRYPT_CEX3A		8
+<<<<<<< HEAD
+=======
+#define ZCRYPT_CEX4	       10
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Large random numbers are pulled in 4096 byte chunks from the crypto cards
@@ -88,7 +109,15 @@ struct zcrypt_ops {
 	long (*rsa_modexpo_crt)(struct zcrypt_device *,
 				struct ica_rsa_modexpo_crt *);
 	long (*send_cprb)(struct zcrypt_device *, struct ica_xcRB *);
+<<<<<<< HEAD
 	long (*rng)(struct zcrypt_device *, char *);
+=======
+	long (*send_ep11_cprb)(struct zcrypt_device *, struct ep11_urb *);
+	long (*rng)(struct zcrypt_device *, char *);
+	struct list_head list;		/* zcrypt ops list. */
+	struct module *owner;
+	int variant;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct zcrypt_device {
@@ -110,14 +139,31 @@ struct zcrypt_device {
 
 	struct ap_message reply;	/* Per-device reply structure. */
 	int max_exp_bit_length;
+<<<<<<< HEAD
 };
 
+=======
+
+	debug_info_t *dbf_area;		/* debugging */
+};
+
+/* transport layer rescanning */
+extern atomic_t zcrypt_rescan_req;
+
+>>>>>>> refs/remotes/origin/master
 struct zcrypt_device *zcrypt_device_alloc(size_t);
 void zcrypt_device_free(struct zcrypt_device *);
 void zcrypt_device_get(struct zcrypt_device *);
 int zcrypt_device_put(struct zcrypt_device *);
 int zcrypt_device_register(struct zcrypt_device *);
 void zcrypt_device_unregister(struct zcrypt_device *);
+<<<<<<< HEAD
+=======
+void zcrypt_msgtype_register(struct zcrypt_ops *);
+void zcrypt_msgtype_unregister(struct zcrypt_ops *);
+struct zcrypt_ops *zcrypt_msgtype_request(unsigned char *, int);
+void zcrypt_msgtype_release(struct zcrypt_ops *);
+>>>>>>> refs/remotes/origin/master
 int zcrypt_api_init(void);
 void zcrypt_api_exit(void);
 

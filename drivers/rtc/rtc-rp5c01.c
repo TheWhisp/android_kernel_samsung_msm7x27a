@@ -230,6 +230,7 @@ static int __init rp5c01_rtc_probe(struct platform_device *dev)
 	if (!res)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
 	if (!priv)
 		return -ENOMEM;
@@ -239,6 +240,15 @@ static int __init rp5c01_rtc_probe(struct platform_device *dev)
 		error = -ENOMEM;
 		goto out_free_priv;
 	}
+=======
+	priv = devm_kzalloc(&dev->dev, sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	priv->regs = devm_ioremap(&dev->dev, res->start, resource_size(res));
+	if (!priv->regs)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	sysfs_bin_attr_init(&priv->nvram_attr);
 	priv->nvram_attr.attr.name = "nvram";
@@ -251,16 +261,24 @@ static int __init rp5c01_rtc_probe(struct platform_device *dev)
 
 	platform_set_drvdata(dev, priv);
 
+<<<<<<< HEAD
 	rtc = rtc_device_register("rtc-rp5c01", &dev->dev, &rp5c01_rtc_ops,
 				  THIS_MODULE);
 	if (IS_ERR(rtc)) {
 		error = PTR_ERR(rtc);
 		goto out_unmap;
 	}
+=======
+	rtc = devm_rtc_device_register(&dev->dev, "rtc-rp5c01", &rp5c01_rtc_ops,
+				  THIS_MODULE);
+	if (IS_ERR(rtc))
+		return PTR_ERR(rtc);
+>>>>>>> refs/remotes/origin/master
 	priv->rtc = rtc;
 
 	error = sysfs_create_bin_file(&dev->dev.kobj, &priv->nvram_attr);
 	if (error)
+<<<<<<< HEAD
 		goto out_unregister;
 
 	return 0;
@@ -273,6 +291,11 @@ out_unmap:
 out_free_priv:
 	kfree(priv);
 	return error;
+=======
+		return error;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __exit rp5c01_rtc_remove(struct platform_device *dev)
@@ -280,9 +303,12 @@ static int __exit rp5c01_rtc_remove(struct platform_device *dev)
 	struct rp5c01_priv *priv = platform_get_drvdata(dev);
 
 	sysfs_remove_bin_file(&dev->dev.kobj, &priv->nvram_attr);
+<<<<<<< HEAD
 	rtc_device_unregister(priv->rtc);
 	iounmap(priv->regs);
 	kfree(priv);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -294,6 +320,7 @@ static struct platform_driver rp5c01_rtc_driver = {
 	.remove	= __exit_p(rp5c01_rtc_remove),
 };
 
+<<<<<<< HEAD
 static int __init rp5c01_rtc_init(void)
 {
 	return platform_driver_probe(&rp5c01_rtc_driver, rp5c01_rtc_probe);
@@ -306,6 +333,9 @@ static void __exit rp5c01_rtc_fini(void)
 
 module_init(rp5c01_rtc_init);
 module_exit(rp5c01_rtc_fini);
+=======
+module_platform_driver_probe(rp5c01_rtc_driver, rp5c01_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Geert Uytterhoeven <geert@linux-m68k.org>");
 MODULE_LICENSE("GPL");

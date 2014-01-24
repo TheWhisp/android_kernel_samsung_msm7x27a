@@ -285,12 +285,18 @@ static void inic_reset_port(void __iomem *port_base)
 static int inic_scr_read(struct ata_link *link, unsigned sc_reg, u32 *val)
 {
 	void __iomem *scr_addr = inic_port_base(link->ap) + PORT_SCR;
+<<<<<<< HEAD
 	void __iomem *addr;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(sc_reg >= ARRAY_SIZE(scr_map)))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	addr = scr_addr + scr_map[sc_reg] * 4;
+=======
+>>>>>>> refs/remotes/origin/master
 	*val = readl(scr_addr + scr_map[sc_reg] * 4);
 
 	/* this controller has stuck DIAG.N, ignore it */
@@ -408,9 +414,19 @@ static void inic_host_intr(struct ata_port *ap)
 	}
 
  spurious:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ata_port_printk(ap, KERN_WARNING, "unhandled interrupt: "
 			"cmd=0x%x irq_stat=0x%x idma_stat=0x%x\n",
 			qc ? qc->tf.command : 0xff, irq_stat, idma_stat);
+=======
+	ata_port_warn(ap, "unhandled interrupt: cmd=0x%x irq_stat=0x%x idma_stat=0x%x\n",
+		      qc ? qc->tf.command : 0xff, irq_stat, idma_stat);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_port_warn(ap, "unhandled interrupt: cmd=0x%x irq_stat=0x%x idma_stat=0x%x\n",
+		      qc ? qc->tf.command : 0xff, irq_stat, idma_stat);
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t inic_interrupt(int irq, void *dev_instance)
@@ -631,8 +647,20 @@ static int inic_hardreset(struct ata_link *link, unsigned int *class,
 
 	rc = sata_link_resume(link, timing, deadline);
 	if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_WARNING, "failed to resume "
 				"link after reset (errno=%d)\n", rc);
+=======
+		ata_link_warn(link,
+			      "failed to resume link after reset (errno=%d)\n",
+			      rc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_link_warn(link,
+			      "failed to resume link after reset (errno=%d)\n",
+			      rc);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
@@ -644,8 +672,20 @@ static int inic_hardreset(struct ata_link *link, unsigned int *class,
 		rc = ata_wait_after_reset(link, deadline, inic_check_ready);
 		/* link occupied, -ENODEV too is an error */
 		if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ata_link_printk(link, KERN_WARNING, "device not ready "
 					"after hardreset (errno=%d)\n", rc);
+=======
+			ata_link_warn(link,
+				      "device not ready after hardreset (errno=%d)\n",
+				      rc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_link_warn(link,
+				      "device not ready after hardreset (errno=%d)\n",
+				      rc);
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 
@@ -789,7 +829,11 @@ static int init_controller(void __iomem *mmio_base, u16 hctl)
 #ifdef CONFIG_PM
 static int inic_pci_device_resume(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct inic_host_priv *hpriv = host->private_data;
 	int rc;
 
@@ -811,7 +855,13 @@ static int inic_pci_device_resume(struct pci_dev *pdev)
 
 static int inic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct ata_port_info *ppi[] = { &inic_port_info, NULL };
 	struct ata_host *host;
 	struct inic_host_priv *hpriv;
@@ -819,8 +869,18 @@ static int inic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	int mmio_bar;
 	int i, rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
+
+	dev_alert(&pdev->dev, "inic162x support is broken with common data corruption issues and will be disabled by default, contact linux-ide@vger.kernel.org if in production use\n");
 
 	dev_alert(&pdev->dev, "inic162x support is broken with common data corruption issues and will be disabled by default, contact linux-ide@vger.kernel.org if in production use\n");
 
@@ -861,15 +921,31 @@ static int inic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/* Set dma_mask.  This devices doesn't support 64bit addressing. */
 	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 	if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "32-bit DMA enable failed\n");
+=======
+		dev_err(&pdev->dev, "32-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "32-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
 	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 	if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "32-bit consistent DMA enable failed\n");
+=======
+		dev_err(&pdev->dev, "32-bit consistent DMA enable failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "32-bit consistent DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
@@ -880,15 +956,31 @@ static int inic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	 */
 	rc = pci_set_dma_max_seg_size(pdev, 65536 - 512);
 	if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "failed to set the maximum segment size.\n");
+=======
+		dev_err(&pdev->dev, "failed to set the maximum segment size\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "failed to set the maximum segment size\n");
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
 	rc = init_controller(hpriv->mmio_base, hpriv->cached_hctl);
 	if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "failed to initialize controller\n");
+=======
+		dev_err(&pdev->dev, "failed to initialize controller\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "failed to initialize controller\n");
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
@@ -913,6 +1005,7 @@ static struct pci_driver inic_pci_driver = {
 	.remove		= ata_pci_remove_one,
 };
 
+<<<<<<< HEAD
 static int __init inic_init(void)
 {
 	return pci_register_driver(&inic_pci_driver);
@@ -922,12 +1015,18 @@ static void __exit inic_exit(void)
 {
 	pci_unregister_driver(&inic_pci_driver);
 }
+=======
+module_pci_driver(inic_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Tejun Heo");
 MODULE_DESCRIPTION("low-level driver for Initio 162x SATA");
 MODULE_LICENSE("GPL v2");
 MODULE_DEVICE_TABLE(pci, inic_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(inic_init);
 module_exit(inic_exit);
+=======
+>>>>>>> refs/remotes/origin/master

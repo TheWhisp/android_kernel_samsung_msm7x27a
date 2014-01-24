@@ -21,7 +21,10 @@
  *
  */
 
+<<<<<<< HEAD
 #include <asm/rtc.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/module.h>
 #include <linux/param.h>
@@ -32,13 +35,19 @@
 #include <linux/profile.h>
 #include <linux/sched.h>	/* just for sched_clock() - funny that */
 
+<<<<<<< HEAD
 int have_rtc;  /* used to remember if we have an RTC or not */;
+=======
+
+#define D(x)
+>>>>>>> refs/remotes/origin/master
 
 #define TICK_SIZE tick
 
 extern unsigned long loops_per_jiffy; /* init/main.c */
 unsigned long loops_per_usec;
 
+<<<<<<< HEAD
 
 #ifdef CONFIG_ARCH_USES_GETTIMEOFFSET
 extern unsigned long do_slow_gettimeoffset(void);
@@ -122,6 +131,18 @@ get_cmos_time(void)
 		year += 100;
 
 	return mktime(year, mon, day, hour, min, sec);
+=======
+int set_rtc_mmss(unsigned long nowtime)
+{
+	D(printk(KERN_DEBUG "set_rtc_mmss(%lu)\n", nowtime));
+	return 0;
+}
+
+/* grab the time from the RTC chip */
+unsigned long get_cmos_time(void)
+{
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -132,7 +153,11 @@ int update_persistent_clock(struct timespec now)
 
 void read_persistent_clock(struct timespec *ts)
 {
+<<<<<<< HEAD
 	ts->tv_sec = get_cmos_time();
+=======
+	ts->tv_sec = 0;
+>>>>>>> refs/remotes/origin/master
 	ts->tv_nsec = 0;
 }
 

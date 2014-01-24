@@ -3,11 +3,26 @@
 
 #include <linux/platform_device.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 
 struct ssc_device {
 	struct list_head	list;
 	void __iomem		*regs;
 	struct platform_device	*pdev;
+=======
+#include <linux/io.h>
+
+struct atmel_ssc_platform_data {
+	int			use_dma;
+};
+
+struct ssc_device {
+	struct list_head	list;
+	dma_addr_t		phybase;
+	void __iomem		*regs;
+	struct platform_device	*pdev;
+	struct atmel_ssc_platform_data *pdata;
+>>>>>>> refs/remotes/origin/master
 	struct clk		*clk;
 	int			user;
 	int			irq;

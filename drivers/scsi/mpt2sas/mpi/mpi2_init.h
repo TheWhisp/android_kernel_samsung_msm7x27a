@@ -1,12 +1,24 @@
 /*
+<<<<<<< HEAD
  *  Copyright (c) 2000-2010 LSI Corporation.
+=======
+ *  Copyright (c) 2000-2013 LSI Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  *
  *           Name:  mpi2_init.h
  *          Title:  MPI SCSI initiator mode messages and structures
  *  Creation Date:  June 23, 2006
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  *    mpi2_init.h Version:  02.00.10
+=======
+ *    mpi2_init.h Version:  02.00.11
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    mpi2_init.h Version:  02.00.14
+>>>>>>> refs/remotes/origin/master
  *
  *  Version History
  *  ---------------
@@ -33,6 +45,17 @@
  *                      Added MPI2_SCSITASKMGMT_RSP_TM_OVERLAPPED_TAG define.
  *  02-10-10  02.00.09  Removed unused structure that had "#if 0" around it.
  *  05-12-10  02.00.10  Added optional vendor-unique region to SCSI IO Request.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *  11-10-10  02.00.11  Added MPI2_SCSIIO_NUM_SGLOFFSETS define.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  11-10-10  02.00.11  Added MPI2_SCSIIO_NUM_SGLOFFSETS define.
+ *  02-06-12  02.00.13  Added alternate defines for Task Priority / Command
+ *                      Priority to match SAM-4.
+ *  07-10-12  02.00.14  Added MPI2_SCSIIO_CONTROL_SHIFT_DATADIRECTION.
+>>>>>>> refs/remotes/origin/master
  *  --------------------------------------------------------------------------
  */
 
@@ -139,6 +162,18 @@ typedef struct _MPI2_SCSI_IO_REQUEST
 #define MPI2_SCSIIO_SGLFLAGS_SGL1_SHIFT             (4)
 #define MPI2_SCSIIO_SGLFLAGS_SGL0_SHIFT             (0)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* number of SGLOffset fields */
+#define MPI2_SCSIIO_NUM_SGLOFFSETS                  (4)
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* number of SGLOffset fields */
+#define MPI2_SCSIIO_NUM_SGLOFFSETS                  (4)
+
+>>>>>>> refs/remotes/origin/master
 /* SCSI IO IoFlags bits */
 
 /* Large CDB Address Space */
@@ -183,6 +218,10 @@ typedef struct _MPI2_SCSI_IO_REQUEST
 #define MPI2_SCSIIO_CONTROL_ADDCDBLEN_SHIFT     (26)
 
 #define MPI2_SCSIIO_CONTROL_DATADIRECTION_MASK  (0x03000000)
+<<<<<<< HEAD
+=======
+#define MPI2_SCSIIO_CONTROL_SHIFT_DATADIRECTION (24)
+>>>>>>> refs/remotes/origin/master
 #define MPI2_SCSIIO_CONTROL_NODATATRANSFER      (0x00000000)
 #define MPI2_SCSIIO_CONTROL_WRITE               (0x01000000)
 #define MPI2_SCSIIO_CONTROL_READ                (0x02000000)
@@ -190,6 +229,12 @@ typedef struct _MPI2_SCSI_IO_REQUEST
 
 #define MPI2_SCSIIO_CONTROL_TASKPRI_MASK        (0x00007800)
 #define MPI2_SCSIIO_CONTROL_TASKPRI_SHIFT       (11)
+<<<<<<< HEAD
+=======
+/* alternate name for the previous field; called Command Priority in SAM-4 */
+#define MPI2_SCSIIO_CONTROL_CMDPRI_MASK         (0x00007800)
+#define MPI2_SCSIIO_CONTROL_CMDPRI_SHIFT        (11)
+>>>>>>> refs/remotes/origin/master
 
 #define MPI2_SCSIIO_CONTROL_TASKATTRIBUTE_MASK  (0x00000700)
 #define MPI2_SCSIIO_CONTROL_SIMPLEQ             (0x00000000)

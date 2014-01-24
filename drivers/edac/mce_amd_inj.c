@@ -6,13 +6,29 @@
  * This file may be distributed under the terms of the GNU General Public
  * License version 2.
  *
+<<<<<<< HEAD
  * Copyright (c) 2010:  Borislav Petkov <borislav.petkov@amd.com>
+=======
+ * Copyright (c) 2010:  Borislav Petkov <bp@alien8.de>
+>>>>>>> refs/remotes/origin/master
  *			Advanced Micro Devices Inc.
  */
 
 #include <linux/kobject.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/edac.h>
+=======
+#include <linux/device.h>
+#include <linux/edac.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+#include <linux/edac.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mce.h>
 
 #include "mce_amd.h"
@@ -42,7 +58,11 @@ static ssize_t edac_inject_##reg##_store(struct kobject *kobj,		\
 	int ret = 0;							\
 	unsigned long value;						\
 									\
+<<<<<<< HEAD
 	ret = strict_strtoul(data, 16, &value);				\
+=======
+	ret = kstrtoul(data, 16, &value);				\
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)							\
 		printk(KERN_ERR "Error writing MCE " #reg " field.\n");	\
 									\
@@ -82,7 +102,11 @@ static ssize_t edac_inject_bank_store(struct kobject *kobj,
 	int ret = 0;
 	unsigned long value;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(data, 10, &value);
+=======
+	ret = kstrtoul(data, 10, &value);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		printk(KERN_ERR "Invalid bank value!\n");
 		return -EINVAL;
@@ -115,6 +139,8 @@ static struct edac_mce_attr *sysfs_attrs[] = { &mce_attr_status, &mce_attr_misc,
 
 static int __init edac_init_mce_inject(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sysdev_class *edac_class = NULL;
 	int i, err = 0;
 
@@ -123,6 +149,21 @@ static int __init edac_init_mce_inject(void)
 		return -EINVAL;
 
 	mce_kobj = kobject_create_and_add("mce", &edac_class->kset.kobj);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct bus_type *edac_subsys = NULL;
+	int i, err = 0;
+
+	edac_subsys = edac_get_sysfs_subsys();
+	if (!edac_subsys)
+		return -EINVAL;
+
+	mce_kobj = kobject_create_and_add("mce", &edac_subsys->dev_root->kobj);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!mce_kobj) {
 		printk(KERN_ERR "Error creating a mce kset.\n");
 		err = -ENOMEM;
@@ -146,7 +187,15 @@ err_sysfs_create:
 	kobject_del(mce_kobj);
 
 err_mce_kobj:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	edac_put_sysfs_class();
+=======
+	edac_put_sysfs_subsys();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	edac_put_sysfs_subsys();
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -160,13 +209,25 @@ static void __exit edac_exit_mce_inject(void)
 
 	kobject_del(mce_kobj);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	edac_put_sysfs_class();
+=======
+	edac_put_sysfs_subsys();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	edac_put_sysfs_subsys();
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(edac_init_mce_inject);
 module_exit(edac_exit_mce_inject);
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_AUTHOR("Borislav Petkov <borislav.petkov@amd.com>");
+=======
+MODULE_AUTHOR("Borislav Petkov <bp@alien8.de>");
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("AMD Inc.");
 MODULE_DESCRIPTION("MCE injection facility for testing MCE decoding");

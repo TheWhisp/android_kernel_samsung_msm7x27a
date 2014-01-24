@@ -112,6 +112,7 @@ do { if(!(expr)) { \
 struct net_device;
 struct packet_type;
 
+<<<<<<< HEAD
 extern void irda_proc_register(void);
 extern void irda_proc_unregister(void);
 
@@ -127,5 +128,21 @@ extern void irda_nl_unregister(void);
 extern int irlap_driver_rcv(struct sk_buff *skb, struct net_device *dev,
 			    struct packet_type *ptype,
 			    struct net_device *orig_dev);
+=======
+void irda_proc_register(void);
+void irda_proc_unregister(void);
+
+int irda_sysctl_register(void);
+void irda_sysctl_unregister(void);
+
+int irsock_init(void);
+void irsock_cleanup(void);
+
+int irda_nl_register(void);
+void irda_nl_unregister(void);
+
+int irlap_driver_rcv(struct sk_buff *skb, struct net_device *dev,
+		     struct packet_type *ptype, struct net_device *orig_dev);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* NET_IRDA_H */

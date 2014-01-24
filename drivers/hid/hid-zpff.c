@@ -24,12 +24,23 @@
 #include <linux/hid.h>
 #include <linux/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "hid-ids.h"
 
 #ifdef CONFIG_ZEROPLUS_FF
+<<<<<<< HEAD
 #include "usbhid/usbhid.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct zpff_device {
 	struct hid_report *report;
@@ -58,7 +69,11 @@ static int zpff_play(struct input_dev *dev, void *data,
 	zpff->report->field[2]->value[0] = left;
 	zpff->report->field[3]->value[0] = right;
 	dbg_hid("running with 0x%02x 0x%02x\n", left, right);
+<<<<<<< HEAD
 	usbhid_submit_report(hid, zpff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, zpff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -95,7 +110,11 @@ static int zpff_init(struct hid_device *hid)
 	zpff->report->field[1]->value[0] = 0x02;
 	zpff->report->field[2]->value[0] = 0x00;
 	zpff->report->field[3]->value[0] = 0x00;
+<<<<<<< HEAD
 	usbhid_submit_report(hid, zpff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, zpff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	hid_info(hid, "force feedback for Zeroplus based devices by Anssi Hannula <anssi.hannula@gmail.com>\n");
 
@@ -143,6 +162,7 @@ static struct hid_driver zp_driver = {
 	.id_table = zp_devices,
 	.probe = zp_probe,
 };
+<<<<<<< HEAD
 
 static int __init zp_init(void)
 {
@@ -156,4 +176,8 @@ static void __exit zp_exit(void)
 
 module_init(zp_init);
 module_exit(zp_exit);
+=======
+module_hid_driver(zp_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

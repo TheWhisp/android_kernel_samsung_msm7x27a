@@ -1,6 +1,7 @@
 #ifndef _PERF_PERF_H
 #define _PERF_PERF_H
 
+<<<<<<< HEAD
 struct winsize;
 
 void get_term_dimensions(struct winsize *ws);
@@ -9,18 +10,56 @@ void get_term_dimensions(struct winsize *ws);
 #include "../../arch/x86/include/asm/unistd.h"
 #define rmb()		asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
 #define cpu_relax()	asm volatile("rep; nop" ::: "memory");
+<<<<<<< HEAD
+=======
+=======
+#include <asm/unistd.h>
+
+#if defined(__i386__)
+#define mb()		asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
+#define wmb()		asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
+#define rmb()		asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
+#define cpu_relax()	asm volatile("rep; nop" ::: "memory");
+>>>>>>> refs/remotes/origin/master
+#define CPUINFO_PROC	"model name"
+#ifndef __NR_perf_event_open
+# define __NR_perf_event_open 336
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #if defined(__x86_64__)
 #include "../../arch/x86/include/asm/unistd.h"
 #define rmb()		asm volatile("lfence" ::: "memory")
 #define cpu_relax()	asm volatile("rep; nop" ::: "memory");
+<<<<<<< HEAD
+=======
+=======
+#endif
+
+#if defined(__x86_64__)
+#define mb()		asm volatile("mfence" ::: "memory")
+#define wmb()		asm volatile("sfence" ::: "memory")
+#define rmb()		asm volatile("lfence" ::: "memory")
+#define cpu_relax()	asm volatile("rep; nop" ::: "memory");
+>>>>>>> refs/remotes/origin/master
+#define CPUINFO_PROC	"model name"
+#ifndef __NR_perf_event_open
+# define __NR_perf_event_open 298
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef __powerpc__
 #include "../../arch/powerpc/include/asm/unistd.h"
 #define rmb()		asm volatile ("sync" ::: "memory")
 #define cpu_relax()	asm volatile ("" ::: "memory");
+<<<<<<< HEAD
+=======
+#define CPUINFO_PROC	"cpu"
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef __s390__
@@ -37,59 +76,204 @@ void get_term_dimensions(struct winsize *ws);
 # define rmb()		asm volatile("" ::: "memory")
 #endif
 #define cpu_relax()	asm volatile("" ::: "memory")
+<<<<<<< HEAD
+=======
+#define CPUINFO_PROC	"cpu type"
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef __hppa__
 #include "../../arch/parisc/include/asm/unistd.h"
 #define rmb()		asm volatile("" ::: "memory")
 #define cpu_relax()	asm volatile("" ::: "memory");
+<<<<<<< HEAD
+=======
+#define CPUINFO_PROC	"cpu"
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef __sparc__
 #include "../../arch/sparc/include/asm/unistd.h"
 #define rmb()		asm volatile("":::"memory")
 #define cpu_relax()	asm volatile("":::"memory")
+<<<<<<< HEAD
+=======
+#define CPUINFO_PROC	"cpu"
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef __alpha__
 #include "../../arch/alpha/include/asm/unistd.h"
 #define rmb()		asm volatile("mb" ::: "memory")
 #define cpu_relax()	asm volatile("" ::: "memory")
+<<<<<<< HEAD
+=======
+#define CPUINFO_PROC	"cpu model"
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef __ia64__
 #include "../../arch/ia64/include/asm/unistd.h"
 #define rmb()		asm volatile ("mf" ::: "memory")
 #define cpu_relax()	asm volatile ("hint @pause" ::: "memory")
+<<<<<<< HEAD
+=======
+#define CPUINFO_PROC	"model name"
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef __arm__
 #include "../../arch/arm/include/asm/unistd.h"
+=======
+#endif
+
+#ifdef __powerpc__
+#include "../../arch/powerpc/include/uapi/asm/unistd.h"
+#define mb()		asm volatile ("sync" ::: "memory")
+#define wmb()		asm volatile ("sync" ::: "memory")
+#define rmb()		asm volatile ("sync" ::: "memory")
+#define CPUINFO_PROC	"cpu"
+#endif
+
+#ifdef __s390__
+#define mb()		asm volatile("bcr 15,0" ::: "memory")
+#define wmb()		asm volatile("bcr 15,0" ::: "memory")
+#define rmb()		asm volatile("bcr 15,0" ::: "memory")
+#endif
+
+#ifdef __sh__
+#if defined(__SH4A__) || defined(__SH5__)
+# define mb()		asm volatile("synco" ::: "memory")
+# define wmb()		asm volatile("synco" ::: "memory")
+# define rmb()		asm volatile("synco" ::: "memory")
+#else
+# define mb()		asm volatile("" ::: "memory")
+# define wmb()		asm volatile("" ::: "memory")
+# define rmb()		asm volatile("" ::: "memory")
+#endif
+#define CPUINFO_PROC	"cpu type"
+#endif
+
+#ifdef __hppa__
+#define mb()		asm volatile("" ::: "memory")
+#define wmb()		asm volatile("" ::: "memory")
+#define rmb()		asm volatile("" ::: "memory")
+#define CPUINFO_PROC	"cpu"
+#endif
+
+#ifdef __sparc__
+#ifdef __LP64__
+#define mb()		asm volatile("ba,pt %%xcc, 1f\n"	\
+				     "membar #StoreLoad\n"	\
+				     "1:\n":::"memory")
+#else
+#define mb()		asm volatile("":::"memory")
+#endif
+#define wmb()		asm volatile("":::"memory")
+#define rmb()		asm volatile("":::"memory")
+#define CPUINFO_PROC	"cpu"
+#endif
+
+#ifdef __alpha__
+#define mb()		asm volatile("mb" ::: "memory")
+#define wmb()		asm volatile("wmb" ::: "memory")
+#define rmb()		asm volatile("mb" ::: "memory")
+#define CPUINFO_PROC	"cpu model"
+#endif
+
+#ifdef __ia64__
+#define mb()		asm volatile ("mf" ::: "memory")
+#define wmb()		asm volatile ("mf" ::: "memory")
+#define rmb()		asm volatile ("mf" ::: "memory")
+#define cpu_relax()	asm volatile ("hint @pause" ::: "memory")
+#define CPUINFO_PROC	"model name"
+#endif
+
+#ifdef __arm__
+>>>>>>> refs/remotes/origin/master
 /*
  * Use the __kuser_memory_barrier helper in the CPU helper page. See
  * arch/arm/kernel/entry-armv.S in the kernel source for details.
  */
+<<<<<<< HEAD
 #define rmb()		((void(*)(void))0xffff0fa0)()
 #define cpu_relax()	asm volatile("":::"memory")
+<<<<<<< HEAD
+=======
+#define CPUINFO_PROC	"Processor"
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef __mips__
 #include "../../arch/mips/include/asm/unistd.h"
 #define rmb()		asm volatile(					\
+=======
+#define mb()		((void(*)(void))0xffff0fa0)()
+#define wmb()		((void(*)(void))0xffff0fa0)()
+#define rmb()		((void(*)(void))0xffff0fa0)()
+#define CPUINFO_PROC	"Processor"
+#endif
+
+#ifdef __aarch64__
+#define mb()		asm volatile("dmb ish" ::: "memory")
+#define wmb()		asm volatile("dmb ishld" ::: "memory")
+#define rmb()		asm volatile("dmb ishst" ::: "memory")
+#define cpu_relax()	asm volatile("yield" ::: "memory")
+#endif
+
+#ifdef __mips__
+#define mb()		asm volatile(					\
+>>>>>>> refs/remotes/origin/master
 				".set	mips2\n\t"			\
 				"sync\n\t"				\
 				".set	mips0"				\
 				: /* no output */			\
 				: /* no input */			\
 				: "memory")
+<<<<<<< HEAD
 #define cpu_relax()	asm volatile("" ::: "memory")
+<<<<<<< HEAD
+=======
+#define CPUINFO_PROC	"cpu model"
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
+=======
+#define wmb()	mb()
+#define rmb()	mb()
+#define CPUINFO_PROC	"cpu model"
+#endif
+
+#ifdef __arc__
+#define mb()		asm volatile("" ::: "memory")
+#define wmb()		asm volatile("" ::: "memory")
+#define rmb()		asm volatile("" ::: "memory")
+#define CPUINFO_PROC	"Processor"
+#endif
+
+#ifdef __metag__
+#define mb()		asm volatile("" ::: "memory")
+#define wmb()		asm volatile("" ::: "memory")
+#define rmb()		asm volatile("" ::: "memory")
+#define CPUINFO_PROC	"CPU"
+#endif
+
+#define barrier() asm volatile ("" ::: "memory")
+
+#ifndef cpu_relax
+#define cpu_relax() barrier()
+#endif
+
+#define ACCESS_ONCE(x) (*(volatile typeof(x) *)&(x))
+
+
+>>>>>>> refs/remotes/origin/master
 #include <time.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/syscall.h>
 
+<<<<<<< HEAD
 #include "../../include/linux/perf_event.h"
 #include "util/types.h"
 #include <stdbool.h>
@@ -120,6 +304,12 @@ static inline void perf_mmap__write_tail(struct perf_mmap *md,
 	pc->data_tail = tail;
 }
 
+=======
+#include <linux/perf_event.h>
+#include "util/types.h"
+#include <stdbool.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * prctl(PR_TASK_PERF_EVENTS_DISABLE) will (cheaply) disable all
  * counters in the current task.
@@ -130,6 +320,12 @@ static inline void perf_mmap__write_tail(struct perf_mmap *md,
 #ifndef NSEC_PER_SEC
 # define NSEC_PER_SEC			1000000000ULL
 #endif
+<<<<<<< HEAD
+=======
+#ifndef NSEC_PER_USEC
+# define NSEC_PER_USEC			1000ULL
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static inline unsigned long long rdclock(void)
 {
@@ -152,14 +348,37 @@ static inline unsigned long long rdclock(void)
 	(void) (&_min1 == &_min2);		\
 	_min1 < _min2 ? _min1 : _min2; })
 
+<<<<<<< HEAD
+=======
+extern bool test_attr__enabled;
+void test_attr__init(void);
+void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
+		     int fd, int group_fd, unsigned long flags);
+
+>>>>>>> refs/remotes/origin/master
 static inline int
 sys_perf_event_open(struct perf_event_attr *attr,
 		      pid_t pid, int cpu, int group_fd,
 		      unsigned long flags)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	attr->size = sizeof(*attr);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return syscall(__NR_perf_event_open, attr, pid, cpu,
 		       group_fd, flags);
+=======
+	int fd;
+
+	fd = syscall(__NR_perf_event_open, attr, pid, cpu,
+		     group_fd, flags);
+
+	if (unlikely(test_attr__enabled))
+		test_attr__open(attr, pid, cpu, fd, group_fd, flags);
+
+	return fd;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define MAX_COUNTERS			256
@@ -170,6 +389,104 @@ struct ip_callchain {
 	u64 ips[0];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern bool perf_host, perf_guest;
+=======
+struct branch_flags {
+	u64 mispred:1;
+	u64 predicted:1;
+	u64 reserved:62;
+=======
+struct branch_flags {
+	u64 mispred:1;
+	u64 predicted:1;
+	u64 in_tx:1;
+	u64 abort:1;
+	u64 reserved:60;
+>>>>>>> refs/remotes/origin/master
+};
+
+struct branch_entry {
+	u64				from;
+	u64				to;
+	struct branch_flags flags;
+};
+
+struct branch_stack {
+	u64				nr;
+	struct branch_entry	entries[0];
+};
+
+<<<<<<< HEAD
+=======
+extern const char *input_name;
+>>>>>>> refs/remotes/origin/master
+extern bool perf_host, perf_guest;
+extern const char perf_version_string[];
+
+void pthread__unblock_sigwinch(void);
+
+<<<<<<< HEAD
+struct perf_record_opts {
+	const char   *target_pid;
+	const char   *target_tid;
+	uid_t	     uid;
+	bool	     call_graph;
+	bool	     group;
+	bool	     inherit_stat;
+	bool	     no_delay;
+	bool	     no_inherit;
+	bool	     no_samples;
+	bool	     pipe_output;
+	bool	     raw_samples;
+	bool	     sample_address;
+	bool	     sample_time;
+	bool	     sample_id_all_missing;
+	bool	     exclude_guest_missing;
+	bool	     system_wide;
+=======
+#include "util/target.h"
+
+enum perf_call_graph_mode {
+	CALLCHAIN_NONE,
+	CALLCHAIN_FP,
+	CALLCHAIN_DWARF
+};
+
+struct record_opts {
+	struct target target;
+	int	     call_graph;
+	bool	     group;
+	bool	     inherit_stat;
+	bool	     no_buffering;
+	bool	     no_inherit;
+	bool	     no_inherit_set;
+	bool	     no_samples;
+	bool	     raw_samples;
+	bool	     sample_address;
+	bool	     sample_weight;
+	bool	     sample_time;
+>>>>>>> refs/remotes/origin/master
+	bool	     period;
+	unsigned int freq;
+	unsigned int mmap_pages;
+	unsigned int user_freq;
+<<<<<<< HEAD
+	int	     branch_stack;
+	u64	     default_interval;
+	u64	     user_interval;
+	const char   *cpu_list;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64          branch_stack;
+	u64	     default_interval;
+	u64	     user_interval;
+	u16	     stack_dump_size;
+	bool	     sample_transaction;
+	unsigned     initial_delay;
+};
+>>>>>>> refs/remotes/origin/master
 
 #endif

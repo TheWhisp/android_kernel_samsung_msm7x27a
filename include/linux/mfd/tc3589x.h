@@ -7,7 +7,15 @@
 #ifndef __LINUX_MFD_TC3589x_H
 #define __LINUX_MFD_TC3589x_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+struct device;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct device;
+>>>>>>> refs/remotes/origin/master
 
 enum tx3589x_block {
 	TC3589x_BLOCK_GPIO        = 1 << 0,
@@ -117,6 +125,10 @@ struct tc3589x {
 	struct mutex lock;
 	struct device *dev;
 	struct i2c_client *i2c;
+<<<<<<< HEAD
+=======
+	struct irq_domain *domain;
+>>>>>>> refs/remotes/origin/master
 
 	int irq_base;
 	int num_gpio;

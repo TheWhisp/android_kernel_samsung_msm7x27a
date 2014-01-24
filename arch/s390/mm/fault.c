@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/mm/fault.c
  *
  *  S390 version
  *    Copyright (C) 1999 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Hartmut Penner (hp@de.ibm.com)
  *               Ulrich Weigand (uweigand@de.ibm.com)
  *
@@ -32,10 +37,23 @@
 #include <linux/uaccess.h>
 #include <linux/hugetlb.h>
 #include <asm/asm-offsets.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/pgtable.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/pgtable.h>
+#include <asm/irq.h>
+#include <asm/mmu_context.h>
+#include <asm/facility.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "../kernel/entry.h"
 
 #ifndef CONFIG_64BIT
@@ -51,6 +69,7 @@
 #define VM_FAULT_BADCONTEXT	0x010000
 #define VM_FAULT_BADMAP		0x020000
 #define VM_FAULT_BADACCESS	0x040000
+<<<<<<< HEAD
 
 static unsigned long store_indication;
 
@@ -59,6 +78,21 @@ void fault_init(void)
 	if (test_facility(2) && test_facility(75))
 		store_indication = 0xc00;
 }
+=======
+#define VM_FAULT_SIGNAL		0x080000
+
+static unsigned long store_indication __read_mostly;
+
+#ifdef CONFIG_64BIT
+static int __init fault_init(void)
+{
+	if (test_facility(75))
+		store_indication = 0xc00;
+	return 0;
+}
+early_initcall(fault_init);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static inline int notify_page_fault(struct pt_regs *regs)
 {
@@ -112,6 +146,7 @@ static inline int user_space_fault(unsigned long trans_exc_code)
 	if (trans_exc_code == 2)
 		/* Access via secondary space, set_fs setting decides */
 		return current->thread.mm_segment.ar4;
+<<<<<<< HEAD
 	if (user_mode == HOME_SPACE_MODE)
 		/* User space if the access has been done via home space. */
 		return trans_exc_code == 3;
@@ -119,13 +154,25 @@ static inline int user_space_fault(unsigned long trans_exc_code)
 	 * If the user space is not the home space the kernel runs in home
 	 * space. Access via secondary space has already been covered,
 	 * access via primary space or access register is from user space
+=======
+	/*
+	 * Access via primary space or access register is from user space
+>>>>>>> refs/remotes/origin/master
 	 * and access via home space is from the kernel.
 	 */
 	return trans_exc_code != 3;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void report_user_fault(struct pt_regs *regs, long int_code,
 				     int signr, unsigned long address)
+=======
+static inline void report_user_fault(struct pt_regs *regs, long signr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void report_user_fault(struct pt_regs *regs, long signr)
+>>>>>>> refs/remotes/origin/master
 {
 	if ((task_pid_nr(current) > 1) && !show_unhandled_signals)
 		return;
@@ -133,10 +180,25 @@ static inline void report_user_fault(struct pt_regs *regs, long int_code,
 		return;
 	if (!printk_ratelimit())
 		return;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk("User process fault: interruption code 0x%lX ", int_code);
 	print_vma_addr(KERN_CONT "in ", regs->psw.addr & PSW_ADDR_INSN);
 	printk("\n");
 	printk("failing address: %lX\n", address);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	printk(KERN_ALERT "User process fault: interruption code 0x%X ",
+	       regs->int_code);
+	print_vma_addr(KERN_CONT "in ", regs->psw.addr & PSW_ADDR_INSN);
+	printk(KERN_CONT "\n");
+	printk(KERN_ALERT "failing address: %lX\n",
+	       regs->int_parm_long & __FAIL_ADDR_MASK);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	show_regs(regs);
 }
 
@@ -144,6 +206,8 @@ static inline void report_user_fault(struct pt_regs *regs, long int_code,
  * Send SIGSEGV to task.  This is an external routine
  * to keep the stack usage of do_page_fault small.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static noinline void do_sigsegv(struct pt_regs *regs, long int_code,
 				int si_code, unsigned long trans_exc_code)
 {
@@ -162,6 +226,25 @@ static noinline void do_sigsegv(struct pt_regs *regs, long int_code,
 
 static noinline void do_no_context(struct pt_regs *regs, long int_code,
 				   unsigned long trans_exc_code)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static noinline void do_sigsegv(struct pt_regs *regs, int si_code)
+{
+	struct siginfo si;
+
+	report_user_fault(regs, SIGSEGV);
+	si.si_signo = SIGSEGV;
+	si.si_code = si_code;
+	si.si_addr = (void __user *)(regs->int_parm_long & __FAIL_ADDR_MASK);
+	force_sig_info(SIGSEGV, &si, current);
+}
+
+static noinline void do_no_context(struct pt_regs *regs)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	const struct exception_table_entry *fixup;
 	unsigned long address;
@@ -169,7 +252,11 @@ static noinline void do_no_context(struct pt_regs *regs, long int_code,
 	/* Are we prepared to handle this kernel fault?  */
 	fixup = search_exception_tables(regs->psw.addr & PSW_ADDR_INSN);
 	if (fixup) {
+<<<<<<< HEAD
 		regs->psw.addr = fixup->fixup | PSW_ADDR_AMODE;
+=======
+		regs->psw.addr = extable_fixup(fixup) | PSW_ADDR_AMODE;
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -177,25 +264,51 @@ static noinline void do_no_context(struct pt_regs *regs, long int_code,
 	 * Oops. The kernel tried to access some bad page. We'll have to
 	 * terminate things with extreme prejudice.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	address = trans_exc_code & __FAIL_ADDR_MASK;
 	if (!user_space_fault(trans_exc_code))
+=======
+	address = regs->int_parm_long & __FAIL_ADDR_MASK;
+	if (!user_space_fault(regs->int_parm_long))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	address = regs->int_parm_long & __FAIL_ADDR_MASK;
+	if (!user_space_fault(regs->int_parm_long))
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ALERT "Unable to handle kernel pointer dereference"
 		       " at virtual kernel address %p\n", (void *)address);
 	else
 		printk(KERN_ALERT "Unable to handle kernel paging request"
 		       " at virtual user address %p\n", (void *)address);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	die("Oops", regs, int_code);
 	do_exit(SIGKILL);
 }
 
 static noinline void do_low_address(struct pt_regs *regs, long int_code,
 				    unsigned long trans_exc_code)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	die(regs, "Oops");
+	do_exit(SIGKILL);
+}
+
+static noinline void do_low_address(struct pt_regs *regs)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	/* Low-address protection hit in kernel mode means
 	   NULL pointer write access in kernel mode.  */
 	if (regs->psw.mask & PSW_MASK_PSTATE) {
 		/* Low-address protection hit in user mode 'cannot happen'. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		die ("Low-address protection", regs, int_code);
 		do_exit(SIGKILL);
 	}
@@ -208,12 +321,31 @@ static noinline void do_sigbus(struct pt_regs *regs, long int_code,
 {
 	struct task_struct *tsk = current;
 	unsigned long address;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		die (regs, "Low-address protection");
+		do_exit(SIGKILL);
+	}
+
+	do_no_context(regs);
+}
+
+static noinline void do_sigbus(struct pt_regs *regs)
+{
+	struct task_struct *tsk = current;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct siginfo si;
 
 	/*
 	 * Send a sigbus, regardless of whether we were in kernel
 	 * or user mode.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	address = trans_exc_code & __FAIL_ADDR_MASK;
 	tsk->thread.prot_addr = address;
 	tsk->thread.trap_no = int_code;
@@ -226,6 +358,21 @@ static noinline void do_sigbus(struct pt_regs *regs, long int_code,
 
 static noinline void do_fault_error(struct pt_regs *regs, long int_code,
 				    unsigned long trans_exc_code, int fault)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	si.si_signo = SIGBUS;
+	si.si_errno = 0;
+	si.si_code = BUS_ADRERR;
+	si.si_addr = (void __user *)(regs->int_parm_long & __FAIL_ADDR_MASK);
+	force_sig_info(SIGBUS, &si, tsk);
+}
+
+static noinline void do_fault_error(struct pt_regs *regs, int fault)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int si_code;
 
@@ -233,28 +380,72 @@ static noinline void do_fault_error(struct pt_regs *regs, long int_code,
 	case VM_FAULT_BADACCESS:
 	case VM_FAULT_BADMAP:
 		/* Bad memory access. Check if it is kernel or user space. */
+<<<<<<< HEAD
 		if (regs->psw.mask & PSW_MASK_PSTATE) {
 			/* User mode accesses just cause a SIGSEGV */
 			si_code = (fault == VM_FAULT_BADMAP) ?
 				SEGV_MAPERR : SEGV_ACCERR;
+<<<<<<< HEAD
 			do_sigsegv(regs, int_code, si_code, trans_exc_code);
 			return;
 		}
 	case VM_FAULT_BADCONTEXT:
 		do_no_context(regs, int_code, trans_exc_code);
+=======
+=======
+		if (user_mode(regs)) {
+			/* User mode accesses just cause a SIGSEGV */
+			si_code = (fault == VM_FAULT_BADMAP) ?
+				SEGV_MAPERR : SEGV_ACCERR;
+>>>>>>> refs/remotes/origin/master
+			do_sigsegv(regs, si_code);
+			return;
+		}
+	case VM_FAULT_BADCONTEXT:
+		do_no_context(regs);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default: /* fault & VM_FAULT_ERROR */
 		if (fault & VM_FAULT_OOM) {
 			if (!(regs->psw.mask & PSW_MASK_PSTATE))
+<<<<<<< HEAD
 				do_no_context(regs, int_code, trans_exc_code);
+=======
+				do_no_context(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case VM_FAULT_SIGNAL:
+		if (!user_mode(regs))
+			do_no_context(regs);
+		break;
+	default: /* fault & VM_FAULT_ERROR */
+		if (fault & VM_FAULT_OOM) {
+			if (!user_mode(regs))
+				do_no_context(regs);
+>>>>>>> refs/remotes/origin/master
 			else
 				pagefault_out_of_memory();
 		} else if (fault & VM_FAULT_SIGBUS) {
 			/* Kernel mode? Handle exceptions or die */
+<<<<<<< HEAD
 			if (!(regs->psw.mask & PSW_MASK_PSTATE))
+<<<<<<< HEAD
 				do_no_context(regs, int_code, trans_exc_code);
 			else
 				do_sigbus(regs, int_code, trans_exc_code);
+=======
+				do_no_context(regs);
+			else
+				do_sigbus(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!user_mode(regs))
+				do_no_context(regs);
+			else
+				do_sigbus(regs);
+>>>>>>> refs/remotes/origin/master
 		} else
 			BUG();
 		break;
@@ -272,21 +463,56 @@ static noinline void do_fault_error(struct pt_regs *regs, long int_code,
  *   11       Page translation     ->  Not present       (nullification)
  *   3b       Region third trans.  ->  Not present       (nullification)
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int do_exception(struct pt_regs *regs, int access,
 			       unsigned long trans_exc_code)
+=======
+static inline int do_exception(struct pt_regs *regs, int access)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int do_exception(struct pt_regs *regs, int access)
+>>>>>>> refs/remotes/origin/master
 {
 	struct task_struct *tsk;
 	struct mm_struct *mm;
 	struct vm_area_struct *vma;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long trans_exc_code;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long trans_exc_code;
+>>>>>>> refs/remotes/origin/master
 	unsigned long address;
 	unsigned int flags;
 	int fault;
 
+<<<<<<< HEAD
 	if (notify_page_fault(regs))
 		return 0;
 
 	tsk = current;
 	mm = tsk->mm;
+<<<<<<< HEAD
+=======
+	trans_exc_code = regs->int_parm_long;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tsk = current;
+	/*
+	 * The instruction that caused the program check has
+	 * been nullified. Don't signal single step via SIGTRAP.
+	 */
+	clear_tsk_thread_flag(tsk, TIF_PER_TRAP);
+
+	if (notify_page_fault(regs))
+		return 0;
+
+	mm = tsk->mm;
+	trans_exc_code = regs->int_parm_long;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Verify that the fault happened in user space, that
@@ -298,6 +524,8 @@ static inline int do_exception(struct pt_regs *regs, int access,
 		goto out;
 
 	address = trans_exc_code & __FAIL_ADDR_MASK;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, 0, regs, address);
 	flags = FAULT_FLAG_ALLOW_RETRY;
 	if (access == VM_WRITE || (trans_exc_code & store_indication) == 0x400)
@@ -305,6 +533,43 @@ static inline int do_exception(struct pt_regs *regs, int access,
 retry:
 	down_read(&mm->mmap_sem);
 
+=======
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+	flags = FAULT_FLAG_ALLOW_RETRY;
+=======
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+	flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+	if (user_mode(regs))
+		flags |= FAULT_FLAG_USER;
+>>>>>>> refs/remotes/origin/master
+	if (access == VM_WRITE || (trans_exc_code & store_indication) == 0x400)
+		flags |= FAULT_FLAG_WRITE;
+	down_read(&mm->mmap_sem);
+
+#ifdef CONFIG_PGSTE
+<<<<<<< HEAD
+	if (test_tsk_thread_flag(current, TIF_SIE) && S390_lowcore.gmap) {
+=======
+	if ((current->flags & PF_VCPU) && S390_lowcore.gmap) {
+>>>>>>> refs/remotes/origin/master
+		address = __gmap_fault(address,
+				     (struct gmap *) S390_lowcore.gmap);
+		if (address == -EFAULT) {
+			fault = VM_FAULT_BADMAP;
+			goto out_up;
+		}
+		if (address == -ENOMEM) {
+			fault = VM_FAULT_OOM;
+			goto out_up;
+		}
+	}
+#endif
+
+retry:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fault = VM_FAULT_BADMAP;
 	vma = find_vma(mm, address);
 	if (!vma)
@@ -333,6 +598,14 @@ retry:
 	 * the fault.
 	 */
 	fault = handle_mm_fault(mm, vma, address, flags);
+<<<<<<< HEAD
+=======
+	/* No reason to continue if interrupted by SIGKILL. */
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current)) {
+		fault = VM_FAULT_SIGNAL;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR))
 		goto out_up;
 
@@ -344,17 +617,36 @@ retry:
 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
 		if (fault & VM_FAULT_MAJOR) {
 			tsk->maj_flt++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1, 0,
 				      regs, address);
 		} else {
 			tsk->min_flt++;
 			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1, 0,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
+				      regs, address);
+		} else {
+			tsk->min_flt++;
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				      regs, address);
 		}
 		if (fault & VM_FAULT_RETRY) {
 			/* Clear FAULT_FLAG_ALLOW_RETRY to avoid any risk
 			 * of starvation. */
 			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			down_read(&mm->mmap_sem);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto retry;
 		}
 	}
@@ -363,6 +655,13 @@ retry:
 	 * be repeated. Don't signal single step via SIGTRAP.
 	 */
 	clear_tsk_thread_flag(tsk, TIF_PER_TRAP);
+=======
+			flags |= FAULT_FLAG_TRIED;
+			down_read(&mm->mmap_sem);
+			goto retry;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	fault = 0;
 out_up:
 	up_read(&mm->mmap_sem);
@@ -370,6 +669,8 @@ out:
 	return fault;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __kprobes do_protection_exception(struct pt_regs *regs, long pgm_int_code,
 				       unsigned long trans_exc_code)
 {
@@ -377,12 +678,36 @@ void __kprobes do_protection_exception(struct pt_regs *regs, long pgm_int_code,
 
 	/* Protection exception is suppressing, decrement psw address. */
 	regs->psw.addr -= (pgm_int_code >> 16);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void __kprobes do_protection_exception(struct pt_regs *regs)
+{
+	unsigned long trans_exc_code;
+	int fault;
+
+	trans_exc_code = regs->int_parm_long;
+<<<<<<< HEAD
+	/* Protection exception is suppressing, decrement psw address. */
+	regs->psw.addr = __rewind_psw(regs->psw, regs->int_code >> 16);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Protection exceptions are suppressing, decrement psw address.
+	 * The exception to this rule are aborted transactions, for these
+	 * the PSW already points to the correct location.
+	 */
+	if (!(regs->int_code & 0x200))
+		regs->psw.addr = __rewind_psw(regs->psw, regs->int_code >> 16);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Check for low-address protection.  This needs to be treated
 	 * as a special case because the translation exception code
 	 * field is not guaranteed to contain valid data in this case.
 	 */
 	if (unlikely(!(trans_exc_code & 4))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		do_low_address(regs, pgm_int_code, trans_exc_code);
 		return;
 	}
@@ -393,10 +718,28 @@ void __kprobes do_protection_exception(struct pt_regs *regs, long pgm_int_code,
 
 void __kprobes do_dat_exception(struct pt_regs *regs, long pgm_int_code,
 				unsigned long trans_exc_code)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		do_low_address(regs);
+		return;
+	}
+	fault = do_exception(regs, VM_WRITE);
+	if (unlikely(fault))
+		do_fault_error(regs, fault);
+}
+
+void __kprobes do_dat_exception(struct pt_regs *regs)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int access, fault;
 
 	access = VM_READ | VM_EXEC | VM_WRITE;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fault = do_exception(regs, access, trans_exc_code);
 	if (unlikely(fault))
 		do_fault_error(regs, pgm_int_code & 255, trans_exc_code, fault);
@@ -409,6 +752,24 @@ void __kprobes do_asce_exception(struct pt_regs *regs, long pgm_int_code,
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct *vma;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	fault = do_exception(regs, access);
+	if (unlikely(fault))
+		do_fault_error(regs, fault);
+}
+
+<<<<<<< HEAD
+#ifdef CONFIG_64BIT
+void __kprobes do_asce_exception(struct pt_regs *regs)
+{
+	struct mm_struct *mm = current->mm;
+	struct vm_area_struct *vma;
+	unsigned long trans_exc_code;
+
+	trans_exc_code = regs->int_parm_long;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(!user_space_fault(trans_exc_code) || in_atomic() || !mm))
 		goto no_context;
 
@@ -423,27 +784,53 @@ void __kprobes do_asce_exception(struct pt_regs *regs, long pgm_int_code,
 
 	/* User mode accesses just cause a SIGSEGV */
 	if (regs->psw.mask & PSW_MASK_PSTATE) {
+<<<<<<< HEAD
 		do_sigsegv(regs, pgm_int_code, SEGV_MAPERR, trans_exc_code);
+=======
+		do_sigsegv(regs, SEGV_MAPERR);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
 no_context:
+<<<<<<< HEAD
 	do_no_context(regs, pgm_int_code, trans_exc_code);
+=======
+	do_no_context(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 int __handle_fault(unsigned long uaddr, unsigned long pgm_int_code, int write)
 {
 	struct pt_regs regs;
 	int access, fault;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	regs.psw.mask = psw_kernel_bits;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* Emulate a uaccess fault from kernel mode. */
+	regs.psw.mask = psw_kernel_bits | PSW_MASK_DAT | PSW_MASK_MCHECK;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Emulate a uaccess fault from kernel mode. */
+	regs.psw.mask = PSW_KERNEL_BITS | PSW_MASK_DAT | PSW_MASK_MCHECK;
+>>>>>>> refs/remotes/origin/master
 	if (!irqs_disabled())
 		regs.psw.mask |= PSW_MASK_IO | PSW_MASK_EXT;
 	regs.psw.addr = (unsigned long) __builtin_return_address(0);
 	regs.psw.addr |= PSW_ADDR_AMODE;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uaddr &= PAGE_MASK;
 	access = write ? VM_WRITE : VM_READ;
+<<<<<<< HEAD
 	fault = do_exception(&regs, access, uaddr | 2);
 	if (unlikely(fault)) {
 		if (fault & VM_FAULT_OOM)
@@ -451,6 +838,28 @@ int __handle_fault(unsigned long uaddr, unsigned long pgm_int_code, int write)
 		else if (fault & VM_FAULT_SIGBUS)
 			do_sigbus(&regs, pgm_int_code, uaddr);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	regs.int_code = pgm_int_code;
+	regs.int_parm_long = (uaddr & PAGE_MASK) | 2;
+	access = write ? VM_WRITE : VM_READ;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	fault = do_exception(&regs, access);
+	/*
+	 * Since the fault happened in kernel mode while performing a uaccess
+	 * all we need to do now is emulating a fixup in case "fault" is not
+	 * zero.
+	 * For the calling uaccess functions this results always in -EFAULT.
+	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return fault ? -EFAULT : 0;
 }
 
@@ -492,7 +901,15 @@ int pfault_init(void)
 		.reserved = __PF_RES_FIELD };
         int rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!MACHINE_IS_VM || pfault_disable)
+=======
+	if (pfault_disable)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pfault_disable)
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	asm volatile(
 		"	diag	%1,%0,0x258\n"
@@ -513,7 +930,15 @@ void pfault_fini(void)
 		.refversn = 2,
 	};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!MACHINE_IS_VM || pfault_disable)
+=======
+	if (pfault_disable)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pfault_disable)
+>>>>>>> refs/remotes/origin/master
 		return;
 	asm volatile(
 		"	diag	%0,0,0x258\n"
@@ -525,7 +950,15 @@ void pfault_fini(void)
 static DEFINE_SPINLOCK(pfault_lock);
 static LIST_HEAD(pfault_list);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void pfault_interrupt(unsigned int ext_int_code,
+=======
+static void pfault_interrupt(struct ext_code ext_code,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void pfault_interrupt(struct ext_code ext_code,
+>>>>>>> refs/remotes/origin/master
 			     unsigned int param32, unsigned long param64)
 {
 	struct task_struct *tsk;
@@ -538,7 +971,12 @@ static void pfault_interrupt(unsigned int ext_int_code,
 	 * in the 'cpu address' field associated with the
          * external interrupt. 
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	subcode = ext_int_code >> 16;
+=======
+	subcode = ext_code.subcode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((subcode & 0xff00) != __SUBCODE_MASK)
 		return;
 	kstat_cpu(smp_processor_id()).irqs[EXTINT_PFL]++;
@@ -555,6 +993,21 @@ static void pfault_interrupt(unsigned int ext_int_code,
 	} else {
 		tsk = current;
 	}
+=======
+	subcode = ext_code.subcode;
+	if ((subcode & 0xff00) != __SUBCODE_MASK)
+		return;
+	inc_irq_stat(IRQEXT_PFL);
+	/* Get the token (= pid of the affected task). */
+	pid = sizeof(void *) == 4 ? param32 : param64;
+	rcu_read_lock();
+	tsk = find_task_by_pid_ns(pid, &init_pid_ns);
+	if (tsk)
+		get_task_struct(tsk);
+	rcu_read_unlock();
+	if (!tsk)
+		return;
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&pfault_lock);
 	if (subcode & 0x0080) {
 		/* signal bit is set -> a page has been swapped in by VM */
@@ -567,32 +1020,76 @@ static void pfault_interrupt(unsigned int ext_int_code,
 			tsk->thread.pfault_wait = 0;
 			list_del(&tsk->thread.list);
 			wake_up_process(tsk);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 			put_task_struct(tsk);
 		} else {
 			/* Completion interrupt was faster than initial
 			 * interrupt. Set pfault_wait to -1 so the initial
+<<<<<<< HEAD
 			 * interrupt doesn't put the task to sleep. */
 			tsk->thread.pfault_wait = -1;
+=======
+		} else {
+			/* Completion interrupt was faster than initial
+			 * interrupt. Set pfault_wait to -1 so the initial
+=======
+>>>>>>> refs/remotes/origin/master
+			 * interrupt doesn't put the task to sleep.
+			 * If the task is not running, ignore the completion
+			 * interrupt since it must be a leftover of a PFAULT
+			 * CANCEL operation which didn't remove all pending
+			 * completion interrupts. */
+			if (tsk->state == TASK_RUNNING)
+				tsk->thread.pfault_wait = -1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		put_task_struct(tsk);
 	} else {
 		/* signal bit not set -> a real page is missing. */
+<<<<<<< HEAD
 		if (tsk->thread.pfault_wait == 1) {
 			/* Already on the list with a reference: put to sleep */
 			set_task_state(tsk, TASK_UNINTERRUPTIBLE);
 			set_tsk_need_resched(tsk);
 		} else if (tsk->thread.pfault_wait == -1) {
+=======
+		if (tsk->thread.pfault_wait == -1) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+	} else {
+		/* signal bit not set -> a real page is missing. */
+		if (WARN_ON_ONCE(tsk != current))
+			goto out;
+		if (tsk->thread.pfault_wait == 1) {
+			/* Already on the list with a reference: put to sleep */
+			__set_task_state(tsk, TASK_UNINTERRUPTIBLE);
+			set_tsk_need_resched(tsk);
+		} else if (tsk->thread.pfault_wait == -1) {
+>>>>>>> refs/remotes/origin/master
 			/* Completion interrupt was faster than the initial
 			 * interrupt (pfault_wait == -1). Set pfault_wait
 			 * back to zero and exit. */
 			tsk->thread.pfault_wait = 0;
 		} else {
 			/* Initial interrupt arrived before completion
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 			 * interrupt. Let the task sleep.
 			 * An extra task reference is needed since a different
 			 * cpu may set the task state to TASK_RUNNING again
 			 * before the scheduler is reached. */
 			get_task_struct(tsk);
+<<<<<<< HEAD
+=======
+			 * interrupt. Let the task sleep. */
+>>>>>>> refs/remotes/origin/cm-10.0
 			tsk->thread.pfault_wait = 1;
 			list_add(&tsk->thread.list, &pfault_list);
 			set_task_state(tsk, TASK_UNINTERRUPTIBLE);
@@ -604,20 +1101,47 @@ static void pfault_interrupt(unsigned int ext_int_code,
 
 static int __cpuinit pfault_cpu_notify(struct notifier_block *self,
 				       unsigned long action, void *hcpu)
+=======
+			tsk->thread.pfault_wait = 1;
+			list_add(&tsk->thread.list, &pfault_list);
+			__set_task_state(tsk, TASK_UNINTERRUPTIBLE);
+			set_tsk_need_resched(tsk);
+		}
+	}
+out:
+	spin_unlock(&pfault_lock);
+	put_task_struct(tsk);
+}
+
+static int pfault_cpu_notify(struct notifier_block *self, unsigned long action,
+			     void *hcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct thread_struct *thread, *next;
 	struct task_struct *tsk;
 
+<<<<<<< HEAD
 	switch (action) {
 	case CPU_DEAD:
 	case CPU_DEAD_FROZEN:
+=======
+	switch (action & ~CPU_TASKS_FROZEN) {
+	case CPU_DEAD:
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irq(&pfault_lock);
 		list_for_each_entry_safe(thread, next, &pfault_list, list) {
 			thread->pfault_wait = 0;
 			list_del(&thread->list);
 			tsk = container_of(thread, struct task_struct, thread);
 			wake_up_process(tsk);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			put_task_struct(tsk);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			put_task_struct(tsk);
+>>>>>>> refs/remotes/origin/master
 		}
 		spin_unlock_irq(&pfault_lock);
 		break;
@@ -631,15 +1155,25 @@ static int __init pfault_irq_init(void)
 {
 	int rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!MACHINE_IS_VM)
 		return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = register_external_interrupt(0x2603, pfault_interrupt);
 	if (rc)
 		goto out_extint;
 	rc = pfault_init() == 0 ? 0 : -EOPNOTSUPP;
 	if (rc)
 		goto out_pfault;
+<<<<<<< HEAD
 	service_subclass_irq_register();
+=======
+	irq_subclass_register(IRQ_SUBCLASS_SERVICE_SIGNAL);
+>>>>>>> refs/remotes/origin/master
 	hotcpu_notifier(pfault_cpu_notify, 0);
 	return 0;
 

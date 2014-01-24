@@ -89,18 +89,41 @@ static int ad5398_set_current_limit(struct regulator_dev *rdev, int min_uA, int 
 	unsigned short data;
 	int ret;
 
+<<<<<<< HEAD
 	if (min_uA > chip->max_uA || min_uA < chip->min_uA)
 		return -EINVAL;
 	if (max_uA > chip->max_uA || max_uA < chip->min_uA)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	selector = ((min_uA - chip->min_uA) * chip->current_level +
 			range_uA - 1) / range_uA;
+=======
+	selector = DIV_ROUND_UP((min_uA - chip->min_uA) * chip->current_level,
+				range_uA);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ad5398_calc_current(chip, selector) > max_uA)
 		return -EINVAL;
 
 	dev_dbg(&client->dev, "changing current %dmA\n",
 		ad5398_calc_current(chip, selector) / 1000);
+=======
+	if (min_uA < chip->min_uA)
+		min_uA = chip->min_uA;
+	if (max_uA > chip->max_uA)
+		max_uA = chip->max_uA;
+
+	if (min_uA > chip->max_uA || max_uA < chip->min_uA)
+		return -EINVAL;
+
+	selector = DIV_ROUND_UP((min_uA - chip->min_uA) * chip->current_level,
+				range_uA);
+	if (ad5398_calc_current(chip, selector) > max_uA)
+		return -EINVAL;
+
+	dev_dbg(&client->dev, "changing current %duA\n",
+		ad5398_calc_current(chip, selector));
+>>>>>>> refs/remotes/origin/master
 
 	/* read chip enable bit */
 	ret = ad5398_read_reg(client, &data);
@@ -184,7 +207,11 @@ static struct regulator_ops ad5398_ops = {
 	.is_enabled = ad5398_is_enabled,
 };
 
+<<<<<<< HEAD
 static struct regulator_desc ad5398_reg = {
+=======
+static const struct regulator_desc ad5398_reg = {
+>>>>>>> refs/remotes/origin/master
 	.name = "isink",
 	.id = 0,
 	.ops = &ad5398_ops,
@@ -208,6 +235,7 @@ static const struct i2c_device_id ad5398_id[] = {
 };
 MODULE_DEVICE_TABLE(i2c, ad5398_id);
 
+<<<<<<< HEAD
 static int __devinit ad5398_probe(struct i2c_client *client,
 				const struct i2c_device_id *id)
 {
@@ -216,14 +244,35 @@ static int __devinit ad5398_probe(struct i2c_client *client,
 	const struct ad5398_current_data_format *df =
 			(struct ad5398_current_data_format *)id->driver_data;
 	int ret;
+=======
+static int ad5398_probe(struct i2c_client *client,
+				const struct i2c_device_id *id)
+{
+	struct regulator_init_data *init_data = dev_get_platdata(&client->dev);
+	struct regulator_config config = { };
+	struct ad5398_chip_info *chip;
+	const struct ad5398_current_data_format *df =
+			(struct ad5398_current_data_format *)id->driver_data;
+>>>>>>> refs/remotes/origin/master
 
 	if (!init_data)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
 	if (!chip)
 		return -ENOMEM;
 
+=======
+	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
+	if (!chip)
+		return -ENOMEM;
+
+	config.dev = &client->dev;
+	config.init_data = init_data;
+	config.driver_data = chip;
+
+>>>>>>> refs/remotes/origin/master
 	chip->client = client;
 
 	chip->min_uA = df->min_uA;
@@ -232,18 +281,32 @@ static int __devinit ad5398_probe(struct i2c_client *client,
 	chip->current_offset = df->current_offset;
 	chip->current_mask = (chip->current_level - 1) << chip->current_offset;
 
+<<<<<<< HEAD
 	chip->rdev = regulator_register(&ad5398_reg, &client->dev,
+<<<<<<< HEAD
 					init_data, chip);
+=======
+					init_data, chip, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(chip->rdev)) {
 		ret = PTR_ERR(chip->rdev);
 		dev_err(&client->dev, "failed to register %s %s\n",
 			id->name, ad5398_reg.name);
 		goto err;
+=======
+	chip->rdev = devm_regulator_register(&client->dev, &ad5398_reg,
+					     &config);
+	if (IS_ERR(chip->rdev)) {
+		dev_err(&client->dev, "failed to register %s %s\n",
+			id->name, ad5398_reg.name);
+		return PTR_ERR(chip->rdev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	i2c_set_clientdata(client, chip);
 	dev_dbg(&client->dev, "%s regulator driver is registered.\n", id->name);
 	return 0;
+<<<<<<< HEAD
 
 err:
 	kfree(chip);
@@ -258,11 +321,16 @@ static int __devexit ad5398_remove(struct i2c_client *client)
 	kfree(chip);
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct i2c_driver ad5398_driver = {
 	.probe = ad5398_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ad5398_remove),
+=======
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "ad5398",
 	},

@@ -1,6 +1,10 @@
 config CAN_SOFTING
 	tristate "Softing Gmbh CAN generic support"
+<<<<<<< HEAD
 	depends on CAN_DEV && HAS_IOMEM
+=======
+	depends on HAS_IOMEM
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Support for CAN cards from Softing Gmbh & some cards
 	  from Vector Gmbh.

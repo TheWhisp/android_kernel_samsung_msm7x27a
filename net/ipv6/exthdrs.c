@@ -30,6 +30,14 @@
 #include <linux/in6.h>
 #include <linux/icmpv6.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/dst.h>
 #include <net/sock.h>
@@ -42,12 +50,17 @@
 #include <net/ndisc.h>
 #include <net/ip6_route.h>
 #include <net/addrconf.h>
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 #include <net/xfrm.h>
 #endif
 
 #include <asm/uaccess.h>
 
+<<<<<<< HEAD
 int ipv6_find_tlv(struct sk_buff *skb, int offset, int type)
 {
 	const unsigned char *nh = skb_network_header(skb);
@@ -97,12 +110,23 @@ EXPORT_SYMBOL_GPL(ipv6_find_tlv);
  *
  *	Parsing function "func" returns 1, if parsing succeed
  *	and 0, if it failed.
+=======
+/*
+ *	Parsing tlv encoded headers.
+ *
+ *	Parsing function "func" returns true, if parsing succeed
+ *	and false, if it failed.
+>>>>>>> refs/remotes/origin/master
  *	It MUST NOT touch skb->h.
  */
 
 struct tlvtype_proc {
 	int	type;
+<<<<<<< HEAD
 	int	(*func)(struct sk_buff *skb, int offset);
+=======
+	bool	(*func)(struct sk_buff *skb, int offset);
+>>>>>>> refs/remotes/origin/master
 };
 
 /*********************
@@ -111,11 +135,19 @@ struct tlvtype_proc {
 
 /* An unknown option is detected, decide what to do */
 
+<<<<<<< HEAD
 static int ip6_tlvopt_unknown(struct sk_buff *skb, int optoff)
 {
 	switch ((skb_network_header(skb)[optoff] & 0xC0) >> 6) {
 	case 0: /* ignore */
 		return 1;
+=======
+static bool ip6_tlvopt_unknown(struct sk_buff *skb, int optoff)
+{
+	switch ((skb_network_header(skb)[optoff] & 0xC0) >> 6) {
+	case 0: /* ignore */
+		return true;
+>>>>>>> refs/remotes/origin/master
 
 	case 1: /* drop packet */
 		break;
@@ -128,21 +160,39 @@ static int ip6_tlvopt_unknown(struct sk_buff *skb, int optoff)
 			break;
 	case 2: /* send ICMP PARM PROB regardless and drop packet */
 		icmpv6_param_prob(skb, ICMPV6_UNK_OPTION, optoff);
+<<<<<<< HEAD
 		return 0;
 	}
 
 	kfree_skb(skb);
 	return 0;
+=======
+		return false;
+	}
+
+	kfree_skb(skb);
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Parse tlv encoded option header (hop-by-hop or destination) */
 
+<<<<<<< HEAD
 static int ip6_parse_tlv(struct tlvtype_proc *procs, struct sk_buff *skb)
 {
 	struct tlvtype_proc *curr;
 	const unsigned char *nh = skb_network_header(skb);
 	int off = skb_network_header_len(skb);
 	int len = (skb_transport_header(skb)[1] + 1) << 3;
+=======
+static bool ip6_parse_tlv(const struct tlvtype_proc *procs, struct sk_buff *skb)
+{
+	const struct tlvtype_proc *curr;
+	const unsigned char *nh = skb_network_header(skb);
+	int off = skb_network_header_len(skb);
+	int len = (skb_transport_header(skb)[1] + 1) << 3;
+	int padlen = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (skb_transport_offset(skb) + len > skb_headlen(skb))
 		goto bad;
@@ -152,6 +202,7 @@ static int ip6_parse_tlv(struct tlvtype_proc *procs, struct sk_buff *skb)
 
 	while (len > 0) {
 		int optlen = nh[off + 1] + 2;
+<<<<<<< HEAD
 
 		switch (nh[off]) {
 		case IPV6_TLV_PAD0:
@@ -159,6 +210,35 @@ static int ip6_parse_tlv(struct tlvtype_proc *procs, struct sk_buff *skb)
 			break;
 
 		case IPV6_TLV_PADN:
+=======
+		int i;
+
+		switch (nh[off]) {
+		case IPV6_TLV_PAD1:
+			optlen = 1;
+			padlen++;
+			if (padlen > 7)
+				goto bad;
+			break;
+
+		case IPV6_TLV_PADN:
+			/* RFC 2460 states that the purpose of PadN is
+			 * to align the containing header to multiples
+			 * of 8. 7 is therefore the highest valid value.
+			 * See also RFC 4942, Section 2.1.9.5.
+			 */
+			padlen += optlen;
+			if (padlen > 7)
+				goto bad;
+			/* RFC 4942 recommends receiving hosts to
+			 * actively check PadN payload to contain
+			 * only zeroes.
+			 */
+			for (i = 2; i < optlen; i++) {
+				if (nh[off + i] != 0)
+					goto bad;
+			}
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		default: /* Other TLV code so scan list */
@@ -169,33 +249,58 @@ static int ip6_parse_tlv(struct tlvtype_proc *procs, struct sk_buff *skb)
 					/* type specific length/alignment
 					   checks will be performed in the
 					   func(). */
+<<<<<<< HEAD
 					if (curr->func(skb, off) == 0)
 						return 0;
+=======
+					if (curr->func(skb, off) == false)
+						return false;
+>>>>>>> refs/remotes/origin/master
 					break;
 				}
 			}
 			if (curr->type < 0) {
 				if (ip6_tlvopt_unknown(skb, off) == 0)
+<<<<<<< HEAD
 					return 0;
 			}
+=======
+					return false;
+			}
+			padlen = 0;
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		off += optlen;
 		len -= optlen;
 	}
+<<<<<<< HEAD
 	if (len == 0)
 		return 1;
 bad:
 	kfree_skb(skb);
 	return 0;
+=======
+
+	if (len == 0)
+		return true;
+bad:
+	kfree_skb(skb);
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*****************************
   Destination options header.
  *****************************/
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
 static int ipv6_dest_hao(struct sk_buff *skb, int optoff)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+static bool ipv6_dest_hao(struct sk_buff *skb, int optoff)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipv6_destopt_hao *hao;
 	struct inet6_skb_parm *opt = IP6CB(skb);
@@ -242,13 +347,26 @@ static int ipv6_dest_hao(struct sk_buff *skb, int optoff)
 	if (skb->ip_summed == CHECKSUM_COMPLETE)
 		skb->ip_summed = CHECKSUM_NONE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&tmp_addr, &ipv6h->saddr);
 	ipv6_addr_copy(&ipv6h->saddr, &hao->addr);
 	ipv6_addr_copy(&hao->addr, &tmp_addr);
+=======
+	tmp_addr = ipv6h->saddr;
+	ipv6h->saddr = hao->addr;
+	hao->addr = tmp_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tmp_addr = ipv6h->saddr;
+	ipv6h->saddr = hao->addr;
+	hao->addr = tmp_addr;
+>>>>>>> refs/remotes/origin/master
 
 	if (skb->tstamp.tv64 == 0)
 		__net_timestamp(skb);
 
+<<<<<<< HEAD
 	return 1;
 
  discard:
@@ -259,6 +377,18 @@ static int ipv6_dest_hao(struct sk_buff *skb, int optoff)
 
 static struct tlvtype_proc tlvprocdestopt_lst[] = {
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+	return true;
+
+ discard:
+	kfree_skb(skb);
+	return false;
+}
+#endif
+
+static const struct tlvtype_proc tlvprocdestopt_lst[] = {
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 	{
 		.type	= IPV6_TLV_HAO,
 		.func	= ipv6_dest_hao,
@@ -270,31 +400,65 @@ static struct tlvtype_proc tlvprocdestopt_lst[] = {
 static int ipv6_destopt_rcv(struct sk_buff *skb)
 {
 	struct inet6_skb_parm *opt = IP6CB(skb);
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
 	__u16 dstbuf;
 #endif
+<<<<<<< HEAD
 	struct dst_entry *dst;
+=======
+	struct dst_entry *dst = skb_dst(skb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+	__u16 dstbuf;
+#endif
+	struct dst_entry *dst = skb_dst(skb);
+>>>>>>> refs/remotes/origin/master
 
 	if (!pskb_may_pull(skb, skb_transport_offset(skb) + 8) ||
 	    !pskb_may_pull(skb, (skb_transport_offset(skb) +
 				 ((skb_transport_header(skb)[1] + 1) << 3)))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		IP6_INC_STATS_BH(dev_net(skb_dst(skb)->dev), ip6_dst_idev(skb_dst(skb)),
+=======
+		IP6_INC_STATS_BH(dev_net(dst->dev), ip6_dst_idev(dst),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		IP6_INC_STATS_BH(dev_net(dst->dev), ip6_dst_idev(dst),
+>>>>>>> refs/remotes/origin/master
 				 IPSTATS_MIB_INHDRERRORS);
 		kfree_skb(skb);
 		return -1;
 	}
 
 	opt->lastopt = opt->dst1 = skb_network_header_len(skb);
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
 	dstbuf = opt->dst1;
 #endif
 
+<<<<<<< HEAD
 	dst = dst_clone(skb_dst(skb));
 	if (ip6_parse_tlv(tlvprocdestopt_lst, skb)) {
 		dst_release(dst);
+=======
+	if (ip6_parse_tlv(tlvprocdestopt_lst, skb)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		skb->transport_header += (skb_transport_header(skb)[1] + 1) << 3;
 		opt = IP6CB(skb);
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+	dstbuf = opt->dst1;
+#endif
+
+	if (ip6_parse_tlv(tlvprocdestopt_lst, skb)) {
+		skb->transport_header += (skb_transport_header(skb)[1] + 1) << 3;
+		opt = IP6CB(skb);
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 		opt->nhoff = dstbuf;
 #else
 		opt->nhoff = opt->dst1;
@@ -304,7 +468,13 @@ static int ipv6_destopt_rcv(struct sk_buff *skb)
 
 	IP6_INC_STATS_BH(dev_net(dst->dev),
 			 ip6_dst_idev(dst), IPSTATS_MIB_INHDRERRORS);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dst_release(dst);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return -1;
 }
 
@@ -351,7 +521,11 @@ static int ipv6_rthdr_rcv(struct sk_buff *skb)
 looped_back:
 	if (hdr->segments_left == 0) {
 		switch (hdr->type) {
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 		case IPV6_SRCRT_TYPE_2:
 			/* Silently discard type 2 header unless it was
 			 * processed by own
@@ -377,7 +551,11 @@ looped_back:
 	}
 
 	switch (hdr->type) {
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 	case IPV6_SRCRT_TYPE_2:
 		if (accept_source_route < 0)
 			goto unknown_rh;
@@ -434,7 +612,11 @@ looped_back:
 	addr += i - 1;
 
 	switch (hdr->type) {
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 	case IPV6_SRCRT_TYPE_2:
 		if (xfrm6_input_addr(skb, (xfrm_address_t *)addr,
 				     (xfrm_address_t *)&ipv6_hdr(skb)->saddr,
@@ -463,9 +645,21 @@ looped_back:
 		return -1;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&daddr, addr);
 	ipv6_addr_copy(addr, &ipv6_hdr(skb)->daddr);
 	ipv6_addr_copy(&ipv6_hdr(skb)->daddr, &daddr);
+=======
+	daddr = *addr;
+	*addr = ipv6_hdr(skb)->daddr;
+	ipv6_hdr(skb)->daddr = daddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	daddr = *addr;
+	*addr = ipv6_hdr(skb)->daddr;
+	ipv6_hdr(skb)->daddr = daddr;
+>>>>>>> refs/remotes/origin/master
 
 	skb_dst_drop(skb);
 	ip6_route_input(skb);
@@ -501,12 +695,20 @@ unknown_rh:
 
 static const struct inet6_protocol rthdr_protocol = {
 	.handler	=	ipv6_rthdr_rcv,
+<<<<<<< HEAD
 	.flags		=	INET6_PROTO_NOPOLICY | INET6_PROTO_GSO_EXTHDR,
+=======
+	.flags		=	INET6_PROTO_NOPOLICY,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct inet6_protocol destopt_protocol = {
 	.handler	=	ipv6_destopt_rcv,
+<<<<<<< HEAD
 	.flags		=	INET6_PROTO_NOPOLICY | INET6_PROTO_GSO_EXTHDR,
+=======
+	.flags		=	INET6_PROTO_NOPOLICY,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct inet6_protocol nodata_protocol = {
@@ -532,10 +734,17 @@ int __init ipv6_exthdrs_init(void)
 
 out:
 	return ret;
+<<<<<<< HEAD
 out_rthdr:
 	inet6_del_protocol(&rthdr_protocol, IPPROTO_ROUTING);
 out_destopt:
 	inet6_del_protocol(&destopt_protocol, IPPROTO_DSTOPTS);
+=======
+out_destopt:
+	inet6_del_protocol(&destopt_protocol, IPPROTO_DSTOPTS);
+out_rthdr:
+	inet6_del_protocol(&rthdr_protocol, IPPROTO_ROUTING);
+>>>>>>> refs/remotes/origin/master
 	goto out;
 };
 
@@ -565,23 +774,41 @@ static inline struct net *ipv6_skb_net(struct sk_buff *skb)
 
 /* Router Alert as of RFC 2711 */
 
+<<<<<<< HEAD
 static int ipv6_hop_ra(struct sk_buff *skb, int optoff)
+=======
+static bool ipv6_hop_ra(struct sk_buff *skb, int optoff)
+>>>>>>> refs/remotes/origin/master
 {
 	const unsigned char *nh = skb_network_header(skb);
 
 	if (nh[optoff + 1] == 2) {
+<<<<<<< HEAD
 		IP6CB(skb)->ra = optoff;
 		return 1;
+=======
+		IP6CB(skb)->flags |= IP6SKB_ROUTERALERT;
+		memcpy(&IP6CB(skb)->ra, nh + optoff + 2, sizeof(IP6CB(skb)->ra));
+		return true;
+>>>>>>> refs/remotes/origin/master
 	}
 	LIMIT_NETDEBUG(KERN_DEBUG "ipv6_hop_ra: wrong RA length %d\n",
 		       nh[optoff + 1]);
 	kfree_skb(skb);
+<<<<<<< HEAD
 	return 0;
+=======
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Jumbo payload */
 
+<<<<<<< HEAD
 static int ipv6_hop_jumbo(struct sk_buff *skb, int optoff)
+=======
+static bool ipv6_hop_jumbo(struct sk_buff *skb, int optoff)
+>>>>>>> refs/remotes/origin/master
 {
 	const unsigned char *nh = skb_network_header(skb);
 	struct net *net = ipv6_skb_net(skb);
@@ -600,13 +827,21 @@ static int ipv6_hop_jumbo(struct sk_buff *skb, int optoff)
 		IP6_INC_STATS_BH(net, ipv6_skb_idev(skb),
 				 IPSTATS_MIB_INHDRERRORS);
 		icmpv6_param_prob(skb, ICMPV6_HDR_FIELD, optoff+2);
+<<<<<<< HEAD
 		return 0;
+=======
+		return false;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (ipv6_hdr(skb)->payload_len) {
 		IP6_INC_STATS_BH(net, ipv6_skb_idev(skb),
 				 IPSTATS_MIB_INHDRERRORS);
 		icmpv6_param_prob(skb, ICMPV6_HDR_FIELD, optoff);
+<<<<<<< HEAD
 		return 0;
+=======
+		return false;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (pkt_len > skb->len - sizeof(struct ipv6hdr)) {
@@ -618,6 +853,7 @@ static int ipv6_hop_jumbo(struct sk_buff *skb, int optoff)
 	if (pskb_trim_rcsum(skb, pkt_len + sizeof(struct ipv6hdr)))
 		goto drop;
 
+<<<<<<< HEAD
 	return 1;
 
 drop:
@@ -626,6 +862,16 @@ drop:
 }
 
 static struct tlvtype_proc tlvprochopopt_lst[] = {
+=======
+	return true;
+
+drop:
+	kfree_skb(skb);
+	return false;
+}
+
+static const struct tlvtype_proc tlvprochopopt_lst[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.type	= IPV6_TLV_ROUTERALERT,
 		.func	= ipv6_hop_ra,
@@ -692,7 +938,15 @@ static void ipv6_push_rthdr(struct sk_buff *skb, u8 *proto,
 		memcpy(phdr->addr, ihdr->addr + 1,
 		       (hops - 1) * sizeof(struct in6_addr));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(phdr->addr + (hops - 1), *addr_p);
+=======
+	phdr->addr[hops - 1] = **addr_p;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phdr->addr[hops - 1] = **addr_p;
+>>>>>>> refs/remotes/origin/master
 	*addr_p = ihdr->addr;
 
 	phdr->rt_hdr.nexthdr = *proto;
@@ -724,7 +978,10 @@ void ipv6_push_nfrag_opts(struct sk_buff *skb, struct ipv6_txoptions *opt,
 	if (opt->hopopt)
 		ipv6_push_exthdr(skb, proto, NEXTHDR_HOP, opt->hopopt);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(ipv6_push_nfrag_opts);
 
 void ipv6_push_frag_opts(struct sk_buff *skb, struct ipv6_txoptions *opt, u8 *proto)
@@ -740,6 +997,7 @@ ipv6_dup_options(struct sock *sk, struct ipv6_txoptions *opt)
 
 	opt2 = sock_kmalloc(sk, opt->tot_len, GFP_ATOMIC);
 	if (opt2) {
+<<<<<<< HEAD
 		long dif = (char*)opt2 - (char*)opt;
 		memcpy(opt2, opt, opt->tot_len);
 		if (opt2->hopopt)
@@ -754,6 +1012,21 @@ ipv6_dup_options(struct sock *sk, struct ipv6_txoptions *opt)
 	return opt2;
 }
 
+=======
+		long dif = (char *)opt2 - (char *)opt;
+		memcpy(opt2, opt, opt->tot_len);
+		if (opt2->hopopt)
+			*((char **)&opt2->hopopt) += dif;
+		if (opt2->dst0opt)
+			*((char **)&opt2->dst0opt) += dif;
+		if (opt2->dst1opt)
+			*((char **)&opt2->dst1opt) += dif;
+		if (opt2->srcrt)
+			*((char **)&opt2->srcrt) += dif;
+	}
+	return opt2;
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(ipv6_dup_options);
 
 static int ipv6_renew_option(void *ohdr,
@@ -766,14 +1039,22 @@ static int ipv6_renew_option(void *ohdr,
 		if (ohdr) {
 			memcpy(*p, ohdr, ipv6_optlen((struct ipv6_opt_hdr *)ohdr));
 			*hdr = (struct ipv6_opt_hdr *)*p;
+<<<<<<< HEAD
 			*p += CMSG_ALIGN(ipv6_optlen(*(struct ipv6_opt_hdr **)hdr));
+=======
+			*p += CMSG_ALIGN(ipv6_optlen(*hdr));
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		if (newopt) {
 			if (copy_from_user(*p, newopt, newoptlen))
 				return -EFAULT;
 			*hdr = (struct ipv6_opt_hdr *)*p;
+<<<<<<< HEAD
 			if (ipv6_optlen(*(struct ipv6_opt_hdr **)hdr) > newoptlen)
+=======
+			if (ipv6_optlen(*hdr) > newoptlen)
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			*p += CMSG_ALIGN(newoptlen);
 		}
@@ -871,6 +1152,10 @@ struct ipv6_txoptions *ipv6_fixup_options(struct ipv6_txoptions *opt_space,
 
 	return opt;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(ipv6_fixup_options);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * fl6_update_dst - update flowi destination address with info given
@@ -890,9 +1175,21 @@ struct in6_addr *fl6_update_dst(struct flowi6 *fl6,
 	if (!opt || !opt->srcrt)
 		return NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(orig, &fl6->daddr);
 	ipv6_addr_copy(&fl6->daddr, ((struct rt0_hdr *)opt->srcrt)->addr);
+=======
+	*orig = fl6->daddr;
+	fl6->daddr = *((struct rt0_hdr *)opt->srcrt)->addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return orig;
 }
 
+=======
+	*orig = fl6->daddr;
+	fl6->daddr = *((struct rt0_hdr *)opt->srcrt)->addr;
+	return orig;
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(fl6_update_dst);

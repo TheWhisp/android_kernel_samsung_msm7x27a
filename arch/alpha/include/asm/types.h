@@ -1,6 +1,7 @@
 #ifndef _ALPHA_TYPES_H
 #define _ALPHA_TYPES_H
 
+<<<<<<< HEAD
 /*
  * This file is never included by application software unless
  * explicitly requested (e.g., via linux/types.h) in which case the
@@ -15,9 +16,17 @@
 #include <asm-generic/int-l64.h>
 #endif
 
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
 
 typedef unsigned int umode_t;
 
 #endif /* __ASSEMBLY__ */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/int-ll64.h>
+#include <uapi/asm/types.h>
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ALPHA_TYPES_H */

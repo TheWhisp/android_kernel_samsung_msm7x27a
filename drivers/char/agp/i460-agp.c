@@ -587,8 +587,13 @@ const struct agp_bridge_driver intel_i460_driver = {
 	.cant_use_aperture	= true,
 };
 
+<<<<<<< HEAD
 static int __devinit agp_intel_i460_probe(struct pci_dev *pdev,
 					  const struct pci_device_id *ent)
+=======
+static int agp_intel_i460_probe(struct pci_dev *pdev,
+				const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct agp_bridge_data *bridge;
 	u8 cap_ptr;
@@ -611,7 +616,11 @@ static int __devinit agp_intel_i460_probe(struct pci_dev *pdev,
 	return agp_add_bridge(bridge);
 }
 
+<<<<<<< HEAD
 static void __devexit agp_intel_i460_remove(struct pci_dev *pdev)
+=======
+static void agp_intel_i460_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct agp_bridge_data *bridge = pci_get_drvdata(pdev);
 
@@ -637,7 +646,11 @@ static struct pci_driver agp_intel_i460_pci_driver = {
 	.name		= "agpgart-intel-i460",
 	.id_table	= agp_intel_i460_pci_table,
 	.probe		= agp_intel_i460_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(agp_intel_i460_remove),
+=======
+	.remove		= agp_intel_i460_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init agp_intel_i460_init(void)

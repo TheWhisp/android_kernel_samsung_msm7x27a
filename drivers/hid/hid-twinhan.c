@@ -3,7 +3,15 @@
  *
  * Based on hid-gyration.c
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009 Bruno Pr�mont <bonbons@linux-vserver.org>
+=======
+ * Copyright (c) 2009 Bruno Prémont <bonbons@linux-vserver.org>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2009 Bruno Prémont <bonbons@linux-vserver.org>
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
@@ -131,6 +139,7 @@ static struct hid_driver twinhan_driver = {
 	.id_table = twinhan_devices,
 	.input_mapping = twinhan_input_mapping,
 };
+<<<<<<< HEAD
 
 static int __init twinhan_init(void)
 {
@@ -144,4 +153,8 @@ static void __exit twinhan_exit(void)
 
 module_init(twinhan_init);
 module_exit(twinhan_exit);
+=======
+module_hid_driver(twinhan_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

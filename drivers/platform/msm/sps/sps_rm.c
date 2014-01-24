@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -22,9 +30,15 @@
 #include "spsi.h"
 #include "sps_core.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* "Clear" value for the connection parameter struct */
 #define SPSRM_CLEAR     0xcccccccc
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* Max BAM FIFO sizes */
 #define SPSRM_MAX_DESC_FIFO_SIZE    0xffff
 #define SPSRM_MAX_DATA_FIFO_SIZE    0xffff
@@ -70,7 +84,15 @@ static void sps_rm_remove_ref(struct sps_connection *map)
 	map->refs--;
 	if (map->refs <= 0) {
 		if (map->client_src != NULL || map->client_dest != NULL)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Failed to allocate connection struct");
+=======
+			SPS_ERR("sps:Failed to allocate connection struct");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Failed to allocate connection struct");
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		list_del(&map->list);
 		kfree(map);
@@ -179,6 +201,8 @@ static int sps_rm_assign(struct sps_pipe *pipe,
 
 	/* Check ownership and BAM */
 	if ((cfg->mode == SPS_MODE_SRC && map->client_src != NULL) ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    (cfg->mode != SPS_MODE_SRC && map->client_dest != NULL))
 		/* The end point is already connected */
 		return SPS_ERROR;
@@ -187,6 +211,24 @@ static int sps_rm_assign(struct sps_pipe *pipe,
 	if ((cfg->mode == SPS_MODE_SRC && map->src.bam == NULL) ||
 	    (cfg->mode != SPS_MODE_SRC && map->dest.bam == NULL))
 		return SPS_ERROR;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	    (cfg->mode != SPS_MODE_SRC && map->client_dest != NULL)) {
+		SPS_ERR("sps:The end point is already connected.\n");
+		return SPS_ERROR;
+	}
+
+	/* Check whether this end point is a BAM (not memory) */
+	if ((cfg->mode == SPS_MODE_SRC && map->src.bam == NULL) ||
+	    (cfg->mode != SPS_MODE_SRC && map->dest.bam == NULL)) {
+		SPS_ERR("sps:The end point is empty.\n");
+		return SPS_ERROR;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Record the connection assignment */
 	if (cfg->mode == SPS_MODE_SRC) {
@@ -195,6 +237,16 @@ static int sps_rm_assign(struct sps_pipe *pipe,
 		pipe->pipe_index = map->src.pipe_index;
 		if (pipe->connect.event_thresh != SPSRM_CLEAR)
 			map->src.event_threshold = pipe->connect.event_thresh;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (pipe->connect.lock_group != SPSRM_CLEAR)
+			map->src.lock_group = pipe->connect.lock_group;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pipe->connect.lock_group != SPSRM_CLEAR)
+			map->src.lock_group = pipe->connect.lock_group;
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		map->client_dest = pipe;
 		pipe->bam = map->dest.bam;
@@ -202,6 +254,16 @@ static int sps_rm_assign(struct sps_pipe *pipe,
 		if (pipe->connect.event_thresh != SPSRM_CLEAR)
 			map->dest.event_threshold =
 			pipe->connect.event_thresh;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (pipe->connect.lock_group != SPSRM_CLEAR)
+			map->dest.lock_group = pipe->connect.lock_group;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pipe->connect.lock_group != SPSRM_CLEAR)
+			map->dest.lock_group = pipe->connect.lock_group;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	pipe->map = map;
 
@@ -355,7 +417,15 @@ static struct sps_connection *sps_rm_create(struct sps_pipe *pipe)
 	/* Allocate new connection */
 	map = kzalloc(sizeof(*map), GFP_KERNEL);
 	if (map == NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("Failed to allocate connection struct");
+=======
+		SPS_ERR("sps:Failed to allocate connection struct");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:Failed to allocate connection struct");
+>>>>>>> refs/remotes/origin/cm-11.0
 		return NULL;
 	}
 
@@ -369,7 +439,15 @@ static struct sps_connection *sps_rm_create(struct sps_pipe *pipe)
 	map->src.bam = sps_h2bam(map->src.dev);
 	if (map->src.bam == NULL) {
 		if (map->src.dev != SPS_DEV_HANDLE_MEM) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Invalid BAM handle: 0x%x", map->src.dev);
+=======
+			SPS_ERR("sps:Invalid BAM handle: 0x%x", map->src.dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Invalid BAM handle: 0x%x", map->src.dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto exit_err;
 		}
 		map->src.pipe_index = SPS_BAM_PIPE_INVALID;
@@ -377,7 +455,15 @@ static struct sps_connection *sps_rm_create(struct sps_pipe *pipe)
 	map->dest.bam = sps_h2bam(map->dest.dev);
 	if (map->dest.bam == NULL) {
 		if (map->dest.dev != SPS_DEV_HANDLE_MEM) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Invalid BAM handle: 0x%x", map->dest.dev);
+=======
+			SPS_ERR("sps:Invalid BAM handle: 0x%x", map->dest.dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Invalid BAM handle: 0x%x", map->dest.dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto exit_err;
 		}
 		map->dest.pipe_index = SPS_BAM_PIPE_INVALID;
@@ -386,7 +472,15 @@ static struct sps_connection *sps_rm_create(struct sps_pipe *pipe)
 	/* Check the BAM device for the pipe */
 	if ((dir == SPS_MODE_SRC && map->src.bam == NULL) ||
 	    (dir != SPS_MODE_SRC && map->dest.bam == NULL)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("Invalid BAM endpt: dir %d src 0x%x dest 0x%x",
+=======
+		SPS_ERR("sps:Invalid BAM endpt: dir %d src 0x%x dest 0x%x",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:Invalid BAM endpt: dir %d src 0x%x dest 0x%x",
+>>>>>>> refs/remotes/origin/cm-11.0
 			dir, map->src.dev, map->dest.dev);
 		goto exit_err;
 	}
@@ -409,7 +503,15 @@ static struct sps_connection *sps_rm_create(struct sps_pipe *pipe)
 			rc = sps_dma_pipe_alloc(bam, map->src.pipe_index,
 						 SPS_MODE_SRC);
 			if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				SPS_ERR("Failed to alloc BAM-DMA pipe: %d",
+=======
+				SPS_ERR("sps:Failed to alloc BAM-DMA pipe: %d",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				SPS_ERR("sps:Failed to alloc BAM-DMA pipe: %d",
+>>>>>>> refs/remotes/origin/cm-11.0
 					map->src.pipe_index);
 				goto exit_err;
 			}
@@ -436,7 +538,15 @@ static struct sps_connection *sps_rm_create(struct sps_pipe *pipe)
 			rc = sps_dma_pipe_alloc(bam, map->dest.pipe_index,
 					       SPS_MODE_DEST);
 			if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				SPS_ERR("Failed to alloc BAM-DMA pipe: %d",
+=======
+				SPS_ERR("sps:Failed to alloc BAM-DMA pipe: %d",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				SPS_ERR("sps:Failed to alloc BAM-DMA pipe: %d",
+>>>>>>> refs/remotes/origin/cm-11.0
 					map->dest.pipe_index);
 				goto exit_err;
 			}
@@ -474,12 +584,28 @@ static struct sps_connection *sps_rm_create(struct sps_pipe *pipe)
 		map->data.size = 0;
 	}
 	if (map->desc.size > SPSRM_MAX_DESC_FIFO_SIZE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("Invalid desc FIFO size: 0x%x",	map->desc.size);
+=======
+		SPS_ERR("sps:Invalid desc FIFO size: 0x%x", map->desc.size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:Invalid desc FIFO size: 0x%x", map->desc.size);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto exit_err;
 	}
 	if (map->src.bam != NULL && map->dest.bam != NULL &&
 	    map->data.size > SPSRM_MAX_DATA_FIFO_SIZE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("Invalid data FIFO size: 0x%x",	map->data.size);
+=======
+		SPS_ERR("sps:Invalid data FIFO size: 0x%x", map->data.size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:Invalid data FIFO size: 0x%x", map->data.size);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto exit_err;
 	}
 
@@ -487,14 +613,30 @@ static struct sps_connection *sps_rm_create(struct sps_pipe *pipe)
 	if (map->desc.size && map->desc.phys_base == SPS_ADDR_INVALID) {
 		map->alloc_desc_base = sps_mem_alloc_io(map->desc.size);
 		if (map->alloc_desc_base == SPS_ADDR_INVALID) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("I/O memory allocation failure: 0x%x",
+=======
+			SPS_ERR("sps:I/O memory allocation failure:0x%x",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:I/O memory allocation failure:0x%x",
+>>>>>>> refs/remotes/origin/cm-11.0
 				map->desc.size);
 			goto exit_err;
 		}
 		map->desc.phys_base = map->alloc_desc_base;
 		map->desc.base = spsi_get_mem_ptr(map->desc.phys_base);
 		if (map->desc.base == NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Cannot get virt addr for I/O buffer: 0x%x",
+=======
+			SPS_ERR("sps:Cannot get virt addr for I/O buffer:0x%x",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Cannot get virt addr for I/O buffer:0x%x",
+>>>>>>> refs/remotes/origin/cm-11.0
 				map->desc.phys_base);
 			goto exit_err;
 		}
@@ -504,22 +646,51 @@ static struct sps_connection *sps_rm_create(struct sps_pipe *pipe)
 	if (map->data.size && map->data.phys_base == SPS_ADDR_INVALID) {
 		map->alloc_data_base = sps_mem_alloc_io(map->data.size);
 		if (map->alloc_data_base == SPS_ADDR_INVALID) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("I/O memory allocation failure: 0x%x",
+=======
+			SPS_ERR("sps:I/O memory allocation failure:0x%x",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:I/O memory allocation failure:0x%x",
+>>>>>>> refs/remotes/origin/cm-11.0
 				map->data.size);
 			goto exit_err;
 		}
 		map->data.phys_base = map->alloc_data_base;
 		map->data.base = spsi_get_mem_ptr(map->data.phys_base);
 		if (map->data.base == NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Cannot get virt addr for I/O buffer: 0x%x",
+=======
+			SPS_ERR("sps:Cannot get virt addr for I/O buffer:0x%x",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Cannot get virt addr for I/O buffer:0x%x",
+>>>>>>> refs/remotes/origin/cm-11.0
 				map->data.phys_base);
 			goto exit_err;
 		}
 	}
 
 	/* Attempt to assign this connection to the client */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (sps_rm_assign(pipe, map))
 		goto exit_err;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (sps_rm_assign(pipe, map)) {
+		SPS_ERR("sps:failed to assign a connection to the client.\n");
+		goto exit_err;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Initialization was successful */
 	success = true;
@@ -611,7 +782,15 @@ static int sps_rm_alloc(struct sps_pipe *pipe)
 	 */
 	if (pipe->connect.config != SPS_CONFIG_DEFAULT) {
 		if (sps_map_find(&pipe->connect)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Failed to find connection mapping");
+=======
+			SPS_ERR("sps:Failed to find connection mapping");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Failed to find connection mapping");
+>>>>>>> refs/remotes/origin/cm-11.0
 			return SPS_ERROR;
 		}
 	}
@@ -619,7 +798,15 @@ static int sps_rm_alloc(struct sps_pipe *pipe)
 	mutex_lock(&sps_rm->lock);
 	/* Check client state */
 	if (IS_SPS_STATE_OK(pipe)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		SPS_ERR("Client connection already allocated");
+=======
+		SPS_ERR("sps:Client connection already allocated");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		SPS_ERR("sps:Client connection already allocated");
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto exit_err;
 	}
 
@@ -636,7 +823,15 @@ static int sps_rm_alloc(struct sps_pipe *pipe)
 	if (map == NULL) {
 		map = sps_rm_create(pipe);
 		if (map == NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Failed to allocate connection");
+=======
+			SPS_ERR("sps:Failed to allocate connection");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Failed to allocate connection");
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto exit_err;
 		}
 		list_add_tail(&map->list, &sps_rm->connections_q);
@@ -692,8 +887,23 @@ int sps_rm_state_change(struct sps_pipe *pipe, u32 state)
 	/* Allocate the pipe */
 	if (pipe->client_state == SPS_STATE_DISCONNECT &&
 	    state == SPS_STATE_ALLOCATE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (sps_rm_alloc(pipe))
 			return SPS_ERROR;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (sps_rm_alloc(pipe)) {
+			SPS_ERR("sps:Fail to allocate resource for"
+				" BAM 0x%x pipe %d",
+				(u32) pipe->bam, pipe->pipe_index);
+			return SPS_ERROR;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/* Configure the pipe */
@@ -710,7 +920,15 @@ int sps_rm_state_change(struct sps_pipe *pipe, u32 state)
 		}
 		result = sps_bam_pipe_connect(pipe, &params);
 		if (result) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Failed to connect BAM 0x%x pipe %d",
+=======
+			SPS_ERR("sps:Failed to connect BAM 0x%x pipe %d",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Failed to connect BAM 0x%x pipe %d",
+>>>>>>> refs/remotes/origin/cm-11.0
 				(u32) pipe->bam, pipe->pipe_index);
 			return SPS_ERROR;
 		}
@@ -733,7 +951,15 @@ int sps_rm_state_change(struct sps_pipe *pipe, u32 state)
 		|| (pipe->connect.options & SPS_O_AUTO_ENABLE))) {
 		result = sps_bam_pipe_enable(pipe->bam, pipe->pipe_index);
 		if (result) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Failed to set BAM 0x%x pipe %d flow on",
+=======
+			SPS_ERR("sps:Failed to set BAM 0x%x pipe %d flow on",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Failed to set BAM 0x%x pipe %d flow on",
+>>>>>>> refs/remotes/origin/cm-11.0
 				pipe->bam->props.phys_addr,
 				pipe->pipe_index);
 			return SPS_ERROR;
@@ -746,8 +972,18 @@ int sps_rm_state_change(struct sps_pipe *pipe, u32 state)
 			result = sps_dma_pipe_enable(pipe->bam,
 						     pipe->pipe_index);
 			if (result) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				SPS_ERR("Failed to activate BAM-DMA pipe: %d",
 					pipe->pipe_index);
+=======
+				SPS_ERR("sps:Failed to activate BAM-DMA"
+					" pipe: %d", pipe->pipe_index);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				SPS_ERR("sps:Failed to activate BAM-DMA"
+					" pipe: %d", pipe->pipe_index);
+>>>>>>> refs/remotes/origin/cm-11.0
 				return SPS_ERROR;
 			}
 		}
@@ -760,7 +996,15 @@ int sps_rm_state_change(struct sps_pipe *pipe, u32 state)
 	    (state == SPS_STATE_DISABLE	|| state == SPS_STATE_DISCONNECT)) {
 		result = sps_bam_pipe_disable(pipe->bam, pipe->pipe_index);
 		if (result) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Failed to set BAM 0x%x pipe %d flow off",
+=======
+			SPS_ERR("sps:Failed to set BAM 0x%x pipe %d flow off",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Failed to set BAM 0x%x pipe %d flow off",
+>>>>>>> refs/remotes/origin/cm-11.0
 				pipe->bam->props.phys_addr,
 				pipe->pipe_index);
 			return SPS_ERROR;
@@ -782,7 +1026,15 @@ int sps_rm_state_change(struct sps_pipe *pipe, u32 state)
 
 		result = sps_bam_pipe_disconnect(pipe->bam, pipe_index);
 		if (result) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			SPS_ERR("Failed to disconnect BAM 0x%x pipe %d",
+=======
+			SPS_ERR("sps:Failed to disconnect BAM 0x%x pipe %d",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			SPS_ERR("sps:Failed to disconnect BAM 0x%x pipe %d",
+>>>>>>> refs/remotes/origin/cm-11.0
 				pipe->bam->props.phys_addr,
 				pipe->pipe_index);
 			return SPS_ERROR;

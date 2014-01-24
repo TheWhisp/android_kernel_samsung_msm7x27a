@@ -21,8 +21,12 @@
 #include <sound/soc.h>
 
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <plat/regs-iis.h>
 #include <mach/gta02.h>
+=======
+#include "regs-iis.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "../codecs/wm8753.h"
 #include "s3c24xx-i2s.h"
@@ -230,8 +234,14 @@ static const struct snd_kcontrol_new neo1973_wm8753_controls[] = {
 
 /* GTA02 specific routes and controls */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MACH_NEO1973_GTA02
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int gta02_speaker_enabled;
 
 static int lm4853_set_spk(struct snd_kcontrol *kcontrol,
@@ -239,7 +249,11 @@ static int lm4853_set_spk(struct snd_kcontrol *kcontrol,
 {
 	gta02_speaker_enabled = ucontrol->value.integer.value[0];
 
+<<<<<<< HEAD
 	gpio_set_value(GTA02_GPIO_HP_IN, !gta02_speaker_enabled);
+=======
+	gpio_set_value(S3C2410_GPJ(2), !gta02_speaker_enabled);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -254,7 +268,11 @@ static int lm4853_get_spk(struct snd_kcontrol *kcontrol,
 static int lm4853_event(struct snd_soc_dapm_widget *w,
 			struct snd_kcontrol *k, int event)
 {
+<<<<<<< HEAD
 	gpio_set_value(GTA02_GPIO_AMP_SHUT, SND_SOC_DAPM_EVENT_OFF(event));
+=======
+	gpio_set_value(S3C2410_GPJ(1), SND_SOC_DAPM_EVENT_OFF(event));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -298,7 +316,15 @@ static int neo1973_gta02_wm8753_init(struct snd_soc_codec *codec)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = snd_soc_add_controls(codec, neo1973_gta02_wm8753_controls,
+=======
+	ret = snd_soc_add_card_controls(codec->card, neo1973_gta02_wm8753_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = snd_soc_add_card_controls(codec->card, neo1973_gta02_wm8753_controls,
+>>>>>>> refs/remotes/origin/master
 			ARRAY_SIZE(neo1973_gta02_wm8753_controls));
 	if (ret)
 		return ret;
@@ -311,10 +337,16 @@ static int neo1973_gta02_wm8753_init(struct snd_soc_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else
 static int neo1973_gta02_wm8753_init(struct snd_soc_code *codec) { return 0; }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_soc_codec *codec = rtd->codec;
@@ -322,10 +354,16 @@ static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
 	int ret;
 
 	/* set up NC codec pins */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (machine_is_neo1973_gta01()) {
 		snd_soc_dapm_nc_pin(dapm, "LOUT2");
 		snd_soc_dapm_nc_pin(dapm, "ROUT2");
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_dapm_nc_pin(dapm, "OUT3");
 	snd_soc_dapm_nc_pin(dapm, "OUT4");
 	snd_soc_dapm_nc_pin(dapm, "LINE1");
@@ -338,7 +376,15 @@ static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 
 	/* add neo1973 specific controls */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = snd_soc_add_controls(codec, neo1973_wm8753_controls,
+=======
+	ret = snd_soc_add_card_controls(rtd->card, neo1973_wm8753_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = snd_soc_add_card_controls(rtd->card, neo1973_wm8753_controls,
+>>>>>>> refs/remotes/origin/master
 			ARRAY_SIZE(neo1973_wm8753_controls));
 	if (ret)
 		return ret;
@@ -367,6 +413,8 @@ static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
 			return ret;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
 	return 0;
@@ -418,11 +466,25 @@ static int neo1973_lm4857_init(struct snd_soc_dapm_context *dapm)
 static int neo1973_lm4857_init(struct snd_soc_dapm_context *dapm) { return 0; };
 #endif
 
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_dai_link neo1973_dai[] = {
 { /* Hifi Playback - for similatious use with voice below */
 	.name = "WM8753",
 	.stream_name = "WM8753 HiFi",
+<<<<<<< HEAD
 	.platform_name = "samsung-audio",
+=======
+	.platform_name = "s3c24xx-iis",
+>>>>>>> refs/remotes/origin/master
 	.cpu_dai_name = "s3c24xx-iis",
 	.codec_dai_name = "wm8753-hifi",
 	.codec_name = "wm8753.0-001a",
@@ -432,7 +494,11 @@ static struct snd_soc_dai_link neo1973_dai[] = {
 { /* Voice via BT */
 	.name = "Bluetooth",
 	.stream_name = "Voice",
+<<<<<<< HEAD
 	.cpu_dai_name = "dfbmcs320-pcm",
+=======
+	.cpu_dai_name = "bt-sco-pcm",
+>>>>>>> refs/remotes/origin/master
 	.codec_dai_name = "wm8753-voice",
 	.codec_name = "wm8753.0-001a",
 	.ops = &neo1973_voice_ops,
@@ -444,11 +510,17 @@ static struct snd_soc_aux_dev neo1973_aux_devs[] = {
 		.name = "dfbmcs320",
 		.codec_name = "dfbmcs320.0",
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{
 		.name = "lm4857",
 		.codec_name = "lm4857.0-007c",
 		.init = neo1973_lm4857_init,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct snd_soc_codec_conf neo1973_codec_conf[] = {
@@ -458,17 +530,37 @@ static struct snd_soc_codec_conf neo1973_codec_conf[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MACH_NEO1973_GTA02
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct gpio neo1973_gta02_gpios[] = {
 	{ GTA02_GPIO_HP_IN, GPIOF_OUT_INIT_HIGH, "GTA02_HP_IN" },
 	{ GTA02_GPIO_AMP_SHUT, GPIOF_OUT_INIT_HIGH, "GTA02_AMP_SHUT" },
 };
+<<<<<<< HEAD
 #else
 static const struct gpio neo1973_gta02_gpios[] = {};
 #endif
 
 static struct snd_soc_card neo1973 = {
 	.name = "neo1973",
+=======
+=======
+static const struct gpio neo1973_gta02_gpios[] = {
+	{ S3C2410_GPJ(2), GPIOF_OUT_INIT_HIGH, "GTA02_HP_IN" },
+	{ S3C2410_GPJ(1), GPIOF_OUT_INIT_HIGH, "GTA02_AMP_SHUT" },
+};
+>>>>>>> refs/remotes/origin/master
+
+static struct snd_soc_card neo1973 = {
+	.name = "neo1973",
+	.owner = THIS_MODULE,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.dai_link = neo1973_dai,
 	.num_links = ARRAY_SIZE(neo1973_dai),
 	.aux_dev = neo1973_aux_devs,
@@ -483,7 +575,15 @@ static int __init neo1973_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!machine_is_neo1973_gta01() && !machine_is_neo1973_gta02())
+=======
+	if (!machine_is_neo1973_gta02())
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!machine_is_neo1973_gta02())
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	if (machine_is_neo1973_gta02()) {

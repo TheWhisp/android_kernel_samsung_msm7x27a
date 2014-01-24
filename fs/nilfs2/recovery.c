@@ -493,9 +493,21 @@ static int nilfs_recovery_copy_block(struct the_nilfs *nilfs,
 	if (unlikely(!bh_org))
 		return -EIO;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(page, KM_USER0);
 	memcpy(kaddr + bh_offset(bh_org), bh_org->b_data, bh_org->b_size);
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kaddr = kmap_atomic(page);
+	memcpy(kaddr + bh_offset(bh_org), bh_org->b_data, bh_org->b_size);
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(page);
+	memcpy(kaddr + bh_offset(bh_org), bh_org->b_data, bh_org->b_size);
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	brelse(bh_org);
 	return 0;
 }
@@ -527,7 +539,12 @@ static int nilfs_recover_dsync_blocks(struct the_nilfs *nilfs,
 		if (unlikely(err)) {
 			loff_t isize = inode->i_size;
 			if (pos + blocksize > isize)
+<<<<<<< HEAD
 				vmtruncate(inode, isize);
+=======
+				nilfs_write_failed(inode->i_mapping,
+							pos + blocksize);
+>>>>>>> refs/remotes/origin/master
 			goto failed_inode;
 		}
 

@@ -178,7 +178,11 @@ handle_real_irq:
 	} else {
 		inb(PIC_MASTER_IMR);	/* DUMMY - (do we need this?) */
 		outb(cached_master_mask, PIC_MASTER_IMR);
+<<<<<<< HEAD
 		outb(0x60+irq, PIC_MASTER_CMD);	/* 'Specific EOI to master */
+=======
+		outb(0x60+irq, PIC_MASTER_CMD); /* 'Specific EOI to master */
+>>>>>>> refs/remotes/origin/master
 	}
 	smtc_im_ack_irq(irq);
 	raw_spin_unlock_irqrestore(&i8259A_lock, flags);
@@ -229,7 +233,15 @@ static void i8259A_shutdown(void)
 	 */
 	if (i8259A_auto_eoi >= 0) {
 		outb(0xff, PIC_MASTER_IMR);	/* mask all of 8259A-1 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		outb(0xff, PIC_SLAVE_IMR);	/* mask all of 8259A-1 */
+=======
+		outb(0xff, PIC_SLAVE_IMR);	/* mask all of 8259A-2 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		outb(0xff, PIC_SLAVE_IMR);	/* mask all of 8259A-2 */
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -295,6 +307,14 @@ static void init_8259A(int auto_eoi)
 static struct irqaction irq2 = {
 	.handler = no_action,
 	.name = "cascade",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource pic1_io_resource = {

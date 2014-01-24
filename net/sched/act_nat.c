@@ -44,7 +44,11 @@ static const struct nla_policy nat_policy[TCA_NAT_MAX + 1] = {
 	[TCA_NAT_PARMS]	= { .len = sizeof(struct tc_nat) },
 };
 
+<<<<<<< HEAD
 static int tcf_nat_init(struct nlattr *nla, struct nlattr *est,
+=======
+static int tcf_nat_init(struct net *net, struct nlattr *nla, struct nlattr *est,
+>>>>>>> refs/remotes/origin/master
 			struct tc_action *a, int ovr, int bind)
 {
 	struct nlattr *tb[TCA_NAT_MAX + 1];
@@ -70,6 +74,7 @@ static int tcf_nat_init(struct nlattr *nla, struct nlattr *est,
 				     &nat_idx_gen, &nat_hash_info);
 		if (IS_ERR(pc))
 			return PTR_ERR(pc);
+<<<<<<< HEAD
 		p = to_tcf_nat(pc);
 		ret = ACT_P_CREATED;
 	} else {
@@ -79,6 +84,17 @@ static int tcf_nat_init(struct nlattr *nla, struct nlattr *est,
 			return -EEXIST;
 		}
 	}
+=======
+		ret = ACT_P_CREATED;
+	} else {
+		if (bind)
+			return 0;
+		tcf_hash_release(pc, bind, &nat_hash_info);
+		if (!ovr)
+			return -EEXIST;
+	}
+	p = to_tcf_nat(pc);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_bh(&p->tcf_lock);
 	p->old_addr = parm->old_addr;
@@ -102,7 +118,15 @@ static int tcf_nat_cleanup(struct tc_action *a, int bind)
 	return tcf_hash_release(&p->common, bind, &nat_hash_info);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int tcf_nat(struct sk_buff *skb, struct tc_action *a,
+=======
+static int tcf_nat(struct sk_buff *skb, const struct tc_action *a,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tcf_nat(struct sk_buff *skb, const struct tc_action *a,
+>>>>>>> refs/remotes/origin/master
 		   struct tcf_result *res)
 {
 	struct tcf_nat *p = a->priv;
@@ -284,11 +308,21 @@ static int tcf_nat_dump(struct sk_buff *skb, struct tc_action *a,
 	};
 	struct tcf_t t;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_NAT_PARMS, sizeof(opt), &opt);
 	t.install = jiffies_to_clock_t(jiffies - p->tcf_tm.install);
 	t.lastuse = jiffies_to_clock_t(jiffies - p->tcf_tm.lastuse);
 	t.expires = jiffies_to_clock_t(p->tcf_tm.expires);
 	NLA_PUT(skb, TCA_NAT_TM, sizeof(t), &t);
+=======
+	if (nla_put(skb, TCA_NAT_PARMS, sizeof(opt), &opt))
+		goto nla_put_failure;
+	t.install = jiffies_to_clock_t(jiffies - p->tcf_tm.install);
+	t.lastuse = jiffies_to_clock_t(jiffies - p->tcf_tm.lastuse);
+	t.expires = jiffies_to_clock_t(p->tcf_tm.expires);
+	if (nla_put(skb, TCA_NAT_TM, sizeof(t), &t))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	return skb->len;
 
@@ -306,9 +340,13 @@ static struct tc_action_ops act_nat_ops = {
 	.act		=	tcf_nat,
 	.dump		=	tcf_nat_dump,
 	.cleanup	=	tcf_nat_cleanup,
+<<<<<<< HEAD
 	.lookup		=	tcf_hash_search,
 	.init		=	tcf_nat_init,
 	.walk		=	tcf_generic_walker
+=======
+	.init		=	tcf_nat_init,
+>>>>>>> refs/remotes/origin/master
 };
 
 MODULE_DESCRIPTION("Stateless NAT actions");

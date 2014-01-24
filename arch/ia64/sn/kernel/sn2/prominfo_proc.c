@@ -11,8 +11,16 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
 #include <linux/nodemask.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/seq_file.h>
+#include <linux/nodemask.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/sn/sn_sal.h>
 #include <asm/sn/sn_cpuid.h>
@@ -102,11 +110,16 @@ get_fit_entry(unsigned long nasid, int index, unsigned long *fentry,
 /*
  * These two routines display the FIT table for each node.
  */
+<<<<<<< HEAD
 static int dump_fit_entry(char *page, unsigned long *fentry)
+=======
+static void dump_fit_entry(struct seq_file *m, unsigned long *fentry)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned type;
 
 	type = FIT_TYPE(fentry[1]);
+<<<<<<< HEAD
 	return sprintf(page, "%02x %-25s %x.%02x %016lx %u\n",
 		       type,
 		       fit_type_name(type),
@@ -114,6 +127,15 @@ static int dump_fit_entry(char *page, unsigned long *fentry)
 		       fentry[0],
 		       /* mult by sixteen to get size in bytes */
 		       (unsigned)(fentry[1] & 0xffffff) * 16);
+=======
+	seq_printf(m, "%02x %-25s %x.%02x %016lx %u\n",
+		   type,
+		   fit_type_name(type),
+		   FIT_MAJOR(fentry[1]), FIT_MINOR(fentry[1]),
+		   fentry[0],
+		   /* mult by sixteen to get size in bytes */
+		   (unsigned)(fentry[1] & 0xffffff) * 16);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -125,6 +147,7 @@ static int dump_fit_entry(char *page, unsigned long *fentry)
  * OK except for 4kB pages (and no one is going to do that on SN
  * anyway).
  */
+<<<<<<< HEAD
 static int
 dump_fit(char *page, unsigned long nasid)
 {
@@ -133,10 +156,19 @@ dump_fit(char *page, unsigned long nasid)
 	char *p;
 
 	p = page;
+=======
+static int proc_fit_show(struct seq_file *m, void *v)
+{
+	unsigned long nasid = (unsigned long)m->private;
+	unsigned long fentry[2];
+	int index;
+
+>>>>>>> refs/remotes/origin/master
 	for (index=0;;index++) {
 		BUG_ON(index * 60 > PAGE_SIZE);
 		if (get_fit_entry(nasid, index, fentry, NULL, 0))
 			break;
+<<<<<<< HEAD
 		p += dump_fit_entry(p, fentry);
 	}
 
@@ -150,6 +182,31 @@ dump_version(char *page, unsigned long nasid)
 	char banner[128];
 	int index;
 	int len;
+=======
+		dump_fit_entry(m, fentry);
+	}
+	return 0;
+}
+
+static int proc_fit_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, proc_fit_show, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_fit_fops = {
+	.open		= proc_fit_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+static int proc_version_show(struct seq_file *m, void *v)
+{
+	unsigned long nasid = (unsigned long)m->private;
+	unsigned long fentry[2];
+	char banner[128];
+	int index;
+>>>>>>> refs/remotes/origin/master
 
 	for (index = 0; ; index++) {
 		if (get_fit_entry(nasid, index, fentry, banner,
@@ -159,6 +216,7 @@ dump_version(char *page, unsigned long nasid)
 			break;
 	}
 
+<<<<<<< HEAD
 	len = sprintf(page, "%x.%02x\n", FIT_MAJOR(fentry[1]),
 		      FIT_MINOR(fentry[1]));
 	page += len;
@@ -209,6 +267,26 @@ read_fit_entry(char *page, char **start, off_t off, int count, int *eof,
 
 	return len;
 }
+=======
+	seq_printf(m, "%x.%02x\n", FIT_MAJOR(fentry[1]), FIT_MINOR(fentry[1]));
+
+	if (banner[0])
+		seq_printf(m, "%s\n", banner);
+	return 0;
+}
+
+static int proc_version_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, proc_version_show, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_version_fops = {
+	.open		= proc_version_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+>>>>>>> refs/remotes/origin/master
 
 /* module entry points */
 int __init prominfo_init(void);
@@ -217,22 +295,31 @@ void __exit prominfo_exit(void);
 module_init(prominfo_init);
 module_exit(prominfo_exit);
 
+<<<<<<< HEAD
 static struct proc_dir_entry **proc_entries;
 static struct proc_dir_entry *sgi_prominfo_entry;
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define NODE_NAME_LEN 11
 
 int __init prominfo_init(void)
 {
+<<<<<<< HEAD
 	struct proc_dir_entry **entp;
 	cnodeid_t cnodeid;
 	unsigned long nasid;
 	int size;
 	char name[NODE_NAME_LEN];
+=======
+	struct proc_dir_entry *sgi_prominfo_entry;
+	cnodeid_t cnodeid;
+>>>>>>> refs/remotes/origin/master
 
 	if (!ia64_platform_is("sn2"))
 		return 0;
 
+<<<<<<< HEAD
 	size = num_online_nodes() * sizeof(struct proc_dir_entry *);
 	proc_entries = kzalloc(size, GFP_KERNEL);
 	if (!proc_entries)
@@ -252,11 +339,33 @@ int __init prominfo_init(void)
 		entp++;
 	}
 
+=======
+	sgi_prominfo_entry = proc_mkdir("sgi_prominfo", NULL);
+	if (!sgi_prominfo_entry)
+		return -ENOMEM;
+
+	for_each_online_node(cnodeid) {
+		struct proc_dir_entry *dir;
+		unsigned long nasid;
+		char name[NODE_NAME_LEN];
+
+		sprintf(name, "node%d", cnodeid);
+		dir = proc_mkdir(name, sgi_prominfo_entry);
+		if (!dir)
+			continue;
+		nasid = cnodeid_to_nasid(cnodeid);
+		proc_create_data("fit", 0, dir,
+				 &proc_fit_fops, (void *)nasid);
+		proc_create_data("version", 0, dir,
+				 &proc_version_fops, (void *)nasid);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 void __exit prominfo_exit(void)
 {
+<<<<<<< HEAD
 	struct proc_dir_entry **entp;
 	unsigned int cnodeid;
 	char name[NODE_NAME_LEN];
@@ -271,4 +380,7 @@ void __exit prominfo_exit(void)
 	}
 	remove_proc_entry("sgi_prominfo", NULL);
 	kfree(proc_entries);
+=======
+	remove_proc_subtree("sgi_prominfo", NULL);
+>>>>>>> refs/remotes/origin/master
 }

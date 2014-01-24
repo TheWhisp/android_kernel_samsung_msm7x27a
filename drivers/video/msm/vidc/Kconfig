@@ -37,3 +37,16 @@ config MSM_VIDC_VDEC
 	help
 	This option enables support for Video decoder.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+config MSM_VIDC_CONTENT_PROTECTION
+	bool "Enable Content Protection"
+	help
+	  Enable content protection feature for Video.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

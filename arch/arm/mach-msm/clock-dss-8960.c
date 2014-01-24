@@ -90,7 +90,13 @@
 #define PLL_PWRDN_B BIT(3)
 #define PD_PLL BIT(1)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned current_rate;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static unsigned hdmi_pll_on;
 
 int hdmi_pll_enable(void)
@@ -219,11 +225,17 @@ void hdmi_pll_disable(void)
 	hdmi_pll_on = 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned hdmi_pll_get_rate(void)
 {
 	return current_rate;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int hdmi_pll_set_rate(unsigned rate)
 {
 	unsigned int set_power_dwn = 0;
@@ -378,7 +390,13 @@ int hdmi_pll_set_rate(unsigned rate)
 	if (set_power_dwn)
 		hdmi_pll_enable();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	current_rate = rate;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!ahb_enabled)
 		writel_relaxed(ahb_en_reg & ~BIT(4), AHB_EN_REG);
 

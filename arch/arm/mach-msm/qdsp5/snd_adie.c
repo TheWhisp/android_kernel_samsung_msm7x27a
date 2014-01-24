@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2009, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2009, 2013 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -376,8 +380,22 @@ static ssize_t snd_adie_debug_write(struct file *file, const char __user *buf,
 {
 	int rc = 0, op = 0;
 	int id = 0, adie_block = 0, config = 1;
+<<<<<<< HEAD
 
 	sscanf(buf, "%d %d %d %d", &op, &id, &adie_block, &config);
+=======
+	char l_buf[100];
+
+	count = count > (sizeof(l_buf) - 1) ?
+			(sizeof(l_buf) - 1) : count;
+	l_buf[count] = '\0';
+	if (copy_from_user(l_buf, buf, count)) {
+		pr_info("Unable to copy data from user space\n");
+		return -EFAULT;
+	}
+	if (sscanf(l_buf, "%d %d %d %d", &op, &id, &adie_block, &config) != 4)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-11.0
 	MM_INFO("\nUser input: op %d id %d block %d config %d\n", op, id,
 			adie_block, config);
 	switch (op) {

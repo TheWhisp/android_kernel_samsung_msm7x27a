@@ -63,7 +63,11 @@ extern int ili9320_write(struct ili9320 *ili,
 			 unsigned int reg, unsigned int value);
 
 extern int ili9320_write_regs(struct ili9320 *ili,
+<<<<<<< HEAD
 			      struct ili9320_reg *values,
+=======
+			      const struct ili9320_reg *values,
+>>>>>>> refs/remotes/origin/master
 			      int nr_values);
 
 /* Device probe */
@@ -76,5 +80,9 @@ extern void ili9320_shutdown(struct ili9320 *lcd);
 
 /* PM */
 
+<<<<<<< HEAD
 extern int ili9320_suspend(struct ili9320 *lcd, pm_message_t state);
+=======
+extern int ili9320_suspend(struct ili9320 *lcd);
+>>>>>>> refs/remotes/origin/master
 extern int ili9320_resume(struct ili9320 *lcd);

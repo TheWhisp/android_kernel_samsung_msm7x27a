@@ -12,6 +12,14 @@ struct clkops {
 	void			(*enable)(struct clk *);
 	void			(*disable)(struct clk *);
 	unsigned long		(*getrate)(struct clk *);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int			(*setrate)(struct clk *, unsigned long);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			(*setrate)(struct clk *, unsigned long);
+>>>>>>> refs/remotes/origin/master
 };
 
 struct clk {
@@ -29,7 +37,15 @@ extern struct clkops apmu_clk_ops;
 
 #define APBC_CLK(_name, _reg, _fnclksel, _rate)			\
 struct clk clk_##_name = {					\
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.clk_rst	= (void __iomem *)APBC_##_reg,	\
+=======
+		.clk_rst	= APBC_##_reg,			\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.clk_rst	= APBC_##_reg,			\
+>>>>>>> refs/remotes/origin/master
 		.fnclksel	= _fnclksel,			\
 		.rate		= _rate,			\
 		.ops		= &apbc_clk_ops,		\
@@ -37,7 +53,15 @@ struct clk clk_##_name = {					\
 
 #define APBC_CLK_OPS(_name, _reg, _fnclksel, _rate, _ops)	\
 struct clk clk_##_name = {					\
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.clk_rst	= (void __iomem *)APBC_##_reg,	\
+=======
+		.clk_rst	= APBC_##_reg,			\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.clk_rst	= APBC_##_reg,			\
+>>>>>>> refs/remotes/origin/master
 		.fnclksel	= _fnclksel,			\
 		.rate		= _rate,			\
 		.ops		= _ops,				\
@@ -45,7 +69,15 @@ struct clk clk_##_name = {					\
 
 #define APMU_CLK(_name, _reg, _eval, _rate)			\
 struct clk clk_##_name = {					\
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.clk_rst	= (void __iomem *)APMU_##_reg,	\
+=======
+		.clk_rst	= APMU_##_reg,			\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.clk_rst	= APMU_##_reg,			\
+>>>>>>> refs/remotes/origin/master
 		.enable_val	= _eval,			\
 		.rate		= _rate,			\
 		.ops		= &apmu_clk_ops,		\
@@ -53,7 +85,15 @@ struct clk clk_##_name = {					\
 
 #define APMU_CLK_OPS(_name, _reg, _eval, _rate, _ops)		\
 struct clk clk_##_name = {					\
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.clk_rst	= (void __iomem *)APMU_##_reg,	\
+=======
+		.clk_rst	= APMU_##_reg,			\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.clk_rst	= APMU_##_reg,			\
+>>>>>>> refs/remotes/origin/master
 		.enable_val	= _eval,			\
 		.rate		= _rate,			\
 		.ops		= _ops,				\

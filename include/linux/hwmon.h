@@ -14,7 +14,12 @@
 #ifndef _HWMON_H_
 #define _HWMON_H_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+struct device;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct device *hwmon_device_register(struct device *dev);
 
@@ -33,3 +38,22 @@ static inline int SENSORS_LIMIT(long value, long low, long high)
 
 #endif
 
+=======
+struct device;
+struct attribute_group;
+
+struct device *hwmon_device_register(struct device *dev);
+struct device *
+hwmon_device_register_with_groups(struct device *dev, const char *name,
+				  void *drvdata,
+				  const struct attribute_group **groups);
+struct device *
+devm_hwmon_device_register_with_groups(struct device *dev, const char *name,
+				       void *drvdata,
+				       const struct attribute_group **groups);
+
+void hwmon_device_unregister(struct device *dev);
+void devm_hwmon_device_unregister(struct device *dev);
+
+#endif
+>>>>>>> refs/remotes/origin/master

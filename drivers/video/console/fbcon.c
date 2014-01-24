@@ -77,7 +77,13 @@
 #include <linux/crc32.h> /* For counting font checksums */
 #include <asm/fb.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "fbcon.h"
 
@@ -405,7 +411,11 @@ static void cursor_timer_handler(unsigned long dev_addr)
 	struct fb_info *info = (struct fb_info *) dev_addr;
 	struct fbcon_ops *ops = info->fbcon_par;
 
+<<<<<<< HEAD
 	schedule_work(&info->queue);
+=======
+	queue_work(system_power_efficient_wq, &info->queue);
+>>>>>>> refs/remotes/origin/master
 	mod_timer(&ops->cursor_timer, jiffies + HZ/5);
 }
 
@@ -450,7 +460,11 @@ static int __init fb_console_setup(char *this_opt)
 
 	while ((options = strsep(&this_opt, ",")) != NULL) {
 		if (!strncmp(options, "font:", 5))
+<<<<<<< HEAD
 			strcpy(fontname, options + 5);
+=======
+			strlcpy(fontname, options + 5, sizeof(fontname));
+>>>>>>> refs/remotes/origin/master
 		
 		if (!strncmp(options, "scrollback:", 11)) {
 			options += 11;
@@ -557,6 +571,10 @@ static int do_fbcon_takeover(int show_logo)
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int fbcon_takeover(int show_logo)
 {
 	int err, i;
@@ -585,6 +603,8 @@ static int fbcon_takeover(int show_logo)
 	return err;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef MODULE
 static void fbcon_prepare_logo(struct vc_data *vc, struct fb_info *info,
 			       int cols, int rows, int new_cols, int new_rows)
@@ -902,7 +922,11 @@ static int set_con2fb_map(int unit, int newidx, int user)
 /*
  *  Low Level Operations
  */
+<<<<<<< HEAD
 /* NOTE: fbcon cannot be __init: it may be called from take_over_console later */
+=======
+/* NOTE: fbcon cannot be __init: it may be called from do_take_over_console later */
+>>>>>>> refs/remotes/origin/master
 static int var_to_display(struct display *disp,
 			  struct fb_var_screeninfo *var,
 			  struct fb_info *info)
@@ -1278,8 +1302,21 @@ static void fbcon_clear(struct vc_data *vc, int sy, int sx, int height,
 	if (!height || !width)
 		return;
 
+<<<<<<< HEAD
 	if (sy < vc->vc_top && vc->vc_top == logo_lines)
 		vc->vc_top = 0;
+=======
+	if (sy < vc->vc_top && vc->vc_top == logo_lines) {
+		vc->vc_top = 0;
+		/*
+		 * If the font dimensions are not an integral of the display
+		 * dimensions then the ops->clear below won't end up clearing
+		 * the margins.  Call clear_margins here in case the logo
+		 * bitmap stretched into the margin area.
+		 */
+		fbcon_clear_margins(vc, 0);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Split blits that cross physical y_wrap boundary */
 
@@ -3536,8 +3573,14 @@ static void fbcon_start(void)
 			}
 		}
 
+<<<<<<< HEAD
 		console_unlock();
 		fbcon_takeover(0);
+=======
+		do_fbcon_takeover(0);
+		console_unlock();
+
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -3641,8 +3684,13 @@ static void __exit fb_console_exit(void)
 	fbcon_deinit_device();
 	device_destroy(fb_class, MKDEV(0, 0));
 	fbcon_exit();
+<<<<<<< HEAD
 	console_unlock();
 	unregister_con_driver(&fb_con);
+=======
+	do_unregister_con_driver(&fb_con);
+	console_unlock();
+>>>>>>> refs/remotes/origin/master
 }	
 
 module_exit(fb_console_exit);

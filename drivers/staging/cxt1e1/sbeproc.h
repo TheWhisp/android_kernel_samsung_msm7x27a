@@ -1,7 +1,13 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * $Id: sbeproc.h,v 1.2 2005/10/17 23:55:28 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _INC_SBEPROC_H_
 #define _INC_SBEPROC_H_
 
@@ -23,6 +29,8 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.2 $
  * Last changed on $Date: 2005/10/17 23:55:28 $
@@ -39,14 +47,37 @@
  * Initial check-in.
  *
  *-----------------------------------------------------------------------------
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 #ifdef __KERNEL__
 void        sbecom_proc_brd_cleanup (ci_t *);
 int __init  sbecom_proc_brd_init (ci_t *);
 
 #endif                          /*** __KERNEL__ ***/
 #endif                          /*** CONFIG_PROC_FS ***/
+=======
+void        sbecom_proc_brd_cleanup (ci_t *);
+int __init  sbecom_proc_brd_init (ci_t *);
+
+#else
+
+static inline void sbecom_proc_brd_cleanup(ci_t *ci)
+{
+}
+
+static inline int __init sbecom_proc_brd_init(ci_t *ci)
+{
+	return 0;
+}
+
+#endif                          /*** CONFIG_PROC_FS ***/
+
+>>>>>>> refs/remotes/origin/master
 #endif                          /*** _INC_SBEPROC_H_ ***/

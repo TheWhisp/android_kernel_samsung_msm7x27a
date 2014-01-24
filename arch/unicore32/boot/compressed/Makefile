@@ -10,14 +10,28 @@
 # Copyright (C) 2001~2010 GUAN Xue-tao
 #
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXTRA_CFLAGS	:= -fpic -fno-builtin
 EXTRA_AFLAGS	:= -Wa,-march=all
+=======
+ccflags-y	:= -fpic -fno-builtin
+asflags-y	:= -Wa,-march=all
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ccflags-y	:= -fpic -fno-builtin
+asflags-y	:= -Wa,-march=all
+>>>>>>> refs/remotes/origin/master
 
 OBJS		:= misc.o
 
 # font.c and font.o
 CFLAGS_font.o	:= -Dstatic=
+<<<<<<< HEAD
 $(obj)/font.c: $(srctree)/drivers/video/console/font_8x8.c
+=======
+$(obj)/font.c: $(srctree)/lib/fonts/font_8x8.c
+>>>>>>> refs/remotes/origin/master
 	$(call cmd,shipped)
 
 # piggy.S and piggy.o

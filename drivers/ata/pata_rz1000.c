@@ -44,7 +44,15 @@ static int rz1000_set_mode(struct ata_link *link, struct ata_device **unused)
 		dev->xfer_mode = XFER_PIO_0;
 		dev->xfer_shift = ATA_SHIFT_PIO;
 		dev->flags |= ATA_DFLAG_PIO;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO, "configured for PIO\n");
+=======
+		ata_dev_info(dev, "configured for PIO\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev, "configured for PIO\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -92,7 +100,15 @@ static int rz1000_init_one (struct pci_dev *pdev, const struct pci_device_id *en
 	};
 	const struct ata_port_info *ppi[] = { &info, NULL };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk_once(KERN_DEBUG DRV_NAME " version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	if (rz1000_fifo_disable(pdev) == 0)
 		return ata_pci_sff_init_one(pdev, ppi, &rz1000_sht, NULL, 0);
@@ -105,7 +121,11 @@ static int rz1000_init_one (struct pci_dev *pdev, const struct pci_device_id *en
 #ifdef CONFIG_PM
 static int rz1000_reinit_one(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
@@ -140,6 +160,7 @@ static struct pci_driver rz1000_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init rz1000_init(void)
 {
 	return pci_register_driver(&rz1000_pci_driver);
@@ -149,13 +170,19 @@ static void __exit rz1000_exit(void)
 {
 	pci_unregister_driver(&rz1000_pci_driver);
 }
+=======
+module_pci_driver(rz1000_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for RZ1000 PCI ATA");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, pata_rz1000);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(rz1000_init);
 module_exit(rz1000_exit);
 
+=======
+>>>>>>> refs/remotes/origin/master

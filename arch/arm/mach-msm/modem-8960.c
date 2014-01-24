@@ -27,6 +27,14 @@
 #include <mach/subsystem_restart.h>
 #include <mach/subsystem_notif.h>
 #include <mach/socinfo.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <mach/msm_smsm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/msm_smsm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include "smd_private.h"
 #include "modem_notifier.h"
@@ -38,6 +46,45 @@ static int crash_shutdown;
 #define Q6_FW_WDOG_ENABLE		0x08882024
 #define Q6_SW_WDOG_ENABLE		0x08982024
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void log_modem_sfr(void)
+{
+	u32 size;
+	char *smem_reason, reason[MAX_SSR_REASON_LEN];
+
+	smem_reason = smem_get_entry(SMEM_SSR_REASON_MSS0, &size);
+	if (!smem_reason || !size) {
+		pr_err("modem subsystem failure reason: (unknown, smem_get_entry failed).\n");
+		return;
+	}
+	if (!smem_reason[0]) {
+		pr_err("modem subsystem failure reason: (unknown, init string found).\n");
+		return;
+	}
+
+	size = min(size, MAX_SSR_REASON_LEN-1);
+	memcpy(reason, smem_reason, size);
+	reason[size] = '\0';
+	pr_err("modem subsystem failure reason: %s.\n", reason);
+
+	smem_reason[0] = '\0';
+	wmb();
+}
+
+static void restart_modem(void)
+{
+	log_modem_sfr();
+	subsystem_restart("modem");
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void modem_wdog_check(struct work_struct *work)
 {
 	void __iomem *q6_sw_wdog_addr;
@@ -50,7 +97,15 @@ static void modem_wdog_check(struct work_struct *work)
 	regval = readl_relaxed(q6_sw_wdog_addr);
 	if (!regval) {
 		pr_err("modem-8960: Modem watchdog wasn't activated!. Restarting the modem now.\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		subsystem_restart("modem");
+=======
+		restart_modem();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		restart_modem();
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	iounmap(q6_sw_wdog_addr);
@@ -58,6 +113,8 @@ static void modem_wdog_check(struct work_struct *work)
 
 static DECLARE_DELAYED_WORK(modem_wdog_check_work, modem_wdog_check);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void modem_sw_fatal_fn(struct work_struct *work)
 {
 	uint32_t panic_smsm_states = SMSM_RESET | SMSM_SYSTEM_DOWNLOAD;
@@ -97,6 +154,10 @@ static void modem_fw_fatal_fn(struct work_struct *work)
 static DECLARE_WORK(modem_sw_fatal_work, modem_sw_fatal_fn);
 static DECLARE_WORK(modem_fw_fatal_work, modem_fw_fatal_fn);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void smsm_state_cb(void *data, uint32_t old_state, uint32_t new_state)
 {
 	/* Ignore if we're the one that set SMSM_RESET */
@@ -104,10 +165,20 @@ static void smsm_state_cb(void *data, uint32_t old_state, uint32_t new_state)
 		return;
 
 	if (new_state & SMSM_RESET) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("Modem SMSM state changed to SMSM_RESET.\n"
 			"Probable err_fatal on the modem. "
 			"Calling subsystem restart...\n");
 		subsystem_restart("modem");
+=======
+		pr_err("Probable fatal error on the modem.\n");
+		restart_modem();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Probable fatal error on the modem.\n");
+		restart_modem();
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 }
 
@@ -225,6 +296,8 @@ out:
 
 static irqreturn_t modem_wdog_bite_irq(int irq, void *dev_id)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	switch (irq) {
@@ -238,6 +311,22 @@ static irqreturn_t modem_wdog_bite_irq(int irq, void *dev_id)
 		ret = schedule_work(&modem_fw_fatal_work);
 		disable_irq_nosync(Q6SW_WDOG_EXPIRED_IRQ);
 		disable_irq_nosync(Q6FW_WDOG_EXPIRED_IRQ);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	switch (irq) {
+
+	case Q6SW_WDOG_EXPIRED_IRQ:
+		pr_err("Watchdog bite received from modem software!\n");
+		restart_modem();
+		break;
+	case Q6FW_WDOG_EXPIRED_IRQ:
+		pr_err("Watchdog bite received from modem firmware!\n");
+		restart_modem();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	break;
 
@@ -295,7 +384,17 @@ static int __init modem_8960_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cpu_is_msm8960() && !cpu_is_msm8930() && !cpu_is_msm9615())
+=======
+	if (!cpu_is_msm8960() && !cpu_is_msm8930() && !cpu_is_msm8930aa() &&
+	    !cpu_is_msm9615() && !cpu_is_msm8627())
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cpu_is_msm8960() && !cpu_is_msm8930() && !cpu_is_msm8930aa() &&
+	    !cpu_is_msm9615() && !cpu_is_msm8627())
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENODEV;
 
 	ret = smsm_state_cb_register(SMSM_MODEM_STATE, SMSM_RESET,
@@ -350,7 +449,15 @@ static int __init modem_8960_init(void)
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	smem_ramdump_dev = create_ramdump_device("smem");
+=======
+	smem_ramdump_dev = create_ramdump_device("smem-modem");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	smem_ramdump_dev = create_ramdump_device("smem-modem");
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!smem_ramdump_dev) {
 		pr_err("%s: Unable to create smem ramdump device. (%d)\n",

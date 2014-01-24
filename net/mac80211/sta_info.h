@@ -14,12 +14,30 @@
 #include <linux/if_ether.h>
 #include <linux/workqueue.h>
 #include <linux/average.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/master
 #include "key.h"
 
 /**
  * enum ieee80211_sta_info_flags - Stations flags
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * These flags are used with &struct sta_info's @flags member.
+=======
+ * These flags are used with &struct sta_info's @flags member, but
+ * only indirectly with set_sta_flag() and friends.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * These flags are used with &struct sta_info's @flags member, but
+ * only indirectly with set_sta_flag() and friends.
+>>>>>>> refs/remotes/origin/master
  *
  * @WLAN_STA_AUTH: Station is authenticated.
  * @WLAN_STA_ASSOC: Station is associated.
@@ -29,7 +47,13 @@
  *	when virtual port control is not in use.
  * @WLAN_STA_SHORT_PREAMBLE: Station is capable of receiving short-preamble
  *	frames.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @WLAN_STA_ASSOC_AP: We're associated to that station, it is an AP.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @WLAN_STA_WME: Station is a QoS-STA.
  * @WLAN_STA_WDS: Station is one of our WDS peers.
  * @WLAN_STA_CLEAR_PS_FILT: Clear PS filter in hardware (using the
@@ -43,6 +67,8 @@
  *	be in the queues
  * @WLAN_STA_PSPOLL: Station sent PS-poll while driver was keeping
  *	station in power-save mode, reply when the driver unblocks.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @WLAN_STA_PS_DRIVER_BUF: Station has frames pending in driver internal
  *	buffers. Automatically cleared on station wake-up.
  */
@@ -61,11 +87,71 @@ enum ieee80211_sta_info_flags {
 	WLAN_STA_PS_DRIVER	= 1<<12,
 	WLAN_STA_PSPOLL		= 1<<13,
 	WLAN_STA_PS_DRIVER_BUF	= 1<<14,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @WLAN_STA_TDLS_PEER: Station is a TDLS peer.
+ * @WLAN_STA_TDLS_PEER_AUTH: This TDLS peer is authorized to send direct
+ *	packets. This means the link is enabled.
+ * @WLAN_STA_UAPSD: Station requested unscheduled SP while driver was
+ *	keeping station in power-save mode, reply when the driver
+ *	unblocks the station.
+ * @WLAN_STA_SP: Station is in a service period, so don't try to
+ *	reply to other uAPSD trigger frames or PS-Poll.
+ * @WLAN_STA_4ADDR_EVENT: 4-addr event was already sent for this frame.
+ * @WLAN_STA_INSERTED: This station is inserted into the hash table.
+ * @WLAN_STA_RATE_CONTROL: rate control was initialized for this station.
+<<<<<<< HEAD
+=======
+ * @WLAN_STA_TOFFSET_KNOWN: toffset calculated for this station is valid.
+ * @WLAN_STA_MPSP_OWNER: local STA is owner of a mesh Peer Service Period.
+ * @WLAN_STA_MPSP_RECIPIENT: local STA is recipient of a MPSP.
+>>>>>>> refs/remotes/origin/master
+ */
+enum ieee80211_sta_info_flags {
+	WLAN_STA_AUTH,
+	WLAN_STA_ASSOC,
+	WLAN_STA_PS_STA,
+	WLAN_STA_AUTHORIZED,
+	WLAN_STA_SHORT_PREAMBLE,
+	WLAN_STA_WME,
+	WLAN_STA_WDS,
+	WLAN_STA_CLEAR_PS_FILT,
+	WLAN_STA_MFP,
+	WLAN_STA_BLOCK_BA,
+	WLAN_STA_PS_DRIVER,
+	WLAN_STA_PSPOLL,
+	WLAN_STA_TDLS_PEER,
+	WLAN_STA_TDLS_PEER_AUTH,
+	WLAN_STA_UAPSD,
+	WLAN_STA_SP,
+	WLAN_STA_4ADDR_EVENT,
+	WLAN_STA_INSERTED,
+	WLAN_STA_RATE_CONTROL,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define STA_TID_NUM 16
 #define ADDBA_RESP_INTERVAL HZ
+<<<<<<< HEAD
 #define HT_AGG_MAX_RETRIES		0x3
+=======
+#define HT_AGG_MAX_RETRIES		15
+#define HT_AGG_BURST_RETRIES		3
+#define HT_AGG_RETRIES_PERIOD		(15 * HZ)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WLAN_STA_TOFFSET_KNOWN,
+	WLAN_STA_MPSP_OWNER,
+	WLAN_STA_MPSP_RECIPIENT,
+};
+
+#define ADDBA_RESP_INTERVAL HZ
+#define HT_AGG_MAX_RETRIES		15
+#define HT_AGG_BURST_RETRIES		3
+#define HT_AGG_RETRIES_PERIOD		(15 * HZ)
+>>>>>>> refs/remotes/origin/master
 
 #define HT_AGG_STATE_DRV_READY		0
 #define HT_AGG_STATE_RESPONSE_RECEIVED	1
@@ -74,18 +160,50 @@ enum ieee80211_sta_info_flags {
 #define HT_AGG_STATE_WANT_START		4
 #define HT_AGG_STATE_WANT_STOP		5
 
+<<<<<<< HEAD
+=======
+enum ieee80211_agg_stop_reason {
+	AGG_STOP_DECLINED,
+	AGG_STOP_LOCAL_REQUEST,
+	AGG_STOP_PEER_REQUEST,
+	AGG_STOP_DESTROY_STA,
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct tid_ampdu_tx - TID aggregation information (Tx).
  *
  * @rcu_head: rcu head for freeing structure
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @session_timer: check if we keep Tx-ing on the TID (by timeout value)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @session_timer: check if we keep Tx-ing on the TID (by timeout value)
+>>>>>>> refs/remotes/origin/master
  * @addba_resp_timer: timer for peer's response to addba request
  * @pending: pending frames queue -- use sta's spinlock to protect
  * @dialog_token: dialog token for aggregation session
  * @timeout: session timeout value to be filled in ADDBA requests
  * @state: session state (see above)
+<<<<<<< HEAD
  * @stop_initiator: initiator of a session stop
  * @tx_stop: TX DelBA frame when stopping
  * @buf_size: reorder buffer size at receiver
+<<<<<<< HEAD
+=======
+ * @failed_bar_ssn: ssn of the last failed BAR tx attempt
+ * @bar_pending: BAR needs to be re-sent
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @last_tx: jiffies of last tx activity
+ * @stop_initiator: initiator of a session stop
+ * @tx_stop: TX DelBA frame when stopping
+ * @buf_size: reorder buffer size at receiver
+ * @failed_bar_ssn: ssn of the last failed BAR tx attempt
+ * @bar_pending: BAR needs to be re-sent
+>>>>>>> refs/remotes/origin/master
  *
  * This structure's lifetime is managed by RCU, assignments to
  * the array holding it must hold the aggregation mutex.
@@ -98,14 +216,38 @@ enum ieee80211_sta_info_flags {
  */
 struct tid_ampdu_tx {
 	struct rcu_head rcu_head;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct timer_list session_timer;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct timer_list addba_resp_timer;
 	struct sk_buff_head pending;
 	unsigned long state;
+=======
+	struct timer_list session_timer;
+	struct timer_list addba_resp_timer;
+	struct sk_buff_head pending;
+	unsigned long state;
+	unsigned long last_tx;
+>>>>>>> refs/remotes/origin/master
 	u16 timeout;
 	u8 dialog_token;
 	u8 stop_initiator;
 	bool tx_stop;
 	u8 buf_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	u16 failed_bar_ssn;
+	bool bar_pending;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	u16 failed_bar_ssn;
+	bool bar_pending;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -115,6 +257,10 @@ struct tid_ampdu_tx {
  * @reorder_time: jiffies when skb was added
  * @session_timer: check if peer keeps Tx-ing on the TID (by timeout value)
  * @reorder_timer: releases expired frames from the reorder buffer.
+<<<<<<< HEAD
+=======
+ * @last_rx: jiffies of last rx activity
+>>>>>>> refs/remotes/origin/master
  * @head_seq_num: head sequence number in reordering buffer.
  * @stored_mpdu_num: number of MPDUs in reordering buffer
  * @ssn: Starting Sequence Number expected to be aggregated.
@@ -139,6 +285,10 @@ struct tid_ampdu_rx {
 	unsigned long *reorder_time;
 	struct timer_list session_timer;
 	struct timer_list reorder_timer;
+<<<<<<< HEAD
+=======
+	unsigned long last_rx;
+>>>>>>> refs/remotes/origin/master
 	u16 head_seq_num;
 	u16 stored_mpdu_num;
 	u16 ssn;
@@ -154,23 +304,64 @@ struct tid_ampdu_rx {
  * @tid_tx: aggregation info for Tx per TID
  * @tid_start_tx: sessions where start was requested
  * @addba_req_num: number of times addBA request has been sent.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @last_addba_req_time: timestamp of the last addBA request.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @last_addba_req_time: timestamp of the last addBA request.
+>>>>>>> refs/remotes/origin/master
  * @dialog_token_allocator: dialog token enumerator for each new session;
  * @work: work struct for starting/stopping aggregation
  * @tid_rx_timer_expired: bitmap indicating on which TIDs the
  *	RX timer expired until the work for it runs
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @tid_rx_stop_requested:  bitmap indicating which BA sessions per TID the
+ *	driver requested to close until the work for it runs
+>>>>>>> refs/remotes/origin/cm-10.0
  * @mtx: mutex to protect all TX data (except non-NULL assignments
  *	to tid_tx[idx], which are protected by the sta spinlock)
+=======
+ * @tid_rx_stop_requested:  bitmap indicating which BA sessions per TID the
+ *	driver requested to close until the work for it runs
+ * @mtx: mutex to protect all TX data (except non-NULL assignments
+ *	to tid_tx[idx], which are protected by the sta spinlock)
+ *	tid_start_tx is also protected by sta->lock.
+>>>>>>> refs/remotes/origin/master
  */
 struct sta_ampdu_mlme {
 	struct mutex mtx;
 	/* rx */
+<<<<<<< HEAD
 	struct tid_ampdu_rx __rcu *tid_rx[STA_TID_NUM];
 	unsigned long tid_rx_timer_expired[BITS_TO_LONGS(STA_TID_NUM)];
+<<<<<<< HEAD
+=======
+	unsigned long tid_rx_stop_requested[BITS_TO_LONGS(STA_TID_NUM)];
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* tx */
 	struct work_struct work;
 	struct tid_ampdu_tx __rcu *tid_tx[STA_TID_NUM];
 	struct tid_ampdu_tx *tid_start_tx[STA_TID_NUM];
+<<<<<<< HEAD
+=======
+	unsigned long last_addba_req_time[STA_TID_NUM];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 addba_req_num[STA_TID_NUM];
+=======
+	struct tid_ampdu_rx __rcu *tid_rx[IEEE80211_NUM_TIDS];
+	unsigned long tid_rx_timer_expired[BITS_TO_LONGS(IEEE80211_NUM_TIDS)];
+	unsigned long tid_rx_stop_requested[BITS_TO_LONGS(IEEE80211_NUM_TIDS)];
+	/* tx */
+	struct work_struct work;
+	struct tid_ampdu_tx __rcu *tid_tx[IEEE80211_NUM_TIDS];
+	struct tid_ampdu_tx *tid_start_tx[IEEE80211_NUM_TIDS];
+	unsigned long last_addba_req_time[IEEE80211_NUM_TIDS];
+	u8 addba_req_num[IEEE80211_NUM_TIDS];
+>>>>>>> refs/remotes/origin/master
 	u8 dialog_token_allocator;
 };
 
@@ -193,8 +384,10 @@ struct sta_ampdu_mlme {
  *	"the" transmit rate
  * @last_rx_rate_idx: rx status rate index of the last data packet
  * @last_rx_rate_flag: rx status flag of the last data packet
+<<<<<<< HEAD
  * @lock: used for locking all fields that require locking, see comments
  *	in the header file.
+<<<<<<< HEAD
  * @flaglock: spinlock for flags accesses
  * @drv_unblock_wk: used for driver PS unblocking
  * @listen_interval: listen interval of this station, when we're acting as AP
@@ -204,6 +397,26 @@ struct sta_ampdu_mlme {
  * @tx_filtered: buffer of frames we already tried to transmit
  *	but were filtered by hardware due to STA having entered
  *	power saving state
+=======
+=======
+ * @last_rx_rate_vht_nss: rx status nss of last data packet
+ * @lock: used for locking all fields that require locking, see comments
+ *	in the header file.
+>>>>>>> refs/remotes/origin/master
+ * @drv_unblock_wk: used for driver PS unblocking
+ * @listen_interval: listen interval of this station, when we're acting as AP
+ * @_flags: STA flags, see &enum ieee80211_sta_info_flags, do not use directly
+ * @ps_tx_buf: buffers (per AC) of frames to transmit to this station
+ *	when it leaves power saving state or polls
+ * @tx_filtered: buffers (per AC) of frames we already tried to
+ *	transmit but were filtered by hardware due to STA having
+ *	entered power saving state, these are also delivered to
+ *	the station when it leaves powersave or polls for frames
+ * @driver_buffered_tids: bitmap of TIDs the driver has data buffered on
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @rx_packets: Number of MSDUs received from this STA
  * @rx_bytes: Number of bytes received from this STA
  * @wep_weak_iv_count: number of weak WEP IVs received from this station
@@ -214,6 +427,10 @@ struct sta_ampdu_mlme {
  * @rx_dropped: number of dropped MPDUs from this STA
  * @last_signal: signal of last received frame from this STA
  * @avg_signal: moving average of signal of received frames from this STA
+<<<<<<< HEAD
+=======
+ * @last_ack_signal: signal of last received Ack frame from this STA
+>>>>>>> refs/remotes/origin/master
  * @last_seq_ctrl: last received seq/frag number from this STA (per RX queue)
  * @tx_filtered_count: number of frames the hardware filtered for this STA
  * @tx_retry_failed: number of frames that failed retry
@@ -233,16 +450,50 @@ struct sta_ampdu_mlme {
  * @plink_state: peer link state
  * @plink_timeout: timeout of peer link
  * @plink_timer: peer link watch timer
+<<<<<<< HEAD
  * @plink_timer_was_running: used by suspend/resume to restore timers
  * @debugfs: debug filesystem info
+<<<<<<< HEAD
  * @sta: station information we share with the driver
  * @dead: set to true when sta is unlinked
  * @uploaded: set to true when sta is uploaded to the driver
  * @lost_packets: number of consecutive lost packets
+=======
+=======
+ * @t_offset: timing offset relative to this host
+ * @t_offset_setpoint: reference timing offset of this sta to be used when
+ * 	calculating clockdrift
+ * @local_pm: local link-specific power save mode
+ * @peer_pm: peer-specific power save mode towards local STA
+ * @nonpeer_pm: STA power save mode towards non-peer neighbors
+ * @debugfs: debug filesystem info
+>>>>>>> refs/remotes/origin/master
+ * @dead: set to true when sta is unlinked
+ * @uploaded: set to true when sta is uploaded to the driver
+ * @lost_packets: number of consecutive lost packets
+ * @sta: station information we share with the driver
+ * @sta_state: duplicates information about station state (for debug)
+ * @beacon_loss_count: number of times beacon loss has triggered
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @rcu_head: RCU head used for freeing this station struct
+ * @cur_max_bandwidth: maximum bandwidth to use for TX to the station,
+ *	taken from HT/VHT capabilities or VHT operating mode notification
+ * @chains: chains ever used for RX from this station
+ * @chain_signal_last: last signal (per chain)
+ * @chain_signal_avg: signal average (per chain)
+ * @known_smps_mode: the smps_mode the client thinks we are in. Relevant for
+ *	AP only.
+>>>>>>> refs/remotes/origin/master
  */
 struct sta_info {
 	/* General information, mostly static */
 	struct list_head list;
+<<<<<<< HEAD
+=======
+	struct rcu_head rcu_head;
+>>>>>>> refs/remotes/origin/master
 	struct sta_info __rcu *hnext;
 	struct ieee80211_local *local;
 	struct ieee80211_sub_if_data *sdata;
@@ -251,7 +502,13 @@ struct sta_info {
 	struct rate_control_ref *rate_ctrl;
 	void *rate_ctrl_priv;
 	spinlock_t lock;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t flaglock;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct work_struct drv_unblock_wk;
 
@@ -261,21 +518,50 @@ struct sta_info {
 
 	bool uploaded;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * frequently updated, locked with own spinlock (flaglock),
 	 * use the accessors defined below
 	 */
 	u32 flags;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	enum ieee80211_sta_state sta_state;
+
+	/* use the accessors defined below */
+	unsigned long _flags;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * STA powersave frame queues, no more than the internal
 	 * locking required.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff_head ps_tx_buf;
 	struct sk_buff_head tx_filtered;
+=======
+	struct sk_buff_head ps_tx_buf[IEEE80211_NUM_ACS];
+	struct sk_buff_head tx_filtered[IEEE80211_NUM_ACS];
+	unsigned long driver_buffered_tids;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Updated from RX path only, no locking requirements */
 	unsigned long rx_packets, rx_bytes;
+=======
+	struct sk_buff_head ps_tx_buf[IEEE80211_NUM_ACS];
+	struct sk_buff_head tx_filtered[IEEE80211_NUM_ACS];
+	unsigned long driver_buffered_tids;
+
+	/* Updated from RX path only, no locking requirements */
+	unsigned long rx_packets;
+	u64 rx_bytes;
+>>>>>>> refs/remotes/origin/master
 	unsigned long wep_weak_iv_count;
 	unsigned long last_rx;
 	long last_connected;
@@ -284,7 +570,23 @@ struct sta_info {
 	unsigned long rx_dropped;
 	int last_signal;
 	struct ewma avg_signal;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__le16 last_seq_ctrl[NUM_RX_DATA_QUEUES];
+=======
+	/* Plus 1 for non-QoS frames */
+	__le16 last_seq_ctrl[NUM_RX_DATA_QUEUES + 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int last_ack_signal;
+
+	u8 chains;
+	s8 chain_signal_last[IEEE80211_MAX_CHAINS];
+	struct ewma chain_signal_avg[IEEE80211_MAX_CHAINS];
+
+	/* Plus 1 for non-QoS frames */
+	__le16 last_seq_ctrl[IEEE80211_NUM_TIDS + 1];
+>>>>>>> refs/remotes/origin/master
 
 	/* Updated from TX status path only, no locking requirements */
 	unsigned long tx_filtered_count;
@@ -293,19 +595,33 @@ struct sta_info {
 	unsigned int fail_avg;
 
 	/* Updated from TX path only, no locking requirements */
+<<<<<<< HEAD
 	unsigned long tx_packets;
 	unsigned long tx_bytes;
 	unsigned long tx_fragments;
 	struct ieee80211_tx_rate last_tx_rate;
 	int last_rx_rate_idx;
 	int last_rx_rate_flag;
+=======
+	u32 tx_fragments;
+	u64 tx_packets[IEEE80211_NUM_ACS];
+	u64 tx_bytes[IEEE80211_NUM_ACS];
+	struct ieee80211_tx_rate last_tx_rate;
+	int last_rx_rate_idx;
+	u32 last_rx_rate_flag;
+	u8 last_rx_rate_vht_nss;
+>>>>>>> refs/remotes/origin/master
 	u16 tid_seq[IEEE80211_QOS_CTL_TID_MASK + 1];
 
 	/*
 	 * Aggregation information, locked with lock.
 	 */
 	struct sta_ampdu_mlme ampdu_mlme;
+<<<<<<< HEAD
 	u8 timer_to_tid[STA_TID_NUM];
+=======
+	u8 timer_to_tid[IEEE80211_NUM_TIDS];
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_MAC80211_MESH
 	/*
@@ -317,10 +633,22 @@ struct sta_info {
 	__le16 reason;
 	u8 plink_retries;
 	bool ignore_plink_timer;
+<<<<<<< HEAD
 	bool plink_timer_was_running;
 	enum nl80211_plink_state plink_state;
 	u32 plink_timeout;
 	struct timer_list plink_timer;
+=======
+	enum nl80211_plink_state plink_state;
+	u32 plink_timeout;
+	struct timer_list plink_timer;
+	s64 t_offset;
+	s64 t_offset_setpoint;
+	/* mesh power save */
+	enum nl80211_mesh_power_mode local_pm;
+	enum nl80211_mesh_power_mode peer_pm;
+	enum nl80211_mesh_power_mode nonpeer_pm;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_MAC80211_DEBUGFS
@@ -330,7 +658,20 @@ struct sta_info {
 	} debugfs;
 #endif
 
+<<<<<<< HEAD
 	unsigned int lost_packets;
+<<<<<<< HEAD
+=======
+	unsigned int beacon_loss_count;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum ieee80211_sta_rx_bandwidth cur_max_bandwidth;
+
+	unsigned int lost_packets;
+	unsigned int beacon_loss_count;
+
+	enum ieee80211_smps_mode known_smps_mode;
+>>>>>>> refs/remotes/origin/master
 
 	/* keep last! */
 	struct ieee80211_sta sta;
@@ -344,6 +685,8 @@ static inline enum nl80211_plink_state sta_plink_state(struct sta_info *sta)
 	return NL80211_PLINK_LISTEN;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void set_sta_flags(struct sta_info *sta, const u32 flags)
 {
 	unsigned long irqfl;
@@ -400,6 +743,70 @@ static inline u32 get_sta_flags(struct sta_info *sta)
 	return ret;
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void set_sta_flag(struct sta_info *sta,
+				enum ieee80211_sta_info_flags flag)
+{
+	WARN_ON(flag == WLAN_STA_AUTH ||
+		flag == WLAN_STA_ASSOC ||
+		flag == WLAN_STA_AUTHORIZED);
+	set_bit(flag, &sta->_flags);
+}
+
+static inline void clear_sta_flag(struct sta_info *sta,
+				  enum ieee80211_sta_info_flags flag)
+{
+	WARN_ON(flag == WLAN_STA_AUTH ||
+		flag == WLAN_STA_ASSOC ||
+		flag == WLAN_STA_AUTHORIZED);
+	clear_bit(flag, &sta->_flags);
+}
+
+static inline int test_sta_flag(struct sta_info *sta,
+				enum ieee80211_sta_info_flags flag)
+{
+	return test_bit(flag, &sta->_flags);
+}
+
+static inline int test_and_clear_sta_flag(struct sta_info *sta,
+					  enum ieee80211_sta_info_flags flag)
+{
+	WARN_ON(flag == WLAN_STA_AUTH ||
+		flag == WLAN_STA_ASSOC ||
+		flag == WLAN_STA_AUTHORIZED);
+	return test_and_clear_bit(flag, &sta->_flags);
+}
+
+static inline int test_and_set_sta_flag(struct sta_info *sta,
+					enum ieee80211_sta_info_flags flag)
+{
+	WARN_ON(flag == WLAN_STA_AUTH ||
+		flag == WLAN_STA_ASSOC ||
+		flag == WLAN_STA_AUTHORIZED);
+	return test_and_set_bit(flag, &sta->_flags);
+}
+
+int sta_info_move_state(struct sta_info *sta,
+			enum ieee80211_sta_state new_state);
+
+static inline void sta_info_pre_move_state(struct sta_info *sta,
+					   enum ieee80211_sta_state new_state)
+{
+	int ret;
+
+	WARN_ON_ONCE(test_sta_flag(sta, WLAN_STA_INSERTED));
+
+	ret = sta_info_move_state(sta, new_state);
+	WARN_ON_ONCE(ret);
+}
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void ieee80211_assign_tid_tx(struct sta_info *sta, int tid,
 			     struct tid_ampdu_tx *tid_tx);
 
@@ -415,8 +822,18 @@ rcu_dereference_protected_tid_tx(struct sta_info *sta, int tid)
 #define STA_HASH(sta) (sta[5])
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Maximum number of frames to buffer per power saving station */
 #define STA_MAX_TX_BUFFER 128
+=======
+/* Maximum number of frames to buffer per power saving station per AC */
+#define STA_MAX_TX_BUFFER	64
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Maximum number of frames to buffer per power saving station per AC */
+#define STA_MAX_TX_BUFFER	64
+>>>>>>> refs/remotes/origin/master
 
 /* Minimum buffered frame expiry time. If STA uses listen interval that is
  * smaller than this value, the minimum value here is used instead. */
@@ -443,7 +860,15 @@ void for_each_sta_info_type_check(struct ieee80211_local *local,
 {
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define for_each_sta_info(local, _addr, _sta, nxt) 			\
+=======
+#define for_each_sta_info(local, _addr, _sta, nxt)			\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define for_each_sta_info(local, _addr, _sta, nxt)			\
+>>>>>>> refs/remotes/origin/master
 	for (	/* initialise loop */					\
 		_sta = rcu_dereference(local->sta_hash[STA_HASH(_addr)]),\
 		nxt = _sta ? rcu_dereference(_sta->hnext) : NULL;	\
@@ -456,7 +881,15 @@ void for_each_sta_info_type_check(struct ieee80211_local *local,
 		nxt = _sta ? rcu_dereference(_sta->hnext) : NULL	\
 	     )								\
 	/* compare address and run code only if it matches */		\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (memcmp(_sta->sta.addr, (_addr), ETH_ALEN) == 0)
+=======
+	if (compare_ether_addr(_sta->sta.addr, (_addr)) == 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ether_addr_equal(_sta->sta.addr, (_addr)))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Get STA info by index, BROKEN!
@@ -468,7 +901,20 @@ struct sta_info *sta_info_get_by_idx(struct ieee80211_sub_if_data *sdata,
  * until sta_info_insert().
  */
 struct sta_info *sta_info_alloc(struct ieee80211_sub_if_data *sdata,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				u8 *addr, gfp_t gfp);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				const u8 *addr, gfp_t gfp);
+
+void sta_info_free(struct ieee80211_local *local, struct sta_info *sta);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Insert STA info into hash table/list, returns zero or a
  * -EEXIST if (if the same MAC address is already present).
@@ -479,24 +925,102 @@ struct sta_info *sta_info_alloc(struct ieee80211_sub_if_data *sdata,
  */
 int sta_info_insert(struct sta_info *sta);
 int sta_info_insert_rcu(struct sta_info *sta) __acquires(RCU);
+<<<<<<< HEAD
+<<<<<<< HEAD
 int sta_info_insert_atomic(struct sta_info *sta);
 
+=======
+
+int __must_check __sta_info_destroy(struct sta_info *sta);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+int __must_check __sta_info_destroy(struct sta_info *sta);
+>>>>>>> refs/remotes/origin/master
 int sta_info_destroy_addr(struct ieee80211_sub_if_data *sdata,
 			  const u8 *addr);
 int sta_info_destroy_addr_bss(struct ieee80211_sub_if_data *sdata,
 			      const u8 *addr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void sta_info_set_tim_bit(struct sta_info *sta);
 void sta_info_clear_tim_bit(struct sta_info *sta);
+=======
+void sta_info_recalc_tim(struct sta_info *sta);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void sta_info_init(struct ieee80211_local *local);
 void sta_info_stop(struct ieee80211_local *local);
 int sta_info_flush(struct ieee80211_local *local,
 		   struct ieee80211_sub_if_data *sdata);
+<<<<<<< HEAD
+=======
+void sta_set_rate_info_tx(struct sta_info *sta,
+			  const struct ieee80211_tx_rate *rate,
+			  struct rate_info *rinfo);
+>>>>>>> refs/remotes/origin/cm-10.0
 void ieee80211_sta_expire(struct ieee80211_sub_if_data *sdata,
 			  unsigned long exp_time);
 
 void ieee80211_sta_ps_deliver_wakeup(struct sta_info *sta);
 void ieee80211_sta_ps_deliver_poll_response(struct sta_info *sta);
+<<<<<<< HEAD
+=======
+void ieee80211_sta_ps_deliver_uapsd(struct sta_info *sta);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sta_info_recalc_tim(struct sta_info *sta);
+
+void sta_info_init(struct ieee80211_local *local);
+void sta_info_stop(struct ieee80211_local *local);
+int sta_info_flush_defer(struct ieee80211_sub_if_data *sdata);
+
+/**
+ * sta_info_flush_cleanup - flush the sta_info cleanup queue
+ * @sdata: the interface
+ *
+ * Flushes the sta_info cleanup queue for a given interface;
+ * this is necessary before the interface is removed or, for
+ * AP/mesh interfaces, before it is deconfigured.
+ *
+ * Note an rcu_barrier() must precede the function, after all
+ * stations have been flushed/removed to ensure the call_rcu()
+ * calls that add stations to the cleanup queue have completed.
+ */
+void sta_info_flush_cleanup(struct ieee80211_sub_if_data *sdata);
+
+/**
+ * sta_info_flush - flush matching STA entries from the STA table
+ *
+ * Returns the number of removed STA entries.
+ *
+ * @sdata: sdata to remove all stations from
+ */
+static inline int sta_info_flush(struct ieee80211_sub_if_data *sdata)
+{
+	int ret = sta_info_flush_defer(sdata);
+
+	rcu_barrier();
+	sta_info_flush_cleanup(sdata);
+
+	return ret;
+}
+
+void sta_set_rate_info_tx(struct sta_info *sta,
+			  const struct ieee80211_tx_rate *rate,
+			  struct rate_info *rinfo);
+void sta_set_rate_info_rx(struct sta_info *sta,
+			  struct rate_info *rinfo);
+void ieee80211_sta_expire(struct ieee80211_sub_if_data *sdata,
+			  unsigned long exp_time);
+u8 sta_info_tx_streams(struct sta_info *sta);
+
+void ieee80211_sta_ps_deliver_wakeup(struct sta_info *sta);
+void ieee80211_sta_ps_deliver_poll_response(struct sta_info *sta);
+void ieee80211_sta_ps_deliver_uapsd(struct sta_info *sta);
+
+void ieee80211_cleanup_sdata_stas(struct ieee80211_sub_if_data *sdata);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* STA_INFO_H */

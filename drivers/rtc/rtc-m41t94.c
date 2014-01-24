@@ -110,7 +110,11 @@ static const struct rtc_class_ops m41t94_rtc_ops = {
 
 static struct spi_driver m41t94_driver;
 
+<<<<<<< HEAD
 static int __devinit m41t94_probe(struct spi_device *spi)
+=======
+static int m41t94_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtc;
 	int res;
@@ -124,6 +128,7 @@ static int __devinit m41t94_probe(struct spi_device *spi)
 		return res;
 	}
 
+<<<<<<< HEAD
 	rtc = rtc_device_register(m41t94_driver.driver.name,
 		&spi->dev, &m41t94_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc))
@@ -140,6 +145,14 @@ static int __devexit m41t94_remove(struct spi_device *spi)
 
 	if (rtc)
 		rtc_device_unregister(rtc);
+=======
+	rtc = devm_rtc_device_register(&spi->dev, m41t94_driver.driver.name,
+					&m41t94_rtc_ops, THIS_MODULE);
+	if (IS_ERR(rtc))
+		return PTR_ERR(rtc);
+
+	spi_set_drvdata(spi, rtc);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -147,13 +160,18 @@ static int __devexit m41t94_remove(struct spi_device *spi)
 static struct spi_driver m41t94_driver = {
 	.driver = {
 		.name	= "rtc-m41t94",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner	= THIS_MODULE,
 	},
 	.probe	= m41t94_probe,
 	.remove = __devexit_p(m41t94_remove),
 };
 
+<<<<<<< HEAD
 static __init int m41t94_init(void)
 {
 	return spi_register_driver(&m41t94_driver);
@@ -167,6 +185,17 @@ static __exit void m41t94_exit(void)
 }
 
 module_exit(m41t94_exit);
+=======
+module_spi_driver(m41t94_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.owner	= THIS_MODULE,
+	},
+	.probe	= m41t94_probe,
+};
+
+module_spi_driver(m41t94_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kim B. Heino <Kim.Heino@bluegiga.com>");
 MODULE_DESCRIPTION("Driver for ST M41T94 SPI RTC");

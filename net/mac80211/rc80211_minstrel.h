@@ -9,6 +9,32 @@
 #ifndef __RC_MINSTREL_H
 #define __RC_MINSTREL_H
 
+<<<<<<< HEAD
+=======
+#define EWMA_LEVEL	96	/* ewma weighting factor [/EWMA_DIV] */
+#define EWMA_DIV	128
+#define SAMPLE_COLUMNS	10	/* number of columns in sample table */
+
+
+/* scaled fraction values */
+#define MINSTREL_SCALE  16
+#define MINSTREL_FRAC(val, div) (((val) << MINSTREL_SCALE) / div)
+#define MINSTREL_TRUNC(val) ((val) >> MINSTREL_SCALE)
+
+/* number of highest throughput rates to consider*/
+#define MAX_THR_RATES 4
+
+/*
+ * Perform EWMA (Exponentially Weighted Moving Average) calculation
+  */
+static inline int
+minstrel_ewma(int old, int new, int weight)
+{
+	return (new * (EWMA_DIV - weight) + old * weight) / EWMA_DIV;
+}
+
+
+>>>>>>> refs/remotes/origin/master
 struct minstrel_rate {
 	int bitrate;
 	int rix;
@@ -26,6 +52,10 @@ struct minstrel_rate {
 	u32 attempts;
 	u32 last_attempts;
 	u32 last_success;
+<<<<<<< HEAD
+=======
+	u8 sample_skipped;
+>>>>>>> refs/remotes/origin/master
 
 	/* parts per thousand */
 	u32 cur_prob;
@@ -39,20 +69,34 @@ struct minstrel_rate {
 };
 
 struct minstrel_sta_info {
+<<<<<<< HEAD
+=======
+	struct ieee80211_sta *sta;
+
+>>>>>>> refs/remotes/origin/master
 	unsigned long stats_update;
 	unsigned int sp_ack_dur;
 	unsigned int rate_avg;
 
 	unsigned int lowest_rix;
 
+<<<<<<< HEAD
 	unsigned int max_tp_rate;
 	unsigned int max_tp_rate2;
 	unsigned int max_prob_rate;
+=======
+	u8 max_tp_rate[MAX_THR_RATES];
+	u8 max_prob_rate;
+>>>>>>> refs/remotes/origin/master
 	unsigned int packet_count;
 	unsigned int sample_count;
 	int sample_deferred;
 
+<<<<<<< HEAD
 	unsigned int sample_idx;
+=======
+	unsigned int sample_row;
+>>>>>>> refs/remotes/origin/master
 	unsigned int sample_column;
 
 	int n_rates;
@@ -73,11 +117,37 @@ struct minstrel_priv {
 	unsigned int cw_min;
 	unsigned int cw_max;
 	unsigned int max_retry;
+<<<<<<< HEAD
 	unsigned int ewma_level;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int segment_size;
 	unsigned int update_interval;
 	unsigned int lookaround_rate;
 	unsigned int lookaround_rate_mrr;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+
+	u8 cck_rates[4];
+>>>>>>> refs/remotes/origin/master
+
+#ifdef CONFIG_MAC80211_DEBUGFS
+	/*
+	 * enable fixed rate processing per RC
+	 *   - write static index to debugfs:ieee80211/phyX/rc/fixed_rate_idx
+	 *   - write -1 to enable RC processing again
+	 *   - setting will be applied on next update
+	 */
+	u32 fixed_rate_idx;
+	struct dentry *dbg_fixed_rate;
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct minstrel_debugfs_info {

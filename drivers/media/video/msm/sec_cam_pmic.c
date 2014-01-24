@@ -195,5 +195,11 @@ void cam_ldo_power_off(void)
 
 }
 #endif	/* end CONFIG_SR300PC20 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

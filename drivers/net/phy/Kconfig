@@ -4,7 +4,10 @@
 
 menuconfig PHYLIB
 	tristate "PHY Device support and infrastructure"
+<<<<<<< HEAD
 	depends on !S390
+=======
+>>>>>>> refs/remotes/origin/master
 	depends on NETDEVICES
 	help
 	  Ethernet controllers are usually attached to PHY
@@ -15,6 +18,25 @@ if PHYLIB
 
 comment "MII PHY device drivers"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+config AT803X_PHY
+	tristate "Drivers for Atheros AT803X PHYs"
+	---help---
+	  Currently supports the AT8030 and AT8035 model
+
+>>>>>>> refs/remotes/origin/master
+config AMD_PHY
+	tristate "Drivers for the AMD PHYs"
+	---help---
+	  Currently supports the am79c874
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config MARVELL_PHY
 	tristate "Drivers for Marvell PHYs"
 	---help---
@@ -62,6 +84,14 @@ config BCM63XX_PHY
 	---help---
 	  Currently supports the 6348 and 6358 PHYs.
 
+<<<<<<< HEAD
+=======
+config BCM87XX_PHY
+	tristate "Driver for Broadcom BCM8706 and BCM8727 PHYs"
+	help
+	  Currently supports the BCM8706 and BCM8727 10G Ethernet PHYs.
+
+>>>>>>> refs/remotes/origin/master
 config ICPLUS_PHY
 	tristate "Drivers for ICPlus PHYs"
 	---help---
@@ -112,7 +142,11 @@ config MDIO_BITBANG
 
 config MDIO_GPIO
 	tristate "Support for GPIO lib-based bitbanged MDIO buses"
+<<<<<<< HEAD
 	depends on MDIO_BITBANG && GENERIC_GPIO
+=======
+	depends on MDIO_BITBANG && GPIOLIB
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Supports GPIO lib-based MDIO busses.
 
@@ -121,7 +155,11 @@ config MDIO_GPIO
 
 config MDIO_OCTEON
 	tristate "Support for MDIO buses on Octeon SOCs"
+<<<<<<< HEAD
 	depends on  CPU_CAVIUM_OCTEON
+=======
+	depends on CAVIUM_OCTEON_SOC
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 
@@ -130,4 +168,67 @@ config MDIO_OCTEON
 
 	  If in doubt, say Y.
 
+<<<<<<< HEAD
 endif # PHYLIB
+<<<<<<< HEAD
+=======
+=======
+config MDIO_SUN4I
+	tristate "Allwinner sun4i MDIO interface support"
+	depends on ARCH_SUNXI
+	select REGULATOR
+	select REGULATOR_FIXED_VOLTAGE
+	help
+	  This driver supports the MDIO interface found in the network
+	  interface units of the Allwinner SoC that have an EMAC (A10,
+	  A12, A10s, etc.)
+
+config MDIO_MOXART
+        tristate "MOXA ART MDIO interface support"
+        depends on ARCH_MOXART
+        help
+          This driver supports the MDIO interface found in the network
+          interface units of the MOXA ART SoC
+
+config MDIO_BUS_MUX
+	tristate
+	depends on OF_MDIO
+	help
+	  This module provides a driver framework for MDIO bus
+	  multiplexers which connect one of several child MDIO busses
+	  to a parent bus.  Switching between child busses is done by
+	  device specific drivers.
+
+config MDIO_BUS_MUX_GPIO
+	tristate "Support for GPIO controlled MDIO bus multiplexers"
+	depends on OF_GPIO && OF_MDIO
+	select MDIO_BUS_MUX
+	help
+	  This module provides a driver for MDIO bus multiplexers that
+	  are controlled via GPIO lines.  The multiplexer connects one of
+	  several child MDIO busses to a parent bus.  Child bus
+	  selection is under the control of GPIO lines.
+
+config MDIO_BUS_MUX_MMIOREG
+	tristate "Support for MMIO device-controlled MDIO bus multiplexers"
+	depends on OF_MDIO
+	select MDIO_BUS_MUX
+	help
+	  This module provides a driver for MDIO bus multiplexers that
+	  are controlled via a simple memory-mapped device, like an FPGA.
+	  The multiplexer connects one of several child MDIO busses to a
+	  parent bus.  Child bus selection is under the control of one of
+	  the FPGA's registers.
+
+	  Currently, only 8-bit registers are supported.
+
+endif # PHYLIB
+>>>>>>> refs/remotes/origin/master
+
+config MICREL_KS8995MA
+	tristate "Micrel KS8995MA 5-ports 10/100 managed Ethernet switch"
+	depends on SPI
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

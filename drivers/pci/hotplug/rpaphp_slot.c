@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * RPA Virtual I/O device functions 
+=======
+ * RPA Virtual I/O device functions
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2004 Linda Xie <lxie@us.ibm.com>
  *
  * All rights reserved.
@@ -51,27 +55,43 @@ struct slot *alloc_slot_struct(struct device_node *dn,
                        int drc_index, char *drc_name, int power_domain)
 {
 	struct slot *slot;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	slot = kzalloc(sizeof(struct slot), GFP_KERNEL);
 	if (!slot)
 		goto error_nomem;
 	slot->hotplug_slot = kzalloc(sizeof(struct hotplug_slot), GFP_KERNEL);
 	if (!slot->hotplug_slot)
+<<<<<<< HEAD
 		goto error_slot;	
+=======
+		goto error_slot;
+>>>>>>> refs/remotes/origin/master
 	slot->hotplug_slot->info = kzalloc(sizeof(struct hotplug_slot_info),
 					   GFP_KERNEL);
 	if (!slot->hotplug_slot->info)
 		goto error_hpslot;
 	slot->name = kstrdup(drc_name, GFP_KERNEL);
 	if (!slot->name)
+<<<<<<< HEAD
 		goto error_info;	
+=======
+		goto error_info;
+>>>>>>> refs/remotes/origin/master
 	slot->dn = dn;
 	slot->index = drc_index;
 	slot->power_domain = power_domain;
 	slot->hotplug_slot->private = slot;
 	slot->hotplug_slot->ops = &rpaphp_hotplug_slot_ops;
 	slot->hotplug_slot->release = &rpaphp_release_slot;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return (slot);
 
 error_info:
@@ -91,7 +111,11 @@ static int is_registered(struct slot *slot)
 	list_for_each_entry(tmp_slot, &rpaphp_slot_head, rpaphp_slot_list) {
 		if (!strcmp(tmp_slot->name, slot->name))
 			return 1;
+<<<<<<< HEAD
 	}	
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -104,7 +128,11 @@ int rpaphp_deregister_slot(struct slot *slot)
 		__func__, slot->name);
 
 	list_del(&slot->rpaphp_slot_list);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	retval = pci_hp_deregister(php_slot);
 	if (retval)
 		err("Problem unregistering a slot %s\n", slot->name);
@@ -120,7 +148,11 @@ int rpaphp_register_slot(struct slot *slot)
 	int retval;
 	int slotno;
 
+<<<<<<< HEAD
 	dbg("%s registering slot:path[%s] index[%x], name[%s] pdomain[%x] type[%d]\n", 
+=======
+	dbg("%s registering slot:path[%s] index[%x], name[%s] pdomain[%x] type[%d]\n",
+>>>>>>> refs/remotes/origin/master
 		__func__, slot->dn->full_name, slot->index, slot->name,
 		slot->power_domain, slot->type);
 
@@ -128,7 +160,11 @@ int rpaphp_register_slot(struct slot *slot)
 	if (is_registered(slot)) {
 		err("rpaphp_register_slot: slot[%s] is already registered\n", slot->name);
 		return -EAGAIN;
+<<<<<<< HEAD
 	}	
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (slot->dn->child)
 		slotno = PCI_SLOT(PCI_DN(slot->dn->child)->devfn);
@@ -145,4 +181,7 @@ int rpaphp_register_slot(struct slot *slot)
 	info("Slot [%s] registered\n", slot->name);
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

@@ -1,6 +1,8 @@
 /*
  * ppp_defs.h - PPP definitions.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 1994 The Australian National University.
  * All rights reserved.
  *
@@ -39,6 +41,19 @@
  *     installation script can recognize it.
  */
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Copyright 1994-2000 Paul Mackerras.
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  version 2 as published by the Free Software Foundation.
+ */
+<<<<<<< HEAD
+#include <linux/types.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _PPP_DEFS_H_
 #define _PPP_DEFS_H_
 
@@ -181,4 +196,13 @@ struct ppp_idle {
     __kernel_time_t recv_idle;	/* time since last NP packet received */
 };
 
+=======
+#ifndef _PPP_DEFS_H_
+#define _PPP_DEFS_H_
+
+#include <linux/crc-ccitt.h>
+#include <uapi/linux/ppp_defs.h>
+
+#define PPP_FCS(fcs, c) crc_ccitt_byte(fcs, c)
+>>>>>>> refs/remotes/origin/master
 #endif /* _PPP_DEFS_H_ */

@@ -1,5 +1,8 @@
 
+<<<<<<< HEAD
 /*   vim:tw=110:ts=4: */
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef DHF_H
 #define DHF_H
 

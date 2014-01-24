@@ -10,6 +10,13 @@
  * published by the Free Software Foundation.
 */
 
+<<<<<<< HEAD
+=======
+/*
+ * NOTE: Code in this file is not used when booting with Device Tree support.
+ */
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/interrupt.h>
@@ -18,9 +25,20 @@
 #include <linux/init.h>
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/serial_core.h>
 #include <linux/platform_device.h>
+=======
+#include <linux/device.h>
+#include <linux/serial_core.h>
+#include <linux/platform_device.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
@@ -41,8 +59,18 @@
 #include <plat/adc-core.h>
 #include <plat/iic-core.h>
 #include <plat/onenand-core.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/s3c6400.h>
 #include <mach/s3c6410.h>
+=======
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 void __init s3c6410_map_io(void)
 {
@@ -62,30 +90,65 @@ void __init s3c6410_map_io(void)
 	s3c_cfcon_setname("s3c64xx-pata");
 }
 
+<<<<<<< HEAD
 void __init s3c6410_init_clocks(int xtal)
 {
 	printk(KERN_DEBUG "%s: initialising clocks\n", __func__);
 	s3c64xx_register_clocks(xtal, S3C6410_CLKDIV0_ARM_MASK);
+<<<<<<< HEAD
 	s3c6400_setup_clocks();
+=======
+	s3c64xx_setup_clocks();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __init s3c6410_init_irq(void)
 {
 	/* VIC0 is missing IRQ7, VIC1 is fully populated. */
 	s3c64xx_init_irq(~0 & ~(1 << 7), ~0);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct sysdev_class s3c6410_sysclass = {
 	.name	= "s3c6410-core",
 };
 
 static struct sys_device s3c6410_sysdev = {
 	.cls	= &s3c6410_sysclass,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct bus_type s3c6410_subsys = {
+	.name		= "s3c6410-core",
+	.dev_name	= "s3c6410-core",
+};
+
+static struct device s3c6410_dev = {
+	.bus	= &s3c6410_subsys,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init s3c6410_core_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return sysdev_class_register(&s3c6410_sysclass);
+=======
+	return subsys_system_register(&s3c6410_subsys, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Not applicable when using DT. */
+	if (of_have_populated_dt())
+		return 0;
+
+	return subsys_system_register(&s3c6410_subsys, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 core_initcall(s3c6410_core_init);
@@ -94,5 +157,13 @@ int __init s3c6410_init(void)
 {
 	printk("S3C6410: Initialising architecture\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return sysdev_register(&s3c6410_sysdev);
+=======
+	return device_register(&s3c6410_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return device_register(&s3c6410_dev);
+>>>>>>> refs/remotes/origin/master
 }

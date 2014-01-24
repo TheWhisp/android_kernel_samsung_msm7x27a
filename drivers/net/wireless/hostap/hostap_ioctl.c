@@ -5,6 +5,15 @@
 #include <linux/sched.h>
 #include <linux/ethtool.h>
 #include <linux/if_arp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/lib80211.h>
 
 #include "hostap_wlan.h"
@@ -3220,8 +3229,12 @@ static int prism2_ioctl_siwencodeext(struct net_device *dev,
 		return -EINVAL;
 
 	addr = ext->addr.sa_data;
+<<<<<<< HEAD
 	if (addr[0] == 0xff && addr[1] == 0xff && addr[2] == 0xff &&
 	    addr[3] == 0xff && addr[4] == 0xff && addr[5] == 0xff) {
+=======
+	if (is_broadcast_ether_addr(addr)) {
+>>>>>>> refs/remotes/origin/master
 		sta_ptr = NULL;
 		crypt = &local->crypt_info.crypt[i];
 	} else {
@@ -3393,8 +3406,12 @@ static int prism2_ioctl_giwencodeext(struct net_device *dev,
 		i--;
 
 	addr = ext->addr.sa_data;
+<<<<<<< HEAD
 	if (addr[0] == 0xff && addr[1] == 0xff && addr[2] == 0xff &&
 	    addr[3] == 0xff && addr[4] == 0xff && addr[5] == 0xff) {
+=======
+	if (is_broadcast_ether_addr(addr)) {
+>>>>>>> refs/remotes/origin/master
 		sta_ptr = NULL;
 		crypt = &local->crypt_info.crypt[i];
 	} else {
@@ -3457,9 +3474,13 @@ static int prism2_ioctl_set_encryption(local_info_t *local,
 	    param->u.crypt.key_len)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (param->sta_addr[0] == 0xff && param->sta_addr[1] == 0xff &&
 	    param->sta_addr[2] == 0xff && param->sta_addr[3] == 0xff &&
 	    param->sta_addr[4] == 0xff && param->sta_addr[5] == 0xff) {
+=======
+	if (is_broadcast_ether_addr(param->sta_addr)) {
+>>>>>>> refs/remotes/origin/master
 		if (param->u.crypt.idx >= WEP_KEYS)
 			return -EINVAL;
 		sta_ptr = NULL;
@@ -3592,9 +3613,13 @@ static int prism2_ioctl_get_encryption(local_info_t *local,
 	if (max_key_len < 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (param->sta_addr[0] == 0xff && param->sta_addr[1] == 0xff &&
 	    param->sta_addr[2] == 0xff && param->sta_addr[3] == 0xff &&
 	    param->sta_addr[4] == 0xff && param->sta_addr[5] == 0xff) {
+=======
+	if (is_broadcast_ether_addr(param->sta_addr)) {
+>>>>>>> refs/remotes/origin/master
 		sta_ptr = NULL;
 		if (param->u.crypt.idx >= WEP_KEYS)
 			param->u.crypt.idx = local->crypt_info.tx_keyidx;
@@ -3871,8 +3896,18 @@ static void prism2_get_drvinfo(struct net_device *dev,
 	iface = netdev_priv(dev);
 	local = iface->local;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	strncpy(info->driver, "hostap", sizeof(info->driver) - 1);
 	snprintf(info->fw_version, sizeof(info->fw_version) - 1,
+=======
+	strlcpy(info->driver, "hostap", sizeof(info->driver));
+	snprintf(info->fw_version, sizeof(info->fw_version),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	strlcpy(info->driver, "hostap", sizeof(info->driver));
+	snprintf(info->fw_version, sizeof(info->fw_version),
+>>>>>>> refs/remotes/origin/master
 		 "%d.%d.%d", (local->sta_fw_ver >> 16) & 0xff,
 		 (local->sta_fw_ver >> 8) & 0xff,
 		 local->sta_fw_ver & 0xff);

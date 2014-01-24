@@ -110,10 +110,31 @@ static void __init coyote_init(void)
 MACHINE_START(ADI_COYOTE, "ADI Engineering Coyote")
 	/* Maintainer: MontaVista Software, Inc. */
 	.map_io		= ixp4xx_map_io,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.init_irq	= ixp4xx_init_irq,
 	.timer		= &ixp4xx_timer,
 	.boot_params	= 0x0100,
 	.init_machine	= coyote_init,
+=======
+	.init_early	= ixp4xx_init_early,
+	.init_irq	= ixp4xx_init_irq,
+	.timer		= &ixp4xx_timer,
+=======
+	.init_early	= ixp4xx_init_early,
+	.init_irq	= ixp4xx_init_irq,
+	.init_time	= ixp4xx_timer_init,
+>>>>>>> refs/remotes/origin/master
+	.atag_offset	= 0x100,
+	.init_machine	= coyote_init,
+#if defined(CONFIG_PCI)
+	.dma_zone_size	= SZ_64M,
+#endif
+	.restart	= ixp4xx_restart,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -125,10 +146,28 @@ MACHINE_END
 MACHINE_START(IXDPG425, "Intel IXDPG425")
 	/* Maintainer: MontaVista Software, Inc. */
 	.map_io		= ixp4xx_map_io,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.init_irq	= ixp4xx_init_irq,
 	.timer		= &ixp4xx_timer,
 	.boot_params	= 0x0100,
 	.init_machine	= coyote_init,
+=======
+	.init_early	= ixp4xx_init_early,
+	.init_irq	= ixp4xx_init_irq,
+	.timer		= &ixp4xx_timer,
+	.atag_offset	= 0x100,
+	.init_machine	= coyote_init,
+	.restart	= ixp4xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_early	= ixp4xx_init_early,
+	.init_irq	= ixp4xx_init_irq,
+	.init_time	= ixp4xx_timer_init,
+	.atag_offset	= 0x100,
+	.init_machine	= coyote_init,
+	.restart	= ixp4xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 

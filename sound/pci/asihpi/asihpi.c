@@ -23,8 +23,22 @@
  */
 
 #include "hpi_internal.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "hpimsginit.h"
 #include "hpioctl.h"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include "hpi_version.h"
+#include "hpimsginit.h"
+#include "hpioctl.h"
+#include "hpicmn.h"
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/pci.h>
 #include <linux/init.h>
@@ -32,6 +46,14 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/control.h>
 #include <sound/pcm.h>
@@ -41,6 +63,8 @@
 #include <sound/tlv.h>
 #include <sound/hwdep.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("AudioScience inc. <support@audioscience.com>");
@@ -63,6 +87,17 @@ static void pcm_debug_name(struct snd_pcm_substream *substream,
 #define pcm_debug_name(s, n, l) do { } while (0)
 #define DEBUG_NAME(name, substream) do { } while (0)
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("AudioScience inc. <support@audioscience.com>");
+MODULE_DESCRIPTION("AudioScience ALSA ASI5000 ASI6000 ASI87xx ASI89xx "
+			HPI_VER_STRING);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if defined CONFIG_SND_DEBUG_VERBOSE
 /**
@@ -81,8 +116,18 @@ static void pcm_debug_name(struct snd_pcm_substream *substream,
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 static int enable_hpi_hwdep = 1;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+static bool enable_hpi_hwdep = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+static bool enable_hpi_hwdep = 1;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, S_IRUGO);
 MODULE_PARM_DESC(index, "ALSA index value for AudioScience soundcard.");
@@ -137,12 +182,20 @@ struct clk_cache {
 struct snd_card_asihpi {
 	struct snd_card *card;
 	struct pci_dev *pci;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 adapter_index;
 	u32 serial_number;
 	u16 type;
 	u16 version;
 	u16 num_outstreams;
 	u16 num_instreams;
+=======
+	struct hpi_adapter *hpi;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hpi_adapter *hpi;
+>>>>>>> refs/remotes/origin/master
 
 	u32 h_mixer;
 	struct clk_cache cc;
@@ -153,6 +206,16 @@ struct snd_card_asihpi {
 	u16 update_interval_frames;
 	u16 in_max_chans;
 	u16 out_max_chans;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u16 in_min_chans;
+	u16 out_min_chans;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 in_min_chans;
+	u16 out_min_chans;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Per stream data */
@@ -304,7 +367,17 @@ static u16 handle_error(u16 err, int line, char *filename)
 static void print_hwparams(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *p)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG_NAME(substream, name);
+=======
+	char name[16];
+	snd_pcm_debug_name(substream, name, sizeof(name));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char name[16];
+	snd_pcm_debug_name(substream, name, sizeof(name));
+>>>>>>> refs/remotes/origin/master
 	snd_printd("%s HWPARAMS\n", name);
 	snd_printd(" samplerate %d Hz\n", params_rate(p));
 	snd_printd(" channels %d\n", params_channels(p));
@@ -512,6 +585,14 @@ static int snd_card_asihpi_pcm_hw_params(struct snd_pcm_substream *substream,
 
 		snd_printdd("stream_host_buffer_attach status 0x%x\n",
 				dpcm->hpi_buffer_attached);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	}
 	bytes_per_sec = params_rate(params) * params_channels(params);
 	width = snd_pcm_format_width(params_format(params));
@@ -576,8 +657,20 @@ static int snd_card_asihpi_trigger(struct snd_pcm_substream *substream,
 	struct snd_card_asihpi *card = snd_pcm_substream_chip(substream);
 	struct snd_pcm_substream *s;
 	u16 e;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG_NAME(substream, name);
 
+=======
+	char name[16];
+
+	snd_pcm_debug_name(substream, name, sizeof(name));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char name[16];
+
+	snd_pcm_debug_name(substream, name, sizeof(name));
+>>>>>>> refs/remotes/origin/master
 	snd_printdd("%s trigger\n", name);
 
 	switch (cmd) {
@@ -741,7 +834,19 @@ static void snd_card_asihpi_timer_function(unsigned long data)
 	int loops = 0;
 	u16 state;
 	u32 buffer_size, bytes_avail, samples_played, on_card_bytes;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG_NAME(substream, name);
+=======
+	char name[16];
+
+	snd_pcm_debug_name(substream, name, sizeof(name));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char name[16];
+
+	snd_pcm_debug_name(substream, name, sizeof(name));
+>>>>>>> refs/remotes/origin/master
 
 	snd_printdd("%s snd_card_asihpi_timer_function\n", name);
 
@@ -771,8 +876,16 @@ static void snd_card_asihpi_timer_function(unsigned long data)
 		if (s->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 			pcm_buf_dma_ofs = ds->pcm_buf_host_rw_ofs - bytes_avail;
 			if (state == HPI_STATE_STOPPED) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if ((bytes_avail == 0) &&
 				    (on_card_bytes < ds->pcm_buf_host_rw_ofs)) {
+=======
+				if (bytes_avail == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (bytes_avail == 0) {
+>>>>>>> refs/remotes/origin/master
 					hpi_handle_error(hpi_stream_start(ds->h_stream));
 					snd_printdd("P%d start\n", s->number);
 					ds->drained_count = 0;
@@ -781,8 +894,20 @@ static void snd_card_asihpi_timer_function(unsigned long data)
 				snd_printd(KERN_WARNING "P%d drained\n",
 						s->number);
 				ds->drained_count++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (ds->drained_count > 2) {
+=======
+				if (ds->drained_count > 20) {
+>>>>>>> refs/remotes/origin/cm-10.0
 					snd_pcm_stop(s, SNDRV_PCM_STATE_XRUN);
+=======
+				if (ds->drained_count > 20) {
+					unsigned long flags;
+					snd_pcm_stream_lock_irqsave(s, flags);
+					snd_pcm_stop(s, SNDRV_PCM_STATE_XRUN);
+					snd_pcm_stream_unlock_irqrestore(s, flags);
+>>>>>>> refs/remotes/origin/master
 					continue;
 				}
 			} else {
@@ -902,8 +1027,18 @@ static void snd_card_asihpi_timer_function(unsigned long data)
 							pd, xfer2));
 				}
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ds->pcm_buf_host_rw_ofs = ds->pcm_buf_host_rw_ofs + xfercount;
 			ds->pcm_buf_elapsed_dma_ofs = pcm_buf_dma_ofs;
+=======
+			ds->pcm_buf_host_rw_ofs += xfercount;
+			ds->pcm_buf_elapsed_dma_ofs += xfercount;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ds->pcm_buf_host_rw_ofs += xfercount;
+			ds->pcm_buf_elapsed_dma_ofs += xfercount;
+>>>>>>> refs/remotes/origin/master
 			snd_pcm_period_elapsed(s);
 		}
 	}
@@ -916,7 +1051,19 @@ static void snd_card_asihpi_timer_function(unsigned long data)
 static int snd_card_asihpi_playback_ioctl(struct snd_pcm_substream *substream,
 					  unsigned int cmd, void *arg)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_printddd(KERN_INFO "P%d ioctl %d\n", substream->number, cmd);
+=======
+	char name[16];
+	snd_pcm_debug_name(substream, name, sizeof(name));
+	snd_printddd(KERN_INFO "%s ioctl %d\n", name, cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char name[16];
+	snd_pcm_debug_name(substream, name, sizeof(name));
+	snd_printddd(KERN_INFO "%s ioctl %d\n", name, cmd);
+>>>>>>> refs/remotes/origin/master
 	return snd_pcm_lib_ioctl(substream, cmd, arg);
 }
 
@@ -941,6 +1088,8 @@ snd_card_asihpi_playback_pointer(struct snd_pcm_substream *substream)
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct snd_card_asihpi_pcm *dpcm = runtime->private_data;
 	snd_pcm_uframes_t ptr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	ptr = bytes_to_frames(runtime, dpcm->pcm_buf_dma_ofs  % dpcm->buffer_bytes);
 	snd_printddd("P%d pointer = 0x%04lx\n", substream->number, (unsigned long)ptr);
@@ -950,12 +1099,37 @@ snd_card_asihpi_playback_pointer(struct snd_pcm_substream *substream)
 static void snd_card_asihpi_playback_format(struct snd_card_asihpi *asihpi,
 						u32 h_stream,
 						struct snd_pcm_hardware *pcmhw)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	char name[16];
+	snd_pcm_debug_name(substream, name, sizeof(name));
+
+	ptr = bytes_to_frames(runtime, dpcm->pcm_buf_dma_ofs  % dpcm->buffer_bytes);
+	snd_printddd("%s pointer = 0x%04lx\n", name, (unsigned long)ptr);
+	return ptr;
+}
+
+static u64 snd_card_asihpi_playback_formats(struct snd_card_asihpi *asihpi,
+						u32 h_stream)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct hpi_format hpi_format;
 	u16 format;
 	u16 err;
 	u32 h_control;
 	u32 sample_rate = 48000;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u64 formats = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 formats = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* on cards without SRC, must query at valid rate,
 	* maybe set by external sync
@@ -970,6 +1144,8 @@ static void snd_card_asihpi_playback_format(struct snd_card_asihpi *asihpi,
 
 	for (format = HPI_FORMAT_PCM8_UNSIGNED;
 	     format <= HPI_FORMAT_PCM24_SIGNED; format++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = hpi_format_create(&hpi_format,
 					2, format, sample_rate, 128000, 0);
 		if (!err)
@@ -992,19 +1168,56 @@ static struct snd_pcm_hardware snd_card_asihpi_playback = {
 	.fifo_size = 0,
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		err = hpi_format_create(&hpi_format, asihpi->out_max_chans,
+					format, sample_rate, 128000, 0);
+		if (!err)
+			err = hpi_outstream_query_format(h_stream, &hpi_format);
+		if (!err && (hpi_to_alsa_formats[format] != -1))
+<<<<<<< HEAD
+			formats |= (1ULL << hpi_to_alsa_formats[format]);
+=======
+			formats |= pcm_format_to_bits(hpi_to_alsa_formats[format]);
+>>>>>>> refs/remotes/origin/master
+	}
+	return formats;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int snd_card_asihpi_playback_open(struct snd_pcm_substream *substream)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct snd_card_asihpi_pcm *dpcm;
 	struct snd_card_asihpi *card = snd_pcm_substream_chip(substream);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct snd_pcm_hardware snd_card_asihpi_playback;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_pcm_hardware snd_card_asihpi_playback;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	dpcm = kzalloc(sizeof(*dpcm), GFP_KERNEL);
 	if (dpcm == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err =
 	    hpi_outstream_open(card->adapter_index,
+=======
+	err = hpi_outstream_open(card->hpi->adapter->index,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = hpi_outstream_open(card->hpi->adapter->index,
+>>>>>>> refs/remotes/origin/master
 			      substream->number, &dpcm->h_stream);
 	hpi_handle_error(err);
 	if (err)
@@ -1026,12 +1239,34 @@ static int snd_card_asihpi_playback_open(struct snd_pcm_substream *substream)
 	runtime->private_data = dpcm;
 	runtime->private_free = snd_card_asihpi_runtime_free;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_card_asihpi_playback.channels_max = card->out_max_chans;
 	/*?snd_card_asihpi_playback.period_bytes_min =
 	card->out_max_chans * 4096; */
 
 	snd_card_asihpi_playback_format(card, dpcm->h_stream,
 					&snd_card_asihpi_playback);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	memset(&snd_card_asihpi_playback, 0, sizeof(snd_card_asihpi_playback));
+	snd_card_asihpi_playback.buffer_bytes_max = BUFFER_BYTES_MAX;
+	snd_card_asihpi_playback.period_bytes_min = PERIOD_BYTES_MIN;
+	/*?snd_card_asihpi_playback.period_bytes_min =
+	card->out_max_chans * 4096; */
+	snd_card_asihpi_playback.period_bytes_max = BUFFER_BYTES_MAX / PERIODS_MIN;
+	snd_card_asihpi_playback.periods_min = PERIODS_MIN;
+	snd_card_asihpi_playback.periods_max = BUFFER_BYTES_MAX / PERIOD_BYTES_MIN;
+	/* snd_card_asihpi_playback.fifo_size = 0; */
+	snd_card_asihpi_playback.channels_max = card->out_max_chans;
+	snd_card_asihpi_playback.channels_min = card->out_min_chans;
+	snd_card_asihpi_playback.formats =
+			snd_card_asihpi_playback_formats(card, dpcm->h_stream);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	snd_card_asihpi_pcm_samplerates(card,  &snd_card_asihpi_playback);
 
@@ -1043,8 +1278,21 @@ static int snd_card_asihpi_playback_open(struct snd_pcm_substream *substream)
 					SNDRV_PCM_INFO_MMAP |
 					SNDRV_PCM_INFO_MMAP_VALID;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (card->support_grouping)
 		snd_card_asihpi_playback.info |= SNDRV_PCM_INFO_SYNC_START;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (card->support_grouping) {
+		snd_card_asihpi_playback.info |= SNDRV_PCM_INFO_SYNC_START;
+		snd_pcm_set_sync(substream);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* struct is copied, so can create initializer dynamically */
 	runtime->hw = snd_card_asihpi_playback;
@@ -1061,8 +1309,14 @@ static int snd_card_asihpi_playback_open(struct snd_pcm_substream *substream)
 	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
 		card->update_interval_frames * 2, UINT_MAX);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_pcm_set_sync(substream);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_printdd("playback open\n");
 
 	return 0;
@@ -1128,15 +1382,33 @@ static int snd_card_asihpi_capture_prepare(struct snd_pcm_substream *substream)
 
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void snd_card_asihpi_capture_format(struct snd_card_asihpi *asihpi,
 					u32 h_stream,
 					 struct snd_pcm_hardware *pcmhw)
+=======
+static u64 snd_card_asihpi_capture_formats(struct snd_card_asihpi *asihpi,
+					u32 h_stream)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u64 snd_card_asihpi_capture_formats(struct snd_card_asihpi *asihpi,
+					u32 h_stream)
+>>>>>>> refs/remotes/origin/master
 {
   struct hpi_format hpi_format;
 	u16 format;
 	u16 err;
 	u32 h_control;
 	u32 sample_rate = 48000;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u64 formats = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 formats = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* on cards without SRC, must query at valid rate,
 		maybe set by external sync */
@@ -1151,6 +1423,8 @@ static void snd_card_asihpi_capture_format(struct snd_card_asihpi *asihpi,
 	for (format = HPI_FORMAT_PCM8_UNSIGNED;
 		format <= HPI_FORMAT_PCM24_SIGNED; format++) {
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = hpi_format_create(&hpi_format, 2, format,
 				sample_rate, 128000, 0);
 		if (!err)
@@ -1174,11 +1448,41 @@ static struct snd_pcm_hardware snd_card_asihpi_capture = {
 	.fifo_size = 0,
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		err = hpi_format_create(&hpi_format, asihpi->in_max_chans,
+					format, sample_rate, 128000, 0);
+		if (!err)
+			err = hpi_instream_query_format(h_stream, &hpi_format);
+<<<<<<< HEAD
+		if (!err)
+			formats |= (1ULL << hpi_to_alsa_formats[format]);
+=======
+		if (!err && (hpi_to_alsa_formats[format] != -1))
+			formats |= pcm_format_to_bits(hpi_to_alsa_formats[format]);
+>>>>>>> refs/remotes/origin/master
+	}
+	return formats;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int snd_card_asihpi_capture_open(struct snd_pcm_substream *substream)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct snd_card_asihpi *card = snd_pcm_substream_chip(substream);
 	struct snd_card_asihpi_pcm *dpcm;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct snd_pcm_hardware snd_card_asihpi_capture;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_pcm_hardware snd_card_asihpi_capture;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	dpcm = kzalloc(sizeof(*dpcm), GFP_KERNEL);
@@ -1186,10 +1490,23 @@ static int snd_card_asihpi_capture_open(struct snd_pcm_substream *substream)
 		return -ENOMEM;
 
 	snd_printdd("capture open adapter %d stream %d\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		   card->adapter_index, substream->number);
 
 	err = hpi_handle_error(
 	    hpi_instream_open(card->adapter_index,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			card->hpi->adapter->index, substream->number);
+
+	err = hpi_handle_error(
+	    hpi_instream_open(card->hpi->adapter->index,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			     substream->number, &dpcm->h_stream));
 	if (err)
 		kfree(dpcm);
@@ -1198,7 +1515,13 @@ static int snd_card_asihpi_capture_open(struct snd_pcm_substream *substream)
 	if (err)
 		return -EIO;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	init_timer(&dpcm->timer);
 	dpcm->timer.data = (unsigned long) dpcm;
 	dpcm->timer.function = snd_card_asihpi_timer_function;
@@ -1206,9 +1529,29 @@ static int snd_card_asihpi_capture_open(struct snd_pcm_substream *substream)
 	runtime->private_data = dpcm;
 	runtime->private_free = snd_card_asihpi_runtime_free;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_card_asihpi_capture.channels_max = card->in_max_chans;
 	snd_card_asihpi_capture_format(card, dpcm->h_stream,
 				       &snd_card_asihpi_capture);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	memset(&snd_card_asihpi_capture, 0, sizeof(snd_card_asihpi_capture));
+	snd_card_asihpi_capture.buffer_bytes_max = BUFFER_BYTES_MAX;
+	snd_card_asihpi_capture.period_bytes_min = PERIOD_BYTES_MIN;
+	snd_card_asihpi_capture.period_bytes_max = BUFFER_BYTES_MAX / PERIODS_MIN;
+	snd_card_asihpi_capture.periods_min = PERIODS_MIN;
+	snd_card_asihpi_capture.periods_max = BUFFER_BYTES_MAX / PERIOD_BYTES_MIN;
+	/* snd_card_asihpi_capture.fifo_size = 0; */
+	snd_card_asihpi_capture.channels_max = card->in_max_chans;
+	snd_card_asihpi_capture.channels_min = card->in_min_chans;
+	snd_card_asihpi_capture.formats =
+		snd_card_asihpi_capture_formats(card, dpcm->h_stream);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_card_asihpi_pcm_samplerates(card,  &snd_card_asihpi_capture);
 	snd_card_asihpi_capture.info = SNDRV_PCM_INFO_INTERLEAVED |
 					SNDRV_PCM_INFO_MMAP |
@@ -1254,6 +1597,8 @@ static struct snd_pcm_ops snd_card_asihpi_capture_mmap_ops = {
 	.pointer = snd_card_asihpi_capture_pointer,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit snd_card_asihpi_pcm_new(struct snd_card_asihpi *asihpi,
 				      int device, int substreams)
 {
@@ -1263,6 +1608,28 @@ static int __devinit snd_card_asihpi_pcm_new(struct snd_card_asihpi *asihpi,
 	err = snd_pcm_new(asihpi->card, "Asihpi PCM", device,
 			 asihpi->num_outstreams, asihpi->num_instreams,
 			 &pcm);
+=======
+static int __devinit snd_card_asihpi_pcm_new(
+		struct snd_card_asihpi *asihpi, int device)
+=======
+static int snd_card_asihpi_pcm_new(struct snd_card_asihpi *asihpi, int device)
+>>>>>>> refs/remotes/origin/master
+{
+	struct snd_pcm *pcm;
+	int err;
+	u16 num_instreams, num_outstreams, x16;
+	u32 x32;
+
+	err = hpi_adapter_get_info(asihpi->hpi->adapter->index,
+			&num_outstreams, &num_instreams,
+			&x16, &x32, &x16);
+
+	err = snd_pcm_new(asihpi->card, "Asihpi PCM", device,
+			num_outstreams,	num_instreams, &pcm);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 	/* pointer to ops struct is stored, dont change ops afterwards! */
@@ -1293,7 +1660,11 @@ struct hpi_control {
 	u16 dst_node_type;
 	u16 dst_node_index;
 	u16 band;
+<<<<<<< HEAD
 	char name[44]; /* copied to snd_ctl_elem_id.name[44]; */
+=======
+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* copied to snd_ctl_elem_id.name[44]; */
+>>>>>>> refs/remotes/origin/master
 };
 
 static const char * const asihpi_tuner_band_names[] = {
@@ -1323,10 +1694,25 @@ static const char * const asihpi_src_names[] = {
 	"RF",
 	"Clock",
 	"Bitstream",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	"Microphone",
 	"Cobranet",
 	"Analog",
 	"Adapter",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	"Mic",
+	"Net",
+	"Analog",
+	"Adapter",
+	"RTP",
+	"Internal"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 compile_time_assert(
@@ -1341,8 +1727,20 @@ static const char * const asihpi_dst_names[] = {
 	"Digital",
 	"RF",
 	"Speaker",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	"Cobranet Out",
 	"Analog"
+=======
+	"Net",
+	"Analog",
+	"RTP",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"Net",
+	"Analog",
+	"RTP",
+>>>>>>> refs/remotes/origin/master
 };
 
 compile_time_assert(
@@ -1420,6 +1818,14 @@ static int snd_asihpi_volume_info(struct snd_kcontrol *kcontrol,
 				  struct snd_ctl_elem_info *uinfo)
 {
 	u32 h_control = kcontrol->private_value;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u32 count;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 count;
+>>>>>>> refs/remotes/origin/master
 	u16 err;
 	/* native gains are in millibels */
 	short min_gain_mB;
@@ -1434,8 +1840,23 @@ static int snd_asihpi_volume_info(struct snd_kcontrol *kcontrol,
 		step_gain_mB = VOL_STEP_mB;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
 	uinfo->count = 2;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	err = hpi_meter_query_channels(h_control, &count);
+	if (err)
+		count = HPI_MAX_CHANNELS;
+
+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+	uinfo->count = count;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	uinfo->value.integer.min = min_gain_mB / VOL_STEP_mB;
 	uinfo->value.integer.max = max_gain_mB / VOL_STEP_mB;
 	uinfo->value.integer.step = step_gain_mB / VOL_STEP_mB;
@@ -1476,11 +1897,59 @@ static int snd_asihpi_volume_put(struct snd_kcontrol *kcontrol,
 
 static const DECLARE_TLV_DB_SCALE(db_scale_100, -10000, VOL_STEP_mB, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define snd_asihpi_volume_mute_info	snd_ctl_boolean_mono_info
+
+static int snd_asihpi_volume_mute_get(struct snd_kcontrol *kcontrol,
+				 struct snd_ctl_elem_value *ucontrol)
+{
+	u32 h_control = kcontrol->private_value;
+	u32 mute;
+
+	hpi_handle_error(hpi_volume_get_mute(h_control, &mute));
+	ucontrol->value.integer.value[0] = mute ? 0 : 1;
+
+	return 0;
+}
+
+static int snd_asihpi_volume_mute_put(struct snd_kcontrol *kcontrol,
+				 struct snd_ctl_elem_value *ucontrol)
+{
+	u32 h_control = kcontrol->private_value;
+	int change = 1;
+	/* HPI currently only supports all or none muting of multichannel volume
+	ALSA Switch element has opposite sense to HPI mute: on==unmuted, off=muted
+	*/
+	int mute =  ucontrol->value.integer.value[0] ? 0 : HPI_BITMASK_ALL_CHANNELS;
+	hpi_handle_error(hpi_volume_set_mute(h_control, mute));
+	return change;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit snd_asihpi_volume_add(struct snd_card_asihpi *asihpi,
 					struct hpi_control *hpi_ctl)
 {
 	struct snd_card *card = asihpi->card;
 	struct snd_kcontrol_new snd_control;
+<<<<<<< HEAD
+=======
+	int err;
+	u32 mute;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int snd_asihpi_volume_add(struct snd_card_asihpi *asihpi,
+				 struct hpi_control *hpi_ctl)
+{
+	struct snd_card *card = asihpi->card;
+	struct snd_kcontrol_new snd_control;
+	int err;
+	u32 mute;
+>>>>>>> refs/remotes/origin/master
 
 	asihpi_ctl_init(&snd_control, hpi_ctl, "Volume");
 	snd_control.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
@@ -1490,7 +1959,29 @@ static int __devinit snd_asihpi_volume_add(struct snd_card_asihpi *asihpi,
 	snd_control.put = snd_asihpi_volume_put;
 	snd_control.tlv.p = db_scale_100;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return ctl_add(card, &snd_control, asihpi);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	err = ctl_add(card, &snd_control, asihpi);
+	if (err)
+		return err;
+
+	if (hpi_volume_get_mute(hpi_ctl->h_control, &mute) == 0) {
+		asihpi_ctl_init(&snd_control, hpi_ctl, "Switch");
+		snd_control.access = SNDRV_CTL_ELEM_ACCESS_READWRITE;
+		snd_control.info = snd_asihpi_volume_mute_info;
+		snd_control.get = snd_asihpi_volume_mute_get;
+		snd_control.put = snd_asihpi_volume_mute_put;
+		err = ctl_add(card, &snd_control, asihpi);
+	}
+	return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------
@@ -1558,8 +2049,13 @@ static int snd_asihpi_level_put(struct snd_kcontrol *kcontrol,
 
 static const DECLARE_TLV_DB_SCALE(db_scale_level, -1000, 100, 0);
 
+<<<<<<< HEAD
 static int __devinit snd_asihpi_level_add(struct snd_card_asihpi *asihpi,
 					struct hpi_control *hpi_ctl)
+=======
+static int snd_asihpi_level_add(struct snd_card_asihpi *asihpi,
+				struct hpi_control *hpi_ctl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = asihpi->card;
 	struct snd_kcontrol_new snd_control;
@@ -1680,8 +2176,13 @@ static int snd_asihpi_aesebu_rxstatus_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_asihpi_aesebu_rx_add(struct snd_card_asihpi *asihpi,
 					struct hpi_control *hpi_ctl)
+=======
+static int snd_asihpi_aesebu_rx_add(struct snd_card_asihpi *asihpi,
+				    struct hpi_control *hpi_ctl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = asihpi->card;
 	struct snd_kcontrol_new snd_control;
@@ -1718,8 +2219,13 @@ static int snd_asihpi_aesebu_tx_format_put(struct snd_kcontrol *kcontrol,
 }
 
 
+<<<<<<< HEAD
 static int __devinit snd_asihpi_aesebu_tx_add(struct snd_card_asihpi *asihpi,
 					struct hpi_control *hpi_ctl)
+=======
+static int snd_asihpi_aesebu_tx_add(struct snd_card_asihpi *asihpi,
+				    struct hpi_control *hpi_ctl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = asihpi->card;
 	struct snd_kcontrol_new snd_control;
@@ -1876,6 +2382,10 @@ static int snd_asihpi_tuner_band_put(struct snd_kcontrol *kcontrol,
 	struct snd_card_asihpi *asihpi = snd_kcontrol_chip(kcontrol);
 	*/
 	u32 h_control = kcontrol->private_value;
+<<<<<<< HEAD
+=======
+	unsigned int idx;
+>>>>>>> refs/remotes/origin/master
 	u16 band;
 	u16 tuner_bands[HPI_TUNER_BAND_LAST];
 	u32 num_bands = 0;
@@ -1883,7 +2393,14 @@ static int snd_asihpi_tuner_band_put(struct snd_kcontrol *kcontrol,
 	num_bands = asihpi_tuner_band_query(kcontrol, tuner_bands,
 			HPI_TUNER_BAND_LAST);
 
+<<<<<<< HEAD
 	band = tuner_bands[ucontrol->value.enumerated.item[0]];
+=======
+	idx = ucontrol->value.enumerated.item[0];
+	if (idx >= ARRAY_SIZE(tuner_bands))
+		idx = ARRAY_SIZE(tuner_bands) - 1;
+	band = tuner_bands[idx];
+>>>>>>> refs/remotes/origin/master
 	hpi_handle_error(hpi_tuner_set_band(h_control, band));
 
 	return 1;
@@ -1961,8 +2478,13 @@ static int snd_asihpi_tuner_freq_put(struct snd_kcontrol *kcontrol,
 }
 
 /* Tuner control group initializer  */
+<<<<<<< HEAD
 static int __devinit snd_asihpi_tuner_add(struct snd_card_asihpi *asihpi,
 					struct hpi_control *hpi_ctl)
+=======
+static int snd_asihpi_tuner_add(struct snd_card_asihpi *asihpi,
+				struct hpi_control *hpi_ctl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = asihpi->card;
 	struct snd_kcontrol_new snd_control;
@@ -2002,8 +2524,26 @@ static int __devinit snd_asihpi_tuner_add(struct snd_card_asihpi *asihpi,
 static int snd_asihpi_meter_info(struct snd_kcontrol *kcontrol,
 				 struct snd_ctl_elem_info *uinfo)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
 	uinfo->count = HPI_MAX_CHANNELS;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u32 h_control = kcontrol->private_value;
+	u32 count;
+	u16 err;
+	err = hpi_meter_query_channels(h_control, &count);
+	if (err)
+		count = HPI_MAX_CHANNELS;
+
+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+	uinfo->count = count;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	uinfo->value.integer.min = 0;
 	uinfo->value.integer.max = 0x7FFFFFFF;
 	return 0;
@@ -2058,8 +2598,13 @@ static int snd_asihpi_meter_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_asihpi_meter_add(struct snd_card_asihpi *asihpi,
 					struct hpi_control *hpi_ctl, int subidx)
+=======
+static int snd_asihpi_meter_add(struct snd_card_asihpi *asihpi,
+				struct hpi_control *hpi_ctl, int subidx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = asihpi->card;
 	struct snd_kcontrol_new snd_control;
@@ -2172,8 +2717,13 @@ static int snd_asihpi_mux_put(struct snd_kcontrol *kcontrol,
 }
 
 
+<<<<<<< HEAD
 static int  __devinit snd_asihpi_mux_add(struct snd_card_asihpi *asihpi,
 					struct hpi_control *hpi_ctl)
+=======
+static int  snd_asihpi_mux_add(struct snd_card_asihpi *asihpi,
+			       struct hpi_control *hpi_ctl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = asihpi->card;
 	struct snd_kcontrol_new snd_control;
@@ -2217,6 +2767,18 @@ static int snd_asihpi_cmode_info(struct snd_kcontrol *kcontrol,
 			valid_modes++;
 			}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!valid_modes)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!valid_modes)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
 	uinfo->count = 1;
 	uinfo->value.enumerated.items = valid_modes;
@@ -2258,8 +2820,13 @@ static int snd_asihpi_cmode_put(struct snd_kcontrol *kcontrol,
 }
 
 
+<<<<<<< HEAD
 static int __devinit snd_asihpi_cmode_add(struct snd_card_asihpi *asihpi,
 					struct hpi_control *hpi_ctl)
+=======
+static int snd_asihpi_cmode_add(struct snd_card_asihpi *asihpi,
+				struct hpi_control *hpi_ctl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = asihpi->card;
 	struct snd_kcontrol_new snd_control;
@@ -2336,7 +2903,12 @@ static int snd_asihpi_clksrc_put(struct snd_kcontrol *kcontrol,
 	struct snd_card_asihpi *asihpi =
 			(struct snd_card_asihpi *)(kcontrol->private_data);
 	struct clk_cache *clkcache = &asihpi->cc;
+<<<<<<< HEAD
 	int change, item;
+=======
+	unsigned int item;
+	int change;
+>>>>>>> refs/remotes/origin/master
 	u32 h_control = kcontrol->private_value;
 
 	change = 1;
@@ -2426,8 +2998,13 @@ static int snd_asihpi_clkrate_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_asihpi_sampleclock_add(struct snd_card_asihpi *asihpi,
 					struct hpi_control *hpi_ctl)
+=======
+static int snd_asihpi_sampleclock_add(struct snd_card_asihpi *asihpi,
+				      struct hpi_control *hpi_ctl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = asihpi->card;
 	struct snd_kcontrol_new snd_control;
@@ -2503,9 +3080,15 @@ static int __devinit snd_asihpi_sampleclock_add(struct snd_card_asihpi *asihpi,
    Mixer
  ------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit snd_card_asihpi_mixer_new(struct snd_card_asihpi *asihpi)
 {
 	struct snd_card *card = asihpi->card;
+=======
+static int snd_card_asihpi_mixer_new(struct snd_card_asihpi *asihpi)
+{
+	struct snd_card *card;
+>>>>>>> refs/remotes/origin/master
 	unsigned int idx = 0;
 	unsigned int subindex = 0;
 	int err;
@@ -2513,10 +3096,22 @@ static int __devinit snd_card_asihpi_mixer_new(struct snd_card_asihpi *asihpi)
 
 	if (snd_BUG_ON(!asihpi))
 		return -EINVAL;
+<<<<<<< HEAD
 	strcpy(card->mixername, "Asihpi Mixer");
 
 	err =
+<<<<<<< HEAD
 	    hpi_mixer_open(asihpi->adapter_index,
+=======
+	    hpi_mixer_open(asihpi->hpi->adapter->index,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card = asihpi->card;
+	strcpy(card->mixername, "Asihpi Mixer");
+
+	err =
+	    hpi_mixer_open(asihpi->hpi->adapter->index,
+>>>>>>> refs/remotes/origin/master
 			  &asihpi->h_mixer);
 	hpi_handle_error(err);
 	if (err)
@@ -2613,7 +3208,11 @@ static int __devinit snd_card_asihpi_mixer_new(struct snd_card_asihpi *asihpi)
 					hpi_ctl.dst_node_type,
 					hpi_ctl.dst_node_index);
 			continue;
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			return err;
 	}
@@ -2634,6 +3233,8 @@ snd_asihpi_proc_read(struct snd_info_entry *entry,
 			struct snd_info_buffer *buffer)
 {
 	struct snd_card_asihpi *asihpi = entry->private_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 version;
 	u32 h_control;
 	u32 rate = 0;
@@ -2652,6 +3253,40 @@ snd_asihpi_proc_read(struct snd_info_entry *entry,
 		"serial#=%d\n_hw version %c%d\nDSP code version %03d\n",
 		asihpi->serial_number, ((version >> 3) & 0xf) + 'A',
 		version & 0x7,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u32 h_control;
+	u32 rate = 0;
+	u16 source = 0;
+
+	u16 num_outstreams;
+	u16 num_instreams;
+	u16 version;
+	u32 serial_number;
+	u16 type;
+
+	int err;
+
+	snd_iprintf(buffer, "ASIHPI driver proc file\n");
+
+	hpi_handle_error(hpi_adapter_get_info(asihpi->hpi->adapter->index,
+			&num_outstreams, &num_instreams,
+			&version, &serial_number, &type));
+
+	snd_iprintf(buffer,
+			"Adapter type ASI%4X\nHardware Index %d\n"
+			"%d outstreams\n%d instreams\n",
+			type, asihpi->hpi->adapter->index,
+			num_outstreams, num_instreams);
+
+	snd_iprintf(buffer,
+		"Serial#%d\nHardware version %c%d\nDSP code version %03d\n",
+		serial_number, ((version >> 3) & 0xf) + 'A', version & 0x7,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		((version >> 13) * 100) + ((version >> 7) & 0x3f));
 
 	err = hpi_mixer_get_control(asihpi->h_mixer,
@@ -2659,6 +3294,8 @@ snd_asihpi_proc_read(struct snd_info_entry *entry,
 				  HPI_CONTROL_SAMPLECLOCK, &h_control);
 
 	if (!err) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = hpi_sample_clock_get_sample_rate(
 					h_control, &rate);
 		err += hpi_sample_clock_get_source(h_control, &source);
@@ -2671,7 +3308,24 @@ snd_asihpi_proc_read(struct snd_info_entry *entry,
 }
 
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		err = hpi_sample_clock_get_sample_rate(h_control, &rate);
+		err += hpi_sample_clock_get_source(h_control, &source);
+
+		if (!err)
+			snd_iprintf(buffer, "Sample Clock %dHz, source %s\n",
+			rate, sampleclock_sources[source]);
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __devinit snd_asihpi_proc_init(struct snd_card_asihpi *asihpi)
+=======
+static void snd_asihpi_proc_init(struct snd_card_asihpi *asihpi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 
@@ -2713,8 +3367,13 @@ static int snd_asihpi_hpi_ioctl(struct snd_hwdep *hw, struct file *file,
 /* results in /dev/snd/hwC#D0 file for each card with index #
    also /proc/asound/hwdep will contain '#-00: asihpi (HPI) for each card'
 */
+<<<<<<< HEAD
 static int __devinit snd_asihpi_hpi_new(struct snd_card_asihpi *asihpi,
 	int device, struct snd_hwdep **rhwdep)
+=======
+static int snd_asihpi_hpi_new(struct snd_card_asihpi *asihpi,
+			      int device, struct snd_hwdep **rhwdep)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_hwdep *hw;
 	int err;
@@ -2738,39 +3397,89 @@ static int __devinit snd_asihpi_hpi_new(struct snd_card_asihpi *asihpi,
 /*------------------------------------------------------------
    CARD
  ------------------------------------------------------------*/
+<<<<<<< HEAD
 static int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
 				       const struct pci_device_id *pci_id)
 {
 	int err;
+<<<<<<< HEAD
 
 	u16 version;
 	int pcm_substreams;
 
 	struct hpi_adapter *hpi_card;
+=======
+	struct hpi_adapter *hpi;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int snd_asihpi_probe(struct pci_dev *pci_dev,
+			    const struct pci_device_id *pci_id)
+{
+	int err;
+	struct hpi_adapter *hpi;
+>>>>>>> refs/remotes/origin/master
 	struct snd_card *card;
 	struct snd_card_asihpi *asihpi;
 
 	u32 h_control;
 	u32 h_stream;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u32 adapter_index;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 adapter_index;
+>>>>>>> refs/remotes/origin/master
 
 	static int dev;
 	if (dev >= SNDRV_CARDS)
 		return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Should this be enable[hpi_card->index] ? */
+=======
+	/* Should this be enable[hpi->index] ? */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Should this be enable[hpi->index] ? */
+>>>>>>> refs/remotes/origin/master
 	if (!enable[dev]) {
 		dev++;
 		return -ENOENT;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* Initialise low-level HPI driver */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Initialise low-level HPI driver */
+>>>>>>> refs/remotes/origin/master
 	err = asihpi_adapter_probe(pci_dev, pci_id);
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hpi_card = pci_get_drvdata(pci_dev);
 	/* first try to give the card the same index as its hardware index */
 	err = snd_card_create(hpi_card->index,
 			      id[hpi_card->index], THIS_MODULE,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	hpi = pci_get_drvdata(pci_dev);
+	adapter_index = hpi->adapter->index;
+	/* first try to give the card the same index as its hardware index */
+	err = snd_card_create(adapter_index,
+			      id[adapter_index], THIS_MODULE,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			      sizeof(struct snd_card_asihpi),
 			      &card);
 	if (err < 0) {
@@ -2784,11 +3493,21 @@ static int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
 			return err;
 		snd_printk(KERN_WARNING
 			"**** WARNING **** Adapter index %d->ALSA index %d\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			hpi_card->index, card->number);
+=======
+			adapter_index, card->number);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			adapter_index, card->number);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	snd_card_set_dev(card, &pci_dev->dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	asihpi = (struct snd_card_asihpi *) card->private_data;
 	asihpi->card = card;
 	asihpi->pci = pci_dev;
@@ -2816,18 +3535,50 @@ static int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
 		pcm_substreams = asihpi->num_instreams;
 
 	err = hpi_adapter_get_property(asihpi->adapter_index,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	asihpi = card->private_data;
+	asihpi->card = card;
+	asihpi->pci = pci_dev;
+	asihpi->hpi = hpi;
+
+	snd_printk(KERN_INFO "adapter ID=%4X index=%d\n",
+			asihpi->hpi->adapter->type, adapter_index);
+
+	err = hpi_adapter_get_property(adapter_index,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		HPI_ADAPTER_PROPERTY_CAPS1,
 		NULL, &asihpi->support_grouping);
 	if (err)
 		asihpi->support_grouping = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = hpi_adapter_get_property(asihpi->adapter_index,
+=======
+	err = hpi_adapter_get_property(adapter_index,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = hpi_adapter_get_property(adapter_index,
+>>>>>>> refs/remotes/origin/master
 		HPI_ADAPTER_PROPERTY_CAPS2,
 		&asihpi->support_mrx, NULL);
 	if (err)
 		asihpi->support_mrx = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = hpi_adapter_get_property(asihpi->adapter_index,
+=======
+	err = hpi_adapter_get_property(adapter_index,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = hpi_adapter_get_property(adapter_index,
+>>>>>>> refs/remotes/origin/master
 		HPI_ADAPTER_PROPERTY_INTERVAL,
 		NULL, &asihpi->update_interval_frames);
 	if (err)
@@ -2836,7 +3587,15 @@ static int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
 	if (!asihpi->can_dma)
 		asihpi->update_interval_frames *= 2;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hpi_handle_error(hpi_instream_open(asihpi->adapter_index,
+=======
+	hpi_handle_error(hpi_instream_open(adapter_index,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hpi_handle_error(hpi_instream_open(adapter_index,
+>>>>>>> refs/remotes/origin/master
 			     0, &h_stream));
 
 	err = hpi_instream_host_buffer_free(h_stream);
@@ -2844,7 +3603,15 @@ static int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
 
 	hpi_handle_error(hpi_instream_close(h_stream));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = hpi_adapter_get_property(asihpi->adapter_index,
+=======
+	err = hpi_adapter_get_property(adapter_index,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = hpi_adapter_get_property(adapter_index,
+>>>>>>> refs/remotes/origin/master
 		HPI_ADAPTER_PROPERTY_CURCHANNELS,
 		&asihpi->in_max_chans, &asihpi->out_max_chans);
 	if (err) {
@@ -2852,13 +3619,40 @@ static int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
 		asihpi->out_max_chans = 2;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_printk(KERN_INFO "has dma:%d, grouping:%d, mrx:%d\n",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (asihpi->out_max_chans > 2) { /* assume LL mode */
+		asihpi->out_min_chans = asihpi->out_max_chans;
+		asihpi->in_min_chans = asihpi->in_max_chans;
+		asihpi->support_grouping = 0;
+	} else {
+		asihpi->out_min_chans = 1;
+		asihpi->in_min_chans = 1;
+	}
+
+	snd_printk(KERN_INFO "Has dma:%d, grouping:%d, mrx:%d\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			asihpi->can_dma,
 			asihpi->support_grouping,
 			asihpi->support_mrx
 	      );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = snd_card_asihpi_pcm_new(asihpi, 0, pcm_substreams);
+=======
+	err = snd_card_asihpi_pcm_new(asihpi, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = snd_card_asihpi_pcm_new(asihpi, 0);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		snd_printk(KERN_ERR "pcm_new failed\n");
 		goto __nodev;
@@ -2885,6 +3679,8 @@ static int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
 
 	strcpy(card->driver, "ASIHPI");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sprintf(card->shortname, "AudioScience ASI%4X", asihpi->type);
 	sprintf(card->longname, "%s %i",
 			card->shortname, asihpi->adapter_index);
@@ -2892,6 +3688,21 @@ static int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
 
 	if (!err) {
 		hpi_card->snd_card_asihpi = card;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	sprintf(card->shortname, "AudioScience ASI%4X",
+			asihpi->hpi->adapter->type);
+	sprintf(card->longname, "%s %i",
+			card->shortname, adapter_index);
+	err = snd_card_register(card);
+
+	if (!err) {
+		hpi->snd_card = card;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dev++;
 		return 0;
 	}
@@ -2902,12 +3713,26 @@ __nodev:
 
 }
 
+<<<<<<< HEAD
 static void __devexit snd_asihpi_remove(struct pci_dev *pci_dev)
 {
+<<<<<<< HEAD
 	struct hpi_adapter *hpi_card = pci_get_drvdata(pci_dev);
 
 	snd_card_free(hpi_card->snd_card_asihpi);
 	hpi_card->snd_card_asihpi = NULL;
+=======
+	struct hpi_adapter *hpi = pci_get_drvdata(pci_dev);
+	snd_card_free(hpi->snd_card);
+	hpi->snd_card = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void snd_asihpi_remove(struct pci_dev *pci_dev)
+{
+	struct hpi_adapter *hpi = pci_get_drvdata(pci_dev);
+	snd_card_free(hpi->snd_card);
+	hpi->snd_card = NULL;
+>>>>>>> refs/remotes/origin/master
 	asihpi_adapter_remove(pci_dev);
 }
 
@@ -2923,11 +3748,23 @@ static DEFINE_PCI_DEVICE_TABLE(asihpi_pci_tbl) = {
 MODULE_DEVICE_TABLE(pci, asihpi_pci_tbl);
 
 static struct pci_driver driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.name = "asihpi",
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = asihpi_pci_tbl,
 	.probe = snd_asihpi_probe,
 	.remove = __devexit_p(snd_asihpi_remove),
 #ifdef CONFIG_PM
+=======
+	.name = KBUILD_MODNAME,
+	.id_table = asihpi_pci_tbl,
+	.probe = snd_asihpi_probe,
+	.remove = snd_asihpi_remove,
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 /*	.suspend = snd_asihpi_suspend,
 	.resume = snd_asihpi_resume, */
 #endif

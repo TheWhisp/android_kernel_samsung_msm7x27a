@@ -17,6 +17,14 @@
 #include <linux/spinlock.h>
 #include <linux/of_platform.h>
 #include <linux/of_gpio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/prom.h>
 #include <asm/mpc52xx.h>
@@ -97,6 +105,8 @@ struct mpc52xx_gpio_wkup __iomem *wkup_gpio;
  *					of the localplus bus to the of_platform
  *					bus.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __init
 mpc52xx_declare_of_platform_devices(void)
 {
@@ -104,6 +114,18 @@ mpc52xx_declare_of_platform_devices(void)
 	if (of_platform_bus_probe(NULL, mpc52xx_bus_ids, NULL))
 		printk(KERN_ERR __FILE__ ": "
 			"Error while probing of_platform bus\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void __init mpc52xx_declare_of_platform_devices(void)
+{
+	/* Find all the 'platform' devices and register them. */
+	if (of_platform_populate(NULL, mpc52xx_bus_ids, NULL, NULL))
+		pr_err(__FILE__ ": Error while populating devices from DT\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

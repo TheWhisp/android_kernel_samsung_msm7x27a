@@ -24,6 +24,14 @@
 #include <linux/wakelock.h>
 #include <linux/platform_device.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -83,6 +91,16 @@ static struct smd_config smd_configs[] = {
 	{2, "APPS_RIVA_BT_ACL", NULL, SMD_APPS_WCNSS},
 	{3, "APPS_RIVA_BT_CMD", NULL, SMD_APPS_WCNSS},
 	{4, "MBALBRIDGE", NULL, SMD_APPS_MODEM},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	{5, "APPS_RIVA_ANT_CMD", NULL, SMD_APPS_WCNSS},
+	{6, "APPS_RIVA_ANT_DATA", NULL, SMD_APPS_WCNSS},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{5, "APPS_RIVA_ANT_CMD", NULL, SMD_APPS_WCNSS},
+	{6, "APPS_RIVA_ANT_DATA", NULL, SMD_APPS_WCNSS},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{7, "DATA1", NULL, SMD_APPS_MODEM},
 	{11, "DATA11", NULL, SMD_APPS_MODEM},
 	{21, "DATA21", NULL, SMD_APPS_MODEM},
@@ -91,15 +109,47 @@ static struct smd_config smd_configs[] = {
 };
 #define DS_IDX 0
 #define LOOPBACK_IDX 36
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static struct delayed_work loopback_work;
 static struct smd_tty_info smd_tty[MAX_SMD_TTYS];
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define BT_ACL_IDX 2
+#define BT_CMD_IDX 3
+
+static struct delayed_work loopback_work;
+static struct smd_tty_info smd_tty[MAX_SMD_TTYS];
+static struct pm_qos_request smd_tty_qos_req;
+static struct work_struct pm_qos_set_work;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int is_in_reset(struct smd_tty_info *info)
 {
 	return info->in_reset;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void pm_qos_set_worker(struct work_struct *work)
+{
+	/* keep the request for 500ms */
+	pm_qos_update_request_timeout(&smd_tty_qos_req,
+			0, jiffies_to_usecs(HZ / 2));
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void buf_req_retry(unsigned long param)
 {
 	struct smd_tty_info *info = (struct smd_tty_info *)param;
@@ -125,11 +175,30 @@ static void smd_tty_read(unsigned long param)
 		return;
 
 	for (;;) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (is_in_reset(info)) {
 			/* signal TTY clients using TTY_BREAK */
 			tty_insert_flip_char(tty, 0x00, TTY_BREAK);
 			tty_flip_buffer_push(tty);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		unsigned int n = info->tty->index;
+		if (is_in_reset(info)) {
+			if (n == BT_ACL_IDX || n == BT_CMD_IDX)
+				pr_err("%s: BT_IDX read in reset %d \n", __func__, n);
+			if ((n != BT_ACL_IDX) && (n != BT_CMD_IDX)) {
+			/* signal TTY clients using TTY_BREAK */
+				tty_insert_flip_char(tty, 0x00, TTY_BREAK);
+				tty_flip_buffer_push(tty);
+				break;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		if (test_bit(TTY_THROTTLED, &tty->flags)) break;
@@ -142,6 +211,8 @@ static void smd_tty_read(unsigned long param)
 
 		avail = tty_prepare_flip_string(tty, &ptr, avail);
 		if (avail <= 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (!timer_pending(&info->buf_req_timer)) {
 				init_timer(&info->buf_req_timer);
 				info->buf_req_timer.expires = jiffies +
@@ -150,6 +221,14 @@ static void smd_tty_read(unsigned long param)
 				info->buf_req_timer.data = param;
 				add_timer(&info->buf_req_timer);
 			}
+=======
+			mod_timer(&info->buf_req_timer,
+					jiffies + msecs_to_jiffies(30));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mod_timer(&info->buf_req_timer,
+					jiffies + msecs_to_jiffies(30));
+>>>>>>> refs/remotes/origin/cm-11.0
 			return;
 		}
 
@@ -161,6 +240,18 @@ static void smd_tty_read(unsigned long param)
 			printk(KERN_ERR "OOPS - smd_tty_buffer mismatch?!");
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HAS_WAKELOCK
+		pr_debug("%s: lock wakelock %s\n", __func__, info->wake_lock.name);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_HAS_WAKELOCK
+		pr_debug("%s: lock wakelock %s\n", __func__, info->wake_lock.name);
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 		wake_lock_timeout(&info->wake_lock, HZ / 2);
 		tty_flip_buffer_push(tty);
 	}
@@ -173,6 +264,14 @@ static void smd_tty_notify(void *priv, unsigned event)
 {
 	struct smd_tty_info *info = priv;
 	unsigned long flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned char *ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char *ptr;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (event) {
 	case SMD_EVENT_DATA:
@@ -189,19 +288,64 @@ static void smd_tty_notify(void *priv, unsigned event)
 		 */
 		if (smd_write_avail(info->ch)) {
 			smd_disable_read_intr(info->ch);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (info->tty)
 				wake_up_interruptible(&info->tty->write_wait);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			if (info->tty) {
+				unsigned int n = info->tty->index;
+				wake_up_interruptible(&info->tty->write_wait);
+
+				/* use pm_qos for BT performance */
+				if (n == BT_ACL_IDX || n == BT_CMD_IDX)
+					schedule_work(&pm_qos_set_work);
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		tasklet_hi_schedule(&info->tty_tsklt);
 		break;
 
 	case SMD_EVENT_OPEN:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (is_in_reset(info)) {
+			unsigned int n = info->tty->index;
+			if (n == BT_CMD_IDX) {
+				pr_err("%s:  BT_CMD_IDX Sending hardware error event to stack\n", __func__);
+				tty_prepare_flip_string(info->tty, &ptr, 0x03);
+				ptr[0] = 0x10;
+				ptr[1] = 0x01;
+				ptr[2] = 0x0A;
+				tty_flip_buffer_push(info->tty);
+			}
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_lock_irqsave(&info->reset_lock, flags);
 		info->in_reset = 0;
 		info->in_reset_updated = 1;
 		info->is_open = 1;
 		wake_up_interruptible(&info->ch_opened_wait_queue);
 		spin_unlock_irqrestore(&info->reset_lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 
 	case SMD_EVENT_CLOSE:
@@ -235,7 +379,15 @@ static int smd_tty_open(struct tty_struct *tty, struct file *f)
 	int res = 0;
 	unsigned int n = tty->index;
 	struct smd_tty_info *info;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	char *peripheral = NULL;
+=======
+	const char *peripheral = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char *peripheral = NULL;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 	if (n >= MAX_SMD_TTYS || !smd_tty[n].smd)
@@ -247,9 +399,17 @@ static int smd_tty_open(struct tty_struct *tty, struct file *f)
 	tty->driver_data = info;
 
 	if (info->open_count++ == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (smd_tty[n].smd->edge == SMD_APPS_MODEM)
 			peripheral = "modem";
 
+=======
+		peripheral = smd_edge_to_subsystem(smd_tty[n].smd->edge);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		peripheral = smd_edge_to_subsystem(smd_tty[n].smd->edge);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (peripheral) {
 			info->pil = pil_get(peripheral);
 			if (IS_ERR(info->pil)) {
@@ -489,7 +649,17 @@ static int smd_tty_dummy_probe(struct platform_device *pdev)
 		if (!smd_configs[n].dev_name)
 			continue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!strncmp(pdev->name, smd_configs[n].dev_name,
+=======
+		if (pdev->id == smd_configs[n].edge &&
+			!strncmp(pdev->name, smd_configs[n].dev_name,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pdev->id == smd_configs[n].edge &&
+			!strncmp(pdev->name, smd_configs[n].dev_name,
+>>>>>>> refs/remotes/origin/cm-11.0
 					SMD_MAX_CH_NAME_LEN)) {
 			complete_all(&smd_tty[idx].ch_allocated);
 			return 0;
@@ -571,6 +741,16 @@ static int __init smd_tty_init(void)
 		smd_tty[idx].driver.driver.owner = THIS_MODULE;
 		spin_lock_init(&smd_tty[idx].reset_lock);
 		smd_tty[idx].is_open = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		setup_timer(&smd_tty[idx].buf_req_timer, buf_req_retry,
+				(unsigned long)&smd_tty[idx]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		setup_timer(&smd_tty[idx].buf_req_timer, buf_req_retry,
+				(unsigned long)&smd_tty[idx]);
+>>>>>>> refs/remotes/origin/cm-11.0
 		init_waitqueue_head(&smd_tty[idx].ch_opened_wait_queue);
 		ret = platform_driver_register(&smd_tty[idx].driver);
 
@@ -581,7 +761,20 @@ static int __init smd_tty_init(void)
 		}
 		smd_tty[idx].smd = &smd_configs[n];
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_DELAYED_WORK(&loopback_work, loopback_probe_worker);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	INIT_WORK(&pm_qos_set_work, pm_qos_set_worker);
+	INIT_DELAYED_WORK(&loopback_work, loopback_probe_worker);
+	pm_qos_add_request(&smd_tty_qos_req, PM_QOS_CPU_DMA_LATENCY,
+			PM_QOS_DEFAULT_VALUE);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 out:

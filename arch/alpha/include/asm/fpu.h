@@ -1,6 +1,17 @@
 #ifndef __ASM_ALPHA_FPU_H
 #define __ASM_ALPHA_FPU_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef __KERNEL__
+#include <asm/special_insns.h>
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Alpha floating-point control register defines:
  */
@@ -119,6 +130,10 @@ ieee_fpcr_to_swcr(unsigned long fp)
 }
 
 #ifdef __KERNEL__
+=======
+#include <asm/special_insns.h>
+#include <uapi/asm/fpu.h>
+>>>>>>> refs/remotes/origin/master
 
 /* The following two functions don't need trapb/excb instructions
    around the mf_fpcr/mt_fpcr instructions because (a) the kernel
@@ -188,6 +203,9 @@ extern void alpha_write_fp_reg (unsigned long reg, unsigned long val);
 extern unsigned long alpha_read_fp_reg_s (unsigned long reg);
 extern void alpha_write_fp_reg_s (unsigned long reg, unsigned long val);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_ALPHA_FPU_H */

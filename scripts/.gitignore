@@ -9,3 +9,8 @@ unifdef
 ihex2fw
 recordmcount
 docproc
+<<<<<<< HEAD
+=======
+sortextable
+asn1_compiler
+>>>>>>> refs/remotes/origin/master

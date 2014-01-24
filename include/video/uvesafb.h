@@ -1,6 +1,7 @@
 #ifndef _UVESAFB_H
 #define _UVESAFB_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 struct v86_regs {
@@ -58,6 +59,10 @@ struct vbe_ib {
 } __attribute__ ((packed));
 
 #ifdef __KERNEL__
+=======
+#include <uapi/video/uvesafb.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* VBE CRTC Info Block */
 struct vbe_crtc_ib {
@@ -189,7 +194,13 @@ struct uvesafb_par {
 
 	int mode_idx;
 	struct vbe_crtc_ib crtc;
+<<<<<<< HEAD
 };
 
 #endif /* __KERNEL__ */
+=======
+	int mtrr_handle;
+};
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _UVESAFB_H */

@@ -27,6 +27,10 @@
  */
 
 #include <linux/i2c.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/v4l2-int-device.h>
 
 #include "tcm825x.h"

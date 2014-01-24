@@ -25,7 +25,10 @@ typedef unsigned long address_t;
 #define cpu_number_map(cpu)	(cpu)
 #define cpu_logical_map(cpu)	(cpu)
 
+<<<<<<< HEAD
 extern void smp_send_reschedule(int cpu);
+=======
+>>>>>>> refs/remotes/origin/master
 extern void smp_send_all_nop(void);
 
 extern void arch_send_call_function_single_ipi(int cpu);
@@ -50,6 +53,9 @@ static inline void __cpu_die (unsigned int cpu) {
   while(1)
     ;
 }
+<<<<<<< HEAD
 extern int __cpu_up (unsigned int cpu);
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /*  __ASM_SMP_H */

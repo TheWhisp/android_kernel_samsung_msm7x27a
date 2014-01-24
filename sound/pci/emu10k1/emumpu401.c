@@ -326,7 +326,11 @@ static void snd_emu10k1_midi_free(struct snd_rawmidi *rmidi)
 	midi->rmidi = NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit emu10k1_midi_init(struct snd_emu10k1 *emu, struct snd_emu10k1_midi *midi, int device, char *name)
+=======
+static int emu10k1_midi_init(struct snd_emu10k1 *emu, struct snd_emu10k1_midi *midi, int device, char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_rawmidi *rmidi;
 	int err;
@@ -349,7 +353,11 @@ static int __devinit emu10k1_midi_init(struct snd_emu10k1 *emu, struct snd_emu10
 	return 0;
 }
 
+<<<<<<< HEAD
 int __devinit snd_emu10k1_midi(struct snd_emu10k1 *emu)
+=======
+int snd_emu10k1_midi(struct snd_emu10k1 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_emu10k1_midi *midi = &emu->midi;
 	int err;
@@ -366,7 +374,11 @@ int __devinit snd_emu10k1_midi(struct snd_emu10k1 *emu)
 	return 0;
 }
 
+<<<<<<< HEAD
 int __devinit snd_emu10k1_audigy_midi(struct snd_emu10k1 *emu)
+=======
+int snd_emu10k1_audigy_midi(struct snd_emu10k1 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_emu10k1_midi *midi;
 	int err;

@@ -30,7 +30,11 @@ static inline struct task_struct *get_current(void)
 
 #define GET_CURRENT(reg,sp)		\
 	GET_THREAD_INFO(reg,sp);	\
+<<<<<<< HEAD
   	l32i reg, reg, TI_TASK		\
+=======
+	l32i reg, reg, TI_TASK		\
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

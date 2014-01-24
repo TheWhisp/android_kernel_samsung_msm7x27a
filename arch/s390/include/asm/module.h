@@ -1,5 +1,11 @@
 #ifndef _ASM_S390_MODULE_H
 #define _ASM_S390_MODULE_H
+<<<<<<< HEAD
+=======
+
+#include <asm-generic/module.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This file contains the s390 architecture specific module code.
  */
@@ -28,6 +34,7 @@ struct mod_arch_specific
 	struct mod_arch_syminfo *syminfo;
 };
 
+<<<<<<< HEAD
 #ifdef __s390x__
 #define ElfW(x) Elf64_ ## x
 #define ELFW(x) ELF64_ ## x
@@ -43,4 +50,6 @@ struct mod_arch_specific
 #define Elf_Ehdr ElfW(Ehdr)
 #define ELF_R_SYM ELFW(R_SYM)
 #define ELF_R_TYPE ELFW(R_TYPE)
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_S390_MODULE_H */

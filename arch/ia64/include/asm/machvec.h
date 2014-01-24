@@ -113,14 +113,21 @@ extern void machvec_tlb_migrate_finish (struct mm_struct *);
 #  include <asm/machvec_sn2.h>
 # elif defined (CONFIG_IA64_SGI_UV)
 #  include <asm/machvec_uv.h>
+<<<<<<< HEAD
 # elif defined (CONFIG_IA64_XEN_GUEST)
 #  include <asm/machvec_xen.h>
+=======
+>>>>>>> refs/remotes/origin/master
 # elif defined (CONFIG_IA64_GENERIC)
 
 # ifdef MACHVEC_PLATFORM_HEADER
 #  include MACHVEC_PLATFORM_HEADER
 # else
+<<<<<<< HEAD
 #  define platform_name		ia64_mv.name
+=======
+#  define ia64_platform_name	ia64_mv.name
+>>>>>>> refs/remotes/origin/master
 #  define platform_setup	ia64_mv.setup
 #  define platform_cpu_init	ia64_mv.cpu_init
 #  define platform_irq_init	ia64_mv.irq_init

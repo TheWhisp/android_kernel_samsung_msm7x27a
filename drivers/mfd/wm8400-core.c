@@ -12,12 +12,29 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/bug.h>
+=======
+#include <linux/module.h>
+#include <linux/bug.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/bug.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/i2c.h>
 #include <linux/kernel.h>
 #include <linux/mfd/core.h>
 #include <linux/mfd/wm8400-private.h>
 #include <linux/mfd/wm8400-audio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 
 static struct {
@@ -123,6 +140,7 @@ static int wm8400_read(struct wm8400 *wm8400, u8 reg, int num_regs, u16 *dest)
 	/* If there are any volatile reads then read back the entire block */
 	for (i = reg; i < reg + num_regs; i++)
 		if (reg_data[i].vol) {
+<<<<<<< HEAD
 			ret = wm8400->read_dev(wm8400->io_data, reg,
 					       num_regs, dest);
 			if (ret != 0)
@@ -131,6 +149,11 @@ static int wm8400_read(struct wm8400 *wm8400, u8 reg, int num_regs, u16 *dest)
 				dest[i] = be16_to_cpu(dest[i]);
 
 			return 0;
+=======
+			ret = regmap_bulk_read(wm8400->regmap, reg, dest,
+					       num_regs);
+			return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 	/* Otherwise use the cache */
@@ -149,6 +172,7 @@ static int wm8400_write(struct wm8400 *wm8400, u8 reg, int num_regs,
 	for (i = 0; i < num_regs; i++) {
 		BUG_ON(!reg_data[reg + i].writable);
 		wm8400->reg_cache[reg + i] = src[i];
+<<<<<<< HEAD
 		src[i] = cpu_to_be16(src[i]);
 	}
 
@@ -157,7 +181,29 @@ static int wm8400_write(struct wm8400 *wm8400, u8 reg, int num_regs,
 	if (ret != 0)
 		return -EIO;
 
+=======
+		ret = regmap_write(wm8400->regmap, reg, src[i]);
+		if (ret != 0)
+			return ret;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
+=======
+#include <linux/regmap.h>
+#include <linux/slab.h>
+
+static bool wm8400_volatile(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8400_INTERRUPT_STATUS_1:
+	case WM8400_INTERRUPT_LEVELS:
+	case WM8400_SHUTDOWN_REASON:
+		return true;
+	default:
+		return false;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -170,6 +216,7 @@ static int wm8400_write(struct wm8400 *wm8400, u8 reg, int num_regs,
  */
 u16 wm8400_reg_read(struct wm8400 *wm8400, u8 reg)
 {
+<<<<<<< HEAD
 	u16 val;
 
 	mutex_lock(&wm8400->io_lock);
@@ -177,6 +224,14 @@ u16 wm8400_reg_read(struct wm8400 *wm8400, u8 reg)
 	wm8400_read(wm8400, reg, 1, &val);
 
 	mutex_unlock(&wm8400->io_lock);
+=======
+	unsigned int val;
+	int ret;
+
+	ret = regmap_read(wm8400->regmap, reg, &val);
+	if (ret < 0)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	return val;
 }
@@ -184,6 +239,7 @@ EXPORT_SYMBOL_GPL(wm8400_reg_read);
 
 int wm8400_block_read(struct wm8400 *wm8400, u8 reg, int count, u16 *data)
 {
+<<<<<<< HEAD
 	int ret;
 
 	mutex_lock(&wm8400->io_lock);
@@ -241,6 +297,12 @@ void wm8400_reset_codec_reg_cache(struct wm8400 *wm8400)
 }
 EXPORT_SYMBOL_GPL(wm8400_reset_codec_reg_cache);
 
+=======
+	return regmap_bulk_read(wm8400->regmap, reg, data, count);
+}
+EXPORT_SYMBOL_GPL(wm8400_block_read);
+
+>>>>>>> refs/remotes/origin/master
 static int wm8400_register_codec(struct wm8400 *wm8400)
 {
 	struct mfd_cell cell = {
@@ -249,7 +311,11 @@ static int wm8400_register_codec(struct wm8400 *wm8400)
 		.pdata_size = sizeof(*wm8400),
 	};
 
+<<<<<<< HEAD
 	return mfd_add_devices(wm8400->dev, -1, &cell, 1, NULL, 0);
+=======
+	return mfd_add_devices(wm8400->dev, -1, &cell, 1, NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -262,22 +328,41 @@ static int wm8400_register_codec(struct wm8400 *wm8400)
 static int wm8400_init(struct wm8400 *wm8400,
 		       struct wm8400_platform_data *pdata)
 {
+<<<<<<< HEAD
 	u16 reg;
 	int ret, i;
 
 	mutex_init(&wm8400->io_lock);
+=======
+	unsigned int reg;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	dev_set_drvdata(wm8400->dev, wm8400);
 
 	/* Check that this is actually a WM8400 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = wm8400->read_dev(wm8400->io_data, WM8400_RESET_ID, 1, &reg);
+=======
+	ret = regmap_read(wm8400->regmap, WM8400_RESET_ID, &i);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = regmap_read(wm8400->regmap, WM8400_RESET_ID, &reg);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(wm8400->dev, "Chip ID register read failed\n");
 		return -EIO;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (be16_to_cpu(reg) != reg_data[WM8400_RESET_ID].default_val) {
 		dev_err(wm8400->dev, "Device is not a WM8400, ID is %x\n",
 			be16_to_cpu(reg));
+=======
+	if (i != reg_data[WM8400_RESET_ID].default_val) {
+		dev_err(wm8400->dev, "Device is not a WM8400, ID is %x\n", i);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
@@ -285,9 +370,14 @@ static int wm8400_init(struct wm8400 *wm8400,
 	 * is a PMIC we can't reset it safely so initialise the register
 	 * cache from the hardware.
 	 */
+<<<<<<< HEAD
 	ret = wm8400->read_dev(wm8400->io_data, 0,
 			       ARRAY_SIZE(wm8400->reg_cache),
 			       wm8400->reg_cache);
+=======
+	ret = regmap_raw_read(wm8400->regmap, 0, wm8400->reg_cache,
+			      ARRAY_SIZE(wm8400->reg_cache));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret != 0) {
 		dev_err(wm8400->dev, "Register cache read failed\n");
 		return -EIO;
@@ -302,6 +392,15 @@ static int wm8400_init(struct wm8400 *wm8400,
 				wm8400->reg_cache[i] = reg_data[i].default_val;
 
 	ret = wm8400_read(wm8400, WM8400_ID, 1, &reg);
+=======
+	if (reg != 0x6172) {
+		dev_err(wm8400->dev, "Device is not a WM8400, ID is %x\n",
+			reg);
+		return -ENODEV;
+	}
+
+	ret = regmap_read(wm8400->regmap, WM8400_ID, &reg);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(wm8400->dev, "ID register read failed: %d\n", ret);
 		return ret;
@@ -337,6 +436,8 @@ static void wm8400_release(struct wm8400 *wm8400)
 	mfd_remove_devices(wm8400->dev);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static int wm8400_i2c_read(void *io_data, char reg, int count, u16 *dest)
 {
@@ -391,32 +492,101 @@ static int wm8400_i2c_write(void *io_data, char reg, int count, const u16 *src)
 	return ret;
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct regmap_config wm8400_regmap_config = {
+	.reg_bits = 8,
+	.val_bits = 16,
+	.max_register = WM8400_REGISTER_COUNT - 1,
+<<<<<<< HEAD
+};
+
+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	.volatile_reg = wm8400_volatile,
+
+	.cache_type = REGCACHE_RBTREE,
+};
+
+/**
+ * wm8400_reset_codec_reg_cache - Reset cached codec registers to
+ * their default values.
+ */
+void wm8400_reset_codec_reg_cache(struct wm8400 *wm8400)
+{
+	regmap_reinit_cache(wm8400->regmap, &wm8400_regmap_config);
+}
+EXPORT_SYMBOL_GPL(wm8400_reset_codec_reg_cache);
+
+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+>>>>>>> refs/remotes/origin/master
 static int wm8400_i2c_probe(struct i2c_client *i2c,
 			    const struct i2c_device_id *id)
 {
 	struct wm8400 *wm8400;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8400 = kzalloc(sizeof(struct wm8400), GFP_KERNEL);
+=======
+	wm8400 = devm_kzalloc(&i2c->dev, sizeof(struct wm8400), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8400 = devm_kzalloc(&i2c->dev, sizeof(struct wm8400), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (wm8400 == NULL) {
 		ret = -ENOMEM;
 		goto err;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wm8400->io_data = i2c;
 	wm8400->read_dev = wm8400_i2c_read;
 	wm8400->write_dev = wm8400_i2c_write;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	wm8400->regmap = devm_regmap_init_i2c(i2c, &wm8400_regmap_config);
+	if (IS_ERR(wm8400->regmap)) {
+		ret = PTR_ERR(wm8400->regmap);
+		goto err;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	wm8400->dev = &i2c->dev;
 	i2c_set_clientdata(i2c, wm8400);
 
 	ret = wm8400_init(wm8400, i2c->dev.platform_data);
 	if (ret != 0)
+<<<<<<< HEAD
 		goto struct_err;
 
 	return 0;
 
 struct_err:
 	kfree(wm8400);
+=======
+=======
+	wm8400->dev = &i2c->dev;
+	i2c_set_clientdata(i2c, wm8400);
+
+	ret = wm8400_init(wm8400, dev_get_platdata(&i2c->dev));
+	if (ret != 0)
+>>>>>>> refs/remotes/origin/master
+		goto err;
+
+	return 0;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err:
 	return ret;
 }
@@ -426,7 +596,13 @@ static int wm8400_i2c_remove(struct i2c_client *i2c)
 	struct wm8400 *wm8400 = i2c_get_clientdata(i2c);
 
 	wm8400_release(wm8400);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(wm8400);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

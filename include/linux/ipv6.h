@@ -1,6 +1,7 @@
 #ifndef _IPV6_H
 #define _IPV6_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/in6.h>
 #include <asm/byteorder.h>
@@ -129,6 +130,12 @@ struct ipv6hdr {
 };
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/ipv6.h>
+
+#define ipv6_optlen(p)  (((p)->hdrlen+1) << 3)
+#define ipv6_authlen(p) (((p)->hdrlen+2) << 2)
+>>>>>>> refs/remotes/origin/master
 /*
  * This structure contains configuration options per IPv6 link.
  */
@@ -144,13 +151,21 @@ struct ipv6_devconf {
 	__s32		rtr_solicit_interval;
 	__s32		rtr_solicit_delay;
 	__s32		force_mld_version;
+<<<<<<< HEAD
 #ifdef CONFIG_IPV6_PRIVACY
+=======
+	__s32		mldv1_unsolicited_report_interval;
+	__s32		mldv2_unsolicited_report_interval;
+>>>>>>> refs/remotes/origin/master
 	__s32		use_tempaddr;
 	__s32		temp_valid_lft;
 	__s32		temp_prefered_lft;
 	__s32		regen_max_retry;
 	__s32		max_desync_factor;
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	__s32		max_addresses;
 	__s32		accept_ra_defrtr;
 	__s32		accept_ra_pinfo;
@@ -172,6 +187,15 @@ struct ipv6_devconf {
 	__s32		disable_ipv6;
 	__s32		accept_dad;
 	__s32		force_tllao;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	__s32           ndisc_notify;
+	__s32		suppress_frag_ndisc;
+>>>>>>> refs/remotes/origin/master
+=======
+	__s32		accept_ra_prefix_route;
+>>>>>>> refs/remotes/origin/cm-11.0
 	void		*sysctl;
 };
 
@@ -180,6 +204,7 @@ struct ipv6_params {
 	__s32 autoconf;
 };
 extern struct ipv6_params ipv6_defaults;
+<<<<<<< HEAD
 #endif
 
 /* index values for the variables in ipv6_devconf */
@@ -213,10 +238,13 @@ enum {
 	DEVCONF_DISABLE_IPV6,
 	DEVCONF_ACCEPT_DAD,
 	DEVCONF_FORCE_TLLAO,
+	DEVCONF_ACCEPT_RA_PREFIX_ROUTE,
 	DEVCONF_MAX
 };
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/icmpv6.h>
 #include <linux/tcp.h>
 #include <linux/udp.h>
@@ -228,11 +256,32 @@ static inline struct ipv6hdr *ipv6_hdr(const struct sk_buff *skb)
 	return (struct ipv6hdr *)skb_network_header(skb);
 }
 
+<<<<<<< HEAD
 static inline struct ipv6hdr *ipipv6_hdr(const struct sk_buff *skb)
 {
 	return (struct ipv6hdr *)skb_transport_header(skb);
 }
 
+<<<<<<< HEAD
+=======
+static inline __u8 ipv6_tclass(const struct ipv6hdr *iph)
+{
+	return (ntohl(*(__be32 *)iph) >> 20) & 0xff;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct ipv6hdr *inner_ipv6_hdr(const struct sk_buff *skb)
+{
+	return (struct ipv6hdr *)skb_inner_network_header(skb);
+}
+
+static inline struct ipv6hdr *ipipv6_hdr(const struct sk_buff *skb)
+{
+	return (struct ipv6hdr *)skb_transport_header(skb);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* 
    This structure contains results of exthdrs parsing
    as offsets from skb->nh.
@@ -240,7 +289,11 @@ static inline struct ipv6hdr *ipipv6_hdr(const struct sk_buff *skb)
 
 struct inet6_skb_parm {
 	int			iif;
+<<<<<<< HEAD
 	__u16			ra;
+=======
+	__be16			ra;
+>>>>>>> refs/remotes/origin/master
 	__u16			hop;
 	__u16			dst0;
 	__u16			srcrt;
@@ -251,10 +304,21 @@ struct inet6_skb_parm {
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
 	__u16			dsthao;
 #endif
+<<<<<<< HEAD
+=======
+	__u16			frag_max_size;
+>>>>>>> refs/remotes/origin/master
 
 #define IP6SKB_XFRM_TRANSFORMED	1
 #define IP6SKB_FORWARDED	2
 #define IP6SKB_REROUTED		4
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define IP6SKB_ROUTERALERT	8
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define IP6SKB_FRAGMENTED      16
 };
 
@@ -266,6 +330,7 @@ static inline int inet6_iif(const struct sk_buff *skb)
 	return IP6CB(skb)->iif;
 }
 
+<<<<<<< HEAD
 struct inet6_request_sock {
 	struct in6_addr		loc_addr;
 	struct in6_addr		rmt_addr;
@@ -276,6 +341,10 @@ struct inet6_request_sock {
 struct tcp6_request_sock {
 	struct tcp_request_sock	  tcp6rsk_tcp;
 	struct inet6_request_sock tcp6rsk_inet6;
+=======
+struct tcp6_request_sock {
+	struct tcp_request_sock	  tcp6rsk_tcp;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ipv6_mc_socklist;
@@ -292,12 +361,19 @@ struct ipv6_fl_socklist;
  */
 struct ipv6_pinfo {
 	struct in6_addr 	saddr;
+<<<<<<< HEAD
 	struct in6_addr 	rcv_saddr;
 	struct in6_addr		daddr;
 	struct in6_pktinfo	sticky_pktinfo;
 	struct in6_addr		*daddr_cache;
 #ifdef CONFIG_IPV6_SUBTREES
 	struct in6_addr		*saddr_cache;
+=======
+	struct in6_pktinfo	sticky_pktinfo;
+	const struct in6_addr		*daddr_cache;
+#ifdef CONFIG_IPV6_SUBTREES
+	const struct in6_addr		*saddr_cache;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	__be32			flow_label;
@@ -325,6 +401,14 @@ struct ipv6_pinfo {
 				__unused_2:6;
 	__s16			mcast_hops:9;
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int			ucast_oif;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			ucast_oif;
+>>>>>>> refs/remotes/origin/master
 	int			mcast_oif;
 
 	/* pktoption flags */
@@ -361,13 +445,28 @@ struct ipv6_pinfo {
 				dontfrag:1;
 	__u8			min_hopcount;
 	__u8			tclass;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__u8			padding;
+=======
+	__u8			rcv_tclass;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__u32			dst_cookie;
 
 	struct ipv6_mc_socklist	__rcu *ipv6_mc_list;
 	struct ipv6_ac_socklist	*ipv6_ac_list;
 	struct ipv6_fl_socklist *ipv6_fl_list;
+=======
+	__u8			rcv_tclass;
+
+	__u32			dst_cookie;
+	__u32			rx_dst_cookie;
+
+	struct ipv6_mc_socklist	__rcu *ipv6_mc_list;
+	struct ipv6_ac_socklist	*ipv6_ac_list;
+	struct ipv6_fl_socklist __rcu *ipv6_fl_list;
+>>>>>>> refs/remotes/origin/master
 
 	struct ipv6_txoptions	*opt;
 	struct sk_buff		*pktoptions;
@@ -405,12 +504,25 @@ struct tcp6_sock {
 
 extern int inet6_sk_rebuild_header(struct sock *sk);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct tcp6_timewait_sock {
+	struct tcp_timewait_sock   tcp6tw_tcp;
+};
+
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 static inline struct ipv6_pinfo * inet6_sk(const struct sock *__sk)
 {
 	return inet_sk(__sk)->pinet6;
 }
 
+<<<<<<< HEAD
 static inline struct inet6_request_sock *
 			inet6_rsk(const struct request_sock *rsk)
 {
@@ -423,14 +535,21 @@ static inline u32 inet6_rsk_offset(struct request_sock *rsk)
 	return rsk->rsk_ops->obj_size - sizeof(struct inet6_request_sock);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct request_sock *inet6_reqsk_alloc(struct request_sock_ops *ops)
 {
 	struct request_sock *req = reqsk_alloc(ops);
 
+<<<<<<< HEAD
 	if (req != NULL) {
 		inet_rsk(req)->inet6_rsk_offset = inet6_rsk_offset(req);
 		inet6_rsk(req)->pktopts = NULL;
 	}
+=======
+	if (req)
+		inet_rsk(req)->pktopts = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	return req;
 }
@@ -454,6 +573,7 @@ static inline void inet_sk_copy_descendant(struct sock *sk_to,
 #define __ipv6_only_sock(sk)	(inet6_sk(sk)->ipv6only)
 #define ipv6_only_sock(sk)	((sk)->sk_family == PF_INET6 && __ipv6_only_sock(sk))
 
+<<<<<<< HEAD
 struct inet6_timewait_sock {
 	struct in6_addr tw_v6_daddr;
 	struct in6_addr	tw_v6_rcv_saddr;
@@ -485,6 +605,13 @@ static inline struct in6_addr *__inet6_rcv_saddr(const struct sock *sk)
 static inline struct in6_addr *inet6_rcv_saddr(const struct sock *sk)
 {
 	return sk->sk_family == AF_INET6 ? __inet6_rcv_saddr(sk) : NULL;
+=======
+static inline const struct in6_addr *inet6_rcv_saddr(const struct sock *sk)
+{
+	if (sk->sk_family == AF_INET6)
+		return &sk->sk_v6_rcv_saddr;
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int inet_v6_ipv6only(const struct sock *sk)
@@ -512,11 +639,16 @@ static inline struct raw6_sock *raw6_sk(const struct sock *sk)
 	return NULL;
 }
 
+<<<<<<< HEAD
 #define __inet6_rcv_saddr(__sk)	NULL
 #define inet6_rcv_saddr(__sk)	NULL
 #define tcp_twsk_ipv6only(__sk)		0
 #define inet_v6_ipv6only(__sk)		0
+<<<<<<< HEAD
 #endif /* defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE) */
+=======
+#endif /* IS_ENABLED(CONFIG_IPV6) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define INET6_MATCH(__sk, __net, __hash, __saddr, __daddr, __ports, __dif)\
 	(((__sk)->sk_hash == (__hash)) && sock_net((__sk)) == (__net)	&& \
@@ -535,5 +667,20 @@ static inline struct raw6_sock *raw6_sk(const struct sock *sk)
 	 (!((__sk)->sk_bound_dev_if) || ((__sk)->sk_bound_dev_if == (__dif))))
 
 #endif /* __KERNEL__ */
+=======
+#define inet6_rcv_saddr(__sk)	NULL
+#define tcp_twsk_ipv6only(__sk)		0
+#define inet_v6_ipv6only(__sk)		0
+#endif /* IS_ENABLED(CONFIG_IPV6) */
+
+#define INET6_MATCH(__sk, __net, __saddr, __daddr, __ports, __dif)	\
+	(((__sk)->sk_portpair == (__ports))			&&	\
+	 ((__sk)->sk_family == AF_INET6)			&&	\
+	 ipv6_addr_equal(&(__sk)->sk_v6_daddr, (__saddr))		&&	\
+	 ipv6_addr_equal(&(__sk)->sk_v6_rcv_saddr, (__daddr))	&&	\
+	 (!(__sk)->sk_bound_dev_if	||				\
+	   ((__sk)->sk_bound_dev_if == (__dif))) 		&&	\
+	 net_eq(sock_net(__sk), (__net)))
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _IPV6_H */

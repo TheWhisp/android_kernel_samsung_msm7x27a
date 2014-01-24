@@ -1,6 +1,7 @@
 #ifndef __ALPHA_COMPILER_H
 #define __ALPHA_COMPILER_H
 
+<<<<<<< HEAD
 /* 
  * Herein are macros we use when describing various patterns we want to GCC.
  * In all cases we can get better schedules out of the compiler if we hide
@@ -114,6 +115,10 @@
 #endif
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/compiler.h>
+
+>>>>>>> refs/remotes/origin/master
 /* Some idiots over in <linux/compiler.h> thought inline should imply
    always_inline.  This breaks stuff.  We'll include this file whenever
    we run into such problems.  */
@@ -125,6 +130,9 @@
 #undef __always_inline
 #define __always_inline		inline __attribute__((always_inline))
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ALPHA_COMPILER_H */

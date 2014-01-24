@@ -79,7 +79,15 @@ static void shx3_prepare_cpus(unsigned int max_cpus)
 
 	for (i = 0; i < SMP_MSG_NR; i++)
 		request_irq(104 + i, ipi_interrupt_handler,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    IRQF_DISABLED | IRQF_PERCPU, "IPI", (void *)(long)i);
+=======
+			    IRQF_PERCPU, "IPI", (void *)(long)i);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    IRQF_PERCPU, "IPI", (void *)(long)i);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < max_cpus; i++)
 		set_cpu_present(i, true);
@@ -124,7 +132,11 @@ static void shx3_update_boot_vector(unsigned int cpu)
 	__raw_writel(STBCR_RESET, STBCR_REG(cpu));
 }
 
+<<<<<<< HEAD
 static int __cpuinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 shx3_cpu_callback(struct notifier_block *nfb, unsigned long action, void *hcpu)
 {
 	unsigned int cpu = (unsigned int)hcpu;
@@ -143,11 +155,19 @@ shx3_cpu_callback(struct notifier_block *nfb, unsigned long action, void *hcpu)
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata shx3_cpu_notifier = {
 	.notifier_call		= shx3_cpu_callback,
 };
 
 static int __cpuinit register_shx3_cpu_notifier(void)
+=======
+static struct notifier_block shx3_cpu_notifier = {
+	.notifier_call		= shx3_cpu_callback,
+};
+
+static int register_shx3_cpu_notifier(void)
+>>>>>>> refs/remotes/origin/master
 {
 	register_hotcpu_notifier(&shx3_cpu_notifier);
 	return 0;

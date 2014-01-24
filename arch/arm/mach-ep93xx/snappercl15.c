@@ -3,7 +3,15 @@
  * Bluewater Systems Snapper CL15 system module
  *
  * Copyright (C) 2009 Bluewater Systems Ltd
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Ryan Mallon <ryan@bluewatersys.com>
+=======
+ * Author: Ryan Mallon
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Ryan Mallon
+>>>>>>> refs/remotes/origin/master
  *
  * NAND code adapted from driver by:
  *   Andre Renaud <andre@bluewatersys.com>
@@ -20,7 +28,13 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/i2c.h>
 #include <linux/i2c-gpio.h>
 #include <linux/fb.h>
@@ -29,11 +43,31 @@
 #include <linux/mtd/nand.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/fb.h>
+<<<<<<< HEAD
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
+=======
+#include <mach/gpio-ep93xx.h>
+
+#include <asm/hardware/vic.h>
+=======
+#include <linux/platform_data/video-ep93xx.h>
+#include <mach/gpio-ep93xx.h>
+
+>>>>>>> refs/remotes/origin/master
+#include <asm/mach-types.h>
+#include <asm/mach/arch.h>
+
+#include "soc.h"
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SNAPPERCL15_NAND_BASE	(EP93XX_CS7_PHYS_BASE + SZ_16M)
 
 #define SNAPPERCL15_NAND_WPN	(1 << 8)  /* Write protect (active low) */
@@ -79,8 +113,11 @@ static int snappercl15_nand_dev_ready(struct mtd_info *mtd)
 	return !!(__raw_readw(NAND_CTRL_ADDR(chip)) & SNAPPERCL15_NAND_RDY);
 }
 
+<<<<<<< HEAD
 static const char *snappercl15_nand_part_probes[] = {"cmdlinepart", NULL};
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mtd_partition snappercl15_nand_parts[] = {
 	{
 		.name		= "Kernel",
@@ -97,10 +134,15 @@ static struct mtd_partition snappercl15_nand_parts[] = {
 static struct platform_nand_data snappercl15_nand_data = {
 	.chip = {
 		.nr_chips		= 1,
+<<<<<<< HEAD
 		.part_probe_types	= snappercl15_nand_part_probes,
 		.partitions		= snappercl15_nand_parts,
 		.nr_partitions		= ARRAY_SIZE(snappercl15_nand_parts),
 		.options		= NAND_NO_AUTOINCR,
+=======
+		.partitions		= snappercl15_nand_parts,
+		.nr_partitions		= ARRAY_SIZE(snappercl15_nand_parts),
+>>>>>>> refs/remotes/origin/master
 		.chip_delay		= 25,
 	},
 	.ctrl = {
@@ -150,6 +192,26 @@ static struct ep93xxfb_mach_info __initdata snappercl15_fb_info = {
 	.bpp			= 16,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct platform_device snappercl15_audio_device = {
+	.name		= "snappercl15-audio",
+	.id		= -1,
+};
+
+static void __init snappercl15_register_audio(void)
+{
+	ep93xx_register_i2s();
+	platform_device_register(&snappercl15_audio_device);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init snappercl15_init_machine(void)
 {
 	ep93xx_init_devices();
@@ -157,15 +219,44 @@ static void __init snappercl15_init_machine(void)
 	ep93xx_register_i2c(&snappercl15_i2c_gpio_data, snappercl15_i2c_data,
 			    ARRAY_SIZE(snappercl15_i2c_data));
 	ep93xx_register_fb(&snappercl15_fb_info);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ep93xx_register_i2s();
+=======
+	snappercl15_register_audio();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snappercl15_register_audio();
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&snappercl15_nand_device);
 }
 
 MACHINE_START(SNAPPER_CL15, "Bluewater Systems Snapper CL15")
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Maintainer: Ryan Mallon <ryan@bluewatersys.com> */
 	.boot_params	= EP93XX_SDCE0_PHYS_BASE + 0x100,
 	.map_io		= ep93xx_map_io,
 	.init_irq	= ep93xx_init_irq,
 	.timer 		= &ep93xx_timer,
 	.init_machine	= snappercl15_init_machine,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Maintainer: Ryan Mallon */
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+<<<<<<< HEAD
+	.handle_irq	= vic_handle_irq,
+	.timer 		= &ep93xx_timer,
+	.init_machine	= snappercl15_init_machine,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= snappercl15_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

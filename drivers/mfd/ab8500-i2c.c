@@ -10,8 +10,13 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/mfd/ab8500.h>
 #include <linux/mfd/db8500-prcmu.h>
+=======
+#include <linux/mfd/abx500/ab8500.h>
+#include <linux/mfd/dbx500-prcmu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int ab8500_i2c_write(struct ab8500 *ab8500, u16 addr, u8 data)
 {
@@ -23,6 +28,21 @@ static int ab8500_i2c_write(struct ab8500 *ab8500, u16 addr, u8 data)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int ab8500_i2c_write_masked(struct ab8500 *ab8500, u16 addr, u8 mask,
+	u8 data)
+{
+	int ret;
+
+	ret = prcmu_abb_write_masked((u8)(addr >> 8), (u8)(addr & 0xFF), &data,
+		&mask, 1);
+	if (ret < 0)
+		dev_err(ab8500->dev, "prcmu i2c error %d\n", ret);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int ab8500_i2c_read(struct ab8500 *ab8500, u16 addr)
 {
 	int ret;
@@ -38,6 +58,10 @@ static int ab8500_i2c_read(struct ab8500 *ab8500, u16 addr)
 
 static int __devinit ab8500_i2c_probe(struct platform_device *plf)
 {
+<<<<<<< HEAD
+=======
+	const struct platform_device_id *platid = platform_get_device_id(plf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ab8500 *ab8500;
 	struct resource *resource;
 	int ret;
@@ -58,6 +82,7 @@ static int __devinit ab8500_i2c_probe(struct platform_device *plf)
 
 	ab8500->read = ab8500_i2c_read;
 	ab8500->write = ab8500_i2c_write;
+<<<<<<< HEAD
 
 	platform_set_drvdata(plf, ab8500);
 
@@ -65,6 +90,17 @@ static int __devinit ab8500_i2c_probe(struct platform_device *plf)
 	if (ret)
 		kfree(ab8500);
 
+=======
+	ab8500->write_masked = ab8500_i2c_write_masked;
+
+	platform_set_drvdata(plf, ab8500);
+
+	ret = ab8500_init(ab8500, platid->driver_data);
+	if (ret)
+		kfree(ab8500);
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -78,13 +114,29 @@ static int __devexit ab8500_i2c_remove(struct platform_device *plf)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static const struct platform_device_id ab8500_id[] = {
+	{ "ab8500-i2c", AB8500_VERSION_AB8500 },
+	{ "ab8505-i2c", AB8500_VERSION_AB8505 },
+	{ "ab9540-i2c", AB8500_VERSION_AB9540 },
+	{ "ab8540-i2c", AB8500_VERSION_AB8540 },
+	{ }
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver ab8500_i2c_driver = {
 	.driver = {
 		.name = "ab8500-i2c",
 		.owner = THIS_MODULE,
 	},
 	.probe	= ab8500_i2c_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(ab8500_i2c_remove)
+=======
+	.remove	= __devexit_p(ab8500_i2c_remove),
+	.id_table = ab8500_id,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init ab8500_i2c_init(void)

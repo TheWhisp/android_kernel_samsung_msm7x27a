@@ -9,12 +9,22 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /include/ "p2020si.dtsi"
+=======
+/include/ "fsl/p2020si-pre.dtsi"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/include/ "fsl/p2020si-pre.dtsi"
+>>>>>>> refs/remotes/origin/master
 
 / {
 	model = "fsl,P2020DS";
 	compatible = "fsl,P2020DS";
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	aliases {
 		ethernet0 = &enet0;
 		ethernet1 = &enet1;
@@ -27,12 +37,24 @@
 	};
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memory {
 		device_type = "memory";
 	};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	localbus@ffe05000 {
 		compatible = "fsl,elbc", "simple-bus";
+=======
+	board_lbc: lbc: localbus@ffe05000 {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	board_lbc: lbc: localbus@ffe05000 {
+>>>>>>> refs/remotes/origin/master
 		ranges = <0x0 0x0 0x0 0xe8000000 0x08000000
 			  0x1 0x0 0x0 0xe0000000 0x08000000
 			  0x2 0x0 0x0 0xffa00000 0x00040000
@@ -40,6 +62,8 @@
 			  0x4 0x0 0x0 0xffa40000 0x00040000
 			  0x5 0x0 0x0 0xffa80000 0x00040000
 			  0x6 0x0 0x0 0xffac0000 0x00040000>;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		nor@0,0 {
 			#address-cells = <1>;
@@ -232,6 +256,25 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		reg = <0 0xffe05000 0 0x1000>;
+	};
+
+	board_soc: soc: soc@ffe00000 {
+		ranges = <0x0 0x0 0xffe00000 0x100000>;
+	};
+
+	pci2: pcie@ffe08000 {
+		ranges = <0x2000000 0x0 0x80000000 0 0x80000000 0x0 0x20000000
+			  0x1000000 0x0 0x00000000 0 0xffc00000 0x0 0x10000>;
+		reg = <0 0xffe08000 0 0x1000>;
+		pcie@0 {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ranges = <0x2000000 0x0 0x80000000
 				  0x2000000 0x0 0x80000000
 				  0x0 0x20000000
@@ -242,6 +285,8 @@
 		};
 	};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci1: pcie@ffe09000 {
 		ranges = <0x2000000 0x0 0xa0000000 0 0xa0000000 0x0 0x20000000
 			  0x1000000 0x0 0x00000000 0 0xffc10000 0x0 0x10000>;
@@ -297,6 +342,18 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	board_pci1: pci1: pcie@ffe09000 {
+		ranges = <0x2000000 0x0 0xa0000000 0 0xa0000000 0x0 0x20000000
+			  0x1000000 0x0 0x00000000 0 0xffc10000 0x0 0x10000>;
+		reg = <0 0xffe09000 0 0x1000>;
+		pcie@0 {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ranges = <0x2000000 0x0 0xa0000000
 				  0x2000000 0x0 0xa0000000
 				  0x0 0x20000000
@@ -304,6 +361,8 @@
 				  0x1000000 0x0 0x0
 				  0x1000000 0x0 0x0
 				  0x0 0x10000>;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			uli1575@0 {
 				reg = <0x0 0x0 0x0 0x0 0x0>;
 				#size-cells = <2>;
@@ -387,6 +446,21 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		};
+	};
+
+	pci0: pcie@ffe0a000 {
+		ranges = <0x2000000 0x0 0xc0000000 0 0xc0000000 0x0 0x20000000
+			  0x1000000 0x0 0x00000000 0 0xffc20000 0x0 0x10000>;
+		reg = <0 0xffe0a000 0 0x1000>;
+		pcie@0 {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ranges = <0x2000000 0x0 0xc0000000
 				  0x2000000 0x0 0xc0000000
 				  0x0 0x20000000
@@ -397,3 +471,20 @@
 		};
 	};
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+/*
+ * p2020ds.dtsi must be last to ensure board_pci0 overrides pci0 settings
+ * for interrupt-map & interrupt-map-mask
+ */
+
+/include/ "fsl/p2020si-post.dtsi"
+/include/ "p2020ds.dtsi"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

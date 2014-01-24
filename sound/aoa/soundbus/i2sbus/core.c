@@ -11,6 +11,11 @@
 #include <linux/pci.h>
 #include <linux/interrupt.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 
@@ -200,7 +205,12 @@ static int i2sbus_add_dev(struct macio_dev *macio,
 			 * We probably cannot handle all device-id machines,
 			 * so restrict to those we do handle for now.
 			 */
+<<<<<<< HEAD
 			if (id && (*id == 22 || *id == 14 || *id == 35)) {
+=======
+			if (id && (*id == 22 || *id == 14 || *id == 35 ||
+				   *id == 44)) {
+>>>>>>> refs/remotes/origin/master
 				snprintf(dev->sound.modalias, 32,
 					 "aoa-device-id-%d", *id);
 				ok = 1;
@@ -262,8 +272,16 @@ static int i2sbus_add_dev(struct macio_dev *macio,
 		 */
 		dev->allocated_resource[i] =
 			request_mem_region(dev->resources[i].start,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					   dev->resources[i].end -
 					   dev->resources[i].start + 1,
+=======
+					   resource_size(&dev->resources[i]),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					   resource_size(&dev->resources[i]),
+>>>>>>> refs/remotes/origin/master
 					   dev->rnames[i]);
 		if (!dev->allocated_resource[i]) {
 			printk(KERN_ERR "i2sbus: failed to claim resource %d!\n", i);
@@ -272,19 +290,43 @@ static int i2sbus_add_dev(struct macio_dev *macio,
 	}
 
 	r = &dev->resources[aoa_resource_i2smmio];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rlen = r->end - r->start + 1;
+=======
+	rlen = resource_size(r);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rlen = resource_size(r);
+>>>>>>> refs/remotes/origin/master
 	if (rlen < sizeof(struct i2s_interface_regs))
 		goto err;
 	dev->intfregs = ioremap(r->start, rlen);
 
 	r = &dev->resources[aoa_resource_txdbdma];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rlen = r->end - r->start + 1;
+=======
+	rlen = resource_size(r);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rlen = resource_size(r);
+>>>>>>> refs/remotes/origin/master
 	if (rlen < sizeof(struct dbdma_regs))
 		goto err;
 	dev->out.dbdma = ioremap(r->start, rlen);
 
 	r = &dev->resources[aoa_resource_rxdbdma];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rlen = r->end - r->start + 1;
+=======
+	rlen = resource_size(r);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rlen = resource_size(r);
+>>>>>>> refs/remotes/origin/master
 	if (rlen < sizeof(struct dbdma_regs))
 		goto err;
 	dev->in.dbdma = ioremap(r->start, rlen);

@@ -45,9 +45,13 @@ int videobuf_dvb_register_bus(struct videobuf_dvb_frontends *f,
 			  void *adapter_priv,
 			  struct device *device,
 			  short *adapter_nr,
+<<<<<<< HEAD
 			  int mfe_shared,
 			  int (*fe_ioctl_override)(struct dvb_frontend *,
 					unsigned int, void *, unsigned int));
+=======
+			  int mfe_shared);
+>>>>>>> refs/remotes/origin/master
 
 void videobuf_dvb_unregister_bus(struct videobuf_dvb_frontends *f);
 

@@ -57,7 +57,15 @@ int ia64_setup_msi_irq(struct pci_dev *pdev, struct msi_desc *desc)
 		return irq;
 
 	irq_set_msi_desc(irq, desc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpus_and(mask, irq_to_domain(irq), cpu_online_map);
+=======
+	cpumask_and(&mask, &(irq_to_domain(irq)), cpu_online_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpumask_and(&mask, &(irq_to_domain(irq)), cpu_online_mask);
+>>>>>>> refs/remotes/origin/master
 	dest_phys_id = cpu_physical_id(first_cpu(mask));
 	vector = irq_to_vector(irq);
 
@@ -131,7 +139,15 @@ void arch_teardown_msi_irq(unsigned int irq)
 	return ia64_teardown_msi_irq(irq);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DMAR
+=======
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 static int dmar_msi_set_affinity(struct irq_data *data,
 				 const struct cpumask *mask, bool force)
@@ -179,7 +195,15 @@ msi_compose_msg(struct pci_dev *pdev, unsigned int irq, struct msi_msg *msg)
 	unsigned dest;
 	cpumask_t mask;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cpus_and(mask, irq_to_domain(irq), cpu_online_map);
+=======
+	cpumask_and(&mask, &(irq_to_domain(irq)), cpu_online_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpumask_and(&mask, &(irq_to_domain(irq)), cpu_online_mask);
+>>>>>>> refs/remotes/origin/master
 	dest = cpu_physical_id(first_cpu(mask));
 
 	msg->address_hi = 0;
@@ -210,5 +234,13 @@ int arch_setup_dmar_msi(unsigned int irq)
 				      "edge");
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_DMAR */
+=======
+#endif /* CONFIG_INTEL_IOMMU */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_INTEL_IOMMU */
+>>>>>>> refs/remotes/origin/master
 

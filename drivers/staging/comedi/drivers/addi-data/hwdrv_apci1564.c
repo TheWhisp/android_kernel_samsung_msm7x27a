@@ -15,10 +15,13 @@ This program is free software; you can redistribute it and/or modify it under th
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
+<<<<<<< HEAD
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 You should also find the complete GPL in the COPYING file accompanying this source code.
 
+=======
+>>>>>>> refs/remotes/origin/master
 @endverbatim
 */
 /*
@@ -46,6 +49,7 @@ You should also find the complete GPL in the COPYING file accompanying this sour
   +----------+-----------+------------------------------------------------+
 */
 
+<<<<<<< HEAD
 /*
 +----------------------------------------------------------------------------+
 |                               Included files                               |
@@ -54,6 +58,64 @@ You should also find the complete GPL in the COPYING file accompanying this sour
 
 #include <linux/delay.h>
 #include "hwdrv_apci1564.h"
+=======
+/*********      Definitions for APCI-1564 card  *****/
+
+#define APCI1564_ADDRESS_RANGE				128
+
+/* DIGITAL INPUT-OUTPUT DEFINE */
+/* Input defines */
+#define APCI1564_DIGITAL_IP				0x04
+#define APCI1564_DIGITAL_IP_INTERRUPT_MODE1		4
+#define APCI1564_DIGITAL_IP_INTERRUPT_MODE2		8
+#define APCI1564_DIGITAL_IP_IRQ				16
+
+/* Output defines */
+#define APCI1564_DIGITAL_OP				0x18
+#define APCI1564_DIGITAL_OP_RW				0
+#define APCI1564_DIGITAL_OP_INTERRUPT			4
+#define APCI1564_DIGITAL_OP_IRQ				12
+
+/* Digital Input IRQ Function Selection */
+#define ADDIDATA_OR					0
+#define ADDIDATA_AND					1
+
+/* Digital Input Interrupt Status */
+#define APCI1564_DIGITAL_IP_INTERRUPT_STATUS		12
+
+/* Digital Output Interrupt Status */
+#define APCI1564_DIGITAL_OP_INTERRUPT_STATUS		8
+
+/* Digital Input Interrupt Enable Disable. */
+#define APCI1564_DIGITAL_IP_INTERRUPT_ENABLE		0x4
+#define APCI1564_DIGITAL_IP_INTERRUPT_DISABLE		0xfffffffb
+
+/* Digital Output Interrupt Enable Disable. */
+#define APCI1564_DIGITAL_OP_VCC_INTERRUPT_ENABLE	0x1
+#define APCI1564_DIGITAL_OP_VCC_INTERRUPT_DISABLE	0xfffffffe
+#define APCI1564_DIGITAL_OP_CC_INTERRUPT_ENABLE		0x2
+#define APCI1564_DIGITAL_OP_CC_INTERRUPT_DISABLE	0xfffffffd
+
+/* TIMER COUNTER WATCHDOG DEFINES */
+
+#define ADDIDATA_TIMER					0
+#define ADDIDATA_COUNTER				1
+#define ADDIDATA_WATCHDOG				2
+#define APCI1564_DIGITAL_OP_WATCHDOG			0x28
+#define APCI1564_TIMER					0x48
+#define APCI1564_COUNTER1				0x0
+#define APCI1564_COUNTER2				0x20
+#define APCI1564_COUNTER3				0x40
+#define APCI1564_COUNTER4				0x60
+#define APCI1564_TCW_SYNC_ENABLEDISABLE			0
+#define APCI1564_TCW_RELOAD_VALUE			4
+#define APCI1564_TCW_TIMEBASE				8
+#define APCI1564_TCW_PROG				12
+#define APCI1564_TCW_TRIG_STATUS			16
+#define APCI1564_TCW_IRQ				20
+#define APCI1564_TCW_WARN_TIMEVAL			24
+#define APCI1564_TCW_WARN_TIMEBASE			28
+>>>>>>> refs/remotes/origin/master
 
 /* Global variables */
 static unsigned int ui_InterruptStatus_1564 = 0;
@@ -86,9 +148,19 @@ static unsigned int ui_InterruptData, ui_Type;
 |			                                                         |
 +----------------------------------------------------------------------------+
 */
+<<<<<<< HEAD
 int i_APCI1564_ConfigDigitalInput(struct comedi_device *dev, struct comedi_subdevice *s,
 	struct comedi_insn *insn, unsigned int *data)
 {
+=======
+static int i_APCI1564_ConfigDigitalInput(struct comedi_device *dev,
+					 struct comedi_subdevice *s,
+					 struct comedi_insn *insn,
+					 unsigned int *data)
+{
+	struct addi_private *devpriv = dev->private;
+
+>>>>>>> refs/remotes/origin/master
 	devpriv->tsk_Current = current;
    /*******************************/
 	/* Set the digital input logic */
@@ -128,6 +200,7 @@ int i_APCI1564_ConfigDigitalInput(struct comedi_device *dev, struct comedi_subde
 	return insn->n;
 }
 
+<<<<<<< HEAD
 /*
 +----------------------------------------------------------------------------+
 | Function   Name   : int i_APCI1564_Read1DigitalInput                       |
@@ -229,6 +302,17 @@ int i_APCI1564_ReadMoreDigitalInput(struct comedi_device *dev, struct comedi_sub
 			*data = ui_InterruptStatus_1564;
 		}		/*  if  (data[1]==1) */
 	}			/*  else if  (data[1]==0) */
+=======
+static int apci1564_di_insn_bits(struct comedi_device *dev,
+				 struct comedi_subdevice *s,
+				 struct comedi_insn *insn,
+				 unsigned int *data)
+{
+	struct addi_private *devpriv = dev->private;
+
+	data[1] = inl(devpriv->i_IobaseAmcc + APCI1564_DIGITAL_IP);
+
+>>>>>>> refs/remotes/origin/master
 	return insn->n;
 }
 
@@ -257,9 +341,18 @@ int i_APCI1564_ReadMoreDigitalInput(struct comedi_device *dev, struct comedi_sub
 |			                                                         |
 +----------------------------------------------------------------------------+
 */
+<<<<<<< HEAD
 int i_APCI1564_ConfigDigitalOutput(struct comedi_device *dev, struct comedi_subdevice *s,
 	struct comedi_insn *insn, unsigned int *data)
 {
+=======
+static int i_APCI1564_ConfigDigitalOutput(struct comedi_device *dev,
+					  struct comedi_subdevice *s,
+					  struct comedi_insn *insn,
+					  unsigned int *data)
+{
+	struct addi_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned int ul_Command = 0;
 
 	if ((data[0] != 0) && (data[0] != 1)) {
@@ -295,6 +388,7 @@ int i_APCI1564_ConfigDigitalOutput(struct comedi_device *dev, struct comedi_subd
 	return insn->n;
 }
 
+<<<<<<< HEAD
 /*
 +----------------------------------------------------------------------------+
 | Function   Name   : int i_APCI1564_WriteDigitalOutput                      |
@@ -533,6 +627,24 @@ int i_APCI1564_ReadDigitalOutput(struct comedi_device *dev, struct comedi_subdev
 			printk("\nSpecified channel not supported \n");
 		}		/*  else if (ui_Temp==1) */
 	}			/*  else if  (ui_Temp==0) */
+=======
+static int apci1564_do_insn_bits(struct comedi_device *dev,
+				 struct comedi_subdevice *s,
+				 struct comedi_insn *insn,
+				 unsigned int *data)
+{
+	struct addi_private *devpriv = dev->private;
+
+	s->state = inl(devpriv->i_IobaseAmcc + APCI1564_DIGITAL_OP +
+			APCI1564_DIGITAL_OP_RW);
+
+	if (comedi_dio_update_state(s, data))
+		outl(s->state, devpriv->i_IobaseAmcc + APCI1564_DIGITAL_OP +
+			APCI1564_DIGITAL_OP_RW);
+
+	data[1] = s->state;
+
+>>>>>>> refs/remotes/origin/master
 	return insn->n;
 }
 
@@ -566,10 +678,21 @@ int i_APCI1564_ReadDigitalOutput(struct comedi_device *dev, struct comedi_subdev
 |			                                                         |
 +----------------------------------------------------------------------------+
 */
+<<<<<<< HEAD
 int i_APCI1564_ConfigTimerCounterWatchdog(struct comedi_device *dev,
 	struct comedi_subdevice *s, struct comedi_insn *insn, unsigned int *data)
 {
 	unsigned int ul_Command1 = 0;
+=======
+static int i_APCI1564_ConfigTimerCounterWatchdog(struct comedi_device *dev,
+						 struct comedi_subdevice *s,
+						 struct comedi_insn *insn,
+						 unsigned int *data)
+{
+	struct addi_private *devpriv = dev->private;
+	unsigned int ul_Command1 = 0;
+
+>>>>>>> refs/remotes/origin/master
 	devpriv->tsk_Current = current;
 	if (data[0] == ADDIDATA_WATCHDOG) {
 		devpriv->b_TimerSelectMode = ADDIDATA_WATCHDOG;
@@ -720,10 +843,21 @@ int i_APCI1564_ConfigTimerCounterWatchdog(struct comedi_device *dev,
 |			                                                         |
 +----------------------------------------------------------------------------+
 */
+<<<<<<< HEAD
 int i_APCI1564_StartStopWriteTimerCounterWatchdog(struct comedi_device *dev,
 	struct comedi_subdevice *s, struct comedi_insn *insn, unsigned int *data)
 {
 	unsigned int ul_Command1 = 0;
+=======
+static int i_APCI1564_StartStopWriteTimerCounterWatchdog(struct comedi_device *dev,
+							 struct comedi_subdevice *s,
+							 struct comedi_insn *insn,
+							 unsigned int *data)
+{
+	struct addi_private *devpriv = dev->private;
+	unsigned int ul_Command1 = 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (devpriv->b_TimerSelectMode == ADDIDATA_WATCHDOG) {
 		switch (data[1]) {
 		case 0:	/* stop the watchdog */
@@ -815,9 +949,18 @@ int i_APCI1564_StartStopWriteTimerCounterWatchdog(struct comedi_device *dev,
 |			                                                         |
 +----------------------------------------------------------------------------+
 */
+<<<<<<< HEAD
 int i_APCI1564_ReadTimerCounterWatchdog(struct comedi_device *dev,
 	struct comedi_subdevice *s, struct comedi_insn *insn, unsigned int *data)
 {
+=======
+static int i_APCI1564_ReadTimerCounterWatchdog(struct comedi_device *dev,
+					       struct comedi_subdevice *s,
+					       struct comedi_insn *insn,
+					       unsigned int *data)
+{
+	struct addi_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned int ul_Command1 = 0;
 
 	if (devpriv->b_TimerSelectMode == ADDIDATA_WATCHDOG) {
@@ -894,8 +1037,15 @@ int i_APCI1564_ReadTimerCounterWatchdog(struct comedi_device *dev,
 +----------------------------------------------------------------------------+
 */
 
+<<<<<<< HEAD
 int i_APCI1564_ReadInterruptStatus(struct comedi_device *dev, struct comedi_subdevice *s,
 	struct comedi_insn *insn, unsigned int *data)
+=======
+static int i_APCI1564_ReadInterruptStatus(struct comedi_device *dev,
+					  struct comedi_subdevice *s,
+					  struct comedi_insn *insn,
+					  unsigned int *data)
+>>>>>>> refs/remotes/origin/master
 {
 	*data = ui_Type;
 	return insn->n;
@@ -921,10 +1071,18 @@ int i_APCI1564_ReadInterruptStatus(struct comedi_device *dev, struct comedi_subd
 static void v_APCI1564_Interrupt(int irq, void *d)
 {
 	struct comedi_device *dev = d;
+<<<<<<< HEAD
+=======
+	struct addi_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned int ui_DO, ui_DI;
 	unsigned int ui_Timer;
 	unsigned int ui_C1, ui_C2, ui_C3, ui_C4;
 	unsigned int ul_Command2 = 0;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	ui_DI = inl(devpriv->i_IobaseAmcc + APCI1564_DIGITAL_IP +
 		APCI1564_DIGITAL_IP_IRQ) & 0x01;
 	ui_DO = inl(devpriv->i_IobaseAmcc + APCI1564_DIGITAL_OP +
@@ -1104,8 +1262,15 @@ static void v_APCI1564_Interrupt(int irq, void *d)
 +----------------------------------------------------------------------------+
 */
 
+<<<<<<< HEAD
 int i_APCI1564_Reset(struct comedi_device *dev)
 {
+=======
+static int i_APCI1564_Reset(struct comedi_device *dev)
+{
+	struct addi_private *devpriv = dev->private;
+
+>>>>>>> refs/remotes/origin/master
 	outl(0x0, devpriv->i_IobaseAmcc + APCI1564_DIGITAL_IP_IRQ);	/* disable the interrupts */
 	inl(devpriv->i_IobaseAmcc + APCI1564_DIGITAL_IP_INTERRUPT_STATUS);	/* Reset the interrupt status register */
 	outl(0x0, devpriv->i_IobaseAmcc + APCI1564_DIGITAL_IP_INTERRUPT_MODE1);	/* Disable the and/or interrupt */

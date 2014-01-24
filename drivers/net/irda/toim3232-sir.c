@@ -78,7 +78,15 @@
  * Target hardware: IRWave IR320ST-2
  *
  * 	The IRWave IR320ST-2 is a simple dongle based on the Vishay/Temic
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 	TOIM3232 SIR Endec and the Vishay/Temic TFDS4500 SIR IRDA transciever.
+=======
+ * 	TOIM3232 SIR Endec and the Vishay/Temic TFDS4500 SIR IRDA transceiver.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * 	TOIM3232 SIR Endec and the Vishay/Temic TFDS4500 SIR IRDA transceiver.
+>>>>>>> refs/remotes/origin/master
  * 	It uses a hex inverter and some discrete components to buffer and
  * 	line convert the RS232 down to 5V.
  *

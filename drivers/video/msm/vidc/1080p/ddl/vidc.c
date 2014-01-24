@@ -520,12 +520,22 @@ void vidc_1080p_get_decode_frame(
 	u32 frame = 0;
 
 	VIDC_HWIO_IN(REG_760102, &frame);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (frame & 0x10)
 		*pe_frame = (enum vidc_1080p_decode_frame)
 			VIDC_1080P_DECODE_FRAMETYPE_IDR;
 	else
 		*pe_frame = (enum vidc_1080p_decode_frame)
 			(frame & VIDC_1080P_SI_RG8_DECODE_FRAMETYPE_MASK);
+=======
+	*pe_frame = (enum vidc_1080p_decode_frame)
+		(frame & VIDC_1080P_SI_RG8_DECODE_FRAMETYPE_MASK);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*pe_frame = (enum vidc_1080p_decode_frame)
+		(frame & VIDC_1080P_SI_RG8_DECODE_FRAMETYPE_MASK);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void vidc_1080p_get_decode_frame_result(

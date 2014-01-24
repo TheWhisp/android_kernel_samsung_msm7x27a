@@ -15,16 +15,45 @@ int swiotlb __read_mostly;
 EXPORT_SYMBOL(swiotlb);
 
 static void *ia64_swiotlb_alloc_coherent(struct device *dev, size_t size,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					 dma_addr_t *dma_handle, gfp_t gfp)
+=======
+					 dma_addr_t *dma_handle, gfp_t gfp,
+					 struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 dma_addr_t *dma_handle, gfp_t gfp,
+					 struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	if (dev->coherent_dma_mask != DMA_BIT_MASK(64))
 		gfp |= GFP_DMA;
 	return swiotlb_alloc_coherent(dev, size, dma_handle, gfp);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct dma_map_ops swiotlb_dma_ops = {
 	.alloc_coherent = ia64_swiotlb_alloc_coherent,
 	.free_coherent = swiotlb_free_coherent,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void ia64_swiotlb_free_coherent(struct device *dev, size_t size,
+				       void *vaddr, dma_addr_t dma_addr,
+				       struct dma_attrs *attrs)
+{
+	swiotlb_free_coherent(dev, size, vaddr, dma_addr);
+}
+
+struct dma_map_ops swiotlb_dma_ops = {
+	.alloc = ia64_swiotlb_alloc_coherent,
+	.free = ia64_swiotlb_free_coherent,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.map_page = swiotlb_map_page,
 	.unmap_page = swiotlb_unmap_page,
 	.map_sg = swiotlb_map_sg_attrs,

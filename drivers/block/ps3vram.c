@@ -10,6 +10,14 @@
 
 #include <linux/blkdev.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <linux/slab.h>
@@ -524,7 +532,11 @@ static int ps3vram_proc_show(struct seq_file *m, void *v)
 
 static int ps3vram_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, ps3vram_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, ps3vram_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations ps3vram_proc_fops = {
@@ -535,7 +547,11 @@ static const struct file_operations ps3vram_proc_fops = {
 	.release	= single_release,
 };
 
+<<<<<<< HEAD
 static void __devinit ps3vram_proc_init(struct ps3_system_bus_device *dev)
+=======
+static void ps3vram_proc_init(struct ps3_system_bus_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ps3vram_priv *priv = ps3_system_bus_get_drvdata(dev);
 	struct proc_dir_entry *pde;
@@ -596,7 +612,15 @@ out:
 	return next;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ps3vram_make_request(struct request_queue *q, struct bio *bio)
+=======
+static void ps3vram_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ps3vram_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ps3_system_bus_device *dev = q->queuedata;
 	struct ps3vram_priv *priv = ps3_system_bus_get_drvdata(dev);
@@ -610,16 +634,33 @@ static int ps3vram_make_request(struct request_queue *q, struct bio *bio)
 	spin_unlock_irq(&priv->lock);
 
 	if (busy)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		bio = ps3vram_do_bio(dev, bio);
 	} while (bio);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devinit ps3vram_probe(struct ps3_system_bus_device *dev)
+=======
+}
+
+static int ps3vram_probe(struct ps3_system_bus_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ps3vram_priv *priv;
 	int error, status;

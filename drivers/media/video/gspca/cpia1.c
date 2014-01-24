@@ -26,6 +26,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MODULE_NAME "cpia1"
 
 #include <linux/input.h>
@@ -550,8 +555,12 @@ retry:
 			      gspca_dev->usb_buf, databytes, 1000);
 
 	if (ret < 0)
+<<<<<<< HEAD
 		err("usb_control_msg %02x, error %d", command[1],
 		       ret);
+=======
+		pr_err("usb_control_msg %02x, error %d\n", command[1], ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ret == -EPIPE && retries > 0) {
 		retries--;
@@ -1279,7 +1288,11 @@ static void monitor_exposure(struct gspca_dev *gspca_dev)
 	cmd[7] = 0;
 	ret = cpia_usb_transferCmd(gspca_dev, cmd);
 	if (ret) {
+<<<<<<< HEAD
 		err("ReadVPRegs(30,4,9,8) - failed: %d", ret);
+=======
+		pr_err("ReadVPRegs(30,4,9,8) - failed: %d\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	exp_acc = gspca_dev->usb_buf[0];
@@ -2131,6 +2144,7 @@ static struct usb_driver sd_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 /* -- module insert / remove -- */
 static int __init sd_mod_init(void)
 {
@@ -2143,3 +2157,6 @@ static void __exit sd_mod_exit(void)
 
 module_init(sd_mod_init);
 module_exit(sd_mod_exit);
+=======
+module_usb_driver(sd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

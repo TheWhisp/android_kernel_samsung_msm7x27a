@@ -16,11 +16,22 @@
 
 #include "audio.h"
 #include "capture.h"
+<<<<<<< HEAD
 #include "control.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "driver.h"
 #include "midi.h"
 #include "playback.h"
 #include "pod.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "podhd.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "podhd.h"
+>>>>>>> refs/remotes/origin/master
 #include "revision.h"
 #include "toneport.h"
 #include "usbdefs.h"
@@ -37,6 +48,17 @@ static const struct usb_device_id line6_id_table[] = {
 	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_BASSPODXTPRO)},
 	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_GUITARPORT)},
 	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_POCKETPOD)},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_PODHD300)},
+	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_PODHD500)},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_PODHD300)},
+	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_PODHD400)},
+	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_PODHD500)},
+>>>>>>> refs/remotes/origin/master
 	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_PODSTUDIO_GX)},
 	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_PODSTUDIO_UX1)},
 	{USB_DEVICE(LINE6_VENDOR_ID, LINE6_DEVID_PODSTUDIO_UX2)},
@@ -56,6 +78,8 @@ MODULE_DEVICE_TABLE(usb, line6_id_table);
 
 /* *INDENT-OFF* */
 static struct line6_properties line6_properties_table[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ "BassPODxt",     "BassPODxt",        LINE6_BIT_BASSPODXT,     LINE6_BIT_CONTROL_PCM_HWMON },
 	{ "BassPODxtLive", "BassPODxt Live",   LINE6_BIT_BASSPODXTLIVE, LINE6_BIT_CONTROL_PCM_HWMON },
 	{ "BassPODxtPro",  "BassPODxt Pro",    LINE6_BIT_BASSPODXTPRO,  LINE6_BIT_CONTROL_PCM_HWMON },
@@ -73,6 +97,36 @@ static struct line6_properties line6_properties_table[] = {
 	{ "TonePortUX1",   "TonePort UX1",     LINE6_BIT_TONEPORT_UX1,  LINE6_BIT_PCM               },
 	{ "TonePortUX2",   "TonePort UX2",     LINE6_BIT_TONEPORT_UX2,  LINE6_BIT_PCM               },
 	{ "Variax",        "Variax Workbench", LINE6_BIT_VARIAX,        LINE6_BIT_CONTROL           }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	{ LINE6_BIT_BASSPODXT,     "BassPODxt",     "BassPODxt",        LINE6_BIT_CONTROL_PCM_HWMON },
+	{ LINE6_BIT_BASSPODXTLIVE, "BassPODxtLive", "BassPODxt Live",   LINE6_BIT_CONTROL_PCM_HWMON },
+	{ LINE6_BIT_BASSPODXTPRO,  "BassPODxtPro",  "BassPODxt Pro",    LINE6_BIT_CONTROL_PCM_HWMON },
+	{ LINE6_BIT_GUITARPORT,    "GuitarPort",    "GuitarPort",       LINE6_BIT_PCM               },
+	{ LINE6_BIT_POCKETPOD,     "PocketPOD",     "Pocket POD",       LINE6_BIT_CONTROL           },
+	{ LINE6_BIT_PODHD300,      "PODHD300",      "POD HD300",        LINE6_BIT_CONTROL_PCM_HWMON },
+<<<<<<< HEAD
+=======
+	{ LINE6_BIT_PODHD400,      "PODHD400",      "POD HD400",        LINE6_BIT_CONTROL_PCM_HWMON },
+>>>>>>> refs/remotes/origin/master
+	{ LINE6_BIT_PODHD500,      "PODHD500",      "POD HD500",        LINE6_BIT_CONTROL_PCM_HWMON },
+	{ LINE6_BIT_PODSTUDIO_GX,  "PODStudioGX",   "POD Studio GX",    LINE6_BIT_PCM               },
+	{ LINE6_BIT_PODSTUDIO_UX1, "PODStudioUX1",  "POD Studio UX1",   LINE6_BIT_PCM               },
+	{ LINE6_BIT_PODSTUDIO_UX2, "PODStudioUX2",  "POD Studio UX2",   LINE6_BIT_PCM               },
+	{ LINE6_BIT_PODX3,         "PODX3",         "POD X3",           LINE6_BIT_PCM               },
+	{ LINE6_BIT_PODX3LIVE,     "PODX3Live",     "POD X3 Live",      LINE6_BIT_PCM               },
+	{ LINE6_BIT_PODXT,         "PODxt",         "PODxt",            LINE6_BIT_CONTROL_PCM_HWMON },
+	{ LINE6_BIT_PODXTLIVE,     "PODxtLive",     "PODxt Live",       LINE6_BIT_CONTROL_PCM_HWMON },
+	{ LINE6_BIT_PODXTPRO,      "PODxtPro",      "PODxt Pro",        LINE6_BIT_CONTROL_PCM_HWMON },
+	{ LINE6_BIT_TONEPORT_GX,   "TonePortGX",    "TonePort GX",      LINE6_BIT_PCM               },
+	{ LINE6_BIT_TONEPORT_UX1,  "TonePortUX1",   "TonePort UX1",     LINE6_BIT_PCM               },
+	{ LINE6_BIT_TONEPORT_UX2,  "TonePortUX2",   "TonePort UX2",     LINE6_BIT_PCM               },
+	{ LINE6_BIT_VARIAX,        "Variax",        "Variax Workbench", LINE6_BIT_CONTROL           },
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 /* *INDENT-ON* */
 
@@ -87,6 +141,7 @@ const unsigned char line6_midi_id[] = {
 	Code to request version of POD, Variax interface
 	(and maybe other devices).
 */
+<<<<<<< HEAD
 static const char line6_request_version0[] = {
 	0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7
 };
@@ -98,6 +153,12 @@ static const char *line6_request_version;
 
 struct usb_line6 *line6_devices[LINE6_MAX_DEVICES];
 
+=======
+static const char line6_request_version[] = {
+	0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
 	 Class for asynchronous messages.
 */
@@ -138,6 +199,7 @@ static void line6_stop_listen(struct usb_line6 *line6)
 	usb_kill_urb(line6->urb_listen);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DUMP_ANY
 /*
 	Write hexdump to syslog.
@@ -195,6 +257,8 @@ static void line6_dump_urb(struct urb *urb)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
 	Send raw message in pieces of wMaxPacketSize bytes.
 */
@@ -203,10 +267,13 @@ int line6_send_raw_message(struct usb_line6 *line6, const char *buffer,
 {
 	int i, done = 0;
 
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DUMP_CTRL
 	line6_write_hexdump(line6, 'S', buffer, size);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < size; i += line6->max_packet_size) {
 		int partial;
 		const char *frag_buf = buffer + i;
@@ -261,10 +328,13 @@ static int line6_send_raw_message_async_part(struct message *msg,
 			 (char *)msg->buffer + done, bytes,
 			 line6_async_request_sent, msg, line6->interval);
 
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DUMP_CTRL
 	line6_write_hexdump(line6, 'S', (char *)msg->buffer + done, bytes);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	msg->done += bytes;
 	retval = usb_submit_urb(urb, GFP_ATOMIC);
 
@@ -273,7 +343,11 @@ static int line6_send_raw_message_async_part(struct message *msg,
 			__func__, retval);
 		usb_free_urb(urb);
 		kfree(msg);
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return retval;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -301,11 +375,16 @@ int line6_send_raw_message_async(struct usb_line6 *line6, const char *buffer,
 
 	/* create message: */
 	msg = kmalloc(sizeof(struct message), GFP_ATOMIC);
+<<<<<<< HEAD
 
 	if (msg == NULL) {
 		dev_err(line6->ifcdev, "Out of memory\n");
 		return -ENOMEM;
 	}
+=======
+	if (msg == NULL)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* create URB: */
 	urb = usb_alloc_urb(0, GFP_ATOMIC);
@@ -331,8 +410,25 @@ int line6_send_raw_message_async(struct usb_line6 *line6, const char *buffer,
 */
 int line6_version_request_async(struct usb_line6 *line6)
 {
+<<<<<<< HEAD
 	return line6_send_raw_message_async(line6, line6_request_version,
 					    sizeof(line6_request_version0));
+=======
+	char *buffer;
+	int retval;
+
+	buffer = kmemdup(line6_request_version,
+			sizeof(line6_request_version), GFP_ATOMIC);
+	if (buffer == NULL) {
+		dev_err(line6->ifcdev, "Out of memory");
+		return -ENOMEM;
+	}
+
+	retval = line6_send_raw_message_async(line6, buffer,
+					      sizeof(line6_request_version));
+	kfree(buffer);
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -347,6 +443,7 @@ int line6_send_sysex_message(struct usb_line6 *line6, const char *buffer,
 }
 
 /*
+<<<<<<< HEAD
 	Send sysex message in pieces of wMaxPacketSize bytes.
 */
 int line6_send_sysex_message_async(struct usb_line6 *line6, const char *buffer,
@@ -358,6 +455,8 @@ int line6_send_sysex_message_async(struct usb_line6 *line6, const char *buffer,
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
 	Allocate buffer for sysex message and prepare header.
 	@param code sysex message code
 	@param size number of bytes between code and sysex end
@@ -367,10 +466,15 @@ char *line6_alloc_sysex_buffer(struct usb_line6 *line6, int code1, int code2,
 {
 	char *buffer = kmalloc(size + SYSEX_EXTRA_SIZE, GFP_ATOMIC);
 
+<<<<<<< HEAD
 	if (!buffer) {
 		dev_err(line6->ifcdev, "out of memory\n");
 		return NULL;
 	}
+=======
+	if (!buffer)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	buffer[0] = LINE6_SYSEX_BEGIN;
 	memcpy(buffer + 1, line6_midi_id, sizeof(line6_midi_id));
@@ -386,25 +490,37 @@ char *line6_alloc_sysex_buffer(struct usb_line6 *line6, int code1, int code2,
 static void line6_data_received(struct urb *urb)
 {
 	struct usb_line6 *line6 = (struct usb_line6 *)urb->context;
+<<<<<<< HEAD
 	struct MidiBuffer *mb = &line6->line6midi->midibuf_in;
+=======
+	struct midi_buffer *mb = &line6->line6midi->midibuf_in;
+>>>>>>> refs/remotes/origin/master
 	int done;
 
 	if (urb->status == -ESHUTDOWN)
 		return;
 
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DUMP_CTRL
 	line6_dump_urb(urb);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	done =
 	    line6_midibuf_write(mb, urb->transfer_buffer, urb->actual_length);
 
 	if (done < urb->actual_length) {
 		line6_midibuf_ignore(mb, done);
+<<<<<<< HEAD
 		DEBUG_MESSAGES(dev_err
 			       (line6->ifcdev,
 				"%d %d buffer overflow - message skipped\n",
 				done, urb->actual_length));
+=======
+		dev_dbg(line6->ifcdev, "%d %d buffer overflow - message skipped\n",
+			done, urb->actual_length);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (;;) {
@@ -415,6 +531,7 @@ static void line6_data_received(struct urb *urb)
 		if (done == 0)
 			break;
 
+<<<<<<< HEAD
 		/* MIDI input filter */
 		if (line6_midibuf_skip_message
 		    (mb, line6->line6midi->midi_mask_receive))
@@ -427,6 +544,12 @@ static void line6_data_received(struct urb *urb)
 		line6_midi_receive(line6, line6->buffer_message, done);
 
 		switch (line6->usbdev->descriptor.idProduct) {
+=======
+		line6->message_length = done;
+		line6_midi_receive(line6, line6->buffer_message, done);
+
+		switch (le16_to_cpu(line6->usbdev->descriptor.idProduct)) {
+>>>>>>> refs/remotes/origin/master
 		case LINE6_DEVID_BASSPODXT:
 		case LINE6_DEVID_BASSPODXTLIVE:
 		case LINE6_DEVID_BASSPODXTPRO:
@@ -437,6 +560,21 @@ static void line6_data_received(struct urb *urb)
 						  line6);
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		case LINE6_DEVID_PODHD300:
+		case LINE6_DEVID_PODHD500:
+			break; /* let userspace handle MIDI */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case LINE6_DEVID_PODHD300:
+		case LINE6_DEVID_PODHD400:
+		case LINE6_DEVID_PODHD500:
+			break; /* let userspace handle MIDI */
+
+>>>>>>> refs/remotes/origin/master
 		case LINE6_DEVID_PODXTLIVE:
 			switch (line6->interface_number) {
 			case PODXTLIVE_INTERFACE_POD:
@@ -473,26 +611,38 @@ static void line6_data_received(struct urb *urb)
 /*
 	Send channel number (i.e., switch to a different sound).
 */
+<<<<<<< HEAD
 int line6_send_program(struct usb_line6 *line6, int value)
+=======
+int line6_send_program(struct usb_line6 *line6, u8 value)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 	unsigned char *buffer;
 	int partial;
 
 	buffer = kmalloc(2, GFP_KERNEL);
+<<<<<<< HEAD
 
 	if (!buffer) {
 		dev_err(line6->ifcdev, "out of memory\n");
 		return -ENOMEM;
 	}
+=======
+	if (!buffer)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	buffer[0] = LINE6_PROGRAM_CHANGE | LINE6_CHANNEL_HOST;
 	buffer[1] = value;
 
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DUMP_CTRL
 	line6_write_hexdump(line6, 'S', buffer, 2);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	retval = usb_interrupt_msg(line6->usbdev,
 				   usb_sndintpipe(line6->usbdev,
 						  line6->ep_control_write),
@@ -509,27 +659,39 @@ int line6_send_program(struct usb_line6 *line6, int value)
 /*
 	Transmit Line6 control parameter.
 */
+<<<<<<< HEAD
 int line6_transmit_parameter(struct usb_line6 *line6, int param, int value)
+=======
+int line6_transmit_parameter(struct usb_line6 *line6, int param, u8 value)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 	unsigned char *buffer;
 	int partial;
 
 	buffer = kmalloc(3, GFP_KERNEL);
+<<<<<<< HEAD
 
 	if (!buffer) {
 		dev_err(line6->ifcdev, "out of memory\n");
 		return -ENOMEM;
 	}
+=======
+	if (!buffer)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	buffer[0] = LINE6_PARAM_CHANGE | LINE6_CHANNEL_HOST;
 	buffer[1] = param;
 	buffer[2] = value;
 
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DUMP_CTRL
 	line6_write_hexdump(line6, 'S', buffer, 3);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	retval = usb_interrupt_msg(line6->usbdev,
 				   usb_sndintpipe(line6->usbdev,
 						  line6->ep_control_write),
@@ -564,7 +726,11 @@ int line6_read_data(struct usb_line6 *line6, int address, void *data,
 		return ret;
 	}
 
+<<<<<<< HEAD
 	/* Wait for data length. We'll get a couple of 0xff until length arrives. */
+=======
+	/* Wait for data length. We'll get 0xff until length arrives. */
+>>>>>>> refs/remotes/origin/master
 	do {
 		ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
 				      USB_TYPE_VENDOR | USB_RECIP_DEVICE |
@@ -664,6 +830,7 @@ ssize_t line6_nop_read(struct device *dev, struct device_attribute *attr,
 }
 
 /*
+<<<<<<< HEAD
 	No operation (i.e., unsupported).
 */
 ssize_t line6_nop_write(struct device *dev, struct device_attribute *attr,
@@ -687,6 +854,8 @@ ssize_t line6_set_raw(struct device *dev, struct device_attribute *attr,
 #endif
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
 	Generic destructor.
 */
 static void line6_destruct(struct usb_interface *interface)
@@ -720,10 +889,21 @@ static int line6_probe(struct usb_interface *interface,
 		       const struct usb_device_id *id)
 {
 	int devtype;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_device *usbdev = NULL;
 	struct usb_line6 *line6 = NULL;
+=======
+	struct usb_device *usbdev;
+	struct usb_line6 *line6;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct line6_properties *properties;
 	int devnum;
+=======
+	struct usb_device *usbdev;
+	struct usb_line6 *line6;
+	const struct line6_properties *properties;
+>>>>>>> refs/remotes/origin/master
 	int interface_number, alternate = 0;
 	int product;
 	int size = 0;
@@ -757,6 +937,7 @@ static int line6_probe(struct usb_interface *interface,
 		goto err_put;
 	}
 
+<<<<<<< HEAD
 	/* find free slot in device table: */
 	for (devnum = 0; devnum < LINE6_MAX_DEVICES; ++devnum)
 		if (line6_devices[devnum] == NULL)
@@ -767,6 +948,8 @@ static int line6_probe(struct usb_interface *interface,
 		goto err_put;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* initialize device info: */
 	properties = &line6_properties_table[devtype];
 	dev_info(&interface->dev, "Line6 %s found\n", properties->name);
@@ -794,6 +977,14 @@ static int line6_probe(struct usb_interface *interface,
 		}
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case LINE6_DEVID_PODHD500:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case LINE6_DEVID_PODHD500:
+>>>>>>> refs/remotes/origin/master
 	case LINE6_DEVID_PODX3:
 	case LINE6_DEVID_PODX3LIVE:
 		switch (interface_number) {
@@ -812,6 +1003,15 @@ static int line6_probe(struct usb_interface *interface,
 	case LINE6_DEVID_BASSPODXTPRO:
 	case LINE6_DEVID_PODXT:
 	case LINE6_DEVID_PODXTPRO:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case LINE6_DEVID_PODHD300:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case LINE6_DEVID_PODHD300:
+	case LINE6_DEVID_PODHD400:
+>>>>>>> refs/remotes/origin/master
 		alternate = 5;
 		break;
 
@@ -865,6 +1065,29 @@ static int line6_probe(struct usb_interface *interface,
 		ep_write = 0x03;
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case LINE6_DEVID_PODHD300:
+=======
+	case LINE6_DEVID_PODHD300:
+	case LINE6_DEVID_PODHD400:
+>>>>>>> refs/remotes/origin/master
+		size = sizeof(struct usb_line6_podhd);
+		ep_read = 0x84;
+		ep_write = 0x03;
+		break;
+
+	case LINE6_DEVID_PODHD500:
+		size = sizeof(struct usb_line6_podhd);
+		ep_read = 0x81;
+		ep_write = 0x01;
+		break;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case LINE6_DEVID_POCKETPOD:
 		size = sizeof(struct usb_line6_pod);
 		ep_read = 0x82;
@@ -923,16 +1146,28 @@ static int line6_probe(struct usb_interface *interface,
 	}
 
 	if (size == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(line6->ifcdev,
+=======
+		dev_err(&interface->dev,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&interface->dev,
+>>>>>>> refs/remotes/origin/master
 			"driver bug: interface data size not set\n");
 		ret = -ENODEV;
 		goto err_put;
 	}
 
 	line6 = kzalloc(size, GFP_KERNEL);
+<<<<<<< HEAD
 
 	if (line6 == NULL) {
 		dev_err(&interface->dev, "Out of memory\n");
+=======
+	if (line6 == NULL) {
+>>>>>>> refs/remotes/origin/master
 		ret = -ENODEV;
 		goto err_put;
 	}
@@ -971,18 +1206,26 @@ static int line6_probe(struct usb_interface *interface,
 		/* initialize USB buffers: */
 		line6->buffer_listen =
 		    kmalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
+<<<<<<< HEAD
 
 		if (line6->buffer_listen == NULL) {
 			dev_err(&interface->dev, "Out of memory\n");
+=======
+		if (line6->buffer_listen == NULL) {
+>>>>>>> refs/remotes/origin/master
 			ret = -ENOMEM;
 			goto err_destruct;
 		}
 
 		line6->buffer_message =
 		    kmalloc(LINE6_MESSAGE_MAXLEN, GFP_KERNEL);
+<<<<<<< HEAD
 
 		if (line6->buffer_message == NULL) {
 			dev_err(&interface->dev, "Out of memory\n");
+=======
+		if (line6->buffer_message == NULL) {
+>>>>>>> refs/remotes/origin/master
 			ret = -ENOMEM;
 			goto err_destruct;
 		}
@@ -1017,6 +1260,23 @@ static int line6_probe(struct usb_interface *interface,
 		ret = line6_pod_init(interface, (struct usb_line6_pod *)line6);
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case LINE6_DEVID_PODHD300:
+=======
+	case LINE6_DEVID_PODHD300:
+	case LINE6_DEVID_PODHD400:
+>>>>>>> refs/remotes/origin/master
+	case LINE6_DEVID_PODHD500:
+		ret = line6_podhd_init(interface,
+				       (struct usb_line6_podhd *)line6);
+		break;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case LINE6_DEVID_PODXTLIVE:
 		switch (interface_number) {
 		case PODXTLIVE_INTERFACE_POD:
@@ -1075,7 +1335,10 @@ static int line6_probe(struct usb_interface *interface,
 
 	dev_info(&interface->dev, "Line6 %s now attached\n",
 		 line6->properties->name);
+<<<<<<< HEAD
 	line6_devices[devnum] = line6;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (product) {
 	case LINE6_DEVID_PODX3:
@@ -1104,7 +1367,11 @@ static void line6_disconnect(struct usb_interface *interface)
 {
 	struct usb_line6 *line6;
 	struct usb_device *usbdev;
+<<<<<<< HEAD
 	int interface_number, i;
+=======
+	int interface_number;
+>>>>>>> refs/remotes/origin/master
 
 	if (interface == NULL)
 		return;
@@ -1127,7 +1394,11 @@ static void line6_disconnect(struct usb_interface *interface)
 			dev_err(line6->ifcdev,
 				"driver bug: inconsistent usb device\n");
 
+<<<<<<< HEAD
 		switch (line6->usbdev->descriptor.idProduct) {
+=======
+		switch (le16_to_cpu(line6->usbdev->descriptor.idProduct)) {
+>>>>>>> refs/remotes/origin/master
 		case LINE6_DEVID_BASSPODXT:
 		case LINE6_DEVID_BASSPODXTLIVE:
 		case LINE6_DEVID_BASSPODXTPRO:
@@ -1139,6 +1410,22 @@ static void line6_disconnect(struct usb_interface *interface)
 			line6_pod_disconnect(interface);
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		case LINE6_DEVID_PODHD300:
+=======
+		case LINE6_DEVID_PODHD300:
+		case LINE6_DEVID_PODHD400:
+>>>>>>> refs/remotes/origin/master
+		case LINE6_DEVID_PODHD500:
+			line6_podhd_disconnect(interface);
+			break;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case LINE6_DEVID_PODXTLIVE:
 			switch (interface_number) {
 			case PODXTLIVE_INTERFACE_POD:
@@ -1172,10 +1459,13 @@ static void line6_disconnect(struct usb_interface *interface)
 
 		dev_info(&interface->dev, "Line6 %s now disconnected\n",
 			 line6->properties->name);
+<<<<<<< HEAD
 
 		for (i = LINE6_MAX_DEVICES; i--;)
 			if (line6_devices[i] == line6)
 				line6_devices[i] = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	line6_destruct(interface);
@@ -1230,7 +1520,11 @@ static int line6_reset_resume(struct usb_interface *interface)
 {
 	struct usb_line6 *line6 = usb_get_intfdata(interface);
 
+<<<<<<< HEAD
 	switch (line6->usbdev->descriptor.idProduct) {
+=======
+	switch (le16_to_cpu(line6->usbdev->descriptor.idProduct)) {
+>>>>>>> refs/remotes/origin/master
 	case LINE6_DEVID_PODSTUDIO_GX:
 	case LINE6_DEVID_PODSTUDIO_UX1:
 	case LINE6_DEVID_PODSTUDIO_UX2:
@@ -1258,6 +1552,7 @@ static struct usb_driver line6_driver = {
 	.id_table = line6_id_table,
 };
 
+<<<<<<< HEAD
 /*
 	Module initialization.
 */
@@ -1312,7 +1607,11 @@ static void __exit line6_exit(void)
 		if (line6pcm == NULL)
 			continue;
 
+<<<<<<< HEAD
 		line6_pcm_stop(line6pcm, ~0);
+=======
+		line6_pcm_release(line6pcm, ~0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	usb_deregister(&line6_driver);
@@ -1321,6 +1620,9 @@ static void __exit line6_exit(void)
 
 module_init(line6_init);
 module_exit(line6_exit);
+=======
+module_usb_driver(line6_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

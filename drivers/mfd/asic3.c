@@ -20,6 +20,14 @@
 #include <linux/delay.h>
 #include <linux/irq.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
@@ -352,12 +360,34 @@ static int asic3_gpio_irq_type(struct irq_data *data, unsigned int type)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int asic3_gpio_irq_set_wake(struct irq_data *data, unsigned int on)
+{
+	struct asic3 *asic = irq_data_get_irq_chip_data(data);
+	u32 bank, index;
+	u16 bit;
+
+	bank = asic3_irq_to_bank(asic, data->irq);
+	index = asic3_irq_to_index(asic, data->irq);
+	bit = 1<<index;
+
+	asic3_set_register(asic, bank + ASIC3_GPIO_SLEEP_MASK, bit, !on);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct irq_chip asic3_gpio_irq_chip = {
 	.name		= "ASIC3-GPIO",
 	.irq_ack	= asic3_mask_gpio_irq,
 	.irq_mask	= asic3_mask_gpio_irq,
 	.irq_unmask	= asic3_unmask_gpio_irq,
 	.irq_set_type	= asic3_gpio_irq_type,
+<<<<<<< HEAD
+=======
+	.irq_set_wake	= asic3_gpio_irq_set_wake,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct irq_chip asic3_irq_chip = {
@@ -524,6 +554,25 @@ static void asic3_gpio_set(struct gpio_chip *chip,
 	return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int asic3_gpio_to_irq(struct gpio_chip *chip, unsigned offset)
+{
+	struct asic3 *asic = container_of(chip, struct asic3, gpio);
+
+<<<<<<< HEAD
+	return (offset < ASIC3_NUM_GPIOS) ? asic->irq_base + offset : -ENXIO;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return asic->irq_base + offset;
+}
+
+>>>>>>> refs/remotes/origin/master
 static __init int asic3_gpio_probe(struct platform_device *pdev,
 				   u16 *gpio_config, int num)
 {
@@ -584,7 +633,15 @@ static int asic3_gpio_remove(struct platform_device *pdev)
 	return gpiochip_remove(&asic->gpio);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int asic3_clk_enable(struct asic3 *asic, struct asic3_clk *clk)
+=======
+static void asic3_clk_enable(struct asic3 *asic, struct asic3_clk *clk)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void asic3_clk_enable(struct asic3 *asic, struct asic3_clk *clk)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	u32 cdex;
@@ -596,8 +653,14 @@ static int asic3_clk_enable(struct asic3 *asic, struct asic3_clk *clk)
 		asic3_write_register(asic, ASIC3_OFFSET(CLOCK, CDEX), cdex);
 	}
 	spin_unlock_irqrestore(&asic->lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void asic3_clk_disable(struct asic3 *asic, struct asic3_clk *clk)
@@ -673,7 +736,11 @@ static int ds1wm_disable(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct mfd_cell asic3_cell_ds1wm = {
+=======
+static const struct mfd_cell asic3_cell_ds1wm = {
+>>>>>>> refs/remotes/origin/master
 	.name          = "ds1wm",
 	.enable        = ds1wm_enable,
 	.disable       = ds1wm_disable,
@@ -775,10 +842,24 @@ static int asic3_mmc_disable(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct mfd_cell asic3_cell_mmc = {
 	.name          = "tmio-mmc",
 	.enable        = asic3_mmc_enable,
 	.disable       = asic3_mmc_disable,
+<<<<<<< HEAD
+=======
+	.suspend       = asic3_mmc_disable,
+	.resume        = asic3_mmc_enable,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct mfd_cell asic3_cell_mmc = {
+	.name          = "tmio-mmc",
+	.enable        = asic3_mmc_enable,
+	.disable       = asic3_mmc_disable,
+	.suspend       = asic3_mmc_disable,
+	.resume        = asic3_mmc_enable,
+>>>>>>> refs/remotes/origin/master
 	.platform_data = &asic3_mmc_data,
 	.pdata_size    = sizeof(asic3_mmc_data),
 	.num_resources = ARRAY_SIZE(asic3_mmc_resources),
@@ -811,24 +892,76 @@ static int asic3_leds_disable(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int asic3_leds_suspend(struct platform_device *pdev)
+{
+	const struct mfd_cell *cell = mfd_get_cell(pdev);
+	struct asic3 *asic = dev_get_drvdata(pdev->dev.parent);
+
+	while (asic3_gpio_get(&asic->gpio, ASIC3_GPIO(C, cell->id)) != 0)
+		msleep(1);
+
+	asic3_clk_disable(asic, &asic->clocks[clock_ledn[cell->id]]);
+
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mfd_cell asic3_cell_leds[ASIC3_NUM_LEDS] = {
 	[0] = {
 		.name          = "leds-asic3",
 		.id            = 0,
 		.enable        = asic3_leds_enable,
 		.disable       = asic3_leds_disable,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.suspend       = asic3_leds_suspend,
+		.resume        = asic3_leds_enable,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.suspend       = asic3_leds_suspend,
+		.resume        = asic3_leds_enable,
+>>>>>>> refs/remotes/origin/master
 	},
 	[1] = {
 		.name          = "leds-asic3",
 		.id            = 1,
 		.enable        = asic3_leds_enable,
 		.disable       = asic3_leds_disable,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.suspend       = asic3_leds_suspend,
+		.resume        = asic3_leds_enable,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.suspend       = asic3_leds_suspend,
+		.resume        = asic3_leds_enable,
+>>>>>>> refs/remotes/origin/master
 	},
 	[2] = {
 		.name          = "leds-asic3",
 		.id            = 2,
 		.enable        = asic3_leds_enable,
 		.disable       = asic3_leds_disable,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.suspend       = asic3_leds_suspend,
+		.resume        = asic3_leds_enable,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.suspend       = asic3_leds_suspend,
+		.resume        = asic3_leds_enable,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -867,6 +1000,7 @@ static int __init asic3_mfd_probe(struct platform_device *pdev,
 	asic3_mmc_resources[0].start >>= asic->bus_shift;
 	asic3_mmc_resources[0].end   >>= asic->bus_shift;
 
+<<<<<<< HEAD
 	ret = mfd_add_devices(&pdev->dev, pdev->id,
 			&asic3_cell_ds1wm, 1, mem, asic->irq_base);
 	if (ret < 0)
@@ -875,10 +1009,27 @@ static int __init asic3_mfd_probe(struct platform_device *pdev,
 	if (mem_sdio && (irq >= 0)) {
 		ret = mfd_add_devices(&pdev->dev, pdev->id,
 			&asic3_cell_mmc, 1, mem_sdio, irq);
+=======
+	if (pdata->clock_rate) {
+		ds1wm_pdata.clock_rate = pdata->clock_rate;
+		ret = mfd_add_devices(&pdev->dev, pdev->id,
+			&asic3_cell_ds1wm, 1, mem, asic->irq_base, NULL);
 		if (ret < 0)
 			goto out;
 	}
 
+	if (mem_sdio && (irq >= 0)) {
+		ret = mfd_add_devices(&pdev->dev, pdev->id,
+			&asic3_cell_mmc, 1, mem_sdio, irq, NULL);
+>>>>>>> refs/remotes/origin/master
+		if (ret < 0)
+			goto out;
+	}
+
+<<<<<<< HEAD
+=======
+	ret = 0;
+>>>>>>> refs/remotes/origin/master
 	if (pdata->leds) {
 		int i;
 
@@ -887,7 +1038,11 @@ static int __init asic3_mfd_probe(struct platform_device *pdev,
 			asic3_cell_leds[i].pdata_size = sizeof(pdata->leds[i]);
 		}
 		ret = mfd_add_devices(&pdev->dev, 0,
+<<<<<<< HEAD
 			asic3_cell_leds, ASIC3_NUM_LEDS, NULL, 0);
+=======
+			asic3_cell_leds, ASIC3_NUM_LEDS, NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	}
 
  out:
@@ -905,13 +1060,22 @@ static void asic3_mfd_remove(struct platform_device *pdev)
 /* Core */
 static int __init asic3_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct asic3_platform_data *pdata = pdev->dev.platform_data;
+=======
+	struct asic3_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct asic3 *asic;
 	struct resource *mem;
 	unsigned long clksel;
 	int ret = 0;
 
+<<<<<<< HEAD
 	asic = kzalloc(sizeof(struct asic3), GFP_KERNEL);
+=======
+	asic = devm_kzalloc(&pdev->dev,
+			    sizeof(struct asic3), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (asic == NULL) {
 		printk(KERN_ERR "kzalloc failed\n");
 		return -ENOMEM;
@@ -923,16 +1087,26 @@ static int __init asic3_probe(struct platform_device *pdev)
 
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!mem) {
+<<<<<<< HEAD
 		ret = -ENOMEM;
 		dev_err(asic->dev, "no MEM resource\n");
 		goto out_free;
+=======
+		dev_err(asic->dev, "no MEM resource\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	asic->mapping = ioremap(mem->start, resource_size(mem));
 	if (!asic->mapping) {
+<<<<<<< HEAD
 		ret = -ENOMEM;
 		dev_err(asic->dev, "Couldn't ioremap\n");
 		goto out_free;
+=======
+		dev_err(asic->dev, "Couldn't ioremap\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	asic->irq_base = pdata->irq_base;
@@ -949,12 +1123,28 @@ static int __init asic3_probe(struct platform_device *pdev)
 		goto out_unmap;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	asic->gpio.label = "asic3";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	asic->gpio.label = "asic3";
+>>>>>>> refs/remotes/origin/master
 	asic->gpio.base = pdata->gpio_base;
 	asic->gpio.ngpio = ASIC3_NUM_GPIOS;
 	asic->gpio.get = asic3_gpio_get;
 	asic->gpio.set = asic3_gpio_set;
 	asic->gpio.direction_input = asic3_gpio_direction_input;
 	asic->gpio.direction_output = asic3_gpio_direction_output;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	asic->gpio.to_irq = asic3_gpio_to_irq;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	asic->gpio.to_irq = asic3_gpio_to_irq;
+>>>>>>> refs/remotes/origin/master
 
 	ret = asic3_gpio_probe(pdev,
 			       pdata->gpio_config,
@@ -971,6 +1161,12 @@ static int __init asic3_probe(struct platform_device *pdev)
 
 	asic3_mfd_probe(pdev, pdata, mem);
 
+<<<<<<< HEAD
+=======
+	asic3_set_register(asic, ASIC3_OFFSET(EXTCF, SELECT),
+		(ASIC3_EXTCF_CF0_BUF_EN|ASIC3_EXTCF_CF0_PWAIT_EN), 1);
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(asic->dev, "ASIC3 Core driver\n");
 
 	return 0;
@@ -981,6 +1177,7 @@ static int __init asic3_probe(struct platform_device *pdev)
  out_unmap:
 	iounmap(asic->mapping);
 
+<<<<<<< HEAD
  out_free:
 	kfree(asic);
 
@@ -988,10 +1185,22 @@ static int __init asic3_probe(struct platform_device *pdev)
 }
 
 static int __devexit asic3_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int asic3_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct asic3 *asic = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
+=======
+	asic3_set_register(asic, ASIC3_OFFSET(EXTCF, SELECT),
+		(ASIC3_EXTCF_CF0_BUF_EN|ASIC3_EXTCF_CF0_PWAIT_EN), 0);
+
+>>>>>>> refs/remotes/origin/master
 	asic3_mfd_remove(pdev);
 
 	ret = asic3_gpio_remove(pdev);
@@ -1003,8 +1212,11 @@ static int __devexit asic3_remove(struct platform_device *pdev)
 
 	iounmap(asic->mapping);
 
+<<<<<<< HEAD
 	kfree(asic);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1016,7 +1228,11 @@ static struct platform_driver asic3_device_driver = {
 	.driver		= {
 		.name	= "asic3",
 	},
+<<<<<<< HEAD
 	.remove		= __devexit_p(asic3_remove),
+=======
+	.remove		= asic3_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= asic3_shutdown,
 };
 

@@ -111,6 +111,14 @@ int dccp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 	rt = ip_route_newports(fl4, rt, orig_sport, orig_dport,
 			       inet->inet_sport, inet->inet_dport, sk);
 	if (IS_ERR(rt)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		err = PTR_ERR(rt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = PTR_ERR(rt);
+>>>>>>> refs/remotes/origin/master
 		rt = NULL;
 		goto failure;
 	}
@@ -160,6 +168,7 @@ static inline void dccp_do_pmtu_discovery(struct sock *sk,
 	if (sk->sk_state == DCCP_LISTEN)
 		return;
 
+<<<<<<< HEAD
 	/* We don't check in the destentry if pmtu discovery is forbidden
 	 * on this route. We just assume that no packet_to_big packets
 	 * are send back when pmtu discovery is not active.
@@ -171,6 +180,12 @@ static inline void dccp_do_pmtu_discovery(struct sock *sk,
 
 	dst->ops->update_pmtu(dst, mtu);
 
+=======
+	dst = inet_csk_update_pmtu(sk, mtu);
+	if (!dst)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	/* Something is about to be wrong... Remember soft error
 	 * for the case, if this connection will not able to recover.
 	 */
@@ -180,6 +195,10 @@ static inline void dccp_do_pmtu_discovery(struct sock *sk,
 	mtu = dst_mtu(dst);
 
 	if (inet->pmtudisc != IP_PMTUDISC_DONT &&
+<<<<<<< HEAD
+=======
+	    ip_sk_accept_pmtu(sk) &&
+>>>>>>> refs/remotes/origin/master
 	    inet_csk(sk)->icsk_pmtu_cookie > mtu) {
 		dccp_sync_mss(sk, mtu);
 
@@ -194,6 +213,17 @@ static inline void dccp_do_pmtu_discovery(struct sock *sk,
 	} /* else let the usual retransmit timer handle it */
 }
 
+<<<<<<< HEAD
+=======
+static void dccp_do_redirect(struct sk_buff *skb, struct sock *sk)
+{
+	struct dst_entry *dst = __sk_dst_check(sk, 0);
+
+	if (dst)
+		dst->ops->redirect(dst, sk, skb);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This routine is called by the ICMP module when it gets some sort of error
  * condition. If err < 0 then the socket should be closed and the error
@@ -258,6 +288,12 @@ static void dccp_v4_err(struct sk_buff *skb, u32 info)
 	}
 
 	switch (type) {
+<<<<<<< HEAD
+=======
+	case ICMP_REDIRECT:
+		dccp_do_redirect(skb, sk);
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	case ICMP_SOURCE_QUENCH:
 		/* Just silently ignore these. */
 		goto out;
@@ -299,7 +335,17 @@ static void dccp_v4_err(struct sk_buff *skb, u32 info)
 		 */
 		WARN_ON(req->sk);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (seq != dccp_rsk(req)->dreq_iss) {
+=======
+		if (!between48(seq, dccp_rsk(req)->dreq_iss,
+				    dccp_rsk(req)->dreq_gss)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!between48(seq, dccp_rsk(req)->dreq_iss,
+				    dccp_rsk(req)->dreq_gss)) {
+>>>>>>> refs/remotes/origin/master
 			NET_INC_STATS_BH(net, LINUX_MIB_OUTOFWINDOWICMPS);
 			goto out;
 		}
@@ -403,9 +449,15 @@ struct sock *dccp_v4_request_recv_sock(struct sock *sk, struct sk_buff *skb,
 
 	newinet		   = inet_sk(newsk);
 	ireq		   = inet_rsk(req);
+<<<<<<< HEAD
 	newinet->inet_daddr	= ireq->rmt_addr;
 	newinet->inet_rcv_saddr = ireq->loc_addr;
 	newinet->inet_saddr	= ireq->loc_addr;
+=======
+	newinet->inet_daddr	= ireq->ir_rmt_addr;
+	newinet->inet_rcv_saddr = ireq->ir_loc_addr;
+	newinet->inet_saddr	= ireq->ir_loc_addr;
+>>>>>>> refs/remotes/origin/master
 	newinet->inet_opt	= ireq->opt;
 	ireq->opt	   = NULL;
 	newinet->mc_index  = inet_iif(skb);
@@ -433,7 +485,22 @@ exit:
 	NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_LISTENDROPS);
 	return NULL;
 put_and_exit:
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sock_put(newsk);
+=======
+	inet_csk_prepare_forced_close(newsk);
+	dccp_done(newsk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inet_csk_prepare_forced_close(newsk);
+	dccp_done(newsk);
+>>>>>>> refs/remotes/origin/master
+=======
+	inet_csk_prepare_forced_close(newsk);
+	dccp_done(newsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	goto exit;
 }
 
@@ -472,10 +539,26 @@ static struct dst_entry* dccp_v4_route_skb(struct net *net, struct sock *sk,
 					   struct sk_buff *skb)
 {
 	struct rtable *rt;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct flowi4 fl4 = {
 		.flowi4_oif = skb_rtable(skb)->rt_iif,
 		.daddr = ip_hdr(skb)->saddr,
 		.saddr = ip_hdr(skb)->daddr,
+=======
+	const struct iphdr *iph = ip_hdr(skb);
+	struct flowi4 fl4 = {
+		.flowi4_oif = skb_rtable(skb)->rt_iif,
+		.daddr = iph->saddr,
+		.saddr = iph->daddr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct iphdr *iph = ip_hdr(skb);
+	struct flowi4 fl4 = {
+		.flowi4_oif = inet_iif(skb),
+		.daddr = iph->saddr,
+		.saddr = iph->daddr,
+>>>>>>> refs/remotes/origin/master
 		.flowi4_tos = RT_CONN_FLAGS(sk),
 		.flowi4_proto = sk->sk_protocol,
 		.fl4_sport = dccp_hdr(skb)->dccph_dport,
@@ -492,8 +575,12 @@ static struct dst_entry* dccp_v4_route_skb(struct net *net, struct sock *sk,
 	return &rt->dst;
 }
 
+<<<<<<< HEAD
 static int dccp_v4_send_response(struct sock *sk, struct request_sock *req,
 				 struct request_values *rv_unused)
+=======
+static int dccp_v4_send_response(struct sock *sk, struct request_sock *req)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -1;
 	struct sk_buff *skb;
@@ -509,10 +596,17 @@ static int dccp_v4_send_response(struct sock *sk, struct request_sock *req,
 		const struct inet_request_sock *ireq = inet_rsk(req);
 		struct dccp_hdr *dh = dccp_hdr(skb);
 
+<<<<<<< HEAD
 		dh->dccph_checksum = dccp_v4_csum_finish(skb, ireq->loc_addr,
 							      ireq->rmt_addr);
 		err = ip_build_and_send_pkt(skb, sk, ireq->loc_addr,
 					    ireq->rmt_addr,
+=======
+		dh->dccph_checksum = dccp_v4_csum_finish(skb, ireq->ir_loc_addr,
+							      ireq->ir_rmt_addr);
+		err = ip_build_and_send_pkt(skb, sk, ireq->ir_loc_addr,
+					    ireq->ir_rmt_addr,
+>>>>>>> refs/remotes/origin/master
 					    ireq->opt);
 		err = net_xmit_eval(err);
 	}
@@ -570,6 +664,14 @@ static void dccp_v4_reqsk_destructor(struct request_sock *req)
 	kfree(inet_rsk(req)->opt);
 }
 
+<<<<<<< HEAD
+=======
+void dccp_syn_ack_timeout(struct sock *sk, struct request_sock *req)
+{
+}
+EXPORT_SYMBOL(dccp_syn_ack_timeout);
+
+>>>>>>> refs/remotes/origin/master
 static struct request_sock_ops dccp_request_sock_ops __read_mostly = {
 	.family		= PF_INET,
 	.obj_size	= sizeof(struct dccp_request_sock),
@@ -577,6 +679,10 @@ static struct request_sock_ops dccp_request_sock_ops __read_mostly = {
 	.send_ack	= dccp_reqsk_send_ack,
 	.destructor	= dccp_v4_reqsk_destructor,
 	.send_reset	= dccp_v4_ctl_send_reset,
+<<<<<<< HEAD
+=======
+	.syn_ack_timeout = dccp_syn_ack_timeout,
+>>>>>>> refs/remotes/origin/master
 };
 
 int dccp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
@@ -628,22 +734,45 @@ int dccp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 		goto drop_and_free;
 
 	ireq = inet_rsk(req);
+<<<<<<< HEAD
 	ireq->loc_addr = ip_hdr(skb)->daddr;
 	ireq->rmt_addr = ip_hdr(skb)->saddr;
+=======
+	ireq->ir_loc_addr = ip_hdr(skb)->daddr;
+	ireq->ir_rmt_addr = ip_hdr(skb)->saddr;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Step 3: Process LISTEN state
 	 *
 	 * Set S.ISR, S.GSR, S.SWL, S.SWH from packet or Init Cookie
 	 *
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * In fact we defer setting S.GSR, S.SWL, S.SWH to
 	 * dccp_create_openreq_child.
 	 */
 	dreq->dreq_isr	   = dcb->dccpd_seq;
 	dreq->dreq_iss	   = dccp_v4_init_sequence(skb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * Setting S.SWL/S.SWH to is deferred to dccp_create_openreq_child().
+	 */
+	dreq->dreq_isr	   = dcb->dccpd_seq;
+	dreq->dreq_gsr	   = dreq->dreq_isr;
+	dreq->dreq_iss	   = dccp_v4_init_sequence(skb);
+	dreq->dreq_gss     = dreq->dreq_iss;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dreq->dreq_service = service;
 
 	if (dccp_v4_send_response(sk, req, NULL))
+=======
+	dreq->dreq_service = service;
+
+	if (dccp_v4_send_response(sk, req))
+>>>>>>> refs/remotes/origin/master
 		goto drop_and_free;
 
 	inet_csk_reqsk_queue_hash_add(sk, req, DCCP_TIMEOUT_INIT);

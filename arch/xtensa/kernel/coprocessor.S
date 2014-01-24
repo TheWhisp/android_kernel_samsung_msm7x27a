@@ -32,9 +32,15 @@
  *   a0:	trashed, original value saved on stack (PT_AREG0)
  *   a1:	a1
  *   a2:	new stack pointer, original in DEPC
+<<<<<<< HEAD
  *   a3:	dispatch table
  *   depc:	a2, original value saved on stack (PT_DEPC)
  *   excsave_1:	a3
+=======
+ *   a3:	a3
+ *   depc:	a2, original value saved on stack (PT_DEPC)
+ *   excsave_1:	dispatch table
+>>>>>>> refs/remotes/origin/master
  *
  *   PT_DEPC >= VALID_DOUBLE_EXCEPTION_ADDRESS: double exception, DEPC
  *	     <  VALID_DOUBLE_EXCEPTION_ADDRESS: regular exception
@@ -43,10 +49,20 @@
 /* IO protection is currently unsupported. */
 
 ENTRY(fast_io_protect)
+<<<<<<< HEAD
 	wsr	a0, EXCSAVE_1
 	movi	a0, unrecoverable_exception
 	callx0	a0
 
+=======
+
+	wsr	a0, excsave1
+	movi	a0, unrecoverable_exception
+	callx0	a0
+
+ENDPROC(fast_io_protect)
+
+>>>>>>> refs/remotes/origin/master
 #if XTENSA_HAVE_COPROCESSORS
 
 /*
@@ -139,6 +155,10 @@ ENTRY(fast_io_protect)
  */
 
 ENTRY(coprocessor_save)
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	entry	a1, 32
 	s32i	a0, a1, 0
 	movi	a0, .Lsave_cp_regs_jump_table
@@ -150,7 +170,14 @@ ENTRY(coprocessor_save)
 1:	l32i	a0, a1, 0
 	retw
 
+<<<<<<< HEAD
 ENTRY(coprocessor_load)
+=======
+ENDPROC(coprocessor_save)
+
+ENTRY(coprocessor_load)
+
+>>>>>>> refs/remotes/origin/master
 	entry	a1, 32
 	s32i	a0, a1, 0
 	movi	a0, .Lload_cp_regs_jump_table
@@ -162,8 +189,15 @@ ENTRY(coprocessor_load)
 1:	l32i	a0, a1, 0
 	retw
 
+<<<<<<< HEAD
 /*
  * coprocessor_flush(struct task_info*, index) 
+=======
+ENDPROC(coprocessor_load)
+
+/*
+ * coprocessor_flush(struct task_info*, index)
+>>>>>>> refs/remotes/origin/master
  *                             a2        a3
  * coprocessor_restore(struct task_info*, index)
  *                              a2         a3
@@ -178,6 +212,10 @@ ENTRY(coprocessor_load)
 
 
 ENTRY(coprocessor_flush)
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	entry	a1, 32
 	s32i	a0, a1, 0
 	movi	a0, .Lsave_cp_regs_jump_table
@@ -191,6 +229,11 @@ ENTRY(coprocessor_flush)
 1:	l32i	a0, a1, 0
 	retw
 
+<<<<<<< HEAD
+=======
+ENDPROC(coprocessor_flush)
+
+>>>>>>> refs/remotes/origin/master
 ENTRY(coprocessor_restore)
 	entry	a1, 32
 	s32i	a0, a1, 0
@@ -205,30 +248,51 @@ ENTRY(coprocessor_restore)
 1:	l32i	a0, a1, 0
 	retw
 
+<<<<<<< HEAD
+=======
+ENDPROC(coprocessor_restore)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Entry condition:
  *
  *   a0:	trashed, original value saved on stack (PT_AREG0)
  *   a1:	a1
  *   a2:	new stack pointer, original in DEPC
+<<<<<<< HEAD
  *   a3:	dispatch table
  *   depc:	a2, original value saved on stack (PT_DEPC)
  *   excsave_1:	a3
+=======
+ *   a3:	a3
+ *   depc:	a2, original value saved on stack (PT_DEPC)
+ *   excsave_1:	dispatch table
+>>>>>>> refs/remotes/origin/master
  *
  *   PT_DEPC >= VALID_DOUBLE_EXCEPTION_ADDRESS: double exception, DEPC
  *	     <  VALID_DOUBLE_EXCEPTION_ADDRESS: regular exception
  */
 
 ENTRY(fast_coprocessor_double)
+<<<<<<< HEAD
 	wsr	a0, EXCSAVE_1
 	movi	a0, unrecoverable_exception
 	callx0	a0
 
+=======
+
+	wsr	a0, excsave1
+	movi	a0, unrecoverable_exception
+	callx0	a0
+
+ENDPROC(fast_coprocessor_double)
+>>>>>>> refs/remotes/origin/master
 
 ENTRY(fast_coprocessor)
 
 	/* Save remaining registers a1-a3 and SAR */
 
+<<<<<<< HEAD
 	xsr	a3, EXCSAVE_1
 	s32i	a3, a2, PT_AREG3
 	rsr	a3, SAR
@@ -236,6 +300,14 @@ ENTRY(fast_coprocessor)
 	s32i	a3, a2, PT_SAR
 	mov	a1, a2
 	rsr	a2, DEPC
+=======
+	s32i	a3, a2, PT_AREG3
+	rsr	a3, sar
+	s32i	a1, a2, PT_AREG1
+	s32i	a3, a2, PT_SAR
+	mov	a1, a2
+	rsr	a2, depc
+>>>>>>> refs/remotes/origin/master
 	s32i	a2, a1, PT_AREG2
 
 	/*
@@ -248,17 +320,28 @@ ENTRY(fast_coprocessor)
 
 	/* Find coprocessor number. Subtract first CP EXCCAUSE from EXCCAUSE */
 
+<<<<<<< HEAD
 	rsr	a3, EXCCAUSE
+=======
+	rsr	a3, exccause
+>>>>>>> refs/remotes/origin/master
 	addi	a3, a3, -EXCCAUSE_COPROCESSOR0_DISABLED
 
 	/* Set corresponding CPENABLE bit -> (sar:cp-index, a3: 1<<cp-index)*/
 
 	ssl	a3			# SAR: 32 - coprocessor_number
 	movi	a2, 1
+<<<<<<< HEAD
 	rsr	a0, CPENABLE
 	sll	a2, a2
 	or	a0, a0, a2
 	wsr	a0, CPENABLE
+=======
+	rsr	a0, cpenable
+	sll	a2, a2
+	or	a0, a0, a2
+	wsr	a0, cpenable
+>>>>>>> refs/remotes/origin/master
 	rsync
 
 	/* Retrieve previous owner. (a3 still holds CP number) */
@@ -291,7 +374,11 @@ ENTRY(fast_coprocessor)
 
 	/* Note that only a0 and a1 were preserved. */
 
+<<<<<<< HEAD
 2:	rsr	a3, EXCCAUSE
+=======
+2:	rsr	a3, exccause
+>>>>>>> refs/remotes/origin/master
 	addi	a3, a3, -EXCCAUSE_COPROCESSOR0_DISABLED
 	movi	a0, coprocessor_owner
 	addx4	a0, a3, a0
@@ -321,15 +408,33 @@ ENTRY(fast_coprocessor)
 	l32i	a0, a1, PT_SAR
 	l32i	a3, a1, PT_AREG3
 	l32i	a2, a1, PT_AREG2
+<<<<<<< HEAD
 	wsr	a0, SAR
+=======
+	wsr	a0, sar
+>>>>>>> refs/remotes/origin/master
 	l32i	a0, a1, PT_AREG0
 	l32i	a1, a1, PT_AREG1
 
 	rfe
 
+<<<<<<< HEAD
 	.data
 ENTRY(coprocessor_owner)
 	.fill XCHAL_CP_MAX, 4, 0
 
 #endif /* XTENSA_HAVE_COPROCESSORS */
 
+=======
+ENDPROC(fast_coprocessor)
+
+	.data
+
+ENTRY(coprocessor_owner)
+
+	.fill XCHAL_CP_MAX, 4, 0
+
+END(coprocessor_owner)
+
+#endif /* XTENSA_HAVE_COPROCESSORS */
+>>>>>>> refs/remotes/origin/master

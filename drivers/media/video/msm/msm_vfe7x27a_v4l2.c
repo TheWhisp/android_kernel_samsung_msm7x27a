@@ -10,20 +10,49 @@
  * GNU General Public License for more details.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/msm_adsp.h>
 #include <linux/uaccess.h>
 #include <linux/fs.h>
 #include <linux/android_pmem.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/delay.h>
 #include <linux/wait.h>
 #include <media/v4l2-device.h>
 #include <media/v4l2-subdev.h>
 #include <media/msm_isp.h>
 #include <mach/msm_adsp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/clk.h>
 #include <mach/camera.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/clk.h>
+#include <mach/clk.h>
+#include <mach/camera.h>
+#include <mach/dal_axi.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "msm_vfe7x27a_v4l2.h"
 #include "msm.h"
 
@@ -112,6 +141,14 @@
 #define VFE_ASYNC_TIMER2_START  29
 #define VFE_STATS_AUTOFOCUS_UPDATE  30
 #define VFE_STATS_WB_EXP_UPDATE  31
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define VFE_IMMEDIATE_STOP      32
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VFE_IMMEDIATE_STOP      32
+>>>>>>> refs/remotes/origin/cm-11.0
 #define VFE_ROLL_OFF_UPDATE  33
 #define VFE_DEMOSAICv3_BPC_UPDATE  34
 #define VFE_TESTGEN_START  35
@@ -236,7 +273,15 @@ struct cmd_id_map cmds_map[] = {
 	{VFE_CMD_CAPTURE, VFE_START, QDSP_CMDQUEUE,
 			"VFE_CMD_CAPTURE", "VFE_START"},
 	{VFE_CMD_DUMMY_7, VFE_MAX, VFE_MAX},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{VFE_CMD_STOP, VFE_STOP, QDSP_CMDQUEUE, "VFE_CMD_STOP", "VFE_STOP"},
+=======
+        {VFE_CMD_STOP, VFE_IMMEDIATE_STOP, QDSP_CMDQUEUE, "VFE_CMD_STOP", "VFE_IMMEDIATE_STOP"},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+        {VFE_CMD_STOP, VFE_IMMEDIATE_STOP, QDSP_CMDQUEUE, "VFE_CMD_STOP", "VFE_IMMEDIATE_STOP"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{VFE_CMD_GET_HW_VERSION, VFE_MAX, VFE_MAX},
 	{VFE_CMD_GET_FRAME_SKIP_COUNTS, VFE_MAX, VFE_MAX},
 	{VFE_CMD_OUTPUT1_BUFFER_ENQ, VFE_MAX, VFE_MAX},
@@ -257,7 +302,17 @@ struct cmd_id_map cmds_map[] = {
 	{VFE_CMD_DUMMY_9, VFE_MAX, VFE_MAX},
 	{VFE_CMD_STATS_AF_START, VFE_STATS_AUTOFOCUS_CONFIG, QDSP_CMDQUEUE,
 		"VFE_CMD_STATS_AF_START", "VFE_STATS_AUTOFOCUS_CONFIG"},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{VFE_CMD_STATS_AF_STOP, VFE_MAX, VFE_MAX},
+=======
+	{VFE_CMD_STATS_AF_STOP, VFE_STATS_AUTOFOCUS_CONFIG, QDSP_CMDQUEUE,
+		"VFE_CMD_STATS_AF_STOP", "VFE_STATS_AUTOFOCUS_CONFIG"},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{VFE_CMD_STATS_AF_STOP, VFE_STATS_AUTOFOCUS_CONFIG, QDSP_CMDQUEUE,
+		"VFE_CMD_STATS_AF_STOP", "VFE_STATS_AUTOFOCUS_CONFIG"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{VFE_CMD_STATS_AE_START, VFE_MAX, VFE_MAX},
 	{VFE_CMD_STATS_AE_STOP, VFE_MAX, VFE_MAX},
 	{VFE_CMD_STATS_AWB_START, VFE_MAX, VFE_MAX},
@@ -292,7 +347,17 @@ struct cmd_id_map cmds_map[] = {
 		"VFE_DEMOSAICv3_BPC_UPDATE"},
 	{VFE_CMD_XBAR_CFG, VFE_MAX, VFE_MAX},
 	{VFE_CMD_MODULE_CFG, VFE_MAX, VFE_MAX},
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{VFE_CMD_ZSL, VFE_MAX, VFE_MAX},
+=======
+	{VFE_CMD_ZSL, VFE_START, QDSP_CMDQUEUE,
+			"VFE_CMD_ZSL", "VFE_START"},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{VFE_CMD_ZSL, VFE_START, QDSP_CMDQUEUE,
+			"VFE_CMD_ZSL", "VFE_START"},
+>>>>>>> refs/remotes/origin/cm-11.0
 	{VFE_CMD_LINEARIZATION_UPDATE, VFE_MAX, VFE_MAX},
 	{VFE_CMD_DEMOSAICV3_ABF_UPDATE, VFE_DEMOSAICv3_ABF_CFG,
 		QDSP_TABLEQUEUE, "VFE_CMD_DEMOSAICV3_ABF_UPDATE",
@@ -327,6 +392,19 @@ struct cmd_id_map cmds_map[] = {
 	{VFE_CMD_SCALE_OUTPUT2_CONFIG, VFE_SCALE_OUTPUT2_CONFIG,
 		QDSP_SCALEQUEUE, "VFE_CMD_SCALE_OUTPUT2_CONFIG",
 		"VFE_SCALE_OUTPUT2_CONFIG"},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	{VFE_CMD_CAPTURE_RAW, VFE_START, QDSP_CMDQUEUE,
+			"VFE_CMD_CAPTURE_RAW", "VFE_START"},
+	{VFE_CMD_STOP_LIVESHOT, VFE_MAX, VFE_MAX},
+	{VFE_CMD_RECONFIG_VFE, VFE_MAX, VFE_MAX},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 
@@ -336,7 +414,13 @@ static void *extdata;
 static uint32_t extlen;
 
 struct mutex vfe_lock;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void     *vfe_syncdata;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static uint8_t vfestopped;
 
 static struct stop_event stopevent;
@@ -391,20 +475,48 @@ static void vfe_7x_ops(void *driver_data, unsigned id, size_t len,
 		void (*getevent)(void *ptr, size_t len))
 {
 	uint32_t evt_buf[3];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void *data;
 	struct buf_info *outch = NULL;
 	uint32_t y_phy, cbcr_phy;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	void *data = NULL;
+	struct buf_info *outch = NULL;
+	uint32_t y_phy, cbcr_phy;
+	static uint32_t liveshot_y_phy;
+	static struct vfe_endframe liveshot_swap;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct table_cmd *table_pending = NULL;
 	unsigned long flags;
 	void   *cmd_data = NULL;
 	unsigned char buf[256];
 	struct msm_free_buf *free_buf = NULL;
 	struct vfe_outputack fack;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	CDBG("%s:id=%d\n", __func__, id);
 
 	if (id != VFE_ADSP_EVENT) {
 		data = kzalloc(len, GFP_KERNEL);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int i;
+
+	CDBG("%s:id=%d\n", __func__, id);
+	if (id != VFE_ADSP_EVENT) {
+		data = kzalloc(len, GFP_ATOMIC);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (!data) {
 			pr_err("%s: rp: cannot allocate buffer\n", __func__);
 			return;
@@ -418,6 +530,8 @@ static void vfe_7x_ops(void *driver_data, unsigned id, size_t len,
 		/* messages */
 		getevent(data, len);
 		CDBG("%s:messages:msg_id=%d\n", __func__, id);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		switch (id) {
 		case MSG_SNAPSHOT:
@@ -448,16 +562,113 @@ static void vfe_7x_ops(void *driver_data, unsigned id, size_t len,
 			break;
 		case MSG_OUTPUT1:
 		case MSG_OUTPUT2:
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		switch (id) {
+		case MSG_SNAPSHOT:
+			while (vfe2x_ctrl->snap.frame_cnt <
+				vfe2x_ctrl->num_snap) {
+				vfe_7x_ops(driver_data, MSG_OUTPUT_S, len,
+					getevent);
+				if (!raw_mode)
+					vfe_7x_ops(driver_data, MSG_OUTPUT_T,
+						len, getevent);
+			}
+			vfe2x_send_isp_msg(vfe2x_ctrl, MSG_ID_SNAPSHOT_DONE);
+			vfe2x_ctrl->snapshot_done = 1;
+			if (vfe2x_ctrl->stop_pending) {
+				cmd_data = buf;
+				*(uint32_t *)cmd_data = VFE_STOP;
+				/* Send Stop cmd here */
+				len  = 4;
+				msm_adsp_write(vfe_mod, QDSP_CMDQUEUE,
+						cmd_data, len);
+				vfe2x_ctrl->stop_pending = 0;
+			}
+			kfree(data);
+			return;
+		case MSG_OUTPUT_S:
+			outch = &vfe2x_ctrl->snap;
+			if (outch->frame_cnt == 0) {
+				y_phy = outch->ping.ch_paddr[0];
+				cbcr_phy = outch->ping.ch_paddr[1];
+			} else if (outch->frame_cnt == 1) {
+				y_phy = outch->pong.ch_paddr[0];
+				cbcr_phy = outch->pong.ch_paddr[1];
+			} else if (outch->frame_cnt == 2) {
+				y_phy = outch->free_buf.ch_paddr[0];
+				cbcr_phy = outch->free_buf.ch_paddr[1];
+			} else {
+				y_phy = outch->free_buf_arr[outch->frame_cnt
+					- 3].ch_paddr[0];
+				cbcr_phy = outch->free_buf_arr[outch->frame_cnt
+					- 3].ch_paddr[1];
+			}
+			outch->frame_cnt++;
+			CDBG("MSG_OUTPUT_S: %x %x %d\n",
+				(unsigned int)y_phy, (unsigned int)cbcr_phy,
+					outch->frame_cnt);
+			vfe_send_outmsg(&vfe2x_ctrl->subdev,
+					MSG_ID_OUTPUT_PRIMARY,
+						y_phy, cbcr_phy);
+			break;
+		case MSG_OUTPUT_T:
+			outch = &vfe2x_ctrl->thumb;
+			if (outch->frame_cnt == 0) {
+				y_phy = outch->ping.ch_paddr[0];
+				cbcr_phy = outch->ping.ch_paddr[1];
+			} else if (outch->frame_cnt == 1) {
+				y_phy = outch->pong.ch_paddr[0];
+				cbcr_phy = outch->pong.ch_paddr[1];
+			} else if (outch->frame_cnt == 2) {
+				y_phy = outch->free_buf.ch_paddr[0];
+				cbcr_phy = outch->free_buf.ch_paddr[1];
+			} else {
+				y_phy = outch->free_buf_arr[outch->frame_cnt
+					- 3].ch_paddr[0];
+				cbcr_phy = outch->free_buf_arr[outch->frame_cnt
+					- 3].ch_paddr[1];
+			}
+			outch->frame_cnt++;
+			CDBG("MSG_OUTPUT_T: %x %x %d\n",
+				(unsigned int)y_phy, (unsigned int)cbcr_phy,
+				outch->frame_cnt);
+			vfe_send_outmsg(&vfe2x_ctrl->subdev,
+						MSG_ID_OUTPUT_SECONDARY,
+							y_phy, cbcr_phy);
+			break;
+		case MSG_OUTPUT1:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (op_mode & SNAPSHOT_MASK_MODE) {
 				kfree(data);
 				return;
 			} else {
 				free_buf = vfe2x_check_free_buffer(
+<<<<<<< HEAD
+<<<<<<< HEAD
 					VFE_MSG_OUTPUT_IRQ,
 					VFE_MSG_OUTPUT_P);
 			      CDBG("free_buf = %x\n", (unsigned int) free_buf);
 			      if (free_buf) {
 					fack.header = VFE_OUTPUT2_ACK;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+							VFE_MSG_OUTPUT_IRQ,
+							VFE_MSG_OUTPUT_SECONDARY
+							);
+				CDBG("free_buf = %x\n",
+						(unsigned int) free_buf);
+				if (free_buf) {
+					fack.header = VFE_OUTPUT1_ACK;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 					fack.output2newybufferaddress =
 						(void *)(free_buf->ch_paddr[0]);
@@ -470,7 +681,15 @@ static void vfe_7x_ops(void *driver_data, unsigned id, size_t len,
 					msm_adsp_write(vfe_mod, QDSP_CMDQUEUE,
 							cmd_data, len);
 			      } else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 					fack.header = VFE_OUTPUT2_ACK;
+=======
+					fack.header = VFE_OUTPUT1_ACK;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					fack.header = VFE_OUTPUT1_ACK;
+>>>>>>> refs/remotes/origin/cm-11.0
 					fack.output2newybufferaddress =
 					(void *)
 				((struct vfe_endframe *)data)->y_address;
@@ -481,6 +700,19 @@ static void vfe_7x_ops(void *driver_data, unsigned id, size_t len,
 					len = sizeof(fack);
 					msm_adsp_write(vfe_mod, QDSP_CMDQUEUE,
 						cmd_data, len);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+					if (!vfe2x_ctrl->zsl_mode) {
+						kfree(data);
+						return;
+					}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				}
 			}
 			y_phy = ((struct vfe_endframe *)data)->y_address;
@@ -489,7 +721,32 @@ static void vfe_7x_ops(void *driver_data, unsigned id, size_t len,
 
 			CDBG("vfe_7x_convert, y_phy = 0x%x, cbcr_phy = 0x%x\n",
 				 y_phy, cbcr_phy);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			if (free_buf) {
+				for (i = 0; i < 3; i++) {
+					if (vfe2x_ctrl->free_buf.buf[i].
+							ch_paddr[0] == y_phy) {
+						vfe2x_ctrl->free_buf.
+							buf[i].ch_paddr[0] =
+							free_buf->ch_paddr[0];
+						vfe2x_ctrl->free_buf.
+							buf[i].ch_paddr[1] =
+							free_buf->ch_paddr[1];
+						break;
+					}
+				}
+				if (i == 3)
+					CDBG("Address doesnt match\n");
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			memcpy(((struct vfe_frame_extra *)extdata),
 				&((struct vfe_endframe *)data)->extra,
 				sizeof(struct vfe_frame_extra));
@@ -497,8 +754,189 @@ static void vfe_7x_ops(void *driver_data, unsigned id, size_t len,
 			vfe2x_ctrl->vfeFrameId =
 				((struct vfe_frame_extra *)extdata)->frame_id;
 			vfe_send_outmsg(&vfe2x_ctrl->subdev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 							MSG_ID_OUTPUT_P,
 							y_phy, cbcr_phy);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+						MSG_ID_OUTPUT_SECONDARY,
+						y_phy, cbcr_phy);
+			break;
+		case MSG_OUTPUT2:
+			if (op_mode & SNAPSHOT_MASK_MODE) {
+				kfree(data);
+				return;
+			}
+			free_buf = vfe2x_check_free_buffer(
+					VFE_MSG_OUTPUT_IRQ,
+					VFE_MSG_OUTPUT_PRIMARY);
+			CDBG("free_buf = %x\n",
+					(unsigned int) free_buf);
+			spin_lock_irqsave(
+					&vfe2x_ctrl->liveshot_enabled_lock,
+					flags);
+			if (!vfe2x_ctrl->liveshot_enabled) {
+				spin_unlock_irqrestore(
+						&vfe2x_ctrl->
+						liveshot_enabled_lock,
+						flags);
+				if (free_buf) {
+					fack.header = VFE_OUTPUT2_ACK;
+
+					fack.output2newybufferaddress =
+						(void *)
+						(free_buf->ch_paddr[0]);
+
+					fack.output2newcbcrbufferaddress =
+						(void *)
+						(free_buf->ch_paddr[1]);
+
+					cmd_data = &fack;
+					len = sizeof(fack);
+					msm_adsp_write(vfe_mod,
+							QDSP_CMDQUEUE,
+							cmd_data, len);
+				} else {
+					fack.header = VFE_OUTPUT2_ACK;
+					fack.output2newybufferaddress =
+						(void *)
+						((struct vfe_endframe *)
+						 data)->y_address;
+					fack.output2newcbcrbufferaddress =
+						(void *)
+						((struct vfe_endframe *)
+						 data)->cbcr_address;
+					cmd_data = &fack;
+					len = sizeof(fack);
+					msm_adsp_write(vfe_mod,
+							QDSP_CMDQUEUE,
+							cmd_data, len);
+					kfree(data);
+					return;
+				}
+			} else { /* Live snapshot */
+				spin_unlock_irqrestore(
+						&vfe2x_ctrl->
+						liveshot_enabled_lock,
+						flags);
+				if (free_buf) {
+					/* liveshot_swap to enqueue
+					   when liveshot snapshot buffer
+					   is obtainedi from adsp */
+					liveshot_swap.y_address =
+						((struct vfe_endframe *)
+						 data)->y_address;
+					liveshot_swap.cbcr_address =
+						((struct vfe_endframe *)
+						 data)->cbcr_address;
+
+					fack.header = VFE_OUTPUT2_ACK;
+
+					fack.output2newybufferaddress =
+						(void *)
+						(free_buf->ch_paddr[0]);
+
+					fack.output2newcbcrbufferaddress =
+						(void *)
+						(free_buf->ch_paddr[1]);
+
+					liveshot_y_phy =
+						(uint32_t)
+						fack.output2newybufferaddress;
+
+					cmd_data = &fack;
+					len = sizeof(fack);
+					msm_adsp_write(vfe_mod,
+							QDSP_CMDQUEUE,
+							cmd_data, len);
+				} else if (liveshot_y_phy !=
+						((struct vfe_endframe *)
+						 data)->y_address) {
+
+					fack.header = VFE_OUTPUT2_ACK;
+					fack.output2newybufferaddress =
+						(void *)
+						((struct vfe_endframe *)
+						 data)->y_address;
+
+					fack.output2newcbcrbufferaddress =
+						(void *)
+						((struct vfe_endframe *)
+						 data)->cbcr_address;
+
+					cmd_data = &fack;
+					len = sizeof(fack);
+					msm_adsp_write(vfe_mod,
+							QDSP_CMDQUEUE,
+							cmd_data, len);
+					kfree(data);
+					return;
+				} else {
+					/* Enque data got
+					 * during freebuf */
+					fack.header = VFE_OUTPUT2_ACK;
+					fack.output2newybufferaddress =
+						(void *)
+						(liveshot_swap.y_address);
+
+					fack.output2newcbcrbufferaddress =
+						(void *)
+						(liveshot_swap.cbcr_address);
+					cmd_data = &fack;
+					len = sizeof(fack);
+					msm_adsp_write(vfe_mod,
+							QDSP_CMDQUEUE,
+							cmd_data, len);
+				}
+			}
+			y_phy = ((struct vfe_endframe *)data)->
+				y_address;
+			cbcr_phy = ((struct vfe_endframe *)data)->
+				cbcr_address;
+
+
+			CDBG("MSG_OUT2:y_phy= 0x%x, cbcr_phy= 0x%x\n",
+					y_phy, cbcr_phy);
+			if (free_buf) {
+				for (i = 0; i < 3; i++) {
+					if (vfe2x_ctrl->free_buf.buf[i].
+							ch_paddr[0] == y_phy) {
+						vfe2x_ctrl->free_buf.
+							buf[i].ch_paddr[0] =
+							free_buf->ch_paddr[0];
+						vfe2x_ctrl->free_buf.
+							buf[i].ch_paddr[1] =
+							free_buf->ch_paddr[1];
+						break;
+					}
+				}
+				if (i == 3)
+					CDBG("Address doesnt match\n");
+			}
+			memcpy(((struct vfe_frame_extra *)extdata),
+					&((struct vfe_endframe *)data)->extra,
+					sizeof(struct vfe_frame_extra));
+
+			vfe2x_ctrl->vfeFrameId =
+				((struct vfe_frame_extra *)extdata)->
+				frame_id;
+
+			if (!vfe2x_ctrl->liveshot_enabled) {
+				/* Liveshot not enalbed */
+				vfe_send_outmsg(&vfe2x_ctrl->subdev,
+						MSG_ID_OUTPUT_PRIMARY,
+						y_phy, cbcr_phy);
+			} else if (liveshot_y_phy == y_phy) {
+				vfe_send_outmsg(&vfe2x_ctrl->subdev,
+						MSG_ID_OUTPUT_PRIMARY,
+						y_phy, cbcr_phy);
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		case MSG_RESET_ACK:
 		case MSG_START_ACK:
@@ -509,6 +947,54 @@ static void vfe_7x_ops(void *driver_data, unsigned id, size_t len,
 			vfe2x_send_isp_msg(vfe2x_ctrl, msgs_map[id].isp_id);
 			if (id == MSG_START_ACK)
 				vfe2x_ctrl->vfe_started = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			if (id == MSG_VFE_ERROR) {
+				uint16_t *ptr;
+				struct vfe_error_msg *VFE_ErrorMessageBuffer
+					= data;
+				ptr = data;
+				CDBG("Error: %x %x\n", ptr[0], ptr[1]);
+				CDBG("CAMIF_Error              = %d\n",
+					VFE_ErrorMessageBuffer->camif_error);
+				CDBG("output1YBusOverflow      = %d\n",
+					VFE_ErrorMessageBuffer->
+					output1ybusoverflow);
+				CDBG("output1CbCrBusOverflow   = %d\n",
+					VFE_ErrorMessageBuffer->
+					output1cbcrbusoverflow);
+				CDBG("output2YBusOverflow      = %d\n",
+					VFE_ErrorMessageBuffer->
+					output2ybusoverflow);
+				CDBG("output2CbCrBusOverflow   = %d\n",
+						VFE_ErrorMessageBuffer->
+						output2cbcrbusoverflow);
+				CDBG("autofocusStatBusOverflow = %d\n",
+						VFE_ErrorMessageBuffer->
+						autofocusstatbusoverflow);
+				CDBG("WB_EXPStatBusOverflow    = %d\n",
+						VFE_ErrorMessageBuffer->
+						wb_expstatbusoverflow);
+				CDBG("AXIError                 = %d\n",
+						VFE_ErrorMessageBuffer->
+						axierror);
+				CDBG("CAMIF_Staus              = %d\n",
+						VFE_ErrorMessageBuffer->
+						camif_staus);
+				CDBG("pixel_count              = %d\n",
+						VFE_ErrorMessageBuffer->
+						pixel_count);
+				CDBG("line_count               = %d\n",
+						VFE_ErrorMessageBuffer->
+						line_count);
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		case MSG_SOF:
 			vfe2x_ctrl->vfeFrameId++;
@@ -531,12 +1017,32 @@ static void vfe_7x_ops(void *driver_data, unsigned id, size_t len,
 						msgs_map[id].isp_id);
 			break;
 		default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			vfe2x_send_isp_msg(vfe2x_ctrl, msgs_map[id].isp_id);
+=======
+			if (MSG_TABLE_CMD_ACK != id)
+				vfe2x_send_isp_msg(vfe2x_ctrl,
+						msgs_map[id].isp_id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (MSG_TABLE_CMD_ACK != id)
+				vfe2x_send_isp_msg(vfe2x_ctrl,
+						msgs_map[id].isp_id);
+>>>>>>> refs/remotes/origin/cm-11.0
 			break;
 		}
 	}
 	if (MSG_TABLE_CMD_ACK == id) {
 		spin_lock_irqsave(&vfe2x_ctrl->table_lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		vfe2x_ctrl->tableack_pending = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		vfe2x_ctrl->tableack_pending = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (list_empty(&vfe2x_ctrl->table_q)) {
 			if (vfe2x_ctrl->start_pending) {
 				CDBG("Send START\n");
@@ -550,28 +1056,87 @@ static void vfe_7x_ops(void *driver_data, unsigned id, size_t len,
 				msm_adsp_write(vfe_mod, QDSP_CMDQUEUE,
 						cmd_data, len);
 				vfe2x_ctrl->start_pending = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			}
 			vfe2x_ctrl->tableack_pending = 0;
 			spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			} else if (vfe2x_ctrl->stop_pending) {
+				CDBG("Send STOP\n");
+				cmd_data = buf;
+				*(uint32_t *)cmd_data = VFE_STOP;
+				/* Send Stop cmd here */
+				len  = 4;
+				msm_adsp_write(vfe_mod, QDSP_CMDQUEUE,
+						cmd_data, len);
+				vfe2x_ctrl->stop_pending = 0;
+			} else if (vfe2x_ctrl->update_pending) {
+				CDBG("Send Update\n");
+				cmd_data = buf;
+				*(uint32_t *)cmd_data = VFE_UPDATE;
+				/* Send Update cmd here */
+				len  = 4;
+				msm_adsp_write(vfe_mod, QDSP_CMDQUEUE,
+						cmd_data, len);
+				vfe2x_ctrl->update_pending = 0;
+			}
+			spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
+			kfree(data);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			return;
 		}
 		table_pending = list_first_entry(&vfe2x_ctrl->table_q,
 					struct table_cmd, list);
 		if (!table_pending) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			vfe2x_ctrl->tableack_pending = 0;
 			spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
+=======
+			spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
+			kfree(data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
+			kfree(data);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return;
 		}
 		msm_adsp_write(vfe_mod, table_pending->queue,
 				table_pending->cmd, table_pending->size);
 		list_del(&table_pending->list);
 		kfree(table_pending->cmd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		vfe2x_ctrl->tableack_pending = 1;
 		spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
 	} else if (!vfe2x_ctrl->tableack_pending) {
 		if (!list_empty(&vfe2x_ctrl->table_q))
 			return;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		kfree(table_pending);
+		vfe2x_ctrl->tableack_pending = 1;
+		spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
+	} else if (!vfe2x_ctrl->tableack_pending) {
+		if (!list_empty(&vfe2x_ctrl->table_q)) {
+			kfree(data);
+			return;
+		}
+	}
+	kfree(data);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static struct msm_adsp_ops vfe_7x_sync = {
@@ -584,6 +1149,8 @@ static int vfe_7x_config_axi(int mode,
 	unsigned long *bptr;
 	int    cnt;
 	int rc = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
 	if (mode == OUTPUT_1) {
@@ -601,12 +1168,145 @@ static int vfe_7x_config_axi(int mode,
 	}
 
 	if (mode == OUTPUT_2) {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int o_mode = 0;
+	unsigned long flags;
+
+	if (op_mode & SNAPSHOT_MASK_MODE)
+		o_mode = SNAPSHOT_MASK_MODE;
+
+	if ((o_mode == SNAPSHOT_MASK_MODE) && (vfe2x_ctrl->num_snap > 1)) {
+		CDBG("%s: BURST mode freebuf cnt %d", __func__,
+			ad->free_buf_cnt);
+		/* Burst */
+		if (mode == OUTPUT_SEC) {
+			ao->output1buffer1_y_phy = ad->ping.ch_paddr[0];
+			ao->output1buffer1_cbcr_phy = ad->ping.ch_paddr[1];
+			ao->output1buffer2_y_phy = ad->pong.ch_paddr[0];
+			ao->output1buffer2_cbcr_phy = ad->pong.ch_paddr[1];
+			ao->output1buffer3_y_phy = ad->free_buf.ch_paddr[0];
+			ao->output1buffer3_cbcr_phy = ad->free_buf.ch_paddr[1];
+			bptr = &ao->output1buffer4_y_phy;
+			for (cnt = 0; cnt < 5; cnt++) {
+				*bptr = (cnt < ad->free_buf_cnt-3) ?
+					ad->free_buf_arr[cnt].ch_paddr[0] :
+						ad->pong.ch_paddr[0];
+				bptr++;
+				*bptr = (cnt < ad->free_buf_cnt-3) ?
+					ad->free_buf_arr[cnt].ch_paddr[1] :
+						ad->pong.ch_paddr[1];
+				bptr++;
+			}
+			CDBG("%x %x\n", (unsigned int)ao->output1buffer1_y_phy,
+				(unsigned int)ao->output1buffer1_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output1buffer2_y_phy,
+				(unsigned int)ao->output1buffer2_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output1buffer3_y_phy,
+				(unsigned int)ao->output1buffer3_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output1buffer4_y_phy,
+				(unsigned int)ao->output1buffer4_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output1buffer5_y_phy,
+				(unsigned int)ao->output1buffer5_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output1buffer6_y_phy,
+				(unsigned int)ao->output1buffer6_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output1buffer7_y_phy,
+				(unsigned int)ao->output1buffer7_cbcr_phy);
+		} else { /*Primary*/
+			ao->output2buffer1_y_phy = ad->ping.ch_paddr[0];
+			ao->output2buffer1_cbcr_phy = ad->ping.ch_paddr[1];
+			ao->output2buffer2_y_phy = ad->pong.ch_paddr[0];
+			ao->output2buffer2_cbcr_phy = ad->pong.ch_paddr[1];
+			ao->output2buffer3_y_phy = ad->free_buf.ch_paddr[0];
+			ao->output2buffer3_cbcr_phy = ad->free_buf.ch_paddr[1];
+			bptr = &ao->output2buffer4_y_phy;
+			for (cnt = 0; cnt < 5; cnt++) {
+				*bptr = (cnt < ad->free_buf_cnt-3) ?
+					ad->free_buf_arr[cnt].ch_paddr[0] :
+						ad->pong.ch_paddr[0];
+				bptr++;
+				*bptr = (cnt < ad->free_buf_cnt-3) ?
+					ad->free_buf_arr[cnt].ch_paddr[1] :
+						ad->pong.ch_paddr[1];
+				bptr++;
+			}
+			CDBG("%x %x\n", (unsigned int)ao->output2buffer1_y_phy,
+				(unsigned int)ao->output2buffer1_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output2buffer2_y_phy,
+				(unsigned int)ao->output2buffer2_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output2buffer3_y_phy,
+				(unsigned int)ao->output2buffer3_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output2buffer4_y_phy,
+				(unsigned int)ao->output2buffer4_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output2buffer5_y_phy,
+				(unsigned int)ao->output2buffer5_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output2buffer6_y_phy,
+				(unsigned int)ao->output2buffer6_cbcr_phy);
+			CDBG("%x %x\n", (unsigned int)ao->output2buffer7_y_phy,
+				(unsigned int)ao->output2buffer7_cbcr_phy);
+		}
+	} else if (mode == OUTPUT_SEC) {
+		/* Thumbnail */
+		if (vfe2x_ctrl->zsl_mode) {
+			ao->output1buffer1_y_phy = ad->ping.ch_paddr[0];
+			ao->output1buffer1_cbcr_phy = ad->ping.ch_paddr[1];
+			ao->output1buffer2_y_phy = ad->pong.ch_paddr[0];
+			ao->output1buffer2_cbcr_phy = ad->pong.ch_paddr[1];
+			ao->output1buffer3_y_phy = ad->free_buf.ch_paddr[0];
+			ao->output1buffer3_cbcr_phy = ad->free_buf.ch_paddr[1];
+			bptr = &ao->output1buffer4_y_phy;
+			for (cnt = 0; cnt < 5; cnt++) {
+				*bptr = ad->pong.ch_paddr[0];
+				bptr++;
+				*bptr = ad->pong.ch_paddr[1];
+				bptr++;
+			}
+		} else {
+			ao->output1buffer1_y_phy = ad->ping.ch_paddr[0];
+			ao->output1buffer1_cbcr_phy = ad->ping.ch_paddr[1];
+			ao->output1buffer2_y_phy = ad->pong.ch_paddr[0];
+			ao->output1buffer2_cbcr_phy = ad->pong.ch_paddr[1];
+			bptr = &ao->output1buffer3_y_phy;
+			for (cnt = 0; cnt < 6; cnt++) {
+				*bptr = ad->pong.ch_paddr[0];
+				bptr++;
+				*bptr = ad->pong.ch_paddr[1];
+				bptr++;
+			}
+		}
+	} else if (mode == OUTPUT_PRIM && o_mode != SNAPSHOT_MASK_MODE) {
+		/* Preview */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		ao->output2buffer1_y_phy = ad->ping.ch_paddr[0];
 		ao->output2buffer1_cbcr_phy = ad->ping.ch_paddr[1];
 		ao->output2buffer2_y_phy = ad->pong.ch_paddr[0];
 		ao->output2buffer2_cbcr_phy = ad->pong.ch_paddr[1];
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ao->output2buffer3_y_phy = ad->free_buf.ch_paddr[0];
 		ao->output2buffer3_cbcr_phy = ad->free_buf.ch_paddr[1];
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		spin_lock_irqsave(&vfe2x_ctrl->liveshot_enabled_lock,
+				flags);
+		if (vfe2x_ctrl->liveshot_enabled) { /* Live shot */
+			ao->output2buffer3_y_phy = ad->pong.ch_paddr[0];
+			ao->output2buffer3_cbcr_phy = ad->pong.ch_paddr[1];
+		} else {
+			ao->output2buffer3_y_phy = ad->free_buf.ch_paddr[0];
+			ao->output2buffer3_cbcr_phy = ad->free_buf.ch_paddr[1];
+		}
+		spin_unlock_irqrestore(&vfe2x_ctrl->liveshot_enabled_lock,
+				flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		bptr = &ao->output2buffer4_y_phy;
 		for (cnt = 0; cnt < 5; cnt++) {
 			*bptr = ad->pong.ch_paddr[0];
@@ -614,9 +1314,42 @@ static int vfe_7x_config_axi(int mode,
 			*bptr = ad->pong.ch_paddr[1];
 			bptr++;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	if (mode == OUTPUT_1_AND_2) {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		CDBG("%x %x\n", (unsigned int)ao->output2buffer1_y_phy,
+			(unsigned int)ao->output2buffer1_cbcr_phy);
+		CDBG("%x %x\n", (unsigned int)ao->output2buffer2_y_phy,
+			(unsigned int)ao->output2buffer2_cbcr_phy);
+		CDBG("%x %x\n", (unsigned int)ao->output2buffer3_y_phy,
+			(unsigned int)ao->output2buffer3_cbcr_phy);
+		CDBG("%x %x\n", (unsigned int)ao->output2buffer4_y_phy,
+			(unsigned int)ao->output2buffer4_cbcr_phy);
+		CDBG("%x %x\n", (unsigned int)ao->output2buffer5_y_phy,
+			(unsigned int)ao->output2buffer5_cbcr_phy);
+		CDBG("%x %x\n", (unsigned int)ao->output2buffer6_y_phy,
+			(unsigned int)ao->output2buffer6_cbcr_phy);
+		CDBG("%x %x\n", (unsigned int)ao->output2buffer7_y_phy,
+			(unsigned int)ao->output2buffer7_cbcr_phy);
+		vfe2x_ctrl->free_buf.buf[0].ch_paddr[0] = ad->ping.ch_paddr[0];
+		vfe2x_ctrl->free_buf.buf[0].ch_paddr[1] = ad->ping.ch_paddr[1];
+		vfe2x_ctrl->free_buf.buf[1].ch_paddr[0] = ad->pong.ch_paddr[0];
+		vfe2x_ctrl->free_buf.buf[1].ch_paddr[1] = ad->pong.ch_paddr[1];
+		vfe2x_ctrl->free_buf.buf[2].ch_paddr[0] =
+			ad->free_buf.ch_paddr[0];
+		vfe2x_ctrl->free_buf.buf[2].ch_paddr[1] =
+			ad->free_buf.ch_paddr[1];
+	} else if (mode == OUTPUT_PRIM && o_mode == SNAPSHOT_MASK_MODE) {
+		vfe2x_ctrl->reconfig_vfe = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (raw_mode) {
 			ao->output2buffer1_y_phy = ad->ping.ch_paddr[0];
 			ao->output2buffer1_cbcr_phy = ad->ping.ch_paddr[0];
@@ -632,7 +1365,15 @@ static int vfe_7x_config_axi(int mode,
 		for (cnt = 0; cnt < 6; cnt++) {
 			*bptr = ad->pong.ch_paddr[0];
 			bptr++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			*bptr = ad->pong.ch_paddr[0];
+=======
+			*bptr = ad->pong.ch_paddr[1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*bptr = ad->pong.ch_paddr[1];
+>>>>>>> refs/remotes/origin/cm-11.0
 			bptr++;
 		}
 	}
@@ -660,6 +1401,8 @@ static struct msm_free_buf *vfe2x_check_free_buffer(int id, int path)
 
 	vfe2x_subdev_notify(id, path);
 	if (op_mode & SNAPSHOT_MASK_MODE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (path == VFE_MSG_OUTPUT_S)
 			outch = &vfe2x_ctrl->snap;
 		else if (path == VFE_MSG_OUTPUT_T)
@@ -667,6 +1410,25 @@ static struct msm_free_buf *vfe2x_check_free_buffer(int id, int path)
 	} else {
 		if (path == VFE_MSG_OUTPUT_P)
 			outch = &vfe2x_ctrl->prev;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (path == VFE_MSG_OUTPUT_PRIMARY)
+			outch = &vfe2x_ctrl->snap;
+		else if (path == VFE_MSG_OUTPUT_SECONDARY)
+			outch = &vfe2x_ctrl->thumb;
+	} else {
+		if (path == VFE_MSG_OUTPUT_PRIMARY) {
+			if (vfe2x_ctrl->zsl_mode)
+				outch = &vfe2x_ctrl->zsl_prim;
+			else
+				outch = &vfe2x_ctrl->prev;
+		} else if (path == VFE_MSG_OUTPUT_SECONDARY)
+				outch = &vfe2x_ctrl->zsl_sec;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (outch->free_buf.ch_paddr[0])
 		return &outch->free_buf;
@@ -680,6 +1442,8 @@ static int vfe2x_configure_pingpong_buffers(int id, int path)
 	int rc = 0;
 
 	vfe2x_subdev_notify(id, path);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	CDBG("Opmode = %d\n", op_mode);
 	if (op_mode & SNAPSHOT_MASK_MODE) {
@@ -690,6 +1454,27 @@ static int vfe2x_configure_pingpong_buffers(int id, int path)
 	} else {
 		if (path == VFE_MSG_OUTPUT_P)
 			outch = &vfe2x_ctrl->prev;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	CDBG("Opmode = %d\n", op_mode);
+	if (op_mode & SNAPSHOT_MASK_MODE) {
+		if (path == VFE_MSG_OUTPUT_PRIMARY)
+			outch = &vfe2x_ctrl->snap;
+		else if (path == VFE_MSG_OUTPUT_SECONDARY)
+			outch = &vfe2x_ctrl->thumb;
+	} else {
+		if (path == VFE_MSG_OUTPUT_PRIMARY) {
+			if (vfe2x_ctrl->zsl_mode)
+				outch = &vfe2x_ctrl->zsl_prim;
+			else
+				outch = &vfe2x_ctrl->prev;
+		} else if (path == VFE_MSG_OUTPUT_SECONDARY)
+			outch = &vfe2x_ctrl->zsl_sec;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (outch->ping.ch_paddr[0] && outch->pong.ch_paddr[0]) {
 		/* Configure Preview Ping Pong */
@@ -707,6 +1492,8 @@ static struct buf_info *vfe2x_get_ch(int path)
 	struct buf_info *ch = NULL;
 
 	CDBG("path = %d op_mode = %d\n", path, op_mode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (op_mode & SNAPSHOT_MASK_MODE) {
 		if (path == VFE_MSG_OUTPUT_T)
 			ch = &vfe2x_ctrl->thumb;
@@ -715,6 +1502,27 @@ static struct buf_info *vfe2x_get_ch(int path)
 	} else {
 		if (path == VFE_MSG_OUTPUT_P)
 			ch = &vfe2x_ctrl->prev;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* TODO: Remove Mode specific stuff */
+	if (op_mode & SNAPSHOT_MASK_MODE) {
+		if (path == VFE_MSG_OUTPUT_SECONDARY)
+			ch = &vfe2x_ctrl->thumb;
+		else if (path == VFE_MSG_OUTPUT_PRIMARY)
+			ch = &vfe2x_ctrl->snap;
+	} else {
+		if (path == VFE_MSG_OUTPUT_PRIMARY) {
+			if (vfe2x_ctrl->zsl_mode)
+				ch = &vfe2x_ctrl->zsl_prim;
+			else
+				ch = &vfe2x_ctrl->prev;
+		} else if (path == VFE_MSG_OUTPUT_SECONDARY)
+			ch = &vfe2x_ctrl->zsl_sec;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	BUG_ON(ch == NULL);
@@ -773,11 +1581,25 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		if (op_mode & SNAPSHOT_MASK_MODE) {
 			free_buf = vfe2x_check_free_buffer(
 					VFE_MSG_OUTPUT_IRQ,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					VFE_MSG_OUTPUT_T);
 		} else {
 			free_buf = vfe2x_check_free_buffer(
 					VFE_MSG_OUTPUT_IRQ,
 					VFE_MSG_OUTPUT_P);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+					VFE_MSG_OUTPUT_SECONDARY);
+		} else {
+			free_buf = vfe2x_check_free_buffer(
+					VFE_MSG_OUTPUT_IRQ,
+					VFE_MSG_OUTPUT_PRIMARY);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (free_buf) {
 				fack.header = VFE_OUTPUT2_ACK;
 
@@ -810,7 +1632,30 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 	case CMD_CONFIG_FREE_BUF_ADDR: {
 		int path = *((int *)cmd->value);
 		struct buf_info *outch = vfe2x_get_ch(path);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		outch->free_buf = *((struct msm_free_buf *)data);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if ((op_mode & SNAPSHOT_MASK_MODE) &&
+			(vfe2x_ctrl->num_snap > 1)) {
+			CDBG("%s: CMD_CONFIG_FREE_BUF_ADDR Burst mode %d",
+					__func__, outch->free_buf_cnt);
+			if (outch->free_buf_cnt <= 0)
+				outch->free_buf =
+					*((struct msm_free_buf *)data);
+			else
+				outch->free_buf_arr[outch->free_buf_cnt-1] =
+					*((struct msm_free_buf *)data);
+			++outch->free_buf_cnt;
+		} else {
+			outch->free_buf = *((struct msm_free_buf *)data);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 		return 0;
 
@@ -871,6 +1716,14 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		break;
 	case CMD_STATS_AF_ENABLE:
 	case CMD_STATS_AF_AXI_CFG: {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		CDBG("CMD_STATS_AF_ENABLE CMD_STATS_AF_AXI_CFG\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		CDBG("CMD_STATS_AF_ENABLE CMD_STATS_AF_AXI_CFG\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 		axid = data;
 		if (!axid) {
 			rc = -EFAULT;
@@ -904,6 +1757,14 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 			goto config_failure;
 		}
 		*(uint32_t *)sfcfg = header;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		CDBG("Number of buffers = %d\n", axid->bufnum1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		CDBG("Number of buffers = %d\n", axid->bufnum1);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (axid->bufnum1 > 0) {
 			regptr = &axid->region[0];
 
@@ -967,8 +1828,50 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 							vfecmd.length))
 				rc = -EFAULT;
 			op_mode = vfe2x_ctrl->start_cmd.mode_of_operation;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return rc;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			vfe2x_ctrl->snap.free_buf_cnt = 0;
+			vfe2x_ctrl->thumb.free_buf_cnt = 0;
+			vfe2x_ctrl->snap.frame_cnt = 0;
+			vfe2x_ctrl->thumb.frame_cnt = 0;
+			vfe2x_ctrl->num_snap =
+				vfe2x_ctrl->start_cmd.snap_number;
+			return rc;
+		}
+		if (vfecmd.id == VFE_CMD_RECONFIG_VFE) {
+			CDBG("VFE is RECONFIGURED\n");
+			vfe2x_ctrl->reconfig_vfe = 1;
+			return 0;
+		}
+		if (vfecmd.id == VFE_CMD_LIVESHOT) {
+			CDBG("live shot enabled\n");
+			spin_lock_irqsave(&vfe2x_ctrl->liveshot_enabled_lock,
+					flags);
+			vfe2x_ctrl->liveshot_enabled = 1;
+			spin_unlock_irqrestore(&vfe2x_ctrl->
+					liveshot_enabled_lock,
+					flags);
+			return 0;
+		}
+		if (vfecmd.id == VFE_CMD_STOP_LIVESHOT) {
+			CDBG("live shot disabled\n");
+			spin_lock_irqsave(&vfe2x_ctrl->liveshot_enabled_lock,
+					flags);
+			vfe2x_ctrl->liveshot_enabled = 0;
+			spin_unlock_irqrestore(
+					&vfe2x_ctrl->liveshot_enabled_lock,
+					flags);
+			return 0;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (vfecmd.length > 256 - 4) {
 			cmd_data_alloc =
 			cmd_data = kmalloc(vfecmd.length + 4, GFP_ATOMIC);
@@ -998,16 +1901,42 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		if (queue == QDSP_CMDQUEUE) {
 			switch (vfecmd.id) {
 			case VFE_CMD_RESET:
+<<<<<<< HEAD
+<<<<<<< HEAD
 				msm_adsp_enable(qcam_mod);
 				msm_adsp_enable(vfe_mod);
 				msm_camio_vfe_blk_reset();
+=======
+				axi_halt(AXI_HALT_PORT_VFE);
+				msm_camio_vfe_blk_reset_2();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				axi_halt(AXI_HALT_PORT_VFE);
+				msm_camio_vfe_blk_reset_2();
+>>>>>>> refs/remotes/origin/cm-11.0
 				vfestopped = 0;
 				break;
 			case VFE_CMD_START:
 			case VFE_CMD_CAPTURE:
+<<<<<<< HEAD
+<<<<<<< HEAD
 				spin_lock_irqsave(&vfe2x_ctrl->table_lock,
 									flags);
 				if (!list_empty(&vfe2x_ctrl->table_q)) {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			case VFE_CMD_CAPTURE_RAW:
+			case VFE_CMD_ZSL:
+				spin_lock_irqsave(&vfe2x_ctrl->table_lock,
+									flags);
+				if ((!list_empty(&vfe2x_ctrl->table_q)) ||
+						vfe2x_ctrl->tableack_pending) {
+					CDBG("start pending\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					vfe2x_ctrl->start_pending = 1;
 					spin_unlock_irqrestore(
 						&vfe2x_ctrl->table_lock,
@@ -1028,18 +1957,360 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 				break;
 			case VFE_CMD_STOP:
 				vfestopped = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				vfe2x_ctrl->vfe_started = 0;
 				goto config_send;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+				spin_lock_irqsave(&vfe2x_ctrl->table_lock,
+						flags);
+				if ((op_mode & SNAPSHOT_MASK_MODE) && !vfe2x_ctrl->snapshot_done) {
+                                        vfe2x_ctrl->stop_pending = 1;
+                                        spin_unlock_irqrestore(&vfe2x_ctrl->table_lock,
+                                                flags);
+                                        return 0;
+                                }
+				if ((!list_empty(&vfe2x_ctrl->table_q)) ||
+						vfe2x_ctrl->tableack_pending) {
+					CDBG("stop pending\n");
+					vfe2x_ctrl->stop_pending = 1;
+					spin_unlock_irqrestore(
+							&vfe2x_ctrl->table_lock,
+							flags);
+					return 0;
+				}
+				vfe2x_ctrl->snapshot_done = 0;
+				spin_unlock_irqrestore(&vfe2x_ctrl->table_lock,
+						flags);
+				vfe2x_ctrl->vfe_started = 0;
+				goto config_send;
+			case VFE_CMD_UPDATE:
+				spin_lock_irqsave(&vfe2x_ctrl->table_lock,
+						flags);
+				if ((!list_empty(&vfe2x_ctrl->table_q)) ||
+						vfe2x_ctrl->tableack_pending) {
+					CDBG("update pending\n");
+					vfe2x_ctrl->update_pending = 0;
+					vfe2x_send_isp_msg(vfe2x_ctrl,
+						msgs_map[MSG_UPDATE_ACK].
+						isp_id);
+					spin_unlock_irqrestore(
+							&vfe2x_ctrl->table_lock,
+							flags);
+					return 0;
+				}
+				spin_unlock_irqrestore(&vfe2x_ctrl->table_lock,
+						flags);
+				goto config_send;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			default:
 				break;
 			}
 		} /* QDSP_CMDQUEUE */
 	}
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case CMD_AXI_CFG_PREVIEW: {
 		CDBG("CMD_AXI_CFG_PREVIEW\n");
 		raw_mode = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	case CMD_AXI_CFG_SEC: {
+		CDBG("CMD_AXI_CFG_SEC\n");
+		raw_mode = 0;
+		vfe2x_ctrl->zsl_mode = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		axio = kmalloc(sizeof(struct axiout), GFP_ATOMIC);
+		if (!axio) {
+			pr_err("NULL axio\n");
+			rc = -ENOMEM;
+			goto config_failure;
+		}
+
+		if (copy_from_user((char *)axio + 4,
+					(void __user *)(vfecmd.value),
+					sizeof(struct axiout))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+			pr_err("copy_from_user failed\n");
+			rc = -EFAULT;
+			goto config_done;
+		}
+		rc = vfe2x_configure_pingpong_buffers(VFE_MSG_V2X_PREVIEW,
+							VFE_MSG_OUTPUT_P);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			CDBG("copy_from_user failed\n");
+			rc = -EFAULT;
+			goto config_done;
+		}
+		if (op_mode & SNAPSHOT_MASK_MODE)
+			rc = vfe2x_configure_pingpong_buffers(
+						VFE_MSG_V2X_CAPTURE,
+						VFE_MSG_OUTPUT_SECONDARY);
+		else
+			rc = vfe2x_configure_pingpong_buffers(
+						VFE_MSG_V2X_PREVIEW,
+						VFE_MSG_OUTPUT_SECONDARY);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (rc < 0) {
+			pr_err("%s error configuring pingpong buffers"
+				" for preview", __func__);
+			rc = -EINVAL;
+			goto config_done;
+		}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+		free_buf = vfe2x_check_free_buffer(
+					VFE_MSG_OUTPUT_IRQ,
+					VFE_MSG_OUTPUT_P);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (!(op_mode & SNAPSHOT_MASK_MODE))
+			free_buf = vfe2x_check_free_buffer(
+					VFE_MSG_OUTPUT_IRQ,
+					VFE_MSG_OUTPUT_SECONDARY);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		header = cmds_map[vfecmd.id].vfe_id;
+		queue = cmds_map[vfecmd.id].queue;
+		if (header == -1 && queue == -1) {
+			rc = -EFAULT;
+			goto config_done;
+		}
+		*(uint32_t *)axio = header;
+<<<<<<< HEAD
+<<<<<<< HEAD
+		vfe_7x_config_axi(OUTPUT_2, &vfe2x_ctrl->prev, axio);
+		cmd_data = axio;
+	}
+		break;
+	case CMD_RAW_PICT_AXI_CFG: {
+		CDBG("CMD_RAW_PICT_AXI_CFG:%d\n", op_mode);
+		raw_mode = 1;
+		axio = kmalloc(sizeof(struct axiout), GFP_ATOMIC);
+		if (!axio) {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (op_mode & SNAPSHOT_MASK_MODE)
+			vfe_7x_config_axi(OUTPUT_SEC,
+					&vfe2x_ctrl->thumb, axio);
+		else
+			vfe_7x_config_axi(OUTPUT_SEC,
+					&vfe2x_ctrl->video, axio);
+		cmd_data = axio;
+	}
+		break;
+	case CMD_AXI_CFG_PRIM: {
+		CDBG("CMD_AXI_CFG_PRIM : %d\n", op_mode);
+		raw_mode = 0;
+		vfe2x_ctrl->zsl_mode = 0;
+		axio = kmalloc(sizeof(struct axiout), GFP_ATOMIC);
+		if (!axio) {
+			pr_err("NULL axio\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			rc = -ENOMEM;
+			goto config_failure;
+		}
+
+		if (copy_from_user((char *)axio + 4,
+					(void __user *)(vfecmd.value),
+					sizeof(struct axiout))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+			rc = -EFAULT;
+			goto config_done;
+		}
+		header = cmds_map[vfecmd.id].vfe_id;
+		queue = cmds_map[vfecmd.id].queue;
+		rc = vfe2x_configure_pingpong_buffers(VFE_MSG_V2X_CAPTURE,
+							VFE_MSG_OUTPUT_S);
+		if (rc < 0) {
+			pr_err("%s error configuring pingpong buffers"
+				" for preview", __func__);
+			rc = -EINVAL;
+			goto config_done;
+		}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			pr_err("copy_from_user failed\n");
+			rc = -EFAULT;
+			goto config_done;
+		}
+		if (!vfe2x_ctrl->reconfig_vfe) {
+			if (op_mode & SNAPSHOT_MASK_MODE)
+				rc = vfe2x_configure_pingpong_buffers(
+						VFE_MSG_V2X_CAPTURE,
+						VFE_MSG_OUTPUT_PRIMARY);
+			else
+				rc = vfe2x_configure_pingpong_buffers(
+						VFE_MSG_V2X_PREVIEW,
+						VFE_MSG_OUTPUT_PRIMARY);
+			if (rc < 0) {
+				pr_err("%s error configuring pingpong buffers"
+					" for preview", __func__);
+				rc = -EINVAL;
+				goto config_done;
+			}
+			if (!(op_mode & SNAPSHOT_MASK_MODE))
+				free_buf = vfe2x_check_free_buffer(
+					VFE_MSG_OUTPUT_IRQ,
+					VFE_MSG_OUTPUT_PRIMARY);
+		} else {
+			vfe2x_ctrl->prev.ping.ch_paddr[0] =
+				vfe2x_ctrl->free_buf.buf[0].ch_paddr[0];
+			vfe2x_ctrl->prev.ping.ch_paddr[1] =
+				vfe2x_ctrl->free_buf.buf[0].ch_paddr[1];
+			vfe2x_ctrl->prev.pong.ch_paddr[0] =
+				vfe2x_ctrl->free_buf.buf[1].ch_paddr[0];
+			vfe2x_ctrl->prev.pong.ch_paddr[1] =
+				vfe2x_ctrl->free_buf.buf[1].ch_paddr[1];
+			vfe2x_ctrl->prev.free_buf.ch_paddr[0] =
+				vfe2x_ctrl->free_buf.buf[2].ch_paddr[0];
+			vfe2x_ctrl->prev.free_buf.ch_paddr[1] =
+				vfe2x_ctrl->free_buf.buf[2].ch_paddr[1];
+			vfe2x_ctrl->reconfig_vfe = 0;
+		}
+		header = cmds_map[vfecmd.id].vfe_id;
+		queue = cmds_map[vfecmd.id].queue;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (header == -1 && queue == -1) {
+			rc = -EFAULT;
+			goto config_done;
+		}
+		*(uint32_t *)axio = header;
+<<<<<<< HEAD
+<<<<<<< HEAD
+		vfe_7x_config_axi(OUTPUT_1_AND_2, &vfe2x_ctrl->snap, axio);
+		cmd_data = axio;
+	}
+		break;
+	case CMD_AXI_CFG_SNAP: {
+		raw_mode = 0;
+		CDBG("CMD_AXI_CFG_SNAP :%d\n", op_mode);
+		axio = kmalloc(sizeof(struct axiout), GFP_ATOMIC);
+		if (!axio) {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (op_mode & SNAPSHOT_MASK_MODE)
+			vfe_7x_config_axi(OUTPUT_PRIM, &vfe2x_ctrl->snap, axio);
+		else
+			vfe_7x_config_axi(OUTPUT_PRIM, &vfe2x_ctrl->prev, axio);
+		cmd_data = axio;
+	}
+		break;
+	case CMD_AXI_CFG_ZSL: {
+		CDBG("CMD_AXI_CFG_ZSL: %d\n", op_mode);
+		raw_mode = 0;
+		vfe2x_ctrl->zsl_mode = 1;
+		axio = kmalloc(sizeof(struct axiout), GFP_ATOMIC);
+		if (!axio) {
+			pr_err("NULL axio\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			rc = -ENOMEM;
+			goto config_failure;
+		}
+
+		if (copy_from_user((char *)axio + 4,
+					(void __user *)(vfecmd.value),
+					sizeof(struct axiout))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+			rc = -EFAULT;
+			goto config_done;
+		}
+		header = cmds_map[vfecmd.id].vfe_id;
+		queue = cmds_map[vfecmd.id].queue;
+		rc = vfe2x_configure_pingpong_buffers(VFE_MSG_V2X_CAPTURE,
+							VFE_MSG_OUTPUT_S);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			pr_err("copy_from_user failed\n");
+			rc = -EFAULT;
+			goto config_done;
+		}
+		if (!vfe2x_ctrl->reconfig_vfe) {
+				rc = vfe2x_configure_pingpong_buffers(
+						VFE_MSG_V2X_PREVIEW,
+						VFE_MSG_OUTPUT_PRIMARY);
+				rc = vfe2x_configure_pingpong_buffers(
+						VFE_MSG_V2X_PREVIEW,
+						VFE_MSG_OUTPUT_SECONDARY);
+			if (rc < 0) {
+				pr_err("%s error configuring pingpong buffers"
+					" for preview", __func__);
+				rc = -EINVAL;
+				goto config_done;
+			}
+				free_buf = vfe2x_check_free_buffer(
+					VFE_MSG_OUTPUT_IRQ,
+					VFE_MSG_OUTPUT_PRIMARY);
+				free_buf = vfe2x_check_free_buffer(
+					VFE_MSG_OUTPUT_IRQ,
+					VFE_MSG_OUTPUT_SECONDARY);
+		} else {
+			vfe2x_ctrl->prev.ping.ch_paddr[0] =
+				vfe2x_ctrl->free_buf.buf[0].ch_paddr[0];
+			vfe2x_ctrl->prev.ping.ch_paddr[1] =
+				vfe2x_ctrl->free_buf.buf[0].ch_paddr[1];
+			vfe2x_ctrl->prev.pong.ch_paddr[0] =
+				vfe2x_ctrl->free_buf.buf[1].ch_paddr[0];
+			vfe2x_ctrl->prev.pong.ch_paddr[1] =
+				vfe2x_ctrl->free_buf.buf[1].ch_paddr[1];
+			vfe2x_ctrl->prev.free_buf.ch_paddr[0] =
+				vfe2x_ctrl->free_buf.buf[2].ch_paddr[0];
+			vfe2x_ctrl->prev.free_buf.ch_paddr[1] =
+				vfe2x_ctrl->free_buf.buf[2].ch_paddr[1];
+			vfe2x_ctrl->reconfig_vfe = 0;
+		}
+		header = cmds_map[vfecmd.id].vfe_id;
+		queue = cmds_map[vfecmd.id].queue;
+		if (header == -1 && queue == -1) {
+			rc = -EFAULT;
+			goto config_done;
+		}
+		*(uint32_t *)axio = header;
+		vfe_7x_config_axi(OUTPUT_PRIM, &vfe2x_ctrl->zsl_prim, axio);
+		vfe_7x_config_axi(OUTPUT_SEC, &vfe2x_ctrl->zsl_sec, axio);
+		cmd_data = axio;
+	}
+		break;
+	case CMD_AXI_CFG_SEC|CMD_AXI_CFG_PRIM: {
+		CDBG("CMD_AXI_CFG_SEC|PRIM\n");
+		raw_mode = 0;
+		vfe2x_ctrl->zsl_mode = 0;
 		axio = kmalloc(sizeof(struct axiout), GFP_ATOMIC);
 		if (!axio) {
 			pr_err("NULL axio\n");
@@ -1054,8 +2325,77 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 			rc = -EFAULT;
 			goto config_done;
 		}
-		rc = vfe2x_configure_pingpong_buffers(VFE_MSG_V2X_PREVIEW,
-							VFE_MSG_OUTPUT_P);
+		if (op_mode & SNAPSHOT_MASK_MODE)
+			rc = vfe2x_configure_pingpong_buffers(
+						VFE_MSG_V2X_CAPTURE,
+						VFE_MSG_OUTPUT_SECONDARY);
+		else
+			rc = vfe2x_configure_pingpong_buffers(
+						VFE_MSG_V2X_PREVIEW,
+						VFE_MSG_OUTPUT_SECONDARY);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (rc < 0) {
+			pr_err("%s error configuring pingpong buffers"
+				" for preview", __func__);
+			rc = -EINVAL;
+			goto config_done;
+		}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+		if (!(op_mode & SNAPSHOT_MASK_MODE)) {
+			free_buf = vfe2x_check_free_buffer(
+					VFE_MSG_OUTPUT_IRQ,
+					VFE_MSG_OUTPUT_SECONDARY);
+		} else if ((op_mode & SNAPSHOT_MASK_MODE) &&
+				(vfe2x_ctrl->num_snap > 1)) {
+			int i = 0;
+			CDBG("Burst mode AXI config SEC snap cnt %d\n",
+				vfe2x_ctrl->num_snap);
+			for (i = 0; i < vfe2x_ctrl->num_snap - 2; i++) {
+				free_buf = vfe2x_check_free_buffer(
+					VFE_MSG_OUTPUT_IRQ,
+					VFE_MSG_OUTPUT_SECONDARY);
+			}
+		}
+		header = cmds_map[vfecmd.id].vfe_id;
+		queue = cmds_map[vfecmd.id].queue;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (header == -1 && queue == -1) {
+			rc = -EFAULT;
+			goto config_done;
+		}
+		*(uint32_t *)axio = header;
+<<<<<<< HEAD
+<<<<<<< HEAD
+		vfe_7x_config_axi(OUTPUT_1_AND_2, &vfe2x_ctrl->snap, axio);
+		rc = vfe2x_configure_pingpong_buffers(VFE_MSG_V2X_CAPTURE,
+							VFE_MSG_OUTPUT_T);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (op_mode & SNAPSHOT_MASK_MODE)
+			vfe_7x_config_axi(OUTPUT_SEC, &vfe2x_ctrl->thumb, axio);
+		else
+			vfe_7x_config_axi(OUTPUT_SEC, &vfe2x_ctrl->prev, axio);
+
+		if (op_mode & SNAPSHOT_MASK_MODE)
+			rc = vfe2x_configure_pingpong_buffers(
+						VFE_MSG_V2X_CAPTURE,
+						VFE_MSG_OUTPUT_PRIMARY);
+		else
+			rc = vfe2x_configure_pingpong_buffers(
+						VFE_MSG_V2X_PREVIEW,
+						VFE_MSG_OUTPUT_PRIMARY);
 		if (rc < 0) {
 			pr_err("%s error configuring pingpong buffers"
 				" for preview", __func__);
@@ -1063,17 +2403,28 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 			goto config_done;
 		}
 
-		free_buf = vfe2x_check_free_buffer(
+		if (!(op_mode & SNAPSHOT_MASK_MODE)) {
+			free_buf = vfe2x_check_free_buffer(
 					VFE_MSG_OUTPUT_IRQ,
-					VFE_MSG_OUTPUT_P);
-		header = cmds_map[vfecmd.id].vfe_id;
-		queue = cmds_map[vfecmd.id].queue;
-		if (header == -1 && queue == -1) {
-			rc = -EFAULT;
-			goto config_done;
+					VFE_MSG_OUTPUT_PRIMARY);
+		} else if ((op_mode & SNAPSHOT_MASK_MODE) &&
+				(vfe2x_ctrl->num_snap > 1)) {
+			int i = 0;
+			CDBG("Burst mode AXI config PRIM snap cnt %d\n",
+				vfe2x_ctrl->num_snap);
+			for (i = 0; i < vfe2x_ctrl->num_snap - 2; i++) {
+				free_buf = vfe2x_check_free_buffer(
+					VFE_MSG_OUTPUT_IRQ,
+					VFE_MSG_OUTPUT_PRIMARY);
+			}
 		}
-		*(uint32_t *)axio = header;
-		vfe_7x_config_axi(OUTPUT_2, &vfe2x_ctrl->prev, axio);
+
+		if (op_mode & SNAPSHOT_MASK_MODE)
+			vfe_7x_config_axi(OUTPUT_PRIM,
+					&vfe2x_ctrl->snap, axio);
+		else
+			vfe_7x_config_axi(OUTPUT_PRIM,
+					&vfe2x_ctrl->prev, axio);
 		cmd_data = axio;
 	}
 		break;
@@ -1095,62 +2446,33 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 		header = cmds_map[vfecmd.id].vfe_id;
 		queue = cmds_map[vfecmd.id].queue;
 		rc = vfe2x_configure_pingpong_buffers(VFE_MSG_V2X_CAPTURE,
-							VFE_MSG_OUTPUT_S);
+						VFE_MSG_OUTPUT_PRIMARY);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (rc < 0) {
 			pr_err("%s error configuring pingpong buffers"
 				" for preview", __func__);
 			rc = -EINVAL;
 			goto config_done;
 		}
-		if (header == -1 && queue == -1) {
-			rc = -EFAULT;
-			goto config_done;
-		}
-		*(uint32_t *)axio = header;
-		vfe_7x_config_axi(OUTPUT_1_AND_2, &vfe2x_ctrl->snap, axio);
-		cmd_data = axio;
-	}
-		break;
-	case CMD_AXI_CFG_SNAP: {
-		raw_mode = 0;
-		CDBG("CMD_AXI_CFG_SNAP :%d\n", op_mode);
-		axio = kmalloc(sizeof(struct axiout), GFP_ATOMIC);
-		if (!axio) {
-			rc = -ENOMEM;
-			goto config_failure;
-		}
-
-		if (copy_from_user((char *)axio + 4,
-					(void __user *)(vfecmd.value),
-					sizeof(struct axiout))) {
-			rc = -EFAULT;
-			goto config_done;
-		}
-		header = cmds_map[vfecmd.id].vfe_id;
-		queue = cmds_map[vfecmd.id].queue;
-		rc = vfe2x_configure_pingpong_buffers(VFE_MSG_V2X_CAPTURE,
-							VFE_MSG_OUTPUT_S);
-		if (rc < 0) {
-			pr_err("%s error configuring pingpong buffers"
-				" for preview", __func__);
-			rc = -EINVAL;
-			goto config_done;
-		}
-		if (header == -1 && queue == -1) {
-			rc = -EFAULT;
-			goto config_done;
-		}
-		*(uint32_t *)axio = header;
-		vfe_7x_config_axi(OUTPUT_1_AND_2, &vfe2x_ctrl->snap, axio);
-		rc = vfe2x_configure_pingpong_buffers(VFE_MSG_V2X_CAPTURE,
-							VFE_MSG_OUTPUT_T);
-		if (rc < 0) {
-			pr_err("%s error configuring pingpong buffers"
-				" for preview", __func__);
-			rc = -EINVAL;
-			goto config_done;
-		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		vfe_7x_config_axi(OUTPUT_1, &vfe2x_ctrl->thumb, axio);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (header == -1 && queue == -1) {
+			rc = -EFAULT;
+			goto config_done;
+		}
+		*(uint32_t *)axio = header;
+		vfe_7x_config_axi(OUTPUT_PRIM, &vfe2x_ctrl->snap, axio);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		cmd_data = axio;
 	}
 		break;
@@ -1163,39 +2485,96 @@ static long msm_vfe_subdev_ioctl(struct v4l2_subdev *sd,
 
 config_send:
 	CDBG("send adsp command = %d\n", *(uint32_t *)cmd_data);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (queue == QDSP_TABLEQUEUE &&
 			vfe2x_ctrl->tableack_pending) {
 		table_pending = kzalloc(sizeof(struct table_cmd), GFP_ATOMIC);
 		if (!table_pending) {
 			rc = -ENOMEM;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	spin_lock_irqsave(&vfe2x_ctrl->table_lock, flags);
+	if (queue == QDSP_TABLEQUEUE &&
+			vfe2x_ctrl->tableack_pending) {
+		CDBG("store table cmd\n");
+		table_pending = kzalloc(sizeof(struct table_cmd), GFP_ATOMIC);
+		if (!table_pending) {
+			rc = -ENOMEM;
+			spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto config_done;
 		}
 		table_pending->cmd = kzalloc(vfecmd.length + 4, GFP_ATOMIC);
 		if (!table_pending->cmd) {
 			kfree(table_pending);
 			rc = -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto config_done;
 		}
 		memcpy(table_pending->cmd, cmd_data, vfecmd.length + 4);
 		table_pending->queue = queue;
 		table_pending->size = vfecmd.length + 4;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock_irqsave(&vfe2x_ctrl->table_lock, flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		list_add_tail(&table_pending->list, &vfe2x_ctrl->table_q);
 		spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
 	} else {
 		if (queue == QDSP_TABLEQUEUE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			spin_lock_irqsave(&vfe2x_ctrl->table_lock, flags);
 			rc = msm_adsp_write(vfe_mod, queue,
 				cmd_data, vfecmd.length + 4);
 			vfe2x_ctrl->tableack_pending = 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			CDBG("sending table cmd\n");
+			vfe2x_ctrl->tableack_pending = 1;
+			rc = msm_adsp_write(vfe_mod, queue,
+				cmd_data, vfecmd.length + 4);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
 		} else {
 			if (*(uint32_t *)cmd_data == VFE_OUTPUT2_ACK) {
 				uint32_t *ptr = cmd_data;
 				CDBG("%x %x %x\n", ptr[0], ptr[1], ptr[2]);
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			rc = msm_adsp_write(vfe_mod, queue,
 				cmd_data, vfecmd.length + 4);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			CDBG("send n-table cmd\n");
+			rc = msm_adsp_write(vfe_mod, queue,
+				cmd_data, vfecmd.length + 4);
+			spin_unlock_irqrestore(&vfe2x_ctrl->table_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			CDBG("%x\n", vfecmd.length + 4);
 		}
 	}
@@ -1206,6 +2585,14 @@ config_done:
 config_failure:
 	kfree(scfg);
 	kfree(axio);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	kfree(sfcfg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(sfcfg);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return rc;
 }
 
@@ -1213,16 +2600,38 @@ static struct msm_cam_clk_info vfe2x_clk_info[] = {
 	{"vfe_clk", 192000000},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int msm_vfe_subdev_init(struct v4l2_subdev *sd, void *data,
 	struct platform_device *pdev)
 {
 	int rc = 0;
 	v4l2_set_subdev_hostdata(sd, data);
 	vfe_syncdata = data;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int msm_vfe_subdev_init(struct v4l2_subdev *sd,
+		struct msm_cam_media_controller *mctl)
+{
+	int rc = 0;
+	v4l2_set_subdev_hostdata(sd, mctl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_lock_init(&vfe2x_ctrl->sd_notify_lock);
 	spin_lock_init(&vfe2x_ctrl->table_lock);
 	spin_lock_init(&vfe2x_ctrl->vfe_msg_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	spin_lock_init(&vfe2x_ctrl->liveshot_enabled_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&vfe2x_ctrl->liveshot_enabled_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	init_waitqueue_head(&stopevent.wait);
 	INIT_LIST_HEAD(&vfe2x_ctrl->table_q);
 	INIT_LIST_HEAD(&vfe2x_ctrl->vfe_msg_q);
@@ -1259,6 +2668,16 @@ int msm_vfe_subdev_init(struct v4l2_subdev *sd, void *data,
 		rc = -EBUSY;
 		goto get_vfe_fail;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	msm_adsp_enable(qcam_mod);
+	msm_adsp_enable(vfe_mod);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_adsp_enable(qcam_mod);
+	msm_adsp_enable(vfe_mod);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 
 get_vfe_fail:
@@ -1270,23 +2689,55 @@ init_fail:
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int msm_vpe_subdev_init(struct v4l2_subdev *sd, void *data,
 	struct platform_device *pdev)
+=======
+int msm_vpe_subdev_init(struct v4l2_subdev *sd,
+			struct msm_cam_media_controller *mctl)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int msm_vpe_subdev_init(struct v4l2_subdev *sd,
+			struct msm_cam_media_controller *mctl)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void msm_vpe_subdev_release(struct platform_device *pdev)
+=======
+void msm_vpe_subdev_release(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void msm_vpe_subdev_release(void)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void msm_vfe_subdev_release(struct platform_device *pdev)
 {
 	msm_cam_clk_enable(&vfe2x_ctrl->pdev->dev, vfe2x_clk_info,
 			vfe2x_ctrl->vfe_clk, ARRAY_SIZE(vfe2x_clk_info), 0);
 	vfe_syncdata = NULL;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+void msm_vfe_subdev_release(struct v4l2_subdev *sd)
+{
+	CDBG("msm_cam_clk_enable: disable vfe_clk\n");
+	msm_cam_clk_enable(&vfe2x_ctrl->pdev->dev, vfe2x_clk_info,
+			vfe2x_ctrl->vfe_clk, ARRAY_SIZE(vfe2x_clk_info), 0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	msm_adsp_disable(qcam_mod);
 	msm_adsp_disable(vfe_mod);
 
@@ -1298,14 +2749,62 @@ void msm_vfe_subdev_release(struct platform_device *pdev)
 	return;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int msm_vfe_subdev_s_crystal_freq(struct v4l2_subdev *sd,
+	u32 freq, u32 flags)
+{
+	int rc = 0;
+	int round_rate;
+
+	round_rate = clk_round_rate(vfe2x_ctrl->vfe_clk[0], freq);
+	if (rc < 0) {
+		pr_err("%s: clk_round_rate failed %d\n",
+			__func__, rc);
+		return rc;
+	}
+
+	rc = clk_set_rate(vfe2x_ctrl->vfe_clk[0], round_rate);
+	if (rc < 0)
+		pr_err("%s: clk_set_rate failed %d\n",
+			__func__, rc);
+
+	return rc;
+}
+
+static const struct v4l2_subdev_video_ops msm_vfe_subdev_video_ops = {
+	.s_crystal_freq = msm_vfe_subdev_s_crystal_freq,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct v4l2_subdev_core_ops msm_vfe_subdev_core_ops = {
 	.ioctl = msm_vfe_subdev_ioctl,
 };
 
 static const struct v4l2_subdev_ops msm_vfe_subdev_ops = {
 	.core = &msm_vfe_subdev_core_ops,
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	.video = &msm_vfe_subdev_video_ops,
+};
+
+static const struct v4l2_subdev_internal_ops msm_vfe_internal_ops;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __devinit vfe2x_probe(struct platform_device *pdev)
 {
 	CDBG("%s: device id = %d\n", __func__, pdev->id);
@@ -1316,12 +2815,30 @@ static int __devinit vfe2x_probe(struct platform_device *pdev)
 	}
 
 	v4l2_subdev_init(&vfe2x_ctrl->subdev, &msm_vfe_subdev_ops);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	vfe2x_ctrl->subdev.internal_ops = &msm_vfe_internal_ops;
+	vfe2x_ctrl->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vfe2x_ctrl->subdev.internal_ops = &msm_vfe_internal_ops;
+	vfe2x_ctrl->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+>>>>>>> refs/remotes/origin/cm-11.0
 	snprintf(vfe2x_ctrl->subdev.name,
 			 sizeof(vfe2x_ctrl->subdev.name), "vfe2.x");
 	v4l2_set_subdevdata(&vfe2x_ctrl->subdev, vfe2x_ctrl);
 	platform_set_drvdata(pdev, &vfe2x_ctrl->subdev);
 
 	vfe2x_ctrl->pdev = pdev;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	msm_cam_register_subdev_node(&vfe2x_ctrl->subdev, VFE_DEV, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msm_cam_register_subdev_node(&vfe2x_ctrl->subdev, VFE_DEV, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 

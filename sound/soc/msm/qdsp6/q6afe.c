@@ -77,7 +77,19 @@ static int32_t afe_callback(struct apr_client_data *data, void *priv)
 		if (data->opcode == APR_BASIC_RSP_RESULT) {
 			switch (payload[0]) {
 			case AFE_PORT_AUDIO_IF_CONFIG:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			case AFE_PORT_MULTI_CHAN_HDMI_AUDIO_IF_CONFIG:
+=======
+			case AFE_PORT_CMD_I2S_CONFIG:
+			case AFE_PORT_MULTI_CHAN_HDMI_AUDIO_IF_CONFIG:
+			case AFE_PORT_AUDIO_SLIM_SCH_CONFIG:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			case AFE_PORT_CMD_I2S_CONFIG:
+			case AFE_PORT_MULTI_CHAN_HDMI_AUDIO_IF_CONFIG:
+			case AFE_PORT_AUDIO_SLIM_SCH_CONFIG:
+>>>>>>> refs/remotes/origin/cm-11.0
 			case AFE_PORT_CMD_STOP:
 			case AFE_PORT_CMD_START:
 			case AFE_PORT_CMD_LOOPBACK:
@@ -140,34 +152,98 @@ int afe_get_port_type(u16 port_id)
 	switch (port_id) {
 	case PRIMARY_I2S_RX:
 	case PCM_RX:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SECONDARY_PCM_RX:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SECONDARY_PCM_RX:
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SECONDARY_I2S_RX:
 	case MI2S_RX:
 	case HDMI_RX:
 	case SLIMBUS_0_RX:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SLIMBUS_1_RX:
+	case SLIMBUS_2_RX:
+	case SLIMBUS_3_RX:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SLIMBUS_1_RX:
+	case SLIMBUS_2_RX:
+	case SLIMBUS_3_RX:
+>>>>>>> refs/remotes/origin/cm-11.0
 	case INT_BT_SCO_RX:
 	case INT_BT_A2DP_RX:
 	case INT_FM_RX:
 	case VOICE_PLAYBACK_TX:
 	case RT_PROXY_PORT_001_RX:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SLIMBUS_4_RX:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SLIMBUS_4_RX:
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = MSM_AFE_PORT_TYPE_RX;
 		break;
 
 	case PRIMARY_I2S_TX:
 	case PCM_TX:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SECONDARY_PCM_TX:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SECONDARY_PCM_TX:
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SECONDARY_I2S_TX:
 	case MI2S_TX:
 	case DIGI_MIC_TX:
 	case VOICE_RECORD_TX:
 	case SLIMBUS_0_TX:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SLIMBUS_1_TX:
+	case SLIMBUS_2_TX:
+	case SLIMBUS_3_TX:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SLIMBUS_1_TX:
+	case SLIMBUS_2_TX:
+	case SLIMBUS_3_TX:
+>>>>>>> refs/remotes/origin/cm-11.0
 	case INT_FM_TX:
 	case VOICE_RECORD_RX:
 	case INT_BT_SCO_TX:
 	case RT_PROXY_PORT_001_TX:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SLIMBUS_4_TX:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SLIMBUS_4_TX:
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = MSM_AFE_PORT_TYPE_TX;
 		break;
 
 	default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("%s: invalid port id\n", __func__);
+=======
+		pr_err("%s: invalid port id %d\n", __func__, port_id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: invalid port id %d\n", __func__, port_id);
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret = -EINVAL;
 	}
 
@@ -183,6 +259,16 @@ int afe_validate_port(u16 port_id)
 	case PRIMARY_I2S_TX:
 	case PCM_RX:
 	case PCM_TX:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SECONDARY_PCM_RX:
+	case SECONDARY_PCM_TX:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SECONDARY_PCM_RX:
+	case SECONDARY_PCM_TX:
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SECONDARY_I2S_RX:
 	case SECONDARY_I2S_TX:
 	case MI2S_RX:
@@ -196,6 +282,21 @@ int afe_validate_port(u16 port_id)
 	case VOICE_PLAYBACK_TX:
 	case SLIMBUS_0_RX:
 	case SLIMBUS_0_TX:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	case SLIMBUS_1_RX:
+	case SLIMBUS_1_TX:
+	case SLIMBUS_2_RX:
+	case SLIMBUS_2_TX:
+	case SLIMBUS_3_RX:
+	case SLIMBUS_3_TX:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case INT_BT_SCO_RX:
 	case INT_BT_SCO_TX:
 	case INT_BT_A2DP_RX:
@@ -203,6 +304,16 @@ int afe_validate_port(u16 port_id)
 	case INT_FM_TX:
 	case RT_PROXY_PORT_001_RX:
 	case RT_PROXY_PORT_001_TX:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SLIMBUS_4_RX:
+	case SLIMBUS_4_TX:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SLIMBUS_4_RX:
+	case SLIMBUS_4_TX:
+>>>>>>> refs/remotes/origin/cm-11.0
 	{
 		ret = 0;
 		break;
@@ -243,6 +354,16 @@ int afe_get_port_index(u16 port_id)
 	case PRIMARY_I2S_TX: return IDX_PRIMARY_I2S_TX;
 	case PCM_RX: return IDX_PCM_RX;
 	case PCM_TX: return IDX_PCM_TX;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SECONDARY_PCM_RX: return IDX_SECONDARY_PCM_RX;
+	case SECONDARY_PCM_TX: return IDX_SECONDARY_PCM_TX;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SECONDARY_PCM_RX: return IDX_SECONDARY_PCM_RX;
+	case SECONDARY_PCM_TX: return IDX_SECONDARY_PCM_TX;
+>>>>>>> refs/remotes/origin/cm-11.0
 	case SECONDARY_I2S_RX: return IDX_SECONDARY_I2S_RX;
 	case SECONDARY_I2S_TX: return IDX_SECONDARY_I2S_TX;
 	case MI2S_RX: return IDX_MI2S_RX;
@@ -256,6 +377,21 @@ int afe_get_port_index(u16 port_id)
 	case VOICE_PLAYBACK_TX: return IDX_VOICE_PLAYBACK_TX;
 	case SLIMBUS_0_RX: return IDX_SLIMBUS_0_RX;
 	case SLIMBUS_0_TX: return IDX_SLIMBUS_0_TX;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	case SLIMBUS_1_RX: return IDX_SLIMBUS_1_RX;
+	case SLIMBUS_1_TX: return IDX_SLIMBUS_1_TX;
+	case SLIMBUS_2_RX: return IDX_SLIMBUS_2_RX;
+	case SLIMBUS_2_TX: return IDX_SLIMBUS_2_TX;
+	case SLIMBUS_3_RX: return IDX_SLIMBUS_3_RX;
+	case SLIMBUS_3_TX: return IDX_SLIMBUS_3_TX;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case INT_BT_SCO_RX: return IDX_INT_BT_SCO_RX;
 	case INT_BT_SCO_TX: return IDX_INT_BT_SCO_TX;
 	case INT_BT_A2DP_RX: return IDX_INT_BT_A2DP_RX;
@@ -263,6 +399,16 @@ int afe_get_port_index(u16 port_id)
 	case INT_FM_TX: return IDX_INT_FM_TX;
 	case RT_PROXY_PORT_001_RX: return IDX_RT_PROXY_PORT_001_RX;
 	case RT_PROXY_PORT_001_TX: return IDX_RT_PROXY_PORT_001_TX;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SLIMBUS_4_RX: return IDX_SLIMBUS_4_RX;
+	case SLIMBUS_4_TX: return IDX_SLIMBUS_4_TX;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SLIMBUS_4_RX: return IDX_SLIMBUS_4_RX;
+	case SLIMBUS_4_TX: return IDX_SLIMBUS_4_TX;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	default: return -EINVAL;
 	}
@@ -285,7 +431,25 @@ int afe_sizeof_cfg_cmd(u16 port_id)
 		break;
 	case SLIMBUS_0_RX:
 	case SLIMBUS_0_TX:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret_size = SIZEOF_CFG_CMD(afe_port_slimbus_cfg);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	case SLIMBUS_1_RX:
+	case SLIMBUS_1_TX:
+	case SLIMBUS_2_RX:
+	case SLIMBUS_2_TX:
+	case SLIMBUS_3_RX:
+	case SLIMBUS_3_TX:
+	case SLIMBUS_4_RX:
+	case SLIMBUS_4_TX:
+		ret_size = SIZEOF_CFG_CMD(afe_port_slimbus_sch_cfg);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	case RT_PROXY_PORT_001_RX:
 	case RT_PROXY_PORT_001_TX:
@@ -293,6 +457,16 @@ int afe_sizeof_cfg_cmd(u16 port_id)
 		break;
 	case PCM_RX:
 	case PCM_TX:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SECONDARY_PCM_RX:
+	case SECONDARY_PCM_TX:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SECONDARY_PCM_RX:
+	case SECONDARY_PCM_TX:
+>>>>>>> refs/remotes/origin/cm-11.0
 	default:
 		ret_size = SIZEOF_CFG_CMD(afe_port_pcm_cfg);
 		break;
@@ -334,11 +508,24 @@ static void afe_send_cal_block(int32_t path, u16 port_id)
 	if ((afe_cal_addr[path].cal_paddr != cal_block.cal_paddr) ||
 		(cal_block.cal_size > afe_cal_addr[path].cal_size)) {
 		if (afe_cal_addr[path].cal_paddr != 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			afe_cmd_memory_unmap_nowait(
 				afe_cal_addr[path].cal_paddr);
 
 		afe_cmd_memory_map_nowait(cal_block.cal_paddr,
 						cal_block.cal_size);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			afe_cmd_memory_unmap(
+				afe_cal_addr[path].cal_paddr);
+
+		afe_cmd_memory_map(cal_block.cal_paddr, cal_block.cal_size);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		afe_cal_addr[path].cal_paddr = cal_block.cal_paddr;
 		afe_cal_addr[path].cal_size = cal_block.cal_size;
 	}
@@ -358,12 +545,37 @@ static void afe_send_cal_block(int32_t path, u16 port_id)
 		"cal size = %d, cal addr = 0x%x\n", __func__,
 		port_id, path, cal_block.cal_size, cal_block.cal_paddr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	atomic_set(&this_afe.state, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&this_afe.state, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	result = apr_send_pkt(this_afe.apr, (uint32_t *) &afe_cal);
 	if (result < 0) {
 		pr_err("%s: AFE cal for port %d failed\n",
 			__func__, port_id);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	result = wait_event_timeout(this_afe.wait,
+				 (atomic_read(&this_afe.state) == 0),
+				 msecs_to_jiffies(TIMEOUT_MS));
+	if (!result) {
+		pr_err("%s: wait_event timeout SET AFE CAL\n", __func__);
+		goto done;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_debug("%s: AFE cal sent for path %d device!\n", __func__, path);
 done:
 	return;
@@ -379,8 +591,22 @@ void afe_send_cal(u16 port_id)
 		afe_send_cal_block(RX_CAL, port_id);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int afe_port_start_nowait(u16 port_id, union afe_port_config *afe_config,
 	u32 rate) /* This function is no blocking */
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* This function sends multi-channel HDMI configuration command and AFE
+ * calibration which is only supported by QDSP6 on 8960 and onward.
+ */
+int afe_port_start(u16 port_id, union afe_port_config *afe_config,
+		   u32 rate)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct afe_port_start_command start;
 	struct afe_audioif_config_command config;
@@ -395,16 +621,36 @@ int afe_port_start_nowait(u16 port_id, union afe_port_config *afe_config,
 
 	if ((port_id == RT_PROXY_DAI_001_RX) ||
 		(port_id == RT_PROXY_DAI_002_TX))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((port_id == RT_PROXY_DAI_002_RX) ||
 		(port_id == RT_PROXY_DAI_001_TX))
 		port_id = VIRTUAL_ID_TO_PORTID(port_id);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (this_afe.apr == NULL) {
 		pr_err("%s: AFE APR is not registered\n", __func__);
 		ret = -ENODEV;
 		return ret;
 	}
+=======
+	ret = afe_q6_interface_prepare();
+	if (IS_ERR_VALUE(ret))
+		return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = afe_q6_interface_prepare();
+	if (IS_ERR_VALUE(ret))
+		return ret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (port_id == HDMI_RX) {
 		config.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
@@ -422,7 +668,53 @@ int afe_port_start_nowait(u16 port_id, union afe_port_config *afe_config,
 		config.hdr.src_port = 0;
 		config.hdr.dest_port = 0;
 		config.hdr.token = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		config.hdr.opcode = AFE_PORT_AUDIO_IF_CONFIG;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		switch (port_id) {
+		case SLIMBUS_0_RX:
+		case SLIMBUS_0_TX:
+		case SLIMBUS_1_RX:
+		case SLIMBUS_1_TX:
+		case SLIMBUS_2_RX:
+		case SLIMBUS_2_TX:
+		case SLIMBUS_3_RX:
+		case SLIMBUS_3_TX:
+		case SLIMBUS_4_RX:
+		case SLIMBUS_4_TX:
+			config.hdr.opcode = AFE_PORT_AUDIO_SLIM_SCH_CONFIG;
+		break;
+		case MI2S_TX:
+		case MI2S_RX:
+		case SECONDARY_I2S_RX:
+		case SECONDARY_I2S_TX:
+		case PRIMARY_I2S_RX:
+		case PRIMARY_I2S_TX:
+			/* AFE_PORT_CMD_I2S_CONFIG command is not supported
+			 * in the LPASS EL 1.0. So we have to distiguish
+			 * which AFE command, AFE_PORT_CMD_I2S_CONFIG or
+			 * AFE_PORT_AUDIO_IF_CONFIG	to use. If the format
+			 * is L-PCM, the AFE_PORT_AUDIO_IF_CONFIG is used
+			 * to make the backward compatible.
+			 */
+			pr_debug("%s: afe_config->mi2s.format = %d\n", __func__,
+					 afe_config->mi2s.format);
+			if (afe_config->mi2s.format == MSM_AFE_I2S_FORMAT_LPCM)
+				config.hdr.opcode = AFE_PORT_AUDIO_IF_CONFIG;
+			else
+				config.hdr.opcode = AFE_PORT_CMD_I2S_CONFIG;
+		break;
+		default:
+			config.hdr.opcode = AFE_PORT_AUDIO_IF_CONFIG;
+		break;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	if (afe_validate_port(port_id) < 0) {
@@ -435,6 +727,16 @@ int afe_port_start_nowait(u16 port_id, union afe_port_config *afe_config,
 	config.port_id = port_id;
 	config.port = *afe_config;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	atomic_set(&this_afe.state, 1);
+	atomic_set(&this_afe.status, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&this_afe.state, 1);
+	atomic_set(&this_afe.status, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = apr_send_pkt(this_afe.apr, (uint32_t *) &config);
 	if (ret < 0) {
 		pr_err("%s: AFE enable for port %d failed\n", __func__,
@@ -443,6 +745,30 @@ int afe_port_start_nowait(u16 port_id, union afe_port_config *afe_config,
 		goto fail_cmd;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	ret = wait_event_timeout(this_afe.wait,
+			(atomic_read(&this_afe.state) == 0),
+				msecs_to_jiffies(TIMEOUT_MS));
+
+	if (!ret) {
+		pr_err("%s: wait_event timeout IF CONFIG\n", __func__);
+		ret = -EINVAL;
+		goto fail_cmd;
+	}
+	if (atomic_read(&this_afe.status) != 0) {
+		pr_err("%s: config cmd failed\n", __func__);
+		ret = -EINVAL;
+		goto fail_cmd;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* send AFE cal */
 	afe_send_cal(port_id);
 
@@ -457,6 +783,14 @@ int afe_port_start_nowait(u16 port_id, union afe_port_config *afe_config,
 	start.gain = 0x2000;
 	start.sample_rate = rate;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	atomic_set(&this_afe.state, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&this_afe.state, 1);
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = apr_send_pkt(this_afe.apr, (uint32_t *) &start);
 
 	if (IS_ERR_VALUE(ret)) {
@@ -466,6 +800,24 @@ int afe_port_start_nowait(u16 port_id, union afe_port_config *afe_config,
 		goto fail_cmd;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	ret = wait_event_timeout(this_afe.wait,
+			(atomic_read(&this_afe.state) == 0),
+				msecs_to_jiffies(TIMEOUT_MS));
+	if (!ret) {
+		pr_err("%s: wait_event timeout PORT START\n", __func__);
+		ret = -EINVAL;
+		goto fail_cmd;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (this_afe.task != current)
 		this_afe.task = current;
 
@@ -477,6 +829,14 @@ fail_cmd:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* This function should be used by 8660 exclusively */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* This function should be used by 8660 exclusively */
+>>>>>>> refs/remotes/origin/cm-11.0
 int afe_open(u16 port_id, union afe_port_config *afe_config, int rate)
 {
 	struct afe_port_start_command start;
@@ -489,11 +849,25 @@ int afe_open(u16 port_id, union afe_port_config *afe_config, int rate)
 		return ret;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: %d %d\n", __func__, port_id, rate);
 
 	if ((port_id == RT_PROXY_DAI_001_RX) ||
 		(port_id == RT_PROXY_DAI_002_TX))
 		return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	pr_debug("%s: %d %d\n", __func__, port_id, rate);
+
+	if ((port_id == RT_PROXY_DAI_001_RX) ||
+		(port_id == RT_PROXY_DAI_002_TX))
+		return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if ((port_id == RT_PROXY_DAI_002_RX) ||
 		(port_id == RT_PROXY_DAI_001_TX))
 		port_id = VIRTUAL_ID_TO_PORTID(port_id);
@@ -508,7 +882,53 @@ int afe_open(u16 port_id, union afe_port_config *afe_config, int rate)
 	config.hdr.src_port = 0;
 	config.hdr.dest_port = 0;
 	config.hdr.token = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	config.hdr.opcode = AFE_PORT_AUDIO_IF_CONFIG;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	switch (port_id) {
+	case SLIMBUS_0_RX:
+	case SLIMBUS_0_TX:
+	case SLIMBUS_1_RX:
+	case SLIMBUS_1_TX:
+	case SLIMBUS_2_RX:
+	case SLIMBUS_2_TX:
+	case SLIMBUS_3_RX:
+	case SLIMBUS_3_TX:
+	case SLIMBUS_4_RX:
+	case SLIMBUS_4_TX:
+		config.hdr.opcode = AFE_PORT_AUDIO_SLIM_SCH_CONFIG;
+	break;
+	case MI2S_TX:
+	case MI2S_RX:
+	case SECONDARY_I2S_RX:
+	case SECONDARY_I2S_TX:
+	case PRIMARY_I2S_RX:
+	case PRIMARY_I2S_TX:
+		/* AFE_PORT_CMD_I2S_CONFIG command is not supported
+		 * in the LPASS EL 1.0. So we have to distiguish
+		 * which AFE command, AFE_PORT_CMD_I2S_CONFIG or
+		 * AFE_PORT_AUDIO_IF_CONFIG	to use. If the format
+		 * is L-PCM, the AFE_PORT_AUDIO_IF_CONFIG is used
+		 * to make the backward compatible.
+		 */
+		pr_debug("%s: afe_config->mi2s.format = %d\n", __func__,
+				 afe_config->mi2s.format);
+		if (afe_config->mi2s.format == MSM_AFE_I2S_FORMAT_LPCM)
+			config.hdr.opcode = AFE_PORT_AUDIO_IF_CONFIG;
+		else
+			config.hdr.opcode = AFE_PORT_CMD_I2S_CONFIG;
+	break;
+	default:
+		config.hdr.opcode = AFE_PORT_AUDIO_IF_CONFIG;
+	break;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (afe_validate_port(port_id) < 0) {
 
@@ -582,7 +1002,15 @@ fail_cmd:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int afe_loopback(u16 enable, u16 rx_port, u16 tx_port)
+=======
+int afe_loopback(u16 enable, u16 dst_port, u16 src_port)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int afe_loopback(u16 enable, u16 dst_port, u16 src_port)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct afe_loopback_command lb_cmd;
 	int ret = 0;
@@ -591,6 +1019,20 @@ int afe_loopback(u16 enable, u16 rx_port, u16 tx_port)
 	if (ret != 0)
 		return ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if ((afe_get_port_type(dst_port) == MSM_AFE_PORT_TYPE_RX) &&
+		(afe_get_port_type(src_port) == MSM_AFE_PORT_TYPE_RX))
+		return afe_loopback_cfg(enable, dst_port, src_port,
+					LB_MODE_EC_REF_VOICE_AUDIO);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	lb_cmd.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
 						APR_HDR_LEN(20), APR_PKT_VER);
 	lb_cmd.hdr.pkt_size = APR_PKT_SIZE(APR_HDR_SIZE,
@@ -599,8 +1041,18 @@ int afe_loopback(u16 enable, u16 rx_port, u16 tx_port)
 	lb_cmd.hdr.dest_port = 0;
 	lb_cmd.hdr.token = 0;
 	lb_cmd.hdr.opcode = AFE_PORT_CMD_LOOPBACK;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	lb_cmd.tx_port_id = tx_port;
 	lb_cmd.rx_port_id = rx_port;
+=======
+	lb_cmd.tx_port_id = src_port;
+	lb_cmd.rx_port_id = dst_port;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lb_cmd.tx_port_id = src_port;
+	lb_cmd.rx_port_id = dst_port;
+>>>>>>> refs/remotes/origin/cm-11.0
 	lb_cmd.mode = 0xFFFF;
 	lb_cmd.enable = (enable ? 1 : 0);
 	atomic_set(&this_afe.state, 1);
@@ -622,6 +1074,73 @@ done:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int afe_loopback_cfg(u16 enable, u16 dst_port, u16 src_port, u16 mode)
+{
+	struct afe_port_cmd_set_param lp_cfg;
+	int ret = 0;
+
+	ret = afe_q6_interface_prepare();
+	if (ret != 0)
+		return ret;
+
+	pr_debug("%s: src_port %d, dst_port %d\n",
+		  __func__, src_port, dst_port);
+
+	lp_cfg.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
+				APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
+	lp_cfg.hdr.pkt_size = sizeof(lp_cfg);
+	lp_cfg.hdr.src_port = 0;
+	lp_cfg.hdr.dest_port = 0;
+	lp_cfg.hdr.token = 0;
+	lp_cfg.hdr.opcode = AFE_PORT_CMD_SET_PARAM;
+
+	lp_cfg.port_id = src_port;
+	lp_cfg.payload_size	= sizeof(struct afe_param_payload_base) +
+		sizeof(struct afe_param_loopback_cfg);
+	lp_cfg.payload_address	= 0;
+
+	lp_cfg.payload.base.module_id = AFE_MODULE_LOOPBACK;
+	lp_cfg.payload.base.param_id	= AFE_PARAM_ID_LOOPBACK_CONFIG;
+	lp_cfg.payload.base.param_size = sizeof(struct afe_param_loopback_cfg);
+	lp_cfg.payload.base.reserved	= 0;
+
+	lp_cfg.payload.param.loopback_cfg.loopback_cfg_minor_version =
+			AFE_API_VERSION_LOOPBACK_CONFIG;
+	lp_cfg.payload.param.loopback_cfg.dst_port_id = dst_port;
+	lp_cfg.payload.param.loopback_cfg.routing_mode = mode;
+	lp_cfg.payload.param.loopback_cfg.enable = enable;
+	lp_cfg.payload.param.loopback_cfg.reserved = 0;
+
+	atomic_set(&this_afe.state, 1);
+	ret = apr_send_pkt(this_afe.apr, (uint32_t *) &lp_cfg);
+	if (ret < 0) {
+		pr_err("%s: AFE loopback config failed for src_port %d, dst_port %d\n",
+			   __func__, src_port, dst_port);
+		ret = -EINVAL;
+		goto fail_cmd;
+	}
+
+	ret = wait_event_timeout(this_afe.wait,
+		(atomic_read(&this_afe.state) == 0),
+			msecs_to_jiffies(TIMEOUT_MS));
+	if (ret < 0) {
+		pr_err("%s: wait_event timeout\n", __func__);
+		ret = -EINVAL;
+		goto fail_cmd;
+	}
+	return 0;
+fail_cmd:
+	return ret;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int afe_loopback_gain(u16 port_id, u16 volume)
 {
@@ -666,6 +1185,8 @@ int afe_loopback_gain(u16 port_id, u16 volume)
 	set_param.hdr.opcode = AFE_PORT_CMD_SET_PARAM;
 
 	set_param.port_id		= port_id;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set_param.payload_size		= sizeof(struct afe_param_payload);
 	set_param.payload_address	= 0;
 
@@ -673,6 +1194,22 @@ int afe_loopback_gain(u16 port_id, u16 volume)
 	set_param.payload.param_id	= AFE_PARAM_ID_LOOPBACK_GAIN;
 	set_param.payload.param_size = sizeof(struct afe_param_loopback_gain);
 	set_param.payload.reserved	= 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	set_param.payload_size	= sizeof(struct afe_param_payload_base) +
+				  sizeof(struct afe_param_loopback_gain);
+	set_param.payload_address	= 0;
+
+	set_param.payload.base.module_id	= AFE_MODULE_ID_PORT_INFO;
+	set_param.payload.base.param_id	= AFE_PARAM_ID_LOOPBACK_GAIN;
+	set_param.payload.base.param_size =
+		sizeof(struct afe_param_loopback_gain);
+	set_param.payload.base.reserved	= 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	set_param.payload.param.loopback_gain.gain		= volume;
 	set_param.payload.param.loopback_gain.reserved	= 0;
@@ -797,7 +1334,15 @@ int afe_start_pseudo_port(u16 port_id)
 	int ret = 0;
 	struct afe_pseudoport_start_command start;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: port_id=%d\n", __func__, port_id);
+=======
+	pr_debug("%s: port_id=%d\n", __func__, port_id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: port_id=%d\n", __func__, port_id);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	ret = afe_q6_interface_prepare();
 	if (ret != 0)
@@ -870,7 +1415,15 @@ int afe_stop_pseudo_port(u16 port_id)
 	int ret = 0;
 	struct afe_pseudoport_stop_command stop;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s: port_id=%d\n", __func__, port_id);
+=======
+	pr_debug("%s: port_id=%d\n", __func__, port_id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: port_id=%d\n", __func__, port_id);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (this_afe.apr == NULL) {
 		pr_err("%s: AFE is already closed\n", __func__);

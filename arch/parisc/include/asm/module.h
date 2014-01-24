@@ -1,5 +1,6 @@
 #ifndef _ASM_PARISC_MODULE_H
 #define _ASM_PARISC_MODULE_H
+<<<<<<< HEAD
 /*
  * This file contains the parisc architecture specific module code.
  */
@@ -16,6 +17,14 @@
 #define Elf_Addr Elf32_Addr
 #define Elf_Rela Elf32_Rela
 #endif
+=======
+
+#include <asm-generic/module.h>
+
+/*
+ * This file contains the parisc architecture specific module code.
+ */
+>>>>>>> refs/remotes/origin/master
 
 struct unwind_table;
 

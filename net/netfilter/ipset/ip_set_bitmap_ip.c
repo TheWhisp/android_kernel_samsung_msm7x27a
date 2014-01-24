@@ -1,6 +1,10 @@
 /* Copyright (C) 2000-2002 Joakim Axelsson <gozem@linux.nu>
  *                         Patrick Schaaf <bof@bof.de>
+<<<<<<< HEAD
  * Copyright (C) 2003-2011 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+=======
+ * Copyright (C) 2003-2013 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -24,6 +28,7 @@
 #include <linux/netfilter/ipset/pfxlen.h>
 #include <linux/netfilter/ipset/ip_set.h>
 #include <linux/netfilter/ipset/ip_set_bitmap.h>
+<<<<<<< HEAD
 #define IP_SET_BITMAP_TIMEOUT
 #include <linux/netfilter/ipset/ip_set_timeout.h>
 
@@ -35,17 +40,45 @@ MODULE_ALIAS("ip_set_bitmap:ip");
 /* Type structure */
 struct bitmap_ip {
 	void *members;		/* the set members */
+=======
+
+#define IPSET_TYPE_REV_MIN	0
+/*				1	   Counter support added */
+#define IPSET_TYPE_REV_MAX	2	/* Comment support added */
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>");
+IP_SET_MODULE_DESC("bitmap:ip", IPSET_TYPE_REV_MIN, IPSET_TYPE_REV_MAX);
+MODULE_ALIAS("ip_set_bitmap:ip");
+
+#define MTYPE		bitmap_ip
+
+/* Type structure */
+struct bitmap_ip {
+	void *members;		/* the set members */
+	void *extensions;	/* data extensions */
+>>>>>>> refs/remotes/origin/master
 	u32 first_ip;		/* host byte order, included in range */
 	u32 last_ip;		/* host byte order, included in range */
 	u32 elements;		/* number of max elements in the set */
 	u32 hosts;		/* number of hosts in a subnet */
 	size_t memsize;		/* members size */
 	u8 netmask;		/* subnet netmask */
+<<<<<<< HEAD
 	u32 timeout;		/* timeout parameter */
 	struct timer_list gc;	/* garbage collection */
 };
 
 /* Base variant */
+=======
+	struct timer_list gc;	/* garbage collection */
+};
+
+/* ADT structure for generic function args */
+struct bitmap_ip_adt_elem {
+	u16 id;
+};
+>>>>>>> refs/remotes/origin/master
 
 static inline u32
 ip_to_id(const struct bitmap_ip *m, u32 ip)
@@ -53,8 +86,13 @@ ip_to_id(const struct bitmap_ip *m, u32 ip)
 	return ((ip & ip_set_hostmask(m->netmask)) - m->first_ip)/m->hosts;
 }
 
+<<<<<<< HEAD
 static int
+<<<<<<< HEAD
 bitmap_ip_test(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ip_test(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct bitmap_ip *map = set->data;
 	u16 id = *(u16 *)value;
@@ -63,7 +101,11 @@ bitmap_ip_test(struct ip_set *set, void *value, u32 timeout)
 }
 
 static int
+<<<<<<< HEAD
 bitmap_ip_add(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ip_add(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ip *map = set->data;
 	u16 id = *(u16 *)value;
@@ -75,7 +117,11 @@ bitmap_ip_add(struct ip_set *set, void *value, u32 timeout)
 }
 
 static int
+<<<<<<< HEAD
 bitmap_ip_del(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ip_del(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ip *map = set->data;
 	u16 id = *(u16 *)value;
@@ -131,7 +177,11 @@ nla_put_failure:
 /* Timeout variant */
 
 static int
+<<<<<<< HEAD
 bitmap_ip_ttest(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ip_ttest(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct bitmap_ip *map = set->data;
 	const unsigned long *members = map->members;
@@ -141,13 +191,21 @@ bitmap_ip_ttest(struct ip_set *set, void *value, u32 timeout)
 }
 
 static int
+<<<<<<< HEAD
 bitmap_ip_tadd(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ip_tadd(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ip *map = set->data;
 	unsigned long *members = map->members;
 	u16 id = *(u16 *)value;
 
+<<<<<<< HEAD
 	if (ip_set_timeout_test(members[id]))
+=======
+	if (ip_set_timeout_test(members[id]) && !(flags & IPSET_FLAG_EXIST))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -IPSET_ERR_EXIST;
 
 	members[id] = ip_set_timeout_set(timeout);
@@ -156,7 +214,11 @@ bitmap_ip_tadd(struct ip_set *set, void *value, u32 timeout)
 }
 
 static int
+<<<<<<< HEAD
 bitmap_ip_tdel(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ip_tdel(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ip *map = set->data;
 	unsigned long *members = map->members;
@@ -215,28 +277,110 @@ nla_put_failure:
 		return -EMSGSIZE;
 	}
 	return 0;
+=======
+/* Common functions */
+
+static inline int
+bitmap_ip_do_test(const struct bitmap_ip_adt_elem *e,
+		  struct bitmap_ip *map, size_t dsize)
+{
+	return !!test_bit(e->id, map->members);
+}
+
+static inline int
+bitmap_ip_gc_test(u16 id, const struct bitmap_ip *map, size_t dsize)
+{
+	return !!test_bit(id, map->members);
+}
+
+static inline int
+bitmap_ip_do_add(const struct bitmap_ip_adt_elem *e, struct bitmap_ip *map,
+		 u32 flags, size_t dsize)
+{
+	return !!test_and_set_bit(e->id, map->members);
+}
+
+static inline int
+bitmap_ip_do_del(const struct bitmap_ip_adt_elem *e, struct bitmap_ip *map)
+{
+	return !test_and_clear_bit(e->id, map->members);
+}
+
+static inline int
+bitmap_ip_do_list(struct sk_buff *skb, const struct bitmap_ip *map, u32 id,
+		  size_t dsize)
+{
+	return nla_put_ipaddr4(skb, IPSET_ATTR_IP,
+			htonl(map->first_ip + id * map->hosts));
+}
+
+static inline int
+bitmap_ip_do_head(struct sk_buff *skb, const struct bitmap_ip *map)
+{
+	return nla_put_ipaddr4(skb, IPSET_ATTR_IP, htonl(map->first_ip)) ||
+	       nla_put_ipaddr4(skb, IPSET_ATTR_IP_TO, htonl(map->last_ip)) ||
+	       (map->netmask != 32 &&
+		nla_put_u8(skb, IPSET_ATTR_NETMASK, map->netmask));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 bitmap_ip_kadt(struct ip_set *set, const struct sk_buff *skb,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	       enum ipset_adt adt, u8 pf, u8 dim, u8 flags)
+=======
+	       const struct xt_action_param *par,
+	       enum ipset_adt adt, const struct ip_set_adt_opt *opt)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ip *map = set->data;
 	ipset_adtfn adtfn = set->variant->adt[adt];
 	u32 ip;
 
+<<<<<<< HEAD
 	ip = ntohl(ip4addr(skb, flags & IPSET_DIM_ONE_SRC));
+=======
+	ip = ntohl(ip4addr(skb, opt->flags & IPSET_DIM_ONE_SRC));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ip < map->first_ip || ip > map->last_ip)
 		return -IPSET_ERR_BITMAP_RANGE;
 
 	ip = ip_to_id(map, ip);
 
+<<<<<<< HEAD
 	return adtfn(set, &ip, map->timeout);
+=======
+	return adtfn(set, &ip, opt_timeout(opt, map), opt->cmdflags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       const struct xt_action_param *par,
+	       enum ipset_adt adt, struct ip_set_adt_opt *opt)
+{
+	struct bitmap_ip *map = set->data;
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct bitmap_ip_adt_elem e = { };
+	struct ip_set_ext ext = IP_SET_INIT_KEXT(skb, opt, set);
+	u32 ip;
+
+	ip = ntohl(ip4addr(skb, opt->flags & IPSET_DIM_ONE_SRC));
+	if (ip < map->first_ip || ip > map->last_ip)
+		return -IPSET_ERR_BITMAP_RANGE;
+
+	e.id = ip_to_id(map, ip);
+
+	return adtfn(set, &e, &ext, &opt->ext, opt->cmdflags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 bitmap_ip_uadt(struct ip_set *set, struct nlattr *tb[],
+<<<<<<< HEAD
+<<<<<<< HEAD
 	       enum ipset_adt adt, u32 *lineno, u32 flags)
+=======
+	       enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ip *map = set->data;
 	ipset_adtfn adtfn = set->variant->adt[adt];
@@ -246,18 +390,39 @@ bitmap_ip_uadt(struct ip_set *set, struct nlattr *tb[],
 
 	if (unlikely(!tb[IPSET_ATTR_IP] ||
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT)))
+=======
+	       enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
+{
+	struct bitmap_ip *map = set->data;
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	u32 ip = 0, ip_to = 0;
+	struct bitmap_ip_adt_elem e = { };
+	struct ip_set_ext ext = IP_SET_INIT_UEXT(set);
+	int ret = 0;
+
+	if (unlikely(!tb[IPSET_ATTR_IP] ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_PACKETS) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_BYTES)))
+>>>>>>> refs/remotes/origin/master
 		return -IPSET_ERR_PROTOCOL;
 
 	if (tb[IPSET_ATTR_LINENO])
 		*lineno = nla_get_u32(tb[IPSET_ATTR_LINENO]);
 
+<<<<<<< HEAD
 	ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP], &ip);
+=======
+	ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP], &ip) ||
+	      ip_set_get_extensions(set, tb, &ext);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	if (ip < map->first_ip || ip > map->last_ip)
 		return -IPSET_ERR_BITMAP_RANGE;
 
+<<<<<<< HEAD
 	if (tb[IPSET_ATTR_TIMEOUT]) {
 		if (!with_timeout(map->timeout))
 			return -IPSET_ERR_TIMEOUT;
@@ -266,7 +431,16 @@ bitmap_ip_uadt(struct ip_set *set, struct nlattr *tb[],
 
 	if (adt == IPSET_TEST) {
 		id = ip_to_id(map, ip);
+<<<<<<< HEAD
 		return adtfn(set, &id, timeout);
+=======
+		return adtfn(set, &id, timeout, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (adt == IPSET_TEST) {
+		e.id = ip_to_id(map, ip);
+		return adtfn(set, &e, &ext, &ext, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (tb[IPSET_ATTR_IP_TO]) {
@@ -281,10 +455,20 @@ bitmap_ip_uadt(struct ip_set *set, struct nlattr *tb[],
 	} else if (tb[IPSET_ATTR_CIDR]) {
 		u8 cidr = nla_get_u8(tb[IPSET_ATTR_CIDR]);
 
+<<<<<<< HEAD
 		if (cidr > 32)
 			return -IPSET_ERR_INVALID_CIDR;
+<<<<<<< HEAD
 		ip &= ip_set_hostmask(cidr);
 		ip_to = ip | ~ip_set_hostmask(cidr);
+=======
+		ip_set_mask_from_to(ip, ip_to, cidr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!cidr || cidr > 32)
+			return -IPSET_ERR_INVALID_CIDR;
+		ip_set_mask_from_to(ip, ip_to, cidr);
+>>>>>>> refs/remotes/origin/master
 	} else
 		ip_to = ip;
 
@@ -292,8 +476,17 @@ bitmap_ip_uadt(struct ip_set *set, struct nlattr *tb[],
 		return -IPSET_ERR_BITMAP_RANGE;
 
 	for (; !before(ip_to, ip); ip += map->hosts) {
+<<<<<<< HEAD
 		id = ip_to_id(map, ip);
+<<<<<<< HEAD
 		ret = adtfn(set, &id, timeout);
+=======
+		ret = adtfn(set, &id, timeout, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		e.id = ip_to_id(map, ip);
+		ret = adtfn(set, &e, &ext, &ext, flags);
+>>>>>>> refs/remotes/origin/master
 
 		if (ret && !ip_set_eexist(ret, flags))
 			return ret;
@@ -303,6 +496,7 @@ bitmap_ip_uadt(struct ip_set *set, struct nlattr *tb[],
 	return ret;
 }
 
+<<<<<<< HEAD
 static void
 bitmap_ip_destroy(struct ip_set *set)
 {
@@ -350,6 +544,8 @@ nla_put_failure:
 	return -EMSGSIZE;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static bool
 bitmap_ip_same_set(const struct ip_set *a, const struct ip_set *b)
 {
@@ -359,6 +555,7 @@ bitmap_ip_same_set(const struct ip_set *a, const struct ip_set *b)
 	return x->first_ip == y->first_ip &&
 	       x->last_ip == y->last_ip &&
 	       x->netmask == y->netmask &&
+<<<<<<< HEAD
 	       x->timeout == y->timeout;
 }
 
@@ -423,6 +620,18 @@ bitmap_ip_gc_init(struct ip_set *set)
 	map->gc.expires = jiffies + IPSET_GC_PERIOD(map->timeout) * HZ;
 	add_timer(&map->gc);
 }
+=======
+	       a->timeout == b->timeout &&
+	       a->extensions == b->extensions;
+}
+
+/* Plain variant */
+
+struct bitmap_ip_elem {
+};
+
+#include "ip_set_bitmap_gen.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Create bitmap:ip type of sets */
 
@@ -434,29 +643,64 @@ init_map_ip(struct ip_set *set, struct bitmap_ip *map,
 	map->members = ip_set_alloc(map->memsize);
 	if (!map->members)
 		return false;
+<<<<<<< HEAD
+=======
+	if (set->dsize) {
+		map->extensions = ip_set_alloc(set->dsize * elements);
+		if (!map->extensions) {
+			kfree(map->members);
+			return false;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	map->first_ip = first_ip;
 	map->last_ip = last_ip;
 	map->elements = elements;
 	map->hosts = hosts;
 	map->netmask = netmask;
+<<<<<<< HEAD
 	map->timeout = IPSET_NO_TIMEOUT;
 
 	set->data = map;
+<<<<<<< HEAD
 	set->family = AF_INET;
+=======
+	set->family = NFPROTO_IPV4;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set->timeout = IPSET_NO_TIMEOUT;
+
+	set->data = map;
+	set->family = NFPROTO_IPV4;
+>>>>>>> refs/remotes/origin/master
 
 	return true;
 }
 
 static int
+<<<<<<< HEAD
 bitmap_ip_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 {
 	struct bitmap_ip *map;
 	u32 first_ip, last_ip, hosts, elements;
+=======
+bitmap_ip_create(struct net *net, struct ip_set *set, struct nlattr *tb[],
+		 u32 flags)
+{
+	struct bitmap_ip *map;
+	u32 first_ip = 0, last_ip = 0, hosts;
+	u64 elements;
+>>>>>>> refs/remotes/origin/master
 	u8 netmask = 32;
 	int ret;
 
 	if (unlikely(!tb[IPSET_ATTR_IP] ||
+<<<<<<< HEAD
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT)))
+=======
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_CADT_FLAGS)))
+>>>>>>> refs/remotes/origin/master
 		return -IPSET_ERR_PROTOCOL;
 
 	ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP], &first_ip);
@@ -478,7 +722,15 @@ bitmap_ip_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 
 		if (cidr >= 32)
 			return -IPSET_ERR_INVALID_CIDR;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		last_ip = first_ip | ~ip_set_hostmask(cidr);
+=======
+		ip_set_mask_from_to(first_ip, last_ip, cidr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ip_set_mask_from_to(first_ip, last_ip, cidr);
+>>>>>>> refs/remotes/origin/master
 	} else
 		return -IPSET_ERR_PROTOCOL;
 
@@ -494,7 +746,11 @@ bitmap_ip_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 
 	if (netmask == 32) {
 		hosts = 1;
+<<<<<<< HEAD
 		elements = last_ip - first_ip + 1;
+=======
+		elements = (u64)last_ip - first_ip + 1;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		u8 mask_bits;
 		u32 mask;
@@ -512,12 +768,18 @@ bitmap_ip_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 	if (elements > IPSET_BITMAP_MAX_RANGE + 1)
 		return -IPSET_ERR_BITMAP_RANGE_SIZE;
 
+<<<<<<< HEAD
 	pr_debug("hosts %u, elements %u\n", hosts, elements);
+=======
+	pr_debug("hosts %u, elements %llu\n",
+		 hosts, (unsigned long long)elements);
+>>>>>>> refs/remotes/origin/master
 
 	map = kzalloc(sizeof(*map), GFP_KERNEL);
 	if (!map)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	if (tb[IPSET_ATTR_TIMEOUT]) {
 		map->memsize = elements * sizeof(unsigned long);
 
@@ -541,6 +803,19 @@ bitmap_ip_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 		}
 
 		set->variant = &bitmap_ip;
+=======
+	map->memsize = bitmap_bytes(0, elements - 1);
+	set->variant = &bitmap_ip;
+	set->dsize = ip_set_elem_len(set, tb, 0);
+	if (!init_map_ip(set, map, first_ip, last_ip,
+			 elements, hosts, netmask)) {
+		kfree(map);
+		return -ENOMEM;
+	}
+	if (tb[IPSET_ATTR_TIMEOUT]) {
+		set->timeout = ip_set_timeout_uget(tb[IPSET_ATTR_TIMEOUT]);
+		bitmap_ip_gc_init(set, bitmap_ip_gc);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -550,8 +825,20 @@ static struct ip_set_type bitmap_ip_type __read_mostly = {
 	.protocol	= IPSET_PROTOCOL,
 	.features	= IPSET_TYPE_IP,
 	.dimension	= IPSET_DIM_ONE,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.family		= AF_INET,
 	.revision	= 0,
+=======
+	.family		= NFPROTO_IPV4,
+	.revision_min	= 0,
+	.revision_max	= 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.family		= NFPROTO_IPV4,
+	.revision_min	= IPSET_TYPE_REV_MIN,
+	.revision_max	= IPSET_TYPE_REV_MAX,
+>>>>>>> refs/remotes/origin/master
 	.create		= bitmap_ip_create,
 	.create_policy	= {
 		[IPSET_ATTR_IP]		= { .type = NLA_NESTED },
@@ -559,6 +846,10 @@ static struct ip_set_type bitmap_ip_type __read_mostly = {
 		[IPSET_ATTR_CIDR]	= { .type = NLA_U8 },
 		[IPSET_ATTR_NETMASK]	= { .type = NLA_U8  },
 		[IPSET_ATTR_TIMEOUT]	= { .type = NLA_U32 },
+<<<<<<< HEAD
+=======
+		[IPSET_ATTR_CADT_FLAGS]	= { .type = NLA_U32 },
+>>>>>>> refs/remotes/origin/master
 	},
 	.adt_policy	= {
 		[IPSET_ATTR_IP]		= { .type = NLA_NESTED },
@@ -566,6 +857,12 @@ static struct ip_set_type bitmap_ip_type __read_mostly = {
 		[IPSET_ATTR_CIDR]	= { .type = NLA_U8 },
 		[IPSET_ATTR_TIMEOUT]	= { .type = NLA_U32 },
 		[IPSET_ATTR_LINENO]	= { .type = NLA_U32 },
+<<<<<<< HEAD
+=======
+		[IPSET_ATTR_BYTES]	= { .type = NLA_U64 },
+		[IPSET_ATTR_PACKETS]	= { .type = NLA_U64 },
+		[IPSET_ATTR_COMMENT]	= { .type = NLA_NUL_STRING },
+>>>>>>> refs/remotes/origin/master
 	},
 	.me		= THIS_MODULE,
 };

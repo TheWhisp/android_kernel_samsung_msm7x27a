@@ -24,19 +24,49 @@
 #include <linux/mutex.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 
 #include <linux/fsnotify_backend.h>
 #include "fsnotify.h"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/atomic.h>
+
+#include <linux/fsnotify_backend.h>
+#include "fsnotify.h"
+#include "../mount.h"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void fsnotify_clear_marks_by_mount(struct vfsmount *mnt)
 {
 	struct fsnotify_mark *mark, *lmark;
+<<<<<<< HEAD
 	struct hlist_node *pos, *n;
+<<<<<<< HEAD
 	LIST_HEAD(free_list);
 
 	spin_lock(&mnt->mnt_root->d_lock);
 	hlist_for_each_entry_safe(mark, pos, n, &mnt->mnt_fsnotify_marks, m.m_list) {
+=======
+=======
+	struct hlist_node *n;
+>>>>>>> refs/remotes/origin/master
+	struct mount *m = real_mount(mnt);
+	LIST_HEAD(free_list);
+
+	spin_lock(&mnt->mnt_root->d_lock);
+<<<<<<< HEAD
+	hlist_for_each_entry_safe(mark, pos, n, &m->mnt_fsnotify_marks, m.m_list) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hlist_for_each_entry_safe(mark, n, &m->mnt_fsnotify_marks, m.m_list) {
+>>>>>>> refs/remotes/origin/master
 		list_add(&mark->m.free_m_list, &free_list);
 		hlist_del_init_rcu(&mark->m.m_list);
 		fsnotify_get_mark(mark);
@@ -44,8 +74,21 @@ void fsnotify_clear_marks_by_mount(struct vfsmount *mnt)
 	spin_unlock(&mnt->mnt_root->d_lock);
 
 	list_for_each_entry_safe(mark, lmark, &free_list, m.free_m_list) {
+<<<<<<< HEAD
 		fsnotify_destroy_mark(mark);
 		fsnotify_put_mark(mark);
+=======
+		struct fsnotify_group *group;
+
+		spin_lock(&mark->lock);
+		fsnotify_get_group(mark->group);
+		group = mark->group;
+		spin_unlock(&mark->lock);
+
+		fsnotify_destroy_mark(mark, group);
+		fsnotify_put_mark(mark);
+		fsnotify_put_group(group);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -59,15 +102,36 @@ void fsnotify_clear_vfsmount_marks_by_group(struct fsnotify_group *group)
  */
 static void fsnotify_recalc_vfsmount_mask_locked(struct vfsmount *mnt)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct mount *m = real_mount(mnt);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct fsnotify_mark *mark;
 	struct hlist_node *pos;
+=======
+	struct mount *m = real_mount(mnt);
+	struct fsnotify_mark *mark;
+>>>>>>> refs/remotes/origin/master
 	__u32 new_mask = 0;
 
 	assert_spin_locked(&mnt->mnt_root->d_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hlist_for_each_entry(mark, pos, &mnt->mnt_fsnotify_marks, m.m_list)
 		new_mask |= mark->mask;
 	mnt->mnt_fsnotify_mask = new_mask;
+=======
+	hlist_for_each_entry(mark, pos, &m->mnt_fsnotify_marks, m.m_list)
+		new_mask |= mark->mask;
+	m->mnt_fsnotify_mask = new_mask;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hlist_for_each_entry(mark, &m->mnt_fsnotify_marks, m.m_list)
+		new_mask |= mark->mask;
+	m->mnt_fsnotify_mask = new_mask;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -85,8 +149,13 @@ void fsnotify_destroy_vfsmount_mark(struct fsnotify_mark *mark)
 {
 	struct vfsmount *mnt = mark->m.mnt;
 
+<<<<<<< HEAD
 	assert_spin_locked(&mark->lock);
 	assert_spin_locked(&mark->group->mark_lock);
+=======
+	BUG_ON(!mutex_is_locked(&mark->group->mark_mutex));
+	assert_spin_locked(&mark->lock);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&mnt->mnt_root->d_lock);
 
@@ -101,12 +170,29 @@ void fsnotify_destroy_vfsmount_mark(struct fsnotify_mark *mark)
 static struct fsnotify_mark *fsnotify_find_vfsmount_mark_locked(struct fsnotify_group *group,
 								struct vfsmount *mnt)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct mount *m = real_mount(mnt);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct fsnotify_mark *mark;
 	struct hlist_node *pos;
 
 	assert_spin_locked(&mnt->mnt_root->d_lock);
 
+<<<<<<< HEAD
 	hlist_for_each_entry(mark, pos, &mnt->mnt_fsnotify_marks, m.m_list) {
+=======
+	hlist_for_each_entry(mark, pos, &m->mnt_fsnotify_marks, m.m_list) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mount *m = real_mount(mnt);
+	struct fsnotify_mark *mark;
+
+	assert_spin_locked(&mnt->mnt_root->d_lock);
+
+	hlist_for_each_entry(mark, &m->mnt_fsnotify_marks, m.m_list) {
+>>>>>>> refs/remotes/origin/master
 		if (mark->group == group) {
 			fsnotify_get_mark(mark);
 			return mark;
@@ -140,28 +226,61 @@ int fsnotify_add_vfsmount_mark(struct fsnotify_mark *mark,
 			       struct fsnotify_group *group, struct vfsmount *mnt,
 			       int allow_dups)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct mount *m = real_mount(mnt);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct fsnotify_mark *lmark;
 	struct hlist_node *node, *last = NULL;
+=======
+	struct mount *m = real_mount(mnt);
+	struct fsnotify_mark *lmark, *last = NULL;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	mark->flags |= FSNOTIFY_MARK_FLAG_VFSMOUNT;
 
+<<<<<<< HEAD
 	assert_spin_locked(&mark->lock);
 	assert_spin_locked(&group->mark_lock);
+=======
+	BUG_ON(!mutex_is_locked(&group->mark_mutex));
+	assert_spin_locked(&mark->lock);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&mnt->mnt_root->d_lock);
 
 	mark->m.mnt = mnt;
 
 	/* is mark the first mark? */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (hlist_empty(&mnt->mnt_fsnotify_marks)) {
 		hlist_add_head_rcu(&mark->m.m_list, &mnt->mnt_fsnotify_marks);
+=======
+	if (hlist_empty(&m->mnt_fsnotify_marks)) {
+		hlist_add_head_rcu(&mark->m.m_list, &m->mnt_fsnotify_marks);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (hlist_empty(&m->mnt_fsnotify_marks)) {
+		hlist_add_head_rcu(&mark->m.m_list, &m->mnt_fsnotify_marks);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	/* should mark be in the middle of the current list? */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hlist_for_each_entry(lmark, node, &mnt->mnt_fsnotify_marks, m.m_list) {
+=======
+	hlist_for_each_entry(lmark, node, &m->mnt_fsnotify_marks, m.m_list) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		last = node;
+=======
+	hlist_for_each_entry(lmark, &m->mnt_fsnotify_marks, m.m_list) {
+		last = lmark;
+>>>>>>> refs/remotes/origin/master
 
 		if ((lmark->group == group) && !allow_dups) {
 			ret = -EEXIST;
@@ -181,7 +300,11 @@ int fsnotify_add_vfsmount_mark(struct fsnotify_mark *mark,
 
 	BUG_ON(last == NULL);
 	/* mark should be the last entry.  last is the current last entry */
+<<<<<<< HEAD
 	hlist_add_after_rcu(last, &mark->m.m_list);
+=======
+	hlist_add_after_rcu(&last->m.m_list, &mark->m.m_list);
+>>>>>>> refs/remotes/origin/master
 out:
 	fsnotify_recalc_vfsmount_mask_locked(mnt);
 	spin_unlock(&mnt->mnt_root->d_lock);

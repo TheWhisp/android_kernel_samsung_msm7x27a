@@ -6,6 +6,14 @@
 #include <linux/pci.h>
 #include <linux/of_address.h>
 #include <linux/of_device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/serial_reg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/serial_reg.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/mmu.h>
 #include <asm/prom.h>
@@ -34,7 +42,11 @@ static struct legacy_serial_info {
 	phys_addr_t			taddr;
 } legacy_serial_infos[MAX_LEGACY_SERIAL_PORTS];
 
+<<<<<<< HEAD
 static struct __initdata of_device_id legacy_serial_parents[] = {
+=======
+static struct of_device_id legacy_serial_parents[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	{.type = "soc",},
 	{.type = "tsi-bridge",},
 	{.type = "opb", },
@@ -47,6 +59,33 @@ static struct __initdata of_device_id legacy_serial_parents[] = {
 static unsigned int legacy_serial_count;
 static int legacy_serial_console = -1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static unsigned int tsi_serial_in(struct uart_port *p, int offset)
+{
+	unsigned int tmp;
+	offset = offset << p->regshift;
+	if (offset == UART_IIR) {
+		tmp = readl(p->membase + (UART_IIR & ~3));
+		return (tmp >> 16) & 0xff; /* UART_IIR % 4 == 2 */
+	} else
+		return readb(p->membase + offset);
+}
+
+static void tsi_serial_out(struct uart_port *p, int offset, int value)
+{
+	offset = offset << p->regshift;
+	if (!((offset == UART_IER) && (value & UART_IER_UUE)))
+		writeb(value, p->membase + offset);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init add_legacy_port(struct device_node *np, int want_index,
 				  int iotype, phys_addr_t base,
 				  phys_addr_t taddr, unsigned long irq,
@@ -80,7 +119,11 @@ static int __init add_legacy_port(struct device_node *np, int want_index,
 		legacy_serial_count = index + 1;
 
 	/* Check if there is a port who already claimed our slot */
+<<<<<<< HEAD
 	if (legacy_serial_infos[index].np != 0) {
+=======
+	if (legacy_serial_infos[index].np != NULL) {
+>>>>>>> refs/remotes/origin/master
 		/* if we still have some room, move it, else override */
 		if (legacy_serial_count < MAX_LEGACY_SERIAL_PORTS) {
 			printk(KERN_DEBUG "Moved legacy port %d -> %d\n",
@@ -102,6 +145,14 @@ static int __init add_legacy_port(struct device_node *np, int want_index,
 		legacy_serial_ports[index].iobase = base;
 	else
 		legacy_serial_ports[index].mapbase = base;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	legacy_serial_ports[index].iotype = iotype;
 	legacy_serial_ports[index].uartclk = clock;
 	legacy_serial_ports[index].irq = irq;
@@ -112,6 +163,20 @@ static int __init add_legacy_port(struct device_node *np, int want_index,
 	legacy_serial_infos[index].speed = spd ? be32_to_cpup(spd) : 0;
 	legacy_serial_infos[index].irq_check_parent = irq_check_parent;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (iotype == UPIO_TSI) {
+		legacy_serial_ports[index].serial_in = tsi_serial_in;
+		legacy_serial_ports[index].serial_out = tsi_serial_out;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_DEBUG "Found legacy serial port %d for %s\n",
 	       index, np->full_name);
 	printk(KERN_DEBUG "  %s=%llx, taddr=%llx, irq=%lx, clk=%d, speed=%d\n",
@@ -127,7 +192,11 @@ static int __init add_legacy_soc_port(struct device_node *np,
 				      struct device_node *soc_dev)
 {
 	u64 addr;
+<<<<<<< HEAD
 	const u32 *addrp;
+=======
+	const __be32 *addrp;
+>>>>>>> refs/remotes/origin/master
 	upf_t flags = UPF_BOOT_AUTOCONF | UPF_SKIP_TEST | UPF_SHARE_IRQ
 		| UPF_FIXED_PORT;
 	struct device_node *tsi = of_get_parent(np);
@@ -196,6 +265,7 @@ static int __init add_legacy_isa_port(struct device_node *np,
 	/* Translate ISA address. If it fails, we still register the port
 	 * with no translated address so that it can be picked up as an IO
 	 * port later by the serial driver
+<<<<<<< HEAD
 	 */
 	taddr = of_translate_address(np, reg);
 	if (taddr == OF_BAD_ADDR)
@@ -204,6 +274,21 @@ static int __init add_legacy_isa_port(struct device_node *np,
 	/* Add port, irq will be dealt with later */
 	return add_legacy_port(np, index, UPIO_PORT, be32_to_cpu(reg[1]), taddr,
 			       NO_IRQ, UPF_BOOT_AUTOCONF, 0);
+=======
+	 *
+	 * Note: Don't even try on P8 lpc, we know it's not directly mapped
+	 */
+	if (!of_device_is_compatible(isa_brg, "ibm,power8-lpc")) {
+		taddr = of_translate_address(np, reg);
+		if (taddr == OF_BAD_ADDR)
+			taddr = 0;
+	} else
+		taddr = 0;
+
+	/* Add port, irq will be dealt with later */
+	return add_legacy_port(np, index, UPIO_PORT, be32_to_cpu(reg[1]),
+			       taddr, NO_IRQ, UPF_BOOT_AUTOCONF, 0);
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -212,7 +297,11 @@ static int __init add_legacy_pci_port(struct device_node *np,
 				      struct device_node *pci_dev)
 {
 	u64 addr, base;
+<<<<<<< HEAD
 	const u32 *addrp;
+=======
+	const __be32 *addrp;
+>>>>>>> refs/remotes/origin/master
 	unsigned int flags;
 	int iotype, index = -1, lindex = 0;
 
@@ -245,7 +334,11 @@ static int __init add_legacy_pci_port(struct device_node *np,
 	if (iotype == UPIO_MEM)
 		base = addr;
 	else
+<<<<<<< HEAD
 		base = addrp[2];
+=======
+		base = of_read_number(&addrp[2], 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* Try to guess an index... If we have subdevices of the pci dev,
 	 * we get to their "reg" property
@@ -282,6 +375,7 @@ static int __init add_legacy_pci_port(struct device_node *np,
 
 static void __init setup_legacy_serial_console(int console)
 {
+<<<<<<< HEAD
 	struct legacy_serial_info *info =
 		&legacy_serial_infos[console];
 	void __iomem *addr;
@@ -295,6 +389,33 @@ static void __init setup_legacy_serial_console(int console)
 		info->speed = udbg_probe_uart_speed(addr, info->clock);
 	DBG("default console speed = %d\n", info->speed);
 	udbg_init_uart(addr, info->speed, info->clock);
+=======
+	struct legacy_serial_info *info = &legacy_serial_infos[console];
+	struct plat_serial8250_port *port = &legacy_serial_ports[console];
+	void __iomem *addr;
+
+	/* Check if a translated MMIO address has been found */
+	if (info->taddr) {
+		addr = ioremap(info->taddr, 0x1000);
+		if (addr == NULL)
+			return;
+		udbg_uart_init_mmio(addr, 1);
+	} else {
+		/* Check if it's PIO and we support untranslated PIO */
+		if (port->iotype == UPIO_PORT && isa_io_special)
+			udbg_uart_init_pio(port->iobase, 1);
+		else
+			return;
+	}
+
+	/* Try to query the current speed */
+	if (info->speed == 0)
+		info->speed = udbg_probe_uart_speed(info->clock);
+
+	/* Set it up */
+	DBG("default console speed = %d\n", info->speed);
+	udbg_uart_setup(info->speed, info->clock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -342,10 +463,20 @@ void __init find_legacy_serial_ports(void)
 	/* Next, fill our array with ISA ports */
 	for_each_node_by_type(np, "serial") {
 		struct device_node *isa = of_get_parent(np);
+<<<<<<< HEAD
 		if (isa && !strcmp(isa->name, "isa")) {
 			index = add_legacy_isa_port(np, isa);
 			if (index >= 0 && np == stdout)
 				legacy_serial_console = index;
+=======
+		if (isa && (!strcmp(isa->name, "isa") ||
+			    !strcmp(isa->name, "lpc"))) {
+			if (of_device_is_available(np)) {
+				index = add_legacy_isa_port(np, isa);
+				if (index >= 0 && np == stdout)
+					legacy_serial_console = index;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 		of_node_put(isa);
 	}
@@ -362,7 +493,11 @@ void __init find_legacy_serial_ports(void)
 			of_node_put(parent);
 			continue;
 		}
+<<<<<<< HEAD
 		/* Check for known pciclass, and also check wether we have
+=======
+		/* Check for known pciclass, and also check whether we have
+>>>>>>> refs/remotes/origin/master
 		 * a device with child nodes for ports or not
 		 */
 		if (of_device_is_compatible(np, "pciclass,0700") ||
@@ -416,6 +551,20 @@ static void __init fixup_port_irq(int index,
 		return;
 
 	port->irq = virq;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#ifdef CONFIG_SERIAL_8250_FSL
+	if (of_device_is_compatible(np, "fsl,ns16550"))
+		port->handle_irq = fsl8250_handle_irq;
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init fixup_port_pio(int index,

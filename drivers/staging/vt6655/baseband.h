@@ -41,11 +41,15 @@
 //
 #define BB_MAX_CONTEXT_SIZE 256
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 //
 // Baseband RF pair definition in eeprom (Bits 6..0)
 //
 
+<<<<<<< HEAD
 /*
 #define RATE_1M         0
 #define RATE_2M         1
@@ -80,6 +84,11 @@
 #define PREAMBLE_SHORT  1
 
 
+=======
+#define PREAMBLE_LONG   0
+#define PREAMBLE_SHORT  1
+
+>>>>>>> refs/remotes/origin/master
 #define F5G             0
 #define F2_4G           1
 
@@ -96,11 +105,15 @@
 #define TOP_RATE_2M         0x00200000
 #define TOP_RATE_1M         0x00100000
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*---------------------  Export Types  ------------------------------*/
 
 /*---------------------  Export Macros ------------------------------*/
 
+<<<<<<< HEAD
 #define BBvClearFOE(dwIoBase)                               \
 {                                                           \
     BBbWriteEmbeded(dwIoBase, 0xB1, 0);                     \
@@ -111,6 +124,13 @@
     BBbWriteEmbeded(dwIoBase, 0xB1, 0x0C);                  \
 }
 
+=======
+#define BBvClearFOE(dwIoBase)				\
+	BBbWriteEmbedded(dwIoBase, 0xB1, 0)
+
+#define BBvSetFOE(dwIoBase)				\
+	BBbWriteEmbedded(dwIoBase, 0xB1, 0x0C)
+>>>>>>> refs/remotes/origin/master
 
 /*---------------------  Export Classes  ----------------------------*/
 
@@ -120,6 +140,7 @@
 
 unsigned int
 BBuGetFrameTime(
+<<<<<<< HEAD
     unsigned char byPreambleType,
     unsigned char byPktType,
     unsigned int cbFrameLength,
@@ -139,6 +160,27 @@ BBvCaculateParameter (
 
 bool BBbReadEmbeded(unsigned long dwIoBase, unsigned char byBBAddr, unsigned char *pbyData);
 bool BBbWriteEmbeded(unsigned long dwIoBase, unsigned char byBBAddr, unsigned char byData);
+=======
+	unsigned char byPreambleType,
+	unsigned char byPktType,
+	unsigned int cbFrameLength,
+	unsigned short wRate
+);
+
+void
+BBvCalculateParameter(
+	PSDevice pDevice,
+	unsigned int cbFrameLength,
+	unsigned short wRate,
+	unsigned char byPacketType,
+	unsigned short *pwPhyLen,
+	unsigned char *pbyPhySrv,
+	unsigned char *pbyPhySgn
+);
+
+bool BBbReadEmbedded(unsigned long dwIoBase, unsigned char byBBAddr, unsigned char *pbyData);
+bool BBbWriteEmbedded(unsigned long dwIoBase, unsigned char byBBAddr, unsigned char byData);
+>>>>>>> refs/remotes/origin/master
 
 void BBvReadAllRegs(unsigned long dwIoBase, unsigned char *pbyBBRegs);
 void BBvLoopbackOn(PSDevice pDevice);
@@ -161,6 +203,7 @@ void BBvExitDeepSleep(unsigned long dwIoBase, unsigned char byLocalID);
 // timer for antenna diversity
 
 void
+<<<<<<< HEAD
 TimerSQ3CallBack (
     void *hDeviceContext
     );
@@ -173,5 +216,19 @@ TimerState1CallBack(
 void BBvAntennaDiversity(PSDevice pDevice, unsigned char byRxRate, unsigned char bySQ3);
 void
 BBvClearAntDivSQ3Value (PSDevice pDevice);
+=======
+TimerSQ3CallBack(
+	void *hDeviceContext
+);
+
+void
+TimerState1CallBack(
+	void *hDeviceContext
+);
+
+void BBvAntennaDiversity(PSDevice pDevice, unsigned char byRxRate, unsigned char bySQ3);
+void
+BBvClearAntDivSQ3Value(PSDevice pDevice);
+>>>>>>> refs/remotes/origin/master
 
 #endif // __BASEBAND_H__

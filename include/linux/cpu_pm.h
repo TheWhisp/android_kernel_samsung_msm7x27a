@@ -2,7 +2,15 @@
  * Copyright (C) 2011 Google, Inc.
  *
  * Author:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	Colin Cross <ccross <at> android.com>
+=======
+ *	Colin Cross <ccross@android.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Colin Cross <ccross@android.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -24,24 +32,51 @@
 /*
  * When a CPU goes to a low power state that turns off power to the CPU's
  * power domain, the contents of some blocks (floating point coprocessors,
+<<<<<<< HEAD
+<<<<<<< HEAD
  * interrutp controllers, caches, timers) in the same power domain can
+=======
+ * interrupt controllers, caches, timers) in the same power domain can
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * interrupt controllers, caches, timers) in the same power domain can
+>>>>>>> refs/remotes/origin/master
  * be lost.  The cpm_pm notifiers provide a method for platform idle, suspend,
  * and hotplug implementations to notify the drivers for these blocks that
  * they may be reset.
  *
  * All cpu_pm notifications must be called with interrupts disabled.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * The notifications are split into two classes, CPU notifications and CPU
  * cluster notifications.
  *
  * CPU notifications apply to a single CPU, and must be called on the affected
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * The notifications are split into two classes: CPU notifications and CPU
+ * cluster notifications.
+ *
+ * CPU notifications apply to a single CPU and must be called on the affected
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * CPU.  They are used to save per-cpu context for affected blocks.
  *
  * CPU cluster notifications apply to all CPUs in a single power domain. They
  * are used to save any global context for affected blocks, and must be called
  * after all the CPUs in the power domain have been notified of the low power
  * state.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
@@ -69,6 +104,8 @@ enum cpu_pm_event {
 
 #ifdef CONFIG_CPU_PM
 int cpu_pm_register_notifier(struct notifier_block *nb);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else
 static inline int cpu_pm_register_notifier(struct notifier_block *nb)
 { return 0; }
@@ -126,4 +163,49 @@ int cpu_cluster_pm_enter(void);
  */
 int cpu_cluster_pm_exit(void);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int cpu_pm_unregister_notifier(struct notifier_block *nb);
+int cpu_pm_enter(void);
+int cpu_pm_exit(void);
+int cpu_cluster_pm_enter(void);
+int cpu_cluster_pm_exit(void);
+
+#else
+
+static inline int cpu_pm_register_notifier(struct notifier_block *nb)
+{
+	return 0;
+}
+
+static inline int cpu_pm_unregister_notifier(struct notifier_block *nb)
+{
+	return 0;
+}
+
+static inline int cpu_pm_enter(void)
+{
+	return 0;
+}
+
+static inline int cpu_pm_exit(void)
+{
+	return 0;
+}
+
+static inline int cpu_cluster_pm_enter(void)
+{
+	return 0;
+}
+
+static inline int cpu_cluster_pm_exit(void)
+{
+	return 0;
+}
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

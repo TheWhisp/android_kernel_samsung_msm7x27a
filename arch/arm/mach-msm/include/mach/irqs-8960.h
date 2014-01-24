@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -268,6 +276,16 @@
 #define PM8921_SEC_IRQ_104			(GIC_SPI_START + 225)
 #define PM8018_SEC_IRQ_107			(GIC_SPI_START + 226)
 #define USB_HSIC_IRQ				(GIC_SPI_START + 229)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define MSM8960_CSIPHY_2_2LN_IRQ		(GIC_SPI_START + 228)
+#define CSI_2_IRQ				(GIC_SPI_START + 227)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSM8960_CSIPHY_2_2LN_IRQ		(GIC_SPI_START + 228)
+#define CSI_2_IRQ				(GIC_SPI_START + 227)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Backwards compatible IRQ macros. */
 #define INT_ADM_AARM				ADM_0_SCSS_0_IRQ

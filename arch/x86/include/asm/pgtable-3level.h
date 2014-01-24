@@ -9,6 +9,7 @@
  */
 
 #define pte_ERROR(e)							\
+<<<<<<< HEAD
 	printk("%s:%d: bad pte %p(%08lx%08lx).\n",			\
 	       __FILE__, __LINE__, &(e), (e).pte_high, (e).pte_low)
 #define pmd_ERROR(e)							\
@@ -16,6 +17,15 @@
 	       __FILE__, __LINE__, &(e), pmd_val(e))
 #define pgd_ERROR(e)							\
 	printk("%s:%d: bad pgd %p(%016Lx).\n",				\
+=======
+	pr_err("%s:%d: bad pte %p(%08lx%08lx)\n",			\
+	       __FILE__, __LINE__, &(e), (e).pte_high, (e).pte_low)
+#define pmd_ERROR(e)							\
+	pr_err("%s:%d: bad pmd %p(%016Lx)\n",				\
+	       __FILE__, __LINE__, &(e), pmd_val(e))
+#define pgd_ERROR(e)							\
+	pr_err("%s:%d: bad pgd %p(%016Lx)\n",				\
+>>>>>>> refs/remotes/origin/master
 	       __FILE__, __LINE__, &(e), pgd_val(e))
 
 /* Rules for using set_pte: the pte being assigned *must* be
@@ -47,6 +57,9 @@ static inline void native_set_pte(pte_t *ptep, pte_t pte)
  * they can run pmd_offset_map_lock or pmd_trans_huge or other pmd
  * operations.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Without THP if the mmap_sem is hold for reading, the
  * pmd can only transition from null to not null while pmd_read_atomic runs.
  * So there's no need of literally reading it atomically.
@@ -57,6 +70,38 @@ static inline void native_set_pte(pte_t *ptep, pte_t pte)
  * with cmpxchg8b.
  */
 #ifndef CONFIG_TRANSPARENT_HUGEPAGE
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ * Without THP if the mmap_sem is hold for reading, the pmd can only
+ * transition from null to not null while pmd_read_atomic runs. So
+ * we can always return atomic pmd values with this function.
+ *
+ * With THP if the mmap_sem is hold for reading, the pmd can become
+ * trans_huge or none or point to a pte (and in turn become "stable")
+ * at any time under pmd_read_atomic. We could read it really
+ * atomically here with a atomic64_read for the THP enabled case (and
+ * it would be a whole lot simpler), but to avoid using cmpxchg8b we
+ * only return an atomic pmdval if the low part of the pmdval is later
+ * found stable (i.e. pointing to a pte). And we're returning a none
+ * pmdval if the low part of the pmd is none. In some cases the high
+ * and low part of the pmdval returned may not be consistent if THP is
+ * enabled (the low part may point to previously mapped hugepage,
+ * while the high part may point to a more recently mapped hugepage),
+ * but pmd_none_or_trans_huge_or_clear_bad() only needs the low part
+ * of the pmd to be read atomically to decide if the pmd is unstable
+ * or not, with the only exception of when the low part of the pmd is
+ * zero in which case we return a none pmd.
+ */
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
 {
 	pmdval_t ret;
@@ -74,12 +119,21 @@ static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
 
 	return (pmd_t) { ret };
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else /* CONFIG_TRANSPARENT_HUGEPAGE */
 static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
 {
 	return (pmd_t) { atomic64_read((atomic64_t *)pmdp) };
 }
 #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static inline void native_set_pte_atomic(pte_t *ptep, pte_t pte)
 {
@@ -175,6 +229,12 @@ static inline pmd_t native_pmdp_get_and_clear(pmd_t *pmdp)
 /*
  * Bits 0, 6 and 7 are taken in the low part of the pte,
  * put the 32 bits of offset into the high part.
+<<<<<<< HEAD
+=======
+ *
+ * For soft-dirty tracking 11 bit is taken from
+ * the low part of pte as well.
+>>>>>>> refs/remotes/origin/master
  */
 #define pte_to_pgoff(pte) ((pte).pte_high)
 #define pgoff_to_pte(off)						\

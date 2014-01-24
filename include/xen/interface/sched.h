@@ -9,7 +9,11 @@
 #ifndef __XEN_PUBLIC_SCHED_H__
 #define __XEN_PUBLIC_SCHED_H__
 
+<<<<<<< HEAD
 #include "event_channel.h"
+=======
+#include <xen/interface/event_channel.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The prototype for this hypercall is:

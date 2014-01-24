@@ -4,7 +4,15 @@
 
   PIO Transmission
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) 2005 Michael Buesch <mb@bu3sch.de>
+=======
+  Copyright (c) 2005 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Copyright (c) 2005 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -382,7 +390,11 @@ static void cancel_transfers(struct b43legacy_pioqueue *queue)
 {
 	struct b43legacy_pio_txpacket *packet, *tmp_packet;
 
+<<<<<<< HEAD
 	tasklet_disable(&queue->txtask);
+=======
+	tasklet_kill(&queue->txtask);
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry_safe(packet, tmp_packet, &queue->txrunning, list)
 		free_txpacket(packet, 0);

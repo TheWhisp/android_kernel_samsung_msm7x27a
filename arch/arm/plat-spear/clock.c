@@ -916,7 +916,11 @@ static struct dentry *clk_debugfs_root;
 static int clk_debugfs_register_one(struct clk *c)
 {
 	int err;
+<<<<<<< HEAD
 	struct dentry *d, *child;
+=======
+	struct dentry *d;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct clk *pa = c->pclk;
 	char s[255];
 	char *p = s;
@@ -951,10 +955,14 @@ static int clk_debugfs_register_one(struct clk *c)
 	return 0;
 
 err_out:
+<<<<<<< HEAD
 	d = c->dent;
 	list_for_each_entry(child, &d->d_subdirs, d_u.d_child)
 		debugfs_remove(child);
 	debugfs_remove(c->dent);
+=======
+	debugfs_remove_recursive(c->dent);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 

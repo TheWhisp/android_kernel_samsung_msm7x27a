@@ -183,6 +183,20 @@ static void handle_vq(struct c2_dev *c2dev, u32 mq_index)
 	case IW_CM_EVENT_ESTABLISHED:
 		c2_set_qp_state(req->qp,
 				C2_QP_STATE_RTS);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * Until ird/ord negotiation via MPAv2 support is added, send
+		 * max supported values
+		 */
+		cm_event.ird = cm_event.ord = 128;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case IW_CM_EVENT_CLOSE:
 
 		/*

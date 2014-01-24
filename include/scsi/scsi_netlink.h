@@ -23,7 +23,11 @@
 #define SCSI_NETLINK_H
 
 #include <linux/netlink.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * This file intended to be included by both kernel and user space

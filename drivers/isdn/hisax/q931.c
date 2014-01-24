@@ -21,7 +21,15 @@
 #include "l3_1tr6.h"
 
 void
+<<<<<<< HEAD
+<<<<<<< HEAD
 iecpy(u_char * dest, u_char * iestart, int ieoffset)
+=======
+iecpy(u_char *dest, u_char *iestart, int ieoffset)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+iecpy(u_char *dest, u_char *iestart, int ieoffset)
+>>>>>>> refs/remotes/origin/master
 {
 	u_char *p;
 	int l;
@@ -215,7 +223,15 @@ prbits(char *dest, u_char b, int start, int len)
 
 static
 u_char *
+<<<<<<< HEAD
+<<<<<<< HEAD
 skipext(u_char * p)
+=======
+skipext(u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+skipext(u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	while (!(*p++ & 0x80));
 	return (p);
@@ -442,7 +458,15 @@ struct CauseValue {
 
 static
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prcause(char *dest, u_char * p)
+=======
+prcause(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prcause(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	u_char *end;
 	char *dp = dest;
@@ -519,7 +543,15 @@ struct MessageType cause_1tr6[] =
 static int cause_1tr6_len = ARRAY_SIZE(cause_1tr6);
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prcause_1tr6(char *dest, u_char * p)
+=======
+prcause_1tr6(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prcause_1tr6(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 	int i, cause;
@@ -554,7 +586,15 @@ prcause_1tr6(char *dest, u_char * p)
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prchident(char *dest, u_char * p)
+=======
+prchident(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prchident(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 
@@ -566,7 +606,15 @@ prchident(char *dest, u_char * p)
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prcalled(char *dest, u_char * p)
+=======
+prcalled(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prcalled(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	int l;
 	char *dp = dest;
@@ -583,7 +631,15 @@ prcalled(char *dest, u_char * p)
 	return (dp - dest);
 }
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prcalling(char *dest, u_char * p)
+=======
+prcalling(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prcalling(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	int l;
 	char *dp = dest;
@@ -610,7 +666,15 @@ prcalling(char *dest, u_char * p)
 
 static
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prbearer(char *dest, u_char * p)
+=======
+prbearer(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prbearer(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest, ch;
 
@@ -658,7 +722,15 @@ prbearer(char *dest, u_char * p)
 
 static
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prbearer_ni1(char *dest, u_char * p)
+=======
+prbearer_ni1(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prbearer_ni1(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 	u_char len;
@@ -668,6 +740,8 @@ prbearer_ni1(char *dest, u_char * p)
 	dp += sprintf(dp, "    octet 3  ");
 	dp += prbits(dp, *p, 8, 8);
 	switch (*p++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case 0x80:
 			dp += sprintf(dp, " Speech");
 			break;
@@ -679,11 +753,31 @@ prbearer_ni1(char *dest, u_char * p)
 			break;
 		default:
 			dp += sprintf(dp, " Unknown information-transfer capability");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case 0x80:
+		dp += sprintf(dp, " Speech");
+		break;
+	case 0x88:
+		dp += sprintf(dp, " Unrestricted digital information");
+		break;
+	case 0x90:
+		dp += sprintf(dp, " 3.1 kHz audio");
+		break;
+	default:
+		dp += sprintf(dp, " Unknown information-transfer capability");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	*dp++ = '\n';
 	dp += sprintf(dp, "    octet 4  ");
 	dp += prbits(dp, *p, 8, 8);
 	switch (*p++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case 0x90:
 			dp += sprintf(dp, " 64 kbps, circuit mode");
 			break;
@@ -692,12 +786,29 @@ prbearer_ni1(char *dest, u_char * p)
 			break;
 		default:
 			dp += sprintf(dp, " Unknown transfer mode");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case 0x90:
+		dp += sprintf(dp, " 64 kbps, circuit mode");
+		break;
+	case 0xc0:
+		dp += sprintf(dp, " Packet mode");
+		break;
+	default:
+		dp += sprintf(dp, " Unknown transfer mode");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	*dp++ = '\n';
 	if (len > 2) {
 		dp += sprintf(dp, "    octet 5  ");
 		dp += prbits(dp, *p, 8, 8);
 		switch (*p++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			case 0x21:
 				dp += sprintf(dp, " Rate adaption\n");
 				dp += sprintf(dp, "    octet 5a ");
@@ -708,6 +819,23 @@ prbearer_ni1(char *dest, u_char * p)
 				break;
 			default:
 				dp += sprintf(dp, " Unknown UI layer 1 protocol");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		case 0x21:
+			dp += sprintf(dp, " Rate adaption\n");
+			dp += sprintf(dp, "    octet 5a ");
+			dp += prbits(dp, *p, 8, 8);
+			break;
+		case 0xa2:
+			dp += sprintf(dp, " u-law");
+			break;
+		default:
+			dp += sprintf(dp, " Unknown UI layer 1 protocol");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		*dp++ = '\n';
 	}
@@ -715,7 +843,15 @@ prbearer_ni1(char *dest, u_char * p)
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 general(char *dest, u_char * p)
+=======
+general(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+general(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 	char ch = ' ';
@@ -742,7 +878,15 @@ general(char *dest, u_char * p)
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 general_ni1(char *dest, u_char * p)
+=======
+general_ni1(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+general_ni1(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 	char ch = ' ';
@@ -769,7 +913,15 @@ general_ni1(char *dest, u_char * p)
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prcharge(char *dest, u_char * p)
+=======
+prcharge(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prcharge(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 	int l;
@@ -786,7 +938,15 @@ prcharge(char *dest, u_char * p)
 	return (dp - dest);
 }
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prtext(char *dest, u_char * p)
+=======
+prtext(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prtext(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 	int l;
@@ -802,7 +962,15 @@ prtext(char *dest, u_char * p)
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prfeatureind(char *dest, u_char * p)
+=======
+prfeatureind(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prfeatureind(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 
@@ -817,6 +985,8 @@ prfeatureind(char *dest, u_char * p)
 	}
 	dp += sprintf(dp, "    Status:  ");
 	switch (*p) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case 0:
 			dp += sprintf(dp, "Idle");
 			break;
@@ -832,6 +1002,28 @@ prfeatureind(char *dest, u_char * p)
 		default:
 			dp += sprintf(dp, "(Reserved)");
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case 0:
+		dp += sprintf(dp, "Idle");
+		break;
+	case 1:
+		dp += sprintf(dp, "Active");
+		break;
+	case 2:
+		dp += sprintf(dp, "Prompt");
+		break;
+	case 3:
+		dp += sprintf(dp, "Pending");
+		break;
+	default:
+		dp += sprintf(dp, "(Reserved)");
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	*dp++ = '\n';
 	return (dp - dest);
@@ -868,7 +1060,15 @@ struct DTag { /* Display tags */
 #define DTAGSIZE ARRAY_SIZE(dtaglist)
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 disptext_ni1(char *dest, u_char * p)
+=======
+disptext_ni1(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+disptext_ni1(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 	int l, tag, len, i;
@@ -902,12 +1102,28 @@ disptext_ni1(char *dest, u_char * p)
 					*dp++ = *p++;
 			}
 			dp += sprintf(dp, "\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
                 }
+=======
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	return (dp - dest);
 }
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 display(char *dest, u_char * p)
+=======
+display(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+display(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 	char ch = ' ';
@@ -936,7 +1152,15 @@ display(char *dest, u_char * p)
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 prfacility(char *dest, u_char * p)
+=======
+prfacility(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+prfacility(char *dest, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp = dest;
 	int l, l2;
@@ -1148,7 +1372,15 @@ static struct InformationElement we_6[] =
 #define WE_6_LEN ARRAY_SIZE(we_6)
 
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 QuickHex(char *txt, u_char * p, int cnt)
+=======
+QuickHex(char *txt, u_char *p, int cnt)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+QuickHex(char *txt, u_char *p, int cnt)
+>>>>>>> refs/remotes/origin/master
 {
 	register int i;
 	register char *t = txt;
@@ -1163,7 +1395,15 @@ QuickHex(char *txt, u_char * p, int cnt)
 }
 
 void
+<<<<<<< HEAD
+<<<<<<< HEAD
 LogFrame(struct IsdnCardState *cs, u_char * buf, int size)
+=======
+LogFrame(struct IsdnCardState *cs, u_char *buf, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+LogFrame(struct IsdnCardState *cs, u_char *buf, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	char *dp;
 
@@ -1179,7 +1419,11 @@ LogFrame(struct IsdnCardState *cs, u_char * buf, int size)
 		dp--;
 		*dp++ = '\n';
 		*dp = 0;
+<<<<<<< HEAD
 		HiSax_putstatus(cs, NULL, cs->dlog);
+=======
+		HiSax_putstatus(cs, NULL, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 	} else
 		HiSax_putstatus(cs, "LogFrame: ", "warning Frame too big (%d)", size);
 }
@@ -1206,7 +1450,15 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 	buf = skb->data;
 	dp += sprintf(dp, "frame %s ", dir ? "network->user" : "user->network");
 	size = skb->len;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (tei == GROUP_TEI) {
 		if (sapi == CTRL_SAPI) { /* sapi 0 */
 			if (ftyp == 3) {
@@ -1246,7 +1498,11 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 	}
 	if (finish) {
 		*dp = 0;
+<<<<<<< HEAD
 		HiSax_putstatus(cs, NULL, cs->dlog);
+=======
+		HiSax_putstatus(cs, NULL, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	if ((0xfe & buf[0]) == PROTO_DIS_N0) {	/* 1TR6 */
@@ -1291,6 +1547,8 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 			/* Is it a single octet information element? */
 			if (*buf & 0x80) {
 				switch ((*buf >> 4) & 7) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 					case 1:
 						dp += sprintf(dp, "  Shift %x\n", *buf & 0xf);
 						cs_old = cset;
@@ -1313,6 +1571,35 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 					default:
 						dp += sprintf(dp, "  Reserved %x\n", *buf);
 						break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				case 1:
+					dp += sprintf(dp, "  Shift %x\n", *buf & 0xf);
+					cs_old = cset;
+					cset = *buf & 7;
+					cs_fest = *buf & 8;
+					break;
+				case 3:
+					dp += sprintf(dp, "  Congestion level %x\n", *buf & 0xf);
+					break;
+				case 2:
+					if (*buf == 0xa0) {
+						dp += sprintf(dp, "  More data\n");
+						break;
+					}
+					if (*buf == 0xa1) {
+						dp += sprintf(dp, "  Sending complete\n");
+					}
+					break;
+					/* fall through */
+				default:
+					dp += sprintf(dp, "  Reserved %x\n", *buf);
+					break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 				buf++;
 				continue;
@@ -1366,11 +1653,25 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 		/* display message type if it exists */
 		if (i == MTSIZE)
 			dp += sprintf(dp, "callref %d %s size %d unknown message type %x!\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    cr & 0x7f, (cr & 0x80) ? "called" : "caller",
 				      size, mt);
 		else
 			dp += sprintf(dp, "callref %d %s size %d message type %s\n",
 			    cr & 0x7f, (cr & 0x80) ? "called" : "caller",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				      cr & 0x7f, (cr & 0x80) ? "called" : "caller",
+				      size, mt);
+		else
+			dp += sprintf(dp, "callref %d %s size %d message type %s\n",
+				      cr & 0x7f, (cr & 0x80) ? "called" : "caller",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				      size, mtlist[i].descr);
 
 		/* display each information element */
@@ -1378,6 +1679,8 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 			/* Is it a single octet information element? */
 			if (*buf & 0x80) {
 				switch ((*buf >> 4) & 7) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 					case 1:
 						dp += sprintf(dp, "  Shift %x\n", *buf & 0xf);
 						cs_old = cset;
@@ -1387,6 +1690,22 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 					default:
 						dp += sprintf(dp, "  Unknown single-octet IE %x\n", *buf);
 						break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				case 1:
+					dp += sprintf(dp, "  Shift %x\n", *buf & 0xf);
+					cs_old = cset;
+					cset = *buf & 7;
+					cs_fest = *buf & 8;
+					break;
+				default:
+					dp += sprintf(dp, "  Unknown single-octet IE %x\n", *buf);
+					break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 				buf++;
 				continue;
@@ -1452,11 +1771,25 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 		/* display message type if it exists */
 		if (i == MTSIZE)
 			dp += sprintf(dp, "callref %d %s size %d unknown message type %x!\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    cr & 0x7f, (cr & 0x80) ? "called" : "caller",
 				      size, mt);
 		else
 			dp += sprintf(dp, "callref %d %s size %d message type %s\n",
 			    cr & 0x7f, (cr & 0x80) ? "called" : "caller",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				      cr & 0x7f, (cr & 0x80) ? "called" : "caller",
+				      size, mt);
+		else
+			dp += sprintf(dp, "callref %d %s size %d message type %s\n",
+				      cr & 0x7f, (cr & 0x80) ? "called" : "caller",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				      size, mtlist[i].descr);
 
 		/* display each information element */
@@ -1464,6 +1797,8 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 			/* Is it a single octet information element? */
 			if (*buf & 0x80) {
 				switch ((*buf >> 4) & 7) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 					case 1:
 						dp += sprintf(dp, "  Shift %x\n", *buf & 0xf);
 						break;
@@ -1486,6 +1821,35 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 					default:
 						dp += sprintf(dp, "  Reserved %x\n", *buf);
 						break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				case 1:
+					dp += sprintf(dp, "  Shift %x\n", *buf & 0xf);
+					break;
+				case 3:
+					dp += sprintf(dp, "  Congestion level %x\n", *buf & 0xf);
+					break;
+				case 5:
+					dp += sprintf(dp, "  Repeat indicator %x\n", *buf & 0xf);
+					break;
+				case 2:
+					if (*buf == 0xa0) {
+						dp += sprintf(dp, "  More data\n");
+						break;
+					}
+					if (*buf == 0xa1) {
+						dp += sprintf(dp, "  Sending complete\n");
+					}
+					break;
+					/* fall through */
+				default:
+					dp += sprintf(dp, "  Reserved %x\n", *buf);
+					break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 				buf++;
 				continue;
@@ -1509,5 +1873,9 @@ dlogframe(struct IsdnCardState *cs, struct sk_buff *skb, int dir)
 		dp += sprintf(dp, "Unknown protocol %x!", buf[0]);
 	}
 	*dp = 0;
+<<<<<<< HEAD
 	HiSax_putstatus(cs, NULL, cs->dlog);
+=======
+	HiSax_putstatus(cs, NULL, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 }

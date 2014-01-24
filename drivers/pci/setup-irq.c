@@ -17,11 +17,28 @@
 #include <linux/ioport.h>
 #include <linux/cache.h>
 
+<<<<<<< HEAD
 
 static void __init
 pdev_fixup_irq(struct pci_dev *dev,
 	       u8 (*swizzle)(struct pci_dev *, u8 *),
+<<<<<<< HEAD
 	       int (*map_irq)(struct pci_dev *, u8, u8))
+=======
+	       int (*map_irq)(const struct pci_dev *, u8, u8))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __weak pcibios_update_irq(struct pci_dev *dev, int irq)
+{
+	dev_dbg(&dev->dev, "assigning IRQ %02d\n", irq);
+	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
+}
+
+static void
+pdev_fixup_irq(struct pci_dev *dev,
+	       u8 (*swizzle)(struct pci_dev *, u8 *),
+	       int (*map_irq)(const struct pci_dev *, u8, u8))
+>>>>>>> refs/remotes/origin/master
 {
 	u8 pin, slot;
 	int irq = 0;
@@ -54,9 +71,19 @@ pdev_fixup_irq(struct pci_dev *dev,
 	pcibios_update_irq(dev, irq);
 }
 
+<<<<<<< HEAD
 void __init
 pci_fixup_irqs(u8 (*swizzle)(struct pci_dev *, u8 *),
+<<<<<<< HEAD
 	       int (*map_irq)(struct pci_dev *, u8, u8))
+=======
+	       int (*map_irq)(const struct pci_dev *, u8, u8))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void
+pci_fixup_irqs(u8 (*swizzle)(struct pci_dev *, u8 *),
+	       int (*map_irq)(const struct pci_dev *, u8, u8))
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = NULL;
 	for_each_pci_dev(dev)

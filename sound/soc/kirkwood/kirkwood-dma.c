@@ -6,7 +6,17 @@
  *
  *  This program is free software; you can redistribute  it and/or modify it
  *  under  the terms of  the GNU General  Public License as published by the
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  Free Software Foundation;  only version 2 of the  License.
+=======
+ *  Free Software Foundation;  either version 2 of the  License, or (at your
+ *  option) any later version.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Free Software Foundation;  either version 2 of the  License, or (at your
+ *  option) any later version.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/init.h>
@@ -20,6 +30,7 @@
 #include <sound/soc.h>
 #include "kirkwood.h"
 
+<<<<<<< HEAD
 #define KIRKWOOD_RATES \
 	(SNDRV_PCM_RATE_44100 | \
 	 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000)
@@ -33,6 +44,13 @@ struct kirkwood_dma_priv {
 	struct snd_pcm_substream *rec_stream;
 	struct kirkwood_dma_data *data;
 };
+=======
+static struct kirkwood_dma_data *kirkwood_priv(struct snd_pcm_substream *subs)
+{
+	struct snd_soc_pcm_runtime *soc_runtime = subs->private_data;
+	return snd_soc_dai_get_drvdata(soc_runtime->cpu_dai);
+}
+>>>>>>> refs/remotes/origin/master
 
 static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
 	.info = (SNDRV_PCM_INFO_INTERLEAVED |
@@ -40,6 +58,7 @@ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
 		 SNDRV_PCM_INFO_MMAP_VALID |
 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
 		 SNDRV_PCM_INFO_PAUSE),
+<<<<<<< HEAD
 	.formats		= KIRKWOOD_FORMATS,
 	.rates			= KIRKWOOD_RATES,
 	.rate_min		= 44100,
@@ -47,6 +66,9 @@ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
 	.channels_min		= 1,
 	.channels_max		= 2,
 	.buffer_bytes_max	= KIRKWOOD_SND_MAX_PERIOD_BYTES * KIRKWOOD_SND_MAX_PERIODS,
+=======
+	.buffer_bytes_max	= KIRKWOOD_SND_MAX_BUFFER_BYTES,
+>>>>>>> refs/remotes/origin/master
 	.period_bytes_min	= KIRKWOOD_SND_MIN_PERIOD_BYTES,
 	.period_bytes_max	= KIRKWOOD_SND_MAX_PERIOD_BYTES,
 	.periods_min		= KIRKWOOD_SND_MIN_PERIODS,
@@ -54,12 +76,22 @@ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
 	.fifo_size		= 0,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u64 kirkwood_dma_dmamask = 0xFFFFFFFFUL;
+=======
+static u64 kirkwood_dma_dmamask = DMA_BIT_MASK(32);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static irqreturn_t kirkwood_dma_irq(int irq, void *dev_id)
 {
 	struct kirkwood_dma_priv *prdata = dev_id;
 	struct kirkwood_dma_data *priv = prdata->data;
+=======
+static irqreturn_t kirkwood_dma_irq(int irq, void *dev_id)
+{
+	struct kirkwood_dma_data *priv = dev_id;
+>>>>>>> refs/remotes/origin/master
 	unsigned long mask, status, cause;
 
 	mask = readl(priv->io + KIRKWOOD_INT_MASK);
@@ -70,7 +102,10 @@ static irqreturn_t kirkwood_dma_irq(int irq, void *dev_id)
 		printk(KERN_WARNING "%s: got err interrupt 0x%lx\n",
 				__func__, cause);
 		writel(cause, priv->io + KIRKWOOD_ERR_CAUSE);
+<<<<<<< HEAD
 		return IRQ_HANDLED;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* we've enabled only bytes interrupts ... */
@@ -85,17 +120,37 @@ static irqreturn_t kirkwood_dma_irq(int irq, void *dev_id)
 	writel(status, priv->io + KIRKWOOD_INT_CAUSE);
 
 	if (status & KIRKWOOD_INT_CAUSE_PLAY_BYTES)
+<<<<<<< HEAD
 		snd_pcm_period_elapsed(prdata->play_stream);
 
 	if (status & KIRKWOOD_INT_CAUSE_REC_BYTES)
 		snd_pcm_period_elapsed(prdata->rec_stream);
+=======
+		snd_pcm_period_elapsed(priv->substream_play);
+
+	if (status & KIRKWOOD_INT_CAUSE_REC_BYTES)
+		snd_pcm_period_elapsed(priv->substream_rec);
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void kirkwood_dma_conf_mbus_windows(void __iomem *base, int win,
 					unsigned long dma,
 					struct mbus_dram_target_info *dram)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void
+kirkwood_dma_conf_mbus_windows(void __iomem *base, int win,
+			       unsigned long dma,
+			       const struct mbus_dram_target_info *dram)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -105,7 +160,15 @@ static void kirkwood_dma_conf_mbus_windows(void __iomem *base, int win,
 
 	/* try to find matching cs for current dma address */
 	for (i = 0; i < dram->num_cs; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct mbus_dram_window *cs = dram->cs + i;
+=======
+		const struct mbus_dram_window *cs = dram->cs + i;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const struct mbus_dram_window *cs = dram->cs + i;
+>>>>>>> refs/remotes/origin/master
 		if ((cs->base & 0xffff0000) < (dma & 0xffff0000)) {
 			writel(cs->base & 0xffff0000,
 				base + KIRKWOOD_AUDIO_WIN_BASE_REG(win));
@@ -121,14 +184,25 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
 {
 	int err;
 	struct snd_pcm_runtime *runtime = substream->runtime;
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
 	struct snd_soc_platform *platform = soc_runtime->platform;
 	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
 	struct kirkwood_dma_data *priv;
 	struct kirkwood_dma_priv *prdata = snd_soc_platform_get_drvdata(platform);
+<<<<<<< HEAD
+=======
+	const struct mbus_dram_target_info *dram;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long addr;
 
 	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
+=======
+	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+	const struct mbus_dram_target_info *dram;
+	unsigned long addr;
+
+>>>>>>> refs/remotes/origin/master
 	snd_soc_set_runtime_hwparams(substream, &kirkwood_dma_snd_hw);
 
 	/* Ensure that all constraints linked to dma burst are fulfilled */
@@ -151,6 +225,7 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
 	if (prdata == NULL) {
 		prdata = kzalloc(sizeof(struct kirkwood_dma_priv), GFP_KERNEL);
 		if (prdata == NULL)
@@ -166,23 +241,58 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
 		}
 
 		snd_soc_platform_set_drvdata(platform, prdata);
+=======
+	if (!priv->substream_play && !priv->substream_rec) {
+		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
+				  "kirkwood-i2s", priv);
+		if (err)
+			return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Enable Error interrupts. We're only ack'ing them but
 		 * it's useful for diagnostics
 		 */
+<<<<<<< HEAD
 		writel((unsigned long)-1, priv->io + KIRKWOOD_ERR_MASK);
 	}
 
+<<<<<<< HEAD
+=======
+	dram = mv_mbus_dram_info();
+>>>>>>> refs/remotes/origin/cm-10.0
 	addr = virt_to_phys(substream->dma_buffer.area);
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		prdata->play_stream = substream;
 		kirkwood_dma_conf_mbus_windows(priv->io,
+<<<<<<< HEAD
 			KIRKWOOD_PLAYBACK_WIN, addr, priv->dram);
 	} else {
 		prdata->rec_stream = substream;
 		kirkwood_dma_conf_mbus_windows(priv->io,
 			KIRKWOOD_RECORD_WIN, addr, priv->dram);
+=======
+			KIRKWOOD_PLAYBACK_WIN, addr, dram);
+	} else {
+		prdata->rec_stream = substream;
+		kirkwood_dma_conf_mbus_windows(priv->io,
+			KIRKWOOD_RECORD_WIN, addr, dram);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		writel((unsigned int)-1, priv->io + KIRKWOOD_ERR_MASK);
+	}
+
+	dram = mv_mbus_dram_info();
+	addr = substream->dma_buffer.addr;
+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+		priv->substream_play = substream;
+		kirkwood_dma_conf_mbus_windows(priv->io,
+			KIRKWOOD_PLAYBACK_WIN, addr, dram);
+	} else {
+		priv->substream_rec = substream;
+		kirkwood_dma_conf_mbus_windows(priv->io,
+			KIRKWOOD_RECORD_WIN, addr, dram);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -190,6 +300,7 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
 
 static int kirkwood_dma_close(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
 	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
 	struct snd_soc_platform *platform = soc_runtime->platform;
@@ -211,6 +322,21 @@ static int kirkwood_dma_close(struct snd_pcm_substream *substream)
 		free_irq(priv->irq, prdata);
 		kfree(prdata);
 		snd_soc_platform_set_drvdata(platform, NULL);
+=======
+	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+
+	if (!priv)
+		return 0;
+
+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+		priv->substream_play = NULL;
+	else
+		priv->substream_rec = NULL;
+
+	if (!priv->substream_play && !priv->substream_rec) {
+		writel(0, priv->io + KIRKWOOD_ERR_MASK);
+		free_irq(priv->irq, priv);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -236,6 +362,7 @@ static int kirkwood_dma_hw_free(struct snd_pcm_substream *substream)
 static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
 	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
 	struct kirkwood_dma_data *priv;
@@ -243,6 +370,11 @@ static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
 
 	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
 
+=======
+	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+	unsigned long size, count;
+
+>>>>>>> refs/remotes/origin/master
 	/* compute buffer size in term of "words" as requested in specs */
 	size = frames_to_bytes(runtime, runtime->buffer_size);
 	size = (size>>2)-1;
@@ -265,6 +397,7 @@ static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
 static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
 						*substream)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
 	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
 	struct kirkwood_dma_data *priv;
@@ -272,6 +405,11 @@ static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
 
 	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
 
+=======
+	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+	snd_pcm_uframes_t count;
+
+>>>>>>> refs/remotes/origin/master
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 		count = bytes_to_frames(substream->runtime,
 			readl(priv->io + KIRKWOOD_PLAY_BYTE_COUNT));
@@ -282,7 +420,11 @@ static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
 	return count;
 }
 
+<<<<<<< HEAD
 struct snd_pcm_ops kirkwood_dma_ops = {
+=======
+static struct snd_pcm_ops kirkwood_dma_ops = {
+>>>>>>> refs/remotes/origin/master
 	.open =		kirkwood_dma_open,
 	.close =        kirkwood_dma_close,
 	.ioctl =	snd_pcm_lib_ioctl,
@@ -314,23 +456,51 @@ static int kirkwood_dma_preallocate_dma_buffer(struct snd_pcm *pcm,
 static int kirkwood_dma_new(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_card *card = rtd->card->snd_card;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_dai *dai = rtd->cpu_dai;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_pcm *pcm = rtd->pcm;
 	int ret;
 
 	if (!card->dev->dma_mask)
 		card->dev->dma_mask = &kirkwood_dma_dmamask;
 	if (!card->dev->coherent_dma_mask)
+<<<<<<< HEAD
 		card->dev->coherent_dma_mask = 0xffffffff;
 
 	if (dai->driver->playback.channels_min) {
+=======
+		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
+
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_pcm *pcm = rtd->pcm;
+	int ret;
+
+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/master
 		ret = kirkwood_dma_preallocate_dma_buffer(pcm,
 				SNDRV_PCM_STREAM_PLAYBACK);
 		if (ret)
 			return ret;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dai->driver->capture.channels_min) {
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/master
 		ret = kirkwood_dma_preallocate_dma_buffer(pcm,
 				SNDRV_PCM_STREAM_CAPTURE);
 		if (ret)
@@ -360,11 +530,16 @@ static void kirkwood_dma_free_dma_buffers(struct snd_pcm *pcm)
 	}
 }
 
+<<<<<<< HEAD
 static struct snd_soc_platform_driver kirkwood_soc_platform = {
+=======
+struct snd_soc_platform_driver kirkwood_soc_platform = {
+>>>>>>> refs/remotes/origin/master
 	.ops		= &kirkwood_dma_ops,
 	.pcm_new	= kirkwood_dma_new,
 	.pcm_free	= kirkwood_dma_free_dma_buffers,
 };
+<<<<<<< HEAD
 
 static int __devinit kirkwood_soc_platform_probe(struct platform_device *pdev)
 {
@@ -387,6 +562,7 @@ static struct platform_driver kirkwood_pcm_driver = {
 	.remove = __devexit_p(kirkwood_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init kirkwood_pcm_init(void)
 {
 	return platform_driver_register(&kirkwood_pcm_driver);
@@ -402,4 +578,13 @@ module_exit(kirkwood_pcm_exit);
 MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
 MODULE_DESCRIPTION("Marvell Kirkwood Audio DMA module");
 MODULE_LICENSE("GPL v2");
+=======
+module_platform_driver(kirkwood_pcm_driver);
+
+MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
+MODULE_DESCRIPTION("Marvell Kirkwood Audio DMA module");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_ALIAS("platform:kirkwood-pcm-audio");
+=======
+>>>>>>> refs/remotes/origin/master

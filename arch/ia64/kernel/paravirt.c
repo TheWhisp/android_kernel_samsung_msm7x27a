@@ -634,6 +634,16 @@ struct pv_irq_ops pv_irq_ops = {
  * pv_time_ops
  * time operations
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct static_key paravirt_steal_enabled;
+struct static_key paravirt_steal_rq_enabled;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct static_key paravirt_steal_enabled;
+struct static_key paravirt_steal_rq_enabled;
+>>>>>>> refs/remotes/origin/master
 
 static int
 ia64_native_do_steal_accounting(unsigned long *new_itm)

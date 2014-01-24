@@ -5,7 +5,15 @@
  * Author       Werner Cornelius
  *              based on existing driver for CCD HFC PCI cards
  * Copyright    by Werner Cornelius  <werner@isdn4linux.de>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -43,16 +51,38 @@ static const char *hfcsx_revision = "$Revision: 1.12.2.5 $";
 #undef CCD_DEMO_BOARD
 #ifdef CCD_DEMO_BOARD
 static u_char ccd_sp_irqtab[16] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
   0,0,0,0,0,2,1,0,0,0,3,4,5,0,0,6
 };
 #else /* Teles 16.3c */
 static u_char ccd_sp_irqtab[16] = {
   0,0,0,7,0,1,0,0,0,2,3,4,5,0,0,6
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 3, 4, 5, 0, 0, 6
+};
+#else /* Teles 16.3c */
+static u_char ccd_sp_irqtab[16] = {
+	0, 0, 0, 7, 0, 1, 0, 0, 0, 2, 3, 4, 5, 0, 0, 6
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 #define NT_T1_COUNT 20		/* number of 3.125ms interrupts for G2 timeout */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/master
 #define bytein(addr) inb(addr)
 
 /******************************/
@@ -61,19 +91,46 @@ static u_char ccd_sp_irqtab[16] = {
 static inline void
 Write_hfc(struct IsdnCardState *cs, u_char regnum, u_char val)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         byteout(cs->hw.hfcsx.base+1, regnum);
 	byteout(cs->hw.hfcsx.base, val);
 } 
+=======
+	byteout(cs->hw.hfcsx.base + 1, regnum);
+	byteout(cs->hw.hfcsx.base, val);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	byteout(cs->hw.hfcsx.base + 1, regnum);
+	byteout(cs->hw.hfcsx.base, val);
+}
+>>>>>>> refs/remotes/origin/master
 
 static inline u_char
 Read_hfc(struct IsdnCardState *cs, u_char regnum)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         u_char ret; 
 
         byteout(cs->hw.hfcsx.base+1, regnum);
 	ret = bytein(cs->hw.hfcsx.base);
 	return(ret);
 } 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u_char ret;
+
+	byteout(cs->hw.hfcsx.base + 1, regnum);
+	ret = bytein(cs->hw.hfcsx.base);
+	return (ret);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /**************************************************/
@@ -82,6 +139,8 @@ Read_hfc(struct IsdnCardState *cs, u_char regnum)
 static void
 fifo_select(struct IsdnCardState *cs, u_char fifo)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         if (fifo == cs->hw.hfcsx.last_fifo) 
 	  return; /* still valid */
 
@@ -91,6 +150,22 @@ fifo_select(struct IsdnCardState *cs, u_char fifo)
 	udelay(4);
 	byteout(cs->hw.hfcsx.base, fifo);
 	while (bytein(cs->hw.hfcsx.base+1) & 1); /* wait for busy */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (fifo == cs->hw.hfcsx.last_fifo)
+		return; /* still valid */
+
+	byteout(cs->hw.hfcsx.base + 1, HFCSX_FIF_SEL);
+	byteout(cs->hw.hfcsx.base, fifo);
+	while (bytein(cs->hw.hfcsx.base + 1) & 1); /* wait for busy */
+	udelay(4);
+	byteout(cs->hw.hfcsx.base, fifo);
+	while (bytein(cs->hw.hfcsx.base + 1) & 1); /* wait for busy */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /******************************************/
@@ -101,11 +176,25 @@ static void
 reset_fifo(struct IsdnCardState *cs, u_char fifo)
 {
 	fifo_select(cs, fifo); /* first select the fifo */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	byteout(cs->hw.hfcsx.base+1, HFCSX_CIRM);
 	byteout(cs->hw.hfcsx.base, cs->hw.hfcsx.cirm | 0x80); /* reset cmd */
 	udelay(1);
 	while (bytein(cs->hw.hfcsx.base+1) & 1); /* wait for busy */
 } 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	byteout(cs->hw.hfcsx.base + 1, HFCSX_CIRM);
+	byteout(cs->hw.hfcsx.base, cs->hw.hfcsx.cirm | 0x80); /* reset cmd */
+	udelay(1);
+	while (bytein(cs->hw.hfcsx.base + 1) & 1); /* wait for busy */
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*************************************************************/
@@ -116,6 +205,8 @@ reset_fifo(struct IsdnCardState *cs, u_char fifo)
 static int
 write_fifo(struct IsdnCardState *cs, struct sk_buff *skb, u_char fifo, int trans_max)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
        unsigned short *msp;
         int fifo_size, count, z1, z2;
 	u_char f_msk, f1, f2, *src;
@@ -135,10 +226,38 @@ write_fifo(struct IsdnCardState *cs, struct sk_buff *skb, u_char fifo, int trans
 	}
 
         z1 = Read_hfc(cs, HFCSX_FIF_Z1H);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned short *msp;
+	int fifo_size, count, z1, z2;
+	u_char f_msk, f1, f2, *src;
+
+	if (skb->len <= 0) return (0);
+	if (fifo & 1) return (0); /* no write fifo */
+
+	fifo_select(cs, fifo);
+	if (fifo & 4) {
+		fifo_size = D_FIFO_SIZE; /* D-channel */
+		f_msk = MAX_D_FRAMES;
+		if (trans_max) return (0); /* only HDLC */
+	}
+	else {
+		fifo_size = cs->hw.hfcsx.b_fifo_size; /* B-channel */
+		f_msk = MAX_B_FRAMES;
+	}
+
+	z1 = Read_hfc(cs, HFCSX_FIF_Z1H);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	z1 = ((z1 << 8) | Read_hfc(cs, HFCSX_FIF_Z1L));
 
 	/* Check for transparent mode */
 	if (trans_max) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  z2 = Read_hfc(cs, HFCSX_FIF_Z2H);
 	  z2 = ((z2 << 8) | Read_hfc(cs, HFCSX_FIF_Z2L));
 	  count = z2 - z1;
@@ -156,16 +275,53 @@ write_fifo(struct IsdnCardState *cs, struct sk_buff *skb, u_char fifo, int trans
 
         msp = ((struct hfcsx_extra *)(cs->hw.hfcsx.extra))->marker;
 	msp += (((fifo >> 1) & 3) * (MAX_B_FRAMES+1));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		z2 = Read_hfc(cs, HFCSX_FIF_Z2H);
+		z2 = ((z2 << 8) | Read_hfc(cs, HFCSX_FIF_Z2L));
+		count = z2 - z1;
+		if (count <= 0)
+			count += fifo_size; /* free bytes */
+		if (count < skb->len + 1) return (0); /* no room */
+		count = fifo_size - count; /* bytes still not send */
+		if (count > 2 * trans_max) return (0); /* delay to long */
+		count = skb->len;
+		src = skb->data;
+		while (count--)
+			Write_hfc(cs, HFCSX_FIF_DWR, *src++);
+		return (1); /* success */
+	}
+
+	msp = ((struct hfcsx_extra *)(cs->hw.hfcsx.extra))->marker;
+	msp += (((fifo >> 1) & 3) * (MAX_B_FRAMES + 1));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	f1 = Read_hfc(cs, HFCSX_FIF_F1) & f_msk;
 	f2 = Read_hfc(cs, HFCSX_FIF_F2) & f_msk;
 
 	count = f1 - f2; /* frame count actually buffered */
 	if (count < 0)
 		count += (f_msk + 1);	/* if wrap around */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (count > f_msk-1) {
 	  if (cs->debug & L1_DEB_ISAC_FIFO)
 	    debugl1(cs, "hfcsx_write_fifo %d more as %d frames",fifo,f_msk-1);
 	  return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (count > f_msk - 1) {
+		if (cs->debug & L1_DEB_ISAC_FIFO)
+			debugl1(cs, "hfcsx_write_fifo %d more as %d frames", fifo, f_msk - 1);
+		return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	*(msp + f1) = z1; /* remember marker */
@@ -176,6 +332,8 @@ write_fifo(struct IsdnCardState *cs, struct sk_buff *skb, u_char fifo, int trans
 	/* now determine free bytes in FIFO buffer */
 	count = *(msp + f2) - z1;
 	if (count <= 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  count += fifo_size;	/* count now contains available bytes */
 
 	if (cs->debug & L1_DEB_ISAC_FIFO)
@@ -197,18 +355,56 @@ write_fifo(struct IsdnCardState *cs, struct sk_buff *skb, u_char fifo, int trans
 	while (bytein(cs->hw.hfcsx.base+1) & 1); /* wait for busy */
 	return(1);
 } 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		count += fifo_size;	/* count now contains available bytes */
+
+	if (cs->debug & L1_DEB_ISAC_FIFO)
+		debugl1(cs, "hfcsx_write_fifo %d count(%u/%d)",
+			fifo, skb->len, count);
+	if (count < skb->len) {
+		if (cs->debug & L1_DEB_ISAC_FIFO)
+			debugl1(cs, "hfcsx_write_fifo %d no fifo mem", fifo);
+		return (0);
+	}
+
+	count = skb->len; /* get frame len */
+	src = skb->data;	/* source pointer */
+	while (count--)
+		Write_hfc(cs, HFCSX_FIF_DWR, *src++);
+
+	Read_hfc(cs, HFCSX_FIF_INCF1); /* increment F1 */
+	udelay(1);
+	while (bytein(cs->hw.hfcsx.base + 1) & 1); /* wait for busy */
+	return (1);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /***************************************************************/
 /* read_fifo reads data to an skb from the desired fifo        */
 /* if no data is available or an error occurs NULL is returned */
 /* the skb is not released in any way.                         */
 /***************************************************************/
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct sk_buff * 
+=======
+static struct sk_buff *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sk_buff *
+>>>>>>> refs/remotes/origin/master
 read_fifo(struct IsdnCardState *cs, u_char fifo, int trans_max)
 {       int fifo_size, count, z1, z2;
 	u_char f_msk, f1, f2, *dst;
 	struct sk_buff *skb;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
         if (!(fifo & 1)) return(NULL); /* no read fifo */
 	fifo_select(cs, fifo);
 	if (fifo & 4) {
@@ -219,10 +415,29 @@ read_fifo(struct IsdnCardState *cs, u_char fifo, int trans_max)
 	else {
 	  fifo_size = cs->hw.hfcsx.b_fifo_size; /* B-channel */
 	  f_msk = MAX_B_FRAMES;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!(fifo & 1)) return (NULL); /* no read fifo */
+	fifo_select(cs, fifo);
+	if (fifo & 4) {
+		fifo_size = D_FIFO_SIZE; /* D-channel */
+		f_msk = MAX_D_FRAMES;
+		if (trans_max) return (NULL); /* only hdlc */
+	}
+	else {
+		fifo_size = cs->hw.hfcsx.b_fifo_size; /* B-channel */
+		f_msk = MAX_B_FRAMES;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* transparent mode */
 	if (trans_max) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  z1 = Read_hfc(cs, HFCSX_FIF_Z1H);
 	  z1 = ((z1 << 8) | Read_hfc(cs, HFCSX_FIF_Z1L));
 	  z2 = Read_hfc(cs, HFCSX_FIF_Z2H);
@@ -304,6 +519,98 @@ read_fifo(struct IsdnCardState *cs, u_char fifo, int trans_max)
 	} while (!skb); /* retry in case of crc error */
 	return(skb);
 } 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		z1 = Read_hfc(cs, HFCSX_FIF_Z1H);
+		z1 = ((z1 << 8) | Read_hfc(cs, HFCSX_FIF_Z1L));
+		z2 = Read_hfc(cs, HFCSX_FIF_Z2H);
+		z2 = ((z2 << 8) | Read_hfc(cs, HFCSX_FIF_Z2L));
+		/* now determine bytes in actual FIFO buffer */
+		count = z1 - z2;
+		if (count <= 0)
+			count += fifo_size;	/* count now contains buffered bytes */
+		count++;
+		if (count > trans_max)
+			count = trans_max; /* limit length */
+		skb = dev_alloc_skb(count);
+		if (skb) {
+			dst = skb_put(skb, count);
+			while (count--)
+				*dst++ = Read_hfc(cs, HFCSX_FIF_DRD);
+			return skb;
+		} else
+			return NULL; /* no memory */
+	}
+
+	do {
+		f1 = Read_hfc(cs, HFCSX_FIF_F1) & f_msk;
+		f2 = Read_hfc(cs, HFCSX_FIF_F2) & f_msk;
+
+		if (f1 == f2) return (NULL); /* no frame available */
+
+		z1 = Read_hfc(cs, HFCSX_FIF_Z1H);
+		z1 = ((z1 << 8) | Read_hfc(cs, HFCSX_FIF_Z1L));
+		z2 = Read_hfc(cs, HFCSX_FIF_Z2H);
+		z2 = ((z2 << 8) | Read_hfc(cs, HFCSX_FIF_Z2L));
+
+		if (cs->debug & L1_DEB_ISAC_FIFO)
+			debugl1(cs, "hfcsx_read_fifo %d f1(%x) f2(%x) z1(f2)(%x) z2(f2)(%x)",
+				fifo, f1, f2, z1, z2);
+		/* now determine bytes in actual FIFO buffer */
+		count = z1 - z2;
+		if (count <= 0)
+			count += fifo_size;	/* count now contains buffered bytes */
+		count++;
+
+		if (cs->debug & L1_DEB_ISAC_FIFO)
+			debugl1(cs, "hfcsx_read_fifo %d count %u)",
+				fifo, count);
+
+		if ((count > fifo_size) || (count < 4)) {
+			if (cs->debug & L1_DEB_WARN)
+<<<<<<< HEAD
+				debugl1(cs, "hfcsx_read_fifo %d paket inv. len %d ", fifo , count);
+=======
+				debugl1(cs, "hfcsx_read_fifo %d packet inv. len %d ", fifo , count);
+>>>>>>> refs/remotes/origin/master
+			while (count) {
+				count--; /* empty fifo */
+				Read_hfc(cs, HFCSX_FIF_DRD);
+			}
+			skb = NULL;
+		} else
+			if ((skb = dev_alloc_skb(count - 3))) {
+				count -= 3;
+				dst = skb_put(skb, count);
+
+				while (count--)
+					*dst++ = Read_hfc(cs, HFCSX_FIF_DRD);
+
+				Read_hfc(cs, HFCSX_FIF_DRD); /* CRC 1 */
+				Read_hfc(cs, HFCSX_FIF_DRD); /* CRC 2 */
+				if (Read_hfc(cs, HFCSX_FIF_DRD)) {
+					dev_kfree_skb_irq(skb);
+					if (cs->debug & L1_DEB_ISAC_FIFO)
+						debugl1(cs, "hfcsx_read_fifo %d crc error", fifo);
+					skb = NULL;
+				}
+			} else {
+				printk(KERN_WARNING "HFC-SX: receive out of memory\n");
+				return (NULL);
+			}
+
+		Read_hfc(cs, HFCSX_FIF_INCF2); /* increment F2 */
+		udelay(1);
+		while (bytein(cs->hw.hfcsx.base + 1) & 1); /* wait for busy */
+		udelay(1);
+	} while (!skb); /* retry in case of crc error */
+	return (skb);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /******************************************/
 /* free hardware resources used by driver */
@@ -328,6 +635,8 @@ release_io_hfcsx(struct IsdnCardState *cs)
 /**********************************************************/
 static int set_fifo_size(struct IsdnCardState *cs)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
         
         if (cs->hw.hfcsx.b_fifo_size) return(1); /* already determined */
 
@@ -339,6 +648,24 @@ static int set_fifo_size(struct IsdnCardState *cs)
 	  cs->hw.hfcsx.b_fifo_size = B_FIFO_SIZE_8K;
 	  cs->hw.hfcsx.cirm |= 0x10; /* only 8K of ram */
 	  return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (cs->hw.hfcsx.b_fifo_size) return (1); /* already determined */
+
+	if ((cs->hw.hfcsx.chip >> 4) == 9) {
+		cs->hw.hfcsx.b_fifo_size = B_FIFO_SIZE_32K;
+		return (1);
+	}
+
+	cs->hw.hfcsx.b_fifo_size = B_FIFO_SIZE_8K;
+	cs->hw.hfcsx.cirm |= 0x10; /* only 8K of ram */
+	return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -354,6 +681,8 @@ reset_hfcsx(struct IsdnCardState *cs)
 
 	printk(KERN_INFO "HFC_SX: resetting card\n");
 	while (1) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  Write_hfc(cs, HFCSX_CIRM, HFCSX_RESET | cs->hw.hfcsx.cirm ); /* Reset */
 	  mdelay(30);
 	  Write_hfc(cs, HFCSX_CIRM, cs->hw.hfcsx.cirm); /* Reset Off */
@@ -363,6 +692,22 @@ reset_hfcsx(struct IsdnCardState *cs)
 	  cs->hw.hfcsx.last_fifo = 0xff; /* invalidate */
 	  if (!set_fifo_size(cs)) continue;
 	  break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		Write_hfc(cs, HFCSX_CIRM, HFCSX_RESET | cs->hw.hfcsx.cirm); /* Reset */
+		mdelay(30);
+		Write_hfc(cs, HFCSX_CIRM, cs->hw.hfcsx.cirm); /* Reset Off */
+		mdelay(20);
+		if (Read_hfc(cs, HFCSX_STATUS) & 2)
+			printk(KERN_WARNING "HFC-SX init bit busy\n");
+		cs->hw.hfcsx.last_fifo = 0xff; /* invalidate */
+		if (!set_fifo_size(cs)) continue;
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cs->hw.hfcsx.trm = 0 + HFCSX_BTRANS_THRESMASK;	/* no echo connect , threshold */
@@ -376,8 +721,18 @@ reset_hfcsx(struct IsdnCardState *cs)
 	cs->hw.hfcsx.ctmt = HFCSX_TIM3_125 | HFCSX_AUTO_TIMER;
 	Write_hfc(cs, HFCSX_CTMT, cs->hw.hfcsx.ctmt);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cs->hw.hfcsx.int_m1 = HFCSX_INTS_DTRANS | HFCSX_INTS_DREC | 
 	    HFCSX_INTS_L1STATE | HFCSX_INTS_TIMER;
+=======
+	cs->hw.hfcsx.int_m1 = HFCSX_INTS_DTRANS | HFCSX_INTS_DREC |
+		HFCSX_INTS_L1STATE | HFCSX_INTS_TIMER;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cs->hw.hfcsx.int_m1 = HFCSX_INTS_DTRANS | HFCSX_INTS_DREC |
+		HFCSX_INTS_L1STATE | HFCSX_INTS_TIMER;
+>>>>>>> refs/remotes/origin/master
 	Write_hfc(cs, HFCSX_INT_M1, cs->hw.hfcsx.int_m1);
 
 	/* Clear already pending ints */
@@ -423,8 +778,18 @@ hfcsx_Timer(struct IsdnCardState *cs)
 	cs->hw.hfcsx.timer.expires = jiffies + 75;
 	/* WD RESET */
 /*      WriteReg(cs, HFCD_DATA, HFCD_CTMT, cs->hw.hfcsx.ctmt | 0x80);
+<<<<<<< HEAD
+<<<<<<< HEAD
    add_timer(&cs->hw.hfcsx.timer);
  */
+=======
+	add_timer(&cs->hw.hfcsx.timer);
+*/
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	add_timer(&cs->hw.hfcsx.timer);
+*/
+>>>>>>> refs/remotes/origin/master
 }
 
 /************************************************/
@@ -458,11 +823,25 @@ receive_dmsg(struct IsdnCardState *cs)
 	}
 
 	do {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  skb = read_fifo(cs, HFCSX_SEL_D_RX, 0);
 	  if (skb) {
 	    skb_queue_tail(&cs->rq, skb);
 	    schedule_event(cs, D_RCVBUFREADY);
 	  }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		skb = read_fifo(cs, HFCSX_SEL_D_RX, 0);
+		if (skb) {
+			skb_queue_tail(&cs->rq, skb);
+			schedule_event(cs, D_RCVBUFREADY);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} while (--count && skb);
 
 	test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
@@ -479,12 +858,22 @@ main_rec_hfcsx(struct BCState *bcs)
 	int count = 5;
 	struct sk_buff *skb;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
       Begin:
+=======
+Begin:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+Begin:
+>>>>>>> refs/remotes/origin/master
 	count--;
 	if (test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
 		debugl1(cs, "rec_data %d blocked", bcs->channel);
 		return;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	skb = read_fifo(cs, ((bcs->channel) && (!cs->hw.hfcsx.bswapped)) ? 
 			HFCSX_SEL_B2_RX : HFCSX_SEL_B1_RX,
 			(bcs->mode == L1_MODE_TRANS) ? 
@@ -493,6 +882,21 @@ main_rec_hfcsx(struct BCState *bcs)
 	if (skb) {
 	  skb_queue_tail(&bcs->rqueue, skb);
 	  schedule_event(bcs, B_RCVBUFREADY);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	skb = read_fifo(cs, ((bcs->channel) && (!cs->hw.hfcsx.bswapped)) ?
+			HFCSX_SEL_B2_RX : HFCSX_SEL_B1_RX,
+			(bcs->mode == L1_MODE_TRANS) ?
+			HFCSX_BTRANS_THRESHOLD : 0);
+
+	if (skb) {
+		skb_queue_tail(&bcs->rqueue, skb);
+		schedule_event(bcs, B_RCVBUFREADY);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
@@ -513,8 +917,18 @@ hfcsx_fill_dfifo(struct IsdnCardState *cs)
 		return;
 
 	if (write_fifo(cs, cs->tx_skb, HFCSX_SEL_D_TX, 0)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  dev_kfree_skb_any(cs->tx_skb);
 	  cs->tx_skb = NULL;
+=======
+		dev_kfree_skb_any(cs->tx_skb);
+		cs->tx_skb = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_kfree_skb_any(cs->tx_skb);
+		cs->tx_skb = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 	return;
 }
@@ -532,6 +946,8 @@ hfcsx_fill_fifo(struct BCState *bcs)
 	if (bcs->tx_skb->len <= 0)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (write_fifo(cs, bcs->tx_skb, 
 		       ((bcs->channel) && (!cs->hw.hfcsx.bswapped)) ? 
 		       HFCSX_SEL_B2_TX : HFCSX_SEL_B1_TX,
@@ -550,6 +966,31 @@ hfcsx_fill_fifo(struct BCState *bcs)
 	  dev_kfree_skb_any(bcs->tx_skb);
 	  bcs->tx_skb = NULL;
 	  test_and_clear_bit(BC_FLG_BUSY, &bcs->Flag);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (write_fifo(cs, bcs->tx_skb,
+		       ((bcs->channel) && (!cs->hw.hfcsx.bswapped)) ?
+		       HFCSX_SEL_B2_TX : HFCSX_SEL_B1_TX,
+		       (bcs->mode == L1_MODE_TRANS) ?
+		       HFCSX_BTRANS_THRESHOLD : 0)) {
+
+		bcs->tx_cnt -= bcs->tx_skb->len;
+		if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+		    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+			u_long	flags;
+			spin_lock_irqsave(&bcs->aclock, flags);
+			bcs->ackcnt += bcs->tx_skb->len;
+			spin_unlock_irqrestore(&bcs->aclock, flags);
+			schedule_event(bcs, B_ACKPENDING);
+		}
+		dev_kfree_skb_any(bcs->tx_skb);
+		bcs->tx_skb = NULL;
+		test_and_clear_bit(BC_FLG_BUSY, &bcs->Flag);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -562,6 +1003,8 @@ dch_nt_l2l1(struct PStack *st, int pr, void *arg)
 	struct IsdnCardState *cs = (struct IsdnCardState *) st->l1.hardware;
 
 	switch (pr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 		case (PH_PULL | REQUEST):
 		case (PH_PULL | INDICATION):
@@ -583,6 +1026,34 @@ dch_nt_l2l1(struct PStack *st, int pr, void *arg)
 			if (cs->debug)
 				debugl1(cs, "dch_nt_l2l1 msg %04X unhandled", pr);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case (PH_DATA | REQUEST):
+	case (PH_PULL | REQUEST):
+	case (PH_PULL | INDICATION):
+		st->l1.l1hw(st, pr, arg);
+		break;
+	case (PH_ACTIVATE | REQUEST):
+		st->l1.l1l2(st, PH_ACTIVATE | CONFIRM, NULL);
+		break;
+	case (PH_TESTLOOP | REQUEST):
+		if (1 & (long) arg)
+			debugl1(cs, "PH_TEST_LOOP B1");
+		if (2 & (long) arg)
+			debugl1(cs, "PH_TEST_LOOP B2");
+		if (!(3 & (long) arg))
+			debugl1(cs, "PH_TEST_LOOP DISABLED");
+		st->l1.l1hw(st, HW_TESTLOOP | REQUEST, arg);
+		break;
+	default:
+		if (cs->debug)
+			debugl1(cs, "dch_nt_l2l1 msg %04X unhandled", pr);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -592,14 +1063,30 @@ dch_nt_l2l1(struct PStack *st, int pr, void *arg)
 /* set/reset echo mode */
 /***********************/
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 hfcsx_auxcmd(struct IsdnCardState *cs, isdn_ctrl * ic)
+=======
+hfcsx_auxcmd(struct IsdnCardState *cs, isdn_ctrl *ic)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+hfcsx_auxcmd(struct IsdnCardState *cs, isdn_ctrl *ic)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	int i = *(unsigned int *) ic->parm.num;
 
 	if ((ic->arg == 98) &&
 	    (!(cs->hw.hfcsx.int_m1 & (HFCSX_INTS_B2TRANS + HFCSX_INTS_B2REC + HFCSX_INTS_B1TRANS + HFCSX_INTS_B1REC)))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    	spin_lock_irqsave(&cs->lock, flags);
+=======
+		spin_lock_irqsave(&cs->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock_irqsave(&cs->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		Write_hfc(cs, HFCSX_STATES, HFCSX_LOAD_STATE | 0);	/* HFC ST G0 */
 		udelay(10);
 		cs->hw.hfcsx.sctrl |= SCTRL_MODE_NT;
@@ -660,6 +1147,8 @@ receive_emsg(struct IsdnCardState *cs)
 		return;
 	}
 	do {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  skb = read_fifo(cs, HFCSX_SEL_B2_RX, 0);
 	  if (skb) {
 	    if (cs->debug & DEB_DLOG_HEX) {
@@ -680,6 +1169,37 @@ receive_emsg(struct IsdnCardState *cs)
 	    }
 	    dev_kfree_skb_any(skb);
 	  }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		skb = read_fifo(cs, HFCSX_SEL_B2_RX, 0);
+		if (skb) {
+			if (cs->debug & DEB_DLOG_HEX) {
+				ptr = cs->dlog;
+				if ((skb->len) < MAX_DLOG_SPACE / 3 - 10) {
+					*ptr++ = 'E';
+					*ptr++ = 'C';
+					*ptr++ = 'H';
+					*ptr++ = 'O';
+					*ptr++ = ':';
+					ptr += QuickHex(ptr, skb->data, skb->len);
+					ptr--;
+					*ptr++ = '\n';
+					*ptr = 0;
+<<<<<<< HEAD
+					HiSax_putstatus(cs, NULL, cs->dlog);
+=======
+					HiSax_putstatus(cs, NULL, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
+				} else
+					HiSax_putstatus(cs, "LogEcho: ", "warning Frame too big (%d)", skb->len);
+			}
+			dev_kfree_skb_any(skb);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} while (--count && skb);
 
 	test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
@@ -843,7 +1363,15 @@ hfcsx_interrupt(int intno, void *dev_id)
 			} else
 				schedule_event(cs, D_XMTBUFREADY);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	      afterXPR:
+=======
+	afterXPR:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	afterXPR:
+>>>>>>> refs/remotes/origin/master
 		if (cs->hw.hfcsx.int_s1 && count--) {
 			val = cs->hw.hfcsx.int_s1;
 			cs->hw.hfcsx.int_s1 = 0;
@@ -875,6 +1403,8 @@ HFCSX_l1hw(struct PStack *st, int pr, void *arg)
 	u_long flags;
 
 	switch (pr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			if (cs->debug & DEB_DLOG_HEX)
 				LogFrame(cs, skb->data, skb->len);
@@ -916,10 +1446,32 @@ HFCSX_l1hw(struct PStack *st, int pr, void *arg)
 				LogFrame(cs, skb->data, skb->len);
 			if (cs->debug & DEB_DLOG_VERBOSE)
 				dlogframe(cs, skb, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case (PH_DATA | REQUEST):
+		if (cs->debug & DEB_DLOG_HEX)
+			LogFrame(cs, skb->data, skb->len);
+		if (cs->debug & DEB_DLOG_VERBOSE)
+			dlogframe(cs, skb, 0);
+		spin_lock_irqsave(&cs->lock, flags);
+		if (cs->tx_skb) {
+			skb_queue_tail(&cs->sq, skb);
+#ifdef L2FRAME_DEBUG		/* psa */
+			if (cs->debug & L1_DEB_LAPD)
+				Logl2Frame(cs, skb, "PH_DATA Queued", 0);
+#endif
+		} else {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			cs->tx_skb = skb;
 			cs->tx_cnt = 0;
 #ifdef L2FRAME_DEBUG		/* psa */
 			if (cs->debug & L1_DEB_LAPD)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				Logl2Frame(cs, skb, "PH_DATA_PULLED", 0);
 #endif
 			if (!test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
@@ -997,6 +1549,118 @@ HFCSX_l1hw(struct PStack *st, int pr, void *arg)
 			if (cs->debug & L1_DEB_WARN)
 				debugl1(cs, "hfcsx_l1hw unknown pr %4x", pr);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				Logl2Frame(cs, skb, "PH_DATA", 0);
+#endif
+			if (!test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
+				hfcsx_fill_dfifo(cs);
+				test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
+			} else
+				debugl1(cs, "hfcsx_fill_dfifo blocked");
+
+		}
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (PH_PULL | INDICATION):
+		spin_lock_irqsave(&cs->lock, flags);
+		if (cs->tx_skb) {
+			if (cs->debug & L1_DEB_WARN)
+				debugl1(cs, " l2l1 tx_skb exist this shouldn't happen");
+			skb_queue_tail(&cs->sq, skb);
+			spin_unlock_irqrestore(&cs->lock, flags);
+			break;
+		}
+		if (cs->debug & DEB_DLOG_HEX)
+			LogFrame(cs, skb->data, skb->len);
+		if (cs->debug & DEB_DLOG_VERBOSE)
+			dlogframe(cs, skb, 0);
+		cs->tx_skb = skb;
+		cs->tx_cnt = 0;
+#ifdef L2FRAME_DEBUG		/* psa */
+		if (cs->debug & L1_DEB_LAPD)
+			Logl2Frame(cs, skb, "PH_DATA_PULLED", 0);
+#endif
+		if (!test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
+			hfcsx_fill_dfifo(cs);
+			test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
+		} else
+			debugl1(cs, "hfcsx_fill_dfifo blocked");
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (PH_PULL | REQUEST):
+#ifdef L2FRAME_DEBUG		/* psa */
+		if (cs->debug & L1_DEB_LAPD)
+			debugl1(cs, "-> PH_REQUEST_PULL");
+#endif
+		if (!cs->tx_skb) {
+			test_and_clear_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+			st->l1.l1l2(st, PH_PULL | CONFIRM, NULL);
+		} else
+			test_and_set_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+		break;
+	case (HW_RESET | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		Write_hfc(cs, HFCSX_STATES, HFCSX_LOAD_STATE | 3);	/* HFC ST 3 */
+		udelay(6);
+		Write_hfc(cs, HFCSX_STATES, 3);	/* HFC ST 2 */
+		cs->hw.hfcsx.mst_m |= HFCSX_MASTER;
+		Write_hfc(cs, HFCSX_MST_MODE, cs->hw.hfcsx.mst_m);
+		Write_hfc(cs, HFCSX_STATES, HFCSX_ACTIVATE | HFCSX_DO_ACTION);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		l1_msg(cs, HW_POWERUP | CONFIRM, NULL);
+		break;
+	case (HW_ENABLE | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		Write_hfc(cs, HFCSX_STATES, HFCSX_ACTIVATE | HFCSX_DO_ACTION);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (HW_DEACTIVATE | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		cs->hw.hfcsx.mst_m &= ~HFCSX_MASTER;
+		Write_hfc(cs, HFCSX_MST_MODE, cs->hw.hfcsx.mst_m);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (HW_INFO3 | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		cs->hw.hfcsx.mst_m |= HFCSX_MASTER;
+		Write_hfc(cs, HFCSX_MST_MODE, cs->hw.hfcsx.mst_m);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (HW_TESTLOOP | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		switch ((long) arg) {
+		case (1):
+			Write_hfc(cs, HFCSX_B1_SSL, 0x80);	/* tx slot */
+			Write_hfc(cs, HFCSX_B1_RSL, 0x80);	/* rx slot */
+			cs->hw.hfcsx.conn = (cs->hw.hfcsx.conn & ~7) | 1;
+			Write_hfc(cs, HFCSX_CONNECT, cs->hw.hfcsx.conn);
+			break;
+		case (2):
+			Write_hfc(cs, HFCSX_B2_SSL, 0x81);	/* tx slot */
+			Write_hfc(cs, HFCSX_B2_RSL, 0x81);	/* rx slot */
+			cs->hw.hfcsx.conn = (cs->hw.hfcsx.conn & ~0x38) | 0x08;
+			Write_hfc(cs, HFCSX_CONNECT, cs->hw.hfcsx.conn);
+			break;
+		default:
+			spin_unlock_irqrestore(&cs->lock, flags);
+			if (cs->debug & L1_DEB_WARN)
+				debugl1(cs, "hfcsx_l1hw loop invalid %4lx", (unsigned long)arg);
+			return;
+		}
+		cs->hw.hfcsx.trm |= 0x80;	/* enable IOM-loop */
+		Write_hfc(cs, HFCSX_TRM, cs->hw.hfcsx.trm);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	default:
+		if (cs->debug & L1_DEB_WARN)
+			debugl1(cs, "hfcsx_l1hw unknown pr %4x", pr);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1018,7 +1682,15 @@ hfcsx_send_data(struct BCState *bcs)
 	struct IsdnCardState *cs = bcs->cs;
 
 	if (!test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  hfcsx_fill_fifo(bcs);
+=======
+		hfcsx_fill_fifo(bcs);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hfcsx_fill_fifo(bcs);
+>>>>>>> refs/remotes/origin/master
 		test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
 	} else
 		debugl1(cs, "send_data %d blocked", bcs->channel);
@@ -1058,6 +1730,8 @@ mode_hfcsx(struct BCState *bcs, int mode, int bc)
 		}
 	}
 	switch (mode) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case (L1_MODE_NULL):
 			if (bc) {
 				cs->hw.hfcsx.sctrl &= ~SCTRL_B2_ENA;
@@ -1121,6 +1795,76 @@ mode_hfcsx(struct BCState *bcs, int mode, int bc)
 				cs->hw.hfcsx.int_m1 &= ~(HFCSX_INTS_B1TRANS + HFCSX_INTS_B1REC);
 			}
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case (L1_MODE_NULL):
+		if (bc) {
+			cs->hw.hfcsx.sctrl &= ~SCTRL_B2_ENA;
+			cs->hw.hfcsx.sctrl_r &= ~SCTRL_B2_ENA;
+		} else {
+			cs->hw.hfcsx.sctrl &= ~SCTRL_B1_ENA;
+			cs->hw.hfcsx.sctrl_r &= ~SCTRL_B1_ENA;
+		}
+		if (fifo2) {
+			cs->hw.hfcsx.int_m1 &= ~(HFCSX_INTS_B2TRANS + HFCSX_INTS_B2REC);
+		} else {
+			cs->hw.hfcsx.int_m1 &= ~(HFCSX_INTS_B1TRANS + HFCSX_INTS_B1REC);
+		}
+		break;
+	case (L1_MODE_TRANS):
+		if (bc) {
+			cs->hw.hfcsx.sctrl |= SCTRL_B2_ENA;
+			cs->hw.hfcsx.sctrl_r |= SCTRL_B2_ENA;
+		} else {
+			cs->hw.hfcsx.sctrl |= SCTRL_B1_ENA;
+			cs->hw.hfcsx.sctrl_r |= SCTRL_B1_ENA;
+		}
+		if (fifo2) {
+			cs->hw.hfcsx.int_m1 |= (HFCSX_INTS_B2TRANS + HFCSX_INTS_B2REC);
+			cs->hw.hfcsx.ctmt |= 2;
+			cs->hw.hfcsx.conn &= ~0x18;
+		} else {
+			cs->hw.hfcsx.int_m1 |= (HFCSX_INTS_B1TRANS + HFCSX_INTS_B1REC);
+			cs->hw.hfcsx.ctmt |= 1;
+			cs->hw.hfcsx.conn &= ~0x03;
+		}
+		break;
+	case (L1_MODE_HDLC):
+		if (bc) {
+			cs->hw.hfcsx.sctrl |= SCTRL_B2_ENA;
+			cs->hw.hfcsx.sctrl_r |= SCTRL_B2_ENA;
+		} else {
+			cs->hw.hfcsx.sctrl |= SCTRL_B1_ENA;
+			cs->hw.hfcsx.sctrl_r |= SCTRL_B1_ENA;
+		}
+		if (fifo2) {
+			cs->hw.hfcsx.int_m1 |= (HFCSX_INTS_B2TRANS + HFCSX_INTS_B2REC);
+			cs->hw.hfcsx.ctmt &= ~2;
+			cs->hw.hfcsx.conn &= ~0x18;
+		} else {
+			cs->hw.hfcsx.int_m1 |= (HFCSX_INTS_B1TRANS + HFCSX_INTS_B1REC);
+			cs->hw.hfcsx.ctmt &= ~1;
+			cs->hw.hfcsx.conn &= ~0x03;
+		}
+		break;
+	case (L1_MODE_EXTRN):
+		if (bc) {
+			cs->hw.hfcsx.conn |= 0x10;
+			cs->hw.hfcsx.sctrl |= SCTRL_B2_ENA;
+			cs->hw.hfcsx.sctrl_r |= SCTRL_B2_ENA;
+			cs->hw.hfcsx.int_m1 &= ~(HFCSX_INTS_B2TRANS + HFCSX_INTS_B2REC);
+		} else {
+			cs->hw.hfcsx.conn |= 0x02;
+			cs->hw.hfcsx.sctrl |= SCTRL_B1_ENA;
+			cs->hw.hfcsx.sctrl_r |= SCTRL_B1_ENA;
+			cs->hw.hfcsx.int_m1 &= ~(HFCSX_INTS_B1TRANS + HFCSX_INTS_B1REC);
+		}
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	Write_hfc(cs, HFCSX_SCTRL_E, cs->hw.hfcsx.sctrl_e);
 	Write_hfc(cs, HFCSX_INT_M1, cs->hw.hfcsx.int_m1);
@@ -1129,8 +1873,18 @@ mode_hfcsx(struct BCState *bcs, int mode, int bc)
 	Write_hfc(cs, HFCSX_CTMT, cs->hw.hfcsx.ctmt);
 	Write_hfc(cs, HFCSX_CONNECT, cs->hw.hfcsx.conn);
 	if (mode != L1_MODE_EXTRN) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	  reset_fifo(cs, fifo2 ? HFCSX_SEL_B2_RX : HFCSX_SEL_B1_RX);
 	  reset_fifo(cs, fifo2 ? HFCSX_SEL_B2_TX : HFCSX_SEL_B1_TX);
+=======
+		reset_fifo(cs, fifo2 ? HFCSX_SEL_B2_RX : HFCSX_SEL_B1_RX);
+		reset_fifo(cs, fifo2 ? HFCSX_SEL_B2_TX : HFCSX_SEL_B1_TX);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		reset_fifo(cs, fifo2 ? HFCSX_SEL_B2_RX : HFCSX_SEL_B1_RX);
+		reset_fifo(cs, fifo2 ? HFCSX_SEL_B2_TX : HFCSX_SEL_B1_TX);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1145,6 +1899,8 @@ hfcsx_l2l1(struct PStack *st, int pr, void *arg)
 	u_long flags;
 
 	switch (pr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			spin_lock_irqsave(&bcs->cs->lock, flags);
 			if (bcs->tx_skb) {
@@ -1192,6 +1948,60 @@ hfcsx_l2l1(struct PStack *st, int pr, void *arg)
 			spin_unlock_irqrestore(&bcs->cs->lock, flags);
 			st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case (PH_DATA | REQUEST):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		if (bcs->tx_skb) {
+			skb_queue_tail(&bcs->squeue, skb);
+		} else {
+			bcs->tx_skb = skb;
+//                              test_and_set_bit(BC_FLG_BUSY, &bcs->Flag);
+			bcs->cs->BC_Send_Data(bcs);
+		}
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		break;
+	case (PH_PULL | INDICATION):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		if (bcs->tx_skb) {
+			printk(KERN_WARNING "hfc_l2l1: this shouldn't happen\n");
+		} else {
+//				test_and_set_bit(BC_FLG_BUSY, &bcs->Flag);
+			bcs->tx_skb = skb;
+			bcs->cs->BC_Send_Data(bcs);
+		}
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		break;
+	case (PH_PULL | REQUEST):
+		if (!bcs->tx_skb) {
+			test_and_clear_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+			st->l1.l1l2(st, PH_PULL | CONFIRM, NULL);
+		} else
+			test_and_set_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+		break;
+	case (PH_ACTIVATE | REQUEST):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		test_and_set_bit(BC_FLG_ACTIV, &bcs->Flag);
+		mode_hfcsx(bcs, st->l1.mode, st->l1.bc);
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		l1_msg_b(st, pr, arg);
+		break;
+	case (PH_DEACTIVATE | REQUEST):
+		l1_msg_b(st, pr, arg);
+		break;
+	case (PH_DEACTIVATE | CONFIRM):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		test_and_clear_bit(BC_FLG_ACTIV, &bcs->Flag);
+		test_and_clear_bit(BC_FLG_BUSY, &bcs->Flag);
+		mode_hfcsx(bcs, 0, st->l1.bc);
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1260,6 +2070,8 @@ hfcsx_bh(struct work_struct *work)
 	if (test_and_clear_bit(D_L1STATECHANGE, &cs->event)) {
 		if (!cs->hw.hfcsx.nt_mode)
 			switch (cs->dc.hfcsx.ph_state) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				case (0):
 					l1_msg(cs, HW_RESET | INDICATION, NULL);
 					break;
@@ -1315,6 +2127,68 @@ hfcsx_bh(struct work_struct *work)
 					break;
 				default:
 					break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			case (0):
+				l1_msg(cs, HW_RESET | INDICATION, NULL);
+				break;
+			case (3):
+				l1_msg(cs, HW_DEACTIVATE | INDICATION, NULL);
+				break;
+			case (8):
+				l1_msg(cs, HW_RSYNC | INDICATION, NULL);
+				break;
+			case (6):
+				l1_msg(cs, HW_INFO2 | INDICATION, NULL);
+				break;
+			case (7):
+				l1_msg(cs, HW_INFO4_P8 | INDICATION, NULL);
+				break;
+			default:
+				break;
+			} else {
+			switch (cs->dc.hfcsx.ph_state) {
+			case (2):
+				spin_lock_irqsave(&cs->lock, flags);
+				if (cs->hw.hfcsx.nt_timer < 0) {
+					cs->hw.hfcsx.nt_timer = 0;
+					cs->hw.hfcsx.int_m1 &= ~HFCSX_INTS_TIMER;
+					Write_hfc(cs, HFCSX_INT_M1, cs->hw.hfcsx.int_m1);
+					/* Clear already pending ints */
+					if (Read_hfc(cs, HFCSX_INT_S1));
+
+					Write_hfc(cs, HFCSX_STATES, 4 | HFCSX_LOAD_STATE);
+					udelay(10);
+					Write_hfc(cs, HFCSX_STATES, 4);
+					cs->dc.hfcsx.ph_state = 4;
+				} else {
+					cs->hw.hfcsx.int_m1 |= HFCSX_INTS_TIMER;
+					Write_hfc(cs, HFCSX_INT_M1, cs->hw.hfcsx.int_m1);
+					cs->hw.hfcsx.ctmt &= ~HFCSX_AUTO_TIMER;
+					cs->hw.hfcsx.ctmt |= HFCSX_TIM3_125;
+					Write_hfc(cs, HFCSX_CTMT, cs->hw.hfcsx.ctmt | HFCSX_CLTIMER);
+					Write_hfc(cs, HFCSX_CTMT, cs->hw.hfcsx.ctmt | HFCSX_CLTIMER);
+					cs->hw.hfcsx.nt_timer = NT_T1_COUNT;
+					Write_hfc(cs, HFCSX_STATES, 2 | HFCSX_NT_G2_G3);	/* allow G2 -> G3 transition */
+				}
+				spin_unlock_irqrestore(&cs->lock, flags);
+				break;
+			case (1):
+			case (3):
+			case (4):
+				spin_lock_irqsave(&cs->lock, flags);
+				cs->hw.hfcsx.nt_timer = 0;
+				cs->hw.hfcsx.int_m1 &= ~HFCSX_INTS_TIMER;
+				Write_hfc(cs, HFCSX_INT_M1, cs->hw.hfcsx.int_m1);
+				spin_unlock_irqrestore(&cs->lock, flags);
+				break;
+			default:
+				break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -1353,6 +2227,8 @@ hfcsx_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	if (cs->debug & L1_DEB_ISAC)
 		debugl1(cs, "HFCSX: card_msg %x", mt);
 	switch (mt) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
 			reset_hfcsx(cs);
@@ -1376,24 +2252,72 @@ hfcsx_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 			return (0);
 		case CARD_TEST:
 			return (0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case CARD_RESET:
+		spin_lock_irqsave(&cs->lock, flags);
+		reset_hfcsx(cs);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		return (0);
+	case CARD_RELEASE:
+		release_io_hfcsx(cs);
+		return (0);
+	case CARD_INIT:
+		spin_lock_irqsave(&cs->lock, flags);
+		inithfcsx(cs);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		msleep(80);				/* Timeout 80ms */
+		/* now switch timer interrupt off */
+		spin_lock_irqsave(&cs->lock, flags);
+		cs->hw.hfcsx.int_m1 &= ~HFCSX_INTS_TIMER;
+		Write_hfc(cs, HFCSX_INT_M1, cs->hw.hfcsx.int_m1);
+		/* reinit mode reg */
+		Write_hfc(cs, HFCSX_MST_MODE, cs->hw.hfcsx.mst_m);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		return (0);
+	case CARD_TEST:
+		return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return (0);
 }
 
 #ifdef __ISAPNP__
+<<<<<<< HEAD
 static struct isapnp_device_id hfc_ids[] __devinitdata = {
 	{ ISAPNP_VENDOR('T', 'A', 'G'), ISAPNP_FUNCTION(0x2620),
+<<<<<<< HEAD
 	  ISAPNP_VENDOR('T', 'A', 'G'), ISAPNP_FUNCTION(0x2620), 
+=======
+	  ISAPNP_VENDOR('T', 'A', 'G'), ISAPNP_FUNCTION(0x2620),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct isapnp_device_id hfc_ids[] = {
+	{ ISAPNP_VENDOR('T', 'A', 'G'), ISAPNP_FUNCTION(0x2620),
+	  ISAPNP_VENDOR('T', 'A', 'G'), ISAPNP_FUNCTION(0x2620),
+>>>>>>> refs/remotes/origin/master
 	  (unsigned long) "Teles 16.3c2" },
 	{ 0, }
 };
 
+<<<<<<< HEAD
 static struct isapnp_device_id *ipid __devinitdata = &hfc_ids[0];
 static struct pnp_card *pnp_c __devinitdata = NULL;
 #endif
 
 int __devinit
 setup_hfcsx(struct IsdnCard *card)
+=======
+static struct isapnp_device_id *ipid = &hfc_ids[0];
+static struct pnp_card *pnp_c = NULL;
+#endif
+
+int setup_hfcsx(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	char tmp[64];
@@ -1403,6 +2327,8 @@ setup_hfcsx(struct IsdnCard *card)
 #ifdef __ISAPNP__
 	if (!card->para[1] && isapnp_present()) {
 		struct pnp_dev *pnp_d;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		while(ipid->card_vendor) {
 			if ((pnp_c = pnp_find_card(ipid->card_vendor,
 				ipid->card_device, pnp_c))) {
@@ -1419,14 +2345,49 @@ setup_hfcsx(struct IsdnCard *card)
 						printk(KERN_WARNING "%s: pnp_activate_dev ret(%d)\n",
 							__func__, err);
 						return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		while (ipid->card_vendor) {
+			if ((pnp_c = pnp_find_card(ipid->card_vendor,
+						   ipid->card_device, pnp_c))) {
+				pnp_d = NULL;
+				if ((pnp_d = pnp_find_dev(pnp_c,
+							  ipid->vendor, ipid->function, pnp_d))) {
+					int err;
+
+					printk(KERN_INFO "HiSax: %s detected\n",
+					       (char *)ipid->driver_data);
+					pnp_disable_dev(pnp_d);
+					err = pnp_activate_dev(pnp_d);
+					if (err < 0) {
+						printk(KERN_WARNING "%s: pnp_activate_dev ret(%d)\n",
+						       __func__, err);
+						return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					}
 					card->para[1] = pnp_port_start(pnp_d, 0);
 					card->para[0] = pnp_irq(pnp_d, 0);
 					if (!card->para[0] || !card->para[1]) {
 						printk(KERN_ERR "HFC PnP:some resources are missing %ld/%lx\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 							card->para[0], card->para[1]);
 						pnp_disable_dev(pnp_d);
 						return(0);
+=======
+						       card->para[0], card->para[1]);
+						pnp_disable_dev(pnp_d);
+						return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       card->para[0], card->para[1]);
+						pnp_disable_dev(pnp_d);
+						return (0);
+>>>>>>> refs/remotes/origin/master
 					}
 					break;
 				} else {
@@ -1435,10 +2396,23 @@ setup_hfcsx(struct IsdnCard *card)
 			}
 			ipid++;
 			pnp_c = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		} 
 		if (!ipid->card_vendor) {
 			printk(KERN_INFO "HFC PnP: no ISAPnP card found\n");
 			return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		}
+		if (!ipid->card_vendor) {
+			printk(KERN_INFO "HFC PnP: no ISAPnP card found\n");
+			return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #endif
@@ -1447,6 +2421,8 @@ setup_hfcsx(struct IsdnCard *card)
 	cs->hw.hfcsx.int_s1 = 0;
 	cs->dc.hfcsx.ph_state = 0;
 	cs->hw.hfcsx.fifo = 255;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((cs->typ == ISDN_CTYPE_HFC_SX) || 
 	    (cs->typ == ISDN_CTYPE_HFC_SP_PCMCIA)) {
 	        if ((!cs->hw.hfcsx.base) || !request_region(cs->hw.hfcsx.base, 2, "HFCSX isdn")) {
@@ -1454,11 +2430,27 @@ setup_hfcsx(struct IsdnCard *card)
 			 "HiSax: HFC-SX io-base %#lx already in use\n",
 		          cs->hw.hfcsx.base);
 		  return(0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if ((cs->typ == ISDN_CTYPE_HFC_SX) ||
+	    (cs->typ == ISDN_CTYPE_HFC_SP_PCMCIA)) {
+		if ((!cs->hw.hfcsx.base) || !request_region(cs->hw.hfcsx.base, 2, "HFCSX isdn")) {
+			printk(KERN_WARNING
+			       "HiSax: HFC-SX io-base %#lx already in use\n",
+			       cs->hw.hfcsx.base);
+			return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		byteout(cs->hw.hfcsx.base, cs->hw.hfcsx.base & 0xFF);
 		byteout(cs->hw.hfcsx.base + 1,
 			((cs->hw.hfcsx.base >> 8) & 3) | 0x54);
 		udelay(10);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	        cs->hw.hfcsx.chip = Read_hfc(cs,HFCSX_CHIP_ID);
                 switch (cs->hw.hfcsx.chip >> 4) {
 		  case 1: 
@@ -1488,6 +2480,46 @@ setup_hfcsx(struct IsdnCard *card)
 		}
 		printk(KERN_INFO "HFC-S%c chip detected at base 0x%x IRQ %d HZ %d\n",
 			tmp[0], (u_int) cs->hw.hfcsx.base, cs->irq, HZ);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		cs->hw.hfcsx.chip = Read_hfc(cs, HFCSX_CHIP_ID);
+		switch (cs->hw.hfcsx.chip >> 4) {
+		case 1:
+			tmp[0] = '+';
+			break;
+		case 9:
+			tmp[0] = 'P';
+			break;
+		default:
+			printk(KERN_WARNING
+			       "HFC-SX: invalid chip id 0x%x\n",
+			       cs->hw.hfcsx.chip >> 4);
+			release_region(cs->hw.hfcsx.base, 2);
+			return (0);
+		}
+		if (!ccd_sp_irqtab[cs->irq & 0xF]) {
+			printk(KERN_WARNING
+			       "HFC_SX: invalid irq %d specified\n", cs->irq & 0xF);
+			release_region(cs->hw.hfcsx.base, 2);
+			return (0);
+		}
+<<<<<<< HEAD
+		if (!(cs->hw.hfcsx.extra = (void *)
+=======
+		if (!(cs->hw.hfcsx.extra =
+>>>>>>> refs/remotes/origin/master
+		      kmalloc(sizeof(struct hfcsx_extra), GFP_ATOMIC))) {
+			release_region(cs->hw.hfcsx.base, 2);
+			printk(KERN_WARNING "HFC-SX: unable to allocate memory\n");
+			return (0);
+		}
+		printk(KERN_INFO "HFC-S%c chip detected at base 0x%x IRQ %d HZ %d\n",
+		       tmp[0], (u_int) cs->hw.hfcsx.base, cs->irq, HZ);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cs->hw.hfcsx.int_m2 = 0;	/* disable alle interrupts */
 		cs->hw.hfcsx.int_m1 = 0;
 		Write_hfc(cs, HFCSX_INT_M1, cs->hw.hfcsx.int_m1);

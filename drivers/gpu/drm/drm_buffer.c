@@ -32,7 +32,16 @@
  * Pauli Nieminen <suokkos-at-gmail-dot-com>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drm_buffer.h"
+=======
+#include <linux/export.h>
+#include <drm/drm_buffer.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Allocate the drm buffer object.

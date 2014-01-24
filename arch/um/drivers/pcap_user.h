@@ -3,7 +3,11 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "net_user.h"
+=======
+#include <net_user.h>
+>>>>>>> refs/remotes/origin/master
 
 struct pcap_data {
 	char *host_if;

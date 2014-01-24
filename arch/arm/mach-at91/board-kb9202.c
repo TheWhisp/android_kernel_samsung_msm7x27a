@@ -20,6 +20,14 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -34,11 +42,26 @@
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
 
+<<<<<<< HEAD
 #include <mach/board.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/cpu.h>
 #include <mach/at91rm9200_mc.h>
+=======
+#include <mach/cpu.h>
+#include <mach/at91rm9200_mc.h>
+#include <mach/at91_ramc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#include <mach/cpu.h>
+#include <mach/at91rm9200_mc.h>
+#include <mach/at91_ramc.h>
+
+#include "at91_aic.h"
+#include "board.h"
+>>>>>>> refs/remotes/origin/master
 #include "generic.h"
 
 
@@ -48,7 +71,12 @@ static void __init kb9202_init_early(void)
 	at91rm9200_set_type(ARCH_REVISON_9200_PQFP);
 
 	/* Initialize processor: 10 MHz crystal */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	at91rm9200_initialize(10000000);
+=======
+	at91_initialize(10000000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Set up the LEDs */
 	at91_init_leds(AT91_PIN_PC19, AT91_PIN_PC18);
@@ -69,18 +97,38 @@ static void __init kb9202_init_early(void)
 	at91_set_serial_console(0);
 }
 
+<<<<<<< HEAD
 static void __init kb9202_init_irq(void)
 {
 	at91rm9200_init_interrupts(NULL);
 }
 
 static struct at91_eth_data __initdata kb9202_eth_data = {
+=======
+static struct macb_platform_data __initdata kb9202_eth_data = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_initialize(10000000);
+}
+
+static struct macb_platform_data __initdata kb9202_eth_data = {
+>>>>>>> refs/remotes/origin/master
 	.phy_irq_pin	= AT91_PIN_PB29,
 	.is_rmii	= 0,
 };
 
 static struct at91_usbh_data __initdata kb9202_usbh_data = {
 	.ports		= 1,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct at91_udc_data __initdata kb9202_udc_data = {
@@ -88,10 +136,24 @@ static struct at91_udc_data __initdata kb9202_udc_data = {
 	.pullup_pin	= AT91_PIN_PB22,
 };
 
+<<<<<<< HEAD
 static struct at91_mmc_data __initdata kb9202_mmc_data = {
 	.det_pin	= AT91_PIN_PB2,
 	.slot_b		= 0,
 	.wire4		= 1,
+<<<<<<< HEAD
+=======
+	.wp_pin		= -EINVAL,
+	.vcc_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct mci_platform_data __initdata kb9202_mci0_data = {
+	.slot[0] = {
+		.bus_width	= 4,
+		.detect_pin	= AT91_PIN_PB2,
+		.wp_pin		= -EINVAL,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct mtd_partition __initdata kb9202_nand_partition[] = {
@@ -102,6 +164,8 @@ static struct mtd_partition __initdata kb9202_nand_partition[] = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
 {
 	*num_partitions = ARRAY_SIZE(kb9202_nand_partition);
@@ -115,11 +179,59 @@ static struct atmel_nand_data __initdata kb9202_nand_data = {
 	.rdy_pin	= AT91_PIN_PC29,
 	.enable_pin	= AT91_PIN_PC28,
 	.partition_info	= nand_partitions,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct atmel_nand_data __initdata kb9202_nand_data = {
+	.ale		= 22,
+	.cle		= 21,
+	.det_pin	= -EINVAL,
+	.rdy_pin	= AT91_PIN_PC29,
+	.enable_pin	= AT91_PIN_PC28,
+	.ecc_mode	= NAND_ECC_SOFT,
+	.parts		= kb9202_nand_partition,
+	.num_parts	= ARRAY_SIZE(kb9202_nand_partition),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+/*
+ * LEDs
+ */
+static struct gpio_led kb9202_leds[] = {
+	{	/* D1 */
+		.name			= "led1",
+		.gpio			= AT91_PIN_PC19,
+		.active_low		= 1,
+		.default_trigger	= "heartbeat",
+	},
+	{	/* D2 */
+		.name			= "led2",
+		.gpio			= AT91_PIN_PC18,
+		.active_low		= 1,
+		.default_trigger	= "timer",
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init kb9202_board_init(void)
 {
 	/* Serial */
+<<<<<<< HEAD
+=======
+	/* DBGU on ttyS0. (Rx & Tx only) */
+	at91_register_uart(0, 0, 0);
+
+	/* USART0 on ttyS1 (Rx & Tx only) */
+	at91_register_uart(AT91RM9200_ID_US0, 1, 0);
+
+	/* USART1 on ttyS2 (Rx & Tx only) - IRDA (optional) */
+	at91_register_uart(AT91RM9200_ID_US1, 2, 0);
+
+	/* USART3 on ttyS3 (Rx, Tx, CTS, RTS) - RS485 (optional) */
+	at91_register_uart(AT91RM9200_ID_US3, 3, ATMEL_UART_CTS | ATMEL_UART_RTS);
+>>>>>>> refs/remotes/origin/master
 	at91_add_device_serial();
 	/* Ethernet */
 	at91_add_device_eth(&kb9202_eth_data);
@@ -128,20 +240,43 @@ static void __init kb9202_board_init(void)
 	/* USB Device */
 	at91_add_device_udc(&kb9202_udc_data);
 	/* MMC */
+<<<<<<< HEAD
 	at91_add_device_mmc(0, &kb9202_mmc_data);
+=======
+	at91_add_device_mci(0, &kb9202_mci0_data);
+>>>>>>> refs/remotes/origin/master
 	/* I2C */
 	at91_add_device_i2c(NULL, 0);
 	/* SPI */
 	at91_add_device_spi(NULL, 0);
 	/* NAND */
 	at91_add_device_nand(&kb9202_nand_data);
+<<<<<<< HEAD
+=======
+	/* LEDs */
+	at91_gpio_leds(kb9202_leds, ARRAY_SIZE(kb9202_leds));
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(KB9200, "KB920x")
 	/* Maintainer: KwikByte, Inc. */
+<<<<<<< HEAD
 	.timer		= &at91rm9200_timer,
+<<<<<<< HEAD
 	.map_io		= at91rm9200_map_io,
 	.init_early	= kb9202_init_early,
 	.init_irq	= kb9202_init_irq,
+=======
+	.map_io		= at91_map_io,
+	.init_early	= kb9202_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= at91rm9200_timer_init,
+	.map_io		= at91_map_io,
+	.handle_irq	= at91_aic_handle_irq,
+	.init_early	= kb9202_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= kb9202_board_init,
 MACHINE_END

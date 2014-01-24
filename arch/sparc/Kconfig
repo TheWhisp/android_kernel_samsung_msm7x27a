@@ -12,12 +12,17 @@ config 64BIT
 config SPARC
 	bool
 	default y
+<<<<<<< HEAD
+=======
+	select ARCH_MIGHT_HAVE_PC_PARPORT if SPARC64 && PCI
+>>>>>>> refs/remotes/origin/master
 	select OF
 	select OF_PROMTREE
 	select HAVE_IDE
 	select HAVE_OPROFILE
 	select HAVE_ARCH_KGDB if !SMP || SPARC64
 	select HAVE_ARCH_TRACEHOOK
+<<<<<<< HEAD
 	select ARCH_WANT_OPTIONAL_GPIOLIB
 	select RTC_CLASS
 	select RTC_DRV_M48T59
@@ -28,25 +33,85 @@ config SPARC
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_SHOW
 	select USE_GENERIC_SMP_HELPERS if SMP
+<<<<<<< HEAD
+=======
+	select GENERIC_PCI_IOMAP
+	select HAVE_NMI_WATCHDOG if SPARC64
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select SYSCTL_EXCEPTION_TRACE
+	select ARCH_WANT_OPTIONAL_GPIOLIB
+	select ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE
+	select RTC_CLASS
+	select RTC_DRV_M48T59
+	select HAVE_DMA_ATTRS
+	select HAVE_DMA_API_DEBUG
+	select HAVE_ARCH_JUMP_LABEL
+	select GENERIC_IRQ_SHOW
+	select ARCH_WANT_IPC_PARSE_VERSION
+	select GENERIC_PCI_IOMAP
+	select HAVE_NMI_WATCHDOG if SPARC64
+	select HAVE_BPF_JIT
+	select HAVE_DEBUG_BUGVERBOSE
+	select GENERIC_SMP_IDLE_THREAD
+	select GENERIC_CMOS_UPDATE
+	select GENERIC_CLOCKEVENTS
+	select GENERIC_STRNCPY_FROM_USER
+	select GENERIC_STRNLEN_USER
+	select MODULES_USE_ELF_RELA
+	select ODD_RT_SIGACTION
+	select OLD_SIGSUSPEND
+>>>>>>> refs/remotes/origin/master
 
 config SPARC32
 	def_bool !64BIT
 	select GENERIC_ATOMIC64
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select CLZ_TAB
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SPARC64
 	def_bool 64BIT
 	select ARCH_SUPPORTS_MSI
+=======
+	select CLZ_TAB
+	select HAVE_UID16
+	select OLD_SIGACTION
+
+config SPARC64
+	def_bool 64BIT
+>>>>>>> refs/remotes/origin/master
 	select HAVE_FUNCTION_TRACER
 	select HAVE_FUNCTION_GRAPH_TRACER
 	select HAVE_FUNCTION_GRAPH_FP_TEST
 	select HAVE_FUNCTION_TRACE_MCOUNT_TEST
 	select HAVE_KRETPROBES
 	select HAVE_KPROBES
+<<<<<<< HEAD
+<<<<<<< HEAD
 	select HAVE_MEMBLOCK
+=======
+	select HAVE_RCU_TABLE_FREE if SMP
+	select HAVE_MEMBLOCK
+	select HAVE_MEMBLOCK_NODE_MAP
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_SYSCALL_WRAPPERS
 	select HAVE_DYNAMIC_FTRACE
 	select HAVE_FTRACE_MCOUNT_RECORD
 	select HAVE_SYSCALL_TRACEPOINTS
+=======
+	select HAVE_RCU_TABLE_FREE if SMP
+	select HAVE_MEMBLOCK
+	select HAVE_MEMBLOCK_NODE_MAP
+	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+	select HAVE_DYNAMIC_FTRACE
+	select HAVE_FTRACE_MCOUNT_RECORD
+	select HAVE_SYSCALL_TRACEPOINTS
+	select HAVE_CONTEXT_TRACKING
+	select HAVE_DEBUG_KMEMLEAK
+>>>>>>> refs/remotes/origin/master
 	select RTC_DRV_CMOS
 	select RTC_DRV_BQ4802
 	select RTC_DRV_SUN4V
@@ -54,13 +119,24 @@ config SPARC64
 	select HAVE_PERF_EVENTS
 	select PERF_USE_VMALLOC
 	select IRQ_PREFLOW_FASTEOI
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_C_RECORDMCOUNT
+=======
+	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+	select HAVE_C_RECORDMCOUNT
+	select NO_BOOTMEM
+>>>>>>> refs/remotes/origin/master
 
 config ARCH_DEFCONFIG
 	string
 	default "arch/sparc/configs/sparc32_defconfig" if SPARC32
 	default "arch/sparc/configs/sparc64_defconfig" if SPARC64
 
+<<<<<<< HEAD
 # CONFIG_BITS can be used at source level to get 32/64 bits
 config BITS
 	int
@@ -79,14 +155,22 @@ config GENERIC_CLOCKEVENTS
 	bool
 	default y if SPARC64
 
+=======
+>>>>>>> refs/remotes/origin/master
 config IOMMU_HELPER
 	bool
 	default y if SPARC64
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config QUICKLIST
 	bool
 	default y if SPARC64
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config STACKTRACE_SUPPORT
 	bool
 	default y if SPARC64
@@ -99,6 +183,12 @@ config HAVE_LATENCYTOP_SUPPORT
 	bool
 	default y if SPARC64
 
+<<<<<<< HEAD
+=======
+config ARCH_HIBERNATION_POSSIBLE
+	def_bool y if SPARC64
+
+>>>>>>> refs/remotes/origin/master
 config AUDIT_ARCH
 	bool
 	default y
@@ -134,6 +224,7 @@ config GENERIC_ISA_DMA
 	bool
 	default y if SPARC32
 
+<<<<<<< HEAD
 config GENERIC_GPIO
 	bool
 	help
@@ -142,6 +233,8 @@ config GENERIC_GPIO
 config ARCH_NO_VIRT_TO_BUS
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ARCH_SUPPORTS_DEBUG_PAGEALLOC
 	def_bool y if SPARC64
 
@@ -152,7 +245,11 @@ source "kernel/Kconfig.freezer"
 menu "Processor type and features"
 
 config SMP
+<<<<<<< HEAD
 	bool "Symmetric multi-processing support (does not work on sun4/sun4c)"
+=======
+	bool "Symmetric multi-processing support"
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This enables support for systems with more than one CPU. If you have
 	  a system with only one CPU, say N. If you have a system with more
@@ -193,7 +290,11 @@ config RWSEM_XCHGADD_ALGORITHM
 
 config GENERIC_HWEIGHT
 	bool
+<<<<<<< HEAD
 	default y if !ULTRA_HAS_POPULATION_COUNT
+=======
+	default y
+>>>>>>> refs/remotes/origin/master
 
 config GENERIC_CALIBRATE_DELAY
 	bool
@@ -228,6 +329,7 @@ config EARLYFB
 	help
 	  Say Y here to enable a faster early framebuffer boot console.
 
+<<<<<<< HEAD
 choice
 	prompt "Kernel page size" if SPARC64
 	default SPARC64_PAGE_SIZE_8KB
@@ -247,6 +349,8 @@ config SPARC64_PAGE_SIZE_64KB
 
 endchoice
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SECCOMP
 	bool "Enable seccomp to safely compute untrusted bytecode"
 	depends on SPARC64 && PROC_FS
@@ -267,12 +371,16 @@ config SECCOMP
 config HOTPLUG_CPU
 	bool "Support for hot-pluggable CPUs"
 	depends on SPARC64 && SMP
+<<<<<<< HEAD
 	select HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here to experiment with turning CPUs off and on.  CPUs
 	  can be controlled through /sys/devices/system/cpu/cpu#.
 	  Say N if you want to disable CPU hotplug.
 
+<<<<<<< HEAD
 source "kernel/time/Kconfig"
 
 if SPARC64
@@ -300,6 +408,10 @@ config US2E_FREQ
 
 	  If in doubt, say N.
 
+=======
+if SPARC64
+source "drivers/cpufreq/Kconfig"
+>>>>>>> refs/remotes/origin/master
 endif
 
 config US3_MC
@@ -320,6 +432,7 @@ config GENERIC_LOCKBREAK
 	default y
 	depends on SPARC64 && SMP && PREEMPT
 
+<<<<<<< HEAD
 choice
 	prompt "SPARC64 Huge TLB Page Size"
 	depends on SPARC64 && HUGETLB_PAGE
@@ -337,6 +450,8 @@ config HUGETLB_PAGE_SIZE_64K
 
 endchoice
 
+=======
+>>>>>>> refs/remotes/origin/master
 config NUMA
 	bool "NUMA support"
 	depends on SPARC64 && SMP
@@ -355,9 +470,15 @@ config NODES_SPAN_OTHER_NODES
 	def_bool y
 	depends on NEED_MULTIPLE_NODES
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config ARCH_POPULATES_NODE_MAP
 	def_bool y if SPARC64
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config ARCH_SELECT_MEMORY_MODEL
 	def_bool y if SPARC64
 
@@ -370,6 +491,13 @@ config ARCH_SPARSEMEM_DEFAULT
 
 source "mm/Kconfig"
 
+<<<<<<< HEAD
+=======
+if SPARC64
+source "kernel/power/Kconfig"
+endif
+
+>>>>>>> refs/remotes/origin/master
 config SCHED_SMT
 	bool "SMT (Hyperthreading) scheduler support"
 	depends on SPARC64 && SMP
@@ -388,9 +516,17 @@ config SCHED_MC
 	  making when dealing with multi-core CPU chips at a cost of slightly
 	  increased overhead in some places. If unsure say N here.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 if SPARC64
 source "kernel/Kconfig.preempt"
 endif
+=======
+source "kernel/Kconfig.preempt"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "kernel/Kconfig.preempt"
+>>>>>>> refs/remotes/origin/master
 
 config CMDLINE_BOOL
 	bool "Default bootloader kernel arguments"
@@ -452,6 +588,11 @@ config SERIAL_CONSOLE
 config SPARC_LEON
 	bool "Sparc Leon processor family"
 	depends on SPARC32
+<<<<<<< HEAD
+=======
+	select USB_EHCI_BIG_ENDIAN_MMIO
+	select USB_EHCI_BIG_ENDIAN_DESC
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you say Y here if you are running on a SPARC-LEON processor.
 	  The LEON processor is a synthesizable VHDL model of the
@@ -539,7 +680,22 @@ config LEON_PCI
 	depends on PCI && SPARC_LEON
 	default y
 
+<<<<<<< HEAD
 config GRPCI2
+=======
+config SPARC_GRPCI1
+	bool "GRPCI Host Bridge Support"
+	depends on LEON_PCI
+	default y
+	help
+	  Say Y here to include the GRPCI Host Bridge Driver. The GRPCI
+	  PCI host controller is typically found in GRLIB SPARC32/LEON
+	  systems. The driver has one property (all_pci_errors) controlled
+	  from the bootloader that makes the GRPCI to generate interrupts
+	  on detected PCI Parity and System errors.
+
+config SPARC_GRPCI2
+>>>>>>> refs/remotes/origin/master
 	bool "GRPCI2 Host Bridge Support"
 	depends on LEON_PCI
 	default y
@@ -563,16 +719,33 @@ config SUN_OPENPROMFS
 	  Only choose N if you know in advance that you will not need to modify
 	  OpenPROM settings on the running system.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 # Makefile helpers
 config SPARC32_PCI
 	bool
 	default y
 	depends on SPARC32 && PCI
 
+=======
+# Makefile helper
+>>>>>>> refs/remotes/origin/cm-10.0
 config SPARC64_PCI
 	bool
 	default y
 	depends on SPARC64 && PCI
+=======
+# Makefile helpers
+config SPARC64_PCI
+	bool
+	default y
+	depends on SPARC64 && PCI
+
+config SPARC64_PCI_MSI
+	bool
+	default y
+	depends on SPARC64_PCI && PCI_MSI
+>>>>>>> refs/remotes/origin/master
 
 endmenu
 
@@ -585,15 +758,34 @@ config COMPAT
 	depends on SPARC64
 	default y
 	select COMPAT_BINFMT_ELF
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select ARCH_WANT_OLD_COMPAT_IPC
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select HAVE_UID16
+	select ARCH_WANT_OLD_COMPAT_IPC
+	select COMPAT_OLD_SIGACTION
+>>>>>>> refs/remotes/origin/master
 
 config SYSVIPC_COMPAT
 	bool
 	depends on COMPAT && SYSVIPC
 	default y
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config KEYS_COMPAT
 	def_bool y if COMPAT && KEYS
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config KEYS_COMPAT
+	def_bool y if COMPAT && KEYS
+
+>>>>>>> refs/remotes/origin/master
 endmenu
 
 source "net/Kconfig"

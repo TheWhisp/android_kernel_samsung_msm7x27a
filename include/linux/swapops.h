@@ -1,15 +1,58 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifndef _LINUX_SWAPOPS_H
+#define _LINUX_SWAPOPS_H
+
+#include <linux/radix-tree.h>
+#include <linux/bug.h>
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * swapcache pages are stored in the swapper_space radix tree.  We want to
  * get good packing density in that tree, so the index should be dense in
  * the low-order bits.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
  * We arrange the `type' and `offset' fields so that `type' is at the five
+=======
+ * We arrange the `type' and `offset' fields so that `type' is at the seven
+>>>>>>> refs/remotes/origin/cm-11.0
  * high-order bits of the swp_entry_t and `offset' is right-aligned in the
- * remaining bits.
+ * remaining bits.  Although `type' itself needs only five bits, we allow for
+ * shmem/tmpfs to shift it all up a further two bits: see swp_to_radix_entry().
  *
  * swp_entry_t's are *never* stored anywhere in their arch-dependent format.
  */
+<<<<<<< HEAD
 #define SWP_TYPE_SHIFT(e)	(sizeof(e.val) * 8 - MAX_SWAPFILES_SHIFT)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * We arrange the `type' and `offset' fields so that `type' is at the seven
+ * high-order bits of the swp_entry_t and `offset' is right-aligned in the
+ * remaining bits.  Although `type' itself needs only five bits, we allow for
+ * shmem/tmpfs to shift it all up a further two bits: see swp_to_radix_entry().
+ *
+ * swp_entry_t's are *never* stored anywhere in their arch-dependent format.
+ */
+#define SWP_TYPE_SHIFT(e)	((sizeof(e.val) * 8) - \
+			(MAX_SWAPFILES_SHIFT + RADIX_TREE_EXCEPTIONAL_SHIFT))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#define SWP_TYPE_SHIFT(e)	((sizeof(e.val) * 8) - \
+			(MAX_SWAPFILES_SHIFT + RADIX_TREE_EXCEPTIONAL_SHIFT))
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SWP_OFFSET_MASK(e)	((1UL << SWP_TYPE_SHIFT(e)) - 1)
 
 /*
@@ -59,6 +102,11 @@ static inline swp_entry_t pte_to_swp_entry(pte_t pte)
 	swp_entry_t arch_entry;
 
 	BUG_ON(pte_file(pte));
+<<<<<<< HEAD
+=======
+	if (pte_swp_soft_dirty(pte))
+		pte = pte_swp_clear_soft_dirty(pte);
+>>>>>>> refs/remotes/origin/master
 	arch_entry = __pte_to_swp_entry(pte);
 	return swp_entry(__swp_type(arch_entry), __swp_offset(arch_entry));
 }
@@ -76,6 +124,31 @@ static inline pte_t swp_entry_to_pte(swp_entry_t entry)
 	return __swp_entry_to_pte(arch_entry);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline swp_entry_t radix_to_swp_entry(void *arg)
+{
+	swp_entry_t entry;
+
+	entry.val = (unsigned long)arg >> RADIX_TREE_EXCEPTIONAL_SHIFT;
+	return entry;
+}
+
+static inline void *swp_to_radix_entry(swp_entry_t entry)
+{
+	unsigned long value;
+
+	value = entry.val << RADIX_TREE_EXCEPTIONAL_SHIFT;
+	return (void *)(value | RADIX_TREE_EXCEPTIONAL_ENTRY);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MIGRATION
 static inline swp_entry_t make_migration_entry(struct page *page, int write)
 {
@@ -113,7 +186,16 @@ static inline void make_migration_entry_read(swp_entry_t *entry)
 
 extern void migration_entry_wait(struct mm_struct *mm, pmd_t *pmd,
 					unsigned long address);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void migration_entry_wait_huge(struct mm_struct *mm, pte_t *pte);
+=======
+extern void migration_entry_wait_huge(struct vm_area_struct *vma,
+		struct mm_struct *mm, pte_t *pte);
+>>>>>>> refs/remotes/origin/master
+=======
+extern void migration_entry_wait_huge(struct mm_struct *mm, pte_t *pte);
+>>>>>>> refs/remotes/origin/cm-11.0
 #else
 
 #define make_migration_entry(page, write) swp_entry(0, 0)
@@ -125,8 +207,18 @@ static inline int is_migration_entry(swp_entry_t swp)
 static inline void make_migration_entry_read(swp_entry_t *entryp) { }
 static inline void migration_entry_wait(struct mm_struct *mm, pmd_t *pmd,
 					 unsigned long address) { }
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline void migration_entry_wait_huge(struct mm_struct *mm,
 					pte_t *pte) { }
+=======
+static inline void migration_entry_wait_huge(struct vm_area_struct *vma,
+		struct mm_struct *mm, pte_t *pte) { }
+>>>>>>> refs/remotes/origin/master
+=======
+static inline void migration_entry_wait_huge(struct mm_struct *mm,
+					pte_t *pte) { }
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int is_write_migration_entry(swp_entry_t entry)
 {
 	return 0;
@@ -172,3 +264,13 @@ static inline int non_swap_entry(swp_entry_t entry)
 	return 0;
 }
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+#endif /* _LINUX_SWAPOPS_H */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#endif /* _LINUX_SWAPOPS_H */
+>>>>>>> refs/remotes/origin/master

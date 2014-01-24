@@ -33,8 +33,24 @@
  */
 
 #include <linux/linkage.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/assembler.h>
 #include <mach/io.h>
+=======
+
+#include <asm/assembler.h>
+
+#include "iomap.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <asm/assembler.h>
+
+#include <mach/hardware.h>
+
+#include "iomap.h"
+>>>>>>> refs/remotes/origin/master
 #include "pm.h"
 
 		.text

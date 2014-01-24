@@ -2,6 +2,8 @@ if ATH79
 
 menu "Atheros AR71XX/AR724X/AR913X machine selection"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config ATH79_MACH_AP81
 	bool "Atheros AP81 reference board"
 	select SOC_AR913X
@@ -9,38 +11,160 @@ config ATH79_MACH_AP81
 	select ATH79_DEV_GPIO_BUTTONS
 	select ATH79_DEV_LEDS_GPIO
 	select ATH79_DEV_SPI
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config ATH79_MACH_AP121
+	bool "Atheros AP121 reference board"
+	select SOC_AR933X
+	select ATH79_DEV_GPIO_BUTTONS
+	select ATH79_DEV_LEDS_GPIO
+	select ATH79_DEV_SPI
+	select ATH79_DEV_USB
+	select ATH79_DEV_WMAC
+	help
+	  Say 'Y' here if you want your kernel to support the
+	  Atheros AP121 reference board.
+
+<<<<<<< HEAD
+=======
+config ATH79_MACH_AP136
+	bool "Atheros AP136 reference board"
+	select SOC_QCA955X
+	select ATH79_DEV_GPIO_BUTTONS
+	select ATH79_DEV_LEDS_GPIO
+	select ATH79_DEV_SPI
+	select ATH79_DEV_USB
+	select ATH79_DEV_WMAC
+	help
+	  Say 'Y' here if you want your kernel to support the
+	  Atheros AP136 reference board.
+
+>>>>>>> refs/remotes/origin/master
+config ATH79_MACH_AP81
+	bool "Atheros AP81 reference board"
+	select SOC_AR913X
+	select ATH79_DEV_GPIO_BUTTONS
+	select ATH79_DEV_LEDS_GPIO
+	select ATH79_DEV_SPI
+	select ATH79_DEV_USB
+	select ATH79_DEV_WMAC
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say 'Y' here if you want your kernel to support the
 	  Atheros AP81 reference board.
 
+<<<<<<< HEAD
+=======
+config ATH79_MACH_DB120
+	bool "Atheros DB120 reference board"
+	select SOC_AR934X
+	select ATH79_DEV_GPIO_BUTTONS
+	select ATH79_DEV_LEDS_GPIO
+	select ATH79_DEV_SPI
+	select ATH79_DEV_USB
+	select ATH79_DEV_WMAC
+	help
+	  Say 'Y' here if you want your kernel to support the
+	  Atheros DB120 reference board.
+
+>>>>>>> refs/remotes/origin/master
 config ATH79_MACH_PB44
 	bool "Atheros PB44 reference board"
 	select SOC_AR71XX
 	select ATH79_DEV_GPIO_BUTTONS
 	select ATH79_DEV_LEDS_GPIO
 	select ATH79_DEV_SPI
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select ATH79_DEV_USB
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ATH79_DEV_USB
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say 'Y' here if you want your kernel to support the
 	  Atheros PB44 reference board.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config ATH79_MACH_UBNT_XM
+	bool "Ubiquiti Networks XM (rev 1.0) board"
+	select SOC_AR724X
+	select ATH79_DEV_GPIO_BUTTONS
+	select ATH79_DEV_LEDS_GPIO
+	select ATH79_DEV_SPI
+	help
+	  Say 'Y' here if you want your kernel to support the
+	  Ubiquiti Networks XM (rev 1.0) board.
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endmenu
 
 config SOC_AR71XX
 	select USB_ARCH_HAS_EHCI
 	select USB_ARCH_HAS_OHCI
+<<<<<<< HEAD
+=======
+	select HW_HAS_PCI
+>>>>>>> refs/remotes/origin/master
 	def_bool n
 
 config SOC_AR724X
 	select USB_ARCH_HAS_EHCI
 	select USB_ARCH_HAS_OHCI
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select HW_HAS_PCI
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select HW_HAS_PCI
+	select PCI_AR724X if PCI
+>>>>>>> refs/remotes/origin/master
 	def_bool n
 
 config SOC_AR913X
 	select USB_ARCH_HAS_EHCI
 	def_bool n
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 config ATH79_DEV_AR913X_WMAC
 	depends on SOC_AR913X
+=======
+config SOC_AR933X
+	select USB_ARCH_HAS_EHCI
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config SOC_AR933X
+	select USB_ARCH_HAS_EHCI
+	def_bool n
+
+config SOC_AR934X
+	select USB_ARCH_HAS_EHCI
+	select HW_HAS_PCI
+	select PCI_AR724X if PCI
+	def_bool n
+
+config SOC_QCA955X
+	select USB_ARCH_HAS_EHCI
+	select HW_HAS_PCI
+	select PCI_AR724X if PCI
+	def_bool n
+
+config PCI_AR724X
+>>>>>>> refs/remotes/origin/master
 	def_bool n
 
 config ATH79_DEV_GPIO_BUTTONS
@@ -52,4 +176,23 @@ config ATH79_DEV_LEDS_GPIO
 config ATH79_DEV_SPI
 	def_bool n
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+config ATH79_DEV_USB
+	def_bool n
+
+config ATH79_DEV_WMAC
+<<<<<<< HEAD
+	depends on (SOC_AR913X || SOC_AR933X)
+	def_bool n
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on (SOC_AR913X || SOC_AR933X || SOC_AR934X || SOC_QCA955X)
+	def_bool n
+
+>>>>>>> refs/remotes/origin/master
 endif

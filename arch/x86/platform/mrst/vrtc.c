@@ -18,6 +18,10 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/sfi.h>
 #include <linux/platform_device.h>
@@ -58,8 +62,16 @@ EXPORT_SYMBOL_GPL(vrtc_cmos_write);
 unsigned long vrtc_get_time(void)
 {
 	u8 sec, min, hour, mday, mon;
+<<<<<<< HEAD
 	u32 year;
 
+=======
+	unsigned long flags;
+	u32 year;
+
+	spin_lock_irqsave(&rtc_lock, flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	while ((vrtc_cmos_read(RTC_FREQ_SELECT) & RTC_UIP))
 		cpu_relax();
 
@@ -70,8 +82,15 @@ unsigned long vrtc_get_time(void)
 	mon = vrtc_cmos_read(RTC_MONTH);
 	year = vrtc_cmos_read(RTC_YEAR);
 
+<<<<<<< HEAD
 	/* vRTC YEAR reg contains the offset to 1960 */
 	year += 1960;
+=======
+	spin_unlock_irqrestore(&rtc_lock, flags);
+
+	/* vRTC YEAR reg contains the offset to 1972 */
+	year += 1972;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO "vRTC: sec: %d min: %d hour: %d day: %d "
 		"mon: %d year: %d\n", sec, min, hour, mday, mon, year);
@@ -83,8 +102,15 @@ unsigned long vrtc_get_time(void)
 int vrtc_set_mmss(unsigned long nowtime)
 {
 	int real_sec, real_min;
+<<<<<<< HEAD
 	int vrtc_min;
 
+=======
+	unsigned long flags;
+	int vrtc_min;
+
+	spin_lock_irqsave(&rtc_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	vrtc_min = vrtc_cmos_read(RTC_MINUTES);
 
 	real_sec = nowtime % 60;
@@ -95,6 +121,11 @@ int vrtc_set_mmss(unsigned long nowtime)
 
 	vrtc_cmos_write(real_sec, RTC_SECONDS);
 	vrtc_cmos_write(real_min, RTC_MINUTES);
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&rtc_lock, flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

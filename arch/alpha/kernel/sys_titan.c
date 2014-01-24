@@ -21,7 +21,13 @@
 #include <linux/bitops.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -281,6 +287,7 @@ titan_late_init(void)
 	 * all reported to the kernel as machine checks, so the handler
 	 * is a nop so it can be called to count the individual events.
 	 */
+<<<<<<< HEAD
 	titan_request_irq(63+16, titan_intr_nop, IRQF_DISABLED,
 		    "CChip Error", NULL);
 	titan_request_irq(62+16, titan_intr_nop, IRQF_DISABLED,
@@ -290,6 +297,17 @@ titan_late_init(void)
 	titan_request_irq(60+16, titan_intr_nop, IRQF_DISABLED,
 		    "PChip 0 C_Error", NULL);
 	titan_request_irq(59+16, titan_intr_nop, IRQF_DISABLED,
+=======
+	titan_request_irq(63+16, titan_intr_nop, 0,
+		    "CChip Error", NULL);
+	titan_request_irq(62+16, titan_intr_nop, 0,
+		    "PChip 0 H_Error", NULL);
+	titan_request_irq(61+16, titan_intr_nop, 0,
+		    "PChip 1 H_Error", NULL);
+	titan_request_irq(60+16, titan_intr_nop, 0,
+		    "PChip 0 C_Error", NULL);
+	titan_request_irq(59+16, titan_intr_nop, 0,
+>>>>>>> refs/remotes/origin/master
 		    "PChip 1 C_Error", NULL);
 
 	/* 
@@ -304,8 +322,17 @@ titan_late_init(void)
 
 }
 
+<<<<<<< HEAD
 static int __devinit
+<<<<<<< HEAD
 titan_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+titan_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int
+titan_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 intline;
 	int irq;
@@ -331,7 +358,17 @@ titan_init_pci(void)
  	 */
  	titan_late_init();
  
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_probe_only = 1;
+=======
+	/* Indicate that we trust the console to configure things properly */
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Indicate that we trust the console to configure things properly */
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/master
 	common_init_pci();
 	SMC669_Init(0);
 	locate_and_init_vga(NULL);
@@ -348,9 +385,15 @@ privateer_init_pci(void)
 	 * Hook a couple of extra err interrupts that the
 	 * common titan code won't.
 	 */
+<<<<<<< HEAD
 	titan_request_irq(53+16, titan_intr_nop, IRQF_DISABLED,
 		    "NMI", NULL);
 	titan_request_irq(50+16, titan_intr_nop, IRQF_DISABLED,
+=======
+	titan_request_irq(53+16, titan_intr_nop, 0,
+		    "NMI", NULL);
+	titan_request_irq(50+16, titan_intr_nop, 0,
+>>>>>>> refs/remotes/origin/master
 		    "Temperature Warning", NULL);
 
 	/*

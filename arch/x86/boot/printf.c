@@ -55,7 +55,11 @@ static char *number(char *str, long num, int base, int size, int precision,
 	locase = (type & SMALL);
 	if (type & LEFT)
 		type &= ~ZEROPAD;
+<<<<<<< HEAD
 	if (base < 2 || base > 36)
+=======
+	if (base < 2 || base > 16)
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	c = (type & ZEROPAD) ? '0' : ' ';
 	sign = 0;

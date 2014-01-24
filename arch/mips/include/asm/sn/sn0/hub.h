@@ -19,8 +19,13 @@
 #define HUB_REV_2_0		2
 #define HUB_REV_2_1		3
 #define HUB_REV_2_2		4
+<<<<<<< HEAD
 #define HUB_REV_2_3             5
 #define HUB_REV_2_4             6
+=======
+#define HUB_REV_2_3		5
+#define HUB_REV_2_4		6
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_HUB_PATH		80
 
@@ -32,9 +37,16 @@
 //#include <asm/sn/sn0/hubcore.h>
 
 /* Translation of uncached attributes */
+<<<<<<< HEAD
 #define	UATTR_HSPEC	0
 #define	UATTR_IO	1
 #define	UATTR_MSPEC	2
 #define	UATTR_UNCAC	3
+=======
+#define UATTR_HSPEC	0
+#define UATTR_IO	1
+#define UATTR_MSPEC	2
+#define UATTR_UNCAC	3
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_SN_SN0_HUB_H */

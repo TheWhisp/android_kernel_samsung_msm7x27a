@@ -32,9 +32,12 @@ static const struct snd_pcm_hardware nuc900_pcm_hardware = {
 					SNDRV_PCM_INFO_MMAP_VALID |
 					SNDRV_PCM_INFO_PAUSE |
 					SNDRV_PCM_INFO_RESUME,
+<<<<<<< HEAD
 	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
 	.channels_min		= 1,
 	.channels_max		= 2,
+=======
+>>>>>>> refs/remotes/origin/master
 	.buffer_bytes_max	= 4*1024,
 	.period_bytes_min	= 1*1024,
 	.period_bytes_max	= 4*1024,
@@ -227,7 +230,15 @@ static int nuc900_dma_trigger(struct snd_pcm_substream *substream, int cmd)
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int nuc900_dma_getposition(struct snd_pcm_substream *substream,
+=======
+static int nuc900_dma_getposition(struct snd_pcm_substream *substream,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int nuc900_dma_getposition(struct snd_pcm_substream *substream,
+>>>>>>> refs/remotes/origin/master
 					dma_addr_t *src, dma_addr_t *dst)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
@@ -268,7 +279,15 @@ static int nuc900_dma_open(struct snd_pcm_substream *substream)
 	nuc900_audio = nuc900_ac97_data;
 
 	if (request_irq(nuc900_audio->irq_num, nuc900_dma_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED, "nuc900-dma", substream))
+=======
+			0, "nuc900-dma", substream))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			0, "nuc900-dma", substream))
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 
 	runtime->private_data = nuc900_audio;
@@ -314,17 +333,32 @@ static void nuc900_dma_free_dma_buffers(struct snd_pcm *pcm)
 	snd_pcm_lib_preallocate_free_for_all(pcm);
 }
 
+<<<<<<< HEAD
 static u64 nuc900_pcm_dmamask = DMA_BIT_MASK(32);
 static int nuc900_dma_new(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_card *card = rtd->card->snd_card;
+<<<<<<< HEAD
 	struct snd_soc_dai *dai = rtd->cpu_dai;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_pcm *pcm = rtd->pcm;
 
 	if (!card->dev->dma_mask)
 		card->dev->dma_mask = &nuc900_pcm_dmamask;
 	if (!card->dev->coherent_dma_mask)
 		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
+=======
+static int nuc900_dma_new(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_card *card = rtd->card->snd_card;
+	struct snd_pcm *pcm = rtd->pcm;
+	int ret;
+
+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
 		card->dev, 4 * 1024, (4 * 1024) - 1);
@@ -338,12 +372,20 @@ static struct snd_soc_platform_driver nuc900_soc_platform = {
 	.pcm_free	= nuc900_dma_free_dma_buffers,
 };
 
+<<<<<<< HEAD
 static int __devinit nuc900_soc_platform_probe(struct platform_device *pdev)
+=======
+static int nuc900_soc_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_platform(&pdev->dev, &nuc900_soc_platform);
 }
 
+<<<<<<< HEAD
 static int __devexit nuc900_soc_platform_remove(struct platform_device *pdev)
+=======
+static int nuc900_soc_platform_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
@@ -356,9 +398,11 @@ static struct platform_driver nuc900_pcm_driver = {
 	},
 
 	.probe = nuc900_soc_platform_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(nuc900_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init nuc900_pcm_init(void)
 {
 	return platform_driver_register(&nuc900_pcm_driver);
@@ -370,6 +414,15 @@ static void __exit nuc900_pcm_exit(void)
 	platform_driver_unregister(&nuc900_pcm_driver);
 }
 module_exit(nuc900_pcm_exit);
+=======
+module_platform_driver(nuc900_pcm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = nuc900_soc_platform_remove,
+};
+
+module_platform_driver(nuc900_pcm_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Wan ZongShun, <mcuos.com@gmail.com>");
 MODULE_DESCRIPTION("nuc900 Audio DMA module");

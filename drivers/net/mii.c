@@ -31,6 +31,8 @@
 #include <linux/module.h>
 #include <linux/netdevice.h>
 #include <linux/ethtool.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mdio.h>
 
 static u32 mii_get_an(struct mii_if_info *mii, u16 addr)
@@ -55,6 +57,22 @@ static u32 mii_get_an(struct mii_if_info *mii, u16 addr)
 		result |= ADVERTISED_Asym_Pause;
 
 	return result;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/mii.h>
+
+static u32 mii_get_an(struct mii_if_info *mii, u16 addr)
+{
+	int advert;
+
+	advert = mii->mdio_read(mii->dev, mii->phy_id, addr);
+
+	return mii_lpa_to_ethtool_lpa_t(advert);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -89,7 +107,15 @@ int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
 
 	/* this isn't fully supported at higher layers */
 	ecmd->phy_address = mii->phy_id;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ecmd->mdio_support = MDIO_SUPPORTS_C22;
+=======
+	ecmd->mdio_support = ETH_MDIO_SUPPORTS_C22;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ecmd->mdio_support = ETH_MDIO_SUPPORTS_C22;
+>>>>>>> refs/remotes/origin/master
 
 	ecmd->advertising = ADVERTISED_TP | ADVERTISED_MII;
 
@@ -104,6 +130,8 @@ int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
 		ecmd->autoneg = AUTONEG_ENABLE;
 
 		ecmd->advertising |= mii_get_an(mii, MII_ADVERTISE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ctrl1000 & ADVERTISE_1000HALF)
 			ecmd->advertising |= ADVERTISED_1000baseT_Half;
 		if (ctrl1000 & ADVERTISE_1000FULL)
@@ -117,6 +145,21 @@ int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
 			if (stat1000 & LPA_1000FULL)
 				ecmd->lp_advertising |=
 					ADVERTISED_1000baseT_Full;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (mii->supports_gmii)
+			ecmd->advertising |=
+					mii_ctrl1000_to_ethtool_adv_t(ctrl1000);
+
+		if (bmsr & BMSR_ANEGCOMPLETE) {
+			ecmd->lp_advertising = mii_get_an(mii, MII_LPA);
+			ecmd->lp_advertising |=
+					mii_stat1000_to_ethtool_lpa_t(stat1000);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			ecmd->lp_advertising = 0;
 		}
@@ -204,6 +247,8 @@ int mii_ethtool_sset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
 			advert2 = mii->mdio_read(dev, mii->phy_id, MII_CTRL1000);
 			tmp2 = advert2 & ~(ADVERTISE_1000HALF | ADVERTISE_1000FULL);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ecmd->advertising & ADVERTISED_10baseT_Half)
 			tmp |= ADVERTISE_10HALF;
 		if (ecmd->advertising & ADVERTISED_10baseT_Full)
@@ -218,6 +263,18 @@ int mii_ethtool_sset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
 			if (ecmd->advertising & ADVERTISED_1000baseT_Full)
 				tmp2 |= ADVERTISE_1000FULL;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		tmp |= ethtool_adv_to_mii_adv_t(ecmd->advertising);
+
+		if (mii->supports_gmii)
+			tmp2 |=
+			      ethtool_adv_to_mii_ctrl1000_t(ecmd->advertising);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (advert != tmp) {
 			mii->mdio_write(dev, mii->phy_id, MII_ADVERTISE, tmp);
 			mii->advertising = tmp;

@@ -18,8 +18,18 @@
 #include <linux/err.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/common.h>
 
+=======
+#include "iomap.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "iomap.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 #include "cm.h"
 #include "cm1_44xx.h"
 #include "cm2_44xx.h"

@@ -98,7 +98,10 @@ static const char version[] = "tms380tr.c: v1.10 30/12/2002 by Christoph Goos, A
 #include <linux/firmware.h>
 #include <linux/bitops.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/dma.h>
 #include <asm/irq.h>
@@ -1525,10 +1528,15 @@ static void tms380tr_chk_outstanding_cmds(struct net_device *dev)
 	/* Check if adapter is opened, avoiding COMMAND_REJECT
 	 * interrupt by the adapter!
 	 */
+<<<<<<< HEAD
 	if(tp->AdapterOpenFlag == 0)
 	{
 		if(tp->CMDqueue & OC_OPEN)
 		{
+=======
+	if (tp->AdapterOpenFlag == 0) {
+		if (tp->CMDqueue & OC_OPEN) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* Execute OPEN command	*/
 			tp->CMDqueue ^= OC_OPEN;
 
@@ -1536,21 +1544,33 @@ static void tms380tr_chk_outstanding_cmds(struct net_device *dev)
 			tp->scb.Parm[0] = LOWORD(Addr);
 			tp->scb.Parm[1] = HIWORD(Addr);
 			tp->scb.CMD = OPEN;
+<<<<<<< HEAD
 		}
 		else
+=======
+		} else
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* No OPEN command queued, but adapter closed. Note:
 			 * We'll try to re-open the adapter in DriverPoll()
 			 */
 			return;		/* No adapter command issued */
+<<<<<<< HEAD
 	}
 	else
 	{
+=======
+	} else {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Adapter is open; evaluate command queue: try to execute
 		 * outstanding commands (depending on priority!) CLOSE
 		 * command queued
 		 */
+<<<<<<< HEAD
 		if(tp->CMDqueue & OC_CLOSE)
 		{
+=======
+		if (tp->CMDqueue & OC_CLOSE) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			tp->CMDqueue ^= OC_CLOSE;
 			tp->AdapterOpenFlag = 0;
 			tp->scb.Parm[0] = 0; /* Parm[0], Parm[1] are ignored */
@@ -1560,6 +1580,7 @@ static void tms380tr_chk_outstanding_cmds(struct net_device *dev)
 				tp->CMDqueue |= OC_OPEN; /* re-open adapter */
 			else
 				tp->CMDqueue = 0;	/* no more commands */
+<<<<<<< HEAD
 		}
 		else
 		{
@@ -1663,6 +1684,72 @@ static void tms380tr_chk_outstanding_cmds(struct net_device *dev)
 					}
 				}
 			}
+=======
+		} else if (tp->CMDqueue & OC_RECEIVE) {
+			tp->CMDqueue ^= OC_RECEIVE;
+			Addr = htonl(((char *)tp->RplHead - (char *)tp) + tp->dmabuffer);
+			tp->scb.Parm[0] = LOWORD(Addr);
+			tp->scb.Parm[1] = HIWORD(Addr);
+			tp->scb.CMD = RECEIVE;
+		} else if (tp->CMDqueue & OC_TRANSMIT_HALT) {
+			/* NOTE: TRANSMIT.HALT must be checked
+			 * before TRANSMIT.
+			 */
+			tp->CMDqueue ^= OC_TRANSMIT_HALT;
+			tp->scb.CMD = TRANSMIT_HALT;
+
+			/* Parm[0] and Parm[1] are ignored
+			 * but should be set to zero!
+			 */
+			tp->scb.Parm[0] = 0;
+			tp->scb.Parm[1] = 0;
+		} else if (tp->CMDqueue & OC_TRANSMIT) {
+			/* NOTE: TRANSMIT must be
+			 * checked after TRANSMIT.HALT
+			 */
+			if (tp->TransmitCommandActive) {
+				if (!tp->TransmitHaltScheduled) {
+					tp->TransmitHaltScheduled = 1;
+					tms380tr_exec_cmd(dev, OC_TRANSMIT_HALT);
+				}
+				tp->TransmitCommandActive = 0;
+				return;
+			}
+
+			tp->CMDqueue ^= OC_TRANSMIT;
+			tms380tr_cancel_tx_queue(tp);
+			Addr = htonl(((char *)tp->TplBusy - (char *)tp) + tp->dmabuffer);
+			tp->scb.Parm[0] = LOWORD(Addr);
+			tp->scb.Parm[1] = HIWORD(Addr);
+			tp->scb.CMD = TRANSMIT;
+			tp->TransmitCommandActive = 1;
+		} else if (tp->CMDqueue & OC_MODIFY_OPEN_PARMS) {
+			tp->CMDqueue ^= OC_MODIFY_OPEN_PARMS;
+			tp->scb.Parm[0] = tp->ocpl.OPENOptions; /* new OPEN options*/
+			tp->scb.Parm[0] |= ENABLE_FULL_DUPLEX_SELECTION;
+			tp->scb.Parm[1] = 0; /* is ignored but should be zero */
+			tp->scb.CMD = MODIFY_OPEN_PARMS;
+		} else if (tp->CMDqueue & OC_SET_FUNCT_ADDR) {
+			tp->CMDqueue ^= OC_SET_FUNCT_ADDR;
+			tp->scb.Parm[0] = LOWORD(tp->ocpl.FunctAddr);
+			tp->scb.Parm[1] = HIWORD(tp->ocpl.FunctAddr);
+			tp->scb.CMD = SET_FUNCT_ADDR;
+		} else if (tp->CMDqueue & OC_SET_GROUP_ADDR) {
+			tp->CMDqueue ^= OC_SET_GROUP_ADDR;
+			tp->scb.Parm[0] = LOWORD(tp->ocpl.GroupAddr);
+			tp->scb.Parm[1] = HIWORD(tp->ocpl.GroupAddr);
+			tp->scb.CMD = SET_GROUP_ADDR;
+		} else if (tp->CMDqueue & OC_READ_ERROR_LOG) {
+			tp->CMDqueue ^= OC_READ_ERROR_LOG;
+			Addr = htonl(((char *)&tp->errorlogtable - (char *)tp) + tp->dmabuffer);
+			tp->scb.Parm[0] = LOWORD(Addr);
+			tp->scb.Parm[1] = HIWORD(Addr);
+			tp->scb.CMD = READ_ERROR_LOG;
+		} else {
+			printk(KERN_WARNING "CheckForOutstandingCommand: unknown Command\n");
+			tp->CMDqueue = 0;
+			return;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -2289,7 +2376,11 @@ const struct net_device_ops tms380tr_netdev_ops = {
 	.ndo_start_xmit		= tms380tr_send_packet,
 	.ndo_tx_timeout		= tms380tr_timeout,
 	.ndo_get_stats		= tms380tr_get_stats,
+<<<<<<< HEAD
 	.ndo_set_multicast_list = tms380tr_set_multicast_list,
+=======
+	.ndo_set_rx_mode	= tms380tr_set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_set_mac_address	= tms380tr_set_mac_address,
 };
 EXPORT_SYMBOL(tms380tr_netdev_ops);

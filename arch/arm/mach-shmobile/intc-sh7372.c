@@ -19,9 +19,23 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <linux/sh_intc.h>
+<<<<<<< HEAD
+=======
+#include <mach/intc.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/irq.h>
+#include <linux/io.h>
+#include <linux/sh_intc.h>
+#include <mach/intc.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
@@ -29,10 +43,16 @@ enum {
 	UNUSED_INTCA = 0,
 
 	/* interrupt sources INTCA */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	IRQ0A, IRQ1A, IRQ2A, IRQ3A, IRQ4A, IRQ5A, IRQ6A, IRQ7A,
 	IRQ8A, IRQ9A, IRQ10A, IRQ11A, IRQ12A, IRQ13A, IRQ14A, IRQ15A,
 	IRQ16A, IRQ17A, IRQ18A, IRQ19A, IRQ20A, IRQ21A, IRQ22A, IRQ23A,
 	IRQ24A, IRQ25A, IRQ26A, IRQ27A, IRQ28A, IRQ29A, IRQ30A, IRQ31A,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	DIRC,
 	CRYPT_STD,
 	IIC1_ALI1, IIC1_TACKI1, IIC1_WAITI1, IIC1_DTEI1,
@@ -86,6 +106,8 @@ enum {
 };
 
 static struct intc_vect intca_vectors[] __initdata = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INTC_VECT(IRQ0A, 0x0200), INTC_VECT(IRQ1A, 0x0220),
 	INTC_VECT(IRQ2A, 0x0240), INTC_VECT(IRQ3A, 0x0260),
 	INTC_VECT(IRQ4A, 0x0280), INTC_VECT(IRQ5A, 0x02a0),
@@ -102,6 +124,10 @@ static struct intc_vect intca_vectors[] __initdata = {
 	INTC_VECT(IRQ26A, 0x3340), INTC_VECT(IRQ27A, 0x3360),
 	INTC_VECT(IRQ28A, 0x3380), INTC_VECT(IRQ29A, 0x33a0),
 	INTC_VECT(IRQ30A, 0x33c0), INTC_VECT(IRQ31A, 0x33e0),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	INTC_VECT(DIRC, 0x0560),
 	INTC_VECT(CRYPT_STD, 0x0700),
 	INTC_VECT(IIC1_ALI1, 0x0780), INTC_VECT(IIC1_TACKI1, 0x07a0),
@@ -203,6 +229,8 @@ static struct intc_group intca_groups[] __initdata = {
 };
 
 static struct intc_mask_reg intca_mask_registers[] __initdata = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ 0xe6900040, 0xe6900060, 8, /* INTMSK00A / INTMSKCLR00A */
 	  { IRQ0A, IRQ1A, IRQ2A, IRQ3A, IRQ4A, IRQ5A, IRQ6A, IRQ7A } },
 	{ 0xe6900044, 0xe6900064, 8, /* INTMSK10A / INTMSKCLR10A */
@@ -212,6 +240,10 @@ static struct intc_mask_reg intca_mask_registers[] __initdata = {
 	{ 0xe690004c, 0xe690006c, 8, /* INTMSK30A / INTMSKCLR30A */
 	  { IRQ24A, IRQ25A, IRQ26A, IRQ27A, IRQ28A, IRQ29A, IRQ30A, IRQ31A } },
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 0xe6940080, 0xe69400c0, 8, /* IMR0A / IMCR0A */
 	  { DMAC2_1_DEI3, DMAC2_1_DEI2, DMAC2_1_DEI1, DMAC2_1_DEI0,
 	    AP_ARM_IRQPMU, 0, AP_ARM_COMMTX, AP_ARM_COMMRX } },
@@ -282,6 +314,8 @@ static struct intc_mask_reg intca_mask_registers[] __initdata = {
 };
 
 static struct intc_prio_reg intca_prio_registers[] __initdata = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ 0xe6900010, 0, 32, 4, /* INTPRI00A */
 	  { IRQ0A, IRQ1A, IRQ2A, IRQ3A, IRQ4A, IRQ5A, IRQ6A, IRQ7A } },
 	{ 0xe6900014, 0, 32, 4, /* INTPRI10A */
@@ -291,6 +325,10 @@ static struct intc_prio_reg intca_prio_registers[] __initdata = {
 	{ 0xe690001c, 0, 32, 4, /* INTPRI30A */
 	  { IRQ24A, IRQ25A, IRQ26A, IRQ27A, IRQ28A, IRQ29A, IRQ30A, IRQ31A } },
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 0xe6940000, 0, 16, 4, /* IPRAA */ { DMAC3_1, DMAC3_2, CMT2, 0 } },
 	{ 0xe6940004, 0, 16, 4, /* IPRBA */ { IRDA, 0, BBIF1, BBIF2 } },
 	{ 0xe6940008, 0, 16, 4, /* IPRCA */ { 0, CRYPT_STD,
@@ -336,6 +374,8 @@ static struct intc_prio_reg intca_prio_registers[] __initdata = {
 	{ 0xe6950050, 0, 16, 4, /* IPRUA3 */ { USBHSDMAC1_USHDMI, 0, 0, 0 } },
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct intc_sense_reg intca_sense_registers[] __initdata = {
 	{ 0xe6900000, 32, 4, /* ICR1A */
 	  { IRQ0A, IRQ1A, IRQ2A, IRQ3A, IRQ4A, IRQ5A, IRQ6A, IRQ7A } },
@@ -363,12 +403,35 @@ static DECLARE_INTC_DESC_ACK(intca_desc, "sh7372-intca",
 			     intca_mask_registers, intca_prio_registers,
 			     intca_sense_registers, intca_ack_registers);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static DECLARE_INTC_DESC(intca_desc, "sh7372-intca",
+			 intca_vectors, intca_groups,
+			 intca_mask_registers, intca_prio_registers,
+			 NULL);
+
+<<<<<<< HEAD
+INTC_IRQ_PINS_32(intca_irq_pins, 0xe6900000,
+		 INTC_VECT, "sh7372-intca-irq-pins");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+INTC_IRQ_PINS_16(intca_irq_pins_lo, 0xe6900000,
+		 INTC_VECT, "sh7372-intca-irq-lo");
+
+INTC_IRQ_PINS_16H(intca_irq_pins_hi, 0xe6900000,
+		 INTC_VECT, "sh7372-intca-irq-hi");
+
+>>>>>>> refs/remotes/origin/master
 enum {
 	UNUSED_INTCS = 0,
 	ENABLED_INTCS,
 
+<<<<<<< HEAD
 	INTCS,
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* interrupt sources INTCS */
 
 	/* IRQ0S - IRQ31S */
@@ -379,7 +442,15 @@ enum {
 	/* BBIF2 */
 	VPU,
 	TSIF1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	_3DG_SGX530,
+=======
+	/* 3DG */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 3DG */
+>>>>>>> refs/remotes/origin/master
 	_2DDMAC,
 	IIC2_ALI2, IIC2_TACKI2, IIC2_WAITI2, IIC2_DTEI2,
 	IPMMU_IPMMUR, IPMMU_IPMMUR2,
@@ -436,7 +507,15 @@ static struct intc_vect intcs_vectors[] = {
 	/* BBIF2 */
 	INTCS_VECT(VPU, 0x980),
 	INTCS_VECT(TSIF1, 0x9a0),
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INTCS_VECT(_3DG_SGX530, 0x9e0),
+=======
+	/* 3DG */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 3DG */
+>>>>>>> refs/remotes/origin/master
 	INTCS_VECT(_2DDMAC, 0xa00),
 	INTCS_VECT(IIC2_ALI2, 0xa80), INTCS_VECT(IIC2_TACKI2, 0xaa0),
 	INTCS_VECT(IIC2_WAITI2, 0xac0), INTCS_VECT(IIC2_DTEI2, 0xae0),
@@ -482,8 +561,11 @@ static struct intc_vect intcs_vectors[] = {
 	INTCS_VECT(CPORTS2R, 0x1a20),
 	/* CEC */
 	INTCS_VECT(JPU6E, 0x1a80),
+<<<<<<< HEAD
 
 	INTC_VECT(INTCS, 0xf80),
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct intc_group intcs_groups[] __initdata = {
@@ -521,7 +603,15 @@ static struct intc_mask_reg intcs_mask_registers[] = {
 	    RTDMAC_1_DEI3, RTDMAC_1_DEI2, RTDMAC_1_DEI1, RTDMAC_1_DEI0 } },
 	{ 0xffd20198, 0xffd201d8, 8, /* IMR6SA / IMCR6SA */
 	  { 0, 0, MSIOF, 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    _3DG_SGX530, 0, 0, 0 } },
+=======
+	    0, 0, 0, 0 } },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    0, 0, 0, 0 } },
+>>>>>>> refs/remotes/origin/master
 	{ 0xffd2019c, 0xffd201dc, 8, /* IMR7SA / IMCR7SA */
 	  { 0, TMU_TUNI2, TMU_TUNI1, TMU_TUNI0,
 	    0, 0, 0, 0 } },
@@ -546,9 +636,12 @@ static struct intc_mask_reg intcs_mask_registers[] = {
 	{ 0xffd5019c, 0xffd501dc, 8, /* IMR7SA3 / IMCR7SA3 */
 	  { MFIS2_INTCS, CPORTS2R, 0, 0,
 	    JPU6E, 0, 0, 0 } },
+<<<<<<< HEAD
 	{ 0xffd20104, 0, 16, /* INTAMASK */
 	  { 0, 0, 0, 0, 0, 0, 0, 0,
 	    0, 0, 0, 0, 0, 0, 0, INTCS } },
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Priority is needed for INTCA to receive the INTCS interrupt */
@@ -561,7 +654,13 @@ static struct intc_prio_reg intcs_prio_registers[] = {
 					      TMU_TUNI2, TSIF1 } },
 	{ 0xffd2001c, 0, 16, 4, /* IPRHS */ { 0, 0, VEU, BEU } },
 	{ 0xffd20020, 0, 16, 4, /* IPRIS */ { 0, MSIOF, TSIF0, IIC0 } },
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ 0xffd20024, 0, 16, 4, /* IPRJS */ { 0, _3DG_SGX530, 0, 0 } },
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 0xffd20028, 0, 16, 4, /* IPRKS */ { 0, 0, LMB, 0 } },
 	{ 0xffd2002c, 0, 16, 4, /* IPRLS */ { IPMMU, 0, 0, 0 } },
 	{ 0xffd20030, 0, 16, 4, /* IPRMS */ { IIC2, 0, 0, 0 } },
@@ -593,6 +692,14 @@ static struct resource intcs_resources[] __initdata = {
 static struct intc_desc intcs_desc __initdata = {
 	.name = "sh7372-intcs",
 	.force_enable = ENABLED_INTCS,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.skip_syscore_suspend = true,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.skip_syscore_suspend = true,
+>>>>>>> refs/remotes/origin/master
 	.resource = intcs_resources,
 	.num_resources = ARRAY_SIZE(intcs_resources),
 	.hw = INTC_HW_DESC(intcs_vectors, intcs_groups, intcs_mask_registers,
@@ -607,14 +714,198 @@ static void intcs_demux(unsigned int irq, struct irq_desc *desc)
 	generic_handle_irq(intcs_evt2irq(evtcodeas));
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void __init sh7372_init_irq(void)
 {
 	void __iomem *intevtsa = ioremap_nocache(0xffd20100, PAGE_SIZE);
 
 	register_intc_controller(&intca_desc);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void __iomem *intcs_ffd2;
+static void __iomem *intcs_ffd5;
+
+void __init sh7372_init_irq(void)
+{
+	void __iomem *intevtsa;
+<<<<<<< HEAD
+=======
+	int n;
+>>>>>>> refs/remotes/origin/master
+
+	intcs_ffd2 = ioremap_nocache(0xffd20000, PAGE_SIZE);
+	intevtsa = intcs_ffd2 + 0x100;
+	intcs_ffd5 = ioremap_nocache(0xffd50000, PAGE_SIZE);
+
+	register_intc_controller(&intca_desc);
+<<<<<<< HEAD
+	register_intc_controller(&intca_irq_pins_desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	register_intc_controller(&intcs_desc);
 
 	/* demux using INTEVTSA */
 	irq_set_handler_data(evt2irq(0xf80), (void *)intevtsa);
 	irq_set_chained_handler(evt2irq(0xf80), intcs_demux);
 }
+<<<<<<< HEAD
+=======
+=======
+	register_intc_controller(&intca_irq_pins_lo_desc);
+	register_intc_controller(&intca_irq_pins_hi_desc);
+	register_intc_controller(&intcs_desc);
+
+	/* setup dummy cascade chip for INTCS */
+	n = evt2irq(0xf80);
+	irq_alloc_desc_at(n, numa_node_id());
+	irq_set_chip_and_handler_name(n, &dummy_irq_chip,
+				      handle_level_irq, "level");
+	set_irq_flags(n, IRQF_VALID); /* yuck */
+
+	/* demux using INTEVTSA */
+	irq_set_handler_data(n, (void *)intevtsa);
+	irq_set_chained_handler(n, intcs_demux);
+
+	/* unmask INTCS in INTAMASK */
+	iowrite16(0, intcs_ffd2 + 0x104);
+}
+>>>>>>> refs/remotes/origin/master
+
+static unsigned short ffd2[0x200];
+static unsigned short ffd5[0x100];
+
+void sh7372_intcs_suspend(void)
+{
+	int k;
+
+	for (k = 0x00; k <= 0x30; k += 4)
+		ffd2[k] = __raw_readw(intcs_ffd2 + k);
+
+	for (k = 0x80; k <= 0xb0; k += 4)
+		ffd2[k] = __raw_readb(intcs_ffd2 + k);
+
+	for (k = 0x180; k <= 0x188; k += 4)
+		ffd2[k] = __raw_readb(intcs_ffd2 + k);
+
+	for (k = 0x00; k <= 0x3c; k += 4)
+		ffd5[k] = __raw_readw(intcs_ffd5 + k);
+
+	for (k = 0x80; k <= 0x9c; k += 4)
+		ffd5[k] = __raw_readb(intcs_ffd5 + k);
+}
+
+void sh7372_intcs_resume(void)
+{
+	int k;
+
+	for (k = 0x00; k <= 0x30; k += 4)
+		__raw_writew(ffd2[k], intcs_ffd2 + k);
+
+	for (k = 0x80; k <= 0xb0; k += 4)
+		__raw_writeb(ffd2[k], intcs_ffd2 + k);
+
+	for (k = 0x180; k <= 0x188; k += 4)
+		__raw_writeb(ffd2[k], intcs_ffd2 + k);
+
+	for (k = 0x00; k <= 0x3c; k += 4)
+		__raw_writew(ffd5[k], intcs_ffd5 + k);
+
+	for (k = 0x80; k <= 0x9c; k += 4)
+		__raw_writeb(ffd5[k], intcs_ffd5 + k);
+}
+
+<<<<<<< HEAD
+=======
+#define E694_BASE IOMEM(0xe6940000)
+#define E695_BASE IOMEM(0xe6950000)
+
+>>>>>>> refs/remotes/origin/master
+static unsigned short e694[0x200];
+static unsigned short e695[0x200];
+
+void sh7372_intca_suspend(void)
+{
+	int k;
+
+	for (k = 0x00; k <= 0x38; k += 4)
+<<<<<<< HEAD
+		e694[k] = __raw_readw(0xe6940000 + k);
+
+	for (k = 0x80; k <= 0xb4; k += 4)
+		e694[k] = __raw_readb(0xe6940000 + k);
+
+	for (k = 0x180; k <= 0x1b4; k += 4)
+		e694[k] = __raw_readb(0xe6940000 + k);
+
+	for (k = 0x00; k <= 0x50; k += 4)
+		e695[k] = __raw_readw(0xe6950000 + k);
+
+	for (k = 0x80; k <= 0xa8; k += 4)
+		e695[k] = __raw_readb(0xe6950000 + k);
+
+	for (k = 0x180; k <= 0x1a8; k += 4)
+		e695[k] = __raw_readb(0xe6950000 + k);
+=======
+		e694[k] = __raw_readw(E694_BASE + k);
+
+	for (k = 0x80; k <= 0xb4; k += 4)
+		e694[k] = __raw_readb(E694_BASE + k);
+
+	for (k = 0x180; k <= 0x1b4; k += 4)
+		e694[k] = __raw_readb(E694_BASE + k);
+
+	for (k = 0x00; k <= 0x50; k += 4)
+		e695[k] = __raw_readw(E695_BASE + k);
+
+	for (k = 0x80; k <= 0xa8; k += 4)
+		e695[k] = __raw_readb(E695_BASE + k);
+
+	for (k = 0x180; k <= 0x1a8; k += 4)
+		e695[k] = __raw_readb(E695_BASE + k);
+>>>>>>> refs/remotes/origin/master
+}
+
+void sh7372_intca_resume(void)
+{
+	int k;
+
+	for (k = 0x00; k <= 0x38; k += 4)
+<<<<<<< HEAD
+		__raw_writew(e694[k], 0xe6940000 + k);
+
+	for (k = 0x80; k <= 0xb4; k += 4)
+		__raw_writeb(e694[k], 0xe6940000 + k);
+
+	for (k = 0x180; k <= 0x1b4; k += 4)
+		__raw_writeb(e694[k], 0xe6940000 + k);
+
+	for (k = 0x00; k <= 0x50; k += 4)
+		__raw_writew(e695[k], 0xe6950000 + k);
+
+	for (k = 0x80; k <= 0xa8; k += 4)
+		__raw_writeb(e695[k], 0xe6950000 + k);
+
+	for (k = 0x180; k <= 0x1a8; k += 4)
+		__raw_writeb(e695[k], 0xe6950000 + k);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__raw_writew(e694[k], E694_BASE + k);
+
+	for (k = 0x80; k <= 0xb4; k += 4)
+		__raw_writeb(e694[k], E694_BASE + k);
+
+	for (k = 0x180; k <= 0x1b4; k += 4)
+		__raw_writeb(e694[k], E694_BASE + k);
+
+	for (k = 0x00; k <= 0x50; k += 4)
+		__raw_writew(e695[k], E695_BASE + k);
+
+	for (k = 0x80; k <= 0xa8; k += 4)
+		__raw_writeb(e695[k], E695_BASE + k);
+
+	for (k = 0x180; k <= 0x1a8; k += 4)
+		__raw_writeb(e695[k], E695_BASE + k);
+}
+>>>>>>> refs/remotes/origin/master

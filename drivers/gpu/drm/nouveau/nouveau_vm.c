@@ -78,9 +78,16 @@ nouveau_vm_map(struct nouveau_vma *vma, struct nouveau_mem *node)
 
 void
 nouveau_vm_map_sg(struct nouveau_vma *vma, u64 delta, u64 length,
+<<<<<<< HEAD
 		  struct nouveau_mem *mem, dma_addr_t *list)
 {
 	struct nouveau_vm *vm = vma->vm;
+=======
+		  struct nouveau_mem *mem)
+{
+	struct nouveau_vm *vm = vma->vm;
+	dma_addr_t *list = mem->pages;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int big = vma->node->type != vm->spg_shift;
 	u32 offset = vma->node->offset + (delta >> 12);
 	u32 bits = vma->node->type - 12;
@@ -172,9 +179,15 @@ nouveau_vm_unmap_pgt(struct nouveau_vm *vm, int big, u32 fpde, u32 lpde)
 			vm->map_pgt(vpgd->obj, pde, vpgt->obj);
 		}
 
+<<<<<<< HEAD
 		mutex_unlock(&vm->mm->mutex);
 		nouveau_gpuobj_ref(NULL, &pgt);
 		mutex_lock(&vm->mm->mutex);
+=======
+		mutex_unlock(&vm->mm.mutex);
+		nouveau_gpuobj_ref(NULL, &pgt);
+		mutex_lock(&vm->mm.mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -191,18 +204,31 @@ nouveau_vm_map_pgt(struct nouveau_vm *vm, u32 pde, u32 type)
 	pgt_size  = (1 << (vm->pgt_bits + 12)) >> type;
 	pgt_size *= 8;
 
+<<<<<<< HEAD
 	mutex_unlock(&vm->mm->mutex);
 	ret = nouveau_gpuobj_new(vm->dev, NULL, pgt_size, 0x1000,
 				 NVOBJ_FLAG_ZERO_ALLOC, &pgt);
 	mutex_lock(&vm->mm->mutex);
+=======
+	mutex_unlock(&vm->mm.mutex);
+	ret = nouveau_gpuobj_new(vm->dev, NULL, pgt_size, 0x1000,
+				 NVOBJ_FLAG_ZERO_ALLOC, &pgt);
+	mutex_lock(&vm->mm.mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(ret))
 		return ret;
 
 	/* someone beat us to filling the PDE while we didn't have the lock */
 	if (unlikely(vpgt->refcount[big]++)) {
+<<<<<<< HEAD
 		mutex_unlock(&vm->mm->mutex);
 		nouveau_gpuobj_ref(NULL, &pgt);
 		mutex_lock(&vm->mm->mutex);
+=======
+		mutex_unlock(&vm->mm.mutex);
+		nouveau_gpuobj_ref(NULL, &pgt);
+		mutex_lock(&vm->mm.mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	}
 
@@ -223,10 +249,17 @@ nouveau_vm_get(struct nouveau_vm *vm, u64 size, u32 page_shift,
 	u32 fpde, lpde, pde;
 	int ret;
 
+<<<<<<< HEAD
 	mutex_lock(&vm->mm->mutex);
 	ret = nouveau_mm_get(vm->mm, page_shift, msize, 0, align, &vma->node);
 	if (unlikely(ret != 0)) {
 		mutex_unlock(&vm->mm->mutex);
+=======
+	mutex_lock(&vm->mm.mutex);
+	ret = nouveau_mm_get(&vm->mm, page_shift, msize, 0, align, &vma->node);
+	if (unlikely(ret != 0)) {
+		mutex_unlock(&vm->mm.mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret;
 	}
 
@@ -245,13 +278,22 @@ nouveau_vm_get(struct nouveau_vm *vm, u64 size, u32 page_shift,
 		if (ret) {
 			if (pde != fpde)
 				nouveau_vm_unmap_pgt(vm, big, fpde, pde - 1);
+<<<<<<< HEAD
 			nouveau_mm_put(vm->mm, vma->node);
 			mutex_unlock(&vm->mm->mutex);
+=======
+			nouveau_mm_put(&vm->mm, vma->node);
+			mutex_unlock(&vm->mm.mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 			vma->node = NULL;
 			return ret;
 		}
 	}
+<<<<<<< HEAD
 	mutex_unlock(&vm->mm->mutex);
+=======
+	mutex_unlock(&vm->mm.mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	vma->vm     = vm;
 	vma->offset = (u64)vma->node->offset << 12;
@@ -270,11 +312,19 @@ nouveau_vm_put(struct nouveau_vma *vma)
 	fpde = (vma->node->offset >> vm->pgt_bits);
 	lpde = (vma->node->offset + vma->node->length - 1) >> vm->pgt_bits;
 
+<<<<<<< HEAD
 	mutex_lock(&vm->mm->mutex);
 	nouveau_vm_unmap_pgt(vm, vma->node->type != vm->spg_shift, fpde, lpde);
 	nouveau_mm_put(vm->mm, vma->node);
 	vma->node = NULL;
 	mutex_unlock(&vm->mm->mutex);
+=======
+	mutex_lock(&vm->mm.mutex);
+	nouveau_vm_unmap_pgt(vm, vma->node->type != vm->spg_shift, fpde, lpde);
+	nouveau_mm_put(&vm->mm, vma->node);
+	vma->node = NULL;
+	mutex_unlock(&vm->mm.mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int
@@ -306,7 +356,11 @@ nouveau_vm_new(struct drm_device *dev, u64 offset, u64 length, u64 mm_offset,
 			block = length;
 
 	} else
+<<<<<<< HEAD
 	if (dev_priv->card_type == NV_C0) {
+=======
+	if (dev_priv->card_type >= NV_C0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		vm->map_pgt = nvc0_vm_map_pgt;
 		vm->map = nvc0_vm_map;
 		vm->map_sg = nvc0_vm_map_sg;
@@ -360,15 +414,24 @@ nouveau_vm_link(struct nouveau_vm *vm, struct nouveau_gpuobj *pgd)
 
 	nouveau_gpuobj_ref(pgd, &vpgd->obj);
 
+<<<<<<< HEAD
 	mutex_lock(&vm->mm->mutex);
 	for (i = vm->fpde; i <= vm->lpde; i++)
 		vm->map_pgt(pgd, i, vm->pgt[i - vm->fpde].obj);
 	list_add(&vpgd->head, &vm->pgd_list);
 	mutex_unlock(&vm->mm->mutex);
+=======
+	mutex_lock(&vm->mm.mutex);
+	for (i = vm->fpde; i <= vm->lpde; i++)
+		vm->map_pgt(pgd, i, vm->pgt[i - vm->fpde].obj);
+	list_add(&vpgd->head, &vm->pgd_list);
+	mutex_unlock(&vm->mm.mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static void
+<<<<<<< HEAD
 nouveau_vm_unlink(struct nouveau_vm *vm, struct nouveau_gpuobj *pgd)
 {
 	struct nouveau_vm_pgd *vpgd, *tmp;
@@ -386,6 +449,28 @@ nouveau_vm_unlink(struct nouveau_vm *vm, struct nouveau_gpuobj *pgd)
 		kfree(vpgd);
 	}
 	mutex_unlock(&vm->mm->mutex);
+=======
+nouveau_vm_unlink(struct nouveau_vm *vm, struct nouveau_gpuobj *mpgd)
+{
+	struct nouveau_vm_pgd *vpgd, *tmp;
+	struct nouveau_gpuobj *pgd = NULL;
+
+	if (!mpgd)
+		return;
+
+	mutex_lock(&vm->mm.mutex);
+	list_for_each_entry_safe(vpgd, tmp, &vm->pgd_list, head) {
+		if (vpgd->obj == mpgd) {
+			pgd = vpgd->obj;
+			list_del(&vpgd->head);
+			kfree(vpgd);
+			break;
+		}
+	}
+	mutex_unlock(&vm->mm.mutex);
+
+	nouveau_gpuobj_ref(NULL, &pgd);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void
@@ -396,8 +481,13 @@ nouveau_vm_del(struct nouveau_vm *vm)
 	list_for_each_entry_safe(vpgd, tmp, &vm->pgd_list, head) {
 		nouveau_vm_unlink(vm, vpgd->obj);
 	}
+<<<<<<< HEAD
 	WARN_ON(nouveau_mm_fini(&vm->mm) != 0);
 
+=======
+
+	nouveau_mm_fini(&vm->mm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(vm->pgt);
 	kfree(vm);
 }

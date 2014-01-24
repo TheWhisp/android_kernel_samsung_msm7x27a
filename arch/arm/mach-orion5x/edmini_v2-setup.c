@@ -23,8 +23,13 @@
 #include <linux/platform_device.h>
 #include <linux/pci.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <linux/mtd/physmap.h>
 #include <linux/mv643xx_eth.h>
+=======
+#include <linux/mbus.h>
+#include <linux/mtd/physmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/leds.h>
 #include <linux/gpio_keys.h>
 #include <linux/input.h>
@@ -96,6 +101,7 @@ static struct platform_device edmini_v2_nor_flash = {
 };
 
 /*****************************************************************************
+<<<<<<< HEAD
  * Ethernet
  ****************************************************************************/
 
@@ -104,6 +110,8 @@ static struct mv643xx_eth_platform_data edmini_v2_eth_data = {
 };
 
 /*****************************************************************************
+=======
+>>>>>>> refs/remotes/origin/master
  * RTC 5C372a on I2C bus
  ****************************************************************************/
 
@@ -115,6 +123,7 @@ static struct i2c_board_info __initdata edmini_v2_i2c_rtc = {
 };
 
 /*****************************************************************************
+<<<<<<< HEAD
  * Sata
  ****************************************************************************/
 
@@ -178,6 +187,8 @@ static struct platform_device edmini_v2_gpio_buttons = {
 };
 
 /*****************************************************************************
+=======
+>>>>>>> refs/remotes/origin/master
  * General Setup
  ****************************************************************************/
 static unsigned int edminiv2_mpp_modes[] __initdata = {
@@ -207,6 +218,7 @@ static unsigned int edminiv2_mpp_modes[] __initdata = {
 	0,
 };
 
+<<<<<<< HEAD
 static void __init edmini_v2_init(void)
 {
 	/*
@@ -214,12 +226,17 @@ static void __init edmini_v2_init(void)
 	 */
 	orion5x_init();
 
+=======
+void __init edmini_v2_init(void)
+{
+>>>>>>> refs/remotes/origin/master
 	orion5x_mpp_conf(edminiv2_mpp_modes);
 
 	/*
 	 * Configure peripherals.
 	 */
 	orion5x_ehci0_init();
+<<<<<<< HEAD
 	orion5x_eth_init(&edmini_v2_eth_data);
 	orion5x_i2c_init();
 	orion5x_sata_init(&edmini_v2_sata_data);
@@ -230,6 +247,14 @@ static void __init edmini_v2_init(void)
 	platform_device_register(&edmini_v2_nor_flash);
 	platform_device_register(&edmini_v2_gpio_leds);
 	platform_device_register(&edmini_v2_gpio_buttons);
+=======
+
+	mvebu_mbus_add_window_by_id(ORION_MBUS_DEVBUS_BOOT_TARGET,
+				    ORION_MBUS_DEVBUS_BOOT_ATTR,
+				    EDMINI_V2_NOR_BOOT_BASE,
+				    EDMINI_V2_NOR_BOOT_SIZE);
+	platform_device_register(&edmini_v2_nor_flash);
+>>>>>>> refs/remotes/origin/master
 
 	pr_notice("edmini_v2: USB device port, flash write and power-off "
 		  "are not yet supported.\n");
@@ -247,15 +272,26 @@ static void __init edmini_v2_init(void)
 
 	i2c_register_board_info(0, &edmini_v2_i2c_rtc, 1);
 }
+<<<<<<< HEAD
 
 /* Warning: LaCie use a wrong mach-type (0x20e=526) in their bootloader. */
 MACHINE_START(EDMINI_V2, "LaCie Ethernet Disk mini V2")
 	/* Maintainer: Christopher Moore <moore@free.fr> */
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= edmini_v2_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
+<<<<<<< HEAD
+=======
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
+=======
+>>>>>>> refs/remotes/origin/master

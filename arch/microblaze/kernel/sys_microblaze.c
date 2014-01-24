@@ -13,6 +13,10 @@
  */
 
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/smp.h>
 #include <linux/syscalls.h>
@@ -24,13 +28,17 @@
 #include <linux/sys.h>
 #include <linux/ipc.h>
 #include <linux/file.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/fs.h>
 #include <linux/semaphore.h>
 #include <linux/uaccess.h>
 #include <linux/unistd.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 #include <asm/syscalls.h>
 
@@ -69,6 +77,13 @@ out:
 asmlinkage long sys_mmap(unsigned long addr, unsigned long len,
 			unsigned long prot, unsigned long flags,
 			unsigned long fd, off_t pgoff)
+=======
+#include <asm/syscalls.h>
+
+SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
+		unsigned long, prot, unsigned long, flags, unsigned long, fd,
+		off_t, pgoff)
+>>>>>>> refs/remotes/origin/master
 {
 	if (pgoff & ~PAGE_MASK)
 		return -EINVAL;
@@ -76,6 +91,7 @@ asmlinkage long sys_mmap(unsigned long addr, unsigned long len,
 	return sys_mmap_pgoff(addr, len, prot, flags, fd, pgoff >> PAGE_SHIFT);
 }
 
+<<<<<<< HEAD
 /*
  * Do a system call from kernel instead of calling sys_execve so we
  * end up with proper pt_regs.
@@ -95,4 +111,15 @@ int kernel_execve(const char *filename,
 			: "r4", "r8", "r9",
 			"r10", "r11", "r14", "cc", "memory");
 	return __ret;
+=======
+SYSCALL_DEFINE6(mmap2, unsigned long, addr, unsigned long, len,
+		unsigned long, prot, unsigned long, flags, unsigned long, fd,
+		unsigned long, pgoff)
+{
+	if (pgoff & (~PAGE_MASK >> 12))
+		return -EINVAL;
+
+	return sys_mmap_pgoff(addr, len, prot, flags, fd,
+			      pgoff >> (PAGE_SHIFT - 12));
+>>>>>>> refs/remotes/origin/master
 }

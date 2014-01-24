@@ -12,15 +12,25 @@
 #ifndef _DAVINCI_PCM_H
 #define _DAVINCI_PCM_H
 
+<<<<<<< HEAD
 #include <mach/edma.h>
 #include <mach/asp.h>
 
+=======
+#include <linux/genalloc.h>
+#include <linux/platform_data/davinci_asp.h>
+#include <linux/platform_data/edma.h>
+>>>>>>> refs/remotes/origin/master
 
 struct davinci_pcm_dma_params {
 	int channel;			/* sync dma channel ID */
 	unsigned short acnt;
 	dma_addr_t dma_addr;		/* device physical address for DMA */
 	unsigned sram_size;
+<<<<<<< HEAD
+=======
+	struct gen_pool *sram_pool;	/* SRAM gen_pool for ping pong */
+>>>>>>> refs/remotes/origin/master
 	enum dma_event_q asp_chan_q;	/* event queue number for ASP channel */
 	enum dma_event_q ram_chan_q;	/* event queue number for RAM channel */
 	unsigned char data_type;	/* xfer data type */
@@ -28,4 +38,10 @@ struct davinci_pcm_dma_params {
 	unsigned int fifo_level;
 };
 
+<<<<<<< HEAD
+=======
+int davinci_soc_platform_register(struct device *dev);
+void davinci_soc_platform_unregister(struct device *dev);
+
+>>>>>>> refs/remotes/origin/master
 #endif

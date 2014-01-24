@@ -1,7 +1,18 @@
 /* linux/include/asm-arm/arch-msm/dma.h
  *
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -15,6 +26,10 @@
  */
 
 #ifndef __ASM_ARCH_MSM_DMA_H
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define __ASM_ARCH_MSM_DMA_H
 
 #include <linux/list.h>
@@ -23,6 +38,13 @@
 #if defined(CONFIG_ARCH_FSM9XXX)
 #include <mach/dma-fsm9xxx.h>
 #endif
+<<<<<<< HEAD
+=======
+
+#include <linux/list.h>
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 struct msm_dmov_errdata {
 	uint32_t flush[6];
@@ -34,19 +56,39 @@ struct msm_dmov_cmd {
 	void (*complete_func)(struct msm_dmov_cmd *cmd,
 			      unsigned int result,
 			      struct msm_dmov_errdata *err);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void (*exec_func)(struct msm_dmov_cmd *cmd);
+<<<<<<< HEAD
 	void *user;	/* Pointer for caller's reference */
+=======
+=======
+	void (*exec_func)(struct msm_dmov_cmd *cmd);
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct work_struct work;
+	unsigned id;    /* For internal use */
+	void *user;	/* Pointer for caller's reference */
+	u8 toflush;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 struct msm_dmov_pdata {
 	int sd;
 	size_t sd_size;
+<<<<<<< HEAD
 };
 
 void msm_dmov_enqueue_cmd(unsigned id, struct msm_dmov_cmd *cmd);
 void msm_dmov_enqueue_cmd_ext(unsigned id, struct msm_dmov_cmd *cmd);
+<<<<<<< HEAD
 void msm_dmov_stop_cmd(unsigned id, struct msm_dmov_cmd *cmd, int graceful);
 void msm_dmov_flush(unsigned int id);
+=======
+void msm_dmov_flush(unsigned int id, int graceful);
+>>>>>>> refs/remotes/origin/cm-10.0
 int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 
 #define DMOV_CRCIS_PER_CONF 10
@@ -54,19 +96,51 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 #define DMOV_ADDR(off, ch) ((off) + ((ch) << 2))
 
 #define DMOV_CMD_PTR(ch)      DMOV_ADDR(0x000, ch)
+=======
+	void (*execute_func)(struct msm_dmov_cmd *cmd);
+	void *data;
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+};
+
+void msm_dmov_enqueue_cmd(unsigned id, struct msm_dmov_cmd *cmd);
+void msm_dmov_enqueue_cmd_ext(unsigned id, struct msm_dmov_cmd *cmd);
+void msm_dmov_flush(unsigned int id, int graceful);
+int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+#define DMOV_CRCIS_PER_CONF 10
+
+#define DMOV_ADDR(off, ch) ((off) + ((ch) << 2))
+
+#define DMOV_CMD_PTR(ch)      DMOV_ADDR(0x000, ch)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMOV_CMD_LIST         (0 << 29) /* does not work */
 #define DMOV_CMD_PTR_LIST     (1 << 29) /* works */
 #define DMOV_CMD_INPUT_CFG    (2 << 29) /* untested */
 #define DMOV_CMD_OUTPUT_CFG   (3 << 29) /* untested */
 #define DMOV_CMD_ADDR(addr)   ((addr) >> 3)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DMOV_RSLT(ch)         DMOV_ADDR(0x040, ch)
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#define DMOV_RSLT(ch)         DMOV_ADDR(0x040, ch)
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMOV_RSLT_VALID       (1 << 31) /* 0 == host has empties result fifo */
 #define DMOV_RSLT_ERROR       (1 << 3)
 #define DMOV_RSLT_FLUSH       (1 << 2)
 #define DMOV_RSLT_DONE        (1 << 1)  /* top pointer done */
 #define DMOV_RSLT_USER        (1 << 0)  /* command with FR force result */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMOV_FLUSH0(ch)       DMOV_ADDR(0x080, ch)
 #define DMOV_FLUSH1(ch)       DMOV_ADDR(0x0C0, ch)
 #define DMOV_FLUSH2(ch)       DMOV_ADDR(0x100, ch)
@@ -76,11 +150,20 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 #define DMOV_FLUSH_TYPE       (1 << 31)
 
 #define DMOV_STATUS(ch)       DMOV_ADDR(0x200, ch)
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMOV_STATUS_RSLT_COUNT(n)    (((n) >> 29))
 #define DMOV_STATUS_CMD_COUNT(n)     (((n) >> 27) & 3)
 #define DMOV_STATUS_RSLT_VALID       (1 << 1)
 #define DMOV_STATUS_CMD_PTR_RDY      (1 << 0)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMOV_CONF(ch)         DMOV_ADDR(0x240, ch)
 #define DMOV_CONF_SD(sd)      (((sd & 4) << 11) | ((sd & 3) << 4))
 #define DMOV_CONF_IRQ_EN             (1 << 6)
@@ -114,6 +197,7 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 #define DMOV_CRCI_CTL_BLK_SZ(n)        ((n) << 0)
 #define DMOV_CRCI_CTL_RST              (1 << 17)
 #define DMOV_CRCI_MUX                  (1 << 18)
+<<<<<<< HEAD
 
 /* channel assignments */
 
@@ -186,6 +270,15 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 #define DMOV_HSUART_GSBI6_RX_CHAN	8
 #define DMOV_HSUART_GSBI6_RX_CRCI	11
 
+<<<<<<< HEAD
+=======
+#define DMOV_HSUART_GSBI9_TX_CHAN	4
+#define DMOV_HSUART_GSBI9_TX_CRCI	13
+
+#define DMOV_HSUART_GSBI9_RX_CHAN	3
+#define DMOV_HSUART_GSBI9_RX_CRCI	12
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #elif defined(CONFIG_ARCH_MSM9615)
 
 #define DMOV_GP_CHAN          4
@@ -214,6 +307,122 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 
 #define DMOV_CE_HASH_CRCI     3
 
+=======
+#define DMOV_CONFIG_FORCE_TOP_PTR_RSLT (1 << 2)
+#define DMOV_CONFIG_FORCE_FLUSH_RSLT   (1 << 1)
+#define DMOV_CONFIG_IRQ_EN             (1 << 0)
+
+/* channel assignments */
+
+>>>>>>> refs/remotes/origin/master
+=======
+
+/* channel assignments */
+
+/*
+ * Format of CRCI numbers: crci number + (muxsel << 4)
+ */
+
+#if defined(CONFIG_ARCH_MSM8X60)
+#define DMOV_GP_CHAN           15
+
+#define DMOV_NAND_CHAN         17
+#define DMOV_NAND_CHAN_MODEM   26
+#define DMOV_NAND_CHAN_Q6      27
+#define DMOV_NAND_CRCI_CMD     15
+#define DMOV_NAND_CRCI_DATA    3
+
+#define DMOV_CE_IN_CHAN        2
+#define DMOV_CE_IN_CRCI        4
+
+#define DMOV_CE_OUT_CHAN       3
+#define DMOV_CE_OUT_CRCI       5
+
+#define DMOV_CE_HASH_CRCI      15
+
+#define DMOV_SDC1_CHAN         18
+#define DMOV_SDC1_CRCI         1
+
+#define DMOV_SDC2_CHAN         19
+#define DMOV_SDC2_CRCI         4
+
+#define DMOV_SDC3_CHAN         20
+#define DMOV_SDC3_CRCI         2
+
+#define DMOV_SDC4_CHAN         21
+#define DMOV_SDC4_CRCI         5
+
+#define DMOV_SDC5_CHAN         21
+#define DMOV_SDC5_CRCI         14
+
+#define DMOV_TSIF_CHAN         4
+#define DMOV_TSIF_CRCI         6
+
+#define DMOV_HSUART1_TX_CHAN   22
+#define DMOV_HSUART1_TX_CRCI   8
+
+#define DMOV_HSUART1_RX_CHAN   23
+#define DMOV_HSUART1_RX_CRCI   9
+
+#define DMOV_HSUART2_TX_CHAN   8
+#define DMOV_HSUART2_TX_CRCI   13
+
+#define DMOV_HSUART2_RX_CHAN   8
+#define DMOV_HSUART2_RX_CRCI   14
+
+#elif defined(CONFIG_ARCH_MSM8960)
+#define DMOV_GP_CHAN           9
+
+#define DMOV_CE_IN_CHAN        0
+#define DMOV_CE_IN_CRCI        2
+
+#define DMOV_CE_OUT_CHAN       1
+#define DMOV_CE_OUT_CRCI       3
+
+#define DMOV_TSIF_CHAN         2
+#define DMOV_TSIF_CRCI         11
+
+#define DMOV_HSUART_GSBI6_TX_CHAN	7
+#define DMOV_HSUART_GSBI6_TX_CRCI	6
+
+#define DMOV_HSUART_GSBI6_RX_CHAN	8
+#define DMOV_HSUART_GSBI6_RX_CRCI	11
+
+#define DMOV_HSUART_GSBI9_TX_CHAN	4
+#define DMOV_HSUART_GSBI9_TX_CRCI	13
+
+#define DMOV_HSUART_GSBI9_RX_CHAN	3
+#define DMOV_HSUART_GSBI9_RX_CRCI	12
+
+#elif defined(CONFIG_ARCH_MSM9615)
+
+#define DMOV_GP_CHAN          4
+
+#define DMOV_CE_IN_CHAN       0
+#define DMOV_CE_IN_CRCI       12
+
+#define DMOV_CE_OUT_CHAN      1
+#define DMOV_CE_OUT_CRCI      13
+
+#define DMOV_NAND_CHAN        3
+#define DMOV_NAND_CRCI_CMD    15
+#define DMOV_NAND_CRCI_DATA   3
+
+#elif defined(CONFIG_ARCH_FSM9XXX)
+/* defined in dma-fsm9xxx.h */
+
+#else
+#define DMOV_GP_CHAN          4
+
+#define DMOV_CE_IN_CHAN       5
+#define DMOV_CE_IN_CRCI       1
+
+#define DMOV_CE_OUT_CHAN      6
+#define DMOV_CE_OUT_CRCI      2
+
+#define DMOV_CE_HASH_CRCI     3
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMOV_NAND_CHAN        7
 #define DMOV_NAND_CRCI_CMD    5
 #define DMOV_NAND_CRCI_DATA   4
@@ -224,17 +433,30 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 #define DMOV_SDC2_CHAN        8
 #define DMOV_SDC2_CRCI        7
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMOV_SDC3_CHAN        8
 #define DMOV_SDC3_CRCI        12
 
 #define DMOV_SDC4_CHAN        8
 #define DMOV_SDC4_CRCI        13
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMOV_TSIF_CHAN        10
 #define DMOV_TSIF_CRCI        10
 
 #define DMOV_USB_CHAN         11
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DMOV_HSUART1_TX_CHAN   4
 #define DMOV_HSUART1_TX_CRCI   8
 
@@ -249,13 +471,31 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 #endif
 
 /* channels for APQ8064 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DMOV8064_CE_IN_CHAN        2
 #define DMOV8064_CE_IN_CRCI       14
 
 #define DMOV8064_CE_OUT_CHAN       3
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define DMOV8064_CE_IN_CHAN        0
+#define DMOV8064_CE_IN_CRCI       14
+
+#define DMOV8064_CE_OUT_CHAN       1
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DMOV8064_CE_OUT_CRCI       15
 
 
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#define DMOV8064_CE_OUT_CRCI       15
+
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /* no client rate control ifc (eg, ram) */
 #define DMOV_NONE_CRCI        0
 

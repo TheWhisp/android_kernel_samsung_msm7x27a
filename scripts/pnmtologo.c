@@ -74,6 +74,10 @@ static unsigned int logo_height;
 static struct color **logo_data;
 static struct color logo_clut[MAX_LINUX_LOGO_COLORS];
 static unsigned int logo_clutsize;
+<<<<<<< HEAD
+=======
+static int is_plain_pbm = 0;
+>>>>>>> refs/remotes/origin/master
 
 static void die(const char *fmt, ...)
     __attribute__ ((noreturn)) __attribute ((format (printf, 1, 2)));
@@ -103,6 +107,14 @@ static unsigned int get_number(FILE *fp)
     val = 0;
     while (isdigit(c)) {
 	val = 10*val+c-'0';
+<<<<<<< HEAD
+=======
+	/* some PBM are 'broken'; GiMP for example exports a PBM without space
+	 * between the digits. This is Ok cause we know a PBM can only have a '1'
+	 * or a '0' for the digit. */
+	if (is_plain_pbm)
+		break;
+>>>>>>> refs/remotes/origin/master
 	c = fgetc(fp);
 	if (c == EOF)
 	    die("%s: end of file\n", filename);
@@ -167,6 +179,10 @@ static void read_image(void)
     switch (magic) {
 	case '1':
 	    /* Plain PBM */
+<<<<<<< HEAD
+=======
+	    is_plain_pbm = 1;
+>>>>>>> refs/remotes/origin/master
 	    for (i = 0; i < logo_height; i++)
 		for (j = 0; j < logo_width; j++)
 		    logo_data[i][j].red = logo_data[i][j].green =

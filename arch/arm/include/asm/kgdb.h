@@ -11,6 +11,10 @@
 #define __ARM_KGDB_H__
 
 #include <linux/ptrace.h>
+<<<<<<< HEAD
+=======
+#include <asm/opcodes.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * GDB assumes that we're a user process being debugged, so
@@ -41,7 +45,11 @@
 
 static inline void arch_kgdb_breakpoint(void)
 {
+<<<<<<< HEAD
 	asm(".word 0xe7ffdeff");
+=======
+	asm(__inst_arm(0xe7ffdeff));
+>>>>>>> refs/remotes/origin/master
 }
 
 extern void kgdb_handle_bus_error(void);

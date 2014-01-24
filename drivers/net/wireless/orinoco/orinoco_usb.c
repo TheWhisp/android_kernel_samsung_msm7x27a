@@ -199,7 +199,15 @@ MODULE_FIRMWARE("orinoco_ezusb_fw");
 #define EZUSB_FRAME_DATA		1
 #define EZUSB_FRAME_CONTROL		2
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DEF_TIMEOUT			(3*HZ)
+=======
+#define DEF_TIMEOUT			(3 * HZ)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DEF_TIMEOUT			(3 * HZ)
+>>>>>>> refs/remotes/origin/master
 
 #define BULK_BUF_SIZE			2048
 
@@ -804,10 +812,22 @@ static inline int ezusb_8051_cpucs(struct ezusb_priv *upriv, int reset)
 static int ezusb_firmware_download(struct ezusb_priv *upriv,
 				   struct ez_usb_fw *fw)
 {
+<<<<<<< HEAD
 	u8 fw_buffer[FW_BUF_SIZE];
 	int retval, addr;
 	int variant_offset;
 
+=======
+	u8 *fw_buffer;
+	int retval, addr;
+	int variant_offset;
+
+	fw_buffer = kmalloc(FW_BUF_SIZE, GFP_KERNEL);
+	if (!fw_buffer) {
+		printk(KERN_ERR PFX "Out of memory for firmware buffer.\n");
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This byte is 1 and should be replaced with 0.  The offset is
 	 * 0x10AD in version 0.0.6.  The byte in question should follow
@@ -859,13 +879,21 @@ static int ezusb_firmware_download(struct ezusb_priv *upriv,
 	printk(KERN_ERR PFX "Firmware download failed, error %d\n",
 	       retval);
  exit:
+<<<<<<< HEAD
+=======
+	kfree(fw_buffer);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
 static int ezusb_access_ltv(struct ezusb_priv *upriv,
 			    struct request_context *ctx,
 			    u16 length, const void *data, u16 frame_type,
+<<<<<<< HEAD
 			    void *ans_buff, int ans_size, u16 *ans_length)
+=======
+			    void *ans_buff, unsigned ans_size, u16 *ans_length)
+>>>>>>> refs/remotes/origin/master
 {
 	int req_size;
 	int retval = 0;
@@ -875,7 +903,12 @@ static int ezusb_access_ltv(struct ezusb_priv *upriv,
 
 	if (!upriv->udev) {
 		dbg("Device disconnected");
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		retval = -ENODEV;
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (upriv->read_urb->status != -EINPROGRESS)
@@ -933,7 +966,11 @@ static int ezusb_access_ltv(struct ezusb_priv *upriv,
 	}
 	if (ctx->in_rid) {
 		struct ezusb_packet *ans = ctx->buf;
+<<<<<<< HEAD
 		int exp_len;
+=======
+		unsigned exp_len;
+>>>>>>> refs/remotes/origin/master
 
 		if (ans->hermes_len != 0)
 			exp_len = le16_to_cpu(ans->hermes_len) * 2 + 12;
@@ -949,8 +986,12 @@ static int ezusb_access_ltv(struct ezusb_priv *upriv,
 		}
 
 		if (ans_buff)
+<<<<<<< HEAD
 			memcpy(ans_buff, ans->data,
 			       min_t(int, exp_len, ans_size));
+=======
+			memcpy(ans_buff, ans->data, min(exp_len, ans_size));
+>>>>>>> refs/remotes/origin/master
 		if (ans_length)
 			*ans_length = le16_to_cpu(ans->hermes_len);
 	}
@@ -959,7 +1000,15 @@ static int ezusb_access_ltv(struct ezusb_priv *upriv,
 	return retval;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ezusb_write_ltv(hermes_t *hw, int bap, u16 rid,
+=======
+static int ezusb_write_ltv(struct hermes *hw, int bap, u16 rid,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ezusb_write_ltv(struct hermes *hw, int bap, u16 rid,
+>>>>>>> refs/remotes/origin/master
 			   u16 length, const void *data)
 {
 	struct ezusb_priv *upriv = hw->priv;
@@ -989,13 +1038,25 @@ static int ezusb_write_ltv(hermes_t *hw, int bap, u16 rid,
 				NULL, 0, NULL);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ezusb_read_ltv(hermes_t *hw, int bap, u16 rid,
+=======
+static int ezusb_read_ltv(struct hermes *hw, int bap, u16 rid,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ezusb_read_ltv(struct hermes *hw, int bap, u16 rid,
+>>>>>>> refs/remotes/origin/master
 			  unsigned bufsize, u16 *length, void *buf)
 {
 	struct ezusb_priv *upriv = hw->priv;
 	struct request_context *ctx;
 
+<<<<<<< HEAD
 	if ((bufsize < 0) || (bufsize % 2))
+=======
+	if (bufsize % 2)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	ctx = ezusb_alloc_ctx(upriv, rid, rid);
@@ -1006,7 +1067,15 @@ static int ezusb_read_ltv(hermes_t *hw, int bap, u16 rid,
 				buf, bufsize, length);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ezusb_doicmd_wait(hermes_t *hw, u16 cmd, u16 parm0, u16 parm1,
+=======
+static int ezusb_doicmd_wait(struct hermes *hw, u16 cmd, u16 parm0, u16 parm1,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ezusb_doicmd_wait(struct hermes *hw, u16 cmd, u16 parm0, u16 parm1,
+>>>>>>> refs/remotes/origin/master
 			     u16 parm2, struct hermes_response *resp)
 {
 	struct ezusb_priv *upriv = hw->priv;
@@ -1028,7 +1097,15 @@ static int ezusb_doicmd_wait(hermes_t *hw, u16 cmd, u16 parm0, u16 parm1,
 				EZUSB_FRAME_CONTROL, NULL, 0, NULL);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ezusb_docmd_wait(hermes_t *hw, u16 cmd, u16 parm0,
+=======
+static int ezusb_docmd_wait(struct hermes *hw, u16 cmd, u16 parm0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ezusb_docmd_wait(struct hermes *hw, u16 cmd, u16 parm0,
+>>>>>>> refs/remotes/origin/master
 			    struct hermes_response *resp)
 {
 	struct ezusb_priv *upriv = hw->priv;
@@ -1196,7 +1273,15 @@ static netdev_tx_t ezusb_xmit(struct sk_buff *skb, struct net_device *dev)
 	struct orinoco_private *priv = ndev_priv(dev);
 	struct net_device_stats *stats = &priv->stats;
 	struct ezusb_priv *upriv = priv->card;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 mic[MICHAEL_MIC_LEN+1];
+=======
+	u8 mic[MICHAEL_MIC_LEN + 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 mic[MICHAEL_MIC_LEN + 1];
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	int tx_control;
 	unsigned long flags;
@@ -1356,7 +1441,15 @@ static int ezusb_hard_reset(struct orinoco_private *priv)
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ezusb_init(hermes_t *hw)
+=======
+static int ezusb_init(struct hermes *hw)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ezusb_init(struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ezusb_priv *upriv = hw->priv;
 	int retval;
@@ -1438,7 +1531,15 @@ static void ezusb_bulk_in_callback(struct urb *urb)
 	} else if (upriv->dev) {
 		struct net_device *dev = upriv->dev;
 		struct orinoco_private *priv = ndev_priv(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		hermes_t *hw = &priv->hw;
+=======
+		struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 
 		if (hermes_rid == EZUSB_RID_RX) {
 			__orinoco_ev_rx(dev, hw);
@@ -1562,7 +1663,15 @@ static const struct net_device_ops ezusb_netdev_ops = {
 	.ndo_open		= orinoco_open,
 	.ndo_stop		= orinoco_stop,
 	.ndo_start_xmit		= ezusb_xmit,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= orinoco_set_multicast_list,
+=======
+	.ndo_set_rx_mode	= orinoco_set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= orinoco_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_change_mtu		= orinoco_change_mtu,
 	.ndo_set_mac_address	= eth_mac_addr,
 	.ndo_validate_addr	= eth_validate_addr,
@@ -1575,11 +1684,23 @@ static int ezusb_probe(struct usb_interface *interface,
 {
 	struct usb_device *udev = interface_to_usbdev(interface);
 	struct orinoco_private *priv;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw;
+=======
+	struct hermes *hw;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ezusb_priv *upriv = NULL;
 	struct usb_interface_descriptor *iface_desc;
 	struct usb_endpoint_descriptor *ep;
 	const struct firmware *fw_entry;
+=======
+	struct hermes *hw;
+	struct ezusb_priv *upriv = NULL;
+	struct usb_interface_descriptor *iface_desc;
+	struct usb_endpoint_descriptor *ep;
+	const struct firmware *fw_entry = NULL;
+>>>>>>> refs/remotes/origin/master
 	int retval = 0;
 	int i;
 
@@ -1682,7 +1803,12 @@ static int ezusb_probe(struct usb_interface *interface,
 		firmware.code = fw_entry->data;
 	}
 	if (firmware.size && firmware.code) {
+<<<<<<< HEAD
 		ezusb_firmware_download(upriv, &firmware);
+=======
+		if (ezusb_firmware_download(upriv, &firmware))
+			goto error;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		err("No firmware to download");
 		goto error;
@@ -1752,8 +1878,10 @@ static struct usb_driver orinoco_driver = {
 	.probe = ezusb_probe,
 	.disconnect = ezusb_disconnect,
 	.id_table = ezusb_table,
+<<<<<<< HEAD
 };
 
+<<<<<<< HEAD
 /* Can't be declared "const" or the whole __initdata section will
  * become const */
 static char version[] __initdata = DRIVER_NAME " " DRIVER_VERSION
@@ -1789,4 +1917,18 @@ module_exit(ezusb_module_exit);
 MODULE_AUTHOR("Manuel Estrada Sainz");
 MODULE_DESCRIPTION
     ("Driver for Orinoco wireless LAN cards using EZUSB bridge");
+=======
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+>>>>>>> refs/remotes/origin/master
+module_usb_driver(orinoco_driver);
+
+MODULE_AUTHOR("Manuel Estrada Sainz");
+MODULE_DESCRIPTION("Driver for Orinoco wireless LAN cards using EZUSB bridge");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("Dual MPL/GPL");

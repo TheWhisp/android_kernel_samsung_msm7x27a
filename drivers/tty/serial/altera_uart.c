@@ -231,7 +231,13 @@ static void altera_uart_rx_chars(struct altera_uart *pp)
 				 flag);
 	}
 
+<<<<<<< HEAD
 	tty_flip_buffer_push(port->state->port.tty);
+=======
+	spin_unlock(&port->lock);
+	tty_flip_buffer_push(&port->state->port);
+	spin_lock(&port->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void altera_uart_tx_chars(struct altera_uart *pp)
@@ -315,7 +321,15 @@ static int altera_uart_startup(struct uart_port *port)
 		return 0;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(port->irq, altera_uart_interrupt, IRQF_DISABLED,
+=======
+	ret = request_irq(port->irq, altera_uart_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(port->irq, altera_uart_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 			DRV_NAME, port);
 	if (ret) {
 		pr_err(DRV_NAME ": unable to attach Altera UART %d "
@@ -377,6 +391,35 @@ static int altera_uart_verify_port(struct uart_port *port,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_CONSOLE_POLL
+static int altera_uart_poll_get_char(struct uart_port *port)
+{
+	while (!(altera_uart_readl(port, ALTERA_UART_STATUS_REG) &
+		 ALTERA_UART_STATUS_RRDY_MSK))
+		cpu_relax();
+
+	return altera_uart_readl(port, ALTERA_UART_RXDATA_REG);
+}
+
+static void altera_uart_poll_put_char(struct uart_port *port, unsigned char c)
+{
+	while (!(altera_uart_readl(port, ALTERA_UART_STATUS_REG) &
+		 ALTERA_UART_STATUS_TRDY_MSK))
+		cpu_relax();
+
+	altera_uart_writel(port, c, ALTERA_UART_TXDATA_REG);
+}
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	Define the basic serial functions we support.
  */
@@ -397,12 +440,27 @@ static struct uart_ops altera_uart_ops = {
 	.release_port	= altera_uart_release_port,
 	.config_port	= altera_uart_config_port,
 	.verify_port	= altera_uart_verify_port,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_CONSOLE_POLL
+	.poll_get_char	= altera_uart_poll_get_char,
+	.poll_put_char	= altera_uart_poll_put_char,
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct altera_uart altera_uart_ports[CONFIG_SERIAL_ALTERA_UART_MAXPORTS];
 
 #if defined(CONFIG_SERIAL_ALTERA_UART_CONSOLE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int __init early_altera_uart_setup(struct altera_uart_platform_uart *platp)
 {
 	struct uart_port *port;
@@ -426,6 +484,10 @@ int __init early_altera_uart_setup(struct altera_uart_platform_uart *platp)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void altera_uart_console_putc(struct uart_port *port, const char c)
 {
 	while (!(altera_uart_readl(port, ALTERA_UART_STATUS_REG) &
@@ -531,9 +593,15 @@ static int altera_uart_get_of_uartclk(struct platform_device *pdev,
 }
 #endif /* CONFIG_OF */
 
+<<<<<<< HEAD
 static int __devinit altera_uart_probe(struct platform_device *pdev)
 {
 	struct altera_uart_platform_uart *platp = pdev->dev.platform_data;
+=======
+static int altera_uart_probe(struct platform_device *pdev)
+{
+	struct altera_uart_platform_uart *platp = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct uart_port *port;
 	struct resource *res_mem;
 	struct resource *res_irq;
@@ -590,13 +658,18 @@ static int __devinit altera_uart_probe(struct platform_device *pdev)
 	port->ops = &altera_uart_ops;
 	port->flags = UPF_BOOT_AUTOCONF;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, port);
+=======
+	platform_set_drvdata(pdev, port);
+>>>>>>> refs/remotes/origin/master
 
 	uart_add_one_port(&altera_uart_driver, port);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit altera_uart_remove(struct platform_device *pdev)
 {
 	struct uart_port *port = dev_get_drvdata(&pdev->dev);
@@ -604,6 +677,14 @@ static int __devexit altera_uart_remove(struct platform_device *pdev)
 	if (port) {
 		uart_remove_one_port(&altera_uart_driver, port);
 		dev_set_drvdata(&pdev->dev, NULL);
+=======
+static int altera_uart_remove(struct platform_device *pdev)
+{
+	struct uart_port *port = platform_get_drvdata(pdev);
+
+	if (port) {
+		uart_remove_one_port(&altera_uart_driver, port);
+>>>>>>> refs/remotes/origin/master
 		port->mapbase = 0;
 	}
 
@@ -613,20 +694,42 @@ static int __devexit altera_uart_remove(struct platform_device *pdev)
 #ifdef CONFIG_OF
 static struct of_device_id altera_uart_match[] = {
 	{ .compatible = "ALTR,uart-1.0", },
+<<<<<<< HEAD
 	{},
 };
 MODULE_DEVICE_TABLE(of, altera_uart_match);
+<<<<<<< HEAD
 #else
 #define altera_uart_match NULL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ .compatible = "altr,uart-1.0", },
+	{},
+};
+MODULE_DEVICE_TABLE(of, altera_uart_match);
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_OF */
 
 static struct platform_driver altera_uart_platform_driver = {
 	.probe	= altera_uart_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(altera_uart_remove),
 	.driver	= {
 		.name		= DRV_NAME,
 		.owner		= THIS_MODULE,
+<<<<<<< HEAD
 		.of_match_table	= altera_uart_match,
+=======
+		.of_match_table	= of_match_ptr(altera_uart_match),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= altera_uart_remove,
+	.driver	= {
+		.name		= DRV_NAME,
+		.owner		= THIS_MODULE,
+		.of_match_table	= of_match_ptr(altera_uart_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -638,11 +741,17 @@ static int __init altera_uart_init(void)
 	if (rc)
 		return rc;
 	rc = platform_driver_register(&altera_uart_platform_driver);
+<<<<<<< HEAD
 	if (rc) {
 		uart_unregister_driver(&altera_uart_driver);
 		return rc;
 	}
 	return 0;
+=======
+	if (rc)
+		uart_unregister_driver(&altera_uart_driver);
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit altera_uart_exit(void)

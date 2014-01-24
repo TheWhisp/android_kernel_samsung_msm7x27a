@@ -18,7 +18,15 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/delay.h>
@@ -30,23 +38,54 @@
 #include <linux/input.h>
 #include <linux/i2c/tps65010.h>
 #include <linux/smc91x.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <asm/gpio.h>
+=======
+#include <linux/omapfb.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/omapfb.h>
+#include <linux/platform_data/gpio-omap.h>
+#include <linux/leds.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <plat/mux.h>
 #include <plat/dma.h>
 #include <plat/tc.h>
 #include <plat/irda.h>
 #include <plat/usb.h>
 #include <plat/keypad.h>
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/flash.h>
 
+=======
+#include <plat/flash.h>
+
+#include <mach/hardware.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/mux.h>
+#include <linux/omap-dma.h>
+#include <mach/tc.h>
+#include <linux/platform_data/keypad-omap.h>
+#include <mach/flash.h>
+
+#include <mach/hardware.h>
+#include <mach/usb.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 #include "board-h2.h"
 
 /* At OMAP1610 Innovator the Ethernet is directly connected to CS1 */
@@ -179,6 +218,7 @@ static struct mtd_partition h2_nand_partitions[] = {
 	},
 };
 
+<<<<<<< HEAD
 static void h2_nand_cmd_ctl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
 {
 	struct nand_chip *this = mtd->priv;
@@ -193,6 +233,8 @@ static void h2_nand_cmd_ctl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
 	writeb(cmd, (unsigned long)this->IO_ADDR_W | mask);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define H2_NAND_RB_GPIO_PIN	62
 
 static int h2_nand_dev_ready(struct mtd_info *mtd)
@@ -200,8 +242,11 @@ static int h2_nand_dev_ready(struct mtd_info *mtd)
 	return gpio_get_value(H2_NAND_RB_GPIO_PIN);
 }
 
+<<<<<<< HEAD
 static const char *h2_part_probes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_nand_data h2_nand_platdata = {
 	.chip	= {
 		.nr_chips		= 1,
@@ -209,12 +254,19 @@ static struct platform_nand_data h2_nand_platdata = {
 		.nr_partitions		= ARRAY_SIZE(h2_nand_partitions),
 		.partitions		= h2_nand_partitions,
 		.options		= NAND_SAMSUNG_LP_OPTIONS,
+<<<<<<< HEAD
 		.part_probe_types	= h2_part_probes,
 	},
 	.ctrl	= {
 		.cmd_ctrl	= h2_nand_cmd_ctl,
 		.dev_ready	= h2_nand_dev_ready,
 
+=======
+	},
+	.ctrl	= {
+		.cmd_ctrl	= omap1_nand_cmd_ctl,
+		.dev_ready	= h2_nand_dev_ready,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -245,8 +297,14 @@ static struct resource h2_smc91x_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= OMAP_GPIO_IRQ(0),
 		.end	= OMAP_GPIO_IRQ(0),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_LOWEDGE,
 	},
 };
@@ -293,6 +351,7 @@ static struct platform_device h2_kp_device = {
 	.resource	= h2_kp_resources,
 };
 
+<<<<<<< HEAD
 #define H2_IRDA_FIRSEL_GPIO_PIN	17
 
 static struct omap_irda_config h2_irda_data = {
@@ -326,18 +385,57 @@ static struct platform_device h2_irda_device = {
 	.resource	= h2_irda_resources,
 };
 
+<<<<<<< HEAD
 static struct platform_device h2_lcd_device = {
 	.name		= "lcd_h2",
 	.id		= -1,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct gpio_led h2_gpio_led_pins[] = {
+	{
+		.name		= "h2:red",
+		.default_trigger = "heartbeat",
+		.gpio		= 3,
+	},
+	{
+		.name		= "h2:green",
+		.default_trigger = "cpu0",
+		.gpio		= OMAP_MPUIO(4),
+	},
+};
+
+static struct gpio_led_platform_data h2_gpio_led_data = {
+	.leds		= h2_gpio_led_pins,
+	.num_leds	= ARRAY_SIZE(h2_gpio_led_pins),
+};
+
+static struct platform_device h2_gpio_leds = {
+	.name	= "leds-gpio",
+	.id	= -1,
+	.dev	= {
+		.platform_data = &h2_gpio_led_data,
+	},
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *h2_devices[] __initdata = {
 	&h2_nor_device,
 	&h2_nand_device,
 	&h2_smc91x_device,
+<<<<<<< HEAD
 	&h2_irda_device,
 	&h2_kp_device,
+<<<<<<< HEAD
 	&h2_lcd_device,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&h2_kp_device,
+	&h2_gpio_leds,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init h2_init_smc91x(void)
@@ -365,6 +463,8 @@ static struct tps65010_board tps_board = {
 static struct i2c_board_info __initdata h2_i2c_board_info[] = {
 	{
 		I2C_BOARD_INFO("tps65010", 0x48),
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.irq            = OMAP_GPIO_IRQ(58),
 		.platform_data	= &tps_board,
 	}, {
@@ -379,6 +479,19 @@ static void __init h2_init_irq(void)
 	omap_init_irq();
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.platform_data	= &tps_board,
+	}, {
+		I2C_BOARD_INFO("isp1301_omap", 0x2d),
+	},
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct omap_usb_config h2_usb_config __initdata = {
 	/* usb1 has a Mini-AB port and external isp1301 transceiver */
 	.otg		= 2,
@@ -398,10 +511,16 @@ static struct omap_lcd_config h2_lcd_config __initdata = {
 	.ctrl_name	= "internal",
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct omap_board_config_kernel h2_config[] __initdata = {
 	{ OMAP_TAG_LCD,		&h2_lcd_config },
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init h2_init(void)
 {
 	h2_init_smc91x();
@@ -420,8 +539,12 @@ static void __init h2_init(void)
 
 	h2_nand_resource.end = h2_nand_resource.start = OMAP_CS2B_PHYS;
 	h2_nand_resource.end += SZ_4K - 1;
+<<<<<<< HEAD
 	if (gpio_request(H2_NAND_RB_GPIO_PIN, "NAND ready") < 0)
 		BUG();
+=======
+	BUG_ON(gpio_request(H2_NAND_RB_GPIO_PIN, "NAND ready") < 0);
+>>>>>>> refs/remotes/origin/master
 	gpio_direction_input(H2_NAND_RB_GPIO_PIN);
 
 	omap_cfg_reg(L3_1610_FLASH_CS2B_OE);
@@ -444,27 +567,78 @@ static void __init h2_init(void)
 	omap_cfg_reg(E19_1610_KBR4);
 	omap_cfg_reg(N19_1610_KBR5);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	platform_add_devices(h2_devices, ARRAY_SIZE(h2_devices));
 	omap_board_config = h2_config;
 	omap_board_config_size = ARRAY_SIZE(h2_config);
 	omap_serial_init();
+=======
+=======
+	/* GPIO based LEDs */
+	omap_cfg_reg(P18_1610_GPIO3);
+	omap_cfg_reg(MPUIO4);
+
+>>>>>>> refs/remotes/origin/master
+	h2_smc91x_resources[1].start = gpio_to_irq(0);
+	h2_smc91x_resources[1].end = gpio_to_irq(0);
+	platform_add_devices(h2_devices, ARRAY_SIZE(h2_devices));
+	omap_serial_init();
+	h2_i2c_board_info[0].irq = gpio_to_irq(58);
+	h2_i2c_board_info[1].irq = gpio_to_irq(2);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	omap_register_i2c_bus(1, 100, h2_i2c_board_info,
 			      ARRAY_SIZE(h2_i2c_board_info));
 	omap1_usb_init(&h2_usb_config);
 	h2_mmc_init();
+<<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 static void __init h2_map_io(void)
 {
 	omap1_map_common_io();
+=======
+
+	omapfb_set_lcd_config(&h2_lcd_config);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	omapfb_set_lcd_config(&h2_lcd_config);
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(OMAP_H2, "TI-H2")
 	/* Maintainer: Imre Deak <imre.deak@nokia.com> */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x10000100,
 	.map_io		= h2_map_io,
 	.reserve	= omap_reserve,
 	.init_irq	= h2_init_irq,
 	.init_machine	= h2_init,
 	.timer		= &omap_timer,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= omap16xx_map_io,
+	.init_early     = omap1_init_early,
+	.reserve	= omap_reserve,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= h2_init,
+	.timer		= &omap1_timer,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= omap16xx_map_io,
+	.init_early     = omap1_init_early,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= h2_init,
+	.init_late	= omap1_init_late,
+	.init_time	= omap1_timer_init,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

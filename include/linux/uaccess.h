@@ -15,7 +15,11 @@
  */
 static inline void pagefault_disable(void)
 {
+<<<<<<< HEAD
 	inc_preempt_count();
+=======
+	preempt_count_inc();
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * make sure to have issued the store before a pagefault
 	 * can hit.
@@ -25,17 +29,28 @@ static inline void pagefault_disable(void)
 
 static inline void pagefault_enable(void)
 {
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_PREEMPT
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * make sure to issue those last loads/stores before enabling
 	 * the pagefault handler again.
 	 */
 	barrier();
+<<<<<<< HEAD
 	dec_preempt_count();
 	/*
 	 * make sure we do..
 	 */
 	barrier();
 	preempt_check_resched();
+=======
+	preempt_count_dec();
+#else
+	preempt_enable();
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifndef ARCH_HAS_NOCACHE_UACCESS

@@ -2,20 +2,38 @@ source "init/Kconfig"
 
 source "kernel/Kconfig.freezer"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 source "drivers/block/Kconfig"
 
 source "arch/um/Kconfig.char"
 
 source "drivers/base/Kconfig"
+=======
+source "arch/um/Kconfig.char"
+
+source "drivers/Kconfig"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "arch/um/Kconfig.char"
+
+source "drivers/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 source "net/Kconfig"
 
 source "arch/um/Kconfig.net"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 source "drivers/net/Kconfig"
 
 source "drivers/connector/Kconfig"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 source "fs/Kconfig"
 
 source "security/Kconfig"
@@ -24,6 +42,8 @@ source "crypto/Kconfig"
 
 source "lib/Kconfig"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 source "drivers/scsi/Kconfig"
 
 source "drivers/md/Kconfig"
@@ -39,4 +59,8 @@ config INPUT
 	tristate
 	default n
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 source "arch/um/Kconfig.debug"

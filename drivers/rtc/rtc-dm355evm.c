@@ -14,6 +14,14 @@
 #include <linux/platform_device.h>
 
 #include <linux/i2c/dm355evm_msp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -122,12 +130,21 @@ static struct rtc_class_ops dm355evm_rtc_ops = {
 
 /*----------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit dm355evm_rtc_probe(struct platform_device *pdev)
 {
 	struct rtc_device *rtc;
 
 	rtc = rtc_device_register(pdev->name,
 				  &pdev->dev, &dm355evm_rtc_ops, THIS_MODULE);
+=======
+static int dm355evm_rtc_probe(struct platform_device *pdev)
+{
+	struct rtc_device *rtc;
+
+	rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+					&dm355evm_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rtc)) {
 		dev_err(&pdev->dev, "can't register RTC device, err %ld\n",
 			PTR_ERR(rtc));
@@ -138,6 +155,7 @@ static int __devinit dm355evm_rtc_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit dm355evm_rtc_remove(struct platform_device *pdev)
 {
 	struct rtc_device *rtc = platform_get_drvdata(pdev);
@@ -147,19 +165,26 @@ static int __devexit dm355evm_rtc_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * I2C is used to talk to the MSP430, but this platform device is
  * exposed by an MFD driver that manages I2C communications.
  */
 static struct platform_driver rtc_dm355evm_driver = {
 	.probe		= dm355evm_rtc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(dm355evm_rtc_remove),
+=======
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.owner	= THIS_MODULE,
 		.name	= "rtc-dm355evm",
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init dm355evm_rtc_init(void)
 {
 	return platform_driver_register(&rtc_dm355evm_driver);
@@ -171,5 +196,11 @@ static void __exit dm355evm_rtc_exit(void)
 	platform_driver_unregister(&rtc_dm355evm_driver);
 }
 module_exit(dm355evm_rtc_exit);
+=======
+module_platform_driver(rtc_dm355evm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(rtc_dm355evm_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

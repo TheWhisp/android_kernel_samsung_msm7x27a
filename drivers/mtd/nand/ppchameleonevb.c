@@ -99,8 +99,11 @@ static struct mtd_partition partition_info_evb[] = {
 
 #define NUM_PARTITIONS 1
 
+<<<<<<< HEAD
 extern int parse_cmdline_partitions(struct mtd_info *master, struct mtd_partition **pparts, const char *mtd_id);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *	hardware specific access to control-lines
  */
@@ -187,18 +190,24 @@ static int ppchameleonevb_device_ready(struct mtd_info *minfo)
 }
 #endif
 
+<<<<<<< HEAD
 const char *part_probes[] = { "cmdlinepart", NULL };
 const char *part_probes_evb[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Main initialization routine
  */
 static int __init ppchameleonevb_init(void)
 {
 	struct nand_chip *this;
+<<<<<<< HEAD
 	const char *part_type = 0;
 	int mtd_parts_nb = 0;
 	struct mtd_partition *mtd_parts = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	void __iomem *ppchameleon_fio_base;
 	void __iomem *ppchameleonevb_fio_base;
 
@@ -281,6 +290,7 @@ static int __init ppchameleonevb_init(void)
 #endif
 
 	ppchameleon_mtd->name = "ppchameleon-nand";
+<<<<<<< HEAD
 	mtd_parts_nb = parse_mtd_partitions(ppchameleon_mtd, part_probes, &mtd_parts, 0);
 	if (mtd_parts_nb > 0)
 		part_type = "command line";
@@ -299,6 +309,14 @@ static int __init ppchameleonevb_init(void)
 	/* Register the partitions */
 	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
 	mtd_device_register(ppchameleon_mtd, mtd_parts, mtd_parts_nb);
+=======
+
+	/* Register the partitions */
+	mtd_device_parse_register(ppchameleon_mtd, NULL, NULL,
+				  ppchameleon_mtd->size == NAND_SMALL_SIZE ?
+					partition_info_me : partition_info_hi,
+				  NUM_PARTITIONS);
+>>>>>>> refs/remotes/origin/cm-10.0
 
  nand_evb_init:
 	/****************************
@@ -382,6 +400,7 @@ static int __init ppchameleonevb_init(void)
 	}
 
 	ppchameleonevb_mtd->name = NAND_EVB_MTD_NAME;
+<<<<<<< HEAD
 	mtd_parts_nb = parse_mtd_partitions(ppchameleonevb_mtd, part_probes_evb, &mtd_parts, 0);
 	if (mtd_parts_nb > 0)
 		part_type = "command line";
@@ -397,6 +416,14 @@ static int __init ppchameleonevb_init(void)
 	/* Register the partitions */
 	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
 	mtd_device_register(ppchameleonevb_mtd, mtd_parts, mtd_parts_nb);
+=======
+
+	/* Register the partitions */
+	mtd_device_parse_register(ppchameleonevb_mtd, NULL, NULL,
+				  ppchameleon_mtd->size == NAND_SMALL_SIZE ?
+				  partition_info_me : partition_info_hi,
+				  NUM_PARTITIONS);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Return happy */
 	return 0;

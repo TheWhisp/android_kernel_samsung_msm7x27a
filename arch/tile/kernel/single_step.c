@@ -12,22 +12,36 @@
  *   more details.
  *
  * A code-rewriter that enables instruction single-stepping.
+<<<<<<< HEAD
  * Derived from iLib's single-stepping code.
  */
 
 #ifndef __tilegx__   /* Hardware support for single step unavailable. */
 
 /* These functions are only used on the TILE platform */
+=======
+ */
+
+#include <linux/smp.h>
+#include <linux/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/thread_info.h>
 #include <linux/uaccess.h>
 #include <linux/mman.h>
 #include <linux/types.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 #include <asm/opcode-tile.h>
 #include <asm/opcode_constants.h>
 #include <arch/abi.h>
+=======
+#include <asm/unaligned.h>
+#include <arch/abi.h>
+#include <arch/opcode.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define signExtend17(val) sign_extend((val), 17)
 #define TILE_X1_MASK (0xffffffffULL << 31)
@@ -47,6 +61,22 @@ static int __init setup_unaligned_printk(char *str)
 __setup("unaligned_printk=", setup_unaligned_printk);
 
 unsigned int unaligned_fixup_count;
+=======
+#include <linux/prctl.h>
+#include <asm/cacheflush.h>
+#include <asm/traps.h>
+#include <asm/uaccess.h>
+#include <asm/unaligned.h>
+#include <arch/abi.h>
+#include <arch/spr_def.h>
+#include <arch/opcode.h>
+
+
+#ifndef __tilegx__   /* Hardware support for single step unavailable. */
+
+#define signExtend17(val) sign_extend((val), 17)
+#define TILE_X1_MASK (0xffffffffULL << 31)
+>>>>>>> refs/remotes/origin/master
 
 enum mem_op {
 	MEMOP_NONE,
@@ -56,12 +86,22 @@ enum mem_op {
 	MEMOP_STORE_POSTINCR
 };
 
+<<<<<<< HEAD
 static inline tile_bundle_bits set_BrOff_X1(tile_bundle_bits n, s32 offset)
 {
 	tile_bundle_bits result;
 
 	/* mask out the old offset */
 	tile_bundle_bits mask = create_BrOff_X1(-1);
+=======
+static inline tilepro_bundle_bits set_BrOff_X1(tilepro_bundle_bits n,
+	s32 offset)
+{
+	tilepro_bundle_bits result;
+
+	/* mask out the old offset */
+	tilepro_bundle_bits mask = create_BrOff_X1(-1);
+>>>>>>> refs/remotes/origin/master
 	result = n & (~mask);
 
 	/* or in the new offset */
@@ -70,10 +110,18 @@ static inline tile_bundle_bits set_BrOff_X1(tile_bundle_bits n, s32 offset)
 	return result;
 }
 
+<<<<<<< HEAD
 static inline tile_bundle_bits move_X1(tile_bundle_bits n, int dest, int src)
 {
 	tile_bundle_bits result;
 	tile_bundle_bits op;
+=======
+static inline tilepro_bundle_bits move_X1(tilepro_bundle_bits n, int dest,
+	int src)
+{
+	tilepro_bundle_bits result;
+	tilepro_bundle_bits op;
+>>>>>>> refs/remotes/origin/master
 
 	result = n & (~TILE_X1_MASK);
 
@@ -87,13 +135,22 @@ static inline tile_bundle_bits move_X1(tile_bundle_bits n, int dest, int src)
 	return result;
 }
 
+<<<<<<< HEAD
 static inline tile_bundle_bits nop_X1(tile_bundle_bits n)
+=======
+static inline tilepro_bundle_bits nop_X1(tilepro_bundle_bits n)
+>>>>>>> refs/remotes/origin/master
 {
 	return move_X1(n, TREG_ZERO, TREG_ZERO);
 }
 
+<<<<<<< HEAD
 static inline tile_bundle_bits addi_X1(
 	tile_bundle_bits n, int dest, int src, int imm)
+=======
+static inline tilepro_bundle_bits addi_X1(
+	tilepro_bundle_bits n, int dest, int src, int imm)
+>>>>>>> refs/remotes/origin/master
 {
 	n &= ~TILE_X1_MASK;
 
@@ -107,18 +164,45 @@ static inline tile_bundle_bits addi_X1(
 	return n;
 }
 
+<<<<<<< HEAD
 static tile_bundle_bits rewrite_load_store_unaligned(
 	struct single_step_state *state,
 	tile_bundle_bits bundle,
+=======
+static tilepro_bundle_bits rewrite_load_store_unaligned(
+	struct single_step_state *state,
+	tilepro_bundle_bits bundle,
+>>>>>>> refs/remotes/origin/master
 	struct pt_regs *regs,
 	enum mem_op mem_op,
 	int size, int sign_ext)
 {
 	unsigned char __user *addr;
 	int val_reg, addr_reg, err, val;
+<<<<<<< HEAD
 
 	/* Get address and value registers */
+<<<<<<< HEAD
 	if (bundle & TILE_BUNDLE_Y_ENCODING_MASK) {
+=======
+	if (bundle & TILEPRO_BUNDLE_Y_ENCODING_MASK) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int align_ctl;
+
+	align_ctl = unaligned_fixup;
+	switch (task_thread_info(current)->align_ctl) {
+	case PR_UNALIGN_NOPRINT:
+		align_ctl = 1;
+		break;
+	case PR_UNALIGN_SIGBUS:
+		align_ctl = 0;
+		break;
+	}
+
+	/* Get address and value registers */
+	if (bundle & TILEPRO_BUNDLE_Y_ENCODING_MASK) {
+>>>>>>> refs/remotes/origin/master
 		addr_reg = get_SrcA_Y2(bundle);
 		val_reg = get_SrcBDest_Y2(bundle);
 	} else if (mem_op == MEMOP_LOAD || mem_op == MEMOP_LOAD_POSTINCR) {
@@ -153,9 +237,41 @@ static tile_bundle_bits rewrite_load_store_unaligned(
 	if (((unsigned long)addr % size) == 0)
 		return bundle;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * Return SIGBUS with the unaligned address, if requested.
+	 * Note that we return SIGBUS even for completely invalid addresses
+	 * as long as they are in fact unaligned; this matches what the
+	 * tilepro hardware would be doing, if it could provide us with the
+	 * actual bad address in an SPR, which it doesn't.
+	 */
+<<<<<<< HEAD
+	if (unaligned_fixup == 0) {
+=======
+	if (align_ctl == 0) {
+>>>>>>> refs/remotes/origin/master
+		siginfo_t info = {
+			.si_signo = SIGBUS,
+			.si_code = BUS_ADRALN,
+			.si_addr = addr
+		};
+		trace_unhandled_signal("unaligned trap", regs,
+				       (unsigned long)addr, SIGBUS);
+		force_sig_info(info.si_signo, &info, current);
+		return (tilepro_bundle_bits) 0;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef __LITTLE_ENDIAN
 # error We assume little-endian representation with copy_xx_user size 2 here
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Handle unaligned load/store */
 	if (mem_op == MEMOP_LOAD || mem_op == MEMOP_LOAD_POSTINCR) {
 		unsigned short val_16;
@@ -176,12 +292,29 @@ static tile_bundle_bits rewrite_load_store_unaligned(
 			state->update = 1;
 		}
 	} else {
+<<<<<<< HEAD
 		val = (val_reg == TREG_ZERO) ? 0 : regs->regs[val_reg];
 		err = copy_to_user(addr, &val, size);
+=======
+		unsigned short val_16;
+		val = (val_reg == TREG_ZERO) ? 0 : regs->regs[val_reg];
+		switch (size) {
+		case 2:
+			val_16 = val;
+			err = copy_to_user(addr, &val_16, sizeof(val_16));
+			break;
+		case 4:
+			err = copy_to_user(addr, &val, sizeof(val));
+			break;
+		default:
+			BUG();
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (err) {
 		siginfo_t info = {
+<<<<<<< HEAD
 			.si_signo = SIGSEGV,
 			.si_code = SEGV_MAPERR,
 			.si_addr = addr
@@ -192,18 +325,32 @@ static tile_bundle_bits rewrite_load_store_unaligned(
 		return (tile_bundle_bits) 0;
 	}
 
+<<<<<<< HEAD
 	if (unaligned_fixup == 0) {
 		siginfo_t info = {
+=======
+>>>>>>> refs/remotes/origin/master
 			.si_signo = SIGBUS,
 			.si_code = BUS_ADRALN,
 			.si_addr = addr
 		};
+<<<<<<< HEAD
 		trace_unhandled_signal("unaligned trap", regs,
 				       (unsigned long)addr, SIGBUS);
 		force_sig_info(info.si_signo, &info, current);
 		return (tile_bundle_bits) 0;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		trace_unhandled_signal("bad address for unaligned fixup", regs,
+				       (unsigned long)addr, SIGBUS);
+		force_sig_info(info.si_signo, &info, current);
+		return (tilepro_bundle_bits) 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (unaligned_printk || unaligned_fixup_count == 0) {
 		pr_info("Process %d/%s: PC %#lx: Fixup of"
 			" unaligned %s at %#lx.\n",
@@ -229,7 +376,15 @@ P("\n");
 	}
 	++unaligned_fixup_count;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (bundle & TILE_BUNDLE_Y_ENCODING_MASK) {
+=======
+	if (bundle & TILEPRO_BUNDLE_Y_ENCODING_MASK) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bundle & TILEPRO_BUNDLE_Y_ENCODING_MASK) {
+>>>>>>> refs/remotes/origin/master
 		/* Convert the Y2 instruction to a prefetch. */
 		bundle &= ~(create_SrcBDest_Y2(-1) |
 			    create_Opcode_Y2(-1));
@@ -270,7 +425,11 @@ void single_step_execve(void)
 	ti->step_state = NULL;
 }
 
+<<<<<<< HEAD
 /**
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * single_step_once() - entry point when single stepping has been triggered.
  * @regs: The machine register state
  *
@@ -289,6 +448,7 @@ void single_step_execve(void)
  */
 void single_step_once(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	extern tile_bundle_bits __single_step_ill_insn;
 	extern tile_bundle_bits __single_step_j_insn;
 	extern tile_bundle_bits __single_step_addli_insn;
@@ -298,11 +458,36 @@ void single_step_once(struct pt_regs *regs)
 	int is_single_step = test_ti_thread_flag(info, TIF_SINGLESTEP);
 	tile_bundle_bits __user *buffer, *pc;
 	tile_bundle_bits bundle;
+=======
+	extern tilepro_bundle_bits __single_step_ill_insn;
+	extern tilepro_bundle_bits __single_step_j_insn;
+	extern tilepro_bundle_bits __single_step_addli_insn;
+	extern tilepro_bundle_bits __single_step_auli_insn;
+	struct thread_info *info = (void *)current_thread_info();
+	struct single_step_state *state = info->step_state;
+	int is_single_step = test_ti_thread_flag(info, TIF_SINGLESTEP);
+	tilepro_bundle_bits __user *buffer, *pc;
+	tilepro_bundle_bits bundle;
+>>>>>>> refs/remotes/origin/master
 	int temp_reg;
 	int target_reg = TREG_LR;
 	int err;
 	enum mem_op mem_op = MEMOP_NONE;
 	int size = 0, sign_ext = 0;  /* happy compiler */
+<<<<<<< HEAD
+=======
+	int align_ctl;
+
+	align_ctl = unaligned_fixup;
+	switch (task_thread_info(current)->align_ctl) {
+	case PR_UNALIGN_NOPRINT:
+		align_ctl = 1;
+		break;
+	case PR_UNALIGN_SIGBUS:
+		align_ctl = 0;
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	asm(
 "    .pushsection .rodata.single_step\n"
@@ -339,12 +524,25 @@ void single_step_once(struct pt_regs *regs)
 		}
 
 		/* allocate a cache line of writable, executable memory */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		down_write(&current->mm->mmap_sem);
 		buffer = (void __user *) do_mmap(NULL, 0, 64,
 					  PROT_EXEC | PROT_READ | PROT_WRITE,
 					  MAP_PRIVATE | MAP_ANONYMOUS,
 					  0);
 		up_write(&current->mm->mmap_sem);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		buffer = (void __user *) vm_mmap(NULL, 0, 64,
+					  PROT_EXEC | PROT_READ | PROT_WRITE,
+					  MAP_PRIVATE | MAP_ANONYMOUS,
+					  0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (IS_ERR((void __force *)buffer)) {
 			kfree(state);
@@ -377,7 +575,11 @@ void single_step_once(struct pt_regs *regs)
 	if (regs->faultnum == INT_SWINT_1)
 		regs->pc -= 8;
 
+<<<<<<< HEAD
 	pc = (tile_bundle_bits __user *)(regs->pc);
+=======
+	pc = (tilepro_bundle_bits __user *)(regs->pc);
+>>>>>>> refs/remotes/origin/master
 	if (get_user(bundle, pc) != 0) {
 		pr_err("Couldn't read instruction at %p trying to step\n", pc);
 		return;
@@ -389,7 +591,15 @@ void single_step_once(struct pt_regs *regs)
 	state->branch_next_pc = 0;
 	state->update = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(bundle & TILE_BUNDLE_Y_ENCODING_MASK)) {
+=======
+	if (!(bundle & TILEPRO_BUNDLE_Y_ENCODING_MASK)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(bundle & TILEPRO_BUNDLE_Y_ENCODING_MASK)) {
+>>>>>>> refs/remotes/origin/master
 		/* two wide, check for control flow */
 		int opcode = get_Opcode_X1(bundle);
 
@@ -520,7 +730,10 @@ void single_step_once(struct pt_regs *regs)
 			}
 			break;
 
+<<<<<<< HEAD
 #if CHIP_HAS_WH64()
+=======
+>>>>>>> refs/remotes/origin/master
 		/* postincrement operations */
 		case IMM_0_OPCODE_X1:
 			switch (get_ImmOpcodeExtension_X1(bundle)) {
@@ -555,7 +768,10 @@ void single_step_once(struct pt_regs *regs)
 				break;
 			}
 			break;
+<<<<<<< HEAD
 #endif /* CHIP_HAS_WH64() */
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (state->update) {
@@ -614,9 +830,15 @@ void single_step_once(struct pt_regs *regs)
 
 	/*
 	 * Check if we need to rewrite an unaligned load/store.
+<<<<<<< HEAD
 	 * Returning zero is a special value meaning we need to SIGSEGV.
 	 */
 	if (mem_op != MEMOP_NONE && unaligned_fixup >= 0) {
+=======
+	 * Returning zero is a special value meaning we generated a signal.
+	 */
+	if (mem_op != MEMOP_NONE && align_ctl >= 0) {
+>>>>>>> refs/remotes/origin/master
 		bundle = rewrite_load_store_unaligned(state, bundle, regs,
 						      mem_op, size, sign_ext);
 		if (bundle == 0)
@@ -655,9 +877,15 @@ void single_step_once(struct pt_regs *regs)
 		}
 
 		/* End with a jump back to the next instruction */
+<<<<<<< HEAD
 		delta = ((regs->pc + TILE_BUNDLE_SIZE_IN_BYTES) -
 			(unsigned long)buffer) >>
 			TILE_LOG2_BUNDLE_ALIGNMENT_IN_BYTES;
+=======
+		delta = ((regs->pc + TILEPRO_BUNDLE_SIZE_IN_BYTES) -
+			(unsigned long)buffer) >>
+			TILEPRO_LOG2_BUNDLE_ALIGNMENT_IN_BYTES;
+>>>>>>> refs/remotes/origin/master
 		bundle = __single_step_j_insn;
 		bundle |= create_JOffLong_X1(delta);
 		err |= __put_user(bundle, buffer++);
@@ -685,9 +913,12 @@ void single_step_once(struct pt_regs *regs)
 }
 
 #else
+<<<<<<< HEAD
 #include <linux/smp.h>
 #include <linux/ptrace.h>
 #include <arch/spr_def.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_PER_CPU(unsigned long, ss_saved_pc);
 
@@ -730,10 +961,17 @@ void gx_singlestep_handle(struct pt_regs *regs, int fault_num)
 	} else if ((*ss_pc != regs->pc) ||
 		   (!(control & SPR_SINGLE_STEP_CONTROL_1__CANCELED_MASK))) {
 
+<<<<<<< HEAD
 		ptrace_notify(SIGTRAP);
 		control |= SPR_SINGLE_STEP_CONTROL_1__CANCELED_MASK;
 		control |= SPR_SINGLE_STEP_CONTROL_1__INHIBIT_MASK;
 		__insn_mtspr(SPR_SINGLE_STEP_CONTROL_K, control);
+=======
+		control |= SPR_SINGLE_STEP_CONTROL_1__CANCELED_MASK;
+		control |= SPR_SINGLE_STEP_CONTROL_1__INHIBIT_MASK;
+		__insn_mtspr(SPR_SINGLE_STEP_CONTROL_K, control);
+		send_sigtrap(current, regs);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

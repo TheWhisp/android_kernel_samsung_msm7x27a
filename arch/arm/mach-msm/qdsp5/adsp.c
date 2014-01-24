@@ -3,7 +3,15 @@
  * Register/Interrupt access for userspace aDSP library.
  *
  * Copyright (C) 2008 Google, Inc.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: Iliyan Malchev <ibm@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -34,6 +42,14 @@
 #include <linux/wait.h>
 #include <linux/wakelock.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/debug_mm.h>
 #include <linux/debugfs.h>
 
@@ -58,8 +74,14 @@ static inline void allow_suspend(void)
 #include <mach/msm_adsp.h>
 #include "adsp.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define INT_ADSP INT_ADSP_A9_A11
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct adsp_info adsp_info;
 static struct msm_rpc_endpoint *rpc_cb_server_client;
 static struct msm_adsp_module *adsp_modules;
@@ -73,6 +95,19 @@ static uint32_t rpc_adsp_rtos_mtoa_vers;
 static uint32_t rpc_adsp_rtos_mtoa_vers_comp;
 static DEFINE_MUTEX(adsp_open_lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct workqueue_struct *msm_adsp_probe_work_queue;
+static void adsp_probe_work(struct work_struct *work);
+static DECLARE_WORK(msm_adsp_probe_work, adsp_probe_work);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /* protect interactions with the ADSP command/message queue */
 static spinlock_t adsp_cmd_lock;
 static spinlock_t adsp_write_lock;
@@ -280,6 +315,14 @@ int msm_adsp_get(const char *name, struct msm_adsp_module **out,
 	int rc = 0;
 	static uint32_t init_info_cmd_sent;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mutex_lock(&adsp_info.lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&adsp_info.lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!init_info_cmd_sent) {
 		init_waitqueue_head(&adsp_info.init_info_wait);
 		msm_get_init_info();
@@ -288,10 +331,26 @@ int msm_adsp_get(const char *name, struct msm_adsp_module **out,
 			5 * HZ);
 		if (!rc) {
 			MM_ERR("INIT_INFO failed\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 			return -ETIMEDOUT;
 		}
 		init_info_cmd_sent++;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			mutex_unlock(&adsp_info.lock);
+			return -ETIMEDOUT;
+
+		}
+		init_info_cmd_sent++;
+	}
+	mutex_unlock(&adsp_info.lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	module = find_adsp_module_by_name(&adsp_info, name);
 	if (!module)
@@ -713,6 +772,8 @@ static void handle_adsp_rtos_mtoa_app(struct rpc_request_hdr *req)
 	mutex_lock(&module->lock);
 	switch (event) {
 	case RPC_ADSP_RTOS_MOD_READY:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (module->state == ADSP_STATE_ENABLING) {
 			MM_INFO("module %s: READY\n", module->name);
 			module->state = ADSP_STATE_ENABLED;
@@ -729,6 +790,18 @@ static void handle_adsp_rtos_mtoa_app(struct rpc_request_hdr *req)
 			mutex_unlock(&module->lock);
 			return;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		MM_INFO("module %s: READY\n", module->name);
+		module->state = ADSP_STATE_ENABLED;
+		wake_up(&module->state_wait);
+		adsp_set_image(module->info, image);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	case RPC_ADSP_RTOS_MOD_DISABLE:
 		MM_INFO("module %s: DISABLED\n", module->name);
 		module->state = ADSP_STATE_DISABLED;
@@ -869,7 +942,17 @@ static int adsp_rtos_read_ctrl_word_cmd_tast_to_h_v(
 	unsigned msg_id;
 	unsigned msg_length;
 #ifdef CONFIG_DEBUG_FS
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint16_t *ptr;
+=======
+	uint16_t *ptr16;
+	uint32_t *ptr32;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint16_t *ptr16;
+	uint32_t *ptr32;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int ii;
 #endif /* CONFIG_DEBUG_FS */
 	void (*func)(void *, size_t);
@@ -913,12 +996,35 @@ static int adsp_rtos_read_ctrl_word_cmd_tast_to_h_v(
 		return 0;
 	}
 #ifdef CONFIG_DEBUG_FS
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rdump > 0) {
 		ptr = read_event_addr;
 		pr_info("D->A\n");
 		pr_info("m_id = %x id = %x\n", module->id, msg_id);
 		for (ii = 0; ii < msg_length/2; ii++)
 			pr_info("%x ", ptr[ii]);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (rdump > 0 &&
+		(dsp_addr >= (void *)(MSM_AD5_BASE + QDSP_RAMC_OFFSET))) {
+		ptr32 = read_event_addr;
+		pr_info("D->A\n");
+		pr_info("m_id = %x id = %x\n", module->id, msg_id);
+		for (ii = 0; ii < msg_length/4; ii++)
+			pr_info("%x ", ptr32[ii]);
+		pr_info("\n");
+	} else if (rdump > 0) {
+		ptr16 = read_event_addr;
+		pr_info("D->A\n");
+		pr_info("m_id = %x id = %x\n", module->id, msg_id);
+		for (ii = 0; ii < msg_length/2; ii++)
+			pr_info("%x ", ptr16[ii]);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_info("\n");
 	}
 #endif /* CONFIG_DEBUG_FS */
@@ -1027,18 +1133,107 @@ static irqreturn_t adsp_irq_handler(int irq, void *data)
 
 int adsp_set_clkrate(struct msm_adsp_module *module, unsigned long clk_rate)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!module)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!module)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (module->clk && clk_rate)
 		return clk_set_rate(module->clk, clk_rate);
 
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int msm_adsp_enable(struct msm_adsp_module *module)
 {
 	int rc = 0;
 
 	MM_INFO("enable '%s'state[%d] id[%d]\n",
 				module->name, module->state, module->id);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int msm_adsp_generate_event(void *data,
+			struct msm_adsp_module *mod,
+			unsigned event_id,
+			unsigned event_length,
+			unsigned event_size,
+			void *msg)
+{
+	unsigned long flags;
+	void (*func)(void *, size_t);
+
+	if (!mod)
+		return -EINVAL;
+
+	if (event_size == sizeof(uint32_t))
+		func = read_event_32;
+	else if (event_size == sizeof(uint16_t))
+		func = read_event_16;
+	else
+		return -EINVAL;
+
+	spin_lock_irqsave(&adsp_cmd_lock, flags);
+	read_event_addr = msg;
+	read_event_size = event_length;
+	mod->ops->event(data, event_id, event_length, func);
+	spin_unlock_irqrestore(&adsp_cmd_lock, flags);
+	return 0;
+}
+
+int msm_adsp_dump(struct msm_adsp_module *module)
+{
+	int rc = 0;
+	if (!module) {
+		MM_INFO("Invalid module. Dumps are not collected\n");
+		return -EINVAL;
+	}
+	MM_INFO("starting DSP DUMP\n");
+	rc = rpc_adsp_rtos_app_to_modem(RPC_ADSP_RTOS_CMD_CORE_DUMP,
+			module->id, module);
+	MM_INFO("DSP DUMP done rc =%d\n", rc);
+	return rc;
+}
+EXPORT_SYMBOL(msm_adsp_dump);
+
+int msm_adsp_enable(struct msm_adsp_module *module)
+{
+	int rc = 0;
+	struct msm_adsp_module *module_en = NULL;
+
+	if (!module)
+		return -EINVAL;
+
+	MM_INFO("enable '%s'state[%d] id[%d]\n",
+				module->name, module->state, module->id);
+	if (!strncmp(module->name, "JPEGTASK", sizeof(module->name)))
+		module_en = find_adsp_module_by_name(&adsp_info, "VIDEOTASK");
+	else if (!strncmp(module->name, "VIDEOTASK", sizeof(module->name)))
+		module_en = find_adsp_module_by_name(&adsp_info, "JPEGTASK");
+	if (module_en) {
+		mutex_lock(&module_en->lock);
+		if (module_en->state == ADSP_STATE_ENABLED ||
+			module_en->state == ADSP_STATE_ENABLING) {
+			MM_ERR("both jpeg and video module can't"\
+				" exist at a time\n");
+			mutex_unlock(&module_en->lock);
+			return -EINVAL;
+		}
+		mutex_unlock(&module_en->lock);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	mutex_lock(&module->lock);
 	switch (module->state) {
@@ -1057,6 +1252,8 @@ int msm_adsp_enable(struct msm_adsp_module *module)
 			rc = 0;
 		} else {
 			MM_ERR("module '%s' enable timed out\n", module->name);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			rc = -ETIMEDOUT;
 		}
 		if (module->open_count++ == 0 && module->clk)
@@ -1065,6 +1262,22 @@ int msm_adsp_enable(struct msm_adsp_module *module)
 		mutex_lock(&adsp_open_lock);
 		if (adsp_open_count++ == 0) {
 			enable_irq(INT_ADSP);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			msm_adsp_dump(module);
+			rc = -ETIMEDOUT;
+		}
+		if (module->open_count++ == 0 && module->clk)
+			clk_prepare_enable(module->clk);
+
+		mutex_lock(&adsp_open_lock);
+		if (adsp_open_count++ == 0) {
+			enable_irq(adsp_info.int_adsp);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			prevent_suspend();
 		}
 		mutex_unlock(&adsp_open_lock);
@@ -1089,6 +1302,18 @@ int msm_adsp_disable_event_rsp(struct msm_adsp_module *module)
 {
 	int rc = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!module)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!module)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_lock(&module->lock);
 
 	rc = rpc_adsp_rtos_app_to_modem(RPC_ADSP_RTOS_CMD_DISABLE_EVENT_RSP,
@@ -1103,6 +1328,18 @@ static int msm_adsp_disable_locked(struct msm_adsp_module *module)
 {
 	int rc = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!module)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!module)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	switch (module->state) {
 	case ADSP_STATE_DISABLED:
 		MM_DBG("module '%s' already disabled\n", module->name);
@@ -1113,10 +1350,23 @@ static int msm_adsp_disable_locked(struct msm_adsp_module *module)
 						module->id, module);
 		module->state = ADSP_STATE_DISABLED;
 		if (--module->open_count == 0 && module->clk)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			clk_disable(module->clk);
 		mutex_lock(&adsp_open_lock);
 		if (--adsp_open_count == 0) {
 			disable_irq(INT_ADSP);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			clk_disable_unprepare(module->clk);
+		mutex_lock(&adsp_open_lock);
+		if (--adsp_open_count == 0) {
+			disable_irq(adsp_info.int_adsp);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			allow_suspend();
 			MM_DBG("disable interrupt\n");
 		}
@@ -1128,6 +1378,19 @@ static int msm_adsp_disable_locked(struct msm_adsp_module *module)
 int msm_adsp_disable(struct msm_adsp_module *module)
 {
 	int rc;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (!module)
+		return -EINVAL;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MM_INFO("disable '%s'\n", module->name);
 	mutex_lock(&module->lock);
 	rc = msm_adsp_disable_locked(module);
@@ -1141,8 +1404,22 @@ static int msm_adsp_probe(struct platform_device *pdev)
 	unsigned count;
 	int rc, i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (pdev->id != (rpc_adsp_rtos_atom_vers & RPC_VERSION_MAJOR_MASK))
 		return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	adsp_info.int_adsp = platform_get_irq(pdev, 0);
+	if (adsp_info.int_adsp < 0) {
+		MM_ERR("no irq resource?\n");
+		return -ENODEV;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	wake_lock_init(&adsp_wake_lock, WAKE_LOCK_SUSPEND, "adsp");
 	adsp_info.init_info_ptr = kzalloc(
@@ -1168,12 +1445,28 @@ static int msm_adsp_probe(struct platform_device *pdev)
 
 	spin_lock_init(&adsp_cmd_lock);
 	spin_lock_init(&adsp_write_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	rc = request_irq(INT_ADSP, adsp_irq_handler, IRQF_TRIGGER_RISING,
 			 "adsp", 0);
 	if (rc < 0)
 		goto fail_request_irq;
 	disable_irq(INT_ADSP);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	mutex_init(&adsp_info.lock);
+
+	rc = request_irq(adsp_info.int_adsp, adsp_irq_handler,
+			IRQF_TRIGGER_RISING, "adsp", 0);
+	if (rc < 0)
+		goto fail_request_irq;
+	disable_irq(adsp_info.int_adsp);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	rpc_cb_server_client = msm_rpc_open();
 	if (IS_ERR(rpc_cb_server_client)) {
@@ -1191,8 +1484,18 @@ static int msm_adsp_probe(struct platform_device *pdev)
 		goto fail_rpc_register;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* start the kernel thread to process the callbacks */
 	kthread_run(adsp_rpc_thread, NULL, "kadspd");
+=======
+	/* schedule start of kernel thread later using work queue */
+	queue_work(msm_adsp_probe_work_queue, &msm_adsp_probe_work);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* schedule start of kernel thread later using work queue */
+	queue_work(msm_adsp_probe_work_queue, &msm_adsp_probe_work);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	for (i = 0; i < count; i++) {
 		struct msm_adsp_module *mod = adsp_modules + i;
@@ -1225,13 +1528,39 @@ fail_rpc_register:
 	msm_rpc_close(rpc_cb_server_client);
 	rpc_cb_server_client = NULL;
 fail_rpc_open:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	enable_irq(INT_ADSP);
 	free_irq(INT_ADSP, 0);
+=======
+	enable_irq(adsp_info.int_adsp);
+	free_irq(adsp_info.int_adsp, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enable_irq(adsp_info.int_adsp);
+	free_irq(adsp_info.int_adsp, 0);
+>>>>>>> refs/remotes/origin/cm-11.0
 fail_request_irq:
 	kfree(adsp_modules);
 	kfree(adsp_info.init_info_ptr);
 	return rc;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+static void adsp_probe_work(struct work_struct *work)
+{
+	/* start the kernel thread to process the callbacks */
+	kthread_run(adsp_rpc_thread, NULL, "kadspd");
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_DEBUG_FS
 static int get_parameters(char *buf, long int *param1, int num_of_par)
 {
@@ -1355,7 +1684,15 @@ static struct platform_driver msm_adsp_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char msm_adsp_driver_name[] = "rs00000000";
+=======
+static const char msm_adsp_driver_name[] = "msm_adsp";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char msm_adsp_driver_name[] = "msm_adsp";
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_DEBUG_FS
 static const struct file_operations adsp_debug_fops = {
@@ -1394,11 +1731,27 @@ static int __init adsp_init(void)
 	rpc_adsp_rtos_mtoa_vers_comp = 0x00030001;
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snprintf(msm_adsp_driver_name, sizeof(msm_adsp_driver_name),
 		"rs%08x",
 		rpc_adsp_rtos_atom_prog);
 	msm_adsp_driver.driver.name = msm_adsp_driver_name;
 	rc = platform_driver_register(&msm_adsp_driver);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	msm_adsp_probe_work_queue = create_workqueue("msm_adsp_probe");
+	if (msm_adsp_probe_work_queue == NULL)
+		return -ENOMEM;
+	msm_adsp_driver.driver.name = msm_adsp_driver_name;
+	preempt_disable();
+	rc = platform_driver_register(&msm_adsp_driver);
+	preempt_enable();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	MM_INFO("%s -- %d\n", msm_adsp_driver_name, rc);
 	return rc;
 }

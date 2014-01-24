@@ -304,6 +304,7 @@ static struct serio_driver ps2mult_drv = {
 	.reconnect	= ps2mult_reconnect,
 };
 
+<<<<<<< HEAD
 static int __init ps2mult_init(void)
 {
 	return serio_register_driver(&ps2mult_drv);
@@ -316,3 +317,6 @@ static void __exit ps2mult_exit(void)
 
 module_init(ps2mult_init);
 module_exit(ps2mult_exit);
+=======
+module_serio_driver(ps2mult_drv);
+>>>>>>> refs/remotes/origin/master

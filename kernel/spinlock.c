@@ -19,7 +19,11 @@
 #include <linux/spinlock.h>
 #include <linux/interrupt.h>
 #include <linux/debug_locks.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * If lockdep is enabled then we use the non-preemption spin-ops
@@ -163,7 +167,11 @@ void __lockfunc _raw_spin_lock_bh(raw_spinlock_t *lock)
 EXPORT_SYMBOL(_raw_spin_lock_bh);
 #endif
 
+<<<<<<< HEAD
 #ifndef CONFIG_INLINE_SPIN_UNLOCK
+=======
+#ifdef CONFIG_UNINLINE_SPIN_UNLOCK
+>>>>>>> refs/remotes/origin/cm-10.0
 void __lockfunc _raw_spin_unlock(raw_spinlock_t *lock)
 {
 	__raw_spin_unlock(lock);

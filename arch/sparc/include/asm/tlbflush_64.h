@@ -1,7 +1,10 @@
 #ifndef _SPARC64_TLBFLUSH_H
 #define _SPARC64_TLBFLUSH_H
 
+<<<<<<< HEAD
 #include <linux/mm.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu_context.h>
 
 /* TSB flush operations. */

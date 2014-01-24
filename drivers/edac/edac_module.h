@@ -10,8 +10,14 @@
 #ifndef	__EDAC_MODULE_H__
 #define	__EDAC_MODULE_H__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "edac_core.h"
 
 /*
@@ -21,12 +27,21 @@
  *
  * edac_mc objects
  */
+<<<<<<< HEAD
 extern int edac_sysfs_setup_mc_kset(void);
 extern void edac_sysfs_teardown_mc_kset(void);
 extern int edac_mc_register_sysfs_main_kobj(struct mem_ctl_info *mci);
 extern void edac_mc_unregister_sysfs_main_kobj(struct mem_ctl_info *mci);
 extern int edac_create_sysfs_mci_device(struct mem_ctl_info *mci);
 extern void edac_remove_sysfs_mci_device(struct mem_ctl_info *mci);
+=======
+	/* on edac_mc_sysfs.c */
+int edac_mc_sysfs_init(void);
+void edac_mc_sysfs_exit(void);
+extern int edac_create_sysfs_mci_device(struct mem_ctl_info *mci);
+extern void edac_remove_sysfs_mci_device(struct mem_ctl_info *mci);
+void edac_unregister_sysfs(struct mem_ctl_info *mci);
+>>>>>>> refs/remotes/origin/master
 extern int edac_get_log_ue(void);
 extern int edac_get_log_ce(void);
 extern int edac_get_panic_on_ue(void);
@@ -36,6 +51,13 @@ extern int edac_mc_get_panic_on_ue(void);
 extern int edac_get_poll_msec(void);
 extern int edac_mc_get_poll_msec(void);
 
+<<<<<<< HEAD
+=======
+unsigned edac_dimm_info_location(struct dimm_info *dimm, char *buf,
+				 unsigned len);
+
+	/* on edac_device.c */
+>>>>>>> refs/remotes/origin/master
 extern int edac_device_register_sysfs_main_kobj(
 				struct edac_device_ctl_info *edac_dev);
 extern void edac_device_unregister_sysfs_main_kobj(
@@ -52,7 +74,25 @@ extern void edac_device_reset_delay_period(struct edac_device_ctl_info
 					   *edac_dev, unsigned long value);
 extern void edac_mc_reset_delay_period(int value);
 
+<<<<<<< HEAD
 extern void *edac_align_ptr(void *ptr, unsigned size);
+=======
+extern void *edac_align_ptr(void **p, unsigned size, int n_elems);
+
+/*
+ * EDAC debugfs functions
+ */
+#ifdef CONFIG_EDAC_DEBUG
+int edac_debugfs_init(void);
+void edac_debugfs_exit(void);
+#else
+static inline int edac_debugfs_init(void)
+{
+	return -ENODEV;
+}
+static inline void edac_debugfs_exit(void) {}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * EDAC PCI functions

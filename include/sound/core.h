@@ -22,17 +22,35 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>		/* wake_up() */
 #include <linux/mutex.h>		/* struct mutex */
 #include <linux/rwsem.h>		/* struct rw_semaphore */
 #include <linux/pm.h>			/* pm_message_t */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/stringify.h>
 
 /* number of supported soundcards */
 #ifdef CONFIG_SND_DYNAMIC_MINORS
 #define SNDRV_CARDS 32
+=======
+#include <linux/stringify.h>
+#include <linux/printk.h>
+
+/* number of supported soundcards */
+#ifdef CONFIG_SND_DYNAMIC_MINORS
+#define SNDRV_CARDS CONFIG_SND_MAX_CARDS
+>>>>>>> refs/remotes/origin/master
 #else
 #define SNDRV_CARDS 8		/* don't change - minor numbers */
 #endif
@@ -40,9 +58,22 @@
 #define CONFIG_SND_MAJOR	116	/* standard configuration */
 
 /* forward declarations */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 struct pci_dev;
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct pci_dev;
+struct module;
+struct device;
+struct device_attribute;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* device allocation stuff */
 
@@ -62,6 +93,14 @@ typedef int __bitwise snd_device_type_t;
 #define	SNDRV_DEV_BUS		((__force snd_device_type_t) 0x1007)
 #define	SNDRV_DEV_CODEC		((__force snd_device_type_t) 0x1008)
 #define	SNDRV_DEV_JACK          ((__force snd_device_type_t) 0x1009)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define	SNDRV_DEV_COMPRESS	((__force snd_device_type_t) 0x100A)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	SNDRV_DEV_COMPRESS	((__force snd_device_type_t) 0x100A)
+>>>>>>> refs/remotes/origin/master
 #define	SNDRV_DEV_LOWLEVEL	((__force snd_device_type_t) 0x2000)
 
 typedef int __bitwise snd_device_state_t;
@@ -229,7 +268,11 @@ int snd_register_device_for_dev(int type, struct snd_card *card,
  * This function uses the card's device pointer to link to the
  * correct &struct device.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure.
+=======
+ * Return: Zero if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 static inline int snd_register_device(int type, struct snd_card *card, int dev,
 				      const struct file_operations *f_ops,
@@ -328,10 +371,30 @@ void release_and_free_resource(struct resource *res);
 
 /* --- */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SND_DEBUG) || defined(CONFIG_SND_VERBOSE_PRINTK)
 void __snd_printk(unsigned int level, const char *file, int line,
 		  const char *format, ...)
      __attribute__ ((format (printf, 4, 5)));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* sound printk debug levels */
+enum {
+	SND_PR_ALWAYS,
+	SND_PR_DEBUG,
+	SND_PR_VERBOSE,
+};
+
+#if defined(CONFIG_SND_DEBUG) || defined(CONFIG_SND_VERBOSE_PRINTK)
+__printf(4, 5)
+void __snd_printk(unsigned int level, const char *file, int line,
+		  const char *format, ...);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define __snd_printk(level, file, line, format, args...) \
 	printk(format, ##args)
@@ -357,6 +420,16 @@ void __snd_printk(unsigned int level, const char *file, int line,
  */
 #define snd_printd(fmt, args...) \
 	__snd_printk(1, __FILE__, __LINE__, fmt, ##args)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define _snd_printd(level, fmt, args...) \
+	__snd_printk(level, __FILE__, __LINE__, fmt, ##args)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define _snd_printd(level, fmt, args...) \
+	__snd_printk(level, __FILE__, __LINE__, fmt, ##args)
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_BUG - give a BUG warning message and stack trace
@@ -367,6 +440,7 @@ void __snd_printk(unsigned int level, const char *file, int line,
 #define snd_BUG()		WARN(1, "BUG?\n")
 
 /**
+<<<<<<< HEAD
  * snd_BUG_ON - debugging check macro
  * @cond: condition to evaluate
  *
@@ -386,12 +460,46 @@ void __snd_printk(unsigned int level, const char *file, int line,
 #else /* !CONFIG_SND_DEBUG */
 
 #define snd_printd(fmt, args...)	do { } while (0)
+<<<<<<< HEAD
+=======
+#define _snd_printd(level, fmt, args...) do { } while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define snd_BUG()			do { } while (0)
 static inline int __snd_bug_on(int cond)
 {
 	return 0;
 }
 #define snd_BUG_ON(cond)	__snd_bug_on(0 && (cond))  /* always false */
+=======
+ * Suppress high rates of output when CONFIG_SND_DEBUG is enabled.
+ */
+#define snd_printd_ratelimit() printk_ratelimit()
+
+/**
+ * snd_BUG_ON - debugging check macro
+ * @cond: condition to evaluate
+ *
+ * Has the same behavior as WARN_ON when CONFIG_SND_DEBUG is set,
+ * otherwise just evaluates the conditional and returns the value.
+ */
+#define snd_BUG_ON(cond)	WARN_ON((cond))
+
+#else /* !CONFIG_SND_DEBUG */
+
+__printf(1, 2)
+static inline void snd_printd(const char *format, ...) {}
+__printf(2, 3)
+static inline void _snd_printd(int level, const char *format, ...) {}
+
+#define snd_BUG()			do { } while (0)
+
+#define snd_BUG_ON(condition) ({ \
+	int __ret_warn_on = !!(condition); \
+	unlikely(__ret_warn_on); \
+})
+
+static inline bool snd_printd_ratelimit(void) { return false; }
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CONFIG_SND_DEBUG */
 
@@ -406,7 +514,12 @@ static inline int __snd_bug_on(int cond)
 #define snd_printdd(format, args...) \
 	__snd_printk(2, __FILE__, __LINE__, format, ##args)
 #else
+<<<<<<< HEAD
 #define snd_printdd(format, args...)	do { } while (0)
+=======
+__printf(1, 2)
+static inline void snd_printdd(const char *format, ...) {}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -419,6 +532,14 @@ static inline int __snd_bug_on(int cond)
 #define gameport_get_port_data(gp) (gp)->port_data
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PCI
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PCI
+>>>>>>> refs/remotes/origin/master
 /* PCI quirk list helper */
 struct snd_pci_quirk {
 	unsigned short subvendor;	/* PCI subvendor ID */
@@ -443,6 +564,10 @@ struct snd_pci_quirk {
 #define SND_PCI_QUIRK_MASK(vend, mask, dev, xname, val)			\
 	{_SND_PCI_QUIRK_ID_MASK(vend, mask, dev),			\
 			.value = (val), .name = (xname)}
+<<<<<<< HEAD
+=======
+#define snd_pci_quirk_name(q)	((q)->name)
+>>>>>>> refs/remotes/origin/master
 #else
 #define SND_PCI_QUIRK(vend,dev,xname,val) \
 	{_SND_PCI_QUIRK_ID(vend, dev), .value = (val)}
@@ -450,6 +575,10 @@ struct snd_pci_quirk {
 	{_SND_PCI_QUIRK_ID_MASK(vend, mask, dev), .value = (val)}
 #define SND_PCI_QUIRK_VENDOR(vend, xname, val)			\
 	{_SND_PCI_QUIRK_ID_MASK(vend, 0, 0), .value = (val)}
+<<<<<<< HEAD
+=======
+#define snd_pci_quirk_name(q)	""
+>>>>>>> refs/remotes/origin/master
 #endif
 
 const struct snd_pci_quirk *
@@ -458,5 +587,13 @@ snd_pci_quirk_lookup(struct pci_dev *pci, const struct snd_pci_quirk *list);
 const struct snd_pci_quirk *
 snd_pci_quirk_lookup_id(u16 vendor, u16 device,
 			const struct snd_pci_quirk *list);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __SOUND_CORE_H */

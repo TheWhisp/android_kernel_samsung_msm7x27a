@@ -7,8 +7,11 @@
 #ifndef _MACH_PORTMUX_H_
 #define _MACH_PORTMUX_H_
 
+<<<<<<< HEAD
 #define MAX_RESOURCES	MAX_BLACKFIN_GPIOS
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define P_SPORT2_TFS	(P_DEFINED | P_IDENT(GPIO_PA0) | P_FUNCT(0))
 #define P_SPORT2_DTSEC	(P_DEFINED | P_IDENT(GPIO_PA1) | P_FUNCT(0))
 #define P_SPORT2_DTPRI	(P_DEFINED | P_IDENT(GPIO_PA2) | P_FUNCT(0))

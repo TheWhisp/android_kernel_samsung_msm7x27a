@@ -29,12 +29,26 @@
 #include <linux/slab.h>
 #include <linux/uaccess.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kallsyms.h>
 #include <asm/pgtable.h>
 #include <linux/mmiotrace.h>
 #include <asm/e820.h> /* for ISA_START_ADDRESS */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/percpu.h>
 #include <linux/cpu.h>
 
@@ -76,8 +90,18 @@ static LIST_HEAD(trace_list);		/* struct remap_trace */
 
 /* module parameters */
 static unsigned long	filter_offset;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int		nommiotrace;
 static int		trace_pc;
+=======
+static bool		nommiotrace;
+static bool		trace_pc;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool		nommiotrace;
+static bool		trace_pc;
+>>>>>>> refs/remotes/origin/master
 
 module_param(filter_offset, ulong, 0);
 module_param(nommiotrace, bool, 0);
@@ -411,9 +435,13 @@ out:
 		pr_warning("multiple CPUs still online, may miss events.\n");
 }
 
+<<<<<<< HEAD
 /* __ref because leave_uniprocessor calls cpu_up which is __cpuinit,
    but this whole function is ifdefed CONFIG_HOTPLUG_CPU */
 static void __ref leave_uniprocessor(void)
+=======
+static void leave_uniprocessor(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpu;
 	int err;

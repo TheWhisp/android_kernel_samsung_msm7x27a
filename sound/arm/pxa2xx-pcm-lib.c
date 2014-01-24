@@ -7,11 +7,19 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+=======
+#include <linux/dmaengine.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/pxa2xx-lib.h>
+<<<<<<< HEAD
+=======
+#include <sound/dmaengine_pcm.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/dma.h>
 
@@ -43,6 +51,38 @@ int __pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
 	size_t period = params_period_bytes(params);
 	pxa_dma_desc *dma_desc;
 	dma_addr_t dma_buff_phys, next_desc_phys;
+<<<<<<< HEAD
+=======
+	u32 dcmd = DCMD_INCSRCADDR | DCMD_FLOWTRG;
+
+	/* temporary transition hack */
+	switch (rtd->params->addr_width) {
+	case DMA_SLAVE_BUSWIDTH_1_BYTE:
+		dcmd |= DCMD_WIDTH1;
+		break;
+	case DMA_SLAVE_BUSWIDTH_2_BYTES:
+		dcmd |= DCMD_WIDTH2;
+		break;
+	case DMA_SLAVE_BUSWIDTH_4_BYTES:
+		dcmd |= DCMD_WIDTH4;
+		break;
+	default:
+		/* can't happen */
+		break;
+	}
+
+	switch (rtd->params->maxburst) {
+	case 8:
+		dcmd |= DCMD_BURST8;
+		break;
+	case 16:
+		dcmd |= DCMD_BURST16;
+		break;
+	case 32:
+		dcmd |= DCMD_BURST32;
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
 	runtime->dma_bytes = totsize;
@@ -55,14 +95,24 @@ int __pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
 		dma_desc->ddadr = next_desc_phys;
 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 			dma_desc->dsadr = dma_buff_phys;
+<<<<<<< HEAD
 			dma_desc->dtadr = rtd->params->dev_addr;
 		} else {
 			dma_desc->dsadr = rtd->params->dev_addr;
+=======
+			dma_desc->dtadr = rtd->params->addr;
+		} else {
+			dma_desc->dsadr = rtd->params->addr;
+>>>>>>> refs/remotes/origin/master
 			dma_desc->dtadr = dma_buff_phys;
 		}
 		if (period > totsize)
 			period = totsize;
+<<<<<<< HEAD
 		dma_desc->dcmd = rtd->params->dcmd | period | DCMD_ENDIRQEN;
+=======
+		dma_desc->dcmd = dcmd | period | DCMD_ENDIRQEN;
+>>>>>>> refs/remotes/origin/master
 		dma_desc++;
 		dma_buff_phys += period;
 	} while (totsize -= period);
@@ -76,8 +126,15 @@ int __pxa2xx_pcm_hw_free(struct snd_pcm_substream *substream)
 {
 	struct pxa2xx_runtime_data *rtd = substream->runtime->private_data;
 
+<<<<<<< HEAD
 	if (rtd && rtd->params && rtd->params->drcmr)
 		*rtd->params->drcmr = 0;
+=======
+	if (rtd && rtd->params && rtd->params->filter_data) {
+		unsigned long req = *(unsigned long *) rtd->params->filter_data;
+		DRCMR(req) = 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	snd_pcm_set_runtime_buffer(substream, NULL);
 	return 0;
@@ -136,6 +193,10 @@ EXPORT_SYMBOL(pxa2xx_pcm_pointer);
 int __pxa2xx_pcm_prepare(struct snd_pcm_substream *substream)
 {
 	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
+<<<<<<< HEAD
+=======
+	unsigned long req;
+>>>>>>> refs/remotes/origin/master
 
 	if (!prtd || !prtd->params)
 		return 0;
@@ -146,7 +207,12 @@ int __pxa2xx_pcm_prepare(struct snd_pcm_substream *substream)
 	DCSR(prtd->dma_ch) &= ~DCSR_RUN;
 	DCSR(prtd->dma_ch) = 0;
 	DCMD(prtd->dma_ch) = 0;
+<<<<<<< HEAD
 	*prtd->params->drcmr = prtd->dma_ch | DRCMR_MAPVLD;
+=======
+	req = *(unsigned long *) prtd->params->filter_data;
+	DRCMR(req) = prtd->dma_ch | DRCMR_MAPVLD;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -155,7 +221,10 @@ EXPORT_SYMBOL(__pxa2xx_pcm_prepare);
 void pxa2xx_pcm_dma_irq(int dma_ch, void *dev_id)
 {
 	struct snd_pcm_substream *substream = dev_id;
+<<<<<<< HEAD
 	struct pxa2xx_runtime_data *rtd = substream->runtime->private_data;
+=======
+>>>>>>> refs/remotes/origin/master
 	int dcsr;
 
 	dcsr = DCSR(dma_ch);
@@ -164,9 +233,17 @@ void pxa2xx_pcm_dma_irq(int dma_ch, void *dev_id)
 	if (dcsr & DCSR_ENDINTR) {
 		snd_pcm_period_elapsed(substream);
 	} else {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: DMA error on channel %d (DCSR=%#x)\n",
 			rtd->params->name, dma_ch, dcsr);
 		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+=======
+		printk(KERN_ERR "DMA error on channel %d (DCSR=%#x)\n",
+			dma_ch, dcsr);
+		snd_pcm_stream_lock(substream);
+		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+		snd_pcm_stream_unlock(substream);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(pxa2xx_pcm_dma_irq);

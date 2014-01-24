@@ -36,6 +36,10 @@
 #include <linux/types.h>
 #include <linux/slab.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/oid_registry.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sunrpc/msg_prot.h>
 #include <linux/sunrpc/gss_asn1.h>
 #include <linux/sunrpc/auth_gss.h>
@@ -102,8 +106,18 @@ out:
 	return status;
 }
 
+<<<<<<< HEAD
 int
 gss_mech_register(struct gss_api_mech *gm)
+=======
+/**
+ * gss_mech_register - register a GSS mechanism
+ * @gm: GSS mechanism handle
+ *
+ * Returns zero if successful, or a negative errno.
+ */
+int gss_mech_register(struct gss_api_mech *gm)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 
@@ -116,11 +130,22 @@ gss_mech_register(struct gss_api_mech *gm)
 	dprintk("RPC:       registered gss mechanism %s\n", gm->gm_name);
 	return 0;
 }
+<<<<<<< HEAD
 
 EXPORT_SYMBOL_GPL(gss_mech_register);
 
 void
 gss_mech_unregister(struct gss_api_mech *gm)
+=======
+EXPORT_SYMBOL_GPL(gss_mech_register);
+
+/**
+ * gss_mech_unregister - release a GSS mechanism
+ * @gm: GSS mechanism handle
+ *
+ */
+void gss_mech_unregister(struct gss_api_mech *gm)
+>>>>>>> refs/remotes/origin/master
 {
 	spin_lock(&registered_mechs_lock);
 	list_del(&gm->gm_list);
@@ -128,20 +153,37 @@ gss_mech_unregister(struct gss_api_mech *gm)
 	dprintk("RPC:       unregistered gss mechanism %s\n", gm->gm_name);
 	gss_mech_free(gm);
 }
+<<<<<<< HEAD
 
 EXPORT_SYMBOL_GPL(gss_mech_unregister);
 
 struct gss_api_mech *
 gss_mech_get(struct gss_api_mech *gm)
+=======
+EXPORT_SYMBOL_GPL(gss_mech_unregister);
+
+struct gss_api_mech *gss_mech_get(struct gss_api_mech *gm)
+>>>>>>> refs/remotes/origin/master
 {
 	__module_get(gm->gm_owner);
 	return gm;
 }
+<<<<<<< HEAD
 
 EXPORT_SYMBOL_GPL(gss_mech_get);
 
 struct gss_api_mech *
+<<<<<<< HEAD
 gss_mech_get_by_name(const char *name)
+=======
+_gss_mech_get_by_name(const char *name)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(gss_mech_get);
+
+static struct gss_api_mech *
+_gss_mech_get_by_name(const char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gss_api_mech	*pos, *gm = NULL;
 
@@ -158,12 +200,42 @@ gss_mech_get_by_name(const char *name)
 
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct gss_api_mech * gss_mech_get_by_name(const char *name)
+{
+	struct gss_api_mech *gm = NULL;
+
+	gm = _gss_mech_get_by_name(name);
+	if (!gm) {
+		request_module("rpc-auth-gss-%s", name);
+		gm = _gss_mech_get_by_name(name);
+	}
+	return gm;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL_GPL(gss_mech_get_by_name);
 
 struct gss_api_mech *
 gss_mech_get_by_OID(struct xdr_netobj *obj)
 {
 	struct gss_api_mech	*pos, *gm = NULL;
+=======
+
+struct gss_api_mech *gss_mech_get_by_OID(struct rpcsec_gss_oid *obj)
+{
+	struct gss_api_mech	*pos, *gm = NULL;
+	char buf[32];
+
+	if (sprint_oid(obj->data, obj->len, buf, sizeof(buf)) < 0)
+		return NULL;
+	dprintk("RPC:       %s(%s)\n", __func__, buf);
+	request_module("rpc-auth-gss-%s", buf);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&registered_mechs_lock);
 	list_for_each_entry(pos, &registered_mechs, gm_list) {
@@ -177,11 +249,16 @@ gss_mech_get_by_OID(struct xdr_netobj *obj)
 	}
 	spin_unlock(&registered_mechs_lock);
 	return gm;
+<<<<<<< HEAD
 
 }
 
 EXPORT_SYMBOL_GPL(gss_mech_get_by_OID);
 
+=======
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int
 mech_supports_pseudoflavor(struct gss_api_mech *gm, u32 pseudoflavor)
 {
@@ -194,10 +271,22 @@ mech_supports_pseudoflavor(struct gss_api_mech *gm, u32 pseudoflavor)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct gss_api_mech *
 gss_mech_get_by_pseudoflavor(u32 pseudoflavor)
 {
 	struct gss_api_mech *pos, *gm = NULL;
+=======
+struct gss_api_mech *_gss_mech_get_by_pseudoflavor(u32 pseudoflavor)
+{
+	struct gss_api_mech *gm = NULL, *pos;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct gss_api_mech *_gss_mech_get_by_pseudoflavor(u32 pseudoflavor)
+{
+	struct gss_api_mech *gm = NULL, *pos;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&registered_mechs_lock);
 	list_for_each_entry(pos, &registered_mechs, gm_list) {
@@ -213,30 +302,100 @@ gss_mech_get_by_pseudoflavor(u32 pseudoflavor)
 	return gm;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct gss_api_mech *
+gss_mech_get_by_pseudoflavor(u32 pseudoflavor)
+{
+	struct gss_api_mech *gm;
+
+	gm = _gss_mech_get_by_pseudoflavor(pseudoflavor);
+
+	if (!gm) {
+		request_module("rpc-auth-gss-%u", pseudoflavor);
+		gm = _gss_mech_get_by_pseudoflavor(pseudoflavor);
+	}
+	return gm;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL_GPL(gss_mech_get_by_pseudoflavor);
 
 int gss_mech_list_pseudoflavors(rpc_authflavor_t *array_ptr)
 {
 	struct gss_api_mech *pos = NULL;
+<<<<<<< HEAD
 	int i = 0;
 
 	spin_lock(&registered_mechs_lock);
 	list_for_each_entry(pos, &registered_mechs, gm_list) {
 		array_ptr[i] = pos->gm_pfs->pseudoflavor;
 		i++;
+=======
+=======
+/**
+ * gss_mech_list_pseudoflavors - Discover registered GSS pseudoflavors
+ * @array: array to fill in
+ * @size: size of "array"
+ *
+ * Returns the number of array items filled in, or a negative errno.
+ *
+ * The returned array is not sorted by any policy.  Callers should not
+ * rely on the order of the items in the returned array.
+ */
+int gss_mech_list_pseudoflavors(rpc_authflavor_t *array_ptr, int size)
+{
+	struct gss_api_mech *pos = NULL;
+>>>>>>> refs/remotes/origin/master
+	int j, i = 0;
+
+	spin_lock(&registered_mechs_lock);
+	list_for_each_entry(pos, &registered_mechs, gm_list) {
+<<<<<<< HEAD
+		for (j=0; j < pos->gm_pf_num; j++) {
+			array_ptr[i++] = pos->gm_pfs[j].pseudoflavor;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (j = 0; j < pos->gm_pf_num; j++) {
+			if (i >= size) {
+				spin_unlock(&registered_mechs_lock);
+				return -ENOMEM;
+			}
+			array_ptr[i++] = pos->gm_pfs[j].pseudoflavor;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock(&registered_mechs_lock);
 	return i;
 }
 
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(gss_mech_list_pseudoflavors);
 
 u32
 gss_svc_to_pseudoflavor(struct gss_api_mech *gm, u32 service)
+=======
+/**
+ * gss_svc_to_pseudoflavor - map a GSS service number to a pseudoflavor
+ * @gm: GSS mechanism handle
+ * @qop: GSS quality-of-protection value
+ * @service: GSS service value
+ *
+ * Returns a matching security flavor, or RPC_AUTH_MAXFLAVOR if none is found.
+ */
+rpc_authflavor_t gss_svc_to_pseudoflavor(struct gss_api_mech *gm, u32 qop,
+					 u32 service)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
 	for (i = 0; i < gm->gm_pf_num; i++) {
+<<<<<<< HEAD
 		if (gm->gm_pfs[i].service == service) {
 			return gm->gm_pfs[i].pseudoflavor;
 		}
@@ -244,6 +403,70 @@ gss_svc_to_pseudoflavor(struct gss_api_mech *gm, u32 service)
 	return RPC_AUTH_MAXFLAVOR; /* illegal value */
 }
 EXPORT_SYMBOL_GPL(gss_svc_to_pseudoflavor);
+=======
+		if (gm->gm_pfs[i].qop == qop &&
+		    gm->gm_pfs[i].service == service) {
+			return gm->gm_pfs[i].pseudoflavor;
+		}
+	}
+	return RPC_AUTH_MAXFLAVOR;
+}
+
+/**
+ * gss_mech_info2flavor - look up a pseudoflavor given a GSS tuple
+ * @info: a GSS mech OID, quality of protection, and service value
+ *
+ * Returns a matching pseudoflavor, or RPC_AUTH_MAXFLAVOR if the tuple is
+ * not supported.
+ */
+rpc_authflavor_t gss_mech_info2flavor(struct rpcsec_gss_info *info)
+{
+	rpc_authflavor_t pseudoflavor;
+	struct gss_api_mech *gm;
+
+	gm = gss_mech_get_by_OID(&info->oid);
+	if (gm == NULL)
+		return RPC_AUTH_MAXFLAVOR;
+
+	pseudoflavor = gss_svc_to_pseudoflavor(gm, info->qop, info->service);
+
+	gss_mech_put(gm);
+	return pseudoflavor;
+}
+
+/**
+ * gss_mech_flavor2info - look up a GSS tuple for a given pseudoflavor
+ * @pseudoflavor: GSS pseudoflavor to match
+ * @info: rpcsec_gss_info structure to fill in
+ *
+ * Returns zero and fills in "info" if pseudoflavor matches a
+ * supported mechanism.  Otherwise a negative errno is returned.
+ */
+int gss_mech_flavor2info(rpc_authflavor_t pseudoflavor,
+			 struct rpcsec_gss_info *info)
+{
+	struct gss_api_mech *gm;
+	int i;
+
+	gm = gss_mech_get_by_pseudoflavor(pseudoflavor);
+	if (gm == NULL)
+		return -ENOENT;
+
+	for (i = 0; i < gm->gm_pf_num; i++) {
+		if (gm->gm_pfs[i].pseudoflavor == pseudoflavor) {
+			memcpy(info->oid.data, gm->gm_oid.data, gm->gm_oid.len);
+			info->oid.len = gm->gm_oid.len;
+			info->qop = gm->gm_pfs[i].qop;
+			info->service = gm->gm_pfs[i].service;
+			gss_mech_put(gm);
+			return 0;
+		}
+	}
+
+	gss_mech_put(gm);
+	return -ENOENT;
+}
+>>>>>>> refs/remotes/origin/master
 
 u32
 gss_pseudoflavor_to_service(struct gss_api_mech *gm, u32 pseudoflavor)
@@ -256,8 +479,12 @@ gss_pseudoflavor_to_service(struct gss_api_mech *gm, u32 pseudoflavor)
 	}
 	return 0;
 }
+<<<<<<< HEAD
 
 EXPORT_SYMBOL_GPL(gss_pseudoflavor_to_service);
+=======
+EXPORT_SYMBOL(gss_pseudoflavor_to_service);
+>>>>>>> refs/remotes/origin/master
 
 char *
 gss_service_to_auth_domain_name(struct gss_api_mech *gm, u32 service)
@@ -271,16 +498,23 @@ gss_service_to_auth_domain_name(struct gss_api_mech *gm, u32 service)
 	return NULL;
 }
 
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(gss_service_to_auth_domain_name);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void
 gss_mech_put(struct gss_api_mech * gm)
 {
 	if (gm)
 		module_put(gm->gm_owner);
 }
+<<<<<<< HEAD
 
 EXPORT_SYMBOL_GPL(gss_mech_put);
+=======
+EXPORT_SYMBOL(gss_mech_put);
+>>>>>>> refs/remotes/origin/master
 
 /* The mech could probably be determined from the token instead, but it's just
  * as easy for now to pass it in. */
@@ -288,14 +522,23 @@ int
 gss_import_sec_context(const void *input_token, size_t bufsize,
 		       struct gss_api_mech	*mech,
 		       struct gss_ctx		**ctx_id,
+<<<<<<< HEAD
+=======
+		       time_t			*endtime,
+>>>>>>> refs/remotes/origin/master
 		       gfp_t gfp_mask)
 {
 	if (!(*ctx_id = kzalloc(sizeof(**ctx_id), gfp_mask)))
 		return -ENOMEM;
 	(*ctx_id)->mech_type = gss_mech_get(mech);
 
+<<<<<<< HEAD
 	return mech->gm_ops
 		->gss_import_sec_context(input_token, bufsize, *ctx_id, gfp_mask);
+=======
+	return mech->gm_ops->gss_import_sec_context(input_token, bufsize,
+						*ctx_id, endtime, gfp_mask);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* gss_get_mic: compute a mic over message and return mic_token. */

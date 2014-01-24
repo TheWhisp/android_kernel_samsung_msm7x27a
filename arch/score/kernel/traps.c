@@ -117,6 +117,11 @@ static void show_code(unsigned int *pc)
  */
 void show_regs(struct pt_regs *regs)
 {
+<<<<<<< HEAD
+=======
+	show_regs_print_info(KERN_DEFAULT);
+
+>>>>>>> refs/remotes/origin/master
 	printk("r0 : %08lx %08lx %08lx %08lx %08lx %08lx %08lx %08lx\n",
 		regs->regs[0], regs->regs[1], regs->regs[2], regs->regs[3],
 		regs->regs[4], regs->regs[5], regs->regs[6], regs->regs[7]);
@@ -149,6 +154,7 @@ static void show_registers(struct pt_regs *regs)
 	printk(KERN_NOTICE "\n");
 }
 
+<<<<<<< HEAD
 /*
  * The architecture-independent dump_stack generator
  */
@@ -159,6 +165,8 @@ void dump_stack(void)
 }
 EXPORT_SYMBOL(dump_stack);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __die(const char *str, struct pt_regs *regs, const char *file,
 	const char *func, unsigned long line)
 {

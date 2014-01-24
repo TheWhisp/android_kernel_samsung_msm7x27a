@@ -56,7 +56,11 @@
 
 #define CLPAIR(x, y)	((x)*6+(y))
 
+<<<<<<< HEAD
 #define CLEARCX	\
+=======
+#define CLEARCX \
+>>>>>>> refs/remotes/origin/master
   (ieee754_csr.cx = 0)
 
 #define SETCX(x) \

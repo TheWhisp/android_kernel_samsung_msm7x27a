@@ -19,12 +19,33 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+<<<<<<< HEAD
 #ifndef __ASM_ARCH_HARDWARE_H
 #define __ASM_ARCH_HARDWARE_H
 
 
 #define CLPS7111_VIRT_BASE	0xff000000
 #define CLPS7111_BASE		CLPS7111_VIRT_BASE
+=======
+#ifndef __MACH_HARDWARE_H
+#define __MACH_HARDWARE_H
+
+#include <mach/clps711x.h>
+
+#define IO_ADDRESS(x)		(0xdc000000 + (((x) & 0x03ffffff) | \
+				(((x) >> 2) & 0x3c000000)))
+
+#define CLPS711X_VIRT_BASE	IOMEM(IO_ADDRESS(CLPS711X_PHYS_BASE))
+
+#ifndef __ASSEMBLY__
+#define clps_readb(off)		readb(CLPS711X_VIRT_BASE + (off))
+#define clps_readw(off)		readw(CLPS711X_VIRT_BASE + (off))
+#define clps_readl(off)		readl(CLPS711X_VIRT_BASE + (off))
+#define clps_writeb(val,off)	writeb(val, CLPS711X_VIRT_BASE + (off))
+#define clps_writew(val,off)	writew(val, CLPS711X_VIRT_BASE + (off))
+#define clps_writel(val,off)	writel(val, CLPS711X_VIRT_BASE + (off))
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The physical addresses that the external chip select signals map to is
@@ -52,6 +73,7 @@
 #define CS7_PHYS_BASE		(0x00000000)
 #endif
 
+<<<<<<< HEAD
 #if defined (CONFIG_ARCH_EP7211)
 
 #define EP7211_VIRT_BASE	CLPS7111_VIRT_BASE
@@ -204,5 +226,12 @@
 // Black button
 #define CEIVA_PB0_BLK_BTN	(1<<0)
 #endif // #if defined (CONFIG_ARCH_CEIVA)
+=======
+#define CLPS711X_SRAM_BASE	CS6_PHYS_BASE
+#define CLPS711X_SRAM_SIZE	(48 * 1024)
+
+#define CLPS711X_SDRAM0_BASE	(0xc0000000)
+#define CLPS711X_SDRAM1_BASE	(0xd0000000)
+>>>>>>> refs/remotes/origin/master
 
 #endif

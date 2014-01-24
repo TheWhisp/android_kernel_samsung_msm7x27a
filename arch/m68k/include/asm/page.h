@@ -6,10 +6,23 @@
 #include <asm/page_offset.h>
 
 /* PAGE_SHIFT determines the page size */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SUN3
 #define PAGE_SHIFT	(12)
 #else
 #define PAGE_SHIFT	(13)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if defined(CONFIG_SUN3) || defined(CONFIG_COLDFIRE)
+#define PAGE_SHIFT	13
+#else
+#define PAGE_SHIFT	12
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 #define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
 #define PAGE_MASK	(~(PAGE_SIZE-1))
@@ -36,6 +49,17 @@ typedef struct page *pgtable_t;
 #define __pgd(x)	((pgd_t) { (x) } )
 #define __pgprot(x)	((pgprot_t) { (x) } )
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern unsigned long _rambase;
+extern unsigned long _ramstart;
+extern unsigned long _ramend;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !__ASSEMBLY__ */
 
 #ifdef CONFIG_MMU
@@ -44,6 +68,19 @@ typedef struct page *pgtable_t;
 #include "page_no.h"
 #endif
 
+=======
+#endif /* !__ASSEMBLY__ */
+
+#ifdef CONFIG_MMU
+#include <asm/page_mm.h>
+#else
+#include <asm/page_no.h>
+#endif
+
+#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/getorder.h>
 
 #endif /* _M68K_PAGE_H */

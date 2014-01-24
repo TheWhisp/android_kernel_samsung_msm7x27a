@@ -15,7 +15,13 @@
 #include <asm/machdep.h>
 #include <asm/irq.h>
 #include <asm/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/traps.h>
 #include <asm/blinken.h>
 
@@ -47,7 +53,11 @@ static irqreturn_t hp300_tick(int irq, void *dev_id)
 	return vector(irq, NULL);
 }
 
+<<<<<<< HEAD
 unsigned long hp300_gettimeoffset(void)
+=======
+u32 hp300_gettimeoffset(void)
+>>>>>>> refs/remotes/origin/master
 {
   /* Read current timer 1 value */
   unsigned char lsb, msb1, msb2;
@@ -60,7 +70,11 @@ unsigned long hp300_gettimeoffset(void)
     /* A carry happened while we were reading.  Read it again */
     lsb = in_8(CLOCKBASE + 7);
   ticks = INTVAL - ((msb2 << 8) | lsb);
+<<<<<<< HEAD
   return (USECS_PER_JIFFY * ticks) / INTVAL;
+=======
+  return ((USECS_PER_JIFFY * ticks) / INTVAL) * 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init hp300_sched_init(irq_handler_t vector)
@@ -70,7 +84,15 @@ void __init hp300_sched_init(irq_handler_t vector)
 
   asm volatile(" movpw %0,%1@(5)" : : "d" (INTVAL), "a" (CLOCKBASE));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   if (request_irq(IRQ_AUTO_6, hp300_tick, IRQ_FLG_STD, "timer tick", vector))
+=======
+  if (request_irq(IRQ_AUTO_6, hp300_tick, 0, "timer tick", vector))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  if (request_irq(IRQ_AUTO_6, hp300_tick, 0, "timer tick", vector))
+>>>>>>> refs/remotes/origin/master
     pr_err("Couldn't register timer interrupt\n");
 
   out_8(CLOCKBASE + CLKCR2, 0x1);		/* select CR1 */

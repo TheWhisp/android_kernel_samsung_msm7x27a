@@ -119,6 +119,7 @@
 
 /*
  */
+<<<<<<< HEAD
 
 /* command block wrapper */
 struct bulk_cb_wrap {
@@ -156,6 +157,8 @@ struct bulk_cs_wrap {
 
 /*
  */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ub_dev;
 
 #define UB_MAX_REQ_SG	9	/* cdrecord requires 32KB and maybe a header */
@@ -2477,6 +2480,11 @@ static int __init ub_init(void)
 	int rc;
 	int i;
 
+<<<<<<< HEAD
+=======
+	pr_info("'Low Performance USB Block' driver is deprecated. "
+			"Please switch to usb-storage\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < UB_QLOCK_NUM; i++)
 		spin_lock_init(&ub_qlockv[i]);
 

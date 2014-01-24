@@ -21,7 +21,15 @@
 
 #define OPROFILEFS_MAGIC 0x6f70726f
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 DEFINE_SPINLOCK(oprofilefs_lock);
+=======
+DEFINE_RAW_SPINLOCK(oprofilefs_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+DEFINE_RAW_SPINLOCK(oprofilefs_lock);
+>>>>>>> refs/remotes/origin/master
 
 static struct inode *oprofilefs_get_inode(struct super_block *sb, int mode)
 {
@@ -83,9 +91,21 @@ int oprofilefs_ulong_from_user(unsigned long *val, char const __user *buf, size_
 	if (copy_from_user(tmpbuf, buf, count))
 		return -EFAULT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&oprofilefs_lock, flags);
 	*val = simple_strtoul(tmpbuf, NULL, 0);
 	spin_unlock_irqrestore(&oprofilefs_lock, flags);
+=======
+	raw_spin_lock_irqsave(&oprofilefs_lock, flags);
+	*val = simple_strtoul(tmpbuf, NULL, 0);
+	raw_spin_unlock_irqrestore(&oprofilefs_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&oprofilefs_lock, flags);
+	*val = simple_strtoul(tmpbuf, NULL, 0);
+	raw_spin_unlock_irqrestore(&oprofilefs_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -117,6 +137,8 @@ static ssize_t ulong_write_file(struct file *file, char const __user *buf, size_
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int default_open(struct inode *inode, struct file *filp)
 {
 	if (inode->i_private)
@@ -129,24 +151,49 @@ static const struct file_operations ulong_fops = {
 	.read		= ulong_read_file,
 	.write		= ulong_write_file,
 	.open		= default_open,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct file_operations ulong_fops = {
+	.read		= ulong_read_file,
+	.write		= ulong_write_file,
+	.open		= simple_open,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.llseek		= default_llseek,
 };
 
 
 static const struct file_operations ulong_ro_fops = {
 	.read		= ulong_read_file,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.open		= default_open,
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/master
 	.llseek		= default_llseek,
 };
 
 
+<<<<<<< HEAD
 static int __oprofilefs_create_file(struct super_block *sb,
 	struct dentry *root, char const *name, const struct file_operations *fops,
 	int perm, void *priv)
+=======
+static int __oprofilefs_create_file(struct dentry *root, char const *name,
+	const struct file_operations *fops, int perm, void *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dentry *dentry;
 	struct inode *inode;
 
+<<<<<<< HEAD
 	dentry = d_alloc_name(root, name);
 	if (!dentry)
 		return -ENOMEM;
@@ -158,22 +205,54 @@ static int __oprofilefs_create_file(struct super_block *sb,
 	inode->i_fop = fops;
 	d_add(dentry, inode);
 	dentry->d_inode->i_private = priv;
+=======
+	mutex_lock(&root->d_inode->i_mutex);
+	dentry = d_alloc_name(root, name);
+	if (!dentry) {
+		mutex_unlock(&root->d_inode->i_mutex);
+		return -ENOMEM;
+	}
+	inode = oprofilefs_get_inode(root->d_sb, S_IFREG | perm);
+	if (!inode) {
+		dput(dentry);
+		mutex_unlock(&root->d_inode->i_mutex);
+		return -ENOMEM;
+	}
+	inode->i_fop = fops;
+	inode->i_private = priv;
+	d_add(dentry, inode);
+	mutex_unlock(&root->d_inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 
+<<<<<<< HEAD
 int oprofilefs_create_ulong(struct super_block *sb, struct dentry *root,
 	char const *name, unsigned long *val)
 {
 	return __oprofilefs_create_file(sb, root, name,
+=======
+int oprofilefs_create_ulong(struct dentry *root,
+	char const *name, unsigned long *val)
+{
+	return __oprofilefs_create_file(root, name,
+>>>>>>> refs/remotes/origin/master
 					&ulong_fops, 0644, val);
 }
 
 
+<<<<<<< HEAD
 int oprofilefs_create_ro_ulong(struct super_block *sb, struct dentry *root,
 	char const *name, unsigned long *val)
 {
 	return __oprofilefs_create_file(sb, root, name,
+=======
+int oprofilefs_create_ro_ulong(struct dentry *root,
+	char const *name, unsigned long *val)
+{
+	return __oprofilefs_create_file(root, name,
+>>>>>>> refs/remotes/origin/master
 					&ulong_ro_fops, 0444, val);
 }
 
@@ -187,19 +266,35 @@ static ssize_t atomic_read_file(struct file *file, char __user *buf, size_t coun
 
 static const struct file_operations atomic_ro_fops = {
 	.read		= atomic_read_file,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.open		= default_open,
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/master
 	.llseek		= default_llseek,
 };
 
 
+<<<<<<< HEAD
 int oprofilefs_create_ro_atomic(struct super_block *sb, struct dentry *root,
 	char const *name, atomic_t *val)
 {
 	return __oprofilefs_create_file(sb, root, name,
+=======
+int oprofilefs_create_ro_atomic(struct dentry *root,
+	char const *name, atomic_t *val)
+{
+	return __oprofilefs_create_file(root, name,
+>>>>>>> refs/remotes/origin/master
 					&atomic_ro_fops, 0444, val);
 }
 
 
+<<<<<<< HEAD
 int oprofilefs_create_file(struct super_block *sb, struct dentry *root,
 	char const *name, const struct file_operations *fops)
 {
@@ -216,21 +311,55 @@ int oprofilefs_create_file_perm(struct super_block *sb, struct dentry *root,
 
 struct dentry *oprofilefs_mkdir(struct super_block *sb,
 	struct dentry *root, char const *name)
+=======
+int oprofilefs_create_file(struct dentry *root,
+	char const *name, const struct file_operations *fops)
+{
+	return __oprofilefs_create_file(root, name, fops, 0644, NULL);
+}
+
+
+int oprofilefs_create_file_perm(struct dentry *root,
+	char const *name, const struct file_operations *fops, int perm)
+{
+	return __oprofilefs_create_file(root, name, fops, perm, NULL);
+}
+
+
+struct dentry *oprofilefs_mkdir(struct dentry *parent, char const *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dentry *dentry;
 	struct inode *inode;
 
+<<<<<<< HEAD
 	dentry = d_alloc_name(root, name);
 	if (!dentry)
 		return NULL;
 	inode = oprofilefs_get_inode(sb, S_IFDIR | 0755);
 	if (!inode) {
 		dput(dentry);
+=======
+	mutex_lock(&parent->d_inode->i_mutex);
+	dentry = d_alloc_name(parent, name);
+	if (!dentry) {
+		mutex_unlock(&parent->d_inode->i_mutex);
+		return NULL;
+	}
+	inode = oprofilefs_get_inode(parent->d_sb, S_IFDIR | 0755);
+	if (!inode) {
+		dput(dentry);
+		mutex_unlock(&parent->d_inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 	inode->i_op = &simple_dir_inode_operations;
 	inode->i_fop = &simple_dir_operations;
 	d_add(dentry, inode);
+<<<<<<< HEAD
+=======
+	mutex_unlock(&parent->d_inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	return dentry;
 }
 
@@ -238,7 +367,13 @@ struct dentry *oprofilefs_mkdir(struct super_block *sb,
 static int oprofilefs_fill_super(struct super_block *sb, void *data, int silent)
 {
 	struct inode *root_inode;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct dentry *root_dentry;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sb->s_blocksize = PAGE_CACHE_SIZE;
 	sb->s_blocksize_bits = PAGE_CACHE_SHIFT;
@@ -251,6 +386,8 @@ static int oprofilefs_fill_super(struct super_block *sb, void *data, int silent)
 		return -ENOMEM;
 	root_inode->i_op = &simple_dir_inode_operations;
 	root_inode->i_fop = &simple_dir_operations;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	root_dentry = d_alloc_root(root_inode);
 	if (!root_dentry) {
 		iput(root_inode);
@@ -260,6 +397,19 @@ static int oprofilefs_fill_super(struct super_block *sb, void *data, int silent)
 	sb->s_root = root_dentry;
 
 	oprofile_create_files(sb, root_dentry);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	sb->s_root = d_make_root(root_inode);
+	if (!sb->s_root)
+		return -ENOMEM;
+
+<<<<<<< HEAD
+	oprofile_create_files(sb, sb->s_root);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	oprofile_create_files(sb->s_root);
+>>>>>>> refs/remotes/origin/master
 
 	// FIXME: verify kill_litter_super removes our dentries
 	return 0;
@@ -279,6 +429,10 @@ static struct file_system_type oprofilefs_type = {
 	.mount		= oprofilefs_mount,
 	.kill_sb	= kill_litter_super,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("oprofilefs");
+>>>>>>> refs/remotes/origin/master
 
 
 int __init oprofilefs_register(void)

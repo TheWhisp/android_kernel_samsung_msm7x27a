@@ -27,7 +27,15 @@
  */
 
 #include <linux/bitops.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/percpu.h>
 
 DECLARE_PER_CPU(cpumask_t, cpu_sibling_map);
@@ -48,6 +56,10 @@ extern void smp_fill_in_sib_core_maps(void);
 extern void cpu_play_dead(void);
 
 extern void smp_fetch_global_regs(void);
+<<<<<<< HEAD
+=======
+extern void smp_fetch_global_pmu(void);
+>>>>>>> refs/remotes/origin/master
 
 struct seq_file;
 void smp_bogo(struct seq_file *);
@@ -65,6 +77,10 @@ extern void __cpu_die(unsigned int cpu);
 #define hard_smp_processor_id()		0
 #define smp_fill_in_sib_core_maps() do { } while (0)
 #define smp_fetch_global_regs() do { } while (0)
+<<<<<<< HEAD
+=======
+#define smp_fetch_global_pmu() do { } while (0)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* !(CONFIG_SMP) */
 

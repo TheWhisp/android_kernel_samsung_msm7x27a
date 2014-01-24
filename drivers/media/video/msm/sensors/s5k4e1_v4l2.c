@@ -11,6 +11,14 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "msm_sensor.h"
 #define SENSOR_NAME "s5k4e1"
 #define PLATFORM_DRIVER_NAME "msm_camera_s5k4e1"
@@ -170,7 +178,15 @@ static struct msm_camera_i2c_reg_conf s5k4e1_recommend_settings[] = {
 
 static struct v4l2_subdev_info s5k4e1_subdev_info[] = {
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.code   = V4L2_MBUS_FMT_SGRBG10_1X10,
+=======
+	.code   = V4L2_MBUS_FMT_SBGGR10_1X10,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.code   = V4L2_MBUS_FMT_SBGGR10_1X10,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.colorspace = V4L2_COLORSPACE_JPEG,
 	.fmt    = 1,
 	.order    = 0,
@@ -196,8 +212,18 @@ static struct msm_sensor_output_info_t s5k4e1_dimensions[] = {
 		.y_output = 0x7A8,
 		.line_length_pclk = 0xAB2,
 		.frame_length_lines = 0x7B4,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.vt_pixel_clk = 816000000,
 		.op_pixel_clk = 816000000,
+=======
+		.vt_pixel_clk = 81600000,
+		.op_pixel_clk = 81600000,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vt_pixel_clk = 81600000,
+		.op_pixel_clk = 81600000,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.binning_factor = 0,
 	},
 	{
@@ -205,8 +231,18 @@ static struct msm_sensor_output_info_t s5k4e1_dimensions[] = {
 		.y_output = 0x3D4,
 		.line_length_pclk = 0xAB2,
 		.frame_length_lines = 0x3E0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.vt_pixel_clk = 816000000,
 		.op_pixel_clk = 816000000,
+=======
+		.vt_pixel_clk = 81600000,
+		.op_pixel_clk = 81600000,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.vt_pixel_clk = 81600000,
+		.op_pixel_clk = 81600000,
+>>>>>>> refs/remotes/origin/cm-11.0
 		.binning_factor = 1,
 	},
 };
@@ -252,10 +288,24 @@ static int32_t s5k4e1_write_prev_exp_gain(struct msm_sensor_ctrl_t *s_ctrl,
 {
 	uint16_t max_legal_gain = 0x0200;
 	int32_t rc = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static uint32_t fl_lines, offset;
 
 	pr_info("s5k4e1_write_prev_exp_gain :%d %d\n", gain, line);
 	offset = s_ctrl->sensor_exp_gain_info->vert_offset;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	uint32_t fl_lines, offset;
+	fl_lines = s_ctrl->curr_frame_length_lines;
+	pr_info("s5k4e1_write_prev_exp_gain :%d %d\n", gain, line);
+	offset = s_ctrl->sensor_exp_gain_info->vert_offset;
+	fl_lines = (fl_lines * s_ctrl->fps_divider) / Q10;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (gain > max_legal_gain) {
 		CDBG("Max legal gain Line:%d\n", __LINE__);
 		gain = max_legal_gain;
@@ -271,8 +321,16 @@ static int32_t s5k4e1_write_prev_exp_gain(struct msm_sensor_ctrl_t *s_ctrl,
 		s5k4e1_byte(gain, LSB),
 		MSM_CAMERA_I2C_BYTE_DATA);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (line > (s_ctrl->curr_frame_length_lines - offset)) {
 		fl_lines = line + offset;
+=======
+	if (line > (fl_lines - offset)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (line > (fl_lines - offset)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		s_ctrl->func_tbl->sensor_group_hold_on(s_ctrl);
 		msm_camera_i2c_write(s_ctrl->sensor_i2c_client,
 			s_ctrl->sensor_output_reg_addr->frame_length_lines,
@@ -293,7 +351,13 @@ static int32_t s5k4e1_write_prev_exp_gain(struct msm_sensor_ctrl_t *s_ctrl,
 			MSM_CAMERA_I2C_BYTE_DATA);
 		s_ctrl->func_tbl->sensor_group_hold_off(s_ctrl);
 	} else if (line < (fl_lines - offset)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		fl_lines = line + offset;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (fl_lines < s_ctrl->curr_frame_length_lines)
 			fl_lines = s_ctrl->curr_frame_length_lines;
 
@@ -317,8 +381,26 @@ static int32_t s5k4e1_write_prev_exp_gain(struct msm_sensor_ctrl_t *s_ctrl,
 			MSM_CAMERA_I2C_BYTE_DATA);
 		s_ctrl->func_tbl->sensor_group_hold_off(s_ctrl);
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		fl_lines = line+4;
 		s_ctrl->func_tbl->sensor_group_hold_on(s_ctrl);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		s_ctrl->func_tbl->sensor_group_hold_on(s_ctrl);
+		msm_camera_i2c_write(s_ctrl->sensor_i2c_client,
+			s_ctrl->sensor_output_reg_addr->frame_length_lines,
+			s5k4e1_byte(fl_lines, MSB),
+			MSM_CAMERA_I2C_BYTE_DATA);
+			msm_camera_i2c_write(s_ctrl->sensor_i2c_client,
+			s_ctrl->sensor_output_reg_addr->frame_length_lines + 1,
+			s5k4e1_byte(fl_lines, LSB),
+			MSM_CAMERA_I2C_BYTE_DATA);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* Coarse Integration Time */
 		msm_camera_i2c_write(s_ctrl->sensor_i2c_client,
 			s_ctrl->sensor_exp_gain_info->coarse_int_time_addr,
@@ -328,7 +410,15 @@ static int32_t s5k4e1_write_prev_exp_gain(struct msm_sensor_ctrl_t *s_ctrl,
 			s_ctrl->sensor_exp_gain_info->coarse_int_time_addr + 1,
 			s5k4e1_byte(line, LSB),
 			MSM_CAMERA_I2C_BYTE_DATA);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		s_ctrl->func_tbl->sensor_group_hold_off(s_ctrl);
+=======
+			s_ctrl->func_tbl->sensor_group_hold_off(s_ctrl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			s_ctrl->func_tbl->sensor_group_hold_off(s_ctrl);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return rc;
 }
@@ -349,8 +439,14 @@ static int32_t s5k4e1_write_pict_exp_gain(struct msm_sensor_ctrl_t *s_ctrl,
 		gain = max_legal_gain;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	gain = 32;
 	line = 1465;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	pr_info("s5k4e1_write_exp_gain : gain = %d line = %d\n", gain, line);
 	line = (uint32_t) (line * s_ctrl->fps_divider);
 	fl_lines = s_ctrl->curr_frame_length_lines * s_ctrl->fps_divider / Q10;
@@ -408,6 +504,45 @@ static int32_t s5k4e1_write_pict_exp_gain(struct msm_sensor_ctrl_t *s_ctrl,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int32_t s5k4e1_sensor_i2c_probe(struct i2c_client *client,
+	const struct i2c_device_id *id)
+{
+	int rc = 0;
+	struct msm_camera_sensor_info *s_info;
+
+	rc = msm_sensor_i2c_probe(client, id);
+
+	s_info = client->dev.platform_data;
+	if (s_info == NULL) {
+		pr_err("%s %s NULL sensor data\n", __func__, client->name);
+		return -EFAULT;
+	}
+
+	if (s_info->actuator_info->vcm_enable) {
+		rc = gpio_request(s_info->actuator_info->vcm_pwd,
+				"msm_actuator");
+		if (rc < 0)
+			pr_err("%s: gpio_request:msm_actuator %d failed\n",
+				__func__, s_info->actuator_info->vcm_pwd);
+		rc = gpio_direction_output(s_info->actuator_info->vcm_pwd, 0);
+		if (rc < 0)
+			pr_err("%s: gpio:msm_actuator %d direction can't be set\n",
+				__func__, s_info->actuator_info->vcm_pwd);
+		gpio_free(s_info->actuator_info->vcm_pwd);
+	}
+
+	return rc;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const struct i2c_device_id s5k4e1_i2c_id[] = {
 	{SENSOR_NAME, (kernel_ulong_t)&s5k4e1_s_ctrl},
 	{ }
@@ -415,7 +550,15 @@ static const struct i2c_device_id s5k4e1_i2c_id[] = {
 
 static struct i2c_driver s5k4e1_i2c_driver = {
 	.id_table = s5k4e1_i2c_id,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.probe  = msm_sensor_i2c_probe,
+=======
+	.probe  = s5k4e1_sensor_i2c_probe,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.probe  = s5k4e1_sensor_i2c_probe,
+>>>>>>> refs/remotes/origin/cm-11.0
 	.driver = {
 		.name = SENSOR_NAME,
 	},
@@ -459,6 +602,14 @@ static struct msm_sensor_fn_t s5k4e1_func_tbl = {
 	.sensor_config = msm_sensor_config,
 	.sensor_power_up = msm_sensor_power_up,
 	.sensor_power_down = msm_sensor_power_down,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.sensor_get_csi_params = msm_sensor_get_csi_params,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sensor_get_csi_params = msm_sensor_get_csi_params,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 static struct msm_sensor_reg_t s5k4e1_regs = {
@@ -494,6 +645,14 @@ static struct msm_sensor_ctrl_t s5k4e1_s_ctrl = {
 	.sensor_v4l2_subdev_info_size = ARRAY_SIZE(s5k4e1_subdev_info),
 	.sensor_v4l2_subdev_ops = &s5k4e1_subdev_ops,
 	.func_tbl = &s5k4e1_func_tbl,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.clk_rate = MSM_SENSOR_MCLK_24HZ,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.clk_rate = MSM_SENSOR_MCLK_24HZ,
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 module_init(msm_sensor_init_module);

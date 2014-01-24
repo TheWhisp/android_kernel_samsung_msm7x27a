@@ -1,7 +1,19 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -19,6 +31,8 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: epivers.h.in 277737 2011-08-16 17:54:59Z $
  *
 */
@@ -45,5 +59,37 @@
 
 
 #define	EPI_VERSION_STR		"5.90.195.75"
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ * $Id: epivers.h.in,v 13.33 2010-09-08 22:08:53 $
+ *
+*/
+
+#ifndef _epivers_h_
+#define _epivers_h_
+
+#define	EPI_MAJOR_VERSION	1
+
+#define	EPI_MINOR_VERSION	27
+
+#define	EPI_RC_NUMBER		0
+
+#define	EPI_INCREMENTAL_NUMBER	0
+
+#define	EPI_BUILD_NUMBER	0
+
+#define	EPI_VERSION		1, 27, 0, 0
+
+#define	EPI_VERSION_NUM		0x011b0000
+
+#define EPI_VERSION_DEV		1.27.0
+
+
+#define	EPI_VERSION_STR		"1.27 (r329705)"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #endif 

@@ -14,11 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: ke_counter
@@ -28,16 +31,21 @@ Author: Michael Hillmann
 Updated: Mon, 14 Apr 2008 15:42:42 +0100
 Status: tested
 
+<<<<<<< HEAD
 Configuration Options:
   [0] - PCI bus of device (optional)
   [1] - PCI slot of device (optional)
   If bus/slot is not specified, the first supported
   PCI device found will be used.
+=======
+Configuration Options: not applicable, uses PCI auto config
+>>>>>>> refs/remotes/origin/master
 
 This driver is a simple driver to read the counter values from
 Kolter Electronic PCI Counter Card.
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include "comedi_pci.h"
@@ -52,10 +60,15 @@ static int cnt_attach(struct comedi_device *dev, struct comedi_devconfig *it);
 static int cnt_detach(struct comedi_device *dev);
 
 static DEFINE_PCI_DEVICE_TABLE(cnt_pci_table) = {
+<<<<<<< HEAD
 	{
 	PCI_VENDOR_ID_KOLTER, CNT_CARD_DEVICE_ID, PCI_ANY_ID,
 		    PCI_ANY_ID, 0, 0, 0}, {
 	0}
+=======
+	{ PCI_DEVICE(PCI_VENDOR_ID_KOLTER, CNT_CARD_DEVICE_ID) },
+	{0}
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 MODULE_DEVICE_TABLE(pci, cnt_pci_table);
@@ -134,6 +147,15 @@ static void __exit cnt_driver_cleanup_module(void)
 module_init(cnt_driver_init_module);
 module_exit(cnt_driver_cleanup_module);
 
+=======
+#include <linux/module.h>
+#include <linux/pci.h>
+
+#include "../comedidev.h"
+
+#define CNT_CARD_DEVICE_ID      0x0014
+
+>>>>>>> refs/remotes/origin/master
 /*-- counter write ----------------------------------------------------------*/
 
 /* This should be used only for resetting the counters; maybe it is better
@@ -183,6 +205,7 @@ static int cnt_rinsn(struct comedi_device *dev,
 	return 1;
 }
 
+<<<<<<< HEAD
 /*-- attach -----------------------------------------------------------------*/
 
 static int cnt_attach(struct comedi_device *dev, struct comedi_devconfig *it)
@@ -266,6 +289,33 @@ found:
 	subdevice->maxdata = (1 << board->cnt_bits) - 1;
 	subdevice->insn_read = cnt_rinsn;
 	subdevice->insn_write = cnt_winsn;
+=======
+static int cnt_auto_attach(struct comedi_device *dev,
+				     unsigned long context_unused)
+{
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	struct comedi_subdevice *s;
+	int ret;
+
+	ret = comedi_pci_enable(dev);
+	if (ret)
+		return ret;
+	dev->iobase = pci_resource_start(pcidev, 0);
+
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+	dev->read_subdev = s;
+
+	s->type = COMEDI_SUBD_COUNTER;
+	s->subdev_flags = SDF_READABLE /* | SDF_COMMON */ ;
+	s->n_chan = 3;
+	s->maxdata = 0x00ffffff;
+	s->insn_read = cnt_rinsn;
+	s->insn_write = cnt_winsn;
+>>>>>>> refs/remotes/origin/master
 
 	/*  select 20MHz clock */
 	outb(3, dev->iobase + 248);
@@ -275,6 +325,7 @@ found:
 	outb(0, dev->iobase + 0x20);
 	outb(0, dev->iobase + 0x40);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "comedi%d: " CNT_DRIVER_NAME " attached.\n",
 	       dev->minor);
 	return 0;
@@ -294,6 +345,42 @@ static int cnt_detach(struct comedi_device *dev)
 	return 0;
 }
 
+=======
+	dev_info(dev->class_dev, "%s: %s attached\n",
+		dev->driver->driver_name, dev->board_name);
+
+	return 0;
+}
+
+static struct comedi_driver ke_counter_driver = {
+	.driver_name	= "ke_counter",
+	.module		= THIS_MODULE,
+	.auto_attach	= cnt_auto_attach,
+	.detach		= comedi_pci_disable,
+};
+
+static int ke_counter_pci_probe(struct pci_dev *dev,
+				const struct pci_device_id *id)
+{
+	return comedi_pci_auto_config(dev, &ke_counter_driver,
+				      id->driver_data);
+}
+
+static const struct pci_device_id ke_counter_pci_table[] = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_KOLTER, CNT_CARD_DEVICE_ID) },
+	{ 0 }
+};
+MODULE_DEVICE_TABLE(pci, ke_counter_pci_table);
+
+static struct pci_driver ke_counter_pci_driver = {
+	.name		= "ke_counter",
+	.id_table	= ke_counter_pci_table,
+	.probe		= ke_counter_pci_probe,
+	.remove		= comedi_pci_auto_unconfig,
+};
+module_comedi_pci_driver(ke_counter_driver, ke_counter_pci_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");
 MODULE_LICENSE("GPL");

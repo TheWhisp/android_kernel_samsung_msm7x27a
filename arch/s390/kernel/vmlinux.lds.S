@@ -8,13 +8,34 @@
 
 #ifndef CONFIG_64BIT
 OUTPUT_FORMAT("elf32-s390", "elf32-s390", "elf32-s390")
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 OUTPUT_ARCH(s390)
 ENTRY(_start)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+OUTPUT_ARCH(s390:31-bit)
+ENTRY(startup)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+OUTPUT_ARCH(s390:31-bit)
+ENTRY(startup)
+>>>>>>> refs/remotes/origin/master
 jiffies = jiffies_64 + 4;
 #else
 OUTPUT_FORMAT("elf64-s390", "elf64-s390", "elf64-s390")
 OUTPUT_ARCH(s390:64-bit)
+<<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(_start)
+=======
+ENTRY(startup)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(startup)
+>>>>>>> refs/remotes/origin/master
 jiffies = jiffies_64;
 #endif
 
@@ -43,7 +64,18 @@ SECTIONS
 
 	NOTES :text :note
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.dummy : { *(.dummy) } :data
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	RODATA
+=======
+	.dummy : { *(.dummy) } :data
+
+	RO_DATA_SECTION(PAGE_SIZE)
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SHARED_KERNEL
 	. = ALIGN(0x100000);	/* VM shared segments are 1MB aligned */
@@ -73,6 +105,13 @@ SECTIONS
 		EXIT_TEXT
 	}
 
+<<<<<<< HEAD
+=======
+	.exit.data : {
+		EXIT_DATA
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* early.c uses stsi, which requires page aligned data. */
 	. = ALIGN(PAGE_SIZE);
 	INIT_DATA_SECTION(0x100)

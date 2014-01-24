@@ -20,7 +20,11 @@ static struct bcsr_reg {
 	spinlock_t lock;
 } bcsr_regs[BCSR_CNT];
 
+<<<<<<< HEAD
 static void __iomem *bcsr_virt;	/* KSEG1 addr of BCSR base */
+=======
+static void __iomem *bcsr_virt; /* KSEG1 addr of BCSR base */
+>>>>>>> refs/remotes/origin/master
 static int bcsr_csc_base;	/* linux-irq of first cascaded irq */
 
 void __init bcsr_init(unsigned long bcsr1_phys, unsigned long bcsr2_phys)
@@ -89,6 +93,8 @@ static void bcsr_csc_handler(unsigned int irq, struct irq_desc *d)
 {
 	unsigned short bisr = __raw_readw(bcsr_virt + BCSR_REG_INTSTAT);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for ( ; bisr; bisr &= bisr - 1)
 		generic_handle_irq(bcsr_csc_base + __ffs(bisr));
 }
@@ -101,6 +107,26 @@ static void bcsr_irq_mask(struct irq_data *d)
 {
 	unsigned short v = 1 << (d->irq - bcsr_csc_base);
 	__raw_writew(v, bcsr_virt + BCSR_REG_INTCLR);
+=======
+	disable_irq_nosync(irq);
+
+	for ( ; bisr; bisr &= bisr - 1)
+		generic_handle_irq(bcsr_csc_base + __ffs(bisr));
+
+=======
+	disable_irq_nosync(irq);
+	generic_handle_irq(bcsr_csc_base + __ffs(bisr));
+>>>>>>> refs/remotes/origin/master
+	enable_irq(irq);
+}
+
+static void bcsr_irq_mask(struct irq_data *d)
+{
+	unsigned short v = 1 << (d->irq - bcsr_csc_base);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__raw_writew(v, bcsr_virt + BCSR_REG_MASKCLR);
 	wmb();
 }
@@ -108,7 +134,13 @@ static void bcsr_irq_mask(struct irq_data *d)
 static void bcsr_irq_maskack(struct irq_data *d)
 {
 	unsigned short v = 1 << (d->irq - bcsr_csc_base);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writew(v, bcsr_virt + BCSR_REG_INTCLR);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__raw_writew(v, bcsr_virt + BCSR_REG_MASKCLR);
 	__raw_writew(v, bcsr_virt + BCSR_REG_INTSTAT);	/* ack */
 	wmb();
@@ -117,7 +149,13 @@ static void bcsr_irq_maskack(struct irq_data *d)
 static void bcsr_irq_unmask(struct irq_data *d)
 {
 	unsigned short v = 1 << (d->irq - bcsr_csc_base);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writew(v, bcsr_virt + BCSR_REG_INTSET);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__raw_writew(v, bcsr_virt + BCSR_REG_MASKSET);
 	wmb();
 }
@@ -133,9 +171,21 @@ void __init bcsr_init_irq(int csc_start, int csc_end, int hook_irq)
 {
 	unsigned int irq;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* mask & disable & ack all */
 	__raw_writew(0xffff, bcsr_virt + BCSR_REG_INTCLR);
 	__raw_writew(0xffff, bcsr_virt + BCSR_REG_MASKCLR);
+=======
+	/* mask & enable & ack all */
+	__raw_writew(0xffff, bcsr_virt + BCSR_REG_MASKCLR);
+	__raw_writew(0xffff, bcsr_virt + BCSR_REG_INTSET);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* mask & enable & ack all */
+	__raw_writew(0xffff, bcsr_virt + BCSR_REG_MASKCLR);
+	__raw_writew(0xffff, bcsr_virt + BCSR_REG_INTSET);
+>>>>>>> refs/remotes/origin/master
 	__raw_writew(0xffff, bcsr_virt + BCSR_REG_INTSTAT);
 	wmb();
 

@@ -1,6 +1,7 @@
 #ifndef _LINUX_FUTEX_H
 #define _LINUX_FUTEX_H
 
+<<<<<<< HEAD
 #include <linux/compiler.h>
 #include <linux/types.h>
 
@@ -124,6 +125,10 @@ struct robust_list_head {
 #define FUTEX_BITSET_MATCH_ANY	0xffffffff
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/futex.h>
+
+>>>>>>> refs/remotes/origin/master
 struct inode;
 struct mm_struct;
 struct task_struct;
@@ -185,6 +190,7 @@ static inline void exit_pi_state_list(struct task_struct *curr)
 {
 }
 #endif
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #define FUTEX_OP_SET		0	/* *(int *)UADDR2 = OPARG; */
@@ -212,4 +218,6 @@ static inline void exit_pi_state_list(struct task_struct *curr)
   (((op & 0xf) << 28) | ((cmp & 0xf) << 24)		\
    | ((oparg & 0xfff) << 12) | (cmparg & 0xfff))
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

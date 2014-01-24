@@ -7,17 +7,46 @@
 #include <linux/delay.h>
 #include <linux/reboot.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/irq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
 #include <asm/mmu_context.h>
 #include <asm/cacheflush.h>
 #include <asm/mach-types.h>
+<<<<<<< HEAD
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern const unsigned char relocate_new_kernel[];
 extern const unsigned int relocate_new_kernel_size;
 
+<<<<<<< HEAD
 extern void setup_mm_for_reboot(char mode);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irq.h>
+#include <linux/memblock.h>
+#include <asm/pgtable.h>
+#include <linux/of_fdt.h>
+#include <asm/pgalloc.h>
+#include <asm/mmu_context.h>
+#include <asm/cacheflush.h>
+#include <asm/fncpy.h>
+#include <asm/mach-types.h>
+#include <asm/smp_plat.h>
+#include <asm/system_misc.h>
+
+extern void relocate_new_kernel(void);
+extern const unsigned int relocate_new_kernel_size;
+
+>>>>>>> refs/remotes/origin/master
 extern unsigned long kexec_start_address;
 extern unsigned long kexec_indirection_page;
 extern unsigned long kexec_mach_type;
@@ -32,6 +61,39 @@ static atomic_t waiting_for_crash_ipi;
 
 int machine_kexec_prepare(struct kimage *image)
 {
+<<<<<<< HEAD
+=======
+	struct kexec_segment *current_segment;
+	__be32 header;
+	int i, err;
+
+	/*
+	 * Validate that if the current HW supports SMP, then the SW supports
+	 * and implements CPU hotplug for the current HW. If not, we won't be
+	 * able to kexec reliably, so fail the prepare operation.
+	 */
+	if (num_possible_cpus() > 1 && !platform_can_cpu_hotplug())
+		return -EINVAL;
+
+	/*
+	 * No segment at default ATAGs address. try to locate
+	 * a dtb using magic.
+	 */
+	for (i = 0; i < image->nr_segments; i++) {
+		current_segment = &image->segment[i];
+
+		if (!memblock_is_region_memory(current_segment->mem,
+					       current_segment->memsz))
+			return -EINVAL;
+
+		err = get_user(header, (__be32*)current_segment->buf);
+		if (err)
+			return err;
+
+		if (be32_to_cpu(header) == OF_DT_HEADER)
+			kexec_boot_atags = current_segment->mem;
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -49,11 +111,47 @@ void machine_crash_nonpanic_core(void *unused)
 	crash_save_cpu(&regs, smp_processor_id());
 	flush_cache_all();
 
+<<<<<<< HEAD
+=======
+	set_cpu_online(smp_processor_id(), false);
+>>>>>>> refs/remotes/origin/master
 	atomic_dec(&waiting_for_crash_ipi);
 	while (1)
 		cpu_relax();
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void machine_kexec_mask_interrupts(void)
+{
+	unsigned int i;
+	struct irq_desc *desc;
+
+	for_each_irq_desc(i, desc) {
+		struct irq_chip *chip;
+
+		chip = irq_desc_get_chip(desc);
+		if (!chip)
+			continue;
+
+		if (chip->irq_eoi && irqd_irq_inprogress(&desc->irq_data))
+			chip->irq_eoi(&desc->irq_data);
+
+		if (chip->irq_mask)
+			chip->irq_mask(&desc->irq_data);
+
+		if (chip->irq_disable && !irqd_irq_disabled(&desc->irq_data))
+			chip->irq_disable(&desc->irq_data);
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void machine_crash_shutdown(struct pt_regs *regs)
 {
 	unsigned long msecs;
@@ -71,6 +169,14 @@ void machine_crash_shutdown(struct pt_regs *regs)
 		printk(KERN_WARNING "Non-crashing CPUs did not react to IPI\n");
 
 	crash_save_cpu(regs, smp_processor_id());
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	machine_kexec_mask_interrupts();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	machine_kexec_mask_interrupts();
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "Loading crashdump kernel...\n");
 }
@@ -84,9 +190,26 @@ void machine_kexec(struct kimage *image)
 {
 	unsigned long page_list;
 	unsigned long reboot_code_buffer_phys;
+<<<<<<< HEAD
 	void *reboot_code_buffer;
 
+<<<<<<< HEAD
 	arch_kexec();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long reboot_entry = (unsigned long)relocate_new_kernel;
+	unsigned long reboot_entry_phys;
+	void *reboot_code_buffer;
+
+	/*
+	 * This can only happen if machine_shutdown() failed to disable some
+	 * CPU, and that can only happen if the checks in
+	 * machine_kexec_prepare() were not correct. If this fails, we can't
+	 * reliably kexec anyway, so BUG_ON is appropriate.
+	 */
+	BUG_ON(num_online_cpus() > 1);
+>>>>>>> refs/remotes/origin/master
 
 	page_list = image->head & PAGE_MASK;
 
@@ -99,6 +222,7 @@ void machine_kexec(struct kimage *image)
 	kexec_start_address = image->start;
 	kexec_indirection_page = page_list;
 	kexec_mach_type = machine_arch_type;
+<<<<<<< HEAD
 	kexec_boot_atags = image->start - KEXEC_ARM_ZIMAGE_OFFSET + KEXEC_ARM_ATAGS_OFFSET;
 
 	/* copy our kernel relocation code to the control code page */
@@ -108,10 +232,25 @@ void machine_kexec(struct kimage *image)
 
 	flush_icache_range((unsigned long) reboot_code_buffer,
 			   (unsigned long) reboot_code_buffer + KEXEC_CONTROL_PAGE_SIZE);
+=======
+	if (!kexec_boot_atags)
+		kexec_boot_atags = image->start - KEXEC_ARM_ZIMAGE_OFFSET + KEXEC_ARM_ATAGS_OFFSET;
+
+
+	/* copy our kernel relocation code to the control code page */
+	reboot_entry = fncpy(reboot_code_buffer,
+			     reboot_entry,
+			     relocate_new_kernel_size);
+	reboot_entry_phys = (unsigned long)reboot_entry +
+		(reboot_code_buffer_phys - (unsigned long)reboot_code_buffer);
+
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO "Bye!\n");
 
 	if (kexec_reinit)
 		kexec_reinit();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_disable();
 	local_fiq_disable();
 	setup_mm_for_reboot(0); /* mode is not used, so just pass 0*/
@@ -122,4 +261,12 @@ void machine_kexec(struct kimage *image)
 	outer_inv_all();
 	flush_cache_all();
 	__virt_to_phys(cpu_reset)(reboot_code_buffer_phys);
+=======
+
+	soft_restart(reboot_code_buffer_phys);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	soft_restart(reboot_entry_phys);
+>>>>>>> refs/remotes/origin/master
 }

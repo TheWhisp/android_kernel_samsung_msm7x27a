@@ -22,20 +22,44 @@
 #include <linux/gpio.h>
 #include <linux/platform_device.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/i2c/at24.h>
 #include <linux/i2c/pcf857x.h>
 
 #include <media/tvp514x.h>
+=======
+#include <linux/platform_data/at24.h>
+#include <linux/i2c/pcf857x.h>
+
+#include <media/tvp514x.h>
+#include <media/adv7343.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/nand.h>
 #include <linux/mtd/partitions.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/platform_data/gpio-davinci.h>
+#include <linux/platform_data/i2c-davinci.h>
+#include <linux/platform_data/mtd-davinci.h>
+#include <linux/platform_data/mtd-davinci-aemif.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/dm646x.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/common.h>
 #include <mach/serial.h>
 #include <mach/i2c.h>
@@ -44,6 +68,19 @@
 #include <mach/cdce949.h>
 #include <mach/aemif.h>
 
+<<<<<<< HEAD
+=======
+#include "davinci.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/common.h>
+#include <mach/irqs.h>
+#include <mach/serial.h>
+#include <mach/clock.h>
+#include <mach/cdce949.h>
+
+#include "davinci.h"
+>>>>>>> refs/remotes/origin/master
 #include "clock.h"
 
 #define NAND_BLOCK_SIZE		SZ_128K
@@ -88,6 +125,10 @@ static struct davinci_nand_pdata davinci_nand_data = {
 	.parts			= davinci_nand_partitions,
 	.nr_parts		= ARRAY_SIZE(davinci_nand_partitions),
 	.ecc_mode		= NAND_ECC_HW,
+<<<<<<< HEAD
+=======
+	.ecc_bits		= 1,
+>>>>>>> refs/remotes/origin/master
 	.options		= 0,
 };
 
@@ -115,12 +156,16 @@ static struct platform_device davinci_nand_device = {
 	},
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_BLK_DEV_PALMCHIP_BK3710) || \
     defined(CONFIG_BLK_DEV_PALMCHIP_BK3710_MODULE)
 #define HAS_ATA 1
 #else
 #define HAS_ATA 0
 #endif
+=======
+#define HAS_ATA		IS_ENABLED(CONFIG_BLK_DEV_PALMCHIP_BK3710)
+>>>>>>> refs/remotes/origin/master
 
 /* CPLD Register 0 bits to control ATA */
 #define DM646X_EVM_ATA_RST		BIT(0)
@@ -192,7 +237,11 @@ static int evm_led_setup(struct i2c_client *client, int gpio,
 	while (ngpio--) {
 		leds->gpio = gpio++;
 		leds++;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	evm_led_dev = platform_device_alloc("leds-gpio", 0);
 	platform_device_add_data(evm_led_dev, &evm_led_data,
@@ -356,7 +405,11 @@ static int cpld_video_probe(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit cpld_video_remove(struct i2c_client *client)
+=======
+static int cpld_video_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	cpld_client = NULL;
 	return 0;
@@ -409,8 +462,14 @@ static struct davinci_i2c_platform_data i2c_pdata = {
 	.bus_delay      = 0 /* usec */,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define VIDCLKCTL_OFFSET	(DAVINCI_SYSTEM_MODULE_BASE + 0x38)
 #define VSCLKDIS_OFFSET		(DAVINCI_SYSTEM_MODULE_BASE + 0x6c)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define VCH2CLK_MASK		(BIT_MASK(10) | BIT_MASK(9) | BIT_MASK(8))
 #define VCH2CLK_SYSCLK8		(BIT(9))
 #define VCH2CLK_AUXCLK		(BIT(9) | BIT(8))
@@ -428,8 +487,14 @@ static struct davinci_i2c_platform_data i2c_pdata = {
 #define TVP5147_CH0		"tvp514x-0"
 #define TVP5147_CH1		"tvp514x-1"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __iomem *vpif_vidclkctl_reg;
 static void __iomem *vpif_vsclkdis_reg;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* spin lock for updating above registers */
 static spinlock_t vpif_reg_lock;
 
@@ -440,14 +505,34 @@ static int set_vpif_clock(int mux_mode, int hd)
 	int val = 0;
 	int err = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!vpif_vidclkctl_reg || !vpif_vsclkdis_reg || !cpld_client)
+=======
+	if (!cpld_client)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cpld_client)
+>>>>>>> refs/remotes/origin/master
 		return -ENXIO;
 
 	/* disable the clock */
 	spin_lock_irqsave(&vpif_reg_lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	value = __raw_readl(vpif_vsclkdis_reg);
 	value |= (VIDCH3CLK | VIDCH2CLK);
 	__raw_writel(value, vpif_vsclkdis_reg);
+=======
+	value = __raw_readl(DAVINCI_SYSMOD_VIRT(SYSMOD_VSCLKDIS));
+	value |= (VIDCH3CLK | VIDCH2CLK);
+	__raw_writel(value, DAVINCI_SYSMOD_VIRT(SYSMOD_VSCLKDIS));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	value = __raw_readl(DAVINCI_SYSMOD_VIRT(SYSMOD_VSCLKDIS));
+	value |= (VIDCH3CLK | VIDCH2CLK);
+	__raw_writel(value, DAVINCI_SYSMOD_VIRT(SYSMOD_VSCLKDIS));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&vpif_reg_lock, flags);
 
 	val = i2c_smbus_read_byte(cpld_client);
@@ -463,7 +548,15 @@ static int set_vpif_clock(int mux_mode, int hd)
 	if (err)
 		return err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	value = __raw_readl(vpif_vidclkctl_reg);
+=======
+	value = __raw_readl(DAVINCI_SYSMOD_VIRT(SYSMOD_VIDCLKCTL));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	value = __raw_readl(DAVINCI_SYSMOD_VIRT(SYSMOD_VIDCLKCTL));
+>>>>>>> refs/remotes/origin/master
 	value &= ~(VCH2CLK_MASK);
 	value &= ~(VCH3CLK_MASK);
 
@@ -472,6 +565,8 @@ static int set_vpif_clock(int mux_mode, int hd)
 	else
 		value |= (VCH2CLK_AUXCLK | VCH3CLK_AUXCLK);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(value, vpif_vidclkctl_reg);
 
 	spin_lock_irqsave(&vpif_reg_lock, flags);
@@ -479,6 +574,20 @@ static int set_vpif_clock(int mux_mode, int hd)
 	/* enable the clock */
 	value &= ~(VIDCH3CLK | VIDCH2CLK);
 	__raw_writel(value, vpif_vsclkdis_reg);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	__raw_writel(value, DAVINCI_SYSMOD_VIRT(SYSMOD_VIDCLKCTL));
+
+	spin_lock_irqsave(&vpif_reg_lock, flags);
+	value = __raw_readl(DAVINCI_SYSMOD_VIRT(SYSMOD_VSCLKDIS));
+	/* enable the clock */
+	value &= ~(VIDCH3CLK | VIDCH2CLK);
+	__raw_writel(value, DAVINCI_SYSMOD_VIRT(SYSMOD_VSCLKDIS));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&vpif_reg_lock, flags);
 
 	return 0;
@@ -499,18 +608,61 @@ static struct vpif_subdev_info dm646x_vpif_subdev[] = {
 	},
 };
 
+<<<<<<< HEAD
 static const char *output[] = {
 	"Composite",
 	"Component",
 	"S-Video",
+=======
+static const struct vpif_output dm6467_ch0_outputs[] = {
+	{
+		.output = {
+			.index = 0,
+			.name = "Composite",
+			.type = V4L2_OUTPUT_TYPE_ANALOG,
+			.capabilities = V4L2_OUT_CAP_STD,
+			.std = V4L2_STD_ALL,
+		},
+		.subdev_name = "adv7343",
+		.output_route = ADV7343_COMPOSITE_ID,
+	},
+	{
+		.output = {
+			.index = 1,
+			.name = "Component",
+			.type = V4L2_OUTPUT_TYPE_ANALOG,
+			.capabilities = V4L2_OUT_CAP_DV_TIMINGS,
+		},
+		.subdev_name = "adv7343",
+		.output_route = ADV7343_COMPONENT_ID,
+	},
+	{
+		.output = {
+			.index = 2,
+			.name = "S-Video",
+			.type = V4L2_OUTPUT_TYPE_ANALOG,
+			.capabilities = V4L2_OUT_CAP_STD,
+			.std = V4L2_STD_ALL,
+		},
+		.subdev_name = "adv7343",
+		.output_route = ADV7343_SVIDEO_ID,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct vpif_display_config dm646x_vpif_display_config = {
 	.set_clock	= set_vpif_clock,
 	.subdevinfo	= dm646x_vpif_subdev,
 	.subdev_count	= ARRAY_SIZE(dm646x_vpif_subdev),
+<<<<<<< HEAD
 	.output		= output,
 	.output_count	= ARRAY_SIZE(output),
+=======
+	.chan_config[0] = {
+		.outputs = dm6467_ch0_outputs,
+		.output_count = ARRAY_SIZE(dm6467_ch0_outputs),
+	},
+>>>>>>> refs/remotes/origin/master
 	.card_name	= "DM646x EVM",
 };
 
@@ -563,7 +715,15 @@ static int setup_vpif_input_channel_mode(int mux_mode)
 	int val;
 	u32 value;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!vpif_vidclkctl_reg || !cpld_client)
+=======
+	if (!cpld_client)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cpld_client)
+>>>>>>> refs/remotes/origin/master
 		return -ENXIO;
 
 	val = i2c_smbus_read_byte(cpld_client);
@@ -571,7 +731,15 @@ static int setup_vpif_input_channel_mode(int mux_mode)
 		return val;
 
 	spin_lock_irqsave(&vpif_reg_lock, flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	value = __raw_readl(vpif_vidclkctl_reg);
+=======
+	value = __raw_readl(DAVINCI_SYSMOD_VIRT(SYSMOD_VIDCLKCTL));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	value = __raw_readl(DAVINCI_SYSMOD_VIRT(SYSMOD_VIDCLKCTL));
+>>>>>>> refs/remotes/origin/master
 	if (mux_mode) {
 		val &= VPIF_INPUT_TWO_CHANNEL;
 		value |= VIDCH1CLK;
@@ -579,7 +747,15 @@ static int setup_vpif_input_channel_mode(int mux_mode)
 		val |= VPIF_INPUT_ONE_CHANNEL;
 		value &= ~VIDCH1CLK;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(value, vpif_vidclkctl_reg);
+=======
+	__raw_writel(value, DAVINCI_SYSMOD_VIRT(SYSMOD_VIDCLKCTL));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__raw_writel(value, DAVINCI_SYSMOD_VIRT(SYSMOD_VIDCLKCTL));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&vpif_reg_lock, flags);
 
 	err = i2c_smbus_write_byte(cpld_client, val);
@@ -604,6 +780,7 @@ static struct vpif_subdev_info vpif_capture_sdev_info[] = {
 			I2C_BOARD_INFO("tvp5146", 0x5d),
 			.platform_data = &tvp5146_pdata,
 		},
+<<<<<<< HEAD
 		.input = INPUT_CVBS_VI2B,
 		.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
 		.can_route = 1,
@@ -613,6 +790,8 @@ static struct vpif_subdev_info vpif_capture_sdev_info[] = {
 			.vd_pol = 1,
 			.fid_pol = 0,
 		},
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name	= TVP5147_CH1,
@@ -620,6 +799,7 @@ static struct vpif_subdev_info vpif_capture_sdev_info[] = {
 			I2C_BOARD_INFO("tvp5146", 0x5c),
 			.platform_data = &tvp5146_pdata,
 		},
+<<<<<<< HEAD
 		.input = INPUT_SVIDEO_VI2C_VI1C,
 		.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
 		.can_route = 1,
@@ -629,6 +809,8 @@ static struct vpif_subdev_info vpif_capture_sdev_info[] = {
 			.vd_pol = 1,
 			.fid_pol = 0,
 		},
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -638,9 +820,18 @@ static const struct vpif_input dm6467_ch0_inputs[] = {
 			.index = 0,
 			.name = "Composite",
 			.type = V4L2_INPUT_TYPE_CAMERA,
+<<<<<<< HEAD
 			.std = TVP514X_STD_ALL,
 		},
 		.subdev_name = TVP5147_CH0,
+=======
+			.capabilities = V4L2_IN_CAP_STD,
+			.std = TVP514X_STD_ALL,
+		},
+		.subdev_name = TVP5147_CH0,
+		.input_route = INPUT_CVBS_VI2B,
+		.output_route = OUTPUT_10BIT_422_EMBEDDED_SYNC,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -650,9 +841,18 @@ static const struct vpif_input dm6467_ch1_inputs[] = {
 			.index = 0,
 			.name = "S-Video",
 			.type = V4L2_INPUT_TYPE_CAMERA,
+<<<<<<< HEAD
 			.std = TVP514X_STD_ALL,
 		},
 		.subdev_name = TVP5147_CH1,
+=======
+			.capabilities = V4L2_IN_CAP_STD,
+			.std = TVP514X_STD_ALL,
+		},
+		.subdev_name = TVP5147_CH1,
+		.input_route = INPUT_SVIDEO_VI2C_VI1C,
+		.output_route = OUTPUT_10BIT_422_EMBEDDED_SYNC,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -664,21 +864,45 @@ static struct vpif_capture_config dm646x_vpif_capture_cfg = {
 	.chan_config[0] = {
 		.inputs = dm6467_ch0_inputs,
 		.input_count = ARRAY_SIZE(dm6467_ch0_inputs),
+<<<<<<< HEAD
+=======
+		.vpif_if = {
+			.if_type = VPIF_IF_BT656,
+			.hd_pol = 1,
+			.vd_pol = 1,
+			.fid_pol = 0,
+		},
+>>>>>>> refs/remotes/origin/master
 	},
 	.chan_config[1] = {
 		.inputs = dm6467_ch1_inputs,
 		.input_count = ARRAY_SIZE(dm6467_ch1_inputs),
+<<<<<<< HEAD
+=======
+		.vpif_if = {
+			.if_type = VPIF_IF_BT656,
+			.hd_pol = 1,
+			.vd_pol = 1,
+			.fid_pol = 0,
+		},
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
 static void __init evm_init_video(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vpif_vidclkctl_reg = ioremap(VIDCLKCTL_OFFSET, 4);
 	vpif_vsclkdis_reg = ioremap(VSCLKDIS_OFFSET, 4);
 	if (!vpif_vidclkctl_reg || !vpif_vsclkdis_reg) {
 		pr_err("Can't map VPIF VIDCLKCTL or VSCLKDIS registers\n");
 		return;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&vpif_reg_lock);
 
 	dm646x_setup_vpif(&dm646x_vpif_display_config,
@@ -719,9 +943,25 @@ static void __init cdce_clk_init(void)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void __init davinci_map_io(void)
 {
 	dm646x_init();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define DM6467T_EVM_REF_FREQ		33000000
+
+static void __init davinci_map_io(void)
+{
+	dm646x_init();
+
+	if (machine_is_davinci_dm6467tevm())
+		davinci_set_refclk_rate(DM6467T_EVM_REF_FREQ);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	cdce_clk_init();
 }
 
@@ -729,7 +969,17 @@ static struct davinci_uart_config uart_config __initdata = {
 	.enabled_uarts = (1 << 0),
 };
 
+<<<<<<< HEAD
 #define DM646X_EVM_PHY_ID		"0:01"
+=======
+#define DM646X_EVM_PHY_ID		"davinci_mdio-0:01"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cdce_clk_init();
+}
+
+#define DM646X_EVM_PHY_ID		"davinci_mdio-0:01"
+>>>>>>> refs/remotes/origin/master
 /*
  * The following EDMA channels/slots are not being used by drivers (for
  * example: Timer, GPIO, UART events etc) on dm646x, hence they are being
@@ -765,10 +1015,22 @@ static struct edma_rsv_info dm646x_edma_rsv[] = {
 
 static __init void evm_init(void)
 {
+<<<<<<< HEAD
 	struct davinci_soc_info *soc_info = &davinci_soc_info;
 
 	evm_init_i2c();
 	davinci_serial_init(&uart_config);
+=======
+	int ret;
+	struct davinci_soc_info *soc_info = &davinci_soc_info;
+
+	ret = dm646x_gpio_register();
+	if (ret)
+		pr_warn("%s: GPIO init failed: %d\n", __func__, ret);
+
+	evm_init_i2c();
+	davinci_serial_init(dm646x_serial_device);
+>>>>>>> refs/remotes/origin/master
 	dm646x_init_mcasp0(&dm646x_evm_snd_data[0]);
 	dm646x_init_mcasp1(&dm646x_evm_snd_data[1]);
 
@@ -785,6 +1047,8 @@ static __init void evm_init(void)
 	soc_info->emac_pdata->phy_id = DM646X_EVM_PHY_ID;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DM646X_EVM_REF_FREQ		27000000
 #define DM6467T_EVM_REF_FREQ		33000000
 
@@ -798,17 +1062,54 @@ void __init dm646x_board_setup_refclk(struct clk *clk)
 
 MACHINE_START(DAVINCI_DM6467_EVM, "DaVinci DM646x EVM")
 	.boot_params  = (0x80000100),
+=======
+MACHINE_START(DAVINCI_DM6467_EVM, "DaVinci DM646x EVM")
+	.atag_offset  = 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io       = davinci_map_io,
 	.init_irq     = davinci_irq_init,
 	.timer        = &davinci_timer,
 	.init_machine = evm_init,
+<<<<<<< HEAD
 MACHINE_END
 
 MACHINE_START(DAVINCI_DM6467TEVM, "DaVinci DM6467T EVM")
 	.boot_params  = (0x80000100),
+=======
+=======
+MACHINE_START(DAVINCI_DM6467_EVM, "DaVinci DM646x EVM")
+	.atag_offset  = 0x100,
+	.map_io       = davinci_map_io,
+	.init_irq     = davinci_irq_init,
+	.init_time	= davinci_timer_init,
+	.init_machine = evm_init,
+	.init_late	= davinci_init_late,
+>>>>>>> refs/remotes/origin/master
+	.dma_zone_size	= SZ_128M,
+	.restart	= davinci_restart,
+MACHINE_END
+
+MACHINE_START(DAVINCI_DM6467TEVM, "DaVinci DM6467T EVM")
+	.atag_offset  = 0x100,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io       = davinci_map_io,
 	.init_irq     = davinci_irq_init,
 	.timer        = &davinci_timer,
 	.init_machine = evm_init,
+<<<<<<< HEAD
+=======
+	.dma_zone_size	= SZ_128M,
+	.restart	= davinci_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.map_io       = davinci_map_io,
+	.init_irq     = davinci_irq_init,
+	.init_time	= davinci_timer_init,
+	.init_machine = evm_init,
+	.init_late	= davinci_init_late,
+	.dma_zone_size	= SZ_128M,
+	.restart	= davinci_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 

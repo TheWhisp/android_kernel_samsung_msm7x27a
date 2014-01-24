@@ -16,7 +16,11 @@
 #include <linux/usb/serial.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Version Information */
 #define DRIVER_VERSION "v2.00"
@@ -135,7 +139,10 @@ static struct usb_driver quausb2_usb_driver = {
 	.probe = usb_serial_probe,
 	.disconnect = usb_serial_disconnect,
 	.id_table = quausb2_id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -1942,7 +1949,10 @@ static struct usb_serial_driver quatech2_device = {
 		.name = "quatech_usb2",
 	},
 	.description = DRIVER_DESC,
+<<<<<<< HEAD
 	.usb_driver = &quausb2_usb_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = quausb2_id_table,
 	.num_ports = 8,
 	.open = qt2_open,
@@ -1964,6 +1974,7 @@ static struct usb_serial_driver quatech2_device = {
 	.write_bulk_callback = qt2_write_bulk_callback,
 };
 
+<<<<<<< HEAD
 static int __init quausb2_usb_init(void)
 {
 	int retval;
@@ -1999,6 +2010,13 @@ static void __exit quausb2_usb_exit(void)
 
 module_init(quausb2_usb_init);
 module_exit(quausb2_usb_exit);
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&quatech2_device, NULL
+};
+
+module_usb_serial_driver(quausb2_usb_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

@@ -1,0 +1,5 @@
+/include/ "tests-phandle.dtsi"
+<<<<<<< HEAD
+=======
+/include/ "tests-interrupts.dtsi"
+>>>>>>> refs/remotes/origin/master

@@ -1,9 +1,22 @@
 /*
  * Kernel CAPI 2.0 Module
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Copyright 1999 by Carsten Paeth <calle@calle.de>
  * Copyright 2002 by Kai Germaschewski <kai@germaschewski.name>
  * 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * Copyright 1999 by Carsten Paeth <calle@calle.de>
+ * Copyright 2002 by Kai Germaschewski <kai@germaschewski.name>
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -16,9 +29,21 @@
 #include <linux/isdn/capilli.h>
 
 #ifdef KCAPI_DEBUG
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DBG(format, arg...) do { \
 printk(KERN_DEBUG "%s: " format "\n" , __func__ , ## arg); \
 } while (0)
+=======
+#define DBG(format, arg...) do {					\
+		printk(KERN_DEBUG "%s: " format "\n" , __func__ , ## arg); \
+	} while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DBG(format, arg...) do {					\
+		printk(KERN_DEBUG "%s: " format "\n" , __func__ , ## arg); \
+	} while (0)
+>>>>>>> refs/remotes/origin/master
 #else
 #define DBG(format, arg...) /* */
 #endif
@@ -49,4 +74,10 @@ static inline void kcapi_proc_init(void) { };
 static inline void kcapi_proc_exit(void) { };
 
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

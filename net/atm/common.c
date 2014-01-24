@@ -23,7 +23,15 @@
 #include <linux/uaccess.h>
 #include <linux/poll.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "resources.h"		/* atm_find_dev */
 #include "common.h"		/* prototypes */
@@ -126,10 +134,25 @@ static void vcc_write_space(struct sock *sk)
 	rcu_read_unlock();
 }
 
+<<<<<<< HEAD
+=======
+static void vcc_release_cb(struct sock *sk)
+{
+	struct atm_vcc *vcc = atm_sk(sk);
+
+	if (vcc->release_cb)
+		vcc->release_cb(vcc);
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct proto vcc_proto = {
 	.name	  = "VCC",
 	.owner	  = THIS_MODULE,
 	.obj_size = sizeof(struct atm_vcc),
+<<<<<<< HEAD
+=======
+	.release_cb = vcc_release_cb,
+>>>>>>> refs/remotes/origin/master
 };
 
 int vcc_create(struct net *net, struct socket *sock, int protocol, int family)
@@ -156,7 +179,13 @@ int vcc_create(struct net *net, struct socket *sock, int protocol, int family)
 	atomic_set(&sk->sk_rmem_alloc, 0);
 	vcc->push = NULL;
 	vcc->pop = NULL;
+<<<<<<< HEAD
 	vcc->push_oam = NULL;
+=======
+	vcc->owner = NULL;
+	vcc->push_oam = NULL;
+	vcc->release_cb = NULL;
+>>>>>>> refs/remotes/origin/master
 	vcc->vpi = vcc->vci = 0; /* no VCI/VPI yet */
 	vcc->atm_options = vcc->aal_options = 0;
 	sk->sk_destruct = vcc_sock_destruct;
@@ -175,6 +204,10 @@ static void vcc_destroy_socket(struct sock *sk)
 			vcc->dev->ops->close(vcc);
 		if (vcc->push)
 			vcc->push(vcc, NULL); /* atmarpd has no push */
+<<<<<<< HEAD
+=======
+		module_put(vcc->owner);
+>>>>>>> refs/remotes/origin/master
 
 		while ((skb = skb_dequeue(&sk->sk_receive_queue)) != NULL) {
 			atm_return(vcc, skb->truesize);
@@ -214,6 +247,35 @@ void vcc_release_async(struct atm_vcc *vcc, int reply)
 }
 EXPORT_SYMBOL(vcc_release_async);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+void vcc_process_recv_queue(struct atm_vcc *vcc)
+{
+	struct sk_buff_head queue, *rq;
+	struct sk_buff *skb, *tmp;
+	unsigned long flags;
+
+	__skb_queue_head_init(&queue);
+	rq = &sk_atm(vcc)->sk_receive_queue;
+
+	spin_lock_irqsave(&rq->lock, flags);
+	skb_queue_splice_init(rq, &queue);
+	spin_unlock_irqrestore(&rq->lock, flags);
+
+	skb_queue_walk_safe(&queue, skb, tmp) {
+		__skb_unlink(skb, &queue);
+		vcc->push(vcc, skb);
+	}
+}
+EXPORT_SYMBOL(vcc_process_recv_queue);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void atm_dev_signal_change(struct atm_dev *dev, char signal)
 {
 	pr_debug("%s signal=%d dev=%p number=%d dev->signal=%d\n",
@@ -238,11 +300,19 @@ void atm_dev_release_vccs(struct atm_dev *dev)
 	write_lock_irq(&vcc_sklist_lock);
 	for (i = 0; i < VCC_HTABLE_SIZE; i++) {
 		struct hlist_head *head = &vcc_hash[i];
+<<<<<<< HEAD
 		struct hlist_node *node, *tmp;
 		struct sock *s;
 		struct atm_vcc *vcc;
 
 		sk_for_each_safe(s, node, tmp, head) {
+=======
+		struct hlist_node *tmp;
+		struct sock *s;
+		struct atm_vcc *vcc;
+
+		sk_for_each_safe(s, tmp, head) {
+>>>>>>> refs/remotes/origin/master
 			vcc = atm_sk(s);
 			if (vcc->dev == dev) {
 				vcc_release_async(vcc, -EPIPE);
@@ -285,11 +355,18 @@ static int adjust_tp(struct atm_trafprm *tp, unsigned char aal)
 static int check_ci(const struct atm_vcc *vcc, short vpi, int vci)
 {
 	struct hlist_head *head = &vcc_hash[vci & (VCC_HTABLE_SIZE - 1)];
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct sock *s;
 	struct atm_vcc *walk;
 
 	sk_for_each(s, node, head) {
+=======
+	struct sock *s;
+	struct atm_vcc *walk;
+
+	sk_for_each(s, head) {
+>>>>>>> refs/remotes/origin/master
 		walk = atm_sk(s);
 		if (walk->dev != vcc->dev)
 			continue;
@@ -500,12 +577,28 @@ int vcc_recvmsg(struct kiocb *iocb, struct socket *sock, struct msghdr *msg,
 	struct sk_buff *skb;
 	int copied, error = -EINVAL;
 
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
 	if (sock->state != SS_CONNECTED)
 		return -ENOTCONN;
+<<<<<<< HEAD
 	if (flags & ~MSG_DONTWAIT)		/* only handle MSG_DONTWAIT */
 		return -EOPNOTSUPP;
+=======
+=======
+	if (sock->state != SS_CONNECTED)
+		return -ENOTCONN;
+>>>>>>> refs/remotes/origin/master
+
+	/* only handle MSG_DONTWAIT and MSG_PEEK */
+	if (flags & ~(MSG_DONTWAIT | MSG_PEEK))
+		return -EOPNOTSUPP;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	vcc = ATM_SD(sock);
 	if (test_bit(ATM_VF_RELEASED, &vcc->flags) ||
 	    test_bit(ATM_VF_CLOSE, &vcc->flags) ||
@@ -526,8 +619,24 @@ int vcc_recvmsg(struct kiocb *iocb, struct socket *sock, struct msghdr *msg,
 	if (error)
 		return error;
 	sock_recv_ts_and_drops(msg, sk, skb);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("%d -= %d\n", atomic_read(&sk->sk_rmem_alloc), skb->truesize);
 	atm_return(vcc, skb->truesize);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (!(flags & MSG_PEEK)) {
+		pr_debug("%d -= %d\n", atomic_read(&sk->sk_rmem_alloc),
+			 skb->truesize);
+		atm_return(vcc, skb->truesize);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	skb_free_datagram(sk, skb);
 	return copied;
 }

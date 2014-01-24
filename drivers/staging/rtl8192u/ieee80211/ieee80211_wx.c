@@ -761,7 +761,11 @@ int ieee80211_wx_set_mlme(struct ieee80211_device *ieee,
 	case IW_MLME_DISASSOC:
 		ieee80211_disassociate(ieee);
 		break;
+<<<<<<< HEAD
 	 default:
+=======
+	default:
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 	}
 	return 0;

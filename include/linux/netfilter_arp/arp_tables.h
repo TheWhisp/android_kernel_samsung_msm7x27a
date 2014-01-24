@@ -5,15 +5,22 @@
  *	network byte order.
  * 	flags are stored in host byte order (of course).
  */
+<<<<<<< HEAD
 
 #ifndef _ARPTABLES_H
 #define _ARPTABLES_H
 
 #ifdef __KERNEL__
+=======
+#ifndef _ARPTABLES_H
+#define _ARPTABLES_H
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/if.h>
 #include <linux/in.h>
 #include <linux/if_arp.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #endif
 #include <linux/types.h>
 #include <linux/compiler.h>
@@ -52,7 +59,11 @@ struct arpt_arp {
 	struct in_addr smsk, tmsk;
 
 	/* Device hw address length, src+target device addresses */
+<<<<<<< HEAD
 	u_int8_t arhln, arhln_mask;
+=======
+	__u8 arhln, arhln_mask;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct arpt_devaddr_info src_devaddr;
 	struct arpt_devaddr_info tgt_devaddr;
 
@@ -71,9 +82,15 @@ struct arpt_arp {
 	unsigned char iniface_mask[IFNAMSIZ], outiface_mask[IFNAMSIZ];
 
 	/* Flags word */
+<<<<<<< HEAD
 	u_int8_t flags;
 	/* Inverse flags */
 	u_int16_t invflags;
+=======
+	__u8 flags;
+	/* Inverse flags */
+	__u16 invflags;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Values for "flag" field in struct arpt_ip (general arp structure).
@@ -102,9 +119,15 @@ struct arpt_entry
 	struct arpt_arp arp;
 
 	/* Size of arpt_entry + matches */
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	/* Size of arpt_entry + matches + target */
 	u_int16_t next_offset;
+=======
+	__u16 target_offset;
+	/* Size of arpt_entry + matches + target */
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Back pointer */
 	unsigned int comefrom;
@@ -210,6 +233,9 @@ static __inline__ struct xt_entry_target *arpt_get_target(struct arpt_entry *e)
  *	Main firewall chains definitions and global var's definitions.
  */
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/netfilter_arp/arp_tables.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Standard entry. */
 struct arpt_standard {
@@ -260,8 +286,18 @@ extern unsigned int arpt_do_table(struct sk_buff *skb,
 
 struct compat_arpt_entry {
 	struct arpt_arp arp;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	u_int16_t next_offset;
+=======
+	__u16 target_offset;
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u16 target_offset;
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/master
 	compat_uint_t comefrom;
 	struct compat_xt_counters counters;
 	unsigned char elems[0];
@@ -274,5 +310,8 @@ compat_arpt_get_target(struct compat_arpt_entry *e)
 }
 
 #endif /* CONFIG_COMPAT */
+<<<<<<< HEAD
 #endif /*__KERNEL__*/
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ARPTABLES_H */

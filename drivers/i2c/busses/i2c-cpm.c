@@ -42,7 +42,10 @@
 #include <linux/dma-mapping.h>
 #include <linux/of_device.h>
 #include <linux/of_platform.h>
+<<<<<<< HEAD
 #include <linux/of_i2c.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <sysdev/fsl_soc.h>
 #include <asm/cpm.h>
 
@@ -338,6 +341,17 @@ static int cpm_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
 	tptr = 0;
 	rptr = 0;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * If there was a collision in the last i2c transaction,
+	 * Set I2COM_MASTER as it was cleared during collision.
+	 */
+	if (in_be16(&tbdf->cbd_sc) & BD_SC_CL) {
+		out_8(&cpm->i2c_reg->i2com, I2COM_MASTER);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	while (tptr < num) {
 		pmsg = &msgs[tptr];
 		dev_dbg(&adap->dev, "R: %d T: %d\n", rptr, tptr);
@@ -426,7 +440,11 @@ static const struct i2c_adapter cpm_ops = {
 	.algo		= &cpm_i2c_algo,
 };
 
+<<<<<<< HEAD
 static int __devinit cpm_i2c_setup(struct cpm_i2c *cpm)
+=======
+static int cpm_i2c_setup(struct cpm_i2c *cpm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_device *ofdev = cpm->ofdev;
 	const u32 *data;
@@ -440,7 +458,11 @@ static int __devinit cpm_i2c_setup(struct cpm_i2c *cpm)
 
 	init_waitqueue_head(&cpm->i2c_wait);
 
+<<<<<<< HEAD
 	cpm->irq = of_irq_to_resource(ofdev->dev.of_node, 0, NULL);
+=======
+	cpm->irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!cpm->irq)
 		return -EINVAL;
 
@@ -634,7 +656,11 @@ static void cpm_i2c_shutdown(struct cpm_i2c *cpm)
 		cpm_muram_free(cpm->i2c_addr);
 }
 
+<<<<<<< HEAD
 static int __devinit cpm_i2c_probe(struct platform_device *ofdev)
+=======
+static int cpm_i2c_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int result, len;
 	struct cpm_i2c *cpm;
@@ -646,7 +672,11 @@ static int __devinit cpm_i2c_probe(struct platform_device *ofdev)
 
 	cpm->ofdev = ofdev;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, cpm);
+=======
+	platform_set_drvdata(ofdev, cpm);
+>>>>>>> refs/remotes/origin/master
 
 	cpm->adap = cpm_ops;
 	i2c_set_adapdata(&cpm->adap, cpm);
@@ -662,11 +692,21 @@ static int __devinit cpm_i2c_probe(struct platform_device *ofdev)
 	/* register new adapter to i2c module... */
 
 	data = of_get_property(ofdev->dev.of_node, "linux,i2c-index", &len);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (data && len == 4) {
 		cpm->adap.nr = *data;
 		result = i2c_add_numbered_adapter(&cpm->adap);
 	} else
 		result = i2c_add_adapter(&cpm->adap);
+=======
+	cpm->adap.nr = (data && len == 4) ? be32_to_cpup(data) : -1;
+	result = i2c_add_numbered_adapter(&cpm->adap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpm->adap.nr = (data && len == 4) ? be32_to_cpup(data) : -1;
+	result = i2c_add_numbered_adapter(&cpm->adap);
+>>>>>>> refs/remotes/origin/master
 
 	if (result < 0) {
 		dev_err(&ofdev->dev, "Unable to register with I2C\n");
@@ -676,30 +716,45 @@ static int __devinit cpm_i2c_probe(struct platform_device *ofdev)
 	dev_dbg(&ofdev->dev, "hw routines for %s registered.\n",
 		cpm->adap.name);
 
+<<<<<<< HEAD
 	/*
 	 * register OF I2C devices
 	 */
 	of_i2c_register_devices(&cpm->adap);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 out_shut:
 	cpm_i2c_shutdown(cpm);
 out_free:
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(cpm);
 
 	return result;
 }
 
+<<<<<<< HEAD
 static int __devexit cpm_i2c_remove(struct platform_device *ofdev)
 {
 	struct cpm_i2c *cpm = dev_get_drvdata(&ofdev->dev);
+=======
+static int cpm_i2c_remove(struct platform_device *ofdev)
+{
+	struct cpm_i2c *cpm = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 
 	i2c_del_adapter(&cpm->adap);
 
 	cpm_i2c_shutdown(cpm);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(cpm);
 
 	return 0;
@@ -719,7 +774,11 @@ MODULE_DEVICE_TABLE(of, cpm_i2c_match);
 
 static struct platform_driver cpm_i2c_driver = {
 	.probe		= cpm_i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cpm_i2c_remove),
+=======
+	.remove		= cpm_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "fsl-i2c-cpm",
 		.owner = THIS_MODULE,
@@ -727,6 +786,8 @@ static struct platform_driver cpm_i2c_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init cpm_i2c_init(void)
 {
 	return platform_driver_register(&cpm_i2c_driver);
@@ -739,6 +800,12 @@ static void __exit cpm_i2c_exit(void)
 
 module_init(cpm_i2c_init);
 module_exit(cpm_i2c_exit);
+=======
+module_platform_driver(cpm_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(cpm_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jochen Friedrich <jochen@scram.de>");
 MODULE_DESCRIPTION("I2C-Bus adapter routines for CPM boards");

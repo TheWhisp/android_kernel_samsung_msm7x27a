@@ -5,7 +5,13 @@
  *
  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
  * Created:	Jan 01, 2011
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Version:	0.3.0
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright:	(C) Torsten Schenk
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,13 +35,31 @@
 #include <sound/initval.h>
 
 MODULE_AUTHOR("Torsten Schenk <torsten.schenk@zoho.com>");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_DESCRIPTION("TerraTec DMX 6Fire USB audio driver, version 0.3.0");
+=======
+MODULE_DESCRIPTION("TerraTec DMX 6Fire USB audio driver");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL v2");
 MODULE_SUPPORTED_DEVICE("{{TerraTec, DMX 6Fire USB}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX; /* Index 0-max */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR; /* Id for card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP; /* Enable card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP; /* Enable card */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DESCRIPTION("TerraTec DMX 6Fire USB audio driver");
+MODULE_LICENSE("GPL v2");
+MODULE_SUPPORTED_DEVICE("{{TerraTec,DMX 6Fire USB}}");
+
+static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX; /* Index 0-max */
+static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR; /* Id for card */
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP; /* Enable card */
+>>>>>>> refs/remotes/origin/master
 static struct sfire_chip *chips[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
 static struct usb_device *devices[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
 
@@ -83,8 +107,13 @@ static void usb6fire_chip_destroy(struct sfire_chip *chip)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit usb6fire_chip_probe(struct usb_interface *intf,
 		const struct usb_device_id *usb_id)
+=======
+static int usb6fire_chip_probe(struct usb_interface *intf,
+			       const struct usb_device_id *usb_id)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	int i;
@@ -102,7 +131,15 @@ static int __devinit usb6fire_chip_probe(struct usb_interface *intf,
 			usb_set_intfdata(intf, chips[i]);
 			mutex_unlock(&register_mutex);
 			return 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		} else if (regidx < 0)
+=======
+		} else if (!devices[i] && regidx < 0)
+>>>>>>> refs/remotes/origin/master
+=======
+		} else if (!devices[i] && regidx < 0)
+>>>>>>> refs/remotes/origin/cm-11.0
 			regidx = i;
 	}
 	if (regidx < 0) {
@@ -211,13 +248,23 @@ static struct usb_device_id device_table[] = {
 
 MODULE_DEVICE_TABLE(usb, device_table);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct usb_driver driver = {
+=======
+static struct usb_driver usb_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct usb_driver usb_driver = {
+>>>>>>> refs/remotes/origin/master
 	.name = "snd-usb-6fire",
 	.probe = usb6fire_chip_probe,
 	.disconnect = usb6fire_chip_disconnect,
 	.id_table = device_table,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usb6fire_chip_init(void)
 {
 	return usb_register(&driver);
@@ -230,3 +277,9 @@ static void __exit usb6fire_chip_cleanup(void)
 
 module_init(usb6fire_chip_init);
 module_exit(usb6fire_chip_cleanup);
+=======
+module_usb_driver(usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(usb_driver);
+>>>>>>> refs/remotes/origin/master

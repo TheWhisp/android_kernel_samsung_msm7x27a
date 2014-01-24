@@ -1,5 +1,13 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  file.c - part of debugfs, a tiny little debug file system
+=======
+ *  inode.c - part of debugfs, a tiny little debug file system
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  inode.c - part of debugfs, a tiny little debug file system
+>>>>>>> refs/remotes/origin/master
  *
  *  Copyright (C) 2004 Greg Kroah-Hartman <greg@kroah.com>
  *  Copyright (C) 2004 IBM Inc.
@@ -23,14 +31,40 @@
 #include <linux/debugfs.h>
 #include <linux/fsnotify.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/magic.h>
 #include <linux/slab.h>
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/seq_file.h>
+#include <linux/parser.h>
+#include <linux/magic.h>
+#include <linux/slab.h>
+
+<<<<<<< HEAD
+#define DEBUGFS_DEFAULT_MODE	0755
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DEBUGFS_DEFAULT_MODE	0700
+
+>>>>>>> refs/remotes/origin/master
 static struct vfsmount *debugfs_mount;
 static int debugfs_mount_count;
 static bool debugfs_registered;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct inode *debugfs_get_inode(struct super_block *sb, int mode, dev_t dev,
+=======
+static struct inode *debugfs_get_inode(struct super_block *sb, umode_t mode, dev_t dev,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct inode *debugfs_get_inode(struct super_block *sb, umode_t mode, dev_t dev,
+>>>>>>> refs/remotes/origin/master
 				       void *data, const struct file_operations *fops)
 
 {
@@ -50,13 +84,20 @@ static struct inode *debugfs_get_inode(struct super_block *sb, int mode, dev_t d
 			break;
 		case S_IFLNK:
 			inode->i_op = &debugfs_link_operations;
+<<<<<<< HEAD
 			inode->i_fop = fops;
+=======
+>>>>>>> refs/remotes/origin/master
 			inode->i_private = data;
 			break;
 		case S_IFDIR:
 			inode->i_op = &simple_dir_inode_operations;
+<<<<<<< HEAD
 			inode->i_fop = fops ? fops : &simple_dir_operations;
 			inode->i_private = data;
+=======
+			inode->i_fop = &simple_dir_operations;
+>>>>>>> refs/remotes/origin/master
 
 			/* directory inodes start off with i_nlink == 2
 			 * (for "." entry) */
@@ -69,7 +110,15 @@ static struct inode *debugfs_get_inode(struct super_block *sb, int mode, dev_t d
 
 /* SMP-safe */
 static int debugfs_mknod(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 int mode, dev_t dev, void *data,
+=======
+			 umode_t mode, dev_t dev, void *data,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 umode_t mode, dev_t dev, void *data,
+>>>>>>> refs/remotes/origin/master
 			 const struct file_operations *fops)
 {
 	struct inode *inode;
@@ -87,13 +136,25 @@ static int debugfs_mknod(struct inode *dir, struct dentry *dentry,
 	return error;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debugfs_mkdir(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int debugfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 void *data, const struct file_operations *fops)
+=======
+static int debugfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int res;
 
 	mode = (mode & (S_IRWXUGO | S_ISVTX)) | S_IFDIR;
+<<<<<<< HEAD
 	res = debugfs_mknod(dir, dentry, mode, 0, data, fops);
+=======
+	res = debugfs_mknod(dir, dentry, mode, 0, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (!res) {
 		inc_nlink(dir);
 		fsnotify_mkdir(dir, dentry);
@@ -101,14 +162,33 @@ static int debugfs_mkdir(struct inode *dir, struct dentry *dentry, int mode,
 	return res;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debugfs_link(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int debugfs_link(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 			void *data, const struct file_operations *fops)
 {
 	mode = (mode & S_IALLUGO) | S_IFLNK;
 	return debugfs_mknod(dir, dentry, mode, 0, data, fops);
 }
 
+<<<<<<< HEAD
 static int debugfs_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int debugfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int debugfs_link(struct inode *dir, struct dentry *dentry, umode_t mode,
+			void *data)
+{
+	mode = (mode & S_IALLUGO) | S_IFLNK;
+	return debugfs_mknod(dir, dentry, mode, 0, data, NULL);
+}
+
+static int debugfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 			  void *data, const struct file_operations *fops)
 {
 	int res;
@@ -125,11 +205,200 @@ static inline int debugfs_positive(struct dentry *dentry)
 	return dentry->d_inode && !d_unhashed(dentry);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug_fill_super(struct super_block *sb, void *data, int silent)
 {
 	static struct tree_descr debug_files[] = {{""}};
 
 	return simple_fill_super(sb, DEBUGFS_MAGIC, debug_files);
+=======
+struct debugfs_mount_opts {
+	uid_t uid;
+	gid_t gid;
+=======
+struct debugfs_mount_opts {
+	kuid_t uid;
+	kgid_t gid;
+>>>>>>> refs/remotes/origin/master
+	umode_t mode;
+};
+
+enum {
+	Opt_uid,
+	Opt_gid,
+	Opt_mode,
+	Opt_err
+};
+
+static const match_table_t tokens = {
+	{Opt_uid, "uid=%u"},
+	{Opt_gid, "gid=%u"},
+	{Opt_mode, "mode=%o"},
+	{Opt_err, NULL}
+};
+
+struct debugfs_fs_info {
+	struct debugfs_mount_opts mount_opts;
+};
+
+static int debugfs_parse_options(char *data, struct debugfs_mount_opts *opts)
+{
+	substring_t args[MAX_OPT_ARGS];
+	int option;
+	int token;
+<<<<<<< HEAD
+=======
+	kuid_t uid;
+	kgid_t gid;
+>>>>>>> refs/remotes/origin/master
+	char *p;
+
+	opts->mode = DEBUGFS_DEFAULT_MODE;
+
+	while ((p = strsep(&data, ",")) != NULL) {
+		if (!*p)
+			continue;
+
+		token = match_token(p, tokens, args);
+		switch (token) {
+		case Opt_uid:
+			if (match_int(&args[0], &option))
+				return -EINVAL;
+<<<<<<< HEAD
+			opts->uid = option;
+			break;
+		case Opt_gid:
+			if (match_octal(&args[0], &option))
+				return -EINVAL;
+			opts->gid = option;
+=======
+			uid = make_kuid(current_user_ns(), option);
+			if (!uid_valid(uid))
+				return -EINVAL;
+			opts->uid = uid;
+			break;
+		case Opt_gid:
+			if (match_int(&args[0], &option))
+				return -EINVAL;
+			gid = make_kgid(current_user_ns(), option);
+			if (!gid_valid(gid))
+				return -EINVAL;
+			opts->gid = gid;
+>>>>>>> refs/remotes/origin/master
+			break;
+		case Opt_mode:
+			if (match_octal(&args[0], &option))
+				return -EINVAL;
+			opts->mode = option & S_IALLUGO;
+			break;
+		/*
+		 * We might like to report bad mount options here;
+		 * but traditionally debugfs has ignored all mount options
+		 */
+		}
+	}
+
+	return 0;
+}
+
+static int debugfs_apply_options(struct super_block *sb)
+{
+	struct debugfs_fs_info *fsi = sb->s_fs_info;
+	struct inode *inode = sb->s_root->d_inode;
+	struct debugfs_mount_opts *opts = &fsi->mount_opts;
+
+	inode->i_mode &= ~S_IALLUGO;
+	inode->i_mode |= opts->mode;
+
+	inode->i_uid = opts->uid;
+	inode->i_gid = opts->gid;
+
+	return 0;
+}
+
+static int debugfs_remount(struct super_block *sb, int *flags, char *data)
+{
+	int err;
+	struct debugfs_fs_info *fsi = sb->s_fs_info;
+
+	err = debugfs_parse_options(data, &fsi->mount_opts);
+	if (err)
+		goto fail;
+
+	debugfs_apply_options(sb);
+
+fail:
+	return err;
+}
+
+static int debugfs_show_options(struct seq_file *m, struct dentry *root)
+{
+	struct debugfs_fs_info *fsi = root->d_sb->s_fs_info;
+	struct debugfs_mount_opts *opts = &fsi->mount_opts;
+
+<<<<<<< HEAD
+	if (opts->uid != 0)
+		seq_printf(m, ",uid=%u", opts->uid);
+	if (opts->gid != 0)
+		seq_printf(m, ",gid=%u", opts->gid);
+=======
+	if (!uid_eq(opts->uid, GLOBAL_ROOT_UID))
+		seq_printf(m, ",uid=%u",
+			   from_kuid_munged(&init_user_ns, opts->uid));
+	if (!gid_eq(opts->gid, GLOBAL_ROOT_GID))
+		seq_printf(m, ",gid=%u",
+			   from_kgid_munged(&init_user_ns, opts->gid));
+>>>>>>> refs/remotes/origin/master
+	if (opts->mode != DEBUGFS_DEFAULT_MODE)
+		seq_printf(m, ",mode=%o", opts->mode);
+
+	return 0;
+}
+
+static const struct super_operations debugfs_super_operations = {
+	.statfs		= simple_statfs,
+	.remount_fs	= debugfs_remount,
+	.show_options	= debugfs_show_options,
+};
+
+static int debug_fill_super(struct super_block *sb, void *data, int silent)
+{
+	static struct tree_descr debug_files[] = {{""}};
+	struct debugfs_fs_info *fsi;
+	int err;
+
+	save_mount_options(sb, data);
+
+	fsi = kzalloc(sizeof(struct debugfs_fs_info), GFP_KERNEL);
+	sb->s_fs_info = fsi;
+	if (!fsi) {
+		err = -ENOMEM;
+		goto fail;
+	}
+
+	err = debugfs_parse_options(data, &fsi->mount_opts);
+	if (err)
+		goto fail;
+
+	err  =  simple_fill_super(sb, DEBUGFS_MAGIC, debug_files);
+	if (err)
+		goto fail;
+
+	sb->s_op = &debugfs_super_operations;
+
+	debugfs_apply_options(sb);
+
+	return 0;
+
+fail:
+	kfree(fsi);
+	sb->s_fs_info = NULL;
+	return err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct dentry *debug_mount(struct file_system_type *fs_type,
@@ -145,14 +414,36 @@ static struct file_system_type debug_fs_type = {
 	.mount =	debug_mount,
 	.kill_sb =	kill_litter_super,
 };
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 static int debugfs_create_by_name(const char *name, mode_t mode,
+=======
+static int debugfs_create_by_name(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  struct dentry *parent,
 				  struct dentry **dentry,
 				  void *data,
 				  const struct file_operations *fops)
 {
 	int error = 0;
+=======
+MODULE_ALIAS_FS("debugfs");
+
+static struct dentry *__create_file(const char *name, umode_t mode,
+				    struct dentry *parent, void *data,
+				    const struct file_operations *fops)
+{
+	struct dentry *dentry = NULL;
+	int error;
+
+	pr_debug("debugfs: creating file '%s'\n",name);
+
+	error = simple_pin_fs(&debug_fs_type, &debugfs_mount,
+			      &debugfs_mount_count);
+	if (error)
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 
 	/* If the parent is not specified, we create it in the root.
 	 * We need the root dentry to do this, which is in the super 
@@ -160,7 +451,12 @@ static int debugfs_create_by_name(const char *name, mode_t mode,
 	 * have around.
 	 */
 	if (!parent)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		parent = debugfs_mount->mnt_sb->s_root;
+=======
+		parent = debugfs_mount->mnt_root;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	*dentry = NULL;
 	mutex_lock(&parent->d_inode->i_mutex);
@@ -186,6 +482,38 @@ static int debugfs_create_by_name(const char *name, mode_t mode,
 	mutex_unlock(&parent->d_inode->i_mutex);
 
 	return error;
+=======
+		parent = debugfs_mount->mnt_root;
+
+	mutex_lock(&parent->d_inode->i_mutex);
+	dentry = lookup_one_len(name, parent, strlen(name));
+	if (!IS_ERR(dentry)) {
+		switch (mode & S_IFMT) {
+		case S_IFDIR:
+			error = debugfs_mkdir(parent->d_inode, dentry, mode);
+					      
+			break;
+		case S_IFLNK:
+			error = debugfs_link(parent->d_inode, dentry, mode,
+					     data);
+			break;
+		default:
+			error = debugfs_create(parent->d_inode, dentry, mode,
+					       data, fops);
+			break;
+		}
+		dput(dentry);
+	} else
+		error = PTR_ERR(dentry);
+	mutex_unlock(&parent->d_inode->i_mutex);
+
+	if (error) {
+		dentry = NULL;
+		simple_release_fs(&debugfs_mount, &debugfs_mount_count);
+	}
+exit:
+	return dentry;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -214,7 +542,12 @@ static int debugfs_create_by_name(const char *name, mode_t mode,
  * If debugfs is not enabled in the kernel, the value -%ENODEV will be
  * returned.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_file(const char *name, mode_t mode,
+=======
+struct dentry *debugfs_create_file(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 				   struct dentry *parent, void *data,
 				   const struct file_operations *fops)
 {
@@ -237,6 +570,21 @@ struct dentry *debugfs_create_file(const char *name, mode_t mode,
 	}
 exit:
 	return dentry;
+=======
+struct dentry *debugfs_create_file(const char *name, umode_t mode,
+				   struct dentry *parent, void *data,
+				   const struct file_operations *fops)
+{
+	switch (mode & S_IFMT) {
+	case S_IFREG:
+	case 0:
+		break;
+	default:
+		BUG();
+	}
+
+	return __create_file(name, mode, parent, data, fops);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(debugfs_create_file);
 
@@ -260,8 +608,12 @@ EXPORT_SYMBOL_GPL(debugfs_create_file);
  */
 struct dentry *debugfs_create_dir(const char *name, struct dentry *parent)
 {
+<<<<<<< HEAD
 	return debugfs_create_file(name, 
 				   S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO,
+=======
+	return __create_file(name, S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO,
+>>>>>>> refs/remotes/origin/master
 				   parent, NULL, NULL);
 }
 EXPORT_SYMBOL_GPL(debugfs_create_dir);
@@ -299,8 +651,12 @@ struct dentry *debugfs_create_symlink(const char *name, struct dentry *parent,
 	if (!link)
 		return NULL;
 
+<<<<<<< HEAD
 	result = debugfs_create_file(name, S_IFLNK | S_IRWXUGO, parent, link,
 				     NULL);
+=======
+	result = __create_file(name, S_IFLNK | S_IRWXUGO, parent, link, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (!result)
 		kfree(link);
 	return result;
@@ -351,7 +707,11 @@ void debugfs_remove(struct dentry *dentry)
 	struct dentry *parent;
 	int ret;
 
+<<<<<<< HEAD
 	if (!dentry)
+=======
+	if (IS_ERR_OR_NULL(dentry))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	parent = dentry->d_parent;
@@ -382,7 +742,11 @@ void debugfs_remove_recursive(struct dentry *dentry)
 {
 	struct dentry *child, *next, *parent;
 
+<<<<<<< HEAD
 	if (!dentry)
+=======
+	if (IS_ERR_OR_NULL(dentry))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	parent = dentry->d_parent;
@@ -413,8 +777,17 @@ void debugfs_remove_recursive(struct dentry *dentry)
 	mutex_lock(&parent->d_inode->i_mutex);
 
 	if (child != dentry) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		next = list_entry(child->d_u.d_child.next, struct dentry,
 					d_u.d_child);
+=======
+		next = list_next_entry(child, d_u.d_child);
+>>>>>>> refs/remotes/origin/master
+=======
+		next = list_entry(child->d_u.d_child.next, struct dentry,
+					d_u.d_child);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto up;
 	}
 

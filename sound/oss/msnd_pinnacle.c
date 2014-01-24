@@ -642,7 +642,11 @@ static int mixer_ioctl(unsigned int cmd, unsigned long arg)
 
 static long dev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
 	int minor = iminor(file->f_path.dentry->d_inode);
+=======
+	int minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (cmd == OSS_GETVERSION) {
@@ -664,12 +668,24 @@ static long dev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 static void dsp_write_flush(void)
 {
+<<<<<<< HEAD
 	if (!(dev.mode & FMODE_WRITE) || !test_bit(F_WRITING, &dev.flags))
 		return;
 	set_bit(F_WRITEFLUSH, &dev.flags);
 	interruptible_sleep_on_timeout(
 		&dev.writeflush,
 		get_play_delay_jiffies(dev.DAPF.len));
+=======
+	int timeout = get_play_delay_jiffies(dev.DAPF.len);
+
+	if (!(dev.mode & FMODE_WRITE) || !test_bit(F_WRITING, &dev.flags))
+		return;
+	set_bit(F_WRITEFLUSH, &dev.flags);
+	wait_event_interruptible_timeout(
+		dev.writeflush,
+		!test_bit(F_WRITEFLUSH, &dev.flags),
+		timeout);
+>>>>>>> refs/remotes/origin/master
 	clear_bit(F_WRITEFLUSH, &dev.flags);
 	if (!signal_pending(current)) {
 		current->state = TASK_INTERRUPTIBLE;
@@ -897,6 +913,10 @@ static int dsp_read(char __user *buf, size_t len)
 {
 	int count = len;
 	char *page = (char *)__get_free_page(GFP_KERNEL);
+<<<<<<< HEAD
+=======
+	int timeout = get_rec_delay_jiffies(DAR_BUFF_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 	if (!page)
 		return -ENOMEM;
@@ -936,11 +956,19 @@ static int dsp_read(char __user *buf, size_t len)
 
 		if (count > 0) {
 			set_bit(F_READBLOCK, &dev.flags);
+<<<<<<< HEAD
 			if (!interruptible_sleep_on_timeout(
 				&dev.readblock,
 				get_rec_delay_jiffies(DAR_BUFF_SIZE)))
 				clear_bit(F_READING, &dev.flags);
 			clear_bit(F_READBLOCK, &dev.flags);
+=======
+			if (wait_event_interruptible_timeout(
+					dev.readblock,
+					test_bit(F_READBLOCK, &dev.flags),
+					timeout) <= 0)
+				clear_bit(F_READING, &dev.flags);
+>>>>>>> refs/remotes/origin/master
 			if (signal_pending(current)) {
 				free_page((unsigned long)page);
 				return -EINTR;
@@ -955,6 +983,10 @@ static int dsp_write(const char __user *buf, size_t len)
 {
 	int count = len;
 	char *page = (char *)__get_free_page(GFP_KERNEL);
+<<<<<<< HEAD
+=======
+	int timeout = get_play_delay_jiffies(DAP_BUFF_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 	if (!page)
 		return -ENOMEM;
@@ -995,10 +1027,17 @@ static int dsp_write(const char __user *buf, size_t len)
 
 		if (count > 0) {
 			set_bit(F_WRITEBLOCK, &dev.flags);
+<<<<<<< HEAD
 			interruptible_sleep_on_timeout(
 				&dev.writeblock,
 				get_play_delay_jiffies(DAP_BUFF_SIZE));
 			clear_bit(F_WRITEBLOCK, &dev.flags);
+=======
+			wait_event_interruptible_timeout(
+				dev.writeblock,
+				test_bit(F_WRITEBLOCK, &dev.flags),
+				timeout);
+>>>>>>> refs/remotes/origin/master
 			if (signal_pending(current)) {
 				free_page((unsigned long)page);
 				return -EINTR;
@@ -1012,7 +1051,11 @@ static int dsp_write(const char __user *buf, size_t len)
 
 static ssize_t dev_read(struct file *file, char __user *buf, size_t count, loff_t *off)
 {
+<<<<<<< HEAD
 	int minor = iminor(file->f_path.dentry->d_inode);
+=======
+	int minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	if (minor == dev.dsp_minor)
 		return dsp_read(buf, count);
 	else
@@ -1021,7 +1064,11 @@ static ssize_t dev_read(struct file *file, char __user *buf, size_t count, loff_
 
 static ssize_t dev_write(struct file *file, const char __user *buf, size_t count, loff_t *off)
 {
+<<<<<<< HEAD
 	int minor = iminor(file->f_path.dentry->d_inode);
+=======
+	int minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	if (minor == dev.dsp_minor)
 		return dsp_write(buf, count);
 	else
@@ -1044,7 +1091,11 @@ static __inline__ void eval_dsp_msg(register WORD wMessage)
 			clear_bit(F_WRITING, &dev.flags);
 		}
 
+<<<<<<< HEAD
 		if (test_bit(F_WRITEBLOCK, &dev.flags))
+=======
+		if (test_and_clear_bit(F_WRITEBLOCK, &dev.flags))
+>>>>>>> refs/remotes/origin/master
 			wake_up_interruptible(&dev.writeblock);
 		break;
 
@@ -1055,7 +1106,11 @@ static __inline__ void eval_dsp_msg(register WORD wMessage)
 
 		pack_DARQ_to_DARF(dev.last_recbank);
 
+<<<<<<< HEAD
 		if (test_bit(F_READBLOCK, &dev.flags))
+=======
+		if (test_and_clear_bit(F_READBLOCK, &dev.flags))
+>>>>>>> refs/remotes/origin/master
 			wake_up_interruptible(&dev.readblock);
 		break;
 
@@ -1294,6 +1349,16 @@ static int __init calibrate_adc(WORD srate)
 
 static int upload_dsp_code(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int ret = 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+
+>>>>>>> refs/remotes/origin/master
 	msnd_outb(HPBLKSEL_0, dev.io + HP_BLKS);
 #ifndef HAVE_DSPCODEH
 	INITCODESIZE = mod_firmware_load(INITCODEFILE, &INITCODE);
@@ -1312,7 +1377,17 @@ static int upload_dsp_code(void)
 	memcpy_toio(dev.base, PERMCODE, PERMCODESIZE);
 	if (msnd_upload_host(&dev, INITCODE, INITCODESIZE) < 0) {
 		printk(KERN_WARNING LOGNAME ": Error uploading to DSP\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		ret = -ENODEV;
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = -ENODEV;
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 #ifdef HAVE_DSPCODEH
 	printk(KERN_INFO LOGNAME ": DSP firmware uploaded (resident)\n");
@@ -1320,12 +1395,28 @@ static int upload_dsp_code(void)
 	printk(KERN_INFO LOGNAME ": DSP firmware uploaded\n");
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 #ifndef HAVE_DSPCODEH
 	vfree(INITCODE);
 	vfree(PERMCODE);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef MSND_CLASSIC
@@ -1631,7 +1722,15 @@ static int ide_irq __initdata = 0;
 static int joystick_io __initdata = 0;
 
 /* If we have the digital daugherboard... */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int digital __initdata = 0;
+=======
+static bool digital __initdata = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool digital __initdata = false;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int fifosize __initdata =	DEFFIFOSIZE;
@@ -1701,7 +1800,15 @@ static int joystick_io __initdata =	CONFIG_MSNDPIN_JOYSTICK_IO;
 #ifndef CONFIG_MSNDPIN_DIGITAL
 #  define CONFIG_MSNDPIN_DIGITAL	0
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int digital __initdata =		CONFIG_MSNDPIN_DIGITAL;
+=======
+static bool digital __initdata =	CONFIG_MSNDPIN_DIGITAL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool digital __initdata =	CONFIG_MSNDPIN_DIGITAL;
+>>>>>>> refs/remotes/origin/master
 
 #endif /* MSND_CLASSIC */
 

@@ -5,4 +5,16 @@
 #else
 #include <asm/processor_32.h>
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+#define nop() 		__asm__ __volatile__ ("nop")
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define nop() 		__asm__ __volatile__ ("nop")
+
+>>>>>>> refs/remotes/origin/master
 #endif

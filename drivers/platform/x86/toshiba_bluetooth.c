@@ -32,9 +32,14 @@ MODULE_LICENSE("GPL");
 
 
 static int toshiba_bt_rfkill_add(struct acpi_device *device);
+<<<<<<< HEAD
 static int toshiba_bt_rfkill_remove(struct acpi_device *device, int type);
 static void toshiba_bt_rfkill_notify(struct acpi_device *device, u32 event);
 static int toshiba_bt_resume(struct acpi_device *device);
+=======
+static int toshiba_bt_rfkill_remove(struct acpi_device *device);
+static void toshiba_bt_rfkill_notify(struct acpi_device *device, u32 event);
+>>>>>>> refs/remotes/origin/master
 
 static const struct acpi_device_id bt_device_ids[] = {
 	{ "TOS6205", 0},
@@ -42,6 +47,14 @@ static const struct acpi_device_id bt_device_ids[] = {
 };
 MODULE_DEVICE_TABLE(acpi, bt_device_ids);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+static int toshiba_bt_resume(struct device *dev);
+#endif
+static SIMPLE_DEV_PM_OPS(toshiba_bt_pm, NULL, toshiba_bt_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct acpi_driver toshiba_bt_rfkill_driver = {
 	.name =		"Toshiba BT",
 	.class =	"Toshiba",
@@ -50,9 +63,15 @@ static struct acpi_driver toshiba_bt_rfkill_driver = {
 				.add =		toshiba_bt_rfkill_add,
 				.remove =	toshiba_bt_rfkill_remove,
 				.notify =	toshiba_bt_rfkill_notify,
+<<<<<<< HEAD
 				.resume =	toshiba_bt_resume,
 			},
 	.owner = 	THIS_MODULE,
+=======
+			},
+	.owner = 	THIS_MODULE,
+	.drv.pm =	&toshiba_bt_pm,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -88,10 +107,19 @@ static void toshiba_bt_rfkill_notify(struct acpi_device *device, u32 event)
 	toshiba_bluetooth_enable(device->handle);
 }
 
+<<<<<<< HEAD
 static int toshiba_bt_resume(struct acpi_device *device)
 {
 	return toshiba_bluetooth_enable(device->handle);
 }
+=======
+#ifdef CONFIG_PM_SLEEP
+static int toshiba_bt_resume(struct device *dev)
+{
+	return toshiba_bluetooth_enable(to_acpi_device(dev)->handle);
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static int toshiba_bt_rfkill_add(struct acpi_device *device)
 {
@@ -116,6 +144,7 @@ static int toshiba_bt_rfkill_add(struct acpi_device *device)
 	return result;
 }
 
+<<<<<<< HEAD
 static int __init toshiba_bt_rfkill_init(void)
 {
 	int result;
@@ -131,11 +160,15 @@ static int __init toshiba_bt_rfkill_init(void)
 }
 
 static int toshiba_bt_rfkill_remove(struct acpi_device *device, int type)
+=======
+static int toshiba_bt_rfkill_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	/* clean up */
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __exit toshiba_bt_rfkill_exit(void)
 {
 	acpi_bus_unregister_driver(&toshiba_bt_rfkill_driver);
@@ -143,3 +176,6 @@ static void __exit toshiba_bt_rfkill_exit(void)
 
 module_init(toshiba_bt_rfkill_init);
 module_exit(toshiba_bt_rfkill_exit);
+=======
+module_acpi_driver(toshiba_bt_rfkill_driver);
+>>>>>>> refs/remotes/origin/master

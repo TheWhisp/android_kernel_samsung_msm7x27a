@@ -13,6 +13,14 @@
 #include <linux/dma-mapping.h>
 #include <linux/scatterlist.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/swiotlb.h>
 #include <linux/types.h>
 #include <linux/init.h>
@@ -60,6 +68,25 @@ static phys_addr_t octeon_gen1_dma_to_phys(struct device *dev, dma_addr_t daddr)
 	return daddr;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static dma_addr_t octeon_gen2_phys_to_dma(struct device *dev, phys_addr_t paddr)
+{
+	return octeon_hole_phys_to_dma(paddr);
+}
+
+static phys_addr_t octeon_gen2_dma_to_phys(struct device *dev, dma_addr_t daddr)
+{
+	return octeon_hole_dma_to_phys(daddr);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static dma_addr_t octeon_big_phys_to_dma(struct device *dev, phys_addr_t paddr)
 {
 	if (paddr >= 0x410000000ull && paddr < 0x420000000ull)
@@ -146,7 +173,15 @@ static void octeon_dma_sync_sg_for_device(struct device *dev,
 }
 
 static void *octeon_dma_alloc_coherent(struct device *dev, size_t size,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dma_addr_t *dma_handle, gfp_t gfp)
+=======
+	dma_addr_t *dma_handle, gfp_t gfp, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_addr_t *dma_handle, gfp_t gfp, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	void *ret;
 
@@ -181,7 +216,15 @@ static void *octeon_dma_alloc_coherent(struct device *dev, size_t size,
 }
 
 static void octeon_dma_free_coherent(struct device *dev, size_t size,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void *vaddr, dma_addr_t dma_handle)
+=======
+	void *vaddr, dma_addr_t dma_handle, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *vaddr, dma_addr_t dma_handle, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	int order = get_order(size);
 
@@ -229,8 +272,18 @@ EXPORT_SYMBOL(dma_to_phys);
 
 static struct octeon_dma_map_ops octeon_linear_dma_map_ops = {
 	.dma_map_ops = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.alloc_coherent = octeon_dma_alloc_coherent,
 		.free_coherent = octeon_dma_free_coherent,
+=======
+		.alloc = octeon_dma_alloc_coherent,
+		.free = octeon_dma_free_coherent,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.alloc = octeon_dma_alloc_coherent,
+		.free = octeon_dma_free_coherent,
+>>>>>>> refs/remotes/origin/master
 		.map_page = octeon_dma_map_page,
 		.unmap_page = swiotlb_unmap_page,
 		.map_sg = octeon_dma_map_sg,
@@ -261,11 +314,25 @@ void __init plat_swiotlb_setup(void)
 
 	for (i = 0 ; i < boot_mem_map.nr_map; i++) {
 		struct boot_mem_map_entry *e = &boot_mem_map.map[i];
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (e->type != BOOT_MEM_RAM)
 			continue;
 
 		/* These addresses map low for PCI. */
 		if (e->addr > 0x410000000ull)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (e->type != BOOT_MEM_RAM && e->type != BOOT_MEM_INIT_RAM)
+			continue;
+
+		/* These addresses map low for PCI. */
+		if (e->addr > 0x410000000ull && !OCTEON_IS_MODEL(OCTEON_CN6XXX))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		addr_size += e->size;
@@ -295,13 +362,32 @@ void __init plat_swiotlb_setup(void)
 		swiotlbsize = 64 * (1<<20);
 	}
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_USB_OCTEON_OHCI
+	/* OCTEON II ohci is only 32-bit. */
+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX) && max_addr >= 0x100000000ul)
+		swiotlbsize = 64 * (1<<20);
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	swiotlb_nslabs = swiotlbsize >> IO_TLB_SHIFT;
 	swiotlb_nslabs = ALIGN(swiotlb_nslabs, IO_TLB_SEGSIZE);
 	swiotlbsize = swiotlb_nslabs << IO_TLB_SHIFT;
 
 	octeon_swiotlb = alloc_bootmem_low_pages(swiotlbsize);
 
+<<<<<<< HEAD
 	swiotlb_init_with_tbl(octeon_swiotlb, swiotlb_nslabs, 1);
+=======
+	if (swiotlb_init_with_tbl(octeon_swiotlb, swiotlb_nslabs, 1) == -ENOMEM)
+		panic("Cannot allocate SWIOTLB buffer");
+>>>>>>> refs/remotes/origin/master
 
 	mips_dma_map_ops = &octeon_linear_dma_map_ops.dma_map_ops;
 }
@@ -309,8 +395,18 @@ void __init plat_swiotlb_setup(void)
 #ifdef CONFIG_PCI
 static struct octeon_dma_map_ops _octeon_pci_dma_map_ops = {
 	.dma_map_ops = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.alloc_coherent = octeon_dma_alloc_coherent,
 		.free_coherent = octeon_dma_free_coherent,
+=======
+		.alloc = octeon_dma_alloc_coherent,
+		.free = octeon_dma_free_coherent,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.alloc = octeon_dma_alloc_coherent,
+		.free = octeon_dma_free_coherent,
+>>>>>>> refs/remotes/origin/master
 		.map_page = octeon_dma_map_page,
 		.unmap_page = swiotlb_unmap_page,
 		.map_sg = octeon_dma_map_sg,
@@ -329,6 +425,19 @@ struct dma_map_ops *octeon_pci_dma_map_ops;
 void __init octeon_pci_dma_init(void)
 {
 	switch (octeon_dma_bar_type) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case OCTEON_DMA_BAR_TYPE_PCIE2:
+		_octeon_pci_dma_map_ops.phys_to_dma = octeon_gen2_phys_to_dma;
+		_octeon_pci_dma_map_ops.dma_to_phys = octeon_gen2_dma_to_phys;
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case OCTEON_DMA_BAR_TYPE_PCIE:
 		_octeon_pci_dma_map_ops.phys_to_dma = octeon_gen1_phys_to_dma;
 		_octeon_pci_dma_map_ops.dma_to_phys = octeon_gen1_dma_to_phys;

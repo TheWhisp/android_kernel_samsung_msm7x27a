@@ -189,7 +189,11 @@ int nilfs_transaction_begin(struct super_block *sb,
 	if (ret > 0)
 		return 0;
 
+<<<<<<< HEAD
 	vfs_check_frozen(sb, SB_FREEZE_WRITE);
+=======
+	sb_start_intwrite(sb);
+>>>>>>> refs/remotes/origin/master
 
 	nilfs = sb->s_fs_info;
 	down_read(&nilfs->ns_segctor_sem);
@@ -205,6 +209,10 @@ int nilfs_transaction_begin(struct super_block *sb,
 	current->journal_info = ti->ti_save;
 	if (ti->ti_flags & NILFS_TI_DYNAMIC_ALLOC)
 		kmem_cache_free(nilfs_transaction_cachep, ti);
+<<<<<<< HEAD
+=======
+	sb_end_intwrite(sb);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -246,6 +254,10 @@ int nilfs_transaction_commit(struct super_block *sb)
 		err = nilfs_construct_segment(sb);
 	if (ti->ti_flags & NILFS_TI_DYNAMIC_ALLOC)
 		kmem_cache_free(nilfs_transaction_cachep, ti);
+<<<<<<< HEAD
+=======
+	sb_end_intwrite(sb);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -264,6 +276,10 @@ void nilfs_transaction_abort(struct super_block *sb)
 	current->journal_info = ti->ti_save;
 	if (ti->ti_flags & NILFS_TI_DYNAMIC_ALLOC)
 		kmem_cache_free(nilfs_transaction_cachep, ti);
+<<<<<<< HEAD
+=======
+	sb_end_intwrite(sb);
+>>>>>>> refs/remotes/origin/master
 }
 
 void nilfs_relax_pressure_in_lock(struct super_block *sb)
@@ -662,7 +678,11 @@ static size_t nilfs_lookup_dirty_data_buffers(struct inode *inode,
 
 		bh = head = page_buffers(page);
 		do {
+<<<<<<< HEAD
 			if (!buffer_dirty(bh))
+=======
+			if (!buffer_dirty(bh) || buffer_async_write(bh))
+>>>>>>> refs/remotes/origin/master
 				continue;
 			get_bh(bh);
 			list_add_tail(&bh->b_assoc_buffers, listp);
@@ -696,7 +716,12 @@ static void nilfs_lookup_dirty_node_buffers(struct inode *inode,
 		for (i = 0; i < pagevec_count(&pvec); i++) {
 			bh = head = page_buffers(pvec.pages[i]);
 			do {
+<<<<<<< HEAD
 				if (buffer_dirty(bh)) {
+=======
+				if (buffer_dirty(bh) &&
+						!buffer_async_write(bh)) {
+>>>>>>> refs/remotes/origin/master
 					get_bh(bh);
 					list_add_tail(&bh->b_assoc_buffers,
 						      listp);
@@ -832,9 +857,15 @@ static int nilfs_segctor_fill_in_checkpoint(struct nilfs_sc_info *sci)
 	raw_cp->cp_snapshot_list.ssl_next = 0;
 	raw_cp->cp_snapshot_list.ssl_prev = 0;
 	raw_cp->cp_inodes_count =
+<<<<<<< HEAD
 		cpu_to_le64(atomic_read(&sci->sc_root->inodes_count));
 	raw_cp->cp_blocks_count =
 		cpu_to_le64(atomic_read(&sci->sc_root->blocks_count));
+=======
+		cpu_to_le64(atomic64_read(&sci->sc_root->inodes_count));
+	raw_cp->cp_blocks_count =
+		cpu_to_le64(atomic64_read(&sci->sc_root->blocks_count));
+>>>>>>> refs/remotes/origin/master
 	raw_cp->cp_nblk_inc =
 		cpu_to_le64(sci->sc_nblk_inc + sci->sc_nblk_this_inc);
 	raw_cp->cp_create = cpu_to_le64(sci->sc_seg_ctime);
@@ -1436,17 +1467,30 @@ static int nilfs_segctor_collect(struct nilfs_sc_info *sci,
 
 		nilfs_clear_logs(&sci->sc_segbufs);
 
+<<<<<<< HEAD
 		err = nilfs_segctor_extend_segments(sci, nilfs, nadd);
 		if (unlikely(err))
 			return err;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (sci->sc_stage.flags & NILFS_CF_SUFREED) {
 			err = nilfs_sufile_cancel_freev(nilfs->ns_sufile,
 							sci->sc_freesegs,
 							sci->sc_nfreesegs,
 							NULL);
 			WARN_ON(err); /* do not happen */
+<<<<<<< HEAD
 		}
+=======
+			sci->sc_stage.flags &= ~NILFS_CF_SUFREED;
+		}
+
+		err = nilfs_segctor_extend_segments(sci, nilfs, nadd);
+		if (unlikely(err))
+			return err;
+
+>>>>>>> refs/remotes/origin/master
 		nadd = min_t(int, nadd << 1, SC_MAX_SEGDELTA);
 		sci->sc_stage = prev_stage;
 	}
@@ -1576,6 +1620,10 @@ static void nilfs_segctor_prepare_write(struct nilfs_sc_info *sci)
 
 		list_for_each_entry(bh, &segbuf->sb_segsum_buffers,
 				    b_assoc_buffers) {
+<<<<<<< HEAD
+=======
+			set_buffer_async_write(bh);
+>>>>>>> refs/remotes/origin/master
 			if (bh->b_page != bd_page) {
 				if (bd_page) {
 					lock_page(bd_page);
@@ -1589,6 +1637,10 @@ static void nilfs_segctor_prepare_write(struct nilfs_sc_info *sci)
 
 		list_for_each_entry(bh, &segbuf->sb_payload_buffers,
 				    b_assoc_buffers) {
+<<<<<<< HEAD
+=======
+			set_buffer_async_write(bh);
+>>>>>>> refs/remotes/origin/master
 			if (bh == segbuf->sb_super_root) {
 				if (bh->b_page != bd_page) {
 					lock_page(bd_page);
@@ -1674,6 +1726,10 @@ static void nilfs_abort_logs(struct list_head *logs, int err)
 	list_for_each_entry(segbuf, logs, sb_list) {
 		list_for_each_entry(bh, &segbuf->sb_segsum_buffers,
 				    b_assoc_buffers) {
+<<<<<<< HEAD
+=======
+			clear_buffer_async_write(bh);
+>>>>>>> refs/remotes/origin/master
 			if (bh->b_page != bd_page) {
 				if (bd_page)
 					end_page_writeback(bd_page);
@@ -1683,6 +1739,10 @@ static void nilfs_abort_logs(struct list_head *logs, int err)
 
 		list_for_each_entry(bh, &segbuf->sb_payload_buffers,
 				    b_assoc_buffers) {
+<<<<<<< HEAD
+=======
+			clear_buffer_async_write(bh);
+>>>>>>> refs/remotes/origin/master
 			if (bh == segbuf->sb_super_root) {
 				if (bh->b_page != bd_page) {
 					end_page_writeback(bd_page);
@@ -1752,6 +1812,10 @@ static void nilfs_segctor_complete_write(struct nilfs_sc_info *sci)
 				    b_assoc_buffers) {
 			set_buffer_uptodate(bh);
 			clear_buffer_dirty(bh);
+<<<<<<< HEAD
+=======
+			clear_buffer_async_write(bh);
+>>>>>>> refs/remotes/origin/master
 			if (bh->b_page != bd_page) {
 				if (bd_page)
 					end_page_writeback(bd_page);
@@ -1773,6 +1837,10 @@ static void nilfs_segctor_complete_write(struct nilfs_sc_info *sci)
 				    b_assoc_buffers) {
 			set_buffer_uptodate(bh);
 			clear_buffer_dirty(bh);
+<<<<<<< HEAD
+=======
+			clear_buffer_async_write(bh);
+>>>>>>> refs/remotes/origin/master
 			clear_buffer_delay(bh);
 			clear_buffer_nilfs_volatile(bh);
 			clear_buffer_nilfs_redirected(bh);
@@ -2472,7 +2540,15 @@ static int nilfs_segctor_thread(void *arg)
 
 	if (freezing(current)) {
 		spin_unlock(&sci->sc_state_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		refrigerator();
+=======
+		try_to_freeze();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		try_to_freeze();
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&sci->sc_state_lock);
 	} else {
 		DEFINE_WAIT(wait);

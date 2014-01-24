@@ -23,6 +23,14 @@
  * information.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/plist.h>
 #include <linux/spinlock.h>
 
@@ -174,7 +182,11 @@ static int  __init plist_test(void)
 	int nr_expect = 0, i, loop;
 	unsigned int r = local_clock();
 
+<<<<<<< HEAD
 	printk(KERN_INFO "start plist test\n");
+=======
+	pr_debug("start plist test\n");
+>>>>>>> refs/remotes/origin/master
 	plist_head_init(&test_head);
 	for (i = 0; i < ARRAY_SIZE(test_node); i++)
 		plist_node_init(test_node + i, 0);
@@ -202,7 +214,11 @@ static int  __init plist_test(void)
 		plist_test_check(nr_expect);
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO "end plist test\n");
+=======
+	pr_debug("end plist test\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

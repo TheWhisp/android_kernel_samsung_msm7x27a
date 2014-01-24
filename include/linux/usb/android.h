@@ -19,6 +19,18 @@
 
 struct android_usb_platform_data {
 	int (*update_pid_and_serial_num)(uint32_t, const char *);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u32 swfi_latency;
+	u8 usb_core_id;
+	bool cdrom;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 swfi_latency;
+	u8 usb_core_id;
+	bool cdrom;
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #endif	/* __LINUX_USB_ANDROID_H */

@@ -10,7 +10,15 @@
 #include <linux/file.h>
 #include <linux/fs.h>
 #include <linux/security.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/uaccess.h>
 #include <linux/writeback.h>
 #include <linux/buffer_head.h>
@@ -37,12 +45,24 @@ static long vfs_ioctl(struct file *filp, unsigned int cmd,
 {
 	int error = -ENOTTY;
 
+<<<<<<< HEAD
 	if (!filp->f_op || !filp->f_op->unlocked_ioctl)
+=======
+	if (!filp->f_op->unlocked_ioctl)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	error = filp->f_op->unlocked_ioctl(filp, cmd, arg);
 	if (error == -ENOIOCTLCMD)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = -EINVAL;
+=======
+		error = -ENOTTY;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = -ENOTTY;
+>>>>>>> refs/remotes/origin/master
  out:
 	return error;
 }
@@ -175,7 +195,11 @@ static int ioctl_fiemap(struct file *filp, unsigned long arg)
 	struct fiemap fiemap;
 	struct fiemap __user *ufiemap = (struct fiemap __user *) arg;
 	struct fiemap_extent_info fieinfo = { 0, };
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	struct super_block *sb = inode->i_sb;
 	u64 len;
 	int error;
@@ -424,7 +448,11 @@ EXPORT_SYMBOL(generic_block_fiemap);
  */
 int ioctl_preallocate(struct file *filp, void __user *argp)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	struct space_resv sr;
 
 	if (copy_from_user(&sr, argp, sizeof(sr)))
@@ -449,7 +477,11 @@ int ioctl_preallocate(struct file *filp, void __user *argp)
 static int file_ioctl(struct file *filp, unsigned int cmd,
 		unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	int __user *p = (int __user *)arg;
 
 	switch (cmd) {
@@ -501,7 +533,11 @@ static int ioctl_fioasync(unsigned int fd, struct file *filp,
 
 	/* Did FASYNC state change ? */
 	if ((flag ^ filp->f_flags) & FASYNC) {
+<<<<<<< HEAD
 		if (filp->f_op && filp->f_op->fasync)
+=======
+		if (filp->f_op->fasync)
+>>>>>>> refs/remotes/origin/master
 			/* fasync() adjusts filp->f_flags */
 			error = filp->f_op->fasync(fd, filp, on);
 		else
@@ -512,7 +548,11 @@ static int ioctl_fioasync(unsigned int fd, struct file *filp,
 
 static int ioctl_fsfreeze(struct file *filp)
 {
+<<<<<<< HEAD
 	struct super_block *sb = filp->f_path.dentry->d_inode->i_sb;
+=======
+	struct super_block *sb = file_inode(filp)->i_sb;
+>>>>>>> refs/remotes/origin/master
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
@@ -527,7 +567,11 @@ static int ioctl_fsfreeze(struct file *filp)
 
 static int ioctl_fsthaw(struct file *filp)
 {
+<<<<<<< HEAD
 	struct super_block *sb = filp->f_path.dentry->d_inode->i_sb;
+=======
+	struct super_block *sb = file_inode(filp)->i_sb;
+>>>>>>> refs/remotes/origin/master
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
@@ -548,7 +592,11 @@ int do_vfs_ioctl(struct file *filp, unsigned int fd, unsigned int cmd,
 {
 	int error = 0;
 	int __user *argp = (int __user *)arg;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case FIOCLEX:
@@ -603,6 +651,7 @@ int do_vfs_ioctl(struct file *filp, unsigned int fd, unsigned int cmd,
 
 SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd, unsigned long, arg)
 {
+<<<<<<< HEAD
 	struct file *filp;
 	int error = -EBADF;
 	int fput_needed;
@@ -619,5 +668,16 @@ SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd, unsigned long, arg)
  out_fput:
 	fput_light(filp, fput_needed);
  out:
+=======
+	int error;
+	struct fd f = fdget(fd);
+
+	if (!f.file)
+		return -EBADF;
+	error = security_file_ioctl(f.file, cmd, arg);
+	if (!error)
+		error = do_vfs_ioctl(f.file, fd, cmd, arg);
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }

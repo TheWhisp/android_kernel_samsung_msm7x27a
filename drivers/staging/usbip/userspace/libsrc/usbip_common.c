@@ -2,12 +2,30 @@
  * Copyright (C) 2005-2007 Takahiro Hirofuchi
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "usbip.h"
 #include "names.h"
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include "usbip_common.h"
+#include "names.h"
+
+#undef  PROGNAME
+#define PROGNAME "libusbip"
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 int usbip_use_syslog = 0;
 int usbip_use_stderr = 0;
 int usbip_use_debug  = 0;
+=======
+int usbip_use_syslog;
+int usbip_use_stderr;
+int usbip_use_debug;
+>>>>>>> refs/remotes/origin/master
 
 struct speed_string {
 	int num;
@@ -41,7 +59,11 @@ static struct portst_string portst_strings[] = {
 
 const char *usbip_status_string(int32_t status)
 {
+<<<<<<< HEAD
 	for (int i=0; portst_strings[i].desc != NULL; i++)
+=======
+	for (int i = 0; portst_strings[i].desc != NULL; i++)
+>>>>>>> refs/remotes/origin/master
 		if (portst_strings[i].num == status)
 			return portst_strings[i].desc;
 
@@ -50,7 +72,11 @@ const char *usbip_status_string(int32_t status)
 
 const char *usbip_speed_string(int num)
 {
+<<<<<<< HEAD
 	for (int i=0; speed_strings[i].speed != NULL; i++)
+=======
+	for (int i = 0; speed_strings[i].speed != NULL; i++)
+>>>>>>> refs/remotes/origin/master
 		if (speed_strings[i].num == num)
 			return speed_strings[i].desc;
 
@@ -64,7 +90,15 @@ const char *usbip_speed_string(int num)
 #define DBG_UINF_INTEGER(name)\
 	dbg("%-20s = %x", to_string(name), (int) uinf->name)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void dump_usb_interface(struct usb_interface *uinf)
+=======
+void dump_usb_interface(struct usbip_usb_interface *uinf)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void dump_usb_interface(struct usbip_usb_interface *uinf)
+>>>>>>> refs/remotes/origin/master
 {
 	char buff[100];
 	usbip_names_get_class(buff, sizeof(buff),
@@ -74,7 +108,15 @@ void dump_usb_interface(struct usb_interface *uinf)
 	dbg("%-20s = %s", "Interface(C/SC/P)", buff);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void dump_usb_device(struct usb_device *udev)
+=======
+void dump_usb_device(struct usbip_usb_device *udev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void dump_usb_device(struct usbip_usb_device *udev)
+>>>>>>> refs/remotes/origin/master
 {
 	char buff[100];
 
@@ -106,7 +148,12 @@ void dump_usb_device(struct usb_device *udev)
 }
 
 
+<<<<<<< HEAD
 int read_attr_value(struct sysfs_device *dev, const char *name, const char *format)
+=======
+int read_attr_value(struct sysfs_device *dev, const char *name,
+		    const char *format)
+>>>>>>> refs/remotes/origin/master
 {
 	char attrpath[SYSFS_PATH_MAX];
 	struct sysfs_attribute *attr;
@@ -117,19 +164,43 @@ int read_attr_value(struct sysfs_device *dev, const char *name, const char *form
 
 	attr = sysfs_open_attribute(attrpath);
 	if (!attr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err("open attr %s", attrpath);
+=======
+		dbg("sysfs_open_attribute failed: %s", attrpath);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg("sysfs_open_attribute failed: %s", attrpath);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	ret = sysfs_read_attribute(attr);
 	if (ret < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err("read attr");
+=======
+		dbg("sysfs_read_attribute failed");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg("sysfs_read_attribute failed");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
 	ret = sscanf(attr->value, format, &num);
 	if (ret < 1) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err("sscanf");
+=======
+		dbg("sscanf failed");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg("sscanf failed");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -151,25 +222,55 @@ int read_attr_speed(struct sysfs_device *dev)
 
 	attr = sysfs_open_attribute(attrpath);
 	if (!attr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err("open attr");
+=======
+		dbg("sysfs_open_attribute failed: %s", attrpath);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg("sysfs_open_attribute failed: %s", attrpath);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	ret = sysfs_read_attribute(attr);
 	if (ret < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err("read attr");
+=======
+		dbg("sysfs_read_attribute failed");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto err;
 	}
 
 	ret = sscanf(attr->value, "%s\n", speed);
 	if (ret < 1) {
+<<<<<<< HEAD
 		err("sscanf");
+=======
+		dbg("sscanf failed");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg("sysfs_read_attribute failed");
+		goto err;
+	}
+
+	ret = sscanf(attr->value, "%99s\n", speed);
+	if (ret < 1) {
+		dbg("sscanf failed");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 err:
 	sysfs_close_attribute(attr);
 
+<<<<<<< HEAD
 	for (int i=0; speed_strings[i].speed != NULL; i++) {
+=======
+	for (int i = 0; speed_strings[i].speed != NULL; i++) {
+>>>>>>> refs/remotes/origin/master
 		if (!strcmp(speed, speed_strings[i].speed))
 			return speed_strings[i].num;
 	}
@@ -177,11 +278,26 @@ err:
 	return USB_SPEED_UNKNOWN;
 }
 
+<<<<<<< HEAD
 #define READ_ATTR(object, type, dev, name, format)\
 	do { (object)->name = (type) read_attr_value(dev, to_string(name), format); } while (0)
 
 
+<<<<<<< HEAD
 int read_usb_device(struct sysfs_device *sdev, struct usb_device *udev)
+=======
+int read_usb_device(struct sysfs_device *sdev, struct usbip_usb_device *udev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define READ_ATTR(object, type, dev, name, format)			      \
+	do {								      \
+		(object)->name = (type) read_attr_value(dev, to_string(name), \
+							format);	      \
+	} while (0)
+
+
+int read_usb_device(struct sysfs_device *sdev, struct usbip_usb_device *udev)
+>>>>>>> refs/remotes/origin/master
 {
 	uint32_t busnum, devnum;
 
@@ -209,7 +325,17 @@ int read_usb_device(struct sysfs_device *sdev, struct usb_device *udev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int read_usb_interface(struct usb_device *udev, int i, struct usb_interface *uinf)
+=======
+int read_usb_interface(struct usbip_usb_device *udev, int i,
+		       struct usbip_usb_interface *uinf)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int read_usb_interface(struct usbip_usb_device *udev, int i,
+		       struct usbip_usb_interface *uinf)
+>>>>>>> refs/remotes/origin/master
 {
 	char busid[SYSFS_BUS_ID_SIZE];
 	struct sysfs_device *sif;
@@ -218,7 +344,15 @@ int read_usb_interface(struct usb_device *udev, int i, struct usb_interface *uin
 
 	sif = sysfs_open_device("usb", busid);
 	if (!sif) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err("open sif of %s", busid);
+=======
+		dbg("sysfs_open_device(\"usb\", \"%s\") failed", busid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg("sysfs_open_device(\"usb\", \"%s\") failed", busid);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -241,7 +375,12 @@ void usbip_names_free()
 	names_free();
 }
 
+<<<<<<< HEAD
 void usbip_names_get_product(char *buff, size_t size, uint16_t vendor, uint16_t product)
+=======
+void usbip_names_get_product(char *buff, size_t size, uint16_t vendor,
+			     uint16_t product)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *prod, *vend;
 
@@ -257,7 +396,12 @@ void usbip_names_get_product(char *buff, size_t size, uint16_t vendor, uint16_t 
 	snprintf(buff, size, "%s : %s (%04x:%04x)", vend, prod, vendor, product);
 }
 
+<<<<<<< HEAD
 void usbip_names_get_class(char *buff, size_t size, uint8_t class, uint8_t subclass, uint8_t protocol)
+=======
+void usbip_names_get_class(char *buff, size_t size, uint8_t class,
+			   uint8_t subclass, uint8_t protocol)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *c, *s, *p;
 

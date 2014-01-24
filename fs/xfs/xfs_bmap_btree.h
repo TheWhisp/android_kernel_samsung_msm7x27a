@@ -18,8 +18,11 @@
 #ifndef __XFS_BMAP_BTREE_H__
 #define __XFS_BMAP_BTREE_H__
 
+<<<<<<< HEAD
 #define XFS_BMAP_MAGIC	0x424d4150	/* 'BMAP' */
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct xfs_btree_cur;
 struct xfs_btree_block;
 struct xfs_mount;
@@ -27,6 +30,7 @@ struct xfs_inode;
 struct xfs_trans;
 
 /*
+<<<<<<< HEAD
  * Bmap root header, on-disk form only.
  */
 typedef struct xfs_bmdr_block {
@@ -106,6 +110,8 @@ typedef enum {
 } xfs_exntst_t;
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Extent state and extent format macros.
  */
 #define XFS_EXTFMT_INODE(x)	\
@@ -114,6 +120,7 @@ typedef enum {
 #define ISUNWRITTEN(x)	((x)->br_state == XFS_EXT_UNWRITTEN)
 
 /*
+<<<<<<< HEAD
  * Incore version of above.
  */
 typedef struct xfs_bmbt_irec
@@ -140,6 +147,13 @@ typedef __be64 xfs_bmbt_ptr_t, xfs_bmdr_ptr_t;
  * (not quite yet, but soon)
  */
 #define XFS_BMBT_BLOCK_LEN(mp)	XFS_BTREE_LBLOCK_LEN
+=======
+ * Btree block header size depends on a superblock flag.
+ */
+#define XFS_BMBT_BLOCK_LEN(mp) \
+	(xfs_sb_version_hascrc(&((mp)->m_sb)) ? \
+		XFS_BTREE_LBLOCK_CRC_LEN : XFS_BTREE_LBLOCK_LEN)
+>>>>>>> refs/remotes/origin/master
 
 #define XFS_BMBT_REC_ADDR(mp, block, index) \
 	((xfs_bmbt_rec_t *) \
@@ -186,6 +200,7 @@ typedef __be64 xfs_bmbt_ptr_t, xfs_bmdr_ptr_t;
 #define XFS_BMAP_BROOT_PTR_ADDR(mp, bb, i, sz) \
 	XFS_BMBT_PTR_ADDR(mp, bb, i, xfs_bmbt_maxrecs(mp, sz, 0))
 
+<<<<<<< HEAD
 #define XFS_BMAP_BROOT_SPACE_CALC(nrecs) \
 	(int)(XFS_BTREE_LBLOCK_LEN + \
 	       ((nrecs) * (sizeof(xfs_bmbt_key_t) + sizeof(xfs_bmbt_ptr_t))))
@@ -195,6 +210,19 @@ typedef __be64 xfs_bmbt_ptr_t, xfs_bmdr_ptr_t;
 #define XFS_BMDR_SPACE_CALC(nrecs) \
 	(int)(sizeof(xfs_bmdr_block_t) + \
 	       ((nrecs) * (sizeof(xfs_bmbt_key_t) + sizeof(xfs_bmbt_ptr_t))))
+=======
+#define XFS_BMAP_BROOT_SPACE_CALC(mp, nrecs) \
+	(int)(XFS_BMBT_BLOCK_LEN(mp) + \
+	       ((nrecs) * (sizeof(xfs_bmbt_key_t) + sizeof(xfs_bmbt_ptr_t))))
+
+#define XFS_BMAP_BROOT_SPACE(mp, bb) \
+	(XFS_BMAP_BROOT_SPACE_CALC(mp, be16_to_cpu((bb)->bb_numrecs)))
+#define XFS_BMDR_SPACE_CALC(nrecs) \
+	(int)(sizeof(xfs_bmdr_block_t) + \
+	       ((nrecs) * (sizeof(xfs_bmbt_key_t) + sizeof(xfs_bmbt_ptr_t))))
+#define XFS_BMAP_BMDR_SPACE(bb) \
+	(XFS_BMDR_SPACE_CALC(be16_to_cpu((bb)->bb_numrecs)))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Maximum number of bmap btree levels.
@@ -204,7 +232,11 @@ typedef __be64 xfs_bmbt_ptr_t, xfs_bmdr_ptr_t;
 /*
  * Prototypes for xfs_bmap.c to call.
  */
+<<<<<<< HEAD
 extern void xfs_bmdr_to_bmbt(struct xfs_mount *, xfs_bmdr_block_t *, int,
+=======
+extern void xfs_bmdr_to_bmbt(struct xfs_inode *, xfs_bmdr_block_t *, int,
+>>>>>>> refs/remotes/origin/master
 			struct xfs_btree_block *, int);
 extern void xfs_bmbt_get_all(xfs_bmbt_rec_host_t *r, xfs_bmbt_irec_t *s);
 extern xfs_filblks_t xfs_bmbt_get_blockcount(xfs_bmbt_rec_host_t *r);
@@ -233,8 +265,18 @@ extern int xfs_bmbt_get_maxrecs(struct xfs_btree_cur *, int level);
 extern int xfs_bmdr_maxrecs(struct xfs_mount *, int blocklen, int leaf);
 extern int xfs_bmbt_maxrecs(struct xfs_mount *, int blocklen, int leaf);
 
+<<<<<<< HEAD
 extern struct xfs_btree_cur *xfs_bmbt_init_cursor(struct xfs_mount *,
 		struct xfs_trans *, struct xfs_inode *, int);
 
 
+=======
+extern int xfs_bmbt_change_owner(struct xfs_trans *tp, struct xfs_inode *ip,
+				 int whichfork, xfs_ino_t new_owner,
+				 struct list_head *buffer_list);
+
+extern struct xfs_btree_cur *xfs_bmbt_init_cursor(struct xfs_mount *,
+		struct xfs_trans *, struct xfs_inode *, int);
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* __XFS_BMAP_BTREE_H__ */

@@ -64,10 +64,15 @@ static inline void ehci_qtd_free (struct ehci_hcd *ehci, struct ehci_qtd *qtd)
 }
 
 
+<<<<<<< HEAD
 static void qh_destroy(struct ehci_qh *qh)
 {
 	struct ehci_hcd *ehci = qh->ehci;
 
+=======
+static void qh_destroy(struct ehci_hcd *ehci, struct ehci_qh *qh)
+{
+>>>>>>> refs/remotes/origin/master
 	/* clean qtds first, and know this is not linked */
 	if (!list_empty (&qh->qtd_list) || qh->qh_next.ptr) {
 		ehci_dbg (ehci, "unused qh not empty!\n");
@@ -92,11 +97,18 @@ static struct ehci_qh *ehci_qh_alloc (struct ehci_hcd *ehci, gfp_t flags)
 	if (!qh->hw)
 		goto fail;
 	memset(qh->hw, 0, sizeof *qh->hw);
+<<<<<<< HEAD
 	qh->refcount = 1;
 	qh->ehci = ehci;
 	qh->qh_dma = dma;
 	// INIT_LIST_HEAD (&qh->qh_list);
 	INIT_LIST_HEAD (&qh->qtd_list);
+=======
+	qh->qh_dma = dma;
+	// INIT_LIST_HEAD (&qh->qh_list);
+	INIT_LIST_HEAD (&qh->qtd_list);
+	INIT_LIST_HEAD(&qh->unlink_node);
+>>>>>>> refs/remotes/origin/master
 
 	/* dummy td enables safe urb queuing */
 	qh->dummy = ehci_qtd_alloc (ehci, flags);
@@ -113,6 +125,7 @@ fail:
 	return NULL;
 }
 
+<<<<<<< HEAD
 /* to share a qh (cpu threads, or hc) */
 static inline struct ehci_qh *qh_get (struct ehci_qh *qh)
 {
@@ -127,6 +140,8 @@ static inline void qh_put (struct ehci_qh *qh)
 		qh_destroy(qh);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 /* The queue heads and transfer descriptors are managed from pools tied
@@ -136,6 +151,7 @@ static inline void qh_put (struct ehci_qh *qh)
 
 static void ehci_mem_cleanup (struct ehci_hcd *ehci)
 {
+<<<<<<< HEAD
 	free_cached_lists(ehci);
 	if (ehci->async)
 		qh_put (ehci->async);
@@ -143,6 +159,14 @@ static void ehci_mem_cleanup (struct ehci_hcd *ehci)
 
 	if (ehci->dummy)
 		qh_put(ehci->dummy);
+=======
+	if (ehci->async)
+		qh_destroy(ehci, ehci->async);
+	ehci->async = NULL;
+
+	if (ehci->dummy)
+		qh_destroy(ehci, ehci->dummy);
+>>>>>>> refs/remotes/origin/master
 	ehci->dummy = NULL;
 
 	/* DMA consistent memory and pools */
@@ -242,11 +266,19 @@ static int ehci_mem_init (struct ehci_hcd *ehci, gfp_t flags)
 		hw->hw_next = EHCI_LIST_END(ehci);
 		hw->hw_qtd_next = EHCI_LIST_END(ehci);
 		hw->hw_alt_next = EHCI_LIST_END(ehci);
+<<<<<<< HEAD
 		hw->hw_token &= ~QTD_STS_ACTIVE;
 		ehci->dummy->hw = hw;
 
 		for (i = 0; i < ehci->periodic_size; i++)
 			ehci->periodic[i] = ehci->dummy->qh_dma;
+=======
+		ehci->dummy->hw = hw;
+
+		for (i = 0; i < ehci->periodic_size; i++)
+			ehci->periodic[i] = cpu_to_hc32(ehci,
+					ehci->dummy->qh_dma);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		for (i = 0; i < ehci->periodic_size; i++)
 			ehci->periodic[i] = EHCI_LIST_END(ehci);

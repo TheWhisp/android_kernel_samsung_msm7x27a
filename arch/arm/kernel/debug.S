@@ -10,6 +10,14 @@
  *  32-bit debugging code
  */
 #include <linux/linkage.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/assembler.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/assembler.h>
+>>>>>>> refs/remotes/origin/master
 
 		.text
 
@@ -19,10 +27,15 @@
  * references to these in a production kernel!
  */
 
+<<<<<<< HEAD
 #if defined(CONFIG_DEBUG_ICEDCC)
 		@@ debug using ARM EmbeddedICE DCC channel
 
+<<<<<<< HEAD
 		.macro	addruart, rp, rv
+=======
+		.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 		.endm
 
 #if defined(CONFIG_CPU_V6) || defined(CONFIG_CPU_V6K) || defined(CONFIG_CPU_V7)
@@ -100,13 +113,30 @@
 
 #endif	/* CONFIG_CPU_V6 */
 
+<<<<<<< HEAD
 #else
+=======
+#elif !defined(CONFIG_DEBUG_SEMIHOSTING)
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/debug-macro.S>
 #endif	/* CONFIG_DEBUG_ICEDCC */
 
 #ifdef CONFIG_MMU
 		.macro	addruart_current, rx, tmp1, tmp2
+<<<<<<< HEAD
 		addruart	\tmp1, \tmp2
+=======
+		addruart	\tmp1, \tmp2, \rx
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if !defined(CONFIG_DEBUG_SEMIHOSTING)
+#include CONFIG_DEBUG_LL_INCLUDE
+#endif
+
+#ifdef CONFIG_MMU
+		.macro	addruart_current, rx, tmp1, tmp2
+		addruart	\tmp1, \tmp2, \rx
+>>>>>>> refs/remotes/origin/master
 		mrc		p15, 0, \rx, c1, c0
 		tst		\rx, #1
 		moveq		\rx, \tmp1
@@ -151,8 +181,23 @@ printhex:	adr	r2, hexbuf
 		b	printascii
 ENDPROC(printhex2)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.ltorg
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+hexbuf:		.space 16
+
+		.ltorg
+
+#ifndef CONFIG_DEBUG_SEMIHOSTING
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(printascii)
 		addruart_current r3, r1, r2
 		b	2f
@@ -176,4 +221,50 @@ ENTRY(printch)
 		b	1b
 ENDPROC(printch)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 hexbuf:		.space 16
+=======
+=======
+#ifdef CONFIG_MMU
+ENTRY(debug_ll_addr)
+		addruart r2, r3, ip
+		str	r2, [r0]
+		str	r3, [r1]
+		mov	pc, lr
+ENDPROC(debug_ll_addr)
+#endif
+
+>>>>>>> refs/remotes/origin/master
+#else
+
+ENTRY(printascii)
+		mov	r1, r0
+		mov	r0, #0x04		@ SYS_WRITE0
+	ARM(	svc	#0x123456	)
+	THUMB(	svc	#0xab		)
+		mov	pc, lr
+ENDPROC(printascii)
+
+ENTRY(printch)
+		adr	r1, hexbuf
+		strb	r0, [r1]
+		mov	r0, #0x03		@ SYS_WRITEC
+	ARM(	svc	#0x123456	)
+	THUMB(	svc	#0xab		)
+		mov	pc, lr
+ENDPROC(printch)
+
+<<<<<<< HEAD
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(debug_ll_addr)
+		mov	r2, #0
+		str	r2, [r0]
+		str	r2, [r1]
+		mov	pc, lr
+ENDPROC(debug_ll_addr)
+
+#endif
+>>>>>>> refs/remotes/origin/master

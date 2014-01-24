@@ -24,7 +24,11 @@
 #include <linux/delay.h>
 #include <asm/atomic.h>
 
+<<<<<<< HEAD
 #include "../proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/debug_mm.h>
 
 static wait_queue_head_t dsp_wait;

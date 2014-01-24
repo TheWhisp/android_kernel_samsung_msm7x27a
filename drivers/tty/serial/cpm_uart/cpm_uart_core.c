@@ -31,6 +31,14 @@
 
 #include <linux/module.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/init.h>
 #include <linux/serial.h>
@@ -40,6 +48,11 @@
 #include <linux/bootmem.h>
 #include <linux/dma-mapping.h>
 #include <linux/fs_uart_pd.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/gpio.h>
 #include <linux/of_gpio.h>
@@ -70,7 +83,11 @@ static void cpm_uart_initbd(struct uart_cpm_port *pinfo);
 
 /**************************************************************/
 
+<<<<<<< HEAD
 #define HW_BUF_SPD_THRESHOLD    9600
+=======
+#define HW_BUF_SPD_THRESHOLD    2400
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Check, if transmit buffers are processed
@@ -244,7 +261,11 @@ static void cpm_uart_int_rx(struct uart_port *port)
 	int i;
 	unsigned char ch;
 	u8 *cp;
+<<<<<<< HEAD
 	struct tty_struct *tty = port->state->port.tty;
+=======
+	struct tty_port *tport = &port->state->port;
+>>>>>>> refs/remotes/origin/master
 	struct uart_cpm_port *pinfo = (struct uart_cpm_port *)port;
 	cbd_t __iomem *bdp;
 	u16 status;
@@ -275,7 +296,11 @@ static void cpm_uart_int_rx(struct uart_port *port)
 		/* If we have not enough room in tty flip buffer, then we try
 		 * later, which will be the next rx-interrupt or a timeout
 		 */
+<<<<<<< HEAD
 		if(tty_buffer_request_room(tty, i) < i) {
+=======
+		if (tty_buffer_request_room(tport, i) < i) {
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_WARNING "No room in flip buffer\n");
 			return;
 		}
@@ -301,7 +326,11 @@ static void cpm_uart_int_rx(struct uart_port *port)
 			}
 #endif
 		      error_return:
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, ch, flg);
+=======
+			tty_insert_flip_char(tport, ch, flg);
+>>>>>>> refs/remotes/origin/master
 
 		}		/* End while (i--) */
 
@@ -321,7 +350,11 @@ static void cpm_uart_int_rx(struct uart_port *port)
 	pinfo->rx_cur = bdp;
 
 	/* activate BH processing */
+<<<<<<< HEAD
 	tty_flip_buffer_push(tty);
+=======
+	tty_flip_buffer_push(tport);
+>>>>>>> refs/remotes/origin/master
 
 	return;
 
@@ -416,6 +449,10 @@ static int cpm_uart_startup(struct uart_port *port)
 			clrbits32(&pinfo->sccp->scc_gsmrl, SCC_GSMRL_ENR);
 			clrbits16(&pinfo->sccp->scc_sccm, UART_SCCM_RX);
 		}
+<<<<<<< HEAD
+=======
+		cpm_uart_initbd(pinfo);
+>>>>>>> refs/remotes/origin/master
 		cpm_line_cr_cmd(pinfo, CPM_CR_INIT_TRX);
 	}
 	/* Install interrupt handler. */
@@ -499,16 +536,39 @@ static void cpm_uart_set_termios(struct uart_port *port,
 	struct uart_cpm_port *pinfo = (struct uart_cpm_port *)port;
 	smc_t __iomem *smcp = pinfo->smcp;
 	scc_t __iomem *sccp = pinfo->sccp;
+<<<<<<< HEAD
+=======
+	int maxidl;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("CPM uart[%d]:set_termios\n", port->line);
 
 	baud = uart_get_baud_rate(port, termios, old, 0, port->uartclk / 16);
+<<<<<<< HEAD
 	if (baud <= HW_BUF_SPD_THRESHOLD ||
 	    (pinfo->port.state && pinfo->port.state->port.tty->low_latency))
+=======
+	if (baud < HW_BUF_SPD_THRESHOLD ||
+	    (pinfo->port.state && pinfo->port.state->port.low_latency))
+>>>>>>> refs/remotes/origin/master
 		pinfo->rx_fifosize = 1;
 	else
 		pinfo->rx_fifosize = RX_BUF_SIZE;
 
+<<<<<<< HEAD
+=======
+	/* MAXIDL is the timeout after which a receive buffer is closed
+	 * when not full if no more characters are received.
+	 * We calculate it from the baudrate so that the duration is
+	 * always the same at standard rates: about 4ms.
+	 */
+	maxidl = baud / 2400;
+	if (maxidl < 1)
+		maxidl = 1;
+	if (maxidl > 0x10)
+		maxidl = 0x10;
+
+>>>>>>> refs/remotes/origin/master
 	/* Character length programmed into the mode register is the
 	 * sum of: 1 start bit, number of data bits, 0 or 1 parity bit,
 	 * 1 or 2 stop bits, minus 1.
@@ -609,6 +669,10 @@ static void cpm_uart_set_termios(struct uart_port *port,
 		 * SMC/SCC receiver is disabled.
 		 */
 		out_be16(&pinfo->smcup->smc_mrblr, pinfo->rx_fifosize);
+<<<<<<< HEAD
+=======
+		out_be16(&pinfo->smcup->smc_maxidl, maxidl);
+>>>>>>> refs/remotes/origin/master
 
 		/* Set the mode register.  We want to keep a copy of the
 		 * enables, because we want to put them back if they were
@@ -621,6 +685,10 @@ static void cpm_uart_set_termios(struct uart_port *port,
 		    SMCMR_SM_UART | prev_mode);
 	} else {
 		out_be16(&pinfo->sccup->scc_genscc.scc_mrblr, pinfo->rx_fifosize);
+<<<<<<< HEAD
+=======
+		out_be16(&pinfo->sccup->scc_maxidl, maxidl);
+>>>>>>> refs/remotes/origin/master
 		out_be16(&sccp->scc_psmr, (sbits << 12) | scval);
 	}
 
@@ -797,7 +865,11 @@ static void cpm_uart_init_scc(struct uart_cpm_port *pinfo)
 	cpm_set_scc_fcr(sup);
 
 	out_be16(&sup->scc_genscc.scc_mrblr, pinfo->rx_fifosize);
+<<<<<<< HEAD
 	out_be16(&sup->scc_maxidl, pinfo->rx_fifosize);
+=======
+	out_be16(&sup->scc_maxidl, 0x10);
+>>>>>>> refs/remotes/origin/master
 	out_be16(&sup->scc_brkcr, 1);
 	out_be16(&sup->scc_parec, 0);
 	out_be16(&sup->scc_frmec, 0);
@@ -871,7 +943,11 @@ static void cpm_uart_init_smc(struct uart_cpm_port *pinfo)
 
 	/* Using idle character time requires some additional tuning.  */
 	out_be16(&up->smc_mrblr, pinfo->rx_fifosize);
+<<<<<<< HEAD
 	out_be16(&up->smc_maxidl, pinfo->rx_fifosize);
+=======
+	out_be16(&up->smc_maxidl, 0x10);
+>>>>>>> refs/remotes/origin/master
 	out_be16(&up->smc_brklen, 0);
 	out_be16(&up->smc_brkec, 0);
 	out_be16(&up->smc_brkcr, 1);
@@ -1191,14 +1267,47 @@ static int cpm_uart_init_port(struct device_node *np,
 	pinfo->port.fifosize = pinfo->tx_nrfifos * pinfo->tx_fifosize;
 	spin_lock_init(&pinfo->port.lock);
 
+<<<<<<< HEAD
 	pinfo->port.irq = of_irq_to_resource(np, 0, NULL);
+=======
+	pinfo->port.irq = irq_of_parse_and_map(np, 0);
+>>>>>>> refs/remotes/origin/master
 	if (pinfo->port.irq == NO_IRQ) {
 		ret = -EINVAL;
 		goto out_pram;
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i < NUM_GPIOS; i++)
 		pinfo->gpios[i] = of_get_gpio(np, i);
+=======
+	for (i = 0; i < NUM_GPIOS; i++) {
+		int gpio;
+
+		pinfo->gpios[i] = -1;
+
+		gpio = of_get_gpio(np, i);
+
+		if (gpio_is_valid(gpio)) {
+			ret = gpio_request(gpio, "cpm_uart");
+			if (ret) {
+				pr_err("can't request gpio #%d: %d\n", i, ret);
+				continue;
+			}
+			if (i == GPIO_RTS || i == GPIO_DTR)
+				ret = gpio_direction_output(gpio, 0);
+			else
+				ret = gpio_direction_input(gpio);
+			if (ret) {
+				pr_err("can't set direction for gpio #%d: %d\n",
+					i, ret);
+				gpio_free(gpio);
+				continue;
+			}
+			pinfo->gpios[i] = gpio;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PPC_EARLY_DEBUG_CPM
 	udbg_putc = NULL;
@@ -1357,7 +1466,11 @@ static struct uart_driver cpm_reg = {
 
 static int probe_index;
 
+<<<<<<< HEAD
 static int __devinit cpm_uart_probe(struct platform_device *ofdev)
+=======
+static int cpm_uart_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int index = probe_index++;
 	struct uart_cpm_port *pinfo = &cpm_uart_ports[index];
@@ -1368,7 +1481,11 @@ static int __devinit cpm_uart_probe(struct platform_device *ofdev)
 	if (index >= UART_NR)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, pinfo);
+=======
+	platform_set_drvdata(ofdev, pinfo);
+>>>>>>> refs/remotes/origin/master
 
 	/* initialize the device pointer for the port */
 	pinfo->port.dev = &ofdev->dev;
@@ -1380,9 +1497,15 @@ static int __devinit cpm_uart_probe(struct platform_device *ofdev)
 	return uart_add_one_port(&cpm_reg, &pinfo->port);
 }
 
+<<<<<<< HEAD
 static int __devexit cpm_uart_remove(struct platform_device *ofdev)
 {
 	struct uart_cpm_port *pinfo = dev_get_drvdata(&ofdev->dev);
+=======
+static int cpm_uart_remove(struct platform_device *ofdev)
+{
+	struct uart_cpm_port *pinfo = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 	return uart_remove_one_port(&cpm_reg, &pinfo->port);
 }
 

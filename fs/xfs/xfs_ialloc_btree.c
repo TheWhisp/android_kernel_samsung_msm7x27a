@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
@@ -31,10 +32,32 @@
 #include "xfs_dinode.h"
 #include "xfs_inode.h"
 #include "xfs_btree.h"
+<<<<<<< HEAD
 #include "xfs_btree_trace.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xfs_ialloc.h"
 #include "xfs_alloc.h"
 #include "xfs_error.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_bit.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_btree.h"
+#include "xfs_ialloc.h"
+#include "xfs_ialloc_btree.h"
+#include "xfs_alloc.h"
+#include "xfs_error.h"
+#include "xfs_trace.h"
+#include "xfs_cksum.h"
+#include "xfs_trans.h"
+>>>>>>> refs/remotes/origin/master
 
 
 STATIC int
@@ -183,7 +206,100 @@ xfs_inobt_key_diff(
 			  cur->bc_rec.i.ir_startino;
 }
 
+<<<<<<< HEAD
 #ifdef DEBUG
+=======
+static int
+xfs_inobt_verify(
+	struct xfs_buf		*bp)
+{
+	struct xfs_mount	*mp = bp->b_target->bt_mount;
+	struct xfs_btree_block	*block = XFS_BUF_TO_BLOCK(bp);
+	struct xfs_perag	*pag = bp->b_pag;
+	unsigned int		level;
+
+	/*
+	 * During growfs operations, we can't verify the exact owner as the
+	 * perag is not fully initialised and hence not attached to the buffer.
+	 *
+	 * Similarly, during log recovery we will have a perag structure
+	 * attached, but the agi information will not yet have been initialised
+	 * from the on disk AGI. We don't currently use any of this information,
+	 * but beware of the landmine (i.e. need to check pag->pagi_init) if we
+	 * ever do.
+	 */
+	switch (block->bb_magic) {
+	case cpu_to_be32(XFS_IBT_CRC_MAGIC):
+		if (!xfs_sb_version_hascrc(&mp->m_sb))
+			return false;
+		if (!uuid_equal(&block->bb_u.s.bb_uuid, &mp->m_sb.sb_uuid))
+			return false;
+		if (block->bb_u.s.bb_blkno != cpu_to_be64(bp->b_bn))
+			return false;
+		if (pag &&
+		    be32_to_cpu(block->bb_u.s.bb_owner) != pag->pag_agno)
+			return false;
+		/* fall through */
+	case cpu_to_be32(XFS_IBT_MAGIC):
+		break;
+	default:
+		return 0;
+	}
+
+	/* numrecs and level verification */
+	level = be16_to_cpu(block->bb_level);
+	if (level >= mp->m_in_maxlevels)
+		return false;
+	if (be16_to_cpu(block->bb_numrecs) > mp->m_inobt_mxr[level != 0])
+		return false;
+
+	/* sibling pointer verification */
+	if (!block->bb_u.s.bb_leftsib ||
+	    (be32_to_cpu(block->bb_u.s.bb_leftsib) >= mp->m_sb.sb_agblocks &&
+	     block->bb_u.s.bb_leftsib != cpu_to_be32(NULLAGBLOCK)))
+		return false;
+	if (!block->bb_u.s.bb_rightsib ||
+	    (be32_to_cpu(block->bb_u.s.bb_rightsib) >= mp->m_sb.sb_agblocks &&
+	     block->bb_u.s.bb_rightsib != cpu_to_be32(NULLAGBLOCK)))
+		return false;
+
+	return true;
+}
+
+static void
+xfs_inobt_read_verify(
+	struct xfs_buf	*bp)
+{
+	if (!(xfs_btree_sblock_verify_crc(bp) &&
+	      xfs_inobt_verify(bp))) {
+		trace_xfs_btree_corrupt(bp, _RET_IP_);
+		XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW,
+				     bp->b_target->bt_mount, bp->b_addr);
+		xfs_buf_ioerror(bp, EFSCORRUPTED);
+	}
+}
+
+static void
+xfs_inobt_write_verify(
+	struct xfs_buf	*bp)
+{
+	if (!xfs_inobt_verify(bp)) {
+		trace_xfs_btree_corrupt(bp, _RET_IP_);
+		XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW,
+				     bp->b_target->bt_mount, bp->b_addr);
+		xfs_buf_ioerror(bp, EFSCORRUPTED);
+	}
+	xfs_btree_sblock_calc_crc(bp);
+
+}
+
+const struct xfs_buf_ops xfs_inobt_buf_ops = {
+	.verify_read = xfs_inobt_read_verify,
+	.verify_write = xfs_inobt_write_verify,
+};
+
+#if defined(DEBUG) || defined(XFS_WARN)
+>>>>>>> refs/remotes/origin/master
 STATIC int
 xfs_inobt_keys_inorder(
 	struct xfs_btree_cur	*cur,
@@ -205,6 +321,8 @@ xfs_inobt_recs_inorder(
 }
 #endif	/* DEBUG */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef XFS_BTREE_TRACE
 ktrace_t	*xfs_inobt_trace_buf;
 
@@ -271,6 +389,10 @@ xfs_inobt_trace_record(
 }
 #endif /* XFS_BTREE_TRACE */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct xfs_btree_ops xfs_inobt_ops = {
 	.rec_len		= sizeof(xfs_inobt_rec_t),
 	.key_len		= sizeof(xfs_inobt_key_t),
@@ -286,11 +408,16 @@ static const struct xfs_btree_ops xfs_inobt_ops = {
 	.init_rec_from_cur	= xfs_inobt_init_rec_from_cur,
 	.init_ptr_from_cur	= xfs_inobt_init_ptr_from_cur,
 	.key_diff		= xfs_inobt_key_diff,
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef DEBUG
 	.keys_inorder		= xfs_inobt_keys_inorder,
 	.recs_inorder		= xfs_inobt_recs_inorder,
 #endif
+<<<<<<< HEAD
 
 #ifdef XFS_BTREE_TRACE
 	.trace_enter		= xfs_inobt_trace_enter,
@@ -298,6 +425,15 @@ static const struct xfs_btree_ops xfs_inobt_ops = {
 	.trace_key		= xfs_inobt_trace_key,
 	.trace_record		= xfs_inobt_trace_record,
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.buf_ops		= &xfs_inobt_buf_ops,
+#if defined(DEBUG) || defined(XFS_WARN)
+	.keys_inorder		= xfs_inobt_keys_inorder,
+	.recs_inorder		= xfs_inobt_recs_inorder,
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -322,6 +458,11 @@ xfs_inobt_init_cursor(
 	cur->bc_blocklog = mp->m_sb.sb_blocklog;
 
 	cur->bc_ops = &xfs_inobt_ops;
+<<<<<<< HEAD
+=======
+	if (xfs_sb_version_hascrc(&mp->m_sb))
+		cur->bc_flags |= XFS_BTREE_CRC_BLOCKS;
+>>>>>>> refs/remotes/origin/master
 
 	cur->bc_private.a.agbp = agbp;
 	cur->bc_private.a.agno = agno;

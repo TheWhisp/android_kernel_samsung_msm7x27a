@@ -34,17 +34,27 @@
 int hpux_execve(struct pt_regs *regs)
 {
 	int error;
+<<<<<<< HEAD
 	char *filename;
+=======
+	struct filename *filename;
+>>>>>>> refs/remotes/origin/master
 
 	filename = getname((const char __user *) regs->gr[26]);
 	error = PTR_ERR(filename);
 	if (IS_ERR(filename))
 		goto out;
 
+<<<<<<< HEAD
 	error = do_execve(filename,
 			  (const char __user *const __user *) regs->gr[25],
 			  (const char __user *const __user *) regs->gr[24],
 			  regs);
+=======
+	error = do_execve(filename->name,
+			  (const char __user *const __user *) regs->gr[25],
+			  (const char __user *const __user *) regs->gr[24]);
+>>>>>>> refs/remotes/origin/master
 
 	putname(filename);
 
@@ -61,6 +71,10 @@ struct hpux_dirent {
 };
 
 struct getdents_callback {
+<<<<<<< HEAD
+=======
+	struct dir_context ctx;
+>>>>>>> refs/remotes/origin/master
 	struct hpux_dirent __user *current_dir;
 	struct hpux_dirent __user *previous;
 	int count;
@@ -109,6 +123,7 @@ Efault:
 
 int hpux_getdents(unsigned int fd, struct hpux_dirent __user *dirent, unsigned int count)
 {
+<<<<<<< HEAD
 	struct file * file;
 	struct hpux_dirent __user * lastdirent;
 	struct getdents_callback buf;
@@ -124,18 +139,42 @@ int hpux_getdents(unsigned int fd, struct hpux_dirent __user *dirent, unsigned i
 	buf.error = 0;
 
 	error = vfs_readdir(file, filldir, &buf);
+=======
+	struct fd arg;
+	struct hpux_dirent __user * lastdirent;
+	struct getdents_callback buf = {
+		.ctx.actor = filldir,
+		.current_dir = dirent,
+		.count = count
+	};
+	int error;
+
+	arg = fdget(fd);
+	if (!arg.file)
+		return -EBADF;
+
+	error = iterate_dir(arg.file, &buf.ctx);
+>>>>>>> refs/remotes/origin/master
 	if (error >= 0)
 		error = buf.error;
 	lastdirent = buf.previous;
 	if (lastdirent) {
+<<<<<<< HEAD
 		if (put_user(file->f_pos, &lastdirent->d_off))
+=======
+		if (put_user(buf.ctx.pos, &lastdirent->d_off))
+>>>>>>> refs/remotes/origin/master
 			error = -EFAULT;
 		else
 			error = count - buf.count;
 	}
 
+<<<<<<< HEAD
 	fput(file);
 out:
+=======
+	fdput(arg);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -159,8 +198,13 @@ static int cp_hpux_stat(struct kstat *stat, struct hpux_stat64 __user *statbuf)
 	tmp.st_ino = stat->ino;
 	tmp.st_mode = stat->mode;
 	tmp.st_nlink = stat->nlink;
+<<<<<<< HEAD
 	tmp.st_uid = stat->uid;
 	tmp.st_gid = stat->gid;
+=======
+	tmp.st_uid = from_kuid_munged(current_user_ns(), stat->uid);
+	tmp.st_gid = from_kgid_munged(current_user_ns(), stat->gid);
+>>>>>>> refs/remotes/origin/master
 	tmp.st_rdev = new_encode_dev(stat->rdev);
 	tmp.st_size = stat->size;
 	tmp.st_atime = stat->atime.tv_sec;

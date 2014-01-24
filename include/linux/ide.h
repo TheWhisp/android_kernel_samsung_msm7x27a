@@ -14,7 +14,13 @@
 #include <linux/interrupt.h>
 #include <linux/bitops.h>
 #include <linux/bio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/completion.h>
 #include <linux/pm.h>
@@ -23,7 +29,13 @@
 #include <acpi/acpi.h>
 #endif
 #include <asm/byteorder.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 /* for request_sense */
@@ -43,6 +55,16 @@
 #define ERROR_RESET	3	/* Reset controller every 4th retry */
 #define ERROR_RECAL	1	/* Recalibrate every 2nd retry */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct device;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct device;
+
+>>>>>>> refs/remotes/origin/master
 /* Error codes returned in rq->errors to the higher part of the driver. */
 enum {
 	IDE_DRV_ERROR_GENERAL	= 101,
@@ -920,7 +942,15 @@ __IDE_PROC_DEVSET(_name, _min, _max, NULL, NULL)
 
 typedef struct {
 	const char	*name;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t		mode;
+=======
+	umode_t		mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t		mode;
+>>>>>>> refs/remotes/origin/master
 	const struct file_operations *proc_fops;
 } ide_proc_entry_t;
 
@@ -1514,7 +1544,11 @@ static inline void ide_set_max_pio(ide_drive_t *drive)
 
 char *ide_media_string(ide_drive_t *);
 
+<<<<<<< HEAD
 extern struct device_attribute ide_dev_attrs[];
+=======
+extern const struct attribute_group *ide_dev_groups[];
+>>>>>>> refs/remotes/origin/master
 extern struct bus_type ide_bus_type;
 extern struct class *ide_port_class;
 

@@ -7,10 +7,22 @@
  *	      Michael Holzheu <holzheu@linux.vnet.ibm.com>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/ptrace.h>
 #include <asm/thread_info.h>
 #include <asm/asm-offsets.h>
+<<<<<<< HEAD
+=======
+#include <asm/sigp.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Save register context in absolute 0 lowcore and call swsusp_save() to
@@ -22,9 +34,17 @@
  * This function runs with disabled interrupts.
  */
 	.section .text
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.align	4
 	.globl swsusp_arch_suspend
 swsusp_arch_suspend:
+=======
+ENTRY(swsusp_arch_suspend)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(swsusp_arch_suspend)
+>>>>>>> refs/remotes/origin/master
 	stmg	%r6,%r15,__SF_GPRS(%r15)
 	lgr	%r1,%r15
 	aghi	%r15,-STACK_FRAME_OVERHEAD
@@ -36,14 +56,27 @@ swsusp_arch_suspend:
 	/* Store prefix register on stack */
 	stpx	__SF_EMPTY(%r15)
 
+<<<<<<< HEAD
 	/* Save prefix register contents for lowcore */
 	llgf	%r4,__SF_EMPTY(%r15)
+=======
+	/* Save prefix register contents for lowcore copy */
+	llgf	%r10,__SF_EMPTY(%r15)
+>>>>>>> refs/remotes/origin/master
 
 	/* Get pointer to save area */
 	lghi	%r1,0x1000
 
 	/* Save CPU address */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	stap	__LC_CPU_ADDRESS(%r0)
+=======
+	stap	__LC_EXT_CPU_ADDR(%r0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	stap	__LC_EXT_CPU_ADDR(%r0)
+>>>>>>> refs/remotes/origin/master
 
 	/* Store registers */
 	mvc	0x318(4,%r1),__SF_EMPTY(%r15)	/* move prefix to lowcore */
@@ -91,7 +124,22 @@ swsusp_arch_suspend:
 	xc	__SF_EMPTY(4,%r15),__SF_EMPTY(%r15)
 	spx	__SF_EMPTY(%r15)
 
+<<<<<<< HEAD
 	lghi	%r2,0
+=======
+	/* Save absolute zero pages */
+	larl	%r2,suspend_zero_pages
+	lg	%r2,0(%r2)
+	lghi	%r4,0
+	lghi	%r3,2*PAGE_SIZE
+	lghi	%r5,2*PAGE_SIZE
+1:	mvcle	%r2,%r4,0
+	jo	1b
+
+	/* Copy lowcore to absolute zero lowcore */
+	lghi	%r2,0
+	lgr	%r4,%r10
+>>>>>>> refs/remotes/origin/master
 	lghi	%r3,2*PAGE_SIZE
 	lghi	%r5,2*PAGE_SIZE
 1:	mvcle	%r2,%r4,0
@@ -112,8 +160,16 @@ swsusp_arch_suspend:
  * Then we return to the function that called swsusp_arch_suspend().
  * swsusp_arch_resume() runs with disabled interrupts.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.globl swsusp_arch_resume
 swsusp_arch_resume:
+=======
+ENTRY(swsusp_arch_resume)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(swsusp_arch_resume)
+>>>>>>> refs/remotes/origin/master
 	stmg	%r6,%r15,__SF_GPRS(%r15)
 	lgr	%r1,%r15
 	aghi	%r15,-STACK_FRAME_OVERHEAD
@@ -138,11 +194,29 @@ swsusp_arch_resume:
 0:
 	lg	%r2,8(%r1)
 	lg	%r4,0(%r1)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	iske	%r0,%r4
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iske	%r0,%r4
+>>>>>>> refs/remotes/origin/master
 	lghi	%r3,PAGE_SIZE
 	lghi	%r5,PAGE_SIZE
 1:
 	mvcle	%r2,%r4,0
 	jo	1b
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	lg	%r2,8(%r1)
+	sske	%r0,%r2
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lg	%r2,8(%r1)
+	sske	%r0,%r2
+>>>>>>> refs/remotes/origin/master
 	lg	%r1,16(%r1)
 	ltgr	%r1,%r1
 	jnz	0b
@@ -162,7 +236,11 @@ swsusp_arch_resume:
 	diag	%r0,%r0,0x308
 restart_entry:
 	lhi	%r1,1
+<<<<<<< HEAD
 	sigp	%r1,%r0,0x12
+=======
+	sigp	%r1,%r0,SIGP_SET_ARCHITECTURE
+>>>>>>> refs/remotes/origin/master
 	sam64
 	larl	%r1,.Lnew_pgm_check_psw
 	lpswe	0(%r1)
@@ -172,15 +250,35 @@ pgm_check_entry:
 	larl	%r1,.Lresume_cpu		/* Resume CPU address: r2 */
 	stap	0(%r1)
 	llgh	%r2,0(%r1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 	llgh	%r1,__LC_CPU_ADDRESS(%r0)	/* Suspend CPU address: r1 */
+=======
+	llgh	%r1,__LC_EXT_CPU_ADDR(%r0)	/* Suspend CPU address: r1 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	llgh	%r1,__LC_EXT_CPU_ADDR(%r0)	/* Suspend CPU address: r1 */
+>>>>>>> refs/remotes/origin/master
 	cgr	%r1,%r2
 	je	restore_registers		/* r1 = r2 -> nothing to do */
 	larl	%r4,.Lrestart_suspend_psw	/* Set new restart PSW */
 	mvc	__LC_RST_NEW_PSW(16,%r0),0(%r4)
 3:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sigp	%r9,%r1,__SIGP_INITIAL_CPU_RESET
 	brc	8,4f	/* accepted */
 	brc	2,3b	/* busy, try again */
+=======
+	sigp	%r9,%r1,11			/* sigp initial cpu reset */
+	brc	8,4f				/* accepted */
+	brc	2,3b				/* busy, try again */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sigp	%r9,%r1,SIGP_INITIAL_CPU_RESET	/* sigp initial cpu reset */
+	brc	8,4f				/* accepted */
+	brc	2,3b				/* busy, try again */
+>>>>>>> refs/remotes/origin/master
 
 	/* Suspend CPU not available -> panic */
 	larl	%r15,init_thread_union
@@ -189,16 +287,34 @@ pgm_check_entry:
 	larl	%r3,_sclp_print_early
 	lghi	%r1,0
 	sam31
+<<<<<<< HEAD
 	sigp	%r1,%r0,0x12
+=======
+	sigp	%r1,%r0,SIGP_SET_ARCHITECTURE
+>>>>>>> refs/remotes/origin/master
 	basr	%r14,%r3
 	larl	%r3,.Ldisabled_wait_31
 	lpsw	0(%r3)
 4:
 	/* Switch to suspend CPU */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sigp	%r9,%r1,__SIGP_RESTART	/* start suspend CPU */
 	brc	2,4b			/* busy, try again */
 5:
 	sigp	%r9,%r2,__SIGP_STOP	/* stop resume (current) CPU */
+=======
+	sigp	%r9,%r1,6		/* sigp restart to suspend CPU */
+	brc	2,4b			/* busy, try again */
+5:
+	sigp	%r9,%r2,5		/* sigp stop to current resume CPU */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sigp	%r9,%r1,SIGP_RESTART	/* sigp restart to suspend CPU */
+	brc	2,4b			/* busy, try again */
+5:
+	sigp	%r9,%r2,SIGP_STOP	/* sigp stop to current resume CPU */
+>>>>>>> refs/remotes/origin/master
 	brc	2,5b			/* busy, try again */
 6:	j	6b
 
@@ -206,7 +322,15 @@ restart_suspend:
 	larl	%r1,.Lresume_cpu
 	llgh	%r2,0(%r1)
 7:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sigp	%r9,%r2,__SIGP_SENSE	/* Wait for resume CPU */
+=======
+	sigp	%r9,%r2,1		/* sigp sense, wait for resume CPU */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sigp	%r9,%r2,SIGP_SENSE	/* sigp sense, wait for resume CPU */
+>>>>>>> refs/remotes/origin/master
 	brc	8,7b			/* accepted, status 0, still running */
 	brc	2,7b			/* busy, try again */
 	tmll	%r9,0x40		/* Test if resume CPU is stopped */
@@ -246,8 +370,25 @@ restore_registers:
 	/* Load old stack */
 	lg	%r15,0x2f8(%r13)
 
+<<<<<<< HEAD
 	/* Restore prefix register */
 	spx	0x318(%r13)
+=======
+	/* Save prefix register */
+	mvc __SF_EMPTY(4,%r15),0x318(%r13)
+
+	/* Restore absolute zero pages */
+	lghi	%r2,0
+	larl	%r4,suspend_zero_pages
+	lg	%r4,0(%r4)
+	lghi	%r3,2*PAGE_SIZE
+	lghi	%r5,2*PAGE_SIZE
+1:	mvcle	%r2,%r4,0
+	jo	1b
+
+	/* Restore prefix register */
+	spx	__SF_EMPTY(%r15)
+>>>>>>> refs/remotes/origin/master
 
 	/* Activate DAT */
 	stosm	__SF_EMPTY(%r15),0x04
@@ -256,8 +397,19 @@ restore_registers:
 	lghi	%r2,0
 	brasl	%r14,arch_set_page_states
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* Log potential guest relocation */
+	brasl	%r14,lgr_info_log
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Reinitialize the channel subsystem */
 	brasl	%r14,channel_subsystem_reinit
+=======
+	/* Call arch specific early resume code */
+	brasl	%r14,s390_early_resume
+>>>>>>> refs/remotes/origin/master
 
 	/* Return 0 */
 	lmg	%r6,%r15,STACK_FRAME_OVERHEAD + __SF_GPRS(%r15)

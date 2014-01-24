@@ -9,6 +9,16 @@
  * 2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <linux/errno.h>
 #include <linux/fs.h>
@@ -22,20 +32,41 @@
 #include <linux/types.h>
 #include <linux/watchdog.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/at91_st.h>
 
 #define WDT_DEFAULT_TIME	5	/* seconds */
 #define WDT_MAX_TIME		256	/* seconds */
 
 static int wdt_time = WDT_DEFAULT_TIME;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/master
 
 module_param(wdt_time, int, 0);
 MODULE_PARM_DESC(wdt_time, "Watchdog time in seconds. (default="
 				__MODULE_STRING(WDT_DEFAULT_TIME) ")");
 
 #ifdef CONFIG_WATCHDOG_NOWAYOUT
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -51,7 +82,15 @@ static unsigned long at91wdt_busy;
  */
 static inline void at91_wdt_stop(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	at91_sys_write(AT91_ST_WDMR, AT91_ST_EXTEN);
+=======
+	at91_st_write(AT91_ST_WDMR, AT91_ST_EXTEN);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_st_write(AT91_ST_WDMR, AT91_ST_EXTEN);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -59,9 +98,21 @@ static inline void at91_wdt_stop(void)
  */
 static inline void at91_wdt_start(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	at91_sys_write(AT91_ST_WDMR, AT91_ST_EXTEN | AT91_ST_RSTEN |
 				(((65536 * wdt_time) >> 8) & AT91_ST_WDV));
 	at91_sys_write(AT91_ST_CR, AT91_ST_WDRST);
+=======
+	at91_st_write(AT91_ST_WDMR, AT91_ST_EXTEN | AT91_ST_RSTEN |
+				(((65536 * wdt_time) >> 8) & AT91_ST_WDV));
+	at91_st_write(AT91_ST_CR, AT91_ST_WDRST);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_st_write(AT91_ST_WDMR, AT91_ST_EXTEN | AT91_ST_RSTEN |
+				(((65536 * wdt_time) >> 8) & AT91_ST_WDV));
+	at91_st_write(AT91_ST_CR, AT91_ST_WDRST);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -69,7 +120,15 @@ static inline void at91_wdt_start(void)
  */
 static inline void at91_wdt_reload(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	at91_sys_write(AT91_ST_CR, AT91_ST_WDRST);
+=======
+	at91_st_write(AT91_ST_CR, AT91_ST_WDRST);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_st_write(AT91_ST_CR, AT91_ST_WDRST);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ......................................................................... */
@@ -197,7 +256,11 @@ static struct miscdevice at91wdt_miscdev = {
 	.fops		= &at91wdt_fops,
 };
 
+<<<<<<< HEAD
 static int __devinit at91wdt_probe(struct platform_device *pdev)
+=======
+static int at91wdt_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int res;
 
@@ -209,12 +272,26 @@ static int __devinit at91wdt_probe(struct platform_device *pdev)
 	if (res)
 		return res;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "AT91 Watchdog Timer enabled (%d seconds%s)\n",
 				wdt_time, nowayout ? ", nowayout" : "");
+=======
+	pr_info("AT91 Watchdog Timer enabled (%d seconds%s)\n",
+		wdt_time, nowayout ? ", nowayout" : "");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int __devexit at91wdt_remove(struct platform_device *pdev)
+=======
+	pr_info("AT91 Watchdog Timer enabled (%d seconds%s)\n",
+		wdt_time, nowayout ? ", nowayout" : "");
+	return 0;
+}
+
+static int at91wdt_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int res;
 
@@ -250,15 +327,31 @@ static int at91wdt_resume(struct platform_device *pdev)
 #define at91wdt_resume	NULL
 #endif
 
+<<<<<<< HEAD
 static struct platform_driver at91wdt_driver = {
 	.probe		= at91wdt_probe,
 	.remove		= __devexit_p(at91wdt_remove),
+=======
+static const struct of_device_id at91_wdt_dt_ids[] = {
+	{ .compatible = "atmel,at91rm9200-wdt" },
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(of, at91_wdt_dt_ids);
+
+static struct platform_driver at91wdt_driver = {
+	.probe		= at91wdt_probe,
+	.remove		= at91wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= at91wdt_shutdown,
 	.suspend	= at91wdt_suspend,
 	.resume		= at91wdt_resume,
 	.driver		= {
 		.name	= "at91_wdt",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = at91_wdt_dt_ids,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -268,8 +361,18 @@ static int __init at91_wdt_init(void)
 	   if not reset to the default */
 	if (at91_wdt_settimeout(wdt_time)) {
 		at91_wdt_settimeout(WDT_DEFAULT_TIME);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_info("at91_wdt: wdt_time value must be 1 <= wdt_time <= 256"
 						", using %d\n", wdt_time);
+=======
+		pr_info("wdt_time value must be 1 <= wdt_time <= 256, using %d\n",
+			wdt_time);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("wdt_time value must be 1 <= wdt_time <= 256, using %d\n",
+			wdt_time);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return platform_driver_register(&at91wdt_driver);
@@ -286,5 +389,8 @@ module_exit(at91_wdt_exit);
 MODULE_AUTHOR("Andrew Victor");
 MODULE_DESCRIPTION("Watchdog driver for Atmel AT91RM9200");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:at91_wdt");

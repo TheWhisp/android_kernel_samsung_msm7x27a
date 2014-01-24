@@ -109,7 +109,11 @@ static void hstcp_init(struct sock *sk)
 	tp->snd_cwnd_clamp = min_t(u32, tp->snd_cwnd_clamp, 0xffffffff/128);
 }
 
+<<<<<<< HEAD
 static void hstcp_cong_avoid(struct sock *sk, u32 adk, u32 in_flight)
+=======
+static void hstcp_cong_avoid(struct sock *sk, u32 ack, u32 acked, u32 in_flight)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct hstcp *ca = inet_csk_ca(sk);
@@ -118,7 +122,11 @@ static void hstcp_cong_avoid(struct sock *sk, u32 adk, u32 in_flight)
 		return;
 
 	if (tp->snd_cwnd <= tp->snd_ssthresh)
+<<<<<<< HEAD
 		tcp_slow_start(tp);
+=======
+		tcp_slow_start(tp, acked);
+>>>>>>> refs/remotes/origin/master
 	else {
 		/* Update AIMD parameters.
 		 *

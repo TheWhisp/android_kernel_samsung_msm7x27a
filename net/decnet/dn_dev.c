@@ -42,7 +42,13 @@
 #include <linux/notifier.h>
 #include <linux/slab.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <net/net_namespace.h>
 #include <net/neighbour.h>
 #include <net/dst.h>
@@ -159,11 +165,19 @@ static int max_t3[] = { 8191 }; /* Must fit in 16 bits when multiplied by BCT3MU
 static int min_priority[1];
 static int max_priority[] = { 127 }; /* From DECnet spec */
 
+<<<<<<< HEAD
 static int dn_forwarding_proc(ctl_table *, int,
 			void __user *, size_t *, loff_t *);
 static struct dn_dev_sysctl_table {
 	struct ctl_table_header *sysctl_header;
 	ctl_table dn_dev_vars[5];
+=======
+static int dn_forwarding_proc(struct ctl_table *, int,
+			void __user *, size_t *, loff_t *);
+static struct dn_dev_sysctl_table {
+	struct ctl_table_header *sysctl_header;
+	struct ctl_table dn_dev_vars[5];
+>>>>>>> refs/remotes/origin/master
 } dn_dev_sysctl = {
 	NULL,
 	{
@@ -210,6 +224,7 @@ static void dn_dev_sysctl_register(struct net_device *dev, struct dn_dev_parms *
 	struct dn_dev_sysctl_table *t;
 	int i;
 
+<<<<<<< HEAD
 #define DN_CTL_PATH_DEV	3
 
 	struct ctl_path dn_ctl_path[] = {
@@ -219,6 +234,9 @@ static void dn_dev_sysctl_register(struct net_device *dev, struct dn_dev_parms *
 		{ /* to be set */ },
 		{ },
 	};
+=======
+	char path[sizeof("net/decnet/conf/") + IFNAMSIZ];
+>>>>>>> refs/remotes/origin/master
 
 	t = kmemdup(&dn_dev_sysctl, sizeof(*t), GFP_KERNEL);
 	if (t == NULL)
@@ -229,6 +247,7 @@ static void dn_dev_sysctl_register(struct net_device *dev, struct dn_dev_parms *
 		t->dn_dev_vars[i].data = ((char *)parms) + offset;
 	}
 
+<<<<<<< HEAD
 	if (dev) {
 		dn_ctl_path[DN_CTL_PATH_DEV].procname = dev->name;
 	} else {
@@ -238,6 +257,14 @@ static void dn_dev_sysctl_register(struct net_device *dev, struct dn_dev_parms *
 	t->dn_dev_vars[0].extra1 = (void *)dev;
 
 	t->sysctl_header = register_sysctl_paths(dn_ctl_path, t->dn_dev_vars);
+=======
+	snprintf(path, sizeof(path), "net/decnet/conf/%s",
+		dev? dev->name : parms->name);
+
+	t->dn_dev_vars[0].extra1 = (void *)dev;
+
+	t->sysctl_header = register_net_sysctl(&init_net, path, t->dn_dev_vars);
+>>>>>>> refs/remotes/origin/master
 	if (t->sysctl_header == NULL)
 		kfree(t);
 	else
@@ -249,12 +276,20 @@ static void dn_dev_sysctl_unregister(struct dn_dev_parms *parms)
 	if (parms->sysctl) {
 		struct dn_dev_sysctl_table *t = parms->sysctl;
 		parms->sysctl = NULL;
+<<<<<<< HEAD
 		unregister_sysctl_table(t->sysctl_header);
+=======
+		unregister_net_sysctl_table(t->sysctl_header);
+>>>>>>> refs/remotes/origin/master
 		kfree(t);
 	}
 }
 
+<<<<<<< HEAD
 static int dn_forwarding_proc(ctl_table *table, int write,
+=======
+static int dn_forwarding_proc(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 				void __user *buffer,
 				size_t *lenp, loff_t *ppos)
 {
@@ -437,6 +472,8 @@ int dn_dev_ioctl(unsigned int cmd, void __user *arg)
 
 	dev_load(&init_net, ifr->ifr_name);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(cmd) {
 		case SIOCGIFADDR:
 			break;
@@ -448,6 +485,24 @@ int dn_dev_ioctl(unsigned int cmd, void __user *arg)
 			break;
 		default:
 			return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (cmd) {
+	case SIOCGIFADDR:
+		break;
+	case SIOCSIFADDR:
+		if (!capable(CAP_NET_ADMIN))
+			return -EACCES;
+		if (sdn->sdn_family != AF_DECnet)
+			return -EINVAL;
+		break;
+	default:
+		return -EINVAL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rtnl_lock();
@@ -470,6 +525,8 @@ int dn_dev_ioctl(unsigned int cmd, void __user *arg)
 		goto done;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(cmd) {
 		case SIOCGIFADDR:
 			*((__le16 *)sdn->sdn_nodeaddr) = ifa->ifa_local;
@@ -491,6 +548,34 @@ int dn_dev_ioctl(unsigned int cmd, void __user *arg)
 			ifa->ifa_local = ifa->ifa_address = dn_saddr2dn(sdn);
 
 			ret = dn_dev_set_ifa(dev, ifa);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (cmd) {
+	case SIOCGIFADDR:
+		*((__le16 *)sdn->sdn_nodeaddr) = ifa->ifa_local;
+		goto rarok;
+
+	case SIOCSIFADDR:
+		if (!ifa) {
+			if ((ifa = dn_dev_alloc_ifa()) == NULL) {
+				ret = -ENOBUFS;
+				break;
+			}
+			memcpy(ifa->ifa_label, dev->name, IFNAMSIZ);
+		} else {
+			if (ifa->ifa_local == dn_saddr2dn(sdn))
+				break;
+			dn_dev_del_ifa(dn_db, ifap, 0);
+		}
+
+		ifa->ifa_local = ifa->ifa_address = dn_saddr2dn(sdn);
+
+		ret = dn_dev_set_ifa(dev, ifa);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 done:
 	rtnl_unlock();
@@ -575,7 +660,11 @@ static const struct nla_policy dn_ifa_policy[IFA_MAX+1] = {
 				    .len = IFNAMSIZ - 1 },
 };
 
+<<<<<<< HEAD
 static int dn_nl_deladdr(struct sk_buff *skb, struct nlmsghdr *nlh, void *arg)
+=======
+static int dn_nl_deladdr(struct sk_buff *skb, struct nlmsghdr *nlh)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net *net = sock_net(skb->sk);
 	struct nlattr *tb[IFA_MAX+1];
@@ -585,6 +674,12 @@ static int dn_nl_deladdr(struct sk_buff *skb, struct nlmsghdr *nlh, void *arg)
 	struct dn_ifaddr __rcu **ifap;
 	int err = -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (!capable(CAP_NET_ADMIN))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/master
 	if (!net_eq(net, &init_net))
 		goto errout;
 
@@ -616,7 +711,11 @@ errout:
 	return err;
 }
 
+<<<<<<< HEAD
 static int dn_nl_newaddr(struct sk_buff *skb, struct nlmsghdr *nlh, void *arg)
+=======
+static int dn_nl_newaddr(struct sk_buff *skb, struct nlmsghdr *nlh)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net *net = sock_net(skb->sk);
 	struct nlattr *tb[IFA_MAX+1];
@@ -626,6 +725,12 @@ static int dn_nl_newaddr(struct sk_buff *skb, struct nlmsghdr *nlh, void *arg)
 	struct dn_ifaddr *ifa;
 	int err;
 
+<<<<<<< HEAD
+=======
+	if (!capable(CAP_NET_ADMIN))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/master
 	if (!net_eq(net, &init_net))
 		return -EINVAL;
 
@@ -679,12 +784,20 @@ static inline size_t dn_ifaddr_nlmsg_size(void)
 }
 
 static int dn_nl_fill_ifaddr(struct sk_buff *skb, struct dn_ifaddr *ifa,
+<<<<<<< HEAD
 			     u32 pid, u32 seq, int event, unsigned int flags)
+=======
+			     u32 portid, u32 seq, int event, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ifaddrmsg *ifm;
 	struct nlmsghdr *nlh;
 
+<<<<<<< HEAD
 	nlh = nlmsg_put(skb, pid, seq, event, sizeof(*ifm), flags);
+=======
+	nlh = nlmsg_put(skb, portid, seq, event, sizeof(*ifm), flags);
+>>>>>>> refs/remotes/origin/master
 	if (nlh == NULL)
 		return -EMSGSIZE;
 
@@ -695,6 +808,7 @@ static int dn_nl_fill_ifaddr(struct sk_buff *skb, struct dn_ifaddr *ifa,
 	ifm->ifa_scope = ifa->ifa_scope;
 	ifm->ifa_index = ifa->ifa_dev->dev->ifindex;
 
+<<<<<<< HEAD
 	if (ifa->ifa_address)
 		NLA_PUT_LE16(skb, IFA_ADDRESS, ifa->ifa_address);
 	if (ifa->ifa_local)
@@ -702,6 +816,15 @@ static int dn_nl_fill_ifaddr(struct sk_buff *skb, struct dn_ifaddr *ifa,
 	if (ifa->ifa_label[0])
 		NLA_PUT_STRING(skb, IFA_LABEL, ifa->ifa_label);
 
+=======
+	if ((ifa->ifa_address &&
+	     nla_put_le16(skb, IFA_ADDRESS, ifa->ifa_address)) ||
+	    (ifa->ifa_local &&
+	     nla_put_le16(skb, IFA_LOCAL, ifa->ifa_local)) ||
+	    (ifa->ifa_label[0] &&
+	     nla_put_string(skb, IFA_LABEL, ifa->ifa_label)))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return nlmsg_end(skb, nlh);
 
 nla_put_failure:
@@ -765,7 +888,11 @@ static int dn_nl_dump_ifaddr(struct sk_buff *skb, struct netlink_callback *cb)
 			if (dn_idx < skip_naddr)
 				continue;
 
+<<<<<<< HEAD
 			if (dn_nl_fill_ifaddr(skb, ifa, NETLINK_CB(cb->skb).pid,
+=======
+			if (dn_nl_fill_ifaddr(skb, ifa, NETLINK_CB(cb->skb).portid,
+>>>>>>> refs/remotes/origin/master
 					      cb->nlh->nlmsg_seq, RTM_NEWADDR,
 					      NLM_F_MULTI) < 0)
 				goto done;
@@ -1101,7 +1228,15 @@ static struct dn_dev *dn_dev_create(struct net_device *dev, int *err)
 
 	dn_db->neigh_parms = neigh_parms_alloc(dev, &dn_neigh_table);
 	if (!dn_db->neigh_parms) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rcu_assign_pointer(dev->dn_ptr, NULL);
+=======
+		RCU_INIT_POINTER(dev->dn_ptr, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		RCU_INIT_POINTER(dev->dn_ptr, NULL);
+>>>>>>> refs/remotes/origin/master
 		kfree(dn_db);
 		return NULL;
 	}
@@ -1313,7 +1448,15 @@ static void *dn_dev_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 
 	++*pos;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev = (struct net_device *)v;
+=======
+	dev = v;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev = v;
+>>>>>>> refs/remotes/origin/master
 	if (v == SEQ_START_TOKEN)
 		dev = net_device_entry(&init_net.dev_base_head);
 
@@ -1335,6 +1478,8 @@ static void dn_dev_seq_stop(struct seq_file *seq, void *v)
 
 static char *dn_type2asc(char type)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	switch(type) {
 		case DN_DEV_BCAST:
 			return "B";
@@ -1342,6 +1487,20 @@ static char *dn_type2asc(char type)
 			return "U";
 		case DN_DEV_MPOINT:
 			return "M";
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	switch (type) {
+	case DN_DEV_BCAST:
+		return "B";
+	case DN_DEV_UCAST:
+		return "U";
+	case DN_DEV_MPOINT:
+		return "M";
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return "?";
@@ -1418,7 +1577,11 @@ void __init dn_dev_init(void)
 	rtnl_register(PF_DECnet, RTM_DELADDR, dn_nl_deladdr, NULL, NULL);
 	rtnl_register(PF_DECnet, RTM_GETADDR, NULL, dn_nl_dump_ifaddr, NULL);
 
+<<<<<<< HEAD
 	proc_net_fops_create(&init_net, "decnet_dev", S_IRUGO, &dn_dev_seq_fops);
+=======
+	proc_create("decnet_dev", S_IRUGO, init_net.proc_net, &dn_dev_seq_fops);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SYSCTL
 	{
@@ -1439,7 +1602,11 @@ void __exit dn_dev_cleanup(void)
 	}
 #endif /* CONFIG_SYSCTL */
 
+<<<<<<< HEAD
 	proc_net_remove(&init_net, "decnet_dev");
+=======
+	remove_proc_entry("decnet_dev", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 
 	dn_dev_devices_off();
 }

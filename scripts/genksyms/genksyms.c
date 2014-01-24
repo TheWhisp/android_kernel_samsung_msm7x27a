@@ -40,11 +40,24 @@ static struct symbol *symtab[HASH_BUCKETS];
 static FILE *debugfile;
 
 int cur_line = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 char *cur_filename;
+=======
+char *cur_filename, *source_file;
+int in_source_file;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int flag_debug, flag_dump_defs, flag_reference, flag_dump_types,
 	   flag_preserve, flag_warnings;
 static const char *arch = "";
+=======
+char *cur_filename, *source_file;
+int in_source_file;
+
+static int flag_debug, flag_dump_defs, flag_reference, flag_dump_types,
+	   flag_preserve, flag_warnings;
+>>>>>>> refs/remotes/origin/master
 static const char *mod_prefix = "";
 
 static int errors;
@@ -448,7 +461,15 @@ static struct string_list *read_node(FILE *f)
 	node.string = buffer;
 
 	if (node.string[1] == '#') {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int n;
+=======
+		size_t n;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		size_t n;
+>>>>>>> refs/remotes/origin/master
 
 		for (n = 0; n < ARRAY_SIZE(symbol_types); n++) {
 			if (node.string[0] == symbol_types[n].n) {
@@ -730,7 +751,11 @@ static void genksyms_usage(void)
 {
 	fputs("Usage:\n" "genksyms [-adDTwqhV] > /path/to/.tmp_obj.ver\n" "\n"
 #ifdef __GNU_LIBRARY__
+<<<<<<< HEAD
 	      "  -a, --arch            Select architecture\n"
+=======
+	      "  -s, --symbol-prefix   Select symbol prefix\n"
+>>>>>>> refs/remotes/origin/master
 	      "  -d, --debug           Increment the debug level (repeatable)\n"
 	      "  -D, --dump            Dump expanded symbol defs (for debugging only)\n"
 	      "  -r, --reference file  Read reference symbols from a file\n"
@@ -741,7 +766,11 @@ static void genksyms_usage(void)
 	      "  -h, --help            Print this message\n"
 	      "  -V, --version         Print the release version\n"
 #else				/* __GNU_LIBRARY__ */
+<<<<<<< HEAD
 	      "  -a                    Select architecture\n"
+=======
+	      "  -s                    Select symbol prefix\n"
+>>>>>>> refs/remotes/origin/master
 	      "  -d                    Increment the debug level (repeatable)\n"
 	      "  -D                    Dump expanded symbol defs (for debugging only)\n"
 	      "  -r file               Read reference symbols from a file\n"
@@ -762,7 +791,11 @@ int main(int argc, char **argv)
 
 #ifdef __GNU_LIBRARY__
 	struct option long_opts[] = {
+<<<<<<< HEAD
 		{"arch", 1, 0, 'a'},
+=======
+		{"symbol-prefix", 1, 0, 's'},
+>>>>>>> refs/remotes/origin/master
 		{"debug", 0, 0, 'd'},
 		{"warnings", 0, 0, 'w'},
 		{"quiet", 0, 0, 'q'},
@@ -775,6 +808,7 @@ int main(int argc, char **argv)
 		{0, 0, 0, 0}
 	};
 
+<<<<<<< HEAD
 	while ((o = getopt_long(argc, argv, "a:dwqVDr:T:ph",
 				&long_opts[0], NULL)) != EOF)
 #else				/* __GNU_LIBRARY__ */
@@ -783,6 +817,16 @@ int main(int argc, char **argv)
 		switch (o) {
 		case 'a':
 			arch = optarg;
+=======
+	while ((o = getopt_long(argc, argv, "s:dwqVDr:T:ph",
+				&long_opts[0], NULL)) != EOF)
+#else				/* __GNU_LIBRARY__ */
+	while ((o = getopt(argc, argv, "s:dwqVDr:T:ph")) != EOF)
+#endif				/* __GNU_LIBRARY__ */
+		switch (o) {
+		case 's':
+			mod_prefix = optarg;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 'd':
 			flag_debug++;
@@ -825,8 +869,11 @@ int main(int argc, char **argv)
 			genksyms_usage();
 			return 1;
 		}
+<<<<<<< HEAD
 	if ((strcmp(arch, "h8300") == 0) || (strcmp(arch, "blackfin") == 0))
 		mod_prefix = "_";
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		extern int yydebug;
 		extern int yy_flex_debug;

@@ -28,6 +28,10 @@
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
@@ -75,7 +79,14 @@ struct fsl_elbc_fcm_ctrl {
 	unsigned int use_mdr;    /* Non zero if the MDR is to be set      */
 	unsigned int oob;        /* Non zero if operating on OOB data     */
 	unsigned int counter;	 /* counter for the initializations	  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	char *oob_poi;           /* Place to write ECC after read back    */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int max_bitflips;  /* Saved during READ0 cmd		  */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* These map to the positions used by the FCM hardware ECC generator */
@@ -109,6 +120,7 @@ static struct nand_ecclayout fsl_elbc_oob_lp_eccm1 = {
 };
 
 /*
+<<<<<<< HEAD
  * fsl_elbc_oob_lp_eccm* specify that LP NAND's OOB free area starts at offset
  * 1, so we have to adjust bad block pattern. This pattern should be used for
  * x8 chips only. So far hardware does not support x16 chips anyway.
@@ -123,6 +135,8 @@ static struct nand_bbt_descr largepage_memorybased = {
 };
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * ELBC may use HW ECC, so that OOB offsets, that NAND core uses for bbt,
  * interfere with ECC positions, that's why we implement our own descriptors.
  * OOB {11, 5}, works for both SP and LP chips, with ECCM = 1 and ECCM = 0.
@@ -167,15 +181,44 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
 
 	elbc_fcm_ctrl->page = page_addr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	out_be32(&lbc->fbar,
 	         page_addr >> (chip->phys_erase_shift - chip->page_shift));
 
 	if (priv->page_size) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (priv->page_size) {
+		/*
+		 * large page size chip : FPAR[PI] save the lowest 6 bits,
+		 *                        FBAR[BLK] save the other bits.
+		 */
+		out_be32(&lbc->fbar, page_addr >> 6);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		out_be32(&lbc->fpar,
 		         ((page_addr << FPAR_LP_PI_SHIFT) & FPAR_LP_PI) |
 		         (oob ? FPAR_LP_MS : 0) | column);
 		buf_num = (page_addr & 1) << 2;
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * small page size chip : FPAR[PI] save the lowest 5 bits,
+		 *                        FBAR[BLK] save the other bits.
+		 */
+		out_be32(&lbc->fbar, page_addr >> 5);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		out_be32(&lbc->fpar,
 		         ((page_addr << FPAR_SP_PI_SHIFT) & FPAR_SP_PI) |
 		         (oob ? FPAR_SP_MS : 0) | column);
@@ -244,6 +287,51 @@ static int fsl_elbc_run_command(struct mtd_info *mtd)
 		return -EIO;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (chip->ecc.mode != NAND_ECC_HW)
+		return 0;
+
+=======
+	if (chip->ecc.mode != NAND_ECC_HW)
+		return 0;
+
+	elbc_fcm_ctrl->max_bitflips = 0;
+
+>>>>>>> refs/remotes/origin/master
+	if (elbc_fcm_ctrl->read_bytes == mtd->writesize + mtd->oobsize) {
+		uint32_t lteccr = in_be32(&lbc->lteccr);
+		/*
+		 * if command was a full page read and the ELBC
+		 * has the LTECCR register, then bits 12-15 (ppc order) of
+		 * LTECCR indicates which 512 byte sub-pages had fixed errors.
+		 * bits 28-31 are uncorrectable errors, marked elsewhere.
+		 * for small page nand only 1 bit is used.
+		 * if the ELBC doesn't have the lteccr register it reads 0
+<<<<<<< HEAD
+		 */
+		if (lteccr & 0x000F000F)
+			out_be32(&lbc->lteccr, 0x000F000F); /* clear lteccr */
+		if (lteccr & 0x000F0000)
+			mtd->ecc_stats.corrected++;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * FIXME: 4 bits can be corrected on NANDs with 2k pages, so
+		 * count the number of sub-pages with bitflips and update
+		 * ecc_stats.corrected accordingly.
+		 */
+		if (lteccr & 0x000F000F)
+			out_be32(&lbc->lteccr, 0x000F000F); /* clear lteccr */
+		if (lteccr & 0x000F0000) {
+			mtd->ecc_stats.corrected++;
+			elbc_fcm_ctrl->max_bitflips = 1;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -331,13 +419,27 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
 		fsl_elbc_run_command(mtd);
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* READID must read all 5 possible bytes while CEB is active */
 	case NAND_CMD_READID:
 		dev_vdbg(priv->dev, "fsl_elbc_cmdfunc: NAND_CMD_READID.\n");
+=======
+	case NAND_CMD_READID:
+	case NAND_CMD_PARAM:
+		dev_vdbg(priv->dev, "fsl_elbc_cmdfunc: NAND_CMD %x\n", command);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case NAND_CMD_READID:
+	case NAND_CMD_PARAM:
+		dev_vdbg(priv->dev, "fsl_elbc_cmdfunc: NAND_CMD %x\n", command);
+>>>>>>> refs/remotes/origin/master
 
 		out_be32(&lbc->fir, (FIR_OP_CM0 << FIR_OP0_SHIFT) |
 		                    (FIR_OP_UA  << FIR_OP1_SHIFT) |
 		                    (FIR_OP_RBW << FIR_OP2_SHIFT));
+<<<<<<< HEAD
+<<<<<<< HEAD
 		out_be32(&lbc->fcr, NAND_CMD_READID << FCR_CMD0_SHIFT);
 		/* nand_get_flash_type() reads 8 bytes of entire ID string */
 		out_be32(&lbc->fbcr, 8);
@@ -345,6 +447,22 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
 		elbc_fcm_ctrl->use_mdr = 1;
 		elbc_fcm_ctrl->mdr = 0;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		out_be32(&lbc->fcr, command << FCR_CMD0_SHIFT);
+		/*
+		 * although currently it's 8 bytes for READID, we always read
+		 * the maximum 256 bytes(for PARAM)
+		 */
+		out_be32(&lbc->fbcr, 256);
+		elbc_fcm_ctrl->read_bytes = 256;
+		elbc_fcm_ctrl->use_mdr = 1;
+		elbc_fcm_ctrl->mdr = column;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		set_addr(mtd, 0, 0, 0);
 		fsl_elbc_run_command(mtd);
 		return;
@@ -389,9 +507,29 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
 		         page_addr, column);
 
 		elbc_fcm_ctrl->column = column;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		elbc_fcm_ctrl->oob = 0;
 		elbc_fcm_ctrl->use_mdr = 1;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		elbc_fcm_ctrl->use_mdr = 1;
+
+		if (column >= mtd->writesize) {
+			/* OOB area */
+			column -= mtd->writesize;
+			elbc_fcm_ctrl->oob = 1;
+		} else {
+			WARN_ON(column != 0);
+			elbc_fcm_ctrl->oob = 0;
+		}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		fcr = (NAND_CMD_STATUS   << FCR_CMD1_SHIFT) |
 		      (NAND_CMD_SEQIN    << FCR_CMD2_SHIFT) |
 		      (NAND_CMD_PAGEPROG << FCR_CMD3_SHIFT);
@@ -416,6 +554,8 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
 			         (FIR_OP_CW1 << FIR_OP6_SHIFT) |
 			         (FIR_OP_RS  << FIR_OP7_SHIFT));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (column >= mtd->writesize) {
 				/* OOB area --> READOOB */
 				column -= mtd->writesize;
@@ -426,6 +566,19 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
 				/* First 256 bytes --> READ0 */
 				fcr |= NAND_CMD_READ0 << FCR_CMD0_SHIFT;
 			}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			if (elbc_fcm_ctrl->oob)
+				/* OOB area --> READOOB */
+				fcr |= NAND_CMD_READOOB << FCR_CMD0_SHIFT;
+			else
+				/* First 256 bytes --> READ0 */
+				fcr |= NAND_CMD_READ0 << FCR_CMD0_SHIFT;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		out_be32(&lbc->fcr, fcr);
@@ -435,7 +588,13 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
 
 	/* PAGEPROG reuses all of the setup from SEQIN and adds the length */
 	case NAND_CMD_PAGEPROG: {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int full_page;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_vdbg(priv->dev,
 		         "fsl_elbc_cmdfunc: NAND_CMD_PAGEPROG "
 			 "writing %d bytes.\n", elbc_fcm_ctrl->index);
@@ -445,6 +604,8 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
 		 * write so the HW generates the ECC.
 		 */
 		if (elbc_fcm_ctrl->oob || elbc_fcm_ctrl->column != 0 ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    elbc_fcm_ctrl->index != mtd->writesize + mtd->oobsize) {
 			out_be32(&lbc->fbcr, elbc_fcm_ctrl->index);
 			full_page = 0;
@@ -473,6 +634,20 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
 		}
 
 		elbc_fcm_ctrl->oob_poi = NULL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		    elbc_fcm_ctrl->index != mtd->writesize + mtd->oobsize)
+			out_be32(&lbc->fbcr,
+				elbc_fcm_ctrl->index - elbc_fcm_ctrl->column);
+		else
+			out_be32(&lbc->fbcr, 0);
+
+		fsl_elbc_run_command(mtd);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -597,6 +772,7 @@ static void fsl_elbc_read_buf(struct mtd_info *mtd, u8 *buf, int len)
 		        len, avail);
 }
 
+<<<<<<< HEAD
 /*
  * Verify buffer against the FCM Controller Data Buffer
  */
@@ -632,6 +808,8 @@ static int fsl_elbc_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
 	return i == len && elbc_fcm_ctrl->status == LTESR_CC ? 0 : -EIO;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* This function is called after Program and Erase Operations to
  * check for success or failure.
  */
@@ -664,9 +842,17 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
 	if (chip->pagemask & 0xff000000)
 		al++;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* add to ECCM mode set in fsl_elbc_init */
 	priv->fmr |= (12 << FMR_CWTO_SHIFT) |  /* Timeout > 12 ms */
 	             (al << FMR_AL_SHIFT);
+=======
+	priv->fmr |= al << FMR_AL_SHIFT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->fmr |= al << FMR_AL_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(priv->dev, "fsl_elbc_init: nand->numchips = %d\n",
 	        chip->numchips);
@@ -684,8 +870,11 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
 	        chip->page_shift);
 	dev_dbg(priv->dev, "fsl_elbc_init: nand->phys_erase_shift = %d\n",
 	        chip->phys_erase_shift);
+<<<<<<< HEAD
 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecclayout = %p\n",
 	        chip->ecclayout);
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.mode = %d\n",
 	        chip->ecc.mode);
 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.steps = %d\n",
@@ -719,7 +908,10 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
 			chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
 			                   &fsl_elbc_oob_lp_eccm1 :
 			                   &fsl_elbc_oob_lp_eccm0;
+<<<<<<< HEAD
 			chip->badblock_pattern = &largepage_memorybased;
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		dev_err(priv->dev,
@@ -731,6 +923,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int fsl_elbc_read_page(struct mtd_info *mtd,
                               struct nand_chip *chip,
 			      uint8_t *buf,
@@ -738,20 +931,38 @@ static int fsl_elbc_read_page(struct mtd_info *mtd,
 {
 	fsl_elbc_read_buf(mtd, buf, mtd->writesize);
 	fsl_elbc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+=======
+static int fsl_elbc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+			      uint8_t *buf, int oob_required, int page)
+{
+	struct fsl_elbc_mtd *priv = chip->priv;
+	struct fsl_lbc_ctrl *ctrl = priv->ctrl;
+	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = ctrl->nand;
+
+	fsl_elbc_read_buf(mtd, buf, mtd->writesize);
+	if (oob_required)
+		fsl_elbc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>>>>>>> refs/remotes/origin/master
 
 	if (fsl_elbc_wait(mtd, chip) & NAND_STATUS_FAIL)
 		mtd->ecc_stats.failed++;
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return elbc_fcm_ctrl->max_bitflips;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ECC will be calculated automatically, and errors will be detected in
  * waitfunc.
  */
+<<<<<<< HEAD
 static void fsl_elbc_write_page(struct mtd_info *mtd,
                                 struct nand_chip *chip,
                                 const uint8_t *buf)
 {
+<<<<<<< HEAD
 	struct fsl_elbc_mtd *priv = chip->priv;
 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = priv->ctrl->nand;
 
@@ -759,6 +970,19 @@ static void fsl_elbc_write_page(struct mtd_info *mtd,
 	fsl_elbc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
 
 	elbc_fcm_ctrl->oob_poi = chip->oob_poi;
+=======
+	fsl_elbc_write_buf(mtd, buf, mtd->writesize);
+	fsl_elbc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int fsl_elbc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+				const uint8_t *buf, int oob_required)
+{
+	fsl_elbc_write_buf(mtd, buf, mtd->writesize);
+	fsl_elbc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
@@ -774,15 +998,31 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
 	priv->mtd.priv = chip;
 	priv->mtd.owner = THIS_MODULE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Set the ECCM according to the settings in bootloader.*/
 	priv->fmr = in_be32(&lbc->fmr) & FMR_ECCM;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* set timeout to maximum */
+	priv->fmr = 15 << FMR_CWTO_SHIFT;
+	if (in_be32(&lbc->bank[priv->bank].or) & OR_FCM_PGS)
+		priv->fmr |= FMR_ECCM;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* fill in nand_chip structure */
 	/* set up function call table */
 	chip->read_byte = fsl_elbc_read_byte;
 	chip->write_buf = fsl_elbc_write_buf;
 	chip->read_buf = fsl_elbc_read_buf;
+<<<<<<< HEAD
 	chip->verify_buf = fsl_elbc_verify_buf;
+=======
+>>>>>>> refs/remotes/origin/master
 	chip->select_chip = fsl_elbc_select_chip;
 	chip->cmdfunc = fsl_elbc_cmdfunc;
 	chip->waitfunc = fsl_elbc_wait;
@@ -791,8 +1031,17 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
 	chip->bbt_md = &bbt_mirror_descr;
 
 	/* set up nand options */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	chip->options = NAND_NO_READRDY | NAND_NO_AUTOINCR |
 			NAND_USE_FLASH_BBT;
+=======
+	chip->options = NAND_NO_READRDY | NAND_NO_AUTOINCR;
+	chip->bbt_options = NAND_BBT_USE_FLASH;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	chip->bbt_options = NAND_BBT_USE_FLASH;
+>>>>>>> refs/remotes/origin/master
 
 	chip->controller = &elbc_fcm_ctrl->controller;
 	chip->priv = priv;
@@ -809,6 +1058,19 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
 				&fsl_elbc_oob_sp_eccm1 : &fsl_elbc_oob_sp_eccm0;
 		chip->ecc.size = 512;
 		chip->ecc.bytes = 3;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		chip->ecc.strength = 1;
+		/*
+		 * FIXME: can hardware ecc correct 4 bitflips if page size is
+		 * 2k?  Then does hardware report number of corrections for this
+		 * case?  If so, ecc_stats reporting needs to be fixed as well.
+		 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		chip->ecc.strength = 1;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* otherwise fall back to default software ECC */
 		chip->ecc.mode = NAND_ECC_SOFT;
@@ -829,26 +1091,56 @@ static int fsl_elbc_chip_remove(struct fsl_elbc_mtd *priv)
 
 	elbc_fcm_ctrl->chips[priv->bank] = NULL;
 	kfree(priv);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(elbc_fcm_ctrl);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static DEFINE_MUTEX(fsl_elbc_nand_mutex);
 
+<<<<<<< HEAD
 static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
+=======
+static int fsl_elbc_nand_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fsl_lbc_regs __iomem *lbc;
 	struct fsl_elbc_mtd *priv;
 	struct resource res;
 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl;
 	static const char *part_probe_types[]
+<<<<<<< HEAD
+<<<<<<< HEAD
 		= { "cmdlinepart", "RedBoot", NULL };
 	struct mtd_partition *parts;
+=======
+		= { "cmdlinepart", "RedBoot", "ofpart", NULL };
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		= { "cmdlinepart", "RedBoot", "ofpart", NULL };
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	int bank;
 	struct device *dev;
 	struct device_node *node = pdev->dev.of_node;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	struct mtd_part_parser_data ppdata;
+
+	ppdata.of_node = pdev->dev.of_node;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mtd_part_parser_data ppdata;
+
+	ppdata.of_node = pdev->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 	if (!fsl_lbc_ctrl_dev || !fsl_lbc_ctrl_dev->regs)
 		return -ENODEV;
 	lbc = fsl_lbc_ctrl_dev->regs;
@@ -901,7 +1193,12 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
 	elbc_fcm_ctrl->chips[bank] = priv;
 	priv->bank = bank;
 	priv->ctrl = fsl_lbc_ctrl_dev;
+<<<<<<< HEAD
 	priv->dev = dev;
+=======
+	priv->dev = &pdev->dev;
+	dev_set_drvdata(priv->dev, priv);
+>>>>>>> refs/remotes/origin/master
 
 	priv->vbase = ioremap(res.start, resource_size(&res));
 	if (!priv->vbase) {
@@ -934,6 +1231,8 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
 
 	/* First look for RedBoot table or partitions on the command
 	 * line, these take precedence over device tree information */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = parse_mtd_partitions(&priv->mtd, part_probe_types, &parts, 0);
 	if (ret < 0)
 		goto err;
@@ -945,6 +1244,14 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
 	}
 
 	mtd_device_register(&priv->mtd, parts, ret);
+=======
+	mtd_device_parse_register(&priv->mtd, part_probe_types, &ppdata,
+				  NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_device_parse_register(&priv->mtd, part_probe_types, &ppdata,
+				  NULL, 0);
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "eLBC NAND device at 0x%llx, bank %d\n",
 	       (unsigned long long)res.start, priv->bank);
@@ -957,11 +1264,18 @@ err:
 
 static int fsl_elbc_nand_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	int i;
 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
 	for (i = 0; i < MAX_BANKS; i++)
 		if (elbc_fcm_ctrl->chips[i])
 			fsl_elbc_chip_remove(elbc_fcm_ctrl->chips[i]);
+=======
+	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
+	struct fsl_elbc_mtd *priv = dev_get_drvdata(&pdev->dev);
+
+	fsl_elbc_chip_remove(priv);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&fsl_elbc_nand_mutex);
 	elbc_fcm_ctrl->counter--;
@@ -990,6 +1304,8 @@ static struct platform_driver fsl_elbc_nand_driver = {
 	.remove = fsl_elbc_nand_remove,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init fsl_elbc_nand_init(void)
 {
 	return platform_driver_register(&fsl_elbc_nand_driver);
@@ -1002,6 +1318,12 @@ static void __exit fsl_elbc_nand_exit(void)
 
 module_init(fsl_elbc_nand_init);
 module_exit(fsl_elbc_nand_exit);
+=======
+module_platform_driver(fsl_elbc_nand_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(fsl_elbc_nand_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Freescale");

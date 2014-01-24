@@ -10,7 +10,17 @@
  */
 
 #include <linux/compiler.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+#include <asm/dcache_clear.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <asm/dcache_clear.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 
 /*

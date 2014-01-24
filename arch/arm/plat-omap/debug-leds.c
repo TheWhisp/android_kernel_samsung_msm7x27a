@@ -1,25 +1,45 @@
 /*
  * linux/arch/arm/plat-omap/debug-leds.c
  *
+<<<<<<< HEAD
+=======
+ * Copyright 2011 by Bryan Wu <bryan.wu@canonical.com>
+>>>>>>> refs/remotes/origin/master
  * Copyright 2003 by Texas Instruments Incorporated
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/leds.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <asm/leds.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/mach-types.h>
 
 #include <plat/fpga.h>
 #include <mach/gpio.h>
+=======
+#include <asm/mach-types.h>
+
+#include <plat/fpga.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /* Many OMAP development platforms reuse the same "debug board"; these
@@ -187,12 +207,48 @@ done:
  *  - with syfs access and generic triggering
  *  - not readily accessible to in-kernel drivers
  */
+=======
+#include <linux/platform_data/gpio-omap.h>
+#include <linux/slab.h>
+
+#include <asm/mach-types.h>
+
+/* Many OMAP development platforms reuse the same "debug board"; these
+ * platforms include H2, H3, H4, and Perseus2.  There are 16 LEDs on the
+ * debug board (all green), accessed through FPGA registers.
+ */
+
+/* NOTE:  most boards don't have a static mapping for the FPGA ... */
+struct h2p2_dbg_fpga {
+	/* offset 0x00 */
+	u16		smc91x[8];
+	/* offset 0x10 */
+	u16		fpga_rev;
+	u16		board_rev;
+	u16		gpio_outputs;
+	u16		leds;
+	/* offset 0x18 */
+	u16		misc_inputs;
+	u16		lan_status;
+	u16		lan_reset;
+	u16		reserved0;
+	/* offset 0x20 */
+	u16		ps2_data;
+	u16		ps2_ctrl;
+	/* plus also 4 rs232 ports ... */
+};
+
+static struct h2p2_dbg_fpga __iomem *fpga;
+
+static u16 fpga_led_state;
+>>>>>>> refs/remotes/origin/master
 
 struct dbg_led {
 	struct led_classdev	cdev;
 	u16			mask;
 };
 
+<<<<<<< HEAD
 static struct dbg_led dbg_leds[] = {
 	/* REVISIT at least H2 uses different timer & cpu leds... */
 #ifndef CONFIG_LEDS_TIMER
@@ -261,11 +317,67 @@ static int /* __init */ fpga_probe(struct platform_device *pdev)
 	struct resource	*iomem;
 
 	spin_lock_init(&lock);
+=======
+static const struct {
+	const char *name;
+	const char *trigger;
+} dbg_leds[] = {
+	{ "dbg:d4", "heartbeat", },
+	{ "dbg:d5", "cpu0", },
+	{ "dbg:d6", "default-on", },
+	{ "dbg:d7", },
+	{ "dbg:d8", },
+	{ "dbg:d9", },
+	{ "dbg:d10", },
+	{ "dbg:d11", },
+	{ "dbg:d12", },
+	{ "dbg:d13", },
+	{ "dbg:d14", },
+	{ "dbg:d15", },
+	{ "dbg:d16", },
+	{ "dbg:d17", },
+	{ "dbg:d18", },
+	{ "dbg:d19", },
+};
+
+/*
+ * The triggers lines up below will only be used if the
+ * LED triggers are compiled in.
+ */
+static void dbg_led_set(struct led_classdev *cdev,
+			      enum led_brightness b)
+{
+	struct dbg_led *led = container_of(cdev, struct dbg_led, cdev);
+	u16 reg;
+
+	reg = __raw_readw(&fpga->leds);
+	if (b != LED_OFF)
+		reg |= led->mask;
+	else
+		reg &= ~led->mask;
+	__raw_writew(reg, &fpga->leds);
+}
+
+static enum led_brightness dbg_led_get(struct led_classdev *cdev)
+{
+	struct dbg_led *led = container_of(cdev, struct dbg_led, cdev);
+	u16 reg;
+
+	reg = __raw_readw(&fpga->leds);
+	return (reg & led->mask) ? LED_FULL : LED_OFF;
+}
+
+static int fpga_probe(struct platform_device *pdev)
+{
+	struct resource	*iomem;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!iomem)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	fpga = ioremap(iomem->start, H2P2_DBG_FPGA_SIZE);
 	__raw_writew(~0, &fpga->leds);
 
@@ -276,6 +388,28 @@ static int /* __init */ fpga_probe(struct platform_device *pdev)
 
 	if (new_led_api()) {
 		newled_init(&pdev->dev);
+=======
+	fpga = ioremap(iomem->start, resource_size(iomem));
+	__raw_writew(0xff, &fpga->leds);
+
+	for (i = 0; i < ARRAY_SIZE(dbg_leds); i++) {
+		struct dbg_led *led;
+
+		led = kzalloc(sizeof(*led), GFP_KERNEL);
+		if (!led)
+			break;
+
+		led->cdev.name = dbg_leds[i].name;
+		led->cdev.brightness_set = dbg_led_set;
+		led->cdev.brightness_get = dbg_led_get;
+		led->cdev.default_trigger = dbg_leds[i].trigger;
+		led->mask = BIT(i);
+
+		if (led_classdev_register(NULL, &led->cdev) < 0) {
+			kfree(led);
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -283,13 +417,23 @@ static int /* __init */ fpga_probe(struct platform_device *pdev)
 
 static int fpga_suspend_noirq(struct device *dev)
 {
+<<<<<<< HEAD
 	__raw_writew(~0, &fpga->leds);
+=======
+	fpga_led_state = __raw_readw(&fpga->leds);
+	__raw_writew(0xff, &fpga->leds);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int fpga_resume_noirq(struct device *dev)
 {
+<<<<<<< HEAD
 	__raw_writew(~hw_led_state, &fpga->leds);
+=======
+	__raw_writew(~fpga_led_state, &fpga->leds);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

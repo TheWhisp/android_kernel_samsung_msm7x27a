@@ -6,7 +6,11 @@
 #ifndef __DAEMON_H__
 #define __DAEMON_H__
 
+<<<<<<< HEAD
 #include "net_user.h"
+=======
+#include <net_user.h>
+>>>>>>> refs/remotes/origin/master
 
 #define SWITCH_VERSION 3
 

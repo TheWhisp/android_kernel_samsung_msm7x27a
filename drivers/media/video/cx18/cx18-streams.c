@@ -138,6 +138,15 @@ static int cx18_prepare_buffer(struct videobuf_queue *q,
 		buf->tvnorm    = cx->std;
 		s->pixelformat = pixelformat;
 
+<<<<<<< HEAD
+=======
+		/* HM12 YUV size is (Y=(h*720) + UV=(h*(720/2)))
+		   UYUV YUV size is (Y=(h*720) + UV=(h*(720))) */
+		if (s->pixelformat == V4L2_PIX_FMT_HM12)
+			s->vb_bytes_per_frame = height * 720 * 3 / 2;
+		else
+			s->vb_bytes_per_frame = height * 720 * 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 		cx18_dma_free(q, s, buf);
 	}
 
@@ -154,6 +163,15 @@ static int cx18_prepare_buffer(struct videobuf_queue *q,
 		buf->tvnorm    = cx->std;
 		s->pixelformat = pixelformat;
 
+<<<<<<< HEAD
+=======
+		/* HM12 YUV size is (Y=(h*720) + UV=(h*(720/2)))
+		   UYUV YUV size is (Y=(h*720) + UV=(h*(720))) */
+		if (s->pixelformat == V4L2_PIX_FMT_HM12)
+			s->vb_bytes_per_frame = height * 720 * 3 / 2;
+		else
+			s->vb_bytes_per_frame = height * 720 * 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = videobuf_iolock(q, &buf->vb, NULL);
 		if (rc != 0)
 			goto fail;
@@ -287,6 +305,10 @@ static void cx18_stream_init(struct cx18 *cx, int type)
 
 		/* Assume the previous pixel default */
 		s->pixelformat = V4L2_PIX_FMT_HM12;
+<<<<<<< HEAD
+=======
+		s->vb_bytes_per_frame = cx->cxhdl.height * 720 * 3 / 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 

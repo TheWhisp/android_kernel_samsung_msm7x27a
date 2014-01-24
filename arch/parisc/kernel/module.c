@@ -214,14 +214,21 @@ static inline int reassemble_22(int as22)
 
 void *module_alloc(unsigned long size)
 {
+<<<<<<< HEAD
 	if (size == 0)
 		return NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* using RWX means less protection for modules, but it's
 	 * easier than trying to map the text, data, init_text and
 	 * init_data correctly */
 	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
 				    GFP_KERNEL | __GFP_HIGHMEM,
+<<<<<<< HEAD
 				    PAGE_KERNEL_RWX, -1,
+=======
+				    PAGE_KERNEL_RWX, NUMA_NO_NODE,
+>>>>>>> refs/remotes/origin/master
 				    __builtin_return_address(0));
 }
 
@@ -540,6 +547,8 @@ static Elf_Addr get_stub(struct module *me, unsigned long value, long addend,
 	return (Elf_Addr)stub;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int apply_relocate(Elf_Shdr *sechdrs,
 		   const char *strtab,
 		   unsigned int symindex,
@@ -552,6 +561,10 @@ int apply_relocate(Elf_Shdr *sechdrs,
 	return -ENOEXEC;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_64BIT
 int apply_relocate_add(Elf_Shdr *sechdrs,
 		       const char *strtab,

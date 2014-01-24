@@ -17,7 +17,15 @@
 #include <linux/interrupt.h>
 #include <linux/mutex.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DM_MSG_PREFIX "table"
 
@@ -26,6 +34,7 @@
 #define KEYS_PER_NODE (NODE_SIZE / sizeof(sector_t))
 #define CHILDREN_PER_NODE (KEYS_PER_NODE + 1)
 
+<<<<<<< HEAD
 /*
  * The table has always exactly one reference from either mapped_device->map
  * or hash_cell->new_map. This reference is not counted in table->holders.
@@ -42,6 +51,10 @@
 struct dm_table {
 	struct mapped_device *md;
 	atomic_t holders;
+=======
+struct dm_table {
+	struct mapped_device *md;
+>>>>>>> refs/remotes/origin/master
 	unsigned type;
 
 	/* btree table */
@@ -54,8 +67,20 @@ struct dm_table {
 	sector_t *highs;
 	struct dm_target *targets;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned discards_supported:1;
 	unsigned integrity_supported:1;
+=======
+	struct target_type *immutable_target_type;
+	unsigned integrity_supported:1;
+	unsigned singleton:1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct target_type *immutable_target_type;
+	unsigned integrity_supported:1;
+	unsigned singleton:1;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Indicates the rw permissions for the new logical
@@ -154,12 +179,26 @@ void *dm_vcalloc(unsigned long nmemb, unsigned long elem_size)
 		return NULL;
 
 	size = nmemb * elem_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	addr = vmalloc(size);
 	if (addr)
 		memset(addr, 0, size);
 
 	return addr;
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	addr = vzalloc(size);
+
+	return addr;
+}
+EXPORT_SYMBOL(dm_vcalloc);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * highs, and targets are managed as dynamic arrays during a
@@ -208,17 +247,45 @@ int dm_table_create(struct dm_table **result, fmode_t mode,
 
 	INIT_LIST_HEAD(&t->devices);
 	INIT_LIST_HEAD(&t->target_callbacks);
+<<<<<<< HEAD
 	atomic_set(&t->holders, 0);
+<<<<<<< HEAD
 	t->discards_supported = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!num_targets)
 		num_targets = KEYS_PER_NODE;
 
 	num_targets = dm_round_up(num_targets, KEYS_PER_NODE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!num_targets) {
+		kfree(t);
+		return -ENOMEM;
+	}
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (alloc_targets(t, num_targets)) {
 		kfree(t);
 		t = NULL;
+=======
+	if (alloc_targets(t, num_targets)) {
+		kfree(t);
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -248,10 +315,13 @@ void dm_table_destroy(struct dm_table *t)
 	if (!t)
 		return;
 
+<<<<<<< HEAD
 	while (atomic_read(&t->holders))
 		msleep(1);
 	smp_mb();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* free the indexes */
 	if (t->depth >= 2)
 		vfree(t->index[t->depth - 2]);
@@ -269,18 +339,31 @@ void dm_table_destroy(struct dm_table *t)
 	vfree(t->highs);
 
 	/* free the device list */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (t->devices.next != &t->devices)
 		free_devices(&t->devices);
+=======
+	free_devices(&t->devices);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_devices(&t->devices);
+>>>>>>> refs/remotes/origin/master
 
 	dm_free_md_mempools(t->mempools);
 
 	kfree(t);
 }
 
+<<<<<<< HEAD
 void dm_table_get(struct dm_table *t)
 {
 	atomic_inc(&t->holders);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dm_table_get);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void dm_table_put(struct dm_table *t)
 {
@@ -290,7 +373,13 @@ void dm_table_put(struct dm_table *t)
 	smp_mb__before_atomic_dec();
 	atomic_dec(&t->holders);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dm_table_put);
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Checks to see if we need to extend highs or targets.
  */
@@ -455,17 +544,42 @@ static int upgrade_mode(struct dm_dev_internal *dd, fmode_t new_mode,
  * Add a device to the list, or just increment the usage count if
  * it's already present.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __table_get_device(struct dm_table *t, struct dm_target *ti,
 		      const char *path, fmode_t mode, struct dm_dev **result)
+=======
+int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
+		  struct dm_dev **result)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
+		  struct dm_dev **result)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 	dev_t uninitialized_var(dev);
 	struct dm_dev_internal *dd;
 	unsigned int major, minor;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	BUG_ON(!t);
 
 	if (sscanf(path, "%u:%u", &major, &minor) == 2) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct dm_table *t = ti->table;
+	char dummy;
+
+	BUG_ON(!t);
+
+	if (sscanf(path, "%u:%u%c", &major, &minor, &dummy) == 2) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Extract the major/minor numbers */
 		dev = MKDEV(major, minor);
 		if (MAJOR(dev) != major || MINOR(dev) != minor)
@@ -509,6 +623,14 @@ static int __table_get_device(struct dm_table *t, struct dm_target *ti,
 	*result = &dd->dm_dev;
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dm_get_device);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dm_get_device);
+>>>>>>> refs/remotes/origin/master
 
 int dm_set_device_limits(struct dm_target *ti, struct dm_dev *dev,
 			 sector_t start, sector_t len, void *data)
@@ -539,14 +661,24 @@ int dm_set_device_limits(struct dm_target *ti, struct dm_dev *dev,
 	 * If not we'll force DM to use PAGE_SIZE or
 	 * smaller I/O, just to be safe.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (q->merge_bvec_fn && !ti->type->merge)
+=======
+	if (dm_queue_merge_is_compulsory(q) && !ti->type->merge)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dm_queue_merge_is_compulsory(q) && !ti->type->merge)
+>>>>>>> refs/remotes/origin/master
 		blk_limits_max_hw_sectors(limits,
 					  (unsigned int) (PAGE_SIZE >> 9));
 	return 0;
 }
 EXPORT_SYMBOL_GPL(dm_set_device_limits);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
 		  struct dm_dev **result)
 {
@@ -556,6 +688,14 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
 
 /*
  * Decrement a devices use count and remove it if necessary.
+=======
+/*
+ * Decrement a device's use count and remove it if necessary.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Decrement a device's use count and remove it if necessary.
+>>>>>>> refs/remotes/origin/master
  */
 void dm_put_device(struct dm_target *ti, struct dm_dev *d)
 {
@@ -568,6 +708,14 @@ void dm_put_device(struct dm_target *ti, struct dm_dev *d)
 		kfree(dd);
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dm_put_device);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dm_put_device);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Checks to see if the target joins onto the end of the table.
@@ -585,14 +733,51 @@ static int adjoin(struct dm_table *table, struct dm_target *ti)
 
 /*
  * Used to dynamically allocate the arg array.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ *
+ * We do first allocation with GFP_NOIO because dm-mpath and dm-thin must
+ * process messages even if some device is suspended. These messages have a
+ * small fixed number of arguments.
+ *
+ * On the other hand, dm-switch needs to process bulk data using messages and
+ * excessive use of GFP_NOIO could cause trouble.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 static char **realloc_argv(unsigned *array_size, char **old_argv)
 {
 	char **argv;
 	unsigned new_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	new_size = *array_size ? *array_size * 2 : 64;
 	argv = kmalloc(new_size * sizeof(*argv), GFP_KERNEL);
+=======
+	gfp_t gfp;
+
+=======
+	gfp_t gfp;
+
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (*array_size) {
+		new_size = *array_size * 2;
+		gfp = GFP_KERNEL;
+	} else {
+		new_size = 8;
+		gfp = GFP_NOIO;
+	}
+	argv = kmalloc(new_size * sizeof(*argv), gfp);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (argv) {
 		memcpy(argv, old_argv, *array_size * sizeof(*argv));
 		*array_size = new_size;
@@ -703,7 +888,15 @@ static int validate_hardware_logical_block_alignment(struct dm_table *table,
 	while (i < dm_table_get_num_targets(table)) {
 		ti = dm_table_get_target(table, i++);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		blk_set_default_limits(&ti_limits);
+=======
+		blk_set_stacking_limits(&ti_limits);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		blk_set_stacking_limits(&ti_limits);
+>>>>>>> refs/remotes/origin/master
 
 		/* combine all target devices' limits */
 		if (ti->type->iterate_devices)
@@ -746,6 +939,21 @@ int dm_table_add_target(struct dm_table *t, const char *type,
 	char **argv;
 	struct dm_target *tgt;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (t->singleton) {
+		DMERR("%s: target type %s must appear alone in table",
+		      dm_device_name(t->md), t->targets->type->name);
+		return -EINVAL;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((r = check_space(t)))
 		return r;
 
@@ -764,6 +972,45 @@ int dm_table_add_target(struct dm_table *t, const char *type,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (dm_target_needs_singleton(tgt->type)) {
+		if (t->num_targets) {
+			DMERR("%s: target type %s must appear alone in table",
+			      dm_device_name(t->md), type);
+			return -EINVAL;
+		}
+		t->singleton = 1;
+	}
+
+	if (dm_target_always_writeable(tgt->type) && !(t->mode & FMODE_WRITE)) {
+		DMERR("%s: target type %s may not be included in read-only tables",
+		      dm_device_name(t->md), type);
+		return -EINVAL;
+	}
+
+	if (t->immutable_target_type) {
+		if (t->immutable_target_type != tgt->type) {
+			DMERR("%s: immutable target type %s cannot be mixed with other target types",
+			      dm_device_name(t->md), t->immutable_target_type->name);
+			return -EINVAL;
+		}
+	} else if (dm_target_is_immutable(tgt->type)) {
+		if (t->num_targets) {
+			DMERR("%s: immutable target type %s cannot be mixed with other target types",
+			      dm_device_name(t->md), tgt->type->name);
+			return -EINVAL;
+		}
+		t->immutable_target_type = tgt->type;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tgt->table = t;
 	tgt->begin = start;
 	tgt->len = len;
@@ -791,8 +1038,20 @@ int dm_table_add_target(struct dm_table *t, const char *type,
 
 	t->highs[t->num_targets++] = tgt->begin + tgt->len - 1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!tgt->num_discard_requests)
 		t->discards_supported = 0;
+=======
+	if (!tgt->num_discard_requests && tgt->discards_supported)
+		DMWARN("%s: %s: ignoring discards_supported because num_discard_requests is zero.",
+		       dm_device_name(t->md), type);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!tgt->num_discard_bios && tgt->discards_supported)
+		DMWARN("%s: %s: ignoring discards_supported because num_discard_bios is zero.",
+		       dm_device_name(t->md), type);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -802,6 +1061,71 @@ int dm_table_add_target(struct dm_table *t, const char *type,
 	return r;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Target argument parsing helpers.
+ */
+static int validate_next_arg(struct dm_arg *arg, struct dm_arg_set *arg_set,
+			     unsigned *value, char **error, unsigned grouped)
+{
+	const char *arg_str = dm_shift_arg(arg_set);
+	char dummy;
+
+	if (!arg_str ||
+	    (sscanf(arg_str, "%u%c", value, &dummy) != 1) ||
+	    (*value < arg->min) ||
+	    (*value > arg->max) ||
+	    (grouped && arg_set->argc < *value)) {
+		*error = arg->error;
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+int dm_read_arg(struct dm_arg *arg, struct dm_arg_set *arg_set,
+		unsigned *value, char **error)
+{
+	return validate_next_arg(arg, arg_set, value, error, 0);
+}
+EXPORT_SYMBOL(dm_read_arg);
+
+int dm_read_arg_group(struct dm_arg *arg, struct dm_arg_set *arg_set,
+		      unsigned *value, char **error)
+{
+	return validate_next_arg(arg, arg_set, value, error, 1);
+}
+EXPORT_SYMBOL(dm_read_arg_group);
+
+const char *dm_shift_arg(struct dm_arg_set *as)
+{
+	char *r;
+
+	if (as->argc) {
+		as->argc--;
+		r = *as->argv;
+		as->argv++;
+		return r;
+	}
+
+	return NULL;
+}
+EXPORT_SYMBOL(dm_shift_arg);
+
+void dm_consume_args(struct dm_arg_set *as, unsigned num_args)
+{
+	BUG_ON(as->argc < num_args);
+	as->argc -= num_args;
+	as->argv += num_args;
+}
+EXPORT_SYMBOL(dm_consume_args);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static int dm_table_set_type(struct dm_table *t)
 {
 	unsigned i;
@@ -813,6 +1137,22 @@ static int dm_table_set_type(struct dm_table *t)
 	for (i = 0; i < t->num_targets; i++) {
 		tgt = t->targets + i;
 		if (dm_target_request_based(tgt))
+=======
+static int dm_table_set_type(struct dm_table *t)
+{
+	unsigned i;
+	unsigned bio_based = 0, request_based = 0, hybrid = 0;
+	struct dm_target *tgt;
+	struct dm_dev_internal *dd;
+	struct list_head *devices;
+	unsigned live_md_type;
+
+	for (i = 0; i < t->num_targets; i++) {
+		tgt = t->targets + i;
+		if (dm_target_hybrid(tgt))
+			hybrid = 1;
+		else if (dm_target_request_based(tgt))
+>>>>>>> refs/remotes/origin/master
 			request_based = 1;
 		else
 			bio_based = 1;
@@ -824,6 +1164,22 @@ static int dm_table_set_type(struct dm_table *t)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (hybrid && !bio_based && !request_based) {
+		/*
+		 * The targets can work either way.
+		 * Determine the type from the live device.
+		 * Default to bio-based if device is new.
+		 */
+		live_md_type = dm_get_md_type(t->md);
+		if (live_md_type == DM_TYPE_REQUEST_BASED)
+			request_based = 1;
+		else
+			bio_based = 1;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (bio_based) {
 		/* We must use this table as bio-based */
 		t->type = DM_TYPE_BIO_BASED;
@@ -863,6 +1219,20 @@ unsigned dm_table_get_type(struct dm_table *t)
 	return t->type;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct target_type *dm_table_get_immutable_target_type(struct dm_table *t)
+{
+	return t->immutable_target_type;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 bool dm_table_request_based(struct dm_table *t)
 {
 	return dm_table_get_type(t) == DM_TYPE_REQUEST_BASED;
@@ -871,13 +1241,29 @@ bool dm_table_request_based(struct dm_table *t)
 int dm_table_alloc_md_mempools(struct dm_table *t)
 {
 	unsigned type = dm_table_get_type(t);
+<<<<<<< HEAD
+=======
+	unsigned per_bio_data_size = 0;
+	struct dm_target *tgt;
+	unsigned i;
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(type == DM_TYPE_NONE)) {
 		DMWARN("no table type is set, can't allocate mempools");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	t->mempools = dm_alloc_md_mempools(type, t->integrity_supported);
+=======
+	if (type == DM_TYPE_BIO_BASED)
+		for (i = 0; i < t->num_targets; i++) {
+			tgt = t->targets + i;
+			per_bio_data_size = max(per_bio_data_size, tgt->per_bio_data_size);
+		}
+
+	t->mempools = dm_alloc_md_mempools(type, t->integrity_supported, per_bio_data_size);
+>>>>>>> refs/remotes/origin/master
 	if (!t->mempools)
 		return -ENOMEM;
 
@@ -1077,11 +1463,27 @@ void dm_table_event(struct dm_table *t)
 		t->event_fn(t->event_context);
 	mutex_unlock(&_event_lock);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dm_table_event);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dm_table_event);
+>>>>>>> refs/remotes/origin/master
 
 sector_t dm_table_get_size(struct dm_table *t)
 {
 	return t->num_targets ? (t->highs[t->num_targets - 1] + 1) : 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dm_table_get_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dm_table_get_size);
+>>>>>>> refs/remotes/origin/master
 
 struct dm_target *dm_table_get_target(struct dm_table *t, unsigned int index)
 {
@@ -1114,6 +1516,44 @@ struct dm_target *dm_table_find_target(struct dm_table *t, sector_t sector)
 	return &t->targets[(KEYS_PER_NODE * n) + k];
 }
 
+<<<<<<< HEAD
+=======
+static int count_device(struct dm_target *ti, struct dm_dev *dev,
+			sector_t start, sector_t len, void *data)
+{
+	unsigned *num_devices = data;
+
+	(*num_devices)++;
+
+	return 0;
+}
+
+/*
+ * Check whether a table has no data devices attached using each
+ * target's iterate_devices method.
+ * Returns false if the result is unknown because a target doesn't
+ * support iterate_devices.
+ */
+bool dm_table_has_no_data_devices(struct dm_table *table)
+{
+	struct dm_target *uninitialized_var(ti);
+	unsigned i = 0, num_devices = 0;
+
+	while (i < dm_table_get_num_targets(table)) {
+		ti = dm_table_get_target(table, i++);
+
+		if (!ti->type->iterate_devices)
+			return false;
+
+		ti->type->iterate_devices(ti, count_device, &num_devices);
+		if (num_devices)
+			return false;
+	}
+
+	return true;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Establish the new table's queue_limits and validate them.
  */
@@ -1124,10 +1564,23 @@ int dm_calculate_queue_limits(struct dm_table *table,
 	struct queue_limits ti_limits;
 	unsigned i = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	blk_set_default_limits(limits);
 
 	while (i < dm_table_get_num_targets(table)) {
 		blk_set_default_limits(&ti_limits);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	blk_set_stacking_limits(limits);
+
+	while (i < dm_table_get_num_targets(table)) {
+		blk_set_stacking_limits(&ti_limits);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ti = dm_table_get_target(table, i++);
 
@@ -1179,15 +1632,31 @@ combine_limits:
 static void dm_table_set_integrity(struct dm_table *t)
 {
 	struct gendisk *template_disk = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int rc;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!blk_get_integrity(dm_disk(t->md)))
 		return;
 
 	template_disk = dm_table_get_integrity_disk(t, true);
 	if (template_disk)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rc = blk_integrity_register(dm_disk(t->md),
 					    blk_get_integrity(template_disk));
+=======
+		blk_integrity_register(dm_disk(t->md),
+				       blk_get_integrity(template_disk));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		blk_integrity_register(dm_disk(t->md),
+				       blk_get_integrity(template_disk));
+>>>>>>> refs/remotes/origin/master
 	else if (blk_integrity_is_initialized(dm_disk(t->md)))
 		DMWARN("%s: device no longer has a valid integrity profile",
 		       dm_device_name(t->md));
@@ -1196,9 +1665,145 @@ static void dm_table_set_integrity(struct dm_table *t)
 		       dm_device_name(t->md));
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
 			       struct queue_limits *limits)
 {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int device_flush_capable(struct dm_target *ti, struct dm_dev *dev,
+				sector_t start, sector_t len, void *data)
+{
+	unsigned flush = (*(unsigned *)data);
+	struct request_queue *q = bdev_get_queue(dev->bdev);
+
+	return q && (q->flush_flags & flush);
+}
+
+static bool dm_table_supports_flush(struct dm_table *t, unsigned flush)
+{
+	struct dm_target *ti;
+	unsigned i = 0;
+
+	/*
+	 * Require at least one underlying device to support flushes.
+	 * t->devices includes internal dm devices such as mirror logs
+	 * so we need to use iterate_devices here, which targets
+	 * supporting flushes must provide.
+	 */
+	while (i < dm_table_get_num_targets(t)) {
+		ti = dm_table_get_target(t, i++);
+
+<<<<<<< HEAD
+		if (!ti->num_flush_requests)
+			continue;
+
+=======
+		if (!ti->num_flush_bios)
+			continue;
+
+		if (ti->flush_supported)
+			return 1;
+
+>>>>>>> refs/remotes/origin/master
+		if (ti->type->iterate_devices &&
+		    ti->type->iterate_devices(ti, device_flush_capable, &flush))
+			return 1;
+	}
+
+	return 0;
+}
+
+static bool dm_table_discard_zeroes_data(struct dm_table *t)
+{
+	struct dm_target *ti;
+	unsigned i = 0;
+
+	/* Ensure that all targets supports discard_zeroes_data. */
+	while (i < dm_table_get_num_targets(t)) {
+		ti = dm_table_get_target(t, i++);
+
+		if (ti->discard_zeroes_data_unsupported)
+			return 0;
+	}
+
+	return 1;
+}
+
+static int device_is_nonrot(struct dm_target *ti, struct dm_dev *dev,
+			    sector_t start, sector_t len, void *data)
+{
+	struct request_queue *q = bdev_get_queue(dev->bdev);
+
+	return q && blk_queue_nonrot(q);
+}
+
+static int device_is_not_random(struct dm_target *ti, struct dm_dev *dev,
+			     sector_t start, sector_t len, void *data)
+{
+	struct request_queue *q = bdev_get_queue(dev->bdev);
+
+	return q && !blk_queue_add_random(q);
+}
+
+static bool dm_table_all_devices_attribute(struct dm_table *t,
+					   iterate_devices_callout_fn func)
+{
+	struct dm_target *ti;
+	unsigned i = 0;
+
+	while (i < dm_table_get_num_targets(t)) {
+		ti = dm_table_get_target(t, i++);
+
+		if (!ti->type->iterate_devices ||
+		    !ti->type->iterate_devices(ti, func, NULL))
+			return 0;
+	}
+
+	return 1;
+}
+
+<<<<<<< HEAD
+=======
+static int device_not_write_same_capable(struct dm_target *ti, struct dm_dev *dev,
+					 sector_t start, sector_t len, void *data)
+{
+	struct request_queue *q = bdev_get_queue(dev->bdev);
+
+	return q && !q->limits.max_write_same_sectors;
+}
+
+static bool dm_table_supports_write_same(struct dm_table *t)
+{
+	struct dm_target *ti;
+	unsigned i = 0;
+
+	while (i < dm_table_get_num_targets(t)) {
+		ti = dm_table_get_target(t, i++);
+
+		if (!ti->num_write_same_bios)
+			return false;
+
+		if (!ti->type->iterate_devices ||
+		    ti->type->iterate_devices(ti, device_not_write_same_capable, NULL))
+			return false;
+	}
+
+	return true;
+}
+
+>>>>>>> refs/remotes/origin/master
+void dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
+			       struct queue_limits *limits)
+{
+	unsigned flush = 0;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Copy table's limits to the DM device's request_queue
 	 */
@@ -1209,9 +1814,55 @@ void dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
 	else
 		queue_flag_set_unlocked(QUEUE_FLAG_DISCARD, q);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dm_table_set_integrity(t);
 
 	/*
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (dm_table_supports_flush(t, REQ_FLUSH)) {
+		flush |= REQ_FLUSH;
+		if (dm_table_supports_flush(t, REQ_FUA))
+			flush |= REQ_FUA;
+	}
+	blk_queue_flush(q, flush);
+
+	if (!dm_table_discard_zeroes_data(t))
+		q->limits.discard_zeroes_data = 0;
+
+	/* Ensure that all underlying devices are non-rotational. */
+	if (dm_table_all_devices_attribute(t, device_is_nonrot))
+		queue_flag_set_unlocked(QUEUE_FLAG_NONROT, q);
+	else
+		queue_flag_clear_unlocked(QUEUE_FLAG_NONROT, q);
+
+<<<<<<< HEAD
+=======
+	if (!dm_table_supports_write_same(t))
+		q->limits.max_write_same_sectors = 0;
+
+>>>>>>> refs/remotes/origin/master
+	dm_table_set_integrity(t);
+
+	/*
+	 * Determine whether or not this queue's I/O timings contribute
+	 * to the entropy pool, Only request-based targets use this.
+	 * Clear QUEUE_FLAG_ADD_RANDOM if any underlying device does not
+	 * have it set.
+	 */
+	if (blk_queue_add_random(q) && dm_table_all_devices_attribute(t, device_is_not_random))
+		queue_flag_clear_unlocked(QUEUE_FLAG_ADD_RANDOM, q);
+
+	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * QUEUE_FLAG_STACKABLE must be set after all queue settings are
 	 * visible to other CPUs because, once the flag is set, incoming bios
 	 * are processed by request-based dm, which refers to the queue
@@ -1239,6 +1890,14 @@ fmode_t dm_table_get_mode(struct dm_table *t)
 {
 	return t->mode;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dm_table_get_mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dm_table_get_mode);
+>>>>>>> refs/remotes/origin/master
 
 static void suspend_targets(struct dm_table *t, unsigned postsuspend)
 {
@@ -1283,8 +1942,16 @@ int dm_table_resume_targets(struct dm_table *t)
 			continue;
 
 		r = ti->type->preresume(ti);
+<<<<<<< HEAD
 		if (r)
 			return r;
+=======
+		if (r) {
+			DMERR("%s: %s: preresume failed, error = %d",
+			      dm_device_name(t->md), ti->type->name, r);
+			return r;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < t->num_targets; i++) {
@@ -1347,6 +2014,14 @@ struct mapped_device *dm_table_get_md(struct dm_table *t)
 {
 	return t->md;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dm_table_get_md);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(dm_table_get_md);
+>>>>>>> refs/remotes/origin/master
 
 static int device_discard_capable(struct dm_target *ti, struct dm_dev *dev,
 				  sector_t start, sector_t len, void *data)
@@ -1361,19 +2036,45 @@ bool dm_table_supports_discards(struct dm_table *t)
 	struct dm_target *ti;
 	unsigned i = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!t->discards_supported)
 		return 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Unless any target used by the table set discards_supported,
 	 * require at least one underlying device to support discards.
 	 * t->devices includes internal dm devices such as mirror logs
 	 * so we need to use iterate_devices here, which targets
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * supporting discard must provide.
+=======
+	 * supporting discard selectively must provide.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * supporting discard selectively must provide.
+>>>>>>> refs/remotes/origin/master
 	 */
 	while (i < dm_table_get_num_targets(t)) {
 		ti = dm_table_get_target(t, i++);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (!ti->num_discard_requests)
+			continue;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!ti->num_discard_bios)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		if (ti->discards_supported)
 			return 1;
 
@@ -1384,6 +2085,8 @@ bool dm_table_supports_discards(struct dm_table *t)
 
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 EXPORT_SYMBOL(dm_vcalloc);
 EXPORT_SYMBOL(dm_get_device);
@@ -1394,3 +2097,7 @@ EXPORT_SYMBOL(dm_table_get_mode);
 EXPORT_SYMBOL(dm_table_get_md);
 EXPORT_SYMBOL(dm_table_put);
 EXPORT_SYMBOL(dm_table_get);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

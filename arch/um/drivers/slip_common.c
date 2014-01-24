@@ -1,6 +1,10 @@
 #include <string.h>
 #include "slip_common.h"
+<<<<<<< HEAD
 #include "net_user.h"
+=======
+#include <net_user.h>
+>>>>>>> refs/remotes/origin/master
 
 int slip_proto_read(int fd, void *buf, int len, struct slip_proto *slip)
 {

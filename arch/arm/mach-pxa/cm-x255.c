@@ -11,7 +11,13 @@
 
 #include <linux/platform_device.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mtd/partitions.h>
 #include <linux/mtd/physmap.h>
 #include <linux/mtd/nand-gpio.h>

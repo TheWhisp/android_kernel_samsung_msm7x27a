@@ -12,6 +12,14 @@
 #include <linux/pfkeyv2.h>
 #include <linux/ipsec.h>
 #include <linux/netfilter_ipv4.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 static int xfrm4_init_flags(struct xfrm_state *x)
 {
@@ -82,6 +90,10 @@ static struct xfrm_state_afinfo xfrm4_state_afinfo = {
 	.extract_input		= xfrm4_extract_input,
 	.extract_output		= xfrm4_extract_output,
 	.transport_finish	= xfrm4_transport_finish,
+<<<<<<< HEAD
+=======
+	.local_error		= xfrm4_local_error,
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init xfrm4_state_init(void)

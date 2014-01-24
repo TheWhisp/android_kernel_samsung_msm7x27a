@@ -7,6 +7,7 @@
  * License. See the file "COPYING" in the main directory of this archive
  * for more details.
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_MICROBLAZE_ELF_H
 #define _ASM_MICROBLAZE_ELF_H
@@ -16,13 +17,24 @@
  * I've snaffled the value from the microblaze binutils source code
  * /binutils/microblaze/include/elf/microblaze.h
  */
+<<<<<<< HEAD
 #define EM_XILINX_MICROBLAZE	0xbaab
 #define ELF_ARCH		EM_XILINX_MICROBLAZE
+=======
+#define EM_MICROBLAZE		189
+#define EM_MICROBLAZE_OLD	0xbaab
+#define ELF_ARCH		EM_MICROBLAZE
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * This is used to ensure we don't load something for the wrong architecture.
  */
+<<<<<<< HEAD
 #define elf_check_arch(x)	((x)->e_machine == EM_XILINX_MICROBLAZE)
+=======
+#define elf_check_arch(x)	((x)->e_machine == EM_MICROBLAZE \
+				 || (x)->e_machine == EM_MICROBLAZE_OLD)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * These are used to set parameters in the core dumps.
@@ -119,4 +131,26 @@ do {							\
 
 #endif /* __uClinux__ */
 
+=======
+#ifndef _ASM_MICROBLAZE_ELF_H
+#define _ASM_MICROBLAZE_ELF_H
+
+#include <uapi/asm/elf.h>
+
+#ifndef __uClinux__
+#ifndef ELF_GREG_T
+#endif
+#ifndef ELF_NGREG
+#endif
+#ifndef ELF_GREGSET_T
+#endif
+#ifndef ELF_FPREGSET_T
+#endif
+#ifdef __MICROBLAZEEL__
+#else
+#endif
+#define SET_PERSONALITY(ex) \
+	set_personality(PER_LINUX_32BIT | (current->personality & (~PER_MASK)))
+#endif /* __uClinux__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_MICROBLAZE_ELF_H */

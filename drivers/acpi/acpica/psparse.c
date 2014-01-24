@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,9 +51,15 @@
 
 /*
  * Parse the AML and build an operation tree as most interpreters,
+<<<<<<< HEAD
  * like Perl, do.  Parsing is done by hand rather than with a YACC
  * generated parser to tightly constrain stack and dynamic memory
  * usage.  At the same time, parsing is kept flexible and the code
+=======
+ * like Perl, do. Parsing is done by hand rather than with a YACC
+ * generated parser to tightly constrain stack and dynamic memory
+ * usage. At the same time, parsing is kept flexible and the code
+>>>>>>> refs/remotes/origin/master
  * fairly compact by parsing based on a list of AML opcode
  * templates in aml_op_info[]
  */
@@ -64,7 +78,11 @@ ACPI_MODULE_NAME("psparse")
  *
  * FUNCTION:    acpi_ps_get_opcode_size
  *
+<<<<<<< HEAD
  * PARAMETERS:  Opcode          - An AML opcode
+=======
+ * PARAMETERS:  opcode          - An AML opcode
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Size of the opcode, in bytes (1 or 2)
  *
@@ -121,7 +139,11 @@ u16 acpi_ps_peek_opcode(struct acpi_parse_state * parser_state)
  * FUNCTION:    acpi_ps_complete_this_op
  *
  * PARAMETERS:  walk_state      - Current State
+<<<<<<< HEAD
  *              Op              - Op to complete
+=======
+ *              op              - Op to complete
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -176,10 +198,17 @@ acpi_ps_complete_this_op(struct acpi_walk_state * walk_state,
 
 		switch (parent_info->class) {
 		case AML_CLASS_CONTROL:
+<<<<<<< HEAD
 			break;
 
 		case AML_CLASS_CREATE:
 
+=======
+
+			break;
+
+		case AML_CLASS_CREATE:
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * These opcodes contain term_arg operands. The current
 			 * op must be replaced by a placeholder return op
@@ -192,7 +221,10 @@ acpi_ps_complete_this_op(struct acpi_walk_state * walk_state,
 			break;
 
 		case AML_CLASS_NAMED_OBJECT:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * These opcodes contain term_arg operands. The current
 			 * op must be replaced by a placeholder return op
@@ -298,7 +330,11 @@ acpi_ps_complete_this_op(struct acpi_walk_state * walk_state,
 			}
 	}
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	/* Now we can actually delete the subtree rooted at Op */
 
@@ -311,7 +347,11 @@ acpi_ps_complete_this_op(struct acpi_walk_state * walk_state,
  * FUNCTION:    acpi_ps_next_parse_state
  *
  * PARAMETERS:  walk_state          - Current state
+<<<<<<< HEAD
  *              Op                  - Current parse op
+=======
+ *              op                  - Current parse op
+>>>>>>> refs/remotes/origin/master
  *              callback_status     - Status from previous operation
  *
  * RETURN:      Status
@@ -379,7 +419,11 @@ acpi_ps_next_parse_state(struct acpi_walk_state *walk_state,
 	case AE_CTRL_FALSE:
 		/*
 		 * Either an IF/WHILE Predicate was false or we encountered a BREAK
+<<<<<<< HEAD
 		 * opcode.  In both cases, we do not execute the rest of the
+=======
+		 * opcode. In both cases, we do not execute the rest of the
+>>>>>>> refs/remotes/origin/master
 		 * package;  We simply close out the parent (finishing the walk of
 		 * this branch of the tree) and continue execution at the parent
 		 * level.
@@ -459,8 +503,14 @@ acpi_status acpi_ps_parse_aml(struct acpi_walk_state *walk_state)
 
 			/* Executing a control method - additional cleanup */
 
+<<<<<<< HEAD
 			acpi_ds_terminate_control_method(
 				walk_state->method_desc, walk_state);
+=======
+			acpi_ds_terminate_control_method(walk_state->
+							 method_desc,
+							 walk_state);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		acpi_ds_delete_walk_state(walk_state);
@@ -487,7 +537,11 @@ acpi_status acpi_ps_parse_aml(struct acpi_walk_state *walk_state)
 	acpi_gbl_current_walk_list = thread;
 
 	/*
+<<<<<<< HEAD
 	 * Execute the walk loop as long as there is a valid Walk State.  This
+=======
+	 * Execute the walk loop as long as there is a valid Walk State. This
+>>>>>>> refs/remotes/origin/master
 	 * handles nested control method invocations without recursion.
 	 */
 	ACPI_DEBUG_PRINT((ACPI_DB_PARSE, "State=%p\n", walk_state));

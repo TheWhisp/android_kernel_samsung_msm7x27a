@@ -15,7 +15,13 @@
 #include <linux/sched.h>
 #include <linux/kdb.h>
 #include <linux/nmi.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "kdb_private.h"
 
 
@@ -112,9 +118,19 @@ kdb_bt(int argc, const char **argv)
 	unsigned long addr;
 	long offset;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kdbgetintenv("BTARGS", &argcount);	/* Arguments to print */
 	kdbgetintenv("BTAPROMPT", &btaprompt);	/* Prompt after each
 						 * proc in bta */
+=======
+	/* Prompt after each proc in bta */
+	kdbgetintenv("BTAPROMPT", &btaprompt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Prompt after each proc in bta */
+	kdbgetintenv("BTAPROMPT", &btaprompt);
+>>>>>>> refs/remotes/origin/master
 
 	if (strcmp(argv[0], "bta") == 0) {
 		struct task_struct *g, *p;
@@ -131,6 +147,11 @@ kdb_bt(int argc, const char **argv)
 		}
 		/* Now the inactive tasks */
 		kdb_do_each_thread(g, p) {
+<<<<<<< HEAD
+=======
+			if (KDB_FLAG(CMD_INTERRUPT))
+				return 0;
+>>>>>>> refs/remotes/origin/master
 			if (task_curr(p))
 				continue;
 			if (kdb_bt1(p, mask, argcount, btaprompt))

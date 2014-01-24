@@ -130,9 +130,14 @@ int __init amd_numa_init(void)
 		}
 
 		limit >>= 16;
+<<<<<<< HEAD
 		limit <<= 24;
 		limit |= (1<<24)-1;
 		limit++;
+=======
+		limit++;
+		limit <<= 24;
+>>>>>>> refs/remotes/origin/master
 
 		if (limit > end)
 			limit = end;

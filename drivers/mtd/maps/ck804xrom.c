@@ -112,8 +112,13 @@ static void ck804xrom_cleanup(struct ck804xrom_window *window)
 }
 
 
+<<<<<<< HEAD
 static int __devinit ck804xrom_init_one (struct pci_dev *pdev,
 					 const struct pci_device_id *ent)
+=======
+static int ck804xrom_init_one(struct pci_dev *pdev,
+			      const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	static char *rom_probe_types[] = { "cfi_probe", "jedec_probe", NULL };
 	u8 byte;
@@ -308,8 +313,12 @@ static int __devinit ck804xrom_init_one (struct pci_dev *pdev,
 
  out:
 	/* Free any left over map structures */
+<<<<<<< HEAD
 	if (map)
 		kfree(map);
+=======
+	kfree(map);
+>>>>>>> refs/remotes/origin/master
 
 	/* See if I have any map structures */
 	if (list_empty(&window->maps)) {
@@ -320,7 +329,11 @@ static int __devinit ck804xrom_init_one (struct pci_dev *pdev,
 }
 
 
+<<<<<<< HEAD
 static void __devexit ck804xrom_remove_one (struct pci_dev *pdev)
+=======
+static void ck804xrom_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ck804xrom_window *window = &ck804xrom_window;
 

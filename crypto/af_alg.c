@@ -12,7 +12,15 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <crypto/if_alg.h>
 #include <linux/crypto.h>
 #include <linux/init.h>
@@ -434,7 +442,11 @@ int af_alg_wait_for_completion(int err, struct af_alg_completion *completion)
 	case -EINPROGRESS:
 	case -EBUSY:
 		wait_for_completion(&completion->completion);
+<<<<<<< HEAD
 		INIT_COMPLETION(completion->completion);
+=======
+		reinit_completion(&completion->completion);
+>>>>>>> refs/remotes/origin/master
 		err = completion->err;
 		break;
 	};

@@ -25,6 +25,14 @@
 #include <sound/core.h>
 
 #include "ctvmem.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "cthardware.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "cthardware.h"
+>>>>>>> refs/remotes/origin/master
 #include "ctresource.h"
 
 enum CTALSADEVS {		/* Types of alsa devices */
@@ -115,12 +123,34 @@ struct ct_atc {
 	int (*line_clfe_unmute)(struct ct_atc *atc, unsigned char state);
 	int (*line_rear_unmute)(struct ct_atc *atc, unsigned char state);
 	int (*line_in_unmute)(struct ct_atc *atc, unsigned char state);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int (*mic_unmute)(struct ct_atc *atc, unsigned char state);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*mic_unmute)(struct ct_atc *atc, unsigned char state);
+>>>>>>> refs/remotes/origin/master
 	int (*spdif_out_unmute)(struct ct_atc *atc, unsigned char state);
 	int (*spdif_in_unmute)(struct ct_atc *atc, unsigned char state);
 	int (*spdif_out_get_status)(struct ct_atc *atc, unsigned int *status);
 	int (*spdif_out_set_status)(struct ct_atc *atc, unsigned int status);
 	int (*spdif_out_passthru)(struct ct_atc *atc, unsigned char state);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int (*have_digit_io_switch)(struct ct_atc *atc);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct capabilities (*capabilities)(struct ct_atc *atc);
+	int (*output_switch_get)(struct ct_atc *atc);
+	int (*output_switch_put)(struct ct_atc *atc, int position);
+	int (*mic_source_switch_get)(struct ct_atc *atc);
+	int (*mic_source_switch_put)(struct ct_atc *atc, int position);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Don't touch! Used for internal object. */
 	void *rsc_mgrs[NUM_RSCTYP]; /* chip resource managers */
@@ -137,8 +167,13 @@ struct ct_atc {
 
 	struct ct_timer *timer;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 	int (*suspend)(struct ct_atc *atc, pm_message_t state);
+=======
+#ifdef CONFIG_PM_SLEEP
+	int (*suspend)(struct ct_atc *atc);
+>>>>>>> refs/remotes/origin/master
 	int (*resume)(struct ct_atc *atc);
 #define NUM_PCMS (NUM_CTALSADEVS - 1)
 	struct snd_pcm *pcms[NUM_PCMS];
@@ -146,9 +181,16 @@ struct ct_atc {
 };
 
 
+<<<<<<< HEAD
 int __devinit ct_atc_create(struct snd_card *card, struct pci_dev *pci,
 			    unsigned int rsr, unsigned int msr, int chip_type,
 			    unsigned int subsysid, struct ct_atc **ratc);
 int __devinit ct_atc_create_alsa_devs(struct ct_atc *atc);
+=======
+int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+		  unsigned int rsr, unsigned int msr, int chip_type,
+		  unsigned int subsysid, struct ct_atc **ratc);
+int ct_atc_create_alsa_devs(struct ct_atc *atc);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CTATC_H */

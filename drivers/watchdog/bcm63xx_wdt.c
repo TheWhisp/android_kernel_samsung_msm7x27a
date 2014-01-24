@@ -10,10 +10,24 @@
  *  2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <linux/errno.h>
 #include <linux/fs.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/miscdevice.h>
 #include <linux/module.h>
@@ -50,8 +64,18 @@ static struct {
 static int expect_close;
 
 static int wdt_time = WDT_DEFAULT_TIME;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 	__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -82,7 +106,15 @@ static void bcm63xx_timer_tick(unsigned long unused)
 		bcm63xx_wdt_hw_start();
 		mod_timer(&bcm63xx_wdt_device.timer, jiffies + HZ);
 	} else
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX ": watchdog will restart system\n");
+=======
+		pr_crit("watchdog will restart system\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("watchdog will restart system\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bcm63xx_wdt_pet(void)
@@ -126,8 +158,16 @@ static int bcm63xx_wdt_release(struct inode *inode, struct file *file)
 	if (expect_close == 42)
 		bcm63xx_wdt_pause();
 	else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 			": Unexpected close, not stopping watchdog!\n");
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		bcm63xx_wdt_start();
 	}
 	clear_bit(0, &bcm63xx_wdt_device.inuse);
@@ -235,7 +275,11 @@ static struct miscdevice bcm63xx_wdt_miscdev = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit bcm63xx_wdt_probe(struct platform_device *pdev)
+=======
+static int bcm63xx_wdt_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct resource *r;
@@ -248,7 +292,12 @@ static int __devinit bcm63xx_wdt_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	bcm63xx_wdt_device.regs = ioremap_nocache(r->start, resource_size(r));
+=======
+	bcm63xx_wdt_device.regs = devm_ioremap_nocache(&pdev->dev, r->start,
+							resource_size(r));
+>>>>>>> refs/remotes/origin/master
 	if (!bcm63xx_wdt_device.regs) {
 		dev_err(&pdev->dev, "failed to remap I/O resources\n");
 		return -ENXIO;
@@ -257,7 +306,11 @@ static int __devinit bcm63xx_wdt_probe(struct platform_device *pdev)
 	ret = bcm63xx_timer_register(TIMER_WDT_ID, bcm63xx_wdt_isr, NULL);
 	if (ret < 0) {
 		dev_err(&pdev->dev, "failed to register wdt timer isr\n");
+<<<<<<< HEAD
 		goto unmap;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (bcm63xx_wdt_settimeout(wdt_time)) {
@@ -280,19 +333,29 @@ static int __devinit bcm63xx_wdt_probe(struct platform_device *pdev)
 
 unregister_timer:
 	bcm63xx_timer_unregister(TIMER_WDT_ID);
+<<<<<<< HEAD
 unmap:
 	iounmap(bcm63xx_wdt_device.regs);
 	return ret;
 }
 
 static int __devexit bcm63xx_wdt_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int bcm63xx_wdt_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!nowayout)
 		bcm63xx_wdt_pause();
 
 	misc_deregister(&bcm63xx_wdt_miscdev);
 	bcm63xx_timer_unregister(TIMER_WDT_ID);
+<<<<<<< HEAD
 	iounmap(bcm63xx_wdt_device.regs);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -301,9 +364,15 @@ static void bcm63xx_wdt_shutdown(struct platform_device *pdev)
 	bcm63xx_wdt_pause();
 }
 
+<<<<<<< HEAD
 static struct platform_driver bcm63xx_wdt = {
 	.probe	= bcm63xx_wdt_probe,
 	.remove = __devexit_p(bcm63xx_wdt_remove),
+=======
+static struct platform_driver bcm63xx_wdt_driver = {
+	.probe	= bcm63xx_wdt_probe,
+	.remove = bcm63xx_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown = bcm63xx_wdt_shutdown,
 	.driver = {
 		.owner = THIS_MODULE,
@@ -311,6 +380,8 @@ static struct platform_driver bcm63xx_wdt = {
 	}
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init bcm63xx_wdt_init(void)
 {
 	return platform_driver_register(&bcm63xx_wdt);
@@ -323,10 +394,19 @@ static void __exit bcm63xx_wdt_exit(void)
 
 module_init(bcm63xx_wdt_init);
 module_exit(bcm63xx_wdt_exit);
+=======
+module_platform_driver(bcm63xx_wdt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(bcm63xx_wdt_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Miguel Gaio <miguel.gaio@efixo.com>");
 MODULE_AUTHOR("Florian Fainelli <florian@openwrt.org>");
 MODULE_DESCRIPTION("Driver for the Broadcom BCM63xx SoC watchdog");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:bcm63xx-wdt");

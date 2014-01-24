@@ -400,7 +400,11 @@ struct buffer {
 } __attribute__ ((packed));
 
 /*    Global variables */
+<<<<<<< HEAD
 static const struct pci_device_id nozomi_pci_tbl[] __devinitconst = {
+=======
+static const struct pci_device_id nozomi_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{PCI_DEVICE(0x1931, 0x000c)},	/* Nozomi HSDPA */
 	{},
 };
@@ -791,7 +795,10 @@ static int send_data(enum port_type index, struct nozomi *dc)
 	const u8 toggle = port->toggle_ul;
 	void __iomem *addr = port->ul_addr[toggle];
 	const u32 ul_size = port->ul_size[toggle];
+<<<<<<< HEAD
 	struct tty_struct *tty = tty_port_tty_get(&port->port);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Get data from tty and place in buf for now */
 	size = kfifo_out(&port->fifo_ul, dc->send_buf,
@@ -799,7 +806,10 @@ static int send_data(enum port_type index, struct nozomi *dc)
 
 	if (size == 0) {
 		DBG4("No more data to send, disable link:");
+<<<<<<< HEAD
 		tty_kref_put(tty);
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -809,10 +819,15 @@ static int send_data(enum port_type index, struct nozomi *dc)
 	write_mem32(addr, (u32 *) &size, 4);
 	write_mem32(addr + 4, (u32 *) dc->send_buf, size);
 
+<<<<<<< HEAD
 	if (tty)
 		tty_wakeup(tty);
 
 	tty_kref_put(tty);
+=======
+	tty_port_tty_wakeup(&port->port);
+
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -827,6 +842,7 @@ static int receive_data(enum port_type index, struct nozomi *dc)
 	struct tty_struct *tty = tty_port_tty_get(&port->port);
 	int i, ret;
 
+<<<<<<< HEAD
 	if (unlikely(!tty)) {
 		DBG1("tty not open for port: %d?", index);
 		return 1;
@@ -836,6 +852,12 @@ static int receive_data(enum port_type index, struct nozomi *dc)
 	/*  DBG1( "%d bytes port: %d", size, index); */
 
 	if (test_bit(TTY_THROTTLED, &tty->flags)) {
+=======
+	read_mem32((u32 *) &size, addr, 4);
+	/*  DBG1( "%d bytes port: %d", size, index); */
+
+	if (tty && test_bit(TTY_THROTTLED, &tty->flags)) {
+>>>>>>> refs/remotes/origin/master
 		DBG1("No room in tty, don't read data, don't ack interrupt, "
 			"disable interrupt");
 
@@ -855,6 +877,7 @@ static int receive_data(enum port_type index, struct nozomi *dc)
 		read_mem32((u32 *) buf, addr + offset, RECEIVE_BUF_MAX);
 
 		if (size == 1) {
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, buf[0], TTY_NORMAL);
 			size = 0;
 		} else if (size < RECEIVE_BUF_MAX) {
@@ -862,6 +885,16 @@ static int receive_data(enum port_type index, struct nozomi *dc)
 		} else {
 			i = tty_insert_flip_string(tty, \
 						(char *) buf, RECEIVE_BUF_MAX);
+=======
+			tty_insert_flip_char(&port->port, buf[0], TTY_NORMAL);
+			size = 0;
+		} else if (size < RECEIVE_BUF_MAX) {
+			size -= tty_insert_flip_string(&port->port,
+					(char *)buf, size);
+		} else {
+			i = tty_insert_flip_string(&port->port,
+					(char *)buf, RECEIVE_BUF_MAX);
+>>>>>>> refs/remotes/origin/master
 			size -= i;
 			offset += i;
 		}
@@ -967,7 +1000,11 @@ static int receive_flow_control(struct nozomi *dc)
 		dev_err(&dc->pdev->dev,
 			"ERROR: flow control received for non-existing port\n");
 		return 0;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	DBG1("0x%04X->0x%04X", *((u16 *)&dc->port[port].ctrl_dl),
 	   *((u16 *)&ctrl_dl));
@@ -1033,7 +1070,11 @@ static enum ctrl_port_type port2ctrl(enum port_type port,
 		dev_err(&dc->pdev->dev,
 			"ERROR: send flow control " \
 			"received for non-existing port\n");
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	return CTRL_ERROR;
 }
 
@@ -1276,6 +1317,7 @@ static irqreturn_t interrupt_handler(int irq, void *dev_id)
 
 exit_handler:
 	spin_unlock(&dc->spin_mutex);
+<<<<<<< HEAD
 	for (a = 0; a < NOZOMI_MAX_PORTS; a++) {
 		struct tty_struct *tty;
 		if (test_and_clear_bit(a, &dc->flip)) {
@@ -1285,6 +1327,13 @@ exit_handler:
 			tty_kref_put(tty);
 		}
 	}
+=======
+
+	for (a = 0; a < NOZOMI_MAX_PORTS; a++)
+		if (test_and_clear_bit(a, &dc->flip))
+			tty_flip_buffer_push(&dc->port[a].port);
+
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 none:
 	spin_unlock(&dc->spin_mutex);
@@ -1360,7 +1409,11 @@ static void remove_sysfs_files(struct nozomi *dc)
 }
 
 /* Allocate memory for one device */
+<<<<<<< HEAD
 static int __devinit nozomi_card_init(struct pci_dev *pdev,
+=======
+static int nozomi_card_init(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				      const struct pci_device_id *ent)
 {
 	resource_size_t start;
@@ -1473,12 +1526,21 @@ static int __devinit nozomi_card_init(struct pci_dev *pdev,
 		port->dc = dc;
 		tty_port_init(&port->port);
 		port->port.ops = &noz_tty_port_ops;
+<<<<<<< HEAD
 		tty_dev = tty_register_device(ntty_driver, dc->index_start + i,
 							&pdev->dev);
+=======
+		tty_dev = tty_port_register_device(&port->port, ntty_driver,
+				dc->index_start + i, &pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 		if (IS_ERR(tty_dev)) {
 			ret = PTR_ERR(tty_dev);
 			dev_err(&pdev->dev, "Could not allocate tty?\n");
+<<<<<<< HEAD
+=======
+			tty_port_destroy(&port->port);
+>>>>>>> refs/remotes/origin/master
 			goto err_free_tty;
 		}
 	}
@@ -1486,8 +1548,15 @@ static int __devinit nozomi_card_init(struct pci_dev *pdev,
 	return 0;
 
 err_free_tty:
+<<<<<<< HEAD
 	for (i = dc->index_start; i < dc->index_start + MAX_PORT; ++i)
 		tty_unregister_device(ntty_driver, i);
+=======
+	for (i = 0; i < MAX_PORT; ++i) {
+		tty_unregister_device(ntty_driver, dc->index_start + i);
+		tty_port_destroy(&dc->port[i].port);
+	}
+>>>>>>> refs/remotes/origin/master
 err_free_kfifo:
 	for (i = 0; i < MAX_PORT; i++)
 		kfifo_free(&dc->port[i].fifo_ul);
@@ -1504,28 +1573,49 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit tty_exit(struct nozomi *dc)
+=======
+static void tty_exit(struct nozomi *dc)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 
 	DBG1(" ");
 
+<<<<<<< HEAD
 	for (i = 0; i < MAX_PORT; ++i) {
 		struct tty_struct *tty = tty_port_tty_get(&dc->port[i].port);
 		if (tty && list_empty(&tty->hangup_work.entry))
 			tty_hangup(tty);
 		tty_kref_put(tty);
 	}
+=======
+	for (i = 0; i < MAX_PORT; ++i)
+		tty_port_tty_hangup(&dc->port[i].port, false);
+
+>>>>>>> refs/remotes/origin/master
 	/* Racy below - surely should wait for scheduled work to be done or
 	   complete off a hangup method ? */
 	while (dc->open_ttys)
 		msleep(1);
+<<<<<<< HEAD
 	for (i = dc->index_start; i < dc->index_start + MAX_PORT; ++i)
 		tty_unregister_device(ntty_driver, i);
 }
 
 /* Deallocate memory for one device */
 static void __devexit nozomi_card_exit(struct pci_dev *pdev)
+=======
+	for (i = 0; i < MAX_PORT; ++i) {
+		tty_unregister_device(ntty_driver, dc->index_start + i);
+		tty_port_destroy(&dc->port[i].port);
+	}
+}
+
+/* Deallocate memory for one device */
+static void nozomi_card_exit(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct ctrl_ul ctrl;
@@ -1602,6 +1692,8 @@ static int ntty_install(struct tty_driver *driver, struct tty_struct *tty)
 	int ret;
 	if (!port || !dc || dc->state != NOZOMI_STATE_READY)
 		return -ENODEV;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = tty_init_termios(tty);
 	if (ret == 0) {
 		tty_driver_kref_get(driver);
@@ -1609,6 +1701,16 @@ static int ntty_install(struct tty_driver *driver, struct tty_struct *tty)
 		tty->driver_data = port;
 		driver->ttys[tty->index] = tty;
 	}
+=======
+	ret = tty_standard_install(driver, tty);
+	if (ret == 0)
+		tty->driver_data = port;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = tty_standard_install(driver, tty);
+	if (ret == 0)
+		tty->driver_data = port;
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1686,12 +1788,15 @@ static int ntty_write(struct tty_struct *tty, const unsigned char *buffer,
 
 	rval = kfifo_in(&port->fifo_ul, (unsigned char *)buffer, count);
 
+<<<<<<< HEAD
 	/* notify card */
 	if (unlikely(dc == NULL)) {
 		DBG1("No device context?");
 		goto exit;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&dc->spin_mutex, flags);
 	/* CTS is only valid on the modem channel */
 	if (port == &(dc->port[PORT_MDM])) {
@@ -1707,7 +1812,10 @@ static int ntty_write(struct tty_struct *tty, const unsigned char *buffer,
 	}
 	spin_unlock_irqrestore(&dc->spin_mutex, flags);
 
+<<<<<<< HEAD
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return rval;
 }
 
@@ -1826,7 +1934,11 @@ static int ntty_ioctl(struct tty_struct *tty,
 	default:
 		DBG1("ERR: 0x%08X, %d", cmd, cmd);
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return rval;
 }
@@ -1907,7 +2019,11 @@ static struct pci_driver nozomi_driver = {
 	.name = NOZOMI_NAME,
 	.id_table = nozomi_pci_tbl,
 	.probe = nozomi_card_init,
+<<<<<<< HEAD
 	.remove = __devexit_p(nozomi_card_exit),
+=======
+	.remove = nozomi_card_exit,
+>>>>>>> refs/remotes/origin/master
 };
 
 static __init int nozomi_init(void)
@@ -1920,7 +2036,13 @@ static __init int nozomi_init(void)
 	if (!ntty_driver)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ntty_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ntty_driver->driver_name = NOZOMI_NAME_TTY;
 	ntty_driver->name = "noz";
 	ntty_driver->major = 0;

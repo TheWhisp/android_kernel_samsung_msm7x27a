@@ -2,6 +2,7 @@
 #define _ASM_X86_DEBUGREG_H
 
 
+<<<<<<< HEAD
 /* Indicate the register numbers for a number of the specific
    debug registers.  Registers 0-3 contain the addresses we wish to trap on */
 #define DR_FIRSTADDR 0        /* u_debugreg[DR_FIRSTADDR] */
@@ -78,8 +79,87 @@
  */
 #ifdef __KERNEL__
 
+<<<<<<< HEAD
 DECLARE_PER_CPU(unsigned long, cpu_dr7);
 
+=======
+#include <linux/bug.h>
+=======
+#include <linux/bug.h>
+#include <uapi/asm/debugreg.h>
+>>>>>>> refs/remotes/origin/master
+
+DECLARE_PER_CPU(unsigned long, cpu_dr7);
+
+#ifndef CONFIG_PARAVIRT
+/*
+ * These special macros can be used to get or set a debugging register
+ */
+#define get_debugreg(var, register)				\
+	(var) = native_get_debugreg(register)
+#define set_debugreg(value, register)				\
+	native_set_debugreg(register, value)
+#endif
+
+static inline unsigned long native_get_debugreg(int regno)
+{
+	unsigned long val = 0;	/* Damn you, gcc! */
+
+	switch (regno) {
+	case 0:
+		asm("mov %%db0, %0" :"=r" (val));
+		break;
+	case 1:
+		asm("mov %%db1, %0" :"=r" (val));
+		break;
+	case 2:
+		asm("mov %%db2, %0" :"=r" (val));
+		break;
+	case 3:
+		asm("mov %%db3, %0" :"=r" (val));
+		break;
+	case 6:
+		asm("mov %%db6, %0" :"=r" (val));
+		break;
+	case 7:
+		asm("mov %%db7, %0" :"=r" (val));
+		break;
+	default:
+		BUG();
+	}
+	return val;
+}
+
+static inline void native_set_debugreg(int regno, unsigned long value)
+{
+	switch (regno) {
+	case 0:
+		asm("mov %0, %%db0"	::"r" (value));
+		break;
+	case 1:
+		asm("mov %0, %%db1"	::"r" (value));
+		break;
+	case 2:
+		asm("mov %0, %%db2"	::"r" (value));
+		break;
+	case 3:
+		asm("mov %0, %%db3"	::"r" (value));
+		break;
+	case 6:
+		asm("mov %0, %%db6"	::"r" (value));
+		break;
+	case 7:
+		asm("mov %0, %%db7"	::"r" (value));
+		break;
+	default:
+		BUG();
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void hw_breakpoint_disable(void)
 {
 	/* Zero the control register for HW Breakpoint */
@@ -101,6 +181,37 @@ extern void aout_dump_debugregs(struct user *dump);
 
 extern void hw_breakpoint_restore(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_X86_64
+DECLARE_PER_CPU(int, debug_stack_usage);
+static inline void debug_stack_usage_inc(void)
+{
+	__get_cpu_var(debug_stack_usage)++;
+}
+static inline void debug_stack_usage_dec(void)
+{
+	__get_cpu_var(debug_stack_usage)--;
+}
+int is_debug_stack(unsigned long addr);
+void debug_stack_set_zero(void);
+void debug_stack_reset(void);
+#else /* !X86_64 */
+static inline int is_debug_stack(unsigned long addr) { return 0; }
+static inline void debug_stack_set_zero(void) { }
+static inline void debug_stack_reset(void) { }
+static inline void debug_stack_usage_inc(void) { }
+static inline void debug_stack_usage_dec(void) { }
+#endif /* X86_64 */
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_DEBUGREG_H */

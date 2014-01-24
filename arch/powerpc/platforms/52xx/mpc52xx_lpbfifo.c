@@ -14,14 +14,28 @@
 #include <linux/of.h>
 #include <linux/of_platform.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/prom.h>
 #include <asm/mpc52xx.h>
 #include <asm/time.h>
 
+<<<<<<< HEAD
 #include <sysdev/bestcomm/bestcomm.h>
 #include <sysdev/bestcomm/bestcomm_priv.h>
 #include <sysdev/bestcomm/gen_bd.h>
+=======
+#include <linux/fsl/bestcomm/bestcomm.h>
+#include <linux/fsl/bestcomm/bestcomm_priv.h>
+#include <linux/fsl/bestcomm/gen_bd.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Grant Likely <grant.likely@secretlab.ca>");
 MODULE_DESCRIPTION("MPC5200 LocalPlus FIFO device driver");
@@ -169,7 +183,12 @@ static void mpc52xx_lpbfifo_kick(struct mpc52xx_lpbfifo_request *req)
 	out_be32(lpbfifo.regs + LPBFIFO_REG_CONTROL, bit_fields);
 
 	/* Kick it off */
+<<<<<<< HEAD
 	out_8(lpbfifo.regs + LPBFIFO_REG_PACKET_SIZE, 0x01);
+=======
+	if (!lpbfifo.req->defer_xfer_start)
+		out_8(lpbfifo.regs + LPBFIFO_REG_PACKET_SIZE, 0x01);
+>>>>>>> refs/remotes/origin/master
 	if (dma)
 		bcom_enable(lpbfifo.bcom_cur_task);
 }
@@ -420,6 +439,41 @@ int mpc52xx_lpbfifo_submit(struct mpc52xx_lpbfifo_request *req)
 }
 EXPORT_SYMBOL(mpc52xx_lpbfifo_submit);
 
+<<<<<<< HEAD
+=======
+int mpc52xx_lpbfifo_start_xfer(struct mpc52xx_lpbfifo_request *req)
+{
+	unsigned long flags;
+
+	if (!lpbfifo.regs)
+		return -ENODEV;
+
+	spin_lock_irqsave(&lpbfifo.lock, flags);
+
+	/*
+	 * If the req pointer is already set and a transfer was
+	 * started on submit, then this transfer is in progress
+	 */
+	if (lpbfifo.req && !lpbfifo.req->defer_xfer_start) {
+		spin_unlock_irqrestore(&lpbfifo.lock, flags);
+		return -EBUSY;
+	}
+
+	/*
+	 * If the req was previously submitted but not
+	 * started, start it now
+	 */
+	if (lpbfifo.req && lpbfifo.req == req &&
+	    lpbfifo.req->defer_xfer_start) {
+		out_8(lpbfifo.regs + LPBFIFO_REG_PACKET_SIZE, 0x01);
+	}
+
+	spin_unlock_irqrestore(&lpbfifo.lock, flags);
+	return 0;
+}
+EXPORT_SYMBOL(mpc52xx_lpbfifo_start_xfer);
+
+>>>>>>> refs/remotes/origin/master
 void mpc52xx_lpbfifo_abort(struct mpc52xx_lpbfifo_request *req)
 {
 	unsigned long flags;
@@ -436,7 +490,11 @@ void mpc52xx_lpbfifo_abort(struct mpc52xx_lpbfifo_request *req)
 }
 EXPORT_SYMBOL(mpc52xx_lpbfifo_abort);
 
+<<<<<<< HEAD
 static int __devinit mpc52xx_lpbfifo_probe(struct platform_device *op)
+=======
+static int mpc52xx_lpbfifo_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource res;
 	int rc = -ENOMEM;
@@ -506,7 +564,11 @@ static int __devinit mpc52xx_lpbfifo_probe(struct platform_device *op)
 }
 
 
+<<<<<<< HEAD
 static int __devexit mpc52xx_lpbfifo_remove(struct platform_device *op)
+=======
+static int mpc52xx_lpbfifo_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	if (lpbfifo.dev != &op->dev)
 		return 0;
@@ -530,7 +592,11 @@ static int __devexit mpc52xx_lpbfifo_remove(struct platform_device *op)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct of_device_id mpc52xx_lpbfifo_match[] __devinitconst = {
+=======
+static struct of_device_id mpc52xx_lpbfifo_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "fsl,mpc5200-lpbfifo", },
 	{},
 };
@@ -542,6 +608,7 @@ static struct platform_driver mpc52xx_lpbfifo_driver = {
 		.of_match_table = mpc52xx_lpbfifo_match,
 	},
 	.probe = mpc52xx_lpbfifo_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(mpc52xx_lpbfifo_remove),
 };
 
@@ -559,3 +626,8 @@ static void __exit mpc52xx_lpbfifo_exit(void)
 	platform_driver_unregister(&mpc52xx_lpbfifo_driver);
 }
 module_exit(mpc52xx_lpbfifo_exit);
+=======
+	.remove = mpc52xx_lpbfifo_remove,
+};
+module_platform_driver(mpc52xx_lpbfifo_driver);
+>>>>>>> refs/remotes/origin/master

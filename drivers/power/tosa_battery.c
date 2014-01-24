@@ -150,7 +150,11 @@ static void tosa_bat_external_power_changed(struct power_supply *psy)
 
 static irqreturn_t tosa_bat_gpio_isr(int irq, void *data)
 {
+<<<<<<< HEAD
 	pr_info("tosa_bat_gpio irq: %d\n", gpio_get_value(irq_to_gpio(irq)));
+=======
+	pr_info("tosa_bat_gpio irq\n");
+>>>>>>> refs/remotes/origin/master
 	schedule_work(&bat_work);
 	return IRQ_HANDLED;
 }
@@ -307,6 +311,8 @@ static struct tosa_bat tosa_bat_bu = {
 	.adc_temp_divider = -1,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct {
 	int gpio;
 	char *name;
@@ -326,13 +332,38 @@ static struct {
 	{ TOSA_GPIO_BAT0_LOW,		"main battery low",	0, 0 },
 	{ TOSA_GPIO_BAT1_LOW,		"jacket battery low",	0, 0 },
 	{ TOSA_GPIO_JACKET_DETECT,	"jacket detect",	0, 0 },
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct gpio tosa_bat_gpios[] = {
+	{ TOSA_GPIO_CHARGE_OFF,	   GPIOF_OUT_INIT_HIGH, "main charge off" },
+	{ TOSA_GPIO_CHARGE_OFF_JC, GPIOF_OUT_INIT_HIGH, "jacket charge off" },
+	{ TOSA_GPIO_BAT_SW_ON,	   GPIOF_OUT_INIT_LOW,	"battery switch" },
+	{ TOSA_GPIO_BAT0_V_ON,	   GPIOF_OUT_INIT_LOW,	"main battery" },
+	{ TOSA_GPIO_BAT1_V_ON,	   GPIOF_OUT_INIT_LOW,	"jacket battery" },
+	{ TOSA_GPIO_BAT1_TH_ON,	   GPIOF_OUT_INIT_LOW,	"main battery temp" },
+	{ TOSA_GPIO_BAT0_TH_ON,	   GPIOF_OUT_INIT_LOW,	"jacket battery temp" },
+	{ TOSA_GPIO_BU_CHRG_ON,	   GPIOF_OUT_INIT_LOW,	"backup battery" },
+	{ TOSA_GPIO_BAT0_CRG,	   GPIOF_IN,		"main battery full" },
+	{ TOSA_GPIO_BAT1_CRG,	   GPIOF_IN,		"jacket battery full" },
+	{ TOSA_GPIO_BAT0_LOW,	   GPIOF_IN,		"main battery low" },
+	{ TOSA_GPIO_BAT1_LOW,	   GPIOF_IN,		"jacket battery low" },
+	{ TOSA_GPIO_JACKET_DETECT, GPIOF_IN,		"jacket detect" },
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_PM
 static int tosa_bat_suspend(struct platform_device *dev, pm_message_t state)
 {
 	/* flush all pending status updates */
+<<<<<<< HEAD
 	flush_work_sync(&bat_work);
+=======
+	flush_work(&bat_work);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -347,14 +378,25 @@ static int tosa_bat_resume(struct platform_device *dev)
 #define tosa_bat_resume NULL
 #endif
 
+<<<<<<< HEAD
 static int __devinit tosa_bat_probe(struct platform_device *dev)
 {
 	int ret;
+<<<<<<< HEAD
 	int i;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tosa_bat_probe(struct platform_device *dev)
+{
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!machine_is_tosa())
 		return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(gpios); i++) {
 		ret = gpio_request(gpios[i].gpio, gpios[i].name);
 		if (ret) {
@@ -371,6 +413,16 @@ static int __devinit tosa_bat_probe(struct platform_device *dev)
 		if (ret)
 			goto err_gpio;
 	}
+=======
+	ret = gpio_request_array(tosa_bat_gpios, ARRAY_SIZE(tosa_bat_gpios));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = gpio_request_array(tosa_bat_gpios, ARRAY_SIZE(tosa_bat_gpios));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&tosa_bat_main.work_lock);
 	mutex_init(&tosa_bat_jacket.work_lock);
@@ -424,18 +476,34 @@ err_psy_reg_main:
 	/* see comment in tosa_bat_remove */
 	cancel_work_sync(&bat_work);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	i--;
 err_gpio:
 	for (; i >= 0; i--)
 		gpio_free(gpios[i].gpio);
 
+=======
+	gpio_free_array(tosa_bat_gpios, ARRAY_SIZE(tosa_bat_gpios));
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit tosa_bat_remove(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	int i;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_free_array(tosa_bat_gpios, ARRAY_SIZE(tosa_bat_gpios));
+	return ret;
+}
+
+static int tosa_bat_remove(struct platform_device *dev)
+{
+>>>>>>> refs/remotes/origin/master
 	free_irq(gpio_to_irq(TOSA_GPIO_JACKET_DETECT), &tosa_bat_jacket);
 	free_irq(gpio_to_irq(TOSA_GPIO_BAT1_CRG), &tosa_bat_jacket);
 	free_irq(gpio_to_irq(TOSA_GPIO_BAT0_CRG), &tosa_bat_main);
@@ -450,10 +518,18 @@ static int __devexit tosa_bat_remove(struct platform_device *dev)
 	 * unregistered now.
 	 */
 	cancel_work_sync(&bat_work);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	for (i = ARRAY_SIZE(gpios) - 1; i >= 0; i--)
 		gpio_free(gpios[i].gpio);
 
+=======
+	gpio_free_array(tosa_bat_gpios, ARRAY_SIZE(tosa_bat_gpios));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_free_array(tosa_bat_gpios, ARRAY_SIZE(tosa_bat_gpios));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -461,11 +537,17 @@ static struct platform_driver tosa_bat_driver = {
 	.driver.name	= "wm97xx-battery",
 	.driver.owner	= THIS_MODULE,
 	.probe		= tosa_bat_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(tosa_bat_remove),
+=======
+	.remove		= tosa_bat_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= tosa_bat_suspend,
 	.resume		= tosa_bat_resume,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init tosa_bat_init(void)
 {
 	return platform_driver_register(&tosa_bat_driver);
@@ -478,6 +560,12 @@ static void __exit tosa_bat_exit(void)
 
 module_init(tosa_bat_init);
 module_exit(tosa_bat_exit);
+=======
+module_platform_driver(tosa_bat_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(tosa_bat_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Dmitry Baryshkov");

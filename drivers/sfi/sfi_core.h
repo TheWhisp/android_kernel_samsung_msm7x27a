@@ -55,6 +55,18 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+#include <linux/sysfs.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <linux/sysfs.h>
+
+>>>>>>> refs/remotes/origin/master
 struct sfi_table_key{
 	char	*sig;
 	char	*oem_id;

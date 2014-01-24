@@ -107,7 +107,10 @@ struct isp_res_device {
 	enum resizer_input_entity input;
 	struct isp_video video_in;
 	struct isp_video video_out;
+<<<<<<< HEAD
 	unsigned int error;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	u32 addr_base;   /* stored source buffer address in memory mode */
 	u32 crop_offset; /* additional offset for crop in memory mode */

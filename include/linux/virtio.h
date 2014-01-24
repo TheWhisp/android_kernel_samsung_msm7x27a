@@ -8,6 +8,10 @@
 #include <linux/device.h>
 #include <linux/mod_devicetable.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/vringh.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * virtqueue - a queue to register buffers for sending or receiving.
@@ -16,15 +20,26 @@
  * @name: the name of this virtqueue (mainly for debugging)
  * @vdev: the virtio device this queue was created for.
  * @priv: a pointer for the virtqueue implementation to use.
+<<<<<<< HEAD
+=======
+ * @index: the zero-based ordinal number for this queue.
+ * @num_free: number of elements we expect to be able to fit.
+ *
+ * A note on @num_free: with indirect buffers, each buffer needs one
+ * element in the queue, otherwise a buffer will need one element per
+ * sg element.
+>>>>>>> refs/remotes/origin/master
  */
 struct virtqueue {
 	struct list_head list;
 	void (*callback)(struct virtqueue *vq);
 	const char *name;
 	struct virtio_device *vdev;
+<<<<<<< HEAD
 	void *priv;
 };
 
+<<<<<<< HEAD
 /**
  * operations for virtqueue
  * virtqueue_add_buf: expose buffer to other end
@@ -87,6 +102,51 @@ static inline int virtqueue_add_buf(struct virtqueue *vq,
 
 void virtqueue_kick(struct virtqueue *vq);
 
+=======
+int virtqueue_add_buf(struct virtqueue *vq,
+		      struct scatterlist sg[],
+		      unsigned int out_num,
+		      unsigned int in_num,
+		      void *data,
+		      gfp_t gfp);
+
+void virtqueue_kick(struct virtqueue *vq);
+
+bool virtqueue_kick_prepare(struct virtqueue *vq);
+
+void virtqueue_notify(struct virtqueue *vq);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int index;
+	unsigned int num_free;
+	void *priv;
+};
+
+int virtqueue_add_outbuf(struct virtqueue *vq,
+			 struct scatterlist sg[], unsigned int num,
+			 void *data,
+			 gfp_t gfp);
+
+int virtqueue_add_inbuf(struct virtqueue *vq,
+			struct scatterlist sg[], unsigned int num,
+			void *data,
+			gfp_t gfp);
+
+int virtqueue_add_sgs(struct virtqueue *vq,
+		      struct scatterlist *sgs[],
+		      unsigned int out_sgs,
+		      unsigned int in_sgs,
+		      void *data,
+		      gfp_t gfp);
+
+bool virtqueue_kick(struct virtqueue *vq);
+
+bool virtqueue_kick_prepare(struct virtqueue *vq);
+
+bool virtqueue_notify(struct virtqueue *vq);
+
+>>>>>>> refs/remotes/origin/master
 void *virtqueue_get_buf(struct virtqueue *vq, unsigned int *len);
 
 void virtqueue_disable_cb(struct virtqueue *vq);
@@ -101,12 +161,28 @@ bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
 
 void *virtqueue_detach_unused_buf(struct virtqueue *vq);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
+
+bool virtqueue_is_broken(struct virtqueue *vq);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * virtio_device - representation of a device using virtio
  * @index: unique position on the virtio bus
  * @dev: underlying device.
  * @id: the device type identification (used to match it with a driver).
  * @config: the configuration ops for this device.
+<<<<<<< HEAD
+=======
+ * @vringh_config: configuration ops for host vrings.
+>>>>>>> refs/remotes/origin/master
  * @vqs: the list of virtqueues for this device.
  * @features: the features supported by both driver and device.
  * @priv: private pointer for the driver's use.
@@ -115,14 +191,27 @@ struct virtio_device {
 	int index;
 	struct device dev;
 	struct virtio_device_id id;
+<<<<<<< HEAD
 	struct virtio_config_ops *config;
+=======
+	const struct virtio_config_ops *config;
+	const struct vringh_config_ops *vringh_config;
+>>>>>>> refs/remotes/origin/master
 	struct list_head vqs;
 	/* Note that this is a Linux set_bit-style bitmap. */
 	unsigned long features[1];
 	void *priv;
 };
 
+<<<<<<< HEAD
 #define dev_to_virtio(dev) container_of(dev, struct virtio_device, dev)
+=======
+static inline struct virtio_device *dev_to_virtio(struct device *_dev)
+{
+	return container_of(_dev, struct virtio_device, dev);
+}
+
+>>>>>>> refs/remotes/origin/master
 int register_virtio_device(struct virtio_device *dev);
 void unregister_virtio_device(struct virtio_device *dev);
 
@@ -130,10 +219,23 @@ void unregister_virtio_device(struct virtio_device *dev);
  * virtio_driver - operations for a virtio I/O driver
  * @driver: underlying device driver (populate name and owner).
  * @id_table: the ids serviced by this driver.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @feature_table: an array of feature numbers supported by this device.
  * @feature_table_size: number of entries in the feature table array.
  * @probe: the function to call when a device is found.  Returns 0 or -errno.
  * @remove: the function when a device is removed.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @feature_table: an array of feature numbers supported by this driver.
+ * @feature_table_size: number of entries in the feature table array.
+ * @probe: the function to call when a device is found.  Returns 0 or -errno.
+ * @remove: the function to call when a device is removed.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @config_changed: optional function to call when the device configuration
  *    changes; may be called in interrupt context.
  */
@@ -143,10 +245,44 @@ struct virtio_driver {
 	const unsigned int *feature_table;
 	unsigned int feature_table_size;
 	int (*probe)(struct virtio_device *dev);
+<<<<<<< HEAD
 	void (*remove)(struct virtio_device *dev);
 	void (*config_changed)(struct virtio_device *dev);
+<<<<<<< HEAD
+=======
+=======
+	void (*scan)(struct virtio_device *dev);
+	void (*remove)(struct virtio_device *dev);
+	void (*config_changed)(struct virtio_device *dev);
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_PM
+	int (*freeze)(struct virtio_device *dev);
+	int (*restore)(struct virtio_device *dev);
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int register_virtio_driver(struct virtio_driver *drv);
 void unregister_virtio_driver(struct virtio_driver *drv);
+=======
+};
+
+static inline struct virtio_driver *drv_to_virtio(struct device_driver *drv)
+{
+	return container_of(drv, struct virtio_driver, driver);
+}
+
+int register_virtio_driver(struct virtio_driver *drv);
+void unregister_virtio_driver(struct virtio_driver *drv);
+
+/* module_virtio_driver() - Helper macro for drivers that don't do
+ * anything special in module init/exit.  This eliminates a lot of
+ * boilerplate.  Each module may only use this macro once, and
+ * calling it replaces module_init() and module_exit()
+ */
+#define module_virtio_driver(__virtio_driver) \
+	module_driver(__virtio_driver, register_virtio_driver, \
+			unregister_virtio_driver)
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_VIRTIO_H */

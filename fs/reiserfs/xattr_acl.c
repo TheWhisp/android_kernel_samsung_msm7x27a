@@ -1,14 +1,32 @@
 #include <linux/capability.h>
 #include <linux/fs.h>
 #include <linux/posix_acl.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/pagemap.h>
 #include <linux/xattr.h>
 #include <linux/slab.h>
 #include <linux/posix_acl_xattr.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_xattr.h>
 #include <linux/reiserfs_acl.h>
+=======
+#include "xattr.h"
+#include "acl.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "xattr.h"
+#include "acl.h"
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 static int reiserfs_set_acl(struct reiserfs_transaction_handle *th,
@@ -30,7 +48,11 @@ posix_acl_set(struct dentry *dentry, const char *name, const void *value,
 		return -EPERM;
 
 	if (value) {
+<<<<<<< HEAD
 		acl = posix_acl_from_xattr(value, size);
+=======
+		acl = posix_acl_from_xattr(&init_user_ns, value, size);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(acl)) {
 			return PTR_ERR(acl);
 		} else if (acl) {
@@ -49,6 +71,7 @@ posix_acl_set(struct dentry *dentry, const char *name, const void *value,
 
 	reiserfs_write_lock(inode->i_sb);
 	error = journal_begin(&th, inode->i_sb, jcreate_blocks);
+<<<<<<< HEAD
 	if (error == 0) {
 		error = reiserfs_set_acl(&th, inode, type, acl);
 		error2 = journal_end(&th, inode->i_sb, jcreate_blocks);
@@ -56,6 +79,17 @@ posix_acl_set(struct dentry *dentry, const char *name, const void *value,
 			error = error2;
 	}
 	reiserfs_write_unlock(inode->i_sb);
+=======
+	reiserfs_write_unlock(inode->i_sb);
+	if (error == 0) {
+		error = reiserfs_set_acl(&th, inode, type, acl);
+		reiserfs_write_lock(inode->i_sb);
+		error2 = journal_end(&th, inode->i_sb, jcreate_blocks);
+		reiserfs_write_unlock(inode->i_sb);
+		if (error2)
+			error = error2;
+	}
+>>>>>>> refs/remotes/origin/master
 
       release_and_out:
 	posix_acl_release(acl);
@@ -77,7 +111,11 @@ posix_acl_get(struct dentry *dentry, const char *name, void *buffer,
 		return PTR_ERR(acl);
 	if (acl == NULL)
 		return -ENODATA;
+<<<<<<< HEAD
 	error = posix_acl_to_xattr(acl, buffer, size);
+=======
+	error = posix_acl_to_xattr(&init_user_ns, acl, buffer, size);
+>>>>>>> refs/remotes/origin/master
 	posix_acl_release(acl);
 
 	return error;
@@ -121,15 +159,34 @@ static struct posix_acl *posix_acl_from_disk(const void *value, size_t size)
 		case ACL_OTHER:
 			value = (char *)value +
 			    sizeof(reiserfs_acl_entry_short);
+<<<<<<< HEAD
 			acl->a_entries[n].e_id = ACL_UNDEFINED_ID;
 			break;
 
 		case ACL_USER:
+=======
+			break;
+
+		case ACL_USER:
+			value = (char *)value + sizeof(reiserfs_acl_entry);
+			if ((char *)value > end)
+				goto fail;
+			acl->a_entries[n].e_uid = 
+				make_kuid(&init_user_ns,
+					  le32_to_cpu(entry->e_id));
+			break;
+>>>>>>> refs/remotes/origin/master
 		case ACL_GROUP:
 			value = (char *)value + sizeof(reiserfs_acl_entry);
 			if ((char *)value > end)
 				goto fail;
+<<<<<<< HEAD
 			acl->a_entries[n].e_id = le32_to_cpu(entry->e_id);
+=======
+			acl->a_entries[n].e_gid =
+				make_kgid(&init_user_ns,
+					  le32_to_cpu(entry->e_id));
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		default:
@@ -164,13 +221,27 @@ static void *posix_acl_to_disk(const struct posix_acl *acl, size_t * size)
 	ext_acl->a_version = cpu_to_le32(REISERFS_ACL_VERSION);
 	e = (char *)ext_acl + sizeof(reiserfs_acl_header);
 	for (n = 0; n < acl->a_count; n++) {
+<<<<<<< HEAD
+=======
+		const struct posix_acl_entry *acl_e = &acl->a_entries[n];
+>>>>>>> refs/remotes/origin/master
 		reiserfs_acl_entry *entry = (reiserfs_acl_entry *) e;
 		entry->e_tag = cpu_to_le16(acl->a_entries[n].e_tag);
 		entry->e_perm = cpu_to_le16(acl->a_entries[n].e_perm);
 		switch (acl->a_entries[n].e_tag) {
 		case ACL_USER:
+<<<<<<< HEAD
 		case ACL_GROUP:
 			entry->e_id = cpu_to_le32(acl->a_entries[n].e_id);
+=======
+			entry->e_id = cpu_to_le32(
+				from_kuid(&init_user_ns, acl_e->e_uid));
+			e += sizeof(reiserfs_acl_entry);
+			break;
+		case ACL_GROUP:
+			entry->e_id = cpu_to_le32(
+				from_kgid(&init_user_ns, acl_e->e_gid));
+>>>>>>> refs/remotes/origin/master
 			e += sizeof(reiserfs_acl_entry);
 			break;
 
@@ -272,12 +343,25 @@ reiserfs_set_acl(struct reiserfs_transaction_handle *th, struct inode *inode,
 	case ACL_TYPE_ACCESS:
 		name = POSIX_ACL_XATTR_ACCESS;
 		if (acl) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			mode_t mode = inode->i_mode;
 			error = posix_acl_equiv_mode(acl, &mode);
 			if (error < 0)
 				return error;
 			else {
 				inode->i_mode = mode;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			error = posix_acl_equiv_mode(acl, &inode->i_mode);
+			if (error < 0)
+				return error;
+			else {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				if (error == 0)
 					acl = NULL;
 			}
@@ -354,10 +438,16 @@ reiserfs_inherit_default_acl(struct reiserfs_transaction_handle *th,
 		return PTR_ERR(acl);
 
 	if (acl) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct posix_acl *acl_copy;
 		mode_t mode = inode->i_mode;
 		int need_acl;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Copy the default ACL to the default ACL of a new directory */
 		if (S_ISDIR(inode->i_mode)) {
 			err = reiserfs_set_acl(th, inode, ACL_TYPE_DEFAULT,
@@ -368,6 +458,8 @@ reiserfs_inherit_default_acl(struct reiserfs_transaction_handle *th,
 
 		/* Now we reconcile the new ACL and the mode,
 		   potentially modifying both */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		acl_copy = posix_acl_clone(acl, GFP_NOFS);
 		if (!acl_copy) {
 			err = -ENOMEM;
@@ -391,6 +483,20 @@ reiserfs_inherit_default_acl(struct reiserfs_transaction_handle *th,
 		}
 	      cleanup_copy:
 		posix_acl_release(acl_copy);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		err = posix_acl_create(&acl, GFP_NOFS, &inode->i_mode);
+		if (err < 0)
+			return err;
+
+		/* If we need an ACL.. */
+		if (err > 0)
+			err = reiserfs_set_acl(th, inode, ACL_TYPE_ACCESS, acl);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	      cleanup:
 		posix_acl_release(acl);
 	} else {
@@ -443,11 +549,34 @@ int reiserfs_cache_default_acl(struct inode *inode)
 	return nblocks;
 }
 
+<<<<<<< HEAD
 int reiserfs_acl_chmod(struct inode *inode)
 {
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
+=======
+	struct reiserfs_transaction_handle th;
+	struct posix_acl *acl;
+	size_t size;
+	int depth;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int error;
 
+=======
+/*
+ * Called under i_mutex
+ */
+int reiserfs_acl_chmod(struct inode *inode)
+{
+	struct reiserfs_transaction_handle th;
+	struct posix_acl *acl;
+	size_t size;
+	int error;
+
+	if (IS_PRIVATE(inode))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (S_ISLNK(inode->i_mode))
 		return -EOPNOTSUPP;
 
@@ -456,13 +585,19 @@ int reiserfs_acl_chmod(struct inode *inode)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	reiserfs_write_unlock(inode->i_sb);
 	acl = reiserfs_get_acl(inode, ACL_TYPE_ACCESS);
 	reiserfs_write_lock(inode->i_sb);
+=======
+	acl = reiserfs_get_acl(inode, ACL_TYPE_ACCESS);
+>>>>>>> refs/remotes/origin/master
 	if (!acl)
 		return 0;
 	if (IS_ERR(acl))
 		return PTR_ERR(acl);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clone = posix_acl_clone(acl, GFP_NOFS);
 	posix_acl_release(acl);
 	if (!clone)
@@ -487,6 +622,42 @@ int reiserfs_acl_chmod(struct inode *inode)
 		reiserfs_write_unlock_once(inode->i_sb, depth);
 	}
 	posix_acl_release(clone);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	error = posix_acl_chmod(&acl, GFP_NOFS, inode->i_mode);
+	if (error)
+		return error;
+
+	size = reiserfs_xattr_nblocks(inode, reiserfs_acl_size(acl->a_count));
+<<<<<<< HEAD
+	depth = reiserfs_write_lock_once(inode->i_sb);
+	error = journal_begin(&th, inode->i_sb, size * 2);
+	if (!error) {
+		int error2;
+		error = reiserfs_set_acl(&th, inode, ACL_TYPE_ACCESS, acl);
+		error2 = journal_end(&th, inode->i_sb, size * 2);
+		if (error2)
+			error = error2;
+	}
+	reiserfs_write_unlock_once(inode->i_sb, depth);
+	posix_acl_release(acl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reiserfs_write_lock(inode->i_sb);
+	error = journal_begin(&th, inode->i_sb, size * 2);
+	reiserfs_write_unlock(inode->i_sb);
+	if (!error) {
+		int error2;
+		error = reiserfs_set_acl(&th, inode, ACL_TYPE_ACCESS, acl);
+		reiserfs_write_lock(inode->i_sb);
+		error2 = journal_end(&th, inode->i_sb, size * 2);
+		reiserfs_write_unlock(inode->i_sb);
+		if (error2)
+			error = error2;
+	}
+	posix_acl_release(acl);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 

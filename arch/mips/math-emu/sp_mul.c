@@ -131,7 +131,11 @@ ieee754sp ieee754sp_mul(ieee754sp x, ieee754sp y)
 			hrm = hxm * hym;	/* 16 * 16 => 32 */
 
 			{
+<<<<<<< HEAD
 				unsigned t = lxm * hym;	/* 16 * 16 => 32 */
+=======
+				unsigned t = lxm * hym; /* 16 * 16 => 32 */
+>>>>>>> refs/remotes/origin/master
 				{
 					unsigned at = lrm + (t << 16);
 					hrm += at < lrm;
@@ -141,7 +145,11 @@ ieee754sp ieee754sp_mul(ieee754sp x, ieee754sp y)
 			}
 
 			{
+<<<<<<< HEAD
 				unsigned t = hxm * lym;	/* 16 * 16 => 32 */
+=======
+				unsigned t = hxm * lym; /* 16 * 16 => 32 */
+>>>>>>> refs/remotes/origin/master
 				{
 					unsigned at = lrm + (t << 16);
 					hrm += at < lrm;

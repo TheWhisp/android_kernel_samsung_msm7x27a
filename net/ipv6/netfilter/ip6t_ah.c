@@ -41,11 +41,19 @@ static bool ah_mt6(const struct sk_buff *skb, struct xt_action_param *par)
 	struct ip_auth_hdr _ah;
 	const struct ip_auth_hdr *ah;
 	const struct ip6t_ah *ahinfo = par->matchinfo;
+<<<<<<< HEAD
 	unsigned int ptr;
 	unsigned int hdrlen = 0;
 	int err;
 
 	err = ipv6_find_hdr(skb, &ptr, NEXTHDR_AUTH, NULL);
+=======
+	unsigned int ptr = 0;
+	unsigned int hdrlen = 0;
+	int err;
+
+	err = ipv6_find_hdr(skb, &ptr, NEXTHDR_AUTH, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		if (err != -ENOENT)
 			par->hotdrop = true;

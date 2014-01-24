@@ -24,6 +24,11 @@
  * 	This file is derived from net/ipv4/ah.c.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "IPv6: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <crypto/hash.h>
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -33,6 +38,10 @@
 #include <linux/pfkeyv2.h>
 #include <linux/string.h>
 #include <linux/scatterlist.h>
+<<<<<<< HEAD
+=======
+#include <net/ip6_route.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/icmp.h>
 #include <net/ipv6.h>
 #include <net/protocol.h>
@@ -41,7 +50,11 @@
 #define IPV6HDR_BASELEN 8
 
 struct tmp_ext {
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 		struct in6_addr saddr;
 #endif
 		struct in6_addr daddr;
@@ -111,7 +124,11 @@ static inline struct scatterlist *ah_req_sg(struct crypto_ahash *ahash,
 			     __alignof__(struct scatterlist));
 }
 
+<<<<<<< HEAD
 static int zero_out_mutable_opts(struct ipv6_opt_hdr *opthdr)
+=======
+static bool zero_out_mutable_opts(struct ipv6_opt_hdr *opthdr)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 *opt = (u8 *)opthdr;
 	int len = ipv6_optlen(opthdr);
@@ -125,7 +142,11 @@ static int zero_out_mutable_opts(struct ipv6_opt_hdr *opthdr)
 
 		switch (opt[off]) {
 
+<<<<<<< HEAD
 		case IPV6_TLV_PAD0:
+=======
+		case IPV6_TLV_PAD1:
+>>>>>>> refs/remotes/origin/master
 			optlen = 1;
 			break;
 		default:
@@ -143,6 +164,7 @@ static int zero_out_mutable_opts(struct ipv6_opt_hdr *opthdr)
 		len -= optlen;
 	}
 	if (len == 0)
+<<<<<<< HEAD
 		return 1;
 
 bad:
@@ -150,6 +172,15 @@ bad:
 }
 
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+		return true;
+
+bad:
+	return false;
+}
+
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 /**
  *	ipv6_rearrange_destopt - rearrange IPv6 destination options header
  *	@iph: IPv6 header
@@ -169,7 +200,11 @@ static void ipv6_rearrange_destopt(struct ipv6hdr *iph, struct ipv6_opt_hdr *des
 
 		switch (opt[off]) {
 
+<<<<<<< HEAD
 		case IPV6_TLV_PAD0:
+=======
+		case IPV6_TLV_PAD1:
+>>>>>>> refs/remotes/origin/master
 			optlen = 1;
 			break;
 		default:
@@ -189,13 +224,29 @@ static void ipv6_rearrange_destopt(struct ipv6hdr *iph, struct ipv6_opt_hdr *des
 
 				hao = (struct ipv6_destopt_hao *)&opt[off];
 				if (hao->length != sizeof(hao->addr)) {
+<<<<<<< HEAD
 					if (net_ratelimit())
 						printk(KERN_WARNING "destopt hao: invalid header length: %u\n", hao->length);
 					goto bad;
 				}
+<<<<<<< HEAD
 				ipv6_addr_copy(&final_addr, &hao->addr);
 				ipv6_addr_copy(&hao->addr, &iph->saddr);
 				ipv6_addr_copy(&iph->saddr, &final_addr);
+=======
+				final_addr = hao->addr;
+				hao->addr = iph->saddr;
+				iph->saddr = final_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					net_warn_ratelimited("destopt hao: invalid header length: %u\n",
+							     hao->length);
+					goto bad;
+				}
+				final_addr = hao->addr;
+				hao->addr = iph->saddr;
+				iph->saddr = final_addr;
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		}
@@ -241,13 +292,31 @@ static void ipv6_rearrange_rthdr(struct ipv6hdr *iph, struct ipv6_rt_hdr *rthdr)
 	segments = rthdr->hdrlen >> 1;
 
 	addrs = ((struct rt0_hdr *)rthdr)->addr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&final_addr, addrs + segments - 1);
+=======
+	final_addr = addrs[segments - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	final_addr = addrs[segments - 1];
+>>>>>>> refs/remotes/origin/master
 
 	addrs += segments - segments_left;
 	memmove(addrs + 1, addrs, (segments_left - 1) * sizeof(*addrs));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(addrs, &iph->daddr);
 	ipv6_addr_copy(&iph->daddr, &final_addr);
+=======
+	addrs[0] = iph->daddr;
+	iph->daddr = final_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addrs[0] = iph->daddr;
+	iph->daddr = final_addr;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ipv6_clear_mutable_options(struct ipv6hdr *iph, int len, int dir)
@@ -317,7 +386,11 @@ static void ah6_output_done(struct crypto_async_request *base, int err)
 	memcpy(top_iph, iph_base, IPV6HDR_BASELEN);
 
 	if (extlen) {
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 		memcpy(&top_iph->saddr, iph_ext, extlen);
 #else
 		memcpy(&top_iph->daddr, iph_ext, extlen);
@@ -382,7 +455,11 @@ static int ah6_output(struct xfrm_state *x, struct sk_buff *skb)
 	memcpy(iph_base, top_iph, IPV6HDR_BASELEN);
 
 	if (extlen) {
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 		memcpy(iph_ext, &top_iph->saddr, extlen);
 #else
 		memcpy(iph_ext, &top_iph->daddr, extlen);
@@ -431,7 +508,11 @@ static int ah6_output(struct xfrm_state *x, struct sk_buff *skb)
 	memcpy(top_iph, iph_base, IPV6HDR_BASELEN);
 
 	if (extlen) {
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 		memcpy(&top_iph->saddr, iph_ext, extlen);
 #else
 		memcpy(&top_iph->daddr, iph_ext, extlen);
@@ -469,7 +550,14 @@ static void ah6_input_done(struct crypto_async_request *base, int err)
 	skb->network_header += ah_hlen;
 	memcpy(skb_network_header(skb), work_iph, hdr_len);
 	__skb_pull(skb, ah_hlen + hdr_len);
+<<<<<<< HEAD
 	skb_set_transport_header(skb, -hdr_len);
+=======
+	if (x->props.mode == XFRM_MODE_TUNNEL)
+		skb_reset_transport_header(skb);
+	else
+		skb_set_transport_header(skb, -hdr_len);
+>>>>>>> refs/remotes/origin/master
 out:
 	kfree(AH_SKB_CB(skb)->tmp);
 	xfrm_input_resume(skb, err);
@@ -515,8 +603,12 @@ static int ah6_input(struct xfrm_state *x, struct sk_buff *skb)
 
 	/* We are going to _remove_ AH header to keep sockets happy,
 	 * so... Later this can change. */
+<<<<<<< HEAD
 	if (skb_cloned(skb) &&
 	    pskb_expand_head(skb, 0, 0, GFP_ATOMIC))
+=======
+	if (skb_unclone(skb, GFP_ATOMIC))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	skb->ip_summed = CHECKSUM_NONE;
@@ -590,9 +682,19 @@ static int ah6_input(struct xfrm_state *x, struct sk_buff *skb)
 
 	skb->network_header += ah_hlen;
 	memcpy(skb_network_header(skb), work_iph, hdr_len);
+<<<<<<< HEAD
 	skb->transport_header = skb->network_header;
 	__skb_pull(skb, ah_hlen + hdr_len);
 
+=======
+	__skb_pull(skb, ah_hlen + hdr_len);
+
+	if (x->props.mode == XFRM_MODE_TUNNEL)
+		skb_reset_transport_header(skb);
+	else
+		skb_set_transport_header(skb, -hdr_len);
+
+>>>>>>> refs/remotes/origin/master
 	err = nexthdr;
 
 out_free:
@@ -609,17 +711,29 @@ static void ah6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 	struct ip_auth_hdr *ah = (struct ip_auth_hdr*)(skb->data+offset);
 	struct xfrm_state *x;
 
+<<<<<<< HEAD
 	if (type != ICMPV6_DEST_UNREACH &&
 	    type != ICMPV6_PKT_TOOBIG)
+=======
+	if (type != ICMPV6_PKT_TOOBIG &&
+	    type != NDISC_REDIRECT)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	x = xfrm_state_lookup(net, skb->mark, (xfrm_address_t *)&iph->daddr, ah->spi, IPPROTO_AH, AF_INET6);
 	if (!x)
 		return;
 
+<<<<<<< HEAD
 	NETDEBUG(KERN_DEBUG "pmtu discovery on SA AH/%08x/%pI6\n",
 		 ntohl(ah->spi), &iph->daddr);
 
+=======
+	if (type == NDISC_REDIRECT)
+		ip6_redirect(skb, net, skb->dev->ifindex, 0);
+	else
+		ip6_update_pmtu(skb, net, info, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	xfrm_state_put(x);
 }
 
@@ -659,9 +773,15 @@ static int ah6_init_state(struct xfrm_state *x)
 
 	if (aalg_desc->uinfo.auth.icv_fullbits/8 !=
 	    crypto_ahash_digestsize(ahash)) {
+<<<<<<< HEAD
 		printk(KERN_INFO "AH: %s digestsize %u != %hu\n",
 		       x->aalg->alg_name, crypto_ahash_digestsize(ahash),
 		       aalg_desc->uinfo.auth.icv_fullbits/8);
+=======
+		pr_info("AH: %s digestsize %u != %hu\n",
+			x->aalg->alg_name, crypto_ahash_digestsize(ahash),
+			aalg_desc->uinfo.auth.icv_fullbits/8);
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -727,12 +847,20 @@ static const struct inet6_protocol ah6_protocol = {
 static int __init ah6_init(void)
 {
 	if (xfrm_register_type(&ah6_type, AF_INET6) < 0) {
+<<<<<<< HEAD
 		printk(KERN_INFO "ipv6 ah init: can't add xfrm type\n");
+=======
+		pr_info("%s: can't add xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;
 	}
 
 	if (inet6_add_protocol(&ah6_protocol, IPPROTO_AH) < 0) {
+<<<<<<< HEAD
 		printk(KERN_INFO "ipv6 ah init: can't add protocol\n");
+=======
+		pr_info("%s: can't add protocol\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		xfrm_unregister_type(&ah6_type, AF_INET6);
 		return -EAGAIN;
 	}
@@ -743,10 +871,17 @@ static int __init ah6_init(void)
 static void __exit ah6_fini(void)
 {
 	if (inet6_del_protocol(&ah6_protocol, IPPROTO_AH) < 0)
+<<<<<<< HEAD
 		printk(KERN_INFO "ipv6 ah close: can't remove protocol\n");
 
 	if (xfrm_unregister_type(&ah6_type, AF_INET6) < 0)
 		printk(KERN_INFO "ipv6 ah close: can't remove xfrm type\n");
+=======
+		pr_info("%s: can't remove protocol\n", __func__);
+
+	if (xfrm_unregister_type(&ah6_type, AF_INET6) < 0)
+		pr_info("%s: can't remove xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 }
 

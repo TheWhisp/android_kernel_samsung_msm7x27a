@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 
@@ -18,7 +22,15 @@ MODULE_AUTHOR("Márton Németh <nm127@freemail.hu>");
 MODULE_DESCRIPTION("Clevo mail LED driver");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int __initdata nodetect;
+=======
+static bool __initdata nodetect;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool __initdata nodetect;
+>>>>>>> refs/remotes/origin/master
 module_param_named(nodetect, nodetect, bool, 0);
 MODULE_PARM_DESC(nodetect, "Skip DMI hardware detection");
 
@@ -26,12 +38,20 @@ static struct platform_device *pdev;
 
 static int __init clevo_mail_led_dmi_callback(const struct dmi_system_id *id)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO KBUILD_MODNAME ": '%s' found\n", id->ident);
+=======
+	pr_info("'%s' found\n", id->ident);
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
 /*
+<<<<<<< HEAD
  * struct mail_led_whitelist - List of known good models
+=======
+ * struct clevo_mail_led_dmi_table - List of known good models
+>>>>>>> refs/remotes/origin/master
  *
  * Contains the known good models this driver is compatible with.
  * When adding a new model try to be as strict as possible. This
@@ -39,7 +59,11 @@ static int __init clevo_mail_led_dmi_callback(const struct dmi_system_id *id)
  * detected as working, but in reality it is not) as low as
  * possible.
  */
+<<<<<<< HEAD
 static struct dmi_system_id __initdata mail_led_whitelist[] = {
+=======
+static struct dmi_system_id clevo_mail_led_dmi_table[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.callback = clevo_mail_led_dmi_callback,
 		.ident = "Clevo D410J",
@@ -59,11 +83,18 @@ static struct dmi_system_id __initdata mail_led_whitelist[] = {
 	},
 	{
 		.callback = clevo_mail_led_dmi_callback,
+<<<<<<< HEAD
 		.ident = "Positivo Mobile",
 		.matches = {
 			DMI_MATCH(DMI_BOARD_VENDOR, "CLEVO Co. "),
 			DMI_MATCH(DMI_BOARD_NAME, "M5X0V "),
 			DMI_MATCH(DMI_PRODUCT_NAME, "Positivo Mobile"),
+=======
+		.ident = "Clevo M5x0V",
+		.matches = {
+			DMI_MATCH(DMI_BOARD_VENDOR, "CLEVO Co. "),
+			DMI_MATCH(DMI_BOARD_NAME, "M5X0V "),
+>>>>>>> refs/remotes/origin/master
 			DMI_MATCH(DMI_PRODUCT_VERSION, "VT6198")
 		}
 	},
@@ -89,6 +120,10 @@ static struct dmi_system_id __initdata mail_led_whitelist[] = {
 	},
 	{ }
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(dmi, clevo_mail_led_dmi_table);
+>>>>>>> refs/remotes/origin/master
 
 static void clevo_mail_led_set(struct led_classdev *led_cdev,
 				enum led_brightness value)
@@ -135,8 +170,12 @@ static int clevo_mail_led_blink(struct led_classdev *led_cdev,
 		status = 0;
 
 	} else {
+<<<<<<< HEAD
 		printk(KERN_DEBUG KBUILD_MODNAME
 		       ": clevo_mail_led_blink(..., %lu, %lu),"
+=======
+		pr_debug("clevo_mail_led_blink(..., %lu, %lu),"
+>>>>>>> refs/remotes/origin/master
 		       " returning -EINVAL (unsupported)\n",
 		       *delay_on, *delay_off);
 	}
@@ -153,7 +192,11 @@ static struct led_classdev clevo_mail_led = {
 	.flags			= LED_CORE_SUSPENDRESUME,
 };
 
+<<<<<<< HEAD
 static int __devinit clevo_mail_led_probe(struct platform_device *pdev)
+=======
+static int clevo_mail_led_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return led_classdev_register(&pdev->dev, &clevo_mail_led);
 }
@@ -180,10 +223,17 @@ static int __init clevo_mail_led_init(void)
 
 	/* Check with the help of DMI if we are running on supported hardware */
 	if (!nodetect) {
+<<<<<<< HEAD
 		count = dmi_check_system(mail_led_whitelist);
 	} else {
 		count = 1;
 		printk(KERN_ERR KBUILD_MODNAME ": Skipping DMI detection. "
+=======
+		count = dmi_check_system(clevo_mail_led_dmi_table);
+	} else {
+		count = 1;
+		pr_err("Skipping DMI detection. "
+>>>>>>> refs/remotes/origin/master
 		       "If the driver works on your hardware please "
 		       "report model and the output of dmidecode in tracker "
 		       "at http://sourceforge.net/projects/clevo-mailled/\n");
@@ -197,8 +247,12 @@ static int __init clevo_mail_led_init(void)
 		error = platform_driver_probe(&clevo_mail_led_driver,
 					      clevo_mail_led_probe);
 		if (error) {
+<<<<<<< HEAD
 			printk(KERN_ERR KBUILD_MODNAME
 			       ": Can't probe platform driver\n");
+=======
+			pr_err("Can't probe platform driver\n");
+>>>>>>> refs/remotes/origin/master
 			platform_device_unregister(pdev);
 		}
 	} else

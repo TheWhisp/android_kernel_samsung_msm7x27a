@@ -7,6 +7,14 @@
  * published by the Free Software Foundation.
 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/soc.h>
 
 #include "s3c24xx_simtec.h"
@@ -54,18 +62,30 @@ static int simtec_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
 	struct snd_soc_codec *codec = rtd->codec;
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_new_controls(dapm, dapm_widgets,
 				  ARRAY_SIZE(dapm_widgets));
 
 	snd_soc_dapm_add_routes(dapm, base_map, ARRAY_SIZE(base_map));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
 	snd_soc_dapm_enable_pin(dapm, "Line In");
 	snd_soc_dapm_enable_pin(dapm, "Line Out");
 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
 
 	simtec_audio_init(rtd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -76,32 +96,66 @@ static struct snd_soc_dai_link simtec_dai_aic23 = {
 	.codec_name	= "tlv320aic3x-codec.0-001a",
 	.cpu_dai_name	= "s3c24xx-iis",
 	.codec_dai_name = "tlv320aic3x-hifi",
+<<<<<<< HEAD
 	.platform_name	= "samsung-audio",
+=======
+	.platform_name	= "s3c24xx-iis",
+>>>>>>> refs/remotes/origin/master
 	.init		= simtec_tlv320aic23_init,
 };
 
 /* simtec audio machine driver */
 static struct snd_soc_card snd_soc_machine_simtec_aic23 = {
 	.name		= "Simtec",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.dai_link	= &simtec_dai_aic23,
 	.num_links	= 1,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.owner		= THIS_MODULE,
+	.dai_link	= &simtec_dai_aic23,
+	.num_links	= 1,
+
+	.dapm_widgets	= dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(dapm_widgets),
+	.dapm_routes	= base_map,
+	.num_dapm_routes = ARRAY_SIZE(base_map),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __devinit simtec_audio_tlv320aic23_probe(struct platform_device *pd)
+=======
+};
+
+static int simtec_audio_tlv320aic23_probe(struct platform_device *pd)
+>>>>>>> refs/remotes/origin/master
 {
 	return simtec_audio_core_probe(pd, &snd_soc_machine_simtec_aic23);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_driver simtec_audio_tlv320aic23_platdrv = {
+=======
+static struct platform_driver simtec_audio_tlv320aic23_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver simtec_audio_tlv320aic23_driver = {
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.owner	= THIS_MODULE,
 		.name	= "s3c24xx-simtec-tlv320aic23",
 		.pm	= simtec_audio_pm,
 	},
 	.probe	= simtec_audio_tlv320aic23_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(simtec_audio_remove),
 };
 
+<<<<<<< HEAD
 MODULE_ALIAS("platform:s3c24xx-simtec-tlv320aic23");
 
 static int __init simtec_tlv320aic23_modinit(void)
@@ -117,6 +171,19 @@ static void __exit simtec_tlv320aic23_modexit(void)
 module_init(simtec_tlv320aic23_modinit);
 module_exit(simtec_tlv320aic23_modexit);
 
+=======
+module_platform_driver(simtec_audio_tlv320aic23_driver);
+
+MODULE_ALIAS("platform:s3c24xx-simtec-tlv320aic23");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= simtec_audio_remove,
+};
+
+module_platform_driver(simtec_audio_tlv320aic23_driver);
+
+MODULE_ALIAS("platform:s3c24xx-simtec-tlv320aic23");
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
 MODULE_DESCRIPTION("ALSA SoC Simtec Audio support");
 MODULE_LICENSE("GPL");

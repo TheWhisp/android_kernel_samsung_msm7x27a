@@ -33,6 +33,7 @@
  * Interrupt Enable Reg OST_OIER
  */
 #define OST_OIER	(PKUNITY_OST_BASE + 0x001C)
+<<<<<<< HEAD
 /*
  * PWM Pulse Width Control Reg OST_PWMPWCR
  */
@@ -45,6 +46,18 @@
  * PWM Period Control Reg OST_PWMPCR
  */
 #define OST_PWMPCR	(PKUNITY_OST_BASE + 0x0088)
+=======
+
+/*
+ * PWM Registers: IO base address: PKUNITY_OST_BASE + 0x80
+ *      PWCR: Pulse Width Control Reg
+ *      DCCR: Duty Cycle Control Reg
+ *      PCR: Period Control Reg
+ */
+#define OST_PWM_PWCR	(0x00)
+#define OST_PWM_DCCR	(0x04)
+#define OST_PWM_PCR 	(0x08)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Match detected 0 OST_OSSR_M0

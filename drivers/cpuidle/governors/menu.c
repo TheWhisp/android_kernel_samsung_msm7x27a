@@ -12,14 +12,40 @@
 
 #include <linux/kernel.h>
 #include <linux/cpuidle.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/time.h>
 #include <linux/ktime.h>
 #include <linux/hrtimer.h>
 #include <linux/tick.h>
 #include <linux/sched.h>
 #include <linux/math64.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#include <linux/module.h>
+
+/*
+ * Please note when changing the tuning values:
+ * If (MAX_INTERESTING-1) * RESOLUTION > UINT_MAX, the result of
+ * a scaling operation multiplication may overflow on 32 bit platforms.
+ * In that case, #define RESOLUTION as ULL to get 64 bit result:
+ * #define RESOLUTION 1024ULL
+ *
+ * The default values do not overflow.
+ */
+>>>>>>> refs/remotes/origin/master
 #define BUCKETS 12
 #define INTERVALS 8
 #define RESOLUTION 1024
@@ -113,11 +139,19 @@ struct menu_device {
 	int             needs_update;
 
 	unsigned int	expected_us;
+<<<<<<< HEAD
 	u64		predicted_us;
 	unsigned int	exit_us;
 	unsigned int	bucket;
 	u64		correction_factor[BUCKETS];
 	u32		intervals[INTERVALS];
+=======
+	unsigned int	predicted_us;
+	unsigned int	exit_us;
+	unsigned int	bucket;
+	unsigned int	correction_factor[BUCKETS];
+	unsigned int	intervals[INTERVALS];
+>>>>>>> refs/remotes/origin/master
 	int		interval_ptr;
 };
 
@@ -125,6 +159,20 @@ struct menu_device {
 #define LOAD_INT(x) ((x) >> FSHIFT)
 #define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int get_loadavg(void)
+{
+	unsigned long this = this_cpu_load();
+
+
+	return LOAD_INT(this) * 10 + LOAD_FRAC(this) / 10;
+}
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static inline int which_bucket(unsigned int duration)
 {
 	int bucket = 0;
@@ -162,6 +210,30 @@ static inline int performance_multiplier(void)
 {
 	int mult = 1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* for higher loadavg, we are more reluctant */
+
+	/*
+	 * this doesn't work as intended - it is almost always 0, but can
+	 * sometimes, depending on workload, spike very high into the hundreds
+	 * even when the average cpu load is under 10%.
+	 */
+	/* mult += 2 * get_loadavg(); */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* for higher loadavg, we are more reluctant */
+
+	/*
+	 * this doesn't work as intended - it is almost always 0, but can
+	 * sometimes, depending on workload, spike very high into the hundreds
+	 * even when the average cpu load is under 10%.
+	 */
+	/* mult += 2 * get_loadavg(); */
+
+>>>>>>> refs/remotes/origin/master
 	/* for IO wait tasks (per cpu!) we add 5x each */
 	mult += 10 * nr_iowait_cpu(smp_processor_id());
 
@@ -170,7 +242,15 @@ static inline int performance_multiplier(void)
 
 static DEFINE_PER_CPU(struct menu_device, menu_devices);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void menu_update(struct cpuidle_device *dev);
+=======
+static void menu_update(struct cpuidle_driver *drv, struct cpuidle_device *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void menu_update(struct cpuidle_driver *drv, struct cpuidle_device *dev);
+>>>>>>> refs/remotes/origin/master
 
 /* This implements DIV_ROUND_CLOSEST but avoids 64 bit division */
 static u64 div_round64(u64 dividend, u32 divisor)
@@ -184,6 +264,7 @@ static u64 div_round64(u64 dividend, u32 divisor)
  * of points is below a threshold. If it is... then use the
  * average of these 8 points as the estimated value.
  */
+<<<<<<< HEAD
 static void detect_repeating_patterns(struct menu_device *data)
 {
 	int i;
@@ -212,10 +293,85 @@ static void detect_repeating_patterns(struct menu_device *data)
 
 	if (avg && stddev < STDDEV_THRESH)
 		data->predicted_us = avg;
+=======
+static void get_typical_interval(struct menu_device *data)
+{
+	int i, divisor;
+	unsigned int max, thresh;
+	uint64_t avg, stddev;
+
+	thresh = UINT_MAX; /* Discard outliers above this value */
+
+again:
+
+	/* First calculate the average of past intervals */
+	max = 0;
+	avg = 0;
+	divisor = 0;
+	for (i = 0; i < INTERVALS; i++) {
+		unsigned int value = data->intervals[i];
+		if (value <= thresh) {
+			avg += value;
+			divisor++;
+			if (value > max)
+				max = value;
+		}
+	}
+	do_div(avg, divisor);
+
+	/* Then try to determine standard deviation */
+	stddev = 0;
+	for (i = 0; i < INTERVALS; i++) {
+		unsigned int value = data->intervals[i];
+		if (value <= thresh) {
+			int64_t diff = value - avg;
+			stddev += diff * diff;
+		}
+	}
+	do_div(stddev, divisor);
+	/*
+	 * The typical interval is obtained when standard deviation is small
+	 * or standard deviation is small compared to the average interval.
+	 *
+	 * int_sqrt() formal parameter type is unsigned long. When the
+	 * greatest difference to an outlier exceeds ~65 ms * sqrt(divisor)
+	 * the resulting squared standard deviation exceeds the input domain
+	 * of int_sqrt on platforms where unsigned long is 32 bits in size.
+	 * In such case reject the candidate average.
+	 *
+	 * Use this result only if there is no timer to wake us up sooner.
+	 */
+	if (likely(stddev <= ULONG_MAX)) {
+		stddev = int_sqrt(stddev);
+		if (((avg > stddev * 6) && (divisor * 4 >= INTERVALS * 3))
+							|| stddev <= 20) {
+			if (data->expected_us > avg)
+				data->predicted_us = avg;
+			return;
+		}
+	}
+
+	/*
+	 * If we have outliers to the upside in our distribution, discard
+	 * those by setting the threshold to exclude these outliers, then
+	 * calculate the average and standard deviation again. Once we get
+	 * down to the bottom 3/4 of our samples, stop excluding samples.
+	 *
+	 * This can deal with workloads that have long pauses interspersed
+	 * with sporadic activity with a bunch of short pauses.
+	 */
+	if ((divisor * 4) <= INTERVALS * 3)
+		return;
+
+	thresh = max - 1;
+	goto again;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * menu_select - selects the next idle state to enter
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @dev: the CPU
  */
 static int menu_select(struct cpuidle_device *dev)
@@ -223,12 +379,35 @@ static int menu_select(struct cpuidle_device *dev)
 	struct menu_device *data = &__get_cpu_var(menu_devices);
 	int latency_req = pm_qos_request(PM_QOS_CPU_DMA_LATENCY);
 	unsigned int power_usage = -1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @drv: cpuidle driver containing state data
+ * @dev: the CPU
+ */
+static int menu_select(struct cpuidle_driver *drv, struct cpuidle_device *dev)
+{
+	struct menu_device *data = &__get_cpu_var(menu_devices);
+	int latency_req = pm_qos_request(PM_QOS_CPU_DMA_LATENCY);
+<<<<<<< HEAD
+	int power_usage = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int multiplier;
 	struct timespec t;
 
 	if (data->needs_update) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		menu_update(dev);
+=======
+		menu_update(drv, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		menu_update(drv, dev);
+>>>>>>> refs/remotes/origin/master
 		data->needs_update = 0;
 	}
 
@@ -256,27 +435,66 @@ static int menu_select(struct cpuidle_device *dev)
 	if (data->correction_factor[data->bucket] == 0)
 		data->correction_factor[data->bucket] = RESOLUTION * DECAY;
 
+<<<<<<< HEAD
 	/* Make sure to round up for half microseconds */
 	data->predicted_us = div_round64(data->expected_us * data->correction_factor[data->bucket],
 					 RESOLUTION * DECAY);
 
 	detect_repeating_patterns(data);
+=======
+	/*
+	 * Force the result of multiplication to be 64 bits even if both
+	 * operands are 32 bits.
+	 * Make sure to round up for half microseconds.
+	 */
+	data->predicted_us = div_round64((uint64_t)data->expected_us *
+					 data->correction_factor[data->bucket],
+					 RESOLUTION * DECAY);
+
+	get_typical_interval(data);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We want to default to C1 (hlt), not to busy polling
 	 * unless the timer is happening really really soon.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (data->expected_us > 5)
+=======
+	if (data->expected_us > 5 &&
+		drv->states[CPUIDLE_DRIVER_STATE_START].disable == 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (data->expected_us > 5 &&
+	    !drv->states[CPUIDLE_DRIVER_STATE_START].disabled &&
+		dev->states_usage[CPUIDLE_DRIVER_STATE_START].disable == 0)
+>>>>>>> refs/remotes/origin/master
 		data->last_state_idx = CPUIDLE_DRIVER_STATE_START;
 
 	/*
 	 * Find the idle state with the lowest power while satisfying
 	 * our constraints.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = CPUIDLE_DRIVER_STATE_START; i < dev->state_count; i++) {
 		struct cpuidle_state *s = &dev->states[i];
 
 		if (s->flags & CPUIDLE_FLAG_IGNORE)
+=======
+	for (i = CPUIDLE_DRIVER_STATE_START; i < drv->state_count; i++) {
+		struct cpuidle_state *s = &drv->states[i];
+
+		if (s->disable)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = CPUIDLE_DRIVER_STATE_START; i < drv->state_count; i++) {
+		struct cpuidle_state *s = &drv->states[i];
+		struct cpuidle_state_usage *su = &dev->states_usage[i];
+
+		if (s->disabled || su->disable)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		if (s->target_residency > data->predicted_us)
 			continue;
@@ -285,11 +503,16 @@ static int menu_select(struct cpuidle_device *dev)
 		if (s->exit_latency * multiplier > data->predicted_us)
 			continue;
 
+<<<<<<< HEAD
 		if (s->power_usage < power_usage) {
 			power_usage = s->power_usage;
 			data->last_state_idx = i;
 			data->exit_us = s->exit_latency;
 		}
+=======
+		data->last_state_idx = i;
+		data->exit_us = s->exit_latency;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return data->last_state_idx;
@@ -298,28 +521,74 @@ static int menu_select(struct cpuidle_device *dev)
 /**
  * menu_reflect - records that data structures need update
  * @dev: the CPU
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ * @index: the index of actual entered state
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @index: the index of actual entered state
+>>>>>>> refs/remotes/origin/master
  *
  * NOTE: it's important to be fast here because this operation will add to
  *       the overall exit latency.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void menu_reflect(struct cpuidle_device *dev)
 {
 	struct menu_device *data = &__get_cpu_var(menu_devices);
 	data->needs_update = 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void menu_reflect(struct cpuidle_device *dev, int index)
+{
+	struct menu_device *data = &__get_cpu_var(menu_devices);
+	data->last_state_idx = index;
+	if (index >= 0)
+		data->needs_update = 1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * menu_update - attempts to guess what happened after entry
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @dev: the CPU
  */
 static void menu_update(struct cpuidle_device *dev)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @drv: cpuidle driver containing state data
+ * @dev: the CPU
+ */
+static void menu_update(struct cpuidle_driver *drv, struct cpuidle_device *dev)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct menu_device *data = &__get_cpu_var(menu_devices);
 	int last_idx = data->last_state_idx;
 	unsigned int last_idle_us = cpuidle_get_last_residency(dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct cpuidle_state *target = &dev->states[last_idx];
+=======
+	struct cpuidle_state *target = &drv->states[last_idx];
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int measured_us;
 	u64 new_factor;
+=======
+	struct cpuidle_state *target = &drv->states[last_idx];
+	unsigned int measured_us;
+	unsigned int new_factor;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Ugh, this idle state doesn't support residency measurements, so we
@@ -340,10 +609,16 @@ static void menu_update(struct cpuidle_device *dev)
 		measured_us -= data->exit_us;
 
 
+<<<<<<< HEAD
 	/* update our correction ratio */
 
 	new_factor = data->correction_factor[data->bucket]
 			* (DECAY - 1) / DECAY;
+=======
+	/* Update our correction ratio */
+	new_factor = data->correction_factor[data->bucket];
+	new_factor -= new_factor / DECAY;
+>>>>>>> refs/remotes/origin/master
 
 	if (data->expected_us > 0 && measured_us < MAX_INTERESTING)
 		new_factor += RESOLUTION * measured_us / data->expected_us;
@@ -356,9 +631,17 @@ static void menu_update(struct cpuidle_device *dev)
 
 	/*
 	 * We don't want 0 as factor; we always want at least
+<<<<<<< HEAD
 	 * a tiny bit of estimated time.
 	 */
 	if (new_factor == 0)
+=======
+	 * a tiny bit of estimated time. Fortunately, due to rounding,
+	 * new_factor will stay nonzero regardless of measured_us values
+	 * and the compiler can eliminate this test as long as DECAY > 1.
+	 */
+	if (DECAY == 1 && unlikely(new_factor == 0))
+>>>>>>> refs/remotes/origin/master
 		new_factor = 1;
 
 	data->correction_factor[data->bucket] = new_factor;
@@ -371,9 +654,23 @@ static void menu_update(struct cpuidle_device *dev)
 
 /**
  * menu_enable_device - scans a CPU's states and does setup
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @dev: the CPU
  */
 static int menu_enable_device(struct cpuidle_device *dev)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * @drv: cpuidle driver
+ * @dev: the CPU
+ */
+static int menu_enable_device(struct cpuidle_driver *drv,
+				struct cpuidle_device *dev)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct menu_device *data = &per_cpu(menu_devices, dev->cpu);
 
@@ -399,6 +696,7 @@ static int __init init_menu(void)
 	return cpuidle_register_governor(&menu_governor);
 }
 
+<<<<<<< HEAD
 /**
  * exit_menu - exits the governor
  */
@@ -410,3 +708,6 @@ static void __exit exit_menu(void)
 MODULE_LICENSE("GPL");
 module_init(init_menu);
 module_exit(exit_menu);
+=======
+postcore_initcall(init_menu);
+>>>>>>> refs/remotes/origin/master

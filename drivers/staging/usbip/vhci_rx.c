@@ -31,6 +31,7 @@ struct urb *pickup_urb_and_free_priv(struct vhci_device *vdev, __u32 seqnum)
 	int status;
 
 	list_for_each_entry_safe(priv, tmp, &vdev->priv_rx, list) {
+<<<<<<< HEAD
 		if (priv->seqnum == seqnum) {
 			urb = priv->urb;
 			status = urb->status;
@@ -58,6 +59,39 @@ struct urb *pickup_urb_and_free_priv(struct vhci_device *vdev, __u32 seqnum)
 
 			break;
 		}
+=======
+		if (priv->seqnum != seqnum)
+			continue;
+
+		urb = priv->urb;
+		status = urb->status;
+
+		usbip_dbg_vhci_rx("find urb %p vurb %p seqnum %u\n",
+				urb, priv, seqnum);
+
+		switch (status) {
+		case -ENOENT:
+			/* fall through */
+		case -ECONNRESET:
+			dev_info(&urb->dev->dev,
+				 "urb %p was unlinked %ssynchronuously.\n", urb,
+				 status == -ENOENT ? "" : "a");
+			break;
+		case -EINPROGRESS:
+			/* no info output */
+			break;
+		default:
+			dev_info(&urb->dev->dev,
+				 "urb %p may be in a error, status %d\n", urb,
+				 status);
+		}
+
+		list_del(&priv->list);
+		kfree(priv);
+		urb->hcpriv = NULL;
+
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return urb;
@@ -68,7 +102,10 @@ static void vhci_recv_ret_submit(struct vhci_device *vdev,
 {
 	struct usbip_device *ud = &vdev->ud;
 	struct urb *urb;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&vdev->priv_lock);
 	urb = pickup_urb_and_free_priv(vdev, pdu->base.seqnum);
@@ -101,9 +138,15 @@ static void vhci_recv_ret_submit(struct vhci_device *vdev,
 
 	usbip_dbg_vhci_rx("now giveback urb %p\n", urb);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&the_controller->lock, flags);
 	usb_hcd_unlink_urb_from_ep(vhci_to_hcd(the_controller), urb);
 	spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+	spin_lock(&the_controller->lock);
+	usb_hcd_unlink_urb_from_ep(vhci_to_hcd(the_controller), urb);
+	spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 
 	usb_hcd_giveback_urb(vhci_to_hcd(the_controller), urb, urb->status);
 
@@ -141,7 +184,10 @@ static void vhci_recv_ret_unlink(struct vhci_device *vdev,
 {
 	struct vhci_unlink *unlink;
 	struct urb *urb;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	usbip_dump_header(pdu);
 
@@ -162,11 +208,16 @@ static void vhci_recv_ret_unlink(struct vhci_device *vdev,
 		 * already received the result of its submit result and gave
 		 * back the URB.
 		 */
+<<<<<<< HEAD
 		pr_info("the urb (seqnum %d) was already given backed\n",
+=======
+		pr_info("the urb (seqnum %d) was already given back\n",
+>>>>>>> refs/remotes/origin/master
 			pdu->base.seqnum);
 	} else {
 		usbip_dbg_vhci_rx("now giveback urb %p\n", urb);
 
+<<<<<<< HEAD
 		/* If unlink is succeed, status is -ECONNRESET */
 		urb->status = pdu->u.ret_unlink.status;
 		pr_info("urb->status %d\n", urb->status);
@@ -174,14 +225,29 @@ static void vhci_recv_ret_unlink(struct vhci_device *vdev,
 		spin_lock_irqsave(&the_controller->lock, flags);
 		usb_hcd_unlink_urb_from_ep(vhci_to_hcd(the_controller), urb);
 		spin_unlock_irqrestore(&the_controller->lock, flags);
+=======
+		/* If unlink is successful, status is -ECONNRESET */
+		urb->status = pdu->u.ret_unlink.status;
+		pr_info("urb->status %d\n", urb->status);
+
+		spin_lock(&the_controller->lock);
+		usb_hcd_unlink_urb_from_ep(vhci_to_hcd(the_controller), urb);
+		spin_unlock(&the_controller->lock);
+>>>>>>> refs/remotes/origin/master
 
 		usb_hcd_giveback_urb(vhci_to_hcd(the_controller), urb,
 				     urb->status);
 	}
 
 	kfree(unlink);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	return;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vhci_priv_tx_empty(struct vhci_device *vdev)
@@ -206,8 +272,17 @@ static void vhci_rx_pdu(struct usbip_device *ud)
 
 	memset(&pdu, 0, sizeof(pdu));
 
+<<<<<<< HEAD
 	/* 1. receive a pdu header */
+<<<<<<< HEAD
 	ret = usbip_xmit(0, ud->tcp_socket, (char *) &pdu, sizeof(pdu), 0);
+=======
+	ret = usbip_recv(ud->tcp_socket, &pdu, sizeof(pdu));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* receive a pdu header */
+	ret = usbip_recv(ud->tcp_socket, &pdu, sizeof(pdu));
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		if (ret == -ECONNRESET)
 			pr_info("connection reset by peer\n");

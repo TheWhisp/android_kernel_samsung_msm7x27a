@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -23,8 +31,22 @@
 #include <linux/suspend.h>
 #include <linux/percpu.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/msm_iomap.h>
 #include <asm/mach-types.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <asm/fiq.h>
+#include <asm/hardware/gic.h>
+#include <mach/msm_iomap.h>
+#include <asm/mach-types.h>
+#include <asm/cacheflush.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/scm.h>
 #include <mach/socinfo.h>
 #include "msm_watchdog.h"
@@ -42,11 +64,29 @@
 
 #define WDT_HZ		32768
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct msm_watchdog_dump msm_dump_cpu_ctx;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct msm_watchdog_dump msm_dump_cpu_ctx;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static void __iomem *msm_tmr0_base;
 
 static unsigned long delay_time;
 static unsigned long bark_time;
 static unsigned long long last_pet;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static bool has_vic;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool has_vic;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * On the kernel command line specify
@@ -77,6 +117,16 @@ module_param_call(runtime_disable, wdog_enable_set, param_get_int,
 static int appsbark;
 module_param(appsbark, int, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int appsbark_fiq;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int appsbark_fiq;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Use /sys/module/msm_watchdog/parameters/print_all_stacks
  * to control whether stacks of all running
@@ -95,6 +145,23 @@ static void init_watchdog_work(struct work_struct *work);
 static DECLARE_DELAYED_WORK(dogwork_struct, pet_watchdog_work);
 static DECLARE_WORK(init_dogwork_struct, init_watchdog_work);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/* Called from the FIQ bark handler */
+void msm_wdog_bark_fin(void)
+{
+	flush_cache_all();
+	pr_crit("\nApps Watchdog bark received - Calling Panic\n");
+	panic("Apps Watchdog Bark received\n");
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int msm_watchdog_suspend(struct device *dev)
 {
 	if (!enable)
@@ -137,13 +204,64 @@ static struct notifier_block panic_blk = {
 	.notifier_call	= panic_wdog_handler,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+struct wdog_disable_work_data {
+	struct work_struct work;
+	struct completion complete;
+};
+
+static void wdog_disable_work(struct work_struct *work)
+{
+	struct wdog_disable_work_data *work_data =
+		container_of(work, struct wdog_disable_work_data, work);
+	__raw_writel(0, msm_tmr0_base + WDT0_EN);
+	mb();
+	if (has_vic) {
+		free_irq(WDT0_ACCSCSSNBARK_INT, 0);
+	} else {
+		disable_percpu_irq(WDT0_ACCSCSSNBARK_INT);
+		if (!appsbark_fiq) {
+			free_percpu_irq(WDT0_ACCSCSSNBARK_INT,
+					percpu_pdata);
+			free_percpu(percpu_pdata);
+		}
+	}
+	enable = 0;
+	atomic_notifier_chain_unregister(&panic_notifier_list, &panic_blk);
+	cancel_delayed_work(&dogwork_struct);
+	/* may be suspended after the first write above */
+	__raw_writel(0, msm_tmr0_base + WDT0_EN);
+	complete(&work_data->complete);
+	pr_info("MSM Watchdog deactivated.\n");
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int wdog_enable_set(const char *val, struct kernel_param *kp)
 {
 	int ret = 0;
 	int old_val = runtime_disable;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	mutex_lock(&disable_lock);
 
+=======
+	struct wdog_disable_work_data work_data;
+
+	mutex_lock(&disable_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wdog_disable_work_data work_data;
+
+	mutex_lock(&disable_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!enable) {
 		printk(KERN_INFO "MSM Watchdog is not active.\n");
 		ret = -EINVAL;
@@ -151,6 +269,8 @@ static int wdog_enable_set(const char *val, struct kernel_param *kp)
 	}
 
 	ret = param_set_int(val, kp);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (ret)
 		goto done;
@@ -181,6 +301,27 @@ static int wdog_enable_set(const char *val, struct kernel_param *kp)
 
 	}
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (ret)
+		goto done;
+
+	if (runtime_disable == 1) {
+		if (old_val)
+			goto done;
+		init_completion(&work_data.complete);
+		INIT_WORK_ONSTACK(&work_data.work, wdog_disable_work);
+		schedule_work_on(0, &work_data.work);
+		wait_for_completion(&work_data.complete);
+	} else {
+		runtime_disable = old_val;
+		ret = -EINVAL;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 done:
 	mutex_unlock(&disable_lock);
 	return ret;
@@ -196,6 +337,18 @@ void pet_watchdog(void)
 	unsigned long long slack_ns;
 	unsigned long long bark_time_ns = bark_time * 1000000ULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!enable)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!enable)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	slack = __raw_readl(msm_tmr0_base + WDT0_STS) >> 3;
 	slack = ((bark_time*WDT_HZ)/1000) - slack;
 	if (slack < min_slack_ticks)
@@ -216,6 +369,8 @@ static void pet_watchdog_work(struct work_struct *work)
 		schedule_delayed_work_on(0, &dogwork_struct, delay_time);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_watchdog_remove(struct platform_device *pdev)
 {
 	if (enable) {
@@ -232,6 +387,10 @@ static int msm_watchdog_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static irqreturn_t wdog_bark_handler(int irq, void *dev_id)
 {
 	unsigned long nanosec_rem;
@@ -301,9 +460,61 @@ static void configure_bark_dump(void)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void init_watchdog_work(struct work_struct *work)
 {
 	u64 timeout = (bark_time * WDT_HZ)/1000;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+struct fiq_handler wdog_fh = {
+	.name = MODULE_NAME,
+};
+
+static void init_watchdog_work(struct work_struct *work)
+{
+	u64 timeout = (bark_time * WDT_HZ)/1000;
+	void *stack;
+	int ret;
+
+	if (has_vic) {
+		ret = request_irq(WDT0_ACCSCSSNBARK_INT, wdog_bark_handler, 0,
+				  "apps_wdog_bark", NULL);
+		if (ret)
+			return;
+	} else if (appsbark_fiq) {
+		claim_fiq(&wdog_fh);
+		set_fiq_handler(&msm_wdog_fiq_start, msm_wdog_fiq_length);
+		stack = (void *)__get_free_pages(GFP_KERNEL, THREAD_SIZE_ORDER);
+		if (!stack) {
+			pr_info("No free pages available - %s fails\n",
+					__func__);
+			return;
+		}
+
+		msm_wdog_fiq_setup(stack);
+		gic_set_irq_secure(WDT0_ACCSCSSNBARK_INT);
+	} else {
+		percpu_pdata = alloc_percpu(struct msm_watchdog_pdata *);
+		if (!percpu_pdata) {
+			pr_err("%s: memory allocation failed for percpu data\n",
+					__func__);
+			return;
+		}
+
+		/* Must request irq before sending scm command */
+		ret = request_percpu_irq(WDT0_ACCSCSSNBARK_INT,
+			wdog_bark_handler, "apps_wdog_bark", percpu_pdata);
+		if (ret) {
+			free_percpu(percpu_pdata);
+			return;
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	configure_bark_dump();
 
@@ -319,6 +530,18 @@ static void init_watchdog_work(struct work_struct *work)
 	__raw_writel(1, msm_tmr0_base + WDT0_RST);
 	last_pet = sched_clock();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!has_vic)
+		enable_percpu_irq(WDT0_ACCSCSSNBARK_INT, IRQ_TYPE_EDGE_RISING);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!has_vic)
+		enable_percpu_irq(WDT0_ACCSCSSNBARK_INT, IRQ_TYPE_EDGE_RISING);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	printk(KERN_INFO "MSM Watchdog Initialized\n");
 
 	return;
@@ -327,13 +550,21 @@ static void init_watchdog_work(struct work_struct *work)
 static int msm_watchdog_probe(struct platform_device *pdev)
 {
 	struct msm_watchdog_pdata *pdata = pdev->dev.platform_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!enable || !pdata || !pdata->pet_time || !pdata->bark_time) {
 		printk(KERN_INFO "MSM Watchdog Not Initialized\n");
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!pdata->has_secure)
 		appsbark = 1;
 
@@ -358,6 +589,21 @@ static int msm_watchdog_probe(struct platform_device *pdev)
 	}
 
 	enable_percpu_irq(WDT0_ACCSCSSNBARK_INT, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	bark_time = pdata->bark_time;
+	has_vic = pdata->has_vic;
+	if (!pdata->has_secure) {
+		appsbark = 1;
+		appsbark_fiq = pdata->use_kernel_fiq;
+	}
+
+	msm_tmr0_base = msm_timer_get_timer0_base();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * This is only temporary till SBLs turn on the XPUs
@@ -366,6 +612,18 @@ static int msm_watchdog_probe(struct platform_device *pdev)
 	if (cpu_is_msm9615())
 		__raw_writel(0xF, MSM_TCSR_BASE + TCSR_WDT_CFG);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (pdata->needs_expired_enable)
+		__raw_writel(0x1, MSM_CLK_CTL_BASE + 0x3820);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pdata->needs_expired_enable)
+		__raw_writel(0x1, MSM_CLK_CTL_BASE + 0x3820);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	delay_time = msecs_to_jiffies(pdata->pet_time);
 	schedule_work_on(0, &init_dogwork_struct);
 	return 0;
@@ -378,7 +636,13 @@ static const struct dev_pm_ops msm_watchdog_dev_pm_ops = {
 
 static struct platform_driver msm_watchdog_driver = {
 	.probe = msm_watchdog_probe,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.remove = msm_watchdog_remove,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.driver = {
 		.name = MODULE_NAME,
 		.owner = THIS_MODULE,

@@ -22,7 +22,15 @@
 #include <linux/timer.h>
 #include <linux/spinlock.h>
 #include <net/sock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/flow.h>
 #include <net/dn.h>
 
@@ -36,16 +44,34 @@ static void dn_slow_timer(unsigned long arg);
 
 void dn_start_slow_timer(struct sock *sk)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sk->sk_timer.expires	= jiffies + SLOW_INTERVAL;
 	sk->sk_timer.function	= dn_slow_timer;
 	sk->sk_timer.data	= (unsigned long)sk;
 
 	add_timer(&sk->sk_timer);
+=======
+	setup_timer(&sk->sk_timer, dn_slow_timer, (unsigned long)sk);
+	sk_reset_timer(sk, &sk->sk_timer, jiffies + SLOW_INTERVAL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_timer(&sk->sk_timer, dn_slow_timer, (unsigned long)sk);
+	sk_reset_timer(sk, &sk->sk_timer, jiffies + SLOW_INTERVAL);
+>>>>>>> refs/remotes/origin/master
 }
 
 void dn_stop_slow_timer(struct sock *sk)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	del_timer(&sk->sk_timer);
+=======
+	sk_stop_timer(sk, &sk->sk_timer);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sk_stop_timer(sk, &sk->sk_timer);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dn_slow_timer(unsigned long arg)
@@ -53,12 +79,25 @@ static void dn_slow_timer(unsigned long arg)
 	struct sock *sk = (struct sock *)arg;
 	struct dn_scp *scp = DN_SK(sk);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sock_hold(sk);
 	bh_lock_sock(sk);
 
 	if (sock_owned_by_user(sk)) {
 		sk->sk_timer.expires = jiffies + HZ / 10;
 		add_timer(&sk->sk_timer);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	bh_lock_sock(sk);
+
+	if (sock_owned_by_user(sk)) {
+		sk_reset_timer(sk, &sk->sk_timer, jiffies + HZ / 10);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -100,9 +139,17 @@ static void dn_slow_timer(unsigned long arg)
 			scp->keepalive_fxn(sk);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sk->sk_timer.expires = jiffies + SLOW_INTERVAL;
 
 	add_timer(&sk->sk_timer);
+=======
+	sk_reset_timer(sk, &sk->sk_timer, jiffies + SLOW_INTERVAL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sk_reset_timer(sk, &sk->sk_timer, jiffies + SLOW_INTERVAL);
+>>>>>>> refs/remotes/origin/master
 out:
 	bh_unlock_sock(sk);
 	sock_put(sk);

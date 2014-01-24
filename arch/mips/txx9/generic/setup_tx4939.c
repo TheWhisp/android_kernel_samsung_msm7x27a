@@ -15,7 +15,15 @@
 #include <linux/delay.h>
 #include <linux/netdevice.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ethtool.h>
 #include <linux/param.h>
 #include <linux/ptrace.h>
@@ -301,7 +309,11 @@ void __init tx4939_sio_init(unsigned int sclk, unsigned int cts_mask)
 	unsigned int ch_mask = 0;
 	__u64 pcfg = __raw_readq(&tx4939_ccfgptr->pcfg);
 
+<<<<<<< HEAD
 	cts_mask |= ~1;	/* only SIO0 have RTS/CTS */
+=======
+	cts_mask |= ~1; /* only SIO0 have RTS/CTS */
+>>>>>>> refs/remotes/origin/master
 	if ((pcfg & TX4939_PCFG_SIO2MODE_MASK) != TX4939_PCFG_SIO2MODE_SIO0)
 		cts_mask |= 1 << 0; /* disable SIO0 RTS/CTS by PCFG setting */
 	if ((pcfg & TX4939_PCFG_SIO2MODE_MASK) != TX4939_PCFG_SIO2MODE_SIO2)
@@ -317,11 +329,23 @@ void __init tx4939_sio_init(unsigned int sclk, unsigned int cts_mask)
 	}
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_TC35815) || defined(CONFIG_TC35815_MODULE)
 static u32 tx4939_get_eth_speed(struct net_device *dev)
 {
 	struct ethtool_cmd cmd;
+<<<<<<< HEAD
 	if (dev_ethtool_get_settings(dev, &cmd))
+=======
+	if (__ethtool_get_settings(dev, &cmd))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_TC35815)
+static u32 tx4939_get_eth_speed(struct net_device *dev)
+{
+	struct ethtool_cmd cmd;
+	if (__ethtool_get_settings(dev, &cmd))
+>>>>>>> refs/remotes/origin/master
 		return 100;	/* default 100Mbps */
 
 	return ethtool_cmd_speed(&cmd);
@@ -331,7 +355,12 @@ static int tx4939_netdev_event(struct notifier_block *this,
 			       unsigned long event,
 			       void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = ptr;
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+
+>>>>>>> refs/remotes/origin/master
 	if (event == NETDEV_CHANGE && netif_carrier_ok(dev)) {
 		__u64 bit = 0;
 		if (dev->irq == TXX9_IRQ_BASE + TX4939_IR_ETH(0))
@@ -378,7 +407,11 @@ void __init tx4939_mtd_init(int ch)
 	unsigned long size = txx9_ce_res[ch].end - start + 1;
 
 	if (!(TX4939_EBUSC_CR(ch) & 0x8))
+<<<<<<< HEAD
 		return;	/* disabled */
+=======
+		return; /* disabled */
+>>>>>>> refs/remotes/origin/master
 	txx9_physmap_flash_init(ch, start, size, &pdata);
 }
 

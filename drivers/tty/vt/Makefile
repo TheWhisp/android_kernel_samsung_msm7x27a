@@ -27,8 +27,12 @@ $(obj)/defkeymap.o:  $(obj)/defkeymap.c
 ifdef GENERATE_KEYMAP
 
 $(obj)/defkeymap.c: $(obj)/%.c: $(src)/%.map
+<<<<<<< HEAD
 	loadkeys --mktable $< > $@.tmp
 	sed -e 's/^static *//' $@.tmp > $@
 	rm $@.tmp
+=======
+	loadkeys --mktable $< > $@
+>>>>>>> refs/remotes/origin/master
 
 endif

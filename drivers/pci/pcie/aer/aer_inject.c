@@ -28,7 +28,15 @@
 #include "aerdrv.h"
 
 /* Override the existing corrected and uncorrected error masks */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int aer_mask_override;
+=======
+static bool aer_mask_override;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool aer_mask_override;
+>>>>>>> refs/remotes/origin/master
 module_param(aer_mask_override, bool, 0);
 
 struct aer_error_inj {
@@ -212,8 +220,13 @@ out:
 	return ops->read(bus, devfn, where, size, val);
 }
 
+<<<<<<< HEAD
 int pci_write_aer(struct pci_bus *bus, unsigned int devfn, int where, int size,
 		  u32 val)
+=======
+static int pci_write_aer(struct pci_bus *bus, unsigned int devfn, int where,
+			 int size, u32 val)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 *sim;
 	struct aer_error *err;
@@ -288,7 +301,11 @@ static struct pci_dev *pcie_find_root_port(struct pci_dev *dev)
 	while (1) {
 		if (!pci_is_pcie(dev))
 			break;
+<<<<<<< HEAD
 		if (dev->pcie_type == PCI_EXP_TYPE_ROOT_PORT)
+=======
+		if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT)
+>>>>>>> refs/remotes/origin/master
 			return dev;
 		if (!dev->bus->self)
 			break;
@@ -334,13 +351,21 @@ static int aer_inject(struct aer_error_inj *einj)
 		return -ENODEV;
 	rpdev = pcie_find_root_port(dev);
 	if (!rpdev) {
+<<<<<<< HEAD
 		ret = -ENOTTY;
+=======
+		ret = -ENODEV;
+>>>>>>> refs/remotes/origin/master
 		goto out_put;
 	}
 
 	pos_cap_err = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
 	if (!pos_cap_err) {
+<<<<<<< HEAD
 		ret = -ENOTTY;
+=======
+		ret = -EPERM;
+>>>>>>> refs/remotes/origin/master
 		goto out_put;
 	}
 	pci_read_config_dword(dev, pos_cap_err + PCI_ERR_UNCOR_SEVER, &sever);
@@ -350,7 +375,11 @@ static int aer_inject(struct aer_error_inj *einj)
 
 	rp_pos_cap_err = pci_find_ext_capability(rpdev, PCI_EXT_CAP_ID_ERR);
 	if (!rp_pos_cap_err) {
+<<<<<<< HEAD
 		ret = -ENOTTY;
+=======
+		ret = -EPERM;
+>>>>>>> refs/remotes/origin/master
 		goto out_put;
 	}
 

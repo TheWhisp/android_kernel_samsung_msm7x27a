@@ -3,7 +3,15 @@
 #
 
 menu "Input device support"
+<<<<<<< HEAD
+<<<<<<< HEAD
 	depends on !S390
+=======
+	depends on !S390 && !UML
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on !UML
+>>>>>>> refs/remotes/origin/master
 
 config INPUT
 	tristate "Generic input layer (needed for keyboard, mouse, ...)" if EXPERT
@@ -25,6 +33,16 @@ config INPUT
 
 if INPUT
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+config INPUT_OF_MATRIX_KEYMAP
+	depends on USE_OF
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config INPUT_FF_MEMLESS
 	tristate "Support for memoryless force-feedback devices"
 	help
@@ -64,10 +82,34 @@ config INPUT_SPARSEKMAP
 	  To compile this driver as a module, choose M here: the
 	  module will be called sparse-keymap.
 
+<<<<<<< HEAD
 comment "Userland interfaces"
 
 config INPUT_MOUSEDEV
+<<<<<<< HEAD
 	tristate "Mouse interface" if EXPERT
+=======
+config INPUT_MATRIXKMAP
+	tristate "Matrix keymap support library"
+	help
+	  Say Y here if you are using a driver for an input
+	  device that uses matrix keymap. This option is only
+	  useful for out-of-tree drivers since in-tree drivers
+	  select it automatically.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called matrix-keymap.
+
+comment "Userland interfaces"
+
+config INPUT_MOUSEDEV
+	tristate "Mouse interface"
+>>>>>>> refs/remotes/origin/master
+=======
+	tristate "Mouse interface"
+>>>>>>> refs/remotes/origin/cm-11.0
 	default y
 	help
 	  Say Y here if you want your mouse to be accessible as char devices
@@ -161,6 +203,10 @@ config INPUT_APMPOWER
 	  To compile this driver as a module, choose M here: the
 	  module will be called apm-power.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 config INPUT_KEYRESET
 	tristate "Reset key"
 	depends on INPUT
@@ -170,6 +216,11 @@ config INPUT_KEYRESET
 	  To compile this driver as a module, choose M here: the
 	  module will be called keyreset.
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 comment "Input Device Drivers"
 
 source "drivers/input/keyboard/Kconfig"

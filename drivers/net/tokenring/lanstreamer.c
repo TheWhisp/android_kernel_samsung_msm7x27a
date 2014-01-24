@@ -127,7 +127,10 @@
 #include <net/checksum.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "lanstreamer.h"
 
@@ -231,7 +234,11 @@ static const struct net_device_ops streamer_netdev_ops = {
 #if STREAMER_IOCTL
 	.ndo_do_ioctl		= streamer_ioctl,
 #endif
+<<<<<<< HEAD
 	.ndo_set_multicast_list = streamer_set_rx_mode,
+=======
+	.ndo_set_rx_mode	= streamer_set_rx_mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_set_mac_address	= streamer_set_mac_address,
 };
 

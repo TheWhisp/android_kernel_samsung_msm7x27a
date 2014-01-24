@@ -13,8 +13,15 @@
 #include <linux/init.h>
 #include <linux/serial.h>
 #include <linux/sh_timer.h>
+<<<<<<< HEAD
 #include <linux/io.h>
 #include <linux/serial_sci.h>
+=======
+#include <linux/sh_intc.h>
+#include <linux/io.h>
+#include <linux/serial_sci.h>
+#include <linux/usb/ohci_pdriver.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct plat_sci_port scif0_platform_data = {
 	.mapbase	= 0xffe00000,
@@ -22,7 +29,16 @@ static struct plat_sci_port scif0_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 40, 40, 40, 40 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0x700)),
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif0_device = {
@@ -39,7 +55,16 @@ static struct plat_sci_port scif1_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 76, 76, 76, 76 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0xb80)),
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif1_device = {
@@ -56,7 +81,16 @@ static struct plat_sci_port scif2_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 104, 104, 104, 104 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0xf00)),
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif2_device = {
@@ -75,7 +109,11 @@ static struct resource rtc_resources[] = {
 	},
 	[1] = {
 		/* Shared Period/Carry/Alarm IRQ */
+<<<<<<< HEAD
 		.start  = 20,
+=======
+		.start  = evt2irq(0x480),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -94,19 +132,36 @@ static struct resource usb_ohci_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 83,
 		.end	= 83,
+=======
+		.start	= evt2irq(0xc60),
+		.end	= evt2irq(0xc60),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
 static u64 usb_ohci_dma_mask = 0xffffffffUL;
+<<<<<<< HEAD
 static struct platform_device usb_ohci_device = {
 	.name		= "sh_ohci",
+=======
+
+static struct usb_ohci_pdata usb_ohci_pdata;
+
+static struct platform_device usb_ohci_device = {
+	.name		= "ohci-platform",
+>>>>>>> refs/remotes/origin/master
 	.id		= -1,
 	.dev = {
 		.dma_mask		= &usb_ohci_dma_mask,
 		.coherent_dma_mask	= 0xffffffff,
+<<<<<<< HEAD
+=======
+		.platform_data		= &usb_ohci_pdata,
+>>>>>>> refs/remotes/origin/master
 	},
 	.num_resources	= ARRAY_SIZE(usb_ohci_resources),
 	.resource	= usb_ohci_resources,
@@ -119,8 +174,13 @@ static struct resource usbf_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 84,
 		.end	= 84,
+=======
+		.start	= evt2irq(0xc80),
+		.end	= evt2irq(0xc80),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -149,7 +209,11 @@ static struct resource tmu0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 28,
+=======
+		.start	= evt2irq(0x580),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -177,7 +241,11 @@ static struct resource tmu1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 29,
+=======
+		.start	= evt2irq(0x5a0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -204,7 +272,11 @@ static struct resource tmu2_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 30,
+=======
+		.start	= evt2irq(0x5c0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -231,7 +303,11 @@ static struct resource tmu3_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 96,
+=======
+		.start	= evt2irq(0xe00),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -258,7 +334,11 @@ static struct resource tmu4_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 97,
+=======
+		.start	= evt2irq(0xe20),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -285,7 +365,11 @@ static struct resource tmu5_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 98,
+=======
+		.start	= evt2irq(0xe40),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };

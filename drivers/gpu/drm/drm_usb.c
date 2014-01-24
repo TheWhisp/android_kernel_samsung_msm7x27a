@@ -1,17 +1,33 @@
+<<<<<<< HEAD
 #include "drmP.h"
 #include <linux/usb.h>
+<<<<<<< HEAD
 
 #ifdef CONFIG_USB
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <drm/drmP.h>
+#include <linux/usb.h>
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/master
 int drm_get_usb_dev(struct usb_interface *interface,
 		    const struct usb_device_id *id,
 		    struct drm_driver *driver)
 {
 	struct drm_device *dev;
+<<<<<<< HEAD
 	struct usb_device *usbdev;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	DRM_DEBUG("\n");
 
+<<<<<<< HEAD
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 	if (!dev)
 		return -ENOMEM;
@@ -52,6 +68,18 @@ int drm_get_usb_dev(struct usb_interface *interface,
 	list_add_tail(&dev->driver_item, &driver->device_list);
 
 	mutex_unlock(&drm_global_mutex);
+=======
+	dev = drm_dev_alloc(driver, &interface->dev);
+	if (!dev)
+		return -ENOMEM;
+
+	dev->usbdev = interface_to_usbdev(interface);
+	usb_set_intfdata(interface, dev);
+
+	ret = drm_dev_register(dev, 0);
+	if (ret)
+		goto err_free;
+>>>>>>> refs/remotes/origin/master
 
 	DRM_INFO("Initialized %s %d.%d.%d %s on minor %d\n",
 		 driver->name, driver->major, driver->minor, driver->patchlevel,
@@ -59,6 +87,7 @@ int drm_get_usb_dev(struct usb_interface *interface,
 
 	return 0;
 
+<<<<<<< HEAD
 err_g3:
 	drm_put_minor(&dev->primary);
 err_g2:
@@ -66,6 +95,10 @@ err_g2:
 err_g1:
 	kfree(dev);
 	mutex_unlock(&drm_global_mutex);
+=======
+err_free:
+	drm_dev_free(dev);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 
 }
@@ -114,4 +147,17 @@ void drm_usb_exit(struct drm_driver *driver,
 	usb_deregister(udriver);
 }
 EXPORT_SYMBOL(drm_usb_exit);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+MODULE_AUTHOR("David Airlie");
+MODULE_DESCRIPTION("USB DRM support");
+MODULE_LICENSE("GPL and additional rights");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

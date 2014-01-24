@@ -367,6 +367,29 @@ static int w8001_command(struct w8001 *w8001, unsigned char command,
 	return rc;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int w8001_open(struct input_dev *dev)
+{
+	struct w8001 *w8001 = input_get_drvdata(dev);
+
+	return w8001_command(w8001, W8001_CMD_START, false);
+}
+
+static void w8001_close(struct input_dev *dev)
+{
+	struct w8001 *w8001 = input_get_drvdata(dev);
+
+	w8001_command(w8001, W8001_CMD_STOP, false);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int w8001_setup(struct w8001 *w8001)
 {
 	struct input_dev *dev = w8001->dev;
@@ -383,6 +406,16 @@ static int w8001_setup(struct w8001 *w8001)
 	dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
 	strlcat(w8001->name, "Wacom Serial", sizeof(w8001->name));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	__set_bit(INPUT_PROP_DIRECT, dev->propbit);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__set_bit(INPUT_PROP_DIRECT, dev->propbit);
+
+>>>>>>> refs/remotes/origin/master
 	/* penabled? */
 	error = w8001_command(w8001, W8001_CMD_QUERY, true);
 	if (!error) {
@@ -455,7 +488,11 @@ static int w8001_setup(struct w8001 *w8001)
 		case 5:
 			w8001->pktlen = W8001_PKTLEN_TOUCH2FG;
 
+<<<<<<< HEAD
 			input_mt_init_slots(dev, 2);
+=======
+			input_mt_init_slots(dev, 2, 0);
+>>>>>>> refs/remotes/origin/master
 			input_set_abs_params(dev, ABS_MT_POSITION_X,
 						0, touch.x, 0, 0);
 			input_set_abs_params(dev, ABS_MT_POSITION_Y,
@@ -474,7 +511,15 @@ static int w8001_setup(struct w8001 *w8001)
 
 	strlcat(w8001->name, " Touchscreen", sizeof(w8001->name));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return w8001_command(w8001, W8001_CMD_START, false);
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -485,12 +530,27 @@ static void w8001_disconnect(struct serio *serio)
 {
 	struct w8001 *w8001 = serio_get_drvdata(serio);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	input_get_device(w8001->dev);
 	input_unregister_device(w8001->dev);
 	serio_close(serio);
 	serio_set_drvdata(serio, NULL);
 	input_put_device(w8001->dev);
 	kfree(w8001);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	serio_close(serio);
+
+	input_unregister_device(w8001->dev);
+	kfree(w8001);
+
+	serio_set_drvdata(serio, NULL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -534,6 +594,20 @@ static int w8001_connect(struct serio *serio, struct serio_driver *drv)
 	input_dev->id.version = 0x0100;
 	input_dev->dev.parent = &serio->dev;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	input_dev->open = w8001_open;
+	input_dev->close = w8001_close;
+
+	input_set_drvdata(input_dev, w8001);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = input_register_device(w8001->dev);
 	if (err)
 		goto fail3;
@@ -573,6 +647,7 @@ static struct serio_driver w8001_drv = {
 	.disconnect	= w8001_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init w8001_init(void)
 {
 	return serio_register_driver(&w8001_drv);
@@ -585,3 +660,6 @@ static void __exit w8001_exit(void)
 
 module_init(w8001_init);
 module_exit(w8001_exit);
+=======
+module_serio_driver(w8001_drv);
+>>>>>>> refs/remotes/origin/master

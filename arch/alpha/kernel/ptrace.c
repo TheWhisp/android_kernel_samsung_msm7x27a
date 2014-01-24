@@ -13,10 +13,20 @@
 #include <linux/user.h>
 #include <linux/security.h>
 #include <linux/signal.h>
+<<<<<<< HEAD
 
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tracehook.h>
+
+#include <asm/uaccess.h>
+#include <asm/pgtable.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/fpu.h>
 
 #include "proto.h"
@@ -313,6 +323,7 @@ long arch_ptrace(struct task_struct *child, long request,
 	return ret;
 }
 
+<<<<<<< HEAD
 asmlinkage void
 syscall_trace(void)
 {
@@ -334,4 +345,20 @@ syscall_trace(void)
 		send_sig(current->exit_code, current, 1);
 		current->exit_code = 0;
 	}
+=======
+asmlinkage unsigned long syscall_trace_enter(void)
+{
+	unsigned long ret = 0;
+	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+	    tracehook_report_syscall_entry(current_pt_regs()))
+		ret = -1UL;
+	return ret ?: current_pt_regs()->r0;
+}
+
+asmlinkage void
+syscall_trace_leave(void)
+{
+	if (test_thread_flag(TIF_SYSCALL_TRACE))
+		tracehook_report_syscall_exit(current_pt_regs(), 0);
+>>>>>>> refs/remotes/origin/master
 }

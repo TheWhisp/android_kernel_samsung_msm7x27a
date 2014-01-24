@@ -7,6 +7,11 @@
  * This file contains driver APIs to the irq subsystem.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "genirq: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/irq.h>
 #include <linux/kthread.h>
 #include <linux/module.h>
@@ -14,6 +19,11 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched/rt.h>
+#include <linux/task_work.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "internals.h"
 
@@ -139,6 +149,28 @@ static inline void
 irq_get_pending(struct cpumask *mask, struct irq_desc *desc) { }
 #endif
 
+<<<<<<< HEAD
+=======
+int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
+			bool force)
+{
+	struct irq_desc *desc = irq_data_to_desc(data);
+	struct irq_chip *chip = irq_data_get_irq_chip(data);
+	int ret;
+
+	ret = chip->irq_set_affinity(data, mask, false);
+	switch (ret) {
+	case IRQ_SET_MASK_OK:
+		cpumask_copy(data->affinity, mask);
+	case IRQ_SET_MASK_OK_NOCOPY:
+		irq_set_thread_affinity(desc);
+		ret = 0;
+	}
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 int __irq_set_affinity_locked(struct irq_data *data, const struct cpumask *mask)
 {
 	struct irq_chip *chip = irq_data_get_irq_chip(data);
@@ -149,6 +181,7 @@ int __irq_set_affinity_locked(struct irq_data *data, const struct cpumask *mask)
 		return -EINVAL;
 
 	if (irq_can_move_pcntxt(data)) {
+<<<<<<< HEAD
 		ret = chip->irq_set_affinity(data, mask, false);
 		switch (ret) {
 		case IRQ_SET_MASK_OK:
@@ -157,6 +190,9 @@ int __irq_set_affinity_locked(struct irq_data *data, const struct cpumask *mask)
 			irq_set_thread_affinity(desc);
 			ret = 0;
 		}
+=======
+		ret = irq_do_set_affinity(data, mask, false);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		irqd_set_move_pending(data);
 		irq_copy_pending(desc, mask);
@@ -280,9 +316,18 @@ EXPORT_SYMBOL_GPL(irq_set_affinity_notifier);
 static int
 setup_affinity(unsigned int irq, struct irq_desc *desc, struct cpumask *mask)
 {
+<<<<<<< HEAD
 	struct irq_chip *chip = irq_desc_get_chip(desc);
 	struct cpumask *set = irq_default_affinity;
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret, node = desc->irq_data.node;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cpumask *set = irq_default_affinity;
+	int node = desc->irq_data.node;
+>>>>>>> refs/remotes/origin/master
 
 	/* Excludes PER_CPU and NO_BALANCE interrupts */
 	if (!irq_can_set_affinity(irq))
@@ -301,6 +346,20 @@ setup_affinity(unsigned int irq, struct irq_desc *desc, struct cpumask *mask)
 	}
 
 	cpumask_and(mask, cpu_online_mask, set);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (node != NUMA_NO_NODE) {
+		const struct cpumask *nodemask = cpumask_of_node(node);
+
+		/* make sure at least one of the cpus in nodemask is online */
+		if (cpumask_intersects(mask, nodemask))
+			cpumask_and(mask, mask, nodemask);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = chip->irq_set_affinity(&desc->irq_data, mask, false);
 	switch (ret) {
 	case IRQ_SET_MASK_OK:
@@ -308,6 +367,9 @@ setup_affinity(unsigned int irq, struct irq_desc *desc, struct cpumask *mask)
 	case IRQ_SET_MASK_OK_NOCOPY:
 		irq_set_thread_affinity(desc);
 	}
+=======
+	irq_do_set_affinity(&desc->irq_data, mask, false);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #else
@@ -467,6 +529,18 @@ static int set_irq_wake_real(unsigned int irq, unsigned int on)
 	struct irq_desc *desc = irq_to_desc(irq);
 	int ret = -ENXIO;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (irq_desc_get_chip(desc)->flags &  IRQCHIP_SKIP_SET_WAKE)
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (irq_desc_get_chip(desc)->flags &  IRQCHIP_SKIP_SET_WAKE)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (desc->irq_data.chip->irq_set_wake)
 		ret = desc->irq_data.chip->irq_set_wake(&desc->irq_data, on);
 
@@ -521,6 +595,10 @@ int irq_set_irq_wake(unsigned int irq, unsigned int on)
 }
 EXPORT_SYMBOL(irq_set_irq_wake);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /**
  *     irq_read_line - read the value on an irq line
  *     @irq: Interrupt number representing a hardware line
@@ -547,6 +625,11 @@ int irq_read_line(unsigned int irq)
 }
 EXPORT_SYMBOL_GPL(irq_read_line);
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 /*
  * Internal function that tells the architecture code whether a
  * particular irq has been exclusively allocated or is available
@@ -582,7 +665,11 @@ int __irq_set_trigger(struct irq_desc *desc, unsigned int irq,
 		 * flow-types?
 		 */
 		pr_debug("No set_type function for IRQ %d (%s)\n", irq,
+<<<<<<< HEAD
 				chip ? (chip->name ? : "unknown") : "unknown");
+=======
+			 chip ? (chip->name ? : "unknown") : "unknown");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -616,7 +703,11 @@ int __irq_set_trigger(struct irq_desc *desc, unsigned int irq,
 		ret = 0;
 		break;
 	default:
+<<<<<<< HEAD
 		pr_err("setting trigger mode %lu for irq %u failed (%pF)\n",
+=======
+		pr_err("Setting trigger mode %lu for irq %u failed (%pF)\n",
+>>>>>>> refs/remotes/origin/master
 		       flags, irq, chip->irq_set_type);
 	}
 	if (unmask)
@@ -624,6 +715,25 @@ int __irq_set_trigger(struct irq_desc *desc, unsigned int irq,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HARDIRQS_SW_RESEND
+int irq_set_parent(int irq, int parent_irq)
+{
+	unsigned long flags;
+	struct irq_desc *desc = irq_get_desc_lock(irq, &flags, 0);
+
+	if (!desc)
+		return -EINVAL;
+
+	desc->parent_irq = parent_irq;
+
+	irq_put_desc_unlock(desc, flags);
+	return 0;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Default primary interrupt handler for threaded interrupts. Is
  * assigned as primary handler when request_threaded_irq is called
@@ -668,7 +778,15 @@ static int irq_wait_for_interrupt(struct irqaction *action)
  * is marked MASKED.
  */
 static void irq_finalize_oneshot(struct irq_desc *desc,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				 struct irqaction *action, bool force)
+=======
+				 struct irqaction *action)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 struct irqaction *action)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!(desc->istate & IRQS_ONESHOT))
 		return;
@@ -702,7 +820,15 @@ again:
 	 * we would clear the threads_oneshot bit of this thread which
 	 * was just set.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!force && test_bit(IRQTF_RUNTHREAD, &action->thread_flags))
+=======
+	if (test_bit(IRQTF_RUNTHREAD, &action->thread_flags))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(IRQTF_RUNTHREAD, &action->thread_flags))
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 
 	desc->threads_oneshot &= ~action->thread_mask;
@@ -771,13 +897,25 @@ irq_forced_thread_fn(struct irq_desc *desc, struct irqaction *action)
 
 	local_bh_disable();
 	ret = action->thread_fn(action->irq, action->dev_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	irq_finalize_oneshot(desc, action, false);
+=======
+	irq_finalize_oneshot(desc, action);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_finalize_oneshot(desc, action);
+>>>>>>> refs/remotes/origin/master
 	local_bh_enable();
 	return ret;
 }
 
 /*
+<<<<<<< HEAD
  * Interrupts explicitely requested as threaded interupts want to be
+=======
+ * Interrupts explicitly requested as threaded interrupts want to be
+>>>>>>> refs/remotes/origin/master
  * preemtible - many of them need to sleep and wait for slow busses to
  * complete.
  */
@@ -787,23 +925,80 @@ static irqreturn_t irq_thread_fn(struct irq_desc *desc,
 	irqreturn_t ret;
 
 	ret = action->thread_fn(action->irq, action->dev_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	irq_finalize_oneshot(desc, action, false);
 	return ret;
 }
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	irq_finalize_oneshot(desc, action);
+	return ret;
+}
+
+static void wake_threads_waitq(struct irq_desc *desc)
+{
+	if (atomic_dec_and_test(&desc->threads_active) &&
+	    waitqueue_active(&desc->wait_for_threads))
+		wake_up(&desc->wait_for_threads);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void irq_thread_dtor(struct callback_head *unused)
+{
+	struct task_struct *tsk = current;
+	struct irq_desc *desc;
+	struct irqaction *action;
+
+	if (WARN_ON_ONCE(!(current->flags & PF_EXITING)))
+		return;
+
+	action = kthread_data(tsk);
+
+	pr_err("exiting task \"%s\" (%d) is an active IRQ thread (irq %d)\n",
+	       tsk->comm, tsk->pid, action->irq);
+
+
+	desc = irq_to_desc(action->irq);
+	/*
+	 * If IRQTF_RUNTHREAD is set, we need to decrement
+	 * desc->threads_active and wake possible waiters.
+	 */
+	if (test_and_clear_bit(IRQTF_RUNTHREAD, &action->thread_flags))
+		wake_threads_waitq(desc);
+
+	/* Prevent a stale desc->threads_oneshot */
+	irq_finalize_oneshot(desc, action);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Interrupt handler thread
  */
 static int irq_thread(void *data)
 {
+<<<<<<< HEAD
 	static const struct sched_param param = {
 		.sched_priority = MAX_USER_RT_PRIO/2,
 	};
+=======
+	struct callback_head on_exit_work;
+>>>>>>> refs/remotes/origin/master
 	struct irqaction *action = data;
 	struct irq_desc *desc = irq_to_desc(action->irq);
 	irqreturn_t (*handler_fn)(struct irq_desc *desc,
 			struct irqaction *action);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int wake;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (force_irqthreads && test_bit(IRQTF_FORCED_THREAD,
 					&action->thread_flags))
@@ -811,7 +1006,9 @@ static int irq_thread(void *data)
 	else
 		handler_fn = irq_thread_fn;
 
+<<<<<<< HEAD
 	sched_setscheduler(current, SCHED_FIFO, &param);
+<<<<<<< HEAD
 	current->irqaction = action;
 
 	while (!irq_wait_for_interrupt(action)) {
@@ -854,6 +1051,42 @@ static int irq_thread(void *data)
 	 * fuzz about an active irq thread going into nirvana.
 	 */
 	current->irqaction = NULL;
+=======
+	current->irq_thread = 1;
+=======
+	init_task_work(&on_exit_work, irq_thread_dtor);
+	task_work_add(current, &on_exit_work, false);
+
+	irq_thread_check_affinity(desc, action);
+>>>>>>> refs/remotes/origin/master
+
+	while (!irq_wait_for_interrupt(action)) {
+		irqreturn_t action_ret;
+
+		irq_thread_check_affinity(desc, action);
+
+		action_ret = handler_fn(desc, action);
+		if (!noirqdebug)
+			note_interrupt(action->irq, desc, action_ret);
+
+		wake_threads_waitq(desc);
+	}
+
+	/*
+	 * This is the regular exit path. __free_irq() is stopping the
+	 * thread via kthread_stop() after calling
+	 * synchronize_irq(). So neither IRQTF_RUNTHREAD nor the
+	 * oneshot mask bit can be set. We cannot verify that as we
+	 * cannot touch the oneshot mask at this point anymore as
+	 * __setup_irq() might have given out currents thread_mask
+	 * again.
+<<<<<<< HEAD
+	 *
+	 * Clear irq_thread. Otherwise exit_irq_thread() would make
+	 * fuzz about an active irq thread going into nirvana.
+	 */
+	current->irq_thread = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -864,6 +1097,7 @@ void exit_irq_thread(void)
 {
 	struct task_struct *tsk = current;
 	struct irq_desc *desc;
+<<<<<<< HEAD
 
 	if (!tsk->irqaction)
 		return;
@@ -885,8 +1119,39 @@ void exit_irq_thread(void)
 	 * soon to be gone threaded handler.
 	 */
 	set_bit(IRQTF_DIED, &tsk->irqaction->flags);
+=======
+	struct irqaction *action;
+
+	if (!tsk->irq_thread)
+		return;
+
+	action = kthread_data(tsk);
+
+	printk(KERN_ERR
+	       "exiting task \"%s\" (%d) is an active IRQ thread (irq %d)\n",
+	       tsk->comm ? tsk->comm : "", tsk->pid, action->irq);
+
+	desc = irq_to_desc(action->irq);
+
+	/*
+	 * If IRQTF_RUNTHREAD is set, we need to decrement
+	 * desc->threads_active and wake possible waiters.
+	 */
+	if (test_and_clear_bit(IRQTF_RUNTHREAD, &action->thread_flags))
+		wake_threads_waitq(desc);
+
+	/* Prevent a stale desc->threads_oneshot */
+	irq_finalize_oneshot(desc, action);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+	 */
+	task_work_cancel(current, irq_thread_dtor);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void irq_setup_forced_threading(struct irqaction *new)
 {
 	if (!force_irqthreads)
@@ -911,7 +1176,10 @@ static int
 __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 {
 	struct irqaction *old, **old_ptr;
+<<<<<<< HEAD
 	const char *old_name = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags, thread_mask = 0;
 	int ret, nested, shared = 0;
 	cpumask_var_t mask;
@@ -952,6 +1220,12 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 	 */
 	if (new->thread_fn && !nested) {
 		struct task_struct *t;
+<<<<<<< HEAD
+=======
+		static const struct sched_param param = {
+			.sched_priority = MAX_USER_RT_PRIO/2,
+		};
+>>>>>>> refs/remotes/origin/master
 
 		t = kthread_create(irq_thread, new, "irq/%d-%s", irq,
 				   new->name);
@@ -959,6 +1233,12 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 			ret = PTR_ERR(t);
 			goto out_mput;
 		}
+<<<<<<< HEAD
+=======
+
+		sched_setscheduler_nocheck(t, SCHED_FIFO, &param);
+
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We keep the reference to the task struct even if
 		 * the thread dies to avoid that the interrupt code
@@ -984,6 +1264,21 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 	}
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Drivers are often written to work w/o knowledge about the
+	 * underlying irq chip implementation, so a request for a
+	 * threaded irq without a primary hard irq context handler
+	 * requires the ONESHOT flag to be set. Some irq chips like
+	 * MSI based interrupts are per se one shot safe. Check the
+	 * chip flags, so we can avoid the unmask dance at the end of
+	 * the threaded handler for those.
+	 */
+	if (desc->irq_data.chip->flags & IRQCHIP_ONESHOT_SAFE)
+		new->flags &= ~IRQF_ONESHOT;
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * The following block of code has to be executed atomically
 	 */
 	raw_spin_lock_irqsave(&desc->lock, flags);
@@ -999,10 +1294,15 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 		 */
 		if (!((old->flags & new->flags) & IRQF_SHARED) ||
 		    ((old->flags ^ new->flags) & IRQF_TRIGGER_MASK) ||
+<<<<<<< HEAD
 		    ((old->flags ^ new->flags) & IRQF_ONESHOT)) {
 			old_name = old->name;
 			goto mismatch;
 		}
+=======
+		    ((old->flags ^ new->flags) & IRQF_ONESHOT))
+			goto mismatch;
+>>>>>>> refs/remotes/origin/master
 
 		/* All handlers must agree on per-cpuness */
 		if ((old->flags & IRQF_PERCPU) !=
@@ -1058,6 +1358,31 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 		 * all existing action->thread_mask bits.
 		 */
 		new->thread_mask = 1 << ffz(thread_mask);
+<<<<<<< HEAD
+=======
+
+	} else if (new->handler == irq_default_primary_handler &&
+		   !(desc->irq_data.chip->flags & IRQCHIP_ONESHOT_SAFE)) {
+		/*
+		 * The interrupt was requested with handler = NULL, so
+		 * we use the default primary handler for it. But it
+		 * does not have the oneshot flag set. In combination
+		 * with level interrupts this is deadly, because the
+		 * default primary handler just wakes the thread, then
+		 * the irq lines is reenabled, but the device still
+		 * has the level irq asserted. Rinse and repeat....
+		 *
+		 * While this works for edge type interrupts, we play
+		 * it safe and reject unconditionally because we can't
+		 * say for sure which type this interrupt really
+		 * has. The type flags are unreliable as the
+		 * underlying chip implementation can override them.
+		 */
+		pr_err("Threaded irq requested with handler=NULL and !ONESHOT for irq %d\n",
+		       irq);
+		ret = -EINVAL;
+		goto out_mask;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!shared) {
@@ -1105,7 +1430,11 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 
 		if (nmsk != omsk)
 			/* hope the handler works with current  trigger mode */
+<<<<<<< HEAD
 			pr_warning("IRQ %d uses trigger mode %u; requested %u\n",
+=======
+			pr_warning("irq %d uses trigger mode %u; requested %u\n",
+>>>>>>> refs/remotes/origin/master
 				   irq, nmsk, omsk);
 	}
 
@@ -1142,6 +1471,7 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 	return 0;
 
 mismatch:
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_SHIRQ
 	if (!(new->flags & IRQF_PROBE_SHARED)) {
 		printk(KERN_ERR "IRQ handler type mismatch for IRQ %d\n", irq);
@@ -1150,6 +1480,15 @@ mismatch:
 		dump_stack();
 	}
 #endif
+=======
+	if (!(new->flags & IRQF_PROBE_SHARED)) {
+		pr_err("Flags mismatch irq %d. %08x (%s) vs. %08x (%s)\n",
+		       irq, new->flags, new->name, old->flags, old->name);
+#ifdef CONFIG_DEBUG_SHIRQ
+		dump_stack();
+#endif
+	}
+>>>>>>> refs/remotes/origin/master
 	ret = -EBUSY;
 
 out_mask:
@@ -1161,8 +1500,16 @@ out_thread:
 		struct task_struct *t = new->thread;
 
 		new->thread = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (likely(!test_bit(IRQTF_DIED, &new->thread_flags)))
 			kthread_stop(t);
+=======
+		kthread_stop(t);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kthread_stop(t);
+>>>>>>> refs/remotes/origin/master
 		put_task_struct(t);
 	}
 out_mput:
@@ -1232,6 +1579,7 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
 	/* Found it - now remove it from the list of entries: */
 	*action_ptr = action->next;
 
+<<<<<<< HEAD
 	/* Currently used only by UML, might disappear one day: */
 #ifdef CONFIG_IRQ_RELEASE_METHOD
 	if (desc->irq_data.chip->release)
@@ -1240,6 +1588,7 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
 
 	/* If this was the last handler, shut down the IRQ line: */
 	if (!desc->action) {
+<<<<<<< HEAD
 		irq_shutdown(desc);
 
 		/* Explicitly mask the interrupt */
@@ -1249,6 +1598,23 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
 			desc->irq_data.chip->irq_mask_ack(&desc->irq_data);
 	}
 
+=======
+	/* If this was the last handler, shut down the IRQ line: */
+	if (!desc->action)
+		irq_shutdown(desc);
+
+>>>>>>> refs/remotes/origin/master
+=======
+		irq_shutdown(desc);
+
+		/* Explicitly mask the interrupt */
+		if (desc->irq_data.chip->irq_mask)
+			desc->irq_data.chip->irq_mask(&desc->irq_data);
+		else if (desc->irq_data.chip->irq_mask_ack)
+			desc->irq_data.chip->irq_mask_ack(&desc->irq_data);
+	}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_SMP
 	/* make sure affinity_hint is cleaned up */
 	if (WARN_ON_ONCE(desc->affinity_hint))
@@ -1279,8 +1645,16 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
 #endif
 
 	if (action->thread) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!test_bit(IRQTF_DIED, &action->thread_flags))
 			kthread_stop(action->thread);
+=======
+		kthread_stop(action->thread);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kthread_stop(action->thread);
+>>>>>>> refs/remotes/origin/master
 		put_task_struct(action->thread);
 	}
 
@@ -1357,7 +1731,15 @@ EXPORT_SYMBOL(free_irq);
  *	and to set up the interrupt handler in the right order.
  *
  *	If you want to set up a threaded irq handler for your device
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	then you need to supply @handler and @thread_fn. @handler ist
+=======
+ *	then you need to supply @handler and @thread_fn. @handler is
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	then you need to supply @handler and @thread_fn. @handler is
+>>>>>>> refs/remotes/origin/master
  *	still called in hard interrupt context and has to check
  *	whether the interrupt originates from the device. If yes it
  *	needs to disable the interrupt on the device and return
@@ -1486,6 +1868,10 @@ int request_any_context_irq(unsigned int irq, irq_handler_t handler,
 }
 EXPORT_SYMBOL_GPL(request_any_context_irq);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void irq_set_pending(unsigned int irq)
 {
 	struct irq_desc *desc = irq_to_desc(irq);
@@ -1499,6 +1885,11 @@ void irq_set_pending(unsigned int irq)
 }
 EXPORT_SYMBOL_GPL(irq_set_pending);
 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void enable_percpu_irq(unsigned int irq, unsigned int type)
 {
 	unsigned int cpu = smp_processor_id();
@@ -1524,6 +1915,10 @@ void enable_percpu_irq(unsigned int irq, unsigned int type)
 out:
 	irq_put_desc_unlock(desc, flags);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(enable_percpu_irq);
+>>>>>>> refs/remotes/origin/master
 
 void disable_percpu_irq(unsigned int irq)
 {
@@ -1537,6 +1932,10 @@ void disable_percpu_irq(unsigned int irq)
 	irq_percpu_disable(desc, cpu);
 	irq_put_desc_unlock(desc, flags);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(disable_percpu_irq);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Internal function to unregister a percpu irqaction.
@@ -1676,7 +2075,15 @@ int request_percpu_irq(unsigned int irq, irq_handler_t handler,
 		return -ENOMEM;
 
 	action->handler = handler;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	action->flags = IRQF_PERCPU;
+=======
+	action->flags = IRQF_PERCPU | IRQF_NO_SUSPEND;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	action->flags = IRQF_PERCPU | IRQF_NO_SUSPEND;
+>>>>>>> refs/remotes/origin/master
 	action->name = devname;
 	action->percpu_dev_id = dev_id;
 

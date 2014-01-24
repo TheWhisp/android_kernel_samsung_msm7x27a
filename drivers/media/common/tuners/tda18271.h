@@ -53,6 +53,10 @@ struct tda18271_std_map {
 	struct tda18271_std_map_item dvbt_7;
 	struct tda18271_std_map_item dvbt_8;
 	struct tda18271_std_map_item qam_6;
+<<<<<<< HEAD
+=======
+	struct tda18271_std_map_item qam_7;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct tda18271_std_map_item qam_8;
 };
 

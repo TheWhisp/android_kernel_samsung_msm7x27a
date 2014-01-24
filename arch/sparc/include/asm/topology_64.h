@@ -31,6 +31,7 @@ static inline int pcibus_to_node(struct pci_bus *pbus)
 	 cpu_all_mask : \
 	 cpumask_of_node(pcibus_to_node(bus)))
 
+<<<<<<< HEAD
 #define SD_NODE_INIT (struct sched_domain) {		\
 	.min_interval		= 8,			\
 	.max_interval		= 32,			\
@@ -50,6 +51,8 @@ static inline int pcibus_to_node(struct pci_bus *pbus)
 	.balance_interval	= 1,			\
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* CONFIG_NUMA */
 
 #include <asm-generic/topology.h>

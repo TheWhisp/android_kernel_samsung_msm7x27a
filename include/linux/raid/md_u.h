@@ -11,6 +11,7 @@
    (for example /usr/src/linux/COPYING); if not, write to the Free
    Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  
 */
+<<<<<<< HEAD
 
 #ifndef _MD_U_H
 #define _MD_U_H
@@ -157,3 +158,12 @@ typedef struct mdu_param_s
 
 #endif 
 
+=======
+#ifndef _MD_U_H
+#define _MD_U_H
+
+#include <uapi/linux/raid/md_u.h>
+
+extern int mdp_major;
+#endif 
+>>>>>>> refs/remotes/origin/master

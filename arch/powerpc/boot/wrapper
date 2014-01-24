@@ -144,6 +144,11 @@ tmp=$tmpdir/zImage.$$.o
 ksection=.kernel:vmlinux.strip
 isection=.kernel:initrd
 link_address='0x400000'
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+make_space=y
+>>>>>>> refs/remotes/origin/cm-10.0
 
 case "$platform" in
 pseries)
@@ -163,7 +168,42 @@ coff)
     link_address='0x500000'
     pie=
     ;;
+<<<<<<< HEAD
 miboot|uboot)
+=======
+miboot|uboot*)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+make_space=y
+
+case "$platform" in
+of)
+    platformo="$object/of.o $object/epapr.o"
+    make_space=n
+    ;;
+pseries)
+    platformo="$object/of.o $object/epapr.o"
+    link_address='0x4000000'
+    make_space=n
+    ;;
+maple)
+    platformo="$object/of.o $object/epapr.o"
+    link_address='0x400000'
+    make_space=n
+    ;;
+pmac|chrp)
+    platformo="$object/of.o $object/epapr.o"
+    make_space=n
+    ;;
+coff)
+    platformo="$object/crt0.o $object/of.o $object/epapr.o"
+    lds=$object/zImage.coff.lds
+    link_address='0x500000'
+    make_space=n
+    pie=
+    ;;
+miboot|uboot*)
+>>>>>>> refs/remotes/origin/master
     # miboot and U-boot want just the bare bits, not an ELF binary
     ext=bin
     objflags="-O binary"
@@ -210,6 +250,14 @@ ps3)
     ksection=.kernel:vmlinux.bin
     isection=.kernel:initrd
     link_address=''
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    make_space=n
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    make_space=n
+>>>>>>> refs/remotes/origin/master
     pie=
     ;;
 ep88xc|ep405|ep8248e)
@@ -244,10 +292,26 @@ gamecube|wii)
     link_address='0x600000'
     platformo="$object/$platform-head.o $object/$platform.o"
     ;;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+treeboot-currituck)
+    link_address='0x1000000'
+    ;;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+treeboot-currituck)
+    link_address='0x1000000'
+    ;;
+>>>>>>> refs/remotes/origin/master
 treeboot-iss4xx-mpic)
     platformo="$object/treeboot-iss4xx.o"
     ;;
 epapr)
+<<<<<<< HEAD
+=======
+    platformo="$object/epapr.o $object/epapr-wrapper.o"
+>>>>>>> refs/remotes/origin/master
     link_address='0x20000000'
     pie=-pie
     ;;
@@ -257,6 +321,16 @@ vmz="$tmpdir/`basename \"$kernel\"`.$ext"
 if [ -z "$cacheit" -o ! -f "$vmz$gzip" -o "$vmz$gzip" -ot "$kernel" ]; then
     ${CROSS}objcopy $objflags "$kernel" "$vmz.$$"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    strip_size=$(stat -c %s $vmz.$$)
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    strip_size=$(stat -c %s $vmz.$$)
+
+>>>>>>> refs/remotes/origin/master
     if [ -n "$gzip" ]; then
         gzip -n -f -9 "$vmz.$$"
     fi
@@ -266,6 +340,35 @@ if [ -z "$cacheit" -o ! -f "$vmz$gzip" -o "$vmz$gzip" -ot "$kernel" ]; then
     else
 	vmz="$vmz.$$"
     fi
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+else
+    # Calculate the vmlinux.strip size
+    ${CROSS}objcopy $objflags "$kernel" "$vmz.$$"
+    strip_size=$(stat -c %s $vmz.$$)
+    rm -f $vmz.$$
+fi
+
+if [ "$make_space" = "y" ]; then
+	# Round the size to next higher MB limit
+	round_size=$(((strip_size + 0xfffff) & 0xfff00000))
+
+	round_size=0x$(printf "%x" $round_size)
+	link_addr=$(printf "%d" $link_address)
+
+	if [ $link_addr -lt $strip_size ]; then
+	    echo "INFO: Uncompressed kernel (size 0x$(printf "%x\n" $strip_size))" \
+			"overlaps the address of the wrapper($link_address)"
+	    echo "INFO: Fixing the link_address of wrapper to ($round_size)"
+	    link_address=$round_size
+	fi
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 fi
 
 vmz="$vmz$gzip"
@@ -291,6 +394,35 @@ uboot)
     fi
     exit 0
     ;;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+uboot-obs600)
+    rm -f "$ofile"
+    # obs600 wants a multi image with an initrd, so we need to put a fake
+    # one in even when building a "normal" image.
+    if [ -n "$initrd" ]; then
+	real_rd="$initrd"
+    else
+	real_rd=`mktemp`
+	echo "\0" >>"$real_rd"
+    fi
+    ${MKIMAGE} -A ppc -O linux -T multi -C gzip -a $membase -e $membase \
+	$uboot_version -d "$vmz":"$real_rd":"$dtb" "$ofile"
+    if [ -z "$initrd" ]; then
+	rm -f "$real_rd"
+    fi
+    if [ -z "$cacheit" ]; then
+	rm -f "$vmz"
+    fi
+    exit 0
+    ;;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 esac
 
 addsec() {

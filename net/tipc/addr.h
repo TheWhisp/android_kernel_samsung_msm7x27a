@@ -50,18 +50,44 @@ static inline u32 tipc_cluster_mask(u32 addr)
 	return addr & TIPC_CLUSTER_MASK;
 }
 
+<<<<<<< HEAD
 static inline int in_own_cluster(u32 addr)
+=======
+static inline int in_own_cluster_exact(u32 addr)
+>>>>>>> refs/remotes/origin/master
 {
 	return !((addr ^ tipc_own_addr) >> 12);
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * in_own_node - test for node inclusion; <0.0.0> always matches
+ */
+static inline int in_own_node(u32 addr)
+{
+	return (addr == tipc_own_addr) || !addr;
+}
+
+/**
+ * in_own_cluster - test for cluster inclusion; <0.0.0> always matches
+ */
+static inline int in_own_cluster(u32 addr)
+{
+	return in_own_cluster_exact(addr) || !addr;
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * addr_domain - convert 2-bit scope value to equivalent message lookup domain
  *
  * Needed when address of a named message must be looked up a second time
  * after a network hop.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 addr_domain(u32 sc)
 {
 	if (likely(sc == TIPC_NODE_SCOPE))

@@ -9,17 +9,30 @@
  * more details.
  */
 
+<<<<<<< HEAD
 //#include <linux/config.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/init.h>
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/random.h>
 #include <linux/skbuff.h>
 #include <linux/netdevice.h>
 #include <linux/if_ether.h>
 #include <linux/if_arp.h>
+<<<<<<< HEAD
 #include <asm/string.h>
+=======
+#include <linux/string.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/wireless.h>
 
 #include "ieee80211.h"
@@ -60,12 +73,20 @@ struct ieee80211_ccmp_data {
 };
 
 void ieee80211_ccmp_aes_encrypt(struct crypto_tfm *tfm,
+<<<<<<< HEAD
 			     const u8 pt[16], u8 ct[16])
+=======
+				const u8 pt[16], u8 ct[16])
+>>>>>>> refs/remotes/origin/master
 {
 	crypto_cipher_encrypt_one((void *)tfm, ct, pt);
 }
 
+<<<<<<< HEAD
 static void * ieee80211_ccmp_init(int key_idx)
+=======
+static void *ieee80211_ccmp_init(int key_idx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_ccmp_data *priv;
 
@@ -76,8 +97,12 @@ static void * ieee80211_ccmp_init(int key_idx)
 
 	priv->tfm = (void *)crypto_alloc_cipher("aes", 0, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->tfm)) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG "ieee80211_crypt_ccmp: could not allocate "
 		       "crypto API aes\n");
+=======
+		pr_debug("could not allocate crypto API aes\n");
+>>>>>>> refs/remotes/origin/master
 		priv->tfm = NULL;
 		goto fail;
 	}
@@ -129,8 +154,12 @@ static void ccmp_init_blocks(struct crypto_tfm *tfm,
 	/*
 	qc_included = ((WLAN_FC_GET_TYPE(fc) == IEEE80211_FTYPE_DATA) &&
 		       (WLAN_FC_GET_STYPE(fc) & 0x08));
+<<<<<<< HEAD
         */
 	// fixed by David :2006.9.6
+=======
+	*/
+>>>>>>> refs/remotes/origin/master
 	qc_included = ((WLAN_FC_GET_TYPE(fc) == IEEE80211_FTYPE_DATA) &&
 		       (WLAN_FC_GET_STYPE(fc) & 0x80));
 	aad_len = 22;
@@ -212,7 +241,10 @@ static int ieee80211_ccmp_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
 	pos = skb_push(skb, CCMP_HDR_LEN);
 	memmove(pos, pos + CCMP_HDR_LEN, hdr_len);
 	pos += hdr_len;
+<<<<<<< HEAD
 //	mic = skb_put(skb, CCMP_MIC_LEN);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	i = CCMP_PN_LEN - 1;
 	while (i >= 0) {
@@ -232,7 +264,10 @@ static int ieee80211_ccmp_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
 	*pos++ = key->tx_pn[0];
 
 	hdr = (struct ieee80211_hdr_4addr *)skb->data;
+<<<<<<< HEAD
 	//mic is moved to here by john
+=======
+>>>>>>> refs/remotes/origin/master
 	mic = skb_put(skb, CCMP_MIC_LEN);
 
 	ccmp_init_blocks(key->tfm, hdr, key->tx_pn, data_len, b0, b, s0);
@@ -283,23 +318,38 @@ static int ieee80211_ccmp_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 	keyidx = pos[3];
 	if (!(keyidx & (1 << 5))) {
 		if (net_ratelimit()) {
+<<<<<<< HEAD
 			printk(KERN_DEBUG "CCMP: received packet without ExtIV"
 			       " flag from %pM\n", hdr->addr2);
+=======
+			pr_debug("received packet without ExtIV flag from %pM\n",
+				 hdr->addr2);
+>>>>>>> refs/remotes/origin/master
 		}
 		key->dot11RSNAStatsCCMPFormatErrors++;
 		return -2;
 	}
 	keyidx >>= 6;
 	if (key->key_idx != keyidx) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG "CCMP: RX tkey->key_idx=%d frame "
 		       "keyidx=%d priv=%p\n", key->key_idx, keyidx, priv);
+=======
+		pr_debug("RX tkey->key_idx=%d frame keyidx=%d priv=%p\n",
+			 key->key_idx, keyidx, priv);
+>>>>>>> refs/remotes/origin/master
 		return -6;
 	}
 	if (!key->key_set) {
 		if (net_ratelimit()) {
+<<<<<<< HEAD
 			printk(KERN_DEBUG "CCMP: received packet from %pM"
 			       " with keyid=%d that does not have a configured"
 			       " key\n", hdr->addr2, keyidx);
+=======
+			pr_debug("received packet from %pM with keyid=%d that does not have a configured key\n",
+				 hdr->addr2, keyidx);
+>>>>>>> refs/remotes/origin/master
 		}
 		return -3;
 	}
@@ -314,9 +364,14 @@ static int ieee80211_ccmp_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 
 	if (memcmp(pn, key->rx_pn, CCMP_PN_LEN) <= 0) {
 		if (net_ratelimit()) {
+<<<<<<< HEAD
 			printk(KERN_DEBUG "CCMP: replay detected: STA=%pM"
 			       " previous PN %pm received PN %pm\n",
 			       hdr->addr2, key->rx_pn, pn);
+=======
+			pr_debug("replay detected: STA=%pM previous PN %pm received PN %pm\n",
+				 hdr->addr2, key->rx_pn, pn);
+>>>>>>> refs/remotes/origin/master
 		}
 		key->dot11RSNAStatsCCMPReplays++;
 		return -4;
@@ -342,10 +397,16 @@ static int ieee80211_ccmp_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 	}
 
 	if (memcmp(mic, a, CCMP_MIC_LEN) != 0) {
+<<<<<<< HEAD
 		if (net_ratelimit()) {
 			printk(KERN_DEBUG "CCMP: decrypt failed: STA="
 			       "%pM\n", hdr->addr2);
 		}
+=======
+		if (net_ratelimit())
+			pr_debug("decrypt failed: STA=%pM\n", hdr->addr2);
+
+>>>>>>> refs/remotes/origin/master
 		key->dot11RSNAStatsCCMPDecryptErrors++;
 		return -5;
 	}
@@ -416,12 +477,20 @@ static int ieee80211_ccmp_get_key(void *key, int len, u8 *seq, void *priv)
 }
 
 
+<<<<<<< HEAD
 static char * ieee80211_ccmp_print_stats(char *p, void *priv)
 {
 	struct ieee80211_ccmp_data *ccmp = priv;
 	p += sprintf(p, "key[%d] alg=CCMP key_set=%d "
 		     "tx_pn=%pm rx_pn=%pm "
 		     "format_errors=%d replays=%d decrypt_errors=%d\n",
+=======
+static char *ieee80211_ccmp_print_stats(char *p, void *priv)
+{
+	struct ieee80211_ccmp_data *ccmp = priv;
+	p += sprintf(p,
+		     "key[%d] alg=CCMP key_set=%d tx_pn=%pm rx_pn=%pm format_errors=%d replays=%d decrypt_errors=%d\n",
+>>>>>>> refs/remotes/origin/master
 		     ccmp->key_idx, ccmp->key_set,
 		     ccmp->tx_pn, ccmp->rx_pn,
 		     ccmp->dot11RSNAStatsCCMPFormatErrors,
@@ -433,7 +502,10 @@ static char * ieee80211_ccmp_print_stats(char *p, void *priv)
 
 void ieee80211_ccmp_null(void)
 {
+<<<<<<< HEAD
 //    printk("============>%s()\n", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 static struct ieee80211_crypto_ops ieee80211_crypt_ccmp = {

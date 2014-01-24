@@ -1,0 +1,48 @@
+NVIDIA Tegra device tree bindings
+-------------------------------------------
+
+<<<<<<< HEAD
+Boards with the tegra20 SoC shall have the following properties:
+
+Required root node property:
+
+compatible = "nvidia,tegra20";
+
+Boards with the tegra30 SoC shall have the following properties:
+
+Required root node property:
+
+compatible = "nvidia,tegra30";
+=======
+SoCs
+-------------------------------------------
+
+Each device tree must specify which Tegra SoC it uses, using one of the
+following compatible values:
+
+  nvidia,tegra20
+  nvidia,tegra30
+
+Boards
+-------------------------------------------
+
+Each device tree must specify which one or more of the following
+board-specific compatible values:
+
+  ad,medcom-wide
+  ad,plutux
+  ad,tamonten
+  ad,tec
+  compal,paz00
+  compulab,trimslice
+  nvidia,beaver
+  nvidia,cardhu
+  nvidia,cardhu-a02
+  nvidia,cardhu-a04
+  nvidia,harmony
+  nvidia,seaboard
+  nvidia,ventana
+  nvidia,whistler
+  toradex,colibri_t20-512
+  toradex,iris
+>>>>>>> refs/remotes/origin/master

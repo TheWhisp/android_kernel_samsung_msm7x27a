@@ -330,7 +330,11 @@ static int cg14_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg)
 		default:
 			ret = -ENOSYS;
 			break;
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 		if (!ret) {
 			sbus_writeb(cur_mode, &regs->mcr);
 			par->mode = mode;
@@ -343,7 +347,11 @@ static int cg14_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg)
 					  FBTYPE_MDICOLOR, 8,
 					  info->fix.smem_len);
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -352,8 +360,13 @@ static int cg14_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg)
  *  Initialisation
  */
 
+<<<<<<< HEAD
 static void __devinit cg14_init_fix(struct fb_info *info, int linebytes,
 				    struct device_node *dp)
+=======
+static void cg14_init_fix(struct fb_info *info, int linebytes,
+			  struct device_node *dp)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *name = dp->name;
 
@@ -367,7 +380,11 @@ static void __devinit cg14_init_fix(struct fb_info *info, int linebytes,
 	info->fix.accel = FB_ACCEL_SUN_CG14;
 }
 
+<<<<<<< HEAD
 static struct sbus_mmap_map __cg14_mmap_map[CG14_MMAP_ENTRIES] __devinitdata = {
+=======
+static struct sbus_mmap_map __cg14_mmap_map[CG14_MMAP_ENTRIES] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.voff	= CG14_REGS,
 		.poff	= 0x80000000,
@@ -463,7 +480,11 @@ static void cg14_unmap_regs(struct platform_device *op, struct fb_info *info,
 			   info->screen_base, info->fix.smem_len);
 }
 
+<<<<<<< HEAD
 static int __devinit cg14_probe(struct platform_device *op)
+=======
+static int cg14_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	struct fb_info *info;
@@ -571,7 +592,11 @@ out_err:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit cg14_remove(struct platform_device *op)
+=======
+static int cg14_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = dev_get_drvdata(&op->dev);
 	struct cg14_par *par = info->par;
@@ -583,8 +608,11 @@ static int __devexit cg14_remove(struct platform_device *op)
 
 	framebuffer_release(info);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -603,7 +631,11 @@ static struct platform_driver cg14_driver = {
 		.of_match_table = cg14_match,
 	},
 	.probe		= cg14_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cg14_remove),
+=======
+	.remove		= cg14_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init cg14_init(void)

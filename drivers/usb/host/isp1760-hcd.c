@@ -21,8 +21,21 @@
 #include <linux/uaccess.h>
 #include <linux/io.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/unaligned.h>
 #include <asm/cacheflush.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/timer.h>
+#include <asm/unaligned.h>
+#include <asm/cacheflush.h>
+#include <linux/gpio.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "isp1760-hcd.h"
 
@@ -30,6 +43,22 @@ static struct kmem_cache *qtd_cachep;
 static struct kmem_cache *qh_cachep;
 static struct kmem_cache *urb_listitem_cachep;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum queue_head_types {
+	QH_CONTROL,
+	QH_BULK,
+	QH_INTERRUPT,
+	QH_END
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct isp1760_hcd {
 	u32 hcs_params;
 	spinlock_t		lock;
@@ -38,8 +67,16 @@ struct isp1760_hcd {
 	struct slotinfo		int_slots[32];
 	int			int_done_map;
 	struct memory_chunk memory_pool[BLOCKS];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head	controlqhs, bulkqhs, interruptqhs;
 	int active_ptds;
+=======
+	struct list_head	qh_list[QH_END];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head	qh_list[QH_END];
+>>>>>>> refs/remotes/origin/master
 
 	/* periodic schedule support */
 #define	DEFAULT_I_TDPS		1024
@@ -48,6 +85,16 @@ struct isp1760_hcd {
 	unsigned long		reset_done;
 	unsigned long		next_statechange;
 	unsigned int		devflags;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	int			rst_gpio;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	int			rst_gpio;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct isp1760_hcd *hcd_to_priv(struct usb_hcd *hcd)
@@ -114,6 +161,14 @@ struct isp1760_qh {
 	u32 toggle;
 	u32 ping;
 	int slot;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int tt_buffer_dirty;	/* See USB2.0 spec section 11.17.5 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int tt_buffer_dirty;	/* See USB2.0 spec section 11.17.5 */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct urb_listitem {
@@ -402,12 +457,27 @@ static int priv_init(struct usb_hcd *hcd)
 {
 	struct isp1760_hcd		*priv = hcd_to_priv(hcd);
 	u32			hcc_params;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	spin_lock_init(&priv->lock);
 
 	INIT_LIST_HEAD(&priv->interruptqhs);
 	INIT_LIST_HEAD(&priv->controlqhs);
 	INIT_LIST_HEAD(&priv->bulkqhs);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int i;
+
+	spin_lock_init(&priv->lock);
+
+	for (i = 0; i < QH_END; i++)
+		INIT_LIST_HEAD(&priv->qh_list[i]);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * hw default: 1K periodic list heads, one per frame.
@@ -432,6 +502,27 @@ static int isp1760_hc_setup(struct usb_hcd *hcd)
 	int result;
 	u32 scratch, hwmode;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* low-level chip reset */
+	if (gpio_is_valid(priv->rst_gpio)) {
+		unsigned int rst_lvl;
+
+		rst_lvl = (priv->devflags &
+			   ISP1760_FLAG_RESET_ACTIVE_HIGH) ? 1 : 0;
+
+		gpio_set_value(priv->rst_gpio, rst_lvl);
+		mdelay(50);
+		gpio_set_value(priv->rst_gpio, !rst_lvl);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Setup HW Mode Control: This assumes a level active-low interrupt */
 	hwmode = HW_DATA_BUS_32BIT;
 
@@ -489,10 +580,16 @@ static int isp1760_hc_setup(struct usb_hcd *hcd)
 			   16 : 32, (priv->devflags & ISP1760_FLAG_ANALOG_OC) ?
 			   "analog" : "digital");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* This is weird: at the first plug-in of a device there seems to be
 	   one packet queued that never gets returned? */
 	priv->active_ptds = -1;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* ATL reset */
 	reg_write32(hcd->regs, HC_HW_MODE_CTRL, hwmode | ALL_ATX_RESET);
 	mdelay(10);
@@ -514,6 +611,8 @@ static int isp1760_hc_setup(struct usb_hcd *hcd)
 	return priv_init(hcd);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void isp1760_init_maps(struct usb_hcd *hcd)
 {
 	/*set last maps, for iso its only 1, else 32 tds bitmap*/
@@ -591,6 +690,10 @@ static int isp1760_run(struct usb_hcd *hcd)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 base_to_chip(u32 base)
 {
 	return ((base - 0x400) >> 3);
@@ -813,6 +916,8 @@ static void start_bus_transfer(struct usb_hcd *hcd, u32 ptd_offset, int slot,
 	WARN_ON(slots[slot].qh);
 	WARN_ON(qtd->status != QTD_PAYLOAD_ALLOC);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	slots[slot].qtd = qtd;
 	slots[slot].qh = qh;
 	qh->slot = slot;
@@ -821,20 +926,54 @@ static void start_bus_transfer(struct usb_hcd *hcd, u32 ptd_offset, int slot,
 	ptd_write(hcd->regs, ptd_offset, slot, ptd);
 	priv->active_ptds++;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Make sure done map has not triggered from some unlinked transfer */
 	if (ptd_offset == ATL_PTD_OFFSET) {
 		priv->atl_done_map |= reg_read32(hcd->regs,
 						HC_ATL_PTD_DONEMAP_REG);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		priv->atl_done_map &= ~(1 << qh->slot);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		priv->atl_done_map &= ~(1 << slot);
+	} else {
+		priv->int_done_map |= reg_read32(hcd->regs,
+						HC_INT_PTD_DONEMAP_REG);
+		priv->int_done_map &= ~(1 << slot);
+	}
+
+	qh->slot = slot;
+	qtd->status = QTD_XFER_STARTED;
+	slots[slot].timestamp = jiffies;
+	slots[slot].qtd = qtd;
+	slots[slot].qh = qh;
+	ptd_write(hcd->regs, ptd_offset, slot, ptd);
+
+	if (ptd_offset == ATL_PTD_OFFSET) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		skip_map = reg_read32(hcd->regs, HC_ATL_PTD_SKIPMAP_REG);
 		skip_map &= ~(1 << qh->slot);
 		reg_write32(hcd->regs, HC_ATL_PTD_SKIPMAP_REG, skip_map);
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		priv->int_done_map |= reg_read32(hcd->regs,
 						HC_INT_PTD_DONEMAP_REG);
 		priv->int_done_map &= ~(1 << qh->slot);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		skip_map = reg_read32(hcd->regs, HC_INT_PTD_SKIPMAP_REG);
 		skip_map &= ~(1 << qh->slot);
 		reg_write32(hcd->regs, HC_INT_PTD_SKIPMAP_REG, skip_map);
@@ -858,10 +997,18 @@ static void collect_qtds(struct usb_hcd *hcd, struct isp1760_qh *qh,
 		if (qtd->status < QTD_XFER_COMPLETE)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (list_is_last(&qtd->qtd_list, &qh->qtd_list))
 			last_qtd = 1;
 		else
 			last_qtd = qtd->urb != qtd_next->urb;
+=======
+		last_qtd = last_qtd_of_urb(qtd, qh);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		last_qtd = last_qtd_of_urb(qtd, qh);
+>>>>>>> refs/remotes/origin/master
 
 		if ((!last_qtd) && (qtd->status == QTD_RETIRE))
 			qtd_next->status = QTD_RETIRE;
@@ -902,7 +1049,15 @@ static void collect_qtds(struct usb_hcd *hcd, struct isp1760_qh *qh,
 			urb_listitem = kmem_cache_zalloc(urb_listitem_cachep,
 								GFP_ATOMIC);
 			if (unlikely(!urb_listitem))
+<<<<<<< HEAD
+<<<<<<< HEAD
 				break;
+=======
+				break; /* Try again on next call */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				break; /* Try again on next call */
+>>>>>>> refs/remotes/origin/master
 			urb_listitem->urb = qtd->urb;
 			list_add_tail(&urb_listitem->urb_list, urb_list);
 		}
@@ -928,6 +1083,19 @@ static void enqueue_qtds(struct usb_hcd *hcd, struct isp1760_qh *qh)
 		return;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Make sure this endpoint's TT buffer is clean before queueing ptds */
+	if (qh->tt_buffer_dirty)
+		return;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (usb_pipeint(list_entry(qh->qtd_list.next, struct isp1760_qtd,
 							qtd_list)->urb->pipe)) {
 		ptd_offset = INT_PTD_OFFSET;
@@ -988,14 +1156,30 @@ static void enqueue_qtds(struct usb_hcd *hcd, struct isp1760_qh *qh)
 	}
 }
 
+<<<<<<< HEAD
 void schedule_ptds(struct usb_hcd *hcd)
+=======
+static void schedule_ptds(struct usb_hcd *hcd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct isp1760_hcd *priv;
 	struct isp1760_qh *qh, *qh_next;
 	struct list_head *ep_queue;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_host_endpoint *ep;
 	LIST_HEAD(urb_list);
 	struct urb_listitem *urb_listitem, *urb_listitem_next;
+=======
+	LIST_HEAD(urb_list);
+	struct urb_listitem *urb_listitem, *urb_listitem_next;
+	int i;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	LIST_HEAD(urb_list);
+	struct urb_listitem *urb_listitem, *urb_listitem_next;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	if (!hcd) {
 		WARN_ON(1);
@@ -1007,6 +1191,8 @@ void schedule_ptds(struct usb_hcd *hcd)
 	/*
 	 * check finished/retired xfers, transfer payloads, call urb_done()
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ep_queue = &priv->interruptqhs;
 	while (ep_queue) {
 		list_for_each_entry_safe(qh, qh_next, ep_queue, qh_list) {
@@ -1029,6 +1215,20 @@ void schedule_ptds(struct usb_hcd *hcd)
 			ep_queue = &priv->bulkqhs;
 		else
 			ep_queue = NULL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	for (i = 0; i < QH_END; i++) {
+		ep_queue = &priv->qh_list[i];
+		list_for_each_entry_safe(qh, qh_next, ep_queue, qh_list) {
+			collect_qtds(hcd, qh, &urb_list);
+			if (list_empty(&qh->qtd_list))
+				list_del(&qh->qh_list);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	list_for_each_entry_safe(urb_listitem, urb_listitem_next, &urb_list,
@@ -1061,6 +1261,8 @@ void schedule_ptds(struct usb_hcd *hcd)
 	 *
 	 * I'm sure this scheme could be improved upon!
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ep_queue = &priv->controlqhs;
 	while (ep_queue) {
 		list_for_each_entry_safe(qh, qh_next, ep_queue, qh_list)
@@ -1072,6 +1274,17 @@ void schedule_ptds(struct usb_hcd *hcd)
 			ep_queue = &priv->bulkqhs;
 		else
 			ep_queue = NULL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	for (i = 0; i < QH_END; i++) {
+		ep_queue = &priv->qh_list[i];
+		list_for_each_entry_safe(qh, qh_next, ep_queue, qh_list)
+			enqueue_qtds(hcd, qh);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1168,11 +1381,23 @@ static int check_atl_transfer(struct usb_hcd *hcd, struct ptd *ptd,
 	return PTD_STATE_QTD_DONE;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static irqreturn_t isp1760_irq(struct usb_hcd *hcd)
 {
 	struct isp1760_hcd *priv = hcd_to_priv(hcd);
 	u32 imask;
 	irqreturn_t irqret = IRQ_NONE;
+=======
+static void handle_done_ptds(struct usb_hcd *hcd)
+{
+	struct isp1760_hcd *priv = hcd_to_priv(hcd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void handle_done_ptds(struct usb_hcd *hcd)
+{
+	struct isp1760_hcd *priv = hcd_to_priv(hcd);
+>>>>>>> refs/remotes/origin/master
 	struct ptd ptd;
 	struct isp1760_qh *qh;
 	int slot;
@@ -1181,6 +1406,8 @@ static irqreturn_t isp1760_irq(struct usb_hcd *hcd)
 	u32 ptd_offset;
 	struct isp1760_qtd *qtd;
 	int modified;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	static int last_active_ptds;
 	int int_skip_map, atl_skip_map;
 
@@ -1202,6 +1429,21 @@ static irqreturn_t isp1760_irq(struct usb_hcd *hcd)
 	priv->atl_done_map &= ~atl_skip_map;
 
 	modified = priv->int_done_map | priv->atl_done_map;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int skip_map;
+
+	skip_map = reg_read32(hcd->regs, HC_INT_PTD_SKIPMAP_REG);
+	priv->int_done_map &= ~skip_map;
+	skip_map = reg_read32(hcd->regs, HC_ATL_PTD_SKIPMAP_REG);
+	priv->atl_done_map &= ~skip_map;
+
+	modified = priv->int_done_map || priv->atl_done_map;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	while (priv->int_done_map || priv->atl_done_map) {
 		if (priv->int_done_map) {
@@ -1240,7 +1482,13 @@ static irqreturn_t isp1760_irq(struct usb_hcd *hcd)
 		slots[slot].qtd = NULL;
 		qh = slots[slot].qh;
 		slots[slot].qh = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		priv->active_ptds--;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		qh->slot = -1;
 
 		WARN_ON(qtd->status != QTD_XFER_STARTED);
@@ -1281,6 +1529,24 @@ static irqreturn_t isp1760_irq(struct usb_hcd *hcd)
 
 		case PTD_STATE_URB_RETIRE:
 			qtd->status = QTD_RETIRE;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			if ((qtd->urb->dev->speed != USB_SPEED_HIGH) &&
+					(qtd->urb->status != -EPIPE) &&
+					(qtd->urb->status != -EREMOTEIO)) {
+				qh->tt_buffer_dirty = 1;
+				if (usb_hub_clear_tt_buffer(qtd->urb))
+					/* Clear failed; let's hope things work
+					   anyway */
+					qh->tt_buffer_dirty = 0;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			qtd = NULL;
 			qh->toggle = 0;
 			qh->ping = 0;
@@ -1311,6 +1577,8 @@ static irqreturn_t isp1760_irq(struct usb_hcd *hcd)
 
 	if (modified)
 		schedule_ptds(hcd);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* ISP1760 Errata 2 explains that interrupts may be missed (or not
 	   happen?) if two USB devices are running simultaneously. Perhaps
@@ -1327,6 +1595,35 @@ static irqreturn_t isp1760_irq(struct usb_hcd *hcd)
 						INTERRUPT_ENABLE_MASK);
 		last_active_ptds = priv->active_ptds;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+}
+
+static irqreturn_t isp1760_irq(struct usb_hcd *hcd)
+{
+	struct isp1760_hcd *priv = hcd_to_priv(hcd);
+	u32 imask;
+	irqreturn_t irqret = IRQ_NONE;
+
+	spin_lock(&priv->lock);
+
+	if (!(hcd->state & HC_STATE_RUNNING))
+		goto leave;
+
+	imask = reg_read32(hcd->regs, HC_INTERRUPT_REG);
+	if (unlikely(!imask))
+		goto leave;
+	reg_write32(hcd->regs, HC_INTERRUPT_REG, imask); /* Clear */
+
+	priv->int_done_map |= reg_read32(hcd->regs, HC_INT_PTD_DONEMAP_REG);
+	priv->atl_done_map |= reg_read32(hcd->regs, HC_ATL_PTD_DONEMAP_REG);
+
+	handle_done_ptds(hcd);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	irqret = IRQ_HANDLED;
 leave:
@@ -1335,6 +1632,151 @@ leave:
 	return irqret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Workaround for problem described in chip errata 2:
+ *
+ * Sometimes interrupts are not generated when ATL (not INT?) completion occurs.
+ * One solution suggested in the errata is to use SOF interrupts _instead_of_
+ * ATL done interrupts (the "instead of" might be important since it seems
+ * enabling ATL interrupts also causes the chip to sometimes - rarely - "forget"
+ * to set the PTD's done bit in addition to not generating an interrupt!).
+ *
+ * So if we use SOF + ATL interrupts, we sometimes get stale PTDs since their
+ * done bit is not being set. This is bad - it blocks the endpoint until reboot.
+ *
+ * If we use SOF interrupts only, we get latency between ptd completion and the
+ * actual handling. This is very noticeable in testusb runs which takes several
+ * minutes longer without ATL interrupts.
+ *
+ * A better solution is to run the code below every SLOT_CHECK_PERIOD ms. If it
+ * finds active ATL slots which are older than SLOT_TIMEOUT ms, it checks the
+ * slot's ACTIVE and VALID bits. If these are not set, the ptd is considered
+ * completed and its done map bit is set.
+ *
+ * The values of SLOT_TIMEOUT and SLOT_CHECK_PERIOD have been arbitrarily chosen
+ * not to cause too much lag when this HW bug occurs, while still hopefully
+ * ensuring that the check does not falsely trigger.
+ */
+#define SLOT_TIMEOUT 300
+#define SLOT_CHECK_PERIOD 200
+static struct timer_list errata2_timer;
+
+<<<<<<< HEAD
+void errata2_function(unsigned long data)
+=======
+static void errata2_function(unsigned long data)
+>>>>>>> refs/remotes/origin/master
+{
+	struct usb_hcd *hcd = (struct usb_hcd *) data;
+	struct isp1760_hcd *priv = hcd_to_priv(hcd);
+	int slot;
+	struct ptd ptd;
+	unsigned long spinflags;
+
+	spin_lock_irqsave(&priv->lock, spinflags);
+
+	for (slot = 0; slot < 32; slot++)
+		if (priv->atl_slots[slot].qh && time_after(jiffies,
+					priv->atl_slots[slot].timestamp +
+					SLOT_TIMEOUT * HZ / 1000)) {
+			ptd_read(hcd->regs, ATL_PTD_OFFSET, slot, &ptd);
+			if (!FROM_DW0_VALID(ptd.dw0) &&
+					!FROM_DW3_ACTIVE(ptd.dw3))
+				priv->atl_done_map |= 1 << slot;
+		}
+
+	if (priv->atl_done_map)
+		handle_done_ptds(hcd);
+
+	spin_unlock_irqrestore(&priv->lock, spinflags);
+
+	errata2_timer.expires = jiffies + SLOT_CHECK_PERIOD * HZ / 1000;
+	add_timer(&errata2_timer);
+}
+
+static int isp1760_run(struct usb_hcd *hcd)
+{
+	int retval;
+	u32 temp;
+	u32 command;
+	u32 chipid;
+
+	hcd->uses_new_polling = 1;
+
+	hcd->state = HC_STATE_RUNNING;
+
+	/* Set PTD interrupt AND & OR maps */
+	reg_write32(hcd->regs, HC_ATL_IRQ_MASK_AND_REG, 0);
+	reg_write32(hcd->regs, HC_ATL_IRQ_MASK_OR_REG, 0xffffffff);
+	reg_write32(hcd->regs, HC_INT_IRQ_MASK_AND_REG, 0);
+	reg_write32(hcd->regs, HC_INT_IRQ_MASK_OR_REG, 0xffffffff);
+	reg_write32(hcd->regs, HC_ISO_IRQ_MASK_AND_REG, 0);
+	reg_write32(hcd->regs, HC_ISO_IRQ_MASK_OR_REG, 0xffffffff);
+	/* step 23 passed */
+
+	temp = reg_read32(hcd->regs, HC_HW_MODE_CTRL);
+	reg_write32(hcd->regs, HC_HW_MODE_CTRL, temp | HW_GLOBAL_INTR_EN);
+
+	command = reg_read32(hcd->regs, HC_USBCMD);
+	command &= ~(CMD_LRESET|CMD_RESET);
+	command |= CMD_RUN;
+	reg_write32(hcd->regs, HC_USBCMD, command);
+
+	retval = handshake(hcd, HC_USBCMD, CMD_RUN, CMD_RUN, 250 * 1000);
+	if (retval)
+		return retval;
+
+	/*
+	 * XXX
+	 * Spec says to write FLAG_CF as last config action, priv code grabs
+	 * the semaphore while doing so.
+	 */
+	down_write(&ehci_cf_port_reset_rwsem);
+	reg_write32(hcd->regs, HC_CONFIGFLAG, FLAG_CF);
+
+	retval = handshake(hcd, HC_CONFIGFLAG, FLAG_CF, FLAG_CF, 250 * 1000);
+	up_write(&ehci_cf_port_reset_rwsem);
+	if (retval)
+		return retval;
+
+	init_timer(&errata2_timer);
+	errata2_timer.function = errata2_function;
+	errata2_timer.data = (unsigned long) hcd;
+	errata2_timer.expires = jiffies + SLOT_CHECK_PERIOD * HZ / 1000;
+	add_timer(&errata2_timer);
+
+	chipid = reg_read32(hcd->regs, HC_CHIP_ID_REG);
+	dev_info(hcd->self.controller, "USB ISP %04x HW rev. %d started\n",
+					chipid & 0xffff, chipid >> 16);
+
+	/* PTD Register Init Part 2, Step 28 */
+
+	/* Setup registers controlling PTD checking */
+	reg_write32(hcd->regs, HC_ATL_PTD_LASTPTD_REG, 0x80000000);
+	reg_write32(hcd->regs, HC_INT_PTD_LASTPTD_REG, 0x80000000);
+	reg_write32(hcd->regs, HC_ISO_PTD_LASTPTD_REG, 0x00000001);
+	reg_write32(hcd->regs, HC_ATL_PTD_SKIPMAP_REG, 0xffffffff);
+	reg_write32(hcd->regs, HC_INT_PTD_SKIPMAP_REG, 0xffffffff);
+	reg_write32(hcd->regs, HC_ISO_PTD_SKIPMAP_REG, 0xffffffff);
+	reg_write32(hcd->regs, HC_BUFFER_STATUS_REG,
+						ATL_BUF_FILL | INT_BUF_FILL);
+
+	/* GRR this is run-once init(), being done every time the HC starts.
+	 * So long as they're part of class devices, we can't do it init()
+	 * since the class device isn't created that early.
+	 */
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int qtd_fill(struct isp1760_qtd *qtd, void *databuffer, size_t len)
 {
 	qtd->data_buffer = databuffer;
@@ -1475,16 +1917,37 @@ static int isp1760_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 
 	switch (usb_pipetype(urb->pipe)) {
 	case PIPE_CONTROL:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ep_queue = &priv->controlqhs;
 		break;
 	case PIPE_BULK:
 		ep_queue = &priv->bulkqhs;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ep_queue = &priv->qh_list[QH_CONTROL];
+		break;
+	case PIPE_BULK:
+		ep_queue = &priv->qh_list[QH_BULK];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case PIPE_INTERRUPT:
 		if (urb->interval < 0)
 			return -EINVAL;
 		/* FIXME: Check bandwidth  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ep_queue = &priv->interruptqhs;
+=======
+		ep_queue = &priv->qh_list[QH_INTERRUPT];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ep_queue = &priv->qh_list[QH_INTERRUPT];
+>>>>>>> refs/remotes/origin/master
 		break;
 	case PIPE_ISOCHRONOUS:
 		dev_err(hcd->self.controller, "%s: isochronous USB packets "
@@ -1503,18 +1966,35 @@ static int isp1760_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 	packetize_urb(hcd, urb, &new_qtds, mem_flags);
 	if (list_empty(&new_qtds))
 		return -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	urb->hcpriv = NULL; /* Used to signal unlink to interrupt handler */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	retval = 0;
 	spin_lock_irqsave(&priv->lock, spinflags);
 
 	if (!test_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags)) {
 		retval = -ESHUTDOWN;
+<<<<<<< HEAD
 		goto out;
 	}
 	retval = usb_hcd_link_urb_to_ep(hcd, urb);
 	if (retval)
 		goto out;
+=======
+		qtd_list_free(&new_qtds);
+		goto out;
+	}
+	retval = usb_hcd_link_urb_to_ep(hcd, urb);
+	if (retval) {
+		qtd_list_free(&new_qtds);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	qh = urb->ep->hcpriv;
 	if (qh) {
@@ -1531,6 +2011,15 @@ static int isp1760_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 		qh = qh_alloc(GFP_ATOMIC);
 		if (!qh) {
 			retval = -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			usb_hcd_unlink_urb_from_ep(hcd, urb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			usb_hcd_unlink_urb_from_ep(hcd, urb);
+			qtd_list_free(&new_qtds);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 		list_add_tail(&qh->qh_list, ep_queue);
@@ -1570,7 +2059,51 @@ static void kill_transfer(struct usb_hcd *hcd, struct urb *urb,
 	}
 
 	qh->slot = -1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	priv->active_ptds--;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+}
+
+/*
+ * Retire the qtds beginning at 'qtd' and belonging all to the same urb, killing
+ * any active transfer belonging to the urb in the process.
+ */
+static void dequeue_urb_from_qtd(struct usb_hcd *hcd, struct isp1760_qh *qh,
+						struct isp1760_qtd *qtd)
+{
+	struct urb *urb;
+	int urb_was_running;
+
+	urb = qtd->urb;
+	urb_was_running = 0;
+	list_for_each_entry_from(qtd, &qh->qtd_list, qtd_list) {
+		if (qtd->urb != urb)
+			break;
+
+		if (qtd->status >= QTD_XFER_STARTED)
+			urb_was_running = 1;
+		if (last_qtd_of_urb(qtd, qh) &&
+					(qtd->status >= QTD_XFER_COMPLETE))
+			urb_was_running = 0;
+
+		if (qtd->status == QTD_XFER_STARTED)
+			kill_transfer(hcd, urb, qh);
+		qtd->status = QTD_RETIRE;
+	}
+
+	if ((urb->dev->speed != USB_SPEED_HIGH) && urb_was_running) {
+		qh->tt_buffer_dirty = 1;
+		if (usb_hub_clear_tt_buffer(urb))
+			/* Clear failed; let's hope things work anyway */
+			qh->tt_buffer_dirty = 0;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int isp1760_urb_dequeue(struct usb_hcd *hcd, struct urb *urb,
@@ -1595,9 +2128,20 @@ static int isp1760_urb_dequeue(struct usb_hcd *hcd, struct urb *urb,
 
 	list_for_each_entry(qtd, &qh->qtd_list, qtd_list)
 		if (qtd->urb == urb) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (qtd->status == QTD_XFER_STARTED)
 				kill_transfer(hcd, urb, qh);
 			qtd->status = QTD_RETIRE;
+=======
+			dequeue_urb_from_qtd(hcd, qh, qtd);
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dequeue_urb_from_qtd(hcd, qh, qtd);
+			list_move(&qtd->qtd_list, &qh->qtd_list);
+			break;
+>>>>>>> refs/remotes/origin/master
 		}
 
 	urb->status = status;
@@ -1613,8 +2157,18 @@ static void isp1760_endpoint_disable(struct usb_hcd *hcd,
 {
 	struct isp1760_hcd *priv = hcd_to_priv(hcd);
 	unsigned long spinflags;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct isp1760_qh *qh;
 	struct isp1760_qtd *qtd;
+=======
+	struct isp1760_qh *qh, *qh_iter;
+	int i;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct isp1760_qh *qh, *qh_iter;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&priv->lock, spinflags);
 
@@ -1622,6 +2176,8 @@ static void isp1760_endpoint_disable(struct usb_hcd *hcd,
 	if (!qh)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each_entry(qtd, &qh->qtd_list, qtd_list) {
 		if (qtd->status == QTD_XFER_STARTED)
 			kill_transfer(hcd, qtd->urb, qh);
@@ -1631,6 +2187,24 @@ static void isp1760_endpoint_disable(struct usb_hcd *hcd,
 
 	ep->hcpriv = NULL;
 	/* Cannot free qh here since it will be parsed by schedule_ptds() */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	WARN_ON(!list_empty(&qh->qtd_list));
+
+	for (i = 0; i < QH_END; i++)
+		list_for_each_entry(qh_iter, &priv->qh_list[i], qh_list)
+			if (qh_iter == qh) {
+				list_del(&qh_iter->qh_list);
+				i = QH_END;
+				break;
+			}
+	qh_free(qh);
+	ep->hcpriv = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	schedule_ptds(hcd);
 
@@ -1646,7 +2220,11 @@ static int isp1760_hub_status_data(struct usb_hcd *hcd, char *buf)
 	int retval = 1;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	/* if !USB_SUSPEND, root hub timers won't get shut down ... */
+=======
+	/* if !PM_RUNTIME, root hub timers won't get shut down ... */
+>>>>>>> refs/remotes/origin/master
 	if (!HC_IS_RUNNING(hcd->state))
 		return 0;
 
@@ -2021,6 +2599,16 @@ static void isp1760_stop(struct usb_hcd *hcd)
 	struct isp1760_hcd *priv = hcd_to_priv(hcd);
 	u32 temp;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	del_timer(&errata2_timer);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	del_timer(&errata2_timer);
+
+>>>>>>> refs/remotes/origin/master
 	isp1760_hub_control(hcd, ClearPortFeature, USB_PORT_FEAT_POWER,	1,
 			NULL, 0);
 	mdelay(20);
@@ -2048,6 +2636,32 @@ static void isp1760_shutdown(struct usb_hcd *hcd)
 	reg_write32(hcd->regs, HC_USBCMD, command);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void isp1760_clear_tt_buffer_complete(struct usb_hcd *hcd,
+						struct usb_host_endpoint *ep)
+{
+	struct isp1760_hcd *priv = hcd_to_priv(hcd);
+	struct isp1760_qh *qh = ep->hcpriv;
+	unsigned long spinflags;
+
+	if (!qh)
+		return;
+
+	spin_lock_irqsave(&priv->lock, spinflags);
+	qh->tt_buffer_dirty = 0;
+	schedule_ptds(hcd);
+	spin_unlock_irqrestore(&priv->lock, spinflags);
+}
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct hc_driver isp1760_hc_driver = {
 	.description		= "isp1760-hcd",
 	.product_desc		= "NXP ISP1760 USB Host Controller",
@@ -2064,11 +2678,23 @@ static const struct hc_driver isp1760_hc_driver = {
 	.get_frame_number	= isp1760_get_frame,
 	.hub_status_data	= isp1760_hub_status_data,
 	.hub_control		= isp1760_hub_control,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.clear_tt_buffer_complete	= isp1760_clear_tt_buffer_complete,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.clear_tt_buffer_complete	= isp1760_clear_tt_buffer_complete,
+>>>>>>> refs/remotes/origin/master
 };
 
 int __init init_kmem_once(void)
 {
+<<<<<<< HEAD
 	urb_listitem_cachep = kmem_cache_create("isp1760 urb_listitem",
+=======
+	urb_listitem_cachep = kmem_cache_create("isp1760_urb_listitem",
+>>>>>>> refs/remotes/origin/master
 			sizeof(struct urb_listitem), 0, SLAB_TEMPORARY |
 			SLAB_MEM_SPREAD, NULL);
 
@@ -2102,6 +2728,14 @@ void deinit_kmem_cache(void)
 
 struct usb_hcd *isp1760_register(phys_addr_t res_start, resource_size_t res_len,
 				 int irq, unsigned long irqflags,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				 int rst_gpio,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 int rst_gpio,
+>>>>>>> refs/remotes/origin/master
 				 struct device *dev, const char *busname,
 				 unsigned int devflags)
 {
@@ -2121,6 +2755,14 @@ struct usb_hcd *isp1760_register(phys_addr_t res_start, resource_size_t res_len,
 
 	priv = hcd_to_priv(hcd);
 	priv->devflags = devflags;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	priv->rst_gpio = rst_gpio;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->rst_gpio = rst_gpio;
+>>>>>>> refs/remotes/origin/master
 	init_memory(priv);
 	hcd->regs = ioremap(res_start, res_len);
 	if (!hcd->regs) {
@@ -2135,6 +2777,10 @@ struct usb_hcd *isp1760_register(phys_addr_t res_start, resource_size_t res_len,
 	ret = usb_add_hcd(hcd, irq, irqflags);
 	if (ret)
 		goto err_unmap;
+<<<<<<< HEAD
+=======
+	device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 
 	return hcd;
 

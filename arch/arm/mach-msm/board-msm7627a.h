@@ -16,6 +16,18 @@
 #include "pm.h"
 void __init msm7627a_init_mmc(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void __init msm_msm7627a_allocate_memory_regions(void);
+void __init msm_fb_add_devices(void);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init msm_msm7627a_allocate_memory_regions(void);
+void __init msm_fb_add_devices(void);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 enum {
 	GPIO_EXPANDER_IRQ_BASE  = NR_MSM_IRQS + NR_GPIO_IRQS,
 	GPIO_EXPANDER_GPIO_BASE = NR_MSM_GPIOS,
@@ -63,6 +75,14 @@ enum {
 	QRD_GPIO_CAM_GP_CAMIF_RESET,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define ADSP_RPC_PROG           0x3000000a
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ADSP_RPC_PROG           0x3000000a
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(CONFIG_BT) && defined(CONFIG_MARIMBA_CORE)
 
 #define FPGA_MSM_CNTRL_REG2 0x90008010
@@ -95,6 +115,8 @@ struct bt_vreg_info {
 	struct regulator *reg;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern struct platform_device msm_bt_power_device;
 
 void __init msm7627a_bt_power_init(void);
@@ -102,4 +124,23 @@ void __init msm7627a_bt_power_init(void);
 
 void __init msm7627a_camera_init(void);
 u32 msm7627a_power_collapse_latency(enum msm_pm_sleep_mode);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+void __init msm7627a_bt_power_init(void);
+#endif
+
+extern struct platform_device msm_device_snd;
+extern struct platform_device msm_device_adspdec;
+extern struct platform_device msm_device_cad;
+
+void __init msm7627a_camera_init(void);
+int lcd_camera_power_onoff(int on);
+
+void __init msm7627a_add_io_devices(void);
+void __init qrd7627a_add_io_devices(void);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

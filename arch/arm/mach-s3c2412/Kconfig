@@ -2,6 +2,7 @@
 #
 # Licensed under GPLv2
 
+<<<<<<< HEAD
 config CPU_S3C2412
 	bool
 	depends on ARCH_S3C2410
@@ -38,6 +39,8 @@ config S3C2412_PM_SLEEP
 	  Internal config node to apply sleep for S3C2412 power management.
 	  Can be selected by another SoCs with similar sleep procedure.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 # Note, the S3C2412 IOtiming support is in plat-s3c24xx
 
 config S3C2412_CPUFREQ
@@ -47,6 +50,7 @@ config S3C2412_CPUFREQ
 	default y
 	help
 	  CPU Frequency scaling support for S3C2412 and S3C2413 SoC CPUs.
+<<<<<<< HEAD
 
 menu "S3C2412 Machines"
 
@@ -97,3 +101,5 @@ config MACH_VSTMS
 	  Say Y here if you are using an VSTMS board
 
 endmenu
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

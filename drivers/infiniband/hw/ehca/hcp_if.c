@@ -90,6 +90,7 @@
 
 static DEFINE_SPINLOCK(hcall_lock);
 
+<<<<<<< HEAD
 static u32 get_longbusy_msecs(int longbusy_rc)
 {
 	switch (longbusy_rc) {
@@ -110,6 +111,8 @@ static u32 get_longbusy_msecs(int longbusy_rc)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static long ehca_plpar_hcall_norets(unsigned long opcode,
 				    unsigned long arg1,
 				    unsigned long arg2,
@@ -396,7 +399,11 @@ u64 hipz_h_query_port(const struct ipz_adapter_handle adapter_handle,
 		      struct hipz_query_port *query_port_response_block)
 {
 	u64 ret;
+<<<<<<< HEAD
 	u64 r_cb = virt_to_abs(query_port_response_block);
+=======
+	u64 r_cb = __pa(query_port_response_block);
+>>>>>>> refs/remotes/origin/master
 
 	if (r_cb & (EHCA_PAGESIZE-1)) {
 		ehca_gen_err("response block not page aligned");
@@ -438,7 +445,11 @@ u64 hipz_h_modify_port(const struct ipz_adapter_handle adapter_handle,
 u64 hipz_h_query_hca(const struct ipz_adapter_handle adapter_handle,
 		     struct hipz_query_hca *query_hca_rblock)
 {
+<<<<<<< HEAD
 	u64 r_cb = virt_to_abs(query_hca_rblock);
+=======
+	u64 r_cb = __pa(query_hca_rblock);
+>>>>>>> refs/remotes/origin/master
 
 	if (r_cb & (EHCA_PAGESIZE-1)) {
 		ehca_gen_err("response_block=%p not page aligned",
@@ -577,7 +588,11 @@ u64 hipz_h_modify_qp(const struct ipz_adapter_handle adapter_handle,
 				adapter_handle.handle, /* r4 */
 				qp_handle.handle,      /* r5 */
 				update_mask,	       /* r6 */
+<<<<<<< HEAD
 				virt_to_abs(mqpcb),    /* r7 */
+=======
+				__pa(mqpcb),	       /* r7 */
+>>>>>>> refs/remotes/origin/master
 				0, 0, 0, 0, 0);
 
 	if (ret == H_NOT_ENOUGH_RESOURCES)
@@ -595,7 +610,11 @@ u64 hipz_h_query_qp(const struct ipz_adapter_handle adapter_handle,
 	return ehca_plpar_hcall_norets(H_QUERY_QP,
 				       adapter_handle.handle, /* r4 */
 				       qp_handle.handle,      /* r5 */
+<<<<<<< HEAD
 				       virt_to_abs(qqpcb),    /* r6 */
+=======
+				       __pa(qqpcb),	      /* r6 */
+>>>>>>> refs/remotes/origin/master
 				       0, 0, 0, 0);
 }
 
@@ -787,7 +806,11 @@ u64 hipz_h_register_rpage_mr(const struct ipz_adapter_handle adapter_handle,
 		if (count > 1) {
 			u64 *kpage;
 			int i;
+<<<<<<< HEAD
 			kpage = (u64 *)abs_to_virt(logical_address_of_page);
+=======
+			kpage = __va(logical_address_of_page);
+>>>>>>> refs/remotes/origin/master
 			for (i = 0; i < count; i++)
 				ehca_gen_dbg("kpage[%d]=%p",
 					     i, (void *)kpage[i]);
@@ -944,7 +967,11 @@ u64 hipz_h_error_data(const struct ipz_adapter_handle adapter_handle,
 		      void *rblock,
 		      unsigned long *byte_count)
 {
+<<<<<<< HEAD
 	u64 r_cb = virt_to_abs(rblock);
+=======
+	u64 r_cb = __pa(rblock);
+>>>>>>> refs/remotes/origin/master
 
 	if (r_cb & (EHCA_PAGESIZE-1)) {
 		ehca_gen_err("rblock not page aligned.");

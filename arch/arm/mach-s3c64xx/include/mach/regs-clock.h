@@ -15,6 +15,7 @@
 #ifndef __PLAT_REGS_CLOCK_H
 #define __PLAT_REGS_CLOCK_H __FILE__
 
+<<<<<<< HEAD
 #define S3C_CLKREG(x)		(S3C_VA_SYS + (x))
 
 #define S3C_APLL_LOCK		S3C_CLKREG(0x00)
@@ -105,10 +106,24 @@
 #define S3C_CLKCON_PCLK_PWM		(1<<7)
 #define S3C_CLKCON_PCLK_RTC		(1<<6)
 #define S3C_CLKCON_PCLK_WDT		(1<<5)
+=======
+/*
+ * FIXME: Remove remaining definitions
+ */
+
+#define S3C_CLKREG(x)		(S3C_VA_SYS + (x))
+
+#define S3C_PCLK_GATE		S3C_CLKREG(0x34)
+#define S3C6410_CLK_SRC2	S3C_CLKREG(0x10C)
+#define S3C_MEM_SYS_CFG		S3C_CLKREG(0x120)
+
+/* PCLK GATE Registers */
+>>>>>>> refs/remotes/origin/master
 #define S3C_CLKCON_PCLK_UART3		(1<<4)
 #define S3C_CLKCON_PCLK_UART2		(1<<3)
 #define S3C_CLKCON_PCLK_UART1		(1<<2)
 #define S3C_CLKCON_PCLK_UART0		(1<<1)
+<<<<<<< HEAD
 #define S3C_CLKCON_PCLK_MFC		(1<<0)
 
 /* SCLK GATE Registers */
@@ -154,6 +169,8 @@
 #define S3C6400_CLKSRC_MPLL_MOUT_SHIFT	(1)
 #define S3C6400_CLKSRC_EPLL_MOUT_SHIFT	(2)
 #define S3C6400_CLKSRC_MFC		(1 << 4)
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* MEM_SYS_CFG */
 #define MEM_SYS_CFG_INDEP_CF		0x4000

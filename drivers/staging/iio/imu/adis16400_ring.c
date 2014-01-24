@@ -1,4 +1,5 @@
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/irq.h>
 #include <linux/gpio.h>
 #include <linux/workqueue.h>
@@ -16,6 +17,18 @@
 #include "../ring_sw.h"
 #include "../accel/accel.h"
 #include "../trigger.h"
+=======
+#include <linux/mutex.h>
+#include <linux/kernel.h>
+#include <linux/spi/spi.h>
+#include <linux/slab.h>
+#include <linux/bitops.h>
+#include <linux/export.h>
+
+#include "../iio.h"
+#include "../ring_sw.h"
+#include "../trigger_consumer.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "adis16400.h"
 
 /**
@@ -86,14 +99,25 @@ static int adis16350_spi_read_all(struct device *dev, u8 *rx)
 	struct spi_message msg;
 	int i, j = 0, ret;
 	struct spi_transfer *xfers;
+<<<<<<< HEAD
 
 	xfers = kzalloc(sizeof(*xfers)*indio_dev->ring->scan_count + 1,
+=======
+	int scan_count = bitmap_weight(indio_dev->active_scan_mask,
+				       indio_dev->masklength);
+
+	xfers = kzalloc(sizeof(*xfers)*(scan_count + 1),
+>>>>>>> refs/remotes/origin/cm-10.0
 			GFP_KERNEL);
 	if (xfers == NULL)
 		return -ENOMEM;
 
 	for (i = 0; i < ARRAY_SIZE(read_all_tx_array); i++)
+<<<<<<< HEAD
 		if (indio_dev->ring->scan_mask & (1 << i)) {
+=======
+		if (test_bit(i, indio_dev->active_scan_mask)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			xfers[j].tx_buf = &read_all_tx_array[i];
 			xfers[j].bits_per_word = 16;
 			xfers[j].len = 2;
@@ -104,7 +128,11 @@ static int adis16350_spi_read_all(struct device *dev, u8 *rx)
 	xfers[j].len = 2;
 
 	spi_message_init(&msg);
+<<<<<<< HEAD
 	for (j = 0; j < indio_dev->ring->scan_count + 1; j++)
+=======
+	for (j = 0; j < scan_count + 1; j++)
+>>>>>>> refs/remotes/origin/cm-10.0
 		spi_message_add_tail(&xfers[j], &msg);
 
 	ret = spi_sync(st->us, &msg);
@@ -119,6 +147,7 @@ static int adis16350_spi_read_all(struct device *dev, u8 *rx)
 static irqreturn_t adis16400_trigger_handler(int irq, void *p)
 {
 	struct iio_poll_func *pf = p;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = pf->private_data;
 	struct adis16400_state *st = iio_priv(indio_dev);
 	struct iio_ring_buffer *ring = indio_dev->ring;
@@ -127,24 +156,48 @@ static irqreturn_t adis16400_trigger_handler(int irq, void *p)
 	size_t datasize = ring->access->get_bytes_per_datum(ring);
 	unsigned long mask = ring->scan_mask;
 
+=======
+	struct iio_dev *indio_dev = pf->indio_dev;
+	struct adis16400_state *st = iio_priv(indio_dev);
+	struct iio_buffer *ring = indio_dev->buffer;
+	int i = 0, j, ret = 0;
+	s16 *data;
+	size_t datasize = ring->access->get_bytes_per_datum(ring);
+	/* Asumption that long is enough for maximum channels */
+	unsigned long mask = *indio_dev->active_scan_mask;
+	int scan_count = bitmap_weight(indio_dev->active_scan_mask,
+				       indio_dev->masklength);
+>>>>>>> refs/remotes/origin/cm-10.0
 	data = kmalloc(datasize , GFP_KERNEL);
 	if (data == NULL) {
 		dev_err(&st->us->dev, "memory alloc failed in ring bh");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	if (ring->scan_count) {
+=======
+	if (scan_count) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (st->variant->flags & ADIS16400_NO_BURST) {
 			ret = adis16350_spi_read_all(&indio_dev->dev, st->rx);
 			if (ret < 0)
 				goto err;
+<<<<<<< HEAD
 			for (; i < ring->scan_count; i++)
+=======
+			for (; i < scan_count; i++)
+>>>>>>> refs/remotes/origin/cm-10.0
 				data[i]	= *(s16 *)(st->rx + i*2);
 		} else {
 			ret = adis16400_spi_read_burst(&indio_dev->dev, st->rx);
 			if (ret < 0)
 				goto err;
+<<<<<<< HEAD
 			for (; i < indio_dev->ring->scan_count; i++) {
+=======
+			for (; i < scan_count; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				j = __ffs(mask);
 				mask &= ~(1 << j);
 				data[i] = be16_to_cpup(
@@ -155,7 +208,11 @@ static irqreturn_t adis16400_trigger_handler(int irq, void *p)
 	/* Guaranteed to be aligned with 8 byte boundary */
 	if (ring->scan_timestamp)
 		*((s64 *)(data + ((i + 3)/4)*4)) = pf->timestamp;
+<<<<<<< HEAD
 	ring->access->store_to(indio_dev->ring, (u8 *) data, pf->timestamp);
+=======
+	ring->access->store_to(indio_dev->buffer, (u8 *) data, pf->timestamp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	iio_trigger_notify_done(indio_dev->trig);
 
@@ -170,6 +227,7 @@ err:
 void adis16400_unconfigure_ring(struct iio_dev *indio_dev)
 {
 	iio_dealloc_pollfunc(indio_dev->pollfunc);
+<<<<<<< HEAD
 	iio_sw_rb_free(indio_dev->ring);
 }
 
@@ -177,19 +235,33 @@ static const struct iio_ring_setup_ops adis16400_ring_setup_ops = {
 	.preenable = &iio_sw_ring_preenable,
 	.postenable = &iio_triggered_ring_postenable,
 	.predisable = &iio_triggered_ring_predisable,
+=======
+	iio_sw_rb_free(indio_dev->buffer);
+}
+
+static const struct iio_buffer_setup_ops adis16400_ring_setup_ops = {
+	.preenable = &iio_sw_buffer_preenable,
+	.postenable = &iio_triggered_buffer_postenable,
+	.predisable = &iio_triggered_buffer_predisable,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int adis16400_configure_ring(struct iio_dev *indio_dev)
 {
 	int ret = 0;
+<<<<<<< HEAD
 	struct adis16400_state *st = iio_priv(indio_dev);
 	struct iio_ring_buffer *ring;
+=======
+	struct iio_buffer *ring;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ring = iio_sw_rb_allocate(indio_dev);
 	if (!ring) {
 		ret = -ENOMEM;
 		return ret;
 	}
+<<<<<<< HEAD
 	indio_dev->ring = ring;
 	/* Effectively select the ring buffer implementation */
 	ring->access = &ring_sw_access_funcs;
@@ -200,6 +272,11 @@ int adis16400_configure_ring(struct iio_dev *indio_dev)
 	/* Set default scan mode */
 	ring->scan_mask = st->variant->default_scan_mask;
 	ring->scan_count = hweight_long(st->variant->default_scan_mask);
+=======
+	indio_dev->buffer = ring;
+	ring->scan_timestamp = true;
+	indio_dev->setup_ops = &adis16400_ring_setup_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	indio_dev->pollfunc = iio_alloc_pollfunc(&iio_pollfunc_store_time,
 						 &adis16400_trigger_handler,
@@ -213,9 +290,16 @@ int adis16400_configure_ring(struct iio_dev *indio_dev)
 		goto error_iio_sw_rb_free;
 	}
 
+<<<<<<< HEAD
 	indio_dev->modes |= INDIO_RING_TRIGGERED;
 	return 0;
 error_iio_sw_rb_free:
 	iio_sw_rb_free(indio_dev->ring);
+=======
+	indio_dev->modes |= INDIO_BUFFER_TRIGGERED;
+	return 0;
+error_iio_sw_rb_free:
+	iio_sw_rb_free(indio_dev->buffer);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }

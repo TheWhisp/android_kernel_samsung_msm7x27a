@@ -153,8 +153,14 @@ static int mt2060_spurcheck(u32 lo1,u32 lo2,u32 if2)
 #define IF2  36150       // IF2 frequency = 36.150 MHz
 #define FREF 16000       // Quartz oscillator 16 MHz
 
+<<<<<<< HEAD
 static int mt2060_set_params(struct dvb_frontend *fe, struct dvb_frontend_parameters *params)
 {
+=======
+static int mt2060_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mt2060_priv *priv;
 	int ret=0;
 	int i=0;
@@ -176,8 +182,12 @@ static int mt2060_set_params(struct dvb_frontend *fe, struct dvb_frontend_parame
 
 	mt2060_writeregs(priv,b,2);
 
+<<<<<<< HEAD
 	freq = params->frequency / 1000; // Hz -> kHz
 	priv->bandwidth = (fe->ops.info.type == FE_OFDM) ? params->u.ofdm.bandwidth : 0;
+=======
+	freq = c->frequency / 1000; /* Hz -> kHz */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	f_lo1 = freq + if1 * 1000;
 	f_lo1 = (f_lo1 / 250) * 250;
@@ -293,10 +303,16 @@ static int mt2060_get_frequency(struct dvb_frontend *fe, u32 *frequency)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int mt2060_get_bandwidth(struct dvb_frontend *fe, u32 *bandwidth)
 {
 	struct mt2060_priv *priv = fe->tuner_priv;
 	*bandwidth = priv->bandwidth;
+=======
+static int mt2060_get_if_frequency(struct dvb_frontend *fe, u32 *frequency)
+{
+	*frequency = IF2 * 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -356,7 +372,11 @@ static const struct dvb_tuner_ops mt2060_tuner_ops = {
 
 	.set_params    = mt2060_set_params,
 	.get_frequency = mt2060_get_frequency,
+<<<<<<< HEAD
 	.get_bandwidth = mt2060_get_bandwidth
+=======
+	.get_if_frequency = mt2060_get_if_frequency,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* This functions tries to identify a MT2060 tuner by reading the PART/REV register. This is hasty. */

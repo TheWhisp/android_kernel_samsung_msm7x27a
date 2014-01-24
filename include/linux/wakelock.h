@@ -28,11 +28,25 @@
 
 enum {
 	WAKE_LOCK_SUSPEND, /* Prevent suspend */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	WAKE_LOCK_IDLE,    /* Prevent low power idle */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	WAKE_LOCK_TYPE_COUNT
 };
 
 struct wake_lock {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HAS_WAKELOCK
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_HAS_WAKELOCK
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct list_head    link;
 	int                 flags;
 	const char         *name;
@@ -48,6 +62,14 @@ struct wake_lock {
 		ktime_t         last_time;
 	} stat;
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 };
 
 #ifdef CONFIG_HAS_WAKELOCK

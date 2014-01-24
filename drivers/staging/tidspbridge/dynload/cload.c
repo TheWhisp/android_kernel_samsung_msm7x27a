@@ -14,6 +14,11 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "header.h"
 
 #include "module_list.h"
@@ -706,6 +711,10 @@ static void dload_symbols(struct dload_state *dlthis)
 	struct local_symbol *sp;
 	struct dynload_symbol *symp;
 	struct dynload_symbol *newsym;
+<<<<<<< HEAD
+=======
+	struct doff_syment_t *my_sym_buf;
+>>>>>>> refs/remotes/origin/master
 
 	sym_count = dlthis->dfile_hdr.df_no_syms;
 	if (sym_count == 0)
@@ -739,13 +748,25 @@ static void dload_symbols(struct dload_state *dlthis)
 	 become defined from the global symbol table */
 	checks = dlthis->verify.dv_sym_tab_checksum;
 	symbols_left = sym_count;
+<<<<<<< HEAD
+=======
+
+	my_sym_buf = kzalloc(sizeof(*my_sym_buf) * MY_SYM_BUF_SIZ, GFP_KERNEL);
+	if (!my_sym_buf)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	do {			/* read all symbols */
 		char *sname;
 		u32 val;
 		s32 delta;
 		struct doff_syment_t *input_sym;
 		unsigned syms_in_buf;
+<<<<<<< HEAD
 		struct doff_syment_t my_sym_buf[MY_SYM_BUF_SIZ];
+=======
+
+>>>>>>> refs/remotes/origin/master
 		input_sym = my_sym_buf;
 		syms_in_buf = symbols_left > MY_SYM_BUF_SIZ ?
 		    MY_SYM_BUF_SIZ : symbols_left;
@@ -753,7 +774,11 @@ static void dload_symbols(struct dload_state *dlthis)
 		if (dlthis->strm->read_buffer(dlthis->strm, input_sym, siz) !=
 		    siz) {
 			DL_ERROR(readstrm, sym_errid);
+<<<<<<< HEAD
 			return;
+=======
+			goto free_sym_buf;
+>>>>>>> refs/remotes/origin/master
 		}
 		if (dlthis->reorder_map)
 			dload_reorder(input_sym, siz, dlthis->reorder_map);
@@ -856,7 +881,11 @@ static void dload_symbols(struct dload_state *dlthis)
 					DL_ERROR("Absolute symbol %s is "
 						 "defined multiple times with "
 						 "different values", sname);
+<<<<<<< HEAD
 					return;
+=======
+					goto free_sym_buf;
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 loop_itr:
@@ -887,6 +916,12 @@ loop_cont:
 	if (~checks)
 		dload_error(dlthis, "Checksum of symbols failed");
 
+<<<<<<< HEAD
+=======
+free_sym_buf:
+	kfree(my_sym_buf);
+	return;
+>>>>>>> refs/remotes/origin/master
 }				/* dload_symbols */
 
 /*****************************************************************************
@@ -1116,6 +1151,14 @@ static int relocate_packet(struct dload_state *dlthis,
 /* VERY dangerous */
 static const char imagepak[] = { "image packet" };
 
+<<<<<<< HEAD
+=======
+struct img_buffer {
+	struct image_packet_t ipacket;
+	u8 bufr[BYTE_TO_HOST(IMAGE_PACKET_SIZE)];
+};
+
+>>>>>>> refs/remotes/origin/master
 /*************************************************************************
  * Procedure dload_data
  *
@@ -1131,6 +1174,7 @@ static void dload_data(struct dload_state *dlthis)
 	u16 curr_sect;
 	struct doff_scnhdr_t *sptr = dlthis->sect_hdrs;
 	struct ldr_section_info *lptr = dlthis->ldr_sections;
+<<<<<<< HEAD
 	u8 *dest;
 
 	struct {
@@ -1141,6 +1185,18 @@ static void dload_data(struct dload_state *dlthis)
 	/* Indicates whether CINIT processing has occurred */
 	bool cinit_processed = false;
 
+=======
+	struct img_buffer *ibuf;
+	u8 *dest;
+
+	/* Indicates whether CINIT processing has occurred */
+	bool cinit_processed = false;
+
+	ibuf = kzalloc(sizeof(*ibuf), GFP_KERNEL);
+	if (!ibuf)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	/* Loop through the sections and load them one at a time.
 	 */
 	for (curr_sect = 0; curr_sect < dlthis->dfile_hdr.df_no_scns;
@@ -1168,6 +1224,7 @@ static void dload_data(struct dload_state *dlthis)
 
 				/* get the fixed header bits */
 				if (dlthis->strm->read_buffer(dlthis->strm,
+<<<<<<< HEAD
 							      &ibuf.ipacket,
 							      IPH_SIZE) !=
 				    IPH_SIZE) {
@@ -1177,11 +1234,23 @@ static void dload_data(struct dload_state *dlthis)
 				/* reorder the header if need be */
 				if (dlthis->reorder_map) {
 					dload_reorder(&ibuf.ipacket, IPH_SIZE,
+=======
+							      &ibuf->ipacket,
+							      IPH_SIZE) !=
+				    IPH_SIZE) {
+					DL_ERROR(readstrm, imagepak);
+					goto free_ibuf;
+				}
+				/* reorder the header if need be */
+				if (dlthis->reorder_map) {
+					dload_reorder(&ibuf->ipacket, IPH_SIZE,
+>>>>>>> refs/remotes/origin/master
 						      dlthis->reorder_map);
 				}
 				/* now read the rest of the packet */
 				ipsize =
 				    BYTE_TO_HOST(DOFF_ALIGN
+<<<<<<< HEAD
 						 (ibuf.ipacket.packet_size));
 				if (ipsize > BYTE_TO_HOST(IMAGE_PACKET_SIZE)) {
 					DL_ERROR("Bad image packet size %d",
@@ -1199,6 +1268,25 @@ static void dload_data(struct dload_state *dlthis)
 					return;
 				}
 				ibuf.ipacket.img_data = dest;
+=======
+						 (ibuf->ipacket.packet_size));
+				if (ipsize > BYTE_TO_HOST(IMAGE_PACKET_SIZE)) {
+					DL_ERROR("Bad image packet size %d",
+						 ipsize);
+					goto free_ibuf;
+				}
+				dest = ibuf->bufr;
+				/* End of determination */
+
+				if (dlthis->strm->read_buffer(dlthis->strm,
+							      ibuf->bufr,
+							      ipsize) !=
+				    ipsize) {
+					DL_ERROR(readstrm, imagepak);
+					goto free_ibuf;
+				}
+				ibuf->ipacket.img_data = dest;
+>>>>>>> refs/remotes/origin/master
 
 				/* reorder the bytes if need be */
 #if !defined(_BIG_ENDIAN) || (TARGET_AU_BITS > 16)
@@ -1225,6 +1313,7 @@ static void dload_data(struct dload_state *dlthis)
 #endif
 #endif
 
+<<<<<<< HEAD
 				checks += dload_checksum(&ibuf.ipacket,
 							 IPH_SIZE);
 				/* relocate the image bits as needed */
@@ -1235,6 +1324,18 @@ static void dload_data(struct dload_state *dlthis)
 							     &checks,
 							     &tramp_generated))
 						return;	/* serious error */
+=======
+				checks += dload_checksum(&ibuf->ipacket,
+							 IPH_SIZE);
+				/* relocate the image bits as needed */
+				if (ibuf->ipacket.num_relocs) {
+					dlthis->image_offset = image_offset;
+					if (!relocate_packet(dlthis,
+							     &ibuf->ipacket,
+							     &checks,
+							     &tramp_generated))
+						goto free_ibuf;	/* error */
+>>>>>>> refs/remotes/origin/master
 				}
 				if (~checks)
 					DL_ERROR(err_checksum, imagepak);
@@ -1249,20 +1350,32 @@ static void dload_data(struct dload_state *dlthis)
 					if (dload_check_type(sptr,
 						DLOAD_CINIT)) {
 						cload_cinit(dlthis,
+<<<<<<< HEAD
 							    &ibuf.ipacket);
+=======
+							    &ibuf->ipacket);
+>>>>>>> refs/remotes/origin/master
 						cinit_processed = true;
 					} else {
 						/* FIXME */
 						if (!dlthis->myio->
 						    writemem(dlthis->
 							myio,
+<<<<<<< HEAD
 							ibuf.bufr,
+=======
+							ibuf->bufr,
+>>>>>>> refs/remotes/origin/master
 							lptr->
 							load_addr +
 							image_offset,
 							lptr,
 							BYTE_TO_HOST
+<<<<<<< HEAD
 							(ibuf.
+=======
+							(ibuf->
+>>>>>>> refs/remotes/origin/master
 							ipacket.
 							packet_size))) {
 							DL_ERROR
@@ -1276,7 +1389,11 @@ static void dload_data(struct dload_state *dlthis)
 					}
 				}
 				image_offset +=
+<<<<<<< HEAD
 				    BYTE_TO_TADDR(ibuf.ipacket.packet_size);
+=======
+				    BYTE_TO_TADDR(ibuf->ipacket.packet_size);
+>>>>>>> refs/remotes/origin/master
 			}	/* process packets */
 			/* if this is a BSS section, we may want to fill it */
 			if (!dload_check_type(sptr, DLOAD_BSS))
@@ -1334,6 +1451,12 @@ loop_cont:
 		DL_ERROR("Finalization of auto-trampolines (size = " FMT_UI32
 			 ") failed", dlthis->tramp.tramp_sect_next_addr);
 	}
+<<<<<<< HEAD
+=======
+free_ibuf:
+	kfree(ibuf);
+	return;
+>>>>>>> refs/remotes/origin/master
 }				/* dload_data */
 
 /*************************************************************************

@@ -750,7 +750,15 @@ static int stir_transmit_thread(void *arg)
 
 			write_reg(stir, REG_CTRL1, CTRL1_TXPWD|CTRL1_RXPWD);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			refrigerator();
+=======
+			try_to_freeze();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			try_to_freeze();
+>>>>>>> refs/remotes/origin/master
 
 			if (change_speed(stir, stir->speed))
 				break;
@@ -904,7 +912,11 @@ static int stir_net_open(struct net_device *netdev)
 	sprintf(hwname, "usb#%d", stir->usbdev->devnum);
 	stir->irlap = irlap_open(netdev, &stir->qos, hwname);
 	if (!stir->irlap) {
+<<<<<<< HEAD
 		err("stir4200: irlap_open failed");
+=======
+		dev_err(&stir->usbdev->dev, "irlap_open failed\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_out5;
 	}
 
@@ -913,7 +925,11 @@ static int stir_net_open(struct net_device *netdev)
 				   "%s", stir->netdev->name);
         if (IS_ERR(stir->thread)) {
                 err = PTR_ERR(stir->thread);
+<<<<<<< HEAD
 		err("stir4200: unable to start kernel thread");
+=======
+		dev_err(&stir->usbdev->dev, "unable to start kernel thread\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_out6;
 	}
 
@@ -1042,7 +1058,11 @@ static int stir_probe(struct usb_interface *intf,
 
 	ret = usb_reset_configuration(dev);
 	if (ret != 0) {
+<<<<<<< HEAD
 		err("stir4200: usb reset configuration failed");
+=======
+		dev_err(&intf->dev, "usb reset configuration failed\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_out2;
 	}
 
@@ -1133,6 +1153,8 @@ static struct usb_driver irda_driver = {
 #endif
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Module insertion
  */
@@ -1151,3 +1173,9 @@ static void __exit stir_cleanup(void)
 	usb_deregister(&irda_driver);
 }
 module_exit(stir_cleanup);
+=======
+module_usb_driver(irda_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(irda_driver);
+>>>>>>> refs/remotes/origin/master

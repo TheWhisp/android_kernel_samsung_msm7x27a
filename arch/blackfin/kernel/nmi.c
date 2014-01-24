@@ -18,7 +18,15 @@
 #include <linux/smp.h>
 #include <linux/timer.h>
 #include <asm/blackfin.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/cacheflush.h>
 #include <asm/bfin_watchdog.h>
 

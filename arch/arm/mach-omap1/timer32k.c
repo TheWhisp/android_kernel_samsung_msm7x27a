@@ -46,15 +46,39 @@
 #include <linux/clockchips.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/leds.h>
 #include <asm/irq.h>
 #include <asm/mach/irq.h>
 #include <asm/mach/time.h>
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/dmtimer.h>
 
+=======
+
+#include <plat/dmtimer.h>
+=======
+#include <asm/irq.h>
+#include <asm/mach/irq.h>
+#include <asm/mach/time.h>
+
+#include <plat/counter-32k.h>
+>>>>>>> refs/remotes/origin/master
+
+#include <mach/hardware.h>
+
+#include "common.h"
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ---------------------------------------------------------------------------
  * 32KHz OS timer
@@ -69,6 +93,10 @@
 
 /* 16xx specific defines */
 #define OMAP1_32K_TIMER_BASE		0xfffb9000
+<<<<<<< HEAD
+=======
+#define OMAP1_32KSYNC_TIMER_BASE	0xfffbc400
+>>>>>>> refs/remotes/origin/master
 #define OMAP1_32K_TIMER_CR		0x08
 #define OMAP1_32K_TIMER_TVR		0x00
 #define OMAP1_32K_TIMER_TCR		0x04
@@ -138,7 +166,10 @@ static void omap_32k_timer_set_mode(enum clock_event_mode mode,
 static struct clock_event_device clockevent_32k_timer = {
 	.name		= "32k-timer",
 	.features       = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
+<<<<<<< HEAD
 	.shift		= 32,
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_next_event	= omap_32k_timer_set_next_event,
 	.set_mode	= omap_32k_timer_set_mode,
 };
@@ -155,7 +186,11 @@ static irqreturn_t omap_32k_timer_interrupt(int irq, void *dev_id)
 
 static struct irqaction omap_32k_timer_irq = {
 	.name		= "32KHz timer",
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL,
+=======
+	.flags		= IRQF_TIMER | IRQF_IRQPOLL,
+>>>>>>> refs/remotes/origin/master
 	.handler	= omap_32k_timer_interrupt,
 };
 
@@ -163,6 +198,7 @@ static __init void omap_init_32k_timer(void)
 {
 	setup_irq(INT_OS_TIMER, &omap_32k_timer_irq);
 
+<<<<<<< HEAD
 	clockevent_32k_timer.mult = div_sc(OMAP_32K_TICKS_PER_SEC,
 					   NSEC_PER_SEC,
 					   clockevent_32k_timer.shift);
@@ -173,6 +209,11 @@ static __init void omap_init_32k_timer(void)
 
 	clockevent_32k_timer.cpumask = cpumask_of(0);
 	clockevents_register_device(&clockevent_32k_timer);
+=======
+	clockevent_32k_timer.cpumask = cpumask_of(0);
+	clockevents_config_and_register(&clockevent_32k_timer,
+					OMAP_32K_TICKS_PER_SEC, 1, 0xfffffffe);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -180,14 +221,45 @@ static __init void omap_init_32k_timer(void)
  * Timer initialization
  * ---------------------------------------------------------------------------
  */
+<<<<<<< HEAD
 bool __init omap_32k_timer_init(void)
 {
 	omap_init_clocksource_32k();
+<<<<<<< HEAD
 
 #ifdef CONFIG_OMAP_DM_TIMER
 	omap_dm_timer_init();
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap_init_32k_timer();
 
 	return true;
+=======
+int __init omap_32k_timer_init(void)
+{
+	int ret = -ENODEV;
+
+	if (cpu_is_omap16xx()) {
+		void __iomem *base;
+		struct clk *sync32k_ick;
+
+		base = ioremap(OMAP1_32KSYNC_TIMER_BASE, SZ_1K);
+		if (!base) {
+			pr_err("32k_counter: failed to map base addr\n");
+			return -ENODEV;
+		}
+
+		sync32k_ick = clk_get(NULL, "omap_32ksync_ick");
+		if (!IS_ERR(sync32k_ick))
+			clk_enable(sync32k_ick);
+
+		ret = omap_init_clocksource_32k(base);
+	}
+
+	if (!ret)
+		omap_init_32k_timer();
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }

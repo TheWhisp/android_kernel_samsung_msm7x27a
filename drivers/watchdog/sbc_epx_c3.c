@@ -13,6 +13,16 @@
  *	based on softdog.c by Alan Cox <alan@lxorguk.ukuu.org.uk>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -28,13 +38,29 @@
 #include <linux/uaccess.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX "epx_c3: "
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int epx_c3_alive;
 
 #define WATCHDOG_TIMEOUT 1		/* 1 sec default timeout */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 					__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -51,7 +77,15 @@ static void epx_c3_stop(void)
 
 	outb(0, EPXC3_WATCHDOG_CTL_REG);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Stopped watchdog timer.\n");
+=======
+	pr_info("Stopped watchdog timer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Stopped watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void epx_c3_pet(void)
@@ -75,7 +109,15 @@ static int epx_c3_open(struct inode *inode, struct file *file)
 	epx_c3_pet();
 
 	epx_c3_alive = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Started watchdog timer.\n");
+=======
+	pr_info("Started watchdog timer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Started watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 
 	return nonseekable_open(inode, file);
 }
@@ -173,9 +215,15 @@ static struct notifier_block epx_c3_notifier = {
 	.notifier_call = epx_c3_notify_sys,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const char banner[] __initdata = KERN_INFO PFX
 	"Hardware Watchdog Timer for Winsystems EPX-C3 SBC: 0.1\n";
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init watchdog_init(void)
 {
 	int ret;
@@ -185,20 +233,46 @@ static int __init watchdog_init(void)
 
 	ret = register_reboot_notifier(&epx_c3_notifier);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "cannot register reboot notifier "
 			"(err=%d)\n", ret);
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	ret = misc_register(&epx_c3_miscdev);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "cannot register miscdev on minor=%d "
 			"(err=%d)\n", WATCHDOG_MINOR, ret);
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+>>>>>>> refs/remotes/origin/master
 		unregister_reboot_notifier(&epx_c3_notifier);
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(banner);
+=======
+	pr_info("Hardware Watchdog Timer for Winsystems EPX-C3 SBC: 0.1\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Hardware Watchdog Timer for Winsystems EPX-C3 SBC: 0.1\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -223,4 +297,7 @@ MODULE_DESCRIPTION("Hardware Watchdog Device for Winsystems EPX-C3 SBC.  "
 	"so only use it if you are *sure* you are running on this specific "
 	"SBC system from Winsystems!  It writes to IO ports 0x1ee and 0x1ef!");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

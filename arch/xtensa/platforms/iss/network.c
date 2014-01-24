@@ -101,6 +101,7 @@ struct iss_net_private {
 
 };
 
+<<<<<<< HEAD
 /* ======================= ISS SIMCALL INTERFACE =========================== */
 
 /* Note: __simc must _not_ be declared inline! */
@@ -150,6 +151,8 @@ static int inline simc_poll(int fd)
 	return __simc(SYS_select_one, fd, XTISS_SELECT_ONE_READ, (int)&tv,0,0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* ================================ HELPERS ================================ */
 
 
@@ -633,7 +636,15 @@ static const struct net_device_ops iss_netdev_ops = {
 	.ndo_set_mac_address	= iss_net_set_mac,
 	//.ndo_do_ioctl		= iss_net_ioctl,
 	.ndo_tx_timeout		= iss_net_tx_timeout,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list = iss_net_set_multicast_list,
+=======
+	.ndo_set_rx_mode	= iss_net_set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= iss_net_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int iss_net_configure(int index, char *init)
@@ -749,7 +760,11 @@ struct iss_net_init {
 
 #define ERR KERN_ERR "iss_net_setup: "
 
+<<<<<<< HEAD
 static int iss_net_setup(char *str)
+=======
+static int __init iss_net_setup(char *str)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iss_net_private *device = NULL;
 	struct iss_net_init *new;
@@ -786,7 +801,12 @@ static int iss_net_setup(char *str)
 		return 1;
 	}
 
+<<<<<<< HEAD
 	if ((new = alloc_bootmem(sizeof new)) == NULL) {
+=======
+	new = alloc_bootmem(sizeof(*new));
+	if (new == NULL) {
+>>>>>>> refs/remotes/origin/master
 		printk("Alloc_bootmem failed\n");
 		return 1;
 	}

@@ -127,8 +127,15 @@ void clk_pxa3xx_cken_enable(struct clk *clk)
 
 	if (clk->cken < 32)
 		CKENA |= mask;
+<<<<<<< HEAD
 	else
 		CKENB |= mask;
+=======
+	else if (clk->cken < 64)
+		CKENB |= mask;
+	else
+		CKENC |= mask;
+>>>>>>> refs/remotes/origin/master
 }
 
 void clk_pxa3xx_cken_disable(struct clk *clk)
@@ -137,8 +144,15 @@ void clk_pxa3xx_cken_disable(struct clk *clk)
 
 	if (clk->cken < 32)
 		CKENA &= ~mask;
+<<<<<<< HEAD
 	else
 		CKENB &= ~mask;
+=======
+	else if (clk->cken < 64)
+		CKENB &= ~mask;
+	else
+		CKENC &= ~mask;
+>>>>>>> refs/remotes/origin/master
 }
 
 const struct clkops clk_pxa3xx_cken_ops = {

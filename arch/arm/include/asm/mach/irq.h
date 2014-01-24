@@ -17,6 +17,7 @@ struct seq_file;
 /*
  * This is internal.  Do not use it.
  */
+<<<<<<< HEAD
 extern void init_FIQ(void);
 extern int show_fiq_list(struct seq_file *, int);
 
@@ -24,6 +25,11 @@ extern int show_fiq_list(struct seq_file *, int);
 extern void (*handle_arch_irq)(struct pt_regs *);
 #endif
 
+=======
+extern void init_FIQ(int);
+extern int show_fiq_list(struct seq_file *, int);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This is for easy migration, but should be changed in the source
  */
@@ -34,6 +40,7 @@ do {							\
 	raw_spin_unlock(&desc->lock);			\
 } while(0)
 
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
 /*
  * Entry/exit functions for chained handlers where the primary IRQ chip
@@ -65,4 +72,6 @@ static inline void chained_irq_exit(struct irq_chip *chip,
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

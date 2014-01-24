@@ -4,7 +4,18 @@
 #define tlb_start_vma(tlb, vma) do { } while (0)
 #define tlb_end_vma(tlb, vma) do { } while (0)
 #define __tlb_remove_tlb_entry(tlb, ptep, address) do { } while (0)
+<<<<<<< HEAD
 #define tlb_flush(tlb) flush_tlb_mm((tlb)->mm)
+=======
+
+#define tlb_flush(tlb)							\
+{									\
+	if (!tlb->fullmm && !tlb->need_flush_all) 			\
+		flush_tlb_mm_range(tlb->mm, tlb->start, tlb->end, 0UL);	\
+	else								\
+		flush_tlb_mm_range(tlb->mm, 0UL, TLB_FLUSH_ALL, 0UL);	\
+}
+>>>>>>> refs/remotes/origin/master
 
 #include <asm-generic/tlb.h>
 

@@ -16,7 +16,17 @@
 
 #include <net/netlabel.h>
 
+<<<<<<< HEAD
 #define EBITMAP_UNIT_NUMS	((32 - sizeof(void *) - sizeof(u32))	\
+=======
+#ifdef CONFIG_64BIT
+#define	EBITMAP_NODE_SIZE	64
+#else
+#define	EBITMAP_NODE_SIZE	32
+#endif
+
+#define EBITMAP_UNIT_NUMS	((EBITMAP_NODE_SIZE-sizeof(void *)-sizeof(u32))\
+>>>>>>> refs/remotes/origin/master
 					/ sizeof(unsigned long))
 #define EBITMAP_UNIT_SIZE	BITS_PER_LONG
 #define EBITMAP_SIZE		(EBITMAP_UNIT_NUMS * EBITMAP_UNIT_SIZE)
@@ -117,7 +127,11 @@ static inline void ebitmap_node_clr_bit(struct ebitmap_node *n,
 
 int ebitmap_cmp(struct ebitmap *e1, struct ebitmap *e2);
 int ebitmap_cpy(struct ebitmap *dst, struct ebitmap *src);
+<<<<<<< HEAD
 int ebitmap_contains(struct ebitmap *e1, struct ebitmap *e2);
+=======
+int ebitmap_contains(struct ebitmap *e1, struct ebitmap *e2, u32 last_e2bit);
+>>>>>>> refs/remotes/origin/master
 int ebitmap_get_bit(struct ebitmap *e, unsigned long bit);
 int ebitmap_set_bit(struct ebitmap *e, unsigned long bit, int value);
 void ebitmap_destroy(struct ebitmap *e);

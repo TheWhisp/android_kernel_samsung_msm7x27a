@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +72,11 @@ acpi_ds_build_internal_object(struct acpi_walk_state *walk_state,
  * FUNCTION:    acpi_ds_build_internal_object
  *
  * PARAMETERS:  walk_state      - Current walk state
+<<<<<<< HEAD
  *              Op              - Parser object to be translated
+=======
+ *              op              - Parser object to be translated
+>>>>>>> refs/remotes/origin/master
  *              obj_desc_ptr    - Where the ACPI internal object is returned
  *
  * RETURN:      Status
@@ -240,7 +252,11 @@ acpi_ds_build_internal_object(struct acpi_walk_state *walk_state,
 		return_ACPI_STATUS(status);
 	}
 
+<<<<<<< HEAD
       exit:
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	*obj_desc_ptr = obj_desc;
 	return_ACPI_STATUS(status);
 }
@@ -250,7 +266,11 @@ acpi_ds_build_internal_object(struct acpi_walk_state *walk_state,
  * FUNCTION:    acpi_ds_build_internal_buffer_obj
  *
  * PARAMETERS:  walk_state      - Current walk state
+<<<<<<< HEAD
  *              Op              - Parser object to be translated
+=======
+ *              op              - Parser object to be translated
+>>>>>>> refs/remotes/origin/master
  *              buffer_length   - Length of the buffer
  *              obj_desc_ptr    - Where the ACPI internal object is returned
  *
@@ -293,7 +313,11 @@ acpi_ds_build_internal_buffer_obj(struct acpi_walk_state *walk_state,
 
 	/*
 	 * Second arg is the buffer data (optional) byte_list can be either
+<<<<<<< HEAD
 	 * individual bytes or a string initializer.  In either case, a
+=======
+	 * individual bytes or a string initializer. In either case, a
+>>>>>>> refs/remotes/origin/master
 	 * byte_list appears in the AML.
 	 */
 	arg = op->common.value.arg;	/* skip first arg */
@@ -354,7 +378,11 @@ acpi_ds_build_internal_buffer_obj(struct acpi_walk_state *walk_state,
  * FUNCTION:    acpi_ds_build_internal_package_obj
  *
  * PARAMETERS:  walk_state      - Current walk state
+<<<<<<< HEAD
  *              Op              - Parser object to be translated
+=======
+ *              op              - Parser object to be translated
+>>>>>>> refs/remotes/origin/master
  *              element_count   - Number of elements in the package - this is
  *                                the num_elements argument to Package()
  *              obj_desc_ptr    - Where the ACPI internal object is returned
@@ -388,7 +416,11 @@ acpi_ds_build_internal_package_obj(struct acpi_walk_state *walk_state,
 	union acpi_parse_object *parent;
 	union acpi_operand_object *obj_desc = NULL;
 	acpi_status status = AE_OK;
+<<<<<<< HEAD
 	unsigned i;
+=======
+	u32 i;
+>>>>>>> refs/remotes/origin/master
 	u16 index;
 	u16 reference_count;
 
@@ -525,7 +557,11 @@ acpi_ds_build_internal_package_obj(struct acpi_walk_state *walk_state,
 		}
 
 		ACPI_INFO((AE_INFO,
+<<<<<<< HEAD
 			   "Actual Package length (%u) is larger than NumElements field (%u), truncated\n",
+=======
+			   "Actual Package length (%u) is larger than NumElements field (%u), truncated",
+>>>>>>> refs/remotes/origin/master
 			   i, element_count));
 	} else if (i < element_count) {
 		/*
@@ -547,8 +583,13 @@ acpi_ds_build_internal_package_obj(struct acpi_walk_state *walk_state,
  * FUNCTION:    acpi_ds_create_node
  *
  * PARAMETERS:  walk_state      - Current walk state
+<<<<<<< HEAD
  *              Node            - NS Node to be initialized
  *              Op              - Parser object to be translated
+=======
+ *              node            - NS Node to be initialized
+ *              op              - Parser object to be translated
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -568,7 +609,11 @@ acpi_ds_create_node(struct acpi_walk_state *walk_state,
 
 	/*
 	 * Because of the execution pass through the non-control-method
+<<<<<<< HEAD
 	 * parts of the table, we can arrive here twice.  Only init
+=======
+	 * parts of the table, we can arrive here twice. Only init
+>>>>>>> refs/remotes/origin/master
 	 * the named object node the first time through
 	 */
 	if (acpi_ns_get_attached_object(node)) {
@@ -611,14 +656,23 @@ acpi_ds_create_node(struct acpi_walk_state *walk_state,
  * FUNCTION:    acpi_ds_init_object_from_op
  *
  * PARAMETERS:  walk_state      - Current walk state
+<<<<<<< HEAD
  *              Op              - Parser op used to init the internal object
  *              Opcode          - AML opcode associated with the object
+=======
+ *              op              - Parser op used to init the internal object
+ *              opcode          - AML opcode associated with the object
+>>>>>>> refs/remotes/origin/master
  *              ret_obj_desc    - Namespace object to be initialized
  *
  * RETURN:      Status
  *
  * DESCRIPTION: Initialize a namespace object from a parser Op and its
+<<<<<<< HEAD
  *              associated arguments.  The namespace object is a more compact
+=======
+ *              associated arguments. The namespace object is a more compact
+>>>>>>> refs/remotes/origin/master
  *              representation of the Op and its arguments.
  *
  ******************************************************************************/
@@ -648,7 +702,10 @@ acpi_ds_init_object_from_op(struct acpi_walk_state *walk_state,
 
 	switch (obj_desc->common.type) {
 	case ACPI_TYPE_BUFFER:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Defer evaluation of Buffer term_arg operand
 		 */
@@ -660,7 +717,10 @@ acpi_ds_init_object_from_op(struct acpi_walk_state *walk_state,
 		break;
 
 	case ACPI_TYPE_PACKAGE:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Defer evaluation of Package term_arg operand
 		 */
@@ -703,7 +763,11 @@ acpi_ds_init_object_from_op(struct acpi_walk_state *walk_state,
 				/* Truncate value if we are executing from a 32-bit ACPI table */
 
 #ifndef ACPI_NO_METHOD_EXECUTION
+<<<<<<< HEAD
 				acpi_ex_truncate_for32bit_table(obj_desc);
+=======
+				(void)acpi_ex_truncate_for32bit_table(obj_desc);
+>>>>>>> refs/remotes/origin/master
 #endif
 				break;
 
@@ -725,12 +789,31 @@ acpi_ds_init_object_from_op(struct acpi_walk_state *walk_state,
 		case AML_TYPE_LITERAL:
 
 			obj_desc->integer.value = op->common.value.integer;
+<<<<<<< HEAD
 #ifndef ACPI_NO_METHOD_EXECUTION
 			acpi_ex_truncate_for32bit_table(obj_desc);
+=======
+
+#ifndef ACPI_NO_METHOD_EXECUTION
+			if (acpi_ex_truncate_for32bit_table(obj_desc)) {
+
+				/* Warn if we found a 64-bit constant in a 32-bit table */
+
+				ACPI_WARNING((AE_INFO,
+					      "Truncated 64-bit constant found in 32-bit table: %8.8X%8.8X => %8.8X",
+					      ACPI_FORMAT_UINT64(op->common.
+								 value.integer),
+					      (u32)obj_desc->integer.value));
+			}
+>>>>>>> refs/remotes/origin/master
 #endif
 			break;
 
 		default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			ACPI_ERROR((AE_INFO, "Unknown Integer type 0x%X",
 				    op_info->type));
 			status = AE_AML_OPERAND_TYPE;

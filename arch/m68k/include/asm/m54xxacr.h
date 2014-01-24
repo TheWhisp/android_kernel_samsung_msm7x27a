@@ -39,8 +39,23 @@
 #define ACR_CM_OFF_PRE	0x00000040	/* No cache, precise */
 #define ACR_CM_OFF_IMP	0x00000060	/* No cache, imprecise */
 #define ACR_CM		0x00000060	/* Cache mode mask */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define ACR_WPROTECT	0x00000004	/* Write protect */
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define ACR_SP		0x00000008	/* Supervisor protect */
+#define ACR_WPROTECT	0x00000004	/* Write protect */
+
+#define ACR_BA(x)	((x) & 0xff000000)
+#define ACR_ADMSK(x)	((((x) - 1) & 0xff000000) >> 8)
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_M5407)
 
 #define ICACHE_SIZE 0x4000	/* instruction - 16k */
@@ -51,11 +66,32 @@
 #define ICACHE_SIZE 0x8000	/* instruction - 32k */
 #define DCACHE_SIZE 0x8000	/* data - 32k */
 
+<<<<<<< HEAD
+=======
+#elif defined(CONFIG_M5441x)
+
+#define ICACHE_SIZE 0x2000	/* instruction - 8k */
+#define DCACHE_SIZE 0x2000	/* data - 8k */
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define CACHE_LINE_SIZE 0x0010	/* 16 bytes */
 #define CACHE_WAYS 4		/* 4 ways */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define ICACHE_SET_MASK	((ICACHE_SIZE / 64 - 1) << CACHE_WAYS)
+#define DCACHE_SET_MASK	((DCACHE_SIZE / 64 - 1) << CACHE_WAYS)
+#define ICACHE_MAX_ADDR	ICACHE_SET_MASK
+#define DCACHE_MAX_ADDR	DCACHE_SET_MASK
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	Version 4 cores have a true harvard style separate instruction
  *	and data cache. Enable data and instruction caches, also enable write
@@ -73,6 +109,46 @@
 #else
 #define CACHE_MODE (CACR_DEC+CACR_DESB+CACR_DDCM_P+CACR_BEC+CACR_IEC+CACR_EUSP)
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define CACHE_INIT (CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
+
+#if defined(CONFIG_MMU)
+/*
+ *	If running with the MMU enabled then we need to map the internal
+ *	register region as non-cacheable. And then we map all our RAM as
+ *	cacheable and supervisor access only.
+ */
+#define ACR0_MODE	(ACR_BA(CONFIG_MBAR)+ACR_ADMSK(0x1000000)+ \
+			 ACR_ENABLE+ACR_SUPER+ACR_CM_OFF_PRE+ACR_SP)
+<<<<<<< HEAD
+#define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
+			 ACR_ENABLE+ACR_SUPER+ACR_SP)
+=======
+#if defined(CONFIG_CACHE_COPYBACK)
+#define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
+			 ACR_ENABLE+ACR_SUPER+ACR_SP+ACR_CM_CP)
+#else
+#define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
+			 ACR_ENABLE+ACR_SUPER+ACR_SP+ACR_CM_WT)
+#endif
+>>>>>>> refs/remotes/origin/master
+#define ACR2_MODE	0
+#define ACR3_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
+			 ACR_ENABLE+ACR_SUPER+ACR_SP)
+
+#else
+
+/*
+ *	For the non-MMU enabled case we map all of RAM as cacheable.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_CACHE_COPYBACK)
 #define DATA_CACHE_MODE (ACR_ENABLE+ACR_ANY+ACR_CM_CP)
 #else
@@ -80,7 +156,13 @@
 #endif
 #define INSN_CACHE_MODE (ACR_ENABLE+ACR_ANY)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define CACHE_INIT	(CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CACHE_INVALIDATE  (CACHE_MODE+CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
 #define CACHE_INVALIDATEI (CACHE_MODE+CACR_BCINVA+CACR_ICINVA)
 #define CACHE_INVALIDATED (CACHE_MODE+CACR_DCINVA)
@@ -94,4 +176,12 @@
 #define	CACHE_PUSH
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif /* CONFIG_MMU */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_MMU */
+>>>>>>> refs/remotes/origin/master
 #endif	/* m54xxacr_h */

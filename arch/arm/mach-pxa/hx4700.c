@@ -22,13 +22,29 @@
 #include <linux/gpio.h>
 #include <linux/gpio_keys.h>
 #include <linux/input.h>
+<<<<<<< HEAD
+=======
+#include <linux/input/navpoint.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/lcd.h>
 #include <linux/mfd/htc-egpio.h>
 #include <linux/mfd/asic3.h>
 #include <linux/mtd/physmap.h>
 #include <linux/pda_power.h>
+<<<<<<< HEAD
 #include <linux/pwm_backlight.h>
+<<<<<<< HEAD
 #include <linux/regulator/bq24022.h>
+=======
+#include <linux/regulator/driver.h>
+#include <linux/regulator/gpio-regulator.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pwm.h>
+#include <linux/pwm_backlight.h>
+#include <linux/regulator/driver.h>
+#include <linux/regulator/gpio-regulator.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/regulator/machine.h>
 #include <linux/regulator/max1586.h>
 #include <linux/spi/ads7846.h>
@@ -43,8 +59,18 @@
 
 #include <mach/pxa27x.h>
 #include <mach/hx4700.h>
+<<<<<<< HEAD
 #include <mach/irda.h>
 
+<<<<<<< HEAD
+=======
+#include <sound/ak4641.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/irda-pxaficp.h>
+
+#include <sound/ak4641.h>
+>>>>>>> refs/remotes/origin/master
 #include <video/platform_lcd.h>
 #include <video/w100fb.h>
 
@@ -96,9 +122,25 @@ static unsigned long hx4700_pin_config[] __initdata = {
 
 	/* BTUART */
 	GPIO42_BTUART_RXD,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	GPIO43_BTUART_TXD,
 	GPIO44_BTUART_CTS,
 	GPIO45_BTUART_RTS,
+=======
+	GPIO43_BTUART_TXD_LPM_LOW,
+	GPIO44_BTUART_CTS,
+	GPIO45_BTUART_RTS_LPM_LOW,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	GPIO43_BTUART_TXD_LPM_LOW,
+	GPIO44_BTUART_CTS,
+	GPIO45_BTUART_RTS_LPM_LOW,
+
+	/* STUART (IRDA) */
+	GPIO46_STUART_RXD,
+	GPIO47_STUART_TXD,
+>>>>>>> refs/remotes/origin/master
 
 	/* PWM 1 (Backlight) */
 	GPIO17_PWM1_OUT,
@@ -111,7 +153,11 @@ static unsigned long hx4700_pin_config[] __initdata = {
 	GPIO113_I2S_SYSCLK,
 
 	/* SSP 1 (NavPoint) */
+<<<<<<< HEAD
 	GPIO23_SSP1_SCLK,
+=======
+	GPIO23_SSP1_SCLK_IN,
+>>>>>>> refs/remotes/origin/master
 	GPIO24_SSP1_SFRM,
 	GPIO25_SSP1_TXD,
 	GPIO26_SSP1_RXD,
@@ -120,6 +166,7 @@ static unsigned long hx4700_pin_config[] __initdata = {
 	GPIO19_SSP2_SCLK,
 	GPIO86_SSP2_RXD,
 	GPIO87_SSP2_TXD,
+<<<<<<< HEAD
 	GPIO88_GPIO,
 
 	/* HX4700 specific input GPIOs */
@@ -127,6 +174,26 @@ static unsigned long hx4700_pin_config[] __initdata = {
 	GPIO13_GPIO,	/* W3220_IRQ */
 	GPIO14_GPIO,	/* nWLAN_IRQ */
 
+=======
+	GPIO88_GPIO | MFP_LPM_DRIVE_HIGH,	/* TSC2046_CS */
+
+	/* BQ24022 Regulator */
+	GPIO72_GPIO | MFP_LPM_KEEP_OUTPUT,	/* BQ24022_nCHARGE_EN */
+	GPIO96_GPIO | MFP_LPM_KEEP_OUTPUT,	/* BQ24022_ISET2 */
+
+	/* HX4700 specific input GPIOs */
+	GPIO12_GPIO | WAKEUP_ON_EDGE_RISE,	/* ASIC3_IRQ */
+	GPIO13_GPIO,	/* W3220_IRQ */
+	GPIO14_GPIO,	/* nWLAN_IRQ */
+
+	/* HX4700 specific output GPIOs */
+	GPIO61_GPIO | MFP_LPM_DRIVE_HIGH,	/* W3220_nRESET */
+	GPIO71_GPIO | MFP_LPM_DRIVE_HIGH,	/* ASIC3_nRESET */
+	GPIO81_GPIO | MFP_LPM_DRIVE_HIGH,	/* CPU_GP_nRESET */
+	GPIO116_GPIO | MFP_LPM_DRIVE_HIGH,	/* CPU_HW_nRESET */
+	GPIO102_GPIO | MFP_LPM_DRIVE_LOW,	/* SYNAPTICS_POWER_ON */
+
+>>>>>>> refs/remotes/origin/master
 	GPIO10_GPIO,	/* GSM_IRQ */
 	GPIO13_GPIO,	/* CPLD_IRQ */
 	GPIO107_GPIO,	/* DS1WM_IRQ */
@@ -135,6 +202,8 @@ static unsigned long hx4700_pin_config[] __initdata = {
 	GPIO66_GPIO,	/* nSDIO_IRQ */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define HX4700_GPIO_IN(num, _desc) \
 	{ .gpio = (num), .dir = 0, .desc = (_desc) }
 #define HX4700_GPIO_OUT(num, _init, _desc) \
@@ -171,6 +240,10 @@ static int hx4700_gpio_request(struct gpio_ress *gpios, int size)
 	return rc;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * IRDA
  */
@@ -217,6 +290,26 @@ static struct platform_device gpio_keys = {
 };
 
 /*
+<<<<<<< HEAD
+=======
+ * Synaptics NavPoint connected to SSP1
+ */
+
+static struct navpoint_platform_data navpoint_platform_data = {
+	.port	= 1,
+	.gpio	= GPIO102_HX4700_SYNAPTICS_POWER_ON,
+};
+
+static struct platform_device navpoint = {
+	.name	= "navpoint",
+	.id	= -1,
+	.dev = {
+		.platform_data = &navpoint_platform_data,
+	},
+};
+
+/*
+>>>>>>> refs/remotes/origin/master
  * ASIC3
  */
 
@@ -261,7 +354,10 @@ static u16 asic3_gpio_config[] = {
 	ASIC3_GPIOC0_LED0,		/* red */
 	ASIC3_GPIOC1_LED1,		/* green */
 	ASIC3_GPIOC2_LED2,		/* blue */
+<<<<<<< HEAD
 	ASIC3_GPIOC4_CF_nCD,
+=======
+>>>>>>> refs/remotes/origin/master
 	ASIC3_GPIOC5_nCIOW,
 	ASIC3_GPIOC6_nCIOR,
 	ASIC3_GPIOC7_nPCE_1,
@@ -275,11 +371,37 @@ static u16 asic3_gpio_config[] = {
 	ASIC3_GPIOC15_nPIOR,
 
 	/* GPIOD: input GPIOs, CF */
+<<<<<<< HEAD
+=======
+	ASIC3_GPIOD4_CF_nCD,
+>>>>>>> refs/remotes/origin/master
 	ASIC3_GPIOD11_nCIOIS16,
 	ASIC3_GPIOD12_nCWAIT,
 	ASIC3_GPIOD15_nPIOW,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct asic3_led asic3_leds[ASIC3_NUM_LEDS] = {
+	[0] = {
+		.name = "hx4700:amber",
+		.default_trigger = "ds2760-battery.0-charging-blink-full-solid",
+	},
+	[1] = {
+		.name = "hx4700:green",
+		.default_trigger = "unused",
+	},
+	[2] = {
+		.name = "hx4700:blue",
+		.default_trigger = "hx4700-radio",
+	},
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct resource asic3_resources[] = {
 	/* GPIO part */
 	[0] = {
@@ -288,8 +410,13 @@ static struct resource asic3_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= gpio_to_irq(GPIO12_HX4700_ASIC3_IRQ),
 		.end	= gpio_to_irq(GPIO12_HX4700_ASIC3_IRQ),
+=======
+		.start	= PXA_GPIO_TO_IRQ(GPIO12_HX4700_ASIC3_IRQ),
+		.end	= PXA_GPIO_TO_IRQ(GPIO12_HX4700_ASIC3_IRQ),
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
 	/* SD part */
@@ -299,10 +426,24 @@ static struct resource asic3_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[3] = {
+<<<<<<< HEAD
 		.start	= gpio_to_irq(GPIO66_HX4700_ASIC3_nSDIO_IRQ),
 		.end	= gpio_to_irq(GPIO66_HX4700_ASIC3_nSDIO_IRQ),
+=======
+		.start	= PXA_GPIO_TO_IRQ(GPIO66_HX4700_ASIC3_nSDIO_IRQ),
+		.end	= PXA_GPIO_TO_IRQ(GPIO66_HX4700_ASIC3_nSDIO_IRQ),
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
+=======
+static struct resource asic3_resources[] = {
+	/* GPIO part */
+	[0] = DEFINE_RES_MEM(ASIC3_PHYS, ASIC3_MAP_SIZE_16BIT),
+	[1] = DEFINE_RES_IRQ(PXA_GPIO_TO_IRQ(GPIO12_HX4700_ASIC3_IRQ)),
+	/* SD part */
+	[2] = DEFINE_RES_MEM(ASIC3_SD_PHYS, ASIC3_MAP_SIZE_16BIT),
+	[3] = DEFINE_RES_IRQ(PXA_GPIO_TO_IRQ(GPIO66_HX4700_ASIC3_nSDIO_IRQ)),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct asic3_platform_data asic3_platform_data = {
@@ -310,6 +451,15 @@ static struct asic3_platform_data asic3_platform_data = {
 	.gpio_config_num = ARRAY_SIZE(asic3_gpio_config),
 	.irq_base        = IRQ_BOARD_START,
 	.gpio_base       = HX4700_ASIC3_GPIO_BASE,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.leds            = asic3_leds,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.clock_rate      = 4000000,
+	.leds            = asic3_leds,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device asic3 = {
@@ -327,11 +477,15 @@ static struct platform_device asic3 = {
  */
 
 static struct resource egpio_resources[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = PXA_CS5_PHYS,
 		.end   = PXA_CS5_PHYS + 0x4 - 1,
 		.flags = IORESOURCE_MEM,
 	},
+=======
+	[0] = DEFINE_RES_MEM(PXA_CS5_PHYS, 0x4),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct htc_egpio_chip egpio_chips[] = {
@@ -521,11 +675,15 @@ static struct w100fb_mach_info w3220_info = {
 };
 
 static struct resource w3220_resources[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start	= ATI_W3220_PHYS,
 		.end	= ATI_W3220_PHYS + 0x00ffffff,
 		.flags	= IORESOURCE_MEM,
 	},
+=======
+	[0] = DEFINE_RES_MEM(ATI_W3220_PHYS, SZ_16M),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device w3220 = {
@@ -564,10 +722,18 @@ static struct platform_device hx4700_lcd = {
  */
 
 static struct platform_pwm_backlight_data backlight_data = {
+<<<<<<< HEAD
 	.pwm_id         = 1,
 	.max_brightness = 200,
 	.dft_brightness = 100,
 	.pwm_period_ns  = 30923,
+=======
+	.pwm_id         = -1,	/* Superseded by pwm_lookup */
+	.max_brightness = 200,
+	.dft_brightness = 100,
+	.pwm_period_ns  = 30923,
+	.enable_gpio    = -1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device backlight = {
@@ -579,6 +745,13 @@ static struct platform_device backlight = {
 	},
 };
 
+<<<<<<< HEAD
+=======
+static struct pwm_lookup hx4700_pwm_lookup[] = {
+	PWM_LOOKUP("pxa27x-pwm.1", 0, "pwm-backlight", NULL),
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * USB "Transceiver"
  */
@@ -623,7 +796,15 @@ static struct spi_board_info tsc2046_board_info[] __initdata = {
 		.modalias        = "ads7846",
 		.bus_num         = 2,
 		.max_speed_hz    = 2600000, /* 100 kHz sample rate */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.irq             = gpio_to_irq(GPIO58_HX4700_TSC2046_nPENIRQ),
+=======
+		.irq             = PXA_GPIO_TO_IRQ(GPIO58_HX4700_TSC2046_nPENIRQ),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq             = PXA_GPIO_TO_IRQ(GPIO58_HX4700_TSC2046_nPENIRQ),
+>>>>>>> refs/remotes/origin/master
 		.platform_data   = &tsc2046_info,
 		.controller_data = &tsc2046_chip,
 	},
@@ -667,20 +848,39 @@ static struct pda_power_pdata power_supply_info = {
 };
 
 static struct resource power_supply_resources[] = {
+<<<<<<< HEAD
 	[0] = {
 		.name  = "ac",
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE |
 		         IORESOURCE_IRQ_LOWEDGE,
+<<<<<<< HEAD
 		.start = gpio_to_irq(GPIOD9_nAC_IN),
 		.end   = gpio_to_irq(GPIOD9_nAC_IN),
+=======
+		.start = PXA_GPIO_TO_IRQ(GPIOD9_nAC_IN),
+		.end   = PXA_GPIO_TO_IRQ(GPIOD9_nAC_IN),
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	[1] = {
 		.name  = "usb",
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE |
 		         IORESOURCE_IRQ_LOWEDGE,
+<<<<<<< HEAD
 		.start = gpio_to_irq(GPIOD14_nUSBC_DETECT),
 		.end   = gpio_to_irq(GPIOD14_nUSBC_DETECT),
+=======
+		.start = PXA_GPIO_TO_IRQ(GPIOD14_nUSBC_DETECT),
+		.end   = PXA_GPIO_TO_IRQ(GPIOD14_nUSBC_DETECT),
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
+=======
+	[0] = DEFINE_RES_NAMED(PXA_GPIO_TO_IRQ(GPIOD9_nAC_IN), 1, "ac",
+		IORESOURCE_IRQ |
+		IORESOURCE_IRQ_HIGHEDGE | IORESOURCE_IRQ_LOWEDGE),
+	[1] = DEFINE_RES_NAMED(PXA_GPIO_TO_IRQ(GPIOD14_nUSBC_DETECT), 1, "usb",
+		IORESOURCE_IRQ |
+		IORESOURCE_IRQ_HIGHEDGE | IORESOURCE_IRQ_LOWEDGE),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device power_supply = {
@@ -698,14 +898,25 @@ static struct platform_device power_supply = {
  */
 
 static struct regulator_consumer_supply bq24022_consumers[] = {
+<<<<<<< HEAD
 	{
+<<<<<<< HEAD
 		.dev = &gpio_vbus.dev,
 		.supply = "vbus_draw",
 	},
 	{
 		.dev = &power_supply.dev,
+=======
+		.supply = "vbus_draw",
+	},
+	{
+>>>>>>> refs/remotes/origin/cm-10.0
 		.supply = "ac_draw",
 	},
+=======
+	REGULATOR_SUPPLY("vbus_draw", NULL),
+	REGULATOR_SUPPLY("ac_draw", NULL),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data bq24022_init_data = {
@@ -717,6 +928,8 @@ static struct regulator_init_data bq24022_init_data = {
 	.consumer_supplies      = bq24022_consumers,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct bq24022_mach_info bq24022_info = {
 	.gpio_nce   = GPIO72_HX4700_BQ24022_nCHARGE_EN,
 	.gpio_iset2 = GPIO96_HX4700_BQ24022_ISET2,
@@ -725,6 +938,41 @@ static struct bq24022_mach_info bq24022_info = {
 
 static struct platform_device bq24022 = {
 	.name = "bq24022",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct gpio bq24022_gpios[] = {
+	{ GPIO96_HX4700_BQ24022_ISET2, GPIOF_OUT_INIT_LOW, "bq24022_iset2" },
+};
+
+static struct gpio_regulator_state bq24022_states[] = {
+	{ .value = 100000, .gpios = (0 << 0) },
+	{ .value = 500000, .gpios = (1 << 0) },
+};
+
+static struct gpio_regulator_config bq24022_info = {
+	.supply_name = "bq24022",
+
+	.enable_gpio = GPIO72_HX4700_BQ24022_nCHARGE_EN,
+	.enable_high = 0,
+	.enabled_at_boot = 0,
+
+	.gpios = bq24022_gpios,
+	.nr_gpios = ARRAY_SIZE(bq24022_gpios),
+
+	.states = bq24022_states,
+	.nr_states = ARRAY_SIZE(bq24022_states),
+
+	.type = REGULATOR_CURRENT,
+	.init_data = &bq24022_init_data,
+};
+
+static struct platform_device bq24022 = {
+	.name = "gpio-regulator",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id   = -1,
 	.dev  = {
 		.platform_data = &bq24022_info,
@@ -740,10 +988,22 @@ static void hx4700_set_vpp(struct platform_device *pdev, int vpp)
 	gpio_set_value(GPIO91_HX4700_FLASH_VPEN, vpp);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct resource strataflash_resource = {
 	.start = PXA_CS0_PHYS,
 	.end   = PXA_CS0_PHYS + SZ_128M - 1,
 	.flags = IORESOURCE_MEM,
+=======
+static struct resource strataflash_resource[] = {
+	[0] = DEFINE_RES_MEM(PXA_CS0_PHYS, SZ_64M),
+	[1] = DEFINE_RES_MEM(PXA_CS0_PHYS + SZ_64M, SZ_64M),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct resource strataflash_resource[] = {
+	[0] = DEFINE_RES_MEM(PXA_CS0_PHYS, SZ_64M),
+	[1] = DEFINE_RES_MEM(PXA_CS0_PHYS + SZ_64M, SZ_64M),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct physmap_flash_data strataflash_data = {
@@ -754,8 +1014,18 @@ static struct physmap_flash_data strataflash_data = {
 static struct platform_device strataflash = {
 	.name          = "physmap-flash",
 	.id            = -1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.resource      = &strataflash_resource,
 	.num_resources = 1,
+=======
+	.resource      = strataflash_resource,
+	.num_resources = ARRAY_SIZE(strataflash_resource),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.resource      = strataflash_resource,
+	.num_resources = ARRAY_SIZE(strataflash_resource),
+>>>>>>> refs/remotes/origin/master
 	.dev = {
 		.platform_data = &strataflash_data,
 	},
@@ -765,9 +1035,14 @@ static struct platform_device strataflash = {
  * Maxim MAX1587A on PI2C
  */
 
+<<<<<<< HEAD
 static struct regulator_consumer_supply max1587a_consumer = {
 	.supply = "vcc_core",
 };
+=======
+static struct regulator_consumer_supply max1587a_consumer =
+	REGULATOR_SUPPLY("vcc_core", NULL);
+>>>>>>> refs/remotes/origin/master
 
 static struct regulator_init_data max1587a_v3_info = {
 	.constraints = {
@@ -801,6 +1076,8 @@ static struct i2c_board_info __initdata pi2c_board_info[] = {
 };
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * PCMCIA
  */
 
@@ -811,6 +1088,34 @@ static struct platform_device pcmcia = {
 	},
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Asahi Kasei AK4641 on I2C
+ */
+
+static struct ak4641_platform_data ak4641_info = {
+	.gpio_power = GPIO27_HX4700_CODEC_ON,
+	.gpio_npdn  = GPIO109_HX4700_CODEC_nPDN,
+};
+
+static struct i2c_board_info i2c_board_info[] __initdata = {
+	{
+		I2C_BOARD_INFO("ak4641", 0x12),
+		.platform_data = &ak4641_info,
+	},
+};
+
+static struct platform_device audio = {
+	.name	= "hx4700-audio",
+	.id	= -1,
+};
+
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Platform devices
  */
@@ -818,6 +1123,10 @@ static struct platform_device pcmcia = {
 static struct platform_device *devices[] __initdata = {
 	&asic3,
 	&gpio_keys,
+<<<<<<< HEAD
+=======
+	&navpoint,
+>>>>>>> refs/remotes/origin/master
 	&backlight,
 	&w3220,
 	&hx4700_lcd,
@@ -826,6 +1135,8 @@ static struct platform_device *devices[] __initdata = {
 	&gpio_vbus,
 	&power_supply,
 	&strataflash,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	&pcmcia,
 };
 
@@ -843,22 +1154,83 @@ static struct gpio_ress global_gpios[] = {
 	HX4700_GPIO_OUT(GPIO71_HX4700_ASIC3_nRESET,     1, "ASIC3_nRESET"),
 	HX4700_GPIO_OUT(GPIO82_HX4700_EUART_RESET,      1, "EUART_RESET"),
 	HX4700_GPIO_OUT(GPIO105_HX4700_nIR_ON,          1, "nIR_EN"),
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	&audio,
+};
+
+static struct gpio global_gpios[] = {
+	{ GPIO12_HX4700_ASIC3_IRQ, GPIOF_IN, "ASIC3_IRQ" },
+	{ GPIO13_HX4700_W3220_IRQ, GPIOF_IN, "W3220_IRQ" },
+	{ GPIO14_HX4700_nWLAN_IRQ, GPIOF_IN, "WLAN_IRQ" },
+	{ GPIO59_HX4700_LCD_PC1,          GPIOF_OUT_INIT_HIGH, "LCD_PC1" },
+	{ GPIO62_HX4700_LCD_nRESET,       GPIOF_OUT_INIT_HIGH, "LCD_RESET" },
+	{ GPIO70_HX4700_LCD_SLIN1,        GPIOF_OUT_INIT_HIGH, "LCD_SLIN1" },
+	{ GPIO84_HX4700_LCD_SQN,          GPIOF_OUT_INIT_HIGH, "LCD_SQN" },
+	{ GPIO110_HX4700_LCD_LVDD_3V3_ON, GPIOF_OUT_INIT_HIGH, "LCD_LVDD" },
+	{ GPIO111_HX4700_LCD_AVDD_3V3_ON, GPIOF_OUT_INIT_HIGH, "LCD_AVDD" },
+	{ GPIO32_HX4700_RS232_ON,         GPIOF_OUT_INIT_HIGH, "RS232_ON" },
+<<<<<<< HEAD
+	{ GPIO71_HX4700_ASIC3_nRESET,     GPIOF_OUT_INIT_HIGH, "ASIC3_nRESET" },
+	{ GPIO82_HX4700_EUART_RESET,      GPIOF_OUT_INIT_HIGH, "EUART_RESET" },
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ GPIO61_HX4700_W3220_nRESET,     GPIOF_OUT_INIT_HIGH, "W3220_nRESET" },
+	{ GPIO71_HX4700_ASIC3_nRESET,     GPIOF_OUT_INIT_HIGH, "ASIC3_nRESET" },
+	{ GPIO81_HX4700_CPU_GP_nRESET,    GPIOF_OUT_INIT_HIGH, "CPU_GP_nRESET" },
+	{ GPIO82_HX4700_EUART_RESET,      GPIOF_OUT_INIT_HIGH, "EUART_RESET" },
+	{ GPIO116_HX4700_CPU_HW_nRESET,   GPIOF_OUT_INIT_HIGH, "CPU_HW_nRESET" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init hx4700_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pxa2xx_mfp_config(ARRAY_AND_SIZE(hx4700_pin_config));
 	hx4700_gpio_request(ARRAY_AND_SIZE(global_gpios));
+=======
+	int ret;
+
+	pxa2xx_mfp_config(ARRAY_AND_SIZE(hx4700_pin_config));
+	ret = gpio_request_array(ARRAY_AND_SIZE(global_gpios));
+	if (ret)
+		pr_err ("hx4700: Failed to request GPIOs.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+
+	PCFR = PCFR_GPR_EN | PCFR_OPDE;
+
+	pxa2xx_mfp_config(ARRAY_AND_SIZE(hx4700_pin_config));
+	gpio_set_wake(GPIO12_HX4700_ASIC3_IRQ, 1);
+	ret = gpio_request_array(ARRAY_AND_SIZE(global_gpios));
+	if (ret)
+		pr_err ("hx4700: Failed to request GPIOs.\n");
+>>>>>>> refs/remotes/origin/master
 
 	pxa_set_ffuart_info(NULL);
 	pxa_set_btuart_info(NULL);
 	pxa_set_stuart_info(NULL);
 
 	platform_add_devices(devices, ARRAY_SIZE(devices));
+<<<<<<< HEAD
+=======
+	pwm_add_table(hx4700_pwm_lookup, ARRAY_SIZE(hx4700_pwm_lookup));
+>>>>>>> refs/remotes/origin/master
 
 	pxa_set_ficp_info(&ficp_info);
 	pxa27x_set_i2c_power_info(NULL);
 	pxa_set_i2c_info(NULL);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	i2c_register_board_info(0, ARRAY_AND_SIZE(i2c_board_info));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i2c_register_board_info(0, ARRAY_AND_SIZE(i2c_board_info));
+>>>>>>> refs/remotes/origin/master
 	i2c_register_board_info(1, ARRAY_AND_SIZE(pi2c_board_info));
 	pxa2xx_set_spi_info(2, &pxa_ssp2_master_info);
 	spi_register_board_info(ARRAY_AND_SIZE(tsc2046_board_info));
@@ -870,10 +1242,29 @@ static void __init hx4700_init(void)
 }
 
 MACHINE_START(H4700, "HP iPAQ HX4700")
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params  = 0xa0000100,
 	.map_io       = pxa27x_map_io,
 	.nr_irqs      = HX4700_NR_IRQS,
 	.init_irq     = pxa27x_init_irq,
 	.init_machine = hx4700_init,
 	.timer        = &pxa_timer,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.atag_offset  = 0x100,
+	.map_io       = pxa27x_map_io,
+	.nr_irqs      = HX4700_NR_IRQS,
+	.init_irq     = pxa27x_init_irq,
+	.handle_irq     = pxa27x_handle_irq,
+	.init_machine = hx4700_init,
+<<<<<<< HEAD
+	.timer        = &pxa_timer,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

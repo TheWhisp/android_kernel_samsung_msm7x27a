@@ -3,14 +3,22 @@
 
 #define IBLOCK_VERSION		"4.0"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IBLOCK_HBA_QUEUE_DEPTH	512
 #define IBLOCK_DEVICE_QUEUE_DEPTH	32
 #define IBLOCK_MAX_DEVICE_QUEUE_DEPTH	128
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define IBLOCK_MAX_CDBS		16
 #define IBLOCK_LBA_SHIFT	9
 
 struct iblock_req {
+<<<<<<< HEAD
 	struct se_task ib_task;
+<<<<<<< HEAD
 	unsigned char ib_scsi_cdb[TCM_MAX_COMMAND_SIZE];
 	atomic_t ib_bio_cnt;
 	atomic_t ib_bio_err_cnt;
@@ -35,6 +43,29 @@ struct iblock_dev {
 
 struct iblock_hba {
 	int		iblock_host_id;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	atomic_t pending;
+	atomic_t ib_bio_err_cnt;
+} ____cacheline_aligned;
+
+#define IBDF_HAS_UDEV_PATH		0x01
+
+struct iblock_dev {
+<<<<<<< HEAD
+=======
+	struct se_device dev;
+>>>>>>> refs/remotes/origin/master
+	unsigned char ibd_udev_path[SE_UDEV_PATH_LEN];
+	u32	ibd_flags;
+	struct bio_set	*ibd_bio_set;
+	struct block_device *ibd_bd;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool ibd_readonly;
+>>>>>>> refs/remotes/origin/master
 } ____cacheline_aligned;
 
 #endif /* TARGET_CORE_IBLOCK_H */

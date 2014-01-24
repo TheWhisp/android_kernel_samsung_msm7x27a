@@ -188,6 +188,7 @@ static struct serio_driver dynapro_drv = {
 	.disconnect	= dynapro_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -204,3 +205,6 @@ static void __exit dynapro_exit(void)
 
 module_init(dynapro_init);
 module_exit(dynapro_exit);
+=======
+module_serio_driver(dynapro_drv);
+>>>>>>> refs/remotes/origin/master

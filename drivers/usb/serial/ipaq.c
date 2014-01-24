@@ -8,6 +8,8 @@
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation; either version 2 of the License, or
  *	(at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * (12/12/2002) ganesh
  * 	Added support for practically all devices supported by ActiveSync
@@ -42,11 +44,18 @@
  * (25/2/2002) ganesh
  * 	Added support for the HP Jornada 548 and 568. Completely untested.
  * 	Thanks to info from Heath Robinson and Arieh Davidoff.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -59,6 +68,7 @@
 
 #define KP_RETRIES	100
 
+<<<<<<< HEAD
 /*
  * Version Information
  */
@@ -68,7 +78,16 @@
 #define DRIVER_DESC "USB PocketPC PDA driver"
 
 static __u16 product, vendor;
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DRIVER_AUTHOR "Ganesh Varadarajan <ganesh@veritas.com>"
+#define DRIVER_DESC "USB PocketPC PDA driver"
+
+>>>>>>> refs/remotes/origin/master
 static int connect_retries = KP_RETRIES;
 static int initial_wait;
 
@@ -78,9 +97,13 @@ static int  ipaq_open(struct tty_struct *tty,
 static int  ipaq_calc_num_ports(struct usb_serial *serial);
 static int  ipaq_startup(struct usb_serial *serial);
 
+<<<<<<< HEAD
 static struct usb_device_id ipaq_id_table [] = {
 	/* The first entry is a placeholder for the insmod-specified device */
 	{ USB_DEVICE(0x049F, 0x0003) },
+=======
+static const struct usb_device_id ipaq_id_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(0x0104, 0x00BE) }, /* Socket USB Sync */
 	{ USB_DEVICE(0x03F0, 0x1016) }, /* HP USB Sync */
 	{ USB_DEVICE(0x03F0, 0x1116) }, /* HP USB Sync 1611 */
@@ -539,14 +562,20 @@ static struct usb_device_id ipaq_id_table [] = {
 
 MODULE_DEVICE_TABLE(usb, ipaq_id_table);
 
+<<<<<<< HEAD
 static struct usb_driver ipaq_driver = {
 	.name =		"ipaq",
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	ipaq_id_table,
+<<<<<<< HEAD
 	.no_dynamic_id =	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* All of the device info needed for the Compaq iPAQ */
 static struct usb_serial_driver ipaq_device = {
@@ -555,7 +584,13 @@ static struct usb_serial_driver ipaq_device = {
 		.name =		"ipaq",
 	},
 	.description =		"PocketPC PDA",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver =		&ipaq_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table =		ipaq_id_table,
 	.bulk_in_size =		256,
 	.bulk_out_size =	256,
@@ -564,6 +599,19 @@ static struct usb_serial_driver ipaq_device = {
 	.calc_num_ports =	ipaq_calc_num_ports,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct usb_serial_driver * const serial_drivers[] = {
+	&ipaq_device, NULL
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ipaq_open(struct tty_struct *tty,
 			struct usb_serial_port *port)
 {
@@ -571,8 +619,11 @@ static int ipaq_open(struct tty_struct *tty,
 	int			result = 0;
 	int			retries = connect_retries;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	msleep(1000*initial_wait);
 
 	/*
@@ -609,7 +660,11 @@ static int ipaq_calc_num_ports(struct usb_serial *serial)
 	 */
 	int ipaq_num_ports = 1;
 
+<<<<<<< HEAD
 	dbg("%s - numberofendpoints: %d", __FUNCTION__,
+=======
+	dev_dbg(&serial->dev->dev, "%s - numberofendpoints: %d\n", __func__,
+>>>>>>> refs/remotes/origin/master
 		(int)serial->interface->cur_altsetting->desc.bNumEndpoints);
 
 	/*
@@ -628,8 +683,11 @@ static int ipaq_calc_num_ports(struct usb_serial *serial)
 
 static int ipaq_startup(struct usb_serial *serial)
 {
+<<<<<<< HEAD
 	dbg("%s", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Some of the devices in ipaq_id_table[] are composite, and we
 	 * shouldn't bind to all the interfaces.  This test will rule out
 	 * some obviously invalid possibilities.
@@ -649,22 +707,34 @@ static int ipaq_startup(struct usb_serial *serial)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	dbg("%s - iPAQ module configured for %d ports",
 		__FUNCTION__, serial->num_ports);
+=======
+	dev_dbg(&serial->dev->dev,
+		"%s - iPAQ module configured for %d ports\n", __func__,
+		serial->num_ports);
+>>>>>>> refs/remotes/origin/master
 
 	return usb_reset_configuration(serial->dev);
 }
 
+<<<<<<< HEAD
 static int __init ipaq_init(void)
 {
 	int retval;
+<<<<<<< HEAD
 	retval = usb_serial_register(&ipaq_device);
 	if (retval)
 		goto failed_usb_serial_register;
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (vendor) {
 		ipaq_id_table[0].idVendor = vendor;
 		ipaq_id_table[0].idProduct = product;
 	}
+<<<<<<< HEAD
 	retval = usb_register(&ipaq_driver);
 	if (retval)
 		goto failed_usb_register;
@@ -675,23 +745,38 @@ static int __init ipaq_init(void)
 failed_usb_register:
 	usb_serial_deregister(&ipaq_device);
 failed_usb_serial_register:
+=======
+
+	retval = usb_serial_register_drivers(&ipaq_driver, serial_drivers);
+	if (retval == 0)
+		printk(KERN_INFO KBUILD_MODNAME ": " DRIVER_VERSION ":"
+			       DRIVER_DESC "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
 static void __exit ipaq_exit(void)
 {
+<<<<<<< HEAD
 	usb_deregister(&ipaq_driver);
 	usb_serial_deregister(&ipaq_device);
+=======
+	usb_serial_deregister_drivers(&ipaq_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
 module_init(ipaq_init);
 module_exit(ipaq_exit);
+=======
+module_usb_serial_driver(serial_drivers, ipaq_id_table);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
 
@@ -701,6 +786,8 @@ MODULE_PARM_DESC(vendor, "User specified USB idVendor");
 module_param(product, ushort, 0);
 MODULE_PARM_DESC(product, "User specified USB idProduct");
 
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(connect_retries, int, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(connect_retries,
 		"Maximum number of connect retries (one second each)");

@@ -175,7 +175,11 @@ static int __init ct82c710_detect(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit ct82c710_probe(struct platform_device *dev)
+=======
+static int ct82c710_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	ct82c710_port = kzalloc(sizeof(struct serio), GFP_KERNEL);
 	if (!ct82c710_port)
@@ -199,7 +203,11 @@ static int __devinit ct82c710_probe(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit ct82c710_remove(struct platform_device *dev)
+=======
+static int ct82c710_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	serio_unregister_port(ct82c710_port);
 
@@ -212,7 +220,11 @@ static struct platform_driver ct82c710_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= ct82c710_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ct82c710_remove),
+=======
+	.remove		= ct82c710_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 

@@ -35,6 +35,7 @@
 
 /**
  * qib_alloc_lkey - allocate an lkey
+<<<<<<< HEAD
  * @rkt: lkey table in which to allocate the lkey
  * @mr: memory region that this lkey protects
  *
@@ -42,14 +43,50 @@
  */
 
 int qib_alloc_lkey(struct qib_lkey_table *rkt, struct qib_mregion *mr)
+=======
+ * @mr: memory region that this lkey protects
+ * @dma_region: 0->normal key, 1->restricted DMA key
+ *
+ * Returns 0 if successful, otherwise returns -errno.
+ *
+ * Increments mr reference count as required.
+ *
+ * Sets the lkey field mr for non-dma regions.
+ *
+ */
+
+int qib_alloc_lkey(struct qib_mregion *mr, int dma_region)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	u32 r;
 	u32 n;
+<<<<<<< HEAD
 	int ret;
 
 	spin_lock_irqsave(&rkt->lock, flags);
 
+=======
+	int ret = 0;
+	struct qib_ibdev *dev = to_idev(mr->pd->device);
+	struct qib_lkey_table *rkt = &dev->lk_table;
+
+	spin_lock_irqsave(&rkt->lock, flags);
+
+	/* special case for dma_mr lkey == 0 */
+	if (dma_region) {
+		struct qib_mregion *tmr;
+
+		tmr = rcu_access_pointer(dev->dma_mr);
+		if (!tmr) {
+			qib_get_mr(mr);
+			rcu_assign_pointer(dev->dma_mr, mr);
+			mr->lkey_published = 1;
+		}
+		goto success;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Find the next available LKEY */
 	r = rkt->next;
 	n = r;
@@ -57,11 +94,16 @@ int qib_alloc_lkey(struct qib_lkey_table *rkt, struct qib_mregion *mr)
 		if (rkt->table[r] == NULL)
 			break;
 		r = (r + 1) & (rkt->max - 1);
+<<<<<<< HEAD
 		if (r == n) {
 			spin_unlock_irqrestore(&rkt->lock, flags);
 			ret = 0;
 			goto bail;
 		}
+=======
+		if (r == n)
+			goto bail;
+>>>>>>> refs/remotes/origin/master
 	}
 	rkt->next = (r + 1) & (rkt->max - 1);
 	/*
@@ -76,6 +118,7 @@ int qib_alloc_lkey(struct qib_lkey_table *rkt, struct qib_mregion *mr)
 		mr->lkey |= 1 << 8;
 		rkt->gen++;
 	}
+<<<<<<< HEAD
 	rkt->table[r] = mr;
 	spin_unlock_irqrestore(&rkt->lock, flags);
 
@@ -83,18 +126,38 @@ int qib_alloc_lkey(struct qib_lkey_table *rkt, struct qib_mregion *mr)
 
 bail:
 	return ret;
+=======
+	qib_get_mr(mr);
+	rcu_assign_pointer(rkt->table[r], mr);
+	mr->lkey_published = 1;
+success:
+	spin_unlock_irqrestore(&rkt->lock, flags);
+out:
+	return ret;
+bail:
+	spin_unlock_irqrestore(&rkt->lock, flags);
+	ret = -ENOMEM;
+	goto out;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * qib_free_lkey - free an lkey
+<<<<<<< HEAD
  * @rkt: table from which to free the lkey
  * @lkey: lkey id to free
  */
 int qib_free_lkey(struct qib_ibdev *dev, struct qib_mregion *mr)
+=======
+ * @mr: mr to free from tables
+ */
+void qib_free_lkey(struct qib_mregion *mr)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	u32 lkey = mr->lkey;
 	u32 r;
+<<<<<<< HEAD
 	int ret;
 
 	spin_lock_irqsave(&dev->lk_table.lock, flags);
@@ -116,17 +179,44 @@ int qib_free_lkey(struct qib_ibdev *dev, struct qib_mregion *mr)
 	if (ret)
 		ret = -EBUSY;
 	return ret;
+=======
+	struct qib_ibdev *dev = to_idev(mr->pd->device);
+	struct qib_lkey_table *rkt = &dev->lk_table;
+
+	spin_lock_irqsave(&rkt->lock, flags);
+	if (!mr->lkey_published)
+		goto out;
+	if (lkey == 0)
+		rcu_assign_pointer(dev->dma_mr, NULL);
+	else {
+		r = lkey >> (32 - ib_qib_lkey_table_size);
+		rcu_assign_pointer(rkt->table[r], NULL);
+	}
+	qib_put_mr(mr);
+	mr->lkey_published = 0;
+out:
+	spin_unlock_irqrestore(&rkt->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * qib_lkey_ok - check IB SGE for validity and initialize
  * @rkt: table containing lkey to check SGE against
+<<<<<<< HEAD
+=======
+ * @pd: protection domain
+>>>>>>> refs/remotes/origin/master
  * @isge: outgoing internal SGE
  * @sge: SGE to check
  * @acc: access flags
  *
  * Return 1 if valid and successful, otherwise returns 0.
  *
+<<<<<<< HEAD
+=======
+ * increments the reference count upon success
+ *
+>>>>>>> refs/remotes/origin/master
  * Check the IB SGE for validity and initialize our internal version
  * of it.
  */
@@ -136,24 +226,42 @@ int qib_lkey_ok(struct qib_lkey_table *rkt, struct qib_pd *pd,
 	struct qib_mregion *mr;
 	unsigned n, m;
 	size_t off;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We use LKEY == zero for kernel virtual addresses
 	 * (see qib_get_dma_mr and qib_dma.c).
 	 */
+<<<<<<< HEAD
 	spin_lock_irqsave(&rkt->lock, flags);
+=======
+	rcu_read_lock();
+>>>>>>> refs/remotes/origin/master
 	if (sge->lkey == 0) {
 		struct qib_ibdev *dev = to_idev(pd->ibpd.device);
 
 		if (pd->user)
 			goto bail;
+<<<<<<< HEAD
 		if (!dev->dma_mr)
 			goto bail;
 		atomic_inc(&dev->dma_mr->refcount);
 		spin_unlock_irqrestore(&rkt->lock, flags);
 
 		isge->mr = dev->dma_mr;
+=======
+		mr = rcu_dereference(dev->dma_mr);
+		if (!mr)
+			goto bail;
+		if (unlikely(!atomic_inc_not_zero(&mr->refcount)))
+			goto bail;
+		rcu_read_unlock();
+
+		isge->mr = mr;
+>>>>>>> refs/remotes/origin/master
 		isge->vaddr = (void *) sge->addr;
 		isge->length = sge->length;
 		isge->sge_length = sge->length;
@@ -161,9 +269,15 @@ int qib_lkey_ok(struct qib_lkey_table *rkt, struct qib_pd *pd,
 		isge->n = 0;
 		goto ok;
 	}
+<<<<<<< HEAD
 	mr = rkt->table[(sge->lkey >> (32 - ib_qib_lkey_table_size))];
 	if (unlikely(mr == NULL || mr->lkey != sge->lkey ||
 		     mr->pd != &pd->ibpd))
+=======
+	mr = rcu_dereference(
+		rkt->table[(sge->lkey >> (32 - ib_qib_lkey_table_size))]);
+	if (unlikely(!mr || mr->lkey != sge->lkey || mr->pd != &pd->ibpd))
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 
 	off = sge->addr - mr->user_base;
@@ -171,8 +285,14 @@ int qib_lkey_ok(struct qib_lkey_table *rkt, struct qib_pd *pd,
 		     off + sge->length > mr->length ||
 		     (mr->access_flags & acc) != acc))
 		goto bail;
+<<<<<<< HEAD
 	atomic_inc(&mr->refcount);
 	spin_unlock_irqrestore(&rkt->lock, flags);
+=======
+	if (unlikely(!atomic_inc_not_zero(&mr->refcount)))
+		goto bail;
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	off += mr->offset;
 	if (mr->page_shift) {
@@ -208,20 +328,34 @@ int qib_lkey_ok(struct qib_lkey_table *rkt, struct qib_pd *pd,
 ok:
 	return 1;
 bail:
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&rkt->lock, flags);
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /**
  * qib_rkey_ok - check the IB virtual address, length, and RKEY
+<<<<<<< HEAD
  * @dev: infiniband device
  * @ss: SGE state
+=======
+ * @qp: qp for validation
+ * @sge: SGE state
+>>>>>>> refs/remotes/origin/master
  * @len: length of data
  * @vaddr: virtual address to place data
  * @rkey: rkey to check
  * @acc: access flags
  *
  * Return 1 if successful, otherwise 0.
+<<<<<<< HEAD
+=======
+ *
+ * increments the reference count upon success
+>>>>>>> refs/remotes/origin/master
  */
 int qib_rkey_ok(struct qib_qp *qp, struct qib_sge *sge,
 		u32 len, u64 vaddr, u32 rkey, int acc)
@@ -230,25 +364,43 @@ int qib_rkey_ok(struct qib_qp *qp, struct qib_sge *sge,
 	struct qib_mregion *mr;
 	unsigned n, m;
 	size_t off;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We use RKEY == zero for kernel virtual addresses
 	 * (see qib_get_dma_mr and qib_dma.c).
 	 */
+<<<<<<< HEAD
 	spin_lock_irqsave(&rkt->lock, flags);
+=======
+	rcu_read_lock();
+>>>>>>> refs/remotes/origin/master
 	if (rkey == 0) {
 		struct qib_pd *pd = to_ipd(qp->ibqp.pd);
 		struct qib_ibdev *dev = to_idev(pd->ibpd.device);
 
 		if (pd->user)
 			goto bail;
+<<<<<<< HEAD
 		if (!dev->dma_mr)
 			goto bail;
 		atomic_inc(&dev->dma_mr->refcount);
 		spin_unlock_irqrestore(&rkt->lock, flags);
 
 		sge->mr = dev->dma_mr;
+=======
+		mr = rcu_dereference(dev->dma_mr);
+		if (!mr)
+			goto bail;
+		if (unlikely(!atomic_inc_not_zero(&mr->refcount)))
+			goto bail;
+		rcu_read_unlock();
+
+		sge->mr = mr;
+>>>>>>> refs/remotes/origin/master
 		sge->vaddr = (void *) vaddr;
 		sge->length = len;
 		sge->sge_length = len;
@@ -257,16 +409,28 @@ int qib_rkey_ok(struct qib_qp *qp, struct qib_sge *sge,
 		goto ok;
 	}
 
+<<<<<<< HEAD
 	mr = rkt->table[(rkey >> (32 - ib_qib_lkey_table_size))];
 	if (unlikely(mr == NULL || mr->lkey != rkey || qp->ibqp.pd != mr->pd))
+=======
+	mr = rcu_dereference(
+		rkt->table[(rkey >> (32 - ib_qib_lkey_table_size))]);
+	if (unlikely(!mr || mr->lkey != rkey || qp->ibqp.pd != mr->pd))
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 
 	off = vaddr - mr->iova;
 	if (unlikely(vaddr < mr->iova || off + len > mr->length ||
 		     (mr->access_flags & acc) == 0))
 		goto bail;
+<<<<<<< HEAD
 	atomic_inc(&mr->refcount);
 	spin_unlock_irqrestore(&rkt->lock, flags);
+=======
+	if (unlikely(!atomic_inc_not_zero(&mr->refcount)))
+		goto bail;
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	off += mr->offset;
 	if (mr->page_shift) {
@@ -302,7 +466,11 @@ int qib_rkey_ok(struct qib_qp *qp, struct qib_sge *sge,
 ok:
 	return 1;
 bail:
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&rkt->lock, flags);
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -325,7 +493,13 @@ int qib_fast_reg_mr(struct qib_qp *qp, struct ib_send_wr *wr)
 	if (pd->user || rkey == 0)
 		goto bail;
 
+<<<<<<< HEAD
 	mr = rkt->table[(rkey >> (32 - ib_qib_lkey_table_size))];
+=======
+	mr = rcu_dereference_protected(
+		rkt->table[(rkey >> (32 - ib_qib_lkey_table_size))],
+		lockdep_is_held(&rkt->lock));
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(mr == NULL || qp->ibqp.pd != mr->pd))
 		goto bail;
 

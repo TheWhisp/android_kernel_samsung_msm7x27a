@@ -51,7 +51,11 @@
  *
  * version 0.7.3
  * bugfix : The mdc800->state field gets set to READY after the
+<<<<<<< HEAD
  * the diconnect function sets it to NOT_CONNECTED. This makes the
+=======
+ * the disconnect function sets it to NOT_CONNECTED. This makes the
+>>>>>>> refs/remotes/origin/master
  * driver running like the camera is connected and causes some
  * hang ups.
  *
@@ -284,18 +288,29 @@ static void mdc800_usb_irq (struct urb *urb)
 	int data_received=0, wake_up;
 	unsigned char* b=urb->transfer_buffer;
 	struct mdc800_data* mdc800=urb->context;
+<<<<<<< HEAD
 	int status = urb->status;
 
 	if (status >= 0) {
 
 		//dbg ("%i %i %i %i %i %i %i %i \n",b[0],b[1],b[2],b[3],b[4],b[5],b[6],b[7]);
 
+=======
+	struct device *dev = &mdc800->dev->dev;
+	int status = urb->status;
+
+	if (status >= 0) {
+>>>>>>> refs/remotes/origin/master
 		if (mdc800_isBusy (b))
 		{
 			if (!mdc800->camera_busy)
 			{
 				mdc800->camera_busy=1;
+<<<<<<< HEAD
 				dbg ("gets busy");
+=======
+				dev_dbg(dev, "gets busy\n");
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		else
@@ -303,13 +318,21 @@ static void mdc800_usb_irq (struct urb *urb)
 			if (mdc800->camera_busy && mdc800_isReady (b))
 			{
 				mdc800->camera_busy=0;
+<<<<<<< HEAD
 				dbg ("gets ready");
+=======
+				dev_dbg(dev, "gets ready\n");
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		if (!(mdc800_isBusy (b) || mdc800_isReady (b)))
 		{
 			/* Store Data in camera_answer field */
+<<<<<<< HEAD
 			dbg ("%i %i %i %i %i %i %i %i ",b[0],b[1],b[2],b[3],b[4],b[5],b[6],b[7]);
+=======
+			dev_dbg(dev, "%i %i %i %i %i %i %i %i \n",b[0],b[1],b[2],b[3],b[4],b[5],b[6],b[7]);
+>>>>>>> refs/remotes/origin/master
 
 			memcpy (mdc800->camera_response,b,8);
 			data_received=1;
@@ -441,7 +464,11 @@ static int mdc800_usb_probe (struct usb_interface *intf,
 	int irq_interval=0;
 	int retval;
 
+<<<<<<< HEAD
 	dbg ("(mdc800_usb_probe) called.");
+=======
+	dev_dbg(&intf->dev, "(%s) called.\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 
 	if (mdc800->dev != NULL)
@@ -554,7 +581,11 @@ static void mdc800_usb_disconnect (struct usb_interface *intf)
 {
 	struct mdc800_data* mdc800 = usb_get_intfdata(intf);
 
+<<<<<<< HEAD
 	dbg ("(mdc800_usb_disconnect) called");
+=======
+	dev_dbg(&intf->dev, "(%s) called\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	if (mdc800) {
 		if (mdc800->state == NOT_CONNECTED)
@@ -656,7 +687,11 @@ static int mdc800_device_open (struct inode* inode, struct file *file)
 	}
 
 	mdc800->open=1;
+<<<<<<< HEAD
 	dbg ("Mustek MDC800 device opened.");
+=======
+	dev_dbg(&mdc800->dev->dev, "Mustek MDC800 device opened.\n");
+>>>>>>> refs/remotes/origin/master
 
 error_out:
 	mutex_unlock(&mdc800->io_lock);
@@ -670,7 +705,10 @@ error_out:
 static int mdc800_device_release (struct inode* inode, struct file *file)
 {
 	int retval=0;
+<<<<<<< HEAD
 	dbg ("Mustek MDC800 device closed.");
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&mdc800->io_lock);
 	if (mdc800->open && (mdc800->state != NOT_CONNECTED))
@@ -927,7 +965,11 @@ static ssize_t mdc800_device_write (struct file *file, const char __user *buf, s
 						{
 							mdc800->pic_len=(int) 65536*(unsigned char) mdc800->camera_response[0]+256*(unsigned char) mdc800->camera_response[1]+(unsigned char) mdc800->camera_response[2];
 
+<<<<<<< HEAD
 							dbg ("cached imagesize = %i",mdc800->pic_len);
+=======
+							dev_dbg(&mdc800->dev->dev, "cached imagesize = %i\n", mdc800->pic_len);
+>>>>>>> refs/remotes/origin/master
 						}
 
 					}

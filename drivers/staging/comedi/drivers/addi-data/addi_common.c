@@ -11,6 +11,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
 	http://www.addi-data.com
 	info@addi-data.com
 
+<<<<<<< HEAD
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -18,6 +19,16 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 You should also find the complete GPL in the COPYING file accompanying this source code.
+=======
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+>>>>>>> refs/remotes/origin/master
 
 @endverbatim
 */
@@ -29,6 +40,7 @@ You should also find the complete GPL in the COPYING file accompanying this sour
   | Tel : +49 (0) 7223/9493-0     | email    : info@addi-data.com         |
   | Fax : +49 (0) 7223/9493-92    | Internet : http://www.addi-data.com   |
   +-----------------------------------------------------------------------+
+<<<<<<< HEAD
   | Project   : ADDI DATA         | Compiler : GCC 		          |
   | Modulname : addi_common.c     | Version  : 2.96                       |
   +-------------------------------+---------------------------------------+
@@ -58,8 +70,13 @@ You should also find the complete GPL in the COPYING file accompanying this sour
 #include <linux/timer.h>
 #include <linux/pci.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
 #include "../../comedidev.h"
 #include <asm/io.h>
+=======
+#include <linux/io.h>
+#include "../../comedidev.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_APCI_1710) || defined(CONFIG_APCI_3200) || defined(CONFIG_APCI_3300)
 #include <asm/i387.h>
 #endif
@@ -145,6 +162,7 @@ void fpu_end(void)
 
 static DEFINE_PCI_DEVICE_TABLE(addi_apci_tbl) = {
 #ifdef CONFIG_APCI_3120
+<<<<<<< HEAD
 	{APCI3120_BOARD_VENDOR_ID, 0x818D, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 #endif
 #ifdef CONFIG_APCI_1032
@@ -217,6 +235,79 @@ static DEFINE_PCI_DEVICE_TABLE(addi_apci_tbl) = {
 	{0x15B8, 0x3003, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{0x15B8, 0x3004, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{0x15B8, 0x3024, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
+=======
+	{PCI_DEVICE(APCI3120_BOARD_VENDOR_ID, 0x818D)},
+#endif
+#ifdef CONFIG_APCI_1032
+	{PCI_DEVICE(APCI1032_BOARD_VENDOR_ID, 0x1003)},
+#endif
+#ifdef CONFIG_APCI_1516
+	{PCI_DEVICE(APCI1516_BOARD_VENDOR_ID, 0x1001)},
+#endif
+#ifdef CONFIG_APCI_2016
+	{PCI_DEVICE(APCI2016_BOARD_VENDOR_ID, 0x1002)},
+#endif
+#ifdef CONFIG_APCI_2032
+	{PCI_DEVICE(APCI2032_BOARD_VENDOR_ID, 0x1004)},
+#endif
+#ifdef CONFIG_APCI_2200
+	{PCI_DEVICE(APCI2200_BOARD_VENDOR_ID, 0x1005)},
+#endif
+#ifdef CONFIG_APCI_1564
+	{PCI_DEVICE(APCI1564_BOARD_VENDOR_ID, 0x1006)},
+#endif
+#ifdef CONFIG_APCI_1500
+	{PCI_DEVICE(APCI1500_BOARD_VENDOR_ID, 0x80fc)},
+#endif
+#ifdef CONFIG_APCI_3001
+	{PCI_DEVICE(APCI3120_BOARD_VENDOR_ID, 0x828D)},
+#endif
+#ifdef CONFIG_APCI_3501
+	{PCI_DEVICE(APCI3501_BOARD_VENDOR_ID, 0x3001)},
+#endif
+#ifdef CONFIG_APCI_035
+	{PCI_DEVICE(APCI035_BOARD_VENDOR_ID,  0x0300)},
+#endif
+#ifdef CONFIG_APCI_3200
+	{PCI_DEVICE(APCI3200_BOARD_VENDOR_ID, 0x3000)},
+#endif
+#ifdef CONFIG_APCI_3300
+	{PCI_DEVICE(APCI3200_BOARD_VENDOR_ID, 0x3007)},
+#endif
+#ifdef CONFIG_APCI_1710
+	{PCI_DEVICE(APCI1710_BOARD_VENDOR_ID, APCI1710_BOARD_DEVICE_ID)},
+#endif
+#ifdef CONFIG_APCI_16XX
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x1009)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x100A)},
+#endif
+#ifdef CONFIG_APCI_3XXX
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3010)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x300F)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x300E)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3013)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3014)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3015)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3016)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3017)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3018)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3019)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x301A)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x301B)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x301C)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x301D)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x301E)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x301F)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3020)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3021)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3022)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3023)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x300B)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3002)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3003)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3004)},
+	{PCI_DEVICE(PCI_VENDOR_ID_ADDIDATA, 0x3024)},
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	{0}
 };
@@ -1019,7 +1110,11 @@ static const struct addi_board boardtypes[] = {
 #endif
 #ifdef CONFIG_APCI_16XX
 	{"apci1648",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x1009,
 			128,
 			0,
@@ -1075,7 +1170,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI16XX_InsnBitsWriteTTLIO},
 
 	{"apci1696",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x100A,
 			128,
 			0,
@@ -1132,7 +1231,11 @@ static const struct addi_board boardtypes[] = {
 #endif
 #ifdef CONFIG_APCI_3XXX
 	{"apci3000-16",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3010,
 			256,
 			256,
@@ -1188,7 +1291,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3000-8",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x300F,
 			256,
 			256,
@@ -1244,7 +1351,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3000-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x300E,
 			256,
 			256,
@@ -1300,7 +1411,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3006-16",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3013,
 			256,
 			256,
@@ -1356,7 +1471,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3006-8",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3014,
 			256,
 			256,
@@ -1412,7 +1531,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3006-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3015,
 			256,
 			256,
@@ -1468,7 +1591,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3010-16",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3016,
 			256,
 			256,
@@ -1524,7 +1651,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3010-8",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3017,
 			256,
 			256,
@@ -1580,7 +1711,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3010-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3018,
 			256,
 			256,
@@ -1636,7 +1771,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3016-16",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3019,
 			256,
 			256,
@@ -1692,7 +1831,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3016-8",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x301A,
 			256,
 			256,
@@ -1748,7 +1891,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3016-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x301B,
 			256,
 			256,
@@ -1804,7 +1951,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3100-16-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x301C,
 			256,
 			256,
@@ -1860,7 +2011,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3100-8-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x301D,
 			256,
 			256,
@@ -1916,7 +2071,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3106-16-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x301E,
 			256,
 			256,
@@ -1972,7 +2131,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3106-8-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x301F,
 			256,
 			256,
@@ -2028,7 +2191,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3110-16-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3020,
 			256,
 			256,
@@ -2084,7 +2251,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3110-8-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3021,
 			256,
 			256,
@@ -2140,7 +2311,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3116-16-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3022,
 			256,
 			256,
@@ -2196,7 +2371,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3116-8-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3023,
 			256,
 			256,
@@ -2252,7 +2431,11 @@ static const struct addi_board boardtypes[] = {
 		i_APCI3XXX_InsnWriteTTLIO},
 
 	{"apci3003",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x300B,
 			256,
 			256,
@@ -2307,7 +2490,11 @@ static const struct addi_board boardtypes[] = {
 		NULL},
 
 	{"apci3002-16",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3002,
 			256,
 			256,
@@ -2362,7 +2549,11 @@ static const struct addi_board boardtypes[] = {
 		NULL},
 
 	{"apci3002-8",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3003,
 			256,
 			256,
@@ -2417,7 +2608,11 @@ static const struct addi_board boardtypes[] = {
 		NULL},
 
 	{"apci3002-4",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3004,
 			256,
 			256,
@@ -2472,7 +2667,11 @@ static const struct addi_board boardtypes[] = {
 		NULL},
 
 	{"apci3500",
+<<<<<<< HEAD
 			0x15B8,
+=======
+			PCI_VENDOR_ID_ADDIDATA,
+>>>>>>> refs/remotes/origin/cm-10.0
 			0x3024,
 			256,
 			256,
@@ -2677,6 +2876,80 @@ static int i_ADDI_Attach(struct comedi_device *dev, struct comedi_devconfig *it)
 					     this_board->i_IorangeBase3);
 		printk("\nioremap end");
 	}
+=======
+  | Project   : ADDI DATA         | Compiler : GCC                        |
+  | Modulname : addi_common.c     | Version  : 2.96                       |
+  +-------------------------------+---------------------------------------+
+  | Author    :           | Date     :                                    |
+  +-----------------------------------------------------------------------+
+  | Description : ADDI COMMON Main Module                                 |
+  +-----------------------------------------------------------------------+
+*/
+
+static int i_ADDIDATA_InsnReadEeprom(struct comedi_device *dev,
+				     struct comedi_subdevice *s,
+				     struct comedi_insn *insn,
+				     unsigned int *data)
+{
+	const struct addi_board *this_board = comedi_board(dev);
+	struct addi_private *devpriv = dev->private;
+	unsigned short w_Address = CR_CHAN(insn->chanspec);
+	unsigned short w_Data;
+
+	w_Data = addi_eeprom_readw(devpriv->i_IobaseAmcc,
+		this_board->pc_EepromChip, 2 * w_Address);
+	data[0] = w_Data;
+
+	return insn->n;
+}
+
+static irqreturn_t v_ADDI_Interrupt(int irq, void *d)
+{
+	struct comedi_device *dev = d;
+	const struct addi_board *this_board = comedi_board(dev);
+
+	this_board->interrupt(irq, d);
+	return IRQ_RETVAL(1);
+}
+
+static int i_ADDI_Reset(struct comedi_device *dev)
+{
+	const struct addi_board *this_board = comedi_board(dev);
+
+	this_board->reset(dev);
+	return 0;
+}
+
+static int addi_auto_attach(struct comedi_device *dev,
+				      unsigned long context_unused)
+{
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	const struct addi_board *this_board = comedi_board(dev);
+	struct addi_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret, n_subdevices;
+	unsigned int dw_Dummy;
+
+	dev->board_name = this_board->pc_DriverName;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	ret = comedi_pci_enable(dev);
+	if (ret)
+		return ret;
+
+	if (this_board->i_IorangeBase1)
+		dev->iobase = pci_resource_start(pcidev, 1);
+	else
+		dev->iobase = pci_resource_start(pcidev, 0);
+
+	devpriv->iobase = dev->iobase;
+	devpriv->i_IobaseAmcc = pci_resource_start(pcidev, 0);
+	devpriv->i_IobaseAddon = pci_resource_start(pcidev, 2);
+	devpriv->i_IobaseReserved = pci_resource_start(pcidev, 3);
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize parameters that can be overridden in EEPROM */
 	devpriv->s_EeParameters.i_NbrAiChannel = this_board->i_NbrAiChannel;
@@ -2686,7 +2959,10 @@ static int i_ADDI_Attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	devpriv->s_EeParameters.i_NbrDiChannel = this_board->i_NbrDiChannel;
 	devpriv->s_EeParameters.i_NbrDoChannel = this_board->i_NbrDoChannel;
 	devpriv->s_EeParameters.i_DoMaxdata = this_board->i_DoMaxdata;
+<<<<<<< HEAD
 	devpriv->s_EeParameters.i_Dma = this_board->i_Dma;
+=======
+>>>>>>> refs/remotes/origin/master
 	devpriv->s_EeParameters.i_Timer = this_board->i_Timer;
 	devpriv->s_EeParameters.ui_MinAcquisitiontimeNs =
 		this_board->ui_MinAcquisitiontimeNs;
@@ -2695,6 +2971,7 @@ static int i_ADDI_Attach(struct comedi_device *dev, struct comedi_devconfig *it)
 
 	/* ## */
 
+<<<<<<< HEAD
 	if (irq > 0) {
 		if (request_irq(irq, v_ADDI_Interrupt, IRQF_SHARED,
 				this_board->pc_DriverName, dev) < 0) {
@@ -3106,4 +3383,168 @@ static int i_ADDIDATA_InsnReadEeprom(struct comedi_device *dev, struct comedi_su
 	/* multiplied by 2 bcozinput will be like 0,1,2...255 */
 	return insn->n;
 
+=======
+	if (pcidev->irq > 0) {
+		ret = request_irq(pcidev->irq, v_ADDI_Interrupt, IRQF_SHARED,
+				  dev->board_name, dev);
+		if (ret == 0)
+			dev->irq = pcidev->irq;
+	}
+
+	/*  Read eepeom and fill addi_board Structure */
+
+	if (this_board->i_PCIEeprom) {
+		if (!(strcmp(this_board->pc_EepromChip, "S5920"))) {
+			/*  Set 3 wait stait */
+			if (!(strcmp(dev->board_name, "apci035")))
+				outl(0x80808082, devpriv->i_IobaseAmcc + 0x60);
+			else
+				outl(0x83838383, devpriv->i_IobaseAmcc + 0x60);
+
+			/*  Enable the interrupt for the controller */
+			dw_Dummy = inl(devpriv->i_IobaseAmcc + 0x38);
+			outl(dw_Dummy | 0x2000, devpriv->i_IobaseAmcc + 0x38);
+		}
+		addi_eeprom_read_info(dev, pci_resource_start(pcidev, 0));
+	}
+
+	n_subdevices = 7;
+	ret = comedi_alloc_subdevices(dev, n_subdevices);
+	if (ret)
+		return ret;
+
+	/*  Allocate and Initialise AI Subdevice Structures */
+	s = &dev->subdevices[0];
+	if ((devpriv->s_EeParameters.i_NbrAiChannel)
+		|| (this_board->i_NbrAiChannelDiff)) {
+		dev->read_subdev = s;
+		s->type = COMEDI_SUBD_AI;
+		s->subdev_flags =
+			SDF_READABLE | SDF_COMMON | SDF_GROUND
+			| SDF_DIFF;
+		if (devpriv->s_EeParameters.i_NbrAiChannel) {
+			s->n_chan =
+				devpriv->s_EeParameters.i_NbrAiChannel;
+			devpriv->b_SingelDiff = 0;
+		} else {
+			s->n_chan = this_board->i_NbrAiChannelDiff;
+			devpriv->b_SingelDiff = 1;
+		}
+		s->maxdata = devpriv->s_EeParameters.i_AiMaxdata;
+		s->len_chanlist = this_board->i_AiChannelList;
+		s->range_table = this_board->pr_AiRangelist;
+
+		s->insn_config = this_board->ai_config;
+		s->insn_read = this_board->ai_read;
+		s->insn_write = this_board->ai_write;
+		s->insn_bits = this_board->ai_bits;
+		s->do_cmdtest = this_board->ai_cmdtest;
+		s->do_cmd = this_board->ai_cmd;
+		s->cancel = this_board->ai_cancel;
+
+	} else {
+		s->type = COMEDI_SUBD_UNUSED;
+	}
+
+	/*  Allocate and Initialise AO Subdevice Structures */
+	s = &dev->subdevices[1];
+	if (devpriv->s_EeParameters.i_NbrAoChannel) {
+		s->type = COMEDI_SUBD_AO;
+		s->subdev_flags = SDF_WRITEABLE | SDF_GROUND | SDF_COMMON;
+		s->n_chan = devpriv->s_EeParameters.i_NbrAoChannel;
+		s->maxdata = devpriv->s_EeParameters.i_AoMaxdata;
+		s->len_chanlist =
+			devpriv->s_EeParameters.i_NbrAoChannel;
+		s->insn_write = this_board->ao_write;
+	} else {
+		s->type = COMEDI_SUBD_UNUSED;
+	}
+	/*  Allocate and Initialise DI Subdevice Structures */
+	s = &dev->subdevices[2];
+	if (devpriv->s_EeParameters.i_NbrDiChannel) {
+		s->type = COMEDI_SUBD_DI;
+		s->subdev_flags = SDF_READABLE | SDF_GROUND | SDF_COMMON;
+		s->n_chan = devpriv->s_EeParameters.i_NbrDiChannel;
+		s->maxdata = 1;
+		s->len_chanlist =
+			devpriv->s_EeParameters.i_NbrDiChannel;
+		s->range_table = &range_digital;
+		s->insn_config = this_board->di_config;
+		s->insn_read = this_board->di_read;
+		s->insn_write = this_board->di_write;
+		s->insn_bits = this_board->di_bits;
+	} else {
+		s->type = COMEDI_SUBD_UNUSED;
+	}
+	/*  Allocate and Initialise DO Subdevice Structures */
+	s = &dev->subdevices[3];
+	if (devpriv->s_EeParameters.i_NbrDoChannel) {
+		s->type = COMEDI_SUBD_DO;
+		s->subdev_flags =
+			SDF_READABLE | SDF_WRITEABLE | SDF_GROUND | SDF_COMMON;
+		s->n_chan = devpriv->s_EeParameters.i_NbrDoChannel;
+		s->maxdata = devpriv->s_EeParameters.i_DoMaxdata;
+		s->len_chanlist =
+			devpriv->s_EeParameters.i_NbrDoChannel;
+		s->range_table = &range_digital;
+
+		/* insn_config - for digital output memory */
+		s->insn_config = this_board->do_config;
+		s->insn_write = this_board->do_write;
+		s->insn_bits = this_board->do_bits;
+		s->insn_read = this_board->do_read;
+	} else {
+		s->type = COMEDI_SUBD_UNUSED;
+	}
+
+	/*  Allocate and Initialise Timer Subdevice Structures */
+	s = &dev->subdevices[4];
+	if (devpriv->s_EeParameters.i_Timer) {
+		s->type = COMEDI_SUBD_TIMER;
+		s->subdev_flags = SDF_WRITEABLE | SDF_GROUND | SDF_COMMON;
+		s->n_chan = 1;
+		s->maxdata = 0;
+		s->len_chanlist = 1;
+		s->range_table = &range_digital;
+
+		s->insn_write = this_board->timer_write;
+		s->insn_read = this_board->timer_read;
+		s->insn_config = this_board->timer_config;
+		s->insn_bits = this_board->timer_bits;
+	} else {
+		s->type = COMEDI_SUBD_UNUSED;
+	}
+
+	/*  Allocate and Initialise TTL */
+	s = &dev->subdevices[5];
+	s->type = COMEDI_SUBD_UNUSED;
+
+	/* EEPROM */
+	s = &dev->subdevices[6];
+	if (this_board->i_PCIEeprom) {
+		s->type = COMEDI_SUBD_MEMORY;
+		s->subdev_flags = SDF_READABLE | SDF_INTERNAL;
+		s->n_chan = 256;
+		s->maxdata = 0xffff;
+		s->insn_read = i_ADDIDATA_InsnReadEeprom;
+	} else {
+		s->type = COMEDI_SUBD_UNUSED;
+	}
+
+	i_ADDI_Reset(dev);
+	return 0;
+}
+
+static void i_ADDI_Detach(struct comedi_device *dev)
+{
+	struct addi_private *devpriv = dev->private;
+
+	if (devpriv) {
+		if (dev->iobase)
+			i_ADDI_Reset(dev);
+		if (dev->irq)
+			free_irq(dev->irq, dev);
+	}
+	comedi_pci_disable(dev);
+>>>>>>> refs/remotes/origin/master
 }

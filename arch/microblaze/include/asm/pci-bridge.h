@@ -13,6 +13,8 @@
 
 struct device_node;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum {
 	/* Force re-assigning all resources (ignore firmware
 	 * setup completely)
@@ -35,6 +37,22 @@ enum {
 	/* ... except for domain 0 */
 	PCI_COMPAT_DOMAIN_0		= 0x00000020,
 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_PCI
+extern struct list_head hose_list;
+extern int pcibios_vaddr_is_ioport(void __iomem *address);
+#else
+static inline int pcibios_vaddr_is_ioport(void __iomem *address)
+{
+	return 0;
+}
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Structure of a PCI controller (host bridge)
@@ -110,6 +128,8 @@ static inline struct pci_controller *pci_bus_to_host(const struct pci_bus *bus)
 	return bus->sysdata;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct device_node *pci_bus_to_OF_node(struct pci_bus *bus)
 {
 	struct pci_controller *host;
@@ -120,6 +140,10 @@ static inline struct device_node *pci_bus_to_OF_node(struct pci_bus *bus)
 	return host ? host->dn : NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int isa_vaddr_is_ioport(void __iomem *address)
 {
 	/* No specific ISA handling on ppc32 at this stage, it
@@ -162,6 +186,8 @@ extern void pci_process_bridge_OF_ranges(struct pci_controller *hose,
 /* Allocate & free a PCI host bridge structure */
 extern struct pci_controller *pcibios_alloc_controller(struct device_node *dev);
 extern void pcibios_free_controller(struct pci_controller *phb);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void pcibios_setup_phb_resources(struct pci_controller *hose);
 
 #ifdef CONFIG_PCI
@@ -198,6 +224,10 @@ static inline int pci_has_flag(int flag)
 	return 0;
 }
 #endif	/* CONFIG_PCI */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __KERNEL__ */
 #endif	/* _ASM_MICROBLAZE_PCI_BRIDGE_H */

@@ -23,7 +23,15 @@ OPTIONS
 -------
 -i <file>::
 --input=<file>::
+<<<<<<< HEAD
+<<<<<<< HEAD
 	Select the input file (default: perf.data)
+=======
+	Select the input file (default: perf.data unless stdin is a fifo)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Select the input file (default: perf.data unless stdin is a fifo)
+>>>>>>> refs/remotes/origin/master
 
 --caller::
 	Show per-callsite statistics

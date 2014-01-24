@@ -96,9 +96,15 @@ static int w1_f2d_readblock(struct w1_slave *sl, int off, int count, char *buf)
 	return -1;
 }
 
+<<<<<<< HEAD
 static ssize_t w1_f2d_read_bin(struct file *filp, struct kobject *kobj,
 			       struct bin_attribute *bin_attr,
 			       char *buf, loff_t off, size_t count)
+=======
+static ssize_t eeprom_read(struct file *filp, struct kobject *kobj,
+			   struct bin_attribute *bin_attr, char *buf,
+			   loff_t off, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct w1_slave *sl = kobj_to_w1_slave(kobj);
 	int todo = count;
@@ -107,7 +113,11 @@ static ssize_t w1_f2d_read_bin(struct file *filp, struct kobject *kobj,
 	if (count == 0)
 		return 0;
 
+<<<<<<< HEAD
 	mutex_lock(&sl->master->mutex);
+=======
+	mutex_lock(&sl->master->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	/* read directly from the EEPROM in chunks of W1_F2D_READ_MAXLEN */
 	while (todo > 0) {
@@ -126,7 +136,11 @@ static ssize_t w1_f2d_read_bin(struct file *filp, struct kobject *kobj,
 		off += W1_F2D_READ_MAXLEN;
 	}
 
+<<<<<<< HEAD
 	mutex_unlock(&sl->master->mutex);
+=======
+	mutex_unlock(&sl->master->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 }
@@ -202,9 +216,15 @@ retry:
 	return 0;
 }
 
+<<<<<<< HEAD
 static ssize_t w1_f2d_write_bin(struct file *filp, struct kobject *kobj,
 				struct bin_attribute *bin_attr,
 				char *buf, loff_t off, size_t count)
+=======
+static ssize_t eeprom_write(struct file *filp, struct kobject *kobj,
+			    struct bin_attribute *bin_attr, char *buf,
+			    loff_t off, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct w1_slave *sl = kobj_to_w1_slave(kobj);
 	int addr, len;
@@ -214,7 +234,11 @@ static ssize_t w1_f2d_write_bin(struct file *filp, struct kobject *kobj,
 	if (count == 0)
 		return 0;
 
+<<<<<<< HEAD
 	mutex_lock(&sl->master->mutex);
+=======
+	mutex_lock(&sl->master->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	/* Can only write data in blocks of the size of the scratchpad */
 	addr = off;
@@ -259,11 +283,16 @@ static ssize_t w1_f2d_write_bin(struct file *filp, struct kobject *kobj,
 	}
 
 out_up:
+<<<<<<< HEAD
 	mutex_unlock(&sl->master->mutex);
+=======
+	mutex_unlock(&sl->master->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 }
 
+<<<<<<< HEAD
 static struct bin_attribute w1_f2d_bin_attr = {
 	.attr = {
 		.name = "eeprom",
@@ -287,6 +316,26 @@ static void w1_f2d_remove_slave(struct w1_slave *sl)
 static struct w1_family_ops w1_f2d_fops = {
 	.add_slave      = w1_f2d_add_slave,
 	.remove_slave   = w1_f2d_remove_slave,
+=======
+static BIN_ATTR_RW(eeprom, W1_F2D_EEPROM_SIZE);
+
+static struct bin_attribute *w1_f2d_bin_attrs[] = {
+	&bin_attr_eeprom,
+	NULL,
+};
+
+static const struct attribute_group w1_f2d_group = {
+	.bin_attrs = w1_f2d_bin_attrs,
+};
+
+static const struct attribute_group *w1_f2d_groups[] = {
+	&w1_f2d_group,
+	NULL,
+};
+
+static struct w1_family_ops w1_f2d_fops = {
+	.groups		= w1_f2d_groups,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct w1_family w1_family_2d = {
@@ -310,3 +359,7 @@ module_exit(w1_f2d_fini);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Bernhard Weirich <bernhard.weirich@riedel.net>");
 MODULE_DESCRIPTION("w1 family 2d driver for DS2431, 1kb EEPROM");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("w1-family-" __stringify(W1_EEPROM_DS2431));
+>>>>>>> refs/remotes/origin/master

@@ -13,6 +13,11 @@
 
 /include/ "mpc5200b.dtsi"
 
+<<<<<<< HEAD
+=======
+&gpt0 { fsl,has-wdt; };
+
+>>>>>>> refs/remotes/origin/master
 / {
 	model = "fsl,media5200";
 	compatible = "fsl,media5200";
@@ -41,10 +46,13 @@
 	soc5200@f0000000 {
 		bus-frequency = <132000000>;// 132 MHz
 
+<<<<<<< HEAD
 		timer@600 {	// General Purpose Timer
 			fsl,has-wdt;
 		};
 
+=======
+>>>>>>> refs/remotes/origin/master
 		psc@2000 {	// PSC1
 			status = "disabled";
 		};

@@ -59,8 +59,19 @@
 #include <asm/uaccess.h>
 #include <asm/mmu_context.h>
 #include <asm/tlb.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "internal.h"
 
+=======
+#include <asm/exec.h>
+
+#include <trace/events/task.h>
+#include "internal.h"
+
+#include <trace/events/sched.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int core_uses_pid;
 char core_pattern[CORENAME_MAX_SIZE] = "core";
 unsigned int core_pipe_limit;
@@ -77,15 +88,46 @@ static atomic_t call_count = ATOMIC_INIT(1);
 static LIST_HEAD(formats);
 static DEFINE_RWLOCK(binfmt_lock);
 
+<<<<<<< HEAD
 int __register_binfmt(struct linux_binfmt * fmt, int insert)
 {
 	if (!fmt)
 		return -EINVAL;
+=======
+void __register_binfmt(struct linux_binfmt * fmt, int insert)
+{
+	BUG_ON(!fmt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <trace/events/task.h>
+#include "internal.h"
+#include "coredump.h"
+
+#include <trace/events/sched.h>
+
+int suid_dumpable = 0;
+
+static LIST_HEAD(formats);
+static DEFINE_RWLOCK(binfmt_lock);
+
+void __register_binfmt(struct linux_binfmt * fmt, int insert)
+{
+	BUG_ON(!fmt);
+	if (WARN_ON(!fmt->load_binary))
+		return;
+>>>>>>> refs/remotes/origin/master
 	write_lock(&binfmt_lock);
 	insert ? list_add(&fmt->lh, &formats) :
 		 list_add_tail(&fmt->lh, &formats);
 	write_unlock(&binfmt_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;	
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 EXPORT_SYMBOL(__register_binfmt);
@@ -112,26 +154,45 @@ static inline void put_binfmt(struct linux_binfmt * fmt)
  */
 SYSCALL_DEFINE1(uselib, const char __user *, library)
 {
+<<<<<<< HEAD
 	struct file *file;
 	char *tmp = getname(library);
+=======
+	struct linux_binfmt *fmt;
+	struct file *file;
+	struct filename *tmp = getname(library);
+>>>>>>> refs/remotes/origin/master
 	int error = PTR_ERR(tmp);
 	static const struct open_flags uselib_flags = {
 		.open_flag = O_LARGEFILE | O_RDONLY | __FMODE_EXEC,
 		.acc_mode = MAY_READ | MAY_EXEC | MAY_OPEN,
+<<<<<<< HEAD
 		.intent = LOOKUP_OPEN
+=======
+		.intent = LOOKUP_OPEN,
+		.lookup_flags = LOOKUP_FOLLOW,
+>>>>>>> refs/remotes/origin/master
 	};
 
 	if (IS_ERR(tmp))
 		goto out;
 
+<<<<<<< HEAD
 	file = do_filp_open(AT_FDCWD, tmp, &uselib_flags, LOOKUP_FOLLOW);
+=======
+	file = do_filp_open(AT_FDCWD, tmp, &uselib_flags);
+>>>>>>> refs/remotes/origin/master
 	putname(tmp);
 	error = PTR_ERR(file);
 	if (IS_ERR(file))
 		goto out;
 
 	error = -EINVAL;
+<<<<<<< HEAD
 	if (!S_ISREG(file->f_path.dentry->d_inode->i_mode))
+=======
+	if (!S_ISREG(file_inode(file)->i_mode))
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 
 	error = -EACCES;
@@ -141,6 +202,7 @@ SYSCALL_DEFINE1(uselib, const char __user *, library)
 	fsnotify_open(file);
 
 	error = -ENOEXEC;
+<<<<<<< HEAD
 	if(file->f_op) {
 		struct linux_binfmt * fmt;
 
@@ -159,6 +221,23 @@ SYSCALL_DEFINE1(uselib, const char __user *, library)
 		}
 		read_unlock(&binfmt_lock);
 	}
+=======
+
+	read_lock(&binfmt_lock);
+	list_for_each_entry(fmt, &formats, lh) {
+		if (!fmt->load_shlib)
+			continue;
+		if (!try_module_get(fmt->module))
+			continue;
+		read_unlock(&binfmt_lock);
+		error = fmt->load_shlib(file);
+		read_lock(&binfmt_lock);
+		put_binfmt(fmt);
+		if (error != -ENOEXEC)
+			break;
+	}
+	read_unlock(&binfmt_lock);
+>>>>>>> refs/remotes/origin/master
 exit:
 	fput(file);
 out:
@@ -181,6 +260,8 @@ static void acct_arg_size(struct linux_binprm *bprm, unsigned long pages)
 		return;
 
 	bprm->vma_pages = pages;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef SPLIT_RSS_COUNTING
 	add_mm_counter(mm, MM_ANONPAGES, diff);
@@ -189,6 +270,12 @@ static void acct_arg_size(struct linux_binprm *bprm, unsigned long pages)
 	add_mm_counter(mm, MM_ANONPAGES, diff);
 	spin_unlock(&mm->page_table_lock);
 #endif
+=======
+	add_mm_counter(mm, MM_ANONPAGES, diff);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	add_mm_counter(mm, MM_ANONPAGES, diff);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct page *get_arg_page(struct linux_binprm *bprm, unsigned long pos,
@@ -277,7 +364,12 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
 	 * use STACK_TOP because that can depend on attributes which aren't
 	 * configured yet.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(VM_STACK_FLAGS & VM_STACK_INCOMPLETE_SETUP);
+=======
+	BUILD_BUG_ON(VM_STACK_FLAGS & VM_STACK_INCOMPLETE_SETUP);
+>>>>>>> refs/remotes/origin/cm-10.0
 	vma->vm_end = STACK_TOP_MAX;
 	vma->vm_start = vma->vm_end - PAGE_SIZE;
 	vma->vm_flags = VM_STACK_FLAGS | VM_STACK_INCOMPLETE_SETUP;
@@ -288,6 +380,15 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
 	if (err)
 		goto err;
 
+=======
+	BUILD_BUG_ON(VM_STACK_FLAGS & VM_STACK_INCOMPLETE_SETUP);
+	vma->vm_end = STACK_TOP_MAX;
+	vma->vm_start = vma->vm_end - PAGE_SIZE;
+	vma->vm_flags = VM_SOFTDIRTY | VM_STACK_FLAGS | VM_STACK_INCOMPLETE_SETUP;
+	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+	INIT_LIST_HEAD(&vma->anon_vma_chain);
+
+>>>>>>> refs/remotes/origin/master
 	err = insert_vm_struct(mm, vma);
 	if (err)
 		goto err;
@@ -374,7 +475,11 @@ static bool valid_arg_len(struct linux_binprm *bprm, long len)
  * flags, permissions, and offset, so we use temporary values.  We'll update
  * them later in setup_arg_pages().
  */
+<<<<<<< HEAD
 int bprm_mm_init(struct linux_binprm *bprm)
+=======
+static int bprm_mm_init(struct linux_binprm *bprm)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct mm_struct *mm = NULL;
@@ -410,7 +515,11 @@ struct user_arg_ptr {
 	union {
 		const char __user *const __user *native;
 #ifdef CONFIG_COMPAT
+<<<<<<< HEAD
 		compat_uptr_t __user *compat;
+=======
+		const compat_uptr_t __user *compat;
+>>>>>>> refs/remotes/origin/master
 #endif
 	} ptr;
 };
@@ -453,8 +562,14 @@ static int count(struct user_arg_ptr argv, int max)
 			if (IS_ERR(p))
 				return -EFAULT;
 
+<<<<<<< HEAD
 			if (i++ >= max)
 				return -E2BIG;
+=======
+			if (i >= max)
+				return -E2BIG;
+			++i;
+>>>>>>> refs/remotes/origin/master
 
 			if (fatal_signal_pending(current))
 				return -ERESTARTNOHAND;
@@ -621,17 +736,37 @@ static int shift_arg_pages(struct vm_area_struct *vma, unsigned long shift)
 	 * process cleanup to remove whatever mess we made.
 	 */
 	if (length != move_page_tables(vma, old_start,
+<<<<<<< HEAD
 				       vma, new_start, length))
 		return -ENOMEM;
 
 	lru_add_drain();
 	tlb_gather_mmu(&tlb, mm, 0);
+=======
+				       vma, new_start, length, false))
+		return -ENOMEM;
+
+	lru_add_drain();
+	tlb_gather_mmu(&tlb, mm, old_start, old_end);
+>>>>>>> refs/remotes/origin/master
 	if (new_end > old_start) {
 		/*
 		 * when the old and new regions overlap clear from new_end.
 		 */
 		free_pgd_range(&tlb, new_end, old_end, new_end,
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			vma->vm_next ? vma->vm_next->vm_start : 0);
+=======
+			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
+>>>>>>> refs/remotes/origin/master
+=======
+			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	} else {
 		/*
 		 * otherwise, clean from old_start; this is done to not touch
@@ -640,9 +775,23 @@ static int shift_arg_pages(struct vm_area_struct *vma, unsigned long shift)
 		 * for the others its just a little faster.
 		 */
 		free_pgd_range(&tlb, old_start, old_end, new_end,
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 			vma->vm_next ? vma->vm_next->vm_start : 0);
+=======
+			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	tlb_finish_mmu(&tlb, new_end, old_end);
+=======
+			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
+	}
+	tlb_finish_mmu(&tlb, old_start, old_end);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Shrink the vma to just the new range.  Always succeeds.
@@ -770,6 +919,7 @@ struct file *open_exec(const char *name)
 {
 	struct file *file;
 	int err;
+<<<<<<< HEAD
 	static const struct open_flags open_exec_flags = {
 		.open_flag = O_LARGEFILE | O_RDONLY | __FMODE_EXEC,
 		.acc_mode = MAY_EXEC | MAY_OPEN,
@@ -777,11 +927,26 @@ struct file *open_exec(const char *name)
 	};
 
 	file = do_filp_open(AT_FDCWD, name, &open_exec_flags, LOOKUP_FOLLOW);
+=======
+	struct filename tmp = { .name = name };
+	static const struct open_flags open_exec_flags = {
+		.open_flag = O_LARGEFILE | O_RDONLY | __FMODE_EXEC,
+		.acc_mode = MAY_EXEC | MAY_OPEN,
+		.intent = LOOKUP_OPEN,
+		.lookup_flags = LOOKUP_FOLLOW,
+	};
+
+	file = do_filp_open(AT_FDCWD, &tmp, &open_exec_flags);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(file))
 		goto out;
 
 	err = -EACCES;
+<<<<<<< HEAD
 	if (!S_ISREG(file->f_path.dentry->d_inode->i_mode))
+=======
+	if (!S_ISREG(file_inode(file)->i_mode))
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 
 	if (file->f_path.mnt->mnt_flags & MNT_NOEXEC)
@@ -819,6 +984,18 @@ int kernel_read(struct file *file, loff_t offset,
 
 EXPORT_SYMBOL(kernel_read);
 
+<<<<<<< HEAD
+=======
+ssize_t read_code(struct file *file, unsigned long addr, loff_t pos, size_t len)
+{
+	ssize_t res = file->f_op->read(file, (void __user *)addr, len, &pos);
+	if (res > 0)
+		flush_icache_range(addr, addr + len);
+	return res;
+}
+EXPORT_SYMBOL(read_code);
+
+>>>>>>> refs/remotes/origin/master
 static int exec_mmap(struct mm_struct *mm)
 {
 	struct task_struct *tsk;
@@ -827,10 +1004,29 @@ static int exec_mmap(struct mm_struct *mm)
 	/* Notify parent that we're no longer interested in the old VM */
 	tsk = current;
 	old_mm = current->mm;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sync_mm_rss(tsk, old_mm);
 	mm_release(tsk, old_mm);
 
 	if (old_mm) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	mm_release(tsk, old_mm);
+
+	if (old_mm) {
+		sync_mm_rss(old_mm);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		/*
 		 * Make sure that if there is a core dump in progress
 		 * for the old mm, we get out and die instead of going
@@ -848,15 +1044,29 @@ static int exec_mmap(struct mm_struct *mm)
 	tsk->mm = mm;
 	tsk->active_mm = mm;
 	activate_mm(active_mm, mm);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (old_mm && tsk->signal->oom_score_adj == OOM_SCORE_ADJ_MIN) {
 		atomic_dec(&old_mm->oom_disable_count);
 		atomic_inc(&tsk->mm->oom_disable_count);
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	task_unlock(tsk);
 	arch_pick_mmap_layout(mm);
 	if (old_mm) {
 		up_read(&old_mm->mmap_sem);
 		BUG_ON(active_mm != old_mm);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		setmax_mm_hiwater_rss(&tsk->signal->maxrss, old_mm);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		setmax_mm_hiwater_rss(&tsk->signal->maxrss, old_mm);
+>>>>>>> refs/remotes/origin/master
 		mm_update_next_owner(old_mm);
 		mmput(old_mm);
 		return 0;
@@ -899,9 +1109,17 @@ static int de_thread(struct task_struct *tsk)
 		sig->notify_count--;
 
 	while (sig->notify_count) {
+<<<<<<< HEAD
 		__set_current_state(TASK_UNINTERRUPTIBLE);
 		spin_unlock_irq(lock);
 		schedule();
+=======
+		__set_current_state(TASK_KILLABLE);
+		spin_unlock_irq(lock);
+		schedule();
+		if (unlikely(__fatal_signal_pending(tsk)))
+			goto killed;
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irq(lock);
 	}
 	spin_unlock_irq(lock);
@@ -916,12 +1134,30 @@ static int de_thread(struct task_struct *tsk)
 
 		sig->notify_count = -1;	/* for exit_notify() */
 		for (;;) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			threadgroup_change_begin(tsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 			write_lock_irq(&tasklist_lock);
 			if (likely(leader->exit_state))
 				break;
 			__set_current_state(TASK_UNINTERRUPTIBLE);
 			write_unlock_irq(&tasklist_lock);
+			threadgroup_change_end(tsk);
 			schedule();
+=======
+			threadgroup_change_begin(tsk);
+			write_lock_irq(&tasklist_lock);
+			if (likely(leader->exit_state))
+				break;
+			__set_current_state(TASK_KILLABLE);
+			write_unlock_irq(&tasklist_lock);
+			threadgroup_change_end(tsk);
+			schedule();
+			if (unlikely(__fatal_signal_pending(tsk)))
+				goto killed;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/*
@@ -935,6 +1171,10 @@ static int de_thread(struct task_struct *tsk)
 		 * also take its birthdate (always earlier than our own).
 		 */
 		tsk->start_time = leader->start_time;
+<<<<<<< HEAD
+=======
+		tsk->real_start_time = leader->real_start_time;
+>>>>>>> refs/remotes/origin/master
 
 		BUG_ON(!same_thread_group(leader, tsk));
 		BUG_ON(has_group_leader_pid(tsk));
@@ -950,9 +1190,14 @@ static int de_thread(struct task_struct *tsk)
 		 * Note: The old leader also uses this pid until release_task
 		 *       is called.  Odd but simple and correct.
 		 */
+<<<<<<< HEAD
 		detach_pid(tsk, PIDTYPE_PID);
 		tsk->pid = leader->pid;
 		attach_pid(tsk, PIDTYPE_PID,  task_pid(leader));
+=======
+		tsk->pid = leader->pid;
+		change_pid(tsk, PIDTYPE_PID, task_pid(leader));
+>>>>>>> refs/remotes/origin/master
 		transfer_pid(leader, tsk, PIDTYPE_PGID);
 		transfer_pid(leader, tsk, PIDTYPE_SID);
 
@@ -963,10 +1208,37 @@ static int de_thread(struct task_struct *tsk)
 		leader->group_leader = tsk;
 
 		tsk->exit_signal = SIGCHLD;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		BUG_ON(leader->exit_state != EXIT_ZOMBIE);
 		leader->exit_state = EXIT_DEAD;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		leader->exit_signal = -1;
+
+		BUG_ON(leader->exit_state != EXIT_ZOMBIE);
+		leader->exit_state = EXIT_DEAD;
+
+		/*
+		 * We are going to release_task()->ptrace_unlink() silently,
+		 * the tracer can sleep in do_wait(). EXIT_DEAD guarantees
+		 * the tracer wont't block again waiting for this thread.
+		 */
+		if (unlikely(leader->ptrace))
+			__wake_up_parent(leader, leader->parent);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		write_unlock_irq(&tasklist_lock);
+<<<<<<< HEAD
+=======
+		write_unlock_irq(&tasklist_lock);
+		threadgroup_change_end(tsk);
+>>>>>>> refs/remotes/origin/master
+=======
+		threadgroup_change_end(tsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		release_task(leader);
 	}
@@ -975,8 +1247,18 @@ static int de_thread(struct task_struct *tsk)
 	sig->notify_count = 0;
 
 no_thread_group:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (current->mm)
 		setmax_mm_hiwater_rss(&sig->maxrss, current->mm);
+=======
+	/* we have changed execution domain */
+	tsk->exit_signal = SIGCHLD;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* we have changed execution domain */
+	tsk->exit_signal = SIGCHLD;
+>>>>>>> refs/remotes/origin/master
 
 	exit_itimers(sig);
 	flush_itimer_signals();
@@ -1006,6 +1288,7 @@ no_thread_group:
 
 	BUG_ON(!thread_group_leader(tsk));
 	return 0;
+<<<<<<< HEAD
 }
 
 /*
@@ -1022,7 +1305,12 @@ static void flush_old_files(struct files_struct * files)
 		unsigned long set, i;
 
 		j++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		i = j * __NFDBITS;
+=======
+		i = j * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-11.0
 		fdt = files_fdtable(files);
 		if (i >= fdt->max_fds)
 			break;
@@ -1030,6 +1318,16 @@ static void flush_old_files(struct files_struct * files)
 		if (!set)
 			continue;
 		fdt->close_on_exec->fds_bits[j] = 0;
+=======
+		i = j * BITS_PER_LONG;
+		fdt = files_fdtable(files);
+		if (i >= fdt->max_fds)
+			break;
+		set = fdt->close_on_exec[j];
+		if (!set)
+			continue;
+		fdt->close_on_exec[j] = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock(&files->file_lock);
 		for ( ; set ; i++,set >>= 1) {
 			if (set & 1) {
@@ -1040,6 +1338,16 @@ static void flush_old_files(struct files_struct * files)
 
 	}
 	spin_unlock(&files->file_lock);
+=======
+
+killed:
+	/* protects against exit_notify() and __exit_signal() */
+	read_lock(&tasklist_lock);
+	sig->group_exit_task = NULL;
+	sig->notify_count = 0;
+	read_unlock(&tasklist_lock);
+	return -EAGAIN;
+>>>>>>> refs/remotes/origin/master
 }
 
 char *get_task_comm(char *buf, struct task_struct *tsk)
@@ -1052,10 +1360,16 @@ char *get_task_comm(char *buf, struct task_struct *tsk)
 }
 EXPORT_SYMBOL_GPL(get_task_comm);
 
+<<<<<<< HEAD
 void set_task_comm(struct task_struct *tsk, char *buf)
 {
 	task_lock(tsk);
 
+<<<<<<< HEAD
+=======
+	trace_task_rename(tsk, buf);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Threads may access current->comm without holding
 	 * the task lock, so write the string carefully.
@@ -1064,11 +1378,46 @@ void set_task_comm(struct task_struct *tsk, char *buf)
 	 */
 	memset(tsk->comm, 0, TASK_COMM_LEN);
 	wmb();
+=======
+/*
+ * These functions flushes out all traces of the currently running executable
+ * so that a new one can be started
+ */
+
+void set_task_comm(struct task_struct *tsk, char *buf)
+{
+	task_lock(tsk);
+	trace_task_rename(tsk, buf);
+>>>>>>> refs/remotes/origin/master
 	strlcpy(tsk->comm, buf, sizeof(tsk->comm));
 	task_unlock(tsk);
 	perf_event_comm(tsk);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void filename_to_taskname(char *tcomm, const char *fn, unsigned int len)
+{
+	int i, ch;
+
+	/* Copies the binary name from after last slash */
+	for (i = 0; (ch = *(fn++)) != '\0';) {
+		if (ch == '/')
+			i = 0; /* overwrite what we wrote */
+		else
+			if (i < len - 1)
+				tcomm[i++] = ch;
+	}
+	tcomm[i] = '\0';
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int flush_old_exec(struct linux_binprm * bprm)
 {
 	int retval;
@@ -1083,6 +1432,14 @@ int flush_old_exec(struct linux_binprm * bprm)
 
 	set_mm_exe_file(bprm->mm, bprm->file);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	filename_to_taskname(bprm->tcomm, bprm->filename, sizeof(bprm->tcomm));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	filename_to_taskname(bprm->tcomm, bprm->filename, sizeof(bprm->tcomm));
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Release all of the old mmap stuff
 	 */
@@ -1094,7 +1451,22 @@ int flush_old_exec(struct linux_binprm * bprm)
 	bprm->mm = NULL;		/* We're using it now */
 
 	set_fs(USER_DS);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	current->flags &= ~(PF_RANDOMIZE | PF_KTHREAD);
+=======
+	current->flags &=
+		~(PF_RANDOMIZE | PF_FORKNOEXEC | PF_KTHREAD | PF_NOFREEZE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	current->flags &=
+		~(PF_RANDOMIZE | PF_FORKNOEXEC | PF_KTHREAD | PF_NOFREEZE);
+>>>>>>> refs/remotes/origin/master
+=======
+	current->flags &=
+		~(PF_RANDOMIZE | PF_FORKNOEXEC | PF_KTHREAD | PF_NOFREEZE);
+>>>>>>> refs/remotes/origin/cm-11.0
 	flush_thread();
 	current->personality &= ~bprm->per_clear;
 
@@ -1105,22 +1477,45 @@ out:
 }
 EXPORT_SYMBOL(flush_old_exec);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void setup_new_exec(struct linux_binprm * bprm)
 {
 	int i, ch;
 	const char *name;
 	char tcomm[sizeof(current->comm)];
 
+=======
+void would_dump(struct linux_binprm *bprm, struct file *file)
+{
+	if (inode_permission(file->f_path.dentry->d_inode, MAY_READ) < 0)
+=======
+void would_dump(struct linux_binprm *bprm, struct file *file)
+{
+	if (inode_permission(file_inode(file), MAY_READ) < 0)
+>>>>>>> refs/remotes/origin/master
+		bprm->interp_flags |= BINPRM_FLAGS_ENFORCE_NONDUMP;
+}
+EXPORT_SYMBOL(would_dump);
+
+void setup_new_exec(struct linux_binprm * bprm)
+{
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	arch_pick_mmap_layout(current->mm);
 
 	/* This is the point of no return */
 	current->sas_ss_sp = current->sas_ss_size = 0;
 
+<<<<<<< HEAD
 	if (current_euid() == current_uid() && current_egid() == current_gid())
 		set_dumpable(current->mm, 1);
 	else
 		set_dumpable(current->mm, suid_dumpable);
 
+<<<<<<< HEAD
 	name = bprm->filename;
 
 	/* Copies the binary name from after last slash */
@@ -1133,6 +1528,17 @@ void setup_new_exec(struct linux_binprm * bprm)
 	}
 	tcomm[i] = '\0';
 	set_task_comm(current, tcomm);
+=======
+	set_task_comm(current, bprm->tcomm);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (uid_eq(current_euid(), current_uid()) && gid_eq(current_egid(), current_gid()))
+		set_dumpable(current->mm, SUID_DUMP_USER);
+	else
+		set_dumpable(current->mm, suid_dumpable);
+
+	set_task_comm(current, bprm->tcomm);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set the new mm task size. We have to do that late because it may
 	 * depend on TIF_32BIT which is only updated in flush_thread() on
@@ -1141,12 +1547,28 @@ void setup_new_exec(struct linux_binprm * bprm)
 	current->mm->task_size = TASK_SIZE;
 
 	/* install the new credentials */
+<<<<<<< HEAD
 	if (bprm->cred->uid != current_euid() ||
 	    bprm->cred->gid != current_egid()) {
 		current->pdeath_signal = 0;
+<<<<<<< HEAD
 	} else if (file_permission(bprm->file, MAY_READ) ||
 		   bprm->interp_flags & BINPRM_FLAGS_ENFORCE_NONDUMP) {
 		set_dumpable(current->mm, suid_dumpable);
+=======
+=======
+	if (!uid_eq(bprm->cred->uid, current_euid()) ||
+	    !gid_eq(bprm->cred->gid, current_egid())) {
+		current->pdeath_signal = 0;
+>>>>>>> refs/remotes/origin/master
+	} else {
+		would_dump(bprm, bprm->file);
+		if (bprm->interp_flags & BINPRM_FLAGS_ENFORCE_NONDUMP)
+			set_dumpable(current->mm, suid_dumpable);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* An exec changes our domain. We are no longer part of the thread
@@ -1155,7 +1577,11 @@ void setup_new_exec(struct linux_binprm * bprm)
 	current->self_exec_id++;
 			
 	flush_signal_handlers(current, 0);
+<<<<<<< HEAD
 	flush_old_files(current->files);
+=======
+	do_close_on_exec(current->files);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(setup_new_exec);
 
@@ -1236,13 +1662,43 @@ EXPORT_SYMBOL(install_exec_creds);
  * - the caller must hold ->cred_guard_mutex to protect against
  *   PTRACE_ATTACH
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int check_unsafe_exec(struct linux_binprm *bprm)
+=======
+static int check_unsafe_exec(struct linux_binprm *bprm)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int check_unsafe_exec(struct linux_binprm *bprm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct task_struct *p = current, *t;
 	unsigned n_fs;
 	int res = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bprm->unsafe = tracehook_unsafe_exec(p);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (p->ptrace) {
+		if (p->ptrace & PT_PTRACE_CAP)
+			bprm->unsafe |= LSM_UNSAFE_PTRACE_CAP;
+		else
+			bprm->unsafe |= LSM_UNSAFE_PTRACE;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/*
+	 * This isn't strictly necessary, but it makes it harder for LSMs to
+	 * mess up.
+	 */
+	if (current->no_new_privs)
+		bprm->unsafe |= LSM_UNSAFE_NO_NEW_PRIVS;
+>>>>>>> refs/remotes/origin/master
 
 	n_fs = 1;
 	spin_lock(&p->fs->lock);
@@ -1275,6 +1731,7 @@ int check_unsafe_exec(struct linux_binprm *bprm)
  */
 int prepare_binprm(struct linux_binprm *bprm)
 {
+<<<<<<< HEAD
 	umode_t mode;
 	struct inode * inode = bprm->file->f_path.dentry->d_inode;
 	int retval;
@@ -1282,12 +1739,25 @@ int prepare_binprm(struct linux_binprm *bprm)
 	mode = inode->i_mode;
 	if (bprm->file->f_op == NULL)
 		return -EACCES;
+=======
+	struct inode *inode = file_inode(bprm->file);
+	umode_t mode = inode->i_mode;
+	int retval;
+
+>>>>>>> refs/remotes/origin/master
 
 	/* clear any previous set[ug]id data from a previous binary */
 	bprm->cred->euid = current_euid();
 	bprm->cred->egid = current_egid();
 
+<<<<<<< HEAD
 	if (!(bprm->file->f_path.mnt->mnt_flags & MNT_NOSUID)) {
+=======
+	if (!(bprm->file->f_path.mnt->mnt_flags & MNT_NOSUID) &&
+	    !current->no_new_privs &&
+	    kuid_has_mapping(bprm->cred->user_ns, inode->i_uid) &&
+	    kgid_has_mapping(bprm->cred->user_ns, inode->i_gid)) {
+>>>>>>> refs/remotes/origin/master
 		/* Set-uid? */
 		if (mode & S_ISUID) {
 			bprm->per_clear |= PER_CLEAR_ON_SETID;
@@ -1340,13 +1810,29 @@ int remove_arg_zero(struct linux_binprm *bprm)
 			ret = -EFAULT;
 			goto out;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(page, KM_USER0);
+=======
+		kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 
 		for (; offset < PAGE_SIZE && kaddr[offset];
 				offset++, bprm->p++)
 			;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 		put_arg_page(page);
 
 		if (offset == PAGE_SIZE)
@@ -1362,6 +1848,7 @@ out:
 }
 EXPORT_SYMBOL(remove_arg_zero);
 
+<<<<<<< HEAD
 /*
  * cycle the list of binary formats handler, until one recognizes the image
  */
@@ -1370,6 +1857,28 @@ int search_binary_handler(struct linux_binprm *bprm,struct pt_regs *regs)
 	unsigned int depth = bprm->recursion_depth;
 	int try,retval;
 	struct linux_binfmt *fmt;
+<<<<<<< HEAD
+=======
+	pid_t old_pid, old_vpid;
+>>>>>>> refs/remotes/origin/cm-10.0
+
+	/* This allows 4 levels of binfmt rewrites before failing hard. */
+	if (depth > 5)
+=======
+#define printable(c) (((c)=='\t') || ((c)=='\n') || (0x20<=(c) && (c)<=0x7e))
+/*
+ * cycle the list of binary formats handler, until one recognizes the image
+ */
+int search_binary_handler(struct linux_binprm *bprm)
+{
+	bool need_retry = IS_ENABLED(CONFIG_MODULES);
+	struct linux_binfmt *fmt;
+	int retval;
+
+	/* This allows 4 levels of binfmt rewrites before failing hard. */
+	if (bprm->recursion_depth > 5)
+>>>>>>> refs/remotes/origin/master
+		return -ELOOP;
 
 	/* This allows 4 levels of binfmt rewrites before failing hard. */
 	if (depth > 5)
@@ -1379,10 +1888,62 @@ int search_binary_handler(struct linux_binprm *bprm,struct pt_regs *regs)
 	if (retval)
 		return retval;
 
+<<<<<<< HEAD
 	retval = audit_bprm(bprm);
 	if (retval)
 		return retval;
 
+<<<<<<< HEAD
+=======
+=======
+	retval = -ENOENT;
+ retry:
+	read_lock(&binfmt_lock);
+	list_for_each_entry(fmt, &formats, lh) {
+		if (!try_module_get(fmt->module))
+			continue;
+		read_unlock(&binfmt_lock);
+		bprm->recursion_depth++;
+		retval = fmt->load_binary(bprm);
+		bprm->recursion_depth--;
+		if (retval >= 0 || retval != -ENOEXEC ||
+		    bprm->mm == NULL || bprm->file == NULL) {
+			put_binfmt(fmt);
+			return retval;
+		}
+		read_lock(&binfmt_lock);
+		put_binfmt(fmt);
+	}
+	read_unlock(&binfmt_lock);
+
+	if (need_retry && retval == -ENOEXEC) {
+		if (printable(bprm->buf[0]) && printable(bprm->buf[1]) &&
+		    printable(bprm->buf[2]) && printable(bprm->buf[3]))
+			return retval;
+		if (request_module("binfmt-%04x", *(ushort *)(bprm->buf + 2)) < 0)
+			return retval;
+		need_retry = false;
+		goto retry;
+	}
+
+	return retval;
+}
+EXPORT_SYMBOL(search_binary_handler);
+
+static int exec_binprm(struct linux_binprm *bprm)
+{
+	pid_t old_pid, old_vpid;
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
+	/* Need to fetch pid before load_binary changes it */
+	old_pid = current->pid;
+	rcu_read_lock();
+	old_vpid = task_pid_nr_ns(current, task_active_pid_ns(current->parent));
+	rcu_read_unlock();
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = -ENOENT;
 	for (try=0; try<2; try++) {
 		read_lock(&binfmt_lock);
@@ -1397,8 +1958,15 @@ int search_binary_handler(struct linux_binprm *bprm,struct pt_regs *regs)
 			retval = fn(bprm, regs);
 			bprm->recursion_depth = depth;
 			if (retval >= 0) {
+<<<<<<< HEAD
 				if (depth == 0)
 					tracehook_report_exec(fmt, bprm, regs);
+=======
+				if (depth == 0) {
+					trace_sched_process_exec(current, old_pid, bprm);
+					ptrace_event(PTRACE_EVENT_EXEC, old_vpid);
+				}
+>>>>>>> refs/remotes/origin/cm-10.0
 				put_binfmt(fmt);
 				allow_write_access(bprm->file);
 				if (bprm->file)
@@ -1418,9 +1986,15 @@ int search_binary_handler(struct linux_binprm *bprm,struct pt_regs *regs)
 			}
 		}
 		read_unlock(&binfmt_lock);
+<<<<<<< HEAD
 		if (retval != -ENOEXEC || bprm->mm == NULL) {
 			break;
 #ifdef CONFIG_MODULES
+=======
+#ifdef CONFIG_MODULES
+		if (retval != -ENOEXEC || bprm->mm == NULL) {
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else {
 #define printable(c) (((c)=='\t') || ((c)=='\n') || (0x20<=(c) && (c)<=0x7e))
 			if (printable(bprm->buf[0]) &&
@@ -1431,27 +2005,87 @@ int search_binary_handler(struct linux_binprm *bprm,struct pt_regs *regs)
 			if (try)
 				break; /* -ENOEXEC */
 			request_module("binfmt-%04x", *(unsigned short *)(&bprm->buf[2]));
+<<<<<<< HEAD
 #endif
 		}
+=======
+		}
+#else
+		break;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return retval;
 }
 
 EXPORT_SYMBOL(search_binary_handler);
+=======
+	ret = search_binary_handler(bprm);
+	if (ret >= 0) {
+		audit_bprm(bprm);
+		trace_sched_process_exec(current, old_pid, bprm);
+		ptrace_event(PTRACE_EVENT_EXEC, old_vpid);
+		current->did_exec = 1;
+		proc_exec_connector(current);
+
+		if (bprm->file) {
+			allow_write_access(bprm->file);
+			fput(bprm->file);
+			bprm->file = NULL; /* to catch use-after-free */
+		}
+	}
+
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * sys_execve() executes a new program.
  */
 static int do_execve_common(const char *filename,
 				struct user_arg_ptr argv,
+<<<<<<< HEAD
 				struct user_arg_ptr envp,
 				struct pt_regs *regs)
+=======
+				struct user_arg_ptr envp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct linux_binprm *bprm;
 	struct file *file;
 	struct files_struct *displaced;
 	bool clear_in_exec;
 	int retval;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	const struct cred *cred = current_cred();
+=======
+>>>>>>> refs/remotes/origin/master
+
+	/*
+	 * We move the actual failure in case of RLIMIT_NPROC excess from
+	 * set*uid() to execve() because too many poorly written programs
+	 * don't check setuid() return code.  Here we additionally recheck
+	 * whether NPROC limit is still exceeded.
+	 */
+	if ((current->flags & PF_NPROC_EXCEEDED) &&
+<<<<<<< HEAD
+	    atomic_read(&cred->user->processes) > rlimit(RLIMIT_NPROC)) {
+=======
+	    atomic_read(&current_user()->processes) > rlimit(RLIMIT_NPROC)) {
+>>>>>>> refs/remotes/origin/master
+		retval = -EAGAIN;
+		goto out_ret;
+	}
+
+	/* We're below the limit (still or again), so we don't want to make
+	 * further execve() calls fail. */
+	current->flags &= ~PF_NPROC_EXCEEDED;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	retval = unshare_files(&displaced);
 	if (retval)
@@ -1512,7 +2146,11 @@ static int do_execve_common(const char *filename,
 	if (retval < 0)
 		goto out;
 
+<<<<<<< HEAD
 	retval = search_binary_handler(bprm,regs);
+=======
+	retval = exec_binprm(bprm);
+>>>>>>> refs/remotes/origin/master
 	if (retval < 0)
 		goto out;
 
@@ -1520,6 +2158,10 @@ static int do_execve_common(const char *filename,
 	current->fs->in_exec = 0;
 	current->in_execve = 0;
 	acct_update_integrals(current);
+<<<<<<< HEAD
+=======
+	task_numa_free(current);
+>>>>>>> refs/remotes/origin/master
 	free_bprm(bprm);
 	if (displaced)
 		put_files_struct(displaced);
@@ -1554,6 +2196,7 @@ out_ret:
 
 int do_execve(const char *filename,
 	const char __user *const __user *__argv,
+<<<<<<< HEAD
 	const char __user *const __user *__envp,
 	struct pt_regs *regs)
 {
@@ -1567,6 +2210,19 @@ int compat_do_execve(char *filename,
 	compat_uptr_t __user *__argv,
 	compat_uptr_t __user *__envp,
 	struct pt_regs *regs)
+=======
+	const char __user *const __user *__envp)
+{
+	struct user_arg_ptr argv = { .ptr.native = __argv };
+	struct user_arg_ptr envp = { .ptr.native = __envp };
+	return do_execve_common(filename, argv, envp);
+}
+
+#ifdef CONFIG_COMPAT
+static int compat_do_execve(const char *filename,
+	const compat_uptr_t __user *__argv,
+	const compat_uptr_t __user *__envp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct user_arg_ptr argv = {
 		.is_compat = true,
@@ -1576,7 +2232,11 @@ int compat_do_execve(char *filename,
 		.is_compat = true,
 		.ptr.compat = __envp,
 	};
+<<<<<<< HEAD
 	return do_execve_common(filename, argv, envp, regs);
+=======
+	return do_execve_common(filename, argv, envp);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -1594,6 +2254,7 @@ void set_binfmt(struct linux_binfmt *new)
 
 EXPORT_SYMBOL(set_binfmt);
 
+<<<<<<< HEAD
 static int expand_corename(struct core_name *cn)
 {
 	char *old_corename = cn->corename;
@@ -1639,6 +2300,7 @@ expand_fail:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int cn_print_exe_file(struct core_name *cn)
 {
 	struct file *exe_file;
@@ -1648,6 +2310,28 @@ static int cn_print_exe_file(struct core_name *cn)
 	exe_file = get_mm_exe_file(current->mm);
 	if (!exe_file)
 		return cn_printf(cn, "(unknown)");
+=======
+static void cn_escape(char *str)
+{
+	for (; *str; str++)
+		if (*str == '/')
+			*str = '!';
+}
+
+static int cn_print_exe_file(struct core_name *cn)
+{
+	struct file *exe_file;
+	char *pathbuf, *path;
+	int ret;
+
+	exe_file = get_mm_exe_file(current->mm);
+	if (!exe_file) {
+		char *commstart = cn->corename + cn->used;
+		ret = cn_printf(cn, "%s (path unknown)", current->comm);
+		cn_escape(commstart);
+		return ret;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pathbuf = kmalloc(PATH_MAX, GFP_TEMPORARY);
 	if (!pathbuf) {
@@ -1661,9 +2345,13 @@ static int cn_print_exe_file(struct core_name *cn)
 		goto free_buf;
 	}
 
+<<<<<<< HEAD
 	for (p = path; *p; p++)
 		if (*p == '/')
 			*p = '!';
+=======
+	cn_escape(path);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = cn_printf(cn, "%s", path);
 
@@ -1735,16 +2423,34 @@ static int format_corename(struct core_name *cn, long signr)
 				break;
 			}
 			/* hostname */
+<<<<<<< HEAD
 			case 'h':
+=======
+			case 'h': {
+				char *namestart = cn->corename + cn->used;
+>>>>>>> refs/remotes/origin/cm-10.0
 				down_read(&uts_sem);
 				err = cn_printf(cn, "%s",
 					      utsname()->nodename);
 				up_read(&uts_sem);
+<<<<<<< HEAD
 				break;
 			/* executable */
 			case 'e':
 				err = cn_printf(cn, "%s", current->comm);
 				break;
+=======
+				cn_escape(namestart);
+				break;
+			}
+			/* executable */
+			case 'e': {
+				char *commstart = cn->corename + cn->used;
+				err = cn_printf(cn, "%s", current->comm);
+				cn_escape(commstart);
+				break;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 			case 'E':
 				err = cn_print_exe_file(cn);
 				break;
@@ -1788,7 +2494,11 @@ static int zap_process(struct task_struct *start, int exit_code)
 
 	t = start;
 	do {
+<<<<<<< HEAD
 		task_clear_group_stop_pending(t);
+=======
+		task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (t != current && t->mm) {
 			sigaddset(&t->pending.signal, SIGKILL);
 			signal_wake_up(t, 1);
@@ -1875,7 +2585,10 @@ static int coredump_wait(int exit_code, struct core_state *core_state)
 {
 	struct task_struct *tsk = current;
 	struct mm_struct *mm = tsk->mm;
+<<<<<<< HEAD
 	struct completion *vfork_done;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int core_waiters = -EBUSY;
 
 	init_completion(&core_state->startup);
@@ -1887,6 +2600,7 @@ static int coredump_wait(int exit_code, struct core_state *core_state)
 		core_waiters = zap_threads(tsk, mm, core_state, exit_code);
 	up_write(&mm->mmap_sem);
 
+<<<<<<< HEAD
 	if (unlikely(core_waiters < 0))
 		goto fail;
 
@@ -1903,6 +2617,11 @@ static int coredump_wait(int exit_code, struct core_state *core_state)
 	if (core_waiters)
 		wait_for_completion(&core_state->startup);
 fail:
+=======
+	if (core_waiters > 0)
+		wait_for_completion(&core_state->startup);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return core_waiters;
 }
 
@@ -1927,6 +2646,8 @@ static void coredump_finish(struct mm_struct *mm)
 	mm->core_state = NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * set_dumpable converts traditional three-value dumpable to two flags and
  * stores them into mm->flags.  It modifies lower two bits of mm->flags, but
@@ -1950,17 +2671,29 @@ static void coredump_finish(struct mm_struct *mm)
 void set_dumpable(struct mm_struct *mm, int value)
 {
 	switch (value) {
+<<<<<<< HEAD
 	case 0:
+=======
+	case SUID_DUMP_DISABLE:
+>>>>>>> refs/remotes/origin/master
 		clear_bit(MMF_DUMPABLE, &mm->flags);
 		smp_wmb();
 		clear_bit(MMF_DUMP_SECURELY, &mm->flags);
 		break;
+<<<<<<< HEAD
 	case 1:
+=======
+	case SUID_DUMP_USER:
+>>>>>>> refs/remotes/origin/master
 		set_bit(MMF_DUMPABLE, &mm->flags);
 		smp_wmb();
 		clear_bit(MMF_DUMP_SECURELY, &mm->flags);
 		break;
+<<<<<<< HEAD
 	case 2:
+=======
+	case SUID_DUMP_ROOT:
+>>>>>>> refs/remotes/origin/master
 		set_bit(MMF_DUMP_SECURELY, &mm->flags);
 		smp_wmb();
 		set_bit(MMF_DUMPABLE, &mm->flags);
@@ -1968,19 +2701,42 @@ void set_dumpable(struct mm_struct *mm, int value)
 	}
 }
 
+<<<<<<< HEAD
 static int __get_dumpable(unsigned long mm_flags)
+=======
+int __get_dumpable(unsigned long mm_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
 	ret = mm_flags & MMF_DUMPABLE_MASK;
+<<<<<<< HEAD
 	return (ret >= 2) ? 2 : ret;
 }
 
+<<<<<<< HEAD
+=======
+	return (ret > SUID_DUMP_USER) ? SUID_DUMP_ROOT : ret;
+}
+
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+/*
+ * This returns the actual value of the suid_dumpable flag. For things
+ * that are using this for checking for privilege transitions, it must
+ * test against SUID_DUMP_USER rather than treating it as a boolean
+ * value.
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int get_dumpable(struct mm_struct *mm)
 {
 	return __get_dumpable(mm->flags);
 }
 
+<<<<<<< HEAD
 static void wait_for_dump_helpers(struct file *file)
 {
 	struct pipe_inode_info *pipe;
@@ -2038,8 +2794,13 @@ static int umh_pipe_setup(struct subprocess_info *info, struct cred *new)
 	fd_install(0, rp);
 	spin_lock(&cf->file_lock);
 	fdt = files_fdtable(cf);
+<<<<<<< HEAD
 	FD_SET(0, fdt->open_fds);
 	FD_CLR(0, fdt->close_on_exec);
+=======
+	__set_open_fd(0, fdt);
+	__clear_close_on_exec(0, fdt);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock(&cf->file_lock);
 
 	/* and disallow core files too */
@@ -2108,16 +2869,28 @@ void do_coredump(long signr, int exit_code, struct pt_regs *regs)
 
 	ispipe = format_corename(&cn, signr);
 
+<<<<<<< HEAD
 	if (ispipe == -ENOMEM) {
 		printk(KERN_WARNING "format_corename failed\n");
 		printk(KERN_WARNING "Aborting core\n");
 		goto fail_corename;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  	if (ispipe) {
 		int dump_count;
 		char **helper_argv;
 
+<<<<<<< HEAD
+=======
+		if (ispipe < 0) {
+			printk(KERN_WARNING "format_corename failed\n");
+			printk(KERN_WARNING "Aborting core\n");
+			goto fail_corename;
+		}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (cprm.limit == 1) {
 			/*
 			 * Normally core limits are irrelevant to pipes, since
@@ -2262,3 +3035,32 @@ int dump_seek(struct file *file, loff_t off)
 	return ret;
 }
 EXPORT_SYMBOL(dump_seek);
+=======
+SYSCALL_DEFINE3(execve,
+		const char __user *, filename,
+		const char __user *const __user *, argv,
+		const char __user *const __user *, envp)
+{
+	struct filename *path = getname(filename);
+	int error = PTR_ERR(path);
+	if (!IS_ERR(path)) {
+		error = do_execve(path->name, argv, envp);
+		putname(path);
+	}
+	return error;
+}
+#ifdef CONFIG_COMPAT
+asmlinkage long compat_sys_execve(const char __user * filename,
+	const compat_uptr_t __user * argv,
+	const compat_uptr_t __user * envp)
+{
+	struct filename *path = getname(filename);
+	int error = PTR_ERR(path);
+	if (!IS_ERR(path)) {
+		error = compat_do_execve(path->name, argv, envp);
+		putname(path);
+	}
+	return error;
+}
+#endif
+>>>>>>> refs/remotes/origin/master

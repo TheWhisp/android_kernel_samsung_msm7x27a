@@ -157,7 +157,15 @@ static ssize_t show_fault(struct device *dev,
 		return sprintf(buf, "0\n");
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t tmp421_is_visible(struct kobject *kobj, struct attribute *a,
+=======
+static umode_t tmp421_is_visible(struct kobject *kobj, struct attribute *a,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static umode_t tmp421_is_visible(struct kobject *kobj, struct attribute *a,
+>>>>>>> refs/remotes/origin/master
 				int n)
 {
 	struct device *dev = container_of(kobj, struct device, kobj);
@@ -208,9 +216,15 @@ static int tmp421_init_client(struct i2c_client *client)
 	/* Start conversions (disable shutdown if necessary) */
 	config = i2c_smbus_read_byte_data(client, TMP421_CONFIG_REG_1);
 	if (config < 0) {
+<<<<<<< HEAD
 		dev_err(&client->dev, "Could not read configuration"
 			 " register (%d)\n", config);
 		return -ENODEV;
+=======
+		dev_err(&client->dev,
+			"Could not read configuration register (%d)\n", config);
+		return config;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	config_orig = config;
@@ -267,7 +281,12 @@ static int tmp421_probe(struct i2c_client *client,
 	struct tmp421_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct tmp421_data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct tmp421_data),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
@@ -277,11 +296,19 @@ static int tmp421_probe(struct i2c_client *client,
 
 	err = tmp421_init_client(client);
 	if (err)
+<<<<<<< HEAD
 		goto exit_free;
 
 	err = sysfs_create_group(&client->dev.kobj, &tmp421_group);
 	if (err)
 		goto exit_free;
+=======
+		return err;
+
+	err = sysfs_create_group(&client->dev.kobj, &tmp421_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -293,10 +320,13 @@ static int tmp421_probe(struct i2c_client *client,
 
 exit_remove:
 	sysfs_remove_group(&client->dev.kobj, &tmp421_group);
+<<<<<<< HEAD
 
 exit_free:
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -307,8 +337,11 @@ static int tmp421_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &tmp421_group);
 
+<<<<<<< HEAD
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -324,6 +357,8 @@ static struct i2c_driver tmp421_driver = {
 	.address_list = normal_i2c,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init tmp421_init(void)
 {
 	return i2c_add_driver(&tmp421_driver);
@@ -333,11 +368,24 @@ static void __exit tmp421_exit(void)
 {
 	i2c_del_driver(&tmp421_driver);
 }
+=======
+module_i2c_driver(tmp421_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Andre Prendel <andre.prendel@gmx.de>");
 MODULE_DESCRIPTION("Texas Instruments TMP421/422/423 temperature sensor"
 		   " driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(tmp421_init);
 module_exit(tmp421_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(tmp421_driver);
+
+MODULE_AUTHOR("Andre Prendel <andre.prendel@gmx.de>");
+MODULE_DESCRIPTION("Texas Instruments TMP421/422/423 temperature sensor driver");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

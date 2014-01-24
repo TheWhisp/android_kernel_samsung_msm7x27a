@@ -15,10 +15,16 @@
 #define MSM_GSBI0_QUP_I2C_BUS_ID	0
 #define MSM_GSBI1_QUP_I2C_BUS_ID	1
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ANDROID_RAM_CONSOLE
 #define MSM_RAM_CONSOLE_SIZE 256*1024
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void __init msm_common_io_init(void);
 void __init msm_init_pmic_vibrator(void);
 void __init msm7x25a_kgsl_3d0_init(void);
@@ -28,9 +34,29 @@ extern struct platform_device msm7x27a_device_csic0;
 extern struct platform_device msm7x27a_device_csic1;
 extern struct platform_device msm7x27a_device_clkctl;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ANDROID_RAM_CONSOLE
 extern struct platform_device ram_console_device;
 extern struct resource ram_console_resources[];
 #endif
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+extern struct platform_device msm8625_device_csic0;
+extern struct platform_device msm8625_device_csic1;
+
+void __init msm8625_init_irq(void);
+void __init msm8625_map_io(void);
+int  ar600x_wlan_power(bool on);
+void __init msm8x25_spm_device_init(void);
+void __init msm_pm_register_cpr_ops(void);
+void __init msm8x25_kgsl_3d0_init(void);
+void __iomem *core_reset_base(unsigned int);
+extern void setup_mm_for_reboot(void);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

@@ -24,12 +24,23 @@
 #include <linux/firmware.h>
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/hwdep.h>
 #include <sound/vx_core.h>
 
+<<<<<<< HEAD
 #ifdef SND_VX_FW_LOADER
 
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_FIRMWARE("vx/bx_1_vxp.b56");
 MODULE_FIRMWARE("vx/bx_1_vp4.b56");
 MODULE_FIRMWARE("vx/x1_1_vx2.xlx");
@@ -118,6 +129,7 @@ void snd_vx_free_firmware(struct vx_core *chip)
 #endif
 }
 
+<<<<<<< HEAD
 #else /* old style firmware loading */
 
 static int vx_hwdep_dsp_status(struct snd_hwdep *hw,
@@ -255,5 +267,7 @@ void snd_vx_free_firmware(struct vx_core *chip)
 
 #endif /* SND_VX_FW_LOADER */
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(snd_vx_setup_firmware);
 EXPORT_SYMBOL(snd_vx_free_firmware);

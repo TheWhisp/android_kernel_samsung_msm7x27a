@@ -10,6 +10,14 @@
 #include <linux/wireless.h>
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/iw_handler.h>
 #include <net/arp.h>
 #include <net/wext.h>
@@ -202,7 +210,11 @@ void wireless_spy_update(struct net_device *	dev,
 
 	/* Update all records that match */
 	for (i = 0; i < spydata->spy_number; i++)
+<<<<<<< HEAD
 		if (!compare_ether_addr(address, spydata->spy_address[i])) {
+=======
+		if (ether_addr_equal(address, spydata->spy_address[i])) {
+>>>>>>> refs/remotes/origin/master
 			memcpy(&(spydata->spy_stat[i]), wstats,
 			       sizeof(struct iw_quality));
 			match = i;

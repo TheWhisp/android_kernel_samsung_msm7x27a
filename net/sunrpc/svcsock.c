@@ -21,6 +21,14 @@
 
 #include <linux/kernel.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/fcntl.h>
 #include <linux/net.h>
@@ -42,6 +50,10 @@
 #include <net/tcp_states.h>
 #include <asm/uaccess.h>
 #include <asm/ioctls.h>
+<<<<<<< HEAD
+=======
+#include <trace/events/skb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/sunrpc/types.h>
 #include <linux/sunrpc/clnt.h>
@@ -51,11 +63,25 @@
 #include <linux/sunrpc/stats.h>
 #include <linux/sunrpc/xprt.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "sunrpc.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "sunrpc.h"
+
+>>>>>>> refs/remotes/origin/master
 #define RPCDBG_FACILITY	RPCDBG_SVCXPRT
 
 
 static struct svc_sock *svc_setup_socket(struct svc_serv *, struct socket *,
+<<<<<<< HEAD
 					 int *errp, int flags);
+=======
+					 int flags);
+>>>>>>> refs/remotes/origin/master
 static void		svc_udp_data_ready(struct sock *, int);
 static int		svc_udp_recvfrom(struct svc_rqst *);
 static int		svc_udp_sendto(struct svc_rqst *);
@@ -66,12 +92,28 @@ static void		svc_sock_free(struct svc_xprt *);
 static struct svc_xprt *svc_create_socket(struct svc_serv *, int,
 					  struct net *, struct sockaddr *,
 					  int, int);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NFS_V4_1)
+=======
+#if defined(CONFIG_SUNRPC_BACKCHANNEL)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SUNRPC_BACKCHANNEL)
+>>>>>>> refs/remotes/origin/master
 static struct svc_xprt *svc_bc_create_socket(struct svc_serv *, int,
 					     struct net *, struct sockaddr *,
 					     int, int);
 static void svc_bc_sock_free(struct svc_xprt *xprt);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_NFS_V4_1 */
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 static struct lock_class_key svc_key[2];
@@ -80,7 +122,15 @@ static struct lock_class_key svc_slock_key[2];
 static void svc_reclassify_socket(struct socket *sock)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	BUG_ON(sock_owned_by_user(sk));
+=======
+
+	WARN_ON_ONCE(sock_owned_by_user(sk));
+	if (sock_owned_by_user(sk))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	switch (sk->sk_family) {
 	case AF_INET:
 		sock_lock_init_class_and_name(sk, "slock-AF_INET-NFSD",
@@ -141,19 +191,44 @@ static void svc_set_cmsg_data(struct svc_rqst *rqstp, struct cmsghdr *cmh)
 			cmh->cmsg_level = SOL_IP;
 			cmh->cmsg_type = IP_PKTINFO;
 			pki->ipi_ifindex = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pki->ipi_spec_dst.s_addr = rqstp->rq_daddr.addr.s_addr;
+=======
+			pki->ipi_spec_dst.s_addr =
+				 svc_daddr_in(rqstp)->sin_addr.s_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pki->ipi_spec_dst.s_addr =
+				 svc_daddr_in(rqstp)->sin_addr.s_addr;
+>>>>>>> refs/remotes/origin/master
 			cmh->cmsg_len = CMSG_LEN(sizeof(*pki));
 		}
 		break;
 
 	case AF_INET6: {
 			struct in6_pktinfo *pki = CMSG_DATA(cmh);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 			cmh->cmsg_level = SOL_IPV6;
 			cmh->cmsg_type = IPV6_PKTINFO;
 			pki->ipi6_ifindex = 0;
 			ipv6_addr_copy(&pki->ipi6_addr,
 					&rqstp->rq_daddr.addr6);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			struct sockaddr_in6 *daddr = svc_daddr_in6(rqstp);
+
+			cmh->cmsg_level = SOL_IPV6;
+			cmh->cmsg_type = IPV6_PKTINFO;
+			pki->ipi6_ifindex = daddr->sin6_scope_id;
+			pki->ipi6_addr = daddr->sin6_addr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			cmh->cmsg_len = CMSG_LEN(sizeof(*pki));
 		}
 		break;
@@ -282,12 +357,23 @@ static int svc_one_sock_name(struct svc_sock *svsk, char *buf, int remaining)
 				&inet_sk(sk)->inet_rcv_saddr,
 				inet_sk(sk)->inet_num);
 		break;
+<<<<<<< HEAD
 	case PF_INET6:
 		len = snprintf(buf, remaining, "ipv6 %s %pI6 %d\n",
 				proto_name,
 				&inet6_sk(sk)->rcv_saddr,
 				inet_sk(sk)->inet_num);
 		break;
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+	case PF_INET6:
+		len = snprintf(buf, remaining, "ipv6 %s %pI6 %d\n",
+				proto_name,
+				&sk->sk_v6_rcv_saddr,
+				inet_sk(sk)->inet_num);
+		break;
+#endif
+>>>>>>> refs/remotes/origin/master
 	default:
 		len = snprintf(buf, remaining, "*unknown-%d*\n",
 				sk->sk_family);
@@ -300,6 +386,7 @@ static int svc_one_sock_name(struct svc_sock *svsk, char *buf, int remaining)
 	return len;
 }
 
+<<<<<<< HEAD
 /**
  * svc_sock_names - construct a list of listener names in a string
  * @serv: pointer to RPC service
@@ -351,6 +438,8 @@ int svc_sock_names(struct svc_serv *serv, char *buf, const size_t buflen,
 }
 EXPORT_SYMBOL_GPL(svc_sock_names);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Check input queue length
  */
@@ -392,7 +481,15 @@ static int svc_partial_recvfrom(struct svc_rqst *rqstp,
 				int buflen, unsigned int base)
 {
 	size_t save_iovlen;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void __user *save_iovbase;
+=======
+	void *save_iovbase;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *save_iovbase;
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 	int ret;
 
@@ -484,7 +581,11 @@ static void svc_tcp_write_space(struct sock *sk)
 {
 	struct socket *sock = sk->sk_socket;
 
+<<<<<<< HEAD
 	if (sk_stream_wspace(sk) >= sk_stream_min_wspace(sk) && sock)
+=======
+	if (sk_stream_is_writeable(sk) && sock)
+>>>>>>> refs/remotes/origin/master
 		clear_bit(SOCK_NOSPACE, &sock->flags);
 	svc_write_space(sk);
 }
@@ -496,22 +597,59 @@ static int svc_udp_get_dest_address4(struct svc_rqst *rqstp,
 				     struct cmsghdr *cmh)
 {
 	struct in_pktinfo *pki = CMSG_DATA(cmh);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cmh->cmsg_type != IP_PKTINFO)
 		return 0;
 	rqstp->rq_daddr.addr.s_addr = pki->ipi_spec_dst.s_addr;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sockaddr_in *daddr = svc_daddr_in(rqstp);
+
+	if (cmh->cmsg_type != IP_PKTINFO)
+		return 0;
+
+	daddr->sin_family = AF_INET;
+	daddr->sin_addr.s_addr = pki->ipi_spec_dst.s_addr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
 /*
+<<<<<<< HEAD
  * See net/ipv6/datagram.c : datagram_recv_ctl
+=======
+ * See net/ipv6/datagram.c : ip6_datagram_recv_ctl
+>>>>>>> refs/remotes/origin/master
  */
 static int svc_udp_get_dest_address6(struct svc_rqst *rqstp,
 				     struct cmsghdr *cmh)
 {
 	struct in6_pktinfo *pki = CMSG_DATA(cmh);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cmh->cmsg_type != IPV6_PKTINFO)
 		return 0;
 	ipv6_addr_copy(&rqstp->rq_daddr.addr6, &pki->ipi6_addr);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct sockaddr_in6 *daddr = svc_daddr_in6(rqstp);
+
+	if (cmh->cmsg_type != IPV6_PKTINFO)
+		return 0;
+
+	daddr->sin6_family = AF_INET6;
+	daddr->sin6_addr = pki->ipi6_addr;
+	daddr->sin6_scope_id = pki->ipi6_ifindex;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -584,11 +722,17 @@ static int svc_udp_recvfrom(struct svc_rqst *rqstp)
 			dprintk("svc: recvfrom returned error %d\n", -err);
 			set_bit(XPT_DATA, &svsk->sk_xprt.xpt_flags);
 		}
+<<<<<<< HEAD
 		return -EAGAIN;
 	}
 	len = svc_addr_len(svc_addr(rqstp));
 	if (len == 0)
 		return -EAFNOSUPPORT;
+=======
+		return 0;
+	}
+	len = svc_addr_len(svc_addr(rqstp));
+>>>>>>> refs/remotes/origin/master
 	rqstp->rq_addrlen = len;
 	if (skb->tstamp.tv64 == 0) {
 		skb->tstamp = ktime_get_real();
@@ -604,6 +748,7 @@ static int svc_udp_recvfrom(struct svc_rqst *rqstp)
 	rqstp->rq_prot = IPPROTO_UDP;
 
 	if (!svc_udp_get_dest_address(rqstp, cmh)) {
+<<<<<<< HEAD
 		if (net_ratelimit())
 			printk(KERN_WARNING
 				"svc: received unknown control message %d/%d; "
@@ -612,6 +757,17 @@ static int svc_udp_recvfrom(struct svc_rqst *rqstp)
 		skb_free_datagram_locked(svsk->sk_sk, skb);
 		return 0;
 	}
+<<<<<<< HEAD
+=======
+	rqstp->rq_daddrlen = svc_addr_len(svc_daddr(rqstp));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		net_warn_ratelimited("svc: received unknown control message %d/%d; dropping RPC reply datagram\n",
+				     cmh->cmsg_level, cmh->cmsg_type);
+		goto out_free;
+	}
+	rqstp->rq_daddrlen = svc_addr_len(svc_daddr(rqstp));
+>>>>>>> refs/remotes/origin/master
 
 	if (skb_is_nonlinear(skb)) {
 		/* we have to copy */
@@ -619,8 +775,12 @@ static int svc_udp_recvfrom(struct svc_rqst *rqstp)
 		if (csum_partial_copy_to_xdr(&rqstp->rq_arg, skb)) {
 			local_bh_enable();
 			/* checksum error */
+<<<<<<< HEAD
 			skb_free_datagram_locked(svsk->sk_sk, skb);
 			return 0;
+=======
+			goto out_free;
+>>>>>>> refs/remotes/origin/master
 		}
 		local_bh_enable();
 		skb_free_datagram_locked(svsk->sk_sk, skb);
@@ -629,10 +789,15 @@ static int svc_udp_recvfrom(struct svc_rqst *rqstp)
 		rqstp->rq_arg.head[0].iov_base = skb->data +
 			sizeof(struct udphdr);
 		rqstp->rq_arg.head[0].iov_len = len;
+<<<<<<< HEAD
 		if (skb_checksum_complete(skb)) {
 			skb_free_datagram_locked(svsk->sk_sk, skb);
 			return 0;
 		}
+=======
+		if (skb_checksum_complete(skb))
+			goto out_free;
+>>>>>>> refs/remotes/origin/master
 		rqstp->rq_xprt_ctxt = skb;
 	}
 
@@ -646,11 +811,22 @@ static int svc_udp_recvfrom(struct svc_rqst *rqstp)
 		rqstp->rq_respages = rqstp->rq_pages + 1 +
 			DIV_ROUND_UP(rqstp->rq_arg.page_len, PAGE_SIZE);
 	}
+<<<<<<< HEAD
+=======
+	rqstp->rq_next_page = rqstp->rq_respages+1;
+>>>>>>> refs/remotes/origin/master
 
 	if (serv->sv_stats)
 		serv->sv_stats->netudpcnt++;
 
 	return len;
+<<<<<<< HEAD
+=======
+out_free:
+	trace_kfree_skb(skb, svc_udp_recvfrom);
+	skb_free_datagram_locked(svsk->sk_sk, skb);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -725,7 +901,17 @@ static void svc_udp_init(struct svc_sock *svsk, struct svc_serv *serv)
 {
 	int err, level, optname, one = 1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	svc_xprt_init(&svc_udp_class, &svsk->sk_xprt, serv);
+=======
+	svc_xprt_init(sock_net(svsk->sk_sock->sk), &svc_udp_class,
+		      &svsk->sk_xprt, serv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	svc_xprt_init(sock_net(svsk->sk_sock->sk), &svc_udp_class,
+		      &svsk->sk_xprt, serv);
+>>>>>>> refs/remotes/origin/master
 	clear_bit(XPT_CACHE_AUTH, &svsk->sk_xprt.xpt_flags);
 	svsk->sk_sk->sk_data_ready = svc_udp_data_ready;
 	svsk->sk_sk->sk_write_space = svc_write_space;
@@ -856,18 +1042,29 @@ static struct svc_xprt *svc_tcp_accept(struct svc_xprt *xprt)
 		if (err == -ENOMEM)
 			printk(KERN_WARNING "%s: no more sockets!\n",
 			       serv->sv_name);
+<<<<<<< HEAD
 		else if (err != -EAGAIN && net_ratelimit())
 			printk(KERN_WARNING "%s: accept failed (err %d)!\n",
 				   serv->sv_name, -err);
+=======
+		else if (err != -EAGAIN)
+			net_warn_ratelimited("%s: accept failed (err %d)!\n",
+					     serv->sv_name, -err);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 	set_bit(XPT_CONN, &svsk->sk_xprt.xpt_flags);
 
 	err = kernel_getpeername(newsock, sin, &slen);
 	if (err < 0) {
+<<<<<<< HEAD
 		if (net_ratelimit())
 			printk(KERN_WARNING "%s: peername failed (err %d)!\n",
 				   serv->sv_name, -err);
+=======
+		net_warn_ratelimited("%s: peername failed (err %d)!\n",
+				     serv->sv_name, -err);
+>>>>>>> refs/remotes/origin/master
 		goto failed;		/* aborted connection or whatever */
 	}
 
@@ -889,8 +1086,14 @@ static struct svc_xprt *svc_tcp_accept(struct svc_xprt *xprt)
 	 */
 	newsock->sk->sk_sndtimeo = HZ*30;
 
+<<<<<<< HEAD
 	if (!(newsvsk = svc_setup_socket(serv, newsock, &err,
 				 (SVC_SOCK_ANONYMOUS | SVC_SOCK_TEMPORARY))))
+=======
+	newsvsk = svc_setup_socket(serv, newsock,
+				 (SVC_SOCK_ANONYMOUS | SVC_SOCK_TEMPORARY));
+	if (IS_ERR(newsvsk))
+>>>>>>> refs/remotes/origin/master
 		goto failed;
 	svc_xprt_set_remote(&newsvsk->sk_xprt, sin, slen);
 	err = kernel_getsockname(newsock, sin, &slen);
@@ -914,9 +1117,15 @@ static unsigned int svc_tcp_restore_pages(struct svc_sock *svsk, struct svc_rqst
 {
 	unsigned int i, len, npages;
 
+<<<<<<< HEAD
 	if (svsk->sk_tcplen <= sizeof(rpc_fraghdr))
 		return 0;
 	len = svsk->sk_tcplen - sizeof(rpc_fraghdr);
+=======
+	if (svsk->sk_datalen == 0)
+		return 0;
+	len = svsk->sk_datalen;
+>>>>>>> refs/remotes/origin/master
 	npages = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
 	for (i = 0; i < npages; i++) {
 		if (rqstp->rq_pages[i] != NULL)
@@ -933,9 +1142,15 @@ static void svc_tcp_save_pages(struct svc_sock *svsk, struct svc_rqst *rqstp)
 {
 	unsigned int i, len, npages;
 
+<<<<<<< HEAD
 	if (svsk->sk_tcplen <= sizeof(rpc_fraghdr))
 		return;
 	len = svsk->sk_tcplen - sizeof(rpc_fraghdr);
+=======
+	if (svsk->sk_datalen == 0)
+		return;
+	len = svsk->sk_datalen;
+>>>>>>> refs/remotes/origin/master
 	npages = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
 	for (i = 0; i < npages; i++) {
 		svsk->sk_pages[i] = rqstp->rq_pages[i];
@@ -947,17 +1162,30 @@ static void svc_tcp_clear_pages(struct svc_sock *svsk)
 {
 	unsigned int i, len, npages;
 
+<<<<<<< HEAD
 	if (svsk->sk_tcplen <= sizeof(rpc_fraghdr))
 		goto out;
 	len = svsk->sk_tcplen - sizeof(rpc_fraghdr);
 	npages = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
 	for (i = 0; i < npages; i++) {
 		BUG_ON(svsk->sk_pages[i] == NULL);
+=======
+	if (svsk->sk_datalen == 0)
+		goto out;
+	len = svsk->sk_datalen;
+	npages = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
+	for (i = 0; i < npages; i++) {
+		if (svsk->sk_pages[i] == NULL) {
+			WARN_ON_ONCE(1);
+			continue;
+		}
+>>>>>>> refs/remotes/origin/master
 		put_page(svsk->sk_pages[i]);
 		svsk->sk_pages[i] = NULL;
 	}
 out:
 	svsk->sk_tcplen = 0;
+<<<<<<< HEAD
 }
 
 /*
@@ -965,6 +1193,14 @@ out:
  * If we haven't gotten the record length yet, get the next four bytes.
  * Otherwise try to gobble up as much as possible up to the complete
  * record length.
+=======
+	svsk->sk_datalen = 0;
+}
+
+/*
+ * Receive fragment record header.
+ * If we haven't gotten the record length yet, get the next four bytes.
+>>>>>>> refs/remotes/origin/master
  */
 static int svc_tcp_recv_record(struct svc_sock *svsk, struct svc_rqst *rqstp)
 {
@@ -990,6 +1226,7 @@ static int svc_tcp_recv_record(struct svc_sock *svsk, struct svc_rqst *rqstp)
 			return -EAGAIN;
 		}
 
+<<<<<<< HEAD
 		svsk->sk_reclen = ntohl(svsk->sk_reclen);
 		if (!(svsk->sk_reclen & RPC_LAST_STREAM_FRAGMENT)) {
 			/* FIXME: technically, a record can be fragmented,
@@ -1010,16 +1247,27 @@ static int svc_tcp_recv_record(struct svc_sock *svsk, struct svc_rqst *rqstp)
 				printk(KERN_NOTICE "RPC: "
 					"fragment too large: 0x%08lx\n",
 					(unsigned long)svsk->sk_reclen);
+=======
+		dprintk("svc: TCP record, %d bytes\n", svc_sock_reclen(svsk));
+		if (svc_sock_reclen(svsk) + svsk->sk_datalen >
+							serv->sv_max_mesg) {
+			net_notice_ratelimited("RPC: fragment too large: %d\n",
+					svc_sock_reclen(svsk));
+>>>>>>> refs/remotes/origin/master
 			goto err_delete;
 		}
 	}
 
+<<<<<<< HEAD
 	if (svsk->sk_reclen < 8)
 		goto err_delete; /* client is nuts. */
 
 	len = svsk->sk_reclen;
 
 	return len;
+=======
+	return svc_sock_reclen(svsk);
+>>>>>>> refs/remotes/origin/master
 error:
 	dprintk("RPC: TCP recv_record got %d\n", len);
 	return len;
@@ -1063,7 +1311,11 @@ static int receive_cb_reply(struct svc_sock *svsk, struct svc_rqst *rqstp)
 	if (dst->iov_len < src->iov_len)
 		return -EAGAIN; /* whatever; just giving up. */
 	memcpy(dst->iov_base, src->iov_base, src->iov_len);
+<<<<<<< HEAD
 	xprt_complete_rqst(req->rq_task, svsk->sk_reclen);
+=======
+	xprt_complete_rqst(req->rq_task, rqstp->rq_arg.len);
+>>>>>>> refs/remotes/origin/master
 	rqstp->rq_arg.len = 0;
 	return 0;
 }
@@ -1082,6 +1334,20 @@ static int copy_pages_to_kvecs(struct kvec *vec, struct page **pages, int len)
 	return i;
 }
 
+<<<<<<< HEAD
+=======
+static void svc_tcp_fragment_received(struct svc_sock *svsk)
+{
+	/* If we have more data, signal svc_xprt_enqueue() to try again */
+	if (svc_recv_available(svsk) > sizeof(rpc_fraghdr))
+		set_bit(XPT_DATA, &svsk->sk_xprt.xpt_flags);
+	dprintk("svc: TCP %s record (%d bytes)\n",
+		svc_sock_final_rec(svsk) ? "final" : "nonfinal",
+		svc_sock_reclen(svsk));
+	svsk->sk_tcplen = 0;
+	svsk->sk_reclen = 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Receive data from a TCP socket.
@@ -1108,11 +1374,16 @@ static int svc_tcp_recvfrom(struct svc_rqst *rqstp)
 		goto error;
 
 	base = svc_tcp_restore_pages(svsk, rqstp);
+<<<<<<< HEAD
 	want = svsk->sk_reclen - base;
+=======
+	want = svc_sock_reclen(svsk) - (svsk->sk_tcplen - sizeof(rpc_fraghdr));
+>>>>>>> refs/remotes/origin/master
 
 	vec = rqstp->rq_vec;
 
 	pnum = copy_pages_to_kvecs(&vec[0], &rqstp->rq_pages[0],
+<<<<<<< HEAD
 						svsk->sk_reclen);
 
 	rqstp->rq_respages = &rqstp->rq_pages[pnum];
@@ -1131,6 +1402,38 @@ static int svc_tcp_recvfrom(struct svc_rqst *rqstp)
 	}
 
 	rqstp->rq_arg.len = svsk->sk_reclen;
+=======
+						svsk->sk_datalen + want);
+
+	rqstp->rq_respages = &rqstp->rq_pages[pnum];
+	rqstp->rq_next_page = rqstp->rq_respages + 1;
+
+	/* Now receive data */
+	len = svc_partial_recvfrom(rqstp, vec, pnum, want, base);
+	if (len >= 0) {
+		svsk->sk_tcplen += len;
+		svsk->sk_datalen += len;
+	}
+	if (len != want || !svc_sock_final_rec(svsk)) {
+		svc_tcp_save_pages(svsk, rqstp);
+		if (len < 0 && len != -EAGAIN)
+			goto err_delete;
+		if (len == want)
+			svc_tcp_fragment_received(svsk);
+		else
+			dprintk("svc: incomplete TCP record (%d of %d)\n",
+				(int)(svsk->sk_tcplen - sizeof(rpc_fraghdr)),
+				svc_sock_reclen(svsk));
+		goto err_noclose;
+	}
+
+	if (svsk->sk_datalen < 8) {
+		svsk->sk_datalen = 0;
+		goto err_delete; /* client is nuts. */
+	}
+
+	rqstp->rq_arg.len = svsk->sk_datalen;
+>>>>>>> refs/remotes/origin/master
 	rqstp->rq_arg.page_base = 0;
 	if (rqstp->rq_arg.len <= rqstp->rq_arg.head[0].iov_len) {
 		rqstp->rq_arg.head[0].iov_len = rqstp->rq_arg.len;
@@ -1147,11 +1450,16 @@ static int svc_tcp_recvfrom(struct svc_rqst *rqstp)
 		len = receive_cb_reply(svsk, rqstp);
 
 	/* Reset TCP read info */
+<<<<<<< HEAD
 	svsk->sk_reclen = 0;
 	svsk->sk_tcplen = 0;
 	/* If we have more data, signal svc_xprt_enqueue() to try again */
 	if (svc_recv_available(svsk) > sizeof(rpc_fraghdr))
 		set_bit(XPT_DATA, &svsk->sk_xprt.xpt_flags);
+=======
+	svsk->sk_datalen = 0;
+	svc_tcp_fragment_received(svsk);
+>>>>>>> refs/remotes/origin/master
 
 	if (len < 0)
 		goto error;
@@ -1160,20 +1468,34 @@ static int svc_tcp_recvfrom(struct svc_rqst *rqstp)
 	if (serv->sv_stats)
 		serv->sv_stats->nettcpcnt++;
 
+<<<<<<< HEAD
 	dprintk("svc: TCP complete record (%d bytes)\n", rqstp->rq_arg.len);
+=======
+>>>>>>> refs/remotes/origin/master
 	return rqstp->rq_arg.len;
 
 error:
 	if (len != -EAGAIN)
+<<<<<<< HEAD
 		goto err_other;
 	dprintk("RPC: TCP recvfrom got EAGAIN\n");
 	return -EAGAIN;
 err_other:
+=======
+		goto err_delete;
+	dprintk("RPC: TCP recvfrom got EAGAIN\n");
+	return 0;
+err_delete:
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_NOTICE "%s: recvfrom returned errno %d\n",
 	       svsk->sk_xprt.xpt_server->sv_name, -len);
 	set_bit(XPT_CLOSE, &svsk->sk_xprt.xpt_flags);
 err_noclose:
+<<<<<<< HEAD
 	return -EAGAIN;	/* record not complete */
+=======
+	return 0;	/* record not complete */
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1227,7 +1549,13 @@ static int svc_tcp_has_wspace(struct svc_xprt *xprt)
 	if (test_bit(XPT_LISTENER, &xprt->xpt_flags))
 		return 1;
 	required = atomic_read(&xprt->xpt_reserved) + serv->sv_max_mesg;
+<<<<<<< HEAD
 	if (sk_stream_wspace(svsk->sk_sk) >= required)
+=======
+	if (sk_stream_wspace(svsk->sk_sk) >= required ||
+	    (sk_stream_min_wspace(svsk->sk_sk) == 0 &&
+	     atomic_read(&xprt->xpt_reserved) == 0))
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	set_bit(SOCK_NOSPACE, &svsk->sk_sock->flags);
 	return 0;
@@ -1241,7 +1569,15 @@ static struct svc_xprt *svc_tcp_create(struct svc_serv *serv,
 	return svc_create_socket(serv, IPPROTO_TCP, net, sa, salen, flags);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NFS_V4_1)
+=======
+#if defined(CONFIG_SUNRPC_BACKCHANNEL)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SUNRPC_BACKCHANNEL)
+>>>>>>> refs/remotes/origin/master
 static struct svc_xprt *svc_bc_create_socket(struct svc_serv *, int,
 					     struct net *, struct sockaddr *,
 					     int, int);
@@ -1282,7 +1618,15 @@ static void svc_cleanup_bc_xprt_sock(void)
 {
 	svc_unreg_xprt_class(&svc_tcp_bc_class);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else /* CONFIG_NFS_V4_1 */
+=======
+#else /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/master
 static void svc_init_bc_xprt_sock(void)
 {
 }
@@ -1290,7 +1634,15 @@ static void svc_init_bc_xprt_sock(void)
 static void svc_cleanup_bc_xprt_sock(void)
 {
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_NFS_V4_1 */
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/master
 
 static struct svc_xprt_ops svc_tcp_ops = {
 	.xpo_create = svc_tcp_create,
@@ -1329,7 +1681,17 @@ static void svc_tcp_init(struct svc_sock *svsk, struct svc_serv *serv)
 {
 	struct sock	*sk = svsk->sk_sk;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	svc_xprt_init(&svc_tcp_class, &svsk->sk_xprt, serv);
+=======
+	svc_xprt_init(sock_net(svsk->sk_sock->sk), &svc_tcp_class,
+		      &svsk->sk_xprt, serv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	svc_xprt_init(sock_net(svsk->sk_sock->sk), &svc_tcp_class,
+		      &svsk->sk_xprt, serv);
+>>>>>>> refs/remotes/origin/master
 	set_bit(XPT_CACHE_AUTH, &svsk->sk_xprt.xpt_flags);
 	if (sk->sk_state == TCP_LISTEN) {
 		dprintk("setting up TCP socket for listening\n");
@@ -1344,6 +1706,10 @@ static void svc_tcp_init(struct svc_sock *svsk, struct svc_serv *serv)
 
 		svsk->sk_reclen = 0;
 		svsk->sk_tcplen = 0;
+<<<<<<< HEAD
+=======
+		svsk->sk_datalen = 0;
+>>>>>>> refs/remotes/origin/master
 		memset(&svsk->sk_pages[0], 0, sizeof(svsk->sk_pages));
 
 		tcp_sk(sk)->nonagle |= TCP_NAGLE_OFF;
@@ -1365,8 +1731,14 @@ void svc_sock_update_bufs(struct svc_serv *serv)
 	spin_lock_bh(&serv->sv_lock);
 	list_for_each_entry(svsk, &serv->sv_permsocks, sk_xprt.xpt_list)
 		set_bit(XPT_CHNGBUF, &svsk->sk_xprt.xpt_flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each_entry(svsk, &serv->sv_tempsocks, sk_xprt.xpt_list)
 		set_bit(XPT_CHNGBUF, &svsk->sk_xprt.xpt_flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&serv->sv_lock);
 }
 EXPORT_SYMBOL_GPL(svc_sock_update_bufs);
@@ -1377,28 +1749,57 @@ EXPORT_SYMBOL_GPL(svc_sock_update_bufs);
  */
 static struct svc_sock *svc_setup_socket(struct svc_serv *serv,
 						struct socket *sock,
+<<<<<<< HEAD
 						int *errp, int flags)
+=======
+						int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct svc_sock	*svsk;
 	struct sock	*inet;
 	int		pmap_register = !(flags & SVC_SOCK_ANONYMOUS);
+<<<<<<< HEAD
 
 	dprintk("svc: svc_setup_socket %p\n", sock);
 	if (!(svsk = kzalloc(sizeof(*svsk), GFP_KERNEL))) {
 		*errp = -ENOMEM;
 		return NULL;
 	}
+=======
+	int		err = 0;
+
+	dprintk("svc: svc_setup_socket %p\n", sock);
+	svsk = kzalloc(sizeof(*svsk), GFP_KERNEL);
+	if (!svsk)
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/master
 
 	inet = sock->sk;
 
 	/* Register socket with portmapper */
+<<<<<<< HEAD
 	if (*errp >= 0 && pmap_register)
+<<<<<<< HEAD
 		*errp = svc_register(serv, inet->sk_family, inet->sk_protocol,
+=======
+		*errp = svc_register(serv, sock_net(sock->sk), inet->sk_family,
+				     inet->sk_protocol,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     ntohs(inet_sk(inet)->inet_sport));
 
 	if (*errp < 0) {
 		kfree(svsk);
 		return NULL;
+=======
+	if (pmap_register)
+		err = svc_register(serv, sock_net(sock->sk), inet->sk_family,
+				     inet->sk_protocol,
+				     ntohs(inet_sk(inet)->inet_sport));
+
+	if (err < 0) {
+		kfree(svsk);
+		return ERR_PTR(err);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	inet->sk_user_data = svsk;
@@ -1443,6 +1844,7 @@ int svc_addsock(struct svc_serv *serv, const int fd, char *name_return,
 	int err = 0;
 	struct socket *so = sockfd_lookup(fd, &err);
 	struct svc_sock *svsk = NULL;
+<<<<<<< HEAD
 
 	if (!so)
 		return err;
@@ -1479,6 +1881,40 @@ int svc_addsock(struct svc_serv *serv, const int fd, char *name_return,
 		return err;
 	}
 	return svc_one_sock_name(svsk, name_return, len);
+=======
+	struct sockaddr_storage addr;
+	struct sockaddr *sin = (struct sockaddr *)&addr;
+	int salen;
+
+	if (!so)
+		return err;
+	err = -EAFNOSUPPORT;
+	if ((so->sk->sk_family != PF_INET) && (so->sk->sk_family != PF_INET6))
+		goto out;
+	err =  -EPROTONOSUPPORT;
+	if (so->sk->sk_protocol != IPPROTO_TCP &&
+	    so->sk->sk_protocol != IPPROTO_UDP)
+		goto out;
+	err = -EISCONN;
+	if (so->state > SS_UNCONNECTED)
+		goto out;
+	err = -ENOENT;
+	if (!try_module_get(THIS_MODULE))
+		goto out;
+	svsk = svc_setup_socket(serv, so, SVC_SOCK_DEFAULTS);
+	if (IS_ERR(svsk)) {
+		module_put(THIS_MODULE);
+		err = PTR_ERR(svsk);
+		goto out;
+	}
+	if (kernel_getsockname(svsk->sk_sock, sin, &salen) == 0)
+		svc_xprt_set_local(&svsk->sk_xprt, sin, salen);
+	svc_add_new_perm_xprt(serv, &svsk->sk_xprt);
+	return svc_one_sock_name(svsk, name_return, len);
+out:
+	sockfd_put(so);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(svc_addsock);
 
@@ -1541,7 +1977,11 @@ static struct svc_xprt *svc_create_socket(struct svc_serv *serv,
 					(char *)&val, sizeof(val));
 
 	if (type == SOCK_STREAM)
+<<<<<<< HEAD
 		sock->sk->sk_reuse = 1;		/* allow address reuse */
+=======
+		sock->sk->sk_reuse = SK_CAN_REUSE; /* allow address reuse */
+>>>>>>> refs/remotes/origin/master
 	error = kernel_bind(sock, sin, len);
 	if (error < 0)
 		goto bummer;
@@ -1556,11 +1996,21 @@ static struct svc_xprt *svc_create_socket(struct svc_serv *serv,
 			goto bummer;
 	}
 
+<<<<<<< HEAD
 	if ((svsk = svc_setup_socket(serv, sock, &error, flags)) != NULL) {
 		svc_xprt_set_local(&svsk->sk_xprt, newsin, newlen);
 		return (struct svc_xprt *)svsk;
 	}
 
+=======
+	svsk = svc_setup_socket(serv, sock, flags);
+	if (IS_ERR(svsk)) {
+		error = PTR_ERR(svsk);
+		goto bummer;
+	}
+	svc_xprt_set_local(&svsk->sk_xprt, newsin, newlen);
+	return (struct svc_xprt *)svsk;
+>>>>>>> refs/remotes/origin/master
 bummer:
 	dprintk("svc: svc_create_socket error = %d\n", -error);
 	sock_release(sock);
@@ -1621,7 +2071,15 @@ static void svc_sock_free(struct svc_xprt *xprt)
 	kfree(svsk);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NFS_V4_1)
+=======
+#if defined(CONFIG_SUNRPC_BACKCHANNEL)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SUNRPC_BACKCHANNEL)
+>>>>>>> refs/remotes/origin/master
 /*
  * Create a back channel svc_xprt which shares the fore channel socket.
  */
@@ -1645,7 +2103,15 @@ static struct svc_xprt *svc_bc_create_socket(struct svc_serv *serv,
 		return ERR_PTR(-ENOMEM);
 
 	xprt = &svsk->sk_xprt;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	svc_xprt_init(&svc_tcp_bc_class, xprt, serv);
+=======
+	svc_xprt_init(net, &svc_tcp_bc_class, xprt, serv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	svc_xprt_init(net, &svc_tcp_bc_class, xprt, serv);
+>>>>>>> refs/remotes/origin/master
 
 	serv->sv_bc_xprt = xprt;
 
@@ -1660,4 +2126,12 @@ static void svc_bc_sock_free(struct svc_xprt *xprt)
 	if (xprt)
 		kfree(container_of(xprt, struct svc_sock, sk_xprt));
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_NFS_V4_1 */
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/master

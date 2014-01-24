@@ -27,10 +27,18 @@
 
 #include <linux/linkage.h>
 #include <asm/assembler.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/io.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/omap24xx.h>
 
+=======
+
+#include "omap24xx.h"
+>>>>>>> refs/remotes/origin/master
 #include "sdrc.h"
 
 /* First address of reserved address space?  apparently valid for OMAP2 & 3 */
@@ -39,6 +47,7 @@
 	.text
 
 /*
+<<<<<<< HEAD
  * Forces OMAP into idle state
  *
  * omap24xx_idle_loop_suspend() - This bit of code just executes the WFI
@@ -58,6 +67,8 @@ ENTRY(omap24xx_idle_loop_suspend_sz)
 	.word	. - omap24xx_idle_loop_suspend
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * omap24xx_cpu_suspend() - Forces OMAP into deep sleep state by completing
  * SDRC shutdown then ARM shutdown.  Upon wake MPU is back on so just restore
  * SDRC.

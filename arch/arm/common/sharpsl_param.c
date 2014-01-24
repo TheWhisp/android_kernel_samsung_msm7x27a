@@ -15,6 +15,10 @@
 #include <linux/module.h>
 #include <linux/string.h>
 #include <asm/mach/sharpsl_param.h>
+<<<<<<< HEAD
+=======
+#include <asm/memory.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Certain hardware parameters determined at the time of device manufacture,
@@ -25,8 +29,15 @@
  */
 #ifdef CONFIG_ARCH_SA1100
 #define PARAM_BASE	0xe8ffc000
+<<<<<<< HEAD
 #else
 #define PARAM_BASE	0xa0000a00
+=======
+#define param_start(x)	(void *)(x)
+#else
+#define PARAM_BASE	0xa0000a00
+#define param_start(x)	__va(x)
+>>>>>>> refs/remotes/origin/master
 #endif
 #define MAGIC_CHG(a,b,c,d) ( ( d << 24 ) | ( c << 16 )  | ( b << 8 ) | a )
 
@@ -41,7 +52,11 @@ EXPORT_SYMBOL(sharpsl_param);
 
 void sharpsl_save_param(void)
 {
+<<<<<<< HEAD
 	memcpy(&sharpsl_param, (void *)PARAM_BASE, sizeof(struct sharpsl_param_info));
+=======
+	memcpy(&sharpsl_param, param_start(PARAM_BASE), sizeof(struct sharpsl_param_info));
+>>>>>>> refs/remotes/origin/master
 
 	if (sharpsl_param.comadj_keyword != COMADJ_MAGIC)
 		sharpsl_param.comadj=-1;

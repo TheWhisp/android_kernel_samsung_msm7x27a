@@ -1,7 +1,15 @@
 /***************************************************************************
  * Copyright (c) 2005-2009, Broadcom Corporation.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  Name: crystalhd_lnx . c
+=======
+ *  Name: crystalhd_lnx . h
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Name: crystalhd_lnx . h
+>>>>>>> refs/remotes/origin/master
  *
  *  Description:
  *		BCM70012 Linux driver
@@ -37,7 +45,10 @@
 #include <linux/delay.h>
 #include <linux/fb.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/pagemap.h>
 #include <linux/vmalloc.h>
@@ -45,6 +56,8 @@
 #include <linux/io.h>
 #include <asm/irq.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <linux/uaccess.h>
 
@@ -53,9 +66,25 @@
 #define CRYSTAL_HD_NAME		"Broadcom Crystal HD Decoder (BCM70012) Driver"
 
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/uaccess.h>
+
+#include "crystalhd.h"
+
+#define CRYSTAL_HD_NAME		"Broadcom Crystal HD Decoder (BCM70012) Driver"
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 /* OS specific PCI information structure and adapter information. */
 struct crystalhd_adp {
 	/* Hardware borad/PCI specifics */
+=======
+/* OS specific PCI information structure and adapter information. */
+struct crystalhd_adp {
+	/* Hardware board/PCI specifics */
+>>>>>>> refs/remotes/origin/master
 	char			name[32];
 	struct pci_dev		*pdev;
 
@@ -79,8 +108,13 @@ struct crystalhd_adp {
 	int		chd_dec_major;
 	unsigned int		cfg_users;
 
+<<<<<<< HEAD
 	struct crystalhd_ioctl_data	*idata_free_head;	/* ioctl data pool */
 	struct crystalhd_elem		*elem_pool_head;	/* Queue element pool */
+=======
+	struct crystalhd_ioctl_data	*idata_free_head; /* ioctl data pool */
+	struct crystalhd_elem	*elem_pool_head; /* Queue element pool */
+>>>>>>> refs/remotes/origin/master
 
 	struct crystalhd_cmd	cmds;
 

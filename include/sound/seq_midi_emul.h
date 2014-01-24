@@ -22,7 +22,11 @@
  *
  */
 
+<<<<<<< HEAD
 #include "seq_kernel.h"
+=======
+#include <sound/seq_kernel.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This structure is used to keep track of the current state on each

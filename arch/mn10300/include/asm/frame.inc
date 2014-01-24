@@ -61,7 +61,11 @@
 ###############################################################################
 .macro RESTORE_ALL
 	# peel back the stack to the calling frame
+<<<<<<< HEAD
 	# - this permits execve() to discard extra frames due to kernel syscalls
+=======
+	# - we need that when returning from interrupts to kernel mode
+>>>>>>> refs/remotes/origin/master
 	GET_THREAD_INFO a0
 	mov	(TI_frame,a0),fp
 	mov	fp,sp

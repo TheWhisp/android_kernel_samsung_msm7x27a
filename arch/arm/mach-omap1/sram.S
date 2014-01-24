@@ -9,10 +9,26 @@
  */
 
 #include <linux/linkage.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/assembler.h>
 #include <mach/io.h>
 #include <mach/hardware.h>
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#include <asm/assembler.h>
+
+#include <mach/hardware.h>
+
+#include "iomap.h"
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.text
 
 /*

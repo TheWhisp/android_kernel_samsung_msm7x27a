@@ -57,6 +57,11 @@ static struct dvb_usb_device_properties dibusb_mc_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.caps = DVB_USB_ADAP_HAS_PID_FILTER | DVB_USB_ADAP_PID_FILTER_CAN_BE_TURNED_OFF,
 			.pid_filter_count = 32,
 			.streaming_ctrl   = dibusb2_0_streaming_ctrl,
@@ -76,6 +81,10 @@ static struct dvb_usb_device_properties dibusb_mc_properties = {
 					}
 				}
 			},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 			.size_of_priv     = sizeof(struct dibusb_state),
 		}
 	},
@@ -138,6 +147,7 @@ static struct usb_driver dibusb_mc_driver = {
 	.id_table	= dibusb_dib3000mc_table,
 };
 
+<<<<<<< HEAD
 /* module stuff */
 static int __init dibusb_mc_module_init(void)
 {
@@ -158,6 +168,9 @@ static void __exit dibusb_mc_module_exit(void)
 
 module_init (dibusb_mc_module_init);
 module_exit (dibusb_mc_module_exit);
+=======
+module_usb_driver(dibusb_mc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Patrick Boettcher <patrick.boettcher@desy.de>");
 MODULE_DESCRIPTION("Driver for DiBcom USB2.0 DVB-T (DiB3000M-C/P based) devices");

@@ -21,7 +21,13 @@
  */
 #include <linux/sched.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/spu.h>
 #include <asm/spu_csa.h>

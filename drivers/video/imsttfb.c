@@ -225,7 +225,11 @@ struct initvalues {
 	__u8 addr, value;
 };
 
+<<<<<<< HEAD
 static struct initvalues ibm_initregs[] __devinitdata = {
+=======
+static struct initvalues ibm_initregs[] = {
+>>>>>>> refs/remotes/origin/master
 	{ CLKCTL,	0x21 },
 	{ SYNCCTL,	0x00 },
 	{ HSYNCPOS,	0x00 },
@@ -272,7 +276,11 @@ static struct initvalues ibm_initregs[] __devinitdata = {
 	{ KEYCTL,	0x00 }
 };
 
+<<<<<<< HEAD
 static struct initvalues tvp_initregs[] __devinitdata = {
+=======
+static struct initvalues tvp_initregs[] = {
+>>>>>>> refs/remotes/origin/master
 	{ TVPIRICC,	0x00 },
 	{ TVPIRBRC,	0xe4 },
 	{ TVPIRLAC,	0x06 },
@@ -336,7 +344,11 @@ enum {
 static int inverse = 0;
 static char fontname[40] __initdata = { 0 };
 #if defined(CONFIG_PPC)
+<<<<<<< HEAD
 static signed char init_vmode __devinitdata = -1, init_cmode __devinitdata = -1;
+=======
+static signed char init_vmode = -1, init_cmode = -1;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static struct imstt_regvals tvp_reg_init_2 = {
@@ -749,7 +761,15 @@ set_offset (struct fb_var_screeninfo *var, struct fb_info *info)
 {
 	struct imstt_par *par = info->par;
 	__u32 off = var->yoffset * (info->fix.line_length >> 3)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    + ((var->xoffset * (var->bits_per_pixel >> 3)) >> 3);
+=======
+		    + ((var->xoffset * (info->var.bits_per_pixel >> 3)) >> 3);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    + ((var->xoffset * (info->var.bits_per_pixel >> 3)) >> 3);
+>>>>>>> refs/remotes/origin/master
 	write_reg_le32(par->dc_regs, SSR, off);
 }
 
@@ -1333,7 +1353,11 @@ static struct pci_driver imsttfb_pci_driver = {
 	.name =		"imsttfb",
 	.id_table =	imsttfb_pci_tbl,
 	.probe =	imsttfb_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(imsttfb_remove),
+=======
+	.remove =	imsttfb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct fb_ops imsttfb_ops = {
@@ -1349,8 +1373,12 @@ static struct fb_ops imsttfb_ops = {
 	.fb_ioctl 	= imsttfb_ioctl,
 };
 
+<<<<<<< HEAD
 static void __devinit
 init_imstt(struct fb_info *info)
+=======
+static void init_imstt(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct imstt_par *par = info->par;
 	__u32 i, tmp, *ip, *end;
@@ -1462,12 +1490,20 @@ init_imstt(struct fb_info *info)
 	}
 
 	tmp = (read_reg_le32(par->dc_regs, SSTATUS) & 0x0f00) >> 8;
+<<<<<<< HEAD
 	printk("fb%u: %s frame buffer; %uMB vram; chip version %u\n",
 		info->node, info->fix.id, info->fix.smem_len >> 20, tmp);
 }
 
 static int __devinit
 imsttfb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+=======
+	fb_info(info, "%s frame buffer; %uMB vram; chip version %u\n",
+		info->fix.id, info->fix.smem_len >> 20, tmp);
+}
+
+static int imsttfb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long addr, size;
 	struct imstt_par *par;
@@ -1534,8 +1570,12 @@ imsttfb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit
 imsttfb_remove(struct pci_dev *pdev)
+=======
+static void imsttfb_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(pdev);
 	struct imstt_par *par = info->par;

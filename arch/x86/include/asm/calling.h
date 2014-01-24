@@ -46,6 +46,11 @@ For 32-bit we have the following conventions - kernel is built with
 
 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "dwarf2.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * 64-bit system call stack frame layout defines and helpers, for
@@ -80,10 +85,49 @@ For 32-bit we have the following conventions - kernel is built with
 #define EFLAGS		(144)
 #define RSP		(152)
 #define SS		(160)
+=======
+#include <asm/dwarf2.h>
+
+#ifdef CONFIG_X86_64
+
+/*
+ * 64-bit system call stack frame layout defines and helpers,
+ * for assembly code:
+ */
+
+#define R15		  0
+#define R14		  8
+#define R13		 16
+#define R12		 24
+#define RBP		 32
+#define RBX		 40
+
+/* arguments: interrupts/non tracing syscalls only save up to here: */
+#define R11		 48
+#define R10		 56
+#define R9		 64
+#define R8		 72
+#define RAX		 80
+#define RCX		 88
+#define RDX		 96
+#define RSI		104
+#define RDI		112
+#define ORIG_RAX	120       /* + error_code */
+/* end of arguments */
+
+/* cpu exception frame or undefined in case of fast syscall: */
+#define RIP		128
+#define CS		136
+#define EFLAGS		144
+#define RSP		152
+#define SS		160
+>>>>>>> refs/remotes/origin/master
 
 #define ARGOFFSET	R11
 #define SWFRAME		ORIG_RAX
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.macro SAVE_ARGS addskip=0, norcx=0, nor891011=0
 	subq  $9*8+\addskip, %rsp
 	CFI_ADJUST_CFA_OFFSET	9*8+\addskip
@@ -111,10 +155,39 @@ For 32-bit we have the following conventions - kernel is built with
 	movq  %r11, (%rsp)
 	CFI_REL_OFFSET	r11, 0*8
 	.endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.macro SAVE_ARGS addskip=0, save_rcx=1, save_r891011=1
+	subq  $9*8+\addskip, %rsp
+	CFI_ADJUST_CFA_OFFSET	9*8+\addskip
+	movq_cfi rdi, 8*8
+	movq_cfi rsi, 7*8
+	movq_cfi rdx, 6*8
+
+	.if \save_rcx
+	movq_cfi rcx, 5*8
+	.endif
+
+	movq_cfi rax, 4*8
+
+	.if \save_r891011
+	movq_cfi r8,  3*8
+	movq_cfi r9,  2*8
+	movq_cfi r10, 1*8
+	movq_cfi r11, 0*8
+	.endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 #define ARG_SKIP	(9*8)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.macro RESTORE_ARGS skiprax=0, addskip=0, skiprcx=0, skipr11=0, \
 			    skipr8910=0, skiprdx=0
 	.if \skipr11
@@ -150,6 +223,40 @@ For 32-bit we have the following conventions - kernel is built with
 	CFI_RESTORE rsi
 	movq 8*8(%rsp), %rdi
 	CFI_RESTORE rdi
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.macro RESTORE_ARGS rstor_rax=1, addskip=0, rstor_rcx=1, rstor_r11=1, \
+			    rstor_r8910=1, rstor_rdx=1
+	.if \rstor_r11
+	movq_cfi_restore 0*8, r11
+	.endif
+
+	.if \rstor_r8910
+	movq_cfi_restore 1*8, r10
+	movq_cfi_restore 2*8, r9
+	movq_cfi_restore 3*8, r8
+	.endif
+
+	.if \rstor_rax
+	movq_cfi_restore 4*8, rax
+	.endif
+
+	.if \rstor_rcx
+	movq_cfi_restore 5*8, rcx
+	.endif
+
+	.if \rstor_rdx
+	movq_cfi_restore 6*8, rdx
+	.endif
+
+	movq_cfi_restore 7*8, rsi
+	movq_cfi_restore 8*8, rdi
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.if ARG_SKIP+\addskip > 0
 	addq $ARG_SKIP+\addskip, %rsp
 	CFI_ADJUST_CFA_OFFSET	-(ARG_SKIP+\addskip)
@@ -176,6 +283,8 @@ For 32-bit we have the following conventions - kernel is built with
 	.macro SAVE_REST
 	subq $REST_SKIP, %rsp
 	CFI_ADJUST_CFA_OFFSET	REST_SKIP
+<<<<<<< HEAD
+<<<<<<< HEAD
 	movq %rbx, 5*8(%rsp)
 	CFI_REL_OFFSET	rbx, 5*8
 	movq %rbp, 4*8(%rsp)
@@ -203,6 +312,28 @@ For 32-bit we have the following conventions - kernel is built with
 	CFI_RESTORE rbp
 	movq 5*8(%rsp),  %rbx
 	CFI_RESTORE rbx
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	movq_cfi rbx, 5*8
+	movq_cfi rbp, 4*8
+	movq_cfi r12, 3*8
+	movq_cfi r13, 2*8
+	movq_cfi r14, 1*8
+	movq_cfi r15, 0*8
+	.endm
+
+	.macro RESTORE_REST
+	movq_cfi_restore 0*8, r15
+	movq_cfi_restore 1*8, r14
+	movq_cfi_restore 2*8, r13
+	movq_cfi_restore 3*8, r12
+	movq_cfi_restore 4*8, rbp
+	movq_cfi_restore 5*8, rbx
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	addq $REST_SKIP, %rsp
 	CFI_ADJUST_CFA_OFFSET	-(REST_SKIP)
 	.endm
@@ -214,9 +345,68 @@ For 32-bit we have the following conventions - kernel is built with
 
 	.macro RESTORE_ALL addskip=0
 	RESTORE_REST
+<<<<<<< HEAD
+<<<<<<< HEAD
 	RESTORE_ARGS 0, \addskip
+=======
+	RESTORE_ARGS 1, \addskip
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RESTORE_ARGS 1, \addskip
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 	.macro icebp
 	.byte 0xf1
 	.endm
+<<<<<<< HEAD
+=======
+
+#else /* CONFIG_X86_64 */
+
+/*
+ * For 32bit only simplified versions of SAVE_ALL/RESTORE_ALL. These
+ * are different from the entry_32.S versions in not changing the segment
+ * registers. So only suitable for in kernel use, not when transitioning
+ * from or to user space. The resulting stack frame is not a standard
+ * pt_regs frame. The main use case is calling C code from assembler
+ * when all the registers need to be preserved.
+ */
+
+	.macro SAVE_ALL
+	pushl_cfi %eax
+	CFI_REL_OFFSET eax, 0
+	pushl_cfi %ebp
+	CFI_REL_OFFSET ebp, 0
+	pushl_cfi %edi
+	CFI_REL_OFFSET edi, 0
+	pushl_cfi %esi
+	CFI_REL_OFFSET esi, 0
+	pushl_cfi %edx
+	CFI_REL_OFFSET edx, 0
+	pushl_cfi %ecx
+	CFI_REL_OFFSET ecx, 0
+	pushl_cfi %ebx
+	CFI_REL_OFFSET ebx, 0
+	.endm
+
+	.macro RESTORE_ALL
+	popl_cfi %ebx
+	CFI_RESTORE ebx
+	popl_cfi %ecx
+	CFI_RESTORE ecx
+	popl_cfi %edx
+	CFI_RESTORE edx
+	popl_cfi %esi
+	CFI_RESTORE esi
+	popl_cfi %edi
+	CFI_RESTORE edi
+	popl_cfi %ebp
+	CFI_RESTORE ebp
+	popl_cfi %eax
+	CFI_RESTORE eax
+	.endm
+
+#endif /* CONFIG_X86_64 */
+
+>>>>>>> refs/remotes/origin/master

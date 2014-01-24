@@ -45,12 +45,20 @@
 #define WIDGET_PENDING			0x0000001f
 
 /* WIDGET_ERR_UPPER_ADDR */
+<<<<<<< HEAD
 #define	WIDGET_ERR_UPPER_ADDR_ONLY	0x0000ffff
+=======
+#define WIDGET_ERR_UPPER_ADDR_ONLY	0x0000ffff
+>>>>>>> refs/remotes/origin/master
 
 /* WIDGET_CONTROL */
 #define WIDGET_F_BAD_PKT		0x00010000
 #define WIDGET_LLP_XBAR_CRD		0x0000f000
+<<<<<<< HEAD
 #define	WIDGET_LLP_XBAR_CRD_SHFT	12
+=======
+#define WIDGET_LLP_XBAR_CRD_SHFT	12
+>>>>>>> refs/remotes/origin/master
 #define WIDGET_CLR_RLLP_CNT		0x00000800
 #define WIDGET_CLR_TLLP_CNT		0x00000400
 #define WIDGET_SYS_END			0x00000200
@@ -86,8 +94,13 @@
 
 /*
  * according to the crosstalk spec, only 32-bits access to the widget
+<<<<<<< HEAD
  * configuration registers is allowed.  some widgets may allow 64-bits
  * access but software should not depend on it.  registers beyond the
+=======
+ * configuration registers is allowed.	some widgets may allow 64-bits
+ * access but software should not depend on it.	 registers beyond the
+>>>>>>> refs/remotes/origin/master
  * widget target flush register are widget dependent thus will not be
  * defined here
  */

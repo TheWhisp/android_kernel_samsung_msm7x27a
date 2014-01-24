@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -181,8 +189,14 @@ static DECLARE_COMPLETION(msm_ipc_local_router_up);
 
 static uint32_t next_port_id;
 static DEFINE_MUTEX(next_port_id_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 static atomic_t pending_close_count = ATOMIC_INIT(0);
 static wait_queue_head_t subsystem_restart_wait;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct workqueue_struct *msm_ipc_router_workqueue;
 
 enum {
@@ -457,8 +471,23 @@ struct msm_ipc_port *msm_ipc_router_create_raw_port(void *endpoint,
 	INIT_LIST_HEAD(&port_ptr->port_rx_q);
 	mutex_init(&port_ptr->port_rx_q_lock);
 	init_waitqueue_head(&port_ptr->port_rx_wait_q);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wake_lock_init(&port_ptr->port_rx_wake_lock,
 			WAKE_LOCK_SUSPEND, "msm_ipc_read");
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	snprintf(port_ptr->rx_wakelock_name, MAX_WAKELOCK_NAME_SZ,
+		 "msm_ipc_read%08x:%08x",
+		 port_ptr->this_port.node_id,
+		 port_ptr->this_port.port_id);
+	wake_lock_init(&port_ptr->port_rx_wake_lock,
+			WAKE_LOCK_SUSPEND, port_ptr->rx_wakelock_name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	port_ptr->endpoint = endpoint;
 	port_ptr->notify = notify;
@@ -468,11 +497,25 @@ struct msm_ipc_port *msm_ipc_router_create_raw_port(void *endpoint,
 	return port_ptr;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/*
+ * Should be called with local_ports_lock locked
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Should be called with local_ports_lock locked
+ */
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct msm_ipc_port *msm_ipc_router_lookup_local_port(uint32_t port_id)
 {
 	int key = (port_id & (LP_HASH_SIZE - 1));
 	struct msm_ipc_port *port_ptr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&local_ports_lock);
 	list_for_each_entry(port_ptr, &local_ports[key], list) {
 		if (port_ptr->this_port.port_id == port_id) {
@@ -481,6 +524,20 @@ static struct msm_ipc_port *msm_ipc_router_lookup_local_port(uint32_t port_id)
 		}
 	}
 	mutex_unlock(&local_ports_lock);
+=======
+	list_for_each_entry(port_ptr, &local_ports[key], list) {
+		if (port_ptr->this_port.port_id == port_id) {
+			return port_ptr;
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_for_each_entry(port_ptr, &local_ports[key], list) {
+		if (port_ptr->this_port.port_id == port_id) {
+			return port_ptr;
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-11.0
 	return NULL;
 }
 
@@ -756,7 +813,15 @@ static int msm_ipc_router_send_control_msg(
 	pkt->length = pkt_size;
 
 	mutex_lock(&xprt_info->tx_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = xprt_info->xprt->write(pkt, pkt_size, 0);
+=======
+	ret = xprt_info->xprt->write(pkt, pkt_size, xprt_info->xprt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = xprt_info->xprt->write(pkt, pkt_size, xprt_info->xprt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&xprt_info->tx_lock);
 
 	release_pkt(pkt);
@@ -933,7 +998,17 @@ static int relay_msg(struct msm_ipc_router_xprt_info *xprt_info,
 	list_for_each_entry(fwd_xprt_info, &xprt_info_list, list) {
 		mutex_lock(&fwd_xprt_info->tx_lock);
 		if (xprt_info->xprt->link_id != fwd_xprt_info->xprt->link_id)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			fwd_xprt_info->xprt->write(pkt, pkt->length, 0);
+=======
+			fwd_xprt_info->xprt->write(pkt, pkt->length,
+						   fwd_xprt_info->xprt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			fwd_xprt_info->xprt->write(pkt, pkt->length,
+						   fwd_xprt_info->xprt);
+>>>>>>> refs/remotes/origin/cm-11.0
 		mutex_unlock(&fwd_xprt_info->tx_lock);
 	}
 	mutex_unlock(&xprt_info_list_lock);
@@ -984,7 +1059,15 @@ static int forward_msg(struct msm_ipc_router_xprt_info *xprt_info,
 		pr_err("%s: DST in the same cluster\n", __func__);
 		return 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fwd_xprt_info->xprt->write(pkt, pkt->length, 0);
+=======
+	fwd_xprt_info->xprt->write(pkt, pkt->length, fwd_xprt_info->xprt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fwd_xprt_info->xprt->write(pkt, pkt->length, fwd_xprt_info->xprt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&fwd_xprt_info->tx_lock);
 	mutex_unlock(&rt_entry->lock);
 	mutex_unlock(&routing_table_lock);
@@ -1427,16 +1510,43 @@ static void do_read_data(struct work_struct *work)
 	resume_tx_node_id = hdr->dst_node_id;
 	resume_tx_port_id = hdr->dst_port_id;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	rport_ptr = msm_ipc_router_lookup_remote_port(hdr->src_node_id,
+						      hdr->src_port_id);
+
+	mutex_lock(&local_ports_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	port_ptr = msm_ipc_router_lookup_local_port(hdr->dst_port_id);
 	if (!port_ptr) {
 		pr_err("%s: No local port id %08x\n", __func__,
 			hdr->dst_port_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		mutex_unlock(&local_ports_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mutex_unlock(&local_ports_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		release_pkt(pkt);
 		goto process_done;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rport_ptr = msm_ipc_router_lookup_remote_port(hdr->src_node_id,
 						      hdr->src_port_id);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!rport_ptr) {
 		rport_ptr = msm_ipc_router_create_remote_port(
 							hdr->src_node_id,
@@ -1444,6 +1554,14 @@ static void do_read_data(struct work_struct *work)
 		if (!rport_ptr) {
 			pr_err("%s: Remote port %08x:%08x creation failed\n",
 				__func__, hdr->src_node_id, hdr->src_port_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			mutex_unlock(&local_ports_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mutex_unlock(&local_ports_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto process_done;
 		}
 	}
@@ -1454,7 +1572,19 @@ static void do_read_data(struct work_struct *work)
 		list_add_tail(&pkt->list, &port_ptr->port_rx_q);
 		wake_up(&port_ptr->port_rx_wait_q);
 		mutex_unlock(&port_ptr->port_rx_q_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
+=======
+		mutex_unlock(&local_ports_lock);
+	} else {
+		mutex_lock(&port_ptr->port_rx_q_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mutex_unlock(&local_ports_lock);
+	} else {
+		mutex_lock(&port_ptr->port_rx_q_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 		src_addr = kmalloc(sizeof(struct msm_ipc_port_addr),
 				   GFP_KERNEL);
 		if (src_addr) {
@@ -1462,8 +1592,21 @@ static void do_read_data(struct work_struct *work)
 			src_addr->port_id = hdr->src_port_id;
 		}
 		skb_pull(head_skb, IPC_ROUTER_HDR_SIZE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		port_ptr->notify(MSM_IPC_ROUTER_READ_CB, pkt->pkt_fragment_q,
 				 src_addr, port_ptr->priv);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		mutex_unlock(&local_ports_lock);
+		port_ptr->notify(MSM_IPC_ROUTER_READ_CB, pkt->pkt_fragment_q,
+				 src_addr, port_ptr->priv);
+		mutex_unlock(&port_ptr->port_rx_q_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		pkt->pkt_fragment_q = NULL;
 		src_addr = NULL;
 		release_pkt(pkt);
@@ -1623,9 +1766,23 @@ static int loopback_data(struct msm_ipc_port *src,
 	hdr->dst_port_id = port_id;
 	pkt->length += IPC_ROUTER_HDR_SIZE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	port_ptr = msm_ipc_router_lookup_local_port(port_id);
 	if (!port_ptr) {
 		pr_err("%s: Local port %d not present\n", __func__, port_id);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	mutex_lock(&local_ports_lock);
+	port_ptr = msm_ipc_router_lookup_local_port(port_id);
+	if (!port_ptr) {
+		pr_err("%s: Local port %d not present\n", __func__, port_id);
+		mutex_unlock(&local_ports_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		release_pkt(pkt);
 		return -ENODEV;
 	}
@@ -1635,6 +1792,14 @@ static int loopback_data(struct msm_ipc_port *src,
 	list_add_tail(&pkt->list, &port_ptr->port_rx_q);
 	wake_up(&port_ptr->port_rx_wait_q);
 	mutex_unlock(&port_ptr->port_rx_q_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mutex_unlock(&local_ports_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&local_ports_lock);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	return pkt->length;
 }
@@ -1713,7 +1878,15 @@ static int msm_ipc_router_write_pkt(struct msm_ipc_port *src,
 	mutex_lock(&rt_entry->lock);
 	xprt_info = rt_entry->xprt_info;
 	mutex_lock(&xprt_info->tx_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = xprt_info->xprt->write(pkt, pkt->length, 0);
+=======
+	ret = xprt_info->xprt->write(pkt, pkt->length, xprt_info->xprt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = xprt_info->xprt->write(pkt, pkt->length, xprt_info->xprt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	mutex_unlock(&xprt_info->tx_lock);
 	mutex_unlock(&rt_entry->lock);
 	mutex_unlock(&routing_table_lock);
@@ -1927,6 +2100,19 @@ int msm_ipc_router_close_port(struct msm_ipc_port *port_ptr)
 		return -EINVAL;
 
 	if (port_ptr->type == SERVER_PORT || port_ptr->type == CLIENT_PORT) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		mutex_lock(&local_ports_lock);
+		list_del(&port_ptr->list);
+		mutex_unlock(&local_ports_lock);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (port_ptr->type == SERVER_PORT) {
 			msg.cmd = IPC_ROUTER_CTRL_CMD_REMOVE_SERVER;
 			msg.srv.service = port_ptr->port_name.service;
@@ -1945,6 +2131,19 @@ int msm_ipc_router_close_port(struct msm_ipc_port *port_ptr)
 		}
 		broadcast_ctl_msg(&msg);
 		broadcast_ctl_msg_locally(&msg);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	} else if (port_ptr->type == CONTROL_PORT) {
+		mutex_lock(&control_ports_lock);
+		list_del(&port_ptr->list);
+		mutex_unlock(&control_ports_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	mutex_lock(&port_ptr->port_rx_q_lock);
@@ -1964,6 +2163,8 @@ int msm_ipc_router_close_port(struct msm_ipc_port *port_ptr)
 			msm_ipc_router_destroy_server(server,
 				port_ptr->this_port.node_id,
 				port_ptr->this_port.port_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mutex_lock(&local_ports_lock);
 		list_del(&port_ptr->list);
 		mutex_unlock(&local_ports_lock);
@@ -1975,6 +2176,10 @@ int msm_ipc_router_close_port(struct msm_ipc_port *port_ptr)
 		mutex_lock(&control_ports_lock);
 		list_del(&port_ptr->list);
 		mutex_unlock(&control_ports_lock);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	wake_lock_destroy(&port_ptr->port_rx_wake_lock);
@@ -2074,7 +2279,15 @@ int msm_ipc_router_close(void)
 	mutex_lock(&xprt_info_list_lock);
 	list_for_each_entry_safe(xprt_info, tmp_xprt_info,
 				 &xprt_info_list, list) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		xprt_info->xprt->close();
+=======
+		xprt_info->xprt->close(xprt_info->xprt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		xprt_info->xprt->close(xprt_info->xprt);
+>>>>>>> refs/remotes/origin/cm-11.0
 		list_del(&xprt_info->list);
 		kfree(xprt_info);
 	}
@@ -2407,10 +2620,18 @@ static void xprt_close_worker(struct work_struct *work)
 
 	modem_reset_cleanup(xprt_work->xprt->priv);
 	msm_ipc_router_remove_xprt(xprt_work->xprt);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (atomic_dec_return(&pending_close_count) == 0)
 		wake_up(&subsystem_restart_wait);
 
+=======
+	xprt_work->xprt->sft_close_done(xprt_work->xprt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xprt_work->xprt->sft_close_done(xprt_work->xprt);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(xprt_work);
 }
 
@@ -2444,7 +2665,13 @@ void msm_ipc_router_xprt_notify(struct msm_ipc_router_xprt *xprt,
 
 	case IPC_ROUTER_XPRT_EVENT_CLOSE:
 		D("close event for '%s'\n", xprt->name);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		atomic_inc(&pending_close_count);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		xprt_work = kmalloc(sizeof(struct msm_ipc_router_xprt_work),
 				GFP_ATOMIC);
 		xprt_work->xprt = xprt;
@@ -2470,6 +2697,8 @@ void msm_ipc_router_xprt_notify(struct msm_ipc_router_xprt *xprt,
 	wake_lock(&xprt_info->wakelock);
 	wake_up(&xprt_info->read_wait);
 	mutex_unlock(&xprt_info->rx_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 static int modem_restart_notifier_cb(struct notifier_block *this,
@@ -2511,6 +2740,16 @@ static __init int msm_ipc_router_modem_restart_late_init(void)
 }
 late_initcall(msm_ipc_router_modem_restart_late_init);
 
+=======
+	queue_work(xprt_info->workqueue, &xprt_info->read_data);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	queue_work(xprt_info->workqueue, &xprt_info->read_data);
+}
+
+>>>>>>> refs/remotes/origin/cm-11.0
 static int __init msm_ipc_router_init(void)
 {
 	int i, ret;
@@ -2540,7 +2779,13 @@ static int __init msm_ipc_router_init(void)
 	mutex_unlock(&routing_table_lock);
 
 	init_waitqueue_head(&newserver_wait);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	init_waitqueue_head(&subsystem_restart_wait);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ret = msm_ipc_router_init_sockets();
 	if (ret < 0)
 		pr_err("%s: Init sockets failed\n", __func__);

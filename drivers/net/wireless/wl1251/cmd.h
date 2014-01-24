@@ -269,7 +269,11 @@ struct cmd_join {
 	u8 bss_type;
 	u8 channel;
 	u8 ssid_len;
+<<<<<<< HEAD
 	u8 ssid[IW_ESSID_MAX_SIZE];
+=======
+	u8 ssid[IEEE80211_MAX_SSID_LEN];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 ctrl; /* JOIN_CMD_CTRL_* */
 	u8 tx_mgt_frame_rate; /* OBSOLETE */
 	u8 tx_mgt_frame_mod;  /* OBSOLETE */

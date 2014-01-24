@@ -34,6 +34,14 @@
 #include <linux/in.h>
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "rds.h"
 #include "ib.h"
@@ -374,23 +382,47 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
 		goto out;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ic->i_sends = vmalloc_node(ic->i_send_ring.w_nr * sizeof(struct rds_ib_send_work),
+=======
+	ic->i_sends = vzalloc_node(ic->i_send_ring.w_nr * sizeof(struct rds_ib_send_work),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ic->i_sends = vzalloc_node(ic->i_send_ring.w_nr * sizeof(struct rds_ib_send_work),
+>>>>>>> refs/remotes/origin/master
 				   ibdev_to_node(dev));
 	if (!ic->i_sends) {
 		ret = -ENOMEM;
 		rdsdebug("send allocation failed\n");
 		goto out;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(ic->i_sends, 0, ic->i_send_ring.w_nr * sizeof(struct rds_ib_send_work));
 
 	ic->i_recvs = vmalloc_node(ic->i_recv_ring.w_nr * sizeof(struct rds_ib_recv_work),
+=======
+
+	ic->i_recvs = vzalloc_node(ic->i_recv_ring.w_nr * sizeof(struct rds_ib_recv_work),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	ic->i_recvs = vzalloc_node(ic->i_recv_ring.w_nr * sizeof(struct rds_ib_recv_work),
+>>>>>>> refs/remotes/origin/master
 				   ibdev_to_node(dev));
 	if (!ic->i_recvs) {
 		ret = -ENOMEM;
 		rdsdebug("recv allocation failed\n");
 		goto out;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(ic->i_recvs, 0, ic->i_recv_ring.w_nr * sizeof(struct rds_ib_recv_work));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rds_ib_recv_init_ack(ic);
 
@@ -435,13 +467,29 @@ static u32 rds_ib_protocol_compatible(struct rdma_cm_event *event)
 		version = RDS_PROTOCOL_3_0;
 		while ((common >>= 1) != 0)
 			version++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (printk_ratelimit()) {
 		printk(KERN_NOTICE "RDS: Connection from %pI4 using "
+=======
+	}
+	printk_ratelimited(KERN_NOTICE "RDS: Connection from %pI4 using "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"incompatible protocol version %u.%u\n",
 			&dp->dp_saddr,
 			dp->dp_protocol_major,
 			dp->dp_protocol_minor);
+<<<<<<< HEAD
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else
+		printk_ratelimited(KERN_NOTICE "RDS: Connection from %pI4 using incompatible protocol version %u.%u\n",
+				&dp->dp_saddr,
+				dp->dp_protocol_major,
+				dp->dp_protocol_minor);
+>>>>>>> refs/remotes/origin/master
 	return version;
 }
 
@@ -751,7 +799,15 @@ int rds_ib_conn_alloc(struct rds_connection *conn, gfp_t gfp)
 	int ret;
 
 	/* XXX too lazy? */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ic = kzalloc(sizeof(struct rds_ib_connection), GFP_KERNEL);
+=======
+	ic = kzalloc(sizeof(struct rds_ib_connection), gfp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ic = kzalloc(sizeof(struct rds_ib_connection), gfp);
+>>>>>>> refs/remotes/origin/master
 	if (!ic)
 		return -ENOMEM;
 

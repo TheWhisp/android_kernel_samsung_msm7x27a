@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  * drivers/s390/net/ctcm_fsms.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright IBM Corp. 2001, 2007
  * Authors: 	Fritz Elfert (felfert@millenux.com)
  * 		Peter Tiedemann (ptiedem@de.ibm.com)

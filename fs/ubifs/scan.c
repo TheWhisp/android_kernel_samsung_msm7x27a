@@ -75,7 +75,11 @@ int ubifs_scan_a_node(const struct ubifs_info *c, void *buf, int len, int lnum,
 	magic = le32_to_cpu(ch->magic);
 
 	if (magic == 0xFFFFFFFF) {
+<<<<<<< HEAD
 		dbg_scan("hit empty space");
+=======
+		dbg_scan("hit empty space at LEB %d:%d", lnum, offs);
+>>>>>>> refs/remotes/origin/master
 		return SCANNED_EMPTY_SPACE;
 	}
 
@@ -85,7 +89,12 @@ int ubifs_scan_a_node(const struct ubifs_info *c, void *buf, int len, int lnum,
 	if (len < UBIFS_CH_SZ)
 		return SCANNED_GARBAGE;
 
+<<<<<<< HEAD
 	dbg_scan("scanning %s", dbg_ntype(ch->node_type));
+=======
+	dbg_scan("scanning %s at LEB %d:%d",
+		 dbg_ntype(ch->node_type), lnum, offs);
+>>>>>>> refs/remotes/origin/master
 
 	if (ubifs_check_node(c, buf, lnum, offs, quiet, 1))
 		return SCANNED_A_CORRUPT_NODE;
@@ -101,7 +110,11 @@ int ubifs_scan_a_node(const struct ubifs_info *c, void *buf, int len, int lnum,
 			if (!quiet) {
 				ubifs_err("bad pad node at LEB %d:%d",
 					  lnum, offs);
+<<<<<<< HEAD
 				dbg_dump_node(c, pad);
+=======
+				ubifs_dump_node(c, pad);
+>>>>>>> refs/remotes/origin/master
 			}
 			return SCANNED_A_BAD_PAD_NODE;
 		}
@@ -109,6 +122,7 @@ int ubifs_scan_a_node(const struct ubifs_info *c, void *buf, int len, int lnum,
 		/* Make the node pads to 8-byte boundary */
 		if ((node_len + pad_len) & 7) {
 			if (!quiet)
+<<<<<<< HEAD
 				dbg_err("bad padding length %d - %d",
 					offs, offs + node_len + pad_len);
 			return SCANNED_A_BAD_PAD_NODE;
@@ -116,6 +130,15 @@ int ubifs_scan_a_node(const struct ubifs_info *c, void *buf, int len, int lnum,
 
 		dbg_scan("%d bytes padded, offset now %d",
 			 pad_len, ALIGN(offs + node_len + pad_len, 8));
+=======
+				ubifs_err("bad padding length %d - %d",
+					  offs, offs + node_len + pad_len);
+			return SCANNED_A_BAD_PAD_NODE;
+		}
+
+		dbg_scan("%d bytes padded at LEB %d:%d, offset now %d", pad_len,
+			 lnum, offs, ALIGN(offs + node_len + pad_len, 8));
+>>>>>>> refs/remotes/origin/master
 
 		return node_len + pad_len;
 	}
@@ -148,10 +171,21 @@ struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
 	INIT_LIST_HEAD(&sleb->nodes);
 	sleb->buf = sbuf;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, sbuf + offs, offs, c->leb_size - offs);
+=======
+	err = ubifs_leb_read(c, lnum, sbuf + offs, offs, c->leb_size - offs, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err && err != -EBADMSG) {
 		ubifs_err("cannot read %d bytes from LEB %d:%d,"
 			  " error %d", c->leb_size - offs, lnum, offs, err);
+=======
+	err = ubifs_leb_read(c, lnum, sbuf + offs, offs, c->leb_size - offs, 0);
+	if (err && err != -EBADMSG) {
+		ubifs_err("cannot read %d bytes from LEB %d:%d, error %d",
+			  c->leb_size - offs, lnum, offs, err);
+>>>>>>> refs/remotes/origin/master
 		kfree(sleb);
 		return ERR_PTR(err);
 	}
@@ -240,12 +274,23 @@ void ubifs_scanned_corruption(const struct ubifs_info *c, int lnum, int offs,
 	int len;
 
 	ubifs_err("corruption at LEB %d:%d", lnum, offs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dbg_failure_mode)
+=======
+	if (dbg_is_tst_rcvry(c))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	len = c->leb_size - offs;
 	if (len > 8192)
 		len = 8192;
 	dbg_err("first %d bytes from LEB %d:%d", len, lnum, offs);
+=======
+	len = c->leb_size - offs;
+	if (len > 8192)
+		len = 8192;
+	ubifs_err("first %d bytes from LEB %d:%d", len, lnum, offs);
+>>>>>>> refs/remotes/origin/master
 	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 4, buf, len, 1);
 }
 
@@ -300,16 +345,27 @@ struct ubifs_scan_leb *ubifs_scan(const struct ubifs_info *c, int lnum,
 
 		switch (ret) {
 		case SCANNED_GARBAGE:
+<<<<<<< HEAD
 			dbg_err("garbage");
+=======
+			ubifs_err("garbage");
+>>>>>>> refs/remotes/origin/master
 			goto corrupted;
 		case SCANNED_A_NODE:
 			break;
 		case SCANNED_A_CORRUPT_NODE:
 		case SCANNED_A_BAD_PAD_NODE:
+<<<<<<< HEAD
 			dbg_err("bad node");
 			goto corrupted;
 		default:
 			dbg_err("unknown");
+=======
+			ubifs_err("bad node");
+			goto corrupted;
+		default:
+			ubifs_err("unknown");
+>>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
 			goto error;
 		}

@@ -1,7 +1,11 @@
 /*-*-linux-c-*-*/
 
 /*
+<<<<<<< HEAD
   Copyright (C) 2007,2008 Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+=======
+  Copyright (C) 2007,2008 Jonathan Woithe <jwoithe@just42.net>
+>>>>>>> refs/remotes/origin/master
   Copyright (C) 2008 Peter Gruber <nokos@gmx.net>
   Copyright (C) 2008 Tony Vroon <tony@linx.net>
   Based on earlier work:
@@ -219,8 +223,12 @@ static int call_fext_func(int cmd, int arg0, int arg1, int arg2)
 	{ .type = ACPI_TYPE_INTEGER }
 	};
 	struct acpi_object_list arg_list = { 4, &params[0] };
+<<<<<<< HEAD
 	struct acpi_buffer output;
 	union acpi_object out_obj;
+=======
+	unsigned long long value;
+>>>>>>> refs/remotes/origin/master
 	acpi_handle handle = NULL;
 
 	status = acpi_get_handle(fujitsu_hotkey->acpi_handle, "FUNC", &handle);
@@ -235,10 +243,14 @@ static int call_fext_func(int cmd, int arg0, int arg1, int arg2)
 	params[2].integer.value = arg1;
 	params[3].integer.value = arg2;
 
+<<<<<<< HEAD
 	output.length = sizeof(out_obj);
 	output.pointer = &out_obj;
 
 	status = acpi_evaluate_object(handle, NULL, &arg_list, &output);
+=======
+	status = acpi_evaluate_integer(handle, NULL, &arg_list, &value);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		vdbg_printk(FUJLAPTOP_DBG_WARN,
 			"FUNC 0x%x (args 0x%x, 0x%x, 0x%x) call failed\n",
@@ -246,6 +258,7 @@ static int call_fext_func(int cmd, int arg0, int arg1, int arg2)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	if (out_obj.type != ACPI_TYPE_INTEGER) {
 		vdbg_printk(FUJLAPTOP_DBG_WARN,
 			"FUNC 0x%x (args 0x%x, 0x%x, 0x%x) did not "
@@ -258,6 +271,12 @@ static int call_fext_func(int cmd, int arg0, int arg1, int arg2)
 		"FUNC 0x%x (args 0x%x, 0x%x, 0x%x) returned 0x%x\n",
 			cmd, arg0, arg1, arg2, (int)out_obj.integer.value);
 	return out_obj.integer.value;
+=======
+	vdbg_printk(FUJLAPTOP_DBG_TRACE,
+		"FUNC 0x%x (args 0x%x, 0x%x, 0x%x) returned 0x%x\n",
+			cmd, arg0, arg1, arg2, (int)value);
+	return value;
+>>>>>>> refs/remotes/origin/master
 }
 
 #if defined(CONFIG_LEDS_CLASS) || defined(CONFIG_LEDS_CLASS_MODULE)
@@ -317,8 +336,11 @@ static enum led_brightness kblamps_get(struct led_classdev *cdev)
 static int set_lcd_level(int level)
 {
 	acpi_status status = AE_OK;
+<<<<<<< HEAD
 	union acpi_object arg0 = { ACPI_TYPE_INTEGER };
 	struct acpi_object_list arg_list = { 1, &arg0 };
+=======
+>>>>>>> refs/remotes/origin/master
 	acpi_handle handle = NULL;
 
 	vdbg_printk(FUJLAPTOP_DBG_TRACE, "set lcd level via SBLL [%d]\n",
@@ -333,9 +355,14 @@ static int set_lcd_level(int level)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	arg0.integer.value = level;
 
 	status = acpi_evaluate_object(handle, NULL, &arg_list, NULL);
+=======
+
+	status = acpi_execute_simple_method(handle, NULL, level);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status))
 		return -ENODEV;
 
@@ -345,8 +372,11 @@ static int set_lcd_level(int level)
 static int set_lcd_level_alt(int level)
 {
 	acpi_status status = AE_OK;
+<<<<<<< HEAD
 	union acpi_object arg0 = { ACPI_TYPE_INTEGER };
 	struct acpi_object_list arg_list = { 1, &arg0 };
+=======
+>>>>>>> refs/remotes/origin/master
 	acpi_handle handle = NULL;
 
 	vdbg_printk(FUJLAPTOP_DBG_TRACE, "set lcd level via SBL2 [%d]\n",
@@ -361,9 +391,13 @@ static int set_lcd_level_alt(int level)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	arg0.integer.value = level;
 
 	status = acpi_evaluate_object(handle, NULL, &arg_list, NULL);
+=======
+	status = acpi_execute_simple_method(handle, NULL, level);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status))
 		return -ENODEV;
 
@@ -586,11 +620,18 @@ static struct platform_driver fujitsupf_driver = {
 
 static void dmi_check_cb_common(const struct dmi_system_id *id)
 {
+<<<<<<< HEAD
 	acpi_handle handle;
 	pr_info("Identified laptop model '%s'\n", id->ident);
 	if (use_alt_lcd_levels == -1) {
 		if (ACPI_SUCCESS(acpi_get_handle(NULL,
 				"\\_SB.PCI0.LPCB.FJEX.SBL2", &handle)))
+=======
+	pr_info("Identified laptop model '%s'\n", id->ident);
+	if (use_alt_lcd_levels == -1) {
+		if (acpi_has_method(NULL,
+				"\\_SB.PCI0.LPCB.FJEX.SBL2"))
+>>>>>>> refs/remotes/origin/master
 			use_alt_lcd_levels = 1;
 		else
 			use_alt_lcd_levels = 0;
@@ -653,7 +694,10 @@ static struct dmi_system_id fujitsu_dmi_table[] = {
 
 static int acpi_fujitsu_add(struct acpi_device *device)
 {
+<<<<<<< HEAD
 	acpi_handle handle;
+=======
+>>>>>>> refs/remotes/origin/master
 	int result = 0;
 	int state = 0;
 	struct input_dev *input;
@@ -702,8 +746,12 @@ static int acpi_fujitsu_add(struct acpi_device *device)
 
 	fujitsu->dev = device;
 
+<<<<<<< HEAD
 	if (ACPI_SUCCESS
 	    (acpi_get_handle(device->handle, METHOD_NAME__INI, &handle))) {
+=======
+	if (acpi_has_method(device->handle, METHOD_NAME__INI)) {
+>>>>>>> refs/remotes/origin/master
 		vdbg_printk(FUJLAPTOP_DBG_INFO, "Invoking _INI\n");
 		if (ACPI_FAILURE
 		    (acpi_evaluate_object
@@ -733,7 +781,11 @@ err_stop:
 	return result;
 }
 
+<<<<<<< HEAD
 static int acpi_fujitsu_remove(struct acpi_device *device, int type)
+=======
+static int acpi_fujitsu_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fujitsu_t *fujitsu = acpi_driver_data(device);
 	struct input_dev *input = fujitsu->input;
@@ -773,8 +825,11 @@ static void acpi_fujitsu_notify(struct acpi_device *device, u32 event)
 				else
 					set_lcd_level(newb);
 			}
+<<<<<<< HEAD
 			acpi_bus_generate_proc_event(fujitsu->dev,
 				ACPI_VIDEO_NOTIFY_INC_BRIGHTNESS, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 			keycode = KEY_BRIGHTNESSUP;
 		} else if (oldb > newb) {
 			if (disable_brightness_adjust != 1) {
@@ -783,8 +838,11 @@ static void acpi_fujitsu_notify(struct acpi_device *device, u32 event)
 				else
 					set_lcd_level(newb);
 			}
+<<<<<<< HEAD
 			acpi_bus_generate_proc_event(fujitsu->dev,
 				ACPI_VIDEO_NOTIFY_DEC_BRIGHTNESS, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 			keycode = KEY_BRIGHTNESSDOWN;
 		}
 		break;
@@ -807,7 +865,10 @@ static void acpi_fujitsu_notify(struct acpi_device *device, u32 event)
 
 static int acpi_fujitsu_hotkey_add(struct acpi_device *device)
 {
+<<<<<<< HEAD
 	acpi_handle handle;
+=======
+>>>>>>> refs/remotes/origin/master
 	int result = 0;
 	int state = 0;
 	struct input_dev *input;
@@ -870,8 +931,12 @@ static int acpi_fujitsu_hotkey_add(struct acpi_device *device)
 
 	fujitsu_hotkey->dev = device;
 
+<<<<<<< HEAD
 	if (ACPI_SUCCESS
 	    (acpi_get_handle(device->handle, METHOD_NAME__INI, &handle))) {
+=======
+	if (acpi_has_method(device->handle, METHOD_NAME__INI)) {
+>>>>>>> refs/remotes/origin/master
 		vdbg_printk(FUJLAPTOP_DBG_INFO, "Invoking _INI\n");
 		if (ACPI_FAILURE
 		    (acpi_evaluate_object
@@ -938,7 +1003,11 @@ err_stop:
 	return result;
 }
 
+<<<<<<< HEAD
 static int acpi_fujitsu_hotkey_remove(struct acpi_device *device, int type)
+=======
+static int acpi_fujitsu_hotkey_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fujitsu_hotkey_t *fujitsu_hotkey = acpi_driver_data(device);
 	struct input_dev *input = fujitsu_hotkey->input;

@@ -13,6 +13,14 @@
  */
 #include <linux/netdevice.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/net_namespace.h>
 #include <net/llc.h>
 #include <net/llc_pdu.h>
@@ -41,6 +49,10 @@ static void (*llc_type_handlers[2])(struct llc_sap *sap,
 void llc_add_pack(int type, void (*handler)(struct llc_sap *sap,
 					    struct sk_buff *skb))
 {
+<<<<<<< HEAD
+=======
+	smp_wmb(); /* ensure initialisation is complete before it's called */
+>>>>>>> refs/remotes/origin/master
 	if (type == LLC_DEST_SAP || type == LLC_DEST_CONN)
 		llc_type_handlers[type - 1] = handler;
 }
@@ -49,11 +61,26 @@ void llc_remove_pack(int type)
 {
 	if (type == LLC_DEST_SAP || type == LLC_DEST_CONN)
 		llc_type_handlers[type - 1] = NULL;
+<<<<<<< HEAD
+=======
+	synchronize_net();
+>>>>>>> refs/remotes/origin/master
 }
 
 void llc_set_station_handler(void (*handler)(struct sk_buff *skb))
 {
+<<<<<<< HEAD
 	llc_station_handler = handler;
+=======
+	/* Ensure initialisation is complete before it's called */
+	if (handler)
+		smp_wmb();
+
+	llc_station_handler = handler;
+
+	if (!handler)
+		synchronize_net();
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -149,6 +176,11 @@ int llc_rcv(struct sk_buff *skb, struct net_device *dev,
 	int dest;
 	int (*rcv)(struct sk_buff *, struct net_device *,
 		   struct packet_type *, struct net_device *);
+<<<<<<< HEAD
+=======
+	void (*sta_handler)(struct sk_buff *skb);
+	void (*sap_handler)(struct llc_sap *sap, struct sk_buff *skb);
+>>>>>>> refs/remotes/origin/master
 
 	if (!net_eq(dev_net(dev), &init_net))
 		goto drop;
@@ -181,7 +213,12 @@ int llc_rcv(struct sk_buff *skb, struct net_device *dev,
 	 */
 	rcv = rcu_dereference(sap->rcv_func);
 	dest = llc_pdu_type(skb);
+<<<<<<< HEAD
 	if (unlikely(!dest || !llc_type_handlers[dest - 1])) {
+=======
+	sap_handler = dest ? ACCESS_ONCE(llc_type_handlers[dest - 1]) : NULL;
+	if (unlikely(!sap_handler)) {
+>>>>>>> refs/remotes/origin/master
 		if (rcv)
 			rcv(skb, dev, pt, orig_dev);
 		else
@@ -192,7 +229,11 @@ int llc_rcv(struct sk_buff *skb, struct net_device *dev,
 			if (cskb)
 				rcv(cskb, dev, pt, orig_dev);
 		}
+<<<<<<< HEAD
 		llc_type_handlers[dest - 1](sap, skb);
+=======
+		sap_handler(sap, skb);
+>>>>>>> refs/remotes/origin/master
 	}
 	llc_sap_put(sap);
 out:
@@ -201,9 +242,16 @@ drop:
 	kfree_skb(skb);
 	goto out;
 handle_station:
+<<<<<<< HEAD
 	if (!llc_station_handler)
 		goto drop;
 	llc_station_handler(skb);
+=======
+	sta_handler = ACCESS_ONCE(llc_station_handler);
+	if (!sta_handler)
+		goto drop;
+	sta_handler(skb);
+>>>>>>> refs/remotes/origin/master
 	goto out;
 }
 

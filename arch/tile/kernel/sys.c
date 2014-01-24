@@ -32,11 +32,27 @@
 #include <asm/syscalls.h>
 #include <asm/pgtable.h>
 #include <asm/homecache.h>
+<<<<<<< HEAD
 #include <arch/chip.h>
 
 SYSCALL_DEFINE0(flush_cache)
 {
 	homecache_evict(cpumask_of(smp_processor_id()));
+=======
+#include <asm/cachectl.h>
+#include <arch/chip.h>
+
+SYSCALL_DEFINE3(cacheflush, unsigned long, addr, unsigned long, len,
+		unsigned long, flags)
+{
+	/* DCACHE is not particularly effective if not bound to one cpu. */
+	if (flags & DCACHE)
+		homecache_evict(cpumask_of(raw_smp_processor_id()));
+
+	if (flags & ICACHE)
+		flush_remote(0, HV_FLUSH_EVICT_L1I, mm_cpumask(current->mm),
+			     0, 0, 0, NULL, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -100,6 +116,7 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
 #define sys_readahead sys32_readahead
 #endif
 
+<<<<<<< HEAD
 /* Call the trampolines to manage pt_regs where necessary. */
 #define sys_execve _sys_execve
 #define sys_sigaltstack _sys_sigaltstack
@@ -108,6 +125,12 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
 #ifndef __tilegx__
 #define sys_cmpxchg_badaddr _sys_cmpxchg_badaddr
 #endif
+=======
+/* Call the assembly trampolines where necessary. */
+#undef sys_rt_sigreturn
+#define sys_rt_sigreturn _sys_rt_sigreturn
+#define sys_clone _sys_clone
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Note that we can't include <linux/unistd.h> here since the header

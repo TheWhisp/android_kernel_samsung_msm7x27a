@@ -5,7 +5,15 @@
 
 #include <linux/mm.h>
 #include <linux/mmu_context.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 
 #include <asm/mmu_context.h>
@@ -14,9 +22,12 @@
  * use_mm
  *	Makes the calling kernel thread take on the specified
  *	mm context.
+<<<<<<< HEAD
  *	Called by the retry thread execute retries within the
  *	iocb issuer's mm context, so that copy_from/to_user
  *	operations work seamlessly for aio.
+=======
+>>>>>>> refs/remotes/origin/master
  *	(Note: this routine is intended to be called only
  *	from a kernel thread context)
  */
@@ -53,7 +64,15 @@ void unuse_mm(struct mm_struct *mm)
 	struct task_struct *tsk = current;
 
 	task_lock(tsk);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sync_mm_rss(tsk, mm);
+=======
+	sync_mm_rss(mm);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sync_mm_rss(mm);
+>>>>>>> refs/remotes/origin/master
 	tsk->mm = NULL;
 	/* active_mm is still 'mm' */
 	enter_lazy_tlb(mm, tsk);

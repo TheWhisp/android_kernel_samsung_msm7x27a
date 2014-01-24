@@ -16,6 +16,11 @@
 #include <linux/slab.h>
 #include <linux/dma-mapping.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/genalloc.h>
+#include <linux/platform_data/edma.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -23,8 +28,11 @@
 #include <sound/soc.h>
 
 #include <asm/dma.h>
+<<<<<<< HEAD
 #include <mach/edma.h>
 #include <mach/sram.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "davinci-pcm.h"
 
@@ -46,11 +54,40 @@ static void print_buf_info(int slot, char *name)
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_pcm_hardware pcm_hardware_playback = {
 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
 		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
 	.formats = (SNDRV_PCM_FMTBIT_S16_LE),
+=======
+#define DAVINCI_PCM_FMTBITS	(\
+				SNDRV_PCM_FMTBIT_S8	|\
+				SNDRV_PCM_FMTBIT_U8	|\
+				SNDRV_PCM_FMTBIT_S16_LE	|\
+				SNDRV_PCM_FMTBIT_S16_BE	|\
+				SNDRV_PCM_FMTBIT_U16_LE	|\
+				SNDRV_PCM_FMTBIT_U16_BE	|\
+				SNDRV_PCM_FMTBIT_S24_LE	|\
+				SNDRV_PCM_FMTBIT_S24_BE	|\
+				SNDRV_PCM_FMTBIT_U24_LE	|\
+				SNDRV_PCM_FMTBIT_U24_BE	|\
+				SNDRV_PCM_FMTBIT_S32_LE	|\
+				SNDRV_PCM_FMTBIT_S32_BE	|\
+				SNDRV_PCM_FMTBIT_U32_LE	|\
+				SNDRV_PCM_FMTBIT_U32_BE)
+
+=======
+>>>>>>> refs/remotes/origin/master
+static struct snd_pcm_hardware pcm_hardware_playback = {
+	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME|
+		 SNDRV_PCM_INFO_BATCH),
+<<<<<<< HEAD
+	.formats = DAVINCI_PCM_FMTBITS,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
 		  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
 		  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
@@ -59,7 +96,13 @@ static struct snd_pcm_hardware pcm_hardware_playback = {
 	.rate_min = 8000,
 	.rate_max = 96000,
 	.channels_min = 2,
+<<<<<<< HEAD
 	.channels_max = 2,
+=======
+	.channels_max = 384,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.buffer_bytes_max = 128 * 1024,
 	.period_bytes_min = 32,
 	.period_bytes_max = 8 * 1024,
@@ -71,8 +114,15 @@ static struct snd_pcm_hardware pcm_hardware_playback = {
 static struct snd_pcm_hardware pcm_hardware_capture = {
 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 SNDRV_PCM_INFO_PAUSE),
 	.formats = (SNDRV_PCM_FMTBIT_S16_LE),
+=======
+		 SNDRV_PCM_INFO_PAUSE |
+		 SNDRV_PCM_INFO_BATCH),
+	.formats = DAVINCI_PCM_FMTBITS,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
 		  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
 		  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
@@ -81,7 +131,15 @@ static struct snd_pcm_hardware pcm_hardware_capture = {
 	.rate_min = 8000,
 	.rate_max = 96000,
 	.channels_min = 2,
+<<<<<<< HEAD
 	.channels_max = 2,
+=======
+	.channels_max = 384,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 SNDRV_PCM_INFO_PAUSE |
+		 SNDRV_PCM_INFO_BATCH),
+>>>>>>> refs/remotes/origin/master
 	.buffer_bytes_max = 128 * 1024,
 	.period_bytes_min = 32,
 	.period_bytes_max = 8 * 1024,
@@ -139,6 +197,31 @@ struct davinci_runtime_data {
 	struct edmacc_param ram_params;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void davinci_pcm_period_elapsed(struct snd_pcm_substream *substream)
+{
+	struct davinci_runtime_data *prtd = substream->runtime->private_data;
+	struct snd_pcm_runtime *runtime = substream->runtime;
+
+	prtd->period++;
+	if (unlikely(prtd->period >= runtime->periods))
+		prtd->period = 0;
+}
+
+static void davinci_pcm_period_reset(struct snd_pcm_substream *substream)
+{
+	struct davinci_runtime_data *prtd = substream->runtime->private_data;
+
+	prtd->period = 0;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Not used with ping/pong
  */
@@ -146,7 +229,13 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
 {
 	struct davinci_runtime_data *prtd = substream->runtime->private_data;
 	struct snd_pcm_runtime *runtime = substream->runtime;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int link = prtd->asp_link[0];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int period_size;
 	unsigned int dma_offset;
 	dma_addr_t dma_pos;
@@ -164,7 +253,17 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
 	fifo_level = prtd->params->fifo_level;
 
 	pr_debug("davinci_pcm: audio_set_dma_params_play channel = %d "
+<<<<<<< HEAD
+<<<<<<< HEAD
 		"dma_ptr = %x period_size=%x\n", link, dma_pos, period_size);
+=======
+		"dma_ptr = %x period_size=%x\n", prtd->asp_link[0], dma_pos,
+		period_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"dma_ptr = %x period_size=%x\n", prtd->asp_link[0], dma_pos,
+		period_size);
+>>>>>>> refs/remotes/origin/master
 
 	data_type = prtd->params->data_type;
 	count = period_size / data_type;
@@ -175,7 +274,11 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
 		src = dma_pos;
 		dst = prtd->params->dma_addr;
 		src_bidx = data_type;
+<<<<<<< HEAD
 		dst_bidx = 0;
+=======
+		dst_bidx = 4;
+>>>>>>> refs/remotes/origin/master
 		src_cidx = data_type * fifo_level;
 		dst_cidx = 0;
 	} else {
@@ -188,6 +291,8 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
 	}
 
 	acnt = prtd->params->acnt;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	edma_set_src(link, src, INCR, W8BIT);
 	edma_set_dest(link, dst, INCR, W8BIT);
 
@@ -203,6 +308,30 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
 	prtd->period++;
 	if (unlikely(prtd->period >= runtime->periods))
 		prtd->period = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	edma_set_src(prtd->asp_link[0], src, INCR, W8BIT);
+	edma_set_dest(prtd->asp_link[0], dst, INCR, W8BIT);
+
+	edma_set_src_index(prtd->asp_link[0], src_bidx, src_cidx);
+	edma_set_dest_index(prtd->asp_link[0], dst_bidx, dst_cidx);
+
+	if (!fifo_level)
+		edma_set_transfer_params(prtd->asp_link[0], acnt, count, 1, 0,
+							ASYNC);
+	else
+<<<<<<< HEAD
+		edma_set_transfer_params(prtd->asp_link[0], acnt, fifo_level,
+							count, fifo_level,
+							ABSYNC);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		edma_set_transfer_params(prtd->asp_link[0], acnt,
+						fifo_level,
+						count, fifo_level,
+						ABSYNC);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
@@ -213,21 +342,47 @@ static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
 	print_buf_info(prtd->ram_channel, "i ram_channel");
 	pr_debug("davinci_pcm: link=%d, status=0x%x\n", link, ch_status);
 
+<<<<<<< HEAD
 	if (unlikely(ch_status != DMA_COMPLETE))
 		return;
 
 	if (snd_pcm_running(substream)) {
+<<<<<<< HEAD
 		if (prtd->ram_channel < 0) {
 			/* No ping/pong must fix up link dma data*/
 			spin_lock(&prtd->lock);
 			davinci_pcm_enqueue_dma(substream);
 			spin_unlock(&prtd->lock);
 		}
+=======
+=======
+	if (unlikely(ch_status != EDMA_DMA_COMPLETE))
+		return;
+
+	if (snd_pcm_running(substream)) {
+>>>>>>> refs/remotes/origin/master
+		spin_lock(&prtd->lock);
+		if (prtd->ram_channel < 0) {
+			/* No ping/pong must fix up link dma data*/
+			davinci_pcm_enqueue_dma(substream);
+		}
+		davinci_pcm_period_elapsed(substream);
+		spin_unlock(&prtd->lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		snd_pcm_period_elapsed(substream);
 	}
 }
 
+<<<<<<< HEAD
 static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
+=======
+#ifdef CONFIG_GENERIC_ALLOCATOR
+static int allocate_sram(struct snd_pcm_substream *substream,
+		struct gen_pool *sram_pool, unsigned size,
+>>>>>>> refs/remotes/origin/master
 		struct snd_pcm_hardware *ppcm)
 {
 	struct snd_dma_buffer *buf = &substream->dma_buffer;
@@ -239,7 +394,11 @@ static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
 		return 0;
 
 	ppcm->period_bytes_max = size;
+<<<<<<< HEAD
 	iram_virt = sram_alloc(size, &iram_phys);
+=======
+	iram_virt = gen_pool_dma_alloc(sram_pool, size, &iram_phys);
+>>>>>>> refs/remotes/origin/master
 	if (!iram_virt)
 		goto exit1;
 	iram_dma = kzalloc(sizeof(*iram_dma), GFP_KERNEL);
@@ -253,11 +412,40 @@ static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
 	return 0;
 exit2:
 	if (iram_virt)
+<<<<<<< HEAD
 		sram_free(iram_virt, size);
+=======
+		gen_pool_free(sram_pool, (unsigned)iram_virt, size);
+>>>>>>> refs/remotes/origin/master
 exit1:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
+=======
+static void davinci_free_sram(struct snd_pcm_substream *substream,
+			      struct snd_dma_buffer *iram_dma)
+{
+	struct davinci_runtime_data *prtd = substream->runtime->private_data;
+	struct gen_pool *sram_pool = prtd->params->sram_pool;
+
+	gen_pool_free(sram_pool, (unsigned) iram_dma->area, iram_dma->bytes);
+}
+#else
+static int allocate_sram(struct snd_pcm_substream *substream,
+		struct gen_pool *sram_pool, unsigned size,
+		struct snd_pcm_hardware *ppcm)
+{
+	return 0;
+}
+
+static void davinci_free_sram(struct snd_pcm_substream *substream,
+			      struct snd_dma_buffer *iram_dma)
+{
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Only used with ping/pong.
  * This is called after runtime->dma_addr, period_bytes and data_type are valid
@@ -274,7 +462,13 @@ static int ping_pong_dma_setup(struct snd_pcm_substream *substream)
 	unsigned int acnt = params->acnt;
 	/* divide by 2 for ping/pong */
 	unsigned int ping_size = snd_pcm_lib_period_bytes(substream) >> 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int link = prtd->asp_link[1];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int fifo_level = prtd->params->fifo_level;
 	unsigned int count;
 	if ((data_type == 0) || (data_type > 4)) {
@@ -285,6 +479,8 @@ static int ping_pong_dma_setup(struct snd_pcm_substream *substream)
 		dma_addr_t asp_src_pong = iram_dma->addr + ping_size;
 		ram_src_cidx = ping_size;
 		ram_dst_cidx = -ping_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		edma_set_src(link, asp_src_pong, INCR, W8BIT);
 
 		link = prtd->asp_link[0];
@@ -294,10 +490,27 @@ static int ping_pong_dma_setup(struct snd_pcm_substream *substream)
 
 		link = prtd->ram_link;
 		edma_set_src(link, runtime->dma_addr, INCR, W32BIT);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		edma_set_src(prtd->asp_link[1], asp_src_pong, INCR, W8BIT);
+
+		edma_set_src_index(prtd->asp_link[0], data_type,
+				data_type * fifo_level);
+		edma_set_src_index(prtd->asp_link[1], data_type,
+				data_type * fifo_level);
+
+		edma_set_src(prtd->ram_link, runtime->dma_addr, INCR, W32BIT);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		dma_addr_t asp_dst_pong = iram_dma->addr + ping_size;
 		ram_src_cidx = -ping_size;
 		ram_dst_cidx = ping_size;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		edma_set_dest(link, asp_dst_pong, INCR, W8BIT);
 
 		link = prtd->asp_link[0];
@@ -307,6 +520,21 @@ static int ping_pong_dma_setup(struct snd_pcm_substream *substream)
 
 		link = prtd->ram_link;
 		edma_set_dest(link, runtime->dma_addr, INCR, W32BIT);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		edma_set_dest(prtd->asp_link[1], asp_dst_pong, INCR, W8BIT);
+
+		edma_set_dest_index(prtd->asp_link[0], data_type,
+				data_type * fifo_level);
+		edma_set_dest_index(prtd->asp_link[1], data_type,
+				data_type * fifo_level);
+
+		edma_set_dest(prtd->ram_link, runtime->dma_addr, INCR, W32BIT);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!fifo_level) {
@@ -323,10 +551,22 @@ static int ping_pong_dma_setup(struct snd_pcm_substream *substream)
 				count, fifo_level, ABSYNC);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	link = prtd->ram_link;
 	edma_set_src_index(link, ping_size, ram_src_cidx);
 	edma_set_dest_index(link, ping_size, ram_dst_cidx);
 	edma_set_transfer_params(link, ping_size, 2,
+=======
+	edma_set_src_index(prtd->ram_link, ping_size, ram_src_cidx);
+	edma_set_dest_index(prtd->ram_link, ping_size, ram_dst_cidx);
+	edma_set_transfer_params(prtd->ram_link, ping_size, 2,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	edma_set_src_index(prtd->ram_link, ping_size, ram_src_cidx);
+	edma_set_dest_index(prtd->ram_link, ping_size, ram_dst_cidx);
+	edma_set_transfer_params(prtd->ram_link, ping_size, 2,
+>>>>>>> refs/remotes/origin/master
 			runtime->periods, 2, ASYNC);
 
 	/* init master params */
@@ -375,6 +615,8 @@ static int request_ping_pong(struct snd_pcm_substream *substream,
 {
 	dma_addr_t asp_src_ping;
 	dma_addr_t asp_dst_ping;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int link;
 	struct davinci_pcm_dma_params *params = prtd->params;
 
@@ -394,13 +636,51 @@ static int request_ping_pong(struct snd_pcm_substream *substream,
 	link = prtd->asp_link[1] = edma_alloc_slot(
 			EDMA_CTLR(prtd->asp_channel), EDMA_SLOT_ANY);
 	if (link < 0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ret;
+	struct davinci_pcm_dma_params *params = prtd->params;
+
+	/* Request ram master channel */
+	ret = prtd->ram_channel = edma_alloc_channel(EDMA_CHANNEL_ANY,
+				  davinci_pcm_dma_irq, substream,
+				  prtd->params->ram_chan_q);
+	if (ret < 0)
+		goto exit1;
+
+	/* Request ram link channel */
+	ret = prtd->ram_link = edma_alloc_slot(
+			EDMA_CTLR(prtd->ram_channel), EDMA_SLOT_ANY);
+	if (ret < 0)
+		goto exit2;
+
+	ret = prtd->asp_link[1] = edma_alloc_slot(
+			EDMA_CTLR(prtd->asp_channel), EDMA_SLOT_ANY);
+	if (ret < 0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto exit3;
 
 	prtd->ram_link2 = -1;
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		link = prtd->ram_link2 = edma_alloc_slot(
 			EDMA_CTLR(prtd->ram_channel), EDMA_SLOT_ANY);
 		if (link < 0)
+=======
+		ret = prtd->ram_link2 = edma_alloc_slot(
+			EDMA_CTLR(prtd->ram_channel), EDMA_SLOT_ANY);
+		if (ret < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = prtd->ram_link2 = edma_alloc_slot(
+			EDMA_CTLR(prtd->ram_channel), EDMA_SLOT_ANY);
+		if (ret < 0)
+>>>>>>> refs/remotes/origin/master
 			goto exit4;
 	}
 	/* circle ping-pong buffers */
@@ -417,6 +697,8 @@ static int request_ping_pong(struct snd_pcm_substream *substream,
 		asp_dst_ping = iram_dma->addr;
 	}
 	/* ping */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	link = prtd->asp_link[0];
 	edma_set_src(link, asp_src_ping, INCR, W16BIT);
 	edma_set_dest(link, asp_dst_ping, INCR, W16BIT);
@@ -446,6 +728,40 @@ static int request_ping_pong(struct snd_pcm_substream *substream,
 	link = prtd->ram_link;
 	edma_set_src(link, iram_dma->addr, INCR, W32BIT);
 	edma_set_dest(link, iram_dma->addr, INCR, W32BIT);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	edma_set_src(prtd->asp_link[0], asp_src_ping, INCR, W16BIT);
+	edma_set_dest(prtd->asp_link[0], asp_dst_ping, INCR, W16BIT);
+	edma_set_src_index(prtd->asp_link[0], 0, 0);
+	edma_set_dest_index(prtd->asp_link[0], 0, 0);
+
+	edma_read_slot(prtd->asp_link[0], &prtd->asp_params);
+	prtd->asp_params.opt &= ~(TCCMODE | EDMA_TCC(0x3f) | TCINTEN);
+	prtd->asp_params.opt |= TCCHEN |
+		EDMA_TCC(prtd->ram_channel & 0x3f);
+	edma_write_slot(prtd->asp_link[0], &prtd->asp_params);
+
+	/* pong */
+	edma_set_src(prtd->asp_link[1], asp_src_ping, INCR, W16BIT);
+	edma_set_dest(prtd->asp_link[1], asp_dst_ping, INCR, W16BIT);
+	edma_set_src_index(prtd->asp_link[1], 0, 0);
+	edma_set_dest_index(prtd->asp_link[1], 0, 0);
+
+	edma_read_slot(prtd->asp_link[1], &prtd->asp_params);
+	prtd->asp_params.opt &= ~(TCCMODE | EDMA_TCC(0x3f));
+	/* interrupt after every pong completion */
+	prtd->asp_params.opt |= TCINTEN | TCCHEN |
+		EDMA_TCC(prtd->ram_channel & 0x3f);
+	edma_write_slot(prtd->asp_link[1], &prtd->asp_params);
+
+	/* ram */
+	edma_set_src(prtd->ram_link, iram_dma->addr, INCR, W32BIT);
+	edma_set_dest(prtd->ram_link, iram_dma->addr, INCR, W32BIT);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_debug("%s: audio dma channels/slots in use for ram:%u %u %u,"
 		"for asp:%u %u %u\n", __func__,
 		prtd->ram_channel, prtd->ram_link, prtd->ram_link2,
@@ -462,7 +778,15 @@ exit2:
 	edma_free_channel(prtd->ram_channel);
 	prtd->ram_channel = -1;
 exit1:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return link;
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int davinci_pcm_dma_request(struct snd_pcm_substream *substream)
@@ -470,12 +794,22 @@ static int davinci_pcm_dma_request(struct snd_pcm_substream *substream)
 	struct snd_dma_buffer *iram_dma;
 	struct davinci_runtime_data *prtd = substream->runtime->private_data;
 	struct davinci_pcm_dma_params *params = prtd->params;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int link;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!params)
 		return -ENODEV;
 
 	/* Request asp master DMA channel */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	link = prtd->asp_channel = edma_alloc_channel(params->channel,
 			davinci_pcm_dma_irq, substream,
 			prtd->params->asp_chan_q);
@@ -486,6 +820,23 @@ static int davinci_pcm_dma_request(struct snd_pcm_substream *substream)
 	link = prtd->asp_link[0] = edma_alloc_slot(
 			EDMA_CTLR(prtd->asp_channel), EDMA_SLOT_ANY);
 	if (link < 0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = prtd->asp_channel = edma_alloc_channel(params->channel,
+			davinci_pcm_dma_irq, substream,
+			prtd->params->asp_chan_q);
+	if (ret < 0)
+		goto exit1;
+
+	/* Request asp link channels */
+	ret = prtd->asp_link[0] = edma_alloc_slot(
+			EDMA_CTLR(prtd->asp_channel), EDMA_SLOT_ANY);
+	if (ret < 0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto exit2;
 
 	iram_dma = (struct snd_dma_buffer *)substream->dma_buffer.private_data;
@@ -505,17 +856,39 @@ static int davinci_pcm_dma_request(struct snd_pcm_substream *substream)
 	 * the buffer and its length (ccnt) ... use it as a template
 	 * so davinci_pcm_enqueue_dma() takes less time in IRQ.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	edma_read_slot(link, &prtd->asp_params);
 	prtd->asp_params.opt |= TCINTEN |
 		EDMA_TCC(EDMA_CHAN_SLOT(prtd->asp_channel));
 	prtd->asp_params.link_bcntrld = EDMA_CHAN_SLOT(link) << 5;
 	edma_write_slot(link, &prtd->asp_params);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	edma_read_slot(prtd->asp_link[0], &prtd->asp_params);
+	prtd->asp_params.opt |= TCINTEN |
+		EDMA_TCC(EDMA_CHAN_SLOT(prtd->asp_channel));
+	prtd->asp_params.link_bcntrld = EDMA_CHAN_SLOT(prtd->asp_link[0]) << 5;
+	edma_write_slot(prtd->asp_link[0], &prtd->asp_params);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 exit2:
 	edma_free_channel(prtd->asp_channel);
 	prtd->asp_channel = -1;
 exit1:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return link;
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int davinci_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
@@ -527,6 +900,22 @@ static int davinci_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 
 	switch (cmd) {
 	case SNDRV_PCM_TRIGGER_START:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		edma_start(prtd->asp_channel);
+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+		    prtd->ram_channel >= 0) {
+			/* copy 1st iram buffer */
+			edma_start(prtd->ram_channel);
+		}
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case SNDRV_PCM_TRIGGER_RESUME:
 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 		edma_resume(prtd->asp_channel);
@@ -550,6 +939,14 @@ static int davinci_pcm_prepare(struct snd_pcm_substream *substream)
 {
 	struct davinci_runtime_data *prtd = substream->runtime->private_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	davinci_pcm_period_reset(substream);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	davinci_pcm_period_reset(substream);
+>>>>>>> refs/remotes/origin/master
 	if (prtd->ram_channel >= 0) {
 		int ret = ping_pong_dma_setup(substream);
 		if (ret < 0)
@@ -565,6 +962,8 @@ static int davinci_pcm_prepare(struct snd_pcm_substream *substream)
 		print_buf_info(prtd->asp_link[0], "asp_link[0]");
 		print_buf_info(prtd->asp_link[1], "asp_link[1]");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 			/* copy 1st iram buffer */
 			edma_start(prtd->ram_channel);
@@ -574,12 +973,46 @@ static int davinci_pcm_prepare(struct snd_pcm_substream *substream)
 	}
 	prtd->period = 0;
 	davinci_pcm_enqueue_dma(substream);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * There is a phase offset of 2 periods between the position
+		 * used by dma setup and the position reported in the pointer
+		 * function.
+		 *
+		 * The phase offset, when not using ping-pong buffers, is due to
+		 * the two consecutive calls to davinci_pcm_enqueue_dma() below.
+		 *
+		 * Whereas here, with ping-pong buffers, the phase is due to
+		 * there being an entire buffer transfer complete before the
+		 * first dma completion event triggers davinci_pcm_dma_irq().
+		 */
+		davinci_pcm_period_elapsed(substream);
+		davinci_pcm_period_elapsed(substream);
+
+		return 0;
+	}
+	davinci_pcm_enqueue_dma(substream);
+	davinci_pcm_period_elapsed(substream);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Copy self-linked parameter RAM entry into master channel */
 	edma_read_slot(prtd->asp_link[0], &prtd->asp_params);
 	edma_write_slot(prtd->asp_channel, &prtd->asp_params);
 	davinci_pcm_enqueue_dma(substream);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	edma_start(prtd->asp_channel);
+=======
+	davinci_pcm_period_elapsed(substream);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	davinci_pcm_period_elapsed(substream);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -591,6 +1024,8 @@ davinci_pcm_pointer(struct snd_pcm_substream *substream)
 	struct davinci_runtime_data *prtd = runtime->private_data;
 	unsigned int offset;
 	int asp_count;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dma_addr_t asp_src, asp_dst;
 
 	spin_lock(&prtd->lock);
@@ -636,6 +1071,30 @@ davinci_pcm_pointer(struct snd_pcm_substream *substream)
 	}
 	spin_unlock(&prtd->lock);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned int period_size = snd_pcm_lib_period_bytes(substream);
+
+	/*
+	 * There is a phase offset of 2 periods between the position used by dma
+	 * setup and the position reported in the pointer function. Either +2 in
+	 * the dma setup or -2 here in the pointer function (with wrapping,
+	 * both) accounts for this offset -- choose the latter since it makes
+	 * the first-time setup clearer.
+	 */
+	spin_lock(&prtd->lock);
+	asp_count = prtd->period - 2;
+	spin_unlock(&prtd->lock);
+
+	if (asp_count < 0)
+		asp_count += runtime->periods;
+	asp_count *= period_size;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	offset = bytes_to_frames(runtime, asp_count);
 	if (offset >= runtime->buffer_size)
 		offset = 0;
@@ -660,7 +1119,11 @@ static int davinci_pcm_open(struct snd_pcm_substream *substream)
 
 	ppcm = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
 			&pcm_hardware_playback : &pcm_hardware_capture;
+<<<<<<< HEAD
 	allocate_sram(substream, params->sram_size, ppcm);
+=======
+	allocate_sram(substream, params->sram_pool, params->sram_size, ppcm);
+>>>>>>> refs/remotes/origin/master
 	snd_soc_set_runtime_hwparams(substream, ppcm);
 	/* ensure that buffer size is a multiple of period size */
 	ret = snd_pcm_hw_constraint_integer(runtime,
@@ -803,27 +1266,58 @@ static void davinci_pcm_free(struct snd_pcm *pcm)
 		buf->area = NULL;
 		iram_dma = buf->private_data;
 		if (iram_dma) {
+<<<<<<< HEAD
 			sram_free(iram_dma->area, iram_dma->bytes);
+=======
+			davinci_free_sram(substream, iram_dma);
+>>>>>>> refs/remotes/origin/master
 			kfree(iram_dma);
 		}
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u64 davinci_pcm_dmamask = 0xffffffff;
+=======
+static u64 davinci_pcm_dmamask = DMA_BIT_MASK(32);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int davinci_pcm_new(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_card *card = rtd->card->snd_card;
+<<<<<<< HEAD
 	struct snd_soc_dai *dai = rtd->cpu_dai;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_pcm *pcm = rtd->pcm;
 	int ret;
 
 	if (!card->dev->dma_mask)
 		card->dev->dma_mask = &davinci_pcm_dmamask;
 	if (!card->dev->coherent_dma_mask)
+<<<<<<< HEAD
 		card->dev->coherent_dma_mask = 0xffffffff;
 
 	if (dai->driver->playback.channels_min) {
+=======
+		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
+
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int davinci_pcm_new(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_card *card = rtd->card->snd_card;
+	struct snd_pcm *pcm = rtd->pcm;
+	int ret;
+
+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/master
 		ret = davinci_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_PLAYBACK,
 			pcm_hardware_playback.buffer_bytes_max);
@@ -831,7 +1325,15 @@ static int davinci_pcm_new(struct snd_soc_pcm_runtime *rtd)
 			return ret;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dai->driver->capture.channels_min) {
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/master
 		ret = davinci_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_CAPTURE,
 			pcm_hardware_capture.buffer_bytes_max);
@@ -848,6 +1350,7 @@ static struct snd_soc_platform_driver davinci_soc_platform = {
 	.pcm_free = 	davinci_pcm_free,
 };
 
+<<<<<<< HEAD
 static int __devinit davinci_soc_platform_probe(struct platform_device *pdev)
 {
 	return snd_soc_register_platform(&pdev->dev, &davinci_soc_platform);
@@ -869,6 +1372,7 @@ static struct platform_driver davinci_pcm_driver = {
 	.remove = __devexit_p(davinci_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init snd_davinci_pcm_init(void)
 {
 	return platform_driver_register(&davinci_pcm_driver);
@@ -880,6 +1384,22 @@ static void __exit snd_davinci_pcm_exit(void)
 	platform_driver_unregister(&davinci_pcm_driver);
 }
 module_exit(snd_davinci_pcm_exit);
+=======
+module_platform_driver(davinci_pcm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int davinci_soc_platform_register(struct device *dev)
+{
+	return snd_soc_register_platform(dev, &davinci_soc_platform);
+}
+EXPORT_SYMBOL_GPL(davinci_soc_platform_register);
+
+void davinci_soc_platform_unregister(struct device *dev)
+{
+	snd_soc_unregister_platform(dev);
+}
+EXPORT_SYMBOL_GPL(davinci_soc_platform_unregister);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Vladimir Barinov");
 MODULE_DESCRIPTION("TI DAVINCI PCM DMA module");

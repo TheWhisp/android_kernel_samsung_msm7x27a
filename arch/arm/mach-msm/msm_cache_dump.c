@@ -20,16 +20,34 @@
 #include <linux/platform_device.h>
 #include <linux/pm.h>
 #include <linux/memory_alloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/notifier.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/notifier.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/scm.h>
 #include <mach/msm_cache_dump.h>
 #include <mach/memory.h>
 #include <mach/msm_iomap.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define L2C_IMEM_ADDR 0x2a03f014
+=======
+#define L2_DUMP_OFFSET 0x14
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define L2_DUMP_OFFSET 0x14
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static unsigned long msm_cache_dump_addr;
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * These are dummy pointers so the defintion of l1_cache_dump
  * and l2_cache_dump don't get optimized away. If they aren't
  * referenced, the structure definitions don't show up in the
@@ -37,6 +55,43 @@ static unsigned long msm_cache_dump_addr;
  */
 static struct l1_cache_dump __used *l1_dump;
 static struct l2_cache_dump __used *l2_dump;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+ * These should not actually be dereferenced. There's no
+ * need for a virtual mapping, but the physical address is
+ * necessary.
+ */
+static struct l1_cache_dump *l1_dump;
+static struct l2_cache_dump *l2_dump;
+
+static int msm_cache_dump_panic(struct notifier_block *this,
+				unsigned long event, void *ptr)
+{
+#ifdef CONFIG_MSM_CACHE_DUMP_ON_PANIC
+	/*
+	 * Clear the bootloader magic so the dumps aren't overwritten
+	 */
+	__raw_writel(0, MSM_IMEM_BASE + L2_DUMP_OFFSET);
+
+	scm_call_atomic1(L1C_SERVICE_ID, CACHE_BUFFER_DUMP_COMMAND_ID, 2);
+	scm_call_atomic1(L1C_SERVICE_ID, CACHE_BUFFER_DUMP_COMMAND_ID, 1);
+#endif
+	return 0;
+}
+
+static struct notifier_block msm_cache_dump_blk = {
+	.notifier_call  = msm_cache_dump_panic,
+	/*
+	 * higher priority to ensure this runs before another panic handler
+	 * flushes the caches.
+	 */
+	.priority = 1,
+};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static int msm_cache_dump_probe(struct platform_device *pdev)
 {
@@ -46,7 +101,13 @@ static int msm_cache_dump_probe(struct platform_device *pdev)
 		unsigned long buf;
 		unsigned long size;
 	} l1_cache_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int *imem_loc;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	void *temp;
 	unsigned long total_size = d->l1_size + d->l2_size;
 
@@ -72,14 +133,59 @@ static int msm_cache_dump_probe(struct platform_device *pdev)
 		pr_err("%s: could not register L1 buffer ret = %d.\n",
 			__func__, ret);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	imem_loc = ioremap(L2C_IMEM_ADDR, SZ_4K);
 	__raw_writel(msm_cache_dump_addr + d->l1_size, imem_loc);
 	iounmap(imem_loc);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	l1_dump = (struct l1_cache_dump *)msm_cache_dump_addr;
+
+#if defined(CONFIG_MSM_CACHE_DUMP_ON_PANIC)
+	l1_cache_data.buf = msm_cache_dump_addr + d->l1_size;
+	l1_cache_data.size = d->l2_size;
+
+	ret = scm_call(L1C_SERVICE_ID, L2C_BUFFER_SET_COMMAND_ID,
+			&l1_cache_data, sizeof(l1_cache_data), NULL, 0);
+
+	if (ret)
+		pr_err("%s: could not register L2 buffer ret = %d.\n",
+			__func__, ret);
+#endif
+	__raw_writel(msm_cache_dump_addr + d->l1_size,
+			MSM_IMEM_BASE + L2_DUMP_OFFSET);
+
+
+	l2_dump = (struct l2_cache_dump *)(msm_cache_dump_addr + d->l1_size);
+
+	atomic_notifier_chain_register(&panic_notifier_list,
+						&msm_cache_dump_blk);
+	return 0;
+}
+
+static int msm_cache_dump_remove(struct platform_device *pdev)
+{
+	atomic_notifier_chain_unregister(&panic_notifier_list,
+					&msm_cache_dump_blk);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static struct platform_driver msm_cache_dump_driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.remove		= __devexit_p(msm_cache_dump_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= __devexit_p(msm_cache_dump_remove),
+>>>>>>> refs/remotes/origin/cm-11.0
 	.driver         = {
 		.name = "msm_cache_dump",
 		.owner = THIS_MODULE

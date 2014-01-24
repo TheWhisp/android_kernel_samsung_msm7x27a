@@ -14,6 +14,12 @@
  * option) any later version.
  *
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/errno.h>
@@ -41,13 +47,21 @@ MODULE_LICENSE("GPL");
 
 void phy_device_free(struct phy_device *phydev)
 {
+<<<<<<< HEAD
 	kfree(phydev);
+=======
+	put_device(&phydev->dev);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(phy_device_free);
 
 static void phy_device_release(struct device *dev)
 {
+<<<<<<< HEAD
 	phy_device_free(to_phy_device(dev));
+=======
+	kfree(to_phy_device(dev));
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct phy_driver genphy_driver;
@@ -149,8 +163,13 @@ int phy_scan_fixups(struct phy_device *phydev)
 }
 EXPORT_SYMBOL(phy_scan_fixups);
 
+<<<<<<< HEAD
 static struct phy_device* phy_device_create(struct mii_bus *bus,
 					    int addr, int phy_id)
+=======
+struct phy_device *phy_device_create(struct mii_bus *bus, int addr, int phy_id,
+			bool is_c45, struct phy_c45_device_ids *c45_ids)
+>>>>>>> refs/remotes/origin/master
 {
 	struct phy_device *dev;
 
@@ -171,8 +190,16 @@ static struct phy_device* phy_device_create(struct mii_bus *bus,
 
 	dev->autoneg = AUTONEG_ENABLE;
 
+<<<<<<< HEAD
 	dev->addr = addr;
 	dev->phy_id = phy_id;
+=======
+	dev->is_c45 = is_c45;
+	dev->addr = addr;
+	dev->phy_id = phy_id;
+	if (c45_ids)
+		dev->c45_ids = *c45_ids;
+>>>>>>> refs/remotes/origin/master
 	dev->bus = bus;
 	dev->dev.parent = bus->parent;
 	dev->dev.bus = &mdio_bus_type;
@@ -183,6 +210,10 @@ static struct phy_device* phy_device_create(struct mii_bus *bus,
 
 	mutex_init(&dev->lock);
 	INIT_DELAYED_WORK(&dev->state_queue, phy_state_machine);
+<<<<<<< HEAD
+=======
+	INIT_WORK(&dev->phy_queue, phy_change);
+>>>>>>> refs/remotes/origin/master
 
 	/* Request the appropriate module unconditionally; don't
 	   bother trying to do so only if it isn't already loaded,
@@ -195,14 +226,90 @@ static struct phy_device* phy_device_create(struct mii_bus *bus,
 	   there's no driver _already_ loaded. */
 	request_module(MDIO_MODULE_PREFIX MDIO_ID_FMT, MDIO_ID_ARGS(phy_id));
 
+<<<<<<< HEAD
 	return dev;
 }
+=======
+	device_initialize(&dev->dev);
+
+	return dev;
+}
+EXPORT_SYMBOL(phy_device_create);
+
+/**
+ * get_phy_c45_ids - reads the specified addr for its 802.3-c45 IDs.
+ * @bus: the target MII bus
+ * @addr: PHY address on the MII bus
+ * @phy_id: where to store the ID retrieved.
+ * @c45_ids: where to store the c45 ID information.
+ *
+ *   If the PHY devices-in-package appears to be valid, it and the
+ *   corresponding identifiers are stored in @c45_ids, zero is stored
+ *   in @phy_id.  Otherwise 0xffffffff is stored in @phy_id.  Returns
+ *   zero on success.
+ *
+ */
+static int get_phy_c45_ids(struct mii_bus *bus, int addr, u32 *phy_id,
+			   struct phy_c45_device_ids *c45_ids) {
+	int phy_reg;
+	int i, reg_addr;
+	const int num_ids = ARRAY_SIZE(c45_ids->device_ids);
+
+	/* Find first non-zero Devices In package.  Device
+	 * zero is reserved, so don't probe it.
+	 */
+	for (i = 1;
+	     i < num_ids && c45_ids->devices_in_package == 0;
+	     i++) {
+		reg_addr = MII_ADDR_C45 | i << 16 | 6;
+		phy_reg = mdiobus_read(bus, addr, reg_addr);
+		if (phy_reg < 0)
+			return -EIO;
+		c45_ids->devices_in_package = (phy_reg & 0xffff) << 16;
+
+		reg_addr = MII_ADDR_C45 | i << 16 | 5;
+		phy_reg = mdiobus_read(bus, addr, reg_addr);
+		if (phy_reg < 0)
+			return -EIO;
+		c45_ids->devices_in_package |= (phy_reg & 0xffff);
+
+		/* If mostly Fs, there is no device there,
+		 * let's get out of here.
+		 */
+		if ((c45_ids->devices_in_package & 0x1fffffff) == 0x1fffffff) {
+			*phy_id = 0xffffffff;
+			return 0;
+		}
+	}
+
+	/* Now probe Device Identifiers for each device present. */
+	for (i = 1; i < num_ids; i++) {
+		if (!(c45_ids->devices_in_package & (1 << i)))
+			continue;
+
+		reg_addr = MII_ADDR_C45 | i << 16 | MII_PHYSID1;
+		phy_reg = mdiobus_read(bus, addr, reg_addr);
+		if (phy_reg < 0)
+			return -EIO;
+		c45_ids->device_ids[i] = (phy_reg & 0xffff) << 16;
+
+		reg_addr = MII_ADDR_C45 | i << 16 | MII_PHYSID2;
+		phy_reg = mdiobus_read(bus, addr, reg_addr);
+		if (phy_reg < 0)
+			return -EIO;
+		c45_ids->device_ids[i] |= (phy_reg & 0xffff);
+	}
+	*phy_id = 0;
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * get_phy_id - reads the specified addr for its ID.
  * @bus: the target MII bus
  * @addr: PHY address on the MII bus
  * @phy_id: where to store the ID retrieved.
+<<<<<<< HEAD
  *
  * Description: Reads the ID registers of the PHY at @addr on the
  *   @bus, stores it in @phy_id and returns zero on success.
@@ -213,7 +320,35 @@ int get_phy_id(struct mii_bus *bus, int addr, u32 *phy_id)
 
 	/* Grab the bits from PHYIR1, and put them
 	 * in the upper half */
+<<<<<<< HEAD
 	phy_reg = bus->read(bus, addr, MII_PHYSID1);
+=======
+	phy_reg = mdiobus_read(bus, addr, MII_PHYSID1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @is_c45: If true the PHY uses the 802.3 clause 45 protocol
+ * @c45_ids: where to store the c45 ID information.
+ *
+ * Description: In the case of a 802.3-c22 PHY, reads the ID registers
+ *   of the PHY at @addr on the @bus, stores it in @phy_id and returns
+ *   zero on success.
+ *
+ *   In the case of a 802.3-c45 PHY, get_phy_c45_ids() is invoked, and
+ *   its return value is in turn returned.
+ *
+ */
+static int get_phy_id(struct mii_bus *bus, int addr, u32 *phy_id,
+		      bool is_c45, struct phy_c45_device_ids *c45_ids)
+{
+	int phy_reg;
+
+	if (is_c45)
+		return get_phy_c45_ids(bus, addr, phy_id, c45_ids);
+
+	/* Grab the bits from PHYIR1, and put them
+	 * in the upper half */
+	phy_reg = mdiobus_read(bus, addr, MII_PHYSID1);
+>>>>>>> refs/remotes/origin/master
 
 	if (phy_reg < 0)
 		return -EIO;
@@ -221,7 +356,15 @@ int get_phy_id(struct mii_bus *bus, int addr, u32 *phy_id)
 	*phy_id = (phy_reg & 0xffff) << 16;
 
 	/* Grab the bits from PHYIR2, and put them in the lower half */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	phy_reg = bus->read(bus, addr, MII_PHYSID2);
+=======
+	phy_reg = mdiobus_read(bus, addr, MII_PHYSID2);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phy_reg = mdiobus_read(bus, addr, MII_PHYSID2);
+>>>>>>> refs/remotes/origin/master
 
 	if (phy_reg < 0)
 		return -EIO;
@@ -230,16 +373,24 @@ int get_phy_id(struct mii_bus *bus, int addr, u32 *phy_id)
 
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(get_phy_id);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * get_phy_device - reads the specified PHY device and returns its @phy_device struct
  * @bus: the target MII bus
  * @addr: PHY address on the MII bus
+<<<<<<< HEAD
+=======
+ * @is_c45: If true the PHY uses the 802.3 clause 45 protocol
+>>>>>>> refs/remotes/origin/master
  *
  * Description: Reads the ID registers of the PHY at @addr on the
  *   @bus, then allocates and returns the phy_device to represent it.
  */
+<<<<<<< HEAD
 struct phy_device * get_phy_device(struct mii_bus *bus, int addr)
 {
 	struct phy_device *dev = NULL;
@@ -247,6 +398,16 @@ struct phy_device * get_phy_device(struct mii_bus *bus, int addr)
 	int r;
 
 	r = get_phy_id(bus, addr, &phy_id);
+=======
+struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45)
+{
+	struct phy_c45_device_ids c45_ids = {0};
+	struct phy_device *dev = NULL;
+	u32 phy_id = 0;
+	int r;
+
+	r = get_phy_id(bus, addr, &phy_id, is_c45, &c45_ids);
+>>>>>>> refs/remotes/origin/master
 	if (r)
 		return ERR_PTR(r);
 
@@ -254,7 +415,11 @@ struct phy_device * get_phy_device(struct mii_bus *bus, int addr)
 	if ((phy_id & 0x1fffffff) == 0x1fffffff)
 		return NULL;
 
+<<<<<<< HEAD
 	dev = phy_device_create(bus, addr, phy_id);
+=======
+	dev = phy_device_create(bus, addr, phy_id, is_c45, &c45_ids);
+>>>>>>> refs/remotes/origin/master
 
 	return dev;
 }
@@ -277,9 +442,15 @@ int phy_device_register(struct phy_device *phydev)
 	/* Run all of the fixups for this PHY */
 	phy_scan_fixups(phydev);
 
+<<<<<<< HEAD
 	err = device_register(&phydev->dev);
 	if (err) {
 		pr_err("phy %d failed to register\n", phydev->addr);
+=======
+	err = device_add(&phydev->dev);
+	if (err) {
+		pr_err("PHY %d failed to add\n", phydev->addr);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -330,16 +501,27 @@ static void phy_prepare_link(struct phy_device *phydev,
  * @dev: the network device to connect
  * @phydev: the pointer to the phy device
  * @handler: callback function for state change notifications
+<<<<<<< HEAD
  * @flags: PHY device's dev_flags
  * @interface: PHY device's interface
  */
 int phy_connect_direct(struct net_device *dev, struct phy_device *phydev,
 		       void (*handler)(struct net_device *), u32 flags,
+=======
+ * @interface: PHY device's interface
+ */
+int phy_connect_direct(struct net_device *dev, struct phy_device *phydev,
+		       void (*handler)(struct net_device *),
+>>>>>>> refs/remotes/origin/master
 		       phy_interface_t interface)
 {
 	int rc;
 
+<<<<<<< HEAD
 	rc = phy_attach_direct(dev, phydev, flags, interface);
+=======
+	rc = phy_attach_direct(dev, phydev, phydev->dev_flags, interface);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		return rc;
 
@@ -357,7 +539,10 @@ EXPORT_SYMBOL(phy_connect_direct);
  * @dev: the network device to connect
  * @bus_id: the id string of the PHY device to connect
  * @handler: callback function for state change notifications
+<<<<<<< HEAD
  * @flags: PHY device's dev_flags
+=======
+>>>>>>> refs/remotes/origin/master
  * @interface: PHY device's interface
  *
  * Description: Convenience function for connecting ethernet
@@ -369,7 +554,11 @@ EXPORT_SYMBOL(phy_connect_direct);
  *   the desired functionality.
  */
 struct phy_device * phy_connect(struct net_device *dev, const char *bus_id,
+<<<<<<< HEAD
 		void (*handler)(struct net_device *), u32 flags,
+=======
+		void (*handler)(struct net_device *),
+>>>>>>> refs/remotes/origin/master
 		phy_interface_t interface)
 {
 	struct phy_device *phydev;
@@ -385,7 +574,11 @@ struct phy_device * phy_connect(struct net_device *dev, const char *bus_id,
 	}
 	phydev = to_phy_device(d);
 
+<<<<<<< HEAD
 	rc = phy_connect_direct(dev, phydev, handler, flags, interface);
+=======
+	rc = phy_connect_direct(dev, phydev, handler, interface);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		return ERR_PTR(rc);
 
@@ -447,6 +640,14 @@ static int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
 	/* Assume that if there is no driver, that it doesn't
 	 * exist, and we should use the genphy driver. */
 	if (NULL == d->driver) {
+<<<<<<< HEAD
+=======
+		if (phydev->is_c45) {
+			pr_err("No driver for phy %x\n", phydev->phy_id);
+			return -ENODEV;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		d->driver = &genphy_driver.driver;
 
 		err = d->driver->probe(d);
@@ -485,14 +686,21 @@ static int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
  * phy_attach - attach a network device to a particular PHY device
  * @dev: network device to attach
  * @bus_id: Bus ID of PHY device to attach
+<<<<<<< HEAD
  * @flags: PHY device's dev_flags
+=======
+>>>>>>> refs/remotes/origin/master
  * @interface: PHY device's interface
  *
  * Description: Same as phy_attach_direct() except that a PHY bus_id
  *     string is passed instead of a pointer to a struct phy_device.
  */
 struct phy_device *phy_attach(struct net_device *dev,
+<<<<<<< HEAD
 		const char *bus_id, u32 flags, phy_interface_t interface)
+=======
+		const char *bus_id, phy_interface_t interface)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bus_type *bus = &mdio_bus_type;
 	struct phy_device *phydev;
@@ -508,7 +716,11 @@ struct phy_device *phy_attach(struct net_device *dev,
 	}
 	phydev = to_phy_device(d);
 
+<<<<<<< HEAD
 	rc = phy_attach_direct(dev, phydev, flags, interface);
+=======
+	rc = phy_attach_direct(dev, phydev, phydev->dev_flags, interface);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		return ERR_PTR(rc);
 
@@ -563,6 +775,8 @@ static int genphy_config_advert(struct phy_device *phydev)
 	if (adv < 0)
 		return adv;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	adv &= ~(ADVERTISE_ALL | ADVERTISE_100BASE4 | ADVERTISE_PAUSE_CAP | 
 		 ADVERTISE_PAUSE_ASYM);
 	if (advertise & ADVERTISED_10baseT_Half)
@@ -577,6 +791,16 @@ static int genphy_config_advert(struct phy_device *phydev)
 		adv |= ADVERTISE_PAUSE_CAP;
 	if (advertise & ADVERTISED_Asym_Pause)
 		adv |= ADVERTISE_PAUSE_ASYM;
+=======
+	adv &= ~(ADVERTISE_ALL | ADVERTISE_100BASE4 | ADVERTISE_PAUSE_CAP |
+		 ADVERTISE_PAUSE_ASYM);
+	adv |= ethtool_adv_to_mii_adv_t(advertise);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	adv &= ~(ADVERTISE_ALL | ADVERTISE_100BASE4 | ADVERTISE_PAUSE_CAP |
+		 ADVERTISE_PAUSE_ASYM);
+	adv |= ethtool_adv_to_mii_adv_t(advertise);
+>>>>>>> refs/remotes/origin/master
 
 	if (adv != oldadv) {
 		err = phy_write(phydev, MII_ADVERTISE, adv);
@@ -595,10 +819,18 @@ static int genphy_config_advert(struct phy_device *phydev)
 			return adv;
 
 		adv &= ~(ADVERTISE_1000FULL | ADVERTISE_1000HALF);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (advertise & SUPPORTED_1000baseT_Half)
 			adv |= ADVERTISE_1000HALF;
 		if (advertise & SUPPORTED_1000baseT_Full)
 			adv |= ADVERTISE_1000FULL;
+=======
+		adv |= ethtool_adv_to_mii_ctrl1000_t(advertise);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		adv |= ethtool_adv_to_mii_ctrl1000_t(advertise);
+>>>>>>> refs/remotes/origin/master
 
 		if (adv != oldadv) {
 			err = phy_write(phydev, MII_CTRL1000, adv);
@@ -620,7 +852,11 @@ static int genphy_config_advert(struct phy_device *phydev)
  *   to the values in phydev. Assumes that the values are valid.
  *   Please see phy_sanitize_settings().
  */
+<<<<<<< HEAD
 static int genphy_setup_forced(struct phy_device *phydev)
+=======
+int genphy_setup_forced(struct phy_device *phydev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	int ctl = 0;
@@ -639,7 +875,11 @@ static int genphy_setup_forced(struct phy_device *phydev)
 
 	return err;
 }
+<<<<<<< HEAD
 
+=======
+EXPORT_SYMBOL(genphy_setup_forced);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * genphy_restart_aneg - Enable and Restart Autonegotiation
@@ -929,9 +1169,14 @@ static int phy_probe(struct device *dev)
 
 	phydev = to_phy_device(dev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Make sure the driver is held.
 	 * XXX -- Is this correct? */
 	drv = get_driver(phydev->dev.driver);
+=======
+	drv = phydev->dev.driver;
+>>>>>>> refs/remotes/origin/cm-10.0
 	phydrv = to_phy_driver(drv);
 	phydev->drv = phydrv;
 
@@ -939,6 +1184,22 @@ static int phy_probe(struct device *dev)
 	if (!(phydrv->flags & PHY_HAS_INTERRUPT))
 		phydev->irq = PHY_POLL;
 
+=======
+	drv = phydev->dev.driver;
+	phydrv = to_phy_driver(drv);
+	phydev->drv = phydrv;
+
+	/* Disable the interrupt if the PHY doesn't support it
+	 * but the interrupt is still a valid one
+	 */
+	if (!(phydrv->flags & PHY_HAS_INTERRUPT) &&
+			phy_interrupt_is_valid(phydev))
+		phydev->irq = PHY_POLL;
+
+	if (phydrv->flags & PHY_IS_INTERNAL)
+		phydev->is_internal = true;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&phydev->lock);
 
 	/* Start out supporting everything. Eventually,
@@ -971,8 +1232,14 @@ static int phy_remove(struct device *dev)
 
 	if (phydev->drv->remove)
 		phydev->drv->remove(phydev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	put_driver(dev->driver);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	phydev->drv = NULL;
 
 	return 0;
@@ -994,8 +1261,13 @@ int phy_driver_register(struct phy_driver *new_driver)
 	retval = driver_register(&new_driver->driver);
 
 	if (retval) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Error %d in registering driver\n",
 				new_driver->name, retval);
+=======
+		pr_err("%s: Error %d in registering driver\n",
+		       new_driver->name, retval);
+>>>>>>> refs/remotes/origin/master
 
 		return retval;
 	}
@@ -1006,12 +1278,43 @@ int phy_driver_register(struct phy_driver *new_driver)
 }
 EXPORT_SYMBOL(phy_driver_register);
 
+<<<<<<< HEAD
+=======
+int phy_drivers_register(struct phy_driver *new_driver, int n)
+{
+	int i, ret = 0;
+
+	for (i = 0; i < n; i++) {
+		ret = phy_driver_register(new_driver + i);
+		if (ret) {
+			while (i-- > 0)
+				phy_driver_unregister(new_driver + i);
+			break;
+		}
+	}
+	return ret;
+}
+EXPORT_SYMBOL(phy_drivers_register);
+
+>>>>>>> refs/remotes/origin/master
 void phy_driver_unregister(struct phy_driver *drv)
 {
 	driver_unregister(&drv->driver);
 }
 EXPORT_SYMBOL(phy_driver_unregister);
 
+<<<<<<< HEAD
+=======
+void phy_drivers_unregister(struct phy_driver *drv, int n)
+{
+	int i;
+	for (i = 0; i < n; i++) {
+		phy_driver_unregister(drv + i);
+	}
+}
+EXPORT_SYMBOL(phy_drivers_unregister);
+
+>>>>>>> refs/remotes/origin/master
 static struct phy_driver genphy_driver = {
 	.phy_id		= 0xffffffff,
 	.phy_id_mask	= 0xffffffff,

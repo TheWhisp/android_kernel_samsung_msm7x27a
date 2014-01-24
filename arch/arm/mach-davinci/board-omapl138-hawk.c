@@ -13,15 +13,31 @@
 #include <linux/init.h>
 #include <linux/console.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/gpio-davinci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
+<<<<<<< HEAD
+=======
+#include <mach/common.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/cp_intc.h>
 #include <mach/da8xx.h>
 #include <mach/mux.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define HAWKBOARD_PHY_ID		"0:07"
+=======
+#define HAWKBOARD_PHY_ID		"davinci_mdio-0:07"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HAWKBOARD_PHY_ID		"davinci_mdio-0:07"
+>>>>>>> refs/remotes/origin/master
 #define DA850_HAWK_MMCSD_CD_PIN		GPIO_TO_PIN(3, 12)
 #define DA850_HAWK_MMCSD_WP_PIN		GPIO_TO_PIN(3, 13)
 
@@ -48,8 +64,12 @@ static __init void omapl138_hawk_config_emac(void)
 	val &= ~BIT(8);
 	ret = davinci_cfg_reg_list(omapl138_hawk_mii_pins);
 	if (ret) {
+<<<<<<< HEAD
 		pr_warning("%s: cpgmac/mii mux setup failed: %d\n",
 			__func__, ret);
+=======
+		pr_warn("%s: CPGMAC/MII mux setup failed: %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -61,8 +81,12 @@ static __init void omapl138_hawk_config_emac(void)
 
 	ret = da8xx_register_emac();
 	if (ret)
+<<<<<<< HEAD
 		pr_warning("%s: emac registration failed: %d\n",
 			__func__, ret);
+=======
+		pr_warn("%s: EMAC registration failed: %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -138,7 +162,10 @@ static struct davinci_mmc_config da850_mmc_config = {
 	.wires		= 4,
 	.max_freq	= 50000000,
 	.caps		= MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED,
+<<<<<<< HEAD
 	.version	= MMC_CTLR_VERSION_2,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static __init void omapl138_hawk_mmc_init(void)
@@ -147,15 +174,23 @@ static __init void omapl138_hawk_mmc_init(void)
 
 	ret = davinci_cfg_reg_list(hawk_mmcsd0_pins);
 	if (ret) {
+<<<<<<< HEAD
 		pr_warning("%s: MMC/SD0 mux setup failed: %d\n",
 			__func__, ret);
+=======
+		pr_warn("%s: MMC/SD0 mux setup failed: %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	ret = gpio_request_one(DA850_HAWK_MMCSD_CD_PIN,
 			GPIOF_DIR_IN, "MMC CD");
 	if (ret < 0) {
+<<<<<<< HEAD
 		pr_warning("%s: can not open GPIO %d\n",
+=======
+		pr_warn("%s: can not open GPIO %d\n",
+>>>>>>> refs/remotes/origin/master
 			__func__, DA850_HAWK_MMCSD_CD_PIN);
 		return;
 	}
@@ -163,15 +198,23 @@ static __init void omapl138_hawk_mmc_init(void)
 	ret = gpio_request_one(DA850_HAWK_MMCSD_WP_PIN,
 			GPIOF_DIR_IN, "MMC WP");
 	if (ret < 0) {
+<<<<<<< HEAD
 		pr_warning("%s: can not open GPIO %d\n",
+=======
+		pr_warn("%s: can not open GPIO %d\n",
+>>>>>>> refs/remotes/origin/master
 			__func__, DA850_HAWK_MMCSD_WP_PIN);
 		goto mmc_setup_wp_fail;
 	}
 
 	ret = da8xx_register_mmcsd0(&da850_mmc_config);
 	if (ret) {
+<<<<<<< HEAD
 		pr_warning("%s: MMC/SD0 registration failed: %d\n",
 			__func__, ret);
+=======
+		pr_warn("%s: MMC/SD0 registration failed: %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 		goto mmc_setup_mmcsd_fail;
 	}
 
@@ -216,7 +259,11 @@ static int hawk_usb_ocic_notify(da8xx_ocic_handler_t handler)
 		hawk_usb_ocic_handler = handler;
 
 		error = request_irq(irq, omapl138_hawk_usb_ocic_irq,
+<<<<<<< HEAD
 					IRQF_DISABLED | IRQF_TRIGGER_RISING |
+=======
+					IRQF_TRIGGER_RISING |
+>>>>>>> refs/remotes/origin/master
 					IRQF_TRIGGER_FALLING,
 					"OHCI over-current indicator", NULL);
 		if (error)
@@ -250,8 +297,12 @@ static __init void omapl138_hawk_usb_init(void)
 
 	ret = davinci_cfg_reg_list(da850_hawk_usb11_pins);
 	if (ret) {
+<<<<<<< HEAD
 		pr_warning("%s: USB 1.1 PinMux setup failed: %d\n",
 			__func__, ret);
+=======
+		pr_warn("%s: USB 1.1 PinMux setup failed: %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -280,8 +331,12 @@ static __init void omapl138_hawk_usb_init(void)
 
 	ret = da8xx_register_usb11(&omapl138_hawk_usb11_pdata);
 	if (ret) {
+<<<<<<< HEAD
 		pr_warning("%s: USB 1.1 registration failed: %d\n",
 			__func__, ret);
+=======
+		pr_warn("%s: USB 1.1 registration failed: %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 		goto usb11_setup_fail;
 	}
 
@@ -293,22 +348,37 @@ usb11_setup_oc_fail:
 	gpio_free(DA850_USB1_VBUS_PIN);
 }
 
+<<<<<<< HEAD
 static struct davinci_uart_config omapl138_hawk_uart_config __initdata = {
 	.enabled_uarts = 0x7,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static __init void omapl138_hawk_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 	davinci_serial_init(&omapl138_hawk_uart_config);
+=======
+	ret = da850_register_gpio();
+	if (ret)
+		pr_warn("%s: GPIO init failed: %d\n", __func__, ret);
+
+	davinci_serial_init(da8xx_serial_device);
+>>>>>>> refs/remotes/origin/master
 
 	omapl138_hawk_config_emac();
 
 	ret = da850_register_edma(da850_edma_rsv);
 	if (ret)
+<<<<<<< HEAD
 		pr_warning("%s: EDMA registration failed: %d\n",
 			__func__, ret);
+=======
+		pr_warn("%s: EDMA registration failed: %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 
 	omapl138_hawk_mmc_init();
 
@@ -316,9 +386,19 @@ static __init void omapl138_hawk_init(void)
 
 	ret = da8xx_register_watchdog();
 	if (ret)
+<<<<<<< HEAD
 		pr_warning("omapl138_hawk_init: "
 			"watchdog registration failed: %d\n",
 			ret);
+=======
+		pr_warn("%s: watchdog registration failed: %d\n",
+			__func__, ret);
+
+	ret = da8xx_register_rproc();
+	if (ret)
+		pr_warn("%s: dsp/rproc registration failed: %d\n",
+			__func__, ret);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_SERIAL_8250_CONSOLE
@@ -338,9 +418,30 @@ static void __init omapl138_hawk_map_io(void)
 }
 
 MACHINE_START(OMAPL138_HAWKBOARD, "AM18x/OMAP-L138 Hawkboard")
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= (DA8XX_DDR_BASE + 0x100),
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= omapl138_hawk_map_io,
 	.init_irq	= cp_intc_init,
 	.timer		= &davinci_timer,
 	.init_machine	= omapl138_hawk_init,
+<<<<<<< HEAD
+=======
+	.dma_zone_size	= SZ_128M,
+	.restart	= da8xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= omapl138_hawk_map_io,
+	.init_irq	= cp_intc_init,
+	.init_time	= davinci_timer_init,
+	.init_machine	= omapl138_hawk_init,
+	.init_late	= davinci_init_late,
+	.dma_zone_size	= SZ_128M,
+	.restart	= da8xx_restart,
+	.reserve	= da8xx_rproc_reserve_cma,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

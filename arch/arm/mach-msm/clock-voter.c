@@ -29,7 +29,15 @@ static unsigned long voter_clk_aggregate_rate(const struct clk *parent)
 	list_for_each_entry(clk, &parent->children, siblings) {
 		struct clk_voter *v = to_clk_voter(clk);
 		if (v->enabled)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			rate = max(v->rate, rate);
+=======
+			rate = max(clk->rate, rate);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rate = max(clk->rate, rate);
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return rate;
 }
@@ -54,10 +62,23 @@ static int voter_clk_set_rate(struct clk *clk, unsigned long rate)
 		list_for_each_entry(clkp, &parent->children, siblings) {
 			clkh = to_clk_voter(clkp);
 			if (clkh->enabled && clkh != v)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				other_rate = max(clkh->rate, other_rate);
 		}
 
 		cur_rate = max(other_rate, v->rate);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+				other_rate = max(clkp->rate, other_rate);
+		}
+
+		cur_rate = max(other_rate, clk->rate);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		new_rate = max(other_rate, rate);
 
 		if (new_rate != cur_rate) {
@@ -66,7 +87,15 @@ static int voter_clk_set_rate(struct clk *clk, unsigned long rate)
 				goto unlock;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	v->rate = rate;
+=======
+	clk->rate = rate;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk->rate = rate;
+>>>>>>> refs/remotes/origin/cm-11.0
 unlock:
 	spin_unlock_irqrestore(&voter_clk_lock, flags);
 
@@ -89,8 +118,18 @@ static int voter_clk_enable(struct clk *clk)
 	 * than the current rate.
 	 */
 	cur_rate = voter_clk_aggregate_rate(parent);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (v->rate > cur_rate) {
 		ret = clk_set_rate(parent, v->rate);
+=======
+	if (clk->rate > cur_rate) {
+		ret = clk_set_rate(parent, clk->rate);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (clk->rate > cur_rate) {
+		ret = clk_set_rate(parent, clk->rate);
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ret)
 			goto out;
 	}
@@ -116,7 +155,15 @@ static void voter_clk_disable(struct clk *clk)
 	 */
 	v->enabled = false;
 	new_rate = voter_clk_aggregate_rate(parent);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cur_rate = max(new_rate, v->rate);
+=======
+	cur_rate = max(new_rate, clk->rate);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cur_rate = max(new_rate, clk->rate);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (new_rate < cur_rate)
 		clk_set_rate(parent, new_rate);
@@ -124,6 +171,8 @@ static void voter_clk_disable(struct clk *clk)
 	spin_unlock_irqrestore(&voter_clk_lock, flags);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long voter_clk_get_rate(struct clk *clk)
 {
 	unsigned long rate, flags;
@@ -136,6 +185,10 @@ static unsigned long voter_clk_get_rate(struct clk *clk)
 	return rate;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int voter_clk_is_enabled(struct clk *clk)
 {
 	struct clk_voter *v = to_clk_voter(clk);
@@ -148,6 +201,8 @@ static long voter_clk_round_rate(struct clk *clk, unsigned long rate)
 	return clk_round_rate(v->parent, rate);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int voter_clk_set_parent(struct clk *clk, struct clk *parent)
 {
 	unsigned long flags;
@@ -160,6 +215,10 @@ static int voter_clk_set_parent(struct clk *clk, struct clk *parent)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct clk *voter_clk_get_parent(struct clk *clk)
 {
 	struct clk_voter *v = to_clk_voter(clk);
@@ -171,14 +230,46 @@ static bool voter_clk_is_local(struct clk *clk)
 	return true;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static enum handoff voter_clk_handoff(struct clk *clk)
+{
+	/* Apply default rate vote */
+	if (clk->rate)
+		return HANDOFF_ENABLED_CLK;
+
+	return HANDOFF_DISABLED_CLK;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct clk_ops clk_ops_voter = {
 	.enable = voter_clk_enable,
 	.disable = voter_clk_disable,
 	.set_rate = voter_clk_set_rate,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.get_rate = voter_clk_get_rate,
 	.is_enabled = voter_clk_is_enabled,
 	.round_rate = voter_clk_round_rate,
 	.set_parent = voter_clk_set_parent,
 	.get_parent = voter_clk_get_parent,
 	.is_local = voter_clk_is_local,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	.is_enabled = voter_clk_is_enabled,
+	.round_rate = voter_clk_round_rate,
+	.get_parent = voter_clk_get_parent,
+	.is_local = voter_clk_is_local,
+	.handoff = voter_clk_handoff,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 };

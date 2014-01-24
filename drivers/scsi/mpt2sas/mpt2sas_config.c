@@ -2,7 +2,11 @@
  * This module provides common API for accessing firmware configuration pages
  *
  * This code is based on drivers/scsi/mpt2sas/mpt2_base.c
+<<<<<<< HEAD
  * Copyright (C) 2007-2010  LSI Corporation
+=======
+ * Copyright (C) 2007-2013  LSI Corporation
+>>>>>>> refs/remotes/origin/master
  *  (mailto:DL-MPTFusionLinux@lsi.com)
  *
  * This program is free software; you can redistribute it and/or
@@ -41,7 +45,13 @@
  * USA.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -150,7 +160,15 @@ _config_display_some_debug(struct MPT2SAS_ADAPTER *ioc, u16 smid,
 			desc = "raid_config";
 			break;
 		case MPI2_CONFIG_EXTPAGETYPE_DRIVER_MAPPING:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			desc = "driver_mappping";
+=======
+			desc = "driver_mapping";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			desc = "driver_mapping";
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		break;
@@ -684,6 +702,45 @@ mpt2sas_config_set_iounit_pg1(struct MPT2SAS_ADAPTER *ioc,
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * mpt2sas_config_get_iounit_pg3 - obtain iounit page 3
+ * @ioc: per adapter object
+ * @mpi_reply: reply mf payload returned from firmware
+ * @config_page: contents of the config page
+ * @sz: size of buffer passed in config_page
+ * Context: sleep.
+ *
+ * Returns 0 for success, non-zero for failure.
+ */
+int
+mpt2sas_config_get_iounit_pg3(struct MPT2SAS_ADAPTER *ioc,
+	Mpi2ConfigReply_t *mpi_reply, Mpi2IOUnitPage3_t *config_page, u16 sz)
+{
+	Mpi2ConfigRequest_t mpi_request;
+	int r;
+
+	memset(&mpi_request, 0, sizeof(Mpi2ConfigRequest_t));
+	mpi_request.Function = MPI2_FUNCTION_CONFIG;
+	mpi_request.Action = MPI2_CONFIG_ACTION_PAGE_HEADER;
+	mpi_request.Header.PageType = MPI2_CONFIG_PAGETYPE_IO_UNIT;
+	mpi_request.Header.PageNumber = 3;
+	mpi_request.Header.PageVersion = MPI2_IOUNITPAGE3_PAGEVERSION;
+	mpt2sas_base_build_zero_len_sge(ioc, &mpi_request.PageBufferSGE);
+	r = _config_request(ioc, &mpi_request, mpi_reply,
+	    MPT2_CONFIG_PAGE_DEFAULT_TIMEOUT, NULL, 0);
+	if (r)
+		goto out;
+
+	mpi_request.Action = MPI2_CONFIG_ACTION_PAGE_READ_CURRENT;
+	r = _config_request(ioc, &mpi_request, mpi_reply,
+	    MPT2_CONFIG_PAGE_DEFAULT_TIMEOUT, config_page, sz);
+ out:
+	return r;
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * mpt2sas_config_get_ioc_pg8 - obtain ioc page 8
  * @ioc: per adapter object
  * @mpi_reply: reply mf payload returned from firmware
@@ -1357,6 +1414,18 @@ mpt2sas_config_get_volume_handle(struct MPT2SAS_ADAPTER *ioc, u16 pd_handle,
 	Mpi2ConfigReply_t mpi_reply;
 	int r, i, config_page_sz;
 	u16 ioc_status;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int config_num;
+	u16 element_type;
+	u16 phys_disk_dev_handle;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int config_num;
+	u16 element_type;
+	u16 phys_disk_dev_handle;
+>>>>>>> refs/remotes/origin/master
 
 	*volume_handle = 0;
 	memset(&mpi_request, 0, sizeof(Mpi2ConfigRequest_t));
@@ -1372,6 +1441,8 @@ mpt2sas_config_get_volume_handle(struct MPT2SAS_ADAPTER *ioc, u16 pd_handle,
 	if (r)
 		goto out;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mpi_request.PageAddress =
 	    cpu_to_le32(MPI2_RAID_PGAD_FORM_ACTIVE_CONFIG);
 	mpi_request.Action = MPI2_CONFIG_ACTION_PAGE_READ_CURRENT;
@@ -1401,6 +1472,60 @@ mpt2sas_config_get_volume_handle(struct MPT2SAS_ADAPTER *ioc, u16 pd_handle,
 			r = 0;
 			goto out;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mpi_request.Action = MPI2_CONFIG_ACTION_PAGE_READ_CURRENT;
+	config_page_sz = (le16_to_cpu(mpi_reply.ExtPageLength) * 4);
+	config_page = kmalloc(config_page_sz, GFP_KERNEL);
+	if (!config_page) {
+		r = -1;
+		goto out;
+	}
+	config_num = 0xff;
+	while (1) {
+		mpi_request.PageAddress = cpu_to_le32(config_num +
+		    MPI2_RAID_PGAD_FORM_GET_NEXT_CONFIGNUM);
+		r = _config_request(ioc, &mpi_request, &mpi_reply,
+		    MPT2_CONFIG_PAGE_DEFAULT_TIMEOUT, config_page,
+		    config_page_sz);
+		if (r)
+			goto out;
+		r = -1;
+		ioc_status = le16_to_cpu(mpi_reply.IOCStatus) &
+		    MPI2_IOCSTATUS_MASK;
+		if (ioc_status != MPI2_IOCSTATUS_SUCCESS)
+			goto out;
+		for (i = 0; i < config_page->NumElements; i++) {
+			element_type = le16_to_cpu(config_page->
+			    ConfigElement[i].ElementFlags) &
+			    MPI2_RAIDCONFIG0_EFLAGS_MASK_ELEMENT_TYPE;
+			if (element_type ==
+			    MPI2_RAIDCONFIG0_EFLAGS_VOL_PHYS_DISK_ELEMENT ||
+			    element_type ==
+			    MPI2_RAIDCONFIG0_EFLAGS_OCE_ELEMENT) {
+				phys_disk_dev_handle =
+				    le16_to_cpu(config_page->ConfigElement[i].
+				    PhysDiskDevHandle);
+				if (phys_disk_dev_handle == pd_handle) {
+					*volume_handle =
+					    le16_to_cpu(config_page->
+					    ConfigElement[i].VolDevHandle);
+					r = 0;
+					goto out;
+				}
+			} else if (element_type ==
+			    MPI2_RAIDCONFIG0_EFLAGS_HOT_SPARE_ELEMENT) {
+				*volume_handle = 0;
+				r = 0;
+				goto out;
+			}
+		}
+		config_num = config_page->ConfigNum;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
  out:
 	kfree(config_page);

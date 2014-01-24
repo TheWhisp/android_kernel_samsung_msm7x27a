@@ -10,7 +10,11 @@
 #ifndef __MUSB_OMAP243X_H__
 #define __MUSB_OMAP243X_H__
 
+<<<<<<< HEAD
 #include <plat/usb.h>
+=======
+#include <linux/platform_data/usb-omap.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * OMAP2430-specific definitions

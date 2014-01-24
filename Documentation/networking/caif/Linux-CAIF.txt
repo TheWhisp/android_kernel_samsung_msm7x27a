@@ -19,13 +19,18 @@ and host. Currently, UART and Loopback are available for Linux.
 Architecture:
 ------------
 The implementation of CAIF is divided into:
+<<<<<<< HEAD
 * CAIF Socket Layer, Kernel API, and  Net Device.
+=======
+* CAIF Socket Layer and GPRS IP Interface.
+>>>>>>> refs/remotes/origin/master
 * CAIF Core Protocol Implementation
 * CAIF Link Layer, implemented as NET devices.
 
 
   RTNL
    !
+<<<<<<< HEAD
    !	 +------+   +------+   +------+
    !	+------+!  +------+!  +------+!
    !	! Sock !!  !Kernel!!  ! Net  !!
@@ -68,11 +73,35 @@ off.
   caif_transmit(&caif_dev, skb);
 
 See the caif_kernel.h for details about the CAIF kernel API.
+=======
+   !	      +------+	 +------+
+   !	     +------+!	+------+!
+   !	     !	IP  !!	!Socket!!
+   +-------> !interf!+	! API  !+	<- CAIF Client APIs
+   !	     +------+	+------!
+   !		!	    !
+   !		+-----------+
+   !		      !
+   !		   +------+		<- CAIF Core Protocol
+   !		   ! CAIF !
+   !		   ! Core !
+   !		   +------+
+   !	   +----------!---------+
+   !	   !	      !		!
+   !	+------+   +-----+   +------+
+   +--> ! HSI  !   ! TTY !   ! USB  !	<- Link Layer (Net Devices)
+	+------+   +-----+   +------+
+
+>>>>>>> refs/remotes/origin/master
 
 
 I M P L E M E N T A T I O N
 ===========================
+<<<<<<< HEAD
 ===========================
+=======
+
+>>>>>>> refs/remotes/origin/master
 
 CAIF Core Protocol Layer
 =========================================
@@ -88,17 +117,24 @@ The Core CAIF implementation contains:
       -	Simple implementation of CAIF.
       -	Layered architecture (a la Streams), each layer in the CAIF
 	specification is implemented in a separate c-file.
+<<<<<<< HEAD
       -	Clients must implement PHY layer to access physical HW
 	with receive and transmit functions.
+=======
+>>>>>>> refs/remotes/origin/master
       -	Clients must call configuration function to add PHY layer.
       -	Clients must implement CAIF layer to consume/produce
 	CAIF payload with receive and transmit functions.
       -	Clients must call configuration function to add and connect the
 	Client layer.
       - When receiving / transmitting CAIF Packets (cfpkt), ownership is passed
+<<<<<<< HEAD
 	to the called function (except for framing layers' receive functions
 	or if a transmit function returns an error, in which case the caller
 	must free the packet).
+=======
+	to the called function (except for framing layers' receive function)
+>>>>>>> refs/remotes/origin/master
 
 Layered Architecture
 --------------------
@@ -109,11 +145,14 @@ Implementation. The support functions include:
 	CAIF Packet has functions for creating, destroying and adding content
 	and for adding/extracting header and trailers to protocol packets.
 
+<<<<<<< HEAD
       - CFLST CAIF list implementation.
 
       - CFGLUE CAIF Glue. Contains OS Specifics, such as memory
 	allocation, endianness, etc.
 
+=======
+>>>>>>> refs/remotes/origin/master
 The CAIF Protocol implementation contains:
 
       - CFCNFG CAIF Configuration layer. Configures the CAIF Protocol
@@ -128,7 +167,11 @@ The CAIF Protocol implementation contains:
 	control and remote shutdown requests.
 
       - CFVEI CAIF VEI layer. Handles CAIF AT Channels on VEI (Virtual
+<<<<<<< HEAD
         External Interface). This layer encodes/decodes VEI frames.
+=======
+	External Interface). This layer encodes/decodes VEI frames.
+>>>>>>> refs/remotes/origin/master
 
       - CFDGML CAIF Datagram layer. Handles CAIF Datagram layer (IP
 	traffic), encodes/decodes Datagram frames.
@@ -170,7 +213,11 @@ The CAIF Protocol implementation contains:
 	    +---------+	    +---------+
 		 !		!
 	    +---------+	    +---------+
+<<<<<<< HEAD
 	    |         |	    | Serial  |
+=======
+	    |	      |	    | Serial  |
+>>>>>>> refs/remotes/origin/master
 	    |	      |	    | CFSERL  |
 	    +---------+	    +---------+
 
@@ -186,17 +233,26 @@ In this layered approach the following "rules" apply.
 		 layer->dn->transmit(layer->dn, packet);
 
 
+<<<<<<< HEAD
 Linux Driver Implementation
 ===========================
 
 Linux GPRS Net Device and CAIF socket are implemented on top of the
 CAIF Core protocol. The Net device and CAIF socket have an instance of
+=======
+CAIF Socket and IP interface
+===========================
+
+The IP interface and CAIF socket API are implemented on top of the
+CAIF Core protocol. The IP Interface and CAIF socket have an instance of
+>>>>>>> refs/remotes/origin/master
 'struct cflayer', just like the CAIF Core protocol stack.
 Net device and Socket implement the 'receive()' function defined by
 'struct cflayer', just like the rest of the CAIF stack. In this way, transmit and
 receive of packets is handled as by the rest of the layers: the 'dn->transmit()'
 function is called in order to transmit data.
 
+<<<<<<< HEAD
 The layer on top of the CAIF Core implementation is
 sometimes referred to as the "Client layer".
 
@@ -204,6 +260,11 @@ sometimes referred to as the "Client layer".
 Configuration of Link Layer
 ---------------------------
 The Link Layer is implemented as Linux net devices (struct net_device).
+=======
+Configuration of Link Layer
+---------------------------
+The Link Layer is implemented as Linux network devices (struct net_device).
+>>>>>>> refs/remotes/origin/master
 Payload handling and registration is done using standard Linux mechanisms.
 
 The CAIF Protocol relies on a loss-less link layer without implementing

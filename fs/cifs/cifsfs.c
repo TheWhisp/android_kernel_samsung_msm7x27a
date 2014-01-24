@@ -36,6 +36,10 @@
 #include <linux/kthread.h>
 #include <linux/freezer.h>
 #include <linux/namei.h>
+<<<<<<< HEAD
+=======
+#include <linux/random.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/ipv6.h>
 #include "cifsfs.h"
 #include "cifspdu.h"
@@ -48,20 +52,37 @@
 #include <linux/key-type.h>
 #include "cifs_spnego.h"
 #include "fscache.h"
+<<<<<<< HEAD
 #define CIFS_MAGIC_NUMBER 0xFF534D42	/* the first four bytes of SMB PDUs */
 
 int cifsFYI = 0;
 int cifsERROR = 1;
 int traceSMB = 0;
+<<<<<<< HEAD
 unsigned int oplockEnabled = 1;
+=======
+bool enable_oplocks = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned int linuxExtEnabled = 1;
 unsigned int lookupCacheEnabled = 1;
 unsigned int multiuser_mount = 0;
+=======
+#ifdef CONFIG_CIFS_SMB2
+#include "smb2pdu.h"
+#endif
+
+int cifsFYI = 0;
+int traceSMB = 0;
+bool enable_oplocks = true;
+unsigned int linuxExtEnabled = 1;
+unsigned int lookupCacheEnabled = 1;
+>>>>>>> refs/remotes/origin/master
 unsigned int global_secflags = CIFSSEC_DEF;
 /* unsigned int ntlmv2_support = 0; */
 unsigned int sign_CIFS_PDUs = 1;
 static const struct super_operations cifs_super_ops;
 unsigned int CIFSMaxBufSize = CIFS_MAX_MSGSIZE;
+<<<<<<< HEAD
 module_param(CIFSMaxBufSize, int, 0);
 MODULE_PARM_DESC(CIFSMaxBufSize, "Network buffer size (not including header). "
 				 "Default: 16384 Range: 8192 to 130048");
@@ -74,6 +95,7 @@ module_param(cifs_min_small, int, 0);
 MODULE_PARM_DESC(cifs_min_small, "Small network buffers in pool. Default: 30 "
 				 "Range: 2 to 256");
 unsigned int cifs_max_pending = CIFS_MAX_REQ;
+<<<<<<< HEAD
 module_param(cifs_max_pending, int, 0);
 MODULE_PARM_DESC(cifs_max_pending, "Simultaneous requests to server. "
 				   "Default: 50 Range: 2 to 256");
@@ -82,10 +104,55 @@ module_param(echo_retries, ushort, 0644);
 MODULE_PARM_DESC(echo_retries, "Number of echo attempts before giving up and "
 			       "reconnecting server. Default: 5. 0 means "
 			       "never reconnect.");
+=======
+module_param(cifs_max_pending, int, 0444);
+MODULE_PARM_DESC(cifs_max_pending, "Simultaneous requests to server. "
+				   "Default: 32767 Range: 2 to 32767.");
+module_param(enable_oplocks, bool, 0644);
+MODULE_PARM_DESC(enable_oplocks, "Enable or disable oplocks (bool). Default:"
+				 "y/Y/1");
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(CIFSMaxBufSize, uint, 0);
+MODULE_PARM_DESC(CIFSMaxBufSize, "Network buffer size (not including header). "
+				 "Default: 16384 Range: 8192 to 130048");
+unsigned int cifs_min_rcv = CIFS_MIN_RCV_POOL;
+module_param(cifs_min_rcv, uint, 0);
+MODULE_PARM_DESC(cifs_min_rcv, "Network buffers in pool. Default: 4 Range: "
+				"1 to 64");
+unsigned int cifs_min_small = 30;
+module_param(cifs_min_small, uint, 0);
+MODULE_PARM_DESC(cifs_min_small, "Small network buffers in pool. Default: 30 "
+				 "Range: 2 to 256");
+unsigned int cifs_max_pending = CIFS_MAX_REQ;
+module_param(cifs_max_pending, uint, 0444);
+MODULE_PARM_DESC(cifs_max_pending, "Simultaneous requests to server. "
+				   "Default: 32767 Range: 2 to 32767.");
+module_param(enable_oplocks, bool, 0644);
+MODULE_PARM_DESC(enable_oplocks, "Enable or disable oplocks. Default: y/Y/1");
+
+>>>>>>> refs/remotes/origin/master
 extern mempool_t *cifs_sm_req_poolp;
 extern mempool_t *cifs_req_poolp;
 extern mempool_t *cifs_mid_poolp;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct workqueue_struct	*cifsiod_wq;
+
+#ifdef CONFIG_CIFS_SMB2
+__u8 cifs_client_guid[SMB2_CLIENT_GUID_SIZE];
+#endif
+
+/*
+ * Bumps refcount for cifs super block.
+ * Note that it should be only called if a referece to VFS super block is
+ * already held, e.g. in open-type syscalls context. Otherwise it can race with
+ * atomic_dec_and_test in deactivate_locked_super.
+ */
+>>>>>>> refs/remotes/origin/master
 void
 cifs_sb_active(struct super_block *sb)
 {
@@ -103,20 +170,38 @@ cifs_sb_deactive(struct super_block *sb)
 	if (atomic_dec_and_test(&server->active))
 		deactivate_super(sb);
 }
+<<<<<<< HEAD
+=======
+struct workqueue_struct	*cifsiod_wq;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int
 cifs_read_super(struct super_block *sb)
 {
 	struct inode *inode;
 	struct cifs_sb_info *cifs_sb;
+<<<<<<< HEAD
 	int rc = 0;
 
 	cifs_sb = CIFS_SB(sb);
+=======
+	struct cifs_tcon *tcon;
+	int rc = 0;
+
+	cifs_sb = CIFS_SB(sb);
+	tcon = cifs_sb_master_tcon(cifs_sb);
+>>>>>>> refs/remotes/origin/master
 
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_POSIXACL)
 		sb->s_flags |= MS_POSIXACL;
 
+<<<<<<< HEAD
 	if (cifs_sb_master_tcon(cifs_sb)->ses->capabilities & CAP_LARGE_FILES)
+=======
+	if (tcon->ses->capabilities & tcon->ses->server->vals->cap_large_files)
+>>>>>>> refs/remotes/origin/master
 		sb->s_maxbytes = MAX_LFS_FILESIZE;
 	else
 		sb->s_maxbytes = MAX_NON_LFS;
@@ -133,37 +218,80 @@ cifs_read_super(struct super_block *sb)
 
 	if (IS_ERR(inode)) {
 		rc = PTR_ERR(inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		inode = NULL;
 		goto out_no_root;
 	}
 
 	sb->s_root = d_alloc_root(inode);
 
+=======
+		goto out_no_root;
+	}
+
+	sb->s_root = d_make_root(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_no_root;
+	}
+
+	if (tcon->nocase)
+		sb->s_d_op = &cifs_ci_dentry_ops;
+	else
+		sb->s_d_op = &cifs_dentry_ops;
+
+	sb->s_root = d_make_root(inode);
+>>>>>>> refs/remotes/origin/master
 	if (!sb->s_root) {
 		rc = -ENOMEM;
 		goto out_no_root;
 	}
 
+<<<<<<< HEAD
 	/* do that *after* d_alloc_root() - we want NULL ->d_op for root here */
 	if (cifs_sb_master_tcon(cifs_sb)->nocase)
 		sb->s_d_op = &cifs_ci_dentry_ops;
 	else
 		sb->s_d_op = &cifs_dentry_ops;
 
+<<<<<<< HEAD
 #ifdef CIFS_NFSD_EXPORT
+=======
+#ifdef CONFIG_CIFS_NFSD_EXPORT
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_SERVER_INUM) {
 		cFYI(1, "export ops supported");
 		sb->s_export_op = &cifs_export_ops;
 	}
+<<<<<<< HEAD
 #endif /* CIFS_NFSD_EXPORT */
+=======
+#endif /* CONFIG_CIFS_NFSD_EXPORT */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_CIFS_NFSD_EXPORT
+	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_SERVER_INUM) {
+		cifs_dbg(FYI, "export ops supported\n");
+		sb->s_export_op = &cifs_export_ops;
+	}
+#endif /* CONFIG_CIFS_NFSD_EXPORT */
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 out_no_root:
+<<<<<<< HEAD
 	cERROR(1, "cifs_read_super: get root inode failed");
+<<<<<<< HEAD
 	if (inode)
 		iput(inode);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cifs_dbg(VFS, "%s: get root inode failed\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -180,12 +308,20 @@ cifs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	struct super_block *sb = dentry->d_sb;
 	struct cifs_sb_info *cifs_sb = CIFS_SB(sb);
 	struct cifs_tcon *tcon = cifs_sb_master_tcon(cifs_sb);
+<<<<<<< HEAD
 	int rc = -EOPNOTSUPP;
 	int xid;
 
 	xid = GetXid();
 
 	buf->f_type = CIFS_MAGIC_NUMBER;
+=======
+	struct TCP_Server_Info *server = tcon->ses->server;
+	unsigned int xid;
+	int rc = 0;
+
+	xid = get_xid();
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * PATH_MAX may be too long - it would presumably be total path,
@@ -198,6 +334,7 @@ cifs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	buf->f_files = 0;	/* undefined */
 	buf->f_ffree = 0;	/* unlimited */
 
+<<<<<<< HEAD
 	/*
 	 * We could add a second check for a QFS Unix capability bit
 	 */
@@ -224,7 +361,21 @@ cifs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cifs_permission(struct inode *inode, int mask, unsigned int flags)
+=======
+static int cifs_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (server->ops->queryfs)
+		rc = server->ops->queryfs(xid, tcon, buf);
+
+	free_xid(xid);
+	return 0;
+}
+
+static int cifs_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cifs_sb_info *cifs_sb;
 
@@ -239,7 +390,15 @@ static int cifs_permission(struct inode *inode, int mask, unsigned int flags)
 		on the client (above and beyond ACL on servers) for
 		servers which do not support setting and viewing mode bits,
 		so allowing client to check permissions is useful */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return generic_permission(inode, mask, flags, NULL);
+=======
+		return generic_permission(inode, mask);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return generic_permission(inode, mask);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct kmem_cache *cifs_inode_cachep;
@@ -259,9 +418,16 @@ cifs_alloc_inode(struct super_block *sb)
 		return NULL;
 	cifs_inode->cifsAttrs = 0x20;	/* default */
 	cifs_inode->time = 0;
+<<<<<<< HEAD
 	/* Until the file is open and we have gotten oplock
 	info back from the server, can not assume caching of
 	file data or metadata */
+=======
+	/*
+	 * Until the file is open and we have gotten oplock info back from the
+	 * server, can not assume caching of file data or metadata.
+	 */
+>>>>>>> refs/remotes/origin/master
 	cifs_set_oplock_level(cifs_inode, 0);
 	cifs_inode->delete_pending = false;
 	cifs_inode->invalid_mapping = false;
@@ -269,18 +435,35 @@ cifs_alloc_inode(struct super_block *sb)
 	cifs_inode->server_eof = 0;
 	cifs_inode->uniqueid = 0;
 	cifs_inode->createtime = 0;
+<<<<<<< HEAD
 
 	/* Can not set i_flags here - they get immediately overwritten
 	   to zero by the VFS */
 /*	cifs_inode->vfs_inode.i_flags = S_NOATIME | S_NOCMTIME;*/
 	INIT_LIST_HEAD(&cifs_inode->openFileList);
+=======
+	cifs_inode->epoch = 0;
+#ifdef CONFIG_CIFS_SMB2
+	get_random_bytes(cifs_inode->lease_key, SMB2_LEASE_KEY_SIZE);
+#endif
+	/*
+	 * Can not set i_flags here - they get immediately overwritten to zero
+	 * by the VFS.
+	 */
+	/* cifs_inode->vfs_inode.i_flags = S_NOATIME | S_NOCMTIME; */
+	INIT_LIST_HEAD(&cifs_inode->openFileList);
+	INIT_LIST_HEAD(&cifs_inode->llist);
+>>>>>>> refs/remotes/origin/master
 	return &cifs_inode->vfs_inode;
 }
 
 static void cifs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(cifs_inode_cachep, CIFS_I(inode));
 }
 
@@ -294,7 +477,11 @@ static void
 cifs_evict_inode(struct inode *inode)
 {
 	truncate_inode_pages(&inode->i_data, 0);
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	cifs_fscache_release_inode_cookie(inode);
 }
 
@@ -321,11 +508,22 @@ cifs_show_address(struct seq_file *s, struct TCP_Server_Info *server)
 }
 
 static void
+<<<<<<< HEAD
 cifs_show_security(struct seq_file *s, struct TCP_Server_Info *server)
 {
 	seq_printf(s, ",sec=");
 
 	switch (server->secType) {
+=======
+cifs_show_security(struct seq_file *s, struct cifs_ses *ses)
+{
+	if (ses->sectype == Unspecified)
+		return;
+
+	seq_printf(s, ",sec=");
+
+	switch (ses->sectype) {
+>>>>>>> refs/remotes/origin/master
 	case LANMAN:
 		seq_printf(s, "lanman");
 		break;
@@ -347,26 +545,76 @@ cifs_show_security(struct seq_file *s, struct TCP_Server_Info *server)
 		break;
 	}
 
+<<<<<<< HEAD
 	if (server->sec_mode & (SECMODE_SIGN_REQUIRED | SECMODE_SIGN_ENABLED))
 		seq_printf(s, "i");
 }
 
+=======
+	if (ses->sign)
+		seq_printf(s, "i");
+}
+
+static void
+cifs_show_cache_flavor(struct seq_file *s, struct cifs_sb_info *cifs_sb)
+{
+	seq_printf(s, ",cache=");
+
+	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_STRICT_IO)
+		seq_printf(s, "strict");
+	else if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_DIRECT_IO)
+		seq_printf(s, "none");
+	else
+		seq_printf(s, "loose");
+}
+
+static void
+cifs_show_nls(struct seq_file *s, struct nls_table *cur)
+{
+	struct nls_table *def;
+
+	/* Display iocharset= option if it's not default charset */
+	def = load_nls_default();
+	if (def != cur)
+		seq_printf(s, ",iocharset=%s", cur->charset);
+	unload_nls(def);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * cifs_show_options() is for displaying mount options in /proc/mounts.
  * Not all settable options are displayed but most of the important
  * ones are.
  */
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 cifs_show_options(struct seq_file *s, struct vfsmount *m)
 {
 	struct cifs_sb_info *cifs_sb = CIFS_SB(m->mnt_sb);
+=======
+cifs_show_options(struct seq_file *s, struct dentry *root)
+{
+	struct cifs_sb_info *cifs_sb = CIFS_SB(root->d_sb);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+cifs_show_options(struct seq_file *s, struct dentry *root)
+{
+	struct cifs_sb_info *cifs_sb = CIFS_SB(root->d_sb);
+>>>>>>> refs/remotes/origin/master
 	struct cifs_tcon *tcon = cifs_sb_master_tcon(cifs_sb);
 	struct sockaddr *srcaddr;
 	srcaddr = (struct sockaddr *)&tcon->ses->server->srcaddr;
 
+<<<<<<< HEAD
 	cifs_show_security(s, tcon->ses->server);
 
 	seq_printf(s, ",unc=%s", tcon->treeName);
+=======
+	seq_printf(s, ",vers=%s", tcon->ses->server->vals->version_string);
+	cifs_show_security(s, tcon->ses);
+	cifs_show_cache_flavor(s, cifs_sb);
+>>>>>>> refs/remotes/origin/master
 
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_MULTIUSER)
 		seq_printf(s, ",multiuser");
@@ -392,13 +640,31 @@ cifs_show_options(struct seq_file *s, struct vfsmount *m)
 				   (int)(srcaddr->sa_family));
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	seq_printf(s, ",uid=%d", cifs_sb->mnt_uid);
+=======
+	seq_printf(s, ",uid=%u", cifs_sb->mnt_uid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_printf(s, ",uid=%u",
+		   from_kuid_munged(&init_user_ns, cifs_sb->mnt_uid));
+>>>>>>> refs/remotes/origin/master
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_OVERR_UID)
 		seq_printf(s, ",forceuid");
 	else
 		seq_printf(s, ",noforceuid");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	seq_printf(s, ",gid=%d", cifs_sb->mnt_gid);
+=======
+	seq_printf(s, ",gid=%u", cifs_sb->mnt_gid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_printf(s, ",gid=%u",
+		   from_kgid_munged(&init_user_ns, cifs_sb->mnt_gid));
+>>>>>>> refs/remotes/origin/master
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_OVERR_GID)
 		seq_printf(s, ",forcegid");
 	else
@@ -407,9 +673,22 @@ cifs_show_options(struct seq_file *s, struct vfsmount *m)
 	cifs_show_address(s, tcon->ses->server);
 
 	if (!tcon->unix_ext)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		seq_printf(s, ",file_mode=0%o,dir_mode=0%o",
+=======
+		seq_printf(s, ",file_mode=0%ho,dir_mode=0%ho",
+>>>>>>> refs/remotes/origin/cm-10.0
 					   cifs_sb->mnt_file_mode,
 					   cifs_sb->mnt_dir_mode);
+=======
+		seq_printf(s, ",file_mode=0%ho,dir_mode=0%ho",
+					   cifs_sb->mnt_file_mode,
+					   cifs_sb->mnt_dir_mode);
+
+	cifs_show_nls(s, cifs_sb->local_nls);
+
+>>>>>>> refs/remotes/origin/master
 	if (tcon->seal)
 		seq_printf(s, ",seal");
 	if (tcon->nocase)
@@ -430,8 +709,11 @@ cifs_show_options(struct seq_file *s, struct vfsmount *m)
 		seq_printf(s, ",rwpidforward");
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_NOPOSIXBRL)
 		seq_printf(s, ",forcemand");
+<<<<<<< HEAD
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_DIRECT_IO)
 		seq_printf(s, ",directio");
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_NO_XATTR)
 		seq_printf(s, ",nouser_xattr");
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_MAP_SPECIAL_CHR)
@@ -444,17 +726,60 @@ cifs_show_options(struct seq_file *s, struct vfsmount *m)
 		seq_printf(s, ",cifsacl");
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_DYNPERM)
 		seq_printf(s, ",dynperm");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (m->mnt_sb->s_flags & MS_POSIXACL)
+=======
+	if (root->d_sb->s_flags & MS_POSIXACL)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (root->d_sb->s_flags & MS_POSIXACL)
+>>>>>>> refs/remotes/origin/master
 		seq_printf(s, ",acl");
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_MF_SYMLINKS)
 		seq_printf(s, ",mfsymlinks");
 	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_FSCACHE)
 		seq_printf(s, ",fsc");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	seq_printf(s, ",rsize=%d", cifs_sb->rsize);
 	seq_printf(s, ",wsize=%d", cifs_sb->wsize);
 	/* convert actimeo and display it in seconds */
 		seq_printf(s, ",actimeo=%lu", cifs_sb->actimeo / HZ);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_NOSSYNC)
+		seq_printf(s, ",nostrictsync");
+	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_NO_PERM)
+		seq_printf(s, ",noperm");
+<<<<<<< HEAD
+	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_STRICT_IO)
+		seq_printf(s, ",strictcache");
+	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_CIFS_BACKUPUID)
+		seq_printf(s, ",backupuid=%u", cifs_sb->mnt_backupuid);
+	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_CIFS_BACKUPGID)
+		seq_printf(s, ",backupgid=%u", cifs_sb->mnt_backupgid);
+=======
+	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_CIFS_BACKUPUID)
+		seq_printf(s, ",backupuid=%u",
+			   from_kuid_munged(&init_user_ns,
+					    cifs_sb->mnt_backupuid));
+	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_CIFS_BACKUPGID)
+		seq_printf(s, ",backupgid=%u",
+			   from_kgid_munged(&init_user_ns,
+					    cifs_sb->mnt_backupgid));
+>>>>>>> refs/remotes/origin/master
+
+	seq_printf(s, ",rsize=%u", cifs_sb->rsize);
+	seq_printf(s, ",wsize=%u", cifs_sb->wsize);
+	/* convert actimeo and display it in seconds */
+	seq_printf(s, ",actimeo=%lu", cifs_sb->actimeo / HZ);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -483,7 +808,11 @@ static void cifs_umount_begin(struct super_block *sb)
 	/* cancel_brl_requests(tcon); */ /* BB mark all brl mids as exiting */
 	/* cancel_notify_requests(tcon); */
 	if (tcon->ses && tcon->ses->server) {
+<<<<<<< HEAD
 		cFYI(1, "wake up tasks now - umount begin not complete");
+=======
+		cifs_dbg(FYI, "wake up tasks now - umount begin not complete\n");
+>>>>>>> refs/remotes/origin/master
 		wake_up_all(&tcon->ses->server->request_q);
 		wake_up_all(&tcon->ses->server->response_q);
 		msleep(1); /* yield */
@@ -496,7 +825,15 @@ static void cifs_umount_begin(struct super_block *sb)
 }
 
 #ifdef CONFIG_CIFS_STATS2
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int cifs_show_stats(struct seq_file *s, struct vfsmount *mnt)
+=======
+static int cifs_show_stats(struct seq_file *s, struct dentry *root)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cifs_show_stats(struct seq_file *s, struct dentry *root)
+>>>>>>> refs/remotes/origin/master
 {
 	/* BB FIXME */
 	return 0;
@@ -548,16 +885,30 @@ cifs_get_root(struct smb_vol *vol, struct super_block *sb)
 	char *full_path = NULL;
 	char *s, *p;
 	char sep;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int xid;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	full_path = cifs_build_path_to_root(vol, cifs_sb,
 					    cifs_sb_master_tcon(cifs_sb));
 	if (full_path == NULL)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	cFYI(1, "Get root dentry for %s", full_path);
 
+<<<<<<< HEAD
 	xid = GetXid();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cifs_dbg(FYI, "Get root dentry for %s\n", full_path);
+
+>>>>>>> refs/remotes/origin/master
 	sep = CIFS_DIR_SEP(cifs_sb);
 	dentry = dget(sb->s_root);
 	p = s = full_path;
@@ -593,7 +944,13 @@ cifs_get_root(struct smb_vol *vol, struct super_block *sb)
 		dput(dentry);
 		dentry = child;
 	} while (!IS_ERR(dentry));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	_FreeXid(xid);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(full_path);
 	return dentry;
 }
@@ -616,7 +973,11 @@ cifs_do_mount(struct file_system_type *fs_type,
 	struct cifs_mnt_data mnt_data;
 	struct dentry *root;
 
+<<<<<<< HEAD
 	cFYI(1, "Devname: %s flags: %d ", dev_name, flags);
+=======
+	cifs_dbg(FYI, "Devname: %s flags: %d\n", dev_name, flags);
+>>>>>>> refs/remotes/origin/master
 
 	volume_info = cifs_get_volume_info((char *)data, dev_name);
 	if (IS_ERR(volume_info))
@@ -639,7 +1000,12 @@ cifs_do_mount(struct file_system_type *fs_type,
 	rc = cifs_mount(cifs_sb, volume_info);
 	if (rc) {
 		if (!(flags & MS_SILENT))
+<<<<<<< HEAD
 			cERROR(1, "cifs_mount failed w/return code = %d", rc);
+=======
+			cifs_dbg(VFS, "cifs_mount failed w/return code = %d\n",
+				 rc);
+>>>>>>> refs/remotes/origin/master
 		root = ERR_PTR(rc);
 		goto out_mountdata;
 	}
@@ -648,7 +1014,14 @@ cifs_do_mount(struct file_system_type *fs_type,
 	mnt_data.cifs_sb = cifs_sb;
 	mnt_data.flags = flags;
 
+<<<<<<< HEAD
 	sb = sget(fs_type, cifs_match_super, cifs_set_super, &mnt_data);
+=======
+	/* BB should we make this contingent on mount parm? */
+	flags |= MS_NODIRATIME | MS_NOATIME;
+
+	sb = sget(fs_type, cifs_match_super, cifs_set_super, flags, &mnt_data);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(sb)) {
 		root = ERR_CAST(sb);
 		cifs_umount(cifs_sb);
@@ -656,6 +1029,7 @@ cifs_do_mount(struct file_system_type *fs_type,
 	}
 
 	if (sb->s_root) {
+<<<<<<< HEAD
 		cFYI(1, "Use existing superblock");
 		cifs_umount(cifs_sb);
 	} else {
@@ -663,6 +1037,11 @@ cifs_do_mount(struct file_system_type *fs_type,
 		/* BB should we make this contingent on mount parm? */
 		sb->s_flags |= MS_NODIRATIME | MS_NOATIME;
 
+=======
+		cifs_dbg(FYI, "Use existing superblock\n");
+		cifs_umount(cifs_sb);
+	} else {
+>>>>>>> refs/remotes/origin/master
 		rc = cifs_read_super(sb);
 		if (rc) {
 			root = ERR_PTR(rc);
@@ -676,7 +1055,11 @@ cifs_do_mount(struct file_system_type *fs_type,
 	if (IS_ERR(root))
 		goto out_super;
 
+<<<<<<< HEAD
 	cFYI(1, "dentry root is: %p", root);
+=======
+	cifs_dbg(FYI, "dentry root is: %p\n", root);
+>>>>>>> refs/remotes/origin/master
 	goto out;
 
 out_super:
@@ -697,34 +1080,71 @@ out_nls:
 static ssize_t cifs_file_aio_write(struct kiocb *iocb, const struct iovec *iov,
 				   unsigned long nr_segs, loff_t pos)
 {
+<<<<<<< HEAD
 	struct inode *inode = iocb->ki_filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(iocb->ki_filp);
+>>>>>>> refs/remotes/origin/master
 	ssize_t written;
 	int rc;
 
 	written = generic_file_aio_write(iocb, iov, nr_segs, pos);
 
+<<<<<<< HEAD
 	if (CIFS_I(inode)->clientCanCacheAll)
+=======
+	if (CIFS_CACHE_WRITE(CIFS_I(inode)))
+>>>>>>> refs/remotes/origin/master
 		return written;
 
 	rc = filemap_fdatawrite(inode->i_mapping);
 	if (rc)
+<<<<<<< HEAD
 		cFYI(1, "cifs_file_aio_write: %d rc on %p inode", rc, inode);
+=======
+		cifs_dbg(FYI, "cifs_file_aio_write: %d rc on %p inode\n",
+			 rc, inode);
+>>>>>>> refs/remotes/origin/master
 
 	return written;
 }
 
+<<<<<<< HEAD
 static loff_t cifs_llseek(struct file *file, loff_t offset, int origin)
 {
+<<<<<<< HEAD
 	/* origin == SEEK_END => we must revalidate the cached file length */
 	if (origin == SEEK_END) {
+=======
+	/*
+	 * origin == SEEK_END || SEEK_DATA || SEEK_HOLE => we must revalidate
+	 * the cached file length
+	 */
+	if (origin != SEEK_SET && origin != SEEK_CUR) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		int rc;
 		struct inode *inode = file->f_path.dentry->d_inode;
+=======
+static loff_t cifs_llseek(struct file *file, loff_t offset, int whence)
+{
+	/*
+	 * whence == SEEK_END || SEEK_DATA || SEEK_HOLE => we must revalidate
+	 * the cached file length
+	 */
+	if (whence != SEEK_SET && whence != SEEK_CUR) {
+		int rc;
+		struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * We need to be sure that all dirty pages are written and the
 		 * server has the newest file length.
 		 */
+<<<<<<< HEAD
 		if (!CIFS_I(inode)->clientCanCacheRead && inode->i_mapping &&
+=======
+		if (!CIFS_CACHE_READ(CIFS_I(inode)) && inode->i_mapping &&
+>>>>>>> refs/remotes/origin/master
 		    inode->i_mapping->nrpages != 0) {
 			rc = filemap_fdatawait(inode->i_mapping);
 			if (rc) {
@@ -743,20 +1163,37 @@ static loff_t cifs_llseek(struct file *file, loff_t offset, int origin)
 		if (rc < 0)
 			return (loff_t)rc;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return generic_file_llseek_unlocked(file, offset, origin);
+=======
+	return generic_file_llseek(file, offset, origin);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return generic_file_llseek(file, offset, whence);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int cifs_setlease(struct file *file, long arg, struct file_lock **lease)
 {
+<<<<<<< HEAD
 	/* note that this is called by vfs setlease with lock_flocks held
 	   to protect *lease from going away */
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	/*
+	 * Note that this is called by vfs setlease with i_lock held to
+	 * protect *lease from going away.
+	 */
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct cifsFileInfo *cfile = file->private_data;
 
 	if (!(S_ISREG(inode->i_mode)))
 		return -EINVAL;
 
 	/* check if file is oplocked */
+<<<<<<< HEAD
 	if (((arg == F_RDLCK) &&
 		(CIFS_I(inode)->clientCanCacheRead)) ||
 	    ((arg == F_WRLCK) &&
@@ -771,6 +1208,21 @@ static int cifs_setlease(struct file *file, long arg, struct file_lock **lease)
 		   this mount option may be useful if the user
 		   knows that the file won't be changed on the server
 		   by anyone else */
+=======
+	if (((arg == F_RDLCK) && CIFS_CACHE_READ(CIFS_I(inode))) ||
+	    ((arg == F_WRLCK) && CIFS_CACHE_WRITE(CIFS_I(inode))))
+		return generic_setlease(file, arg, lease);
+	else if (tlink_tcon(cfile->tlink)->local_lease &&
+		 !CIFS_CACHE_READ(CIFS_I(inode)))
+		/*
+		 * If the server claims to support oplock on this file, then we
+		 * still need to check oplock even if the local_lease mount
+		 * option is set, but there are servers which do not support
+		 * oplock for which this mount option may be useful if the user
+		 * knows that the file won't be changed on the server by anyone
+		 * else.
+		 */
+>>>>>>> refs/remotes/origin/master
 		return generic_setlease(file, arg, lease);
 	else
 		return -EAGAIN;
@@ -783,8 +1235,15 @@ struct file_system_type cifs_fs_type = {
 	.kill_sb = cifs_kill_sb,
 	/*  .fs_flags */
 };
+<<<<<<< HEAD
 const struct inode_operations cifs_dir_inode_ops = {
 	.create = cifs_create,
+=======
+MODULE_ALIAS_FS("cifs");
+const struct inode_operations cifs_dir_inode_ops = {
+	.create = cifs_create,
+	.atomic_open = cifs_atomic_open,
+>>>>>>> refs/remotes/origin/master
 	.lookup = cifs_lookup,
 	.getattr = cifs_getattr,
 	.unlink = cifs_unlink,
@@ -822,7 +1281,11 @@ const struct inode_operations cifs_file_inode_ops = {
 const struct inode_operations cifs_symlink_inode_ops = {
 	.readlink = generic_readlink,
 	.follow_link = cifs_follow_link,
+<<<<<<< HEAD
 	.put_link = cifs_put_link,
+=======
+	.put_link = kfree_put_link,
+>>>>>>> refs/remotes/origin/master
 	.permission = cifs_permission,
 	/* BB add the following two eventually */
 	/* revalidate: cifs_revalidate,
@@ -949,7 +1412,11 @@ const struct file_operations cifs_file_direct_nobrl_ops = {
 };
 
 const struct file_operations cifs_dir_ops = {
+<<<<<<< HEAD
 	.readdir = cifs_readdir,
+=======
+	.iterate = cifs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.release = cifs_closedir,
 	.read    = generic_read_dir,
 	.unlocked_ioctl  = cifs_ioctl,
@@ -962,7 +1429,16 @@ cifs_init_once(void *inode)
 	struct cifsInodeInfo *cifsi = inode;
 
 	inode_init_once(&cifsi->vfs_inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&cifsi->lockList);
+=======
+	INIT_LIST_HEAD(&cifsi->llist);
+	mutex_init(&cifsi->lock_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_rwsem(&cifsi->lock_sem);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -982,12 +1458,31 @@ cifs_init_inodecache(void)
 static void
 cifs_destroy_inodecache(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(cifs_inode_cachep);
 }
 
 static int
 cifs_init_request_bufs(void)
 {
+<<<<<<< HEAD
+=======
+	size_t max_hdr_size = MAX_CIFS_HDR_SIZE;
+#ifdef CONFIG_CIFS_SMB2
+	/*
+	 * SMB2 maximum header size is bigger than CIFS one - no problems to
+	 * allocate some more bytes for CIFS.
+	 */
+	max_hdr_size = MAX_SMB2_HDR_SIZE;
+#endif
+>>>>>>> refs/remotes/origin/master
 	if (CIFSMaxBufSize < 8192) {
 	/* Buffer size can not be smaller than 2 * PATH_MAX since maximum
 	Unicode path name has to fit in any SMB/CIFS path based frames */
@@ -997,10 +1492,19 @@ cifs_init_request_bufs(void)
 	} else {
 		CIFSMaxBufSize &= 0x1FE00; /* Round size to even 512 byte mult*/
 	}
+<<<<<<< HEAD
 /*	cERROR(1, "CIFSMaxBufSize %d 0x%x",CIFSMaxBufSize,CIFSMaxBufSize); */
 	cifs_req_cachep = kmem_cache_create("cifs_request",
 					    CIFSMaxBufSize +
 					    MAX_CIFS_HDR_SIZE, 0,
+=======
+/*
+	cifs_dbg(VFS, "CIFSMaxBufSize %d 0x%x\n",
+		 CIFSMaxBufSize, CIFSMaxBufSize);
+*/
+	cifs_req_cachep = kmem_cache_create("cifs_request",
+					    CIFSMaxBufSize + max_hdr_size, 0,
+>>>>>>> refs/remotes/origin/master
 					    SLAB_HWCACHE_ALIGN, NULL);
 	if (cifs_req_cachep == NULL)
 		return -ENOMEM;
@@ -1009,7 +1513,11 @@ cifs_init_request_bufs(void)
 		cifs_min_rcv = 1;
 	else if (cifs_min_rcv > 64) {
 		cifs_min_rcv = 64;
+<<<<<<< HEAD
 		cERROR(1, "cifs_min_rcv set to maximum (64)");
+=======
+		cifs_dbg(VFS, "cifs_min_rcv set to maximum (64)\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cifs_req_poolp = mempool_create_slab_pool(cifs_min_rcv,
@@ -1040,7 +1548,11 @@ cifs_init_request_bufs(void)
 		cifs_min_small = 2;
 	else if (cifs_min_small > 256) {
 		cifs_min_small = 256;
+<<<<<<< HEAD
 		cFYI(1, "cifs_min_small set to maximum (256)");
+=======
+		cifs_dbg(FYI, "cifs_min_small set to maximum (256)\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cifs_sm_req_poolp = mempool_create_slab_pool(cifs_min_small,
@@ -1125,17 +1637,54 @@ init_cifs(void)
 	spin_lock_init(&cifs_file_list_lock);
 	spin_lock_init(&GlobalMid_Lock);
 
+<<<<<<< HEAD
 	if (cifs_max_pending < 2) {
 		cifs_max_pending = 2;
 		cFYI(1, "cifs_max_pending set to min of 2");
+<<<<<<< HEAD
 	} else if (cifs_max_pending > 256) {
 		cifs_max_pending = 256;
 		cFYI(1, "cifs_max_pending set to max of 256");
+=======
+	} else if (cifs_max_pending > CIFS_MAX_REQ) {
+		cifs_max_pending = CIFS_MAX_REQ;
+		cFYI(1, "cifs_max_pending set to max of %u", CIFS_MAX_REQ);
+=======
+#ifdef CONFIG_CIFS_SMB2
+	get_random_bytes(cifs_client_guid, SMB2_CLIENT_GUID_SIZE);
+#endif
+
+	if (cifs_max_pending < 2) {
+		cifs_max_pending = 2;
+		cifs_dbg(FYI, "cifs_max_pending set to min of 2\n");
+	} else if (cifs_max_pending > CIFS_MAX_REQ) {
+		cifs_max_pending = CIFS_MAX_REQ;
+		cifs_dbg(FYI, "cifs_max_pending set to max of %u\n",
+			 CIFS_MAX_REQ);
+>>>>>>> refs/remotes/origin/master
+	}
+
+	cifsiod_wq = alloc_workqueue("cifsiod", WQ_FREEZABLE|WQ_MEM_RECLAIM, 0);
+	if (!cifsiod_wq) {
+		rc = -ENOMEM;
+		goto out_clean_proc;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = cifs_fscache_register();
 	if (rc)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_clean_proc;
+=======
+		goto out_destroy_wq;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_destroy_wq;
+>>>>>>> refs/remotes/origin/master
 
 	rc = cifs_init_inodecache();
 	if (rc)
@@ -1183,6 +1732,16 @@ out_destroy_inodecache:
 	cifs_destroy_inodecache();
 out_unreg_fscache:
 	cifs_fscache_unregister();
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+out_destroy_wq:
+	destroy_workqueue(cifsiod_wq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_destroy_wq:
+	destroy_workqueue(cifsiod_wq);
+>>>>>>> refs/remotes/origin/master
 out_clean_proc:
 	cifs_proc_clean();
 	return rc;
@@ -1191,23 +1750,50 @@ out_clean_proc:
 static void __exit
 exit_cifs(void)
 {
+<<<<<<< HEAD
 	cFYI(DBG2, "exit_cifs");
+<<<<<<< HEAD
 	cifs_proc_clean();
 	cifs_fscache_unregister();
 #ifdef CONFIG_CIFS_DFS_UPCALL
 	cifs_dfs_release_automount_timer();
 #endif
+=======
+	unregister_filesystem(&cifs_fs_type);
+	cifs_dfs_release_automount_timer();
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_CIFS_ACL
 	cifs_destroy_idmaptrees();
+=======
+	cifs_dbg(NOISY, "exit_cifs\n");
+	unregister_filesystem(&cifs_fs_type);
+	cifs_dfs_release_automount_timer();
+#ifdef CONFIG_CIFS_ACL
+>>>>>>> refs/remotes/origin/master
 	exit_cifs_idmap();
 #endif
 #ifdef CONFIG_CIFS_UPCALL
 	unregister_key_type(&cifs_spnego_key_type);
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unregister_filesystem(&cifs_fs_type);
 	cifs_destroy_inodecache();
 	cifs_destroy_mids();
 	cifs_destroy_request_bufs();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	cifs_destroy_request_bufs();
+	cifs_destroy_mids();
+	cifs_destroy_inodecache();
+	cifs_fscache_unregister();
+	destroy_workqueue(cifsiod_wq);
+	cifs_proc_clean();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 MODULE_AUTHOR("Steve French <sfrench@us.ibm.com>");

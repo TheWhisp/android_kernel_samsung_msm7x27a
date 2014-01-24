@@ -12,6 +12,7 @@
  *	as published by the Free Software Foundation; either version
  *	2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_IGMP_H
 #define _LINUX_IGMP_H
@@ -129,6 +130,15 @@ struct igmpv3_query {
 #include <linux/skbuff.h>
 #include <linux/timer.h>
 #include <linux/in.h>
+=======
+#ifndef _LINUX_IGMP_H
+#define _LINUX_IGMP_H
+
+#include <linux/skbuff.h>
+#include <linux/timer.h>
+#include <linux/in.h>
+#include <uapi/linux/igmp.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline struct igmphdr *igmp_hdr(const struct sk_buff *skb)
 {
@@ -194,6 +204,10 @@ struct ip_mc_list {
 		struct ip_mc_list *next;
 		struct ip_mc_list __rcu *next_rcu;
 	};
+<<<<<<< HEAD
+=======
+	struct ip_mc_list __rcu *next_hash;
+>>>>>>> refs/remotes/origin/master
 	struct timer_list	timer;
 	int			users;
 	atomic_t		refcnt;
@@ -238,7 +252,12 @@ extern void ip_mc_unmap(struct in_device *);
 extern void ip_mc_remap(struct in_device *);
 extern void ip_mc_dec_group(struct in_device *in_dev, __be32 addr);
 extern void ip_mc_inc_group(struct in_device *in_dev, __be32 addr);
+<<<<<<< HEAD
 extern void ip_mc_rejoin_groups(struct in_device *in_dev);
 
 #endif
 #endif
+=======
+
+#endif
+>>>>>>> refs/remotes/origin/master

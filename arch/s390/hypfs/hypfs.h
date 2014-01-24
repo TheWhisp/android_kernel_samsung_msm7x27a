@@ -1,8 +1,14 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/hypfs/hypfs.h
  *    Hypervisor filesystem for Linux on s390.
  *
  *    Copyright (C) IBM Corp. 2006
+=======
+ *    Hypervisor filesystem for Linux on s390.
+ *
+ *    Copyright IBM Corp. 2006
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Michael Holzheu <holzheu@de.ibm.com>
  */
 
@@ -19,6 +25,7 @@
 #define UPDATE_FILE_MODE 0220
 #define DIR_MODE         0550
 
+<<<<<<< HEAD
 extern struct dentry *hypfs_mkdir(struct super_block *sb, struct dentry *parent,
 				  const char *name);
 
@@ -28,17 +35,33 @@ extern struct dentry *hypfs_create_u64(struct super_block *sb,
 
 extern struct dentry *hypfs_create_str(struct super_block *sb,
 				       struct dentry *dir, const char *name,
+=======
+extern struct dentry *hypfs_mkdir(struct dentry *parent, const char *name);
+
+extern struct dentry *hypfs_create_u64(struct dentry *dir, const char *name,
+				       __u64 value);
+
+extern struct dentry *hypfs_create_str(struct dentry *dir, const char *name,
+>>>>>>> refs/remotes/origin/master
 				       char *string);
 
 /* LPAR Hypervisor */
 extern int hypfs_diag_init(void);
 extern void hypfs_diag_exit(void);
+<<<<<<< HEAD
 extern int hypfs_diag_create_files(struct super_block *sb, struct dentry *root);
+=======
+extern int hypfs_diag_create_files(struct dentry *root);
+>>>>>>> refs/remotes/origin/master
 
 /* VM Hypervisor */
 extern int hypfs_vm_init(void);
 extern void hypfs_vm_exit(void);
+<<<<<<< HEAD
 extern int hypfs_vm_create_files(struct super_block *sb, struct dentry *root);
+=======
+extern int hypfs_vm_create_files(struct dentry *root);
+>>>>>>> refs/remotes/origin/master
 
 /* debugfs interface */
 struct hypfs_dbfs_file;

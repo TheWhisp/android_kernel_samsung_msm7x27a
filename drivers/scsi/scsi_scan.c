@@ -184,6 +184,7 @@ int scsi_complete_async_scans(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Only exported for the benefit of scsi_wait_scan */
 EXPORT_SYMBOL_GPL(scsi_complete_async_scans);
 
@@ -196,6 +197,8 @@ EXPORT_SYMBOL_GPL(scsi_complete_async_scans);
 late_initcall(scsi_complete_async_scans);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * scsi_unlock_floptical - unlock device via a special MODE SENSE command
  * @sdev:	scsi device to send command to
@@ -297,7 +300,15 @@ static struct scsi_device *scsi_alloc_sdev(struct scsi_target *starget,
 		kfree(sdev);
 		goto out;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	blk_get_queue(sdev->request_queue);
+=======
+	WARN_ON_ONCE(!blk_get_queue(sdev->request_queue));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON_ONCE(!blk_get_queue(sdev->request_queue));
+>>>>>>> refs/remotes/origin/master
 	sdev->request_queue->queuedata = sdev;
 	scsi_adjust_queue_depth(sdev, 0, sdev->host->cmd_per_lun);
 
@@ -933,6 +944,17 @@ static int scsi_add_lun(struct scsi_device *sdev, unsigned char *inq_result,
 	if (*bflags & BLIST_RETRY_HWERROR)
 		sdev->retry_hwerror = 1;
 
+<<<<<<< HEAD
+=======
+	if (*bflags & BLIST_NO_DIF)
+		sdev->no_dif = 1;
+
+	sdev->eh_timeout = SCSI_DEFAULT_EH_TIMEOUT;
+
+	if (*bflags & BLIST_SKIP_VPD_PAGES)
+		sdev->skip_vpd_pages = 1;
+
+>>>>>>> refs/remotes/origin/master
 	transport_configure_device(&sdev->sdev_gendev);
 
 	if (sdev->host->hostt->slave_configure) {
@@ -1305,6 +1327,14 @@ EXPORT_SYMBOL(int_to_scsilun);
  *   LUNs even if it's older than SCSI-3.
  *   If BLIST_NOREPORTLUN is set, return 1 always.
  *   If BLIST_NOLUN is set, return 0 always.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *   If starget->no_report_luns is set, return 1 always.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *   If starget->no_report_luns is set, return 1 always.
+>>>>>>> refs/remotes/origin/master
  *
  * Return:
  *     0: scan completed (or no memory, so further scanning is futile)
@@ -1331,6 +1361,14 @@ static int scsi_report_lun_scan(struct scsi_target *starget, int bflags,
 	 * Only support SCSI-3 and up devices if BLIST_NOREPORTLUN is not set.
 	 * Also allow SCSI-2 if BLIST_REPORTLUN2 is set and host adapter does
 	 * support more than 8 LUNs.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	 * Don't attempt if the target doesn't support REPORT LUNS.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Don't attempt if the target doesn't support REPORT LUNS.
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (bflags & BLIST_NOREPORTLUN)
 		return 1;
@@ -1342,6 +1380,16 @@ static int scsi_report_lun_scan(struct scsi_target *starget, int bflags,
 		return 1;
 	if (bflags & BLIST_NOLUN)
 		return 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (starget->no_report_luns)
+		return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (starget->no_report_luns)
+		return 1;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(sdev = scsi_device_lookup_by_target(starget, 0))) {
 		sdev = scsi_alloc_sdev(starget, 0, NULL);
@@ -1848,14 +1896,21 @@ static void do_scsi_scan_host(struct Scsi_Host *shost)
 	}
 }
 
+<<<<<<< HEAD
 static int do_scan_async(void *_data)
+=======
+static void do_scan_async(void *_data, async_cookie_t c)
+>>>>>>> refs/remotes/origin/master
 {
 	struct async_scan_data *data = _data;
 	struct Scsi_Host *shost = data->shost;
 
 	do_scsi_scan_host(shost);
 	scsi_finish_async_scan(data);
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1864,7 +1919,10 @@ static int do_scan_async(void *_data)
  **/
 void scsi_scan_host(struct Scsi_Host *shost)
 {
+<<<<<<< HEAD
 	struct task_struct *p;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct async_scan_data *data;
 
 	if (strncmp(scsi_scan_type, "none", 4) == 0)
@@ -1879,9 +1937,17 @@ void scsi_scan_host(struct Scsi_Host *shost)
 		return;
 	}
 
+<<<<<<< HEAD
 	p = kthread_run(do_scan_async, data, "scsi_scan_%d", shost->host_no);
 	if (IS_ERR(p))
 		do_scan_async(data);
+=======
+	/* register with the async subsystem so wait_for_device_probe()
+	 * will flush this work
+	 */
+	async_schedule(do_scan_async, data);
+
+>>>>>>> refs/remotes/origin/master
 	/* scsi_autopm_put_host(shost) is called in scsi_finish_async_scan() */
 }
 EXPORT_SYMBOL(scsi_scan_host);

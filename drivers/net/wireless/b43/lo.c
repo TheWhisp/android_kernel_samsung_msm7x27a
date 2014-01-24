@@ -6,7 +6,15 @@
 
   Copyright (c) 2005 Martin Langer <martin-langer@gmx.de>,
   Copyright (c) 2005, 2006 Stefano Brivio <stefano.brivio@polimi.it>
+<<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) 2005-2007 Michael Buesch <mb@bu3sch.de>
+=======
+  Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
   Copyright (c) 2005, 2006 Danny van Dyk <kugelfang@gentoo.org>
   Copyright (c) 2005, 2006 Andreas Jaggi <andreas.jaggi@waterwave.ch>
 
@@ -98,7 +106,15 @@ static u16 lo_measure_feedthrough(struct b43_wldev *dev,
 		rfover |= pga;
 		rfover |= lna;
 		rfover |= trsw_rx;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((dev->sdev->bus->sprom.boardflags_lo & B43_BFL_EXTLNA)
+=======
+		if ((dev->dev->bus_sprom->boardflags_lo & B43_BFL_EXTLNA)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((dev->dev->bus_sprom->boardflags_lo & B43_BFL_EXTLNA)
+>>>>>>> refs/remotes/origin/master
 		    && phy->rev > 6)
 			rfover |= B43_PHY_RFOVERVAL_EXTLNA;
 
@@ -301,14 +317,26 @@ static void lo_measure_gain_values(struct b43_wldev *dev,
 		max_rx_gain = 0;
 
 	if (has_loopback_gain(phy)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int trsw_rx = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		int trsw_rx_gain;
 
 		if (use_trsw_rx) {
 			trsw_rx_gain = gphy->trsw_rx_gain / 2;
 			if (max_rx_gain >= trsw_rx_gain) {
 				trsw_rx_gain = max_rx_gain - trsw_rx_gain;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				trsw_rx = 0x20;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		} else
 			trsw_rx_gain = max_rx_gain;
@@ -387,7 +415,15 @@ struct lo_g_saved_values {
 static void lo_measure_setup(struct b43_wldev *dev,
 			     struct lo_g_saved_values *sav)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ssb_sprom *sprom = &dev->sdev->bus->sprom;
+=======
+	struct ssb_sprom *sprom = dev->dev->bus_sprom;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ssb_sprom *sprom = dev->dev->bus_sprom;
+>>>>>>> refs/remotes/origin/master
 	struct b43_phy *phy = &dev->phy;
 	struct b43_phy_g *gphy = phy->g;
 	struct b43_txpower_lo_control *lo = gphy->lo_control;
@@ -828,7 +864,15 @@ void b43_gphy_dc_lt_init(struct b43_wldev *dev, bool update_all)
 	const struct b43_rfatt *rfatt;
 	const struct b43_bbatt *bbatt;
 	u64 power_vector;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bool table_changed = 0;
+=======
+	bool table_changed = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool table_changed = false;
+>>>>>>> refs/remotes/origin/master
 
 	BUILD_BUG_ON(B43_DC_LT_SIZE != 32);
 	B43_WARN_ON(lo->rfatt_list.len * lo->bbatt_list.len > 64);
@@ -878,7 +922,15 @@ void b43_gphy_dc_lt_init(struct b43_wldev *dev, bool update_all)
 			lo->dc_lt[idx] = (lo->dc_lt[idx] & 0xFF00)
 					 | (val & 0x00FF);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		table_changed = 1;
+=======
+		table_changed = true;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		table_changed = true;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (table_changed) {
 		/* The table changed in memory. Update the hardware table. */
@@ -940,7 +992,15 @@ void b43_lo_g_maintanance_work(struct b43_wldev *dev)
 	unsigned long now;
 	unsigned long expire;
 	struct b43_lo_calib *cal, *tmp;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bool current_item_expired = 0;
+=======
+	bool current_item_expired = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool current_item_expired = false;
+>>>>>>> refs/remotes/origin/master
 	bool hwpctl;
 
 	if (!lo)
@@ -970,7 +1030,15 @@ void b43_lo_g_maintanance_work(struct b43_wldev *dev)
 		if (b43_compare_bbatt(&cal->bbatt, &gphy->bbatt) &&
 		    b43_compare_rfatt(&cal->rfatt, &gphy->rfatt)) {
 			B43_WARN_ON(current_item_expired);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			current_item_expired = 1;
+=======
+			current_item_expired = true;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			current_item_expired = true;
+>>>>>>> refs/remotes/origin/master
 		}
 		if (b43_debug(dev, B43_DBG_LO)) {
 			b43dbg(dev->wl, "LO: Item BB(%u), RF(%u,%u), "

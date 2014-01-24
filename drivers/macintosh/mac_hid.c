@@ -181,7 +181,11 @@ static void mac_hid_stop_emulation(void)
 	mac_hid_destroy_emumouse();
 }
 
+<<<<<<< HEAD
 static int mac_hid_toggle_emumouse(ctl_table *table, int write,
+=======
+static int mac_hid_toggle_emumouse(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 				   void __user *buffer, size_t *lenp,
 				   loff_t *ppos)
 {
@@ -214,7 +218,11 @@ static int mac_hid_toggle_emumouse(ctl_table *table, int write,
 }
 
 /* file(s) in /proc/sys/dev/mac_hid */
+<<<<<<< HEAD
 static ctl_table mac_hid_files[] = {
+=======
+static struct ctl_table mac_hid_files[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "mouse_button_emulation",
 		.data		= &mouse_emulate_buttons,
@@ -240,7 +248,11 @@ static ctl_table mac_hid_files[] = {
 };
 
 /* dir in /proc/sys/dev */
+<<<<<<< HEAD
 static ctl_table mac_hid_dir[] = {
+=======
+static struct ctl_table mac_hid_dir[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "mac_hid",
 		.maxlen		= 0,
@@ -251,7 +263,11 @@ static ctl_table mac_hid_dir[] = {
 };
 
 /* /proc/sys/dev itself, in case that is not there yet */
+<<<<<<< HEAD
 static ctl_table mac_hid_root_dir[] = {
+=======
+static struct ctl_table mac_hid_root_dir[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "dev",
 		.maxlen		= 0,

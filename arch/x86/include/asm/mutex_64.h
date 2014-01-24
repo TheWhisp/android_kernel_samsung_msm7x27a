@@ -16,6 +16,23 @@
  *
  * Atomically decrements @v and calls <fail_fn> if the result is negative.
  */
+<<<<<<< HEAD
+=======
+#ifdef CC_HAVE_ASM_GOTO
+static inline void __mutex_fastpath_lock(atomic_t *v,
+					 void (*fail_fn)(atomic_t *))
+{
+	asm_volatile_goto(LOCK_PREFIX "   decl %0\n"
+			  "   jns %l[exit]\n"
+			  : : "m" (v->counter)
+			  : "memory", "cc"
+			  : exit);
+	fail_fn(v);
+exit:
+	return;
+}
+#else
+>>>>>>> refs/remotes/origin/master
 #define __mutex_fastpath_lock(v, fail_fn)			\
 do {								\
 	unsigned long dummy;					\
@@ -32,11 +49,16 @@ do {								\
 		     : "rax", "rsi", "rdx", "rcx",		\
 		       "r8", "r9", "r10", "r11", "memory");	\
 } while (0)
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /**
  *  __mutex_fastpath_lock_retval - try to take the lock by moving the count
  *                                 from 1 to a 0 value
  *  @count: pointer of type atomic_t
+<<<<<<< HEAD
  *  @fail_fn: function to call if the original value was not 1
  *
  * Change the count from 1 to a value lower than 1, and call <fail_fn> if
@@ -48,6 +70,16 @@ static inline int __mutex_fastpath_lock_retval(atomic_t *count,
 {
 	if (unlikely(atomic_dec_return(count) < 0))
 		return fail_fn(count);
+=======
+ *
+ * Change the count from 1 to a value lower than 1. This function returns 0
+ * if the fastpath succeeds, or -1 otherwise.
+ */
+static inline int __mutex_fastpath_lock_retval(atomic_t *count)
+{
+	if (unlikely(atomic_dec_return(count) < 0))
+		return -1;
+>>>>>>> refs/remotes/origin/master
 	else
 		return 0;
 }
@@ -59,6 +91,23 @@ static inline int __mutex_fastpath_lock_retval(atomic_t *count,
  *
  * Atomically increments @v and calls <fail_fn> if the result is nonpositive.
  */
+<<<<<<< HEAD
+=======
+#ifdef CC_HAVE_ASM_GOTO
+static inline void __mutex_fastpath_unlock(atomic_t *v,
+					   void (*fail_fn)(atomic_t *))
+{
+	asm_volatile_goto(LOCK_PREFIX "   incl %0\n"
+			  "   jg %l[exit]\n"
+			  : : "m" (v->counter)
+			  : "memory", "cc"
+			  : exit);
+	fail_fn(v);
+exit:
+	return;
+}
+#else
+>>>>>>> refs/remotes/origin/master
 #define __mutex_fastpath_unlock(v, fail_fn)			\
 do {								\
 	unsigned long dummy;					\
@@ -75,6 +124,10 @@ do {								\
 		     : "rax", "rsi", "rdx", "rcx",		\
 		       "r8", "r9", "r10", "r11", "memory");	\
 } while (0)
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #define __mutex_slowpath_needs_to_unlock()	1
 

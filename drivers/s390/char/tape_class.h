@@ -1,6 +1,10 @@
 /*
+<<<<<<< HEAD
  * (C) Copyright IBM Corp. 2004   All Rights Reserved.
  * tape_class.h
+=======
+ * Copyright IBM Corp. 2004   All Rights Reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * Tape class device support
  *
@@ -14,7 +18,13 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/major.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/kobj_map.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/cdev.h>
 
 #include <linux/device.h>

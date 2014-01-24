@@ -113,7 +113,11 @@ static inline void setup_protection_map(void)
 	protection_map[15] = PAGE_SHARED;
 }
 
+<<<<<<< HEAD
 void __devinit cpu_cache_init(void)
+=======
+void cpu_cache_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	setup_protection_map();
 }

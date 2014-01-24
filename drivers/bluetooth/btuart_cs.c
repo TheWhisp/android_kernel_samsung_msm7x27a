@@ -38,7 +38,14 @@
 #include <linux/serial.h>
 #include <linux/serial_reg.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#include <asm/system.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/io.h>
 
 #include <pcmcia/cistpl.h>
@@ -141,9 +148,15 @@ static void btuart_write_wakeup(btuart_info_t *info)
 	}
 
 	do {
+<<<<<<< HEAD
 		register unsigned int iobase = info->p_dev->resource[0]->start;
 		register struct sk_buff *skb;
 		register int len;
+=======
+		unsigned int iobase = info->p_dev->resource[0]->start;
+		register struct sk_buff *skb;
+		int len;
+>>>>>>> refs/remotes/origin/master
 
 		clear_bit(XMIT_WAKEUP, &(info->tx_state));
 
@@ -199,7 +212,10 @@ static void btuart_receive(btuart_info_t *info)
 
 		if (info->rx_state == RECV_WAIT_PACKET_TYPE) {
 
+<<<<<<< HEAD
 			info->rx_skb->dev = (void *) info->hdev;
+=======
+>>>>>>> refs/remotes/origin/master
 			bt_cb(info->rx_skb)->pkt_type = inb(iobase + UART_RX);
 
 			switch (bt_cb(info->rx_skb)->pkt_type) {
@@ -266,7 +282,11 @@ static void btuart_receive(btuart_info_t *info)
 					break;
 
 				case RECV_WAIT_DATA:
+<<<<<<< HEAD
 					hci_recv_frame(info->rx_skb);
+=======
+					hci_recv_frame(info->hdev, info->rx_skb);
+>>>>>>> refs/remotes/origin/master
 					info->rx_skb = NULL;
 					break;
 
@@ -397,7 +417,15 @@ static void btuart_change_speed(btuart_info_t *info, unsigned int speed)
 
 static int btuart_hci_flush(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	btuart_info_t *info = (btuart_info_t *)(hdev->driver_data);
+=======
+	btuart_info_t *info = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
+=======
+	btuart_info_t *info = (btuart_info_t *)(hdev->driver_data);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Drop TX queue */
 	skb_queue_purge(&(info->txq));
@@ -425,6 +453,7 @@ static int btuart_hci_close(struct hci_dev *hdev)
 }
 
 
+<<<<<<< HEAD
 static int btuart_hci_send_frame(struct sk_buff *skb)
 {
 	btuart_info_t *info;
@@ -436,6 +465,14 @@ static int btuart_hci_send_frame(struct sk_buff *skb)
 	}
 
 	info = (btuart_info_t *)(hdev->driver_data);
+<<<<<<< HEAD
+=======
+static int btuart_hci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
+{
+	btuart_info_t *info = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	switch (bt_cb(skb)->pkt_type) {
 	case HCI_COMMAND_PKT:
@@ -447,7 +484,11 @@ static int btuart_hci_send_frame(struct sk_buff *skb)
 	case HCI_SCODATA_PKT:
 		hdev->stat.sco_tx++;
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Prepend skb with frame type */
 	memcpy(skb_push(skb, 1), &bt_cb(skb)->pkt_type, 1);
@@ -459,6 +500,10 @@ static int btuart_hci_send_frame(struct sk_buff *skb)
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void btuart_hci_destruct(struct hci_dev *hdev)
 {
 }
@@ -470,6 +515,8 @@ static int btuart_hci_ioctl(struct hci_dev *hdev, unsigned int cmd, unsigned lon
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* ======================== Card services HCI interaction ======================== */
 
@@ -498,6 +545,10 @@ static int btuart_open(btuart_info_t *info)
 	info->hdev = hdev;
 
 	hdev->bus = HCI_PCCARD;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->driver_data = info;
 	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
 
@@ -509,6 +560,18 @@ static int btuart_open(btuart_info_t *info)
 	hdev->ioctl    = btuart_hci_ioctl;
 
 	hdev->owner = THIS_MODULE;
+<<<<<<< HEAD
+=======
+	hci_set_drvdata(hdev, info);
+	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
+
+	hdev->open  = btuart_hci_open;
+	hdev->close = btuart_hci_close;
+	hdev->flush = btuart_hci_flush;
+	hdev->send  = btuart_hci_send_frame;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_lock_irqsave(&(info->lock), flags);
 
@@ -565,9 +628,19 @@ static int btuart_close(btuart_info_t *info)
 
 	spin_unlock_irqrestore(&(info->lock), flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (hci_unregister_dev(hdev) < 0)
 		BT_ERR("Can't unregister HCI device %s", hdev->name);
 
+=======
+	hci_unregister_dev(hdev);
+>>>>>>> refs/remotes/origin/master
+=======
+	if (hci_unregister_dev(hdev) < 0)
+		BT_ERR("Can't unregister HCI device %s", hdev->name);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_free_dev(hdev);
 
 	return 0;
@@ -578,7 +651,11 @@ static int btuart_probe(struct pcmcia_device *link)
 	btuart_info_t *info;
 
 	/* Create new info device */
+<<<<<<< HEAD
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+=======
+	info = devm_kzalloc(&link->dev, sizeof(*info), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!info)
 		return -ENOMEM;
 
@@ -594,17 +671,25 @@ static int btuart_probe(struct pcmcia_device *link)
 
 static void btuart_detach(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 	btuart_info_t *info = link->priv;
 
 	btuart_release(link);
 	kfree(info);
+=======
+	btuart_release(link);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int btuart_check_config(struct pcmcia_device *p_dev, void *priv_data)
 {
 	int *try = priv_data;
 
+<<<<<<< HEAD
 	if (try == 0)
+=======
+	if (!try)
+>>>>>>> refs/remotes/origin/master
 		p_dev->io_lines = 16;
 
 	if ((p_dev->resource[0]->end != 8) || (p_dev->resource[0]->start == 0))
@@ -689,7 +774,15 @@ static void btuart_release(struct pcmcia_device *link)
 	pcmcia_disable_device(link);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct pcmcia_device_id btuart_ids[] = {
+=======
+static const struct pcmcia_device_id btuart_ids[] = {
+>>>>>>> refs/remotes/origin/master
+=======
+static struct pcmcia_device_id btuart_ids[] = {
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* don't use this driver. Use serial_cs + hci_uart instead */
 	PCMCIA_DEVICE_NULL
 };
@@ -702,6 +795,7 @@ static struct pcmcia_driver btuart_driver = {
 	.remove		= btuart_detach,
 	.id_table	= btuart_ids,
 };
+<<<<<<< HEAD
 
 static int __init init_btuart_cs(void)
 {
@@ -716,3 +810,6 @@ static void __exit exit_btuart_cs(void)
 
 module_init(init_btuart_cs);
 module_exit(exit_btuart_cs);
+=======
+module_pcmcia_driver(btuart_driver);
+>>>>>>> refs/remotes/origin/master

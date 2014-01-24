@@ -14,6 +14,14 @@
 #include "xtalk/hubdev.h"
 #include <linux/acpi.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -131,7 +139,11 @@ sn_get_bussoft_ptr(struct pci_bus *bus)
 	struct acpi_resource_vendor_typed *vendor;
 
 
+<<<<<<< HEAD
 	handle = PCI_CONTROLLER(bus)->acpi_handle;
+=======
+	handle = acpi_device_handle(PCI_CONTROLLER(bus)->companion);
+>>>>>>> refs/remotes/origin/master
 	status = acpi_get_vendor_resource(handle, METHOD_NAME__CRS,
 					  &sn_uuid, &buffer);
 	if (ACPI_FAILURE(status)) {
@@ -359,7 +371,11 @@ sn_acpi_get_pcidev_info(struct pci_dev *dev, struct pcidev_info **pcidev_info,
 	acpi_status status;
 	struct acpi_buffer name_buffer = { ACPI_ALLOCATE_BUFFER, NULL };
 
+<<<<<<< HEAD
 	rootbus_handle = PCI_CONTROLLER(dev)->acpi_handle;
+=======
+	rootbus_handle = acpi_device_handle(PCI_CONTROLLER(dev)->companion);
+>>>>>>> refs/remotes/origin/master
         status = acpi_evaluate_integer(rootbus_handle, METHOD_NAME__SEG, NULL,
                                        &segment);
         if (ACPI_SUCCESS(status)) {

@@ -25,7 +25,15 @@
 #include <linux/err.h>
 #include <linux/slab.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/jump_label.h>
+=======
+#include <linux/static_key.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/static_key.h>
+>>>>>>> refs/remotes/origin/master
 
 extern struct tracepoint * const __start___tracepoints_ptrs[];
 extern struct tracepoint * const __stop___tracepoints_ptrs[];
@@ -34,11 +42,30 @@ extern struct tracepoint * const __stop___tracepoints_ptrs[];
 static const int tracepoint_debug;
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * tracepoints_mutex nests inside module_mutex. Tracepoints mutex protects the
  * builtin and module tracepoints and the hash table.
  */
 static DEFINE_MUTEX(tracepoints_mutex);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Tracepoints mutex protects the builtin and module tracepoints and the hash
+ * table, as well as the local module list.
+ */
+static DEFINE_MUTEX(tracepoints_mutex);
+
+#ifdef CONFIG_MODULES
+/* Local list of struct module */
+static LIST_HEAD(tracepoint_module_list);
+#endif /* CONFIG_MODULES */
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Tracepoint hash table, containing the active tracepoints.
  * Protected by tracepoints_mutex.
@@ -107,7 +134,12 @@ tracepoint_entry_add_probe(struct tracepoint_entry *entry,
 	int nr_probes = 0;
 	struct tracepoint_func *old, *new;
 
+<<<<<<< HEAD
 	WARN_ON(!probe);
+=======
+	if (WARN_ON(!probe))
+		return ERR_PTR(-EINVAL);
+>>>>>>> refs/remotes/origin/master
 
 	debug_print_probes(entry);
 	old = entry->funcs;
@@ -147,6 +179,7 @@ tracepoint_entry_remove_probe(struct tracepoint_entry *entry,
 
 	debug_print_probes(entry);
 	/* (N -> M), (N > 1, M >= 0) probes */
+<<<<<<< HEAD
 	for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
 		if (!probe ||
 		    (old[nr_probes].func == probe &&
@@ -154,6 +187,20 @@ tracepoint_entry_remove_probe(struct tracepoint_entry *entry,
 			nr_del++;
 	}
 
+=======
+	if (probe) {
+		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
+			if (old[nr_probes].func == probe &&
+			     old[nr_probes].data == data)
+				nr_del++;
+		}
+	}
+
+	/*
+	 * If probe is NULL, then nr_probes = nr_del = 0, and then the
+	 * entire entry will be removed.
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (nr_probes - nr_del == 0) {
 		/* N -> 0, (N > 1) */
 		entry->funcs = NULL;
@@ -168,8 +215,12 @@ tracepoint_entry_remove_probe(struct tracepoint_entry *entry,
 		if (new == NULL)
 			return ERR_PTR(-ENOMEM);
 		for (i = 0; old[i].func; i++)
+<<<<<<< HEAD
 			if (probe &&
 			    (old[i].func != probe || old[i].data != data))
+=======
+			if (old[i].func != probe || old[i].data != data)
+>>>>>>> refs/remotes/origin/master
 				new[j++] = old[i];
 		new[nr_probes - nr_del].func = NULL;
 		entry->refcount = nr_probes - nr_del;
@@ -187,12 +238,19 @@ tracepoint_entry_remove_probe(struct tracepoint_entry *entry,
 static struct tracepoint_entry *get_tracepoint(const char *name)
 {
 	struct hlist_head *head;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tracepoint_entry *e;
 	u32 hash = jhash(name, strlen(name), 0);
 
 	head = &tracepoint_table[hash & (TRACEPOINT_TABLE_SIZE - 1)];
+<<<<<<< HEAD
 	hlist_for_each_entry(e, node, head, hlist) {
+=======
+	hlist_for_each_entry(e, head, hlist) {
+>>>>>>> refs/remotes/origin/master
 		if (!strcmp(name, e->name))
 			return e;
 	}
@@ -206,13 +264,20 @@ static struct tracepoint_entry *get_tracepoint(const char *name)
 static struct tracepoint_entry *add_tracepoint(const char *name)
 {
 	struct hlist_head *head;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tracepoint_entry *e;
 	size_t name_len = strlen(name) + 1;
 	u32 hash = jhash(name, name_len-1, 0);
 
 	head = &tracepoint_table[hash & (TRACEPOINT_TABLE_SIZE - 1)];
+<<<<<<< HEAD
 	hlist_for_each_entry(e, node, head, hlist) {
+=======
+	hlist_for_each_entry(e, head, hlist) {
+>>>>>>> refs/remotes/origin/master
 		if (!strcmp(name, e->name)) {
 			printk(KERN_NOTICE
 				"tracepoint %s busy\n", name);
@@ -251,9 +316,21 @@ static void set_tracepoint(struct tracepoint_entry **entry,
 {
 	WARN_ON(strcmp((*entry)->name, elem->name) != 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (elem->regfunc && !jump_label_enabled(&elem->key) && active)
 		elem->regfunc();
 	else if (elem->unregfunc && jump_label_enabled(&elem->key) && !active)
+=======
+	if (elem->regfunc && !static_key_enabled(&elem->key) && active)
+		elem->regfunc();
+	else if (elem->unregfunc && static_key_enabled(&elem->key) && !active)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (elem->regfunc && !static_key_enabled(&elem->key) && active)
+		elem->regfunc();
+	else if (elem->unregfunc && static_key_enabled(&elem->key) && !active)
+>>>>>>> refs/remotes/origin/master
 		elem->unregfunc();
 
 	/*
@@ -264,10 +341,23 @@ static void set_tracepoint(struct tracepoint_entry **entry,
 	 * is used.
 	 */
 	rcu_assign_pointer(elem->funcs, (*entry)->funcs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (active && !jump_label_enabled(&elem->key))
 		jump_label_inc(&elem->key);
 	else if (!active && jump_label_enabled(&elem->key))
 		jump_label_dec(&elem->key);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (active && !static_key_enabled(&elem->key))
+		static_key_slow_inc(&elem->key);
+	else if (!active && static_key_enabled(&elem->key))
+		static_key_slow_dec(&elem->key);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -278,11 +368,25 @@ static void set_tracepoint(struct tracepoint_entry **entry,
  */
 static void disable_tracepoint(struct tracepoint *elem)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (elem->unregfunc && jump_label_enabled(&elem->key))
 		elem->unregfunc();
 
 	if (jump_label_enabled(&elem->key))
 		jump_label_dec(&elem->key);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (elem->unregfunc && static_key_enabled(&elem->key))
+		elem->unregfunc();
+
+	if (static_key_enabled(&elem->key))
+		static_key_slow_dec(&elem->key);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rcu_assign_pointer(elem->funcs, NULL);
 }
 
@@ -292,9 +396,22 @@ static void disable_tracepoint(struct tracepoint *elem)
  * @end: end of the range
  *
  * Updates the probe callback corresponding to a range of tracepoints.
+<<<<<<< HEAD
+<<<<<<< HEAD
  */
 void tracepoint_update_probe_range(struct tracepoint * const *begin,
 				   struct tracepoint * const *end)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Called with tracepoints_mutex held.
+ */
+static void tracepoint_update_probe_range(struct tracepoint * const *begin,
+					  struct tracepoint * const *end)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct tracepoint * const *iter;
 	struct tracepoint_entry *mark_entry;
@@ -302,7 +419,13 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
 	if (!begin)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&tracepoints_mutex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (iter = begin; iter < end; iter++) {
 		mark_entry = get_tracepoint((*iter)->name);
 		if (mark_entry) {
@@ -312,11 +435,41 @@ void tracepoint_update_probe_range(struct tracepoint * const *begin,
 			disable_tracepoint(*iter);
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&tracepoints_mutex);
 }
 
 /*
  * Update probes, removing the faulty probes.
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+}
+
+#ifdef CONFIG_MODULES
+void module_update_tracepoints(void)
+{
+	struct tp_module *tp_mod;
+
+	list_for_each_entry(tp_mod, &tracepoint_module_list, list)
+		tracepoint_update_probe_range(tp_mod->tracepoints_ptrs,
+			tp_mod->tracepoints_ptrs + tp_mod->num_tracepoints);
+}
+#else /* CONFIG_MODULES */
+void module_update_tracepoints(void)
+{
+}
+#endif /* CONFIG_MODULES */
+
+
+/*
+ * Update probes, removing the faulty probes.
+ * Called with tracepoints_mutex held.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static void tracepoint_update_probes(void)
 {
@@ -359,11 +512,26 @@ int tracepoint_probe_register(const char *name, void *probe, void *data)
 
 	mutex_lock(&tracepoints_mutex);
 	old = tracepoint_add_probe(name, probe, data);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&tracepoints_mutex);
 	if (IS_ERR(old))
 		return PTR_ERR(old);
 
 	tracepoint_update_probes();		/* may update entry */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(old)) {
+		mutex_unlock(&tracepoints_mutex);
+		return PTR_ERR(old);
+	}
+	tracepoint_update_probes();		/* may update entry */
+	mutex_unlock(&tracepoints_mutex);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	release_probes(old);
 	return 0;
 }
@@ -402,11 +570,26 @@ int tracepoint_probe_unregister(const char *name, void *probe, void *data)
 
 	mutex_lock(&tracepoints_mutex);
 	old = tracepoint_remove_probe(name, probe, data);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&tracepoints_mutex);
 	if (IS_ERR(old))
 		return PTR_ERR(old);
 
 	tracepoint_update_probes();		/* may update entry */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(old)) {
+		mutex_unlock(&tracepoints_mutex);
+		return PTR_ERR(old);
+	}
+	tracepoint_update_probes();		/* may update entry */
+	mutex_unlock(&tracepoints_mutex);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	release_probes(old);
 	return 0;
 }
@@ -489,9 +672,19 @@ void tracepoint_probe_update_all(void)
 	if (!list_empty(&old_probes))
 		list_replace_init(&old_probes, &release_probes);
 	need_update = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&tracepoints_mutex);
 
 	tracepoint_update_probes();
+=======
+	tracepoint_update_probes();
+	mutex_unlock(&tracepoints_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tracepoint_update_probes();
+	mutex_unlock(&tracepoints_mutex);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(pos, next, &release_probes, u.list) {
 		list_del(&pos->u.list);
 		call_rcu_sched(&pos->u.rcu, rcu_free_old_probes);
@@ -509,7 +702,15 @@ EXPORT_SYMBOL_GPL(tracepoint_probe_update_all);
  * Will return the first tracepoint in the range if the input tracepoint is
  * NULL.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int tracepoint_get_iter_range(struct tracepoint * const **tracepoint,
+=======
+static int tracepoint_get_iter_range(struct tracepoint * const **tracepoint,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tracepoint_get_iter_range(struct tracepoint * const **tracepoint,
+>>>>>>> refs/remotes/origin/master
 	struct tracepoint * const *begin, struct tracepoint * const *end)
 {
 	if (!*tracepoint && begin != end) {
@@ -520,11 +721,26 @@ int tracepoint_get_iter_range(struct tracepoint * const **tracepoint,
 		return 1;
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(tracepoint_get_iter_range);
 
 static void tracepoint_get_iter(struct tracepoint_iter *iter)
 {
 	int found = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#ifdef CONFIG_MODULES
+static void tracepoint_get_iter(struct tracepoint_iter *iter)
+{
+	int found = 0;
+	struct tp_module *iter_mod;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Core kernel tracepoints */
 	if (!iter->module) {
@@ -534,12 +750,63 @@ static void tracepoint_get_iter(struct tracepoint_iter *iter)
 		if (found)
 			goto end;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* tracepoints in modules. */
 	found = module_get_iter_tracepoints(iter);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Tracepoints in modules */
+	mutex_lock(&tracepoints_mutex);
+	list_for_each_entry(iter_mod, &tracepoint_module_list, list) {
+		/*
+		 * Sorted module list
+		 */
+		if (iter_mod < iter->module)
+			continue;
+		else if (iter_mod > iter->module)
+			iter->tracepoint = NULL;
+		found = tracepoint_get_iter_range(&iter->tracepoint,
+			iter_mod->tracepoints_ptrs,
+			iter_mod->tracepoints_ptrs
+				+ iter_mod->num_tracepoints);
+		if (found) {
+			iter->module = iter_mod;
+			break;
+		}
+	}
+	mutex_unlock(&tracepoints_mutex);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 end:
 	if (!found)
 		tracepoint_iter_reset(iter);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#else /* CONFIG_MODULES */
+static void tracepoint_get_iter(struct tracepoint_iter *iter)
+{
+	int found = 0;
+
+	/* Core kernel tracepoints */
+	found = tracepoint_get_iter_range(&iter->tracepoint,
+			__start___tracepoints_ptrs,
+			__stop___tracepoints_ptrs);
+	if (!found)
+		tracepoint_iter_reset(iter);
+}
+#endif /* CONFIG_MODULES */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void tracepoint_iter_start(struct tracepoint_iter *iter)
 {
@@ -566,17 +833,107 @@ EXPORT_SYMBOL_GPL(tracepoint_iter_stop);
 
 void tracepoint_iter_reset(struct tracepoint_iter *iter)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iter->module = NULL;
+=======
+#ifdef CONFIG_MODULES
+	iter->module = NULL;
+#endif /* CONFIG_MODULES */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MODULES
+	iter->module = NULL;
+#endif /* CONFIG_MODULES */
+>>>>>>> refs/remotes/origin/master
 	iter->tracepoint = NULL;
 }
 EXPORT_SYMBOL_GPL(tracepoint_iter_reset);
 
 #ifdef CONFIG_MODULES
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int tracepoint_module_coming(struct module *mod)
+{
+	struct tp_module *tp_mod, *iter;
+	int ret = 0;
+
+	/*
+	 * We skip modules that taint the kernel, especially those with different
+	 * module headers (for forced load), to make sure we don't cause a crash.
+	 * Staging and out-of-tree GPL modules are fine.
+	 */
+	if (mod->taints & ~((1 << TAINT_OOT_MODULE) | (1 << TAINT_CRAP)))
+		return 0;
+	mutex_lock(&tracepoints_mutex);
+	tp_mod = kmalloc(sizeof(struct tp_module), GFP_KERNEL);
+	if (!tp_mod) {
+		ret = -ENOMEM;
+		goto end;
+	}
+	tp_mod->num_tracepoints = mod->num_tracepoints;
+	tp_mod->tracepoints_ptrs = mod->tracepoints_ptrs;
+
+	/*
+	 * tracepoint_module_list is kept sorted by struct module pointer
+	 * address for iteration on tracepoints from a seq_file that can release
+	 * the mutex between calls.
+	 */
+	list_for_each_entry_reverse(iter, &tracepoint_module_list, list) {
+		BUG_ON(iter == tp_mod);	/* Should never be in the list twice */
+		if (iter < tp_mod) {
+			/* We belong to the location right after iter. */
+			list_add(&tp_mod->list, &iter->list);
+			goto module_added;
+		}
+	}
+	/* We belong to the beginning of the list */
+	list_add(&tp_mod->list, &tracepoint_module_list);
+module_added:
+	tracepoint_update_probe_range(mod->tracepoints_ptrs,
+		mod->tracepoints_ptrs + mod->num_tracepoints);
+end:
+	mutex_unlock(&tracepoints_mutex);
+	return ret;
+}
+
+static int tracepoint_module_going(struct module *mod)
+{
+	struct tp_module *pos;
+
+	mutex_lock(&tracepoints_mutex);
+	tracepoint_update_probe_range(mod->tracepoints_ptrs,
+		mod->tracepoints_ptrs + mod->num_tracepoints);
+	list_for_each_entry(pos, &tracepoint_module_list, list) {
+		if (pos->tracepoints_ptrs == mod->tracepoints_ptrs) {
+			list_del(&pos->list);
+			kfree(pos);
+			break;
+		}
+	}
+	/*
+	 * In the case of modules that were tainted at "coming", we'll simply
+	 * walk through the list without finding it. We cannot use the "tainted"
+	 * flag on "going", in case a module taints the kernel only after being
+	 * loaded.
+	 */
+	mutex_unlock(&tracepoints_mutex);
+	return 0;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int tracepoint_module_notify(struct notifier_block *self,
 			     unsigned long val, void *data)
 {
 	struct module *mod = data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	switch (val) {
 	case MODULE_STATE_COMING:
@@ -586,6 +943,26 @@ int tracepoint_module_notify(struct notifier_block *self,
 		break;
 	}
 	return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ret = 0;
+
+	switch (val) {
+	case MODULE_STATE_COMING:
+		ret = tracepoint_module_coming(mod);
+		break;
+	case MODULE_STATE_LIVE:
+		break;
+	case MODULE_STATE_GOING:
+		ret = tracepoint_module_going(mod);
+		break;
+	}
+	return ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 struct notifier_block tracepoint_module_nb = {
@@ -598,7 +975,13 @@ static int init_tracepoints(void)
 	return register_module_notifier(&tracepoint_module_nb);
 }
 __initcall(init_tracepoints);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MODULES */
 
 #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS

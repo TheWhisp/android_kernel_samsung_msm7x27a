@@ -1,10 +1,26 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/fs.h>
 #include <linux/pagemap.h>
 #include <linux/xattr.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_xattr.h>
+=======
+#include "xattr.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "xattr.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/security.h>
 #include <asm/uaccess.h>
 
@@ -66,8 +82,18 @@ int reiserfs_security_init(struct inode *dir, struct inode *inode,
 	if (IS_PRIVATE(dir))
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	error = security_inode_init_security(inode, dir, qstr, &sec->name,
 					     &sec->value, &sec->length);
+=======
+	error = security_old_inode_init_security(inode, dir, qstr, &sec->name,
+						 &sec->value, &sec->length);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = security_old_inode_init_security(inode, dir, qstr, &sec->name,
+						 &sec->value, &sec->length);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		if (error == -EOPNOTSUPP)
 			error = 0;

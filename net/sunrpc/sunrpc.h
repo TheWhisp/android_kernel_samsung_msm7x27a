@@ -47,5 +47,15 @@ int svc_send_common(struct socket *sock, struct xdr_buf *xdr,
 		    struct page *headpage, unsigned long headoffset,
 		    struct page *tailpage, unsigned long tailoffset);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int rpc_clients_notifier_register(void);
+void rpc_clients_notifier_unregister(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int rpc_clients_notifier_register(void);
+void rpc_clients_notifier_unregister(void);
+>>>>>>> refs/remotes/origin/master
 #endif /* _NET_SUNRPC_SUNRPC_H */
 

@@ -5,7 +5,11 @@
 # and for each file listed in this file with generic-y creates
 # a small wrapper file in $(obj) (arch/$(SRCARCH)/include/generated/asm)
 
+<<<<<<< HEAD
 kbuild-file := $(srctree)/arch/$(SRCARCH)/include/asm/Kbuild
+=======
+kbuild-file := $(srctree)/arch/$(SRCARCH)/include/$(src)/Kbuild
+>>>>>>> refs/remotes/origin/master
 -include $(kbuild-file)
 
 include scripts/Kbuild.include

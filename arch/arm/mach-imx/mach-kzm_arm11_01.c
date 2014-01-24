@@ -24,6 +24,16 @@
 #include <linux/serial_8250.h>
 #include <linux/smsc911x.h>
 #include <linux/types.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/regulator/machine.h>
+#include <linux/regulator/fixed.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regulator/machine.h>
+#include <linux/regulator/fixed.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/irq.h>
 #include <asm/mach-types.h>
@@ -34,11 +44,22 @@
 #include <asm/mach/map.h>
 #include <asm/mach/time.h>
 
+<<<<<<< HEAD
 #include <mach/clock.h>
 #include <mach/common.h>
+<<<<<<< HEAD
+=======
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/iomux-mx3.h>
 
 #include "devices-imx31.h"
+=======
+#include "common.h"
+#include "devices-imx31.h"
+#include "hardware.h"
+#include "iomux-mx3.h"
+>>>>>>> refs/remotes/origin/master
 
 #define KZM_ARM11_IO_ADDRESS(x) (IOMEM(					\
 	IMX_IO_P2V_MODULE(x, MX31_CS4) ?:				\
@@ -70,7 +91,11 @@ static struct plat_serial8250_port serial_platform_data[] = {
 	{
 		.membase	= KZM_ARM11_IO_ADDRESS(KZM_ARM11_16550),
 		.mapbase	= KZM_ARM11_16550,
+<<<<<<< HEAD
 		.irq		= IOMUX_TO_IRQ(MX31_PIN_GPIO1_1),
+=======
+		/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 		.irqflags	= IRQ_TYPE_EDGE_RISING,
 		.uartclk	= 14745600,
 		.regshift	= 0,
@@ -88,8 +113,12 @@ static struct resource serial8250_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start	= IOMUX_TO_IRQ(MX31_PIN_GPIO1_1),
 		.end	= IOMUX_TO_IRQ(MX31_PIN_GPIO1_1),
+=======
+		/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -122,6 +151,16 @@ static int __init kzm_init_ext_uart(void)
 	tmp |= 0x2;
 	__raw_writeb(tmp, KZM_ARM11_IO_ADDRESS(KZM_ARM11_CTL1));
 
+<<<<<<< HEAD
+=======
+	serial_platform_data[0].irq =
+			gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO1_1));
+	serial8250_resources[1].start =
+			gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO1_1));
+	serial8250_resources[1].end =
+			gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO1_1));
+
+>>>>>>> refs/remotes/origin/master
 	return platform_device_register(&serial_device);
 }
 #else
@@ -149,8 +188,12 @@ static struct resource kzm_smsc9118_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start	= IOMUX_TO_IRQ(MX31_PIN_GPIO1_2),
 		.end	= IOMUX_TO_IRQ(MX31_PIN_GPIO1_2),
+=======
+		/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	},
 };
@@ -165,6 +208,20 @@ static struct platform_device kzm_smsc9118_device = {
 			  },
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct regulator_consumer_supply dummy_supplies[] = {
+	REGULATOR_SUPPLY("vdd33a", "smsc911x"),
+	REGULATOR_SUPPLY("vddvario", "smsc911x"),
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init kzm_init_smsc9118(void)
 {
 	/*
@@ -174,6 +231,21 @@ static int __init kzm_init_smsc9118(void)
 	gpio_request(IOMUX_TO_GPIO(MX31_PIN_GPIO1_2), "smsc9118-int");
 	gpio_direction_input(IOMUX_TO_GPIO(MX31_PIN_GPIO1_2));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+
+	kzm_smsc9118_resources[1].start =
+			gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO1_2));
+	kzm_smsc9118_resources[1].end =
+			gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO1_2));
+
+>>>>>>> refs/remotes/origin/master
 	return platform_device_register(&kzm_smsc9118_device);
 }
 #else
@@ -223,6 +295,16 @@ static int kzm_pins[] __initdata = {
  */
 static void __init kzm_board_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	imx31_soc_init();
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx31_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	mxc_iomux_setup_multiple_pins(kzm_pins,
 				      ARRAY_SIZE(kzm_pins), "kzm");
 	kzm_init_ext_uart();
@@ -237,13 +319,21 @@ static void __init kzm_board_init(void)
  */
 static struct map_desc kzm_io_desc[] __initdata = {
 	{
+<<<<<<< HEAD
 		.virtual	= MX31_CS4_BASE_ADDR_VIRT,
+=======
+		.virtual	= (unsigned long)MX31_CS4_BASE_ADDR_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(MX31_CS4_BASE_ADDR),
 		.length		= MX31_CS4_SIZE,
 		.type		= MT_DEVICE
 	},
 	{
+<<<<<<< HEAD
 		.virtual	= MX31_CS5_BASE_ADDR_VIRT,
+=======
+		.virtual	= (unsigned long)MX31_CS5_BASE_ADDR_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(MX31_CS5_BASE_ADDR),
 		.length		= MX31_CS5_SIZE,
 		.type		= MT_DEVICE
@@ -264,15 +354,36 @@ static void __init kzm_timer_init(void)
 	mx31_clocks_init(26000000);
 }
 
+<<<<<<< HEAD
 static struct sys_timer kzm_timer = {
 	.init = kzm_timer_init,
 };
 
 MACHINE_START(KZM_ARM11_01, "Kyoto Microcomputer Co., Ltd. KZM-ARM11-01")
+<<<<<<< HEAD
 	.boot_params = MX3x_PHYS_OFFSET + 0x100,
 	.map_io = kzm_map_io,
 	.init_early = imx31_init_early,
 	.init_irq = mx31_init_irq,
 	.timer = &kzm_timer,
 	.init_machine = kzm_board_init,
+=======
+=======
+MACHINE_START(KZM_ARM11_01, "Kyoto Microcomputer Co., Ltd. KZM-ARM11-01")
+>>>>>>> refs/remotes/origin/master
+	.atag_offset = 0x100,
+	.map_io = kzm_map_io,
+	.init_early = imx31_init_early,
+	.init_irq = mx31_init_irq,
+	.handle_irq = imx31_handle_irq,
+<<<<<<< HEAD
+	.timer = &kzm_timer,
+	.init_machine = kzm_board_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= kzm_timer_init,
+	.init_machine = kzm_board_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

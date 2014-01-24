@@ -14,14 +14,30 @@
 
 /* Please don't access any members of this structure directly */
 struct semaphore {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t		lock;
+=======
+	raw_spinlock_t		lock;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spinlock_t		lock;
+>>>>>>> refs/remotes/origin/master
 	unsigned int		count;
 	struct list_head	wait_list;
 };
 
 #define __SEMAPHORE_INITIALIZER(name, n)				\
 {									\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.lock		= __SPIN_LOCK_UNLOCKED((name).lock),		\
+=======
+	.lock		= __RAW_SPIN_LOCK_UNLOCKED((name).lock),	\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.lock		= __RAW_SPIN_LOCK_UNLOCKED((name).lock),	\
+>>>>>>> refs/remotes/origin/master
 	.count		= n,						\
 	.wait_list	= LIST_HEAD_INIT((name).wait_list),		\
 }
@@ -36,7 +52,13 @@ static inline void sema_init(struct semaphore *sem, int val)
 	lockdep_init_map(&sem->lock.dep_map, "semaphore->lock", &__key, 0);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define init_MUTEX(sem)		sema_init(sem, 1)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void down(struct semaphore *sem);
 extern int __must_check down_interruptible(struct semaphore *sem);
 extern int __must_check down_killable(struct semaphore *sem);

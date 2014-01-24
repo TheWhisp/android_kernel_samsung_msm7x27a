@@ -7,17 +7,32 @@
 #include <bcm63xx_dev_pci.h>
 
 /*
+<<<<<<< HEAD
  * Cardbus shares  the PCI bus, but has  no IDSEL, so a  special id is
+=======
+ * Cardbus shares  the PCI bus, but has	 no IDSEL, so a	 special id is
+>>>>>>> refs/remotes/origin/master
  * reserved for it.  If you have a standard PCI device at this id, you
  * need to change the following definition.
  */
 #define CARDBUS_PCI_IDSEL	0x8
 
+<<<<<<< HEAD
+=======
+
+#define PCIE_BUS_BRIDGE		0
+#define PCIE_BUS_DEVICE		1
+
+>>>>>>> refs/remotes/origin/master
 /*
  * defined in ops-bcm63xx.c
  */
 extern struct pci_ops bcm63xx_pci_ops;
 extern struct pci_ops bcm63xx_cb_ops;
+<<<<<<< HEAD
+=======
+extern struct pci_ops bcm63xx_pcie_ops;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * defined in pci-bcm63xx.c

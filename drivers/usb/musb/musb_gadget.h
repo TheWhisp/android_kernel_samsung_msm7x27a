@@ -37,6 +37,41 @@
 
 #include <linux/list.h>
 
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_USB_MUSB_GADGET) || IS_ENABLED(CONFIG_USB_MUSB_DUAL_ROLE)
+extern irqreturn_t musb_g_ep0_irq(struct musb *);
+extern void musb_g_tx(struct musb *, u8);
+extern void musb_g_rx(struct musb *, u8);
+extern void musb_g_reset(struct musb *);
+extern void musb_g_suspend(struct musb *);
+extern void musb_g_resume(struct musb *);
+extern void musb_g_wakeup(struct musb *);
+extern void musb_g_disconnect(struct musb *);
+extern void musb_gadget_cleanup(struct musb *);
+extern int musb_gadget_setup(struct musb *);
+
+#else
+static inline irqreturn_t musb_g_ep0_irq(struct musb *musb)
+{
+	return 0;
+}
+
+static inline void musb_g_tx(struct musb *musb, u8 epnum)	{}
+static inline void musb_g_rx(struct musb *musb, u8 epnum)	{}
+static inline void musb_g_reset(struct musb *musb)		{}
+static inline void musb_g_suspend(struct musb *musb)		{}
+static inline void musb_g_resume(struct musb *musb)		{}
+static inline void musb_g_wakeup(struct musb *musb)		{}
+static inline void musb_g_disconnect(struct musb *musb)		{}
+static inline void musb_gadget_cleanup(struct musb *musb)	{}
+static inline int musb_gadget_setup(struct musb *musb)
+{
+	return 0;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 enum buffer_map_state {
 	UN_MAPPED = 0,
 	PRE_MAPPED,
@@ -106,6 +141,7 @@ static inline struct musb_request *next_request(struct musb_ep *ep)
 	return container_of(queue->next, struct musb_request, list);
 }
 
+<<<<<<< HEAD
 extern void musb_g_tx(struct musb *musb, u8 epnum);
 extern void musb_g_rx(struct musb *musb, u8 epnum);
 
@@ -114,6 +150,10 @@ extern const struct usb_ep_ops musb_g_ep0_ops;
 extern int musb_gadget_setup(struct musb *);
 extern void musb_gadget_cleanup(struct musb *);
 
+=======
+extern const struct usb_ep_ops musb_g_ep0_ops;
+
+>>>>>>> refs/remotes/origin/master
 extern void musb_g_giveback(struct musb_ep *, struct usb_request *, int);
 
 extern void musb_ep_restart(struct musb *, struct musb_request *);

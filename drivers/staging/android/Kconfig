@@ -10,8 +10,10 @@ if ANDROID
 
 config ANDROID_BINDER_IPC
 	bool "Android Binder IPC Driver"
+<<<<<<< HEAD
 	default n
 
+<<<<<<< HEAD
 config ANDROID_LOGGER
 	tristate "Android log driver"
 	default n
@@ -30,10 +32,47 @@ menuconfig ANDROID_RAM_CONSOLE_ERROR_CORRECTION
 	default n
 	depends on ANDROID_RAM_CONSOLE
 	depends on !ANDROID_RAM_CONSOLE_EARLY_INIT
+=======
+config ASHMEM
+	bool "Enable the Anonymous Shared Memory Subsystem"
+	default n
+	depends on SHMEM || TINY_SHMEM
+	help
+=======
+	depends on MMU
+	default n
+	---help---
+	  Binder is used in Android for both communication between processes,
+	  and remote method invocation.
+
+	  This means one Android process can call a method/routine in another
+	  Android process, using Binder to identify, invoke and pass arguments
+	  between said processes.
+
+config ASHMEM
+	bool "Enable the Anonymous Shared Memory Subsystem"
+	default n
+	depends on SHMEM
+	---help---
+>>>>>>> refs/remotes/origin/master
+	  The ashmem subsystem is a new shared memory allocator, similar to
+	  POSIX SHM but with different behavior and sporting a simpler
+	  file-based API.
+
+<<<<<<< HEAD
+config ANDROID_LOGGER
+	tristate "Android log driver"
+	default n
+
+config ANDROID_PERSISTENT_RAM
+	bool
+	depends on HAVE_MEMBLOCK
+>>>>>>> refs/remotes/origin/cm-10.0
 	select REED_SOLOMON
 	select REED_SOLOMON_ENC8
 	select REED_SOLOMON_DEC8
 
+<<<<<<< HEAD
 if ANDROID_RAM_CONSOLE_ERROR_CORRECTION
 
 config ANDROID_RAM_CONSOLE_ERROR_CORRECTION_DATA_SIZE
@@ -74,6 +113,51 @@ config ANDROID_RAM_CONSOLE_EARLY_SIZE
 	hex "Android RAM console buffer size"
 	default 0
 	depends on ANDROID_RAM_CONSOLE_EARLY_INIT
+=======
+config ANDROID_RAM_CONSOLE
+	bool "Android RAM buffer console"
+	depends on !S390 && !UML && HAVE_MEMBLOCK
+	select ANDROID_PERSISTENT_RAM
+	default n
+
+config PERSISTENT_TRACER
+	bool "Persistent function tracer"
+	depends on HAVE_FUNCTION_TRACER
+	select FUNCTION_TRACER
+	select ANDROID_PERSISTENT_RAM
+	help
+	  persistent_trace traces function calls into a persistent ram
+	  buffer that can be decoded and dumped after reboot through
+	  /sys/kernel/debug/persistent_trace.  It can be used to
+	  determine what function was last called before a reset or
+	  panic.
+
+	  If unsure, say N.
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  It is, in theory, a good memory allocator for low-memory devices,
+	  because it can discard shared memory units when under memory pressure.
+
+config ANDROID_LOGGER
+	tristate "Android log driver"
+	default n
+	---help---
+	  This adds support for system-wide logging using four log buffers.
+
+	  These are:
+
+	      1: main
+	      2: events
+	      3: radio
+	      4: system
+
+	  Log reading and writing is performed via normal Linux reads and
+	  optimized writes. This optimization avoids logging having too
+	  much overhead in the system.
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 config ANDROID_TIMED_OUTPUT
 	bool "Timed output class driver"
@@ -81,15 +165,88 @@ config ANDROID_TIMED_OUTPUT
 
 config ANDROID_TIMED_GPIO
 	tristate "Android timed gpio driver"
+<<<<<<< HEAD
 	depends on GENERIC_GPIO && ANDROID_TIMED_OUTPUT
+=======
+	depends on GPIOLIB && ANDROID_TIMED_OUTPUT
+>>>>>>> refs/remotes/origin/master
 	default n
 
 config ANDROID_LOW_MEMORY_KILLER
 	bool "Android Low Memory Killer"
 	default N
 	---help---
+<<<<<<< HEAD
 	  Register processes to be killed when memory is low
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+config ANDROID_LOW_MEMORY_KILLER_AUTODETECT_OOM_ADJ_VALUES
+	bool "Android Low Memory Killer: detect oom_adj values"
+	depends on ANDROID_LOW_MEMORY_KILLER
+	default y
+	---help---
+	  Detect oom_adj values written to
+	  /sys/module/lowmemorykiller/parameters/adj and convert them
+	  to oom_score_adj values.
+
+source "drivers/staging/android/switch/Kconfig"
+=======
+	  Registers processes to be killed when memory is low
+>>>>>>> refs/remotes/origin/master
+
+config ANDROID_INTF_ALARM_DEV
+	bool "Android alarm driver"
+	depends on RTC_CLASS
+	default n
+<<<<<<< HEAD
+	help
+=======
+	---help---
+>>>>>>> refs/remotes/origin/master
+	  Provides non-wakeup and rtc backed wakeup alarms based on rtc or
+	  elapsed realtime, and a non-wakeup alarm on the monotonic clock.
+	  Also exports the alarm interface to user-space.
+<<<<<<< HEAD
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+config SYNC
+	bool "Synchronization framework"
+	default n
+	select ANON_INODES
+	---help---
+	  This option enables the framework for synchronization between multiple
+	  drivers.  Sync implementations can take advantage of hardware
+	  synchronization built into devices like GPUs.
+
+config SW_SYNC
+	bool "Software synchronization objects"
+	default n
+	depends on SYNC
+	---help---
+	  A sync object driver that uses a 32bit counter to coordinate
+	  syncrhronization.  Useful when there is no hardware primitive backing
+	  the synchronization.
+
+config SW_SYNC_USER
+	bool "Userspace API for SW_SYNC"
+	default n
+	depends on SW_SYNC
+	---help---
+	  Provides a user space API to the sw sync object.
+	  *WARNING* improper use of this can result in deadlocking kernel
+	  drivers from userspace.
+
+source "drivers/staging/android/ion/Kconfig"
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+>>>>>>> refs/remotes/origin/master
 endif # if ANDROID
 
 endmenu

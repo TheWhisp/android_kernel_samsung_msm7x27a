@@ -1,6 +1,11 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2010 QLogic Corporation. All rights reserved.
  * Copyright (c) 2006, 2007, 2008, 2009 QLogic Corporation. All rights reserved.
+=======
+ * Copyright (c) 2012 Intel Corporation. All rights reserved.
+ * Copyright (c) 2006 - 2012 QLogic Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2003, 2004, 2005, 2006 PathScale, Inc. All rights reserved.
  *
  * This software is available to you under a choice of one of two
@@ -46,12 +51,26 @@
 #include <linux/pci.h>
 #include <linux/poll.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/uaccess.h>
 
 #include "qib.h"
 #include "qib_common.h"
 
+<<<<<<< HEAD
+=======
+#undef pr_fmt
+#define pr_fmt(fmt) QIB_DRV_NAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Each client that opens the diag device must read then write
  * offset 0, to prevent lossage from random cat or od. diag_state
@@ -597,8 +616,13 @@ static ssize_t qib_diagpkt_write(struct file *fp,
 	}
 	tmpbuf = vmalloc(plen);
 	if (!tmpbuf) {
+<<<<<<< HEAD
 		qib_devinfo(dd->pcidev, "Unable to allocate tmp buffer, "
 			 "failing\n");
+=======
+		qib_devinfo(dd->pcidev,
+			"Unable to allocate tmp buffer, failing\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto bail;
 	}
@@ -692,7 +716,11 @@ int qib_register_observer(struct qib_devdata *dd,
 	ret = -ENOMEM;
 	olp = vmalloc(sizeof *olp);
 	if (!olp) {
+<<<<<<< HEAD
 		printk(KERN_ERR QIB_DRV_NAME ": vmalloc for observer failed\n");
+=======
+		pr_err("vmalloc for observer failed\n");
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 	}
 	if (olp) {

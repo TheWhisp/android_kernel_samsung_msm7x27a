@@ -22,6 +22,7 @@
 #define IO_SPACE_LIMIT 0xffffffff
 
 #define __io(a) __iop13xx_io(a)
+<<<<<<< HEAD
 #define __mem_pci(a) (a)
 #define __mem_isa(a) (a)
 
@@ -37,5 +38,9 @@ extern size_t iop13xx_atux_mem_size;
 
 #define __arch_ioremap	__iop13xx_ioremap
 #define __arch_iounmap	__iop13xx_iounmap
+=======
+
+extern void __iomem * __iop13xx_io(unsigned long io_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

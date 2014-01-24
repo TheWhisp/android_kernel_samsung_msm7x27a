@@ -25,6 +25,7 @@
 #define SIC1_BASE_INT   32
 #define SIC2_BASE_INT   64
 
+<<<<<<< HEAD
 		.macro	disable_fiq
 		.endm
 
@@ -34,6 +35,11 @@
 		.macro  arch_ret_to_user, tmp1, tmp2
 		.endm
 
+=======
+		.macro  get_irqnr_preamble, base, tmp
+		.endm
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		.macro	get_irqnr_and_base, irqnr, irqstat, base, tmp
 /* decode the MIC interrupt numbers */
 		ldr	\base, =IO_ADDRESS(PNX4008_INTCTRLMIC_BASE)
@@ -120,8 +126,11 @@
 1003:
 		.endm
 
+<<<<<<< HEAD
 
 		.macro	irq_prio_table
 		.endm
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

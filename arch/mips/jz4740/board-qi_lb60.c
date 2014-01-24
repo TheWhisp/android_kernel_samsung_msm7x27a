@@ -52,7 +52,11 @@ static bool is_avt2;
 static struct nand_ecclayout qi_lb60_ecclayout_1gb = {
 	.eccbytes = 36,
 	.eccpos = {
+<<<<<<< HEAD
 		6,  7,  8,  9,  10, 11, 12, 13,
+=======
+		6,  7,	8,  9,	10, 11, 12, 13,
+>>>>>>> refs/remotes/origin/master
 		14, 15, 16, 17, 18, 19, 20, 21,
 		22, 23, 24, 25, 26, 27, 28, 29,
 		30, 31, 32, 33, 34, 35, 36, 37,
@@ -140,6 +144,10 @@ static void qi_lb60_nand_ident(struct platform_device *pdev,
 static struct jz_nand_platform_data qi_lb60_nand_pdata = {
 	.ident_callback = qi_lb60_nand_ident,
 	.busy_gpio = 94,
+<<<<<<< HEAD
+=======
+	.banks = { 1 },
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Keyboard*/
@@ -209,7 +217,11 @@ static const uint32_t qi_lb60_keymap[] = {
 	KEY(6, 7, KEY_RIGHT),	/* S57 */
 
 	KEY(7, 0, KEY_LEFTSHIFT),	/* S58 */
+<<<<<<< HEAD
 	KEY(7, 1, KEY_LEFTALT),	/* S59 */
+=======
+	KEY(7, 1, KEY_LEFTALT), /* S59 */
+>>>>>>> refs/remotes/origin/master
 	KEY(7, 2, KEY_QI_FN),	/* S60 */
 };
 
@@ -316,7 +328,11 @@ static struct spi_board_info qi_lb60_spi_board_info[] = {
 
 /* Battery */
 static struct jz_battery_platform_data qi_lb60_battery_pdata = {
+<<<<<<< HEAD
 	.gpio_charge =  JZ_GPIO_PORTC(27),
+=======
+	.gpio_charge =	JZ_GPIO_PORTC(27),
+>>>>>>> refs/remotes/origin/master
 	.gpio_charge_active_low = 1,
 	.info = {
 		.name = "battery",
@@ -343,7 +359,11 @@ static struct gpio_keys_platform_data qi_lb60_gpio_keys_data = {
 };
 
 static struct platform_device qi_lb60_gpio_keys = {
+<<<<<<< HEAD
 	.name =	"gpio-keys",
+=======
+	.name = "gpio-keys",
+>>>>>>> refs/remotes/origin/master
 	.id =	-1,
 	.dev = {
 		.platform_data = &qi_lb60_gpio_keys_data,
@@ -418,6 +438,20 @@ static struct platform_device qi_lb60_charger_device = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* audio */
+static struct platform_device qi_lb60_audio_device = {
+	.name = "qi-lb60-audio",
+	.id = -1,
+};
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_device *jz_platform_devices[] __initdata = {
 	&jz4740_udc_device,
@@ -431,9 +465,22 @@ static struct platform_device *jz_platform_devices[] __initdata = {
 	&jz4740_codec_device,
 	&jz4740_rtc_device,
 	&jz4740_adc_device,
+<<<<<<< HEAD
 	&qi_lb60_gpio_keys,
 	&qi_lb60_pwm_beeper,
 	&qi_lb60_charger_device,
+<<<<<<< HEAD
+=======
+	&qi_lb60_audio_device,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&jz4740_pwm_device,
+	&jz4740_dma_device,
+	&qi_lb60_gpio_keys,
+	&qi_lb60_pwm_beeper,
+	&qi_lb60_charger_device,
+	&qi_lb60_audio_device,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init board_gpio_setup(void)
@@ -488,7 +535,15 @@ static int __init qi_lb60_board_setup(void)
 	board_gpio_setup();
 
 	if (qi_lb60_init_platform_devices())
+<<<<<<< HEAD
+<<<<<<< HEAD
 		panic("Failed to initialize platform devices\n");
+=======
+		panic("Failed to initialize platform devices");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		panic("Failed to initialize platform devices");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

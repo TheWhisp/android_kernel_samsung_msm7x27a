@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/shmparam.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *  S390 version
  *
  *  Derived from "include/asm-i386/shmparam.h"

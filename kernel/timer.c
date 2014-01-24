@@ -1,7 +1,11 @@
 /*
  *  linux/kernel/timer.c
  *
+<<<<<<< HEAD
  *  Kernel internal timers, basic process system calls
+=======
+ *  Kernel internal timers
+>>>>>>> refs/remotes/origin/master
  *
  *  Copyright (C) 1991, 1992  Linus Torvalds
  *
@@ -20,7 +24,15 @@
  */
 
 #include <linux/kernel_stat.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/percpu.h>
 #include <linux/init.h>
@@ -39,7 +51,13 @@
 #include <linux/kallsyms.h>
 #include <linux/irq_work.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
+=======
+#include <linux/sched/sysctl.h>
+#include <linux/slab.h>
+#include <linux/compat.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 #include <asm/unistd.h>
@@ -78,6 +96,10 @@ struct tvec_base {
 	struct timer_list *running_timer;
 	unsigned long timer_jiffies;
 	unsigned long next_timer;
+<<<<<<< HEAD
+=======
+	unsigned long active_timers;
+>>>>>>> refs/remotes/origin/master
 	struct tvec_root tv1;
 	struct tvec tv2;
 	struct tvec tv3;
@@ -92,6 +114,7 @@ static DEFINE_PER_CPU(struct tvec_base *, tvec_bases) = &boot_tvec_bases;
 /* Functions below help us manage 'deferrable' flag */
 static inline unsigned int tbase_get_deferrable(struct tvec_base *base)
 {
+<<<<<<< HEAD
 	return ((unsigned int)(unsigned long)base & TBASE_DEFERRABLE_FLAG);
 }
 
@@ -103,13 +126,32 @@ static inline struct tvec_base *tbase_get_base(struct tvec_base *base)
 static inline void timer_set_deferrable(struct timer_list *timer)
 {
 	timer->base = TBASE_MAKE_DEFERRED(timer->base);
+=======
+	return ((unsigned int)(unsigned long)base & TIMER_DEFERRABLE);
+}
+
+static inline unsigned int tbase_get_irqsafe(struct tvec_base *base)
+{
+	return ((unsigned int)(unsigned long)base & TIMER_IRQSAFE);
+}
+
+static inline struct tvec_base *tbase_get_base(struct tvec_base *base)
+{
+	return ((struct tvec_base *)((unsigned long)base & ~TIMER_FLAG_MASK));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
 timer_set_base(struct timer_list *timer, struct tvec_base *new_base)
 {
+<<<<<<< HEAD
 	timer->base = (struct tvec_base *)((unsigned long)(new_base) |
 				      tbase_get_deferrable(timer->base));
+=======
+	unsigned long flags = (unsigned long)timer->base & TIMER_FLAG_MASK;
+
+	timer->base = (struct tvec_base *)((unsigned long)(new_base) | flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long round_jiffies_common(unsigned long j, int cpu,
@@ -333,7 +375,12 @@ void set_timer_slack(struct timer_list *timer, int slack_hz)
 }
 EXPORT_SYMBOL_GPL(set_timer_slack);
 
+<<<<<<< HEAD
 static void internal_add_timer(struct tvec_base *base, struct timer_list *timer)
+=======
+static void
+__internal_add_timer(struct tvec_base *base, struct timer_list *timer)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long expires = timer->expires;
 	unsigned long idx = expires - base->timer_jiffies;
@@ -376,6 +423,22 @@ static void internal_add_timer(struct tvec_base *base, struct timer_list *timer)
 	list_add_tail(&timer->entry, vec);
 }
 
+<<<<<<< HEAD
+=======
+static void internal_add_timer(struct tvec_base *base, struct timer_list *timer)
+{
+	__internal_add_timer(base, timer);
+	/*
+	 * Update base->active_timers and base->next_timer
+	 */
+	if (!tbase_get_deferrable(timer->base)) {
+		if (time_before(timer->expires, base->next_timer))
+			base->next_timer = timer->expires;
+		base->active_timers++;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TIMER_STATS
 void __timer_stats_timer_set_start_info(struct timer_list *timer, void *addr)
 {
@@ -431,6 +494,21 @@ static int timer_fixup_init(void *addr, enum debug_obj_state state)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* Stub timer callback for improperly used timers. */
+static void stub_timer(unsigned long data)
+{
+	WARN_ON(1);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * fixup_activate is called when:
  * - an active object is activated
@@ -454,7 +532,17 @@ static int timer_fixup_activate(void *addr, enum debug_obj_state state)
 			debug_object_activate(timer, &timer_debug_descr);
 			return 0;
 		} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			WARN_ON_ONCE(1);
+=======
+			setup_timer(timer, stub_timer, 0);
+			return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			setup_timer(timer, stub_timer, 0);
+			return 1;
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 
@@ -484,12 +572,55 @@ static int timer_fixup_free(void *addr, enum debug_obj_state state)
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct debug_obj_descr timer_debug_descr = {
 	.name		= "timer_list",
 	.debug_hint	= timer_debug_hint,
 	.fixup_init	= timer_fixup_init,
 	.fixup_activate	= timer_fixup_activate,
 	.fixup_free	= timer_fixup_free,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * fixup_assert_init is called when:
+ * - an untracked/uninit-ed object is found
+ */
+static int timer_fixup_assert_init(void *addr, enum debug_obj_state state)
+{
+	struct timer_list *timer = addr;
+
+	switch (state) {
+	case ODEBUG_STATE_NOTAVAILABLE:
+		if (timer->entry.prev == TIMER_ENTRY_STATIC) {
+			/*
+			 * This is not really a fixup. The timer was
+			 * statically initialized. We just make sure that it
+			 * is tracked in the object tracker.
+			 */
+			debug_object_init(timer, &timer_debug_descr);
+			return 0;
+		} else {
+			setup_timer(timer, stub_timer, 0);
+			return 1;
+		}
+	default:
+		return 0;
+	}
+}
+
+static struct debug_obj_descr timer_debug_descr = {
+	.name			= "timer_list",
+	.debug_hint		= timer_debug_hint,
+	.fixup_init		= timer_fixup_init,
+	.fixup_activate		= timer_fixup_activate,
+	.fixup_free		= timer_fixup_free,
+	.fixup_assert_init	= timer_fixup_assert_init,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void debug_timer_init(struct timer_list *timer)
@@ -512,6 +643,18 @@ static inline void debug_timer_free(struct timer_list *timer)
 	debug_object_free(timer, &timer_debug_descr);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void debug_timer_assert_init(struct timer_list *timer)
+{
+	debug_object_assert_init(timer, &timer_debug_descr);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init_timer(struct timer_list *timer,
 			 const char *name,
 			 struct lock_class_key *key);
@@ -522,6 +665,16 @@ void init_timer_on_stack_key(struct timer_list *timer,
 {
 	debug_object_init_on_stack(timer, &timer_debug_descr);
 	__init_timer(timer, name, key);
+=======
+static void do_init_timer(struct timer_list *timer, unsigned int flags,
+			  const char *name, struct lock_class_key *key);
+
+void init_timer_on_stack_key(struct timer_list *timer, unsigned int flags,
+			     const char *name, struct lock_class_key *key)
+{
+	debug_object_init_on_stack(timer, &timer_debug_descr);
+	do_init_timer(timer, flags, name, key);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(init_timer_on_stack_key);
 
@@ -535,6 +688,14 @@ EXPORT_SYMBOL_GPL(destroy_timer_on_stack);
 static inline void debug_timer_init(struct timer_list *timer) { }
 static inline void debug_timer_activate(struct timer_list *timer) { }
 static inline void debug_timer_deactivate(struct timer_list *timer) { }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static inline void debug_timer_assert_init(struct timer_list *timer) { }
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void debug_timer_assert_init(struct timer_list *timer) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static inline void debug_init(struct timer_list *timer)
@@ -556,12 +717,33 @@ static inline void debug_deactivate(struct timer_list *timer)
 	trace_timer_cancel(timer);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void debug_assert_init(struct timer_list *timer)
+{
+	debug_timer_assert_init(timer);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init_timer(struct timer_list *timer,
 			 const char *name,
 			 struct lock_class_key *key)
 {
 	timer->entry.next = NULL;
 	timer->base = __raw_get_cpu_var(tvec_bases);
+=======
+static void do_init_timer(struct timer_list *timer, unsigned int flags,
+			  const char *name, struct lock_class_key *key)
+{
+	struct tvec_base *base = __raw_get_cpu_var(tvec_bases);
+
+	timer->entry.next = NULL;
+	timer->base = (void *)((unsigned long)base | flags);
+>>>>>>> refs/remotes/origin/master
 	timer->slack = -1;
 #ifdef CONFIG_TIMER_STATS
 	timer->start_site = NULL;
@@ -571,6 +753,7 @@ static void __init_timer(struct timer_list *timer,
 	lockdep_init_map(&timer->lockdep_map, name, key, 0);
 }
 
+<<<<<<< HEAD
 void setup_deferrable_timer_on_stack_key(struct timer_list *timer,
 					 const char *name,
 					 struct lock_class_key *key,
@@ -587,6 +770,12 @@ EXPORT_SYMBOL_GPL(setup_deferrable_timer_on_stack_key);
 /**
  * init_timer_key - initialize a timer
  * @timer: the timer to be initialized
+=======
+/**
+ * init_timer_key - initialize a timer
+ * @timer: the timer to be initialized
+ * @flags: timer flags
+>>>>>>> refs/remotes/origin/master
  * @name: name of the timer
  * @key: lockdep class key of the fake lock used for tracking timer
  *       sync lock dependencies
@@ -594,6 +783,7 @@ EXPORT_SYMBOL_GPL(setup_deferrable_timer_on_stack_key);
  * init_timer_key() must be done to a timer prior calling *any* of the
  * other timer functions.
  */
+<<<<<<< HEAD
 void init_timer_key(struct timer_list *timer,
 		    const char *name,
 		    struct lock_class_key *key)
@@ -614,6 +804,17 @@ EXPORT_SYMBOL(init_timer_deferrable_key);
 
 static inline void detach_timer(struct timer_list *timer,
 				int clear_pending)
+=======
+void init_timer_key(struct timer_list *timer, unsigned int flags,
+		    const char *name, struct lock_class_key *key)
+{
+	debug_init(timer);
+	do_init_timer(timer, flags, name, key);
+}
+EXPORT_SYMBOL(init_timer_key);
+
+static inline void detach_timer(struct timer_list *timer, bool clear_pending)
+>>>>>>> refs/remotes/origin/master
 {
 	struct list_head *entry = &timer->entry;
 
@@ -625,6 +826,32 @@ static inline void detach_timer(struct timer_list *timer,
 	entry->prev = LIST_POISON2;
 }
 
+<<<<<<< HEAD
+=======
+static inline void
+detach_expired_timer(struct timer_list *timer, struct tvec_base *base)
+{
+	detach_timer(timer, true);
+	if (!tbase_get_deferrable(timer->base))
+		base->active_timers--;
+}
+
+static int detach_if_pending(struct timer_list *timer, struct tvec_base *base,
+			     bool clear_pending)
+{
+	if (!timer_pending(timer))
+		return 0;
+
+	detach_timer(timer, clear_pending);
+	if (!tbase_get_deferrable(timer->base)) {
+		base->active_timers--;
+		if (timer->expires == base->next_timer)
+			base->next_timer = base->timer_jiffies;
+	}
+	return 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * We are using hashed locking: holding per_cpu(tvec_bases).lock
  * means that all timers which are tied to this base via timer->base are
@@ -670,6 +897,7 @@ __mod_timer(struct timer_list *timer, unsigned long expires,
 
 	base = lock_timer_base(timer, &flags);
 
+<<<<<<< HEAD
 	if (timer_pending(timer)) {
 		detach_timer(timer, 0);
 		if (timer->expires == base->next_timer &&
@@ -680,12 +908,21 @@ __mod_timer(struct timer_list *timer, unsigned long expires,
 		if (pending_only)
 			goto out_unlock;
 	}
+=======
+	ret = detach_if_pending(timer, base, false);
+	if (!ret && pending_only)
+		goto out_unlock;
+>>>>>>> refs/remotes/origin/master
 
 	debug_activate(timer, expires);
 
 	cpu = smp_processor_id();
 
+<<<<<<< HEAD
 #if defined(CONFIG_NO_HZ) && defined(CONFIG_SMP)
+=======
+#if defined(CONFIG_NO_HZ_COMMON) && defined(CONFIG_SMP)
+>>>>>>> refs/remotes/origin/master
 	if (!pinned && get_sysctl_timer_migration() && idle_cpu(cpu))
 		cpu = get_nohz_timer_target();
 #endif
@@ -710,9 +947,12 @@ __mod_timer(struct timer_list *timer, unsigned long expires,
 	}
 
 	timer->expires = expires;
+<<<<<<< HEAD
 	if (time_before(timer->expires, base->next_timer) &&
 	    !tbase_get_deferrable(timer->base))
 		base->next_timer = timer->expires;
+=======
+>>>>>>> refs/remotes/origin/master
 	internal_add_timer(base, timer);
 
 out_unlock:
@@ -819,7 +1059,17 @@ EXPORT_SYMBOL(mod_timer);
  *
  * mod_timer_pinned() is a way to update the expire field of an
  * active timer (if the timer is inactive it will be activated)
+<<<<<<< HEAD
  * and not allow the timer to be migrated to a different CPU.
+=======
+ * and to ensure that the timer is scheduled on the current CPU.
+ *
+ * Note that this does not prevent the timer from being migrated
+ * when the current CPU goes offline.  If this is a problem for
+ * you, use CPU-hotplug notifiers to handle it correctly, for
+ * example, cancelling the timer when the corresponding CPU goes
+ * offline.
+>>>>>>> refs/remotes/origin/master
  *
  * mod_timer_pinned(timer, expires) is equivalent to:
  *
@@ -872,6 +1122,7 @@ void add_timer_on(struct timer_list *timer, int cpu)
 	spin_lock_irqsave(&base->lock, flags);
 	timer_set_base(timer, base);
 	debug_activate(timer, timer->expires);
+<<<<<<< HEAD
 	if (time_before(timer->expires, base->next_timer) &&
 	    !tbase_get_deferrable(timer->base))
 		base->next_timer = timer->expires;
@@ -885,6 +1136,18 @@ void add_timer_on(struct timer_list *timer, int cpu)
 	 * the timer wheel.
 	 */
 	wake_up_idle_cpu(cpu);
+=======
+	internal_add_timer(base, timer);
+	/*
+	 * Check whether the other CPU is in dynticks mode and needs
+	 * to be triggered to reevaluate the timer wheel.
+	 * We are protected against the other CPU fiddling
+	 * with the timer by holding the timer base lock. This also
+	 * makes sure that a CPU on the way to stop its tick can not
+	 * evaluate the timer wheel.
+	 */
+	wake_up_nohz_cpu(cpu);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&base->lock, flags);
 }
 EXPORT_SYMBOL_GPL(add_timer_on);
@@ -906,6 +1169,12 @@ int del_timer(struct timer_list *timer)
 	unsigned long flags;
 	int ret = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	debug_assert_init(timer);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	timer_stats_timer_clear_start_info(timer);
 	if (timer_pending(timer)) {
 		base = lock_timer_base(timer, &flags);
@@ -916,6 +1185,14 @@ int del_timer(struct timer_list *timer)
 				base->next_timer = base->timer_jiffies;
 			ret = 1;
 		}
+=======
+	debug_assert_init(timer);
+
+	timer_stats_timer_clear_start_info(timer);
+	if (timer_pending(timer)) {
+		base = lock_timer_base(timer, &flags);
+		ret = detach_if_pending(timer, base, true);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&base->lock, flags);
 	}
 
@@ -936,6 +1213,12 @@ int try_to_del_timer_sync(struct timer_list *timer)
 	unsigned long flags;
 	int ret = -1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	debug_assert_init(timer);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	base = lock_timer_base(timer, &flags);
 
 	if (base->running_timer == timer)
@@ -951,6 +1234,16 @@ int try_to_del_timer_sync(struct timer_list *timer)
 		ret = 1;
 	}
 out:
+=======
+	debug_assert_init(timer);
+
+	base = lock_timer_base(timer, &flags);
+
+	if (base->running_timer != timer) {
+		timer_stats_timer_clear_start_info(timer);
+		ret = detach_if_pending(timer, base, true);
+	}
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&base->lock, flags);
 
 	return ret;
@@ -968,6 +1261,7 @@ EXPORT_SYMBOL(try_to_del_timer_sync);
  *
  * Synchronization rules: Callers must prevent restarting of the timer,
  * otherwise this function is meaningless. It must not be called from
+<<<<<<< HEAD
  * interrupt contexts. The caller must not hold locks which would prevent
  * completion of the timer's handler. The timer's handler must not call
  * add_timer_on(). Upon exit the timer is not queued and the handler is
@@ -976,6 +1270,16 @@ EXPORT_SYMBOL(try_to_del_timer_sync);
  * Note: You must not hold locks that are held in interrupt context
  *   while calling this function. Even if the lock has nothing to do
  *   with the timer in question.  Here's why:
+=======
+ * interrupt contexts unless the timer is an irqsafe one. The caller must
+ * not hold locks which would prevent completion of the timer's
+ * handler. The timer's handler must not call add_timer_on(). Upon exit the
+ * timer is not queued and the handler is not running on any CPU.
+ *
+ * Note: For !irqsafe timers, you must not hold locks that are held in
+ *   interrupt context while calling this function. Even if the lock has
+ *   nothing to do with the timer in question.  Here's why:
+>>>>>>> refs/remotes/origin/master
  *
  *    CPU0                             CPU1
  *    ----                             ----
@@ -1012,7 +1316,11 @@ int del_timer_sync(struct timer_list *timer)
 	 * don't use it in hardirq context, because it
 	 * could lead to deadlock.
 	 */
+<<<<<<< HEAD
 	WARN_ON(in_irq());
+=======
+	WARN_ON(in_irq() && !tbase_get_irqsafe(timer->base));
+>>>>>>> refs/remotes/origin/master
 	for (;;) {
 		int ret = try_to_del_timer_sync(timer);
 		if (ret >= 0)
@@ -1037,7 +1345,12 @@ static int cascade(struct tvec_base *base, struct tvec *tv, int index)
 	 */
 	list_for_each_entry_safe(timer, tmp, &tv_list, entry) {
 		BUG_ON(tbase_get_base(timer->base) != base);
+<<<<<<< HEAD
 		internal_add_timer(base, timer);
+=======
+		/* No accounting, while moving them */
+		__internal_add_timer(base, timer);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return index;
@@ -1046,7 +1359,11 @@ static int cascade(struct tvec_base *base, struct tvec *tv, int index)
 static void call_timer_fn(struct timer_list *timer, void (*fn)(unsigned long),
 			  unsigned long data)
 {
+<<<<<<< HEAD
 	int preempt_count = preempt_count();
+=======
+	int count = preempt_count();
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_LOCKDEP
 	/*
@@ -1056,7 +1373,13 @@ static void call_timer_fn(struct timer_list *timer, void (*fn)(unsigned long),
 	 * warnings as well as problems when looking into
 	 * timer->lockdep_map, make a copy and use that here.
 	 */
+<<<<<<< HEAD
 	struct lockdep_map lockdep_map = timer->lockdep_map;
+=======
+	struct lockdep_map lockdep_map;
+
+	lockdep_copy_map(&lockdep_map, &timer->lockdep_map);
+>>>>>>> refs/remotes/origin/master
 #endif
 	/*
 	 * Couple the lock chain with the lock chain at
@@ -1071,16 +1394,26 @@ static void call_timer_fn(struct timer_list *timer, void (*fn)(unsigned long),
 
 	lock_map_release(&lockdep_map);
 
+<<<<<<< HEAD
 	if (preempt_count != preempt_count()) {
 		WARN_ONCE(1, "timer: %pF preempt leak: %08x -> %08x\n",
 			  fn, preempt_count, preempt_count());
+=======
+	if (count != preempt_count()) {
+		WARN_ONCE(1, "timer: %pF preempt leak: %08x -> %08x\n",
+			  fn, count, preempt_count());
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Restore the preempt count. That gives us a decent
 		 * chance to survive and extract information. If the
 		 * callback kept a lock held, bad luck, but not worse
 		 * than the BUG() we had.
 		 */
+<<<<<<< HEAD
 		preempt_count() = preempt_count;
+=======
+		preempt_count_set(count);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1116,26 +1449,52 @@ static inline void __run_timers(struct tvec_base *base)
 		while (!list_empty(head)) {
 			void (*fn)(unsigned long);
 			unsigned long data;
+<<<<<<< HEAD
+=======
+			bool irqsafe;
+>>>>>>> refs/remotes/origin/master
 
 			timer = list_first_entry(head, struct timer_list,entry);
 			fn = timer->function;
 			data = timer->data;
+<<<<<<< HEAD
+=======
+			irqsafe = tbase_get_irqsafe(timer->base);
+>>>>>>> refs/remotes/origin/master
 
 			timer_stats_account_timer(timer);
 
 			base->running_timer = timer;
+<<<<<<< HEAD
 			detach_timer(timer, 1);
 
 			spin_unlock_irq(&base->lock);
 			call_timer_fn(timer, fn, data);
 			spin_lock_irq(&base->lock);
+=======
+			detach_expired_timer(timer, base);
+
+			if (irqsafe) {
+				spin_unlock(&base->lock);
+				call_timer_fn(timer, fn, data);
+				spin_lock(&base->lock);
+			} else {
+				spin_unlock_irq(&base->lock);
+				call_timer_fn(timer, fn, data);
+				spin_lock_irq(&base->lock);
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	base->running_timer = NULL;
 	spin_unlock_irq(&base->lock);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_NO_HZ
+=======
+#ifdef CONFIG_NO_HZ_COMMON
+>>>>>>> refs/remotes/origin/master
 /*
  * Find out when the next timer event is due to happen. This
  * is used on S/390 to stop all activity when a CPU is idle.
@@ -1262,18 +1621,33 @@ static unsigned long cmp_next_hrtimer_event(unsigned long now,
 unsigned long get_next_timer_interrupt(unsigned long now)
 {
 	struct tvec_base *base = __this_cpu_read(tvec_bases);
+<<<<<<< HEAD
 	unsigned long expires;
+=======
+	unsigned long expires = now + NEXT_TIMER_MAX_DELTA;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Pretend that there is no timer pending if the cpu is offline.
 	 * Possible pending timers will be migrated later to an active cpu.
 	 */
 	if (cpu_is_offline(smp_processor_id()))
+<<<<<<< HEAD
 		return now + NEXT_TIMER_MAX_DELTA;
 	spin_lock(&base->lock);
 	if (time_before_eq(base->next_timer, base->timer_jiffies))
 		base->next_timer = __next_timer_interrupt(base);
 	expires = base->next_timer;
+=======
+		return expires;
+
+	spin_lock(&base->lock);
+	if (base->active_timers) {
+		if (time_before_eq(base->next_timer, base->timer_jiffies))
+			base->next_timer = __next_timer_interrupt(base);
+		expires = base->next_timer;
+	}
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&base->lock);
 
 	if (time_before_eq(expires, now))
@@ -1296,7 +1670,10 @@ void update_process_times(int user_tick)
 	account_process_tick(p, user_tick);
 	run_local_timers();
 	rcu_check_callbacks(cpu, user_tick);
+<<<<<<< HEAD
 	printk_tick();
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_IRQ_WORK
 	if (in_irq())
 		irq_work_run();
@@ -1340,6 +1717,7 @@ SYSCALL_DEFINE1(alarm, unsigned int, seconds)
 
 #endif
 
+<<<<<<< HEAD
 #ifndef __alpha__
 
 /*
@@ -1372,7 +1750,11 @@ SYSCALL_DEFINE0(getppid)
 	int pid;
 
 	rcu_read_lock();
+<<<<<<< HEAD
 	pid = task_tgid_vnr(current->real_parent);
+=======
+	pid = task_tgid_vnr(rcu_dereference(current->real_parent));
+>>>>>>> refs/remotes/origin/cm-10.0
 	rcu_read_unlock();
 
 	return pid;
@@ -1404,6 +1786,8 @@ SYSCALL_DEFINE0(getegid)
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void process_timeout(unsigned long __data)
 {
 	wake_up_process((struct task_struct *)__data);
@@ -1511,6 +1895,7 @@ signed long __sched schedule_timeout_uninterruptible(signed long timeout)
 }
 EXPORT_SYMBOL(schedule_timeout_uninterruptible);
 
+<<<<<<< HEAD
 /* Thread ID - the internal kernel "pid" */
 SYSCALL_DEFINE0(gettid)
 {
@@ -1601,6 +1986,13 @@ static int __cpuinit init_timers_cpu(int cpu)
 	int j;
 	struct tvec_base *base;
 	static char __cpuinitdata tvec_base_done[NR_CPUS];
+=======
+static int init_timers_cpu(int cpu)
+{
+	int j;
+	struct tvec_base *base;
+	static char tvec_base_done[NR_CPUS];
+>>>>>>> refs/remotes/origin/master
 
 	if (!tvec_base_done[cpu]) {
 		static char boot_done;
@@ -1609,9 +2001,14 @@ static int __cpuinit init_timers_cpu(int cpu)
 			/*
 			 * The APs use this path later in boot
 			 */
+<<<<<<< HEAD
 			base = kmalloc_node(sizeof(*base),
 						GFP_KERNEL | __GFP_ZERO,
 						cpu_to_node(cpu));
+=======
+			base = kzalloc_node(sizeof(*base), GFP_KERNEL,
+					    cpu_to_node(cpu));
+>>>>>>> refs/remotes/origin/master
 			if (!base)
 				return -ENOMEM;
 
@@ -1650,6 +2047,10 @@ static int __cpuinit init_timers_cpu(int cpu)
 
 	base->timer_jiffies = jiffies;
 	base->next_timer = base->timer_jiffies;
+<<<<<<< HEAD
+=======
+	base->active_timers = 0;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1660,16 +2061,26 @@ static void migrate_timer_list(struct tvec_base *new_base, struct list_head *hea
 
 	while (!list_empty(head)) {
 		timer = list_first_entry(head, struct timer_list, entry);
+<<<<<<< HEAD
 		detach_timer(timer, 0);
 		timer_set_base(timer, new_base);
 		if (time_before(timer->expires, new_base->next_timer) &&
 		    !tbase_get_deferrable(timer->base))
 			new_base->next_timer = timer->expires;
+=======
+		/* We ignore the accounting on the dying cpu */
+		detach_timer(timer, false);
+		timer_set_base(timer, new_base);
+>>>>>>> refs/remotes/origin/master
 		internal_add_timer(new_base, timer);
 	}
 }
 
+<<<<<<< HEAD
 static void __cpuinit migrate_timers(int cpu)
+=======
+static void migrate_timers(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tvec_base *old_base;
 	struct tvec_base *new_base;
@@ -1702,7 +2113,11 @@ static void __cpuinit migrate_timers(int cpu)
 }
 #endif /* CONFIG_HOTPLUG_CPU */
 
+<<<<<<< HEAD
 static int __cpuinit timer_cpu_notify(struct notifier_block *self,
+=======
+static int timer_cpu_notify(struct notifier_block *self,
+>>>>>>> refs/remotes/origin/master
 				unsigned long action, void *hcpu)
 {
 	long cpu = (long)hcpu;
@@ -1727,16 +2142,30 @@ static int __cpuinit timer_cpu_notify(struct notifier_block *self,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata timers_nb = {
+=======
+static struct notifier_block timers_nb = {
+>>>>>>> refs/remotes/origin/master
 	.notifier_call	= timer_cpu_notify,
 };
 
 
 void __init init_timers(void)
 {
+<<<<<<< HEAD
 	int err = timer_cpu_notify(&timers_nb, (unsigned long)CPU_UP_PREPARE,
 				(void *)(long)smp_processor_id());
 
+=======
+	int err;
+
+	/* ensure there are enough low bits for flags in timer->base pointer */
+	BUILD_BUG_ON(__alignof__(struct tvec_base) & TIMER_FLAG_MASK);
+
+	err = timer_cpu_notify(&timers_nb, (unsigned long)CPU_UP_PREPARE,
+			       (void *)(long)smp_processor_id());
+>>>>>>> refs/remotes/origin/master
 	init_timer_stats();
 
 	BUG_ON(err != NOTIFY_OK);

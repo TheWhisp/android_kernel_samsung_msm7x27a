@@ -21,6 +21,14 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/pci.h>
 #include <linux/delay.h>
@@ -170,7 +178,15 @@ W6692Version(struct w6692_hw *card)
 
 	val = ReadW6692(card, W_D_RBCH);
 	pr_notice("%s: Winbond W6692 version: %s\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		W6692Ver[(val >> 6) & 3]);
+=======
+		  W6692Ver[(val >> 6) & 3]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  W6692Ver[(val >> 6) & 3]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -247,7 +263,15 @@ W6692_ph_bh(struct dchannel *dch)
 		break;
 	default:
 		pr_debug("%s: TE unknown state %02x dch state %02x\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			card->name, card->state, dch->state);
+=======
+			 card->name, card->state, dch->state);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 card->name, card->state, dch->state);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	pr_debug("%s: TE newstate %02x\n", card->name, dch->state);
@@ -270,7 +294,15 @@ W6692_empty_Dfifo(struct w6692_hw *card, int count)
 	}
 	if ((dch->rx_skb->len + count) >= dch->maxlen) {
 		pr_debug("%s: empty_Dfifo overrun %d\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dch->rx_skb->len + count);
+=======
+			 dch->rx_skb->len + count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 dch->rx_skb->len + count);
+>>>>>>> refs/remotes/origin/master
 		WriteW6692(card, W_D_CMDR, W_D_CMDR_RACK);
 		return;
 	}
@@ -279,7 +311,15 @@ W6692_empty_Dfifo(struct w6692_hw *card, int count)
 	WriteW6692(card, W_D_CMDR, W_D_CMDR_RACK);
 	if (debug & DEBUG_HW_DFIFO) {
 		snprintf(card->log, 63, "D-recv %s %d ",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			card->name, count);
+=======
+			 card->name, count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 card->name, count);
+>>>>>>> refs/remotes/origin/master
 		print_hex_dump_bytes(card->log, DUMP_PREFIX_OFFSET, ptr, count);
 	}
 }
@@ -311,11 +351,25 @@ W6692_fill_Dfifo(struct w6692_hw *card)
 		del_timer(&dch->timer);
 	}
 	init_timer(&dch->timer);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dch->timer.expires = jiffies + ((DBUSY_TIMER_VALUE * HZ)/1000);
 	add_timer(&dch->timer);
 	if (debug & DEBUG_HW_DFIFO) {
 		snprintf(card->log, 63, "D-send %s %d ",
 			card->name, count);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	dch->timer.expires = jiffies + ((DBUSY_TIMER_VALUE * HZ) / 1000);
+	add_timer(&dch->timer);
+	if (debug & DEBUG_HW_DFIFO) {
+		snprintf(card->log, 63, "D-send %s %d ",
+			 card->name, count);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		print_hex_dump_bytes(card->log, DUMP_PREFIX_OFFSET, ptr, count);
 	}
 }
@@ -425,7 +479,15 @@ handle_statusD(struct w6692_hw *card)
 	if (exval & W_D_EXI_MOC) {	/* MOC - not supported */
 		v1 = ReadW6692(card, W_MOSR);
 		pr_debug("%s: spurious MOC interrupt MOSR %02x\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			card->name, v1);
+=======
+			 card->name, v1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 card->name, v1);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (exval & W_D_EXI_ISC) {	/* ISC - Level1 change */
 		cir = ReadW6692(card, W_CIR);
@@ -433,7 +495,15 @@ handle_statusD(struct w6692_hw *card)
 		if (cir & W_CIR_ICC) {
 			v1 = cir & W_CIR_COD_MASK;
 			pr_debug("%s: ph_state_change %x -> %x\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				dch->state, v1);
+=======
+				 dch->state, v1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 dch->state, v1);
+>>>>>>> refs/remotes/origin/master
 			card->state = v1;
 			if (card->fmask & led) {
 				switch (v1) {
@@ -464,6 +534,10 @@ W6692_empty_Bfifo(struct w6692_ch *wch, int count)
 {
 	struct w6692_hw *card = wch->bch.hw;
 	u8 *ptr;
+<<<<<<< HEAD
+=======
+	int maxlen;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s: empty_Bfifo %d\n", card->name, count);
 	if (unlikely(wch->bch.state == ISDN_P_NONE)) {
@@ -473,20 +547,43 @@ W6692_empty_Bfifo(struct w6692_ch *wch, int count)
 			skb_trim(wch->bch.rx_skb, 0);
 		return;
 	}
+<<<<<<< HEAD
 	if (!wch->bch.rx_skb) {
 		wch->bch.rx_skb = mI_alloc_skb(wch->bch.maxlen, GFP_ATOMIC);
 		if (unlikely(!wch->bch.rx_skb)) {
 			pr_info("%s: B receive out of memory\n", card->name);
 			WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RACK |
+<<<<<<< HEAD
 				W_B_CMDR_RACT);
+=======
+				    W_B_CMDR_RACT);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 	}
 	if (wch->bch.rx_skb->len + count > wch->bch.maxlen) {
 		pr_debug("%s: empty_Bfifo incoming packet too large\n",
+<<<<<<< HEAD
 			card->name);
+=======
+			 card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RACK | W_B_CMDR_RACT);
 		skb_trim(wch->bch.rx_skb, 0);
+=======
+	if (test_bit(FLG_RX_OFF, &wch->bch.Flags)) {
+		wch->bch.dropcnt += count;
+		WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RACK | W_B_CMDR_RACT);
+		return;
+	}
+	maxlen = bchannel_get_rxbuf(&wch->bch, count);
+	if (maxlen < 0) {
+		WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RACK | W_B_CMDR_RACT);
+		if (wch->bch.rx_skb)
+			skb_trim(wch->bch.rx_skb, 0);
+		pr_warning("%s.B%d: No bufferspace for %d bytes\n",
+			   card->name, wch->bch.nr, count);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	ptr = skb_put(wch->bch.rx_skb, count);
@@ -494,7 +591,15 @@ W6692_empty_Bfifo(struct w6692_ch *wch, int count)
 	WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RACK | W_B_CMDR_RACT);
 	if (debug & DEBUG_HW_DFIFO) {
 		snprintf(card->log, 63, "B%1d-recv %s %d ",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			wch->bch.nr, card->name, count);
+=======
+			 wch->bch.nr, card->name, count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 wch->bch.nr, card->name, count);
+>>>>>>> refs/remotes/origin/master
 		print_hex_dump_bytes(card->log, DUMP_PREFIX_OFFSET, ptr, count);
 	}
 }
@@ -503,6 +608,7 @@ static void
 W6692_fill_Bfifo(struct w6692_ch *wch)
 {
 	struct w6692_hw *card = wch->bch.hw;
+<<<<<<< HEAD
 	int count;
 	u8 *ptr, cmd = W_B_CMDR_RACT | W_B_CMDR_XMS;
 
@@ -513,19 +619,62 @@ W6692_fill_Bfifo(struct w6692_ch *wch)
 	if (count <= 0)
 		return;
 	ptr = wch->bch.tx_skb->data + wch->bch.tx_idx;
+=======
+	int count, fillempty = 0;
+	u8 *ptr, cmd = W_B_CMDR_RACT | W_B_CMDR_XMS;
+
+	pr_debug("%s: fill Bfifo\n", card->name);
+	if (!wch->bch.tx_skb) {
+		if (!test_bit(FLG_TX_EMPTY, &wch->bch.Flags))
+			return;
+		ptr = wch->bch.fill;
+		count = W_B_FIFO_THRESH;
+		fillempty = 1;
+	} else {
+		count = wch->bch.tx_skb->len - wch->bch.tx_idx;
+		if (count <= 0)
+			return;
+		ptr = wch->bch.tx_skb->data + wch->bch.tx_idx;
+	}
+>>>>>>> refs/remotes/origin/master
 	if (count > W_B_FIFO_THRESH)
 		count = W_B_FIFO_THRESH;
 	else if (test_bit(FLG_HDLC, &wch->bch.Flags))
 		cmd |= W_B_CMDR_XME;
 
 	pr_debug("%s: fill Bfifo%d/%d\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			count, wch->bch.tx_idx);
+=======
+		 count, wch->bch.tx_idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 	wch->bch.tx_idx += count;
 	outsb(wch->addr + W_B_XFIFO, ptr, count);
 	WriteW6692B(wch, W_B_CMDR, cmd);
 	if (debug & DEBUG_HW_DFIFO) {
 		snprintf(card->log, 63, "B%1d-send %s %d ",
+<<<<<<< HEAD
 			wch->bch.nr, card->name, count);
+=======
+			 wch->bch.nr, card->name, count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 count, wch->bch.tx_idx);
+	wch->bch.tx_idx += count;
+	if (fillempty) {
+		while (count > 0) {
+			outsb(wch->addr + W_B_XFIFO, ptr, MISDN_BCH_FILL_SIZE);
+			count -= MISDN_BCH_FILL_SIZE;
+		}
+	} else {
+		outsb(wch->addr + W_B_XFIFO, ptr, count);
+	}
+	WriteW6692B(wch, W_B_CMDR, cmd);
+	if ((debug & DEBUG_HW_BFIFO) && !fillempty) {
+		snprintf(card->log, 63, "B%1d-send %s %d ",
+			 wch->bch.nr, card->name, count);
+>>>>>>> refs/remotes/origin/master
 		print_hex_dump_bytes(card->log, DUMP_PREFIX_OFFSET, ptr, count);
 	}
 }
@@ -585,7 +734,15 @@ disable_pots(struct w6692_ch *wch)
 	wch->b_mode &= ~(W_B_MODE_EPCM | W_B_MODE_BSW0);
 	WriteW6692B(wch, W_B_MODE, wch->b_mode);
 	WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RRST | W_B_CMDR_RACT |
+<<<<<<< HEAD
+<<<<<<< HEAD
 		W_B_CMDR_XRST);
+=======
+		    W_B_CMDR_XRST);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    W_B_CMDR_XRST);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -596,7 +753,15 @@ w6692_mode(struct w6692_ch *wch, u32 pr)
 
 	card = wch->bch.hw;
 	pr_debug("%s: B%d protocol %x-->%x\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		wch->bch.nr, wch->bch.state, pr);
+=======
+		 wch->bch.nr, wch->bch.state, pr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 wch->bch.nr, wch->bch.state, pr);
+>>>>>>> refs/remotes/origin/master
 	switch (pr) {
 	case ISDN_P_NONE:
 		if ((card->fmask & pots) && (wch->b_mode & W_B_MODE_EPCM))
@@ -613,7 +778,15 @@ w6692_mode(struct w6692_ch *wch, u32 pr)
 		WriteW6692B(wch, W_B_MODE, wch->b_mode);
 		WriteW6692B(wch, W_B_EXIM, 0);
 		WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RRST | W_B_CMDR_RACT |
+<<<<<<< HEAD
+<<<<<<< HEAD
 			W_B_CMDR_XRST);
+=======
+			    W_B_CMDR_XRST);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    W_B_CMDR_XRST);
+>>>>>>> refs/remotes/origin/master
 		test_and_set_bit(FLG_TRANSPARENT, &wch->bch.Flags);
 		break;
 	case ISDN_P_B_HDLC:
@@ -623,7 +796,15 @@ w6692_mode(struct w6692_ch *wch, u32 pr)
 		WriteW6692B(wch, W_B_ADM2, 0xff);
 		WriteW6692B(wch, W_B_EXIM, 0);
 		WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RRST | W_B_CMDR_RACT |
+<<<<<<< HEAD
+<<<<<<< HEAD
 			W_B_CMDR_XRST);
+=======
+			    W_B_CMDR_XRST);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    W_B_CMDR_XRST);
+>>>>>>> refs/remotes/origin/master
 		test_and_set_bit(FLG_HDLC, &wch->bch.Flags);
 		break;
 	default:
@@ -637,6 +818,7 @@ w6692_mode(struct w6692_ch *wch, u32 pr)
 static void
 send_next(struct w6692_ch *wch)
 {
+<<<<<<< HEAD
 	if (wch->bch.tx_skb && wch->bch.tx_idx < wch->bch.tx_skb->len)
 		W6692_fill_Bfifo(wch);
 	else {
@@ -648,6 +830,19 @@ send_next(struct w6692_ch *wch)
 		}
 		if (get_next_bframe(&wch->bch))
 			W6692_fill_Bfifo(wch);
+=======
+	if (wch->bch.tx_skb && wch->bch.tx_idx < wch->bch.tx_skb->len) {
+		W6692_fill_Bfifo(wch);
+	} else {
+		if (wch->bch.tx_skb)
+			dev_kfree_skb(wch->bch.tx_skb);
+		if (get_next_bframe(&wch->bch)) {
+			W6692_fill_Bfifo(wch);
+			test_and_clear_bit(FLG_TX_EMPTY, &wch->bch.Flags);
+		} else if (test_bit(FLG_TX_EMPTY, &wch->bch.Flags)) {
+			W6692_fill_Bfifo(wch);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -666,7 +861,15 @@ W6692B_interrupt(struct w6692_hw *card, int ch)
 			if ((star & W_B_STAR_RDOV) &&
 			    test_bit(FLG_ACTIVE, &wch->bch.Flags)) {
 				pr_debug("%s: B%d RDOV proto=%x\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					wch->bch.nr, wch->bch.state);
+=======
+					 wch->bch.nr, wch->bch.state);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 wch->bch.nr, wch->bch.state);
+>>>>>>> refs/remotes/origin/master
 #ifdef ERROR_STATISTIC
 				wch->bch.err_rdo++;
 #endif
@@ -674,21 +877,45 @@ W6692B_interrupt(struct w6692_hw *card, int ch)
 			if (test_bit(FLG_HDLC, &wch->bch.Flags)) {
 				if (star & W_B_STAR_CRCE) {
 					pr_debug("%s: B%d CRC error\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 						card->name, wch->bch.nr);
+=======
+						 card->name, wch->bch.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 card->name, wch->bch.nr);
+>>>>>>> refs/remotes/origin/master
 #ifdef ERROR_STATISTIC
 					wch->bch.err_crc++;
 #endif
 				}
 				if (star & W_B_STAR_RMB) {
 					pr_debug("%s: B%d message abort\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 						card->name, wch->bch.nr);
+=======
+						 card->name, wch->bch.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 card->name, wch->bch.nr);
+>>>>>>> refs/remotes/origin/master
 #ifdef ERROR_STATISTIC
 					wch->bch.err_inv++;
 #endif
 				}
 			}
 			WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RACK |
+<<<<<<< HEAD
+<<<<<<< HEAD
 				W_B_CMDR_RRST | W_B_CMDR_RACT);
+=======
+				    W_B_CMDR_RRST | W_B_CMDR_RACT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    W_B_CMDR_RRST | W_B_CMDR_RACT);
+>>>>>>> refs/remotes/origin/master
 			if (wch->bch.rx_skb)
 				skb_trim(wch->bch.rx_skb, 0);
 		} else {
@@ -697,7 +924,11 @@ W6692B_interrupt(struct w6692_hw *card, int ch)
 			if (count == 0)
 				count = W_B_FIFO_THRESH;
 			W6692_empty_Bfifo(wch, count);
+<<<<<<< HEAD
 			recv_Bchannel(&wch->bch, 0);
+=======
+			recv_Bchannel(&wch->bch, 0, false);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (stat & W_B_EXI_RMR) {
@@ -705,45 +936,105 @@ W6692B_interrupt(struct w6692_hw *card, int ch)
 			star = ReadW6692B(wch, W_B_STAR);
 		if (star & W_B_STAR_RDOV) {
 			pr_debug("%s: B%d RDOV proto=%x\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				wch->bch.nr, wch->bch.state);
+=======
+				 wch->bch.nr, wch->bch.state);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 wch->bch.nr, wch->bch.state);
+>>>>>>> refs/remotes/origin/master
 #ifdef ERROR_STATISTIC
 			wch->bch.err_rdo++;
 #endif
 			WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RACK |
+<<<<<<< HEAD
+<<<<<<< HEAD
 				W_B_CMDR_RRST | W_B_CMDR_RACT);
+=======
+				    W_B_CMDR_RRST | W_B_CMDR_RACT);
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else {
 			W6692_empty_Bfifo(wch, W_B_FIFO_THRESH);
 			if (test_bit(FLG_TRANSPARENT, &wch->bch.Flags) &&
 			    wch->bch.rx_skb && (wch->bch.rx_skb->len > 0))
 				recv_Bchannel(&wch->bch, 0);
+=======
+				    W_B_CMDR_RRST | W_B_CMDR_RACT);
+		} else {
+			W6692_empty_Bfifo(wch, W_B_FIFO_THRESH);
+			if (test_bit(FLG_TRANSPARENT, &wch->bch.Flags))
+				recv_Bchannel(&wch->bch, 0, false);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (stat & W_B_EXI_RDOV) {
 		/* only if it is not handled yet */
 		if (!(star & W_B_STAR_RDOV)) {
 			pr_debug("%s: B%d RDOV IRQ proto=%x\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				wch->bch.nr, wch->bch.state);
+=======
+				 wch->bch.nr, wch->bch.state);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 wch->bch.nr, wch->bch.state);
+>>>>>>> refs/remotes/origin/master
 #ifdef ERROR_STATISTIC
 			wch->bch.err_rdo++;
 #endif
 			WriteW6692B(wch, W_B_CMDR, W_B_CMDR_RACK |
+<<<<<<< HEAD
+<<<<<<< HEAD
 				W_B_CMDR_RRST | W_B_CMDR_RACT);
+=======
+				    W_B_CMDR_RRST | W_B_CMDR_RACT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    W_B_CMDR_RRST | W_B_CMDR_RACT);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (stat & W_B_EXI_XFR) {
 		if (!(stat & (W_B_EXI_RME | W_B_EXI_RMR))) {
 			star = ReadW6692B(wch, W_B_STAR);
 			pr_debug("%s: B%d star %02x\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				wch->bch.nr, star);
 		}
 		if (star & W_B_STAR_XDOW) {
 			pr_debug("%s: B%d XDOW proto=%x\n", card->name,
 				wch->bch.nr, wch->bch.state);
+=======
+				 wch->bch.nr, star);
+		}
+		if (star & W_B_STAR_XDOW) {
+			pr_debug("%s: B%d XDOW proto=%x\n", card->name,
+				 wch->bch.nr, wch->bch.state);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 wch->bch.nr, star);
+		}
+		if (star & W_B_STAR_XDOW) {
+			pr_warning("%s: B%d XDOW proto=%x\n", card->name,
+				   wch->bch.nr, wch->bch.state);
+>>>>>>> refs/remotes/origin/master
 #ifdef ERROR_STATISTIC
 			wch->bch.err_xdu++;
 #endif
 			WriteW6692B(wch, W_B_CMDR, W_B_CMDR_XRST |
+<<<<<<< HEAD
+<<<<<<< HEAD
 				W_B_CMDR_RACT);
+=======
+				    W_B_CMDR_RACT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    W_B_CMDR_RACT);
+>>>>>>> refs/remotes/origin/master
 			/* resend */
 			if (wch->bch.tx_skb) {
 				if (!test_bit(FLG_TRANSPARENT, &wch->bch.Flags))
@@ -751,12 +1042,17 @@ W6692B_interrupt(struct w6692_hw *card, int ch)
 			}
 		}
 		send_next(wch);
+<<<<<<< HEAD
 		if (stat & W_B_EXI_XDUN)
 			return; /* handle XDOW only once */
 	}
 	if (stat & W_B_EXI_XDUN) {
 		pr_debug("%s: B%d XDUN proto=%x\n", card->name,
+<<<<<<< HEAD
 			wch->bch.nr, wch->bch.state);
+=======
+			 wch->bch.nr, wch->bch.state);
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef ERROR_STATISTIC
 		wch->bch.err_xdu++;
 #endif
@@ -765,6 +1061,23 @@ W6692B_interrupt(struct w6692_hw *card, int ch)
 		if (wch->bch.tx_skb) {
 			if (!test_bit(FLG_TRANSPARENT, &wch->bch.Flags))
 				wch->bch.tx_idx = 0;
+=======
+		if (star & W_B_STAR_XDOW)
+			return; /* handle XDOW only once */
+	}
+	if (stat & W_B_EXI_XDUN) {
+		pr_warning("%s: B%d XDUN proto=%x\n", card->name,
+			   wch->bch.nr, wch->bch.state);
+#ifdef ERROR_STATISTIC
+		wch->bch.err_xdu++;
+#endif
+		/* resend - no XRST needed */
+		if (wch->bch.tx_skb) {
+			if (!test_bit(FLG_TRANSPARENT, &wch->bch.Flags))
+				wch->bch.tx_idx = 0;
+		} else if (test_bit(FLG_FILLEMPTY, &wch->bch.Flags)) {
+			test_and_set_bit(FLG_TX_EMPTY, &wch->bch.Flags);
+>>>>>>> refs/remotes/origin/master
 		}
 		send_next(wch);
 	}
@@ -817,7 +1130,15 @@ dbusy_timer_handler(struct dchannel *dch)
 		rbch = ReadW6692(card, W_D_RBCH);
 		star = ReadW6692(card, W_D_STAR);
 		pr_debug("%s: D-Channel Busy RBCH %02x STAR %02x\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			card->name, rbch, star);
+=======
+			 card->name, rbch, star);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 card->name, rbch, star);
+>>>>>>> refs/remotes/origin/master
 		if (star & W_D_STAR_XBZ)	/* D-Channel Busy */
 			test_and_set_bit(FLG_L1_BUSY, &dch->Flags);
 		else {
@@ -887,7 +1208,15 @@ void initW6692(struct w6692_hw *card)
 			val = ReadW6692(card, W_XADDR);
 			if (debug & DEBUG_HW)
 				pr_notice("%s: W_XADDR=%02x\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 					card->name, val);
+=======
+					  card->name, val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  card->name, val);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -923,7 +1252,15 @@ init_card(struct w6692_hw *card)
 		msleep_interruptible(10);
 		if (debug & DEBUG_HW)
 			pr_notice("%s: IRQ %d count %d\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				card->irq, card->irqcnt);
+=======
+				  card->irq, card->irqcnt);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  card->irq, card->irqcnt);
+>>>>>>> refs/remotes/origin/master
 		if (!card->irqcnt) {
 			pr_info("%s: IRQ(%d) getting no IRQs during init %d\n",
 				card->name, card->irq, 3 - cnt);
@@ -943,14 +1280,19 @@ w6692_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 	struct w6692_hw *card = bch->hw;
 	int ret = -EINVAL;
 	struct mISDNhead *hh = mISDN_HEAD_P(skb);
+<<<<<<< HEAD
 	u32 id;
 	u_long flags;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	switch (hh->prim) {
 	case PH_DATA_REQ:
 		spin_lock_irqsave(&card->lock, flags);
 		ret = bchannel_senddata(bch, skb);
 		if (ret > 0) { /* direct TX */
+<<<<<<< HEAD
 			id = hh->id; /* skb can be freed */
 			ret = 0;
 			W6692_fill_Bfifo(bc);
@@ -959,6 +1301,12 @@ w6692_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 				queue_ch_frame(ch, PH_DATA_CNF, id, NULL);
 		} else
 			spin_unlock_irqrestore(&card->lock, flags);
+=======
+			ret = 0;
+			W6692_fill_Bfifo(bc);
+		}
+		spin_unlock_irqrestore(&card->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	case PH_ACTIVATE_REQ:
 		spin_lock_irqsave(&card->lock, flags);
@@ -969,7 +1317,15 @@ w6692_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 		spin_unlock_irqrestore(&card->lock, flags);
 		if (!ret)
 			_queue_data(ch, PH_ACTIVATE_IND, MISDN_ID_ANY, 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				NULL, GFP_KERNEL);
+=======
+				    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case PH_DEACTIVATE_REQ:
 		spin_lock_irqsave(&card->lock, flags);
@@ -977,7 +1333,15 @@ w6692_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 		w6692_mode(bc, ISDN_P_NONE);
 		spin_unlock_irqrestore(&card->lock, flags);
 		_queue_data(ch, PH_DEACTIVATE_IND, MISDN_ID_ANY, 0,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			NULL, GFP_KERNEL);
+=======
+			    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		break;
 	default:
@@ -993,13 +1357,18 @@ w6692_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 static int
 channel_bctrl(struct bchannel *bch, struct mISDN_ctrl_req *cq)
 {
+<<<<<<< HEAD
 	int	ret = 0;
 
 	switch (cq->op) {
 	case MISDN_CTRL_GETOP:
 		cq->op = 0;
 		break;
+<<<<<<< HEAD
 	/* Nothing implemented yet */
+=======
+		/* Nothing implemented yet */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case MISDN_CTRL_FILL_EMPTY:
 	default:
 		pr_info("%s: unknown Op %x\n", __func__, cq->op);
@@ -1007,6 +1376,9 @@ channel_bctrl(struct bchannel *bch, struct mISDN_ctrl_req *cq)
 		break;
 	}
 	return ret;
+=======
+	return mISDN_ctrl_bchannel(bch, cq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -1014,14 +1386,25 @@ open_bchannel(struct w6692_hw *card, struct channel_req *rq)
 {
 	struct bchannel *bch;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rq->adr.channel > 2)
+=======
+	if (rq->adr.channel == 0 || rq->adr.channel > 2)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rq->adr.channel == 0 || rq->adr.channel > 2)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (rq->protocol == ISDN_P_NONE)
 		return -EINVAL;
 	bch = &card->bc[rq->adr.channel - 1].bch;
 	if (test_and_set_bit(FLG_OPEN, &bch->Flags))
 		return -EBUSY; /* b-channel can be only open once */
+<<<<<<< HEAD
 	test_and_clear_bit(FLG_FILLEMPTY, &bch->Flags);
+=======
+>>>>>>> refs/remotes/origin/master
 	bch->ch.protocol = rq->protocol;
 	rq->ch = &bch->ch;
 	return 0;
@@ -1034,7 +1417,14 @@ channel_ctrl(struct w6692_hw *card, struct mISDN_ctrl_req *cq)
 
 	switch (cq->op) {
 	case MISDN_CTRL_GETOP:
+<<<<<<< HEAD
 		cq->op = 0;
+=======
+		cq->op = MISDN_CTRL_L1_TIMER3;
+		break;
+	case MISDN_CTRL_L1_TIMER3:
+		ret = l1_event(card->dch.l1, HW_TIMER3_VALUE | (cq->p1 & 0xff));
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		pr_info("%s: unknown CTRL OP %x\n", card->name, cq->op);
@@ -1057,6 +1447,7 @@ w6692_bctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 	switch (cmd) {
 	case CLOSE_CHANNEL:
 		test_and_clear_bit(FLG_OPEN, &bch->Flags);
+<<<<<<< HEAD
 		if (test_bit(FLG_ACTIVE, &bch->Flags)) {
 			spin_lock_irqsave(&card->lock, flags);
 			mISDN_freebchannel(bch);
@@ -1066,6 +1457,13 @@ w6692_bctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 			skb_queue_purge(&bch->rqueue);
 			bch->rcount = 0;
 		}
+=======
+		cancel_work_sync(&bch->workq);
+		spin_lock_irqsave(&card->lock, flags);
+		mISDN_clear_bchannel(bch);
+		w6692_mode(bc, ISDN_P_NONE);
+		spin_unlock_irqrestore(&card->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		ch->protocol = ISDN_P_NONE;
 		ch->peer = NULL;
 		module_put(THIS_MODULE);
@@ -1167,16 +1565,38 @@ w6692_l1callback(struct dchannel *dch, u32 cmd)
 	case PH_ACTIVATE_IND:
 		test_and_set_bit(FLG_ACTIVE, &dch->Flags);
 		_queue_data(&dch->dev.D, cmd, MISDN_ID_ANY, 0, NULL,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			GFP_ATOMIC);
+=======
+			    GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case PH_DEACTIVATE_IND:
 		test_and_clear_bit(FLG_ACTIVE, &dch->Flags);
 		_queue_data(&dch->dev.D, cmd, MISDN_ID_ANY, 0, NULL,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			GFP_ATOMIC);
 		break;
 	default:
 		pr_debug("%s: %s unknown command %x\n", card->name,
 			__func__, cmd);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			    GFP_ATOMIC);
+		break;
+	default:
+		pr_debug("%s: %s unknown command %x\n", card->name,
+			 __func__, cmd);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	return 0;
@@ -1186,7 +1606,15 @@ static int
 open_dchannel(struct w6692_hw *card, struct channel_req *rq)
 {
 	pr_debug("%s: %s dev(%d) open from %p\n", card->name, __func__,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		card->dch.dev.id, __builtin_return_address(1));
+=======
+		 card->dch.dev.id, __builtin_return_address(1));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 card->dch.dev.id, __builtin_return_address(1));
+>>>>>>> refs/remotes/origin/master
 	if (rq->protocol != ISDN_P_TE_S0)
 		return -EINVAL;
 	if (rq->adr.channel == 1)
@@ -1196,7 +1624,15 @@ open_dchannel(struct w6692_hw *card, struct channel_req *rq)
 	rq->ch->protocol = rq->protocol;
 	if (card->dch.state == 7)
 		_queue_data(rq->ch, PH_ACTIVATE_IND, MISDN_ID_ANY,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    0, NULL, GFP_KERNEL);
+=======
+			    0, NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    0, NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1224,7 +1660,15 @@ w6692_dctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 		break;
 	case CLOSE_CHANNEL:
 		pr_debug("%s: dev(%d) close from %p\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dch->dev.id, __builtin_return_address(0));
+=======
+			 dch->dev.id, __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 dch->dev.id, __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/master
 		module_put(THIS_MODULE);
 		break;
 	case CONTROL_CHANNEL:
@@ -1244,7 +1688,15 @@ setup_w6692(struct w6692_hw *card)
 
 	if (!request_region(card->addr, 256, card->name)) {
 		pr_info("%s: config port %x-%x already in use\n", card->name,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       card->addr, card->addr + 255);
+=======
+			card->addr, card->addr + 255);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			card->addr, card->addr + 255);
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 	W6692Version(card);
@@ -1319,7 +1771,12 @@ setup_instance(struct w6692_hw *card)
 	card->dch.hw = card;
 	card->dch.dev.nrbchan = 2;
 	for (i = 0; i < 2; i++) {
+<<<<<<< HEAD
 		mISDN_initbchannel(&card->bc[i].bch, MAX_DATA_MEM);
+=======
+		mISDN_initbchannel(&card->bc[i].bch, MAX_DATA_MEM,
+				   W_B_FIFO_THRESH);
+>>>>>>> refs/remotes/origin/master
 		card->bc[i].bch.hw = card;
 		card->bc[i].bch.nr = i + 1;
 		card->bc[i].bch.ch.nr = i + 1;
@@ -1332,7 +1789,15 @@ setup_instance(struct w6692_hw *card)
 	if (err)
 		goto error_setup;
 	err = mISDN_register_device(&card->dch.dev, &card->pdev->dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		card->name);
+=======
+				    card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    card->name);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto error_reg;
 	err = init_card(card);
@@ -1361,7 +1826,11 @@ error_setup:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 w6692_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	int		err = -ENOMEM;
@@ -1393,7 +1862,11 @@ w6692_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 w6692_remove_pci(struct pci_dev *pdev)
 {
 	struct w6692_hw	*card = pci_get_drvdata(pdev);
@@ -1420,7 +1893,11 @@ MODULE_DEVICE_TABLE(pci, w6692_ids);
 static struct pci_driver w6692_driver = {
 	.name =  "w6692",
 	.probe = w6692_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(w6692_remove_pci),
+=======
+	.remove = w6692_remove_pci,
+>>>>>>> refs/remotes/origin/master
 	.id_table = w6692_ids,
 };
 

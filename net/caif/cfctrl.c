@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -9,6 +13,10 @@
 #include <linux/stddef.h>
 #include <linux/spinlock.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/pkt_sched.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/caif/caif_layer.h>
 #include <net/caif/cfpkt.h>
 #include <net/caif/cfctrl.h>
@@ -19,12 +27,20 @@
 
 #ifdef CAIF_NO_LOOP
 static int handle_loop(struct cfctrl *ctrl,
+<<<<<<< HEAD
 			      int cmd, struct cfpkt *pkt){
+=======
+		       int cmd, struct cfpkt *pkt){
+>>>>>>> refs/remotes/origin/master
 	return -1;
 }
 #else
 static int handle_loop(struct cfctrl *ctrl,
+<<<<<<< HEAD
 		int cmd, struct cfpkt *pkt);
+=======
+		       int cmd, struct cfpkt *pkt);
+>>>>>>> refs/remotes/origin/master
 #endif
 static int cfctrl_recv(struct cflayer *layr, struct cfpkt *pkt);
 static void cfctrl_ctrlcmd(struct cflayer *layr, enum caif_ctrlcmd ctrl,
@@ -35,6 +51,8 @@ struct cflayer *cfctrl_create(void)
 {
 	struct dev_info dev_info;
 	struct cfctrl *this =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kmalloc(sizeof(struct cfctrl), GFP_ATOMIC);
 	if (!this) {
 		pr_warn("Out of memory\n");
@@ -44,6 +62,19 @@ struct cflayer *cfctrl_create(void)
 	memset(&dev_info, 0, sizeof(dev_info));
 	dev_info.id = 0xff;
 	memset(this, 0, sizeof(*this));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		kzalloc(sizeof(struct cfctrl), GFP_ATOMIC);
+	if (!this)
+		return NULL;
+	caif_assert(offsetof(struct cfctrl, serv.layer) == 0);
+	memset(&dev_info, 0, sizeof(dev_info));
+	dev_info.id = 0xff;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cfsrvl_init(&this->serv, 0, &dev_info, false);
 	atomic_set(&this->req_seq_no, 1);
 	atomic_set(&this->rsp_seq_no, 1);
@@ -74,7 +105,11 @@ void cfctrl_remove(struct cflayer *layer)
 }
 
 static bool param_eq(const struct cfctrl_link_param *p1,
+<<<<<<< HEAD
 			const struct cfctrl_link_param *p2)
+=======
+		     const struct cfctrl_link_param *p2)
+>>>>>>> refs/remotes/origin/master
 {
 	bool eq =
 	    p1->linktype == p2->linktype &&
@@ -177,29 +212,56 @@ static void init_info(struct caif_payload_info *info, struct cfctrl *cfctrl)
 
 void cfctrl_enum_req(struct cflayer *layer, u8 physlinkid)
 {
+<<<<<<< HEAD
 	struct cfctrl *cfctrl = container_obj(layer);
 	struct cfpkt *pkt = cfpkt_create(CFPKT_CTRL_PKT_LEN);
 	struct cflayer *dn = cfctrl->serv.layer.dn;
+<<<<<<< HEAD
 	if (!pkt) {
 		pr_warn("Out of memory\n");
 		return;
 	}
+=======
+	if (!pkt)
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cfpkt *pkt;
+	struct cfctrl *cfctrl = container_obj(layer);
+	struct cflayer *dn = cfctrl->serv.layer.dn;
+
+>>>>>>> refs/remotes/origin/master
 	if (!dn) {
 		pr_debug("not able to send enum request\n");
 		return;
 	}
+<<<<<<< HEAD
+=======
+	pkt = cfpkt_create(CFPKT_CTRL_PKT_LEN);
+	if (!pkt)
+		return;
+>>>>>>> refs/remotes/origin/master
 	caif_assert(offsetof(struct cfctrl, serv.layer) == 0);
 	init_info(cfpkt_info(pkt), cfctrl);
 	cfpkt_info(pkt)->dev_info->id = physlinkid;
 	cfctrl->serv.dev_info.id = physlinkid;
 	cfpkt_addbdy(pkt, CFCTRL_CMD_ENUM);
 	cfpkt_addbdy(pkt, physlinkid);
+<<<<<<< HEAD
+=======
+	cfpkt_set_prio(pkt, TC_PRIO_CONTROL);
+>>>>>>> refs/remotes/origin/master
 	dn->transmit(dn, pkt);
 }
 
 int cfctrl_linkup_request(struct cflayer *layer,
+<<<<<<< HEAD
 			   struct cfctrl_link_param *param,
 			   struct cflayer *user_layer)
+=======
+			  struct cfctrl_link_param *param,
+			  struct cflayer *user_layer)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cfctrl *cfctrl = container_obj(layer);
 	u32 tmp32;
@@ -224,10 +286,20 @@ int cfctrl_linkup_request(struct cflayer *layer,
 	}
 
 	pkt = cfpkt_create(CFPKT_CTRL_PKT_LEN);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!pkt) {
 		pr_warn("Out of memory\n");
 		return -ENOMEM;
 	}
+=======
+	if (!pkt)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!pkt)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	cfpkt_addbdy(pkt, CFCTRL_CMD_LINK_SETUP);
 	cfpkt_addbdy(pkt, (param->chtype << 4) | param->linktype);
 	cfpkt_addbdy(pkt, (param->priority << 3) | param->phyid);
@@ -275,10 +347,20 @@ int cfctrl_linkup_request(struct cflayer *layer,
 		return -EINVAL;
 	}
 	req = kzalloc(sizeof(*req), GFP_KERNEL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!req) {
 		pr_warn("Out of memory\n");
 		return -ENOMEM;
 	}
+=======
+	if (!req)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!req)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	req->client_layer = user_layer;
 	req->cmd = CFCTRL_CMD_LINK_SETUP;
 	req->param = *param;
@@ -290,6 +372,10 @@ int cfctrl_linkup_request(struct cflayer *layer,
 	 *	might arrive with the newly allocated channel ID.
 	 */
 	cfpkt_info(pkt)->dev_info->id = param->phyid;
+<<<<<<< HEAD
+=======
+	cfpkt_set_prio(pkt, TC_PRIO_CONTROL);
+>>>>>>> refs/remotes/origin/master
 	ret =
 	    dn->transmit(dn, pkt);
 	if (ret < 0) {
@@ -306,6 +392,7 @@ int cfctrl_linkup_request(struct cflayer *layer,
 }
 
 int cfctrl_linkdown_req(struct cflayer *layer, u8 channelid,
+<<<<<<< HEAD
 				struct cflayer *client)
 {
 	int ret;
@@ -313,19 +400,43 @@ int cfctrl_linkdown_req(struct cflayer *layer, u8 channelid,
 	struct cfpkt *pkt = cfpkt_create(CFPKT_CTRL_PKT_LEN);
 	struct cflayer *dn = cfctrl->serv.layer.dn;
 
+<<<<<<< HEAD
 	if (!pkt) {
 		pr_warn("Out of memory\n");
 		return -ENOMEM;
 	}
+=======
+	if (!pkt)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+			struct cflayer *client)
+{
+	int ret;
+	struct cfpkt *pkt;
+	struct cfctrl *cfctrl = container_obj(layer);
+	struct cflayer *dn = cfctrl->serv.layer.dn;
+
+>>>>>>> refs/remotes/origin/master
 	if (!dn) {
 		pr_debug("not able to send link-down request\n");
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 
 	cfpkt_addbdy(pkt, CFCTRL_CMD_LINK_DESTROY);
 	cfpkt_addbdy(pkt, channelid);
 	init_info(cfpkt_info(pkt), cfctrl);
+=======
+	pkt = cfpkt_create(CFPKT_CTRL_PKT_LEN);
+	if (!pkt)
+		return -ENOMEM;
+	cfpkt_addbdy(pkt, CFCTRL_CMD_LINK_DESTROY);
+	cfpkt_addbdy(pkt, channelid);
+	init_info(cfpkt_info(pkt), cfctrl);
+	cfpkt_set_prio(pkt, TC_PRIO_CONTROL);
+>>>>>>> refs/remotes/origin/master
 	ret =
 	    dn->transmit(dn, pkt);
 #ifndef CAIF_NO_LOOP
@@ -522,8 +633,12 @@ static int cfctrl_recv(struct cflayer *layer, struct cfpkt *pkt)
 							  client_layer : NULL);
 			}
 
+<<<<<<< HEAD
 			if (req != NULL)
 				kfree(req);
+=======
+			kfree(req);
+>>>>>>> refs/remotes/origin/master
 
 			spin_unlock_bh(&cfctrl->info_list_lock);
 		}
@@ -563,7 +678,11 @@ error:
 }
 
 static void cfctrl_ctrlcmd(struct cflayer *layr, enum caif_ctrlcmd ctrl,
+<<<<<<< HEAD
 			int phyid)
+=======
+			   int phyid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cfctrl *this = container_obj(layr);
 	switch (ctrl) {

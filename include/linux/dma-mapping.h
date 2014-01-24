@@ -1,6 +1,8 @@
 #ifndef _LINUX_DMA_MAPPING_H
 #define _LINUX_DMA_MAPPING_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/err.h>
 #include <linux/dma-attrs.h>
@@ -20,6 +22,33 @@ struct dma_map_ops {
 				dma_addr_t *dma_handle, gfp_t gfp);
 	void (*free_coherent)(struct device *dev, size_t size,
 			      void *vaddr, dma_addr_t dma_handle);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/string.h>
+#include <linux/device.h>
+#include <linux/err.h>
+#include <linux/dma-attrs.h>
+#include <linux/dma-direction.h>
+#include <linux/scatterlist.h>
+
+struct dma_map_ops {
+	void* (*alloc)(struct device *dev, size_t size,
+				dma_addr_t *dma_handle, gfp_t gfp,
+				struct dma_attrs *attrs);
+	void (*free)(struct device *dev, size_t size,
+			      void *vaddr, dma_addr_t dma_handle,
+			      struct dma_attrs *attrs);
+	int (*mmap)(struct device *, struct vm_area_struct *,
+			  void *, dma_addr_t, size_t, struct dma_attrs *attrs);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*get_sgtable)(struct device *dev, struct sg_table *sgt, void *,
+			   dma_addr_t, size_t, struct dma_attrs *attrs);
+
+>>>>>>> refs/remotes/origin/master
 	dma_addr_t (*map_page)(struct device *dev, struct page *page,
 			       unsigned long offset, size_t size,
 			       enum dma_data_direction dir,
@@ -49,11 +78,25 @@ struct dma_map_ops {
 	int (*mapping_error)(struct device *dev, dma_addr_t dma_addr);
 	int (*dma_supported)(struct device *dev, u64 mask);
 	int (*set_dma_mask)(struct device *dev, u64 mask);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef ARCH_HAS_DMA_GET_REQUIRED_MASK
+	u64 (*get_required_mask)(struct device *dev);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef ARCH_HAS_DMA_GET_REQUIRED_MASK
+	u64 (*get_required_mask)(struct device *dev);
+#endif
+>>>>>>> refs/remotes/origin/master
 	int is_phys;
 };
 
 #define DMA_BIT_MASK(n)	(((n) == 64) ? ~0ULL : ((1ULL<<(n))-1))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 typedef u64 DMA_nnBIT_MASK __deprecated;
 
 /*
@@ -75,6 +118,10 @@ typedef u64 DMA_nnBIT_MASK __deprecated;
 #define DMA_28BIT_MASK	(DMA_nnBIT_MASK)DMA_BIT_MASK(28)
 #define DMA_24BIT_MASK	(DMA_nnBIT_MASK)DMA_BIT_MASK(24)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DMA_MASK_NONE	0x0ULL
 
 static inline int valid_dma_direction(int dma_direction)
@@ -102,7 +149,15 @@ static inline u64 dma_get_mask(struct device *dev)
 	return DMA_BIT_MASK(32);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef ARCH_HAS_DMA_SET_COHERENT_MASK
+=======
+#ifdef CONFIG_ARCH_HAS_DMA_SET_COHERENT_MASK
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_ARCH_HAS_DMA_SET_COHERENT_MASK
+>>>>>>> refs/remotes/origin/master
 int dma_set_coherent_mask(struct device *dev, u64 mask);
 #else
 static inline int dma_set_coherent_mask(struct device *dev, u64 mask)
@@ -114,6 +169,33 @@ static inline int dma_set_coherent_mask(struct device *dev, u64 mask)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+/*
+ * Set both the DMA mask and the coherent DMA mask to the same thing.
+ * Note that we don't check the return value from dma_set_coherent_mask()
+ * as the DMA API guarantees that the coherent DMA mask can be set to
+ * the same or smaller than the streaming DMA mask.
+ */
+static inline int dma_set_mask_and_coherent(struct device *dev, u64 mask)
+{
+	int rc = dma_set_mask(dev, mask);
+	if (rc == 0)
+		dma_set_coherent_mask(dev, mask);
+	return rc;
+}
+
+/*
+ * Similar to the above, except it deals with the case where the device
+ * does not have dev->dma_mask appropriately setup.
+ */
+static inline int dma_coerce_mask_and_coherent(struct device *dev, u64 mask)
+{
+	dev->dma_mask = &dev->coherent_dma_mask;
+	return dma_set_mask_and_coherent(dev, mask);
+}
+
+>>>>>>> refs/remotes/origin/master
 extern u64 dma_get_required_mask(struct device *dev);
 
 static inline unsigned int dma_get_max_seg_size(struct device *dev)
@@ -146,6 +228,36 @@ static inline int dma_set_seg_boundary(struct device *dev, unsigned long mask)
 		return -EIO;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static inline void *dma_zalloc_coherent(struct device *dev, size_t size,
+					dma_addr_t *dma_handle, gfp_t flag)
+{
+	void *ret = dma_alloc_coherent(dev, size, dma_handle, flag);
+	if (ret)
+		memset(ret, 0, size);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef dma_max_pfn
+static inline unsigned long dma_max_pfn(struct device *dev)
+{
+	return *dev->dma_mask >> PAGE_SHIFT;
+}
+#endif
+
+static inline void *dma_zalloc_coherent(struct device *dev, size_t size,
+					dma_addr_t *dma_handle, gfp_t flag)
+{
+	void *ret = dma_alloc_coherent(dev, size, dma_handle,
+				       flag | __GFP_ZERO);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HAS_DMA
 static inline int dma_get_cache_alignment(void)
 {

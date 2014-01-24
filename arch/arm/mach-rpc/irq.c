@@ -5,6 +5,14 @@
 #include <asm/mach/irq.h>
 #include <asm/hardware/iomd.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/fiq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/fiq.h>
+>>>>>>> refs/remotes/origin/master
 
 static void iomd_ack_irq_a(struct irq_data *d)
 {
@@ -112,6 +120,16 @@ static struct irq_chip iomd_fiq_chip = {
 	.irq_unmask	= iomd_unmask_irq_fiq,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern unsigned char rpc_default_fiq_start, rpc_default_fiq_end;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern unsigned char rpc_default_fiq_start, rpc_default_fiq_end;
+
+>>>>>>> refs/remotes/origin/master
 void __init rpc_init_irq(void)
 {
 	unsigned int irq, flags;
@@ -121,6 +139,18 @@ void __init rpc_init_irq(void)
 	iomd_writeb(0, IOMD_FIQMASK);
 	iomd_writeb(0, IOMD_DMAMASK);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	set_fiq_handler(&rpc_default_fiq_start,
+		&rpc_default_fiq_end - &rpc_default_fiq_start);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_fiq_handler(&rpc_default_fiq_start,
+		&rpc_default_fiq_end - &rpc_default_fiq_start);
+
+>>>>>>> refs/remotes/origin/master
 	for (irq = 0; irq < NR_IRQS; irq++) {
 		flags = IRQF_VALID;
 
@@ -157,6 +187,10 @@ void __init rpc_init_irq(void)
 		}
 	}
 
+<<<<<<< HEAD
 	init_FIQ();
+=======
+	init_FIQ(FIQ_START);
+>>>>>>> refs/remotes/origin/master
 }
 

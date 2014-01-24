@@ -13,6 +13,7 @@
 
 #include <mach/addr-map.h>
 
+<<<<<<< HEAD
 #define APBC_VIRT_BASE	(APB_VIRT_BASE + 0x015000)
 #define APBC_REG(x)	(APBC_VIRT_BASE + (x))
 
@@ -57,6 +58,10 @@
 #define APBC_PXA910_SSP1	APBC_REG(0x01c)
 #define APBC_PXA910_SSP2	APBC_REG(0x020)
 #define APBC_PXA910_IPC		APBC_REG(0x024)
+<<<<<<< HEAD
+=======
+#define APBC_PXA910_RTC		APBC_REG(0x028)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define APBC_PXA910_TWSI0	APBC_REG(0x02c)
 #define APBC_PXA910_KPC		APBC_REG(0x030)
 #define APBC_PXA910_TIMERS	APBC_REG(0x034)
@@ -110,6 +115,8 @@
 #define APBC_MMP2_THSENS1	APBC_REG(0x090)	/* Thermal Sensor */
 #define APBC_MMP2_THSENS_INTSTS	APBC_REG(0x0a4)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Common APB clock register bit definitions */
 #define APBC_APBCLK	(1 << 0)  /* APB Bus Clock Enable */
 #define APBC_FNCLK	(1 << 1)  /* Functional Clock Enable */

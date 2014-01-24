@@ -159,6 +159,7 @@ read_block_bitmap(struct super_block *sb, unsigned int block_group)
 	return bh;
 }
 
+<<<<<<< HEAD
 static void release_blocks(struct super_block *sb, int count)
 {
 	if (count) {
@@ -169,6 +170,8 @@ static void release_blocks(struct super_block *sb, int count)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void group_adjust_blocks(struct super_block *sb, int group_no,
 	struct ext2_group_desc *desc, struct buffer_head *bh, int count)
 {
@@ -180,7 +183,10 @@ static void group_adjust_blocks(struct super_block *sb, int group_no,
 		free_blocks = le16_to_cpu(desc->bg_free_blocks_count);
 		desc->bg_free_blocks_count = cpu_to_le16(free_blocks + count);
 		spin_unlock(sb_bgl_lock(sbi, group_no));
+<<<<<<< HEAD
 		sb->s_dirt = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 		mark_buffer_dirty(bh);
 	}
 }
@@ -421,7 +427,15 @@ static inline int rsv_is_empty(struct ext2_reserve_window *rsv)
 void ext2_init_block_alloc_info(struct inode *inode)
 {
 	struct ext2_inode_info *ei = EXT2_I(inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ext2_block_alloc_info *block_i = ei->i_block_alloc_info;
+=======
+	struct ext2_block_alloc_info *block_i;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ext2_block_alloc_info *block_i;
+>>>>>>> refs/remotes/origin/master
 	struct super_block *sb = inode->i_sb;
 
 	block_i = kmalloc(sizeof(*block_i), GFP_NOFS);
@@ -479,9 +493,15 @@ void ext2_discard_reservation(struct inode *inode)
 }
 
 /**
+<<<<<<< HEAD
  * ext2_free_blocks_sb() -- Free given blocks and update quota and i_blocks
  * @inode:		inode
  * @block:		start physcial block to free
+=======
+ * ext2_free_blocks() -- Free given blocks and update quota and i_blocks
+ * @inode:		inode
+ * @block:		start physical block to free
+>>>>>>> refs/remotes/origin/master
  * @count:		number of blocks to free
  */
 void ext2_free_blocks (struct inode * inode, unsigned long block,
@@ -570,8 +590,16 @@ do_more:
 	}
 error_return:
 	brelse(bitmap_bh);
+<<<<<<< HEAD
 	release_blocks(sb, freed);
 	dquot_free_block_nodirty(inode, freed);
+=======
+	if (freed) {
+		percpu_counter_add(&sbi->s_freeblocks_counter, freed);
+		dquot_free_block_nodirty(inode, freed);
+		mark_inode_dirty(inode);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1193,8 +1221,14 @@ static int ext2_has_free_blocks(struct ext2_sb_info *sbi)
 	free_blocks = percpu_counter_read_positive(&sbi->s_freeblocks_counter);
 	root_blocks = le32_to_cpu(sbi->s_es->s_r_blocks_count);
 	if (free_blocks < root_blocks + 1 && !capable(CAP_SYS_RESOURCE) &&
+<<<<<<< HEAD
 		sbi->s_resuid != current_fsuid() &&
 		(sbi->s_resgid == 0 || !in_group_p (sbi->s_resgid))) {
+=======
+		!uid_eq(sbi->s_resuid, current_fsuid()) &&
+		(gid_eq(sbi->s_resgid, GLOBAL_ROOT_GID) ||
+		 !in_group_p (sbi->s_resgid))) {
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	return 1;
@@ -1240,10 +1274,13 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
 
 	*errp = -ENOSPC;
 	sb = inode->i_sb;
+<<<<<<< HEAD
 	if (!sb) {
 		printk("ext2_new_blocks: nonexistent device");
 		return 0;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check quota for allocation of this block.
@@ -1417,9 +1454,17 @@ allocated:
 
 	*errp = 0;
 	brelse(bitmap_bh);
+<<<<<<< HEAD
 	dquot_free_block_nodirty(inode, *count-num);
 	mark_inode_dirty(inode);
 	*count = num;
+=======
+	if (num < *count) {
+		dquot_free_block_nodirty(inode, *count-num);
+		mark_inode_dirty(inode);
+		*count = num;
+	}
+>>>>>>> refs/remotes/origin/master
 	return ret_block;
 
 io_error:
@@ -1445,6 +1490,7 @@ ext2_fsblk_t ext2_new_block(struct inode *inode, unsigned long goal, int *errp)
 
 #ifdef EXT2FS_DEBUG
 
+<<<<<<< HEAD
 static const int nibblemap[] = {4, 3, 3, 2, 3, 2, 2, 1, 3, 2, 2, 1, 2, 1, 1, 0};
 
 unsigned long ext2_count_free (struct buffer_head * map, unsigned int numchars)
@@ -1458,6 +1504,11 @@ unsigned long ext2_count_free (struct buffer_head * map, unsigned int numchars)
 		sum += nibblemap[map->b_data[i] & 0xf] +
 			nibblemap[(map->b_data[i] >> 4) & 0xf];
 	return (sum);
+=======
+unsigned long ext2_count_free(struct buffer_head *map, unsigned int numchars)
+{
+	return numchars * BITS_PER_BYTE - memweight(map->b_data, numchars);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif  /*  EXT2FS_DEBUG  */

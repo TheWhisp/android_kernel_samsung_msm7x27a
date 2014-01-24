@@ -8,7 +8,26 @@
 #include <linux/mm.h>
 
 /* Cache flush operations. */
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+
+#define flushi(addr)	__asm__ __volatile__ ("flush %0" : : "r" (addr) : "memory")
+=======
+>>>>>>> refs/remotes/origin/master
+#define flushw_all()	__asm__ __volatile__("flushw")
+
+extern void __flushw_user(void);
+#define flushw_user() __flushw_user()
+
+#define flush_user_windows flushw_user
+#define flush_register_windows flushw_all
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* These are the same regardless of whether this is an SMP kernel or not. */
 #define flush_cache_mm(__mm) \
 	do { if ((__mm) == current->mm) flushw_user(); } while(0)

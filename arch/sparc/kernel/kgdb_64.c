@@ -6,7 +6,17 @@
 #include <linux/kgdb.h>
 #include <linux/kdebug.h>
 #include <linux/ftrace.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/context_tracking.h>
+
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/kdebug.h>
 #include <asm/ptrace.h>
 #include <asm/irq.h>
@@ -41,7 +51,11 @@ void sleeping_thread_to_gdb_regs(unsigned long *gdb_regs, struct task_struct *p)
 {
 	struct thread_info *t = task_thread_info(p);
 	extern unsigned int switch_to_pc;
+<<<<<<< HEAD
 	extern unsigned int ret_from_syscall;
+=======
+	extern unsigned int ret_from_fork;
+>>>>>>> refs/remotes/origin/master
 	struct reg_window *win;
 	unsigned long pc, cwp;
 	int i;
@@ -65,7 +79,11 @@ void sleeping_thread_to_gdb_regs(unsigned long *gdb_regs, struct task_struct *p)
 		gdb_regs[i] = 0;
 
 	if (t->new_child)
+<<<<<<< HEAD
 		pc = (unsigned long) &ret_from_syscall;
+=======
+		pc = (unsigned long) &ret_from_fork;
+>>>>>>> refs/remotes/origin/master
 	else
 		pc = (unsigned long) &switch_to_pc;
 
@@ -158,11 +176,19 @@ int kgdb_arch_handle_exception(int e_vector, int signo, int err_code,
 
 asmlinkage void kgdb_trap(unsigned long trap_level, struct pt_regs *regs)
 {
+<<<<<<< HEAD
+=======
+	enum ctx_state prev_state = exception_enter();
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (user_mode(regs)) {
 		bad_trap(regs, trap_level);
+<<<<<<< HEAD
 		return;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	flushw_all();
@@ -170,6 +196,11 @@ asmlinkage void kgdb_trap(unsigned long trap_level, struct pt_regs *regs)
 	local_irq_save(flags);
 	kgdb_handle_exception(0x172, SIGTRAP, 0, regs);
 	local_irq_restore(flags);
+<<<<<<< HEAD
+=======
+out:
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 int kgdb_arch_init(void)

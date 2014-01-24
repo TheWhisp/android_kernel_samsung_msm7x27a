@@ -23,7 +23,13 @@
 #include <linux/uio.h>
 #include <linux/nfs_fs.h>
 #include <linux/quota.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/poll.h>
 #include <linux/personality.h>
 #include <linux/stat.h>
@@ -50,6 +56,7 @@
 #include <asm/mmu_context.h>
 #include <asm/compat_signal.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_SYSVIPC                                                        
 asmlinkage long compat_sys_ipc(u32 call, u32 first, u32 second, u32 third, compat_uptr_t ptr, u32 fifth)
 {
@@ -115,6 +122,8 @@ asmlinkage long compat_sys_ipc(u32 call, u32 first, u32 second, u32 third, compa
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys32_truncate64(const char __user * path, unsigned long high, unsigned long low)
 {
 	if ((int)high < 0)
@@ -140,8 +149,13 @@ static int cp_compat_stat64(struct kstat *stat,
 	err |= put_user(stat->ino, &statbuf->st_ino);
 	err |= put_user(stat->mode, &statbuf->st_mode);
 	err |= put_user(stat->nlink, &statbuf->st_nlink);
+<<<<<<< HEAD
 	err |= put_user(stat->uid, &statbuf->st_uid);
 	err |= put_user(stat->gid, &statbuf->st_gid);
+=======
+	err |= put_user(from_kuid_munged(current_user_ns(), stat->uid), &statbuf->st_uid);
+	err |= put_user(from_kgid_munged(current_user_ns(), stat->gid), &statbuf->st_gid);
+>>>>>>> refs/remotes/origin/master
 	err |= put_user(huge_encode_dev(stat->rdev), &statbuf->st_rdev);
 	err |= put_user(0, (unsigned long __user *) &statbuf->__pad3[0]);
 	err |= put_user(stat->size, &statbuf->st_size);
@@ -207,6 +221,7 @@ asmlinkage long compat_sys_fstatat64(unsigned int dfd,
 	return cp_compat_stat64(&stat, statbuf);
 }
 
+<<<<<<< HEAD
 asmlinkage long compat_sys_sysfs(int option, u32 arg1, u32 arg2)
 {
 	return sys_sysfs(option, arg1, arg2);
@@ -348,6 +363,21 @@ asmlinkage long compat_sys_rt_sigaction(int sig,
 					struct sigaction32 __user *oact,
 					void __user *restorer,
 					compat_size_t sigsetsize)
+=======
+COMPAT_SYSCALL_DEFINE3(sparc_sigaction, int, sig,
+			struct compat_old_sigaction __user *,act,
+			struct compat_old_sigaction __user *,oact)
+{
+	WARN_ON_ONCE(sig >= 0);
+	return compat_sys_sigaction(-sig, act, oact);
+}
+
+COMPAT_SYSCALL_DEFINE5(rt_sigaction, int, sig,
+			struct compat_sigaction __user *,act,
+			struct compat_sigaction __user *,oact,
+			void __user *,restorer,
+			compat_size_t,sigsetsize)
+>>>>>>> refs/remotes/origin/master
 {
         struct k_sigaction new_ka, old_ka;
         int ret;
@@ -363,6 +393,7 @@ asmlinkage long compat_sys_rt_sigaction(int sig,
 		new_ka.ka_restorer = restorer;
 		ret = get_user(u_handler, &act->sa_handler);
 		new_ka.sa.sa_handler =  compat_ptr(u_handler);
+<<<<<<< HEAD
 		ret |= __copy_from_user(&set32, &act->sa_mask, sizeof(compat_sigset_t));
 		switch (_NSIG_WORDS) {
 		case 4: new_ka.sa.sa_mask.sig[3] = set32.sig[6] | (((long)set32.sig[7]) << 32);
@@ -372,6 +403,12 @@ asmlinkage long compat_sys_rt_sigaction(int sig,
 		}
 		ret |= __get_user(new_ka.sa.sa_flags, &act->sa_flags);
 		ret |= __get_user(u_restorer, &act->sa_restorer);
+=======
+		ret |= copy_from_user(&set32, &act->sa_mask, sizeof(compat_sigset_t));
+		sigset_from_compat(&new_ka.sa.sa_mask, &set32);
+		ret |= get_user(new_ka.sa.sa_flags, &act->sa_flags);
+		ret |= get_user(u_restorer, &act->sa_restorer);
+>>>>>>> refs/remotes/origin/master
 		new_ka.sa.sa_restorer = compat_ptr(u_restorer);
                 if (ret)
                 	return -EFAULT;
@@ -380,6 +417,7 @@ asmlinkage long compat_sys_rt_sigaction(int sig,
 	ret = do_sigaction(sig, act ? &new_ka : NULL, oact ? &old_ka : NULL);
 
 	if (!ret && oact) {
+<<<<<<< HEAD
 		switch (_NSIG_WORDS) {
 		case 4: set32.sig[7] = (old_ka.sa.sa_mask.sig[3] >> 32); set32.sig[6] = old_ka.sa.sa_mask.sig[3];
 		case 3: set32.sig[5] = (old_ka.sa.sa_mask.sig[2] >> 32); set32.sig[4] = old_ka.sa.sa_mask.sig[2];
@@ -390,6 +428,13 @@ asmlinkage long compat_sys_rt_sigaction(int sig,
 		ret |= __copy_to_user(&oact->sa_mask, &set32, sizeof(compat_sigset_t));
 		ret |= __put_user(old_ka.sa.sa_flags, &oact->sa_flags);
 		ret |= __put_user(ptr_to_compat(old_ka.sa.sa_restorer), &oact->sa_restorer);
+=======
+		sigset_to_compat(&set32, &old_ka.sa.sa_mask);
+		ret = put_user(ptr_to_compat(old_ka.sa.sa_handler), &oact->sa_handler);
+		ret |= copy_to_user(&oact->sa_mask, &set32, sizeof(compat_sigset_t));
+		ret |= put_user(old_ka.sa.sa_flags, &oact->sa_flags);
+		ret |= put_user(ptr_to_compat(old_ka.sa.sa_restorer), &oact->sa_restorer);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			ret = -EFAULT;
         }
@@ -397,6 +442,7 @@ asmlinkage long compat_sys_rt_sigaction(int sig,
         return ret;
 }
 
+<<<<<<< HEAD
 /*
  * sparc32_execve() executes a new program after the asm stub has set
  * things up for us.  This should basically do what I want it to.
@@ -462,6 +508,8 @@ asmlinkage long sys32_delete_module(const char __user *name_user)
 
 #endif  /* CONFIG_MODULES */
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage compat_ssize_t sys32_pread64(unsigned int fd,
 					char __user *ubuf,
 					compat_size_t count,
@@ -507,6 +555,7 @@ long compat_sys_fadvise64_64(int fd,
 				advice);
 }
 
+<<<<<<< HEAD
 asmlinkage long compat_sys_sendfile(int out_fd, int in_fd,
 				    compat_off_t __user *offset,
 				    compat_size_t count)
@@ -572,6 +621,9 @@ long sys32_lookup_dcookie(unsigned long cookie_high,
 }
 
 long compat_sync_file_range(int fd, unsigned long off_high, unsigned long off_low, unsigned long nb_high, unsigned long nb_low, int flags)
+=======
+long sys32_sync_file_range(unsigned int fd, unsigned long off_high, unsigned long off_low, unsigned long nb_high, unsigned long nb_low, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	return sys_sync_file_range(fd,
 				   (off_high << 32) | off_low,

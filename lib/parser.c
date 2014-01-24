@@ -6,7 +6,17 @@
  */
 
 #include <linux/ctype.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/types.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/parser.h>
 #include <linux/slab.h>
 #include <linux/string.h>
@@ -121,13 +131,21 @@ int match_token(char *s, const match_table_t table, substring_t args[])
  *
  * Description: Given a &substring_t and a base, attempts to parse the substring
  * as a number in that base. On success, sets @result to the integer represented
+<<<<<<< HEAD
  * by the string and returns 0. Returns either -ENOMEM or -EINVAL on failure.
+=======
+ * by the string and returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
+>>>>>>> refs/remotes/origin/master
  */
 static int match_number(substring_t *s, int *result, int base)
 {
 	char *endp;
 	char *buf;
 	int ret;
+<<<<<<< HEAD
+=======
+	long val;
+>>>>>>> refs/remotes/origin/master
 	size_t len = s->to - s->from;
 
 	buf = kmalloc(len + 1, GFP_KERNEL);
@@ -135,10 +153,22 @@ static int match_number(substring_t *s, int *result, int base)
 		return -ENOMEM;
 	memcpy(buf, s->from, len);
 	buf[len] = '\0';
+<<<<<<< HEAD
 	*result = simple_strtol(buf, &endp, base);
 	ret = 0;
 	if (endp == buf)
 		ret = -EINVAL;
+=======
+
+	ret = 0;
+	val = simple_strtol(buf, &endp, base);
+	if (endp == buf)
+		ret = -EINVAL;
+	else if (val < (long)INT_MIN || val > (long)INT_MAX)
+		ret = -ERANGE;
+	else
+		*result = (int) val;
+>>>>>>> refs/remotes/origin/master
 	kfree(buf);
 	return ret;
 }
@@ -150,7 +180,11 @@ static int match_number(substring_t *s, int *result, int base)
  *
  * Description: Attempts to parse the &substring_t @s as a decimal integer. On
  * success, sets @result to the integer represented by the string and returns 0.
+<<<<<<< HEAD
  * Returns either -ENOMEM or -EINVAL on failure.
+=======
+ * Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int match_int(substring_t *s, int *result)
 {
@@ -164,7 +198,11 @@ int match_int(substring_t *s, int *result)
  *
  * Description: Attempts to parse the &substring_t @s as an octal integer. On
  * success, sets @result to the integer represented by the string and returns
+<<<<<<< HEAD
  * 0. Returns either -ENOMEM or -EINVAL on failure.
+=======
+ * 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int match_octal(substring_t *s, int *result)
 {
@@ -178,7 +216,11 @@ int match_octal(substring_t *s, int *result)
  *
  * Description: Attempts to parse the &substring_t @s as a hexadecimal integer.
  * On success, sets @result to the integer represented by the string and
+<<<<<<< HEAD
  * returns 0. Returns either -ENOMEM or -EINVAL on failure.
+=======
+ * returns 0. Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int match_hex(substring_t *s, int *result)
 {

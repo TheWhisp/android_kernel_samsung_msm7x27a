@@ -250,25 +250,43 @@ static void ip_nat_sip_seq_adjust(struct sk_buff *skb, s16 off)
 static void ip_nat_sip_expected(struct nf_conn *ct,
 				struct nf_conntrack_expect *exp)
 {
+<<<<<<< HEAD
 	struct nf_nat_range range;
+=======
+	struct nf_nat_ipv4_range range;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* This must be a fresh one. */
 	BUG_ON(ct->status & IPS_NAT_DONE_MASK);
 
 	/* For DST manip, map port here to where it's expected. */
+<<<<<<< HEAD
 	range.flags = (IP_NAT_RANGE_MAP_IPS | IP_NAT_RANGE_PROTO_SPECIFIED);
 	range.min = range.max = exp->saved_proto;
 	range.min_ip = range.max_ip = exp->saved_ip;
 	nf_nat_setup_info(ct, &range, IP_NAT_MANIP_DST);
+=======
+	range.flags = (NF_NAT_RANGE_MAP_IPS | NF_NAT_RANGE_PROTO_SPECIFIED);
+	range.min = range.max = exp->saved_proto;
+	range.min_ip = range.max_ip = exp->saved_ip;
+	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_DST);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Change src to where master sends to, but only if the connection
 	 * actually came from the same source. */
 	if (ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u3.ip ==
 	    ct->master->tuplehash[exp->dir].tuple.src.u3.ip) {
+<<<<<<< HEAD
 		range.flags = IP_NAT_RANGE_MAP_IPS;
 		range.min_ip = range.max_ip
 			= ct->master->tuplehash[!exp->dir].tuple.dst.u3.ip;
 		nf_nat_setup_info(ct, &range, IP_NAT_MANIP_SRC);
+=======
+		range.flags = NF_NAT_RANGE_MAP_IPS;
+		range.min_ip = range.max_ip
+			= ct->master->tuplehash[!exp->dir].tuple.dst.u3.ip;
+		nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -530,6 +548,7 @@ err1:
 	return NF_DROP;
 }
 
+<<<<<<< HEAD
 static void __exit nf_nat_sip_fini(void)
 {
 	rcu_assign_pointer(nf_nat_sip_hook, NULL);
@@ -539,6 +558,23 @@ static void __exit nf_nat_sip_fini(void)
 	rcu_assign_pointer(nf_nat_sdp_port_hook, NULL);
 	rcu_assign_pointer(nf_nat_sdp_session_hook, NULL);
 	rcu_assign_pointer(nf_nat_sdp_media_hook, NULL);
+=======
+static struct nf_ct_helper_expectfn sip_nat = {
+        .name           = "sip",
+        .expectfn       = ip_nat_sip_expected,
+};
+
+static void __exit nf_nat_sip_fini(void)
+{
+	RCU_INIT_POINTER(nf_nat_sip_hook, NULL);
+	RCU_INIT_POINTER(nf_nat_sip_seq_adjust_hook, NULL);
+	RCU_INIT_POINTER(nf_nat_sip_expect_hook, NULL);
+	RCU_INIT_POINTER(nf_nat_sdp_addr_hook, NULL);
+	RCU_INIT_POINTER(nf_nat_sdp_port_hook, NULL);
+	RCU_INIT_POINTER(nf_nat_sdp_session_hook, NULL);
+	RCU_INIT_POINTER(nf_nat_sdp_media_hook, NULL);
+	nf_ct_helper_expectfn_unregister(&sip_nat);
+>>>>>>> refs/remotes/origin/cm-10.0
 	synchronize_rcu();
 }
 
@@ -551,6 +587,7 @@ static int __init nf_nat_sip_init(void)
 	BUG_ON(nf_nat_sdp_port_hook != NULL);
 	BUG_ON(nf_nat_sdp_session_hook != NULL);
 	BUG_ON(nf_nat_sdp_media_hook != NULL);
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_nat_sip_hook, ip_nat_sip);
 	rcu_assign_pointer(nf_nat_sip_seq_adjust_hook, ip_nat_sip_seq_adjust);
 	rcu_assign_pointer(nf_nat_sip_expect_hook, ip_nat_sip_expect);
@@ -558,6 +595,16 @@ static int __init nf_nat_sip_init(void)
 	rcu_assign_pointer(nf_nat_sdp_port_hook, ip_nat_sdp_port);
 	rcu_assign_pointer(nf_nat_sdp_session_hook, ip_nat_sdp_session);
 	rcu_assign_pointer(nf_nat_sdp_media_hook, ip_nat_sdp_media);
+=======
+	RCU_INIT_POINTER(nf_nat_sip_hook, ip_nat_sip);
+	RCU_INIT_POINTER(nf_nat_sip_seq_adjust_hook, ip_nat_sip_seq_adjust);
+	RCU_INIT_POINTER(nf_nat_sip_expect_hook, ip_nat_sip_expect);
+	RCU_INIT_POINTER(nf_nat_sdp_addr_hook, ip_nat_sdp_addr);
+	RCU_INIT_POINTER(nf_nat_sdp_port_hook, ip_nat_sdp_port);
+	RCU_INIT_POINTER(nf_nat_sdp_session_hook, ip_nat_sdp_session);
+	RCU_INIT_POINTER(nf_nat_sdp_media_hook, ip_nat_sdp_media);
+	nf_ct_helper_expectfn_register(&sip_nat);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

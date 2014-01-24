@@ -401,11 +401,19 @@ error:
 	} else {
 		if (config && *config) {
 			size = 256;
+<<<<<<< HEAD
 			free_bootmem((unsigned long)(*config), size);
 		}
 		if (res && *res) {
 			size = sizeof(struct celleb_pci_resource);
 			free_bootmem((unsigned long)(*res), size);
+=======
+			free_bootmem(__pa(*config), size);
+		}
+		if (res && *res) {
+			size = sizeof(struct celleb_pci_resource);
+			free_bootmem(__pa(*res), size);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -472,7 +480,11 @@ int __init celleb_setup_phb(struct pci_controller *phb)
 {
 	struct device_node *dev = phb->dn;
 	const struct of_device_id *match;
+<<<<<<< HEAD
 	struct celleb_phb_spec *phb_spec;
+=======
+	const struct celleb_phb_spec *phb_spec;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	match = of_match_node(celleb_phb_match, dev);

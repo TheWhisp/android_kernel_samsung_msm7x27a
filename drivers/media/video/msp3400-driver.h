@@ -44,10 +44,17 @@
 
 /* module parameters */
 extern int msp_debug;
+<<<<<<< HEAD
 extern int msp_once;
 extern int msp_amsound;
 extern int msp_standard;
 extern int msp_dolby;
+=======
+extern bool msp_once;
+extern bool msp_amsound;
+extern int msp_standard;
+extern bool msp_dolby;
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int msp_stereo_thresh;
 
 struct msp_state {
@@ -75,7 +82,11 @@ struct msp_state {
 	int opmode;
 	int std;
 	int mode;
+<<<<<<< HEAD
 	v4l2_std_id v4l2_std;
+=======
+	v4l2_std_id v4l2_std, detected_std;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int nicam_on;
 	int acb;
 	int in_scart;

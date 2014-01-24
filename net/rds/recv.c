@@ -34,6 +34,14 @@
 #include <linux/slab.h>
 #include <net/sock.h>
 #include <linux/in.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "rds.h"
 
@@ -154,7 +162,15 @@ static void rds_recv_incoming_exthdrs(struct rds_incoming *inc, struct rds_sock 
  * tell us which roles the addrs in the conn are playing for this message.
  */
 void rds_recv_incoming(struct rds_connection *conn, __be32 saddr, __be32 daddr,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		       struct rds_incoming *inc, gfp_t gfp, enum km_type km)
+=======
+		       struct rds_incoming *inc, gfp_t gfp)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       struct rds_incoming *inc, gfp_t gfp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rds_sock *rs = NULL;
 	struct sock *sk;
@@ -409,8 +425,11 @@ int rds_recvmsg(struct kiocb *iocb, struct socket *sock, struct msghdr *msg,
 
 	rdsdebug("size %zu flags 0x%x timeo %ld\n", size, msg_flags, timeo);
 
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (msg_flags & MSG_OOB)
 		goto out;
 

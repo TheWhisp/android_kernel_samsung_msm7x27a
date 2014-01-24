@@ -22,6 +22,16 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/compiler.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -43,10 +53,21 @@
 #include <linux/signal.h>
 #include <linux/sfi.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/intel_scu_ipc.h>
 #include <asm/apb_timer.h>
 #include <asm/mrst.h>
+=======
+#include <linux/atomic.h>
+#include <asm/intel_scu_ipc.h>
+#include <asm/apb_timer.h>
+#include <asm/intel-mid.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "intel_scu_watchdog.h"
 
@@ -96,6 +117,8 @@ static struct intel_scu_watchdog_dev watchdog_device;
 static void watchdog_fire(void)
 {
 	if (force_boot) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX "Initiating system reboot.\n");
 		emergency_restart();
 		printk(KERN_CRIT PFX "Reboot didn't ?????\n");
@@ -105,6 +128,21 @@ static void watchdog_fire(void)
 		printk(KERN_CRIT PFX "Immediate Reboot Disabled\n");
 		printk(KERN_CRIT PFX
 			"System will reset when watchdog timer times out!\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_crit("Initiating system reboot\n");
+		emergency_restart();
+		pr_crit("Reboot didn't ?????\n");
+	}
+
+	else {
+		pr_crit("Immediate Reboot Disabled\n");
+		pr_crit("System will reset when watchdog timer times out!\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -112,8 +150,18 @@ static int check_timer_margin(int new_margin)
 {
 	if ((new_margin < MIN_TIME_CYCLE) ||
 	    (new_margin > MAX_TIME - timer_set)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("Watchdog timer: value of new_margin %d is out of the range %d to %d\n",
 			  new_margin, MIN_TIME_CYCLE, MAX_TIME - timer_set);
+=======
+		pr_debug("value of new_margin %d is out of the range %d to %d\n",
+			 new_margin, MIN_TIME_CYCLE, MAX_TIME - timer_set);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("value of new_margin %d is out of the range %d to %d\n",
+			 new_margin, MIN_TIME_CYCLE, MAX_TIME - timer_set);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	return 0;
@@ -156,14 +204,30 @@ static irqreturn_t watchdog_timer_interrupt(int irq, void *dev_id)
 	int int_status;
 	int_status = ioread32(watchdog_device.timer_interrupt_status_addr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("Watchdog timer: irq, int_status: %x\n", int_status);
+=======
+	pr_debug("irq, int_status: %x\n", int_status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("irq, int_status: %x\n", int_status);
+>>>>>>> refs/remotes/origin/master
 
 	if (int_status != 0)
 		return IRQ_NONE;
 
 	/* has the timer been started? If not, then this is spurious */
 	if (watchdog_device.timer_started == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("Watchdog timer: spurious interrupt received\n");
+=======
+		pr_debug("spurious interrupt received\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("spurious interrupt received\n");
+>>>>>>> refs/remotes/origin/master
 		return IRQ_HANDLED;
 	}
 
@@ -220,6 +284,8 @@ static int intel_scu_set_heartbeat(u32 t)
 		(watchdog_device.timer_set - timer_margin)
 		* watchdog_device.timer_tbl_ptr->freq_hz;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("Watchdog timer: set_heartbeat: timer freq is %d\n",
 		watchdog_device.timer_tbl_ptr->freq_hz);
 	pr_debug("Watchdog timer: set_heartbeat: timer_set is %x (hex)\n",
@@ -230,6 +296,22 @@ static int intel_scu_set_heartbeat(u32 t)
 		watchdog_device.threshold);
 	pr_debug("Watchdog timer: set_heartbeat: soft_threshold is %x (hex)\n",
 		watchdog_device.soft_threshold);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	pr_debug("set_heartbeat: timer freq is %d\n",
+		 watchdog_device.timer_tbl_ptr->freq_hz);
+	pr_debug("set_heartbeat: timer_set is %x (hex)\n",
+		 watchdog_device.timer_set);
+	pr_debug("set_hearbeat: timer_margin is %x (hex)\n", timer_margin);
+	pr_debug("set_heartbeat: threshold is %x (hex)\n",
+		 watchdog_device.threshold);
+	pr_debug("set_heartbeat: soft_threshold is %x (hex)\n",
+		 watchdog_device.soft_threshold);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Adjust thresholds by FREQ_ADJUSTMENT factor, to make the */
 	/* watchdog timing come out right. */
@@ -264,7 +346,15 @@ static int intel_scu_set_heartbeat(u32 t)
 
 		if (MAX_RETRY < retry_count++) {
 			/* Unable to set timer value */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("Watchdog timer: Unable to set timer\n");
+=======
+			pr_err("Unable to set timer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("Unable to set timer\n");
+>>>>>>> refs/remotes/origin/master
 			return -ENODEV;
 		}
 
@@ -321,18 +411,40 @@ static int intel_scu_release(struct inode *inode, struct file *file)
 	 */
 
 	if (!test_and_clear_bit(0, &watchdog_device.driver_open)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("Watchdog timer: intel_scu_release, without open\n");
+=======
+		pr_debug("intel_scu_release, without open\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("intel_scu_release, without open\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOTTY;
 	}
 
 	if (!watchdog_device.timer_started) {
 		/* Just close, since timer has not been started */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("Watchdog timer: closed, without starting timer\n");
 		return 0;
 	}
 
 	printk(KERN_CRIT PFX
 	       "Unexpected close of /dev/watchdog!\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_debug("closed, without starting timer\n");
+		return 0;
+	}
+
+	pr_crit("Unexpected close of /dev/watchdog!\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Since the timer was started, prevent future reopens */
 	watchdog_device.driver_closed = 1;
@@ -446,7 +558,11 @@ static int __init intel_scu_watchdog_init(void)
 	 *
 	 * If it isn't an intel MID device then it doesn't have this watchdog
 	 */
+<<<<<<< HEAD
 	if (!mrst_identify_cpu())
+=======
+	if (!intel_mid_identify_cpu())
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	/* Check boot parameters to verify that their initial values */
@@ -454,9 +570,19 @@ static int __init intel_scu_watchdog_init(void)
 	/* Check value of timer_set boot parameter */
 	if ((timer_set < MIN_TIME_CYCLE) ||
 	    (timer_set > MAX_TIME - MIN_TIME_CYCLE)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("Watchdog timer: value of timer_set %x (hex) "
 		  "is out of range from %x to %x (hex)\n",
 		  timer_set, MIN_TIME_CYCLE, MAX_TIME - MIN_TIME_CYCLE);
+=======
+		pr_err("value of timer_set %x (hex) is out of range from %x to %x (hex)\n",
+		       timer_set, MIN_TIME_CYCLE, MAX_TIME - MIN_TIME_CYCLE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("value of timer_set %x (hex) is out of range from %x to %x (hex)\n",
+		       timer_set, MIN_TIME_CYCLE, MAX_TIME - MIN_TIME_CYCLE);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -467,19 +593,45 @@ static int __init intel_scu_watchdog_init(void)
 	watchdog_device.timer_tbl_ptr = sfi_get_mtmr(sfi_mtimer_num-1);
 
 	if (watchdog_device.timer_tbl_ptr == NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("Watchdog timer - Intel SCU watchdog: timer is not available\n");
+=======
+		pr_debug("timer is not available\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("timer is not available\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 	/* make sure the timer exists */
 	if (watchdog_device.timer_tbl_ptr->phys_addr == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("Watchdog timer - Intel SCU watchdog - timer %d does not have valid physical memory\n",
 								sfi_mtimer_num);
+=======
+		pr_debug("timer %d does not have valid physical memory\n",
+			 sfi_mtimer_num);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("timer %d does not have valid physical memory\n",
+			 sfi_mtimer_num);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	if (watchdog_device.timer_tbl_ptr->irq == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("Watchdog timer: timer %d invalid irq\n",
 							sfi_mtimer_num);
+=======
+		pr_debug("timer %d invalid irq\n", sfi_mtimer_num);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("timer %d invalid irq\n", sfi_mtimer_num);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -487,7 +639,15 @@ static int __init intel_scu_watchdog_init(void)
 			20);
 
 	if (tmp_addr == NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("Watchdog timer: timer unable to ioremap\n");
+=======
+		pr_debug("timer unable to ioremap\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("timer unable to ioremap\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -512,7 +672,15 @@ static int __init intel_scu_watchdog_init(void)
 
 	ret = register_reboot_notifier(&watchdog_device.intel_scu_notifier);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("Watchdog timer: cannot register notifier %d)\n", ret);
+=======
+		pr_err("cannot register notifier %d)\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register notifier %d)\n", ret);
+>>>>>>> refs/remotes/origin/master
 		goto register_reboot_error;
 	}
 
@@ -522,8 +690,18 @@ static int __init intel_scu_watchdog_init(void)
 
 	ret = misc_register(&watchdog_device.miscdev);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("Watchdog timer: cannot register miscdev %d err =%d\n",
 							WATCHDOG_MINOR, ret);
+=======
+		pr_err("cannot register miscdev %d err =%d\n",
+		       WATCHDOG_MINOR, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register miscdev %d err =%d\n",
+		       WATCHDOG_MINOR, ret);
+>>>>>>> refs/remotes/origin/master
 		goto misc_register_error;
 	}
 
@@ -532,7 +710,15 @@ static int __init intel_scu_watchdog_init(void)
 		IRQF_SHARED, "watchdog",
 		&watchdog_device.timer_load_count_addr);
 	if (ret) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("Watchdog timer: error requesting irq %d\n", ret);
+=======
+		pr_err("error requesting irq %d\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("error requesting irq %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		goto request_irq_error;
 	}
 	/* Make sure timer is disabled before returning */
@@ -567,5 +753,8 @@ module_exit(intel_scu_watchdog_exit);
 MODULE_AUTHOR("Intel Corporation");
 MODULE_DESCRIPTION("Intel SCU Watchdog Device Driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_VERSION(WDT_VER);

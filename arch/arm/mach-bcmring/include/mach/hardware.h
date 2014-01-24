@@ -22,7 +22,10 @@
 #define __ASM_ARCH_HARDWARE_H
 
 #include <asm/sizes.h>
+<<<<<<< HEAD
 #include <mach/memory.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <cfg_global.h>
 #include <mach/csp/mm_io.h>
 
@@ -31,13 +34,20 @@
  *  *_SIZE  is the size of the region
  *  *_BASE  is the virtual address
  */
+<<<<<<< HEAD
 #define RAM_START               PLAT_PHYS_OFFSET
+=======
+#define RAM_START               PHYS_OFFSET
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define RAM_SIZE                (CFG_GLOBAL_RAM_SIZE-CFG_GLOBAL_RAM_SIZE_RESERVED)
 #define RAM_BASE                PAGE_OFFSET
 
+<<<<<<< HEAD
 #define pcibios_assign_all_busses()	1
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Macros to make managing spinlocks a bit more controlled in terms of naming. */
 /* See reg_gpio.h, reg_irq.h, arch.c, gpio.c for example usage. */
 #if defined(__KERNEL__)

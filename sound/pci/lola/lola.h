@@ -480,7 +480,15 @@ struct lola {
 
 /* count values in the Vendor Specific Mixer Widget's Audio Widget Capabilities */
 #define LOLA_MIXER_SRC_INPUT_PLAY_SEPARATION(res)   ((res >> 2) & 0x1f)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define LOLA_MIXER_DEST_REC_OUTPUT_SEPATATION(res)  ((res >> 7) & 0x1f)
+=======
+#define LOLA_MIXER_DEST_REC_OUTPUT_SEPARATION(res)  ((res >> 7) & 0x1f)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LOLA_MIXER_DEST_REC_OUTPUT_SEPARATION(res)  ((res >> 7) & 0x1f)
+>>>>>>> refs/remotes/origin/master
 
 int lola_codec_write(struct lola *chip, unsigned int nid, unsigned int verb,
 		     unsigned int data, unsigned int extdata);

@@ -14,18 +14,31 @@
 #include <linux/io.h>
 #include <linux/gpio.h>
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <plat/mpp.h>
 
 /* Address of the ith MPP control register */
 static __init unsigned long mpp_ctrl_addr(unsigned int i,
 					  unsigned long dev_bus)
+=======
+#include <plat/orion-gpio.h>
+#include <plat/mpp.h>
+
+/* Address of the ith MPP control register */
+static __init void __iomem *mpp_ctrl_addr(unsigned int i,
+					  void __iomem *dev_bus)
+>>>>>>> refs/remotes/origin/master
 {
 	return dev_bus + (i) * 4;
 }
 
 
 void __init orion_mpp_conf(unsigned int *mpp_list, unsigned int variant_mask,
+<<<<<<< HEAD
 			   unsigned int mpp_max, unsigned int dev_bus)
+=======
+			   unsigned int mpp_max, void __iomem *dev_bus)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int mpp_nr_regs = (1 + mpp_max/8);
 	u32 mpp_ctrl[mpp_nr_regs];
@@ -48,7 +61,11 @@ void __init orion_mpp_conf(unsigned int *mpp_list, unsigned int variant_mask,
 					"number (%u)\n", num);
 			continue;
 		}
+<<<<<<< HEAD
 		if (variant_mask & !(*mpp_list & variant_mask)) {
+=======
+		if (variant_mask && !(*mpp_list & variant_mask)) {
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_WARNING
 			       "orion_mpp_conf: requested MPP%u config "
 			       "unavailable on this hardware\n", num);

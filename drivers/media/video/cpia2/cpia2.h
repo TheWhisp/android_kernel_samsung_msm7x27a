@@ -31,7 +31,10 @@
 #ifndef __CPIA2_H__
 #define __CPIA2_H__
 
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/videodev2.h>
 #include <media/v4l2-common.h>
 #include <linux/usb.h>
@@ -43,10 +46,13 @@
 /* define for verbose debug output */
 //#define _CPIA2_DEBUG_
 
+<<<<<<< HEAD
 #define CPIA2_MAJ_VER	3
 #define CPIA2_MIN_VER   0
 #define CPIA2_PATCH_VER	0
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /***
  * Image defines
  ***/

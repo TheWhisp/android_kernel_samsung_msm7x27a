@@ -29,7 +29,11 @@
 
 #define PRINT_PREF KERN_INFO "mtd_speedtest: "
 
+<<<<<<< HEAD
 static int dev;
+=======
+static int dev = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(dev, int, S_IRUGO);
 MODULE_PARM_DESC(dev, "MTD device number to use");
 
@@ -79,7 +83,11 @@ static int erase_eraseblock(int ebnum)
 	ei.addr = addr;
 	ei.len  = mtd->erasesize;
 
+<<<<<<< HEAD
 	err = mtd->erase(mtd, &ei);
+=======
+	err = mtd_erase(mtd, &ei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err) {
 		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
 		return err;
@@ -105,7 +113,11 @@ static int multiblock_erase(int ebnum, int blocks)
 	ei.addr = addr;
 	ei.len  = mtd->erasesize * blocks;
 
+<<<<<<< HEAD
 	err = mtd->erase(mtd, &ei);
+=======
+	err = mtd_erase(mtd, &ei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err) {
 		printk(PRINT_PREF "error %d while erasing EB %d, blocks %d\n",
 		       err, ebnum, blocks);
@@ -139,11 +151,19 @@ static int erase_whole_device(void)
 
 static int write_eraseblock(int ebnum)
 {
+<<<<<<< HEAD
 	size_t written = 0;
 	int err = 0;
 	loff_t addr = ebnum * mtd->erasesize;
 
 	err = mtd->write(mtd, addr, mtd->erasesize, &written, iobuf);
+=======
+	size_t written;
+	int err = 0;
+	loff_t addr = ebnum * mtd->erasesize;
+
+	err = mtd_write(mtd, addr, mtd->erasesize, &written, iobuf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err || written != mtd->erasesize) {
 		printk(PRINT_PREF "error: write failed at %#llx\n", addr);
 		if (!err)
@@ -155,13 +175,21 @@ static int write_eraseblock(int ebnum)
 
 static int write_eraseblock_by_page(int ebnum)
 {
+<<<<<<< HEAD
 	size_t written = 0;
+=======
+	size_t written;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i, err = 0;
 	loff_t addr = ebnum * mtd->erasesize;
 	void *buf = iobuf;
 
 	for (i = 0; i < pgcnt; i++) {
+<<<<<<< HEAD
 		err = mtd->write(mtd, addr, pgsize, &written, buf);
+=======
+		err = mtd_write(mtd, addr, pgsize, &written, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err || written != pgsize) {
 			printk(PRINT_PREF "error: write failed at %#llx\n",
 			       addr);
@@ -178,13 +206,21 @@ static int write_eraseblock_by_page(int ebnum)
 
 static int write_eraseblock_by_2pages(int ebnum)
 {
+<<<<<<< HEAD
 	size_t written = 0, sz = pgsize * 2;
+=======
+	size_t written, sz = pgsize * 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i, n = pgcnt / 2, err = 0;
 	loff_t addr = ebnum * mtd->erasesize;
 	void *buf = iobuf;
 
 	for (i = 0; i < n; i++) {
+<<<<<<< HEAD
 		err = mtd->write(mtd, addr, sz, &written, buf);
+=======
+		err = mtd_write(mtd, addr, sz, &written, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err || written != sz) {
 			printk(PRINT_PREF "error: write failed at %#llx\n",
 			       addr);
@@ -196,7 +232,11 @@ static int write_eraseblock_by_2pages(int ebnum)
 		buf += sz;
 	}
 	if (pgcnt % 2) {
+<<<<<<< HEAD
 		err = mtd->write(mtd, addr, pgsize, &written, buf);
+=======
+		err = mtd_write(mtd, addr, pgsize, &written, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err || written != pgsize) {
 			printk(PRINT_PREF "error: write failed at %#llx\n",
 			       addr);
@@ -210,6 +250,7 @@ static int write_eraseblock_by_2pages(int ebnum)
 
 static int read_eraseblock(int ebnum)
 {
+<<<<<<< HEAD
 	size_t read = 0;
 	int err = 0;
 	loff_t addr = ebnum * mtd->erasesize;
@@ -217,6 +258,15 @@ static int read_eraseblock(int ebnum)
 	err = mtd->read(mtd, addr, mtd->erasesize, &read, iobuf);
 	/* Ignore corrected ECC errors */
 	if (err == -EUCLEAN)
+=======
+	size_t read;
+	int err = 0;
+	loff_t addr = ebnum * mtd->erasesize;
+
+	err = mtd_read(mtd, addr, mtd->erasesize, &read, iobuf);
+	/* Ignore corrected ECC errors */
+	if (mtd_is_bitflip(err))
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = 0;
 	if (err || read != mtd->erasesize) {
 		printk(PRINT_PREF "error: read failed at %#llx\n", addr);
@@ -229,15 +279,25 @@ static int read_eraseblock(int ebnum)
 
 static int read_eraseblock_by_page(int ebnum)
 {
+<<<<<<< HEAD
 	size_t read = 0;
+=======
+	size_t read;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i, err = 0;
 	loff_t addr = ebnum * mtd->erasesize;
 	void *buf = iobuf;
 
 	for (i = 0; i < pgcnt; i++) {
+<<<<<<< HEAD
 		err = mtd->read(mtd, addr, pgsize, &read, buf);
 		/* Ignore corrected ECC errors */
 		if (err == -EUCLEAN)
+=======
+		err = mtd_read(mtd, addr, pgsize, &read, buf);
+		/* Ignore corrected ECC errors */
+		if (mtd_is_bitflip(err))
+>>>>>>> refs/remotes/origin/cm-10.0
 			err = 0;
 		if (err || read != pgsize) {
 			printk(PRINT_PREF "error: read failed at %#llx\n",
@@ -255,15 +315,25 @@ static int read_eraseblock_by_page(int ebnum)
 
 static int read_eraseblock_by_2pages(int ebnum)
 {
+<<<<<<< HEAD
 	size_t read = 0, sz = pgsize * 2;
+=======
+	size_t read, sz = pgsize * 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i, n = pgcnt / 2, err = 0;
 	loff_t addr = ebnum * mtd->erasesize;
 	void *buf = iobuf;
 
 	for (i = 0; i < n; i++) {
+<<<<<<< HEAD
 		err = mtd->read(mtd, addr, sz, &read, buf);
 		/* Ignore corrected ECC errors */
 		if (err == -EUCLEAN)
+=======
+		err = mtd_read(mtd, addr, sz, &read, buf);
+		/* Ignore corrected ECC errors */
+		if (mtd_is_bitflip(err))
+>>>>>>> refs/remotes/origin/cm-10.0
 			err = 0;
 		if (err || read != sz) {
 			printk(PRINT_PREF "error: read failed at %#llx\n",
@@ -276,9 +346,15 @@ static int read_eraseblock_by_2pages(int ebnum)
 		buf += sz;
 	}
 	if (pgcnt % 2) {
+<<<<<<< HEAD
 		err = mtd->read(mtd, addr, pgsize, &read, buf);
 		/* Ignore corrected ECC errors */
 		if (err == -EUCLEAN)
+=======
+		err = mtd_read(mtd, addr, pgsize, &read, buf);
+		/* Ignore corrected ECC errors */
+		if (mtd_is_bitflip(err))
+>>>>>>> refs/remotes/origin/cm-10.0
 			err = 0;
 		if (err || read != pgsize) {
 			printk(PRINT_PREF "error: read failed at %#llx\n",
@@ -296,7 +372,11 @@ static int is_block_bad(int ebnum)
 	loff_t addr = ebnum * mtd->erasesize;
 	int ret;
 
+<<<<<<< HEAD
 	ret = mtd->block_isbad(mtd, addr);
+=======
+	ret = mtd_block_isbad(mtd, addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		printk(PRINT_PREF "block %d is bad\n", ebnum);
 	return ret;
@@ -336,8 +416,12 @@ static int scan_for_bad_eraseblocks(void)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	/* NOR flash does not implement block_isbad */
 	if (mtd->block_isbad == NULL)
+=======
+	if (!mtd_can_have_bb(mtd))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 
 	printk(PRINT_PREF "scanning for bad eraseblocks\n");
@@ -361,6 +445,16 @@ static int __init mtd_speedtest_init(void)
 
 	printk(KERN_INFO "\n");
 	printk(KERN_INFO "=================================================\n");
+<<<<<<< HEAD
+=======
+
+	if (dev < 0) {
+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
+		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (count)
 		printk(PRINT_PREF "MTD device: %d    count: %d\n", dev, count);
 	else

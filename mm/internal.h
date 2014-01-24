@@ -32,11 +32,14 @@ static inline void set_page_refcounted(struct page *page)
 	set_page_count(page, 1);
 }
 
+<<<<<<< HEAD
 static inline void __put_page(struct page *page)
 {
 	atomic_dec(&page->_count);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void __get_page_tail_foll(struct page *page,
 					bool get_page_head)
 {
@@ -52,11 +55,17 @@ static inline void __get_page_tail_foll(struct page *page,
 	 * page_cache_get_speculative()) on tail pages.
 	 */
 	VM_BUG_ON(atomic_read(&page->first_page->_count) <= 0);
+<<<<<<< HEAD
 	VM_BUG_ON(atomic_read(&page->_count) != 0);
 	VM_BUG_ON(page_mapcount(page) < 0);
 	if (get_page_head)
 		atomic_inc(&page->first_page->_count);
 	atomic_inc(&page->_mapcount);
+=======
+	if (get_page_head)
+		atomic_inc(&page->first_page->_count);
+	get_huge_page_tail(page);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -90,6 +99,16 @@ extern unsigned long highest_memmap_pfn;
  */
 extern int isolate_lru_page(struct page *page);
 extern void putback_lru_page(struct page *page);
+<<<<<<< HEAD
+=======
+extern unsigned long zone_reclaimable_pages(struct zone *zone);
+extern bool zone_reclaimable(struct zone *zone);
+
+/*
+ * in mm/rmap.c:
+ */
+extern pmd_t *mm_find_pmd(struct mm_struct *mm, unsigned long address);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * in mm/page_alloc.c
@@ -100,6 +119,79 @@ extern void prep_compound_page(struct page *page, unsigned long order);
 extern bool is_free_buddy_page(struct page *page);
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#if defined CONFIG_COMPACTION || defined CONFIG_CMA
+
+/*
+ * in mm/compaction.c
+ */
+/*
+ * compact_control is used to track pages being migrated and the free pages
+ * they are being migrated to during memory compaction. The free_pfn starts
+ * at the end of a zone and migrate_pfn begins at the start. Movable pages
+ * are moved to the end of a zone during a compaction run and the run
+ * completes when free_pfn <= migrate_pfn
+ */
+struct compact_control {
+	struct list_head freepages;	/* List of free pages to migrate to */
+	struct list_head migratepages;	/* List of pages being migrated */
+	unsigned long nr_freepages;	/* Number of isolated free pages */
+	unsigned long nr_migratepages;	/* Number of pages to migrate */
+	unsigned long free_pfn;		/* isolate_freepages search base */
+	unsigned long migrate_pfn;	/* isolate_migratepages search base */
+	bool sync;			/* Synchronous migration */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool ignore_skip_hint;		/* Scan blocks even if marked skip */
+	bool finished_update_free;	/* True when the zone cached pfns are
+					 * no longer being updated
+					 */
+	bool finished_update_migrate;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	int order;			/* order a direct compactor needs */
+	int migratetype;		/* MOVABLE, RECLAIMABLE etc */
+	struct zone *zone;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+};
+
+unsigned long
+isolate_freepages_range(unsigned long start_pfn, unsigned long end_pfn);
+unsigned long
+isolate_migratepages_range(struct zone *zone, struct compact_control *cc,
+			   unsigned long low_pfn, unsigned long end_pfn);
+
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool contended;			/* True if a lock was contended */
+};
+
+unsigned long
+isolate_freepages_range(struct compact_control *cc,
+			unsigned long start_pfn, unsigned long end_pfn);
+unsigned long
+isolate_migratepages_range(struct zone *zone, struct compact_control *cc,
+	unsigned long low_pfn, unsigned long end_pfn, bool unevictable);
+
+#endif
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * function for dealing with page's order in buddy system.
@@ -117,8 +209,13 @@ void __vma_link_list(struct mm_struct *mm, struct vm_area_struct *vma,
 		struct vm_area_struct *prev, struct rb_node *rb_parent);
 
 #ifdef CONFIG_MMU
+<<<<<<< HEAD
 extern long mlock_vma_pages_range(struct vm_area_struct *vma,
 			unsigned long start, unsigned long end);
+=======
+extern long __mlock_vma_pages_range(struct vm_area_struct *vma,
+		unsigned long start, unsigned long end, int *nonblocking);
+>>>>>>> refs/remotes/origin/master
 extern void munlock_vma_pages_range(struct vm_area_struct *vma,
 			unsigned long start, unsigned long end);
 static inline void munlock_vma_pages_all(struct vm_area_struct *vma)
@@ -127,11 +224,19 @@ static inline void munlock_vma_pages_all(struct vm_area_struct *vma)
 }
 
 /*
+<<<<<<< HEAD
  * Called only in fault path via page_evictable() for a new page
  * to determine if it's being mapped into a LOCKED vma.
  * If so, mark page as mlocked.
  */
 static inline int is_mlocked_vma(struct vm_area_struct *vma, struct page *page)
+=======
+ * Called only in fault path, to determine if a new page is being
+ * mapped into a LOCKED vma.  If it is, mark page as mlocked.
+ */
+static inline int mlocked_vma_newpage(struct vm_area_struct *vma,
+				    struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	VM_BUG_ON(PageLRU(page));
 
@@ -139,7 +244,12 @@ static inline int is_mlocked_vma(struct vm_area_struct *vma, struct page *page)
 		return 0;
 
 	if (!TestSetPageMlocked(page)) {
+<<<<<<< HEAD
 		inc_zone_page_state(page, NR_MLOCK);
+=======
+		mod_zone_page_state(page_zone(page), NR_MLOCK,
+				    hpage_nr_pages(page));
+>>>>>>> refs/remotes/origin/master
 		count_vm_event(UNEVICTABLE_PGMLOCKED);
 	}
 	return 1;
@@ -149,7 +259,11 @@ static inline int is_mlocked_vma(struct vm_area_struct *vma, struct page *page)
  * must be called with vma's mmap_sem held for read or write, and page locked.
  */
 extern void mlock_vma_page(struct page *page);
+<<<<<<< HEAD
 extern void munlock_vma_page(struct page *page);
+=======
+extern unsigned int munlock_vma_page(struct page *page);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Clear the page's PageMlocked().  This can be useful in a situation where
@@ -160,12 +274,16 @@ extern void munlock_vma_page(struct page *page);
  * If called for a page that is still mapped by mlocked vmas, all we do
  * is revert to lazy LRU behaviour -- semantics are not broken.
  */
+<<<<<<< HEAD
 extern void __clear_page_mlock(struct page *page);
 static inline void clear_page_mlock(struct page *page)
 {
 	if (unlikely(TestClearPageMlocked(page)))
 		__clear_page_mlock(page);
 }
+=======
+extern void clear_page_mlock(struct page *page);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * mlock_migrate_page - called only from migrate_page_copy() to
@@ -175,21 +293,39 @@ static inline void mlock_migrate_page(struct page *newpage, struct page *page)
 {
 	if (TestClearPageMlocked(page)) {
 		unsigned long flags;
+<<<<<<< HEAD
 
 		local_irq_save(flags);
 		__dec_zone_page_state(page, NR_MLOCK);
 		SetPageMlocked(newpage);
 		__inc_zone_page_state(newpage, NR_MLOCK);
+=======
+		int nr_pages = hpage_nr_pages(page);
+
+		local_irq_save(flags);
+		__mod_zone_page_state(page_zone(page), NR_MLOCK, -nr_pages);
+		SetPageMlocked(newpage);
+		__mod_zone_page_state(page_zone(newpage), NR_MLOCK, nr_pages);
+>>>>>>> refs/remotes/origin/master
 		local_irq_restore(flags);
 	}
 }
 
+<<<<<<< HEAD
+=======
+extern pmd_t maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
 extern unsigned long vma_address(struct page *page,
 				 struct vm_area_struct *vma);
 #endif
 #else /* !CONFIG_MMU */
+<<<<<<< HEAD
 static inline int is_mlocked_vma(struct vm_area_struct *v, struct page *p)
+=======
+static inline int mlocked_vma_newpage(struct vm_area_struct *v, struct page *p)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -299,7 +435,10 @@ static inline void mminit_validate_memmodel_limits(unsigned long *start_pfn,
 #define ZONE_RECLAIM_FULL	-1
 #define ZONE_RECLAIM_SOME	0
 #define ZONE_RECLAIM_SUCCESS	1
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern int hwpoison_filter(struct page *p);
 
@@ -309,3 +448,29 @@ extern u64 hwpoison_filter_flags_mask;
 extern u64 hwpoison_filter_flags_value;
 extern u64 hwpoison_filter_memcg;
 extern u32 hwpoison_filter_enable;
+<<<<<<< HEAD
+=======
+
+extern unsigned long vm_mmap_pgoff(struct file *, unsigned long,
+        unsigned long, unsigned long,
+        unsigned long, unsigned long);
+
+extern void set_pageblock_order(void);
+unsigned long reclaim_clean_pages_from_list(struct zone *zone,
+					    struct list_head *page_list);
+/* The ALLOC_WMARK bits are used as an index to zone->watermark */
+#define ALLOC_WMARK_MIN		WMARK_MIN
+#define ALLOC_WMARK_LOW		WMARK_LOW
+#define ALLOC_WMARK_HIGH	WMARK_HIGH
+#define ALLOC_NO_WATERMARKS	0x04 /* don't check watermarks at all */
+
+/* Mask to get the watermark bits */
+#define ALLOC_WMARK_MASK	(ALLOC_NO_WATERMARKS-1)
+
+#define ALLOC_HARDER		0x10 /* try to alloc harder */
+#define ALLOC_HIGH		0x20 /* __GFP_HIGH set */
+#define ALLOC_CPUSET		0x40 /* check for correct cpuset */
+#define ALLOC_CMA		0x80 /* allow allocations from CMA areas */
+
+#endif	/* __MM_INTERNAL_H */
+>>>>>>> refs/remotes/origin/master

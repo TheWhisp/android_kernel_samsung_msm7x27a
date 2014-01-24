@@ -2,7 +2,15 @@
 #define _ASM_GENERIC_LOCAL_H
 
 #include <linux/percpu.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/types.h>
 
 /*

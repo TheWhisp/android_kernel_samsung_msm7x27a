@@ -4,7 +4,11 @@
  * Data structure and helper functions for tracking pending FSF
  * requests.
  *
+<<<<<<< HEAD
  * Copyright IBM Corporation 2009
+=======
+ * Copyright IBM Corp. 2009
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef ZFCP_REQLIST_H

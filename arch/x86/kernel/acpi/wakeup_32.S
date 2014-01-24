@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 	.section .text..page_aligned
+=======
+	.text
+>>>>>>> refs/remotes/origin/master
 #include <linux/linkage.h>
 #include <asm/segment.h>
 #include <asm/page_types.h>
@@ -18,7 +22,10 @@ wakeup_pmode_return:
 	movw	%ax, %gs
 
 	# reload the gdt, as we need the full 32 bit address
+<<<<<<< HEAD
 	lgdt	saved_gdt
+=======
+>>>>>>> refs/remotes/origin/master
 	lidt	saved_idt
 	lldt	saved_ldt
 	ljmp	$(__KERNEL_CS), $1f
@@ -44,7 +51,10 @@ bogus_magic:
 
 
 save_registers:
+<<<<<<< HEAD
 	sgdt	saved_gdt
+=======
+>>>>>>> refs/remotes/origin/master
 	sidt	saved_idt
 	sldt	saved_ldt
 	str	saved_tss
@@ -74,9 +84,19 @@ restore_registers:
 ENTRY(do_suspend_lowlevel)
 	call	save_processor_state
 	call	save_registers
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pushl	$3
 	call	acpi_enter_sleep_state
 	addl	$4, %esp
+=======
+	call	acpi_enter_s3
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pushl	$3
+	call	x86_acpi_enter_sleep_state
+	addl	$4, %esp
+>>>>>>> refs/remotes/origin/master
 
 #	In case of S3 failure, we'll emerge here.  Jump
 # 	to ret_point to recover
@@ -93,7 +113,10 @@ ENTRY(saved_magic)	.long	0
 ENTRY(saved_eip)	.long	0
 
 # saved registers
+<<<<<<< HEAD
 saved_gdt:	.long	0,0
+=======
+>>>>>>> refs/remotes/origin/master
 saved_idt:	.long	0,0
 saved_ldt:	.long	0
 saved_tss:	.long	0

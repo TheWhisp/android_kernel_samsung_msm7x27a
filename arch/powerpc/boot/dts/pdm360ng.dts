@@ -13,15 +13,24 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
 /dts-v1/;
 
 / {
 	model = "pdm360ng";
 	compatible = "ifm,pdm360ng";
+=======
+#include <mpc5121.dtsi>
+
+/ {
+	model = "pdm360ng";
+	compatible = "ifm,pdm360ng", "fsl,mpc5121";
+>>>>>>> refs/remotes/origin/master
 	#address-cells = <1>;
 	#size-cells = <1>;
 	interrupt-parent = <&ipic>;
 
+<<<<<<< HEAD
 	aliases {
 		ethernet0 = &eth0;
 	};
@@ -43,17 +52,22 @@
 		};
 	};
 
+=======
+>>>>>>> refs/remotes/origin/master
 	memory {
 		device_type = "memory";
 		reg = <0x00000000 0x20000000>;	// 512MB at 0
 	};
 
 	nfc@40000000 {
+<<<<<<< HEAD
 		compatible = "fsl,mpc5121-nfc";
 		reg = <0x40000000 0x100000>;
 		interrupts = <0x6 0x8>;
 		#address-cells = <0x1>;
 		#size-cells = <0x1>;
+=======
+>>>>>>> refs/remotes/origin/master
 		bank-width = <0x1>;
 		chips = <0x1>;
 
@@ -63,6 +77,7 @@
 		};
 	};
 
+<<<<<<< HEAD
 	sram@50000000 {
 		compatible = "fsl,mpc5121-sram";
 		reg = <0x50000000 0x20000>;	// 128K at 0x50000000
@@ -74,6 +89,9 @@
 		#size-cells = <1>;
 		reg = <0x80000020 0x40>;
 
+=======
+	localbus@80000020 {
+>>>>>>> refs/remotes/origin/master
 		ranges = <0x0 0x0 0xf0000000 0x10000000   /* Flash */
 			  0x2 0x0 0x50040000 0x00020000>; /* CS2: MRAM */
 
@@ -129,6 +147,7 @@
 	};
 
 	soc@80000000 {
+<<<<<<< HEAD
 		compatible = "fsl,mpc5121-immr";
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -197,6 +216,10 @@
 			compatible = "fsl,mpc5121-i2c";
 			reg = <0x1700 0x20>;
 			interrupts = <0x9 0x8>;
+=======
+
+		i2c@1700 {
+>>>>>>> refs/remotes/origin/master
 			fsl,preserve-clocking;
 
 			eeprom@50 {
@@ -210,6 +233,7 @@
 			};
 		};
 
+<<<<<<< HEAD
 		i2c@1740 {
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -260,11 +284,28 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			phy: ethernet-phy@0 {
+=======
+		i2c@1720 {
+			status = "disabled";
+		};
+
+		i2c@1740 {
+			fsl,preserve-clocking;
+		};
+
+		ethernet@2800 {
+			phy-handle = <&phy0>;
+		};
+
+		mdio@2800 {
+			phy0: ethernet-phy@1f {
+>>>>>>> refs/remotes/origin/master
 				compatible = "smsc,lan8700";
 				reg = <0x1f>;
 			};
 		};
 
+<<<<<<< HEAD
 		eth0: ethernet@2800 {
 			compatible = "fsl,mpc5121-fec";
 			reg = <0x2800 0x200>;
@@ -392,19 +433,86 @@
 			fsl,tx-fifo-size = <16>;
 
 			// 7845 touch screen controller
+=======
+		/* USB1 using external ULPI PHY */
+		usb@3000 {
+			dr_mode = "host";
+		};
+
+		/* USB0 using internal UTMI PHY */
+		usb@4000 {
+			fsl,invert-pwr-fault;
+		};
+
+		psc@11000 {
+			compatible = "fsl,mpc5121-psc-uart", "fsl,mpc5121-psc";
+		};
+
+		psc@11100 {
+			compatible = "fsl,mpc5121-psc-uart", "fsl,mpc5121-psc";
+		};
+
+		psc@11200 {
+			compatible = "fsl,mpc5121-psc-uart", "fsl,mpc5121-psc";
+		};
+
+		psc@11300 {
+			compatible = "fsl,mpc5121-psc-uart", "fsl,mpc5121-psc";
+		};
+
+		psc@11400 {
+			compatible = "fsl,mpc5121-psc-uart", "fsl,mpc5121-psc";
+		};
+
+		psc@11500 {
+			status = "disabled";
+		};
+
+		psc@11600 {
+			compatible = "fsl,mpc5121-psc-uart", "fsl,mpc5121-psc";
+		};
+
+		psc@11700 {
+			status = "disabled";
+		};
+
+		psc@11800 {
+			compatible = "fsl,mpc5121-psc-uart", "fsl,mpc5121-psc";
+		};
+
+		psc@11900 {
+			compatible = "fsl,mpc5121-psc-spi", "fsl,mpc5121-psc";
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			/* ADS7845 touch screen controller */
+>>>>>>> refs/remotes/origin/master
 			ts@0 {
 				compatible = "ti,ads7846";
 				reg = <0x0>;
 				spi-max-frequency = <3000000>;
+<<<<<<< HEAD
 				// pen irq is GPIO25
+=======
+				/* pen irq is GPIO25 */
+>>>>>>> refs/remotes/origin/master
 				interrupts = <78 0x8>;
 			};
 		};
 
+<<<<<<< HEAD
 		dma@14000 {
 			compatible = "fsl,mpc5121-dma";
 			reg = <0x14000 0x1800>;
 			interrupts = <65 0x8>;
+=======
+		psc@11a00 {
+			status = "disabled";
+		};
+
+		psc@11b00 {
+			compatible = "fsl,mpc5121-psc-uart", "fsl,mpc5121-psc";
+>>>>>>> refs/remotes/origin/master
 		};
 	};
 };

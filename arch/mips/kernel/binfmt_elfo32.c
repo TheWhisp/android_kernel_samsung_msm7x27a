@@ -6,7 +6,11 @@
  *
  * Heavily inspired by the 32-bit Sparc compat code which is
  * Copyright (C) 1995, 1996, 1997, 1998 David S. Miller (davem@redhat.com)
+<<<<<<< HEAD
  * Copyright (C) 1995, 1996, 1997, 1998 Jakub Jelinek   (jj@ultra.linux.cz)
+=======
+ * Copyright (C) 1995, 1996, 1997, 1998 Jakub Jelinek	(jj@ultra.linux.cz)
+>>>>>>> refs/remotes/origin/master
  */
 
 #define ELF_ARCH		EM_MIPS
@@ -48,9 +52,19 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
 	__res;								\
 })
 
+<<<<<<< HEAD
 #define TASK32_SIZE		0x7fff8000UL
 #undef ELF_ET_DYN_BASE
 #define ELF_ET_DYN_BASE         (TASK32_SIZE / 3 * 2)
+=======
+#ifdef CONFIG_KVM_GUEST
+#define TASK32_SIZE		0x3fff8000UL
+#else
+#define TASK32_SIZE		0x7fff8000UL
+#endif
+#undef ELF_ET_DYN_BASE
+#define ELF_ET_DYN_BASE		(TASK32_SIZE / 3 * 2)
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/processor.h>
 
@@ -86,8 +100,13 @@ struct elf_prstatus32
 	pid_t	pr_ppid;
 	pid_t	pr_pgrp;
 	pid_t	pr_sid;
+<<<<<<< HEAD
 	struct compat_timeval pr_utime;	/* User time */
 	struct compat_timeval pr_stime;	/* System time */
+=======
+	struct compat_timeval pr_utime; /* User time */
+	struct compat_timeval pr_stime; /* System time */
+>>>>>>> refs/remotes/origin/master
 	struct compat_timeval pr_cutime;/* Cumulative user time */
 	struct compat_timeval pr_cstime;/* Cumulative system time */
 	elf_gregset_t pr_reg;	/* GP registers */
@@ -107,7 +126,11 @@ struct elf_prpsinfo32
 	pid_t	pr_pid, pr_ppid, pr_pgrp, pr_sid;
 	/* Lots missing */
 	char	pr_fname[16];	/* filename of executable */
+<<<<<<< HEAD
 	char	pr_psargs[ELF_PRARGSZ];	/* initial part of arg list */
+=======
+	char	pr_psargs[ELF_PRARGSZ]; /* initial part of arg list */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define elf_caddr_t	u32
@@ -158,4 +181,18 @@ MODULE_AUTHOR("Ralf Baechle (ralf@linux-mips.org)");
 #undef TASK_SIZE
 #define TASK_SIZE TASK_SIZE32
 
+<<<<<<< HEAD
+=======
+#undef cputime_to_timeval
+#define cputime_to_timeval cputime_to_compat_timeval
+static __inline__ void
+cputime_to_compat_timeval(const cputime_t cputime, struct compat_timeval *value)
+{
+	unsigned long jiffies = cputime_to_jiffies(cputime);
+
+	value->tv_usec = (jiffies % HZ) * (1000000L / HZ);
+	value->tv_sec = jiffies / HZ;
+}
+
+>>>>>>> refs/remotes/origin/master
 #include "../../../fs/binfmt_elf.c"

@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
+=======
+/* Copyright (c) 2010, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -8,6 +16,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 
 #include <linux/console.h>
@@ -81,6 +100,24 @@ static int hvc_dcc_get_chars(uint32_t vt, char *buf, int count)
 	return i;
 }
 
+<<<<<<< HEAD
+=======
+static bool hvc_dcc_check(void)
+{
+	unsigned long time = jiffies + (HZ / 10);
+
+	/* Write a test character to check if it is handled */
+	__dcc_putchar('\n');
+
+	while (time_is_after_jiffies(time)) {
+		if (!(__dcc_getstatus() & DCC_STATUS_TX))
+			return true;
+	}
+
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct hv_ops hvc_dcc_get_put_ops = {
 	.get_chars = hvc_dcc_get_chars,
 	.put_chars = hvc_dcc_put_chars,
@@ -88,6 +125,12 @@ static const struct hv_ops hvc_dcc_get_put_ops = {
 
 static int __init hvc_dcc_console_init(void)
 {
+<<<<<<< HEAD
+=======
+	if (!hvc_dcc_check())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	hvc_instantiate(0, 0, &hvc_dcc_get_put_ops);
 	return 0;
 }
@@ -95,6 +138,12 @@ console_initcall(hvc_dcc_console_init);
 
 static int __init hvc_dcc_init(void)
 {
+<<<<<<< HEAD
+=======
+	if (!hvc_dcc_check())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	hvc_alloc(0, 0, &hvc_dcc_get_put_ops, 128);
 	return 0;
 }

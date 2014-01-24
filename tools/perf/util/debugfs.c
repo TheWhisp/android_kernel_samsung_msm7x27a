@@ -2,8 +2,17 @@
 #include "debugfs.h"
 #include "cache.h"
 
+<<<<<<< HEAD
 static int debugfs_premounted;
 static char debugfs_mountpoint[MAX_PATH+1];
+=======
+#include <linux/kernel.h>
+#include <sys/mount.h>
+
+static int debugfs_premounted;
+char debugfs_mountpoint[PATH_MAX + 1] = "/sys/kernel/debug";
+char tracing_events_path[PATH_MAX + 1] = "/sys/kernel/debug/tracing/events";
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const char *debugfs_known_mountpoints[] = {
 	"/sys/kernel/debug/",
@@ -11,6 +20,7 @@ static const char *debugfs_known_mountpoints[] = {
 	0,
 };
 
+<<<<<<< HEAD
 /* use this to force a umount */
 void debugfs_force_cleanup(void)
 {
@@ -37,6 +47,8 @@ int debugfs_make_path(const char *element, char *buffer, int size)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int debugfs_found;
 
 /* find the path to the mounted debugfs */
@@ -62,11 +74,17 @@ const char *debugfs_find_mountpoint(void)
 	/* give up and parse /proc/mounts */
 	fp = fopen("/proc/mounts", "r");
 	if (fp == NULL)
+<<<<<<< HEAD
 		die("Can't open /proc/mounts for read");
 
 	while (fscanf(fp, "%*s %"
 		      STR(MAX_PATH)
 		      "s %99s %*s %*d %*d\n",
+=======
+		return NULL;
+
+	while (fscanf(fp, "%*s %" STR(PATH_MAX) "s %99s %*s %*d %*d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		      debugfs_mountpoint, type) == 2) {
 		if (strcmp(type, "debugfs") == 0)
 			break;
@@ -95,6 +113,7 @@ int debugfs_valid_mountpoint(const char *debugfs)
 	return 0;
 }
 
+<<<<<<< HEAD
 
 int debugfs_valid_entry(const char *path)
 {
@@ -104,6 +123,12 @@ int debugfs_valid_entry(const char *path)
 		return -errno;
 
 	return 0;
+=======
+static void debugfs_set_tracing_events_path(const char *mountpoint)
+{
+	snprintf(tracing_events_path, sizeof(tracing_events_path), "%s/%s",
+		 mountpoint, "tracing/events");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* mount the debugfs somewhere if it's not mounted */
@@ -113,7 +138,11 @@ char *debugfs_mount(const char *mountpoint)
 	/* see if it's already mounted */
 	if (debugfs_find_mountpoint()) {
 		debugfs_premounted = 1;
+<<<<<<< HEAD
 		return debugfs_mountpoint;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* if not mounted and no argument */
@@ -129,6 +158,7 @@ char *debugfs_mount(const char *mountpoint)
 		return NULL;
 
 	/* save the mountpoint */
+<<<<<<< HEAD
 	strncpy(debugfs_mountpoint, mountpoint, sizeof(debugfs_mountpoint));
 	debugfs_found = 1;
 
@@ -237,4 +267,17 @@ int debugfs_read(const char *entry, char *buffer, size_t size)
 
 	/* return the number of chars read */
 	return ret;
+=======
+	debugfs_found = 1;
+	strncpy(debugfs_mountpoint, mountpoint, sizeof(debugfs_mountpoint));
+out:
+	debugfs_set_tracing_events_path(debugfs_mountpoint);
+	return debugfs_mountpoint;
+}
+
+void debugfs_set_path(const char *mountpoint)
+{
+	snprintf(debugfs_mountpoint, sizeof(debugfs_mountpoint), "%s", mountpoint);
+	debugfs_set_tracing_events_path(mountpoint);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

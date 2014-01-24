@@ -46,7 +46,15 @@
 #include <net/neighbour.h>
 #include <net/sch_generic.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <rdma/ib_verbs.h>
 #include <rdma/ib_pack.h>
@@ -92,6 +100,11 @@ enum {
 	IPOIB_STOP_REAPER	  = 7,
 	IPOIB_FLAG_ADMIN_CM	  = 9,
 	IPOIB_FLAG_UMCAST	  = 10,
+<<<<<<< HEAD
+=======
+	IPOIB_STOP_NEIGH_GC	  = 11,
+	IPOIB_NEIGH_TBL_FLUSH	  = 12,
+>>>>>>> refs/remotes/origin/master
 
 	IPOIB_MAX_BACKOFF_SECONDS = 16,
 
@@ -99,9 +112,20 @@ enum {
 	IPOIB_MCAST_FLAG_SENDONLY = 1,
 	IPOIB_MCAST_FLAG_BUSY	  = 2,	/* joining or already joined */
 	IPOIB_MCAST_FLAG_ATTACHED = 3,
+<<<<<<< HEAD
 
 	MAX_SEND_CQE		  = 16,
 	IPOIB_CM_COPYBREAK	  = 256,
+=======
+	IPOIB_MCAST_JOIN_STARTED  = 4,
+
+	MAX_SEND_CQE		  = 16,
+	IPOIB_CM_COPYBREAK	  = 256,
+
+	IPOIB_NON_CHILD		  = 0,
+	IPOIB_LEGACY_CHILD	  = 1,
+	IPOIB_RTNL_CHILD	  = 2,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define	IPOIB_OP_RECV   (1ul << 31)
@@ -111,6 +135,11 @@ enum {
 #define	IPOIB_OP_CM     (0)
 #endif
 
+<<<<<<< HEAD
+=======
+#define IPOIB_QPN_MASK ((__force u32) cpu_to_be32(0xFFFFFF))
+
+>>>>>>> refs/remotes/origin/master
 /* structs */
 
 struct ipoib_header {
@@ -143,6 +172,10 @@ struct ipoib_mcast {
 	struct sk_buff_head pkt_queue;
 
 	struct net_device *dev;
+<<<<<<< HEAD
+=======
+	struct completion done;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ipoib_rx_buf {
@@ -260,6 +293,26 @@ struct ipoib_ethtool_st {
 	u16     max_coalesced_frames;
 };
 
+<<<<<<< HEAD
+=======
+struct ipoib_neigh_table;
+
+struct ipoib_neigh_hash {
+	struct ipoib_neigh_table       *ntbl;
+	struct ipoib_neigh __rcu      **buckets;
+	struct rcu_head			rcu;
+	u32				mask;
+	u32				size;
+};
+
+struct ipoib_neigh_table {
+	struct ipoib_neigh_hash __rcu  *htbl;
+	atomic_t			entries;
+	struct completion		flushed;
+	struct completion		deleted;
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Device private locking: network stack tx_lock protects members used
  * in TX fast path, lock protects everything else.  lock nests inside
@@ -274,11 +327,20 @@ struct ipoib_dev_priv {
 
 	unsigned long flags;
 
+<<<<<<< HEAD
 	struct mutex vlan_mutex;
+=======
+	struct rw_semaphore vlan_rwsem;
+>>>>>>> refs/remotes/origin/master
 
 	struct rb_root  path_tree;
 	struct list_head path_list;
 
+<<<<<<< HEAD
+=======
+	struct ipoib_neigh_table ntbl;
+
+>>>>>>> refs/remotes/origin/master
 	struct ipoib_mcast *broadcast;
 	struct list_head multicast_list;
 	struct rb_root multicast_tree;
@@ -291,7 +353,11 @@ struct ipoib_dev_priv {
 	struct work_struct flush_heavy;
 	struct work_struct restart_task;
 	struct delayed_work ah_reap_task;
+<<<<<<< HEAD
 
+=======
+	struct delayed_work neigh_reap_task;
+>>>>>>> refs/remotes/origin/master
 	struct ib_device *ca;
 	u8		  port;
 	u16		  pkey;
@@ -332,6 +398,10 @@ struct ipoib_dev_priv {
 	struct net_device *parent;
 	struct list_head child_intfs;
 	struct list_head list;
+<<<<<<< HEAD
+=======
+	int    child_type;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_INFINIBAND_IPOIB_CM
 	struct ipoib_cm_dev_priv cm;
@@ -377,6 +447,7 @@ struct ipoib_neigh {
 #ifdef CONFIG_INFINIBAND_IPOIB_CM
 	struct ipoib_cm_tx *cm;
 #endif
+<<<<<<< HEAD
 	union ib_gid	    dgid;
 	struct sk_buff_head queue;
 
@@ -384,6 +455,18 @@ struct ipoib_neigh {
 	struct net_device *dev;
 
 	struct list_head    list;
+=======
+	u8     daddr[INFINIBAND_ALEN];
+	struct sk_buff_head queue;
+
+	struct net_device *dev;
+
+	struct list_head    list;
+	struct ipoib_neigh __rcu *hnext;
+	struct rcu_head     rcu;
+	atomic_t	    refcnt;
+	unsigned long       alive;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define IPOIB_UD_MTU(ib_mtu)		(ib_mtu - IPOIB_ENCAP_LEN)
@@ -394,6 +477,7 @@ static inline int ipoib_ud_need_sg(unsigned int ib_mtu)
 	return IPOIB_UD_BUF_SIZE(ib_mtu) > PAGE_SIZE;
 }
 
+<<<<<<< HEAD
 /*
  * We stash a pointer to our private neighbour information after our
  * hardware address in neigh->ha.  The ALIGN() expression here makes
@@ -409,6 +493,19 @@ static inline struct ipoib_neigh **to_ipoib_neigh(struct neighbour *neigh)
 struct ipoib_neigh *ipoib_neigh_alloc(struct neighbour *neigh,
 				      struct net_device *dev);
 void ipoib_neigh_free(struct net_device *dev, struct ipoib_neigh *neigh);
+=======
+void ipoib_neigh_dtor(struct ipoib_neigh *neigh);
+static inline void ipoib_neigh_put(struct ipoib_neigh *neigh)
+{
+	if (atomic_dec_and_test(&neigh->refcnt))
+		ipoib_neigh_dtor(neigh);
+}
+struct ipoib_neigh *ipoib_neigh_get(struct net_device *dev, u8 *daddr);
+struct ipoib_neigh *ipoib_neigh_alloc(u8 *daddr,
+				      struct net_device *dev);
+void ipoib_neigh_free(struct ipoib_neigh *neigh);
+void ipoib_del_neighs_by_gid(struct net_device *dev, u8 *gid);
+>>>>>>> refs/remotes/origin/master
 
 extern struct workqueue_struct *ipoib_workqueue;
 
@@ -425,7 +522,10 @@ static inline void ipoib_put_ah(struct ipoib_ah *ah)
 {
 	kref_put(&ah->ref, ipoib_free_ah);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 int ipoib_open(struct net_device *dev);
 int ipoib_add_pkey_attr(struct net_device *dev);
 int ipoib_add_umcast_attr(struct net_device *dev);
@@ -455,7 +555,11 @@ void ipoib_dev_cleanup(struct net_device *dev);
 
 void ipoib_mcast_join_task(struct work_struct *work);
 void ipoib_mcast_carrier_on_task(struct work_struct *work);
+<<<<<<< HEAD
 void ipoib_mcast_send(struct net_device *dev, void *mgid, struct sk_buff *skb);
+=======
+void ipoib_mcast_send(struct net_device *dev, u8 *daddr, struct sk_buff *skb);
+>>>>>>> refs/remotes/origin/master
 
 void ipoib_mcast_restart_task(struct work_struct *work);
 int ipoib_mcast_start_thread(struct net_device *dev);
@@ -493,6 +597,20 @@ void ipoib_event(struct ib_event_handler *handler,
 int ipoib_vlan_add(struct net_device *pdev, unsigned short pkey);
 int ipoib_vlan_delete(struct net_device *pdev, unsigned short pkey);
 
+<<<<<<< HEAD
+=======
+int __ipoib_vlan_add(struct ipoib_dev_priv *ppriv, struct ipoib_dev_priv *priv,
+		     u16 pkey, int child_type);
+
+int  __init ipoib_netlink_init(void);
+void __exit ipoib_netlink_fini(void);
+
+void ipoib_set_umcast(struct net_device *ndev, int umcast_val);
+int  ipoib_set_mode(struct net_device *dev, const char *buf);
+
+void ipoib_setup(struct net_device *dev);
+
+>>>>>>> refs/remotes/origin/master
 void ipoib_pkey_poll(struct work_struct *work);
 int ipoib_pkey_dev_delay_open(struct net_device *dev);
 void ipoib_drain_cq(struct net_device *dev);
@@ -500,14 +618,22 @@ void ipoib_drain_cq(struct net_device *dev);
 void ipoib_set_ethtool_ops(struct net_device *dev);
 int ipoib_set_dev_features(struct ipoib_dev_priv *priv, struct ib_device *hca);
 
+<<<<<<< HEAD
 #ifdef CONFIG_INFINIBAND_IPOIB_CM
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define IPOIB_FLAGS_RC		0x80
 #define IPOIB_FLAGS_UC		0x40
 
 /* We don't support UC connections at the moment */
 #define IPOIB_CM_SUPPORTED(ha)   (ha[0] & (IPOIB_FLAGS_RC))
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_INFINIBAND_IPOIB_CM
+
+>>>>>>> refs/remotes/origin/master
 extern int ipoib_max_conn_qp;
 
 static inline int ipoib_cm_admin_enabled(struct net_device *dev)
@@ -517,10 +643,17 @@ static inline int ipoib_cm_admin_enabled(struct net_device *dev)
 		test_bit(IPOIB_FLAG_ADMIN_CM, &priv->flags);
 }
 
+<<<<<<< HEAD
 static inline int ipoib_cm_enabled(struct net_device *dev, struct neighbour *n)
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 	return IPOIB_CM_SUPPORTED(n->ha) &&
+=======
+static inline int ipoib_cm_enabled(struct net_device *dev, u8 *hwaddr)
+{
+	struct ipoib_dev_priv *priv = netdev_priv(dev);
+	return IPOIB_CM_SUPPORTED(hwaddr) &&
+>>>>>>> refs/remotes/origin/master
 		test_bit(IPOIB_FLAG_ADMIN_CM, &priv->flags);
 }
 
@@ -575,7 +708,11 @@ static inline int ipoib_cm_admin_enabled(struct net_device *dev)
 {
 	return 0;
 }
+<<<<<<< HEAD
 static inline int ipoib_cm_enabled(struct net_device *dev, struct neighbour *n)
+=======
+static inline int ipoib_cm_enabled(struct net_device *dev, u8 *hwaddr)
+>>>>>>> refs/remotes/origin/master
 
 {
 	return 0;
@@ -725,4 +862,9 @@ extern int ipoib_debug_level;
 
 #define IPOIB_QPN(ha) (be32_to_cpup((__be32 *) ha) & 0xffffff)
 
+<<<<<<< HEAD
+=======
+extern const char ipoib_driver_version[];
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _IPOIB_H */

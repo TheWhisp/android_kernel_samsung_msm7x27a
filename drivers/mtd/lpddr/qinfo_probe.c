@@ -57,7 +57,11 @@ static struct qinfo_query_info qinfo_array[] = {
 
 static long lpddr_get_qinforec_pos(struct map_info *map, char *id_str)
 {
+<<<<<<< HEAD
 	int qinfo_lines = sizeof(qinfo_array)/sizeof(struct qinfo_query_info);
+=======
+	int qinfo_lines = ARRAY_SIZE(qinfo_array);
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int bankwidth = map_bankwidth(map) * 8;
 	int major, minor;

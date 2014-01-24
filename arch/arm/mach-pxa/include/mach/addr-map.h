@@ -20,7 +20,15 @@
  * Peripheral Bus
  */
 #define PERIPH_PHYS		0x40000000
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PERIPH_VIRT		0xf2000000
+=======
+#define PERIPH_VIRT		IOMEM(0xf2000000)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PERIPH_VIRT		IOMEM(0xf2000000)
+>>>>>>> refs/remotes/origin/master
 #define PERIPH_SIZE		0x02000000
 
 /*
@@ -28,21 +36,45 @@
  */
 #define PXA2XX_SMEMC_PHYS	0x48000000
 #define PXA3XX_SMEMC_PHYS	0x4a000000
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SMEMC_VIRT		0xf6000000
+=======
+#define SMEMC_VIRT		IOMEM(0xf6000000)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SMEMC_VIRT		IOMEM(0xf6000000)
+>>>>>>> refs/remotes/origin/master
 #define SMEMC_SIZE		0x00100000
 
 /*
  * Dynamic Memory Controller (only on PXA3xx)
  */
 #define DMEMC_PHYS		0x48100000
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DMEMC_VIRT		0xf6100000
+=======
+#define DMEMC_VIRT		IOMEM(0xf6100000)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DMEMC_VIRT		IOMEM(0xf6100000)
+>>>>>>> refs/remotes/origin/master
 #define DMEMC_SIZE		0x00100000
 
 /*
  * Internal Memory Controller (PXA27x and later)
  */
 #define IMEMC_PHYS		0x58000000
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define IMEMC_VIRT		0xfe000000
+=======
+#define IMEMC_VIRT		IOMEM(0xfe000000)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IMEMC_VIRT		IOMEM(0xfe000000)
+>>>>>>> refs/remotes/origin/master
 #define IMEMC_SIZE		0x00100000
 
 #endif /* __ASM_MACH_ADDR_MAP_H */

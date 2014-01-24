@@ -7,6 +7,7 @@
  *
  * Copyright (C) 2001 - 2005 Tensilica Inc.
  */
+<<<<<<< HEAD
 
 #ifndef _XTENSA_TYPES_H
 #define _XTENSA_TYPES_H
@@ -23,8 +24,11 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 typedef unsigned short umode_t;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * These aren't exported outside the kernel to avoid name space clashes
  */
@@ -35,4 +39,19 @@ typedef unsigned short umode_t;
 #endif	/* __KERNEL__ */
 #endif
 
+=======
+#ifndef _XTENSA_TYPES_H
+#define _XTENSA_TYPES_H
+
+#include <uapi/asm/types.h>
+
+#ifndef __ASSEMBLY__
+/*
+ * These aren't exported outside the kernel to avoid name space clashes
+ */
+
+#define BITS_PER_LONG 32
+
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif	/* _XTENSA_TYPES_H */

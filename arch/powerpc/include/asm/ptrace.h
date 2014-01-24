@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef _ASM_POWERPC_PTRACE_H
 #define _ASM_POWERPC_PTRACE_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Copyright (C) 2001 PPC64 Team, IBM Corp
  *
@@ -23,6 +26,7 @@
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #include <linux/types.h>
 
@@ -54,6 +58,13 @@ struct pt_regs {
 #endif /* __ASSEMBLY__ */
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_POWERPC_PTRACE_H
+#define _ASM_POWERPC_PTRACE_H
+
+#include <uapi/asm/ptrace.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __powerpc64__
 
@@ -83,6 +94,8 @@ struct pt_regs {
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define instruction_pointer(regs) ((regs)->nip)
 #define user_stack_pointer(regs) ((regs)->gpr[1])
 #define kernel_stack_pointer(regs) ((regs)->gpr[1])
@@ -94,6 +107,39 @@ extern unsigned long profile_pc(struct pt_regs *regs);
 #define profile_pc(regs) instruction_pointer(regs)
 #endif
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define GET_IP(regs)		((regs)->nip)
+#define GET_USP(regs)		((regs)->gpr[1])
+#define GET_FP(regs)		(0)
+#define SET_FP(regs, val)
+
+#ifdef CONFIG_SMP
+extern unsigned long profile_pc(struct pt_regs *regs);
+#define profile_pc profile_pc
+#endif
+
+#include <asm-generic/ptrace.h>
+
+#define kernel_stack_pointer(regs) ((regs)->gpr[1])
+static inline int is_syscall_success(struct pt_regs *regs)
+{
+	return !(regs->ccr & 0x10000000);
+}
+
+static inline long regs_return_value(struct pt_regs *regs)
+{
+	if (is_syscall_success(regs))
+		return regs->gpr[3];
+	else
+		return -regs->gpr[3];
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef __powerpc64__
 #define user_mode(regs) ((((regs)->msr) >> MSR_PR_LG) & 0x1)
 #else
@@ -106,10 +152,20 @@ extern unsigned long profile_pc(struct pt_regs *regs);
 	} while(0)
 
 struct task_struct;
+<<<<<<< HEAD
 extern unsigned long ptrace_get_reg(struct task_struct *task, int regno);
 extern int ptrace_put_reg(struct task_struct *task, int regno,
 			  unsigned long data);
 
+=======
+extern int ptrace_get_reg(struct task_struct *task, int regno,
+			  unsigned long *data);
+extern int ptrace_put_reg(struct task_struct *task, int regno,
+			  unsigned long data);
+
+#define current_pt_regs() \
+	((struct pt_regs *)((unsigned long)current_thread_info() + THREAD_SIZE) - 1)
+>>>>>>> refs/remotes/origin/master
 /*
  * We use the least-significant bit of the trap field to indicate
  * whether we have saved the full set of registers, or only a
@@ -205,6 +261,7 @@ static inline unsigned long regs_get_kernel_stack_nth(struct pt_regs *regs,
 
 #endif /* __ASSEMBLY__ */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /*
@@ -426,4 +483,14 @@ struct ppc_hw_breakpoint {
 #define PPC_BREAKPOINT_CONDITION_BE(n)	\
 	(1<<((n)+PPC_BREAKPOINT_CONDITION_BE_SHIFT))
 
+=======
+#ifndef __powerpc64__
+#else /* __powerpc64__ */
+#define PT_FPSCR32 (PT_FPR0 + 2*32 + 1)	/* each FP reg occupies 2 32-bit userspace slots */
+#define PT_VR0_32 164	/* each Vector reg occupies 4 slots in 32-bit */
+#define PT_VSCR_32 (PT_VR0 + 32*4 + 3)
+#define PT_VRSAVE_32 (PT_VR0 + 33*4)
+#define PT_VSR0_32 300 	/* each VSR reg occupies 4 slots in 32-bit */
+#endif /* __powerpc64__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_POWERPC_PTRACE_H */

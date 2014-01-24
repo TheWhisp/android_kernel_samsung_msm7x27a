@@ -42,14 +42,24 @@
 /*---------------------  Export Functions  --------------------------*/
 
 bool
+<<<<<<< HEAD
 device_receive_frame (
     PSDevice pDevice,
     PSRxDesc pCurrRD
     );
+=======
+device_receive_frame(
+	PSDevice pDevice,
+	PSRxDesc pCurrRD
+);
+>>>>>>> refs/remotes/origin/master
 
 void	MngWorkItem(void *Context);
 
 #endif // __RXTX_H__
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master

@@ -6,7 +6,15 @@
  */
 
 #ifndef _ASM_S390_ITCW_H
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define _ASM_S390_ITCW_H _ASM_S390_ITCW_H
+=======
+#define _ASM_S390_ITCW_H
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define _ASM_S390_ITCW_H
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/types.h>
 #include <asm/fcx.h>

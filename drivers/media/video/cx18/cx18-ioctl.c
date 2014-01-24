@@ -160,12 +160,16 @@ static int cx18_g_fmt_vid_cap(struct file *file, void *fh,
 	pixfmt->priv = 0;
 	if (id->type == CX18_ENC_STREAM_TYPE_YUV) {
 		pixfmt->pixelformat = s->pixelformat;
+<<<<<<< HEAD
 		/* HM12 YUV size is (Y=(h*720) + UV=(h*(720/2)))
 		   UYUV YUV size is (Y=(h*720) + UV=(h*(720))) */
 		if (s->pixelformat == V4L2_PIX_FMT_HM12)
 			pixfmt->sizeimage = pixfmt->height * 720 * 3 / 2;
 		else
 			pixfmt->sizeimage = pixfmt->height * 720 * 2;
+=======
+		pixfmt->sizeimage = s->vb_bytes_per_frame;
+>>>>>>> refs/remotes/origin/cm-10.0
 		pixfmt->bytesperline = 720;
 	} else {
 		pixfmt->pixelformat = V4L2_PIX_FMT_MPEG;
@@ -296,6 +300,15 @@ static int cx18_s_fmt_vid_cap(struct file *file, void *fh,
 		return -EBUSY;
 
 	s->pixelformat = fmt->fmt.pix.pixelformat;
+<<<<<<< HEAD
+=======
+	/* HM12 YUV size is (Y=(h*720) + UV=(h*(720/2)))
+	   UYUV YUV size is (Y=(h*720) + UV=(h*(720))) */
+	if (s->pixelformat == V4L2_PIX_FMT_HM12)
+		s->vb_bytes_per_frame = h * 720 * 3 / 2;
+	else
+		s->vb_bytes_per_frame = h * 720 * 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mbus_fmt.width = cx->cxhdl.width = w;
 	mbus_fmt.height = cx->cxhdl.height = h;
@@ -463,14 +476,25 @@ static int cx18_s_register(struct file *file, void *fh,
 static int cx18_querycap(struct file *file, void *fh,
 				struct v4l2_capability *vcap)
 {
+<<<<<<< HEAD
 	struct cx18 *cx = fh2id(fh)->cx;
+=======
+	struct cx18_open_id *id = fh2id(fh);
+	struct cx18 *cx = id->cx;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	strlcpy(vcap->driver, CX18_DRIVER_NAME, sizeof(vcap->driver));
 	strlcpy(vcap->card, cx->card_name, sizeof(vcap->card));
 	snprintf(vcap->bus_info, sizeof(vcap->bus_info),
 		 "PCI:%s", pci_name(cx->pci_dev));
+<<<<<<< HEAD
 	vcap->version = CX18_DRIVER_VERSION; 	    /* version */
 	vcap->capabilities = cx->v4l2_cap; 	    /* capabilities */
+=======
+	vcap->capabilities = cx->v4l2_cap; 	    /* capabilities */
+	if (id->type == CX18_ENC_STREAM_TYPE_YUV)
+		vcap->capabilities |= V4L2_CAP_STREAMING;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -1082,8 +1106,11 @@ static int cx18_log_status(struct file *file, void *fh)
 	struct v4l2_audio audin;
 	int i;
 
+<<<<<<< HEAD
 	CX18_INFO("=================  START STATUS CARD #%d  "
 		  "=================\n", cx->instance);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	CX18_INFO("Version: %s  Card: %s\n", CX18_VERSION, cx->card_name);
 	if (cx->hw_flags & CX18_HW_TVEEPROM) {
 		struct tveeprom tv;
@@ -1117,8 +1144,11 @@ static int cx18_log_status(struct file *file, void *fh)
 	CX18_INFO("Read MPEG/VBI: %lld/%lld bytes\n",
 			(long long)cx->mpg_data_received,
 			(long long)cx->vbi_data_inserted);
+<<<<<<< HEAD
 	CX18_INFO("==================  END STATUS CARD #%d  "
 		  "==================\n", cx->instance);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

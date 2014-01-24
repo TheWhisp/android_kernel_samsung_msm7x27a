@@ -31,6 +31,7 @@
 
 #define LPC32XX_SUART_FIFO_SIZE	64
 
+<<<<<<< HEAD
 /* Standard 8250/16550 compatible serial ports */
 static struct plat_serial8250_port serial_std_platform_data[] = {
 #ifdef CONFIG_ARCH_LPC32XX_UART5_SELECT
@@ -84,6 +85,8 @@ static struct plat_serial8250_port serial_std_platform_data[] = {
 	{ },
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct uartinit {
 	char *uart_ck_name;
 	u32 ck_mode_mask;
@@ -92,7 +95,10 @@ struct uartinit {
 };
 
 static struct uartinit uartinit_data[] __initdata = {
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_LPC32XX_UART5_SELECT
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.uart_ck_name = "uart5_ck",
 		.ck_mode_mask =
@@ -100,8 +106,11 @@ static struct uartinit uartinit_data[] __initdata = {
 		.pdiv_clk_reg = LPC32XX_CLKPWR_UART5_CLK_CTRL,
 		.mapbase = LPC32XX_UART5_BASE,
 	},
+<<<<<<< HEAD
 #endif
 #ifdef CONFIG_ARCH_LPC32XX_UART3_SELECT
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.uart_ck_name = "uart3_ck",
 		.ck_mode_mask =
@@ -109,8 +118,11 @@ static struct uartinit uartinit_data[] __initdata = {
 		.pdiv_clk_reg = LPC32XX_CLKPWR_UART3_CLK_CTRL,
 		.mapbase = LPC32XX_UART3_BASE,
 	},
+<<<<<<< HEAD
 #endif
 #ifdef CONFIG_ARCH_LPC32XX_UART4_SELECT
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.uart_ck_name = "uart4_ck",
 		.ck_mode_mask =
@@ -118,8 +130,11 @@ static struct uartinit uartinit_data[] __initdata = {
 		.pdiv_clk_reg = LPC32XX_CLKPWR_UART4_CLK_CTRL,
 		.mapbase = LPC32XX_UART4_BASE,
 	},
+<<<<<<< HEAD
 #endif
 #ifdef CONFIG_ARCH_LPC32XX_UART6_SELECT
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.uart_ck_name = "uart6_ck",
 		.ck_mode_mask =
@@ -127,6 +142,7 @@ static struct uartinit uartinit_data[] __initdata = {
 		.pdiv_clk_reg = LPC32XX_CLKPWR_UART6_CLK_CTRL,
 		.mapbase = LPC32XX_UART6_BASE,
 	},
+<<<<<<< HEAD
 #endif
 };
 
@@ -140,6 +156,8 @@ static struct platform_device serial_std_platform_device = {
 
 static struct platform_device *lpc32xx_serial_devs[] __initdata = {
 	&serial_std_platform_device,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init lpc32xx_serial_init(void)
@@ -156,6 +174,7 @@ void __init lpc32xx_serial_init(void)
 		clk = clk_get(NULL, uartinit_data[i].uart_ck_name);
 		if (!IS_ERR(clk)) {
 			clk_enable(clk);
+<<<<<<< HEAD
 			serial_std_platform_data[i].uartclk =
 				clk_get_rate(clk);
 		}
@@ -165,6 +184,10 @@ void __init lpc32xx_serial_init(void)
 			serial_std_platform_data[i].uartclk =
 				LPC32XX_MAIN_OSC_FREQ;
 
+=======
+		}
+
+>>>>>>> refs/remotes/origin/master
 		/* Setup UART clock modes for all UARTs, disable autoclock */
 		clkmodes |= uartinit_data[i].ck_mode_mask;
 
@@ -189,7 +212,11 @@ void __init lpc32xx_serial_init(void)
 	__raw_writel(clkmodes, LPC32XX_UARTCTL_CLKMODE);
 	for (i = 0; i < ARRAY_SIZE(uartinit_data); i++) {
 		/* Force a flush of the RX FIFOs to work around a HW bug */
+<<<<<<< HEAD
 		puart = serial_std_platform_data[i].mapbase;
+=======
+		puart = uartinit_data[i].mapbase;
+>>>>>>> refs/remotes/origin/master
 		__raw_writel(0xC1, LPC32XX_UART_IIR_FCR(puart));
 		__raw_writel(0x00, LPC32XX_UART_DLL_FIFO(puart));
 		j = LPC32XX_SUART_FIFO_SIZE;
@@ -198,11 +225,22 @@ void __init lpc32xx_serial_init(void)
 		__raw_writel(0, LPC32XX_UART_IIR_FCR(puart));
 	}
 
+<<<<<<< HEAD
+=======
+	/* Disable IrDA pulsing support on UART6 */
+	tmp = __raw_readl(LPC32XX_UARTCTL_CTRL);
+	tmp |= LPC32XX_UART_UART6_IRDAMOD_BYPASS;
+	__raw_writel(tmp, LPC32XX_UARTCTL_CTRL);
+
+>>>>>>> refs/remotes/origin/master
 	/* Disable UART5->USB transparent mode or USB won't work */
 	tmp = __raw_readl(LPC32XX_UARTCTL_CTRL);
 	tmp &= ~LPC32XX_UART_U5_ROUTE_TO_USB;
 	__raw_writel(tmp, LPC32XX_UARTCTL_CTRL);
+<<<<<<< HEAD
 
 	platform_add_devices(lpc32xx_serial_devs,
 		ARRAY_SIZE(lpc32xx_serial_devs));
+=======
+>>>>>>> refs/remotes/origin/master
 }

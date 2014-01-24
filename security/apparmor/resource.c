@@ -15,6 +15,10 @@
 #include <linux/audit.h>
 
 #include "include/audit.h"
+<<<<<<< HEAD
+=======
+#include "include/context.h"
+>>>>>>> refs/remotes/origin/master
 #include "include/resource.h"
 #include "include/policy.h"
 
@@ -23,13 +27,35 @@
  */
 #include "rlim_names.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct aa_fs_entry aa_fs_entry_rlimit[] = {
+	AA_FS_FILE_STRING("mask", AA_FS_RLIMIT_MASK),
+	{ }
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* audit callback for resource specific fields */
 static void audit_cb(struct audit_buffer *ab, void *va)
 {
 	struct common_audit_data *sa = va;
 
 	audit_log_format(ab, " rlimit=%s value=%lu",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			 rlim_names[sa->aad.rlim.rlim], sa->aad.rlim.max);
+=======
+			 rlim_names[sa->aad->rlim.rlim], sa->aad->rlim.max);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 rlim_names[sa->aad->rlim.rlim], sa->aad->rlim.max);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -45,12 +71,32 @@ static int audit_resource(struct aa_profile *profile, unsigned int resource,
 			  unsigned long value, int error)
 {
 	struct common_audit_data sa;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	COMMON_AUDIT_DATA_INIT(&sa, NONE);
 	sa.aad.op = OP_SETRLIMIT,
 	sa.aad.rlim.rlim = resource;
 	sa.aad.rlim.max = value;
 	sa.aad.error = error;
+=======
+	struct apparmor_audit_data aad = {0,};
+
+	COMMON_AUDIT_DATA_INIT(&sa, NONE);
+=======
+	struct apparmor_audit_data aad = {0,};
+
+	sa.type = LSM_AUDIT_DATA_NONE;
+>>>>>>> refs/remotes/origin/master
+	sa.aad = &aad;
+	aad.op = OP_SETRLIMIT,
+	aad.rlim.rlim = resource;
+	aad.rlim.max = value;
+	aad.error = error;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return aa_audit(AUDIT_APPARMOR_AUTO, profile, GFP_KERNEL, &sa,
 			audit_cb);
 }
@@ -83,6 +129,7 @@ int aa_map_resource(int resource)
 int aa_task_setrlimit(struct aa_profile *profile, struct task_struct *task,
 		      unsigned int resource, struct rlimit *new_rlim)
 {
+<<<<<<< HEAD
 	int error = 0;
 
 	/* TODO: extend resource control to handle other (non current)
@@ -90,10 +137,30 @@ int aa_task_setrlimit(struct aa_profile *profile, struct task_struct *task,
 	 * that the task is setting the resource of the current process
 	 */
 	if ((task != current->group_leader) ||
+=======
+	struct aa_profile *task_profile;
+	int error = 0;
+
+	rcu_read_lock();
+	task_profile = aa_get_profile(aa_cred_profile(__task_cred(task)));
+	rcu_read_unlock();
+
+	/* TODO: extend resource control to handle other (non current)
+	 * profiles.  AppArmor rules currently have the implicit assumption
+	 * that the task is setting the resource of a task confined with
+	 * the same profile.
+	 */
+	if (profile != task_profile ||
+>>>>>>> refs/remotes/origin/master
 	    (profile->rlimits.mask & (1 << resource) &&
 	     new_rlim->rlim_max > profile->rlimits.limits[resource].rlim_max))
 		error = -EACCES;
 
+<<<<<<< HEAD
+=======
+	aa_put_profile(task_profile);
+
+>>>>>>> refs/remotes/origin/master
 	return audit_resource(profile, resource, new_rlim->rlim_max, error);
 }
 

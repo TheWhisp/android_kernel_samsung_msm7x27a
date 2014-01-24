@@ -5,7 +5,11 @@
  * License.  See the file "COPYING" in the main directory of this archive
  * for more details.
  *
+<<<<<<< HEAD
  * Copyright (C) 2001 - 2005 Tensilica Inc.
+=======
+ * Copyright (C) 2001 - 2008 Tensilica Inc.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _XTENSA_TIMEX_H
@@ -19,6 +23,7 @@
 #define _INTLEVEL(x)	XCHAL_INT ## x ## _LEVEL
 #define INTLEVEL(x)	_INTLEVEL(x)
 
+<<<<<<< HEAD
 #if INTLEVEL(XCHAL_TIMER0_INTERRUPT) == 1
 # define LINUX_TIMER     0
 # define LINUX_TIMER_INT XCHAL_TIMER0_INTERRUPT
@@ -26,12 +31,25 @@
 # define LINUX_TIMER     1
 # define LINUX_TIMER_INT XCHAL_TIMER1_INTERRUPT
 #elif INTLEVEL(XCHAL_TIMER2_INTERRUPT) == 1
+=======
+#if XCHAL_NUM_TIMERS > 0 && \
+	INTLEVEL(XCHAL_TIMER0_INTERRUPT) <= XCHAL_EXCM_LEVEL
+# define LINUX_TIMER     0
+# define LINUX_TIMER_INT XCHAL_TIMER0_INTERRUPT
+#elif XCHAL_NUM_TIMERS > 1 && \
+	INTLEVEL(XCHAL_TIMER1_INTERRUPT) <= XCHAL_EXCM_LEVEL
+# define LINUX_TIMER     1
+# define LINUX_TIMER_INT XCHAL_TIMER1_INTERRUPT
+#elif XCHAL_NUM_TIMERS > 2 && \
+	INTLEVEL(XCHAL_TIMER2_INTERRUPT) <= XCHAL_EXCM_LEVEL
+>>>>>>> refs/remotes/origin/master
 # define LINUX_TIMER     2
 # define LINUX_TIMER_INT XCHAL_TIMER2_INTERRUPT
 #else
 # error "Bad timer number for Linux configurations!"
 #endif
 
+<<<<<<< HEAD
 #define LINUX_TIMER_MASK        (1L << LINUX_TIMER_INT)
 
 #define CLOCK_TICK_RATE 	1193180	/* (everyone is using this value) */
@@ -47,6 +65,9 @@ extern unsigned long nsec_per_ccount;
 #define NSEC_PER_CCOUNT (1000UL / CONFIG_XTENSA_CPU_CLOCK)
 #endif
 
+=======
+extern unsigned long ccount_freq;
+>>>>>>> refs/remotes/origin/master
 
 typedef unsigned long long cycles_t;
 
@@ -63,10 +84,17 @@ extern cycles_t cacheflush_time;
  * Register access.
  */
 
+<<<<<<< HEAD
 #define WSR_CCOUNT(r)	  asm volatile ("wsr %0,"__stringify(CCOUNT) :: "a" (r))
 #define RSR_CCOUNT(r)	  asm volatile ("rsr %0,"__stringify(CCOUNT) : "=a" (r))
 #define WSR_CCOMPARE(x,r) asm volatile ("wsr %0,"__stringify(CCOMPARE)"+"__stringify(x) :: "a"(r))
 #define RSR_CCOMPARE(x,r) asm volatile ("rsr %0,"__stringify(CCOMPARE)"+"__stringify(x) : "=a"(r))
+=======
+#define WSR_CCOUNT(r)	  asm volatile ("wsr %0, ccount" :: "a" (r))
+#define RSR_CCOUNT(r)	  asm volatile ("rsr %0, ccount" : "=a" (r))
+#define WSR_CCOMPARE(x,r) asm volatile ("wsr %0,"__stringify(SREG_CCOMPARE)"+"__stringify(x) :: "a"(r))
+#define RSR_CCOMPARE(x,r) asm volatile ("rsr %0,"__stringify(SREG_CCOMPARE)"+"__stringify(x) : "=a"(r))
+>>>>>>> refs/remotes/origin/master
 
 static inline unsigned long get_ccount (void)
 {

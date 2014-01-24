@@ -4,10 +4,17 @@
 #include <linux/mtd/physmap.h>
 #include <linux/spi/flash.h>
 #include <linux/spi/spi.h>
+<<<<<<< HEAD
 #include <linux/spi/orion_spi.h>
 #include <linux/serial_reg.h>
 #include <mach/kirkwood.h>
 #include "common.h"
+=======
+#include <linux/serial_reg.h>
+#include <mach/kirkwood.h>
+#include "common.h"
+#include "tsx1x-common.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * QNAP TS-x1x Boards flash
@@ -30,7 +37,11 @@
  *
  ***************************************************************************/
 
+<<<<<<< HEAD
 struct mtd_partition qnap_tsx1x_partitions[] = {
+=======
+static struct mtd_partition qnap_tsx1x_partitions[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name		= "U-Boot",
 		.size		= 0x00080000,
@@ -59,14 +70,22 @@ struct mtd_partition qnap_tsx1x_partitions[] = {
 	},
 };
 
+<<<<<<< HEAD
 const struct flash_platform_data qnap_tsx1x_flash = {
+=======
+static const struct flash_platform_data qnap_tsx1x_flash = {
+>>>>>>> refs/remotes/origin/master
 	.type		= "m25p128",
 	.name		= "spi_flash",
 	.parts		= qnap_tsx1x_partitions,
 	.nr_parts	= ARRAY_SIZE(qnap_tsx1x_partitions),
 };
 
+<<<<<<< HEAD
 struct spi_board_info __initdata qnap_tsx1x_spi_slave_info[] = {
+=======
+static struct spi_board_info __initdata qnap_tsx1x_spi_slave_info[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.modalias	= "m25p80",
 		.platform_data	= &qnap_tsx1x_flash,

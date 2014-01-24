@@ -26,8 +26,17 @@
 #define DCSS_BUS_ID_SIZE 20
 
 static int dcssblk_open(struct block_device *bdev, fmode_t mode);
+<<<<<<< HEAD
 static int dcssblk_release(struct gendisk *disk, fmode_t mode);
+<<<<<<< HEAD
 static int dcssblk_make_request(struct request_queue *q, struct bio *bio);
+=======
+static void dcssblk_make_request(struct request_queue *q, struct bio *bio);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void dcssblk_release(struct gendisk *disk, fmode_t mode);
+static void dcssblk_make_request(struct request_queue *q, struct bio *bio);
+>>>>>>> refs/remotes/origin/master
 static int dcssblk_direct_access(struct block_device *bdev, sector_t secnum,
 				 void **kaddr, unsigned long *pfn);
 
@@ -69,6 +78,7 @@ static ssize_t dcssblk_add_store(struct device * dev, struct device_attribute *a
 				  size_t count);
 static ssize_t dcssblk_remove_store(struct device * dev, struct device_attribute *attr, const char * buf,
 				  size_t count);
+<<<<<<< HEAD
 static ssize_t dcssblk_save_store(struct device * dev, struct device_attribute *attr, const char * buf,
 				  size_t count);
 static ssize_t dcssblk_save_show(struct device *dev, struct device_attribute *attr, char *buf);
@@ -86,6 +96,11 @@ static DEVICE_ATTR(save, S_IWUSR | S_IRUSR, dcssblk_save_show,
 static DEVICE_ATTR(shared, S_IWUSR | S_IRUSR, dcssblk_shared_show,
 		   dcssblk_shared_store);
 static DEVICE_ATTR(seglist, S_IRUSR, dcssblk_seglist_show, NULL);
+=======
+
+static DEVICE_ATTR(add, S_IWUSR, NULL, dcssblk_add_store);
+static DEVICE_ATTR(remove, S_IWUSR, NULL, dcssblk_remove_store);
+>>>>>>> refs/remotes/origin/master
 
 static struct device *dcssblk_root_dev;
 
@@ -416,6 +431,11 @@ out:
 	up_write(&dcssblk_devices_sem);
 	return rc;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(shared, S_IWUSR | S_IRUSR, dcssblk_shared_show,
+		   dcssblk_shared_store);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * device attribute for save operation on current copy
@@ -476,6 +496,11 @@ dcssblk_save_store(struct device *dev, struct device_attribute *attr, const char
 	up_write(&dcssblk_devices_sem);
 	return count;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(save, S_IWUSR | S_IRUSR, dcssblk_save_show,
+		   dcssblk_save_store);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * device attribute for showing all segments in a device
@@ -502,6 +527,24 @@ dcssblk_seglist_show(struct device *dev, struct device_attribute *attr,
 	up_read(&dcssblk_devices_sem);
 	return i;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(seglist, S_IRUSR, dcssblk_seglist_show, NULL);
+
+static struct attribute *dcssblk_dev_attrs[] = {
+	&dev_attr_shared.attr,
+	&dev_attr_save.attr,
+	&dev_attr_seglist.attr,
+	NULL,
+};
+static struct attribute_group dcssblk_dev_attr_group = {
+	.attrs = dcssblk_dev_attrs,
+};
+static const struct attribute_group *dcssblk_dev_attr_groups[] = {
+	&dcssblk_dev_attr_group,
+	NULL,
+};
+>>>>>>> refs/remotes/origin/master
 
 /*
  * device attribute for adding devices
@@ -590,6 +633,10 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char 
 
 	dev_set_name(&dev_info->dev, dev_info->segment_name);
 	dev_info->dev.release = dcssblk_release_segment;
+<<<<<<< HEAD
+=======
+	dev_info->dev.groups = dcssblk_dev_attr_groups;
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&dev_info->lh);
 	dev_info->gd = alloc_disk(DCSSBLK_MINORS_PER_DISK);
 	if (dev_info->gd == NULL) {
@@ -637,6 +684,7 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char 
 	 * register the device
 	 */
 	rc = device_register(&dev_info->dev);
+<<<<<<< HEAD
 	if (rc) {
 		module_put(THIS_MODULE);
 		goto dev_list_del;
@@ -652,6 +700,12 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char 
 	if (rc)
 		goto unregister_dev;
 
+=======
+	if (rc)
+		goto put_dev;
+
+	get_device(&dev_info->dev);
+>>>>>>> refs/remotes/origin/master
 	add_disk(dev_info->gd);
 
 	switch (dev_info->segment_type) {
@@ -668,12 +722,19 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char 
 	rc = count;
 	goto out;
 
+<<<<<<< HEAD
 unregister_dev:
+=======
+put_dev:
+>>>>>>> refs/remotes/origin/master
 	list_del(&dev_info->lh);
 	blk_cleanup_queue(dev_info->dcssblk_queue);
 	dev_info->gd->queue = NULL;
 	put_disk(dev_info->gd);
+<<<<<<< HEAD
 	device_unregister(&dev_info->dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(seg_info, &dev_info->seg_list, lh) {
 		segment_unload(seg_info->segment_name);
 	}
@@ -787,16 +848,27 @@ out:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 dcssblk_release(struct gendisk *disk, fmode_t mode)
 {
 	struct dcssblk_dev_info *dev_info = disk->private_data;
 	struct segment_info *entry;
+<<<<<<< HEAD
 	int rc;
 
 	if (!dev_info) {
 		rc = -ENODEV;
 		goto out;
+=======
+
+	if (!dev_info) {
+		WARN_ON(1);
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 	down_write(&dcssblk_devices_sem);
 	if (atomic_dec_and_test(&dev_info->use_count)
@@ -809,12 +881,22 @@ dcssblk_release(struct gendisk *disk, fmode_t mode)
 		dev_info->save_pending = 0;
 	}
 	up_write(&dcssblk_devices_sem);
+<<<<<<< HEAD
 	rc = 0;
 out:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int
+=======
+static void
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static void
+>>>>>>> refs/remotes/origin/master
 dcssblk_make_request(struct request_queue *q, struct bio *bio)
 {
 	struct dcssblk_dev_info *dev_info;
@@ -832,8 +914,12 @@ dcssblk_make_request(struct request_queue *q, struct bio *bio)
 	if ((bio->bi_sector & 7) != 0 || (bio->bi_size & 4095) != 0)
 		/* Request is not page-aligned. */
 		goto fail;
+<<<<<<< HEAD
 	if (((bio->bi_size >> 9) + bio->bi_sector)
 			> get_capacity(bio->bi_bdev->bd_disk)) {
+=======
+	if (bio_end_sector(bio) > get_capacity(bio->bi_bdev->bd_disk)) {
+>>>>>>> refs/remotes/origin/master
 		/* Request beyond end of DCSS segment. */
 		goto fail;
 	}
@@ -871,10 +957,22 @@ dcssblk_make_request(struct request_queue *q, struct bio *bio)
 		bytes_done += bvec->bv_len;
 	}
 	bio_endio(bio, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 fail:
 	bio_io_error(bio);
 	return 0;
+=======
+	return;
+fail:
+	bio_io_error(bio);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return;
+fail:
+	bio_io_error(bio);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int

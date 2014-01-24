@@ -70,6 +70,14 @@
  * wusbhc_rh_start_port_reset() ??? unimplemented
  */
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "wusbhc.h"
 
 /*
@@ -140,6 +148,7 @@ static int wusbhc_rh_port_reset(struct wusbhc *wusbhc, u8 port_idx)
 int wusbhc_rh_status_data(struct usb_hcd *usb_hcd, char *_buf)
 {
 	struct wusbhc *wusbhc = usb_hcd_to_wusbhc(usb_hcd);
+<<<<<<< HEAD
 	size_t cnt, size;
 	unsigned long *buf = (unsigned long *) _buf;
 
@@ -152,6 +161,28 @@ int wusbhc_rh_status_data(struct usb_hcd *usb_hcd, char *_buf)
 		else
 			clear_bit(cnt + 1, buf);
 	return size;
+=======
+	size_t cnt, size, bits_set = 0;
+
+	/* WE DON'T LOCK, see comment */
+	/* round up to bytes.  Hub bit is bit 0 so add 1. */
+	size = DIV_ROUND_UP(wusbhc->ports_max + 1, 8);
+
+	/* clear the output buffer. */
+	memset(_buf, 0, size);
+	/* set the bit for each changed port. */
+	for (cnt = 0; cnt < wusbhc->ports_max; cnt++) {
+
+		if (wusb_port_by_idx(wusbhc, cnt)->change) {
+			const int bitpos = cnt+1;
+
+			_buf[bitpos/8] |= (1 << (bitpos % 8));
+			bits_set++;
+		}
+	}
+
+	return bits_set ? size : 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(wusbhc_rh_status_data);
 
@@ -392,6 +423,7 @@ int wusbhc_rh_control(struct usb_hcd *usb_hcd, u16 reqntype, u16 wValue,
 }
 EXPORT_SYMBOL_GPL(wusbhc_rh_control);
 
+<<<<<<< HEAD
 int wusbhc_rh_suspend(struct usb_hcd *usb_hcd)
 {
 	struct wusbhc *wusbhc = usb_hcd_to_wusbhc(usb_hcd);
@@ -412,6 +444,8 @@ int wusbhc_rh_resume(struct usb_hcd *usb_hcd)
 }
 EXPORT_SYMBOL_GPL(wusbhc_rh_resume);
 
+=======
+>>>>>>> refs/remotes/origin/master
 int wusbhc_rh_start_port_reset(struct usb_hcd *usb_hcd, unsigned port_idx)
 {
 	struct wusbhc *wusbhc = usb_hcd_to_wusbhc(usb_hcd);

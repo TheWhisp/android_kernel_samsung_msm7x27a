@@ -35,7 +35,11 @@
 #ifndef _DRM_BUFFER_H_
 #define _DRM_BUFFER_H_
 
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 
 struct drm_buffer {
 	int iterator;

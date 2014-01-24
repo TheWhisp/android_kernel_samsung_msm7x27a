@@ -1,7 +1,11 @@
 /*
  * This is part of the rtl8180-sa2400 driver
  * released under the GPL (See file COPYING for details).
+<<<<<<< HEAD
  * Copyright (c) 2005 Andrea Merello <andreamrl@tiscali.it>
+=======
+ * Copyright (c) 2005 Andrea Merello <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This files contains programming code for the rtl8225
  * radio frontend.
@@ -15,7 +19,10 @@
 
 #include "ieee80211/dot11d.h"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void write_rtl8225(struct net_device *dev, u8 adr, u16 data)
 {
 	int i;
@@ -76,6 +83,7 @@ static void write_rtl8225(struct net_device *dev, u8 adr, u16 data)
 	rtl8185_rf_pins_enable(dev);
 }
 
+<<<<<<< HEAD
 static const u16 rtl8225bcd_rxgain[] = {
 	0x0400, 0x0401, 0x0402, 0x0403, 0x0404, 0x0405, 0x0408, 0x0409,
 	0x040a, 0x040b, 0x0502, 0x0503, 0x0504, 0x0505, 0x0540, 0x0541,
@@ -92,6 +100,8 @@ static const u16 rtl8225bcd_rxgain[] = {
 
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const u8 rtl8225_agc[] = {
 	0x9e, 0x9e, 0x9e, 0x9e, 0x9e, 0x9e, 0x9e, 0x9e,
 	0x9d, 0x9c, 0x9b, 0x9a, 0x99, 0x98, 0x97, 0x96,
@@ -111,6 +121,7 @@ static const u8 rtl8225_agc[] = {
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
 };
 
+<<<<<<< HEAD
 static const u8 rtl8225_gain[] = {
 	0x23, 0x88, 0x7c, 0xa5,	/* -82dBm */
 	0x23, 0x88, 0x7c, 0xb5,	/* -82dBm */
@@ -147,12 +158,15 @@ static const u8 rtl8225_tx_power_ofdm[] = {
 	0x80, 0x90, 0xa2, 0xb5, 0xcb, 0xe4
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 rtl8225_chan[] = {
 	0,
 	0x0080, 0x0100, 0x0180, 0x0200, 0x0280, 0x0300, 0x0380,
 	0x0400, 0x0480, 0x0500, 0x0580, 0x0600, 0x0680, 0x074A,
 };
 
+<<<<<<< HEAD
 static void rtl8225_SetTXPowerLevel(struct net_device *dev, short ch)
 {
 	struct r8180_priv *priv = ieee80211_priv(dev);
@@ -227,6 +241,8 @@ static const u8 rtl8225z2_threshold[] = {
 	0x8d, 0x8d, 0x8d, 0x8d, 0x9d, 0xad, 0xbd,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const u8 rtl8225z2_gain_bg[] = {
 	0x23, 0x15, 0xa5, /* -82-1dBm */
 	0x23, 0x15, 0xb5, /* -82-2dBm */
@@ -259,6 +275,7 @@ static const u16 rtl8225z2_rxgain[] = {
 	0x0794, 0x0795, 0x0798, 0x0799, 0x079a, 0x079b, 0x079c, 0x079d,
 	0x07a0, 0x07a1, 0x07a2, 0x07a3, 0x07a4, 0x07a5, 0x07a8, 0x07a9,
 	0x03aa, 0x03ab, 0x03ac, 0x03ad, 0x03b0, 0x03b1, 0x03b2, 0x03b3,
+<<<<<<< HEAD
 	0x03b4, 0x03b5, 0x03b8, 0x03b9, 0x03ba, 0x03bb, 0x03bb
 
 };
@@ -285,6 +302,13 @@ static const u8 rtl8225z2_tx_power_cck[] = {
 };
 
 void rtl8225z2_set_gain(struct net_device *dev, short gain)
+=======
+	0x03b4, 0x03b5, 0x03b8, 0x03b9, 0x03ba, 0x03bb
+
+};
+
+static void rtl8225z2_set_gain(struct net_device *dev, short gain)
+>>>>>>> refs/remotes/origin/master
 {
 	const u8 *rtl8225_gain;
 	struct r8180_priv *priv = ieee80211_priv(dev);
@@ -412,6 +436,7 @@ static u32 read_rtl8225(struct net_device *dev, u8 adr)
 	return dataRead;
 }
 
+<<<<<<< HEAD
 short rtl8225_is_V_z2(struct net_device *dev)
 {
 	short vz2 = 1;
@@ -428,6 +453,8 @@ short rtl8225_is_V_z2(struct net_device *dev)
 	return vz2;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void rtl8225z2_rf_close(struct net_device *dev)
 {
 	RF_WriteReg(dev, 0x4, 0x1f);
@@ -443,8 +470,13 @@ void rtl8225z2_rf_close(struct net_device *dev)
  * Map dBm into Tx power index according to current HW model, for example,
  * RF and PA, and current wireless mode.
  */
+<<<<<<< HEAD
 s8 DbmToTxPwrIdx(struct r8180_priv *priv, WIRELESS_MODE WirelessMode,
 		 s32 PowerInDbm)
+=======
+static s8 DbmToTxPwrIdx(struct r8180_priv *priv, WIRELESS_MODE WirelessMode,
+			s32 PowerInDbm)
+>>>>>>> refs/remotes/origin/master
 {
 	bool bUseDefault = true;
 	s8 TxPwrIdx = 0;
@@ -479,7 +511,11 @@ s8 DbmToTxPwrIdx(struct r8180_priv *priv, WIRELESS_MODE WirelessMode,
 
 	/*
 	 * TRUE if we want to use a default implementation.
+<<<<<<< HEAD
 	 * We shall set it to FALSE when we have exact translation formular
+=======
+	 * We shall set it to FALSE when we have exact translation formula
+>>>>>>> refs/remotes/origin/master
 	 * for target IC. 070622, by rcnjko.
 	 */
 	if (bUseDefault) {
@@ -524,8 +560,12 @@ void rtl8225z2_SetTXPowerLevel(struct net_device *dev, short ch)
 	if (cck_power_level > 35)
 		cck_power_level = 35;
 
+<<<<<<< HEAD
 	write_nic_byte(dev, CCK_TXAGC,
 		       (ZEBRA2_CCK_OFDM_GAIN_SETTING[(u8)cck_power_level]));
+=======
+	write_nic_byte(dev, CCK_TXAGC, cck_power_level);
+>>>>>>> refs/remotes/origin/master
 	force_pci_posting(dev);
 	mdelay(1);
 
@@ -540,8 +580,12 @@ void rtl8225z2_SetTXPowerLevel(struct net_device *dev, short ch)
 		write_phy_ofdm(dev, 8, 0x40);
 	}
 
+<<<<<<< HEAD
 	write_nic_byte(dev, OFDM_TXAGC,
 		       ZEBRA2_CCK_OFDM_GAIN_SETTING[(u8)ofdm_power_level]);
+=======
+	write_nic_byte(dev, OFDM_TXAGC, ofdm_power_level);
+>>>>>>> refs/remotes/origin/master
 
 	if (ofdm_power_level <= 11) {
 		write_phy_ofdm(dev, 0x07, 0x5c);
@@ -592,11 +636,16 @@ static void rtl8225_host_pci_init(struct net_device *dev)
 	write_nic_word(dev, GP_ENABLE, 0xff & (~(1 << 6)));
 }
 
+<<<<<<< HEAD
 static void rtl8225_rf_set_chan(struct net_device *dev, short ch)
 {
 	struct r8180_priv *priv = ieee80211_priv(dev);
 	short gset = (priv->ieee80211->state == IEEE80211_LINKED &&
+<<<<<<< HEAD
 		ieee80211_is_54g(priv->ieee80211->current_network)) ||
+=======
+		ieee80211_is_54g(&priv->ieee80211->current_network)) ||
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->ieee80211->iw_mode == IW_MODE_MONITOR;
 
 	rtl8225_SetTXPowerLevel(dev, ch);
@@ -615,7 +664,11 @@ static void rtl8225_rf_set_chan(struct net_device *dev, short ch)
 	}
 
 	if (priv->ieee80211->state == IEEE80211_LINKED &&
+<<<<<<< HEAD
 	    ieee80211_is_shortslot(priv->ieee80211->current_network))
+=======
+	    ieee80211_is_shortslot(&priv->ieee80211->current_network))
+>>>>>>> refs/remotes/origin/cm-10.0
 		write_nic_byte(dev, SLOT, 0x9);
 	else
 		write_nic_byte(dev, SLOT, 0x14);
@@ -629,13 +682,20 @@ static void rtl8225_rf_set_chan(struct net_device *dev, short ch)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void rtl8225z2_rf_init(struct net_device *dev)
 {
 	struct r8180_priv *priv = ieee80211_priv(dev);
 	int i;
 	short channel = 1;
+<<<<<<< HEAD
 	u16	brsr;
 	u32	data, addr;
+=======
+	u16 brsr;
+	u32 data;
+>>>>>>> refs/remotes/origin/master
 
 	priv->chan = channel;
 
@@ -676,8 +736,13 @@ void rtl8225z2_rf_init(struct net_device *dev)
 
 	write_rtl8225(dev, 0x0, 0x1b7);
 
+<<<<<<< HEAD
 	for (i = 0; i < 95; i++) {
 		write_rtl8225(dev, 0x1, (u8)(i + 1));
+=======
+	for (i = 0; i < ARRAY_SIZE(rtl8225z2_rxgain); i++) {
+		write_rtl8225(dev, 0x1, i + 1);
+>>>>>>> refs/remotes/origin/master
 		write_rtl8225(dev, 0x2, rtl8225z2_rxgain[i]);
 	}
 
@@ -707,6 +772,7 @@ void rtl8225z2_rf_init(struct net_device *dev)
 
 	write_rtl8225(dev, 0x0, 0x2bf);
 
+<<<<<<< HEAD
 	for (i = 0; i < 128; i++) {
 		data = rtl8225_agc[i];
 
@@ -715,6 +781,14 @@ void rtl8225z2_rf_init(struct net_device *dev)
 		mdelay(1);
 
 		write_phy_ofdm(dev, 0xa, addr);
+=======
+	for (i = 0; i < ARRAY_SIZE(rtl8225_agc); i++) {
+		write_phy_ofdm(dev, 0xb, rtl8225_agc[i]);
+		mdelay(1);
+
+		/* enable writing AGC table */
+		write_phy_ofdm(dev, 0xa, i + 0x80);
+>>>>>>> refs/remotes/origin/master
 		mdelay(1);
 	}
 
@@ -808,7 +882,11 @@ void rtl8225z2_rf_init(struct net_device *dev)
 	write_nic_dword(dev, 0x94, 0x15c00002);
 	rtl8185_rf_pins_enable(dev);
 
+<<<<<<< HEAD
 	rtl8225_rf_set_chan(dev, priv->chan);
+=======
+	rtl8225z2_rf_set_chan(dev, priv->chan);
+>>>>>>> refs/remotes/origin/master
 }
 
 void rtl8225z2_rf_set_mode(struct net_device *dev)

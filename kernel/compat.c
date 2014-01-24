@@ -21,6 +21,14 @@
 #include <linux/unistd.h>
 #include <linux/security.h>
 #include <linux/timex.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/migrate.h>
 #include <linux/posix-timers.h>
 #include <linux/times.h>
@@ -30,11 +38,24 @@
 #include <asm/uaccess.h>
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Note that the native side is already converted to a timespec, because
  * that's what we want anyway.
  */
 static int compat_get_timeval(struct timespec *o,
 		struct compat_timeval __user *i)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Get/set struct timeval with struct timespec on the native side
+ */
+static int compat_get_timeval_convert(struct timespec *o,
+				      struct compat_timeval __user *i)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	long usec;
 
@@ -45,8 +66,18 @@ static int compat_get_timeval(struct timespec *o,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int compat_put_timeval(struct compat_timeval __user *o,
 		struct timeval *i)
+=======
+static int compat_put_timeval_convert(struct compat_timeval __user *o,
+				      struct timeval *i)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int compat_put_timeval_convert(struct compat_timeval __user *o,
+				      struct timeval *i)
+>>>>>>> refs/remotes/origin/master
 {
 	return (put_user(i->tv_sec, &o->tv_sec) ||
 		put_user(i->tv_usec, &o->tv_usec)) ? -EFAULT : 0;
@@ -116,7 +147,15 @@ asmlinkage long compat_sys_gettimeofday(struct compat_timeval __user *tv,
 	if (tv) {
 		struct timeval ktv;
 		do_gettimeofday(&ktv);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (compat_put_timeval(tv, &ktv))
+=======
+		if (compat_put_timeval_convert(tv, &ktv))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (compat_put_timeval_convert(tv, &ktv))
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 	}
 	if (tz) {
@@ -134,7 +173,15 @@ asmlinkage long compat_sys_settimeofday(struct compat_timeval __user *tv,
 	struct timezone ktz;
 
 	if (tv) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (compat_get_timeval(&kts, tv))
+=======
+		if (compat_get_timeval_convert(&kts, tv))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (compat_get_timeval_convert(&kts, tv))
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 	}
 	if (tz) {
@@ -145,12 +192,45 @@ asmlinkage long compat_sys_settimeofday(struct compat_timeval __user *tv,
 	return do_sys_settimeofday(tv ? &kts : NULL, tz ? &ktz : NULL);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int get_compat_timeval(struct timeval *tv, const struct compat_timeval __user *ctv)
+{
+	return (!access_ok(VERIFY_READ, ctv, sizeof(*ctv)) ||
+			__get_user(tv->tv_sec, &ctv->tv_sec) ||
+			__get_user(tv->tv_usec, &ctv->tv_usec)) ? -EFAULT : 0;
+}
+EXPORT_SYMBOL_GPL(get_compat_timeval);
+
+int put_compat_timeval(const struct timeval *tv, struct compat_timeval __user *ctv)
+{
+	return (!access_ok(VERIFY_WRITE, ctv, sizeof(*ctv)) ||
+			__put_user(tv->tv_sec, &ctv->tv_sec) ||
+			__put_user(tv->tv_usec, &ctv->tv_usec)) ? -EFAULT : 0;
+}
+EXPORT_SYMBOL_GPL(put_compat_timeval);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int get_compat_timespec(struct timespec *ts, const struct compat_timespec __user *cts)
 {
 	return (!access_ok(VERIFY_READ, cts, sizeof(*cts)) ||
 			__get_user(ts->tv_sec, &cts->tv_sec) ||
 			__get_user(ts->tv_nsec, &cts->tv_nsec)) ? -EFAULT : 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(get_compat_timespec);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(get_compat_timespec);
+>>>>>>> refs/remotes/origin/master
 
 int put_compat_timespec(const struct timespec *ts, struct compat_timespec __user *cts)
 {
@@ -158,6 +238,52 @@ int put_compat_timespec(const struct timespec *ts, struct compat_timespec __user
 			__put_user(ts->tv_sec, &cts->tv_sec) ||
 			__put_user(ts->tv_nsec, &cts->tv_nsec)) ? -EFAULT : 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+EXPORT_SYMBOL_GPL(put_compat_timespec);
+
+int compat_get_timeval(struct timeval *tv, const void __user *utv)
+{
+	if (COMPAT_USE_64BIT_TIME)
+		return copy_from_user(tv, utv, sizeof *tv) ? -EFAULT : 0;
+	else
+		return get_compat_timeval(tv, utv);
+}
+EXPORT_SYMBOL_GPL(compat_get_timeval);
+
+int compat_put_timeval(const struct timeval *tv, void __user *utv)
+{
+	if (COMPAT_USE_64BIT_TIME)
+		return copy_to_user(utv, tv, sizeof *tv) ? -EFAULT : 0;
+	else
+		return put_compat_timeval(tv, utv);
+}
+EXPORT_SYMBOL_GPL(compat_put_timeval);
+
+int compat_get_timespec(struct timespec *ts, const void __user *uts)
+{
+	if (COMPAT_USE_64BIT_TIME)
+		return copy_from_user(ts, uts, sizeof *ts) ? -EFAULT : 0;
+	else
+		return get_compat_timespec(ts, uts);
+}
+EXPORT_SYMBOL_GPL(compat_get_timespec);
+
+int compat_put_timespec(const struct timespec *ts, void __user *uts)
+{
+	if (COMPAT_USE_64BIT_TIME)
+		return copy_to_user(uts, ts, sizeof *ts) ? -EFAULT : 0;
+	else
+		return put_compat_timespec(ts, uts);
+}
+EXPORT_SYMBOL_GPL(compat_put_timespec);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static long compat_nanosleep_restart(struct restart_block *restart)
 {
@@ -236,8 +362,13 @@ static inline long put_compat_itimerval(struct compat_itimerval __user *o,
 		 __put_user(i->it_value.tv_usec, &o->it_value.tv_usec)));
 }
 
+<<<<<<< HEAD
 asmlinkage long compat_sys_getitimer(int which,
 		struct compat_itimerval __user *it)
+=======
+COMPAT_SYSCALL_DEFINE2(getitimer, int, which,
+		struct compat_itimerval __user *, it)
+>>>>>>> refs/remotes/origin/master
 {
 	struct itimerval kit;
 	int error;
@@ -248,9 +379,15 @@ asmlinkage long compat_sys_getitimer(int which,
 	return error;
 }
 
+<<<<<<< HEAD
 asmlinkage long compat_sys_setitimer(int which,
 		struct compat_itimerval __user *in,
 		struct compat_itimerval __user *out)
+=======
+COMPAT_SYSCALL_DEFINE3(setitimer, int, which,
+		struct compat_itimerval __user *, in,
+		struct compat_itimerval __user *, out)
+>>>>>>> refs/remotes/origin/master
 {
 	struct itimerval kin, kout;
 	int error;
@@ -327,9 +464,15 @@ static inline void compat_sig_setmask(sigset_t *blocked, compat_sigset_word set)
 	memcpy(blocked->sig, &set, sizeof(set));
 }
 
+<<<<<<< HEAD
 asmlinkage long compat_sys_sigprocmask(int how,
 				       compat_old_sigset_t __user *nset,
 				       compat_old_sigset_t __user *oset)
+=======
+COMPAT_SYSCALL_DEFINE3(sigprocmask, int, how,
+		       compat_old_sigset_t __user *, nset,
+		       compat_old_sigset_t __user *, oset)
+>>>>>>> refs/remotes/origin/master
 {
 	old_sigset_t old_set, new_set;
 	sigset_t new_blocked;
@@ -462,6 +605,7 @@ int put_compat_rusage(const struct rusage *r, struct compat_rusage __user *ru)
 	return 0;
 }
 
+<<<<<<< HEAD
 asmlinkage long compat_sys_getrusage(int who, struct compat_rusage __user *ru)
 {
 	struct rusage r;
@@ -484,6 +628,13 @@ asmlinkage long compat_sys_getrusage(int who, struct compat_rusage __user *ru)
 asmlinkage long
 compat_sys_wait4(compat_pid_t pid, compat_uint_t __user *stat_addr, int options,
 	struct compat_rusage __user *ru)
+=======
+COMPAT_SYSCALL_DEFINE4(wait4,
+	compat_pid_t, pid,
+	compat_uint_t __user *, stat_addr,
+	int, options,
+	struct compat_rusage __user *, ru)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!ru) {
 		return sys_wait4(pid, stat_addr, options, NULL);
@@ -510,9 +661,16 @@ compat_sys_wait4(compat_pid_t pid, compat_uint_t __user *stat_addr, int options,
 	}
 }
 
+<<<<<<< HEAD
 asmlinkage long compat_sys_waitid(int which, compat_pid_t pid,
 		struct compat_siginfo __user *uinfo, int options,
 		struct compat_rusage __user *uru)
+=======
+COMPAT_SYSCALL_DEFINE5(waitid,
+		int, which, compat_pid_t, pid,
+		struct compat_siginfo __user *, uinfo, int, options,
+		struct compat_rusage __user *, uru)
+>>>>>>> refs/remotes/origin/master
 {
 	siginfo_t info;
 	struct rusage ru;
@@ -530,9 +688,19 @@ asmlinkage long compat_sys_waitid(int which, compat_pid_t pid,
 		return ret;
 
 	if (uru) {
+<<<<<<< HEAD
 		ret = put_compat_rusage(&ru, uru);
 		if (ret)
 			return ret;
+=======
+		/* sys_waitid() overwrites everything in ru */
+		if (COMPAT_USE_64BIT_TIME)
+			ret = copy_to_user(uru, &ru, sizeof(ru));
+		else
+			ret = put_compat_rusage(&ru, uru);
+		if (ret)
+			return -EFAULT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	BUG_ON(info.si_code & __SI_MASK);
@@ -910,7 +1078,11 @@ long compat_put_bitmap(compat_ulong_t __user *umask, unsigned long *mask,
 }
 
 void
+<<<<<<< HEAD
 sigset_from_compat (sigset_t *set, compat_sigset_t *compat)
+=======
+sigset_from_compat(sigset_t *set, const compat_sigset_t *compat)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (_NSIG_WORDS) {
 	case 4: set->sig[3] = compat->sig[6] | (((long)compat->sig[7]) << 32 );
@@ -919,11 +1091,34 @@ sigset_from_compat (sigset_t *set, compat_sigset_t *compat)
 	case 1: set->sig[0] = compat->sig[0] | (((long)compat->sig[1]) << 32 );
 	}
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(sigset_from_compat);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 asmlinkage long
 compat_sys_rt_sigtimedwait (compat_sigset_t __user *uthese,
 		struct compat_siginfo __user *uinfo,
 		struct compat_timespec __user *uts, compat_size_t sigsetsize)
+=======
+EXPORT_SYMBOL_GPL(sigset_from_compat);
+
+void
+sigset_to_compat(compat_sigset_t *compat, const sigset_t *set)
+{
+	switch (_NSIG_WORDS) {
+	case 4: compat->sig[7] = (set->sig[3] >> 32); compat->sig[6] = set->sig[3];
+	case 3: compat->sig[5] = (set->sig[2] >> 32); compat->sig[4] = set->sig[2];
+	case 2: compat->sig[3] = (set->sig[1] >> 32); compat->sig[2] = set->sig[1];
+	case 1: compat->sig[1] = (set->sig[0] >> 32); compat->sig[0] = set->sig[0];
+	}
+}
+
+COMPAT_SYSCALL_DEFINE4(rt_sigtimedwait, compat_sigset_t __user *, uthese,
+		struct compat_siginfo __user *, uinfo,
+		struct compat_timespec __user *, uts, compat_size_t, sigsetsize)
+>>>>>>> refs/remotes/origin/master
 {
 	compat_sigset_t s32;
 	sigset_t s;
@@ -939,7 +1134,11 @@ compat_sys_rt_sigtimedwait (compat_sigset_t __user *uthese,
 	sigset_from_compat(&s, &s32);
 
 	if (uts) {
+<<<<<<< HEAD
 		if (get_compat_timespec(&t, uts))
+=======
+		if (compat_get_timespec(&t, uts))
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 	}
 
@@ -951,6 +1150,7 @@ compat_sys_rt_sigtimedwait (compat_sigset_t __user *uthese,
 	}
 
 	return ret;
+<<<<<<< HEAD
 
 }
 
@@ -963,6 +1163,8 @@ compat_sys_rt_tgsigqueueinfo(compat_pid_t tgid, compat_pid_t pid, int sig,
 	if (copy_siginfo_from_user32(&info, uinfo))
 		return -EFAULT;
 	return do_rt_tgsigqueueinfo(tgid, pid, sig, &info);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef __ARCH_WANT_COMPAT_SYS_TIME
@@ -1005,6 +1207,7 @@ asmlinkage long compat_sys_stime(compat_time_t __user *tptr)
 
 #endif /* __ARCH_WANT_COMPAT_SYS_TIME */
 
+<<<<<<< HEAD
 #ifdef __ARCH_WANT_COMPAT_SYS_RT_SIGSUSPEND
 asmlinkage long compat_sys_rt_sigsuspend(compat_sigset_t __user *unewset, compat_size_t sigsetsize)
 {
@@ -1020,11 +1223,16 @@ asmlinkage long compat_sys_rt_sigsuspend(compat_sigset_t __user *unewset, compat
 	sigset_from_compat(&newset, &newset32);
 	sigdelsetmask(&newset, sigmask(SIGKILL)|sigmask(SIGSTOP));
 
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->saved_sigmask = current->blocked;
 	current->blocked = newset;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	current->saved_sigmask = current->blocked;
+	set_current_blocked(&newset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	current->state = TASK_INTERRUPTIBLE;
 	schedule();
@@ -1033,6 +1241,8 @@ asmlinkage long compat_sys_rt_sigsuspend(compat_sigset_t __user *unewset, compat
 }
 #endif /* __ARCH_WANT_COMPAT_SYS_RT_SIGSUSPEND */
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage long compat_sys_adjtimex(struct compat_timex __user *utp)
 {
 	struct timex txc;
@@ -1106,6 +1316,7 @@ asmlinkage long compat_sys_migrate_pages(compat_pid_t pid,
 }
 #endif
 
+<<<<<<< HEAD
 struct compat_sysinfo {
 	s32 uptime;
 	u32 loads[3];
@@ -1169,6 +1380,22 @@ compat_sys_sysinfo(struct compat_sysinfo __user *info)
 		return -EFAULT;
 
 	return 0;
+=======
+COMPAT_SYSCALL_DEFINE2(sched_rr_get_interval,
+		       compat_pid_t, pid,
+		       struct compat_timespec __user *, interval)
+{
+	struct timespec t;
+	int ret;
+	mm_segment_t old_fs = get_fs();
+
+	set_fs(KERNEL_DS);
+	ret = sys_sched_rr_get_interval(pid, (struct timespec __user *)&t);
+	set_fs(old_fs);
+	if (put_compat_timespec(&t, interval))
+		return -EFAULT;
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

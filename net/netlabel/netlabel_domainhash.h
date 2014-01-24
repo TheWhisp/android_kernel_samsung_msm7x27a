@@ -6,7 +6,15 @@
  * system manages static and dynamic label mappings for network protocols such
  * as CIPSO and RIPSO.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -43,6 +51,7 @@
 #define NETLBL_DOMHSH_BITSIZE       7
 
 /* Domain mapping definition structures */
+<<<<<<< HEAD
 #define netlbl_domhsh_addr4_entry(iter) \
 	container_of(iter, struct netlbl_domaddr4_map, list)
 struct netlbl_domaddr4_map {
@@ -50,12 +59,30 @@ struct netlbl_domaddr4_map {
 	union {
 		struct cipso_v4_doi *cipsov4;
 	} type_def;
+=======
+struct netlbl_domaddr_map {
+	struct list_head list4;
+	struct list_head list6;
+};
+struct netlbl_dommap_def {
+	u32 type;
+	union {
+		struct netlbl_domaddr_map *addrsel;
+		struct cipso_v4_doi *cipso;
+	};
+};
+#define netlbl_domhsh_addr4_entry(iter) \
+	container_of(iter, struct netlbl_domaddr4_map, list)
+struct netlbl_domaddr4_map {
+	struct netlbl_dommap_def def;
+>>>>>>> refs/remotes/origin/master
 
 	struct netlbl_af4list list;
 };
 #define netlbl_domhsh_addr6_entry(iter) \
 	container_of(iter, struct netlbl_domaddr6_map, list)
 struct netlbl_domaddr6_map {
+<<<<<<< HEAD
 	u32 type;
 
 	/* NOTE: no 'type_def' union needed at present since we don't currently
@@ -74,6 +101,16 @@ struct netlbl_dom_map {
 		struct cipso_v4_doi *cipsov4;
 		struct netlbl_domaddr_map *addrsel;
 	} type_def;
+=======
+	struct netlbl_dommap_def def;
+
+	struct netlbl_af6list list;
+};
+
+struct netlbl_dom_map {
+	char *domain;
+	struct netlbl_dommap_def def;
+>>>>>>> refs/remotes/origin/master
 
 	u32 valid;
 	struct list_head list;
@@ -97,16 +134,33 @@ int netlbl_domhsh_remove_af4(const char *domain,
 int netlbl_domhsh_remove(const char *domain, struct netlbl_audit *audit_info);
 int netlbl_domhsh_remove_default(struct netlbl_audit *audit_info);
 struct netlbl_dom_map *netlbl_domhsh_getentry(const char *domain);
+<<<<<<< HEAD
 struct netlbl_domaddr4_map *netlbl_domhsh_getentry_af4(const char *domain,
 						       __be32 addr);
+=======
+struct netlbl_dommap_def *netlbl_domhsh_getentry_af4(const char *domain,
+						     __be32 addr);
+#if IS_ENABLED(CONFIG_IPV6)
+struct netlbl_dommap_def *netlbl_domhsh_getentry_af6(const char *domain,
+						   const struct in6_addr *addr);
+#endif /* IPv6 */
+
+>>>>>>> refs/remotes/origin/master
 int netlbl_domhsh_walk(u32 *skip_bkt,
 		     u32 *skip_chain,
 		     int (*callback) (struct netlbl_dom_map *entry, void *arg),
 		     void *cb_arg);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 struct netlbl_domaddr6_map *netlbl_domhsh_getentry_af6(const char *domain,
 						  const struct in6_addr *addr);
 #endif /* IPv6 */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

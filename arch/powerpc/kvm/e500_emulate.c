@@ -14,15 +14,26 @@
 
 #include <asm/kvm_ppc.h>
 #include <asm/disassemble.h>
+<<<<<<< HEAD
 #include <asm/kvm_e500.h>
 
 #include "booke.h"
 #include "e500_tlb.h"
 
+=======
+#include <asm/dbell.h>
+
+#include "booke.h"
+#include "e500.h"
+
+#define XOP_MSGSND  206
+#define XOP_MSGCLR  238
+>>>>>>> refs/remotes/origin/master
 #define XOP_TLBIVAX 786
 #define XOP_TLBSX   914
 #define XOP_TLBRE   946
 #define XOP_TLBWE   978
+<<<<<<< HEAD
 
 int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
                            unsigned int inst, int *advance)
@@ -30,11 +41,112 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 	int emulated = EMULATE_DONE;
 	int ra;
 	int rb;
+=======
+#define XOP_TLBILX  18
+#define XOP_EHPRIV  270
+
+#ifdef CONFIG_KVM_E500MC
+static int dbell2prio(ulong param)
+{
+	int msg = param & PPC_DBELL_TYPE_MASK;
+	int prio = -1;
+
+	switch (msg) {
+	case PPC_DBELL_TYPE(PPC_DBELL):
+		prio = BOOKE_IRQPRIO_DBELL;
+		break;
+	case PPC_DBELL_TYPE(PPC_DBELL_CRIT):
+		prio = BOOKE_IRQPRIO_DBELL_CRIT;
+		break;
+	default:
+		break;
+	}
+
+	return prio;
+}
+
+static int kvmppc_e500_emul_msgclr(struct kvm_vcpu *vcpu, int rb)
+{
+	ulong param = vcpu->arch.gpr[rb];
+	int prio = dbell2prio(param);
+
+	if (prio < 0)
+		return EMULATE_FAIL;
+
+	clear_bit(prio, &vcpu->arch.pending_exceptions);
+	return EMULATE_DONE;
+}
+
+static int kvmppc_e500_emul_msgsnd(struct kvm_vcpu *vcpu, int rb)
+{
+	ulong param = vcpu->arch.gpr[rb];
+	int prio = dbell2prio(rb);
+	int pir = param & PPC_DBELL_PIR_MASK;
+	int i;
+	struct kvm_vcpu *cvcpu;
+
+	if (prio < 0)
+		return EMULATE_FAIL;
+
+	kvm_for_each_vcpu(i, cvcpu, vcpu->kvm) {
+		int cpir = cvcpu->arch.shared->pir;
+		if ((param & PPC_DBELL_MSG_BRDCAST) || (cpir == pir)) {
+			set_bit(prio, &cvcpu->arch.pending_exceptions);
+			kvm_vcpu_kick(cvcpu);
+		}
+	}
+
+	return EMULATE_DONE;
+}
+#endif
+
+static int kvmppc_e500_emul_ehpriv(struct kvm_run *run, struct kvm_vcpu *vcpu,
+				   unsigned int inst, int *advance)
+{
+	int emulated = EMULATE_DONE;
+
+	switch (get_oc(inst)) {
+	case EHPRIV_OC_DEBUG:
+		run->exit_reason = KVM_EXIT_DEBUG;
+		run->debug.arch.address = vcpu->arch.pc;
+		run->debug.arch.status = 0;
+		kvmppc_account_exit(vcpu, DEBUG_EXITS);
+		emulated = EMULATE_EXIT_USER;
+		*advance = 0;
+		break;
+	default:
+		emulated = EMULATE_FAIL;
+	}
+	return emulated;
+}
+
+int kvmppc_core_emulate_op_e500(struct kvm_run *run, struct kvm_vcpu *vcpu,
+				unsigned int inst, int *advance)
+{
+	int emulated = EMULATE_DONE;
+	int ra = get_ra(inst);
+	int rb = get_rb(inst);
+	int rt = get_rt(inst);
+	gva_t ea;
+>>>>>>> refs/remotes/origin/master
 
 	switch (get_op(inst)) {
 	case 31:
 		switch (get_xop(inst)) {
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KVM_E500MC
+		case XOP_MSGSND:
+			emulated = kvmppc_e500_emul_msgsnd(vcpu, rb);
+			break;
+
+		case XOP_MSGCLR:
+			emulated = kvmppc_e500_emul_msgclr(vcpu, rb);
+			break;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 		case XOP_TLBRE:
 			emulated = kvmppc_e500_emul_tlbre(vcpu);
 			break;
@@ -44,6 +156,7 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 			break;
 
 		case XOP_TLBSX:
+<<<<<<< HEAD
 			rb = get_rb(inst);
 			emulated = kvmppc_e500_emul_tlbsx(vcpu,rb);
 			break;
@@ -52,6 +165,27 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 			ra = get_ra(inst);
 			rb = get_rb(inst);
 			emulated = kvmppc_e500_emul_tlbivax(vcpu, ra, rb);
+=======
+			ea = kvmppc_get_ea_indexed(vcpu, ra, rb);
+			emulated = kvmppc_e500_emul_tlbsx(vcpu, ea);
+			break;
+
+		case XOP_TLBILX: {
+			int type = rt & 0x3;
+			ea = kvmppc_get_ea_indexed(vcpu, ra, rb);
+			emulated = kvmppc_e500_emul_tlbilx(vcpu, type, ea);
+			break;
+		}
+
+		case XOP_TLBIVAX:
+			ea = kvmppc_get_ea_indexed(vcpu, ra, rb);
+			emulated = kvmppc_e500_emul_tlbivax(vcpu, ea);
+			break;
+
+		case XOP_EHPRIV:
+			emulated = kvmppc_e500_emul_ehpriv(run, vcpu, inst,
+							   advance);
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		default:
@@ -70,6 +204,7 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 	return emulated;
 }
 
+<<<<<<< HEAD
 int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 {
 	struct kvmppc_vcpu_e500 *vcpu_e500 = to_e500(vcpu);
@@ -77,10 +212,21 @@ int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 	ulong spr_val = kvmppc_get_gpr(vcpu, rs);
 
 	switch (sprn) {
+=======
+int kvmppc_core_emulate_mtspr_e500(struct kvm_vcpu *vcpu, int sprn, ulong spr_val)
+{
+	struct kvmppc_vcpu_e500 *vcpu_e500 = to_e500(vcpu);
+	int emulated = EMULATE_DONE;
+
+	switch (sprn) {
+#ifndef CONFIG_KVM_BOOKE_HV
+>>>>>>> refs/remotes/origin/master
 	case SPRN_PID:
 		kvmppc_set_pid(vcpu, spr_val);
 		break;
 	case SPRN_PID1:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		vcpu_e500->pid[1] = spr_val; break;
 	case SPRN_PID2:
 		vcpu_e500->pid[2] = spr_val; break;
@@ -98,16 +244,86 @@ int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 		vcpu_e500->mas6 = spr_val; break;
 	case SPRN_MAS7:
 		vcpu_e500->mas7 = spr_val; break;
+=======
+		if (spr_val != 0)
+			return EMULATE_FAIL;
+		vcpu_e500->pid[1] = spr_val; break;
+	case SPRN_PID2:
+		if (spr_val != 0)
+			return EMULATE_FAIL;
+		vcpu_e500->pid[2] = spr_val; break;
+	case SPRN_MAS0:
+		vcpu->arch.shared->mas0 = spr_val; break;
+	case SPRN_MAS1:
+		vcpu->arch.shared->mas1 = spr_val; break;
+	case SPRN_MAS2:
+		vcpu->arch.shared->mas2 = spr_val; break;
+=======
+		if (spr_val != 0)
+			return EMULATE_FAIL;
+		vcpu_e500->pid[1] = spr_val;
+		break;
+	case SPRN_PID2:
+		if (spr_val != 0)
+			return EMULATE_FAIL;
+		vcpu_e500->pid[2] = spr_val;
+		break;
+	case SPRN_MAS0:
+		vcpu->arch.shared->mas0 = spr_val;
+		break;
+	case SPRN_MAS1:
+		vcpu->arch.shared->mas1 = spr_val;
+		break;
+	case SPRN_MAS2:
+		vcpu->arch.shared->mas2 = spr_val;
+		break;
+>>>>>>> refs/remotes/origin/master
+	case SPRN_MAS3:
+		vcpu->arch.shared->mas7_3 &= ~(u64)0xffffffff;
+		vcpu->arch.shared->mas7_3 |= spr_val;
+		break;
+	case SPRN_MAS4:
+<<<<<<< HEAD
+		vcpu->arch.shared->mas4 = spr_val; break;
+	case SPRN_MAS6:
+		vcpu->arch.shared->mas6 = spr_val; break;
+=======
+		vcpu->arch.shared->mas4 = spr_val;
+		break;
+	case SPRN_MAS6:
+		vcpu->arch.shared->mas6 = spr_val;
+		break;
+>>>>>>> refs/remotes/origin/master
+	case SPRN_MAS7:
+		vcpu->arch.shared->mas7_3 &= (u64)0xffffffff;
+		vcpu->arch.shared->mas7_3 |= (u64)spr_val << 32;
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 	case SPRN_L1CSR0:
 		vcpu_e500->l1csr0 = spr_val;
 		vcpu_e500->l1csr0 &= ~(L1CSR0_DCFI | L1CSR0_CLFC);
 		break;
 	case SPRN_L1CSR1:
+<<<<<<< HEAD
 		vcpu_e500->l1csr1 = spr_val; break;
 	case SPRN_HID0:
 		vcpu_e500->hid0 = spr_val; break;
 	case SPRN_HID1:
 		vcpu_e500->hid1 = spr_val; break;
+=======
+		vcpu_e500->l1csr1 = spr_val;
+		break;
+	case SPRN_HID0:
+		vcpu_e500->hid0 = spr_val;
+		break;
+	case SPRN_HID1:
+		vcpu_e500->hid1 = spr_val;
+		break;
+>>>>>>> refs/remotes/origin/master
 
 	case SPRN_MMUCSR0:
 		emulated = kvmppc_e500_emul_mt_mmucsr0(vcpu_e500,
@@ -127,18 +343,36 @@ int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 	case SPRN_IVOR35:
 		vcpu->arch.ivor[BOOKE_IRQPRIO_PERFORMANCE_MONITOR] = spr_val;
 		break;
+<<<<<<< HEAD
 
 	default:
 		emulated = kvmppc_booke_emulate_mtspr(vcpu, sprn, rs);
+=======
+#ifdef CONFIG_KVM_BOOKE_HV
+	case SPRN_IVOR36:
+		vcpu->arch.ivor[BOOKE_IRQPRIO_DBELL] = spr_val;
+		break;
+	case SPRN_IVOR37:
+		vcpu->arch.ivor[BOOKE_IRQPRIO_DBELL_CRIT] = spr_val;
+		break;
+#endif
+	default:
+		emulated = kvmppc_booke_emulate_mtspr(vcpu, sprn, spr_val);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return emulated;
 }
 
+<<<<<<< HEAD
 int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
 {
 	struct kvmppc_vcpu_e500 *vcpu_e500 = to_e500(vcpu);
 	int emulated = EMULATE_DONE;
+<<<<<<< HEAD
+=======
+	unsigned long val;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (sprn) {
 	case SPRN_PID:
@@ -148,6 +382,7 @@ int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
 	case SPRN_PID2:
 		kvmppc_set_gpr(vcpu, rt, vcpu_e500->pid[2]); break;
 	case SPRN_MAS0:
+<<<<<<< HEAD
 		kvmppc_set_gpr(vcpu, rt, vcpu_e500->mas0); break;
 	case SPRN_MAS1:
 		kvmppc_set_gpr(vcpu, rt, vcpu_e500->mas1); break;
@@ -162,6 +397,25 @@ int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
 	case SPRN_MAS7:
 		kvmppc_set_gpr(vcpu, rt, vcpu_e500->mas7); break;
 
+=======
+		kvmppc_set_gpr(vcpu, rt, vcpu->arch.shared->mas0); break;
+	case SPRN_MAS1:
+		kvmppc_set_gpr(vcpu, rt, vcpu->arch.shared->mas1); break;
+	case SPRN_MAS2:
+		kvmppc_set_gpr(vcpu, rt, vcpu->arch.shared->mas2); break;
+	case SPRN_MAS3:
+		val = (u32)vcpu->arch.shared->mas7_3;
+		kvmppc_set_gpr(vcpu, rt, val);
+		break;
+	case SPRN_MAS4:
+		kvmppc_set_gpr(vcpu, rt, vcpu->arch.shared->mas4); break;
+	case SPRN_MAS6:
+		kvmppc_set_gpr(vcpu, rt, vcpu->arch.shared->mas6); break;
+	case SPRN_MAS7:
+		val = vcpu->arch.shared->mas7_3 >> 32;
+		kvmppc_set_gpr(vcpu, rt, val);
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SPRN_TLB0CFG:
 		kvmppc_set_gpr(vcpu, rt, vcpu_e500->tlb0cfg); break;
 	case SPRN_TLB1CFG:
@@ -198,6 +452,121 @@ int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
 		break;
 	default:
 		emulated = kvmppc_booke_emulate_mfspr(vcpu, sprn, rt);
+=======
+int kvmppc_core_emulate_mfspr_e500(struct kvm_vcpu *vcpu, int sprn, ulong *spr_val)
+{
+	struct kvmppc_vcpu_e500 *vcpu_e500 = to_e500(vcpu);
+	int emulated = EMULATE_DONE;
+
+	switch (sprn) {
+#ifndef CONFIG_KVM_BOOKE_HV
+	case SPRN_PID:
+		*spr_val = vcpu_e500->pid[0];
+		break;
+	case SPRN_PID1:
+		*spr_val = vcpu_e500->pid[1];
+		break;
+	case SPRN_PID2:
+		*spr_val = vcpu_e500->pid[2];
+		break;
+	case SPRN_MAS0:
+		*spr_val = vcpu->arch.shared->mas0;
+		break;
+	case SPRN_MAS1:
+		*spr_val = vcpu->arch.shared->mas1;
+		break;
+	case SPRN_MAS2:
+		*spr_val = vcpu->arch.shared->mas2;
+		break;
+	case SPRN_MAS3:
+		*spr_val = (u32)vcpu->arch.shared->mas7_3;
+		break;
+	case SPRN_MAS4:
+		*spr_val = vcpu->arch.shared->mas4;
+		break;
+	case SPRN_MAS6:
+		*spr_val = vcpu->arch.shared->mas6;
+		break;
+	case SPRN_MAS7:
+		*spr_val = vcpu->arch.shared->mas7_3 >> 32;
+		break;
+#endif
+	case SPRN_DECAR:
+		*spr_val = vcpu->arch.decar;
+		break;
+	case SPRN_TLB0CFG:
+		*spr_val = vcpu->arch.tlbcfg[0];
+		break;
+	case SPRN_TLB1CFG:
+		*spr_val = vcpu->arch.tlbcfg[1];
+		break;
+	case SPRN_TLB0PS:
+		if (!has_feature(vcpu, VCPU_FTR_MMU_V2))
+			return EMULATE_FAIL;
+		*spr_val = vcpu->arch.tlbps[0];
+		break;
+	case SPRN_TLB1PS:
+		if (!has_feature(vcpu, VCPU_FTR_MMU_V2))
+			return EMULATE_FAIL;
+		*spr_val = vcpu->arch.tlbps[1];
+		break;
+	case SPRN_L1CSR0:
+		*spr_val = vcpu_e500->l1csr0;
+		break;
+	case SPRN_L1CSR1:
+		*spr_val = vcpu_e500->l1csr1;
+		break;
+	case SPRN_HID0:
+		*spr_val = vcpu_e500->hid0;
+		break;
+	case SPRN_HID1:
+		*spr_val = vcpu_e500->hid1;
+		break;
+	case SPRN_SVR:
+		*spr_val = vcpu_e500->svr;
+		break;
+
+	case SPRN_MMUCSR0:
+		*spr_val = 0;
+		break;
+
+	case SPRN_MMUCFG:
+		*spr_val = vcpu->arch.mmucfg;
+		break;
+	case SPRN_EPTCFG:
+		if (!has_feature(vcpu, VCPU_FTR_MMU_V2))
+			return EMULATE_FAIL;
+		/*
+		 * Legacy Linux guests access EPTCFG register even if the E.PT
+		 * category is disabled in the VM. Give them a chance to live.
+		 */
+		*spr_val = vcpu->arch.eptcfg;
+		break;
+
+	/* extra exceptions */
+	case SPRN_IVOR32:
+		*spr_val = vcpu->arch.ivor[BOOKE_IRQPRIO_SPE_UNAVAIL];
+		break;
+	case SPRN_IVOR33:
+		*spr_val = vcpu->arch.ivor[BOOKE_IRQPRIO_SPE_FP_DATA];
+		break;
+	case SPRN_IVOR34:
+		*spr_val = vcpu->arch.ivor[BOOKE_IRQPRIO_SPE_FP_ROUND];
+		break;
+	case SPRN_IVOR35:
+		*spr_val = vcpu->arch.ivor[BOOKE_IRQPRIO_PERFORMANCE_MONITOR];
+		break;
+#ifdef CONFIG_KVM_BOOKE_HV
+	case SPRN_IVOR36:
+		*spr_val = vcpu->arch.ivor[BOOKE_IRQPRIO_DBELL];
+		break;
+	case SPRN_IVOR37:
+		*spr_val = vcpu->arch.ivor[BOOKE_IRQPRIO_DBELL_CRIT];
+		break;
+#endif
+	default:
+		emulated = kvmppc_booke_emulate_mfspr(vcpu, sprn, spr_val);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return emulated;

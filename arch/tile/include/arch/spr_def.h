@@ -11,6 +11,7 @@
  *   NON INFRINGEMENT.  See the GNU General Public License for
  *   more details.
  */
+<<<<<<< HEAD
 
 /* Include the proper base SPR definition file. */
 #ifdef __tilegx__
@@ -20,6 +21,13 @@
 #endif
 
 #ifdef __KERNEL__
+=======
+#ifndef __ARCH_SPR_DEF_H__
+#define __ARCH_SPR_DEF_H__
+
+#include <uapi/arch/spr_def.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * In addition to including the proper base SPR definition file, depending
@@ -60,8 +68,18 @@
 	_concat4(SPR_IPI_EVENT_, CONFIG_KERNEL_PL,,)
 #define SPR_IPI_EVENT_RESET_K \
 	_concat4(SPR_IPI_EVENT_RESET_, CONFIG_KERNEL_PL,,)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SPR_IPI_MASK_SET_K \
 	_concat4(SPR_IPI_MASK_SET_, CONFIG_KERNEL_PL,,)
+=======
+#define SPR_IPI_EVENT_SET_K \
+	_concat4(SPR_IPI_EVENT_SET_, CONFIG_KERNEL_PL,,)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SPR_IPI_EVENT_SET_K \
+	_concat4(SPR_IPI_EVENT_SET_, CONFIG_KERNEL_PL,,)
+>>>>>>> refs/remotes/origin/master
 #define INT_IPI_K \
 	_concat4(INT_IPI_, CONFIG_KERNEL_PL,,)
 
@@ -110,4 +128,8 @@
 #define INT_INTCTRL_K \
 	_concat4(INT_INTCTRL_, CONFIG_KERNEL_PL,,)
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+#endif /* __ARCH_SPR_DEF_H__ */
+>>>>>>> refs/remotes/origin/master

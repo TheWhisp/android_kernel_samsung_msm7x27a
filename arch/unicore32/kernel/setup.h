@@ -12,14 +12,32 @@
 #ifndef __UNICORE_KERNEL_SETUP_H__
 #define __UNICORE_KERNEL_SETUP_H__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void paging_init(void);
 extern void puv3_core_init(void);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/hwdef-copro.h>
+
+extern void paging_init(void);
+extern void puv3_core_init(void);
+extern void cpu_init(void);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern void puv3_ps2_init(void);
 extern void pci_puv3_preinit(void);
 extern void __init puv3_init_gpio(void);
 
+<<<<<<< HEAD
 extern void setup_mm_for_reboot(char mode);
+=======
+extern void setup_mm_for_reboot(void);
+>>>>>>> refs/remotes/origin/master
 
 extern char __stubs_start[], __stubs_end[];
 extern char __vectors_start[], __vectors_end[];
@@ -27,4 +45,13 @@ extern char __vectors_start[], __vectors_end[];
 extern void kernel_thread_helper(void);
 
 extern void __init early_signal_init(void);
+<<<<<<< HEAD
+=======
+
+extern asmlinkage void __backtrace(void);
+extern asmlinkage void c_backtrace(unsigned long fp, int pmode);
+
+extern void __show_regs(struct pt_regs *);
+
+>>>>>>> refs/remotes/origin/master
 #endif

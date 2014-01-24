@@ -2,8 +2,17 @@ if ETRAX_ARCH_V32
 
 config ETRAX_ETHERNET
 	bool "Ethernet support"
+<<<<<<< HEAD
 	depends on ETRAX_ARCH_V32
+<<<<<<< HEAD
 	select NET_ETHERNET
+=======
+	select ETHERNET
+	select NET_CORE
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ETRAX_ARCH_V32 && NETDEVICES
+>>>>>>> refs/remotes/origin/master
 	select MII
 	help
 	  This option enables the ETRAX FS built-in 10/100Mbit Ethernet
@@ -20,6 +29,7 @@ config ETRAX_NO_PHY
 	  switch. This option should normally be disabled. If enabled,
 	  speed and duplex will be locked to 100 Mbit and full duplex.
 
+<<<<<<< HEAD
 config ETRAX_ETHERNET_IFACE0
 	depends on ETRAX_ETHERNET
 	bool "Enable network interface 0"
@@ -78,6 +88,8 @@ config ETRAX_ETH1_USE_LEDGRPNULL
 	  Use no LEDs for eth1
 endchoice
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ETRAXFS_SERIAL
 	bool "Serial-port support"
 	depends on ETRAX_ARCH_V32
@@ -109,6 +121,7 @@ config ETRAX_SERIAL_PORT0
 	  if you do not need DMA to something else.
 	  ser0 can use dma4 or dma6 for output and dma5 or dma7 for input.
 
+<<<<<<< HEAD
 choice
 	prompt "Ser0 default port type "
 	depends on ETRAX_SERIAL_PORT0
@@ -150,12 +163,15 @@ config ETRAX_SER0_CD_BIT
 	string "Ser 0 CD bit (empty = not used)"
 	depends on ETRAX_SERIAL_PORT0
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ETRAX_SERIAL_PORT1
 	bool "Serial port 1 enabled"
 	depends on ETRAXFS_SERIAL
 	help
 	  Enables the ETRAX FS serial driver for ser1 (ttyS1).
 
+<<<<<<< HEAD
 choice
 	prompt "Ser1 default port type"
 	depends on ETRAX_SERIAL_PORT1
@@ -197,12 +213,15 @@ config ETRAX_SER1_CD_BIT
 	string "Ser 1 CD bit (empty = not used)"
 	depends on ETRAX_SERIAL_PORT1
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ETRAX_SERIAL_PORT2
 	bool "Serial port 2 enabled"
 	depends on ETRAXFS_SERIAL
 	help
 	  Enables the ETRAX FS serial driver for ser2 (ttyS2).
 
+<<<<<<< HEAD
 choice
 	prompt "Ser2 default port type"
 	depends on ETRAX_SERIAL_PORT2
@@ -245,12 +264,15 @@ config ETRAX_SER2_CD_BIT
 	string "Ser 2 CD bit (empty = not used)"
 	depends on ETRAX_SERIAL_PORT2
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ETRAX_SERIAL_PORT3
 	bool "Serial port 3 enabled"
 	depends on ETRAXFS_SERIAL
 	help
 	  Enables the ETRAX FS serial driver for ser3 (ttyS3).
 
+<<<<<<< HEAD
 choice
 	prompt "Ser3 default port type"
 	depends on ETRAX_SERIAL_PORT3
@@ -364,6 +386,8 @@ config ETRAX_SER4_CD_BIT
 	string "Ser 4 CD bit (empty = not used)"
 	depends on ETRAX_SERIAL_PORT4
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ETRAX_SYNCHRONOUS_SERIAL
 	bool "Synchronous serial-port support"
 	depends on ETRAX_ARCH_V32
@@ -403,7 +427,10 @@ config ETRAX_AXISFLASHMAP
 	select MTD_CFI
 	select MTD_CFI_AMDSTD
 	select MTD_JEDECPROBE
+<<<<<<< HEAD
 	select MTD_CHAR
+=======
+>>>>>>> refs/remotes/origin/master
 	select MTD_BLOCK
 	select MTD_COMPLEX_MAPPINGS
 	help
@@ -617,7 +644,10 @@ config ETRAX_PV_CHANGEABLE_BITS
 config ETRAX_CARDBUS
         bool "Cardbus support"
         depends on ETRAX_ARCH_V32
+<<<<<<< HEAD
         select HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
         help
 	 Enabled the ETRAX Cardbus driver.
 
@@ -641,8 +671,11 @@ config ETRAX_STREAMCOPROC
 	  This option enables a driver for the stream co-processor
 	  for cryptographic operations.
 
+<<<<<<< HEAD
 source drivers/mmc/Kconfig
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ETRAX_MMC_IOP
 	tristate "MMC/SD host driver using IO-processor"
 	depends on ETRAX_ARCH_V32 && MMC
@@ -679,7 +712,11 @@ config ETRAX_SPI_MMC_BOARD
 
 config SPI_ETRAX_SSER
 	tristate
+<<<<<<< HEAD
 	depends on SPI_MASTER && ETRAX_ARCH_V32 && EXPERIMENTAL
+=======
+	depends on SPI_MASTER && ETRAX_ARCH_V32
+>>>>>>> refs/remotes/origin/master
 	select SPI_BITBANG
 	help
 	  This enables using an synchronous serial (sser) port as a
@@ -688,7 +725,11 @@ config SPI_ETRAX_SSER
 
 config SPI_ETRAX_GPIO
 	tristate
+<<<<<<< HEAD
 	depends on SPI_MASTER && ETRAX_ARCH_V32 && EXPERIMENTAL
+=======
+	depends on SPI_MASTER && ETRAX_ARCH_V32
+>>>>>>> refs/remotes/origin/master
 	select SPI_BITBANG
 	help
 	  This enables using GPIO pins port as a SPI master controller
@@ -708,6 +749,7 @@ config ETRAX_SPI_SSER0
 	  want to build it as a module, which will be named spi_crisv32_sser.
 	  (You need to select MMC separately.)
 
+<<<<<<< HEAD
 config ETRAX_SPI_SSER0_DMA
 	bool "DMA for SPI on sser0 enabled"
 	depends on ETRAX_SPI_SSER0
@@ -734,6 +776,8 @@ config ETRAX_SPI_MMC_WP_SSER0_PIN
 	  The pin to use for the SD/MMC write-protect signal for a memory
 	  card.  If defined as " " (space), the card is considered writable.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ETRAX_SPI_SSER1
 	tristate "SPI using synchronous serial port 1 (sser1)"
 	depends on ETRAX_SPI_MMC
@@ -747,6 +791,7 @@ config ETRAX_SPI_SSER1
 	  want to build it as a module, which will be named spi_crisv32_sser.
 	  (You need to select MMC separately.)
 
+<<<<<<< HEAD
 config ETRAX_SPI_SSER1_DMA
 	bool "DMA for SPI on sser1 enabled"
 	depends on ETRAX_SPI_SSER1 && !ETRAX_ETHERNET_IFACE1
@@ -773,6 +818,8 @@ config ETRAX_SPI_MMC_WP_SSER1_PIN
 	  The pin to use for the SD/MMC write-protect signal for a memory
 	  card.  If defined as " " (space), the card is considered writable.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ETRAX_SPI_GPIO
 	tristate "Bitbanged SPI using gpio pins"
 	depends on ETRAX_SPI_MMC
@@ -787,6 +834,7 @@ config ETRAX_SPI_GPIO
 	  Say m to build it as a module, which will be called spi_crisv32_gpio.
 	  (You need to select MMC separately.)
 
+<<<<<<< HEAD
 # The default match that of sser0, only because that's how it was tested.
 config ETRAX_SPI_CS_PIN
 	string "SPI chip select pin"
@@ -839,4 +887,6 @@ if ETRAX_SPI_MMC
 source drivers/spi/Kconfig
 endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 endif

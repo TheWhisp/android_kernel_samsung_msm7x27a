@@ -18,10 +18,12 @@
  * Copyright (C) IBM Corporation, 2002, 2004, 2009
  */
 
+<<<<<<< HEAD
 #include <linux/string.h>
 #include <asm/inat.h>
 #include <asm/insn.h>
 
+<<<<<<< HEAD
 #define get_next(t, insn)	\
 	({t r; r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
 
@@ -30,6 +32,38 @@
 
 #define peek_nbyte_next(t, insn, n)	\
 	({t r; r = *(t*)((insn)->next_byte + n); r; })
+=======
+=======
+#ifdef __KERNEL__
+#include <linux/string.h>
+#else
+#include <string.h>
+#endif
+#include <asm/inat.h>
+#include <asm/insn.h>
+
+>>>>>>> refs/remotes/origin/master
+/* Verify next sizeof(t) bytes can be on the same instruction */
+#define validate_next(t, insn, n)	\
+	((insn)->next_byte + sizeof(t) + n - (insn)->kaddr <= MAX_INSN_SIZE)
+
+#define __get_next(t, insn)	\
+	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
+
+#define __peek_nbyte_next(t, insn, n)	\
+	({ t r = *(t*)((insn)->next_byte + n); r; })
+
+#define get_next(t, insn)	\
+	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+
+#define peek_nbyte_next(t, insn, n)	\
+	({ if (unlikely(!validate_next(t, insn, n))) goto err_out; __peek_nbyte_next(t, insn, n); })
+
+#define peek_next(t, insn)	peek_nbyte_next(t, insn, 0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * insn_init() - initialize struct insn
@@ -158,6 +192,16 @@ vex_end:
 	insn->vex_prefix.got = 1;
 
 	prefixes->got = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+err_out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+err_out:
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
@@ -174,7 +218,17 @@ vex_end:
 void insn_get_opcode(struct insn *insn)
 {
 	struct insn_field *opcode = &insn->opcode;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	insn_byte_t op, pfx;
+=======
+	insn_byte_t op;
+	int pfx_id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	insn_byte_t op;
+	int pfx_id;
+>>>>>>> refs/remotes/origin/master
 	if (opcode->got)
 		return;
 	if (!insn->prefixes.got)
@@ -191,7 +245,15 @@ void insn_get_opcode(struct insn *insn)
 		m = insn_vex_m_bits(insn);
 		p = insn_vex_p_bits(insn);
 		insn->attr = inat_get_avx_attribute(op, m, p);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!inat_accept_vex(insn->attr))
+=======
+		if (!inat_accept_vex(insn->attr) && !inat_is_group(insn->attr))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!inat_accept_vex(insn->attr) && !inat_is_group(insn->attr))
+>>>>>>> refs/remotes/origin/master
 			insn->attr = 0;	/* This instruction is bad */
 		goto end;	/* VEX has only 1 byte for opcode */
 	}
@@ -201,13 +263,35 @@ void insn_get_opcode(struct insn *insn)
 		/* Get escaped opcode */
 		op = get_next(insn_byte_t, insn);
 		opcode->bytes[opcode->nbytes++] = op;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pfx = insn_last_prefix(insn);
 		insn->attr = inat_get_escape_attribute(op, pfx, insn->attr);
+=======
+		pfx_id = insn_last_prefix_id(insn);
+		insn->attr = inat_get_escape_attribute(op, pfx_id, insn->attr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pfx_id = insn_last_prefix_id(insn);
+		insn->attr = inat_get_escape_attribute(op, pfx_id, insn->attr);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (inat_must_vex(insn->attr))
 		insn->attr = 0;	/* This instruction is bad */
 end:
 	opcode->got = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+err_out:
+	return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+err_out:
+	return;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -221,7 +305,15 @@ end:
 void insn_get_modrm(struct insn *insn)
 {
 	struct insn_field *modrm = &insn->modrm;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	insn_byte_t pfx, mod;
+=======
+	insn_byte_t pfx_id, mod;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	insn_byte_t pfx_id, mod;
+>>>>>>> refs/remotes/origin/master
 	if (modrm->got)
 		return;
 	if (!insn->opcode.got)
@@ -232,15 +324,41 @@ void insn_get_modrm(struct insn *insn)
 		modrm->value = mod;
 		modrm->nbytes = 1;
 		if (inat_is_group(insn->attr)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pfx = insn_last_prefix(insn);
 			insn->attr = inat_get_group_attribute(mod, pfx,
 							      insn->attr);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			pfx_id = insn_last_prefix_id(insn);
+			insn->attr = inat_get_group_attribute(mod, pfx_id,
+							      insn->attr);
+			if (insn_is_avx(insn) && !inat_accept_vex(insn->attr))
+				insn->attr = 0;	/* This is bad */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (insn->x86_64 && inat_is_force64(insn->attr))
 		insn->opnd_bytes = 8;
 	modrm->got = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+err_out:
+	return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+err_out:
+	return;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -290,6 +408,18 @@ void insn_get_sib(struct insn *insn)
 		}
 	}
 	insn->sib.got = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+err_out:
+	return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+err_out:
+	return;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -351,10 +481,26 @@ void insn_get_displacement(struct insn *insn)
 	}
 out:
 	insn->displacement.got = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 /* Decode moffset16/32/64 */
 static void __get_moffset(struct insn *insn)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+err_out:
+	return;
+}
+
+/* Decode moffset16/32/64. Return 0 if failed */
+static int __get_moffset(struct insn *insn)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	switch (insn->addr_bytes) {
 	case 2:
@@ -371,12 +517,34 @@ static void __get_moffset(struct insn *insn)
 		insn->moffset2.value = get_next(int, insn);
 		insn->moffset2.nbytes = 4;
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 	insn->moffset1.got = insn->moffset2.got = 1;
 }
 
 /* Decode imm v32(Iz) */
 static void __get_immv32(struct insn *insn)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	default:	/* opnd_bytes must be modified manually */
+		goto err_out;
+	}
+	insn->moffset1.got = insn->moffset2.got = 1;
+
+	return 1;
+
+err_out:
+	return 0;
+}
+
+/* Decode imm v32(Iz). Return 0 if failed */
+static int __get_immv32(struct insn *insn)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	switch (insn->opnd_bytes) {
 	case 2:
@@ -388,11 +556,32 @@ static void __get_immv32(struct insn *insn)
 		insn->immediate.value = get_next(int, insn);
 		insn->immediate.nbytes = 4;
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 }
 
 /* Decode imm v64(Iv/Ov) */
 static void __get_immv(struct insn *insn)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	default:	/* opnd_bytes must be modified manually */
+		goto err_out;
+	}
+
+	return 1;
+
+err_out:
+	return 0;
+}
+
+/* Decode imm v64(Iv/Ov), Return 0 if failed */
+static int __get_immv(struct insn *insn)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	switch (insn->opnd_bytes) {
 	case 2:
@@ -409,12 +598,33 @@ static void __get_immv(struct insn *insn)
 		insn->immediate2.value = get_next(int, insn);
 		insn->immediate2.nbytes = 4;
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 	insn->immediate1.got = insn->immediate2.got = 1;
 }
 
 /* Decode ptr16:16/32(Ap) */
 static void __get_immptr(struct insn *insn)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	default:	/* opnd_bytes must be modified manually */
+		goto err_out;
+	}
+	insn->immediate1.got = insn->immediate2.got = 1;
+
+	return 1;
+err_out:
+	return 0;
+}
+
+/* Decode ptr16:16/32(Ap) */
+static int __get_immptr(struct insn *insn)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	switch (insn->opnd_bytes) {
 	case 2:
@@ -427,11 +637,36 @@ static void __get_immptr(struct insn *insn)
 		break;
 	case 8:
 		/* ptr16:64 is not exist (no segment) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+	default:	/* opnd_bytes must be modified manually */
+		goto err_out;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 0;
+	default:	/* opnd_bytes must be modified manually */
+		goto err_out;
+>>>>>>> refs/remotes/origin/master
 	}
 	insn->immediate2.value = get_next(unsigned short, insn);
 	insn->immediate2.nbytes = 2;
 	insn->immediate1.got = insn->immediate2.got = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	return 1;
+err_out:
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -451,7 +686,17 @@ void insn_get_immediate(struct insn *insn)
 		insn_get_displacement(insn);
 
 	if (inat_has_moffset(insn->attr)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		__get_moffset(insn);
+=======
+		if (!__get_moffset(insn))
+			goto err_out;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!__get_moffset(insn))
+			goto err_out;
+>>>>>>> refs/remotes/origin/master
 		goto done;
 	}
 
@@ -479,6 +724,8 @@ void insn_get_immediate(struct insn *insn)
 		insn->immediate2.nbytes = 4;
 		break;
 	case INAT_IMM_PTR:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		__get_immptr(insn);
 		break;
 	case INAT_IMM_VWORD32:
@@ -489,6 +736,27 @@ void insn_get_immediate(struct insn *insn)
 		break;
 	default:
 		break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (!__get_immptr(insn))
+			goto err_out;
+		break;
+	case INAT_IMM_VWORD32:
+		if (!__get_immv32(insn))
+			goto err_out;
+		break;
+	case INAT_IMM_VWORD:
+		if (!__get_immv(insn))
+			goto err_out;
+		break;
+	default:
+		/* Here, insn must have an immediate, but failed */
+		goto err_out;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (inat_has_second_immediate(insn->attr)) {
 		insn->immediate2.value = get_next(char, insn);
@@ -496,6 +764,18 @@ void insn_get_immediate(struct insn *insn)
 	}
 done:
 	insn->immediate.got = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+err_out:
+	return;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+err_out:
+	return;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**

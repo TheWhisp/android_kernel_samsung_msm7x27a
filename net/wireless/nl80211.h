@@ -7,11 +7,19 @@ int nl80211_init(void);
 void nl80211_exit(void);
 void nl80211_notify_dev_rename(struct cfg80211_registered_device *rdev);
 void nl80211_send_scan_start(struct cfg80211_registered_device *rdev,
+<<<<<<< HEAD
 			     struct net_device *netdev);
 void nl80211_send_scan_done(struct cfg80211_registered_device *rdev,
 			    struct net_device *netdev);
 void nl80211_send_scan_aborted(struct cfg80211_registered_device *rdev,
 			       struct net_device *netdev);
+=======
+			     struct wireless_dev *wdev);
+void nl80211_send_scan_done(struct cfg80211_registered_device *rdev,
+			    struct wireless_dev *wdev);
+void nl80211_send_scan_aborted(struct cfg80211_registered_device *rdev,
+			       struct wireless_dev *wdev);
+>>>>>>> refs/remotes/origin/master
 void nl80211_send_sched_scan(struct cfg80211_registered_device *rdev,
 			     struct net_device *netdev, u32 cmd);
 void nl80211_send_sched_scan_results(struct cfg80211_registered_device *rdev,
@@ -29,12 +37,15 @@ void nl80211_send_deauth(struct cfg80211_registered_device *rdev,
 void nl80211_send_disassoc(struct cfg80211_registered_device *rdev,
 			   struct net_device *netdev,
 			   const u8 *buf, size_t len, gfp_t gfp);
+<<<<<<< HEAD
 void nl80211_send_unprot_deauth(struct cfg80211_registered_device *rdev,
 				struct net_device *netdev,
 				const u8 *buf, size_t len, gfp_t gfp);
 void nl80211_send_unprot_disassoc(struct cfg80211_registered_device *rdev,
 				  struct net_device *netdev,
 				  const u8 *buf, size_t len, gfp_t gfp);
+=======
+>>>>>>> refs/remotes/origin/master
 void nl80211_send_auth_timeout(struct cfg80211_registered_device *rdev,
 			       struct net_device *netdev,
 			       const u8 *addr, gfp_t gfp);
@@ -54,10 +65,13 @@ void nl80211_send_disconnected(struct cfg80211_registered_device *rdev,
 			       struct net_device *netdev, u16 reason,
 			       const u8 *ie, size_t ie_len, bool from_ap);
 
+<<<<<<< HEAD
 void nl80211_send_new_peer_candidate(struct cfg80211_registered_device *rdev,
 				     struct net_device *netdev,
 				     const u8 *macaddr, const u8* ie, u8 ie_len,
 				     gfp_t gfp);
+=======
+>>>>>>> refs/remotes/origin/master
 void
 nl80211_michael_mic_failure(struct cfg80211_registered_device *rdev,
 			    struct net_device *netdev, const u8 *addr,
@@ -73,6 +87,7 @@ void nl80211_send_ibss_bssid(struct cfg80211_registered_device *rdev,
 			     struct net_device *netdev, const u8 *bssid,
 			     gfp_t gfp);
 
+<<<<<<< HEAD
 void nl80211_send_remain_on_channel(struct cfg80211_registered_device *rdev,
 				    struct net_device *netdev,
 				    u64 cookie,
@@ -92,7 +107,12 @@ void nl80211_send_sta_del_event(struct cfg80211_registered_device *rdev,
 				gfp_t gfp);
 
 int nl80211_send_mgmt(struct cfg80211_registered_device *rdev,
+<<<<<<< HEAD
 		      struct net_device *netdev, u32 nlpid, int freq,
+=======
+		      struct net_device *netdev, u32 nlpid,
+		      int freq, int sig_dbm,
+>>>>>>> refs/remotes/origin/cm-10.0
 		      const u8 *buf, size_t len, gfp_t gfp);
 void nl80211_send_mgmt_tx_status(struct cfg80211_registered_device *rdev,
 				 struct net_device *netdev, u64 cookie,
@@ -109,4 +129,35 @@ nl80211_send_cqm_pktloss_notify(struct cfg80211_registered_device *rdev,
 				struct net_device *netdev, const u8 *peer,
 				u32 num_packets, gfp_t gfp);
 
+<<<<<<< HEAD
+=======
+void nl80211_gtk_rekey_notify(struct cfg80211_registered_device *rdev,
+			      struct net_device *netdev, const u8 *bssid,
+			      const u8 *replay_ctr, gfp_t gfp);
+
+void nl80211_pmksa_candidate_notify(struct cfg80211_registered_device *rdev,
+				    struct net_device *netdev, int index,
+				    const u8 *bssid, bool preauth, gfp_t gfp);
+
+bool nl80211_unexpected_frame(struct net_device *dev,
+			      const u8 *addr, gfp_t gfp);
+bool nl80211_unexpected_4addr_frame(struct net_device *dev,
+				    const u8 *addr, gfp_t gfp);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int nl80211_send_mgmt(struct cfg80211_registered_device *rdev,
+		      struct wireless_dev *wdev, u32 nlpid,
+		      int freq, int sig_dbm,
+		      const u8 *buf, size_t len, u32 flags, gfp_t gfp);
+
+void
+nl80211_radar_notify(struct cfg80211_registered_device *rdev,
+		     struct cfg80211_chan_def *chandef,
+		     enum nl80211_radar_event event,
+		     struct net_device *netdev, gfp_t gfp);
+
+void cfg80211_rdev_free_coalesce(struct cfg80211_registered_device *rdev);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __NET_WIRELESS_NL80211_H */

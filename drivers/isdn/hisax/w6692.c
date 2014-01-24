@@ -4,7 +4,15 @@
  *
  * Author       Petr Novak
  * Copyright    by Petr Novak        <petr.novak@i.cz>
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -69,6 +77,8 @@ static void
 W6692_new_ph(struct IsdnCardState *cs)
 {
 	switch (cs->dc.w6692.ph_state) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case (W_L1CMD_RST):
 			ph_command(cs, W_L1CMD_DRC);
 			l1_msg(cs, HW_RESET | INDICATION, NULL);
@@ -96,6 +106,40 @@ W6692_new_ph(struct IsdnCardState *cs)
 			break;
 		default:
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case (W_L1CMD_RST):
+		ph_command(cs, W_L1CMD_DRC);
+		l1_msg(cs, HW_RESET | INDICATION, NULL);
+		/* fallthru */
+	case (W_L1IND_CD):
+		l1_msg(cs, HW_DEACTIVATE | CONFIRM, NULL);
+		break;
+	case (W_L1IND_DRD):
+		l1_msg(cs, HW_DEACTIVATE | INDICATION, NULL);
+		break;
+	case (W_L1IND_CE):
+		l1_msg(cs, HW_POWERUP | CONFIRM, NULL);
+		break;
+	case (W_L1IND_LD):
+		l1_msg(cs, HW_RSYNC | INDICATION, NULL);
+		break;
+	case (W_L1IND_ARD):
+		l1_msg(cs, HW_INFO2 | INDICATION, NULL);
+		break;
+	case (W_L1IND_AI8):
+		l1_msg(cs, HW_INFO4_P8 | INDICATION, NULL);
+		break;
+	case (W_L1IND_AI10):
+		l1_msg(cs, HW_INFO4_P10 | INDICATION, NULL);
+		break;
+	default:
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -122,11 +166,25 @@ W6692_bh(struct work_struct *work)
 	if (test_and_clear_bit(D_XMTBUFREADY, &cs->event))
 		DChannel_proc_xmt(cs);
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
    if (test_and_clear_bit(D_RX_MON1, &cs->event))
    arcofi_fsm(cs, ARCOFI_RX_END, NULL);
    if (test_and_clear_bit(D_TX_MON1, &cs->event))
    arcofi_fsm(cs, ARCOFI_TX_END, NULL);
  */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+  if (test_and_clear_bit(D_RX_MON1, &cs->event))
+  arcofi_fsm(cs, ARCOFI_RX_END, NULL);
+  if (test_and_clear_bit(D_TX_MON1, &cs->event))
+  arcofi_fsm(cs, ARCOFI_TX_END, NULL);
+*/
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -154,7 +212,11 @@ W6692_empty_fifo(struct IsdnCardState *cs, int count)
 
 		t += sprintf(t, "W6692_empty_fifo cnt %d", count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, cs->dlog);
+=======
+		debugl1(cs, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -196,7 +258,11 @@ W6692_fill_fifo(struct IsdnCardState *cs)
 
 		t += sprintf(t, "W6692_fill_fifo cnt %d", count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, cs->dlog);
+=======
+		debugl1(cs, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -226,7 +292,11 @@ W6692B_empty_fifo(struct BCState *bcs, int count)
 		t += sprintf(t, "W6692B_empty_fifo %c cnt %d",
 			     bcs->channel + '1', count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, bcs->blog);
+=======
+		debugl1(cs, "%s", bcs->blog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -250,7 +320,15 @@ W6692B_fill_fifo(struct BCState *bcs)
 		count = bcs->tx_skb->len;
 
 	if ((cs->debug & L1_DEB_HSCX) && !(cs->debug & L1_DEB_HSCX_FIFO))
+<<<<<<< HEAD
+<<<<<<< HEAD
 		debugl1(cs, "W6692B_fill_fifo%s%d", (more ? " ": " last "), count);
+=======
+		debugl1(cs, "W6692B_fill_fifo%s%d", (more ? " " : " last "), count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		debugl1(cs, "W6692B_fill_fifo%s%d", (more ? " " : " last "), count);
+>>>>>>> refs/remotes/origin/master
 
 	ptr = bcs->tx_skb->data;
 	skb_pull(bcs->tx_skb, count);
@@ -264,7 +342,11 @@ W6692B_fill_fifo(struct BCState *bcs)
 		t += sprintf(t, "W6692B_fill_fifo %c cnt %d",
 			     bcs->channel + '1', count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, bcs->blog);
+=======
+		debugl1(cs, "%s", bcs->blog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -277,7 +359,15 @@ W6692B_interrupt(struct IsdnCardState *cs, u_char bchan)
 	struct sk_buff *skb;
 	int count;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bcs = (cs->bcs->channel == bchan) ? cs->bcs : (cs->bcs+1);
+=======
+	bcs = (cs->bcs->channel == bchan) ? cs->bcs : (cs->bcs + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bcs = (cs->bcs->channel == bchan) ? cs->bcs : (cs->bcs + 1);
+>>>>>>> refs/remotes/origin/master
 	val = cs->BC_Read_Reg(cs, bchan, W_B_EXIR);
 	debugl1(cs, "W6692B chan %d B_EXIR 0x%02X", bchan, val);
 
@@ -322,7 +412,15 @@ W6692B_interrupt(struct IsdnCardState *cs, u_char bchan)
 		r = cs->BC_Read_Reg(cs, bchan, W_B_STAR);
 		if (r & W_B_STAR_RDOV) {
 			if (cs->debug & L1_DEB_WARN)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				debugl1(cs, "W6692 B RDOV(RMR) mode=%d",bcs->mode);
+=======
+				debugl1(cs, "W6692 B RDOV(RMR) mode=%d", bcs->mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				debugl1(cs, "W6692 B RDOV(RMR) mode=%d", bcs->mode);
+>>>>>>> refs/remotes/origin/master
 			cs->BC_Write_Reg(cs, bchan, W_B_CMDR, W_B_CMDR_RACK | W_B_CMDR_RRST | W_B_CMDR_RACT);
 			if (bcs->mode != L1_MODE_TRANS)
 				bcs->hw.w6692.rcvidx = 0;
@@ -347,7 +445,15 @@ W6692B_interrupt(struct IsdnCardState *cs, u_char bchan)
 			W6692B_fill_fifo(bcs);
 		else {
 			/* Here we lost an TX interrupt, so
+<<<<<<< HEAD
+<<<<<<< HEAD
 			   * restart transmitting the whole frame.
+=======
+			 * restart transmitting the whole frame.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 * restart transmitting the whole frame.
+>>>>>>> refs/remotes/origin/master
 			 */
 			if (bcs->tx_skb) {
 				skb_push(bcs->tx_skb, bcs->hw.w6692.count);
@@ -374,9 +480,21 @@ W6692B_interrupt(struct IsdnCardState *cs, u_char bchan)
 				W6692B_fill_fifo(bcs);
 				return;
 			} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (test_bit(FLG_LLI_L1WAKEUP,&bcs->st->lli.flag) &&
 					(PACKET_NOACK != bcs->tx_skb->pkt_type)) {
 					u_long	flags;
+=======
+				if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+				    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+					u_long flags;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+				    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+					u_long flags;
+>>>>>>> refs/remotes/origin/master
 					spin_lock_irqsave(&bcs->aclock, flags);
 					bcs->ackcnt += bcs->hw.w6692.count;
 					spin_unlock_irqrestore(&bcs->aclock, flags);
@@ -414,7 +532,15 @@ W6692_interrupt(int intno, void *dev_id)
 		spin_unlock_irqrestore(&cs->lock, flags);
 		return IRQ_NONE;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
       StartW6692:
+=======
+StartW6692:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+StartW6692:
+>>>>>>> refs/remotes/origin/master
 	if (cs->debug & L1_DEB_ISAC)
 		debugl1(cs, "W6692 ISTA %x", val);
 
@@ -473,7 +599,15 @@ W6692_interrupt(int intno, void *dev_id)
 		} else
 			schedule_event(cs, D_XMTBUFREADY);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
       afterXFR:
+=======
+afterXFR:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+afterXFR:
+>>>>>>> refs/remotes/origin/master
 	if (val & (W_INT_XINT0 | W_INT_XINT1)) {	/* XINT0/1 - never */
 		if (cs->debug & L1_DEB_ISAC)
 			debugl1(cs, "W6692 spurious XINT!");
@@ -564,6 +698,8 @@ W6692_l1hw(struct PStack *st, int pr, void *arg)
 	int val;
 
 	switch (pr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			if (cs->debug & DEB_DLOG_HEX)
 				LogFrame(cs, skb->data, skb->len);
@@ -600,10 +736,32 @@ W6692_l1hw(struct PStack *st, int pr, void *arg)
 				LogFrame(cs, skb->data, skb->len);
 			if (cs->debug & DEB_DLOG_VERBOSE)
 				dlogframe(cs, skb, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case (PH_DATA | REQUEST):
+		if (cs->debug & DEB_DLOG_HEX)
+			LogFrame(cs, skb->data, skb->len);
+		if (cs->debug & DEB_DLOG_VERBOSE)
+			dlogframe(cs, skb, 0);
+		spin_lock_irqsave(&cs->lock, flags);
+		if (cs->tx_skb) {
+			skb_queue_tail(&cs->sq, skb);
+#ifdef L2FRAME_DEBUG		/* psa */
+			if (cs->debug & L1_DEB_LAPD)
+				Logl2Frame(cs, skb, "PH_DATA Queued", 0);
+#endif
+		} else {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			cs->tx_skb = skb;
 			cs->tx_cnt = 0;
 #ifdef L2FRAME_DEBUG		/* psa */
 			if (cs->debug & L1_DEB_LAPD)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				Logl2Frame(cs, skb, "PH_DATA_PULLED", 0);
 #endif
 			W6692_fill_fifo(cs);
@@ -666,6 +824,98 @@ W6692_l1hw(struct PStack *st, int pr, void *arg)
 			if (cs->debug & L1_DEB_WARN)
 				debugl1(cs, "W6692_l1hw unknown %04x", pr);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				Logl2Frame(cs, skb, "PH_DATA", 0);
+#endif
+			W6692_fill_fifo(cs);
+		}
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (PH_PULL | INDICATION):
+		spin_lock_irqsave(&cs->lock, flags);
+		if (cs->tx_skb) {
+			if (cs->debug & L1_DEB_WARN)
+				debugl1(cs, " l2l1 tx_skb exist this shouldn't happen");
+			skb_queue_tail(&cs->sq, skb);
+			spin_unlock_irqrestore(&cs->lock, flags);
+			break;
+		}
+		if (cs->debug & DEB_DLOG_HEX)
+			LogFrame(cs, skb->data, skb->len);
+		if (cs->debug & DEB_DLOG_VERBOSE)
+			dlogframe(cs, skb, 0);
+		cs->tx_skb = skb;
+		cs->tx_cnt = 0;
+#ifdef L2FRAME_DEBUG		/* psa */
+		if (cs->debug & L1_DEB_LAPD)
+			Logl2Frame(cs, skb, "PH_DATA_PULLED", 0);
+#endif
+		W6692_fill_fifo(cs);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (PH_PULL | REQUEST):
+#ifdef L2FRAME_DEBUG		/* psa */
+		if (cs->debug & L1_DEB_LAPD)
+			debugl1(cs, "-> PH_REQUEST_PULL");
+#endif
+		if (!cs->tx_skb) {
+			test_and_clear_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+			st->l1.l1l2(st, PH_PULL | CONFIRM, NULL);
+		} else
+			test_and_set_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+		break;
+	case (HW_RESET | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		if ((cs->dc.w6692.ph_state == W_L1IND_DRD)) {
+			ph_command(cs, W_L1CMD_ECK);
+			spin_unlock_irqrestore(&cs->lock, flags);
+		} else {
+			ph_command(cs, W_L1CMD_RST);
+			cs->dc.w6692.ph_state = W_L1CMD_RST;
+			spin_unlock_irqrestore(&cs->lock, flags);
+			W6692_new_ph(cs);
+		}
+		break;
+	case (HW_ENABLE | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		ph_command(cs, W_L1CMD_ECK);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (HW_INFO3 | REQUEST):
+		spin_lock_irqsave(&cs->lock, flags);
+		ph_command(cs, W_L1CMD_AR8);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		break;
+	case (HW_TESTLOOP | REQUEST):
+		val = 0;
+		if (1 & (long) arg)
+			val |= 0x0c;
+		if (2 & (long) arg)
+			val |= 0x3;
+		/* !!! not implemented yet */
+		break;
+	case (HW_DEACTIVATE | RESPONSE):
+		skb_queue_purge(&cs->rq);
+		skb_queue_purge(&cs->sq);
+		if (cs->tx_skb) {
+			dev_kfree_skb_any(cs->tx_skb);
+			cs->tx_skb = NULL;
+		}
+		if (test_and_clear_bit(FLG_DBUSY_TIMER, &cs->HW_Flags))
+			del_timer(&cs->dbusytimer);
+		if (test_and_clear_bit(FLG_L1_DBUSY, &cs->HW_Flags))
+			schedule_event(cs, D_CLEARBUSY);
+		break;
+	default:
+		if (cs->debug & L1_DEB_WARN)
+			debugl1(cs, "W6692_l1hw unknown %04x", pr);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -734,6 +984,8 @@ W6692Bmode(struct BCState *bcs, int mode, int bchan)
 	bcs->hw.w6692.bchan = bchan;
 
 	switch (mode) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case (L1_MODE_NULL):
 			cs->BC_Write_Reg(cs, bchan, W_B_MODE, 0);
 			break;
@@ -745,6 +997,24 @@ W6692Bmode(struct BCState *bcs, int mode, int bchan)
 			cs->BC_Write_Reg(cs, bchan, W_B_ADM1, 0xff);
 			cs->BC_Write_Reg(cs, bchan, W_B_ADM2, 0xff);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case (L1_MODE_NULL):
+		cs->BC_Write_Reg(cs, bchan, W_B_MODE, 0);
+		break;
+	case (L1_MODE_TRANS):
+		cs->BC_Write_Reg(cs, bchan, W_B_MODE, W_B_MODE_MMS);
+		break;
+	case (L1_MODE_HDLC):
+		cs->BC_Write_Reg(cs, bchan, W_B_MODE, W_B_MODE_ITF);
+		cs->BC_Write_Reg(cs, bchan, W_B_ADM1, 0xff);
+		cs->BC_Write_Reg(cs, bchan, W_B_ADM2, 0xff);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (mode)
 		cs->BC_Write_Reg(cs, bchan, W_B_CMDR, W_B_CMDR_RRST |
@@ -756,6 +1026,8 @@ static void
 W6692_l2l1(struct PStack *st, int pr, void *arg)
 {
 	struct sk_buff *skb = arg;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct BCState *bcs = st->l1.bcs; 
 	u_long flags;
 
@@ -809,6 +1081,66 @@ W6692_l2l1(struct PStack *st, int pr, void *arg)
 			spin_unlock_irqrestore(&bcs->cs->lock, flags);
 			st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 			break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct BCState *bcs = st->l1.bcs;
+	u_long flags;
+
+	switch (pr) {
+	case (PH_DATA | REQUEST):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		if (bcs->tx_skb) {
+			skb_queue_tail(&bcs->squeue, skb);
+		} else {
+			bcs->tx_skb = skb;
+			test_and_set_bit(BC_FLG_BUSY, &bcs->Flag);
+			bcs->hw.w6692.count = 0;
+			bcs->cs->BC_Send_Data(bcs);
+		}
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		break;
+	case (PH_PULL | INDICATION):
+		if (bcs->tx_skb) {
+			printk(KERN_WARNING "W6692_l2l1: this shouldn't happen\n");
+			break;
+		}
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		test_and_set_bit(BC_FLG_BUSY, &bcs->Flag);
+		bcs->tx_skb = skb;
+		bcs->hw.w6692.count = 0;
+		bcs->cs->BC_Send_Data(bcs);
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		break;
+	case (PH_PULL | REQUEST):
+		if (!bcs->tx_skb) {
+			test_and_clear_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+			st->l1.l1l2(st, PH_PULL | CONFIRM, NULL);
+		} else
+			test_and_set_bit(FLG_L1_PULL_REQ, &st->l1.Flags);
+		break;
+	case (PH_ACTIVATE | REQUEST):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		test_and_set_bit(BC_FLG_ACTIV, &bcs->Flag);
+		W6692Bmode(bcs, st->l1.mode, st->l1.bc);
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		l1_msg_b(st, pr, arg);
+		break;
+	case (PH_DEACTIVATE | REQUEST):
+		l1_msg_b(st, pr, arg);
+		break;
+	case (PH_DEACTIVATE | CONFIRM):
+		spin_lock_irqsave(&bcs->cs->lock, flags);
+		test_and_clear_bit(BC_FLG_ACTIV, &bcs->Flag);
+		test_and_clear_bit(BC_FLG_BUSY, &bcs->Flag);
+		W6692Bmode(bcs, 0, st->l1.bc);
+		spin_unlock_irqrestore(&bcs->cs->lock, flags);
+		st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -943,13 +1275,29 @@ WriteW6692(struct IsdnCardState *cs, u_char offset, u_char value)
 }
 
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	insb(cs->hw.w6692.iobase + W_D_RFIFO, data, size);
 }
 
 static void
+<<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	outsb(cs->hw.w6692.iobase + W_D_XFIFO, data, size);
 }
@@ -970,6 +1318,8 @@ static int
 w6692_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 {
 	switch (mt) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case CARD_RESET:
 			resetW6692(cs);
 			return (0);
@@ -985,16 +1335,50 @@ w6692_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 			return (0);
 		case CARD_TEST:
 			return (0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case CARD_RESET:
+		resetW6692(cs);
+		return (0);
+	case CARD_RELEASE:
+		cs->writeW6692(cs, W_IMASK, 0xff);
+		release_region(cs->hw.w6692.iobase, 256);
+		if (cs->subtyp == W6692_USR) {
+			cs->writeW6692(cs, W_XDATA, 0x04);
+		}
+		return (0);
+	case CARD_INIT:
+		initW6692(cs, 3);
+		return (0);
+	case CARD_TEST:
+		return (0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return (0);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int id_idx ;
+=======
+static int id_idx;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct pci_dev *dev_w6692 __devinitdata = NULL;
 
 int __devinit
 setup_w6692(struct IsdnCard *card)
+=======
+static int id_idx;
+
+static struct pci_dev *dev_w6692 = NULL;
+
+int setup_w6692(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	char tmp[64];
@@ -1009,8 +1393,18 @@ setup_w6692(struct IsdnCard *card)
 
 	while (id_list[id_idx].vendor_id) {
 		dev_w6692 = hisax_find_pci_device(id_list[id_idx].vendor_id,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					    id_list[id_idx].device_id,
 					    dev_w6692);
+=======
+						  id_list[id_idx].device_id,
+						  dev_w6692);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						  id_list[id_idx].device_id,
+						  dev_w6692);
+>>>>>>> refs/remotes/origin/master
 		if (dev_w6692) {
 			if (pci_enable_device(dev_w6692))
 				continue;

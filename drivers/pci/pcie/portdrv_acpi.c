@@ -17,6 +17,10 @@
 
 #include "aer/aerdrv.h"
 #include "../pci.h"
+<<<<<<< HEAD
+=======
+#include "portdrv.h"
+>>>>>>> refs/remotes/origin/master
 
 /**
  * pcie_port_acpi_setup - Request the BIOS to release control of PCIe services.

@@ -1,14 +1,45 @@
 /*
  * i8253 PIT clocksource
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/clocksource.h>
+=======
+#include <linux/clockchips.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/clockchips.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/spinlock.h>
 #include <linux/timex.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/i8253.h>
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/module.h>
+#include <linux/i8253.h>
+#include <linux/smp.h>
+
+/*
+ * Protects access to I/O ports
+ *
+ * 0040-0043 : timer0, i8253 / i8254
+ * 0061-0061 : NMI Control Register which contains two speaker control bits.
+ */
+DEFINE_RAW_SPINLOCK(i8253_lock);
+EXPORT_SYMBOL(i8253_lock);
+
+#ifdef CONFIG_CLKSRC_I8253
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Since the PIT overflows every tick, its not very useful
  * to just read by itself. So use jiffies to emulate a free
@@ -24,7 +55,11 @@ static cycle_t i8253_read(struct clocksource *cs)
 
 	raw_spin_lock_irqsave(&i8253_lock, flags);
 	/*
+<<<<<<< HEAD
 	 * Although our caller may have the read side of xtime_lock,
+=======
+	 * Although our caller may have the read side of jiffies_lock,
+>>>>>>> refs/remotes/origin/master
 	 * this is now a seqlock, and we are cheating in this routine
 	 * by having side effects on state that we cannot undo if
 	 * there is a collision on the seqlock and our caller has to
@@ -37,6 +72,8 @@ static cycle_t i8253_read(struct clocksource *cs)
 	 * count), it cannot be newer.
 	 */
 	jifs = jiffies;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	outb_pit(0x00, PIT_MODE);	/* latch the count ASAP */
 	count = inb_pit(PIT_CH0);	/* read the latched count */
 	count |= inb_pit(PIT_CH0) << 8;
@@ -46,6 +83,22 @@ static cycle_t i8253_read(struct clocksource *cs)
 		outb_pit(0x34, PIT_MODE);
 		outb_pit(PIT_LATCH & 0xff, PIT_CH0);
 		outb_pit(PIT_LATCH >> 8, PIT_CH0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	outb_p(0x00, PIT_MODE);	/* latch the count ASAP */
+	count = inb_p(PIT_CH0);	/* read the latched count */
+	count |= inb_p(PIT_CH0) << 8;
+
+	/* VIA686a test code... reset the latch if count > max + 1 */
+	if (count > PIT_LATCH) {
+		outb_p(0x34, PIT_MODE);
+		outb_p(PIT_LATCH & 0xff, PIT_CH0);
+		outb_p(PIT_LATCH >> 8, PIT_CH0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		count = PIT_LATCH - 1;
 	}
 
@@ -86,3 +139,99 @@ int __init clocksource_i8253_init(void)
 {
 	return clocksource_register_hz(&i8253_cs, PIT_TICK_RATE);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#endif
+
+#ifdef CONFIG_CLKEVT_I8253
+/*
+ * Initialize the PIT timer.
+ *
+ * This is also called after resume to bring the PIT into operation again.
+ */
+static void init_pit_timer(enum clock_event_mode mode,
+			   struct clock_event_device *evt)
+{
+	raw_spin_lock(&i8253_lock);
+
+	switch (mode) {
+	case CLOCK_EVT_MODE_PERIODIC:
+		/* binary, mode 2, LSB/MSB, ch 0 */
+		outb_p(0x34, PIT_MODE);
+		outb_p(PIT_LATCH & 0xff , PIT_CH0);	/* LSB */
+		outb_p(PIT_LATCH >> 8 , PIT_CH0);		/* MSB */
+		break;
+
+	case CLOCK_EVT_MODE_SHUTDOWN:
+	case CLOCK_EVT_MODE_UNUSED:
+		if (evt->mode == CLOCK_EVT_MODE_PERIODIC ||
+		    evt->mode == CLOCK_EVT_MODE_ONESHOT) {
+			outb_p(0x30, PIT_MODE);
+			outb_p(0, PIT_CH0);
+			outb_p(0, PIT_CH0);
+		}
+		break;
+
+	case CLOCK_EVT_MODE_ONESHOT:
+		/* One shot setup */
+		outb_p(0x38, PIT_MODE);
+		break;
+
+	case CLOCK_EVT_MODE_RESUME:
+		/* Nothing to do here */
+		break;
+	}
+	raw_spin_unlock(&i8253_lock);
+}
+
+/*
+ * Program the next event in oneshot mode
+ *
+ * Delta is given in PIT ticks
+ */
+static int pit_next_event(unsigned long delta, struct clock_event_device *evt)
+{
+	raw_spin_lock(&i8253_lock);
+	outb_p(delta & 0xff , PIT_CH0);	/* LSB */
+	outb_p(delta >> 8 , PIT_CH0);		/* MSB */
+	raw_spin_unlock(&i8253_lock);
+
+	return 0;
+}
+
+/*
+ * On UP the PIT can serve all of the possible timer functions. On SMP systems
+ * it can be solely used for the global tick.
+ */
+struct clock_event_device i8253_clockevent = {
+	.name		= "pit",
+	.features	= CLOCK_EVT_FEAT_PERIODIC,
+	.set_mode	= init_pit_timer,
+	.set_next_event = pit_next_event,
+};
+
+/*
+ * Initialize the conversion factor and the min/max deltas of the clock event
+ * structure and register the clock event source with the framework.
+ */
+void __init clockevent_i8253_init(bool oneshot)
+{
+	if (oneshot)
+		i8253_clockevent.features |= CLOCK_EVT_FEAT_ONESHOT;
+	/*
+	 * Start pit with the boot cpu mask. x86 might make it global
+	 * when it is used as broadcast device later.
+	 */
+	i8253_clockevent.cpumask = cpumask_of(smp_processor_id());
+
+	clockevents_config_and_register(&i8253_clockevent, PIT_TICK_RATE,
+					0xF, 0x7FFF);
+}
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

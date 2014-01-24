@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm_crtc_helper.h"
+=======
+#include <drm/drmP.h>
+#include <drm/drm_crtc_helper.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon.h"
 
 /*
@@ -864,7 +869,15 @@ void radeon_legacy_tv_adjust_crtc_reg(struct drm_encoder *encoder,
 	*v_sync_strt_wid = tmp;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int get_post_div(int value)
+=======
+static int get_post_div(int value)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int get_post_div(int value)
+>>>>>>> refs/remotes/origin/master
 {
 	int post_div;
 	switch (value) {

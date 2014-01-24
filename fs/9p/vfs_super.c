@@ -89,7 +89,11 @@ v9fs_fill_super(struct super_block *sb, struct v9fs_session_info *v9ses,
 	if (v9ses->cache)
 		sb->s_bdi->ra_pages = (VM_MAX_READAHEAD * 1024)/PAGE_CACHE_SIZE;
 
+<<<<<<< HEAD
 	sb->s_flags = flags | MS_ACTIVE | MS_DIRSYNC | MS_NOATIME;
+=======
+	sb->s_flags |= MS_ACTIVE | MS_DIRSYNC | MS_NOATIME;
+>>>>>>> refs/remotes/origin/master
 	if (!v9ses->cache)
 		sb->s_flags |= MS_SYNCHRONOUS;
 
@@ -117,11 +121,25 @@ static struct dentry *v9fs_mount(struct file_system_type *fs_type, int flags,
 	struct inode *inode = NULL;
 	struct dentry *root = NULL;
 	struct v9fs_session_info *v9ses = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int mode = S_IRWXUGO | S_ISVTX;
 	struct p9_fid *fid;
 	int retval = 0;
 
 	P9_DPRINTK(P9_DEBUG_VFS, " \n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	umode_t mode = S_IRWXUGO | S_ISVTX;
+	struct p9_fid *fid;
+	int retval = 0;
+
+	p9_debug(P9_DEBUG_VFS, "\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	v9ses = kzalloc(sizeof(struct v9fs_session_info), GFP_KERNEL);
 	if (!v9ses)
@@ -137,7 +155,11 @@ static struct dentry *v9fs_mount(struct file_system_type *fs_type, int flags,
 		goto close_session;
 	}
 
+<<<<<<< HEAD
 	sb = sget(fs_type, NULL, v9fs_set_super, v9ses);
+=======
+	sb = sget(fs_type, NULL, v9fs_set_super, flags, v9ses);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(sb)) {
 		retval = PTR_ERR(sb);
 		goto clunk_fid;
@@ -155,9 +177,19 @@ static struct dentry *v9fs_mount(struct file_system_type *fs_type, int flags,
 		goto release_sb;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	root = d_alloc_root(inode);
 	if (!root) {
 		iput(inode);
+=======
+	root = d_make_root(inode);
+	if (!root) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	root = d_make_root(inode);
+	if (!root) {
+>>>>>>> refs/remotes/origin/master
 		retval = -ENOMEM;
 		goto release_sb;
 	}
@@ -191,7 +223,15 @@ static struct dentry *v9fs_mount(struct file_system_type *fs_type, int flags,
 		goto release_sb;
 	v9fs_fid_add(root, fid);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, " simple set mount, return 0\n");
+=======
+	p9_debug(P9_DEBUG_VFS, " simple set mount, return 0\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, " simple set mount, return 0\n");
+>>>>>>> refs/remotes/origin/master
 	return dget(sb->s_root);
 
 clunk_fid:
@@ -223,7 +263,15 @@ static void v9fs_kill_super(struct super_block *s)
 {
 	struct v9fs_session_info *v9ses = s->s_fs_info;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, " %p\n", s);
+=======
+	p9_debug(P9_DEBUG_VFS, " %p\n", s);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, " %p\n", s);
+>>>>>>> refs/remotes/origin/master
 
 	kill_anon_super(s);
 
@@ -231,7 +279,15 @@ static void v9fs_kill_super(struct super_block *s)
 	v9fs_session_close(v9ses);
 	kfree(v9ses);
 	s->s_fs_info = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "exiting kill_super\n");
+=======
+	p9_debug(P9_DEBUG_VFS, "exiting kill_super\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "exiting kill_super\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -260,7 +316,15 @@ static int v9fs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	if (v9fs_proto_dotl(v9ses)) {
 		res = p9_client_statfs(fid, &rs);
 		if (res == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			buf->f_type = V9FS_MAGIC;
+=======
+			buf->f_type = rs.type;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			buf->f_type = rs.type;
+>>>>>>> refs/remotes/origin/master
 			buf->f_bsize = rs.bsize;
 			buf->f_blocks = rs.blocks;
 			buf->f_bfree = rs.bfree;
@@ -303,7 +367,15 @@ static int v9fs_write_inode(struct inode *inode,
 	 * send an fsync request to server irrespective of
 	 * wbc->sync_mode.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "%s: inode %p\n", __func__, inode);
+=======
+	p9_debug(P9_DEBUG_VFS, "%s: inode %p\n", __func__, inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "%s: inode %p\n", __func__, inode);
+>>>>>>> refs/remotes/origin/master
 	v9inode = V9FS_I(inode);
 	if (!v9inode->writeback_fid)
 		return 0;
@@ -326,7 +398,15 @@ static int v9fs_write_inode_dotl(struct inode *inode,
 	 * send an fsync request to server irrespective of
 	 * wbc->sync_mode.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "%s: inode %p\n", __func__, inode);
+=======
+	p9_debug(P9_DEBUG_VFS, "%s: inode %p\n", __func__, inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "%s: inode %p\n", __func__, inode);
+>>>>>>> refs/remotes/origin/master
 	v9inode = V9FS_I(inode);
 	if (!v9inode->writeback_fid)
 		return 0;
@@ -364,5 +444,11 @@ struct file_system_type v9fs_fs_type = {
 	.mount = v9fs_mount,
 	.kill_sb = v9fs_kill_super,
 	.owner = THIS_MODULE,
+<<<<<<< HEAD
 	.fs_flags = FS_RENAME_DOES_D_MOVE|FS_REVAL_DOT,
 };
+=======
+	.fs_flags = FS_RENAME_DOES_D_MOVE,
+};
+MODULE_ALIAS_FS("9p");
+>>>>>>> refs/remotes/origin/master

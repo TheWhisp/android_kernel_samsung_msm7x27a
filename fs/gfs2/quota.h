@@ -10,6 +10,7 @@
 #ifndef __QUOTA_DOT_H__
 #define __QUOTA_DOT_H__
 
+<<<<<<< HEAD
 struct gfs2_inode;
 struct gfs2_sbd;
 struct shrink_control;
@@ -28,6 +29,28 @@ extern void gfs2_quota_change(struct gfs2_inode *ip, s64 change,
 
 extern int gfs2_quota_sync(struct super_block *sb, int type, int wait);
 extern int gfs2_quota_refresh(struct gfs2_sbd *sdp, int user, u32 id);
+=======
+#include <linux/list_lru.h>
+
+struct gfs2_inode;
+struct gfs2_sbd;
+
+#define NO_UID_QUOTA_CHANGE INVALID_UID
+#define NO_GID_QUOTA_CHANGE INVALID_GID
+
+extern int gfs2_quota_hold(struct gfs2_inode *ip, kuid_t uid, kgid_t gid);
+extern void gfs2_quota_unhold(struct gfs2_inode *ip);
+
+extern int gfs2_quota_lock(struct gfs2_inode *ip, kuid_t uid, kgid_t gid);
+extern void gfs2_quota_unlock(struct gfs2_inode *ip);
+
+extern int gfs2_quota_check(struct gfs2_inode *ip, kuid_t uid, kgid_t gid);
+extern void gfs2_quota_change(struct gfs2_inode *ip, s64 change,
+			      kuid_t uid, kgid_t gid);
+
+extern int gfs2_quota_sync(struct super_block *sb, int type);
+extern int gfs2_quota_refresh(struct gfs2_sbd *sdp, struct kqid qid);
+>>>>>>> refs/remotes/origin/master
 
 extern int gfs2_quota_init(struct gfs2_sbd *sdp);
 extern void gfs2_quota_cleanup(struct gfs2_sbd *sdp);
@@ -41,7 +64,11 @@ static inline int gfs2_quota_lock_check(struct gfs2_inode *ip)
 	int ret;
 	if (sdp->sd_args.ar_quota == GFS2_QUOTA_OFF)
 		return 0;
+<<<<<<< HEAD
 	ret = gfs2_quota_lock(ip, NO_QUOTA_CHANGE, NO_QUOTA_CHANGE);
+=======
+	ret = gfs2_quota_lock(ip, NO_UID_QUOTA_CHANGE, NO_GID_QUOTA_CHANGE);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 	if (sdp->sd_args.ar_quota != GFS2_QUOTA_ON)
@@ -52,8 +79,15 @@ static inline int gfs2_quota_lock_check(struct gfs2_inode *ip)
 	return ret;
 }
 
+<<<<<<< HEAD
 extern int gfs2_shrink_qd_memory(struct shrinker *shrink,
 				 struct shrink_control *sc);
 extern const struct quotactl_ops gfs2_quotactl_ops;
+=======
+extern const struct quotactl_ops gfs2_quotactl_ops;
+extern struct shrinker gfs2_qd_shrinker;
+extern struct list_lru gfs2_qd_lru;
+extern void __init gfs2_quota_hash_init(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __QUOTA_DOT_H__ */

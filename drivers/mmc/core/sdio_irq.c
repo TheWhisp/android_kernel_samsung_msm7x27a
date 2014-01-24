@@ -16,6 +16,14 @@
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/kthread.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/wait.h>
 #include <linux/delay.h>
 
@@ -27,14 +35,49 @@
 
 #include "sdio_ops.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int process_sdio_pending_irqs(struct mmc_card *card)
+=======
+static int process_sdio_pending_irqs(struct mmc_host *host)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
+	struct mmc_card *card = host->card;
 	int i, ret, count;
 	unsigned char pending;
 
 	ret = mmc_io_rw_direct(card, 0, 0, SDIO_CCCR_INTx, 0, &pending);
 	if (ret) {
 		printk(KERN_DEBUG "%s: error %d reading SDIO_CCCR_INTx\n",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int process_sdio_pending_irqs(struct mmc_host *host)
+{
+	struct mmc_card *card = host->card;
+	int i, ret, count;
+	unsigned char pending;
+	struct sdio_func *func;
+
+	/*
+	 * Optimization, if there is only 1 function interrupt registered
+	 * and we know an IRQ was signaled then call irq handler directly.
+	 * Otherwise do the full probe.
+	 */
+	func = card->sdio_single_irq;
+	if (func && host->sdio_irq_pending) {
+		func->irq_handler(func);
+		return 1;
+	}
+
+	ret = mmc_io_rw_direct(card, 0, 0, SDIO_CCCR_INTx, 0, &pending);
+	if (ret) {
+		pr_debug("%s: error %d reading SDIO_CCCR_INTx\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		       mmc_card_id(card), ret);
 		return ret;
 	}
@@ -42,9 +85,21 @@ static int process_sdio_pending_irqs(struct mmc_card *card)
 	count = 0;
 	for (i = 1; i <= 7; i++) {
 		if (pending & (1 << i)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			struct sdio_func *func = card->sdio_func[i - 1];
 			if (!func) {
 				printk(KERN_WARNING "%s: pending IRQ for "
+=======
+			func = card->sdio_func[i - 1];
+			if (!func) {
+				pr_warning("%s: pending IRQ for "
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			func = card->sdio_func[i - 1];
+			if (!func) {
+				pr_warning("%s: pending IRQ for "
+>>>>>>> refs/remotes/origin/master
 					"non-existent function\n",
 					mmc_card_id(card));
 				ret = -EINVAL;
@@ -52,7 +107,15 @@ static int process_sdio_pending_irqs(struct mmc_card *card)
 				func->irq_handler(func);
 				count++;
 			} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_WARNING "%s: pending IRQ with no handler\n",
+=======
+				pr_warning("%s: pending IRQ with no handler\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_warning("%s: pending IRQ with no handler\n",
+>>>>>>> refs/remotes/origin/master
 				       sdio_func_id(func));
 				ret = -EINVAL;
 			}
@@ -104,7 +167,22 @@ static int sdio_irq_thread(void *_host)
 		ret = __mmc_claim_host(host, &host->sdio_irq_thread_abort);
 		if (ret)
 			break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ret = process_sdio_pending_irqs(host->card);
+=======
+		ret = process_sdio_pending_irqs(host);
+		host->sdio_irq_pending = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = process_sdio_pending_irqs(host);
+		host->sdio_irq_pending = false;
+>>>>>>> refs/remotes/origin/master
+=======
+		ret = process_sdio_pending_irqs(host);
+		host->sdio_irq_pending = false;
+>>>>>>> refs/remotes/origin/cm-11.0
 		mmc_release_host(host);
 
 		/*
@@ -192,6 +270,47 @@ static int sdio_card_irq_put(struct mmc_card *card)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* If there is only 1 function registered set sdio_single_irq */
+static void sdio_single_irq_set(struct mmc_card *card)
+{
+	struct sdio_func *func;
+	int i;
+
+	card->sdio_single_irq = NULL;
+	if ((card->host->caps & MMC_CAP_SDIO_IRQ) &&
+<<<<<<< HEAD
+<<<<<<< HEAD
+			card->host->sdio_irqs == 1)
+		for (i = 0; i < card->sdio_funcs; i++) {
+			func = card->sdio_func[i];
+			if (func && func->irq_handler) {
+				card->sdio_single_irq = func;
+				break;
+			}
+		}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    card->host->sdio_irqs == 1)
+=======
+			card->host->sdio_irqs == 1)
+>>>>>>> refs/remotes/origin/cm-11.0
+		for (i = 0; i < card->sdio_funcs; i++) {
+			func = card->sdio_func[i];
+			if (func && func->irq_handler) {
+				card->sdio_single_irq = func;
+				break;
+			}
+		}
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	sdio_claim_irq - claim the IRQ for a SDIO function
  *	@func: SDIO function
@@ -233,6 +352,14 @@ int sdio_claim_irq(struct sdio_func *func, sdio_irq_handler_t *handler)
 	ret = sdio_card_irq_get(func->card);
 	if (ret)
 		func->irq_handler = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	sdio_single_irq_set(func->card);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sdio_single_irq_set(func->card);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -257,6 +384,14 @@ int sdio_release_irq(struct sdio_func *func)
 	if (func->irq_handler) {
 		func->irq_handler = NULL;
 		sdio_card_irq_put(func->card);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		sdio_single_irq_set(func->card);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sdio_single_irq_set(func->card);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = mmc_io_rw_direct(func->card, 0, 0, SDIO_CCCR_IENx, 0, &reg);

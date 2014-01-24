@@ -15,6 +15,18 @@ obj-y        := dvb-core/	\
 		dm1105/		\
 		pt1/		\
 		mantis/		\
+<<<<<<< HEAD
 		ngene/
 
 obj-$(CONFIG_DVB_FIREDTV)	+= firewire/
+=======
+		ngene/		\
+		ddbridge/
+
+obj-$(CONFIG_DVB_FIREDTV)	+= firewire/
+obj-$(CONFIG_DVB_MPQ)		+= mpq/
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

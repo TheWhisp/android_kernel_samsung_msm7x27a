@@ -130,6 +130,7 @@ parport_atari_data_forward(struct parport *p)
 static void
 parport_atari_data_reverse(struct parport *p)
 {
+<<<<<<< HEAD
 #if 0 /* too dangerous, can kill sound chip */
 	unsigned long flags;
 
@@ -139,6 +140,8 @@ parport_atari_data_reverse(struct parport *p)
 	sound_ym.wd_data = sound_ym.rd_data_reg_sel & ~0x40;
 	local_irq_restore(flags);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct parport_operations parport_atari_ops = {

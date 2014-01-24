@@ -235,6 +235,8 @@ static inline struct audit_entry *audit_to_entry_common(struct audit_rule *rule)
 	switch(listnr) {
 	default:
 		goto exit_err;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	case AUDIT_FILTER_USER:
 	case AUDIT_FILTER_TYPE:
 #ifdef CONFIG_AUDITSYSCALL
@@ -242,6 +244,22 @@ static inline struct audit_entry *audit_to_entry_common(struct audit_rule *rule)
 	case AUDIT_FILTER_EXIT:
 	case AUDIT_FILTER_TASK:
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_AUDITSYSCALL
+	case AUDIT_FILTER_ENTRY:
+		if (rule->action == AUDIT_ALWAYS)
+			goto exit_err;
+	case AUDIT_FILTER_EXIT:
+	case AUDIT_FILTER_TASK:
+#endif
+	case AUDIT_FILTER_USER:
+	case AUDIT_FILTER_TYPE:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		;
 	}
 	if (unlikely(rule->action == AUDIT_POSSIBLE)) {
@@ -308,6 +326,7 @@ static u32 audit_to_op(u32 op)
 	return n;
 }
 
+<<<<<<< HEAD
 
 /* Translate struct audit_rule to kernel's rule respresentation.
  * Exists for backward compatibility with userspace. */
@@ -385,7 +404,11 @@ static struct audit_entry *audit_rule_to_entry(struct audit_rule *rule)
 				goto exit_free;
 			break;
 		case AUDIT_FILETYPE:
+<<<<<<< HEAD
 			if ((f->val & ~S_IFMT) > S_IFMT)
+=======
+			if (f->val & ~S_IFMT)
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto exit_free;
 			break;
 		case AUDIT_INODE:
@@ -405,6 +428,86 @@ exit_nofree:
 exit_free:
 	audit_free_rule(entry);
 	return ERR_PTR(err);
+=======
+/* check if an audit field is valid */
+static int audit_field_valid(struct audit_entry *entry, struct audit_field *f)
+{
+	switch(f->type) {
+	case AUDIT_MSGTYPE:
+		if (entry->rule.listnr != AUDIT_FILTER_TYPE &&
+		    entry->rule.listnr != AUDIT_FILTER_USER)
+			return -EINVAL;
+		break;
+	};
+
+	switch(f->type) {
+	default:
+		return -EINVAL;
+	case AUDIT_UID:
+	case AUDIT_EUID:
+	case AUDIT_SUID:
+	case AUDIT_FSUID:
+	case AUDIT_LOGINUID:
+	case AUDIT_OBJ_UID:
+	case AUDIT_GID:
+	case AUDIT_EGID:
+	case AUDIT_SGID:
+	case AUDIT_FSGID:
+	case AUDIT_OBJ_GID:
+	case AUDIT_PID:
+	case AUDIT_PERS:
+	case AUDIT_MSGTYPE:
+	case AUDIT_PPID:
+	case AUDIT_DEVMAJOR:
+	case AUDIT_DEVMINOR:
+	case AUDIT_EXIT:
+	case AUDIT_SUCCESS:
+	case AUDIT_INODE:
+		/* bit ops are only useful on syscall args */
+		if (f->op == Audit_bitmask || f->op == Audit_bittest)
+			return -EINVAL;
+		break;
+	case AUDIT_ARG0:
+	case AUDIT_ARG1:
+	case AUDIT_ARG2:
+	case AUDIT_ARG3:
+	case AUDIT_SUBJ_USER:
+	case AUDIT_SUBJ_ROLE:
+	case AUDIT_SUBJ_TYPE:
+	case AUDIT_SUBJ_SEN:
+	case AUDIT_SUBJ_CLR:
+	case AUDIT_OBJ_USER:
+	case AUDIT_OBJ_ROLE:
+	case AUDIT_OBJ_TYPE:
+	case AUDIT_OBJ_LEV_LOW:
+	case AUDIT_OBJ_LEV_HIGH:
+	case AUDIT_WATCH:
+	case AUDIT_DIR:
+	case AUDIT_FILTERKEY:
+		break;
+	case AUDIT_LOGINUID_SET:
+		if ((f->val != 0) && (f->val != 1))
+			return -EINVAL;
+	/* FALL THROUGH */
+	case AUDIT_ARCH:
+		if (f->op != Audit_not_equal && f->op != Audit_equal)
+			return -EINVAL;
+		break;
+	case AUDIT_PERM:
+		if (f->val & ~15)
+			return -EINVAL;
+		break;
+	case AUDIT_FILETYPE:
+		if (f->val & ~S_IFMT)
+			return -EINVAL;
+		break;
+	case AUDIT_FIELD_COMPARE:
+		if (f->val > AUDIT_MAX_FIELD_COMPARE)
+			return -EINVAL;
+		break;
+	};
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Translate struct audit_rule_data to kernel's rule respresentation. */
@@ -435,18 +538,48 @@ static struct audit_entry *audit_data_to_entry(struct audit_rule_data *data,
 
 		f->type = data->fields[i];
 		f->val = data->values[i];
+<<<<<<< HEAD
 		f->lsm_str = NULL;
 		f->lsm_rule = NULL;
 		switch(f->type) {
 		case AUDIT_PID:
+=======
+		f->uid = INVALID_UID;
+		f->gid = INVALID_GID;
+		f->lsm_str = NULL;
+		f->lsm_rule = NULL;
+
+		/* Support legacy tests for a valid loginuid */
+		if ((f->type == AUDIT_LOGINUID) && (f->val == AUDIT_UID_UNSET)) {
+			f->type = AUDIT_LOGINUID_SET;
+			f->val = 0;
+		}
+
+		err = audit_field_valid(entry, f);
+		if (err)
+			goto exit_free;
+
+		err = -EINVAL;
+		switch (f->type) {
+		case AUDIT_LOGINUID:
+>>>>>>> refs/remotes/origin/master
 		case AUDIT_UID:
 		case AUDIT_EUID:
 		case AUDIT_SUID:
 		case AUDIT_FSUID:
+<<<<<<< HEAD
+=======
+		case AUDIT_OBJ_UID:
+			f->uid = make_kuid(current_user_ns(), f->val);
+			if (!uid_valid(f->uid))
+				goto exit_free;
+			break;
+>>>>>>> refs/remotes/origin/master
 		case AUDIT_GID:
 		case AUDIT_EGID:
 		case AUDIT_SGID:
 		case AUDIT_FSGID:
+<<<<<<< HEAD
 		case AUDIT_LOGINUID:
 		case AUDIT_PERS:
 		case AUDIT_MSGTYPE:
@@ -459,6 +592,17 @@ static struct audit_entry *audit_data_to_entry(struct audit_rule_data *data,
 		case AUDIT_ARG1:
 		case AUDIT_ARG2:
 		case AUDIT_ARG3:
+<<<<<<< HEAD
+=======
+		case AUDIT_OBJ_UID:
+		case AUDIT_OBJ_GID:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case AUDIT_OBJ_GID:
+			f->gid = make_kgid(current_user_ns(), f->val);
+			if (!gid_valid(f->gid))
+				goto exit_free;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case AUDIT_ARCH:
 			entry->rule.arch_f = f;
@@ -522,7 +666,13 @@ static struct audit_entry *audit_data_to_entry(struct audit_rule_data *data,
 				goto exit_free;
 			break;
 		case AUDIT_FILTERKEY:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			err = -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (entry->rule.filterkey || f->val > AUDIT_MAX_KEY_LEN)
 				goto exit_free;
 			str = audit_unpack_string(&bufp, &remain, f->val);
@@ -531,16 +681,27 @@ static struct audit_entry *audit_data_to_entry(struct audit_rule_data *data,
 			entry->rule.buflen += f->val;
 			entry->rule.filterkey = str;
 			break;
+<<<<<<< HEAD
 		case AUDIT_PERM:
 			if (f->val & ~15)
 				goto exit_free;
 			break;
 		case AUDIT_FILETYPE:
+<<<<<<< HEAD
 			if ((f->val & ~S_IFMT) > S_IFMT)
+=======
+			if (f->val & ~S_IFMT)
+				goto exit_free;
+			break;
+		case AUDIT_FIELD_COMPARE:
+			if (f->val > AUDIT_MAX_FIELD_COMPARE)
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto exit_free;
 			break;
 		default:
 			goto exit_free;
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -551,6 +712,13 @@ exit_nofree:
 	return entry;
 
 exit_free:
+<<<<<<< HEAD
+=======
+	if (entry->rule.watch)
+		audit_put_watch(entry->rule.watch); /* matches initial get */
+	if (entry->rule.tree)
+		audit_put_tree(entry->rule.tree); /* that's the temporary one */
+>>>>>>> refs/remotes/origin/master
 	audit_free_rule(entry);
 	return ERR_PTR(err);
 }
@@ -566,6 +734,7 @@ static inline size_t audit_pack_string(void **bufp, const char *str)
 	return len;
 }
 
+<<<<<<< HEAD
 /* Translate kernel rule respresentation to struct audit_rule.
  * Exists for backward compatibility with userspace. */
 static struct audit_rule *audit_krule_to_rule(struct audit_krule *krule)
@@ -596,6 +765,8 @@ static struct audit_rule *audit_krule_to_rule(struct audit_krule *krule)
 	return rule;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Translate kernel rule respresentation to struct audit_rule_data. */
 static struct audit_rule_data *audit_krule_to_data(struct audit_krule *krule)
 {
@@ -700,6 +871,26 @@ static int audit_compare_rule(struct audit_krule *a, struct audit_krule *b)
 			if (strcmp(a->filterkey, b->filterkey))
 				return 1;
 			break;
+<<<<<<< HEAD
+=======
+		case AUDIT_UID:
+		case AUDIT_EUID:
+		case AUDIT_SUID:
+		case AUDIT_FSUID:
+		case AUDIT_LOGINUID:
+		case AUDIT_OBJ_UID:
+			if (!uid_eq(a->fields[i].uid, b->fields[i].uid))
+				return 1;
+			break;
+		case AUDIT_GID:
+		case AUDIT_EGID:
+		case AUDIT_SGID:
+		case AUDIT_FSGID:
+		case AUDIT_OBJ_GID:
+			if (!gid_eq(a->fields[i].gid, b->fields[i].gid))
+				return 1;
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			if (a->fields[i].val != b->fields[i].val)
 				return 1;
@@ -892,6 +1083,15 @@ static inline int audit_add_rule(struct audit_entry *entry)
 		err = audit_add_watch(&entry->rule, &list);
 		if (err) {
 			mutex_unlock(&audit_filter_mutex);
+<<<<<<< HEAD
+=======
+			/*
+			 * normally audit_add_tree_rule() will free it
+			 * on failure
+			 */
+			if (tree)
+				audit_put_tree(tree);
+>>>>>>> refs/remotes/origin/master
 			goto error;
 		}
 	}
@@ -991,6 +1191,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 /* List rules using struct audit_rule.  Exists for backward
  * compatibility with userspace. */
 static void audit_list(int pid, int seq, struct sk_buff_head *q)
@@ -1020,6 +1221,8 @@ static void audit_list(int pid, int seq, struct sk_buff_head *q)
 		skb_queue_tail(q, skb);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* List rules using struct audit_rule_data. */
 static void audit_list_rules(int pid, int seq, struct sk_buff_head *q)
 {
@@ -1049,11 +1252,19 @@ static void audit_list_rules(int pid, int seq, struct sk_buff_head *q)
 }
 
 /* Log rule additions and removals */
+<<<<<<< HEAD
 static void audit_log_rule_change(uid_t loginuid, u32 sessionid, u32 sid,
 				  char *action, struct audit_krule *rule,
 				  int res)
 {
 	struct audit_buffer *ab;
+=======
+static void audit_log_rule_change(char *action, struct audit_krule *rule, int res)
+{
+	struct audit_buffer *ab;
+	uid_t loginuid = from_kuid(&init_user_ns, audit_get_loginuid(current));
+	u32 sessionid = audit_get_sessionid(current);
+>>>>>>> refs/remotes/origin/master
 
 	if (!audit_enabled)
 		return;
@@ -1061,6 +1272,7 @@ static void audit_log_rule_change(uid_t loginuid, u32 sessionid, u32 sid,
 	ab = audit_log_start(NULL, GFP_KERNEL, AUDIT_CONFIG_CHANGE);
 	if (!ab)
 		return;
+<<<<<<< HEAD
 	audit_log_format(ab, "auid=%u ses=%u", loginuid, sessionid);
 	if (sid) {
 		char *ctx = NULL;
@@ -1072,6 +1284,10 @@ static void audit_log_rule_change(uid_t loginuid, u32 sessionid, u32 sid,
 			security_release_secctx(ctx, len);
 		}
 	}
+=======
+	audit_log_format(ab, "auid=%u ses=%u" ,loginuid, sessionid);
+	audit_log_task_context(ab);
+>>>>>>> refs/remotes/origin/master
 	audit_log_format(ab, " op=");
 	audit_log_string(ab, action);
 	audit_log_key(ab, rule->filterkey);
@@ -1083,6 +1299,7 @@ static void audit_log_rule_change(uid_t loginuid, u32 sessionid, u32 sid,
  * audit_receive_filter - apply all rules to the specified message type
  * @type: audit message type
  * @pid: target pid for netlink audit messages
+<<<<<<< HEAD
  * @uid: target uid for netlink audit messages
  * @seq: netlink audit message sequence (serial) number
  * @data: payload data
@@ -1093,6 +1310,13 @@ static void audit_log_rule_change(uid_t loginuid, u32 sessionid, u32 sid,
  */
 int audit_receive_filter(int type, int pid, int uid, int seq, void *data,
 			 size_t datasz, uid_t loginuid, u32 sessionid, u32 sid)
+=======
+ * @seq: netlink audit message sequence (serial) number
+ * @data: payload data
+ * @datasz: size of payload data
+ */
+int audit_receive_filter(int type, int pid, int seq, void *data, size_t datasz)
+>>>>>>> refs/remotes/origin/master
 {
 	struct task_struct *tsk;
 	struct audit_netlink_list *dest;
@@ -1100,7 +1324,10 @@ int audit_receive_filter(int type, int pid, int uid, int seq, void *data,
 	struct audit_entry *entry;
 
 	switch (type) {
+<<<<<<< HEAD
 	case AUDIT_LIST:
+=======
+>>>>>>> refs/remotes/origin/master
 	case AUDIT_LIST_RULES:
 		/* We can't just spew out the rules here because we might fill
 		 * the available socket buffer space and deadlock waiting for
@@ -1115,10 +1342,14 @@ int audit_receive_filter(int type, int pid, int uid, int seq, void *data,
 		skb_queue_head_init(&dest->q);
 
 		mutex_lock(&audit_filter_mutex);
+<<<<<<< HEAD
 		if (type == AUDIT_LIST)
 			audit_list(pid, seq, &dest->q);
 		else
 			audit_list_rules(pid, seq, &dest->q);
+=======
+		audit_list_rules(pid, seq, &dest->q);
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&audit_filter_mutex);
 
 		tsk = kthread_run(audit_send_list, dest, "audit_send_list");
@@ -1128,16 +1359,22 @@ int audit_receive_filter(int type, int pid, int uid, int seq, void *data,
 			err = PTR_ERR(tsk);
 		}
 		break;
+<<<<<<< HEAD
 	case AUDIT_ADD:
 	case AUDIT_ADD_RULE:
 		if (type == AUDIT_ADD)
 			entry = audit_rule_to_entry(data);
 		else
 			entry = audit_data_to_entry(data, datasz);
+=======
+	case AUDIT_ADD_RULE:
+		entry = audit_data_to_entry(data, datasz);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(entry))
 			return PTR_ERR(entry);
 
 		err = audit_add_rule(entry);
+<<<<<<< HEAD
 		audit_log_rule_change(loginuid, sessionid, sid, "add rule",
 				      &entry->rule, !err);
 
@@ -1150,13 +1387,25 @@ int audit_receive_filter(int type, int pid, int uid, int seq, void *data,
 			entry = audit_rule_to_entry(data);
 		else
 			entry = audit_data_to_entry(data, datasz);
+=======
+		audit_log_rule_change("add rule", &entry->rule, !err);
+		if (err)
+			audit_free_rule(entry);
+		break;
+	case AUDIT_DEL_RULE:
+		entry = audit_data_to_entry(data, datasz);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(entry))
 			return PTR_ERR(entry);
 
 		err = audit_del_rule(entry);
+<<<<<<< HEAD
 		audit_log_rule_change(loginuid, sessionid, sid, "remove rule",
 				      &entry->rule, !err);
 
+=======
+		audit_log_rule_change("remove rule", &entry->rule, !err);
+>>>>>>> refs/remotes/origin/master
 		audit_free_rule(entry);
 		break;
 	default:
@@ -1191,6 +1440,7 @@ int audit_comparator(u32 left, u32 op, u32 right)
 	}
 }
 
+<<<<<<< HEAD
 /* Compare given dentry name with last component in given path,
  * return of 0 indicates a match. */
 int audit_compare_dname_path(const char *dname, const char *path,
@@ -1206,12 +1456,74 @@ int audit_compare_dname_path(const char *dname, const char *path,
 	plen = strlen(path);
 	if (plen < dlen)
 		return 1;
+=======
+int audit_uid_comparator(kuid_t left, u32 op, kuid_t right)
+{
+	switch (op) {
+	case Audit_equal:
+		return uid_eq(left, right);
+	case Audit_not_equal:
+		return !uid_eq(left, right);
+	case Audit_lt:
+		return uid_lt(left, right);
+	case Audit_le:
+		return uid_lte(left, right);
+	case Audit_gt:
+		return uid_gt(left, right);
+	case Audit_ge:
+		return uid_gte(left, right);
+	case Audit_bitmask:
+	case Audit_bittest:
+	default:
+		BUG();
+		return 0;
+	}
+}
+
+int audit_gid_comparator(kgid_t left, u32 op, kgid_t right)
+{
+	switch (op) {
+	case Audit_equal:
+		return gid_eq(left, right);
+	case Audit_not_equal:
+		return !gid_eq(left, right);
+	case Audit_lt:
+		return gid_lt(left, right);
+	case Audit_le:
+		return gid_lte(left, right);
+	case Audit_gt:
+		return gid_gt(left, right);
+	case Audit_ge:
+		return gid_gte(left, right);
+	case Audit_bitmask:
+	case Audit_bittest:
+	default:
+		BUG();
+		return 0;
+	}
+}
+
+/**
+ * parent_len - find the length of the parent portion of a pathname
+ * @path: pathname of which to determine length
+ */
+int parent_len(const char *path)
+{
+	int plen;
+	const char *p;
+
+	plen = strlen(path);
+
+	if (plen == 0)
+		return plen;
+>>>>>>> refs/remotes/origin/master
 
 	/* disregard trailing slashes */
 	p = path + plen - 1;
 	while ((*p == '/') && (p > path))
 		p--;
 
+<<<<<<< HEAD
 	/* find last path component */
 	p = p - dlen + 1;
 	if (p < path)
@@ -1231,6 +1543,47 @@ int audit_compare_dname_path(const char *dname, const char *path,
 
 static int audit_filter_user_rules(struct netlink_skb_parms *cb,
 				   struct audit_krule *rule,
+=======
+	/* walk backward until we find the next slash or hit beginning */
+	while ((*p != '/') && (p > path))
+		p--;
+
+	/* did we find a slash? Then increment to include it in path */
+	if (*p == '/')
+		p++;
+
+	return p - path;
+}
+
+/**
+ * audit_compare_dname_path - compare given dentry name with last component in
+ * 			      given path. Return of 0 indicates a match.
+ * @dname:	dentry name that we're comparing
+ * @path:	full pathname that we're comparing
+ * @parentlen:	length of the parent if known. Passing in AUDIT_NAME_FULL
+ * 		here indicates that we must compute this value.
+ */
+int audit_compare_dname_path(const char *dname, const char *path, int parentlen)
+{
+	int dlen, pathlen;
+	const char *p;
+
+	dlen = strlen(dname);
+	pathlen = strlen(path);
+	if (pathlen < dlen)
+		return 1;
+
+	parentlen = parentlen == AUDIT_NAME_FULL ? parent_len(path) : parentlen;
+	if (pathlen - parentlen != dlen)
+		return 1;
+
+	p = path + parentlen;
+
+	return strncmp(p, dname, dlen);
+}
+
+static int audit_filter_user_rules(struct audit_krule *rule, int type,
+>>>>>>> refs/remotes/origin/master
 				   enum audit_state *state)
 {
 	int i;
@@ -1242,6 +1595,7 @@ static int audit_filter_user_rules(struct netlink_skb_parms *cb,
 
 		switch (f->type) {
 		case AUDIT_PID:
+<<<<<<< HEAD
 			result = audit_comparator(cb->creds.pid, f->op, f->val);
 			break;
 		case AUDIT_UID:
@@ -1254,6 +1608,27 @@ static int audit_filter_user_rules(struct netlink_skb_parms *cb,
 			result = audit_comparator(audit_get_loginuid(current),
 						  f->op, f->val);
 			break;
+=======
+			result = audit_comparator(task_pid_vnr(current), f->op, f->val);
+			break;
+		case AUDIT_UID:
+			result = audit_uid_comparator(current_uid(), f->op, f->uid);
+			break;
+		case AUDIT_GID:
+			result = audit_gid_comparator(current_gid(), f->op, f->gid);
+			break;
+		case AUDIT_LOGINUID:
+			result = audit_uid_comparator(audit_get_loginuid(current),
+						  f->op, f->uid);
+			break;
+		case AUDIT_LOGINUID_SET:
+			result = audit_comparator(audit_loginuid_set(current),
+						  f->op, f->val);
+			break;
+		case AUDIT_MSGTYPE:
+			result = audit_comparator(type, f->op, f->val);
+			break;
+>>>>>>> refs/remotes/origin/master
 		case AUDIT_SUBJ_USER:
 		case AUDIT_SUBJ_ROLE:
 		case AUDIT_SUBJ_TYPE:
@@ -1280,7 +1655,11 @@ static int audit_filter_user_rules(struct netlink_skb_parms *cb,
 	return 1;
 }
 
+<<<<<<< HEAD
 int audit_filter_user(struct netlink_skb_parms *cb)
+=======
+int audit_filter_user(int type)
+>>>>>>> refs/remotes/origin/master
 {
 	enum audit_state state = AUDIT_DISABLED;
 	struct audit_entry *e;
@@ -1288,7 +1667,11 @@ int audit_filter_user(struct netlink_skb_parms *cb)
 
 	rcu_read_lock();
 	list_for_each_entry_rcu(e, &audit_filter_list[AUDIT_FILTER_USER], list) {
+<<<<<<< HEAD
 		if (audit_filter_user_rules(cb, &e->rule, &state)) {
+=======
+		if (audit_filter_user_rules(&e->rule, type, &state)) {
+>>>>>>> refs/remotes/origin/master
 			if (state == AUDIT_DISABLED)
 				ret = 0;
 			break;

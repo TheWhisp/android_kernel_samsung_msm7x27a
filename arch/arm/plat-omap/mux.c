@@ -26,8 +26,16 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <linux/spinlock.h>
+=======
+#include <linux/spinlock.h>
+
+#include <asm/system.h>
+
+#include <plat/cpu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/mux.h>
 
 #ifdef CONFIG_OMAP_MUX

@@ -1,6 +1,16 @@
 #ifndef __OMAP_PMIC_COMMON__
 #define __OMAP_PMIC_COMMON__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <plat/irqs.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 #define TWL_COMMON_PDATA_USB		(1 << 0)
 #define TWL_COMMON_PDATA_BCI		(1 << 1)
 #define TWL_COMMON_PDATA_MADC		(1 << 2)
@@ -20,6 +30,11 @@
 #define TWL_COMMON_REGULATOR_VCXIO	(1 << 8)
 #define TWL_COMMON_REGULATOR_VUSB	(1 << 9)
 #define TWL_COMMON_REGULATOR_CLK32KG	(1 << 10)
+<<<<<<< HEAD
+=======
+#define TWL_COMMON_REGULATOR_V1V8	(1 << 11)
+#define TWL_COMMON_REGULATOR_V2V1	(1 << 12)
+>>>>>>> refs/remotes/origin/master
 
 /* TWL4030 LDO regulators */
 #define TWL_COMMON_REGULATOR_VPLL1	(1 << 4)
@@ -27,28 +42,64 @@
 
 
 struct twl4030_platform_data;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 void omap_pmic_init(int bus, u32 clkrate, const char *pmic_type, int pmic_irq,
 		    struct twl4030_platform_data *pmic_data);
+=======
+struct twl6040_platform_data;
+=======
+struct twl6040_platform_data;
+struct omap_tw4030_pdata;
+struct i2c_board_info;
+>>>>>>> refs/remotes/origin/master
+
+void omap_pmic_init(int bus, u32 clkrate, const char *pmic_type, int pmic_irq,
+		    struct twl4030_platform_data *pmic_data);
+void omap_pmic_late_init(void);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void omap2_pmic_init(const char *pmic_type,
 				   struct twl4030_platform_data *pmic_data)
 {
+<<<<<<< HEAD
 	omap_pmic_init(2, 2600, pmic_type, INT_24XX_SYS_NIRQ, pmic_data);
+=======
+	omap_pmic_init(2, 2600, pmic_type, 7 + OMAP_INTC_START, pmic_data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void omap3_pmic_init(const char *pmic_type,
 				   struct twl4030_platform_data *pmic_data)
 {
+<<<<<<< HEAD
 	omap_pmic_init(1, 2600, pmic_type, INT_34XX_SYS_NIRQ, pmic_data);
 }
 
+<<<<<<< HEAD
 static inline void omap4_pmic_init(const char *pmic_type,
 				   struct twl4030_platform_data *pmic_data)
 {
 	/* Phoenix Audio IC needs I2C1 to start with 400 KHz or less */
 	omap_pmic_init(1, 400, pmic_type, OMAP44XX_IRQ_SYS_1N, pmic_data);
 }
+=======
+void omap4_pmic_init(const char *pmic_type,
+		    struct twl4030_platform_data *pmic_data,
+		    struct twl6040_platform_data *audio_data, int twl6040_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	omap_pmic_init(1, 2600, pmic_type, 7 + OMAP_INTC_START, pmic_data);
+}
+
+void omap4_pmic_init(const char *pmic_type,
+		    struct twl4030_platform_data *pmic_data,
+		    struct i2c_board_info *devices, int nr_devices);
+>>>>>>> refs/remotes/origin/master
 
 void omap3_pmic_get_config(struct twl4030_platform_data *pmic_data,
 			   u32 pdata_flags, u32 regulators_flags);
@@ -56,4 +107,9 @@ void omap3_pmic_get_config(struct twl4030_platform_data *pmic_data,
 void omap4_pmic_get_config(struct twl4030_platform_data *pmic_data,
 			   u32 pdata_flags, u32 regulators_flags);
 
+<<<<<<< HEAD
+=======
+void omap_twl4030_audio_init(char *card_name, struct omap_tw4030_pdata *pdata);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __OMAP_PMIC_COMMON__ */

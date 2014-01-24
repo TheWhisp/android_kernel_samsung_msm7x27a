@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -17,6 +25,14 @@
 
 /* #define DEBUG */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/init.h>
@@ -33,7 +49,17 @@
 #include <linux/slab.h>
 #include <linux/pm_runtime.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/socinfo.h>
+=======
+#include <linux/of.h>
+#include <linux/of_i2c.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/of_i2c.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 
 MODULE_LICENSE("GPL v2");
 MODULE_VERSION("0.2");
@@ -307,20 +333,32 @@ qup_update_state(struct qup_i2c_dev *dev, uint32_t state)
 /*
  * Before calling qup_config_core_on_en(), please make
  * sure that QuPE core is in RESET state.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Configuration of CORE_ON_EN - BIT13 in QUP_CONFIG register
  * is only required for targets like 7x27a, where it needs
  * be turned on for disabling the QuPE pclks.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  */
 static void
 qup_config_core_on_en(struct qup_i2c_dev *dev)
 {
 	uint32_t status;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(cpu_is_msm7x27a() || cpu_is_msm7x27aa() ||
 		 cpu_is_msm7x25a() || cpu_is_msm7x25aa()))
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	status = readl_relaxed(dev->base + QUP_CONFIG);
 	status |= BIT(13);
 	writel_relaxed(status, dev->base + QUP_CONFIG);
@@ -338,7 +376,15 @@ qup_i2c_pwr_mgmt(struct qup_i2c_dev *dev, unsigned int state)
 	} else {
 		qup_update_state(dev, QUP_RESET_STATE);
 		clk_disable(dev->clk);
+<<<<<<< HEAD
+<<<<<<< HEAD
                 qup_config_core_on_en(dev);
+=======
+		qup_config_core_on_en(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		qup_config_core_on_en(dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 		clk_disable(dev->pclk);
 	}
 }
@@ -768,6 +814,8 @@ qup_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
 		return -EIO;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev->clk_state == 0) {
 		if (dev->clk_ctl == 0) {
 			if (dev->pdata->src_clk_rate > 0)
@@ -778,6 +826,16 @@ qup_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
 		}
 		qup_i2c_pwr_mgmt(dev, 1);
 	}
+=======
+	if (dev->clk_state == 0)
+		qup_i2c_pwr_mgmt(dev, 1);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->clk_state == 0)
+		qup_i2c_pwr_mgmt(dev, 1);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/* Initialize QUP registers during first transfer */
 	if (dev->clk_ctl == 0) {
 		int fs_div;
@@ -1110,7 +1168,34 @@ qup_i2c_probe(struct platform_device *pdev)
 	gsbi_mem = NULL;
 	dev_dbg(&pdev->dev, "qup_i2c_probe\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (pdev->dev.of_node) {
+		struct device_node *node = pdev->dev.of_node;
+		pdata = kzalloc(sizeof(*pdata), GFP_KERNEL);
+		if (!pdata)
+			return -ENOMEM;
+		ret = of_property_read_u32(node, "qcom,i2c-bus-freq",
+					&pdata->clk_freq);
+		if (ret)
+			goto get_res_failed;
+		ret = of_property_read_u32(node, "cell-index", &pdev->id);
+		if (ret)
+			goto get_res_failed;
+		/* Optional property */
+		of_property_read_u32(node, "qcom,i2c-src-freq",
+					&pdata->src_clk_rate);
+	} else
+		pdata = pdev->dev.platform_data;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pdata) {
 		dev_err(&pdev->dev, "platform data not initialized\n");
 		return -ENOSYS;
@@ -1119,7 +1204,17 @@ qup_i2c_probe(struct platform_device *pdev)
 						"qup_phys_addr");
 	if (!qup_mem) {
 		dev_err(&pdev->dev, "no qup mem resource?\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		ret = -ENODEV;
+		goto get_res_failed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = -ENODEV;
+		goto get_res_failed;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	/*
@@ -1136,22 +1231,57 @@ qup_i2c_probe(struct platform_device *pdev)
 						"qup_err_intr");
 	if (!err_irq) {
 		dev_err(&pdev->dev, "no error irq resource?\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		ret = -ENODEV;
+		goto get_res_failed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = -ENODEV;
+		goto get_res_failed;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	qup_io = request_mem_region(qup_mem->start, resource_size(qup_mem),
 					pdev->name);
 	if (!qup_io) {
 		dev_err(&pdev->dev, "QUP region already claimed\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -EBUSY;
+=======
+		ret = -EBUSY;
+		goto get_res_failed;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = -EBUSY;
+		goto get_res_failed;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (!pdata->use_gsbi_shared_mode) {
 		gsbi_mem = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 							"gsbi_qup_i2c_addr");
 		if (!gsbi_mem) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(&pdev->dev, "no gsbi mem resource?\n");
 			ret = -ENODEV;
 			goto err_res_failed;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			dev_dbg(&pdev->dev, "Assume BLSP\n");
+			/*
+			 * BLSP core does not need protocol programming so this
+			 * resource is not expected
+			 */
+			goto blsp_core_init;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 		gsbi_io = request_mem_region(gsbi_mem->start,
 						resource_size(gsbi_mem),
@@ -1163,6 +1293,14 @@ qup_i2c_probe(struct platform_device *pdev)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+blsp_core_init:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+blsp_core_init:
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk = clk_get(&pdev->dev, "core_clk");
 	if (IS_ERR(clk)) {
 		dev_err(&pdev->dev, "Could not get core_clk\n");
@@ -1237,6 +1375,33 @@ qup_i2c_probe(struct platform_device *pdev)
 	dev->pos = 0;
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	 * If bootloaders leave a pending interrupt on certain GSBI's,
+	 * then we reset the core before registering for interrupts.
+	 */
+
+	if (dev->pdata->src_clk_rate > 0)
+		clk_set_rate(dev->clk, dev->pdata->src_clk_rate);
+	else
+		dev->pdata->src_clk_rate = 19200000;
+
+	clk_prepare_enable(dev->clk);
+	clk_prepare_enable(dev->pclk);
+	writel_relaxed(1, dev->base + QUP_SW_RESET);
+	if (qup_i2c_poll_state(dev, 0, true) != 0)
+		goto err_reset_failed;
+	clk_disable_unprepare(dev->clk);
+	clk_disable_unprepare(dev->pclk);
+
+	/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	 * We use num_irqs to also indicate if we got 3 interrupts or just 1.
 	 * If we have just 1, we use err_irq as the general purpose irq
 	 * and handle the changes in ISR accordingly
@@ -1294,6 +1459,16 @@ qup_i2c_probe(struct platform_device *pdev)
 	dev->suspended = 0;
 	mutex_init(&dev->mlock);
 	dev->clk_state = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	clk_prepare(dev->clk);
+	clk_prepare(dev->pclk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare(dev->clk);
+	clk_prepare(dev->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	setup_timer(&dev->pwr_timer, qup_i2c_pwr_timer, (unsigned long) dev);
 
 	pm_runtime_set_active(&pdev->dev);
@@ -1307,14 +1482,40 @@ qup_i2c_probe(struct platform_device *pdev)
 			free_irq(dev->in_irq, dev);
 		}
 		free_irq(dev->err_irq, dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	} else
 		return 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	} else {
+		if (dev->dev->of_node)
+			of_i2c_register_devices(&dev->adapter);
+		return 0;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 err_request_irq_failed:
 	qup_i2c_free_gpios(dev);
 	if (dev->gsbi)
 		iounmap(dev->gsbi);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+err_reset_failed:
+	clk_disable_unprepare(dev->clk);
+	clk_disable_unprepare(dev->pclk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+err_reset_failed:
+	clk_disable_unprepare(dev->clk);
+	clk_disable_unprepare(dev->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 err_request_gpio_failed:
 err_gsbi_failed:
 	iounmap(dev->base);
@@ -1329,6 +1530,18 @@ err_clk_get_failed:
 		release_mem_region(gsbi_mem->start, resource_size(gsbi_mem));
 err_res_failed:
 	release_mem_region(qup_mem->start, resource_size(qup_mem));
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+get_res_failed:
+	if (pdev->dev.of_node)
+		kfree(pdata);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+get_res_failed:
+	if (pdev->dev.of_node)
+		kfree(pdata);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -1353,6 +1566,16 @@ qup_i2c_remove(struct platform_device *pdev)
 	}
 	free_irq(dev->err_irq, dev);
 	i2c_del_adapter(&dev->adapter);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	clk_unprepare(dev->clk);
+	clk_unprepare(dev->pclk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_unprepare(dev->clk);
+	clk_unprepare(dev->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	clk_put(dev->clk);
 	clk_put(dev->pclk);
 	qup_i2c_free_gpios(dev);
@@ -1370,6 +1593,16 @@ qup_i2c_remove(struct platform_device *pdev)
 	qup_mem = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 						"qup_phys_addr");
 	release_mem_region(qup_mem->start, resource_size(qup_mem));
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (dev->dev->of_node)
+		kfree(dev->pdata);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->dev->of_node)
+		kfree(dev->pdata);
+>>>>>>> refs/remotes/origin/cm-11.0
 	kfree(dev);
 	return 0;
 }
@@ -1387,6 +1620,16 @@ static int qup_i2c_suspend(struct device *device)
 	del_timer_sync(&dev->pwr_timer);
 	if (dev->clk_state != 0)
 		qup_i2c_pwr_mgmt(dev, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	clk_unprepare(dev->clk);
+	clk_unprepare(dev->pclk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_unprepare(dev->clk);
+	clk_unprepare(dev->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	qup_i2c_free_gpios(dev);
 	return 0;
 }
@@ -1396,6 +1639,16 @@ static int qup_i2c_resume(struct device *device)
 	struct platform_device *pdev = to_platform_device(device);
 	struct qup_i2c_dev *dev = platform_get_drvdata(pdev);
 	BUG_ON(qup_i2c_request_gpios(dev) != 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	clk_prepare(dev->clk);
+	clk_prepare(dev->pclk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare(dev->clk);
+	clk_prepare(dev->pclk);
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->suspended = 0;
 	return 0;
 }
@@ -1433,6 +1686,22 @@ static const struct dev_pm_ops i2c_qup_dev_pm_ops = {
 	)
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct of_device_id i2c_qup_dt_match[] = {
+	{
+		.compatible = "qcom,i2c-qup",
+	},
+	{}
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct platform_driver qup_i2c_driver = {
 	.probe		= qup_i2c_probe,
 	.remove		= __devexit_p(qup_i2c_remove),
@@ -1440,6 +1709,14 @@ static struct platform_driver qup_i2c_driver = {
 		.name	= "qup_i2c",
 		.owner	= THIS_MODULE,
 		.pm = &i2c_qup_dev_pm_ops,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.of_match_table = i2c_qup_dt_match,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.of_match_table = i2c_qup_dt_match,
+>>>>>>> refs/remotes/origin/cm-11.0
 	},
 };
 

@@ -14,6 +14,7 @@
  * assume GCC is being used.
  */
 
+<<<<<<< HEAD
 typedef unsigned long   __kernel_ino_t;
 typedef unsigned short  __kernel_mode_t;
 typedef unsigned short  __kernel_nlink_t;
@@ -121,5 +122,29 @@ static __inline__ void __FD_ZERO(__kernel_fd_set *__p)
 }
 
 #endif /* defined(__KERNEL__) */
+=======
+typedef unsigned short  __kernel_mode_t;
+#define __kernel_mode_t __kernel_mode_t
+
+typedef unsigned short  __kernel_nlink_t;
+#define __kernel_nlink_t __kernel_nlink_t
+
+typedef unsigned short  __kernel_ipc_pid_t;
+#define __kernel_ipc_pid_t __kernel_ipc_pid_t
+
+typedef unsigned long	__kernel_size_t;
+typedef long		__kernel_ssize_t;
+typedef int             __kernel_ptrdiff_t;
+#define __kernel_size_t __kernel_size_t
+
+typedef unsigned short  __kernel_old_uid_t;
+typedef unsigned short  __kernel_old_gid_t;
+#define __kernel_old_uid_t __kernel_old_uid_t
+
+typedef unsigned short  __kernel_old_dev_t;
+#define __kernel_old_dev_t __kernel_old_dev_t
+
+#include <asm-generic/posix_types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __ASM_AVR32_POSIX_TYPES_H */

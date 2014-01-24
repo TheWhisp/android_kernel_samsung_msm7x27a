@@ -30,10 +30,21 @@
 #include <linux/firmware.h>
 #include <linux/ihex.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "drmP.h"
 #include "drm.h"
 #include "mga_drm.h"
+=======
+#include <linux/module.h>
+
+#include <drm/drmP.h>
+#include <drm/mga_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "mga_drv.h"
 
 #define FIRMWARE_G200 "matrox/g200_warp.fw"

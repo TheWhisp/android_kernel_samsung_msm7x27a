@@ -17,6 +17,14 @@
 #include <linux/errno.h>
 #include <linux/sched.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/stddef.h>
 #include <linux/unistd.h>
@@ -46,7 +54,13 @@
 #include <asm/processor.h>
 #include <asm/sections.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/io.h>
 #include <asm/pci-bridge.h>
@@ -220,7 +234,15 @@ static void __init maple_init_IRQ(void)
 	unsigned long openpic_addr = 0;
 	int naddr, n, i, opplen, has_isus = 0;
 	struct mpic *mpic;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int flags = MPIC_PRIMARY;
+=======
+	unsigned int flags = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int flags = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* Locate MPIC in the device-tree. Note that there is a bug
 	 * in Maple device-tree where the type of the controller is
@@ -261,7 +283,15 @@ static void __init maple_init_IRQ(void)
 		flags |= MPIC_BIG_ENDIAN;
 
 	/* XXX Maple specific bits */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	flags |= MPIC_U3_HT_IRQS | MPIC_WANTS_RESET;
+=======
+	flags |= MPIC_U3_HT_IRQS;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	flags |= MPIC_U3_HT_IRQS;
+>>>>>>> refs/remotes/origin/master
 	/* All U3/U4 are big-endian, older SLOF firmware doesn't encode this */
 	flags |= MPIC_BIG_ENDIAN;
 
@@ -338,14 +368,26 @@ define_machine(maple) {
 #ifdef CONFIG_EDAC
 /*
  * Register a platform device for CPC925 memory controller on
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Motorola ATCA-6101 blade.
  */
 #define MAPLE_CPC925_MODEL	"Motorola,ATCA-6101"
+=======
+ * all boards with U3H (CPC925) bridge.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * all boards with U3H (CPC925) bridge.
+ */
+>>>>>>> refs/remotes/origin/master
 static int __init maple_cpc925_edac_setup(void)
 {
 	struct platform_device *pdev;
 	struct device_node *np = NULL;
 	struct resource r;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	const unsigned char *model;
 	int ret;
 
@@ -367,6 +409,16 @@ static int __init maple_cpc925_edac_setup(void)
 
 	if (ret != 0)
 		return 0;
+=======
+	int ret;
+	volatile void __iomem *mem;
+	u32 rev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+	volatile void __iomem *mem;
+	u32 rev;
+>>>>>>> refs/remotes/origin/master
 
 	np = of_find_node_by_type(NULL, "memory-controller");
 	if (!np) {
@@ -384,6 +436,31 @@ static int __init maple_cpc925_edac_setup(void)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mem = ioremap(r.start, resource_size(&r));
+	if (!mem) {
+		printk(KERN_ERR "%s: Unable to map memory-controller memory\n",
+				__func__);
+		return -ENOMEM;
+	}
+
+	rev = __raw_readl(mem);
+	iounmap(mem);
+
+	if (rev < 0x34 || rev > 0x3f) { /* U3H */
+		printk(KERN_ERR "%s: Non-CPC925(U3H) bridge revision: %02x\n",
+			__func__, rev);
+		return 0;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pdev = platform_device_register_simple("cpc925_edac", 0, &r, 1);
 	if (IS_ERR(pdev))
 		return PTR_ERR(pdev);

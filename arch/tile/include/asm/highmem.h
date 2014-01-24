@@ -59,7 +59,15 @@ void *kmap_fix_kpte(struct page *page, int finished);
 /* This macro is used only in map_new_virtual() to map "page". */
 #define kmap_prot page_to_kpgprot(page)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page);
+=======
+void *kmap_atomic(struct page *page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *kmap_atomic(struct page *page);
+>>>>>>> refs/remotes/origin/master
 void __kunmap_atomic(void *kvaddr);
 void *kmap_atomic_pfn(unsigned long pfn);
 void *kmap_atomic_prot_pfn(unsigned long pfn, pgprot_t prot);

@@ -1,12 +1,24 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Module Name: tbxface - Public interfaces to the ACPI subsystem
  *                         ACPI table oriented interfaces
+=======
+ * Module Name: tbxface - ACPI table-oriented external interfaces
+>>>>>>> refs/remotes/origin/master
  *
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,19 +54,33 @@
  * POSSIBILITY OF SUCH DAMAGES.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "acnamesp.h"
+=======
+#define EXPORT_ACPI_INTERFACES
+
+#include <acpi/acpi.h>
+#include "accommon.h"
+>>>>>>> refs/remotes/origin/master
 #include "actables.h"
 
 #define _COMPONENT          ACPI_TABLES
 ACPI_MODULE_NAME("tbxface")
 
+<<<<<<< HEAD
 /* Local prototypes */
 static acpi_status acpi_tb_load_namespace(void);
 
 static int no_auto_ssdt;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_allocate_root_table
@@ -64,11 +90,18 @@ static int no_auto_ssdt;
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: Allocate a root table array. Used by i_aSL compiler and
  *              acpi_initialize_tables.
  *
  ******************************************************************************/
 
+=======
+ * DESCRIPTION: Allocate a root table array. Used by iASL compiler and
+ *              acpi_initialize_tables.
+ *
+ ******************************************************************************/
+>>>>>>> refs/remotes/origin/master
 acpi_status acpi_allocate_root_table(u32 initial_table_count)
 {
 
@@ -87,7 +120,11 @@ acpi_status acpi_allocate_root_table(u32 initial_table_count)
  *                                    array is dynamically allocated.
  *              initial_table_count - Size of initial_table_array, in number of
  *                                    struct acpi_table_desc structures
+<<<<<<< HEAD
  *              allow_realloc       - Flag to tell Table Manager if resize of
+=======
+ *              allow_resize        - Flag to tell Table Manager if resize of
+>>>>>>> refs/remotes/origin/master
  *                                    pre-allocated array is allowed. Ignored
  *                                    if initial_table_array is NULL.
  *
@@ -114,8 +151,13 @@ acpi_initialize_tables(struct acpi_table_desc * initial_table_array,
 	ACPI_FUNCTION_TRACE(acpi_initialize_tables);
 
 	/*
+<<<<<<< HEAD
 	 * Set up the Root Table Array
 	 * Allocate the table array if requested
+=======
+	 * Setup the Root Table Array and allocate the table array
+	 * if requested
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (!initial_table_array) {
 		status = acpi_allocate_root_table(initial_table_count);
@@ -154,6 +196,11 @@ acpi_initialize_tables(struct acpi_table_desc * initial_table_array,
 	return_ACPI_STATUS(status);
 }
 
+<<<<<<< HEAD
+=======
+ACPI_EXPORT_SYMBOL_INIT(acpi_initialize_tables)
+
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_reallocate_root_table
@@ -165,6 +212,7 @@ acpi_initialize_tables(struct acpi_table_desc * initial_table_array,
  * DESCRIPTION: Reallocate Root Table List into dynamic memory. Copies the
  *              root list from the previously provided scratch area. Should
  *              be called once dynamic memory allocation is available in the
+<<<<<<< HEAD
  *              kernel
  *
  ******************************************************************************/
@@ -173,6 +221,14 @@ acpi_status acpi_reallocate_root_table(void)
 	struct acpi_table_desc *tables;
 	acpi_size new_size;
 	acpi_size current_size;
+=======
+ *              kernel.
+ *
+ ******************************************************************************/
+acpi_status __init acpi_reallocate_root_table(void)
+{
+	acpi_status status;
+>>>>>>> refs/remotes/origin/master
 
 	ACPI_FUNCTION_TRACE(acpi_reallocate_root_table);
 
@@ -184,6 +240,7 @@ acpi_status acpi_reallocate_root_table(void)
 		return_ACPI_STATUS(AE_SUPPORT);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Get the current size of the root table and add the default
 	 * increment to create the new table size.
@@ -260,13 +317,27 @@ acpi_status acpi_load_table(struct acpi_table_header *table_ptr)
 }
 
 ACPI_EXPORT_SYMBOL(acpi_load_table)
+=======
+	acpi_gbl_root_table_list.flags |= ACPI_ROOT_ALLOW_RESIZE;
+
+	status = acpi_tb_resize_root_table_list();
+	return_ACPI_STATUS(status);
+}
+
+ACPI_EXPORT_SYMBOL_INIT(acpi_reallocate_root_table)
+>>>>>>> refs/remotes/origin/master
 
 /*******************************************************************************
  *
  * FUNCTION:    acpi_get_table_header
  *
+<<<<<<< HEAD
  * PARAMETERS:  Signature           - ACPI signature of needed table
  *              Instance            - Which instance (for SSDTs)
+=======
+ * PARAMETERS:  signature           - ACPI signature of needed table
+ *              instance            - Which instance (for SSDTs)
+>>>>>>> refs/remotes/origin/master
  *              out_table_header    - The pointer to the table header to fill
  *
  * RETURN:      Status and pointer to mapped table header
@@ -315,7 +386,11 @@ acpi_get_table_header(char *signature,
 						       sizeof(struct
 							      acpi_table_header));
 				if (!header) {
+<<<<<<< HEAD
 					return AE_NO_MEMORY;
+=======
+					return (AE_NO_MEMORY);
+>>>>>>> refs/remotes/origin/master
 				}
 				ACPI_MEMCPY(out_table_header, header,
 					    sizeof(struct acpi_table_header));
@@ -323,7 +398,11 @@ acpi_get_table_header(char *signature,
 						     sizeof(struct
 							    acpi_table_header));
 			} else {
+<<<<<<< HEAD
 				return AE_NOT_FOUND;
+=======
+				return (AE_NOT_FOUND);
+>>>>>>> refs/remotes/origin/master
 			}
 		} else {
 			ACPI_MEMCPY(out_table_header,
@@ -381,6 +460,7 @@ ACPI_EXPORT_SYMBOL(acpi_unload_table_id)
  *
  * FUNCTION:    acpi_get_table_with_size
  *
+<<<<<<< HEAD
  * PARAMETERS:  Signature           - ACPI signature of needed table
  *              Instance            - Which instance (for SSDTs)
  *              out_table           - Where the pointer to the table is returned
@@ -388,6 +468,16 @@ ACPI_EXPORT_SYMBOL(acpi_unload_table_id)
  * RETURN:      Status and pointer to table
  *
  * DESCRIPTION: Finds and verifies an ACPI table.
+=======
+ * PARAMETERS:  signature           - ACPI signature of needed table
+ *              instance            - Which instance (for SSDTs)
+ *              out_table           - Where the pointer to the table is returned
+ *
+ * RETURN:      Status and pointer to the requested table
+ *
+ * DESCRIPTION: Finds and verifies an ACPI table. Table must be in the
+ *              RSDT/XSDT.
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 acpi_status
@@ -435,6 +525,13 @@ acpi_get_table_with_size(char *signature,
 
 	return (AE_NOT_FOUND);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 ACPI_EXPORT_SYMBOL(acpi_get_table_with_size)
 
 acpi_status
@@ -446,6 +543,10 @@ acpi_get_table(char *signature,
 	return acpi_get_table_with_size(signature,
 		       instance, out_table, &tbl_size);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 ACPI_EXPORT_SYMBOL(acpi_get_table)
 
 /*******************************************************************************
@@ -453,11 +554,20 @@ ACPI_EXPORT_SYMBOL(acpi_get_table)
  * FUNCTION:    acpi_get_table_by_index
  *
  * PARAMETERS:  table_index         - Table index
+<<<<<<< HEAD
  *              Table               - Where the pointer to the table is returned
  *
  * RETURN:      Status and pointer to the table
  *
  * DESCRIPTION: Obtain a table by an index into the global table list.
+=======
+ *              table               - Where the pointer to the table is returned
+ *
+ * RETURN:      Status and pointer to the requested table
+ *
+ * DESCRIPTION: Obtain a table by an index into the global table list. Used
+ *              internally also.
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 acpi_status
@@ -504,6 +614,7 @@ ACPI_EXPORT_SYMBOL(acpi_get_table_by_index)
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_tb_load_namespace
  *
  * PARAMETERS:  None
@@ -661,6 +772,20 @@ ACPI_EXPORT_SYMBOL(acpi_load_tables)
  ******************************************************************************/
 acpi_status
 acpi_install_table_handler(acpi_tbl_handler handler, void *context)
+=======
+ * FUNCTION:    acpi_install_table_handler
+ *
+ * PARAMETERS:  handler         - Table event handler
+ *              context         - Value passed to the handler on each event
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Install a global table event handler.
+ *
+ ******************************************************************************/
+acpi_status
+acpi_install_table_handler(acpi_table_handler handler, void *context)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 
@@ -687,7 +812,11 @@ acpi_install_table_handler(acpi_tbl_handler handler, void *context)
 	acpi_gbl_table_handler = handler;
 	acpi_gbl_table_handler_context = context;
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_EVENTS);
 	return_ACPI_STATUS(status);
 }
@@ -698,15 +827,26 @@ ACPI_EXPORT_SYMBOL(acpi_install_table_handler)
  *
  * FUNCTION:    acpi_remove_table_handler
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handler         - Table event handler that was installed
+=======
+ * PARAMETERS:  handler         - Table event handler that was installed
+>>>>>>> refs/remotes/origin/master
  *                                previously.
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: Remove table event handler
  *
  ******************************************************************************/
 acpi_status acpi_remove_table_handler(acpi_tbl_handler handler)
+=======
+ * DESCRIPTION: Remove a table event handler
+ *
+ ******************************************************************************/
+acpi_status acpi_remove_table_handler(acpi_table_handler handler)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 
@@ -728,12 +868,17 @@ acpi_status acpi_remove_table_handler(acpi_tbl_handler handler)
 
 	acpi_gbl_table_handler = NULL;
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_EVENTS);
 	return_ACPI_STATUS(status);
 }
 
 ACPI_EXPORT_SYMBOL(acpi_remove_table_handler)
+<<<<<<< HEAD
 
 
 static int __init acpi_no_auto_ssdt_setup(char *s) {
@@ -746,3 +891,5 @@ static int __init acpi_no_auto_ssdt_setup(char *s) {
 }
 
 __setup("acpi_no_auto_ssdt", acpi_no_auto_ssdt_setup);
+=======
+>>>>>>> refs/remotes/origin/master

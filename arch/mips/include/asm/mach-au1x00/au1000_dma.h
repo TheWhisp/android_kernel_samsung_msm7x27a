@@ -33,9 +33,17 @@
 #include <linux/io.h>		/* need byte IO */
 #include <linux/spinlock.h>	/* And spinlocks */
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define NUM_AU1000_DMA_CHANNELS	8
+=======
+
+#define NUM_AU1000_DMA_CHANNELS 8
+>>>>>>> refs/remotes/origin/master
 
 /* DMA Channel Register Offsets */
 #define DMA_MODE_SET		0x00000000
@@ -48,7 +56,11 @@
 #define DMA_DS			(1 << 15)
 #define DMA_BE			(1 << 13)
 #define DMA_DR			(1 << 12)
+<<<<<<< HEAD
 #define DMA_TS8 		(1 << 11)
+=======
+#define DMA_TS8			(1 << 11)
+>>>>>>> refs/remotes/origin/master
 #define DMA_DW_BIT		9
 #define DMA_DW_MASK		(0x03 << DMA_DW_BIT)
 #define DMA_DW8			(0 << DMA_DW_BIT)
@@ -60,9 +72,15 @@
 #define DMA_GO			(1 << 5)
 #define DMA_AB			(1 << 4)
 #define DMA_D1			(1 << 3)
+<<<<<<< HEAD
 #define DMA_BE1 		(1 << 2)
 #define DMA_D0			(1 << 1)
 #define DMA_BE0 		(1 << 0)
+=======
+#define DMA_BE1			(1 << 2)
+#define DMA_D0			(1 << 1)
+#define DMA_BE0			(1 << 0)
+>>>>>>> refs/remotes/origin/master
 
 #define DMA_PERIPHERAL_ADDR	0x00000008
 #define DMA_BUFFER0_START	0x0000000C
@@ -247,7 +265,11 @@ static inline void init_dma(unsigned int dmanr)
 		mode |= DMA_IE;
 
 	au_writel(~mode, chan->io + DMA_MODE_CLEAR);
+<<<<<<< HEAD
 	au_writel(mode,  chan->io + DMA_MODE_SET);
+=======
+	au_writel(mode,	 chan->io + DMA_MODE_SET);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

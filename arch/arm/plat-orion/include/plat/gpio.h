@@ -12,6 +12,7 @@
 #define __PLAT_GPIO_H
 
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <asm-generic/gpio.h>
 
 /*
@@ -21,6 +22,9 @@
 #define gpio_set_value  __gpio_set_value
 #define gpio_cansleep   __gpio_cansleep
 #define gpio_to_irq     __gpio_to_irq
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Orion-specific GPIO API extensions.

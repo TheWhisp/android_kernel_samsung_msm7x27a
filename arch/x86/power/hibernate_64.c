@@ -11,6 +11,11 @@
 #include <linux/gfp.h>
 #include <linux/smp.h>
 #include <linux/suspend.h>
+<<<<<<< HEAD
+=======
+
+#include <asm/init.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/proto.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -18,21 +23,33 @@
 #include <asm/suspend.h>
 
 /* References to section boundaries */
+<<<<<<< HEAD
 extern const void __nosave_begin, __nosave_end;
 
 /* Defined in hibernate_asm_64.S */
 extern int restore_image(void);
+=======
+extern __visible const void __nosave_begin, __nosave_end;
+
+/* Defined in hibernate_asm_64.S */
+extern asmlinkage int restore_image(void);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Address to jump to in the last phase of restore in order to get to the image
  * kernel's text (this value is passed in the image header).
  */
+<<<<<<< HEAD
 unsigned long restore_jump_address;
+=======
+unsigned long restore_jump_address __visible;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Value of the cr3 register from before the hibernation (this value is passed
  * in the image header).
  */
+<<<<<<< HEAD
 unsigned long restore_cr3;
 
 pgd_t *temp_level4_pgt;
@@ -68,12 +85,34 @@ static int res_phys_pud_init(pud_t *pud, unsigned long address, unsigned long en
 		}
 	}
 	return 0;
+=======
+unsigned long restore_cr3 __visible;
+
+pgd_t *temp_level4_pgt __visible;
+
+void *relocated_restore_code __visible;
+
+static void *alloc_pgt_page(void *context)
+{
+	return (void *)get_safe_page(GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int set_up_temporary_mappings(void)
 {
+<<<<<<< HEAD
 	unsigned long start, end, next;
 	int error;
+=======
+	struct x86_mapping_info info = {
+		.alloc_pgt_page	= alloc_pgt_page,
+		.pmd_flag	= __PAGE_KERNEL_LARGE_EXEC,
+		.kernel_mapping = true,
+	};
+	unsigned long mstart, mend;
+	int result;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	temp_level4_pgt = (pgd_t *)get_safe_page(GFP_ATOMIC);
 	if (!temp_level4_pgt)
@@ -84,6 +123,7 @@ static int set_up_temporary_mappings(void)
 		init_level4_pgt[pgd_index(__START_KERNEL_map)]);
 
 	/* Set up the direct mapping from scratch */
+<<<<<<< HEAD
 	start = (unsigned long)pfn_to_kaddr(0);
 	end = (unsigned long)pfn_to_kaddr(max_pfn);
 
@@ -99,6 +139,19 @@ static int set_up_temporary_mappings(void)
 		set_pgd(temp_level4_pgt + pgd_index(start),
 			mk_kernel_pgd(__pa(pud)));
 	}
+=======
+	for (i = 0; i < nr_pfn_mapped; i++) {
+		mstart = pfn_mapped[i].start << PAGE_SHIFT;
+		mend   = pfn_mapped[i].end << PAGE_SHIFT;
+
+		result = kernel_ident_mapping_init(&info, temp_level4_pgt,
+						   mstart, mend);
+
+		if (result)
+			return result;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

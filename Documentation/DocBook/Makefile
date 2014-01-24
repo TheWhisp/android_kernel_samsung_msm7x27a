@@ -6,7 +6,11 @@
 # To add a new book the only step required is to add the book to the
 # list of DOCBOOKS.
 
+<<<<<<< HEAD
 DOCBOOKS := z8530book.xml mcabook.xml device-drivers.xml \
+=======
+DOCBOOKS := z8530book.xml device-drivers.xml \
+>>>>>>> refs/remotes/origin/master
 	    kernel-hacking.xml kernel-locking.xml deviceiobook.xml \
 	    writing_usb_driver.xml networking.xml \
 	    kernel-api.xml filesystems.xml lsm.xml usb.xml kgdb.xml \
@@ -14,7 +18,19 @@ DOCBOOKS := z8530book.xml mcabook.xml device-drivers.xml \
 	    genericirq.xml s390-drivers.xml uio-howto.xml scsi.xml \
 	    80211.xml debugobjects.xml sh.xml regulator.xml \
 	    alsa-driver-api.xml writing-an-alsa-driver.xml \
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    tracepoint.xml media.xml drm.xml
+=======
+	    tracepoint.xml drm.xml media_api.xml
+
+include $(srctree)/Documentation/DocBook/media/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    tracepoint.xml drm.xml media_api.xml
+
+include $(srctree)/Documentation/DocBook/media/Makefile
+>>>>>>> refs/remotes/origin/master
 
 ###
 # The build process is as follows (targets):
@@ -32,7 +48,15 @@ PS_METHOD	= $(prefer-db2x)
 
 ###
 # The targets that may be used.
+<<<<<<< HEAD
+<<<<<<< HEAD
 PHONY += xmldocs sgmldocs psdocs pdfdocs htmldocs mandocs installmandocs cleandocs xmldoclinks
+=======
+PHONY += xmldocs sgmldocs psdocs pdfdocs htmldocs mandocs installmandocs cleandocs
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+PHONY += xmldocs sgmldocs psdocs pdfdocs htmldocs mandocs installmandocs cleandocs
+>>>>>>> refs/remotes/origin/master
 
 BOOKS := $(addprefix $(obj)/,$(DOCBOOKS))
 xmldocs: $(BOOKS)
@@ -45,13 +69,28 @@ PDF := $(patsubst %.xml, %.pdf, $(BOOKS))
 pdfdocs: $(PDF)
 
 HTML := $(sort $(patsubst %.xml, %.html, $(BOOKS)))
+<<<<<<< HEAD
+<<<<<<< HEAD
 htmldocs: $(HTML) xmldoclinks
 	$(call build_main_index)
 	$(call build_images)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+htmldocs: $(HTML)
+	$(call build_main_index)
+	$(call build_images)
+	$(call install_media_images)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MAN := $(patsubst %.xml, %.9, $(BOOKS))
 mandocs: $(MAN)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 build_images = mkdir -p $(objtree)/Documentation/DocBook/media/ && \
 	       cp $(srctree)/Documentation/DocBook/dvb/*.png \
 	          $(srctree)/Documentation/DocBook/v4l/*.gif \
@@ -66,6 +105,10 @@ ifneq ($(objtree),$(srctree))
 	done
 endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 installmandocs: mandocs
 	mkdir -p /usr/local/man/man9/
 	install Documentation/DocBook/man/*.9.gz /usr/local/man/man9/
@@ -97,11 +140,25 @@ define rule_docproc
         ) > $(dir $@).$(notdir $@).cmd
 endef
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 %.xml: %.tmpl xmldoclinks FORCE
 	$(call if_changed_rule,docproc)
 
 ###
 #Read in all saved dependency files 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+%.xml: %.tmpl FORCE
+	$(call if_changed_rule,docproc)
+
+###
+#Read in all saved dependency files
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 cmd_files := $(wildcard $(foreach f,$(BOOKS),$(dir $(f)).$(notdir $(f)).cmd))
 
 ifneq ($(cmd_files),)
@@ -150,7 +207,15 @@ quiet_cmd_db2pdf = PDF     $@
 
 index = index.html
 main_idx = Documentation/DocBook/$(index)
+<<<<<<< HEAD
+<<<<<<< HEAD
 build_main_index = rm -rf $(main_idx) && \
+=======
+build_main_index = rm -rf $(main_idx); \
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+build_main_index = rm -rf $(main_idx); \
+>>>>>>> refs/remotes/origin/master
 		   echo '<h1>Linux Kernel HTML Documentation</h1>' >> $(main_idx) && \
 		   echo '<h2>Kernel Version: $(KERNELVERSION)</h2>' >> $(main_idx) && \
 		   cat $(HTML) >> $(main_idx)
@@ -242,7 +307,15 @@ clean-files := $(DOCBOOKS) \
 
 clean-dirs := $(patsubst %.xml,%,$(DOCBOOKS)) man
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 cleandocs:
+=======
+cleandocs: cleanmediadocs
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+cleandocs: cleanmediadocs
+>>>>>>> refs/remotes/origin/master
 	$(Q)rm -f $(call objectify, $(clean-files))
 	$(Q)rm -rf $(call objectify, $(clean-dirs))
 

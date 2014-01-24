@@ -35,11 +35,29 @@
 #include <linux/poll.h>
 #include <linux/cdev.h>
 #include <linux/swap.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/vmalloc.h>
 #include <linux/slab.h>
 #include <linux/highmem.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/jiffies.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/aio.h>
+#include <linux/jiffies.h>
+#include <linux/cpu.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 
 #include "ipath_kernel.h"
@@ -1223,7 +1241,11 @@ static int mmap_kvaddr(struct vm_area_struct *vma, u64 pgaddr,
 
 	vma->vm_pgoff = (unsigned long) addr >> PAGE_SHIFT;
 	vma->vm_ops = &ipath_file_vm_ops;
+<<<<<<< HEAD
 	vma->vm_flags |= VM_RESERVED | VM_DONTEXPAND;
+=======
+	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 	ret = 1;
 
 bail:
@@ -1684,17 +1706,40 @@ static int find_best_unit(struct file *fp,
 	 * information.  There may be some issues with dual core numbering
 	 * as well.  This needs more work prior to release.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cpumask_empty(&current->cpus_allowed) &&
 	    !cpumask_full(&current->cpus_allowed)) {
 		int ncpus = num_online_cpus(), curcpu = -1, nset = 0;
 		for (i = 0; i < ncpus; i++)
 			if (cpumask_test_cpu(i, &current->cpus_allowed)) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!cpumask_empty(tsk_cpus_allowed(current)) &&
+	    !cpumask_full(tsk_cpus_allowed(current))) {
+		int ncpus = num_online_cpus(), curcpu = -1, nset = 0;
+		get_online_cpus();
+		for_each_online_cpu(i)
+			if (cpumask_test_cpu(i, tsk_cpus_allowed(current))) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				ipath_cdbg(PROC, "%s[%u] affinity set for "
 					   "cpu %d/%d\n", current->comm,
 					   current->pid, i, ncpus);
 				curcpu = i;
 				nset++;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		put_online_cpus();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		put_online_cpus();
+>>>>>>> refs/remotes/origin/master
 		if (curcpu != -1 && nset != ncpus) {
 			if (npresent) {
 				prefunit = curcpu / (ncpus / npresent);
@@ -1860,9 +1905,15 @@ static int ipath_assign_port(struct file *fp,
 		goto done_chk_sdma;
 	}
 
+<<<<<<< HEAD
 	i_minor = iminor(fp->f_path.dentry->d_inode) - IPATH_USER_MINOR_BASE;
 	ipath_cdbg(VERBOSE, "open on dev %lx (minor %d)\n",
 		   (long)fp->f_path.dentry->d_inode->i_rdev, i_minor);
+=======
+	i_minor = iminor(file_inode(fp)) - IPATH_USER_MINOR_BASE;
+	ipath_cdbg(VERBOSE, "open on dev %lx (minor %d)\n",
+		   (long)file_inode(fp)->i_rdev, i_minor);
+>>>>>>> refs/remotes/origin/master
 
 	if (i_minor)
 		ret = find_free_port(i_minor - 1, fp, uinfo);

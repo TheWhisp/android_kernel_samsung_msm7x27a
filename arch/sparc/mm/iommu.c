@@ -34,13 +34,20 @@
 #define IOMMU_RNGE	IOMMU_RNGE_256MB
 #define IOMMU_START	0xF0000000
 #define IOMMU_WINSIZE	(256*1024*1024U)
+<<<<<<< HEAD
 #define IOMMU_NPTES	(IOMMU_WINSIZE/PAGE_SIZE)	/* 64K PTEs, 265KB */
+=======
+#define IOMMU_NPTES	(IOMMU_WINSIZE/PAGE_SIZE)	/* 64K PTEs, 256KB */
+>>>>>>> refs/remotes/origin/master
 #define IOMMU_ORDER	6				/* 4096 * (1<<6) */
 
 /* srmmu.c */
 extern int viking_mxcc_present;
+<<<<<<< HEAD
 BTFIXUPDEF_CALL(void, flush_page_for_dma, unsigned long)
 #define flush_page_for_dma(page) BTFIXUP_CALL(flush_page_for_dma)(page)
+=======
+>>>>>>> refs/remotes/origin/master
 extern int flush_page_for_dma_global;
 static int viking_flush;
 /* viking.S */
@@ -92,8 +99,13 @@ static void __init sbus_iommu_init(struct platform_device *op)
            it to us. */
         tmp = __get_free_pages(GFP_KERNEL, IOMMU_ORDER);
 	if (!tmp) {
+<<<<<<< HEAD
 		prom_printf("Unable to allocate iommu table [0x%08x]\n",
 			    IOMMU_NPTES*sizeof(iopte_t));
+=======
+		prom_printf("Unable to allocate iommu table [0x%lx]\n",
+			    IOMMU_NPTES * sizeof(iopte_t));
+>>>>>>> refs/remotes/origin/master
 		prom_halt();
 	}
 	iommu->page_table = (iopte_t *)tmp;
@@ -143,7 +155,10 @@ static int __init iommu_init(void)
 
 subsys_initcall(iommu_init);
 
+<<<<<<< HEAD
 /* This begs to be btfixup-ed by srmmu. */
+=======
+>>>>>>> refs/remotes/origin/master
 /* Flush the iotlb entries to ram. */
 /* This could be better if we didn't have to flush whole pages. */
 static void iommu_flush_iotlb(iopte_t *iopte, unsigned int niopte)
@@ -216,11 +231,14 @@ static u32 iommu_get_scsi_one(struct device *dev, char *vaddr, unsigned int len)
 	return busa + off;
 }
 
+<<<<<<< HEAD
 static __u32 iommu_get_scsi_one_noflush(struct device *dev, char *vaddr, unsigned long len)
 {
 	return iommu_get_scsi_one(dev, vaddr, len);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static __u32 iommu_get_scsi_one_gflush(struct device *dev, char *vaddr, unsigned long len)
 {
 	flush_page_for_dma(0);
@@ -238,6 +256,7 @@ static __u32 iommu_get_scsi_one_pflush(struct device *dev, char *vaddr, unsigned
 	return iommu_get_scsi_one(dev, vaddr, len);
 }
 
+<<<<<<< HEAD
 static void iommu_get_scsi_sgl_noflush(struct device *dev, struct scatterlist *sg, int sz)
 {
 	int n;
@@ -251,6 +270,8 @@ static void iommu_get_scsi_sgl_noflush(struct device *dev, struct scatterlist *s
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void iommu_get_scsi_sgl_gflush(struct device *dev, struct scatterlist *sg, int sz)
 {
 	int n;
@@ -426,6 +447,7 @@ static void iommu_unmap_dma_area(struct device *dev, unsigned long busa, int len
 }
 #endif
 
+<<<<<<< HEAD
 static char *iommu_lockarea(char *vaddr, unsigned long len)
 {
 	return vaddr;
@@ -460,6 +482,38 @@ void __init ld_mmu_iommu(void)
 	BTFIXUPSET_CALL(mmu_map_dma_area, iommu_map_dma_area, BTFIXUPCALL_NORM);
 	BTFIXUPSET_CALL(mmu_unmap_dma_area, iommu_unmap_dma_area, BTFIXUPCALL_NORM);
 #endif
+=======
+static const struct sparc32_dma_ops iommu_dma_gflush_ops = {
+	.get_scsi_one		= iommu_get_scsi_one_gflush,
+	.get_scsi_sgl		= iommu_get_scsi_sgl_gflush,
+	.release_scsi_one	= iommu_release_scsi_one,
+	.release_scsi_sgl	= iommu_release_scsi_sgl,
+#ifdef CONFIG_SBUS
+	.map_dma_area		= iommu_map_dma_area,
+	.unmap_dma_area		= iommu_unmap_dma_area,
+#endif
+};
+
+static const struct sparc32_dma_ops iommu_dma_pflush_ops = {
+	.get_scsi_one		= iommu_get_scsi_one_pflush,
+	.get_scsi_sgl		= iommu_get_scsi_sgl_pflush,
+	.release_scsi_one	= iommu_release_scsi_one,
+	.release_scsi_sgl	= iommu_release_scsi_sgl,
+#ifdef CONFIG_SBUS
+	.map_dma_area		= iommu_map_dma_area,
+	.unmap_dma_area		= iommu_unmap_dma_area,
+#endif
+};
+
+void __init ld_mmu_iommu(void)
+{
+	if (flush_page_for_dma_global) {
+		/* flush_page_for_dma flushes everything, no matter of what page is it */
+		sparc32_dma_ops = &iommu_dma_gflush_ops;
+	} else {
+		sparc32_dma_ops = &iommu_dma_pflush_ops;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (viking_mxcc_present || srmmu_modtype == HyperSparc) {
 		dvma_prot = __pgprot(SRMMU_CACHE | SRMMU_ET_PTE | SRMMU_PRIV);

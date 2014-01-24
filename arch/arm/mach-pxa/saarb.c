@@ -9,7 +9,11 @@
  *  it under the terms of the GNU General Public License version 2 as
  *  publishhed by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/i2c.h>
@@ -23,7 +27,11 @@
 #include <mach/hardware.h>
 #include <mach/mfp.h>
 #include <mach/mfp-pxa930.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <mach/pxa95x.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "generic.h"
 
@@ -91,7 +99,11 @@ static struct i2c_board_info saarb_i2c_info[] = {
 		.type		= "88PM860x",
 		.addr		= 0x34,
 		.platform_data	= &saarb_pm8607_info,
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(mfp_to_gpio(MFP_PIN_GPIO83)),
+=======
+		.irq		= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO83)),
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -103,11 +115,22 @@ static void __init saarb_init(void)
 }
 
 MACHINE_START(SAARB, "PXA955 Handheld Platform (aka SAARB)")
+<<<<<<< HEAD
 	.boot_params    = 0xa0000100,
 	.map_io         = pxa_map_io,
 	.nr_irqs	= SAARB_NR_IRQS,
 	.init_irq       = pxa95x_init_irq,
 	.timer          = &pxa_timer,
 	.init_machine   = saarb_init,
+=======
+	.atag_offset    = 0x100,
+	.map_io         = pxa3xx_map_io,
+	.nr_irqs	= SAARB_NR_IRQS,
+	.init_irq       = pxa95x_init_irq,
+	.handle_irq	= pxa3xx_handle_irq,
+	.timer          = &pxa_timer,
+	.init_machine   = saarb_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 

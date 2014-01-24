@@ -18,14 +18,28 @@
 #include <asm/mach-types.h>
 #include <mach/hardware.h>
 #include <asm/sizes.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/system_info.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/system_info.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/irq.h>
 #include <mach/pxa3xx-regs.h>
 #include <mach/mfp-pxa300.h>
 #include <mach/colibri.h>
+<<<<<<< HEAD
 #include <mach/mmc.h>
 #include <mach/pxafb.h>
 #include <plat/pxa3xx_nand.h>
+=======
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/mtd-nand-pxa3xx.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 #include "devices.h"
@@ -139,8 +153,20 @@ static struct mtd_partition colibri_nand_partitions[] = {
 static struct pxa3xx_nand_platform_data colibri_nand_info = {
 	.enable_arbiter	= 1,
 	.keep_config	= 1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.parts		= colibri_nand_partitions,
 	.nr_parts	= ARRAY_SIZE(colibri_nand_partitions),
+=======
+	.num_cs		= 1,
+	.parts[0]	= colibri_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(colibri_nand_partitions),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_cs		= 1,
+	.parts[0]	= colibri_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(colibri_nand_partitions),
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init colibri_pxa3xx_init_nand(void)

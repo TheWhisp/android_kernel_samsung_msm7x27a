@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 
 	.globl	__lshrdi3
 __lshrdi3:
+=======
+#include <linux/linkage.h>
+
+ENTRY(__lshrdi3)
+>>>>>>> refs/remotes/origin/master
 	cmp	%o2, 0
 	be	3f
 	 mov	0x20, %g2
@@ -24,3 +30,7 @@ __lshrdi3:
 3:
 	retl 
 	 nop 
+<<<<<<< HEAD
+=======
+ENDPROC(__lshrdi3)
+>>>>>>> refs/remotes/origin/master

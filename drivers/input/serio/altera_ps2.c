@@ -81,7 +81,11 @@ static void altera_ps2_close(struct serio *io)
 /*
  * Add one device to this driver.
  */
+<<<<<<< HEAD
 static int __devinit altera_ps2_probe(struct platform_device *pdev)
+=======
+static int altera_ps2_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ps2if *ps2if;
 	struct serio *serio;
@@ -159,11 +163,18 @@ static int __devinit altera_ps2_probe(struct platform_device *pdev)
 /*
  * Remove one device from this driver.
  */
+<<<<<<< HEAD
 static int __devexit altera_ps2_remove(struct platform_device *pdev)
 {
 	struct ps2if *ps2if = platform_get_drvdata(pdev);
 
 	platform_set_drvdata(pdev, NULL);
+=======
+static int altera_ps2_remove(struct platform_device *pdev)
+{
+	struct ps2if *ps2if = platform_get_drvdata(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	serio_unregister_port(ps2if->io);
 	free_irq(ps2if->irq, ps2if);
 	iounmap(ps2if->base);
@@ -177,11 +188,21 @@ static int __devexit altera_ps2_remove(struct platform_device *pdev)
 #ifdef CONFIG_OF
 static const struct of_device_id altera_ps2_match[] = {
 	{ .compatible = "ALTR,ps2-1.0", },
+<<<<<<< HEAD
 	{},
 };
 MODULE_DEVICE_TABLE(of, altera_ps2_match);
+<<<<<<< HEAD
 #else /* CONFIG_OF */
 #define altera_ps2_match NULL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ .compatible = "altr,ps2-1.0", },
+	{},
+};
+MODULE_DEVICE_TABLE(of, altera_ps2_match);
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_OF */
 
 /*
@@ -189,10 +210,12 @@ MODULE_DEVICE_TABLE(of, altera_ps2_match);
  */
 static struct platform_driver altera_ps2_driver = {
 	.probe		= altera_ps2_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(altera_ps2_remove),
 	.driver	= {
 		.name	= DRV_NAME,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 		.of_match_table = altera_ps2_match,
 	},
 };
@@ -208,6 +231,21 @@ static void __exit altera_ps2_exit(void)
 	platform_driver_unregister(&altera_ps2_driver);
 }
 module_exit(altera_ps2_exit);
+=======
+=======
+	.remove		= altera_ps2_remove,
+	.driver	= {
+		.name	= DRV_NAME,
+		.owner	= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
+		.of_match_table = of_match_ptr(altera_ps2_match),
+	},
+};
+module_platform_driver(altera_ps2_driver);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Altera University Program PS2 controller driver");
 MODULE_AUTHOR("Thomas Chou <thomas@wytron.com.tw>");

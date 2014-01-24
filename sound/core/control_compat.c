@@ -83,6 +83,16 @@ struct snd_ctl_elem_info32 {
 			u32 items;
 			u32 item;
 			char name[64];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			u64 names_ptr;
+			u32 names_length;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			u64 names_ptr;
+			u32 names_length;
+>>>>>>> refs/remotes/origin/master
 		} enumerated;
 		unsigned char reserved[128];
 	} value;
@@ -372,6 +382,16 @@ static int snd_ctl_elem_add_compat(struct snd_ctl_file *file,
 				   &data32->value.enumerated,
 				   sizeof(data->value.enumerated)))
 			goto error;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		data->value.enumerated.names_ptr =
+			(uintptr_t)compat_ptr(data->value.enumerated.names_ptr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		data->value.enumerated.names_ptr =
+			(uintptr_t)compat_ptr(data->value.enumerated.names_ptr);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;

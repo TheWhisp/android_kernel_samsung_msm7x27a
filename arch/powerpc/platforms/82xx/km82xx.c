@@ -18,11 +18,19 @@
 #include <linux/fsl_devices.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
 #include <asm/io.h>
 #include <asm/cpm2.h>
 #include <asm/udbg.h>
 #include <asm/machdep.h>
 #include <asm/time.h>
+=======
+#include <linux/io.h>
+#include <asm/cpm2.h>
+#include <asm/udbg.h>
+#include <asm/machdep.h>
+#include <linux/time.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mpc8260.h>
 #include <asm/prom.h>
 
@@ -36,7 +44,11 @@ static void __init km82xx_pic_init(void)
 	struct device_node *np = of_find_compatible_node(NULL, NULL,
 							"fsl,pq2-pic");
 	if (!np) {
+<<<<<<< HEAD
 		printk(KERN_ERR "PIC init: can not find cpm-pic node\n");
+=======
+		pr_err("PIC init: can not find cpm-pic node\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -49,6 +61,18 @@ struct cpm_pin {
 };
 
 static __initdata struct cpm_pin km82xx_pins[] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* SMC1 */
+	{2, 4, CPM_PIN_INPUT | CPM_PIN_PRIMARY},
+	{2, 5, CPM_PIN_OUTPUT | CPM_PIN_PRIMARY},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* SMC1 */
+	{2, 4, CPM_PIN_INPUT | CPM_PIN_PRIMARY},
+	{2, 5, CPM_PIN_OUTPUT | CPM_PIN_PRIMARY},
+>>>>>>> refs/remotes/origin/master
 
 	/* SMC2 */
 	{0, 8, CPM_PIN_INPUT | CPM_PIN_PRIMARY},
@@ -125,6 +149,14 @@ static __initdata struct cpm_pin km82xx_pins[] = {
 	{3, 23, CPM_PIN_OUTPUT | CPM_PIN_PRIMARY}, /* TXP */
 	{3, 24, CPM_PIN_OUTPUT | CPM_PIN_PRIMARY}, /* TXN */
 	{3, 25, CPM_PIN_INPUT  | CPM_PIN_PRIMARY}, /* RXD */
+<<<<<<< HEAD
+=======
+
+	/* SPI */
+	{3, 16, CPM_PIN_INPUT | CPM_PIN_SECONDARY},/* SPI_MISO PD16 */
+	{3, 17, CPM_PIN_INPUT | CPM_PIN_SECONDARY},/* SPI_MOSI PD17 */
+	{3, 18, CPM_PIN_INPUT | CPM_PIN_SECONDARY},/* SPI_CLK PD18 */
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init init_ioports(void)
@@ -137,6 +169,14 @@ static void __init init_ioports(void)
 	}
 
 	cpm2_smc_clk_setup(CPM_CLK_SMC2, CPM_BRG8);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cpm2_smc_clk_setup(CPM_CLK_SMC1, CPM_BRG7);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpm2_smc_clk_setup(CPM_CLK_SMC1, CPM_BRG7);
+>>>>>>> refs/remotes/origin/master
 	cpm2_clk_setup(CPM_CLK_SCC1, CPM_CLK11, CPM_CLK_RX);
 	cpm2_clk_setup(CPM_CLK_SCC1, CPM_CLK11, CPM_CLK_TX);
 	cpm2_clk_setup(CPM_CLK_SCC3, CPM_CLK5, CPM_CLK_RTX);

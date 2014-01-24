@@ -115,6 +115,8 @@ extern int rmm_create(struct rmm_target_obj **target_obj,
 extern void rmm_delete(struct rmm_target_obj *target);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== rmm_exit ========
  *  Exit the RMM module
  *
@@ -127,6 +129,10 @@ extern void rmm_delete(struct rmm_target_obj *target);
 extern void rmm_exit(void);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== rmm_free ========
  *  Free or unreserve memory allocated through rmm_alloc().
  *
@@ -148,6 +154,8 @@ extern bool rmm_free(struct rmm_target_obj *target, u32 segid, u32 dsp_addr,
 		     u32 size, bool reserved);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== rmm_init ========
  *  Initialize the RMM module
  *
@@ -161,6 +169,10 @@ extern bool rmm_free(struct rmm_target_obj *target, u32 segid, u32 dsp_addr,
 extern bool rmm_init(void);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== rmm_stat ========
  *  Obtain  memory segment status
  *

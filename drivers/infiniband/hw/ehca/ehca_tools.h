@@ -58,8 +58,16 @@
 #include <linux/cpu.h>
 #include <linux/device.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/abs_addr.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/ibmebus.h>
 #include <asm/io.h>
 #include <asm/pgtable.h>

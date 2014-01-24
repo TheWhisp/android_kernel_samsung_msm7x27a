@@ -10,6 +10,19 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+#define pr_fmt(fmt) "UDPLite: " fmt
+
+#include <linux/export.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "udp_impl.h"
 
 struct udp_table 	udplite_table __read_mostly;
@@ -71,13 +84,39 @@ static struct inet_protosw udplite4_protosw = {
 };
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static const struct file_operations udplite_afinfo_seq_fops = {
+	.owner    = THIS_MODULE,
+	.open     = udp_seq_open,
+	.read     = seq_read,
+	.llseek   = seq_lseek,
+	.release  = seq_release_net
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct udp_seq_afinfo udplite4_seq_afinfo = {
 	.name		= "udplite",
 	.family		= AF_INET,
 	.udp_table 	= &udplite_table,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.seq_fops	= {
 		.owner	=	THIS_MODULE,
 	},
+=======
+	.seq_fops	= &udplite_afinfo_seq_fops,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.seq_fops	= &udplite_afinfo_seq_fops,
+>>>>>>> refs/remotes/origin/master
 	.seq_ops	= {
 		.show		= udp4_seq_show,
 	},
@@ -121,11 +160,27 @@ void __init udplite4_register(void)
 	inet_register_protosw(&udplite4_protosw);
 
 	if (udplite4_proc_init())
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Cannot register /proc!\n", __func__);
+=======
+		pr_err("%s: Cannot register /proc!\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Cannot register /proc!\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	return;
 
 out_unregister_proto:
 	proto_unregister(&udplite_prot);
 out_register_err:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_CRIT "%s: Cannot add UDP-Lite protocol.\n", __func__);
+=======
+	pr_crit("%s: Cannot add UDP-Lite protocol\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_crit("%s: Cannot add UDP-Lite protocol\n", __func__);
+>>>>>>> refs/remotes/origin/master
 }

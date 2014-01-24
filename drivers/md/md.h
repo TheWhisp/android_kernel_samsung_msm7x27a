@@ -1,5 +1,13 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
    md_k.h : kernel internal structure of the Linux MD driver
+=======
+   md.h : kernel internal structure of the Linux MD driver
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+   md.h : kernel internal structure of the Linux MD driver
+>>>>>>> refs/remotes/origin/master
           Copyright (C) 1996-98 Ingo Molnar, Gadi Oxman
 	  
    This program is free software; you can redistribute it and/or modify
@@ -26,18 +34,47 @@
 
 #define MaxSector (~(sector_t)0)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct mddev_s mddev_t;
 typedef struct mdk_rdev_s mdk_rdev_t;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* Bad block numbers are stored sorted in a single page.
+ * 64bits is used for each block or extent.
+ * 54 bits are sector number, 9 bits are extent size,
+ * 1 bit is an 'acknowledged' flag.
+ */
+#define MD_MAX_BADBLOCKS	(PAGE_SIZE/8)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * MD's 'extended' device
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct mdk_rdev_s
 {
 	struct list_head same_set;	/* RAID devices within the same set */
 
 	sector_t sectors;		/* Device size (in 512bytes sectors) */
 	mddev_t *mddev;			/* RAID array if running */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct md_rdev {
+	struct list_head same_set;	/* RAID devices within the same set */
+
+	sector_t sectors;		/* Device size (in 512bytes sectors) */
+	struct mddev *mddev;		/* RAID array if running */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int last_events;		/* IO event timestamp */
 
 	/*
@@ -48,10 +85,22 @@ struct mdk_rdev_s
 	struct block_device *meta_bdev;
 	struct block_device *bdev;	/* block device handle */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct page	*sb_page;
+=======
+	struct page	*sb_page, *bb_page;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int		sb_loaded;
 	__u64		sb_events;
 	sector_t	data_offset;	/* start of data in array */
+=======
+	struct page	*sb_page, *bb_page;
+	int		sb_loaded;
+	__u64		sb_events;
+	sector_t	data_offset;	/* start of data in array */
+	sector_t	new_data_offset;/* only relevant while reshaping */
+>>>>>>> refs/remotes/origin/master
 	sector_t 	sb_start;	/* offset of the super block (in 512byte sectors) */
 	int		sb_size;	/* bytes in the superblock */
 	int		preferred_minor;	/* autorun support */
@@ -69,6 +118,8 @@ struct mdk_rdev_s
 	 * This reduces the burden of testing multiple flags in many cases
 	 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long	flags;
 #define	Faulty		1		/* device is known to have a fault */
 #define	In_sync		2		/* device is in_sync with rest of array */
@@ -77,6 +128,12 @@ struct mdk_rdev_s
 #define Blocked		8		/* An error occurred on an externally
 					 * managed array, don't allow writes
 					 * until it is cleared */
+=======
+	unsigned long	flags;	/* bit set of 'enum flag_bits' bits. */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long	flags;	/* bit set of 'enum flag_bits' bits. */
+>>>>>>> refs/remotes/origin/master
 	wait_queue_head_t blocked_wait;
 
 	int desc_nr;			/* descriptor index in the superblock */
@@ -109,22 +166,149 @@ struct mdk_rdev_s
 					   */
 	struct work_struct del_work;	/* used for delayed sysfs removal */
 
+<<<<<<< HEAD
 	struct sysfs_dirent *sysfs_state; /* handle for 'state'
 					   * sysfs entry */
+<<<<<<< HEAD
 };
 
 struct mddev_s
 {
 	void				*private;
 	struct mdk_personality		*pers;
+=======
+=======
+	struct kernfs_node *sysfs_state; /* handle for 'state'
+					   * sysfs entry */
+>>>>>>> refs/remotes/origin/master
+
+	struct badblocks {
+		int	count;		/* count of bad blocks */
+		int	unacked_exist;	/* there probably are unacknowledged
+					 * bad blocks.  This is only cleared
+					 * when a read discovers none
+					 */
+		int	shift;		/* shift from sectors to block size
+					 * a -ve shift means badblocks are
+					 * disabled.*/
+		u64	*page;		/* badblock list */
+		int	changed;
+		seqlock_t lock;
+
+		sector_t sector;
+		sector_t size;		/* in sectors */
+	} badblocks;
+};
+enum flag_bits {
+	Faulty,			/* device is known to have a fault */
+	In_sync,		/* device is in_sync with rest of array */
+<<<<<<< HEAD
+=======
+	Bitmap_sync,		/* ..actually, not quite In_sync.  Need a
+				 * bitmap-based recovery to get fully in sync
+				 */
+>>>>>>> refs/remotes/origin/master
+	Unmerged,		/* device is being added to array and should
+				 * be considerred for bvec_merge_fn but not
+				 * yet for actual IO
+				 */
+	WriteMostly,		/* Avoid reading if at all possible */
+	AutoDetected,		/* added by auto-detect */
+	Blocked,		/* An error occurred but has not yet
+				 * been acknowledged by the metadata
+				 * handler, so don't allow writes
+				 * until it is cleared */
+	WriteErrorSeen,		/* A write error has been seen on this
+				 * device
+				 */
+	FaultRecorded,		/* Intermediate state for clearing
+				 * Blocked.  The Fault is/will-be
+				 * recorded in the metadata, but that
+				 * metadata hasn't been stored safely
+				 * on disk yet.
+				 */
+	BlockedBadBlocks,	/* A writer is blocked because they
+				 * found an unacknowledged bad-block.
+				 * This can safely be cleared at any
+				 * time, and the writer will re-check.
+				 * It may be set at any time, and at
+				 * worst the writer will timeout and
+				 * re-check.  So setting it as
+				 * accurately as possible is good, but
+				 * not absolutely critical.
+				 */
+	WantReplacement,	/* This device is a candidate to be
+				 * hot-replaced, either because it has
+				 * reported some faults, or because
+				 * of explicit request.
+				 */
+	Replacement,		/* This device is a replacement for
+				 * a want_replacement device with same
+				 * raid_disk number.
+				 */
+};
+
+#define BB_LEN_MASK	(0x00000000000001FFULL)
+#define BB_OFFSET_MASK	(0x7FFFFFFFFFFFFE00ULL)
+#define BB_ACK_MASK	(0x8000000000000000ULL)
+#define BB_MAX_LEN	512
+#define BB_OFFSET(x)	(((x) & BB_OFFSET_MASK) >> 9)
+#define BB_LEN(x)	(((x) & BB_LEN_MASK) + 1)
+#define BB_ACK(x)	(!!((x) & BB_ACK_MASK))
+#define BB_MAKE(a, l, ack) (((a)<<9) | ((l)-1) | ((u64)(!!(ack)) << 63))
+
+extern int md_is_badblock(struct badblocks *bb, sector_t s, int sectors,
+			  sector_t *first_bad, int *bad_sectors);
+static inline int is_badblock(struct md_rdev *rdev, sector_t s, int sectors,
+			      sector_t *first_bad, int *bad_sectors)
+{
+	if (unlikely(rdev->badblocks.count)) {
+		int rv = md_is_badblock(&rdev->badblocks, rdev->data_offset + s,
+					sectors,
+					first_bad, bad_sectors);
+		if (rv)
+			*first_bad -= rdev->data_offset;
+		return rv;
+	}
+	return 0;
+}
+extern int rdev_set_badblocks(struct md_rdev *rdev, sector_t s, int sectors,
+<<<<<<< HEAD
+			      int acknowledged);
+extern int rdev_clear_badblocks(struct md_rdev *rdev, sector_t s, int sectors);
+=======
+			      int is_new);
+extern int rdev_clear_badblocks(struct md_rdev *rdev, sector_t s, int sectors,
+				int is_new);
+>>>>>>> refs/remotes/origin/master
+extern void md_ack_all_badblocks(struct badblocks *bb);
+
+struct mddev {
+	void				*private;
+	struct md_personality		*pers;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_t				unit;
 	int				md_minor;
 	struct list_head 		disks;
+=======
+	dev_t				unit;
+	int				md_minor;
+	struct list_head		disks;
+>>>>>>> refs/remotes/origin/master
 	unsigned long			flags;
 #define MD_CHANGE_DEVS	0	/* Some device status has changed */
 #define MD_CHANGE_CLEAN 1	/* transition to or from 'clean' */
 #define MD_CHANGE_PENDING 2	/* switch from 'clean' to 'active' in progress */
+<<<<<<< HEAD
 #define MD_ARRAY_FIRST_USE 3    /* First use of array, needs initialization */
+=======
+#define MD_UPDATE_SB_FLAGS (1 | 2 | 4)	/* If these are set, md_update_sb needed */
+#define MD_ARRAY_FIRST_USE 3    /* First use of array, needs initialization */
+#define MD_STILL_CLOSED	4	/* If set, then array has not been opened since
+				 * md_ioctl checked on it.
+				 */
+>>>>>>> refs/remotes/origin/master
 
 	int				suspended;
 	atomic_t			active_io;
@@ -133,7 +317,11 @@ struct mddev_s
 						       * are happening, so run/
 						       * takeover/stop are not safe
 						       */
+<<<<<<< HEAD
 	int				ready; /* See when safe to pass 
+=======
+	int				ready; /* See when safe to pass
+>>>>>>> refs/remotes/origin/master
 						* IO requests down */
 	struct gendisk			*gendisk;
 
@@ -179,12 +367,32 @@ struct mddev_s
 	sector_t			reshape_position;
 	int				delta_disks, new_level, new_layout;
 	int				new_chunk_sectors;
+<<<<<<< HEAD
 
 	atomic_t			plug_cnt;	/* If device is expecting
 							 * more bios soon.
 							 */
+<<<<<<< HEAD
 	struct mdk_thread_s		*thread;	/* management thread */
 	struct mdk_thread_s		*sync_thread;	/* doing resync or reconstruct */
+=======
+	struct md_thread		*thread;	/* management thread */
+	struct md_thread		*sync_thread;	/* doing resync or reconstruct */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int				reshape_backwards;
+
+	struct md_thread		*thread;	/* management thread */
+	struct md_thread		*sync_thread;	/* doing resync or reconstruct */
+
+	/* 'last_sync_action' is initialized to "none".  It is set when a
+	 * sync operation (i.e "data-check", "requested-resync", "resync",
+	 * "recovery", or "reshape") is started.  It holds this value even
+	 * when the sync thread is "frozen" (interrupted) or "idle" (stopped
+	 * or finished).  It is overwritten when a new sync operation is begun.
+	 */
+	char				*last_sync_action;
+>>>>>>> refs/remotes/origin/master
 	sector_t			curr_resync;	/* last block scheduled */
 	/* As resync requests can complete out of order, we cannot easily track
 	 * how much resync has been completed.  So we occasionally pause until
@@ -199,7 +407,11 @@ struct mddev_s
 
 	sector_t			resync_max_sectors; /* may be set by personality */
 
+<<<<<<< HEAD
 	sector_t			resync_mismatches; /* count of sectors where
+=======
+	atomic64_t			resync_mismatches; /* count of sectors where
+>>>>>>> refs/remotes/origin/master
 							    * parity/replica mismatch found
 							    */
 
@@ -224,6 +436,10 @@ struct mddev_s
 	 * REQUEST:  user-space has requested a sync (used with SYNC)
 	 * CHECK:    user-space request for check-only, no repair
 	 * RESHAPE:  A reshape is happening
+<<<<<<< HEAD
+=======
+	 * ERROR:    sync-action interrupted because io-error
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * If neither SYNC or RESHAPE are set, then it is a recovery.
 	 */
@@ -237,11 +453,29 @@ struct mddev_s
 #define	MD_RECOVERY_CHECK	7
 #define MD_RECOVERY_RESHAPE	8
 #define	MD_RECOVERY_FROZEN	9
+<<<<<<< HEAD
 
 	unsigned long			recovery;
+<<<<<<< HEAD
 	int				recovery_disabled; /* if we detect that recovery
 							    * will always fail, set this
 							    * so we don't loop trying */
+=======
+=======
+#define	MD_RECOVERY_ERROR	10
+
+	unsigned long			recovery;
+>>>>>>> refs/remotes/origin/master
+	/* If a RAID personality determines that recovery (of a particular
+	 * device) will fail due to a read error on the source device, it
+	 * takes a copy of this number and does not attempt recovery again
+	 * until this number changes.
+	 */
+	int				recovery_disabled;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	int				in_sync;	/* know to not need resync */
 	/* 'open_mutex' avoids races between 'md_open' and 'do_md_stop', so
@@ -263,6 +497,19 @@ struct mddev_s
 	int				degraded;	/* whether md should consider
 							 * adding a spare
 							 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int				merge_check_needed; /* at least one
+							     * member device
+							     * has a
+							     * merge_bvec_fn */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	atomic_t			recovery_active; /* blocks scheduled, but not written */
 	wait_queue_head_t		recovery_wait;
@@ -272,10 +519,17 @@ struct mddev_s
 	sector_t			resync_max;	/* resync should pause
 							 * when it gets here */
 
+<<<<<<< HEAD
 	struct sysfs_dirent		*sysfs_state;	/* handle for 'array_state'
 							 * file in sysfs.
 							 */
 	struct sysfs_dirent		*sysfs_action;  /* handle for 'sync_action' */
+=======
+	struct kernfs_node		*sysfs_state;	/* handle for 'array_state'
+							 * file in sysfs.
+							 */
+	struct kernfs_node		*sysfs_action;  /* handle for 'sync_action' */
+>>>>>>> refs/remotes/origin/master
 
 	struct work_struct del_work;	/* used for delayed sysfs removal */
 
@@ -300,15 +554,27 @@ struct mddev_s
 						 * For external metadata, offset
 						 * from start of device. 
 						 */
+<<<<<<< HEAD
+=======
+		unsigned long		space; /* space available at this offset */
+>>>>>>> refs/remotes/origin/master
 		loff_t			default_offset; /* this is the offset to use when
 							 * hot-adding a bitmap.  It should
 							 * eventually be settable by sysfs.
 							 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* When md is serving under dm, it might use a
 		 * dirty_log to store the bits.
 		 */
 		struct dm_dirty_log *log;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned long		default_space; /* space available at
+							* default offset */
+>>>>>>> refs/remotes/origin/master
 		struct mutex		mutex;
 		unsigned long		chunksize;
 		unsigned long		daemon_sleep; /* how many jiffies between updates? */
@@ -331,11 +597,25 @@ struct mddev_s
 	atomic_t flush_pending;
 	struct work_struct flush_work;
 	struct work_struct event_work;	/* used by dm to report failure event */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void (*sync_super)(mddev_t *mddev, mdk_rdev_t *rdev);
 };
 
 
 static inline void rdev_dec_pending(mdk_rdev_t *rdev, mddev_t *mddev)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	void (*sync_super)(struct mddev *mddev, struct md_rdev *rdev);
+};
+
+
+static inline void rdev_dec_pending(struct md_rdev *rdev, struct mddev *mddev)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int faulty = test_bit(Faulty, &rdev->flags);
 	if (atomic_dec_and_test(&rdev->nr_pending) && faulty)
@@ -347,12 +627,22 @@ static inline void md_sync_acct(struct block_device *bdev, unsigned long nr_sect
         atomic_add(nr_sectors, &bdev->bd_contains->bd_disk->sync_io);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct mdk_personality
+=======
+struct md_personality
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct md_personality
+>>>>>>> refs/remotes/origin/master
 {
 	char *name;
 	int level;
 	struct list_head list;
 	struct module *owner;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int (*make_request)(mddev_t *mddev, struct bio *bio);
 	int (*run)(mddev_t *mddev);
 	int (*stop)(mddev_t *mddev);
@@ -370,12 +660,44 @@ struct mdk_personality
 	int (*check_reshape) (mddev_t *mddev);
 	int (*start_reshape) (mddev_t *mddev);
 	void (*finish_reshape) (mddev_t *mddev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	void (*make_request)(struct mddev *mddev, struct bio *bio);
+	int (*run)(struct mddev *mddev);
+	int (*stop)(struct mddev *mddev);
+	void (*status)(struct seq_file *seq, struct mddev *mddev);
+	/* error_handler must set ->faulty and clear ->in_sync
+	 * if appropriate, and should abort recovery if needed 
+	 */
+	void (*error_handler)(struct mddev *mddev, struct md_rdev *rdev);
+	int (*hot_add_disk) (struct mddev *mddev, struct md_rdev *rdev);
+	int (*hot_remove_disk) (struct mddev *mddev, struct md_rdev *rdev);
+	int (*spare_active) (struct mddev *mddev);
+	sector_t (*sync_request)(struct mddev *mddev, sector_t sector_nr, int *skipped, int go_faster);
+	int (*resize) (struct mddev *mddev, sector_t sectors);
+	sector_t (*size) (struct mddev *mddev, sector_t sectors, int raid_disks);
+	int (*check_reshape) (struct mddev *mddev);
+	int (*start_reshape) (struct mddev *mddev);
+	void (*finish_reshape) (struct mddev *mddev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* quiesce moves between quiescence states
 	 * 0 - fully active
 	 * 1 - no new requests allowed
 	 * others - reserved
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void (*quiesce) (mddev_t *mddev, int state);
+=======
+	void (*quiesce) (struct mddev *mddev, int state);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void (*quiesce) (struct mddev *mddev, int state);
+>>>>>>> refs/remotes/origin/master
 	/* takeover is used to transition an array from one
 	 * personality to another.  The new personality must be able
 	 * to handle the data in the current layout.
@@ -385,14 +707,28 @@ struct mdk_personality
 	 * This needs to be installed and then ->run used to activate the
 	 * array.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void *(*takeover) (mddev_t *mddev);
+=======
+	void *(*takeover) (struct mddev *mddev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *(*takeover) (struct mddev *mddev);
+>>>>>>> refs/remotes/origin/master
 };
 
 
 struct md_sysfs_entry {
 	struct attribute attr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ssize_t (*show)(mddev_t *, char *);
 	ssize_t (*store)(mddev_t *, const char *, size_t);
+=======
+	ssize_t (*show)(struct mddev *, char *);
+	ssize_t (*store)(struct mddev *, const char *, size_t);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 extern struct attribute_group md_bitmap_group;
 
@@ -403,16 +739,74 @@ static inline struct sysfs_dirent *sysfs_get_dirent_safe(struct sysfs_dirent *sd
 	return sd;
 }
 static inline void sysfs_notify_dirent_safe(struct sysfs_dirent *sd)
+=======
+	ssize_t (*show)(struct mddev *, char *);
+	ssize_t (*store)(struct mddev *, const char *, size_t);
+};
+extern struct attribute_group md_bitmap_group;
+
+static inline struct kernfs_node *sysfs_get_dirent_safe(struct kernfs_node *sd, char *name)
+{
+	if (sd)
+		return sysfs_get_dirent(sd, name);
+	return sd;
+}
+static inline void sysfs_notify_dirent_safe(struct kernfs_node *sd)
+>>>>>>> refs/remotes/origin/master
 {
 	if (sd)
 		sysfs_notify_dirent(sd);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline char * mdname (mddev_t * mddev)
+=======
+static inline char * mdname (struct mddev * mddev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline char * mdname (struct mddev * mddev)
+>>>>>>> refs/remotes/origin/master
 {
 	return mddev->gendisk ? mddev->gendisk->disk_name : "mdX";
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static inline int sysfs_link_rdev(struct mddev *mddev, struct md_rdev *rdev)
+{
+	char nm[20];
+	if (!test_bit(Replacement, &rdev->flags)) {
+=======
+static inline int sysfs_link_rdev(struct mddev *mddev, struct md_rdev *rdev)
+{
+	char nm[20];
+	if (!test_bit(Replacement, &rdev->flags) && mddev->kobj.sd) {
+>>>>>>> refs/remotes/origin/master
+		sprintf(nm, "rd%d", rdev->raid_disk);
+		return sysfs_create_link(&mddev->kobj, &rdev->kobj, nm);
+	} else
+		return 0;
+}
+
+static inline void sysfs_unlink_rdev(struct mddev *mddev, struct md_rdev *rdev)
+{
+	char nm[20];
+<<<<<<< HEAD
+	if (!test_bit(Replacement, &rdev->flags)) {
+=======
+	if (!test_bit(Replacement, &rdev->flags) && mddev->kobj.sd) {
+>>>>>>> refs/remotes/origin/master
+		sprintf(nm, "rd%d", rdev->raid_disk);
+		sysfs_remove_link(&mddev->kobj, nm);
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * iterates through some rdev ringlist. It's safe to remove the
  * current 'rdev'. Dont touch 'tmp' though.
@@ -423,20 +817,50 @@ static inline char * mdname (mddev_t * mddev)
 /*
  * iterates through the 'same array disks' ringlist
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define rdev_for_each(rdev, tmp, mddev)				\
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define rdev_for_each(rdev, mddev)				\
+	list_for_each_entry(rdev, &((mddev)->disks), same_set)
+
+#define rdev_for_each_safe(rdev, tmp, mddev)				\
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(rdev, tmp, &((mddev)->disks), same_set)
 
 #define rdev_for_each_rcu(rdev, mddev)				\
 	list_for_each_entry_rcu(rdev, &((mddev)->disks), same_set)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct mdk_thread_s {
 	void			(*run) (mddev_t *mddev);
 	mddev_t			*mddev;
+=======
+struct md_thread {
+	void			(*run) (struct mddev *mddev);
+	struct mddev		*mddev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct md_thread {
+	void			(*run) (struct md_thread *thread);
+	struct mddev		*mddev;
+>>>>>>> refs/remotes/origin/master
 	wait_queue_head_t	wqueue;
 	unsigned long           flags;
 	struct task_struct	*tsk;
 	unsigned long		timeout;
+<<<<<<< HEAD
+<<<<<<< HEAD
 } mdk_thread_t;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define THREAD_WAKEUP  0
 
@@ -466,11 +890,20 @@ do {									\
 	__wait_event_lock_irq(wq, condition, lock, cmd);		\
 } while (0)
 
+=======
+	void			*private;
+};
+
+#define THREAD_WAKEUP  0
+
+>>>>>>> refs/remotes/origin/master
 static inline void safe_put_page(struct page *p)
 {
 	if (p) put_page(p);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int register_md_personality(struct mdk_personality *p);
 extern int unregister_md_personality(struct mdk_personality *p);
 extern mdk_thread_t * md_register_thread(void (*run) (mddev_t *mddev),
@@ -514,4 +947,84 @@ extern struct bio *bio_clone_mddev(struct bio *bio, gfp_t gfp_mask,
 extern struct bio *bio_alloc_mddev(gfp_t gfp_mask, int nr_iovecs,
 				   mddev_t *mddev);
 extern int mddev_check_plugged(mddev_t *mddev);
+=======
+extern int register_md_personality(struct md_personality *p);
+extern int unregister_md_personality(struct md_personality *p);
+extern struct md_thread *md_register_thread(
+	void (*run)(struct mddev *mddev),
+=======
+extern int register_md_personality(struct md_personality *p);
+extern int unregister_md_personality(struct md_personality *p);
+extern struct md_thread *md_register_thread(
+	void (*run)(struct md_thread *thread),
+>>>>>>> refs/remotes/origin/master
+	struct mddev *mddev,
+	const char *name);
+extern void md_unregister_thread(struct md_thread **threadp);
+extern void md_wakeup_thread(struct md_thread *thread);
+extern void md_check_recovery(struct mddev *mddev);
+<<<<<<< HEAD
+=======
+extern void md_reap_sync_thread(struct mddev *mddev);
+>>>>>>> refs/remotes/origin/master
+extern void md_write_start(struct mddev *mddev, struct bio *bi);
+extern void md_write_end(struct mddev *mddev);
+extern void md_done_sync(struct mddev *mddev, int blocks, int ok);
+extern void md_error(struct mddev *mddev, struct md_rdev *rdev);
+<<<<<<< HEAD
+=======
+extern void md_finish_reshape(struct mddev *mddev);
+>>>>>>> refs/remotes/origin/master
+
+extern int mddev_congested(struct mddev *mddev, int bits);
+extern void md_flush_request(struct mddev *mddev, struct bio *bio);
+extern void md_super_write(struct mddev *mddev, struct md_rdev *rdev,
+			   sector_t sector, int size, struct page *page);
+extern void md_super_wait(struct mddev *mddev);
+extern int sync_page_io(struct md_rdev *rdev, sector_t sector, int size, 
+			struct page *page, int rw, bool metadata_op);
+<<<<<<< HEAD
+extern void md_do_sync(struct mddev *mddev);
+=======
+extern void md_do_sync(struct md_thread *thread);
+>>>>>>> refs/remotes/origin/master
+extern void md_new_event(struct mddev *mddev);
+extern int md_allow_write(struct mddev *mddev);
+extern void md_wait_for_blocked_rdev(struct md_rdev *rdev, struct mddev *mddev);
+extern void md_set_array_sectors(struct mddev *mddev, sector_t array_sectors);
+extern int md_check_no_bitmap(struct mddev *mddev);
+extern int md_integrity_register(struct mddev *mddev);
+extern void md_integrity_add_rdev(struct md_rdev *rdev, struct mddev *mddev);
+extern int strict_strtoul_scaled(const char *cp, unsigned long *res, int scale);
+extern void restore_bitmap_write_access(struct file *file);
+
+extern void mddev_init(struct mddev *mddev);
+extern int md_run(struct mddev *mddev);
+extern void md_stop(struct mddev *mddev);
+extern void md_stop_writes(struct mddev *mddev);
+extern int md_rdev_init(struct md_rdev *rdev);
+<<<<<<< HEAD
+=======
+extern void md_rdev_clear(struct md_rdev *rdev);
+>>>>>>> refs/remotes/origin/master
+
+extern void mddev_suspend(struct mddev *mddev);
+extern void mddev_resume(struct mddev *mddev);
+extern struct bio *bio_clone_mddev(struct bio *bio, gfp_t gfp_mask,
+				   struct mddev *mddev);
+extern struct bio *bio_alloc_mddev(gfp_t gfp_mask, int nr_iovecs,
+				   struct mddev *mddev);
+<<<<<<< HEAD
+extern int mddev_check_plugged(struct mddev *mddev);
+extern void md_trim_bio(struct bio *bio, int offset, int size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+extern void md_unplug(struct blk_plug_cb *cb, bool from_schedule);
+static inline int mddev_check_plugged(struct mddev *mddev)
+{
+	return !!blk_check_plugged(md_unplug, mddev,
+				   sizeof(struct blk_plug_cb));
+}
+>>>>>>> refs/remotes/origin/master
 #endif /* _MD_MD_H */

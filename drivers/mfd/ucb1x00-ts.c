@@ -20,8 +20,20 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/smp.h>
 #include <linux/sched.h>
+=======
+#include <linux/interrupt.h>
+#include <linux/sched.h>
+#include <linux/spinlock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+#include <linux/sched.h>
+#include <linux/spinlock.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/completion.h>
 #include <linux/delay.h>
 #include <linux/string.h>
@@ -32,7 +44,13 @@
 #include <linux/kthread.h>
 #include <linux/mfd/ucb1x00.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/dma.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/collie.h>
 #include <asm/mach-types.h>
 
@@ -42,12 +60,28 @@ struct ucb1x00_ts {
 	struct input_dev	*idev;
 	struct ucb1x00		*ucb;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	spinlock_t		irq_lock;
+	unsigned		irq_disabled;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t		irq_lock;
+	unsigned		irq_disabled;
+>>>>>>> refs/remotes/origin/master
 	wait_queue_head_t	irq_wait;
 	struct task_struct	*rtask;
 	u16			x_res;
 	u16			y_res;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int		restart:1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		adcsync:1;
 };
 
@@ -207,15 +241,38 @@ static int ucb1x00_thread(void *_ts)
 {
 	struct ucb1x00_ts *ts = _ts;
 	DECLARE_WAITQUEUE(wait, current);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool frozen, ignore = false;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool frozen, ignore = false;
+>>>>>>> refs/remotes/origin/master
 	int valid = 0;
 
 	set_freezable();
 	add_wait_queue(&ts->irq_wait, &wait);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (!kthread_should_stop()) {
 		unsigned int x, y, p;
 		signed long timeout;
 
 		ts->restart = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	while (!kthread_freezable_should_stop(&frozen)) {
+		unsigned int x, y, p;
+		signed long timeout;
+
+		if (frozen)
+			ignore = true;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ucb1x00_adc_enable(ts->ucb);
 
@@ -237,7 +294,22 @@ static int ucb1x00_thread(void *_ts)
 		if (ucb1x00_ts_pen_down(ts)) {
 			set_current_state(TASK_INTERRUPTIBLE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ucb1x00_enable_irq(ts->ucb, UCB_IRQ_TSPX, machine_is_collie() ? UCB_RISING : UCB_FALLING);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			spin_lock_irq(&ts->irq_lock);
+			if (ts->irq_disabled) {
+				ts->irq_disabled = 0;
+				enable_irq(ts->ucb->irq_base + UCB_IRQ_TSPX);
+			}
+			spin_unlock_irq(&ts->irq_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ucb1x00_disable(ts->ucb);
 
 			/*
@@ -258,7 +330,15 @@ static int ucb1x00_thread(void *_ts)
 			 * space.  We therefore leave it to user space
 			 * to do any filtering they please.
 			 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (!ts->restart) {
+=======
+			if (!ignore) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!ignore) {
+>>>>>>> refs/remotes/origin/master
 				ucb1x00_ts_evt_add(ts, p, x, y);
 				valid = 1;
 			}
@@ -267,8 +347,14 @@ static int ucb1x00_thread(void *_ts)
 			timeout = HZ / 100;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		try_to_freeze();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		schedule_timeout(timeout);
 	}
 
@@ -282,23 +368,70 @@ static int ucb1x00_thread(void *_ts)
  * We only detect touch screen _touches_ with this interrupt
  * handler, and even then we just schedule our task.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void ucb1x00_ts_irq(int idx, void *id)
 {
 	struct ucb1x00_ts *ts = id;
 
 	ucb1x00_disable_irq(ts->ucb, UCB_IRQ_TSPX, UCB_FALLING);
 	wake_up(&ts->irq_wait);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static irqreturn_t ucb1x00_ts_irq(int irq, void *id)
+{
+	struct ucb1x00_ts *ts = id;
+
+	spin_lock(&ts->irq_lock);
+	ts->irq_disabled = 1;
+	disable_irq_nosync(ts->ucb->irq_base + UCB_IRQ_TSPX);
+	spin_unlock(&ts->irq_lock);
+	wake_up(&ts->irq_wait);
+
+	return IRQ_HANDLED;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ucb1x00_ts_open(struct input_dev *idev)
 {
 	struct ucb1x00_ts *ts = input_get_drvdata(idev);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long flags = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags = 0;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	BUG_ON(ts->rtask);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	init_waitqueue_head(&ts->irq_wait);
 	ret = ucb1x00_hook_irq(ts->ucb, UCB_IRQ_TSPX, ucb1x00_ts_irq, ts);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (machine_is_collie())
+		flags = IRQF_TRIGGER_RISING;
+	else
+		flags = IRQF_TRIGGER_FALLING;
+
+	ts->irq_disabled = 0;
+
+	init_waitqueue_head(&ts->irq_wait);
+	ret = request_irq(ts->ucb->irq_base + UCB_IRQ_TSPX, ucb1x00_ts_irq,
+			  flags, "ucb1x00-ts", ts);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto out;
 
@@ -315,7 +448,15 @@ static int ucb1x00_ts_open(struct input_dev *idev)
 	if (!IS_ERR(ts->rtask)) {
 		ret = 0;
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ucb1x00_free_irq(ts->ucb, UCB_IRQ_TSPX, ts);
+=======
+		free_irq(ts->ucb->irq_base + UCB_IRQ_TSPX, ts);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		free_irq(ts->ucb->irq_base + UCB_IRQ_TSPX, ts);
+>>>>>>> refs/remotes/origin/master
 		ts->rtask = NULL;
 		ret = -EFAULT;
 	}
@@ -335,11 +476,21 @@ static void ucb1x00_ts_close(struct input_dev *idev)
 		kthread_stop(ts->rtask);
 
 	ucb1x00_enable(ts->ucb);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ucb1x00_free_irq(ts->ucb, UCB_IRQ_TSPX, ts);
+=======
+	free_irq(ts->ucb->irq_base + UCB_IRQ_TSPX, ts);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_irq(ts->ucb->irq_base + UCB_IRQ_TSPX, ts);
+>>>>>>> refs/remotes/origin/master
 	ucb1x00_reg_write(ts->ucb, UCB_TS_CR, 0);
 	ucb1x00_disable(ts->ucb);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int ucb1x00_ts_resume(struct ucb1x00_dev *dev)
 {
@@ -360,6 +511,10 @@ static int ucb1x00_ts_resume(struct ucb1x00_dev *dev)
 #define ucb1x00_ts_resume NULL
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Initialisation.
@@ -380,11 +535,27 @@ static int ucb1x00_ts_add(struct ucb1x00_dev *dev)
 	ts->ucb = dev->ucb;
 	ts->idev = idev;
 	ts->adcsync = adcsync ? UCB_SYNC : UCB_NOSYNC;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	spin_lock_init(&ts->irq_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&ts->irq_lock);
+>>>>>>> refs/remotes/origin/master
 
 	idev->name       = "Touchscreen panel";
 	idev->id.product = ts->ucb->id;
 	idev->open       = ucb1x00_ts_open;
 	idev->close      = ucb1x00_ts_close;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	idev->dev.parent = &ts->ucb->dev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	idev->dev.parent = &ts->ucb->dev;
+>>>>>>> refs/remotes/origin/master
 
 	idev->evbit[0]   = BIT_MASK(EV_ABS) | BIT_MASK(EV_KEY);
 	idev->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
@@ -425,7 +596,13 @@ static void ucb1x00_ts_remove(struct ucb1x00_dev *dev)
 static struct ucb1x00_driver ucb1x00_ts_driver = {
 	.add		= ucb1x00_ts_add,
 	.remove		= ucb1x00_ts_remove,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.resume		= ucb1x00_ts_resume,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ucb1x00_ts_init(void)

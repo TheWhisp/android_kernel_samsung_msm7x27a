@@ -47,6 +47,14 @@
 #include <linux/usb.h>
 #include <linux/wait.h>
 #include <linux/usb/audio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/control.h>
@@ -818,6 +826,31 @@ static struct usb_protocol_ops snd_usbmidi_raw_ops = {
 	.output = snd_usbmidi_raw_output,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * FTDI protocol: raw MIDI bytes, but input packets have two modem status bytes.
+ */
+
+static void snd_usbmidi_ftdi_input(struct snd_usb_midi_in_endpoint* ep,
+				   uint8_t* buffer, int buffer_length)
+{
+	if (buffer_length > 2)
+		snd_usbmidi_input_data(ep, 0, buffer + 2, buffer_length - 2);
+}
+
+static struct usb_protocol_ops snd_usbmidi_ftdi_ops = {
+	.input = snd_usbmidi_ftdi_input,
+	.output = snd_usbmidi_raw_output,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void snd_usbmidi_us122l_input(struct snd_usb_midi_in_endpoint *ep,
 				     uint8_t *buffer, int buffer_length)
 {
@@ -1427,6 +1460,10 @@ void snd_usbmidi_disconnect(struct list_head* p)
 	}
 	del_timer_sync(&umidi->error_timer);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(snd_usbmidi_disconnect);
+>>>>>>> refs/remotes/origin/master
 
 static void snd_usbmidi_rawmidi_free(struct snd_rawmidi *rmidi)
 {
@@ -1437,10 +1474,16 @@ static void snd_usbmidi_rawmidi_free(struct snd_rawmidi *rmidi)
 static struct snd_rawmidi_substream *snd_usbmidi_find_substream(struct snd_usb_midi* umidi,
 								int stream, int number)
 {
+<<<<<<< HEAD
 	struct list_head* list;
 
 	list_for_each(list, &umidi->rmidi->streams[stream].substreams) {
 		struct snd_rawmidi_substream *substream = list_entry(list, struct snd_rawmidi_substream, list);
+=======
+	struct snd_rawmidi_substream *substream;
+
+	list_for_each_entry(substream, &umidi->rmidi->streams[stream].substreams, list) {
+>>>>>>> refs/remotes/origin/master
 		if (substream->number == number)
 			return substream;
 	}
@@ -1558,8 +1601,46 @@ static struct port_info {
 	EXTERNAL_PORT(0x0582, 0x004d, 0, "%s MIDI"),
 	EXTERNAL_PORT(0x0582, 0x004d, 1, "%s 1"),
 	EXTERNAL_PORT(0x0582, 0x004d, 2, "%s 2"),
+<<<<<<< HEAD
 	/* Edirol UM-3EX */
 	CONTROL_PORT(0x0582, 0x009a, 3, "%s Control"),
+=======
+	/* BOSS GT-PRO */
+	CONTROL_PORT(0x0582, 0x0089, 0, "%s Control"),
+	/* Edirol UM-3EX */
+	CONTROL_PORT(0x0582, 0x009a, 3, "%s Control"),
+	/* Roland VG-99 */
+	CONTROL_PORT(0x0582, 0x00b2, 0, "%s Control"),
+	EXTERNAL_PORT(0x0582, 0x00b2, 1, "%s MIDI"),
+	/* Cakewalk Sonar V-Studio 100 */
+	EXTERNAL_PORT(0x0582, 0x00eb, 0, "%s MIDI"),
+	CONTROL_PORT(0x0582, 0x00eb, 1, "%s Control"),
+	/* Roland VB-99 */
+	CONTROL_PORT(0x0582, 0x0102, 0, "%s Control"),
+	EXTERNAL_PORT(0x0582, 0x0102, 1, "%s MIDI"),
+	/* Roland A-PRO */
+	EXTERNAL_PORT(0x0582, 0x010f, 0, "%s MIDI"),
+	CONTROL_PORT(0x0582, 0x010f, 1, "%s 1"),
+	CONTROL_PORT(0x0582, 0x010f, 2, "%s 2"),
+	/* Roland SD-50 */
+	ROLAND_SYNTH_PORT(0x0582, 0x0114, 0, "%s Synth", 128),
+	EXTERNAL_PORT(0x0582, 0x0114, 1, "%s MIDI"),
+	CONTROL_PORT(0x0582, 0x0114, 2, "%s Control"),
+	/* Roland OCTA-CAPTURE */
+	EXTERNAL_PORT(0x0582, 0x0120, 0, "%s MIDI"),
+	CONTROL_PORT(0x0582, 0x0120, 1, "%s Control"),
+	EXTERNAL_PORT(0x0582, 0x0121, 0, "%s MIDI"),
+	CONTROL_PORT(0x0582, 0x0121, 1, "%s Control"),
+	/* Roland SPD-SX */
+	CONTROL_PORT(0x0582, 0x0145, 0, "%s Control"),
+	EXTERNAL_PORT(0x0582, 0x0145, 1, "%s MIDI"),
+	/* Roland A-Series */
+	CONTROL_PORT(0x0582, 0x0156, 0, "%s Keyboard"),
+	EXTERNAL_PORT(0x0582, 0x0156, 1, "%s MIDI"),
+	/* Roland INTEGRA-7 */
+	ROLAND_SYNTH_PORT(0x0582, 0x015b, 0, "%s Synth", 128),
+	CONTROL_PORT(0x0582, 0x015b, 1, "%s Control"),
+>>>>>>> refs/remotes/origin/master
 	/* M-Audio MidiSport 8x8 */
 	CONTROL_PORT(0x0763, 0x1031, 8, "%s Control"),
 	CONTROL_PORT(0x0763, 0x1033, 8, "%s Control"),
@@ -1931,6 +2012,47 @@ static int snd_usbmidi_detect_yamaha(struct snd_usb_midi* umidi,
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Detects the endpoints and ports of Roland devices.
+ */
+static int snd_usbmidi_detect_roland(struct snd_usb_midi* umidi,
+				     struct snd_usb_midi_endpoint_info* endpoint)
+{
+	struct usb_interface* intf;
+	struct usb_host_interface *hostif;
+	u8* cs_desc;
+
+	intf = umidi->iface;
+	if (!intf)
+		return -ENOENT;
+	hostif = intf->altsetting;
+	/*
+	 * Some devices have a descriptor <06 24 F1 02 <inputs> <outputs>>,
+	 * some have standard class descriptors, or both kinds, or neither.
+	 */
+	for (cs_desc = hostif->extra;
+	     cs_desc < hostif->extra + hostif->extralen && cs_desc[0] >= 2;
+	     cs_desc += cs_desc[0]) {
+		if (cs_desc[0] >= 6 &&
+		    cs_desc[1] == USB_DT_CS_INTERFACE &&
+		    cs_desc[2] == 0xf1 &&
+		    cs_desc[3] == 0x02) {
+			endpoint->in_cables  = (1 << cs_desc[4]) - 1;
+			endpoint->out_cables = (1 << cs_desc[5]) - 1;
+			return snd_usbmidi_detect_endpoints(umidi, endpoint, 1);
+		} else if (cs_desc[0] >= 7 &&
+			   cs_desc[1] == USB_DT_CS_INTERFACE &&
+			   cs_desc[2] == UAC_HEADER) {
+			return snd_usbmidi_get_ms_info(umidi, endpoint);
+		}
+	}
+
+	return -ENODEV;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Creates the endpoints and their ports for Midiman devices.
  */
 static int snd_usbmidi_create_endpoints_midiman(struct snd_usb_midi* umidi,
@@ -2063,6 +2185,10 @@ void snd_usbmidi_input_stop(struct list_head* p)
 	}
 	umidi->input_running = 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(snd_usbmidi_input_stop);
+>>>>>>> refs/remotes/origin/master
 
 static void snd_usbmidi_input_start_ep(struct snd_usb_midi_in_endpoint* ep)
 {
@@ -2092,6 +2218,10 @@ void snd_usbmidi_input_start(struct list_head* p)
 		snd_usbmidi_input_start_ep(umidi->endpoints[i].in);
 	umidi->input_running = 1;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(snd_usbmidi_input_start);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Creates and registers everything needed for a MIDI streaming interface.
@@ -2143,6 +2273,12 @@ int snd_usbmidi_create(struct snd_card *card,
 	case QUIRK_MIDI_YAMAHA:
 		err = snd_usbmidi_detect_yamaha(umidi, &endpoints[0]);
 		break;
+<<<<<<< HEAD
+=======
+	case QUIRK_MIDI_ROLAND:
+		err = snd_usbmidi_detect_roland(umidi, &endpoints[0]);
+		break;
+>>>>>>> refs/remotes/origin/master
 	case QUIRK_MIDI_MIDIMAN:
 		umidi->usb_protocol_ops = &snd_usbmidi_midiman_ops;
 		memcpy(&endpoints[0], quirk->data,
@@ -2184,6 +2320,26 @@ int snd_usbmidi_create(struct snd_card *card,
 		/* endpoint 1 is input-only */
 		endpoints[1].out_cables = 0;
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case QUIRK_MIDI_FTDI:
+		umidi->usb_protocol_ops = &snd_usbmidi_ftdi_ops;
+
+		/* set baud rate to 31250 (48 MHz / 16 / 96) */
+		err = usb_control_msg(umidi->dev, usb_sndctrlpipe(umidi->dev, 0),
+				      3, 0x40, 0x60, 0, NULL, 0, 1000);
+		if (err < 0)
+			break;
+
+		err = snd_usbmidi_detect_per_port_endpoints(umidi, endpoints);
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		snd_printd(KERN_ERR "invalid quirk type %d\n", quirk->type);
 		err = -ENXIO;
@@ -2222,8 +2378,12 @@ int snd_usbmidi_create(struct snd_card *card,
 	list_add_tail(&umidi->list, midi_list);
 	return 0;
 }
+<<<<<<< HEAD
 
 EXPORT_SYMBOL(snd_usbmidi_create);
 EXPORT_SYMBOL(snd_usbmidi_input_stop);
 EXPORT_SYMBOL(snd_usbmidi_input_start);
 EXPORT_SYMBOL(snd_usbmidi_disconnect);
+=======
+EXPORT_SYMBOL(snd_usbmidi_create);
+>>>>>>> refs/remotes/origin/master

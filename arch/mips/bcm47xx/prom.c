@@ -1,6 +1,10 @@
 /*
  *  Copyright (C) 2004 Florian Schirmer <jolt@tuxbox.org>
  *  Copyright (C) 2007 Aurelien Jarno <aurelien@aurel32.net>
+<<<<<<< HEAD
+=======
+ *  Copyright (C) 2010-2012 Hauke Mehrtens <hauke@hauke-m.de>
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute  it and/or modify it
  *  under  the terms of  the GNU General  Public License as published by the
@@ -27,6 +31,7 @@
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <asm/bootinfo.h>
 #include <asm/fw/cfe/cfe_api.h>
 #include <asm/fw/cfe/cfe_error.h>
@@ -36,6 +41,43 @@ static int cfe_cons_handle;
 const char *get_system_type(void)
 {
 	return "Broadcom BCM47XX";
+=======
+#include <linux/smp.h>
+#include <asm/bootinfo.h>
+#include <asm/fw/cfe/cfe_api.h>
+#include <asm/fw/cfe/cfe_error.h>
+#include <bcm47xx.h>
+#include <bcm47xx_board.h>
+
+static int cfe_cons_handle;
+
+static u16 get_chip_id(void)
+{
+	switch (bcm47xx_bus_type) {
+#ifdef CONFIG_BCM47XX_SSB
+	case BCM47XX_BUS_TYPE_SSB:
+		return bcm47xx_bus.ssb.chip_id;
+#endif
+#ifdef CONFIG_BCM47XX_BCMA
+	case BCM47XX_BUS_TYPE_BCMA:
+		return bcm47xx_bus.bcma.bus.chipinfo.id;
+#endif
+	}
+	return 0;
+}
+
+const char *get_system_type(void)
+{
+	static char buf[50];
+	u16 chip_id = get_chip_id();
+
+	snprintf(buf, sizeof(buf),
+		 (chip_id > 0x9999) ? "Broadcom BCM%d (%s)" :
+				      "Broadcom BCM%04X (%s)",
+		 chip_id, bcm47xx_board_get_name());
+
+	return buf;
+>>>>>>> refs/remotes/origin/master
 }
 
 void prom_putchar(char c)
@@ -127,6 +169,11 @@ static __init void prom_init_mem(void)
 {
 	unsigned long mem;
 	unsigned long max;
+<<<<<<< HEAD
+=======
+	unsigned long off;
+	struct cpuinfo_mips *c = &current_cpu_data;
+>>>>>>> refs/remotes/origin/master
 
 	/* Figure out memory size by finding aliases.
 	 *
@@ -143,18 +190,40 @@ static __init void prom_init_mem(void)
 	 * max contains the biggest possible address supported by the platform.
 	 * If the method wants to try something above we assume 128MB ram.
 	 */
+<<<<<<< HEAD
 	max = ((unsigned long)(prom_init) | ((128 << 20) - 1));
 	for (mem = (1 << 20); mem < (128 << 20); mem += (1 << 20)) {
 		if (((unsigned long)(prom_init) + mem) > max) {
+=======
+	off = (unsigned long)prom_init;
+	max = off | ((128 << 20) - 1);
+	for (mem = (1 << 20); mem < (128 << 20); mem += (1 << 20)) {
+		if ((off + mem) > max) {
+>>>>>>> refs/remotes/origin/master
 			mem = (128 << 20);
 			printk(KERN_DEBUG "assume 128MB RAM\n");
 			break;
 		}
+<<<<<<< HEAD
 		if (*(unsigned long *)((unsigned long)(prom_init) + mem) ==
 		    *(unsigned long *)(prom_init))
 			break;
 	}
 
+=======
+		if (!memcmp(prom_init, prom_init + mem, 32))
+			break;
+	}
+
+	/* Ignoring the last page when ddr size is 128M. Cached
+	 * accesses to last page is causing the processor to prefetch
+	 * using address above 128M stepping out of the ddr address
+	 * space.
+	 */
+	if (c->cputype == CPU_74K && (mem == (128  << 20)))
+		mem -= 0x1000;
+
+>>>>>>> refs/remotes/origin/master
 	add_memory_region(0, mem, BOOT_MEM_RAM);
 }
 

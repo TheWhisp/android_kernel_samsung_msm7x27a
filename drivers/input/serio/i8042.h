@@ -41,6 +41,7 @@
 #define I8042_CTL_TIMEOUT	10000
 
 /*
+<<<<<<< HEAD
  * Status register bits.
  */
 
@@ -65,6 +66,8 @@
 #define I8042_CTR_XLATE		0x40
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Return codes.
  */
 

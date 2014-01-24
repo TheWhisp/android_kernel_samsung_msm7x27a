@@ -3,7 +3,15 @@
  * Copyright (C) 2009 Hong H. Pham <hong.pham@windriver.com>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -325,6 +333,17 @@ static int iterate_cpu(struct cpuinfo_tree *t, unsigned int root_index)
 	case SUN4V_CHIP_NIAGARA1:
 	case SUN4V_CHIP_NIAGARA2:
 	case SUN4V_CHIP_NIAGARA3:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	case SUN4V_CHIP_NIAGARA4:
+	case SUN4V_CHIP_NIAGARA5:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SUN4V_CHIP_NIAGARA4:
+	case SUN4V_CHIP_NIAGARA5:
+	case SUN4V_CHIP_SPARC64X:
+>>>>>>> refs/remotes/origin/master
 		rover_inc_table = niagara_iterate_method;
 		break;
 	default:

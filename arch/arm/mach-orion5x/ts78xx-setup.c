@@ -8,6 +8,11 @@
  * warranty of any kind, whether express or implied.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/sysfs.h>
@@ -34,7 +39,11 @@
  * FPGA - lives where the PCI bus would be at ORION5X_PCI_MEM_PHYS_BASE
  */
 #define TS78XX_FPGA_REGS_PHYS_BASE	0xe8000000
+<<<<<<< HEAD
 #define TS78XX_FPGA_REGS_VIRT_BASE	0xff900000
+=======
+#define TS78XX_FPGA_REGS_VIRT_BASE	IOMEM(0xff900000)
+>>>>>>> refs/remotes/origin/master
 #define TS78XX_FPGA_REGS_SIZE		SZ_1M
 
 static struct ts78xx_fpga_data ts78xx_fpga = {
@@ -48,7 +57,11 @@ static struct ts78xx_fpga_data ts78xx_fpga = {
  ****************************************************************************/
 static struct map_desc ts78xx_io_desc[] __initdata = {
 	{
+<<<<<<< HEAD
 		.virtual	= TS78XX_FPGA_REGS_VIRT_BASE,
+=======
+		.virtual	= (unsigned long)TS78XX_FPGA_REGS_VIRT_BASE,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(TS78XX_FPGA_REGS_PHYS_BASE),
 		.length		= TS78XX_FPGA_REGS_SIZE,
 		.type		= MT_DEVICE,
@@ -78,8 +91,13 @@ static struct mv_sata_platform_data ts78xx_sata_data = {
 /*****************************************************************************
  * RTC M48T86 - nicked^Wborrowed from arch/arm/mach-ep93xx/ts72xx.c
  ****************************************************************************/
+<<<<<<< HEAD
 #define TS_RTC_CTRL	(TS78XX_FPGA_REGS_VIRT_BASE | 0x808)
 #define TS_RTC_DATA	(TS78XX_FPGA_REGS_VIRT_BASE | 0x80c)
+=======
+#define TS_RTC_CTRL	(TS78XX_FPGA_REGS_VIRT_BASE + 0x808)
+#define TS_RTC_DATA	(TS78XX_FPGA_REGS_VIRT_BASE + 0x80c)
+>>>>>>> refs/remotes/origin/master
 
 static unsigned char ts78xx_ts_rtc_readbyte(unsigned long addr)
 {
@@ -115,7 +133,11 @@ static struct platform_device ts78xx_ts_rtc_device = {
  * I've used the method TS use in their rtc7800.c example for the detection
  *
  * TODO: track down a guinea pig without an RTC to see if we can work out a
+<<<<<<< HEAD
  * 		better RTC detection routine
+=======
+ *		better RTC detection routine
+>>>>>>> refs/remotes/origin/master
  */
 static int ts78xx_ts_rtc_load(void)
 {
@@ -141,10 +163,20 @@ static int ts78xx_ts_rtc_load(void)
 			} else
 				rc = platform_device_add(&ts78xx_ts_rtc_device);
 
+<<<<<<< HEAD
+=======
+			if (rc)
+				pr_info("RTC could not be registered: %d\n",
+					rc);
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	pr_info("RTC not found\n");
+>>>>>>> refs/remotes/origin/master
 	return -ENODEV;
 };
 
@@ -156,8 +188,13 @@ static void ts78xx_ts_rtc_unload(void)
 /*****************************************************************************
  * NAND Flash
  ****************************************************************************/
+<<<<<<< HEAD
 #define TS_NAND_CTRL	(TS78XX_FPGA_REGS_VIRT_BASE | 0x800)	/* VIRT */
 #define TS_NAND_DATA	(TS78XX_FPGA_REGS_PHYS_BASE | 0x804)	/* PHYS */
+=======
+#define TS_NAND_CTRL	(TS78XX_FPGA_REGS_VIRT_BASE + 0x800)	/* VIRT */
+#define TS_NAND_DATA	(TS78XX_FPGA_REGS_PHYS_BASE + 0x804)	/* PHYS */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * hardware specific access to control-lines
@@ -245,8 +282,11 @@ static void ts78xx_ts_nand_read_buf(struct mtd_info *mtd,
 		readsb(io_base, buf, len);
 }
 
+<<<<<<< HEAD
 const char *ts_nand_part_probes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mtd_partition ts78xx_ts_nand_parts[] = {
 	{
 		.name		= "mbr",
@@ -271,11 +311,22 @@ static struct mtd_partition ts78xx_ts_nand_parts[] = {
 static struct platform_nand_data ts78xx_ts_nand_data = {
 	.chip	= {
 		.nr_chips		= 1,
+<<<<<<< HEAD
 		.part_probe_types	= ts_nand_part_probes,
 		.partitions		= ts78xx_ts_nand_parts,
 		.nr_partitions		= ARRAY_SIZE(ts78xx_ts_nand_parts),
 		.chip_delay		= 15,
+<<<<<<< HEAD
 		.options		= NAND_USE_FLASH_BBT,
+=======
+		.bbt_options		= NAND_BBT_USE_FLASH,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.partitions		= ts78xx_ts_nand_parts,
+		.nr_partitions		= ARRAY_SIZE(ts78xx_ts_nand_parts),
+		.chip_delay		= 15,
+		.bbt_options		= NAND_BBT_USE_FLASH,
+>>>>>>> refs/remotes/origin/master
 	},
 	.ctrl	= {
 		/*
@@ -292,11 +343,16 @@ static struct platform_nand_data ts78xx_ts_nand_data = {
 	},
 };
 
+<<<<<<< HEAD
 static struct resource ts78xx_ts_nand_resources = {
 	.start		= TS_NAND_DATA,
 	.end		= TS_NAND_DATA + 4,
 	.flags		= IORESOURCE_MEM,
 };
+=======
+static struct resource ts78xx_ts_nand_resources
+			= DEFINE_RES_MEM(TS_NAND_DATA, 4);
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_device ts78xx_ts_nand_device = {
 	.name		= "gen_nand",
@@ -319,6 +375,11 @@ static int ts78xx_ts_nand_load(void)
 	} else
 		rc = platform_device_add(&ts78xx_ts_nand_device);
 
+<<<<<<< HEAD
+=======
+	if (rc)
+		pr_info("NAND could not be registered: %d\n", rc);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 };
 
@@ -332,11 +393,16 @@ static void ts78xx_ts_nand_unload(void)
  ****************************************************************************/
 #define TS_RNG_DATA	(TS78XX_FPGA_REGS_PHYS_BASE | 0x044)
 
+<<<<<<< HEAD
 static struct resource ts78xx_ts_rng_resource = {
 	.flags		= IORESOURCE_MEM,
 	.start		= TS_RNG_DATA,
 	.end		= TS_RNG_DATA + 4 - 1,
 };
+=======
+static struct resource ts78xx_ts_rng_resource
+			= DEFINE_RES_MEM(TS_RNG_DATA, 4);
+>>>>>>> refs/remotes/origin/master
 
 static struct timeriomem_rng_data ts78xx_ts_rng_data = {
 	.period		= 1000000, /* one second */
@@ -363,6 +429,11 @@ static int ts78xx_ts_rng_load(void)
 	} else
 		rc = platform_device_add(&ts78xx_ts_rng_device);
 
+<<<<<<< HEAD
+=======
+	if (rc)
+		pr_info("RNG could not be registered: %d\n", rc);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 };
 
@@ -402,7 +473,11 @@ static void ts78xx_fpga_supports(void)
 		/* enable devices if magic matches */
 		switch ((ts78xx_fpga.id >> 8) & 0xffffff) {
 		case TS7800_FPGA_MAGIC:
+<<<<<<< HEAD
 			pr_warning("TS-7800 FPGA: unrecognized revision 0x%.2x\n",
+=======
+			pr_warning("unrecognised FPGA revision 0x%.2x\n",
+>>>>>>> refs/remotes/origin/master
 					ts78xx_fpga.id & 0xff);
 			ts78xx_fpga.supports.ts_rtc.present = 1;
 			ts78xx_fpga.supports.ts_nand.present = 1;
@@ -422,26 +497,41 @@ static int ts78xx_fpga_load_devices(void)
 
 	if (ts78xx_fpga.supports.ts_rtc.present == 1) {
 		tmp = ts78xx_ts_rtc_load();
+<<<<<<< HEAD
 		if (tmp) {
 			pr_info("TS-78xx: RTC not registered\n");
 			ts78xx_fpga.supports.ts_rtc.present = 0;
 		}
+=======
+		if (tmp)
+			ts78xx_fpga.supports.ts_rtc.present = 0;
+>>>>>>> refs/remotes/origin/master
 		ret |= tmp;
 	}
 	if (ts78xx_fpga.supports.ts_nand.present == 1) {
 		tmp = ts78xx_ts_nand_load();
+<<<<<<< HEAD
 		if (tmp) {
 			pr_info("TS-78xx: NAND not registered\n");
 			ts78xx_fpga.supports.ts_nand.present = 0;
 		}
+=======
+		if (tmp)
+			ts78xx_fpga.supports.ts_nand.present = 0;
+>>>>>>> refs/remotes/origin/master
 		ret |= tmp;
 	}
 	if (ts78xx_fpga.supports.ts_rng.present == 1) {
 		tmp = ts78xx_ts_rng_load();
+<<<<<<< HEAD
 		if (tmp) {
 			pr_info("TS-78xx: RNG not registered\n");
 			ts78xx_fpga.supports.ts_rng.present = 0;
 		}
+=======
+		if (tmp)
+			ts78xx_fpga.supports.ts_rng.present = 0;
+>>>>>>> refs/remotes/origin/master
 		ret |= tmp;
 	}
 
@@ -466,7 +556,11 @@ static int ts78xx_fpga_load(void)
 {
 	ts78xx_fpga.id = readl(TS78XX_FPGA_REGS_VIRT_BASE);
 
+<<<<<<< HEAD
 	pr_info("TS-78xx FPGA: magic=0x%.6x, rev=0x%.2x\n",
+=======
+	pr_info("FPGA magic=0x%.6x, rev=0x%.2x\n",
+>>>>>>> refs/remotes/origin/master
 			(ts78xx_fpga.id >> 8) & 0xffffff,
 			ts78xx_fpga.id & 0xff);
 
@@ -494,7 +588,11 @@ static int ts78xx_fpga_unload(void)
 	 * UrJTAG SVN since r1381 can be used to reprogram the FPGA
 	 */
 	if (ts78xx_fpga.id != fpga_id) {
+<<<<<<< HEAD
 		pr_err("TS-78xx FPGA: magic/rev mismatch\n"
+=======
+		pr_err("FPGA magic/rev mismatch\n"
+>>>>>>> refs/remotes/origin/master
 			"TS-78xx FPGA: was 0x%.6x/%.2x but now 0x%.6x/%.2x\n",
 			(ts78xx_fpga.id >> 8) & 0xffffff, ts78xx_fpga.id & 0xff,
 			(fpga_id >> 8) & 0xffffff, fpga_id & 0xff);
@@ -525,7 +623,11 @@ static ssize_t ts78xx_fpga_store(struct kobject *kobj,
 	int value, ret;
 
 	if (ts78xx_fpga.state < 0) {
+<<<<<<< HEAD
 		pr_err("TS-78xx FPGA: borked, you must powercycle asap\n");
+=======
+		pr_err("FPGA borked, you must powercycle ASAP\n");
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
@@ -533,10 +635,15 @@ static ssize_t ts78xx_fpga_store(struct kobject *kobj,
 		value = 1;
 	else if (strncmp(buf, "offline", sizeof("offline") - 1) == 0)
 		value = 0;
+<<<<<<< HEAD
 	else {
 		pr_err("ts78xx_fpga_store: Invalid value\n");
 		return -EINVAL;
 	}
+=======
+	else
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	if (ts78xx_fpga.state == value)
 		return n;
@@ -614,17 +721,38 @@ static void __init ts78xx_init(void)
 	/* FPGA init */
 	ts78xx_fpga_devices_zero_init();
 	ret = ts78xx_fpga_load();
+<<<<<<< HEAD
 	ret = sysfs_create_file(power_kobj, &ts78xx_fpga_attr.attr);
+=======
+	ret = sysfs_create_file(firmware_kobj, &ts78xx_fpga_attr.attr);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		pr_err("sysfs_create_file failed: %d\n", ret);
 }
 
 MACHINE_START(TS78XX, "Technologic Systems TS-78xx SBC")
 	/* Maintainer: Alexander Clouter <alex@digriz.org.uk> */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= ts78xx_init,
 	.map_io		= ts78xx_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
+<<<<<<< HEAD
 	.timer		= &orion5x_timer,
+<<<<<<< HEAD
+=======
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= orion5x_timer_init,
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

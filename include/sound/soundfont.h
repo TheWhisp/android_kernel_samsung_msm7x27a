@@ -22,8 +22,13 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  */
 
+<<<<<<< HEAD
 #include "sfnt_info.h"
 #include "util_mem.h"
+=======
+#include <sound/sfnt_info.h>
+#include <sound/util_mem.h>
+>>>>>>> refs/remotes/origin/master
 
 #define SF_MAX_INSTRUMENTS	128	/* maximum instrument number */
 #define SF_MAX_PRESETS  256	/* drums are mapped from 128 to 256 */
@@ -121,7 +126,15 @@ int snd_soundfont_search_zone(struct snd_sf_list *sflist, int *notep, int vel,
 int snd_sf_calc_parm_hold(int msec);
 int snd_sf_calc_parm_attack(int msec);
 int snd_sf_calc_parm_decay(int msec);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define snd_sf_calc_parm_delay(msec) (0x8000 - (msec) * 1000 / 725);
+=======
+#define snd_sf_calc_parm_delay(msec) (0x8000 - (msec) * 1000 / 725)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define snd_sf_calc_parm_delay(msec) (0x8000 - (msec) * 1000 / 725)
+>>>>>>> refs/remotes/origin/master
 extern int snd_sf_vol_table[128];
 int snd_sf_linear_to_log(unsigned int amount, int offset, int ratio);
 

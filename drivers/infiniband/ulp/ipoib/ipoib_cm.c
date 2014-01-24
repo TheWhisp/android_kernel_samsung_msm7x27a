@@ -37,6 +37,14 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ipoib.h"
 
@@ -84,7 +92,15 @@ static void ipoib_cm_dma_unmap_rx(struct ipoib_dev_priv *priv, int frags,
 	ib_dma_unmap_single(priv->ca, mapping[0], IPOIB_CM_HEAD_SIZE, DMA_FROM_DEVICE);
 
 	for (i = 0; i < frags; ++i)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ib_dma_unmap_single(priv->ca, mapping[i + 1], PAGE_SIZE, DMA_FROM_DEVICE);
+=======
+		ib_dma_unmap_page(priv->ca, mapping[i + 1], PAGE_SIZE, DMA_FROM_DEVICE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ib_dma_unmap_page(priv->ca, mapping[i + 1], PAGE_SIZE, DMA_FROM_DEVICE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ipoib_cm_post_receive_srq(struct net_device *dev, int id)
@@ -139,7 +155,12 @@ static int ipoib_cm_post_receive_nonsrq(struct net_device *dev,
 static struct sk_buff *ipoib_cm_alloc_rx_skb(struct net_device *dev,
 					     struct ipoib_cm_rx_buf *rx_ring,
 					     int id, int frags,
+<<<<<<< HEAD
 					     u64 mapping[IPOIB_CM_RX_SG])
+=======
+					     u64 mapping[IPOIB_CM_RX_SG],
+					     gfp_t gfp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 	struct sk_buff *skb;
@@ -163,13 +184,25 @@ static struct sk_buff *ipoib_cm_alloc_rx_skb(struct net_device *dev,
 	}
 
 	for (i = 0; i < frags; i++) {
+<<<<<<< HEAD
 		struct page *page = alloc_page(GFP_ATOMIC);
+=======
+		struct page *page = alloc_page(gfp);
+>>>>>>> refs/remotes/origin/master
 
 		if (!page)
 			goto partial_error;
 		skb_fill_page_desc(skb, i, page, 0, PAGE_SIZE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mapping[i + 1] = ib_dma_map_page(priv->ca, skb_shinfo(skb)->frags[i].page,
+=======
+		mapping[i + 1] = ib_dma_map_page(priv->ca, page,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mapping[i + 1] = ib_dma_map_page(priv->ca, page,
+>>>>>>> refs/remotes/origin/master
 						 0, PAGE_SIZE, DMA_FROM_DEVICE);
 		if (unlikely(ib_dma_mapping_error(priv->ca, mapping[i + 1])))
 			goto partial_error;
@@ -183,7 +216,15 @@ partial_error:
 	ib_dma_unmap_single(priv->ca, mapping[0], IPOIB_CM_HEAD_SIZE, DMA_FROM_DEVICE);
 
 	for (; i > 0; --i)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ib_dma_unmap_single(priv->ca, mapping[i], PAGE_SIZE, DMA_FROM_DEVICE);
+=======
+		ib_dma_unmap_page(priv->ca, mapping[i], PAGE_SIZE, DMA_FROM_DEVICE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ib_dma_unmap_page(priv->ca, mapping[i], PAGE_SIZE, DMA_FROM_DEVICE);
+>>>>>>> refs/remotes/origin/master
 
 	dev_kfree_skb_any(skb);
 	return NULL;
@@ -381,7 +422,12 @@ static int ipoib_cm_nonsrq_init_rx(struct net_device *dev, struct ib_cm_id *cm_i
 
 	for (i = 0; i < ipoib_recvq_size; ++i) {
 		if (!ipoib_cm_alloc_rx_skb(dev, rx->rx_ring, i, IPOIB_CM_RX_SG - 1,
+<<<<<<< HEAD
 					   rx->rx_ring[i].mapping)) {
+=======
+					   rx->rx_ring[i].mapping,
+					   GFP_KERNEL)) {
+>>>>>>> refs/remotes/origin/master
 			ipoib_warn(priv, "failed to allocate receive buffer %d\n", i);
 				ret = -ENOMEM;
 				goto err_count;
@@ -459,7 +505,11 @@ static int ipoib_cm_req_handler(struct ib_cm_id *cm_id, struct ib_cm_event *even
 		goto err_qp;
 	}
 
+<<<<<<< HEAD
 	psn = random32() & 0xffffff;
+=======
+	psn = prandom_u32() & 0xffffff;
+>>>>>>> refs/remotes/origin/master
 	ret = ipoib_cm_modify_rx_qp(dev, cm_id, p->qp, psn);
 	if (ret)
 		goto err_modify;
@@ -537,12 +587,30 @@ static void skb_put_frags(struct sk_buff *skb, unsigned int hdr_space,
 
 		if (length == 0) {
 			/* don't need this page */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			skb_fill_page_desc(toskb, i, frag->page, 0, PAGE_SIZE);
+=======
+			skb_fill_page_desc(toskb, i, skb_frag_page(frag),
+					   0, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			skb_fill_page_desc(toskb, i, skb_frag_page(frag),
+					   0, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 			--skb_shinfo(skb)->nr_frags;
 		} else {
 			size = min(length, (unsigned) PAGE_SIZE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			frag->size = size;
+=======
+			skb_frag_size_set(frag, size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			skb_frag_size_set(frag, size);
+>>>>>>> refs/remotes/origin/master
 			skb->data_len += size;
 			skb->truesize += size;
 			skb->len += size;
@@ -637,7 +705,12 @@ void ipoib_cm_handle_rx_wc(struct net_device *dev, struct ib_wc *wc)
 	frags = PAGE_ALIGN(wc->byte_len - min(wc->byte_len,
 					      (unsigned)IPOIB_CM_HEAD_SIZE)) / PAGE_SIZE;
 
+<<<<<<< HEAD
 	newskb = ipoib_cm_alloc_rx_skb(dev, rx_ring, wr_id, frags, mapping);
+=======
+	newskb = ipoib_cm_alloc_rx_skb(dev, rx_ring, wr_id, frags,
+				       mapping, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(!newskb)) {
 		/*
 		 * If we can't allocate a new RX buffer, dump
@@ -739,6 +812,12 @@ void ipoib_cm_send(struct net_device *dev, struct sk_buff *skb, struct ipoib_cm_
 
 	tx_req->mapping = addr;
 
+<<<<<<< HEAD
+=======
+	skb_orphan(skb);
+	skb_dst_drop(skb);
+
+>>>>>>> refs/remotes/origin/master
 	rc = post_send(priv, tx, tx->tx_head & (ipoib_sendq_size - 1),
 		       addr, skb->len);
 	if (unlikely(rc)) {
@@ -812,10 +891,14 @@ void ipoib_cm_handle_tx_wc(struct net_device *dev, struct ib_wc *wc)
 
 		if (neigh) {
 			neigh->cm = NULL;
+<<<<<<< HEAD
 			list_del(&neigh->list);
 			if (neigh->ah)
 				ipoib_put_ah(neigh->ah);
 			ipoib_neigh_free(dev, neigh);
+=======
+			ipoib_neigh_free(neigh);
+>>>>>>> refs/remotes/origin/master
 
 			tx->neigh = NULL;
 		}
@@ -1231,10 +1314,14 @@ static int ipoib_cm_tx_handler(struct ib_cm_id *cm_id,
 
 		if (neigh) {
 			neigh->cm = NULL;
+<<<<<<< HEAD
 			list_del(&neigh->list);
 			if (neigh->ah)
 				ipoib_put_ah(neigh->ah);
 			ipoib_neigh_free(dev, neigh);
+=======
+			ipoib_neigh_free(neigh);
+>>>>>>> refs/remotes/origin/master
 
 			tx->neigh = NULL;
 		}
@@ -1277,12 +1364,24 @@ struct ipoib_cm_tx *ipoib_cm_create_tx(struct net_device *dev, struct ipoib_path
 void ipoib_cm_destroy_tx(struct ipoib_cm_tx *tx)
 {
 	struct ipoib_dev_priv *priv = netdev_priv(tx->dev);
+<<<<<<< HEAD
 	if (test_and_clear_bit(IPOIB_FLAG_INITIALIZED, &tx->flags)) {
 		list_move(&tx->list, &priv->cm.reap_list);
 		queue_work(ipoib_workqueue, &priv->cm.reap_task);
 		ipoib_dbg(priv, "Reap connection for gid %pI6\n",
 			  tx->neigh->dgid.raw);
 		tx->neigh = NULL;
+=======
+	unsigned long flags;
+	if (test_and_clear_bit(IPOIB_FLAG_INITIALIZED, &tx->flags)) {
+		spin_lock_irqsave(&priv->lock, flags);
+		list_move(&tx->list, &priv->cm.reap_list);
+		queue_work(ipoib_workqueue, &priv->cm.reap_task);
+		ipoib_dbg(priv, "Reap connection for gid %pI6\n",
+			  tx->neigh->daddr + 4);
+		tx->neigh = NULL;
+		spin_unlock_irqrestore(&priv->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1306,7 +1405,11 @@ static void ipoib_cm_tx_start(struct work_struct *work)
 		p = list_entry(priv->cm.start_list.next, typeof(*p), list);
 		list_del_init(&p->list);
 		neigh = p->neigh;
+<<<<<<< HEAD
 		qpn = IPOIB_QPN(neigh->neighbour->ha);
+=======
+		qpn = IPOIB_QPN(neigh->daddr);
+>>>>>>> refs/remotes/origin/master
 		memcpy(&pathrec, &p->path->pathrec, sizeof pathrec);
 
 		spin_unlock_irqrestore(&priv->lock, flags);
@@ -1321,10 +1424,14 @@ static void ipoib_cm_tx_start(struct work_struct *work)
 			neigh = p->neigh;
 			if (neigh) {
 				neigh->cm = NULL;
+<<<<<<< HEAD
 				list_del(&neigh->list);
 				if (neigh->ah)
 					ipoib_put_ah(neigh->ah);
 				ipoib_neigh_free(dev, neigh);
+=======
+				ipoib_neigh_free(neigh);
+>>>>>>> refs/remotes/origin/master
 			}
 			list_del(&p->list);
 			kfree(p);
@@ -1378,7 +1485,11 @@ static void ipoib_cm_skb_reap(struct work_struct *work)
 
 		if (skb->protocol == htons(ETH_P_IP))
 			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED, htonl(mtu));
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 		else if (skb->protocol == htons(ETH_P_IPV6))
 			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
 #endif
@@ -1399,7 +1510,11 @@ void ipoib_cm_skb_too_long(struct net_device *dev, struct sk_buff *skb,
 	int e = skb_queue_empty(&priv->cm.skb_queue);
 
 	if (skb_dst(skb))
+<<<<<<< HEAD
 		skb_dst(skb)->ops->update_pmtu(skb_dst(skb), mtu);
+=======
+		skb_dst(skb)->ops->update_pmtu(skb_dst(skb), NULL, skb, mtu);
+>>>>>>> refs/remotes/origin/master
 
 	skb_queue_tail(&priv->cm.skb_queue, skb);
 	if (e)
@@ -1457,11 +1572,16 @@ static ssize_t set_mode(struct device *d, struct device_attribute *attr,
 			const char *buf, size_t count)
 {
 	struct net_device *dev = to_net_dev(d);
+<<<<<<< HEAD
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!rtnl_trylock())
 		return restart_syscall();
 
+<<<<<<< HEAD
 	/* flush paths if we switch modes so that connections are restarted */
 	if (IPOIB_CM_SUPPORTED(dev->dev_addr) && !strcmp(buf, "connected\n")) {
 		set_bit(IPOIB_FLAG_ADMIN_CM, &priv->flags);
@@ -1487,6 +1607,16 @@ static ssize_t set_mode(struct device *d, struct device_attribute *attr,
 	rtnl_unlock();
 
 	return -EINVAL;
+=======
+	ret = ipoib_set_mode(dev, buf);
+
+	rtnl_unlock();
+
+	if (!ret)
+		return count;
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static DEVICE_ATTR(mode, S_IWUSR | S_IRUGO, show_mode, set_mode);
@@ -1500,6 +1630,14 @@ static void ipoib_cm_create_srq(struct net_device *dev, int max_sge)
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 	struct ib_srq_init_attr srq_init_attr = {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.srq_type = IB_SRQT_BASIC,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.srq_type = IB_SRQT_BASIC,
+>>>>>>> refs/remotes/origin/master
 		.attr = {
 			.max_wr  = ipoib_recvq_size,
 			.max_sge = max_sge
@@ -1573,7 +1711,12 @@ int ipoib_cm_dev_init(struct net_device *dev)
 		for (i = 0; i < ipoib_recvq_size; ++i) {
 			if (!ipoib_cm_alloc_rx_skb(dev, priv->cm.srq_ring, i,
 						   priv->cm.num_frags - 1,
+<<<<<<< HEAD
 						   priv->cm.srq_ring[i].mapping)) {
+=======
+						   priv->cm.srq_ring[i].mapping,
+						   GFP_KERNEL)) {
+>>>>>>> refs/remotes/origin/master
 				ipoib_warn(priv, "failed to allocate "
 					   "receive buffer %d\n", i);
 				ipoib_cm_dev_cleanup(dev);

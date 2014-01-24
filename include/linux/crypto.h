@@ -17,10 +17,23 @@
 #ifndef _LINUX_CRYPTO_H
 #define _LINUX_CRYPTO_H
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/list.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/atomic.h>
+#include <linux/kernel.h>
+#include <linux/list.h>
+#include <linux/bug.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/string.h>
 #include <linux/uaccess.h>
@@ -72,6 +85,25 @@
 #define CRYPTO_ALG_TESTED		0x00000400
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Set if the algorithm is an instance that is build from templates.
+ */
+#define CRYPTO_ALG_INSTANCE		0x00000800
+
+/* Set this bit if the algorithm provided is hardware accelerated but
+ * not available to userspace via instruction set or so.
+ */
+#define CRYPTO_ALG_KERN_DRIVER_ONLY	0x00001000
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Transform masks and values (for crt_flags).
  */
 #define CRYPTO_TFM_REQ_MASK		0x000fff00
@@ -305,6 +337,16 @@ struct crypto_alg {
  */
 int crypto_register_alg(struct crypto_alg *alg);
 int crypto_unregister_alg(struct crypto_alg *alg);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+int crypto_register_algs(struct crypto_alg *algs, int count);
+int crypto_unregister_algs(struct crypto_alg *algs, int count);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int crypto_register_algs(struct crypto_alg *algs, int count);
+int crypto_unregister_algs(struct crypto_alg *algs, int count);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Algorithm query interface.
@@ -505,11 +547,17 @@ static inline int crypto_tfm_alg_priority(struct crypto_tfm *tfm)
 	return tfm->__crt_alg->cra_priority;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline const char *crypto_tfm_alg_modname(struct crypto_tfm *tfm)
 {
 	return module_name(tfm->__crt_alg->cra_module);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 crypto_tfm_alg_type(struct crypto_tfm *tfm)
 {
 	return tfm->__crt_alg->cra_flags & CRYPTO_ALG_TYPE_MASK;

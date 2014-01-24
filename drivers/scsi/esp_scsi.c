@@ -1002,7 +1002,11 @@ static int esp_check_spur_intr(struct esp *esp)
 
 static void esp_schedule_reset(struct esp *esp)
 {
+<<<<<<< HEAD
 	esp_log_reset("ESP: esp_schedule_reset() from %p\n",
+=======
+	esp_log_reset("ESP: esp_schedule_reset() from %pf\n",
+>>>>>>> refs/remotes/origin/master
 		      __builtin_return_address(0));
 	esp->flags |= ESP_FLAG_RESETTING;
 	esp_event(esp, ESP_EVENT_RESET);

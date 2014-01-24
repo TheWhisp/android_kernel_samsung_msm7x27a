@@ -48,6 +48,16 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -63,7 +73,13 @@
 #include <linux/io.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define OUR_NAME "sbc60xxwdt"
 #define PFX OUR_NAME ": "
@@ -105,8 +121,18 @@ MODULE_PARM_DESC(timeout,
 	"Watchdog timeout in seconds. (1<=timeout<=3600, default="
 				__MODULE_STRING(WATCHDOG_TIMEOUT) ")");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -132,8 +158,16 @@ static void wdt_timer_ping(unsigned long data)
 		/* Re-set the timer interval */
 		mod_timer(&timer, jiffies + WDT_INTERVAL);
 	} else
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING PFX
 			"Heartbeat lost! Will not ping the watchdog\n");
+=======
+		pr_warn("Heartbeat lost! Will not ping the watchdog\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("Heartbeat lost! Will not ping the watchdog\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -146,7 +180,15 @@ static void wdt_startup(void)
 
 	/* Start the timer */
 	mod_timer(&timer, jiffies + WDT_INTERVAL);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Watchdog timer is now enabled.\n");
+=======
+	pr_info("Watchdog timer is now enabled\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Watchdog timer is now enabled\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wdt_turnoff(void)
@@ -154,7 +196,15 @@ static void wdt_turnoff(void)
 	/* Stop the timer */
 	del_timer(&timer);
 	inb_p(wdt_stop);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Watchdog timer is now disabled...\n");
+=======
+	pr_info("Watchdog timer is now disabled...\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Watchdog timer is now disabled...\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wdt_keepalive(void)
@@ -217,8 +267,16 @@ static int fop_close(struct inode *inode, struct file *file)
 		wdt_turnoff();
 	else {
 		del_timer(&timer);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 		  "device file closed unexpectedly. Will not stop the WDT!\n");
+=======
+		pr_crit("device file closed unexpectedly. Will not stop the WDT!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("device file closed unexpectedly. Will not stop the WDT!\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	clear_bit(0, &wdt_is_open);
 	wdt_expect_close = 0;
@@ -335,6 +393,8 @@ static int __init sbc60xxwdt_init(void)
 
 	if (timeout < 1 || timeout > 3600) { /* arbitrary upper limit */
 		timeout = WATCHDOG_TIMEOUT;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"timeout value must be 1 <= x <= 3600, using %d\n",
 								timeout);
@@ -343,6 +403,19 @@ static int __init sbc60xxwdt_init(void)
 	if (!request_region(wdt_start, 1, "SBC 60XX WDT")) {
 		printk(KERN_ERR PFX "I/O address 0x%04x already in use\n",
 			wdt_start);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_info("timeout value must be 1 <= x <= 3600, using %d\n",
+			timeout);
+	}
+
+	if (!request_region(wdt_start, 1, "SBC 60XX WDT")) {
+		pr_err("I/O address 0x%04x already in use\n", wdt_start);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = -EIO;
 		goto err_out;
 	}
@@ -350,9 +423,17 @@ static int __init sbc60xxwdt_init(void)
 	/* We cannot reserve 0x45 - the kernel already has! */
 	if (wdt_stop != 0x45 && wdt_stop != wdt_start) {
 		if (!request_region(wdt_stop, 1, "SBC 60XX WDT")) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR PFX
 				"I/O address 0x%04x already in use\n",
 							wdt_stop);
+=======
+			pr_err("I/O address 0x%04x already in use\n", wdt_stop);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("I/O address 0x%04x already in use\n", wdt_stop);
+>>>>>>> refs/remotes/origin/master
 			rc = -EIO;
 			goto err_out_region1;
 		}
@@ -360,13 +441,23 @@ static int __init sbc60xxwdt_init(void)
 
 	rc = register_reboot_notifier(&wdt_notifier);
 	if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", rc);
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", rc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_region2;
 	}
 
 	rc = misc_register(&wdt_miscdev);
 	if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 						wdt_miscdev.minor, rc);
@@ -375,6 +466,19 @@ static int __init sbc60xxwdt_init(void)
 	printk(KERN_INFO PFX
 		"WDT driver for 60XX single board computer initialised. "
 		"timeout=%d sec (nowayout=%d)\n", timeout, nowayout);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       wdt_miscdev.minor, rc);
+		goto err_out_reboot;
+	}
+	pr_info("WDT driver for 60XX single board computer initialised. timeout=%d sec (nowayout=%d)\n",
+		timeout, nowayout);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -395,4 +499,7 @@ module_exit(sbc60xxwdt_unload);
 MODULE_AUTHOR("Jakob Oestergaard <jakob@unthought.net>");
 MODULE_DESCRIPTION("60xx Single Board Computer Watchdog Timer driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

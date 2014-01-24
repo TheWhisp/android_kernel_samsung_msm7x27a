@@ -12,7 +12,11 @@ EXPORT_SYMBOL(memset);
 EXPORT_SYMBOL(memcpy);
 EXPORT_SYMBOL(strlen);
 
+<<<<<<< HEAD
 #include<asm/pgtable.h>
+=======
+#include <asm/pgtable.h>
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(empty_zero_page);
 
 #include <asm/checksum.h>

@@ -68,7 +68,11 @@ static int als_wait_for_data_ready(struct device *dev)
 		ret = i2c_smbus_read_byte_data(client, 0x86);
 	} while (!(ret & 0x80) && retry--);
 
+<<<<<<< HEAD
 	if (!retry) {
+=======
+	if (retry < 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_warn(dev, "timeout waiting for data ready\n");
 		return -ETIMEDOUT;
 	}
@@ -126,8 +130,14 @@ static ssize_t als_sensing_range_store(struct device *dev,
 	int ret_val;
 	unsigned long val;
 
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val))
 		return -EINVAL;
+=======
+	ret_val = kstrtoul(buf, 10, &val);
+	if (ret_val)
+		return ret_val;
+>>>>>>> refs/remotes/origin/master
 
 	if (val < 4096)
 		val = 1;
@@ -254,7 +264,11 @@ als_error1:
 	return res;
 }
 
+<<<<<<< HEAD
 static int __devexit apds9802als_remove(struct i2c_client *client)
+=======
+static int apds9802als_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct als_data *data = i2c_get_clientdata(client);
 
@@ -272,6 +286,7 @@ static int __devexit apds9802als_remove(struct i2c_client *client)
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 static int apds9802als_suspend(struct i2c_client *client, pm_message_t mesg)
 {
 	als_set_power_state(client, false);
@@ -285,6 +300,10 @@ static int apds9802als_resume(struct i2c_client *client)
 }
 
 static int apds9802als_runtime_suspend(struct device *dev)
+=======
+
+static int apds9802als_suspend(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct i2c_client *client = to_i2c_client(dev);
 
@@ -292,7 +311,11 @@ static int apds9802als_runtime_suspend(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int apds9802als_runtime_resume(struct device *dev)
+=======
+static int apds9802als_resume(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct i2c_client *client = to_i2c_client(dev);
 
@@ -300,16 +323,24 @@ static int apds9802als_runtime_resume(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct dev_pm_ops apds9802als_pm_ops = {
 	.runtime_suspend = apds9802als_runtime_suspend,
 	.runtime_resume = apds9802als_runtime_resume,
 };
+=======
+static UNIVERSAL_DEV_PM_OPS(apds9802als_pm_ops, apds9802als_suspend,
+	apds9802als_resume, NULL);
+>>>>>>> refs/remotes/origin/master
 
 #define APDS9802ALS_PM_OPS (&apds9802als_pm_ops)
 
 #else	/* CONFIG_PM */
+<<<<<<< HEAD
 #define apds9802als_suspend NULL
 #define apds9802als_resume NULL
+=======
+>>>>>>> refs/remotes/origin/master
 #define APDS9802ALS_PM_OPS NULL
 #endif	/* CONFIG_PM */
 
@@ -326,12 +357,14 @@ static struct i2c_driver apds9802als_driver = {
 		.pm = APDS9802ALS_PM_OPS,
 	},
 	.probe = apds9802als_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(apds9802als_remove),
 	.suspend = apds9802als_suspend,
 	.resume = apds9802als_resume,
 	.id_table = apds9802als_id,
 };
 
+<<<<<<< HEAD
 static int __init sensor_apds9802als_init(void)
 {
 	return i2c_add_driver(&apds9802als_driver);
@@ -343,6 +376,16 @@ static void  __exit sensor_apds9802als_exit(void)
 }
 module_init(sensor_apds9802als_init);
 module_exit(sensor_apds9802als_exit);
+=======
+module_i2c_driver(apds9802als_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = apds9802als_remove,
+	.id_table = apds9802als_id,
+};
+
+module_i2c_driver(apds9802als_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Anantha Narayanan <Anantha.Narayanan@intel.com");
 MODULE_DESCRIPTION("Avago apds9802als ALS Driver");

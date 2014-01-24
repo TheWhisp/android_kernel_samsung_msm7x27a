@@ -13,7 +13,12 @@
 	ERSN(DEBUG), ERSN(HLT), ERSN(MMIO), ERSN(IRQ_WINDOW_OPEN),	\
 	ERSN(SHUTDOWN), ERSN(FAIL_ENTRY), ERSN(INTR), ERSN(SET_TPR),	\
 	ERSN(TPR_ACCESS), ERSN(S390_SIEIC), ERSN(S390_RESET), ERSN(DCR),\
+<<<<<<< HEAD
 	ERSN(NMI), ERSN(INTERNAL_ERROR), ERSN(OSI)
+=======
+	ERSN(NMI), ERSN(INTERNAL_ERROR), ERSN(OSI), ERSN(PAPR_HCALL),	\
+	ERSN(S390_UCONTROL), ERSN(WATCHDOG), ERSN(S390_TSCH)
+>>>>>>> refs/remotes/origin/master
 
 TRACE_EVENT(kvm_userspace_exit,
 	    TP_PROTO(__u32 reason, int errno),
@@ -36,7 +41,11 @@ TRACE_EVENT(kvm_userspace_exit,
 		  __entry->errno < 0 ? -__entry->errno : __entry->reason)
 );
 
+<<<<<<< HEAD
 #if defined(__KVM_HAVE_IOAPIC)
+=======
+#if defined(CONFIG_HAVE_KVM_IRQCHIP)
+>>>>>>> refs/remotes/origin/master
 TRACE_EVENT(kvm_set_irq,
 	TP_PROTO(unsigned int gsi, int level, int irq_source_id),
 	TP_ARGS(gsi, level, irq_source_id),
@@ -56,7 +65,13 @@ TRACE_EVENT(kvm_set_irq,
 	TP_printk("gsi %u level %d source %d",
 		  __entry->gsi, __entry->level, __entry->irq_source_id)
 );
+<<<<<<< HEAD
 
+=======
+#endif
+
+#if defined(__KVM_HAVE_IOAPIC)
+>>>>>>> refs/remotes/origin/master
 #define kvm_deliver_mode		\
 	{0x0, "Fixed"},			\
 	{0x1, "LowPrio"},		\
@@ -119,6 +134,13 @@ TRACE_EVENT(kvm_msi_set_irq,
 	{KVM_IRQCHIP_PIC_SLAVE,		"PIC slave"},		\
 	{KVM_IRQCHIP_IOAPIC,		"IOAPIC"}
 
+<<<<<<< HEAD
+=======
+#endif /* defined(__KVM_HAVE_IOAPIC) */
+
+#if defined(CONFIG_HAVE_KVM_IRQCHIP)
+
+>>>>>>> refs/remotes/origin/master
 TRACE_EVENT(kvm_ack_irq,
 	TP_PROTO(unsigned int irqchip, unsigned int pin),
 	TP_ARGS(irqchip, pin),
@@ -133,6 +155,7 @@ TRACE_EVENT(kvm_ack_irq,
 		__entry->pin		= pin;
 	),
 
+<<<<<<< HEAD
 	TP_printk("irqchip %s pin %u",
 		  __print_symbolic(__entry->irqchip, kvm_irqchips),
 		 __entry->pin)
@@ -141,6 +164,20 @@ TRACE_EVENT(kvm_ack_irq,
 
 
 #endif /* defined(__KVM_HAVE_IOAPIC) */
+=======
+#ifdef kvm_irqchips
+	TP_printk("irqchip %s pin %u",
+		  __print_symbolic(__entry->irqchip, kvm_irqchips),
+		 __entry->pin)
+#else
+	TP_printk("irqchip %d pin %u", __entry->irqchip, __entry->pin)
+#endif
+);
+
+#endif /* defined(CONFIG_HAVE_KVM_IRQCHIP) */
+
+
+>>>>>>> refs/remotes/origin/master
 
 #define KVM_TRACE_MMIO_READ_UNSATISFIED 0
 #define KVM_TRACE_MMIO_READ 1
@@ -285,23 +322,39 @@ DEFINE_EVENT(kvm_async_pf_nopresent_ready, kvm_async_pf_ready,
 
 TRACE_EVENT(
 	kvm_async_pf_completed,
+<<<<<<< HEAD
 	TP_PROTO(unsigned long address, struct page *page, u64 gva),
 	TP_ARGS(address, page, gva),
 
 	TP_STRUCT__entry(
 		__field(unsigned long, address)
 		__field(pfn_t, pfn)
+=======
+	TP_PROTO(unsigned long address, u64 gva),
+	TP_ARGS(address, gva),
+
+	TP_STRUCT__entry(
+		__field(unsigned long, address)
+>>>>>>> refs/remotes/origin/master
 		__field(u64, gva)
 		),
 
 	TP_fast_assign(
 		__entry->address = address;
+<<<<<<< HEAD
 		__entry->pfn = page ? page_to_pfn(page) : 0;
 		__entry->gva = gva;
 		),
 
 	TP_printk("gva %#llx address %#lx pfn %#llx",  __entry->gva,
 		  __entry->address, __entry->pfn)
+=======
+		__entry->gva = gva;
+		),
+
+	TP_printk("gva %#llx address %#lx",  __entry->gva,
+		  __entry->address)
+>>>>>>> refs/remotes/origin/master
 );
 
 #endif

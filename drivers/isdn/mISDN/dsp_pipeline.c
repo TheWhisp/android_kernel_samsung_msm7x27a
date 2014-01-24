@@ -30,6 +30,14 @@
 #include <linux/string.h>
 #include <linux/mISDNif.h>
 #include <linux/mISDNdsp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "dsp.h"
 #include "dsp_hwec.h"
 
@@ -62,11 +70,25 @@ attr_show_args(struct device *dev, struct device_attribute *attr, char *buf)
 	*buf = 0;
 	for (i = 0; i < elem->num_args; i++)
 		p += sprintf(p, "Name:        %s\n%s%s%sDescription: %s\n\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  elem->args[i].name,
 			  elem->args[i].def ? "Default:     " : "",
 			  elem->args[i].def ? elem->args[i].def : "",
 			  elem->args[i].def ? "\n" : "",
 			  elem->args[i].desc);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			     elem->args[i].name,
+			     elem->args[i].def ? "Default:     " : "",
+			     elem->args[i].def ? elem->args[i].def : "",
+			     elem->args[i].def ? "\n" : "",
+			     elem->args[i].desc);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return p - buf;
 }
@@ -101,21 +123,46 @@ int mISDN_dsp_element_register(struct mISDN_dsp_element *elem)
 	entry->dev.class = elements_class;
 	entry->dev.release = mISDN_dsp_dev_release;
 	dev_set_drvdata(&entry->dev, elem);
+<<<<<<< HEAD
 	dev_set_name(&entry->dev, elem->name);
 	ret = device_register(&entry->dev);
 	if (ret) {
 		printk(KERN_ERR "%s: failed to register %s\n",
+<<<<<<< HEAD
 			__func__, elem->name);
+=======
+		       __func__, elem->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_set_name(&entry->dev, "%s", elem->name);
+	ret = device_register(&entry->dev);
+	if (ret) {
+		printk(KERN_ERR "%s: failed to register %s\n",
+		       __func__, elem->name);
+>>>>>>> refs/remotes/origin/master
 		goto err1;
 	}
 	list_add_tail(&entry->list, &dsp_elements);
 
 	for (i = 0; i < ARRAY_SIZE(element_attributes); ++i) {
 		ret = device_create_file(&entry->dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				&element_attributes[i]);
 		if (ret) {
 			printk(KERN_ERR "%s: failed to create device file\n",
 				__func__);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+					 &element_attributes[i]);
+		if (ret) {
+			printk(KERN_ERR "%s: failed to create device file\n",
+			       __func__);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto err2;
 		}
 	}
@@ -147,7 +194,15 @@ void mISDN_dsp_element_unregister(struct mISDN_dsp_element *elem)
 			device_unregister(&entry->dev);
 #ifdef PIPELINE_DEBUG
 			printk(KERN_DEBUG "%s: %s unregistered\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, elem->name);
+=======
+			       __func__, elem->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, elem->name);
+>>>>>>> refs/remotes/origin/master
 #endif
 			return;
 		}
@@ -181,7 +236,15 @@ void dsp_pipeline_module_exit(void)
 	list_for_each_entry_safe(entry, n, &dsp_elements, list) {
 		list_del(&entry->list);
 		printk(KERN_WARNING "%s: element was still registered: %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			__func__, entry->elem->name);
+=======
+		       __func__, entry->elem->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, entry->elem->name);
+>>>>>>> refs/remotes/origin/master
 		kfree(entry);
 	}
 
@@ -212,7 +275,15 @@ static inline void _dsp_pipeline_destroy(struct dsp_pipeline *pipeline)
 		list_del(&entry->list);
 		if (entry->elem == dsp_hwec)
 			dsp_hwec_disable(container_of(pipeline, struct dsp,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				pipeline));
+=======
+						      pipeline));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						      pipeline));
+>>>>>>> refs/remotes/origin/master
 		else
 			entry->elem->free(entry->p);
 		kfree(entry);
@@ -270,11 +341,25 @@ int dsp_pipeline_build(struct dsp_pipeline *pipeline, const char *cfg)
 				elem = entry->elem;
 
 				pipeline_entry = kmalloc(sizeof(struct
+<<<<<<< HEAD
+<<<<<<< HEAD
 					dsp_pipeline_entry), GFP_ATOMIC);
 				if (!pipeline_entry) {
 					printk(KERN_ERR "%s: failed to add "
 					    "entry to pipeline: %s (out of "
 					    "memory)\n", __func__, elem->name);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+								dsp_pipeline_entry), GFP_ATOMIC);
+				if (!pipeline_entry) {
+					printk(KERN_ERR "%s: failed to add "
+					       "entry to pipeline: %s (out of "
+					       "memory)\n", __func__, elem->name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					incomplete = 1;
 					goto _out;
 				}
@@ -284,13 +369,27 @@ int dsp_pipeline_build(struct dsp_pipeline *pipeline, const char *cfg)
 					/* This is a hack to make the hwec
 					   available as a pipeline module */
 					dsp_hwec_enable(container_of(pipeline,
+<<<<<<< HEAD
+<<<<<<< HEAD
 						struct dsp, pipeline), args);
 					list_add_tail(&pipeline_entry->list,
 						&pipeline->list);
+=======
+								     struct dsp, pipeline), args);
+					list_add_tail(&pipeline_entry->list,
+						      &pipeline->list);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+								     struct dsp, pipeline), args);
+					list_add_tail(&pipeline_entry->list,
+						      &pipeline->list);
+>>>>>>> refs/remotes/origin/master
 				} else {
 					pipeline_entry->p = elem->new(args);
 					if (pipeline_entry->p) {
 						list_add_tail(&pipeline_entry->
+<<<<<<< HEAD
+<<<<<<< HEAD
 							list, &pipeline->list);
 #ifdef PIPELINE_DEBUG
 						printk(KERN_DEBUG "%s: created "
@@ -304,6 +403,26 @@ int dsp_pipeline_build(struct dsp_pipeline *pipeline, const char *cfg)
 						  "to add entry to pipeline: "
 						  "%s (new() returned NULL)\n",
 						  __func__, elem->name);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+							      list, &pipeline->list);
+#ifdef PIPELINE_DEBUG
+						printk(KERN_DEBUG "%s: created "
+						       "instance of %s%s%s\n",
+						       __func__, name, args ?
+						       " with args " : "", args ?
+						       args : "");
+#endif
+					} else {
+						printk(KERN_ERR "%s: failed "
+						       "to add entry to pipeline: "
+						       "%s (new() returned NULL)\n",
+						       __func__, elem->name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						kfree(pipeline_entry);
 						incomplete = 1;
 					}
@@ -316,7 +435,15 @@ int dsp_pipeline_build(struct dsp_pipeline *pipeline, const char *cfg)
 			found = 0;
 		else {
 			printk(KERN_ERR "%s: element not found, skipping: "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"%s\n", __func__, name);
+=======
+			       "%s\n", __func__, name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "%s\n", __func__, name);
+>>>>>>> refs/remotes/origin/master
 			incomplete = 1;
 		}
 	}
@@ -329,7 +456,15 @@ _out:
 
 #ifdef PIPELINE_DEBUG
 	printk(KERN_DEBUG "%s: dsp pipeline built%s: %s\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		__func__, incomplete ? " incomplete" : "", cfg);
+=======
+	       __func__, incomplete ? " incomplete" : "", cfg);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       __func__, incomplete ? " incomplete" : "", cfg);
+>>>>>>> refs/remotes/origin/master
 #endif
 	kfree(dup);
 	return 0;
@@ -348,7 +483,15 @@ void dsp_pipeline_process_tx(struct dsp_pipeline *pipeline, u8 *data, int len)
 }
 
 void dsp_pipeline_process_rx(struct dsp_pipeline *pipeline, u8 *data, int len,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int txlen)
+=======
+			     unsigned int txlen)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     unsigned int txlen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dsp_pipeline_entry *entry;
 
@@ -359,5 +502,11 @@ void dsp_pipeline_process_rx(struct dsp_pipeline *pipeline, u8 *data, int len,
 		if (entry->elem->process_rx)
 			entry->elem->process_rx(entry->p, data, len, txlen);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

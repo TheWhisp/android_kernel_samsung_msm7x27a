@@ -506,7 +506,11 @@ int omap24xxcam_sgdma_queue(struct omap24xxcam_sgdma *sgdma,
 	unsigned long flags;
 	struct sgdma_state *sg_state;
 
+<<<<<<< HEAD
 	if ((sglen < 0) || ((sglen > 0) & !sglist))
+=======
+	if ((sglen < 0) || ((sglen > 0) && !sglist))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	spin_lock_irqsave(&sgdma->lock, flags);

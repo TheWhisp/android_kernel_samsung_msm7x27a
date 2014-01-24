@@ -1,6 +1,7 @@
 #ifndef _LINUX_FB_H
 #define _LINUX_FB_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/i2c.h>
 #ifdef __KERNEL__
@@ -45,6 +46,10 @@
 #define FB_TYPE_INTERLEAVED_PLANES	2	/* Interleaved planes	*/
 #define FB_TYPE_TEXT			3	/* Text/attributes	*/
 #define FB_TYPE_VGA_PLANES		4	/* EGA/VGA planes	*/
+<<<<<<< HEAD
+=======
+#define FB_TYPE_FOURCC			5	/* Type identified by a V4L2 FOURCC */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define FB_AUX_TEXT_MDA		0	/* Monochrome text */
 #define FB_AUX_TEXT_CGA		1	/* CGA/EGA/VGA Color text */
@@ -69,6 +74,10 @@
 #define FB_VISUAL_PSEUDOCOLOR		3	/* Pseudo color (like atari) */
 #define FB_VISUAL_DIRECTCOLOR		4	/* Direct color */
 #define FB_VISUAL_STATIC_PSEUDOCOLOR	5	/* Pseudo color readonly */
+<<<<<<< HEAD
+=======
+#define FB_VISUAL_FOURCC		6	/* Visual identified by a V4L2 FOURCC */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define FB_ACCEL_NONE		0	/* no hardware accelerator	*/
 #define FB_ACCEL_ATARIBLITT	1	/* Atari Blitter		*/
@@ -154,6 +163,11 @@
 
 #define FB_ACCEL_PUV3_UNIGFX	0xa0	/* PKUnity-v3 Unigfx		*/
 
+<<<<<<< HEAD
+=======
+#define FB_CAP_FOURCC		1	/* Device supports FOURCC-based formats */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct fb_fix_screeninfo {
 	char id[16];			/* identification string eg "TT Builtin" */
 	unsigned long smem_start;	/* Start of frame buffer mem */
@@ -171,7 +185,12 @@ struct fb_fix_screeninfo {
 	__u32 mmio_len;			/* Length of Memory Mapped I/O  */
 	__u32 accel;			/* Indicate to driver which	*/
 					/*  specific chip/card we have	*/
+<<<<<<< HEAD
 	__u16 reserved[3];		/* Reserved for future compatibility */
+=======
+	__u16 capabilities;		/* see FB_CAP_*			*/
+	__u16 reserved[2];		/* Reserved for future compatibility */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Interpretation of offset for color fields: All offsets are from the right,
@@ -246,8 +265,13 @@ struct fb_var_screeninfo {
 	__u32 yoffset;			/* resolution			*/
 
 	__u32 bits_per_pixel;		/* guess what			*/
+<<<<<<< HEAD
 	__u32 grayscale;		/* != 0 Graylevels instead of colors */
 
+=======
+	__u32 grayscale;		/* 0 = color, 1 = grayscale,	*/
+					/* >1 = FOURCC			*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct fb_bitfield red;		/* bitfield in fb mem if true color, */
 	struct fb_bitfield green;	/* else only length is significant */
 	struct fb_bitfield blue;
@@ -273,6 +297,13 @@ struct fb_var_screeninfo {
 	__u32 sync;			/* see FB_SYNC_*		*/
 	__u32 vmode;			/* see FB_VMODE_*		*/
 	__u32 rotate;			/* angle we rotate counter clockwise */
+<<<<<<< HEAD
+=======
+	__u32 colorspace;		/* colorspace for FOURCC-based modes */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	__u32 reserved[5];		/* Reserved for future compatibility */
 };
 
@@ -401,7 +432,19 @@ struct fb_cursor {
 
 #include <linux/fs.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kgdb.h>
+#include <uapi/linux/fb.h>
+
+#define FBIO_CURSOR            _IOWR('F', 0x08, struct fb_cursor_user)
+
+#include <linux/fs.h>
+#include <linux/init.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/workqueue.h>
 #include <linux/notifier.h>
 #include <linux/list.h>
@@ -413,6 +456,11 @@ struct vm_area_struct;
 struct fb_info;
 struct device;
 struct file;
+<<<<<<< HEAD
+=======
+struct videomode;
+struct device_node;
+>>>>>>> refs/remotes/origin/master
 
 /* Definitions below are used in the parsed monitor specs */
 #define FB_DPMS_ACTIVE_OFF	1
@@ -549,6 +597,13 @@ struct fb_cursor_user {
 #define FB_EVENT_FB_UNBIND              0x0E
 /*      CONSOLE-SPECIFIC: remap all consoles to new fb - for vga switcheroo */
 #define FB_EVENT_REMAP_ALL_CONSOLE      0x0F
+<<<<<<< HEAD
+=======
+/*      A hardware display blank early change occured */
+#define FB_EARLY_EVENT_BLANK		0x10
+/*      A hardware display blank revert early change occured */
+#define FB_R_EARLY_EVENT_BLANK		0x11
+>>>>>>> refs/remotes/origin/master
 
 struct fb_event {
 	struct fb_info *info;
@@ -602,6 +657,10 @@ struct fb_deferred_io {
 	struct mutex lock; /* mutex that protects the page list */
 	struct list_head pagelist; /* list of touched pages */
 	/* callback */
+<<<<<<< HEAD
+=======
+	void (*first_io)(struct fb_info *info);
+>>>>>>> refs/remotes/origin/master
 	void (*deferred_io)(struct fb_info *info, struct list_head *pagelist);
 };
 #endif
@@ -888,6 +947,11 @@ struct fb_info {
 			resource_size_t size;
 		} ranges[0];
 	} *apertures;
+<<<<<<< HEAD
+=======
+
+	bool skip_vt_switch; /* no VT switch on suspend/resume required */
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct apertures_struct *alloc_apertures(unsigned int max_num) {
@@ -1009,7 +1073,11 @@ extern void fb_pad_aligned_buffer(u8 *dst, u32 d_pitch, u8 *src, u32 s_pitch, u3
 extern void fb_set_suspend(struct fb_info *info, int state);
 extern int fb_get_color_depth(struct fb_var_screeninfo *var,
 			      struct fb_fix_screeninfo *fix);
+<<<<<<< HEAD
 extern int fb_get_options(char *name, char **option);
+=======
+extern int fb_get_options(const char *name, char **option);
+>>>>>>> refs/remotes/origin/master
 extern int fb_new_modelist(struct fb_info *info);
 
 extern struct fb_info *registered_fb[FB_MAX];
@@ -1044,7 +1112,17 @@ extern void fb_deferred_io_open(struct fb_info *info,
 				struct inode *inode,
 				struct file *file);
 extern void fb_deferred_io_cleanup(struct fb_info *info);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int fb_deferred_io_fsync(struct file *file, int datasync);
+=======
+extern int fb_deferred_io_fsync(struct file *file, loff_t start,
+				loff_t end, int datasync);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int fb_deferred_io_fsync(struct file *file, loff_t start,
+				loff_t end, int datasync);
+>>>>>>> refs/remotes/origin/master
 
 static inline bool fb_be_math(struct fb_info *info)
 {
@@ -1102,6 +1180,15 @@ extern void fb_destroy_modedb(struct fb_videomode *modedb);
 extern int fb_find_mode_cvt(struct fb_videomode *mode, int margins, int rb);
 extern unsigned char *fb_ddc_read(struct i2c_adapter *adapter);
 
+<<<<<<< HEAD
+=======
+extern int of_get_fb_videomode(struct device_node *np,
+			       struct fb_videomode *fb,
+			       int index);
+extern int fb_videomode_from_videomode(const struct videomode *vm,
+				       struct fb_videomode *fbmode);
+
+>>>>>>> refs/remotes/origin/master
 /* drivers/video/modedb.c */
 #define VESA_MODEDB_SIZE 34
 extern void fb_var_to_videomode(struct fb_videomode *mode,
@@ -1170,6 +1257,20 @@ extern int fb_find_mode(struct fb_var_screeninfo *var,
 			const struct fb_videomode *default_mode,
 			unsigned int default_bpp);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+/* Convenience logging macros */
+#define fb_err(fb_info, fmt, ...)					\
+	pr_err("fb%d: " fmt, (fb_info)->node, ##__VA_ARGS__)
+#define fb_notice(info, fmt, ...)					\
+	pr_notice("fb%d: " fmt, (fb_info)->node, ##__VA_ARGS__)
+#define fb_warn(fb_info, fmt, ...)					\
+	pr_warn("fb%d: " fmt, (fb_info)->node, ##__VA_ARGS__)
+#define fb_info(fb_info, fmt, ...)					\
+	pr_info("fb%d: " fmt, (fb_info)->node, ##__VA_ARGS__)
+#define fb_dbg(fb_info, fmt, ...)					\
+	pr_debug("fb%d: " fmt, (fb_info)->node, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_FB_H */

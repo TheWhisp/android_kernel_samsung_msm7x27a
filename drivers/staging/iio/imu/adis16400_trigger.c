@@ -1,4 +1,5 @@
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/irq.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
@@ -9,6 +10,13 @@
 
 #include "../iio.h"
 #include "../sysfs.h"
+=======
+#include <linux/kernel.h>
+#include <linux/spi/spi.h>
+#include <linux/export.h>
+
+#include "../iio.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "../trigger.h"
 #include "adis16400.h"
 
@@ -24,13 +32,25 @@ static int adis16400_data_rdy_trigger_set_state(struct iio_trigger *trig,
 	return adis16400_set_irq(indio_dev, state);
 }
 
+<<<<<<< HEAD
+=======
+static const struct iio_trigger_ops adis16400_trigger_ops = {
+	.owner = THIS_MODULE,
+	.set_trigger_state = &adis16400_data_rdy_trigger_set_state,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int adis16400_probe_trigger(struct iio_dev *indio_dev)
 {
 	int ret;
 	struct adis16400_state *st = iio_priv(indio_dev);
 
 	st->trig = iio_allocate_trigger("%s-dev%d",
+<<<<<<< HEAD
 					spi_get_device_id(st->us)->name,
+=======
+					indio_dev->name,
+>>>>>>> refs/remotes/origin/cm-10.0
 					indio_dev->id);
 	if (st->trig == NULL) {
 		ret = -ENOMEM;
@@ -45,9 +65,14 @@ int adis16400_probe_trigger(struct iio_dev *indio_dev)
 	if (ret)
 		goto error_free_trig;
 	st->trig->dev.parent = &st->us->dev;
+<<<<<<< HEAD
 	st->trig->owner = THIS_MODULE;
 	st->trig->private_data = indio_dev;
 	st->trig->set_trigger_state = &adis16400_data_rdy_trigger_set_state;
+=======
+	st->trig->private_data = indio_dev;
+	st->trig->ops = &adis16400_trigger_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = iio_trigger_register(st->trig);
 
 	/* select default trigger */

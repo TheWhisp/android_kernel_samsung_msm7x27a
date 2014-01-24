@@ -11,6 +11,14 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "udp_impl.h"
 
 static int udplitev6_rcv(struct sk_buff *skb)
@@ -93,13 +101,39 @@ void udplitev6_exit(void)
 }
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static const struct file_operations udplite6_afinfo_seq_fops = {
+	.owner    = THIS_MODULE,
+	.open     = udp_seq_open,
+	.read     = seq_read,
+	.llseek   = seq_lseek,
+	.release  = seq_release_net
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct udp_seq_afinfo udplite6_seq_afinfo = {
 	.name		= "udplite6",
 	.family		= AF_INET6,
 	.udp_table	= &udplite_table,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.seq_fops	= {
 		.owner	=	THIS_MODULE,
 	},
+=======
+	.seq_fops	= &udplite6_afinfo_seq_fops,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.seq_fops	= &udplite6_afinfo_seq_fops,
+>>>>>>> refs/remotes/origin/master
 	.seq_ops	= {
 		.show		= udp6_seq_show,
 	},

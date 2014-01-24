@@ -19,6 +19,14 @@
 #include <linux/nl80211.h>
 #include <linux/platform_device.h>
 #include <linux/ath9k_platform.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "ath9k.h"
 
 static const struct platform_device_id ath9k_platform_id_table[] = {
@@ -27,9 +35,29 @@ static const struct platform_device_id ath9k_platform_id_table[] = {
 		.driver_data = AR5416_AR9100_DEVID,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		.name = "ar933x_wmac",
+		.driver_data = AR9300_DEVID_AR9330,
+	},
+	{
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 		.name = "ar934x_wmac",
 		.driver_data = AR9300_DEVID_AR9340,
 	},
+=======
+		.name = "ar934x_wmac",
+		.driver_data = AR9300_DEVID_AR9340,
+	},
+	{
+		.name = "qca955x_wmac",
+		.driver_data = AR9300_DEVID_QCA955X,
+	},
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 
@@ -45,7 +73,11 @@ static bool ath_ahb_eeprom_read(struct ath_common *common, u32 off, u16 *data)
 	struct platform_device *pdev = to_platform_device(sc->dev);
 	struct ath9k_platform_data *pdata;
 
+<<<<<<< HEAD
 	pdata = (struct ath9k_platform_data *) pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (off >= (ARRAY_SIZE(pdata->eeprom_data))) {
 		ath_err(common,
 			"%s: flash read failed, offset %08x is out of range\n",
@@ -75,15 +107,22 @@ static int ath_ahb_probe(struct platform_device *pdev)
 	struct ath_hw *ah;
 	char hw_name[64];
 
+<<<<<<< HEAD
 	if (!pdev->dev.platform_data) {
 		dev_err(&pdev->dev, "no platform data specified\n");
 		ret = -EINVAL;
 		goto err_out;
+=======
+	if (!dev_get_platdata(&pdev->dev)) {
+		dev_err(&pdev->dev, "no platform data specified\n");
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (res == NULL) {
 		dev_err(&pdev->dev, "no memory resource found\n");
+<<<<<<< HEAD
 		ret = -ENXIO;
 		goto err_out;
 	}
@@ -93,13 +132,26 @@ static int ath_ahb_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "ioremap failed\n");
 		ret = -ENOMEM;
 		goto err_out;
+=======
+		return -ENXIO;
+	}
+
+	mem = devm_ioremap_nocache(&pdev->dev, res->start, resource_size(res));
+	if (mem == NULL) {
+		dev_err(&pdev->dev, "ioremap failed\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (res == NULL) {
 		dev_err(&pdev->dev, "no IRQ resource found\n");
+<<<<<<< HEAD
 		ret = -ENXIO;
 		goto err_iounmap;
+=======
+		return -ENXIO;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	irq = res->start;
@@ -107,8 +159,12 @@ static int ath_ahb_probe(struct platform_device *pdev)
 	hw = ieee80211_alloc_hw(sizeof(struct ath_softc), &ath9k_ops);
 	if (hw == NULL) {
 		dev_err(&pdev->dev, "no memory for ieee80211_hw\n");
+<<<<<<< HEAD
 		ret = -ENOMEM;
 		goto err_iounmap;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	SET_IEEE80211_DEV(hw, &pdev->dev);
@@ -121,7 +177,11 @@ static int ath_ahb_probe(struct platform_device *pdev)
 	sc->irq = irq;
 
 	/* Will be cleared in ath9k_start() */
+<<<<<<< HEAD
 	sc->sc_flags |= SC_OP_INVALID;
+=======
+	set_bit(SC_OP_INVALID, &sc->sc_flags);
+>>>>>>> refs/remotes/origin/master
 
 	ret = request_irq(irq, ath_isr, IRQF_SHARED, "ath9k", sc);
 	if (ret) {
@@ -129,7 +189,15 @@ static int ath_ahb_probe(struct platform_device *pdev)
 		goto err_free_hw;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = ath9k_init_device(id->driver_data, sc, 0x0, &ath_ahb_bus_ops);
+=======
+	ret = ath9k_init_device(id->driver_data, sc, &ath_ahb_bus_ops);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = ath9k_init_device(id->driver_data, sc, &ath_ahb_bus_ops);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&pdev->dev, "failed to initialize device\n");
 		goto err_irq;
@@ -146,10 +214,13 @@ static int ath_ahb_probe(struct platform_device *pdev)
 	free_irq(irq, sc);
  err_free_hw:
 	ieee80211_free_hw(hw);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
  err_iounmap:
 	iounmap(mem);
  err_out:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -159,13 +230,19 @@ static int ath_ahb_remove(struct platform_device *pdev)
 
 	if (hw) {
 		struct ath_softc *sc = hw->priv;
+<<<<<<< HEAD
 		void __iomem *mem = sc->mem;
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ath9k_deinit_device(sc);
 		free_irq(sc->irq, sc);
 		ieee80211_free_hw(sc->hw);
+<<<<<<< HEAD
 		iounmap(mem);
 		platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;

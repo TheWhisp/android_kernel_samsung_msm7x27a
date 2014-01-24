@@ -682,7 +682,11 @@ mgt_update_addr(islpci_private *priv)
 				     isl_oid[GEN_OID_MACADDRESS].size, &res);
 
 	if ((ret == 0) && res && (res->header->operation != PIMFOR_OP_ERROR))
+<<<<<<< HEAD
 		memcpy(priv->ndev->dev_addr, res->data, 6);
+=======
+		memcpy(priv->ndev->dev_addr, res->data, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	else
 		ret = -EIO;
 	if (res)
@@ -693,8 +697,11 @@ mgt_update_addr(islpci_private *priv)
 	return ret;
 }
 
+<<<<<<< HEAD
 #define VEC_SIZE(a) ARRAY_SIZE(a)
 
+=======
+>>>>>>> refs/remotes/origin/master
 int
 mgt_commit(islpci_private *priv)
 {
@@ -704,10 +711,17 @@ mgt_commit(islpci_private *priv)
 	if (islpci_get_state(priv) < PRV_STATE_INIT)
 		return 0;
 
+<<<<<<< HEAD
 	rvalue = mgt_commit_list(priv, commit_part1, VEC_SIZE(commit_part1));
 
 	if (priv->iw_mode != IW_MODE_MONITOR)
 		rvalue |= mgt_commit_list(priv, commit_part2, VEC_SIZE(commit_part2));
+=======
+	rvalue = mgt_commit_list(priv, commit_part1, ARRAY_SIZE(commit_part1));
+
+	if (priv->iw_mode != IW_MODE_MONITOR)
+		rvalue |= mgt_commit_list(priv, commit_part2, ARRAY_SIZE(commit_part2));
+>>>>>>> refs/remotes/origin/master
 
 	u = OID_INL_MODE;
 	rvalue |= mgt_commit_list(priv, &u, 1);

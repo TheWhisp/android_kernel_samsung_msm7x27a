@@ -16,7 +16,10 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/tty.h>
 #include <linux/module.h>
 #include <linux/usb.h>
@@ -54,7 +57,11 @@
 #define SAMSUNG_VENDOR_ID			0x04e8
 #define SAMSUNG_PRODUCT_U520			0x6640 /* SCH-U520 */
 
+<<<<<<< HEAD
 static struct usb_device_id id_table[] = {
+=======
+static const struct usb_device_id id_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE_AND_INTERFACE_INFO(UTSTARCOM_VENDOR_ID, UTSTARCOM_PRODUCT_PC5740, 0xff, 0x00, 0x00) },
 	{ USB_DEVICE_AND_INTERFACE_INFO(UTSTARCOM_VENDOR_ID, UTSTARCOM_PRODUCT_PC5750, 0xff, 0x00, 0x00) },
 	{ USB_DEVICE_AND_INTERFACE_INFO(UTSTARCOM_VENDOR_ID, UTSTARCOM_PRODUCT_UM150, 0xff, 0x00, 0x00) },
@@ -74,20 +81,28 @@ static struct usb_device_id id_table[] = {
 };
 MODULE_DEVICE_TABLE(usb, id_table);
 
+<<<<<<< HEAD
 static struct usb_driver qcaux_driver = {
 	.name =		"qcaux",
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_serial_driver qcaux_device = {
 	.driver = {
 		.owner =	THIS_MODULE,
 		.name =		"qcaux",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver =		&qcaux_driver,
 	.num_ports =		1,
 };
@@ -113,4 +128,20 @@ static void __exit qcaux_exit(void)
 
 module_init(qcaux_init);
 module_exit(qcaux_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.num_ports =		1,
+};
+
+static struct usb_serial_driver * const serial_drivers[] = {
+	&qcaux_device, NULL
+};
+
+<<<<<<< HEAD
+module_usb_serial_driver(qcaux_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_serial_driver(serial_drivers, id_table);
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

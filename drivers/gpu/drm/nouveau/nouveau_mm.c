@@ -27,7 +27,11 @@
 #include "nouveau_mm.h"
 
 static inline void
+<<<<<<< HEAD
 region_put(struct nouveau_mm *rmm, struct nouveau_mm_node *a)
+=======
+region_put(struct nouveau_mm *mm, struct nouveau_mm_node *a)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	list_del(&a->nl_entry);
 	list_del(&a->fl_entry);
@@ -35,7 +39,11 @@ region_put(struct nouveau_mm *rmm, struct nouveau_mm_node *a)
 }
 
 static struct nouveau_mm_node *
+<<<<<<< HEAD
 region_split(struct nouveau_mm *rmm, struct nouveau_mm_node *a, u32 size)
+=======
+region_split(struct nouveau_mm *mm, struct nouveau_mm_node *a, u32 size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct nouveau_mm_node *b;
 
@@ -57,33 +65,57 @@ region_split(struct nouveau_mm *rmm, struct nouveau_mm_node *a, u32 size)
 	return b;
 }
 
+<<<<<<< HEAD
 #define node(root, dir) ((root)->nl_entry.dir == &rmm->nodes) ? NULL : \
 	list_entry((root)->nl_entry.dir, struct nouveau_mm_node, nl_entry)
 
 void
 nouveau_mm_put(struct nouveau_mm *rmm, struct nouveau_mm_node *this)
+=======
+#define node(root, dir) ((root)->nl_entry.dir == &mm->nodes) ? NULL : \
+	list_entry((root)->nl_entry.dir, struct nouveau_mm_node, nl_entry)
+
+void
+nouveau_mm_put(struct nouveau_mm *mm, struct nouveau_mm_node *this)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct nouveau_mm_node *prev = node(this, prev);
 	struct nouveau_mm_node *next = node(this, next);
 
+<<<<<<< HEAD
 	list_add(&this->fl_entry, &rmm->free);
+=======
+	list_add(&this->fl_entry, &mm->free);
+>>>>>>> refs/remotes/origin/cm-10.0
 	this->type = 0;
 
 	if (prev && prev->type == 0) {
 		prev->length += this->length;
+<<<<<<< HEAD
 		region_put(rmm, this);
+=======
+		region_put(mm, this);
+>>>>>>> refs/remotes/origin/cm-10.0
 		this = prev;
 	}
 
 	if (next && next->type == 0) {
 		next->offset  = this->offset;
 		next->length += this->length;
+<<<<<<< HEAD
 		region_put(rmm, this);
+=======
+		region_put(mm, this);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
 int
+<<<<<<< HEAD
 nouveau_mm_get(struct nouveau_mm *rmm, int type, u32 size, u32 size_nc,
+=======
+nouveau_mm_get(struct nouveau_mm *mm, int type, u32 size, u32 size_nc,
+>>>>>>> refs/remotes/origin/cm-10.0
 	       u32 align, struct nouveau_mm_node **pnode)
 {
 	struct nouveau_mm_node *prev, *this, *next;
@@ -92,17 +124,29 @@ nouveau_mm_get(struct nouveau_mm *rmm, int type, u32 size, u32 size_nc,
 	u32 splitoff;
 	u32 s, e;
 
+<<<<<<< HEAD
 	list_for_each_entry(this, &rmm->free, fl_entry) {
+=======
+	list_for_each_entry(this, &mm->free, fl_entry) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		e = this->offset + this->length;
 		s = this->offset;
 
 		prev = node(this, prev);
 		if (prev && prev->type != type)
+<<<<<<< HEAD
 			s = roundup(s, rmm->block_size);
 
 		next = node(this, next);
 		if (next && next->type != type)
 			e = rounddown(e, rmm->block_size);
+=======
+			s = roundup(s, mm->block_size);
+
+		next = node(this, next);
+		if (next && next->type != type)
+			e = rounddown(e, mm->block_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		s  = (s + align_mask) & ~align_mask;
 		e &= ~align_mask;
@@ -110,10 +154,17 @@ nouveau_mm_get(struct nouveau_mm *rmm, int type, u32 size, u32 size_nc,
 			continue;
 
 		splitoff = s - this->offset;
+<<<<<<< HEAD
 		if (splitoff && !region_split(rmm, this, splitoff))
 			return -ENOMEM;
 
 		this = region_split(rmm, this, min(size, e - s));
+=======
+		if (splitoff && !region_split(mm, this, splitoff))
+			return -ENOMEM;
+
+		this = region_split(mm, this, min(size, e - s));
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!this)
 			return -ENOMEM;
 
@@ -127,6 +178,7 @@ nouveau_mm_get(struct nouveau_mm *rmm, int type, u32 size, u32 size_nc,
 }
 
 int
+<<<<<<< HEAD
 nouveau_mm_init(struct nouveau_mm **prmm, u32 offset, u32 length, u32 block)
 {
 	struct nouveau_mm *rmm;
@@ -151,10 +203,34 @@ nouveau_mm_init(struct nouveau_mm **prmm, u32 offset, u32 length, u32 block)
 	list_add(&heap->fl_entry, &rmm->free);
 
 	*prmm = rmm;
+=======
+nouveau_mm_init(struct nouveau_mm *mm, u32 offset, u32 length, u32 block)
+{
+	struct nouveau_mm_node *node;
+
+	if (block) {
+		mutex_init(&mm->mutex);
+		INIT_LIST_HEAD(&mm->nodes);
+		INIT_LIST_HEAD(&mm->free);
+		mm->block_size = block;
+		mm->heap_nodes = 0;
+	}
+
+	node = kzalloc(sizeof(*node), GFP_KERNEL);
+	if (!node)
+		return -ENOMEM;
+	node->offset = roundup(offset, mm->block_size);
+	node->length = rounddown(offset + length, mm->block_size) - node->offset;
+
+	list_add_tail(&node->nl_entry, &mm->nodes);
+	list_add_tail(&node->fl_entry, &mm->free);
+	mm->heap_nodes++;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 int
+<<<<<<< HEAD
 nouveau_mm_fini(struct nouveau_mm **prmm)
 {
 	struct nouveau_mm *rmm = *prmm;
@@ -167,5 +243,26 @@ nouveau_mm_fini(struct nouveau_mm **prmm)
 	kfree(heap);
 	kfree(rmm);
 	*prmm = NULL;
+=======
+nouveau_mm_fini(struct nouveau_mm *mm)
+{
+	struct nouveau_mm_node *node, *heap =
+		list_first_entry(&mm->nodes, struct nouveau_mm_node, nl_entry);
+	int nodes = 0;
+
+	list_for_each_entry(node, &mm->nodes, nl_entry) {
+		if (nodes++ == mm->heap_nodes) {
+			printk(KERN_ERR "nouveau_mm in use at destroy time!\n");
+			list_for_each_entry(node, &mm->nodes, nl_entry) {
+				printk(KERN_ERR "0x%02x: 0x%08x 0x%08x\n",
+				       node->type, node->offset, node->length);
+			}
+			WARN_ON(1);
+			return -EBUSY;
+		}
+	}
+
+	kfree(heap);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }

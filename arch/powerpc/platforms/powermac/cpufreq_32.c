@@ -23,7 +23,11 @@
 #include <linux/pmu.h>
 #include <linux/cpufreq.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/hardirq.h>
 #include <asm/prom.h>
 #include <asm/machdep.h>
@@ -33,9 +37,15 @@
 #include <asm/sections.h>
 #include <asm/cputable.h>
 #include <asm/time.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/mpic.h>
 #include <asm/keylargo.h>
+=======
+#include <asm/mpic.h>
+#include <asm/keylargo.h>
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* WARNING !!! This will cause calibrate_delay() to be called,
  * but this is an __init function ! So you MUST go edit

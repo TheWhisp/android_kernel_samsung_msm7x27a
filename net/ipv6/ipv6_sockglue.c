@@ -174,7 +174,11 @@ static int do_ipv6_setsockopt(struct sock *sk, int level, int optname,
 			}
 
 			if (ipv6_only_sock(sk) ||
+<<<<<<< HEAD
 			    !ipv6_addr_v4mapped(&np->daddr)) {
+=======
+			    !ipv6_addr_v4mapped(&sk->sk_v6_daddr)) {
+>>>>>>> refs/remotes/origin/master
 				retv = -EADDRNOTAVAIL;
 				break;
 			}
@@ -343,7 +347,16 @@ static int do_ipv6_setsockopt(struct sock *sk, int level, int optname,
 		break;
 
 	case IPV6_TRANSPARENT:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!capable(CAP_NET_ADMIN)) {
+=======
+		if (valbool && !capable(CAP_NET_ADMIN) && !capable(CAP_NET_RAW)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (valbool && !ns_capable(net->user_ns, CAP_NET_ADMIN) &&
+		    !ns_capable(net->user_ns, CAP_NET_RAW)) {
+>>>>>>> refs/remotes/origin/master
 			retv = -EPERM;
 			break;
 		}
@@ -381,7 +394,11 @@ static int do_ipv6_setsockopt(struct sock *sk, int level, int optname,
 
 		/* hop-by-hop / destination options are privileged option */
 		retv = -EPERM;
+<<<<<<< HEAD
 		if (optname != IPV6_RTHDR && !capable(CAP_NET_RAW))
+=======
+		if (optname != IPV6_RTHDR && !ns_capable(net->user_ns, CAP_NET_RAW))
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		opt = ipv6_renew_options(sk, np->opt, optname,
@@ -397,7 +414,11 @@ static int do_ipv6_setsockopt(struct sock *sk, int level, int optname,
 		if (optname == IPV6_RTHDR && opt && opt->srcrt) {
 			struct ipv6_rt_hdr *rthdr = opt->srcrt;
 			switch (rthdr->type) {
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 			case IPV6_SRCRT_TYPE_2:
 				if (rthdr->hdrlen != 2 ||
 				    rthdr->segments_left != 1)
@@ -435,7 +456,15 @@ sticky_done:
 			goto e_inval;
 
 		np->sticky_pktinfo.ipi6_ifindex = pkt.ipi6_ifindex;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&np->sticky_pktinfo.ipi6_addr, &pkt.ipi6_addr);
+=======
+		np->sticky_pktinfo.ipi6_addr = pkt.ipi6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		np->sticky_pktinfo.ipi6_addr = pkt.ipi6_addr;
+>>>>>>> refs/remotes/origin/master
 		retv = 0;
 		break;
 	}
@@ -475,8 +504,17 @@ sticky_done:
 		msg.msg_controllen = optlen;
 		msg.msg_control = (void*)(opt+1);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		retv = datagram_send_ctl(net, &msg, &fl6, opt, &junk, &junk,
+=======
+		retv = datagram_send_ctl(net, sk, &msg, &fl6, opt, &junk, &junk,
+>>>>>>> refs/remotes/origin/cm-10.0
 					 &junk);
+=======
+		retv = ip6_datagram_send_ctl(net, sk, &msg, &fl6, opt, &junk,
+					     &junk, &junk);
+>>>>>>> refs/remotes/origin/master
 		if (retv)
 			goto done;
 update:
@@ -503,7 +541,15 @@ done:
 			goto e_inval;
 		if (val > 255 || val < -1)
 			goto e_inval;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		np->mcast_hops = val;
+=======
+		np->mcast_hops = (val == -1 ? IPV6_DEFAULT_MCASTHOPS : val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		np->mcast_hops = (val == -1 ? IPV6_DEFAULT_MCASTHOPS : val);
+>>>>>>> refs/remotes/origin/master
 		retv = 0;
 		break;
 
@@ -516,6 +562,45 @@ done:
 		retv = 0;
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case IPV6_UNICAST_IF:
+	{
+		struct net_device *dev = NULL;
+		int ifindex;
+
+		if (optlen != sizeof(int))
+			goto e_inval;
+
+		ifindex = (__force int)ntohl((__force __be32)val);
+		if (ifindex == 0) {
+			np->ucast_oif = 0;
+			retv = 0;
+			break;
+		}
+
+		dev = dev_get_by_index(net, ifindex);
+		retv = -EADDRNOTAVAIL;
+		if (!dev)
+			break;
+		dev_put(dev);
+
+		retv = -EINVAL;
+		if (sk->sk_bound_dev_if)
+			break;
+
+		np->ucast_oif = ifindex;
+		retv = 0;
+		break;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case IPV6_MULTICAST_IF:
 		if (sk->sk_type == SOCK_STREAM)
 			break;
@@ -648,7 +733,10 @@ done:
 	}
 	case MCAST_MSFILTER:
 	{
+<<<<<<< HEAD
 		extern int sysctl_mld_max_msf;
+=======
+>>>>>>> refs/remotes/origin/master
 		struct group_filter *gsf;
 
 		if (optlen < GROUP_FILTER_SIZE(0))
@@ -725,7 +813,11 @@ done:
 	case IPV6_IPSEC_POLICY:
 	case IPV6_XFRM_POLICY:
 		retv = -EPERM;
+<<<<<<< HEAD
 		if (!capable(CAP_NET_ADMIN))
+=======
+		if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 			break;
 		retv = xfrm_user_policy(sk, optname, optval, optlen);
 		break;
@@ -914,7 +1006,11 @@ static int ipv6_getsockopt_sticky(struct sock *sk, struct ipv6_txoptions *opt,
 }
 
 static int do_ipv6_getsockopt(struct sock *sk, int level, int optname,
+<<<<<<< HEAD
 		    char __user *optval, int __user *optlen, unsigned flags)
+=======
+		    char __user *optval, int __user *optlen, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipv6_pinfo *np = inet6_sk(sk);
 	int len;
@@ -972,7 +1068,11 @@ static int do_ipv6_getsockopt(struct sock *sk, int level, int optname,
 		release_sock(sk);
 
 		if (skb) {
+<<<<<<< HEAD
 			int err = datagram_recv_ctl(sk, &msg, skb);
+=======
+			int err = ip6_datagram_recv_ctl(sk, &msg, skb);
+>>>>>>> refs/remotes/origin/master
 			kfree_skb(skb);
 			if (err)
 				return err;
@@ -981,20 +1081,50 @@ static int do_ipv6_getsockopt(struct sock *sk, int level, int optname,
 				struct in6_pktinfo src_info;
 				src_info.ipi6_ifindex = np->mcast_oif ? np->mcast_oif :
 					np->sticky_pktinfo.ipi6_ifindex;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				np->mcast_oif? ipv6_addr_copy(&src_info.ipi6_addr, &np->daddr) :
 					ipv6_addr_copy(&src_info.ipi6_addr, &(np->sticky_pktinfo.ipi6_addr));
+=======
+				src_info.ipi6_addr = np->mcast_oif ? np->daddr : np->sticky_pktinfo.ipi6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				src_info.ipi6_addr = np->mcast_oif ? sk->sk_v6_daddr : np->sticky_pktinfo.ipi6_addr;
+>>>>>>> refs/remotes/origin/master
 				put_cmsg(&msg, SOL_IPV6, IPV6_PKTINFO, sizeof(src_info), &src_info);
 			}
 			if (np->rxopt.bits.rxhlim) {
 				int hlim = np->mcast_hops;
 				put_cmsg(&msg, SOL_IPV6, IPV6_HOPLIMIT, sizeof(hlim), &hlim);
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			if (np->rxopt.bits.rxtclass) {
+				int tclass = np->rcv_tclass;
+				put_cmsg(&msg, SOL_IPV6, IPV6_TCLASS, sizeof(tclass), &tclass);
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (np->rxopt.bits.rxoinfo) {
 				struct in6_pktinfo src_info;
 				src_info.ipi6_ifindex = np->mcast_oif ? np->mcast_oif :
 					np->sticky_pktinfo.ipi6_ifindex;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				np->mcast_oif? ipv6_addr_copy(&src_info.ipi6_addr, &np->daddr) :
 					ipv6_addr_copy(&src_info.ipi6_addr, &(np->sticky_pktinfo.ipi6_addr));
+=======
+				src_info.ipi6_addr = np->mcast_oif ? np->daddr : np->sticky_pktinfo.ipi6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				src_info.ipi6_addr = np->mcast_oif ? sk->sk_v6_daddr :
+								     np->sticky_pktinfo.ipi6_addr;
+>>>>>>> refs/remotes/origin/master
 				put_cmsg(&msg, SOL_IPV6, IPV6_2292PKTINFO, sizeof(src_info), &src_info);
 			}
 			if (np->rxopt.bits.rxohlim) {
@@ -1163,6 +1293,19 @@ static int do_ipv6_getsockopt(struct sock *sk, int level, int optname,
 		val = np->mcast_oif;
 		break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case IPV6_UNICAST_IF:
+		val = (__force int)htonl((__u32) np->ucast_oif);
+		break;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case IPV6_MTU_DISCOVER:
 		val = np->pmtudisc;
 		break;
@@ -1175,6 +1318,37 @@ static int do_ipv6_getsockopt(struct sock *sk, int level, int optname,
 		val = np->sndflow;
 		break;
 
+<<<<<<< HEAD
+=======
+	case IPV6_FLOWLABEL_MGR:
+	{
+		struct in6_flowlabel_req freq;
+
+		if (len < sizeof(freq))
+			return -EINVAL;
+
+		if (copy_from_user(&freq, optval, sizeof(freq)))
+			return -EFAULT;
+
+		if (freq.flr_action != IPV6_FL_A_GET)
+			return -EINVAL;
+
+		len = sizeof(freq);
+		memset(&freq, 0, sizeof(freq));
+
+		val = ipv6_flowlabel_opt_get(sk, &freq);
+		if (val < 0)
+			return val;
+
+		if (put_user(len, optlen))
+			return -EFAULT;
+		if (copy_to_user(optval, &freq, len))
+			return -EFAULT;
+
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	case IPV6_ADDR_PREFERENCES:
 		val = 0;
 

@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * 	cn_queue.c
+=======
+ *	cn_queue.c
+>>>>>>> refs/remotes/origin/master
  *
  * 2004+ Copyright (c) Evgeniy Polyakov <zbr@ioremap.net>
  * All rights reserved.
@@ -34,13 +38,22 @@
 static struct cn_callback_entry *
 cn_queue_alloc_callback_entry(struct cn_queue_dev *dev, const char *name,
 			      struct cb_id *id,
+<<<<<<< HEAD
 			      void (*callback)(struct cn_msg *, struct netlink_skb_parms *))
+=======
+			      void (*callback)(struct cn_msg *,
+					       struct netlink_skb_parms *))
+>>>>>>> refs/remotes/origin/master
 {
 	struct cn_callback_entry *cbq;
 
 	cbq = kzalloc(sizeof(*cbq), GFP_KERNEL);
 	if (!cbq) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Failed to create new callback queue.\n");
+=======
+		pr_err("Failed to create new callback queue.\n");
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -71,7 +84,12 @@ int cn_cb_equal(struct cb_id *i1, struct cb_id *i2)
 
 int cn_queue_add_callback(struct cn_queue_dev *dev, const char *name,
 			  struct cb_id *id,
+<<<<<<< HEAD
 			  void (*callback)(struct cn_msg *, struct netlink_skb_parms *))
+=======
+			  void (*callback)(struct cn_msg *,
+					   struct netlink_skb_parms *))
+>>>>>>> refs/remotes/origin/master
 {
 	struct cn_callback_entry *cbq, *__cbq;
 	int found = 0;
@@ -149,7 +167,11 @@ void cn_queue_free_dev(struct cn_queue_dev *dev)
 	spin_unlock_bh(&dev->queue_lock);
 
 	while (atomic_read(&dev->refcnt)) {
+<<<<<<< HEAD
 		printk(KERN_INFO "Waiting for %s to become free: refcnt=%d.\n",
+=======
+		pr_info("Waiting for %s to become free: refcnt=%d.\n",
+>>>>>>> refs/remotes/origin/master
 		       dev->name, atomic_read(&dev->refcnt));
 		msleep(1000);
 	}

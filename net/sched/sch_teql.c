@@ -67,7 +67,10 @@ struct teql_master {
 struct teql_sched_data {
 	struct Qdisc *next;
 	struct teql_master *m;
+<<<<<<< HEAD
 	struct neighbour *ncache;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff_head q;
 };
 
@@ -88,9 +91,13 @@ teql_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		return NET_XMIT_SUCCESS;
 	}
 
+<<<<<<< HEAD
 	kfree_skb(skb);
 	sch->qstats.drops++;
 	return NET_XMIT_DROP;
+=======
+	return qdisc_drop(skb, sch);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct sk_buff *
@@ -136,7 +143,10 @@ teql_reset(struct Qdisc *sch)
 
 	skb_queue_purge(&dat->q);
 	sch->q.qlen = 0;
+<<<<<<< HEAD
 	teql_neigh_release(xchg(&dat->ncache, NULL));
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -168,7 +178,10 @@ teql_destroy(struct Qdisc *sch)
 					}
 				}
 				skb_queue_purge(&dat->q);
+<<<<<<< HEAD
 				teql_neigh_release(xchg(&dat->ncache, NULL));
+=======
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 
@@ -227,6 +240,7 @@ static int teql_qdisc_init(struct Qdisc *sch, struct nlattr *opt)
 static int
 __teql_resolve(struct sk_buff *skb, struct sk_buff *skb_res,
 	       struct net_device *dev, struct netdev_queue *txq,
+<<<<<<< HEAD
 	       struct neighbour *mn)
 {
 	struct teql_sched_data *q = qdisc_priv(txq->qdisc);
@@ -242,6 +256,27 @@ __teql_resolve(struct sk_buff *skb, struct sk_buff *skb_res,
 		if (IS_ERR(n))
 			return PTR_ERR(n);
 	}
+=======
+	       struct dst_entry *dst)
+{
+	struct neighbour *n;
+	int err = 0;
+
+	n = dst_neigh_lookup_skb(dst, skb);
+	if (!n)
+		return -ENOENT;
+
+	if (dst->dev != dev) {
+		struct neighbour *mn;
+
+		mn = __neigh_lookup_errno(n->tbl, n->primary_key, dev);
+		neigh_release(n);
+		if (IS_ERR(mn))
+			return PTR_ERR(mn);
+		n = mn;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (neigh_event_send(n, skb_res) == 0) {
 		int err;
 		char haddr[MAX_ADDR_LEN];
@@ -250,6 +285,7 @@ __teql_resolve(struct sk_buff *skb, struct sk_buff *skb_res,
 		err = dev_hard_header(skb, dev, ntohs(skb->protocol), haddr,
 				      NULL, skb->len);
 
+<<<<<<< HEAD
 		if (err < 0) {
 			neigh_release(n);
 			return -EINVAL;
@@ -259,6 +295,15 @@ __teql_resolve(struct sk_buff *skb, struct sk_buff *skb_res,
 	}
 	neigh_release(n);
 	return (skb_res == NULL) ? -EAGAIN : 1;
+=======
+		if (err < 0)
+			err = -EINVAL;
+	} else {
+		err = (skb_res == NULL) ? -EAGAIN : 1;
+	}
+	neigh_release(n);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int teql_resolve(struct sk_buff *skb,
@@ -267,7 +312,10 @@ static inline int teql_resolve(struct sk_buff *skb,
 			       struct netdev_queue *txq)
 {
 	struct dst_entry *dst = skb_dst(skb);
+<<<<<<< HEAD
 	struct neighbour *mn;
+=======
+>>>>>>> refs/remotes/origin/master
 	int res;
 
 	if (txq->qdisc == &noop_qdisc)
@@ -277,8 +325,16 @@ static inline int teql_resolve(struct sk_buff *skb,
 		return 0;
 
 	rcu_read_lock();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mn = dst_get_neighbour(dst);
+=======
+	mn = dst_get_neighbour_noref(dst);
+>>>>>>> refs/remotes/origin/cm-10.0
 	res = mn ? __teql_resolve(skb, skb_res, dev, txq, mn) : 0;
+=======
+	res = __teql_resolve(skb, skb_res, dev, txq, dst);
+>>>>>>> refs/remotes/origin/master
 	rcu_read_unlock();
 
 	return res;
@@ -310,7 +366,15 @@ restart:
 
 		if (slave_txq->qdisc_sleeping != q)
 			continue;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (__netif_subqueue_stopped(slave, subq) ||
+=======
+		if (netif_xmit_stopped(netdev_get_tx_queue(slave, subq)) ||
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (netif_xmit_stopped(netdev_get_tx_queue(slave, subq)) ||
+>>>>>>> refs/remotes/origin/master
 		    !netif_running(slave)) {
 			busy = 1;
 			continue;
@@ -321,7 +385,15 @@ restart:
 			if (__netif_tx_trylock(slave_txq)) {
 				unsigned int length = qdisc_pkt_len(skb);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (!netif_tx_queue_frozen_or_stopped(slave_txq) &&
+=======
+				if (!netif_xmit_frozen_or_stopped(slave_txq) &&
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (!netif_xmit_frozen_or_stopped(slave_txq) &&
+>>>>>>> refs/remotes/origin/master
 				    slave_ops->ndo_start_xmit(skb, slave) == NETDEV_TX_OK) {
 					txq_trans_update(slave_txq);
 					__netif_tx_unlock(slave_txq);
@@ -333,7 +405,15 @@ restart:
 				}
 				__netif_tx_unlock(slave_txq);
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (netif_queue_stopped(dev))
+=======
+			if (netif_xmit_stopped(netdev_get_tx_queue(dev, 0)))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (netif_xmit_stopped(netdev_get_tx_queue(dev, 0)))
+>>>>>>> refs/remotes/origin/master
 				busy = 1;
 			break;
 		case 1:

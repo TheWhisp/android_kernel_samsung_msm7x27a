@@ -21,7 +21,13 @@
 #include <pcmcia/cistpl.h>
 
 #include <asm/irq.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-au1x00/au1000.h>
 
 #define MEM_MAP_SIZE	0x400000
@@ -205,7 +211,11 @@ static struct pccard_operations xxs1500_pcmcia_operations = {
 	.set_mem_map		= au1x00_pcmcia_set_mem_map,
 };
 
+<<<<<<< HEAD
 static int __devinit xxs1500_pcmcia_probe(struct platform_device *pdev)
+=======
+static int xxs1500_pcmcia_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xxs1500_pcmcia_sock *sock;
 	struct resource *r;
@@ -300,7 +310,11 @@ out0:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit xxs1500_pcmcia_remove(struct platform_device *pdev)
+=======
+static int xxs1500_pcmcia_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xxs1500_pcmcia_sock *sock = platform_get_drvdata(pdev);
 
@@ -318,9 +332,11 @@ static struct platform_driver xxs1500_pcmcia_socket_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= xxs1500_pcmcia_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(xxs1500_pcmcia_remove),
 };
 
+<<<<<<< HEAD
 int __init xxs1500_pcmcia_socket_load(void)
 {
 	return platform_driver_register(&xxs1500_pcmcia_socket_driver);
@@ -333,6 +349,15 @@ void  __exit xxs1500_pcmcia_socket_unload(void)
 
 module_init(xxs1500_pcmcia_socket_load);
 module_exit(xxs1500_pcmcia_socket_unload);
+=======
+module_platform_driver(xxs1500_pcmcia_socket_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= xxs1500_pcmcia_remove,
+};
+
+module_platform_driver(xxs1500_pcmcia_socket_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("PCMCIA Socket Services for MyCable XXS1500 systems");

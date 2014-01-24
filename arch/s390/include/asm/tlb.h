@@ -32,6 +32,10 @@ struct mmu_gather {
 	struct mm_struct *mm;
 	struct mmu_table_batch *batch;
 	unsigned int fullmm;
+<<<<<<< HEAD
+=======
+	unsigned long start, end;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mmu_table_batch {
@@ -48,10 +52,20 @@ extern void tlb_remove_table(struct mmu_gather *tlb, void *table);
 
 static inline void tlb_gather_mmu(struct mmu_gather *tlb,
 				  struct mm_struct *mm,
+<<<<<<< HEAD
 				  unsigned int full_mm_flush)
 {
 	tlb->mm = mm;
 	tlb->fullmm = full_mm_flush;
+=======
+				  unsigned long start,
+				  unsigned long end)
+{
+	tlb->mm = mm;
+	tlb->start = start;
+	tlb->end = end;
+	tlb->fullmm = !(start | (end+1));
+>>>>>>> refs/remotes/origin/master
 	tlb->batch = NULL;
 	if (tlb->fullmm)
 		__tlb_flush_mm(mm);
@@ -59,13 +73,21 @@ static inline void tlb_gather_mmu(struct mmu_gather *tlb,
 
 static inline void tlb_flush_mmu(struct mmu_gather *tlb)
 {
+<<<<<<< HEAD
+=======
+	__tlb_flush_mm_lazy(tlb->mm);
+>>>>>>> refs/remotes/origin/master
 	tlb_table_flush(tlb);
 }
 
 static inline void tlb_finish_mmu(struct mmu_gather *tlb,
 				  unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	tlb_table_flush(tlb);
+=======
+	tlb_flush_mmu(tlb);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -106,7 +128,11 @@ static inline void pte_free_tlb(struct mmu_gather *tlb, pgtable_t pte,
 static inline void pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd,
 				unsigned long address)
 {
+<<<<<<< HEAD
 #ifdef __s390x__
+=======
+#ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 	if (tlb->mm->context.asce_limit <= (1UL << 31))
 		return;
 	if (!tlb->fullmm)
@@ -125,7 +151,11 @@ static inline void pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd,
 static inline void pud_free_tlb(struct mmu_gather *tlb, pud_t *pud,
 				unsigned long address)
 {
+<<<<<<< HEAD
 #ifdef __s390x__
+=======
+#ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 	if (tlb->mm->context.asce_limit <= (1UL << 42))
 		return;
 	if (!tlb->fullmm)
@@ -137,6 +167,10 @@ static inline void pud_free_tlb(struct mmu_gather *tlb, pud_t *pud,
 #define tlb_start_vma(tlb, vma)			do { } while (0)
 #define tlb_end_vma(tlb, vma)			do { } while (0)
 #define tlb_remove_tlb_entry(tlb, ptep, addr)	do { } while (0)
+<<<<<<< HEAD
+=======
+#define tlb_remove_pmd_tlb_entry(tlb, pmdp, addr)	do { } while (0)
+>>>>>>> refs/remotes/origin/master
 #define tlb_migrate_finish(mm)			do { } while (0)
 
 #endif /* _S390_TLB_H */

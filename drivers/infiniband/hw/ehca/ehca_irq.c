@@ -42,6 +42,10 @@
  */
 
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/smpboot.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ehca_classes.h"
 #include "ehca_irq.h"
@@ -652,7 +656,11 @@ void ehca_tasklet_eq(unsigned long data)
 	ehca_process_eq((struct ehca_shca*)data, 1);
 }
 
+<<<<<<< HEAD
 static inline int find_next_online_cpu(struct ehca_comp_pool *pool)
+=======
+static int find_next_online_cpu(struct ehca_comp_pool *pool)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpu;
 	unsigned long flags;
@@ -662,17 +670,31 @@ static inline int find_next_online_cpu(struct ehca_comp_pool *pool)
 		ehca_dmp(cpu_online_mask, cpumask_size(), "");
 
 	spin_lock_irqsave(&pool->last_cpu_lock, flags);
+<<<<<<< HEAD
 	cpu = cpumask_next(pool->last_cpu, cpu_online_mask);
 	if (cpu >= nr_cpu_ids)
 		cpu = cpumask_first(cpu_online_mask);
 	pool->last_cpu = cpu;
+=======
+	do {
+		cpu = cpumask_next(pool->last_cpu, cpu_online_mask);
+		if (cpu >= nr_cpu_ids)
+			cpu = cpumask_first(cpu_online_mask);
+		pool->last_cpu = cpu;
+	} while (!per_cpu_ptr(pool->cpu_comp_tasks, cpu)->active);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&pool->last_cpu_lock, flags);
 
 	return cpu;
 }
 
 static void __queue_comp_task(struct ehca_cq *__cq,
+<<<<<<< HEAD
 			      struct ehca_cpu_comp_task *cct)
+=======
+			      struct ehca_cpu_comp_task *cct,
+			      struct task_struct *thread)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -683,7 +705,11 @@ static void __queue_comp_task(struct ehca_cq *__cq,
 		__cq->nr_callbacks++;
 		list_add_tail(&__cq->entry, &cct->cq_list);
 		cct->cq_jobs++;
+<<<<<<< HEAD
 		wake_up(&cct->wait_queue);
+=======
+		wake_up_process(thread);
+>>>>>>> refs/remotes/origin/master
 	} else
 		__cq->nr_callbacks++;
 
@@ -695,6 +721,10 @@ static void queue_comp_task(struct ehca_cq *__cq)
 {
 	int cpu_id;
 	struct ehca_cpu_comp_task *cct;
+<<<<<<< HEAD
+=======
+	struct task_struct *thread;
+>>>>>>> refs/remotes/origin/master
 	int cq_jobs;
 	unsigned long flags;
 
@@ -702,7 +732,12 @@ static void queue_comp_task(struct ehca_cq *__cq)
 	BUG_ON(!cpu_online(cpu_id));
 
 	cct = per_cpu_ptr(pool->cpu_comp_tasks, cpu_id);
+<<<<<<< HEAD
 	BUG_ON(!cct);
+=======
+	thread = *per_cpu_ptr(pool->cpu_comp_threads, cpu_id);
+	BUG_ON(!cct || !thread);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&cct->task_lock, flags);
 	cq_jobs = cct->cq_jobs;
@@ -710,15 +745,23 @@ static void queue_comp_task(struct ehca_cq *__cq)
 	if (cq_jobs > 0) {
 		cpu_id = find_next_online_cpu(pool);
 		cct = per_cpu_ptr(pool->cpu_comp_tasks, cpu_id);
+<<<<<<< HEAD
 		BUG_ON(!cct);
 	}
 
 	__queue_comp_task(__cq, cct);
+=======
+		thread = *per_cpu_ptr(pool->cpu_comp_threads, cpu_id);
+		BUG_ON(!cct || !thread);
+	}
+	__queue_comp_task(__cq, cct, thread);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void run_comp_task(struct ehca_cpu_comp_task *cct)
 {
 	struct ehca_cq *cq;
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(&cct->task_lock, flags);
@@ -726,12 +769,22 @@ static void run_comp_task(struct ehca_cpu_comp_task *cct)
 	while (!list_empty(&cct->cq_list)) {
 		cq = list_entry(cct->cq_list.next, struct ehca_cq, entry);
 		spin_unlock_irqrestore(&cct->task_lock, flags);
+=======
+
+	while (!list_empty(&cct->cq_list)) {
+		cq = list_entry(cct->cq_list.next, struct ehca_cq, entry);
+		spin_unlock_irq(&cct->task_lock);
+>>>>>>> refs/remotes/origin/master
 
 		comp_event_callback(cq);
 		if (atomic_dec_and_test(&cq->nr_events))
 			wake_up(&cq->wait_completion);
 
+<<<<<<< HEAD
 		spin_lock_irqsave(&cct->task_lock, flags);
+=======
+		spin_lock_irq(&cct->task_lock);
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&cq->task_lock);
 		cq->nr_callbacks--;
 		if (!cq->nr_callbacks) {
@@ -740,6 +793,7 @@ static void run_comp_task(struct ehca_cpu_comp_task *cct)
 		}
 		spin_unlock(&cq->task_lock);
 	}
+<<<<<<< HEAD
 
 	spin_unlock_irqrestore(&cct->task_lock, flags);
 }
@@ -786,7 +840,12 @@ static struct task_struct *create_comp_task(struct ehca_comp_pool *pool,
 	spin_lock_init(&cct->task_lock);
 	INIT_LIST_HEAD(&cct->cq_list);
 	init_waitqueue_head(&cct->wait_queue);
+<<<<<<< HEAD
 	cct->task = kthread_create(comp_task, cct, "ehca_comp/%d", cpu);
+=======
+	cct->task = kthread_create_on_node(comp_task, cct, cpu_to_node(cpu),
+					   "ehca_comp/%d", cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return cct->task;
 }
@@ -886,12 +945,83 @@ static int __cpuinit comp_pool_callback(struct notifier_block *nfb,
 static struct notifier_block comp_pool_callback_nb __cpuinitdata = {
 	.notifier_call	= comp_pool_callback,
 	.priority	= 0,
+=======
+}
+
+static void comp_task_park(unsigned int cpu)
+{
+	struct ehca_cpu_comp_task *cct = per_cpu_ptr(pool->cpu_comp_tasks, cpu);
+	struct ehca_cpu_comp_task *target;
+	struct task_struct *thread;
+	struct ehca_cq *cq, *tmp;
+	LIST_HEAD(list);
+
+	spin_lock_irq(&cct->task_lock);
+	cct->cq_jobs = 0;
+	cct->active = 0;
+	list_splice_init(&cct->cq_list, &list);
+	spin_unlock_irq(&cct->task_lock);
+
+	cpu = find_next_online_cpu(pool);
+	target = per_cpu_ptr(pool->cpu_comp_tasks, cpu);
+	thread = *per_cpu_ptr(pool->cpu_comp_threads, cpu);
+	spin_lock_irq(&target->task_lock);
+	list_for_each_entry_safe(cq, tmp, &list, entry) {
+		list_del(&cq->entry);
+		__queue_comp_task(cq, target, thread);
+	}
+	spin_unlock_irq(&target->task_lock);
+}
+
+static void comp_task_stop(unsigned int cpu, bool online)
+{
+	struct ehca_cpu_comp_task *cct = per_cpu_ptr(pool->cpu_comp_tasks, cpu);
+
+	spin_lock_irq(&cct->task_lock);
+	cct->cq_jobs = 0;
+	cct->active = 0;
+	WARN_ON(!list_empty(&cct->cq_list));
+	spin_unlock_irq(&cct->task_lock);
+}
+
+static int comp_task_should_run(unsigned int cpu)
+{
+	struct ehca_cpu_comp_task *cct = per_cpu_ptr(pool->cpu_comp_tasks, cpu);
+
+	return cct->cq_jobs;
+}
+
+static void comp_task(unsigned int cpu)
+{
+	struct ehca_cpu_comp_task *cct = this_cpu_ptr(pool->cpu_comp_tasks);
+	int cql_empty;
+
+	spin_lock_irq(&cct->task_lock);
+	cql_empty = list_empty(&cct->cq_list);
+	if (!cql_empty) {
+		__set_current_state(TASK_RUNNING);
+		run_comp_task(cct);
+	}
+	spin_unlock_irq(&cct->task_lock);
+}
+
+static struct smp_hotplug_thread comp_pool_threads = {
+	.thread_should_run	= comp_task_should_run,
+	.thread_fn		= comp_task,
+	.thread_comm		= "ehca_comp/%u",
+	.cleanup		= comp_task_stop,
+	.park			= comp_task_park,
+>>>>>>> refs/remotes/origin/master
 };
 
 int ehca_create_comp_pool(void)
 {
+<<<<<<< HEAD
 	int cpu;
 	struct task_struct *task;
+=======
+	int cpu, ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	if (!ehca_scaling_code)
 		return 0;
@@ -904,6 +1034,7 @@ int ehca_create_comp_pool(void)
 	pool->last_cpu = cpumask_any(cpu_online_mask);
 
 	pool->cpu_comp_tasks = alloc_percpu(struct ehca_cpu_comp_task);
+<<<<<<< HEAD
 	if (pool->cpu_comp_tasks == NULL) {
 		kfree(pool);
 		return -EINVAL;
@@ -922,10 +1053,43 @@ int ehca_create_comp_pool(void)
 	printk(KERN_INFO "eHCA scaling code enabled\n");
 
 	return 0;
+=======
+	if (!pool->cpu_comp_tasks)
+		goto out_pool;
+
+	pool->cpu_comp_threads = alloc_percpu(struct task_struct *);
+	if (!pool->cpu_comp_threads)
+		goto out_tasks;
+
+	for_each_present_cpu(cpu) {
+		struct ehca_cpu_comp_task *cct;
+
+		cct = per_cpu_ptr(pool->cpu_comp_tasks, cpu);
+		spin_lock_init(&cct->task_lock);
+		INIT_LIST_HEAD(&cct->cq_list);
+	}
+
+	comp_pool_threads.store = pool->cpu_comp_threads;
+	ret = smpboot_register_percpu_thread(&comp_pool_threads);
+	if (ret)
+		goto out_threads;
+
+	pr_info("eHCA scaling code enabled\n");
+	return ret;
+
+out_threads:
+	free_percpu(pool->cpu_comp_threads);
+out_tasks:
+	free_percpu(pool->cpu_comp_tasks);
+out_pool:
+	kfree(pool);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 void ehca_destroy_comp_pool(void)
 {
+<<<<<<< HEAD
 	int i;
 
 	if (!ehca_scaling_code)
@@ -936,6 +1100,14 @@ void ehca_destroy_comp_pool(void)
 	for_each_online_cpu(i)
 		destroy_comp_task(pool, i);
 
+=======
+	if (!ehca_scaling_code)
+		return;
+
+	smpboot_unregister_percpu_thread(&comp_pool_threads);
+
+	free_percpu(pool->cpu_comp_threads);
+>>>>>>> refs/remotes/origin/master
 	free_percpu(pool->cpu_comp_tasks);
 	kfree(pool);
 }

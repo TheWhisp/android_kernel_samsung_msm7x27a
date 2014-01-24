@@ -12,6 +12,14 @@
 #include "bitops.h"
 		.text
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(_set_bit)
 	bitop	orr
 ENDPROC(_set_bit)
+=======
+bitop	_set_bit, orr
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+bitop	_set_bit, orr
+>>>>>>> refs/remotes/origin/master

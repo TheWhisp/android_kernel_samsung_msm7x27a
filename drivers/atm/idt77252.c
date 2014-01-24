@@ -37,6 +37,14 @@
 #include <linux/atm.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <linux/wait.h>
 #include <linux/jiffies.h>
@@ -45,7 +53,15 @@
 
 #include <asm/io.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 
 #ifdef CONFIG_ATM_IDT77252_USE_SUNI
@@ -1257,7 +1273,11 @@ idt77252_rx_raw(struct idt77252_dev *card)
 	tail = readl(SAR_REG_RAWCT);
 
 	pci_dma_sync_single_for_cpu(card->pcidev, IDT77252_PRV_PADDR(queue),
+<<<<<<< HEAD
 				    skb_end_pointer(queue) - queue->head - 16,
+=======
+				    skb_end_offset(queue) - 16,
+>>>>>>> refs/remotes/origin/master
 				    PCI_DMA_FROMDEVICE);
 
 	while (head != tail) {
@@ -3108,8 +3128,12 @@ deinit_card(struct idt77252_dev *card)
 }
 
 
+<<<<<<< HEAD
 static void __devinit
 init_sram(struct idt77252_dev *card)
+=======
+static void init_sram(struct idt77252_dev *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -3256,8 +3280,12 @@ init_sram(struct idt77252_dev *card)
 	IPRINTK("%s: SRAM initialization complete.\n", card->name);
 }
 
+<<<<<<< HEAD
 static int __devinit
 init_card(struct atm_dev *dev)
+=======
+static int init_card(struct atm_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct idt77252_dev *card = dev->dev_data;
 	struct pci_dev *pcidev = card->pcidev;
@@ -3415,27 +3443,69 @@ init_card(struct atm_dev *dev)
 
 	size = sizeof(struct vc_map *) * card->tct_size;
 	IPRINTK("%s: allocate %d byte for VC map.\n", card->name, size);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (NULL == (card->vcs = vmalloc(size))) {
+=======
+	card->vcs = vzalloc(size);
+	if (!card->vcs) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->vcs = vzalloc(size);
+	if (!card->vcs) {
+>>>>>>> refs/remotes/origin/master
 		printk("%s: memory allocation failure.\n", card->name);
 		deinit_card(card);
 		return -1;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(card->vcs, 0, size);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	size = sizeof(struct vc_map *) * card->scd_size;
 	IPRINTK("%s: allocate %d byte for SCD to VC mapping.\n",
 	        card->name, size);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (NULL == (card->scd2vc = vmalloc(size))) {
+=======
+	card->scd2vc = vzalloc(size);
+	if (!card->scd2vc) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->scd2vc = vzalloc(size);
+	if (!card->scd2vc) {
+>>>>>>> refs/remotes/origin/master
 		printk("%s: memory allocation failure.\n", card->name);
 		deinit_card(card);
 		return -1;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	memset(card->scd2vc, 0, size);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	size = sizeof(struct tst_info) * (card->tst_size - 2);
 	IPRINTK("%s: allocate %d byte for TST to VC mapping.\n",
 		card->name, size);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (NULL == (card->soft_tst = vmalloc(size))) {
+=======
+	card->soft_tst = vmalloc(size);
+	if (!card->soft_tst) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->soft_tst = vmalloc(size);
+	if (!card->soft_tst) {
+>>>>>>> refs/remotes/origin/master
 		printk("%s: memory allocation failure.\n", card->name);
 		deinit_card(card);
 		return -1;
@@ -3511,7 +3581,15 @@ init_card(struct atm_dev *dev)
 	tmp = dev_get_by_name(&init_net, tname);	/* jhs: was "tmp = dev_get(tname);" */
 	if (tmp) {
 		memcpy(card->atmdev->esi, tmp->dev_addr, 6);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+		dev_put(tmp);
+>>>>>>> refs/remotes/origin/master
+=======
+		dev_put(tmp);
+>>>>>>> refs/remotes/origin/cm-11.0
 		printk("%s: ESI %pM\n", card->name, card->atmdev->esi);
 	}
 	/*
@@ -3535,8 +3613,12 @@ init_card(struct atm_dev *dev)
 /*****************************************************************************/
 
 
+<<<<<<< HEAD
 static int __devinit
 idt77252_preset(struct idt77252_dev *card)
+=======
+static int idt77252_preset(struct idt77252_dev *card)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 pci_command;
 
@@ -3577,8 +3659,12 @@ idt77252_preset(struct idt77252_dev *card)
 }
 
 
+<<<<<<< HEAD
 static unsigned long __devinit
 probe_sram(struct idt77252_dev *card)
+=======
+static unsigned long probe_sram(struct idt77252_dev *card)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 data, addr;
 
@@ -3599,8 +3685,13 @@ probe_sram(struct idt77252_dev *card)
 	return addr * sizeof(u32);
 }
 
+<<<<<<< HEAD
 static int __devinit
 idt77252_init_one(struct pci_dev *pcidev, const struct pci_device_id *id)
+=======
+static int idt77252_init_one(struct pci_dev *pcidev,
+			     const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	static struct idt77252_dev **last = &idt77252_chain;
 	static int index = 0;

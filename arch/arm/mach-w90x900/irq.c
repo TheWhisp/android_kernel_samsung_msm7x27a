@@ -19,7 +19,15 @@
 #include <linux/interrupt.h>
 #include <linux/ioport.h>
 #include <linux/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 
 #include <asm/irq.h>
@@ -28,6 +36,16 @@
 #include <mach/hardware.h>
 #include <mach/regs-irq.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include "nuc9xx.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "nuc9xx.h"
+
+>>>>>>> refs/remotes/origin/master
 struct group_irq {
 	unsigned long		gpen;
 	unsigned int		enabled;

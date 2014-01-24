@@ -137,7 +137,11 @@ static int __init sgiseeq_devinit(void)
 
 	eth0_pd.hpc = hpc3c0;
 	eth0_pd.irq = SGI_ENET_IRQ;
+<<<<<<< HEAD
 #define EADDR_NVOFS     250
+=======
+#define EADDR_NVOFS	250
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 3; i++) {
 		unsigned short tmp = ip22_nvram_read(EADDR_NVOFS / 2 + i);
 
@@ -155,17 +159,28 @@ static int __init sgiseeq_devinit(void)
 		return 0;
 
 	sgimc->giopar |= SGIMC_GIOPAR_MASTEREXP1 | SGIMC_GIOPAR_EXP164 |
+<<<<<<< HEAD
 	                 SGIMC_GIOPAR_HPC264;
+=======
+			 SGIMC_GIOPAR_HPC264;
+>>>>>>> refs/remotes/origin/master
 	hpc3c1->pbus_piocfg[0][0] = 0x3ffff;
 	/* interrupt/config register on Challenge S Mezz board */
 	hpc3c1->pbus_extregs[0][0] = 0x30;
 
 	eth1_pd.hpc = hpc3c1;
 	eth1_pd.irq = SGI_GIO_0_IRQ;
+<<<<<<< HEAD
 #define EADDR_NVOFS     250
 	for (i = 0; i < 3; i++) {
 		unsigned short tmp = ip22_eeprom_read(&hpc3c1->eeprom,
 		                                      EADDR_NVOFS / 2 + i);
+=======
+#define EADDR_NVOFS	250
+	for (i = 0; i < 3; i++) {
+		unsigned short tmp = ip22_eeprom_read(&hpc3c1->eeprom,
+						      EADDR_NVOFS / 2 + i);
+>>>>>>> refs/remotes/origin/master
 
 		eth1_pd.mac[2 * i]     = tmp >> 8;
 		eth1_pd.mac[2 * i + 1] = tmp & 0xff;

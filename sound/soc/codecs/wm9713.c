@@ -1,7 +1,11 @@
 /*
  * wm9713.c  --  ALSA Soc WM9713 codec support
  *
+<<<<<<< HEAD
  * Copyright 2006 Wolfson Microelectronics PLC.
+=======
+ * Copyright 2006-10 Wolfson Microelectronics PLC.
+>>>>>>> refs/remotes/origin/master
  * Author: Liam Girdwood <lrg@slimlogic.co.uk>
  *
  *  This program is free software; you can redistribute  it and/or modify it
@@ -221,7 +225,12 @@ static int wm9713_voice_shutdown(struct snd_soc_dapm_widget *w,
 	struct snd_soc_codec *codec = w->codec;
 	u16 status, rate;
 
+<<<<<<< HEAD
 	BUG_ON(event != SND_SOC_DAPM_PRE_PMD);
+=======
+	if (WARN_ON(event != SND_SOC_DAPM_PRE_PMD))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	/* Gracefully shut down the voice interface. */
 	status = ac97_read(codec, AC97_EXTENDED_MID) | 0x1000;
@@ -652,7 +661,11 @@ static unsigned int ac97_read(struct snd_soc_codec *codec,
 	if (reg == AC97_RESET || reg == AC97_GPIO_STATUS ||
 		reg == AC97_VENDOR_ID1 || reg == AC97_VENDOR_ID2 ||
 		reg == AC97_CD)
+<<<<<<< HEAD
 		return soc_ac97_ops.read(codec->ac97, reg);
+=======
+		return soc_ac97_ops->read(codec->ac97, reg);
+>>>>>>> refs/remotes/origin/master
 	else {
 		reg = reg >> 1;
 
@@ -668,7 +681,11 @@ static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
 {
 	u16 *cache = codec->reg_cache;
 	if (reg < 0x7c)
+<<<<<<< HEAD
 		soc_ac97_ops.write(codec->ac97, reg, val);
+=======
+		soc_ac97_ops->write(codec->ac97, reg, val);
+>>>>>>> refs/remotes/origin/master
 	reg = reg >> 1;
 	if (reg < (ARRAY_SIZE(wm9713_reg)))
 		cache[reg] = val;
@@ -1026,19 +1043,43 @@ static int ac97_aux_prepare(struct snd_pcm_substream *substream,
 	(SNDRV_PCM_FORMAT_S16_LE | SNDRV_PCM_FORMAT_S20_3LE | \
 	 SNDRV_PCM_FORMAT_S24_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm9713_dai_ops_hifi = {
+=======
+static const struct snd_soc_dai_ops wm9713_dai_ops_hifi = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm9713_dai_ops_hifi = {
+>>>>>>> refs/remotes/origin/master
 	.prepare	= ac97_hifi_prepare,
 	.set_clkdiv	= wm9713_set_dai_clkdiv,
 	.set_pll	= wm9713_set_dai_pll,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm9713_dai_ops_aux = {
+=======
+static const struct snd_soc_dai_ops wm9713_dai_ops_aux = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm9713_dai_ops_aux = {
+>>>>>>> refs/remotes/origin/master
 	.prepare	= ac97_aux_prepare,
 	.set_clkdiv	= wm9713_set_dai_clkdiv,
 	.set_pll	= wm9713_set_dai_pll,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm9713_dai_ops_voice = {
+=======
+static const struct snd_soc_dai_ops wm9713_dai_ops_voice = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm9713_dai_ops_voice = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= wm9713_pcm_hw_params,
 	.set_clkdiv	= wm9713_set_dai_clkdiv,
 	.set_pll	= wm9713_set_dai_pll,
@@ -1095,15 +1136,26 @@ static struct snd_soc_dai_driver wm9713_dai[] = {
 
 int wm9713_reset(struct snd_soc_codec *codec, int try_warm)
 {
+<<<<<<< HEAD
 	if (try_warm && soc_ac97_ops.warm_reset) {
 		soc_ac97_ops.warm_reset(codec->ac97);
+=======
+	if (try_warm && soc_ac97_ops->warm_reset) {
+		soc_ac97_ops->warm_reset(codec->ac97);
+>>>>>>> refs/remotes/origin/master
 		if (ac97_read(codec, 0) == wm9713_reg[0])
 			return 1;
 	}
 
+<<<<<<< HEAD
 	soc_ac97_ops.reset(codec->ac97);
 	if (soc_ac97_ops.warm_reset)
 		soc_ac97_ops.warm_reset(codec->ac97);
+=======
+	soc_ac97_ops->reset(codec->ac97);
+	if (soc_ac97_ops->warm_reset)
+		soc_ac97_ops->warm_reset(codec->ac97);
+>>>>>>> refs/remotes/origin/master
 	if (ac97_read(codec, 0) != wm9713_reg[0])
 		return -EIO;
 	return 0;
@@ -1140,8 +1192,16 @@ static int wm9713_set_bias_level(struct snd_soc_codec *codec,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm9713_soc_suspend(struct snd_soc_codec *codec,
 	pm_message_t state)
+=======
+static int wm9713_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm9713_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 reg;
 
@@ -1181,7 +1241,11 @@ static int wm9713_soc_resume(struct snd_soc_codec *codec)
 			if (i == AC97_POWERDOWN || i == AC97_EXTENDED_MID ||
 				i == AC97_EXTENDED_MSTATUS || i > 0x66)
 				continue;
+<<<<<<< HEAD
 			soc_ac97_ops.write(codec->ac97, i, cache[i>>1]);
+=======
+			soc_ac97_ops->write(codec->ac97, i, cache[i>>1]);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1198,7 +1262,11 @@ static int wm9713_soc_probe(struct snd_soc_codec *codec)
 		return -ENOMEM;
 	snd_soc_codec_set_drvdata(codec, wm9713);
 
+<<<<<<< HEAD
 	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
+=======
+	ret = snd_soc_new_ac97_codec(codec, soc_ac97_ops, 0);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto codec_err;
 
@@ -1217,7 +1285,15 @@ static int wm9713_soc_probe(struct snd_soc_codec *codec)
 	reg = ac97_read(codec, AC97_CD) & 0x7fff;
 	ac97_write(codec, AC97_CD, reg);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm9713_snd_ac97_controls,
+=======
+	snd_soc_add_codec_controls(codec, wm9713_snd_ac97_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_add_codec_controls(codec, wm9713_snd_ac97_controls,
+>>>>>>> refs/remotes/origin/master
 				ARRAY_SIZE(wm9713_snd_ac97_controls));
 
 	return 0;
@@ -1255,13 +1331,21 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9713 = {
 	.num_dapm_routes = ARRAY_SIZE(wm9713_audio_map),
 };
 
+<<<<<<< HEAD
 static __devinit int wm9713_probe(struct platform_device *pdev)
+=======
+static int wm9713_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_codec(&pdev->dev,
 			&soc_codec_dev_wm9713, wm9713_dai, ARRAY_SIZE(wm9713_dai));
 }
 
+<<<<<<< HEAD
 static int __devexit wm9713_remove(struct platform_device *pdev)
+=======
+static int wm9713_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_codec(&pdev->dev);
 	return 0;
@@ -1274,9 +1358,11 @@ static struct platform_driver wm9713_codec_driver = {
 	},
 
 	.probe = wm9713_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(wm9713_remove),
 };
 
+<<<<<<< HEAD
 static int __init wm9713_init(void)
 {
 	return platform_driver_register(&wm9713_codec_driver);
@@ -1288,6 +1374,15 @@ static void __exit wm9713_exit(void)
 	platform_driver_unregister(&wm9713_codec_driver);
 }
 module_exit(wm9713_exit);
+=======
+module_platform_driver(wm9713_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = wm9713_remove,
+};
+
+module_platform_driver(wm9713_codec_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC WM9713/WM9714 driver");
 MODULE_AUTHOR("Liam Girdwood");

@@ -16,6 +16,7 @@
 
 /* These are here to support 32-bit syscalls on a 64-bit kernel. */
 
+<<<<<<< HEAD
 typedef struct compat_siginfo {
 	int si_signo;
 	int si_errno;
@@ -91,6 +92,8 @@ typedef struct sigaltstack_32 {
 	compat_size_t ss_size;
 } stack_32_t;
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct pt_regs32 {
 	unsigned int gpr[32];
 	unsigned int nip;
@@ -126,7 +129,11 @@ struct mcontext32 {
 struct ucontext32 { 
 	unsigned int	  	uc_flags;
 	unsigned int 	  	uc_link;
+<<<<<<< HEAD
 	stack_32_t	 	uc_stack;
+=======
+	compat_stack_t	 	uc_stack;
+>>>>>>> refs/remotes/origin/master
 	int		 	uc_pad[7];
 	compat_uptr_t		uc_regs;	/* points to uc_mcontext field */
 	compat_sigset_t	 	uc_sigmask;	/* mask last for extensibility */

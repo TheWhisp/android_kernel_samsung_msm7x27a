@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -177,7 +185,15 @@ static irqreturn_t resout_irq_handler(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void arch_reset(char mode, const char *cmd)
+=======
+void msm_restart(char mode, const char *cmd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void msm_restart(char mode, const char *cmd)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 
 #ifdef CONFIG_MSM_DLOAD_MODE
@@ -232,6 +248,8 @@ void arch_reset(char mode, const char *cmd)
 	printk(KERN_ERR "Restarting has failed\n");
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init msm_restart_init(void)
 {
 	int rc;
@@ -247,6 +265,17 @@ static int __init msm_restart_init(void)
 	restart_reason = MSM_IMEM_BASE + RESTART_REASON_ADDR;
 	pm_power_off = msm_power_off;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int __init msm_pmic_restart_init(void)
+{
+	int rc;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pmic_reset_irq != 0) {
 		rc = request_any_context_irq(pmic_reset_irq,
 					resout_irq_handler, IRQF_TRIGGER_HIGH,
@@ -260,4 +289,29 @@ static int __init msm_restart_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 late_initcall(msm_restart_init);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+late_initcall(msm_pmic_restart_init);
+
+static int __init msm_restart_init(void)
+{
+#ifdef CONFIG_MSM_DLOAD_MODE
+	atomic_notifier_chain_register(&panic_notifier_list, &panic_blk);
+	dload_mode_addr = MSM_IMEM_BASE + DLOAD_MODE_ADDR;
+	set_dload_mode(download_mode);
+#endif
+	msm_tmr0_base = msm_timer_get_timer0_base();
+	restart_reason = MSM_IMEM_BASE + RESTART_REASON_ADDR;
+	pm_power_off = msm_power_off;
+
+	return 0;
+}
+early_initcall(msm_restart_init);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

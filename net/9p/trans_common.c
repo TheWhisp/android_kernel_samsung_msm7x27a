@@ -21,23 +21,52 @@
 
 /**
  *  p9_release_req_pages - Release pages after the transaction.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  @*private: PDU's private page of struct trans_rpage_info
  */
 void
 p9_release_req_pages(struct trans_rpage_info *rpinfo)
 {
+<<<<<<< HEAD
 	int i = 0;
 
 	while (rpinfo->rp_data[i] && rpinfo->rp_nr_pages--) {
 		put_page(rpinfo->rp_data[i]);
 		i++;
 	}
+=======
+	int i;
+
+	for (i = 0; i < nr_pages; i++)
+		if (pages[i])
+			put_page(pages[i]);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL(p9_release_req_pages);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ */
+void p9_release_pages(struct page **pages, int nr_pages)
+{
+	int i;
+
+	for (i = 0; i < nr_pages; i++)
+		if (pages[i])
+			put_page(pages[i]);
+}
+EXPORT_SYMBOL(p9_release_pages);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * p9_nr_pages - Return number of pages needed to accommodate the payload.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int
 p9_nr_pages(struct p9_req_t *req)
 {
@@ -45,6 +74,18 @@ p9_nr_pages(struct p9_req_t *req)
 	start_page =  (unsigned long)req->tc->pubuf >> PAGE_SHIFT;
 	end_page = ((unsigned long)req->tc->pubuf + req->tc->pbuf_size +
 			PAGE_SIZE - 1) >> PAGE_SHIFT;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int p9_nr_pages(char *data, int len)
+{
+	unsigned long start_page, end_page;
+	start_page =  (unsigned long)data >> PAGE_SHIFT;
+	end_page = ((unsigned long)data + len + PAGE_SIZE - 1) >> PAGE_SHIFT;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return end_page - start_page;
 }
 EXPORT_SYMBOL(p9_nr_pages);
@@ -58,6 +99,8 @@ EXPORT_SYMBOL(p9_nr_pages);
  * @nr_pages: number of pages to accommodate the payload
  * @rw: Indicates if the pages are for read or write.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 int
 p9_payload_gup(struct p9_req_t *req, size_t *pdata_off, int *pdata_len,
 		int nr_pages, u8 rw)
@@ -87,6 +130,24 @@ p9_payload_gup(struct p9_req_t *req, size_t *pdata_off, int *pdata_len,
 		*pdata_len = min(req->tc->pbuf_size,
 				(size_t)pdata_mapped_pages << PAGE_SHIFT);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+int p9_payload_gup(char *data, int *nr_pages, struct page **pages, int write)
+{
+	int nr_mapped_pages;
+
+	nr_mapped_pages = get_user_pages_fast((unsigned long)data,
+					      *nr_pages, write, pages);
+	if (nr_mapped_pages <= 0)
+		return nr_mapped_pages;
+
+	*nr_pages = nr_mapped_pages;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(p9_payload_gup);

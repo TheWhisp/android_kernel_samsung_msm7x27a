@@ -217,6 +217,10 @@ extern void parport_gsc_dec_use_count(void);
 extern struct parport *parport_gsc_probe_port(unsigned long base,
 						unsigned long base_hi,
 						int irq, int dma,
+<<<<<<< HEAD
 						struct pci_dev *dev);
+=======
+						struct parisc_device *padev);
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __DRIVERS_PARPORT_PARPORT_GSC_H */

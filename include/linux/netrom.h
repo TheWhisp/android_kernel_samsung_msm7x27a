@@ -7,6 +7,11 @@
 #ifndef	NETROM_KERNEL_H
 #define	NETROM_KERNEL_H
 
+<<<<<<< HEAD
+=======
+#include <linux/ax25.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define NETROM_MTU	236
 
 #define NETROM_T1	1

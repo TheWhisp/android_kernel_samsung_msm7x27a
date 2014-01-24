@@ -33,13 +33,17 @@
  */
 
 #include "int.h"
+<<<<<<< HEAD
 #include "mib.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "tmacro.h"
 #include "mac.h"
 #include "power.h"
 #include "bssdb.h"
 #include "usbpipe.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 /* static int msglevel = MSG_LEVEL_DEBUG; */
 static int msglevel = MSG_LEVEL_INFO;
@@ -56,6 +60,9 @@ static int msglevel = MSG_LEVEL_INFO;
 
 /*---------------------  Export Functions  --------------------------*/
 
+=======
+static int msglevel = MSG_LEVEL_INFO; /* MSG_LEVEL_DEBUG */
+>>>>>>> refs/remotes/origin/master
 
 /*+
  *
@@ -79,69 +86,127 @@ static int msglevel = MSG_LEVEL_INFO;
  *  if we've gotten no data
  *
 -*/
+<<<<<<< HEAD
 void INTvWorkItem(void *Context)
 {
 	PSDevice pDevice = (PSDevice) Context;
+=======
+void INTvWorkItem(struct vnt_private *pDevice)
+{
+>>>>>>> refs/remotes/origin/master
 	int ntStatus;
 
 	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"---->Interrupt Polling Thread\n");
 
 	spin_lock_irq(&pDevice->lock);
+<<<<<<< HEAD
 	if (pDevice->fKillEventPollingThread != TRUE)
+=======
+	if (pDevice->fKillEventPollingThread != true)
+>>>>>>> refs/remotes/origin/master
 		ntStatus = PIPEnsInterruptRead(pDevice);
 	spin_unlock_irq(&pDevice->lock);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int INTnsProcessData(PSDevice pDevice)
 {
 	int status = STATUS_SUCCESS;
+=======
+void INTnsProcessData(PSDevice pDevice)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	PSINTData	pINTData;
 	PSMgmtObject	pMgmt = &(pDevice->sMgmtObj);
+=======
+void INTnsProcessData(struct vnt_private *pDevice)
+{
+	PSINTData pINTData;
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+>>>>>>> refs/remotes/origin/master
 	struct net_device_stats *pStats = &pDevice->stats;
 
 	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"---->s_nsInterruptProcessData\n");
 
 	pINTData = (PSINTData) pDevice->intBuf.pDataBuf;
 	if (pINTData->byTSR0 & TSR_VALID) {
+<<<<<<< HEAD
 		STAvUpdateTDStatCounter(&(pDevice->scStatistic),
 					(BYTE) (pINTData->byPkt0 & 0x0F),
 					(BYTE) (pINTData->byPkt0>>4),
 					pINTData->byTSR0);
 		BSSvUpdateNodeTxCounter(pDevice,
 					&(pDevice->scStatistic),
+=======
+		if (pINTData->byTSR0 & (TSR_TMO | TSR_RETRYTMO))
+			pDevice->wstats.discard.retries++;
+		else
+			pStats->tx_packets++;
+
+		BSSvUpdateNodeTxCounter(pDevice,
+>>>>>>> refs/remotes/origin/master
 					pINTData->byTSR0,
 					pINTData->byPkt0);
 		/*DBG_PRN_GRP01(("TSR0 %02x\n", pINTData->byTSR0));*/
 	}
 	if (pINTData->byTSR1 & TSR_VALID) {
+<<<<<<< HEAD
 		STAvUpdateTDStatCounter(&(pDevice->scStatistic),
 					(BYTE) (pINTData->byPkt1 & 0x0F),
 					(BYTE) (pINTData->byPkt1>>4),
 					pINTData->byTSR1);
 		BSSvUpdateNodeTxCounter(pDevice,
 					&(pDevice->scStatistic),
+=======
+		if (pINTData->byTSR1 & (TSR_TMO | TSR_RETRYTMO))
+			pDevice->wstats.discard.retries++;
+		else
+			pStats->tx_packets++;
+
+
+		BSSvUpdateNodeTxCounter(pDevice,
+>>>>>>> refs/remotes/origin/master
 					pINTData->byTSR1,
 					pINTData->byPkt1);
 		/*DBG_PRN_GRP01(("TSR1 %02x\n", pINTData->byTSR1));*/
 	}
 	if (pINTData->byTSR2 & TSR_VALID) {
+<<<<<<< HEAD
 		STAvUpdateTDStatCounter(&(pDevice->scStatistic),
 					(BYTE) (pINTData->byPkt2 & 0x0F),
 					(BYTE) (pINTData->byPkt2>>4),
 					pINTData->byTSR2);
 		BSSvUpdateNodeTxCounter(pDevice,
 					&(pDevice->scStatistic),
+=======
+		if (pINTData->byTSR2 & (TSR_TMO | TSR_RETRYTMO))
+			pDevice->wstats.discard.retries++;
+		else
+			pStats->tx_packets++;
+
+		BSSvUpdateNodeTxCounter(pDevice,
+>>>>>>> refs/remotes/origin/master
 					pINTData->byTSR2,
 					pINTData->byPkt2);
 		/*DBG_PRN_GRP01(("TSR2 %02x\n", pINTData->byTSR2));*/
 	}
 	if (pINTData->byTSR3 & TSR_VALID) {
+<<<<<<< HEAD
 		STAvUpdateTDStatCounter(&(pDevice->scStatistic),
 					(BYTE) (pINTData->byPkt3 & 0x0F),
 					(BYTE) (pINTData->byPkt3>>4),
 					pINTData->byTSR3);
 		BSSvUpdateNodeTxCounter(pDevice,
 					&(pDevice->scStatistic),
+=======
+		if (pINTData->byTSR3 & (TSR_TMO | TSR_RETRYTMO))
+			pDevice->wstats.discard.retries++;
+		else
+			pStats->tx_packets++;
+
+		BSSvUpdateNodeTxCounter(pDevice,
+>>>>>>> refs/remotes/origin/master
 					pINTData->byTSR3,
 					pINTData->byPkt3);
 		/*DBG_PRN_GRP01(("TSR3 %02x\n", pINTData->byTSR3));*/
@@ -152,12 +217,21 @@ int INTnsProcessData(PSDevice pDevice)
 				if (pMgmt->byDTIMCount > 0) {
 					pMgmt->byDTIMCount--;
 					pMgmt->sNodeDBTable[0].bRxPSPoll =
+<<<<<<< HEAD
 						FALSE;
 				} else if (pMgmt->byDTIMCount == 0) {
 					/* check if mutltcast tx bufferring */
 					pMgmt->byDTIMCount =
 						pMgmt->byDTIMPeriod-1;
 					pMgmt->sNodeDBTable[0].bRxPSPoll = TRUE;
+=======
+						false;
+				} else if (pMgmt->byDTIMCount == 0) {
+					/* check if multicast tx buffering */
+					pMgmt->byDTIMCount =
+						pMgmt->byDTIMPeriod-1;
+					pMgmt->sNodeDBTable[0].bRxPSPoll = true;
+>>>>>>> refs/remotes/origin/master
 					if (pMgmt->sNodeDBTable[0].bPSEnable)
 						bScheduleCommand((void *) pDevice,
 								 WLAN_CMD_RX_PSPOLL,
@@ -167,9 +241,15 @@ int INTnsProcessData(PSDevice pDevice)
 						WLAN_CMD_BECON_SEND,
 						NULL);
 			} /* if (pDevice->eOPMode == OP_MODE_AP) */
+<<<<<<< HEAD
 		pDevice->bBeaconSent = TRUE;
 		} else {
 			pDevice->bBeaconSent = FALSE;
+=======
+		pDevice->bBeaconSent = true;
+		} else {
+			pDevice->bBeaconSent = false;
+>>>>>>> refs/remotes/origin/master
 		}
 		if (pINTData->byISR0 & ISR_TBTT) {
 			if (pDevice->bEnablePSMode)
@@ -184,6 +264,7 @@ int INTnsProcessData(PSDevice pDevice)
 							NULL);
 			}
 		}
+<<<<<<< HEAD
 		LODWORD(pDevice->qwCurrTSF) = pINTData->dwLoTSF;
 		HIDWORD(pDevice->qwCurrTSF) = pINTData->dwHiTSF;
 		/*DBG_PRN_GRP01(("ISR0 = %02x ,
@@ -204,12 +285,23 @@ int INTnsProcessData(PSDevice pDevice)
 					pINTData->byISR1);
 	}
 
+=======
+		pDevice->qwCurrTSF = cpu_to_le64(pINTData->qwTSF);
+		/*DBG_PRN_GRP01(("ISR0 = %02x ,
+		  LoTsf =  %08x,
+		  HiTsf =  %08x\n",
+		  pINTData->byISR0,
+		  pINTData->dwLoTSF,
+		  pINTData->dwHiTSF)); */
+	}
+>>>>>>> refs/remotes/origin/master
 	if (pINTData->byISR1 != 0)
 		if (pINTData->byISR1 & ISR_GPIO3)
 			bScheduleCommand((void *) pDevice,
 					WLAN_CMD_RADIO,
 					NULL);
 	pDevice->intBuf.uDataLen = 0;
+<<<<<<< HEAD
 	pDevice->intBuf.bInUse = FALSE;
 
 	pStats->tx_packets = pDevice->scStatistic.ullTsrOK;
@@ -218,6 +310,15 @@ int INTnsProcessData(PSDevice pDevice)
 			pDevice->scStatistic.ullTxBroadcastBytes;
 	pStats->tx_errors = pDevice->scStatistic.dwTsrErr;
 	pStats->tx_dropped = pDevice->scStatistic.dwTsrErr;
+<<<<<<< HEAD
 
 	return status;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pDevice->intBuf.bInUse = false;
+
+	pStats->tx_errors = pDevice->wstats.discard.retries;
+	pStats->tx_dropped = pDevice->wstats.discard.retries;
+>>>>>>> refs/remotes/origin/master
 }

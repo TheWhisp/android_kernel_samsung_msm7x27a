@@ -11,7 +11,19 @@
  * GNU General Public License for more details.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/cp15.h>
+#include <asm/vfp.h>
+#include "../vfp/vfpinstr.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cp15.h>
+#include <asm/vfp.h>
+#include "../vfp/vfpinstr.h"
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #ifdef CONFIG_CPU_V7
 #define KRAIT_EVT_PREFIX 1
@@ -36,6 +48,16 @@
 #define KRAIT_EVENT_MASK 0xfffff
 #define KRAIT_MODE_EXCL_MASK 0xc0000000
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define COUNT_MASK	0xffffffff
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define COUNT_MASK	0xffffffff
+
+>>>>>>> refs/remotes/origin/cm-11.0
 u32 evt_type_base[][4] = {
 	{0x4c, 0x50, 0x54},		/* Pass 1 */
 	{0xcc, 0xd0, 0xd4, 0xd8},	/* Pass 2 */
@@ -54,6 +76,26 @@ u32 evt_type_base[][4] = {
 static u32 krait_ver, evt_index;
 static u32 krait_max_l1_reg;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+/*
+ * Every 4 bytes represents a prefix.
+ * Every nibble represents a register.
+ * Every bit represents a group within a register.
+ *
+ * This supports up to 4 groups per register, upto 8
+ * registers per prefix and upto 2 prefixes.
+ */
+static DEFINE_PER_CPU(u64, pmu_bitmap);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static const unsigned armv7_krait_perf_map[PERF_COUNT_HW_MAX] = {
 	[PERF_COUNT_HW_CPU_CYCLES]	    = ARMV7_PERFCTR_CPU_CYCLES,
 	[PERF_COUNT_HW_INSTRUCTIONS]	    = ARMV7_PERFCTR_INSTR_EXECUTED,
@@ -75,12 +117,27 @@ static unsigned armv7_krait_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 		 * combined.
 		 */
 		[C(OP_READ)] = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DCACHE_REFILL,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DCACHE_REFILL,
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -163,6 +220,21 @@ static unsigned armv7_krait_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static int krait_8960_map_event(struct perf_event *event)
+{
+	return map_cpu_event(event, &armv7_krait_perf_map,
+			&armv7_krait_perf_cache_map, 0xfffff);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 struct krait_evt {
 	/*
 	 * The group_setval field corresponds to the value that the group
@@ -280,9 +352,21 @@ static void krait_pre_vmresr0(void)
 	u32 v_orig_val;
 	u32 f_orig_val;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* CPACR Enable CP10 access */
 	v_orig_val = get_copro_access();
 	venum_new_val = v_orig_val | CPACC_SVC(10);
+=======
+	/* CPACR Enable CP10 and CP11 access */
+	v_orig_val = get_copro_access();
+	venum_new_val = v_orig_val | CPACC_SVC(10) | CPACC_SVC(11);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* CPACR Enable CP10 and CP11 access */
+	v_orig_val = get_copro_access();
+	venum_new_val = v_orig_val | CPACC_SVC(10) | CPACC_SVC(11);
+>>>>>>> refs/remotes/origin/cm-11.0
 	set_copro_access(venum_new_val);
 	/* Store orig venum val */
 	__get_cpu_var(venum_orig_val) = v_orig_val;
@@ -381,9 +465,23 @@ static void krait_pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	u32 gr;
 	unsigned long event;
 	struct krait_evt evtinfo;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Disable counter and interrupt */
 	raw_spin_lock_irqsave(&pmu_lock, flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+
+
+	/* Disable counter and interrupt */
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Disable counter */
 	armv7_pmnc_disable_counter(idx);
@@ -392,7 +490,15 @@ static void krait_pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	 * Clear pmresr code (if destined for PMNx counters)
 	 * We don't need to set the event if it's a cycle count
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (idx != ARMV7_CYCLE_COUNTER) {
+=======
+	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		val = hwc->config_base;
 		val &= KRAIT_EVENT_MASK;
 
@@ -409,10 +515,23 @@ static void krait_pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	armv7_pmnc_disable_intens(idx);
 
 krait_dis_out:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 }
 
 static void krait_pmu_enable_event(struct hw_perf_event *hwc, int idx)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+}
+
+static void krait_pmu_enable_event(struct hw_perf_event *hwc, int idx, int cpu)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	unsigned long flags;
 	u32 val = 0;
@@ -420,12 +539,28 @@ static void krait_pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	unsigned long event;
 	struct krait_evt evtinfo;
 	unsigned long long prev_count = local64_read(&hwc->prev_count);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/*
 	 * Enable counter and interrupt, and set the counter to count
 	 * the event that we're interested in.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&pmu_lock, flags);
+=======
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Disable counter */
 	armv7_pmnc_disable_counter(idx);
@@ -434,7 +569,15 @@ static void krait_pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	 * Set event (if destined for PMNx counters)
 	 * We don't need to set the event if it's a cycle count
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (idx != ARMV7_CYCLE_COUNTER) {
+=======
+	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (idx != ARMV7_IDX_CYCLE_COUNTER) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		val = hwc->config_base;
 		val &= KRAIT_EVENT_MASK;
 
@@ -473,12 +616,28 @@ static void krait_pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	armv7_pmnc_enable_counter(idx);
 
 krait_out:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void krait_pmu_reset(void *info)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32 idx, nb_cnt = armpmu->num_events;
+=======
+	u32 idx, nb_cnt = cpu_pmu->num_events;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 idx, nb_cnt = cpu_pmu->num_events;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Stop all counters and their interrupts */
 	for (idx = 1; idx < nb_cnt; ++idx) {
@@ -496,6 +655,114 @@ static void krait_pmu_reset(void *info)
 	armv7_pmnc_write(ARMV7_PMNC_P | ARMV7_PMNC_C);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void enable_irq_callback(void *info)
+{
+        int irq = *(unsigned int *)info;
+
+        enable_percpu_irq(irq, IRQ_TYPE_EDGE_RISING);
+}
+
+static void disable_irq_callback(void *info)
+{
+        int irq = *(unsigned int *)info;
+
+        disable_percpu_irq(irq);
+}
+
+static int
+msm_request_irq(int irq, irq_handler_t *handle_irq)
+{
+        int err = 0;
+        int cpu;
+
+        err = request_percpu_irq(irq, *handle_irq, "krait-l1-armpmu",
+                        &cpu_hw_events);
+
+        if (!err) {
+                for_each_cpu(cpu, cpu_online_mask) {
+                        smp_call_function_single(cpu,
+                                        enable_irq_callback, &irq, 1);
+                }
+        }
+
+        return err;
+}
+
+static void
+msm_free_irq(int irq)
+{
+        int cpu;
+
+        if (irq >= 0) {
+                for_each_cpu(cpu, cpu_online_mask) {
+                        smp_call_function_single(cpu,
+                                        disable_irq_callback, &irq, 1);
+                }
+                free_percpu_irq(irq, &cpu_hw_events);
+        }
+}
+
+/*
+ * We check for column exclusion constraints here.
+ * Two events cant have same reg and same group.
+ */
+static int msm_test_set_ev_constraint(struct perf_event *event)
+{
+	u32 evt_type = event->attr.config & KRAIT_EVENT_MASK;
+	u8 prefix = (evt_type & 0xF0000) >> 16;
+	u8 reg = (evt_type & 0x0F000) >> 12;
+	u8 group = evt_type & 0x0000F;
+	u64 cpu_pmu_bitmap = __get_cpu_var(pmu_bitmap);
+	u64 bitmap_t;
+
+	/* Return if non MSM event. */
+	if (!prefix)
+		return 0;
+
+	bitmap_t = 1 << (((prefix - 1) * 32) + (reg * 4) + group);
+
+	/* Set it if not already set. */
+	if (!(cpu_pmu_bitmap & bitmap_t)) {
+		cpu_pmu_bitmap |= bitmap_t;
+		__get_cpu_var(pmu_bitmap) = cpu_pmu_bitmap;
+		return 1;
+	}
+	/* Bit is already set. Constraint failed. */
+	return -EPERM;
+}
+
+static int msm_clear_ev_constraint(struct perf_event *event)
+{
+	u32 evt_type = event->attr.config & KRAIT_EVENT_MASK;
+	u8 prefix = (evt_type & 0xF0000) >> 16;
+	u8 reg = (evt_type & 0x0F000) >> 12;
+	u8 group = evt_type & 0x0000F;
+	u64 cpu_pmu_bitmap = __get_cpu_var(pmu_bitmap);
+	u64 bitmap_t;
+
+	/* Return if non MSM event. */
+	if (!prefix)
+		return 0;
+
+	bitmap_t = 1 << (((prefix - 1) * 32) + (reg * 4) + group);
+
+	/* Clear constraint bit. */
+	cpu_pmu_bitmap &= ~(bitmap_t);
+
+	__get_cpu_var(pmu_bitmap) = cpu_pmu_bitmap;
+
+	return 1;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static struct arm_pmu krait_pmu = {
 	.handle_irq		= armv7pmu_handle_irq,
 	.request_pmu_irq	= msm_request_irq,
@@ -504,14 +771,62 @@ static struct arm_pmu krait_pmu = {
 	.disable		= krait_pmu_disable_event,
 	.read_counter		= armv7pmu_read_counter,
 	.write_counter		= armv7pmu_write_counter,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.raw_event_mask		= 0xFFFFF,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	.get_event_idx		= armv7pmu_get_event_idx,
 	.start			= armv7pmu_start,
 	.stop			= armv7pmu_stop,
 	.reset			= krait_pmu_reset,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.max_period		= (1LLU << 32) - 1,
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	.test_set_event_constraints	= msm_test_set_ev_constraint,
+	.clear_event_constraints	= msm_clear_ev_constraint,
+	.max_period		= (1LLU << 32) - 1,
+};
+
+/* NRCCG format for perf RAW codes. */
+PMU_FORMAT_ATTR(prefix,	"config:16-19");
+PMU_FORMAT_ATTR(reg,	"config:12-15");
+PMU_FORMAT_ATTR(code,	"config:4-11");
+PMU_FORMAT_ATTR(grp,	"config:0-3");
+
+static struct attribute *msm_l1_ev_formats[] = {
+	&format_attr_prefix.attr,
+	&format_attr_reg.attr,
+	&format_attr_code.attr,
+	&format_attr_grp.attr,
+	NULL,
+};
+
+/*
+ * Format group is essential to access PMU's from userspace
+ * via their .name field.
+ */
+static struct attribute_group msm_pmu_format_group = {
+	.name = "format",
+	.attrs = msm_l1_ev_formats,
+};
+
+static const struct attribute_group *msm_l1_pmu_attr_grps[] = {
+	&msm_pmu_format_group,
+	NULL,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int get_krait_ver(void)
 {
 	int ver = 0;
@@ -525,6 +840,8 @@ int get_krait_ver(void)
 	return ver;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_krait_pmu_init(void)
 {
 	krait_pmu.id		= ARM_PERF_PMU_ID_KRAIT;
@@ -532,6 +849,20 @@ static const struct arm_pmu *__init armv7_krait_pmu_init(void)
 	krait_pmu.cache_map	= &armv7_krait_perf_cache_map;
 	krait_pmu.event_map	= &armv7_krait_perf_map;
 	krait_pmu.num_events	= armv7_read_num_pmnc_events();
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct arm_pmu *__init armv7_krait_pmu_init(void)
+{
+	krait_pmu.id		= ARM_PERF_PMU_ID_KRAIT;
+	krait_pmu.name	        = "ARMv7 Krait";
+	krait_pmu.map_event	= krait_8960_map_event;
+	krait_pmu.num_events	= armv7_read_num_pmnc_events();
+	krait_pmu.pmu.attr_groups	= msm_l1_pmu_attr_grps;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	krait_clear_pmuregs();
 
 	krait_ver = get_krait_ver();

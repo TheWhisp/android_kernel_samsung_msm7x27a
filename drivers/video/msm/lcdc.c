@@ -37,6 +37,14 @@ static int lcdc_remove(struct platform_device *pdev);
 
 static int lcdc_off(struct platform_device *pdev);
 static int lcdc_on(struct platform_device *pdev);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static void cont_splash_clk_ctrl(int enable);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void cont_splash_clk_ctrl(int enable);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static struct platform_device *pdev_list[MSM_FB_MAX_DEV_LIST];
 static int pdev_list_cnt;
@@ -100,6 +108,16 @@ static int lcdc_on(struct platform_device *pdev)
 #endif
 	mfd = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cont_splash_clk_ctrl(0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cont_splash_clk_ctrl(0);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (lcdc_pdata && lcdc_pdata->lcdc_get_clk)
 		panel_pixclock_freq = lcdc_pdata->lcdc_get_clk();
 
@@ -151,6 +169,29 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void cont_splash_clk_ctrl(int enable)
+{
+	static int cont_splash_clks_enabled;
+	if (enable && !cont_splash_clks_enabled) {
+		clk_prepare_enable(pixel_mdp_clk);
+		clk_prepare_enable(pixel_lcdc_clk);
+		cont_splash_clks_enabled = 1;
+	} else if (!enable && cont_splash_clks_enabled) {
+		clk_disable_unprepare(pixel_mdp_clk);
+		clk_disable_unprepare(pixel_lcdc_clk);
+		cont_splash_clks_enabled = 0;
+	}
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static int lcdc_probe(struct platform_device *pdev)
 {
 	struct msm_fb_data_type *mfd;
@@ -199,6 +240,16 @@ static int lcdc_probe(struct platform_device *pdev)
 	if (!mdp_dev)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cont_splash_clk_ctrl(1);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cont_splash_clk_ctrl(1);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	/*
 	 * link to the latest pdev
 	 */

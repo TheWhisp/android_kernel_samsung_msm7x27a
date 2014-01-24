@@ -5,6 +5,14 @@
 #include <linux/kernel.h>
 #include <linux/cdrom.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ide.h>
 #include <linux/scatterlist.h>
 #include <linux/gfp.h>

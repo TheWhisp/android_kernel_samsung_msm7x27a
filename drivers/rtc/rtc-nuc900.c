@@ -99,7 +99,11 @@ static int *check_rtc_access_enable(struct nuc900_rtc *nuc900_rtc)
 	if (!timeout)
 		return ERR_PTR(-EPERM);
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int nuc900_rtc_bcd2bin(unsigned int timereg,
@@ -222,6 +226,7 @@ static struct rtc_class_ops nuc900_rtc_ops = {
 	.alarm_irq_enable = nuc900_alarm_irq_enable,
 };
 
+<<<<<<< HEAD
 static int __devinit nuc900_rtc_probe(struct platform_device *pdev)
 {
 	struct resource *res;
@@ -229,11 +234,21 @@ static int __devinit nuc900_rtc_probe(struct platform_device *pdev)
 	int err = 0;
 
 	nuc900_rtc = kzalloc(sizeof(struct nuc900_rtc), GFP_KERNEL);
+=======
+static int __init nuc900_rtc_probe(struct platform_device *pdev)
+{
+	struct resource *res;
+	struct nuc900_rtc *nuc900_rtc;
+
+	nuc900_rtc = devm_kzalloc(&pdev->dev, sizeof(struct nuc900_rtc),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!nuc900_rtc) {
 		dev_err(&pdev->dev, "kzalloc nuc900_rtc failed\n");
 		return -ENOMEM;
 	}
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res) {
 		dev_err(&pdev->dev, "platform_get_resource failed\n");
 		err = -ENXIO;
@@ -262,14 +277,32 @@ static int __devinit nuc900_rtc_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "rtc device register failed\n");
 		err = PTR_ERR(nuc900_rtc->rtcdev);
 		goto fail3;
+=======
+	nuc900_rtc->rtc_reg = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(nuc900_rtc->rtc_reg))
+		return PTR_ERR(nuc900_rtc->rtc_reg);
+
+	platform_set_drvdata(pdev, nuc900_rtc);
+
+	nuc900_rtc->rtcdev = devm_rtc_device_register(&pdev->dev, pdev->name,
+						&nuc900_rtc_ops, THIS_MODULE);
+	if (IS_ERR(nuc900_rtc->rtcdev)) {
+		dev_err(&pdev->dev, "rtc device register failed\n");
+		return PTR_ERR(nuc900_rtc->rtcdev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	__raw_writel(__raw_readl(nuc900_rtc->rtc_reg + REG_RTC_TSSR) | MODE24,
 					nuc900_rtc->rtc_reg + REG_RTC_TSSR);
 
 	nuc900_rtc->irq_num = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
 	if (request_irq(nuc900_rtc->irq_num, nuc900_rtc_interrupt,
+<<<<<<< HEAD
 				IRQF_DISABLED, "nuc900rtc", nuc900_rtc)) {
+=======
+				0, "nuc900rtc", nuc900_rtc)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_err(&pdev->dev, "NUC900 RTC request irq failed\n");
 		err = -EBUSY;
 		goto fail4;
@@ -305,12 +338,25 @@ static int __devexit nuc900_rtc_remove(struct platform_device *pdev)
 
 static struct platform_driver nuc900_rtc_driver = {
 	.remove		= __devexit_p(nuc900_rtc_remove),
+=======
+	if (devm_request_irq(&pdev->dev, nuc900_rtc->irq_num,
+			nuc900_rtc_interrupt, 0, "nuc900rtc", nuc900_rtc)) {
+		dev_err(&pdev->dev, "NUC900 RTC request irq failed\n");
+		return -EBUSY;
+	}
+
+	return 0;
+}
+
+static struct platform_driver nuc900_rtc_driver = {
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "nuc900-rtc",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static int __init nuc900_rtc_init(void)
 {
 	return platform_driver_probe(&nuc900_rtc_driver, nuc900_rtc_probe);
@@ -323,6 +369,9 @@ static void __exit nuc900_rtc_exit(void)
 
 module_init(nuc900_rtc_init);
 module_exit(nuc900_rtc_exit);
+=======
+module_platform_driver_probe(nuc900_rtc_driver, nuc900_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
 MODULE_DESCRIPTION("nuc910/nuc920 RTC driver");

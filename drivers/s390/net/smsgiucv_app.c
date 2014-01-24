@@ -168,7 +168,15 @@ static int __init smsgiucv_app_init(void)
 	rc = dev_set_name(smsg_app_dev, KMSG_COMPONENT);
 	if (rc) {
 		kfree(smsg_app_dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto fail_put_driver;
+=======
+		goto fail;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 	}
 	smsg_app_dev->bus = &iucv_bus;
 	smsg_app_dev->parent = iucv_root;
@@ -177,7 +185,15 @@ static int __init smsgiucv_app_init(void)
 	rc = device_register(smsg_app_dev);
 	if (rc) {
 		put_device(smsg_app_dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto fail_put_driver;
+=======
+		goto fail;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* convert sender to uppercase characters */
@@ -191,12 +207,26 @@ static int __init smsgiucv_app_init(void)
 	rc = smsg_register_callback(SMSG_PREFIX, smsg_app_callback);
 	if (rc) {
 		device_unregister(smsg_app_dev);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto fail_put_driver;
 	}
 
 	rc = 0;
 fail_put_driver:
 	put_driver(smsgiucv_drv);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		goto fail;
+	}
+
+	rc = 0;
+fail:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 module_init(smsgiucv_app_init);

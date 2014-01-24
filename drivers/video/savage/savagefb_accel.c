@@ -11,6 +11,14 @@
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/fb.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "savagefb.h"
 

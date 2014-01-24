@@ -21,6 +21,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "nand-s3c2410: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MTD_NAND_S3C2410_DEBUG
 #define DEBUG
 #endif
@@ -30,6 +35,10 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/platform_device.h>
 #include <linux/delay.h>
@@ -43,6 +52,7 @@
 #include <linux/mtd/nand_ecc.h>
 #include <linux/mtd/partitions.h>
 
+<<<<<<< HEAD
 #include <asm/io.h>
 
 #include <plat/regs-nand.h>
@@ -60,6 +70,10 @@ static const int clock_stop = 1;
 static const int clock_stop = 0;
 #endif
 
+=======
+#include <plat/regs-nand.h>
+#include <linux/platform_data/mtd-nand-s3c2410.h>
+>>>>>>> refs/remotes/origin/master
 
 /* new oob placement block for use with hardware ecc generation
  */
@@ -109,9 +123,14 @@ enum s3c_nand_clk_state {
  * @mtds: An array of MTD instances on this controoler.
  * @platform: The platform data for this board.
  * @device: The platform device we bound to.
+<<<<<<< HEAD
  * @area: The IO area resource that came from request_mem_region().
  * @clk: The clock resource for this controller.
  * @regs: The area mapped for the hardware registers described by @area.
+=======
+ * @clk: The clock resource for this controller.
+ * @regs: The area mapped for the hardware registers.
+>>>>>>> refs/remotes/origin/master
  * @sel_reg: Pointer to the register controlling the NAND selection.
  * @sel_bit: The bit in @sel_reg to select the NAND chip.
  * @mtd_count: The number of MTDs created from this controller.
@@ -128,7 +147,10 @@ struct s3c2410_nand_info {
 
 	/* device info */
 	struct device			*device;
+<<<<<<< HEAD
 	struct resource			*area;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct clk			*clk;
 	void __iomem			*regs;
 	void __iomem			*sel_reg;
@@ -164,12 +186,24 @@ static struct s3c2410_nand_info *to_nand_info(struct platform_device *dev)
 
 static struct s3c2410_platform_nand *to_nand_plat(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	return dev->dev.platform_data;
+=======
+	return dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int allow_clk_suspend(struct s3c2410_nand_info *info)
 {
+<<<<<<< HEAD
 	return clock_stop;
+=======
+#ifdef CONFIG_MTD_NAND_S3C2410_CLKSTOP
+	return 1;
+#else
+	return 0;
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -215,7 +249,12 @@ static int s3c_nand_calc_rate(int wanted, unsigned long clk, int max)
 	pr_debug("result %d from %ld, %d\n", result, clk, wanted);
 
 	if (result > max) {
+<<<<<<< HEAD
 		printk("%d ns is too big for current clock rate %ld\n", wanted, clk);
+=======
+		pr_err("%d ns is too big for current clock rate %ld\n",
+			wanted, clk);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -225,7 +264,11 @@ static int s3c_nand_calc_rate(int wanted, unsigned long clk, int max)
 	return result;
 }
 
+<<<<<<< HEAD
 #define to_ns(ticks,clk) (((ticks) * NS_IN_KHZ) / (unsigned int)(clk))
+=======
+#define to_ns(ticks, clk) (((ticks) * NS_IN_KHZ) / (unsigned int)(clk))
+>>>>>>> refs/remotes/origin/master
 
 /* controller setup */
 
@@ -268,7 +311,12 @@ static int s3c2410_nand_setrate(struct s3c2410_nand_info *info)
 	}
 
 	dev_info(info->device, "Tacls=%d, %dns Twrph0=%d %dns, Twrph1=%d %dns\n",
+<<<<<<< HEAD
 	       tacls, to_ns(tacls, clkrate), twrph0, to_ns(twrph0, clkrate), twrph1, to_ns(twrph1, clkrate));
+=======
+		tacls, to_ns(tacls, clkrate), twrph0, to_ns(twrph0, clkrate),
+						twrph1, to_ns(twrph1, clkrate));
+>>>>>>> refs/remotes/origin/master
 
 	switch (info->cpu_type) {
 	case TYPE_S3C2410:
@@ -325,6 +373,7 @@ static int s3c2410_nand_inithw(struct s3c2410_nand_info *info)
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
  	switch (info->cpu_type) {
  	case TYPE_S3C2410:
 	default:
@@ -332,6 +381,15 @@ static int s3c2410_nand_inithw(struct s3c2410_nand_info *info)
 
  	case TYPE_S3C2440:
  	case TYPE_S3C2412:
+=======
+	switch (info->cpu_type) {
+	case TYPE_S3C2410:
+	default:
+		break;
+
+	case TYPE_S3C2440:
+	case TYPE_S3C2412:
+>>>>>>> refs/remotes/origin/master
 		/* enable the controller and de-assert nFCE */
 
 		writel(S3C2440_NFCONT_ENABLE, info->regs + S3C2440_NFCONT);
@@ -450,6 +508,10 @@ static int s3c2412_nand_devready(struct mtd_info *mtd)
 
 /* ECC handling functions */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MTD_NAND_S3C2410_HWECC
+>>>>>>> refs/remotes/origin/master
 static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
 				     u_char *read_ecc, u_char *calc_ecc)
 {
@@ -463,10 +525,15 @@ static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
 	diff1 = read_ecc[1] ^ calc_ecc[1];
 	diff2 = read_ecc[2] ^ calc_ecc[2];
 
+<<<<<<< HEAD
 	pr_debug("%s: rd %02x%02x%02x calc %02x%02x%02x diff %02x%02x%02x\n",
 		 __func__,
 		 read_ecc[0], read_ecc[1], read_ecc[2],
 		 calc_ecc[0], calc_ecc[1], calc_ecc[2],
+=======
+	pr_debug("%s: rd %*phN calc %*phN diff %02x%02x%02x\n",
+		 __func__, 3, read_ecc, 3, calc_ecc,
+>>>>>>> refs/remotes/origin/master
 		 diff0, diff1, diff2);
 
 	if (diff0 == 0 && diff1 == 0 && diff2 == 0)
@@ -546,7 +613,12 @@ static void s3c2412_nand_enable_hwecc(struct mtd_info *mtd, int mode)
 	unsigned long ctrl;
 
 	ctrl = readl(info->regs + S3C2440_NFCONT);
+<<<<<<< HEAD
 	writel(ctrl | S3C2412_NFCONT_INIT_MAIN_ECC, info->regs + S3C2440_NFCONT);
+=======
+	writel(ctrl | S3C2412_NFCONT_INIT_MAIN_ECC,
+	       info->regs + S3C2440_NFCONT);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void s3c2440_nand_enable_hwecc(struct mtd_info *mtd, int mode)
@@ -558,7 +630,12 @@ static void s3c2440_nand_enable_hwecc(struct mtd_info *mtd, int mode)
 	writel(ctrl | S3C2440_NFCONT_INITECC, info->regs + S3C2440_NFCONT);
 }
 
+<<<<<<< HEAD
 static int s3c2410_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
+=======
+static int s3c2410_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+				      u_char *ecc_code)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
 
@@ -566,13 +643,22 @@ static int s3c2410_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u
 	ecc_code[1] = readb(info->regs + S3C2410_NFECC + 1);
 	ecc_code[2] = readb(info->regs + S3C2410_NFECC + 2);
 
+<<<<<<< HEAD
 	pr_debug("%s: returning ecc %02x%02x%02x\n", __func__,
 		 ecc_code[0], ecc_code[1], ecc_code[2]);
+=======
+	pr_debug("%s: returning ecc %*phN\n", __func__, 3, ecc_code);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int s3c2412_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
+=======
+static int s3c2412_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+				      u_char *ecc_code)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
 	unsigned long ecc = readl(info->regs + S3C2412_NFMECC0);
@@ -581,12 +667,21 @@ static int s3c2412_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u
 	ecc_code[1] = ecc >> 8;
 	ecc_code[2] = ecc >> 16;
 
+<<<<<<< HEAD
 	pr_debug("calculate_ecc: returning ecc %02x,%02x,%02x\n", ecc_code[0], ecc_code[1], ecc_code[2]);
+=======
+	pr_debug("%s: returning ecc %*phN\n", __func__, 3, ecc_code);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int s3c2440_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
+=======
+static int s3c2440_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+				      u_char *ecc_code)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
 	unsigned long ecc = readl(info->regs + S3C2440_NFMECC0);
@@ -599,6 +694,10 @@ static int s3c2440_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /* over-ride the standard functions for a little more speed. We can
  * use read/write block to move the data buffers to/from the controller
@@ -625,13 +724,23 @@ static void s3c2440_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
 	}
 }
 
+<<<<<<< HEAD
 static void s3c2410_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
+=======
+static void s3c2410_nand_write_buf(struct mtd_info *mtd, const u_char *buf,
+				   int len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nand_chip *this = mtd->priv;
 	writesb(this->IO_ADDR_W, buf, len);
 }
 
+<<<<<<< HEAD
 static void s3c2440_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
+=======
+static void s3c2440_nand_write_buf(struct mtd_info *mtd, const u_char *buf,
+				   int len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
 
@@ -675,7 +784,12 @@ static inline int s3c2410_nand_cpufreq_register(struct s3c2410_nand_info *info)
 					 CPUFREQ_TRANSITION_NOTIFIER);
 }
 
+<<<<<<< HEAD
 static inline void s3c2410_nand_cpufreq_deregister(struct s3c2410_nand_info *info)
+=======
+static inline void
+s3c2410_nand_cpufreq_deregister(struct s3c2410_nand_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	cpufreq_unregister_notifier(&info->freq_transition,
 				    CPUFREQ_TRANSITION_NOTIFIER);
@@ -687,7 +801,12 @@ static inline int s3c2410_nand_cpufreq_register(struct s3c2410_nand_info *info)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline void s3c2410_nand_cpufreq_deregister(struct s3c2410_nand_info *info)
+=======
+static inline void
+s3c2410_nand_cpufreq_deregister(struct s3c2410_nand_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 }
 #endif
@@ -698,8 +817,11 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
 {
 	struct s3c2410_nand_info *info = to_nand_info(pdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (info == NULL)
 		return 0;
 
@@ -717,13 +839,21 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
 			pr_debug("releasing mtd %d (%p)\n", mtdno, ptr);
 			nand_release(&ptr->mtd);
 		}
+<<<<<<< HEAD
 
 		kfree(info->mtds);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* free the common resources */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (info->clk != NULL && !IS_ERR(info->clk)) {
+=======
+	if (!IS_ERR(info->clk)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		s3c2410_nand_clk_set_state(info, CLOCK_DISABLE);
 		clk_put(info->clk);
 	}
@@ -740,15 +870,27 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
 	}
 
 	kfree(info);
+=======
+	if (!IS_ERR(info->clk))
+		s3c2410_nand_clk_set_state(info, CLOCK_DISABLE);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 const char *part_probes[] = { "cmdlinepart", NULL };
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
 				      struct s3c2410_nand_mtd *mtd,
 				      struct s3c2410_nand_set *set)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct mtd_partition *part_info;
 	int nr_part = 0;
 
@@ -764,6 +906,23 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
 	}
 
 	return mtd_device_register(&mtd->mtd, part_info, nr_part);
+=======
+	if (set)
+		mtd->mtd.name = set->name;
+
+	return mtd_device_parse_register(&mtd->mtd, NULL, NULL,
+					 set->partitions, set->nr_partitions);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (set) {
+		mtd->mtd.name = set->name;
+
+		return mtd_device_parse_register(&mtd->mtd, NULL, NULL,
+					 set->partitions, set->nr_partitions);
+	}
+
+	return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -821,7 +980,11 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
 			dev_info(info->device, "System booted from NAND\n");
 
 		break;
+<<<<<<< HEAD
   	}
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	chip->IO_ADDR_R = chip->IO_ADDR_W;
 
@@ -830,10 +993,15 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
 	nmtd->mtd.owner    = THIS_MODULE;
 	nmtd->set	   = set;
 
+<<<<<<< HEAD
 	if (hardware_ecc) {
 		chip->ecc.calculate = s3c2410_nand_calculate_ecc;
 		chip->ecc.correct   = s3c2410_nand_correct_data;
 		chip->ecc.mode	    = NAND_ECC_HW;
+<<<<<<< HEAD
+=======
+		chip->ecc.strength  = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		switch (info->cpu_type) {
 		case TYPE_S3C2410:
@@ -855,6 +1023,33 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
 	} else {
 		chip->ecc.mode	    = NAND_ECC_SOFT;
 	}
+=======
+#ifdef CONFIG_MTD_NAND_S3C2410_HWECC
+	chip->ecc.calculate = s3c2410_nand_calculate_ecc;
+	chip->ecc.correct   = s3c2410_nand_correct_data;
+	chip->ecc.mode	    = NAND_ECC_HW;
+	chip->ecc.strength  = 1;
+
+	switch (info->cpu_type) {
+	case TYPE_S3C2410:
+		chip->ecc.hwctl	    = s3c2410_nand_enable_hwecc;
+		chip->ecc.calculate = s3c2410_nand_calculate_ecc;
+		break;
+
+	case TYPE_S3C2412:
+		chip->ecc.hwctl     = s3c2412_nand_enable_hwecc;
+		chip->ecc.calculate = s3c2412_nand_calculate_ecc;
+		break;
+
+	case TYPE_S3C2440:
+		chip->ecc.hwctl     = s3c2440_nand_enable_hwecc;
+		chip->ecc.calculate = s3c2440_nand_calculate_ecc;
+		break;
+	}
+#else
+	chip->ecc.mode	    = NAND_ECC_SOFT;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	if (set->ecc_layout != NULL)
 		chip->ecc.layout = set->ecc_layout;
@@ -880,8 +1075,21 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
 	/* If you use u-boot BBT creation code, specifying this flag will
 	 * let the kernel fish out the BBT from the NAND, and also skip the
 	 * full NAND scan that can take 1/2s or so. Little things... */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (set->flash_bbt)
 		chip->options |= NAND_USE_FLASH_BBT | NAND_SKIP_BBTSCAN;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (set->flash_bbt) {
+		chip->bbt_options |= NAND_BBT_USE_FLASH;
+		chip->options |= NAND_SKIP_BBTSCAN;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -906,7 +1114,11 @@ static void s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
 	if (chip->ecc.mode != NAND_ECC_HW)
 		return;
 
+<<<<<<< HEAD
 		/* change the behaviour depending on wether we are using
+=======
+		/* change the behaviour depending on whether we are using
+>>>>>>> refs/remotes/origin/master
 		 * the large or small page nand device */
 
 	if (chip->page_shift > 10) {
@@ -929,7 +1141,11 @@ static void s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
 static int s3c24xx_nand_probe(struct platform_device *pdev)
 {
 	struct s3c2410_platform_nand *plat = to_nand_plat(pdev);
+<<<<<<< HEAD
 	enum s3c_cpu_type cpu_type; 
+=======
+	enum s3c_cpu_type cpu_type;
+>>>>>>> refs/remotes/origin/master
 	struct s3c2410_nand_info *info;
 	struct s3c2410_nand_mtd *nmtd;
 	struct s3c2410_nand_set *sets;
@@ -943,7 +1159,11 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
 
 	pr_debug("s3c2410_nand_probe(%p)\n", pdev);
 
+<<<<<<< HEAD
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+=======
+	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (info == NULL) {
 		dev_err(&pdev->dev, "no memory for flash info\n");
 		err = -ENOMEM;
@@ -957,7 +1177,11 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
 
 	/* get the clock source and enable it */
 
+<<<<<<< HEAD
 	info->clk = clk_get(&pdev->dev, "nand");
+=======
+	info->clk = devm_clk_get(&pdev->dev, "nand");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(info->clk)) {
 		dev_err(&pdev->dev, "failed to get clock\n");
 		err = -ENOENT;
@@ -969,6 +1193,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
 	/* allocate and map the resource */
 
 	/* currently we assume we have the one resource */
+<<<<<<< HEAD
 	res  = pdev->resource;
 	size = resource_size(res);
 
@@ -988,6 +1213,18 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
 	if (info->regs == NULL) {
 		dev_err(&pdev->dev, "cannot reserve register region\n");
 		err = -EIO;
+=======
+	res = pdev->resource;
+	size = resource_size(res);
+
+	info->device	= &pdev->dev;
+	info->platform	= plat;
+	info->cpu_type	= cpu_type;
+
+	info->regs = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(info->regs)) {
+		err = PTR_ERR(info->regs);
+>>>>>>> refs/remotes/origin/master
 		goto exit_error;
 	}
 
@@ -1007,7 +1244,11 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
 	/* allocate our information */
 
 	size = nr_sets * sizeof(*info->mtds);
+<<<<<<< HEAD
 	info->mtds = kzalloc(size, GFP_KERNEL);
+=======
+	info->mtds = devm_kzalloc(&pdev->dev, size, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (info->mtds == NULL) {
 		dev_err(&pdev->dev, "failed to allocate mtd storage\n");
 		err = -ENOMEM;
@@ -1019,7 +1260,12 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
 	nmtd = info->mtds;
 
 	for (setno = 0; setno < nr_sets; setno++, nmtd++) {
+<<<<<<< HEAD
 		pr_debug("initialising set %d (%p, info %p)\n", setno, nmtd, info);
+=======
+		pr_debug("initialising set %d (%p, info %p)\n",
+			 setno, nmtd, info);
+>>>>>>> refs/remotes/origin/master
 
 		s3c2410_nand_init_chip(info, nmtd, sets);
 
@@ -1142,6 +1388,7 @@ static struct platform_driver s3c24xx_nand_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init s3c2410_nand_init(void)
 {
 	printk("S3C24XX NAND Driver, (c) 2004 Simtec Electronics\n");
@@ -1156,6 +1403,9 @@ static void __exit s3c2410_nand_exit(void)
 
 module_init(s3c2410_nand_init);
 module_exit(s3c2410_nand_exit);
+=======
+module_platform_driver(s3c24xx_nand_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");

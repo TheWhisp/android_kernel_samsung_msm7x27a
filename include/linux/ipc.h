@@ -1,6 +1,7 @@
 #ifndef _LINUX_IPC_H
 #define _LINUX_IPC_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #define IPC_PRIVATE ((__kernel_key_t) 0)  
@@ -79,6 +80,11 @@ struct ipc_kludge {
 
 #ifdef __KERNEL__
 #include <linux/spinlock.h>
+=======
+#include <linux/spinlock.h>
+#include <linux/uidgid.h>
+#include <uapi/linux/ipc.h>
+>>>>>>> refs/remotes/origin/master
 
 #define IPCMNI 32768  /* <= MAX_INT limit for ipc arrays (including sysctl changes) */
 
@@ -89,15 +95,30 @@ struct kern_ipc_perm
 	int		deleted;
 	int		id;
 	key_t		key;
+<<<<<<< HEAD
 	uid_t		uid;
 	gid_t		gid;
 	uid_t		cuid;
 	gid_t		cgid;
+<<<<<<< HEAD
 	mode_t		mode; 
+=======
+	umode_t		mode; 
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kuid_t		uid;
+	kgid_t		gid;
+	kuid_t		cuid;
+	kgid_t		cgid;
+	umode_t		mode; 
+>>>>>>> refs/remotes/origin/master
 	unsigned long	seq;
 	void		*security;
 };
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_IPC_H */

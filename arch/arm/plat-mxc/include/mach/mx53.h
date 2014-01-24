@@ -9,6 +9,10 @@
 
 /* TZIC */
 #define MX53_TZIC_BASE_ADDR		0x0FFFC000
+<<<<<<< HEAD
+=======
+#define MX53_TZIC_SIZE			SZ_16K
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * AHCI SATA
@@ -145,6 +149,7 @@
 /*
  * Memory regions and CS
  */
+<<<<<<< HEAD
 #define MX53_CSD0_BASE_ADDR		0x90000000
 #define MX53_CSD1_BASE_ADDR		0xA0000000
 #define MX53_CS0_BASE_ADDR		0xB0000000
@@ -153,6 +158,16 @@
 #define MX53_CS3_BASE_ADDR		0xC8000000
 #define MX53_CS4_BASE_ADDR		0xCC000000
 #define MX53_CS5_BASE_ADDR		0xCE000000
+=======
+#define MX53_CSD0_BASE_ADDR		0x70000000
+#define MX53_CSD1_BASE_ADDR		0xB0000000
+#define MX53_CS0_BASE_ADDR		0xF0000000
+#define MX53_CS1_32MB_BASE_ADDR	0xF2000000
+#define MX53_CS1_64MB_BASE_ADDR		0xF4000000
+#define MX53_CS2_64MB_BASE_ADDR		0xF4000000
+#define MX53_CS2_96MB_BASE_ADDR		0xF6000000
+#define MX53_CS3_BASE_ADDR		0xF6000000
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MX53_IO_P2V(x)			IMX_IO_P2V(x)
 #define MX53_IO_ADDRESS(x)		IOMEM(MX53_IO_P2V(x))
@@ -176,10 +191,17 @@
 /*
  * DMA request assignments
  */
+<<<<<<< HEAD
 #define MX53_DMA_REQ_SSI3_TX1		47
 #define MX53_DMA_REQ_SSI3_RX1		46
 #define MX53_DMA_REQ_SSI3_TX2		45
 #define MX53_DMA_REQ_SSI3_RX2		44
+=======
+#define MX53_DMA_REQ_SSI3_TX0		47
+#define MX53_DMA_REQ_SSI3_RX0		46
+#define MX53_DMA_REQ_SSI3_TX1		45
+#define MX53_DMA_REQ_SSI3_RX1		44
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MX53_DMA_REQ_UART3_TX	43
 #define MX53_DMA_REQ_UART3_RX	42
 #define MX53_DMA_REQ_ESAI_TX		41
@@ -194,6 +216,7 @@
 #define MX53_DMA_REQ_ASRC_DMA1	32
 #define MX53_DMA_REQ_EMI_WR		31
 #define MX53_DMA_REQ_EMI_RD		30
+<<<<<<< HEAD
 #define MX53_DMA_REQ_SSI1_TX1		29
 #define MX53_DMA_REQ_SSI1_RX1		28
 #define MX53_DMA_REQ_SSI1_TX2		27
@@ -202,6 +225,16 @@
 #define MX53_DMA_REQ_SSI2_RX1		24
 #define MX53_DMA_REQ_SSI2_TX2		23
 #define MX53_DMA_REQ_SSI2_RX2		22
+=======
+#define MX53_DMA_REQ_SSI1_TX0		29
+#define MX53_DMA_REQ_SSI1_RX0		28
+#define MX53_DMA_REQ_SSI1_TX1		27
+#define MX53_DMA_REQ_SSI1_RX1		26
+#define MX53_DMA_REQ_SSI2_TX0		25
+#define MX53_DMA_REQ_SSI2_RX0		24
+#define MX53_DMA_REQ_SSI2_TX1		23
+#define MX53_DMA_REQ_SSI2_RX1		22
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MX53_DMA_REQ_I2C2_SDHC2	21
 #define MX53_DMA_REQ_I2C1_SDHC1	20
 #define MX53_DMA_REQ_UART1_TX	19
@@ -233,7 +266,11 @@
 #define MX53_INT_ESDHC2	2
 #define MX53_INT_ESDHC3	3
 #define MX53_INT_ESDHC4	4
+<<<<<<< HEAD
 #define MX53_INT_RESV5	5
+=======
+#define MX53_INT_DAP	5
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MX53_INT_SDMA	6
 #define MX53_INT_IOMUX	7
 #define MX53_INT_NFC	8
@@ -241,7 +278,11 @@
 #define MX53_INT_IPU_ERR	10
 #define MX53_INT_IPU_SYN	11
 #define MX53_INT_GPU	12
+<<<<<<< HEAD
 #define MX53_INT_RESV13	13
+=======
+#define MX53_INT_UART4	13
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MX53_INT_USB_H1	14
 #define MX53_INT_EMI	15
 #define MX53_INT_USB_H2	16
@@ -262,8 +303,13 @@
 #define MX53_INT_UART1	31
 #define MX53_INT_UART2	32
 #define MX53_INT_UART3	33
+<<<<<<< HEAD
 #define MX53_INT_RESV34	34
 #define MX53_INT_RESV35	35
+=======
+#define MX53_INT_RTC	34
+#define MX53_INT_PTP	35
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MX53_INT_ECSPI1	36
 #define MX53_INT_ECSPI2	37
 #define MX53_INT_CSPI	38
@@ -293,8 +339,13 @@
 #define MX53_INT_I2C1	62
 #define MX53_INT_I2C2	63
 #define MX53_INT_I2C3	64
+<<<<<<< HEAD
 #define MX53_INT_RESV65	65
 #define MX53_INT_RESV66	66
+=======
+#define MX53_INT_MLB	65
+#define MX53_INT_ASRC	66
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MX53_INT_SPDIF	67
 #define MX53_INT_SIM_DAT	68
 #define MX53_INT_IIM	69
@@ -314,7 +365,11 @@
 #define MX53_INT_CAN2	83
 #define MX53_INT_GPU2_IRQ	84
 #define MX53_INT_GPU2_BUSY	85
+<<<<<<< HEAD
 #define MX53_INT_RESV86	86
+=======
+#define MX53_INT_UART5	86
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MX53_INT_FEC	87
 #define MX53_INT_OWIRE	88
 #define MX53_INT_CTI1_TG2	89

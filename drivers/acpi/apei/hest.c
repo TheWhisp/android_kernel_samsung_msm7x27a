@@ -36,12 +36,24 @@
 #include <linux/io.h>
 #include <linux/platform_device.h>
 #include <acpi/apei.h>
+<<<<<<< HEAD
+=======
+#include <asm/mce.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "apei-internal.h"
 
 #define HEST_PFX "HEST: "
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int hest_disable;
+=======
+bool hest_disable;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool hest_disable;
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(hest_disable);
 
 /* HEST table parsing */
@@ -89,7 +101,11 @@ int apei_hest_parse(apei_hest_func_t func, void *data)
 	struct acpi_hest_header *hest_hdr;
 	int i, rc, len;
 
+<<<<<<< HEAD
 	if (hest_disable)
+=======
+	if (hest_disable || !hest_tab)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	hest_hdr = (struct acpi_hest_header *)(hest_tab + 1);
@@ -121,6 +137,44 @@ int apei_hest_parse(apei_hest_func_t func, void *data)
 }
 EXPORT_SYMBOL_GPL(apei_hest_parse);
 
+<<<<<<< HEAD
+=======
+/*
+ * Check if firmware advertises firmware first mode. We need FF bit to be set
+ * along with a set of MC banks which work in FF mode.
+ */
+static int __init hest_parse_cmc(struct acpi_hest_header *hest_hdr, void *data)
+{
+#ifdef CONFIG_X86_MCE
+	int i;
+	struct acpi_hest_ia_corrected *cmc;
+	struct acpi_hest_ia_error_bank *mc_bank;
+
+	if (hest_hdr->type != ACPI_HEST_TYPE_IA32_CORRECTED_CHECK)
+		return 0;
+
+	cmc = (struct acpi_hest_ia_corrected *)hest_hdr;
+	if (!cmc->enabled)
+		return 0;
+
+	/*
+	 * We expect HEST to provide a list of MC banks that report errors
+	 * in firmware first mode. Otherwise, return non-zero value to
+	 * indicate that we are done parsing HEST.
+	 */
+	if (!(cmc->flags & ACPI_HEST_FIRMWARE_FIRST) || !cmc->num_hardware_banks)
+		return 1;
+
+	pr_info(HEST_PFX "Enabling Firmware First mode for corrected errors.\n");
+
+	mc_bank = (struct acpi_hest_ia_error_bank *)(cmc + 1);
+	for (i = 0; i < cmc->num_hardware_banks; i++, mc_bank++)
+		mce_disable_bank(mc_bank->bank_number);
+#endif
+	return 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct ghes_arr {
 	struct platform_device **ghes_devs;
 	unsigned int count;
@@ -216,21 +270,37 @@ void __init acpi_hest_init(void)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (acpi_disabled)
 		goto err;
 
 	status = acpi_get_table(ACPI_SIG_HEST, 0,
 				(struct acpi_table_header **)&hest_tab);
+<<<<<<< HEAD
 	if (status == AE_NOT_FOUND) {
 		pr_info(HEST_PFX "Table not found.\n");
 		goto err;
 	} else if (ACPI_FAILURE(status)) {
+=======
+	if (status == AE_NOT_FOUND)
+		goto err;
+	else if (ACPI_FAILURE(status)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = acpi_get_table(ACPI_SIG_HEST, 0,
+				(struct acpi_table_header **)&hest_tab);
+	if (status == AE_NOT_FOUND)
+		goto err;
+	else if (ACPI_FAILURE(status)) {
+>>>>>>> refs/remotes/origin/master
 		const char *msg = acpi_format_exception(status);
 		pr_err(HEST_PFX "Failed to get table, %s\n", msg);
 		rc = -EINVAL;
 		goto err;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = apei_hest_parse(hest_parse_ghes_count, &ghes_count);
 	if (rc)
 		goto err;
@@ -241,6 +311,27 @@ void __init acpi_hest_init(void)
 		return;
 	}
 
+=======
+=======
+	if (!acpi_disable_cmcff)
+		apei_hest_parse(hest_parse_cmc, NULL);
+
+>>>>>>> refs/remotes/origin/master
+	if (!ghes_disable) {
+		rc = apei_hest_parse(hest_parse_ghes_count, &ghes_count);
+		if (rc)
+			goto err;
+		rc = hest_ghes_dev_register(ghes_count);
+		if (rc)
+			goto err;
+	}
+
+	pr_info(HEST_PFX "Table parsing has been initialized.\n");
+	return;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err:
 	hest_disable = 1;
 }

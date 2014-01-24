@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Board support file for Nokia RM-680.
+=======
+ * Board support file for Nokia RM-680/696.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Copyright (C) 2010 Nokia
  *
@@ -25,7 +29,11 @@
 #include <plat/mmc.h>
 #include <plat/usb.h>
 #include <plat/gpmc.h>
+<<<<<<< HEAD
 #include <plat/common.h>
+=======
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/onenand.h>
 
 #include "mux.h"
@@ -120,6 +128,7 @@ static void __init rm680_peripherals_init(void)
 				ARRAY_SIZE(rm680_peripherals_devices));
 	rm680_i2c_init();
 	gpmc_onenand_init(board_onenand_data);
+<<<<<<< HEAD
 	omap2_hsmmc_init(mmc);
 }
 
@@ -130,6 +139,9 @@ static void __init rm680_init_early(void)
 	omap2_init_common_infrastructure();
 	sdrc_params = nokia_get_sdram_timings();
 	omap2_init_common_devices(sdrc_params, sdrc_params);
+=======
+	omap_hsmmc_init(mmc);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_OMAP_MUX
@@ -140,12 +152,24 @@ static struct omap_board_mux board_mux[] __initdata = {
 
 static void __init rm680_init(void)
 {
+<<<<<<< HEAD
 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
 	omap_serial_init();
+=======
+	struct omap_sdrc_params *sdrc_params;
+
+	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
+	omap_serial_init();
+
+	sdrc_params = nokia_get_sdram_timings();
+	omap_sdrc_init(sdrc_params, sdrc_params);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_musb_init(NULL);
 	rm680_peripherals_init();
 }
 
+<<<<<<< HEAD
 static void __init rm680_map_io(void)
 {
 	omap2_set_globals_3xxx();
@@ -160,4 +184,28 @@ MACHINE_START(NOKIA_RM680, "Nokia RM-680 board")
 	.init_irq	= omap_init_irq,
 	.init_machine	= rm680_init,
 	.timer		= &omap_timer,
+=======
+MACHINE_START(NOKIA_RM680, "Nokia RM-680 board")
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap3_map_io,
+	.init_early	= omap3630_init_early,
+	.init_irq	= omap3_init_irq,
+	.handle_irq	= omap3_intc_handle_irq,
+	.init_machine	= rm680_init,
+	.timer		= &omap3_timer,
+	.restart	= omap_prcm_restart,
+MACHINE_END
+
+MACHINE_START(NOKIA_RM696, "Nokia RM-696 board")
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap3_map_io,
+	.init_early	= omap3630_init_early,
+	.init_irq	= omap3_init_irq,
+	.handle_irq	= omap3_intc_handle_irq,
+	.init_machine	= rm680_init,
+	.timer		= &omap3_timer,
+	.restart	= omap_prcm_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

@@ -5,7 +5,15 @@
  * NetLabel system.  The NetLabel system manages static and dynamic label
  * mappings for network protocols such as CIPSO and RIPSO.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -52,7 +60,15 @@
 #include <net/net_namespace.h>
 #include <net/netlabel.h>
 #include <asm/bug.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "netlabel_user.h"
 #include "netlabel_addrlist.h"
@@ -116,8 +132,16 @@ struct netlbl_unlhsh_walk_arg {
  * hash table should be okay */
 static DEFINE_SPINLOCK(netlbl_unlhsh_lock);
 #define netlbl_unlhsh_rcu_deref(p) \
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_dereference_check(p, rcu_read_lock_held() || \
 				 lockdep_is_held(&netlbl_unlhsh_lock))
+=======
+	rcu_dereference_check(p, lockdep_is_held(&netlbl_unlhsh_lock))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rcu_dereference_check(p, lockdep_is_held(&netlbl_unlhsh_lock))
+>>>>>>> refs/remotes/origin/master
 static struct netlbl_unlhsh_tbl *netlbl_unlhsh = NULL;
 static struct netlbl_unlhsh_iface *netlbl_unlhsh_def = NULL;
 
@@ -171,7 +195,15 @@ static void netlbl_unlhsh_free_iface(struct rcu_head *entry)
 	struct netlbl_unlhsh_iface *iface;
 	struct netlbl_af4list *iter4;
 	struct netlbl_af4list *tmp4;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	struct netlbl_af6list *iter6;
 	struct netlbl_af6list *tmp6;
 #endif /* IPv6 */
@@ -185,7 +217,15 @@ static void netlbl_unlhsh_free_iface(struct rcu_head *entry)
 		netlbl_af4list_remove_entry(iter4);
 		kfree(netlbl_unlhsh_addr4_entry(iter4));
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	netlbl_af6list_foreach_safe(iter6, tmp6, &iface->addr6_list) {
 		netlbl_af6list_remove_entry(iter6);
 		kfree(netlbl_unlhsh_addr6_entry(iter6));
@@ -275,7 +315,15 @@ static int netlbl_unlhsh_add_addr4(struct netlbl_unlhsh_iface *iface,
 	return ret_val;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 /**
  * netlbl_unlhsh_add_addr6 - Add a new IPv6 address entry to the hash table
  * @iface: the associated interface entry
@@ -301,12 +349,28 @@ static int netlbl_unlhsh_add_addr6(struct netlbl_unlhsh_iface *iface,
 	if (entry == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&entry->list.addr, addr);
+=======
+	entry->list.addr = *addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	entry->list.addr = *addr;
+>>>>>>> refs/remotes/origin/master
 	entry->list.addr.s6_addr32[0] &= mask->s6_addr32[0];
 	entry->list.addr.s6_addr32[1] &= mask->s6_addr32[1];
 	entry->list.addr.s6_addr32[2] &= mask->s6_addr32[2];
 	entry->list.addr.s6_addr32[3] &= mask->s6_addr32[3];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&entry->list.mask, mask);
+=======
+	entry->list.mask = *mask;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	entry->list.mask = *mask;
+>>>>>>> refs/remotes/origin/master
 	entry->list.valid = 1;
 	entry->secid = secid;
 
@@ -426,10 +490,22 @@ int netlbl_unlhsh_add(struct net *net,
 					      audit_info);
 	switch (addr_len) {
 	case sizeof(struct in_addr): {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		struct in_addr *addr4, *mask4;
 
 		addr4 = (struct in_addr *)addr;
 		mask4 = (struct in_addr *)mask;
+=======
+		const struct in_addr *addr4 = addr;
+		const struct in_addr *mask4 = mask;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const struct in_addr *addr4 = addr;
+		const struct in_addr *mask4 = mask;
+
+>>>>>>> refs/remotes/origin/master
 		ret_val = netlbl_unlhsh_add_addr4(iface, addr4, mask4, secid);
 		if (audit_buf != NULL)
 			netlbl_af4list_audit_addr(audit_buf, 1,
@@ -438,12 +514,26 @@ int netlbl_unlhsh_add(struct net *net,
 						  mask4->s_addr);
 		break;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 	case sizeof(struct in6_addr): {
 		struct in6_addr *addr6, *mask6;
 
 		addr6 = (struct in6_addr *)addr;
 		mask6 = (struct in6_addr *)mask;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if IS_ENABLED(CONFIG_IPV6)
+	case sizeof(struct in6_addr): {
+		const struct in6_addr *addr6 = addr;
+		const struct in6_addr *mask6 = mask;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret_val = netlbl_unlhsh_add_addr6(iface, addr6, mask6, secid);
 		if (audit_buf != NULL)
 			netlbl_af6list_audit_addr(audit_buf, 1,
@@ -534,7 +624,15 @@ static int netlbl_unlhsh_remove_addr4(struct net *net,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 /**
  * netlbl_unlhsh_remove_addr6 - Remove an IPv6 address entry
  * @net: network namespace
@@ -609,14 +707,30 @@ static int netlbl_unlhsh_remove_addr6(struct net *net,
 static void netlbl_unlhsh_condremove_iface(struct netlbl_unlhsh_iface *iface)
 {
 	struct netlbl_af4list *iter4;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	struct netlbl_af6list *iter6;
 #endif /* IPv6 */
 
 	spin_lock(&netlbl_unlhsh_lock);
 	netlbl_af4list_foreach_rcu(iter4, &iface->addr4_list)
 		goto unlhsh_condremove_failure;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	netlbl_af6list_foreach_rcu(iter6, &iface->addr6_list)
 		goto unlhsh_condremove_failure;
 #endif /* IPv6 */
@@ -624,7 +738,15 @@ static void netlbl_unlhsh_condremove_iface(struct netlbl_unlhsh_iface *iface)
 	if (iface->ifindex > 0)
 		list_del_rcu(&iface->list);
 	else
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rcu_assign_pointer(netlbl_unlhsh_def, NULL);
+=======
+		RCU_INIT_POINTER(netlbl_unlhsh_def, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		RCU_INIT_POINTER(netlbl_unlhsh_def, NULL);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&netlbl_unlhsh_lock);
 
 	call_rcu(&iface->rcu, netlbl_unlhsh_free_iface);
@@ -683,7 +805,15 @@ int netlbl_unlhsh_remove(struct net *net,
 						     iface, addr, mask,
 						     audit_info);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case sizeof(struct in6_addr):
 		ret_val = netlbl_unlhsh_remove_addr6(net,
 						     iface, addr, mask,
@@ -711,7 +841,11 @@ unlhsh_remove_return:
  * netlbl_unlhsh_netdev_handler - Network device notification handler
  * @this: notifier block
  * @event: the event
+<<<<<<< HEAD
  * @ptr: the network device (cast to void)
+=======
+ * @ptr: the netdevice notifier info (cast to void)
+>>>>>>> refs/remotes/origin/master
  *
  * Description:
  * Handle network device events, although at present all we care about is a
@@ -720,10 +854,16 @@ unlhsh_remove_return:
  *
  */
 static int netlbl_unlhsh_netdev_handler(struct notifier_block *this,
+<<<<<<< HEAD
 					unsigned long event,
 					void *ptr)
 {
 	struct net_device *dev = ptr;
+=======
+					unsigned long event, void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 	struct netlbl_unlhsh_iface *iface = NULL;
 
 	if (!net_eq(dev_net(dev), &init_net))
@@ -1099,7 +1239,11 @@ static int netlbl_unlabel_staticlist_gen(u32 cmd,
 	char *secctx;
 	u32 secctx_len;
 
+<<<<<<< HEAD
 	data = genlmsg_put(cb_arg->skb, NETLINK_CB(cb_arg->nl_cb->skb).pid,
+=======
+	data = genlmsg_put(cb_arg->skb, NETLINK_CB(cb_arg->nl_cb->skb).portid,
+>>>>>>> refs/remotes/origin/master
 			   cb_arg->seq, &netlbl_unlabel_gnl_family,
 			   NLM_F_MULTI, cmd);
 	if (data == NULL)
@@ -1197,7 +1341,15 @@ static int netlbl_unlabel_staticlist(struct sk_buff *skb,
 	struct netlbl_unlhsh_iface *iface;
 	struct list_head *iter_list;
 	struct netlbl_af4list *addr4;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	struct netlbl_af6list *addr6;
 #endif
 
@@ -1229,7 +1381,15 @@ static int netlbl_unlabel_staticlist(struct sk_buff *skb,
 					goto unlabel_staticlist_return;
 				}
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 			netlbl_af6list_foreach_rcu(addr6,
 						   &iface->addr6_list) {
 				if (iter_addr6++ < cb->args[3])
@@ -1276,7 +1436,18 @@ static int netlbl_unlabel_staticlistdef(struct sk_buff *skb,
 	struct netlbl_unlhsh_iface *iface;
 	u32 iter_addr4 = 0, iter_addr6 = 0;
 	struct netlbl_af4list *addr4;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct netlbl_af6list *addr6;
 #endif
 
@@ -1301,7 +1472,15 @@ static int netlbl_unlabel_staticlistdef(struct sk_buff *skb,
 			goto unlabel_staticlistdef_return;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	netlbl_af6list_foreach_rcu(addr6, &iface->addr6_list) {
 		if (iter_addr6++ < cb->args[1])
 			continue;
@@ -1327,7 +1506,11 @@ unlabel_staticlistdef_return:
  * NetLabel Generic NETLINK Command Definitions
  */
 
+<<<<<<< HEAD
 static struct genl_ops netlbl_unlabel_genl_ops[] = {
+=======
+static const struct genl_ops netlbl_unlabel_genl_ops[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 	.cmd = NLBL_UNLABEL_C_STATICADD,
 	.flags = GENL_ADMIN_PERM,
@@ -1401,7 +1584,11 @@ static struct genl_ops netlbl_unlabel_genl_ops[] = {
 int __init netlbl_unlabel_genl_init(void)
 {
 	return genl_register_family_with_ops(&netlbl_unlabel_gnl_family,
+<<<<<<< HEAD
 		netlbl_unlabel_genl_ops, ARRAY_SIZE(netlbl_unlabel_genl_ops));
+=======
+					     netlbl_unlabel_genl_ops);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1445,11 +1632,23 @@ int __init netlbl_unlabel_init(u32 size)
 	for (iter = 0; iter < hsh_tbl->size; iter++)
 		INIT_LIST_HEAD(&hsh_tbl->tbl[iter]);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_read_lock();
 	spin_lock(&netlbl_unlhsh_lock);
 	rcu_assign_pointer(netlbl_unlhsh, hsh_tbl);
 	spin_unlock(&netlbl_unlhsh_lock);
 	rcu_read_unlock();
+=======
+	spin_lock(&netlbl_unlhsh_lock);
+	rcu_assign_pointer(netlbl_unlhsh, hsh_tbl);
+	spin_unlock(&netlbl_unlhsh_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&netlbl_unlhsh_lock);
+	rcu_assign_pointer(netlbl_unlhsh, hsh_tbl);
+	spin_unlock(&netlbl_unlhsh_lock);
+>>>>>>> refs/remotes/origin/master
 
 	register_netdevice_notifier(&netlbl_unlhsh_netdev_notifier);
 
@@ -1492,7 +1691,15 @@ int netlbl_unlabel_getattr(const struct sk_buff *skb,
 		secattr->attr.secid = netlbl_unlhsh_addr4_entry(addr4)->secid;
 		break;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case PF_INET6: {
 		struct ipv6hdr *hdr6;
 		struct netlbl_af6list *addr6;
@@ -1541,13 +1748,21 @@ int __init netlbl_unlabel_defconf(void)
 	 * it is called is at bootup before the audit subsystem is reporting
 	 * messages so don't worry to much about these values. */
 	security_task_getsecid(current, &audit_info.secid);
+<<<<<<< HEAD
 	audit_info.loginuid = 0;
+=======
+	audit_info.loginuid = GLOBAL_ROOT_UID;
+>>>>>>> refs/remotes/origin/master
 	audit_info.sessionid = 0;
 
 	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
 	if (entry == NULL)
 		return -ENOMEM;
+<<<<<<< HEAD
 	entry->type = NETLBL_NLTYPE_UNLABELED;
+=======
+	entry->def.type = NETLBL_NLTYPE_UNLABELED;
+>>>>>>> refs/remotes/origin/master
 	ret_val = netlbl_domhsh_add_default(entry, &audit_info);
 	if (ret_val != 0)
 		return ret_val;

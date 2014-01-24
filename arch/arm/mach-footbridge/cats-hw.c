@@ -76,8 +76,16 @@ __initcall(cats_hw_init);
  * hard reboots fail on early boards.
  */
 static void __init
+<<<<<<< HEAD
+<<<<<<< HEAD
 fixup_cats(struct machine_desc *desc, struct tag *tags,
 	   char **cmdline, struct meminfo *mi)
+=======
+fixup_cats(struct tag *tags, char **cmdline, struct meminfo *mi)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+fixup_cats(struct tag *tags, char **cmdline, struct meminfo *mi)
+>>>>>>> refs/remotes/origin/master
 {
 	screen_info.orig_video_lines  = 25;
 	screen_info.orig_video_points = 16;
@@ -86,10 +94,29 @@ fixup_cats(struct machine_desc *desc, struct tag *tags,
 
 MACHINE_START(CATS, "Chalice-CATS")
 	/* Maintainer: Philip Blundell */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 	.soft_reboot	= 1,
+=======
+	.atag_offset	= 0x100,
+	.restart_mode	= 's',
+>>>>>>> refs/remotes/origin/cm-10.0
 	.fixup		= fixup_cats,
 	.map_io		= footbridge_map_io,
 	.init_irq	= footbridge_init_irq,
 	.timer		= &isa_timer,
+<<<<<<< HEAD
+=======
+	.restart	= footbridge_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.reboot_mode	= REBOOT_SOFT,
+	.fixup		= fixup_cats,
+	.map_io		= footbridge_map_io,
+	.init_irq	= footbridge_init_irq,
+	.init_time	= isa_timer_init,
+	.restart	= footbridge_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

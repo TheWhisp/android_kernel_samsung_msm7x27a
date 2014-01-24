@@ -1,15 +1,25 @@
 /*
+<<<<<<< HEAD
  *  linux/drivers/s390/crypto/zcrypt_cex2a.c
  *
  *  zcrypt 2.1.0
  *
  *  Copyright (C)  2001, 2006 IBM Corporation
+=======
+ *  zcrypt 2.1.0
+ *
+ *  Copyright IBM Corp. 2001, 2012
+>>>>>>> refs/remotes/origin/master
  *  Author(s): Robert Burroughs
  *	       Eric Rossman (edrossma@us.ibm.com)
  *
  *  Hotplug & misc device support: Jochen Roehrig (roehrig@de.ibm.com)
  *  Major cleanup & driver split: Martin Schwidefsky <schwidefsky@de.ibm.com>
  *				  Ralph Wuerthner <rwuerthn@de.ibm.com>
+<<<<<<< HEAD
+=======
+ *  MSGTYPE restruct:		  Holger Dengler <hd@linux.vnet.ibm.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,13 +40,25 @@
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #include "ap_bus.h"
 #include "zcrypt_api.h"
 #include "zcrypt_error.h"
 #include "zcrypt_cex2a.h"
+<<<<<<< HEAD
+=======
+#include "zcrypt_msgtype50.h"
+>>>>>>> refs/remotes/origin/master
 
 #define CEX2A_MIN_MOD_SIZE	  1	/*    8 bits	*/
 #define CEX2A_MAX_MOD_SIZE	256	/* 2048 bits	*/
@@ -63,28 +85,49 @@ static struct ap_device_id zcrypt_cex2a_ids[] = {
 	{ /* end of list */ },
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_ZCRYPT_MONOLITHIC
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DEVICE_TABLE(ap, zcrypt_cex2a_ids);
 MODULE_AUTHOR("IBM Corporation");
 MODULE_DESCRIPTION("CEX2A Cryptographic Coprocessor device driver, "
 		   "Copyright 2001, 2006 IBM Corporation");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int zcrypt_cex2a_probe(struct ap_device *ap_dev);
 static void zcrypt_cex2a_remove(struct ap_device *ap_dev);
 static void zcrypt_cex2a_receive(struct ap_device *, struct ap_message *,
 				 struct ap_message *);
+=======
+MODULE_DEVICE_TABLE(ap, zcrypt_cex2a_ids);
+MODULE_AUTHOR("IBM Corporation");
+MODULE_DESCRIPTION("CEX2A Cryptographic Coprocessor device driver, " \
+		   "Copyright IBM Corp. 2001, 2012");
+MODULE_LICENSE("GPL");
+
+static int zcrypt_cex2a_probe(struct ap_device *ap_dev);
+static void zcrypt_cex2a_remove(struct ap_device *ap_dev);
+>>>>>>> refs/remotes/origin/master
 
 static struct ap_driver zcrypt_cex2a_driver = {
 	.probe = zcrypt_cex2a_probe,
 	.remove = zcrypt_cex2a_remove,
+<<<<<<< HEAD
 	.receive = zcrypt_cex2a_receive,
+=======
+>>>>>>> refs/remotes/origin/master
 	.ids = zcrypt_cex2a_ids,
 	.request_timeout = CEX2A_CLEANUP_TIME,
 };
 
 /**
+<<<<<<< HEAD
  * Convert a ICAMEX message to a type50 MEX message.
  *
  * @zdev: crypto device pointer
@@ -421,6 +464,8 @@ static struct zcrypt_ops zcrypt_cex2a_ops = {
 };
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * Probe function for CEX2A cards. It always accepts the AP device
  * since the bus_match already checked the hardware type.
  * @ap_dev: pointer to the AP device.
@@ -452,7 +497,12 @@ static int zcrypt_cex2a_probe(struct ap_device *ap_dev)
 		zdev->min_mod_size = CEX2A_MIN_MOD_SIZE;
 		zdev->max_mod_size = CEX2A_MAX_MOD_SIZE;
 		zdev->max_exp_bit_length = CEX2A_MAX_MOD_SIZE;
+<<<<<<< HEAD
 		if (ap_4096_commands_available(ap_dev->qid)) {
+=======
+		if (ap_test_bit(&ap_dev->functions, AP_FUNC_MEX4K) &&
+		    ap_test_bit(&ap_dev->functions, AP_FUNC_CRT4K)) {
+>>>>>>> refs/remotes/origin/master
 			zdev->max_mod_size = CEX3A_MAX_MOD_SIZE;
 			zdev->max_exp_bit_length = CEX3A_MAX_MOD_SIZE;
 		}
@@ -460,6 +510,7 @@ static int zcrypt_cex2a_probe(struct ap_device *ap_dev)
 		zdev->speed_rating = CEX3A_SPEED_RATING;
 		break;
 	}
+<<<<<<< HEAD
 	if (zdev != NULL) {
 		zdev->ap_dev = ap_dev;
 		zdev->ops = &zcrypt_cex2a_ops;
@@ -470,6 +521,20 @@ static int zcrypt_cex2a_probe(struct ap_device *ap_dev)
 	}
 	if (rc) {
 		ap_dev->private = NULL;
+=======
+	if (!zdev)
+		return -ENODEV;
+	zdev->ops = zcrypt_msgtype_request(MSGTYPE50_NAME,
+					   MSGTYPE50_VARIANT_DEFAULT);
+	zdev->ap_dev = ap_dev;
+	zdev->online = 1;
+	ap_dev->reply = &zdev->reply;
+	ap_dev->private = zdev;
+	rc = zcrypt_device_register(zdev);
+	if (rc) {
+		ap_dev->private = NULL;
+		zcrypt_msgtype_release(zdev->ops);
+>>>>>>> refs/remotes/origin/master
 		zcrypt_device_free(zdev);
 	}
 	return rc;
@@ -482,8 +547,15 @@ static int zcrypt_cex2a_probe(struct ap_device *ap_dev)
 static void zcrypt_cex2a_remove(struct ap_device *ap_dev)
 {
 	struct zcrypt_device *zdev = ap_dev->private;
+<<<<<<< HEAD
 
 	zcrypt_device_unregister(zdev);
+=======
+	struct zcrypt_ops *zops = zdev->ops;
+
+	zcrypt_device_unregister(zdev);
+	zcrypt_msgtype_release(zops);
+>>>>>>> refs/remotes/origin/master
 }
 
 int __init zcrypt_cex2a_init(void)
@@ -496,7 +568,17 @@ void __exit zcrypt_cex2a_exit(void)
 	ap_driver_unregister(&zcrypt_cex2a_driver);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_ZCRYPT_MONOLITHIC
 module_init(zcrypt_cex2a_init);
 module_exit(zcrypt_cex2a_exit);
 #endif
+=======
+module_init(zcrypt_cex2a_init);
+module_exit(zcrypt_cex2a_exit);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_init(zcrypt_cex2a_init);
+module_exit(zcrypt_cex2a_exit);
+>>>>>>> refs/remotes/origin/master

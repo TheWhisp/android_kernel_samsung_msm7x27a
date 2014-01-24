@@ -74,7 +74,13 @@ spufs_alloc_inode(struct super_block *sb)
 static void spufs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(spufs_inode_cache, SPUFS_I(inode));
 }
 
@@ -92,7 +98,15 @@ spufs_init_once(void *p)
 }
 
 static struct inode *
+<<<<<<< HEAD
+<<<<<<< HEAD
 spufs_new_inode(struct super_block *sb, int mode)
+=======
+spufs_new_inode(struct super_block *sb, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+spufs_new_inode(struct super_block *sb, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 
@@ -125,7 +139,15 @@ spufs_setattr(struct dentry *dentry, struct iattr *attr)
 
 static int
 spufs_new_file(struct super_block *sb, struct dentry *dentry,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		const struct file_operations *fops, int mode,
+=======
+		const struct file_operations *fops, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const struct file_operations *fops, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 		size_t size, struct spu_context *ctx)
 {
 	static const struct inode_operations spufs_file_iops = {
@@ -153,7 +175,11 @@ static void
 spufs_evict_inode(struct inode *inode)
 {
 	struct spufs_inode_info *ei = SPUFS_I(inode);
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	if (ei->i_ctx)
 		put_spu_context(ei->i_ctx);
 	if (ei->i_gang)
@@ -188,6 +214,7 @@ static void spufs_prune_dir(struct dentry *dir)
 static int spufs_rmdir(struct inode *parent, struct dentry *dir)
 {
 	/* remove all entries */
+<<<<<<< HEAD
 	spufs_prune_dir(dir);
 	d_drop(dir);
 
@@ -195,7 +222,11 @@ static int spufs_rmdir(struct inode *parent, struct dentry *dir)
 }
 
 static int spufs_fill_dir(struct dentry *dir,
+<<<<<<< HEAD
 		const struct spufs_tree_descr *files, int mode,
+=======
+		const struct spufs_tree_descr *files, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct spu_context *ctx)
 {
 	struct dentry *dentry, *tmp;
@@ -229,6 +260,33 @@ out:
 
 	shrink_dcache_parent(dir);
 	return ret;
+=======
+	int res;
+	spufs_prune_dir(dir);
+	d_drop(dir);
+	res = simple_rmdir(parent, dir);
+	/* We have to give up the mm_struct */
+	spu_forget(SPUFS_I(dir->d_inode)->i_ctx);
+	return res;
+}
+
+static int spufs_fill_dir(struct dentry *dir,
+		const struct spufs_tree_descr *files, umode_t mode,
+		struct spu_context *ctx)
+{
+	while (files->name && files->name[0]) {
+		int ret;
+		struct dentry *dentry = d_alloc_name(dir, files->name);
+		if (!dentry)
+			return -ENOMEM;
+		ret = spufs_new_file(dir->d_sb, dentry, files->ops,
+					files->mode & mode, files->size, ctx);
+		if (ret)
+			return ret;
+		files++;
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int spufs_dir_close(struct inode *inode, struct file *file)
@@ -247,9 +305,12 @@ static int spufs_dir_close(struct inode *inode, struct file *file)
 	mutex_unlock(&parent->i_mutex);
 	WARN_ON(ret);
 
+<<<<<<< HEAD
 	/* We have to give up the mm_struct */
 	spu_forget(ctx);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return dcache_dir_close(inode, file);
 }
 
@@ -258,23 +319,41 @@ const struct file_operations spufs_context_fops = {
 	.release	= spufs_dir_close,
 	.llseek		= dcache_dir_lseek,
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= dcache_readdir,
+=======
+	.iterate	= dcache_readdir,
+>>>>>>> refs/remotes/origin/master
 	.fsync		= noop_fsync,
 };
 EXPORT_SYMBOL_GPL(spufs_context_fops);
 
 static int
 spufs_mkdir(struct inode *dir, struct dentry *dentry, unsigned int flags,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		int mode)
+=======
+		umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct inode *inode;
 	struct spu_context *ctx;
 
+<<<<<<< HEAD
 	ret = -ENOSPC;
 	inode = spufs_new_inode(dir->i_sb, mode | S_IFDIR);
 	if (!inode)
 		goto out;
+=======
+	inode = spufs_new_inode(dir->i_sb, mode | S_IFDIR);
+	if (!inode)
+		return -ENOSPC;
+>>>>>>> refs/remotes/origin/master
 
 	if (dir->i_mode & S_ISGID) {
 		inode->i_gid = dir->i_gid;
@@ -282,26 +361,50 @@ spufs_mkdir(struct inode *dir, struct dentry *dentry, unsigned int flags,
 	}
 	ctx = alloc_spu_context(SPUFS_I(dir)->i_gang); /* XXX gang */
 	SPUFS_I(inode)->i_ctx = ctx;
+<<<<<<< HEAD
 	if (!ctx)
 		goto out_iput;
+=======
+	if (!ctx) {
+		iput(inode);
+		return -ENOSPC;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ctx->flags = flags;
 	inode->i_op = &simple_dir_inode_operations;
 	inode->i_fop = &simple_dir_operations;
+<<<<<<< HEAD
+=======
+
+	mutex_lock(&inode->i_mutex);
+
+	dget(dentry);
+	inc_nlink(dir);
+	inc_nlink(inode);
+
+	d_instantiate(dentry, inode);
+
+>>>>>>> refs/remotes/origin/master
 	if (flags & SPU_CREATE_NOSCHED)
 		ret = spufs_fill_dir(dentry, spufs_dir_nosched_contents,
 					 mode, ctx);
 	else
 		ret = spufs_fill_dir(dentry, spufs_dir_contents, mode, ctx);
 
+<<<<<<< HEAD
 	if (ret)
 		goto out_free_ctx;
 
 	if (spufs_get_sb_info(dir->i_sb)->debug)
+=======
+	if (!ret && spufs_get_sb_info(dir->i_sb)->debug)
+>>>>>>> refs/remotes/origin/master
 		ret = spufs_fill_dir(dentry, spufs_dir_debug_contents,
 				mode, ctx);
 
 	if (ret)
+<<<<<<< HEAD
 		goto out_free_ctx;
 
 	d_instantiate(dentry, inode);
@@ -320,11 +423,22 @@ out:
 }
 
 static int spufs_context_open(struct dentry *dentry, struct vfsmount *mnt)
+=======
+		spufs_rmdir(dir, dentry);
+
+	mutex_unlock(&inode->i_mutex);
+
+	return ret;
+}
+
+static int spufs_context_open(struct path *path)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct file *filp;
 
 	ret = get_unused_fd();
+<<<<<<< HEAD
 	if (ret < 0) {
 		dput(dentry);
 		mntput(mnt);
@@ -336,11 +450,23 @@ static int spufs_context_open(struct dentry *dentry, struct vfsmount *mnt)
 		put_unused_fd(ret);
 		ret = PTR_ERR(filp);
 		goto out;
+=======
+	if (ret < 0)
+		return ret;
+
+	filp = dentry_open(path, O_RDONLY, current_cred());
+	if (IS_ERR(filp)) {
+		put_unused_fd(ret);
+		return PTR_ERR(filp);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	filp->f_op = &spufs_context_fops;
 	fd_install(ret, filp);
+<<<<<<< HEAD
 out:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -375,7 +501,11 @@ spufs_assert_affinity(unsigned int flags, struct spu_gang *gang,
 			return ERR_PTR(-EINVAL);
 
 		neighbor = get_spu_context(
+<<<<<<< HEAD
 				SPUFS_I(filp->f_dentry->d_inode)->i_ctx);
+=======
+				SPUFS_I(file_inode(filp))->i_ctx);
+>>>>>>> refs/remotes/origin/master
 
 		if (!list_empty(&neighbor->aff_list) && !(neighbor->aff_head) &&
 		    !list_is_last(&neighbor->aff_list, &gang->aff_list_head) &&
@@ -448,13 +578,22 @@ spufs_set_affinity(unsigned int flags, struct spu_context *ctx,
 
 static int
 spufs_create_context(struct inode *inode, struct dentry *dentry,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			struct vfsmount *mnt, int flags, int mode,
+=======
+			struct vfsmount *mnt, int flags, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			struct vfsmount *mnt, int flags, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 			struct file *aff_filp)
 {
 	int ret;
 	int affinity;
 	struct spu_gang *gang;
 	struct spu_context *neighbor;
+<<<<<<< HEAD
 
 	ret = -EPERM;
 	if ((flags & SPU_CREATE_NOSCHED) &&
@@ -469,15 +608,34 @@ spufs_create_context(struct inode *inode, struct dentry *dentry,
 	ret = -ENODEV;
 	if ((flags & SPU_CREATE_ISOLATE) && !isolated_loader)
 		goto out_unlock;
+=======
+	struct path path = {.mnt = mnt, .dentry = dentry};
+
+	if ((flags & SPU_CREATE_NOSCHED) &&
+	    !capable(CAP_SYS_NICE))
+		return -EPERM;
+
+	if ((flags & (SPU_CREATE_NOSCHED | SPU_CREATE_ISOLATE))
+	    == SPU_CREATE_ISOLATE)
+		return -EINVAL;
+
+	if ((flags & SPU_CREATE_ISOLATE) && !isolated_loader)
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	gang = NULL;
 	neighbor = NULL;
 	affinity = flags & (SPU_CREATE_AFFINITY_MEM | SPU_CREATE_AFFINITY_SPU);
 	if (affinity) {
 		gang = SPUFS_I(inode)->i_gang;
+<<<<<<< HEAD
 		ret = -EINVAL;
 		if (!gang)
 			goto out_unlock;
+=======
+		if (!gang)
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&gang->aff_mutex);
 		neighbor = spufs_assert_affinity(flags, gang, aff_filp);
 		if (IS_ERR(neighbor)) {
@@ -497,6 +655,7 @@ spufs_create_context(struct inode *inode, struct dentry *dentry,
 			put_spu_context(neighbor);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * get references for dget and mntget, will be released
 	 * in error path of *_open().
@@ -510,19 +669,35 @@ spufs_create_context(struct inode *inode, struct dentry *dentry,
 		spu_forget(SPUFS_I(dentry->d_inode)->i_ctx);
 		goto out;
 	}
+=======
+	ret = spufs_context_open(&path);
+	if (ret < 0)
+		WARN_ON(spufs_rmdir(inode, dentry));
+>>>>>>> refs/remotes/origin/master
 
 out_aff_unlock:
 	if (affinity)
 		mutex_unlock(&gang->aff_mutex);
+<<<<<<< HEAD
 out_unlock:
 	mutex_unlock(&inode->i_mutex);
 out:
 	dput(dentry);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 spufs_mkgang(struct inode *dir, struct dentry *dentry, int mode)
+=======
+spufs_mkgang(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+spufs_mkgang(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct inode *inode;
@@ -558,12 +733,17 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int spufs_gang_open(struct dentry *dentry, struct vfsmount *mnt)
+=======
+static int spufs_gang_open(struct path *path)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct file *filp;
 
 	ret = get_unused_fd();
+<<<<<<< HEAD
 	if (ret < 0) {
 		dput(dentry);
 		mntput(mnt);
@@ -575,17 +755,38 @@ static int spufs_gang_open(struct dentry *dentry, struct vfsmount *mnt)
 		put_unused_fd(ret);
 		ret = PTR_ERR(filp);
 		goto out;
+=======
+	if (ret < 0)
+		return ret;
+
+	/*
+	 * get references for dget and mntget, will be released
+	 * in error path of *_open().
+	 */
+	filp = dentry_open(path, O_RDONLY, current_cred());
+	if (IS_ERR(filp)) {
+		put_unused_fd(ret);
+		return PTR_ERR(filp);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	filp->f_op = &simple_dir_operations;
 	fd_install(ret, filp);
+<<<<<<< HEAD
 out:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static int spufs_create_gang(struct inode *inode,
 			struct dentry *dentry,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			struct vfsmount *mnt, int mode)
+=======
+			struct vfsmount *mnt, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 
@@ -606,21 +807,47 @@ static int spufs_create_gang(struct inode *inode,
 out:
 	mutex_unlock(&inode->i_mutex);
 	dput(dentry);
+=======
+			struct vfsmount *mnt, umode_t mode)
+{
+	struct path path = {.mnt = mnt, .dentry = dentry};
+	int ret;
+
+	ret = spufs_mkgang(inode, dentry, mode & S_IRWXUGO);
+	if (!ret) {
+		ret = spufs_gang_open(&path);
+		if (ret < 0) {
+			int err = simple_rmdir(inode, dentry);
+			WARN_ON(err);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 
 static struct file_system_type spufs_type;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 long spufs_create(struct nameidata *nd, unsigned int flags, mode_t mode,
 							struct file *filp)
 {
 	struct dentry *dentry;
+=======
+long spufs_create(struct path *path, struct dentry *dentry,
+		unsigned int flags, umode_t mode, struct file *filp)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	ret = -EINVAL;
 	/* check if we are on spufs */
+<<<<<<< HEAD
 	if (nd->path.dentry->d_sb->s_type != &spufs_type)
+=======
+	if (path->dentry->d_sb->s_type != &spufs_type)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 
 	/* don't accept undefined flags */
@@ -628,6 +855,7 @@ long spufs_create(struct nameidata *nd, unsigned int flags, mode_t mode,
 		goto out;
 
 	/* only threads can be underneath a gang */
+<<<<<<< HEAD
 	if (nd->path.dentry != nd->path.dentry->d_sb->s_root) {
 		if ((flags & SPU_CREATE_GANG) ||
 		    !SPUFS_I(nd->path.dentry->d_inode)->i_gang)
@@ -638,10 +866,31 @@ long spufs_create(struct nameidata *nd, unsigned int flags, mode_t mode,
 	ret = PTR_ERR(dentry);
 	if (IS_ERR(dentry))
 		goto out_dir;
+=======
+long spufs_create(struct path *path, struct dentry *dentry,
+		unsigned int flags, umode_t mode, struct file *filp)
+{
+	struct inode *dir = path->dentry->d_inode;
+	int ret;
+
+	/* check if we are on spufs */
+	if (path->dentry->d_sb->s_type != &spufs_type)
+		return -EINVAL;
+
+	/* don't accept undefined flags */
+	if (flags & (~SPU_CREATE_FLAG_ALL))
+		return -EINVAL;
+
+	/* only threads can be underneath a gang */
+	if (path->dentry != path->dentry->d_sb->s_root)
+		if ((flags & SPU_CREATE_GANG) || !SPUFS_I(dir)->i_gang)
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	mode &= ~current_umask();
 
 	if (flags & SPU_CREATE_GANG)
+<<<<<<< HEAD
 		ret = spufs_create_gang(nd->path.dentry->d_inode,
 					 dentry, nd->path.mnt, mode);
 	else
@@ -655,6 +904,39 @@ long spufs_create(struct nameidata *nd, unsigned int flags, mode_t mode,
 out_dir:
 	mutex_unlock(&nd->path.dentry->d_inode->i_mutex);
 out:
+=======
+	if (path->dentry != path->dentry->d_sb->s_root) {
+		if ((flags & SPU_CREATE_GANG) ||
+		    !SPUFS_I(path->dentry->d_inode)->i_gang)
+			goto out;
+	}
+
+	mode &= ~current_umask();
+
+	if (flags & SPU_CREATE_GANG)
+		ret = spufs_create_gang(path->dentry->d_inode,
+					 dentry, path->mnt, mode);
+	else
+		ret = spufs_create_context(path->dentry->d_inode,
+					    dentry, path->mnt, flags, mode,
+					    filp);
+	if (ret >= 0)
+		fsnotify_mkdir(path->dentry->d_inode, dentry);
+	return ret;
+
+out:
+	mutex_unlock(&path->dentry->d_inode->i_mutex);
+	dput(dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = spufs_create_gang(dir, dentry, path->mnt, mode);
+	else
+		ret = spufs_create_context(dir, dentry, path->mnt, flags, mode,
+					    filp);
+	if (ret >= 0)
+		fsnotify_mkdir(dir, dentry);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -688,12 +970,24 @@ spufs_parse_options(struct super_block *sb, char *options, struct inode *root)
 		case Opt_uid:
 			if (match_int(&args[0], &option))
 				return 0;
+<<<<<<< HEAD
 			root->i_uid = option;
+=======
+			root->i_uid = make_kuid(current_user_ns(), option);
+			if (!uid_valid(root->i_uid))
+				return 0;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_gid:
 			if (match_int(&args[0], &option))
 				return 0;
+<<<<<<< HEAD
 			root->i_gid = option;
+=======
+			root->i_gid = make_kgid(current_user_ns(), option);
+			if (!gid_valid(root->i_gid))
+				return 0;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_mode:
 			if (match_octal(&args[0], &option))
@@ -766,9 +1060,21 @@ spufs_create_root(struct super_block *sb, void *data)
 		goto out_iput;
 
 	ret = -ENOMEM;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(inode);
 	if (!sb->s_root)
 		goto out_iput;
+=======
+	sb->s_root = d_make_root(inode);
+	if (!sb->s_root)
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(inode);
+	if (!sb->s_root)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 out_iput:
@@ -818,6 +1124,10 @@ static struct file_system_type spufs_type = {
 	.mount = spufs_mount,
 	.kill_sb = kill_litter_super,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("spufs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init spufs_init(void)
 {
@@ -837,19 +1147,44 @@ static int __init spufs_init(void)
 	ret = spu_sched_init();
 	if (ret)
 		goto out_cache;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = register_filesystem(&spufs_type);
 	if (ret)
 		goto out_sched;
 	ret = register_spu_syscalls(&spufs_calls);
 	if (ret)
 		goto out_fs;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = register_spu_syscalls(&spufs_calls);
+	if (ret)
+		goto out_sched;
+	ret = register_filesystem(&spufs_type);
+	if (ret)
+		goto out_syscalls;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spufs_init_isolated_loader();
 
 	return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 out_fs:
 	unregister_filesystem(&spufs_type);
+=======
+out_syscalls:
+	unregister_spu_syscalls(&spufs_calls);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_syscalls:
+	unregister_spu_syscalls(&spufs_calls);
+>>>>>>> refs/remotes/origin/master
 out_sched:
 	spu_sched_exit();
 out_cache:

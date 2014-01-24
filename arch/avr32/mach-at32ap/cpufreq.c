@@ -18,7 +18,11 @@
 #include <linux/io.h>
 #include <linux/clk.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct clk *cpuclk;
 

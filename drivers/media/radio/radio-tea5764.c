@@ -39,10 +39,23 @@
 #include <linux/i2c.h>			/* I2C				*/
 #include <media/v4l2-common.h>
 #include <media/v4l2-ioctl.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>      	/* for KERNEL_VERSION MACRO     */
 
 #define DRIVER_VERSION	"v0.01"
 #define RADIO_VERSION	KERNEL_VERSION(0, 0, 1)
+=======
+
+#define DRIVER_VERSION	"0.0.2"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <media/v4l2-device.h>
+#include <media/v4l2-ctrls.h>
+#include <media/v4l2-event.h>
+
+#define DRIVER_VERSION	"0.0.2"
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_AUTHOR	"Fabio Belavenuto <belavenuto@gmail.com>"
 #define DRIVER_DESC	"A driver for the TEA5764 radio chip for EZX Phones."
@@ -59,8 +72,13 @@
 
 /* Frequency limits in MHz -- these are European values.  For Japanese
 devices, that would be 76000 and 91000.  */
+<<<<<<< HEAD
 #define FREQ_MIN  87500
 #define FREQ_MAX 108000
+=======
+#define FREQ_MIN  87500U
+#define FREQ_MAX 108000U
+>>>>>>> refs/remotes/origin/master
 #define FREQ_MUL 16
 
 /* TEA5764 registers */
@@ -130,29 +148,61 @@ struct tea5764_write_regs {
 	u16 rdsbbl;				/* PAUSEDET & RDSBBL */
 } __attribute__ ((packed));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef RADIO_TEA5764_XTAL
 #define RADIO_TEA5764_XTAL 1
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_RADIO_TEA5764_XTAL
+#define RADIO_TEA5764_XTAL 1
+#else
+#define RADIO_TEA5764_XTAL 0
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int radio_nr = -1;
 static int use_xtal = RADIO_TEA5764_XTAL;
 
 struct tea5764_device {
+<<<<<<< HEAD
 	struct i2c_client		*i2c_client;
 	struct video_device		*videodev;
+=======
+	struct v4l2_device		v4l2_dev;
+	struct v4l2_ctrl_handler	ctrl_handler;
+	struct i2c_client		*i2c_client;
+	struct video_device		vdev;
+>>>>>>> refs/remotes/origin/master
 	struct tea5764_regs		regs;
 	struct mutex			mutex;
 };
 
 /* I2C code related */
+<<<<<<< HEAD
 int tea5764_i2c_read(struct tea5764_device *radio)
+=======
+static int tea5764_i2c_read(struct tea5764_device *radio)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	u16 *p = (u16 *) &radio->regs;
 
 	struct i2c_msg msgs[1] = {
+<<<<<<< HEAD
 		{ radio->i2c_client->addr, I2C_M_RD, sizeof(radio->regs),
 			(void *)&radio->regs },
+=======
+		{	.addr = radio->i2c_client->addr,
+			.flags = I2C_M_RD,
+			.len = sizeof(radio->regs),
+			.buf = (void *)&radio->regs
+		},
+>>>>>>> refs/remotes/origin/master
 	};
 	if (i2c_transfer(radio->i2c_client->adapter, msgs, 1) != 1)
 		return -EIO;
@@ -162,12 +212,24 @@ int tea5764_i2c_read(struct tea5764_device *radio)
 	return 0;
 }
 
+<<<<<<< HEAD
 int tea5764_i2c_write(struct tea5764_device *radio)
+=======
+static int tea5764_i2c_write(struct tea5764_device *radio)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tea5764_write_regs wr;
 	struct tea5764_regs *r = &radio->regs;
 	struct i2c_msg msgs[1] = {
+<<<<<<< HEAD
 		{ radio->i2c_client->addr, 0, sizeof(wr), (void *) &wr },
+=======
+		{
+			.addr = radio->i2c_client->addr,
+			.len = sizeof(wr),
+			.buf = (void *)&wr
+		},
+>>>>>>> refs/remotes/origin/master
 	};
 	wr.intreg  = r->intreg & 0xff;
 	wr.frqset  = __cpu_to_be16(r->frqset);
@@ -180,6 +242,7 @@ int tea5764_i2c_write(struct tea5764_device *radio)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* V4L2 code related */
 static struct v4l2_queryctrl radio_qctrl[] = {
 	{
@@ -192,6 +255,8 @@ static struct v4l2_queryctrl radio_qctrl[] = {
 	}
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void tea5764_power_up(struct tea5764_device *radio)
 {
 	struct tea5764_regs *r = &radio->regs;
@@ -284,24 +349,39 @@ static void tea5764_mute(struct tea5764_device *radio, int on)
 		tea5764_i2c_write(radio);
 }
 
+<<<<<<< HEAD
 static int tea5764_is_muted(struct tea5764_device *radio)
 {
 	return radio->regs.tnctrl & TEA5764_TNCTRL_MU;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* V4L2 vidioc */
 static int vidioc_querycap(struct file *file, void  *priv,
 					struct v4l2_capability *v)
 {
 	struct tea5764_device *radio = video_drvdata(file);
+<<<<<<< HEAD
 	struct video_device *dev = radio->videodev;
+=======
+	struct video_device *dev = &radio->vdev;
+>>>>>>> refs/remotes/origin/master
 
 	strlcpy(v->driver, dev->dev.driver->name, sizeof(v->driver));
 	strlcpy(v->card, dev->name, sizeof(v->card));
 	snprintf(v->bus_info, sizeof(v->bus_info),
 		 "I2C:%s", dev_name(&dev->dev));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	v->version = RADIO_VERSION;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	v->capabilities = V4L2_CAP_TUNER | V4L2_CAP_RADIO;
+=======
+	v->device_caps = V4L2_CAP_TUNER | V4L2_CAP_RADIO;
+	v->capabilities = v->device_caps | V4L2_CAP_DEVICE_CAPS;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -314,8 +394,12 @@ static int vidioc_g_tuner(struct file *file, void *priv,
 	if (v->index > 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	memset(v, 0, sizeof(*v));
 	strcpy(v->name, "FM");
+=======
+	strlcpy(v->name, "FM", sizeof(v->name));
+>>>>>>> refs/remotes/origin/master
 	v->type = V4L2_TUNER_RADIO;
 	tea5764_i2c_read(radio);
 	v->rangelow   = FREQ_MIN * FREQ_MUL;
@@ -333,7 +417,11 @@ static int vidioc_g_tuner(struct file *file, void *priv,
 }
 
 static int vidioc_s_tuner(struct file *file, void *priv,
+<<<<<<< HEAD
 				struct v4l2_tuner *v)
+=======
+				const struct v4l2_tuner *v)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tea5764_device *radio = video_drvdata(file);
 
@@ -345,6 +433,7 @@ static int vidioc_s_tuner(struct file *file, void *priv,
 }
 
 static int vidioc_s_frequency(struct file *file, void *priv,
+<<<<<<< HEAD
 				struct v4l2_frequency *f)
 {
 	struct tea5764_device *radio = video_drvdata(file);
@@ -361,6 +450,28 @@ static int vidioc_s_frequency(struct file *file, void *priv,
 		return -EINVAL;
 	tea5764_power_up(radio);
 	tea5764_tune(radio, (f->frequency * 125) / 2);
+=======
+				const struct v4l2_frequency *f)
+{
+	struct tea5764_device *radio = video_drvdata(file);
+	unsigned freq = f->frequency;
+
+	if (f->tuner != 0 || f->type != V4L2_TUNER_RADIO)
+		return -EINVAL;
+	if (freq == 0) {
+		/* We special case this as a power down control. */
+		tea5764_power_down(radio);
+		/* Yes, that's what is returned in this case. This
+		   whole special case is non-compliant and should really
+		   be replaced with something better, but changing this
+		   might well break code that depends on this behavior.
+		   So we keep it as-is. */
+		return -EINVAL;
+	}
+	freq = clamp(freq, FREQ_MIN * FREQ_MUL, FREQ_MAX * FREQ_MUL);
+	tea5764_power_up(radio);
+	tea5764_tune(radio, (freq * 125) / 2);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -373,7 +484,10 @@ static int vidioc_g_frequency(struct file *file, void *priv,
 	if (f->tuner != 0)
 		return -EINVAL;
 	tea5764_i2c_read(radio);
+<<<<<<< HEAD
 	memset(f, 0, sizeof(*f));
+=======
+>>>>>>> refs/remotes/origin/master
 	f->type = V4L2_TUNER_RADIO;
 	if (r->tnctrl & TEA5764_TNCTRL_PUPD0)
 		f->frequency = (tea5764_get_freq(radio) * 2) / 125;
@@ -383,6 +497,7 @@ static int vidioc_g_frequency(struct file *file, void *priv,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int vidioc_queryctrl(struct file *file, void *priv,
 			    struct v4l2_queryctrl *qc)
 {
@@ -419,11 +534,22 @@ static int vidioc_s_ctrl(struct file *file, void *priv,
 	switch (ctrl->id) {
 	case V4L2_CID_AUDIO_MUTE:
 		tea5764_mute(radio, ctrl->value);
+=======
+static int tea5764_s_ctrl(struct v4l2_ctrl *ctrl)
+{
+	struct tea5764_device *radio =
+		container_of(ctrl->handler, struct tea5764_device, ctrl_handler);
+
+	switch (ctrl->id) {
+	case V4L2_CID_AUDIO_MUTE:
+		tea5764_mute(radio, ctrl->val);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int vidioc_g_input(struct file *filp, void *priv, unsigned int *i)
 {
 	*i = 0;
@@ -456,10 +582,21 @@ static int vidioc_s_audio(struct file *file, void *priv,
 
 	return 0;
 }
+=======
+static const struct v4l2_ctrl_ops tea5764_ctrl_ops = {
+	.s_ctrl = tea5764_s_ctrl,
+};
+>>>>>>> refs/remotes/origin/master
 
 /* File system interface */
 static const struct v4l2_file_operations tea5764_fops = {
 	.owner		= THIS_MODULE,
+<<<<<<< HEAD
+=======
+	.open		= v4l2_fh_open,
+	.release	= v4l2_fh_release,
+	.poll		= v4l2_ctrl_poll,
+>>>>>>> refs/remotes/origin/master
 	.unlocked_ioctl	= video_ioctl2,
 };
 
@@ -467,6 +604,7 @@ static const struct v4l2_ioctl_ops tea5764_ioctl_ops = {
 	.vidioc_querycap    = vidioc_querycap,
 	.vidioc_g_tuner     = vidioc_g_tuner,
 	.vidioc_s_tuner     = vidioc_s_tuner,
+<<<<<<< HEAD
 	.vidioc_g_audio     = vidioc_g_audio,
 	.vidioc_s_audio     = vidioc_s_audio,
 	.vidioc_g_input     = vidioc_g_input,
@@ -476,6 +614,13 @@ static const struct v4l2_ioctl_ops tea5764_ioctl_ops = {
 	.vidioc_queryctrl   = vidioc_queryctrl,
 	.vidioc_g_ctrl      = vidioc_g_ctrl,
 	.vidioc_s_ctrl      = vidioc_s_ctrl,
+=======
+	.vidioc_g_frequency = vidioc_g_frequency,
+	.vidioc_s_frequency = vidioc_s_frequency,
+	.vidioc_log_status  = v4l2_ctrl_log_status,
+	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
+	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* V4L2 interface */
@@ -483,6 +628,7 @@ static struct video_device tea5764_radio_template = {
 	.name		= "TEA5764 FM-Radio",
 	.fops           = &tea5764_fops,
 	.ioctl_ops 	= &tea5764_ioctl_ops,
+<<<<<<< HEAD
 	.release	= video_device_release,
 };
 
@@ -491,6 +637,18 @@ static int __devinit tea5764_i2c_probe(struct i2c_client *client,
 					const struct i2c_device_id *id)
 {
 	struct tea5764_device *radio;
+=======
+	.release	= video_device_release_empty,
+};
+
+/* I2C probe: check if the device exists and register with v4l if it is */
+static int tea5764_i2c_probe(struct i2c_client *client,
+			     const struct i2c_device_id *id)
+{
+	struct tea5764_device *radio;
+	struct v4l2_device *v4l2_dev;
+	struct v4l2_ctrl_handler *hdl;
+>>>>>>> refs/remotes/origin/master
 	struct tea5764_regs *r;
 	int ret;
 
@@ -499,17 +657,43 @@ static int __devinit tea5764_i2c_probe(struct i2c_client *client,
 	if (!radio)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	v4l2_dev = &radio->v4l2_dev;
+	ret = v4l2_device_register(&client->dev, v4l2_dev);
+	if (ret < 0) {
+		v4l2_err(v4l2_dev, "could not register v4l2_device\n");
+		goto errfr;
+	}
+
+	hdl = &radio->ctrl_handler;
+	v4l2_ctrl_handler_init(hdl, 1);
+	v4l2_ctrl_new_std(hdl, &tea5764_ctrl_ops,
+			V4L2_CID_AUDIO_MUTE, 0, 1, 1, 1);
+	v4l2_dev->ctrl_handler = hdl;
+	if (hdl->error) {
+		ret = hdl->error;
+		v4l2_err(v4l2_dev, "Could not register controls\n");
+		goto errunreg;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&radio->mutex);
 	radio->i2c_client = client;
 	ret = tea5764_i2c_read(radio);
 	if (ret)
+<<<<<<< HEAD
 		goto errfr;
+=======
+		goto errunreg;
+>>>>>>> refs/remotes/origin/master
 	r = &radio->regs;
 	PDEBUG("chipid = %04X, manid = %04X", r->chipid, r->manid);
 	if (r->chipid != TEA5764_CHIPID ||
 		(r->manid & 0x0fff) != TEA5764_MANID) {
 		PWARN("This chip is not a TEA5764!");
 		ret = -EINVAL;
+<<<<<<< HEAD
 		goto errfr;
 	}
 
@@ -524,6 +708,18 @@ static int __devinit tea5764_i2c_probe(struct i2c_client *client,
 	i2c_set_clientdata(client, radio);
 	video_set_drvdata(radio->videodev, radio);
 	radio->videodev->lock = &radio->mutex;
+=======
+		goto errunreg;
+	}
+
+	radio->vdev = tea5764_radio_template;
+
+	i2c_set_clientdata(client, radio);
+	video_set_drvdata(&radio->vdev, radio);
+	radio->vdev.lock = &radio->mutex;
+	radio->vdev.v4l2_dev = v4l2_dev;
+	set_bit(V4L2_FL_USE_FH_PRIO, &radio->vdev.flags);
+>>>>>>> refs/remotes/origin/master
 
 	/* initialize and power off the chip */
 	tea5764_i2c_read(radio);
@@ -531,29 +727,52 @@ static int __devinit tea5764_i2c_probe(struct i2c_client *client,
 	tea5764_mute(radio, 1);
 	tea5764_power_down(radio);
 
+<<<<<<< HEAD
 	ret = video_register_device(radio->videodev, VFL_TYPE_RADIO, radio_nr);
 	if (ret < 0) {
 		PWARN("Could not register video device!");
 		goto errrel;
+=======
+	ret = video_register_device(&radio->vdev, VFL_TYPE_RADIO, radio_nr);
+	if (ret < 0) {
+		PWARN("Could not register video device!");
+		goto errunreg;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	PINFO("registered.");
 	return 0;
+<<<<<<< HEAD
 errrel:
 	video_device_release(radio->videodev);
+=======
+errunreg:
+	v4l2_ctrl_handler_free(hdl);
+	v4l2_device_unregister(v4l2_dev);
+>>>>>>> refs/remotes/origin/master
 errfr:
 	kfree(radio);
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit tea5764_i2c_remove(struct i2c_client *client)
+=======
+static int tea5764_i2c_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tea5764_device *radio = i2c_get_clientdata(client);
 
 	PDEBUG("remove");
 	if (radio) {
 		tea5764_power_down(radio);
+<<<<<<< HEAD
 		video_unregister_device(radio->videodev);
+=======
+		video_unregister_device(&radio->vdev);
+		v4l2_ctrl_handler_free(&radio->ctrl_handler);
+		v4l2_device_unregister(&radio->v4l2_dev);
+>>>>>>> refs/remotes/origin/master
 		kfree(radio);
 	}
 	return 0;
@@ -572,10 +791,12 @@ static struct i2c_driver tea5764_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = tea5764_i2c_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tea5764_i2c_remove),
 	.id_table = tea5764_id,
 };
 
+<<<<<<< HEAD
 /* init the driver */
 static int __init tea5764_init(void)
 {
@@ -591,10 +812,22 @@ static void __exit tea5764_exit(void)
 {
 	i2c_del_driver(&tea5764_i2c_driver);
 }
+=======
+module_i2c_driver(tea5764_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = tea5764_i2c_remove,
+	.id_table = tea5764_id,
+};
+
+module_i2c_driver(tea5764_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_param(use_xtal, int, 1);
 MODULE_PARM_DESC(use_xtal, "Chip have a xtal connected in board");
@@ -603,3 +836,16 @@ MODULE_PARM_DESC(radio_nr, "video4linux device number to use");
 
 module_init(tea5764_init);
 module_exit(tea5764_exit);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+MODULE_VERSION(DRIVER_VERSION);
+
+module_param(use_xtal, int, 0);
+MODULE_PARM_DESC(use_xtal, "Chip have a xtal connected in board");
+module_param(radio_nr, int, 0);
+MODULE_PARM_DESC(radio_nr, "video4linux device number to use");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

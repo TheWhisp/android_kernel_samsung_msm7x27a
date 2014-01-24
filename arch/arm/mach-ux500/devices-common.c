@@ -13,19 +13,30 @@
 #include <linux/platform_device.h>
 #include <linux/amba/bus.h>
 
+<<<<<<< HEAD
 #include <plat/gpio.h>
+=======
+#include <plat/gpio-nomadik.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/hardware.h>
 
 #include "devices-common.h"
 
 struct amba_device *
+<<<<<<< HEAD
 dbx500_add_amba_device(const char *name, resource_size_t base,
 		       int irq, void *pdata, unsigned int periphid)
+=======
+dbx500_add_amba_device(struct device *parent, const char *name,
+		       resource_size_t base, int irq, void *pdata,
+		       unsigned int periphid)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct amba_device *dev;
 	int ret;
 
+<<<<<<< HEAD
 	dev = kzalloc(sizeof *dev, GFP_KERNEL);
 	if (!dev)
 		return ERR_PTR(-ENOMEM);
@@ -36,19 +47,36 @@ dbx500_add_amba_device(const char *name, resource_size_t base,
 	dev->res.end = base + SZ_4K - 1;
 	dev->res.flags = IORESOURCE_MEM;
 
+=======
+	dev = amba_device_alloc(name, base, SZ_4K);
+	if (!dev)
+		return ERR_PTR(-ENOMEM);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->dma_mask = DMA_BIT_MASK(32);
 	dev->dev.coherent_dma_mask = DMA_BIT_MASK(32);
 
 	dev->irq[0] = irq;
+<<<<<<< HEAD
 	dev->irq[1] = NO_IRQ;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev->periphid = periphid;
 
 	dev->dev.platform_data = pdata;
 
+<<<<<<< HEAD
 	ret = amba_device_register(dev, &iomem_resource);
 	if (ret) {
 		kfree(dev);
+=======
+	dev->dev.parent = parent;
+
+	ret = amba_device_add(dev, &iomem_resource);
+	if (ret) {
+		amba_device_put(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ERR_PTR(ret);
 	}
 
@@ -56,6 +84,7 @@ dbx500_add_amba_device(const char *name, resource_size_t base,
 }
 
 static struct platform_device *
+<<<<<<< HEAD
 dbx500_add_platform_device(const char *name, int id, void *pdata,
 			   struct resource *res, int resnum)
 {
@@ -110,6 +139,9 @@ dbx500_add_platform_device_4k1irq(const char *name, int id,
 
 static struct platform_device *
 dbx500_add_gpio(int id, resource_size_t addr, int irq,
+=======
+dbx500_add_gpio(struct device *parent, int id, resource_size_t addr, int irq,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct nmk_gpio_platform_data *pdata)
 {
 	struct resource resources[] = {
@@ -125,6 +157,7 @@ dbx500_add_gpio(int id, resource_size_t addr, int irq,
 		}
 	};
 
+<<<<<<< HEAD
 	return platform_device_register_resndata(NULL, "gpio", id,
 				resources, ARRAY_SIZE(resources),
 				pdata, sizeof(*pdata));
@@ -132,6 +165,20 @@ dbx500_add_gpio(int id, resource_size_t addr, int irq,
 
 void dbx500_add_gpios(resource_size_t *base, int num, int irq,
 		      struct nmk_gpio_platform_data *pdata)
+=======
+	return platform_device_register_resndata(
+		parent,
+		"gpio",
+		id,
+		resources,
+		ARRAY_SIZE(resources),
+		pdata,
+		sizeof(*pdata));
+}
+
+void dbx500_add_gpios(struct device *parent, resource_size_t *base, int num,
+		      int irq, struct nmk_gpio_platform_data *pdata)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int first = 0;
 	int i;
@@ -141,6 +188,10 @@ void dbx500_add_gpios(resource_size_t *base, int num, int irq,
 		pdata->first_irq = NOMADIK_GPIO_TO_IRQ(first);
 		pdata->num_gpio = 32;
 
+<<<<<<< HEAD
 		dbx500_add_gpio(i, base[i], irq, pdata);
+=======
+		dbx500_add_gpio(parent, i, base[i], irq, pdata);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }

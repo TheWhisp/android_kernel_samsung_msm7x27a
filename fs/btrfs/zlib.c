@@ -97,7 +97,11 @@ static int zlib_compress_pages(struct list_head *ws,
 	*total_in = 0;
 
 	if (Z_OK != zlib_deflateInit(&workspace->def_strm, 3)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "deflateInit failed\n");
+=======
+		printk(KERN_WARNING "btrfs: deflateInit failed\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -1;
 		goto out;
 	}
@@ -125,7 +129,11 @@ static int zlib_compress_pages(struct list_head *ws,
 	while (workspace->def_strm.total_in < len) {
 		ret = zlib_deflate(&workspace->def_strm, Z_SYNC_FLUSH);
 		if (ret != Z_OK) {
+<<<<<<< HEAD
 			printk(KERN_DEBUG "btrfs deflate in loop returned %d\n",
+=======
+			printk(KERN_DEBUG "btrfs: deflate in loop returned %d\n",
+>>>>>>> refs/remotes/origin/master
 			       ret);
 			zlib_deflateEnd(&workspace->def_strm);
 			ret = -1;
@@ -252,7 +260,11 @@ static int zlib_decompress_biovec(struct list_head *ws, struct page **pages_in,
 	}
 
 	if (Z_OK != zlib_inflateInit2(&workspace->inf_strm, wbits)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "inflateInit failed\n");
+=======
+		printk(KERN_WARNING "btrfs: inflateInit failed\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	while (workspace->inf_strm.total_in < srclen) {
@@ -336,7 +348,11 @@ static int zlib_decompress(struct list_head *ws, unsigned char *data_in,
 	}
 
 	if (Z_OK != zlib_inflateInit2(&workspace->inf_strm, wbits)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "inflateInit failed\n");
+=======
+		printk(KERN_WARNING "btrfs: inflateInit failed\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -370,9 +386,21 @@ static int zlib_decompress(struct list_head *ws, unsigned char *data_in,
 			    PAGE_CACHE_SIZE - buf_offset);
 		bytes = min(bytes, bytes_left);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(dest_page, KM_USER0);
 		memcpy(kaddr + pg_offset, workspace->buf + buf_offset, bytes);
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kaddr = kmap_atomic(dest_page);
+		memcpy(kaddr + pg_offset, workspace->buf + buf_offset, bytes);
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kaddr = kmap_atomic(dest_page);
+		memcpy(kaddr + pg_offset, workspace->buf + buf_offset, bytes);
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 		pg_offset += bytes;
 		bytes_left -= bytes;

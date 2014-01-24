@@ -23,9 +23,15 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 
 #include <mach/system.h>
 #include <plat/common.h>
+=======
+#include <linux/export.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/prcm.h>
 #include <plat/irqs.h>
 
@@ -58,7 +64,11 @@ u32 omap_prcm_get_reset_sources(void)
 EXPORT_SYMBOL(omap_prcm_get_reset_sources);
 
 /* Resets clock rates and reboots the system. Only called from system.h */
+<<<<<<< HEAD
 static void omap_prcm_arch_reset(char mode, const char *cmd)
+=======
+void omap_prcm_restart(char mode, const char *cmd)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	s16 prcm_offs = 0;
 
@@ -70,7 +80,11 @@ static void omap_prcm_arch_reset(char mode, const char *cmd)
 		prcm_offs = OMAP3430_GR_MOD;
 		omap3_ctrl_write_boot_mode((cmd ? (u8)*cmd : 0));
 	} else if (cpu_is_omap44xx()) {
+<<<<<<< HEAD
 		omap4_prm_global_warm_sw_reset(); /* never returns */
+=======
+		omap4_prminst_global_warm_sw_reset(); /* never returns */
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		WARN_ON(1);
 	}
@@ -109,8 +123,11 @@ static void omap_prcm_arch_reset(char mode, const char *cmd)
 	omap2_prm_read_mod_reg(prcm_offs, OMAP2_RM_RSTCTRL); /* OCP barrier */
 }
 
+<<<<<<< HEAD
 void (*arch_reset)(char, const char *) = omap_prcm_arch_reset;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * omap2_cm_wait_idlest - wait for IDLEST bit to indicate module readiness
  * @reg: physical address of module IDLEST register
@@ -151,6 +168,7 @@ int omap2_cm_wait_idlest(void __iomem *reg, u32 mask, u8 idlest,
 
 void __init omap2_set_globals_prcm(struct omap_globals *omap2_globals)
 {
+<<<<<<< HEAD
 	/* Static mapping, never released */
 	if (omap2_globals->prm) {
 		prm_base = ioremap(omap2_globals->prm, SZ_8K);
@@ -164,4 +182,12 @@ void __init omap2_set_globals_prcm(struct omap_globals *omap2_globals)
 		cm2_base = ioremap(omap2_globals->cm2, SZ_8K);
 		WARN_ON(!cm2_base);
 	}
+=======
+	if (omap2_globals->prm)
+		prm_base = omap2_globals->prm;
+	if (omap2_globals->cm)
+		cm_base = omap2_globals->cm;
+	if (omap2_globals->cm2)
+		cm2_base = omap2_globals->cm2;
+>>>>>>> refs/remotes/origin/cm-10.0
 }

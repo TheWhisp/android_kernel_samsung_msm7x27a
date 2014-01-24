@@ -43,6 +43,7 @@
 #include "fid.h"
 
 /**
+<<<<<<< HEAD
  * v9fs_dentry_delete - called when dentry refcount equals 0
  * @dentry:  dentry in question
  *
@@ -53,21 +54,38 @@
 
 static int v9fs_dentry_delete(const struct dentry *dentry)
 {
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, " dentry: %s (%p)\n", dentry->d_name.name,
 									dentry);
+=======
+	p9_debug(P9_DEBUG_VFS, " dentry: %s (%p)\n",
+		 dentry->d_name.name, dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 1;
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * v9fs_cached_dentry_delete - called when dentry refcount equals 0
  * @dentry:  dentry in question
  *
  */
 static int v9fs_cached_dentry_delete(const struct dentry *dentry)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, " dentry: %s (%p)\n",
 		   dentry->d_name.name, dentry);
+=======
+	p9_debug(P9_DEBUG_VFS, " dentry: %s (%p)\n",
+		 dentry->d_name.name, dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, " dentry: %s (%p)\n",
+		 dentry->d_name.name, dentry);
+>>>>>>> refs/remotes/origin/master
 
 	/* Don't cache negative dentries */
 	if (!dentry->d_inode)
@@ -83,11 +101,17 @@ static int v9fs_cached_dentry_delete(const struct dentry *dentry)
 
 static void v9fs_dentry_release(struct dentry *dentry)
 {
+<<<<<<< HEAD
 	struct v9fs_dentry *dent;
 	struct p9_fid *temp, *current_fid;
 
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, " dentry: %s (%p)\n", dentry->d_name.name,
 									dentry);
+=======
+	p9_debug(P9_DEBUG_VFS, " dentry: %s (%p)\n",
+		 dentry->d_name.name, dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dent = dentry->d_fsdata;
 	if (dent) {
 		list_for_each_entry_safe(current_fid, temp, &dent->fidlist,
@@ -101,12 +125,27 @@ static void v9fs_dentry_release(struct dentry *dentry)
 }
 
 static int v9fs_lookup_revalidate(struct dentry *dentry, struct nameidata *nd)
+=======
+	struct hlist_node *p, *n;
+	p9_debug(P9_DEBUG_VFS, " dentry: %s (%p)\n",
+		 dentry->d_name.name, dentry);
+	hlist_for_each_safe(p, n, (struct hlist_head *)&dentry->d_fsdata)
+		p9_client_clunk(hlist_entry(p, struct p9_fid, dlist));
+	dentry->d_fsdata = NULL;
+}
+
+static int v9fs_lookup_revalidate(struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct p9_fid *fid;
 	struct inode *inode;
 	struct v9fs_inode *v9inode;
 
+<<<<<<< HEAD
 	if (nd->flags & LOOKUP_RCU)
+=======
+	if (flags & LOOKUP_RCU)
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 
 	inode = dentry->d_inode;
@@ -137,11 +176,19 @@ out_valid:
 
 const struct dentry_operations v9fs_cached_dentry_operations = {
 	.d_revalidate = v9fs_lookup_revalidate,
+<<<<<<< HEAD
+=======
+	.d_weak_revalidate = v9fs_lookup_revalidate,
+>>>>>>> refs/remotes/origin/master
 	.d_delete = v9fs_cached_dentry_delete,
 	.d_release = v9fs_dentry_release,
 };
 
 const struct dentry_operations v9fs_dentry_operations = {
+<<<<<<< HEAD
 	.d_delete = v9fs_dentry_delete,
+=======
+	.d_delete = always_delete_dentry,
+>>>>>>> refs/remotes/origin/master
 	.d_release = v9fs_dentry_release,
 };

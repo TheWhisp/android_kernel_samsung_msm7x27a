@@ -54,9 +54,21 @@ extern struct kmem_cache *v9fs_inode_cache;
 
 struct inode *v9fs_alloc_inode(struct super_block *sb);
 void v9fs_destroy_inode(struct inode *inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct inode *v9fs_get_inode(struct super_block *sb, int mode, dev_t);
 int v9fs_init_inode(struct v9fs_session_info *v9ses,
 		    struct inode *inode, int mode, dev_t);
+=======
+struct inode *v9fs_get_inode(struct super_block *sb, umode_t mode, dev_t);
+int v9fs_init_inode(struct v9fs_session_info *v9ses,
+		    struct inode *inode, umode_t mode, dev_t);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct inode *v9fs_get_inode(struct super_block *sb, umode_t mode, dev_t);
+int v9fs_init_inode(struct v9fs_session_info *v9ses,
+		    struct inode *inode, umode_t mode, dev_t);
+>>>>>>> refs/remotes/origin/master
 void v9fs_evict_inode(struct inode *inode);
 ino_t v9fs_qid2ino(struct p9_qid *qid);
 void v9fs_stat2inode(struct p9_wstat *, struct inode *, struct super_block *);
@@ -70,7 +82,17 @@ ssize_t v9fs_file_readn(struct file *, char *, char __user *, u32, u64);
 ssize_t v9fs_fid_readn(struct p9_fid *, char *, char __user *, u32, u64);
 void v9fs_blank_wstat(struct p9_wstat *wstat);
 int v9fs_vfs_setattr_dotl(struct dentry *, struct iattr *);
+<<<<<<< HEAD
+<<<<<<< HEAD
 int v9fs_file_fsync_dotl(struct file *filp, int datasync);
+=======
+int v9fs_file_fsync_dotl(struct file *filp, loff_t start, loff_t end,
+			 int datasync);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int v9fs_file_fsync_dotl(struct file *filp, loff_t start, loff_t end,
+			 int datasync);
+>>>>>>> refs/remotes/origin/master
 ssize_t v9fs_file_write_internal(struct inode *, struct p9_fid *,
 				 const char __user *, size_t, loff_t *, int);
 int v9fs_refresh_inode(struct p9_fid *fid, struct inode *inode);

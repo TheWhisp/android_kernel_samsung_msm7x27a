@@ -66,9 +66,15 @@ static int osdmap_show(struct seq_file *s, void *p)
 	for (n = rb_first(&client->osdc.osdmap->pg_pools); n; n = rb_next(n)) {
 		struct ceph_pg_pool_info *pool =
 			rb_entry(n, struct ceph_pg_pool_info, node);
+<<<<<<< HEAD
 		seq_printf(s, "pg_pool %d pg_num %d / %d, lpg_num %d / %d\n",
 			   pool->id, pool->v.pg_num, pool->pg_num_mask,
 			   pool->v.lpg_num, pool->lpg_num_mask);
+=======
+		seq_printf(s, "pg_pool %llu pg_num %d / %d\n",
+			   (unsigned long long)pool->id, pool->pg_num,
+			   pool->pg_num_mask);
+>>>>>>> refs/remotes/origin/master
 	}
 	for (i = 0; i < client->osdc.osdmap->max_osd; i++) {
 		struct ceph_entity_addr *addr =
@@ -94,9 +100,15 @@ static int monc_show(struct seq_file *s, void *p)
 	mutex_lock(&monc->mutex);
 
 	if (monc->have_mdsmap)
+<<<<<<< HEAD
 		seq_printf(s, "have mdsmap %u\n", (unsigned)monc->have_mdsmap);
 	if (monc->have_osdmap)
 		seq_printf(s, "have osdmap %u\n", (unsigned)monc->have_osdmap);
+=======
+		seq_printf(s, "have mdsmap %u\n", (unsigned int)monc->have_mdsmap);
+	if (monc->have_osdmap)
+		seq_printf(s, "have osdmap %u\n", (unsigned int)monc->have_osdmap);
+>>>>>>> refs/remotes/origin/master
 	if (monc->want_next_osdmap)
 		seq_printf(s, "want next osdmap\n");
 
@@ -123,6 +135,7 @@ static int osdc_show(struct seq_file *s, void *pp)
 	mutex_lock(&osdc->request_mutex);
 	for (p = rb_first(&osdc->requests); p; p = rb_next(p)) {
 		struct ceph_osd_request *req;
+<<<<<<< HEAD
 		struct ceph_osd_request_head *head;
 		struct ceph_osd_op *op;
 		int num_ops;
@@ -147,14 +160,36 @@ static int osdc_show(struct seq_file *s, void *pp)
 		if (req->r_reassert_version.epoch)
 			seq_printf(s, "\t%u'%llu",
 			   (unsigned)le32_to_cpu(req->r_reassert_version.epoch),
+=======
+		unsigned int i;
+		int opcode;
+
+		req = rb_entry(p, struct ceph_osd_request, r_node);
+
+		seq_printf(s, "%lld\tosd%d\t%lld.%x\t", req->r_tid,
+			   req->r_osd ? req->r_osd->o_osd : -1,
+			   req->r_pgid.pool, req->r_pgid.seed);
+
+		seq_printf(s, "%.*s", req->r_oid_len, req->r_oid);
+
+		if (req->r_reassert_version.epoch)
+			seq_printf(s, "\t%u'%llu",
+			   (unsigned int)le32_to_cpu(req->r_reassert_version.epoch),
+>>>>>>> refs/remotes/origin/master
 			   le64_to_cpu(req->r_reassert_version.version));
 		else
 			seq_printf(s, "\t");
 
+<<<<<<< HEAD
 		for (i = 0; i < num_ops; i++) {
 			opcode = le16_to_cpu(op->op);
 			seq_printf(s, "\t%s", ceph_osd_op_name(opcode));
 			op++;
+=======
+		for (i = 0; i < req->r_num_ops; i++) {
+			opcode = req->r_ops[i].op;
+			seq_printf(s, "\t%s", ceph_osd_op_name(opcode));
+>>>>>>> refs/remotes/origin/master
 		}
 
 		seq_printf(s, "\n");
@@ -189,6 +224,24 @@ int ceph_debugfs_client_init(struct ceph_client *client)
 	snprintf(name, sizeof(name), "%pU.client%lld", &client->fsid,
 		 client->monc.auth->global_id);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dout("ceph_debugfs_client_init %p %s\n", client, name);
+
+	BUG_ON(client->debugfs_dir);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dout("ceph_debugfs_client_init %p %s\n", client, name);
+
+	BUG_ON(client->debugfs_dir);
+>>>>>>> refs/remotes/origin/master
+=======
+	dout("ceph_debugfs_client_init %p %s\n", client, name);
+
+	BUG_ON(client->debugfs_dir);
+>>>>>>> refs/remotes/origin/cm-11.0
 	client->debugfs_dir = debugfs_create_dir(name, ceph_debugfs_dir);
 	if (!client->debugfs_dir)
 		goto out;
@@ -234,6 +287,18 @@ out:
 
 void ceph_debugfs_client_cleanup(struct ceph_client *client)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dout("ceph_debugfs_client_cleanup %p\n", client);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dout("ceph_debugfs_client_cleanup %p\n", client);
+>>>>>>> refs/remotes/origin/master
+=======
+	dout("ceph_debugfs_client_cleanup %p\n", client);
+>>>>>>> refs/remotes/origin/cm-11.0
 	debugfs_remove(client->debugfs_osdmap);
 	debugfs_remove(client->debugfs_monmap);
 	debugfs_remove(client->osdc.debugfs_file);

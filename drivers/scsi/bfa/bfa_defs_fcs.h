@@ -90,12 +90,33 @@ enum bfa_lport_role {
  * FCS port configuration.
  */
 struct bfa_lport_cfg_s {
+<<<<<<< HEAD
+<<<<<<< HEAD
     wwn_t	       pwwn;       /*  port wwn */
     wwn_t	       nwwn;       /*  node wwn */
     struct bfa_lport_symname_s  sym_name;   /*  vm port symbolic name */
     bfa_boolean_t       preboot_vp;  /*  vport created from PBC */
     enum bfa_lport_role     roles;      /*  FCS port roles */
     u8	     tag[16];	/*  opaque tag from application */
+=======
+	wwn_t	       pwwn;       /*  port wwn */
+	wwn_t	       nwwn;       /*  node wwn */
+	struct bfa_lport_symname_s  sym_name;   /*  vm port symbolic name */
+=======
+	wwn_t	       pwwn;       /*  port wwn */
+	wwn_t	       nwwn;       /*  node wwn */
+	struct bfa_lport_symname_s  sym_name;   /*  vm port symbolic name */
+	struct bfa_lport_symname_s node_sym_name; /* Node symbolic name */
+>>>>>>> refs/remotes/origin/master
+	enum bfa_lport_role roles;      /* FCS port roles */
+	u32     rsvd;
+	bfa_boolean_t   preboot_vp;  /*  vport created from PBC */
+	u8	tag[16];        /* opaque tag from application */
+	u8	padding[4];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -190,6 +211,21 @@ struct bfa_lport_stats_s {
 	u32	ns_gidft_unknown_rsp;
 	u32	ns_gidft_alloc_wait;
 
+<<<<<<< HEAD
+=======
+	u32	ns_rnnid_sent;
+	u32	ns_rnnid_accepts;
+	u32	ns_rnnid_rsp_err;
+	u32	ns_rnnid_rejects;
+	u32	ns_rnnid_alloc_wait;
+
+	u32	ns_rsnn_nn_sent;
+	u32	ns_rsnn_nn_accepts;
+	u32	ns_rsnn_nn_rsp_err;
+	u32	ns_rsnn_nn_rejects;
+	u32	ns_rsnn_nn_alloc_wait;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Mgmt Server stats
 	 */
@@ -249,12 +285,28 @@ enum bfa_vport_state {
 	BFA_FCS_VPORT_FDISC_SEND	= 2,
 	BFA_FCS_VPORT_FDISC		= 3,
 	BFA_FCS_VPORT_FDISC_RETRY	= 4,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BFA_FCS_VPORT_ONLINE		= 5,
 	BFA_FCS_VPORT_DELETING		= 6,
 	BFA_FCS_VPORT_CLEANUP		= 6,
 	BFA_FCS_VPORT_LOGO_SEND		= 7,
 	BFA_FCS_VPORT_LOGO		= 8,
 	BFA_FCS_VPORT_ERROR		= 9,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	BFA_FCS_VPORT_FDISC_RSP_WAIT	= 5,
+	BFA_FCS_VPORT_ONLINE		= 6,
+	BFA_FCS_VPORT_DELETING		= 7,
+	BFA_FCS_VPORT_CLEANUP		= 8,
+	BFA_FCS_VPORT_LOGO_SEND		= 9,
+	BFA_FCS_VPORT_LOGO		= 10,
+	BFA_FCS_VPORT_ERROR		= 11,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BFA_FCS_VPORT_MAX_STATE,
 };
 
@@ -407,6 +459,14 @@ struct bfa_rport_remote_link_stats_s {
 	u32 icc; /*  Invalid CRC Count */
 };
 
+<<<<<<< HEAD
+=======
+struct bfa_rport_qualifier_s {
+	wwn_t	pwwn;	/* Port WWN */
+	u32	pid;	/* port ID */
+	u32	rsvd;
+};
+>>>>>>> refs/remotes/origin/master
 
 #define BFA_MAX_IO_INDEX 7
 #define BFA_NO_IO_INDEX 9

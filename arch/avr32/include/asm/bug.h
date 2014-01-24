@@ -70,4 +70,18 @@
 
 #include <asm-generic/bug.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct pt_regs;
+void die(const char *str, struct pt_regs *regs, long err);
+void _exception(long signr, struct pt_regs *regs, int code,
+		unsigned long addr);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_AVR32_BUG_H */

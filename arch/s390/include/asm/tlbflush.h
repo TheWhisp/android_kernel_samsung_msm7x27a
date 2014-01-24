@@ -27,12 +27,20 @@ static inline void __tlb_flush_global(void)
 	register unsigned long reg4 asm("4");
 	long dummy;
 
+<<<<<<< HEAD
 #ifndef __s390x__
+=======
+#ifndef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 	if (!MACHINE_HAS_CSP) {
 		smp_ptlb_all();
 		return;
 	}
+<<<<<<< HEAD
 #endif /* __s390x__ */
+=======
+#endif /* CONFIG_64BIT */
+>>>>>>> refs/remotes/origin/master
 
 	dummy = 0;
 	reg2 = reg3 = 0;
@@ -59,6 +67,14 @@ static inline void __tlb_flush_full(struct mm_struct *mm)
 }
 #else
 #define __tlb_flush_full(mm)	__tlb_flush_local()
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define __tlb_flush_global()	__tlb_flush_local()
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __tlb_flush_global()	__tlb_flush_local()
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -78,21 +94,37 @@ static inline void __tlb_flush_mm(struct mm_struct * mm)
 	 * on all cpus instead of doing a local flush if the mm
 	 * only ran on the local cpu.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (MACHINE_HAS_IDTE)
+=======
+	if (MACHINE_HAS_IDTE && list_empty(&mm->context.gmap_list))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (MACHINE_HAS_IDTE && list_empty(&mm->context.gmap_list))
+>>>>>>> refs/remotes/origin/master
 		__tlb_flush_idte((unsigned long) mm->pgd |
 				 mm->context.asce_bits);
 	else
 		__tlb_flush_full(mm);
 }
 
+<<<<<<< HEAD
 static inline void __tlb_flush_mm_cond(struct mm_struct * mm)
 {
 	spin_lock(&mm->page_table_lock);
+=======
+static inline void __tlb_flush_mm_lazy(struct mm_struct * mm)
+{
+>>>>>>> refs/remotes/origin/master
 	if (mm->context.flush_mm) {
 		__tlb_flush_mm(mm);
 		mm->context.flush_mm = 0;
 	}
+<<<<<<< HEAD
 	spin_unlock(&mm->page_table_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -119,13 +151,21 @@ static inline void __tlb_flush_mm_cond(struct mm_struct * mm)
 
 static inline void flush_tlb_mm(struct mm_struct *mm)
 {
+<<<<<<< HEAD
 	__tlb_flush_mm_cond(mm);
+=======
+	__tlb_flush_mm_lazy(mm);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void flush_tlb_range(struct vm_area_struct *vma,
 				   unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	__tlb_flush_mm_cond(vma->vm_mm);
+=======
+	__tlb_flush_mm_lazy(vma->vm_mm);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void flush_tlb_kernel_range(unsigned long start,

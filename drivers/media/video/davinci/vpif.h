@@ -18,8 +18,12 @@
 
 #include <linux/io.h>
 #include <linux/videodev2.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/dm646x.h>
+=======
+#include <media/davinci/vpif_types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Maximum channel allowed */
 #define VPIF_NUM_CHANNELS		(4)

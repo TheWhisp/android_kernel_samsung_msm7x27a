@@ -35,7 +35,10 @@ static struct raw3270_fn con3270_fn;
  */
 struct con3270 {
 	struct raw3270_view view;
+<<<<<<< HEAD
 	spinlock_t lock;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head freemem;	/* list of free memory for strings. */
 
 	/* Output stuff. */

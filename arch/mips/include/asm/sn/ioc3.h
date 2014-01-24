@@ -62,8 +62,13 @@ struct ioc3_sioregs {
 
 	volatile u8		fill3[0x170 - 0x169 - 1];
 
+<<<<<<< HEAD
 	struct ioc3_uartregs    uartb;	/* 0x20170  */
 	struct ioc3_uartregs    uarta;	/* 0x20178  */
+=======
+	struct ioc3_uartregs	uartb;	/* 0x20170  */
+	struct ioc3_uartregs	uarta;	/* 0x20178  */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Register layout of IOC3 in configuration space.  */
@@ -106,7 +111,11 @@ struct ioc3 {
 	volatile u32	ppbr_l_b;	/* 0x00094  */
 	volatile u32	ppcr_b;		/* 0x00098  */
 
+<<<<<<< HEAD
 	/* Keyboard and Mouse Registers  */
+=======
+	/* Keyboard and Mouse Registers	 */
+>>>>>>> refs/remotes/origin/master
 	volatile u32	km_csr;		/* 0x0009c  */
 	volatile u32	k_rd;		/* 0x000a0  */
 	volatile u32	m_rd;		/* 0x000a4  */
@@ -208,7 +217,11 @@ struct ioc3_erxbuf {
 /*
  * Ethernet TX Descriptor
  */
+<<<<<<< HEAD
 #define ETXD_DATALEN    104
+=======
+#define ETXD_DATALEN	104
+>>>>>>> refs/remotes/origin/master
 struct ioc3_etxd {
 	u32	cmd;				/* command field */
 	u32	bufcnt;				/* buffer counts field */

@@ -30,23 +30,40 @@
 
 static int
 udp_conn_schedule(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
+<<<<<<< HEAD
 		  int *verdict, struct ip_vs_conn **cpp)
+=======
+		  int *verdict, struct ip_vs_conn **cpp,
+		  struct ip_vs_iphdr *iph)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net *net;
 	struct ip_vs_service *svc;
 	struct udphdr _udph, *uh;
+<<<<<<< HEAD
 	struct ip_vs_iphdr iph;
 
 	ip_vs_fill_iphdr(af, skb_network_header(skb), &iph);
 
 	uh = skb_header_pointer(skb, iph.len, sizeof(_udph), &_udph);
+=======
+
+	/* IPv6 fragments, only first fragment will hit this */
+	uh = skb_header_pointer(skb, iph->len, sizeof(_udph), &_udph);
+>>>>>>> refs/remotes/origin/master
 	if (uh == NULL) {
 		*verdict = NF_DROP;
 		return 0;
 	}
 	net = skb_net(skb);
+<<<<<<< HEAD
 	svc = ip_vs_service_get(net, af, skb->mark, iph.protocol,
 				&iph.daddr, uh->dest);
+=======
+	rcu_read_lock();
+	svc = ip_vs_service_find(net, af, skb->mark, iph->protocol,
+				 &iph->daddr, uh->dest);
+>>>>>>> refs/remotes/origin/master
 	if (svc) {
 		int ignored;
 
@@ -55,7 +72,11 @@ udp_conn_schedule(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
 			 * It seems that we are very loaded.
 			 * We have to drop this packet :(
 			 */
+<<<<<<< HEAD
 			ip_vs_service_put(svc);
+=======
+			rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 			*verdict = NF_DROP;
 			return 0;
 		}
@@ -64,6 +85,7 @@ udp_conn_schedule(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
 		 * Let the virtual server select a real server for the
 		 * incoming connection, and create a connection entry.
 		 */
+<<<<<<< HEAD
 		*cpp = ip_vs_schedule(svc, skb, pd, &ignored);
 		if (!*cpp && ignored <= 0) {
 			if (!ignored)
@@ -76,6 +98,19 @@ udp_conn_schedule(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
 		}
 		ip_vs_service_put(svc);
 	}
+=======
+		*cpp = ip_vs_schedule(svc, skb, pd, &ignored, iph);
+		if (!*cpp && ignored <= 0) {
+			if (!ignored)
+				*verdict = ip_vs_leave(svc, skb, pd, iph);
+			else
+				*verdict = NF_DROP;
+			rcu_read_unlock();
+			return 0;
+		}
+	}
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	/* NF_ACCEPT */
 	return 1;
 }
@@ -125,20 +160,34 @@ udp_partial_csum_update(int af, struct udphdr *uhdr,
 
 
 static int
+<<<<<<< HEAD
 udp_snat_handler(struct sk_buff *skb,
 		 struct ip_vs_protocol *pp, struct ip_vs_conn *cp)
 {
 	struct udphdr *udph;
 	unsigned int udphoff;
+=======
+udp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
+		 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph)
+{
+	struct udphdr *udph;
+	unsigned int udphoff = iph->len;
+>>>>>>> refs/remotes/origin/master
 	int oldlen;
 	int payload_csum = 0;
 
 #ifdef CONFIG_IP_VS_IPV6
+<<<<<<< HEAD
 	if (cp->af == AF_INET6)
 		udphoff = sizeof(struct ipv6hdr);
 	else
 #endif
 		udphoff = ip_hdrlen(skb);
+=======
+	if (cp->af == AF_INET6 && iph->fragoffs)
+		return 1;
+#endif
+>>>>>>> refs/remotes/origin/master
 	oldlen = skb->len - udphoff;
 
 	/* csum_check requires unshared skb */
@@ -210,20 +259,34 @@ udp_snat_handler(struct sk_buff *skb,
 
 
 static int
+<<<<<<< HEAD
 udp_dnat_handler(struct sk_buff *skb,
 		 struct ip_vs_protocol *pp, struct ip_vs_conn *cp)
 {
 	struct udphdr *udph;
 	unsigned int udphoff;
+=======
+udp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
+		 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph)
+{
+	struct udphdr *udph;
+	unsigned int udphoff = iph->len;
+>>>>>>> refs/remotes/origin/master
 	int oldlen;
 	int payload_csum = 0;
 
 #ifdef CONFIG_IP_VS_IPV6
+<<<<<<< HEAD
 	if (cp->af == AF_INET6)
 		udphoff = sizeof(struct ipv6hdr);
 	else
 #endif
 		udphoff = ip_hdrlen(skb);
+=======
+	if (cp->af == AF_INET6 && iph->fragoffs)
+		return 1;
+#endif
+>>>>>>> refs/remotes/origin/master
 	oldlen = skb->len - udphoff;
 
 	/* csum_check requires unshared skb */
@@ -364,19 +427,29 @@ static int udp_register_app(struct net *net, struct ip_vs_app *inc)
 
 	hash = udp_app_hashkey(port);
 
+<<<<<<< HEAD
 
 	spin_lock_bh(&ipvs->udp_app_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(i, &ipvs->udp_apps[hash], p_list) {
 		if (i->port == port) {
 			ret = -EEXIST;
 			goto out;
 		}
 	}
+<<<<<<< HEAD
 	list_add(&inc->p_list, &ipvs->udp_apps[hash]);
 	atomic_inc(&pd->appcnt);
 
   out:
 	spin_unlock_bh(&ipvs->udp_app_lock);
+=======
+	list_add_rcu(&inc->p_list, &ipvs->udp_apps[hash]);
+	atomic_inc(&pd->appcnt);
+
+  out:
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -385,12 +458,18 @@ static void
 udp_unregister_app(struct net *net, struct ip_vs_app *inc)
 {
 	struct ip_vs_proto_data *pd = ip_vs_proto_data_get(net, IPPROTO_UDP);
+<<<<<<< HEAD
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
 	spin_lock_bh(&ipvs->udp_app_lock);
 	atomic_dec(&pd->appcnt);
 	list_del(&inc->p_list);
 	spin_unlock_bh(&ipvs->udp_app_lock);
+=======
+
+	atomic_dec(&pd->appcnt);
+	list_del_rcu(&inc->p_list);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -408,12 +487,21 @@ static int udp_app_conn_bind(struct ip_vs_conn *cp)
 	/* Lookup application incarnations and bind the right one */
 	hash = udp_app_hashkey(cp->vport);
 
+<<<<<<< HEAD
 	spin_lock(&ipvs->udp_app_lock);
 	list_for_each_entry(inc, &ipvs->udp_apps[hash], p_list) {
 		if (inc->port == cp->vport) {
 			if (unlikely(!ip_vs_app_inc_get(inc)))
 				break;
 			spin_unlock(&ipvs->udp_app_lock);
+=======
+	rcu_read_lock();
+	list_for_each_entry_rcu(inc, &ipvs->udp_apps[hash], p_list) {
+		if (inc->port == cp->vport) {
+			if (unlikely(!ip_vs_app_inc_get(inc)))
+				break;
+			rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 			IP_VS_DBG_BUF(9, "%s(): Binding conn %s:%u->"
 				      "%s:%u to app %s on port %u\n",
@@ -430,7 +518,11 @@ static int udp_app_conn_bind(struct ip_vs_conn *cp)
 			goto out;
 		}
 	}
+<<<<<<< HEAD
 	spin_unlock(&ipvs->udp_app_lock);
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
   out:
 	return result;
@@ -454,13 +546,23 @@ static const char * udp_state_name(int state)
 	return udp_state_name_table[state] ? udp_state_name_table[state] : "?";
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int
+=======
+static void
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 udp_state_transition(struct ip_vs_conn *cp, int direction,
 		     const struct sk_buff *skb,
 		     struct ip_vs_proto_data *pd)
 {
 	if (unlikely(!pd)) {
 		pr_err("UDP no ns data\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 	}
 
@@ -469,13 +571,41 @@ udp_state_transition(struct ip_vs_conn *cp, int direction,
 }
 
 static void __udp_init(struct net *net, struct ip_vs_proto_data *pd)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		return;
+	}
+
+	cp->timeout = pd->timeout_table[IP_VS_UDP_S_NORMAL];
+}
+
+static int __udp_init(struct net *net, struct ip_vs_proto_data *pd)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
 	ip_vs_init_hash_table(ipvs->udp_apps, UDP_APP_TAB_SIZE);
+<<<<<<< HEAD
 	spin_lock_init(&ipvs->udp_app_lock);
 	pd->timeout_table = ip_vs_create_timeout_table((int *)udp_timeouts,
 							sizeof(udp_timeouts));
+<<<<<<< HEAD
+=======
+	if (!pd->timeout_table)
+		return -ENOMEM;
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pd->timeout_table = ip_vs_create_timeout_table((int *)udp_timeouts,
+							sizeof(udp_timeouts));
+	if (!pd->timeout_table)
+		return -ENOMEM;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __udp_exit(struct net *net, struct ip_vs_proto_data *pd)

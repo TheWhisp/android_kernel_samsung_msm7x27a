@@ -29,6 +29,7 @@ static int min_proto[1],		max_proto[] = { AX25_PROTO_MAX };
 static int min_ds_timeout[1],		max_ds_timeout[] = {65535000};
 #endif
 
+<<<<<<< HEAD
 static struct ctl_table_header *ax25_table_header;
 
 static ctl_table *ax25_table;
@@ -41,6 +42,9 @@ static struct ctl_path ax25_path[] = {
 };
 
 static const ctl_table ax25_param_table[] = {
+=======
+static const struct ctl_table ax25_param_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "ip_default_mode",
 		.maxlen		= sizeof(int),
@@ -159,6 +163,7 @@ static const ctl_table ax25_param_table[] = {
 	{ }	/* that's all, folks! */
 };
 
+<<<<<<< HEAD
 void ax25_register_sysctl(void)
 {
 	ax25_dev *ax25_dev;
@@ -207,4 +212,39 @@ void ax25_unregister_sysctl(void)
 	for (p = ax25_table; p->procname; p++)
 		kfree(p->child);
 	kfree(ax25_table);
+=======
+int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
+{
+	char path[sizeof("net/ax25/") + IFNAMSIZ];
+	int k;
+	struct ctl_table *table;
+
+	table = kmemdup(ax25_param_table, sizeof(ax25_param_table), GFP_KERNEL);
+	if (!table)
+		return -ENOMEM;
+
+	for (k = 0; k < AX25_MAX_VALUES; k++)
+		table[k].data = &ax25_dev->values[k];
+
+	snprintf(path, sizeof(path), "net/ax25/%s", ax25_dev->dev->name);
+	ax25_dev->sysheader = register_net_sysctl(&init_net, path, table);
+	if (!ax25_dev->sysheader) {
+		kfree(table);
+		return -ENOMEM;
+	}
+	return 0;
+}
+
+void ax25_unregister_dev_sysctl(ax25_dev *ax25_dev)
+{
+	struct ctl_table_header *header = ax25_dev->sysheader;
+	struct ctl_table *table;
+
+	if (header) {
+		ax25_dev->sysheader = NULL;
+		table = header->ctl_table_arg;
+		unregister_net_sysctl_table(header);
+		kfree(table);
+	}
+>>>>>>> refs/remotes/origin/master
 }

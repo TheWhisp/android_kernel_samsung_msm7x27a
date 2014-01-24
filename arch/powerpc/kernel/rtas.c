@@ -15,15 +15,40 @@
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/capability.h>
 #include <linux/delay.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/export.h>
+#include <linux/init.h>
+#include <linux/capability.h>
+#include <linux/delay.h>
+#include <linux/cpu.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <linux/smp.h>
 #include <linux/completion.h>
 #include <linux/cpumask.h>
 #include <linux/memblock.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/prom.h>
 #include <asm/rtas.h>
@@ -32,17 +57,34 @@
 #include <asm/firmware.h>
 #include <asm/page.h>
 #include <asm/param.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/delay.h>
 #include <asm/uaccess.h>
 #include <asm/udbg.h>
 #include <asm/syscalls.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/mmu.h>
 #include <asm/topology.h>
 #include <asm/pSeries_reconfig.h>
+=======
+#include <linux/atomic.h>
+#include <asm/time.h>
+#include <asm/mmu.h>
+#include <asm/topology.h>
+>>>>>>> refs/remotes/origin/master
 
 struct rtas_t rtas = {
 	.lock = __ARCH_SPIN_LOCK_UNLOCKED
@@ -91,7 +133,11 @@ static void unlock_rtas(unsigned long flags)
  * are designed only for very early low-level debugging, which
  * is why the token is hard-coded to 10.
  */
+<<<<<<< HEAD
 static void call_rtas_display_status(char c)
+=======
+static void call_rtas_display_status(unsigned char c)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtas_args *args = &rtas.args;
 	unsigned long s;
@@ -100,11 +146,19 @@ static void call_rtas_display_status(char c)
 		return;
 	s = lock_rtas();
 
+<<<<<<< HEAD
 	args->token = 10;
 	args->nargs = 1;
 	args->nret  = 1;
 	args->rets  = (rtas_arg_t *)&(args->args[1]);
 	args->args[0] = (unsigned char)c;
+=======
+	args->token = cpu_to_be32(10);
+	args->nargs = cpu_to_be32(1);
+	args->nret  = cpu_to_be32(1);
+	args->rets  = &(args->args[1]);
+	args->args[0] = cpu_to_be32(c);
+>>>>>>> refs/remotes/origin/master
 
 	enter_rtas(__pa(args));
 
@@ -204,7 +258,11 @@ void rtas_progress(char *s, unsigned short hex)
 {
 	struct device_node *root;
 	int width;
+<<<<<<< HEAD
 	const int *p;
+=======
+	const __be32 *p;
+>>>>>>> refs/remotes/origin/master
 	char *os;
 	static int display_character, set_indicator;
 	static int display_width, display_lines, form_feed;
@@ -221,6 +279,7 @@ void rtas_progress(char *s, unsigned short hex)
 		if ((root = of_find_node_by_path("/rtas"))) {
 			if ((p = of_get_property(root,
 					"ibm,display-line-length", NULL)))
+<<<<<<< HEAD
 				display_width = *p;
 			if ((p = of_get_property(root,
 					"ibm,form-feed", NULL)))
@@ -228,6 +287,15 @@ void rtas_progress(char *s, unsigned short hex)
 			if ((p = of_get_property(root,
 					"ibm,display-number-of-lines", NULL)))
 				display_lines = *p;
+=======
+				display_width = be32_to_cpu(*p);
+			if ((p = of_get_property(root,
+					"ibm,form-feed", NULL)))
+				form_feed = be32_to_cpu(*p);
+			if ((p = of_get_property(root,
+					"ibm,display-number-of-lines", NULL)))
+				display_lines = be32_to_cpu(*p);
+>>>>>>> refs/remotes/origin/master
 			row_width = of_get_property(root,
 					"ibm,display-truncation-length", NULL);
 			of_node_put(root);
@@ -322,11 +390,19 @@ EXPORT_SYMBOL(rtas_progress);		/* needed by rtas_flash module */
 
 int rtas_token(const char *service)
 {
+<<<<<<< HEAD
 	const int *tokp;
 	if (rtas.dev == NULL)
 		return RTAS_UNKNOWN_SERVICE;
 	tokp = of_get_property(rtas.dev, service, NULL);
 	return tokp ? *tokp : RTAS_UNKNOWN_SERVICE;
+=======
+	const __be32 *tokp;
+	if (rtas.dev == NULL)
+		return RTAS_UNKNOWN_SERVICE;
+	tokp = of_get_property(rtas.dev, service, NULL);
+	return tokp ? be32_to_cpu(*tokp) : RTAS_UNKNOWN_SERVICE;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(rtas_token);
 
@@ -380,11 +456,19 @@ static char *__fetch_rtas_last_error(char *altbuf)
 
 	bufsz = rtas_get_error_log_max();
 
+<<<<<<< HEAD
 	err_args.token = rtas_last_error_token;
 	err_args.nargs = 2;
 	err_args.nret = 1;
 	err_args.args[0] = (rtas_arg_t)__pa(rtas_err_buf);
 	err_args.args[1] = bufsz;
+=======
+	err_args.token = cpu_to_be32(rtas_last_error_token);
+	err_args.nargs = cpu_to_be32(2);
+	err_args.nret = cpu_to_be32(1);
+	err_args.args[0] = cpu_to_be32(__pa(rtas_err_buf));
+	err_args.args[1] = cpu_to_be32(bufsz);
+>>>>>>> refs/remotes/origin/master
 	err_args.args[2] = 0;
 
 	save_args = rtas.args;
@@ -433,6 +517,7 @@ int rtas_call(int token, int nargs, int nret, int *outputs, ...)
 	s = lock_rtas();
 	rtas_args = &rtas.args;
 
+<<<<<<< HEAD
 	rtas_args->token = token;
 	rtas_args->nargs = nargs;
 	rtas_args->nret  = nret;
@@ -440,6 +525,15 @@ int rtas_call(int token, int nargs, int nret, int *outputs, ...)
 	va_start(list, outputs);
 	for (i = 0; i < nargs; ++i)
 		rtas_args->args[i] = va_arg(list, rtas_arg_t);
+=======
+	rtas_args->token = cpu_to_be32(token);
+	rtas_args->nargs = cpu_to_be32(nargs);
+	rtas_args->nret  = cpu_to_be32(nret);
+	rtas_args->rets  = &(rtas_args->args[nargs]);
+	va_start(list, outputs);
+	for (i = 0; i < nargs; ++i)
+		rtas_args->args[i] = cpu_to_be32(va_arg(list, __u32));
+>>>>>>> refs/remotes/origin/master
 	va_end(list);
 
 	for (i = 0; i < nret; ++i)
@@ -449,13 +543,22 @@ int rtas_call(int token, int nargs, int nret, int *outputs, ...)
 
 	/* A -1 return code indicates that the last command couldn't
 	   be completed due to a hardware error. */
+<<<<<<< HEAD
 	if (rtas_args->rets[0] == -1)
+=======
+	if (be32_to_cpu(rtas_args->rets[0]) == -1)
+>>>>>>> refs/remotes/origin/master
 		buff_copy = __fetch_rtas_last_error(NULL);
 
 	if (nret > 1 && outputs != NULL)
 		for (i = 0; i < nret-1; ++i)
+<<<<<<< HEAD
 			outputs[i] = rtas_args->rets[i+1];
 	ret = (nret > 0)? rtas_args->rets[0]: 0;
+=======
+			outputs[i] = be32_to_cpu(rtas_args->rets[i+1]);
+	ret = (nret > 0)? be32_to_cpu(rtas_args->rets[0]): 0;
+>>>>>>> refs/remotes/origin/master
 
 	unlock_rtas(s);
 
@@ -588,8 +691,13 @@ bool rtas_indicator_present(int token, int *maxindex)
 {
 	int proplen, count, i;
 	const struct indicator_elem {
+<<<<<<< HEAD
 		u32 token;
 		u32 maxindex;
+=======
+		__be32 token;
+		__be32 maxindex;
+>>>>>>> refs/remotes/origin/master
 	} *indicators;
 
 	indicators = of_get_property(rtas.dev, "rtas-indicators", &proplen);
@@ -599,10 +707,17 @@ bool rtas_indicator_present(int token, int *maxindex)
 	count = proplen / sizeof(struct indicator_elem);
 
 	for (i = 0; i < count; i++) {
+<<<<<<< HEAD
 		if (indicators[i].token != token)
 			continue;
 		if (maxindex)
 			*maxindex = indicators[i].maxindex;
+=======
+		if (__be32_to_cpu(indicators[i].token) != token)
+			continue;
+		if (maxindex)
+			*maxindex = __be32_to_cpu(indicators[i].maxindex);
+>>>>>>> refs/remotes/origin/master
 		return true;
 	}
 
@@ -715,7 +830,13 @@ static int __rtas_suspend_last_cpu(struct rtas_suspend_me_data *data, int wake_w
 	int cpu;
 
 	slb_set_size(SLB_MIN_SIZE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	stop_topology_update();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_DEBUG "calling ibm,suspend-me on cpu %i\n", smp_processor_id());
 
 	while (rc == H_MULTI_THREADS_ACTIVE && !atomic_read(&data->done) &&
@@ -731,7 +852,13 @@ static int __rtas_suspend_last_cpu(struct rtas_suspend_me_data *data, int wake_w
 		rc = atomic_read(&data->error);
 
 	atomic_set(&data->error, rc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	start_topology_update();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pSeries_coalesce_init();
 
 	if (wake_when_done) {
@@ -810,6 +937,110 @@ static void rtas_percpu_suspend_me(void *info)
 	__rtas_suspend_cpu((struct rtas_suspend_me_data *)info, 1);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+enum rtas_cpu_state {
+	DOWN,
+	UP,
+};
+
+#ifndef CONFIG_SMP
+static int rtas_cpu_state_change_mask(enum rtas_cpu_state state,
+				cpumask_var_t cpus)
+{
+	if (!cpumask_empty(cpus)) {
+		cpumask_clear(cpus);
+		return -EINVAL;
+	} else
+		return 0;
+}
+#else
+/* On return cpumask will be altered to indicate CPUs changed.
+ * CPUs with states changed will be set in the mask,
+ * CPUs with status unchanged will be unset in the mask. */
+static int rtas_cpu_state_change_mask(enum rtas_cpu_state state,
+				cpumask_var_t cpus)
+{
+	int cpu;
+	int cpuret = 0;
+	int ret = 0;
+
+	if (cpumask_empty(cpus))
+		return 0;
+
+	for_each_cpu(cpu, cpus) {
+		switch (state) {
+		case DOWN:
+			cpuret = cpu_down(cpu);
+			break;
+		case UP:
+			cpuret = cpu_up(cpu);
+			break;
+		}
+		if (cpuret) {
+			pr_debug("%s: cpu_%s for cpu#%d returned %d.\n",
+					__func__,
+					((state == UP) ? "up" : "down"),
+					cpu, cpuret);
+			if (!ret)
+				ret = cpuret;
+			if (state == UP) {
+				/* clear bits for unchanged cpus, return */
+				cpumask_shift_right(cpus, cpus, cpu);
+				cpumask_shift_left(cpus, cpus, cpu);
+				break;
+			} else {
+				/* clear bit for unchanged cpu, continue */
+				cpumask_clear_cpu(cpu, cpus);
+			}
+		}
+	}
+
+	return ret;
+}
+#endif
+
+int rtas_online_cpus_mask(cpumask_var_t cpus)
+{
+	int ret;
+
+	ret = rtas_cpu_state_change_mask(UP, cpus);
+
+	if (ret) {
+		cpumask_var_t tmp_mask;
+
+		if (!alloc_cpumask_var(&tmp_mask, GFP_TEMPORARY))
+			return ret;
+
+		/* Use tmp_mask to preserve cpus mask from first failure */
+		cpumask_copy(tmp_mask, cpus);
+		rtas_offline_cpus_mask(tmp_mask);
+		free_cpumask_var(tmp_mask);
+	}
+
+	return ret;
+}
+EXPORT_SYMBOL(rtas_online_cpus_mask);
+
+int rtas_offline_cpus_mask(cpumask_var_t cpus)
+{
+	return rtas_cpu_state_change_mask(DOWN, cpus);
+}
+EXPORT_SYMBOL(rtas_offline_cpus_mask);
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 int rtas_ibm_suspend_me(struct rtas_args *args)
 {
 	long state;
@@ -817,6 +1048,21 @@ int rtas_ibm_suspend_me(struct rtas_args *args)
 	unsigned long retbuf[PLPAR_HCALL_BUFSIZE];
 	struct rtas_suspend_me_data data;
 	DECLARE_COMPLETION_ONSTACK(done);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cpumask_var_t offline_mask;
+	int cpuret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpumask_var_t offline_mask;
+	int cpuret;
+>>>>>>> refs/remotes/origin/master
+=======
+	cpumask_var_t offline_mask;
+	int cpuret;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	if (!rtas_service_present("ibm,suspend-me"))
 		return -ENOSYS;
@@ -840,12 +1086,53 @@ int rtas_ibm_suspend_me(struct rtas_args *args)
 		return 0;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!alloc_cpumask_var(&offline_mask, GFP_TEMPORARY))
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!alloc_cpumask_var(&offline_mask, GFP_TEMPORARY))
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
+=======
+	if (!alloc_cpumask_var(&offline_mask, GFP_TEMPORARY))
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&data.working, 0);
 	atomic_set(&data.done, 0);
 	atomic_set(&data.error, 0);
 	data.token = rtas_token("ibm,suspend-me");
 	data.complete = &done;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* All present CPUs must be online */
+	cpumask_andnot(offline_mask, cpu_present_mask, cpu_online_mask);
+	cpuret = rtas_online_cpus_mask(offline_mask);
+	if (cpuret) {
+		pr_err("%s: Could not bring present CPUs online.\n", __func__);
+		atomic_set(&data.error, cpuret);
+		goto out;
+	}
+
+	stop_topology_update();
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Call function on all CPUs.  One of us will make the
 	 * rtas call
 	 */
@@ -857,6 +1144,28 @@ int rtas_ibm_suspend_me(struct rtas_args *args)
 	if (atomic_read(&data.error) != 0)
 		printk(KERN_ERR "Error doing global join\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	start_topology_update();
+
+	/* Take down CPUs not online prior to suspend */
+	cpuret = rtas_offline_cpus_mask(offline_mask);
+	if (cpuret)
+		pr_warn("%s: Could not restore CPUs to offline state.\n",
+				__func__);
+
+out:
+	free_cpumask_var(offline_mask);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return atomic_read(&data.error);
 }
 #else /* CONFIG_PPC_PSERIES */
@@ -866,6 +1175,49 @@ int rtas_ibm_suspend_me(struct rtas_args *args)
 }
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * Find a specific pseries error log in an RTAS extended event log.
+ * @log: RTAS error/event log
+ * @section_id: two character section identifier
+ *
+ * Returns a pointer to the specified errorlog or NULL if not found.
+ */
+struct pseries_errorlog *get_pseries_errorlog(struct rtas_error_log *log,
+					      uint16_t section_id)
+{
+	struct rtas_ext_event_log_v6 *ext_log =
+		(struct rtas_ext_event_log_v6 *)log->buffer;
+	struct pseries_errorlog *sect;
+	unsigned char *p, *log_end;
+
+	/* Check that we understand the format */
+	if (log->extended_log_length < sizeof(struct rtas_ext_event_log_v6) ||
+	    ext_log->log_format != RTAS_V6EXT_LOG_FORMAT_EVENT_LOG ||
+	    ext_log->company_id != RTAS_V6EXT_COMPANY_ID_IBM)
+		return NULL;
+
+	log_end = log->buffer + log->extended_log_length;
+	p = ext_log->vendor_log;
+
+	while (p < log_end) {
+		sect = (struct pseries_errorlog *)p;
+		if (sect->id == section_id)
+			return sect;
+		p += sect->length;
+	}
+
+	return NULL;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage int ppc_rtas(struct rtas_args __user *uargs)
 {
 	struct rtas_args args;
@@ -950,19 +1302,32 @@ void __init rtas_initialize(void)
 	 */
 	rtas.dev = of_find_node_by_name(NULL, "rtas");
 	if (rtas.dev) {
+<<<<<<< HEAD
 		const u32 *basep, *entryp, *sizep;
+=======
+		const __be32 *basep, *entryp, *sizep;
+>>>>>>> refs/remotes/origin/master
 
 		basep = of_get_property(rtas.dev, "linux,rtas-base", NULL);
 		sizep = of_get_property(rtas.dev, "rtas-size", NULL);
 		if (basep != NULL && sizep != NULL) {
+<<<<<<< HEAD
 			rtas.base = *basep;
 			rtas.size = *sizep;
+=======
+			rtas.base = __be32_to_cpu(*basep);
+			rtas.size = __be32_to_cpu(*sizep);
+>>>>>>> refs/remotes/origin/master
 			entryp = of_get_property(rtas.dev,
 					"linux,rtas-entry", NULL);
 			if (entryp == NULL) /* Ugh */
 				rtas.entry = rtas.base;
 			else
+<<<<<<< HEAD
 				rtas.entry = *entryp;
+=======
+				rtas.entry = __be32_to_cpu(*entryp);
+>>>>>>> refs/remotes/origin/master
 		} else
 			rtas.dev = NULL;
 	}
@@ -1025,7 +1390,11 @@ int __init early_init_dt_scan_rtas(unsigned long node,
 static arch_spinlock_t timebase_lock;
 static u64 timebase = 0;
 
+<<<<<<< HEAD
 void __cpuinit rtas_give_timebase(void)
+=======
+void rtas_give_timebase(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -1042,7 +1411,11 @@ void __cpuinit rtas_give_timebase(void)
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
 void __cpuinit rtas_take_timebase(void)
+=======
+void rtas_take_timebase(void)
+>>>>>>> refs/remotes/origin/master
 {
 	while (!timebase)
 		barrier();

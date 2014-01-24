@@ -9,11 +9,21 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /dts-v1/;
+=======
+/include/ "fsl/mpc8569si-pre.dtsi"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/include/ "fsl/mpc8569si-pre.dtsi"
+>>>>>>> refs/remotes/origin/master
 
 / {
 	model = "MPC8569EMDS";
 	compatible = "fsl,MPC8569EMDS";
+<<<<<<< HEAD
+<<<<<<< HEAD
 	#address-cells = <1>;
 	#size-cells = <1>;
 
@@ -22,10 +32,24 @@
 		serial1 = &serial1;
 		ethernet0 = &enet0;
 		ethernet1 = &enet1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	#address-cells = <2>;
+	#size-cells = <2>;
+	interrupt-parent = <&mpic>;
+
+	aliases {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ethernet2 = &enet2;
 		ethernet3 = &enet3;
 		ethernet5 = &enet5;
 		ethernet7 = &enet7;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pci1 = &pci1;
 		rapidio0 = &rio0;
 	};
@@ -48,12 +72,20 @@
 			clock-frequency = <0>;
 			next-level-cache = <&L2>;
 		};
+=======
+		rapidio0 = &rio;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rapidio0 = &rio;
+>>>>>>> refs/remotes/origin/master
 	};
 
 	memory {
 		device_type = "memory";
 	};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	localbus@e0005000 {
 		#address-cells = <2>;
 		#size-cells = <1>;
@@ -69,6 +101,22 @@
 			  0x3 0x0 0xfc000000 0x00008000
 			  0x4 0x0 0xf8008000 0x00008000
 			  0x5 0x0 0xf8010000 0x00008000>;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	lbc: localbus@e0005000 {
+		reg = <0x0 0xe0005000 0x0 0x1000>;
+
+		ranges = <0x0 0x0 0x0 0xfe000000 0x02000000
+			  0x1 0x0 0x0 0xf8000000 0x00008000
+			  0x2 0x0 0x0 0xf0000000 0x04000000
+			  0x3 0x0 0x0 0xfc000000 0x00008000
+			  0x4 0x0 0x0 0xf8008000 0x00008000
+			  0x5 0x0 0x0 0xf8010000 0x00008000>;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		nor@0,0 {
 			#address-cells = <1>;
@@ -133,6 +181,8 @@
 		};
 	};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	soc@e0000000 {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -284,10 +334,30 @@
 			sleep = <&pmc 0x00200000>;
 			/* Filled in by U-Boot */
 			clock-frequency = <0>;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	soc: soc@e0000000 {
+		ranges = <0x0 0x0 0xe0000000 0x100000>;
+
+		i2c-sleep-nexus {
+			i2c@3000 {
+				rtc@68 {
+					compatible = "dallas,ds1374";
+					reg = <0x68>;
+					interrupts = <3 1 0 0>;
+				};
+			};
+		};
+
+		sdhc@2e000 {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 			status = "disabled";
 			sdhci,1-bit-only;
 		};
 
+<<<<<<< HEAD
 		crypto@30000 {
 			compatible = "fsl,sec3.1", "fsl,sec3.0", "fsl,sec2.4",
 				"fsl,sec2.2", "fsl,sec2.1", "fsl,sec2.0";
@@ -347,6 +417,17 @@
 			reg = <0xe0100 0x100>;
 			ranges = <0x0 0xe0100 0x100>;
 			device_type = "par_io";
+=======
+		par_io@e0100 {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			status = "disabled";
+			sdhci,1-bit-only;
+			bus-width = <1>;
+		};
+
+		par_io@e0100 {
+>>>>>>> refs/remotes/origin/master
 			num-ports = <7>;
 
 			qe_pio_e: gpio-controller@80 {
@@ -447,6 +528,8 @@
 		};
 	};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	qe@e0080000 {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -488,6 +571,18 @@
 			cell-index = <0>;
 			interrupts = <2>;
 			interrupt-parent = <&qeic>;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	qe: qe@e0080000 {
+		ranges = <0x0 0x0 0xe0080000 0x40000>;
+		reg = <0x0 0xe0080000 0x0 0x480>;
+
+		spi@4c0 {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			gpios = <&qe_pio_e 30 0>;
 			mode = "cpu-qe";
 
@@ -499,20 +594,32 @@
 		};
 
 		spi@500 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			cell-index = <1>;
 			compatible = "fsl,spi";
 			reg = <0x500 0x40>;
 			interrupts = <1>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			mode = "cpu";
 		};
 
 		usb@6c0 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			compatible = "fsl,mpc8569-qe-usb",
 				     "fsl,mpc8323-qe-usb";
 			reg = <0x6c0 0x40 0x8b00 0x100>;
 			interrupts = <11>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			fsl,fullspeed-clock = "clk5";
 			fsl,lowspeed-clock = "brg10";
 			gpios = <&qe_pio_f 3 0   /* USBOE */
@@ -527,10 +634,16 @@
 		enet0: ucc@2000 {
 			device_type = "network";
 			compatible = "ucc_geth";
+<<<<<<< HEAD
+<<<<<<< HEAD
 			cell-index = <1>;
 			reg = <0x2000 0x200>;
 			interrupts = <32>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			rx-clock-name = "none";
 			tx-clock-name = "clk12";
@@ -548,35 +661,79 @@
 
 			qe_phy0: ethernet-phy@07 {
 				interrupt-parent = <&mpic>;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				interrupts = <1 1>;
+=======
+				interrupts = <1 1 0 0>;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				interrupts = <1 1 0 0>;
+>>>>>>> refs/remotes/origin/master
 				reg = <0x7>;
 				device_type = "ethernet-phy";
 			};
 			qe_phy1: ethernet-phy@01 {
 				interrupt-parent = <&mpic>;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				interrupts = <2 1>;
+=======
+				interrupts = <2 1 0 0>;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				interrupts = <2 1 0 0>;
+>>>>>>> refs/remotes/origin/master
 				reg = <0x1>;
 				device_type = "ethernet-phy";
 			};
 			qe_phy2: ethernet-phy@02 {
 				interrupt-parent = <&mpic>;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				interrupts = <3 1>;
+=======
+				interrupts = <3 1 0 0>;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				interrupts = <3 1 0 0>;
+>>>>>>> refs/remotes/origin/master
 				reg = <0x2>;
 				device_type = "ethernet-phy";
 			};
 			qe_phy3: ethernet-phy@03 {
 				interrupt-parent = <&mpic>;
+<<<<<<< HEAD
+<<<<<<< HEAD
 				interrupts = <4 1>;
+=======
+				interrupts = <4 1 0 0>;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				interrupts = <4 1 0 0>;
+>>>>>>> refs/remotes/origin/master
 				reg = <0x3>;
 				device_type = "ethernet-phy";
 			};
 			qe_phy5: ethernet-phy@04 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				interrupt-parent = <&mpic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				reg = <0x04>;
 				device_type = "ethernet-phy";
 			};
 			qe_phy7: ethernet-phy@06 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				interrupt-parent = <&mpic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				reg = <0x6>;
 				device_type = "ethernet-phy";
 			};
@@ -610,10 +767,16 @@
 		enet2: ucc@2200 {
 			device_type = "network";
 			compatible = "ucc_geth";
+<<<<<<< HEAD
+<<<<<<< HEAD
 			cell-index = <3>;
 			reg = <0x2200 0x200>;
 			interrupts = <34>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			rx-clock-name = "none";
 			tx-clock-name = "clk12";
@@ -637,10 +800,16 @@
 		enet1: ucc@3000 {
 			device_type = "network";
 			compatible = "ucc_geth";
+<<<<<<< HEAD
+<<<<<<< HEAD
 			cell-index = <2>;
 			reg = <0x3000 0x200>;
 			interrupts = <33>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			rx-clock-name = "none";
 			tx-clock-name = "clk17";
@@ -664,10 +833,16 @@
 		enet3: ucc@3200 {
 			device_type = "network";
 			compatible = "ucc_geth";
+<<<<<<< HEAD
+<<<<<<< HEAD
 			cell-index = <4>;
 			reg = <0x3200 0x200>;
 			interrupts = <35>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			rx-clock-name = "none";
 			tx-clock-name = "clk17";
@@ -691,10 +866,16 @@
 		enet5: ucc@3400 {
 			device_type = "network";
 			compatible = "ucc_geth";
+<<<<<<< HEAD
+<<<<<<< HEAD
 			cell-index = <6>;
 			reg = <0x3400 0x200>;
 			interrupts = <41>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			rx-clock-name = "none";
 			tx-clock-name = "none";
@@ -706,10 +887,16 @@
 		enet7: ucc@3600 {
 			device_type = "network";
 			compatible = "ucc_geth";
+<<<<<<< HEAD
+<<<<<<< HEAD
 			cell-index = <8>;
 			reg = <0x3600 0x200>;
 			interrupts = <43>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			rx-clock-name = "none";
 			tx-clock-name = "none";
@@ -717,6 +904,8 @@
 			phy-handle = <&qe_phy7>;
 			phy-connection-type = "sgmii";
 		};
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		muram@10000 {
 			#address-cells = <1>;
@@ -731,10 +920,16 @@
 			};
 		};
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* PCI Express */
 	pci1: pcie@e000a000 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		compatible = "fsl,mpc8548-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
@@ -761,6 +956,17 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		reg = <0x0 0xe000a000 0x0 0x1000>;
+		ranges = <0x2000000 0x0 0xa0000000 0 0xa0000000 0x0 0x10000000
+			  0x1000000 0x0 0x00000000 0 0xe2800000 0x0 0x00800000>;
+		pcie@0 {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ranges = <0x2000000 0x0 0xa0000000
 				  0x2000000 0x0 0xa0000000
 				  0x0 0x10000000
@@ -771,6 +977,8 @@
 		};
 	};
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rio0: rapidio@e00c00000 {
 		#address-cells = <2>;
 		#size-cells = <2>;
@@ -788,3 +996,22 @@
 		sleep = <&pmc 0x00080000>;
 	};
 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rio: rapidio@e00c00000 {
+		reg = <0x0 0xe00c0000 0x0 0x20000>;
+		port1 {
+			ranges = <0x0 0x0 0x0 0xc0000000 0x0 0x20000000>;
+		};
+		port2 {
+			status = "disabled";
+		};
+	};
+};
+
+/include/ "fsl/mpc8569si-post.dtsi"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -155,7 +155,11 @@ u32 fhci_create_ep(struct fhci_usb *usb, enum fhci_mem_alloc data_mem,
 	struct endpoint *ep;
 	struct usb_td __iomem *td;
 	unsigned long ep_offset;
+<<<<<<< HEAD
 	char *err_for = "enpoint PRAM";
+=======
+	char *err_for = "endpoint PRAM";
+>>>>>>> refs/remotes/origin/master
 	int ep_mem_size;
 	u32 i;
 
@@ -249,7 +253,11 @@ void fhci_init_ep_registers(struct fhci_usb *usb, struct endpoint *ep,
 	u8 rt;
 
 	/* set the endpoint registers according to the endpoint */
+<<<<<<< HEAD
 	out_be16(&usb->fhci->regs->usb_ep[0],
+=======
+	out_be16(&usb->fhci->regs->usb_usep[0],
+>>>>>>> refs/remotes/origin/master
 		 USB_TRANS_CTR | USB_EP_MF | USB_EP_RTE);
 	out_be16(&usb->fhci->pram->ep_ptr[0],
 		 cpm_muram_offset(ep->ep_pram_ptr));
@@ -463,7 +471,11 @@ u32 fhci_host_transaction(struct fhci_usb *usb,
 	cq_put(&ep->conf_frame_Q, pkt);
 
 	if (cq_howmany(&ep->conf_frame_Q) == 1)
+<<<<<<< HEAD
 		out_8(&usb->fhci->regs->usb_comm, USB_CMD_STR_FIFO);
+=======
+		out_8(&usb->fhci->regs->usb_uscom, USB_CMD_STR_FIFO);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -535,8 +547,13 @@ void fhci_flush_actual_frame(struct fhci_usb *usb)
 	struct endpoint *ep = usb->ep0;
 
 	/* disable the USB controller */
+<<<<<<< HEAD
 	mode = in_8(&usb->fhci->regs->usb_mod);
 	out_8(&usb->fhci->regs->usb_mod, mode & ~USB_MODE_EN);
+=======
+	mode = in_8(&usb->fhci->regs->usb_usmod);
+	out_8(&usb->fhci->regs->usb_usmod, mode & ~USB_MODE_EN);
+>>>>>>> refs/remotes/origin/master
 
 	tb_ptr = in_be16(&ep->ep_pram_ptr->tx_bd_ptr);
 	td = cpm_muram_addr(tb_ptr);
@@ -571,9 +588,15 @@ void fhci_flush_actual_frame(struct fhci_usb *usb)
 	usb->actual_frame->frame_status = FRAME_TIMER_END_TRANSMISSION;
 
 	/* reset the event register */
+<<<<<<< HEAD
 	out_be16(&usb->fhci->regs->usb_event, 0xffff);
 	/* enable the USB controller */
 	out_8(&usb->fhci->regs->usb_mod, mode | USB_MODE_EN);
+=======
+	out_be16(&usb->fhci->regs->usb_usber, 0xffff);
+	/* enable the USB controller */
+	out_8(&usb->fhci->regs->usb_usmod, mode | USB_MODE_EN);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* handles Tx confirm and Tx error interrupt */
@@ -613,7 +636,11 @@ void fhci_host_transmit_actual_frame(struct fhci_usb *usb)
 
 		/* start transmit only if we have something in the TDs */
 		if (in_be16(&td->status) & TD_R)
+<<<<<<< HEAD
 			out_8(&usb->fhci->regs->usb_comm, USB_CMD_STR_FIFO);
+=======
+			out_8(&usb->fhci->regs->usb_uscom, USB_CMD_STR_FIFO);
+>>>>>>> refs/remotes/origin/master
 
 		if (in_be32(&ep->conf_td->buf_ptr) == DUMMY_BD_BUFFER) {
 			out_be32(&old_td->buf_ptr, 0);

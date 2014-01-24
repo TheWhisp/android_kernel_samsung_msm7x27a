@@ -11,6 +11,14 @@
  *
  */
 #include <linux/clk.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <mach/clk.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/clk.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "msm_fb.h"
 #include "mdp.h"
 #include "mdp4.h"
@@ -749,6 +757,19 @@ void hdmi_msm_reset_core(void)
 	hdmi_msm_clk(0);
 	udelay(5);
 	hdmi_msm_clk(1);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	clk_reset(hdmi_msm_state->hdmi_app_clk, CLK_RESET_ASSERT);
+	udelay(20);
+	clk_reset(hdmi_msm_state->hdmi_app_clk, CLK_RESET_DEASSERT);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void hdmi_msm_init_phy(int video_format)

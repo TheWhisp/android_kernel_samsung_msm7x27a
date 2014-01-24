@@ -34,8 +34,13 @@
  * the same DMA mappings?
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "via_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/via_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "via_drv.h"
 #include "via_dmablit.h"
 

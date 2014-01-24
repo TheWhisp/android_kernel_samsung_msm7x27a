@@ -124,6 +124,7 @@ struct dtsplit {
 #define DT_PAGE(IP, MP) BT_PAGE(IP, MP, dtpage_t, i_dtroot)
 
 /* get page buffer for specified block address */
+<<<<<<< HEAD
 #define DT_GETPAGE(IP, BN, MP, SIZE, P, RC)\
 {\
 	BT_GETPAGE(IP, BN, MP, dtpage_t, SIZE, P, RC, i_dtroot)\
@@ -139,6 +140,23 @@ struct dtsplit {
 		}\
 	}\
 }
+=======
+#define DT_GETPAGE(IP, BN, MP, SIZE, P, RC)				\
+do {									\
+	BT_GETPAGE(IP, BN, MP, dtpage_t, SIZE, P, RC, i_dtroot);	\
+	if (!(RC)) {							\
+		if (((P)->header.nextindex >				\
+		     (((BN) == 0) ? DTROOTMAXSLOT : (P)->header.maxslot)) || \
+		    ((BN) && ((P)->header.maxslot > DTPAGEMAXSLOT))) {	\
+			BT_PUTPAGE(MP);					\
+			jfs_error((IP)->i_sb,				\
+				  "DT_GETPAGE: dtree page corrupt\n");	\
+			MP = NULL;					\
+			RC = -EIO;					\
+		}							\
+	}								\
+} while (0)
+>>>>>>> refs/remotes/origin/master
 
 /* for consistency */
 #define DT_PUTPAGE(MP) BT_PUTPAGE(MP)
@@ -776,7 +794,11 @@ int dtSearch(struct inode *ip, struct component_name * key, ino_t * data,
 			/* Something's corrupted, mark filesystem dirty so
 			 * chkdsk will fix it.
 			 */
+<<<<<<< HEAD
 			jfs_error(sb, "stack overrun in dtSearch!");
+=======
+			jfs_error(sb, "stack overrun!\n");
+>>>>>>> refs/remotes/origin/master
 			BT_STACK_DUMP(btstack);
 			rc = -EIO;
 			goto out;
@@ -3002,9 +3024,15 @@ static inline struct jfs_dirent *next_jfs_dirent(struct jfs_dirent *dirent)
  * return: offset = (pn, index) of start entry
  *	of next jfs_readdir()/dtRead()
  */
+<<<<<<< HEAD
 int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 {
 	struct inode *ip = filp->f_path.dentry->d_inode;
+=======
+int jfs_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct inode *ip = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct nls_table *codepage = JFS_SBI(ip->i_sb)->nls_tab;
 	int rc = 0;
 	loff_t dtpos;	/* legacy OS/2 style position */
@@ -3033,7 +3061,11 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	int overflow, fix_page, page_fixed = 0;
 	static int unique_pos = 2;	/* If we can't fix broken index */
 
+<<<<<<< HEAD
 	if (filp->f_pos == DIREND)
+=======
+	if (ctx->pos == DIREND)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (DO_INDEX(ip)) {
@@ -3045,12 +3077,24 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		 */
 		do_index = 1;
 
+<<<<<<< HEAD
 		dir_index = (u32) filp->f_pos;
 
 		/*
 		 * NFSv4 reserves cookies 1 and 2 for . and .. so we add
 		 * the value we return to the vfs is one greater than the
 		 * one we use internally.
+<<<<<<< HEAD
+=======
+		dir_index = (u32) ctx->pos;
+
+		/*
+		 * NFSv4 reserves cookies 1 and 2 for . and .. so the value
+		 * we return to the vfs is one greater than the one we use
+		 * internally.
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		 */
 		if (dir_index)
 			dir_index--;
@@ -3061,25 +3105,41 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 			if (dtEmpty(ip) ||
 			    (dir_index >= JFS_IP(ip)->next_index)) {
 				/* Stale position.  Directory has shrunk */
+<<<<<<< HEAD
 				filp->f_pos = DIREND;
+=======
+				ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
 				return 0;
 			}
 		      repeat:
 			rc = read_index(ip, dir_index, &dirtab_slot);
 			if (rc) {
+<<<<<<< HEAD
 				filp->f_pos = DIREND;
+=======
+				ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
 				return rc;
 			}
 			if (dirtab_slot.flag == DIR_INDEX_FREE) {
 				if (loop_count++ > JFS_IP(ip)->next_index) {
 					jfs_err("jfs_readdir detected "
 						   "infinite loop!");
+<<<<<<< HEAD
 					filp->f_pos = DIREND;
+=======
+					ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
 					return 0;
 				}
 				dir_index = le32_to_cpu(dirtab_slot.addr2);
 				if (dir_index == -1) {
+<<<<<<< HEAD
 					filp->f_pos = DIREND;
+=======
+					ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
 					return 0;
 				}
 				goto repeat;
@@ -3088,13 +3148,25 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 			index = dirtab_slot.slot;
 			DT_GETPAGE(ip, bn, mp, PSIZE, p, rc);
 			if (rc) {
+<<<<<<< HEAD
 				filp->f_pos = DIREND;
+=======
+				ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
 				return 0;
 			}
 			if (p->header.flag & BT_INTERNAL) {
 				jfs_err("jfs_readdir: bad index table");
 				DT_PUTPAGE(mp);
+<<<<<<< HEAD
+<<<<<<< HEAD
 				filp->f_pos = DIREND;
+=======
+				ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
+=======
+				filp->f_pos = DIREND;
+>>>>>>> refs/remotes/origin/cm-11.0
 				return 0;
 			}
 		} else {
@@ -3102,23 +3174,43 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 				/*
 				 * self "."
 				 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				filp->f_pos = 1;
 				if (filldir(dirent, ".", 1, 0, ip->i_ino,
 					    DT_DIR))
+=======
+				ctx->pos = 1;
+				if (!dir_emit(ctx, ".", 1, ip->i_ino, DT_DIR))
+>>>>>>> refs/remotes/origin/master
 					return 0;
 			}
 			/*
 			 * parent ".."
 			 */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			filp->f_pos = 2;
 			if (filldir(dirent, "..", 2, 1, PARENT(ip), DT_DIR))
+=======
+			ctx->pos = 2;
+			if (!dir_emit(ctx, "..", 2, PARENT(ip), DT_DIR))
+>>>>>>> refs/remotes/origin/master
 				return 0;
 
 			/*
 			 * Find first entry of left-most leaf
 			 */
 			if (dtEmpty(ip)) {
+<<<<<<< HEAD
 				filp->f_pos = DIREND;
+=======
+				ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
 				return 0;
 			}
 
@@ -3136,6 +3228,7 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		 * pn > 0:		Real entries, pn=1 -> leftmost page
 		 * pn = index = -1:	No more entries
 		 */
+<<<<<<< HEAD
 		dtpos = filp->f_pos;
 		if (dtpos < 2) {
 			/* build "." entry */
@@ -3146,14 +3239,28 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 				return 0;
 			dtoffset->index = 2;
 			filp->f_pos = dtpos;
+=======
+		dtpos = ctx->pos;
+		if (dtpos < 2) {
+			/* build "." entry */
+			ctx->pos = 1;
+			if (!dir_emit(ctx, ".", 1, ip->i_ino, DT_DIR))
+				return 0;
+			dtoffset->index = 2;
+			ctx->pos = dtpos;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (dtoffset->pn == 0) {
 			if (dtoffset->index == 2) {
 				/* build ".." entry */
+<<<<<<< HEAD
 
 				if (filldir(dirent, "..", 2, filp->f_pos,
 					    PARENT(ip), DT_DIR))
+=======
+				if (!dir_emit(ctx, "..", 2, PARENT(ip), DT_DIR))
+>>>>>>> refs/remotes/origin/master
 					return 0;
 			} else {
 				jfs_err("jfs_readdir called with "
@@ -3161,6 +3268,7 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 			}
 			dtoffset->pn = 1;
 			dtoffset->index = 0;
+<<<<<<< HEAD
 			filp->f_pos = dtpos;
 		}
 
@@ -3173,6 +3281,20 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 			jfs_err("jfs_readdir: unexpected rc = %d "
 				"from dtReadNext", rc);
 			filp->f_pos = DIREND;
+=======
+			ctx->pos = dtpos;
+		}
+
+		if (dtEmpty(ip)) {
+			ctx->pos = DIREND;
+			return 0;
+		}
+
+		if ((rc = dtReadNext(ip, &ctx->pos, &btstack))) {
+			jfs_err("jfs_readdir: unexpected rc = %d "
+				"from dtReadNext", rc);
+			ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 		/* get start leaf page and index */
@@ -3180,7 +3302,11 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 
 		/* offset beyond directory eof ? */
 		if (bn < 0) {
+<<<<<<< HEAD
 			filp->f_pos = DIREND;
+=======
+			ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 	}
@@ -3189,7 +3315,11 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	if (dirent_buf == 0) {
 		DT_PUTPAGE(mp);
 		jfs_warn("jfs_readdir: __get_free_page failed!");
+<<<<<<< HEAD
 		filp->f_pos = DIREND;
+=======
+		ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -3267,8 +3397,12 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 				/* Sanity Check */
 				if (d_namleft == 0) {
 					jfs_error(ip->i_sb,
+<<<<<<< HEAD
 						  "JFS:Dtree error: ino = "
 						  "%ld, bn=%Ld, index = %d",
+=======
+						  "JFS:Dtree error: ino = %ld, bn=%lld, index = %d\n",
+>>>>>>> refs/remotes/origin/master
 						  (long)ip->i_ino,
 						  (long long)bn,
 						  i);
@@ -3310,9 +3444,15 @@ skip_one:
 
 		jfs_dirent = (struct jfs_dirent *) dirent_buf;
 		while (jfs_dirents--) {
+<<<<<<< HEAD
 			filp->f_pos = jfs_dirent->position;
 			if (filldir(dirent, jfs_dirent->name,
 				    jfs_dirent->name_len, filp->f_pos,
+=======
+			ctx->pos = jfs_dirent->position;
+			if (!dir_emit(ctx, jfs_dirent->name,
+				    jfs_dirent->name_len,
+>>>>>>> refs/remotes/origin/master
 				    jfs_dirent->ino, DT_UNKNOWN))
 				goto out;
 			jfs_dirent = next_jfs_dirent(jfs_dirent);
@@ -3324,7 +3464,11 @@ skip_one:
 		}
 
 		if (!overflow && (bn == 0)) {
+<<<<<<< HEAD
 			filp->f_pos = DIREND;
+=======
+			ctx->pos = DIREND;
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -3388,7 +3532,11 @@ static int dtReadFirst(struct inode *ip, struct btstack * btstack)
 		 */
 		if (BT_STACK_FULL(btstack)) {
 			DT_PUTPAGE(mp);
+<<<<<<< HEAD
 			jfs_error(ip->i_sb, "dtReadFirst: btstack overrun");
+=======
+			jfs_error(ip->i_sb, "btstack overrun\n");
+>>>>>>> refs/remotes/origin/master
 			BT_STACK_DUMP(btstack);
 			return -EIO;
 		}

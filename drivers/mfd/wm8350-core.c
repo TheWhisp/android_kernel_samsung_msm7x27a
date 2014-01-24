@@ -20,6 +20,10 @@
 #include <linux/device.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/workqueue.h>
 
 #include <linux/mfd/wm8350/core.h>
@@ -31,9 +35,12 @@
 #include <linux/mfd/wm8350/supply.h>
 #include <linux/mfd/wm8350/wdt.h>
 
+<<<<<<< HEAD
 #define WM8350_UNLOCK_KEY		0x0013
 #define WM8350_LOCK_KEY			0x0000
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM8350_CLOCK_CONTROL_1		0x28
 #define WM8350_AIF_TEST			0x74
 
@@ -62,6 +69,7 @@
 /*
  * WM8350 Device IO
  */
+<<<<<<< HEAD
 static DEFINE_MUTEX(io_mutex);
 static DEFINE_MUTEX(reg_lock_mutex);
 
@@ -185,11 +193,16 @@ static int wm8350_write(struct wm8350 *wm8350, u8 reg, int num_regs, u16 *src)
 	return wm8350->write_dev(wm8350, reg, bytes, (char *)src);
 }
 
+=======
+static DEFINE_MUTEX(reg_lock_mutex);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Safe read, modify, write methods
  */
 int wm8350_clear_bits(struct wm8350 *wm8350, u16 reg, u16 mask)
 {
+<<<<<<< HEAD
 	u16 data;
 	int err;
 
@@ -207,11 +220,15 @@ int wm8350_clear_bits(struct wm8350 *wm8350, u16 reg, u16 mask)
 out:
 	mutex_unlock(&io_mutex);
 	return err;
+=======
+	return regmap_update_bits(wm8350->regmap, reg, mask, 0);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(wm8350_clear_bits);
 
 int wm8350_set_bits(struct wm8350 *wm8350, u16 reg, u16 mask)
 {
+<<<<<<< HEAD
 	u16 data;
 	int err;
 
@@ -229,11 +246,15 @@ int wm8350_set_bits(struct wm8350 *wm8350, u16 reg, u16 mask)
 out:
 	mutex_unlock(&io_mutex);
 	return err;
+=======
+	return regmap_update_bits(wm8350->regmap, reg, mask, mask);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(wm8350_set_bits);
 
 u16 wm8350_reg_read(struct wm8350 *wm8350, int reg)
 {
+<<<<<<< HEAD
 	u16 data;
 	int err;
 
@@ -243,6 +264,15 @@ u16 wm8350_reg_read(struct wm8350 *wm8350, int reg)
 		dev_err(wm8350->dev, "read from reg R%d failed\n", reg);
 
 	mutex_unlock(&io_mutex);
+=======
+	unsigned int data;
+	int err;
+
+	err = regmap_read(wm8350->regmap, reg, &data);
+	if (err)
+		dev_err(wm8350->dev, "read from reg R%d failed\n", reg);
+
+>>>>>>> refs/remotes/origin/master
 	return data;
 }
 EXPORT_SYMBOL_GPL(wm8350_reg_read);
@@ -250,6 +280,7 @@ EXPORT_SYMBOL_GPL(wm8350_reg_read);
 int wm8350_reg_write(struct wm8350 *wm8350, int reg, u16 val)
 {
 	int ret;
+<<<<<<< HEAD
 	u16 data = val;
 
 	mutex_lock(&io_mutex);
@@ -257,6 +288,13 @@ int wm8350_reg_write(struct wm8350 *wm8350, int reg, u16 val)
 	if (ret)
 		dev_err(wm8350->dev, "write to reg R%d failed\n", reg);
 	mutex_unlock(&io_mutex);
+=======
+
+	ret = regmap_write(wm8350->regmap, reg, val);
+
+	if (ret)
+		dev_err(wm8350->dev, "write to reg R%d failed\n", reg);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL_GPL(wm8350_reg_write);
@@ -266,12 +304,20 @@ int wm8350_block_read(struct wm8350 *wm8350, int start_reg, int regs,
 {
 	int err = 0;
 
+<<<<<<< HEAD
 	mutex_lock(&io_mutex);
 	err = wm8350_read(wm8350, start_reg, regs, dest);
 	if (err)
 		dev_err(wm8350->dev, "block read starting from R%d failed\n",
 			start_reg);
 	mutex_unlock(&io_mutex);
+=======
+	err = regmap_bulk_read(wm8350->regmap, start_reg, dest, regs);
+	if (err)
+		dev_err(wm8350->dev, "block read starting from R%d failed\n",
+			start_reg);
+
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 EXPORT_SYMBOL_GPL(wm8350_block_read);
@@ -281,12 +327,20 @@ int wm8350_block_write(struct wm8350 *wm8350, int start_reg, int regs,
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 	mutex_lock(&io_mutex);
 	ret = wm8350_write(wm8350, start_reg, regs, src);
 	if (ret)
 		dev_err(wm8350->dev, "block write starting at R%d failed\n",
 			start_reg);
 	mutex_unlock(&io_mutex);
+=======
+	ret = regmap_bulk_write(wm8350->regmap, start_reg, src, regs);
+	if (ret)
+		dev_err(wm8350->dev, "block write starting at R%d failed\n",
+			start_reg);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL_GPL(wm8350_block_write);
@@ -300,6 +354,7 @@ EXPORT_SYMBOL_GPL(wm8350_block_write);
  */
 int wm8350_reg_lock(struct wm8350 *wm8350)
 {
+<<<<<<< HEAD
 	u16 key = WM8350_LOCK_KEY;
 	int ret;
 
@@ -309,6 +364,22 @@ int wm8350_reg_lock(struct wm8350 *wm8350)
 	if (ret)
 		dev_err(wm8350->dev, "lock failed\n");
 	mutex_unlock(&io_mutex);
+=======
+	int ret;
+
+	mutex_lock(&reg_lock_mutex);
+
+	ldbg(__func__);
+
+	ret = wm8350_reg_write(wm8350, WM8350_SECURITY, WM8350_LOCK_KEY);
+	if (ret)
+		dev_err(wm8350->dev, "lock failed\n");
+
+	wm8350->unlocked = false;
+
+	mutex_unlock(&reg_lock_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL_GPL(wm8350_reg_lock);
@@ -324,6 +395,7 @@ EXPORT_SYMBOL_GPL(wm8350_reg_lock);
  */
 int wm8350_reg_unlock(struct wm8350 *wm8350)
 {
+<<<<<<< HEAD
 	u16 key = WM8350_UNLOCK_KEY;
 	int ret;
 
@@ -333,6 +405,22 @@ int wm8350_reg_unlock(struct wm8350 *wm8350)
 	if (ret)
 		dev_err(wm8350->dev, "unlock failed\n");
 	mutex_unlock(&io_mutex);
+=======
+	int ret;
+
+	mutex_lock(&reg_lock_mutex);
+
+	ldbg(__func__);
+
+	ret = wm8350_reg_write(wm8350, WM8350_SECURITY, WM8350_UNLOCK_KEY);
+	if (ret)
+		dev_err(wm8350->dev, "unlock failed\n");
+
+	wm8350->unlocked = true;
+
+	mutex_unlock(&reg_lock_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL_GPL(wm8350_reg_unlock);
@@ -400,6 +488,7 @@ static irqreturn_t wm8350_auxadc_irq(int irq, void *irq_data)
 }
 
 /*
+<<<<<<< HEAD
  * Cache is always host endian.
  */
 static int wm8350_create_cache(struct wm8350 *wm8350, int type, int mode)
@@ -541,6 +630,8 @@ out:
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Register a client device.  This is non-fatal since there is no need to
  * fail the entire device init due to a single platform device failing.
  */
@@ -570,33 +661,59 @@ int wm8350_device_init(struct wm8350 *wm8350, int irq,
 		       struct wm8350_platform_data *pdata)
 {
 	int ret;
+<<<<<<< HEAD
 	u16 id1, id2, mask_rev;
 	u16 cust_id, mode, chip_rev;
 
+<<<<<<< HEAD
+=======
+	dev_set_drvdata(wm8350->dev, wm8350);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* get WM8350 revision and config mode */
 	ret = wm8350->read_dev(wm8350, WM8350_RESET_ID, sizeof(id1), &id1);
+=======
+	unsigned int id1, id2, mask_rev;
+	unsigned int cust_id, mode, chip_rev;
+
+	dev_set_drvdata(wm8350->dev, wm8350);
+
+	/* get WM8350 revision and config mode */
+	ret = regmap_read(wm8350->regmap, WM8350_RESET_ID, &id1);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(wm8350->dev, "Failed to read ID: %d\n", ret);
 		goto err;
 	}
 
+<<<<<<< HEAD
 	ret = wm8350->read_dev(wm8350, WM8350_ID, sizeof(id2), &id2);
+=======
+	ret = regmap_read(wm8350->regmap, WM8350_ID, &id2);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(wm8350->dev, "Failed to read ID: %d\n", ret);
 		goto err;
 	}
 
+<<<<<<< HEAD
 	ret = wm8350->read_dev(wm8350, WM8350_REVISION, sizeof(mask_rev),
 			       &mask_rev);
+=======
+	ret = regmap_read(wm8350->regmap, WM8350_REVISION, &mask_rev);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(wm8350->dev, "Failed to read revision: %d\n", ret);
 		goto err;
 	}
 
+<<<<<<< HEAD
 	id1 = be16_to_cpu(id1);
 	id2 = be16_to_cpu(id2);
 	mask_rev = be16_to_cpu(mask_rev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (id1 != 0x6143) {
 		dev_err(wm8350->dev,
 			"Device with ID %x is not a WM8350\n", id1);
@@ -690,18 +807,25 @@ int wm8350_device_init(struct wm8350 *wm8350, int irq,
 		goto err;
 	}
 
+<<<<<<< HEAD
 	ret = wm8350_create_cache(wm8350, mask_rev, mode);
 	if (ret < 0) {
 		dev_err(wm8350->dev, "Failed to create register cache\n");
 		return ret;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&wm8350->auxadc_mutex);
 	init_completion(&wm8350->auxadc_done);
 
 	ret = wm8350_irq_init(wm8350, irq, pdata);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto err_free;
+=======
+		goto err;
+>>>>>>> refs/remotes/origin/master
 
 	if (wm8350->irq_base) {
 		ret = request_threaded_irq(wm8350->irq_base +
@@ -739,8 +863,11 @@ int wm8350_device_init(struct wm8350 *wm8350, int irq,
 
 err_irq:
 	wm8350_irq_exit(wm8350);
+<<<<<<< HEAD
 err_free:
 	kfree(wm8350->reg_cache);
+=======
+>>>>>>> refs/remotes/origin/master
 err:
 	return ret;
 }
@@ -767,8 +894,11 @@ void wm8350_device_exit(struct wm8350 *wm8350)
 		free_irq(wm8350->irq_base + WM8350_IRQ_AUXADC_DATARDY, wm8350);
 
 	wm8350_irq_exit(wm8350);
+<<<<<<< HEAD
 
 	kfree(wm8350->reg_cache);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(wm8350_device_exit);
 

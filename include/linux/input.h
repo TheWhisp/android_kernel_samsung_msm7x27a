@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef _INPUT_H
 #define _INPUT_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Copyright (c) 1999-2002 Vojtech Pavlik
  *
@@ -8,6 +11,7 @@
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
  */
+<<<<<<< HEAD
 
 #ifdef __KERNEL__
 #include <linux/time.h>
@@ -114,14 +118,48 @@ struct input_keymap_entry {
 #define EVIOCGUNIQ(len)		_IOC(_IOC_READ, 'E', 0x08, len)		/* get unique identifier */
 #define EVIOCGPROP(len)		_IOC(_IOC_READ, 'E', 0x09, len)		/* get device properties */
 
+<<<<<<< HEAD
+=======
+/**
+ * EVIOCGMTSLOTS(len) - get MT slot values
+ *
+ * The ioctl buffer argument should be binary equivalent to
+ *
+ * struct input_mt_request_layout {
+ *	__u32 code;
+ *	__s32 values[num_slots];
+ * };
+ *
+ * where num_slots is the (arbitrary) number of MT slots to extract.
+ *
+ * The ioctl size argument (len) is the size of the buffer, which
+ * should satisfy len = (num_slots + 1) * sizeof(__s32).  If len is
+ * too small to fit all available slots, the first num_slots are
+ * returned.
+ *
+ * Before the call, code is set to the wanted ABS_MT event type. On
+ * return, values[] is filled with the slot values for the specified
+ * ABS_MT code.
+ *
+ * If the request code is not an ABS_MT value, -EINVAL is returned.
+ */
+#define EVIOCGMTSLOTS(len)	_IOC(_IOC_READ, 'E', 0x0a, len)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EVIOCGKEY(len)		_IOC(_IOC_READ, 'E', 0x18, len)		/* get global key state */
 #define EVIOCGLED(len)		_IOC(_IOC_READ, 'E', 0x19, len)		/* get all LEDs */
 #define EVIOCGSND(len)		_IOC(_IOC_READ, 'E', 0x1a, len)		/* get all sounds status */
 #define EVIOCGSW(len)		_IOC(_IOC_READ, 'E', 0x1b, len)		/* get all switch states */
 
+<<<<<<< HEAD
 #define EVIOCGBIT(ev,len)	_IOC(_IOC_READ, 'E', 0x20 + ev, len)	/* get event bits */
 #define EVIOCGABS(abs)		_IOR('E', 0x40 + abs, struct input_absinfo)	/* get abs value/limits */
 #define EVIOCSABS(abs)		_IOW('E', 0xc0 + abs, struct input_absinfo)	/* set abs value/limits */
+=======
+#define EVIOCGBIT(ev,len)	_IOC(_IOC_READ, 'E', 0x20 + (ev), len)	/* get event bits */
+#define EVIOCGABS(abs)		_IOR('E', 0x40 + (abs), struct input_absinfo)	/* get abs value/limits */
+#define EVIOCSABS(abs)		_IOW('E', 0xc0 + (abs), struct input_absinfo)	/* set abs value/limits */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define EVIOCSFF		_IOC(_IOC_WRITE, 'E', 0x80, sizeof(struct ff_effect))	/* send a force effect to a force feedback device */
 #define EVIOCRMFF		_IOW('E', 0x81, int)			/* Erase a force effect */
@@ -132,6 +170,14 @@ struct input_keymap_entry {
 #define EVIOCGSUSPENDBLOCK	_IOR('E', 0x91, int)			/* get suspend block enable */
 #define EVIOCSSUSPENDBLOCK	_IOW('E', 0x91, int)			/* set suspend block enable */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define EVIOCSCLOCKID		_IOW('E', 0xa0, int)			/* Set clockid to be used for timestamps */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Device properties and quirks
  */
@@ -441,6 +487,11 @@ struct input_keymap_entry {
 #define KEY_WIMAX		246
 #define KEY_RFKILL		247	/* Key that controls all radios */
 
+<<<<<<< HEAD
+=======
+#define KEY_MICMUTE		248	/* Mute / unmute the microphone */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Code 255 is reserved for special needs of AT keyboard driver */
 
 #define BTN_MISC		0x100
@@ -506,6 +557,10 @@ struct input_keymap_entry {
 #define BTN_TOOL_FINGER		0x145
 #define BTN_TOOL_MOUSE		0x146
 #define BTN_TOOL_LENS		0x147
+<<<<<<< HEAD
+=======
+#define BTN_TOOL_QUINTTAP	0x148	/* Five fingers on trackpad */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define BTN_TOUCH		0x14a
 #define BTN_STYLUS		0x14b
 #define BTN_STYLUS2		0x14c
@@ -815,9 +870,23 @@ struct input_keymap_entry {
 #define SW_KEYPAD_SLIDE		0x0a  /* set = keypad slide out */
 #define SW_FRONT_PROXIMITY	0x0b  /* set = front proximity sensor active */
 #define SW_ROTATE_LOCK		0x0c  /* set = rotate locked/disabled */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define SW_HPHL_OVERCURRENT	0x0d  /* set = over current on left hph */
 #define SW_HPHR_OVERCURRENT	0x0e  /* set = over current on right hph */
 #define SW_MAX			0x0f
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define SW_LINEIN_INSERT	0x0d  /* set = inserted */
+#define SW_HPHL_OVERCURRENT    0x0e  /* set = over current on left hph */
+#define SW_HPHR_OVERCURRENT    0x0f  /* set = over current on right hph */
+#define SW_UNSUPPORT_INSERT	0x10  /* set = unsupported device inserted */
+#define SW_MAX			0x20
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define SW_CNT			(SW_MAX+1)
 
 /*
@@ -1129,6 +1198,17 @@ struct ff_effect {
 #define FF_CNT		(FF_MAX+1)
 
 #ifdef __KERNEL__
+=======
+#ifndef _INPUT_H
+#define _INPUT_H
+
+#include <linux/time.h>
+#include <linux/list.h>
+#include <uapi/linux/input.h>
+/* Implementation details, userspace should not care about these */
+#define ABS_MT_FIRST		ABS_MT_TOUCH_MAJOR
+#define ABS_MT_LAST		ABS_MT_TOOL_Y
+>>>>>>> refs/remotes/origin/master
 
 /*
  * In-kernel definitions.
@@ -1140,6 +1220,21 @@ struct ff_effect {
 #include <linux/mod_devicetable.h>
 
 /**
+<<<<<<< HEAD
+=======
+ * struct input_value - input value representation
+ * @type: type of value (EV_KEY, EV_ABS, etc)
+ * @code: the value code
+ * @value: the value
+ */
+struct input_value {
+	__u16 type;
+	__u16 code;
+	__s32 value;
+};
+
+/**
+>>>>>>> refs/remotes/origin/master
  * struct input_dev - represents an input device
  * @name: name of the device
  * @phys: physical path to the device in the system hierarchy
@@ -1174,11 +1269,15 @@ struct ff_effect {
  *	software autorepeat
  * @timer: timer for software autorepeat
  * @rep: current values for autorepeat parameters (delay, rate)
+<<<<<<< HEAD
  * @mt: pointer to array of struct input_mt_slot holding current values
  *	of tracked contacts
  * @mtsize: number of MT slots the device uses
  * @slot: MT slot currently being transmitted
  * @trkid: stores MT tracking ID for the current contact
+=======
+ * @mt: pointer to multitouch state
+>>>>>>> refs/remotes/origin/master
  * @absinfo: array of &struct input_absinfo elements holding information
  *	about absolute axes (current value, min, max, flat, fuzz,
  *	resolution)
@@ -1215,11 +1314,22 @@ struct ff_effect {
  *	last user closes the device
  * @going_away: marks devices that are in a middle of unregistering and
  *	causes input_open_device*() fail with -ENODEV.
+<<<<<<< HEAD
  * @sync: set to %true when there were no new events since last EV_SYN
+=======
+>>>>>>> refs/remotes/origin/master
  * @dev: driver model's view of this device
  * @h_list: list of input handles associated with the device. When
  *	accessing the list dev->mutex must be held
  * @node: used to place the device onto input_dev_list
+<<<<<<< HEAD
+=======
+ * @num_vals: number of values queued in the current frame
+ * @max_vals: maximum number of values queued in a frame
+ * @vals: array of values queued in the current frame
+ * @devres_managed: indicates that devices is managed with devres framework
+ *	and needs not be explicitly unregistered or freed.
+>>>>>>> refs/remotes/origin/master
  */
 struct input_dev {
 	const char *name;
@@ -1258,10 +1368,14 @@ struct input_dev {
 
 	int rep[REP_CNT];
 
+<<<<<<< HEAD
 	struct input_mt_slot *mt;
 	int mtsize;
 	int slot;
 	int trkid;
+=======
+	struct input_mt *mt;
+>>>>>>> refs/remotes/origin/master
 
 	struct input_absinfo *absinfo;
 
@@ -1283,12 +1397,24 @@ struct input_dev {
 	unsigned int users;
 	bool going_away;
 
+<<<<<<< HEAD
 	bool sync;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	struct device dev;
 
 	struct list_head	h_list;
 	struct list_head	node;
+<<<<<<< HEAD
+=======
+
+	unsigned int num_vals;
+	unsigned int max_vals;
+	struct input_value *vals;
+
+	bool devres_managed;
+>>>>>>> refs/remotes/origin/master
 };
 #define to_input_dev(d) container_of(d, struct input_dev, dev)
 
@@ -1349,6 +1475,12 @@ struct input_handle;
  * @event: event handler. This method is being called by input core with
  *	interrupts disabled and dev->event_lock spinlock held and so
  *	it may not sleep
+<<<<<<< HEAD
+=======
+ * @events: event sequence handler. This method is being called by
+ *	input core with interrupts disabled and dev->event_lock
+ *	spinlock held and so it may not sleep
+>>>>>>> refs/remotes/origin/master
  * @filter: similar to @event; separates normal event handlers from
  *	"filters".
  * @match: called after comparing device's id with handler's id_table
@@ -1358,8 +1490,13 @@ struct input_handle;
  * @start: starts handler for given handle. This function is called by
  *	input core right after connect() method and also when a process
  *	that "grabbed" a device releases it
+<<<<<<< HEAD
  * @fops: file operations this driver implements
  * @minor: beginning of range of 32 minors for devices this driver
+=======
+ * @legacy_minors: set to %true by drivers using legacy minor ranges
+ * @minor: beginning of range of 32 legacy minors for devices this driver
+>>>>>>> refs/remotes/origin/master
  *	can provide
  * @name: name of the handler, to be shown in /proc/bus/input/handlers
  * @id_table: pointer to a table of input_device_ids this driver can
@@ -1385,13 +1522,22 @@ struct input_handler {
 	void *private;
 
 	void (*event)(struct input_handle *handle, unsigned int type, unsigned int code, int value);
+<<<<<<< HEAD
+=======
+	void (*events)(struct input_handle *handle,
+		       const struct input_value *vals, unsigned int count);
+>>>>>>> refs/remotes/origin/master
 	bool (*filter)(struct input_handle *handle, unsigned int type, unsigned int code, int value);
 	bool (*match)(struct input_handler *handler, struct input_dev *dev);
 	int (*connect)(struct input_handler *handler, struct input_dev *dev, const struct input_device_id *id);
 	void (*disconnect)(struct input_handle *handle);
 	void (*start)(struct input_handle *handle);
 
+<<<<<<< HEAD
 	const struct file_operations *fops;
+=======
+	bool legacy_minors;
+>>>>>>> refs/remotes/origin/master
 	int minor;
 	const char *name;
 
@@ -1427,7 +1573,12 @@ struct input_handle {
 	struct list_head	h_node;
 };
 
+<<<<<<< HEAD
 struct input_dev *input_allocate_device(void);
+=======
+struct input_dev __must_check *input_allocate_device(void);
+struct input_dev __must_check *devm_input_allocate_device(struct device *);
+>>>>>>> refs/remotes/origin/master
 void input_free_device(struct input_dev *dev);
 
 static inline struct input_dev *input_get_device(struct input_dev *dev)
@@ -1459,6 +1610,13 @@ void input_reset_device(struct input_dev *);
 int __must_check input_register_handler(struct input_handler *);
 void input_unregister_handler(struct input_handler *);
 
+<<<<<<< HEAD
+=======
+int __must_check input_get_new_minor(int legacy_base, unsigned int legacy_num,
+				     bool allow_dynamic);
+void input_free_minor(unsigned int minor);
+
+>>>>>>> refs/remotes/origin/master
 int input_handler_for_each_handle(struct input_handler *, void *data,
 				  int (*fn)(struct input_handle *, void *));
 
@@ -1612,7 +1770,15 @@ struct ff_device {
 	struct file *effect_owners[];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int input_ff_create(struct input_dev *dev, int max_effects);
+=======
+int input_ff_create(struct input_dev *dev, unsigned int max_effects);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int input_ff_create(struct input_dev *dev, unsigned int max_effects);
+>>>>>>> refs/remotes/origin/master
 void input_ff_destroy(struct input_dev *dev);
 
 int input_ff_event(struct input_dev *dev, unsigned int type, unsigned int code, int value);
@@ -1624,4 +1790,7 @@ int input_ff_create_memless(struct input_dev *dev, void *data,
 		int (*play_effect)(struct input_dev *, void *, struct ff_effect *));
 
 #endif
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

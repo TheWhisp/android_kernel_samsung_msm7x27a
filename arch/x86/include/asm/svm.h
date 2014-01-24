@@ -1,6 +1,12 @@
 #ifndef __SVM_H
 #define __SVM_H
 
+<<<<<<< HEAD
+=======
+#include <uapi/asm/svm.h>
+
+
+>>>>>>> refs/remotes/origin/master
 enum {
 	INTERCEPT_INTR,
 	INTERCEPT_NMI,
@@ -264,6 +270,7 @@ struct __attribute__ ((__packed__)) vmcb {
 
 #define SVM_EXITINFO_REG_MASK 0x0F
 
+<<<<<<< HEAD
 #define	SVM_EXIT_READ_CR0 	0x000
 #define	SVM_EXIT_READ_CR3 	0x003
 #define	SVM_EXIT_READ_CR4 	0x004
@@ -339,6 +346,8 @@ struct __attribute__ ((__packed__)) vmcb {
 
 #define SVM_EXIT_ERR		-1
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define SVM_CR0_SELECTIVE_MASK (X86_CR0_TS | X86_CR0_MP)
 
 #define SVM_VMLOAD ".byte 0x0f, 0x01, 0xda"
@@ -349,4 +358,7 @@ struct __attribute__ ((__packed__)) vmcb {
 #define SVM_INVLPGA ".byte 0x0f, 0x01, 0xdf"
 
 #endif
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

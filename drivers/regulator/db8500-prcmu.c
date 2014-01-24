@@ -13,6 +13,8 @@
 #include <linux/err.h>
 #include <linux/spinlock.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mfd/db8500-prcmu.h>
 #include <linux/regulator/driver.h>
 #include <linux/regulator/machine.h>
@@ -85,6 +87,28 @@ struct db8500_regulator_info {
 static int db8500_regulator_enable(struct regulator_dev *rdev)
 {
 	struct db8500_regulator_info *info = rdev_get_drvdata(rdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/mfd/dbx500-prcmu.h>
+#include <linux/regulator/driver.h>
+#include <linux/regulator/machine.h>
+#include <linux/regulator/db8500-prcmu.h>
+<<<<<<< HEAD
+=======
+#include <linux/regulator/of_regulator.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
+#include <linux/module.h>
+#include "dbx500-prcmu.h"
+
+static int db8500_regulator_enable(struct regulator_dev *rdev)
+{
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (info == NULL)
 		return -EINVAL;
@@ -92,16 +116,38 @@ static int db8500_regulator_enable(struct regulator_dev *rdev)
 	dev_vdbg(rdev_get_dev(rdev), "regulator-%s-enable\n",
 		info->desc.name);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info->is_enabled = true;
 	if (!info->exclude_from_power_state)
 		power_state_active_enable();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!info->is_enabled) {
+		info->is_enabled = true;
+		if (!info->exclude_from_power_state)
+			power_state_active_enable();
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int db8500_regulator_disable(struct regulator_dev *rdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct db8500_regulator_info *info = rdev_get_drvdata(rdev);
+=======
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (info == NULL)
@@ -110,16 +156,38 @@ static int db8500_regulator_disable(struct regulator_dev *rdev)
 	dev_vdbg(rdev_get_dev(rdev), "regulator-%s-disable\n",
 		info->desc.name);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	info->is_enabled = false;
 	if (!info->exclude_from_power_state)
 		ret = power_state_active_disable();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (info->is_enabled) {
+		info->is_enabled = false;
+		if (!info->exclude_from_power_state)
+			ret = power_state_active_disable();
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
 static int db8500_regulator_is_enabled(struct regulator_dev *rdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct db8500_regulator_info *info = rdev_get_drvdata(rdev);
+=======
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+>>>>>>> refs/remotes/origin/master
 
 	if (info == NULL)
 		return -EINVAL;
@@ -196,7 +264,15 @@ static int disable_epod(u16 epod_id, bool ramret)
  */
 static int db8500_regulator_switch_enable(struct regulator_dev *rdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct db8500_regulator_info *info = rdev_get_drvdata(rdev);
+=======
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (info == NULL)
@@ -220,7 +296,15 @@ out:
 
 static int db8500_regulator_switch_disable(struct regulator_dev *rdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct db8500_regulator_info *info = rdev_get_drvdata(rdev);
+=======
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (info == NULL)
@@ -244,7 +328,15 @@ out:
 
 static int db8500_regulator_switch_is_enabled(struct regulator_dev *rdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct db8500_regulator_info *info = rdev_get_drvdata(rdev);
+=======
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dbx500_regulator_info *info = rdev_get_drvdata(rdev);
+>>>>>>> refs/remotes/origin/master
 
 	if (info == NULL)
 		return -EINVAL;
@@ -265,8 +357,18 @@ static struct regulator_ops db8500_regulator_switch_ops = {
 /*
  * Regulator information
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct db8500_regulator_info
 db8500_regulator_info[DB8500_NUM_REGULATORS] = {
+=======
+static struct dbx500_regulator_info
+dbx500_regulator_info[DB8500_NUM_REGULATORS] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct dbx500_regulator_info
+dbx500_regulator_info[DB8500_NUM_REGULATORS] = {
+>>>>>>> refs/remotes/origin/master
 	[DB8500_REGULATOR_VAPE] = {
 		.desc = {
 			.name	= "db8500-vape",
@@ -468,6 +570,7 @@ db8500_regulator_info[DB8500_NUM_REGULATORS] = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit db8500_regulator_probe(struct platform_device *pdev)
 {
 	struct regulator_init_data *db8500_init_data =
@@ -475,17 +578,30 @@ static int __devinit db8500_regulator_probe(struct platform_device *pdev)
 	int i, err;
 
 	/* register all regulators */
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(db8500_regulator_info); i++) {
 		struct db8500_regulator_info *info;
 		struct regulator_init_data *init_data = &db8500_init_data[i];
 
 		/* assign per-regulator data */
 		info = &db8500_regulator_info[i];
+=======
+	for (i = 0; i < ARRAY_SIZE(dbx500_regulator_info); i++) {
+		struct dbx500_regulator_info *info;
+		struct regulator_init_data *init_data = &db8500_init_data[i];
+
+		/* assign per-regulator data */
+		info = &dbx500_regulator_info[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 		info->dev = &pdev->dev;
 
 		/* register with the regulator framework */
 		info->rdev = regulator_register(&info->desc, &pdev->dev,
+<<<<<<< HEAD
 				init_data, info);
+=======
+				init_data, info, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR(info->rdev)) {
 			err = PTR_ERR(info->rdev);
 			dev_err(&pdev->dev, "failed to register %s: err %i\n",
@@ -493,7 +609,11 @@ static int __devinit db8500_regulator_probe(struct platform_device *pdev)
 
 			/* if failing, unregister all earlier regulators */
 			while (--i >= 0) {
+<<<<<<< HEAD
 				info = &db8500_regulator_info[i];
+=======
+				info = &dbx500_regulator_info[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 				regulator_unregister(info->rdev);
 			}
 			return err;
@@ -502,17 +622,158 @@ static int __devinit db8500_regulator_probe(struct platform_device *pdev)
 		dev_dbg(rdev_get_dev(info->rdev),
 			"regulator-%s-probed\n", info->desc.name);
 	}
+<<<<<<< HEAD
 
 	return 0;
+=======
+	err = ux500_regulator_debug_init(pdev,
+					 dbx500_regulator_info,
+					 ARRAY_SIZE(dbx500_regulator_info));
+
+	return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __exit db8500_regulator_remove(struct platform_device *pdev)
 {
 	int i;
 
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(db8500_regulator_info); i++) {
 		struct db8500_regulator_info *info;
 		info = &db8500_regulator_info[i];
+=======
+=======
+static int db8500_regulator_register(struct platform_device *pdev,
+					struct regulator_init_data *init_data,
+					int id,
+					struct device_node *np)
+{
+	struct dbx500_regulator_info *info;
+	struct regulator_config config = { };
+	int err;
+
+	/* assign per-regulator data */
+	info = &dbx500_regulator_info[id];
+	info->dev = &pdev->dev;
+
+	config.dev = &pdev->dev;
+	config.init_data = init_data;
+	config.driver_data = info;
+	config.of_node = np;
+
+	/* register with the regulator framework */
+	info->rdev = regulator_register(&info->desc, &config);
+	if (IS_ERR(info->rdev)) {
+		err = PTR_ERR(info->rdev);
+		dev_err(&pdev->dev, "failed to register %s: err %i\n",
+			info->desc.name, err);
+
+		/* if failing, unregister all earlier regulators */
+		while (--id >= 0) {
+			info = &dbx500_regulator_info[id];
+			regulator_unregister(info->rdev);
+		}
+		return err;
+	}
+
+	dev_dbg(rdev_get_dev(info->rdev),
+		"regulator-%s-probed\n", info->desc.name);
+
+	return 0;
+}
+
+static struct of_regulator_match db8500_regulator_matches[] = {
+	{ .name	= "db8500_vape",          .driver_data = (void *) DB8500_REGULATOR_VAPE, },
+	{ .name	= "db8500_varm",          .driver_data = (void *) DB8500_REGULATOR_VARM, },
+	{ .name	= "db8500_vmodem",        .driver_data = (void *) DB8500_REGULATOR_VMODEM, },
+	{ .name	= "db8500_vpll",          .driver_data = (void *) DB8500_REGULATOR_VPLL, },
+	{ .name	= "db8500_vsmps1",        .driver_data = (void *) DB8500_REGULATOR_VSMPS1, },
+	{ .name	= "db8500_vsmps2",        .driver_data = (void *) DB8500_REGULATOR_VSMPS2, },
+	{ .name	= "db8500_vsmps3",        .driver_data = (void *) DB8500_REGULATOR_VSMPS3, },
+	{ .name	= "db8500_vrf1",          .driver_data = (void *) DB8500_REGULATOR_VRF1, },
+	{ .name	= "db8500_sva_mmdsp",     .driver_data = (void *) DB8500_REGULATOR_SWITCH_SVAMMDSP, },
+	{ .name	= "db8500_sva_mmdsp_ret", .driver_data = (void *) DB8500_REGULATOR_SWITCH_SVAMMDSPRET, },
+	{ .name	= "db8500_sva_pipe",      .driver_data = (void *) DB8500_REGULATOR_SWITCH_SVAPIPE, },
+	{ .name	= "db8500_sia_mmdsp",     .driver_data = (void *) DB8500_REGULATOR_SWITCH_SIAMMDSP, },
+	{ .name	= "db8500_sia_mmdsp_ret", .driver_data = (void *) DB8500_REGULATOR_SWITCH_SIAMMDSPRET, },
+	{ .name	= "db8500_sia_pipe",      .driver_data = (void *) DB8500_REGULATOR_SWITCH_SIAPIPE, },
+	{ .name	= "db8500_sga",           .driver_data = (void *) DB8500_REGULATOR_SWITCH_SGA, },
+	{ .name	= "db8500_b2r2_mcde",     .driver_data = (void *) DB8500_REGULATOR_SWITCH_B2R2_MCDE, },
+	{ .name	= "db8500_esram12",       .driver_data = (void *) DB8500_REGULATOR_SWITCH_ESRAM12, },
+	{ .name	= "db8500_esram12_ret",   .driver_data = (void *) DB8500_REGULATOR_SWITCH_ESRAM12RET, },
+	{ .name	= "db8500_esram34",       .driver_data = (void *) DB8500_REGULATOR_SWITCH_ESRAM34, },
+	{ .name	= "db8500_esram34_ret",   .driver_data = (void *) DB8500_REGULATOR_SWITCH_ESRAM34RET, },
+};
+
+static int
+db8500_regulator_of_probe(struct platform_device *pdev,
+			struct device_node *np)
+{
+	int i, err;
+
+	for (i = 0; i < ARRAY_SIZE(dbx500_regulator_info); i++) {
+		err = db8500_regulator_register(
+			pdev, db8500_regulator_matches[i].init_data,
+			i, db8500_regulator_matches[i].of_node);
+		if (err)
+			return err;
+	}
+
+	return 0;
+}
+
+static int db8500_regulator_probe(struct platform_device *pdev)
+{
+	struct regulator_init_data *db8500_init_data =
+					dev_get_platdata(&pdev->dev);
+	struct device_node *np = pdev->dev.of_node;
+	int i, err;
+
+	/* register all regulators */
+	if (np) {
+		err = of_regulator_match(&pdev->dev, np,
+					db8500_regulator_matches,
+					ARRAY_SIZE(db8500_regulator_matches));
+		if (err < 0) {
+			dev_err(&pdev->dev,
+				"Error parsing regulator init data: %d\n", err);
+			return err;
+		}
+
+		err = db8500_regulator_of_probe(pdev, np);
+		if (err)
+			return err;
+	} else {
+		for (i = 0; i < ARRAY_SIZE(dbx500_regulator_info); i++) {
+			err = db8500_regulator_register(pdev,
+							&db8500_init_data[i],
+							i, NULL);
+			if (err)
+				return err;
+		}
+	}
+
+	err = ux500_regulator_debug_init(pdev,
+					 dbx500_regulator_info,
+					 ARRAY_SIZE(dbx500_regulator_info));
+	return 0;
+}
+
+static int db8500_regulator_remove(struct platform_device *pdev)
+{
+	int i;
+
+>>>>>>> refs/remotes/origin/master
+	ux500_regulator_debug_exit();
+
+	for (i = 0; i < ARRAY_SIZE(dbx500_regulator_info); i++) {
+		struct dbx500_regulator_info *info;
+		info = &dbx500_regulator_info[i];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		dev_vdbg(rdev_get_dev(info->rdev),
 			"regulator-%s-remove\n", info->desc.name);
@@ -529,7 +790,11 @@ static struct platform_driver db8500_regulator_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = db8500_regulator_probe,
+<<<<<<< HEAD
 	.remove = __exit_p(db8500_regulator_remove),
+=======
+	.remove = db8500_regulator_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init db8500_regulator_init(void)

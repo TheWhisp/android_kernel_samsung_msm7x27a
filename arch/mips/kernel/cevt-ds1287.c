@@ -1,7 +1,11 @@
 /*
  *  DS1287 clockevent driver
  *
+<<<<<<< HEAD
  *  Copyright (C) 2008  Yoichi Yuasa <yuasa@linux-mips.org>
+=======
+ *  Copyright (C) 2008	Yoichi Yuasa <yuasa@linux-mips.org>
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -89,7 +93,11 @@ static void ds1287_event_handler(struct clock_event_device *dev)
 static struct clock_event_device ds1287_clockevent = {
 	.name		= "ds1287",
 	.features	= CLOCK_EVT_FEAT_PERIODIC,
+<<<<<<< HEAD
 	.set_next_event	= ds1287_set_next_event,
+=======
+	.set_next_event = ds1287_set_next_event,
+>>>>>>> refs/remotes/origin/master
 	.set_mode	= ds1287_set_mode,
 	.event_handler	= ds1287_event_handler,
 };
@@ -108,7 +116,15 @@ static irqreturn_t ds1287_interrupt(int irq, void *dev_id)
 
 static struct irqaction ds1287_irqaction = {
 	.handler	= ds1287_interrupt,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_PERCPU | IRQF_TIMER,
+=======
+	.flags		= IRQF_PERCPU | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= IRQF_PERCPU | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 	.name		= "ds1287",
 };
 

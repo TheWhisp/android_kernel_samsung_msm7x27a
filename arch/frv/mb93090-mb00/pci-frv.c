@@ -194,6 +194,8 @@ void __init pcibios_resource_survey(void)
 	pcibios_allocate_resources(1);
 	pcibios_assign_resources();
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  *  If we set up a device for bus mastering, we need to check the latency
@@ -214,3 +216,7 @@ void pcibios_set_master(struct pci_dev *dev)
 	printk(KERN_DEBUG "PCI: Setting latency timer of device %s to %d\n", pci_name(dev), lat);
 	pci_write_config_byte(dev, PCI_LATENCY_TIMER, lat);
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

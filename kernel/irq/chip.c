@@ -16,6 +16,16 @@
 #include <linux/interrupt.h>
 #include <linux/kernel_stat.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <trace/events/irq.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <trace/events/irq.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "internals.h"
 
 /**
@@ -88,6 +98,7 @@ int irq_set_handler_data(unsigned int irq, void *data)
 EXPORT_SYMBOL(irq_set_handler_data);
 
 /**
+<<<<<<< HEAD
  *	irq_set_msi_desc - set MSI descriptor data for an irq
  *	@irq:	Interrupt number
  *	@entry:	Pointer to MSI descriptor data
@@ -98,17 +109,51 @@ int irq_set_msi_desc(unsigned int irq, struct msi_desc *entry)
 {
 	unsigned long flags;
 	struct irq_desc *desc = irq_get_desc_lock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
+=======
+ *	irq_set_msi_desc_off - set MSI descriptor data for an irq at offset
+ *	@irq_base:	Interrupt number base
+ *	@irq_offset:	Interrupt number offset
+ *	@entry:		Pointer to MSI descriptor data
+ *
+ *	Set the MSI descriptor entry for an irq at offset
+ */
+int irq_set_msi_desc_off(unsigned int irq_base, unsigned int irq_offset,
+			 struct msi_desc *entry)
+{
+	unsigned long flags;
+	struct irq_desc *desc = irq_get_desc_lock(irq_base + irq_offset, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
+>>>>>>> refs/remotes/origin/master
 
 	if (!desc)
 		return -EINVAL;
 	desc->irq_data.msi_desc = entry;
+<<<<<<< HEAD
 	if (entry)
 		entry->irq = irq;
+=======
+	if (entry && !irq_offset)
+		entry->irq = irq_base;
+>>>>>>> refs/remotes/origin/master
 	irq_put_desc_unlock(desc, flags);
 	return 0;
 }
 
 /**
+<<<<<<< HEAD
+=======
+ *	irq_set_msi_desc - set MSI descriptor data for an irq
+ *	@irq:	Interrupt number
+ *	@entry:	Pointer to MSI descriptor data
+ *
+ *	Set the MSI descriptor entry for an irq
+ */
+int irq_set_msi_desc(unsigned int irq, struct msi_desc *entry)
+{
+	return irq_set_msi_desc_off(irq, 0, entry);
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  *	irq_set_chip_data - set irq chip data for an irq
  *	@irq:	Interrupt number
  *	@data:	Pointer to chip specific data
@@ -197,6 +242,22 @@ void irq_enable(struct irq_desc *desc)
 	irq_state_clr_masked(desc);
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * irq_disable - Mark interrupt disabled
+ * @desc:	irq descriptor which should be disabled
+ *
+ * If the chip does not implement the irq_disable callback, we
+ * use a lazy disable approach. That means we mark the interrupt
+ * disabled, but leave the hardware unmasked. That's an
+ * optimization because we avoid the hardware access for the
+ * common case where no interrupt happens after we marked it
+ * disabled. If an interrupt happens, then the interrupt flow
+ * handler masks the line at the hardware level and marks it
+ * pending.
+ */
+>>>>>>> refs/remotes/origin/master
 void irq_disable(struct irq_desc *desc)
 {
 	irq_state_set_disabled(desc);
@@ -264,18 +325,37 @@ void handle_nested_irq(unsigned int irq)
 {
 	struct irq_desc *desc = irq_to_desc(irq);
 	struct irqaction *action;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int mask_this_irq = 0;
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+	int mask_this_irq = 0;
+>>>>>>> refs/remotes/origin/cm-11.0
 	irqreturn_t action_ret;
 
 	might_sleep();
 
 	raw_spin_lock_irq(&desc->lock);
 
+<<<<<<< HEAD
+=======
+	desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
+>>>>>>> refs/remotes/origin/master
 	kstat_incr_irqs_this_cpu(irq, desc);
 
 	action = desc->action;
 	if (unlikely(!action || irqd_irq_disabled(&desc->irq_data))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		mask_this_irq = 1;
+=======
+		desc->istate |= IRQS_PENDING;
+>>>>>>> refs/remotes/origin/master
+=======
+		mask_this_irq = 1;
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out_unlock;
 	}
 
@@ -291,11 +371,20 @@ void handle_nested_irq(unsigned int irq)
 
 out_unlock:
 	raw_spin_unlock_irq(&desc->lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (unlikely(mask_this_irq)) {
 		chip_bus_lock(desc);
 		mask_irq(desc);
 		chip_bus_sync_unlock(desc);
 	}
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 EXPORT_SYMBOL_GPL(handle_nested_irq);
 
@@ -330,8 +419,15 @@ handle_simple_irq(unsigned int irq, struct irq_desc *desc)
 	desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
 	kstat_incr_irqs_this_cpu(irq, desc);
 
+<<<<<<< HEAD
 	if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data)))
 		goto out_unlock;
+=======
+	if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data))) {
+		desc->istate |= IRQS_PENDING;
+		goto out_unlock;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	handle_irq_event(desc);
 
@@ -385,8 +481,15 @@ handle_level_irq(unsigned int irq, struct irq_desc *desc)
 	 * If its disabled or no action available
 	 * keep it masked and get out of here
 	 */
+<<<<<<< HEAD
 	if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data)))
 		goto out_unlock;
+=======
+	if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data))) {
+		desc->istate |= IRQS_PENDING;
+		goto out_unlock;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	handle_irq_event(desc);
 
@@ -434,8 +537,17 @@ handle_fasteoi_irq(unsigned int irq, struct irq_desc *desc)
 	 * then mask it and get out of here:
 	 */
 	if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!irq_settings_is_level(desc))
 			desc->istate |= IRQS_PENDING;
+=======
+		desc->istate |= IRQS_PENDING;
+>>>>>>> refs/remotes/origin/master
+=======
+		if (!irq_settings_is_level(desc))
+			desc->istate |= IRQS_PENDING;
+>>>>>>> refs/remotes/origin/cm-11.0
 		mask_irq(desc);
 		goto out;
 	}
@@ -525,6 +637,14 @@ handle_edge_irq(unsigned int irq, struct irq_desc *desc)
 out_unlock:
 	raw_spin_unlock(&desc->lock);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(handle_edge_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(handle_edge_irq);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IRQ_EDGE_EOI_HANDLER
 /**
@@ -671,6 +791,10 @@ irq_set_chip_and_handler_name(unsigned int irq, struct irq_chip *chip,
 	irq_set_chip(irq, chip);
 	__irq_set_handler(irq, handle, 0, name);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(irq_set_chip_and_handler_name);
+>>>>>>> refs/remotes/origin/master
 
 void irq_modify_status(unsigned int irq, unsigned long clr, unsigned long set)
 {

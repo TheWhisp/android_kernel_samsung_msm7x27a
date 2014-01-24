@@ -1,7 +1,11 @@
 /*
  * Watchdog implementation based on z/VM Watchdog Timer API
  *
+<<<<<<< HEAD
  * Copyright IBM Corp. 2004,2009
+=======
+ * Copyright IBM Corp. 2004, 2009
+>>>>>>> refs/remotes/origin/master
  *
  * The user space watchdog daemon can use this driver as
  * /dev/vmwatchdog to have z/VM execute the specified CP
@@ -28,9 +32,21 @@
 #define MAX_CMDLEN 240
 #define MIN_INTERVAL 15
 static char vmwdt_cmd[MAX_CMDLEN] = "IPL";
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int vmwdt_conceal;
 
 static int vmwdt_nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool vmwdt_conceal;
+
+static bool vmwdt_nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool vmwdt_conceal;
+
+static bool vmwdt_nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Arnd Bergmann <arndb@de.ibm.com>");
@@ -112,7 +128,12 @@ static int vmwdt_keepalive(void)
 
 static int vmwdt_disable(void)
 {
+<<<<<<< HEAD
 	int ret = __diag288(wdt_cancel, 0, "", 0);
+=======
+	char cmd[] = {'\0'};
+	int ret = __diag288(wdt_cancel, 0, cmd, 0);
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(ret != 0);
 	clear_bit(VMWDT_RUNNING, &vmwdt_is_open);
 	return ret;
@@ -124,7 +145,11 @@ static int __init vmwdt_probe(void)
 	 * so we try initializing it with a NOP command ("BEGIN")
 	 * that won't cause any harm even if the following disable
 	 * fails for some reason */
+<<<<<<< HEAD
 	static char __initdata ebc_begin[] = {
+=======
+	char ebc_begin[] = {
+>>>>>>> refs/remotes/origin/master
 		194, 197, 199, 201, 213
 	};
 	if (__diag288(wdt_init, 15, ebc_begin, sizeof(ebc_begin)) != 0)
@@ -258,13 +283,29 @@ static int vmwdt_suspend(void)
 	if (test_and_set_bit(VMWDT_OPEN, &vmwdt_is_open)) {
 		pr_err("The system cannot be suspended while the watchdog"
 			" is in use\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return NOTIFY_BAD;
+=======
+		return notifier_from_errno(-EBUSY);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return notifier_from_errno(-EBUSY);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (test_bit(VMWDT_RUNNING, &vmwdt_is_open)) {
 		clear_bit(VMWDT_OPEN, &vmwdt_is_open);
 		pr_err("The system cannot be suspended while the watchdog"
 			" is running\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return NOTIFY_BAD;
+=======
+		return notifier_from_errno(-EBUSY);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return notifier_from_errno(-EBUSY);
+>>>>>>> refs/remotes/origin/master
 	}
 	return NOTIFY_DONE;
 }

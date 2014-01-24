@@ -85,7 +85,12 @@ static int fifo_dump(struct Qdisc *sch, struct sk_buff *skb)
 {
 	struct tc_fifo_qopt opt = { .limit = sch->limit };
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_OPTIONS, sizeof(opt), &opt);
+=======
+	if (nla_put(skb, TCA_OPTIONS, sizeof(opt), &opt))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return skb->len;
 
 nla_put_failure:

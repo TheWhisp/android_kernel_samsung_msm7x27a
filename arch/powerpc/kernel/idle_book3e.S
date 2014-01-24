@@ -16,11 +16,20 @@
 #include <asm/ppc-opcode.h>
 #include <asm/processor.h>
 #include <asm/thread_info.h>
+<<<<<<< HEAD
+=======
+#include <asm/epapr_hcalls.h>
+>>>>>>> refs/remotes/origin/master
 
 /* 64-bit version only for now */
 #ifdef CONFIG_PPC64
 
+<<<<<<< HEAD
 _GLOBAL(book3e_idle)
+=======
+.macro BOOK3E_IDLE name loop
+_GLOBAL(\name)
+>>>>>>> refs/remotes/origin/master
 	/* Save LR for later */
 	mflr	r0
 	std	r0,16(r1)
@@ -29,6 +38,8 @@ _GLOBAL(book3e_idle)
 	wrteei	0
 
 	/* Now check if an interrupt came in while we were soft disabled
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * since we may otherwise lose it (doorbells etc...). We know
 	 * that since PACAHARDIRQEN will have been cleared in that case.
 	 */
@@ -37,22 +48,51 @@ _GLOBAL(book3e_idle)
 	beqlr
 
 	/* Now we are going to mark ourselves as soft and hard enables in
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * since we may otherwise lose it (doorbells etc...).
+	 */
+	lbz	r3,PACAIRQHAPPENED(r13)
+	cmpwi	cr0,r3,0
+	bnelr
+
+	/* Now we are going to mark ourselves as soft and hard enabled in
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * order to be able to take interrupts while asleep. We inform lockdep
 	 * of that. We don't actually turn interrupts on just yet tho.
 	 */
 #ifdef CONFIG_TRACE_IRQFLAGS
 	stdu    r1,-128(r1)
 	bl	.trace_hardirqs_on
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 	li	r0,1
 	stb	r0,PACASOFTIRQEN(r13)
 	stb	r0,PACAHARDIRQEN(r13)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	addi    r1,r1,128
+#endif
+	li	r0,1
+	stb	r0,PACASOFTIRQEN(r13)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	
 	/* Interrupts will make use return to LR, so get something we want
 	 * in there
 	 */
 	bl	1f
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Hard disable interrupts again */
 	wrteei	0
 
@@ -66,6 +106,12 @@ _GLOBAL(book3e_idle)
 	bl	.trace_hardirqs_off
 	addi    r1,r1,128
 #endif
+=======
+	/* And return (interrupts are on) */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* And return (interrupts are on) */
+>>>>>>> refs/remotes/origin/master
 	ld	r0,16(r1)
 	mtlr	r0
 	blr
@@ -73,14 +119,49 @@ _GLOBAL(book3e_idle)
 1:	/* Let's set the _TLF_NAPPING flag so interrupts make us return
 	 * to the right spot
 	*/
+<<<<<<< HEAD
 	clrrdi	r11,r1,THREAD_SHIFT
+=======
+	CURRENT_THREAD_INFO(r11, r1)
+>>>>>>> refs/remotes/origin/master
 	ld	r10,TI_LOCAL_FLAGS(r11)
 	ori	r10,r10,_TLF_NAPPING
 	std	r10,TI_LOCAL_FLAGS(r11)
 
 	/* We can now re-enable hard interrupts and go to sleep */
 	wrteei	1
+<<<<<<< HEAD
 1:	PPC_WAIT(0)
 	b	1b
+=======
+	\loop
+
+.endm
+
+.macro BOOK3E_IDLE_LOOP
+1:
+	PPC_WAIT(0)
+	b	1b
+.endm
+
+/* epapr_ev_idle_start below is patched with the proper hcall
+   opcodes during kernel initialization */
+.macro EPAPR_EV_IDLE_LOOP
+idle_loop:
+	LOAD_REG_IMMEDIATE(r11, EV_HCALL_TOKEN(EV_IDLE))
+
+.global epapr_ev_idle_start
+epapr_ev_idle_start:
+	li      r3, -1
+	nop
+	nop
+	nop
+	b       idle_loop
+.endm
+
+BOOK3E_IDLE epapr_ev_idle EPAPR_EV_IDLE_LOOP
+
+BOOK3E_IDLE book3e_idle BOOK3E_IDLE_LOOP
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CONFIG_PPC64 */

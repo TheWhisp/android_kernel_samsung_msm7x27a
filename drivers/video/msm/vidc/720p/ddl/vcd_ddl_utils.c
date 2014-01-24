@@ -125,8 +125,20 @@ void ddl_pmem_alloc(struct ddl_buf_addr *buff_addr, size_t sz, u32 align)
 					alloc_size,
 					SZ_4K,
 					buff_addr->mem_type);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (IS_ERR_OR_NULL(buff_addr->alloc_handle)) {
 			ERR("\n%s(): DDL ION alloc failed\n", __func__);
+=======
+		if (!buff_addr->alloc_handle) {
+			ERR("\n%s(): DDL ION alloc failed\n",
+					__func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!buff_addr->alloc_handle) {
+			ERR("\n%s(): DDL ION alloc failed\n",
+					__func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 			goto bailout;
 		}
 		ret = ion_phys(ddl_context->video_ion_client,
@@ -306,3 +318,21 @@ void ddl_reset_core_time_variables(u32 index)
 	proc_time[index].ddl_ttotal = 0;
 	proc_time[index].ddl_count = 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+int ddl_get_core_decode_proc_time(u32 *ddl_handle)
+{
+	return 0;
+}
+
+void ddl_reset_avg_dec_time(u32 *ddl_handle)
+{
+	return;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0

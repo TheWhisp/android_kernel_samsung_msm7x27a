@@ -26,7 +26,13 @@
 #include <linux/module.h>
 
 #include <asm/m32r.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/hardirq.h>
 #include <asm/mmu_context.h>
@@ -79,7 +85,11 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long error_code,
 	struct mm_struct *mm;
 	struct vm_area_struct * vma;
 	unsigned long page, addr;
+<<<<<<< HEAD
 	int write;
+=======
+	unsigned long flags = 0;
+>>>>>>> refs/remotes/origin/master
 	int fault;
 	siginfo_t info;
 
@@ -118,6 +128,12 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long error_code,
 	if (in_atomic() || !mm)
 		goto bad_area_nosemaphore;
 
+<<<<<<< HEAD
+=======
+	if (error_code & ACE_USERMODE)
+		flags |= FAULT_FLAG_USER;
+
+>>>>>>> refs/remotes/origin/master
 	/* When running in the kernel we expect faults to occur only to
 	 * addresses in user space.  All other faults represent errors in the
 	 * kernel and should generate an OOPS.  Unfortunately, in the case of an
@@ -167,14 +183,21 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long error_code,
  */
 good_area:
 	info.si_code = SEGV_ACCERR;
+<<<<<<< HEAD
 	write = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (error_code & (ACE_WRITE|ACE_PROTECTION)) {
 		default:	/* 3: write, present */
 			/* fall through */
 		case ACE_WRITE:	/* write, not present */
 			if (!(vma->vm_flags & VM_WRITE))
 				goto bad_area;
+<<<<<<< HEAD
 			write++;
+=======
+			flags |= FAULT_FLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case ACE_PROTECTION:	/* read, present */
 		case 0:		/* read, not present */
@@ -195,7 +218,11 @@ good_area:
 	 */
 	addr = (address & PAGE_MASK);
 	set_thread_fault_code(error_code);
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, addr, write ? FAULT_FLAG_WRITE : 0);
+=======
+	fault = handle_mm_fault(mm, vma, addr, flags);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;

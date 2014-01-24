@@ -7,7 +7,11 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 #include <linux/string.h>
 #include <linux/kernel.h>
@@ -15,11 +19,17 @@
 #include <linux/platform_device.h>
 #include <linux/leds.h>
 #include <linux/etherdevice.h>
+<<<<<<< HEAD
 #include <linux/reboot.h>
 #include <linux/time.h>
 #include <linux/io.h>
 #include <linux/gpio.h>
 #include <linux/leds.h>
+=======
+#include <linux/time.h>
+#include <linux/io.h>
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/bootinfo.h>
 #include <asm/irq.h>

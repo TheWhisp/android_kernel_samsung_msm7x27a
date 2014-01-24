@@ -30,7 +30,10 @@ extern void __negdi2(void);
 extern void iounmap(volatile void * __iomem);
 
 /* Platform dependent support */
+<<<<<<< HEAD
 EXPORT_SYMBOL(kernel_thread);
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(get_cmos_time);
 EXPORT_SYMBOL(loops_per_usec);
 

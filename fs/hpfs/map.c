@@ -8,15 +8,30 @@
 
 #include "hpfs_fn.h"
 
+<<<<<<< HEAD
 unsigned *hpfs_map_dnode_bitmap(struct super_block *s, struct quad_buffer_head *qbh)
+=======
+__le32 *hpfs_map_dnode_bitmap(struct super_block *s, struct quad_buffer_head *qbh)
+>>>>>>> refs/remotes/origin/master
 {
 	return hpfs_map_4sectors(s, hpfs_sb(s)->sb_dmap, qbh, 0);
 }
 
+<<<<<<< HEAD
 unsigned int *hpfs_map_bitmap(struct super_block *s, unsigned bmp_block,
 			 struct quad_buffer_head *qbh, char *id)
 {
 	secno sec;
+<<<<<<< HEAD
+=======
+__le32 *hpfs_map_bitmap(struct super_block *s, unsigned bmp_block,
+			 struct quad_buffer_head *qbh, char *id)
+{
+	secno sec;
+	__le32 *ret;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned n_bands = (hpfs_sb(s)->sb_fs_size + 0x3fff) >> 14;
 	if (hpfs_sb(s)->sb_chk) if (bmp_block >= n_bands) {
 		hpfs_error(s, "hpfs_map_bitmap called with bad parameter: %08x at %s", bmp_block, id);
@@ -27,7 +42,27 @@ unsigned int *hpfs_map_bitmap(struct super_block *s, unsigned bmp_block,
 		hpfs_error(s, "invalid bitmap block pointer %08x -> %08x at %s", bmp_block, sec, id);
 		return NULL;
 	}
+<<<<<<< HEAD
 	return hpfs_map_4sectors(s, sec, qbh, 4);
+=======
+	ret = hpfs_map_4sectors(s, sec, qbh, 4);
+	if (ret) hpfs_prefetch_bitmap(s, bmp_block + 1);
+	return ret;
+}
+
+void hpfs_prefetch_bitmap(struct super_block *s, unsigned bmp_block)
+{
+	unsigned to_prefetch, next_prefetch;
+	unsigned n_bands = (hpfs_sb(s)->sb_fs_size + 0x3fff) >> 14;
+	if (unlikely(bmp_block >= n_bands))
+		return;
+	to_prefetch = le32_to_cpu(hpfs_sb(s)->sb_bmp_dir[bmp_block]);
+	if (unlikely(bmp_block + 1 >= n_bands))
+		next_prefetch = 0;
+	else
+		next_prefetch = le32_to_cpu(hpfs_sb(s)->sb_bmp_dir[bmp_block + 1]);
+	hpfs_prefetch_sectors(s, to_prefetch, 4 + 4 * (to_prefetch + 4 == next_prefetch));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -90,18 +125,30 @@ unsigned char *hpfs_load_code_page(struct super_block *s, secno cps)
 	return cp_table;
 }
 
+<<<<<<< HEAD
 secno *hpfs_load_bitmap_directory(struct super_block *s, secno bmp)
+=======
+__le32 *hpfs_load_bitmap_directory(struct super_block *s, secno bmp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct buffer_head *bh;
 	int n = (hpfs_sb(s)->sb_fs_size + 0x200000 - 1) >> 21;
 	int i;
+<<<<<<< HEAD
 	secno *b;
+=======
+	__le32 *b;
+>>>>>>> refs/remotes/origin/master
 	if (!(b = kmalloc(n * 512, GFP_KERNEL))) {
 		printk("HPFS: can't allocate memory for bitmap directory\n");
 		return NULL;
 	}	
 	for (i=0;i<n;i++) {
+<<<<<<< HEAD
 		secno *d = hpfs_map_sector(s, bmp+i, &bh, n - i - 1);
+=======
+		__le32 *d = hpfs_map_sector(s, bmp+i, &bh, n - i - 1);
+>>>>>>> refs/remotes/origin/master
 		if (!d) {
 			kfree(b);
 			return NULL;
@@ -131,16 +178,26 @@ struct fnode *hpfs_map_fnode(struct super_block *s, ino_t ino, struct buffer_hea
 					(unsigned long)ino);
 				goto bail;
 			}
+<<<<<<< HEAD
 			if (!fnode->dirflag) {
 				if ((unsigned)fnode->btree.n_used_nodes + (unsigned)fnode->btree.n_free_nodes !=
 				    (fnode->btree.internal ? 12 : 8)) {
+=======
+			if (!fnode_is_dir(fnode)) {
+				if ((unsigned)fnode->btree.n_used_nodes + (unsigned)fnode->btree.n_free_nodes !=
+				    (bp_internal(&fnode->btree) ? 12 : 8)) {
+>>>>>>> refs/remotes/origin/master
 					hpfs_error(s,
 					   "bad number of nodes in fnode %08lx",
 					    (unsigned long)ino);
 					goto bail;
 				}
 				if (le16_to_cpu(fnode->btree.first_free) !=
+<<<<<<< HEAD
 				    8 + fnode->btree.n_used_nodes * (fnode->btree.internal ? 8 : 12)) {
+=======
+				    8 + fnode->btree.n_used_nodes * (bp_internal(&fnode->btree) ? 8 : 12)) {
+>>>>>>> refs/remotes/origin/master
 					hpfs_error(s,
 					    "bad first_free pointer in fnode %08lx",
 					    (unsigned long)ino);
@@ -188,12 +245,20 @@ struct anode *hpfs_map_anode(struct super_block *s, anode_secno ano, struct buff
 				goto bail;
 			}
 			if ((unsigned)anode->btree.n_used_nodes + (unsigned)anode->btree.n_free_nodes !=
+<<<<<<< HEAD
 			    (anode->btree.internal ? 60 : 40)) {
+=======
+			    (bp_internal(&anode->btree) ? 60 : 40)) {
+>>>>>>> refs/remotes/origin/master
 				hpfs_error(s, "bad number of nodes in anode %08x", ano);
 				goto bail;
 			}
 			if (le16_to_cpu(anode->btree.first_free) !=
+<<<<<<< HEAD
 			    8 + anode->btree.n_used_nodes * (anode->btree.internal ? 8 : 12)) {
+=======
+			    8 + anode->btree.n_used_nodes * (bp_internal(&anode->btree) ? 8 : 12)) {
+>>>>>>> refs/remotes/origin/master
 				hpfs_error(s, "bad first_free pointer in anode %08x", ano);
 				goto bail;
 			}

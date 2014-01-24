@@ -27,8 +27,14 @@
 #include <linux/gfp.h>
 
 #include <asm/sections.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/vac-ops.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/vaddrs.h>
@@ -46,6 +52,7 @@ EXPORT_SYMBOL(phys_base);
 unsigned long pfn_base;
 EXPORT_SYMBOL(pfn_base);
 
+<<<<<<< HEAD
 unsigned long page_kernel;
 EXPORT_SYMBOL(page_kernel);
 
@@ -53,6 +60,9 @@ struct sparc_phys_banks sp_banks[SPARC_PHYS_BANKS+1];
 unsigned long sparc_unmapped_base;
 
 struct pgtable_cache_struct pgt_quicklists;
+=======
+struct sparc_phys_banks sp_banks[SPARC_PHYS_BANKS+1];
+>>>>>>> refs/remotes/origin/master
 
 /* Initial ramdisk setup */
 extern unsigned int sparc_ramdisk_image;
@@ -60,6 +70,7 @@ extern unsigned int sparc_ramdisk_size;
 
 unsigned long highstart_pfn, highend_pfn;
 
+<<<<<<< HEAD
 pte_t *kmap_pte;
 pgprot_t kmap_prot;
 
@@ -73,11 +84,14 @@ void __init kmap_init(void)
 	kmap_prot = __pgprot(SRMMU_ET_PTE | SRMMU_PRIV | SRMMU_CACHE);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void show_mem(unsigned int filter)
 {
 	printk("Mem-info:\n");
 	show_free_areas(filter);
 	printk("Free swap:       %6ldkB\n",
+<<<<<<< HEAD
 	       nr_swap_pages << (PAGE_SHIFT-10));
 	printk("%ld pages of RAM\n", totalram_pages);
 	printk("%ld free pages\n", nr_free_pages());
@@ -108,6 +122,13 @@ void __init sparc_context_init(int numctx)
 	for(ctx = 0; ctx < numctx; ctx++)
 		add_to_free_ctxlist(ctx_list_pool + ctx);
 }
+=======
+	       get_nr_swap_pages() << (PAGE_SHIFT-10));
+	printk("%ld pages of RAM\n", totalram_pages);
+	printk("%ld free pages\n", nr_free_pages());
+}
+
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned long cmdline_memory_size;
 unsigned long last_valid_pfn;
@@ -288,6 +309,7 @@ unsigned long __init bootmem_init(unsigned long *pages_avail)
 }
 
 /*
+<<<<<<< HEAD
  * check_pgt_cache
  *
  * This is called at the end of unmapping of VMA (zap_page_range),
@@ -305,10 +327,13 @@ void check_pgt_cache(void)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * paging_init() sets up the page tables: We call the MMU specific
  * init routine based upon the Sun model type on the Sparc.
  *
  */
+<<<<<<< HEAD
 extern void sun4c_paging_init(void);
 extern void srmmu_paging_init(void);
 extern void device_scan(void);
@@ -360,6 +385,14 @@ void __init paging_init(void)
 	protection_map[14] = PAGE_SHARED;
 	protection_map[15] = PAGE_SHARED;
 	btfixup();
+=======
+extern void srmmu_paging_init(void);
+extern void device_scan(void);
+
+void __init paging_init(void)
+{
+	srmmu_paging_init();
+>>>>>>> refs/remotes/origin/master
 	prom_build_devicetree();
 	of_fill_in_cpu_data();
 	device_scan();
@@ -390,6 +423,7 @@ static void map_high_region(unsigned long start_pfn, unsigned long end_pfn)
 	printk("mapping high region %08lx - %08lx\n", start_pfn, end_pfn);
 #endif
 
+<<<<<<< HEAD
 	for (tmp = start_pfn; tmp < end_pfn; tmp++) {
 		struct page *page = pfn_to_page(tmp);
 
@@ -398,14 +432,21 @@ static void map_high_region(unsigned long start_pfn, unsigned long end_pfn)
 		__free_page(page);
 		totalhigh_pages++;
 	}
+=======
+	for (tmp = start_pfn; tmp < end_pfn; tmp++)
+		free_highmem_page(pfn_to_page(tmp));
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	int codepages = 0;
 	int datapages = 0;
 	int initpages = 0; 
 	int reservedpages = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (PKMAP_BASE+LAST_PKMAP*PAGE_SIZE >= FIXADDR_START) {
@@ -437,15 +478,22 @@ void __init mem_init(void)
 
 	max_mapnr = last_valid_pfn - pfn_base;
 	high_memory = __va(max_low_pfn << PAGE_SHIFT);
+<<<<<<< HEAD
 
 	totalram_pages = free_all_bootmem();
+=======
+	free_all_bootmem();
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; sp_banks[i].num_bytes != 0; i++) {
 		unsigned long start_pfn = sp_banks[i].base_addr >> PAGE_SHIFT;
 		unsigned long end_pfn = (sp_banks[i].base_addr + sp_banks[i].num_bytes) >> PAGE_SHIFT;
 
+<<<<<<< HEAD
 		num_physpages += sp_banks[i].num_bytes >> PAGE_SHIFT;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (end_pfn <= highstart_pfn)
 			continue;
 
@@ -455,6 +503,7 @@ void __init mem_init(void)
 		map_high_region(start_pfn, end_pfn);
 	}
 	
+<<<<<<< HEAD
 	totalram_pages += totalhigh_pages;
 
 	codepages = (((unsigned long) &_etext) - ((unsigned long)&_start));
@@ -478,10 +527,14 @@ void __init mem_init(void)
 	       datapages << (PAGE_SHIFT-10), 
 	       initpages << (PAGE_SHIFT-10),
 	       totalhigh_pages << (PAGE_SHIFT-10));
+=======
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 void free_initmem (void)
 {
+<<<<<<< HEAD
 	unsigned long addr;
 	unsigned long freed;
 
@@ -501,11 +554,15 @@ void free_initmem (void)
 	}
 	printk(KERN_INFO "Freeing unused kernel memory: %ldk freed\n",
 		freed >> 10);
+=======
+	free_initmem_default(POISON_FREE_INITMEM);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_BLK_DEV_INITRD
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	if (start < end)
 		printk(KERN_INFO "Freeing initrd memory: %ldk freed\n",
 			(end - start) >> 10);
@@ -521,6 +578,10 @@ void free_initrd_mem(unsigned long start, unsigned long end)
 		totalram_pages++;
 		num_physpages++;
 	}
+=======
+	free_reserved_area((void *)start, (void *)end, POISON_FREE_INITMEM,
+			   "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 

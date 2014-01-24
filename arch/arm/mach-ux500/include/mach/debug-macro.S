@@ -35,7 +35,11 @@
 #define UX500_UART(n)	__UX500_UART(n)
 #define UART_BASE	UX500_UART(CONFIG_UX500_DEBUG_UART)
 
+<<<<<<< HEAD
 	.macro	addruart, rp, rv
+=======
+	.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldr	\rp, =UART_BASE				@ no, physical address
 	ldr	\rv, =IO_ADDRESS(UART_BASE)		@ yes, virtual address
 	.endm

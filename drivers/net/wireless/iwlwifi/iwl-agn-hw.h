@@ -5,7 +5,15 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2007 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2007 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2007 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -22,7 +30,11 @@
  * USA
  *
  * The full GNU General Public License is included in this distribution
+<<<<<<< HEAD
  * in the file called LICENSE.GPL.
+=======
+ * in the file called COPYING.
+>>>>>>> refs/remotes/origin/master
  *
  * Contact Information:
  *  Intel Linux Wireless <ilw@linux.intel.com>
@@ -30,7 +42,15 @@
  *
  * BSD LICENSE
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2005 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -78,6 +98,8 @@
 #define IWLAGN_RTC_DATA_SIZE (IWLAGN_RTC_DATA_UPPER_BOUND - \
 				IWLAGN_RTC_DATA_LOWER_BOUND)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* RSSI to dBm */
 #define IWLAGN_RSSI_OFFSET	44
 
@@ -89,6 +111,30 @@
 #define PCI_CFG_LINK_CTRL_VAL_L1_EN	0x02
 
 #define IWLAGN_DEFAULT_TX_RETRY  15
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define IWL60_RTC_INST_LOWER_BOUND		(0x000000)
+#define IWL60_RTC_INST_UPPER_BOUND		(0x040000)
+#define IWL60_RTC_DATA_LOWER_BOUND		(0x800000)
+#define IWL60_RTC_DATA_UPPER_BOUND		(0x814000)
+#define IWL60_RTC_INST_SIZE \
+	(IWL60_RTC_INST_UPPER_BOUND - IWL60_RTC_INST_LOWER_BOUND)
+#define IWL60_RTC_DATA_SIZE \
+	(IWL60_RTC_DATA_UPPER_BOUND - IWL60_RTC_DATA_LOWER_BOUND)
+
+/* RSSI to dBm */
+#define IWLAGN_RSSI_OFFSET	44
+
+#define IWLAGN_DEFAULT_TX_RETRY			15
+#define IWLAGN_MGMT_DFAULT_RETRY_LIMIT		3
+#define IWLAGN_RTS_DFAULT_RETRY_LIMIT		60
+#define IWLAGN_BAR_DFAULT_RETRY_LIMIT		60
+#define IWLAGN_LOW_RETRY_LIMIT			7
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Limit range of txpower output target to be between these values */
 #define IWLAGN_TX_POWER_TARGET_POWER_MIN	(0)	/* 0 dBm: 1 milliwatt */
@@ -96,9 +142,11 @@
 
 /* EEPROM */
 #define IWLAGN_EEPROM_IMG_SIZE		2048
+<<<<<<< HEAD
 
 #define IWLAGN_CMD_FIFO_NUM		7
 #define IWLAGN_NUM_QUEUES		20
+<<<<<<< HEAD
 #define IWLAGN_NUM_AMPDU_QUEUES		10
 #define IWLAGN_FIRST_AMPDU_QUEUE	10
 
@@ -114,5 +162,24 @@ struct iwlagn_scd_bc_tbl {
 	__le16 tfd_offset[TFD_QUEUE_BC_SIZE];
 } __packed;
 
+=======
+#define IWLAGN_NUM_AMPDU_QUEUES		9
+#define IWLAGN_FIRST_AMPDU_QUEUE	11
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* OTP */
+/* lower blocks contain EEPROM image and calibration data */
+#define OTP_LOW_IMAGE_SIZE		(2 * 512 * sizeof(u16)) /* 2 KB */
+/* high blocks contain PAPD data */
+#define OTP_HIGH_IMAGE_SIZE_6x00        (6 * 512 * sizeof(u16)) /* 6 KB */
+#define OTP_HIGH_IMAGE_SIZE_1000        (0x200 * sizeof(u16)) /* 1024 bytes */
+#define OTP_MAX_LL_ITEMS_1000		(3)	/* OTP blocks for 1000 */
+#define OTP_MAX_LL_ITEMS_6x00		(4)	/* OTP blocks for 6x00 */
+#define OTP_MAX_LL_ITEMS_6x50		(7)	/* OTP blocks for 6x50 */
+#define OTP_MAX_LL_ITEMS_2x00		(4)	/* OTP blocks for 2x00 */
+
+
+#define IWLAGN_NUM_QUEUES		20
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __iwl_agn_hw_h__ */

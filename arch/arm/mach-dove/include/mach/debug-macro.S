@@ -8,7 +8,11 @@
 
 #include <mach/bridge-regs.h>
 
+<<<<<<< HEAD
 	.macro	addruart, rp, rv
+=======
+	.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldr	\rp, =DOVE_SB_REGS_PHYS_BASE
 	ldr	\rv, =DOVE_SB_REGS_VIRT_BASE
 	orr	\rp, \rp, #0x00012000

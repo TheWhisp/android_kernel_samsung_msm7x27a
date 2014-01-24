@@ -32,7 +32,11 @@ static int fat_ioctl_get_attributes(struct inode *inode, u32 __user *user_attr)
 
 static int fat_ioctl_set_attributes(struct file *file, u32 __user *user_attr)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct msdos_sb_info *sbi = MSDOS_SB(inode->i_sb);
 	int is_dir = S_ISDIR(inode->i_mode);
 	u32 attr, oldattr;
@@ -43,10 +47,21 @@ static int fat_ioctl_set_attributes(struct file *file, u32 __user *user_attr)
 	if (err)
 		goto out;
 
+<<<<<<< HEAD
 	mutex_lock(&inode->i_mutex);
+<<<<<<< HEAD
 	err = mnt_want_write(file->f_path.mnt);
+=======
+	err = mnt_want_write_file(file);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		goto out_unlock_inode;
+=======
+	err = mnt_want_write_file(file);
+	if (err)
+		goto out;
+	mutex_lock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * ATTR_VOLUME and ATTR_DIR cannot be changed; this also
@@ -73,14 +88,22 @@ static int fat_ioctl_set_attributes(struct file *file, u32 __user *user_attr)
 	/* The root directory has no attributes */
 	if (inode->i_ino == MSDOS_ROOT_INO && attr != ATTR_DIR) {
 		err = -EINVAL;
+<<<<<<< HEAD
 		goto out_drop_write;
+=======
+		goto out_unlock_inode;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (sbi->options.sys_immutable &&
 	    ((attr | oldattr) & ATTR_SYS) &&
 	    !capable(CAP_LINUX_IMMUTABLE)) {
 		err = -EPERM;
+<<<<<<< HEAD
 		goto out_drop_write;
+=======
+		goto out_unlock_inode;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -90,12 +113,20 @@ static int fat_ioctl_set_attributes(struct file *file, u32 __user *user_attr)
 	 */
 	err = security_inode_setattr(file->f_path.dentry, &ia);
 	if (err)
+<<<<<<< HEAD
 		goto out_drop_write;
+=======
+		goto out_unlock_inode;
+>>>>>>> refs/remotes/origin/master
 
 	/* This MUST be done before doing anything irreversible... */
 	err = fat_setattr(file->f_path.dentry, &ia);
 	if (err)
+<<<<<<< HEAD
 		goto out_drop_write;
+=======
+		goto out_unlock_inode;
+>>>>>>> refs/remotes/origin/master
 
 	fsnotify_change(file->f_path.dentry, ia.ia_valid);
 	if (sbi->options.sys_immutable) {
@@ -107,17 +138,39 @@ static int fat_ioctl_set_attributes(struct file *file, u32 __user *user_attr)
 
 	fat_save_attrs(inode, attr);
 	mark_inode_dirty(inode);
+<<<<<<< HEAD
 out_drop_write:
+<<<<<<< HEAD
 	mnt_drop_write(file->f_path.mnt);
+=======
+	mnt_drop_write_file(file);
+>>>>>>> refs/remotes/origin/cm-10.0
 out_unlock_inode:
 	mutex_unlock(&inode->i_mutex);
+=======
+out_unlock_inode:
+	mutex_unlock(&inode->i_mutex);
+	mnt_drop_write_file(file);
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }
 
+<<<<<<< HEAD
 long fat_generic_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+static int fat_ioctl_get_volume_id(struct inode *inode, u32 __user *user_attr)
+{
+	struct msdos_sb_info *sbi = MSDOS_SB(inode->i_sb);
+	return put_user(sbi->vol_id, user_attr);
+}
+
+long fat_generic_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+{
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	u32 __user *user_attr = (u32 __user *)arg;
 
 	switch (cmd) {
@@ -125,6 +178,11 @@ long fat_generic_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		return fat_ioctl_get_attributes(inode, user_attr);
 	case FAT_IOCTL_SET_ATTRIBUTES:
 		return fat_ioctl_set_attributes(filp, user_attr);
+<<<<<<< HEAD
+=======
+	case FAT_IOCTL_GET_VOLUME_ID:
+		return fat_ioctl_get_volume_id(inode, user_attr);
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -ENOTTY;	/* Inappropriate ioctl for device */
 	}
@@ -149,12 +207,28 @@ static int fat_file_release(struct inode *inode, struct file *filp)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int fat_file_fsync(struct file *filp, int datasync)
+=======
+int fat_file_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fat_file_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = filp->f_mapping->host;
 	int res, err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	res = generic_file_fsync(filp, datasync);
+=======
+	res = generic_file_fsync(filp, start, end, datasync);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = generic_file_fsync(filp, start, end, datasync);
+>>>>>>> refs/remotes/origin/master
 	err = sync_mapping_buffers(MSDOS_SB(inode->i_sb)->fat_inode->i_mapping);
 
 	return res ? res : err;
@@ -307,6 +381,14 @@ int fat_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat)
 	struct inode *inode = dentry->d_inode;
 	generic_fillattr(inode, stat);
 	stat->blksize = MSDOS_SB(inode->i_sb)->cluster_size;
+<<<<<<< HEAD
+=======
+
+	if (MSDOS_SB(inode->i_sb)->options.nfs == FAT_NFS_NOSTALE_RO) {
+		/* Use i_pos for ino. This is used as fileid of nfs. */
+		stat->ino = fat_i_pos_read(MSDOS_SB(inode->i_sb), inode);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL_GPL(fat_getattr);
@@ -314,7 +396,15 @@ EXPORT_SYMBOL_GPL(fat_getattr);
 static int fat_sanitize_mode(const struct msdos_sb_info *sbi,
 			     struct inode *inode, umode_t *mode_ptr)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mask, perm;
+=======
+	umode_t mask, perm;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mask, perm;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Note, the basic check is already done by a caller of
@@ -351,9 +441,19 @@ static int fat_sanitize_mode(const struct msdos_sb_info *sbi,
 
 static int fat_allow_set_time(struct msdos_sb_info *sbi, struct inode *inode)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t allow_utime = sbi->options.allow_utime;
+=======
+	umode_t allow_utime = sbi->options.allow_utime;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (current_fsuid() != inode->i_uid) {
+=======
+	umode_t allow_utime = sbi->options.allow_utime;
+
+	if (!uid_eq(current_fsuid(), inode->i_uid)) {
+>>>>>>> refs/remotes/origin/master
 		if (in_group_p(inode->i_gid))
 			allow_utime >>= 3;
 		if (allow_utime & MAY_WRITE)
@@ -397,6 +497,16 @@ int fat_setattr(struct dentry *dentry, struct iattr *attr)
 	 * sequence.
 	 */
 	if (attr->ia_valid & ATTR_SIZE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		inode_dio_wait(inode);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inode_dio_wait(inode);
+
+>>>>>>> refs/remotes/origin/master
 		if (attr->ia_size > inode->i_size) {
 			error = fat_cont_expand(inode, attr->ia_size);
 			if (error || attr->ia_valid == ATTR_SIZE)
@@ -406,9 +516,15 @@ int fat_setattr(struct dentry *dentry, struct iattr *attr)
 	}
 
 	if (((attr->ia_valid & ATTR_UID) &&
+<<<<<<< HEAD
 	     (attr->ia_uid != sbi->options.fs_uid)) ||
 	    ((attr->ia_valid & ATTR_GID) &&
 	     (attr->ia_gid != sbi->options.fs_gid)) ||
+=======
+	     (!uid_eq(attr->ia_uid, sbi->options.fs_uid))) ||
+	    ((attr->ia_valid & ATTR_GID) &&
+	     (!gid_eq(attr->ia_gid, sbi->options.fs_gid))) ||
+>>>>>>> refs/remotes/origin/master
 	    ((attr->ia_valid & ATTR_MODE) &&
 	     (attr->ia_mode & ~FAT_VALID_MODE)))
 		error = -EPERM;
@@ -429,8 +545,21 @@ int fat_setattr(struct dentry *dentry, struct iattr *attr)
 	}
 
 	if (attr->ia_valid & ATTR_SIZE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		truncate_setsize(inode, attr->ia_size);
 		fat_truncate_blocks(inode, attr->ia_size);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		down_write(&MSDOS_I(inode)->truncate_lock);
+		truncate_setsize(inode, attr->ia_size);
+		fat_truncate_blocks(inode, attr->ia_size);
+		up_write(&MSDOS_I(inode)->truncate_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	setattr_copy(inode, attr);

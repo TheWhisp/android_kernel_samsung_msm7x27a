@@ -24,6 +24,14 @@
 #include <linux/vmalloc.h>
 #include <linux/firmware.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <sound/core.h>
 #include <sound/hwdep.h>
@@ -34,6 +42,7 @@
 #include "pcxhr_mix22.h"
 
 
+<<<<<<< HEAD
 #if defined(CONFIG_FW_LOADER) || defined(CONFIG_FW_LOADER_MODULE)
 #if !defined(CONFIG_USE_PCXHRLOADER) && !defined(CONFIG_SND_PCXHR) /* built-in kernel */
 #define SND_PCXHR_FW_LOADER	/* use the standard firmware loader */
@@ -41,6 +50,8 @@
 #endif
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int pcxhr_sub_init(struct pcxhr_mgr *mgr);
 /*
  * get basic information and init pcxhr card
@@ -65,10 +76,17 @@ static int pcxhr_init_board(struct pcxhr_mgr *mgr)
 	err = pcxhr_send_msg(mgr, &rmh);
 	if (err)
 		return err;
+<<<<<<< HEAD
 	/* test 8 or 12 phys out */
 	if ((rmh.stat[0] & MASK_FIRST_FIELD) != mgr->playback_chips * 2)
 		return -EINVAL;
 	/* test 8 or 2 phys in */
+=======
+	/* test 4, 8 or 12 phys out */
+	if ((rmh.stat[0] & MASK_FIRST_FIELD) < mgr->playback_chips * 2)
+		return -EINVAL;
+	/* test 4, 8 or 2 phys in */
+>>>>>>> refs/remotes/origin/master
 	if (((rmh.stat[0] >> (2 * FIELD_SIZE)) & MASK_FIRST_FIELD) <
 	    mgr->capture_chips * 2)
 		return -EINVAL;
@@ -361,8 +379,11 @@ static int pcxhr_dsp_load(struct pcxhr_mgr *mgr, int index,
 /*
  * fw loader entry
  */
+<<<<<<< HEAD
 #ifdef SND_PCXHR_FW_LOADER
 
+=======
+>>>>>>> refs/remotes/origin/master
 int pcxhr_setup_firmware(struct pcxhr_mgr *mgr)
 {
 	static char *fw_files[][5] = {
@@ -423,6 +444,7 @@ MODULE_FIRMWARE("pcxhr/xlxc924.dat");
 MODULE_FIRMWARE("pcxhr/dspe924.e56");
 MODULE_FIRMWARE("pcxhr/dspb924.b56");
 MODULE_FIRMWARE("pcxhr/dspd222.d56");
+<<<<<<< HEAD
 
 
 #else /* old style firmware loading */
@@ -500,3 +522,5 @@ int pcxhr_setup_firmware(struct pcxhr_mgr *mgr)
 }
 
 #endif /* SND_PCXHR_FW_LOADER */
+=======
+>>>>>>> refs/remotes/origin/master

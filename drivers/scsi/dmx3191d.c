@@ -68,8 +68,13 @@ static struct scsi_host_template dmx3191d_driver_template = {
 	.use_clustering		= DISABLE_CLUSTERING,
 };
 
+<<<<<<< HEAD
 static int __devinit dmx3191d_probe_one(struct pci_dev *pdev,
 		const struct pci_device_id *id)
+=======
+static int dmx3191d_probe_one(struct pci_dev *pdev,
+			      const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *shost;
 	unsigned long io;
@@ -123,7 +128,11 @@ static int __devinit dmx3191d_probe_one(struct pci_dev *pdev,
 	return error;
 }
 
+<<<<<<< HEAD
 static void __devexit dmx3191d_remove_one(struct pci_dev *pdev)
+=======
+static void dmx3191d_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *shost = pci_get_drvdata(pdev);
 
@@ -150,7 +159,11 @@ static struct pci_driver dmx3191d_pci_driver = {
 	.name		= DMX3191D_DRIVER_NAME,
 	.id_table	= dmx3191d_pci_tbl,
 	.probe		= dmx3191d_probe_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(dmx3191d_remove_one),
+=======
+	.remove		= dmx3191d_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init dmx3191d_init(void)

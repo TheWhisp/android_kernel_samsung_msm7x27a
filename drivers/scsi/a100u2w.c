@@ -1082,8 +1082,13 @@ static struct scsi_host_template inia100_template = {
 	.use_clustering		= ENABLE_CLUSTERING,
 };
 
+<<<<<<< HEAD
 static int __devinit inia100_probe_one(struct pci_dev *pdev,
 		const struct pci_device_id *id)
+=======
+static int inia100_probe_one(struct pci_dev *pdev,
+			     const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *shost;
 	struct orc_host *host;
@@ -1197,7 +1202,11 @@ out:
 	return error;
 }
 
+<<<<<<< HEAD
 static void __devexit inia100_remove_one(struct pci_dev *pdev)
+=======
+static void inia100_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *shost = pci_get_drvdata(pdev);
 	struct orc_host *host = (struct orc_host *)shost->hostdata;
@@ -1224,7 +1233,11 @@ static struct pci_driver inia100_pci_driver = {
 	.name		= "inia100",
 	.id_table	= inia100_pci_tbl,
 	.probe		= inia100_probe_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(inia100_remove_one),
+=======
+	.remove		= inia100_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init inia100_init(void)

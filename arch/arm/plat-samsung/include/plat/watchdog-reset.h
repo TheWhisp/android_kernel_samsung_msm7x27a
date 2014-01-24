@@ -10,26 +10,46 @@
  * published by the Free Software Foundation.
 */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <plat/clock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/regs-watchdog.h>
 #include <mach/map.h>
 
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
 static inline void arch_wdt_reset(void)
 {
 	struct clk *wdtclk;
 
+=======
+#include <linux/delay.h>
+
+static inline void arch_wdt_reset(void)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk("arch_reset: attempting watchdog reset\n");
 
 	__raw_writel(0, S3C2410_WTCON);	  /* disable watchdog, to be safe  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	wdtclk = clk_get(NULL, "watchdog");
 	if (!IS_ERR(wdtclk)) {
 		clk_enable(wdtclk);
 	} else
 		printk(KERN_WARNING "%s: warning: cannot get watchdog clock\n", __func__);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!IS_ERR(s3c2410_wdtclk))
+		clk_enable(s3c2410_wdtclk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* put initial values into count and data */
 	__raw_writel(0x80, S3C2410_WTCNT);
@@ -47,3 +67,13 @@ static inline void arch_wdt_reset(void)
 	/* delay to allow the serial port to show the message */
 	mdelay(50);
 }
+=======
+#ifndef __PLAT_SAMSUNG_WATCHDOG_RESET_H
+#define __PLAT_SAMSUNG_WATCHDOG_RESET_H
+
+extern void samsung_wdt_reset(void);
+extern void samsung_wdt_reset_of_init(void);
+extern void samsung_wdt_reset_init(void __iomem *base);
+
+#endif /* __PLAT_SAMSUNG_WATCHDOG_RESET_H */
+>>>>>>> refs/remotes/origin/master

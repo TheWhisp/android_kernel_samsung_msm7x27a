@@ -108,11 +108,26 @@
  * 1.31- Add support for num Z pipes from GET_PARAM
  * 1.32- fixes for rv740 setup
  * 1.33- Add r6xx/r7xx const buffer support
+<<<<<<< HEAD
  */
 #define DRIVER_MAJOR		1
 #define DRIVER_MINOR		33
 #define DRIVER_PATCHLEVEL	0
 
+=======
+ * 1.34- fix evergreen/cayman GS register
+ */
+#define DRIVER_MAJOR		1
+#define DRIVER_MINOR		34
+#define DRIVER_PATCHLEVEL	0
+
+long radeon_drm_ioctl(struct file *filp,
+		      unsigned int cmd, unsigned long arg);
+
+/* The rest of the file is DEPRECATED! */
+#ifdef CONFIG_DRM_RADEON_UMS
+
+>>>>>>> refs/remotes/origin/master
 enum radeon_cp_microcode_version {
 	UCODE_R100,
 	UCODE_R200,
@@ -366,7 +381,10 @@ extern int radeon_cp_buffers(struct drm_device *dev, void *data, struct drm_file
 extern u32 radeon_read_fb_location(drm_radeon_private_t *dev_priv);
 extern void radeon_write_agp_location(drm_radeon_private_t *dev_priv, u32 agp_loc);
 extern void radeon_write_agp_base(drm_radeon_private_t *dev_priv, u64 agp_base);
+<<<<<<< HEAD
 extern u32 RADEON_READ_MM(drm_radeon_private_t *dev_priv, int addr);
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern void radeon_freelist_reset(struct drm_device * dev);
 extern struct drm_buf *radeon_freelist_get(struct drm_device * dev);
@@ -419,8 +437,11 @@ extern int radeon_driver_open(struct drm_device *dev,
 			      struct drm_file *file_priv);
 extern long radeon_compat_ioctl(struct file *filp, unsigned int cmd,
 				unsigned long arg);
+<<<<<<< HEAD
 extern long radeon_kms_compat_ioctl(struct file *filp, unsigned int cmd,
 				    unsigned long arg);
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern int radeon_master_create(struct drm_device *dev, struct drm_master *master);
 extern void radeon_master_destroy(struct drm_device *dev, struct drm_master *master);
@@ -463,6 +484,7 @@ extern void r600_blit_swap(struct drm_device *dev,
 			   int sx, int sy, int dx, int dy,
 			   int w, int h, int src_pitch, int dst_pitch, int cpp);
 
+<<<<<<< HEAD
 /* atpx handler */
 #if defined(CONFIG_VGA_SWITCHEROO)
 void radeon_register_atpx_handler(void);
@@ -472,6 +494,8 @@ static inline void radeon_register_atpx_handler(void) {}
 static inline void radeon_unregister_atpx_handler(void) {}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Flags for stats.boxes
  */
 #define RADEON_BOX_DMA_IDLE      0x1
@@ -2168,4 +2192,9 @@ extern void radeon_commit_ring(drm_radeon_private_t *dev_priv);
 } while (0)
 
 
+<<<<<<< HEAD
+=======
+#endif				/* CONFIG_DRM_RADEON_UMS */
+
+>>>>>>> refs/remotes/origin/master
 #endif				/* __RADEON_DRV_H__ */

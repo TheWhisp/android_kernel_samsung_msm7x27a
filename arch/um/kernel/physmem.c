@@ -3,6 +3,8 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "linux/bootmem.h"
 #include "linux/mm.h"
 #include "linux/pfn.h"
@@ -12,11 +14,36 @@
 #include "kern.h"
 #include "mem_user.h"
 #include "os.h"
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/module.h>
+#include <linux/bootmem.h>
+#include <linux/mm.h>
+#include <linux/pfn.h>
+#include <asm/page.h>
+#include <as-layout.h>
+#include <init.h>
+#include <kern.h>
+#include <mem_user.h>
+#include <os.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int physmem_fd = -1;
 
 /* Changed during early boot */
 unsigned long high_physmem;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(high_physmem);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(high_physmem);
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned long long physmem_size;
 
@@ -184,6 +211,14 @@ unsigned long find_iomem(char *driver, unsigned long *len_out)
 
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(find_iomem);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(find_iomem);
+>>>>>>> refs/remotes/origin/master
 
 static int setup_iomem(void)
 {

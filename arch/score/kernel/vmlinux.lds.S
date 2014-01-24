@@ -49,6 +49,10 @@ SECTIONS
 	}
 
 	. = ALIGN(16);
+<<<<<<< HEAD
+=======
+	_sdata =  .;			/* Start of data section */
+>>>>>>> refs/remotes/origin/master
 	RODATA
 
 	EXCEPTION_TABLE(16)

@@ -38,8 +38,13 @@ static int __init generic_rtc_probe(struct platform_device *dev)
 {
 	struct rtc_device *rtc;
 
+<<<<<<< HEAD
 	rtc = rtc_device_register("rtc-generic", &dev->dev, &generic_rtc_ops,
 				  THIS_MODULE);
+=======
+	rtc = devm_rtc_device_register(&dev->dev, "rtc-generic",
+					&generic_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
 
@@ -48,6 +53,7 @@ static int __init generic_rtc_probe(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __exit generic_rtc_remove(struct platform_device *dev)
 {
 	struct rtc_device *rtc = platform_get_drvdata(dev);
@@ -57,11 +63,14 @@ static int __exit generic_rtc_remove(struct platform_device *dev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver generic_rtc_driver = {
 	.driver = {
 		.name = "rtc-generic",
 		.owner = THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.remove = __exit_p(generic_rtc_remove),
 };
 
@@ -77,6 +86,11 @@ static void __exit generic_rtc_fini(void)
 
 module_init(generic_rtc_init);
 module_exit(generic_rtc_fini);
+=======
+};
+
+module_platform_driver_probe(generic_rtc_driver, generic_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kyle McMartin <kyle@mcmartin.ca>");
 MODULE_LICENSE("GPL");

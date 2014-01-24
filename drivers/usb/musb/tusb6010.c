@@ -17,11 +17,26 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/prefetch.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/usb.h>
 #include <linux/irq.h>
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
+=======
+#include <linux/err.h>
+#include <linux/prefetch.h>
+#include <linux/usb.h>
+#include <linux/irq.h>
+#include <linux/io.h>
+#include <linux/platform_device.h>
+#include <linux/dma-mapping.h>
+#include <linux/usb/usb_phy_gen_xceiv.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "musb_core.h"
 
@@ -55,6 +70,14 @@ u8 tusb_get_revision(struct musb *musb)
 
 	return rev;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(tusb_get_revision);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(tusb_get_revision);
+>>>>>>> refs/remotes/origin/master
 
 static int tusb_print_revision(struct musb *musb)
 {
@@ -150,7 +173,11 @@ tusb_fifo_write_unaligned(void __iomem *fifo, const u8 *buf, u16 len)
 }
 
 static inline void tusb_fifo_read_unaligned(void __iomem *fifo,
+<<<<<<< HEAD
 						void __iomem *buf, u16 len)
+=======
+						void *buf, u16 len)
+>>>>>>> refs/remotes/origin/master
 {
 	u32		val;
 	int		i;
@@ -194,7 +221,11 @@ void musb_write_fifo(struct musb_hw_ep *hw_ep, u16 len, const u8 *buf)
 		/* Best case is 32bit-aligned destination address */
 		if ((0x02 & (unsigned long) buf) == 0) {
 			if (len >= 4) {
+<<<<<<< HEAD
 				writesl(fifo, buf, len >> 2);
+=======
+				iowrite32_rep(fifo, buf, len >> 2);
+>>>>>>> refs/remotes/origin/master
 				buf += (len & ~0x03);
 				len &= 0x03;
 			}
@@ -241,7 +272,11 @@ void musb_read_fifo(struct musb_hw_ep *hw_ep, u16 len, u8 *buf)
 		/* Best case is 32bit-aligned destination address */
 		if ((0x02 & (unsigned long) buf) == 0) {
 			if (len >= 4) {
+<<<<<<< HEAD
 				readsl(fifo, buf, len >> 2);
+=======
+				ioread32_rep(fifo, buf, len >> 2);
+>>>>>>> refs/remotes/origin/master
 				buf += (len & ~0x03);
 				len &= 0x03;
 			}
@@ -269,15 +304,29 @@ void musb_read_fifo(struct musb_hw_ep *hw_ep, u16 len, u8 *buf)
 
 static struct musb *the_musb;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_MUSB_HDRC
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* This is used by gadget drivers, and OTG transceiver logic, allowing
  * at most mA current to be drawn from VBUS during a Default-B session
  * (that is, while VBUS exceeds 4.4V).  In Default-A (including pure host
  * mode), or low power Default-B sessions, something else supplies power.
  * Caller must take care of locking.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int tusb_draw_power(struct otg_transceiver *x, unsigned mA)
+=======
+static int tusb_draw_power(struct usb_phy *x, unsigned mA)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tusb_draw_power(struct usb_phy *x, unsigned mA)
+>>>>>>> refs/remotes/origin/master
 {
 	struct musb	*musb = the_musb;
 	void __iomem	*tbase = musb->ctrl_base;
@@ -293,7 +342,15 @@ static int tusb_draw_power(struct otg_transceiver *x, unsigned mA)
 	 * The actual current usage would be very board-specific.  For now,
 	 * it's simpler to just use an aggregate (also board-specific).
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (x->default_a || mA < (musb->min_power << 1))
+=======
+	if (x->otg->default_a || mA < (musb->min_power << 1))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (x->otg->default_a || mA < (musb->min_power << 1))
+>>>>>>> refs/remotes/origin/master
 		mA = 0;
 
 	reg = musb_readl(tbase, TUSB_PRCM_MNGMT);
@@ -310,10 +367,16 @@ static int tusb_draw_power(struct otg_transceiver *x, unsigned mA)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else
 #define tusb_draw_power	NULL
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* workaround for issue 13:  change clock during chip idle
  * (to be fixed in rev3 silicon) ... symptoms include disconnect
  * or looping suspend/resume cycles
@@ -424,7 +487,11 @@ static void musb_do_idle(unsigned long _musb)
 			&& (musb->idle_timeout == 0
 				|| time_after(jiffies, musb->idle_timeout))) {
 			dev_dbg(musb->controller, "Nothing connected %s, turning off VBUS\n",
+<<<<<<< HEAD
 					otg_state_string(musb->xceiv->state));
+=======
+					usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 		}
 		/* FALLTHROUGH */
 	case OTG_STATE_A_IDLE:
@@ -440,19 +507,40 @@ static void musb_do_idle(unsigned long _musb)
 		if (is_host_active(musb) && (musb->port1_status >> 16))
 			goto done;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_MUSB_HDRC
 		if (is_peripheral_enabled(musb) && !musb->gadget_driver)
 			wakeups = 0;
 		else {
 			wakeups = TUSB_PRCM_WHOSTDISCON
 					| TUSB_PRCM_WBUS
+=======
+		if (is_peripheral_enabled(musb) && !musb->gadget_driver) {
+=======
+		if (!musb->gadget_driver) {
+>>>>>>> refs/remotes/origin/master
+			wakeups = 0;
+		} else {
+			wakeups = TUSB_PRCM_WHOSTDISCON
+				| TUSB_PRCM_WBUS
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 					| TUSB_PRCM_WVBUS;
 			if (is_otg_enabled(musb))
 				wakeups |= TUSB_PRCM_WID;
 		}
+<<<<<<< HEAD
 #else
 		wakeups = TUSB_PRCM_WHOSTDISCON | TUSB_PRCM_WBUS;
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					| TUSB_PRCM_WVBUS;
+			wakeups |= TUSB_PRCM_WID;
+		}
+>>>>>>> refs/remotes/origin/master
 		tusb_allow_idle(musb, wakeups);
 	}
 done:
@@ -484,7 +572,11 @@ static void tusb_musb_try_idle(struct musb *musb, unsigned long timeout)
 	if (musb->is_active || ((musb->a_wait_bcon == 0)
 			&& (musb->xceiv->state == OTG_STATE_A_WAIT_BCON))) {
 		dev_dbg(musb->controller, "%s active, deleting timer\n",
+<<<<<<< HEAD
 			otg_state_string(musb->xceiv->state));
+=======
+			usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 		del_timer(&musb_idle_timer);
 		last_timer = jiffies;
 		return;
@@ -501,7 +593,11 @@ static void tusb_musb_try_idle(struct musb *musb, unsigned long timeout)
 	last_timer = timeout;
 
 	dev_dbg(musb->controller, "%s inactive, for idle timer for %lu ms\n",
+<<<<<<< HEAD
 		otg_state_string(musb->xceiv->state),
+=======
+		usb_otg_state_string(musb->xceiv->state),
+>>>>>>> refs/remotes/origin/master
 		(unsigned long)jiffies_to_msecs(timeout - jiffies));
 	mod_timer(&musb_idle_timer, timeout);
 }
@@ -518,6 +614,14 @@ static void tusb_musb_set_vbus(struct musb *musb, int is_on)
 	void __iomem	*tbase = musb->ctrl_base;
 	u32		conf, prcm, timer;
 	u8		devctl;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct usb_otg	*otg = musb->xceiv->otg;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_otg	*otg = musb->xceiv->otg;
+>>>>>>> refs/remotes/origin/master
 
 	/* HDRC controls CPEN, but beware current surges during device
 	 * connect.  They can trigger transient overcurrent conditions
@@ -530,7 +634,15 @@ static void tusb_musb_set_vbus(struct musb *musb, int is_on)
 
 	if (is_on) {
 		timer = OTG_TIMER_MS(OTG_TIME_A_WAIT_VRISE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		musb->xceiv->default_a = 1;
+=======
+		otg->default_a = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		otg->default_a = 1;
+>>>>>>> refs/remotes/origin/master
 		musb->xceiv->state = OTG_STATE_A_WAIT_VRISE;
 		devctl |= MUSB_DEVCTL_SESSION;
 
@@ -556,11 +668,25 @@ static void tusb_musb_set_vbus(struct musb *musb, int is_on)
 				musb->xceiv->state = OTG_STATE_A_IDLE;
 			}
 			musb->is_active = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			musb->xceiv->default_a = 1;
 			MUSB_HST_MODE(musb);
 		} else {
 			musb->is_active = 0;
 			musb->xceiv->default_a = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			otg->default_a = 1;
+			MUSB_HST_MODE(musb);
+		} else {
+			musb->is_active = 0;
+			otg->default_a = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			musb->xceiv->state = OTG_STATE_B_IDLE;
 			MUSB_DEV_MODE(musb);
 		}
@@ -576,7 +702,11 @@ static void tusb_musb_set_vbus(struct musb *musb, int is_on)
 	musb_writeb(musb->mregs, MUSB_DEVCTL, devctl);
 
 	dev_dbg(musb->controller, "VBUS %s, devctl %02x otg %3x conf %08x prcm %08x\n",
+<<<<<<< HEAD
 		otg_state_string(musb->xceiv->state),
+=======
+		usb_otg_state_string(musb->xceiv->state),
+>>>>>>> refs/remotes/origin/master
 		musb_readb(musb->mregs, MUSB_DEVCTL),
 		musb_readl(tbase, TUSB_DEV_OTG_STAT),
 		conf, prcm);
@@ -588,21 +718,27 @@ static void tusb_musb_set_vbus(struct musb *musb, int is_on)
  *
  * Note that if a mini-A cable is plugged in the ID line will stay down as
  * the weak ID pull-up is not able to pull the ID up.
+<<<<<<< HEAD
  *
  * REVISIT: It would be possible to add support for changing between host
  * and peripheral modes in non-OTG configurations by reconfiguring hardware
  * and then setting musb->board_mode. For now, only support OTG mode.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static int tusb_musb_set_mode(struct musb *musb, u8 musb_mode)
 {
 	void __iomem	*tbase = musb->ctrl_base;
 	u32		otg_stat, phy_otg_ctrl, phy_otg_ena, dev_conf;
 
+<<<<<<< HEAD
 	if (musb->board_mode != MUSB_OTG) {
 		ERR("Changing mode currently only supported in OTG mode\n");
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	otg_stat = musb_readl(tbase, TUSB_DEV_OTG_STAT);
 	phy_otg_ctrl = musb_readl(tbase, TUSB_PHY_OTG_CTRL);
 	phy_otg_ena = musb_readl(tbase, TUSB_PHY_OTG_CTRL_ENABLE);
@@ -610,30 +746,54 @@ static int tusb_musb_set_mode(struct musb *musb, u8 musb_mode)
 
 	switch (musb_mode) {
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case MUSB_HOST:		/* Disable PHY ID detect, ground ID */
 		phy_otg_ctrl &= ~TUSB_PHY_OTG_CTRL_OTG_ID_PULLUP;
 		phy_otg_ena |= TUSB_PHY_OTG_CTRL_OTG_ID_PULLUP;
 		dev_conf |= TUSB_DEV_CONF_ID_SEL;
 		dev_conf &= ~TUSB_DEV_CONF_SOFT_ID;
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_USB_GADGET_MUSB_HDRC
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case MUSB_PERIPHERAL:	/* Disable PHY ID detect, keep ID pull-up on */
 		phy_otg_ctrl |= TUSB_PHY_OTG_CTRL_OTG_ID_PULLUP;
 		phy_otg_ena |= TUSB_PHY_OTG_CTRL_OTG_ID_PULLUP;
 		dev_conf |= (TUSB_DEV_CONF_ID_SEL | TUSB_DEV_CONF_SOFT_ID);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_USB_MUSB_OTG
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case MUSB_OTG:		/* Use PHY ID detection */
 		phy_otg_ctrl |= TUSB_PHY_OTG_CTRL_OTG_ID_PULLUP;
 		phy_otg_ena |= TUSB_PHY_OTG_CTRL_OTG_ID_PULLUP;
 		dev_conf &= ~(TUSB_DEV_CONF_ID_SEL | TUSB_DEV_CONF_SOFT_ID);
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	default:
 		dev_dbg(musb->controller, "Trying to set mode %i\n", musb_mode);
@@ -660,17 +820,35 @@ tusb_otg_ints(struct musb *musb, u32 int_src, void __iomem *tbase)
 {
 	u32		otg_stat = musb_readl(tbase, TUSB_DEV_OTG_STAT);
 	unsigned long	idle_timeout = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct usb_otg	*otg = musb->xceiv->otg;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_otg	*otg = musb->xceiv->otg;
+>>>>>>> refs/remotes/origin/master
 
 	/* ID pin */
 	if ((int_src & TUSB_INT_SRC_ID_STATUS_CHNG)) {
 		int	default_a;
 
+<<<<<<< HEAD
 		if (is_otg_enabled(musb))
 			default_a = !(otg_stat & TUSB_DEV_OTG_STAT_ID_STATUS);
 		else
 			default_a = is_host_enabled(musb);
 		dev_dbg(musb->controller, "Default-%c\n", default_a ? 'A' : 'B');
+<<<<<<< HEAD
 		musb->xceiv->default_a = default_a;
+=======
+		otg->default_a = default_a;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		default_a = !(otg_stat & TUSB_DEV_OTG_STAT_ID_STATUS);
+		dev_dbg(musb->controller, "Default-%c\n", default_a ? 'A' : 'B');
+		otg->default_a = default_a;
+>>>>>>> refs/remotes/origin/master
 		tusb_musb_set_vbus(musb, default_a);
 
 		/* Don't allow idling immediately */
@@ -682,9 +860,18 @@ tusb_otg_ints(struct musb *musb, u32 int_src, void __iomem *tbase)
 	if (int_src & TUSB_INT_SRC_VBUS_SENSE_CHNG) {
 
 		/* B-dev state machine:  no vbus ~= disconnect */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((is_otg_enabled(musb) && !musb->xceiv->default_a)
 				|| !is_host_enabled(musb)) {
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
+=======
+		if ((is_otg_enabled(musb) && !otg->default_a)
+				|| !is_host_enabled(musb)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!otg->default_a) {
+>>>>>>> refs/remotes/origin/master
 			/* ? musb_root_disconnect(musb); */
 			musb->port1_status &=
 				~(USB_PORT_STAT_CONNECTION
@@ -693,7 +880,13 @@ tusb_otg_ints(struct musb *musb, u32 int_src, void __iomem *tbase)
 				| USB_PORT_STAT_HIGH_SPEED
 				| USB_PORT_STAT_TEST
 				);
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			if (otg_stat & TUSB_DEV_OTG_STAT_SESS_END) {
 				dev_dbg(musb->controller, "Forcing disconnect (no interrupt)\n");
@@ -705,13 +898,21 @@ tusb_otg_ints(struct musb *musb, u32 int_src, void __iomem *tbase)
 				musb->is_active = 0;
 			}
 			dev_dbg(musb->controller, "vbus change, %s, otg %03x\n",
+<<<<<<< HEAD
 				otg_state_string(musb->xceiv->state), otg_stat);
+=======
+				usb_otg_state_string(musb->xceiv->state), otg_stat);
+>>>>>>> refs/remotes/origin/master
 			idle_timeout = jiffies + (1 * HZ);
 			schedule_work(&musb->irq_work);
 
 		} else /* A-dev state machine */ {
 			dev_dbg(musb->controller, "vbus change, %s, otg %03x\n",
+<<<<<<< HEAD
 				otg_state_string(musb->xceiv->state), otg_stat);
+=======
+				usb_otg_state_string(musb->xceiv->state), otg_stat);
+>>>>>>> refs/remotes/origin/master
 
 			switch (musb->xceiv->state) {
 			case OTG_STATE_A_IDLE:
@@ -760,7 +961,11 @@ tusb_otg_ints(struct musb *musb, u32 int_src, void __iomem *tbase)
 		u8	devctl;
 
 		dev_dbg(musb->controller, "%s timer, %03x\n",
+<<<<<<< HEAD
 			otg_state_string(musb->xceiv->state), otg_stat);
+=======
+			usb_otg_state_string(musb->xceiv->state), otg_stat);
+>>>>>>> refs/remotes/origin/master
 
 		switch (musb->xceiv->state) {
 		case OTG_STATE_A_WAIT_VRISE:
@@ -1094,9 +1299,19 @@ static int tusb_musb_init(struct musb *musb)
 	int			ret;
 
 	usb_nop_xceiv_register();
+<<<<<<< HEAD
+<<<<<<< HEAD
 	musb->xceiv = otg_get_transceiver();
+=======
+	musb->xceiv = usb_get_transceiver();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!musb->xceiv)
 		return -ENODEV;
+=======
+	musb->xceiv = usb_get_phy(USB_PHY_TYPE_USB2);
+	if (IS_ERR_OR_NULL(musb->xceiv))
+		return -EPROBE_DEFER;
+>>>>>>> refs/remotes/origin/master
 
 	pdev = to_platform_device(musb->controller);
 
@@ -1134,10 +1349,15 @@ static int tusb_musb_init(struct musb *musb)
 	}
 	musb->isr = tusb_musb_interrupt;
 
+<<<<<<< HEAD
 	if (is_peripheral_enabled(musb)) {
 		musb->xceiv->set_power = tusb_draw_power;
 		the_musb = musb;
 	}
+=======
+	musb->xceiv->set_power = tusb_draw_power;
+	the_musb = musb;
+>>>>>>> refs/remotes/origin/master
 
 	setup_timer(&musb_idle_timer, musb_do_idle, (unsigned long) musb);
 
@@ -1146,7 +1366,15 @@ done:
 		if (sync)
 			iounmap(sync);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		otg_put_transceiver(musb->xceiv);
+=======
+		usb_put_transceiver(musb->xceiv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_put_phy(musb->xceiv);
+>>>>>>> refs/remotes/origin/master
 		usb_nop_xceiv_unregister();
 	}
 	return ret;
@@ -1162,7 +1390,15 @@ static int tusb_musb_exit(struct musb *musb)
 
 	iounmap(musb->sync_va);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	otg_put_transceiver(musb->xceiv);
+=======
+	usb_put_transceiver(musb->xceiv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_put_phy(musb->xceiv);
+>>>>>>> refs/remotes/origin/master
 	usb_nop_xceiv_unregister();
 	return 0;
 }
@@ -1181,14 +1417,34 @@ static const struct musb_platform_ops tusb_ops = {
 	.set_vbus	= tusb_musb_set_vbus,
 };
 
+<<<<<<< HEAD
 static u64 tusb_dmamask = DMA_BIT_MASK(32);
 
+<<<<<<< HEAD
 static int __init tusb_probe(struct platform_device *pdev)
+=======
+static int __devinit tusb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct musb_hdrc_platform_data	*pdata = pdev->dev.platform_data;
 	struct platform_device		*musb;
 	struct tusb6010_glue		*glue;
 
+=======
+static const struct platform_device_info tusb_dev_info = {
+	.name		= "musb-hdrc",
+	.id		= PLATFORM_DEVID_AUTO,
+	.dma_mask	= DMA_BIT_MASK(32),
+};
+
+static int tusb_probe(struct platform_device *pdev)
+{
+	struct resource musb_resources[3];
+	struct musb_hdrc_platform_data	*pdata = dev_get_platdata(&pdev->dev);
+	struct platform_device		*musb;
+	struct tusb6010_glue		*glue;
+	struct platform_device_info	pinfo;
+>>>>>>> refs/remotes/origin/master
 	int				ret = -ENOMEM;
 
 	glue = kzalloc(sizeof(*glue), GFP_KERNEL);
@@ -1197,6 +1453,7 @@ static int __init tusb_probe(struct platform_device *pdev)
 		goto err0;
 	}
 
+<<<<<<< HEAD
 	musb = platform_device_alloc("musb-hdrc", -1);
 	if (!musb) {
 		dev_err(&pdev->dev, "failed to allocate musb device\n");
@@ -1209,11 +1466,15 @@ static int __init tusb_probe(struct platform_device *pdev)
 
 	glue->dev			= &pdev->dev;
 	glue->musb			= musb;
+=======
+	glue->dev			= &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 
 	pdata->platform_ops		= &tusb_ops;
 
 	platform_set_drvdata(pdev, glue);
 
+<<<<<<< HEAD
 	ret = platform_device_add_resources(musb, pdev->resource,
 			pdev->num_resources);
 	if (ret) {
@@ -1231,33 +1492,91 @@ static int __init tusb_probe(struct platform_device *pdev)
 	if (ret) {
 		dev_err(&pdev->dev, "failed to register musb device\n");
 		goto err1;
+=======
+	memset(musb_resources, 0x00, sizeof(*musb_resources) *
+			ARRAY_SIZE(musb_resources));
+
+	musb_resources[0].name = pdev->resource[0].name;
+	musb_resources[0].start = pdev->resource[0].start;
+	musb_resources[0].end = pdev->resource[0].end;
+	musb_resources[0].flags = pdev->resource[0].flags;
+
+	musb_resources[1].name = pdev->resource[1].name;
+	musb_resources[1].start = pdev->resource[1].start;
+	musb_resources[1].end = pdev->resource[1].end;
+	musb_resources[1].flags = pdev->resource[1].flags;
+
+	musb_resources[2].name = pdev->resource[2].name;
+	musb_resources[2].start = pdev->resource[2].start;
+	musb_resources[2].end = pdev->resource[2].end;
+	musb_resources[2].flags = pdev->resource[2].flags;
+
+	pinfo = tusb_dev_info;
+	pinfo.parent = &pdev->dev;
+	pinfo.res = musb_resources;
+	pinfo.num_res = ARRAY_SIZE(musb_resources);
+	pinfo.data = pdata;
+	pinfo.size_data = sizeof(*pdata);
+
+	glue->musb = musb = platform_device_register_full(&pinfo);
+	if (IS_ERR(musb)) {
+		ret = PTR_ERR(musb);
+		dev_err(&pdev->dev, "failed to register musb device: %d\n", ret);
+		goto err3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
+<<<<<<< HEAD
 err2:
 	platform_device_put(musb);
 
 err1:
+=======
+err3:
+>>>>>>> refs/remotes/origin/master
 	kfree(glue);
 
 err0:
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __exit tusb_remove(struct platform_device *pdev)
+=======
+static int __devexit tusb_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct tusb6010_glue		*glue = platform_get_drvdata(pdev);
 
 	platform_device_del(glue->musb);
 	platform_device_put(glue->musb);
+=======
+static int tusb_remove(struct platform_device *pdev)
+{
+	struct tusb6010_glue		*glue = platform_get_drvdata(pdev);
+
+	platform_device_unregister(glue->musb);
+>>>>>>> refs/remotes/origin/master
 	kfree(glue);
 
 	return 0;
 }
 
 static struct platform_driver tusb_driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.remove		= __exit_p(tusb_remove),
+=======
+	.probe		= tusb_probe,
+	.remove		= __devexit_p(tusb_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.probe		= tusb_probe,
+	.remove		= tusb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "musb-tusb",
 	},
@@ -1266,15 +1585,25 @@ static struct platform_driver tusb_driver = {
 MODULE_DESCRIPTION("TUSB6010 MUSB Glue Layer");
 MODULE_AUTHOR("Felipe Balbi <balbi@ti.com>");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 
 static int __init tusb_init(void)
 {
+<<<<<<< HEAD
 	return platform_driver_probe(&tusb_driver, tusb_probe);
 }
 subsys_initcall(tusb_init);
+=======
+	return platform_driver_register(&tusb_driver);
+}
+module_init(tusb_init);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __exit tusb_exit(void)
 {
 	platform_driver_unregister(&tusb_driver);
 }
 module_exit(tusb_exit);
+=======
+module_platform_driver(tusb_driver);
+>>>>>>> refs/remotes/origin/master

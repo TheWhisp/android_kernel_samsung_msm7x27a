@@ -14,6 +14,13 @@
 #include <linux/init.h>
 #include <linux/serial_core.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/hardware/vic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/setup.h>
@@ -23,12 +30,30 @@
 #include <mach/regs-clock.h>
 
 #include <plat/regs-serial.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/s5pv210.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/devs.h>
 #include <plat/cpu.h>
 #include <plat/iic.h>
 #include <plat/s5p-time.h>
 
+<<<<<<< HEAD
+=======
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <plat/devs.h>
+#include <plat/cpu.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <plat/samsung-time.h>
+
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 /* Following are default values for UCON, ULCON and UFCON UART registers */
 #define TORBRECK_UCON_DEFAULT	(S3C2410_UCON_TXILEVEL |	\
 				 S3C2410_UCON_RXILEVEL |	\
@@ -102,10 +127,21 @@ static struct i2c_board_info torbreck_i2c_devs2[] __initdata = {
 
 static void __init torbreck_map_io(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	s5p_init_io(NULL, 0, S5P_VA_CHIPID);
+=======
+	s5pv210_init_io(NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	s3c24xx_init_clocks(24000000);
 	s3c24xx_init_uarts(torbreck_uartcfgs, ARRAY_SIZE(torbreck_uartcfgs));
 	s5p_set_timer_source(S5P_PWM3, S5P_PWM4);
+=======
+	s5pv210_init_io(NULL, 0);
+	s3c24xx_init_clocks(24000000);
+	s3c24xx_init_uarts(torbreck_uartcfgs, ARRAY_SIZE(torbreck_uartcfgs));
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init torbreck_machine_init(void)
@@ -125,9 +161,28 @@ static void __init torbreck_machine_init(void)
 
 MACHINE_START(TORBRECK, "TORBRECK")
 	/* Maintainer: Hyunchul Ko <ghcstop@gmail.com> */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= S5P_PA_SDRAM + 0x100,
 	.init_irq	= s5pv210_init_irq,
 	.map_io		= torbreck_map_io,
 	.init_machine	= torbreck_machine_init,
 	.timer		= &s5p_timer,
+=======
+	.atag_offset	= 0x100,
+	.init_irq	= s5pv210_init_irq,
+	.handle_irq	= vic_handle_irq,
+	.map_io		= torbreck_map_io,
+	.init_machine	= torbreck_machine_init,
+	.timer		= &s5p_timer,
+	.restart	= s5pv210_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.init_irq	= s5pv210_init_irq,
+	.map_io		= torbreck_map_io,
+	.init_machine	= torbreck_machine_init,
+	.init_time	= samsung_timer_init,
+	.restart	= s5pv210_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

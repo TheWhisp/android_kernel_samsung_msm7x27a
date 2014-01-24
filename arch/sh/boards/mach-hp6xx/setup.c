@@ -13,6 +13,10 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/sh_dac_audio.h>
 #include <asm/hd64461.h>
 #include <asm/io.h>
@@ -35,7 +39,11 @@ static struct resource cf_ide_resources[] = {
 		.flags = IORESOURCE_MEM,
 	},
 	[2] = {
+<<<<<<< HEAD
 		.start = 77,
+=======
+		.start = evt2irq(0xba0),
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ,
 	},
 };
@@ -168,8 +176,11 @@ device_initcall(hp6xx_devices_setup);
 static struct sh_machine_vector mv_hp6xx __initmv = {
 	.mv_name = "hp6xx",
 	.mv_setup = hp6xx_setup,
+<<<<<<< HEAD
 	/* IRQ's : CPU(64) + CCHIP(16) + FREE_TO_USE(6) */
 	.mv_nr_irqs = HD64461_IRQBASE + HD64461_IRQ_NUM + 6,
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Enable IRQ0 -> IRQ3 in IRQ_MODE */
 	.mv_init_irq = hp6xx_init_irq,
 };

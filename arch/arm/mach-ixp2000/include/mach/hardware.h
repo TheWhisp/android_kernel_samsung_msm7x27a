@@ -19,6 +19,7 @@
 #ifndef __ASM_ARCH_HARDWARE_H__
 #define __ASM_ARCH_HARDWARE_H__
 
+<<<<<<< HEAD
 /*
  * This needs to be platform-specific?
  */
@@ -29,6 +30,10 @@
 
 #define pcibios_assign_all_busses() 0
 
+=======
+#include "ixp2000-regs.h"	/* Chipset Registers */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Platform helper functions
  */

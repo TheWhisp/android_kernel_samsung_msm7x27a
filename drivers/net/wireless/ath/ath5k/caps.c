@@ -24,7 +24,15 @@
 #include "ath5k.h"
 #include "reg.h"
 #include "debug.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "base.h"
+=======
+#include "../regd.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "../regd.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Fill the capabilities struct
@@ -52,8 +60,18 @@ int ath5k_hw_set_capabilities(struct ath5k_hw *ah)
 		__set_bit(AR5K_MODE_11A, caps->cap_mode);
 	} else {
 		/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * XXX The tranceiver supports frequencies from 4920 to 6100GHz
 		 * XXX and from 2312 to 2732GHz. There are problems with the
+=======
+		 * XXX The transceiver supports frequencies from 4920 to 6100MHz
+		 * XXX and from 2312 to 2732MHz. There are problems with the
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * XXX The transceiver supports frequencies from 4920 to 6100MHz
+		 * XXX and from 2312 to 2732MHz. There are problems with the
+>>>>>>> refs/remotes/origin/master
 		 * XXX current ieee80211 implementation because the IEEE
 		 * XXX channel mapping does not support negative channel
 		 * XXX numbers (2312MHz is channel -19). Of course, this
@@ -85,12 +103,34 @@ int ath5k_hw_set_capabilities(struct ath5k_hw *ah)
 			caps->cap_range.range_2ghz_min = 2412;
 			caps->cap_range.range_2ghz_max = 2732;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (AR5K_EEPROM_HDR_11B(ee_header))
 				__set_bit(AR5K_MODE_11B, caps->cap_mode);
 
 			if (AR5K_EEPROM_HDR_11G(ee_header) &&
 			    ah->ah_version != AR5K_AR5211)
 				__set_bit(AR5K_MODE_11G, caps->cap_mode);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			/* Override 2GHz modes on SoCs that need it
+			 * NOTE: cap_needs_2GHz_ovr gets set from
+			 * ath_ahb_probe */
+			if (!caps->cap_needs_2GHz_ovr) {
+				if (AR5K_EEPROM_HDR_11B(ee_header))
+					__set_bit(AR5K_MODE_11B,
+							caps->cap_mode);
+
+				if (AR5K_EEPROM_HDR_11G(ee_header) &&
+				ah->ah_version != AR5K_AR5211)
+					__set_bit(AR5K_MODE_11G,
+							caps->cap_mode);
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -103,12 +143,22 @@ int ath5k_hw_set_capabilities(struct ath5k_hw *ah)
 	else
 		caps->cap_queues.q_tx_num = AR5K_NUM_TX_QUEUES;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* newer hardware has PHY error counters */
+=======
+	/* Newer hardware has PHY error counters */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Newer hardware has PHY error counters */
+>>>>>>> refs/remotes/origin/master
 	if (ah->ah_mac_srev >= AR5K_SREV_AR5213A)
 		caps->cap_has_phyerr_counters = true;
 	else
 		caps->cap_has_phyerr_counters = false;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -154,6 +204,19 @@ int ath5k_hw_get_capability(struct ath5k_hw *ah,
 no:
 	return -EINVAL;
 yes:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* MACs since AR5212 have MRR support */
+	if (ah->ah_version == AR5K_AR5212)
+		caps->cap_has_mrr_support = true;
+	else
+		caps->cap_has_mrr_support = false;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

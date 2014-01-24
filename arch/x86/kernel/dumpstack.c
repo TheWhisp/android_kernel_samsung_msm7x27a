@@ -25,10 +25,22 @@ unsigned int code_bytes = 64;
 int kstack_depth_to_print = 3 * STACKSLOTS_PER_LINE;
 static int die_counter;
 
+<<<<<<< HEAD
 void printk_address(unsigned long address, int reliable)
 {
 	printk(" [<%p>] %s%pB\n", (void *) address,
 			reliable ? "" : "? ", (void *) address);
+=======
+static void printk_stack_address(unsigned long address, int reliable)
+{
+	pr_cont(" [<%p>] %s%pB\n",
+		(void *)address, reliable ? "" : "? ", (void *)address);
+}
+
+void printk_address(unsigned long address)
+{
+	pr_cont(" [<%p>] %pS\n", (void *)address, (void *)address);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
@@ -37,13 +49,37 @@ print_ftrace_graph_addr(unsigned long addr, void *data,
 			const struct stacktrace_ops *ops,
 			struct thread_info *tinfo, int *graph)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct task_struct *task = tinfo->task;
 	unsigned long ret_addr;
 	int index = task->curr_ret_stack;
+=======
+	struct task_struct *task;
+	unsigned long ret_addr;
+	int index;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct task_struct *task;
+	unsigned long ret_addr;
+	int index;
+>>>>>>> refs/remotes/origin/master
 
 	if (addr != (unsigned long)return_to_handler)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	task = tinfo->task;
+	index = task->curr_ret_stack;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	task = tinfo->task;
+	index = task->curr_ret_stack;
+
+>>>>>>> refs/remotes/origin/master
 	if (!task->ret_stack || index < *graph)
 		return;
 
@@ -148,7 +184,11 @@ static void print_trace_address(void *data, unsigned long addr, int reliable)
 {
 	touch_nmi_watchdog();
 	printk(data);
+<<<<<<< HEAD
 	printk_address(addr, reliable);
+=======
+	printk_stack_address(addr, reliable);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct stacktrace_ops print_trace_ops = {
@@ -173,6 +213,7 @@ void show_trace(struct task_struct *task, struct pt_regs *regs,
 
 void show_stack(struct task_struct *task, unsigned long *sp)
 {
+<<<<<<< HEAD
 	show_stack_log_lvl(task, NULL, sp, 0, "");
 }
 
@@ -193,6 +234,22 @@ void dump_stack(void)
 	show_trace(NULL, NULL, &stack, bp);
 }
 EXPORT_SYMBOL(dump_stack);
+=======
+	unsigned long bp = 0;
+	unsigned long stack;
+
+	/*
+	 * Stack frames below this one aren't interesting.  Don't show them
+	 * if we're printing for %current.
+	 */
+	if (!sp && (!task || task == current)) {
+		sp = &stack;
+		bp = stack_frame(current, NULL);
+	}
+
+	show_stack_log_lvl(task, NULL, sp, bp, "");
+}
+>>>>>>> refs/remotes/origin/master
 
 static arch_spinlock_t die_lock = __ARCH_SPIN_LOCK_UNLOCKED;
 static int die_owner = -1;
@@ -229,7 +286,11 @@ void __kprobes oops_end(unsigned long flags, struct pt_regs *regs, int signr)
 
 	bust_spinlocks(0);
 	die_owner = -1;
+<<<<<<< HEAD
 	add_taint(TAINT_DIE);
+=======
+	add_taint(TAINT_DIE, LOCKDEP_NOW_UNRELIABLE);
+>>>>>>> refs/remotes/origin/master
 	die_nest_count--;
 	if (!die_nest_count)
 		/* Nest count reaches zero, release the lock. */
@@ -252,7 +313,17 @@ int __kprobes __die(const char *str, struct pt_regs *regs, long err)
 	unsigned short ss;
 	unsigned long sp;
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_EMERG "%s: %04lx [#%d] ", str, err & 0xffff, ++die_counter);
+=======
+	printk(KERN_DEFAULT
+	       "%s: %04lx [#%d] ", str, err & 0xffff, ++die_counter);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_DEFAULT
+	       "%s: %04lx [#%d] ", str, err & 0xffff, ++die_counter);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PREEMPT
 	printk("PREEMPT ");
 #endif
@@ -264,10 +335,22 @@ int __kprobes __die(const char *str, struct pt_regs *regs, long err)
 #endif
 	printk("\n");
 	if (notify_die(DIE_OOPS, str, regs, err,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			current->thread.trap_no, SIGSEGV) == NOTIFY_STOP)
+=======
+			current->thread.trap_nr, SIGSEGV) == NOTIFY_STOP)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 
 	show_registers(regs);
+=======
+			current->thread.trap_nr, SIGSEGV) == NOTIFY_STOP)
+		return 1;
+
+	print_modules();
+	show_regs(regs);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_32
 	if (user_mode_vm(regs)) {
 		sp = regs->sp;
@@ -282,7 +365,11 @@ int __kprobes __die(const char *str, struct pt_regs *regs, long err)
 #else
 	/* Executive summary in case the oops scrolled away */
 	printk(KERN_ALERT "RIP ");
+<<<<<<< HEAD
 	printk_address(regs->ip, 1);
+=======
+	printk_address(regs->ip);
+>>>>>>> refs/remotes/origin/master
 	printk(" RSP <%016lx>\n", regs->sp);
 #endif
 	return 0;
@@ -307,16 +394,43 @@ void die(const char *str, struct pt_regs *regs, long err)
 
 static int __init kstack_setup(char *s)
 {
+<<<<<<< HEAD
 	if (!s)
 		return -EINVAL;
 	kstack_depth_to_print = simple_strtoul(s, NULL, 0);
+=======
+	ssize_t ret;
+	unsigned long val;
+
+	if (!s)
+		return -EINVAL;
+
+	ret = kstrtoul(s, 0, &val);
+	if (ret)
+		return ret;
+	kstack_depth_to_print = val;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 early_param("kstack", kstack_setup);
 
 static int __init code_bytes_setup(char *s)
 {
+<<<<<<< HEAD
 	code_bytes = simple_strtoul(s, NULL, 0);
+=======
+	ssize_t ret;
+	unsigned long val;
+
+	if (!s)
+		return -EINVAL;
+
+	ret = kstrtoul(s, 0, &val);
+	if (ret)
+		return ret;
+
+	code_bytes = val;
+>>>>>>> refs/remotes/origin/master
 	if (code_bytes > 8192)
 		code_bytes = 8192;
 

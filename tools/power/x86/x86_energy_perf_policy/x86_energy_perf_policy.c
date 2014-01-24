@@ -137,7 +137,13 @@ void cmdline(int argc, char **argv)
 void validate_cpuid(void)
 {
 	unsigned int eax, ebx, ecx, edx, max_level;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	char brand[16];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int fms, family, model, stepping;
 
 	eax = ebx = ecx = edx = 0;
@@ -160,8 +166,18 @@ void validate_cpuid(void)
 		model += ((fms >> 16) & 0xf) << 4;
 
 	if (verbose > 1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printf("CPUID %s %d levels family:model:stepping "
 			"0x%x:%x:%x (%d:%d:%d)\n", brand, max_level,
+=======
+		printf("CPUID %d levels family:model:stepping "
+			"0x%x:%x:%x (%d:%d:%d)\n", max_level,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printf("CPUID %d levels family:model:stepping "
+			"0x%x:%x:%x (%d:%d:%d)\n", max_level,
+>>>>>>> refs/remotes/origin/master
 			family, model, stepping, family, model, stepping);
 
 	if (!(edx & (1 << 5))) {
@@ -290,7 +306,11 @@ void for_every_cpu(void (func)(int))
 			"cpu%u %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d\n",
 			&cpu);
 		if (retval != 1)
+<<<<<<< HEAD
 			return;
+=======
+			break;
+>>>>>>> refs/remotes/origin/master
 
 		func(cpu);
 	}

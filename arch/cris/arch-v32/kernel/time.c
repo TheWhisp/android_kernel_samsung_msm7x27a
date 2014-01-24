@@ -18,7 +18,10 @@
 #include <asm/signal.h>
 #include <asm/io.h>
 #include <asm/delay.h>
+<<<<<<< HEAD
 #include <asm/rtc.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/irq_regs.h>
 
@@ -47,14 +50,28 @@ static struct clocksource cont_rotime = {
 	.rating = 300,
 	.read   = read_cont_rotime,
 	.mask   = CLOCKSOURCE_MASK(32),
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.shift  = 10,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.flags  = CLOCK_SOURCE_IS_CONTINUOUS,
 };
 
 static int __init etrax_init_cont_rotime(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	cont_rotime.mult = clocksource_khz2mult(100000, cont_rotime.shift);
 	clocksource_register(&cont_rotime);
+=======
+	clocksource_register_khz(&cont_rotime, 100000);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clocksource_register_khz(&cont_rotime, 100000);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 arch_initcall(etrax_init_cont_rotime);
@@ -69,7 +86,10 @@ unsigned long timer_regs[NR_CPUS] =
 };
 
 extern int set_rtc_mmss(unsigned long nowtime);
+<<<<<<< HEAD
 extern int have_rtc;
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CPU_FREQ
 static int
@@ -267,11 +287,14 @@ void __init time_init(void)
 	 */
 	loops_per_usec = 50;
 
+<<<<<<< HEAD
 	if(RTC_INIT() < 0)
 		have_rtc = 0;
 	else
 		have_rtc = 1;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Start CPU local timer. */
 	cris_timer_init();
 

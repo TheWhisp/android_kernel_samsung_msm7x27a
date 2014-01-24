@@ -157,6 +157,10 @@ enum  hrtimer_base_type {
 	HRTIMER_BASE_MONOTONIC,
 	HRTIMER_BASE_REALTIME,
 	HRTIMER_BASE_BOOTTIME,
+<<<<<<< HEAD
+=======
+	HRTIMER_BASE_TAI,
+>>>>>>> refs/remotes/origin/master
 	HRTIMER_MAX_CLOCK_BASES,
 };
 
@@ -327,7 +331,17 @@ extern ktime_t ktime_get(void);
 extern ktime_t ktime_get_real(void);
 extern ktime_t ktime_get_boottime(void);
 extern ktime_t ktime_get_monotonic_offset(void);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern ktime_t ktime_get_update_offsets(ktime_t *offs_real, ktime_t *offs_boot);
+=======
+extern ktime_t ktime_get_clocktai(void);
+extern ktime_t ktime_get_update_offsets(ktime_t *offs_real, ktime_t *offs_boot,
+					 ktime_t *offs_tai);
+>>>>>>> refs/remotes/origin/master
+=======
+extern ktime_t ktime_get_update_offsets(ktime_t *offs_real, ktime_t *offs_boot);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 DECLARE_PER_CPU(struct tick_device, tick_cpu_device);
 

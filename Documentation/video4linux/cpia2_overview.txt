@@ -35,4 +35,8 @@ the camera.  There are three modes for this.  Block mode requests a number
 of contiguous registers.  Random mode reads or writes random registers with
 a tuple structure containing address/value pairs.  The repeat mode is only
 used by VP4 to load a firmware patch.  It contains a starting address and
+<<<<<<< HEAD
 a sequence of bytes to be written into a gpio port.
+=======
+a sequence of bytes to be written into a gpio port.
+>>>>>>> refs/remotes/origin/master

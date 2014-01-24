@@ -2,6 +2,10 @@
  * wm8731.c  --  WM8731 ALSA SoC Audio driver
  *
  * Copyright 2005 Openedhand Ltd.
+<<<<<<< HEAD
+=======
+ * Copyright 2006-12 Wolfson Microelectronics, plc
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Richard Purdie <richard@openedhand.com>
  *
@@ -19,9 +23,22 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
 #include <linux/spi/spi.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/regmap.h>
+#include <linux/regulator/consumer.h>
+#include <linux/spi/spi.h>
+#include <linux/of_device.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -41,8 +58,18 @@ static const char *wm8731_supply_names[WM8731_NUM_SUPPLIES] = {
 
 /* codec private data */
 struct wm8731_priv {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
+=======
+	struct regmap *regmap;
+	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
+	const struct snd_pcm_hw_constraint_list *constraints;
+>>>>>>> refs/remotes/origin/master
 	unsigned int sysclk;
 	int sysclk_type;
 	int playback_fs;
@@ -52,6 +79,8 @@ struct wm8731_priv {
 
 /*
  * wm8731 register cache
+<<<<<<< HEAD
+<<<<<<< HEAD
  * We can't read the WM8731 register space when we are
  * using 2 wire for device control, so we cache them instead.
  * There is no point in caching the reset register
@@ -62,6 +91,37 @@ static const u16 wm8731_reg[WM8731_CACHEREGNUM] = {
 	0x0000, 0x0000
 };
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ */
+static const struct reg_default wm8731_reg_defaults[] = {
+	{ 0, 0x0097 },
+	{ 1, 0x0097 },
+	{ 2, 0x0079 },
+	{ 3, 0x0079 },
+	{ 4, 0x000a },
+	{ 5, 0x0008 },
+	{ 6, 0x009f },
+	{ 7, 0x000a },
+	{ 8, 0x0000 },
+	{ 9, 0x0000 },
+};
+
+static bool wm8731_volatile(struct device *dev, unsigned int reg)
+{
+	return reg == WM8731_RESET;
+}
+
+static bool wm8731_writeable(struct device *dev, unsigned int reg)
+{
+	return reg <= WM8731_RESET;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define wm8731_reset(c)	snd_soc_write(c, WM8731_RESET, 0)
 
 static const char *wm8731_input_select[] = {"Line In", "Mic"};
@@ -274,6 +334,39 @@ static const struct _coeff_div coeff_div[] = {
 	{12000000, 88200, 136, 0xf, 0x1, 0x1},
 };
 
+<<<<<<< HEAD
+=======
+/* rates constraints */
+static const unsigned int wm8731_rates_12000000[] = {
+	8000, 32000, 44100, 48000, 96000, 88200,
+};
+
+static const unsigned int wm8731_rates_12288000_18432000[] = {
+	8000, 32000, 48000, 96000,
+};
+
+static const unsigned int wm8731_rates_11289600_16934400[] = {
+	8000, 44100, 88200,
+};
+
+static const struct snd_pcm_hw_constraint_list wm8731_constraints_12000000 = {
+	.list = wm8731_rates_12000000,
+	.count = ARRAY_SIZE(wm8731_rates_12000000),
+};
+
+static const
+struct snd_pcm_hw_constraint_list wm8731_constraints_12288000_18432000 = {
+	.list = wm8731_rates_12288000_18432000,
+	.count = ARRAY_SIZE(wm8731_rates_12288000_18432000),
+};
+
+static const
+struct snd_pcm_hw_constraint_list wm8731_constraints_11289600_16934400 = {
+	.list = wm8731_rates_11289600_16934400,
+	.count = ARRAY_SIZE(wm8731_rates_11289600_16934400),
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline int get_coeff(int mclk, int rate)
 {
 	int i;
@@ -346,17 +439,38 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 	}
 
 	switch (freq) {
+<<<<<<< HEAD
 	case 11289600:
 	case 12000000:
 	case 12288000:
 	case 16934400:
 	case 18432000:
 		wm8731->sysclk = freq;
+=======
+	case 0:
+		wm8731->constraints = NULL;
+		break;
+	case 12000000:
+		wm8731->constraints = &wm8731_constraints_12000000;
+		break;
+	case 12288000:
+	case 18432000:
+		wm8731->constraints = &wm8731_constraints_12288000_18432000;
+		break;
+	case 16934400:
+	case 11289600:
+		wm8731->constraints = &wm8731_constraints_11289600_16934400;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+=======
+	wm8731->sysclk = freq;
+
+>>>>>>> refs/remotes/origin/master
 	snd_soc_dapm_sync(&codec->dapm);
 
 	return 0;
@@ -391,10 +505,24 @@ static int wm8731_set_dai_fmt(struct snd_soc_dai *codec_dai,
 		iface |= 0x0001;
 		break;
 	case SND_SOC_DAIFMT_DSP_A:
+<<<<<<< HEAD
+<<<<<<< HEAD
 		iface |= 0x0003;
 		break;
 	case SND_SOC_DAIFMT_DSP_B:
 		iface |= 0x0013;
+=======
+		iface |= 0x0013;
+		break;
+	case SND_SOC_DAIFMT_DSP_B:
+		iface |= 0x0003;
+>>>>>>> refs/remotes/origin/master
+=======
+		iface |= 0x0013;
+		break;
+	case SND_SOC_DAIFMT_DSP_B:
+		iface |= 0x0003;
+>>>>>>> refs/remotes/origin/cm-11.0
 		break;
 	default:
 		return -EINVAL;
@@ -426,9 +554,17 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
 	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int i, ret;
 	u8 data[2];
 	u16 *cache = codec->reg_cache;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	u16 reg;
 
 	switch (level) {
@@ -443,6 +579,8 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
 			if (ret != 0)
 				return ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			/* Sync reg_cache with the hardware */
 			for (i = 0; i < ARRAY_SIZE(wm8731_reg); i++) {
 				if (cache[i] == wm8731_reg[i])
@@ -453,6 +591,12 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
 				data[1] = cache[i] & 0x00ff;
 				codec->hw_write(codec->control_data, data, 2);
 			}
+=======
+			regcache_sync(wm8731->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			regcache_sync(wm8731->regmap);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* Clear PWROFF, gate CLKOUT, everything else as-is */
@@ -463,19 +607,52 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
 		snd_soc_write(codec, WM8731_PWR, 0xffff);
 		regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies),
 				       wm8731->supplies);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		codec->cache_sync = 1;
+=======
+		regcache_mark_dirty(wm8731->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		regcache_mark_dirty(wm8731->regmap);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	codec->dapm.bias_level = level;
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int wm8731_startup(struct snd_pcm_substream *substream,
+	struct snd_soc_dai *dai)
+{
+	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(dai->codec);
+
+	if (wm8731->constraints)
+		snd_pcm_hw_constraint_list(substream->runtime, 0,
+					   SNDRV_PCM_HW_PARAM_RATE,
+					   wm8731->constraints);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define WM8731_RATES SNDRV_PCM_RATE_8000_96000
 
 #define WM8731_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
 	SNDRV_PCM_FMTBIT_S24_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8731_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8731_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8731_dai_ops = {
+	.startup	= wm8731_startup,
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= wm8731_hw_params,
 	.digital_mute	= wm8731_mute,
 	.set_sysclk	= wm8731_set_dai_sysclk,
@@ -501,7 +678,15 @@ static struct snd_soc_dai_driver wm8731_dai = {
 };
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8731_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8731_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8731_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm8731_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
@@ -524,7 +709,17 @@ static int wm8731_probe(struct snd_soc_codec *codec)
 	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
 	int ret = 0, i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8731->control_type);
+=======
+	codec->control_data = wm8731->regmap;
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	codec->control_data = wm8731->regmap;
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -564,9 +759,15 @@ static int wm8731_probe(struct snd_soc_codec *codec)
 	/* Disable bypass path by default */
 	snd_soc_update_bits(codec, WM8731_APANA, 0x8, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8731_snd_controls,
 			     ARRAY_SIZE(wm8731_snd_controls));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Regulators will have been enabled by bias management */
 	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
 
@@ -599,39 +800,142 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8731 = {
 	.suspend =	wm8731_suspend,
 	.resume =	wm8731_resume,
 	.set_bias_level = wm8731_set_bias_level,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8731_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8731_reg,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.dapm_widgets = wm8731_dapm_widgets,
 	.num_dapm_widgets = ARRAY_SIZE(wm8731_dapm_widgets),
 	.dapm_routes = wm8731_intercon,
 	.num_dapm_routes = ARRAY_SIZE(wm8731_intercon),
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.controls =	wm8731_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8731_snd_controls),
+};
+
+static const struct of_device_id wm8731_of_match[] = {
+	{ .compatible = "wlf,wm8731", },
+	{ }
+};
+
+MODULE_DEVICE_TABLE(of, wm8731_of_match);
+
+static const struct regmap_config wm8731_regmap = {
+	.reg_bits = 7,
+	.val_bits = 9,
+
+	.max_register = WM8731_RESET,
+	.volatile_reg = wm8731_volatile,
+	.writeable_reg = wm8731_writeable,
+
+	.cache_type = REGCACHE_RBTREE,
+	.reg_defaults = wm8731_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8731_reg_defaults),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #if defined(CONFIG_SPI_MASTER)
 static int __devinit wm8731_spi_probe(struct spi_device *spi)
+=======
+};
+
+#if defined(CONFIG_SPI_MASTER)
+static int wm8731_spi_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8731_priv *wm8731;
 	int ret;
 
+<<<<<<< HEAD
 	wm8731 = kzalloc(sizeof(struct wm8731_priv), GFP_KERNEL);
 	if (wm8731 == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	wm8731->control_type = SND_SOC_SPI;
+=======
+	wm8731->regmap = regmap_init_spi(spi, &wm8731_regmap);
+=======
+	wm8731 = devm_kzalloc(&spi->dev, sizeof(struct wm8731_priv),
+			      GFP_KERNEL);
+	if (wm8731 == NULL)
+		return -ENOMEM;
+
+	wm8731->regmap = devm_regmap_init_spi(spi, &wm8731_regmap);
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(wm8731->regmap)) {
+		ret = PTR_ERR(wm8731->regmap);
+		dev_err(&spi->dev, "Failed to allocate register map: %d\n",
+			ret);
+<<<<<<< HEAD
+		goto err;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	spi_set_drvdata(spi, wm8731);
 
 	ret = snd_soc_register_codec(&spi->dev,
 			&soc_codec_dev_wm8731, &wm8731_dai, 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8731);
+=======
+	if (ret != 0) {
+		dev_err(&spi->dev, "Failed to register CODEC: %d\n", ret);
+		goto err_regmap;
+	}
+
+	return 0;
+
+err_regmap:
+	regmap_exit(wm8731->regmap);
+err:
+	kfree(wm8731);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit wm8731_spi_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	snd_soc_unregister_codec(&spi->dev);
 	kfree(spi_get_drvdata(spi));
+=======
+	struct wm8731_priv *wm8731 = spi_get_drvdata(spi);
+
+	snd_soc_unregister_codec(&spi->dev);
+	regmap_exit(wm8731->regmap);
+	kfree(wm8731);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret != 0) {
+		dev_err(&spi->dev, "Failed to register CODEC: %d\n", ret);
+		return ret;
+	}
+
+	return 0;
+}
+
+static int wm8731_spi_remove(struct spi_device *spi)
+{
+	snd_soc_unregister_codec(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -639,6 +943,11 @@ static struct spi_driver wm8731_spi_driver = {
 	.driver = {
 		.name	= "wm8731",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.of_match_table = wm8731_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe		= wm8731_spi_probe,
 	.remove		= __devexit_p(wm8731_spi_remove),
@@ -648,14 +957,28 @@ static struct spi_driver wm8731_spi_driver = {
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static __devinit int wm8731_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+		.of_match_table = wm8731_of_match,
+	},
+	.probe		= wm8731_spi_probe,
+	.remove		= wm8731_spi_remove,
+};
+#endif /* CONFIG_SPI_MASTER */
+
+#if IS_ENABLED(CONFIG_I2C)
+static int wm8731_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8731_priv *wm8731;
 	int ret;
 
+<<<<<<< HEAD
 	wm8731 = kzalloc(sizeof(struct wm8731_priv), GFP_KERNEL);
 	if (wm8731 == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	i2c_set_clientdata(i2c, wm8731);
 	wm8731->control_type = SND_SOC_I2C;
 
@@ -663,13 +986,69 @@ static __devinit int wm8731_i2c_probe(struct i2c_client *i2c,
 			&soc_codec_dev_wm8731, &wm8731_dai, 1);
 	if (ret < 0)
 		kfree(wm8731);
+=======
+	wm8731->regmap = regmap_init_i2c(i2c, &wm8731_regmap);
+=======
+	wm8731 = devm_kzalloc(&i2c->dev, sizeof(struct wm8731_priv),
+			      GFP_KERNEL);
+	if (wm8731 == NULL)
+		return -ENOMEM;
+
+	wm8731->regmap = devm_regmap_init_i2c(i2c, &wm8731_regmap);
+>>>>>>> refs/remotes/origin/master
+	if (IS_ERR(wm8731->regmap)) {
+		ret = PTR_ERR(wm8731->regmap);
+		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+			ret);
+<<<<<<< HEAD
+		goto err;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
+	}
+
+	i2c_set_clientdata(i2c, wm8731);
+
+	ret = snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_wm8731, &wm8731_dai, 1);
+	if (ret != 0) {
+		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+<<<<<<< HEAD
+		goto err_regmap;
+	}
+
+	return 0;
+
+err_regmap:
+	regmap_exit(wm8731->regmap);
+err:
+	kfree(wm8731);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int wm8731_i2c_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	snd_soc_unregister_codec(&client->dev);
 	kfree(i2c_get_clientdata(client));
+=======
+	struct wm8731_priv *wm8731 = i2c_get_clientdata(client);
+	snd_soc_unregister_codec(&client->dev);
+	regmap_exit(wm8731->regmap);
+	kfree(wm8731);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ret;
+	}
+
+	return 0;
+}
+
+static int wm8731_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -683,9 +1062,20 @@ static struct i2c_driver wm8731_i2c_driver = {
 	.driver = {
 		.name = "wm8731",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.of_match_table = wm8731_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe =    wm8731_i2c_probe,
 	.remove =   __devexit_p(wm8731_i2c_remove),
+=======
+		.of_match_table = wm8731_of_match,
+	},
+	.probe =    wm8731_i2c_probe,
+	.remove =   wm8731_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = wm8731_i2c_id,
 };
 #endif
@@ -693,7 +1083,11 @@ static struct i2c_driver wm8731_i2c_driver = {
 static int __init wm8731_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	ret = i2c_add_driver(&wm8731_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register WM8731 I2C driver: %d\n",
@@ -713,7 +1107,11 @@ module_init(wm8731_modinit);
 
 static void __exit wm8731_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	i2c_del_driver(&wm8731_i2c_driver);
 #endif
 #if defined(CONFIG_SPI_MASTER)

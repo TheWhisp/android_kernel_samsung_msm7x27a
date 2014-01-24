@@ -45,8 +45,18 @@ MODULE_PARM_DESC(timeout,
 		"Timeout value. Limited to be 1 or 2 seconds. (default="
 		__MODULE_STRING(TIMEOUT_DEFAULT) ")");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 		__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -321,13 +331,22 @@ static int __init at32_wdt_probe(struct platform_device *pdev)
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 	wdt = kzalloc(sizeof(struct wdt_at32ap700x), GFP_KERNEL);
+=======
+	wdt = devm_kzalloc(&pdev->dev, sizeof(struct wdt_at32ap700x),
+			GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!wdt) {
 		dev_dbg(&pdev->dev, "no memory for wdt structure\n");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	wdt->regs = ioremap(regs->start, resource_size(regs));
+=======
+	wdt->regs = devm_ioremap(&pdev->dev, regs->start, resource_size(regs));
+>>>>>>> refs/remotes/origin/master
 	if (!wdt->regs) {
 		ret = -ENOMEM;
 		dev_dbg(&pdev->dev, "could not map I/O memory\n");
@@ -342,7 +361,11 @@ static int __init at32_wdt_probe(struct platform_device *pdev)
 		dev_info(&pdev->dev, "CPU must be reset with external "
 				"reset or POR due to silicon errata.\n");
 		ret = -EIO;
+<<<<<<< HEAD
 		goto err_iounmap;
+=======
+		goto err_free;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		wdt->users = 0;
 	}
@@ -364,7 +387,11 @@ static int __init at32_wdt_probe(struct platform_device *pdev)
 	ret = misc_register(&wdt->miscdev);
 	if (ret) {
 		dev_dbg(&pdev->dev, "failed to register wdt miscdev\n");
+<<<<<<< HEAD
 		goto err_register;
+=======
+		goto err_free;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev_info(&pdev->dev,
@@ -373,12 +400,16 @@ static int __init at32_wdt_probe(struct platform_device *pdev)
 
 	return 0;
 
+<<<<<<< HEAD
 err_register:
 	platform_set_drvdata(pdev, NULL);
 err_iounmap:
 	iounmap(wdt->regs);
 err_free:
 	kfree(wdt);
+=======
+err_free:
+>>>>>>> refs/remotes/origin/master
 	wdt = NULL;
 	return ret;
 }
@@ -391,10 +422,14 @@ static int __exit at32_wdt_remove(struct platform_device *pdev)
 			at32_wdt_stop();
 
 		misc_deregister(&wdt->miscdev);
+<<<<<<< HEAD
 		iounmap(wdt->regs);
 		kfree(wdt);
 		wdt = NULL;
 		platform_set_drvdata(pdev, NULL);
+=======
+		wdt = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -436,6 +471,7 @@ static struct platform_driver at32_wdt_driver = {
 	.shutdown	= at32_wdt_shutdown,
 };
 
+<<<<<<< HEAD
 static int __init at32_wdt_init(void)
 {
 	return platform_driver_probe(&at32_wdt_driver, at32_wdt_probe);
@@ -447,8 +483,14 @@ static void __exit at32_wdt_exit(void)
 	platform_driver_unregister(&at32_wdt_driver);
 }
 module_exit(at32_wdt_exit);
+=======
+module_platform_driver_probe(at32_wdt_driver, at32_wdt_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Hans-Christian Egtvedt <egtvedt@samfundet.no>");
 MODULE_DESCRIPTION("Watchdog driver for Atmel AT32AP700X");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

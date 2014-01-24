@@ -26,6 +26,16 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/in.h>
 #include <linux/module.h>
 #include <linux/net.h>
@@ -55,9 +65,13 @@
 #define P9_RDMA_IRD		0
 #define P9_RDMA_ORD		0
 #define P9_RDMA_TIMEOUT		30000		/* 30 seconds */
+<<<<<<< HEAD
 #define P9_RDMA_MAXSIZE		(4*4096)	/* Min SGE is 4, so we can
 						 * safely advertise a maxsize
 						 * of 64k */
+=======
+#define P9_RDMA_MAXSIZE		(1024*1024)	/* 1MB */
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct p9_trans_rdma - RDMA transport instance
@@ -73,7 +87,13 @@
  * @sq_depth: The depth of the Send Queue
  * @sq_sem: Semaphore for the SQ
  * @rq_depth: The depth of the Receive Queue.
+<<<<<<< HEAD
  * @rq_count: Count of requests in the Receive Queue.
+=======
+ * @rq_sem: Semaphore for the RQ
+ * @excess_rc : Amount of posted Receive Contexts without a pending request.
+ *		See rdma_request()
+>>>>>>> refs/remotes/origin/master
  * @addr: The remote peer's address
  * @req_lock: Protects the active request list
  * @cm_done: Completion event for connection management tracking
@@ -98,7 +118,12 @@ struct p9_trans_rdma {
 	int sq_depth;
 	struct semaphore sq_sem;
 	int rq_depth;
+<<<<<<< HEAD
 	atomic_t rq_count;
+=======
+	struct semaphore rq_sem;
+	atomic_t excess_rc;
+>>>>>>> refs/remotes/origin/master
 	struct sockaddr_in addr;
 	spinlock_t req_lock;
 
@@ -178,8 +203,18 @@ static int parse_opts(char *params, struct p9_rdma_opts *opts)
 
 	tmp_options = kstrdup(params, GFP_KERNEL);
 	if (!tmp_options) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_ERROR,
 			   "failed to allocate copy of option string\n");
+=======
+		p9_debug(P9_DEBUG_ERROR,
+			 "failed to allocate copy of option string\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_ERROR,
+			 "failed to allocate copy of option string\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	options = tmp_options;
@@ -192,8 +227,18 @@ static int parse_opts(char *params, struct p9_rdma_opts *opts)
 		token = match_token(p, tokens, args);
 		r = match_int(&args[0], &option);
 		if (r < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			P9_DPRINTK(P9_DEBUG_ERROR,
 				   "integer field, but no integer?\n");
+=======
+			p9_debug(P9_DEBUG_ERROR,
+				 "integer field, but no integer?\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			p9_debug(P9_DEBUG_ERROR,
+				 "integer field, but no integer?\n");
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		switch (token) {
@@ -294,6 +339,16 @@ handle_recv(struct p9_client *client, struct p9_trans_rdma *rdma,
 	if (!req)
 		goto err_out;
 
+<<<<<<< HEAD
+=======
+	/* Check that we have not yet received a reply for this request.
+	 */
+	if (unlikely(req->rc)) {
+		pr_err("Duplicate reply for request %d", tag);
+		goto err_out;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	req->rc = c->rc;
 	req->status = REQ_STATUS_RCVD;
 	p9_client_cb(client, req);
@@ -301,8 +356,16 @@ handle_recv(struct p9_client *client, struct p9_trans_rdma *rdma,
 	return;
 
  err_out:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_ERROR, "req %p err %d status %d\n",
 		   req, err, status);
+=======
+	p9_debug(P9_DEBUG_ERROR, "req %p err %d status %d\n", req, err, status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_ERROR, "req %p err %d status %d\n", req, err, status);
+>>>>>>> refs/remotes/origin/master
 	rdma->state = P9_RDMA_FLUSHING;
 	client->status = Disconnected;
 }
@@ -318,8 +381,18 @@ handle_send(struct p9_client *client, struct p9_trans_rdma *rdma,
 
 static void qp_event_handler(struct ib_event *event, void *context)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_ERROR, "QP event %d context %p\n", event->event,
 								context);
+=======
+	p9_debug(P9_DEBUG_ERROR, "QP event %d context %p\n",
+		 event->event, context);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_ERROR, "QP event %d context %p\n",
+		 event->event, context);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void cq_comp_handler(struct ib_cq *cq, void *cq_context)
@@ -335,8 +408,13 @@ static void cq_comp_handler(struct ib_cq *cq, void *cq_context)
 
 		switch (c->wc_op) {
 		case IB_WC_RECV:
+<<<<<<< HEAD
 			atomic_dec(&rdma->rq_count);
 			handle_recv(client, rdma, c, wc.status, wc.byte_len);
+=======
+			handle_recv(client, rdma, c, wc.status, wc.byte_len);
+			up(&rdma->rq_sem);
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case IB_WC_SEND:
@@ -345,8 +423,16 @@ static void cq_comp_handler(struct ib_cq *cq, void *cq_context)
 			break;
 
 		default:
+<<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "9prdma: unexpected completion type, "
 			       "c->wc_op=%d, wc.opcode=%d, status=%d\n",
+=======
+			pr_err("unexpected completion type, c->wc_op=%d, wc.opcode=%d, status=%d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("unexpected completion type, c->wc_op=%d, wc.opcode=%d, status=%d\n",
+>>>>>>> refs/remotes/origin/master
 			       c->wc_op, wc.opcode, wc.status);
 			break;
 		}
@@ -356,7 +442,15 @@ static void cq_comp_handler(struct ib_cq *cq, void *cq_context)
 
 static void cq_event_handler(struct ib_event *e, void *v)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_ERROR, "CQ event %d context %p\n", e->event, v);
+=======
+	p9_debug(P9_DEBUG_ERROR, "CQ event %d context %p\n", e->event, v);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_ERROR, "CQ event %d context %p\n", e->event, v);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rdma_destroy_trans(struct p9_trans_rdma *rdma)
@@ -407,7 +501,15 @@ post_recv(struct p9_client *client, struct p9_rdma_context *c)
 	return ib_post_recv(rdma->qp, &wr, &bad_wr);
 
  error:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_ERROR, "EIO\n");
+=======
+	p9_debug(P9_DEBUG_ERROR, "EIO\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_ERROR, "EIO\n");
+>>>>>>> refs/remotes/origin/master
 	return -EIO;
 }
 
@@ -421,10 +523,34 @@ static int rdma_request(struct p9_client *client, struct p9_req_t *req)
 	struct p9_rdma_context *c = NULL;
 	struct p9_rdma_context *rpl_context = NULL;
 
+<<<<<<< HEAD
+=======
+	/* When an error occurs between posting the recv and the send,
+	 * there will be a receive context posted without a pending request.
+	 * Since there is no way to "un-post" it, we remember it and skip
+	 * post_recv() for the next request.
+	 * So here,
+	 * see if we are this `next request' and need to absorb an excess rc.
+	 * If yes, then drop and free our own, and do not recv_post().
+	 **/
+	if (unlikely(atomic_read(&rdma->excess_rc) > 0)) {
+		if ((atomic_sub_return(1, &rdma->excess_rc) >= 0)) {
+			/* Got one ! */
+			kfree(req->rc);
+			req->rc = NULL;
+			goto dont_need_post_recv;
+		} else {
+			/* We raced and lost. */
+			atomic_inc(&rdma->excess_rc);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Allocate an fcall for the reply */
 	rpl_context = kmalloc(sizeof *rpl_context, GFP_NOFS);
 	if (!rpl_context) {
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto err_close;
 	}
 
@@ -447,6 +573,11 @@ static int rdma_request(struct p9_client *client, struct p9_req_t *req)
 		err = -ENOMEM;
 		goto err_free2;
 	}
+=======
+		goto recv_error;
+	}
+	rpl_context->rc = req->rc;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Post a receive buffer for this request. We need to ensure
@@ -455,6 +586,7 @@ static int rdma_request(struct p9_client *client, struct p9_req_t *req)
 	 * outstanding request, so we must keep a count to avoid
 	 * overflowing the RQ.
 	 */
+<<<<<<< HEAD
 	if (atomic_inc_return(&rdma->rq_count) <= rdma->rq_depth) {
 		err = post_recv(client, rpl_context);
 		if (err)
@@ -465,19 +597,46 @@ static int rdma_request(struct p9_client *client, struct p9_req_t *req)
 	/* remove posted receive buffer from request structure */
 	req->rc = NULL;
 
+=======
+	if (down_interruptible(&rdma->rq_sem)) {
+		err = -EINTR;
+		goto recv_error;
+	}
+
+	err = post_recv(client, rpl_context);
+	if (err) {
+		p9_debug(P9_DEBUG_FCALL, "POST RECV failed\n");
+		goto recv_error;
+	}
+	/* remove posted receive buffer from request structure */
+	req->rc = NULL;
+
+dont_need_post_recv:
+>>>>>>> refs/remotes/origin/master
 	/* Post the request */
 	c = kmalloc(sizeof *c, GFP_NOFS);
 	if (!c) {
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto err_free1;
+=======
+		goto send_error;
+>>>>>>> refs/remotes/origin/master
 	}
 	c->req = req;
 
 	c->busa = ib_dma_map_single(rdma->cm_id->device,
 				    c->req->tc->sdata, c->req->tc->size,
 				    DMA_TO_DEVICE);
+<<<<<<< HEAD
 	if (ib_dma_mapping_error(rdma->cm_id->device, c->busa))
 		goto error;
+=======
+	if (ib_dma_mapping_error(rdma->cm_id->device, c->busa)) {
+		err = -EIO;
+		goto send_error;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	sge.addr = c->busa;
 	sge.length = c->req->tc->size;
@@ -491,6 +650,7 @@ static int rdma_request(struct p9_client *client, struct p9_req_t *req)
 	wr.sg_list = &sge;
 	wr.num_sge = 1;
 
+<<<<<<< HEAD
 	if (down_interruptible(&rdma->sq_sem))
 		goto error;
 
@@ -500,13 +660,45 @@ static int rdma_request(struct p9_client *client, struct p9_req_t *req)
 	kfree(c);
 	kfree(rpl_context->rc);
 	kfree(rpl_context);
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_ERROR, "EIO\n");
+=======
+	p9_debug(P9_DEBUG_ERROR, "EIO\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -EIO;
  err_free1:
 	kfree(rpl_context->rc);
  err_free2:
 	kfree(rpl_context);
  err_close:
+=======
+	if (down_interruptible(&rdma->sq_sem)) {
+		err = -EINTR;
+		goto send_error;
+	}
+
+	err = ib_post_send(rdma->qp, &wr, &bad_wr);
+	if (err)
+		goto send_error;
+
+	/* Success */
+	return 0;
+
+ /* Handle errors that happened during or while preparing the send: */
+ send_error:
+	kfree(c);
+	p9_debug(P9_DEBUG_ERROR, "Error %d in rdma_request()\n", err);
+
+	/* Ach.
+	 *  We did recv_post(), but not send. We have one recv_post in excess.
+	 */
+	atomic_inc(&rdma->excess_rc);
+	return err;
+
+ /* Handle errors that happened during or while preparing post_recv(): */
+ recv_error:
+	kfree(rpl_context);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&rdma->req_lock, flags);
 	if (rdma->state < P9_RDMA_CLOSING) {
 		rdma->state = P9_RDMA_CLOSING;
@@ -551,7 +743,12 @@ static struct p9_trans_rdma *alloc_rdma(struct p9_rdma_opts *opts)
 	spin_lock_init(&rdma->req_lock);
 	init_completion(&rdma->cm_done);
 	sema_init(&rdma->sq_sem, rdma->sq_depth);
+<<<<<<< HEAD
 	atomic_set(&rdma->rq_count, 0);
+=======
+	sema_init(&rdma->rq_sem, rdma->rq_depth);
+	atomic_set(&rdma->excess_rc, 0);
+>>>>>>> refs/remotes/origin/master
 
 	return rdma;
 }

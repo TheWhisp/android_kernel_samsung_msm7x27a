@@ -125,7 +125,11 @@ static char dtlk_write_tts(char);
 static ssize_t dtlk_read(struct file *file, char __user *buf,
 			 size_t count, loff_t * ppos)
 {
+<<<<<<< HEAD
 	unsigned int minor = iminor(file->f_path.dentry->d_inode);
+=======
+	unsigned int minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	char ch;
 	int i = 0, retries;
 
@@ -177,7 +181,11 @@ static ssize_t dtlk_write(struct file *file, const char __user *buf,
 	}
 #endif
 
+<<<<<<< HEAD
 	if (iminor(file->f_path.dentry->d_inode) != DTLK_MINOR)
+=======
+	if (iminor(file_inode(file)) != DTLK_MINOR)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	while (1) {

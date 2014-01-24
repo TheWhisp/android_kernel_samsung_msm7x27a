@@ -13,6 +13,14 @@
 #include <linux/backlight.h>
 #include <linux/mfd/adp5520.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 struct adp5520_bl {
 	struct device *master;
@@ -142,6 +150,7 @@ static int adp5520_bl_setup(struct backlight_device *bl)
 static ssize_t adp5520_show(struct device *dev, char *buf, int reg)
 {
 	struct adp5520_bl *data = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	int error;
 	uint8_t reg_val;
 
@@ -149,6 +158,18 @@ static ssize_t adp5520_show(struct device *dev, char *buf, int reg)
 	error = adp5520_read(data->master, reg, &reg_val);
 	mutex_unlock(&data->lock);
 
+=======
+	int ret;
+	uint8_t reg_val;
+
+	mutex_lock(&data->lock);
+	ret = adp5520_read(data->master, reg, &reg_val);
+	mutex_unlock(&data->lock);
+
+	if (ret < 0)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%u\n", reg_val);
 }
 
@@ -159,7 +180,11 @@ static ssize_t adp5520_store(struct device *dev, const char *buf,
 	unsigned long val;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &val);
+=======
+	ret = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -213,7 +238,11 @@ static ssize_t adp5520_bl_daylight_max_store(struct device *dev,
 	struct adp5520_bl *data = dev_get_drvdata(dev);
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &data->cached_daylight_max);
+=======
+	ret = kstrtoul(buf, 10, &data->cached_daylight_max);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
@@ -281,23 +310,45 @@ static const struct attribute_group adp5520_bl_attr_group = {
 	.attrs = adp5520_bl_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit adp5520_bl_probe(struct platform_device *pdev)
+=======
+static int adp5520_bl_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct backlight_properties props;
 	struct backlight_device *bl;
 	struct adp5520_bl *data;
 	int ret = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (data == NULL)
 		return -ENOMEM;
 
 	data->master = pdev->dev.parent;
+<<<<<<< HEAD
 	data->pdata = pdev->dev.platform_data;
 
 	if (data->pdata  == NULL) {
 		dev_err(&pdev->dev, "missing platform data\n");
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data->pdata = dev_get_platdata(&pdev->dev);
+
+	if (data->pdata  == NULL) {
+		dev_err(&pdev->dev, "missing platform data\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -309,11 +360,22 @@ static int __devinit adp5520_bl_probe(struct platform_device *pdev)
 	memset(&props, 0, sizeof(struct backlight_properties));
 	props.type = BACKLIGHT_RAW;
 	props.max_brightness = ADP5020_MAX_BRIGHTNESS;
+<<<<<<< HEAD
 	bl = backlight_device_register(pdev->name, data->master, data,
 				       &adp5520_bl_ops, &props);
 	if (IS_ERR(bl)) {
 		dev_err(&pdev->dev, "failed to register backlight\n");
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bl = devm_backlight_device_register(&pdev->dev, pdev->name,
+					data->master, data, &adp5520_bl_ops,
+					&props);
+	if (IS_ERR(bl)) {
+		dev_err(&pdev->dev, "failed to register backlight\n");
+>>>>>>> refs/remotes/origin/master
 		return PTR_ERR(bl);
 	}
 
@@ -324,8 +386,15 @@ static int __devinit adp5520_bl_probe(struct platform_device *pdev)
 
 	if (ret) {
 		dev_err(&pdev->dev, "failed to register sysfs\n");
+<<<<<<< HEAD
 		backlight_device_unregister(bl);
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, bl);
@@ -335,7 +404,11 @@ static int __devinit adp5520_bl_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit adp5520_bl_remove(struct platform_device *pdev)
+=======
+static int adp5520_bl_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct backlight_device *bl = platform_get_drvdata(pdev);
 	struct adp5520_bl *data = bl_get_data(bl);
@@ -346,8 +419,12 @@ static int __devexit adp5520_bl_remove(struct platform_device *pdev)
 		sysfs_remove_group(&bl->dev.kobj,
 				&adp5520_bl_attr_group);
 
+<<<<<<< HEAD
 	backlight_device_unregister(bl);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -363,19 +440,44 @@ static int adp5520_bl_suspend(struct platform_device *pdev,
 static int adp5520_bl_resume(struct platform_device *pdev)
 {
 	struct backlight_device *bl = platform_get_drvdata(pdev);
+=======
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int adp5520_bl_suspend(struct device *dev)
+{
+	struct backlight_device *bl = dev_get_drvdata(dev);
+
+	return adp5520_bl_set(bl, 0);
+}
+
+static int adp5520_bl_resume(struct device *dev)
+{
+	struct backlight_device *bl = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	backlight_update_status(bl);
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define adp5520_bl_suspend	NULL
 #define adp5520_bl_resume	NULL
 #endif
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(adp5520_bl_pm_ops, adp5520_bl_suspend,
+			adp5520_bl_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver adp5520_bl_driver = {
 	.driver		= {
 		.name	= "adp5520-backlight",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= adp5520_bl_probe,
 	.remove		= __devexit_p(adp5520_bl_remove),
@@ -383,6 +485,7 @@ static struct platform_driver adp5520_bl_driver = {
 	.resume		= adp5520_bl_resume,
 };
 
+<<<<<<< HEAD
 static int __init adp5520_bl_init(void)
 {
 	return platform_driver_register(&adp5520_bl_driver);
@@ -394,6 +497,18 @@ static void __exit adp5520_bl_exit(void)
 	platform_driver_unregister(&adp5520_bl_driver);
 }
 module_exit(adp5520_bl_exit);
+=======
+module_platform_driver(adp5520_bl_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= &adp5520_bl_pm_ops,
+	},
+	.probe		= adp5520_bl_probe,
+	.remove		= adp5520_bl_remove,
+};
+
+module_platform_driver(adp5520_bl_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("ADP5520(01) Backlight Driver");

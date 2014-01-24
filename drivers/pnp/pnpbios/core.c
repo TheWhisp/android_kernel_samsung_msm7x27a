@@ -65,7 +65,13 @@
 
 #include <asm/page.h>
 #include <asm/desc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 
 #include "../base.h"
@@ -92,8 +98,11 @@ struct pnp_dev_node_info node_info;
  *
  */
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct completion unload_sem;
 
 /*
@@ -200,8 +209,11 @@ static int pnp_dock_thread(void *unused)
 	complete_and_exit(&unload_sem, 0);
 }
 
+<<<<<<< HEAD
 #endif				/* CONFIG_HOTPLUG */
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int pnpbios_get_resources(struct pnp_dev *dev)
 {
 	u8 nodenum = dev->number;
@@ -518,10 +530,13 @@ static int __init pnpbios_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 #if defined(CONFIG_PPC)
 	if (check_legacy_ioport(PNPBIOS_BASE))
 		return -ENODEV;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pnpbios_disabled || dmi_check_system(pnpbios_dmi_table) ||
 	    paravirt_enabled()) {
 		printk(KERN_INFO "PnPBIOS: Disabled\n");
@@ -574,6 +589,7 @@ fs_initcall(pnpbios_init);
 
 static int __init pnpbios_thread_init(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_PPC)
 	if (check_legacy_ioport(PNPBIOS_BASE))
 		return 0;
@@ -589,6 +605,18 @@ static int __init pnpbios_thread_init(void)
 			return PTR_ERR(task);
 	}
 #endif
+=======
+	struct task_struct *task;
+
+	if (pnpbios_disabled)
+		return 0;
+
+	init_completion(&unload_sem);
+	task = kthread_run(pnp_dock_thread, NULL, "kpnpbiosd");
+	if (IS_ERR(task))
+		return PTR_ERR(task);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

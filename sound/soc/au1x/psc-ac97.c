@@ -41,6 +41,8 @@
 	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3BE)
 
 #define AC97PCR_START(stype)	\
+<<<<<<< HEAD
+<<<<<<< HEAD
 	((stype) == PCM_TX ? PSC_AC97PCR_TS : PSC_AC97PCR_RS)
 #define AC97PCR_STOP(stype)	\
 	((stype) == PCM_TX ? PSC_AC97PCR_TP : PSC_AC97PCR_RP)
@@ -49,6 +51,21 @@
 
 #define AC97STAT_BUSY(stype)	\
 	((stype) == PCM_TX ? PSC_AC97STAT_TB : PSC_AC97STAT_RB)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97PCR_TS : PSC_AC97PCR_RS)
+#define AC97PCR_STOP(stype)	\
+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97PCR_TP : PSC_AC97PCR_RP)
+#define AC97PCR_CLRFIFO(stype)	\
+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97PCR_TC : PSC_AC97PCR_RC)
+
+#define AC97STAT_BUSY(stype)	\
+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97STAT_TB : PSC_AC97STAT_RB)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* instance data. There can be only one, MacLeod!!!! */
 static struct au1xpsc_audio_data *au1xpsc_ac97_workdata;
@@ -201,13 +218,20 @@ static void au1xpsc_ac97_cold_reset(struct snd_ac97 *ac97)
 }
 
 /* AC97 controller operations */
+<<<<<<< HEAD
 struct snd_ac97_bus_ops soc_ac97_ops = {
+=======
+static struct snd_ac97_bus_ops psc_ac97_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read		= au1xpsc_ac97_read,
 	.write		= au1xpsc_ac97_write,
 	.reset		= au1xpsc_ac97_cold_reset,
 	.warm_reset	= au1xpsc_ac97_warm_reset,
 };
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(soc_ac97_ops);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int au1xpsc_ac97_hw_params(struct snd_pcm_substream *substream,
 				  struct snd_pcm_hw_params *params,
@@ -215,7 +239,15 @@ static int au1xpsc_ac97_hw_params(struct snd_pcm_substream *substream,
 {
 	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
 	unsigned long r, ro, stat;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int chans, t, stype = SUBSTREAM_TYPE(substream);
+=======
+	int chans, t, stype = substream->stream;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int chans, t, stype = substream->stream;
+>>>>>>> refs/remotes/origin/master
 
 	chans = params_channels(params);
 
@@ -235,7 +267,15 @@ static int au1xpsc_ac97_hw_params(struct snd_pcm_substream *substream,
 		r |= PSC_AC97CFG_SET_LEN(params->msbits);
 
 		/* channels: enable slots for front L/R channel */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (stype == PCM_TX) {
+=======
+		if (stype == SNDRV_PCM_STREAM_PLAYBACK) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (stype == SNDRV_PCM_STREAM_PLAYBACK) {
+>>>>>>> refs/remotes/origin/master
 			r &= ~PSC_AC97CFG_TXSLOT_MASK;
 			r |= PSC_AC97CFG_TXSLOT_ENA(3);
 			r |= PSC_AC97CFG_TXSLOT_ENA(4);
@@ -294,7 +334,15 @@ static int au1xpsc_ac97_trigger(struct snd_pcm_substream *substream,
 				int cmd, struct snd_soc_dai *dai)
 {
 	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int ret, stype = SUBSTREAM_TYPE(substream);
+=======
+	int ret, stype = substream->stream;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret, stype = substream->stream;
+>>>>>>> refs/remotes/origin/master
 
 	ret = 0;
 
@@ -324,12 +372,39 @@ static int au1xpsc_ac97_trigger(struct snd_pcm_substream *substream,
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int au1xpsc_ac97_startup(struct snd_pcm_substream *substream,
+				struct snd_soc_dai *dai)
+{
+	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
+	snd_soc_dai_set_dma_data(dai, substream, &pscdata->dmaids[0]);
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int au1xpsc_ac97_probe(struct snd_soc_dai *dai)
 {
 	return au1xpsc_ac97_workdata ? 0 : -ENODEV;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops au1xpsc_ac97_dai_ops = {
+=======
+static const struct snd_soc_dai_ops au1xpsc_ac97_dai_ops = {
+	.startup	= au1xpsc_ac97_startup,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops au1xpsc_ac97_dai_ops = {
+	.startup	= au1xpsc_ac97_startup,
+>>>>>>> refs/remotes/origin/master
 	.trigger	= au1xpsc_ac97_trigger,
 	.hw_params	= au1xpsc_ac97_hw_params,
 };
@@ -352,19 +427,43 @@ static const struct snd_soc_dai_driver au1xpsc_ac97_dai_template = {
 	.ops = &au1xpsc_ac97_dai_ops,
 };
 
+<<<<<<< HEAD
 static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
 {
 	int ret;
+<<<<<<< HEAD
 	struct resource *r;
 	unsigned long sel;
 	struct au1xpsc_audio_data *wd;
 
 	wd = kzalloc(sizeof(struct au1xpsc_audio_data), GFP_KERNEL);
+=======
+=======
+static const struct snd_soc_component_driver au1xpsc_ac97_component = {
+	.name		= "au1xpsc-ac97",
+};
+
+static int au1xpsc_ac97_drvprobe(struct platform_device *pdev)
+{
+	int ret;
+>>>>>>> refs/remotes/origin/master
+	struct resource *iores, *dmares;
+	unsigned long sel;
+	struct au1xpsc_audio_data *wd;
+
+	wd = devm_kzalloc(&pdev->dev, sizeof(struct au1xpsc_audio_data),
+			  GFP_KERNEL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!wd)
 		return -ENOMEM;
 
 	mutex_init(&wd->lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!r) {
 		ret = -ENODEV;
@@ -378,6 +477,40 @@ static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
 	wd->mmio = ioremap(r->start, resource_size(r));
 	if (!wd->mmio)
 		goto out1;
+=======
+	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!iores)
+		return -ENODEV;
+
+	if (!devm_request_mem_region(&pdev->dev, iores->start,
+				     resource_size(iores),
+				     pdev->name))
+		return -EBUSY;
+
+	wd->mmio = devm_ioremap(&pdev->dev, iores->start,
+				resource_size(iores));
+	if (!wd->mmio)
+		return -EBUSY;
+=======
+	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	wd->mmio = devm_ioremap_resource(&pdev->dev, iores);
+	if (IS_ERR(wd->mmio))
+		return PTR_ERR(wd->mmio);
+>>>>>>> refs/remotes/origin/master
+
+	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+	if (!dmares)
+		return -EBUSY;
+	wd->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = dmares->start;
+
+	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+	if (!dmares)
+		return -EBUSY;
+	wd->dmaids[SNDRV_PCM_STREAM_CAPTURE] = dmares->start;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* configuration: max dma trigger threshold, enable ac97 */
 	wd->cfg = PSC_AC97CFG_RT_FIFO8 | PSC_AC97CFG_TT_FIFO8 |
@@ -399,8 +532,10 @@ static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, wd);
 
+<<<<<<< HEAD
 	ret = snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
 	if (ret)
+<<<<<<< HEAD
 		goto out1;
 
 	wd->dmapd = au1xpsc_pcm_add(pdev);
@@ -415,17 +550,45 @@ out1:
 out0:
 	kfree(wd);
 	return ret;
+=======
+=======
+	ret = snd_soc_set_ac97_ops(&psc_ac97_ops);
+	if (ret)
+		return ret;
+
+	ret = snd_soc_register_component(&pdev->dev, &au1xpsc_ac97_component,
+					 &wd->dai_drv, 1);
+	if (ret)
+>>>>>>> refs/remotes/origin/master
+		return ret;
+
+	au1xpsc_ac97_workdata = wd;
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devexit au1xpsc_ac97_drvremove(struct platform_device *pdev)
 {
 	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	struct resource *r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 
 	if (wd->dmapd)
 		au1xpsc_pcm_destroy(wd->dmapd);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+}
+
+static int au1xpsc_ac97_drvremove(struct platform_device *pdev)
+{
+	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
+
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* disable PSC completely */
 	au_writel(0, AC97_CFG(wd));
@@ -433,10 +596,16 @@ static int __devexit au1xpsc_ac97_drvremove(struct platform_device *pdev)
 	au_writel(PSC_CTRL_DISABLE, PSC_CTRL(wd));
 	au_sync();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	iounmap(wd->mmio);
 	release_mem_region(r->start, resource_size(r));
 	kfree(wd);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	au1xpsc_ac97_workdata = NULL;	/* MDEV */
 
 	return 0;
@@ -493,6 +662,7 @@ static struct platform_driver au1xpsc_ac97_driver = {
 		.pm	= AU1XPSCAC97_PMOPS,
 	},
 	.probe		= au1xpsc_ac97_drvprobe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(au1xpsc_ac97_drvremove),
 };
 
@@ -509,6 +679,12 @@ static void __exit au1xpsc_ac97_unload(void)
 
 module_init(au1xpsc_ac97_load);
 module_exit(au1xpsc_ac97_unload);
+=======
+	.remove		= au1xpsc_ac97_drvremove,
+};
+
+module_platform_driver(au1xpsc_ac97_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Au12x0/Au1550 PSC AC97 ALSA ASoC audio driver");

@@ -158,7 +158,19 @@
 #define GPIO44_BTUART_CTS	MFP_CFG_IN(GPIO44, AF1)
 #define GPIO42_BTUART_RXD	MFP_CFG_IN(GPIO42, AF1)
 #define GPIO45_BTUART_RTS	MFP_CFG_OUT(GPIO45, AF2, DRIVE_HIGH)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define GPIO43_BTUART_TXD	MFP_CFG_OUT(GPIO43, AF2, DRIVE_HIGH)
+=======
+#define GPIO45_BTUART_RTS_LPM_LOW	MFP_CFG_OUT(GPIO45, AF2, DRIVE_LOW)
+#define GPIO43_BTUART_TXD	MFP_CFG_OUT(GPIO43, AF2, DRIVE_HIGH)
+#define GPIO43_BTUART_TXD_LPM_LOW	MFP_CFG_OUT(GPIO43, AF2, DRIVE_LOW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GPIO45_BTUART_RTS_LPM_LOW	MFP_CFG_OUT(GPIO45, AF2, DRIVE_LOW)
+#define GPIO43_BTUART_TXD	MFP_CFG_OUT(GPIO43, AF2, DRIVE_HIGH)
+#define GPIO43_BTUART_TXD_LPM_LOW	MFP_CFG_OUT(GPIO43, AF2, DRIVE_LOW)
+>>>>>>> refs/remotes/origin/master
 
 /* STUART */
 #define GPIO46_STUART_RXD	MFP_CFG_IN(GPIO46, AF2)
@@ -206,6 +218,10 @@
 #define GPIO113_I2S_SYSCLK	MFP_CFG_OUT(GPIO113, AF1, DRIVE_LOW)
 
 /* SSP 1 */
+<<<<<<< HEAD
+=======
+#define GPIO23_SSP1_SCLK_IN	MFP_CFG_IN(GPIO23, AF2)
+>>>>>>> refs/remotes/origin/master
 #define GPIO23_SSP1_SCLK	MFP_CFG_OUT(GPIO23, AF2, DRIVE_LOW)
 #define GPIO29_SSP1_SCLK	MFP_CFG_IN(GPIO29, AF3)
 #define GPIO27_SSP1_SYSCLK	MFP_CFG_OUT(GPIO27, AF1, DRIVE_LOW)
@@ -460,6 +476,24 @@
 	GPIO76_LCD_PCLK,	\
 	GPIO77_LCD_BIAS
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* these enable a work-around for a hw bug in pxa27x during ac97 warm reset */
+#define GPIO113_AC97_nRESET_GPIO_HIGH MFP_CFG_OUT(GPIO113, AF0, DEFAULT)
+#define GPIO95_AC97_nRESET_GPIO_HIGH MFP_CFG_OUT(GPIO95, AF0, DEFAULT)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* these enable a work-around for a hw bug in pxa27x during ac97 warm reset */
+#define GPIO113_AC97_nRESET_GPIO_HIGH MFP_CFG_OUT(GPIO113, AF0, DEFAULT)
+#define GPIO95_AC97_nRESET_GPIO_HIGH MFP_CFG_OUT(GPIO95, AF0, DEFAULT)
+>>>>>>> refs/remotes/origin/master
+=======
+/* these enable a work-around for a hw bug in pxa27x during ac97 warm reset */
+#define GPIO113_AC97_nRESET_GPIO_HIGH MFP_CFG_OUT(GPIO113, AF0, DEFAULT)
+#define GPIO95_AC97_nRESET_GPIO_HIGH MFP_CFG_OUT(GPIO95, AF0, DEFAULT)
+>>>>>>> refs/remotes/origin/cm-11.0
 
 extern int keypad_set_wake(unsigned int on);
 #endif /* __ASM_ARCH_MFP_PXA27X_H */

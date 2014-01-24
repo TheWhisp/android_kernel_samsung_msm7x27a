@@ -19,7 +19,13 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/reboot.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/sgialib.h>
 #include <asm/sn/addrs.h>
 #include <asm/sn/arch.h>
@@ -30,7 +36,11 @@ void machine_restart(char *command) __attribute__((noreturn));
 void machine_halt(void) __attribute__((noreturn));
 void machine_power_off(void) __attribute__((noreturn));
 
+<<<<<<< HEAD
 #define noreturn while(1);				/* Silence gcc.  */
+=======
+#define noreturn while(1);				/* Silence gcc.	 */
+>>>>>>> refs/remotes/origin/master
 
 /* XXX How to pass the reboot command to the firmware??? */
 static void ip27_machine_restart(char *command)

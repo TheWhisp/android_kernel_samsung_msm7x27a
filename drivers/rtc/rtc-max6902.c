@@ -93,6 +93,7 @@ static int max6902_set_time(struct device *dev, struct rtc_time *dt)
 	dt->tm_year = dt->tm_year + 1900;
 
 	/* Remove write protection */
+<<<<<<< HEAD
 	max6902_set_reg(dev, 0xF, 0);
 
 	max6902_set_reg(dev, 0x01, bin2bcd(dt->tm_sec));
@@ -104,13 +105,30 @@ static int max6902_set_time(struct device *dev, struct rtc_time *dt)
 	max6902_set_reg(dev, 0x0B, bin2bcd(dt->tm_wday));
 	max6902_set_reg(dev, 0x0D, bin2bcd(dt->tm_year % 100));
 	max6902_set_reg(dev, 0x13, bin2bcd(dt->tm_year / 100));
+=======
+	max6902_set_reg(dev, MAX6902_REG_CONTROL, 0);
+
+	max6902_set_reg(dev, MAX6902_REG_SECONDS, bin2bcd(dt->tm_sec));
+	max6902_set_reg(dev, MAX6902_REG_MINUTES, bin2bcd(dt->tm_min));
+	max6902_set_reg(dev, MAX6902_REG_HOURS, bin2bcd(dt->tm_hour));
+
+	max6902_set_reg(dev, MAX6902_REG_DATE, bin2bcd(dt->tm_mday));
+	max6902_set_reg(dev, MAX6902_REG_MONTH, bin2bcd(dt->tm_mon + 1));
+	max6902_set_reg(dev, MAX6902_REG_DAY, bin2bcd(dt->tm_wday));
+	max6902_set_reg(dev, MAX6902_REG_YEAR, bin2bcd(dt->tm_year % 100));
+	max6902_set_reg(dev, MAX6902_REG_CENTURY, bin2bcd(dt->tm_year / 100));
+>>>>>>> refs/remotes/origin/master
 
 	/* Compulab used a delay here. However, the datasheet
 	 * does not mention a delay being required anywhere... */
 	/* delay(2000); */
 
 	/* Write protect */
+<<<<<<< HEAD
 	max6902_set_reg(dev, 0xF, 0x80);
+=======
+	max6902_set_reg(dev, MAX6902_REG_CONTROL, 0x80);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -120,7 +138,11 @@ static const struct rtc_class_ops max6902_rtc_ops = {
 	.set_time	= max6902_set_time,
 };
 
+<<<<<<< HEAD
 static int __devinit max6902_probe(struct spi_device *spi)
+=======
+static int max6902_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtc;
 	unsigned char tmp;
@@ -134,6 +156,7 @@ static int __devinit max6902_probe(struct spi_device *spi)
 	if (res != 0)
 		return res;
 
+<<<<<<< HEAD
 	rtc = rtc_device_register("max6902",
 				&spi->dev, &max6902_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc))
@@ -148,19 +171,32 @@ static int __devexit max6902_remove(struct spi_device *spi)
 	struct rtc_device *rtc = dev_get_drvdata(&spi->dev);
 
 	rtc_device_unregister(rtc);
+=======
+	rtc = devm_rtc_device_register(&spi->dev, "max6902",
+				&max6902_rtc_ops, THIS_MODULE);
+	if (IS_ERR(rtc))
+		return PTR_ERR(rtc);
+
+	spi_set_drvdata(spi, rtc);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct spi_driver max6902_driver = {
 	.driver = {
 		.name	= "rtc-max6902",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner	= THIS_MODULE,
 	},
 	.probe	= max6902_probe,
 	.remove = __devexit_p(max6902_remove),
 };
 
+<<<<<<< HEAD
 static __init int max6902_init(void)
 {
 	return spi_register_driver(&max6902_driver);
@@ -172,8 +208,23 @@ static __exit void max6902_exit(void)
 	spi_unregister_driver(&max6902_driver);
 }
 module_exit(max6902_exit);
+=======
+module_spi_driver(max6902_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION ("max6902 spi RTC driver");
 MODULE_AUTHOR ("Raphael Assenat");
 MODULE_LICENSE ("GPL");
+=======
+		.owner	= THIS_MODULE,
+	},
+	.probe	= max6902_probe,
+};
+
+module_spi_driver(max6902_driver);
+
+MODULE_DESCRIPTION("max6902 spi RTC driver");
+MODULE_AUTHOR("Raphael Assenat");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("spi:rtc-max6902");

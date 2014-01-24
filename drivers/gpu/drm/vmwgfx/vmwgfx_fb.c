@@ -26,10 +26,24 @@
  *
  **************************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 #include "vmwgfx_drv.h"
 
 #include "ttm/ttm_placement.h"
+=======
+#include <linux/export.h>
+
+#include <drm/drmP.h>
+#include "vmwgfx_drv.h"
+
+#include <drm/ttm/ttm_placement.h>
+>>>>>>> refs/remotes/origin/master
 
 #define VMW_DIRTY_DELAY (HZ / 30)
 
@@ -158,10 +172,27 @@ static int vmw_fb_set_par(struct fb_info *info)
 {
 	struct vmw_fb_par *par = info->par;
 	struct vmw_private *vmw_priv = par->vmw_priv;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	vmw_kms_write_svga(vmw_priv, info->var.xres, info->var.yres,
 			   info->fix.line_length,
 			   par->bpp, par->depth);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ret;
+
+	ret = vmw_kms_write_svga(vmw_priv, info->var.xres, info->var.yres,
+				 info->fix.line_length,
+				 par->bpp, par->depth);
+	if (ret)
+		return ret;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vmw_priv->capabilities & SVGA_CAP_DISPLAY_TOPOLOGY) {
 		/* TODO check if pitch and offset changes */
 		vmw_write(vmw_priv, SVGA_REG_NUM_GUEST_DISPLAYS, 1);
@@ -405,6 +436,8 @@ int vmw_fb_init(struct vmw_private *vmw_priv)
 	struct fb_info *info;
 	unsigned initial_width, initial_height;
 	unsigned fb_width, fb_height;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned fb_bbp, fb_depth, fb_offset, fb_pitch, fb_size;
 	int ret;
 
@@ -413,16 +446,40 @@ int vmw_fb_init(struct vmw_private *vmw_priv)
 	initial_height = 600;
 
 	fb_bbp = 32;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	unsigned fb_bpp, fb_depth, fb_offset, fb_pitch, fb_size;
+	int ret;
+
+	fb_bpp = 32;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fb_depth = 24;
 
 	/* XXX As shouldn't these be as well. */
 	fb_width = min(vmw_priv->fb_max_width, (unsigned)2048);
 	fb_height = min(vmw_priv->fb_max_height, (unsigned)2048);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	initial_width = min(fb_width, initial_width);
 	initial_height = min(fb_height, initial_height);
 
 	fb_pitch = fb_width * fb_bbp / 8;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	initial_width = min(vmw_priv->initial_width, fb_width);
+	initial_height = min(vmw_priv->initial_height, fb_height);
+
+	fb_pitch = fb_width * fb_bpp / 8;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fb_size = fb_pitch * fb_height;
 	fb_offset = vmw_read(vmw_priv, SVGA_REG_FB_OFFSET);
 
@@ -437,7 +494,15 @@ int vmw_fb_init(struct vmw_private *vmw_priv)
 	par = info->par;
 	par->vmw_priv = vmw_priv;
 	par->depth = fb_depth;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	par->bpp = fb_bbp;
+=======
+	par->bpp = fb_bpp;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	par->bpp = fb_bpp;
+>>>>>>> refs/remotes/origin/master
 	par->vmalloc = NULL;
 	par->max_width = fb_width;
 	par->max_height = fb_height;
@@ -509,6 +574,8 @@ int vmw_fb_init(struct vmw_private *vmw_priv)
 	info->var.xres = initial_width;
 	info->var.yres = initial_height;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if 0
 	info->pixmap.size = 64*1024;
 	info->pixmap.buf_align = 8;
@@ -522,6 +589,12 @@ int vmw_fb_init(struct vmw_private *vmw_priv)
 	info->pixmap.flags = FB_PIXMAP_SYSTEM;
 	info->pixmap.scan_align = 1;
 #endif
+=======
+	/* Use default scratch pixmap (info->pixmap.flags = FB_PIXMAP_SYSTEM) */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Use default scratch pixmap (info->pixmap.flags = FB_PIXMAP_SYSTEM) */
+>>>>>>> refs/remotes/origin/master
 
 	info->apertures = alloc_apertures(1);
 	if (!info->apertures) {
@@ -588,6 +661,8 @@ int vmw_fb_close(struct vmw_private *vmw_priv)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 int vmw_dmabuf_from_vram(struct vmw_private *vmw_priv,
 			 struct vmw_dma_buffer *vmw_bo)
 {
@@ -640,6 +715,10 @@ err_unlock:
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int vmw_fb_off(struct vmw_private *vmw_priv)
 {
 	struct fb_info *info;
@@ -656,12 +735,24 @@ int vmw_fb_off(struct vmw_private *vmw_priv)
 	par->dirty.active = false;
 	spin_unlock_irqrestore(&par->dirty.lock, flags);
 
+<<<<<<< HEAD
 	flush_delayed_work_sync(&info->deferred_work);
+=======
+	flush_delayed_work(&info->deferred_work);
+>>>>>>> refs/remotes/origin/master
 
 	par->bo_ptr = NULL;
 	ttm_bo_kunmap(&par->map);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	vmw_dmabuf_from_vram(vmw_priv, par->vmw_bo);
+=======
+	vmw_dmabuf_unpin(vmw_priv, par->vmw_bo, false);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vmw_dmabuf_unpin(vmw_priv, par->vmw_bo, false);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -687,7 +778,15 @@ int vmw_fb_on(struct vmw_private *vmw_priv)
 	/* Make sure that all overlays are stoped when we take over */
 	vmw_overlay_stop_all(vmw_priv);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = vmw_dmabuf_to_start_of_vram(vmw_priv, par->vmw_bo);
+=======
+	ret = vmw_dmabuf_to_start_of_vram(vmw_priv, par->vmw_bo, true, false);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = vmw_dmabuf_to_start_of_vram(vmw_priv, par->vmw_bo, true, false);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ret != 0)) {
 		DRM_ERROR("could not move buffer to start of VRAM\n");
 		goto err_no_buffer;

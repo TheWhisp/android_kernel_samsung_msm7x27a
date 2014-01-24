@@ -67,7 +67,11 @@ static inline void dccp_v6_send_check(struct sock *sk, struct sk_buff *skb)
 	struct dccp_hdr *dh = dccp_hdr(skb);
 
 	dccp_csum_outgoing(skb);
+<<<<<<< HEAD
 	dh->dccph_checksum = dccp_v6_csum_finish(skb, &np->saddr, &np->daddr);
+=======
+	dh->dccph_checksum = dccp_v6_csum_finish(skb, &np->saddr, &sk->sk_v6_daddr);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline __u64 dccp_v6_init_sequence(struct sk_buff *skb)
@@ -130,6 +134,17 @@ static void dccp_v6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 
 	np = inet6_sk(sk);
 
+<<<<<<< HEAD
+=======
+	if (type == NDISC_REDIRECT) {
+		struct dst_entry *dst = __sk_dst_check(sk, np->dst_cookie);
+
+		if (dst)
+			dst->ops->redirect(dst, sk, skb);
+		goto out;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (type == ICMPV6_PKT_TOOBIG) {
 		struct dst_entry *dst = NULL;
 
@@ -138,6 +153,7 @@ static void dccp_v6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 		if ((1 << sk->sk_state) & (DCCPF_LISTEN | DCCPF_CLOSED))
 			goto out;
 
+<<<<<<< HEAD
 		/* icmp should have updated the destination cache entry */
 		dst = __sk_dst_check(sk, np->dst_cookie);
 		if (dst == NULL) {
@@ -150,8 +166,13 @@ static void dccp_v6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 			 */
 			memset(&fl6, 0, sizeof(fl6));
 			fl6.flowi6_proto = IPPROTO_DCCP;
+<<<<<<< HEAD
 			ipv6_addr_copy(&fl6.daddr, &np->daddr);
 			ipv6_addr_copy(&fl6.saddr, &np->saddr);
+=======
+			fl6.daddr = np->daddr;
+			fl6.saddr = np->saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 			fl6.flowi6_oif = sk->sk_bound_dev_if;
 			fl6.fl6_dport = inet->inet_dport;
 			fl6.fl6_sport = inet->inet_sport;
@@ -169,6 +190,14 @@ static void dccp_v6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 			dccp_sync_mss(sk, dst_mtu(dst));
 		} /* else let the usual retransmit timer handle it */
 		dst_release(dst);
+=======
+		dst = inet6_csk_update_pmtu(sk, ntohl(info));
+		if (!dst)
+			goto out;
+
+		if (inet_csk(sk)->icsk_pmtu_cookie > dst_mtu(dst))
+			dccp_sync_mss(sk, dst_mtu(dst));
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -193,7 +222,17 @@ static void dccp_v6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 		 */
 		WARN_ON(req->sk != NULL);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (seq != dccp_rsk(req)->dreq_iss) {
+=======
+		if (!between48(seq, dccp_rsk(req)->dreq_iss,
+				    dccp_rsk(req)->dreq_gss)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!between48(seq, dccp_rsk(req)->dreq_iss,
+				    dccp_rsk(req)->dreq_gss)) {
+>>>>>>> refs/remotes/origin/master
 			NET_INC_STATS_BH(net, LINUX_MIB_OUTOFWINDOWICMPS);
 			goto out;
 		}
@@ -230,6 +269,7 @@ out:
 }
 
 
+<<<<<<< HEAD
 static int dccp_v6_send_response(struct sock *sk, struct request_sock *req,
 				 struct request_values *rv_unused)
 {
@@ -237,6 +277,13 @@ static int dccp_v6_send_response(struct sock *sk, struct request_sock *req,
 	struct ipv6_pinfo *np = inet6_sk(sk);
 	struct sk_buff *skb;
 	struct ipv6_txoptions *opt = NULL;
+=======
+static int dccp_v6_send_response(struct sock *sk, struct request_sock *req)
+{
+	struct inet_request_sock *ireq = inet_rsk(req);
+	struct ipv6_pinfo *np = inet6_sk(sk);
+	struct sk_buff *skb;
+>>>>>>> refs/remotes/origin/master
 	struct in6_addr *final_p, final;
 	struct flowi6 fl6;
 	int err = -1;
@@ -244,8 +291,14 @@ static int dccp_v6_send_response(struct sock *sk, struct request_sock *req,
 
 	memset(&fl6, 0, sizeof(fl6));
 	fl6.flowi6_proto = IPPROTO_DCCP;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6.daddr, &ireq6->rmt_addr);
 	ipv6_addr_copy(&fl6.saddr, &ireq6->loc_addr);
+=======
+	fl6.daddr = ireq6->rmt_addr;
+	fl6.saddr = ireq6->loc_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	fl6.flowlabel = 0;
 	fl6.flowi6_oif = ireq6->iif;
 	fl6.fl6_dport = inet_rsk(req)->rmt_port;
@@ -255,6 +308,18 @@ static int dccp_v6_send_response(struct sock *sk, struct request_sock *req,
 	opt = np->opt;
 
 	final_p = fl6_update_dst(&fl6, opt, &final);
+=======
+	fl6.daddr = ireq->ir_v6_rmt_addr;
+	fl6.saddr = ireq->ir_v6_loc_addr;
+	fl6.flowlabel = 0;
+	fl6.flowi6_oif = ireq->ir_iif;
+	fl6.fl6_dport = ireq->ir_rmt_port;
+	fl6.fl6_sport = htons(ireq->ir_num);
+	security_req_classify_flow(req, flowi6_to_flowi(&fl6));
+
+
+	final_p = fl6_update_dst(&fl6, np->opt, &final);
+>>>>>>> refs/remotes/origin/master
 
 	dst = ip6_dst_lookup_flow(sk, &fl6, final_p, false);
 	if (IS_ERR(dst)) {
@@ -268,16 +333,31 @@ static int dccp_v6_send_response(struct sock *sk, struct request_sock *req,
 		struct dccp_hdr *dh = dccp_hdr(skb);
 
 		dh->dccph_checksum = dccp_v6_csum_finish(skb,
+<<<<<<< HEAD
 							 &ireq6->loc_addr,
 							 &ireq6->rmt_addr);
+<<<<<<< HEAD
 		ipv6_addr_copy(&fl6.daddr, &ireq6->rmt_addr);
 		err = ip6_xmit(sk, skb, &fl6, opt);
+=======
+		fl6.daddr = ireq6->rmt_addr;
+		err = ip6_xmit(sk, skb, &fl6, opt, np->tclass);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+							 &ireq->ir_v6_loc_addr,
+							 &ireq->ir_v6_rmt_addr);
+		fl6.daddr = ireq->ir_v6_rmt_addr;
+		err = ip6_xmit(sk, skb, &fl6, np->opt, np->tclass);
+>>>>>>> refs/remotes/origin/master
 		err = net_xmit_eval(err);
 	}
 
 done:
+<<<<<<< HEAD
 	if (opt != NULL && opt != np->opt)
 		sock_kfree_s(sk, opt, opt->tot_len);
+=======
+>>>>>>> refs/remotes/origin/master
 	dst_release(dst);
 	return err;
 }
@@ -285,8 +365,12 @@ done:
 static void dccp_v6_reqsk_destructor(struct request_sock *req)
 {
 	dccp_feat_list_purge(&dccp_rsk(req)->dreq_featneg);
+<<<<<<< HEAD
 	if (inet6_rsk(req)->pktopts != NULL)
 		kfree_skb(inet6_rsk(req)->pktopts);
+=======
+	kfree_skb(inet_rsk(req)->pktopts);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dccp_v6_ctl_send_reset(struct sock *sk, struct sk_buff *rxskb)
@@ -313,8 +397,18 @@ static void dccp_v6_ctl_send_reset(struct sock *sk, struct sk_buff *rxskb)
 							    &rxip6h->daddr);
 
 	memset(&fl6, 0, sizeof(fl6));
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6.daddr, &rxip6h->saddr);
 	ipv6_addr_copy(&fl6.saddr, &rxip6h->daddr);
+=======
+	fl6.daddr = rxip6h->saddr;
+	fl6.saddr = rxip6h->daddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fl6.daddr = rxip6h->saddr;
+	fl6.saddr = rxip6h->daddr;
+>>>>>>> refs/remotes/origin/master
 
 	fl6.flowi6_proto = IPPROTO_DCCP;
 	fl6.flowi6_oif = inet6_iif(rxskb);
@@ -326,7 +420,15 @@ static void dccp_v6_ctl_send_reset(struct sock *sk, struct sk_buff *rxskb)
 	dst = ip6_dst_lookup_flow(ctl_sk, &fl6, NULL, false);
 	if (!IS_ERR(dst)) {
 		skb_dst_set(skb, dst);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ip6_xmit(ctl_sk, skb, &fl6, NULL);
+=======
+		ip6_xmit(ctl_sk, skb, &fl6, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ip6_xmit(ctl_sk, skb, &fl6, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 		DCCP_INC_STATS_BH(DCCP_MIB_OUTSEGS);
 		DCCP_INC_STATS_BH(DCCP_MIB_OUTRSTS);
 		return;
@@ -342,6 +444,10 @@ static struct request_sock_ops dccp6_request_sock_ops = {
 	.send_ack	= dccp_reqsk_send_ack,
 	.destructor	= dccp_v6_reqsk_destructor,
 	.send_reset	= dccp_v6_ctl_send_reset,
+<<<<<<< HEAD
+=======
+	.syn_ack_timeout = dccp_syn_ack_timeout,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct sock *dccp_v6_hnd_req(struct sock *sk,struct sk_buff *skb)
@@ -379,7 +485,11 @@ static int dccp_v6_conn_request(struct sock *sk, struct sk_buff *skb)
 {
 	struct request_sock *req;
 	struct dccp_request_sock *dreq;
+<<<<<<< HEAD
 	struct inet6_request_sock *ireq6;
+=======
+	struct inet_request_sock *ireq;
+>>>>>>> refs/remotes/origin/master
 	struct ipv6_pinfo *np = inet6_sk(sk);
 	const __be32 service = dccp_hdr_request(skb)->dccph_req_service;
 	struct dccp_skb_cb *dcb = DCCP_SKB_CB(skb);
@@ -418,14 +528,26 @@ static int dccp_v6_conn_request(struct sock *sk, struct sk_buff *skb)
 	if (security_inet_conn_request(sk, skb, req))
 		goto drop_and_free;
 
+<<<<<<< HEAD
 	ireq6 = inet6_rsk(req);
+<<<<<<< HEAD
 	ipv6_addr_copy(&ireq6->rmt_addr, &ipv6_hdr(skb)->saddr);
 	ipv6_addr_copy(&ireq6->loc_addr, &ipv6_hdr(skb)->daddr);
+=======
+	ireq6->rmt_addr = ipv6_hdr(skb)->saddr;
+	ireq6->loc_addr = ipv6_hdr(skb)->daddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ireq = inet_rsk(req);
+	ireq->ir_v6_rmt_addr = ipv6_hdr(skb)->saddr;
+	ireq->ir_v6_loc_addr = ipv6_hdr(skb)->daddr;
+>>>>>>> refs/remotes/origin/master
 
 	if (ipv6_opt_accepted(sk, skb) ||
 	    np->rxopt.bits.rxinfo || np->rxopt.bits.rxoinfo ||
 	    np->rxopt.bits.rxhlim || np->rxopt.bits.rxohlim) {
 		atomic_inc(&skb->users);
+<<<<<<< HEAD
 		ireq6->pktopts = skb;
 	}
 	ireq6->iif = sk->sk_bound_dev_if;
@@ -434,20 +556,48 @@ static int dccp_v6_conn_request(struct sock *sk, struct sk_buff *skb)
 	if (!sk->sk_bound_dev_if &&
 	    ipv6_addr_type(&ireq6->rmt_addr) & IPV6_ADDR_LINKLOCAL)
 		ireq6->iif = inet6_iif(skb);
+=======
+		ireq->pktopts = skb;
+	}
+	ireq->ir_iif = sk->sk_bound_dev_if;
+
+	/* So that link locals have meaning */
+	if (!sk->sk_bound_dev_if &&
+	    ipv6_addr_type(&ireq->ir_v6_rmt_addr) & IPV6_ADDR_LINKLOCAL)
+		ireq->ir_iif = inet6_iif(skb);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Step 3: Process LISTEN state
 	 *
 	 *   Set S.ISR, S.GSR, S.SWL, S.SWH from packet or Init Cookie
 	 *
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 *   In fact we defer setting S.GSR, S.SWL, S.SWH to
 	 *   dccp_create_openreq_child.
 	 */
 	dreq->dreq_isr	   = dcb->dccpd_seq;
 	dreq->dreq_iss	   = dccp_v6_init_sequence(skb);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * Setting S.SWL/S.SWH to is deferred to dccp_create_openreq_child().
+	 */
+	dreq->dreq_isr	   = dcb->dccpd_seq;
+	dreq->dreq_gsr     = dreq->dreq_isr;
+	dreq->dreq_iss	   = dccp_v6_init_sequence(skb);
+	dreq->dreq_gss     = dreq->dreq_iss;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	dreq->dreq_service = service;
 
 	if (dccp_v6_send_response(sk, req, NULL))
+=======
+	dreq->dreq_service = service;
+
+	if (dccp_v6_send_response(sk, req))
+>>>>>>> refs/remotes/origin/master
 		goto drop_and_free;
 
 	inet6_csk_reqsk_queue_hash_add(sk, req, DCCP_TIMEOUT_INIT);
@@ -465,12 +615,19 @@ static struct sock *dccp_v6_request_recv_sock(struct sock *sk,
 					      struct request_sock *req,
 					      struct dst_entry *dst)
 {
+<<<<<<< HEAD
 	struct inet6_request_sock *ireq6 = inet6_rsk(req);
+=======
+	struct inet_request_sock *ireq = inet_rsk(req);
+>>>>>>> refs/remotes/origin/master
 	struct ipv6_pinfo *newnp, *np = inet6_sk(sk);
 	struct inet_sock *newinet;
 	struct dccp6_sock *newdp6;
 	struct sock *newsk;
+<<<<<<< HEAD
 	struct ipv6_txoptions *opt;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (skb->protocol == htons(ETH_P_IP)) {
 		/*
@@ -487,11 +644,23 @@ static struct sock *dccp_v6_request_recv_sock(struct sock *sk,
 
 		memcpy(newnp, np, sizeof(struct ipv6_pinfo));
 
+<<<<<<< HEAD
 		ipv6_addr_set_v4mapped(newinet->inet_daddr, &newnp->daddr);
 
 		ipv6_addr_set_v4mapped(newinet->inet_saddr, &newnp->saddr);
 
+<<<<<<< HEAD
 		ipv6_addr_copy(&newnp->rcv_saddr, &newnp->saddr);
+=======
+		newnp->rcv_saddr = newnp->saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ipv6_addr_set_v4mapped(newinet->inet_daddr, &newsk->sk_v6_daddr);
+
+		ipv6_addr_set_v4mapped(newinet->inet_saddr, &newnp->saddr);
+
+		newsk->sk_v6_rcv_saddr = newnp->saddr;
+>>>>>>> refs/remotes/origin/master
 
 		inet_csk(newsk)->icsk_af_ops = &dccp_ipv6_mapped;
 		newsk->sk_backlog_rcv = dccp_v4_do_rcv;
@@ -515,7 +684,10 @@ static struct sock *dccp_v6_request_recv_sock(struct sock *sk,
 		return newsk;
 	}
 
+<<<<<<< HEAD
 	opt = np->opt;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (sk_acceptq_is_full(sk))
 		goto out_overflow;
@@ -526,12 +698,27 @@ static struct sock *dccp_v6_request_recv_sock(struct sock *sk,
 
 		memset(&fl6, 0, sizeof(fl6));
 		fl6.flowi6_proto = IPPROTO_DCCP;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&fl6.daddr, &ireq6->rmt_addr);
 		final_p = fl6_update_dst(&fl6, opt, &final);
 		ipv6_addr_copy(&fl6.saddr, &ireq6->loc_addr);
+=======
+		fl6.daddr = ireq6->rmt_addr;
+		final_p = fl6_update_dst(&fl6, opt, &final);
+		fl6.saddr = ireq6->loc_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		fl6.flowi6_oif = sk->sk_bound_dev_if;
 		fl6.fl6_dport = inet_rsk(req)->rmt_port;
 		fl6.fl6_sport = inet_rsk(req)->loc_port;
+=======
+		fl6.daddr = ireq->ir_v6_rmt_addr;
+		final_p = fl6_update_dst(&fl6, np->opt, &final);
+		fl6.saddr = ireq->ir_v6_loc_addr;
+		fl6.flowi6_oif = sk->sk_bound_dev_if;
+		fl6.fl6_dport = ireq->ir_rmt_port;
+		fl6.fl6_sport = htons(ireq->ir_num);
+>>>>>>> refs/remotes/origin/master
 		security_sk_classify_flow(sk, flowi6_to_flowi(&fl6));
 
 		dst = ip6_dst_lookup_flow(sk, &fl6, final_p, false);
@@ -559,10 +746,23 @@ static struct sock *dccp_v6_request_recv_sock(struct sock *sk,
 
 	memcpy(newnp, np, sizeof(struct ipv6_pinfo));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&newnp->daddr, &ireq6->rmt_addr);
 	ipv6_addr_copy(&newnp->saddr, &ireq6->loc_addr);
 	ipv6_addr_copy(&newnp->rcv_saddr, &ireq6->loc_addr);
+=======
+	newnp->daddr = ireq6->rmt_addr;
+	newnp->saddr = ireq6->loc_addr;
+	newnp->rcv_saddr = ireq6->loc_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	newsk->sk_bound_dev_if = ireq6->iif;
+=======
+	newsk->sk_v6_daddr	= ireq->ir_v6_rmt_addr;
+	newnp->saddr		= ireq->ir_v6_loc_addr;
+	newsk->sk_v6_rcv_saddr	= ireq->ir_v6_loc_addr;
+	newsk->sk_bound_dev_if	= ireq->ir_iif;
+>>>>>>> refs/remotes/origin/master
 
 	/* Now IPv6 options...
 
@@ -575,10 +775,17 @@ static struct sock *dccp_v6_request_recv_sock(struct sock *sk,
 
 	/* Clone pktoptions received with SYN */
 	newnp->pktoptions = NULL;
+<<<<<<< HEAD
 	if (ireq6->pktopts != NULL) {
 		newnp->pktoptions = skb_clone(ireq6->pktopts, GFP_ATOMIC);
 		kfree_skb(ireq6->pktopts);
 		ireq6->pktopts = NULL;
+=======
+	if (ireq->pktopts != NULL) {
+		newnp->pktoptions = skb_clone(ireq->pktopts, GFP_ATOMIC);
+		consume_skb(ireq->pktopts);
+		ireq->pktopts = NULL;
+>>>>>>> refs/remotes/origin/master
 		if (newnp->pktoptions)
 			skb_set_owner_r(newnp->pktoptions, newsk);
 	}
@@ -592,11 +799,16 @@ static struct sock *dccp_v6_request_recv_sock(struct sock *sk,
 	 * Yes, keeping reference count would be much more clever, but we make
 	 * one more one thing there: reattach optmem to newsk.
 	 */
+<<<<<<< HEAD
 	if (opt != NULL) {
 		newnp->opt = ipv6_dup_options(newsk, opt);
 		if (opt != np->opt)
 			sock_kfree_s(sk, opt, opt->tot_len);
 	}
+=======
+	if (np->opt != NULL)
+		newnp->opt = ipv6_dup_options(newsk, np->opt);
+>>>>>>> refs/remotes/origin/master
 
 	inet_csk(newsk)->icsk_ext_hdr_len = 0;
 	if (newnp->opt != NULL)
@@ -609,7 +821,22 @@ static struct sock *dccp_v6_request_recv_sock(struct sock *sk,
 	newinet->inet_rcv_saddr = LOOPBACK4_IPV6;
 
 	if (__inet_inherit_port(sk, newsk) < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sock_put(newsk);
+=======
+		inet_csk_prepare_forced_close(newsk);
+		dccp_done(newsk);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inet_csk_prepare_forced_close(newsk);
+		dccp_done(newsk);
+>>>>>>> refs/remotes/origin/master
+=======
+		inet_csk_prepare_forced_close(newsk);
+		dccp_done(newsk);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 	__inet6_hash(newsk, NULL);
@@ -622,8 +849,11 @@ out_nonewsk:
 	dst_release(dst);
 out:
 	NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_LISTENDROPS);
+<<<<<<< HEAD
 	if (opt != NULL && opt != np->opt)
 		sock_kfree_s(sk, opt, opt->tot_len);
+=======
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -877,7 +1107,14 @@ static int dccp_v6_connect(struct sock *sk, struct sockaddr *uaddr,
 			flowlabel = fl6_sock_lookup(sk, fl6.flowlabel);
 			if (flowlabel == NULL)
 				return -EINVAL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ipv6_addr_copy(&usin->sin6_addr, &flowlabel->dst);
+=======
+			usin->sin6_addr = flowlabel->dst;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			fl6_sock_release(flowlabel);
 		}
 	}
@@ -910,7 +1147,15 @@ static int dccp_v6_connect(struct sock *sk, struct sockaddr *uaddr,
 			return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&np->daddr, &usin->sin6_addr);
+=======
+	np->daddr = usin->sin6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sk->sk_v6_daddr = usin->sin6_addr;
+>>>>>>> refs/remotes/origin/master
 	np->flow_label = fl6.flowlabel;
 
 	/*
@@ -940,17 +1185,35 @@ static int dccp_v6_connect(struct sock *sk, struct sockaddr *uaddr,
 			goto failure;
 		}
 		ipv6_addr_set_v4mapped(inet->inet_saddr, &np->saddr);
+<<<<<<< HEAD
 		ipv6_addr_set_v4mapped(inet->inet_rcv_saddr, &np->rcv_saddr);
+=======
+		ipv6_addr_set_v4mapped(inet->inet_rcv_saddr, &sk->sk_v6_rcv_saddr);
+>>>>>>> refs/remotes/origin/master
 
 		return err;
 	}
 
+<<<<<<< HEAD
 	if (!ipv6_addr_any(&np->rcv_saddr))
 		saddr = &np->rcv_saddr;
 
 	fl6.flowi6_proto = IPPROTO_DCCP;
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6.daddr, &np->daddr);
 	ipv6_addr_copy(&fl6.saddr, saddr ? saddr : &np->saddr);
+=======
+	fl6.daddr = np->daddr;
+	fl6.saddr = saddr ? *saddr : np->saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ipv6_addr_any(&sk->sk_v6_rcv_saddr))
+		saddr = &sk->sk_v6_rcv_saddr;
+
+	fl6.flowi6_proto = IPPROTO_DCCP;
+	fl6.daddr = sk->sk_v6_daddr;
+	fl6.saddr = saddr ? *saddr : np->saddr;
+>>>>>>> refs/remotes/origin/master
 	fl6.flowi6_oif = sk->sk_bound_dev_if;
 	fl6.fl6_dport = usin->sin6_port;
 	fl6.fl6_sport = inet->inet_sport;
@@ -966,11 +1229,26 @@ static int dccp_v6_connect(struct sock *sk, struct sockaddr *uaddr,
 
 	if (saddr == NULL) {
 		saddr = &fl6.saddr;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&np->rcv_saddr, saddr);
 	}
 
 	/* set the source address */
 	ipv6_addr_copy(&np->saddr, saddr);
+=======
+		np->rcv_saddr = *saddr;
+=======
+		sk->sk_v6_rcv_saddr = *saddr;
+>>>>>>> refs/remotes/origin/master
+	}
+
+	/* set the source address */
+	np->saddr = *saddr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	inet->inet_rcv_saddr = LOOPBACK4_IPV6;
 
 	__ip6_dst_store(sk, dst, NULL, NULL);
@@ -988,7 +1266,11 @@ static int dccp_v6_connect(struct sock *sk, struct sockaddr *uaddr,
 		goto late_failure;
 
 	dp->dccps_iss = secure_dccpv6_sequence_number(np->saddr.s6_addr32,
+<<<<<<< HEAD
 						      np->daddr.s6_addr32,
+=======
+						      sk->sk_v6_daddr.s6_addr32,
+>>>>>>> refs/remotes/origin/master
 						      inet->inet_sport,
 						      inet->inet_dport);
 	err = dccp_connect(sk);

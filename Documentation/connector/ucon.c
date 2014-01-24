@@ -71,7 +71,11 @@ static int netlink_send(int s, struct cn_msg *msg)
 	nlh->nlmsg_seq = seq++;
 	nlh->nlmsg_pid = getpid();
 	nlh->nlmsg_type = NLMSG_DONE;
+<<<<<<< HEAD
 	nlh->nlmsg_len = NLMSG_LENGTH(size - sizeof(*nlh));
+=======
+	nlh->nlmsg_len = size;
+>>>>>>> refs/remotes/origin/master
 	nlh->nlmsg_flags = 0;
 
 	m = NLMSG_DATA(nlh);

@@ -2,10 +2,21 @@
 # Wireless USB Core configuration
 #
 config USB_WUSB
+<<<<<<< HEAD
 	tristate "Enable Wireless USB extensions (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
 	depends on USB
+<<<<<<< HEAD
         select UWB
+=======
+	depends on PCI
+	depends on UWB
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "Enable Wireless USB extensions"
+	depends on PCI
+	depends on UWB
+>>>>>>> refs/remotes/origin/master
         select CRYPTO
         select CRYPTO_BLKCIPHER
         select CRYPTO_CBC
@@ -19,7 +30,10 @@ config USB_WUSB
 
 config USB_WUSB_CBAF
 	tristate "Support WUSB Cable Based Association (CBA)"
+<<<<<<< HEAD
 	depends on USB
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Some WUSB devices support Cable Based Association. It's used to
 	  enable the secure communication between the host and the

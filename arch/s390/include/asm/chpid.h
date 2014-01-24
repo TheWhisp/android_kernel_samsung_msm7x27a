@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/cio/chpid.h
  *
  *    Copyright IBM Corp. 2007
@@ -6,7 +7,11 @@
  */
 
 #ifndef _ASM_S390_CHPID_H
+<<<<<<< HEAD
 #define _ASM_S390_CHPID_H _ASM_S390_CHPID_H
+=======
+#define _ASM_S390_CHPID_H
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/string.h>
 #include <linux/types.h>
@@ -21,6 +26,15 @@ struct chp_id {
 } __attribute__((packed));
 
 #ifdef __KERNEL__
+=======
+ *    Copyright IBM Corp. 2007, 2012
+ *    Author(s): Peter Oberparleiter <peter.oberparleiter@de.ibm.com>
+ */
+#ifndef _ASM_S390_CHPID_H
+#define _ASM_S390_CHPID_H
+
+#include <uapi/asm/chpid.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/cio.h>
 
 static inline void chp_id_init(struct chp_id *chpid)
@@ -51,6 +65,9 @@ static inline int chp_id_is_valid(struct chp_id *chpid)
 
 #define chp_id_for_each(c) \
 	for (chp_id_init(c); chp_id_is_valid(c); chp_id_next(c))
+<<<<<<< HEAD
 #endif /* __KERNEL */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_S390_CHPID_H */

@@ -20,6 +20,17 @@ config EARLY_PRINTK
 	  doesn't cooperate with an X server. You should normally say N here,
 	  unless you want to debug such a crash.
 
+<<<<<<< HEAD
+=======
+config EARLY_PRINTK_8250
+	bool "8250/16550 and compatible serial early printk driver"
+	depends on EARLY_PRINTK
+	default n
+	help
+	  If you say Y here, it will be possible to use a 8250/16550 serial
+	  port as the boot console.
+
+>>>>>>> refs/remotes/origin/master
 config CMDLINE_BOOL
 	bool "Built-in kernel command line"
 	default n
@@ -57,7 +68,11 @@ config CMDLINE
 	  options.
 
 config CMDLINE_OVERRIDE
+<<<<<<< HEAD
 	bool "Built-in command line overrides firware arguments"
+=======
+	bool "Built-in command line overrides firmware arguments"
+>>>>>>> refs/remotes/origin/master
 	default n
 	depends on CMDLINE_BOOL
 	help
@@ -67,6 +82,7 @@ config CMDLINE_OVERRIDE
 
 	  Normally, you will choose 'N' here.
 
+<<<<<<< HEAD
 config DEBUG_STACKOVERFLOW
 	bool "Check for stack overflows"
 	depends on DEBUG_KERNEL
@@ -76,6 +92,8 @@ config DEBUG_STACKOVERFLOW
 	  provides another way to check stack overflow happened on kernel mode
 	  stack usually caused by nested interruption.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SMTC_IDLE_HOOK_DEBUG
 	bool "Enable additional debug checks before going into CPU idle loop"
 	depends on DEBUG_KERNEL && MIPS_MT_SMTC

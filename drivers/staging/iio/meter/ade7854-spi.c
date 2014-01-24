@@ -10,8 +10,18 @@
 #include <linux/kernel.h>
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "../iio.h"
+=======
+#include <linux/module.h>
+
+#include <linux/iio/iio.h>
+>>>>>>> refs/remotes/origin/master
 #include "ade7854.h"
 
 static int ade7854_spi_write_reg_8(struct device *dev,
@@ -19,9 +29,18 @@ static int ade7854_spi_write_reg_8(struct device *dev,
 		u8 value)
 {
 	int ret;
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	struct spi_transfer xfer = {
 		.tx_buf = st->tx,
 		.bits_per_word = 8,
@@ -34,9 +53,13 @@ static int ade7854_spi_write_reg_8(struct device *dev,
 	st->tx[2] = reg_address & 0xFF;
 	st->tx[3] = value & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfer, &msg);
 	ret = spi_sync(st->spi, &msg);
+=======
+	ret = spi_sync_transfer(st->spi, &xfer, 1);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&st->buf_lock);
 
 	return ret;
@@ -47,9 +70,18 @@ static int ade7854_spi_write_reg_16(struct device *dev,
 		u16 value)
 {
 	int ret;
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	struct spi_transfer xfer = {
 		.tx_buf = st->tx,
 		.bits_per_word = 8,
@@ -63,9 +95,13 @@ static int ade7854_spi_write_reg_16(struct device *dev,
 	st->tx[3] = (value >> 8) & 0xFF;
 	st->tx[4] = value & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfer, &msg);
 	ret = spi_sync(st->spi, &msg);
+=======
+	ret = spi_sync_transfer(st->spi, &xfer, 1);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&st->buf_lock);
 
 	return ret;
@@ -76,9 +112,18 @@ static int ade7854_spi_write_reg_24(struct device *dev,
 		u32 value)
 {
 	int ret;
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	struct spi_transfer xfer = {
 		.tx_buf = st->tx,
 		.bits_per_word = 8,
@@ -93,9 +138,13 @@ static int ade7854_spi_write_reg_24(struct device *dev,
 	st->tx[4] = (value >> 8) & 0xFF;
 	st->tx[5] = value & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfer, &msg);
 	ret = spi_sync(st->spi, &msg);
+=======
+	ret = spi_sync_transfer(st->spi, &xfer, 1);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&st->buf_lock);
 
 	return ret;
@@ -106,9 +155,18 @@ static int ade7854_spi_write_reg_32(struct device *dev,
 		u32 value)
 {
 	int ret;
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	struct spi_transfer xfer = {
 		.tx_buf = st->tx,
 		.bits_per_word = 8,
@@ -124,9 +182,13 @@ static int ade7854_spi_write_reg_32(struct device *dev,
 	st->tx[5] = (value >> 8) & 0xFF;
 	st->tx[6] = value & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfer, &msg);
 	ret = spi_sync(st->spi, &msg);
+=======
+	ret = spi_sync_transfer(st->spi, &xfer, 1);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&st->buf_lock);
 
 	return ret;
@@ -136,9 +198,18 @@ static int ade7854_spi_read_reg_8(struct device *dev,
 		u16 reg_address,
 		u8 *val)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct spi_transfer xfers[] = {
 		{
@@ -158,10 +229,14 @@ static int ade7854_spi_read_reg_8(struct device *dev,
 	st->tx[1] = (reg_address >> 8) & 0xFF;
 	st->tx[2] = reg_address & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfers[0], &msg);
 	spi_message_add_tail(&xfers[1], &msg);
 	ret = spi_sync(st->spi, &msg);
+=======
+	ret = spi_sync_transfer(st->spi, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&st->spi->dev, "problem when reading 8 bit register 0x%02X",
 				reg_address);
@@ -178,9 +253,18 @@ static int ade7854_spi_read_reg_16(struct device *dev,
 		u16 reg_address,
 		u16 *val)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct spi_transfer xfers[] = {
 		{
@@ -199,10 +283,14 @@ static int ade7854_spi_read_reg_16(struct device *dev,
 	st->tx[1] = (reg_address >> 8) & 0xFF;
 	st->tx[2] = reg_address & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfers[0], &msg);
 	spi_message_add_tail(&xfers[1], &msg);
 	ret = spi_sync(st->spi, &msg);
+=======
+	ret = spi_sync_transfer(st->spi, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&st->spi->dev, "problem when reading 16 bit register 0x%02X",
 				reg_address);
@@ -219,9 +307,18 @@ static int ade7854_spi_read_reg_24(struct device *dev,
 		u16 reg_address,
 		u32 *val)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct spi_transfer xfers[] = {
 		{
@@ -241,10 +338,14 @@ static int ade7854_spi_read_reg_24(struct device *dev,
 	st->tx[1] = (reg_address >> 8) & 0xFF;
 	st->tx[2] = reg_address & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfers[0], &msg);
 	spi_message_add_tail(&xfers[1], &msg);
 	ret = spi_sync(st->spi, &msg);
+=======
+	ret = spi_sync_transfer(st->spi, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&st->spi->dev, "problem when reading 24 bit register 0x%02X",
 				reg_address);
@@ -261,9 +362,18 @@ static int ade7854_spi_read_reg_32(struct device *dev,
 		u16 reg_address,
 		u32 *val)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct spi_transfer xfers[] = {
 		{
@@ -283,10 +393,14 @@ static int ade7854_spi_read_reg_32(struct device *dev,
 	st->tx[1] = (reg_address >> 8) & 0xFF;
 	st->tx[2] = reg_address & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfers[0], &msg);
 	spi_message_add_tail(&xfers[1], &msg);
 	ret = spi_sync(st->spi, &msg);
+=======
+	ret = spi_sync_transfer(st->spi, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&st->spi->dev, "problem when reading 32 bit register 0x%02X",
 				reg_address);
@@ -299,9 +413,11 @@ error_ret:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit ade7854_spi_probe(struct spi_device *spi)
 {
 	int ret;
+<<<<<<< HEAD
 	struct ade7854_state *st = kzalloc(sizeof *st, GFP_KERNEL);
 	if (!st) {
 		ret =  -ENOMEM;
@@ -309,6 +425,28 @@ static int __devinit ade7854_spi_probe(struct spi_device *spi)
 	}
 
 	spi_set_drvdata(spi, st);
+=======
+	struct ade7854_state *st;
+	struct iio_dev *indio_dev;
+
+	indio_dev = iio_allocate_device(sizeof(*st));
+=======
+static int ade7854_spi_probe(struct spi_device *spi)
+{
+	int ret;
+	struct ade7854_state *st;
+	struct iio_dev *indio_dev;
+
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+>>>>>>> refs/remotes/origin/master
+	if (indio_dev == NULL)
+		return -ENOMEM;
+	st = iio_priv(indio_dev);
+	spi_set_drvdata(spi, indio_dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	st->read_reg_8 = ade7854_spi_read_reg_8;
 	st->read_reg_16 = ade7854_spi_read_reg_16;
 	st->read_reg_24 = ade7854_spi_read_reg_24;
@@ -320,13 +458,27 @@ static int __devinit ade7854_spi_probe(struct spi_device *spi)
 	st->irq = spi->irq;
 	st->spi = spi;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = ade7854_probe(st, &spi->dev);
 	if (ret) {
 		kfree(st);
 		return ret;
 	}
+=======
+
+	ret = ade7854_probe(indio_dev, &spi->dev);
+	if (ret)
+		iio_free_device(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
+=======
+
+	ret = ade7854_probe(indio_dev, &spi->dev);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ade7854_spi_remove(struct spi_device *spi)
@@ -342,6 +494,14 @@ static const struct spi_device_id ade7854_id[] = {
 	{ "ade7878", 0 },
 	{ }
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(spi, ade7854_id);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(spi, ade7854_id);
+>>>>>>> refs/remotes/origin/master
 
 static struct spi_driver ade7854_driver = {
 	.driver = {
@@ -349,9 +509,11 @@ static struct spi_driver ade7854_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = ade7854_spi_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ade7854_spi_remove),
 	.id_table = ade7854_id,
 };
+<<<<<<< HEAD
 
 static __init int ade7854_init(void)
 {
@@ -364,6 +526,15 @@ static __exit void ade7854_exit(void)
 	spi_unregister_driver(&ade7854_driver);
 }
 module_exit(ade7854_exit);
+=======
+module_spi_driver(ade7854_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = ade7854_spi_remove,
+	.id_table = ade7854_id,
+};
+module_spi_driver(ade7854_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
 MODULE_DESCRIPTION("Analog Devices ADE7854/58/68/78 SPI Driver");

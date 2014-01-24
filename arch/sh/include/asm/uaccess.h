@@ -25,6 +25,11 @@
 	(__chk_user_ptr(addr),		\
 	 __access_ok((unsigned long __force)(addr), (size)))
 
+<<<<<<< HEAD
+=======
+#define user_addr_max()	(current_thread_info()->addr_limit.seg)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Uh, these should become the main single-value transfer routines ...
  * They automatically use the right size if we just have the right
@@ -95,11 +100,24 @@ struct __large_struct { unsigned long buf[100]; };
 })
 
 #ifdef CONFIG_SUPERH32
+<<<<<<< HEAD
 # include "uaccess_32.h"
 #else
 # include "uaccess_64.h"
 #endif
 
+=======
+# include <asm/uaccess_32.h>
+#else
+# include <asm/uaccess_64.h>
+#endif
+
+extern long strncpy_from_user(char *dest, const char __user *src, long count);
+
+extern __must_check long strlen_user(const char __user *str);
+extern __must_check long strnlen_user(const char __user *str, long n);
+
+>>>>>>> refs/remotes/origin/master
 /* Generic arbitrary sized copy.  */
 /* Return the number of bytes NOT copied */
 __kernel_size_t __copy_user(void *to, const void *from, __kernel_size_t n);
@@ -137,6 +155,7 @@ __kernel_size_t __clear_user(void *addr, __kernel_size_t size);
 	__cl_size;							\
 })
 
+<<<<<<< HEAD
 /**
  * strncpy_from_user: - Copy a NUL terminated string from userspace.
  * @dst:   Destination address, in kernel space.  This buffer must be at
@@ -168,6 +187,8 @@ __kernel_size_t __clear_user(void *addr, __kernel_size_t size);
 	__sfu_res;							\
 })
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long
 copy_from_user(void *to, const void __user *from, unsigned long n)
 {
@@ -192,6 +213,7 @@ copy_to_user(void __user *to, const void *from, unsigned long n)
 	return __copy_size;
 }
 
+<<<<<<< HEAD
 /**
  * strnlen_user: - Get the size of a string in user space.
  * @s: The string to measure.
@@ -229,6 +251,8 @@ static inline long strnlen_user(const char __user *s, long n)
  */
 #define strlen_user(str)	strnlen_user(str, ~0UL >> 1)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The exception table consists of pairs of addresses: the first is the
  * address of an instruction that is allowed to fault, and the second is
@@ -254,5 +278,28 @@ int fixup_exception(struct pt_regs *regs);
 unsigned long search_exception_table(unsigned long addr);
 const struct exception_table_entry *search_exception_tables(unsigned long addr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern void *set_exception_table_vec(unsigned int vec, void *handler);
+
+static inline void *set_exception_table_evt(unsigned int evt, void *handler)
+{
+	return set_exception_table_vec(evt >> 5, handler);
+}
+
+struct mem_access {
+	unsigned long (*from)(void *dst, const void __user *src, unsigned long cnt);
+	unsigned long (*to)(void __user *dst, const void *src, unsigned long cnt);
+};
+
+int handle_unaligned_access(insn_size_t instruction, struct pt_regs *regs,
+			    struct mem_access *ma, int, unsigned long address);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_SH_UACCESS_H */

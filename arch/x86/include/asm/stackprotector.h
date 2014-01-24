@@ -38,7 +38,13 @@
 #include <asm/tsc.h>
 #include <asm/processor.h>
 #include <asm/percpu.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/desc.h>
 #include <linux/random.h>
 
@@ -76,9 +82,15 @@ static __always_inline void boot_init_stack_canary(void)
 
 	current->stack_canary = canary;
 #ifdef CONFIG_X86_64
+<<<<<<< HEAD
 	percpu_write(irq_stack_union.stack_canary, canary);
 #else
 	percpu_write(stack_canary.canary, canary);
+=======
+	this_cpu_write(irq_stack_union.stack_canary, canary);
+#else
+	this_cpu_write(stack_canary.canary, canary);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 

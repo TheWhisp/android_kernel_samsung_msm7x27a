@@ -594,7 +594,11 @@ static int Vort3DRend_Initialize(vortex_t * v, unsigned short mode)
 static int vortex_a3d_register_controls(vortex_t * vortex);
 static void vortex_a3d_unregister_controls(vortex_t * vortex);
 /* A3D base support init/shudown */
+<<<<<<< HEAD
 static void __devinit vortex_Vort3D_enable(vortex_t * v)
+=======
+static void vortex_Vort3D_enable(vortex_t *v)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -845,7 +849,11 @@ snd_vortex_a3d_filter_put(struct snd_kcontrol *kcontrol,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new vortex_a3d_kcontrol __devinitdata = {
+=======
+static struct snd_kcontrol_new vortex_a3d_kcontrol = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
 	.name = "Playback PCM advanced processing",
 	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
@@ -855,7 +863,11 @@ static struct snd_kcontrol_new vortex_a3d_kcontrol __devinitdata = {
 };
 
 /* Control (un)registration. */
+<<<<<<< HEAD
 static int __devinit vortex_a3d_register_controls(vortex_t * vortex)
+=======
+static int vortex_a3d_register_controls(vortex_t *vortex)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_kcontrol *kcontrol;
 	int err, i;

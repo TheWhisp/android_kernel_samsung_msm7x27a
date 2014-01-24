@@ -4,11 +4,24 @@
  * for more details.
  *
  * Copyright (C) 2004-2007 Cavium Networks
+<<<<<<< HEAD
  * Copyright (C) 2008 Wind River Systems
  */
 #include <linux/init.h>
 #include <linux/console.h>
 #include <linux/delay.h>
+=======
+ * Copyright (C) 2008, 2009 Wind River Systems
+ *   written by Ralf Baechle <ralf@linux-mips.org>
+ */
+#include <linux/compiler.h>
+#include <linux/vmalloc.h>
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/console.h>
+#include <linux/delay.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/serial.h>
@@ -20,11 +33,23 @@
 #include <linux/platform_device.h>
 #include <linux/serial_core.h>
 #include <linux/serial_8250.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_fdt.h>
+#include <linux/libfdt.h>
+#include <linux/kexec.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/processor.h>
 #include <asm/reboot.h>
 #include <asm/smp-ops.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq_cpu.h>
 #include <asm/mipsregs.h>
 #include <asm/bootinfo.h>
@@ -35,12 +60,15 @@
 #include <asm/octeon/pci-octeon.h>
 #include <asm/octeon/cvmx-mio-defs.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_CAVIUM_DECODE_RSL
 extern void cvmx_interrupt_rsl_decode(void);
 extern int __cvmx_interrupt_ecc_report_single_bit_errors;
 extern void cvmx_interrupt_rsl_enable(void);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct plat_smp_ops octeon_smp_ops;
 
 #ifdef CONFIG_PCI
@@ -54,11 +82,217 @@ struct octeon_boot_descriptor *octeon_boot_desc_ptr;
 struct cvmx_bootinfo *octeon_bootinfo;
 EXPORT_SYMBOL(octeon_bootinfo);
 
+<<<<<<< HEAD
+=======
+static unsigned long long RESERVE_LOW_MEM = 0ull;
+#ifdef CONFIG_KEXEC
+#ifdef CONFIG_SMP
+/*
+ * Wait for relocation code is prepared and send
+ * secondary CPUs to spin until kernel is relocated.
+ */
+static void octeon_kexec_smp_down(void *ignored)
+{
+	int cpu = smp_processor_id();
+
+	local_irq_disable();
+	set_cpu_online(cpu, false);
+	while (!atomic_read(&kexec_ready_to_reboot))
+		cpu_relax();
+
+	asm volatile (
+	"	sync						\n"
+	"	synci	($0)					\n");
+
+	relocated_kexec_smp_wait(NULL);
+}
+#endif
+
+#define OCTEON_DDR0_BASE    (0x0ULL)
+#define OCTEON_DDR0_SIZE    (0x010000000ULL)
+#define OCTEON_DDR1_BASE    (0x410000000ULL)
+#define OCTEON_DDR1_SIZE    (0x010000000ULL)
+#define OCTEON_DDR2_BASE    (0x020000000ULL)
+#define OCTEON_DDR2_SIZE    (0x3e0000000ULL)
+#define OCTEON_MAX_PHY_MEM_SIZE (16*1024*1024*1024ULL)
+
+static struct kimage *kimage_ptr;
+
+static void kexec_bootmem_init(uint64_t mem_size, uint32_t low_reserved_bytes)
+{
+	int64_t addr;
+	struct cvmx_bootmem_desc *bootmem_desc;
+
+	bootmem_desc = cvmx_bootmem_get_desc();
+
+	if (mem_size > OCTEON_MAX_PHY_MEM_SIZE) {
+		mem_size = OCTEON_MAX_PHY_MEM_SIZE;
+		pr_err("Error: requested memory too large,"
+		       "truncating to maximum size\n");
+	}
+
+	bootmem_desc->major_version = CVMX_BOOTMEM_DESC_MAJ_VER;
+	bootmem_desc->minor_version = CVMX_BOOTMEM_DESC_MIN_VER;
+
+	addr = (OCTEON_DDR0_BASE + RESERVE_LOW_MEM + low_reserved_bytes);
+	bootmem_desc->head_addr = 0;
+
+	if (mem_size <= OCTEON_DDR0_SIZE) {
+		__cvmx_bootmem_phy_free(addr,
+				mem_size - RESERVE_LOW_MEM -
+				low_reserved_bytes, 0);
+		return;
+	}
+
+	__cvmx_bootmem_phy_free(addr,
+			OCTEON_DDR0_SIZE - RESERVE_LOW_MEM -
+			low_reserved_bytes, 0);
+
+	mem_size -= OCTEON_DDR0_SIZE;
+
+	if (mem_size > OCTEON_DDR1_SIZE) {
+		__cvmx_bootmem_phy_free(OCTEON_DDR1_BASE, OCTEON_DDR1_SIZE, 0);
+		__cvmx_bootmem_phy_free(OCTEON_DDR2_BASE,
+				mem_size - OCTEON_DDR1_SIZE, 0);
+	} else
+		__cvmx_bootmem_phy_free(OCTEON_DDR1_BASE, mem_size, 0);
+}
+
+static int octeon_kexec_prepare(struct kimage *image)
+{
+	int i;
+	char *bootloader = "kexec";
+
+	octeon_boot_desc_ptr->argc = 0;
+	for (i = 0; i < image->nr_segments; i++) {
+		if (!strncmp(bootloader, (char *)image->segment[i].buf,
+				strlen(bootloader))) {
+			/*
+			 * convert command line string to array
+			 * of parameters (as bootloader does).
+			 */
+			int argc = 0, offt;
+			char *str = (char *)image->segment[i].buf;
+			char *ptr = strchr(str, ' ');
+			while (ptr && (OCTEON_ARGV_MAX_ARGS > argc)) {
+				*ptr = '\0';
+				if (ptr[1] != ' ') {
+					offt = (int)(ptr - str + 1);
+					octeon_boot_desc_ptr->argv[argc] =
+						image->segment[i].mem + offt;
+					argc++;
+				}
+				ptr = strchr(ptr + 1, ' ');
+			}
+			octeon_boot_desc_ptr->argc = argc;
+			break;
+		}
+	}
+
+	/*
+	 * Information about segments will be needed during pre-boot memory
+	 * initialization.
+	 */
+	kimage_ptr = image;
+	return 0;
+}
+
+static void octeon_generic_shutdown(void)
+{
+	int i;
+#ifdef CONFIG_SMP
+	int cpu;
+#endif
+	struct cvmx_bootmem_desc *bootmem_desc;
+	void *named_block_array_ptr;
+
+	bootmem_desc = cvmx_bootmem_get_desc();
+	named_block_array_ptr =
+		cvmx_phys_to_ptr(bootmem_desc->named_block_array_addr);
+
+#ifdef CONFIG_SMP
+	/* disable watchdogs */
+	for_each_online_cpu(cpu)
+		cvmx_write_csr(CVMX_CIU_WDOGX(cpu_logical_map(cpu)), 0);
+#else
+	cvmx_write_csr(CVMX_CIU_WDOGX(cvmx_get_core_num()), 0);
+#endif
+	if (kimage_ptr != kexec_crash_image) {
+		memset(named_block_array_ptr,
+			0x0,
+			CVMX_BOOTMEM_NUM_NAMED_BLOCKS *
+			sizeof(struct cvmx_bootmem_named_block_desc));
+		/*
+		 * Mark all memory (except low 0x100000 bytes) as free.
+		 * It is the same thing that bootloader does.
+		 */
+		kexec_bootmem_init(octeon_bootinfo->dram_size*1024ULL*1024ULL,
+				0x100000);
+		/*
+		 * Allocate all segments to avoid their corruption during boot.
+		 */
+		for (i = 0; i < kimage_ptr->nr_segments; i++)
+			cvmx_bootmem_alloc_address(
+				kimage_ptr->segment[i].memsz + 2*PAGE_SIZE,
+				kimage_ptr->segment[i].mem - PAGE_SIZE,
+				PAGE_SIZE);
+	} else {
+		/*
+		 * Do not mark all memory as free. Free only named sections
+		 * leaving the rest of memory unchanged.
+		 */
+		struct cvmx_bootmem_named_block_desc *ptr =
+			(struct cvmx_bootmem_named_block_desc *)
+			named_block_array_ptr;
+
+		for (i = 0; i < bootmem_desc->named_block_num_blocks; i++)
+			if (ptr[i].size)
+				cvmx_bootmem_free_named(ptr[i].name);
+	}
+	kexec_args[2] = 1UL; /* running on octeon_main_processor */
+	kexec_args[3] = (unsigned long)octeon_boot_desc_ptr;
+#ifdef CONFIG_SMP
+	secondary_kexec_args[2] = 0UL; /* running on secondary cpu */
+	secondary_kexec_args[3] = (unsigned long)octeon_boot_desc_ptr;
+#endif
+}
+
+static void octeon_shutdown(void)
+{
+	octeon_generic_shutdown();
+#ifdef CONFIG_SMP
+	smp_call_function(octeon_kexec_smp_down, NULL, 0);
+	smp_wmb();
+	while (num_online_cpus() > 1) {
+		cpu_relax();
+		mdelay(1);
+	}
+#endif
+}
+
+static void octeon_crash_shutdown(struct pt_regs *regs)
+{
+	octeon_generic_shutdown();
+	default_machine_crash_shutdown(regs);
+}
+
+#endif /* CONFIG_KEXEC */
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CAVIUM_RESERVE32
 uint64_t octeon_reserve32_memory;
 EXPORT_SYMBOL(octeon_reserve32_memory);
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KEXEC
+/* crashkernel cmdline parameter is parsed _after_ memory setup
+ * we also parse it here (workaround for EHB5200) */
+static uint64_t crashk_size, crashk_base;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int octeon_uart;
 
 extern asmlinkage void handle_int(void);
@@ -117,7 +351,11 @@ EXPORT_SYMBOL(octeon_get_io_clock_rate);
  * exists on most Cavium evaluation boards. If it doesn't exist, then
  * this function doesn't do anything.
  *
+<<<<<<< HEAD
  * @s:      String to write
+=======
+ * @s:	    String to write
+>>>>>>> refs/remotes/origin/master
  */
 void octeon_write_lcd(const char *s)
 {
@@ -139,7 +377,11 @@ void octeon_write_lcd(const char *s)
 /**
  * Return the console uart passed by the bootloader
  *
+<<<<<<< HEAD
  * Returns uart   (0 or 1)
+=======
+ * Returns uart	  (0 or 1)
+>>>>>>> refs/remotes/origin/master
  */
 int octeon_get_boot_uart(void)
 {
@@ -223,6 +465,7 @@ static void octeon_restart(char *command)
  */
 static void octeon_kill_core(void *arg)
 {
+<<<<<<< HEAD
 	mb();
 	if (octeon_is_simulation()) {
 		/* The simulator needs the watchdog to stop for dead cores */
@@ -230,6 +473,18 @@ static void octeon_kill_core(void *arg)
 		/* A break instruction causes the simulator stop a core */
 		asm volatile ("sync\nbreak");
 	}
+=======
+	if (octeon_is_simulation())
+		/* A break instruction causes the simulator stop a core */
+		asm volatile ("break" ::: "memory");
+
+	local_irq_disable();
+	/* Disable watchdog on this core. */
+	cvmx_write_csr(CVMX_CIU_WDOGX(cvmx_get_core_num()), 0);
+	/* Spin in a low power mode. */
+	while (true)
+		asm volatile ("wait" ::: "memory");
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -255,6 +510,7 @@ static void octeon_halt(void)
 }
 
 /**
+<<<<<<< HEAD
  * Handle all the error condition interrupts that might occur.
  *
  */
@@ -267,6 +523,8 @@ static irqreturn_t octeon_rlm_interrupt(int cpl, void *dev_id)
 #endif
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * Return a string representing the system type
  *
  * Returns
@@ -413,6 +671,11 @@ void octeon_user_io_init(void)
 void __init prom_init(void)
 {
 	struct cvmx_sysinfo *sysinfo;
+<<<<<<< HEAD
+=======
+	const char *arg;
+	char *p;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int argc;
 #ifdef CONFIG_CAVIUM_RESERVE32
@@ -502,7 +765,11 @@ void __init prom_init(void)
 	if (cvmx_read_csr(CVMX_L2D_FUS3) & (3ull << 34)) {
 		pr_info("Skipping L2 locking due to reduced L2 cache size\n");
 	} else {
+<<<<<<< HEAD
 		uint32_t ebase = read_c0_ebase() & 0x3ffff000;
+=======
+		uint32_t __maybe_unused ebase = read_c0_ebase() & 0x3ffff000;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CAVIUM_OCTEON_LOCK_L2_TLB
 		/* TLB refill */
 		cvmx_l2c_lock_mem_region(ebase, 0x100);
@@ -546,6 +813,11 @@ void __init prom_init(void)
 	}
 #endif
 
+<<<<<<< HEAD
+=======
+	octeon_setup_delays();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * BIST should always be enabled when doing a soft reset. L2
 	 * Cache locking for instance is not cleared unless BIST is
@@ -562,6 +834,18 @@ void __init prom_init(void)
 	if (octeon_is_simulation())
 		MAX_MEMORY = 64ull << 20;
 
+<<<<<<< HEAD
+=======
+	arg = strstr(arcs_cmdline, "mem=");
+	if (arg) {
+		MAX_MEMORY = memparse(arg + 4, &p);
+		if (MAX_MEMORY == 0)
+			MAX_MEMORY = 32ull << 30;
+		if (*p == '@')
+			RESERVE_LOW_MEM = memparse(p + 1, &p);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	arcs_cmdline[0] = 0;
 	argc = octeon_boot_desc_ptr->argc;
 	for (i = 0; i < argc; i++) {
@@ -569,16 +853,40 @@ void __init prom_init(void)
 			cvmx_phys_to_ptr(octeon_boot_desc_ptr->argv[i]);
 		if ((strncmp(arg, "MEM=", 4) == 0) ||
 		    (strncmp(arg, "mem=", 4) == 0)) {
+<<<<<<< HEAD
 			sscanf(arg + 4, "%llu", &MAX_MEMORY);
 			MAX_MEMORY <<= 20;
 			if (MAX_MEMORY == 0)
 				MAX_MEMORY = 32ull << 30;
+=======
+			MAX_MEMORY = memparse(arg + 4, &p);
+			if (MAX_MEMORY == 0)
+				MAX_MEMORY = 32ull << 30;
+			if (*p == '@')
+				RESERVE_LOW_MEM = memparse(p + 1, &p);
+>>>>>>> refs/remotes/origin/master
 		} else if (strcmp(arg, "ecc_verbose") == 0) {
 #ifdef CONFIG_CAVIUM_REPORT_SINGLE_BIT_ECC
 			__cvmx_interrupt_ecc_report_single_bit_errors = 1;
 			pr_notice("Reporting of single bit ECC errors is "
 				  "turned on\n");
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KEXEC
+		} else if (strncmp(arg, "crashkernel=", 12) == 0) {
+			crashk_size = memparse(arg+12, &p);
+			if (*p == '@')
+				crashk_base = memparse(p+1, &p);
+			strcat(arcs_cmdline, " ");
+			strcat(arcs_cmdline, arg);
+			/*
+			 * To do: switch parsing to new style, something like:
+			 * parse_crashkernel(arg, sysinfo->system_dram_size,
+			 *		  &crashk_size, &crashk_base);
+			 */
+#endif
+>>>>>>> refs/remotes/origin/master
 		} else if (strlen(arcs_cmdline) + strlen(arg) + 1 <
 			   sizeof(arcs_cmdline) - 1) {
 			strcat(arcs_cmdline, " ");
@@ -609,16 +917,32 @@ void __init prom_init(void)
 	mips_hpt_frequency = octeon_get_clock_rate();
 
 	octeon_init_cvmcount();
+<<<<<<< HEAD
 	octeon_setup_delays();
+=======
+>>>>>>> refs/remotes/origin/master
 
 	_machine_restart = octeon_restart;
 	_machine_halt = octeon_halt;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KEXEC
+	_machine_kexec_shutdown = octeon_shutdown;
+	_machine_crash_shutdown = octeon_crash_shutdown;
+	_machine_kexec_prepare = octeon_kexec_prepare;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	octeon_user_io_init();
 	register_smp_ops(&octeon_smp_ops);
 }
 
 /* Exclude a single page from the regions obtained in plat_mem_setup. */
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_CRASH_DUMP
+>>>>>>> refs/remotes/origin/master
 static __init void memory_exclude_page(u64 addr, u64 *mem, u64 *size)
 {
 	if (addr > *mem && addr < *mem + *size) {
@@ -633,15 +957,21 @@ static __init void memory_exclude_page(u64 addr, u64 *mem, u64 *size)
 		*size -= PAGE_SIZE;
 	}
 }
+<<<<<<< HEAD
+=======
+#endif /* CONFIG_CRASH_DUMP */
+>>>>>>> refs/remotes/origin/master
 
 void __init plat_mem_setup(void)
 {
 	uint64_t mem_alloc_size;
 	uint64_t total;
+<<<<<<< HEAD
 	int64_t memory;
 
 	total = 0;
 
+<<<<<<< HEAD
 	/* First add the init memory we will be returning.  */
 	memory = __pa_symbol(&__init_begin) & PAGE_MASK;
 	mem_alloc_size = (__pa_symbol(&__init_end) & PAGE_MASK) - memory;
@@ -650,6 +980,20 @@ void __init plat_mem_setup(void)
 		total += mem_alloc_size;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint64_t crashk_end;
+#ifndef CONFIG_CRASH_DUMP
+	int64_t memory;
+	uint64_t kernel_start;
+	uint64_t kernel_size;
+#endif
+
+	total = 0;
+	crashk_end = 0;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The Mips memory init uses the first memory location for
 	 * some memory vectors. When SPARSEMEM is in use, it doesn't
@@ -661,6 +1005,20 @@ void __init plat_mem_setup(void)
 	if (mem_alloc_size > MAX_MEMORY)
 		mem_alloc_size = MAX_MEMORY;
 
+<<<<<<< HEAD
+=======
+/* Crashkernel ignores bootmem list. It relies on mem=X@Y option */
+#ifdef CONFIG_CRASH_DUMP
+	add_memory_region(RESERVE_LOW_MEM, MAX_MEMORY, BOOT_MEM_RAM);
+	total += MAX_MEMORY;
+#else
+#ifdef CONFIG_KEXEC
+	if (crashk_size > 0) {
+		add_memory_region(crashk_base, crashk_size, BOOT_MEM_RAM);
+		crashk_end = crashk_base + crashk_size;
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * When allocating memory, we want incrementing addresses from
 	 * bootmem_alloc so the code in add_memory_region can merge
@@ -669,11 +1027,15 @@ void __init plat_mem_setup(void)
 	cvmx_bootmem_lock();
 	while ((boot_mem_map.nr_map < BOOT_MEM_MAP_MAX)
 		&& (total < MAX_MEMORY)) {
+<<<<<<< HEAD
 #if defined(CONFIG_64BIT) || defined(CONFIG_64BIT_PHYS_ADDR)
+=======
+>>>>>>> refs/remotes/origin/master
 		memory = cvmx_bootmem_phy_alloc(mem_alloc_size,
 						__pa_symbol(&__init_end), -1,
 						0x100000,
 						CVMX_BOOTMEM_FLAG_NO_LOCKING);
+<<<<<<< HEAD
 #elif defined(CONFIG_HIGHMEM)
 		memory = cvmx_bootmem_phy_alloc(mem_alloc_size, 0, 1ull << 31,
 						0x100000,
@@ -685,6 +1047,13 @@ void __init plat_mem_setup(void)
 #endif
 		if (memory >= 0) {
 			u64 size = mem_alloc_size;
+=======
+		if (memory >= 0) {
+			u64 size = mem_alloc_size;
+#ifdef CONFIG_KEXEC
+			uint64_t end;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * exclude a page at the beginning and end of
@@ -697,6 +1066,7 @@ void __init plat_mem_setup(void)
 			memory_exclude_page(CVMX_PCIE_BAR1_PHYS_BASE +
 					    CVMX_PCIE_BAR1_PHYS_SIZE,
 					    &memory, &size);
+<<<<<<< HEAD
 
 			/*
 			 * This function automatically merges address
@@ -706,11 +1076,72 @@ void __init plat_mem_setup(void)
 			if (size)
 				add_memory_region(memory, size, BOOT_MEM_RAM);
 			total += mem_alloc_size;
+=======
+#ifdef CONFIG_KEXEC
+			end = memory + mem_alloc_size;
+
+			/*
+			 * This function automatically merges address regions
+			 * next to each other if they are received in
+			 * incrementing order
+			 */
+			if (memory < crashk_base && end >  crashk_end) {
+				/* region is fully in */
+				add_memory_region(memory,
+						  crashk_base - memory,
+						  BOOT_MEM_RAM);
+				total += crashk_base - memory;
+				add_memory_region(crashk_end,
+						  end - crashk_end,
+						  BOOT_MEM_RAM);
+				total += end - crashk_end;
+				continue;
+			}
+
+			if (memory >= crashk_base && end <= crashk_end)
+				/*
+				 * Entire memory region is within the new
+				 *  kernel's memory, ignore it.
+				 */
+				continue;
+
+			if (memory > crashk_base && memory < crashk_end &&
+			    end > crashk_end) {
+				/*
+				 * Overlap with the beginning of the region,
+				 * reserve the beginning.
+				  */
+				mem_alloc_size -= crashk_end - memory;
+				memory = crashk_end;
+			} else if (memory < crashk_base && end > crashk_base &&
+				   end < crashk_end)
+				/*
+				 * Overlap with the beginning of the region,
+				 * chop of end.
+				 */
+				mem_alloc_size -= end - crashk_base;
+#endif
+			add_memory_region(memory, mem_alloc_size, BOOT_MEM_RAM);
+			total += mem_alloc_size;
+			/* Recovering mem_alloc_size */
+			mem_alloc_size = 4 << 20;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			break;
 		}
 	}
 	cvmx_bootmem_unlock();
+<<<<<<< HEAD
+=======
+	/* Add the memory region for the kernel. */
+	kernel_start = (unsigned long) _text;
+	kernel_size = _end - _text;
+
+	/* Adjust for physical offset. */
+	kernel_start &= ~0xffffffff80000000ULL;
+	add_memory_region(kernel_start, kernel_size, BOOT_MEM_RAM);
+#endif /* CONFIG_CRASH_DUMP */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CAVIUM_RESERVE32
 	/*
@@ -724,11 +1155,19 @@ void __init plat_mem_setup(void)
 
 	if (total == 0)
 		panic("Unable to allocate memory from "
+<<<<<<< HEAD
 		      "cvmx_bootmem_phy_alloc\n");
 }
 
 /*
  * Emit one character to the boot UART.  Exported for use by the
+=======
+		      "cvmx_bootmem_phy_alloc");
+}
+
+/*
+ * Emit one character to the boot UART.	 Exported for use by the
+>>>>>>> refs/remotes/origin/master
  * watchdog timer.
  */
 int prom_putchar(char c)
@@ -767,11 +1206,23 @@ void prom_free_prom_memory(void)
 			: "=r" (insn) : : "$31", "memory");
 
 		if ((insn >> 26) != 0x33)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			panic("No PREF instruction at Core-14449 probe point.\n");
 
 		if (((insn >> 16) & 0x1f) != 28)
 			panic("Core-14449 WAR not in place (%04x).\n"
 			      "Please build kernel with proper options (CONFIG_CAVIUM_CN63XXP1).\n", insn);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+			panic("No PREF instruction at Core-14449 probe point.");
+
+		if (((insn >> 16) & 0x1f) != 28)
+			panic("Core-14449 WAR not in place (%04x).\n"
+			      "Please build kernel with proper options (CONFIG_CAVIUM_CN63XXP1).", insn);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 #ifdef CONFIG_CAVIUM_DECODE_RSL
 	cvmx_interrupt_rsl_enable();
@@ -779,7 +1230,133 @@ void prom_free_prom_memory(void)
 	/* Add an interrupt handler for general failures. */
 	if (request_irq(OCTEON_IRQ_RML, octeon_rlm_interrupt, IRQF_SHARED,
 			"RML/RSL", octeon_rlm_interrupt)) {
+<<<<<<< HEAD
 		panic("Unable to request_irq(OCTEON_IRQ_RML)\n");
+=======
+		panic("Unable to request_irq(OCTEON_IRQ_RML)");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 #endif
 }
+=======
+	}
+}
+
+int octeon_prune_device_tree(void);
+
+extern const char __dtb_octeon_3xxx_begin;
+extern const char __dtb_octeon_3xxx_end;
+extern const char __dtb_octeon_68xx_begin;
+extern const char __dtb_octeon_68xx_end;
+void __init device_tree_init(void)
+{
+	int dt_size;
+	struct boot_param_header *fdt;
+	bool do_prune;
+
+	if (octeon_bootinfo->minor_version >= 3 && octeon_bootinfo->fdt_addr) {
+		fdt = phys_to_virt(octeon_bootinfo->fdt_addr);
+		if (fdt_check_header(fdt))
+			panic("Corrupt Device Tree passed to kernel.");
+		dt_size = be32_to_cpu(fdt->totalsize);
+		do_prune = false;
+	} else if (OCTEON_IS_MODEL(OCTEON_CN68XX)) {
+		fdt = (struct boot_param_header *)&__dtb_octeon_68xx_begin;
+		dt_size = &__dtb_octeon_68xx_end - &__dtb_octeon_68xx_begin;
+		do_prune = true;
+	} else {
+		fdt = (struct boot_param_header *)&__dtb_octeon_3xxx_begin;
+		dt_size = &__dtb_octeon_3xxx_end - &__dtb_octeon_3xxx_begin;
+		do_prune = true;
+	}
+
+	/* Copy the default tree from init memory. */
+	initial_boot_params = early_init_dt_alloc_memory_arch(dt_size, 8);
+	if (initial_boot_params == NULL)
+		panic("Could not allocate initial_boot_params");
+	memcpy(initial_boot_params, fdt, dt_size);
+
+	if (do_prune) {
+		octeon_prune_device_tree();
+		pr_info("Using internal Device Tree.\n");
+	} else {
+		pr_info("Using passed Device Tree.\n");
+	}
+	unflatten_device_tree();
+}
+
+static int __initdata disable_octeon_edac_p;
+
+static int __init disable_octeon_edac(char *str)
+{
+	disable_octeon_edac_p = 1;
+	return 0;
+}
+early_param("disable_octeon_edac", disable_octeon_edac);
+
+static char *edac_device_names[] = {
+	"octeon_l2c_edac",
+	"octeon_pc_edac",
+};
+
+static int __init edac_devinit(void)
+{
+	struct platform_device *dev;
+	int i, err = 0;
+	int num_lmc;
+	char *name;
+
+	if (disable_octeon_edac_p)
+		return 0;
+
+	for (i = 0; i < ARRAY_SIZE(edac_device_names); i++) {
+		name = edac_device_names[i];
+		dev = platform_device_register_simple(name, -1, NULL, 0);
+		if (IS_ERR(dev)) {
+			pr_err("Registation of %s failed!\n", name);
+			err = PTR_ERR(dev);
+		}
+	}
+
+	num_lmc = OCTEON_IS_MODEL(OCTEON_CN68XX) ? 4 :
+		(OCTEON_IS_MODEL(OCTEON_CN56XX) ? 2 : 1);
+	for (i = 0; i < num_lmc; i++) {
+		dev = platform_device_register_simple("octeon_lmc_edac",
+						      i, NULL, 0);
+		if (IS_ERR(dev)) {
+			pr_err("Registation of octeon_lmc_edac %d failed!\n", i);
+			err = PTR_ERR(dev);
+		}
+	}
+
+	return err;
+}
+device_initcall(edac_devinit);
+
+static void __initdata *octeon_dummy_iospace;
+
+static int __init octeon_no_pci_init(void)
+{
+	/*
+	 * Initially assume there is no PCI. The PCI/PCIe platform code will
+	 * later re-initialize these to correct values if they are present.
+	 */
+	octeon_dummy_iospace = vzalloc(IO_SPACE_LIMIT);
+	set_io_port_base((unsigned long)octeon_dummy_iospace);
+	ioport_resource.start = MAX_RESOURCE;
+	ioport_resource.end = 0;
+	return 0;
+}
+core_initcall(octeon_no_pci_init);
+
+static int __init octeon_no_pci_release(void)
+{
+	/*
+	 * Release the allocated memory if a real IO space is there.
+	 */
+	if ((unsigned long)octeon_dummy_iospace != mips_io_port_base)
+		vfree(octeon_dummy_iospace);
+	return 0;
+}
+late_initcall(octeon_no_pci_release);
+>>>>>>> refs/remotes/origin/master

@@ -33,6 +33,12 @@
 
 #define VMWARE_PORT_CMD_GETVERSION	10
 #define VMWARE_PORT_CMD_GETHZ		45
+<<<<<<< HEAD
+=======
+#define VMWARE_PORT_CMD_GETVCPU_INFO	68
+#define VMWARE_PORT_CMD_LEGACY_X2APIC	3
+#define VMWARE_PORT_CMD_VCPU_RESERVED	31
+>>>>>>> refs/remotes/origin/master
 
 #define VMWARE_PORT(cmd, eax, ebx, ecx, edx)				\
 	__asm__("inl (%%dx)" :						\
@@ -90,7 +96,11 @@ static void __init vmware_platform_setup(void)
  * serial key should be enough, as this will always have a VMware
  * specific string when running under VMware hypervisor.
  */
+<<<<<<< HEAD
 static bool __init vmware_platform(void)
+=======
+static uint32_t __init vmware_platform(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (cpu_has_hypervisor) {
 		unsigned int eax;
@@ -99,12 +109,21 @@ static bool __init vmware_platform(void)
 		cpuid(CPUID_VMWARE_INFO_LEAF, &eax, &hyper_vendor_id[0],
 		      &hyper_vendor_id[1], &hyper_vendor_id[2]);
 		if (!memcmp(hyper_vendor_id, "VMwareVMware", 12))
+<<<<<<< HEAD
 			return true;
 	} else if (dmi_available && dmi_name_in_serial("VMware") &&
 		   __vmware_platform())
 		return true;
 
 	return false;
+=======
+			return CPUID_VMWARE_INFO_LEAF;
+	} else if (dmi_available && dmi_name_in_serial("VMware") &&
+		   __vmware_platform())
+		return 1;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -119,16 +138,36 @@ static bool __init vmware_platform(void)
  * so that the kernel could just trust the hypervisor with providing a
  * reliable virtual TSC that is suitable for timekeeping.
  */
+<<<<<<< HEAD
 static void __cpuinit vmware_set_cpu_features(struct cpuinfo_x86 *c)
+=======
+static void vmware_set_cpu_features(struct cpuinfo_x86 *c)
+>>>>>>> refs/remotes/origin/master
 {
 	set_cpu_cap(c, X86_FEATURE_CONSTANT_TSC);
 	set_cpu_cap(c, X86_FEATURE_TSC_RELIABLE);
 }
 
+<<<<<<< HEAD
+=======
+/* Checks if hypervisor supports x2apic without VT-D interrupt remapping. */
+static bool __init vmware_legacy_x2apic_available(void)
+{
+	uint32_t eax, ebx, ecx, edx;
+	VMWARE_PORT(GETVCPU_INFO, eax, ebx, ecx, edx);
+	return (eax & (1 << VMWARE_PORT_CMD_VCPU_RESERVED)) == 0 &&
+	       (eax & (1 << VMWARE_PORT_CMD_LEGACY_X2APIC)) != 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 const __refconst struct hypervisor_x86 x86_hyper_vmware = {
 	.name			= "VMware",
 	.detect			= vmware_platform,
 	.set_cpu_features	= vmware_set_cpu_features,
 	.init_platform		= vmware_platform_setup,
+<<<<<<< HEAD
+=======
+	.x2apic_available	= vmware_legacy_x2apic_available,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL(x86_hyper_vmware);

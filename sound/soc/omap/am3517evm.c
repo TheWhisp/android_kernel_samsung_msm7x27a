@@ -19,17 +19,31 @@
 
 #include <linux/clk.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/soc.h>
 
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/gpio.h>
 #include <plat/mcbsp.h>
 
 #include "omap-mcbsp.h"
 #include "omap-pcm.h"
+=======
+#include <linux/platform_data/asoc-ti-mcbsp.h>
+
+#include "omap-mcbsp.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "../codecs/tlv320aic23.h"
 
@@ -40,9 +54,11 @@ static int am3517evm_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+<<<<<<< HEAD
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 	int ret;
 
+<<<<<<< HEAD
 	/* Set codec DAI configuration */
 	ret = snd_soc_dai_set_fmt(codec_dai,
 				  SND_SOC_DAIFMT_DSP_B |
@@ -63,6 +79,8 @@ static int am3517evm_hw_params(struct snd_pcm_substream *substream,
 		return ret;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Set the codec system clock for DAC and ADC */
 	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
 			CODEC_CLOCK, SND_SOC_CLOCK_IN);
@@ -86,6 +104,17 @@ static int am3517evm_hw_params(struct snd_pcm_substream *substream,
 	}
 
 	return 0;
+=======
+	int ret;
+
+	/* Set the codec system clock for DAC and ADC */
+	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
+			CODEC_CLOCK, SND_SOC_CLOCK_IN);
+	if (ret < 0)
+		printk(KERN_ERR "can't set codec system clock\n");
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct snd_soc_ops am3517evm_ops = {
@@ -110,6 +139,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"MICIN", NULL, "Mic In"},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int am3517evm_aic23_init(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_soc_codec *codec = rtd->codec;
@@ -132,23 +163,59 @@ static int am3517evm_aic23_init(struct snd_soc_pcm_runtime *rtd)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Digital audio interface glue - connects codec <--> CPU */
 static struct snd_soc_dai_link am3517evm_dai = {
 	.name = "TLV320AIC23",
 	.stream_name = "AIC23",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.cpu_dai_name ="omap-mcbsp-dai.0",
 	.codec_dai_name = "tlv320aic23-hifi",
 	.platform_name = "omap-pcm-audio",
 	.codec_name = "tlv320aic23-codec.2-001a",
 	.init = am3517evm_aic23_init,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.cpu_dai_name = "omap-mcbsp.1",
+	.codec_dai_name = "tlv320aic23-hifi",
+	.platform_name = "omap-pcm-audio",
+	.codec_name = "tlv320aic23-codec.2-001a",
+	.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
+		   SND_SOC_DAIFMT_CBM_CFM,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ops = &am3517evm_ops,
 };
 
 /* Audio machine driver */
 static struct snd_soc_card snd_soc_am3517evm = {
 	.name = "am3517evm",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.dai_link = &am3517evm_dai,
 	.num_links = 1,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.owner = THIS_MODULE,
+	.dai_link = &am3517evm_dai,
+	.num_links = 1,
+
+	.dapm_widgets = tlv320aic23_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
+	.dapm_routes = audio_map,
+	.num_dapm_routes = ARRAY_SIZE(audio_map),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *am3517evm_snd_device;

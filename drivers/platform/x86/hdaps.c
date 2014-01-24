@@ -2,7 +2,11 @@
  * hdaps.c - driver for IBM's Hard Drive Active Protection System
  *
  * Copyright (C) 2005 Robert Love <rml@novell.com>
+<<<<<<< HEAD
  * Copyright (C) 2005 Jesper Juhl <jesper.juhl@gmail.com>
+=======
+ * Copyright (C) 2005 Jesper Juhl <jj@chaosbits.net>
+>>>>>>> refs/remotes/origin/master
  *
  * The HardDisk Active Protection System (hdaps) is present in IBM ThinkPads
  * starting with the R40, T41, and X40.  It provides a basic two-axis
@@ -305,6 +309,7 @@ static int hdaps_probe(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int hdaps_resume(struct platform_device *dev)
 {
 	return hdaps_device_init();
@@ -316,6 +321,23 @@ static struct platform_driver hdaps_driver = {
 	.driver	= {
 		.name = "hdaps",
 		.owner = THIS_MODULE,
+=======
+#ifdef CONFIG_PM_SLEEP
+static int hdaps_resume(struct device *dev)
+{
+	return hdaps_device_init();
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(hdaps_pm, NULL, hdaps_resume);
+
+static struct platform_driver hdaps_driver = {
+	.probe = hdaps_probe,
+	.driver	= {
+		.name = "hdaps",
+		.owner = THIS_MODULE,
+		.pm = &hdaps_pm,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -375,11 +397,25 @@ static ssize_t hdaps_variance_show(struct device *dev,
 static ssize_t hdaps_temp1_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 temp;
 	int ret;
 
 	ret = hdaps_readb_one(HDAPS_PORT_TEMP1, &temp);
 	if (ret < 0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u8 uninitialized_var(temp);
+	int ret;
+
+	ret = hdaps_readb_one(HDAPS_PORT_TEMP1, &temp);
+	if (ret)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 
 	return sprintf(buf, "%u\n", temp);
@@ -388,11 +424,25 @@ static ssize_t hdaps_temp1_show(struct device *dev,
 static ssize_t hdaps_temp2_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u8 temp;
 	int ret;
 
 	ret = hdaps_readb_one(HDAPS_PORT_TEMP2, &temp);
 	if (ret < 0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	u8 uninitialized_var(temp);
+	int ret;
+
+	ret = hdaps_readb_one(HDAPS_PORT_TEMP2, &temp);
+	if (ret)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 
 	return sprintf(buf, "%u\n", temp);

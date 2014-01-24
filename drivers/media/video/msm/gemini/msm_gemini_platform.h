@@ -16,6 +16,14 @@
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
 #include <linux/ion.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/iommu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/iommu.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 void msm_gemini_platform_p2v(struct file  *file,
 				struct ion_handle **ionhandle);
 uint32_t msm_gemini_platform_v2p(int fd, uint32_t len, struct file **file,

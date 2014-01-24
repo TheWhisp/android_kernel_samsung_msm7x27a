@@ -10,6 +10,16 @@
  * of the GNU Public License, incorporated herein by reference.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -31,8 +41,14 @@ enum {
 	ASMTYPE_SPRUCE,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX "ibmasr: "
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define TOPAZ_ASR_REG_OFFSET	4
 #define TOPAZ_ASR_TOGGLE	0x40
 #define TOPAZ_ASR_DISABLE	0x80
@@ -60,7 +76,15 @@ enum {
 #define SPRUCE_ASR_TOGGLE_MASK	0x02	/* bit 0: 0, then 1, then 0 */
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/master
 
 static unsigned long asr_is_open;
 static char asr_expect_close;
@@ -68,7 +92,15 @@ static char asr_expect_close;
 static unsigned int asr_type, asr_base, asr_length;
 static unsigned int asr_read_addr, asr_write_addr;
 static unsigned char asr_toggle_mask, asr_disable_mask;
+<<<<<<< HEAD
+<<<<<<< HEAD
 static spinlock_t asr_lock;
+=======
+static DEFINE_SPINLOCK(asr_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_SPINLOCK(asr_lock);
+>>>>>>> refs/remotes/origin/master
 
 static void __asr_toggle(void)
 {
@@ -234,12 +266,26 @@ static int __init asr_get_base_address(void)
 	}
 
 	if (!request_region(asr_base, asr_length, "ibmasr")) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "address %#x already in use\n",
 			asr_base);
 		return -EBUSY;
 	}
 
 	printk(KERN_INFO PFX "found %sASR @ addr %#x\n", type, asr_base);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_err("address %#x already in use\n", asr_base);
+		return -EBUSY;
+	}
+
+	pr_info("found %sASR @ addr %#x\n", type, asr_base);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -332,8 +378,16 @@ static int asr_release(struct inode *inode, struct file *file)
 	if (asr_expect_close == 42)
 		asr_disable();
 	else {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 				"unexpected close, not stopping watchdog!\n");
+=======
+		pr_crit("unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		asr_toggle();
 	}
 	clear_bit(0, &asr_is_open);
@@ -386,8 +440,14 @@ static int __init ibmasr_init(void)
 	if (!asr_type)
 		return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&asr_lock);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = asr_get_base_address();
 	if (rc)
 		return rc;
@@ -395,7 +455,15 @@ static int __init ibmasr_init(void)
 	rc = misc_register(&asr_miscdev);
 	if (rc < 0) {
 		release_region(asr_base, asr_length);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "failed to register misc device\n");
+=======
+		pr_err("failed to register misc device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("failed to register misc device\n");
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
@@ -415,7 +483,15 @@ static void __exit ibmasr_exit(void)
 module_init(ibmasr_init);
 module_exit(ibmasr_exit);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -423,4 +499,7 @@ MODULE_PARM_DESC(nowayout,
 MODULE_DESCRIPTION("IBM Automatic Server Restart driver");
 MODULE_AUTHOR("Andrey Panin");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

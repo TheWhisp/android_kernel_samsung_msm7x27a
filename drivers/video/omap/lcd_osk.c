@@ -23,8 +23,20 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/mux.h>
+=======
+#include <asm/gpio.h>
+
+#include <mach/hardware.h>
+#include <mach/mux.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "omapfb.h"
 
 static int osk_panel_init(struct lcd_panel *panel, struct omapfb_device *fbdev)
@@ -116,7 +128,15 @@ static int osk_panel_resume(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_driver osk_panel_driver = {
+=======
+static struct platform_driver osk_panel_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver osk_panel_driver = {
+>>>>>>> refs/remotes/origin/master
 	.probe		= osk_panel_probe,
 	.remove		= osk_panel_remove,
 	.suspend	= osk_panel_suspend,
@@ -127,6 +147,8 @@ struct platform_driver osk_panel_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init osk_panel_drv_init(void)
 {
 	return platform_driver_register(&osk_panel_driver);
@@ -140,3 +162,9 @@ static void __exit osk_panel_drv_cleanup(void)
 module_init(osk_panel_drv_init);
 module_exit(osk_panel_drv_cleanup);
 
+=======
+module_platform_driver(osk_panel_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(osk_panel_driver);
+>>>>>>> refs/remotes/origin/master

@@ -12,6 +12,7 @@
 #ifndef __UNICORE_PTRACE_H__
 #define __UNICORE_PTRACE_H__
 
+<<<<<<< HEAD
 #define PTRACE_GET_THREAD_AREA	22
 
 /*
@@ -86,6 +87,12 @@ struct pt_regs {
 
 #ifdef __KERNEL__
 
+=======
+#include <uapi/asm/ptrace.h>
+
+#ifndef __ASSEMBLY__
+
+>>>>>>> refs/remotes/origin/master
 #define user_mode(regs)	\
 	(processor_mode(regs) == USER_MODE)
 
@@ -124,6 +131,7 @@ static inline int valid_user_regs(struct pt_regs *regs)
 }
 
 #define instruction_pointer(regs)	((regs)->UCreg_pc)
+<<<<<<< HEAD
 
 #endif /* __KERNEL__ */
 
@@ -131,3 +139,9 @@ static inline int valid_user_regs(struct pt_regs *regs)
 
 #endif
 
+=======
+#define user_stack_pointer(regs)	((regs)->UCreg_sp)
+
+#endif /* __ASSEMBLY__ */
+#endif
+>>>>>>> refs/remotes/origin/master

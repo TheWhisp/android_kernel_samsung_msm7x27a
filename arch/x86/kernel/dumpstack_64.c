@@ -105,6 +105,8 @@ in_irq_stack(unsigned long *stack, unsigned long *irq_stack,
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * We are returning from the irq stack and go to the previous one.
  * If the previous stack is also in the irq stack, then bp in the first
  * frame of the irq stack points to the previous, interrupted one.
@@ -133,6 +135,10 @@ fixup_bp_irq_link(unsigned long bp, unsigned long *stack,
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * x86-64 can have up to three kernel stacks:
  * process stack
  * interrupt stack
@@ -155,9 +161,24 @@ void dump_trace(struct task_struct *task, struct pt_regs *regs,
 		task = current;
 
 	if (!stack) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		stack = &dummy;
 		if (task && task != current)
 			stack = (unsigned long *)task->thread.sp;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (regs)
+			stack = (unsigned long *)regs->sp;
+		else if (task != current)
+			stack = (unsigned long *)task->thread.sp;
+		else
+			stack = &dummy;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!bp)
@@ -205,8 +226,14 @@ void dump_trace(struct task_struct *task, struct pt_regs *regs,
 				 * pointer (index -1 to end) in the IRQ stack:
 				 */
 				stack = (unsigned long *) (irq_stack_end[-1]);
+<<<<<<< HEAD
+<<<<<<< HEAD
 				bp = fixup_bp_irq_link(bp, stack, irq_stack,
 						       irq_stack_end);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				irq_stack_end = NULL;
 				ops->stack(data, "EOI");
 				continue;
@@ -255,19 +282,29 @@ show_stack_log_lvl(struct task_struct *task, struct pt_regs *regs,
 		if (stack >= irq_stack && stack <= irq_stack_end) {
 			if (stack == irq_stack_end) {
 				stack = (unsigned long *) (irq_stack_end[-1]);
+<<<<<<< HEAD
 				printk(KERN_CONT " <EOI> ");
+=======
+				pr_cont(" <EOI> ");
+>>>>>>> refs/remotes/origin/master
 			}
 		} else {
 		if (((long) stack & (THREAD_SIZE-1)) == 0)
 			break;
 		}
 		if (i && ((i % STACKSLOTS_PER_LINE) == 0))
+<<<<<<< HEAD
 			printk(KERN_CONT "\n");
 		printk(KERN_CONT " %016lx", *stack++);
+=======
+			pr_cont("\n");
+		pr_cont(" %016lx", *stack++);
+>>>>>>> refs/remotes/origin/master
 		touch_nmi_watchdog();
 	}
 	preempt_enable();
 
+<<<<<<< HEAD
 	printk(KERN_CONT "\n");
 	show_trace_log_lvl(task, regs, sp, bp, log_lvl);
 }
@@ -285,6 +322,20 @@ void show_registers(struct pt_regs *regs)
 	__show_regs(regs, 1);
 	printk("Process %s (pid: %d, threadinfo %p, task %p)\n",
 		cur->comm, cur->pid, task_thread_info(cur), cur);
+=======
+	pr_cont("\n");
+	show_trace_log_lvl(task, regs, sp, bp, log_lvl);
+}
+
+void show_regs(struct pt_regs *regs)
+{
+	int i;
+	unsigned long sp;
+
+	sp = regs->sp;
+	show_regs_print_info(KERN_DEFAULT);
+	__show_regs(regs, 1);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * When in-kernel, we also print out the stack and code at the
@@ -296,11 +347,25 @@ void show_registers(struct pt_regs *regs)
 		unsigned char c;
 		u8 *ip;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_EMERG "Stack:\n");
 		show_stack_log_lvl(NULL, regs, (unsigned long *)sp,
 				   0, KERN_EMERG);
 
 		printk(KERN_EMERG "Code: ");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		printk(KERN_DEFAULT "Stack:\n");
+		show_stack_log_lvl(NULL, regs, (unsigned long *)sp,
+				   0, KERN_DEFAULT);
+
+		printk(KERN_DEFAULT "Code: ");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ip = (u8 *)regs->ip - code_prologue;
 		if (ip < (u8 *)PAGE_OFFSET || probe_kernel_address(ip, c)) {
@@ -311,6 +376,8 @@ void show_registers(struct pt_regs *regs)
 		for (i = 0; i < code_len; i++, ip++) {
 			if (ip < (u8 *)PAGE_OFFSET ||
 					probe_kernel_address(ip, c)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				printk(" Bad RIP value.");
 				break;
 			}
@@ -321,6 +388,30 @@ void show_registers(struct pt_regs *regs)
 		}
 	}
 	printk("\n");
+=======
+				printk(KERN_CONT " Bad RIP value.");
+				break;
+			}
+			if (ip == (u8 *)regs->ip)
+				printk(KERN_CONT "<%02x> ", c);
+			else
+				printk(KERN_CONT "%02x ", c);
+		}
+	}
+	printk(KERN_CONT "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_cont(" Bad RIP value.");
+				break;
+			}
+			if (ip == (u8 *)regs->ip)
+				pr_cont("<%02x> ", c);
+			else
+				pr_cont("%02x ", c);
+		}
+	}
+	pr_cont("\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 int is_valid_bugaddr(unsigned long ip)

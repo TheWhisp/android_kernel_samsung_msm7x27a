@@ -14,11 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: dmm32at
@@ -37,9 +40,18 @@ Configuration Options:
   comedi_config /dev/comedi0 dmm32at baseaddr,irq
 */
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include "../comedidev.h"
 #include <linux/ioport.h>
+=======
+#include <linux/module.h>
+#include <linux/delay.h>
+#include <linux/interrupt.h>
+#include "../comedidev.h"
+
+#include "comedi_fc.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Board register addresses */
 
@@ -78,9 +90,12 @@ Configuration Options:
 #define DMM32AT_DIOC 0x0e
 #define DMM32AT_DIOCONF 0x0f
 
+<<<<<<< HEAD
 #define dmm_inb(cdev, reg) inb((cdev->iobase)+reg)
 #define dmm_outb(cdev, reg, valu) outb(valu, (cdev->iobase)+reg)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Board register values. */
 
 /* DMM32AT_DACSTAT 0x04 */
@@ -129,6 +144,7 @@ Configuration Options:
 
 /* board AI ranges in comedi structure */
 static const struct comedi_lrange dmm32at_airanges = {
+<<<<<<< HEAD
 	4,
 	{
 	 UNI_RANGE(10),
@@ -136,6 +152,14 @@ static const struct comedi_lrange dmm32at_airanges = {
 	 BIP_RANGE(10),
 	 BIP_RANGE(5),
 	 }
+=======
+	4, {
+		UNI_RANGE(10),
+		UNI_RANGE(5),
+		BIP_RANGE(10),
+		BIP_RANGE(5)
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 /* register values for above ranges */
@@ -150,6 +174,7 @@ static const unsigned char dmm32at_rangebits[] = {
  * board. The application should only use the range set by the jumper
  */
 static const struct comedi_lrange dmm32at_aoranges = {
+<<<<<<< HEAD
 	4,
 	{
 	 UNI_RANGE(10),
@@ -198,6 +223,16 @@ static const struct dmm32at_board dmm32at_boards[] = {
  * several hardware drivers keep similar information in this structure,
  * feel free to suggest moving the variable to the struct comedi_device struct.
  */
+=======
+	4, {
+		UNI_RANGE(10),
+		UNI_RANGE(5),
+		BIP_RANGE(10),
+		BIP_RANGE(5)
+	}
+};
+
+>>>>>>> refs/remotes/origin/master
 struct dmm32at_private {
 
 	int data;
@@ -210,6 +245,7 @@ struct dmm32at_private {
 
 };
 
+<<<<<<< HEAD
 /*
  * most drivers define the following macro to make it easy to
  * access the private structure.
@@ -474,6 +510,8 @@ static int dmm32at_detach(struct comedi_device *dev)
  * mode.
  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int dmm32at_ai_rinsn(struct comedi_device *dev,
 			    struct comedi_subdevice *s,
 			    struct comedi_insn *insn, unsigned int *data)
@@ -490,6 +528,7 @@ static int dmm32at_ai_rinsn(struct comedi_device *dev,
 	chan = CR_CHAN(insn->chanspec) & (s->n_chan - 1);
 	range = CR_RANGE(insn->chanspec);
 
+<<<<<<< HEAD
 	/* printk("channel=0x%02x, range=%d\n",chan,range); */
 
 	/* zero scan and fifo control and reset fifo */
@@ -511,10 +550,30 @@ static int dmm32at_ai_rinsn(struct comedi_device *dev,
 		printk(KERN_WARNING "dmm32at: timeout\n");
 		return -ETIMEDOUT;
 	}
+=======
+	/* zero scan and fifo control and reset fifo */
+	outb(DMM32AT_FIFORESET, dev->iobase + DMM32AT_FIFOCNTRL);
+
+	/* write the ai channel range regs */
+	outb(chan, dev->iobase + DMM32AT_AILOW);
+	outb(chan, dev->iobase + DMM32AT_AIHIGH);
+	/* set the range bits */
+	outb(dmm32at_rangebits[range], dev->iobase + DMM32AT_AICONF);
+
+	/* wait for circuit to settle */
+	for (i = 0; i < 40000; i++) {
+		status = inb(dev->iobase + DMM32AT_AIRBACK);
+		if ((status & DMM32AT_STATUS) == 0)
+			break;
+	}
+	if (i == 40000)
+		return -ETIMEDOUT;
+>>>>>>> refs/remotes/origin/master
 
 	/* convert n samples */
 	for (n = 0; n < insn->n; n++) {
 		/* trigger conversion */
+<<<<<<< HEAD
 		dmm_outb(dev, DMM32AT_CONV, 0xff);
 		/* wait for conversion to end */
 		for (i = 0; i < 40000; i++) {
@@ -530,6 +589,21 @@ static int dmm32at_ai_rinsn(struct comedi_device *dev,
 		/* read data */
 		lsb = dmm_inb(dev, DMM32AT_AILSB);
 		msb = dmm_inb(dev, DMM32AT_AIMSB);
+=======
+		outb(0xff, dev->iobase + DMM32AT_CONV);
+		/* wait for conversion to end */
+		for (i = 0; i < 40000; i++) {
+			status = inb(dev->iobase + DMM32AT_AISTAT);
+			if ((status & DMM32AT_STATUS) == 0)
+				break;
+		}
+		if (i == 40000)
+			return -ETIMEDOUT;
+
+		/* read data */
+		lsb = inb(dev->iobase + DMM32AT_AILSB);
+		msb = inb(dev->iobase + DMM32AT_AIMSB);
+>>>>>>> refs/remotes/origin/master
 
 		/* invert sign bit to make range unsigned, this is an
 		   idiosyncrasy of the diamond board, it return
@@ -546,6 +620,15 @@ static int dmm32at_ai_rinsn(struct comedi_device *dev,
 	return n;
 }
 
+<<<<<<< HEAD
+=======
+static int dmm32at_ns_to_timer(unsigned int *ns, int round)
+{
+	/* trivial timer */
+	return *ns;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int dmm32at_ai_cmdtest(struct comedi_device *dev,
 			      struct comedi_subdevice *s,
 			      struct comedi_cmd *cmd)
@@ -554,6 +637,7 @@ static int dmm32at_ai_cmdtest(struct comedi_device *dev,
 	int tmp;
 	int start_chan, gain, i;
 
+<<<<<<< HEAD
 	/* printk("dmmat32 in command test\n"); */
 
 	/* cmdtest tests a particular command to see if it is valid.
@@ -589,10 +673,22 @@ static int dmm32at_ai_cmdtest(struct comedi_device *dev,
 	cmd->stop_src &= TRIG_COUNT | TRIG_NONE;
 	if (!cmd->stop_src || tmp != cmd->stop_src)
 		err++;
+=======
+	/* Step 1 : check if triggers are trivially valid */
+
+	err |= cfc_check_trigger_src(&cmd->start_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_begin_src,
+					TRIG_TIMER /*| TRIG_EXT */);
+	err |= cfc_check_trigger_src(&cmd->convert_src,
+					TRIG_TIMER /*| TRIG_EXT */);
+	err |= cfc_check_trigger_src(&cmd->scan_end_src, TRIG_COUNT);
+	err |= cfc_check_trigger_src(&cmd->stop_src, TRIG_COUNT | TRIG_NONE);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 1;
 
+<<<<<<< HEAD
 	/* step 2: make sure trigger sources are unique and mutually
 	 * compatible */
 
@@ -604,20 +700,37 @@ static int dmm32at_ai_cmdtest(struct comedi_device *dev,
 		err++;
 	if (cmd->stop_src != TRIG_COUNT && cmd->stop_src != TRIG_NONE)
 		err++;
+=======
+	/* Step 2a : make sure trigger sources are unique */
+
+	err |= cfc_check_trigger_is_unique(cmd->scan_begin_src);
+	err |= cfc_check_trigger_is_unique(cmd->convert_src);
+	err |= cfc_check_trigger_is_unique(cmd->stop_src);
+
+	/* Step 2b : and mutually compatible */
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 2;
 
+<<<<<<< HEAD
 	/* step 3: make sure arguments are trivially compatible */
 
 	if (cmd->start_arg != 0) {
 		cmd->start_arg = 0;
 		err++;
 	}
+=======
+	/* Step 3: check if arguments are trivially valid */
+
+	err |= cfc_check_trigger_arg_is(&cmd->start_arg, 0);
+
+>>>>>>> refs/remotes/origin/master
 #define MAX_SCAN_SPEED	1000000	/* in nanoseconds */
 #define MIN_SCAN_SPEED	1000000000	/* in nanoseconds */
 
 	if (cmd->scan_begin_src == TRIG_TIMER) {
+<<<<<<< HEAD
 		if (cmd->scan_begin_arg < MAX_SCAN_SPEED) {
 			cmd->scan_begin_arg = MAX_SCAN_SPEED;
 			err++;
@@ -626,15 +739,27 @@ static int dmm32at_ai_cmdtest(struct comedi_device *dev,
 			cmd->scan_begin_arg = MIN_SCAN_SPEED;
 			err++;
 		}
+=======
+		err |= cfc_check_trigger_arg_min(&cmd->scan_begin_arg,
+						 MAX_SCAN_SPEED);
+		err |= cfc_check_trigger_arg_max(&cmd->scan_begin_arg,
+						 MIN_SCAN_SPEED);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* external trigger */
 		/* should be level/edge, hi/lo specification here */
 		/* should specify multiple external triggers */
+<<<<<<< HEAD
 		if (cmd->scan_begin_arg > 9) {
 			cmd->scan_begin_arg = 9;
 			err++;
 		}
 	}
+=======
+		err |= cfc_check_trigger_arg_max(&cmd->scan_begin_arg, 9);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (cmd->convert_src == TRIG_TIMER) {
 		if (cmd->convert_arg >= 17500)
 			cmd->convert_arg = 20000;
@@ -644,6 +769,7 @@ static int dmm32at_ai_cmdtest(struct comedi_device *dev,
 			cmd->convert_arg = 10000;
 		else
 			cmd->convert_arg = 5000;
+<<<<<<< HEAD
 
 	} else {
 		/* external trigger */
@@ -673,6 +799,22 @@ static int dmm32at_ai_cmdtest(struct comedi_device *dev,
 			cmd->stop_arg = 0;
 			err++;
 		}
+=======
+	} else {
+		/* external trigger */
+		/* see above */
+		err |= cfc_check_trigger_arg_max(&cmd->convert_arg, 9);
+	}
+
+	err |= cfc_check_trigger_arg_is(&cmd->scan_end_arg, cmd->chanlist_len);
+
+	if (cmd->stop_src == TRIG_COUNT) {
+		err |= cfc_check_trigger_arg_max(&cmd->stop_arg, 0xfffffff0);
+		err |= cfc_check_trigger_arg_min(&cmd->stop_arg, 1);
+	} else {
+		/* TRIG_NONE */
+		err |= cfc_check_trigger_arg_is(&cmd->stop_arg, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (err)
@@ -732,8 +874,44 @@ static int dmm32at_ai_cmdtest(struct comedi_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int dmm32at_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 {
+=======
+static void dmm32at_setaitimer(struct comedi_device *dev, unsigned int nansec)
+{
+	unsigned char lo1, lo2, hi2;
+	unsigned short both2;
+
+	/* based on 10mhz clock */
+	lo1 = 200;
+	both2 = nansec / 20000;
+	hi2 = (both2 & 0xff00) >> 8;
+	lo2 = both2 & 0x00ff;
+
+	/* set the counter frequency to 10mhz */
+	outb(0, dev->iobase + DMM32AT_CNTRDIO);
+
+	/* get access to the clock regs */
+	outb(DMM32AT_CLKACC, dev->iobase + DMM32AT_CNTRL);
+
+	/* write the counter 1 control word and low byte to counter */
+	outb(DMM32AT_CLKCT1, dev->iobase + DMM32AT_CLKCT);
+	outb(lo1, dev->iobase + DMM32AT_CLK1);
+
+	/* write the counter 2 control word and low byte then to counter */
+	outb(DMM32AT_CLKCT2, dev->iobase + DMM32AT_CLKCT);
+	outb(lo2, dev->iobase + DMM32AT_CLK2);
+	outb(hi2, dev->iobase + DMM32AT_CLK2);
+
+	/* enable the ai conversion interrupt and the clock to start scans */
+	outb(DMM32AT_ADINT | DMM32AT_CLKSEL, dev->iobase + DMM32AT_INTCLOCK);
+}
+
+static int dmm32at_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
+{
+	struct dmm32at_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	struct comedi_cmd *cmd = &s->async->cmd;
 	int i, range;
 	unsigned char chanlo, chanhi, status;
@@ -749,6 +927,7 @@ static int dmm32at_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	range = CR_RANGE(cmd->chanlist[0]);
 
 	/* reset fifo */
+<<<<<<< HEAD
 	dmm_outb(dev, DMM32AT_FIFOCNTRL, DMM32AT_FIFORESET);
 
 	/* set scan enable */
@@ -763,6 +942,22 @@ static int dmm32at_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 
 	/* reset the interrupt just in case */
 	dmm_outb(dev, DMM32AT_CNTRL, DMM32AT_INTRESET);
+=======
+	outb(DMM32AT_FIFORESET, dev->iobase + DMM32AT_FIFOCNTRL);
+
+	/* set scan enable */
+	outb(DMM32AT_SCANENABLE, dev->iobase + DMM32AT_FIFOCNTRL);
+
+	/* write the ai channel range regs */
+	outb(chanlo, dev->iobase + DMM32AT_AILOW);
+	outb(chanhi, dev->iobase + DMM32AT_AIHIGH);
+
+	/* set the range bits */
+	outb(dmm32at_rangebits[range], dev->iobase + DMM32AT_AICONF);
+
+	/* reset the interrupt just in case */
+	outb(DMM32AT_INTRESET, dev->iobase + DMM32AT_CNTRL);
+>>>>>>> refs/remotes/origin/master
 
 	if (cmd->stop_src == TRIG_COUNT)
 		devpriv->ai_scans_left = cmd->stop_arg;
@@ -773,6 +968,7 @@ static int dmm32at_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 
 	/* wait for circuit to settle */
 	for (i = 0; i < 40000; i++) {
+<<<<<<< HEAD
 		status = dmm_inb(dev, DMM32AT_AIRBACK);
 		if ((status & DMM32AT_STATUS) == 0)
 			break;
@@ -781,18 +977,33 @@ static int dmm32at_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 		printk(KERN_WARNING "dmm32at: timeout\n");
 		return -ETIMEDOUT;
 	}
+=======
+		status = inb(dev->iobase + DMM32AT_AIRBACK);
+		if ((status & DMM32AT_STATUS) == 0)
+			break;
+	}
+	if (i == 40000)
+		return -ETIMEDOUT;
+>>>>>>> refs/remotes/origin/master
 
 	if (devpriv->ai_scans_left > 1) {
 		/* start the clock and enable the interrupts */
 		dmm32at_setaitimer(dev, cmd->scan_begin_arg);
 	} else {
 		/* start the interrups and initiate a single scan */
+<<<<<<< HEAD
 		dmm_outb(dev, DMM32AT_INTCLOCK, DMM32AT_ADINT);
 		dmm_outb(dev, DMM32AT_CONV, 0xff);
 	}
 
 /*	printk("dmmat32 in command\n"); */
 
+=======
+		outb(DMM32AT_ADINT, dev->iobase + DMM32AT_INTCLOCK);
+		outb(0xff, dev->iobase + DMM32AT_CONV);
+	}
+
+>>>>>>> refs/remotes/origin/master
 /*	for(i=0;i<cmd->chanlist_len;i++) */
 /*		comedi_buf_put(s->async,i*100); */
 
@@ -806,24 +1017,41 @@ static int dmm32at_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 static int dmm32at_ai_cancel(struct comedi_device *dev,
 			     struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	struct dmm32at_private *devpriv = dev->private;
+
+>>>>>>> refs/remotes/origin/master
 	devpriv->ai_scans_left = 1;
 	return 0;
 }
 
 static irqreturn_t dmm32at_isr(int irq, void *d)
 {
+<<<<<<< HEAD
+=======
+	struct comedi_device *dev = d;
+	struct dmm32at_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned char intstat;
 	unsigned int samp;
 	unsigned short msb, lsb;
 	int i;
+<<<<<<< HEAD
 	struct comedi_device *dev = d;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev->attached) {
 		comedi_error(dev, "spurious interrupt");
 		return IRQ_HANDLED;
 	}
 
+<<<<<<< HEAD
 	intstat = dmm_inb(dev, DMM32AT_INTCLOCK);
+=======
+	intstat = inb(dev->iobase + DMM32AT_INTCLOCK);
+>>>>>>> refs/remotes/origin/master
 
 	if (intstat & DMM32AT_ADINT) {
 		struct comedi_subdevice *s = dev->read_subdev;
@@ -831,8 +1059,13 @@ static irqreturn_t dmm32at_isr(int irq, void *d)
 
 		for (i = 0; i < cmd->chanlist_len; i++) {
 			/* read data */
+<<<<<<< HEAD
 			lsb = dmm_inb(dev, DMM32AT_AILSB);
 			msb = dmm_inb(dev, DMM32AT_AIMSB);
+=======
+			lsb = inb(dev->iobase + DMM32AT_AILSB);
+			msb = inb(dev->iobase + DMM32AT_AIMSB);
+>>>>>>> refs/remotes/origin/master
 
 			/* invert sign bit to make range unsigned */
 			samp = ((msb ^ 0x0080) << 8) + lsb;
@@ -843,7 +1076,11 @@ static irqreturn_t dmm32at_isr(int irq, void *d)
 			devpriv->ai_scans_left--;
 			if (devpriv->ai_scans_left == 0) {
 				/* disable further interrupts and clocks */
+<<<<<<< HEAD
 				dmm_outb(dev, DMM32AT_INTCLOCK, 0x0);
+=======
+				outb(0x0, dev->iobase + DMM32AT_INTCLOCK);
+>>>>>>> refs/remotes/origin/master
 				/* set the buffer to be flushed with an EOF */
 				s->async->events |= COMEDI_CB_EOA;
 			}
@@ -854,6 +1091,7 @@ static irqreturn_t dmm32at_isr(int irq, void *d)
 	}
 
 	/* reset the interrupt */
+<<<<<<< HEAD
 	dmm_outb(dev, DMM32AT_CNTRL, DMM32AT_INTRESET);
 	return IRQ_HANDLED;
 }
@@ -875,10 +1113,20 @@ static int dmm32at_ns_to_timer(unsigned int *ns, int round)
 	return *ns;
 }
 
+=======
+	outb(DMM32AT_INTRESET, dev->iobase + DMM32AT_CNTRL);
+	return IRQ_HANDLED;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int dmm32at_ao_winsn(struct comedi_device *dev,
 			    struct comedi_subdevice *s,
 			    struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct dmm32at_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int chan = CR_CHAN(insn->chanspec);
 	unsigned char hi, lo, status;
@@ -893,6 +1141,7 @@ static int dmm32at_ao_winsn(struct comedi_device *dev,
 		lo = data[i] & 0x00ff;
 		/* high byte also contains channel number */
 		hi = (data[i] >> 8) + chan * (1 << 6);
+<<<<<<< HEAD
 		/* printk("writing 0x%02x  0x%02x\n",hi,lo); */
 		/* write the low and high values to the board */
 		dmm_outb(dev, DMM32AT_DACLSB, lo);
@@ -910,6 +1159,23 @@ static int dmm32at_ao_winsn(struct comedi_device *dev,
 		}
 		/* dummy read to update trigger the output */
 		status = dmm_inb(dev, DMM32AT_DACMSB);
+=======
+		/* write the low and high values to the board */
+		outb(lo, dev->iobase + DMM32AT_DACLSB);
+		outb(hi, dev->iobase + DMM32AT_DACMSB);
+
+		/* wait for circuit to settle */
+		for (i = 0; i < 40000; i++) {
+			status = inb(dev->iobase + DMM32AT_DACSTAT);
+			if ((status & DMM32AT_DACBUSY) == 0)
+				break;
+		}
+		if (i == 40000)
+			return -ETIMEDOUT;
+
+		/* dummy read to update trigger the output */
+		status = inb(dev->iobase + DMM32AT_DACMSB);
+>>>>>>> refs/remotes/origin/master
 
 	}
 
@@ -917,12 +1183,19 @@ static int dmm32at_ao_winsn(struct comedi_device *dev,
 	return i;
 }
 
+<<<<<<< HEAD
 /* AO subdevices should have a read insn as well as a write insn.
  * Usually this means copying a value stored in devpriv. */
+=======
+>>>>>>> refs/remotes/origin/master
 static int dmm32at_ao_rinsn(struct comedi_device *dev,
 			    struct comedi_subdevice *s,
 			    struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct dmm32at_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int chan = CR_CHAN(insn->chanspec);
 
@@ -932,6 +1205,7 @@ static int dmm32at_ao_rinsn(struct comedi_device *dev,
 	return i;
 }
 
+<<<<<<< HEAD
 /* DIO devices are slightly special.  Although it is possible to
  * implement the insn_read/insn_write interface, it is much more
  * useful to applications if you implement the insn_bits interface.
@@ -989,10 +1263,51 @@ static int dmm32at_dio_insn_bits(struct comedi_device *dev,
 	/* data[1]=s->state; */
 
 	return 2;
+=======
+static int dmm32at_dio_insn_bits(struct comedi_device *dev,
+				 struct comedi_subdevice *s,
+				 struct comedi_insn *insn,
+				 unsigned int *data)
+{
+	struct dmm32at_private *devpriv = dev->private;
+	unsigned int mask;
+	unsigned int val;
+
+	mask = comedi_dio_update_state(s, data);
+	if (mask) {
+		/* get access to the DIO regs */
+		outb(DMM32AT_DIOACC, dev->iobase + DMM32AT_CNTRL);
+
+		/* if either part of dio is set for output */
+		if (((devpriv->dio_config & DMM32AT_DIRCL) == 0) ||
+		    ((devpriv->dio_config & DMM32AT_DIRCH) == 0)) {
+			val = (s->state & 0x00ff0000) >> 16;
+			outb(val, dev->iobase + DMM32AT_DIOC);
+		}
+		if ((devpriv->dio_config & DMM32AT_DIRB) == 0) {
+			val = (s->state & 0x0000ff00) >> 8;
+			outb(val, dev->iobase + DMM32AT_DIOB);
+		}
+		if ((devpriv->dio_config & DMM32AT_DIRA) == 0) {
+			val = (s->state & 0x000000ff);
+			outb(val, dev->iobase + DMM32AT_DIOA);
+		}
+	}
+
+	val = inb(dev->iobase + DMM32AT_DIOA);
+	val |= inb(dev->iobase + DMM32AT_DIOB) << 8;
+	val |= inb(dev->iobase + DMM32AT_DIOC) << 16;
+	s->state = val;
+
+	data[1] = val;
+
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int dmm32at_dio_insn_config(struct comedi_device *dev,
 				   struct comedi_subdevice *s,
+<<<<<<< HEAD
 				   struct comedi_insn *insn, unsigned int *data)
 {
 	unsigned char chanbit;
@@ -1017,10 +1332,41 @@ static int dmm32at_dio_insn_config(struct comedi_device *dev,
 
 	/* if output clear the bit, otherwise set it */
 	if (data[0] == COMEDI_OUTPUT)
+=======
+				   struct comedi_insn *insn,
+				   unsigned int *data)
+{
+	struct dmm32at_private *devpriv = dev->private;
+	unsigned int chan = CR_CHAN(insn->chanspec);
+	unsigned int mask;
+	unsigned char chanbit;
+	int ret;
+
+	if (chan < 8) {
+		mask = 0x0000ff;
+		chanbit = DMM32AT_DIRA;
+	} else if (chan < 16) {
+		mask = 0x00ff00;
+		chanbit = DMM32AT_DIRB;
+	} else if (chan < 20) {
+		mask = 0x0f0000;
+		chanbit = DMM32AT_DIRCL;
+	} else {
+		mask = 0xf00000;
+		chanbit = DMM32AT_DIRCH;
+	}
+
+	ret = comedi_dio_insn_config(dev, s, insn, data, mask);
+	if (ret)
+		return ret;
+
+	if (data[0] == INSN_CONFIG_DIO_OUTPUT)
+>>>>>>> refs/remotes/origin/master
 		devpriv->dio_config &= ~chanbit;
 	else
 		devpriv->dio_config |= chanbit;
 	/* get access to the DIO regs */
+<<<<<<< HEAD
 	dmm_outb(dev, DMM32AT_CNTRL, DMM32AT_DIOACC);
 	/* set the DIO's to the new configuration setting */
 	dmm_outb(dev, DMM32AT_DIOCONF, devpriv->dio_config);
@@ -1075,6 +1421,139 @@ static void __exit driver_dmm32at_cleanup_module(void)
 
 module_init(driver_dmm32at_init_module);
 module_exit(driver_dmm32at_cleanup_module);
+=======
+	outb(DMM32AT_DIOACC, dev->iobase + DMM32AT_CNTRL);
+	/* set the DIO's to the new configuration setting */
+	outb(devpriv->dio_config, dev->iobase + DMM32AT_DIOCONF);
+
+	return insn->n;
+}
+
+static int dmm32at_attach(struct comedi_device *dev,
+			  struct comedi_devconfig *it)
+{
+	struct dmm32at_private *devpriv;
+	int ret;
+	struct comedi_subdevice *s;
+	unsigned char aihi, ailo, fifostat, aistat, intstat, airback;
+
+	ret = comedi_request_region(dev, it->options[0], DMM32AT_MEMSIZE);
+	if (ret)
+		return ret;
+
+	/* the following just makes sure the board is there and gets
+	   it to a known state */
+
+	/* reset the board */
+	outb(DMM32AT_RESET, dev->iobase + DMM32AT_CNTRL);
+
+	/* allow a millisecond to reset */
+	udelay(1000);
+
+	/* zero scan and fifo control */
+	outb(0x0, dev->iobase + DMM32AT_FIFOCNTRL);
+
+	/* zero interrupt and clock control */
+	outb(0x0, dev->iobase + DMM32AT_INTCLOCK);
+
+	/* write a test channel range, the high 3 bits should drop */
+	outb(0x80, dev->iobase + DMM32AT_AILOW);
+	outb(0xff, dev->iobase + DMM32AT_AIHIGH);
+
+	/* set the range at 10v unipolar */
+	outb(DMM32AT_RANGE_U10, dev->iobase + DMM32AT_AICONF);
+
+	/* should take 10 us to settle, here's a hundred */
+	udelay(100);
+
+	/* read back the values */
+	ailo = inb(dev->iobase + DMM32AT_AILOW);
+	aihi = inb(dev->iobase + DMM32AT_AIHIGH);
+	fifostat = inb(dev->iobase + DMM32AT_FIFOSTAT);
+	aistat = inb(dev->iobase + DMM32AT_AISTAT);
+	intstat = inb(dev->iobase + DMM32AT_INTCLOCK);
+	airback = inb(dev->iobase + DMM32AT_AIRBACK);
+
+	if ((ailo != 0x00) || (aihi != 0x1f) || (fifostat != 0x80) ||
+	    (aistat != 0x60 || (intstat != 0x00) || airback != 0x0c)) {
+		dev_err(dev->class_dev, "board detection failed\n");
+		return -EIO;
+	}
+
+	if (it->options[1]) {
+		ret = request_irq(it->options[1], dmm32at_isr, 0,
+				  dev->board_name, dev);
+		if (ret == 0)
+			dev->irq = it->options[1];
+	}
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	ret = comedi_alloc_subdevices(dev, 3);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+	/* analog input subdevice */
+	s->type = COMEDI_SUBD_AI;
+	/* we support single-ended (ground) and differential */
+	s->subdev_flags = SDF_READABLE | SDF_GROUND | SDF_DIFF;
+	s->n_chan = 32;
+	s->maxdata = 0xffff;
+	s->range_table = &dmm32at_airanges;
+	s->insn_read = dmm32at_ai_rinsn;
+	if (dev->irq) {
+		dev->read_subdev = s;
+		s->subdev_flags |= SDF_CMD_READ;
+		s->len_chanlist = 32;
+		s->do_cmd = dmm32at_ai_cmd;
+		s->do_cmdtest = dmm32at_ai_cmdtest;
+		s->cancel = dmm32at_ai_cancel;
+	}
+
+	s = &dev->subdevices[1];
+	/* analog output subdevice */
+	s->type = COMEDI_SUBD_AO;
+	s->subdev_flags = SDF_WRITABLE;
+	s->n_chan = 4;
+	s->maxdata = 0x0fff;
+	s->range_table = &dmm32at_aoranges;
+	s->insn_write = dmm32at_ao_winsn;
+	s->insn_read = dmm32at_ao_rinsn;
+
+	s = &dev->subdevices[2];
+	/* digital i/o subdevice */
+
+	/* get access to the DIO regs */
+	outb(DMM32AT_DIOACC, dev->iobase + DMM32AT_CNTRL);
+	/* set the DIO's to the defualt input setting */
+	devpriv->dio_config = DMM32AT_DIRA | DMM32AT_DIRB |
+		DMM32AT_DIRCL | DMM32AT_DIRCH | DMM32AT_DIENABLE;
+	outb(devpriv->dio_config, dev->iobase + DMM32AT_DIOCONF);
+
+	/* set up the subdevice */
+	s->type = COMEDI_SUBD_DIO;
+	s->subdev_flags = SDF_READABLE | SDF_WRITABLE;
+	s->n_chan = 24;
+	s->maxdata = 1;
+	s->state = 0;
+	s->range_table = &range_digital;
+	s->insn_bits = dmm32at_dio_insn_bits;
+	s->insn_config = dmm32at_dio_insn_config;
+
+	return 0;
+}
+
+static struct comedi_driver dmm32at_driver = {
+	.driver_name	= "dmm32at",
+	.module		= THIS_MODULE,
+	.attach		= dmm32at_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(dmm32at_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

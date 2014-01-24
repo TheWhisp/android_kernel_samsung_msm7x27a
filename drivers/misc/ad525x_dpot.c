@@ -64,7 +64,15 @@
  * Author: Chris Verges <chrisv@cyberswitching.com>
  *
  * derived from ad5252.c
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 Michael Hennerich <hennerich@blackfin.uclinux.org>
+=======
+ * Copyright (c) 2006-2011 Michael Hennerich <hennerich@blackfin.uclinux.org>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006-2011 Michael Hennerich <hennerich@blackfin.uclinux.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GPL-2 or later.
  */
@@ -76,8 +84,14 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DRIVER_VERSION			"0.2"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "ad525x_dpot.h"
 
 /*
@@ -472,7 +486,11 @@ static ssize_t sysfs_set_reg(struct device *dev,
 		!test_bit(DPOT_RDAC_MASK & reg, data->otp_en_mask))
 		return -EPERM;
 
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &value);
+=======
+	err = kstrtoul(buf, 10, &value);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -643,7 +661,11 @@ static const struct attribute_group ad525x_group_commands = {
 	.attrs = ad525x_attributes_commands,
 };
 
+<<<<<<< HEAD
 __devinit int ad_dpot_add_files(struct device *dev,
+=======
+static int ad_dpot_add_files(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 		unsigned features, unsigned rdac)
 {
 	int err = sysfs_create_file(&dev->kobj,
@@ -668,7 +690,11 @@ __devinit int ad_dpot_add_files(struct device *dev,
 	return err;
 }
 
+<<<<<<< HEAD
 inline void ad_dpot_remove_files(struct device *dev,
+=======
+static inline void ad_dpot_remove_files(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 		unsigned features, unsigned rdac)
 {
 	sysfs_remove_file(&dev->kobj,
@@ -687,8 +713,20 @@ inline void ad_dpot_remove_files(struct device *dev,
 	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 __devinit int ad_dpot_probe(struct device *dev,
 		struct ad_dpot_bus_data *bdata, const struct ad_dpot_id *id)
+=======
+int __devinit ad_dpot_probe(struct device *dev,
+		struct ad_dpot_bus_data *bdata, unsigned long devid,
+			    const char *name)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ad_dpot_probe(struct device *dev,
+		struct ad_dpot_bus_data *bdata, unsigned long devid,
+			    const char *name)
+>>>>>>> refs/remotes/origin/master
 {
 
 	struct dpot_data *data;
@@ -704,6 +742,8 @@ __devinit int ad_dpot_probe(struct device *dev,
 	mutex_init(&data->update_lock);
 
 	data->bdata = *bdata;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	data->devid = id->devid;
 
 	data->max_pos = 1 << DPOT_MAX_POS(data->devid);
@@ -711,6 +751,20 @@ __devinit int ad_dpot_probe(struct device *dev,
 	data->feat = DPOT_FEAT(data->devid);
 	data->uid = DPOT_UID(data->devid);
 	data->wipers = DPOT_WIPERS(data->devid);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	data->devid = devid;
+
+	data->max_pos = 1 << DPOT_MAX_POS(devid);
+	data->rdac_mask = data->max_pos - 1;
+	data->feat = DPOT_FEAT(devid);
+	data->uid = DPOT_UID(devid);
+	data->wipers = DPOT_WIPERS(devid);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i = DPOT_RDAC0; i < MAX_RDACS; i++)
 		if (data->wipers & (1 << i)) {
@@ -731,7 +785,15 @@ __devinit int ad_dpot_probe(struct device *dev,
 	}
 
 	dev_info(dev, "%s %d-Position Digital Potentiometer registered\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 id->name, data->max_pos);
+=======
+		 name, data->max_pos);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 name, data->max_pos);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -745,12 +807,24 @@ exit_free:
 	dev_set_drvdata(dev, NULL);
 exit:
 	dev_err(dev, "failed to create client for %s ID 0x%lX\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 			id->name, id->devid);
+=======
+		name, devid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		name, devid);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 EXPORT_SYMBOL(ad_dpot_probe);
 
+<<<<<<< HEAD
 __devexit int ad_dpot_remove(struct device *dev)
+=======
+int ad_dpot_remove(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dpot_data *data = dev_get_drvdata(dev);
 	int i;
@@ -770,4 +844,10 @@ MODULE_AUTHOR("Chris Verges <chrisv@cyberswitching.com>, "
 	      "Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("Digital potentiometer driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_VERSION(DRIVER_VERSION);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

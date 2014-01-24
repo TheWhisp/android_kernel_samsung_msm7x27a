@@ -5,10 +5,16 @@ static struct {
 	struct fault_attr attr;
 	u32 ignore_gfp_wait;
 	int cache_filter;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
 	struct dentry *ignore_gfp_wait_file;
 	struct dentry *cache_filter_file;
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } failslab = {
 	.attr = FAULT_ATTR_INITIALIZER,
 	.ignore_gfp_wait = 1,
@@ -38,6 +44,8 @@ __setup("failslab=", setup_failslab);
 #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
 static int __init failslab_debugfs_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode = S_IFREG | S_IRUSR | S_IWUSR;
 	struct dentry *dir;
 	int err;
@@ -64,6 +72,32 @@ static int __init failslab_debugfs_init(void)
 	}
 
 	return err;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct dentry *dir;
+	umode_t mode = S_IFREG | S_IRUSR | S_IWUSR;
+
+	dir = fault_create_debugfs_attr("failslab", NULL, &failslab.attr);
+	if (IS_ERR(dir))
+		return PTR_ERR(dir);
+
+	if (!debugfs_create_bool("ignore-gfp-wait", mode, dir,
+				&failslab.ignore_gfp_wait))
+		goto fail;
+	if (!debugfs_create_bool("cache-filter", mode, dir,
+				&failslab.cache_filter))
+		goto fail;
+
+	return 0;
+fail:
+	debugfs_remove_recursive(dir);
+
+	return -ENOMEM;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 late_initcall(failslab_debugfs_init);

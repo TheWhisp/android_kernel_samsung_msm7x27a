@@ -14,7 +14,14 @@
 #include <linux/serial_sci.h>
 #include <linux/sh_dma.h>
 #include <linux/sh_timer.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <cpu/dma-register.h>
 
 static struct plat_sci_port scif0_platform_data = {
@@ -23,7 +30,16 @@ static struct plat_sci_port scif0_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE | SCSCR_CKE1,
 	.scbrr_algo_id	= SCBRR_ALGO_1,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 40, 40, 40, 40 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0x700)),
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif0_device = {
@@ -40,7 +56,16 @@ static struct plat_sci_port scif1_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE | SCSCR_CKE1,
 	.scbrr_algo_id	= SCBRR_ALGO_1,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 76, 76, 76, 76 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0xb80)),
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif1_device = {
@@ -64,7 +89,11 @@ static struct resource tmu0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 28,
+=======
+		.start	= evt2irq(0x580),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -92,7 +121,11 @@ static struct resource tmu1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 29,
+=======
+		.start	= evt2irq(0x5a0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -119,7 +152,11 @@ static struct resource tmu2_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 30,
+=======
+		.start	= evt2irq(0x5c0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -146,7 +183,11 @@ static struct resource tmu3_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 96,
+=======
+		.start	= evt2irq(0xe00),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -173,7 +214,11 @@ static struct resource tmu4_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 97,
+=======
+		.start	= evt2irq(0xe20),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -200,7 +245,11 @@ static struct resource tmu5_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 98,
+=======
+		.start	= evt2irq(0xe40),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -223,7 +272,11 @@ static struct resource rtc_resources[] = {
 	},
 	[1] = {
 		/* Shared Period/Carry/Alarm IRQ */
+<<<<<<< HEAD
 		.start	= 20,
+=======
+		.start	= evt2irq(0x480),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -320,9 +373,23 @@ static struct resource sh7780_dmae0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		/* Real DMA error IRQ is 38, and channel IRQs are 34-37, 44-45 */
+<<<<<<< HEAD
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= 34,
 		.end	= 34,
+=======
+		/*
+		 * Real DMA error vector is 0x6c0, and channel
+		 * vectors are 0x640-0x6a0, 0x780-0x7a0
+		 */
+		.name	= "error_irq",
+		.start	= evt2irq(0x640),
+		.end	= evt2irq(0x640),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 };
@@ -336,9 +403,23 @@ static struct resource sh7780_dmae1_resources[] = {
 	},
 	/* DMAC1 has no DMARS */
 	{
+<<<<<<< HEAD
 		/* Real DMA error IRQ is 38, and channel IRQs are 46-47, 92-95 */
+<<<<<<< HEAD
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= 46,
 		.end	= 46,
+=======
+		/*
+		 * Real DMA error vector is 0x6c0, and channel
+		 * vectors are 0x7c0-0x7e0, 0xd80-0xde0
+		 */
+		.name	= "error_irq",
+		.start	= evt2irq(0x7c0),
+		.end	= evt2irq(0x7c0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
 	},
 };

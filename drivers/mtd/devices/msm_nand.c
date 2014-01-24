@@ -1,6 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -841,7 +849,15 @@ static int msm_nand_read_oob(struct mtd_info *mtd, loff_t from,
 		       __func__, from);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW) {
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ops->datbuf != NULL && (ops->len % mtd->writesize) != 0) {
 			/* when ops->datbuf is NULL, ops->len can be ooblen */
 			pr_err("%s: unsupported ops->len, %d\n",
@@ -852,17 +868,35 @@ static int msm_nand_read_oob(struct mtd_info *mtd, loff_t from,
 		if (ops->datbuf != NULL &&
 			(ops->len % (mtd->writesize + mtd->oobsize)) != 0) {
 			pr_err("%s: unsupported ops->len,"
+<<<<<<< HEAD
+<<<<<<< HEAD
 				" %d for MTD_OOB_RAW\n", __func__, ops->len);
+=======
+				" %d for MTD_OPS_RAW\n", __func__, ops->len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				" %d for MTD_OPS_RAW\n", __func__, ops->len);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+=======
+	if (ops->mode != MTD_OPS_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: unsupported ops->ooboffs, %d\n",
 		       __func__, ops->ooboffs);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->oobbuf && !ops->datbuf && ops->mode == MTD_OOB_AUTO)
 		start_sector = cwperpage - 1;
 
@@ -872,6 +906,22 @@ static int msm_nand_read_oob(struct mtd_info *mtd, loff_t from,
 		if ((page_count == 0) && (ops->ooblen))
 			page_count = 1;
 	} else if (ops->mode != MTD_OOB_RAW)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (ops->oobbuf && !ops->datbuf && ops->mode == MTD_OPS_AUTO_OOB)
+		start_sector = cwperpage - 1;
+
+	if (ops->oobbuf && !ops->datbuf) {
+		page_count = ops->ooblen / ((ops->mode == MTD_OPS_AUTO_OOB) ?
+			mtd->oobavail : mtd->oobsize);
+		if ((page_count == 0) && (ops->ooblen))
+			page_count = 1;
+	} else if (ops->mode != MTD_OPS_RAW)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		page_count = ops->len / mtd->writesize;
 	else
 		page_count = ops->len / (mtd->writesize + mtd->oobsize);
@@ -912,7 +962,15 @@ static int msm_nand_read_oob(struct mtd_info *mtd, loff_t from,
 		cmd = dma_buffer->cmd;
 
 		/* CMD / ADDR0 / ADDR1 / CHIPSEL program values */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ops->mode != MTD_OOB_RAW) {
+=======
+		if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			dma_buffer->data.cmd = MSM_NAND_CMD_PAGE_READ_ECC;
 			dma_buffer->data.cfg0 =
 			(chip->CFG0 & ~(7U << 6))
@@ -1001,7 +1059,15 @@ static int msm_nand_read_oob(struct mtd_info *mtd, loff_t from,
 			 * (only valid if status says success)
 			 */
 			if (ops->datbuf) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (ops->mode != MTD_OOB_RAW)
+=======
+				if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 					sectordatasize = (n < (cwperpage - 1))
 					? 516 : (512 - ((cwperpage - 1) << 2));
 				else
@@ -1016,13 +1082,29 @@ static int msm_nand_read_oob(struct mtd_info *mtd, loff_t from,
 			}
 
 			if (ops->oobbuf && (n == (cwperpage - 1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			     || ops->mode != MTD_OOB_AUTO)) {
+=======
+			     || ops->mode != MTD_OPS_AUTO_OOB)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     || ops->mode != MTD_OPS_AUTO_OOB)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				cmd->cmd = 0;
 				if (n == (cwperpage - 1)) {
 					cmd->src = MSM_NAND_FLASH_BUFFER +
 						(512 - ((cwperpage - 1) << 2));
 					sectoroobsize = (cwperpage << 2);
+<<<<<<< HEAD
+<<<<<<< HEAD
 					if (ops->mode != MTD_OOB_AUTO)
+=======
+					if (ops->mode != MTD_OPS_AUTO_OOB)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					if (ops->mode != MTD_OPS_AUTO_OOB)
+>>>>>>> refs/remotes/origin/cm-11.0
 						sectoroobsize +=
 							chip->ecc_parity_bytes;
 				} else {
@@ -1068,7 +1150,15 @@ static int msm_nand_read_oob(struct mtd_info *mtd, loff_t from,
 			}
 		}
 		if (rawerr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->datbuf && ops->mode != MTD_OOB_RAW) {
+=======
+			if (ops->datbuf && ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->datbuf && ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				uint8_t *datbuf = ops->datbuf +
 					pages_read * mtd->writesize;
 
@@ -1169,7 +1259,15 @@ err_dma_map_oobbuf_failed:
 				 ops->len, DMA_BIDIRECTIONAL);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW)
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 		ops->retlen = mtd->writesize * pages_read;
 	else
 		ops->retlen = (mtd->writesize +  mtd->oobsize) *
@@ -1271,7 +1369,15 @@ static int msm_nand_read_oob_dualnandc(struct mtd_info *mtd, loff_t from,
 		       __func__, from);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW) {
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ops->datbuf != NULL && (ops->len % mtd->writesize) != 0) {
 			pr_err("%s: unsupported ops->len, %d\n",
 			       __func__, ops->len);
@@ -1281,17 +1387,35 @@ static int msm_nand_read_oob_dualnandc(struct mtd_info *mtd, loff_t from,
 		if (ops->datbuf != NULL &&
 			(ops->len % (mtd->writesize + mtd->oobsize)) != 0) {
 			pr_err("%s: unsupported ops->len,"
+<<<<<<< HEAD
+<<<<<<< HEAD
 				" %d for MTD_OOB_RAW\n", __func__, ops->len);
+=======
+				" %d for MTD_OPS_RAW\n", __func__, ops->len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				" %d for MTD_OPS_RAW\n", __func__, ops->len);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+=======
+	if (ops->mode != MTD_OPS_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: unsupported ops->ooboffs, %d\n",
 		       __func__, ops->ooboffs);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->oobbuf && !ops->datbuf && ops->mode == MTD_OOB_AUTO)
 		start_sector = cwperpage - 1;
 
@@ -1301,6 +1425,22 @@ static int msm_nand_read_oob_dualnandc(struct mtd_info *mtd, loff_t from,
 		if ((page_count == 0) && (ops->ooblen))
 			page_count = 1;
 	} else if (ops->mode != MTD_OOB_RAW)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (ops->oobbuf && !ops->datbuf && ops->mode == MTD_OPS_AUTO_OOB)
+		start_sector = cwperpage - 1;
+
+	if (ops->oobbuf && !ops->datbuf) {
+		page_count = ops->ooblen / ((ops->mode == MTD_OPS_AUTO_OOB) ?
+			mtd->oobavail : mtd->oobsize);
+		if ((page_count == 0) && (ops->ooblen))
+			page_count = 1;
+	} else if (ops->mode != MTD_OPS_RAW)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		page_count = ops->len / mtd->writesize;
 	else
 		page_count = ops->len / (mtd->writesize + mtd->oobsize);
@@ -1344,7 +1484,15 @@ static int msm_nand_read_oob_dualnandc(struct mtd_info *mtd, loff_t from,
 	while (page_count-- > 0) {
 		cmd = dma_buffer->cmd;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ops->mode != MTD_OOB_RAW) {
+=======
+		if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			dma_buffer->data.cmd = MSM_NAND_CMD_PAGE_READ_ECC;
 			if (start_sector == (cwperpage - 1)) {
 				dma_buffer->data.cfg0 = (chip->CFG0 &
@@ -1614,8 +1762,18 @@ static int msm_nand_read_oob_dualnandc(struct mtd_info *mtd, loff_t from,
 			 * (only valid if status says success)
 			 */
 			if (ops->datbuf || (ops->oobbuf &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 						 ops->mode != MTD_OOB_AUTO)) {
 				if (ops->mode != MTD_OOB_RAW)
+=======
+						 ops->mode != MTD_OPS_AUTO_OOB)) {
+				if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 ops->mode != MTD_OPS_AUTO_OOB)) {
+				if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 					sectordatasize = (n < (cwperpage - 1))
 					? 516 : (512 - ((cwperpage - 1) << 2));
 				else
@@ -1756,7 +1914,15 @@ static int msm_nand_read_oob_dualnandc(struct mtd_info *mtd, loff_t from,
 			}
 
 			if (ops->oobbuf && (n == (cwperpage - 1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			     || ops->mode != MTD_OOB_AUTO)) {
+=======
+			     || ops->mode != MTD_OPS_AUTO_OOB)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     || ops->mode != MTD_OPS_AUTO_OOB)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				cmd->cmd = 0;
 				if (n == (cwperpage - 1)) {
 					/* Use NC10 for reading the
@@ -1765,7 +1931,15 @@ static int msm_nand_read_oob_dualnandc(struct mtd_info *mtd, loff_t from,
 					cmd->src = NC10(MSM_NAND_FLASH_BUFFER) +
 						(512 - ((cwperpage - 1) << 2));
 					sectoroobsize = (cwperpage << 2);
+<<<<<<< HEAD
+<<<<<<< HEAD
 					if (ops->mode != MTD_OOB_AUTO)
+=======
+					if (ops->mode != MTD_OPS_AUTO_OOB)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					if (ops->mode != MTD_OPS_AUTO_OOB)
+>>>>>>> refs/remotes/origin/cm-11.0
 						sectoroobsize +=
 							chip->ecc_parity_bytes;
 				} else {
@@ -1848,7 +2022,15 @@ static int msm_nand_read_oob_dualnandc(struct mtd_info *mtd, loff_t from,
 			}
 		}
 		if (rawerr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->datbuf && ops->mode != MTD_OOB_RAW) {
+=======
+			if (ops->datbuf && ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->datbuf && ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				uint8_t *datbuf = ops->datbuf +
 					pages_read * mtd->writesize;
 
@@ -1963,7 +2145,15 @@ err_dma_map_oobbuf_failed:
 				 ops->len, DMA_BIDIRECTIONAL);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW)
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 		ops->retlen = mtd->writesize * pages_read;
 	else
 		ops->retlen = (mtd->writesize +  mtd->oobsize) *
@@ -1990,6 +2180,8 @@ msm_nand_read(struct mtd_info *mtd, loff_t from, size_t len,
 {
 	int ret;
 	struct mtd_oob_ops ops;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* printk("msm_nand_read %llx %x\n", from, len); */
 
@@ -2004,6 +2196,81 @@ msm_nand_read(struct mtd_info *mtd, loff_t from, size_t len,
 	else
 		ret = msm_nand_read_oob_dualnandc(mtd, from, &ops);
 	*retlen = ops.retlen;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int (*read_oob)(struct mtd_info *, loff_t, struct mtd_oob_ops *);
+
+	if (!dual_nand_ctlr_present)
+		read_oob = msm_nand_read_oob;
+	else
+		read_oob = msm_nand_read_oob_dualnandc;
+
+	ops.mode = MTD_OPS_PLACE_OOB;
+	ops.retlen = 0;
+	ops.ooblen = 0;
+	ops.oobbuf = NULL;
+	ret = 0;
+	*retlen = 0;
+
+	if ((from & (mtd->writesize - 1)) == 0 && len == mtd->writesize) {
+		/* reading a page on page boundary */
+		ops.len = len;
+		ops.datbuf = buf;
+		ret = read_oob(mtd, from, &ops);
+		*retlen = ops.retlen;
+	} else if (len > 0) {
+		/* reading any size on any offset. partial page is supported */
+		u8 *bounce_buf;
+		loff_t aligned_from;
+		loff_t offset;
+		size_t actual_len;
+
+		bounce_buf = kmalloc(mtd->writesize, GFP_KERNEL);
+		if (!bounce_buf) {
+			pr_err("%s: could not allocate memory\n", __func__);
+			ret = -ENOMEM;
+			goto out;
+		}
+
+		ops.len = mtd->writesize;
+		offset = from & (mtd->writesize - 1);
+		aligned_from = from - offset;
+
+		for (;;) {
+			int no_copy;
+
+			actual_len = mtd->writesize - offset;
+			if (actual_len > len)
+				actual_len = len;
+
+			no_copy = (offset == 0 && actual_len == mtd->writesize);
+			ops.datbuf = (no_copy) ? buf : bounce_buf;
+			ret = read_oob(mtd, aligned_from, &ops);
+			if (ret < 0)
+				break;
+
+			if (!no_copy)
+				memcpy(buf, bounce_buf + offset, actual_len);
+
+			len -= actual_len;
+			*retlen += actual_len;
+			if (len == 0)
+				break;
+
+			buf += actual_len;
+			offset = 0;
+			aligned_from += mtd->writesize;
+		}
+
+		kfree(bounce_buf);
+	}
+
+out:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -2065,8 +2332,18 @@ msm_nand_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW) {
 		if (ops->ooblen != 0 && ops->mode != MTD_OOB_AUTO) {
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+		if (ops->ooblen != 0 && ops->mode != MTD_OPS_AUTO_OOB) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+		if (ops->ooblen != 0 && ops->mode != MTD_OPS_AUTO_OOB) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_err("%s: unsupported ops->mode,%d\n",
 					 __func__, ops->mode);
 			return -EINVAL;
@@ -2079,7 +2356,15 @@ msm_nand_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
 	} else {
 		if ((ops->len % (mtd->writesize + mtd->oobsize)) != 0) {
 			pr_err("%s: unsupported ops->len, "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"%d for MTD_OOB_RAW mode\n",
+=======
+				"%d for MTD_OPS_RAW mode\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				"%d for MTD_OPS_RAW mode\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				 __func__, ops->len);
 			return -EINVAL;
 		}
@@ -2089,7 +2374,15 @@ msm_nand_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
 		pr_err("%s: unsupported ops->datbuf == NULL\n", __func__);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+=======
+	if (ops->mode != MTD_OPS_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: unsupported ops->ooboffs, %d\n",
 		       __func__, ops->ooboffs);
 		return -EINVAL;
@@ -2116,7 +2409,15 @@ msm_nand_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
 			goto err_dma_map_oobbuf_failed;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW)
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 		page_count = ops->len / mtd->writesize;
 	else
 		page_count = ops->len / (mtd->writesize + mtd->oobsize);
@@ -2127,7 +2428,15 @@ msm_nand_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
 	while (page_count-- > 0) {
 		cmd = dma_buffer->cmd;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ops->mode != MTD_OOB_RAW) {
+=======
+		if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			dma_buffer->data.cfg0 = chip->CFG0;
 			dma_buffer->data.cfg1 = chip->CFG1;
 			if (enable_bch_ecc)
@@ -2191,7 +2500,15 @@ msm_nand_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
 			}
 
 			/* write data block */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode != MTD_OOB_RAW)
+=======
+			if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 				sectordatawritesize = (n < (cwperpage - 1)) ?
 					516 : (512 - ((cwperpage - 1) << 2));
 			else
@@ -2219,7 +2536,15 @@ msm_nand_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
 					if (cmd->len > 0)
 						cmd++;
 				}
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (ops->mode != MTD_OOB_AUTO) {
+=======
+				if (ops->mode != MTD_OPS_AUTO_OOB) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (ops->mode != MTD_OPS_AUTO_OOB) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					/* skip ecc bytes in oobbuf */
 					if (oob_len < chip->ecc_parity_bytes) {
 						oob_dma_addr_curr +=
@@ -2308,7 +2633,15 @@ msm_nand_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
 		pages_written++;
 		page++;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW)
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 		ops->retlen = mtd->writesize * pages_written;
 	else
 		ops->retlen = (mtd->writesize + mtd->oobsize) * pages_written;
@@ -2415,8 +2748,18 @@ msm_nand_write_oob_dualnandc(struct mtd_info *mtd, loff_t to,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW) {
 		if (ops->ooblen != 0 && ops->mode != MTD_OOB_AUTO) {
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+		if (ops->ooblen != 0 && ops->mode != MTD_OPS_AUTO_OOB) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+		if (ops->ooblen != 0 && ops->mode != MTD_OPS_AUTO_OOB) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_err("%s: unsupported ops->mode,%d\n",
 					 __func__, ops->mode);
 			return -EINVAL;
@@ -2429,7 +2772,15 @@ msm_nand_write_oob_dualnandc(struct mtd_info *mtd, loff_t to,
 	} else {
 		if ((ops->len % (mtd->writesize + mtd->oobsize)) != 0) {
 			pr_err("%s: unsupported ops->len, "
+<<<<<<< HEAD
+<<<<<<< HEAD
 				"%d for MTD_OOB_RAW mode\n",
+=======
+				"%d for MTD_OPS_RAW mode\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				"%d for MTD_OPS_RAW mode\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				 __func__, ops->len);
 			return -EINVAL;
 		}
@@ -2440,7 +2791,15 @@ msm_nand_write_oob_dualnandc(struct mtd_info *mtd, loff_t to,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+=======
+	if (ops->mode != MTD_OPS_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW && ops->ooblen != 0 && ops->ooboffs != 0) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: unsupported ops->ooboffs, %d\n",
 		       __func__, ops->ooboffs);
 		return -EINVAL;
@@ -2469,7 +2828,15 @@ msm_nand_write_oob_dualnandc(struct mtd_info *mtd, loff_t to,
 			goto err_dma_map_oobbuf_failed;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW)
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 		page_count = ops->len / mtd->writesize;
 	else
 		page_count = ops->len / (mtd->writesize + mtd->oobsize);
@@ -2497,7 +2864,15 @@ msm_nand_write_oob_dualnandc(struct mtd_info *mtd, loff_t to,
 	while (page_count-- > 0) {
 		cmd = dma_buffer->cmd;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (ops->mode != MTD_OOB_RAW) {
+=======
+		if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			dma_buffer->data.cfg0 = ((chip->CFG0 & ~(7U << 6))
 				& ~(1 << 4)) | ((((cwperpage >> 1)-1)) << 6);
 			dma_buffer->data.cfg1 = chip->CFG1;
@@ -2710,7 +3085,15 @@ msm_nand_write_oob_dualnandc(struct mtd_info *mtd, loff_t to,
 				cmd++;
 			}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode != MTD_OOB_RAW)
+=======
+			if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 				sectordatawritesize = (n < (cwperpage - 1)) ?
 					516 : (512 - ((cwperpage - 1) << 2));
 			else
@@ -2742,7 +3125,15 @@ msm_nand_write_oob_dualnandc(struct mtd_info *mtd, loff_t to,
 					if (cmd->len > 0)
 						cmd++;
 				}
+<<<<<<< HEAD
+<<<<<<< HEAD
 				if (ops->mode != MTD_OOB_AUTO) {
+=======
+				if (ops->mode != MTD_OPS_AUTO_OOB) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (ops->mode != MTD_OPS_AUTO_OOB) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					/* skip ecc bytes in oobbuf */
 					if (oob_len < chip->ecc_parity_bytes) {
 						oob_dma_addr_curr +=
@@ -2928,7 +3319,15 @@ msm_nand_write_oob_dualnandc(struct mtd_info *mtd, loff_t to,
 		pages_written++;
 		page++;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW)
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 		ops->retlen = mtd->writesize * pages_written;
 	else
 		ops->retlen = (mtd->writesize + mtd->oobsize) * pages_written;
@@ -2963,6 +3362,8 @@ static int msm_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
 {
 	int ret;
 	struct mtd_oob_ops ops;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	ops.mode = MTD_OOB_PLACE;
 	ops.len = len;
@@ -2975,6 +3376,61 @@ static int msm_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
 	else
 		ret =  msm_nand_write_oob_dualnandc(mtd, to, &ops);
 	*retlen = ops.retlen;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int (*write_oob)(struct mtd_info *, loff_t, struct mtd_oob_ops *);
+
+	if (!dual_nand_ctlr_present)
+		write_oob = msm_nand_write_oob;
+	else
+		write_oob = msm_nand_write_oob_dualnandc;
+
+	ops.mode = MTD_OPS_PLACE_OOB;
+	ops.retlen = 0;
+	ops.ooblen = 0;
+	ops.oobbuf = NULL;
+	ret = 0;
+	*retlen = 0;
+
+	if (!virt_addr_valid(buf) &&
+	    ((to | len) & (mtd->writesize - 1)) == 0 &&
+	    ((unsigned long) buf & ~PAGE_MASK) + len > PAGE_SIZE) {
+		/*
+		 * Handle writing of large size write buffer in vmalloc
+		 * address space that does not fit in an MMU page.
+		 * The destination address must be on page boundary,
+		 * and the size must be multiple of NAND page size.
+		 * Writing partial page is not supported.
+		 */
+		ops.len = mtd->writesize;
+
+		for (;;) {
+			ops.datbuf = (uint8_t *) buf;
+
+			ret = write_oob(mtd, to, &ops);
+			if (ret < 0)
+				break;
+
+			len -= mtd->writesize;
+			*retlen += mtd->writesize;
+			if (len == 0)
+				break;
+
+			buf += mtd->writesize;
+			to += mtd->writesize;
+		}
+	} else {
+		ops.len = len;
+		ops.datbuf = (uint8_t *) buf;
+		ret = write_oob(mtd, to, &ops);
+		*retlen = ops.retlen;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return ret;
 }
 
@@ -3773,7 +4229,15 @@ msm_nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
 	*/
 	buf = page_address(ZERO_PAGE());
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_RAW;
+=======
+	ops.mode = MTD_OPS_RAW;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops.mode = MTD_OPS_RAW;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ops.len = mtd->writesize + mtd->oobsize;
 	ops.retlen = 0;
 	ops.ooblen = 0;
@@ -4079,8 +4543,18 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ops->mode != MTD_OOB_PLACE) && (ops->mode != MTD_OOB_AUTO) &&
 			(ops->mode != MTD_OOB_RAW)) {
+=======
+	if ((ops->mode != MTD_OPS_PLACE_OOB) && (ops->mode != MTD_OPS_AUTO_OOB) &&
+			(ops->mode != MTD_OPS_RAW)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->mode != MTD_OPS_PLACE_OOB) && (ops->mode != MTD_OPS_AUTO_OOB) &&
+			(ops->mode != MTD_OPS_RAW)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: unsupported ops->mode, %d\n", __func__,
 				ops->mode);
 		return -EINVAL;
@@ -4105,7 +4579,15 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW) {
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ops->datbuf != NULL && (ops->len % mtd->writesize) != 0) {
 			/* when ops->datbuf is NULL, ops->len can be ooblen */
 			pr_err("%s: unsupported ops->len, %d\n", __func__,
@@ -4116,12 +4598,28 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 		if (ops->datbuf != NULL &&
 			(ops->len % (mtd->writesize + mtd->oobsize)) != 0) {
 			pr_err("%s: unsupported ops->len,"
+<<<<<<< HEAD
+<<<<<<< HEAD
 				" %d for MTD_OOB_RAW\n", __func__, ops->len);
+=======
+				" %d for MTD_OPS_RAW\n", __func__, ops->len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				" %d for MTD_OPS_RAW\n", __func__, ops->len);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ops->mode == MTD_OOB_RAW) && (ops->oobbuf)) {
+=======
+	if ((ops->mode == MTD_OPS_RAW) && (ops->oobbuf)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->mode == MTD_OPS_RAW) && (ops->oobbuf)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: unsupported operation, oobbuf pointer "
 				"passed in for RAW mode, %x\n", __func__,
 				(uint32_t)ops->oobbuf);
@@ -4129,16 +4627,38 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 	}
 
 	if (ops->oobbuf && !ops->datbuf) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		page_count = ops->ooblen / ((ops->mode == MTD_OOB_AUTO) ?
 			mtd->oobavail : mtd->oobsize);
 		if ((page_count == 0) && (ops->ooblen))
 			page_count = 1;
 	} else if (ops->mode != MTD_OOB_RAW)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		page_count = ops->ooblen / ((ops->mode == MTD_OPS_AUTO_OOB) ?
+			mtd->oobavail : mtd->oobsize);
+		if ((page_count == 0) && (ops->ooblen))
+			page_count = 1;
+	} else if (ops->mode != MTD_OPS_RAW)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			page_count = ops->len / mtd->writesize;
 		else
 			page_count = ops->len / (mtd->writesize + mtd->oobsize);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ops->mode == MTD_OOB_PLACE) && (ops->oobbuf != NULL)) {
+=======
+	if ((ops->mode == MTD_OPS_PLACE_OOB) && (ops->oobbuf != NULL)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->mode == MTD_OPS_PLACE_OOB) && (ops->oobbuf != NULL)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (page_count * mtd->oobsize > ops->ooblen) {
 			pr_err("%s: unsupported ops->ooblen for "
 				"PLACE, %d\n", __func__, ops->ooblen);
@@ -4146,7 +4666,15 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ops->mode == MTD_OOB_PLACE) && (ops->ooblen != 0) &&
+=======
+	if ((ops->mode == MTD_OPS_PLACE_OOB) && (ops->ooblen != 0) &&
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->mode == MTD_OPS_PLACE_OOB) && (ops->ooblen != 0) &&
+>>>>>>> refs/remotes/origin/cm-11.0
 							(ops->ooboffs != 0)) {
 		pr_err("%s: unsupported ops->ooboffs, %d\n", __func__,
 				ops->ooboffs);
@@ -4199,7 +4727,15 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 		onenand_startaddr8 = (((uint32_t)from_curr &
 				(mtd->erasesize - 1)) / mtd->writesize) << 2;
 		onenand_startbuffer = DATARAM0_0 << 8;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		onenand_sysconfig1 = (ops->mode == MTD_OOB_RAW) ?
+=======
+		onenand_sysconfig1 = (ops->mode == MTD_OPS_RAW) ?
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		onenand_sysconfig1 = (ops->mode == MTD_OPS_RAW) ?
+>>>>>>> refs/remotes/origin/cm-11.0
 			ONENAND_SYSCFG1_ECCDIS(nand_sfcmd_mode) :
 			ONENAND_SYSCFG1_ECCENA(nand_sfcmd_mode);
 
@@ -4469,7 +5005,15 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 			}
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((ops->oobbuf) || (ops->mode == MTD_OOB_RAW)) {
+=======
+		if ((ops->oobbuf) || (ops->mode == MTD_OPS_RAW)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((ops->oobbuf) || (ops->mode == MTD_OPS_RAW)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 
 			/* Block on cmd ready and write CMD register */
 			cmd->cmd = DST_CRCI_NAND_CMD;
@@ -4504,7 +5048,15 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 			cmd++;
 
 			/* Transfer nand ctlr buffer contents into usr buf */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode == MTD_OOB_AUTO) {
+=======
+			if (ops->mode == MTD_OPS_AUTO_OOB) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode == MTD_OPS_AUTO_OOB) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				for (i = 0; i < MTD_MAX_OOBFREE_ENTRIES; i++) {
 					cmd->cmd = 0;
 					cmd->src = MSM_NAND_FLASH_BUFFER +
@@ -4517,7 +5069,15 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 					cmd++;
 				}
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode == MTD_OOB_PLACE) {
+=======
+			if (ops->mode == MTD_OPS_PLACE_OOB) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode == MTD_OPS_PLACE_OOB) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					cmd->cmd = 0;
 					cmd->src = MSM_NAND_FLASH_BUFFER;
 					cmd->dst = oob_dma_addr_curr;
@@ -4525,7 +5085,15 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 					oob_dma_addr_curr += mtd->oobsize;
 					cmd++;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode == MTD_OOB_RAW) {
+=======
+			if (ops->mode == MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode == MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 					cmd->cmd = 0;
 					cmd->src = MSM_NAND_FLASH_BUFFER;
 					cmd->dst = data_dma_addr_curr;
@@ -4618,7 +5186,15 @@ int msm_onenand_read_oob(struct mtd_info *mtd,
 								(ops->datbuf))
 				|| ((dma_buffer->data.sfstat[7] & 0x110) &&
 								((ops->oobbuf)
+<<<<<<< HEAD
+<<<<<<< HEAD
 					|| (ops->mode == MTD_OOB_RAW)))) {
+=======
+					|| (ops->mode == MTD_OPS_RAW)))) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					|| (ops->mode == MTD_OPS_RAW)))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_info("%s: ECC/MPU/OP error\n", __func__);
 			err = -EIO;
 		}
@@ -4647,14 +5223,30 @@ err_dma_map_oobbuf_failed:
 	} else {
 		ops->retlen = ops->oobretlen = 0;
 		if (ops->datbuf != NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode != MTD_OOB_RAW)
+=======
+			if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 				ops->retlen = mtd->writesize * pages_read;
 			else
 				ops->retlen = (mtd->writesize +  mtd->oobsize)
 							* pages_read;
 		}
 		if (ops->oobbuf != NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode == MTD_OOB_AUTO)
+=======
+			if (ops->mode == MTD_OPS_AUTO_OOB)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode == MTD_OPS_AUTO_OOB)
+>>>>>>> refs/remotes/origin/cm-11.0
 				ops->oobretlen = mtd->oobavail * pages_read;
 			else
 				ops->oobretlen = mtd->oobsize * pages_read;
@@ -4677,7 +5269,15 @@ int msm_onenand_read(struct mtd_info *mtd, loff_t from, size_t len,
 	int ret;
 	struct mtd_oob_ops ops;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_PLACE;
+=======
+	ops.mode = MTD_OPS_PLACE_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops.mode = MTD_OPS_PLACE_OOB;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ops.datbuf = buf;
 	ops.len = len;
 	ops.retlen = 0;
@@ -4763,8 +5363,18 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ops->mode != MTD_OOB_PLACE) && (ops->mode != MTD_OOB_AUTO) &&
 			(ops->mode != MTD_OOB_RAW)) {
+=======
+	if ((ops->mode != MTD_OPS_PLACE_OOB) && (ops->mode != MTD_OPS_AUTO_OOB) &&
+			(ops->mode != MTD_OPS_RAW)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->mode != MTD_OPS_PLACE_OOB) && (ops->mode != MTD_OPS_AUTO_OOB) &&
+			(ops->mode != MTD_OPS_RAW)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: unsupported ops->mode, %d\n", __func__,
 				ops->mode);
 		return -EINVAL;
@@ -4789,7 +5399,15 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ops->mode != MTD_OOB_RAW) {
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ops->mode != MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (ops->datbuf != NULL && (ops->len % mtd->writesize) != 0) {
 			/* when ops->datbuf is NULL, ops->len can be ooblen */
 			pr_err("%s: unsupported ops->len, %d\n", __func__,
@@ -4800,12 +5418,28 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 		if (ops->datbuf != NULL &&
 			(ops->len % (mtd->writesize + mtd->oobsize)) != 0) {
 			pr_err("%s: unsupported ops->len,"
+<<<<<<< HEAD
+<<<<<<< HEAD
 				" %d for MTD_OOB_RAW\n", __func__, ops->len);
+=======
+				" %d for MTD_OPS_RAW\n", __func__, ops->len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				" %d for MTD_OPS_RAW\n", __func__, ops->len);
+>>>>>>> refs/remotes/origin/cm-11.0
 			return -EINVAL;
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ops->mode == MTD_OOB_RAW) && (ops->oobbuf)) {
+=======
+	if ((ops->mode == MTD_OPS_RAW) && (ops->oobbuf)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->mode == MTD_OPS_RAW) && (ops->oobbuf)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		pr_err("%s: unsupported operation, oobbuf pointer "
 				"passed in for RAW mode, %x\n", __func__,
 				(uint32_t)ops->oobbuf);
@@ -4813,16 +5447,38 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 	}
 
 	if (ops->oobbuf && !ops->datbuf) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		page_count = ops->ooblen / ((ops->mode == MTD_OOB_AUTO) ?
 			mtd->oobavail : mtd->oobsize);
 		if ((page_count == 0) && (ops->ooblen))
 			page_count = 1;
 	} else if (ops->mode != MTD_OOB_RAW)
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		page_count = ops->ooblen / ((ops->mode == MTD_OPS_AUTO_OOB) ?
+			mtd->oobavail : mtd->oobsize);
+		if ((page_count == 0) && (ops->ooblen))
+			page_count = 1;
+	} else if (ops->mode != MTD_OPS_RAW)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			page_count = ops->len / mtd->writesize;
 		else
 			page_count = ops->len / (mtd->writesize + mtd->oobsize);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ops->mode == MTD_OOB_AUTO) && (ops->oobbuf != NULL)) {
+=======
+	if ((ops->mode == MTD_OPS_AUTO_OOB) && (ops->oobbuf != NULL)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->mode == MTD_OPS_AUTO_OOB) && (ops->oobbuf != NULL)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (page_count > 1) {
 			pr_err("%s: unsupported ops->ooblen for"
 				"AUTO, %d\n", __func__, ops->ooblen);
@@ -4830,7 +5486,15 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ops->mode == MTD_OOB_PLACE) && (ops->oobbuf != NULL)) {
+=======
+	if ((ops->mode == MTD_OPS_PLACE_OOB) && (ops->oobbuf != NULL)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->mode == MTD_OPS_PLACE_OOB) && (ops->oobbuf != NULL)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (page_count * mtd->oobsize > ops->ooblen) {
 			pr_err("%s: unsupported ops->ooblen for"
 				"PLACE,	%d\n", __func__, ops->ooblen);
@@ -4838,7 +5502,15 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ops->mode == MTD_OOB_PLACE) && (ops->ooblen != 0) &&
+=======
+	if ((ops->mode == MTD_OPS_PLACE_OOB) && (ops->ooblen != 0) &&
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->mode == MTD_OPS_PLACE_OOB) && (ops->ooblen != 0) &&
+>>>>>>> refs/remotes/origin/cm-11.0
 						(ops->ooboffs != 0)) {
 		pr_err("%s: unsupported ops->ooboffs, %d\n",
 				__func__, ops->ooboffs);
@@ -4854,7 +5526,15 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 	for (i = 0; i < 64; i++)
 		init_spare_bytes[i] = 0xFF;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ops->oobbuf) && (ops->mode == MTD_OOB_AUTO)) {
+=======
+	if ((ops->oobbuf) && (ops->mode == MTD_OPS_AUTO_OOB)) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ops->oobbuf) && (ops->mode == MTD_OPS_AUTO_OOB)) {
+>>>>>>> refs/remotes/origin/cm-11.0
 		for (i = 0, k = 0; i < MTD_MAX_OOBFREE_ENTRIES; i++)
 			for (j = 0; j < mtd->ecclayout->oobfree[i].length;
 					j++) {
@@ -4918,7 +5598,15 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 		onenand_startaddr8 = (((uint32_t)to_curr &
 				(mtd->erasesize - 1)) / mtd->writesize) << 2;
 		onenand_startbuffer = DATARAM0_0 << 8;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		onenand_sysconfig1 = (ops->mode == MTD_OOB_RAW) ?
+=======
+		onenand_sysconfig1 = (ops->mode == MTD_OPS_RAW) ?
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		onenand_sysconfig1 = (ops->mode == MTD_OPS_RAW) ?
+>>>>>>> refs/remotes/origin/cm-11.0
 			ONENAND_SYSCFG1_ECCDIS(nand_sfcmd_mode) :
 			ONENAND_SYSCFG1_ECCENA(nand_sfcmd_mode);
 
@@ -5137,17 +5825,38 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 		cmd->len = 4;
 		cmd++;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((ops->oobbuf) || (ops->mode == MTD_OOB_RAW)) {
 
 			/* Transfer user buf contents into nand ctlr buffer */
 			if (ops->mode == MTD_OOB_AUTO) {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if ((ops->oobbuf) || (ops->mode == MTD_OPS_RAW)) {
+
+			/* Transfer user buf contents into nand ctlr buffer */
+			if (ops->mode == MTD_OPS_AUTO_OOB) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				cmd->cmd = 0;
 				cmd->src = init_dma_addr;
 				cmd->dst = MSM_NAND_FLASH_BUFFER;
 				cmd->len = mtd->oobsize;
 				cmd++;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode == MTD_OOB_PLACE) {
+=======
+			if (ops->mode == MTD_OPS_PLACE_OOB) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode == MTD_OPS_PLACE_OOB) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				cmd->cmd = 0;
 				cmd->src = oob_dma_addr_curr;
 				cmd->dst = MSM_NAND_FLASH_BUFFER;
@@ -5155,7 +5864,15 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 				oob_dma_addr_curr += mtd->oobsize;
 				cmd++;
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode == MTD_OOB_RAW) {
+=======
+			if (ops->mode == MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode == MTD_OPS_RAW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				cmd->cmd = 0;
 				cmd->src = data_dma_addr_curr;
 				cmd->dst = MSM_NAND_FLASH_BUFFER;
@@ -5363,7 +6080,15 @@ static int msm_onenand_write_oob(struct mtd_info *mtd, loff_t to,
 								(ops->datbuf))
 				|| ((dma_buffer->data.sfstat[5] & 0x110) &&
 								((ops->oobbuf)
+<<<<<<< HEAD
+<<<<<<< HEAD
 					|| (ops->mode == MTD_OOB_RAW)))) {
+=======
+					|| (ops->mode == MTD_OPS_RAW)))) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					|| (ops->mode == MTD_OPS_RAW)))) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_info("%s: ECC/MPU/OP error\n", __func__);
 			err = -EIO;
 		}
@@ -5395,14 +6120,30 @@ err_dma_map_oobbuf_failed:
 	} else {
 		ops->retlen = ops->oobretlen = 0;
 		if (ops->datbuf != NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode != MTD_OOB_RAW)
+=======
+			if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode != MTD_OPS_RAW)
+>>>>>>> refs/remotes/origin/cm-11.0
 				ops->retlen = mtd->writesize * pages_written;
 			else
 				ops->retlen = (mtd->writesize +  mtd->oobsize)
 							* pages_written;
 		}
 		if (ops->oobbuf != NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (ops->mode == MTD_OOB_AUTO)
+=======
+			if (ops->mode == MTD_OPS_AUTO_OOB)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ops->mode == MTD_OPS_AUTO_OOB)
+>>>>>>> refs/remotes/origin/cm-11.0
 				ops->oobretlen = mtd->oobavail * pages_written;
 			else
 				ops->oobretlen = mtd->oobsize * pages_written;
@@ -5426,7 +6167,15 @@ static int msm_onenand_write(struct mtd_info *mtd, loff_t to, size_t len,
 	int ret;
 	struct mtd_oob_ops ops;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_PLACE;
+=======
+	ops.mode = MTD_OPS_PLACE_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops.mode = MTD_OPS_PLACE_OOB;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ops.datbuf = (uint8_t *)buf;
 	ops.len = len;
 	ops.retlen = 0;
@@ -5817,7 +6566,15 @@ static int msm_onenand_block_isbad(struct mtd_info *mtd, loff_t ofs)
 	memset(buffer, 0x00, 2112);
 	oobptr = &(buffer[2048]);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_RAW;
+=======
+	ops.mode = MTD_OPS_RAW;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops.mode = MTD_OPS_RAW;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ops.len = 2112;
 	ops.retlen = 0;
 	ops.ooblen = 0;
@@ -5870,7 +6627,15 @@ static int msm_onenand_block_markbad(struct mtd_info *mtd, loff_t ofs)
 
 	buffer = page_address(ZERO_PAGE());
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_RAW;
+=======
+	ops.mode = MTD_OPS_RAW;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops.mode = MTD_OPS_RAW;
+>>>>>>> refs/remotes/origin/cm-11.0
 	ops.len = 2112;
 	ops.retlen = 0;
 	ops.ooblen = 0;
@@ -6647,6 +7412,8 @@ int msm_onenand_scan(struct mtd_info *mtd, int maxchips)
 
 	mtd->type = MTD_NANDFLASH;
 	mtd->flags = MTD_CAP_NANDFLASH;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mtd->erase = msm_onenand_erase;
 	mtd->point = NULL;
 	mtd->unpoint = NULL;
@@ -6660,6 +7427,26 @@ int msm_onenand_scan(struct mtd_info *mtd, int maxchips)
 	mtd->resume = msm_onenand_resume;
 	mtd->block_isbad = msm_onenand_block_isbad;
 	mtd->block_markbad = msm_onenand_block_markbad;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	mtd->_erase = msm_onenand_erase;
+	mtd->_point = NULL;
+	mtd->_unpoint = NULL;
+	mtd->_read = msm_onenand_read;
+	mtd->_write = msm_onenand_write;
+	mtd->_read_oob = msm_onenand_read_oob;
+	mtd->_write_oob = msm_onenand_write_oob;
+	mtd->_lock = msm_onenand_lock;
+	mtd->_unlock = msm_onenand_unlock;
+	mtd->_suspend = msm_onenand_suspend;
+	mtd->_resume = msm_onenand_resume;
+	mtd->_block_isbad = msm_onenand_block_isbad;
+	mtd->_block_markbad = msm_onenand_block_markbad;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mtd->owner = THIS_MODULE;
 
 	pr_info("Found a supported onenand device\n");
@@ -6719,8 +7506,27 @@ int msm_nand_scan(struct mtd_info *mtd, int maxchips)
 			supported_flash.pagesize = 1024 << (devcfg & 0x3);
 			supported_flash.blksize = (64 * 1024) <<
 							((devcfg >> 4) & 0x3);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			supported_flash.oobsize = (8 << ((devcfg >> 2) & 1)) *
 				(supported_flash.pagesize >> 9);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			supported_flash.oobsize = (8 << ((devcfg >> 2) & 0x3)) *
+				(supported_flash.pagesize >> 9);
+
+			if ((supported_flash.oobsize > 64) &&
+				(supported_flash.pagesize == 2048)) {
+				pr_info("msm_nand: Found a 2K page device with"
+					" %d oobsize - changing oobsize to 64 "
+					"bytes.\n", supported_flash.oobsize);
+				supported_flash.oobsize = 64;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		} else {
 			supported_flash.flash_id = flash_id;
 			supported_flash.density = flashdev->chipsize << 20;
@@ -6739,6 +7545,14 @@ int msm_nand_scan(struct mtd_info *mtd, int maxchips)
 		mtd->writesize = supported_flash.pagesize * i;
 		mtd->oobsize   = supported_flash.oobsize  * i;
 		mtd->erasesize = supported_flash.blksize  * i;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		mtd->writebufsize = mtd->writesize;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mtd->writebufsize = mtd->writesize;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (!interleave_enable)
 			mtd_writesize = mtd->writesize;
@@ -6835,6 +7649,8 @@ int msm_nand_scan(struct mtd_info *mtd, int maxchips)
 	mtd->type = MTD_NANDFLASH;
 	mtd->flags = MTD_CAP_NANDFLASH;
 	/* mtd->ecctype = MTD_ECC_SW; */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mtd->erase = msm_nand_erase;
 	mtd->block_isbad = msm_nand_block_isbad;
 	mtd->block_markbad = msm_nand_block_markbad;
@@ -6850,14 +7666,49 @@ int msm_nand_scan(struct mtd_info *mtd, int maxchips)
 		if (interleave_enable) {
 			mtd->erase = msm_nand_erase_dualnandc;
 			mtd->block_isbad = msm_nand_block_isbad_dualnandc;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	mtd->_erase = msm_nand_erase;
+	mtd->_block_isbad = msm_nand_block_isbad;
+	mtd->_block_markbad = msm_nand_block_markbad;
+	mtd->_point = NULL;
+	mtd->_unpoint = NULL;
+	mtd->_read = msm_nand_read;
+	mtd->_write = msm_nand_write;
+	mtd->_read_oob  = msm_nand_read_oob;
+	mtd->_write_oob = msm_nand_write_oob;
+	if (dual_nand_ctlr_present) {
+		mtd->_read_oob = msm_nand_read_oob_dualnandc;
+		mtd->_write_oob = msm_nand_write_oob_dualnandc;
+		if (interleave_enable) {
+			mtd->_erase = msm_nand_erase_dualnandc;
+			mtd->_block_isbad = msm_nand_block_isbad_dualnandc;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 	}
 
 	/* mtd->sync = msm_nand_sync; */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mtd->lock = NULL;
 	/* mtd->unlock = msm_nand_unlock; */
 	mtd->suspend = msm_nand_suspend;
 	mtd->resume = msm_nand_resume;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	mtd->_lock = NULL;
+	/* mtd->_unlock = msm_nand_unlock; */
+	mtd->_suspend = msm_nand_suspend;
+	mtd->_resume = msm_nand_resume;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	mtd->owner = THIS_MODULE;
 
 	/* Unlock whole block */

@@ -13,16 +13,29 @@
 #include <linux/gpio.h>
 
 #include <plat/gpio-cfg.h>
+<<<<<<< HEAD
 #include <plat/audio.h>
+=======
+#include <linux/platform_data/asoc-s3c.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/map.h>
 #include <mach/dma.h>
 #include <mach/irqs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <mach/regs-audss.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const char *rclksrc[] = {
 	[0] = "busclk",
 	[1] = "i2sclk",
 };
+=======
+
+#define S5PV210_AUDSS_INT_MEM	(0xC0000000)
+>>>>>>> refs/remotes/origin/master
 
 static int s5pv210_cfg_i2s(struct platform_device *pdev)
 {
@@ -51,12 +64,21 @@ static struct s3c_audio_pdata i2sv5_pdata = {
 		.i2s = {
 			.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI
 					 | QUIRK_NEED_RSTCLR,
+<<<<<<< HEAD
 			.src_clk = rclksrc,
+<<<<<<< HEAD
+=======
+			.idma_addr = S5PV210_AUDSS_INT_MEM,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.idma_addr = S5PV210_AUDSS_INT_MEM,
+>>>>>>> refs/remotes/origin/master
 		},
 	},
 };
 
 static struct resource s5pv210_iis0_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S5PV210_PA_IIS0,
 		.end   = S5PV210_PA_IIS0 + 0x100 - 1,
@@ -77,6 +99,12 @@ static struct resource s5pv210_iis0_resource[] = {
 		.end = DMACH_I2S0S_TX,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S5PV210_PA_IIS0, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_I2S0_TX),
+	[2] = DEFINE_RES_DMA(DMACH_I2S0_RX),
+	[3] = DEFINE_RES_DMA(DMACH_I2S0S_TX),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s5pv210_device_iis0 = {
@@ -89,6 +117,7 @@ struct platform_device s5pv210_device_iis0 = {
 	},
 };
 
+<<<<<<< HEAD
 static const char *rclksrc_v3[] = {
 	[0] = "iis",
 	[1] = "audio-bus",
@@ -119,6 +148,16 @@ static struct resource s5pv210_iis1_resource[] = {
 		.end   = DMACH_I2S1_RX,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+static struct s3c_audio_pdata i2sv3_pdata = {
+	.cfg_gpio = s5pv210_cfg_i2s,
+};
+
+static struct resource s5pv210_iis1_resource[] = {
+	[0] = DEFINE_RES_MEM(S5PV210_PA_IIS1, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_I2S1_TX),
+	[2] = DEFINE_RES_DMA(DMACH_I2S1_RX),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s5pv210_device_iis1 = {
@@ -132,6 +171,7 @@ struct platform_device s5pv210_device_iis1 = {
 };
 
 static struct resource s5pv210_iis2_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S5PV210_PA_IIS2,
 		.end   = S5PV210_PA_IIS2 + 0x100 - 1,
@@ -147,6 +187,11 @@ static struct resource s5pv210_iis2_resource[] = {
 		.end   = DMACH_I2S2_RX,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S5PV210_PA_IIS2, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_I2S2_TX),
+	[2] = DEFINE_RES_DMA(DMACH_I2S2_RX),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s5pv210_device_iis2 = {
@@ -186,6 +231,7 @@ static struct s3c_audio_pdata s3c_pcm_pdata = {
 };
 
 static struct resource s5pv210_pcm0_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S5PV210_PA_PCM0,
 		.end   = S5PV210_PA_PCM0 + 0x100 - 1,
@@ -201,6 +247,11 @@ static struct resource s5pv210_pcm0_resource[] = {
 		.end   = DMACH_PCM0_RX,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S5PV210_PA_PCM0, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_PCM0_TX),
+	[2] = DEFINE_RES_DMA(DMACH_PCM0_RX),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s5pv210_device_pcm0 = {
@@ -214,6 +265,7 @@ struct platform_device s5pv210_device_pcm0 = {
 };
 
 static struct resource s5pv210_pcm1_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S5PV210_PA_PCM1,
 		.end   = S5PV210_PA_PCM1 + 0x100 - 1,
@@ -229,6 +281,11 @@ static struct resource s5pv210_pcm1_resource[] = {
 		.end   = DMACH_PCM1_RX,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S5PV210_PA_PCM1, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_PCM1_TX),
+	[2] = DEFINE_RES_DMA(DMACH_PCM1_RX),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s5pv210_device_pcm1 = {
@@ -242,6 +299,7 @@ struct platform_device s5pv210_device_pcm1 = {
 };
 
 static struct resource s5pv210_pcm2_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S5PV210_PA_PCM2,
 		.end   = S5PV210_PA_PCM2 + 0x100 - 1,
@@ -257,6 +315,11 @@ static struct resource s5pv210_pcm2_resource[] = {
 		.end   = DMACH_PCM2_RX,
 		.flags = IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S5PV210_PA_PCM2, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_PCM2_TX),
+	[2] = DEFINE_RES_DMA(DMACH_PCM2_RX),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s5pv210_device_pcm2 = {
@@ -277,6 +340,7 @@ static int s5pv210_ac97_cfg_gpio(struct platform_device *pdev)
 }
 
 static struct resource s5pv210_ac97_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S5PV210_PA_AC97,
 		.end   = S5PV210_PA_AC97 + 0x100 - 1,
@@ -302,6 +366,13 @@ static struct resource s5pv210_ac97_resource[] = {
 		.end   = IRQ_AC97,
 		.flags = IORESOURCE_IRQ,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S5PV210_PA_AC97, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_AC97_PCMOUT),
+	[2] = DEFINE_RES_DMA(DMACH_AC97_PCMIN),
+	[3] = DEFINE_RES_DMA(DMACH_AC97_MICIN),
+	[4] = DEFINE_RES_IRQ(IRQ_AC97),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c_audio_pdata s3c_ac97_pdata = {
@@ -332,6 +403,7 @@ static int s5pv210_spdif_cfg_gpio(struct platform_device *pdev)
 }
 
 static struct resource s5pv210_spdif_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start	= S5PV210_PA_SPDIF,
 		.end	= S5PV210_PA_SPDIF + 0x100 - 1,
@@ -342,6 +414,10 @@ static struct resource s5pv210_spdif_resource[] = {
 		.end	= DMACH_SPDIF,
 		.flags	= IORESOURCE_DMA,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S5PV210_PA_SPDIF, SZ_256),
+	[1] = DEFINE_RES_DMA(DMACH_SPDIF),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c_audio_pdata samsung_spdif_pdata = {

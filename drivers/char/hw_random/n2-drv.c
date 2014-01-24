@@ -1,6 +1,14 @@
 /* n2-drv.c: Niagara-2 RNG driver.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2008 David S. Miller <davem@davemloft.net>
+=======
+ * Copyright (C) 2008, 2011 David S. Miller <davem@davemloft.net>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2008, 2011 David S. Miller <davem@davemloft.net>
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/kernel.h>
@@ -22,10 +30,22 @@
 
 #define DRV_MODULE_NAME		"n2rng"
 #define PFX DRV_MODULE_NAME	": "
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DRV_MODULE_VERSION	"0.1"
 #define DRV_MODULE_RELDATE	"May 15, 2008"
+=======
+#define DRV_MODULE_VERSION	"0.2"
+#define DRV_MODULE_RELDATE	"July 27, 2011"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static char version[] __devinitdata =
+=======
+#define DRV_MODULE_VERSION	"0.2"
+#define DRV_MODULE_RELDATE	"July 27, 2011"
+
+static char version[] =
+>>>>>>> refs/remotes/origin/master
 	DRV_MODULE_NAME ".c:v" DRV_MODULE_VERSION " (" DRV_MODULE_RELDATE ")\n";
 
 MODULE_AUTHOR("David S. Miller (davem@davemloft.net)");
@@ -611,7 +631,11 @@ static void n2rng_work(struct work_struct *work)
 		schedule_delayed_work(&np->work, HZ * 2);
 }
 
+<<<<<<< HEAD
 static void __devinit n2rng_driver_version(void)
+=======
+static void n2rng_driver_version(void)
+>>>>>>> refs/remotes/origin/master
 {
 	static int n2rng_version_printed;
 
@@ -620,17 +644,36 @@ static void __devinit n2rng_driver_version(void)
 }
 
 static const struct of_device_id n2rng_match[];
+<<<<<<< HEAD
 static int __devinit n2rng_probe(struct platform_device *op)
 {
 	const struct of_device_id *match;
+<<<<<<< HEAD
 	int victoria_falls;
+=======
+	int multi_capable;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int n2rng_probe(struct platform_device *op)
+{
+	const struct of_device_id *match;
+	int multi_capable;
+>>>>>>> refs/remotes/origin/master
 	int err = -ENOMEM;
 	struct n2rng *np;
 
 	match = of_match_device(n2rng_match, &op->dev);
 	if (!match)
 		return -EINVAL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	victoria_falls = (match->data != NULL);
+=======
+	multi_capable = (match->data != NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	multi_capable = (match->data != NULL);
+>>>>>>> refs/remotes/origin/master
 
 	n2rng_driver_version();
 	np = kzalloc(sizeof(*np), GFP_KERNEL);
@@ -640,8 +683,18 @@ static int __devinit n2rng_probe(struct platform_device *op)
 
 	INIT_DELAYED_WORK(&np->work, n2rng_work);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (victoria_falls)
 		np->flags |= N2RNG_FLAG_VF;
+=======
+	if (multi_capable)
+		np->flags |= N2RNG_FLAG_MULTI;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (multi_capable)
+		np->flags |= N2RNG_FLAG_MULTI;
+>>>>>>> refs/remotes/origin/master
 
 	err = -ENODEV;
 	np->hvapi_major = 2;
@@ -658,10 +711,23 @@ static int __devinit n2rng_probe(struct platform_device *op)
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (np->flags & N2RNG_FLAG_VF) {
 		if (np->hvapi_major < 2) {
 			dev_err(&op->dev, "VF RNG requires HVAPI major "
 				"version 2 or later, got %lu\n",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (np->flags & N2RNG_FLAG_MULTI) {
+		if (np->hvapi_major < 2) {
+			dev_err(&op->dev, "multi-unit-capable RNG requires "
+				"HVAPI major version 2 or later, got %lu\n",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				np->hvapi_major);
 			goto out_hvapi_unregister;
 		}
@@ -688,8 +754,18 @@ static int __devinit n2rng_probe(struct platform_device *op)
 		goto out_free_units;
 
 	dev_info(&op->dev, "Found %s RNG, units: %d\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 ((np->flags & N2RNG_FLAG_VF) ?
 		  "Victoria Falls" : "Niagara2"),
+=======
+		 ((np->flags & N2RNG_FLAG_MULTI) ?
+		  "multi-unit-capable" : "single-unit"),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 ((np->flags & N2RNG_FLAG_MULTI) ?
+		  "multi-unit-capable" : "single-unit"),
+>>>>>>> refs/remotes/origin/master
 		 np->num_units);
 
 	np->hwrng.name = "n2rng";
@@ -700,7 +776,11 @@ static int __devinit n2rng_probe(struct platform_device *op)
 	if (err)
 		goto out_free_units;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, np);
+=======
+	platform_set_drvdata(op, np);
+>>>>>>> refs/remotes/origin/master
 
 	schedule_delayed_work(&np->work, 0);
 
@@ -719,9 +799,15 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit n2rng_remove(struct platform_device *op)
 {
 	struct n2rng *np = dev_get_drvdata(&op->dev);
+=======
+static int n2rng_remove(struct platform_device *op)
+{
+	struct n2rng *np = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 
 	np->flags |= N2RNG_FLAG_SHUTDOWN;
 
@@ -736,8 +822,11 @@ static int __devexit n2rng_remove(struct platform_device *op)
 
 	kfree(np);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -751,6 +840,20 @@ static const struct of_device_id n2rng_match[] = {
 		.compatible	= "SUNW,vf-rng",
 		.data		= (void *) 1,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	{
+		.name		= "random-number-generator",
+		.compatible	= "SUNW,kt-rng",
+		.data		= (void *) 1,
+	},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 MODULE_DEVICE_TABLE(of, n2rng_match);
@@ -762,9 +865,11 @@ static struct platform_driver n2rng_driver = {
 		.of_match_table = n2rng_match,
 	},
 	.probe		= n2rng_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(n2rng_remove),
 };
 
+<<<<<<< HEAD
 static int __init n2rng_init(void)
 {
 	return platform_driver_register(&n2rng_driver);
@@ -777,3 +882,12 @@ static void __exit n2rng_exit(void)
 
 module_init(n2rng_init);
 module_exit(n2rng_exit);
+=======
+module_platform_driver(n2rng_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= n2rng_remove,
+};
+
+module_platform_driver(n2rng_driver);
+>>>>>>> refs/remotes/origin/master

@@ -4,11 +4,19 @@
  * Copyright (C) 2005 David S. Miller <davem@davemloft.net>
  */
 
+<<<<<<< HEAD
 	.text
 
 	.globl	memset
 	.type	memset, #function
 memset:			/* %o0=buf, %o1=pat, %o2=len */
+=======
+#include <linux/linkage.h>
+
+	.text
+
+ENTRY(memset) /* %o0=buf, %o1=pat, %o2=len */
+>>>>>>> refs/remotes/origin/master
 	and		%o1, 0xff, %o3
 	mov		%o2, %o1
 	sllx		%o3, 8, %g1
@@ -19,9 +27,13 @@ memset:			/* %o0=buf, %o1=pat, %o2=len */
 	ba,pt		%xcc, 1f
 	 or		%g1, %o2, %o2
 
+<<<<<<< HEAD
 	.globl	__bzero
 	.type	__bzero, #function
 __bzero:		/* %o0=buf, %o1=len */
+=======
+ENTRY(__bzero) /* %o0=buf, %o1=len */
+>>>>>>> refs/remotes/origin/master
 	clr		%o2
 1:	mov		%o0, %o3
 	brz,pn		%o1, __bzero_done
@@ -78,8 +90,13 @@ __bzero_tiny:
 __bzero_done:
 	retl
 	 mov		%o3, %o0
+<<<<<<< HEAD
 	.size		__bzero, .-__bzero
 	.size		memset, .-memset
+=======
+ENDPROC(__bzero)
+ENDPROC(memset)
+>>>>>>> refs/remotes/origin/master
 
 #define EX_ST(x,y)		\
 98:	x,y;			\
@@ -89,9 +106,13 @@ __bzero_done:
 	.text;			\
 	.align 4;
 
+<<<<<<< HEAD
 	.globl	__clear_user
 	.type	__clear_user, #function
 __clear_user:		/* %o0=buf, %o1=len */
+=======
+ENTRY(__clear_user) /* %o0=buf, %o1=len */
+>>>>>>> refs/remotes/origin/master
 	brz,pn		%o1, __clear_user_done
 	 cmp		%o1, 16
 	bl,pn		%icc, __clear_user_tiny
@@ -146,4 +167,8 @@ __clear_user_tiny:
 __clear_user_done:
 	retl
 	 clr		%o0
+<<<<<<< HEAD
 	.size		__clear_user, .-__clear_user
+=======
+ENDPROC(__clear_user)
+>>>>>>> refs/remotes/origin/master

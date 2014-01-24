@@ -6,11 +6,24 @@
 #include <linux/ioport.h>
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/slab.h>
 
 /* Number of bytes to reserve for the iomem resource */
 #define ATMEL_TC_IOMEM_SIZE	256
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/module.h>
+#include <linux/slab.h>
+#include <linux/export.h>
+#include <linux/of.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is a thin library to solve the problem of how to portably allocate
@@ -47,10 +60,30 @@ struct atmel_tc *atmel_tc_alloc(unsigned block, const char *name)
 	struct atmel_tc		*tc;
 	struct platform_device	*pdev = NULL;
 	struct resource		*r;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	spin_lock(&tc_list_lock);
 	list_for_each_entry(tc, &tc_list, node) {
 		if (tc->pdev->id == block) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	size_t			size;
+
+	spin_lock(&tc_list_lock);
+	list_for_each_entry(tc, &tc_list, node) {
+		if (tc->pdev->dev.of_node) {
+			if (of_alias_get_id(tc->pdev->dev.of_node, "tcb")
+					== block) {
+				pdev = tc->pdev;
+				break;
+			}
+		} else if (tc->pdev->id == block) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			pdev = tc->pdev;
 			break;
 		}
@@ -60,11 +93,29 @@ struct atmel_tc *atmel_tc_alloc(unsigned block, const char *name)
 		goto fail;
 
 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r = request_mem_region(r->start, ATMEL_TC_IOMEM_SIZE, name);
 	if (!r)
 		goto fail;
 
 	tc->regs = ioremap(r->start, ATMEL_TC_IOMEM_SIZE);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!r)
+		goto fail;
+
+	size = resource_size(r);
+	r = request_mem_region(r->start, size, name);
+	if (!r)
+		goto fail;
+
+	tc->regs = ioremap(r->start, size);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!tc->regs)
 		goto fail_ioremap;
 
@@ -75,7 +126,15 @@ out:
 	return tc;
 
 fail_ioremap:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	release_mem_region(r->start, ATMEL_TC_IOMEM_SIZE);
+=======
+	release_mem_region(r->start, size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_mem_region(r->start, size);
+>>>>>>> refs/remotes/origin/master
 fail:
 	tc = NULL;
 	goto out;
@@ -95,7 +154,15 @@ void atmel_tc_free(struct atmel_tc *tc)
 	spin_lock(&tc_list_lock);
 	if (tc->regs) {
 		iounmap(tc->regs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		release_mem_region(tc->iomem->start, ATMEL_TC_IOMEM_SIZE);
+=======
+		release_mem_region(tc->iomem->start, resource_size(tc->iomem));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		release_mem_region(tc->iomem->start, resource_size(tc->iomem));
+>>>>>>> refs/remotes/origin/master
 		tc->regs = NULL;
 		tc->iomem = NULL;
 	}
@@ -103,6 +170,39 @@ void atmel_tc_free(struct atmel_tc *tc)
 }
 EXPORT_SYMBOL_GPL(atmel_tc_free);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#if defined(CONFIG_OF)
+static struct atmel_tcb_config tcb_rm9200_config = {
+	.counter_width = 16,
+};
+
+static struct atmel_tcb_config tcb_sam9x5_config = {
+	.counter_width = 32,
+};
+
+static const struct of_device_id atmel_tcb_dt_ids[] = {
+	{
+		.compatible = "atmel,at91rm9200-tcb",
+		.data = &tcb_rm9200_config,
+	}, {
+		.compatible = "atmel,at91sam9x5-tcb",
+		.data = &tcb_sam9x5_config,
+	}, {
+		/* sentinel */
+	}
+};
+
+MODULE_DEVICE_TABLE(of, atmel_tcb_dt_ids);
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init tc_probe(struct platform_device *pdev)
 {
 	struct atmel_tc *tc;
@@ -128,6 +228,23 @@ static int __init tc_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Now take SoC information if available */
+	if (pdev->dev.of_node) {
+		const struct of_device_id *match;
+		match = of_match_node(atmel_tcb_dt_ids, pdev->dev.of_node);
+		if (match)
+			tc->tcb_config = match->data;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tc->clk[0] = clk;
 	tc->clk[1] = clk_get(&pdev->dev, "t1_clk");
 	if (IS_ERR(tc->clk[1]))
@@ -152,7 +269,20 @@ static int __init tc_probe(struct platform_device *pdev)
 }
 
 static struct platform_driver tc_driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.driver.name	= "atmel_tcb",
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.driver = {
+		.name	= "atmel_tcb",
+		.of_match_table	= of_match_ptr(atmel_tcb_dt_ids),
+	},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init tc_init(void)

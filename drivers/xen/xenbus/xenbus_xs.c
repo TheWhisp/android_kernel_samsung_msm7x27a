@@ -31,6 +31,11 @@
  * IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/unistd.h>
 #include <linux/errno.h>
 #include <linux/types.h>
@@ -44,7 +49,17 @@
 #include <linux/rwsem.h>
 #include <linux/module.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <xen/xenbus.h>
+<<<<<<< HEAD
+=======
+#include <xen/xen.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/xen/hypervisor.h>
+#include <xen/xenbus.h>
+#include <xen/xen.h>
+>>>>>>> refs/remotes/origin/master
 #include "xenbus_comms.h"
 
 struct xs_stored_msg {
@@ -127,9 +142,14 @@ static int get_error(const char *errorstring)
 
 	for (i = 0; strcmp(errorstring, xsd_errors[i].errstring) != 0; i++) {
 		if (i == ARRAY_SIZE(xsd_errors) - 1) {
+<<<<<<< HEAD
 			printk(KERN_WARNING
 			       "XENBUS xen store gave: unknown error %s",
 			       errorstring);
+=======
+			pr_warn("xen store gave: unknown error %s\n",
+				errorstring);
+>>>>>>> refs/remotes/origin/master
 			return EINVAL;
 		}
 	}
@@ -270,10 +290,15 @@ static void *xs_talkv(struct xenbus_transaction t,
 	}
 
 	if (msg.type != type) {
+<<<<<<< HEAD
 		if (printk_ratelimit())
 			printk(KERN_WARNING
 			       "XENBUS unexpected type [%d], expected [%d]\n",
 			       msg.type, type);
+=======
+		pr_warn_ratelimited("unexpected type [%d], expected [%d]\n",
+				    msg.type, type);
+>>>>>>> refs/remotes/origin/master
 		kfree(ret);
 		return ERR_PTR(-EINVAL);
 	}
@@ -531,6 +556,8 @@ int xenbus_printf(struct xenbus_transaction t,
 {
 	va_list ap;
 	int ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PRINTF_BUFFER_SIZE 4096
 	char *printf_buffer;
 
@@ -546,6 +573,25 @@ int xenbus_printf(struct xenbus_transaction t,
 	ret = xenbus_write(t, dir, node, printf_buffer);
 
 	kfree(printf_buffer);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	char *buf;
+
+	va_start(ap, fmt);
+	buf = kvasprintf(GFP_NOIO | __GFP_HIGH, fmt, ap);
+	va_end(ap);
+
+	if (!buf)
+		return -ENOMEM;
+
+	ret = xenbus_write(t, dir, node, buf);
+
+	kfree(buf);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -619,6 +665,48 @@ static struct xenbus_watch *find_watch(const char *token)
 
 	return NULL;
 }
+<<<<<<< HEAD
+=======
+/*
+ * Certain older XenBus toolstack cannot handle reading values that are
+ * not populated. Some Xen 3.4 installation are incapable of doing this
+ * so if we are running on anything older than 4 do not attempt to read
+ * control/platform-feature-xs_reset_watches.
+ */
+static bool xen_strict_xenbus_quirk(void)
+{
+#ifdef CONFIG_X86
+	uint32_t eax, ebx, ecx, edx, base;
+
+	base = xen_cpuid_base();
+	cpuid(base + 1, &eax, &ebx, &ecx, &edx);
+
+	if ((eax >> 16) < 4)
+		return true;
+#endif
+	return false;
+
+}
+static void xs_reset_watches(void)
+{
+	int err, supported = 0;
+
+	if (!xen_hvm_domain() || xen_initial_domain())
+		return;
+
+	if (xen_strict_xenbus_quirk())
+		return;
+
+	err = xenbus_scanf(XBT_NIL, "control",
+			"platform-feature-xs_reset_watches", "%d", &supported);
+	if (err != 1 || !supported)
+		return;
+
+	err = xs_error(xs_single(XBT_NIL, XS_RESET_WATCHES, "", NULL));
+	if (err && err != -EEXIST)
+		pr_warn("xs_reset_watches failed: %d\n", err);
+}
+>>>>>>> refs/remotes/origin/master
 
 /* Register callback to watch this node. */
 int register_xenbus_watch(struct xenbus_watch *watch)
@@ -638,8 +726,16 @@ int register_xenbus_watch(struct xenbus_watch *watch)
 
 	err = xs_watch(watch->node, token);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Ignore errors due to multiple registration. */
 	if ((err != 0) && (err != -EEXIST)) {
+=======
+	if (err) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (err) {
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&watches_lock);
 		list_del(&watch->list);
 		spin_unlock(&watches_lock);
@@ -668,9 +764,13 @@ void unregister_xenbus_watch(struct xenbus_watch *watch)
 
 	err = xs_unwatch(watch->node, token);
 	if (err)
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "XENBUS Failed to release watch %s: %i\n",
 		       watch->node, err);
+=======
+		pr_warn("Failed to release watch %s: %i\n", watch->node, err);
+>>>>>>> refs/remotes/origin/master
 
 	up_read(&xs_state.watch_mutex);
 
@@ -864,8 +964,12 @@ static int xenbus_thread(void *unused)
 	for (;;) {
 		err = process_msg();
 		if (err)
+<<<<<<< HEAD
 			printk(KERN_WARNING "XENBUS error %d while reading "
 			       "message\n", err);
+=======
+			pr_warn("error %d while reading message\n", err);
+>>>>>>> refs/remotes/origin/master
 		if (kthread_should_stop())
 			break;
 	}
@@ -903,5 +1007,11 @@ int xs_init(void)
 	if (IS_ERR(task))
 		return PTR_ERR(task);
 
+<<<<<<< HEAD
+=======
+	/* shutdown watches for kexec boot */
+	xs_reset_watches();
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

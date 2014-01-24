@@ -8,7 +8,13 @@
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation; either version 2 of the License, or
  *	(at your option) any later version.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _UVC_GADGET_H_
@@ -56,7 +62,17 @@ struct uvc_event
 #include <linux/usb.h>	/* For usb_endpoint_* */
 #include <linux/usb/gadget.h>
 #include <linux/videodev2.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/version.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/v4l2-fh.h>
+=======
+#include <linux/version.h>
+#include <media/v4l2-fh.h>
+#include <media/v4l2-device.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "uvc_queue.h"
 
@@ -98,8 +114,11 @@ extern unsigned int uvc_gadget_trace_param;
 #define DRIVER_VERSION				"0.1.0"
 #define DRIVER_VERSION_NUMBER			KERNEL_VERSION(0, 1, 0)
 
+<<<<<<< HEAD
 #define DMA_ADDR_INVALID			(~(dma_addr_t)0)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define UVC_NUM_REQUESTS			4
 #define UVC_MAX_REQUEST_SIZE			64
 #define UVC_MAX_EVENTS				4
@@ -147,15 +166,27 @@ enum uvc_state
 struct uvc_device
 {
 	struct video_device *vdev;
+<<<<<<< HEAD
+=======
+	struct v4l2_device v4l2_dev;
+>>>>>>> refs/remotes/origin/master
 	enum uvc_state state;
 	struct usb_function func;
 	struct uvc_video video;
 
 	/* Descriptors */
 	struct {
+<<<<<<< HEAD
 		const struct uvc_descriptor_header * const *control;
 		const struct uvc_descriptor_header * const *fs_streaming;
 		const struct uvc_descriptor_header * const *hs_streaming;
+=======
+		const struct uvc_descriptor_header * const *fs_control;
+		const struct uvc_descriptor_header * const *ss_control;
+		const struct uvc_descriptor_header * const *fs_streaming;
+		const struct uvc_descriptor_header * const *hs_streaming;
+		const struct uvc_descriptor_header * const *ss_streaming;
+>>>>>>> refs/remotes/origin/master
 	} desc;
 
 	unsigned int control_intf;
@@ -188,6 +219,10 @@ struct uvc_file_handle
  * Functions
  */
 
+<<<<<<< HEAD
+=======
+extern void uvc_function_setup_continue(struct uvc_device *uvc);
+>>>>>>> refs/remotes/origin/master
 extern void uvc_endpoint_stream(struct uvc_device *dev);
 
 extern void uvc_function_connect(struct uvc_device *uvc);

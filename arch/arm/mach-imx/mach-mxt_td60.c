@@ -21,17 +21,29 @@
 #include <linux/mtd/physmap.h>
 #include <linux/i2c.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 #include <asm/mach/map.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
 #include <mach/iomux-mx27.h>
 #include <linux/i2c/pca953x.h>
 
 #include "devices-imx27.h"
+=======
+#include <linux/platform_data/pca953x.h>
+
+#include "common.h"
+#include "devices-imx27.h"
+#include "hardware.h"
+#include "iomux-mx27.h"
+>>>>>>> refs/remotes/origin/master
 
 static const int mxt_td60_pins[] __initconst = {
 	/* UART0 */
@@ -213,13 +225,22 @@ static const struct imx_fb_platform_data mxt_td60_fb_data __initconst = {
 static int mxt_td60_sdhc1_init(struct device *dev, irq_handler_t detect_irq,
 				void *data)
 {
+<<<<<<< HEAD
 	return request_irq(IRQ_GPIOF(8), detect_irq, IRQF_TRIGGER_FALLING,
 				"sdhc1-card-detect", data);
+=======
+	return request_irq(gpio_to_irq(IMX_GPIO_NR(6, 8)), detect_irq,
+			   IRQF_TRIGGER_FALLING, "sdhc1-card-detect", data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mxt_td60_sdhc1_exit(struct device *dev, void *data)
 {
+<<<<<<< HEAD
 	free_irq(IRQ_GPIOF(8), data);
+=======
+	free_irq(gpio_to_irq(IMX_GPIO_NR(6, 8)), data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct imxmmc_platform_data sdhc1_pdata __initconst = {
@@ -233,6 +254,16 @@ static const struct imxuart_platform_data uart_pdata __initconst = {
 
 static void __init mxt_td60_board_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	imx27_soc_init();
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx27_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	mxc_gpio_setup_multiple_pins(mxt_td60_pins, ARRAY_SIZE(mxt_td60_pins),
 			"MXT_TD60");
 
@@ -259,16 +290,38 @@ static void __init mxt_td60_timer_init(void)
 	mx27_clocks_init(26000000);
 }
 
+<<<<<<< HEAD
 static struct sys_timer mxt_td60_timer = {
 	.init	= mxt_td60_timer_init,
 };
 
 MACHINE_START(MXT_TD60, "Maxtrack i-MXT TD60")
 	/* maintainer: Maxtrack Industrial */
+<<<<<<< HEAD
 	.boot_params = MX27_PHYS_OFFSET + 0x100,
 	.map_io = mx27_map_io,
 	.init_early = imx27_init_early,
 	.init_irq = mx27_init_irq,
 	.timer = &mxt_td60_timer,
 	.init_machine = mxt_td60_board_init,
+=======
+=======
+MACHINE_START(MXT_TD60, "Maxtrack i-MXT TD60")
+	/* maintainer: Maxtrack Industrial */
+>>>>>>> refs/remotes/origin/master
+	.atag_offset = 0x100,
+	.map_io = mx27_map_io,
+	.init_early = imx27_init_early,
+	.init_irq = mx27_init_irq,
+	.handle_irq = imx27_handle_irq,
+<<<<<<< HEAD
+	.timer = &mxt_td60_timer,
+	.init_machine = mxt_td60_board_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= mxt_td60_timer_init,
+	.init_machine = mxt_td60_board_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

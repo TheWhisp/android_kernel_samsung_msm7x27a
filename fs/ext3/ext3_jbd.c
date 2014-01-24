@@ -2,7 +2,15 @@
  * Interface between ext3 and JBD
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/ext3_jbd.h>
+=======
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/master
 
 int __ext3_journal_get_undo_access(const char *where, handle_t *handle,
 				struct buffer_head *bh)

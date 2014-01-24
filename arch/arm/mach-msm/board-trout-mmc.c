@@ -1,7 +1,15 @@
 /* linux/arch/arm/mach-msm/board-trout-mmc.c
 ** Author: Brian Swetland <swetland@google.com>
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -11,19 +19,48 @@
 #include <linux/err.h>
 #include <linux/debugfs.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include <mach/vreg.h>
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+
+#include <mach/vreg.h>
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <mach/mmc.h>
+=======
+#include <linux/platform_data/mmc-msm_sdcc.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "devices.h"
 
 #include "board-trout.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "proc_comm.h"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "proc_comm.h"
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define DEBUG_SDSLOT_VDD 1
 
 /* ---- COMMON ---- */

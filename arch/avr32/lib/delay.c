@@ -20,7 +20,11 @@
 #include <asm/processor.h>
 #include <asm/sysreg.h>
 
+<<<<<<< HEAD
 int __devinit read_current_timer(unsigned long *timer_value)
+=======
+int read_current_timer(unsigned long *timer_value)
+>>>>>>> refs/remotes/origin/master
 {
 	*timer_value = sysreg_read(COUNT);
 	return 0;

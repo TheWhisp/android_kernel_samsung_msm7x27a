@@ -5,7 +5,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,8 +68,13 @@ ACPI_MODULE_NAME("nswalk")
  * RETURN:      struct acpi_namespace_node - Pointer to the NEXT child or NULL if
  *                                    none is found.
  *
+<<<<<<< HEAD
  * DESCRIPTION: Return the next peer node within the namespace.  If Handle
  *              is valid, Scope is ignored.  Otherwise, the first node
+=======
+ * DESCRIPTION: Return the next peer node within the namespace. If Handle
+ *              is valid, Scope is ignored. Otherwise, the first node
+>>>>>>> refs/remotes/origin/master
  *              within Scope is returned.
  *
  ******************************************************************************/
@@ -76,19 +89,31 @@ struct acpi_namespace_node *acpi_ns_get_next_node(struct acpi_namespace_node
 
 		/* It's really the parent's _scope_ that we want */
 
+<<<<<<< HEAD
 		return parent_node->child;
+=======
+		return (parent_node->child);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Otherwise just return the next peer */
 
+<<<<<<< HEAD
 	return child_node->peer;
+=======
+	return (child_node->peer);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
  *
  * FUNCTION:    acpi_ns_get_next_node_typed
  *
+<<<<<<< HEAD
  * PARAMETERS:  Type                - Type of node to be searched for
+=======
+ * PARAMETERS:  type                - Type of node to be searched for
+>>>>>>> refs/remotes/origin/master
  *              parent_node         - Parent node whose children we are
  *                                    getting
  *              child_node          - Previous child that was found.
@@ -97,8 +122,13 @@ struct acpi_namespace_node *acpi_ns_get_next_node(struct acpi_namespace_node
  * RETURN:      struct acpi_namespace_node - Pointer to the NEXT child or NULL if
  *                                    none is found.
  *
+<<<<<<< HEAD
  * DESCRIPTION: Return the next peer node within the namespace.  If Handle
  *              is valid, Scope is ignored.  Otherwise, the first node
+=======
+ * DESCRIPTION: Return the next peer node within the namespace. If Handle
+ *              is valid, Scope is ignored. Otherwise, the first node
+>>>>>>> refs/remotes/origin/master
  *              within Scope is returned.
  *
  ******************************************************************************/
@@ -151,6 +181,7 @@ struct acpi_namespace_node *acpi_ns_get_next_node_typed(acpi_object_type type,
  *
  * FUNCTION:    acpi_ns_walk_namespace
  *
+<<<<<<< HEAD
  * PARAMETERS:  Type                - acpi_object_type to search for
  *              start_node          - Handle in namespace where search begins
  *              max_depth           - Depth to which search is to reach
@@ -161,6 +192,18 @@ struct acpi_namespace_node *acpi_ns_get_next_node_typed(acpi_object_type type,
  *              post_order_visit    - Called during tree post-order visit
  *                                    when an object of "Type" is found
  *              Context             - Passed to user function(s) above
+=======
+ * PARAMETERS:  type                - acpi_object_type to search for
+ *              start_node          - Handle in namespace where search begins
+ *              max_depth           - Depth to which search is to reach
+ *              flags               - Whether to unlock the NS before invoking
+ *                                    the callback routine
+ *              descending_callback - Called during tree descent
+ *                                    when an object of "Type" is found
+ *              ascending_callback  - Called during tree ascent
+ *                                    when an object of "Type" is found
+ *              context             - Passed to user function(s) above
+>>>>>>> refs/remotes/origin/master
  *              return_value        - from the user_function if terminated
  *                                    early. Otherwise, returns NULL.
  * RETURNS:     Status
@@ -185,8 +228,13 @@ acpi_ns_walk_namespace(acpi_object_type type,
 		       acpi_handle start_node,
 		       u32 max_depth,
 		       u32 flags,
+<<<<<<< HEAD
 		       acpi_walk_callback pre_order_visit,
 		       acpi_walk_callback post_order_visit,
+=======
+		       acpi_walk_callback descending_callback,
+		       acpi_walk_callback ascending_callback,
+>>>>>>> refs/remotes/origin/master
 		       void *context, void **return_value)
 {
 	acpi_status status;
@@ -255,6 +303,7 @@ acpi_ns_walk_namespace(acpi_object_type type,
 			}
 
 			/*
+<<<<<<< HEAD
 			 * Invoke the user function, either pre-order or post-order
 			 * or both.
 			 */
@@ -271,6 +320,24 @@ acpi_ns_walk_namespace(acpi_object_type type,
 					    post_order_visit(child_node, level,
 							     context,
 							     return_value);
+=======
+			 * Invoke the user function, either descending, ascending,
+			 * or both.
+			 */
+			if (!node_previously_visited) {
+				if (descending_callback) {
+					status =
+					    descending_callback(child_node,
+								level, context,
+								return_value);
+				}
+			} else {
+				if (ascending_callback) {
+					status =
+					    ascending_callback(child_node,
+							       level, context,
+							       return_value);
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 
@@ -305,7 +372,11 @@ acpi_ns_walk_namespace(acpi_object_type type,
 
 		/*
 		 * Depth first search: Attempt to go down another level in the
+<<<<<<< HEAD
 		 * namespace if we are allowed to.  Don't go any further if we have
+=======
+		 * namespace if we are allowed to. Don't go any further if we have
+>>>>>>> refs/remotes/origin/master
 		 * reached the caller specified maximum depth or if the user
 		 * function has specified that the maximum depth has been reached.
 		 */

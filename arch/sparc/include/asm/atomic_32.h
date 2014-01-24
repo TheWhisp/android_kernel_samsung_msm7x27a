@@ -13,18 +13,38 @@
 
 #include <linux/types.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __KERNEL__
 
 #include <asm-generic/atomic64.h>
 
 #include <asm/system.h>
+=======
+#include <asm/cmpxchg.h>
+#include <asm-generic/atomic64.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cmpxchg.h>
+#include <asm-generic/atomic64.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define ATOMIC_INIT(i)  { (i) }
 
 extern int __atomic_add_return(int, atomic_t *);
 extern int atomic_cmpxchg(atomic_t *, int, int);
 #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int atomic_add_unless(atomic_t *, int, int);
+=======
+extern int __atomic_add_unless(atomic_t *, int, int);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int __atomic_add_unless(atomic_t *, int, int);
+>>>>>>> refs/remotes/origin/master
 extern void atomic_set(atomic_t *, int);
 
 #define atomic_read(v)          (*(volatile int *)&(v)->counter)
@@ -54,6 +74,8 @@ extern void atomic_set(atomic_t *, int);
 #define atomic_dec_and_test(v) (atomic_dec_return(v) == 0)
 #define atomic_sub_and_test(i, v) (atomic_sub_return(i, v) == 0)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
 
 /* This is the old 24-bit implementation.  It's still used internally
@@ -155,13 +177,23 @@ static inline int __atomic24_sub(int i, atomic24_t *v)
 
 #define atomic24_add_negative(i, v) (__atomic24_add((i), (v)) < 0)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Atomic operations are already serializing */
 #define smp_mb__before_atomic_dec()	barrier()
 #define smp_mb__after_atomic_dec()	barrier()
 #define smp_mb__before_atomic_inc()	barrier()
 #define smp_mb__after_atomic_inc()	barrier()
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* !(__KERNEL__) */
 
 #include <asm-generic/atomic-long.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(__ARCH_SPARC_ATOMIC__) */

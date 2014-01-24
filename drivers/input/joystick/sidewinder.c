@@ -820,6 +820,7 @@ static struct gameport_driver sw_drv = {
 	.disconnect	= sw_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init sw_init(void)
 {
 	return gameport_register_driver(&sw_drv);
@@ -832,3 +833,6 @@ static void __exit sw_exit(void)
 
 module_init(sw_init);
 module_exit(sw_exit);
+=======
+module_gameport_driver(sw_drv);
+>>>>>>> refs/remotes/origin/master

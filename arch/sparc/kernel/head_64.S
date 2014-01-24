@@ -133,7 +133,17 @@ prom_sun4v_name:
 prom_niagara_prefix:
 	.asciz	"SUNW,UltraSPARC-T"
 prom_sparc_prefix:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.asciz	"SPARC-T"
+=======
+	.asciz	"SPARC-"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.asciz	"SPARC-"
+prom_sparc64x_prefix:
+	.asciz	"SPARC64-X"
+>>>>>>> refs/remotes/origin/master
 	.align	4
 prom_root_compatible:
 	.skip	64
@@ -396,7 +406,15 @@ sun4v_chip_type:
 	or	%g1, %lo(prom_cpu_compatible), %g1
 	sethi	%hi(prom_sparc_prefix), %g7
 	or	%g7, %lo(prom_sparc_prefix), %g7
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mov	7, %g3
+=======
+	mov	6, %g3
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mov	6, %g3
+>>>>>>> refs/remotes/origin/master
 90:	ldub	[%g7], %g2
 	ldub	[%g1], %g4
 	cmp	%g2, %g4
@@ -408,11 +426,42 @@ sun4v_chip_type:
 
 	sethi	%hi(prom_cpu_compatible), %g1
 	or	%g1, %lo(prom_cpu_compatible), %g1
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ldub	[%g1 + 7], %g2
 	cmp	%g2, '3'
 	be,pt	%xcc, 5f
 	 mov	SUN4V_CHIP_NIAGARA3, %g4
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ldub	[%g1 + 6], %g2
+	cmp	%g2, 'T'
+	be,pt	%xcc, 70f
+	 cmp	%g2, 'M'
+<<<<<<< HEAD
+	bne,pn	%xcc, 4f
+=======
+	bne,pn	%xcc, 49f
+>>>>>>> refs/remotes/origin/master
+	 nop
+
+70:	ldub	[%g1 + 7], %g2
+	cmp	%g2, '3'
+	be,pt	%xcc, 5f
+	 mov	SUN4V_CHIP_NIAGARA3, %g4
+	cmp	%g2, '4'
+	be,pt	%xcc, 5f
+	 mov	SUN4V_CHIP_NIAGARA4, %g4
+	cmp	%g2, '5'
+	be,pt	%xcc, 5f
+	 mov	SUN4V_CHIP_NIAGARA5, %g4
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	ba,pt	%xcc, 4f
+=======
+	ba,pt	%xcc, 49f
+>>>>>>> refs/remotes/origin/master
 	 nop
 
 91:	sethi	%hi(prom_cpu_compatible), %g1
@@ -424,8 +473,36 @@ sun4v_chip_type:
 	cmp	%g2, '2'
 	be,pt	%xcc, 5f
 	 mov	SUN4V_CHIP_NIAGARA2, %g4
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> refs/remotes/origin/cm-10.0
 4:
+=======
+	
+4:
+	/* Athena */
+	sethi	%hi(prom_cpu_compatible), %g1
+	or	%g1, %lo(prom_cpu_compatible), %g1
+	sethi	%hi(prom_sparc64x_prefix), %g7
+	or	%g7, %lo(prom_sparc64x_prefix), %g7
+	mov	9, %g3
+41:	ldub	[%g7], %g2
+	ldub	[%g1], %g4
+	cmp	%g2, %g4
+	bne,pn	%icc, 49f
+	add	%g7, 1, %g7
+	subcc	%g3, 1, %g3
+	bne,pt	%xcc, 41b
+	add	%g1, 1, %g1
+	mov	SUN4V_CHIP_SPARC64X, %g4
+	ba,pt	%xcc, 5f
+	nop
+
+49:
+>>>>>>> refs/remotes/origin/master
 	mov	SUN4V_CHIP_UNKNOWN, %g4
 5:	sethi	%hi(sun4v_chip_type), %g2
 	or	%g2, %lo(sun4v_chip_type), %g2
@@ -545,6 +622,24 @@ niagara_tlb_fixup:
 	cmp	%g1, SUN4V_CHIP_NIAGARA3
 	be,pt	%xcc, niagara2_patch
 	 nop
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cmp	%g1, SUN4V_CHIP_NIAGARA4
+	be,pt	%xcc, niagara2_patch
+	 nop
+	cmp	%g1, SUN4V_CHIP_NIAGARA5
+	be,pt	%xcc, niagara2_patch
+	 nop
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmp	%g1, SUN4V_CHIP_NIAGARA4
+	be,pt	%xcc, niagara4_patch
+	 nop
+	cmp	%g1, SUN4V_CHIP_NIAGARA5
+	be,pt	%xcc, niagara4_patch
+	 nop
+>>>>>>> refs/remotes/origin/master
 
 	call	generic_patch_copyops
 	 nop
@@ -554,6 +649,19 @@ niagara_tlb_fixup:
 	 nop
 
 	ba,a,pt	%xcc, 80f
+<<<<<<< HEAD
+=======
+niagara4_patch:
+	call	niagara4_patch_copyops
+	 nop
+	call	niagara4_patch_bzero
+	 nop
+	call	niagara4_patch_pageops
+	 nop
+
+	ba,a,pt	%xcc, 80f
+
+>>>>>>> refs/remotes/origin/master
 niagara2_patch:
 	call	niagara2_patch_copyops
 	 nop
@@ -887,7 +995,11 @@ swapper_4m_tsb:
 	 * error and will instead write junk into the relocation and
 	 * you'll have an unbootable kernel.
 	 */
+<<<<<<< HEAD
 #include "ttable.S"
+=======
+#include "ttable_64.S"
+>>>>>>> refs/remotes/origin/master
 
 ! 0x0000000000428000
 

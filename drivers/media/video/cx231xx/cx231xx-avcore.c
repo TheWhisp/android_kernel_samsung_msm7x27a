@@ -355,6 +355,11 @@ int cx231xx_afe_update_power_control(struct cx231xx *dev,
 	case CX231XX_BOARD_HAUPPAUGE_EXETER:
 	case CX231XX_BOARD_HAUPPAUGE_USBLIVE2:
 	case CX231XX_BOARD_PV_PLAYTV_USB_HYBRID:
+<<<<<<< HEAD
+=======
+	case CX231XX_BOARD_HAUPPAUGE_USB2_FM_PAL:
+	case CX231XX_BOARD_HAUPPAUGE_USB2_FM_NTSC:
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (avmode == POLARIS_AVMODE_ANALOGT_TV) {
 			while (afe_power_status != (FLD_PWRDN_TUNING_BIAS |
 						FLD_PWRDN_ENABLE_PLL)) {
@@ -1733,6 +1738,11 @@ int cx231xx_dif_set_standard(struct cx231xx *dev, u32 standard)
 		break;
 	case CX231XX_BOARD_CNXT_RDE_253S:
 	case CX231XX_BOARD_CNXT_RDU_253S:
+<<<<<<< HEAD
+=======
+	case CX231XX_BOARD_HAUPPAUGE_USB2_FM_PAL:
+	case CX231XX_BOARD_HAUPPAUGE_USB2_FM_NTSC:
+>>>>>>> refs/remotes/origin/cm-10.0
 		func_mode = 0x01;
 		break;
 	default:

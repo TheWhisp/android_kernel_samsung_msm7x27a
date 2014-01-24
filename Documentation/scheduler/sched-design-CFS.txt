@@ -66,9 +66,13 @@ rq->cfs.load value, which is the sum of the weights of the tasks queued on the
 runqueue.
 
 CFS maintains a time-ordered rbtree, where all runnable tasks are sorted by the
+<<<<<<< HEAD
 p->se.vruntime key (there is a subtraction using rq->cfs.min_vruntime to
 account for possible wraparounds).  CFS picks the "leftmost" task from this
 tree and sticks to it.
+=======
+p->se.vruntime key. CFS picks the "leftmost" task from this tree and sticks to it.
+>>>>>>> refs/remotes/origin/master
 As the system progresses forwards, the executed tasks are put into the tree
 more and more to the right --- slowly but surely giving a chance for every task
 to become the "leftmost task" and thus get on the CPU within a deterministic
@@ -130,7 +134,11 @@ CFS implements three scheduling policies:
     idle timer scheduler in order to avoid to get into priority
     inversion problems which would deadlock the machine.
 
+<<<<<<< HEAD
 SCHED_FIFO/_RR are implemented in sched_rt.c and are as specified by
+=======
+SCHED_FIFO/_RR are implemented in sched/rt.c and are as specified by
+>>>>>>> refs/remotes/origin/master
 POSIX.
 
 The command chrt from util-linux-ng 2.13.1.1 can set all of these except
@@ -145,9 +153,15 @@ Classes," an extensible hierarchy of scheduler modules.  These modules
 encapsulate scheduling policy details and are handled by the scheduler core
 without the core code assuming too much about them.
 
+<<<<<<< HEAD
 sched_fair.c implements the CFS scheduler described above.
 
 sched_rt.c implements SCHED_FIFO and SCHED_RR semantics, in a simpler way than
+=======
+sched/fair.c implements the CFS scheduler described above.
+
+sched/rt.c implements SCHED_FIFO and SCHED_RR semantics, in a simpler way than
+>>>>>>> refs/remotes/origin/master
 the previous vanilla scheduler did.  It uses 100 runqueues (for all 100 RT
 priority levels, instead of 140 in the previous scheduler) and it needs no
 expired array.

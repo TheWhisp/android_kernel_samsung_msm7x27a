@@ -40,6 +40,8 @@ int ceph_init_dentry(struct dentry *dentry)
 	if (dentry->d_fsdata)
 		return 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (dentry->d_parent == NULL ||   /* nfs fh_to_dentry */
 	    ceph_snap(dentry->d_parent->d_inode) == CEPH_NOSNAP)
 		d_set_d_op(dentry, &ceph_dentry_ops);
@@ -48,6 +50,10 @@ int ceph_init_dentry(struct dentry *dentry)
 	else
 		d_set_d_op(dentry, &ceph_snap_dentry_ops);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	di = kmem_cache_alloc(ceph_dentry_cachep, GFP_NOFS | __GFP_ZERO);
 	if (!di)
 		return -ENOMEM;          /* oh well */
@@ -58,16 +64,70 @@ int ceph_init_dentry(struct dentry *dentry)
 		kmem_cache_free(ceph_dentry_cachep, di);
 		goto out_unlock;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	di->dentry = dentry;
 	di->lease_session = NULL;
 	dentry->d_fsdata = di;
 	dentry->d_time = jiffies;
+=======
+
+	if (dentry->d_parent == NULL ||   /* nfs fh_to_dentry */
+	    ceph_snap(dentry->d_parent->d_inode) == CEPH_NOSNAP)
+=======
+
+	if (ceph_snap(dentry->d_parent->d_inode) == CEPH_NOSNAP)
+>>>>>>> refs/remotes/origin/master
+		d_set_d_op(dentry, &ceph_dentry_ops);
+	else if (ceph_snap(dentry->d_parent->d_inode) == CEPH_SNAPDIR)
+		d_set_d_op(dentry, &ceph_snapdir_dentry_ops);
+	else
+		d_set_d_op(dentry, &ceph_snap_dentry_ops);
+
+	di->dentry = dentry;
+	di->lease_session = NULL;
+	dentry->d_time = jiffies;
+	/* avoid reordering d_fsdata setup so that the check above is safe */
+	smp_mb();
+	dentry->d_fsdata = di;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ceph_dentry_lru_add(dentry);
 out_unlock:
 	spin_unlock(&dentry->d_lock);
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct inode *ceph_get_dentry_parent_inode(struct dentry *dentry)
+{
+	struct inode *inode = NULL;
+
+	if (!dentry)
+		return NULL;
+
+	spin_lock(&dentry->d_lock);
+<<<<<<< HEAD
+	if (dentry->d_parent) {
+=======
+	if (!IS_ROOT(dentry)) {
+>>>>>>> refs/remotes/origin/master
+		inode = dentry->d_parent->d_inode;
+		ihold(inode);
+	}
+	spin_unlock(&dentry->d_lock);
+	return inode;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -90,7 +150,12 @@ static unsigned fpos_off(loff_t p)
  * falling back to a "normal" sync readdir if any dentries in the dir
  * are dropped.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * I_COMPLETE tells indicates we have all dentries in the dir.  It is
+=======
+ * D_COMPLETE tells indicates we have all dentries in the dir.  It is
+>>>>>>> refs/remotes/origin/cm-10.0
  * defined IFF we hold CEPH_CAP_FILE_SHARED (which will be revoked by
  * the MDS if/when the directory is modified).
  */
@@ -99,6 +164,16 @@ static int __dcache_readdir(struct file *filp,
 {
 	struct ceph_file_info *fi = filp->private_data;
 	struct dentry *parent = filp->f_dentry;
+=======
+ * Complete dir indicates that we have all dentries in the dir.  It is
+ * defined IFF we hold CEPH_CAP_FILE_SHARED (which will be revoked by
+ * the MDS if/when the directory is modified).
+ */
+static int __dcache_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct ceph_file_info *fi = file->private_data;
+	struct dentry *parent = file->f_dentry;
+>>>>>>> refs/remotes/origin/master
 	struct inode *dir = parent->d_inode;
 	struct list_head *p;
 	struct dentry *dentry, *last;
@@ -109,14 +184,23 @@ static int __dcache_readdir(struct file *filp,
 	last = fi->dentry;
 	fi->dentry = NULL;
 
+<<<<<<< HEAD
 	dout("__dcache_readdir %p at %llu (last %p)\n", dir, filp->f_pos,
+=======
+	dout("__dcache_readdir %p at %llu (last %p)\n", dir, ctx->pos,
+>>>>>>> refs/remotes/origin/master
 	     last);
 
 	spin_lock(&parent->d_lock);
 
 	/* start at beginning? */
+<<<<<<< HEAD
 	if (filp->f_pos == 2 || last == NULL ||
 	    filp->f_pos < ceph_dentry(last)->offset) {
+=======
+	if (ctx->pos == 2 || last == NULL ||
+	    ctx->pos < ceph_dentry(last)->offset) {
+>>>>>>> refs/remotes/origin/master
 		if (list_empty(&parent->d_subdirs))
 			goto out_unlock;
 		p = parent->d_subdirs.prev;
@@ -133,18 +217,34 @@ more:
 		     d_unhashed(dentry) ? "!hashed" : "hashed",
 		     parent->d_subdirs.prev, parent->d_subdirs.next);
 		if (p == &parent->d_subdirs) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			fi->at_end = 1;
+=======
+			fi->flags |= CEPH_F_ATEND;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			fi->flags |= CEPH_F_ATEND;
+>>>>>>> refs/remotes/origin/master
 			goto out_unlock;
 		}
 		spin_lock_nested(&dentry->d_lock, DENTRY_D_LOCK_NESTED);
 		if (!d_unhashed(dentry) && dentry->d_inode &&
 		    ceph_snap(dentry->d_inode) != CEPH_SNAPDIR &&
 		    ceph_ino(dentry->d_inode) != CEPH_INO_CEPH &&
+<<<<<<< HEAD
 		    filp->f_pos <= di->offset)
 			break;
 		dout(" skipping %p %.*s at %llu (%llu)%s%s\n", dentry,
 		     dentry->d_name.len, dentry->d_name.name, di->offset,
 		     filp->f_pos, d_unhashed(dentry) ? " unhashed" : "",
+=======
+		    ctx->pos <= di->offset)
+			break;
+		dout(" skipping %p %.*s at %llu (%llu)%s%s\n", dentry,
+		     dentry->d_name.len, dentry->d_name.name, di->offset,
+		     ctx->pos, d_unhashed(dentry) ? " unhashed" : "",
+>>>>>>> refs/remotes/origin/master
 		     !dentry->d_inode ? " null" : "");
 		spin_unlock(&dentry->d_lock);
 		p = p->prev;
@@ -156,6 +256,7 @@ more:
 	spin_unlock(&dentry->d_lock);
 	spin_unlock(&parent->d_lock);
 
+<<<<<<< HEAD
 	dout(" %llu (%llu) dentry %p %.*s %p\n", di->offset, filp->f_pos,
 	     dentry, dentry->d_name.len, dentry->d_name.name, dentry->d_inode);
 	filp->f_pos = di->offset;
@@ -181,8 +282,40 @@ more:
 	filp->f_pos++;
 
 	/* make sure a dentry wasn't dropped while we didn't have parent lock */
+<<<<<<< HEAD
 	if (!ceph_i_test(dir, CEPH_I_COMPLETE)) {
 		dout(" lost I_COMPLETE on %p; falling back to mds\n", dir);
+=======
+	if (!ceph_dir_test_complete(dir)) {
+		dout(" lost D_COMPLETE on %p; falling back to mds\n", dir);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dout(" %llu (%llu) dentry %p %.*s %p\n", di->offset, ctx->pos,
+	     dentry, dentry->d_name.len, dentry->d_name.name, dentry->d_inode);
+	ctx->pos = di->offset;
+	if (!dir_emit(ctx, dentry->d_name.name,
+		      dentry->d_name.len,
+		      ceph_translate_ino(dentry->d_sb, dentry->d_inode->i_ino),
+		      dentry->d_inode->i_mode >> 12)) {
+		if (last) {
+			/* remember our position */
+			fi->dentry = last;
+			fi->next_offset = di->offset;
+		}
+		dput(dentry);
+		return 0;
+	}
+
+	if (last)
+		dput(last);
+	last = dentry;
+
+	ctx->pos++;
+
+	/* make sure a dentry wasn't dropped while we didn't have parent lock */
+	if (!ceph_dir_is_complete(dir)) {
+		dout(" lost dir complete on %p; falling back to mds\n", dir);
+>>>>>>> refs/remotes/origin/master
 		err = -EAGAIN;
 		goto out;
 	}
@@ -218,6 +351,7 @@ static int note_last_dentry(struct ceph_file_info *fi, const char *name,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ceph_readdir(struct file *filp, void *dirent, filldir_t filldir)
 {
 	struct ceph_file_info *fi = filp->private_data;
@@ -227,14 +361,30 @@ static int ceph_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	struct ceph_mds_client *mdsc = fsc->mdsc;
 	unsigned frag = fpos_frag(filp->f_pos);
 	int off = fpos_off(filp->f_pos);
+=======
+static int ceph_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct ceph_file_info *fi = file->private_data;
+	struct inode *inode = file_inode(file);
+	struct ceph_inode_info *ci = ceph_inode(inode);
+	struct ceph_fs_client *fsc = ceph_inode_to_client(inode);
+	struct ceph_mds_client *mdsc = fsc->mdsc;
+	unsigned frag = fpos_frag(ctx->pos);
+	int off = fpos_off(ctx->pos);
+>>>>>>> refs/remotes/origin/master
 	int err;
 	u32 ftype;
 	struct ceph_mds_reply_info_parsed *rinfo;
 	const int max_entries = fsc->mount_options->max_readdir;
 	const int max_bytes = fsc->mount_options->max_readdir_bytes;
 
+<<<<<<< HEAD
 	dout("readdir %p filp %p frag %u off %u\n", inode, filp, frag, off);
+<<<<<<< HEAD
 	if (fi->at_end)
+=======
+	if (fi->flags & CEPH_F_ATEND)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	/* always start with . and .. */
@@ -252,17 +402,51 @@ static int ceph_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		off = 1;
 	}
 	if (filp->f_pos == 1) {
+<<<<<<< HEAD
 		ino_t ino = filp->f_dentry->d_parent->d_inode->i_ino;
+=======
+		ino_t ino = parent_ino(filp->f_dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
 		dout("readdir off 1 -> '..'\n");
 		if (filldir(dirent, "..", 2, ceph_make_fpos(0, 1),
 			    ceph_translate_ino(inode->i_sb, ino),
 			    inode->i_mode >> 12) < 0)
 			return 0;
 		filp->f_pos = 2;
+=======
+	dout("readdir %p file %p frag %u off %u\n", inode, file, frag, off);
+	if (fi->flags & CEPH_F_ATEND)
+		return 0;
+
+	/* always start with . and .. */
+	if (ctx->pos == 0) {
+		/* note dir version at start of readdir so we can tell
+		 * if any dentries get dropped */
+		fi->dir_release_count = atomic_read(&ci->i_release_count);
+
+		dout("readdir off 0 -> '.'\n");
+		if (!dir_emit(ctx, ".", 1, 
+			    ceph_translate_ino(inode->i_sb, inode->i_ino),
+			    inode->i_mode >> 12))
+			return 0;
+		ctx->pos = 1;
+		off = 1;
+	}
+	if (ctx->pos == 1) {
+		ino_t ino = parent_ino(file->f_dentry);
+		dout("readdir off 1 -> '..'\n");
+		if (!dir_emit(ctx, "..", 2,
+			    ceph_translate_ino(inode->i_sb, ino),
+			    inode->i_mode >> 12))
+			return 0;
+		ctx->pos = 2;
+>>>>>>> refs/remotes/origin/master
 		off = 2;
 	}
 
 	/* can we use the dcache? */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 	if ((filp->f_pos == 2 || fi->dentry) &&
 	    !ceph_test_mount_opt(fsc, NOASYNCREADDIR) &&
@@ -270,11 +454,38 @@ static int ceph_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	    (ci->i_ceph_flags & CEPH_I_COMPLETE) &&
 	    __ceph_caps_issued_mask(ci, CEPH_CAP_FILE_SHARED, 1)) {
 		spin_unlock(&inode->i_lock);
+=======
+	spin_lock(&ci->i_ceph_lock);
+	if ((filp->f_pos == 2 || fi->dentry) &&
+	    !ceph_test_mount_opt(fsc, NOASYNCREADDIR) &&
+	    ceph_snap(inode) != CEPH_SNAPDIR &&
+	    ceph_dir_test_complete(inode) &&
+	    __ceph_caps_issued_mask(ci, CEPH_CAP_FILE_SHARED, 1)) {
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = __dcache_readdir(filp, dirent, filldir);
 		if (err != -EAGAIN)
 			return err;
 	} else {
+<<<<<<< HEAD
 		spin_unlock(&inode->i_lock);
+=======
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+	if ((ctx->pos == 2 || fi->dentry) &&
+	    !ceph_test_mount_opt(fsc, NOASYNCREADDIR) &&
+	    ceph_snap(inode) != CEPH_SNAPDIR &&
+	    __ceph_dir_is_complete(ci) &&
+	    __ceph_caps_issued_mask(ci, CEPH_CAP_FILE_SHARED, 1)) {
+		spin_unlock(&ci->i_ceph_lock);
+		err = __dcache_readdir(file, ctx);
+		if (err != -EAGAIN)
+			return err;
+	} else {
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (fi->dentry) {
 		err = note_last_dentry(fi, fi->dentry->d_name.name,
@@ -310,7 +521,11 @@ more:
 			return PTR_ERR(req);
 		req->r_inode = inode;
 		ihold(inode);
+<<<<<<< HEAD
 		req->r_dentry = dget(filp->f_dentry);
+=======
+		req->r_dentry = dget(file->f_dentry);
+>>>>>>> refs/remotes/origin/master
 		/* hints to request -> mds selection code */
 		req->r_direct_mode = USE_AUTH_MDS;
 		req->r_direct_hash = ceph_frag_value(frag);
@@ -333,12 +548,36 @@ more:
 
 		if (!req->r_did_prepopulate) {
 			dout("readdir !did_prepopulate");
+<<<<<<< HEAD
+<<<<<<< HEAD
 			fi->dir_release_count--;    /* preclude I_COMPLETE */
+=======
+			fi->dir_release_count--;    /* preclude D_COMPLETE */
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* note next offset and last dentry name */
 		fi->offset = fi->next_offset;
 		fi->last_readdir = req;
+=======
+			/* preclude from marking dir complete */
+			fi->dir_release_count--;
+		}
+
+		/* note next offset and last dentry name */
+		rinfo = &req->r_reply_info;
+		if (le32_to_cpu(rinfo->dir_dir->frag) != frag) {
+			frag = le32_to_cpu(rinfo->dir_dir->frag);
+			if (ceph_frag_is_leftmost(frag))
+				fi->next_offset = 2;
+			else
+				fi->next_offset = 0;
+			off = fi->next_offset;
+		}
+		fi->offset = fi->next_offset;
+		fi->last_readdir = req;
+		fi->frag = frag;
+>>>>>>> refs/remotes/origin/master
 
 		if (req->r_reply_info.dir_end) {
 			kfree(fi->last_name);
@@ -348,7 +587,10 @@ more:
 			else
 				fi->next_offset = 0;
 		} else {
+<<<<<<< HEAD
 			rinfo = &req->r_reply_info;
+=======
+>>>>>>> refs/remotes/origin/master
 			err = note_last_dentry(fi,
 				       rinfo->dir_dname[rinfo->dir_nr-1],
 				       rinfo->dir_dname_len[rinfo->dir_nr-1]);
@@ -361,15 +603,25 @@ more:
 	rinfo = &fi->last_readdir->r_reply_info;
 	dout("readdir frag %x num %d off %d chunkoff %d\n", frag,
 	     rinfo->dir_nr, off, fi->offset);
+<<<<<<< HEAD
 	while (off >= fi->offset && off - fi->offset < rinfo->dir_nr) {
 		u64 pos = ceph_make_fpos(frag, off);
+=======
+
+	ctx->pos = ceph_make_fpos(frag, off);
+	while (off >= fi->offset && off - fi->offset < rinfo->dir_nr) {
+>>>>>>> refs/remotes/origin/master
 		struct ceph_mds_reply_inode *in =
 			rinfo->dir_in[off - fi->offset].in;
 		struct ceph_vino vino;
 		ino_t ino;
 
 		dout("readdir off %d (%d/%d) -> %lld '%.*s' %p\n",
+<<<<<<< HEAD
 		     off, off - fi->offset, rinfo->dir_nr, pos,
+=======
+		     off, off - fi->offset, rinfo->dir_nr, ctx->pos,
+>>>>>>> refs/remotes/origin/master
 		     rinfo->dir_dname_len[off - fi->offset],
 		     rinfo->dir_dname[off - fi->offset], in);
 		BUG_ON(!in);
@@ -377,16 +629,27 @@ more:
 		vino.ino = le64_to_cpu(in->ino);
 		vino.snap = le64_to_cpu(in->snapid);
 		ino = ceph_vino_to_ino(vino);
+<<<<<<< HEAD
 		if (filldir(dirent,
 			    rinfo->dir_dname[off - fi->offset],
 			    rinfo->dir_dname_len[off - fi->offset],
 			    pos,
 			    ceph_translate_ino(inode->i_sb, ino), ftype) < 0) {
+=======
+		if (!dir_emit(ctx,
+			    rinfo->dir_dname[off - fi->offset],
+			    rinfo->dir_dname_len[off - fi->offset],
+			    ceph_translate_ino(inode->i_sb, ino), ftype)) {
+>>>>>>> refs/remotes/origin/master
 			dout("filldir stopping us...\n");
 			return 0;
 		}
 		off++;
+<<<<<<< HEAD
 		filp->f_pos = pos + 1;
+=======
+		ctx->pos++;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (fi->last_name) {
@@ -399,17 +662,31 @@ more:
 	if (!ceph_frag_is_rightmost(frag)) {
 		frag = ceph_frag_next(frag);
 		off = 0;
+<<<<<<< HEAD
 		filp->f_pos = ceph_make_fpos(frag, off);
 		dout("readdir next frag is %x\n", frag);
 		goto more;
 	}
+<<<<<<< HEAD
 	fi->at_end = 1;
+=======
+	fi->flags |= CEPH_F_ATEND;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ctx->pos = ceph_make_fpos(frag, off);
+		dout("readdir next frag is %x\n", frag);
+		goto more;
+	}
+	fi->flags |= CEPH_F_ATEND;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * if dir_release_count still matches the dir, no dentries
 	 * were released during the whole readdir, and we should have
 	 * the complete dir contents in our cache.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 	if (ci->i_release_count == fi->dir_release_count) {
 		dout(" marking %p complete\n", inode);
@@ -417,8 +694,27 @@ more:
 		ci->i_max_offset = filp->f_pos;
 	}
 	spin_unlock(&inode->i_lock);
+=======
+	spin_lock(&ci->i_ceph_lock);
+	if (ci->i_release_count == fi->dir_release_count) {
+		ceph_dir_set_complete(inode);
+		ci->i_max_offset = filp->f_pos;
+	}
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dout("readdir %p filp %p done.\n", inode, filp);
+=======
+	spin_lock(&ci->i_ceph_lock);
+	if (atomic_read(&ci->i_release_count) == fi->dir_release_count) {
+		dout(" marking %p complete\n", inode);
+		__ceph_dir_set_complete(ci, fi->dir_release_count);
+		ci->i_max_offset = ctx->pos;
+	}
+	spin_unlock(&ci->i_ceph_lock);
+
+	dout("readdir %p file %p done.\n", inode, file);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -435,10 +731,21 @@ static void reset_readdir(struct ceph_file_info *fi)
 		dput(fi->dentry);
 		fi->dentry = NULL;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fi->at_end = 0;
+=======
+	fi->flags &= ~CEPH_F_ATEND;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static loff_t ceph_dir_llseek(struct file *file, loff_t offset, int origin)
+=======
+	fi->flags &= ~CEPH_F_ATEND;
+}
+
+static loff_t ceph_dir_llseek(struct file *file, loff_t offset, int whence)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_file_info *fi = file->private_data;
 	struct inode *inode = file->f_mapping->host;
@@ -446,19 +753,51 @@ static loff_t ceph_dir_llseek(struct file *file, loff_t offset, int origin)
 	loff_t retval;
 
 	mutex_lock(&inode->i_mutex);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	retval = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (origin) {
+=======
+	retval = -EINVAL;
+	switch (whence) {
+>>>>>>> refs/remotes/origin/master
 	case SEEK_END:
 		offset += inode->i_size + 2;   /* FIXME */
 		break;
 	case SEEK_CUR:
 		offset += file->f_pos;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
 	retval = -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case SEEK_SET:
+		break;
+	default:
+		goto out;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (offset >= 0 && offset <= inode->i_sb->s_maxbytes) {
 		if (offset != file->f_pos) {
 			file->f_pos = offset;
 			file->f_version = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			fi->at_end = 0;
+=======
+			fi->flags &= ~CEPH_F_ATEND;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			fi->flags &= ~CEPH_F_ATEND;
+>>>>>>> refs/remotes/origin/master
 		}
 		retval = offset;
 
@@ -477,11 +816,21 @@ static loff_t ceph_dir_llseek(struct file *file, loff_t offset, int origin)
 		if (offset > old_offset)
 			fi->dir_release_count--;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&inode->i_mutex);
 	return retval;
 }
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Process result of a lookup/open request.
  *
  * Mainly, make sure we return the final req->r_dentry (if it already
@@ -497,6 +846,20 @@ struct dentry *ceph_finish_lookup(struct ceph_mds_request *req,
 {
 	struct ceph_fs_client *fsc = ceph_sb_to_client(dentry->d_sb);
 	struct inode *parent = dentry->d_parent->d_inode;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Handle lookups for the hidden .snap directory.
+ */
+int ceph_handle_snapdir(struct ceph_mds_request *req,
+			struct dentry *dentry, int err)
+{
+	struct ceph_fs_client *fsc = ceph_sb_to_client(dentry->d_sb);
+	struct inode *parent = dentry->d_parent->d_inode; /* we hold i_mutex */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* .snap dir? */
 	if (err == -ENOENT &&
@@ -510,7 +873,33 @@ struct dentry *ceph_finish_lookup(struct ceph_mds_request *req,
 		d_add(dentry, inode);
 		err = 0;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	return err;
+}
+
+/*
+ * Figure out final result of a lookup/open request.
+ *
+ * Mainly, make sure we return the final req->r_dentry (if it already
+ * existed) in place of the original VFS-provided dentry when they
+ * differ.
+ *
+ * Gracefully handle the case where the MDS replies with -ENOENT and
+ * no trace (which it may do, at its discretion, e.g., if it doesn't
+ * care to issue a lease on the negative dentry).
+ */
+struct dentry *ceph_finish_lookup(struct ceph_mds_request *req,
+				  struct dentry *dentry, int err)
+{
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err == -ENOENT) {
 		/* no trace? */
 		err = 0;
@@ -545,7 +934,11 @@ static int is_root_ceph_dentry(struct inode *inode, struct dentry *dentry)
  * the MDS so that it gets our 'caps wanted' value in a single op.
  */
 static struct dentry *ceph_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				  struct nameidata *nd)
+=======
+				  unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_fs_client *fsc = ceph_sb_to_client(dir->i_sb);
 	struct ceph_mds_client *mdsc = fsc->mdsc;
@@ -563,35 +956,69 @@ static struct dentry *ceph_lookup(struct inode *dir, struct dentry *dentry,
 	if (err < 0)
 		return ERR_PTR(err);
 
+<<<<<<< HEAD
 	/* open (but not create!) intent? */
 	if (nd &&
 	    (nd->flags & LOOKUP_OPEN) &&
+<<<<<<< HEAD
 	    (nd->flags & LOOKUP_CONTINUE) == 0 && /* only open last component */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	    !(nd->intent.open.flags & O_CREAT)) {
 		int mode = nd->intent.open.create_mode & ~current->fs->umask;
 		return ceph_lookup_open(dir, dentry, nd, mode, 1);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* can we conclude ENOENT locally? */
 	if (dentry->d_inode == NULL) {
 		struct ceph_inode_info *ci = ceph_inode(dir);
 		struct ceph_dentry_info *di = ceph_dentry(dentry);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&dir->i_lock);
+=======
+		spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		dout(" dir %p flags are %d\n", dir, ci->i_ceph_flags);
 		if (strncmp(dentry->d_name.name,
 			    fsc->mount_options->snapdir_name,
 			    dentry->d_name.len) &&
 		    !is_root_ceph_dentry(dir, dentry) &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    (ci->i_ceph_flags & CEPH_I_COMPLETE) &&
 		    (__ceph_caps_issued_mask(ci, CEPH_CAP_FILE_SHARED, 1))) {
 			spin_unlock(&dir->i_lock);
+=======
+		    ceph_dir_test_complete(dir) &&
+		    (__ceph_caps_issued_mask(ci, CEPH_CAP_FILE_SHARED, 1))) {
+			spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    __ceph_dir_is_complete(ci) &&
+		    (__ceph_caps_issued_mask(ci, CEPH_CAP_FILE_SHARED, 1))) {
+			spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 			dout(" dir %p complete, -ENOENT\n", dir);
 			d_add(dentry, NULL);
 			di->lease_shared_gen = ci->i_shared_gen;
 			return NULL;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock(&dir->i_lock);
+=======
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	op = ceph_snap(dir) == CEPH_SNAPDIR ?
@@ -605,6 +1032,14 @@ static struct dentry *ceph_lookup(struct inode *dir, struct dentry *dentry,
 	req->r_args.getattr.mask = cpu_to_le32(CEPH_STAT_CAP_INODE);
 	req->r_locked_dir = dir;
 	err = ceph_mdsc_do_request(mdsc, NULL, req);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	err = ceph_handle_snapdir(req, dentry, err);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ceph_handle_snapdir(req, dentry, err);
+>>>>>>> refs/remotes/origin/master
 	dentry = ceph_finish_lookup(req, dentry, err);
 	ceph_mdsc_put_request(req);  /* will dput(dentry) */
 	dout("lookup result=%p\n", dentry);
@@ -617,7 +1052,11 @@ static struct dentry *ceph_lookup(struct inode *dir, struct dentry *dentry,
  */
 int ceph_handle_notrace_create(struct inode *dir, struct dentry *dentry)
 {
+<<<<<<< HEAD
 	struct dentry *result = ceph_lookup(dir, dentry, NULL);
+=======
+	struct dentry *result = ceph_lookup(dir, dentry, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (result && !IS_ERR(result)) {
 		/*
@@ -635,7 +1074,15 @@ int ceph_handle_notrace_create(struct inode *dir, struct dentry *dentry)
 }
 
 static int ceph_mknod(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		      int mode, dev_t rdev)
+=======
+		      umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_fs_client *fsc = ceph_sb_to_client(dir->i_sb);
 	struct ceph_mds_client *mdsc = fsc->mdsc;
@@ -645,7 +1092,15 @@ static int ceph_mknod(struct inode *dir, struct dentry *dentry,
 	if (ceph_snap(dir) != CEPH_NOSNAP)
 		return -EROFS;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dout("mknod in dir %p dentry %p mode 0%o rdev %d\n",
+=======
+	dout("mknod in dir %p dentry %p mode 0%ho rdev %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dout("mknod in dir %p dentry %p mode 0%ho rdev %d\n",
+>>>>>>> refs/remotes/origin/master
 	     dir, dentry, mode, rdev);
 	req = ceph_mdsc_create_request(mdsc, CEPH_MDS_OP_MKNOD, USE_AUTH_MDS);
 	if (IS_ERR(req)) {
@@ -668,7 +1123,12 @@ static int ceph_mknod(struct inode *dir, struct dentry *dentry,
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ceph_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int ceph_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		       struct nameidata *nd)
 {
 	dout("create in dir %p dentry %p name '%.*s'\n",
@@ -688,6 +1148,12 @@ static int ceph_create(struct inode *dir, struct dentry *dentry, int mode,
 
 	/* fall back to mknod */
 	return ceph_mknod(dir, dentry, (mode & ~S_IFMT) | S_IFREG, 0);
+=======
+static int ceph_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+		       bool excl)
+{
+	return ceph_mknod(dir, dentry, mode, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ceph_symlink(struct inode *dir, struct dentry *dentry,
@@ -722,7 +1188,15 @@ static int ceph_symlink(struct inode *dir, struct dentry *dentry,
 	return err;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ceph_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int ceph_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ceph_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_fs_client *fsc = ceph_sb_to_client(dir->i_sb);
 	struct ceph_mds_client *mdsc = fsc->mdsc;
@@ -736,7 +1210,15 @@ static int ceph_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 		dout("mksnap dir %p snap '%.*s' dn %p\n", dir,
 		     dentry->d_name.len, dentry->d_name.name, dentry);
 	} else if (ceph_snap(dir) == CEPH_NOSNAP) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dout("mkdir dir %p dn %p mode 0%o\n", dir, dentry, mode);
+=======
+		dout("mkdir dir %p dn %p mode 0%ho\n", dir, dentry, mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dout("mkdir dir %p dn %p mode 0%ho\n", dir, dentry, mode);
+>>>>>>> refs/remotes/origin/master
 		op = CEPH_MDS_OP_MKDIR;
 	} else {
 		goto out;
@@ -784,9 +1266,22 @@ static int ceph_link(struct dentry *old_dentry, struct inode *dir,
 	req->r_dentry = dget(dentry);
 	req->r_num_caps = 2;
 	req->r_old_dentry = dget(old_dentry); /* or inode? hrm. */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	req->r_old_dentry_dir = ceph_get_dentry_parent_inode(old_dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
 	req->r_locked_dir = dir;
 	req->r_dentry_drop = CEPH_CAP_FILE_SHARED;
 	req->r_dentry_unless = CEPH_CAP_FILE_EXCL;
+=======
+	req->r_old_dentry_dir = ceph_get_dentry_parent_inode(old_dentry);
+	req->r_locked_dir = dir;
+	req->r_dentry_drop = CEPH_CAP_FILE_SHARED;
+	req->r_dentry_unless = CEPH_CAP_FILE_EXCL;
+	/* release LINK_SHARED on source inode (mds will lock it) */
+	req->r_old_inode_drop = CEPH_CAP_LINK_SHARED;
+>>>>>>> refs/remotes/origin/master
 	err = ceph_mdsc_do_request(mdsc, dir, req);
 	if (err) {
 		d_drop(dentry);
@@ -809,12 +1304,28 @@ static int drop_caps_for_unlink(struct inode *inode)
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	int drop = CEPH_CAP_LINK_SHARED | CEPH_CAP_LINK_EXCL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	if (inode->i_nlink == 1) {
 		drop |= ~(__ceph_caps_wanted(ci) | CEPH_CAP_PIN);
 		ci->i_ceph_flags |= CEPH_I_NODELAY;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	return drop;
 }
 
@@ -838,7 +1349,15 @@ static int ceph_unlink(struct inode *dir, struct dentry *dentry)
 	} else if (ceph_snap(dir) == CEPH_NOSNAP) {
 		dout("unlink/rmdir dir %p dn %p inode %p\n",
 		     dir, dentry, inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		op = ((dentry->d_inode->i_mode & S_IFMT) == S_IFDIR) ?
+=======
+		op = S_ISDIR(dentry->d_inode->i_mode) ?
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		op = S_ISDIR(dentry->d_inode->i_mode) ?
+>>>>>>> refs/remotes/origin/master
 			CEPH_MDS_OP_RMDIR : CEPH_MDS_OP_UNLINK;
 	} else
 		goto out;
@@ -882,6 +1401,14 @@ static int ceph_rename(struct inode *old_dir, struct dentry *old_dentry,
 	req->r_dentry = dget(new_dentry);
 	req->r_num_caps = 2;
 	req->r_old_dentry = dget(old_dentry);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	req->r_old_dentry_dir = ceph_get_dentry_parent_inode(old_dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	req->r_old_dentry_dir = ceph_get_dentry_parent_inode(old_dentry);
+>>>>>>> refs/remotes/origin/master
 	req->r_locked_dir = new_dir;
 	req->r_old_dentry_drop = CEPH_CAP_FILE_SHARED;
 	req->r_old_dentry_unless = CEPH_CAP_FILE_EXCL;
@@ -900,7 +1427,15 @@ static int ceph_rename(struct inode *old_dir, struct dentry *old_dentry,
 		 */
 
 		/* d_move screws up d_subdirs order */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ceph_i_clear(new_dir, CEPH_I_COMPLETE);
+=======
+		ceph_dir_clear_complete(new_dir);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ceph_dir_clear_complete(new_dir);
+>>>>>>> refs/remotes/origin/master
 
 		d_move(old_dentry, new_dentry);
 
@@ -940,12 +1475,27 @@ static int dentry_lease_is_valid(struct dentry *dentry)
 
 	spin_lock(&dentry->d_lock);
 	di = ceph_dentry(dentry);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (di && di->lease_session) {
 		s = di->lease_session;
 		spin_lock(&s->s_cap_lock);
 		gen = s->s_cap_gen;
 		ttl = s->s_cap_ttl;
 		spin_unlock(&s->s_cap_lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (di->lease_session) {
+		s = di->lease_session;
+		spin_lock(&s->s_gen_ttl_lock);
+		gen = s->s_cap_gen;
+		ttl = s->s_cap_ttl;
+		spin_unlock(&s->s_gen_ttl_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (di->lease_gen == gen &&
 		    time_before(jiffies, dentry->d_time) &&
@@ -982,10 +1532,23 @@ static int dir_lease_is_valid(struct inode *dir, struct dentry *dentry)
 	struct ceph_dentry_info *di = ceph_dentry(dentry);
 	int valid = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&dir->i_lock);
 	if (ci->i_shared_gen == di->lease_shared_gen)
 		valid = __ceph_caps_issued_mask(ci, CEPH_CAP_FILE_SHARED, 1);
 	spin_unlock(&dir->i_lock);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	spin_lock(&ci->i_ceph_lock);
+	if (ci->i_shared_gen == di->lease_shared_gen)
+		valid = __ceph_caps_issued_mask(ci, CEPH_CAP_FILE_SHARED, 1);
+	spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dout("dir_lease_is_valid dir %p v%u dentry %p v%u = %d\n",
 	     dir, (unsigned)ci->i_shared_gen, dentry,
 	     (unsigned)di->lease_shared_gen, valid);
@@ -995,23 +1558,53 @@ static int dir_lease_is_valid(struct inode *dir, struct dentry *dentry)
 /*
  * Check if cached dentry can be trusted.
  */
+<<<<<<< HEAD
 static int ceph_d_revalidate(struct dentry *dentry, struct nameidata *nd)
 {
+<<<<<<< HEAD
+=======
+	int valid = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct inode *dir;
 
 	if (nd && nd->flags & LOOKUP_RCU)
 		return -ECHILD;
 
+<<<<<<< HEAD
 	dir = dentry->d_parent->d_inode;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ceph_d_revalidate(struct dentry *dentry, unsigned int flags)
+{
+	int valid = 0;
+	struct inode *dir;
+
+	if (flags & LOOKUP_RCU)
+		return -ECHILD;
+
+>>>>>>> refs/remotes/origin/master
 	dout("d_revalidate %p '%.*s' inode %p offset %lld\n", dentry,
 	     dentry->d_name.len, dentry->d_name.name, dentry->d_inode,
 	     ceph_dentry(dentry)->offset);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	dir = ceph_get_dentry_parent_inode(dentry);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dir = ceph_get_dentry_parent_inode(dentry);
+
+>>>>>>> refs/remotes/origin/master
 	/* always trust cached snapped dentries, snapdir dentry */
 	if (ceph_snap(dir) != CEPH_NOSNAP) {
 		dout("d_revalidate %p '%.*s' inode %p is SNAPPED\n", dentry,
 		     dentry->d_name.len, dentry->d_name.name, dentry->d_inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_touch;
 	}
 	if (dentry->d_inode && ceph_snap(dentry->d_inode) == CEPH_SNAPDIR)
@@ -1027,6 +1620,29 @@ static int ceph_d_revalidate(struct dentry *dentry, struct nameidata *nd)
 out_touch:
 	ceph_dentry_lru_touch(dentry);
 	return 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		valid = 1;
+	} else if (dentry->d_inode &&
+		   ceph_snap(dentry->d_inode) == CEPH_SNAPDIR) {
+		valid = 1;
+	} else if (dentry_lease_is_valid(dentry) ||
+		   dir_lease_is_valid(dir, dentry)) {
+		valid = 1;
+	}
+
+	dout("d_revalidate %p %s\n", dentry, valid ? "valid" : "invalid");
+	if (valid)
+		ceph_dentry_lru_touch(dentry);
+	else
+		d_drop(dentry);
+	iput(dir);
+	return valid;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1037,6 +1653,8 @@ static void ceph_d_release(struct dentry *dentry)
 	struct ceph_dentry_info *di = ceph_dentry(dentry);
 
 	dout("d_release %p\n", dentry);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (di) {
 		ceph_dentry_lru_del(dentry);
 		if (di->lease_session)
@@ -1044,10 +1662,26 @@ static void ceph_d_release(struct dentry *dentry)
 		kmem_cache_free(ceph_dentry_cachep, di);
 		dentry->d_fsdata = NULL;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ceph_dentry_lru_del(dentry);
+	if (di->lease_session)
+		ceph_put_mds_session(di->lease_session);
+	kmem_cache_free(ceph_dentry_cachep, di);
+	dentry->d_fsdata = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int ceph_snapdir_d_revalidate(struct dentry *dentry,
 					  struct nameidata *nd)
+=======
+}
+
+static int ceph_snapdir_d_revalidate(struct dentry *dentry,
+					  unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Eventually, we'll want to revalidate snapped metadata
@@ -1056,7 +1690,93 @@ static int ceph_snapdir_d_revalidate(struct dentry *dentry,
 	return 1;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+/*
+ * Set/clear/test dir complete flag on the dir's dentry.
+ */
+void ceph_dir_set_complete(struct inode *inode)
+{
+	struct dentry *dentry = d_find_any_alias(inode);
+	
+	if (dentry && ceph_dentry(dentry) &&
+	    ceph_test_mount_opt(ceph_sb_to_client(dentry->d_sb), DCACHE)) {
+		dout(" marking %p (%p) complete\n", inode, dentry);
+		set_bit(CEPH_D_COMPLETE, &ceph_dentry(dentry)->flags);
+	}
+	dput(dentry);
+}
+
+void ceph_dir_clear_complete(struct inode *inode)
+{
+	struct dentry *dentry = d_find_any_alias(inode);
+
+	if (dentry && ceph_dentry(dentry)) {
+		dout(" marking %p (%p) complete\n", inode, dentry);
+		set_bit(CEPH_D_COMPLETE, &ceph_dentry(dentry)->flags);
+	}
+	dput(dentry);
+}
+
+bool ceph_dir_test_complete(struct inode *inode)
+{
+	struct dentry *dentry = d_find_any_alias(inode);
+
+	if (dentry && ceph_dentry(dentry)) {
+		dout(" marking %p (%p) NOT complete\n", inode, dentry);
+		clear_bit(CEPH_D_COMPLETE, &ceph_dentry(dentry)->flags);
+	}
+	dput(dentry);
+	return false;
+}
+
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * When the VFS prunes a dentry from the cache, we need to clear the
+ * complete flag on the parent directory.
+ *
+ * Called under dentry->d_lock.
+ */
+static void ceph_d_prune(struct dentry *dentry)
+{
+<<<<<<< HEAD
+	struct ceph_dentry_info *di;
+
+	dout("ceph_d_prune %p\n", dentry);
+
+	/* do we have a valid parent? */
+	if (!dentry->d_parent || IS_ROOT(dentry))
+		return;
+
+	/* if we are not hashed, we don't affect D_COMPLETE */
+=======
+	dout("ceph_d_prune %p\n", dentry);
+
+	/* do we have a valid parent? */
+	if (IS_ROOT(dentry))
+		return;
+
+	/* if we are not hashed, we don't affect dir's completeness */
+>>>>>>> refs/remotes/origin/master
+	if (d_unhashed(dentry))
+		return;
+
+	/*
+	 * we hold d_lock, so d_parent is stable, and d_fsdata is never
+	 * cleared until d_release
+	 */
+<<<<<<< HEAD
+	di = ceph_dentry(dentry->d_parent);
+	clear_bit(CEPH_D_COMPLETE, &di->flags);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ceph_dir_clear_complete(dentry->d_parent->d_inode);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * read() on a dir.  This weird interface hack only works if mounted
@@ -1066,7 +1786,11 @@ static ssize_t ceph_read_dir(struct file *file, char __user *buf, size_t size,
 			     loff_t *ppos)
 {
 	struct ceph_file_info *cf = file->private_data;
+<<<<<<< HEAD
 	struct inode *inode = file->f_dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	int left;
 	const int bufsize = 1024;
@@ -1113,9 +1837,21 @@ static ssize_t ceph_read_dir(struct file *file, char __user *buf, size_t size,
  * an fsync() on a dir will wait for any uncommitted directory
  * operations to commit.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ceph_dir_fsync(struct file *file, int datasync)
+=======
+static int ceph_dir_fsync(struct file *file, loff_t start, loff_t end,
+			  int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+static int ceph_dir_fsync(struct file *file, loff_t start, loff_t end,
+			  int datasync)
+{
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	struct list_head *head = &ci->i_unsafe_dirops;
 	struct ceph_mds_request *req;
@@ -1123,6 +1859,20 @@ static int ceph_dir_fsync(struct file *file, int datasync)
 	int ret = 0;
 
 	dout("dir_fsync %p\n", inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (ret)
+		return ret;
+	mutex_lock(&inode->i_mutex);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&ci->i_unsafe_lock);
 	if (list_empty(head))
 		goto out;
@@ -1134,6 +1884,14 @@ static int ceph_dir_fsync(struct file *file, int datasync)
 	do {
 		ceph_mdsc_get_request(req);
 		spin_unlock(&ci->i_unsafe_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		dout("dir_fsync %p wait on tid %llu (until %llu)\n",
 		     inode, req->r_tid, last_tid);
 		if (req->r_timeout) {
@@ -1146,9 +1904,21 @@ static int ceph_dir_fsync(struct file *file, int datasync)
 		} else {
 			wait_for_completion(&req->r_safe_completion);
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&ci->i_unsafe_lock);
 		ceph_mdsc_put_request(req);
 
+=======
+		ceph_mdsc_put_request(req);
+
+		spin_lock(&ci->i_unsafe_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ceph_mdsc_put_request(req);
+
+		spin_lock(&ci->i_unsafe_lock);
+>>>>>>> refs/remotes/origin/master
 		if (ret || list_empty(head))
 			break;
 		req = list_entry(head->next,
@@ -1156,6 +1926,16 @@ static int ceph_dir_fsync(struct file *file, int datasync)
 	} while (req->r_tid < last_tid);
 out:
 	spin_unlock(&ci->i_unsafe_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	mutex_unlock(&inode->i_mutex);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&inode->i_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1171,6 +1951,8 @@ void ceph_dentry_lru_add(struct dentry *dn)
 
 	dout("dentry_lru_add %p %p '%.*s'\n", di, dn,
 	     dn->d_name.len, dn->d_name.name);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (di) {
 		mdsc = ceph_sb_to_client(dn->d_sb)->mdsc;
 		spin_lock(&mdsc->dentry_lru_lock);
@@ -1178,6 +1960,18 @@ void ceph_dentry_lru_add(struct dentry *dn)
 		mdsc->num_dentry++;
 		spin_unlock(&mdsc->dentry_lru_lock);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mdsc = ceph_sb_to_client(dn->d_sb)->mdsc;
+	spin_lock(&mdsc->dentry_lru_lock);
+	list_add_tail(&di->lru, &mdsc->dentry_lru);
+	mdsc->num_dentry++;
+	spin_unlock(&mdsc->dentry_lru_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void ceph_dentry_lru_touch(struct dentry *dn)
@@ -1187,12 +1981,25 @@ void ceph_dentry_lru_touch(struct dentry *dn)
 
 	dout("dentry_lru_touch %p %p '%.*s' (offset %lld)\n", di, dn,
 	     dn->d_name.len, dn->d_name.name, di->offset);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (di) {
 		mdsc = ceph_sb_to_client(dn->d_sb)->mdsc;
 		spin_lock(&mdsc->dentry_lru_lock);
 		list_move_tail(&di->lru, &mdsc->dentry_lru);
 		spin_unlock(&mdsc->dentry_lru_lock);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mdsc = ceph_sb_to_client(dn->d_sb)->mdsc;
+	spin_lock(&mdsc->dentry_lru_lock);
+	list_move_tail(&di->lru, &mdsc->dentry_lru);
+	spin_unlock(&mdsc->dentry_lru_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void ceph_dentry_lru_del(struct dentry *dn)
@@ -1202,6 +2009,8 @@ void ceph_dentry_lru_del(struct dentry *dn)
 
 	dout("dentry_lru_del %p %p '%.*s'\n", di, dn,
 	     dn->d_name.len, dn->d_name.name);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (di) {
 		mdsc = ceph_sb_to_client(dn->d_sb)->mdsc;
 		spin_lock(&mdsc->dentry_lru_lock);
@@ -1209,15 +2018,37 @@ void ceph_dentry_lru_del(struct dentry *dn)
 		mdsc->num_dentry--;
 		spin_unlock(&mdsc->dentry_lru_lock);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mdsc = ceph_sb_to_client(dn->d_sb)->mdsc;
+	spin_lock(&mdsc->dentry_lru_lock);
+	list_del_init(&di->lru);
+	mdsc->num_dentry--;
+	spin_unlock(&mdsc->dentry_lru_lock);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Return name hash for a given dentry.  This is dependent on
  * the parent directory's hash function.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned ceph_dentry_hash(struct dentry *dn)
 {
 	struct inode *dir = dn->d_parent->d_inode;
+=======
+unsigned ceph_dentry_hash(struct inode *dir, struct dentry *dn)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned ceph_dentry_hash(struct inode *dir, struct dentry *dn)
+{
+>>>>>>> refs/remotes/origin/master
 	struct ceph_inode_info *dci = ceph_inode(dir);
 
 	switch (dci->i_dir_layout.dl_dir_hash) {
@@ -1233,7 +2064,11 @@ unsigned ceph_dentry_hash(struct dentry *dn)
 
 const struct file_operations ceph_dir_fops = {
 	.read = ceph_read_dir,
+<<<<<<< HEAD
 	.readdir = ceph_readdir,
+=======
+	.iterate = ceph_readdir,
+>>>>>>> refs/remotes/origin/master
 	.llseek = ceph_dir_llseek,
 	.open = ceph_open,
 	.release = ceph_release,
@@ -1258,11 +2093,23 @@ const struct inode_operations ceph_dir_iops = {
 	.rmdir = ceph_unlink,
 	.rename = ceph_rename,
 	.create = ceph_create,
+<<<<<<< HEAD
+=======
+	.atomic_open = ceph_atomic_open,
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct dentry_operations ceph_dentry_ops = {
 	.d_revalidate = ceph_d_revalidate,
 	.d_release = ceph_d_release,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.d_prune = ceph_d_prune,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.d_prune = ceph_d_prune,
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct dentry_operations ceph_snapdir_dentry_ops = {
@@ -1272,4 +2119,12 @@ const struct dentry_operations ceph_snapdir_dentry_ops = {
 
 const struct dentry_operations ceph_snap_dentry_ops = {
 	.d_release = ceph_d_release,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.d_prune = ceph_d_prune,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.d_prune = ceph_d_prune,
+>>>>>>> refs/remotes/origin/master
 };

@@ -18,6 +18,14 @@
 #include <linux/kernel.h>
 #include <linux/debugfs.h>
 #include <linux/uwb.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "uwb-internal.h"
 
@@ -43,10 +51,18 @@ int uwb_pal_register(struct uwb_pal *pal)
 	int ret;
 
 	if (pal->device) {
+<<<<<<< HEAD
+=======
+		/* create a link to the uwb_rc in the PAL device's directory. */
+>>>>>>> refs/remotes/origin/master
 		ret = sysfs_create_link(&pal->device->kobj,
 					&rc->uwb_dev.dev.kobj, "uwb_rc");
 		if (ret < 0)
 			return ret;
+<<<<<<< HEAD
+=======
+		/* create a link to the PAL in the UWB device's directory. */
+>>>>>>> refs/remotes/origin/master
 		ret = sysfs_create_link(&rc->uwb_dev.dev.kobj,
 					&pal->device->kobj, pal->name);
 		if (ret < 0) {
@@ -65,8 +81,45 @@ int uwb_pal_register(struct uwb_pal *pal)
 }
 EXPORT_SYMBOL_GPL(uwb_pal_register);
 
+<<<<<<< HEAD
 /**
  * uwb_pal_register - unregister a UWB PAL
+=======
+static int find_rc(struct device *dev, const void *data)
+{
+	const struct uwb_rc *target_rc = data;
+	struct uwb_rc *rc = dev_get_drvdata(dev);
+
+	if (rc == NULL) {
+		WARN_ON(1);
+		return 0;
+	}
+	if (rc == target_rc) {
+		if (rc->ready == 0)
+			return 0;
+		else
+			return 1;
+	}
+	return 0;
+}
+
+/**
+ * Given a radio controller descriptor see if it is registered.
+ *
+ * @returns false if the rc does not exist or is quiescing; true otherwise.
+ */
+static bool uwb_rc_class_device_exists(struct uwb_rc *target_rc)
+{
+	struct device *dev;
+
+	dev = class_find_device(&uwb_rc_class, NULL, target_rc,	find_rc);
+
+	return (dev != NULL);
+}
+
+/**
+ * uwb_pal_unregister - unregister a UWB PAL
+>>>>>>> refs/remotes/origin/master
  * @pal: the PAL
  */
 void uwb_pal_unregister(struct uwb_pal *pal)
@@ -82,7 +135,15 @@ void uwb_pal_unregister(struct uwb_pal *pal)
 	debugfs_remove(pal->debugfs_dir);
 
 	if (pal->device) {
+<<<<<<< HEAD
 		sysfs_remove_link(&rc->uwb_dev.dev.kobj, pal->name);
+=======
+		/* remove link to the PAL in the UWB device's directory. */
+		if (uwb_rc_class_device_exists(rc))
+			sysfs_remove_link(&rc->uwb_dev.dev.kobj, pal->name);
+
+		/* remove link to uwb_rc in the PAL device's directory. */
+>>>>>>> refs/remotes/origin/master
 		sysfs_remove_link(&pal->device->kobj, "uwb_rc");
 	}
 }

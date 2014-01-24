@@ -30,10 +30,15 @@
 #ifndef __RF_H__
 #define __RF_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 #include "device.h"
 
 /*---------------------  Export Definitions -------------------------*/
+=======
+#include "device.h"
+
+>>>>>>> refs/remotes/origin/master
 //
 // Baseband RF pair definition in eeprom (Bits 6..0)
 //
@@ -55,6 +60,7 @@
 #define RF_EMU              0x80
 #define RF_MASK             0x7F
 
+<<<<<<< HEAD
 
 
 /*---------------------  Export Classes  ----------------------------*/
@@ -80,5 +86,14 @@ BOOL s_bVT3226D0_11bLoCurrentAdjust(
       BYTE        byChannel,
       BOOL        b11bMode
     );
+=======
+extern const u8 RFaby11aChannelIndex[200];
+
+int IFRFbWriteEmbedded(struct vnt_private *, u32 dwData);
+int RFbSetPower(struct vnt_private *, u32 uRATE, u32 uCH);
+int RFbRawSetPower(struct vnt_private *, u8 byPwr, u32 uRATE);
+void RFvRSSITodBm(struct vnt_private *, u8 byCurrRSSI, long *pldBm);
+void RFbRFTableDownload(struct vnt_private *pDevice);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __RF_H__ */

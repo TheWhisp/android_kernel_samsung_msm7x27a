@@ -179,12 +179,27 @@ static struct kobj_attribute cpm_idle_attr =
 
 static void cpm_idle_config_sysfs(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sys_device *sys_dev;
 	unsigned long ret;
 
 	sys_dev = get_cpu_sysdev(0);
 
 	ret = sysfs_create_file(&sys_dev->kobj,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct device *dev;
+	unsigned long ret;
+
+	dev = get_cpu_device(0);
+
+	ret = sysfs_create_file(&dev->kobj,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				&cpm_idle_attr.attr);
 	if (ret)
 		printk(KERN_WARNING

@@ -8,21 +8,44 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/string.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/err.h>
+#include <linux/string.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/errno.h>
 #include <linux/delay.h>
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/usb/musb.h>
 
 #include <plat/gpmc.h>
+=======
+#include <linux/export.h>
+#include <linux/platform_data/usb-omap.h>
+
+#include <linux/usb/musb.h>
+
+#include "gpmc.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "mux.h"
 
 static u8		async_cs, sync_cs;
 static unsigned		refclk_psec;
 
+<<<<<<< HEAD
 
 /* t2_ps, when quantized to fclk units, must happen no earlier than
  * the clock after after t1_NS.
@@ -103,10 +126,56 @@ static int tusb_set_async_mode(unsigned sysclk_ps, unsigned fclk_ps)
 
 	tmp = t.cs_wr_off * 1000 + 7000 /* t_acsn_rdy_z */;
 	t.wr_cycle = next_clk(t.cs_wr_off, tmp, fclk_ps);
+=======
+static struct gpmc_settings tusb_async = {
+	.wait_on_read	= true,
+	.wait_on_write	= true,
+	.device_width	= GPMC_DEVWIDTH_16BIT,
+	.mux_add_data	= GPMC_MUX_AD,
+};
+
+static struct gpmc_settings tusb_sync = {
+	.burst_read	= true,
+	.burst_write	= true,
+	.sync_read	= true,
+	.sync_write	= true,
+	.wait_on_read	= true,
+	.wait_on_write	= true,
+	.burst_len	= GPMC_BURST_16,
+	.device_width	= GPMC_DEVWIDTH_16BIT,
+	.mux_add_data	= GPMC_MUX_AD,
+};
+
+/* NOTE:  timings are from tusb 6010 datasheet Rev 1.8, 12-Sept 2006 */
+
+static int tusb_set_async_mode(unsigned sysclk_ps)
+{
+	struct gpmc_device_timings dev_t;
+	struct gpmc_timings	t;
+	unsigned		t_acsnh_advnh = sysclk_ps + 3000;
+
+	memset(&dev_t, 0, sizeof(dev_t));
+
+	dev_t.t_ceasu = 8 * 1000;
+	dev_t.t_avdasu = t_acsnh_advnh - 7000;
+	dev_t.t_ce_avd = 1000;
+	dev_t.t_avdp_r = t_acsnh_advnh;
+	dev_t.t_oeasu = t_acsnh_advnh + 1000;
+	dev_t.t_oe = 300;
+	dev_t.t_cez_r = 7000;
+	dev_t.t_cez_w = dev_t.t_cez_r;
+	dev_t.t_avdp_w = t_acsnh_advnh;
+	dev_t.t_weasu = t_acsnh_advnh + 1000;
+	dev_t.t_wpl = 300;
+	dev_t.cyc_aavdh_we = 1;
+
+	gpmc_calc_timings(&t, &tusb_async, &dev_t);
+>>>>>>> refs/remotes/origin/master
 
 	return gpmc_cs_set_timings(async_cs, &t);
 }
 
+<<<<<<< HEAD
 static int tusb_set_sync_mode(unsigned sysclk_ps, unsigned fclk_ps)
 {
 	struct gpmc_timings	t;
@@ -171,33 +240,77 @@ static int tusb_set_sync_mode(unsigned sysclk_ps, unsigned fclk_ps)
 
 	tmp = t.cs_wr_off * 1000 + 7000 /* t_scsn_rdy_z */;
 	t.wr_cycle = next_clk(t.cs_wr_off, tmp, fclk_ps);
+=======
+static int tusb_set_sync_mode(unsigned sysclk_ps)
+{
+	struct gpmc_device_timings dev_t;
+	struct gpmc_timings	t;
+	unsigned		t_scsnh_advnh = sysclk_ps + 3000;
+
+	memset(&dev_t, 0, sizeof(dev_t));
+
+	dev_t.clk = 11100;
+	dev_t.t_bacc = 1000;
+	dev_t.t_ces = 1000;
+	dev_t.t_ceasu = 8 * 1000;
+	dev_t.t_avdasu = t_scsnh_advnh - 7000;
+	dev_t.t_ce_avd = 1000;
+	dev_t.t_avdp_r = t_scsnh_advnh;
+	dev_t.cyc_aavdh_oe = 3;
+	dev_t.cyc_oe = 5;
+	dev_t.t_ce_rdyz = 7000;
+	dev_t.t_avdp_w = t_scsnh_advnh;
+	dev_t.cyc_aavdh_we = 3;
+	dev_t.cyc_wpl = 6;
+	dev_t.t_ce_rdyz = 7000;
+
+	gpmc_calc_timings(&t, &tusb_sync, &dev_t);
+>>>>>>> refs/remotes/origin/master
 
 	return gpmc_cs_set_timings(sync_cs, &t);
 }
 
+<<<<<<< HEAD
 extern unsigned long gpmc_get_fclk_period(void);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* tusb driver calls this when it changes the chip's clocking */
 int tusb6010_platform_retime(unsigned is_refclk)
 {
 	static const char	error[] =
 		KERN_ERR "tusb6010 %s retime error %d\n";
 
+<<<<<<< HEAD
 	unsigned	fclk_ps = gpmc_get_fclk_period();
 	unsigned	sysclk_ps;
 	int		status;
 
 	if (!refclk_psec || fclk_ps == 0)
+=======
+	unsigned	sysclk_ps;
+	int		status;
+
+	if (!refclk_psec)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	sysclk_ps = is_refclk ? refclk_psec : TUSB6010_OSCCLK_60;
 
+<<<<<<< HEAD
 	status = tusb_set_async_mode(sysclk_ps, fclk_ps);
+=======
+	status = tusb_set_async_mode(sysclk_ps);
+>>>>>>> refs/remotes/origin/master
 	if (status < 0) {
 		printk(error, "async", status);
 		goto done;
 	}
+<<<<<<< HEAD
 	status = tusb_set_sync_mode(sysclk_ps, fclk_ps);
+=======
+	status = tusb_set_sync_mode(sysclk_ps);
+>>>>>>> refs/remotes/origin/master
 	if (status < 0)
 		printk(error, "sync", status);
 done:
@@ -254,6 +367,7 @@ tusb6010_setup_interface(struct musb_hdrc_platform_data *data,
 		return status;
 	}
 	tusb_resources[0].end = tusb_resources[0].start + 0x9ff;
+<<<<<<< HEAD
 	async_cs = async;
 	gpmc_cs_write_reg(async, GPMC_CS_CONFIG1,
 			  GPMC_CONFIG1_PAGE_LEN(2)
@@ -266,6 +380,14 @@ tusb6010_setup_interface(struct musb_hdrc_platform_data *data,
 			| GPMC_CONFIG1_DEVICETYPE_NOR
 			| GPMC_CONFIG1_MUXADDDATA);
 
+=======
+	tusb_async.wait_pin = waitpin;
+	async_cs = async;
+
+	status = gpmc_cs_program_settings(async_cs, &tusb_async);
+	if (status < 0)
+		return status;
+>>>>>>> refs/remotes/origin/master
 
 	/* SYNC region, primarily for DMA */
 	status = gpmc_cs_request(sync, SZ_16M, (unsigned long *)
@@ -275,6 +397,7 @@ tusb6010_setup_interface(struct musb_hdrc_platform_data *data,
 		return status;
 	}
 	tusb_resources[1].end = tusb_resources[1].start + 0x9ff;
+<<<<<<< HEAD
 	sync_cs = sync;
 	gpmc_cs_write_reg(sync, GPMC_CS_CONFIG1,
 			  GPMC_CONFIG1_READMULTIPLE_SUPP
@@ -291,6 +414,14 @@ tusb6010_setup_interface(struct musb_hdrc_platform_data *data,
 			| GPMC_CONFIG1_MUXADDDATA
 			/* fclk divider gets set later */
 			);
+=======
+	tusb_sync.wait_pin = waitpin;
+	sync_cs = sync;
+
+	status = gpmc_cs_program_settings(sync_cs, &tusb_sync);
+	if (status < 0)
+		return status;
+>>>>>>> refs/remotes/origin/master
 
 	/* IRQ */
 	status = gpio_request_one(irq, GPIOF_IN, "TUSB6010 irq");
@@ -298,7 +429,11 @@ tusb6010_setup_interface(struct musb_hdrc_platform_data *data,
 		printk(error, 3, status);
 		return status;
 	}
+<<<<<<< HEAD
 	tusb_resources[2].start = irq + IH_GPIO_BASE;
+=======
+	tusb_resources[2].start = gpio_to_irq(irq);
+>>>>>>> refs/remotes/origin/master
 
 	/* set up memory timings ... can speed them up later */
 	if (!ps_refclk) {

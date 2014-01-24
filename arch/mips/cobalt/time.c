@@ -17,10 +17,23 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/init.h>
 
 #include <asm/gt64120.h>
 #include <asm/i8253.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/i8253.h>
+#include <linux/init.h>
+
+#include <asm/gt64120.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 
 #define GT641XX_BASE_CLOCK	50000000	/* 50MHz */

@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: exnames - interpreter/scanner name load/execute
@@ -6,7 +9,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,8 +64,12 @@ ACPI_MODULE_NAME("exnames")
 /* Local prototypes */
 static char *acpi_ex_allocate_name_string(u32 prefix_count, u32 num_name_segs);
 
+<<<<<<< HEAD
 static acpi_status
 acpi_ex_name_segment(u8 ** in_aml_address, char *name_string);
+=======
+static acpi_status acpi_ex_name_segment(u8 **in_aml_address, char *name_string);
+>>>>>>> refs/remotes/origin/master
 
 /*******************************************************************************
  *
@@ -64,7 +79,11 @@ acpi_ex_name_segment(u8 ** in_aml_address, char *name_string);
  *                                    (-1)==root,  0==none
  *              num_name_segs       - count of 4-character name segments
  *
+<<<<<<< HEAD
  * RETURN:      A pointer to the allocated string segment.  This segment must
+=======
+ * RETURN:      A pointer to the allocated string segment. This segment must
+>>>>>>> refs/remotes/origin/master
  *              be deleted by the caller.
  *
  * DESCRIPTION: Allocate a buffer for a name string. Ensure allocated name
@@ -178,7 +197,12 @@ static acpi_status acpi_ex_name_segment(u8 ** in_aml_address, char *name_string)
 
 	ACPI_DEBUG_PRINT((ACPI_DB_LOAD, "Bytes from stream:\n"));
 
+<<<<<<< HEAD
 	for (index = 0; (index < ACPI_NAME_SIZE)
+=======
+	for (index = 0;
+	     (index < ACPI_NAME_SIZE)
+>>>>>>> refs/remotes/origin/master
 	     && (acpi_ut_valid_acpi_char(*aml_address, 0)); index++) {
 		char_buf[index] = *aml_address++;
 		ACPI_DEBUG_PRINT((ACPI_DB_LOAD, "%c\n", char_buf[index]));

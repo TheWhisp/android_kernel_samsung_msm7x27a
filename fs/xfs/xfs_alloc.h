@@ -23,8 +23,19 @@ struct xfs_btree_cur;
 struct xfs_mount;
 struct xfs_perag;
 struct xfs_trans;
+<<<<<<< HEAD
 struct xfs_busy_extent;
 
+<<<<<<< HEAD
+=======
+extern struct workqueue_struct *xfs_alloc_wq;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+extern struct workqueue_struct *xfs_alloc_wq;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Freespace allocation types.  Argument to xfs_alloc_[v]extent.
  */
@@ -119,6 +130,15 @@ typedef struct xfs_alloc_arg {
 	char		isfl;		/* set if is freelist blocks - !acctg */
 	char		userdata;	/* set if this is user data */
 	xfs_fsblock_t	firstblock;	/* io first block allocated */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct completion *done;
+	struct work_struct work;
+	int		result;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } xfs_alloc_arg_t;
 
 /*
@@ -134,6 +154,7 @@ xfs_extlen_t
 xfs_alloc_longest_free_extent(struct xfs_mount *mp,
 		struct xfs_perag *pag);
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 void
 xfs_alloc_busy_insert(struct xfs_trans *tp, xfs_agnumber_t agno,
@@ -161,6 +182,8 @@ static inline void xfs_alloc_busy_sort(struct list_head *list)
 
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Compute and fill in value of m_ag_maxlevels.
  */
@@ -243,6 +266,22 @@ xfs_alloc_lookup_le(
 	xfs_extlen_t		len,	/* length of extent */
 	int			*stat);	/* success/failure */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int				/* error */
+xfs_alloc_lookup_ge(
+	struct xfs_btree_cur	*cur,	/* btree cursor */
+	xfs_agblock_t		bno,	/* starting block of extent */
+	xfs_extlen_t		len,	/* length of extent */
+	int			*stat);	/* success/failure */
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int					/* error */
 xfs_alloc_get_rec(
 	struct xfs_btree_cur	*cur,	/* btree cursor */

@@ -13,8 +13,16 @@
 #include <linux/vmalloc.h>
 #include <linux/string.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 #include <linux/reiserfs_fs_sb.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/buffer_head.h>
 
 int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
@@ -35,6 +43,10 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 	unsigned long int block_count, free_blocks;
 	int i;
 	int copy_size;
+<<<<<<< HEAD
+=======
+	int depth;
+>>>>>>> refs/remotes/origin/master
 
 	sb = SB_DISK_SUPER_BLOCK(s);
 
@@ -44,7 +56,13 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 	}
 
 	/* check the device size */
+<<<<<<< HEAD
 	bh = sb_bread(s, block_count_new - 1);
+=======
+	depth = reiserfs_write_unlock_nested(s);
+	bh = sb_bread(s, block_count_new - 1);
+	reiserfs_write_lock_nested(s, depth);
+>>>>>>> refs/remotes/origin/master
 	if (!bh) {
 		printk("reiserfs_resize: can\'t read last block\n");
 		return -EINVAL;
@@ -111,15 +129,29 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 		/* allocate additional bitmap blocks, reallocate array of bitmap
 		 * block pointers */
 		bitmap =
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    vmalloc(sizeof(struct reiserfs_bitmap_info) * bmap_nr_new);
+=======
+		    vzalloc(sizeof(struct reiserfs_bitmap_info) * bmap_nr_new);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    vzalloc(sizeof(struct reiserfs_bitmap_info) * bmap_nr_new);
+>>>>>>> refs/remotes/origin/master
 		if (!bitmap) {
 			/* Journal bitmaps are still supersized, but the memory isn't
 			 * leaked, so I guess it's ok */
 			printk("reiserfs_resize: unable to allocate memory.\n");
 			return -ENOMEM;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		memset(bitmap, 0,
 		       sizeof(struct reiserfs_bitmap_info) * bmap_nr_new);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < bmap_nr; i++)
 			bitmap[i] = old_bitmap[i];
 
@@ -128,22 +160,45 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 		 * transaction begins, and the new bitmaps don't matter if the
 		 * transaction fails. */
 		for (i = bmap_nr; i < bmap_nr_new; i++) {
+<<<<<<< HEAD
 			/* don't use read_bitmap_block since it will cache
 			 * the uninitialized bitmap */
 			bh = sb_bread(s, i * s->s_blocksize * 8);
+=======
+			int depth;
+			/* don't use read_bitmap_block since it will cache
+			 * the uninitialized bitmap */
+			depth = reiserfs_write_unlock_nested(s);
+			bh = sb_bread(s, i * s->s_blocksize * 8);
+			reiserfs_write_lock_nested(s, depth);
+>>>>>>> refs/remotes/origin/master
 			if (!bh) {
 				vfree(bitmap);
 				return -EIO;
 			}
 			memset(bh->b_data, 0, sb_blocksize(sb));
+<<<<<<< HEAD
+<<<<<<< HEAD
 			reiserfs_test_and_set_le_bit(0, bh->b_data);
+=======
+			reiserfs_set_le_bit(0, bh->b_data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			reiserfs_set_le_bit(0, bh->b_data);
+>>>>>>> refs/remotes/origin/master
 			reiserfs_cache_bitmap_metadata(s, bh, bitmap + i);
 
 			set_buffer_uptodate(bh);
 			mark_buffer_dirty(bh);
+<<<<<<< HEAD
 			reiserfs_write_unlock(s);
 			sync_dirty_buffer(bh);
 			reiserfs_write_lock(s);
+=======
+			depth = reiserfs_write_unlock_nested(s);
+			sync_dirty_buffer(bh);
+			reiserfs_write_lock_nested(s, depth);
+>>>>>>> refs/remotes/origin/master
 			// update bitmap_info stuff
 			bitmap[i].free_count = sb_blocksize(sb) * 8 - 1;
 			brelse(bh);
@@ -172,7 +227,15 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 
 	reiserfs_prepare_for_journal(s, bh, 1);
 	for (i = block_r; i < s->s_blocksize * 8; i++)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		reiserfs_test_and_clear_le_bit(i, bh->b_data);
+=======
+		reiserfs_clear_le_bit(i, bh->b_data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		reiserfs_clear_le_bit(i, bh->b_data);
+>>>>>>> refs/remotes/origin/master
 	info->free_count += s->s_blocksize * 8 - block_r;
 
 	journal_mark_dirty(&th, s, bh);
@@ -190,7 +253,15 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 
 	reiserfs_prepare_for_journal(s, bh, 1);
 	for (i = block_r_new; i < s->s_blocksize * 8; i++)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		reiserfs_test_and_set_le_bit(i, bh->b_data);
+=======
+		reiserfs_set_le_bit(i, bh->b_data);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		reiserfs_set_le_bit(i, bh->b_data);
+>>>>>>> refs/remotes/origin/master
 	journal_mark_dirty(&th, s, bh);
 	brelse(bh);
 
@@ -203,7 +274,10 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 					  (bmap_nr_new - bmap_nr)));
 	PUT_SB_BLOCK_COUNT(s, block_count_new);
 	PUT_SB_BMAP_NR(s, bmap_would_wrap(bmap_nr_new) ? : bmap_nr_new);
+<<<<<<< HEAD
 	s->s_dirt = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	journal_mark_dirty(&th, s, SB_BUFFER_WITH_SB(s));
 

@@ -8,8 +8,18 @@
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef __SDHCI_H
 #define __SDHCI_H
+=======
+#ifndef LINUX_MMC_SDHCI_H
+#define LINUX_MMC_SDHCI_H
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef LINUX_MMC_SDHCI_H
+#define LINUX_MMC_SDHCI_H
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/scatterlist.h>
 #include <linux/compiler.h>
@@ -88,12 +98,38 @@ struct sdhci_host {
 /* The read-only detection via SDHCI_PRESENT_STATE register is unstable */
 #define SDHCI_QUIRK_UNSTABLE_RO_DETECT			(1<<31)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned int quirks2;	/* More deviations from spec. */
+
+#define SDHCI_QUIRK2_HOST_OFF_CARD_ON			(1<<0)
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int quirks2;	/* More deviations from spec. */
+
+#define SDHCI_QUIRK2_HOST_OFF_CARD_ON			(1<<0)
+#define SDHCI_QUIRK2_HOST_NO_CMD23			(1<<1)
+/* The system physically doesn't support 1.8v, even if the host does */
+#define SDHCI_QUIRK2_NO_1_8_V				(1<<2)
+#define SDHCI_QUIRK2_PRESET_VALUE_BROKEN		(1<<3)
+#define SDHCI_QUIRK2_CARD_ON_NEEDS_BUS_ON		(1<<4)
+/* Controller has a non-standard host control register */
+#define SDHCI_QUIRK2_BROKEN_HOST_CONTROL		(1<<5)
+
+>>>>>>> refs/remotes/origin/master
 	int irq;		/* Device IRQ */
 	void __iomem *ioaddr;	/* Mapped address */
 
 	const struct sdhci_ops *ops;	/* Low level hw interface */
 
+<<<<<<< HEAD
 	struct regulator *vmmc;	/* Power regulator */
+=======
+	struct regulator *vmmc;		/* Power regulator (vmmc) */
+	struct regulator *vqmmc;	/* Signaling regulator (vccq) */
+>>>>>>> refs/remotes/origin/master
 
 	/* Internal data */
 	struct mmc_host *mmc;	/* MMC structure */
@@ -115,6 +151,19 @@ struct sdhci_host {
 #define SDHCI_NEEDS_RETUNING	(1<<5)	/* Host needs retuning */
 #define SDHCI_AUTO_CMD12	(1<<6)	/* Auto CMD12 support */
 #define SDHCI_AUTO_CMD23	(1<<7)	/* Auto CMD23 support */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define SDHCI_PV_ENABLED	(1<<8)	/* Preset value enabled */
+#define SDHCI_SDIO_IRQ_ENABLED	(1<<9)	/* SDIO irq enabled */
+#define SDHCI_HS200_NEEDS_TUNING (1<<10)	/* HS200 needs tuning */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SDHCI_PV_ENABLED	(1<<8)	/* Preset value enabled */
+#define SDHCI_SDIO_IRQ_ENABLED	(1<<9)	/* SDIO irq enabled */
+#define SDHCI_SDR104_NEEDS_TUNING (1<<10)	/* SDR104/HS200 needs tuning */
+#define SDHCI_USING_RETUNING_TIMER (1<<11)	/* Host is using a retuning timer for the card */
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int version;	/* SDHCI spec. version */
 
@@ -125,6 +174,17 @@ struct sdhci_host {
 	unsigned int clock;	/* Current clock (MHz) */
 	u8 pwr;			/* Current voltage */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	bool runtime_suspended;	/* Host is runtime suspended */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool runtime_suspended;	/* Host is runtime suspended */
+	bool bus_on;		/* Bus power prevents runtime suspend */
+
+>>>>>>> refs/remotes/origin/master
 	struct mmc_request *mrq;	/* Current request */
 	struct mmc_command *cmd;	/* Current command */
 	struct mmc_data *data;	/* Current data request */
@@ -146,11 +206,20 @@ struct sdhci_host {
 
 	struct timer_list timer;	/* Timer for timeouts */
 
+<<<<<<< HEAD
 	unsigned int caps;	/* Alternative capabilities */
+=======
+	u32 caps;		/* Alternative CAPABILITY_0 */
+	u32 caps1;		/* Alternative CAPABILITY_1 */
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int            ocr_avail_sdio;	/* OCR bit masks */
 	unsigned int            ocr_avail_sd;
 	unsigned int            ocr_avail_mmc;
+<<<<<<< HEAD
+=======
+	u32 ocr_mask;		/* available voltages */
+>>>>>>> refs/remotes/origin/master
 
 	wait_queue_head_t	buf_ready_int;	/* Waitqueue for Buffer Read Ready interrupt */
 	unsigned int		tuning_done;	/* Condition flag set when CMD19 succeeds */
@@ -162,4 +231,12 @@ struct sdhci_host {
 
 	unsigned long private[0] ____cacheline_aligned;
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* __SDHCI_H */
+=======
+#endif /* LINUX_MMC_SDHCI_H */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* LINUX_MMC_SDHCI_H */
+>>>>>>> refs/remotes/origin/master

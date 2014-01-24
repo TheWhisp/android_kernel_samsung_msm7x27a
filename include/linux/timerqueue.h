@@ -39,7 +39,11 @@ struct timerqueue_node *timerqueue_getnext(struct timerqueue_head *head)
 
 static inline void timerqueue_init(struct timerqueue_node *node)
 {
+<<<<<<< HEAD
 	rb_init_node(&node->node);
+=======
+	RB_CLEAR_NODE(&node->node);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void timerqueue_init_head(struct timerqueue_head *head)

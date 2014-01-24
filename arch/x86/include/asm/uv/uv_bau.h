@@ -65,10 +65,23 @@
  * UV2: Bit 19 selects between
  *  (0): 10 microsecond timebase and
  *  (1): 80 microseconds
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  we're using 655us, similar to UV1: 65 units of 10us
  */
 #define UV1_INTD_SOFT_ACK_TIMEOUT_PERIOD (9UL)
 #define UV2_INTD_SOFT_ACK_TIMEOUT_PERIOD (65*10UL)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *  we're using 560us, similar to UV1: 65 units of 10us
+ */
+#define UV1_INTD_SOFT_ACK_TIMEOUT_PERIOD (9UL)
+#define UV2_INTD_SOFT_ACK_TIMEOUT_PERIOD (15UL)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define UV_INTD_SOFT_ACK_TIMEOUT_PERIOD	(is_uv1_hub() ?			\
 		UV1_INTD_SOFT_ACK_TIMEOUT_PERIOD :			\
@@ -107,12 +120,35 @@
 #define DS_SOURCE_TIMEOUT		3
 /*
  * bits put together from HRP_LB_BAU_SB_ACTIVATION_STATUS_0/1/2
+<<<<<<< HEAD
+<<<<<<< HEAD
  * values 1 and 5 will not occur
  */
 #define UV2H_DESC_IDLE			0
 #define UV2H_DESC_DEST_TIMEOUT		2
 #define UV2H_DESC_DEST_STRONG_NACK	3
 #define UV2H_DESC_BUSY			4
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * values 1 and 3 will not occur
+ *        Decoded meaning              ERROR  BUSY    AUX ERR
+ * -------------------------------     ----   -----   -------
+ * IDLE                                 0       0        0
+ * BUSY (active)                        0       1        0
+ * SW Ack Timeout (destination)         1       0        0
+ * SW Ack INTD rejected (strong NACK)   1       0        1
+ * Source Side Time Out Detected        1       1        0
+ * Destination Side PUT Failed          1       1        1
+ */
+#define UV2H_DESC_IDLE			0
+#define UV2H_DESC_BUSY			2
+#define UV2H_DESC_DEST_TIMEOUT		4
+#define UV2H_DESC_DEST_STRONG_NACK	5
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define UV2H_DESC_SOURCE_TIMEOUT	6
 #define UV2H_DESC_DEST_PUT_ERR		7
 
@@ -132,6 +168,12 @@
 #define IPI_RESET_LIMIT			1
 /* after this # consecutive successes, bump up the throttle if it was lowered */
 #define COMPLETE_THRESHOLD		5
+<<<<<<< HEAD
+=======
+/* after this # of giveups (fall back to kernel IPI's) disable the use of
+   the BAU for a period of time */
+#define GIVEUP_LIMIT			100
+>>>>>>> refs/remotes/origin/master
 
 #define UV_LB_SUBNODEID			0x10
 
@@ -141,7 +183,16 @@
 /* 4 bits of software ack period */
 #define UV2_ACK_MASK			0x7UL
 #define UV2_ACK_UNITS_SHFT		3
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define UV2_LEG_SHFT UV2H_LB_BAU_MISC_CONTROL_USE_LEGACY_DESCRIPTOR_FORMATS_SHFT
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #define UV2_EXT_SHFT UV2H_LB_BAU_MISC_CONTROL_ENABLE_EXTENDED_SB_STATUS_SHFT
 
 /*
@@ -159,6 +210,13 @@
 #define FLUSH_RETRY_TIMEOUT		2
 #define FLUSH_GIVEUP			3
 #define FLUSH_COMPLETE			4
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define FLUSH_RETRY_BUSYBUG		5
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * tuning the action when the numalink network is extremely delayed
@@ -167,7 +225,11 @@
 						   microseconds */
 #define CONGESTED_REPS			10	/* long delays averaged over
 						   this many broadcasts */
+<<<<<<< HEAD
 #define CONGESTED_PERIOD		30	/* time for the bau to be
+=======
+#define DISABLED_PERIOD			10	/* time for the bau to be
+>>>>>>> refs/remotes/origin/master
 						   disabled, in seconds */
 /* see msg_type: */
 #define MSG_NOOP			0
@@ -184,7 +246,15 @@
  * 'base_dest_nasid' field of the header corresponds to the
  * destination nodeID associated with that specified bit.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct bau_targ_hubmask {
+=======
+struct pnmask {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct pnmask {
+>>>>>>> refs/remotes/origin/master
 	unsigned long		bits[BITS_TO_LONGS(UV_DISTRIBUTION_SIZE)];
 };
 
@@ -227,10 +297,23 @@ struct bau_msg_payload {
 
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Message header:  16 bytes (128 bits) (bytes 0x30-0x3f of descriptor)
  * see table 4.2.3.0.1 in broacast_assist spec.
  */
 struct bau_msg_header {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * UV1 Message header:  16 bytes (128 bits) (bytes 0x30-0x3f of descriptor)
+ * see table 4.2.3.0.1 in broacast_assist spec.
+ */
+struct uv1_bau_msg_header {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int	dest_subnodeid:6;	/* must be 0x10, for the LB */
 	/* bits 5:0 */
 	unsigned int	base_dest_nasid:15;	/* nasid of the first bit */
@@ -310,11 +393,86 @@ struct bau_msg_header {
 };
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * UV2 Message header:  16 bytes (128 bits) (bytes 0x30-0x3f of descriptor)
+ * see figure 9-2 of harp_sys.pdf
+ */
+struct uv2_bau_msg_header {
+	unsigned int	base_dest_nasid:15;	/* nasid of the first bit */
+	/* bits 14:0 */				/* in uvhub map */
+	unsigned int	dest_subnodeid:5;	/* must be 0x10, for the LB */
+	/* bits 19:15 */
+	unsigned int	rsvd_1:1;		/* must be zero */
+	/* bit 20 */
+	/* Address bits 59:21 */
+	/* bits 25:2 of address (44:21) are payload */
+	/* these next 24 bits become bytes 12-14 of msg */
+	/* bits 28:21 land in byte 12 */
+	unsigned int	replied_to:1;		/* sent as 0 by the source to
+						   byte 12 */
+	/* bit 21 */
+	unsigned int	msg_type:3;		/* software type of the
+						   message */
+	/* bits 24:22 */
+	unsigned int	canceled:1;		/* message canceled, resource
+						   is to be freed*/
+	/* bit 25 */
+	unsigned int	payload_1:3;		/* not currently used */
+	/* bits 28:26 */
+
+	/* bits 36:29 land in byte 13 */
+	unsigned int	payload_2a:3;		/* not currently used */
+	unsigned int	payload_2b:5;		/* not currently used */
+	/* bits 36:29 */
+
+	/* bits 44:37 land in byte 14 */
+	unsigned int	payload_3:8;		/* not currently used */
+	/* bits 44:37 */
+
+	unsigned int	rsvd_2:7;		/* reserved */
+	/* bits 51:45 */
+	unsigned int	swack_flag:1;		/* software acknowledge flag */
+	/* bit 52 */
+	unsigned int	rsvd_3a:3;		/* must be zero */
+	unsigned int	rsvd_3b:8;		/* must be zero */
+	unsigned int	rsvd_3c:8;		/* must be zero */
+	unsigned int	rsvd_3d:3;		/* must be zero */
+	/* bits 74:53 */
+	unsigned int	fairness:3;		/* usually zero */
+	/* bits 77:75 */
+
+	unsigned int	sequence:16;		/* message sequence number */
+	/* bits 93:78  Suppl_A  */
+	unsigned int	chaining:1;		/* next descriptor is part of
+						   this activation*/
+	/* bit 94 */
+	unsigned int	multilevel:1;		/* multi-level multicast
+						   format */
+	/* bit 95 */
+	unsigned int	rsvd_4:24;		/* ordered / source node /
+						   source subnode / aging
+						   must be zero */
+	/* bits 119:96 */
+	unsigned int	command:8;		/* message type */
+	/* bits 127:120 */
+};
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * The activation descriptor:
  * The format of the message to send, plus all accompanying control
  * Should be 64 bytes
  */
 struct bau_desc {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct bau_targ_hubmask	distribution;
 	/*
 	 * message template, consisting of header and payload:
@@ -323,6 +481,25 @@ struct bau_desc {
 	struct bau_msg_payload		payload;
 };
 /*
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct pnmask				distribution;
+	/*
+	 * message template, consisting of header and payload:
+	 */
+	union bau_msg_header {
+		struct uv1_bau_msg_header	uv1_hdr;
+		struct uv2_bau_msg_header	uv2_hdr;
+	} header;
+
+	struct bau_msg_payload			payload;
+};
+/* UV1:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *   -payload--    ---------header------
  *   bytes 0-11    bits 41-56  bits 58-81
  *       A           B  (2)      C (3)
@@ -332,6 +509,25 @@ struct bau_desc {
  *   bytes 0-11  bytes 12-14  bytes 16-17  (byte 15 filled in by hw as vector)
  *   ------------payload queue-----------
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* UV2:
+ *   -payload--    ---------header------
+ *   bytes 0-11    bits 70-78  bits 21-44
+ *       A           B  (2)      C (3)
+ *
+ *            A/B/C are moved to:
+ *       A            C          B
+ *   bytes 0-11  bytes 12-14  bytes 16-17  (byte 15 filled in by hw as vector)
+ *   ------------payload queue-----------
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The payload queue on the destination side is an array of these.
@@ -377,7 +573,13 @@ struct bau_pq_entry {
 struct msg_desc {
 	struct bau_pq_entry	*msg;
 	int			msg_slot;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int			swack_slot;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bau_pq_entry	*queue_first;
 	struct bau_pq_entry	*queue_last;
 };
@@ -397,6 +599,14 @@ struct ptc_stats {
 						   requests */
 	unsigned long	s_stimeout;		/* source side timeouts */
 	unsigned long	s_dtimeout;		/* destination side timeouts */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long	s_strongnacks;		/* number of strong nack's */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long	s_strongnacks;		/* number of strong nack's */
+>>>>>>> refs/remotes/origin/master
 	unsigned long	s_time;			/* time spent in sending side */
 	unsigned long	s_retriesok;		/* successful retries */
 	unsigned long	s_ntargcpu;		/* total number of cpu's
@@ -431,6 +641,24 @@ struct ptc_stats {
 	unsigned long	s_retry_messages;	/* retry broadcasts */
 	unsigned long	s_bau_reenabled;	/* for bau enable/disable */
 	unsigned long	s_bau_disabled;		/* for bau enable/disable */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned long	s_uv2_wars;		/* uv2 workaround, perm. busy */
+	unsigned long	s_uv2_wars_hw;		/* uv2 workaround, hiwater */
+	unsigned long	s_uv2_war_waits;	/* uv2 workaround, long waits */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long	s_uv2_wars;		/* uv2 workaround, perm. busy */
+	unsigned long	s_uv2_wars_hw;		/* uv2 workaround, hiwater */
+	unsigned long	s_uv2_war_waits;	/* uv2 workaround, long waits */
+	unsigned long	s_overipilimit;		/* over the ipi reset limit */
+	unsigned long	s_giveuplimit;		/* disables, over giveup limit*/
+	unsigned long	s_enters;		/* entries to the driver */
+	unsigned long	s_ipifordisabled;	/* fall back to IPI; disabled */
+	unsigned long	s_plugged;		/* plugged by h/w bug*/
+	unsigned long	s_congested;		/* giveup on long wait */
+>>>>>>> refs/remotes/origin/master
 	/* destination statistics */
 	unsigned long	d_alltlb;		/* times all tlb's on this
 						   cpu were flushed */
@@ -489,6 +717,14 @@ struct bau_control {
 	struct bau_control	*uvhub_master;
 	struct bau_control	*socket_master;
 	struct ptc_stats	*statp;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	cpumask_t		*cpumask;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpumask_t		*cpumask;
+>>>>>>> refs/remotes/origin/master
 	unsigned long		timeout_interval;
 	unsigned long		set_bau_on_time;
 	atomic_t		active_descriptor_count;
@@ -496,21 +732,50 @@ struct bau_control {
 	int			timeout_tries;
 	int			ipi_attempts;
 	int			conseccompletes;
+<<<<<<< HEAD
 	int			baudisabled;
 	int			set_bau_off;
+=======
+	short			nobau;
+	short			baudisabled;
+>>>>>>> refs/remotes/origin/master
 	short			cpu;
 	short			osnode;
 	short			uvhub_cpu;
 	short			uvhub;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	short			cpus_in_socket;
 	short			cpus_in_uvhub;
 	short			partition_base_pnode;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	short			uvhub_version;
+	short			cpus_in_socket;
+	short			cpus_in_uvhub;
+	short			partition_base_pnode;
+<<<<<<< HEAD
+	short			using_desc; /* an index, like uvhub_cpu */
+	unsigned int		inuse_map;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	short			busy;       /* all were busy (war) */
+>>>>>>> refs/remotes/origin/master
 	unsigned short		message_number;
 	unsigned short		uvhub_quiesce;
 	short			socket_acknowledge_count[DEST_Q_SIZE];
 	cycles_t		send_message;
+<<<<<<< HEAD
 	spinlock_t		uvhub_lock;
 	spinlock_t		queue_lock;
+=======
+	cycles_t		period_end;
+	cycles_t		period_time;
+	spinlock_t		uvhub_lock;
+	spinlock_t		queue_lock;
+	spinlock_t		disable_lock;
+>>>>>>> refs/remotes/origin/master
 	/* tunables */
 	int			max_concurr;
 	int			max_concurr_const;
@@ -521,82 +786,213 @@ struct bau_control {
 	int			complete_threshold;
 	int			cong_response_us;
 	int			cong_reps;
+<<<<<<< HEAD
 	int			cong_period;
+<<<<<<< HEAD
+=======
+	unsigned long		clocks_per_100_usec;
+>>>>>>> refs/remotes/origin/cm-10.0
 	cycles_t		period_time;
+=======
+	cycles_t		disabled_period;
+	int			period_giveups;
+	int			giveup_limit;
+>>>>>>> refs/remotes/origin/master
 	long			period_requests;
 	struct hub_and_pnode	*thp;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long read_mmr_uv2_status(void)
+=======
+static inline unsigned long read_mmr_uv2_status(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline unsigned long read_mmr_uv2_status(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return read_lmmr(UV2H_LB_BAU_SB_ACTIVATION_STATUS_2);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void write_mmr_data_broadcast(int pnode, unsigned long mmr_image)
+=======
+static inline void write_mmr_data_broadcast(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void write_mmr_data_broadcast(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/master
 {
 	write_gmmr(pnode, UVH_BAU_DATA_BROADCAST, mmr_image);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void write_mmr_descriptor_base(int pnode, unsigned long mmr_image)
+=======
+static inline void write_mmr_descriptor_base(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void write_mmr_descriptor_base(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/master
 {
 	write_gmmr(pnode, UVH_LB_BAU_SB_DESCRIPTOR_BASE, mmr_image);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void write_mmr_activation(unsigned long index)
+=======
+static inline void write_mmr_activation(unsigned long index)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void write_mmr_activation(unsigned long index)
+>>>>>>> refs/remotes/origin/master
 {
 	write_lmmr(UVH_LB_BAU_SB_ACTIVATION_CONTROL, index);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void write_gmmr_activation(int pnode, unsigned long mmr_image)
+=======
+static inline void write_gmmr_activation(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void write_gmmr_activation(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/master
 {
 	write_gmmr(pnode, UVH_LB_BAU_SB_ACTIVATION_CONTROL, mmr_image);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void write_mmr_payload_first(int pnode, unsigned long mmr_image)
+=======
+static inline void write_mmr_payload_first(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void write_mmr_payload_first(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/master
 {
 	write_gmmr(pnode, UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST, mmr_image);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void write_mmr_payload_tail(int pnode, unsigned long mmr_image)
+=======
+static inline void write_mmr_payload_tail(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void write_mmr_payload_tail(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/master
 {
 	write_gmmr(pnode, UVH_LB_BAU_INTD_PAYLOAD_QUEUE_TAIL, mmr_image);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void write_mmr_payload_last(int pnode, unsigned long mmr_image)
+=======
+static inline void write_mmr_payload_last(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void write_mmr_payload_last(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/master
 {
 	write_gmmr(pnode, UVH_LB_BAU_INTD_PAYLOAD_QUEUE_LAST, mmr_image);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void write_mmr_misc_control(int pnode, unsigned long mmr_image)
+=======
+static inline void write_mmr_misc_control(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void write_mmr_misc_control(int pnode, unsigned long mmr_image)
+>>>>>>> refs/remotes/origin/master
 {
 	write_gmmr(pnode, UVH_LB_BAU_MISC_CONTROL, mmr_image);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long read_mmr_misc_control(int pnode)
+=======
+static inline unsigned long read_mmr_misc_control(int pnode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline unsigned long read_mmr_misc_control(int pnode)
+>>>>>>> refs/remotes/origin/master
 {
 	return read_gmmr(pnode, UVH_LB_BAU_MISC_CONTROL);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void write_mmr_sw_ack(unsigned long mr)
+=======
+static inline void write_mmr_sw_ack(unsigned long mr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void write_mmr_sw_ack(unsigned long mr)
+>>>>>>> refs/remotes/origin/master
 {
 	uv_write_local_mmr(UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_ALIAS, mr);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long read_mmr_sw_ack(void)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline void write_gmmr_sw_ack(int pnode, unsigned long mr)
+{
+	write_gmmr(pnode, UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_ALIAS, mr);
+}
+
+static inline unsigned long read_mmr_sw_ack(void)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return read_lmmr(UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long read_gmmr_sw_ack(int pnode)
+=======
+static inline unsigned long read_gmmr_sw_ack(int pnode)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline unsigned long read_gmmr_sw_ack(int pnode)
+>>>>>>> refs/remotes/origin/master
 {
 	return read_gmmr(pnode, UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void write_mmr_data_config(int pnode, unsigned long mr)
+=======
+static inline void write_mmr_data_config(int pnode, unsigned long mr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void write_mmr_data_config(int pnode, unsigned long mr)
+>>>>>>> refs/remotes/origin/master
 {
 	uv_write_global_mmr64(pnode, UVH_BAU_DATA_CONFIG, mr);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int bau_uvhub_isset(int uvhub, struct bau_targ_hubmask *dstp)
 {
 	return constant_test_bit(uvhub, &dstp->bits[0]);
@@ -606,11 +1002,35 @@ static inline void bau_uvhub_set(int pnode, struct bau_targ_hubmask *dstp)
 	__set_bit(pnode, &dstp->bits[0]);
 }
 static inline void bau_uvhubs_clear(struct bau_targ_hubmask *dstp,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static inline int bau_uvhub_isset(int uvhub, struct pnmask *dstp)
+{
+	return constant_test_bit(uvhub, &dstp->bits[0]);
+}
+static inline void bau_uvhub_set(int pnode, struct pnmask *dstp)
+{
+	__set_bit(pnode, &dstp->bits[0]);
+}
+static inline void bau_uvhubs_clear(struct pnmask *dstp,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				    int nbits)
 {
 	bitmap_zero(&dstp->bits[0], nbits);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 static inline int bau_uvhub_weight(struct bau_targ_hubmask *dstp)
+=======
+static inline int bau_uvhub_weight(struct pnmask *dstp)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int bau_uvhub_weight(struct pnmask *dstp)
+>>>>>>> refs/remotes/origin/master
 {
 	return bitmap_weight((unsigned long *)&dstp->bits[0],
 				UV_DISTRIBUTION_SIZE);
@@ -622,6 +1042,12 @@ static inline void bau_cpubits_clear(struct bau_local_cpumask *dstp, int nbits)
 }
 
 extern void uv_bau_message_intr1(void);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_TRACING
+#define trace_uv_bau_message_intr1 uv_bau_message_intr1
+#endif
+>>>>>>> refs/remotes/origin/master
 extern void uv_bau_timeout_intr1(void);
 
 struct atomic_short {
@@ -648,11 +1074,19 @@ static inline int atomic_read_short(const struct atomic_short *v)
  */
 static inline int atom_asr(short i, struct atomic_short *v)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	short __i = i;
 	asm volatile(LOCK_PREFIX "xaddw %0, %1"
 			: "+r" (i), "+m" (v->counter)
 			: : "memory");
 	return i + __i;
+=======
+	return i + xadd(&v->counter, i);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return i + xadd(&v->counter, i);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

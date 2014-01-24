@@ -20,19 +20,32 @@
 #include <linux/smp.h>
 #include <linux/perf_event.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/kdebug.h>
 
 #include <asm/system.h>
+=======
+#include <linux/kdebug.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/memreg.h>
+=======
+#include <linux/kdebug.h>
+
+#include <asm/page.h>
+#include <asm/pgtable.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/openprom.h>
 #include <asm/oplib.h>
 #include <asm/smp.h>
 #include <asm/traps.h>
 #include <asm/uaccess.h>
 
+<<<<<<< HEAD
 extern int prom_node_root;
 
 int show_unhandled_signals = 1;
@@ -94,23 +107,52 @@ static void unhandled_fault(unsigned long address, struct task_struct *tsk,
 	} else {
 		printk(KERN_ALERT "Unable to handle kernel paging request "
 		       "at virtual address %08lx\n", address);
+=======
+int show_unhandled_signals = 1;
+
+static void unhandled_fault(unsigned long, struct task_struct *,
+		struct pt_regs *) __attribute__ ((noreturn));
+
+static void __noreturn unhandled_fault(unsigned long address,
+				       struct task_struct *tsk,
+				       struct pt_regs *regs)
+{
+	if ((unsigned long) address < PAGE_SIZE) {
+		printk(KERN_ALERT
+		    "Unable to handle kernel NULL pointer dereference\n");
+	} else {
+		printk(KERN_ALERT "Unable to handle kernel paging request at virtual address %08lx\n",
+		       address);
+>>>>>>> refs/remotes/origin/master
 	}
 	printk(KERN_ALERT "tsk->{mm,active_mm}->context = %08lx\n",
 		(tsk->mm ? tsk->mm->context : tsk->active_mm->context));
 	printk(KERN_ALERT "tsk->{mm,active_mm}->pgd = %08lx\n",
 		(tsk->mm ? (unsigned long) tsk->mm->pgd :
+<<<<<<< HEAD
 		 	(unsigned long) tsk->active_mm->pgd));
 	die_if_kernel("Oops", regs);
 }
 
 asmlinkage int lookup_fault(unsigned long pc, unsigned long ret_pc, 
+=======
+			(unsigned long) tsk->active_mm->pgd));
+	die_if_kernel("Oops", regs);
+}
+
+asmlinkage int lookup_fault(unsigned long pc, unsigned long ret_pc,
+>>>>>>> refs/remotes/origin/master
 			    unsigned long address)
 {
 	struct pt_regs regs;
 	unsigned long g2;
 	unsigned int insn;
 	int i;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	i = search_extables_range(ret_pc, &g2);
 	switch (i) {
 	case 3:
@@ -130,14 +172,23 @@ asmlinkage int lookup_fault(unsigned long pc, unsigned long ret_pc,
 		/* for _from_ macros */
 		insn = *((unsigned int *) pc);
 		if (!((insn >> 21) & 1) || ((insn>>19)&0x3f) == 15)
+<<<<<<< HEAD
 			return 2; 
 		break; 
+=======
+			return 2;
+		break;
+>>>>>>> refs/remotes/origin/master
 
 	default:
 		break;
 	}
 
+<<<<<<< HEAD
 	memset(&regs, 0, sizeof (regs));
+=======
+	memset(&regs, 0, sizeof(regs));
+>>>>>>> refs/remotes/origin/master
 	regs.pc = pc;
 	regs.npc = pc + 4;
 	__asm__ __volatile__(
@@ -200,11 +251,18 @@ static unsigned long compute_si_addr(struct pt_regs *regs, int text_fault)
 	if (text_fault)
 		return regs->pc;
 
+<<<<<<< HEAD
 	if (regs->psr & PSR_PS) {
 		insn = *(unsigned int *) regs->pc;
 	} else {
 		__get_user(insn, (unsigned int *) regs->pc);
 	}
+=======
+	if (regs->psr & PSR_PS)
+		insn = *(unsigned int *) regs->pc;
+	else
+		__get_user(insn, (unsigned int *) regs->pc);
+>>>>>>> refs/remotes/origin/master
 
 	return safe_compute_effective_address(regs, insn);
 }
@@ -227,8 +285,19 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
 	unsigned long g2;
 	int from_user = !(regs->psr & PSR_PS);
 	int fault, code;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	unsigned int flags = (FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
+			      (write ? FAULT_FLAG_WRITE : 0));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if(text_fault)
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+
+	if (text_fault)
+>>>>>>> refs/remotes/origin/master
 		address = regs->pc;
 
 	/*
@@ -241,18 +310,29 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
 	 * nothing more.
 	 */
 	code = SEGV_MAPERR;
+<<<<<<< HEAD
 	if (!ARCH_SUN4C && address >= TASK_SIZE)
+=======
+	if (address >= TASK_SIZE)
+>>>>>>> refs/remotes/origin/master
 		goto vmalloc_fault;
 
 	/*
 	 * If we're in an interrupt or have no user
 	 * context, we must not take the fault..
 	 */
+<<<<<<< HEAD
         if (in_atomic() || !mm)
                 goto no_context;
 
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, 0, regs, address);
 
+=======
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+
+retry:
+>>>>>>> refs/remotes/origin/cm-10.0
 	down_read(&mm->mmap_sem);
 
 	/*
@@ -270,6 +350,27 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
 	if(!(vma->vm_flags & VM_GROWSDOWN))
 		goto bad_area;
 	if(expand_stack(vma, address))
+=======
+	if (in_atomic() || !mm)
+		goto no_context;
+
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+
+retry:
+	down_read(&mm->mmap_sem);
+
+	if (!from_user && address >= PAGE_OFFSET)
+		goto bad_area;
+
+	vma = find_vma(mm, address);
+	if (!vma)
+		goto bad_area;
+	if (vma->vm_start <= address)
+		goto good_area;
+	if (!(vma->vm_flags & VM_GROWSDOWN))
+		goto bad_area;
+	if (expand_stack(vma, address))
+>>>>>>> refs/remotes/origin/master
 		goto bad_area;
 	/*
 	 * Ok, we have a good vm_area for this memory access, so
@@ -277,6 +378,7 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
 	 */
 good_area:
 	code = SEGV_ACCERR;
+<<<<<<< HEAD
 	if(write) {
 		if(!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
@@ -286,12 +388,42 @@ good_area:
 			goto bad_area;
 	}
 
+=======
+	if (write) {
+		if (!(vma->vm_flags & VM_WRITE))
+			goto bad_area;
+	} else {
+		/* Allow reads even for write-only mappings */
+		if (!(vma->vm_flags & (VM_READ | VM_EXEC)))
+			goto bad_area;
+	}
+
+	if (from_user)
+		flags |= FAULT_FLAG_USER;
+	if (write)
+		flags |= FAULT_FLAG_WRITE;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If for any reason at all we couldn't handle the fault,
 	 * make sure we exit gracefully rather than endlessly redo
 	 * the fault.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, write ? FAULT_FLAG_WRITE : 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	fault = handle_mm_fault(mm, vma, address, flags);
+
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		return;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
@@ -299,6 +431,8 @@ good_area:
 			goto do_sigbus;
 		BUG();
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (fault & VM_FAULT_MAJOR) {
 		current->maj_flt++;
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1, 0,
@@ -308,6 +442,40 @@ good_area:
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1, 0,
 			      regs, address);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+		if (fault & VM_FAULT_MAJOR) {
+			current->maj_flt++;
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ,
+				      1, regs, address);
+		} else {
+			current->min_flt++;
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN,
+				      1, regs, address);
+		}
+		if (fault & VM_FAULT_RETRY) {
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+<<<<<<< HEAD
+=======
+			flags |= FAULT_FLAG_TRIED;
+>>>>>>> refs/remotes/origin/master
+
+			/* No need to up_read(&mm->mmap_sem) as we would
+			 * have already released it in __lock_page_or_retry
+			 * in mm/filemap.c.
+			 */
+
+			goto retry;
+		}
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	up_read(&mm->mmap_sem);
 	return;
 
@@ -330,14 +498,24 @@ no_context:
 	g2 = regs->u_regs[UREG_G2];
 	if (!from_user) {
 		fixup = search_extables_range(regs->pc, &g2);
+<<<<<<< HEAD
 		if (fixup > 10) { /* Values below are reserved for other things */
+=======
+		/* Values below 10 are reserved for other things */
+		if (fixup > 10) {
+>>>>>>> refs/remotes/origin/master
 			extern const unsigned __memset_start[];
 			extern const unsigned __memset_end[];
 			extern const unsigned __csum_partial_copy_start[];
 			extern const unsigned __csum_partial_copy_end[];
 
 #ifdef DEBUG_EXCEPTIONS
+<<<<<<< HEAD
 			printk("Exception: PC<%08lx> faddr<%08lx>\n", regs->pc, address);
+=======
+			printk("Exception: PC<%08lx> faddr<%08lx>\n",
+			       regs->pc, address);
+>>>>>>> refs/remotes/origin/master
 			printk("EX_TABLE: insn<%08lx> fixup<%08x> g2<%08lx>\n",
 				regs->pc, fixup, g2);
 #endif
@@ -345,7 +523,11 @@ no_context:
 			     regs->pc < (unsigned long)__memset_end) ||
 			    (regs->pc >= (unsigned long)__csum_partial_copy_start &&
 			     regs->pc < (unsigned long)__csum_partial_copy_end)) {
+<<<<<<< HEAD
 			        regs->u_regs[UREG_I4] = address;
+=======
+				regs->u_regs[UREG_I4] = address;
+>>>>>>> refs/remotes/origin/master
 				regs->u_regs[UREG_I5] = regs->pc;
 			}
 			regs->u_regs[UREG_G2] = g2;
@@ -354,8 +536,13 @@ no_context:
 			return;
 		}
 	}
+<<<<<<< HEAD
 	
 	unhandled_fault (address, tsk, regs);
+=======
+
+	unhandled_fault(address, tsk, regs);
+>>>>>>> refs/remotes/origin/master
 	do_exit(SIGKILL);
 
 /*
@@ -401,11 +588,16 @@ vmalloc_fault:
 
 		if (pmd_present(*pmd) || !pmd_present(*pmd_k))
 			goto bad_area_nosemaphore;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		*pmd = *pmd_k;
 		return;
 	}
 }
 
+<<<<<<< HEAD
 asmlinkage void do_sun4c_fault(struct pt_regs *regs, int text_fault, int write,
 			       unsigned long address)
 {
@@ -492,18 +684,25 @@ asmlinkage void do_sun4c_fault(struct pt_regs *regs, int text_fault, int write,
 		do_sparc_fault(regs, text_fault, write, address);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* This always deals with user addresses. */
 static void force_user_fault(unsigned long address, int write)
 {
 	struct vm_area_struct *vma;
 	struct task_struct *tsk = current;
 	struct mm_struct *mm = tsk->mm;
+<<<<<<< HEAD
+=======
+	unsigned int flags = FAULT_FLAG_USER;
+>>>>>>> refs/remotes/origin/master
 	int code;
 
 	code = SEGV_MAPERR;
 
 	down_read(&mm->mmap_sem);
 	vma = find_vma(mm, address);
+<<<<<<< HEAD
 	if(!vma)
 		goto bad_area;
 	if(vma->vm_start <= address)
@@ -522,6 +721,27 @@ good_area:
 			goto bad_area;
 	}
 	switch (handle_mm_fault(mm, vma, address, write ? FAULT_FLAG_WRITE : 0)) {
+=======
+	if (!vma)
+		goto bad_area;
+	if (vma->vm_start <= address)
+		goto good_area;
+	if (!(vma->vm_flags & VM_GROWSDOWN))
+		goto bad_area;
+	if (expand_stack(vma, address))
+		goto bad_area;
+good_area:
+	code = SEGV_ACCERR;
+	if (write) {
+		if (!(vma->vm_flags & VM_WRITE))
+			goto bad_area;
+		flags |= FAULT_FLAG_WRITE;
+	} else {
+		if (!(vma->vm_flags & (VM_READ | VM_EXEC)))
+			goto bad_area;
+	}
+	switch (handle_mm_fault(mm, vma, address, flags)) {
+>>>>>>> refs/remotes/origin/master
 	case VM_FAULT_SIGBUS:
 	case VM_FAULT_OOM:
 		goto do_sigbus;
@@ -549,7 +769,11 @@ void window_overflow_fault(void)
 	unsigned long sp;
 
 	sp = current_thread_info()->rwbuf_stkptrs[0];
+<<<<<<< HEAD
 	if(((sp + 0x38) & PAGE_MASK) != (sp & PAGE_MASK))
+=======
+	if (((sp + 0x38) & PAGE_MASK) != (sp & PAGE_MASK))
+>>>>>>> refs/remotes/origin/master
 		force_user_fault(sp + 0x38, 1);
 	force_user_fault(sp, 1);
 
@@ -558,7 +782,11 @@ void window_overflow_fault(void)
 
 void window_underflow_fault(unsigned long sp)
 {
+<<<<<<< HEAD
 	if(((sp + 0x38) & PAGE_MASK) != (sp & PAGE_MASK))
+=======
+	if (((sp + 0x38) & PAGE_MASK) != (sp & PAGE_MASK))
+>>>>>>> refs/remotes/origin/master
 		force_user_fault(sp + 0x38, 0);
 	force_user_fault(sp, 0);
 
@@ -570,7 +798,11 @@ void window_ret_fault(struct pt_regs *regs)
 	unsigned long sp;
 
 	sp = regs->u_regs[UREG_FP];
+<<<<<<< HEAD
 	if(((sp + 0x38) & PAGE_MASK) != (sp & PAGE_MASK))
+=======
+	if (((sp + 0x38) & PAGE_MASK) != (sp & PAGE_MASK))
+>>>>>>> refs/remotes/origin/master
 		force_user_fault(sp + 0x38, 0);
 	force_user_fault(sp, 0);
 

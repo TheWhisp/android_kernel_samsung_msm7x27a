@@ -37,6 +37,10 @@
 
 /* Register descriptions for twl4030 codec part */
 #include <linux/mfd/twl4030-audio.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "omap-mcbsp.h"
 #include "omap-pcm.h"
@@ -53,6 +57,7 @@ static int sdp3430_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+<<<<<<< HEAD
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 	int ret;
 
@@ -76,6 +81,10 @@ static int sdp3430_hw_params(struct snd_pcm_substream *substream,
 		return ret;
 	}
 
+=======
+	int ret;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Set the codec system clock for DAC and ADC */
 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
 					    SND_SOC_CLOCK_IN);
@@ -91,6 +100,7 @@ static struct snd_soc_ops sdp3430_ops = {
 	.hw_params = sdp3430_hw_params,
 };
 
+<<<<<<< HEAD
 static int sdp3430_hw_voice_params(struct snd_pcm_substream *substream,
 	struct snd_pcm_hw_params *params)
 {
@@ -134,6 +144,8 @@ static struct snd_soc_ops sdp3430_voice_ops = {
 	.hw_params = sdp3430_hw_voice_params,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Headset jack */
 static struct snd_soc_jack hs_jack;
 
@@ -193,6 +205,7 @@ static int sdp3430_twl4030_init(struct snd_soc_pcm_runtime *rtd)
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 	int ret;
 
+<<<<<<< HEAD
 	/* Add SDP3430 specific widgets */
 	ret = snd_soc_dapm_new_controls(dapm, sdp3430_twl4030_dapm_widgets,
 				ARRAY_SIZE(sdp3430_twl4030_dapm_widgets));
@@ -202,6 +215,8 @@ static int sdp3430_twl4030_init(struct snd_soc_pcm_runtime *rtd)
 	/* Set up SDP3430 specific audio path audio_map */
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* SDP3430 connected pins */
 	snd_soc_dapm_enable_pin(dapm, "Ext Mic");
 	snd_soc_dapm_enable_pin(dapm, "Ext Spk");
@@ -223,10 +238,13 @@ static int sdp3430_twl4030_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_nc_pin(dapm, "CARKITL");
 	snd_soc_dapm_nc_pin(dapm, "CARKITR");
 
+<<<<<<< HEAD
 	ret = snd_soc_dapm_sync(dapm);
 	if (ret)
 		return ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Headset jack detection */
 	ret = snd_soc_jack_new(codec, "Headset Jack",
 				SND_JACK_HEADSET, &hs_jack);
@@ -263,30 +281,61 @@ static struct snd_soc_dai_link sdp3430_dai[] = {
 	{
 		.name = "TWL4030 I2S",
 		.stream_name = "TWL4030 Audio",
+<<<<<<< HEAD
 		.cpu_dai_name = "omap-mcbsp-dai.1",
 		.codec_dai_name = "twl4030-hifi",
 		.platform_name = "omap-pcm-audio",
 		.codec_name = "twl4030-codec",
+=======
+		.cpu_dai_name = "omap-mcbsp.2",
+		.codec_dai_name = "twl4030-hifi",
+		.platform_name = "omap-pcm-audio",
+		.codec_name = "twl4030-codec",
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			   SND_SOC_DAIFMT_CBM_CFM,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.init = sdp3430_twl4030_init,
 		.ops = &sdp3430_ops,
 	},
 	{
 		.name = "TWL4030 PCM",
 		.stream_name = "TWL4030 Voice",
+<<<<<<< HEAD
 		.cpu_dai_name = "omap-mcbsp-dai.2",
 		.codec_dai_name = "twl4030-voice",
 		.platform_name = "omap-pcm-audio",
 		.codec_name = "twl4030-codec",
 		.init = sdp3430_twl4030_voice_init,
 		.ops = &sdp3430_voice_ops,
+=======
+		.cpu_dai_name = "omap-mcbsp.3",
+		.codec_dai_name = "twl4030-voice",
+		.platform_name = "omap-pcm-audio",
+		.codec_name = "twl4030-codec",
+		.dai_fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF |
+			   SND_SOC_DAIFMT_CBM_CFM,
+		.init = sdp3430_twl4030_voice_init,
+		.ops = &sdp3430_ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
 /* Audio machine driver */
 static struct snd_soc_card snd_soc_sdp3430 = {
 	.name = "SDP3430",
+<<<<<<< HEAD
 	.dai_link = sdp3430_dai,
 	.num_links = ARRAY_SIZE(sdp3430_dai),
+=======
+	.owner = THIS_MODULE,
+	.dai_link = sdp3430_dai,
+	.num_links = ARRAY_SIZE(sdp3430_dai),
+
+	.dapm_widgets = sdp3430_twl4030_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(sdp3430_twl4030_dapm_widgets),
+	.dapm_routes = audio_map,
+	.num_dapm_routes = ARRAY_SIZE(audio_map),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device *sdp3430_snd_device;

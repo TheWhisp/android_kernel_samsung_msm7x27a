@@ -24,11 +24,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <ctype.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <errno.h>
 
 #include "../../perf.h"
 #include "../util.h"
+<<<<<<< HEAD
+=======
+#include "../event.h"
+#include "../thread.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <errno.h>
+
+#include "../../perf.h"
+#include "../evsel.h"
+#include "../util.h"
+#include "../event.h"
+#include "../thread.h"
+>>>>>>> refs/remotes/origin/master
 #include "../trace-event.h"
 
 PyMODINIT_FUNC initperf_trace_context(void);
@@ -36,7 +54,11 @@ PyMODINIT_FUNC initperf_trace_context(void);
 #define FTRACE_MAX_EVENT				\
 	((1 << (sizeof(unsigned short) * 8)) - 1)
 
+<<<<<<< HEAD
 struct event *events[FTRACE_MAX_EVENT];
+=======
+struct event_format *events[FTRACE_MAX_EVENT];
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_FIELDS	64
 #define N_COMMON_FIELDS	7
@@ -54,6 +76,20 @@ static void handler_call_die(const char *handler_name)
 	Py_FatalError("problem in Python trace event handler");
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * Insert val into into the dictionary and decrement the reference counter.
+ * This is necessary for dictionaries since PyDict_SetItemString() does not 
+ * steal a reference, as opposed to PyTuple_SetItem().
+ */
+static void pydict_set_item_string_decref(PyObject *dict, const char *key, PyObject *val)
+{
+	PyDict_SetItemString(dict, key, val);
+	Py_DECREF(val);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void define_value(enum print_arg_type field_type,
 			 const char *ev_name,
 			 const char *field_name,
@@ -135,7 +171,11 @@ static void define_field(enum print_arg_type field_type,
 	Py_DECREF(t);
 }
 
+<<<<<<< HEAD
 static void define_event_symbols(struct event *event,
+=======
+static void define_event_symbols(struct event_format *event,
+>>>>>>> refs/remotes/origin/master
 				 const char *ev_name,
 				 struct print_arg *args)
 {
@@ -148,8 +188,12 @@ static void define_event_symbols(struct event *event,
 		zero_flag_atom = 0;
 		break;
 	case PRINT_FIELD:
+<<<<<<< HEAD
 		if (cur_field_name)
 			free(cur_field_name);
+=======
+		free(cur_field_name);
+>>>>>>> refs/remotes/origin/master
 		cur_field_name = strdup(args->field.name);
 		break;
 	case PRINT_FLAGS:
@@ -165,6 +209,13 @@ static void define_event_symbols(struct event *event,
 		define_values(PRINT_SYMBOL, args->symbol.symbols, ev_name,
 			      cur_field_name);
 		break;
+<<<<<<< HEAD
+=======
+	case PRINT_HEX:
+		define_event_symbols(event, ev_name, args->hex.field);
+		define_event_symbols(event, ev_name, args->hex.size);
+		break;
+>>>>>>> refs/remotes/origin/master
 	case PRINT_STRING:
 		break;
 	case PRINT_TYPE:
@@ -177,6 +228,13 @@ static void define_event_symbols(struct event *event,
 		define_event_symbols(event, ev_name, args->op.right);
 		break;
 	default:
+<<<<<<< HEAD
+=======
+		/* gcc warns for these? */
+	case PRINT_BSTRING:
+	case PRINT_DYNAMIC_ARRAY:
+	case PRINT_FUNC:
+>>>>>>> refs/remotes/origin/master
 		/* we should warn... */
 		return;
 	}
@@ -185,6 +243,7 @@ static void define_event_symbols(struct event *event,
 		define_event_symbols(event, ev_name, args->next);
 }
 
+<<<<<<< HEAD
 static inline struct event *find_cache_event(int type)
 {
 	static char ev_name[256];
@@ -194,6 +253,23 @@ static inline struct event *find_cache_event(int type)
 		return events[type];
 
 	events[type] = event = trace_find_event(type);
+=======
+static inline struct event_format *find_cache_event(struct perf_evsel *evsel)
+{
+	static char ev_name[256];
+	struct event_format *event;
+	int type = evsel->attr.config;
+
+	/*
+ 	 * XXX: Do we really need to cache this since now we have evsel->tp_format
+ 	 * cached already? Need to re-read this "cache" routine that as well calls
+ 	 * define_event_symbols() :-\
+ 	 */
+	if (events[type])
+		return events[type];
+
+	events[type] = event = evsel->tp_format;
+>>>>>>> refs/remotes/origin/master
 	if (!event)
 		return NULL;
 
@@ -204,30 +280,51 @@ static inline struct event *find_cache_event(int type)
 	return event;
 }
 
+<<<<<<< HEAD
 static void python_process_event(union perf_event *pevent __unused,
 				 struct perf_sample *sample,
 				 struct perf_evsel *evsel __unused,
+<<<<<<< HEAD
 				 struct perf_session *session __unused,
+=======
+				 struct machine *machine __unused,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 struct thread *thread)
+=======
+static void python_process_tracepoint(struct perf_sample *sample,
+				      struct perf_evsel *evsel,
+				      struct thread *thread,
+				      struct addr_location *al)
+>>>>>>> refs/remotes/origin/master
 {
 	PyObject *handler, *retval, *context, *t, *obj, *dict = NULL;
 	static char handler_name[256];
 	struct format_field *field;
 	unsigned long long val;
 	unsigned long s, ns;
+<<<<<<< HEAD
 	struct event *event;
 	unsigned n = 0;
 	int type;
+=======
+	struct event_format *event;
+	unsigned n = 0;
+>>>>>>> refs/remotes/origin/master
 	int pid;
 	int cpu = sample->cpu;
 	void *data = sample->raw_data;
 	unsigned long long nsecs = sample->time;
+<<<<<<< HEAD
 	char *comm = thread->comm;
+=======
+	const char *comm = thread__comm_str(thread);
+>>>>>>> refs/remotes/origin/master
 
 	t = PyTuple_New(MAX_FIELDS);
 	if (!t)
 		Py_FatalError("couldn't create Python tuple");
 
+<<<<<<< HEAD
 	type = trace_parse_common_type(data);
 
 	event = find_cache_event(type);
@@ -235,6 +332,13 @@ static void python_process_event(union perf_event *pevent __unused,
 		die("ug! no event found for type %d", type);
 
 	pid = trace_parse_common_pid(data);
+=======
+	event = find_cache_event(evsel);
+	if (!event)
+		die("ug! no event found for type %d", (int)evsel->attr.config);
+
+	pid = raw_field_value(event, "common_pid", data);
+>>>>>>> refs/remotes/origin/master
 
 	sprintf(handler_name, "%s__%s", event->system, event->name);
 
@@ -250,6 +354,10 @@ static void python_process_event(union perf_event *pevent __unused,
 	ns = nsecs - s * NSECS_PER_SEC;
 
 	scripting_context->event_data = data;
+<<<<<<< HEAD
+=======
+	scripting_context->pevent = evsel->tp_format->pevent;
+>>>>>>> refs/remotes/origin/master
 
 	context = PyCObject_FromVoidPtr(scripting_context, NULL);
 
@@ -263,11 +371,19 @@ static void python_process_event(union perf_event *pevent __unused,
 		PyTuple_SetItem(t, n++, PyInt_FromLong(pid));
 		PyTuple_SetItem(t, n++, PyString_FromString(comm));
 	} else {
+<<<<<<< HEAD
 		PyDict_SetItemString(dict, "common_cpu", PyInt_FromLong(cpu));
 		PyDict_SetItemString(dict, "common_s", PyInt_FromLong(s));
 		PyDict_SetItemString(dict, "common_ns", PyInt_FromLong(ns));
 		PyDict_SetItemString(dict, "common_pid", PyInt_FromLong(pid));
 		PyDict_SetItemString(dict, "common_comm", PyString_FromString(comm));
+=======
+		pydict_set_item_string_decref(dict, "common_cpu", PyInt_FromLong(cpu));
+		pydict_set_item_string_decref(dict, "common_s", PyInt_FromLong(s));
+		pydict_set_item_string_decref(dict, "common_ns", PyInt_FromLong(ns));
+		pydict_set_item_string_decref(dict, "common_pid", PyInt_FromLong(pid));
+		pydict_set_item_string_decref(dict, "common_comm", PyString_FromString(comm));
+>>>>>>> refs/remotes/origin/master
 	}
 	for (field = event->format.fields; field; field = field->next) {
 		if (field->flags & FIELD_IS_STRING) {
@@ -279,7 +395,12 @@ static void python_process_event(union perf_event *pevent __unused,
 				offset = field->offset;
 			obj = PyString_FromString((char *)data + offset);
 		} else { /* FIELD_IS_NUMERIC */
+<<<<<<< HEAD
 			val = read_size(data + field->offset, field->size);
+=======
+			val = read_size(event, data + field->offset,
+					field->size);
+>>>>>>> refs/remotes/origin/master
 			if (field->flags & FIELD_IS_SIGNED) {
 				if ((long long)val >= LONG_MIN &&
 				    (long long)val <= LONG_MAX)
@@ -296,7 +417,11 @@ static void python_process_event(union perf_event *pevent __unused,
 		if (handler)
 			PyTuple_SetItem(t, n++, obj);
 		else
+<<<<<<< HEAD
 			PyDict_SetItemString(dict, field->name, obj);
+=======
+			pydict_set_item_string_decref(dict, field->name, obj);
+>>>>>>> refs/remotes/origin/master
 
 	}
 	if (!handler)
@@ -323,6 +448,82 @@ static void python_process_event(union perf_event *pevent __unused,
 	Py_DECREF(t);
 }
 
+<<<<<<< HEAD
+=======
+static void python_process_general_event(struct perf_sample *sample,
+					 struct perf_evsel *evsel,
+					 struct thread *thread,
+					 struct addr_location *al)
+{
+	PyObject *handler, *retval, *t, *dict;
+	static char handler_name[64];
+	unsigned n = 0;
+
+	/*
+	 * Use the MAX_FIELDS to make the function expandable, though
+	 * currently there is only one item for the tuple.
+	 */
+	t = PyTuple_New(MAX_FIELDS);
+	if (!t)
+		Py_FatalError("couldn't create Python tuple");
+
+	dict = PyDict_New();
+	if (!dict)
+		Py_FatalError("couldn't create Python dictionary");
+
+	snprintf(handler_name, sizeof(handler_name), "%s", "process_event");
+
+	handler = PyDict_GetItemString(main_dict, handler_name);
+	if (!handler || !PyCallable_Check(handler))
+		goto exit;
+
+	pydict_set_item_string_decref(dict, "ev_name", PyString_FromString(perf_evsel__name(evsel)));
+	pydict_set_item_string_decref(dict, "attr", PyString_FromStringAndSize(
+			(const char *)&evsel->attr, sizeof(evsel->attr)));
+	pydict_set_item_string_decref(dict, "sample", PyString_FromStringAndSize(
+			(const char *)sample, sizeof(*sample)));
+	pydict_set_item_string_decref(dict, "raw_buf", PyString_FromStringAndSize(
+			(const char *)sample->raw_data, sample->raw_size));
+	pydict_set_item_string_decref(dict, "comm",
+			PyString_FromString(thread__comm_str(thread)));
+	if (al->map) {
+		pydict_set_item_string_decref(dict, "dso",
+			PyString_FromString(al->map->dso->name));
+	}
+	if (al->sym) {
+		pydict_set_item_string_decref(dict, "symbol",
+			PyString_FromString(al->sym->name));
+	}
+
+	PyTuple_SetItem(t, n++, dict);
+	if (_PyTuple_Resize(&t, n) == -1)
+		Py_FatalError("error resizing Python tuple");
+
+	retval = PyObject_CallObject(handler, t);
+	if (retval == NULL)
+		handler_call_die(handler_name);
+exit:
+	Py_DECREF(dict);
+	Py_DECREF(t);
+}
+
+static void python_process_event(union perf_event *event __maybe_unused,
+				 struct perf_sample *sample,
+				 struct perf_evsel *evsel,
+				 struct thread *thread,
+				 struct addr_location *al)
+{
+	switch (evsel->attr.type) {
+	case PERF_TYPE_TRACEPOINT:
+		python_process_tracepoint(sample, evsel, thread, al);
+		break;
+	/* Reserve for future process_hw/sw/raw APIs */
+	default:
+		python_process_general_event(sample, evsel, thread, al);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int run_start_sub(void)
 {
 	PyObject *handler, *retval;
@@ -433,9 +634,15 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int python_generate_script(const char *outfile)
 {
 	struct event *event = NULL;
+=======
+static int python_generate_script(struct pevent *pevent, const char *outfile)
+{
+	struct event_format *event = NULL;
+>>>>>>> refs/remotes/origin/master
 	struct format_field *f;
 	char fname[PATH_MAX];
 	int not_first, count;
@@ -482,7 +689,11 @@ static int python_generate_script(const char *outfile)
 	fprintf(ofp, "def trace_end():\n");
 	fprintf(ofp, "\tprint \"in trace_end\"\n\n");
 
+<<<<<<< HEAD
 	while ((event = trace_find_next_event(event))) {
+=======
+	while ((event = trace_find_next_event(pevent, event))) {
+>>>>>>> refs/remotes/origin/master
 		fprintf(ofp, "def %s__%s(", event->system, event->name);
 		fprintf(ofp, "event_name, ");
 		fprintf(ofp, "context, ");

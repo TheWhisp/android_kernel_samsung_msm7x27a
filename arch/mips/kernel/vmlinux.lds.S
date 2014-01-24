@@ -1,6 +1,22 @@
 #include <asm/asm-offsets.h>
+<<<<<<< HEAD
 #include <asm/page.h>
 #include <asm/thread_info.h>
+<<<<<<< HEAD
+=======
+#include <asm/thread_info.h>
+
+#define PAGE_SIZE _PAGE_SIZE
+
+/*
+ * Put .bss..swapper_pg_dir as the first thing in .bss. This will
+ * ensure that it has .bss alignment (64K).
+ */
+#define BSS_FIRST_SECTIONS *(.bss..swapper_pg_dir)
+
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm-generic/vmlinux.lds.h>
 
 #undef mips
@@ -14,12 +30,21 @@ PHDRS {
 
 #ifdef CONFIG_32BIT
 	#ifdef CONFIG_CPU_LITTLE_ENDIAN
+<<<<<<< HEAD
 		jiffies  = jiffies_64;
 	#else
 		jiffies  = jiffies_64 + 4;
 	#endif
 #else
 	jiffies  = jiffies_64;
+=======
+		jiffies	 = jiffies_64;
+	#else
+		jiffies	 = jiffies_64 + 4;
+	#endif
+#else
+	jiffies	 = jiffies_64;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 SECTIONS
@@ -70,7 +95,13 @@ SECTIONS
 	RODATA
 
 	/* writeable */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	_sdata = .;				/* Start of data section */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.data : {	/* Data */
 		. = . + DATAOFFSET;		/* for CONFIG_MAPPED_KERNEL */
 
@@ -120,11 +151,29 @@ SECTIONS
 	}
 
 	PERCPU_SECTION(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+<<<<<<< HEAD
 	. = ALIGN(PAGE_SIZE);
 	__init_end = .;
 	/* freed after init ends here */
 
 	BSS_SECTION(0, 0, 0)
+=======
+	/*
+	 * Align to 64K in attempt to eliminate holes before the
+	 * .bss..swapper_pg_dir section at the start of .bss.  This
+	 * also satisfies PAGE_SIZE alignment as the largest page size
+	 * allowed is 64K.
+	 */
+	. = ALIGN(0x10000);
+	__init_end = .;
+	/* freed after init ends here */
+
+	/*
+	 * Force .bss to 64K alignment so that .bss..swapper_pg_dir
+	 * gets that alignment.	 .sbss should be empty, so there will be
+	 * no holes after __init_end. */
+	BSS_SECTION(0, 0x10000, 0)
+>>>>>>> refs/remotes/origin/master
 
 	_end = . ;
 
@@ -162,5 +211,9 @@ SECTIONS
 		*(.options)
 		*(.pdr)
 		*(.reginfo)
+<<<<<<< HEAD
+=======
+		*(.eh_frame)
+>>>>>>> refs/remotes/origin/master
 	}
 }

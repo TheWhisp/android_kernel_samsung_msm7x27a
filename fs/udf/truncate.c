@@ -95,6 +95,8 @@ void udf_truncate_tail_extent(struct inode *inode)
 		lbcount += elen;
 		if (lbcount > inode->i_size) {
 			if (lbcount - inode->i_size >= inode->i_sb->s_blocksize)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_WARNING
 				       "udf_truncate_tail_extent(): Too long "
 				       "extent after EOF in inode %u: i_size: "
@@ -104,14 +106,40 @@ void udf_truncate_tail_extent(struct inode *inode)
 				       (long long)lbcount,
 				       (unsigned)eloc.logicalBlockNum,
 				       (unsigned)elen);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				udf_warn(inode->i_sb,
+					 "Too long extent after EOF in inode %u: i_size: %lld lbcount: %lld extent %u+%u\n",
+					 (unsigned)inode->i_ino,
+					 (long long)inode->i_size,
+					 (long long)lbcount,
+					 (unsigned)eloc.logicalBlockNum,
+					 (unsigned)elen);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			nelen = elen - (lbcount - inode->i_size);
 			epos.offset -= adsize;
 			extent_trunc(inode, &epos, &eloc, etype, elen, nelen);
 			epos.offset += adsize;
 			if (udf_next_aext(inode, &epos, &eloc, &elen, 1) != -1)
+<<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_ERR "udf_truncate_tail_extent(): "
 				       "Extent after EOF in inode %u.\n",
 				       (unsigned)inode->i_ino);
+=======
+				udf_err(inode->i_sb,
+					"Extent after EOF in inode %u\n",
+					(unsigned)inode->i_ino);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				udf_err(inode->i_sb,
+					"Extent after EOF in inode %u\n",
+					(unsigned)inode->i_ino);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -250,7 +278,11 @@ void udf_truncate_extents(struct inode *inode)
 				/* We managed to free all extents in the
 				 * indirect extent - free it too */
 				BUG_ON(!epos.bh);
+<<<<<<< HEAD
 				udf_free_blocks(sb, inode, &epos.block,
+=======
+				udf_free_blocks(sb, NULL, &epos.block,
+>>>>>>> refs/remotes/origin/master
 						0, indirect_ext_len);
 			} else if (!epos.bh) {
 				iinfo->i_lenAlloc = lenalloc;
@@ -277,7 +309,11 @@ void udf_truncate_extents(struct inode *inode)
 
 	if (indirect_ext_len) {
 		BUG_ON(!epos.bh);
+<<<<<<< HEAD
 		udf_free_blocks(sb, inode, &epos.block, 0, indirect_ext_len);
+=======
+		udf_free_blocks(sb, NULL, &epos.block, 0, indirect_ext_len);
+>>>>>>> refs/remotes/origin/master
 	} else if (!epos.bh) {
 		iinfo->i_lenAlloc = lenalloc;
 		mark_inode_dirty(inode);

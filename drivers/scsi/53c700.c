@@ -129,7 +129,13 @@
 #include <linux/interrupt.h>
 #include <linux/device.h>
 #include <asm/dma.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/pgtable.h>
 #include <asm/byteorder.h>

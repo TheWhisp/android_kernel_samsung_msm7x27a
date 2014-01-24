@@ -17,7 +17,13 @@
 
 #include <pcmcia/ss.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include "i82092aa.h"
@@ -26,6 +32,8 @@
 MODULE_LICENSE("GPL");
 
 /* PCI core routines */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_device_id i82092aa_pci_ids[] = {
 	{
 	      .vendor = PCI_VENDOR_ID_INTEL,
@@ -34,6 +42,16 @@ static struct pci_device_id i82092aa_pci_ids[] = {
 	      .subdevice = PCI_ANY_ID,
 	 },
 	 {} 
+=======
+static DEFINE_PCI_DEVICE_TABLE(i82092aa_pci_ids) = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82092AA_0) },
+	{ }
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_PCI_DEVICE_TABLE(i82092aa_pci_ids) = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82092AA_0) },
+	{ }
+>>>>>>> refs/remotes/origin/master
 };
 MODULE_DEVICE_TABLE(pci, i82092aa_pci_ids);
 
@@ -41,7 +59,11 @@ static struct pci_driver i82092aa_pci_driver = {
 	.name           = "i82092aa",
 	.id_table       = i82092aa_pci_ids,
 	.probe          = i82092aa_pci_probe,
+<<<<<<< HEAD
 	.remove         = __devexit_p(i82092aa_pci_remove),
+=======
+	.remove         = i82092aa_pci_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -73,7 +95,11 @@ static struct socket_info sockets[MAX_SOCKETS];
 static int socket_count;  /* shortcut */                                  	                                	
 
 
+<<<<<<< HEAD
 static int __devinit i82092aa_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int i82092aa_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char configbyte;
 	int i, ret;
@@ -139,8 +165,11 @@ static int __devinit i82092aa_pci_probe(struct pci_dev *dev, const struct pci_de
 		goto err_out_free_res;
 	}
 
+<<<<<<< HEAD
 	pci_set_drvdata(dev, &sockets[i].socket);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i<socket_count; i++) {
 		sockets[i].socket.dev.parent = &dev->dev;
 		sockets[i].socket.ops = &i82092aa_operations;
@@ -168,16 +197,27 @@ err_out_disable:
 	return ret;			
 }
 
+<<<<<<< HEAD
 static void __devexit i82092aa_pci_remove(struct pci_dev *dev)
 {
 	struct pcmcia_socket *socket = pci_get_drvdata(dev);
+=======
+static void i82092aa_pci_remove(struct pci_dev *dev)
+{
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	enter("i82092aa_pci_remove");
 	
 	free_irq(dev->irq, i82092aa_interrupt);
 
+<<<<<<< HEAD
 	if (socket)
 		pcmcia_unregister_socket(socket);
+=======
+	for (i = 0; i < socket_count; i++)
+		pcmcia_unregister_socket(&sockets[i].socket);
+>>>>>>> refs/remotes/origin/master
 
 	leave("i82092aa_pci_remove");
 }

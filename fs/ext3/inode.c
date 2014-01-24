@@ -22,6 +22,8 @@
  *  Assorted race fixes, rewrite of ext3_get_block() by Al Viro, 2000
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/time.h>
@@ -38,10 +40,33 @@
 #include <linux/bio.h>
 #include <linux/fiemap.h>
 #include <linux/namei.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/highuid.h>
+#include <linux/quotaops.h>
+#include <linux/writeback.h>
+#include <linux/mpage.h>
+#include <linux/namei.h>
+<<<<<<< HEAD
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/aio.h>
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/master
 #include "xattr.h"
 #include "acl.h"
 
 static int ext3_writepage_trans_blocks(struct inode *inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int ext3_block_truncate_page(struct inode *inode, loff_t from);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ext3_block_truncate_page(struct inode *inode, loff_t from);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Test whether an inode is a fast symlink.
@@ -70,6 +95,14 @@ int ext3_forget(handle_t *handle, int is_metadata, struct inode *inode,
 
 	might_sleep();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_forget(inode, is_metadata, blocknr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_forget(inode, is_metadata, blocknr);
+>>>>>>> refs/remotes/origin/master
 	BUFFER_TRACE(bh, "enter");
 
 	jbd_debug(4, "forgetting bh %p: is_metadata = %d, mode %o, "
@@ -194,20 +227,80 @@ static int truncate_restart_transaction(handle_t *handle, struct inode *inode)
  */
 void ext3_evict_inode (struct inode *inode)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct ext3_inode_info *ei = EXT3_I(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ext3_inode_info *ei = EXT3_I(inode);
+>>>>>>> refs/remotes/origin/master
 	struct ext3_block_alloc_info *rsv;
 	handle_t *handle;
 	int want_delete = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_evict_inode(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_evict_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	if (!inode->i_nlink && !is_bad_inode(inode)) {
 		dquot_initialize(inode);
 		want_delete = 1;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	truncate_inode_pages(&inode->i_data, 0);
 
 	ext3_discard_reservation(inode);
 	rsv = EXT3_I(inode)->i_block_alloc_info;
 	EXT3_I(inode)->i_block_alloc_info = NULL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/*
+	 * When journalling data dirty buffers are tracked only in the journal.
+	 * So although mm thinks everything is clean and ready for reaping the
+	 * inode might still have some pages to write in the running
+	 * transaction or waiting to be checkpointed. Thus calling
+	 * journal_invalidatepage() (via truncate_inode_pages()) to discard
+	 * these buffers can cause data loss. Also even if we did not discard
+	 * these buffers, we would have no way to find them after the inode
+	 * is reaped and thus user could see stale data if he tries to read
+	 * them before the transaction is checkpointed. So be careful and
+	 * force everything to disk here... We use ei->i_datasync_tid to
+	 * store the newest transaction containing inode's data.
+	 *
+	 * Note that directories do not have this problem because they don't
+	 * use page cache.
+	 *
+	 * The s_journal check handles the case when ext3_get_journal() fails
+	 * and puts the journal inode.
+	 */
+	if (inode->i_nlink && ext3_should_journal_data(inode) &&
+	    EXT3_SB(inode->i_sb)->s_journal &&
+	    (S_ISLNK(inode->i_mode) || S_ISREG(inode->i_mode)) &&
+	    inode->i_ino != EXT3_JOURNAL_INO) {
+		tid_t commit_tid = atomic_read(&ei->i_datasync_tid);
+		journal_t *journal = EXT3_SB(inode->i_sb)->s_journal;
+
+		log_start_commit(journal, commit_tid);
+		log_wait_commit(journal, commit_tid);
+		filemap_write_and_wait(&inode->i_data);
+	}
+	truncate_inode_pages(&inode->i_data, 0);
+
+	ext3_discard_reservation(inode);
+	rsv = ei->i_block_alloc_info;
+	ei->i_block_alloc_info = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(rsv))
 		kfree(rsv);
 
@@ -231,6 +324,8 @@ void ext3_evict_inode (struct inode *inode)
 	if (inode->i_blocks)
 		ext3_truncate(inode);
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * Kill off the orphan record which ext3_truncate created.
 	 * AKPM: I think this can be inside the above `if'.
 	 * Note that ext3_orphan_del() has to be able to cope with the
@@ -240,6 +335,20 @@ void ext3_evict_inode (struct inode *inode)
 	 */
 	ext3_orphan_del(handle, inode);
 	EXT3_I(inode)->i_dtime	= get_seconds();
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * Kill off the orphan record created when the inode lost the last
+	 * link.  Note that ext3_orphan_del() has to be able to cope with the
+	 * deletion of a non-existent orphan - ext3_truncate() could
+	 * have removed the record.
+	 */
+	ext3_orphan_del(handle, inode);
+	ei->i_dtime = get_seconds();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * One subtle ordering requirement: if anything has gone wrong
@@ -251,18 +360,30 @@ void ext3_evict_inode (struct inode *inode)
 	if (ext3_mark_inode_dirty(handle, inode)) {
 		/* If that failed, just dquot_drop() and be done with that */
 		dquot_drop(inode);
+<<<<<<< HEAD
 		end_writeback(inode);
+=======
+		clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		ext3_xattr_delete_inode(handle, inode);
 		dquot_free_inode(inode);
 		dquot_drop(inode);
+<<<<<<< HEAD
 		end_writeback(inode);
+=======
+		clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 		ext3_free_inode(handle, inode);
 	}
 	ext3_journal_stop(handle);
 	return;
 no_delete:
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	dquot_drop(inode);
 }
 
@@ -655,6 +776,13 @@ static int ext3_alloc_branch(handle_t *handle, struct inode *inode,
 		 * parent to disk.
 		 */
 		bh = sb_getblk(inode->i_sb, new_blocks[n-1]);
+<<<<<<< HEAD
+=======
+		if (unlikely(!bh)) {
+			err = -ENOMEM;
+			goto failed;
+		}
+>>>>>>> refs/remotes/origin/master
 		branch[n].bh = bh;
 		lock_buffer(bh);
 		BUFFER_TRACE(bh, "call get_create_access");
@@ -696,7 +824,11 @@ failed:
 		BUFFER_TRACE(branch[i].bh, "call journal_forget");
 		ext3_journal_forget(handle, branch[i].bh);
 	}
+<<<<<<< HEAD
 	for (i = 0; i <indirect_blks; i++)
+=======
+	for (i = 0; i < indirect_blks; i++)
+>>>>>>> refs/remotes/origin/master
 		ext3_free_blocks(handle, inode, new_blocks[i], 1);
 
 	ext3_free_blocks(handle, inode, new_blocks[i], num);
@@ -725,6 +857,14 @@ static int ext3_splice_branch(handle_t *handle, struct inode *inode,
 	struct ext3_block_alloc_info *block_i;
 	ext3_fsblk_t current_block;
 	struct ext3_inode_info *ei = EXT3_I(inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct timespec now;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct timespec now;
+>>>>>>> refs/remotes/origin/master
 
 	block_i = ei->i_block_alloc_info;
 	/*
@@ -764,9 +904,23 @@ static int ext3_splice_branch(handle_t *handle, struct inode *inode,
 	}
 
 	/* We are done with atomic stuff, now do the rest of housekeeping */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	inode->i_ctime = CURRENT_TIME_SEC;
 	ext3_mark_inode_dirty(handle, inode);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	now = CURRENT_TIME_SEC;
+	if (!timespec_equal(&inode->i_ctime, &now) || !where->bh) {
+		inode->i_ctime = now;
+		ext3_mark_inode_dirty(handle, inode);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* ext3_mark_inode_dirty already updated i_sync_tid */
 	atomic_set(&ei->i_datasync_tid, handle->h_transaction->t_tid);
 
@@ -842,6 +996,14 @@ int ext3_get_blocks_handle(handle_t *handle, struct inode *inode,
 	ext3_fsblk_t first_block = 0;
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_get_blocks_enter(inode, iblock, maxblocks, create);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_get_blocks_enter(inode, iblock, maxblocks, create);
+>>>>>>> refs/remotes/origin/master
 	J_ASSERT(handle != NULL || create == 0);
 	depth = ext3_block_to_path(inode,iblock,offsets,&blocks_to_boundary);
 
@@ -886,6 +1048,18 @@ int ext3_get_blocks_handle(handle_t *handle, struct inode *inode,
 	if (!create || err == -EIO)
 		goto cleanup;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/*
+	 * Block out ext3_truncate while we alter the tree
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Block out ext3_truncate while we alter the tree
+	 */
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&ei->truncate_mutex);
 
 	/*
@@ -934,9 +1108,15 @@ int ext3_get_blocks_handle(handle_t *handle, struct inode *inode,
 	 */
 	count = ext3_blks_to_allocate(partial, indirect_blks,
 					maxblocks, blocks_to_boundary);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Block out ext3_truncate while we alter the tree
 	 */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = ext3_alloc_branch(handle, inode, indirect_blks, &count, goal,
 				offsets + (partial - chain), partial);
 
@@ -970,6 +1150,18 @@ cleanup:
 	}
 	BUFFER_TRACE(bh_result, "returned");
 out:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_get_blocks_exit(inode, iblock,
+				   depth ? le32_to_cpu(chain[depth-1].key) : 0,
+				   count, err);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_get_blocks_exit(inode, iblock,
+				   depth ? le32_to_cpu(chain[depth-1].key) : 0,
+				   count, err);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1043,16 +1235,25 @@ struct buffer_head *ext3_getblk(handle_t *handle, struct inode *inode,
 	 * mapped. 0 in case of a HOLE.
 	 */
 	if (err > 0) {
+<<<<<<< HEAD
 		if (err > 1)
 			WARN_ON(1);
+=======
+		WARN_ON(err > 1);
+>>>>>>> refs/remotes/origin/master
 		err = 0;
 	}
 	*errp = err;
 	if (!err && buffer_mapped(&dummy)) {
 		struct buffer_head *bh;
 		bh = sb_getblk(inode->i_sb, dummy.b_blocknr);
+<<<<<<< HEAD
 		if (!bh) {
 			*errp = -EIO;
+=======
+		if (unlikely(!bh)) {
+			*errp = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			goto err;
 		}
 		if (buffer_new(&dummy)) {
@@ -1100,9 +1301,23 @@ struct buffer_head *ext3_bread(handle_t *handle, struct inode *inode,
 	bh = ext3_getblk(handle, inode, block, create, err);
 	if (!bh)
 		return bh;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (buffer_uptodate(bh))
 		return bh;
 	ll_rw_block(READ_META, 1, &bh);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (bh_uptodate_or_lock(bh))
+		return bh;
+	get_bh(bh);
+	bh->b_end_io = end_buffer_read_sync;
+	submit_bh(READ | REQ_META | REQ_PRIO, bh);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wait_on_buffer(bh);
 	if (buffer_uptodate(bh))
 		return bh;
@@ -1202,6 +1417,25 @@ static void ext3_truncate_failed_write(struct inode *inode)
 	ext3_truncate(inode);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Truncate blocks that were not used by direct IO write. We have to zero out
+ * the last file block as well because direct IO might have written to it.
+ */
+static void ext3_truncate_failed_direct_write(struct inode *inode)
+{
+	ext3_block_truncate_page(inode, inode->i_size);
+	ext3_truncate(inode);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ext3_write_begin(struct file *file, struct address_space *mapping,
 				loff_t pos, unsigned len, unsigned flags,
 				struct page **pagep, void **fsdata)
@@ -1217,6 +1451,16 @@ static int ext3_write_begin(struct file *file, struct address_space *mapping,
 	 * we allocate blocks but write fails for some reason */
 	int needed_blocks = ext3_writepage_trans_blocks(inode) + 1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_write_begin(inode, pos, len, flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_write_begin(inode, pos, len, flags);
+
+>>>>>>> refs/remotes/origin/master
 	index = pos >> PAGE_CACHE_SHIFT;
 	from = pos & (PAGE_CACHE_SIZE - 1);
 	to = from + len;
@@ -1332,6 +1576,14 @@ static int ext3_ordered_write_end(struct file *file,
 	unsigned from, to;
 	int ret = 0, ret2;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_ordered_write_end(inode, pos, len, copied);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_ordered_write_end(inode, pos, len, copied);
+>>>>>>> refs/remotes/origin/master
 	copied = block_write_end(file, mapping, pos, len, copied, page, fsdata);
 
 	from = pos & (PAGE_CACHE_SIZE - 1);
@@ -1367,6 +1619,14 @@ static int ext3_writeback_write_end(struct file *file,
 	struct inode *inode = file->f_mapping->host;
 	int ret;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_writeback_write_end(inode, pos, len, copied);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_writeback_write_end(inode, pos, len, copied);
+>>>>>>> refs/remotes/origin/master
 	copied = block_write_end(file, mapping, pos, len, copied, page, fsdata);
 	update_file_sizes(inode, pos, copied);
 	/*
@@ -1391,10 +1651,26 @@ static int ext3_journalled_write_end(struct file *file,
 {
 	handle_t *handle = ext3_journal_current_handle();
 	struct inode *inode = mapping->host;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct ext3_inode_info *ei = EXT3_I(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ext3_inode_info *ei = EXT3_I(inode);
+>>>>>>> refs/remotes/origin/master
 	int ret = 0, ret2;
 	int partial = 0;
 	unsigned from, to;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_journalled_write_end(inode, pos, len, copied);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_journalled_write_end(inode, pos, len, copied);
+>>>>>>> refs/remotes/origin/master
 	from = pos & (PAGE_CACHE_SIZE - 1);
 	to = from + len;
 
@@ -1419,8 +1695,20 @@ static int ext3_journalled_write_end(struct file *file,
 	if (pos + len > inode->i_size && ext3_can_truncate(inode))
 		ext3_orphan_add(handle, inode);
 	ext3_set_inode_state(inode, EXT3_STATE_JDATA);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (inode->i_size > EXT3_I(inode)->i_disksize) {
 		EXT3_I(inode)->i_disksize = inode->i_size;
+=======
+	atomic_set(&ei->i_datasync_tid, handle->h_transaction->t_tid);
+	if (inode->i_size > ei->i_disksize) {
+		ei->i_disksize = inode->i_size;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&ei->i_datasync_tid, handle->h_transaction->t_tid);
+	if (inode->i_size > ei->i_disksize) {
+		ei->i_disksize = inode->i_size;
+>>>>>>> refs/remotes/origin/master
 		ret2 = ext3_mark_inode_dirty(handle, inode);
 		if (!ret)
 			ret = ret2;
@@ -1583,6 +1871,14 @@ static int ext3_ordered_writepage(struct page *page,
 	if (ext3_journal_current_handle())
 		goto out_fail;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_ordered_writepage(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_ordered_writepage(page);
+>>>>>>> refs/remotes/origin/master
 	if (!page_has_buffers(page)) {
 		create_empty_buffers(page, inode->i_sb->s_blocksize,
 				(1 << BH_Dirty)|(1 << BH_Uptodate));
@@ -1659,6 +1955,14 @@ static int ext3_writeback_writepage(struct page *page,
 	if (ext3_journal_current_handle())
 		goto out_fail;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_writeback_writepage(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_writeback_writepage(page);
+>>>>>>> refs/remotes/origin/master
 	if (page_has_buffers(page)) {
 		if (!walk_page_buffers(NULL, page_buffers(page), 0,
 				      PAGE_CACHE_SIZE, NULL, buffer_unmapped)) {
@@ -1707,6 +2011,14 @@ static int ext3_journalled_writepage(struct page *page,
 	if (ext3_journal_current_handle())
 		goto no_write;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_journalled_writepage(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_journalled_writepage(page);
+>>>>>>> refs/remotes/origin/master
 	handle = ext3_journal_start(inode, ext3_writepage_trans_blocks(inode));
 	if (IS_ERR(handle)) {
 		ret = PTR_ERR(handle);
@@ -1733,6 +2045,16 @@ static int ext3_journalled_writepage(struct page *page,
 		if (ret == 0)
 			ret = err;
 		ext3_set_inode_state(inode, EXT3_STATE_JDATA);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		atomic_set(&EXT3_I(inode)->i_datasync_tid,
+			   handle->h_transaction->t_tid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		atomic_set(&EXT3_I(inode)->i_datasync_tid,
+			   handle->h_transaction->t_tid);
+>>>>>>> refs/remotes/origin/master
 		unlock_page(page);
 	} else {
 		/*
@@ -1757,6 +2079,14 @@ out_unlock:
 
 static int ext3_readpage(struct file *file, struct page *page)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_readpage(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_readpage(page);
+>>>>>>> refs/remotes/origin/master
 	return mpage_readpage(page, ext3_get_block);
 }
 
@@ -1767,10 +2097,16 @@ ext3_readpages(struct file *file, struct address_space *mapping,
 	return mpage_readpages(mapping, pages, nr_pages, ext3_get_block);
 }
 
+<<<<<<< HEAD
 static void ext3_invalidatepage(struct page *page, unsigned long offset)
 {
 	journal_t *journal = EXT3_JOURNAL(page->mapping->host);
 
+<<<<<<< HEAD
+=======
+	trace_ext3_invalidatepage(page, offset);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * If it's a full truncate we just forget about the pending dirtying
 	 */
@@ -1778,12 +2114,36 @@ static void ext3_invalidatepage(struct page *page, unsigned long offset)
 		ClearPageChecked(page);
 
 	journal_invalidatepage(journal, page, offset);
+=======
+static void ext3_invalidatepage(struct page *page, unsigned int offset,
+				unsigned int length)
+{
+	journal_t *journal = EXT3_JOURNAL(page->mapping->host);
+
+	trace_ext3_invalidatepage(page, offset, length);
+
+	/*
+	 * If it's a full truncate we just forget about the pending dirtying
+	 */
+	if (offset == 0 && length == PAGE_CACHE_SIZE)
+		ClearPageChecked(page);
+
+	journal_invalidatepage(journal, page, offset, length);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ext3_releasepage(struct page *page, gfp_t wait)
 {
 	journal_t *journal = EXT3_JOURNAL(page->mapping->host);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_releasepage(page);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_releasepage(page);
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(PageChecked(page));
 	if (!page_has_buffers(page))
 		return 0;
@@ -1812,6 +2172,16 @@ static ssize_t ext3_direct_IO(int rw, struct kiocb *iocb,
 	size_t count = iov_length(iov, nr_segs);
 	int retries = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_direct_IO_enter(inode, offset, iov_length(iov, nr_segs), rw);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_direct_IO_enter(inode, offset, iov_length(iov, nr_segs), rw);
+
+>>>>>>> refs/remotes/origin/master
 	if (rw == WRITE) {
 		loff_t final_size = offset + count;
 
@@ -1834,9 +2204,19 @@ static ssize_t ext3_direct_IO(int rw, struct kiocb *iocb,
 	}
 
 retry:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = blockdev_direct_IO(rw, iocb, inode, inode->i_sb->s_bdev, iov,
 				 offset, nr_segs,
 				 ext3_get_block, NULL);
+=======
+	ret = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
+				 ext3_get_block);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
+				 ext3_get_block);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * In case of error extending write may have instantiated a few
 	 * blocks outside i_size. Trim these off again.
@@ -1846,7 +2226,15 @@ retry:
 		loff_t end = offset + iov_length(iov, nr_segs);
 
 		if (end > isize)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			vmtruncate(inode, isize);
+=======
+			ext3_truncate_failed_direct_write(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ext3_truncate_failed_direct_write(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (ret == -ENOSPC && ext3_should_retry_alloc(inode->i_sb, &retries))
 		goto retry;
@@ -1860,7 +2248,15 @@ retry:
 			/* This is really bad luck. We've written the data
 			 * but cannot extend i_size. Truncate allocated blocks
 			 * and pretend the write failed... */
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ext3_truncate(inode);
+=======
+			ext3_truncate_failed_direct_write(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ext3_truncate_failed_direct_write(inode);
+>>>>>>> refs/remotes/origin/master
 			ret = PTR_ERR(handle);
 			goto out;
 		}
@@ -1886,6 +2282,16 @@ retry:
 			ret = err;
 	}
 out:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_direct_IO_exit(inode, offset,
+				iov_length(iov, nr_segs), rw, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_direct_IO_exit(inode, offset,
+				iov_length(iov, nr_segs), rw, ret);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1920,6 +2326,10 @@ static const struct address_space_operations ext3_ordered_aops = {
 	.direct_IO		= ext3_direct_IO,
 	.migratepage		= buffer_migrate_page,
 	.is_partially_uptodate  = block_is_partially_uptodate,
+<<<<<<< HEAD
+=======
+	.is_dirty_writeback	= buffer_check_dirty_writeback,
+>>>>>>> refs/remotes/origin/master
 	.error_remove_page	= generic_error_remove_page,
 };
 
@@ -1968,6 +2378,8 @@ void ext3_set_aops(struct inode *inode)
  * This required during truncate. We need to physically zero the tail end
  * of that block so it doesn't yield old data if the file is later grown.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ext3_block_truncate_page(handle_t *handle, struct page *page,
 		struct address_space *mapping, loff_t from)
 {
@@ -1979,6 +2391,31 @@ static int ext3_block_truncate_page(handle_t *handle, struct page *page,
 	int err = 0;
 
 	blocksize = inode->i_sb->s_blocksize;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int ext3_block_truncate_page(struct inode *inode, loff_t from)
+{
+	ext3_fsblk_t index = from >> PAGE_CACHE_SHIFT;
+	unsigned offset = from & (PAGE_CACHE_SIZE - 1);
+	unsigned blocksize, iblock, length, pos;
+	struct page *page;
+	handle_t *handle = NULL;
+	struct buffer_head *bh;
+	int err = 0;
+
+	/* Truncated on block boundary - nothing to do */
+	blocksize = inode->i_sb->s_blocksize;
+	if ((from & (blocksize - 1)) == 0)
+		return 0;
+
+	page = grab_cache_page(inode->i_mapping, index);
+	if (!page)
+		return -ENOMEM;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	length = blocksize - (offset & (blocksize - 1));
 	iblock = index << (PAGE_CACHE_SHIFT - inode->i_sb->s_blocksize_bits);
 
@@ -2014,6 +2451,8 @@ static int ext3_block_truncate_page(handle_t *handle, struct page *page,
 	if (PageUptodate(page))
 		set_buffer_uptodate(bh);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!buffer_uptodate(bh)) {
 		err = -EIO;
 		ll_rw_block(READ, 1, &bh);
@@ -2023,11 +2462,45 @@ static int ext3_block_truncate_page(handle_t *handle, struct page *page,
 			goto unlock;
 	}
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!bh_uptodate_or_lock(bh)) {
+		err = bh_submit_read(bh);
+		/* Uhhuh. Read error. Complain and punt. */
+		if (err)
+			goto unlock;
+	}
+
+	/* data=writeback mode doesn't need transaction to zero-out data */
+	if (!ext3_should_writeback_data(inode)) {
+		/* We journal at most one block */
+		handle = ext3_journal_start(inode, 1);
+		if (IS_ERR(handle)) {
+			clear_highpage(page);
+			flush_dcache_page(page);
+			err = PTR_ERR(handle);
+			goto unlock;
+		}
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ext3_should_journal_data(inode)) {
 		BUFFER_TRACE(bh, "get write access");
 		err = ext3_journal_get_write_access(handle, bh);
 		if (err)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			goto unlock;
+=======
+			goto stop;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto stop;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	zero_user(page, offset, length);
@@ -2041,6 +2514,18 @@ static int ext3_block_truncate_page(handle_t *handle, struct page *page,
 			err = ext3_journal_dirty_data(handle, bh);
 		mark_buffer_dirty(bh);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+stop:
+	if (handle)
+		ext3_journal_stop(handle);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+stop:
+	if (handle)
+		ext3_journal_stop(handle);
+>>>>>>> refs/remotes/origin/master
 
 unlock:
 	unlock_page(page);
@@ -2409,8 +2894,14 @@ static void ext3_free_branches(handle_t *handle, struct inode *inode,
 
 int ext3_can_truncate(struct inode *inode)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_APPEND(inode) || IS_IMMUTABLE(inode))
 		return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (S_ISREG(inode->i_mode))
 		return 1;
 	if (S_ISDIR(inode->i_mode))
@@ -2427,7 +2918,15 @@ int ext3_can_truncate(struct inode *inode)
  * transaction, and VFS/VM ensures that ext3_truncate() cannot run
  * simultaneously on behalf of the same inode.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * As we work through the truncate and commmit bits of it to the journal there
+=======
+ * As we work through the truncate and commit bits of it to the journal there
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * As we work through the truncate and commit bits of it to the journal there
+>>>>>>> refs/remotes/origin/master
  * is one core, guiding principle: the file's tree must always be consistent on
  * disk.  We must be able to restart the truncate after a crash.
  *
@@ -2454,7 +2953,13 @@ void ext3_truncate(struct inode *inode)
 	struct ext3_inode_info *ei = EXT3_I(inode);
 	__le32 *i_data = ei->i_data;
 	int addr_per_block = EXT3_ADDR_PER_BLOCK(inode->i_sb);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct address_space *mapping = inode->i_mapping;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int offsets[4];
 	Indirect chain[4];
 	Indirect *partial;
@@ -2462,7 +2967,17 @@ void ext3_truncate(struct inode *inode)
 	int n;
 	long last_block;
 	unsigned blocksize = inode->i_sb->s_blocksize;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *page;
+=======
+
+	trace_ext3_truncate_enter(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_ext3_truncate_enter(inode);
+>>>>>>> refs/remotes/origin/master
 
 	if (!ext3_can_truncate(inode))
 		goto out_notrans;
@@ -2470,6 +2985,8 @@ void ext3_truncate(struct inode *inode)
 	if (inode->i_size == 0 && ext3_should_writeback_data(inode))
 		ext3_set_inode_state(inode, EXT3_STATE_FLUSH_ON_CLOSE);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * We have to lock the EOF page here, because lock_page() nests
 	 * outside journal_start().
@@ -2501,6 +3018,19 @@ void ext3_truncate(struct inode *inode)
 	if (page)
 		ext3_block_truncate_page(handle, page, mapping, inode->i_size);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	handle = start_transaction(inode);
+	if (IS_ERR(handle))
+		goto out_notrans;
+
+	last_block = (inode->i_size + blocksize-1)
+					>> EXT3_BLOCK_SIZE_BITS(inode->i_sb);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	n = ext3_block_to_path(inode, last_block, offsets, NULL);
 	if (n == 0)
 		goto out_stop;	/* error */
@@ -2615,6 +3145,14 @@ out_stop:
 		ext3_orphan_del(handle, inode);
 
 	ext3_journal_stop(handle);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_truncate_exit(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_truncate_exit(inode);
+>>>>>>> refs/remotes/origin/master
 	return;
 out_notrans:
 	/*
@@ -2623,6 +3161,14 @@ out_notrans:
 	 */
 	if (inode->i_nlink)
 		ext3_orphan_del(NULL, inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_truncate_exit(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_truncate_exit(inode);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ext3_fsblk_t ext3_get_inode_block(struct super_block *sb,
@@ -2676,12 +3222,20 @@ static int __ext3_get_inode_loc(struct inode *inode,
 		return -EIO;
 
 	bh = sb_getblk(inode->i_sb, block);
+<<<<<<< HEAD
 	if (!bh) {
+=======
+	if (unlikely(!bh)) {
+>>>>>>> refs/remotes/origin/master
 		ext3_error (inode->i_sb, "ext3_get_inode_loc",
 				"unable to read inode block - "
 				"inode=%lu, block="E3FSBLK,
 				 inode->i_ino, block);
+<<<<<<< HEAD
 		return -EIO;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!buffer_uptodate(bh)) {
 		lock_buffer(bh);
@@ -2730,7 +3284,11 @@ static int __ext3_get_inode_loc(struct inode *inode,
 
 			bitmap_bh = sb_getblk(inode->i_sb,
 					le32_to_cpu(desc->bg_inode_bitmap));
+<<<<<<< HEAD
 			if (!bitmap_bh)
+=======
+			if (unlikely(!bitmap_bh))
+>>>>>>> refs/remotes/origin/master
 				goto make_io;
 
 			/*
@@ -2764,9 +3322,22 @@ make_io:
 		 * has in-inode xattrs, or we don't have this inode in memory.
 		 * Read the block from disk.
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		get_bh(bh);
 		bh->b_end_io = end_buffer_read_sync;
 		submit_bh(READ_META, bh);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		trace_ext3_load_inode(inode);
+		get_bh(bh);
+		bh->b_end_io = end_buffer_read_sync;
+		submit_bh(READ | REQ_META | REQ_PRIO, bh);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		wait_on_buffer(bh);
 		if (!buffer_uptodate(bh)) {
 			ext3_error(inode->i_sb, "ext3_get_inode_loc",
@@ -2836,6 +3407,11 @@ struct inode *ext3_iget(struct super_block *sb, unsigned long ino)
 	transaction_t *transaction;
 	long ret;
 	int block;
+<<<<<<< HEAD
+=======
+	uid_t i_uid;
+	gid_t i_gid;
+>>>>>>> refs/remotes/origin/master
 
 	inode = iget_locked(sb, ino);
 	if (!inode)
@@ -2852,13 +3428,29 @@ struct inode *ext3_iget(struct super_block *sb, unsigned long ino)
 	bh = iloc.bh;
 	raw_inode = ext3_raw_inode(&iloc);
 	inode->i_mode = le16_to_cpu(raw_inode->i_mode);
+<<<<<<< HEAD
 	inode->i_uid = (uid_t)le16_to_cpu(raw_inode->i_uid_low);
 	inode->i_gid = (gid_t)le16_to_cpu(raw_inode->i_gid_low);
 	if(!(test_opt (inode->i_sb, NO_UID32))) {
 		inode->i_uid |= le16_to_cpu(raw_inode->i_uid_high) << 16;
 		inode->i_gid |= le16_to_cpu(raw_inode->i_gid_high) << 16;
 	}
+<<<<<<< HEAD
 	inode->i_nlink = le16_to_cpu(raw_inode->i_links_count);
+=======
+	set_nlink(inode, le16_to_cpu(raw_inode->i_links_count));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i_uid = (uid_t)le16_to_cpu(raw_inode->i_uid_low);
+	i_gid = (gid_t)le16_to_cpu(raw_inode->i_gid_low);
+	if(!(test_opt (inode->i_sb, NO_UID32))) {
+		i_uid |= le16_to_cpu(raw_inode->i_uid_high) << 16;
+		i_gid |= le16_to_cpu(raw_inode->i_gid_high) << 16;
+	}
+	i_uid_write(inode, i_uid);
+	i_gid_write(inode, i_gid);
+	set_nlink(inode, le16_to_cpu(raw_inode->i_links_count));
+>>>>>>> refs/remotes/origin/master
 	inode->i_size = le32_to_cpu(raw_inode->i_size);
 	inode->i_atime.tv_sec = (signed)le32_to_cpu(raw_inode->i_atime);
 	inode->i_ctime.tv_sec = (signed)le32_to_cpu(raw_inode->i_ctime);
@@ -3015,6 +3607,14 @@ static int ext3_do_update_inode(handle_t *handle,
 	int err = 0, rc, block;
 	int need_datasync = 0;
 	__le32 disksize;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	uid_t i_uid;
+	gid_t i_gid;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 again:
 	/* we can't allow multiple procs in here at once, its a bit racey */
@@ -3027,27 +3627,47 @@ again:
 
 	ext3_get_inode_flags(ei);
 	raw_inode->i_mode = cpu_to_le16(inode->i_mode);
+<<<<<<< HEAD
 	if(!(test_opt(inode->i_sb, NO_UID32))) {
 		raw_inode->i_uid_low = cpu_to_le16(low_16_bits(inode->i_uid));
 		raw_inode->i_gid_low = cpu_to_le16(low_16_bits(inode->i_gid));
+=======
+	i_uid = i_uid_read(inode);
+	i_gid = i_gid_read(inode);
+	if(!(test_opt(inode->i_sb, NO_UID32))) {
+		raw_inode->i_uid_low = cpu_to_le16(low_16_bits(i_uid));
+		raw_inode->i_gid_low = cpu_to_le16(low_16_bits(i_gid));
+>>>>>>> refs/remotes/origin/master
 /*
  * Fix up interoperability with old kernels. Otherwise, old inodes get
  * re-used with the upper 16 bits of the uid/gid intact
  */
 		if(!ei->i_dtime) {
 			raw_inode->i_uid_high =
+<<<<<<< HEAD
 				cpu_to_le16(high_16_bits(inode->i_uid));
 			raw_inode->i_gid_high =
 				cpu_to_le16(high_16_bits(inode->i_gid));
+=======
+				cpu_to_le16(high_16_bits(i_uid));
+			raw_inode->i_gid_high =
+				cpu_to_le16(high_16_bits(i_gid));
+>>>>>>> refs/remotes/origin/master
 		} else {
 			raw_inode->i_uid_high = 0;
 			raw_inode->i_gid_high = 0;
 		}
 	} else {
 		raw_inode->i_uid_low =
+<<<<<<< HEAD
 			cpu_to_le16(fs_high2lowuid(inode->i_uid));
 		raw_inode->i_gid_low =
 			cpu_to_le16(fs_high2lowgid(inode->i_gid));
+=======
+			cpu_to_le16(fs_high2lowuid(i_uid));
+		raw_inode->i_gid_low =
+			cpu_to_le16(fs_high2lowgid(i_gid));
+>>>>>>> refs/remotes/origin/master
 		raw_inode->i_uid_high = 0;
 		raw_inode->i_gid_high = 0;
 	}
@@ -3144,7 +3764,11 @@ out_brelse:
  *
  * - Within generic_file_write() for O_SYNC files.
  *   Here, there will be no transaction running. We wait for any running
+<<<<<<< HEAD
  *   trasnaction to commit.
+=======
+ *   transaction to commit.
+>>>>>>> refs/remotes/origin/master
  *
  * - Within sys_sync(), kupdate and such.
  *   We wait on commit, if tol to.
@@ -3218,8 +3842,13 @@ int ext3_setattr(struct dentry *dentry, struct iattr *attr)
 
 	if (is_quota_modification(inode, attr))
 		dquot_initialize(inode);
+<<<<<<< HEAD
 	if ((ia_valid & ATTR_UID && attr->ia_uid != inode->i_uid) ||
 		(ia_valid & ATTR_GID && attr->ia_gid != inode->i_gid)) {
+=======
+	if ((ia_valid & ATTR_UID && !uid_eq(attr->ia_uid, inode->i_uid)) ||
+	    (ia_valid & ATTR_GID && !gid_eq(attr->ia_gid, inode->i_gid))) {
+>>>>>>> refs/remotes/origin/master
 		handle_t *handle;
 
 		/* (user+group)*(old+new) structure, inode write (sb,
@@ -3245,6 +3874,18 @@ int ext3_setattr(struct dentry *dentry, struct iattr *attr)
 		ext3_journal_stop(handle);
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (attr->ia_valid & ATTR_SIZE)
+		inode_dio_wait(inode);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (attr->ia_valid & ATTR_SIZE)
+		inode_dio_wait(inode);
+
+>>>>>>> refs/remotes/origin/master
 	if (S_ISREG(inode->i_mode) &&
 	    attr->ia_valid & ATTR_SIZE && attr->ia_size < inode->i_size) {
 		handle_t *handle;
@@ -3256,18 +3897,61 @@ int ext3_setattr(struct dentry *dentry, struct iattr *attr)
 		}
 
 		error = ext3_orphan_add(handle, inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		EXT3_I(inode)->i_disksize = attr->ia_size;
 		rc = ext3_mark_inode_dirty(handle, inode);
 		if (!error)
 			error = rc;
 		ext3_journal_stop(handle);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (error) {
+			ext3_journal_stop(handle);
+			goto err_out;
+		}
+		EXT3_I(inode)->i_disksize = attr->ia_size;
+		error = ext3_mark_inode_dirty(handle, inode);
+		ext3_journal_stop(handle);
+		if (error) {
+			/* Some hard fs error must have happened. Bail out. */
+			ext3_orphan_del(NULL, inode);
+			goto err_out;
+		}
+		rc = ext3_block_truncate_page(inode, attr->ia_size);
+		if (rc) {
+			/* Cleanup orphan list and exit */
+			handle = ext3_journal_start(inode, 3);
+			if (IS_ERR(handle)) {
+				ext3_orphan_del(NULL, inode);
+				goto err_out;
+			}
+			ext3_orphan_del(handle, inode);
+			ext3_journal_stop(handle);
+			goto err_out;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if ((attr->ia_valid & ATTR_SIZE) &&
 	    attr->ia_size != i_size_read(inode)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		rc = vmtruncate(inode, attr->ia_size);
 		if (rc)
 			goto err_out;
+=======
+		truncate_setsize(inode, attr->ia_size);
+		ext3_truncate(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		truncate_setsize(inode, attr->ia_size);
+		ext3_truncate(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	setattr_copy(inode, attr);
@@ -3386,6 +4070,7 @@ ext3_reserve_inode_write(handle_t *handle, struct inode *inode,
  * inode out, but prune_icache isn't a user-visible syncing function.
  * Whenever the user wants stuff synced (sys_sync, sys_msync, sys_fsync)
  * we start and wait on commits.
+<<<<<<< HEAD
  *
  * Is this efficient/effective?  Well, we're being nice to the system
  * by cleaning up our inodes proactively so they can be reaped
@@ -3394,6 +4079,8 @@ ext3_reserve_inode_write(handle_t *handle, struct inode *inode,
  * write out.  One way to fix that would be to get prune_icache()
  * to do a write_super() to free up some memory.  It has the desired
  * effect.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 int ext3_mark_inode_dirty(handle_t *handle, struct inode *inode)
 {
@@ -3401,6 +4088,14 @@ int ext3_mark_inode_dirty(handle_t *handle, struct inode *inode)
 	int err;
 
 	might_sleep();
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_mark_inode_dirty(inode, _RET_IP_);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_mark_inode_dirty(inode, _RET_IP_);
+>>>>>>> refs/remotes/origin/master
 	err = ext3_reserve_inode_write(handle, inode, &iloc);
 	if (!err)
 		err = ext3_mark_iloc_dirty(handle, inode, &iloc);

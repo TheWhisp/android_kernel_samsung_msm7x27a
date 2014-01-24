@@ -285,6 +285,7 @@ static int controlfb_pan_display(struct fb_var_screeninfo *var,
 static int controlfb_mmap(struct fb_info *info,
                        struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
        unsigned long off, start;
        u32 len;
 
@@ -315,6 +316,28 @@ static int controlfb_mmap(struct fb_info *info,
                return -EAGAIN;
 
        return 0;
+=======
+	unsigned long mmio_pgoff;
+	unsigned long start;
+	u32 len;
+
+	start = info->fix.smem_start;
+	len = info->fix.smem_len;
+	mmio_pgoff = PAGE_ALIGN((start & ~PAGE_MASK) + len) >> PAGE_SHIFT;
+	if (vma->vm_pgoff >= mmio_pgoff) {
+		if (info->var.accel_flags)
+			return -EINVAL;
+		vma->vm_pgoff -= mmio_pgoff;
+		start = info->fix.mmio_start;
+		len = info->fix.mmio_len;
+		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+	} else {
+		/* framebuffer */
+		vma->vm_page_prot = pgprot_cached_wthru(vma->vm_page_prot);
+	}
+
+	return vm_iomap_memory(vma, start, len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int controlfb_blank(int blank_mode, struct fb_info *info)
@@ -420,7 +443,15 @@ static int __init init_control(struct fb_info_control *p)
 
 	/* Try to pick a video mode out of NVRAM if we have one. */
 #ifdef CONFIG_NVRAM
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (default_cmode == CMODE_NVRAM){
+=======
+	if (default_cmode == CMODE_NVRAM) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (default_cmode == CMODE_NVRAM) {
+>>>>>>> refs/remotes/origin/master
 		cmode = nvram_read_byte(NV_CMODE);
 		if(cmode < CMODE_8 || cmode > CMODE_32)
 			cmode = CMODE_8;
@@ -481,8 +512,13 @@ try_again:
 	/* Register with fbdev layer */
 	if (register_framebuffer(&p->info) < 0)
 		return -ENXIO;
+<<<<<<< HEAD
 	
 	printk(KERN_INFO "fb%d: control display adapter\n", p->info.node);	
+=======
+
+	fb_info(&p->info, "control display adapter\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -550,7 +586,15 @@ static void control_set_hardware(struct fb_info_control *p, struct fb_par_contro
 
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Parse user speficied options (`video=controlfb:')
+=======
+ * Parse user specified options (`video=controlfb:')
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Parse user specified options (`video=controlfb:')
+>>>>>>> refs/remotes/origin/master
  */
 static void __init control_setup(char *options)
 {
@@ -709,11 +753,25 @@ static int __init control_of_init(struct device_node *dp)
 
 	/* Map in frame buffer and registers */
 	p->fb_orig_base = fb_res.start;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	p->fb_orig_size = fb_res.end - fb_res.start + 1;
 	/* use the big-endian aperture (??) */
 	p->frame_buffer_phys = fb_res.start + 0x800000;
 	p->control_regs_phys = reg_res.start;
 	p->control_regs_size = reg_res.end - reg_res.start + 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	p->fb_orig_size = resource_size(&fb_res);
+	/* use the big-endian aperture (??) */
+	p->frame_buffer_phys = fb_res.start + 0x800000;
+	p->control_regs_phys = reg_res.start;
+	p->control_regs_size = resource_size(&reg_res);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!p->fb_orig_base ||
 	    !request_mem_region(p->fb_orig_base,p->fb_orig_size,"controlfb")) {

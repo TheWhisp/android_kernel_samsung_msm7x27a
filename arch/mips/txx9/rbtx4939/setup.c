@@ -13,6 +13,14 @@
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/leds.h>
 #include <linux/interrupt.h>
@@ -39,8 +47,12 @@ static void __init rbtx4939_time_init(void)
 	tx4939_time_init(0);
 }
 
+<<<<<<< HEAD
 #if defined(__BIG_ENDIAN) && \
 	(defined(CONFIG_SMC91X) || defined(CONFIG_SMC91X_MODULE))
+=======
+#if defined(__BIG_ENDIAN) && IS_ENABLED(CONFIG_SMC91X)
+>>>>>>> refs/remotes/origin/master
 #define HAVE_RBTX4939_IOSWAB
 #define IS_CE1_ADDR(addr) \
 	((((unsigned long)(addr) - IO_BASE) & 0xfff00000) == TXX9_CE(1))
@@ -186,7 +198,11 @@ static void __init rbtx4939_update_ioc_pen(void)
 
 #define RBTX4939_MAX_7SEGLEDS	8
 
+<<<<<<< HEAD
 #if defined(CONFIG_LEDS_CLASS) || defined(CONFIG_LEDS_CLASS_MODULE)
+=======
+#if IS_ENABLED(CONFIG_LEDS_CLASS)
+>>>>>>> refs/remotes/origin/master
 static u8 led_val[RBTX4939_MAX_7SEGLEDS];
 struct rbtx4939_led_data {
 	struct led_classdev cdev;
@@ -243,7 +259,11 @@ static int __init rbtx4939_led_probe(struct platform_device *pdev)
 }
 
 static struct platform_driver rbtx4939_led_driver = {
+<<<<<<< HEAD
 	.driver  = {
+=======
+	.driver	 = {
+>>>>>>> refs/remotes/origin/master
 		.name = "rbtx4939-led",
 		.owner = THIS_MODULE,
 	},
@@ -262,7 +282,11 @@ static inline void rbtx4939_led_setup(void)
 
 static void __rbtx4939_7segled_putc(unsigned int pos, unsigned char val)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_LEDS_CLASS) || defined(CONFIG_LEDS_CLASS_MODULE)
+=======
+#if IS_ENABLED(CONFIG_LEDS_CLASS)
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	local_irq_save(flags);
 	/* bit7: reserved for LED class */
@@ -286,7 +310,11 @@ static void rbtx4939_7segled_putc(unsigned int pos, unsigned char val)
 	__rbtx4939_7segled_putc(pos, val);
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_MTD_RBTX4939) || defined(CONFIG_MTD_RBTX4939_MODULE)
+=======
+#if IS_ENABLED(CONFIG_MTD_RBTX4939)
+>>>>>>> refs/remotes/origin/master
 /* special mapping for boot rom */
 static unsigned long rbtx4939_flash_fixup_ofs(unsigned long ofs)
 {
@@ -337,7 +365,11 @@ static void rbtx4939_flash_copy_from(struct map_info *map, void *to,
 		shift = bdipsw & 3;
 		while (len) {
 			curlen = min_t(unsigned long, len,
+<<<<<<< HEAD
 				     0x400000 -	(from & (0x400000 - 1)));
+=======
+				     0x400000 - (from & (0x400000 - 1)));
+>>>>>>> refs/remotes/origin/master
 			memcpy(to,
 			       (void *)((from & ~0xc00000) |
 					((((from >> 22) + shift) & 3) << 22)),
@@ -462,7 +494,11 @@ static void __init rbtx4939_device_init(void)
 		.flags = SMC91X_USE_16BIT,
 	};
 	struct platform_device *pdev;
+<<<<<<< HEAD
 #if defined(CONFIG_TC35815) || defined(CONFIG_TC35815_MODULE)
+=======
+#if IS_ENABLED(CONFIG_TC35815)
+>>>>>>> refs/remotes/origin/master
 	int i, j;
 	unsigned char ethaddr[2][6];
 	u8 bdipsw = readb(rbtx4939_bdipsw_addr) & 0x0f;

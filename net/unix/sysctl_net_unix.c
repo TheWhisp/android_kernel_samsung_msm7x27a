@@ -15,7 +15,11 @@
 
 #include <net/af_unix.h>
 
+<<<<<<< HEAD
 static ctl_table unix_table[] = {
+=======
+static struct ctl_table unix_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "max_dgram_qlen",
 		.data		= &init_net.unx.sysctl_max_dgram_qlen,
@@ -26,12 +30,15 @@ static ctl_table unix_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static struct ctl_path unix_path[] = {
 	{ .procname = "net", },
 	{ .procname = "unix", },
 	{ },
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 int __net_init unix_sysctl_register(struct net *net)
 {
 	struct ctl_table *table;
@@ -40,8 +47,17 @@ int __net_init unix_sysctl_register(struct net *net)
 	if (table == NULL)
 		goto err_alloc;
 
+<<<<<<< HEAD
 	table[0].data = &net->unx.sysctl_max_dgram_qlen;
 	net->unx.ctl = register_net_sysctl_table(net, unix_path, table);
+=======
+	/* Don't export sysctls to unprivileged users */
+	if (net->user_ns != &init_user_ns)
+		table[0].procname = NULL;
+
+	table[0].data = &net->unx.sysctl_max_dgram_qlen;
+	net->unx.ctl = register_net_sysctl(net, "net/unix", table);
+>>>>>>> refs/remotes/origin/master
 	if (net->unx.ctl == NULL)
 		goto err_reg;
 
@@ -58,6 +74,10 @@ void unix_sysctl_unregister(struct net *net)
 	struct ctl_table *table;
 
 	table = net->unx.ctl->ctl_table_arg;
+<<<<<<< HEAD
 	unregister_sysctl_table(net->unx.ctl);
+=======
+	unregister_net_sysctl_table(net->unx.ctl);
+>>>>>>> refs/remotes/origin/master
 	kfree(table);
 }

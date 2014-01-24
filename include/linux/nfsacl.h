@@ -6,6 +6,7 @@
 #ifndef __LINUX_NFSACL_H
 #define __LINUX_NFSACL_H
 
+<<<<<<< HEAD
 #define NFS_ACL_PROGRAM	100227
 
 #define ACLPROC2_GETACL		1
@@ -30,6 +31,12 @@
 
 #include <linux/posix_acl.h>
 #include <linux/sunrpc/xdr.h>
+=======
+
+#include <linux/posix_acl.h>
+#include <linux/sunrpc/xdr.h>
+#include <uapi/linux/nfsacl.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Maximum number of ACL entries over NFS */
 #define NFS_ACL_MAX_ENTRIES	1024
@@ -58,5 +65,8 @@ extern int
 nfsacl_decode(struct xdr_buf *buf, unsigned int base, unsigned int *aclcnt,
 	      struct posix_acl **pacl);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif  /* __LINUX_NFSACL_H */

@@ -18,7 +18,13 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/param.h>
 #include <linux/string.h>
 #include <linux/ioport.h>
@@ -29,6 +35,10 @@
 #include <linux/fs_uart_pd.h>
 #include <linux/fsl_devices.h>
 #include <linux/mii.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_fdt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 
 #include <asm/delay.h>
@@ -36,7 +46,13 @@
 #include <asm/machdep.h>
 #include <asm/page.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/mpc8xx.h>
 #include <asm/8xx_immap.h>
@@ -50,7 +66,11 @@ struct cpm_pin {
 	int port, pin, flags;
 };
 
+<<<<<<< HEAD
 static struct __initdata cpm_pin tqm8xx_pins[] = {
+=======
+static struct cpm_pin tqm8xx_pins[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	/* SMC1 */
 	{CPM_PORTB, 24, CPM_PIN_INPUT}, /* RX */
 	{CPM_PORTB, 25, CPM_PIN_INPUT | CPM_PIN_SECONDARY}, /* TX */
@@ -65,7 +85,11 @@ static struct __initdata cpm_pin tqm8xx_pins[] = {
 	{CPM_PORTC, 11, CPM_PIN_INPUT | CPM_PIN_SECONDARY | CPM_PIN_GPIO},
 };
 
+<<<<<<< HEAD
 static struct __initdata cpm_pin tqm8xx_fec_pins[] = {
+=======
+static struct cpm_pin tqm8xx_fec_pins[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	/* MII */
 	{CPM_PORTD, 3, CPM_PIN_OUTPUT},
 	{CPM_PORTD, 4, CPM_PIN_OUTPUT},

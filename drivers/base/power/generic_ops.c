@@ -8,6 +8,11 @@
 
 #include <linux/pm.h>
 #include <linux/pm_runtime.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_PM_RUNTIME
 /**
@@ -34,6 +39,12 @@ int pm_generic_runtime_idle(struct device *dev)
 EXPORT_SYMBOL_GPL(pm_generic_runtime_idle);
 
 /**
+=======
+#include <linux/export.h>
+
+#ifdef CONFIG_PM_RUNTIME
+/**
+>>>>>>> refs/remotes/origin/master
  * pm_generic_runtime_suspend - Generic runtime suspend callback for subsystems.
  * @dev: Device to suspend.
  *
@@ -91,6 +102,8 @@ int pm_generic_prepare(struct device *dev)
 }
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * __pm_generic_call - Generic suspend/freeze/poweroff/thaw subsystem callback.
  * @dev: Device to handle.
  * @event: PM transition of the system under way.
@@ -127,6 +140,35 @@ static int __pm_generic_call(struct device *dev, int event)
 
 	return callback ? callback(dev) : 0;
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * pm_generic_suspend_noirq - Generic suspend_noirq callback for subsystems.
+ * @dev: Device to suspend.
+ */
+int pm_generic_suspend_noirq(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->suspend_noirq ? pm->suspend_noirq(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_suspend_noirq);
+
+/**
+ * pm_generic_suspend_late - Generic suspend_late callback for subsystems.
+ * @dev: Device to suspend.
+ */
+int pm_generic_suspend_late(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->suspend_late ? pm->suspend_late(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_suspend_late);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * pm_generic_suspend - Generic suspend callback for subsystems.
@@ -134,41 +176,190 @@ static int __pm_generic_call(struct device *dev, int event)
  */
 int pm_generic_suspend(struct device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return __pm_generic_call(dev, PM_EVENT_SUSPEND);
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->suspend ? pm->suspend(dev) : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->suspend ? pm->suspend(dev) : 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(pm_generic_suspend);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * pm_generic_freeze_noirq - Generic freeze_noirq callback for subsystems.
+ * @dev: Device to freeze.
+ */
+int pm_generic_freeze_noirq(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->freeze_noirq ? pm->freeze_noirq(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_freeze_noirq);
+
+/**
+ * pm_generic_freeze_late - Generic freeze_late callback for subsystems.
+ * @dev: Device to freeze.
+ */
+int pm_generic_freeze_late(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->freeze_late ? pm->freeze_late(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_freeze_late);
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * pm_generic_freeze - Generic freeze callback for subsystems.
  * @dev: Device to freeze.
  */
 int pm_generic_freeze(struct device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return __pm_generic_call(dev, PM_EVENT_FREEZE);
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->freeze ? pm->freeze(dev) : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->freeze ? pm->freeze(dev) : 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(pm_generic_freeze);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * pm_generic_poweroff_noirq - Generic poweroff_noirq callback for subsystems.
+ * @dev: Device to handle.
+ */
+int pm_generic_poweroff_noirq(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->poweroff_noirq ? pm->poweroff_noirq(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_poweroff_noirq);
+
+/**
+ * pm_generic_poweroff_late - Generic poweroff_late callback for subsystems.
+ * @dev: Device to handle.
+ */
+int pm_generic_poweroff_late(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->poweroff_late ? pm->poweroff_late(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_poweroff_late);
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * pm_generic_poweroff - Generic poweroff callback for subsystems.
  * @dev: Device to handle.
  */
 int pm_generic_poweroff(struct device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return __pm_generic_call(dev, PM_EVENT_HIBERNATE);
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->poweroff ? pm->poweroff(dev) : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->poweroff ? pm->poweroff(dev) : 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(pm_generic_poweroff);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * pm_generic_thaw_noirq - Generic thaw_noirq callback for subsystems.
+ * @dev: Device to thaw.
+ */
+int pm_generic_thaw_noirq(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->thaw_noirq ? pm->thaw_noirq(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_thaw_noirq);
+
+/**
+ * pm_generic_thaw_early - Generic thaw_early callback for subsystems.
+ * @dev: Device to thaw.
+ */
+int pm_generic_thaw_early(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->thaw_early ? pm->thaw_early(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_thaw_early);
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * pm_generic_thaw - Generic thaw callback for subsystems.
  * @dev: Device to thaw.
  */
 int pm_generic_thaw(struct device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return __pm_generic_call(dev, PM_EVENT_THAW);
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->thaw ? pm->thaw(dev) : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->thaw ? pm->thaw(dev) : 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(pm_generic_thaw);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
  * __pm_generic_resume - Generic resume/restore callback for subsystems.
  * @dev: Device to handle.
  * @event: PM transition of the system under way.
@@ -210,6 +401,35 @@ static int __pm_generic_resume(struct device *dev, int event)
 
 	return ret;
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * pm_generic_resume_noirq - Generic resume_noirq callback for subsystems.
+ * @dev: Device to resume.
+ */
+int pm_generic_resume_noirq(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->resume_noirq ? pm->resume_noirq(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_resume_noirq);
+
+/**
+ * pm_generic_resume_early - Generic resume_early callback for subsystems.
+ * @dev: Device to resume.
+ */
+int pm_generic_resume_early(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->resume_early ? pm->resume_early(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_resume_early);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * pm_generic_resume - Generic resume callback for subsystems.
@@ -217,17 +437,74 @@ static int __pm_generic_resume(struct device *dev, int event)
  */
 int pm_generic_resume(struct device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return __pm_generic_resume(dev, PM_EVENT_RESUME);
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->resume ? pm->resume(dev) : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->resume ? pm->resume(dev) : 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(pm_generic_resume);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * pm_generic_restore_noirq - Generic restore_noirq callback for subsystems.
+ * @dev: Device to restore.
+ */
+int pm_generic_restore_noirq(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->restore_noirq ? pm->restore_noirq(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_restore_noirq);
+
+/**
+ * pm_generic_restore_early - Generic restore_early callback for subsystems.
+ * @dev: Device to resume.
+ */
+int pm_generic_restore_early(struct device *dev)
+{
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->restore_early ? pm->restore_early(dev) : 0;
+}
+EXPORT_SYMBOL_GPL(pm_generic_restore_early);
+
+/**
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * pm_generic_restore - Generic restore callback for subsystems.
  * @dev: Device to restore.
  */
 int pm_generic_restore(struct device *dev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return __pm_generic_resume(dev, PM_EVENT_RESTORE);
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->restore ? pm->restore(dev) : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+
+	return pm && pm->restore ? pm->restore(dev) : 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(pm_generic_restore);
 
@@ -248,9 +525,11 @@ void pm_generic_complete(struct device *dev)
 	 * Let runtime PM try to suspend devices that haven't been in use before
 	 * going into the system-wide sleep state we're resuming from.
 	 */
+<<<<<<< HEAD
 	pm_runtime_idle(dev);
 }
 #endif /* CONFIG_PM_SLEEP */
+<<<<<<< HEAD
 
 struct dev_pm_ops generic_subsys_pm_ops = {
 #ifdef CONFIG_PM_SLEEP
@@ -270,3 +549,10 @@ struct dev_pm_ops generic_subsys_pm_ops = {
 #endif
 };
 EXPORT_SYMBOL_GPL(generic_subsys_pm_ops);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_request_idle(dev);
+}
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master

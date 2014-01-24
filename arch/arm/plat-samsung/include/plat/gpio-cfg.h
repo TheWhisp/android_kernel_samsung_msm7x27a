@@ -24,6 +24,8 @@
 #ifndef __PLAT_GPIO_CFG_H
 #define __PLAT_GPIO_CFG_H __FILE__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 typedef unsigned int __bitwise__ s3c_gpio_pull_t;
 typedef unsigned int __bitwise__ s5p_gpio_drvstr_t;
 
@@ -32,6 +34,24 @@ struct s3c_gpio_chip;
 
 /**
  * struct s3c_gpio_cfg GPIO configuration
+=======
+#include<linux/types.h>
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/master
+
+typedef unsigned int __bitwise__ samsung_gpio_pull_t;
+typedef unsigned int __bitwise__ s5p_gpio_drvstr_t;
+
+/* forward declaration if gpio-core.h hasn't been included */
+struct samsung_gpio_chip;
+
+/**
+ * struct samsung_gpio_cfg GPIO configuration
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @cfg_eint: Configuration setting when used for external interrupt source
  * @get_pull: Read the current pull configuration for the GPIO
  * @set_pull: Set the current pull configuraiton for the GPIO
@@ -44,11 +64,21 @@ struct s3c_gpio_chip;
  * per-bank configuration information that other systems such as the
  * external interrupt code will need.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @sa s3c_gpio_cfgpin
+=======
+ * @sa samsung_gpio_cfgpin
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @sa samsung_gpio_cfgpin
+>>>>>>> refs/remotes/origin/master
  * @sa s3c_gpio_getcfg
  * @sa s3c_gpio_setpull
  * @sa s3c_gpio_getpull
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct s3c_gpio_cfg {
 	unsigned int	cfg_eint;
 
@@ -58,6 +88,22 @@ struct s3c_gpio_cfg {
 
 	unsigned (*get_config)(struct s3c_gpio_chip *chip, unsigned offs);
 	int	 (*set_config)(struct s3c_gpio_chip *chip, unsigned offs,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct samsung_gpio_cfg {
+	unsigned int	cfg_eint;
+
+	samsung_gpio_pull_t	(*get_pull)(struct samsung_gpio_chip *chip, unsigned offs);
+	int		(*set_pull)(struct samsung_gpio_chip *chip, unsigned offs,
+				    samsung_gpio_pull_t pull);
+
+	unsigned (*get_config)(struct samsung_gpio_chip *chip, unsigned offs);
+	int	 (*set_config)(struct samsung_gpio_chip *chip, unsigned offs,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			       unsigned config);
 };
 
@@ -69,7 +115,15 @@ struct s3c_gpio_cfg {
 #define S3C_GPIO_OUTPUT	(S3C_GPIO_SPECIAL(1))
 #define S3C_GPIO_SFN(x)	(S3C_GPIO_SPECIAL(x))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define s3c_gpio_is_cfg_special(_cfg) \
+=======
+#define samsung_gpio_is_cfg_special(_cfg) \
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define samsung_gpio_is_cfg_special(_cfg) \
+>>>>>>> refs/remotes/origin/master
 	(((_cfg) & S3C_GPIO_SPECIAL_MARK) == S3C_GPIO_SPECIAL_MARK)
 
 /**
@@ -128,9 +182,21 @@ extern int s3c_gpio_cfgpin_range(unsigned int start, unsigned int nr,
  * up or down settings, and it may be dependent on the chip that is being
  * used to whether the particular mode is available.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define S3C_GPIO_PULL_NONE	((__force s3c_gpio_pull_t)0x00)
 #define S3C_GPIO_PULL_DOWN	((__force s3c_gpio_pull_t)0x01)
 #define S3C_GPIO_PULL_UP	((__force s3c_gpio_pull_t)0x02)
+=======
+#define S3C_GPIO_PULL_NONE	((__force samsung_gpio_pull_t)0x00)
+#define S3C_GPIO_PULL_DOWN	((__force samsung_gpio_pull_t)0x01)
+#define S3C_GPIO_PULL_UP	((__force samsung_gpio_pull_t)0x02)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define S3C_GPIO_PULL_NONE	((__force samsung_gpio_pull_t)0x00)
+#define S3C_GPIO_PULL_DOWN	((__force samsung_gpio_pull_t)0x01)
+#define S3C_GPIO_PULL_UP	((__force samsung_gpio_pull_t)0x02)
+>>>>>>> refs/remotes/origin/master
 
 /**
  * s3c_gpio_setpull() - set the state of a gpio pin pull resistor
@@ -143,7 +209,15 @@ extern int s3c_gpio_cfgpin_range(unsigned int start, unsigned int nr,
  *
  * @pull is one of S3C_GPIO_PULL_NONE, S3C_GPIO_PULL_DOWN or S3C_GPIO_PULL_UP.
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int s3c_gpio_setpull(unsigned int pin, s3c_gpio_pull_t pull);
+=======
+extern int s3c_gpio_setpull(unsigned int pin, samsung_gpio_pull_t pull);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int s3c_gpio_setpull(unsigned int pin, samsung_gpio_pull_t pull);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * s3c_gpio_getpull() - get the pull resistor state of a gpio pin
@@ -151,7 +225,15 @@ extern int s3c_gpio_setpull(unsigned int pin, s3c_gpio_pull_t pull);
  *
  * Read the pull resistor value for the specified pin.
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern s3c_gpio_pull_t s3c_gpio_getpull(unsigned int pin);
+=======
+extern samsung_gpio_pull_t s3c_gpio_getpull(unsigned int pin);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern samsung_gpio_pull_t s3c_gpio_getpull(unsigned int pin);
+>>>>>>> refs/remotes/origin/master
 
 /* configure `all` aspects of an gpio */
 
@@ -170,7 +252,15 @@ extern s3c_gpio_pull_t s3c_gpio_getpull(unsigned int pin);
  * @sa s3c_gpio_cfgpin_range
  */
 extern int s3c_gpio_cfgall_range(unsigned int start, unsigned int nr,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				 unsigned int cfg, s3c_gpio_pull_t pull);
+=======
+				 unsigned int cfg, samsung_gpio_pull_t pull);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 unsigned int cfg, samsung_gpio_pull_t pull);
+>>>>>>> refs/remotes/origin/master
 
 static inline int s3c_gpio_cfgrange_nopull(unsigned int pin, unsigned int size,
 					   unsigned int cfg)

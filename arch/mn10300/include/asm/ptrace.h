@@ -11,6 +11,7 @@
 #ifndef _ASM_PTRACE_H
 #define _ASM_PTRACE_H
 
+<<<<<<< HEAD
 #define PT_A3		0
 #define PT_A2		1
 #define PT_D3		2
@@ -85,15 +86,29 @@ struct pt_regs {
 #define PTRACE_O_TRACESYSGOOD     0x00000001
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/ptrace.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define user_mode(regs)			(((regs)->epsw & EPSW_nSL) == EPSW_nSL)
 #define instruction_pointer(regs)	((regs)->pc)
 #define user_stack_pointer(regs)	((regs)->sp)
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define current_pt_regs()		current_frame()
+>>>>>>> refs/remotes/origin/master
 
 #define arch_has_single_step()	(1)
 
 #define profile_pc(regs) ((regs)->pc)
 
+<<<<<<< HEAD
 #endif /* __KERNEL__  */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_PTRACE_H */

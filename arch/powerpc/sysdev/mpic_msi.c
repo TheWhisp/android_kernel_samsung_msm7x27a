@@ -32,10 +32,21 @@ void mpic_msi_reserve_hwirq(struct mpic *mpic, irq_hw_number_t hwirq)
 static int mpic_msi_reserve_u3_hwirqs(struct mpic *mpic)
 {
 	irq_hw_number_t hwirq;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct irq_host_ops *ops = mpic->irqhost->ops;
+=======
+	const struct irq_domain_ops *ops = mpic->irqhost->ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct device_node *np;
 	int flags, index, i;
 	struct of_irq oirq;
+=======
+	const struct irq_domain_ops *ops = mpic->irqhost->ops;
+	struct device_node *np;
+	int flags, index, i;
+	struct of_phandle_args oirq;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("mpic: found U3, guessing msi allocator setup\n");
 
@@ -54,7 +65,15 @@ static int mpic_msi_reserve_u3_hwirqs(struct mpic *mpic)
 	for (i = 100; i < 105; i++)
 		msi_bitmap_reserve_hwirq(&mpic->msi_bitmap, i);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 124; i < mpic->irq_count; i++)
+=======
+	for (i = 124; i < mpic->num_sources; i++)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 124; i < mpic->num_sources; i++)
+>>>>>>> refs/remotes/origin/master
 		msi_bitmap_reserve_hwirq(&mpic->msi_bitmap, i);
 
 
@@ -63,9 +82,15 @@ static int mpic_msi_reserve_u3_hwirqs(struct mpic *mpic)
 		pr_debug("mpic: mapping hwirqs for %s\n", np->full_name);
 
 		index = 0;
+<<<<<<< HEAD
 		while (of_irq_map_one(np, index++, &oirq) == 0) {
 			ops->xlate(mpic->irqhost, NULL, oirq.specifier,
 						oirq.size, &hwirq, &flags);
+=======
+		while (of_irq_parse_one(np, index++, &oirq) == 0) {
+			ops->xlate(mpic->irqhost, NULL, oirq.args,
+						oirq.args_count, &hwirq, &flags);
+>>>>>>> refs/remotes/origin/master
 			msi_bitmap_reserve_hwirq(&mpic->msi_bitmap, hwirq);
 		}
 	}
@@ -83,7 +108,15 @@ int mpic_msi_init_allocator(struct mpic *mpic)
 {
 	int rc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rc = msi_bitmap_alloc(&mpic->msi_bitmap, mpic->irq_count,
+=======
+	rc = msi_bitmap_alloc(&mpic->msi_bitmap, mpic->num_sources,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = msi_bitmap_alloc(&mpic->msi_bitmap, mpic->num_sources,
+>>>>>>> refs/remotes/origin/master
 			      mpic->irqhost->of_node);
 	if (rc)
 		return rc;

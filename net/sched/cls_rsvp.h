@@ -130,7 +130,15 @@ static struct tcf_ext_map rsvp_ext_map = {
 		return r;				\
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int rsvp_classify(struct sk_buff *skb, struct tcf_proto *tp,
+=======
+static int rsvp_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int rsvp_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+>>>>>>> refs/remotes/origin/master
 			 struct tcf_result *res)
 {
 	struct rsvp_session **sht = ((struct rsvp_head *)tp->root)->ht;
@@ -167,7 +175,15 @@ restart:
 	dst = &nhptr->daddr;
 	protocol = nhptr->protocol;
 	xprt = ((u8 *)nhptr) + (nhptr->ihl<<2);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (nhptr->frag_off & htons(IP_MF | IP_OFFSET))
+=======
+	if (ip_is_fragment(nhptr))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ip_is_fragment(nhptr))
+>>>>>>> refs/remotes/origin/master
 		return -1;
 #endif
 
@@ -416,7 +432,12 @@ static const struct nla_policy rsvp_policy[TCA_RSVP_MAX + 1] = {
 	[TCA_RSVP_PINFO]	= { .len = sizeof(struct tc_rsvp_pinfo) },
 };
 
+<<<<<<< HEAD
 static int rsvp_change(struct tcf_proto *tp, unsigned long base,
+=======
+static int rsvp_change(struct net *net, struct sk_buff *in_skb,
+		       struct tcf_proto *tp, unsigned long base,
+>>>>>>> refs/remotes/origin/master
 		       u32 handle,
 		       struct nlattr **tca,
 		       unsigned long *arg)
@@ -425,7 +446,15 @@ static int rsvp_change(struct tcf_proto *tp, unsigned long base,
 	struct rsvp_filter *f, **fp;
 	struct rsvp_session *s, **sp;
 	struct tc_rsvp_pinfo *pinfo = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct nlattr *opt = tca[TCA_OPTIONS-1];
+=======
+	struct nlattr *opt = tca[TCA_OPTIONS];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nlattr *opt = tca[TCA_OPTIONS];
+>>>>>>> refs/remotes/origin/master
 	struct nlattr *tb[TCA_RSVP_MAX + 1];
 	struct tcf_exts e;
 	unsigned int h1, h2;
@@ -439,7 +468,15 @@ static int rsvp_change(struct tcf_proto *tp, unsigned long base,
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = tcf_exts_validate(tp, tb, tca[TCA_RATE-1], &e, &rsvp_ext_map);
+=======
+	err = tcf_exts_validate(tp, tb, tca[TCA_RATE], &e, &rsvp_ext_map);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = tcf_exts_validate(net, tp, tb, tca[TCA_RATE], &e, &rsvp_ext_map);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -449,8 +486,18 @@ static int rsvp_change(struct tcf_proto *tp, unsigned long base,
 
 		if (f->handle != handle && handle)
 			goto errout2;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (tb[TCA_RSVP_CLASSID-1]) {
 			f->res.classid = nla_get_u32(tb[TCA_RSVP_CLASSID-1]);
+=======
+		if (tb[TCA_RSVP_CLASSID]) {
+			f->res.classid = nla_get_u32(tb[TCA_RSVP_CLASSID]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (tb[TCA_RSVP_CLASSID]) {
+			f->res.classid = nla_get_u32(tb[TCA_RSVP_CLASSID]);
+>>>>>>> refs/remotes/origin/master
 			tcf_bind_filter(tp, &f->res, base);
 		}
 
@@ -462,7 +509,15 @@ static int rsvp_change(struct tcf_proto *tp, unsigned long base,
 	err = -EINVAL;
 	if (handle)
 		goto errout2;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (tb[TCA_RSVP_DST-1] == NULL)
+=======
+	if (tb[TCA_RSVP_DST] == NULL)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tb[TCA_RSVP_DST] == NULL)
+>>>>>>> refs/remotes/origin/master
 		goto errout2;
 
 	err = -ENOBUFS;
@@ -471,6 +526,8 @@ static int rsvp_change(struct tcf_proto *tp, unsigned long base,
 		goto errout2;
 
 	h2 = 16;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (tb[TCA_RSVP_SRC-1]) {
 		memcpy(f->src, nla_data(tb[TCA_RSVP_SRC-1]), sizeof(f->src));
 		h2 = hash_src(f->src);
@@ -484,6 +541,26 @@ static int rsvp_change(struct tcf_proto *tp, unsigned long base,
 		f->res.classid = nla_get_u32(tb[TCA_RSVP_CLASSID-1]);
 
 	dst = nla_data(tb[TCA_RSVP_DST-1]);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (tb[TCA_RSVP_SRC]) {
+		memcpy(f->src, nla_data(tb[TCA_RSVP_SRC]), sizeof(f->src));
+		h2 = hash_src(f->src);
+	}
+	if (tb[TCA_RSVP_PINFO]) {
+		pinfo = nla_data(tb[TCA_RSVP_PINFO]);
+		f->spi = pinfo->spi;
+		f->tunnelhdr = pinfo->tunnelhdr;
+	}
+	if (tb[TCA_RSVP_CLASSID])
+		f->res.classid = nla_get_u32(tb[TCA_RSVP_CLASSID]);
+
+	dst = nla_data(tb[TCA_RSVP_DST]);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	h1 = hash_dst(dst, pinfo ? pinfo->protocol : 0, pinfo ? pinfo->tunnelid : 0);
 
 	err = -ENOMEM;
@@ -615,18 +692,34 @@ static int rsvp_dump(struct tcf_proto *tp, unsigned long fh,
 	if (nest == NULL)
 		goto nla_put_failure;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_RSVP_DST, sizeof(s->dst), &s->dst);
+=======
+	if (nla_put(skb, TCA_RSVP_DST, sizeof(s->dst), &s->dst))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	pinfo.dpi = s->dpi;
 	pinfo.spi = f->spi;
 	pinfo.protocol = s->protocol;
 	pinfo.tunnelid = s->tunnelid;
 	pinfo.tunnelhdr = f->tunnelhdr;
 	pinfo.pad = 0;
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_RSVP_PINFO, sizeof(pinfo), &pinfo);
 	if (f->res.classid)
 		NLA_PUT_U32(skb, TCA_RSVP_CLASSID, f->res.classid);
 	if (((f->handle >> 8) & 0xFF) != 16)
 		NLA_PUT(skb, TCA_RSVP_SRC, sizeof(f->src), f->src);
+=======
+	if (nla_put(skb, TCA_RSVP_PINFO, sizeof(pinfo), &pinfo))
+		goto nla_put_failure;
+	if (f->res.classid &&
+	    nla_put_u32(skb, TCA_RSVP_CLASSID, f->res.classid))
+		goto nla_put_failure;
+	if (((f->handle >> 8) & 0xFF) != 16 &&
+	    nla_put(skb, TCA_RSVP_SRC, sizeof(f->src), f->src))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	if (tcf_exts_dump(skb, &f->exts, &rsvp_ext_map) < 0)
 		goto nla_put_failure;
@@ -642,8 +735,16 @@ nla_put_failure:
 	return -1;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct tcf_proto_ops RSVP_OPS = {
 	.next		=	NULL,
+=======
+static struct tcf_proto_ops RSVP_OPS __read_mostly = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct tcf_proto_ops RSVP_OPS __read_mostly = {
+>>>>>>> refs/remotes/origin/master
 	.kind		=	RSVP_ID,
 	.classify	=	rsvp_classify,
 	.init		=	rsvp_init,

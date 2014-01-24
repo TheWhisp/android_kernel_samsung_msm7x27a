@@ -21,6 +21,11 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 #include <linux/pxa2xx_ssp.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/dmaengine.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/irq.h>
 
@@ -30,10 +35,16 @@
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
 #include <sound/pxa2xx-lib.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <mach/dma.h>
 #include <mach/audio.h>
+=======
+#include <sound/dmaengine_pcm.h>
+
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "../../arm/pxa2xx-pcm.h"
 #include "pxa-ssp.h"
@@ -80,6 +91,7 @@ static void pxa_ssp_disable(struct ssp_device *ssp)
 	__raw_writel(sscr0, ssp->mmio_base + SSCR0);
 }
 
+<<<<<<< HEAD
 struct pxa2xx_pcm_dma_data {
 	struct pxa2xx_pcm_dma_params params;
 	char name[20];
@@ -105,6 +117,15 @@ pxa_ssp_get_dma_params(struct ssp_device *ssp, int width4, int out)
 	dma->params.dev_addr = ssp->phys_base + SSDR;
 
 	return &dma->params;
+=======
+static void pxa_ssp_set_dma_params(struct ssp_device *ssp, int width4,
+			int out, struct snd_dmaengine_dai_dma_data *dma)
+{
+	dma->addr_width = width4 ? DMA_SLAVE_BUSWIDTH_4_BYTES :
+				   DMA_SLAVE_BUSWIDTH_2_BYTES;
+	dma->maxburst = 16;
+	dma->addr = ssp->phys_base + SSDR;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pxa_ssp_startup(struct snd_pcm_substream *substream,
@@ -112,6 +133,10 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
 {
 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
 	struct ssp_device *ssp = priv->ssp;
+<<<<<<< HEAD
+=======
+	struct snd_dmaengine_dai_dma_data *dma;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (!cpu_dai->active) {
@@ -119,8 +144,19 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
 		pxa_ssp_disable(ssp);
 	}
 
+<<<<<<< HEAD
 	kfree(snd_soc_dai_get_dma_data(cpu_dai, substream));
 	snd_soc_dai_set_dma_data(cpu_dai, substream, NULL);
+=======
+	dma = kzalloc(sizeof(struct snd_dmaengine_dai_dma_data), GFP_KERNEL);
+	if (!dma)
+		return -ENOMEM;
+
+	dma->filter_data = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
+				&ssp->drcmr_tx : &ssp->drcmr_rx;
+
+	snd_soc_dai_set_dma_data(cpu_dai, substream, dma);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -195,7 +231,11 @@ static void pxa_ssp_set_scr(struct ssp_device *ssp, u32 div)
 {
 	u32 sscr0 = pxa_ssp_read_reg(ssp, SSCR0);
 
+<<<<<<< HEAD
 	if (cpu_is_pxa25x() && ssp->type == PXA25x_SSP) {
+=======
+	if (ssp->type == PXA25x_SSP) {
+>>>>>>> refs/remotes/origin/master
 		sscr0 &= ~0x0000ff00;
 		sscr0 |= ((div - 2)/2) << 8; /* 2..512 */
 	} else {
@@ -213,7 +253,11 @@ static u32 pxa_ssp_get_scr(struct ssp_device *ssp)
 	u32 sscr0 = pxa_ssp_read_reg(ssp, SSCR0);
 	u32 div;
 
+<<<<<<< HEAD
 	if (cpu_is_pxa25x() && ssp->type == PXA25x_SSP)
+=======
+	if (ssp->type == PXA25x_SSP)
+>>>>>>> refs/remotes/origin/master
 		div = ((sscr0 >> 8) & 0xff) * 2 + 2;
 	else
 		div = ((sscr0 >> 8) & 0xfff) + 1;
@@ -243,7 +287,11 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
 		break;
 	case PXA_SSP_CLK_PLL:
 		/* Internal PLL is fixed */
+<<<<<<< HEAD
 		if (cpu_is_pxa25x())
+=======
+		if (ssp->type == PXA25x_SSP)
+>>>>>>> refs/remotes/origin/master
 			priv->sysclk = 1843200;
 		else
 			priv->sysclk = 13000000;
@@ -267,11 +315,19 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
 
 	/* The SSP clock must be disabled when changing SSP clock mode
 	 * on PXA2xx.  On PXA3xx it must be enabled when doing so. */
+<<<<<<< HEAD
 	if (!cpu_is_pxa3xx())
 		clk_disable(ssp->clk);
 	val = pxa_ssp_read_reg(ssp, SSCR0) | sscr0;
 	pxa_ssp_write_reg(ssp, SSCR0, val);
 	if (!cpu_is_pxa3xx())
+=======
+	if (ssp->type != PXA3xx_SSP)
+		clk_disable(ssp->clk);
+	val = pxa_ssp_read_reg(ssp, SSCR0) | sscr0;
+	pxa_ssp_write_reg(ssp, SSCR0, val);
+	if (ssp->type != PXA3xx_SSP)
+>>>>>>> refs/remotes/origin/master
 		clk_enable(ssp->clk);
 
 	return 0;
@@ -295,24 +351,37 @@ static int pxa_ssp_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
 	case PXA_SSP_AUDIO_DIV_SCDB:
 		val = pxa_ssp_read_reg(ssp, SSACD);
 		val &= ~SSACD_SCDB;
+<<<<<<< HEAD
 #if defined(CONFIG_PXA3xx)
 		if (cpu_is_pxa3xx())
 			val &= ~SSACD_SCDX8;
 #endif
+=======
+		if (ssp->type == PXA3xx_SSP)
+			val &= ~SSACD_SCDX8;
+>>>>>>> refs/remotes/origin/master
 		switch (div) {
 		case PXA_SSP_CLK_SCDB_1:
 			val |= SSACD_SCDB;
 			break;
 		case PXA_SSP_CLK_SCDB_4:
 			break;
+<<<<<<< HEAD
 #if defined(CONFIG_PXA3xx)
 		case PXA_SSP_CLK_SCDB_8:
 			if (cpu_is_pxa3xx())
+=======
+		case PXA_SSP_CLK_SCDB_8:
+			if (ssp->type == PXA3xx_SSP)
+>>>>>>> refs/remotes/origin/master
 				val |= SSACD_SCDX8;
 			else
 				return -EINVAL;
 			break;
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		default:
 			return -EINVAL;
 		}
@@ -338,10 +407,15 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
 	struct ssp_device *ssp = priv->ssp;
 	u32 ssacd = pxa_ssp_read_reg(ssp, SSACD) & ~0x70;
 
+<<<<<<< HEAD
 #if defined(CONFIG_PXA3xx)
 	if (cpu_is_pxa3xx())
 		pxa_ssp_write_reg(ssp, SSACDD, 0);
 #endif
+=======
+	if (ssp->type == PXA3xx_SSP)
+		pxa_ssp_write_reg(ssp, SSACDD, 0);
+>>>>>>> refs/remotes/origin/master
 
 	switch (freq_out) {
 	case 5622000:
@@ -366,11 +440,18 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
 		break;
 
 	default:
+<<<<<<< HEAD
 #ifdef CONFIG_PXA3xx
 		/* PXA3xx has a clock ditherer which can be used to generate
 		 * a wider range of frequencies - calculate a value for it.
 		 */
 		if (cpu_is_pxa3xx()) {
+=======
+		/* PXA3xx has a clock ditherer which can be used to generate
+		 * a wider range of frequencies - calculate a value for it.
+		 */
+		if (ssp->type == PXA3xx_SSP) {
+>>>>>>> refs/remotes/origin/master
 			u32 val;
 			u64 tmp = 19968;
 			tmp *= 1000000;
@@ -387,7 +468,10 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
 				val, freq_out);
 			break;
 		}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 		return -EINVAL;
 	}
@@ -569,6 +653,7 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
 	u32 sspsp;
 	int width = snd_pcm_format_physical_width(params_format(params));
 	int ttsa = pxa_ssp_read_reg(ssp, SSTSA) & 0xf;
+<<<<<<< HEAD
 	struct pxa2xx_pcm_dma_params *dma_data;
 
 	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
@@ -576,15 +661,27 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
 	/* generate correct DMA params */
 	kfree(dma_data);
 
+=======
+	struct snd_dmaengine_dai_dma_data *dma_data;
+
+	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
+
+>>>>>>> refs/remotes/origin/master
 	/* Network mode with one active slot (ttsa == 1) can be used
 	 * to force 16-bit frame width on the wire (for S16_LE), even
 	 * with two channels. Use 16-bit DMA transfers for this case.
 	 */
+<<<<<<< HEAD
 	dma_data = pxa_ssp_get_dma_params(ssp,
 			((chn == 2) && (ttsa != 1)) || (width == 32),
 			substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
 
 	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
+=======
+	pxa_ssp_set_dma_params(ssp,
+		((chn == 2) && (ttsa != 1)) || (width == 32),
+		substream->stream == SNDRV_PCM_STREAM_PLAYBACK, dma_data);
+>>>>>>> refs/remotes/origin/master
 
 	/* we can only change the settings if the port is not in use */
 	if (pxa_ssp_read_reg(ssp, SSCR0) & SSCR0_SSE)
@@ -596,10 +693,15 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
 	/* bit size */
 	switch (params_format(params)) {
 	case SNDRV_PCM_FORMAT_S16_LE:
+<<<<<<< HEAD
 #ifdef CONFIG_PXA3xx
 		if (cpu_is_pxa3xx())
 			sscr0 |= SSCR0_FPCKE;
 #endif
+=======
+		if (ssp->type == PXA3xx_SSP)
+			sscr0 |= SSCR0_FPCKE;
+>>>>>>> refs/remotes/origin/master
 		sscr0 |= SSCR0_DataSize(16);
 		break;
 	case SNDRV_PCM_FORMAT_S24_LE:
@@ -624,9 +726,13 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
 			* trying and failing a lot; some of the registers
 			* needed for that mode are only available on PXA3xx.
 			*/
+<<<<<<< HEAD
 
 #ifdef CONFIG_PXA3xx
 			if (!cpu_is_pxa3xx())
+=======
+			if (ssp->type != PXA3xx_SSP)
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 
 			sspsp |= SSPSP_SFRMWDTH(width * 2);
@@ -634,9 +740,12 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
 			sspsp |= SSPSP_EDMYSTOP(3);
 			sspsp |= SSPSP_DMYSTOP(3);
 			sspsp |= SSPSP_DMYSTRT(1);
+<<<<<<< HEAD
 #else
 			return -EINVAL;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* The frame width is the width the LRCLK is
 			 * asserted for; the delay is expressed in
@@ -741,6 +850,10 @@ static int pxa_ssp_trigger(struct snd_pcm_substream *substream, int cmd,
 
 static int pxa_ssp_probe(struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
+=======
+	struct device *dev = dai->dev;
+>>>>>>> refs/remotes/origin/master
 	struct ssp_priv *priv;
 	int ret;
 
@@ -748,10 +861,33 @@ static int pxa_ssp_probe(struct snd_soc_dai *dai)
 	if (!priv)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	priv->ssp = pxa_ssp_request(dai->id + 1, "SoC audio");
 	if (priv->ssp == NULL) {
 		ret = -ENODEV;
 		goto err_priv;
+=======
+	if (dev->of_node) {
+		struct device_node *ssp_handle;
+
+		ssp_handle = of_parse_phandle(dev->of_node, "port", 0);
+		if (!ssp_handle) {
+			dev_err(dev, "unable to get 'port' phandle\n");
+			return -ENODEV;
+		}
+
+		priv->ssp = pxa_ssp_request_of(ssp_handle, "SoC audio");
+		if (priv->ssp == NULL) {
+			ret = -ENODEV;
+			goto err_priv;
+		}
+	} else {
+		priv->ssp = pxa_ssp_request(dai->id + 1, "SoC audio");
+		if (priv->ssp == NULL) {
+			ret = -ENODEV;
+			goto err_priv;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	priv->dai_fmt = (unsigned int) -1;
@@ -775,14 +911,32 @@ static int pxa_ssp_remove(struct snd_soc_dai *dai)
 
 #define PXA_SSP_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
 			  SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |	\
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |	\
+=======
+			  SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |	\
+			  SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_64000 |	\
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |	\
+			  SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_64000 |	\
+>>>>>>> refs/remotes/origin/master
 			  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
 
 #define PXA_SSP_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
 			    SNDRV_PCM_FMTBIT_S24_LE |	\
 			    SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops pxa_ssp_dai_ops = {
+=======
+static const struct snd_soc_dai_ops pxa_ssp_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops pxa_ssp_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= pxa_ssp_startup,
 	.shutdown	= pxa_ssp_shutdown,
 	.trigger	= pxa_ssp_trigger,
@@ -815,6 +969,7 @@ static struct snd_soc_dai_driver pxa_ssp_dai = {
 		.ops = &pxa_ssp_dai_ops,
 };
 
+<<<<<<< HEAD
 static __devinit int asoc_ssp_probe(struct platform_device *pdev)
 {
 	return snd_soc_register_dai(&pdev->dev, &pxa_ssp_dai);
@@ -823,11 +978,33 @@ static __devinit int asoc_ssp_probe(struct platform_device *pdev)
 static int __devexit asoc_ssp_remove(struct platform_device *pdev)
 {
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+static const struct snd_soc_component_driver pxa_ssp_component = {
+	.name		= "pxa-ssp",
+};
+
+#ifdef CONFIG_OF
+static const struct of_device_id pxa_ssp_of_ids[] = {
+	{ .compatible = "mrvl,pxa-ssp-dai" },
+};
+#endif
+
+static int asoc_ssp_probe(struct platform_device *pdev)
+{
+	return snd_soc_register_component(&pdev->dev, &pxa_ssp_component,
+					  &pxa_ssp_dai, 1);
+}
+
+static int asoc_ssp_remove(struct platform_device *pdev)
+{
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver asoc_ssp_driver = {
 	.driver = {
+<<<<<<< HEAD
 			.name = "pxa-ssp-dai",
 			.owner = THIS_MODULE,
 	},
@@ -836,6 +1013,7 @@ static struct platform_driver asoc_ssp_driver = {
 	.remove = __devexit_p(asoc_ssp_remove),
 };
 
+<<<<<<< HEAD
 static int __init pxa_ssp_init(void)
 {
 	return platform_driver_register(&asoc_ssp_driver);
@@ -847,6 +1025,21 @@ static void __exit pxa_ssp_exit(void)
 	platform_driver_unregister(&asoc_ssp_driver);
 }
 module_exit(pxa_ssp_exit);
+=======
+module_platform_driver(asoc_ssp_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name = "pxa-ssp-dai",
+		.owner = THIS_MODULE,
+		.of_match_table = of_match_ptr(pxa_ssp_of_ids),
+	},
+
+	.probe = asoc_ssp_probe,
+	.remove = asoc_ssp_remove,
+};
+
+module_platform_driver(asoc_ssp_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");

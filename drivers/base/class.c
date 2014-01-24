@@ -47,6 +47,24 @@ static ssize_t class_attr_store(struct kobject *kobj, struct attribute *attr,
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static const void *class_attr_namespace(struct kobject *kobj,
+					const struct attribute *attr)
+{
+	struct class_attribute *class_attr = to_class_attr(attr);
+	struct subsys_private *cp = to_subsys_private(kobj);
+	const void *ns = NULL;
+
+	if (class_attr->namespace)
+		ns = class_attr->namespace(cp->class, class_attr);
+	return ns;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void class_release(struct kobject *kobj)
 {
 	struct subsys_private *cp = to_subsys_private(kobj);
@@ -72,8 +90,19 @@ static const struct kobj_ns_type_operations *class_child_ns_type(struct kobject 
 }
 
 static const struct sysfs_ops class_sysfs_ops = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.show	= class_attr_show,
 	.store	= class_attr_store,
+=======
+	.show	   = class_attr_show,
+	.store	   = class_attr_store,
+	.namespace = class_attr_namespace,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.show	   = class_attr_show,
+	.store	   = class_attr_store,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct kobj_type class_ktype = {
@@ -86,21 +115,39 @@ static struct kobj_type class_ktype = {
 static struct kset *class_kset;
 
 
+<<<<<<< HEAD
 int class_create_file(struct class *cls, const struct class_attribute *attr)
 {
 	int error;
 	if (cls)
 		error = sysfs_create_file(&cls->p->subsys.kobj,
 					  &attr->attr);
+=======
+int class_create_file_ns(struct class *cls, const struct class_attribute *attr,
+			 const void *ns)
+{
+	int error;
+	if (cls)
+		error = sysfs_create_file_ns(&cls->p->subsys.kobj,
+					     &attr->attr, ns);
+>>>>>>> refs/remotes/origin/master
 	else
 		error = -EINVAL;
 	return error;
 }
 
+<<<<<<< HEAD
 void class_remove_file(struct class *cls, const struct class_attribute *attr)
 {
 	if (cls)
 		sysfs_remove_file(&cls->p->subsys.kobj, &attr->attr);
+=======
+void class_remove_file_ns(struct class *cls, const struct class_attribute *attr,
+			  const void *ns)
+{
+	if (cls)
+		sysfs_remove_file_ns(&cls->p->subsys.kobj, &attr->attr, ns);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct class *class_get(struct class *cls)
@@ -122,7 +169,11 @@ static int add_class_attrs(struct class *cls)
 	int error = 0;
 
 	if (cls->class_attrs) {
+<<<<<<< HEAD
 		for (i = 0; attr_name(cls->class_attrs[i]); i++) {
+=======
+		for (i = 0; cls->class_attrs[i].attr.name; i++) {
+>>>>>>> refs/remotes/origin/master
 			error = class_create_file(cls, &cls->class_attrs[i]);
 			if (error)
 				goto error;
@@ -141,7 +192,11 @@ static void remove_class_attrs(struct class *cls)
 	int i;
 
 	if (cls->class_attrs) {
+<<<<<<< HEAD
 		for (i = 0; attr_name(cls->class_attrs[i]); i++)
+=======
+		for (i = 0; cls->class_attrs[i].attr.name; i++)
+>>>>>>> refs/remotes/origin/master
 			class_remove_file(cls, &cls->class_attrs[i]);
 	}
 }
@@ -171,9 +226,21 @@ int __class_register(struct class *cls, struct lock_class_key *key)
 	if (!cp)
 		return -ENOMEM;
 	klist_init(&cp->klist_devices, klist_class_dev_get, klist_class_dev_put);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&cp->class_interfaces);
 	kset_init(&cp->glue_dirs);
 	__mutex_init(&cp->class_mutex, "struct class mutex", key);
+=======
+	INIT_LIST_HEAD(&cp->interfaces);
+	kset_init(&cp->glue_dirs);
+	__mutex_init(&cp->mutex, "subsys mutex", key);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&cp->interfaces);
+	kset_init(&cp->glue_dirs);
+	__mutex_init(&cp->mutex, "subsys mutex", key);
+>>>>>>> refs/remotes/origin/master
 	error = kobject_set_name(&cp->subsys.kobj, "%s", cls->name);
 	if (error) {
 		kfree(cp);
@@ -407,8 +474,13 @@ EXPORT_SYMBOL_GPL(class_for_each_device);
  * code.  There's no locking restriction.
  */
 struct device *class_find_device(struct class *class, struct device *start,
+<<<<<<< HEAD
 				 void *data,
 				 int (*match)(struct device *, void *))
+=======
+				 const void *data,
+				 int (*match)(struct device *, const void *))
+>>>>>>> refs/remotes/origin/master
 {
 	struct class_dev_iter iter;
 	struct device *dev;
@@ -447,15 +519,33 @@ int class_interface_register(struct class_interface *class_intf)
 	if (!parent)
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&parent->p->class_mutex);
 	list_add_tail(&class_intf->node, &parent->p->class_interfaces);
+=======
+	mutex_lock(&parent->p->mutex);
+	list_add_tail(&class_intf->node, &parent->p->interfaces);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&parent->p->mutex);
+	list_add_tail(&class_intf->node, &parent->p->interfaces);
+>>>>>>> refs/remotes/origin/master
 	if (class_intf->add_dev) {
 		class_dev_iter_init(&iter, parent, NULL, NULL);
 		while ((dev = class_dev_iter_next(&iter)))
 			class_intf->add_dev(dev, class_intf);
 		class_dev_iter_exit(&iter);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&parent->p->class_mutex);
+=======
+	mutex_unlock(&parent->p->mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&parent->p->mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -469,7 +559,15 @@ void class_interface_unregister(struct class_interface *class_intf)
 	if (!parent)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&parent->p->class_mutex);
+=======
+	mutex_lock(&parent->p->mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&parent->p->mutex);
+>>>>>>> refs/remotes/origin/master
 	list_del_init(&class_intf->node);
 	if (class_intf->remove_dev) {
 		class_dev_iter_init(&iter, parent, NULL, NULL);
@@ -477,7 +575,15 @@ void class_interface_unregister(struct class_interface *class_intf)
 			class_intf->remove_dev(dev, class_intf);
 		class_dev_iter_exit(&iter);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&parent->p->class_mutex);
+=======
+	mutex_unlock(&parent->p->mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&parent->p->mutex);
+>>>>>>> refs/remotes/origin/master
 
 	class_put(parent);
 }
@@ -587,8 +693,13 @@ int __init classes_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(class_create_file);
 EXPORT_SYMBOL_GPL(class_remove_file);
+=======
+EXPORT_SYMBOL_GPL(class_create_file_ns);
+EXPORT_SYMBOL_GPL(class_remove_file_ns);
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(class_unregister);
 EXPORT_SYMBOL_GPL(class_destroy);
 

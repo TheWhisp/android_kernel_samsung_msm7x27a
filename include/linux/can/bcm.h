@@ -7,14 +7,21 @@
  * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
  * All rights reserved.
  *
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #ifndef CAN_BCM_H
 #define CAN_BCM_H
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/can.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * struct bcm_msg_head - head of messages to/from the broadcast manager

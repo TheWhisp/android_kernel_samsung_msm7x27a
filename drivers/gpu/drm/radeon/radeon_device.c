@@ -32,6 +32,14 @@
 #include <drm/radeon_drm.h>
 #include <linux/vgaarb.h>
 #include <linux/vga_switcheroo.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/efi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/efi.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon_reg.h"
 #include "radeon.h"
 #include "atom.h"
@@ -88,11 +96,81 @@ static const char radeon_family_name[][16] = {
 	"TURKS",
 	"CAICOS",
 	"CAYMAN",
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	"ARUBA",
+	"TAHITI",
+	"PITCAIRN",
+	"VERDE",
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	"LAST",
 };
 
 /*
  * Clear GPU surface registers.
+=======
+	"OLAND",
+	"HAINAN",
+	"BONAIRE",
+	"KAVERI",
+	"KABINI",
+	"HAWAII",
+	"LAST",
+};
+
+#if defined(CONFIG_VGA_SWITCHEROO)
+bool radeon_is_px(void);
+#else
+static inline bool radeon_is_px(void) { return false; }
+#endif
+
+/**
+ * radeon_program_register_sequence - program an array of registers.
+ *
+ * @rdev: radeon_device pointer
+ * @registers: pointer to the register array
+ * @array_size: size of the register array
+ *
+ * Programs an array or registers with and and or masks.
+ * This is a helper for setting golden registers.
+ */
+void radeon_program_register_sequence(struct radeon_device *rdev,
+				      const u32 *registers,
+				      const u32 array_size)
+{
+	u32 tmp, reg, and_mask, or_mask;
+	int i;
+
+	if (array_size % 3)
+		return;
+
+	for (i = 0; i < array_size; i +=3) {
+		reg = registers[i + 0];
+		and_mask = registers[i + 1];
+		or_mask = registers[i + 2];
+
+		if (and_mask == 0xffffffff) {
+			tmp = or_mask;
+		} else {
+			tmp = RREG32(reg);
+			tmp &= ~and_mask;
+			tmp |= or_mask;
+		}
+		WREG32(reg, tmp);
+	}
+}
+
+/**
+ * radeon_surface_init - Clear GPU surface registers.
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Clear GPU surface registers (r1xx-r5xx).
+>>>>>>> refs/remotes/origin/master
  */
 void radeon_surface_init(struct radeon_device *rdev)
 {
@@ -114,6 +192,16 @@ void radeon_surface_init(struct radeon_device *rdev)
 /*
  * GPU scratch registers helpers function.
  */
+<<<<<<< HEAD
+=======
+/**
+ * radeon_scratch_init - Init scratch register driver information.
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Init CP scratch register driver information (r1xx-r5xx)
+ */
+>>>>>>> refs/remotes/origin/master
 void radeon_scratch_init(struct radeon_device *rdev)
 {
 	int i;
@@ -131,6 +219,18 @@ void radeon_scratch_init(struct radeon_device *rdev)
 	}
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_scratch_get - Allocate a scratch register
+ *
+ * @rdev: radeon_device pointer
+ * @reg: scratch register mmio offset
+ *
+ * Allocate a CP scratch register for use by the driver (all asics).
+ * Returns 0 on success or -EINVAL on failure.
+ */
+>>>>>>> refs/remotes/origin/master
 int radeon_scratch_get(struct radeon_device *rdev, uint32_t *reg)
 {
 	int i;
@@ -145,6 +245,17 @@ int radeon_scratch_get(struct radeon_device *rdev, uint32_t *reg)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_scratch_free - Free a scratch register
+ *
+ * @rdev: radeon_device pointer
+ * @reg: scratch register mmio offset
+ *
+ * Free a CP scratch register allocated for use by the driver (all asics)
+ */
+>>>>>>> refs/remotes/origin/master
 void radeon_scratch_free(struct radeon_device *rdev, uint32_t reg)
 {
 	int i;
@@ -157,6 +268,7 @@ void radeon_scratch_free(struct radeon_device *rdev, uint32_t reg)
 	}
 }
 
+<<<<<<< HEAD
 void radeon_wb_disable(struct radeon_device *rdev)
 {
 	int r;
@@ -172,27 +284,162 @@ void radeon_wb_disable(struct radeon_device *rdev)
 	rdev->wb.enabled = false;
 }
 
+=======
+/*
+ * GPU doorbell aperture helpers function.
+ */
+/**
+ * radeon_doorbell_init - Init doorbell driver information.
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Init doorbell driver information (CIK)
+ * Returns 0 on success, error on failure.
+ */
+int radeon_doorbell_init(struct radeon_device *rdev)
+{
+	/* doorbell bar mapping */
+	rdev->doorbell.base = pci_resource_start(rdev->pdev, 2);
+	rdev->doorbell.size = pci_resource_len(rdev->pdev, 2);
+
+	rdev->doorbell.num_doorbells = min_t(u32, rdev->doorbell.size / sizeof(u32), RADEON_MAX_DOORBELLS);
+	if (rdev->doorbell.num_doorbells == 0)
+		return -EINVAL;
+
+	rdev->doorbell.ptr = ioremap(rdev->doorbell.base, rdev->doorbell.num_doorbells * sizeof(u32));
+	if (rdev->doorbell.ptr == NULL) {
+		return -ENOMEM;
+	}
+	DRM_INFO("doorbell mmio base: 0x%08X\n", (uint32_t)rdev->doorbell.base);
+	DRM_INFO("doorbell mmio size: %u\n", (unsigned)rdev->doorbell.size);
+
+	memset(&rdev->doorbell.used, 0, sizeof(rdev->doorbell.used));
+
+	return 0;
+}
+
+/**
+ * radeon_doorbell_fini - Tear down doorbell driver information.
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Tear down doorbell driver information (CIK)
+ */
+void radeon_doorbell_fini(struct radeon_device *rdev)
+{
+	iounmap(rdev->doorbell.ptr);
+	rdev->doorbell.ptr = NULL;
+}
+
+/**
+ * radeon_doorbell_get - Allocate a doorbell entry
+ *
+ * @rdev: radeon_device pointer
+ * @doorbell: doorbell index
+ *
+ * Allocate a doorbell for use by the driver (all asics).
+ * Returns 0 on success or -EINVAL on failure.
+ */
+int radeon_doorbell_get(struct radeon_device *rdev, u32 *doorbell)
+{
+	unsigned long offset = find_first_zero_bit(rdev->doorbell.used, rdev->doorbell.num_doorbells);
+	if (offset < rdev->doorbell.num_doorbells) {
+		__set_bit(offset, rdev->doorbell.used);
+		*doorbell = offset;
+		return 0;
+	} else {
+		return -EINVAL;
+	}
+}
+
+/**
+ * radeon_doorbell_free - Free a doorbell entry
+ *
+ * @rdev: radeon_device pointer
+ * @doorbell: doorbell index
+ *
+ * Free a doorbell allocated for use by the driver (all asics)
+ */
+void radeon_doorbell_free(struct radeon_device *rdev, u32 doorbell)
+{
+	if (doorbell < rdev->doorbell.num_doorbells)
+		__clear_bit(doorbell, rdev->doorbell.used);
+}
+
+/*
+ * radeon_wb_*()
+ * Writeback is the the method by which the the GPU updates special pages
+ * in memory with the status of certain GPU events (fences, ring pointers,
+ * etc.).
+ */
+
+/**
+ * radeon_wb_disable - Disable Writeback
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Disables Writeback (all asics).  Used for suspend.
+ */
+void radeon_wb_disable(struct radeon_device *rdev)
+{
+	rdev->wb.enabled = false;
+}
+
+/**
+ * radeon_wb_fini - Disable Writeback and free memory
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Disables Writeback and frees the Writeback memory (all asics).
+ * Used at driver shutdown.
+ */
+>>>>>>> refs/remotes/origin/master
 void radeon_wb_fini(struct radeon_device *rdev)
 {
 	radeon_wb_disable(rdev);
 	if (rdev->wb.wb_obj) {
+<<<<<<< HEAD
+=======
+		if (!radeon_bo_reserve(rdev->wb.wb_obj, false)) {
+			radeon_bo_kunmap(rdev->wb.wb_obj);
+			radeon_bo_unpin(rdev->wb.wb_obj);
+			radeon_bo_unreserve(rdev->wb.wb_obj);
+		}
+>>>>>>> refs/remotes/origin/master
 		radeon_bo_unref(&rdev->wb.wb_obj);
 		rdev->wb.wb = NULL;
 		rdev->wb.wb_obj = NULL;
 	}
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_wb_init- Init Writeback driver info and allocate memory
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Disables Writeback and frees the Writeback memory (all asics).
+ * Used at driver startup.
+ * Returns 0 on success or an -error on failure.
+ */
+>>>>>>> refs/remotes/origin/master
 int radeon_wb_init(struct radeon_device *rdev)
 {
 	int r;
 
 	if (rdev->wb.wb_obj == NULL) {
 		r = radeon_bo_create(rdev, RADEON_GPU_PAGE_SIZE, PAGE_SIZE, true,
+<<<<<<< HEAD
 				RADEON_GEM_DOMAIN_GTT, &rdev->wb.wb_obj);
+=======
+				     RADEON_GEM_DOMAIN_GTT, NULL, &rdev->wb.wb_obj);
+>>>>>>> refs/remotes/origin/master
 		if (r) {
 			dev_warn(rdev->dev, "(%d) create WB bo failed\n", r);
 			return r;
 		}
+<<<<<<< HEAD
 	}
 	r = radeon_bo_reserve(rdev->wb.wb_obj, false);
 	if (unlikely(r != 0)) {
@@ -213,6 +460,28 @@ int radeon_wb_init(struct radeon_device *rdev)
 		dev_warn(rdev->dev, "(%d) map WB bo failed\n", r);
 		radeon_wb_fini(rdev);
 		return r;
+=======
+		r = radeon_bo_reserve(rdev->wb.wb_obj, false);
+		if (unlikely(r != 0)) {
+			radeon_wb_fini(rdev);
+			return r;
+		}
+		r = radeon_bo_pin(rdev->wb.wb_obj, RADEON_GEM_DOMAIN_GTT,
+				&rdev->wb.gpu_addr);
+		if (r) {
+			radeon_bo_unreserve(rdev->wb.wb_obj);
+			dev_warn(rdev->dev, "(%d) pin WB bo failed\n", r);
+			radeon_wb_fini(rdev);
+			return r;
+		}
+		r = radeon_bo_kmap(rdev->wb.wb_obj, (void **)&rdev->wb.wb);
+		radeon_bo_unreserve(rdev->wb.wb_obj);
+		if (r) {
+			dev_warn(rdev->dev, "(%d) map WB bo failed\n", r);
+			radeon_wb_fini(rdev);
+			return r;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* clear wb memory */
@@ -220,9 +489,15 @@ int radeon_wb_init(struct radeon_device *rdev)
 	/* disable event_write fences */
 	rdev->wb.use_event = false;
 	/* disabled via module param */
+<<<<<<< HEAD
 	if (radeon_no_wb == 1)
 		rdev->wb.enabled = false;
 	else {
+=======
+	if (radeon_no_wb == 1) {
+		rdev->wb.enabled = false;
+	} else {
+>>>>>>> refs/remotes/origin/master
 		if (rdev->flags & RADEON_IS_AGP) {
 			/* often unreliable on AGP */
 			rdev->wb.enabled = false;
@@ -232,12 +507,27 @@ int radeon_wb_init(struct radeon_device *rdev)
 		} else {
 			rdev->wb.enabled = true;
 			/* event_write fences are only available on r600+ */
+<<<<<<< HEAD
 			if (rdev->family >= CHIP_R600)
 				rdev->wb.use_event = true;
 		}
 	}
+<<<<<<< HEAD
 	/* always use writeback/events on NI */
 	if (ASIC_IS_DCE5(rdev)) {
+=======
+	/* always use writeback/events on NI, APUs */
+	if (rdev->family >= CHIP_PALM) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (rdev->family >= CHIP_R600) {
+				rdev->wb.use_event = true;
+			}
+		}
+	}
+	/* always use writeback/events on NI, APUs */
+	if (rdev->family >= CHIP_PALM) {
+>>>>>>> refs/remotes/origin/master
 		rdev->wb.enabled = true;
 		rdev->wb.use_event = true;
 	}
@@ -290,8 +580,15 @@ int radeon_wb_init(struct radeon_device *rdev)
  */
 void radeon_vram_location(struct radeon_device *rdev, struct radeon_mc *mc, u64 base)
 {
+<<<<<<< HEAD
 	mc->vram_start = base;
 	if (mc->mc_vram_size > (0xFFFFFFFF - base + 1)) {
+=======
+	uint64_t limit = (uint64_t)radeon_vram_limit << 20;
+
+	mc->vram_start = base;
+	if (mc->mc_vram_size > (rdev->mc.mc_mask - base + 1)) {
+>>>>>>> refs/remotes/origin/master
 		dev_warn(rdev->dev, "limiting VRAM to PCI aperture size\n");
 		mc->real_vram_size = mc->aper_size;
 		mc->mc_vram_size = mc->aper_size;
@@ -303,6 +600,16 @@ void radeon_vram_location(struct radeon_device *rdev, struct radeon_mc *mc, u64 
 		mc->mc_vram_size = mc->aper_size;
 	}
 	mc->vram_end = mc->vram_start + mc->mc_vram_size - 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (radeon_vram_limit && radeon_vram_limit < mc->real_vram_size)
+		mc->real_vram_size = radeon_vram_limit;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (limit && limit < mc->real_vram_size)
+		mc->real_vram_size = limit;
+>>>>>>> refs/remotes/origin/master
 	dev_info(rdev->dev, "VRAM: %lluM 0x%016llX - 0x%016llX (%lluM used)\n",
 			mc->mc_vram_size >> 20, mc->vram_start,
 			mc->vram_end, mc->real_vram_size >> 20);
@@ -324,7 +631,11 @@ void radeon_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc)
 {
 	u64 size_af, size_bf;
 
+<<<<<<< HEAD
 	size_af = ((0xFFFFFFFF - mc->vram_end) + mc->gtt_base_align) & ~mc->gtt_base_align;
+=======
+	size_af = ((rdev->mc.mc_mask - mc->vram_end) + mc->gtt_base_align) & ~mc->gtt_base_align;
+>>>>>>> refs/remotes/origin/master
 	size_bf = mc->vram_start & ~mc->gtt_base_align;
 	if (size_bf > size_af) {
 		if (mc->gtt_size > size_bf) {
@@ -347,10 +658,46 @@ void radeon_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc)
 /*
  * GPU helpers function.
  */
+<<<<<<< HEAD
+=======
+/**
+ * radeon_card_posted - check if the hw has already been initialized
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Check if the asic has been initialized (all asics).
+ * Used at driver startup.
+ * Returns true if initialized or false if not.
+ */
+>>>>>>> refs/remotes/origin/master
 bool radeon_card_posted(struct radeon_device *rdev)
 {
 	uint32_t reg;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (efi_enabled(EFI_BOOT) &&
+	    rdev->pdev->subsystem_vendor == PCI_VENDOR_ID_APPLE)
+		return false;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* required for EFI mode on macbook2,1 which uses an r5xx asic */
+	if (efi_enabled(EFI_BOOT) &&
+	    (rdev->pdev->subsystem_vendor == PCI_VENDOR_ID_APPLE) &&
+	    (rdev->family < CHIP_R600))
+=======
+	if (efi_enabled(EFI_BOOT) &&
+	    rdev->pdev->subsystem_vendor == PCI_VENDOR_ID_APPLE)
+>>>>>>> refs/remotes/origin/cm-11.0
+		return false;
+
+	if (ASIC_IS_NODCE(rdev))
+		goto check_memsize;
+
+>>>>>>> refs/remotes/origin/master
 	/* first check CRTCs */
 	if (ASIC_IS_DCE4(rdev)) {
 		reg = RREG32(EVERGREEN_CRTC_CONTROL + EVERGREEN_CRTC0_REGISTER_OFFSET) |
@@ -379,6 +726,10 @@ bool radeon_card_posted(struct radeon_device *rdev)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+check_memsize:
+>>>>>>> refs/remotes/origin/master
 	/* then check MEM_SIZE, in case the crtcs are off */
 	if (rdev->family >= CHIP_R600)
 		reg = RREG32(R600_CONFIG_MEMSIZE);
@@ -392,6 +743,17 @@ bool radeon_card_posted(struct radeon_device *rdev)
 
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_update_bandwidth_info - update display bandwidth params
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Used when sclk/mclk are switched or display modes are set.
+ * params are used to calculate display watermarks (all asics)
+ */
+>>>>>>> refs/remotes/origin/master
 void radeon_update_bandwidth_info(struct radeon_device *rdev)
 {
 	fixed20_12 a;
@@ -412,6 +774,18 @@ void radeon_update_bandwidth_info(struct radeon_device *rdev)
 	}
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_boot_test_post_card - check and possibly initialize the hw
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Check if the asic is initialized and if not, attempt to initialize
+ * it (all asics).
+ * Returns true if initialized or false if not.
+ */
+>>>>>>> refs/remotes/origin/master
 bool radeon_boot_test_post_card(struct radeon_device *rdev)
 {
 	if (radeon_card_posted(rdev))
@@ -430,6 +804,19 @@ bool radeon_boot_test_post_card(struct radeon_device *rdev)
 	}
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_dummy_page_init - init dummy page used by the driver
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Allocate the dummy page used by the driver (all asics).
+ * This dummy page is used by the driver as a filler for gart entries
+ * when pages are taken out of the GART
+ * Returns 0 on sucess, -ENOMEM on failure.
+ */
+>>>>>>> refs/remotes/origin/master
 int radeon_dummy_page_init(struct radeon_device *rdev)
 {
 	if (rdev->dummy_page.page)
@@ -448,6 +835,16 @@ int radeon_dummy_page_init(struct radeon_device *rdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_dummy_page_fini - free dummy page used by the driver
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Frees the dummy page used by the driver (all asics).
+ */
+>>>>>>> refs/remotes/origin/master
 void radeon_dummy_page_fini(struct radeon_device *rdev)
 {
 	if (rdev->dummy_page.page == NULL)
@@ -460,6 +857,26 @@ void radeon_dummy_page_fini(struct radeon_device *rdev)
 
 
 /* ATOM accessor methods */
+<<<<<<< HEAD
+=======
+/*
+ * ATOM is an interpreted byte code stored in tables in the vbios.  The
+ * driver registers callbacks to access registers and the interpreter
+ * in the driver parses the tables and executes then to program specific
+ * actions (set display modes, asic init, etc.).  See radeon_atombios.c,
+ * atombios.h, and atom.c
+ */
+
+/**
+ * cail_pll_read - read PLL register
+ *
+ * @info: atom card_info pointer
+ * @reg: PLL register offset
+ *
+ * Provides a PLL register accessor for the atom interpreter (r4xx+).
+ * Returns the value of the PLL register.
+ */
+>>>>>>> refs/remotes/origin/master
 static uint32_t cail_pll_read(struct card_info *info, uint32_t reg)
 {
 	struct radeon_device *rdev = info->dev->dev_private;
@@ -469,6 +886,18 @@ static uint32_t cail_pll_read(struct card_info *info, uint32_t reg)
 	return r;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * cail_pll_write - write PLL register
+ *
+ * @info: atom card_info pointer
+ * @reg: PLL register offset
+ * @val: value to write to the pll register
+ *
+ * Provides a PLL register accessor for the atom interpreter (r4xx+).
+ */
+>>>>>>> refs/remotes/origin/master
 static void cail_pll_write(struct card_info *info, uint32_t reg, uint32_t val)
 {
 	struct radeon_device *rdev = info->dev->dev_private;
@@ -476,6 +905,18 @@ static void cail_pll_write(struct card_info *info, uint32_t reg, uint32_t val)
 	rdev->pll_wreg(rdev, reg, val);
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * cail_mc_read - read MC (Memory Controller) register
+ *
+ * @info: atom card_info pointer
+ * @reg: MC register offset
+ *
+ * Provides an MC register accessor for the atom interpreter (r4xx+).
+ * Returns the value of the MC register.
+ */
+>>>>>>> refs/remotes/origin/master
 static uint32_t cail_mc_read(struct card_info *info, uint32_t reg)
 {
 	struct radeon_device *rdev = info->dev->dev_private;
@@ -485,6 +926,18 @@ static uint32_t cail_mc_read(struct card_info *info, uint32_t reg)
 	return r;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * cail_mc_write - write MC (Memory Controller) register
+ *
+ * @info: atom card_info pointer
+ * @reg: MC register offset
+ * @val: value to write to the pll register
+ *
+ * Provides a MC register accessor for the atom interpreter (r4xx+).
+ */
+>>>>>>> refs/remotes/origin/master
 static void cail_mc_write(struct card_info *info, uint32_t reg, uint32_t val)
 {
 	struct radeon_device *rdev = info->dev->dev_private;
@@ -492,6 +945,18 @@ static void cail_mc_write(struct card_info *info, uint32_t reg, uint32_t val)
 	rdev->mc_wreg(rdev, reg, val);
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * cail_reg_write - write MMIO register
+ *
+ * @info: atom card_info pointer
+ * @reg: MMIO register offset
+ * @val: value to write to the pll register
+ *
+ * Provides a MMIO register accessor for the atom interpreter (r4xx+).
+ */
+>>>>>>> refs/remotes/origin/master
 static void cail_reg_write(struct card_info *info, uint32_t reg, uint32_t val)
 {
 	struct radeon_device *rdev = info->dev->dev_private;
@@ -499,6 +964,18 @@ static void cail_reg_write(struct card_info *info, uint32_t reg, uint32_t val)
 	WREG32(reg*4, val);
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * cail_reg_read - read MMIO register
+ *
+ * @info: atom card_info pointer
+ * @reg: MMIO register offset
+ *
+ * Provides an MMIO register accessor for the atom interpreter (r4xx+).
+ * Returns the value of the MMIO register.
+ */
+>>>>>>> refs/remotes/origin/master
 static uint32_t cail_reg_read(struct card_info *info, uint32_t reg)
 {
 	struct radeon_device *rdev = info->dev->dev_private;
@@ -508,6 +985,18 @@ static uint32_t cail_reg_read(struct card_info *info, uint32_t reg)
 	return r;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * cail_ioreg_write - write IO register
+ *
+ * @info: atom card_info pointer
+ * @reg: IO register offset
+ * @val: value to write to the pll register
+ *
+ * Provides a IO register accessor for the atom interpreter (r4xx+).
+ */
+>>>>>>> refs/remotes/origin/master
 static void cail_ioreg_write(struct card_info *info, uint32_t reg, uint32_t val)
 {
 	struct radeon_device *rdev = info->dev->dev_private;
@@ -515,6 +1004,18 @@ static void cail_ioreg_write(struct card_info *info, uint32_t reg, uint32_t val)
 	WREG32_IO(reg*4, val);
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * cail_ioreg_read - read IO register
+ *
+ * @info: atom card_info pointer
+ * @reg: IO register offset
+ *
+ * Provides an IO register accessor for the atom interpreter (r4xx+).
+ * Returns the value of the IO register.
+ */
+>>>>>>> refs/remotes/origin/master
 static uint32_t cail_ioreg_read(struct card_info *info, uint32_t reg)
 {
 	struct radeon_device *rdev = info->dev->dev_private;
@@ -524,6 +1025,19 @@ static uint32_t cail_ioreg_read(struct card_info *info, uint32_t reg)
 	return r;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_atombios_init - init the driver info and callbacks for atombios
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Initializes the driver info and register access callbacks for the
+ * ATOM interpreter (r4xx+).
+ * Returns 0 on sucess, -ENOMEM on failure.
+ * Called at driver startup.
+ */
+>>>>>>> refs/remotes/origin/master
 int radeon_atombios_init(struct radeon_device *rdev)
 {
 	struct card_info *atom_card_info =
@@ -551,32 +1065,102 @@ int radeon_atombios_init(struct radeon_device *rdev)
 	atom_card_info->pll_write = cail_pll_write;
 
 	rdev->mode_info.atom_context = atom_parse(atom_card_info, rdev->bios);
+<<<<<<< HEAD
+=======
+	if (!rdev->mode_info.atom_context) {
+		radeon_atombios_fini(rdev);
+		return -ENOMEM;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&rdev->mode_info.atom_context->mutex);
 	radeon_atom_initialize_bios_scratch_regs(rdev->ddev);
 	atom_allocate_fb_scratch(rdev->mode_info.atom_context);
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_atombios_fini - free the driver info and callbacks for atombios
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Frees the driver info and register access callbacks for the ATOM
+ * interpreter (r4xx+).
+ * Called at driver shutdown.
+ */
+>>>>>>> refs/remotes/origin/master
 void radeon_atombios_fini(struct radeon_device *rdev)
 {
 	if (rdev->mode_info.atom_context) {
 		kfree(rdev->mode_info.atom_context->scratch);
+<<<<<<< HEAD
 		kfree(rdev->mode_info.atom_context);
 	}
 	kfree(rdev->mode_info.atom_card_info);
 }
 
+=======
+	}
+	kfree(rdev->mode_info.atom_context);
+	rdev->mode_info.atom_context = NULL;
+	kfree(rdev->mode_info.atom_card_info);
+	rdev->mode_info.atom_card_info = NULL;
+}
+
+/* COMBIOS */
+/*
+ * COMBIOS is the bios format prior to ATOM. It provides
+ * command tables similar to ATOM, but doesn't have a unified
+ * parser.  See radeon_combios.c
+ */
+
+/**
+ * radeon_combios_init - init the driver info for combios
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Initializes the driver info for combios (r1xx-r3xx).
+ * Returns 0 on sucess.
+ * Called at driver startup.
+ */
+>>>>>>> refs/remotes/origin/master
 int radeon_combios_init(struct radeon_device *rdev)
 {
 	radeon_combios_initialize_bios_scratch_regs(rdev->ddev);
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_combios_fini - free the driver info for combios
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Frees the driver info for combios (r1xx-r3xx).
+ * Called at driver shutdown.
+ */
+>>>>>>> refs/remotes/origin/master
 void radeon_combios_fini(struct radeon_device *rdev)
 {
 }
 
+<<<<<<< HEAD
 /* if we get transitioned to only one device, tak VGA back */
+=======
+/* if we get transitioned to only one device, take VGA back */
+/**
+ * radeon_vga_set_decode - enable/disable vga decode
+ *
+ * @cookie: radeon_device pointer
+ * @state: enable/disable vga decode
+ *
+ * Enable/disable vga decode (all asics).
+ * Returns VGA resource flags.
+ */
+>>>>>>> refs/remotes/origin/master
 static unsigned int radeon_vga_set_decode(void *cookie, bool state)
 {
 	struct radeon_device *rdev = cookie;
@@ -588,6 +1172,7 @@ static unsigned int radeon_vga_set_decode(void *cookie, bool state)
 		return VGA_RSRC_NORMAL_IO | VGA_RSRC_NORMAL_MEM;
 }
 
+<<<<<<< HEAD
 void radeon_check_arguments(struct radeon_device *rdev)
 {
 	/* vramlimit must be a power of two */
@@ -637,6 +1222,63 @@ void radeon_check_arguments(struct radeon_device *rdev)
 		break;
 	}
 	rdev->mc.gtt_size = radeon_gart_size * 1024 * 1024;
+=======
+/**
+ * radeon_check_pot_argument - check that argument is a power of two
+ *
+ * @arg: value to check
+ *
+ * Validates that a certain argument is a power of two (all asics).
+ * Returns true if argument is valid.
+ */
+static bool radeon_check_pot_argument(int arg)
+{
+	return (arg & (arg - 1)) == 0;
+}
+
+/**
+ * radeon_check_arguments - validate module params
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Validates certain module parameters and updates
+ * the associated values used by the driver (all asics).
+ */
+static void radeon_check_arguments(struct radeon_device *rdev)
+{
+	/* vramlimit must be a power of two */
+	if (!radeon_check_pot_argument(radeon_vram_limit)) {
+		dev_warn(rdev->dev, "vram limit (%d) must be a power of 2\n",
+				radeon_vram_limit);
+		radeon_vram_limit = 0;
+	}
+
+	if (radeon_gart_size == -1) {
+		/* default to a larger gart size on newer asics */
+		if (rdev->family >= CHIP_RV770)
+			radeon_gart_size = 1024;
+		else
+			radeon_gart_size = 512;
+	}
+	/* gtt size must be power of two and greater or equal to 32M */
+	if (radeon_gart_size < 32) {
+		dev_warn(rdev->dev, "gart size (%d) too small\n",
+				radeon_gart_size);
+		if (rdev->family >= CHIP_RV770)
+			radeon_gart_size = 1024;
+		else
+			radeon_gart_size = 512;
+	} else if (!radeon_check_pot_argument(radeon_gart_size)) {
+		dev_warn(rdev->dev, "gart size (%d) must be a power of 2\n",
+				radeon_gart_size);
+		if (rdev->family >= CHIP_RV770)
+			radeon_gart_size = 1024;
+		else
+			radeon_gart_size = 512;
+	}
+	rdev->mc.gtt_size = (uint64_t)radeon_gart_size << 20;
+
+>>>>>>> refs/remotes/origin/master
 	/* AGP mode can only be -1, 1, 2, 4, 8 */
 	switch (radeon_agpmode) {
 	case -1:
@@ -654,6 +1296,7 @@ void radeon_check_arguments(struct radeon_device *rdev)
 	}
 }
 
+<<<<<<< HEAD
 static void radeon_switcheroo_set_state(struct pci_dev *pdev, enum vga_switcheroo_state state)
 {
 	struct drm_device *dev = pci_get_drvdata(pdev);
@@ -663,17 +1306,84 @@ static void radeon_switcheroo_set_state(struct pci_dev *pdev, enum vga_switchero
 		/* don't suspend or resume card normally */
 		dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
 		radeon_resume_kms(dev);
+=======
+/**
+ * radeon_switcheroo_quirk_long_wakeup - return true if longer d3 delay is
+ * needed for waking up.
+ *
+ * @pdev: pci dev pointer
+ */
+static bool radeon_switcheroo_quirk_long_wakeup(struct pci_dev *pdev)
+{
+
+	/* 6600m in a macbook pro */
+	if (pdev->subsystem_vendor == PCI_VENDOR_ID_APPLE &&
+	    pdev->subsystem_device == 0x00e2) {
+		printk(KERN_INFO "radeon: quirking longer d3 wakeup delay\n");
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * radeon_switcheroo_set_state - set switcheroo state
+ *
+ * @pdev: pci dev pointer
+ * @state: vga switcheroo state
+ *
+ * Callback for the switcheroo driver.  Suspends or resumes the
+ * the asics before or after it is powered up using ACPI methods.
+ */
+static void radeon_switcheroo_set_state(struct pci_dev *pdev, enum vga_switcheroo_state state)
+{
+	struct drm_device *dev = pci_get_drvdata(pdev);
+
+	if (radeon_is_px() && state == VGA_SWITCHEROO_OFF)
+		return;
+
+	if (state == VGA_SWITCHEROO_ON) {
+		unsigned d3_delay = dev->pdev->d3_delay;
+
+		printk(KERN_INFO "radeon: switched on\n");
+		/* don't suspend or resume card normally */
+		dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
+
+		if (d3_delay < 20 && radeon_switcheroo_quirk_long_wakeup(pdev))
+			dev->pdev->d3_delay = 20;
+
+		radeon_resume_kms(dev, true, true);
+
+		dev->pdev->d3_delay = d3_delay;
+
+>>>>>>> refs/remotes/origin/master
 		dev->switch_power_state = DRM_SWITCH_POWER_ON;
 		drm_kms_helper_poll_enable(dev);
 	} else {
 		printk(KERN_INFO "radeon: switched off\n");
 		drm_kms_helper_poll_disable(dev);
 		dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
+<<<<<<< HEAD
 		radeon_suspend_kms(dev, pmm);
+=======
+		radeon_suspend_kms(dev, true, true);
+>>>>>>> refs/remotes/origin/master
 		dev->switch_power_state = DRM_SWITCH_POWER_OFF;
 	}
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * radeon_switcheroo_can_switch - see if switcheroo state can change
+ *
+ * @pdev: pci dev pointer
+ *
+ * Callback for the switcheroo driver.  Check of the switcheroo
+ * state can be changed.
+ * Returns true if the state can be changed, false if not.
+ */
+>>>>>>> refs/remotes/origin/master
 static bool radeon_switcheroo_can_switch(struct pci_dev *pdev)
 {
 	struct drm_device *dev = pci_get_drvdata(pdev);
@@ -685,7 +1395,28 @@ static bool radeon_switcheroo_can_switch(struct pci_dev *pdev)
 	return can_switch;
 }
 
+<<<<<<< HEAD
 
+=======
+static const struct vga_switcheroo_client_ops radeon_switcheroo_ops = {
+	.set_gpu_state = radeon_switcheroo_set_state,
+	.reprobe = NULL,
+	.can_switch = radeon_switcheroo_can_switch,
+};
+
+/**
+ * radeon_device_init - initialize the driver
+ *
+ * @rdev: radeon_device pointer
+ * @pdev: drm dev pointer
+ * @pdev: pci dev pointer
+ * @flags: driver flags
+ *
+ * Initializes the driver info and hw (all asics).
+ * Returns 0 for success or an error on failure.
+ * Called at driver startup.
+ */
+>>>>>>> refs/remotes/origin/master
 int radeon_device_init(struct radeon_device *rdev,
 		       struct drm_device *ddev,
 		       struct pci_dev *pdev,
@@ -693,6 +1424,10 @@ int radeon_device_init(struct radeon_device *rdev,
 {
 	int r, i;
 	int dma_bits;
+<<<<<<< HEAD
+=======
+	bool runtime = false;
+>>>>>>> refs/remotes/origin/master
 
 	rdev->shutdown = false;
 	rdev->dev = &pdev->dev;
@@ -702,9 +1437,18 @@ int radeon_device_init(struct radeon_device *rdev,
 	rdev->family = flags & RADEON_FAMILY_MASK;
 	rdev->is_atom_bios = false;
 	rdev->usec_timeout = RADEON_MAX_USEC_TIMEOUT;
+<<<<<<< HEAD
 	rdev->mc.gtt_size = radeon_gart_size * 1024 * 1024;
 	rdev->gpu_lockup = false;
 	rdev->accel_working = false;
+=======
+	rdev->mc.gtt_size = 512 * 1024 * 1024;
+	rdev->accel_working = false;
+	/* set up ring ids */
+	for (i = 0; i < RADEON_NUM_RINGS; i++) {
+		rdev->ring[i].idx = i;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	DRM_INFO("initializing kernel modesetting (%s 0x%04X:0x%04X 0x%04X:0x%04X).\n",
 		radeon_family_name[rdev->family], pdev->vendor, pdev->device,
@@ -712,19 +1456,63 @@ int radeon_device_init(struct radeon_device *rdev,
 
 	/* mutex initialization are all done here so we
 	 * can recall function without having locking issues */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&rdev->cs_mutex);
 	mutex_init(&rdev->ib_pool.mutex);
 	mutex_init(&rdev->cp.mutex);
+=======
+	radeon_mutex_init(&rdev->cs_mutex);
+	radeon_mutex_init(&rdev->ib_pool.mutex);
+	for (i = 0; i < RADEON_NUM_RINGS; ++i)
+		mutex_init(&rdev->ring[i].mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_init(&rdev->dc_hw_i2c_mutex);
 	if (rdev->family >= CHIP_R600)
 		spin_lock_init(&rdev->ih.lock);
 	mutex_init(&rdev->gem.mutex);
 	mutex_init(&rdev->pm.mutex);
 	mutex_init(&rdev->vram_mutex);
+<<<<<<< HEAD
 	rwlock_init(&rdev->fence_drv.lock);
 	INIT_LIST_HEAD(&rdev->gem.objects);
 	init_waitqueue_head(&rdev->irq.vblank_queue);
 	init_waitqueue_head(&rdev->irq.idle_queue);
+=======
+	rwlock_init(&rdev->fence_lock);
+	rwlock_init(&rdev->semaphore_drv.lock);
+	INIT_LIST_HEAD(&rdev->gem.objects);
+	init_waitqueue_head(&rdev->irq.vblank_queue);
+	init_waitqueue_head(&rdev->irq.idle_queue);
+	INIT_LIST_HEAD(&rdev->semaphore_drv.bo);
+	/* initialize vm here */
+	rdev->vm_manager.use_bitmap = 1;
+	rdev->vm_manager.max_pfn = 1 << 20;
+	INIT_LIST_HEAD(&rdev->vm_manager.lru_vm);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&rdev->ring_lock);
+	mutex_init(&rdev->dc_hw_i2c_mutex);
+	atomic_set(&rdev->ih.lock, 0);
+	mutex_init(&rdev->gem.mutex);
+	mutex_init(&rdev->pm.mutex);
+	mutex_init(&rdev->gpu_clock_mutex);
+	mutex_init(&rdev->srbm_mutex);
+	init_rwsem(&rdev->pm.mclk_lock);
+	init_rwsem(&rdev->exclusive_lock);
+	init_waitqueue_head(&rdev->irq.vblank_queue);
+	r = radeon_gem_init(rdev);
+	if (r)
+		return r;
+	/* initialize vm here */
+	mutex_init(&rdev->vm_manager.lock);
+	/* Adjust VM size here.
+	 * Currently set to 4GB ((1 << 20) 4k pages).
+	 * Max GPUVM size for cayman and SI is 40 bits.
+	 */
+	rdev->vm_manager.max_pfn = 1 << 20;
+	INIT_LIST_HEAD(&rdev->vm_manager.lru_vm);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set asic functions */
 	r = radeon_asic_init(rdev);
@@ -744,29 +1532,106 @@ int radeon_device_init(struct radeon_device *rdev,
 		radeon_agp_disable(rdev);
 	}
 
+<<<<<<< HEAD
 	/* set DMA mask + need_dma32 flags.
 	 * PCIE - can handle 40-bits.
+<<<<<<< HEAD
 	 * IGP - can handle 40-bits (in theory)
 	 * AGP - generally dma32 is safest
 	 * PCI - only dma32
+=======
+	 * IGP - can handle 40-bits
+	 * AGP - generally dma32 is safest
+	 * PCI - dma32 for legacy pci gart, 40 bits on newer asics
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Set the internal MC address mask
+	 * This is the max address of the GPU's
+	 * internal address space.
+	 */
+	if (rdev->family >= CHIP_CAYMAN)
+		rdev->mc.mc_mask = 0xffffffffffULL; /* 40 bit MC */
+	else if (rdev->family >= CHIP_CEDAR)
+		rdev->mc.mc_mask = 0xfffffffffULL; /* 36 bit MC */
+	else
+		rdev->mc.mc_mask = 0xffffffffULL; /* 32 bit MC */
+
+	/* set DMA mask + need_dma32 flags.
+	 * PCIE - can handle 40-bits.
+	 * IGP - can handle 40-bits
+	 * AGP - generally dma32 is safest
+	 * PCI - dma32 for legacy pci gart, 40 bits on newer asics
+>>>>>>> refs/remotes/origin/master
 	 */
 	rdev->need_dma32 = false;
 	if (rdev->flags & RADEON_IS_AGP)
 		rdev->need_dma32 = true;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (rdev->flags & RADEON_IS_PCI)
+=======
+	if ((rdev->flags & RADEON_IS_PCI) &&
+	    (rdev->family <= CHIP_RS740))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((rdev->flags & RADEON_IS_PCI) &&
+	    (rdev->family <= CHIP_RS740))
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rdev->need_dma32 = true;
 
 	dma_bits = rdev->need_dma32 ? 32 : 40;
 	r = pci_set_dma_mask(rdev->pdev, DMA_BIT_MASK(dma_bits));
 	if (r) {
 		rdev->need_dma32 = true;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "radeon: No suitable DMA available.\n");
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		dma_bits = 32;
+		printk(KERN_WARNING "radeon: No suitable DMA available.\n");
+	}
+	r = pci_set_consistent_dma_mask(rdev->pdev, DMA_BIT_MASK(dma_bits));
+	if (r) {
+		pci_set_consistent_dma_mask(rdev->pdev, DMA_BIT_MASK(32));
+		printk(KERN_WARNING "radeon: No coherent DMA available.\n");
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Registers mapping */
 	/* TODO: block userspace mapping of io register */
 	rdev->rmmio_base = pci_resource_start(rdev->pdev, 2);
 	rdev->rmmio_size = pci_resource_len(rdev->pdev, 2);
+=======
+
+	/* Registers mapping */
+	/* TODO: block userspace mapping of io register */
+	spin_lock_init(&rdev->mmio_idx_lock);
+	spin_lock_init(&rdev->smc_idx_lock);
+	spin_lock_init(&rdev->pll_idx_lock);
+	spin_lock_init(&rdev->mc_idx_lock);
+	spin_lock_init(&rdev->pcie_idx_lock);
+	spin_lock_init(&rdev->pciep_idx_lock);
+	spin_lock_init(&rdev->pif_idx_lock);
+	spin_lock_init(&rdev->cg_idx_lock);
+	spin_lock_init(&rdev->uvd_idx_lock);
+	spin_lock_init(&rdev->rcu_idx_lock);
+	spin_lock_init(&rdev->didt_idx_lock);
+	spin_lock_init(&rdev->end_idx_lock);
+	if (rdev->family >= CHIP_BONAIRE) {
+		rdev->rmmio_base = pci_resource_start(rdev->pdev, 5);
+		rdev->rmmio_size = pci_resource_len(rdev->pdev, 5);
+	} else {
+		rdev->rmmio_base = pci_resource_start(rdev->pdev, 2);
+		rdev->rmmio_size = pci_resource_len(rdev->pdev, 2);
+	}
+>>>>>>> refs/remotes/origin/master
 	rdev->rmmio = ioremap(rdev->rmmio_base, rdev->rmmio_size);
 	if (rdev->rmmio == NULL) {
 		return -ENOMEM;
@@ -774,6 +1639,13 @@ int radeon_device_init(struct radeon_device *rdev,
 	DRM_INFO("register mmio base: 0x%08X\n", (uint32_t)rdev->rmmio_base);
 	DRM_INFO("register mmio size: %u\n", (unsigned)rdev->rmmio_size);
 
+<<<<<<< HEAD
+=======
+	/* doorbell bar mapping */
+	if (rdev->family >= CHIP_BONAIRE)
+		radeon_doorbell_init(rdev);
+
+>>>>>>> refs/remotes/origin/master
 	/* io port mapping */
 	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
 		if (pci_resource_flags(rdev->pdev, i) & IORESOURCE_IO) {
@@ -789,15 +1661,38 @@ int radeon_device_init(struct radeon_device *rdev,
 	/* this will fail for cards that aren't VGA class devices, just
 	 * ignore it */
 	vga_client_register(rdev->pdev, rdev, NULL, radeon_vga_set_decode);
+<<<<<<< HEAD
 	vga_switcheroo_register_client(rdev->pdev,
 				       radeon_switcheroo_set_state,
 				       NULL,
 				       radeon_switcheroo_can_switch);
+=======
+
+	if (radeon_runtime_pm == 1)
+		runtime = true;
+	if ((radeon_runtime_pm == -1) && radeon_is_px())
+		runtime = true;
+	vga_switcheroo_register_client(rdev->pdev, &radeon_switcheroo_ops, runtime);
+	if (runtime)
+		vga_switcheroo_init_domain_pm_ops(rdev->dev, &rdev->vga_pm_domain);
+>>>>>>> refs/remotes/origin/master
 
 	r = radeon_init(rdev);
 	if (r)
 		return r;
 
+<<<<<<< HEAD
+=======
+	r = radeon_ib_ring_tests(rdev);
+	if (r)
+		DRM_ERROR("ib ring test failed (%d).\n", r);
+
+	r = radeon_gem_debugfs_init(rdev);
+	if (r) {
+		DRM_ERROR("registering gem debugfs failed (%d).\n", r);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (rdev->flags & RADEON_IS_AGP && !rdev->accel_working) {
 		/* Acceleration not working on AGP card try again
 		 * with fallback to PCI or PCIE GART
@@ -809,15 +1704,70 @@ int radeon_device_init(struct radeon_device *rdev,
 		if (r)
 			return r;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (radeon_testing) {
 		radeon_test_moves(rdev);
+=======
+	if ((radeon_testing & 1)) {
+		if (rdev->accel_working)
+			radeon_test_moves(rdev);
+		else
+			DRM_INFO("radeon: acceleration disabled, skipping move tests\n");
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	if (radeon_benchmarking) {
 		radeon_benchmark(rdev);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if ((radeon_testing & 1)) {
+		if (rdev->accel_working)
+			radeon_test_moves(rdev);
+		else
+			DRM_INFO("radeon: acceleration disabled, skipping move tests\n");
+	}
+	if ((radeon_testing & 2)) {
+		if (rdev->accel_working)
+			radeon_test_syncing(rdev);
+		else
+			DRM_INFO("radeon: acceleration disabled, skipping sync tests\n");
+	}
+	if (radeon_benchmarking) {
+		if (rdev->accel_working)
+			radeon_benchmark(rdev, radeon_benchmarking);
+		else
+			DRM_INFO("radeon: acceleration disabled, skipping benchmarks\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static void radeon_debugfs_remove_files(struct radeon_device *rdev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void radeon_debugfs_remove_files(struct radeon_device *rdev);
+
+/**
+ * radeon_device_fini - tear down the driver
+ *
+ * @rdev: radeon_device pointer
+ *
+ * Tear down the driver info (all asics).
+ * Called at driver shutdown.
+ */
+>>>>>>> refs/remotes/origin/master
 void radeon_device_fini(struct radeon_device *rdev)
 {
 	DRM_INFO("radeon: finishing device.\n");
@@ -832,25 +1782,62 @@ void radeon_device_fini(struct radeon_device *rdev)
 	rdev->rio_mem = NULL;
 	iounmap(rdev->rmmio);
 	rdev->rmmio = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	radeon_debugfs_remove_files(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rdev->family >= CHIP_BONAIRE)
+		radeon_doorbell_fini(rdev);
+	radeon_debugfs_remove_files(rdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /*
  * Suspend & resume.
  */
+<<<<<<< HEAD
 int radeon_suspend_kms(struct drm_device *dev, pm_message_t state)
+=======
+/**
+ * radeon_suspend_kms - initiate device suspend
+ *
+ * @pdev: drm dev pointer
+ * @state: suspend state
+ *
+ * Puts the hw in the suspend state (all asics).
+ * Returns 0 for success or an error on failure.
+ * Called at driver suspend.
+ */
+int radeon_suspend_kms(struct drm_device *dev, bool suspend, bool fbcon)
+>>>>>>> refs/remotes/origin/master
 {
 	struct radeon_device *rdev;
 	struct drm_crtc *crtc;
 	struct drm_connector *connector;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int r;
+=======
+	int i, r;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, r;
+	bool force_completion = false;
+>>>>>>> refs/remotes/origin/master
 
 	if (dev == NULL || dev->dev_private == NULL) {
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 	if (state.event == PM_EVENT_PRETHAW) {
 		return 0;
 	}
+=======
+
+>>>>>>> refs/remotes/origin/master
 	rdev = dev->dev_private;
 
 	if (dev->switch_power_state == DRM_SWITCH_POWER_OFF)
@@ -883,8 +1870,30 @@ int radeon_suspend_kms(struct drm_device *dev, pm_message_t state)
 	}
 	/* evict vram memory */
 	radeon_bo_evict_vram(rdev);
+<<<<<<< HEAD
 	/* wait for gpu to finish processing current batch */
+<<<<<<< HEAD
 	radeon_fence_wait_last(rdev);
+=======
+	for (i = 0; i < RADEON_NUM_RINGS; i++)
+		radeon_fence_wait_last(rdev, i);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	mutex_lock(&rdev->ring_lock);
+	/* wait for gpu to finish processing current batch */
+	for (i = 0; i < RADEON_NUM_RINGS; i++) {
+		r = radeon_fence_wait_empty_locked(rdev, i);
+		if (r) {
+			/* delay GPU reset to resume */
+			force_completion = true;
+		}
+	}
+	if (force_completion) {
+		radeon_fence_driver_force_completion(rdev);
+	}
+	mutex_unlock(&rdev->ring_lock);
+>>>>>>> refs/remotes/origin/master
 
 	radeon_save_bios_scratch_regs(rdev);
 
@@ -897,11 +1906,16 @@ int radeon_suspend_kms(struct drm_device *dev, pm_message_t state)
 	radeon_agp_suspend(rdev);
 
 	pci_save_state(dev->pdev);
+<<<<<<< HEAD
 	if (state.event == PM_EVENT_SUSPEND) {
+=======
+	if (suspend) {
+>>>>>>> refs/remotes/origin/master
 		/* Shut down the device */
 		pci_disable_device(dev->pdev);
 		pci_set_power_state(dev->pdev, PCI_D3hot);
 	}
+<<<<<<< HEAD
 	console_lock();
 	radeon_fbdev_set_suspend(rdev, 1);
 	console_unlock();
@@ -912,10 +1926,36 @@ int radeon_resume_kms(struct drm_device *dev)
 {
 	struct drm_connector *connector;
 	struct radeon_device *rdev = dev->dev_private;
+=======
+
+	if (fbcon) {
+		console_lock();
+		radeon_fbdev_set_suspend(rdev, 1);
+		console_unlock();
+	}
+	return 0;
+}
+
+/**
+ * radeon_resume_kms - initiate device resume
+ *
+ * @pdev: drm dev pointer
+ *
+ * Bring the hw back to operating state (all asics).
+ * Returns 0 for success or an error on failure.
+ * Called at driver resume.
+ */
+int radeon_resume_kms(struct drm_device *dev, bool resume, bool fbcon)
+{
+	struct drm_connector *connector;
+	struct radeon_device *rdev = dev->dev_private;
+	int r;
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->switch_power_state == DRM_SWITCH_POWER_OFF)
 		return 0;
 
+<<<<<<< HEAD
 	console_lock();
 	pci_set_power_state(dev->pdev, PCI_D0);
 	pci_restore_state(dev->pdev);
@@ -933,9 +1973,58 @@ int radeon_resume_kms(struct drm_device *dev)
 	radeon_fbdev_set_suspend(rdev, 0);
 	console_unlock();
 
+<<<<<<< HEAD
 	/* init dig PHYs */
 	if (rdev->is_atom_bios)
 		radeon_atom_encoder_init(rdev);
+=======
+=======
+	if (fbcon) {
+		console_lock();
+	}
+	if (resume) {
+		pci_set_power_state(dev->pdev, PCI_D0);
+		pci_restore_state(dev->pdev);
+		if (pci_enable_device(dev->pdev)) {
+			if (fbcon)
+				console_unlock();
+			return -1;
+		}
+	}
+	/* resume AGP if in use */
+	radeon_agp_resume(rdev);
+	radeon_resume(rdev);
+
+	r = radeon_ib_ring_tests(rdev);
+	if (r)
+		DRM_ERROR("ib ring test failed (%d).\n", r);
+
+	radeon_pm_resume(rdev);
+	radeon_restore_bios_scratch_regs(rdev);
+
+	if (fbcon) {
+		radeon_fbdev_set_suspend(rdev, 0);
+		console_unlock();
+	}
+       
+>>>>>>> refs/remotes/origin/master
+	/* init dig PHYs, disp eng pll */
+	if (rdev->is_atom_bios) {
+		radeon_atom_encoder_init(rdev);
+		radeon_atom_disp_eng_pll_init(rdev);
+<<<<<<< HEAD
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* turn on the BL */
+		if (rdev->mode_info.bl_encoder) {
+			u8 bl_level = radeon_get_backlight_level(rdev,
+								 rdev->mode_info.bl_encoder);
+			radeon_set_backlight_level(rdev, rdev->mode_info.bl_encoder,
+						   bl_level);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	/* reset hpd state */
 	radeon_hpd_init(rdev);
 	/* blat the mode back in */
@@ -949,11 +2038,18 @@ int radeon_resume_kms(struct drm_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 int radeon_gpu_reset(struct radeon_device *rdev)
 {
 	int r;
 	int resched;
 
+<<<<<<< HEAD
+=======
+	/* Prevent CS ioctl from interfering */
+	radeon_mutex_lock(&rdev->cs_mutex);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	radeon_save_bios_scratch_regs(rdev);
 	/* block TTM */
 	resched = ttm_bo_lock_delayed_workqueue(&rdev->mman.bdev);
@@ -966,10 +2062,108 @@ int radeon_gpu_reset(struct radeon_device *rdev)
 		radeon_restore_bios_scratch_regs(rdev);
 		drm_helper_resume_force_mode(rdev->ddev);
 		ttm_bo_unlock_delayed_workqueue(&rdev->mman.bdev, resched);
+<<<<<<< HEAD
 		return 0;
 	}
 	/* bad news, how to tell it to userspace ? */
 	dev_info(rdev->dev, "GPU reset failed\n");
+=======
+	}
+
+	radeon_mutex_unlock(&rdev->cs_mutex);
+
+=======
+/**
+ * radeon_gpu_reset - reset the asic
+ *
+ * @rdev: radeon device pointer
+ *
+ * Attempt the reset the GPU if it has hung (all asics).
+ * Returns 0 for success or an error on failure.
+ */
+int radeon_gpu_reset(struct radeon_device *rdev)
+{
+	unsigned ring_sizes[RADEON_NUM_RINGS];
+	uint32_t *ring_data[RADEON_NUM_RINGS];
+
+	bool saved = false;
+
+	int i, r;
+	int resched;
+
+	down_write(&rdev->exclusive_lock);
+
+	if (!rdev->needs_reset) {
+		up_write(&rdev->exclusive_lock);
+		return 0;
+	}
+
+	rdev->needs_reset = false;
+
+	radeon_save_bios_scratch_regs(rdev);
+	/* block TTM */
+	resched = ttm_bo_lock_delayed_workqueue(&rdev->mman.bdev);
+	radeon_pm_suspend(rdev);
+	radeon_suspend(rdev);
+
+	for (i = 0; i < RADEON_NUM_RINGS; ++i) {
+		ring_sizes[i] = radeon_ring_backup(rdev, &rdev->ring[i],
+						   &ring_data[i]);
+		if (ring_sizes[i]) {
+			saved = true;
+			dev_info(rdev->dev, "Saved %d dwords of commands "
+				 "on ring %d.\n", ring_sizes[i], i);
+		}
+	}
+
+retry:
+	r = radeon_asic_reset(rdev);
+	if (!r) {
+		dev_info(rdev->dev, "GPU reset succeeded, trying to resume\n");
+		radeon_resume(rdev);
+	}
+
+	radeon_restore_bios_scratch_regs(rdev);
+
+	if (!r) {
+		for (i = 0; i < RADEON_NUM_RINGS; ++i) {
+			radeon_ring_restore(rdev, &rdev->ring[i],
+					    ring_sizes[i], ring_data[i]);
+			ring_sizes[i] = 0;
+			ring_data[i] = NULL;
+		}
+
+		r = radeon_ib_ring_tests(rdev);
+		if (r) {
+			dev_err(rdev->dev, "ib ring test failed (%d).\n", r);
+			if (saved) {
+				saved = false;
+				radeon_suspend(rdev);
+				goto retry;
+			}
+		}
+	} else {
+		radeon_fence_driver_force_completion(rdev);
+		for (i = 0; i < RADEON_NUM_RINGS; ++i) {
+			kfree(ring_data[i]);
+		}
+	}
+
+	radeon_pm_resume(rdev);
+	drm_helper_resume_force_mode(rdev->ddev);
+
+	ttm_bo_unlock_delayed_workqueue(&rdev->mman.bdev, resched);
+>>>>>>> refs/remotes/origin/master
+	if (r) {
+		/* bad news, how to tell it to userspace ? */
+		dev_info(rdev->dev, "GPU reset failed\n");
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	up_write(&rdev->exclusive_lock);
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
@@ -977,6 +2171,8 @@ int radeon_gpu_reset(struct radeon_device *rdev)
 /*
  * Debugfs
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct radeon_debugfs {
 	struct drm_info_list	*files;
 	unsigned		num_files;
@@ -984,18 +2180,34 @@ struct radeon_debugfs {
 static struct radeon_debugfs _radeon_debugfs[RADEON_DEBUGFS_MAX_NUM_FILES];
 static unsigned _radeon_debugfs_count = 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int radeon_debugfs_add_files(struct radeon_device *rdev,
 			     struct drm_info_list *files,
 			     unsigned nfiles)
 {
 	unsigned i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < _radeon_debugfs_count; i++) {
 		if (_radeon_debugfs[i].files == files) {
+=======
+	for (i = 0; i < rdev->debugfs_count; i++) {
+		if (rdev->debugfs[i].files == files) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < rdev->debugfs_count; i++) {
+		if (rdev->debugfs[i].files == files) {
+>>>>>>> refs/remotes/origin/master
 			/* Already registered */
 			return 0;
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((_radeon_debugfs_count + nfiles) > RADEON_DEBUGFS_MAX_NUM_FILES) {
 		DRM_ERROR("Reached maximum number of debugfs files.\n");
 		DRM_ERROR("Report so we increase RADEON_DEBUGFS_MAX_NUM_FILES.\n");
@@ -1004,6 +2216,24 @@ int radeon_debugfs_add_files(struct radeon_device *rdev,
 	_radeon_debugfs[_radeon_debugfs_count].files = files;
 	_radeon_debugfs[_radeon_debugfs_count].num_files = nfiles;
 	_radeon_debugfs_count++;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	i = rdev->debugfs_count + 1;
+	if (i > RADEON_DEBUGFS_MAX_COMPONENTS) {
+		DRM_ERROR("Reached maximum number of debugfs components.\n");
+		DRM_ERROR("Report so we increase "
+		          "RADEON_DEBUGFS_MAX_COMPONENTS.\n");
+		return -EINVAL;
+	}
+	rdev->debugfs[rdev->debugfs_count].files = files;
+	rdev->debugfs[rdev->debugfs_count].num_files = nfiles;
+	rdev->debugfs_count = i;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_DEBUG_FS)
 	drm_debugfs_create_files(files, nfiles,
 				 rdev->ddev->control->debugfs_root,
@@ -1015,6 +2245,31 @@ int radeon_debugfs_add_files(struct radeon_device *rdev,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void radeon_debugfs_remove_files(struct radeon_device *rdev)
+{
+#if defined(CONFIG_DEBUG_FS)
+	unsigned i;
+
+	for (i = 0; i < rdev->debugfs_count; i++) {
+		drm_debugfs_remove_files(rdev->debugfs[i].files,
+					 rdev->debugfs[i].num_files,
+					 rdev->ddev->control);
+		drm_debugfs_remove_files(rdev->debugfs[i].files,
+					 rdev->debugfs[i].num_files,
+					 rdev->ddev->primary);
+	}
+#endif
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_DEBUG_FS)
 int radeon_debugfs_init(struct drm_minor *minor)
 {
@@ -1023,11 +2278,17 @@ int radeon_debugfs_init(struct drm_minor *minor)
 
 void radeon_debugfs_cleanup(struct drm_minor *minor)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned i;
 
 	for (i = 0; i < _radeon_debugfs_count; i++) {
 		drm_debugfs_remove_files(_radeon_debugfs[i].files,
 					 _radeon_debugfs[i].num_files, minor);
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif

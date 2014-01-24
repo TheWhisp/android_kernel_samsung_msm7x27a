@@ -184,7 +184,11 @@ static int vx_set_format(struct vx_core *chip, struct vx_pipe *pipe,
 	default : 
 		snd_BUG();
 		return -EINVAL;
+<<<<<<< HEAD
         };
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return vx_set_stream_format(chip, pipe, header);
 }

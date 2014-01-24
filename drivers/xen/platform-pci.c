@@ -84,7 +84,11 @@ static irqreturn_t do_hvm_evtchn_intr(int irq, void *dev_id)
 static int xen_allocate_irq(struct pci_dev *pdev)
 {
 	return request_irq(pdev->irq, do_hvm_evtchn_intr,
+<<<<<<< HEAD
 			IRQF_DISABLED | IRQF_NOBALANCING | IRQF_TRIGGER_RISING,
+=======
+			IRQF_NOBALANCING | IRQF_TRIGGER_RISING,
+>>>>>>> refs/remotes/origin/master
 			"xen-platform-pci", pdev);
 }
 
@@ -101,14 +105,25 @@ static int platform_pci_resume(struct pci_dev *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit platform_pci_init(struct pci_dev *pdev,
 				       const struct pci_device_id *ent)
+=======
+static int platform_pci_init(struct pci_dev *pdev,
+			     const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, ret;
 	long ioaddr;
 	long mmio_addr, mmio_len;
 	unsigned int max_nr_gframes;
 
+<<<<<<< HEAD
+=======
+	if (!xen_domain())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	i = pci_enable_device(pdev);
 	if (i)
 		return i;
@@ -167,7 +182,11 @@ pci_out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct pci_device_id platform_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id platform_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{PCI_VENDOR_ID_XEN, PCI_DEVICE_ID_XEN_PLATFORM,
 		PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{0,}
@@ -186,11 +205,17 @@ static struct pci_driver platform_driver = {
 
 static int __init platform_pci_module_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* no unplug has been done, IGNORE hasn't been specified: just
 	 * return now */
 	if (!xen_platform_pci_unplug)
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return pci_register_driver(&platform_driver);
 }
 

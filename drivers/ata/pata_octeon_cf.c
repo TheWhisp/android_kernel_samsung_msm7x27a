@@ -5,19 +5,35 @@
  * License.  See the file "COPYING" in the main directory of this archive
  * for more details.
  *
+<<<<<<< HEAD
  * Copyright (C) 2005 - 2009 Cavium Networks
+=======
+ * Copyright (C) 2005 - 2012 Cavium Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2008 Wind River Systems
  */
 
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/libata.h>
+<<<<<<< HEAD
 #include <linux/irq.h>
 #include <linux/slab.h>
 #include <linux/platform_device.h>
 #include <linux/workqueue.h>
 #include <scsi/scsi_host.h>
 
+=======
+#include <linux/hrtimer.h>
+#include <linux/slab.h>
+#include <linux/irq.h>
+#include <linux/of.h>
+#include <linux/of_platform.h>
+#include <linux/platform_device.h>
+#include <scsi/scsi_host.h>
+
+#include <asm/byteorder.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/octeon/octeon.h>
 
 /*
@@ -34,6 +50,7 @@
  */
 
 #define DRV_NAME	"pata_octeon_cf"
+<<<<<<< HEAD
 #define DRV_VERSION	"2.1"
 
 
@@ -42,12 +59,41 @@ struct octeon_cf_port {
 	struct delayed_work delayed_finish;
 	struct ata_port *ap;
 	int dma_finished;
+=======
+#define DRV_VERSION	"2.2"
+
+/* Poll interval in nS. */
+#define OCTEON_CF_BUSY_POLL_INTERVAL 500000
+
+#define DMA_CFG 0
+#define DMA_TIM 0x20
+#define DMA_INT 0x38
+#define DMA_INT_EN 0x50
+
+struct octeon_cf_port {
+	struct hrtimer delayed_finish;
+	struct ata_port *ap;
+	int dma_finished;
+	void		*c0;
+	unsigned int cs0;
+	unsigned int cs1;
+	bool is_true_ide;
+	u64 dma_base;
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct scsi_host_template octeon_cf_sht = {
 	ATA_PIO_SHT(DRV_NAME),
 };
 
+<<<<<<< HEAD
+=======
+static int enable_dma;
+module_param(enable_dma, int, 0444);
+MODULE_PARM_DESC(enable_dma,
+		 "Enable use of DMA on interfaces that support it (0=no dma [default], 1=use dma)");
+
+>>>>>>> refs/remotes/origin/master
 /**
  * Convert nanosecond based time to setting used in the
  * boot bus timing register, based on timing multiple
@@ -66,12 +112,38 @@ static unsigned int ns_to_tim_reg(unsigned int tim_mult, unsigned int nsecs)
 	return val;
 }
 
+<<<<<<< HEAD
 static void octeon_cf_set_boot_reg_cfg(int cs)
 {
 	union cvmx_mio_boot_reg_cfgx reg_cfg;
 	reg_cfg.u64 = cvmx_read_csr(CVMX_MIO_BOOT_REG_CFGX(cs));
 	reg_cfg.s.dmack = 0;	/* Don't assert DMACK on access */
 	reg_cfg.s.tim_mult = 2;	/* Timing mutiplier 2x */
+=======
+static void octeon_cf_set_boot_reg_cfg(int cs, unsigned int multiplier)
+{
+	union cvmx_mio_boot_reg_cfgx reg_cfg;
+	unsigned int tim_mult;
+
+	switch (multiplier) {
+	case 8:
+		tim_mult = 3;
+		break;
+	case 4:
+		tim_mult = 0;
+		break;
+	case 2:
+		tim_mult = 2;
+		break;
+	default:
+		tim_mult = 1;
+		break;
+	}
+
+	reg_cfg.u64 = cvmx_read_csr(CVMX_MIO_BOOT_REG_CFGX(cs));
+	reg_cfg.s.dmack = 0;	/* Don't assert DMACK on access */
+	reg_cfg.s.tim_mult = tim_mult;	/* Timing mutiplier */
+>>>>>>> refs/remotes/origin/master
 	reg_cfg.s.rd_dly = 0;	/* Sample on falling edge of BOOT_OE */
 	reg_cfg.s.sam = 0;	/* Don't combine write and output enable */
 	reg_cfg.s.we_ext = 0;	/* No write enable extension */
@@ -92,12 +164,21 @@ static void octeon_cf_set_boot_reg_cfg(int cs)
  */
 static void octeon_cf_set_piomode(struct ata_port *ap, struct ata_device *dev)
 {
+<<<<<<< HEAD
 	struct octeon_cf_data *ocd = ap->dev->platform_data;
 	union cvmx_mio_boot_reg_timx reg_tim;
 	int cs = ocd->base_region;
 	int T;
 	struct ata_timing timing;
 
+=======
+	struct octeon_cf_port *cf_port = ap->private_data;
+	union cvmx_mio_boot_reg_timx reg_tim;
+	int T;
+	struct ata_timing timing;
+
+	unsigned int div;
+>>>>>>> refs/remotes/origin/master
 	int use_iordy;
 	int trh;
 	int pause;
@@ -106,7 +187,19 @@ static void octeon_cf_set_piomode(struct ata_port *ap, struct ata_device *dev)
 	int t2;
 	int t2i;
 
+<<<<<<< HEAD
 	T = (int)(2000000000000LL / octeon_get_clock_rate());
+=======
+	/*
+	 * A divisor value of four will overflow the timing fields at
+	 * clock rates greater than 800MHz
+	 */
+	if (octeon_get_io_clock_rate() <= 800000000)
+		div = 4;
+	else
+		div = 8;
+	T = (int)((1000000000000LL * div) / octeon_get_io_clock_rate());
+>>>>>>> refs/remotes/origin/master
 
 	if (ata_timing_compute(dev, dev->pio_mode, &timing, T, T))
 		BUG();
@@ -121,6 +214,7 @@ static void octeon_cf_set_piomode(struct ata_port *ap, struct ata_device *dev)
 	if (t2i)
 		t2i--;
 
+<<<<<<< HEAD
 	trh = ns_to_tim_reg(2, 20);
 	if (trh)
 		trh--;
@@ -133,11 +227,32 @@ static void octeon_cf_set_piomode(struct ata_port *ap, struct ata_device *dev)
 	if (ocd->dma_engine >= 0)
 		/* True IDE mode, program both chip selects.  */
 		octeon_cf_set_boot_reg_cfg(cs + 1);
+=======
+	trh = ns_to_tim_reg(div, 20);
+	if (trh)
+		trh--;
+
+	pause = (int)timing.cycle - (int)timing.active -
+		(int)timing.setup - trh;
+	if (pause < 0)
+		pause = 0;
+	if (pause)
+		pause--;
+
+	octeon_cf_set_boot_reg_cfg(cf_port->cs0, div);
+	if (cf_port->is_true_ide)
+		/* True IDE mode, program both chip selects.  */
+		octeon_cf_set_boot_reg_cfg(cf_port->cs1, div);
+>>>>>>> refs/remotes/origin/master
 
 
 	use_iordy = ata_pio_need_iordy(dev);
 
+<<<<<<< HEAD
 	reg_tim.u64 = cvmx_read_csr(CVMX_MIO_BOOT_REG_TIMX(cs));
+=======
+	reg_tim.u64 = cvmx_read_csr(CVMX_MIO_BOOT_REG_TIMX(cf_port->cs0));
+>>>>>>> refs/remotes/origin/master
 	/* Disable page mode */
 	reg_tim.s.pagem = 0;
 	/* Enable dynamic timing */
@@ -161,20 +276,37 @@ static void octeon_cf_set_piomode(struct ata_port *ap, struct ata_device *dev)
 	/* How long read enable is asserted */
 	reg_tim.s.oe = t2;
 	/* Time after CE that read/write starts */
+<<<<<<< HEAD
 	reg_tim.s.ce = ns_to_tim_reg(2, 5);
+=======
+	reg_tim.s.ce = ns_to_tim_reg(div, 5);
+>>>>>>> refs/remotes/origin/master
 	/* Time before CE that address is valid */
 	reg_tim.s.adr = 0;
 
 	/* Program the bootbus region timing for the data port chip select. */
+<<<<<<< HEAD
 	cvmx_write_csr(CVMX_MIO_BOOT_REG_TIMX(cs), reg_tim.u64);
 	if (ocd->dma_engine >= 0)
 		/* True IDE mode, program both chip selects.  */
 		cvmx_write_csr(CVMX_MIO_BOOT_REG_TIMX(cs + 1), reg_tim.u64);
+=======
+	cvmx_write_csr(CVMX_MIO_BOOT_REG_TIMX(cf_port->cs0), reg_tim.u64);
+	if (cf_port->is_true_ide)
+		/* True IDE mode, program both chip selects.  */
+		cvmx_write_csr(CVMX_MIO_BOOT_REG_TIMX(cf_port->cs1),
+			       reg_tim.u64);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void octeon_cf_set_dmamode(struct ata_port *ap, struct ata_device *dev)
 {
+<<<<<<< HEAD
 	struct octeon_cf_data *ocd = dev->link->ap->dev->platform_data;
+=======
+	struct octeon_cf_port *cf_port = ap->private_data;
+	union cvmx_mio_boot_pin_defs pin_defs;
+>>>>>>> refs/remotes/origin/master
 	union cvmx_mio_boot_dma_timx dma_tim;
 	unsigned int oe_a;
 	unsigned int oe_n;
@@ -183,6 +315,10 @@ static void octeon_cf_set_dmamode(struct ata_port *ap, struct ata_device *dev)
 	unsigned int pause;
 	unsigned int T0, Tkr, Td;
 	unsigned int tim_mult;
+<<<<<<< HEAD
+=======
+	int c;
+>>>>>>> refs/remotes/origin/master
 
 	const struct ata_timing *timing;
 
@@ -199,13 +335,27 @@ static void octeon_cf_set_dmamode(struct ata_port *ap, struct ata_device *dev)
 	/* not spec'ed, value in eclocks, not affected by tim_mult */
 	dma_arq = 8;
 	pause = 25 - dma_arq * 1000 /
+<<<<<<< HEAD
 		(octeon_get_clock_rate() / 1000000); /* Tz */
+=======
+		(octeon_get_io_clock_rate() / 1000000); /* Tz */
+>>>>>>> refs/remotes/origin/master
 
 	oe_a = Td;
 	/* Tkr from cf spec, lengthened to meet T0 */
 	oe_n = max(T0 - oe_a, Tkr);
 
+<<<<<<< HEAD
 	dma_tim.s.dmack_pi = 1;
+=======
+	pin_defs.u64 = cvmx_read_csr(CVMX_MIO_BOOT_PIN_DEFS);
+
+	/* DMA channel number. */
+	c = (cf_port->dma_base & 8) >> 3;
+
+	/* Invert the polarity if the default is 0*/
+	dma_tim.s.dmack_pi = (pin_defs.u64 & (1ull << (11 + c))) ? 0 : 1;
+>>>>>>> refs/remotes/origin/master
 
 	dma_tim.s.oe_n = ns_to_tim_reg(tim_mult, oe_n);
 	dma_tim.s.oe_a = ns_to_tim_reg(tim_mult, oe_a);
@@ -228,6 +378,7 @@ static void octeon_cf_set_dmamode(struct ata_port *ap, struct ata_device *dev)
 
 	pr_debug("ns to ticks (mult %d) of %d is: %d\n", tim_mult, 60,
 		 ns_to_tim_reg(tim_mult, 60));
+<<<<<<< HEAD
 	pr_debug("oe_n: %d, oe_a: %d, dmack_s: %d, dmack_h: "
 		 "%d, dmarq: %d, pause: %d\n",
 		 dma_tim.s.oe_n, dma_tim.s.oe_a, dma_tim.s.dmack_s,
@@ -236,6 +387,13 @@ static void octeon_cf_set_dmamode(struct ata_port *ap, struct ata_device *dev)
 	cvmx_write_csr(CVMX_MIO_BOOT_DMA_TIMX(ocd->dma_engine),
 		       dma_tim.u64);
 
+=======
+	pr_debug("oe_n: %d, oe_a: %d, dmack_s: %d, dmack_h: %d, dmarq: %d, pause: %d\n",
+		 dma_tim.s.oe_n, dma_tim.s.oe_a, dma_tim.s.dmack_s,
+		 dma_tim.s.dmack_h, dma_tim.s.dmarq, dma_tim.s.pause);
+
+	cvmx_write_csr(cf_port->dma_base + DMA_TIM, dma_tim.u64);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -405,7 +563,15 @@ static int octeon_cf_softreset16(struct ata_link *link, unsigned int *classes,
 
 	rc = ata_sff_wait_after_reset(link, 1, deadline);
 	if (rc) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_ERR, "SRST failed (errno=%d)\n", rc);
+=======
+		ata_link_err(link, "SRST failed (errno=%d)\n", rc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_link_err(link, "SRST failed (errno=%d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
@@ -489,6 +655,7 @@ static void octeon_cf_exec_command16(struct ata_port *ap,
 	ata_wait_idle(ap);
 }
 
+<<<<<<< HEAD
 static void octeon_cf_irq_on(struct ata_port *ap)
 {
 }
@@ -498,6 +665,12 @@ static void octeon_cf_irq_clear(struct ata_port *ap)
 	return;
 }
 
+=======
+static void octeon_cf_ata_port_noaction(struct ata_port *ap)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 static void octeon_cf_dma_setup(struct ata_queued_cmd *qc)
 {
 	struct ata_port *ap = qc->ap;
@@ -519,7 +692,11 @@ static void octeon_cf_dma_setup(struct ata_queued_cmd *qc)
  */
 static void octeon_cf_dma_start(struct ata_queued_cmd *qc)
 {
+<<<<<<< HEAD
 	struct octeon_cf_data *ocd = qc->ap->dev->platform_data;
+=======
+	struct octeon_cf_port *cf_port = qc->ap->private_data;
+>>>>>>> refs/remotes/origin/master
 	union cvmx_mio_boot_dma_cfgx mio_boot_dma_cfg;
 	union cvmx_mio_boot_dma_intx mio_boot_dma_int;
 	struct scatterlist *sg;
@@ -535,6 +712,7 @@ static void octeon_cf_dma_start(struct ata_queued_cmd *qc)
 	 */
 	mio_boot_dma_int.u64 = 0;
 	mio_boot_dma_int.s.done = 1;
+<<<<<<< HEAD
 	cvmx_write_csr(CVMX_MIO_BOOT_DMA_INTX(ocd->dma_engine),
 		       mio_boot_dma_int.u64);
 
@@ -544,6 +722,18 @@ static void octeon_cf_dma_start(struct ata_queued_cmd *qc)
 
 	/* Set the direction of the DMA */
 	mio_boot_dma_cfg.u64 = 0;
+=======
+	cvmx_write_csr(cf_port->dma_base + DMA_INT, mio_boot_dma_int.u64);
+
+	/* Enable the interrupt.  */
+	cvmx_write_csr(cf_port->dma_base + DMA_INT_EN, mio_boot_dma_int.u64);
+
+	/* Set the direction of the DMA */
+	mio_boot_dma_cfg.u64 = 0;
+#ifdef __LITTLE_ENDIAN
+	mio_boot_dma_cfg.s.endian = 1;
+#endif
+>>>>>>> refs/remotes/origin/master
 	mio_boot_dma_cfg.s.en = 1;
 	mio_boot_dma_cfg.s.rw = ((qc->tf.flags & ATA_TFLAG_WRITE) != 0);
 
@@ -569,8 +759,12 @@ static void octeon_cf_dma_start(struct ata_queued_cmd *qc)
 		(mio_boot_dma_cfg.s.rw) ? "write" : "read", sg->length,
 		(void *)(unsigned long)mio_boot_dma_cfg.s.adr);
 
+<<<<<<< HEAD
 	cvmx_write_csr(CVMX_MIO_BOOT_DMA_CFGX(ocd->dma_engine),
 		       mio_boot_dma_cfg.u64);
+=======
+	cvmx_write_csr(cf_port->dma_base + DMA_CFG, mio_boot_dma_cfg.u64);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -583,10 +777,16 @@ static unsigned int octeon_cf_dma_finished(struct ata_port *ap,
 					struct ata_queued_cmd *qc)
 {
 	struct ata_eh_info *ehi = &ap->link.eh_info;
+<<<<<<< HEAD
 	struct octeon_cf_data *ocd = ap->dev->platform_data;
 	union cvmx_mio_boot_dma_cfgx dma_cfg;
 	union cvmx_mio_boot_dma_intx dma_int;
 	struct octeon_cf_port *cf_port;
+=======
+	struct octeon_cf_port *cf_port = ap->private_data;
+	union cvmx_mio_boot_dma_cfgx dma_cfg;
+	union cvmx_mio_boot_dma_intx dma_int;
+>>>>>>> refs/remotes/origin/master
 	u8 status;
 
 	VPRINTK("ata%u: protocol %d task_state %d\n",
@@ -596,9 +796,13 @@ static unsigned int octeon_cf_dma_finished(struct ata_port *ap,
 	if (ap->hsm_task_state != HSM_ST_LAST)
 		return 0;
 
+<<<<<<< HEAD
 	cf_port = ap->private_data;
 
 	dma_cfg.u64 = cvmx_read_csr(CVMX_MIO_BOOT_DMA_CFGX(ocd->dma_engine));
+=======
+	dma_cfg.u64 = cvmx_read_csr(cf_port->dma_base + DMA_CFG);
+>>>>>>> refs/remotes/origin/master
 	if (dma_cfg.s.size != 0xfffff) {
 		/* Error, the transfer was not complete.  */
 		qc->err_mask |= AC_ERR_HOST_BUS;
@@ -608,6 +812,7 @@ static unsigned int octeon_cf_dma_finished(struct ata_port *ap,
 	/* Stop and clear the dma engine.  */
 	dma_cfg.u64 = 0;
 	dma_cfg.s.size = -1;
+<<<<<<< HEAD
 	cvmx_write_csr(CVMX_MIO_BOOT_DMA_CFGX(ocd->dma_engine), dma_cfg.u64);
 
 	/* Disable the interrupt.  */
@@ -617,6 +822,17 @@ static unsigned int octeon_cf_dma_finished(struct ata_port *ap,
 	/* Clear the DMA complete status */
 	dma_int.s.done = 1;
 	cvmx_write_csr(CVMX_MIO_BOOT_DMA_INTX(ocd->dma_engine), dma_int.u64);
+=======
+	cvmx_write_csr(cf_port->dma_base + DMA_CFG, dma_cfg.u64);
+
+	/* Disable the interrupt.  */
+	dma_int.u64 = 0;
+	cvmx_write_csr(cf_port->dma_base + DMA_INT_EN, dma_int.u64);
+
+	/* Clear the DMA complete status */
+	dma_int.s.done = 1;
+	cvmx_write_csr(cf_port->dma_base + DMA_INT, dma_int.u64);
+>>>>>>> refs/remotes/origin/master
 
 	status = ap->ops->sff_check_status(ap);
 
@@ -649,6 +865,7 @@ static irqreturn_t octeon_cf_interrupt(int irq, void *dev_instance)
 		struct ata_queued_cmd *qc;
 		union cvmx_mio_boot_dma_intx dma_int;
 		union cvmx_mio_boot_dma_cfgx dma_cfg;
+<<<<<<< HEAD
 		struct octeon_cf_data *ocd;
 
 		ap = host->ports[i];
@@ -696,22 +913,81 @@ static irqreturn_t octeon_cf_interrupt(int irq, void *dev_instance)
 				handled |= octeon_cf_dma_finished(ap, qc);
 			}
 		}
+=======
+
+		ap = host->ports[i];
+		cf_port = ap->private_data;
+
+		dma_int.u64 = cvmx_read_csr(cf_port->dma_base + DMA_INT);
+		dma_cfg.u64 = cvmx_read_csr(cf_port->dma_base + DMA_CFG);
+
+		qc = ata_qc_from_tag(ap, ap->link.active_tag);
+
+		if (!qc || (qc->tf.flags & ATA_TFLAG_POLLING))
+			continue;
+
+		if (dma_int.s.done && !dma_cfg.s.en) {
+			if (!sg_is_last(qc->cursg)) {
+				qc->cursg = sg_next(qc->cursg);
+				handled = 1;
+				octeon_cf_dma_start(qc);
+				continue;
+			} else {
+				cf_port->dma_finished = 1;
+			}
+		}
+		if (!cf_port->dma_finished)
+			continue;
+		status = ioread8(ap->ioaddr.altstatus_addr);
+		if (status & (ATA_BUSY | ATA_DRQ)) {
+			/*
+			 * We are busy, try to handle it later.  This
+			 * is the DMA finished interrupt, and it could
+			 * take a little while for the card to be
+			 * ready for more commands.
+			 */
+			/* Clear DMA irq. */
+			dma_int.u64 = 0;
+			dma_int.s.done = 1;
+			cvmx_write_csr(cf_port->dma_base + DMA_INT,
+				       dma_int.u64);
+			hrtimer_start_range_ns(&cf_port->delayed_finish,
+					       ns_to_ktime(OCTEON_CF_BUSY_POLL_INTERVAL),
+					       OCTEON_CF_BUSY_POLL_INTERVAL / 5,
+					       HRTIMER_MODE_REL);
+			handled = 1;
+		} else {
+			handled |= octeon_cf_dma_finished(ap, qc);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(&host->lock, flags);
 	DPRINTK("EXIT\n");
 	return IRQ_RETVAL(handled);
 }
 
+<<<<<<< HEAD
 static void octeon_cf_delayed_finish(struct work_struct *work)
 {
 	struct octeon_cf_port *cf_port = container_of(work,
 						      struct octeon_cf_port,
 						      delayed_finish.work);
+=======
+static enum hrtimer_restart octeon_cf_delayed_finish(struct hrtimer *hrt)
+{
+	struct octeon_cf_port *cf_port = container_of(hrt,
+						      struct octeon_cf_port,
+						      delayed_finish);
+>>>>>>> refs/remotes/origin/master
 	struct ata_port *ap = cf_port->ap;
 	struct ata_host *host = ap->host;
 	struct ata_queued_cmd *qc;
 	unsigned long flags;
 	u8 status;
+<<<<<<< HEAD
+=======
+	enum hrtimer_restart rv = HRTIMER_NORESTART;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&host->lock, flags);
 
@@ -726,6 +1002,7 @@ static void octeon_cf_delayed_finish(struct work_struct *work)
 	status = ioread8(ap->ioaddr.altstatus_addr);
 	if (status & (ATA_BUSY | ATA_DRQ)) {
 		/* Still busy, try again. */
+<<<<<<< HEAD
 		queue_delayed_work(cf_port->wq,
 				   &cf_port->delayed_finish, 1);
 		goto out;
@@ -735,6 +1012,19 @@ static void octeon_cf_delayed_finish(struct work_struct *work)
 		octeon_cf_dma_finished(ap, qc);
 out:
 	spin_unlock_irqrestore(&host->lock, flags);
+=======
+		hrtimer_forward_now(hrt,
+				    ns_to_ktime(OCTEON_CF_BUSY_POLL_INTERVAL));
+		rv = HRTIMER_RESTART;
+		goto out;
+	}
+	qc = ata_qc_from_tag(ap, ap->link.active_tag);
+	if (qc && (!(qc->tf.flags & ATA_TFLAG_POLLING)))
+		octeon_cf_dma_finished(ap, qc);
+out:
+	spin_unlock_irqrestore(&host->lock, flags);
+	return rv;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void octeon_cf_dev_config(struct ata_device *dev)
@@ -786,27 +1076,53 @@ static struct ata_port_operations octeon_cf_ops = {
 	.qc_prep		= ata_noop_qc_prep,
 	.qc_issue		= octeon_cf_qc_issue,
 	.sff_dev_select		= octeon_cf_dev_select,
+<<<<<<< HEAD
 	.sff_irq_on		= octeon_cf_irq_on,
 	.sff_irq_clear		= octeon_cf_irq_clear,
+=======
+	.sff_irq_on		= octeon_cf_ata_port_noaction,
+	.sff_irq_clear		= octeon_cf_ata_port_noaction,
+>>>>>>> refs/remotes/origin/master
 	.cable_detect		= ata_cable_40wire,
 	.set_piomode		= octeon_cf_set_piomode,
 	.set_dmamode		= octeon_cf_set_dmamode,
 	.dev_config		= octeon_cf_dev_config,
 };
 
+<<<<<<< HEAD
 static int __devinit octeon_cf_probe(struct platform_device *pdev)
 {
 	struct resource *res_cs0, *res_cs1;
 
+=======
+static int octeon_cf_probe(struct platform_device *pdev)
+{
+	struct resource *res_cs0, *res_cs1;
+
+	bool is_16bit;
+	const __be32 *cs_num;
+	struct property *reg_prop;
+	int n_addr, n_size, reg_len;
+	struct device_node *node;
+	const void *prop;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *cs0;
 	void __iomem *cs1 = NULL;
 	struct ata_host *host;
 	struct ata_port *ap;
+<<<<<<< HEAD
 	struct octeon_cf_data *ocd;
+=======
+>>>>>>> refs/remotes/origin/master
 	int irq = 0;
 	irq_handler_t irq_handler = NULL;
 	void __iomem *base;
 	struct octeon_cf_port *cf_port;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	char version[32];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	res_cs0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 
@@ -827,16 +1143,110 @@ static int __devinit octeon_cf_probe(struct platform_device *pdev)
 		if (!res_cs1)
 			return -EINVAL;
 
+=======
+	int rv = -ENOMEM;
+
+
+	node = pdev->dev.of_node;
+	if (node == NULL)
+		return -EINVAL;
+
+	cf_port = kzalloc(sizeof(*cf_port), GFP_KERNEL);
+	if (!cf_port)
+		return -ENOMEM;
+
+	cf_port->is_true_ide = (of_find_property(node, "cavium,true-ide", NULL) != NULL);
+
+	prop = of_get_property(node, "cavium,bus-width", NULL);
+	if (prop)
+		is_16bit = (be32_to_cpup(prop) == 16);
+	else
+		is_16bit = false;
+
+	n_addr = of_n_addr_cells(node);
+	n_size = of_n_size_cells(node);
+
+	reg_prop = of_find_property(node, "reg", &reg_len);
+	if (!reg_prop || reg_len < sizeof(__be32)) {
+		rv = -EINVAL;
+		goto free_cf_port;
+	}
+	cs_num = reg_prop->value;
+	cf_port->cs0 = be32_to_cpup(cs_num);
+
+	if (cf_port->is_true_ide) {
+		struct device_node *dma_node;
+		dma_node = of_parse_phandle(node,
+					    "cavium,dma-engine-handle", 0);
+		if (dma_node) {
+			struct platform_device *dma_dev;
+			dma_dev = of_find_device_by_node(dma_node);
+			if (dma_dev) {
+				struct resource *res_dma;
+				int i;
+				res_dma = platform_get_resource(dma_dev, IORESOURCE_MEM, 0);
+				if (!res_dma) {
+					of_node_put(dma_node);
+					rv = -EINVAL;
+					goto free_cf_port;
+				}
+				cf_port->dma_base = (u64)devm_ioremap_nocache(&pdev->dev, res_dma->start,
+									 resource_size(res_dma));
+
+				if (!cf_port->dma_base) {
+					of_node_put(dma_node);
+					rv = -EINVAL;
+					goto free_cf_port;
+				}
+
+				irq_handler = octeon_cf_interrupt;
+				i = platform_get_irq(dma_dev, 0);
+				if (i > 0)
+					irq = i;
+			}
+			of_node_put(dma_node);
+		}
+		res_cs1 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+		if (!res_cs1) {
+			rv = -EINVAL;
+			goto free_cf_port;
+		}
+>>>>>>> refs/remotes/origin/master
 		cs1 = devm_ioremap_nocache(&pdev->dev, res_cs1->start,
 					   resource_size(res_cs1));
 
 		if (!cs1)
+<<<<<<< HEAD
 			return -ENOMEM;
 	}
 
 	cf_port = kzalloc(sizeof(*cf_port), GFP_KERNEL);
 	if (!cf_port)
 		return -ENOMEM;
+=======
+			goto free_cf_port;
+
+		if (reg_len < (n_addr + n_size + 1) * sizeof(__be32)) {
+			rv = -EINVAL;
+			goto free_cf_port;
+		}
+		cs_num += n_addr + n_size;
+		cf_port->cs1 = be32_to_cpup(cs_num);
+	}
+
+	res_cs0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+	if (!res_cs0) {
+		rv = -EINVAL;
+		goto free_cf_port;
+	}
+
+	cs0 = devm_ioremap_nocache(&pdev->dev, res_cs0->start,
+				   resource_size(res_cs0));
+
+	if (!cs0)
+		goto free_cf_port;
+>>>>>>> refs/remotes/origin/master
 
 	/* allocate host */
 	host = ata_host_alloc(&pdev->dev, 1);
@@ -845,21 +1255,35 @@ static int __devinit octeon_cf_probe(struct platform_device *pdev)
 
 	ap = host->ports[0];
 	ap->private_data = cf_port;
+<<<<<<< HEAD
+=======
+	pdev->dev.platform_data = cf_port;
+>>>>>>> refs/remotes/origin/master
 	cf_port->ap = ap;
 	ap->ops = &octeon_cf_ops;
 	ap->pio_mask = ATA_PIO6;
 	ap->flags |= ATA_FLAG_NO_ATAPI | ATA_FLAG_PIO_POLLING;
 
+<<<<<<< HEAD
 	base = cs0 + ocd->base_region_bias;
 	if (!ocd->is16bit) {
+=======
+	if (!is_16bit) {
+		base = cs0 + 0x800;
+>>>>>>> refs/remotes/origin/master
 		ap->ioaddr.cmd_addr	= base;
 		ata_sff_std_ports(&ap->ioaddr);
 
 		ap->ioaddr.altstatus_addr = base + 0xe;
 		ap->ioaddr.ctl_addr	= base + 0xe;
 		octeon_cf_ops.sff_data_xfer = octeon_cf_data_xfer8;
+<<<<<<< HEAD
 	} else if (cs1) {
 		/* Presence of cs1 indicates True IDE mode.  */
+=======
+	} else if (cf_port->is_true_ide) {
+		base = cs0;
+>>>>>>> refs/remotes/origin/master
 		ap->ioaddr.cmd_addr	= base + (ATA_REG_CMD << 1) + 1;
 		ap->ioaddr.data_addr	= base + (ATA_REG_DATA << 1);
 		ap->ioaddr.error_addr	= base + (ATA_REG_ERR << 1) + 1;
@@ -875,6 +1299,7 @@ static int __devinit octeon_cf_probe(struct platform_device *pdev)
 		ap->ioaddr.ctl_addr	= cs1 + (6 << 1) + 1;
 		octeon_cf_ops.sff_data_xfer = octeon_cf_data_xfer16;
 
+<<<<<<< HEAD
 		ap->mwdma_mask	= ATA_MWDMA4;
 		irq = platform_get_irq(pdev, 0);
 		irq_handler = octeon_cf_interrupt;
@@ -888,6 +1313,17 @@ static int __devinit octeon_cf_probe(struct platform_device *pdev)
 
 	} else {
 		/* 16 bit but not True IDE */
+=======
+		ap->mwdma_mask	= enable_dma ? ATA_MWDMA4 : 0;
+
+		/* True IDE mode needs a timer to poll for not-busy.  */
+		hrtimer_init(&cf_port->delayed_finish, CLOCK_MONOTONIC,
+			     HRTIMER_MODE_REL);
+		cf_port->delayed_finish.function = octeon_cf_delayed_finish;
+	} else {
+		/* 16 bit but not True IDE */
+		base = cs0 + 0x800;
+>>>>>>> refs/remotes/origin/master
 		octeon_cf_ops.sff_data_xfer	= octeon_cf_data_xfer16;
 		octeon_cf_ops.softreset		= octeon_cf_softreset16;
 		octeon_cf_ops.sff_check_status	= octeon_cf_check_status16;
@@ -901,14 +1337,31 @@ static int __devinit octeon_cf_probe(struct platform_device *pdev)
 		ap->ioaddr.ctl_addr	= base + 0xe;
 		ap->ioaddr.altstatus_addr = base + 0xe;
 	}
+<<<<<<< HEAD
+=======
+	cf_port->c0 = ap->ioaddr.ctl_addr;
+
+	rv = dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+	if (rv)
+		return rv;
+>>>>>>> refs/remotes/origin/master
 
 	ata_port_desc(ap, "cmd %p ctl %p", base, ap->ioaddr.ctl_addr);
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_info(&pdev->dev, "version " DRV_VERSION" %d bit%s.\n",
 		 (ocd->is16bit) ? 16 : 8,
 		 (cs1) ? ", True IDE" : "");
 
+=======
+	snprintf(version, sizeof(version), "%s %d bit%s",
+		 DRV_VERSION,
+		 (ocd->is16bit) ? 16 : 8,
+		 (cs1) ? ", True IDE" : "");
+	ata_print_version_once(&pdev->dev, version);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ata_host_activate(host, irq, irq_handler, 0, &octeon_cf_sht);
 
@@ -917,11 +1370,68 @@ free_cf_port:
 	return -ENOMEM;
 }
 
+=======
+	dev_info(&pdev->dev, "version " DRV_VERSION" %d bit%s.\n",
+		 is_16bit ? 16 : 8,
+		 cf_port->is_true_ide ? ", True IDE" : "");
+
+	return ata_host_activate(host, irq, irq_handler,
+				 IRQF_SHARED, &octeon_cf_sht);
+
+free_cf_port:
+	kfree(cf_port);
+	return rv;
+}
+
+static void octeon_cf_shutdown(struct device *dev)
+{
+	union cvmx_mio_boot_dma_cfgx dma_cfg;
+	union cvmx_mio_boot_dma_intx dma_int;
+
+	struct octeon_cf_port *cf_port = dev_get_platdata(dev);
+
+	if (cf_port->dma_base) {
+		/* Stop and clear the dma engine.  */
+		dma_cfg.u64 = 0;
+		dma_cfg.s.size = -1;
+		cvmx_write_csr(cf_port->dma_base + DMA_CFG, dma_cfg.u64);
+
+		/* Disable the interrupt.  */
+		dma_int.u64 = 0;
+		cvmx_write_csr(cf_port->dma_base + DMA_INT_EN, dma_int.u64);
+
+		/* Clear the DMA complete status */
+		dma_int.s.done = 1;
+		cvmx_write_csr(cf_port->dma_base + DMA_INT, dma_int.u64);
+
+		__raw_writeb(0, cf_port->c0);
+		udelay(20);
+		__raw_writeb(ATA_SRST, cf_port->c0);
+		udelay(20);
+		__raw_writeb(0, cf_port->c0);
+		mdelay(100);
+	}
+}
+
+static struct of_device_id octeon_cf_match[] = {
+	{
+		.compatible = "cavium,ebt3000-compact-flash",
+	},
+	{},
+};
+MODULE_DEVICE_TABLE(of, octeon_i2c_match);
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver octeon_cf_driver = {
 	.probe		= octeon_cf_probe,
 	.driver		= {
 		.name	= DRV_NAME,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = octeon_cf_match,
+		.shutdown = octeon_cf_shutdown
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

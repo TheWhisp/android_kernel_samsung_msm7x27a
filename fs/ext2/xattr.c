@@ -54,7 +54,13 @@
  */
 
 #include <linux/buffer_head.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/mbcache.h>
@@ -161,6 +167,19 @@ ext2_xattr_get(struct inode *inode, int name_index, const char *name,
 
 	if (name == NULL)
 		return -EINVAL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	name_len = strlen(name);
+	if (name_len > 255)
+		return -ERANGE;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	down_read(&EXT2_I(inode)->xattr_sem);
 	error = -ENODATA;
 	if (!EXT2_I(inode)->i_file_acl)
@@ -181,12 +200,22 @@ bad_block:	ext2_error(inode->i_sb, "ext2_xattr_get",
 		error = -EIO;
 		goto cleanup;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* find named attribute */
 	name_len = strlen(name);
 
 	error = -ERANGE;
 	if (name_len > 255)
 		goto cleanup;
+=======
+
+	/* find named attribute */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* find named attribute */
+>>>>>>> refs/remotes/origin/master
 	entry = FIRST_ENTRY(bh);
 	while (!IS_LAST_ENTRY(entry)) {
 		struct ext2_xattr_entry *next =
@@ -340,7 +369,10 @@ static void ext2_xattr_update_super_block(struct super_block *sb)
 	spin_lock(&EXT2_SB(sb)->s_lock);
 	EXT2_SET_COMPAT_FEATURE(sb, EXT2_FEATURE_COMPAT_EXT_ATTR);
 	spin_unlock(&EXT2_SB(sb)->s_lock);
+<<<<<<< HEAD
 	sb->s_dirt = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 	mark_buffer_dirty(EXT2_SB(sb)->s_sbh);
 }
 
@@ -664,10 +696,17 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
 			ea_idebug(inode, "creating block %d", block);
 
 			new_bh = sb_getblk(sb, block);
+<<<<<<< HEAD
 			if (!new_bh) {
 				ext2_free_blocks(inode, block, 1);
 				mark_inode_dirty(inode);
 				error = -EIO;
+=======
+			if (unlikely(!new_bh)) {
+				ext2_free_blocks(inode, block, 1);
+				mark_inode_dirty(inode);
+				error = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 				goto cleanup;
 			}
 			lock_buffer(new_bh);

@@ -18,7 +18,10 @@
 #include <linux/errno.h>
 #include <linux/wait.h>
 #include <linux/personality.h>
+<<<<<<< HEAD
 #include <linux/freezer.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/ptrace.h>
 #include <linux/unistd.h>
 #include <linux/stddef.h>
@@ -41,11 +44,17 @@
 
 #define DEBUG_SIG 0
 
+<<<<<<< HEAD
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
 static int
 handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 		sigset_t *oldset, struct pt_regs * regs);
+=======
+static void
+handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
+		struct pt_regs * regs);
+>>>>>>> refs/remotes/origin/master
 
 static inline void
 handle_syscall_restart(struct pt_regs *regs, struct sigaction *sa)
@@ -83,7 +92,11 @@ handle_syscall_restart(struct pt_regs *regs, struct sigaction *sa)
  * the kernel can handle, and then we build all the user-level signal handling
  * stack-frames in one go after that.
  */
+<<<<<<< HEAD
 static int do_signal(struct pt_regs *regs, sigset_t *oldset)
+=======
+static void do_signal(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	siginfo_t info;
 	int signr;
@@ -96,21 +109,29 @@ static int do_signal(struct pt_regs *regs, sigset_t *oldset)
 	 * if so.
 	 */
 	if (!user_mode(regs))
+<<<<<<< HEAD
 		return 1;
 
+<<<<<<< HEAD
 	if (try_to_freeze())
 		goto no_signal;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (current_thread_info()->status & TS_RESTORE_SIGMASK)
 		oldset = &current->saved_sigmask;
 	else if (!oldset)
 		oldset = &current->blocked;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	signr = get_signal_to_deliver(&info, &ka, regs, 0);
 	if (signr > 0) {
 		handle_syscall_restart(regs, &ka.sa);
 
 		/* Whee!  Actually deliver the signal.  */
+<<<<<<< HEAD
 		if (handle_signal(signr, &info, &ka, oldset, regs) == 0) {
 			/*
 			 * If a signal was successfully delivered, the
@@ -125,7 +146,16 @@ static int do_signal(struct pt_regs *regs, sigset_t *oldset)
 		}
 	}
 
+<<<<<<< HEAD
 no_signal:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		handle_signal(signr, &info, &ka, regs);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Did we come from a system call? */
 	if (regs->syscall_nr >= 0) {
 		/* Restart the system call - no handlers present */
@@ -146,6 +176,7 @@ no_signal:
 	}
 
 	/* No signal to deliver -- put the saved sigmask back */
+<<<<<<< HEAD
 	if (current_thread_info()->status & TS_RESTORE_SIGMASK) {
 		current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
@@ -163,6 +194,7 @@ sys_sigsuspend(old_sigset_t mask,
 	       unsigned long r6, unsigned long r7,
 	       struct pt_regs * regs)
 {
+<<<<<<< HEAD
 	sigset_t saveset;
 
 	mask &= _BLOCKABLE;
@@ -171,6 +203,15 @@ sys_sigsuspend(old_sigset_t mask,
 	siginitset(&current->blocked, mask);
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	sigset_t saveset, blocked;
+
+	saveset = current->blocked;
+
+	mask &= _BLOCKABLE;
+	siginitset(&blocked, mask);
+	set_current_blocked(&blocked);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	REF_REG_RET = -EINTR;
 	while (1) {
@@ -202,11 +243,16 @@ sys_rt_sigsuspend(sigset_t *unewset, size_t sigsetsize,
 	if (copy_from_user(&newset, unewset, sizeof(newset)))
 		return -EFAULT;
 	sigdelsetmask(&newset, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	saveset = current->blocked;
 	current->blocked = newset;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	saveset = current->blocked;
+	set_current_blocked(&newset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	REF_REG_RET = -EINTR;
 	while (1) {
@@ -261,6 +307,9 @@ sys_sigaltstack(const stack_t __user *uss, stack_t __user *uoss,
 	        struct pt_regs * regs)
 {
 	return do_sigaltstack(uss, uoss, REF_REG_SP);
+=======
+	restore_saved_sigmask();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -411,12 +460,20 @@ asmlinkage int sys_sigreturn(unsigned long r2, unsigned long r3,
 				    sizeof(frame->extramask))))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
+<<<<<<< HEAD
 
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	if (restore_sigcontext(regs, &frame->sc, &ret))
 		goto badframe;
@@ -436,7 +493,10 @@ asmlinkage int sys_rt_sigreturn(unsigned long r2, unsigned long r3,
 {
 	struct rt_sigframe __user *frame = (struct rt_sigframe __user *) (long) REF_REG_SP;
 	sigset_t set;
+<<<<<<< HEAD
 	stack_t __user st;
+=======
+>>>>>>> refs/remotes/origin/master
 	long long ret;
 
 	/* Always make any pending restarted system calls return -EINTR */
@@ -448,21 +508,34 @@ asmlinkage int sys_rt_sigreturn(unsigned long r2, unsigned long r3,
 	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	if (restore_sigcontext(regs, &frame->uc.uc_mcontext, &ret))
 		goto badframe;
 	regs->pc -= 4;
 
+<<<<<<< HEAD
 	if (__copy_from_user(&st, &frame->uc.uc_stack, sizeof(st)))
 		goto badframe;
 	/* It is more difficult to avoid calling this function than to
 	   call it and ignore errors.  */
 	do_sigaltstack(&st, NULL, REF_REG_SP);
+=======
+	if (restore_altstack(&frame->uc.uc_stack))
+		goto badframe;
+>>>>>>> refs/remotes/origin/master
 
 	return (int) ret;
 
@@ -655,11 +728,15 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	/* Create the ucontext.  */
 	err |= __put_user(0, &frame->uc.uc_flags);
 	err |= __put_user(0, &frame->uc.uc_link);
+<<<<<<< HEAD
 	err |= __put_user((void *)current->sas_ss_sp,
 			  &frame->uc.uc_stack.ss_sp);
 	err |= __put_user(sas_ss_flags(regs->regs[REG_SP]),
 			  &frame->uc.uc_stack.ss_flags);
 	err |= __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_size);
+=======
+	err |= __save_altstack(&frame->uc.uc_stack, regs->regs[REG_SP]);
+>>>>>>> refs/remotes/origin/master
 	err |= setup_sigcontext(&frame->uc.uc_mcontext,
 			        regs, set->sig[0]);
 	err |= __copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set));
@@ -726,10 +803,18 @@ give_sigsegv:
 /*
  * OK, we're invoking a handler
  */
+<<<<<<< HEAD
 static int
 handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 		sigset_t *oldset, struct pt_regs * regs)
 {
+=======
+static void
+handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
+		struct pt_regs * regs)
+{
+	sigset_t *oldset = sigmask_to_save();
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* Set up the stack frame */
@@ -738,6 +823,8 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 	else
 		ret = setup_frame(sig, ka, oldset, regs);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ka->sa.sa_flags & SA_ONESHOT)
 		ka->sa.sa_handler = SIG_DFL;
 
@@ -749,19 +836,37 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 		recalc_sigpending();
 		spin_unlock_irq(&current->sighand->siglock);
 	}
+=======
+	if (ret == 0)
+		block_sigmask(ka, sig);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
+=======
+	if (ret)
+		return;
+
+	signal_delivered(sig, info, ka, regs,
+			test_thread_flag(TIF_SINGLESTEP));
+>>>>>>> refs/remotes/origin/master
 }
 
 asmlinkage void do_notify_resume(struct pt_regs *regs, unsigned long thread_info_flags)
 {
 	if (thread_info_flags & _TIF_SIGPENDING)
+<<<<<<< HEAD
 		do_signal(regs, 0);
+=======
+		do_signal(regs);
+>>>>>>> refs/remotes/origin/master
 
 	if (thread_info_flags & _TIF_NOTIFY_RESUME) {
 		clear_thread_flag(TIF_NOTIFY_RESUME);
 		tracehook_notify_resume(regs);
+<<<<<<< HEAD
 		if (current->replacement_session_keyring)
 			key_replace_session_keyring();
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }

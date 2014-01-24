@@ -26,8 +26,17 @@
 #include <linux/fs.h>
 #include <linux/gfp.h>
 #include <linux/list.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/syscalls.h>
+=======
+#include <linux/syscalls.h>
+#include <linux/coredump.h>
+#include <linux/binfmts.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 
@@ -49,6 +58,7 @@ static ssize_t do_coredump_read(int num, struct spu_context *ctx, void *buffer,
 	return ++ret; /* count trailing NULL */
 }
 
+<<<<<<< HEAD
 /*
  * These are the only things you should do on a core-file: use only these
  * functions to write out all the necessary info.
@@ -87,6 +97,8 @@ static int spufs_dump_align(struct file *file, char *buf, loff_t new_off,
 	return rc;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int spufs_ctx_note_size(struct spu_context *ctx, int dfd)
 {
 	int i, sz, total = 0;
@@ -107,6 +119,20 @@ static int spufs_ctx_note_size(struct spu_context *ctx, int dfd)
 	return total;
 }
 
+<<<<<<< HEAD
+=======
+static int match_context(const void *v, struct file *file, unsigned fd)
+{
+	struct spu_context *ctx;
+	if (file->f_op != &spufs_context_fops)
+		return 0;
+	ctx = SPUFS_I(file_inode(file))->i_ctx;
+	if (ctx->flags & SPU_CREATE_NOSCHED)
+		return 0;
+	return fd + 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The additional architecture-specific notes for Cell are various
  * context files in the spu context.
@@ -116,6 +142,7 @@ static int spufs_ctx_note_size(struct spu_context *ctx, int dfd)
  * internal functionality to dump them without needing to actually
  * open the files.
  */
+<<<<<<< HEAD
 static struct spu_context *coredump_next_context(int *fd)
 {
 	struct fdtable *fdt = files_fdtable(current->files);
@@ -123,7 +150,11 @@ static struct spu_context *coredump_next_context(int *fd)
 	struct spu_context *ctx = NULL;
 
 	for (; *fd < fdt->max_fds; (*fd)++) {
+<<<<<<< HEAD
 		if (!FD_ISSET(*fd, fdt->open_fds))
+=======
+		if (!fd_is_open(*fd, fdt))
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 
 		file = fcheck(*fd);
@@ -139,6 +170,20 @@ static struct spu_context *coredump_next_context(int *fd)
 	}
 
 	return ctx;
+=======
+/*
+ * descriptor table is not shared, so files can't change or go away.
+ */
+static struct spu_context *coredump_next_context(int *fd)
+{
+	struct file *file;
+	int n = iterate_fd(current->files, *fd, match_context, NULL);
+	if (!n)
+		return NULL;
+	*fd = n - 1;
+	file = fcheck(*fd);
+	return SPUFS_I(file_inode(file))->i_ctx;
+>>>>>>> refs/remotes/origin/master
 }
 
 int spufs_coredump_extra_notes_size(void)
@@ -166,10 +211,17 @@ int spufs_coredump_extra_notes_size(void)
 }
 
 static int spufs_arch_write_note(struct spu_context *ctx, int i,
+<<<<<<< HEAD
 				  struct file *file, int dfd, loff_t *foffset)
 {
 	loff_t pos = 0;
 	int sz, rc, nread, total = 0;
+=======
+				  struct coredump_params *cprm, int dfd)
+{
+	loff_t pos = 0;
+	int sz, rc, total = 0;
+>>>>>>> refs/remotes/origin/master
 	const int bufsz = PAGE_SIZE;
 	char *name;
 	char fullname[80], *buf;
@@ -187,6 +239,7 @@ static int spufs_arch_write_note(struct spu_context *ctx, int i,
 	en.n_descsz = sz;
 	en.n_type = NT_SPU;
 
+<<<<<<< HEAD
 	rc = spufs_dump_write(file, &en, sizeof(en), foffset);
 	if (rc)
 		goto out;
@@ -223,6 +276,41 @@ out:
 }
 
 int spufs_coredump_extra_notes_write(struct file *file, loff_t *foffset)
+=======
+	if (!dump_emit(cprm, &en, sizeof(en)))
+		goto Eio;
+
+	if (!dump_emit(cprm, fullname, en.n_namesz))
+		goto Eio;
+
+	if (!dump_align(cprm, 4))
+		goto Eio;
+
+	do {
+		rc = do_coredump_read(i, ctx, buf, bufsz, &pos);
+		if (rc > 0) {
+			if (!dump_emit(cprm, buf, rc))
+				goto Eio;
+			total += rc;
+		}
+	} while (rc == bufsz && total < sz);
+
+	if (rc < 0)
+		goto out;
+
+	if (!dump_skip(cprm,
+		       roundup(cprm->written - total + sz, 4) - cprm->written))
+		goto Eio;
+out:
+	free_page((unsigned long)buf);
+	return rc;
+Eio:
+	free_page((unsigned long)buf);
+	return -EIO;
+}
+
+int spufs_coredump_extra_notes_write(struct coredump_params *cprm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spu_context *ctx;
 	int fd, j, rc;
@@ -234,7 +322,11 @@ int spufs_coredump_extra_notes_write(struct file *file, loff_t *foffset)
 			return rc;
 
 		for (j = 0; spufs_coredump_read[j].name != NULL; j++) {
+<<<<<<< HEAD
 			rc = spufs_arch_write_note(ctx, j, file, fd, foffset);
+=======
+			rc = spufs_arch_write_note(ctx, j, cprm, fd);
+>>>>>>> refs/remotes/origin/master
 			if (rc) {
 				spu_release_saved(ctx);
 				return rc;

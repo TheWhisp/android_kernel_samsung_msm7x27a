@@ -24,12 +24,24 @@
 #include <linux/selection.h>
 #include <linux/tiocl.h>
 #include <linux/console.h>
+<<<<<<< HEAD
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Don't take this from <ctype.h>: 011-015 on the screen aren't spaces */
 #define isspace(c)	((c) == ' ')
 
 extern void poke_blanked_console(void);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* FIXME: all this needs locking */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* FIXME: all this needs locking */
+>>>>>>> refs/remotes/origin/master
 /* Variables for selection control. */
 /* Use a dynamic buffer, instead of static (Dec 1994) */
 struct vc_data *sel_cons;		/* must not be deallocated */
@@ -61,10 +73,27 @@ sel_pos(int n)
 				use_unicode);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* remove the current selection highlight, if any,
    from the console holding the selection. */
 void
 clear_selection(void) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ *	clear_selection		-	remove current selection
+ *
+ *	Remove the current selection highlight, if any from the console
+ *	holding the selection. The caller must hold the console lock.
+ */
+void clear_selection(void)
+{
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	highlight_pointer(-1); /* hide the pointer */
 	if (sel_start != -1) {
 		highlight(sel_start, sel_end);
@@ -74,7 +103,15 @@ clear_selection(void) {
 
 /*
  * User settable table: what characters are to be considered alphabetic?
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 256 bits
+=======
+ * 256 bits. Locked by the console lock.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * 256 bits. Locked by the console lock.
+>>>>>>> refs/remotes/origin/master
  */
 static u32 inwordLut[8]={
   0x00000000, /* control chars     */
@@ -91,10 +128,33 @@ static inline int inword(const u16 c) {
 	return c > 0xff || (( inwordLut[c>>5] >> (c & 0x1F) ) & 1);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* set inwordLut contents. Invoked by ioctl(). */
 int sel_loadlut(char __user *p)
 {
 	return copy_from_user(inwordLut, (u32 __user *)(p+4), 32) ? -EFAULT : 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ *	set loadlut		-	load the LUT table
+ *	@p: user table
+ *
+ *	Load the LUT table from user space. The caller must hold the console
+ *	lock. Make a temporary copy so a partial update doesn't make a mess.
+ */
+int sel_loadlut(char __user *p)
+{
+	u32 tmplut[8];
+	if (copy_from_user(tmplut, (u32 __user *)(p+4), 32))
+		return -EFAULT;
+	memcpy(inwordLut, tmplut, 32);
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* does screen address p correspond to character at LH/RH edge of screen? */
@@ -130,7 +190,26 @@ static int store_utf8(u16 c, char *p)
     	}
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* set the current selection. Invoked by ioctl() or by kernel code. */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ *	set_selection		- 	set the current selection.
+ *	@sel: user selection info
+ *	@tty: the console tty
+ *
+ *	Invoked by the ioctl handle for the vt layer.
+ *
+ *	The entire selection process is managed under the console_lock. It's
+ *	 a lot under the lock but its hardly a performance path
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int set_selection(const struct tiocl_selection __user *sel, struct tty_struct *tty)
 {
 	struct vc_data *vc = vc_cons[fg_console].d;
@@ -138,7 +217,15 @@ int set_selection(const struct tiocl_selection __user *sel, struct tty_struct *t
 	char *bp, *obp;
 	int i, ps, pe, multiplier;
 	u16 c;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct kbd_struct *kbd = kbd_table + fg_console;
+=======
+	int mode;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int mode;
+>>>>>>> refs/remotes/origin/master
 
 	poke_blanked_console();
 
@@ -182,7 +269,21 @@ int set_selection(const struct tiocl_selection __user *sel, struct tty_struct *t
 		clear_selection();
 		sel_cons = vc_cons[fg_console].d;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	use_unicode = kbd && kbd->kbdmode == VC_UNICODE;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mode = vt_do_kdgkbmode(fg_console);
+	if (mode == K_UNICODE)
+		use_unicode = 1;
+	else
+		use_unicode = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (sel_mode)
 	{
@@ -301,6 +402,18 @@ int set_selection(const struct tiocl_selection __user *sel, struct tty_struct *t
 /* Insert the contents of the selection buffer into the
  * queue of the tty associated with the current console.
  * Invoked by ioctl().
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *
+ * Locking: called without locks. Calls the ldisc wrongly with
+ * unsafe methods,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+ * Locking: called without locks. Calls the ldisc wrongly with
+ * unsafe methods,
+>>>>>>> refs/remotes/origin/master
  */
 int paste_selection(struct tty_struct *tty)
 {
@@ -310,13 +423,21 @@ int paste_selection(struct tty_struct *tty)
 	struct  tty_ldisc *ld;
 	DECLARE_WAITQUEUE(wait, current);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* always called with BTM from vt_ioctl */
 	WARN_ON(!tty_locked());
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 	console_lock();
 	poke_blanked_console();
 	console_unlock();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ld = tty_ldisc_ref(tty);
 	if (!ld) {
 		tty_unlock();
@@ -324,6 +445,19 @@ int paste_selection(struct tty_struct *tty)
 		tty_lock();
 	}
 
+=======
+	/* FIXME: wtf is this supposed to achieve ? */
+	ld = tty_ldisc_ref(tty);
+	if (!ld)
+		ld = tty_ldisc_ref_wait(tty);
+
+	/* FIXME: this is completely unsafe */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ld = tty_ldisc_ref_wait(tty);
+	tty_buffer_lock_exclusive(&vc->port);
+
+>>>>>>> refs/remotes/origin/master
 	add_wait_queue(&vc->paste_wait, &wait);
 	while (sel_buffer && sel_buffer_lth > pasted) {
 		set_current_state(TASK_INTERRUPTIBLE);
@@ -332,14 +466,23 @@ int paste_selection(struct tty_struct *tty)
 			continue;
 		}
 		count = sel_buffer_lth - pasted;
+<<<<<<< HEAD
 		count = min(count, tty->receive_room);
 		tty->ldisc->ops->receive_buf(tty, sel_buffer + pasted,
 								NULL, count);
+=======
+		count = tty_ldisc_receive_buf(ld, sel_buffer + pasted, NULL,
+					      count);
+>>>>>>> refs/remotes/origin/master
 		pasted += count;
 	}
 	remove_wait_queue(&vc->paste_wait, &wait);
 	__set_current_state(TASK_RUNNING);
 
+<<<<<<< HEAD
+=======
+	tty_buffer_unlock_exclusive(&vc->port);
+>>>>>>> refs/remotes/origin/master
 	tty_ldisc_deref(ld);
 	return 0;
 }

@@ -825,7 +825,15 @@ static int ps3_probe_thread(void *data)
 
 	spin_lock_init(&dev.lock);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	res = request_irq(irq, ps3_notification_interrupt, IRQF_DISABLED,
+=======
+	res = request_irq(irq, ps3_notification_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = request_irq(irq, ps3_notification_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 			  "ps3_notification", &dev);
 	if (res) {
 		pr_err("%s:%u: request_irq failed %d\n", __func__, __LINE__,

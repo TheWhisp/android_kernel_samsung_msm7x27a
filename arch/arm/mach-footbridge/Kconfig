@@ -4,6 +4,14 @@ menu "Footbridge Implementations"
 
 config ARCH_CATS
 	bool "CATS"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select CLKEVT_I8253
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select CLKEVT_I8253
+>>>>>>> refs/remotes/origin/master
 	select CLKSRC_I8253
 	select FOOTBRIDGE_HOST
 	select ISA
@@ -60,11 +68,23 @@ config ARCH_EBSA285_HOST
 
 config ARCH_NETWINDER
 	bool "NetWinder"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	select CLKEVT_I8253
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select CLKEVT_I8253
+>>>>>>> refs/remotes/origin/master
 	select CLKSRC_I8253
 	select FOOTBRIDGE_HOST
 	select ISA
 	select ISA_DMA
 	select PCI
+<<<<<<< HEAD
+=======
+	select VIRT_TO_BUS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you intend to run this kernel on the Rebel.COM
 	  NetWinder.  Information about this machine can be found at:
@@ -89,7 +109,12 @@ config FOOTBRIDGE_ADDIN
 
 # EBSA285 board in either host or addin mode
 config ARCH_EBSA285
+<<<<<<< HEAD
 	select ARCH_MAY_HAVE_PC_FDC
 	bool
+=======
+	bool
+	select ARCH_MAY_HAVE_PC_FDC
+>>>>>>> refs/remotes/origin/master
 
 endif

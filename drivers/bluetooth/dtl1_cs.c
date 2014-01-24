@@ -38,7 +38,14 @@
 #include <linux/serial.h>
 #include <linux/serial_reg.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+#include <asm/system.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <asm/io.h>
 
 #include <pcmcia/cistpl.h>
@@ -83,9 +90,18 @@ typedef struct dtl1_info_t {
 
 
 static int dtl1_config(struct pcmcia_device *link);
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void dtl1_release(struct pcmcia_device *link);
 
 static void dtl1_detach(struct pcmcia_device *p_dev);
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+static void dtl1_release(struct pcmcia_device *link);
+
+static void dtl1_detach(struct pcmcia_device *p_dev);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 /* Transmit states  */
@@ -148,9 +164,15 @@ static void dtl1_write_wakeup(dtl1_info_t *info)
 	}
 
 	do {
+<<<<<<< HEAD
 		register unsigned int iobase = info->p_dev->resource[0]->start;
 		register struct sk_buff *skb;
 		register int len;
+=======
+		unsigned int iobase = info->p_dev->resource[0]->start;
+		register struct sk_buff *skb;
+		int len;
+>>>>>>> refs/remotes/origin/master
 
 		clear_bit(XMIT_WAKEUP, &(info->tx_state));
 
@@ -260,9 +282,14 @@ static void dtl1_receive(dtl1_info_t *info)
 				case 0x83:
 				case 0x84:
 					/* send frame to the HCI layer */
+<<<<<<< HEAD
 					info->rx_skb->dev = (void *) info->hdev;
 					bt_cb(info->rx_skb)->pkt_type &= 0x0f;
 					hci_recv_frame(info->rx_skb);
+=======
+					bt_cb(info->rx_skb)->pkt_type &= 0x0f;
+					hci_recv_frame(info->hdev, info->rx_skb);
+>>>>>>> refs/remotes/origin/master
 					break;
 				default:
 					/* unknown packet */
@@ -367,7 +394,15 @@ static int dtl1_hci_open(struct hci_dev *hdev)
 
 static int dtl1_hci_flush(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dtl1_info_t *info = (dtl1_info_t *)(hdev->driver_data);
+=======
+	dtl1_info_t *info = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
+=======
+	dtl1_info_t *info = (dtl1_info_t *)(hdev->driver_data);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* Drop TX queue */
 	skb_queue_purge(&(info->txq));
@@ -387,6 +422,7 @@ static int dtl1_hci_close(struct hci_dev *hdev)
 }
 
 
+<<<<<<< HEAD
 static int dtl1_hci_send_frame(struct sk_buff *skb)
 {
 	dtl1_info_t *info;
@@ -401,6 +437,14 @@ static int dtl1_hci_send_frame(struct sk_buff *skb)
 
 	info = (dtl1_info_t *)(hdev->driver_data);
 
+=======
+static int dtl1_hci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
+{
+	dtl1_info_t *info = hci_get_drvdata(hdev);
+	struct sk_buff *s;
+	nsh_t nsh;
+
+>>>>>>> refs/remotes/origin/master
 	switch (bt_cb(skb)->pkt_type) {
 	case HCI_COMMAND_PKT:
 		hdev->stat.cmd_tx++;
@@ -442,6 +486,10 @@ static int dtl1_hci_send_frame(struct sk_buff *skb)
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void dtl1_hci_destruct(struct hci_dev *hdev)
 {
 }
@@ -453,6 +501,8 @@ static int dtl1_hci_ioctl(struct hci_dev *hdev, unsigned int cmd,  unsigned long
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* ======================== Card services HCI interaction ======================== */
 
@@ -483,6 +533,10 @@ static int dtl1_open(dtl1_info_t *info)
 	info->hdev = hdev;
 
 	hdev->bus = HCI_PCCARD;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	hdev->driver_data = info;
 	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
 
@@ -494,6 +548,18 @@ static int dtl1_open(dtl1_info_t *info)
 	hdev->ioctl    = dtl1_hci_ioctl;
 
 	hdev->owner = THIS_MODULE;
+<<<<<<< HEAD
+=======
+	hci_set_drvdata(hdev, info);
+	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
+
+	hdev->open  = dtl1_hci_open;
+	hdev->close = dtl1_hci_close;
+	hdev->flush = dtl1_hci_flush;
+	hdev->send  = dtl1_hci_send_frame;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	spin_lock_irqsave(&(info->lock), flags);
 
@@ -551,9 +617,19 @@ static int dtl1_close(dtl1_info_t *info)
 
 	spin_unlock_irqrestore(&(info->lock), flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (hci_unregister_dev(hdev) < 0)
 		BT_ERR("Can't unregister HCI device %s", hdev->name);
 
+=======
+	hci_unregister_dev(hdev);
+>>>>>>> refs/remotes/origin/master
+=======
+	if (hci_unregister_dev(hdev) < 0)
+		BT_ERR("Can't unregister HCI device %s", hdev->name);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	hci_free_dev(hdev);
 
 	return 0;
@@ -564,7 +640,11 @@ static int dtl1_probe(struct pcmcia_device *link)
 	dtl1_info_t *info;
 
 	/* Create new info device */
+<<<<<<< HEAD
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+=======
+	info = devm_kzalloc(&link->dev, sizeof(*info), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!info)
 		return -ENOMEM;
 
@@ -581,9 +661,20 @@ static void dtl1_detach(struct pcmcia_device *link)
 {
 	dtl1_info_t *info = link->priv;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dtl1_release(link);
 
 	kfree(info);
+=======
+	dtl1_close(info);
+	pcmcia_disable_device(link);
+>>>>>>> refs/remotes/origin/master
+=======
+	dtl1_release(link);
+
+	kfree(info);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int dtl1_confcheck(struct pcmcia_device *p_dev, void *priv_data)
@@ -600,6 +691,7 @@ static int dtl1_confcheck(struct pcmcia_device *p_dev, void *priv_data)
 static int dtl1_config(struct pcmcia_device *link)
 {
 	dtl1_info_t *info = link->priv;
+<<<<<<< HEAD
 	int i;
 
 	/* Look for a generic full-sized window */
@@ -616,11 +708,35 @@ static int dtl1_config(struct pcmcia_device *link)
 		goto failed;
 
 	if (dtl1_open(info) != 0)
+=======
+	int ret;
+
+	/* Look for a generic full-sized window */
+	link->resource[0]->end = 8;
+	ret = pcmcia_loop_config(link, dtl1_confcheck, NULL);
+	if (ret)
+		goto failed;
+
+	ret = pcmcia_request_irq(link, dtl1_interrupt);
+	if (ret)
+		goto failed;
+
+	ret = pcmcia_enable_device(link);
+	if (ret)
+		goto failed;
+
+	ret = dtl1_open(info);
+	if (ret)
+>>>>>>> refs/remotes/origin/master
 		goto failed;
 
 	return 0;
 
 failed:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	dtl1_release(link);
 	return -ENODEV;
 }
@@ -637,6 +753,16 @@ static void dtl1_release(struct pcmcia_device *link)
 
 
 static struct pcmcia_device_id dtl1_ids[] = {
+<<<<<<< HEAD
+=======
+	dtl1_detach(link);
+	return ret;
+}
+
+static const struct pcmcia_device_id dtl1_ids[] = {
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	PCMCIA_DEVICE_PROD_ID12("Nokia Mobile Phones", "DTL-1", 0xe1bfdd64, 0xe168480d),
 	PCMCIA_DEVICE_PROD_ID12("Nokia Mobile Phones", "DTL-4", 0xe1bfdd64, 0x9102bc82),
 	PCMCIA_DEVICE_PROD_ID12("Socket", "CF", 0xb38bcc2e, 0x44ebf863),
@@ -652,6 +778,7 @@ static struct pcmcia_driver dtl1_driver = {
 	.remove		= dtl1_detach,
 	.id_table	= dtl1_ids,
 };
+<<<<<<< HEAD
 
 static int __init init_dtl1_cs(void)
 {
@@ -666,3 +793,6 @@ static void __exit exit_dtl1_cs(void)
 
 module_init(init_dtl1_cs);
 module_exit(exit_dtl1_cs);
+=======
+module_pcmcia_driver(dtl1_driver);
+>>>>>>> refs/remotes/origin/master

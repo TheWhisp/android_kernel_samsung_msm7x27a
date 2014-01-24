@@ -75,6 +75,16 @@
 /*
  * Testchip peripheral and fpga gic regions
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define REALVIEW_TC11MP_PRIV_MEM_BASE		0x1F000000
+#define REALVIEW_TC11MP_PRIV_MEM_SIZE		SZ_8K
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define REALVIEW_TC11MP_PRIV_MEM_BASE		0x1F000000
+#define REALVIEW_TC11MP_PRIV_MEM_SIZE		SZ_8K
+>>>>>>> refs/remotes/origin/master
 #define REALVIEW_TC11MP_SCU_BASE		0x1F000000	/* IRQ, Test chip */
 #define REALVIEW_TC11MP_GIC_CPU_BASE		0x1F000100	/* Test chip interrupt controller CPU interface */
 #define REALVIEW_TC11MP_TWD_BASE		0x1F000600

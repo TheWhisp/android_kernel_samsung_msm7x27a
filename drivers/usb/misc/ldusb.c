@@ -24,7 +24,10 @@
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/mutex.h>
@@ -129,6 +132,7 @@ MODULE_DESCRIPTION("LD USB Driver");
 MODULE_LICENSE("GPL");
 MODULE_SUPPORTED_DEVICE("LD USB Devices");
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_DEBUG
 	static int debug = 1;
 #else
@@ -142,6 +146,8 @@ MODULE_SUPPORTED_DEVICE("LD USB Devices");
 module_param(debug, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* All interrupt in transfers are collected in a ring buffer to
  * avoid racing conditions and get better performance of the driver.
  */
@@ -256,8 +262,14 @@ static void ld_usb_interrupt_in_callback(struct urb *urb)
 		    status == -ESHUTDOWN) {
 			goto exit;
 		} else {
+<<<<<<< HEAD
 			dbg_info(&dev->intf->dev, "%s: nonzero status received: %d\n",
 				 __func__, status);
+=======
+			dev_dbg(&dev->intf->dev,
+				"%s: nonzero status received: %d\n", __func__,
+				status);
+>>>>>>> refs/remotes/origin/master
 			spin_lock(&dev->rbsl);
 			goto resubmit; /* maybe we can recover */
 		}
@@ -272,8 +284,13 @@ static void ld_usb_interrupt_in_callback(struct urb *urb)
 			*actual_buffer = urb->actual_length;
 			memcpy(actual_buffer+1, dev->interrupt_in_buffer, urb->actual_length);
 			dev->ring_head = next_ring_head;
+<<<<<<< HEAD
 			dbg_info(&dev->intf->dev, "%s: received %d bytes\n",
 				 __func__, urb->actual_length);
+=======
+			dev_dbg(&dev->intf->dev, "%s: received %d bytes\n",
+				__func__, urb->actual_length);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			dev_warn(&dev->intf->dev,
 				 "Ring buffer overflow, %d bytes dropped\n",
@@ -310,9 +327,15 @@ static void ld_usb_interrupt_out_callback(struct urb *urb)
 	if (status && !(status == -ENOENT ||
 			status == -ECONNRESET ||
 			status == -ESHUTDOWN))
+<<<<<<< HEAD
 		dbg_info(&dev->intf->dev,
 			 "%s - nonzero write interrupt status received: %d\n",
 			 __func__, status);
+=======
+		dev_dbg(&dev->intf->dev,
+			"%s - nonzero write interrupt status received: %d\n",
+			__func__, status);
+>>>>>>> refs/remotes/origin/master
 
 	dev->interrupt_out_busy = 0;
 	wake_up_interruptible(&dev->write_wait);
@@ -334,8 +357,13 @@ static int ld_usb_open(struct inode *inode, struct file *file)
 	interface = usb_find_interface(&ld_usb_driver, subminor);
 
 	if (!interface) {
+<<<<<<< HEAD
 		err("%s - error, can't find device for minor %d\n",
 		     __func__, subminor);
+=======
+		printk(KERN_ERR "%s - error, can't find device for minor %d\n",
+		       __func__, subminor);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -485,7 +513,11 @@ static ssize_t ld_usb_read(struct file *file, char __user *buffer, size_t count,
 	/* verify that the device wasn't unplugged */
 	if (dev->intf == NULL) {
 		retval = -ENODEV;
+<<<<<<< HEAD
 		err("No device or device unplugged %d\n", retval);
+=======
+		printk(KERN_ERR "ldusb: No device or device unplugged %d\n", retval);
+>>>>>>> refs/remotes/origin/master
 		goto unlock_exit;
 	}
 
@@ -565,7 +597,11 @@ static ssize_t ld_usb_write(struct file *file, const char __user *buffer,
 	/* verify that the device wasn't unplugged */
 	if (dev->intf == NULL) {
 		retval = -ENODEV;
+<<<<<<< HEAD
 		err("No device or device unplugged %d\n", retval);
+=======
+		printk(KERN_ERR "ldusb: No device or device unplugged %d\n", retval);
+>>>>>>> refs/remotes/origin/master
 		goto unlock_exit;
 	}
 
@@ -585,7 +621,12 @@ static ssize_t ld_usb_write(struct file *file, const char __user *buffer,
 	bytes_to_write = min(count, write_buffer_size*dev->interrupt_out_endpoint_size);
 	if (bytes_to_write < count)
 		dev_warn(&dev->intf->dev, "Write buffer overflow, %zd bytes dropped\n",count-bytes_to_write);
+<<<<<<< HEAD
 	dbg_info(&dev->intf->dev, "%s: count = %zd, bytes_to_write = %zd\n", __func__, count, bytes_to_write);
+=======
+	dev_dbg(&dev->intf->dev, "%s: count = %zd, bytes_to_write = %zd\n",
+		__func__, count, bytes_to_write);
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(dev->interrupt_out_buffer, buffer, bytes_to_write)) {
 		retval = -EFAULT;
@@ -603,7 +644,13 @@ static ssize_t ld_usb_write(struct file *file, const char __user *buffer,
 					 bytes_to_write,
 					 USB_CTRL_SET_TIMEOUT * HZ);
 		if (retval < 0)
+<<<<<<< HEAD
 			err("Couldn't submit HID_REQ_SET_REPORT %d\n", retval);
+=======
+			dev_err(&dev->intf->dev,
+				"Couldn't submit HID_REQ_SET_REPORT %d\n",
+				retval);
+>>>>>>> refs/remotes/origin/master
 		goto unlock_exit;
 	}
 
@@ -624,7 +671,12 @@ static ssize_t ld_usb_write(struct file *file, const char __user *buffer,
 	retval = usb_submit_urb(dev->interrupt_out_urb, GFP_KERNEL);
 	if (retval) {
 		dev->interrupt_out_busy = 0;
+<<<<<<< HEAD
 		err("Couldn't submit interrupt_out_urb %d\n", retval);
+=======
+		dev_err(&dev->intf->dev,
+			"Couldn't submit interrupt_out_urb %d\n", retval);
+>>>>>>> refs/remotes/origin/master
 		goto unlock_exit;
 	}
 	retval = bytes_to_write;
@@ -721,7 +773,15 @@ static int ld_usb_probe(struct usb_interface *intf, const struct usb_device_id *
 	if (dev->interrupt_out_endpoint == NULL)
 		dev_warn(&intf->dev, "Interrupt out endpoint not found (using control endpoint instead)\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev->interrupt_in_endpoint_size = le16_to_cpu(dev->interrupt_in_endpoint->wMaxPacketSize);
+=======
+	dev->interrupt_in_endpoint_size = usb_endpoint_maxp(dev->interrupt_in_endpoint);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->interrupt_in_endpoint_size = usb_endpoint_maxp(dev->interrupt_in_endpoint);
+>>>>>>> refs/remotes/origin/master
 	dev->ring_buffer = kmalloc(ring_buffer_size*(sizeof(size_t)+dev->interrupt_in_endpoint_size), GFP_KERNEL);
 	if (!dev->ring_buffer) {
 		dev_err(&intf->dev, "Couldn't allocate ring_buffer\n");
@@ -737,7 +797,15 @@ static int ld_usb_probe(struct usb_interface *intf, const struct usb_device_id *
 		dev_err(&intf->dev, "Couldn't allocate interrupt_in_urb\n");
 		goto error;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev->interrupt_out_endpoint_size = dev->interrupt_out_endpoint ? le16_to_cpu(dev->interrupt_out_endpoint->wMaxPacketSize) :
+=======
+	dev->interrupt_out_endpoint_size = dev->interrupt_out_endpoint ? usb_endpoint_maxp(dev->interrupt_out_endpoint) :
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->interrupt_out_endpoint_size = dev->interrupt_out_endpoint ? usb_endpoint_maxp(dev->interrupt_out_endpoint) :
+>>>>>>> refs/remotes/origin/master
 									 udev->descriptor.bMaxPacketSize0;
 	dev->interrupt_out_buffer = kmalloc(write_buffer_size*dev->interrupt_out_endpoint_size, GFP_KERNEL);
 	if (!dev->interrupt_out_buffer) {
@@ -821,6 +889,8 @@ static struct usb_driver ld_usb_driver = {
 	.id_table =	ld_usb_table,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /**
  *	ld_usb_init
  */
@@ -847,4 +917,10 @@ static void __exit ld_usb_exit(void)
 
 module_init(ld_usb_init);
 module_exit(ld_usb_exit);
+=======
+module_usb_driver(ld_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(ld_usb_driver);
+>>>>>>> refs/remotes/origin/master
 

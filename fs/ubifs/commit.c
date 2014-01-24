@@ -78,7 +78,15 @@ static int nothing_to_commit(struct ubifs_info *c)
 	 * If the root TNC node is dirty, we definitely have something to
 	 * commit.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (c->zroot.znode && test_bit(DIRTY_ZNODE, &c->zroot.znode->flags))
+=======
+	if (c->zroot.znode && ubifs_zn_dirty(c->zroot.znode))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (c->zroot.znode && ubifs_zn_dirty(c->zroot.znode))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/*
@@ -293,8 +301,13 @@ int ubifs_bg_thread(void *info)
 	int err;
 	struct ubifs_info *c = info;
 
+<<<<<<< HEAD
 	dbg_msg("background thread \"%s\" started, PID %d",
 		c->bgt_name, current->pid);
+=======
+	ubifs_msg("background thread \"%s\" started, PID %d",
+		  c->bgt_name, current->pid);
+>>>>>>> refs/remotes/origin/master
 	set_freezable();
 
 	while (1) {
@@ -328,7 +341,11 @@ int ubifs_bg_thread(void *info)
 		cond_resched();
 	}
 
+<<<<<<< HEAD
 	dbg_msg("background thread \"%s\" stops", c->bgt_name);
+=======
+	ubifs_msg("background thread \"%s\" stops", c->bgt_name);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -418,7 +435,15 @@ int ubifs_run_commit(struct ubifs_info *c)
 
 	spin_lock(&c->cs_lock);
 	if (c->cmt_state == COMMIT_BROKEN) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = -EINVAL;
+=======
+		err = -EROFS;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = -EROFS;
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -444,7 +469,15 @@ int ubifs_run_commit(struct ubifs_info *c)
 	 * re-check it.
 	 */
 	if (c->cmt_state == COMMIT_BROKEN) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = -EINVAL;
+=======
+		err = -EROFS;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = -EROFS;
+>>>>>>> refs/remotes/origin/master
 		goto out_cmt_unlock;
 	}
 
@@ -496,7 +529,13 @@ int ubifs_gc_should_commit(struct ubifs_info *c)
 	return ret;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
+=======
+/*
+ * Everything below is related to debugging.
+ */
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct idx_node - hold index nodes during index tree traversal.
@@ -512,7 +551,11 @@ struct idx_node {
 	struct list_head list;
 	int iip;
 	union ubifs_key upper_key;
+<<<<<<< HEAD
 	struct ubifs_idx_node idx __attribute__((aligned(8)));
+=======
+	struct ubifs_idx_node idx __aligned(8);
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -576,7 +619,15 @@ int dbg_check_old_index(struct ubifs_info *c, struct ubifs_zbranch *zroot)
 	struct idx_node *i;
 	size_t sz;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_OLD_IDX))
+=======
+	if (!dbg_is_chk_index(c))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_index(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	INIT_LIST_HEAD(&list);
@@ -714,14 +765,24 @@ out:
 	return 0;
 
 out_dump:
+<<<<<<< HEAD
 	dbg_err("dumping index node (iip=%d)", i->iip);
 	dbg_dump_node(c, idx);
+=======
+	ubifs_err("dumping index node (iip=%d)", i->iip);
+	ubifs_dump_node(c, idx);
+>>>>>>> refs/remotes/origin/master
 	list_del(&i->list);
 	kfree(i);
 	if (!list_empty(&list)) {
 		i = list_entry(list.prev, struct idx_node, list);
+<<<<<<< HEAD
 		dbg_err("dumping parent index node");
 		dbg_dump_node(c, &i->idx);
+=======
+		ubifs_err("dumping parent index node");
+		ubifs_dump_node(c, &i->idx);
+>>>>>>> refs/remotes/origin/master
 	}
 out_free:
 	while (!list_empty(&list)) {
@@ -734,5 +795,8 @@ out_free:
 		err = -EINVAL;
 	return err;
 }
+<<<<<<< HEAD
 
 #endif /* CONFIG_UBIFS_FS_DEBUG */
+=======
+>>>>>>> refs/remotes/origin/master

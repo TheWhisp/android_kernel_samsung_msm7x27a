@@ -15,6 +15,11 @@
 
 #include <stdio.h>
 
+<<<<<<< HEAD
+=======
+#include "../include/asm/required-features.h"
+#include "../include/asm/cpufeature.h"
+>>>>>>> refs/remotes/origin/master
 #include "../kernel/cpu/capflags.c"
 
 int main(void)

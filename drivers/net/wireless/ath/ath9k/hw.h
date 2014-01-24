@@ -20,6 +20,10 @@
 #include <linux/if_ether.h>
 #include <linux/delay.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/firmware.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "mac.h"
 #include "ani.h"
@@ -45,6 +49,25 @@
 #define AR9300_DEVID_PCIE	0x0030
 #define AR9300_DEVID_AR9340	0x0031
 #define AR9300_DEVID_AR9485_PCIE 0x0032
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define AR9300_DEVID_AR9580	0x0033
+#define AR9300_DEVID_AR9462	0x0034
+#define AR9300_DEVID_AR9330	0x0035
+#define AR9485_DEVID_AR1111	0x0037
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR9300_DEVID_AR9580	0x0033
+#define AR9300_DEVID_AR9462	0x0034
+#define AR9300_DEVID_AR9330	0x0035
+#define AR9300_DEVID_QCA955X	0x0038
+#define AR9485_DEVID_AR1111	0x0037
+#define AR9300_DEVID_AR9565     0x0036
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 #define AR5416_AR9100_DEVID	0x000b
 
@@ -56,9 +79,15 @@
 #define AT9285_COEX3WIRE_SA_SUBSYSID	0x30aa
 #define AT9285_COEX3WIRE_DA_SUBSYSID	0x30ab
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define AR9300_NUM_BT_WEIGHTS   4
 #define AR9300_NUM_WLAN_WEIGHTS 4
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define ATH_AMPDU_LIMIT_MAX        (64 * 1024 - 1)
 
 #define	ATH_DEFAULT_NOISE_FLOOR -95
@@ -92,6 +121,24 @@
 			(_ah)->reg_ops.write_flush((_ah));	\
 	} while (0)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define PR_EEP(_s, _val)						\
+	do {								\
+		len += snprintf(buf + len, size - len, "%20s : %10d\n",	\
+				_s, (_val));				\
+	} while (0)
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PR_EEP(_s, _val)						\
+	do {								\
+		len += scnprintf(buf + len, size - len, "%20s : %10d\n",\
+				 _s, (_val));				\
+	} while (0)
+
+>>>>>>> refs/remotes/origin/master
 #define SM(_v, _f)  (((_v) << _f##_S) & _f)
 #define MS(_v, _f)  (((_v) & _f) >> _f##_S)
 #define REG_RMW_FIELD(_a, _r, _f, _v) \
@@ -120,6 +167,25 @@
 #define AR_GPIO_OUTPUT_MUX_AS_RX_CLEAR_EXTERNAL  4
 #define AR_GPIO_OUTPUT_MUX_AS_MAC_NETWORK_LED    5
 #define AR_GPIO_OUTPUT_MUX_AS_MAC_POWER_LED      6
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define AR_GPIO_OUTPUT_MUX_AS_MCI_WLAN_DATA      0x16
+#define AR_GPIO_OUTPUT_MUX_AS_MCI_WLAN_CLK       0x17
+#define AR_GPIO_OUTPUT_MUX_AS_MCI_BT_DATA        0x18
+#define AR_GPIO_OUTPUT_MUX_AS_MCI_BT_CLK         0x19
+#define AR_GPIO_OUTPUT_MUX_AS_WL_IN_TX           0x14
+#define AR_GPIO_OUTPUT_MUX_AS_WL_IN_RX           0x13
+#define AR_GPIO_OUTPUT_MUX_AS_BT_IN_TX           9
+#define AR_GPIO_OUTPUT_MUX_AS_BT_IN_RX           8
+#define AR_GPIO_OUTPUT_MUX_AS_RUCKUS_STROBE      0x1d
+#define AR_GPIO_OUTPUT_MUX_AS_RUCKUS_DATA        0x1e
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define AR_GPIOD_MASK               0x00001FFF
 #define AR_GPIO_BIT(_gpio)          (1 << (_gpio))
@@ -142,6 +208,16 @@
 #define AR_KEYTABLE_SIZE            128
 #define POWER_UP_TIME               10000
 #define SPUR_RSSI_THRESH            40
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define UPPER_5G_SUB_BAND_START		5700
+#define MID_5G_SUB_BAND_START		5400
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UPPER_5G_SUB_BAND_START		5700
+#define MID_5G_SUB_BAND_START		5400
+>>>>>>> refs/remotes/origin/master
 
 #define CAB_TIMEOUT_VAL             10
 #define BEACON_TIMEOUT_VAL          10
@@ -157,8 +233,51 @@
 #define ATH9K_HW_RX_HP_QDEPTH	16
 #define ATH9K_HW_RX_LP_QDEPTH	128
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PAPRD_GAIN_TABLE_ENTRIES    32
 #define PAPRD_TABLE_SZ              24
+=======
+#define PAPRD_GAIN_TABLE_ENTRIES	32
+#define PAPRD_TABLE_SZ			24
+#define PAPRD_IDEAL_AGC2_PWR_RANGE	0xe0
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PAPRD_GAIN_TABLE_ENTRIES	32
+#define PAPRD_TABLE_SZ			24
+#define PAPRD_IDEAL_AGC2_PWR_RANGE	0xe0
+
+/*
+ * Wake on Wireless
+ */
+
+/* Keep Alive Frame */
+#define KAL_FRAME_LEN		28
+#define KAL_FRAME_TYPE		0x2	/* data frame */
+#define KAL_FRAME_SUB_TYPE	0x4	/* null data frame */
+#define KAL_DURATION_ID		0x3d
+#define KAL_NUM_DATA_WORDS	6
+#define KAL_NUM_DESC_WORDS	12
+#define KAL_ANTENNA_MODE	1
+#define KAL_TO_DS		1
+#define KAL_DELAY		4	/*delay of 4ms between 2 KAL frames */
+#define KAL_TIMEOUT		900
+
+#define MAX_PATTERN_SIZE		256
+#define MAX_PATTERN_MASK_SIZE		32
+#define MAX_NUM_PATTERN			8
+#define MAX_NUM_USER_PATTERN		6 /*  deducting the disassociate and
+					      deauthenticate packets */
+
+/*
+ * WoW trigger mapping to hardware code
+ */
+
+#define AH_WOW_USER_PATTERN_EN		BIT(0)
+#define AH_WOW_MAGIC_PATTERN_EN		BIT(1)
+#define AH_WOW_LINK_CHANGE		BIT(2)
+#define AH_WOW_BEACON_MISS		BIT(3)
+>>>>>>> refs/remotes/origin/master
 
 enum ath_hw_txq_subtype {
 	ATH_TXQ_AC_BE = 0,
@@ -177,6 +296,8 @@ enum ath_ini_subsys {
 enum ath9k_hw_caps {
 	ATH9K_HW_CAP_HT                         = BIT(0),
 	ATH9K_HW_CAP_RFSILENT                   = BIT(1),
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ATH9K_HW_CAP_CST                        = BIT(2),
 	ATH9K_HW_CAP_AUTOSLEEP                  = BIT(4),
 	ATH9K_HW_CAP_4KB_SPLITTRANS             = BIT(5),
@@ -190,8 +311,50 @@ enum ath9k_hw_caps {
 	ATH9K_HW_CAP_2GHZ			= BIT(13),
 	ATH9K_HW_CAP_5GHZ			= BIT(14),
 	ATH9K_HW_CAP_APM			= BIT(15),
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ATH9K_HW_CAP_AUTOSLEEP                  = BIT(2),
+	ATH9K_HW_CAP_4KB_SPLITTRANS             = BIT(3),
+	ATH9K_HW_CAP_EDMA			= BIT(4),
+	ATH9K_HW_CAP_RAC_SUPPORTED		= BIT(5),
+	ATH9K_HW_CAP_LDPC			= BIT(6),
+	ATH9K_HW_CAP_FASTCLOCK			= BIT(7),
+	ATH9K_HW_CAP_SGI_20			= BIT(8),
+<<<<<<< HEAD
+	ATH9K_HW_CAP_PAPRD			= BIT(9),
+=======
+>>>>>>> refs/remotes/origin/master
+	ATH9K_HW_CAP_ANT_DIV_COMB		= BIT(10),
+	ATH9K_HW_CAP_2GHZ			= BIT(11),
+	ATH9K_HW_CAP_5GHZ			= BIT(12),
+	ATH9K_HW_CAP_APM			= BIT(13),
+	ATH9K_HW_CAP_RTT			= BIT(14),
+	ATH9K_HW_CAP_MCI			= BIT(15),
+	ATH9K_HW_CAP_DFS			= BIT(16),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+	ATH9K_HW_WOW_DEVICE_CAPABLE		= BIT(17),
+	ATH9K_HW_CAP_PAPRD			= BIT(18),
+	ATH9K_HW_CAP_FCC_BAND_SWITCH		= BIT(19),
+	ATH9K_HW_CAP_BT_ANT_DIV			= BIT(20),
+};
+
+/*
+ * WoW device capabilities
+ * @ATH9K_HW_WOW_DEVICE_CAPABLE: device revision is capable of WoW.
+ * @ATH9K_HW_WOW_PATTERN_MATCH_EXACT: device is capable of matching
+ * an exact user defined pattern or de-authentication/disassoc pattern.
+ * @ATH9K_HW_WOW_PATTERN_MATCH_DWORD: device requires the first four
+ * bytes of the pattern for user defined pattern, de-authentication and
+ * disassociation patterns for all types of possible frames recieved
+ * of those types.
+ */
+
+>>>>>>> refs/remotes/origin/master
 struct ath9k_hw_capabilities {
 	u32 hw_caps; /* ATH9K_HW_CAP_* from ath9k_hw_caps */
 	u16 rts_aggr_limit;
@@ -205,8 +368,11 @@ struct ath9k_hw_capabilities {
 	u8 rx_status_len;
 	u8 tx_desc_len;
 	u8 txs_len;
+<<<<<<< HEAD
 	u16 pcie_lcr_offset;
 	bool pcie_lcr_extsync_en;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ath9k_ops_config {
@@ -219,12 +385,19 @@ struct ath9k_ops_config {
 	u8 pcie_clock_req;
 	u32 pcie_waen;
 	u8 analog_shiftreg;
+<<<<<<< HEAD
 	u8 paprd_disable;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 ofdm_trig_low;
 	u32 ofdm_trig_high;
 	u32 cck_trig_high;
 	u32 cck_trig_low;
+<<<<<<< HEAD
 	u32 enable_ani;
+=======
+	u32 enable_paprd;
+>>>>>>> refs/remotes/origin/master
 	int serialize_regmode;
 	bool rx_intr_mitigation;
 	bool tx_intr_mitigation;
@@ -242,6 +415,17 @@ struct ath9k_ops_config {
 	u16 spurchans[AR_EEPROM_MODAL_SPURS][2];
 	u8 max_txtrig_level;
 	u16 ani_poll_interval; /* ANI poll interval in ms */
+<<<<<<< HEAD
+=======
+
+	/* Platform specific config */
+	u32 aspm_l1_fix;
+	u32 xlna_gpio;
+	u32 ant_ctrl_comm2g_switch_enable;
+	bool xatten_margin_cfg;
+	bool alt_mingainidx;
+	bool no_pll_pwrsave;
+>>>>>>> refs/remotes/origin/master
 };
 
 enum ath9k_int {
@@ -255,6 +439,14 @@ enum ath9k_int {
 	ATH9K_INT_TX = 0x00000040,
 	ATH9K_INT_TXDESC = 0x00000080,
 	ATH9K_INT_TIM_TIMER = 0x00000100,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	ATH9K_INT_MCI = 0x00000200,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ATH9K_INT_MCI = 0x00000200,
+>>>>>>> refs/remotes/origin/master
 	ATH9K_INT_BB_WATCHDOG = 0x00000400,
 	ATH9K_INT_TXURN = 0x00000800,
 	ATH9K_INT_MIB = 0x00001000,
@@ -294,6 +486,7 @@ enum ath9k_int {
 	ATH9K_INT_NOCARD = 0xffffffff
 };
 
+<<<<<<< HEAD
 #define CHANNEL_CW_INT    0x00002
 #define CHANNEL_CCK       0x00020
 #define CHANNEL_OFDM      0x00040
@@ -325,6 +518,19 @@ enum ath9k_int {
 	 CHANNEL_HT40PLUS |			\
 	 CHANNEL_HT40MINUS)
 
+<<<<<<< HEAD
+=======
+#define MAX_RTT_TABLE_ENTRY     6
+#define RTT_HIST_MAX            3
+struct ath9k_rtt_hist {
+	u32 table[AR9300_MAX_CHAINS][RTT_HIST_MAX][MAX_RTT_TABLE_ENTRY];
+	u8 num_readings;
+};
+
+#define MAX_IQCAL_MEASUREMENT	8
+#define MAX_CL_TAB_ENTRY	16
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ath9k_hw_cal_data {
 	u16 channel;
 	u32 channelFlags;
@@ -334,13 +540,57 @@ struct ath9k_hw_cal_data {
 	bool paprd_done;
 	bool nfcal_pending;
 	bool nfcal_interference;
+<<<<<<< HEAD
 	u16 small_signal_gain[AR9300_MAX_CHAINS];
 	u32 pa_table[AR9300_MAX_CHAINS][PAPRD_TABLE_SZ];
 	struct ath9k_nfcal_hist nfCalHist[NUM_NF_READINGS];
+=======
+	bool done_txiqcal_once;
+	bool done_txclcal_once;
+=======
+#define MAX_RTT_TABLE_ENTRY     6
+#define MAX_IQCAL_MEASUREMENT	8
+#define MAX_CL_TAB_ENTRY	16
+#define CL_TAB_ENTRY(reg_base)	(reg_base + (4 * j))
+
+enum ath9k_cal_flags {
+	RTT_DONE,
+	PAPRD_PACKET_SENT,
+	PAPRD_DONE,
+	NFCAL_PENDING,
+	NFCAL_INTF,
+	TXIQCAL_DONE,
+	TXCLCAL_DONE,
+	SW_PKDET_DONE,
+};
+
+struct ath9k_hw_cal_data {
+	u16 channel;
+	u16 channelFlags;
+	unsigned long cal_flags;
+	int32_t CalValid;
+	int8_t iCoff;
+	int8_t qCoff;
+	u8 caldac[2];
+>>>>>>> refs/remotes/origin/master
+	u16 small_signal_gain[AR9300_MAX_CHAINS];
+	u32 pa_table[AR9300_MAX_CHAINS][PAPRD_TABLE_SZ];
+	u32 num_measures[AR9300_MAX_CHAINS];
+	int tx_corr_coeff[MAX_IQCAL_MEASUREMENT][AR9300_MAX_CHAINS];
+	u32 tx_clcal[AR9300_MAX_CHAINS][MAX_CL_TAB_ENTRY];
+<<<<<<< HEAD
+	struct ath9k_nfcal_hist nfCalHist[NUM_NF_READINGS];
+	struct ath9k_rtt_hist rtt_hist;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 rtt_table[AR9300_MAX_CHAINS][MAX_RTT_TABLE_ENTRY];
+	struct ath9k_nfcal_hist nfCalHist[NUM_NF_READINGS];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ath9k_channel {
 	struct ieee80211_channel *chan;
+<<<<<<< HEAD
 	struct ar5416AniState ani;
 	u16 channel;
 	u32 channelFlags;
@@ -370,6 +620,37 @@ struct ath9k_channel {
 			  ((_c)->chanmode == CHANNEL_G_HT40PLUS) ||	\
 			  ((_c)->chanmode == CHANNEL_G_HT40MINUS))
 #define IS_CHAN_HT(_c) (IS_CHAN_HT20((_c)) || IS_CHAN_HT40((_c)))
+=======
+	u16 channel;
+	u16 channelFlags;
+	s16 noisefloor;
+};
+
+#define CHANNEL_5GHZ		BIT(0)
+#define CHANNEL_HALF		BIT(1)
+#define CHANNEL_QUARTER		BIT(2)
+#define CHANNEL_HT		BIT(3)
+#define CHANNEL_HT40PLUS	BIT(4)
+#define CHANNEL_HT40MINUS	BIT(5)
+
+#define IS_CHAN_5GHZ(_c) (!!((_c)->channelFlags & CHANNEL_5GHZ))
+#define IS_CHAN_2GHZ(_c) (!IS_CHAN_5GHZ(_c))
+
+#define IS_CHAN_HALF_RATE(_c) (!!((_c)->channelFlags & CHANNEL_HALF))
+#define IS_CHAN_QUARTER_RATE(_c) (!!((_c)->channelFlags & CHANNEL_QUARTER))
+#define IS_CHAN_A_FAST_CLOCK(_ah, _c)			\
+	(IS_CHAN_5GHZ(_c) && ((_ah)->caps.hw_caps & ATH9K_HW_CAP_FASTCLOCK))
+
+#define IS_CHAN_HT(_c) ((_c)->channelFlags & CHANNEL_HT)
+
+#define IS_CHAN_HT20(_c) (IS_CHAN_HT(_c) && !IS_CHAN_HT40(_c))
+
+#define IS_CHAN_HT40(_c) \
+	(!!((_c)->channelFlags & (CHANNEL_HT40PLUS | CHANNEL_HT40MINUS)))
+
+#define IS_CHAN_HT40PLUS(_c) ((_c)->channelFlags & CHANNEL_HT40PLUS)
+#define IS_CHAN_HT40MINUS(_c) ((_c)->channelFlags & CHANNEL_HT40MINUS)
+>>>>>>> refs/remotes/origin/master
 
 enum ath9k_power_mode {
 	ATH9K_PM_AWAKE = 0,
@@ -378,6 +659,8 @@ enum ath9k_power_mode {
 	ATH9K_PM_UNDEFINED
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum ath9k_tp_scale {
 	ATH9K_TP_SCALE_MAX = 0,
 	ATH9K_TP_SCALE_50,
@@ -386,6 +669,10 @@ enum ath9k_tp_scale {
 	ATH9K_TP_SCALE_MIN
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum ser_reg_mode {
 	SER_REG_MODE_OFF = 0,
 	SER_REG_MODE_ON = 1,
@@ -402,7 +689,13 @@ struct ath9k_beacon_state {
 	u32 bs_nexttbtt;
 	u32 bs_nextdtim;
 	u32 bs_intval;
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define ATH9K_BEACON_PERIOD       0x0000ffff
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define ATH9K_TSFOOR_THRESHOLD    0x00004240 /* 16k us */
 	u32 bs_dtimperiod;
 	u16 bs_cfpperiod;
@@ -435,7 +728,13 @@ struct ath9k_hw_version {
 	u16 phyRev;
 	u16 analog5GhzRev;
 	u16 analog2GhzRev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u16 subsysid;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	enum ath_usb_dev usbdev;
 };
 
@@ -481,6 +780,10 @@ struct ath_hw_antcomb_conf {
 	u8 main_gaintb;
 	u8 alt_gaintb;
 	int lna1_lna2_delta;
+<<<<<<< HEAD
+=======
+	int lna1_lna2_switch_delta;
+>>>>>>> refs/remotes/origin/master
 	u8 div_group;
 };
 
@@ -527,13 +830,19 @@ struct ath_hw_radar_conf {
  * @init_cal_settings: setup types of calibrations supported
  * @init_cal: starts actual calibration
  *
+<<<<<<< HEAD
  * @init_mode_regs: Initializes mode registers
+=======
+>>>>>>> refs/remotes/origin/master
  * @init_mode_gain_regs: Initialize TX/RX gain registers
  *
  * @rf_set_freq: change frequency
  * @spur_mitigate_freq: spur mitigation
+<<<<<<< HEAD
  * @rf_alloc_ext_banks:
  * @rf_free_ext_banks:
+=======
+>>>>>>> refs/remotes/origin/master
  * @set_rf_regs:
  * @compute_pll_control: compute the PLL control value to use for
  *	AR_RTC_PLL_CONTROL for a given channel
@@ -548,7 +857,10 @@ struct ath_hw_private_ops {
 	void (*init_cal_settings)(struct ath_hw *ah);
 	bool (*init_cal)(struct ath_hw *ah, struct ath9k_channel *chan);
 
+<<<<<<< HEAD
 	void (*init_mode_regs)(struct ath_hw *ah);
+=======
+>>>>>>> refs/remotes/origin/master
 	void (*init_mode_gain_regs)(struct ath_hw *ah);
 	void (*setup_calibration)(struct ath_hw *ah,
 				  struct ath9k_cal_list *currCal);
@@ -558,8 +870,11 @@ struct ath_hw_private_ops {
 			   struct ath9k_channel *chan);
 	void (*spur_mitigate_freq)(struct ath_hw *ah,
 				   struct ath9k_channel *chan);
+<<<<<<< HEAD
 	int (*rf_alloc_ext_banks)(struct ath_hw *ah);
 	void (*rf_free_ext_banks)(struct ath_hw *ah);
+=======
+>>>>>>> refs/remotes/origin/master
 	bool (*set_rf_regs)(struct ath_hw *ah,
 			    struct ath9k_channel *chan,
 			    u16 modesIndex);
@@ -574,7 +889,13 @@ struct ath_hw_private_ops {
 	bool (*rfbus_req)(struct ath_hw *ah);
 	void (*rfbus_done)(struct ath_hw *ah);
 	void (*restore_chainmask)(struct ath_hw *ah);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void (*set_diversity)(struct ath_hw *ah, bool value);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 (*compute_pll_control)(struct ath_hw *ah,
 				   struct ath9k_channel *chan);
 	bool (*ani_control)(struct ath_hw *ah, enum ath9k_ani_cmd cmd,
@@ -582,12 +903,56 @@ struct ath_hw_private_ops {
 	void (*do_getnf)(struct ath_hw *ah, int16_t nfarray[NUM_NF_READINGS]);
 	void (*set_radar_params)(struct ath_hw *ah,
 				 struct ath_hw_radar_conf *conf);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int (*fast_chan_change)(struct ath_hw *ah, struct ath9k_channel *chan,
+				u8 *ini_reloaded);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*fast_chan_change)(struct ath_hw *ah, struct ath9k_channel *chan,
+				u8 *ini_reloaded);
+>>>>>>> refs/remotes/origin/master
 
 	/* ANI */
 	void (*ani_cache_ini_regs)(struct ath_hw *ah);
 };
 
 /**
+<<<<<<< HEAD
+=======
+ * struct ath_spec_scan - parameters for Atheros spectral scan
+ *
+ * @enabled: enable/disable spectral scan
+ * @short_repeat: controls whether the chip is in spectral scan mode
+ *		  for 4 usec (enabled) or 204 usec (disabled)
+ * @count: number of scan results requested. There are special meanings
+ *	   in some chip revisions:
+ *	   AR92xx: highest bit set (>=128) for endless mode
+ *		   (spectral scan won't stopped until explicitly disabled)
+ *	   AR9300 and newer: 0 for endless mode
+ * @endless: true if endless mode is intended. Otherwise, count value is
+ *           corrected to the next possible value.
+ * @period: time duration between successive spectral scan entry points
+ *	    (period*256*Tclk). Tclk = ath_common->clockrate
+ * @fft_period: PHY passes FFT frames to MAC every (fft_period+1)*4uS
+ *
+ * Note: Tclk = 40MHz or 44MHz depending upon operating mode.
+ *	 Typically it's 44MHz in 2/5GHz on later chips, but there's
+ *	 a "fast clock" check for this in 5GHz.
+ *
+ */
+struct ath_spec_scan {
+	bool enabled;
+	bool short_repeat;
+	bool endless;
+	u8 count;
+	u8 period;
+	u8 fft_period;
+};
+
+/**
+>>>>>>> refs/remotes/origin/master
  * struct ath_hw_ops - callbacks used by hardware code and driver code
  *
  * This structure contains callbacks designed to to be used internally by
@@ -595,19 +960,40 @@ struct ath_hw_private_ops {
  *
  * @config_pci_powersave:
  * @calibrate: periodic calibration for NF, ANI, IQ, ADC gain, ADC-DC
+<<<<<<< HEAD
  */
 struct ath_hw_ops {
 	void (*config_pci_powersave)(struct ath_hw *ah,
+<<<<<<< HEAD
 				     int restore,
 				     int power_off);
 	void (*rx_enable)(struct ath_hw *ah);
 	void (*set_desc_link)(void *ds, u32 link);
 	void (*get_desc_link)(void *ds, u32 **link);
+=======
+				     bool power_off);
+	void (*rx_enable)(struct ath_hw *ah);
+	void (*set_desc_link)(void *ds, u32 link);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+ * @spectral_scan_config: set parameters for spectral scan and enable/disable it
+ * @spectral_scan_trigger: trigger a spectral scan run
+ * @spectral_scan_wait: wait for a spectral scan run to finish
+ */
+struct ath_hw_ops {
+	void (*config_pci_powersave)(struct ath_hw *ah,
+				     bool power_off);
+	void (*rx_enable)(struct ath_hw *ah);
+	void (*set_desc_link)(void *ds, u32 link);
+>>>>>>> refs/remotes/origin/master
 	bool (*calibrate)(struct ath_hw *ah,
 			  struct ath9k_channel *chan,
 			  u8 rxchainmask,
 			  bool longcal);
 	bool (*get_isr)(struct ath_hw *ah, enum ath9k_int *masked);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	void (*fill_txdesc)(struct ath_hw *ah, void *ds, u32 seglen,
 			    bool is_firstseg, bool is_is_lastseg,
 			    const void *ds0, dma_addr_t buf_addr,
@@ -632,11 +1018,37 @@ struct ath_hw_ops {
 	void (*set11n_aggr_last)(struct ath_hw *ah, void *ds);
 	void (*clr11n_aggr)(struct ath_hw *ah, void *ds);
 	void (*set_clrdmask)(struct ath_hw *ah, void *ds, bool val);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	void (*set_txdesc)(struct ath_hw *ah, void *ds,
+			   struct ath_tx_info *i);
+	int (*proc_txdesc)(struct ath_hw *ah, void *ds,
+			   struct ath_tx_status *ts);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void (*antdiv_comb_conf_get)(struct ath_hw *ah,
 			struct ath_hw_antcomb_conf *antconf);
 	void (*antdiv_comb_conf_set)(struct ath_hw *ah,
 			struct ath_hw_antcomb_conf *antconf);
+<<<<<<< HEAD
 
+=======
+	void (*spectral_scan_config)(struct ath_hw *ah,
+				     struct ath_spec_scan *param);
+	void (*spectral_scan_trigger)(struct ath_hw *ah);
+	void (*spectral_scan_wait)(struct ath_hw *ah);
+
+	void (*tx99_start)(struct ath_hw *ah, u32 qnum);
+	void (*tx99_stop)(struct ath_hw *ah);
+	void (*tx99_set_txpower)(struct ath_hw *ah, u8 power);
+
+#ifdef CONFIG_ATH9K_BTCOEX_SUPPORT
+	void (*set_bt_ant_diversity)(struct ath_hw *hw, bool enable);
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ath_nf_limits {
@@ -645,13 +1057,36 @@ struct ath_nf_limits {
 	s16 nominal;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* ah_flags */
 #define AH_USE_EEPROM   0x1
 #define AH_UNPLUGGED    0x2 /* The card has been physically removed. */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum ath_cal_list {
+	TX_IQ_CAL         =	BIT(0),
+	TX_IQ_ON_AGC_CAL  =	BIT(1),
+	TX_CL_CAL         =	BIT(2),
+};
+
+/* ah_flags */
+#define AH_USE_EEPROM   0x1
+#define AH_UNPLUGGED    0x2 /* The card has been physically removed. */
+#define AH_FASTCC       0x4
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct ath_hw {
 	struct ath_ops reg_ops;
 
+<<<<<<< HEAD
+=======
+	struct device *dev;
+>>>>>>> refs/remotes/origin/master
 	struct ieee80211_hw *hw;
 	struct ath_common common;
 	struct ath9k_hw_version hw_version;
@@ -683,17 +1118,32 @@ struct ath_hw {
 	u32 rfkill_polarity;
 	u32 ah_flags;
 
+<<<<<<< HEAD
+=======
+	bool reset_power_on;
+>>>>>>> refs/remotes/origin/master
 	bool htc_reset_init;
 
 	enum nl80211_iftype opmode;
 	enum ath9k_power_mode power_mode;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	s8 noise;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s8 noise;
+>>>>>>> refs/remotes/origin/master
 	struct ath9k_hw_cal_data *caldata;
 	struct ath9k_pacal_info pacal_info;
 	struct ar5416Stats stats;
 	struct ath9k_tx_queue_info txq[ATH9K_NUM_TX_QUEUES];
 
+<<<<<<< HEAD
 	int16_t curchan_rad_index;
+=======
+>>>>>>> refs/remotes/origin/master
 	enum ath9k_int imask;
 	u32 imrs2_reg;
 	u32 txok_interrupt_mask;
@@ -701,15 +1151,31 @@ struct ath_hw {
 	u32 txdesc_interrupt_mask;
 	u32 txeol_interrupt_mask;
 	u32 txurn_interrupt_mask;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bool chip_fullsleep;
 	u32 atim_window;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	atomic_t intr_ref_cnt;
+	bool chip_fullsleep;
+	u32 atim_window;
+	u32 modes_index;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Calibration */
 	u32 supp_cals;
 	struct ath9k_cal_list iq_caldata;
 	struct ath9k_cal_list adcgain_caldata;
 	struct ath9k_cal_list adcdc_caldata;
+<<<<<<< HEAD
 	struct ath9k_cal_list tempCompCalData;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ath9k_cal_list *cal_list;
 	struct ath9k_cal_list *cal_list_last;
 	struct ath9k_cal_list *cal_list_curr;
@@ -741,6 +1207,11 @@ struct ath_hw {
 		int32_t sign[AR5416_MAX_CHAINS];
 	} meas3;
 	u16 cal_samples;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	u8 enabled_cals;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	u32 sta_id1_defaults;
 	u32 misc_mode;
@@ -749,6 +1220,12 @@ struct ath_hw {
 		USE_32KHZ,
 		DONT_USE_32KHZ,
 	} enable_32kHz_clock;
+=======
+	u8 enabled_cals;
+
+	u32 sta_id1_defaults;
+	u32 misc_mode;
+>>>>>>> refs/remotes/origin/master
 
 	/* Private to hardware code */
 	struct ath_hw_private_ops private_ops;
@@ -756,6 +1233,7 @@ struct ath_hw {
 	struct ath_hw_ops ops;
 
 	/* Used to program the radio on non single-chip devices */
+<<<<<<< HEAD
 	u32 *analogBank0Data;
 	u32 *analogBank1Data;
 	u32 *analogBank2Data;
@@ -766,11 +1244,16 @@ struct ath_hw {
 	u32 *bank6Temp;
 
 	u8 txpower_limit;
+=======
+	u32 *analogBank6Data;
+
+>>>>>>> refs/remotes/origin/master
 	int coverage_class;
 	u32 slottime;
 	u32 globaltxtimeout;
 
 	/* ANI */
+<<<<<<< HEAD
 	u32 proc_phyerr;
 	u32 aniperiod;
 	int totalSizeDesired[5];
@@ -779,10 +1262,26 @@ struct ath_hw {
 	int firpwr[5];
 	enum ath9k_ani_cmd ani_function;
 
+<<<<<<< HEAD
 	/* Bluetooth coexistance */
 	struct ath_btcoex_hw btcoex_hw;
 	u32 bt_coex_bt_weight[AR9300_NUM_BT_WEIGHTS];
 	u32 bt_coex_wlan_weight[AR9300_NUM_WLAN_WEIGHTS];
+=======
+#ifdef CONFIG_ATH9K_BTCOEX_SUPPORT
+	struct ath_btcoex_hw btcoex_hw;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 aniperiod;
+	enum ath9k_ani_cmd ani_function;
+	u32 ani_skip_count;
+	struct ar5416AniState ani;
+
+#ifdef CONFIG_ATH9K_BTCOEX_SUPPORT
+	struct ath_btcoex_hw btcoex_hw;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	u32 intr_txqs;
 	u8 txchainmask;
@@ -799,6 +1298,7 @@ struct ath_hw {
 
 	struct ar5416IniArray iniModes;
 	struct ar5416IniArray iniCommon;
+<<<<<<< HEAD
 	struct ar5416IniArray iniBank0;
 	struct ar5416IniArray iniBB_RfGain;
 	struct ar5416IniArray iniBank1;
@@ -810,6 +1310,7 @@ struct ath_hw {
 	struct ar5416IniArray iniAddac;
 	struct ar5416IniArray iniPcieSerdes;
 	struct ar5416IniArray iniPcieSerdesLowPower;
+<<<<<<< HEAD
 	struct ar5416IniArray iniModesAdditional;
 	struct ar5416IniArray iniModesAdditional_40M;
 	struct ar5416IniArray iniModesRxGain;
@@ -822,6 +1323,37 @@ struct ath_hw {
 	struct ar5416IniArray iniModes_9271_ANI_reg;
 	struct ar5416IniArray iniModes_high_power_tx_gain_9271;
 	struct ar5416IniArray iniModes_normal_power_tx_gain_9271;
+=======
+	struct ar5416IniArray iniModesFastClock;
+	struct ar5416IniArray iniAdditional;
+	struct ar5416IniArray iniModesRxGain;
+	struct ar5416IniArray iniModesTxGain;
+	struct ar5416IniArray iniCckfirNormal;
+	struct ar5416IniArray iniCckfirJapan2484;
+	struct ar5416IniArray ini_japan2484;
+	struct ar5416IniArray iniModes_9271_ANI_reg;
+	struct ar5416IniArray ini_radio_post_sys2ant;
+	struct ar5416IniArray ini_BTCOEX_MAX_TXPWR;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ar5416IniArray iniBB_RfGain;
+	struct ar5416IniArray iniBank6;
+	struct ar5416IniArray iniAddac;
+	struct ar5416IniArray iniPcieSerdes;
+	struct ar5416IniArray iniPcieSerdesLowPower;
+	struct ar5416IniArray iniModesFastClock;
+	struct ar5416IniArray iniAdditional;
+	struct ar5416IniArray iniModesRxGain;
+	struct ar5416IniArray ini_modes_rx_gain_bounds;
+	struct ar5416IniArray iniModesTxGain;
+	struct ar5416IniArray iniCckfirNormal;
+	struct ar5416IniArray iniCckfirJapan2484;
+	struct ar5416IniArray iniModes_9271_ANI_reg;
+	struct ar5416IniArray ini_radio_post_sys2ant;
+	struct ar5416IniArray ini_modes_rxgain_5g_xlna;
+	struct ar5416IniArray ini_modes_rxgain_bb_core;
+	struct ar5416IniArray ini_modes_rxgain_bb_postamble;
+>>>>>>> refs/remotes/origin/master
 
 	struct ar5416IniArray iniMac[ATH_INI_NUM_SPLIT];
 	struct ar5416IniArray iniBB[ATH_INI_NUM_SPLIT];
@@ -833,11 +1365,22 @@ struct ath_hw {
 	struct ath_gen_timer_table hw_gen_timers;
 
 	struct ar9003_txs *ts_ring;
+<<<<<<< HEAD
 	void *ts_start;
 	u32 ts_paddr_start;
 	u32 ts_paddr_end;
 	u16 ts_tail;
+<<<<<<< HEAD
 	u8 ts_size;
+=======
+	u16 ts_size;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 ts_paddr_start;
+	u32 ts_paddr_end;
+	u16 ts_tail;
+	u16 ts_size;
+>>>>>>> refs/remotes/origin/master
 
 	u32 bb_watchdog_last_status;
 	u32 bb_watchdog_timeout_ms; /* in ms, 0 to disable */
@@ -860,7 +1403,23 @@ struct ath_hw {
 	/* Enterprise mode cap */
 	u32 ent_mode;
 
+<<<<<<< HEAD
 	bool is_clk_25mhz;
+<<<<<<< HEAD
+=======
+	int (*get_mac_revision)(void);
+	int (*external_reset)(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM_SLEEP
+	u32 wow_event_mask;
+#endif
+	bool is_clk_25mhz;
+	int (*get_mac_revision)(void);
+	int (*external_reset)(void);
+
+	const struct firmware *eeprom_blob;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ath_bus_ops {
@@ -868,7 +1427,10 @@ struct ath_bus_ops {
 	void (*read_cachesize)(struct ath_common *common, int *csz);
 	bool (*eeprom_read)(struct ath_common *common, u32 off, u16 *data);
 	void (*bt_coex_prep)(struct ath_common *common);
+<<<<<<< HEAD
 	void (*extn_synch_en)(struct ath_common *common);
+=======
+>>>>>>> refs/remotes/origin/master
 	void (*aspm_init)(struct ath_common *common);
 };
 
@@ -898,11 +1460,22 @@ static inline u8 get_streams(int mask)
 }
 
 /* Initialization, Detach, Reset */
+<<<<<<< HEAD
 const char *ath9k_hw_probe(u16 vendorid, u16 devid);
 void ath9k_hw_deinit(struct ath_hw *ah);
 int ath9k_hw_init(struct ath_hw *ah);
 int ath9k_hw_reset(struct ath_hw *ah, struct ath9k_channel *chan,
+<<<<<<< HEAD
 		   struct ath9k_hw_cal_data *caldata, bool bChannelChange);
+=======
+		   struct ath9k_hw_cal_data *caldata, bool fastcc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ath9k_hw_deinit(struct ath_hw *ah);
+int ath9k_hw_init(struct ath_hw *ah);
+int ath9k_hw_reset(struct ath_hw *ah, struct ath9k_channel *chan,
+		   struct ath9k_hw_cal_data *caldata, bool fastcc);
+>>>>>>> refs/remotes/origin/master
 int ath9k_hw_fill_cap_info(struct ath_hw *ah);
 u32 ath9k_regd_get_ctl(struct ath_regulatory *reg, struct ath9k_channel *chan);
 
@@ -912,12 +1485,25 @@ u32 ath9k_hw_gpio_get(struct ath_hw *ah, u32 gpio);
 void ath9k_hw_cfg_output(struct ath_hw *ah, u32 gpio,
 			 u32 ah_signal_type);
 void ath9k_hw_set_gpio(struct ath_hw *ah, u32 gpio, u32 val);
+<<<<<<< HEAD
+<<<<<<< HEAD
 u32 ath9k_hw_getdefantenna(struct ath_hw *ah);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void ath9k_hw_setantenna(struct ath_hw *ah, u32 antenna);
 
 /* General Operation */
 bool ath9k_hw_wait(struct ath_hw *ah, u32 reg, u32 mask, u32 val, u32 timeout);
 void ath9k_hw_write_array(struct ath_hw *ah, struct ar5416IniArray *array,
+=======
+void ath9k_hw_setantenna(struct ath_hw *ah, u32 antenna);
+
+/* General Operation */
+void ath9k_hw_synth_delay(struct ath_hw *ah, struct ath9k_channel *chan,
+			  int hw_delay);
+bool ath9k_hw_wait(struct ath_hw *ah, u32 reg, u32 mask, u32 val, u32 timeout);
+void ath9k_hw_write_array(struct ath_hw *ah, const struct ar5416IniArray *array,
+>>>>>>> refs/remotes/origin/master
 			  int column, unsigned int *writecnt);
 u32 ath9k_hw_reverse_bits(u32 val, u32 n);
 u16 ath9k_hw_computetxtime(struct ath_hw *ah,
@@ -933,12 +1519,19 @@ bool ath9k_hw_disable(struct ath_hw *ah);
 void ath9k_hw_set_txpowerlimit(struct ath_hw *ah, u32 limit, bool test);
 void ath9k_hw_setopmode(struct ath_hw *ah);
 void ath9k_hw_setmcastfilter(struct ath_hw *ah, u32 filter0, u32 filter1);
+<<<<<<< HEAD
+<<<<<<< HEAD
 void ath9k_hw_setbssidmask(struct ath_hw *ah);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void ath9k_hw_write_associd(struct ath_hw *ah);
 u32 ath9k_hw_gettsf32(struct ath_hw *ah);
 u64 ath9k_hw_gettsf64(struct ath_hw *ah);
 void ath9k_hw_settsf64(struct ath_hw *ah, u64 tsf64);
 void ath9k_hw_reset_tsf(struct ath_hw *ah);
+<<<<<<< HEAD
 void ath9k_hw_set_tsfadjust(struct ath_hw *ah, u32 setting);
 void ath9k_hw_init_global_settings(struct ath_hw *ah);
 u32 ar9003_get_pll_sqsum_dvc(struct ath_hw *ah);
@@ -946,10 +1539,30 @@ void ath9k_hw_set11nmac2040(struct ath_hw *ah);
 void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period);
 void ath9k_hw_set_sta_beacon_timers(struct ath_hw *ah,
 				    const struct ath9k_beacon_state *bs);
+=======
+void ath9k_hw_set_tsfadjust(struct ath_hw *ah, bool set);
+void ath9k_hw_init_global_settings(struct ath_hw *ah);
+u32 ar9003_get_pll_sqsum_dvc(struct ath_hw *ah);
+void ath9k_hw_set11nmac2040(struct ath_hw *ah, struct ath9k_channel *chan);
+void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period);
+void ath9k_hw_set_sta_beacon_timers(struct ath_hw *ah,
+				    const struct ath9k_beacon_state *bs);
+void ath9k_hw_check_nav(struct ath_hw *ah);
+>>>>>>> refs/remotes/origin/master
 bool ath9k_hw_check_alive(struct ath_hw *ah);
 
 bool ath9k_hw_setpower(struct ath_hw *ah, enum ath9k_power_mode mode);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ATH9K_DEBUGFS
+void ath9k_debug_sync_cause(struct ath_common *common, u32 sync_cause);
+#else
+static inline void ath9k_debug_sync_cause(struct ath_common *common,
+					  u32 sync_cause) {}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /* Generic hw timer primitives */
 struct ath_gen_timer *ath_gen_timer_alloc(struct ath_hw *ah,
 					  void (*trigger)(void *),
@@ -967,22 +1580,46 @@ void ath_gen_timer_isr(struct ath_hw *hw);
 
 void ath9k_hw_name(struct ath_hw *ah, char *hw_name, size_t len);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* HTC */
 void ath9k_hw_htc_resetinit(struct ath_hw *ah);
 
 /* PHY */
 void ath9k_hw_get_delta_slope_vals(struct ath_hw *ah, u32 coef_scaled,
 				   u32 *coef_mantissa, u32 *coef_exponent);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* PHY */
+void ath9k_hw_get_delta_slope_vals(struct ath_hw *ah, u32 coef_scaled,
+				   u32 *coef_mantissa, u32 *coef_exponent);
+void ath9k_hw_apply_txpower(struct ath_hw *ah, struct ath9k_channel *chan,
+			    bool test);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Code Specific to AR5008, AR9001 or AR9002,
  * we stuff these here to avoid callbacks for AR9003.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 void ar9002_hw_cck_chan14_spread(struct ath_hw *ah);
 int ar9002_hw_rf_claim(struct ath_hw *ah);
 void ar9002_hw_enable_async_fifo(struct ath_hw *ah);
 void ar9002_hw_update_async_fifo(struct ath_hw *ah);
 void ar9002_hw_enable_wep_aggregation(struct ath_hw *ah);
+=======
+int ar9002_hw_rf_claim(struct ath_hw *ah);
+void ar9002_hw_enable_async_fifo(struct ath_hw *ah);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ar9002_hw_rf_claim(struct ath_hw *ah);
+void ar9002_hw_enable_async_fifo(struct ath_hw *ah);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Code specific to AR9003, we stuff these here to avoid callbacks
@@ -998,19 +1635,39 @@ void ar9003_paprd_populate_single_table(struct ath_hw *ah,
 					int chain);
 int ar9003_paprd_create_curve(struct ath_hw *ah,
 			      struct ath9k_hw_cal_data *caldata, int chain);
+<<<<<<< HEAD
 int ar9003_paprd_setup_gain_table(struct ath_hw *ah, int chain);
 int ar9003_paprd_init_table(struct ath_hw *ah);
 bool ar9003_paprd_is_done(struct ath_hw *ah);
 void ar9003_hw_set_paprd_txdesc(struct ath_hw *ah, void *ds, u8 chains);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void ar9003_hw_set_chain_masks(struct ath_hw *ah, u8 rx, u8 tx);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ar9003_hw_set_chain_masks(struct ath_hw *ah, u8 rx, u8 tx);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /* Hardware family op attach helpers */
 void ar5008_hw_attach_phy_ops(struct ath_hw *ah);
+=======
+void ar9003_paprd_setup_gain_table(struct ath_hw *ah, int chain);
+int ar9003_paprd_init_table(struct ath_hw *ah);
+bool ar9003_paprd_is_done(struct ath_hw *ah);
+bool ar9003_is_paprd_enabled(struct ath_hw *ah);
+void ar9003_hw_set_chain_masks(struct ath_hw *ah, u8 rx, u8 tx);
+
+/* Hardware family op attach helpers */
+int ar5008_hw_attach_phy_ops(struct ath_hw *ah);
+>>>>>>> refs/remotes/origin/master
 void ar9002_hw_attach_phy_ops(struct ath_hw *ah);
 void ar9003_hw_attach_phy_ops(struct ath_hw *ah);
 
 void ar9002_hw_attach_calib_ops(struct ath_hw *ah);
 void ar9003_hw_attach_calib_ops(struct ath_hw *ah);
 
+<<<<<<< HEAD
 void ar9002_hw_attach_ops(struct ath_hw *ah);
 void ar9003_hw_attach_ops(struct ath_hw *ah);
 
@@ -1027,9 +1684,95 @@ void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning);
 void ath9k_hw_proc_mib_event(struct ath_hw *ah);
 void ath9k_hw_ani_monitor(struct ath_hw *ah, struct ath9k_channel *chan);
 
+<<<<<<< HEAD
 #define ATH_PCIE_CAP_LINK_CTRL	0x70
 #define ATH_PCIE_CAP_LINK_L0S	1
 #define ATH_PCIE_CAP_LINK_L1	2
+=======
+=======
+int ar9002_hw_attach_ops(struct ath_hw *ah);
+void ar9003_hw_attach_ops(struct ath_hw *ah);
+
+void ar9002_hw_load_ani_reg(struct ath_hw *ah, struct ath9k_channel *chan);
+
+void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning);
+void ath9k_hw_ani_monitor(struct ath_hw *ah, struct ath9k_channel *chan);
+
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_ATH9K_BTCOEX_SUPPORT
+static inline bool ath9k_hw_btcoex_is_enabled(struct ath_hw *ah)
+{
+	return ah->btcoex_hw.enabled;
+}
+<<<<<<< HEAD
+=======
+static inline bool ath9k_hw_mci_is_enabled(struct ath_hw *ah)
+{
+	return ah->common.btcoex_enabled &&
+	       (ah->caps.hw_caps & ATH9K_HW_CAP_MCI);
+
+}
+>>>>>>> refs/remotes/origin/master
+void ath9k_hw_btcoex_enable(struct ath_hw *ah);
+static inline enum ath_btcoex_scheme
+ath9k_hw_get_btcoex_scheme(struct ath_hw *ah)
+{
+	return ah->btcoex_hw.scheme;
+}
+#else
+static inline bool ath9k_hw_btcoex_is_enabled(struct ath_hw *ah)
+{
+	return false;
+}
+<<<<<<< HEAD
+=======
+static inline bool ath9k_hw_mci_is_enabled(struct ath_hw *ah)
+{
+	return false;
+}
+>>>>>>> refs/remotes/origin/master
+static inline void ath9k_hw_btcoex_enable(struct ath_hw *ah)
+{
+}
+static inline enum ath_btcoex_scheme
+ath9k_hw_get_btcoex_scheme(struct ath_hw *ah)
+{
+	return ATH_BTCOEX_CFG_NONE;
+}
+#endif /* CONFIG_ATH9K_BTCOEX_SUPPORT */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+
+#ifdef CONFIG_PM_SLEEP
+const char *ath9k_hw_wow_event_to_string(u32 wow_event);
+void ath9k_hw_wow_apply_pattern(struct ath_hw *ah, u8 *user_pattern,
+				u8 *user_mask, int pattern_count,
+				int pattern_len);
+u32 ath9k_hw_wow_wakeup(struct ath_hw *ah);
+void ath9k_hw_wow_enable(struct ath_hw *ah, u32 pattern_enable);
+#else
+static inline const char *ath9k_hw_wow_event_to_string(u32 wow_event)
+{
+	return NULL;
+}
+static inline void ath9k_hw_wow_apply_pattern(struct ath_hw *ah,
+					      u8 *user_pattern,
+					      u8 *user_mask,
+					      int pattern_count,
+					      int pattern_len)
+{
+}
+static inline u32 ath9k_hw_wow_wakeup(struct ath_hw *ah)
+{
+	return 0;
+}
+static inline void ath9k_hw_wow_enable(struct ath_hw *ah, u32 pattern_enable)
+{
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #define ATH9K_CLOCK_RATE_CCK		22
 #define ATH9K_CLOCK_RATE_5GHZ_OFDM	40

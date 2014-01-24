@@ -28,15 +28,33 @@ extern struct pglist_data *node_data[];
  *    64Gb / 4096bytes/page = 16777216 pages
  */
 #define MAX_NR_PAGES 16777216
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_ELEMENTS 1024
 #define PAGES_PER_ELEMENT (MAX_NR_PAGES/MAX_ELEMENTS)
+=======
+#define MAX_SECTIONS 1024
+#define PAGES_PER_SECTION (MAX_NR_PAGES/MAX_SECTIONS)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_SECTIONS 1024
+#define PAGES_PER_SECTION (MAX_NR_PAGES/MAX_SECTIONS)
+>>>>>>> refs/remotes/origin/master
 
 extern s8 physnode_map[];
 
 static inline int pfn_to_nid(unsigned long pfn)
 {
 #ifdef CONFIG_NUMA
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return((int) physnode_map[(pfn) / PAGES_PER_ELEMENT]);
+=======
+	return((int) physnode_map[(pfn) / PAGES_PER_SECTION]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return((int) physnode_map[(pfn) / PAGES_PER_SECTION]);
+>>>>>>> refs/remotes/origin/master
 #else
 	return 0;
 #endif
@@ -55,10 +73,13 @@ static inline int pfn_valid(int pfn)
 
 #endif /* CONFIG_DISCONTIGMEM */
 
+<<<<<<< HEAD
 #ifdef CONFIG_NEED_MULTIPLE_NODES
 /* always use node 0 for bootmem on this numa platform */
 #define bootmem_arch_preferred_node(__bdata, size, align, goal, limit)	\
 	(NODE_DATA(0)->bdata)
 #endif /* CONFIG_NEED_MULTIPLE_NODES */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_MMZONE_32_H */

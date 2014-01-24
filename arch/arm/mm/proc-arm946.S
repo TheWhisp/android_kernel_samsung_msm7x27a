@@ -55,6 +55,14 @@ ENTRY(cpu_arm946_proc_fin)
  * Params  : r0 = address to jump to
  * Notes   : This sets up everything for a reset
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_arm946_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c5, 0		@ flush I cache
@@ -65,6 +73,16 @@ ENTRY(cpu_arm946_reset)
 	bic	ip, ip, #0x00001000		@ i-cache
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_arm946_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_arm946_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  * cpu_arm946_do_idle()
@@ -187,6 +205,10 @@ ENTRY(arm946_coherent_user_range)
 	cmp	r0, r1
 	blo	1b
 	mcr	p15, 0, r0, c7, c10, 4		@ drain WB
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -306,6 +328,8 @@ ENTRY(arm946_dma_unmap_area)
 	mov	pc, lr
 ENDPROC(arm946_dma_unmap_area)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(arm946_cache_fns)
 	.long	arm946_flush_icache_all
 	.long	arm946_flush_kern_cache_all
@@ -318,6 +342,17 @@ ENTRY(arm946_cache_fns)
 	.long	arm946_dma_unmap_area
 	.long	arm946_dma_flush_range
 
+=======
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm946
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	arm946_flush_kern_cache_louis
+	.equ	arm946_flush_kern_cache_louis, arm946_flush_kern_cache_all
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm946
+>>>>>>> refs/remotes/origin/master
 
 ENTRY(cpu_arm946_dcache_clean_area)
 #ifndef CONFIG_CPU_DCACHE_WRITETHROUGH
@@ -329,8 +364,11 @@ ENTRY(cpu_arm946_dcache_clean_area)
 	mcr	p15, 0, r0, c7, c10, 4		@ drain WB
 	mov	pc, lr
 
+<<<<<<< HEAD
 	__CPUINIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.type	__arm946_setup, #function
 __arm946_setup:
 	mov	r0, #0
@@ -403,6 +441,8 @@ __arm946_setup:
 
 	__INITDATA
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
  *	     come through these
@@ -440,6 +480,21 @@ cpu_elf_name:
 cpu_arm946_name:
 	.ascii	"ARM946E-S"
 	.size	cpu_arm946_name, . - cpu_arm946_name
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions arm946, dabort=nommu_early_abort, pabort=legacy_pabort, nommu=1
+
+	.section ".rodata"
+
+	string	cpu_arch_name, "armv5te"
+	string	cpu_elf_name, "v5t"
+	string	cpu_arm946_name, "ARM946E-S"
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align
 
@@ -449,6 +504,14 @@ __arm946_proc_info:
 	.long	0x41009460
 	.long	0xff00fff0
 	.long	0
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.long	0
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long	0
+>>>>>>> refs/remotes/origin/master
 	b	__arm946_setup
 	.long	cpu_arch_name
 	.long	cpu_elf_name
@@ -457,6 +520,14 @@ __arm946_proc_info:
 	.long	arm946_processor_functions
 	.long	0
 	.long	0
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.long	arm940_cache_fns
+=======
+	.long	arm946_cache_fns
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long	arm946_cache_fns
+>>>>>>> refs/remotes/origin/master
 	.size	__arm946_proc_info, . - __arm946_proc_info
 

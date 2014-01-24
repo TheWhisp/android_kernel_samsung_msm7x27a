@@ -21,10 +21,17 @@
 /******/
 
 static const int subtype_txq_to_hwq[] = {
+<<<<<<< HEAD
 	[WME_AC_BE] = ATH_TXQ_AC_BE,
 	[WME_AC_BK] = ATH_TXQ_AC_BK,
 	[WME_AC_VI] = ATH_TXQ_AC_VI,
 	[WME_AC_VO] = ATH_TXQ_AC_VO,
+=======
+	[IEEE80211_AC_BE] = ATH_TXQ_AC_BE,
+	[IEEE80211_AC_BK] = ATH_TXQ_AC_BK,
+	[IEEE80211_AC_VI] = ATH_TXQ_AC_VI,
+	[IEEE80211_AC_VO] = ATH_TXQ_AC_VO,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define ATH9K_HTC_INIT_TXQ(subtype) do {			\
@@ -41,6 +48,7 @@ int get_hw_qnum(u16 queue, int *hwq_map)
 {
 	switch (queue) {
 	case 0:
+<<<<<<< HEAD
 		return hwq_map[WME_AC_VO];
 	case 1:
 		return hwq_map[WME_AC_VI];
@@ -50,6 +58,17 @@ int get_hw_qnum(u16 queue, int *hwq_map)
 		return hwq_map[WME_AC_BK];
 	default:
 		return hwq_map[WME_AC_BE];
+=======
+		return hwq_map[IEEE80211_AC_VO];
+	case 1:
+		return hwq_map[IEEE80211_AC_VI];
+	case 2:
+		return hwq_map[IEEE80211_AC_BE];
+	case 3:
+		return hwq_map[IEEE80211_AC_BK];
+	default:
+		return hwq_map[IEEE80211_AC_BE];
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -106,6 +125,7 @@ static inline enum htc_endpoint_id get_htc_epid(struct ath9k_htc_priv *priv,
 
 	switch (qnum) {
 	case 0:
+<<<<<<< HEAD
 		TX_QSTAT_INC(WME_AC_VO);
 		epid = priv->data_vo_ep;
 		break;
@@ -115,11 +135,26 @@ static inline enum htc_endpoint_id get_htc_epid(struct ath9k_htc_priv *priv,
 		break;
 	case 2:
 		TX_QSTAT_INC(WME_AC_BE);
+=======
+		TX_QSTAT_INC(IEEE80211_AC_VO);
+		epid = priv->data_vo_ep;
+		break;
+	case 1:
+		TX_QSTAT_INC(IEEE80211_AC_VI);
+		epid = priv->data_vi_ep;
+		break;
+	case 2:
+		TX_QSTAT_INC(IEEE80211_AC_BE);
+>>>>>>> refs/remotes/origin/master
 		epid = priv->data_be_ep;
 		break;
 	case 3:
 	default:
+<<<<<<< HEAD
 		TX_QSTAT_INC(WME_AC_BK);
+=======
+		TX_QSTAT_INC(IEEE80211_AC_BK);
+>>>>>>> refs/remotes/origin/master
 		epid = priv->data_bk_ep;
 		break;
 	}
@@ -333,12 +368,19 @@ static void ath9k_htc_tx_data(struct ath9k_htc_priv *priv,
 }
 
 int ath9k_htc_tx_start(struct ath9k_htc_priv *priv,
+<<<<<<< HEAD
+=======
+		       struct ieee80211_sta *sta,
+>>>>>>> refs/remotes/origin/master
 		       struct sk_buff *skb,
 		       u8 slot, bool is_cab)
 {
 	struct ieee80211_hdr *hdr;
 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
+<<<<<<< HEAD
 	struct ieee80211_sta *sta = tx_info->control.sta;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ieee80211_vif *vif = tx_info->control.vif;
 	struct ath9k_htc_sta *ista;
 	struct ath9k_htc_vif *avp = NULL;
@@ -355,7 +397,15 @@ int ath9k_htc_tx_start(struct ath9k_htc_priv *priv,
 		vif_idx = avp->index;
 	} else {
 		if (!priv->ah->is_monitoring) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(ath9k_hw_common(priv->ah), ATH_DBG_XMIT,
+=======
+			ath_dbg(ath9k_hw_common(priv->ah), XMIT,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(ath9k_hw_common(priv->ah), XMIT,
+>>>>>>> refs/remotes/origin/master
 				"VIF is null, but no monitor interface !\n");
 			return -EINVAL;
 		}
@@ -491,7 +541,11 @@ static void ath9k_htc_tx_process(struct ath9k_htc_priv *priv,
 		if (txs->ts_flags & ATH9K_HTC_TXSTAT_SGI)
 			rate->flags |= IEEE80211_TX_RC_SHORT_GI;
 	} else {
+<<<<<<< HEAD
 		if (cur_conf->channel->band == IEEE80211_BAND_5GHZ)
+=======
+		if (cur_conf->chandef.chan->band == IEEE80211_BAND_5GHZ)
+>>>>>>> refs/remotes/origin/master
 			rate->idx += 4; /* No CCK rates */
 	}
 
@@ -630,8 +684,16 @@ static struct sk_buff* ath9k_htc_tx_get_packet(struct ath9k_htc_priv *priv,
 	}
 	spin_unlock_irqrestore(&epid_queue->lock, flags);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_XMIT,
 		"No matching packet for cookie: %d, epid: %d\n",
+=======
+	ath_dbg(common, XMIT, "No matching packet for cookie: %d, epid: %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, XMIT, "No matching packet for cookie: %d, epid: %d\n",
+>>>>>>> refs/remotes/origin/master
 		txs->cookie, epid);
 
 	return NULL;
@@ -715,8 +777,16 @@ static inline bool check_packet(struct ath9k_htc_priv *priv, struct sk_buff *skb
 	if (time_after(jiffies,
 		       tx_ctl->timestamp +
 		       msecs_to_jiffies(ATH9K_HTC_TX_TIMEOUT_INTERVAL))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_XMIT,
 			"Dropping a packet due to TX timeout\n");
+=======
+		ath_dbg(common, XMIT, "Dropping a packet due to TX timeout\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, XMIT, "Dropping a packet due to TX timeout\n");
+>>>>>>> refs/remotes/origin/master
 		return true;
 	}
 
@@ -763,7 +833,15 @@ void ath9k_htc_tx_cleanup_timer(unsigned long data)
 
 		skb = ath9k_htc_tx_get_packet(priv, &event->txs);
 		if (skb) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_XMIT,
+=======
+			ath_dbg(common, XMIT,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, XMIT,
+>>>>>>> refs/remotes/origin/master
 				"Found packet for cookie: %d, epid: %d\n",
 				event->txs.cookie,
 				MS(event->txs.ts_rate, ATH9K_HTC_TXSTAT_EPID));
@@ -899,7 +977,11 @@ u32 ath9k_htc_calcrxfilter(struct ath9k_htc_priv *priv)
 	if (priv->rxfilter & FIF_PSPOLL)
 		rfilt |= ATH9K_RX_FILTER_PSPOLL;
 
+<<<<<<< HEAD
 	if (priv->nvifs > 1)
+=======
+	if (priv->nvifs > 1 || priv->rxfilter & FIF_OTHER_BSS)
+>>>>>>> refs/remotes/origin/master
 		rfilt |= ATH9K_RX_FILTER_MCAST_BCAST_ALL;
 
 	return rfilt;
@@ -928,7 +1010,11 @@ void ath9k_host_rx_init(struct ath9k_htc_priv *priv)
 {
 	ath9k_hw_rxena(priv->ah);
 	ath9k_htc_opmode_init(priv);
+<<<<<<< HEAD
 	ath9k_hw_startpcureceive(priv->ah, (priv->op_flags & OP_SCANNING));
+=======
+	ath9k_hw_startpcureceive(priv->ah, test_bit(OP_SCANNING, &priv->op_flags));
+>>>>>>> refs/remotes/origin/master
 	priv->rx.last_rssi = ATH_RSSI_DUMMY_MARKER;
 }
 
@@ -951,7 +1037,11 @@ static void ath9k_process_rate(struct ieee80211_hw *hw,
 		return;
 	}
 
+<<<<<<< HEAD
 	band = hw->conf.channel->band;
+=======
+	band = hw->conf.chandef.chan->band;
+>>>>>>> refs/remotes/origin/master
 	sband = hw->wiphy->bands[band];
 
 	for (i = 0; i < sband->n_bitrates; i++) {
@@ -978,7 +1068,11 @@ static bool ath9k_rx_prepare(struct ath9k_htc_priv *priv,
 	struct sk_buff *skb = rxbuf->skb;
 	struct ath_common *common = ath9k_hw_common(priv->ah);
 	struct ath_htc_rx_status *rxstatus;
+<<<<<<< HEAD
 	int hdrlen, padpos, padsize;
+=======
+	int hdrlen, padsize;
+>>>>>>> refs/remotes/origin/master
 	int last_rssi = ATH_RSSI_DUMMY_MARKER;
 	__le16 fc;
 
@@ -1008,11 +1102,17 @@ static bool ath9k_rx_prepare(struct ath9k_htc_priv *priv,
 	fc = hdr->frame_control;
 	hdrlen = ieee80211_get_hdrlen_from_skb(skb);
 
+<<<<<<< HEAD
 	padpos = ath9k_cmn_padpos(fc);
 
 	padsize = padpos & 3;
 	if (padsize && skb->len >= padpos+padsize+FCS_LEN) {
 		memmove(skb->data + padsize, skb->data, padpos);
+=======
+	padsize = hdrlen & 3;
+	if (padsize && skb->len >= hdrlen+padsize+FCS_LEN) {
+		memmove(skb->data + padsize, skb->data, hdrlen);
+>>>>>>> refs/remotes/origin/master
 		skb_pull(skb, padsize);
 	}
 
@@ -1079,6 +1179,7 @@ static bool ath9k_rx_prepare(struct ath9k_htc_priv *priv,
 
 	last_rssi = priv->rx.last_rssi;
 
+<<<<<<< HEAD
 	if (likely(last_rssi != ATH_RSSI_DUMMY_MARKER))
 		rxbuf->rxstatus.rs_rssi = ATH_EP_RND(last_rssi,
 						     ATH_RSSI_EP_MULTIPLIER);
@@ -1095,6 +1196,28 @@ static bool ath9k_rx_prepare(struct ath9k_htc_priv *priv,
 	rx_status->signal =  rxbuf->rxstatus.rs_rssi + ATH_DEFAULT_NOISE_FLOOR;
 	rx_status->antenna = rxbuf->rxstatus.rs_antenna;
 	rx_status->flag |= RX_FLAG_MACTIME_MPDU;
+=======
+	if (ieee80211_is_beacon(hdr->frame_control) &&
+	    !is_zero_ether_addr(common->curbssid) &&
+	    ether_addr_equal(hdr->addr3, common->curbssid)) {
+		s8 rssi = rxbuf->rxstatus.rs_rssi;
+
+		if (likely(last_rssi != ATH_RSSI_DUMMY_MARKER))
+			rssi = ATH_EP_RND(last_rssi, ATH_RSSI_EP_MULTIPLIER);
+
+		if (rssi < 0)
+			rssi = 0;
+
+		priv->ah->stats.avgbrssi = rssi;
+	}
+
+	rx_status->mactime = be64_to_cpu(rxbuf->rxstatus.rs_tstamp);
+	rx_status->band = hw->conf.chandef.chan->band;
+	rx_status->freq = hw->conf.chandef.chan->center_freq;
+	rx_status->signal =  rxbuf->rxstatus.rs_rssi + ATH_DEFAULT_NOISE_FLOOR;
+	rx_status->antenna = rxbuf->rxstatus.rs_antenna;
+	rx_status->flag |= RX_FLAG_MACTIME_END;
+>>>>>>> refs/remotes/origin/master
 
 	return true;
 
@@ -1177,8 +1300,16 @@ void ath9k_htc_rxep(void *drv_priv, struct sk_buff *skb,
 	spin_unlock(&priv->rx.rxbuflock);
 
 	if (rxbuf == NULL) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_ANY,
 			"No free RX buffer\n");
+=======
+		ath_dbg(common, ANY, "No free RX buffer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, ANY, "No free RX buffer\n");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -1209,20 +1340,31 @@ void ath9k_rx_cleanup(struct ath9k_htc_priv *priv)
 
 int ath9k_rx_init(struct ath9k_htc_priv *priv)
 {
+<<<<<<< HEAD
 	struct ath_hw *ah = priv->ah;
 	struct ath_common *common = ath9k_hw_common(ah);
 	struct ath9k_htc_rxbuf *rxbuf;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i = 0;
 
 	INIT_LIST_HEAD(&priv->rx.rxbuf);
 	spin_lock_init(&priv->rx.rxbuflock);
 
 	for (i = 0; i < ATH9K_HTC_RXBUF; i++) {
+<<<<<<< HEAD
 		rxbuf = kzalloc(sizeof(struct ath9k_htc_rxbuf), GFP_KERNEL);
 		if (rxbuf == NULL) {
 			ath_err(common, "Unable to allocate RX buffers\n");
 			goto err;
 		}
+=======
+		struct ath9k_htc_rxbuf *rxbuf =
+			kzalloc(sizeof(struct ath9k_htc_rxbuf), GFP_KERNEL);
+		if (rxbuf == NULL)
+			goto err;
+
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&rxbuf->list, &priv->rx.rxbuf);
 	}
 

@@ -57,6 +57,14 @@ CONFIG_TULIP_MMIO=y
 CONFIG_TULIP_NAPI=y
 CONFIG_TULIP_NAPI_HW_MITIGATION=y
 CONFIG_NET_PCI=y
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+CONFIG_NET_VENDOR_INTEL=y
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_NET_VENDOR_INTEL=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_E100=y
 CONFIG_E1000=y
 CONFIG_TIGON3=y

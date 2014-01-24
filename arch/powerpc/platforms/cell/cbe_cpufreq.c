@@ -21,6 +21,10 @@
  */
 
 #include <linux/cpufreq.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/of_platform.h>
 
 #include <asm/machdep.h>

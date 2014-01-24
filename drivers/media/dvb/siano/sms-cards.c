@@ -19,6 +19,10 @@
 
 #include "sms-cards.h"
 #include "smsir.h"
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int sms_dbg;
 module_param_named(cards_dbg, sms_dbg, int, 0644);

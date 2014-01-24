@@ -61,11 +61,14 @@
 #include "xattr.h"
 #include "acl.h"
 
+<<<<<<< HEAD
 #define BHDR(bh) ((struct ext4_xattr_header *)((bh)->b_data))
 #define ENTRY(ptr) ((struct ext4_xattr_entry *)(ptr))
 #define BFIRST(bh) ENTRY(BHDR(bh)+1)
 #define IS_LAST_ENTRY(entry) (*(__u32 *)(entry) == 0)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef EXT4_XATTR_DEBUG
 # define ea_idebug(inode, f...) do { \
 		printk(KERN_DEBUG "inode %s:%lu: ", \
@@ -82,8 +85,18 @@
 		printk("\n"); \
 	} while (0)
 #else
+<<<<<<< HEAD
+<<<<<<< HEAD
 # define ea_idebug(f...)
 # define ea_bdebug(f...)
+=======
+# define ea_idebug(inode, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
+# define ea_bdebug(bh, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+# define ea_idebug(inode, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
+# define ea_bdebug(bh, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static void ext4_xattr_cache_insert(struct buffer_head *);
@@ -122,6 +135,59 @@ const struct xattr_handler *ext4_xattr_handlers[] = {
 	NULL
 };
 
+<<<<<<< HEAD
+=======
+static __le32 ext4_xattr_block_csum(struct inode *inode,
+				    sector_t block_nr,
+				    struct ext4_xattr_header *hdr)
+{
+	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+	__u32 csum;
+	__le32 save_csum;
+	__le64 dsk_block_nr = cpu_to_le64(block_nr);
+
+	save_csum = hdr->h_checksum;
+	hdr->h_checksum = 0;
+	csum = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)&dsk_block_nr,
+			   sizeof(dsk_block_nr));
+	csum = ext4_chksum(sbi, csum, (__u8 *)hdr,
+			   EXT4_BLOCK_SIZE(inode->i_sb));
+
+	hdr->h_checksum = save_csum;
+	return cpu_to_le32(csum);
+}
+
+static int ext4_xattr_block_csum_verify(struct inode *inode,
+					sector_t block_nr,
+					struct ext4_xattr_header *hdr)
+{
+	if (EXT4_HAS_RO_COMPAT_FEATURE(inode->i_sb,
+		EXT4_FEATURE_RO_COMPAT_METADATA_CSUM) &&
+	    (hdr->h_checksum != ext4_xattr_block_csum(inode, block_nr, hdr)))
+		return 0;
+	return 1;
+}
+
+static void ext4_xattr_block_csum_set(struct inode *inode,
+				      sector_t block_nr,
+				      struct ext4_xattr_header *hdr)
+{
+	if (!EXT4_HAS_RO_COMPAT_FEATURE(inode->i_sb,
+		EXT4_FEATURE_RO_COMPAT_METADATA_CSUM))
+		return;
+
+	hdr->h_checksum = ext4_xattr_block_csum(inode, block_nr, hdr);
+}
+
+static inline int ext4_handle_dirty_xattr_block(handle_t *handle,
+						struct inode *inode,
+						struct buffer_head *bh)
+{
+	ext4_xattr_block_csum_set(inode, bh->b_blocknr, BHDR(bh));
+	return ext4_handle_dirty_metadata(handle, inode, bh);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline const struct xattr_handler *
 ext4_xattr_handler(int name_index)
 {
@@ -156,8 +222,10 @@ ext4_xattr_check_names(struct ext4_xattr_entry *entry, void *end)
 }
 
 static inline int
+<<<<<<< HEAD
 ext4_xattr_check_block(struct buffer_head *bh)
 {
+<<<<<<< HEAD
 	int error;
 
 	if (BHDR(bh)->h_magic != cpu_to_le32(EXT4_XATTR_MAGIC) ||
@@ -165,6 +233,30 @@ ext4_xattr_check_block(struct buffer_head *bh)
 		return -EIO;
 	error = ext4_xattr_check_names(BFIRST(bh), bh->b_data + bh->b_size);
 	return error;
+=======
+	if (BHDR(bh)->h_magic != cpu_to_le32(EXT4_XATTR_MAGIC) ||
+	    BHDR(bh)->h_blocks != cpu_to_le32(1))
+		return -EIO;
+	return ext4_xattr_check_names(BFIRST(bh), bh->b_data + bh->b_size);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ext4_xattr_check_block(struct inode *inode, struct buffer_head *bh)
+{
+	int error;
+
+	if (buffer_verified(bh))
+		return 0;
+
+	if (BHDR(bh)->h_magic != cpu_to_le32(EXT4_XATTR_MAGIC) ||
+	    BHDR(bh)->h_blocks != cpu_to_le32(1))
+		return -EIO;
+	if (!ext4_xattr_block_csum_verify(inode, bh->b_blocknr, BHDR(bh)))
+		return -EIO;
+	error = ext4_xattr_check_names(BFIRST(bh), bh->b_data + bh->b_size);
+	if (!error)
+		set_buffer_verified(bh);
+	return error;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int
@@ -220,13 +312,27 @@ ext4_xattr_block_get(struct inode *inode, int name_index, const char *name,
 	error = -ENODATA;
 	if (!EXT4_I(inode)->i_file_acl)
 		goto cleanup;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ea_idebug(inode, "reading block %u", EXT4_I(inode)->i_file_acl);
+=======
+	ea_idebug(inode, "reading block %llu",
+		  (unsigned long long)EXT4_I(inode)->i_file_acl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ea_idebug(inode, "reading block %llu",
+		  (unsigned long long)EXT4_I(inode)->i_file_acl);
+>>>>>>> refs/remotes/origin/master
 	bh = sb_bread(inode->i_sb, EXT4_I(inode)->i_file_acl);
 	if (!bh)
 		goto cleanup;
 	ea_bdebug(bh, "b_count=%d, refcount=%d",
 		atomic_read(&(bh->b_count)), le32_to_cpu(BHDR(bh)->h_refcount));
+<<<<<<< HEAD
 	if (ext4_xattr_check_block(bh)) {
+=======
+	if (ext4_xattr_check_block(inode, bh)) {
+>>>>>>> refs/remotes/origin/master
 bad_block:
 		EXT4_ERROR_INODE(inode, "bad block %llu",
 				 EXT4_I(inode)->i_file_acl);
@@ -255,7 +361,11 @@ cleanup:
 	return error;
 }
 
+<<<<<<< HEAD
 static int
+=======
+int
+>>>>>>> refs/remotes/origin/master
 ext4_xattr_ibody_get(struct inode *inode, int name_index, const char *name,
 		     void *buffer, size_t buffer_size)
 {
@@ -363,14 +473,28 @@ ext4_xattr_block_list(struct dentry *dentry, char *buffer, size_t buffer_size)
 	error = 0;
 	if (!EXT4_I(inode)->i_file_acl)
 		goto cleanup;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ea_idebug(inode, "reading block %u", EXT4_I(inode)->i_file_acl);
+=======
+	ea_idebug(inode, "reading block %llu",
+		  (unsigned long long)EXT4_I(inode)->i_file_acl);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ea_idebug(inode, "reading block %llu",
+		  (unsigned long long)EXT4_I(inode)->i_file_acl);
+>>>>>>> refs/remotes/origin/master
 	bh = sb_bread(inode->i_sb, EXT4_I(inode)->i_file_acl);
 	error = -EIO;
 	if (!bh)
 		goto cleanup;
 	ea_bdebug(bh, "b_count=%d, refcount=%d",
 		atomic_read(&(bh->b_count)), le32_to_cpu(BHDR(bh)->h_refcount));
+<<<<<<< HEAD
 	if (ext4_xattr_check_block(bh)) {
+=======
+	if (ext4_xattr_check_block(inode, bh)) {
+>>>>>>> refs/remotes/origin/master
 		EXT4_ERROR_INODE(inode, "bad block %llu",
 				 EXT4_I(inode)->i_file_acl);
 		error = -EIO;
@@ -493,10 +617,25 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
 		if (ce)
 			mb_cache_entry_release(ce);
 		unlock_buffer(bh);
+<<<<<<< HEAD
 		error = ext4_handle_dirty_metadata(handle, inode, bh);
 		if (IS_SYNC(inode))
 			ext4_handle_sync(handle);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dquot_free_block(inode, 1);
+=======
+		dquot_free_block(inode, EXT4_C2B(EXT4_SB(inode->i_sb), 1));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = ext4_handle_dirty_xattr_block(handle, inode, bh);
+		if (IS_SYNC(inode))
+			ext4_handle_sync(handle);
+		dquot_free_block(inode, EXT4_C2B(EXT4_SB(inode->i_sb), 1));
+>>>>>>> refs/remotes/origin/master
+=======
+		dquot_free_block(inode, EXT4_C2B(EXT4_SB(inode->i_sb), 1));
+>>>>>>> refs/remotes/origin/cm-11.0
 		ea_bdebug(bh, "refcount now=%d; releasing",
 			  le32_to_cpu(BHDR(bh)->h_refcount));
 	}
@@ -523,6 +662,7 @@ static size_t ext4_xattr_free_space(struct ext4_xattr_entry *last,
 	return (*min_offs - ((void *)last - base) - sizeof(__u32));
 }
 
+<<<<<<< HEAD
 struct ext4_xattr_info {
 	int name_index;
 	const char *name;
@@ -538,6 +678,8 @@ struct ext4_xattr_search {
 	int not_found;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 ext4_xattr_set_entry(struct ext4_xattr_info *i, struct ext4_xattr_search *s)
 {
@@ -590,9 +732,20 @@ ext4_xattr_set_entry(struct ext4_xattr_info *i, struct ext4_xattr_search *s)
 				   size. Just replace. */
 				s->here->e_value_size =
 					cpu_to_le32(i->value_len);
+<<<<<<< HEAD
 				memset(val + size - EXT4_XATTR_PAD, 0,
 				       EXT4_XATTR_PAD); /* Clear pad bytes. */
 				memcpy(val, i->value, i->value_len);
+=======
+				if (i->value == EXT4_ZERO_XATTR_VALUE) {
+					memset(val, 0, size);
+				} else {
+					/* Clear pad bytes first. */
+					memset(val + size - EXT4_XATTR_PAD, 0,
+					       EXT4_XATTR_PAD);
+					memcpy(val, i->value, i->value_len);
+				}
+>>>>>>> refs/remotes/origin/master
 				return 0;
 			}
 
@@ -631,9 +784,20 @@ ext4_xattr_set_entry(struct ext4_xattr_info *i, struct ext4_xattr_search *s)
 			size_t size = EXT4_XATTR_SIZE(i->value_len);
 			void *val = s->base + min_offs - size;
 			s->here->e_value_offs = cpu_to_le16(min_offs - size);
+<<<<<<< HEAD
 			memset(val + size - EXT4_XATTR_PAD, 0,
 			       EXT4_XATTR_PAD); /* Clear the pad bytes. */
 			memcpy(val, i->value, i->value_len);
+=======
+			if (i->value == EXT4_ZERO_XATTR_VALUE) {
+				memset(val, 0, size);
+			} else {
+				/* Clear the pad bytes first. */
+				memset(val + size - EXT4_XATTR_PAD, 0,
+				       EXT4_XATTR_PAD);
+				memcpy(val, i->value, i->value_len);
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return 0;
@@ -663,7 +827,11 @@ ext4_xattr_block_find(struct inode *inode, struct ext4_xattr_info *i,
 		ea_bdebug(bs->bh, "b_count=%d, refcount=%d",
 			atomic_read(&(bs->bh->b_count)),
 			le32_to_cpu(BHDR(bs->bh)->h_refcount));
+<<<<<<< HEAD
 		if (ext4_xattr_check_block(bs->bh)) {
+=======
+		if (ext4_xattr_check_block(inode, bs->bh)) {
+>>>>>>> refs/remotes/origin/master
 			EXT4_ERROR_INODE(inode, "bad block %llu",
 					 EXT4_I(inode)->i_file_acl);
 			error = -EIO;
@@ -726,9 +894,15 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
 			if (error == -EIO)
 				goto bad_block;
 			if (!error)
+<<<<<<< HEAD
 				error = ext4_handle_dirty_metadata(handle,
 								   inode,
 								   bs->bh);
+=======
+				error = ext4_handle_dirty_xattr_block(handle,
+								      inode,
+								      bs->bh);
+>>>>>>> refs/remotes/origin/master
 			if (error)
 				goto cleanup;
 			goto inserted;
@@ -736,7 +910,10 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
 			int offset = (char *)s->here - bs->bh->b_data;
 
 			unlock_buffer(bs->bh);
+<<<<<<< HEAD
 			ext4_handle_release_buffer(handle, bs->bh);
+=======
+>>>>>>> refs/remotes/origin/master
 			if (ce) {
 				mb_cache_entry_release(ce);
 				ce = NULL;
@@ -785,7 +962,22 @@ inserted:
 			else {
 				/* The old block is released after updating
 				   the inode. */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 				error = dquot_alloc_block(inode, 1);
+=======
+				error = dquot_alloc_block(inode,
+						EXT4_C2B(EXT4_SB(sb), 1));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				error = dquot_alloc_block(inode,
+						EXT4_C2B(EXT4_SB(sb), 1));
+>>>>>>> refs/remotes/origin/master
+=======
+				error = dquot_alloc_block(inode,
+						EXT4_C2B(EXT4_SB(sb), 1));
+>>>>>>> refs/remotes/origin/cm-11.0
 				if (error)
 					goto cleanup;
 				error = ext4_journal_get_write_access(handle,
@@ -797,9 +989,15 @@ inserted:
 				ea_bdebug(new_bh, "reusing; refcount now=%d",
 					le32_to_cpu(BHDR(new_bh)->h_refcount));
 				unlock_buffer(new_bh);
+<<<<<<< HEAD
 				error = ext4_handle_dirty_metadata(handle,
 								   inode,
 								   new_bh);
+=======
+				error = ext4_handle_dirty_xattr_block(handle,
+								      inode,
+								      new_bh);
+>>>>>>> refs/remotes/origin/master
 				if (error)
 					goto cleanup_dquot;
 			}
@@ -835,7 +1033,13 @@ inserted:
 			if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
 				BUG_ON(block > EXT4_MAX_BLOCK_FILE_PHYS);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ea_idebug(inode, "creating block %d", block);
+=======
+			ea_idebug(inode, "creating block %llu",
+				  (unsigned long long)block);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			new_bh = sb_getblk(sb, block);
 			if (!new_bh) {
@@ -843,20 +1047,40 @@ getblk_failed:
 				ext4_free_blocks(handle, inode, NULL, block, 1,
 						 EXT4_FREE_BLOCKS_METADATA);
 				error = -EIO;
+=======
+			ea_idebug(inode, "creating block %llu",
+				  (unsigned long long)block);
+
+			new_bh = sb_getblk(sb, block);
+			if (unlikely(!new_bh)) {
+				error = -ENOMEM;
+getblk_failed:
+				ext4_free_blocks(handle, inode, NULL, block, 1,
+						 EXT4_FREE_BLOCKS_METADATA);
+>>>>>>> refs/remotes/origin/master
 				goto cleanup;
 			}
 			lock_buffer(new_bh);
 			error = ext4_journal_get_create_access(handle, new_bh);
 			if (error) {
 				unlock_buffer(new_bh);
+<<<<<<< HEAD
+=======
+				error = -EIO;
+>>>>>>> refs/remotes/origin/master
 				goto getblk_failed;
 			}
 			memcpy(new_bh->b_data, s->base, new_bh->b_size);
 			set_buffer_uptodate(new_bh);
 			unlock_buffer(new_bh);
 			ext4_xattr_cache_insert(new_bh);
+<<<<<<< HEAD
 			error = ext4_handle_dirty_metadata(handle,
 							   inode, new_bh);
+=======
+			error = ext4_handle_dirty_xattr_block(handle,
+							      inode, new_bh);
+>>>>>>> refs/remotes/origin/master
 			if (error)
 				goto cleanup;
 		}
@@ -880,7 +1104,19 @@ cleanup:
 	return error;
 
 cleanup_dquot:
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dquot_free_block(inode, 1);
+=======
+	dquot_free_block(inode, EXT4_C2B(EXT4_SB(sb), 1));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dquot_free_block(inode, EXT4_C2B(EXT4_SB(sb), 1));
+>>>>>>> refs/remotes/origin/master
+=======
+	dquot_free_block(inode, EXT4_C2B(EXT4_SB(sb), 1));
+>>>>>>> refs/remotes/origin/cm-11.0
 	goto cleanup;
 
 bad_block:
@@ -891,6 +1127,7 @@ bad_block:
 #undef header
 }
 
+<<<<<<< HEAD
 struct ext4_xattr_ibody_find {
 	struct ext4_xattr_search s;
 	struct ext4_iloc iloc;
@@ -899,6 +1136,10 @@ struct ext4_xattr_ibody_find {
 static int
 ext4_xattr_ibody_find(struct inode *inode, struct ext4_xattr_info *i,
 		      struct ext4_xattr_ibody_find *is)
+=======
+int ext4_xattr_ibody_find(struct inode *inode, struct ext4_xattr_info *i,
+			  struct ext4_xattr_ibody_find *is)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ext4_xattr_ibody_header *header;
 	struct ext4_inode *raw_inode;
@@ -926,10 +1167,54 @@ ext4_xattr_ibody_find(struct inode *inode, struct ext4_xattr_info *i,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int
 ext4_xattr_ibody_set(handle_t *handle, struct inode *inode,
 		     struct ext4_xattr_info *i,
 		     struct ext4_xattr_ibody_find *is)
+=======
+int ext4_xattr_ibody_inline_set(handle_t *handle, struct inode *inode,
+				struct ext4_xattr_info *i,
+				struct ext4_xattr_ibody_find *is)
+{
+	struct ext4_xattr_ibody_header *header;
+	struct ext4_xattr_search *s = &is->s;
+	int error;
+
+	if (EXT4_I(inode)->i_extra_isize == 0)
+		return -ENOSPC;
+	error = ext4_xattr_set_entry(i, s);
+	if (error) {
+		if (error == -ENOSPC &&
+		    ext4_has_inline_data(inode)) {
+			error = ext4_try_to_evict_inline_data(handle, inode,
+					EXT4_XATTR_LEN(strlen(i->name) +
+					EXT4_XATTR_SIZE(i->value_len)));
+			if (error)
+				return error;
+			error = ext4_xattr_ibody_find(inode, i, is);
+			if (error)
+				return error;
+			error = ext4_xattr_set_entry(i, s);
+		}
+		if (error)
+			return error;
+	}
+	header = IHDR(inode, ext4_raw_inode(&is->iloc));
+	if (!IS_LAST_ENTRY(s->first)) {
+		header->h_magic = cpu_to_le32(EXT4_XATTR_MAGIC);
+		ext4_set_inode_state(inode, EXT4_STATE_XATTR);
+	} else {
+		header->h_magic = cpu_to_le32(0);
+		ext4_clear_inode_state(inode, EXT4_STATE_XATTR);
+	}
+	return 0;
+}
+
+static int ext4_xattr_ibody_set(handle_t *handle, struct inode *inode,
+				struct ext4_xattr_info *i,
+				struct ext4_xattr_ibody_find *is)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ext4_xattr_ibody_header *header;
 	struct ext4_xattr_search *s = &is->s;
@@ -992,11 +1277,19 @@ ext4_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
 	no_expand = ext4_test_inode_state(inode, EXT4_STATE_NO_EXPAND);
 	ext4_set_inode_state(inode, EXT4_STATE_NO_EXPAND);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	error = ext4_get_inode_loc(inode, &is.iloc);
 	if (error)
 		goto cleanup;
 
 	error = ext4_journal_get_write_access(handle, is.iloc.bh);
+=======
+	error = ext4_reserve_inode_write(handle, inode, &is.iloc);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = ext4_reserve_inode_write(handle, inode, &is.iloc);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		goto cleanup;
 
@@ -1089,9 +1382,16 @@ ext4_xattr_set(struct inode *inode, int name_index, const char *name,
 {
 	handle_t *handle;
 	int error, retries = 0;
+<<<<<<< HEAD
 
 retry:
 	handle = ext4_journal_start(inode, EXT4_DATA_TRANS_BLOCKS(inode->i_sb));
+=======
+	int credits = ext4_jbd2_credits_xattr(inode);
+
+retry:
+	handle = ext4_journal_start(inode, EXT4_HT_XATTR, credits);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(handle)) {
 		error = PTR_ERR(handle);
 	} else {
@@ -1197,7 +1497,11 @@ retry:
 		error = -EIO;
 		if (!bh)
 			goto cleanup;
+<<<<<<< HEAD
 		if (ext4_xattr_check_block(bh)) {
+=======
+		if (ext4_xattr_check_block(inode, bh)) {
+>>>>>>> refs/remotes/origin/master
 			EXT4_ERROR_INODE(inode, "bad block %llu",
 					 EXT4_I(inode)->i_file_acl);
 			error = -EIO;
@@ -1273,6 +1577,14 @@ retry:
 					new_extra_isize = s_min_extra_isize;
 					kfree(is); is = NULL;
 					kfree(bs); bs = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+					brelse(bh);
+>>>>>>> refs/remotes/origin/master
+=======
+					brelse(bh);
+>>>>>>> refs/remotes/origin/cm-11.0
 					goto retry;
 				}
 				error = -1;

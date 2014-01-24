@@ -32,7 +32,15 @@
 
 #include "ethernet-defines.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "cvmx-fpa.h"
+=======
+#include <asm/octeon/cvmx-fpa.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/octeon/cvmx-fpa.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * cvm_oct_fill_hw_skbuff - fill the supplied hardware pool with skbuffs
@@ -48,6 +56,7 @@ static int cvm_oct_fill_hw_skbuff(int pool, int size, int elements)
 	while (freed) {
 
 		struct sk_buff *skb = dev_alloc_skb(size + 256);
+<<<<<<< HEAD
 		if (unlikely(skb == NULL)) {
 			pr_warning
 			    ("Failed to allocate skb for hardware pool %d\n",
@@ -55,6 +64,10 @@ static int cvm_oct_fill_hw_skbuff(int pool, int size, int elements)
 			break;
 		}
 
+=======
+		if (unlikely(skb == NULL))
+			break;
+>>>>>>> refs/remotes/origin/master
 		skb_reserve(skb, 256 - (((unsigned long)skb->data) & 0x7f));
 		*(struct sk_buff **)(skb->data - sizeof(void *)) = skb;
 		cvmx_fpa_free(skb->data, pool, DONT_WRITEBACK(size / 128));

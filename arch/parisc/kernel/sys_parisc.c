@@ -35,6 +35,7 @@
 
 static unsigned long get_unshared_area(unsigned long addr, unsigned long len)
 {
+<<<<<<< HEAD
 	struct vm_area_struct *vma;
 
 	addr = PAGE_ALIGN(addr);
@@ -51,6 +52,19 @@ static unsigned long get_unshared_area(unsigned long addr, unsigned long len)
 
 #define DCACHE_ALIGN(addr) (((addr) + (SHMLBA - 1)) &~ (SHMLBA - 1))
 
+=======
+	struct vm_unmapped_area_info info;
+
+	info.flags = 0;
+	info.length = len;
+	info.low_limit = PAGE_ALIGN(addr);
+	info.high_limit = TASK_SIZE;
+	info.align_mask = 0;
+	info.align_offset = 0;
+	return vm_unmapped_area(&info);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * We need to know the offset to use.  Old scheme was to look for
  * existing mapping and use the same offset.  New scheme is to use the
@@ -63,6 +77,7 @@ static unsigned long get_unshared_area(unsigned long addr, unsigned long len)
  */
 static int get_offset(struct address_space *mapping)
 {
+<<<<<<< HEAD
 	int offset = (unsigned long) mapping << (PAGE_SHIFT - 8);
 	return offset & 0x3FF000;
 }
@@ -87,6 +102,30 @@ static unsigned long get_shared_area(struct address_space *mapping,
 		if (addr < vma->vm_end) /* handle wraparound */
 			return -ENOMEM;
 	}
+=======
+	return (unsigned long) mapping >> 8;
+}
+
+static unsigned long shared_align_offset(struct file *filp, unsigned long pgoff)
+{
+	struct address_space *mapping = filp ? filp->f_mapping : NULL;
+
+	return (get_offset(mapping) + pgoff) << PAGE_SHIFT;
+}
+
+static unsigned long get_shared_area(struct file *filp, unsigned long addr,
+		unsigned long len, unsigned long pgoff)
+{
+	struct vm_unmapped_area_info info;
+
+	info.flags = 0;
+	info.length = len;
+	info.low_limit = PAGE_ALIGN(addr);
+	info.high_limit = TASK_SIZE;
+	info.align_mask = PAGE_MASK & (SHMLBA - 1);
+	info.align_offset = shared_align_offset(filp, pgoff);
+	return vm_unmapped_area(&info);
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
@@ -94,6 +133,7 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
 {
 	if (len > TASK_SIZE)
 		return -ENOMEM;
+<<<<<<< HEAD
 	/* Might want to check for cache aliasing issues for MAP_FIXED case
 	 * like ARM or MIPS ??? --BenH.
 	 */
@@ -109,6 +149,22 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
 	} else {
 		addr = get_unshared_area(addr, len);
 	}
+=======
+	if (flags & MAP_FIXED) {
+		if ((flags & MAP_SHARED) &&
+		    (addr - shared_align_offset(filp, pgoff)) & (SHMLBA - 1))
+			return -EINVAL;
+		return addr;
+	}
+	if (!addr)
+		addr = TASK_UNMAPPED_BASE;
+
+	if (filp || (flags & MAP_SHARED))
+		addr = get_shared_area(filp, addr, len, pgoff);
+	else
+		addr = get_unshared_area(addr, len);
+
+>>>>>>> refs/remotes/origin/master
 	return addr;
 }
 
@@ -212,6 +268,16 @@ asmlinkage long parisc_sync_file_range(int fd,
 			(loff_t)hi_nbytes << 32 | lo_nbytes, flags);
 }
 
+<<<<<<< HEAD
+=======
+asmlinkage long parisc_fallocate(int fd, int mode, u32 offhi, u32 offlo,
+				u32 lenhi, u32 lenlo)
+{
+        return sys_fallocate(fd, mode, ((u64)offhi << 32) | offlo,
+                             ((u64)lenhi << 32) | lenlo);
+}
+
+>>>>>>> refs/remotes/origin/master
 asmlinkage unsigned long sys_alloc_hugepages(int key, unsigned long addr, unsigned long len, int prot, int flag)
 {
 	return -ENOMEM;
@@ -227,12 +293,21 @@ long parisc_personality(unsigned long personality)
 	long err;
 
 	if (personality(current->personality) == PER_LINUX32
+<<<<<<< HEAD
 	    && personality == PER_LINUX)
 		personality = PER_LINUX32;
 
 	err = sys_personality(personality);
 	if (err == PER_LINUX32)
 		err = PER_LINUX;
+=======
+	    && personality(personality) == PER_LINUX)
+		personality = (personality & ~PER_MASK) | PER_LINUX32;
+
+	err = sys_personality(personality);
+	if (personality(err) == PER_LINUX32)
+		err = (err & ~PER_MASK) | PER_LINUX;
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

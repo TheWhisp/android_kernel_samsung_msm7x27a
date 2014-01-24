@@ -1,6 +1,10 @@
 /*
  * Persistent Storage - platform driver interface parts.
  *
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2007-2008 Google, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2010 Intel Corporation <tony.luck@intel.com>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -22,21 +26,96 @@
 #include <linux/errno.h>
 #include <linux/init.h>
 #include <linux/kmsg_dump.h>
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/pstore.h>
 #include <linux/string.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include <linux/uaccess.h>
+=======
+=======
+#include <linux/console.h>
+#include <linux/module.h>
+#include <linux/pstore.h>
+#include <linux/zlib.h>
+#include <linux/string.h>
+>>>>>>> refs/remotes/origin/master
+#include <linux/timer.h>
+#include <linux/slab.h>
+#include <linux/uaccess.h>
+#include <linux/hardirq.h>
+<<<<<<< HEAD
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/jiffies.h>
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "internal.h"
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * We defer making "oops" entries appear in pstore - see
+ * whether the system is actually still running well enough
+ * to let someone see the entry
+ */
+<<<<<<< HEAD
+#define	PSTORE_INTERVAL	(60 * HZ)
+=======
+static int pstore_update_ms = -1;
+module_param_named(update_ms, pstore_update_ms, int, 0600);
+MODULE_PARM_DESC(update_ms, "milliseconds before pstore updates its content "
+		 "(default is -1, which means runtime updates are disabled; "
+		 "enabling this option is not safe, it may lead to further "
+		 "corruption on Oopses)");
+>>>>>>> refs/remotes/origin/master
+
+static int pstore_new_entry;
+
+static void pstore_timefunc(unsigned long);
+static DEFINE_TIMER(pstore_timer, pstore_timefunc, 0, 0);
+
+static void pstore_dowork(struct work_struct *);
+static DECLARE_WORK(pstore_work, pstore_dowork);
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * pstore_lock just protects "psinfo" during
  * calls to pstore_register()
  */
 static DEFINE_SPINLOCK(pstore_lock);
+<<<<<<< HEAD
 static struct pstore_info *psinfo;
 
+<<<<<<< HEAD
+=======
+static char *backend;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct pstore_info *psinfo;
+
+static char *backend;
+
+/* Compression parameters */
+#define COMPR_LEVEL 6
+#define WINDOW_BITS 12
+#define MEM_LEVEL 4
+static struct z_stream_s stream;
+
+static char *big_oops_buf;
+static size_t big_oops_buf_sz;
+
+>>>>>>> refs/remotes/origin/master
 /* How much of the console log to snapshot */
 static unsigned long kmsg_bytes = 10240;
 
@@ -48,9 +127,197 @@ void pstore_set_kmsg_bytes(int bytes)
 /* Tag each group of saved records with a sequence number */
 static int	oopscount;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static char *reason_str[] = {
 	"Oops", "Panic", "Kexec", "Restart", "Halt", "Poweroff", "Emergency"
 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const char *get_reason_str(enum kmsg_dump_reason reason)
+{
+	switch (reason) {
+	case KMSG_DUMP_PANIC:
+		return "Panic";
+	case KMSG_DUMP_OOPS:
+		return "Oops";
+	case KMSG_DUMP_EMERG:
+		return "Emergency";
+	case KMSG_DUMP_RESTART:
+		return "Restart";
+	case KMSG_DUMP_HALT:
+		return "Halt";
+	case KMSG_DUMP_POWEROFF:
+		return "Poweroff";
+	default:
+		return "Unknown";
+	}
+}
+
+bool pstore_cannot_block_path(enum kmsg_dump_reason reason)
+{
+	/*
+	 * In case of NMI path, pstore shouldn't be blocked
+	 * regardless of reason.
+	 */
+	if (in_nmi())
+		return true;
+
+	switch (reason) {
+	/* In panic case, other cpus are stopped by smp_send_stop(). */
+	case KMSG_DUMP_PANIC:
+	/* Emergency restart shouldn't be blocked by spin lock. */
+	case KMSG_DUMP_EMERG:
+		return true;
+	default:
+		return false;
+	}
+}
+EXPORT_SYMBOL_GPL(pstore_cannot_block_path);
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* Derived from logfs_compress() */
+static int pstore_compress(const void *in, void *out, size_t inlen,
+							size_t outlen)
+{
+	int err, ret;
+
+	ret = -EIO;
+	err = zlib_deflateInit2(&stream, COMPR_LEVEL, Z_DEFLATED, WINDOW_BITS,
+						MEM_LEVEL, Z_DEFAULT_STRATEGY);
+	if (err != Z_OK)
+		goto error;
+
+	stream.next_in = in;
+	stream.avail_in = inlen;
+	stream.total_in = 0;
+	stream.next_out = out;
+	stream.avail_out = outlen;
+	stream.total_out = 0;
+
+	err = zlib_deflate(&stream, Z_FINISH);
+	if (err != Z_STREAM_END)
+		goto error;
+
+	err = zlib_deflateEnd(&stream);
+	if (err != Z_OK)
+		goto error;
+
+	if (stream.total_out >= stream.total_in)
+		goto error;
+
+	ret = stream.total_out;
+error:
+	return ret;
+}
+
+/* Derived from logfs_uncompress */
+static int pstore_decompress(void *in, void *out, size_t inlen, size_t outlen)
+{
+	int err, ret;
+
+	ret = -EIO;
+	err = zlib_inflateInit2(&stream, WINDOW_BITS);
+	if (err != Z_OK)
+		goto error;
+
+	stream.next_in = in;
+	stream.avail_in = inlen;
+	stream.total_in = 0;
+	stream.next_out = out;
+	stream.avail_out = outlen;
+	stream.total_out = 0;
+
+	err = zlib_inflate(&stream, Z_FINISH);
+	if (err != Z_STREAM_END)
+		goto error;
+
+	err = zlib_inflateEnd(&stream);
+	if (err != Z_OK)
+		goto error;
+
+	ret = stream.total_out;
+error:
+	return ret;
+}
+
+static void allocate_buf_for_compression(void)
+{
+	size_t size;
+	size_t cmpr;
+
+	switch (psinfo->bufsize) {
+	/* buffer range for efivars */
+	case 1000 ... 2000:
+		cmpr = 56;
+		break;
+	case 2001 ... 3000:
+		cmpr = 54;
+		break;
+	case 3001 ... 3999:
+		cmpr = 52;
+		break;
+	/* buffer range for nvram, erst */
+	case 4000 ... 10000:
+		cmpr = 45;
+		break;
+	default:
+		cmpr = 60;
+		break;
+	}
+
+	big_oops_buf_sz = (psinfo->bufsize * 100) / cmpr;
+	big_oops_buf = kmalloc(big_oops_buf_sz, GFP_KERNEL);
+	if (big_oops_buf) {
+		size = max(zlib_deflate_workspacesize(WINDOW_BITS, MEM_LEVEL),
+			zlib_inflate_workspacesize());
+		stream.workspace = kmalloc(size, GFP_KERNEL);
+		if (!stream.workspace) {
+			pr_err("pstore: No memory for compression workspace; "
+				"skipping compression\n");
+			kfree(big_oops_buf);
+			big_oops_buf = NULL;
+		}
+	} else {
+		pr_err("No memory for uncompressed data; "
+			"skipping compression\n");
+		stream.workspace = NULL;
+	}
+
+}
+
+/*
+ * Called when compression fails, since the printk buffer
+ * would be fetched for compression calling it again when
+ * compression fails would have moved the iterator of
+ * printk buffer which results in fetching old contents.
+ * Copy the recent messages from big_oops_buf to psinfo->buf
+ */
+static size_t copy_kmsg_to_buffer(int hsize, size_t len)
+{
+	size_t total_len;
+	size_t diff;
+
+	total_len = hsize + len;
+
+	if (total_len > psinfo->bufsize) {
+		diff = total_len - psinfo->bufsize + hsize;
+		memcpy(psinfo->buf, big_oops_buf, hsize);
+		memcpy(psinfo->buf + hsize, big_oops_buf + diff,
+					psinfo->bufsize - hsize);
+		total_len = psinfo->bufsize;
+	} else
+		memcpy(psinfo->buf, big_oops_buf, total_len);
+
+	return total_len;
+}
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 /*
  * callback from kmsg_dump. (s2,l2) has the most recently
@@ -58,6 +325,7 @@ static char *reason_str[] = {
  * as we can from the end of the buffer.
  */
 static void pstore_dump(struct kmsg_dumper *dumper,
+<<<<<<< HEAD
 	    enum kmsg_dump_reason reason,
 	    const char *s1, unsigned long l1,
 	    const char *s2, unsigned long l2)
@@ -65,6 +333,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 	unsigned long	s1_start, s2_start;
 	unsigned long	l1_cpy, l2_cpy;
 	unsigned long	size, total = 0;
+<<<<<<< HEAD
 	char		*dst, *why;
 	u64		id;
 	int		hsize, part = 1;
@@ -79,6 +348,42 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 	while (total < kmsg_bytes) {
 		dst = psinfo->buf;
 		hsize = sprintf(dst, "%s#%d Part%d\n", why, oopscount, part++);
+=======
+	char		*dst;
+	const char	*why;
+	u64		id;
+	int		hsize, ret;
+	unsigned int	part = 1;
+	unsigned long	flags = 0;
+	int		is_locked = 0;
+=======
+			enum kmsg_dump_reason reason)
+{
+	unsigned long	total = 0;
+	const char	*why;
+	u64		id;
+	unsigned int	part = 1;
+	unsigned long	flags = 0;
+	int		is_locked = 0;
+	int		ret;
+>>>>>>> refs/remotes/origin/master
+
+	why = get_reason_str(reason);
+
+	if (pstore_cannot_block_path(reason)) {
+		is_locked = spin_trylock_irqsave(&psinfo->buf_lock, flags);
+		if (!is_locked) {
+			pr_err("pstore dump routine blocked in %s path, may corrupt error record\n"
+				       , in_nmi() ? "NMI" : why);
+		}
+	} else
+		spin_lock_irqsave(&psinfo->buf_lock, flags);
+	oopscount++;
+	while (total < kmsg_bytes) {
+<<<<<<< HEAD
+		dst = psinfo->buf;
+		hsize = sprintf(dst, "%s#%d Part%d\n", why, oopscount, part);
+>>>>>>> refs/remotes/origin/cm-10.0
 		size = psinfo->bufsize - hsize;
 		dst += hsize;
 
@@ -94,6 +399,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 		memcpy(dst, s1 + s1_start, l1_cpy);
 		memcpy(dst + l1_cpy, s2 + s2_start, l2_cpy);
 
+<<<<<<< HEAD
 		id = psinfo->write(PSTORE_TYPE_DMESG, hsize + l1_cpy + l2_cpy);
 		if (reason == KMSG_DUMP_OOPS && pstore_is_mounted())
 			pstore_mkfile(PSTORE_TYPE_DMESG, psinfo->name, id,
@@ -104,12 +410,136 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 		total += l1_cpy + l2_cpy;
 	}
 	mutex_unlock(&psinfo->buf_mutex);
+=======
+		ret = psinfo->write(PSTORE_TYPE_DMESG, reason, &id, part,
+				   hsize + l1_cpy + l2_cpy, psinfo);
+		if (ret == 0 && reason == KMSG_DUMP_OOPS && pstore_is_mounted())
+			pstore_new_entry = 1;
+		l1 -= l1_cpy;
+		l2 -= l2_cpy;
+		total += l1_cpy + l2_cpy;
+=======
+		char *dst;
+		unsigned long size;
+		int hsize;
+		int zipped_len = -1;
+		size_t len;
+		bool compressed;
+		size_t total_len;
+
+		if (big_oops_buf) {
+			dst = big_oops_buf;
+			hsize = sprintf(dst, "%s#%d Part%d\n", why,
+							oopscount, part);
+			size = big_oops_buf_sz - hsize;
+
+			if (!kmsg_dump_get_buffer(dumper, true, dst + hsize,
+								size, &len))
+				break;
+
+			zipped_len = pstore_compress(dst, psinfo->buf,
+						hsize + len, psinfo->bufsize);
+
+			if (zipped_len > 0) {
+				compressed = true;
+				total_len = zipped_len;
+			} else {
+				compressed = false;
+				total_len = copy_kmsg_to_buffer(hsize, len);
+			}
+		} else {
+			dst = psinfo->buf;
+			hsize = sprintf(dst, "%s#%d Part%d\n", why, oopscount,
+									part);
+			size = psinfo->bufsize - hsize;
+			dst += hsize;
+
+			if (!kmsg_dump_get_buffer(dumper, true, dst,
+								size, &len))
+				break;
+
+			compressed = false;
+			total_len = hsize + len;
+		}
+
+		ret = psinfo->write(PSTORE_TYPE_DMESG, reason, &id, part,
+				    oopscount, compressed, total_len, psinfo);
+		if (ret == 0 && reason == KMSG_DUMP_OOPS && pstore_is_mounted())
+			pstore_new_entry = 1;
+
+		total += total_len;
+>>>>>>> refs/remotes/origin/master
+		part++;
+	}
+	if (pstore_cannot_block_path(reason)) {
+		if (is_locked)
+			spin_unlock_irqrestore(&psinfo->buf_lock, flags);
+	} else
+		spin_unlock_irqrestore(&psinfo->buf_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct kmsg_dumper pstore_dumper = {
 	.dump = pstore_dump,
 };
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PSTORE_CONSOLE
+static void pstore_console_write(struct console *con, const char *s, unsigned c)
+{
+	const char *e = s + c;
+
+	while (s < e) {
+		unsigned long flags;
+		u64 id;
+
+		if (c > psinfo->bufsize)
+			c = psinfo->bufsize;
+
+		if (oops_in_progress) {
+			if (!spin_trylock_irqsave(&psinfo->buf_lock, flags))
+				break;
+		} else {
+			spin_lock_irqsave(&psinfo->buf_lock, flags);
+		}
+		memcpy(psinfo->buf, s, c);
+		psinfo->write(PSTORE_TYPE_CONSOLE, 0, &id, 0, 0, 0, c, psinfo);
+		spin_unlock_irqrestore(&psinfo->buf_lock, flags);
+		s += c;
+		c = e - s;
+	}
+}
+
+static struct console pstore_console = {
+	.name	= "pstore",
+	.write	= pstore_console_write,
+	.flags	= CON_PRINTBUFFER | CON_ENABLED | CON_ANYTIME,
+	.index	= -1,
+};
+
+static void pstore_register_console(void)
+{
+	register_console(&pstore_console);
+}
+#else
+static void pstore_register_console(void) {}
+#endif
+
+static int pstore_write_compat(enum pstore_type_id type,
+			       enum kmsg_dump_reason reason,
+			       u64 *id, unsigned int part, int count,
+			       bool compressed, size_t size,
+			       struct pstore_info *psi)
+{
+	return psi->write_buf(type, reason, id, part, psinfo->buf, compressed,
+			     size, psi);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * platform specific persistent storage driver registers with
  * us here. If pstore is already mounted, call the platform
@@ -123,12 +553,37 @@ int pstore_register(struct pstore_info *psi)
 {
 	struct module *owner = psi->owner;
 
+<<<<<<< HEAD
+=======
+	if (backend && strcmp(backend, psi->name))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&pstore_lock);
 	if (psinfo) {
 		spin_unlock(&pstore_lock);
 		return -EBUSY;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	psinfo = psi;
+=======
+
+	if (backend && strcmp(backend, psi->name)) {
+		spin_unlock(&pstore_lock);
+		return -EINVAL;
+	}
+
+	psinfo = psi;
+	mutex_init(&psinfo->read_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (!psi->write)
+		psi->write = pstore_write_compat;
+	psinfo = psi;
+	mutex_init(&psinfo->read_mutex);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&pstore_lock);
 
 	if (owner && !try_module_get(owner)) {
@@ -136,31 +591,93 @@ int pstore_register(struct pstore_info *psi)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (pstore_is_mounted())
+<<<<<<< HEAD
 		pstore_get_records();
 
 	kmsg_dump_register(&pstore_dumper);
 
+=======
+		pstore_get_records(0);
+
+	kmsg_dump_register(&pstore_dumper);
+
+	pstore_timer.expires = jiffies + PSTORE_INTERVAL;
+	add_timer(&pstore_timer);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	allocate_buf_for_compression();
+
+	if (pstore_is_mounted())
+		pstore_get_records(0);
+
+	kmsg_dump_register(&pstore_dumper);
+
+	if ((psi->flags & PSTORE_FLAGS_FRAGILE) == 0) {
+		pstore_register_console();
+		pstore_register_ftrace();
+	}
+
+	if (pstore_update_ms >= 0) {
+		pstore_timer.expires = jiffies +
+			msecs_to_jiffies(pstore_update_ms);
+		add_timer(&pstore_timer);
+	}
+
+	pr_info("pstore: Registered %s as persistent store backend\n",
+		psi->name);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL_GPL(pstore_register);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Read all the records from the persistent store. Create and
  * file files in our filesystem.
  */
 void pstore_get_records(void)
 {
 	struct pstore_info *psi = psinfo;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Read all the records from the persistent store. Create
+ * files in our filesystem.  Don't warn about -EEXIST errors
+ * when we are re-scanning the backing store looking to add new
+ * error records.
+ */
+void pstore_get_records(int quiet)
+{
+	struct pstore_info *psi = psinfo;
+	char			*buf = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	ssize_t			size;
 	u64			id;
 	enum pstore_type_id	type;
 	struct timespec		time;
 	int			failed = 0, rc;
+=======
+	ssize_t			size;
+	u64			id;
+	int			count;
+	enum pstore_type_id	type;
+	struct timespec		time;
+	int			failed = 0, rc;
+	bool			compressed;
+	int			unzipped_len = -1;
+>>>>>>> refs/remotes/origin/master
 
 	if (!psi)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&psinfo->buf_mutex);
 	rc = psi->open(psi);
 	if (rc)
@@ -174,12 +691,66 @@ void pstore_get_records(void)
 	psi->close(psi);
 out:
 	mutex_unlock(&psinfo->buf_mutex);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mutex_lock(&psi->read_mutex);
+	if (psi->open && psi->open(psi))
+		goto out;
+
+<<<<<<< HEAD
+	while ((size = psi->read(&id, &type, &time, &buf, psi)) > 0) {
+		rc = pstore_mkfile(type, psi->name, id, buf, (size_t)size,
+				  time, psi);
+		kfree(buf);
+		buf = NULL;
+=======
+	while ((size = psi->read(&id, &type, &count, &time, &buf, &compressed,
+				psi)) > 0) {
+		if (compressed && (type == PSTORE_TYPE_DMESG)) {
+			if (big_oops_buf)
+				unzipped_len = pstore_decompress(buf,
+							big_oops_buf, size,
+							big_oops_buf_sz);
+
+			if (unzipped_len > 0) {
+				buf = big_oops_buf;
+				size = unzipped_len;
+				compressed = false;
+			} else {
+				pr_err("pstore: decompression failed;"
+					"returned %d\n", unzipped_len);
+				compressed = true;
+			}
+		}
+		rc = pstore_mkfile(type, psi->name, id, count, buf,
+				  compressed, (size_t)size, time, psi);
+		if (unzipped_len < 0) {
+			/* Free buffer other than big oops */
+			kfree(buf);
+			buf = NULL;
+		} else
+			unzipped_len = -1;
+>>>>>>> refs/remotes/origin/master
+		if (rc && (rc != -EEXIST || !quiet))
+			failed++;
+	}
+	if (psi->close)
+		psi->close(psi);
+out:
+	mutex_unlock(&psi->read_mutex);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (failed)
 		printk(KERN_WARNING "pstore: failed to load %d record(s) from '%s'\n",
 		       failed, psi->name);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Call platform driver to write a record to the
  * persistent store.
@@ -205,3 +776,31 @@ int pstore_write(enum pstore_type_id type, char *buf, size_t size)
 	return 0;
 }
 EXPORT_SYMBOL_GPL(pstore_write);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static void pstore_dowork(struct work_struct *work)
+{
+	pstore_get_records(1);
+}
+
+static void pstore_timefunc(unsigned long dummy)
+{
+	if (pstore_new_entry) {
+		pstore_new_entry = 0;
+		schedule_work(&pstore_work);
+	}
+
+<<<<<<< HEAD
+	mod_timer(&pstore_timer, jiffies + PSTORE_INTERVAL);
+=======
+	mod_timer(&pstore_timer, jiffies + msecs_to_jiffies(pstore_update_ms));
+>>>>>>> refs/remotes/origin/master
+}
+
+module_param(backend, charp, 0444);
+MODULE_PARM_DESC(backend, "Pstore backend to use");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

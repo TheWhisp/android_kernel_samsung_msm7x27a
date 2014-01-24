@@ -99,6 +99,11 @@ extern const char * dmi_get_system_info(int field);
 extern const struct dmi_device * dmi_find_device(int type, const char *name,
 	const struct dmi_device *from);
 extern void dmi_scan_machine(void);
+<<<<<<< HEAD
+=======
+extern void dmi_memdev_walk(void);
+extern void dmi_set_dump_stack_arch_desc(void);
+>>>>>>> refs/remotes/origin/master
 extern bool dmi_get_date(int field, int *yearp, int *monthp, int *dayp);
 extern int dmi_name_in_vendors(const char *str);
 extern int dmi_name_in_serial(const char *str);
@@ -106,6 +111,10 @@ extern int dmi_available;
 extern int dmi_walk(void (*decode)(const struct dmi_header *, void *),
 	void *private_data);
 extern bool dmi_match(enum dmi_field f, const char *str);
+<<<<<<< HEAD
+=======
+extern void dmi_memdev_name(u16 handle, const char **bank, const char **device);
+>>>>>>> refs/remotes/origin/master
 
 #else
 
@@ -114,6 +123,11 @@ static inline const char * dmi_get_system_info(int field) { return NULL; }
 static inline const struct dmi_device * dmi_find_device(int type, const char *name,
 	const struct dmi_device *from) { return NULL; }
 static inline void dmi_scan_machine(void) { return; }
+<<<<<<< HEAD
+=======
+static inline void dmi_memdev_walk(void) { }
+static inline void dmi_set_dump_stack_arch_desc(void) { }
+>>>>>>> refs/remotes/origin/master
 static inline bool dmi_get_date(int field, int *yearp, int *monthp, int *dayp)
 {
 	if (yearp)
@@ -131,6 +145,11 @@ static inline int dmi_walk(void (*decode)(const struct dmi_header *, void *),
 	void *private_data) { return -1; }
 static inline bool dmi_match(enum dmi_field f, const char *str)
 	{ return false; }
+<<<<<<< HEAD
+=======
+static inline void dmi_memdev_name(u16 handle, const char **bank,
+		const char **device) { }
+>>>>>>> refs/remotes/origin/master
 static inline const struct dmi_system_id *
 	dmi_first_match(const struct dmi_system_id *list) { return NULL; }
 

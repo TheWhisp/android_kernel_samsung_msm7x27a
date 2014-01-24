@@ -40,7 +40,10 @@
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/poll.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 
 #include "sisusb.h"

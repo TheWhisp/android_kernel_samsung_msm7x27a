@@ -1,6 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009-2010, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
+=======
+ * Copyright (c) 2009-2010, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-11.0
  * Author: Brian Swetland <swetland@google.com>
  */
 
@@ -71,7 +79,17 @@
 #define NR_MSM_IRQS 64
 #define NR_GPIO_IRQS 122
 #define NR_BOARD_IRQS 64
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define NR_SIRC_IRQS 0
 
 #define INT_ADSP_A11_SMSM    INT_ADSP_A11
+=======
+
+>>>>>>> refs/remotes/origin/master
+=======
+#define NR_SIRC_IRQS 0
+
+#define INT_ADSP_A11_SMSM    INT_ADSP_A11
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif

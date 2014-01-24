@@ -14,10 +14,15 @@
 #endif
 
 #include <linux/compiler.h>
+<<<<<<< HEAD
 #include <linux/irqflags.h>
 #include <linux/types.h>
 #include <asm/barrier.h>
 #include <asm/bug.h>
+=======
+#include <linux/types.h>
+#include <asm/barrier.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>		/* sigh ... */
 #include <asm/cpu-features.h>
 #include <asm/sgidefs.h>
@@ -28,15 +33,25 @@
 #define SZLONG_MASK 31UL
 #define __LL		"ll	"
 #define __SC		"sc	"
+<<<<<<< HEAD
 #define __INS		"ins    "
 #define __EXT		"ext    "
+=======
+#define __INS		"ins	"
+#define __EXT		"ext	"
+>>>>>>> refs/remotes/origin/master
 #elif _MIPS_SZLONG == 64
 #define SZLONG_LOG 6
 #define SZLONG_MASK 63UL
 #define __LL		"lld	"
 #define __SC		"scd	"
+<<<<<<< HEAD
 #define __INS		"dins    "
 #define __EXT		"dext    "
+=======
+#define __INS		"dins	 "
+#define __EXT		"dext	 "
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -45,6 +60,27 @@
 #define smp_mb__before_clear_bit()	smp_mb__before_llsc()
 #define smp_mb__after_clear_bit()	smp_llsc_mb()
 
+<<<<<<< HEAD
+=======
+
+/*
+ * These are the "slower" versions of the functions and are in bitops.c.
+ * These functions call raw_local_irq_{save,restore}().
+ */
+void __mips_set_bit(unsigned long nr, volatile unsigned long *addr);
+void __mips_clear_bit(unsigned long nr, volatile unsigned long *addr);
+void __mips_change_bit(unsigned long nr, volatile unsigned long *addr);
+int __mips_test_and_set_bit(unsigned long nr,
+			    volatile unsigned long *addr);
+int __mips_test_and_set_bit_lock(unsigned long nr,
+				 volatile unsigned long *addr);
+int __mips_test_and_clear_bit(unsigned long nr,
+			      volatile unsigned long *addr);
+int __mips_test_and_change_bit(unsigned long nr,
+			       volatile unsigned long *addr);
+
+
+>>>>>>> refs/remotes/origin/master
 /*
  * set_bit - Atomically set a bit in memory
  * @nr: the bit to set
@@ -58,7 +94,11 @@
 static inline void set_bit(unsigned long nr, volatile unsigned long *addr)
 {
 	unsigned long *m = ((unsigned long *) addr) + (nr >> SZLONG_LOG);
+<<<<<<< HEAD
 	unsigned short bit = nr & SZLONG_MASK;
+=======
+	int bit = nr & SZLONG_MASK;
+>>>>>>> refs/remotes/origin/master
 	unsigned long temp;
 
 	if (kernel_uses_llsc && R10000_LLSC_WAR) {
@@ -93,6 +133,7 @@ static inline void set_bit(unsigned long nr, volatile unsigned long *addr)
 			: "=&r" (temp), "+m" (*m)
 			: "ir" (1UL << bit));
 		} while (unlikely(!temp));
+<<<<<<< HEAD
 	} else {
 		volatile unsigned long *a = addr;
 		unsigned long mask;
@@ -104,6 +145,10 @@ static inline void set_bit(unsigned long nr, volatile unsigned long *addr)
 		*a |= mask;
 		raw_local_irq_restore(flags);
 	}
+=======
+	} else
+		__mips_set_bit(nr, addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -119,7 +164,11 @@ static inline void set_bit(unsigned long nr, volatile unsigned long *addr)
 static inline void clear_bit(unsigned long nr, volatile unsigned long *addr)
 {
 	unsigned long *m = ((unsigned long *) addr) + (nr >> SZLONG_LOG);
+<<<<<<< HEAD
 	unsigned short bit = nr & SZLONG_MASK;
+=======
+	int bit = nr & SZLONG_MASK;
+>>>>>>> refs/remotes/origin/master
 	unsigned long temp;
 
 	if (kernel_uses_llsc && R10000_LLSC_WAR) {
@@ -154,6 +203,7 @@ static inline void clear_bit(unsigned long nr, volatile unsigned long *addr)
 			: "=&r" (temp), "+m" (*m)
 			: "ir" (~(1UL << bit)));
 		} while (unlikely(!temp));
+<<<<<<< HEAD
 	} else {
 		volatile unsigned long *a = addr;
 		unsigned long mask;
@@ -165,6 +215,10 @@ static inline void clear_bit(unsigned long nr, volatile unsigned long *addr)
 		*a &= ~mask;
 		raw_local_irq_restore(flags);
 	}
+=======
+	} else
+		__mips_clear_bit(nr, addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -192,7 +246,11 @@ static inline void clear_bit_unlock(unsigned long nr, volatile unsigned long *ad
  */
 static inline void change_bit(unsigned long nr, volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	unsigned short bit = nr & SZLONG_MASK;
+=======
+	int bit = nr & SZLONG_MASK;
+>>>>>>> refs/remotes/origin/master
 
 	if (kernel_uses_llsc && R10000_LLSC_WAR) {
 		unsigned long *m = ((unsigned long *) addr) + (nr >> SZLONG_LOG);
@@ -221,6 +279,7 @@ static inline void change_bit(unsigned long nr, volatile unsigned long *addr)
 			: "=&r" (temp), "+m" (*m)
 			: "ir" (1UL << bit));
 		} while (unlikely(!temp));
+<<<<<<< HEAD
 	} else {
 		volatile unsigned long *a = addr;
 		unsigned long mask;
@@ -232,6 +291,10 @@ static inline void change_bit(unsigned long nr, volatile unsigned long *addr)
 		*a ^= mask;
 		raw_local_irq_restore(flags);
 	}
+=======
+	} else
+		__mips_change_bit(nr, addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -245,7 +308,11 @@ static inline void change_bit(unsigned long nr, volatile unsigned long *addr)
 static inline int test_and_set_bit(unsigned long nr,
 	volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	unsigned short bit = nr & SZLONG_MASK;
+=======
+	int bit = nr & SZLONG_MASK;
+>>>>>>> refs/remotes/origin/master
 	unsigned long res;
 
 	smp_mb__before_llsc();
@@ -282,6 +349,7 @@ static inline int test_and_set_bit(unsigned long nr,
 		} while (unlikely(!res));
 
 		res = temp & (1UL << bit);
+<<<<<<< HEAD
 	} else {
 		volatile unsigned long *a = addr;
 		unsigned long mask;
@@ -294,6 +362,10 @@ static inline int test_and_set_bit(unsigned long nr,
 		*a |= mask;
 		raw_local_irq_restore(flags);
 	}
+=======
+	} else
+		res = __mips_test_and_set_bit(nr, addr);
+>>>>>>> refs/remotes/origin/master
 
 	smp_llsc_mb();
 
@@ -311,7 +383,11 @@ static inline int test_and_set_bit(unsigned long nr,
 static inline int test_and_set_bit_lock(unsigned long nr,
 	volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	unsigned short bit = nr & SZLONG_MASK;
+=======
+	int bit = nr & SZLONG_MASK;
+>>>>>>> refs/remotes/origin/master
 	unsigned long res;
 
 	if (kernel_uses_llsc && R10000_LLSC_WAR) {
@@ -346,6 +422,7 @@ static inline int test_and_set_bit_lock(unsigned long nr,
 		} while (unlikely(!res));
 
 		res = temp & (1UL << bit);
+<<<<<<< HEAD
 	} else {
 		volatile unsigned long *a = addr;
 		unsigned long mask;
@@ -358,6 +435,10 @@ static inline int test_and_set_bit_lock(unsigned long nr,
 		*a |= mask;
 		raw_local_irq_restore(flags);
 	}
+=======
+	} else
+		res = __mips_test_and_set_bit_lock(nr, addr);
+>>>>>>> refs/remotes/origin/master
 
 	smp_llsc_mb();
 
@@ -374,7 +455,11 @@ static inline int test_and_set_bit_lock(unsigned long nr,
 static inline int test_and_clear_bit(unsigned long nr,
 	volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	unsigned short bit = nr & SZLONG_MASK;
+=======
+	int bit = nr & SZLONG_MASK;
+>>>>>>> refs/remotes/origin/master
 	unsigned long res;
 
 	smp_mb__before_llsc();
@@ -388,7 +473,11 @@ static inline int test_and_clear_bit(unsigned long nr,
 		"1:	" __LL	"%0, %1		# test_and_clear_bit	\n"
 		"	or	%2, %0, %3				\n"
 		"	xor	%2, %3					\n"
+<<<<<<< HEAD
 		"	" __SC 	"%2, %1					\n"
+=======
+		"	" __SC	"%2, %1					\n"
+>>>>>>> refs/remotes/origin/master
 		"	beqzl	%2, 1b					\n"
 		"	and	%2, %0, %3				\n"
 		"	.set	mips0					\n"
@@ -402,10 +491,17 @@ static inline int test_and_clear_bit(unsigned long nr,
 
 		do {
 			__asm__ __volatile__(
+<<<<<<< HEAD
 			"	" __LL	"%0, %1	# test_and_clear_bit	\n"
 			"	" __EXT "%2, %0, %3, 1			\n"
 			"	" __INS	"%0, $0, %3, 1			\n"
 			"	" __SC 	"%0, %1				\n"
+=======
+			"	" __LL	"%0, %1 # test_and_clear_bit	\n"
+			"	" __EXT "%2, %0, %3, 1			\n"
+			"	" __INS "%0, $0, %3, 1			\n"
+			"	" __SC	"%0, %1				\n"
+>>>>>>> refs/remotes/origin/master
 			: "=&r" (temp), "+m" (*m), "=&r" (res)
 			: "ir" (bit)
 			: "memory");
@@ -418,10 +514,17 @@ static inline int test_and_clear_bit(unsigned long nr,
 		do {
 			__asm__ __volatile__(
 			"	.set	mips3				\n"
+<<<<<<< HEAD
 			"	" __LL	"%0, %1	# test_and_clear_bit	\n"
 			"	or	%2, %0, %3			\n"
 			"	xor	%2, %3				\n"
 			"	" __SC 	"%2, %1				\n"
+=======
+			"	" __LL	"%0, %1 # test_and_clear_bit	\n"
+			"	or	%2, %0, %3			\n"
+			"	xor	%2, %3				\n"
+			"	" __SC	"%2, %1				\n"
+>>>>>>> refs/remotes/origin/master
 			"	.set	mips0				\n"
 			: "=&r" (temp), "+m" (*m), "=&r" (res)
 			: "r" (1UL << bit)
@@ -429,6 +532,7 @@ static inline int test_and_clear_bit(unsigned long nr,
 		} while (unlikely(!res));
 
 		res = temp & (1UL << bit);
+<<<<<<< HEAD
 	} else {
 		volatile unsigned long *a = addr;
 		unsigned long mask;
@@ -441,6 +545,10 @@ static inline int test_and_clear_bit(unsigned long nr,
 		*a &= ~mask;
 		raw_local_irq_restore(flags);
 	}
+=======
+	} else
+		res = __mips_test_and_clear_bit(nr, addr);
+>>>>>>> refs/remotes/origin/master
 
 	smp_llsc_mb();
 
@@ -458,7 +566,11 @@ static inline int test_and_clear_bit(unsigned long nr,
 static inline int test_and_change_bit(unsigned long nr,
 	volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	unsigned short bit = nr & SZLONG_MASK;
+=======
+	int bit = nr & SZLONG_MASK;
+>>>>>>> refs/remotes/origin/master
 	unsigned long res;
 
 	smp_mb__before_llsc();
@@ -485,7 +597,11 @@ static inline int test_and_change_bit(unsigned long nr,
 		do {
 			__asm__ __volatile__(
 			"	.set	mips3				\n"
+<<<<<<< HEAD
 			"	" __LL	"%0, %1	# test_and_change_bit	\n"
+=======
+			"	" __LL	"%0, %1 # test_and_change_bit	\n"
+>>>>>>> refs/remotes/origin/master
 			"	xor	%2, %0, %3			\n"
 			"	" __SC	"\t%2, %1			\n"
 			"	.set	mips0				\n"
@@ -495,6 +611,7 @@ static inline int test_and_change_bit(unsigned long nr,
 		} while (unlikely(!res));
 
 		res = temp & (1UL << bit);
+<<<<<<< HEAD
 	} else {
 		volatile unsigned long *a = addr;
 		unsigned long mask;
@@ -507,6 +624,10 @@ static inline int test_and_change_bit(unsigned long nr,
 		*a ^= mask;
 		raw_local_irq_restore(flags);
 	}
+=======
+	} else
+		res = __mips_test_and_change_bit(nr, addr);
+>>>>>>> refs/remotes/origin/master
 
 	smp_llsc_mb();
 

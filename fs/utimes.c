@@ -53,6 +53,10 @@ static int utimes_common(struct path *path, struct timespec *times)
 	int error;
 	struct iattr newattrs;
 	struct inode *inode = path->dentry->d_inode;
+<<<<<<< HEAD
+=======
+	struct inode *delegated_inode = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	error = mnt_want_write(path->mnt);
 	if (error)
@@ -101,9 +105,21 @@ static int utimes_common(struct path *path, struct timespec *times)
 				goto mnt_drop_write_and_out;
 		}
 	}
+<<<<<<< HEAD
 	mutex_lock(&inode->i_mutex);
 	error = notify_change(path->dentry, &newattrs);
 	mutex_unlock(&inode->i_mutex);
+=======
+retry_deleg:
+	mutex_lock(&inode->i_mutex);
+	error = notify_change(path->dentry, &newattrs, &delegated_inode);
+	mutex_unlock(&inode->i_mutex);
+	if (delegated_inode) {
+		error = break_deleg_wait(&delegated_inode);
+		if (!error)
+			goto retry_deleg;
+	}
+>>>>>>> refs/remotes/origin/master
 
 mnt_drop_write_and_out:
 	mnt_drop_write(path->mnt);
@@ -140,11 +156,16 @@ long do_utimes(int dfd, const char __user *filename, struct timespec *times,
 		goto out;
 
 	if (filename == NULL && dfd != AT_FDCWD) {
+<<<<<<< HEAD
 		struct file *file;
+=======
+		struct fd f;
+>>>>>>> refs/remotes/origin/master
 
 		if (flags & AT_SYMLINK_NOFOLLOW)
 			goto out;
 
+<<<<<<< HEAD
 		file = fget(dfd);
 		error = -EBADF;
 		if (!file)
@@ -152,19 +173,39 @@ long do_utimes(int dfd, const char __user *filename, struct timespec *times,
 
 		error = utimes_common(&file->f_path, times);
 		fput(file);
+=======
+		f = fdget(dfd);
+		error = -EBADF;
+		if (!f.file)
+			goto out;
+
+		error = utimes_common(&f.file->f_path, times);
+		fdput(f);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		struct path path;
 		int lookup_flags = 0;
 
 		if (!(flags & AT_SYMLINK_NOFOLLOW))
 			lookup_flags |= LOOKUP_FOLLOW;
+<<<<<<< HEAD
 
+=======
+retry:
+>>>>>>> refs/remotes/origin/master
 		error = user_path_at(dfd, filename, lookup_flags, &path);
 		if (error)
 			goto out;
 
 		error = utimes_common(&path, times);
 		path_put(&path);
+<<<<<<< HEAD
+=======
+		if (retry_estale(error, lookup_flags)) {
+			lookup_flags |= LOOKUP_REVAL;
+			goto retry;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:

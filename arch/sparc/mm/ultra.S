@@ -153,10 +153,17 @@ __spitfire_flush_tlb_mm_slow:
 	.globl		__flush_icache_page
 __flush_icache_page:	/* %o0 = phys_page */
 	srlx		%o0, PAGE_SHIFT, %o0
+<<<<<<< HEAD
 	sethi		%uhi(PAGE_OFFSET), %g1
 	sllx		%o0, PAGE_SHIFT, %o0
 	sethi		%hi(PAGE_SIZE), %g2
 	sllx		%g1, 32, %g1
+=======
+	sethi		%hi(PAGE_OFFSET), %g1
+	sllx		%o0, PAGE_SHIFT, %o0
+	sethi		%hi(PAGE_SIZE), %g2
+	ldx		[%g1 + %lo(PAGE_OFFSET)], %g1
+>>>>>>> refs/remotes/origin/master
 	add		%o0, %g1, %o0
 1:	subcc		%g2, 32, %g2
 	bne,pt		%icc, 1b
@@ -178,8 +185,13 @@ __flush_icache_page:	/* %o0 = phys_page */
 	.align		64
 	.globl		__flush_dcache_page
 __flush_dcache_page:	/* %o0=kaddr, %o1=flush_icache */
+<<<<<<< HEAD
 	sethi		%uhi(PAGE_OFFSET), %g1
 	sllx		%g1, 32, %g1
+=======
+	sethi		%hi(PAGE_OFFSET), %g1
+	ldx		[%g1 + %lo(PAGE_OFFSET)], %g1
+>>>>>>> refs/remotes/origin/master
 	sub		%o0, %g1, %o0			! physical address
 	srlx		%o0, 11, %o0			! make D-cache TAG
 	sethi		%hi(1 << 14), %o2		! D-cache size
@@ -246,7 +258,15 @@ __cheetah_flush_tlb_page:	/* 22 insns */
 	be,pn		%icc, 1f
 	 andn		%o1, 1, %o3
 	stxa		%g0, [%o3] ASI_IMMU_DEMAP
+<<<<<<< HEAD
+<<<<<<< HEAD
 1:	stxa		%g0, [%o3] ASI_DMMU_DEMAP
+=======
+1:	stxa		%g0, [%o3] ASI_DMMU_DEMAP	
+>>>>>>> refs/remotes/origin/master
+=======
+1:	stxa		%g0, [%o3] ASI_DMMU_DEMAP
+>>>>>>> refs/remotes/origin/cm-11.0
 	membar		#Sync
 	stxa		%g2, [%o4] ASI_DMMU
 	sethi		%hi(KERNBASE), %o4
@@ -287,8 +307,13 @@ __cheetah_flush_tlb_pending:	/* 27 insns */
 
 #ifdef DCACHE_ALIASING_POSSIBLE
 __cheetah_flush_dcache_page: /* 11 insns */
+<<<<<<< HEAD
 	sethi		%uhi(PAGE_OFFSET), %g1
 	sllx		%g1, 32, %g1
+=======
+	sethi		%hi(PAGE_OFFSET), %g1
+	ldx		[%g1 + %lo(PAGE_OFFSET)], %g1
+>>>>>>> refs/remotes/origin/master
 	sub		%o0, %g1, %o0
 	sethi		%hi(PAGE_SIZE), %o4
 1:	subcc		%o4, (1 << 5), %o4
@@ -549,8 +574,13 @@ xcall_sync_tick:
 
 	.globl		xcall_fetch_glob_regs
 xcall_fetch_glob_regs:
+<<<<<<< HEAD
 	sethi		%hi(global_reg_snapshot), %g1
 	or		%g1, %lo(global_reg_snapshot), %g1
+=======
+	sethi		%hi(global_cpu_snapshot), %g1
+	or		%g1, %lo(global_cpu_snapshot), %g1
+>>>>>>> refs/remotes/origin/master
 	__GET_CPUID(%g2)
 	sllx		%g2, 6, %g3
 	add		%g1, %g3, %g1
@@ -577,6 +607,69 @@ xcall_fetch_glob_regs:
 	stx		%g3, [%g1 + GR_SNAP_THREAD]
 	retry
 
+<<<<<<< HEAD
+=======
+	.globl		xcall_fetch_glob_pmu
+xcall_fetch_glob_pmu:
+	sethi		%hi(global_cpu_snapshot), %g1
+	or		%g1, %lo(global_cpu_snapshot), %g1
+	__GET_CPUID(%g2)
+	sllx		%g2, 6, %g3
+	add		%g1, %g3, %g1
+	rd		%pic, %g7
+	stx		%g7, [%g1 + (4 * 8)]
+	rd		%pcr, %g7
+	stx		%g7, [%g1 + (0 * 8)]
+	retry
+
+	.globl		xcall_fetch_glob_pmu_n4
+xcall_fetch_glob_pmu_n4:
+	sethi		%hi(global_cpu_snapshot), %g1
+	or		%g1, %lo(global_cpu_snapshot), %g1
+	__GET_CPUID(%g2)
+	sllx		%g2, 6, %g3
+	add		%g1, %g3, %g1
+
+	ldxa		[%g0] ASI_PIC, %g7
+	stx		%g7, [%g1 + (4 * 8)]
+	mov		0x08, %g3
+	ldxa		[%g3] ASI_PIC, %g7
+	stx		%g7, [%g1 + (5 * 8)]
+	mov		0x10, %g3
+	ldxa		[%g3] ASI_PIC, %g7
+	stx		%g7, [%g1 + (6 * 8)]
+	mov		0x18, %g3
+	ldxa		[%g3] ASI_PIC, %g7
+	stx		%g7, [%g1 + (7 * 8)]
+
+	mov		%o0, %g2
+	mov		%o1, %g3
+	mov		%o5, %g7
+
+	mov		HV_FAST_VT_GET_PERFREG, %o5
+	mov		3, %o0
+	ta		HV_FAST_TRAP
+	stx		%o1, [%g1 + (3 * 8)]
+	mov		HV_FAST_VT_GET_PERFREG, %o5
+	mov		2, %o0
+	ta		HV_FAST_TRAP
+	stx		%o1, [%g1 + (2 * 8)]
+	mov		HV_FAST_VT_GET_PERFREG, %o5
+	mov		1, %o0
+	ta		HV_FAST_TRAP
+	stx		%o1, [%g1 + (1 * 8)]
+	mov		HV_FAST_VT_GET_PERFREG, %o5
+	mov		0, %o0
+	ta		HV_FAST_TRAP
+	stx		%o1, [%g1 + (0 * 8)]
+
+	mov		%g2, %o0
+	mov		%g3, %o1
+	mov		%g7, %o5
+
+	retry
+
+>>>>>>> refs/remotes/origin/master
 #ifdef DCACHE_ALIASING_POSSIBLE
 	.align		32
 	.globl		xcall_flush_dcache_page_cheetah

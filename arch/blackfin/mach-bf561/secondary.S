@@ -23,6 +23,8 @@
 #define INITIAL_STACK	(COREB_L1_SCRATCH_START + L1_SCRATCH_LENGTH - 12)
 
 ENTRY(_coreb_trampoline_start)
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Set the SYSCFG register */
 	R0 = 0x36;
 	SYSCFG = R0; /*Enable Cycle Counter and Nesting Of Interrupts(3rd Bit)*/
@@ -99,12 +101,77 @@ ENTRY(_coreb_trampoline_start)
 	R0 = RETX;
 	[P0] = R0;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Enable Cycle Counter and Nesting Of Interrupts */
+#ifdef CONFIG_BFIN_SCRATCH_REG_CYCLES
+	R0 = SYSCFG_SNEN;
+#else
+	R0 = SYSCFG_SNEN | SYSCFG_CCEN;
+#endif
+	SYSCFG = R0;
+
+	/* Optimization register tricks: keep a base value in the
+	 * reserved P registers so we use the load/store with an
+	 * offset syntax.  R0 = [P5 + <constant>];
+	 *   P5 - core MMR base
+	 *   R6 - 0
+	 */
+	r6 = 0;
+	p5.l = 0;
+	p5.h = hi(COREMMR_BASE);
+
+	/* Zero out registers required by Blackfin ABI */
+
+	/* Disable circular buffers */
+	L0 = r6;
+	L1 = r6;
+	L2 = r6;
+	L3 = r6;
+
+	/* Disable hardware loops in case we were started by 'go' */
+	LC0 = r6;
+	LC1 = r6;
+
+	/*
+	 * Clear ITEST_COMMAND and DTEST_COMMAND registers,
+	 * Leaving these as non-zero can confuse the emulator
+	 */
+	[p5 + (DTEST_COMMAND - COREMMR_BASE)] = r6;
+	[p5 + (ITEST_COMMAND - COREMMR_BASE)] = r6;
+	CSYNC;
+
+	trace_buffer_init(p0,r0);
+
+	/* Turn off the icache */
+	r1 = [p5 + (IMEM_CONTROL - COREMMR_BASE)];
+	BITCLR (r1, ENICPLB_P);
+	[p5 + (IMEM_CONTROL - COREMMR_BASE)] = r1;
+	SSYNC;
+
+	/* Turn off the dcache */
+	r1 = [p5 + (DMEM_CONTROL - COREMMR_BASE)];
+	BITCLR (r1, ENDCPLB_P);
+	[p5 + (DMEM_CONTROL - COREMMR_BASE)] = r1;
+	SSYNC;
+
+	/* in case of double faults, save a few things */
+	p1.l = _initial_pda_coreb;
+	p1.h = _initial_pda_coreb;
+	r4 = RETX;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DEBUG_DOUBLEFAULT
 	/* Only save these if we are storing them,
 	 * This happens here, since L1 gets clobbered
 	 * below
 	 */
 	GET_PDA(p0, r0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	r7 = [p0 + PDA_DF_RETX];
 	p1.l = _init_saved_retx_coreb;
 	p1.h = _init_saved_retx_coreb;
@@ -125,6 +192,23 @@ ENTRY(_coreb_trampoline_start)
 	p1.h = _init_saved_seqstat_coreb;
 	[p1] = r7;
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	r0 = [p0 + PDA_DF_RETX];
+	r1 = [p0 + PDA_DF_DCPLB];
+	r2 = [p0 + PDA_DF_ICPLB];
+	r3 = [p0 + PDA_DF_SEQSTAT];
+	[p1 + PDA_INIT_DF_RETX] = r0;
+	[p1 + PDA_INIT_DF_DCPLB] = r1;
+	[p1 + PDA_INIT_DF_ICPLB] = r2;
+	[p1 + PDA_INIT_DF_SEQSTAT] = r3;
+#endif
+	[p1 + PDA_INIT_RETX] = r4;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize stack pointer */
 	sp.l = lo(INITIAL_STACK);
@@ -138,6 +222,8 @@ ENTRY(_coreb_trampoline_start)
 
 	/* EVT15 = _real_start */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	p0.l = lo(EVT15);
 	p0.h = hi(EVT15);
 	p1.l = _coreb_start;
@@ -151,6 +237,20 @@ ENTRY(_coreb_trampoline_start)
 	p1.h = 0x0;
 	[p0] = p1;
 	csync;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	p1.l = _coreb_start;
+	p1.h = _coreb_start;
+	[p5 + (EVT15 - COREMMR_BASE)] = p1;
+	csync;
+
+	r0 = EVT_IVG15 (z);
+	sti r0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	raise 15;
 	p0.l = .LWAIT_HERE;

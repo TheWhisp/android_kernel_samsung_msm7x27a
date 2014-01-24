@@ -1,3 +1,37 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/******************************************************************************
+ *
+ * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of version 2 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ * Modifications for inclusion into the Linux staging tree are
+ * Copyright(c) 2010 Larry Finger. All rights reserved.
+ *
+ * Contact information:
+ * WLAN FAE <wlanfae@realtek.com>
+ * Larry Finger <Larry.Finger@lwfinger.net>
+ *
+ ******************************************************************************/
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __RTL871X_CMD_H_
 #define __RTL871X_CMD_H_
 
@@ -295,6 +329,44 @@ struct setdatarate_parm {
 	u8	datarates[NumRates];
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum _RT_CHANNEL_DOMAIN {
+	RT_CHANNEL_DOMAIN_FCC = 0,
+	RT_CHANNEL_DOMAIN_IC = 1,
+	RT_CHANNEL_DOMAIN_ETSI = 2,
+	RT_CHANNEL_DOMAIN_SPAIN = 3,
+	RT_CHANNEL_DOMAIN_FRANCE = 4,
+	RT_CHANNEL_DOMAIN_MKK = 5,
+	RT_CHANNEL_DOMAIN_MKK1 = 6,
+	RT_CHANNEL_DOMAIN_ISRAEL = 7,
+	RT_CHANNEL_DOMAIN_TELEC = 8,
+
+	/* Be compatible with old channel plan. No good! */
+	RT_CHANNEL_DOMAIN_MIC = 9,
+	RT_CHANNEL_DOMAIN_GLOBAL_DOAMIN = 10,
+	RT_CHANNEL_DOMAIN_WORLD_WIDE_13 = 11,
+	RT_CHANNEL_DOMAIN_TELEC_NETGEAR = 12,
+
+	RT_CHANNEL_DOMAIN_NCC = 13,
+	RT_CHANNEL_DOMAIN_5G = 14,
+	RT_CHANNEL_DOMAIN_5G_40M = 15,
+ /*===== Add new channel plan above this line===============*/
+	RT_CHANNEL_DOMAIN_MAX,
+};
+
+
+struct SetChannelPlan_param {
+	enum _RT_CHANNEL_DOMAIN ChannelPlan;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
 Caller Mode: Any
 
@@ -367,6 +439,19 @@ struct writeBB_parm {
 	u8	value;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct writePTM_parm {
+	u8	type;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct readRF_parm {
 	u8	offset;
 };
@@ -646,9 +731,26 @@ struct SetChannel_parm {
 	u32 curr_ch;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*H2C Handler index: 56 */
 struct PT_param {
 	u8 PT_En;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*H2C Handler index: 61 */
+struct DisconnectCtrlEx_param {
+	/* MAXTIME = (2 * FirstStageTO) + (TryPktCnt * TryPktInterval) */
+	unsigned char EnableDrvCtrl;
+	unsigned char TryPktCnt;
+	unsigned char TryPktInterval; /* Unit: ms */
+	unsigned char rsvd;
+	unsigned int  FirstStageTO; /* Unit: ms */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define GEN_CMD_CODE(cmd)	cmd ## _CMD_
@@ -657,7 +759,11 @@ struct PT_param {
  * Result:
  * 0x00: success
  * 0x01: success, and check Response.
+<<<<<<< HEAD
  * 0x02: cmd ignored due to duplicated sequcne number
+=======
+ * 0x02: cmd ignored due to duplicated sequence number
+>>>>>>> refs/remotes/origin/master
  * 0x03: cmd dropped due to invalid cmd code
  * 0x04: reserved.
  */
@@ -684,13 +790,36 @@ u8 r8712_disassoc_cmd(struct _adapter *padapter);
 u8 r8712_setopmode_cmd(struct _adapter *padapter,
 		 enum NDIS_802_11_NETWORK_INFRASTRUCTURE networktype);
 u8 r8712_setdatarate_cmd(struct _adapter *padapter, u8 *rateset);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+u8 r8712_set_chplan_cmd(struct _adapter  *padapter, int chplan);
+>>>>>>> refs/remotes/origin/cm-10.0
 u8 r8712_setbasicrate_cmd(struct _adapter *padapter, u8 *rateset);
 u8 r8712_getrfreg_cmd(struct _adapter *padapter, u8 offset, u8 * pval);
+=======
+u8 r8712_set_chplan_cmd(struct _adapter  *padapter, int chplan);
+u8 r8712_setbasicrate_cmd(struct _adapter *padapter, u8 *rateset);
+u8 r8712_getrfreg_cmd(struct _adapter *padapter, u8 offset, u8 *pval);
+>>>>>>> refs/remotes/origin/master
 u8 r8712_setrfintfs_cmd(struct _adapter *padapter, u8 mode);
 u8 r8712_setrfreg_cmd(struct _adapter  *padapter, u8 offset, u32 val);
 u8 r8712_setrttbl_cmd(struct _adapter  *padapter,
 		      struct setratable_parm *prate_table);
+<<<<<<< HEAD
+<<<<<<< HEAD
 u8 r8712_setptm_cmd(struct _adapter *padapter, u8 type);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+u8 r8712_gettssi_cmd(struct _adapter  *padapter, u8 offset, u8 *pval);
+u8 r8712_setptm_cmd(struct _adapter *padapter, u8 type);
+u8 r8712_setfwdig_cmd(struct _adapter *padapter, u8 type);
+u8 r8712_setfwra_cmd(struct _adapter *padapter, u8 type);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 u8 r8712_addbareq_cmd(struct _adapter *padapter, u8 tid);
 u8 r8712_wdg_wk_cmd(struct _adapter *padapter);
 void r8712_survey_cmd_callback(struct _adapter  *padapter,
@@ -703,10 +832,30 @@ void r8712_createbss_cmd_callback(struct _adapter *padapter,
 				  struct cmd_obj *pcmd);
 void r8712_getbbrfreg_cmdrsp_callback(struct _adapter *padapter,
 				      struct cmd_obj *pcmd);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void r8712_readtssi_cmdrsp_callback(struct _adapter *padapter,
+				struct cmd_obj *pcmd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void r8712_readtssi_cmdrsp_callback(struct _adapter *padapter,
+				struct cmd_obj *pcmd);
+>>>>>>> refs/remotes/origin/master
 void r8712_setstaKey_cmdrsp_callback(struct _adapter  *padapter,
 				     struct cmd_obj *pcmd);
 void r8712_setassocsta_cmdrsp_callback(struct _adapter  *padapter,
 				       struct cmd_obj *pcmd);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+u8 r8712_disconnectCtrlEx_cmd(struct _adapter *adapter, u32 enableDrvCtrl,
+			u32 tryPktCnt, u32 tryPktInterval, u32 firstStageTO);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+u8 r8712_disconnectCtrlEx_cmd(struct _adapter *adapter, u32 enableDrvCtrl,
+			u32 tryPktCnt, u32 tryPktInterval, u32 firstStageTO);
+>>>>>>> refs/remotes/origin/master
 
 struct _cmd_callback {
 	u32	cmd_code;

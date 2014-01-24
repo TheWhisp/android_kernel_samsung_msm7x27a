@@ -81,8 +81,18 @@ Send and receive HID reports
 	to do this.
 
 	hid_gadget_test is a small interactive program to test the HID
+<<<<<<< HEAD
+<<<<<<< HEAD
  	gadget driver. To use, point it at a hidg device and set the
  	device type (keyboard / mouse / joystick) - E.G.:
+=======
+	gadget driver. To use, point it at a hidg device and set the
+	device type (keyboard / mouse / joystick) - E.G.:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gadget driver. To use, point it at a hidg device and set the
+	device type (keyboard / mouse / joystick) - E.G.:
+>>>>>>> refs/remotes/origin/master
 
 		# hid_gadget_test /dev/hidg0 keyboard
 
@@ -97,7 +107,15 @@ Send and receive HID reports
 	HID gadget.
 
 	Another interesting example is the caps lock test. Type
+<<<<<<< HEAD
+<<<<<<< HEAD
 	-–caps-lock and hit return. A report is then sent by the
+=======
+	--caps-lock and hit return. A report is then sent by the
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	--caps-lock and hit return. A report is then sent by the
+>>>>>>> refs/remotes/origin/master
 	gadget and you should receive the host answer, corresponding
 	to the caps lock LED status.
 

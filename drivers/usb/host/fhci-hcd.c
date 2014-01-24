@@ -26,6 +26,11 @@
 #include <linux/io.h>
 #include <linux/usb.h>
 #include <linux/usb/hcd.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/of_gpio.h>
 #include <linux/slab.h>
@@ -40,8 +45,13 @@ void fhci_start_sof_timer(struct fhci_hcd *fhci)
 	/* clear frame_n */
 	out_be16(&fhci->pram->frame_num, 0);
 
+<<<<<<< HEAD
 	out_be16(&fhci->regs->usb_sof_tmr, 0);
 	setbits8(&fhci->regs->usb_mod, USB_MODE_SFTE);
+=======
+	out_be16(&fhci->regs->usb_ussft, 0);
+	setbits8(&fhci->regs->usb_usmod, USB_MODE_SFTE);
+>>>>>>> refs/remotes/origin/master
 
 	fhci_dbg(fhci, "<- %s\n", __func__);
 }
@@ -50,7 +60,11 @@ void fhci_stop_sof_timer(struct fhci_hcd *fhci)
 {
 	fhci_dbg(fhci, "-> %s\n", __func__);
 
+<<<<<<< HEAD
 	clrbits8(&fhci->regs->usb_mod, USB_MODE_SFTE);
+=======
+	clrbits8(&fhci->regs->usb_usmod, USB_MODE_SFTE);
+>>>>>>> refs/remotes/origin/master
 	gtm_stop_timer16(fhci->timer);
 
 	fhci_dbg(fhci, "<- %s\n", __func__);
@@ -58,7 +72,11 @@ void fhci_stop_sof_timer(struct fhci_hcd *fhci)
 
 u16 fhci_get_sof_timer_count(struct fhci_usb *usb)
 {
+<<<<<<< HEAD
 	return be16_to_cpu(in_be16(&usb->fhci->regs->usb_sof_tmr) / 12);
+=======
+	return be16_to_cpu(in_be16(&usb->fhci->regs->usb_ussft) / 12);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* initialize the endpoint zero */
@@ -88,8 +106,13 @@ void fhci_usb_enable_interrupt(struct fhci_usb *usb)
 		enable_irq(fhci_to_hcd(fhci)->irq);
 
 		/* initialize the event register and mask register */
+<<<<<<< HEAD
 		out_be16(&usb->fhci->regs->usb_event, 0xffff);
 		out_be16(&usb->fhci->regs->usb_mask, usb->saved_msk);
+=======
+		out_be16(&usb->fhci->regs->usb_usber, 0xffff);
+		out_be16(&usb->fhci->regs->usb_usbmr, usb->saved_msk);
+>>>>>>> refs/remotes/origin/master
 
 		/* enable the timer interrupts */
 		enable_irq(fhci->timer->irq);
@@ -109,7 +132,11 @@ void fhci_usb_disable_interrupt(struct fhci_usb *usb)
 
 		/* disable the usb interrupt */
 		disable_irq_nosync(fhci_to_hcd(fhci)->irq);
+<<<<<<< HEAD
 		out_be16(&usb->fhci->regs->usb_mask, 0);
+=======
+		out_be16(&usb->fhci->regs->usb_usbmr, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 	usb->intr_nesting_cnt++;
 }
@@ -119,9 +146,15 @@ static u32 fhci_usb_enable(struct fhci_hcd *fhci)
 {
 	struct fhci_usb *usb = fhci->usb_lld;
 
+<<<<<<< HEAD
 	out_be16(&usb->fhci->regs->usb_event, 0xffff);
 	out_be16(&usb->fhci->regs->usb_mask, usb->saved_msk);
 	setbits8(&usb->fhci->regs->usb_mod, USB_MODE_EN);
+=======
+	out_be16(&usb->fhci->regs->usb_usber, 0xffff);
+	out_be16(&usb->fhci->regs->usb_usbmr, usb->saved_msk);
+	setbits8(&usb->fhci->regs->usb_usmod, USB_MODE_EN);
+>>>>>>> refs/remotes/origin/master
 
 	mdelay(100);
 
@@ -141,7 +174,11 @@ static u32 fhci_usb_disable(struct fhci_hcd *fhci)
 			usb->port_status == FHCI_PORT_LOW)
 		fhci_device_disconnected_interrupt(fhci);
 
+<<<<<<< HEAD
 	clrbits8(&usb->fhci->regs->usb_mod, USB_MODE_EN);
+=======
+	clrbits8(&usb->fhci->regs->usb_usmod, USB_MODE_EN);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -285,6 +322,7 @@ static int fhci_usb_init(struct fhci_hcd *fhci)
 			  USB_E_IDLE_MASK |
 			  USB_E_RESET_MASK | USB_E_SFT_MASK | USB_E_MSF_MASK);
 
+<<<<<<< HEAD
 	out_8(&usb->fhci->regs->usb_mod, USB_MODE_HOST | USB_MODE_EN);
 
 	/* clearing the mask register */
@@ -292,6 +330,15 @@ static int fhci_usb_init(struct fhci_hcd *fhci)
 
 	/* initialing the event register */
 	out_be16(&usb->fhci->regs->usb_event, 0xffff);
+=======
+	out_8(&usb->fhci->regs->usb_usmod, USB_MODE_HOST | USB_MODE_EN);
+
+	/* clearing the mask register */
+	out_be16(&usb->fhci->regs->usb_usbmr, 0);
+
+	/* initialing the event register */
+	out_be16(&usb->fhci->regs->usb_usber, 0xffff);
+>>>>>>> refs/remotes/origin/master
 
 	if (endpoint_zero_init(usb, DEFAULT_DATA_MEM, DEFAULT_RING_LEN) != 0) {
 		fhci_usb_free(usb);
@@ -561,7 +608,11 @@ static const struct hc_driver fhci_driver = {
 	.hub_control = fhci_hub_control,
 };
 
+<<<<<<< HEAD
 static int __devinit of_fhci_probe(struct platform_device *ofdev)
+=======
+static int of_fhci_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &ofdev->dev;
 	struct device_node *node = dev->of_node;
@@ -605,7 +656,15 @@ static int __devinit of_fhci_probe(struct platform_device *ofdev)
 		goto err_regs;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	hcd->regs = ioremap(usb_regs.start, usb_regs.end - usb_regs.start + 1);
+=======
+	hcd->regs = ioremap(usb_regs.start, resource_size(&usb_regs));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hcd->regs = ioremap(usb_regs.start, resource_size(&usb_regs));
+>>>>>>> refs/remotes/origin/master
 	if (!hcd->regs) {
 		dev_err(dev, "could not ioremap regs\n");
 		ret = -ENOMEM;
@@ -621,12 +680,32 @@ static int __devinit of_fhci_probe(struct platform_device *ofdev)
 		goto err_pram;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pram_addr = cpm_muram_alloc_fixed(iprop[2], FHCI_PRAM_SIZE);
+=======
+	pram_addr = cpm_muram_alloc(FHCI_PRAM_SIZE, 64);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pram_addr = cpm_muram_alloc(FHCI_PRAM_SIZE, 64);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR_VALUE(pram_addr)) {
 		dev_err(dev, "failed to allocate usb pram\n");
 		ret = -ENOMEM;
 		goto err_pram;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+	qe_issue_cmd(QE_ASSIGN_PAGE_TO_DEVICE, QE_CR_SUBBLOCK_USB,
+		     QE_CR_PROTOCOL_UNSPECIFIED, pram_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	qe_issue_cmd(QE_ASSIGN_PAGE_TO_DEVICE, QE_CR_SUBBLOCK_USB,
+		     QE_CR_PROTOCOL_UNSPECIFIED, pram_addr);
+>>>>>>> refs/remotes/origin/master
 	fhci->pram = cpm_muram_addr(pram_addr);
 
 	/* GPIOs and pins */
@@ -686,7 +765,15 @@ static int __devinit of_fhci_probe(struct platform_device *ofdev)
 	}
 
 	ret = request_irq(fhci->timer->irq, fhci_frame_limit_timer_irq,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			  IRQF_DISABLED, "qe timer (usb)", hcd);
+=======
+			  0, "qe timer (usb)", hcd);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  0, "qe timer (usb)", hcd);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(dev, "failed to request timer irq");
 		goto err_timer_irq;
@@ -742,13 +829,29 @@ static int __devinit of_fhci_probe(struct platform_device *ofdev)
 	}
 
 	/* Clear and disable any pending interrupts. */
+<<<<<<< HEAD
 	out_be16(&fhci->regs->usb_event, 0xffff);
 	out_be16(&fhci->regs->usb_mask, 0);
 
+<<<<<<< HEAD
 	ret = usb_add_hcd(hcd, usb_irq, IRQF_DISABLED);
+=======
+	ret = usb_add_hcd(hcd, usb_irq, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		goto err_add_hcd;
 
+=======
+	out_be16(&fhci->regs->usb_usber, 0xffff);
+	out_be16(&fhci->regs->usb_usbmr, 0);
+
+	ret = usb_add_hcd(hcd, usb_irq, 0);
+	if (ret < 0)
+		goto err_add_hcd;
+
+	device_wakeup_enable(hcd->self.controller);
+
+>>>>>>> refs/remotes/origin/master
 	fhci_dfs_create(fhci);
 
 	return 0;
@@ -777,7 +880,11 @@ err_regs:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit fhci_remove(struct device *dev)
+=======
+static int fhci_remove(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_hcd *hcd = dev_get_drvdata(dev);
 	struct fhci_hcd *fhci = hcd_to_fhci(hcd);
@@ -800,7 +907,11 @@ static int __devexit fhci_remove(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit of_fhci_remove(struct platform_device *ofdev)
+=======
+static int of_fhci_remove(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return fhci_remove(&ofdev->dev);
 }
@@ -818,9 +929,11 @@ static struct platform_driver of_fhci_driver = {
 		.of_match_table = of_fhci_match,
 	},
 	.probe		= of_fhci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(of_fhci_remove),
 };
 
+<<<<<<< HEAD
 static int __init fhci_module_init(void)
 {
 	return platform_driver_register(&of_fhci_driver);
@@ -832,6 +945,15 @@ static void __exit fhci_module_exit(void)
 	platform_driver_unregister(&of_fhci_driver);
 }
 module_exit(fhci_module_exit);
+=======
+module_platform_driver(of_fhci_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= of_fhci_remove,
+};
+
+module_platform_driver(of_fhci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("USB Freescale Host Controller Interface Driver");
 MODULE_AUTHOR("Shlomi Gridish <gridish@freescale.com>, "

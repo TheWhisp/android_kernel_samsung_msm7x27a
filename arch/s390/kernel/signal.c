@@ -1,7 +1,11 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/kernel/signal.c
  *
  *    Copyright (C) IBM Corp. 1999,2006
+=======
+ *    Copyright IBM Corp. 1999, 2006
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Denis Joseph Barrow (djbarrow@de.ibm.com,barrow_dj@yahoo.com)
  *
  *    Based on Intel version
@@ -30,11 +34,21 @@
 #include <asm/ucontext.h>
 #include <asm/uaccess.h>
 #include <asm/lowcore.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "entry.h"
 
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
 
+=======
+#include <asm/switch_to.h>
+#include "entry.h"
+
+>>>>>>> refs/remotes/origin/master
 typedef struct 
 {
 	__u8 callee_used_stack[__SIGNAL_FRAMESIZE];
@@ -52,11 +66,13 @@ typedef struct
 	struct ucontext uc;
 } rt_sigframe;
 
+<<<<<<< HEAD
 /*
  * Atomically swap in the new signal mask, and wait for a signal.
  */
 SYSCALL_DEFINE3(sigsuspend, int, history0, int, history1, old_sigset_t, mask)
 {
+<<<<<<< HEAD
 	mask &= _BLOCKABLE;
 	spin_lock_irq(&current->sighand->siglock);
 	current->saved_sigmask = current->blocked;
@@ -68,6 +84,17 @@ SYSCALL_DEFINE3(sigsuspend, int, history0, int, history1, old_sigset_t, mask)
 	schedule();
 	set_thread_flag(TIF_RESTORE_SIGMASK);
 
+=======
+	sigset_t blocked;
+
+	current->saved_sigmask = current->blocked;
+	mask &= _BLOCKABLE;
+	siginitset(&blocked, mask);
+	set_current_blocked(&blocked);
+	set_current_state(TASK_INTERRUPTIBLE);
+	schedule();
+	set_restore_sigmask();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -ERESTARTNOHAND;
 }
 
@@ -109,6 +136,8 @@ SYSCALL_DEFINE2(sigaltstack, const stack_t __user *, uss,
 	return do_sigaltstack(uss, uoss, regs->gprs[15]);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Returns non-zero on fault. */
 static int save_sigregs(struct pt_regs *regs, _sigregs __user *sregs)
 {
@@ -118,15 +147,30 @@ static int save_sigregs(struct pt_regs *regs, _sigregs __user *sregs)
 
 	/* Copy a 'clean' PSW mask to the user to avoid leaking
 	   information about whether PER is currently on.  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	user_sregs.regs.psw.mask = PSW_MASK_MERGE(psw_user_bits, regs->psw.mask);
+=======
+	user_sregs.regs.psw.mask = psw_user_bits |
+		(regs->psw.mask & PSW_MASK_USER);
+>>>>>>> refs/remotes/origin/cm-10.0
 	user_sregs.regs.psw.addr = regs->psw.addr;
 	memcpy(&user_sregs.regs.gprs, &regs->gprs, sizeof(sregs->regs.gprs));
 	memcpy(&user_sregs.regs.acrs, current->thread.acrs,
 	       sizeof(sregs->regs.acrs));
+=======
+	user_sregs.regs.psw.mask = PSW_USER_BITS |
+		(regs->psw.mask & (PSW_MASK_USER | PSW_MASK_RI));
+	user_sregs.regs.psw.addr = regs->psw.addr;
+	memcpy(&user_sregs.regs.gprs, &regs->gprs, sizeof(sregs->regs.gprs));
+	memcpy(&user_sregs.regs.acrs, current->thread.acrs,
+	       sizeof(user_sregs.regs.acrs));
+>>>>>>> refs/remotes/origin/master
 	/* 
 	 * We have to store the fp registers to current->thread.fp_regs
 	 * to merge them with the emulated registers.
 	 */
+<<<<<<< HEAD
 	save_fp_regs(&current->thread.fp_regs);
 	memcpy(&user_sregs.fpregs, &current->thread.fp_regs,
 	       sizeof(s390_fp_regs));
@@ -137,17 +181,67 @@ static int save_sigregs(struct pt_regs *regs, _sigregs __user *sregs)
 static int restore_sigregs(struct pt_regs *regs, _sigregs __user *sregs)
 {
 	int err;
+=======
+	save_fp_ctl(&current->thread.fp_regs.fpc);
+	save_fp_regs(current->thread.fp_regs.fprs);
+	memcpy(&user_sregs.fpregs, &current->thread.fp_regs,
+	       sizeof(user_sregs.fpregs));
+	if (__copy_to_user(sregs, &user_sregs, sizeof(_sigregs)))
+		return -EFAULT;
+	return 0;
+}
+
+static int restore_sigregs(struct pt_regs *regs, _sigregs __user *sregs)
+{
+>>>>>>> refs/remotes/origin/master
 	_sigregs user_sregs;
 
 	/* Alwys make any pending restarted system call return -EINTR */
 	current_thread_info()->restart_block.fn = do_no_restart_syscall;
 
+<<<<<<< HEAD
 	err = __copy_from_user(&user_sregs, sregs, sizeof(_sigregs));
 	if (err)
 		return err;
+<<<<<<< HEAD
 	regs->psw.mask = PSW_MASK_MERGE(regs->psw.mask,
 					user_sregs.regs.psw.mask);
 	regs->psw.addr = PSW_ADDR_AMODE | user_sregs.regs.psw.addr;
+=======
+	/* Use regs->psw.mask instead of psw_user_bits to preserve PER bit. */
+	regs->psw.mask = (regs->psw.mask & ~PSW_MASK_USER) |
+		(user_sregs.regs.psw.mask & PSW_MASK_USER);
+	/* Check for invalid user address space control. */
+	if ((regs->psw.mask & PSW_MASK_ASC) >= (psw_kernel_bits & PSW_MASK_ASC))
+		regs->psw.mask = (psw_user_bits & PSW_MASK_ASC) |
+<<<<<<< HEAD
+=======
+	if (__copy_from_user(&user_sregs, sregs, sizeof(user_sregs)))
+		return -EFAULT;
+
+	if (!is_ri_task(current) && (user_sregs.regs.psw.mask & PSW_MASK_RI))
+		return -EINVAL;
+
+	/* Loading the floating-point-control word can fail. Do that first. */
+	if (restore_fp_ctl(&user_sregs.fpregs.fpc))
+		return -EINVAL;
+
+	/* Use regs->psw.mask instead of PSW_USER_BITS to preserve PER bit. */
+	regs->psw.mask = (regs->psw.mask & ~(PSW_MASK_USER | PSW_MASK_RI)) |
+		(user_sregs.regs.psw.mask & (PSW_MASK_USER | PSW_MASK_RI));
+	/* Check for invalid user address space control. */
+	if ((regs->psw.mask & PSW_MASK_ASC) == PSW_ASC_HOME)
+		regs->psw.mask = PSW_ASC_PRIMARY |
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			(regs->psw.mask & ~PSW_MASK_ASC);
+	/* Check for invalid amode */
+	if (regs->psw.mask & PSW_MASK_EA)
+		regs->psw.mask |= PSW_MASK_BA;
+	regs->psw.addr = user_sregs.regs.psw.addr;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy(&regs->gprs, &user_sregs.regs.gprs, sizeof(sregs->regs.gprs));
 	memcpy(&current->thread.acrs, &user_sregs.regs.acrs,
 	       sizeof(sregs->regs.acrs));
@@ -158,7 +252,23 @@ static int restore_sigregs(struct pt_regs *regs, _sigregs __user *sregs)
 	current->thread.fp_regs.fpc &= FPC_VALID_MASK;
 
 	restore_fp_regs(&current->thread.fp_regs);
+<<<<<<< HEAD
 	regs->svcnr = 0;	/* disable syscall checks */
+=======
+	clear_thread_flag(TIF_SYSCALL);	/* No longer in a system call */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(&regs->gprs, &user_sregs.regs.gprs, sizeof(sregs->regs.gprs));
+	memcpy(&current->thread.acrs, &user_sregs.regs.acrs,
+	       sizeof(current->thread.acrs));
+	restore_access_regs(current->thread.acrs);
+
+	memcpy(&current->thread.fp_regs, &user_sregs.fpregs,
+	       sizeof(current->thread.fp_regs));
+
+	restore_fp_regs(current->thread.fp_regs.fprs);
+	clear_thread_flag(TIF_SYSCALL);	/* No longer in a system call */
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -168,10 +278,12 @@ SYSCALL_DEFINE0(sigreturn)
 	sigframe __user *frame = (sigframe __user *)regs->gprs[15];
 	sigset_t set;
 
+<<<<<<< HEAD
 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
 		goto badframe;
 	if (__copy_from_user(&set.sig, &frame->sc.oldmask, _SIGMASK_COPY_SIZE))
 		goto badframe;
+<<<<<<< HEAD
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
 	spin_lock_irq(&current->sighand->siglock);
@@ -184,6 +296,20 @@ SYSCALL_DEFINE0(sigreturn)
 
 	return regs->gprs[2];
 
+=======
+	sigdelsetmask(&set, ~_BLOCKABLE);
+=======
+	if (__copy_from_user(&set.sig, &frame->sc.oldmask, _SIGMASK_COPY_SIZE))
+		goto badframe;
+>>>>>>> refs/remotes/origin/master
+	set_current_blocked(&set);
+	if (restore_sigregs(regs, &frame->sregs))
+		goto badframe;
+	return regs->gprs[2];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 badframe:
 	force_sig(SIGSEGV, current);
 	return 0;
@@ -195,10 +321,12 @@ SYSCALL_DEFINE0(rt_sigreturn)
 	rt_sigframe __user *frame = (rt_sigframe __user *)regs->gprs[15];
 	sigset_t set;
 
+<<<<<<< HEAD
 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
 		goto badframe;
 	if (__copy_from_user(&set.sig, &frame->uc.uc_sigmask, sizeof(set)))
 		goto badframe;
+<<<<<<< HEAD
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
 	spin_lock_irq(&current->sighand->siglock);
@@ -209,11 +337,30 @@ SYSCALL_DEFINE0(rt_sigreturn)
 	if (restore_sigregs(regs, &frame->uc.uc_mcontext))
 		goto badframe;
 
+=======
+	sigdelsetmask(&set, ~_BLOCKABLE);
+	set_current_blocked(&set);
+	if (restore_sigregs(regs, &frame->uc.uc_mcontext))
+		goto badframe;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (do_sigaltstack(&frame->uc.uc_stack, NULL,
 			   regs->gprs[15]) == -EFAULT)
 		goto badframe;
 	return regs->gprs[2];
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (__copy_from_user(&set.sig, &frame->uc.uc_sigmask, sizeof(set)))
+		goto badframe;
+	set_current_blocked(&set);
+	if (restore_sigregs(regs, &frame->uc.uc_mcontext))
+		goto badframe;
+	if (restore_altstack(&frame->uc.uc_stack))
+		goto badframe;
+	return regs->gprs[2];
+>>>>>>> refs/remotes/origin/master
 badframe:
 	force_sig(SIGSEGV, current);
 	return 0;
@@ -245,6 +392,7 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs * regs, size_t frame_size)
 			sp = current->sas_ss_sp + current->sas_ss_size;
 	}
 
+<<<<<<< HEAD
 	/* This is the legacy signal stack switching. */
 	else if (!user_mode(regs) &&
 		 !(ka->sa.sa_flags & SA_RESTORER) &&
@@ -252,6 +400,8 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs * regs, size_t frame_size)
 		sp = (unsigned long) ka->sa.sa_restorer;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return (void __user *)((sp - frame_size) & -8ul);
 }
 
@@ -271,8 +421,11 @@ static int setup_frame(int sig, struct k_sigaction *ka,
 	sigframe __user *frame;
 
 	frame = get_sigframe(ka, regs, sizeof(sigframe));
+<<<<<<< HEAD
 	if (!access_ok(VERIFY_WRITE, frame, sizeof(sigframe)))
 		goto give_sigsegv;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (frame == (void __user *) -1UL)
 		goto give_sigsegv;
@@ -304,6 +457,26 @@ static int setup_frame(int sig, struct k_sigaction *ka,
 
 	/* Set up registers for signal handler */
 	regs->gprs[15] = (unsigned long) frame;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* Force default amode and default user address space control. */
+	regs->psw.mask = PSW_MASK_EA | PSW_MASK_BA |
+		(psw_user_bits & PSW_MASK_ASC) |
+		(regs->psw.mask & ~PSW_MASK_ASC);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Force default amode and default user address space control. */
+	regs->psw.mask = PSW_MASK_EA | PSW_MASK_BA |
+		(PSW_USER_BITS & PSW_MASK_ASC) |
+		(regs->psw.mask & ~PSW_MASK_ASC);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	regs->psw.addr = (unsigned long) ka->sa.sa_handler | PSW_ADDR_AMODE;
 
 	regs->gprs[2] = map_signal(sig);
@@ -311,9 +484,25 @@ static int setup_frame(int sig, struct k_sigaction *ka,
 
 	/* We forgot to include these in the sigcontext.
 	   To avoid breaking binary compatibility, they are passed as args. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	regs->gprs[4] = current->thread.trap_no;
 	regs->gprs[5] = current->thread.prot_addr;
 	regs->gprs[6] = task_thread_info(current)->last_break;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (sig == SIGSEGV || sig == SIGBUS || sig == SIGILL ||
+	    sig == SIGTRAP || sig == SIGFPE) {
+		/* set extra registers only for synchronous signals */
+		regs->gprs[4] = regs->int_code & 127;
+		regs->gprs[5] = regs->int_parm_long;
+		regs->gprs[6] = task_thread_info(current)->last_break;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Place signal number on stack to allow backtrace from handler.  */
 	if (__put_user(regs->gprs[2], (int __user *) &frame->signo))
@@ -332,8 +521,11 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	rt_sigframe __user *frame;
 
 	frame = get_sigframe(ka, regs, sizeof(rt_sigframe));
+<<<<<<< HEAD
 	if (!access_ok(VERIFY_WRITE, frame, sizeof(rt_sigframe)))
 		goto give_sigsegv;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (frame == (void __user *) -1UL)
 		goto give_sigsegv;
@@ -344,10 +536,14 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	/* Create the ucontext.  */
 	err |= __put_user(0, &frame->uc.uc_flags);
 	err |= __put_user(NULL, &frame->uc.uc_link);
+<<<<<<< HEAD
 	err |= __put_user((void __user *)current->sas_ss_sp, &frame->uc.uc_stack.ss_sp);
 	err |= __put_user(sas_ss_flags(regs->gprs[15]),
 			  &frame->uc.uc_stack.ss_flags);
 	err |= __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_size);
+=======
+	err |= __save_altstack(&frame->uc.uc_stack, regs->gprs[15]);
+>>>>>>> refs/remotes/origin/master
 	err |= save_sigregs(regs, &frame->uc.uc_mcontext);
 	err |= __copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set));
 	if (err)
@@ -372,6 +568,26 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 
 	/* Set up registers for signal handler */
 	regs->gprs[15] = (unsigned long) frame;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	/* Force default amode and default user address space control. */
+	regs->psw.mask = PSW_MASK_EA | PSW_MASK_BA |
+		(psw_user_bits & PSW_MASK_ASC) |
+		(regs->psw.mask & ~PSW_MASK_ASC);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Force default amode and default user address space control. */
+	regs->psw.mask = PSW_MASK_EA | PSW_MASK_BA |
+		(PSW_USER_BITS & PSW_MASK_ASC) |
+		(regs->psw.mask & ~PSW_MASK_ASC);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	regs->psw.addr = (unsigned long) ka->sa.sa_handler | PSW_ADDR_AMODE;
 
 	regs->gprs[2] = map_signal(sig);
@@ -385,6 +601,8 @@ give_sigsegv:
 	return -EFAULT;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * OK, we're invoking a handler
  */	
@@ -392,6 +610,16 @@ give_sigsegv:
 static int
 handle_signal(unsigned long sig, struct k_sigaction *ka,
 	      siginfo_t *info, sigset_t *oldset, struct pt_regs * regs)
+=======
+static int handle_signal(unsigned long sig, struct k_sigaction *ka,
+			 siginfo_t *info, sigset_t *oldset,
+			 struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void handle_signal(unsigned long sig, struct k_sigaction *ka,
+			 siginfo_t *info, sigset_t *oldset,
+			 struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -400,6 +628,8 @@ handle_signal(unsigned long sig, struct k_sigaction *ka,
 		ret = setup_rt_frame(sig, ka, info, oldset, regs);
 	else
 		ret = setup_frame(sig, ka, oldset, regs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (ret == 0) {
 		spin_lock_irq(&current->sighand->siglock);
@@ -411,6 +641,18 @@ handle_signal(unsigned long sig, struct k_sigaction *ka,
 	}
 
 	return ret;
+=======
+	if (ret)
+		return ret;
+	block_sigmask(ka, sig);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret)
+		return;
+	signal_delivered(sig, info, ka, regs,
+				 test_thread_flag(TIF_SINGLE_STEP));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -424,7 +666,11 @@ handle_signal(unsigned long sig, struct k_sigaction *ka,
  */
 void do_signal(struct pt_regs *regs)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long retval = 0, continue_addr = 0, restart_addr = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	siginfo_t info;
 	int signr;
 	struct k_sigaction ka;
@@ -444,6 +690,7 @@ void do_signal(struct pt_regs *regs)
 	else
 		oldset = &current->blocked;
 
+<<<<<<< HEAD
 	/* Are we from a system call? */
 	if (regs->svcnr) {
 		continue_addr = regs->psw.addr;
@@ -492,6 +739,56 @@ void do_signal(struct pt_regs *regs)
 #endif
 			ret = handle_signal(signr, &ka, &info, oldset, regs);
 		if (!ret) {
+=======
+	/*
+=======
+	siginfo_t info;
+	int signr;
+	struct k_sigaction ka;
+	sigset_t *oldset = sigmask_to_save();
+
+	/*
+>>>>>>> refs/remotes/origin/master
+	 * Get signal to deliver. When running under ptrace, at this point
+	 * the debugger may change all our registers, including the system
+	 * call information.
+	 */
+	current_thread_info()->system_call =
+		test_thread_flag(TIF_SYSCALL) ? regs->int_code : 0;
+	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+
+	if (signr > 0) {
+		/* Whee!  Actually deliver the signal.  */
+		if (current_thread_info()->system_call) {
+			regs->int_code = current_thread_info()->system_call;
+			/* Check for system call restarting. */
+			switch (regs->gprs[2]) {
+			case -ERESTART_RESTARTBLOCK:
+			case -ERESTARTNOHAND:
+				regs->gprs[2] = -EINTR;
+				break;
+			case -ERESTARTSYS:
+				if (!(ka.sa.sa_flags & SA_RESTART)) {
+					regs->gprs[2] = -EINTR;
+					break;
+				}
+			/* fallthrough */
+			case -ERESTARTNOINTR:
+				regs->gprs[2] = regs->orig_gpr2;
+				regs->psw.addr =
+					__rewind_psw(regs->psw,
+						     regs->int_code >> 16);
+				break;
+			}
+		}
+		/* No longer in a system call */
+		clear_thread_flag(TIF_SYSCALL);
+
+<<<<<<< HEAD
+		if ((is_compat_task() ?
+		     handle_signal32(signr, &ka, &info, oldset, regs) :
+		     handle_signal(signr, &ka, &info, oldset, regs)) == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * A signal was successfully delivered; the saved
 			 * sigmask will have been stored in the signal frame,
@@ -505,11 +802,52 @@ void do_signal(struct pt_regs *regs)
 			 * Let tracing know that we've done the handler setup.
 			 */
 			tracehook_signal_handler(signr, &info, &ka, regs,
+<<<<<<< HEAD
 					test_thread_flag(TIF_SINGLE_STEP));
+=======
+					 test_thread_flag(TIF_SINGLE_STEP));
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+=======
+		if (is_compat_task())
+			handle_signal32(signr, &ka, &info, oldset, regs);
+		else
+			handle_signal(signr, &ka, &info, oldset, regs);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
+	/* No handlers present - check for system call restart */
+	clear_thread_flag(TIF_SYSCALL);
+	if (current_thread_info()->system_call) {
+		regs->int_code = current_thread_info()->system_call;
+		switch (regs->gprs[2]) {
+		case -ERESTART_RESTARTBLOCK:
+			/* Restart with sys_restart_syscall */
+			regs->int_code = __NR_restart_syscall;
+		/* fallthrough */
+		case -ERESTARTNOHAND:
+		case -ERESTARTSYS:
+		case -ERESTARTNOINTR:
+			/* Restart system call with magic TIF bit. */
+			regs->gprs[2] = regs->orig_gpr2;
+			set_thread_flag(TIF_SYSCALL);
+<<<<<<< HEAD
+=======
+			if (test_thread_flag(TIF_SINGLE_STEP))
+				set_thread_flag(TIF_PER_TRAP);
+>>>>>>> refs/remotes/origin/master
+			break;
+		}
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * If there's no signal to deliver, we just put the saved sigmask back.
 	 */
@@ -517,6 +855,7 @@ void do_signal(struct pt_regs *regs)
 		clear_thread_flag(TIF_RESTORE_SIGMASK);
 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
 	}
+<<<<<<< HEAD
 
 	/* Restart a different system call. */
 	if (retval == -ERESTART_RESTARTBLOCK
@@ -524,12 +863,23 @@ void do_signal(struct pt_regs *regs)
 		regs->gprs[2] = __NR_restart_syscall;
 		set_thread_flag(TIF_RESTART_SVC);
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * If there's no signal to deliver, we just put the saved sigmask back.
+	 */
+	restore_saved_sigmask();
+>>>>>>> refs/remotes/origin/master
 }
 
 void do_notify_resume(struct pt_regs *regs)
 {
 	clear_thread_flag(TIF_NOTIFY_RESUME);
 	tracehook_notify_resume(regs);
+<<<<<<< HEAD
 	if (current->replacement_session_keyring)
 		key_replace_session_keyring();
+=======
+>>>>>>> refs/remotes/origin/master
 }

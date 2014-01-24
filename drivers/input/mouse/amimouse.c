@@ -25,7 +25,13 @@
 
 #include <asm/irq.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/amigahw.h>
 #include <asm/amigaints.h>
@@ -134,7 +140,10 @@ static int __exit amimouse_remove(struct platform_device *pdev)
 {
 	struct input_dev *dev = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	input_unregister_device(dev);
 	return 0;
 }
@@ -147,6 +156,7 @@ static struct platform_driver amimouse_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init amimouse_init(void)
 {
 	return platform_driver_probe(&amimouse_driver, amimouse_probe);
@@ -160,5 +170,8 @@ static void __exit amimouse_exit(void)
 }
 
 module_exit(amimouse_exit);
+=======
+module_platform_driver_probe(amimouse_driver, amimouse_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("platform:amiga-mouse");

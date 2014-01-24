@@ -69,6 +69,7 @@ static struct pci_target_address_window pci_target_window1 = {
 };
 
 static struct resource pci_mem_resource = {
+<<<<<<< HEAD
 	.name   = "PCI Memory resources",
 	.start  = PCI_MEM_RESOURCE_START,
 	.end    = PCI_MEM_RESOURCE_END,
@@ -80,6 +81,19 @@ static struct resource pci_io_resource = {
 	.start  = PCI_IO_RESOURCE_START,
 	.end    = PCI_IO_RESOURCE_END,
 	.flags  = IORESOURCE_IO,
+=======
+	.name	= "PCI Memory resources",
+	.start	= PCI_MEM_RESOURCE_START,
+	.end	= PCI_MEM_RESOURCE_END,
+	.flags	= IORESOURCE_MEM,
+};
+
+static struct resource pci_io_resource = {
+	.name	= "PCI I/O resources",
+	.start	= PCI_IO_RESOURCE_START,
+	.end	= PCI_IO_RESOURCE_END,
+	.flags	= IORESOURCE_IO,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct pci_controller_unit_setup vr41xx_pci_controller_unit_setup = {
@@ -97,7 +111,11 @@ static struct pci_controller_unit_setup vr41xx_pci_controller_unit_setup = {
 };
 
 static struct pci_controller vr41xx_pci_controller = {
+<<<<<<< HEAD
 	.pci_ops        = &vr41xx_pci_ops,
+=======
+	.pci_ops	= &vr41xx_pci_ops,
+>>>>>>> refs/remotes/origin/master
 	.mem_resource	= &pci_mem_resource,
 	.io_resource	= &pci_io_resource,
 };
@@ -148,7 +166,11 @@ static int __init vr41xx_pciu_init(void)
 	else if ((vtclock / 2) < pci_clock_max)
 		pciu_write(PCICLKSELREG, HALF_VTCLOCK);
 	else if (current_cpu_data.processor_id >= PRID_VR4131_REV2_1 &&
+<<<<<<< HEAD
 	         (vtclock / 3) < pci_clock_max)
+=======
+		 (vtclock / 3) < pci_clock_max)
+>>>>>>> refs/remotes/origin/master
 		pciu_write(PCICLKSELREG, ONE_THIRD_VTCLOCK);
 	else if ((vtclock / 4) < pci_clock_max)
 		pciu_write(PCICLKSELREG, QUARTER_VTCLOCK);
@@ -281,7 +303,11 @@ static int __init vr41xx_pciu_init(void)
 	pciu_write(PCIAPCNTREG, val);
 
 	pciu_write(COMMANDREG, PCI_COMMAND_IO | PCI_COMMAND_MEMORY |
+<<<<<<< HEAD
 	                       PCI_COMMAND_MASTER | PCI_COMMAND_PARITY |
+=======
+			       PCI_COMMAND_MASTER | PCI_COMMAND_PARITY |
+>>>>>>> refs/remotes/origin/master
 			       PCI_COMMAND_SERR);
 
 	/* Clear bus error */
@@ -305,7 +331,15 @@ static int __init vr41xx_pciu_init(void)
 		struct resource *res = vr41xx_pci_controller.io_resource;
 		master = setup->master_io;
 		io_map_base = ioremap(master->bus_base_address,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				      res->end - res->start + 1);
+=======
+				      resource_size(res));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      resource_size(res));
+>>>>>>> refs/remotes/origin/master
 		if (!io_map_base)
 			return -EBUSY;
 

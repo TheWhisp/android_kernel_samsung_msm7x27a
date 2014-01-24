@@ -76,6 +76,7 @@
  */
 #define SCIC_SDS_SATA_LINK_TRAINING_TIMEOUT  250
 
+<<<<<<< HEAD
 enum sci_phy_protocol {
 	SCIC_SDS_PHY_PROTOCOL_UNKNOWN,
 	SCIC_SDS_PHY_PROTOCOL_SAS,
@@ -83,6 +84,8 @@ enum sci_phy_protocol {
 	SCIC_SDS_MAX_PHY_PROTOCOLS
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * isci_phy - hba local phy infrastructure
  * @sm:
@@ -95,7 +98,11 @@ struct isci_phy {
 	struct sci_base_state_machine sm;
 	struct isci_port *owning_port;
 	enum sas_linkrate max_negotiated_speed;
+<<<<<<< HEAD
 	enum sci_phy_protocol protocol;
+=======
+	enum sas_protocol protocol;
+>>>>>>> refs/remotes/origin/master
 	u8 phy_index;
 	bool bcn_received_while_port_unassigned;
 	bool is_in_link_training;
@@ -103,7 +110,13 @@ struct isci_phy {
 	struct scu_transport_layer_registers __iomem *transport_layer_registers;
 	struct scu_link_layer_registers __iomem *link_layer_registers;
 	struct asd_sas_phy sas_phy;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct isci_port *isci_port;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 sas_addr[SAS_ADDR_SIZE];
 	union {
 		struct sas_identify_frame iaf;
@@ -344,6 +357,8 @@ enum sci_phy_counter_id {
 	SCIC_PHY_COUNTER_SN_DWORD_SYNC_ERROR
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 enum sci_phy_states {
 	/**
 	 * Simply the initial state for the base domain state machine.
@@ -439,6 +454,72 @@ enum sci_phy_states {
 	 */
 	SCI_PHY_FINAL,
 };
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * enum sci_phy_states - phy state machine states
+ * @SCI_PHY_INITIAL: Simply the initial state for the base domain state
+ *		     machine.
+ * @SCI_PHY_STOPPED: phy has successfully been stopped.  In this state
+ *		     no new IO operations are permitted on this phy.
+ * @SCI_PHY_STARTING: the phy is in the process of becomming ready.  In
+ *		      this state no new IO operations are permitted on
+ *		      this phy.
+ * @SCI_PHY_SUB_INITIAL: Initial state
+ * @SCI_PHY_SUB_AWAIT_OSSP_EN: Wait state for the hardware OSSP event
+ *			       type notification
+ * @SCI_PHY_SUB_AWAIT_SAS_SPEED_EN: Wait state for the PHY speed
+ *				    notification
+ * @SCI_PHY_SUB_AWAIT_IAF_UF: Wait state for the IAF Unsolicited frame
+ *			      notification
+ * @SCI_PHY_SUB_AWAIT_SAS_POWER: Wait state for the request to consume
+ *				 power
+ * @SCI_PHY_SUB_AWAIT_SATA_POWER: Wait state for request to consume
+ *				  power
+ * @SCI_PHY_SUB_AWAIT_SATA_PHY_EN: Wait state for the SATA PHY
+ *				   notification
+ * @SCI_PHY_SUB_AWAIT_SATA_SPEED_EN: Wait for the SATA PHY speed
+ *				     notification
+ * @SCI_PHY_SUB_AWAIT_SIG_FIS_UF: Wait state for the SIGNATURE FIS
+ *				  unsolicited frame notification
+ * @SCI_PHY_SUB_FINAL: Exit state for this state machine
+ * @SCI_PHY_READY: phy is now ready.  Thus, the user is able to perform
+ *		   IO operations utilizing this phy as long as it is
+ *		   currently part of a valid port.  This state is
+ *		   entered from the STARTING state.
+ * @SCI_PHY_RESETTING: phy is in the process of being reset.  In this
+ *		       state no new IO operations are permitted on this
+ *		       phy.  This state is entered from the READY state.
+ * @SCI_PHY_FINAL: Simply the final state for the base phy state
+ *		   machine.
+ */
+#define PHY_STATES {\
+	C(PHY_INITIAL),\
+	C(PHY_STOPPED),\
+	C(PHY_STARTING),\
+	C(PHY_SUB_INITIAL),\
+	C(PHY_SUB_AWAIT_OSSP_EN),\
+	C(PHY_SUB_AWAIT_SAS_SPEED_EN),\
+	C(PHY_SUB_AWAIT_IAF_UF),\
+	C(PHY_SUB_AWAIT_SAS_POWER),\
+	C(PHY_SUB_AWAIT_SATA_POWER),\
+	C(PHY_SUB_AWAIT_SATA_PHY_EN),\
+	C(PHY_SUB_AWAIT_SATA_SPEED_EN),\
+	C(PHY_SUB_AWAIT_SIG_FIS_UF),\
+	C(PHY_SUB_FINAL),\
+	C(PHY_READY),\
+	C(PHY_RESETTING),\
+	C(PHY_FINAL),\
+	}
+#undef C
+#define C(a) SCI_##a
+enum sci_phy_states PHY_STATES;
+#undef C
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void sci_phy_construct(
 	struct isci_phy *iphy,

@@ -22,7 +22,10 @@
 #include <linux/i2c.h>
 #include <linux/hwmon.h>
 #include <linux/hwmon-sysfs.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/jiffies.h>
 
 enum chips { max16065, max16066, max16067, max16068, max16070, max16071 };
@@ -84,7 +87,12 @@ static const bool max16065_have_current[] = {
 
 struct max16065_data {
 	enum chips type;
+<<<<<<< HEAD
 	struct device *hwmon_dev;
+=======
+	struct i2c_client *client;
+	const struct attribute_group *groups[4];
+>>>>>>> refs/remotes/origin/master
 	struct mutex update_lock;
 	bool valid;
 	unsigned long last_updated; /* in jiffies */
@@ -119,7 +127,11 @@ static inline int LIMIT_TO_MV(int limit, int range)
 
 static inline int MV_TO_LIMIT(int mv, int range)
 {
+<<<<<<< HEAD
 	return SENSORS_LIMIT(DIV_ROUND_CLOSEST(mv * 256, range), 0, 255);
+=======
+	return clamp_val(DIV_ROUND_CLOSEST(mv * 256, range), 0, 255);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int ADC_TO_CURR(int adc, int gain)
@@ -137,16 +149,34 @@ static int max16065_read_adc(struct i2c_client *client, int reg)
 {
 	int rv;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rv = i2c_smbus_read_word_data(client, reg);
 	if (unlikely(rv < 0))
 		return rv;
 	return ((rv & 0xff) << 2) | ((rv >> 14) & 0x03);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	rv = i2c_smbus_read_word_swapped(client, reg);
+	if (unlikely(rv < 0))
+		return rv;
+	return rv >> 6;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct max16065_data *max16065_update_device(struct device *dev)
 {
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct max16065_data *data = i2c_get_clientdata(client);
+=======
+	struct max16065_data *data = dev_get_drvdata(dev);
+	struct i2c_client *client = data->client;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	if (time_after(jiffies, data->last_updated + HZ) || !data->valid) {
@@ -187,7 +217,11 @@ static ssize_t max16065_show_alarm(struct device *dev,
 
 	val &= (1 << attr2->index);
 	if (val)
+<<<<<<< HEAD
 		i2c_smbus_write_byte_data(to_i2c_client(dev),
+=======
+		i2c_smbus_write_byte_data(data->client,
+>>>>>>> refs/remotes/origin/master
 					  MAX16065_FAULT(attr2->nr), val);
 
 	return snprintf(buf, PAGE_SIZE, "%d\n", !!val);
@@ -224,13 +258,25 @@ static ssize_t max16065_set_limit(struct device *dev,
 				  const char *buf, size_t count)
 {
 	struct sensor_device_attribute_2 *attr2 = to_sensor_dev_attr_2(da);
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct max16065_data *data = i2c_get_clientdata(client);
+=======
+	struct max16065_data *data = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 	int limit;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(err < 0))
 		return err;
 
@@ -239,7 +285,11 @@ static ssize_t max16065_set_limit(struct device *dev,
 	mutex_lock(&data->update_lock);
 	data->limit[attr2->nr][attr2->index]
 	  = LIMIT_TO_MV(limit, data->range[attr2->index]);
+<<<<<<< HEAD
 	i2c_smbus_write_byte_data(client,
+=======
+	i2c_smbus_write_byte_data(data->client,
+>>>>>>> refs/remotes/origin/master
 				  MAX16065_LIMIT(attr2->nr, attr2->index),
 				  limit);
 	mutex_unlock(&data->update_lock);
@@ -251,8 +301,12 @@ static ssize_t max16065_show_limit(struct device *dev,
 				   struct device_attribute *da, char *buf)
 {
 	struct sensor_device_attribute_2 *attr2 = to_sensor_dev_attr_2(da);
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct max16065_data *data = i2c_get_clientdata(client);
+=======
+	struct max16065_data *data = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	return snprintf(buf, PAGE_SIZE, "%d\n",
 			data->limit[attr2->nr][attr2->index]);
@@ -517,8 +571,37 @@ static struct attribute *max16065_max_attributes[] = {
 	NULL
 };
 
+<<<<<<< HEAD
 static const struct attribute_group max16065_basic_group = {
 	.attrs = max16065_basic_attributes,
+=======
+static umode_t max16065_basic_is_visible(struct kobject *kobj,
+					 struct attribute *a, int n)
+{
+	struct device *dev = container_of(kobj, struct device, kobj);
+	struct max16065_data *data = dev_get_drvdata(dev);
+	int index = n / 4;
+
+	if (index >= data->num_adc || !data->range[index])
+		return 0;
+	return a->mode;
+}
+
+static umode_t max16065_secondary_is_visible(struct kobject *kobj,
+					     struct attribute *a, int index)
+{
+	struct device *dev = container_of(kobj, struct device, kobj);
+	struct max16065_data *data = dev_get_drvdata(dev);
+
+	if (index >= data->num_adc)
+		return 0;
+	return a->mode;
+}
+
+static const struct attribute_group max16065_basic_group = {
+	.attrs = max16065_basic_attributes,
+	.is_visible = max16065_basic_is_visible,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct attribute_group max16065_current_group = {
@@ -527,10 +610,15 @@ static const struct attribute_group max16065_current_group = {
 
 static const struct attribute_group max16065_min_group = {
 	.attrs = max16065_min_attributes,
+<<<<<<< HEAD
+=======
+	.is_visible = max16065_secondary_is_visible,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct attribute_group max16065_max_group = {
 	.attrs = max16065_max_attributes,
+<<<<<<< HEAD
 };
 
 static void max16065_cleanup(struct i2c_client *client)
@@ -541,24 +629,50 @@ static void max16065_cleanup(struct i2c_client *client)
 	sysfs_remove_group(&client->dev.kobj, &max16065_basic_group);
 }
 
+=======
+	.is_visible = max16065_secondary_is_visible,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int max16065_probe(struct i2c_client *client,
 			  const struct i2c_device_id *id)
 {
 	struct i2c_adapter *adapter = client->adapter;
 	struct max16065_data *data;
+<<<<<<< HEAD
 	int i, j, val, ret;
 	bool have_secondary;		/* true if chip has secondary limits */
 	bool secondary_is_max = false;	/* secondary limits reflect max */
+=======
+	struct device *dev = &client->dev;
+	struct device *hwmon_dev;
+	int i, j, val;
+	bool have_secondary;		/* true if chip has secondary limits */
+	bool secondary_is_max = false;	/* secondary limits reflect max */
+	int groups = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA
 				     | I2C_FUNC_SMBUS_READ_WORD_DATA))
 		return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(!data))
 		return -ENOMEM;
 
 	i2c_set_clientdata(client, data);
+=======
+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+	if (unlikely(!data))
+		return -ENOMEM;
+
+	data->client = client;
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&data->update_lock);
 
 	data->num_adc = max16065_num_adc[id->driver_data];
@@ -567,20 +681,40 @@ static int max16065_probe(struct i2c_client *client,
 
 	if (have_secondary) {
 		val = i2c_smbus_read_byte_data(client, MAX16065_SW_ENABLE);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (unlikely(val < 0)) {
 			ret = val;
 			goto out_free;
 		}
+=======
+		if (unlikely(val < 0))
+			return val;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (unlikely(val < 0))
+			return val;
+>>>>>>> refs/remotes/origin/master
 		secondary_is_max = val & MAX16065_WARNING_OV;
 	}
 
 	/* Read scale registers, convert to range */
 	for (i = 0; i < DIV_ROUND_UP(data->num_adc, 4); i++) {
 		val = i2c_smbus_read_byte_data(client, MAX16065_SCALE(i));
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (unlikely(val < 0)) {
 			ret = val;
 			goto out_free;
 		}
+=======
+		if (unlikely(val < 0))
+			return val;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (unlikely(val < 0))
+			return val;
+>>>>>>> refs/remotes/origin/master
 		for (j = 0; j < 4 && i * 4 + j < data->num_adc; j++) {
 			data->range[i * 4 + j] =
 			  max16065_adc_range[(val >> (j * 2)) & 0x3];
@@ -595,14 +729,25 @@ static int max16065_probe(struct i2c_client *client,
 		for (j = 0; j < data->num_adc; j++) {
 			val = i2c_smbus_read_byte_data(client,
 						       MAX16065_LIMIT(i, j));
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if (unlikely(val < 0)) {
 				ret = val;
 				goto out_free;
 			}
+=======
+			if (unlikely(val < 0))
+				return val;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (unlikely(val < 0))
+				return val;
+>>>>>>> refs/remotes/origin/master
 			data->limit[i][j] = LIMIT_TO_MV(val, data->range[j]);
 		}
 	}
 
+<<<<<<< HEAD
 	/* Register sysfs hooks */
 	for (i = 0; i < data->num_adc * 4; i++) {
 		/* Do not create sysfs entry if channel is disabled */
@@ -635,6 +780,18 @@ static int max16065_probe(struct i2c_client *client,
 			ret = val;
 			goto out;
 		}
+=======
+	/* sysfs hooks */
+	data->groups[groups++] = &max16065_basic_group;
+	if (have_secondary)
+		data->groups[groups++] = secondary_is_max ?
+			&max16065_max_group : &max16065_min_group;
+
+	if (data->have_current) {
+		val = i2c_smbus_read_byte_data(client, MAX16065_CURR_CONTROL);
+		if (unlikely(val < 0))
+			return val;
+>>>>>>> refs/remotes/origin/master
 		if (val & MAX16065_CURR_ENABLE) {
 			/*
 			 * Current gain is 6, 12, 24, 48 based on values in
@@ -643,15 +800,20 @@ static int max16065_probe(struct i2c_client *client,
 			data->curr_gain = 6 << ((val >> 2) & 0x03);
 			data->range[MAX16065_NUM_ADC]
 			  = max16065_csp_adc_range[(val >> 1) & 0x01];
+<<<<<<< HEAD
 			ret = sysfs_create_group(&client->dev.kobj,
 						 &max16065_current_group);
 			if (unlikely(ret))
 				goto out;
+=======
+			data->groups[groups++] = &max16065_current_group;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			data->have_current = false;
 		}
 	}
 
+<<<<<<< HEAD
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (unlikely(IS_ERR(data->hwmon_dev))) {
 		ret = PTR_ERR(data->hwmon_dev);
@@ -661,8 +823,11 @@ static int max16065_probe(struct i2c_client *client,
 
 out:
 	max16065_cleanup(client);
+<<<<<<< HEAD
 out_free:
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -672,7 +837,16 @@ static int max16065_remove(struct i2c_client *client)
 
 	hwmon_device_unregister(data->hwmon_dev);
 	max16065_cleanup(client);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hwmon_dev = devm_hwmon_device_register_with_groups(dev, client->name,
+							   data, data->groups);
+	if (unlikely(IS_ERR(hwmon_dev)))
+		return PTR_ERR(hwmon_dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -695,10 +869,12 @@ static struct i2c_driver max16065_driver = {
 		.name = "max16065",
 	},
 	.probe = max16065_probe,
+<<<<<<< HEAD
 	.remove = max16065_remove,
 	.id_table = max16065_id,
 };
 
+<<<<<<< HEAD
 static int __init max16065_init(void)
 {
 	return i2c_add_driver(&max16065_driver);
@@ -708,10 +884,26 @@ static void __exit max16065_exit(void)
 {
 	i2c_del_driver(&max16065_driver);
 }
+=======
+module_i2c_driver(max16065_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Guenter Roeck <guenter.roeck@ericsson.com>");
 MODULE_DESCRIPTION("MAX16065 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(max16065_init);
 module_exit(max16065_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id_table = max16065_id,
+};
+
+module_i2c_driver(max16065_driver);
+
+MODULE_AUTHOR("Guenter Roeck <linux@roeck-us.net>");
+MODULE_DESCRIPTION("MAX16065 driver");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

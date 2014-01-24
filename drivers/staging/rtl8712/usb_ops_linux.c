@@ -28,6 +28,16 @@
 
 #define _HCI_OPS_OS_C_
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/usb.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/usb.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "osdep_service.h"
 #include "drv_types.h"
 #include "osdep_intf.h"
@@ -43,12 +53,22 @@ struct zero_bulkout_context {
 	void *padapter;
 };
 
+<<<<<<< HEAD
 #define usb_write_cmd r8712_usb_write_mem
 #define usb_write_cmd_complete usb_write_mem_complete
 
 uint r8712_usb_init_intf_priv(struct intf_priv *pintfpriv)
 {
+<<<<<<< HEAD
 	pintfpriv->piorw_urb = _usb_alloc_urb(0, GFP_ATOMIC);
+=======
+	pintfpriv->piorw_urb = usb_alloc_urb(0, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+uint r8712_usb_init_intf_priv(struct intf_priv *pintfpriv)
+{
+	pintfpriv->piorw_urb = usb_alloc_urb(0, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (!pintfpriv->piorw_urb)
 		return _FAIL;
 	sema_init(&(pintfpriv->io_retevt), 0);
@@ -187,7 +207,15 @@ void r8712_usb_write_mem(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem)
 	usb_fill_bulk_urb(piorw_urb, pusbd, pipe,
 			  wmem, cnt, usb_write_mem_complete,
 			  pio_queue);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	status = _usb_submit_urb(piorw_urb, GFP_ATOMIC);
+=======
+	status = usb_submit_urb(piorw_urb, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = usb_submit_urb(piorw_urb, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	_down_sema(&pintfpriv->io_retevt);
 }
 
@@ -241,8 +269,12 @@ static void r8712_usb_read_port_complete(struct urb *purb)
 				  (unsigned char *)precvbuf);
 			break;
 		case -EINPROGRESS:
+<<<<<<< HEAD
 			printk(KERN_ERR "r8712u: ERROR: URB IS IN"
 			       " PROGRESS!/n");
+=======
+			netdev_err(padapter->pnetdev, "ERROR: URB IS IN PROGRESS!\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			break;
@@ -305,7 +337,15 @@ u32 r8712_usb_read_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *rmem)
 				  precvbuf->pbuf, MAX_RECVBUF_SZ,
 				  r8712_usb_read_port_complete,
 				  precvbuf);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		err = _usb_submit_urb(purb, GFP_ATOMIC);
+=======
+		err = usb_submit_urb(purb, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = usb_submit_urb(purb, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		if ((err) && (err != (-EPERM)))
 			ret = _FAIL;
 	} else
@@ -332,6 +372,8 @@ void r8712_xmit_bh(void *priv)
 	struct _adapter *padapter = (struct _adapter *)priv;
 	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (1) {
 		if ((padapter->bDriverStopped == true) ||
 		    (padapter->bSurpriseRemoved == true)) {
@@ -343,6 +385,26 @@ void r8712_xmit_bh(void *priv)
 		if (ret == false)
 			break;
 	}
+=======
+	if ((padapter->bDriverStopped == true) ||
+	    (padapter->bSurpriseRemoved == true)) {
+		printk(KERN_ERR "r8712u: xmit_bh => bDriverStopped"
+		       " or bSurpriseRemoved\n");
+=======
+	if ((padapter->bDriverStopped == true) ||
+	    (padapter->bSurpriseRemoved == true)) {
+		netdev_err(padapter->pnetdev, "xmit_bh => bDriverStopped or bSurpriseRemoved\n");
+>>>>>>> refs/remotes/origin/master
+		return;
+	}
+	ret = r8712_xmitframe_complete(padapter, pxmitpriv, NULL);
+	if (ret == false)
+		return;
+	tasklet_hi_schedule(&pxmitpriv->xmit_tasklet);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void usb_write_port_complete(struct urb *purb)
@@ -386,7 +448,11 @@ static void usb_write_port_complete(struct urb *purb)
 	case 0:
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_WARNING "r8712u: pipe error: (%d)\n", purb->status);
+=======
+		netdev_warn(padapter->pnetdev, "r8712u: pipe error: (%d)\n", purb->status);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	/* not to consider tx fragment */
@@ -462,7 +528,15 @@ u32 r8712_usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem)
 			  pxmitframe->mem_addr,
 			  cnt, usb_write_port_complete,
 			  pxmitframe); /* context is xmit_frame */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	status = _usb_submit_urb(purb, GFP_ATOMIC);
+=======
+	status = usb_submit_urb(purb, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = usb_submit_urb(purb, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (!status)
 		ret = _SUCCESS;
 	else
@@ -501,8 +575,13 @@ int r8712_usbctrl_vendorreq(struct intf_priv *pintfpriv, u8 request, u16 value,
 
 	palloc_buf = _malloc((u32) len + 16);
 	if (palloc_buf == NULL) {
+<<<<<<< HEAD
 		printk(KERN_ERR "r8712u: [%s] Can't alloc memory for vendor"
 		       " request\n", __func__);
+=======
+		dev_err(&udev->dev, "%s: Can't alloc memory for vendor request\n",
+			__func__);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	pIo_buf = palloc_buf + 16 - ((addr_t)(palloc_buf) & 0x0f);

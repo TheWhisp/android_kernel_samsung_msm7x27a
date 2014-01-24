@@ -21,6 +21,10 @@
 #include <linux/gfp.h>
 #include <linux/raid/xor.h>
 #include <linux/jiffies.h>
+<<<<<<< HEAD
+=======
+#include <linux/preempt.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/xor.h>
 
 /* The xor routines to use.  */
@@ -55,6 +59,7 @@ xor_blocks(unsigned int src_count, unsigned int bytes, void *dest, void **srcs)
 EXPORT_SYMBOL(xor_blocks);
 
 /* Set of all registered templates.  */
+<<<<<<< HEAD
 static struct xor_block_template *template_list;
 
 #define BENCH_SIZE (PAGE_SIZE)
@@ -64,11 +69,27 @@ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
 {
 	int speed;
 	unsigned long now;
+=======
+static struct xor_block_template *__initdata template_list;
+
+#define BENCH_SIZE (PAGE_SIZE)
+
+static void __init
+do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
+{
+	int speed;
+	unsigned long now, j;
+>>>>>>> refs/remotes/origin/master
 	int i, count, max;
 
 	tmpl->next = template_list;
 	template_list = tmpl;
 
+<<<<<<< HEAD
+=======
+	preempt_disable();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Count the number of XORs done during a whole jiffy, and use
 	 * this to calculate the speed of checksumming.  We use a 2-page
@@ -76,9 +97,17 @@ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
 	 */
 	max = 0;
 	for (i = 0; i < 5; i++) {
+<<<<<<< HEAD
 		now = jiffies;
 		count = 0;
 		while (jiffies == now) {
+=======
+		j = jiffies;
+		count = 0;
+		while ((now = jiffies) == j)
+			cpu_relax();
+		while (time_before(jiffies, now + 1)) {
+>>>>>>> refs/remotes/origin/master
 			mb(); /* prevent loop optimzation */
 			tmpl->do_2(BENCH_SIZE, b1, b2);
 			mb();
@@ -89,6 +118,11 @@ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
 			max = count;
 	}
 
+<<<<<<< HEAD
+=======
+	preempt_enable();
+
+>>>>>>> refs/remotes/origin/master
 	speed = max * (HZ * BENCH_SIZE / 1024);
 	tmpl->speed = speed;
 
@@ -129,9 +163,15 @@ calibrate_xor_blocks(void)
 
 	if (fastest) {
 		printk(KERN_INFO "xor: automatically using best "
+<<<<<<< HEAD
 			"checksumming function: %s\n",
 			fastest->name);
 		xor_speed(fastest);
+=======
+				 "checksumming function:\n");
+		xor_speed(fastest);
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		printk(KERN_INFO "xor: measuring software checksum speed\n");
 		XOR_TRY_TEMPLATES;
@@ -146,6 +186,10 @@ calibrate_xor_blocks(void)
 
 #undef xor_speed
 
+<<<<<<< HEAD
+=======
+ out:
+>>>>>>> refs/remotes/origin/master
 	free_pages((unsigned long)b1, 2);
 
 	active_template = fastest;

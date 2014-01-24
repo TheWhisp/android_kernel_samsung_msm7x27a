@@ -3,7 +3,11 @@
  *
  * QE Parallel I/O ports configuration routines
  *
+<<<<<<< HEAD
  * Copyright (C) Freescale Semicondutor, Inc. 2006. All rights reserved.
+=======
+ * Copyright 2006 Freescale Semiconductor, Inc. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Li Yang <LeoLi@freescale.com>
  * Based on code from Shlomi Gridish <gridish@freescale.com>
@@ -41,7 +45,15 @@ int par_io_init(struct device_node *np)
 	ret = of_address_to_resource(np, 0, &res);
 	if (ret)
 		return ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	par_io = ioremap(res.start, res.end - res.start + 1);
+=======
+	par_io = ioremap(res.start, resource_size(&res));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	par_io = ioremap(res.start, resource_size(&res));
+>>>>>>> refs/remotes/origin/master
 
 	num_ports = of_get_property(np, "num-ports", NULL);
 	if (num_ports)

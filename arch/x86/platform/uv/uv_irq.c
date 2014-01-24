@@ -25,7 +25,15 @@ struct uv_irq_2_mmr_pnode{
 	int			irq;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static spinlock_t		uv_irq_lock;
+=======
+static DEFINE_SPINLOCK(uv_irq_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_SPINLOCK(uv_irq_lock);
+>>>>>>> refs/remotes/origin/master
 static struct rb_root		uv_irq_root;
 
 static int uv_set_irq_affinity(struct irq_data *, const struct cpumask *, bool);
@@ -135,6 +143,10 @@ arch_enable_uv_irq(char *irq_name, unsigned int irq, int cpu, int mmr_blade,
 	unsigned long mmr_value;
 	struct uv_IO_APIC_route_entry *entry;
 	int mmr_pnode, err;
+<<<<<<< HEAD
+=======
+	unsigned int dest;
+>>>>>>> refs/remotes/origin/master
 
 	BUILD_BUG_ON(sizeof(struct uv_IO_APIC_route_entry) !=
 			sizeof(unsigned long));
@@ -143,6 +155,13 @@ arch_enable_uv_irq(char *irq_name, unsigned int irq, int cpu, int mmr_blade,
 	if (err != 0)
 		return err;
 
+<<<<<<< HEAD
+=======
+	err = apic->cpu_mask_to_apicid_and(eligible_cpu, eligible_cpu, &dest);
+	if (err != 0)
+		return err;
+
+>>>>>>> refs/remotes/origin/master
 	if (limit == UV_AFFINITY_CPU)
 		irq_set_status_flags(irq, IRQ_NO_BALANCING);
 	else
@@ -159,7 +178,11 @@ arch_enable_uv_irq(char *irq_name, unsigned int irq, int cpu, int mmr_blade,
 	entry->polarity		= 0;
 	entry->trigger		= 0;
 	entry->mask		= 0;
+<<<<<<< HEAD
 	entry->dest		= apic->cpu_mask_to_apicid(eligible_cpu);
+=======
+	entry->dest		= dest;
+>>>>>>> refs/remotes/origin/master
 
 	mmr_pnode = uv_blade_to_pnode(mmr_blade);
 	uv_write_global_mmr64(mmr_pnode, mmr_offset, mmr_value);
@@ -222,7 +245,11 @@ uv_set_irq_affinity(struct irq_data *data, const struct cpumask *mask,
 	if (cfg->move_in_progress)
 		send_cleanup_vector(cfg);
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return IRQ_SET_MASK_OK_NOCOPY;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

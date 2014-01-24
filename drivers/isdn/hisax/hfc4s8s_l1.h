@@ -15,10 +15,23 @@
 
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
 *  include Genero generated HFC-4S/8S header file hfc48scu.h
 *  for complete register description. This will define _HFC48SCU_H_
 *  to prevent redefinitions
 */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *  include Genero generated HFC-4S/8S header file hfc48scu.h
+ *  for complete register description. This will define _HFC48SCU_H_
+ *  to prevent redefinitions
+ */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 // #include "hfc48scu.h"
 

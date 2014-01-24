@@ -124,6 +124,10 @@ static struct usb_driver gigaset_usb_driver = {
 	.reset_resume =	gigaset_resume,
 	.pre_reset =	gigaset_pre_reset,
 	.post_reset =	gigaset_resume,
+<<<<<<< HEAD
+=======
+	.disable_hub_initiated_lpm = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct usb_cardstate {
@@ -184,7 +188,15 @@ static int set_value(struct cardstate *cs, u8 req, u16 val)
 		(unsigned)req, (unsigned)val);
 	r = usb_control_msg(udev, usb_sndctrlpipe(udev, 0), 0x12, 0x41,
 			    0xf /*?*/, 0, NULL, 0, 2000 /*?*/);
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    /* no idea what this does */
+=======
+	/* no idea what this does */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* no idea what this does */
+>>>>>>> refs/remotes/origin/master
 	if (r < 0) {
 		dev_err(&udev->dev, "error %d on request 0x12\n", -r);
 		return r;
@@ -365,7 +377,15 @@ static void gigaset_read_int_callback(struct urb *urb)
 			src = cs->hw.usb->rcvbuf;
 			if (unlikely(*src))
 				dev_warn(cs->dev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				    "%s: There was no leading 0, but 0x%02x!\n",
+=======
+					 "%s: There was no leading 0, but 0x%02x!\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 "%s: There was no leading 0, but 0x%02x!\n",
+>>>>>>> refs/remotes/origin/master
 					 __func__, (unsigned) *src);
 			++src; /* skip leading 0x00 */
 			--numbytes;
@@ -465,7 +485,15 @@ static int send_cb(struct cardstate *cs, struct cmdbuf_t *cb)
 
 			usb_fill_bulk_urb(ucs->bulk_out_urb, ucs->udev,
 					  usb_sndbulkpipe(ucs->udev,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					     ucs->bulk_out_endpointAddr & 0x0f),
+=======
+							  ucs->bulk_out_endpointAddr & 0x0f),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+							  ucs->bulk_out_endpointAddr & 0x0f),
+>>>>>>> refs/remotes/origin/master
 					  cb->buf + cb->offset, count,
 					  gigaset_write_bulk_callback, cs);
 
@@ -499,7 +527,15 @@ static int gigaset_write_cmd(struct cardstate *cs, struct cmdbuf_t *cb)
 	unsigned long flags;
 
 	gigaset_dbg_buffer(cs->mstate != MS_LOCKED ?
+<<<<<<< HEAD
+<<<<<<< HEAD
 			     DEBUG_TRANSCMD : DEBUG_LOCKCMD,
+=======
+			   DEBUG_TRANSCMD : DEBUG_LOCKCMD,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   DEBUG_TRANSCMD : DEBUG_LOCKCMD,
+>>>>>>> refs/remotes/origin/master
 			   "CMD Transmit", cb->len, cb->buf);
 
 	spin_lock_irqsave(&cs->cmdlock, flags);
@@ -549,10 +585,16 @@ static int gigaset_brkchars(struct cardstate *cs, const unsigned char buf[6])
 			       0, 0, &buf, 6, 2000);
 }
 
+<<<<<<< HEAD
 static int gigaset_freebcshw(struct bc_state *bcs)
 {
 	/* unused */
 	return 1;
+=======
+static void gigaset_freebcshw(struct bc_state *bcs)
+{
+	/* unused */
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Initialize the b-channel structure */
@@ -560,7 +602,11 @@ static int gigaset_initbcshw(struct bc_state *bcs)
 {
 	/* unused */
 	bcs->hw.usb = NULL;
+<<<<<<< HEAD
 	return 1;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void gigaset_reinitbcshw(struct bc_state *bcs)
@@ -582,7 +628,11 @@ static int gigaset_initcshw(struct cardstate *cs)
 		kmalloc(sizeof(struct usb_cardstate), GFP_KERNEL);
 	if (!ucs) {
 		pr_err("out of memory\n");
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ucs->bchars[0] = 0;
@@ -597,7 +647,11 @@ static int gigaset_initcshw(struct cardstate *cs)
 	tasklet_init(&cs->write_tasklet,
 		     gigaset_modem_fill, (unsigned long) cs);
 
+<<<<<<< HEAD
 	return 1;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Send data from current skb to the device. */
@@ -766,9 +820,15 @@ static int gigaset_probe(struct usb_interface *interface,
 	if (startmode == SM_LOCKED)
 		cs->mstate = MS_LOCKED;
 
+<<<<<<< HEAD
 	if (!gigaset_start(cs)) {
 		tasklet_kill(&cs->write_tasklet);
 		retval = -ENODEV;
+=======
+	retval = gigaset_start(cs);
+	if (retval < 0) {
+		tasklet_kill(&cs->write_tasklet);
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 	return 0;
@@ -898,8 +958,15 @@ static int __init usb_gigaset_init(void)
 	driver = gigaset_initdriver(GIGASET_MINOR, GIGASET_MINORS,
 				    GIGASET_MODULENAME, GIGASET_DEVNAME,
 				    &ops, THIS_MODULE);
+<<<<<<< HEAD
 	if (driver == NULL)
 		goto error;
+=======
+	if (driver == NULL) {
+		result = -ENOMEM;
+		goto error;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* register this driver with the USB subsystem */
 	result = usb_register(&gigaset_usb_driver);
@@ -915,7 +982,11 @@ error:
 	if (driver)
 		gigaset_freedriver(driver);
 	driver = NULL;
+<<<<<<< HEAD
 	return -1;
+=======
+	return result;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

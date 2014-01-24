@@ -10,7 +10,15 @@
  */
 #include <linux/rwsem.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/debug_locks.h>
 
@@ -30,6 +38,10 @@ EXPORT_SYMBOL_GPL(debug_locks);
  * a locking bug is detected.
  */
 int debug_locks_silent;
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(debug_locks_silent);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Generic 'turn off all lock debugging' function:
@@ -44,3 +56,7 @@ int debug_locks_off(void)
 	}
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(debug_locks_off);
+>>>>>>> refs/remotes/origin/master

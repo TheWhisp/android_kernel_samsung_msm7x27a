@@ -25,7 +25,11 @@
 ******************************************************************************
 
   Few modifications for Realtek's Wi-Fi drivers by
+<<<<<<< HEAD
   Andrea Merello <andreamrl@tiscali.it>
+=======
+  Andrea Merello <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
 
   A special thanks goes to Realtek for their support !
 
@@ -70,7 +74,11 @@ val  | 0  |  0  |  0  |  1  |  x  |  0  |  0  |  0  |  1  |  0  |  x  |  x  |  x
 desc | ^-ver-^  |  ^type-^  |  ^-----subtype-----^  | to  |from |more |retry| pwr |more |wep   |
      |          |           | x=0 data,x=1 data+ack | DS  | DS  |frag |     | mgm |data |      |
      '-----------------------------------------------------------------------------------------'
+<<<<<<< HEAD
 		                                    /\
+=======
+                                                    /\
+>>>>>>> refs/remotes/origin/master
                                                     |
 802.11 Data Frame                                   |
            ,--------- 'ctrl' expands to >-----------'
@@ -183,7 +191,11 @@ int ieee80211_encrypt_fragment(
 	struct sk_buff *frag,
 	int hdr_len)
 {
+<<<<<<< HEAD
 	struct ieee80211_crypt_data* crypt = ieee->crypt[ieee->tx_keyidx];
+=======
+	struct ieee80211_crypt_data *crypt = ieee->crypt[ieee->tx_keyidx];
+>>>>>>> refs/remotes/origin/master
 	int res;
 
 	if (!(crypt && crypt->ops))
@@ -237,13 +249,22 @@ void ieee80211_txb_free(struct ieee80211_txb *txb) {
 	kfree(txb);
 }
 
+<<<<<<< HEAD
 struct ieee80211_txb *ieee80211_alloc_txb(int nr_frags, int txb_size,
 					  int gfp_mask)
+=======
+static struct ieee80211_txb *ieee80211_alloc_txb(int nr_frags, int txb_size,
+						 gfp_t gfp_mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_txb *txb;
 	int i;
 	txb = kmalloc(
+<<<<<<< HEAD
 		sizeof(struct ieee80211_txb) + (sizeof(u8*) * nr_frags),
+=======
+		sizeof(struct ieee80211_txb) + (sizeof(u8 *) * nr_frags),
+>>>>>>> refs/remotes/origin/master
 		gfp_mask);
 	if (!txb)
 		return NULL;
@@ -283,6 +304,7 @@ ieee80211_classify(struct sk_buff *skb, struct ieee80211_network *network)
 //	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA, skb->data, skb->len);
 	ip = ip_hdr(skb);
 	switch (ip->tos & 0xfc) {
+<<<<<<< HEAD
 		case 0x20:
 			return 2;
 		case 0x40:
@@ -299,22 +321,53 @@ ieee80211_classify(struct sk_buff *skb, struct ieee80211_network *network)
 			return 7;
 		default:
 			return 0;
+=======
+	case 0x20:
+		return 2;
+	case 0x40:
+		return 1;
+	case 0x60:
+		return 3;
+	case 0x80:
+		return 4;
+	case 0xa0:
+		return 5;
+	case 0xc0:
+		return 6;
+	case 0xe0:
+		return 7;
+	default:
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 #define SN_LESS(a, b)		(((a-b)&0x800)!=0)
+<<<<<<< HEAD
 void ieee80211_tx_query_agg_cap(struct ieee80211_device* ieee, struct sk_buff* skb, cb_desc* tcb_desc)
 {
 	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
 	PTX_TS_RECORD			pTxTs = NULL;
 	struct ieee80211_hdr_1addr* hdr = (struct ieee80211_hdr_1addr*)skb->data;
+=======
+static void ieee80211_tx_query_agg_cap(struct ieee80211_device *ieee,
+				       struct sk_buff *skb, cb_desc *tcb_desc)
+{
+	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+	PTX_TS_RECORD			pTxTs = NULL;
+	struct ieee80211_hdr_1addr *hdr = (struct ieee80211_hdr_1addr *)skb->data;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pHTInfo->bCurrentHTSupport||!pHTInfo->bEnableHT)
 		return;
 	if (!IsQoSDataFrame(skb->data))
 		return;
 
+<<<<<<< HEAD
 	if (is_multicast_ether_addr(hdr->addr1) || is_broadcast_ether_addr(hdr->addr1))
+=======
+	if (is_multicast_ether_addr(hdr->addr1))
+>>>>>>> refs/remotes/origin/master
 		return;
 	//check packet and mode later
 #ifdef TO_DO_LIST
@@ -330,7 +383,11 @@ void ieee80211_tx_query_agg_cap(struct ieee80211_device* ieee, struct sk_buff* s
 	}
 	if(pHTInfo->bCurrentAMPDUEnable)
 	{
+<<<<<<< HEAD
 		if (!GetTs(ieee, (PTS_COMMON_INFO*)(&pTxTs), hdr->addr1, skb->priority, TX_DIR, true))
+=======
+		if (!GetTs(ieee, (PTS_COMMON_INFO *)(&pTxTs), hdr->addr1, skb->priority, TX_DIR, true))
+>>>>>>> refs/remotes/origin/master
 		{
 			printk("===>can't get TS\n");
 			return;
@@ -356,7 +413,11 @@ void ieee80211_tx_query_agg_cap(struct ieee80211_device* ieee, struct sk_buff* s
 		}
 	}
 FORCED_AGG_SETTING:
+<<<<<<< HEAD
 	switch(pHTInfo->ForcedAMPDUMode )
+=======
+	switch (pHTInfo->ForcedAMPDUMode )
+>>>>>>> refs/remotes/origin/master
 	{
 		case HT_AGG_AUTO:
 			break;
@@ -377,7 +438,11 @@ FORCED_AGG_SETTING:
 		return;
 }
 
+<<<<<<< HEAD
 extern void ieee80211_qurey_ShortPreambleMode(struct ieee80211_device* ieee, cb_desc* tcb_desc)
+=======
+extern void ieee80211_qurey_ShortPreambleMode(struct ieee80211_device *ieee, cb_desc *tcb_desc)
+>>>>>>> refs/remotes/origin/master
 {
 	tcb_desc->bUseShortPreamble = false;
 	if (tcb_desc->data_rate == 2)
@@ -395,7 +460,11 @@ ieee80211_query_HTCapShortGI(struct ieee80211_device *ieee, cb_desc *tcb_desc)
 {
 	PRT_HIGH_THROUGHPUT		pHTInfo = ieee->pHTInfo;
 
+<<<<<<< HEAD
 	tcb_desc->bUseShortGI 		= false;
+=======
+	tcb_desc->bUseShortGI		= false;
+>>>>>>> refs/remotes/origin/master
 
 	if(!pHTInfo->bCurrentHTSupport||!pHTInfo->bEnableHT)
 		return;
@@ -412,7 +481,12 @@ ieee80211_query_HTCapShortGI(struct ieee80211_device *ieee, cb_desc *tcb_desc)
 		tcb_desc->bUseShortGI = true;
 }
 
+<<<<<<< HEAD
 void ieee80211_query_BandwidthMode(struct ieee80211_device* ieee, cb_desc *tcb_desc)
+=======
+static void ieee80211_query_BandwidthMode(struct ieee80211_device *ieee,
+					  cb_desc *tcb_desc)
+>>>>>>> refs/remotes/origin/master
 {
 	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
 
@@ -432,7 +506,13 @@ void ieee80211_query_BandwidthMode(struct ieee80211_device* ieee, cb_desc *tcb_d
 	return;
 }
 
+<<<<<<< HEAD
 void ieee80211_query_protectionmode(struct ieee80211_device* ieee, cb_desc* tcb_desc, struct sk_buff* skb)
+=======
+static void ieee80211_query_protectionmode(struct ieee80211_device *ieee,
+					   cb_desc *tcb_desc,
+					   struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	// Common Settings
 	tcb_desc->bRTSSTBC			= false;
@@ -514,7 +594,11 @@ void ieee80211_query_protectionmode(struct ieee80211_device* ieee, cb_desc* tcb_
 			if(pHTInfo->IOTAction & HT_IOT_ACT_FORCED_CTS2SELF)
 			{
 				tcb_desc->bCTSEnable	= true;
+<<<<<<< HEAD
 				tcb_desc->rts_rate  = 	MGN_24M;
+=======
+				tcb_desc->rts_rate  =	MGN_24M;
+>>>>>>> refs/remotes/origin/master
 				tcb_desc->bRTSEnable = true;
 				break;
 			}
@@ -527,7 +611,11 @@ void ieee80211_query_protectionmode(struct ieee80211_device* ieee, cb_desc* tcb_
 	{
 		tcb_desc->bCTSEnable	= true;
 		tcb_desc->rts_rate = MGN_24M;
+<<<<<<< HEAD
 		tcb_desc->bRTSEnable 	= true;
+=======
+		tcb_desc->bRTSEnable	= true;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (ieee->current_network.capability & WLAN_CAPABILITY_SHORT_PREAMBLE)
 		tcb_desc->bUseShortPreamble = true;
@@ -543,7 +631,12 @@ NO_PROTECTION:
 }
 
 
+<<<<<<< HEAD
 void ieee80211_txrate_selectmode(struct ieee80211_device* ieee, cb_desc* tcb_desc)
+=======
+static void ieee80211_txrate_selectmode(struct ieee80211_device *ieee,
+					cb_desc *tcb_desc)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef TO_DO_LIST
 	if(!IsDataFrame(pFrame))
@@ -573,14 +666,25 @@ void ieee80211_txrate_selectmode(struct ieee80211_device* ieee, cb_desc* tcb_des
 	}
 }
 
+<<<<<<< HEAD
 void ieee80211_query_seqnum(struct ieee80211_device*ieee, struct sk_buff* skb, u8* dst)
 {
 	if (is_multicast_ether_addr(dst) || is_broadcast_ether_addr(dst))
+=======
+static void ieee80211_query_seqnum(struct ieee80211_device *ieee,
+				   struct sk_buff *skb, u8 *dst)
+{
+	if (is_multicast_ether_addr(dst))
+>>>>>>> refs/remotes/origin/master
 		return;
 	if (IsQoSDataFrame(skb->data)) //we deal qos data only
 	{
 		PTX_TS_RECORD pTS = NULL;
+<<<<<<< HEAD
 		if (!GetTs(ieee, (PTS_COMMON_INFO*)(&pTS), dst, skb->priority, TX_DIR, true))
+=======
+		if (!GetTs(ieee, (PTS_COMMON_INFO *)(&pTS), dst, skb->priority, TX_DIR, true))
+>>>>>>> refs/remotes/origin/master
 		{
 			return;
 		}
@@ -607,7 +711,11 @@ int ieee80211_xmit(struct sk_buff *skb, struct net_device *dev)
 	u8 dest[ETH_ALEN], src[ETH_ALEN];
 	int qos_actived = ieee->current_network.qos_data.active;
 
+<<<<<<< HEAD
 	struct ieee80211_crypt_data* crypt;
+=======
+	struct ieee80211_crypt_data *crypt;
+>>>>>>> refs/remotes/origin/master
 
 	cb_desc *tcb_desc;
 
@@ -656,17 +764,29 @@ int ieee80211_xmit(struct sk_buff *skb, struct net_device *dev)
 		memcpy(&dest, skb->data, ETH_ALEN);
 		memcpy(&src, skb->data+ETH_ALEN, ETH_ALEN);
 
+<<<<<<< HEAD
                 /* Advance the SKB to the start of the payload */
                 skb_pull(skb, sizeof(struct ethhdr));
 
                 /* Determine total amount of storage required for TXB packets */
                 bytes = skb->len + SNAP_SIZE + sizeof(u16);
+=======
+		/* Advance the SKB to the start of the payload */
+		skb_pull(skb, sizeof(struct ethhdr));
+
+		/* Determine total amount of storage required for TXB packets */
+		bytes = skb->len + SNAP_SIZE + sizeof(u16);
+>>>>>>> refs/remotes/origin/master
 
 		if (encrypt)
 			fc = IEEE80211_FTYPE_DATA | IEEE80211_FCTL_WEP;
 		else
 
+<<<<<<< HEAD
                         fc = IEEE80211_FTYPE_DATA;
+=======
+			fc = IEEE80211_FTYPE_DATA;
+>>>>>>> refs/remotes/origin/master
 
 		//if(ieee->current_network.QoS_Enable)
 		if(qos_actived)
@@ -689,12 +809,20 @@ int ieee80211_xmit(struct sk_buff *skb, struct net_device *dev)
 			memcpy(&header.addr3, ieee->current_network.bssid, ETH_ALEN);
 		}
 
+<<<<<<< HEAD
                 header.frame_ctl = cpu_to_le16(fc);
 
 		/* Determine fragmentation size based on destination (multicast
 		* and broadcast are not fragmented) */
 		if (is_multicast_ether_addr(header.addr1) ||
 		is_broadcast_ether_addr(header.addr1)) {
+=======
+		header.frame_ctl = cpu_to_le16(fc);
+
+		/* Determine fragmentation size based on destination (multicast
+		* and broadcast are not fragmented) */
+		if (is_multicast_ether_addr(header.addr1)) {
+>>>>>>> refs/remotes/origin/master
 			frag_size = MAX_FRAG_THRESHOLD;
 			qos_ctl |= QOS_CTL_NOTCONTAIN_ACK;
 		}
@@ -723,7 +851,15 @@ int ieee80211_xmit(struct sk_buff *skb, struct net_device *dev)
 		(CFG_IEEE80211_COMPUTE_FCS | CFG_IEEE80211_RESERVE_FCS))
 			bytes_per_frag -= IEEE80211_FCS_LEN;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		/* Each fragment may need to have room for encryptiong pre/postfix */
+=======
+		/* Each fragment may need to have room for encryption pre/postfix */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Each fragment may need to have room for encryption pre/postfix */
+>>>>>>> refs/remotes/origin/master
 		if (encrypt)
 			bytes_per_frag -= crypt->ops->extra_prefix_len +
 				crypt->ops->extra_postfix_len;
@@ -834,7 +970,11 @@ int ieee80211_xmit(struct sk_buff *skb, struct net_device *dev)
 		  else
 			ieee->seq_ctrl[UP2AC(skb->priority) + 1]++;
 		} else {
+<<<<<<< HEAD
   		  if (ieee->seq_ctrl[0] == 0xFFF)
+=======
+		  if (ieee->seq_ctrl[0] == 0xFFF)
+>>>>>>> refs/remotes/origin/master
 			ieee->seq_ctrl[0] = 0;
 		  else
 			ieee->seq_ctrl[0]++;

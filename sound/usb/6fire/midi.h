@@ -3,7 +3,13 @@
  *
  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
  * Created:	Jan 01, 2011
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Version:	0.3.0
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright:	(C) Torsten Schenk
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,10 +23,13 @@
 
 #include "common.h"
 
+<<<<<<< HEAD
 enum {
 	MIDI_BUFSIZE = 64
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct midi_runtime {
 	struct sfire_chip *chip;
 	struct snd_rawmidi *instance;
@@ -33,13 +42,21 @@ struct midi_runtime {
 	struct snd_rawmidi_substream *out;
 	struct urb out_urb;
 	u8 out_serial; /* serial number of out packet */
+<<<<<<< HEAD
 	u8 out_buffer[MIDI_BUFSIZE];
+=======
+	u8 *out_buffer;
+>>>>>>> refs/remotes/origin/master
 	int buffer_offset;
 
 	void (*in_received)(struct midi_runtime *rt, u8 *data, int length);
 };
 
+<<<<<<< HEAD
 int __devinit usb6fire_midi_init(struct sfire_chip *chip);
+=======
+int usb6fire_midi_init(struct sfire_chip *chip);
+>>>>>>> refs/remotes/origin/master
 void usb6fire_midi_abort(struct sfire_chip *chip);
 void usb6fire_midi_destroy(struct sfire_chip *chip);
 #endif /* USB6FIRE_MIDI_H */

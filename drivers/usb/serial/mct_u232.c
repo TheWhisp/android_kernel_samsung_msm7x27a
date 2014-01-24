@@ -19,6 +19,8 @@
  *   DTR/RTS signal handling may be incomplete or incorrect. I have mainly
  *   implemented what I have seen with SniffUSB or found in belkin_sa.c.
  *   For further TODOs check also belkin_sa.c.
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * TEST STATUS:
  *   Basic tests have been performed with minicom/zmodem transfers and
@@ -63,11 +65,18 @@
  * 27-Nov-2000 Wolfgang Grandegge
  *   A version for kernel 2.4.0-test10 released to the Linux community
  *   (via linux-usb-devel).
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -79,6 +88,7 @@
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 #include <linux/serial.h>
+<<<<<<< HEAD
 #include <linux/ioctl.h>
 #include "mct_u232.h"
 
@@ -89,13 +99,29 @@
 #define DRIVER_AUTHOR "Wolfgang Grandegger <wolfgang@ces.ch>"
 #define DRIVER_DESC "Magic Control Technology USB-RS232 converter driver"
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Function prototypes
  */
 static int  mct_u232_startup(struct usb_serial *serial);
 static void mct_u232_release(struct usb_serial *serial);
+=======
+#include "mct_u232.h"
+
+#define DRIVER_AUTHOR "Wolfgang Grandegger <wolfgang@ces.ch>"
+#define DRIVER_DESC "Magic Control Technology USB-RS232 converter driver"
+
+/*
+ * Function prototypes
+ */
+static int  mct_u232_port_probe(struct usb_serial_port *port);
+static int  mct_u232_port_remove(struct usb_serial_port *remove);
+>>>>>>> refs/remotes/origin/master
 static int  mct_u232_open(struct tty_struct *tty, struct usb_serial_port *port);
 static void mct_u232_close(struct usb_serial_port *port);
 static void mct_u232_dtr_rts(struct usb_serial_port *port, int on);
@@ -106,10 +132,13 @@ static void mct_u232_break_ctl(struct tty_struct *tty, int break_state);
 static int  mct_u232_tiocmget(struct tty_struct *tty);
 static int  mct_u232_tiocmset(struct tty_struct *tty,
 			unsigned int set, unsigned int clear);
+<<<<<<< HEAD
 static int  mct_u232_ioctl(struct tty_struct *tty,
 			unsigned int cmd, unsigned long arg);
 static int  mct_u232_get_icount(struct tty_struct *tty,
 			struct serial_icounter_struct *icount);
+=======
+>>>>>>> refs/remotes/origin/master
 static void mct_u232_throttle(struct tty_struct *tty);
 static void mct_u232_unthrottle(struct tty_struct *tty);
 
@@ -117,13 +146,18 @@ static void mct_u232_unthrottle(struct tty_struct *tty);
 /*
  * All of the device info needed for the MCT USB-RS232 converter.
  */
+<<<<<<< HEAD
 static const struct usb_device_id id_table_combined[] = {
+=======
+static const struct usb_device_id id_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(MCT_U232_VID, MCT_U232_PID) },
 	{ USB_DEVICE(MCT_U232_VID, MCT_U232_SITECOM_PID) },
 	{ USB_DEVICE(MCT_U232_VID, MCT_U232_DU_H3SP_PID) },
 	{ USB_DEVICE(MCT_U232_BELKIN_F5U109_VID, MCT_U232_BELKIN_F5U109_PID) },
 	{ }		/* Terminating entry */
 };
+<<<<<<< HEAD
 
 MODULE_DEVICE_TABLE(usb, id_table_combined);
 
@@ -132,8 +166,14 @@ static struct usb_driver mct_u232_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
+=======
+MODULE_DEVICE_TABLE(usb, id_table);
+>>>>>>> refs/remotes/origin/master
 
 static struct usb_serial_driver mct_u232_device = {
 	.driver = {
@@ -141,8 +181,15 @@ static struct usb_serial_driver mct_u232_device = {
 		.name =		"mct_u232",
 	},
 	.description =	     "MCT U232",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver = 	     &mct_u232_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =	     id_table_combined,
+=======
+	.id_table =	     id_table,
+>>>>>>> refs/remotes/origin/master
 	.num_ports =	     1,
 	.open =		     mct_u232_open,
 	.close =	     mct_u232_close,
@@ -154,22 +201,46 @@ static struct usb_serial_driver mct_u232_device = {
 	.break_ctl =	     mct_u232_break_ctl,
 	.tiocmget =	     mct_u232_tiocmget,
 	.tiocmset =	     mct_u232_tiocmset,
+<<<<<<< HEAD
 	.attach =	     mct_u232_startup,
 	.release =	     mct_u232_release,
 	.ioctl =             mct_u232_ioctl,
 	.get_icount =        mct_u232_get_icount,
 };
 
+<<<<<<< HEAD
+=======
+=======
+	.tiocmiwait =        usb_serial_generic_tiocmiwait,
+	.port_probe =        mct_u232_port_probe,
+	.port_remove =       mct_u232_port_remove,
+	.get_icount =        usb_serial_generic_get_icount,
+};
+
+>>>>>>> refs/remotes/origin/master
+static struct usb_serial_driver * const serial_drivers[] = {
+	&mct_u232_device, NULL
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 struct mct_u232_private {
+=======
+struct mct_u232_private {
+	struct urb *read_urb;
+>>>>>>> refs/remotes/origin/master
 	spinlock_t lock;
 	unsigned int	     control_state; /* Modem Line Setting (TIOCM) */
 	unsigned char        last_lcr;      /* Line Control Register */
 	unsigned char	     last_lsr;      /* Line Status Register */
 	unsigned char	     last_msr;      /* Modem Status Register */
 	unsigned int	     rx_flags;      /* Throttling flags */
+<<<<<<< HEAD
 	struct async_icount  icount;
 	wait_queue_head_t    msr_wait;	/* for handling sleeping while waiting
 						for msr change to happen */
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define THROTTLED		0x01
@@ -264,7 +335,11 @@ static int mct_u232_set_baud_rate(struct tty_struct *tty,
 			value, rc);
 	else
 		tty_encode_baud_rate(tty, speed, speed);
+<<<<<<< HEAD
 	dbg("set_baud_rate: value: 0x%x, divisor: 0x%x", value, divisor);
+=======
+	dev_dbg(&port->dev, "set_baud_rate: value: 0x%x, divisor: 0x%x\n", value, divisor);
+>>>>>>> refs/remotes/origin/master
 
 	/* Mimic the MCT-supplied Windows driver (version 1.21P.0104), which
 	   always sends two extra USB 'device request' messages after the
@@ -297,8 +372,13 @@ static int mct_u232_set_baud_rate(struct tty_struct *tty,
 	if (port && C_CRTSCTS(tty))
 	   cts_enable_byte = 1;
 
+<<<<<<< HEAD
 	dbg("set_baud_rate: send second control message, data = %02X",
 							cts_enable_byte);
+=======
+	dev_dbg(&port->dev, "set_baud_rate: send second control message, data = %02X\n",
+		cts_enable_byte);
+>>>>>>> refs/remotes/origin/master
 	buf[0] = cts_enable_byte;
 	rc = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
 			MCT_U232_SET_CTS_REQUEST,
@@ -313,7 +393,12 @@ static int mct_u232_set_baud_rate(struct tty_struct *tty,
 	return rc;
 } /* mct_u232_set_baud_rate */
 
+<<<<<<< HEAD
 static int mct_u232_set_line_ctrl(struct usb_serial *serial, unsigned char lcr)
+=======
+static int mct_u232_set_line_ctrl(struct usb_serial_port *port,
+				  unsigned char lcr)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	unsigned char *buf;
@@ -323,20 +408,33 @@ static int mct_u232_set_line_ctrl(struct usb_serial *serial, unsigned char lcr)
 		return -ENOMEM;
 
 	buf[0] = lcr;
+<<<<<<< HEAD
 	rc = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
+=======
+	rc = usb_control_msg(port->serial->dev, usb_sndctrlpipe(port->serial->dev, 0),
+>>>>>>> refs/remotes/origin/master
 			MCT_U232_SET_LINE_CTRL_REQUEST,
 			MCT_U232_SET_REQUEST_TYPE,
 			0, 0, buf, MCT_U232_SET_LINE_CTRL_SIZE,
 			WDR_TIMEOUT);
 	if (rc < 0)
+<<<<<<< HEAD
 		dev_err(&serial->dev->dev,
 			"Set LINE CTRL 0x%x failed (error = %d)\n", lcr, rc);
 	dbg("set_line_ctrl: 0x%x", lcr);
+=======
+		dev_err(&port->dev, "Set LINE CTRL 0x%x failed (error = %d)\n", lcr, rc);
+	dev_dbg(&port->dev, "set_line_ctrl: 0x%x\n", lcr);
+>>>>>>> refs/remotes/origin/master
 	kfree(buf);
 	return rc;
 } /* mct_u232_set_line_ctrl */
 
+<<<<<<< HEAD
 static int mct_u232_set_modem_ctrl(struct usb_serial *serial,
+=======
+static int mct_u232_set_modem_ctrl(struct usb_serial_port *port,
+>>>>>>> refs/remotes/origin/master
 				   unsigned int control_state)
 {
 	int rc;
@@ -354,25 +452,49 @@ static int mct_u232_set_modem_ctrl(struct usb_serial *serial,
 		mcr |= MCT_U232_MCR_RTS;
 
 	buf[0] = mcr;
+<<<<<<< HEAD
 	rc = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
+=======
+	rc = usb_control_msg(port->serial->dev, usb_sndctrlpipe(port->serial->dev, 0),
+>>>>>>> refs/remotes/origin/master
 			MCT_U232_SET_MODEM_CTRL_REQUEST,
 			MCT_U232_SET_REQUEST_TYPE,
 			0, 0, buf, MCT_U232_SET_MODEM_CTRL_SIZE,
 			WDR_TIMEOUT);
 	kfree(buf);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dbg("set_modem_ctrl: state=0x%x ==> mcr=0x%x", control_state, mcr);
 
 	if (rc < 0) {
 		dev_err(&serial->dev->dev,
 			"Set MODEM CTRL 0x%x failed (error = %d)\n", mcr, rc);
+=======
+	dev_dbg(&port->dev, "set_modem_ctrl: state=0x%x ==> mcr=0x%x\n", control_state, mcr);
+
+	if (rc < 0) {
+		dev_err(&port->dev, "Set MODEM CTRL 0x%x failed (error = %d)\n", mcr, rc);
+>>>>>>> refs/remotes/origin/master
+=======
+	dbg("set_modem_ctrl: state=0x%x ==> mcr=0x%x", control_state, mcr);
+
+	if (rc < 0) {
+		dev_err(&serial->dev->dev,
+			"Set MODEM CTRL 0x%x failed (error = %d)\n", mcr, rc);
+>>>>>>> refs/remotes/origin/cm-11.0
 		return rc;
 	}
 	return 0;
 } /* mct_u232_set_modem_ctrl */
 
+<<<<<<< HEAD
 static int mct_u232_get_modem_stat(struct usb_serial *serial,
 						unsigned char *msr)
+=======
+static int mct_u232_get_modem_stat(struct usb_serial_port *port,
+				   unsigned char *msr)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	unsigned char *buf;
@@ -382,19 +504,31 @@ static int mct_u232_get_modem_stat(struct usb_serial *serial,
 		*msr = 0;
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	rc = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
+=======
+	rc = usb_control_msg(port->serial->dev, usb_rcvctrlpipe(port->serial->dev, 0),
+>>>>>>> refs/remotes/origin/master
 			MCT_U232_GET_MODEM_STAT_REQUEST,
 			MCT_U232_GET_REQUEST_TYPE,
 			0, 0, buf, MCT_U232_GET_MODEM_STAT_SIZE,
 			WDR_TIMEOUT);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(&serial->dev->dev,
 			"Get MODEM STATus failed (error = %d)\n", rc);
+=======
+		dev_err(&port->dev, "Get MODEM STATus failed (error = %d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 		*msr = 0;
 	} else {
 		*msr = buf[0];
 	}
+<<<<<<< HEAD
 	dbg("get_modem_stat: 0x%x", *msr);
+=======
+	dev_dbg(&port->dev, "get_modem_stat: 0x%x\n", *msr);
+>>>>>>> refs/remotes/origin/master
 	kfree(buf);
 	return rc;
 } /* mct_u232_get_modem_stat */
@@ -413,8 +547,13 @@ static void mct_u232_msr_to_icount(struct async_icount *icount,
 		icount->dcd++;
 } /* mct_u232_msr_to_icount */
 
+<<<<<<< HEAD
 static void mct_u232_msr_to_state(unsigned int *control_state,
 						unsigned char msr)
+=======
+static void mct_u232_msr_to_state(struct usb_serial_port *port,
+				  unsigned int *control_state, unsigned char msr)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Translate Control Line states */
 	if (msr & MCT_U232_MSR_DSR)
@@ -433,13 +572,18 @@ static void mct_u232_msr_to_state(unsigned int *control_state,
 		*control_state |=  TIOCM_CD;
 	else
 		*control_state &= ~TIOCM_CD;
+<<<<<<< HEAD
 	dbg("msr_to_state: msr=0x%x ==> state=0x%x", msr, *control_state);
+=======
+	dev_dbg(&port->dev, "msr_to_state: msr=0x%x ==> state=0x%x\n", msr, *control_state);
+>>>>>>> refs/remotes/origin/master
 } /* mct_u232_msr_to_state */
 
 /*
  * Driver's tty interface functions
  */
 
+<<<<<<< HEAD
 static int mct_u232_startup(struct usb_serial *serial)
 {
 	struct mct_u232_private *priv;
@@ -480,6 +624,36 @@ static void mct_u232_release(struct usb_serial *serial)
 		kfree(priv);
 	}
 } /* mct_u232_release */
+=======
+static int mct_u232_port_probe(struct usb_serial_port *port)
+{
+	struct mct_u232_private *priv;
+
+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	/* Use second interrupt-in endpoint for reading. */
+	priv->read_urb = port->serial->port[1]->interrupt_in_urb;
+	priv->read_urb->context = port;
+
+	spin_lock_init(&priv->lock);
+
+	usb_set_serial_port_data(port, priv);
+
+	return 0;
+}
+
+static int mct_u232_port_remove(struct usb_serial_port *port)
+{
+	struct mct_u232_private *priv;
+
+	priv = usb_get_serial_port_data(port);
+	kfree(priv);
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 static int  mct_u232_open(struct tty_struct *tty, struct usb_serial_port *port)
 {
@@ -491,8 +665,11 @@ static int  mct_u232_open(struct tty_struct *tty, struct usb_serial_port *port)
 	unsigned char last_lcr;
 	unsigned char last_msr;
 
+<<<<<<< HEAD
 	dbg("%s port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Compensate for a hardware bug: although the Sitecom U232-P25
 	 * device reports a maximum output packet size of 32 bytes,
 	 * it seems to be able to accept only 16 bytes (and that's what
@@ -508,7 +685,11 @@ static int  mct_u232_open(struct tty_struct *tty, struct usb_serial_port *port)
 	 * either.
 	 */
 	spin_lock_irqsave(&priv->lock, flags);
+<<<<<<< HEAD
 	if (tty && (tty->termios->c_cflag & CBAUD))
+=======
+	if (tty && (tty->termios.c_cflag & CBAUD))
+>>>>>>> refs/remotes/origin/master
 		priv->control_state = TIOCM_DTR | TIOCM_RTS;
 	else
 		priv->control_state = 0;
@@ -519,6 +700,7 @@ static int  mct_u232_open(struct tty_struct *tty, struct usb_serial_port *port)
 	control_state = priv->control_state;
 	last_lcr = priv->last_lcr;
 	spin_unlock_irqrestore(&priv->lock, flags);
+<<<<<<< HEAD
 	mct_u232_set_modem_ctrl(serial, control_state);
 	mct_u232_set_line_ctrl(serial, last_lcr);
 
@@ -529,19 +711,47 @@ static int  mct_u232_open(struct tty_struct *tty, struct usb_serial_port *port)
 	mct_u232_msr_to_state(&priv->control_state, priv->last_msr);
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
 	port->read_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = usb_submit_urb(port->read_urb, GFP_KERNEL);
 	if (retval) {
 		dev_err(&port->dev,
 			"usb_submit_urb(read bulk) failed pipe 0x%x err %d\n",
+=======
+	mct_u232_set_modem_ctrl(port, control_state);
+	mct_u232_set_line_ctrl(port, last_lcr);
+
+	/* Read modem status and update control state */
+	mct_u232_get_modem_stat(port, &last_msr);
+	spin_lock_irqsave(&priv->lock, flags);
+	priv->last_msr = last_msr;
+	mct_u232_msr_to_state(port, &priv->control_state, priv->last_msr);
+	spin_unlock_irqrestore(&priv->lock, flags);
+
+	retval = usb_submit_urb(priv->read_urb, GFP_KERNEL);
+	if (retval) {
+		dev_err(&port->dev,
+			"usb_submit_urb(read) failed pipe 0x%x err %d\n",
+>>>>>>> refs/remotes/origin/master
 			port->read_urb->pipe, retval);
 		goto error;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
 	if (retval) {
 		usb_kill_urb(port->read_urb);
+=======
+	retval = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
+	if (retval) {
+		usb_kill_urb(priv->read_urb);
+>>>>>>> refs/remotes/origin/master
 		dev_err(&port->dev,
 			"usb_submit_urb(read int) failed pipe 0x%x err %d",
 			port->interrupt_in_urb->pipe, retval);
@@ -558,6 +768,9 @@ static void mct_u232_dtr_rts(struct usb_serial_port *port, int on)
 	unsigned int control_state;
 	struct mct_u232_private *priv = usb_get_serial_port_data(port);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&port->serial->disc_mutex);
 	if (!port->serial->disconnected) {
 		/* drop DTR and RTS */
@@ -571,10 +784,34 @@ static void mct_u232_dtr_rts(struct usb_serial_port *port, int on)
 		mct_u232_set_modem_ctrl(port->serial, control_state);
 	}
 	mutex_unlock(&port->serial->disc_mutex);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	spin_lock_irq(&priv->lock);
+	if (on)
+		priv->control_state |= TIOCM_DTR | TIOCM_RTS;
+	else
+		priv->control_state &= ~(TIOCM_DTR | TIOCM_RTS);
+	control_state = priv->control_state;
+	spin_unlock_irq(&priv->lock);
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+	mct_u232_set_modem_ctrl(port->serial, control_state);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mct_u232_set_modem_ctrl(port, control_state);
+>>>>>>> refs/remotes/origin/master
+=======
+	mct_u232_set_modem_ctrl(port->serial, control_state);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static void mct_u232_close(struct usb_serial_port *port)
 {
+<<<<<<< HEAD
 	dbg("%s port %d", __func__, port->number);
 
 	/*
@@ -582,6 +819,14 @@ static void mct_u232_close(struct usb_serial_port *port)
 	 * generic close thus fails to kill.
 	 */
 	usb_kill_urb(port->read_urb);
+<<<<<<< HEAD
+=======
+	struct mct_u232_private *priv = usb_get_serial_port_data(port);
+
+	usb_kill_urb(priv->read_urb);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_kill_urb(port->interrupt_in_urb);
 
 	usb_serial_generic_close(port);
@@ -592,8 +837,11 @@ static void mct_u232_read_int_callback(struct urb *urb)
 {
 	struct usb_serial_port *port = urb->context;
 	struct mct_u232_private *priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
 	struct usb_serial *serial = port->serial;
 	struct tty_struct *tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char *data = urb->transfer_buffer;
 	int retval;
 	int status = urb->status;
@@ -607,6 +855,7 @@ static void mct_u232_read_int_callback(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d",
 		    __func__, status);
 		return;
@@ -624,12 +873,25 @@ static void mct_u232_read_int_callback(struct urb *urb)
 	dbg("%s - port %d", __func__, port->number);
 	usb_serial_debug_data(debug, &port->dev, __func__,
 					urb->actual_length, data);
+=======
+		dev_dbg(&port->dev, "%s - urb shutting down with status: %d\n",
+			__func__, status);
+		return;
+	default:
+		dev_dbg(&port->dev, "%s - nonzero urb status received: %d\n",
+			__func__, status);
+		goto exit;
+	}
+
+	usb_serial_debug_data(&port->dev, __func__, urb->actual_length, data);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Work-a-round: handle the 'usual' bulk-in pipe here
 	 */
 	if (urb->transfer_buffer_length > 2) {
 		if (urb->actual_length) {
+<<<<<<< HEAD
 			tty = tty_port_tty_get(&port->port);
 			if (tty) {
 				tty_insert_flip_string(tty, data,
@@ -637,6 +899,11 @@ static void mct_u232_read_int_callback(struct urb *urb)
 				tty_flip_buffer_push(tty);
 			}
 			tty_kref_put(tty);
+=======
+			tty_insert_flip_string(&port->port, data,
+					urb->actual_length);
+			tty_flip_buffer_push(&port->port);
+>>>>>>> refs/remotes/origin/master
 		}
 		goto exit;
 	}
@@ -649,9 +916,15 @@ static void mct_u232_read_int_callback(struct urb *urb)
 	priv->last_msr = data[MCT_U232_MSR_INDEX];
 
 	/* Record Control Line states */
+<<<<<<< HEAD
 	mct_u232_msr_to_state(&priv->control_state, priv->last_msr);
 
 	mct_u232_msr_to_icount(&priv->icount, priv->last_msr);
+=======
+	mct_u232_msr_to_state(port, &priv->control_state, priv->last_msr);
+
+	mct_u232_msr_to_icount(&port->icount, priv->last_msr);
+>>>>>>> refs/remotes/origin/master
 
 #if 0
 	/* Not yet handled. See belkin_sa.c for further information */
@@ -679,7 +952,11 @@ static void mct_u232_read_int_callback(struct urb *urb)
 		tty_kref_put(tty);
 	}
 #endif
+<<<<<<< HEAD
 	wake_up_interruptible(&priv->msr_wait);
+=======
+	wake_up_interruptible(&port->port.delta_msr_wait);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&priv->lock, flags);
 exit:
 	retval = usb_submit_urb(urb, GFP_ATOMIC);
@@ -695,7 +972,11 @@ static void mct_u232_set_termios(struct tty_struct *tty,
 {
 	struct usb_serial *serial = port->serial;
 	struct mct_u232_private *priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
 	struct ktermios *termios = tty->termios;
+=======
+	struct ktermios *termios = &tty->termios;
+>>>>>>> refs/remotes/origin/master
 	unsigned int cflag = termios->c_cflag;
 	unsigned int old_cflag = old_termios->c_cflag;
 	unsigned long flags;
@@ -717,18 +998,31 @@ static void mct_u232_set_termios(struct tty_struct *tty,
 
 	/* reassert DTR and RTS on transition from B0 */
 	if ((old_cflag & CBAUD) == B0) {
+<<<<<<< HEAD
 		dbg("%s: baud was B0", __func__);
 		control_state |= TIOCM_DTR | TIOCM_RTS;
 		mct_u232_set_modem_ctrl(serial, control_state);
+=======
+		dev_dbg(&port->dev, "%s: baud was B0\n", __func__);
+		control_state |= TIOCM_DTR | TIOCM_RTS;
+		mct_u232_set_modem_ctrl(port, control_state);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mct_u232_set_baud_rate(tty, serial, port, tty_get_baud_rate(tty));
 
 	if ((cflag & CBAUD) == B0) {
+<<<<<<< HEAD
 		dbg("%s: baud is B0", __func__);
 		/* Drop RTS and DTR */
 		control_state &= ~(TIOCM_DTR | TIOCM_RTS);
 		mct_u232_set_modem_ctrl(serial, control_state);
+=======
+		dev_dbg(&port->dev, "%s: baud is B0\n", __func__);
+		/* Drop RTS and DTR */
+		control_state &= ~(TIOCM_DTR | TIOCM_RTS);
+		mct_u232_set_modem_ctrl(port, control_state);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -765,7 +1059,11 @@ static void mct_u232_set_termios(struct tty_struct *tty,
 	last_lcr |= (cflag & CSTOPB) ?
 		MCT_U232_STOP_BITS_2 : MCT_U232_STOP_BITS_1;
 
+<<<<<<< HEAD
 	mct_u232_set_line_ctrl(serial, last_lcr);
+=======
+	mct_u232_set_line_ctrl(port, last_lcr);
+>>>>>>> refs/remotes/origin/master
 
 	/* save off the modified port settings */
 	spin_lock_irqsave(&priv->lock, flags);
@@ -777,13 +1075,19 @@ static void mct_u232_set_termios(struct tty_struct *tty,
 static void mct_u232_break_ctl(struct tty_struct *tty, int break_state)
 {
 	struct usb_serial_port *port = tty->driver_data;
+<<<<<<< HEAD
 	struct usb_serial *serial = port->serial;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mct_u232_private *priv = usb_get_serial_port_data(port);
 	unsigned char lcr;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%sstate=%d", __func__, break_state);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	lcr = priv->last_lcr;
 
@@ -791,7 +1095,11 @@ static void mct_u232_break_ctl(struct tty_struct *tty, int break_state)
 		lcr |= MCT_U232_SET_BREAK;
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
 	mct_u232_set_line_ctrl(serial, lcr);
+=======
+	mct_u232_set_line_ctrl(port, lcr);
+>>>>>>> refs/remotes/origin/master
 } /* mct_u232_break_ctl */
 
 
@@ -802,8 +1110,11 @@ static int mct_u232_tiocmget(struct tty_struct *tty)
 	unsigned int control_state;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	control_state = priv->control_state;
 	spin_unlock_irqrestore(&priv->lock, flags);
@@ -815,13 +1126,19 @@ static int mct_u232_tiocmset(struct tty_struct *tty,
 			      unsigned int set, unsigned int clear)
 {
 	struct usb_serial_port *port = tty->driver_data;
+<<<<<<< HEAD
 	struct usb_serial *serial = port->serial;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mct_u232_private *priv = usb_get_serial_port_data(port);
 	unsigned int control_state;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&priv->lock, flags);
 	control_state = priv->control_state;
 
@@ -836,7 +1153,11 @@ static int mct_u232_tiocmset(struct tty_struct *tty,
 
 	priv->control_state = control_state;
 	spin_unlock_irqrestore(&priv->lock, flags);
+<<<<<<< HEAD
 	return mct_u232_set_modem_ctrl(serial, control_state);
+=======
+	return mct_u232_set_modem_ctrl(port, control_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mct_u232_throttle(struct tty_struct *tty)
@@ -845,15 +1166,22 @@ static void mct_u232_throttle(struct tty_struct *tty)
 	struct mct_u232_private *priv = usb_get_serial_port_data(port);
 	unsigned int control_state;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&priv->lock);
 	priv->rx_flags |= THROTTLED;
 	if (C_CRTSCTS(tty)) {
 		priv->control_state &= ~TIOCM_RTS;
 		control_state = priv->control_state;
 		spin_unlock_irq(&priv->lock);
+<<<<<<< HEAD
 		(void) mct_u232_set_modem_ctrl(port->serial, control_state);
+=======
+		mct_u232_set_modem_ctrl(port, control_state);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		spin_unlock_irq(&priv->lock);
 	}
@@ -865,20 +1193,28 @@ static void mct_u232_unthrottle(struct tty_struct *tty)
 	struct mct_u232_private *priv = usb_get_serial_port_data(port);
 	unsigned int control_state;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&priv->lock);
 	if ((priv->rx_flags & THROTTLED) && C_CRTSCTS(tty)) {
 		priv->rx_flags &= ~THROTTLED;
 		priv->control_state |= TIOCM_RTS;
 		control_state = priv->control_state;
 		spin_unlock_irq(&priv->lock);
+<<<<<<< HEAD
 		(void) mct_u232_set_modem_ctrl(port->serial, control_state);
+=======
+		mct_u232_set_modem_ctrl(port, control_state);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		spin_unlock_irq(&priv->lock);
 	}
 }
 
+<<<<<<< HEAD
 static int  mct_u232_ioctl(struct tty_struct *tty,
 			unsigned int cmd, unsigned long arg)
 {
@@ -955,6 +1291,7 @@ static int  mct_u232_get_icount(struct tty_struct *tty,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __init mct_u232_init(void)
 {
 	int retval;
@@ -982,10 +1319,19 @@ static void __exit mct_u232_exit(void)
 
 module_init(mct_u232_init);
 module_exit(mct_u232_exit);
+=======
+module_usb_serial_driver(mct_u232_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_serial_driver(serial_drivers, id_table);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
+=======
+>>>>>>> refs/remotes/origin/master

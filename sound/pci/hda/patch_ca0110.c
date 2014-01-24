@@ -19,9 +19,14 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include "hda_codec.h"
 #include "hda_local.h"
@@ -40,7 +45,11 @@ struct ca0110_spec {
 	hda_nid_t dig_out;
 	hda_nid_t dig_in;
 	unsigned int num_inputs;
+<<<<<<< HEAD
 	const char *input_labels[AUTO_PIN_LAST];
+=======
+	char input_labels[AUTO_PIN_LAST][32];
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct hda_pcm pcm_rec[2];	/* PCM information */
 };
 
@@ -240,7 +249,12 @@ static int ca0110_build_controls(struct hda_codec *codec)
 	}
 
 	if (spec->dig_out) {
+<<<<<<< HEAD
 		err = snd_hda_create_spdif_out_ctls(codec, spec->dig_out);
+=======
+		err = snd_hda_create_spdif_out_ctls(codec, spec->dig_out,
+						    spec->dig_out);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err < 0)
 			return err;
 		err = snd_hda_create_spdif_share_sw(codec, &spec->multiout);
@@ -474,7 +488,13 @@ static void parse_input(struct hda_codec *codec)
 		if (j >= cfg->num_inputs)
 			continue;
 		spec->input_pins[n] = pin;
+<<<<<<< HEAD
 		spec->input_labels[n] = hda_get_input_pin_label(codec, pin, 1);
+=======
+		snd_hda_get_pin_label(codec, pin, cfg,
+				      spec->input_labels[n],
+				      sizeof(spec->input_labels[n]), NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spec->adcs[n] = nid;
 		n++;
 	}
@@ -505,20 +525,64 @@ static int ca0110_parse_auto_config(struct hda_codec *codec)
 	parse_hp_out(codec);
 	parse_digital(codec);
 	parse_input(codec);
+=======
+#include <linux/slab.h>
+#include <linux/pci.h>
+#include <linux/module.h>
+#include <sound/core.h>
+#include "hda_codec.h"
+#include "hda_local.h"
+#include "hda_auto_parser.h"
+#include "hda_jack.h"
+#include "hda_generic.h"
+
+
+static const struct hda_codec_ops ca0110_patch_ops = {
+	.build_controls = snd_hda_gen_build_controls,
+	.build_pcms = snd_hda_gen_build_pcms,
+	.init = snd_hda_gen_init,
+	.free = snd_hda_gen_free,
+	.unsol_event = snd_hda_jack_unsol_event,
+};
+
+static int ca0110_parse_auto_config(struct hda_codec *codec)
+{
+	struct hda_gen_spec *spec = codec->spec;
+	int err;
+
+	err = snd_hda_parse_pin_defcfg(codec, &spec->autocfg, NULL, 0);
+	if (err < 0)
+		return err;
+	err = snd_hda_gen_parse_auto_config(codec, &spec->autocfg);
+	if (err < 0)
+		return err;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 
 static int patch_ca0110(struct hda_codec *codec)
 {
+<<<<<<< HEAD
 	struct ca0110_spec *spec;
+=======
+	struct hda_gen_spec *spec;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
 	if (!spec)
 		return -ENOMEM;
+<<<<<<< HEAD
 	codec->spec = spec;
 
+=======
+	snd_hda_gen_spec_init(spec);
+	codec->spec = spec;
+
+	spec->multi_cap_vol = 1;
+>>>>>>> refs/remotes/origin/master
 	codec->bus->needs_damn_long_delay = 1;
 
 	err = ca0110_parse_auto_config(codec);
@@ -530,8 +594,12 @@ static int patch_ca0110(struct hda_codec *codec)
 	return 0;
 
  error:
+<<<<<<< HEAD
 	kfree(codec->spec);
 	codec->spec = NULL;
+=======
+	snd_hda_gen_free(codec);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 

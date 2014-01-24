@@ -6,8 +6,13 @@
  *
  * (C) 2007 SGI, Christoph Lameter
  */
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/workqueue.h>
 #include <linux/kobject.h>
 
@@ -17,13 +22,34 @@ enum stat_item {
 	ALLOC_FASTPATH,		/* Allocation from cpu slab */
 	ALLOC_SLOWPATH,		/* Allocation by getting a new cpu slab */
 	FREE_FASTPATH,		/* Free to cpu slub */
+=======
+#include <linux/kobject.h>
+
+enum stat_item {
+	ALLOC_FASTPATH,		/* Allocation from cpu slab */
+	ALLOC_SLOWPATH,		/* Allocation by getting a new cpu slab */
+	FREE_FASTPATH,		/* Free to cpu slab */
+>>>>>>> refs/remotes/origin/master
 	FREE_SLOWPATH,		/* Freeing not to cpu slab */
 	FREE_FROZEN,		/* Freeing to frozen slab */
 	FREE_ADD_PARTIAL,	/* Freeing moves slab to partial list */
 	FREE_REMOVE_PARTIAL,	/* Freeing removes last object */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ALLOC_FROM_PARTIAL,	/* Cpu slab acquired from partial list */
 	ALLOC_SLAB,		/* Cpu slab acquired from page allocator */
 	ALLOC_REFILL,		/* Refill cpu slab from slab freelist */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ALLOC_FROM_PARTIAL,	/* Cpu slab acquired from node partial list */
+	ALLOC_SLAB,		/* Cpu slab acquired from page allocator */
+	ALLOC_REFILL,		/* Refill cpu slab from slab freelist */
+	ALLOC_NODE_MISMATCH,	/* Switching cpu slab */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	FREE_SLAB,		/* Slab freed to the page allocator */
 	CPUSLAB_FLUSH,		/* Abandoning of the cpu slab */
 	DEACTIVATE_FULL,	/* Cpu slab was full when deactivated */
@@ -31,20 +57,46 @@ enum stat_item {
 	DEACTIVATE_TO_HEAD,	/* Cpu slab was moved to the head of partials */
 	DEACTIVATE_TO_TAIL,	/* Cpu slab was moved to the tail of partials */
 	DEACTIVATE_REMOTE_FREES,/* Slab contained remotely freed objects */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ORDER_FALLBACK,		/* Number of times fallback was necessary */
 	CMPXCHG_DOUBLE_CPU_FAIL,/* Failure of this_cpu_cmpxchg_double */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	DEACTIVATE_BYPASS,	/* Implicit deactivation */
+	ORDER_FALLBACK,		/* Number of times fallback was necessary */
+	CMPXCHG_DOUBLE_CPU_FAIL,/* Failure of this_cpu_cmpxchg_double */
+	CMPXCHG_DOUBLE_FAIL,	/* Number of times that cmpxchg double did not match */
+	CPU_PARTIAL_ALLOC,	/* Used cpu partial on alloc */
+	CPU_PARTIAL_FREE,	/* Refill cpu partial on free */
+	CPU_PARTIAL_NODE,	/* Refill cpu partial from node partial */
+	CPU_PARTIAL_DRAIN,	/* Drain cpu partial to node partial */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	NR_SLUB_STAT_ITEMS };
 
 struct kmem_cache_cpu {
 	void **freelist;	/* Pointer to next available object */
 	unsigned long tid;	/* Globally unique transaction id */
 	struct page *page;	/* The slab from which we are allocating */
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct page *partial;	/* Partially allocated frozen slabs */
+>>>>>>> refs/remotes/origin/cm-10.0
 	int node;		/* The node of the page (or -1 for debug) */
+=======
+	struct page *partial;	/* Partially allocated frozen slabs */
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SLUB_STATS
 	unsigned stat[NR_SLUB_STAT_ITEMS];
 #endif
 };
 
+<<<<<<< HEAD
 struct kmem_cache_node {
 	spinlock_t list_lock;	/* Protect partial list and nr_partial */
 	unsigned long nr_partial;
@@ -56,6 +108,8 @@ struct kmem_cache_node {
 #endif
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Word size structure that can be atomically updated or read and that
  * contains both the order and the number of objects that a slab of the
@@ -74,8 +128,18 @@ struct kmem_cache {
 	unsigned long flags;
 	unsigned long min_partial;
 	int size;		/* The size of an object including meta data */
+<<<<<<< HEAD
 	int objsize;		/* The size of an object without meta data */
 	int offset;		/* Free pointer offset. */
+<<<<<<< HEAD
+=======
+	int cpu_partial;	/* Number of per cpu partial objects to keep around */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int object_size;	/* The size of an object without meta data */
+	int offset;		/* Free pointer offset. */
+	int cpu_partial;	/* Number of per cpu partial objects to keep around */
+>>>>>>> refs/remotes/origin/master
 	struct kmem_cache_order_objects oo;
 
 	/* Allocation and freeing of slabs */
@@ -92,6 +156,13 @@ struct kmem_cache {
 #ifdef CONFIG_SYSFS
 	struct kobject kobj;	/* For sysfs */
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MEMCG_KMEM
+	struct memcg_cache_params *memcg_params;
+	int max_attr_size; /* for propagation, maximum size of a stored attr */
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_NUMA
 	/*
@@ -102,6 +173,7 @@ struct kmem_cache {
 	struct kmem_cache_node *node[MAX_NUMNODES];
 };
 
+<<<<<<< HEAD
 /*
  * Kmalloc subsystem.
  */
@@ -113,6 +185,7 @@ struct kmem_cache {
 
 #define KMALLOC_SHIFT_LOW ilog2(KMALLOC_MIN_SIZE)
 
+<<<<<<< HEAD
 #ifdef ARCH_DMA_MINALIGN
 #define ARCH_KMALLOC_MINALIGN ARCH_DMA_MINALIGN
 #else
@@ -123,6 +196,8 @@ struct kmem_cache {
 #define ARCH_SLAB_MINALIGN __alignof__(unsigned long long)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Maximum kmalloc object size handled by SLUB. Larger object allocations
  * are passed through to the page allocator. The page allocator "fastpath"
@@ -228,6 +303,22 @@ kmalloc_order(size_t size, gfp_t flags, unsigned int order)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * Calling this on allocated memory will check that the memory
+ * is expected to be in use, and print warnings if not.
+ */
+#ifdef CONFIG_SLUB_DEBUG
+extern bool verify_mem_not_deleted(const void *x);
+#else
+static inline bool verify_mem_not_deleted(const void *x)
+{
+	return true;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_TRACING
 extern void *
 kmem_cache_alloc_trace(struct kmem_cache *s, gfp_t gfpflags, size_t size);
@@ -303,4 +394,6 @@ static __always_inline void *kmalloc_node(size_t size, gfp_t flags, int node)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_SLUB_DEF_H */

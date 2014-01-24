@@ -112,7 +112,11 @@ static struct spk_synth synth_apollo = {
 	.startup = SYNTH_START,
 	.checkval = SYNTH_CHECK,
 	.vars = vars,
+<<<<<<< HEAD
 	.probe = serial_synth_probe,
+=======
+	.probe = spk_serial_synth_probe,
+>>>>>>> refs/remotes/origin/master
 	.release = spk_serial_release,
 	.synth_immediate = spk_synth_immediate,
 	.catch_up = do_catch_up,
@@ -145,6 +149,7 @@ static void do_catch_up(struct spk_synth *synth)
 	int delay_time_val = 0;
 	int jiffy_delta_val = 0;
 
+<<<<<<< HEAD
 	jiffy_delta = get_var(JIFFY);
 	delay_time = get_var(DELAY);
 	full_time = get_var(FULL);
@@ -155,23 +160,47 @@ static void do_catch_up(struct spk_synth *synth)
 
 	while (!kthread_should_stop()) {
 		spk_lock(flags);
+=======
+	jiffy_delta = spk_get_var(JIFFY);
+	delay_time = spk_get_var(DELAY);
+	full_time = spk_get_var(FULL);
+	spin_lock_irqsave(&speakup_info.spinlock, flags);
+	jiffy_delta_val = jiffy_delta->u.n.value;
+	spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+	jiff_max = jiffies + jiffy_delta_val;
+
+	while (!kthread_should_stop()) {
+		spin_lock_irqsave(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 		jiffy_delta_val = jiffy_delta->u.n.value;
 		full_time_val = full_time->u.n.value;
 		delay_time_val = delay_time->u.n.value;
 		if (speakup_info.flushing) {
 			speakup_info.flushing = 0;
+<<<<<<< HEAD
 			spk_unlock(flags);
+=======
+			spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 			synth->flush(synth);
 			continue;
 		}
 		if (synth_buffer_empty()) {
+<<<<<<< HEAD
 			spk_unlock(flags);
+=======
+			spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		ch = synth_buffer_peek();
 		set_current_state(TASK_INTERRUPTIBLE);
 		full_time_val = full_time->u.n.value;
+<<<<<<< HEAD
 		spk_unlock(flags);
+=======
+		spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 		if (!spk_serial_out(ch)) {
 			outb(UART_MCR_DTR, speakup_info.port_tts + UART_MCR);
 			outb(UART_MCR_DTR | UART_MCR_RTS,
@@ -179,12 +208,21 @@ static void do_catch_up(struct spk_synth *synth)
 			schedule_timeout(msecs_to_jiffies(full_time_val));
 			continue;
 		}
+<<<<<<< HEAD
 		if ((jiffies >= jiff_max) && (ch == SPACE)) {
 			spk_lock(flags);
 			jiffy_delta_val = jiffy_delta->u.n.value;
 			full_time_val = full_time->u.n.value;
 			delay_time_val = delay_time->u.n.value;
 			spk_unlock(flags);
+=======
+		if (time_after_eq(jiffies, jiff_max) && (ch == SPACE)) {
+			spin_lock_irqsave(&speakup_info.spinlock, flags);
+			jiffy_delta_val = jiffy_delta->u.n.value;
+			full_time_val = full_time->u.n.value;
+			delay_time_val = delay_time->u.n.value;
+			spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 			if (spk_serial_out(synth->procspeech))
 				schedule_timeout(msecs_to_jiffies
 						 (delay_time_val));
@@ -194,9 +232,15 @@ static void do_catch_up(struct spk_synth *synth)
 			jiff_max = jiffies + jiffy_delta_val;
 		}
 		set_current_state(TASK_RUNNING);
+<<<<<<< HEAD
 		spk_lock(flags);
 		synth_buffer_getc();
 		spk_unlock(flags);
+=======
+		spin_lock_irqsave(&speakup_info.spinlock, flags);
+		synth_buffer_getc();
+		spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 	spk_serial_out(PROCSPEECH);
 }

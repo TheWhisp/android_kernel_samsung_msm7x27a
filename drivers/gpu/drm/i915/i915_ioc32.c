@@ -31,9 +31,15 @@
  */
 #include <linux/compat.h>
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "i915_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/i915_drm.h>
+#include "i915_drv.h"
+>>>>>>> refs/remotes/origin/master
 
 typedef struct _drm_i915_batchbuffer32 {
 	int start;		/* agp offset */
@@ -181,7 +187,11 @@ static int compat_i915_alloc(struct file *file, unsigned int cmd,
 			 (unsigned long)request);
 }
 
+<<<<<<< HEAD
 drm_ioctl_compat_t *i915_compat_ioctls[] = {
+=======
+static drm_ioctl_compat_t *i915_compat_ioctls[] = {
+>>>>>>> refs/remotes/origin/master
 	[DRM_I915_BATCHBUFFER] = compat_i915_batchbuffer,
 	[DRM_I915_CMDBUFFER] = compat_i915_cmdbuffer,
 	[DRM_I915_GETPARAM] = compat_i915_getparam,
@@ -189,6 +199,10 @@ drm_ioctl_compat_t *i915_compat_ioctls[] = {
 	[DRM_I915_ALLOC] = compat_i915_alloc
 };
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COMPAT
+>>>>>>> refs/remotes/origin/master
 /**
  * Called whenever a 32-bit process running under a 64-bit kernel
  * performs an ioctl on /dev/dri/card<n>.
@@ -217,3 +231,7 @@ long i915_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 	return ret;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master

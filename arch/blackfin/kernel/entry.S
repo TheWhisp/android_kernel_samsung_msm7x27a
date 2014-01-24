@@ -46,6 +46,7 @@ ENTRY(_ret_from_fork)
 	SP += -12;
 	pseudo_long_call _schedule_tail, p5;
 	SP += 12;
+<<<<<<< HEAD
 	r0 = [sp + PT_IPEND];
 	cc = bittst(r0,1);
 	if cc jump .Lin_kernel;
@@ -106,3 +107,16 @@ ENTRY(_sys_rt_sigreturn)
 	rets = [sp++];
 	rts;
 ENDPROC(_sys_rt_sigreturn)
+=======
+	p1 = [sp++];
+	r0 = [sp++];
+	cc = p1 == 0;
+	if cc jump .Lfork;
+	sp += -12;
+	call (p1);
+	sp += 12;
+.Lfork:
+	RESTORE_CONTEXT
+	rti;
+ENDPROC(_ret_from_fork)
+>>>>>>> refs/remotes/origin/master

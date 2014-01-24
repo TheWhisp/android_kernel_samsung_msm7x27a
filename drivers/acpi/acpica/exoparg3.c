@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: exoparg3 - AML execution - opcodes with 3 arguments
@@ -6,7 +9,15 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -125,7 +136,11 @@ acpi_status acpi_ex_opcode_3A_0T_0R(struct acpi_walk_state *walk_state)
 		goto cleanup;
 	}
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	return_ACPI_STATUS(status);
 }
@@ -156,9 +171,14 @@ acpi_status acpi_ex_opcode_3A_1T_1R(struct acpi_walk_state *walk_state)
 
 	switch (walk_state->opcode) {
 	case AML_MID_OP:	/* Mid (Source[0], Index[1], Length[2], Result[3]) */
+<<<<<<< HEAD
 
 		/*
 		 * Create the return object.  The Source operand is guaranteed to be
+=======
+		/*
+		 * Create the return object. The Source operand is guaranteed to be
+>>>>>>> refs/remotes/origin/master
 		 * either a String or a Buffer, so just use its type.
 		 */
 		return_desc = acpi_ut_create_internal_object((operand[0])->
@@ -254,7 +274,11 @@ acpi_status acpi_ex_opcode_3A_1T_1R(struct acpi_walk_state *walk_state)
 
 	status = acpi_ex_store(return_desc, operand[3], walk_state);
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	/* Delete return object on error */
 

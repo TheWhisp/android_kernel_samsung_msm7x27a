@@ -12,6 +12,10 @@
 #include <linux/io.h>
 #include <linux/leds.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/idle.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 
 #include <cobalt.h>

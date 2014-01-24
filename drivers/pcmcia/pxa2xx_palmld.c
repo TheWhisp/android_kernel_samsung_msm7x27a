@@ -23,7 +23,13 @@
 static struct gpio palmld_pcmcia_gpios[] = {
 	{ GPIO_NR_PALMLD_PCMCIA_POWER,	GPIOF_INIT_LOW,	"PCMCIA Power" },
 	{ GPIO_NR_PALMLD_PCMCIA_RESET,	GPIOF_INIT_HIGH,"PCMCIA Reset" },
+<<<<<<< HEAD
+<<<<<<< HEAD
 	{ GPIO_NR_PALMLD_PCMCIA_READY,	GPIOF_IN,	"PCMCIA Ready" },
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int palmld_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
@@ -33,7 +39,17 @@ static int palmld_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 	ret = gpio_request_array(palmld_pcmcia_gpios,
 				ARRAY_SIZE(palmld_pcmcia_gpios));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	skt->socket.pci_irq = IRQ_GPIO(GPIO_NR_PALMLD_PCMCIA_READY);
+=======
+	skt->stat[SOC_STAT_RDY].gpio = GPIO_NR_PALMLD_PCMCIA_READY;
+	skt->stat[SOC_STAT_RDY].name = "PCMCIA Ready";
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skt->stat[SOC_STAT_RDY].gpio = GPIO_NR_PALMLD_PCMCIA_READY;
+	skt->stat[SOC_STAT_RDY].name = "PCMCIA Ready";
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -47,10 +63,16 @@ static void palmld_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 					struct pcmcia_state *state)
 {
 	state->detect = 1; /* always inserted */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	state->ready  = !!gpio_get_value(GPIO_NR_PALMLD_PCMCIA_READY);
 	state->bvd1   = 1;
 	state->bvd2   = 1;
 	state->wrprot = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	state->vs_3v  = 1;
 	state->vs_Xv  = 0;
 }
@@ -65,6 +87,8 @@ static int palmld_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void palmld_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
 }
@@ -73,6 +97,10 @@ static void palmld_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pcmcia_low_level palmld_pcmcia_ops = {
 	.owner			= THIS_MODULE,
 
@@ -84,9 +112,15 @@ static struct pcmcia_low_level palmld_pcmcia_ops = {
 
 	.socket_state		= palmld_pcmcia_socket_state,
 	.configure_socket	= palmld_pcmcia_configure_socket,
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	.socket_init		= palmld_pcmcia_socket_init,
 	.socket_suspend		= palmld_pcmcia_socket_suspend,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *palmld_pcmcia_device;

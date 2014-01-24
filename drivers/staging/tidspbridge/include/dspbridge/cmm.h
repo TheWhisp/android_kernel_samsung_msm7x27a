@@ -79,7 +79,13 @@ extern void *cmm_calloc_buf(struct cmm_object *hcmm_mgr,
  *      -EPERM:      Failed to initialize critical sect sync object.
  *
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      cmm_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      ph_cmm_mgr != NULL.
  *      mgr_attrts->min_block_size >= 4 bytes.
  *  Ensures:
@@ -111,6 +117,8 @@ extern int cmm_create(struct cmm_object **ph_cmm_mgr,
 extern int cmm_destroy(struct cmm_object *hcmm_mgr, bool force);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== cmm_exit ========
  *  Purpose:
  *     Discontinue usage of module. Cleanup CMM module if CMM cRef reaches zero.
@@ -125,6 +133,10 @@ extern int cmm_destroy(struct cmm_object *hcmm_mgr, bool force);
 extern void cmm_exit(void);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== cmm_free_buf ========
  *  Purpose:
  *      Free the given buffer.
@@ -185,6 +197,8 @@ extern int cmm_get_info(struct cmm_object *hcmm_mgr,
 			       struct cmm_info *cmm_info_obj);
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== cmm_init ========
  *  Purpose:
  *      Initializes private state of CMM module.
@@ -198,6 +212,10 @@ extern int cmm_get_info(struct cmm_object *hcmm_mgr,
 extern bool cmm_init(void);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== cmm_register_gppsm_seg ========
  *  Purpose:
  *      Register a block of SM with the CMM.
@@ -321,7 +339,11 @@ extern int cmm_xlator_free_buf(struct cmm_xlatorobject *xlator,
  *  ======== cmm_xlator_info ========
  *  Purpose:
  *      Set/Get process specific "translator" address info.
+<<<<<<< HEAD
  *      This is used to perform fast virtaul address translation
+=======
+ *      This is used to perform fast virtual address translation
+>>>>>>> refs/remotes/origin/master
  *      for shared memory buffers between the GPP and DSP.
  *  Parameters:
  *     xlator:     handle to translator.
@@ -333,7 +355,13 @@ extern int cmm_xlator_free_buf(struct cmm_xlatorobject *xlator,
  *      0:        Success.
  *      -EFAULT:    Bad translator handle.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      (refs > 0)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      (paddr != NULL)
  *      (ul_size > 0)
  *  Ensures:
@@ -355,7 +383,13 @@ extern int cmm_xlator_info(struct cmm_xlatorobject *xlator,
  *  Returns:
  *     Valid address on success, else NULL.
  *  Requires:
+<<<<<<< HEAD
+<<<<<<< HEAD
  *      refs > 0
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      paddr != NULL
  *      xtype >= CMM_VA2PA) && (xtype <= CMM_DSPPA2PA)
  *  Ensures:

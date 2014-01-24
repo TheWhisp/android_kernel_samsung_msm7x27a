@@ -1,5 +1,8 @@
 
+<<<<<<< HEAD
 //   vim:tw=110:ts=4:
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef MMD_H
 #define MMD_H 1
 
@@ -33,7 +36,15 @@
 * software indicates your acceptance of these terms and conditions.  If you do
 * not agree with these terms and conditions, do not use the software.
 *
+<<<<<<< HEAD
+<<<<<<< HEAD
 * COPYRIGHT � 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
+=======
+* COPYRIGHT © 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+* COPYRIGHT © 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
+>>>>>>> refs/remotes/origin/master
 * All rights reserved.
 *
 * Redistribution and use in source or binary forms, with or without

@@ -14,11 +14,26 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/spinlock.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/string.h>
 #include <linux/platform_device.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/syscore_ops.h>
+#include <linux/debugfs.h>
+#include <linux/mutex.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/syscore_ops.h>
+#include <linux/mutex.h>
+#include <linux/olpc-ec.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/geode.h>
 #include <asm/setup.h>
@@ -28,8 +43,29 @@
 struct olpc_platform_t olpc_platform_info;
 EXPORT_SYMBOL_GPL(olpc_platform_info);
 
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(ec_lock);
 
+<<<<<<< HEAD
+=======
+/* debugfs interface to EC commands */
+#define EC_MAX_CMD_ARGS (5 + 1)	/* cmd byte + 5 args */
+#define EC_MAX_CMD_REPLY (8)
+
+static struct dentry *ec_debugfs_dir;
+static DEFINE_MUTEX(ec_debugfs_cmd_lock);
+static unsigned char ec_debugfs_resp[EC_MAX_CMD_REPLY];
+static unsigned int ec_debugfs_resp_bytes;
+
+/* EC event mask to be applied during suspend (defining wakeup sources). */
+static u16 ec_wakeup_mask;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* EC event mask to be applied during suspend (defining wakeup sources). */
+static u16 ec_wakeup_mask;
+
+>>>>>>> refs/remotes/origin/master
 /* what the timeout *should* be (in ms) */
 #define EC_BASE_TIMEOUT 20
 
@@ -110,16 +146,25 @@ static int __wait_on_obf(unsigned int line, unsigned int port, int desired)
  * <http://wiki.laptop.org/go/Ec_specification>.  Unfortunately, while
  * OpenFirmware's source is available, the EC's is not.
  */
+<<<<<<< HEAD
 int olpc_ec_cmd(unsigned char cmd, unsigned char *inbuf, size_t inlen,
 		unsigned char *outbuf,  size_t outlen)
 {
 	unsigned long flags;
+=======
+static int olpc_xo1_ec_cmd(u8 cmd, u8 *inbuf, size_t inlen, u8 *outbuf,
+		size_t outlen, void *arg)
+{
+>>>>>>> refs/remotes/origin/master
 	int ret = -EIO;
 	int i;
 	int restarts = 0;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&ec_lock, flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Clear OBF */
 	for (i = 0; i < 10 && (obf_status(0x6c) == 1); i++)
 		inb(0x68);
@@ -183,11 +228,190 @@ restart:
 
 	ret = 0;
 err:
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&ec_lock, flags);
 	return ret;
 }
 EXPORT_SYMBOL_GPL(olpc_ec_cmd);
 
+<<<<<<< HEAD
+=======
+=======
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
+void olpc_ec_wakeup_set(u16 value)
+{
+	ec_wakeup_mask |= value;
+}
+EXPORT_SYMBOL_GPL(olpc_ec_wakeup_set);
+
+void olpc_ec_wakeup_clear(u16 value)
+{
+	ec_wakeup_mask &= ~value;
+}
+EXPORT_SYMBOL_GPL(olpc_ec_wakeup_clear);
+
+/*
+ * Returns true if the compile and runtime configurations allow for EC events
+ * to wake the system.
+ */
+bool olpc_ec_wakeup_available(void)
+{
+	if (!machine_is_olpc())
+		return false;
+
+	/*
+	 * XO-1 EC wakeups are available when olpc-xo1-sci driver is
+	 * compiled in
+	 */
+#ifdef CONFIG_OLPC_XO1_SCI
+	if (olpc_platform_info.boardrev < olpc_board_pre(0xd0)) /* XO-1 */
+		return true;
+#endif
+
+	/*
+	 * XO-1.5 EC wakeups are available when olpc-xo15-sci driver is
+	 * compiled in
+	 */
+#ifdef CONFIG_OLPC_XO15_SCI
+	if (olpc_platform_info.boardrev >= olpc_board_pre(0xd0)) /* XO-1.5 */
+		return true;
+#endif
+
+	return false;
+}
+EXPORT_SYMBOL_GPL(olpc_ec_wakeup_available);
+
+int olpc_ec_mask_write(u16 bits)
+{
+	if (olpc_platform_info.flags & OLPC_F_EC_WIDE_SCI) {
+		__be16 ec_word = cpu_to_be16(bits);
+		return olpc_ec_cmd(EC_WRITE_EXT_SCI_MASK, (void *) &ec_word, 2,
+				   NULL, 0);
+	} else {
+		unsigned char ec_byte = bits & 0xff;
+		return olpc_ec_cmd(EC_WRITE_SCI_MASK, &ec_byte, 1, NULL, 0);
+	}
+}
+EXPORT_SYMBOL_GPL(olpc_ec_mask_write);
+
+int olpc_ec_sci_query(u16 *sci_value)
+{
+	int ret;
+
+	if (olpc_platform_info.flags & OLPC_F_EC_WIDE_SCI) {
+		__be16 ec_word;
+		ret = olpc_ec_cmd(EC_EXT_SCI_QUERY,
+			NULL, 0, (void *) &ec_word, 2);
+		if (ret == 0)
+			*sci_value = be16_to_cpu(ec_word);
+	} else {
+		unsigned char ec_byte;
+		ret = olpc_ec_cmd(EC_SCI_QUERY, NULL, 0, &ec_byte, 1);
+		if (ret == 0)
+			*sci_value = ec_byte;
+	}
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(olpc_ec_sci_query);
+
+<<<<<<< HEAD
+static ssize_t ec_debugfs_cmd_write(struct file *file, const char __user *buf,
+				    size_t size, loff_t *ppos)
+{
+	int i, m;
+	unsigned char ec_cmd[EC_MAX_CMD_ARGS];
+	unsigned int ec_cmd_int[EC_MAX_CMD_ARGS];
+	char cmdbuf[64];
+	int ec_cmd_bytes;
+
+	mutex_lock(&ec_debugfs_cmd_lock);
+
+	size = simple_write_to_buffer(cmdbuf, sizeof(cmdbuf), ppos, buf, size);
+
+	m = sscanf(cmdbuf, "%x:%u %x %x %x %x %x", &ec_cmd_int[0],
+		   &ec_debugfs_resp_bytes,
+		   &ec_cmd_int[1], &ec_cmd_int[2], &ec_cmd_int[3],
+		   &ec_cmd_int[4], &ec_cmd_int[5]);
+	if (m < 2 || ec_debugfs_resp_bytes > EC_MAX_CMD_REPLY) {
+		/* reset to prevent overflow on read */
+		ec_debugfs_resp_bytes = 0;
+
+		printk(KERN_DEBUG "olpc-ec: bad ec cmd:  "
+		       "cmd:response-count [arg1 [arg2 ...]]\n");
+		size = -EINVAL;
+		goto out;
+	}
+
+	/* convert scanf'd ints to char */
+	ec_cmd_bytes = m - 2;
+	for (i = 0; i <= ec_cmd_bytes; i++)
+		ec_cmd[i] = ec_cmd_int[i];
+
+	printk(KERN_DEBUG "olpc-ec: debugfs cmd 0x%02x with %d args "
+	       "%02x %02x %02x %02x %02x, want %d returns\n",
+	       ec_cmd[0], ec_cmd_bytes, ec_cmd[1], ec_cmd[2], ec_cmd[3],
+	       ec_cmd[4], ec_cmd[5], ec_debugfs_resp_bytes);
+
+	olpc_ec_cmd(ec_cmd[0], (ec_cmd_bytes == 0) ? NULL : &ec_cmd[1],
+		    ec_cmd_bytes, ec_debugfs_resp, ec_debugfs_resp_bytes);
+
+	printk(KERN_DEBUG "olpc-ec: response "
+	       "%02x %02x %02x %02x %02x %02x %02x %02x (%d bytes expected)\n",
+	       ec_debugfs_resp[0], ec_debugfs_resp[1], ec_debugfs_resp[2],
+	       ec_debugfs_resp[3], ec_debugfs_resp[4], ec_debugfs_resp[5],
+	       ec_debugfs_resp[6], ec_debugfs_resp[7], ec_debugfs_resp_bytes);
+
+out:
+	mutex_unlock(&ec_debugfs_cmd_lock);
+	return size;
+}
+
+static ssize_t ec_debugfs_cmd_read(struct file *file, char __user *buf,
+				   size_t size, loff_t *ppos)
+{
+	unsigned int i, r;
+	char *rp;
+	char respbuf[64];
+
+	mutex_lock(&ec_debugfs_cmd_lock);
+	rp = respbuf;
+	rp += sprintf(rp, "%02x", ec_debugfs_resp[0]);
+	for (i = 1; i < ec_debugfs_resp_bytes; i++)
+		rp += sprintf(rp, ", %02x", ec_debugfs_resp[i]);
+	mutex_unlock(&ec_debugfs_cmd_lock);
+	rp += sprintf(rp, "\n");
+
+	r = rp - respbuf;
+	return simple_read_from_buffer(buf, size, ppos, respbuf, r);
+}
+
+static const struct file_operations ec_debugfs_genops = {
+	.write	 = ec_debugfs_cmd_write,
+	.read	 = ec_debugfs_cmd_read,
+};
+
+static void setup_debugfs(void)
+{
+	ec_debugfs_dir = debugfs_create_dir("olpc-ec", 0);
+	if (ec_debugfs_dir == ERR_PTR(-ENODEV))
+		return;
+
+	debugfs_create_file("cmd", 0600, ec_debugfs_dir, NULL,
+			    &ec_debugfs_genops);
+}
+
+static int olpc_ec_suspend(void)
+{
+	return olpc_ec_mask_write(ec_wakeup_mask);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static bool __init check_ofw_architecture(struct device_node *root)
 {
 	const char *olpc_arch;
@@ -242,6 +466,71 @@ static int __init add_xo1_platform_devices(void)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static struct syscore_ops olpc_syscore_ops = {
+	.suspend = olpc_ec_suspend,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int olpc_xo1_ec_probe(struct platform_device *pdev)
+{
+	/* get the EC revision */
+	olpc_ec_cmd(EC_FIRMWARE_REV, NULL, 0,
+			(unsigned char *) &olpc_platform_info.ecver, 1);
+
+	/* EC version 0x5f adds support for wide SCI mask */
+	if (olpc_platform_info.ecver >= 0x5f)
+		olpc_platform_info.flags |= OLPC_F_EC_WIDE_SCI;
+
+	pr_info("OLPC board revision %s%X (EC=%x)\n",
+			((olpc_platform_info.boardrev & 0xf) < 8) ? "pre" : "",
+			olpc_platform_info.boardrev >> 4,
+			olpc_platform_info.ecver);
+
+	return 0;
+}
+static int olpc_xo1_ec_suspend(struct platform_device *pdev)
+{
+	olpc_ec_mask_write(ec_wakeup_mask);
+
+	/*
+	 * Squelch SCIs while suspended.  This is a fix for
+	 * <http://dev.laptop.org/ticket/1835>.
+	 */
+	return olpc_ec_cmd(EC_SET_SCI_INHIBIT, NULL, 0, NULL, 0);
+}
+
+static int olpc_xo1_ec_resume(struct platform_device *pdev)
+{
+	/* Tell the EC to stop inhibiting SCIs */
+	olpc_ec_cmd(EC_SET_SCI_INHIBIT_RELEASE, NULL, 0, NULL, 0);
+
+	/*
+	 * Tell the wireless module to restart USB communication.
+	 * Must be done twice.
+	 */
+	olpc_ec_cmd(EC_WAKE_UP_WLAN, NULL, 0, NULL, 0);
+	olpc_ec_cmd(EC_WAKE_UP_WLAN, NULL, 0, NULL, 0);
+
+	return 0;
+}
+
+static struct olpc_ec_driver ec_xo1_driver = {
+	.probe = olpc_xo1_ec_probe,
+	.suspend = olpc_xo1_ec_suspend,
+	.resume = olpc_xo1_ec_resume,
+	.ec_cmd = olpc_xo1_ec_cmd,
+};
+
+static struct olpc_ec_driver ec_xo1_5_driver = {
+	.probe = olpc_xo1_ec_probe,
+	.ec_cmd = olpc_xo1_ec_cmd,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int __init olpc_init(void)
 {
 	int r = 0;
@@ -249,16 +538,28 @@ static int __init olpc_init(void)
 	if (!olpc_ofw_present() || !platform_detect())
 		return 0;
 
+<<<<<<< HEAD
 	spin_lock_init(&ec_lock);
+=======
+	/* register the XO-1 and 1.5-specific EC handler */
+	if (olpc_platform_info.boardrev < olpc_board_pre(0xd0))	/* XO-1 */
+		olpc_ec_driver_register(&ec_xo1_driver, NULL);
+	else
+		olpc_ec_driver_register(&ec_xo1_5_driver, NULL);
+	platform_device_register_simple("olpc-ec", -1, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* assume B1 and above models always have a DCON */
 	if (olpc_board_at_least(olpc_board(0xb1)))
 		olpc_platform_info.flags |= OLPC_F_DCON;
 
+<<<<<<< HEAD
 	/* get the EC revision */
 	olpc_ec_cmd(EC_FIRMWARE_REV, NULL, 0,
 			(unsigned char *) &olpc_platform_info.ecver, 1);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PCI_OLPC
 	/* If the VSA exists let it emulate PCI, if not emulate in kernel.
 	 * XO-1 only. */
@@ -266,11 +567,20 @@ static int __init olpc_init(void)
 			!cs5535_has_vsa2())
 		x86_init.pci.arch_init = pci_olpc_init;
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	/* EC version 0x5f adds support for wide SCI mask */
+	if (olpc_platform_info.ecver >= 0x5f)
+		olpc_platform_info.flags |= OLPC_F_EC_WIDE_SCI;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO "OLPC board revision %s%X (EC=%x)\n",
 			((olpc_platform_info.boardrev & 0xf) < 8) ? "pre" : "",
 			olpc_platform_info.boardrev >> 4,
 			olpc_platform_info.ecver);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (olpc_platform_info.boardrev < olpc_board_pre(0xd0)) { /* XO-1 */
 		r = add_xo1_platform_devices();
@@ -278,6 +588,15 @@ static int __init olpc_init(void)
 			return r;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	register_syscore_ops(&olpc_syscore_ops);
+	setup_debugfs();
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

@@ -24,15 +24,29 @@
 #include <linux/init.h>
 #include <asm/intel_scu_ipc.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static u32 major;
 
 #define MAX_FW_SIZE 264192
+=======
+static int major;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int major;
+>>>>>>> refs/remotes/origin/master
 
 /* ioctl commnds */
 #define	INTE_SCU_IPC_REGISTER_READ	0
 #define INTE_SCU_IPC_REGISTER_WRITE	1
 #define INTE_SCU_IPC_REGISTER_UPDATE	2
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define INTE_SCU_IPC_FW_UPDATE		0xA2
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct scu_ipc_data {
 	u32     count;  /* No. of registers */
@@ -88,6 +102,8 @@ static long scu_ipc_ioctl(struct file *fp, unsigned int cmd,
 	if (!capable(CAP_SYS_RAWIO))
 		return -EPERM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cmd == INTE_SCU_IPC_FW_UPDATE) {
 			u8 *fwbuf = kmalloc(MAX_FW_SIZE, GFP_KERNEL);
 			if (fwbuf == NULL)
@@ -109,6 +125,21 @@ static long scu_ipc_ioctl(struct file *fp, unsigned int cmd,
 			return -EFAULT;
 		return 0;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (copy_from_user(&data, argp, sizeof(struct scu_ipc_data)))
+		return -EFAULT;
+	ret = scu_reg_access(cmd, &data);
+	if (ret < 0)
+		return ret;
+	if (copy_to_user(argp, &data, sizeof(struct scu_ipc_data)))
+		return -EFAULT;
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations scu_ipc_fops = {
@@ -117,7 +148,21 @@ static const struct file_operations scu_ipc_fops = {
 
 static int __init ipc_module_init(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return register_chrdev(0, "intel_mid_scu", &scu_ipc_fops);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	major = register_chrdev(0, "intel_mid_scu", &scu_ipc_fops);
+	if (major < 0)
+		return major;
+
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit ipc_module_exit(void)

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include "drmP.h"
 #include "nouveau_drv.h"
 #include <linux/pagemap.h>
@@ -8,6 +9,7 @@
 #define NV_CTXDMA_PAGE_MASK  (NV_CTXDMA_PAGE_SIZE - 1)
 
 struct nouveau_sgdma_be {
+<<<<<<< HEAD
 	struct ttm_backend backend;
 	struct drm_device *dev;
 
@@ -107,13 +109,59 @@ nouveau_sgdma_destroy(struct ttm_backend *be)
 				be->func->clear(be);
 			kfree(nvbe);
 		}
+=======
+=======
+#include <linux/pagemap.h>
+#include <linux/slab.h>
+
+#include <subdev/fb.h>
+
+#include "nouveau_drm.h"
+#include "nouveau_ttm.h"
+
+struct nouveau_sgdma_be {
+>>>>>>> refs/remotes/origin/master
+	/* this has to be the first field so populate/unpopulated in
+	 * nouve_bo.c works properly, otherwise have to move them here
+	 */
+	struct ttm_dma_tt ttm;
+	struct drm_device *dev;
+<<<<<<< HEAD
+	u64 offset;
+=======
+	struct nouveau_mem *node;
+>>>>>>> refs/remotes/origin/master
+};
+
+static void
+nouveau_sgdma_destroy(struct ttm_tt *ttm)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+
+	if (ttm) {
+<<<<<<< HEAD
+		NV_DEBUG(nvbe->dev, "\n");
+		ttm_dma_tt_fini(&nvbe->ttm);
+		kfree(nvbe);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ttm_dma_tt_fini(&nvbe->ttm);
+		kfree(nvbe);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 nv04_sgdma_bind(struct ttm_backend *be, struct ttm_mem_reg *mem)
 {
 	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)be;
+=======
+nv04_sgdma_bind(struct ttm_tt *ttm, struct ttm_mem_reg *mem)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct drm_device *dev = nvbe->dev;
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct nouveau_gpuobj *gpuobj = dev_priv->gart_info.sg_ctxdma;
@@ -123,24 +171,60 @@ nv04_sgdma_bind(struct ttm_backend *be, struct ttm_mem_reg *mem)
 
 	nvbe->offset = mem->start << PAGE_SHIFT;
 	pte = (nvbe->offset >> NV_CTXDMA_PAGE_SHIFT) + 2;
+<<<<<<< HEAD
 	for (i = 0; i < nvbe->nr_pages; i++) {
 		dma_addr_t dma_offset = nvbe->pages[i];
+=======
+	for (i = 0; i < ttm->num_pages; i++) {
+		dma_addr_t dma_offset = nvbe->ttm.dma_address[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 		uint32_t offset_l = lower_32_bits(dma_offset);
 
 		for (j = 0; j < PAGE_SIZE / NV_CTXDMA_PAGE_SIZE; j++, pte++) {
 			nv_wo32(gpuobj, (pte * 4) + 0, offset_l | 3);
+<<<<<<< HEAD
 			dma_offset += NV_CTXDMA_PAGE_SIZE;
 		}
 	}
 
 	nvbe->bound = true;
+=======
+			offset_l += NV_CTXDMA_PAGE_SIZE;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+nv04_sgdma_bind(struct ttm_tt *ttm, struct ttm_mem_reg *mem)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+	struct nouveau_mem *node = mem->mm_node;
+	u64 size = mem->num_pages << 12;
+
+	if (ttm->sg) {
+		node->sg = ttm->sg;
+		nouveau_vm_map_sg_table(&node->vma[0], 0, size, node);
+	} else {
+		node->pages = nvbe->ttm.dma_address;
+		nouveau_vm_map_sg(&node->vma[0], 0, size, node);
+	}
+
+	nvbe->node = node;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 nv04_sgdma_unbind(struct ttm_backend *be)
 {
 	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)be;
+=======
+nv04_sgdma_unbind(struct ttm_tt *ttm)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct drm_device *dev = nvbe->dev;
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct nouveau_gpuobj *gpuobj = dev_priv->gart_info.sg_ctxdma;
@@ -148,27 +232,51 @@ nv04_sgdma_unbind(struct ttm_backend *be)
 
 	NV_DEBUG(dev, "\n");
 
+<<<<<<< HEAD
 	if (!nvbe->bound)
 		return 0;
 
 	pte = (nvbe->offset >> NV_CTXDMA_PAGE_SHIFT) + 2;
 	for (i = 0; i < nvbe->nr_pages; i++) {
+=======
+	if (ttm->state != tt_bound)
+		return 0;
+
+	pte = (nvbe->offset >> NV_CTXDMA_PAGE_SHIFT) + 2;
+	for (i = 0; i < ttm->num_pages; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (j = 0; j < PAGE_SIZE / NV_CTXDMA_PAGE_SIZE; j++, pte++)
 			nv_wo32(gpuobj, (pte * 4) + 0, 0x00000000);
 	}
 
+<<<<<<< HEAD
 	nvbe->bound = false;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+nv04_sgdma_unbind(struct ttm_tt *ttm)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+	nouveau_vm_unmap(&nvbe->node->vma[0]);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct ttm_backend_func nv04_sgdma_backend = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.populate		= nouveau_sgdma_populate,
 	.clear			= nouveau_sgdma_clear,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.bind			= nv04_sgdma_bind,
 	.unbind			= nv04_sgdma_unbind,
 	.destroy		= nouveau_sgdma_destroy
 };
 
+<<<<<<< HEAD
 static void
 nv41_sgdma_flush(struct nouveau_sgdma_be *nvbe)
 {
@@ -182,6 +290,7 @@ nv41_sgdma_flush(struct nouveau_sgdma_be *nvbe)
 }
 
 static int
+<<<<<<< HEAD
 nv41_sgdma_bind(struct ttm_backend *be, struct ttm_mem_reg *mem)
 {
 	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)be;
@@ -190,6 +299,16 @@ nv41_sgdma_bind(struct ttm_backend *be, struct ttm_mem_reg *mem)
 	dma_addr_t *list = nvbe->pages;
 	u32 pte = mem->start << 2;
 	u32 cnt = nvbe->nr_pages;
+=======
+nv41_sgdma_bind(struct ttm_tt *ttm, struct ttm_mem_reg *mem)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+	struct drm_nouveau_private *dev_priv = nvbe->dev->dev_private;
+	struct nouveau_gpuobj *pgt = dev_priv->gart_info.sg_ctxdma;
+	dma_addr_t *list = nvbe->ttm.dma_address;
+	u32 pte = mem->start << 2;
+	u32 cnt = ttm->num_pages;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	nvbe->offset = mem->start << PAGE_SHIFT;
 
@@ -199,11 +318,15 @@ nv41_sgdma_bind(struct ttm_backend *be, struct ttm_mem_reg *mem)
 	}
 
 	nv41_sgdma_flush(nvbe);
+<<<<<<< HEAD
 	nvbe->bound = true;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int
+<<<<<<< HEAD
 nv41_sgdma_unbind(struct ttm_backend *be)
 {
 	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)be;
@@ -211,6 +334,15 @@ nv41_sgdma_unbind(struct ttm_backend *be)
 	struct nouveau_gpuobj *pgt = dev_priv->gart_info.sg_ctxdma;
 	u32 pte = (nvbe->offset >> 12) << 2;
 	u32 cnt = nvbe->nr_pages;
+=======
+nv41_sgdma_unbind(struct ttm_tt *ttm)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+	struct drm_nouveau_private *dev_priv = nvbe->dev->dev_private;
+	struct nouveau_gpuobj *pgt = dev_priv->gart_info.sg_ctxdma;
+	u32 pte = (nvbe->offset >> 12) << 2;
+	u32 cnt = ttm->num_pages;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	while (cnt--) {
 		nv_wo32(pgt, pte, 0x00000000);
@@ -218,24 +350,39 @@ nv41_sgdma_unbind(struct ttm_backend *be)
 	}
 
 	nv41_sgdma_flush(nvbe);
+<<<<<<< HEAD
 	nvbe->bound = false;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static struct ttm_backend_func nv41_sgdma_backend = {
+<<<<<<< HEAD
 	.populate		= nouveau_sgdma_populate,
 	.clear			= nouveau_sgdma_clear,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.bind			= nv41_sgdma_bind,
 	.unbind			= nv41_sgdma_unbind,
 	.destroy		= nouveau_sgdma_destroy
 };
 
 static void
+<<<<<<< HEAD
 nv44_sgdma_flush(struct nouveau_sgdma_be *nvbe)
 {
 	struct drm_device *dev = nvbe->dev;
 
 	nv_wr32(dev, 0x100814, (nvbe->nr_pages - 1) << 12);
+=======
+nv44_sgdma_flush(struct ttm_tt *ttm)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+	struct drm_device *dev = nvbe->dev;
+
+	nv_wr32(dev, 0x100814, (ttm->num_pages - 1) << 12);
+>>>>>>> refs/remotes/origin/cm-10.0
 	nv_wr32(dev, 0x100808, nvbe->offset | 0x20);
 	if (!nv_wait(dev, 0x100808, 0x00000001, 0x00000001))
 		NV_ERROR(dev, "gart flush timeout: 0x%08x\n",
@@ -294,6 +441,7 @@ nv44_sgdma_fill(struct nouveau_gpuobj *pgt, dma_addr_t *list, u32 base, u32 cnt)
 }
 
 static int
+<<<<<<< HEAD
 nv44_sgdma_bind(struct ttm_backend *be, struct ttm_mem_reg *mem)
 {
 	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)be;
@@ -302,6 +450,16 @@ nv44_sgdma_bind(struct ttm_backend *be, struct ttm_mem_reg *mem)
 	dma_addr_t *list = nvbe->pages;
 	u32 pte = mem->start << 2, tmp[4];
 	u32 cnt = nvbe->nr_pages;
+=======
+nv44_sgdma_bind(struct ttm_tt *ttm, struct ttm_mem_reg *mem)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+	struct drm_nouveau_private *dev_priv = nvbe->dev->dev_private;
+	struct nouveau_gpuobj *pgt = dev_priv->gart_info.sg_ctxdma;
+	dma_addr_t *list = nvbe->ttm.dma_address;
+	u32 pte = mem->start << 2, tmp[4];
+	u32 cnt = ttm->num_pages;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 
 	nvbe->offset = mem->start << PAGE_SHIFT;
@@ -329,12 +487,17 @@ nv44_sgdma_bind(struct ttm_backend *be, struct ttm_mem_reg *mem)
 	if (cnt)
 		nv44_sgdma_fill(pgt, list, pte, cnt);
 
+<<<<<<< HEAD
 	nv44_sgdma_flush(nvbe);
 	nvbe->bound = true;
+=======
+	nv44_sgdma_flush(ttm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int
+<<<<<<< HEAD
 nv44_sgdma_unbind(struct ttm_backend *be)
 {
 	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)be;
@@ -342,6 +505,15 @@ nv44_sgdma_unbind(struct ttm_backend *be)
 	struct nouveau_gpuobj *pgt = dev_priv->gart_info.sg_ctxdma;
 	u32 pte = (nvbe->offset >> 12) << 2;
 	u32 cnt = nvbe->nr_pages;
+=======
+nv44_sgdma_unbind(struct ttm_tt *ttm)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+	struct drm_nouveau_private *dev_priv = nvbe->dev->dev_private;
+	struct nouveau_gpuobj *pgt = dev_priv->gart_info.sg_ctxdma;
+	u32 pte = (nvbe->offset >> 12) << 2;
+	u32 cnt = ttm->num_pages;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (pte & 0x0000000c) {
 		u32  max = 4 - ((pte >> 2) & 0x3);
@@ -363,20 +535,28 @@ nv44_sgdma_unbind(struct ttm_backend *be)
 	if (cnt)
 		nv44_sgdma_fill(pgt, NULL, pte, cnt);
 
+<<<<<<< HEAD
 	nv44_sgdma_flush(nvbe);
 	nvbe->bound = false;
+=======
+	nv44_sgdma_flush(ttm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static struct ttm_backend_func nv44_sgdma_backend = {
+<<<<<<< HEAD
 	.populate		= nouveau_sgdma_populate,
 	.clear			= nouveau_sgdma_clear,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.bind			= nv44_sgdma_bind,
 	.unbind			= nv44_sgdma_unbind,
 	.destroy		= nouveau_sgdma_destroy
 };
 
 static int
+<<<<<<< HEAD
 nv50_sgdma_bind(struct ttm_backend *be, struct ttm_mem_reg *mem)
 {
 	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)be;
@@ -385,10 +565,31 @@ nv50_sgdma_bind(struct ttm_backend *be, struct ttm_mem_reg *mem)
 	node->pages = nvbe->pages;
 	nvbe->pages = (dma_addr_t *)node;
 	nvbe->bound = true;
+=======
+=======
+static int
+>>>>>>> refs/remotes/origin/master
+nv50_sgdma_bind(struct ttm_tt *ttm, struct ttm_mem_reg *mem)
+{
+	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
+	struct nouveau_mem *node = mem->mm_node;
+
+	/* noop: bound in move_notify() */
+<<<<<<< HEAD
+	node->pages = nvbe->ttm.dma_address;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ttm->sg) {
+		node->sg = ttm->sg;
+	} else
+		node->pages = nvbe->ttm.dma_address;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int
+<<<<<<< HEAD
+<<<<<<< HEAD
 nv50_sgdma_unbind(struct ttm_backend *be)
 {
 	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)be;
@@ -397,31 +598,75 @@ nv50_sgdma_unbind(struct ttm_backend *be)
 	nvbe->pages = node->pages;
 	node->pages = NULL;
 	nvbe->bound = false;
+=======
+nv50_sgdma_unbind(struct ttm_tt *ttm)
+{
+	/* noop: unbound in move_notify() */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+nv50_sgdma_unbind(struct ttm_tt *ttm)
+{
+	/* noop: unbound in move_notify() */
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct ttm_backend_func nv50_sgdma_backend = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.populate		= nouveau_sgdma_populate,
 	.clear			= nouveau_sgdma_clear,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.bind			= nv50_sgdma_bind,
 	.unbind			= nv50_sgdma_unbind,
 	.destroy		= nouveau_sgdma_destroy
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct ttm_backend *
 nouveau_sgdma_init_ttm(struct drm_device *dev)
 {
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct ttm_tt *
+nouveau_sgdma_create_ttm(struct ttm_bo_device *bdev,
+			 unsigned long size, uint32_t page_flags,
+			 struct page *dummy_read_page)
+{
+<<<<<<< HEAD
+	struct drm_nouveau_private *dev_priv = nouveau_bdev(bdev);
+	struct drm_device *dev = dev_priv->dev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nouveau_drm *drm = nouveau_bdev(bdev);
+>>>>>>> refs/remotes/origin/master
 	struct nouveau_sgdma_be *nvbe;
 
 	nvbe = kzalloc(sizeof(*nvbe), GFP_KERNEL);
 	if (!nvbe)
 		return NULL;
 
+<<<<<<< HEAD
 	nvbe->dev = dev;
+<<<<<<< HEAD
 
 	nvbe->backend.func = dev_priv->gart_info.func;
 	return &nvbe->backend;
+=======
+	nvbe->ttm.ttm.func = dev_priv->gart_info.func;
+
+	if (ttm_dma_tt_init(&nvbe->ttm, bdev, size, page_flags, dummy_read_page)) {
+		kfree(nvbe);
+		return NULL;
+	}
+	return &nvbe->ttm.ttm;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int
@@ -432,7 +677,11 @@ nouveau_sgdma_init(struct drm_device *dev)
 	u32 aper_size, align;
 	int ret;
 
+<<<<<<< HEAD
 	if (dev_priv->card_type >= NV_40 && drm_pci_device_is_pcie(dev))
+=======
+	if (dev_priv->card_type >= NV_40 && pci_is_pcie(dev->pdev))
+>>>>>>> refs/remotes/origin/cm-10.0
 		aper_size = 512 * 1024 * 1024;
 	else
 		aper_size = 64 * 1024 * 1024;
@@ -461,7 +710,11 @@ nouveau_sgdma_init(struct drm_device *dev)
 		dev_priv->gart_info.type = NOUVEAU_GART_HW;
 		dev_priv->gart_info.func = &nv50_sgdma_backend;
 	} else
+<<<<<<< HEAD
 	if (0 && drm_pci_device_is_pcie(dev) &&
+=======
+	if (0 && pci_is_pcie(dev->pdev) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 	    dev_priv->chipset > 0x40 && dev_priv->chipset != 0x45) {
 		if (nv44_graph_class(dev)) {
 			dev_priv->gart_info.func = &nv44_sgdma_backend;
@@ -535,4 +788,15 @@ nouveau_sgdma_get_physical(struct drm_device *dev, uint32_t offset)
 
 	return (nv_ro32(gpuobj, 4 * pte) & ~NV_CTXDMA_PAGE_MASK) |
 		(offset & NV_CTXDMA_PAGE_MASK);
+=======
+	nvbe->dev = drm->dev;
+	if (nv_device(drm->device)->card_type < NV_50)
+		nvbe->ttm.ttm.func = &nv04_sgdma_backend;
+	else
+		nvbe->ttm.ttm.func = &nv50_sgdma_backend;
+
+	if (ttm_dma_tt_init(&nvbe->ttm, bdev, size, page_flags, dummy_read_page))
+		return NULL;
+	return &nvbe->ttm.ttm;
+>>>>>>> refs/remotes/origin/master
 }

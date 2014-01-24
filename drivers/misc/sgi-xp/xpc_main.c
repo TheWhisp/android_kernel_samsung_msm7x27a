@@ -92,7 +92,11 @@ int xpc_disengage_timelimit = XPC_DISENGAGE_DEFAULT_TIMELIMIT;
 static int xpc_disengage_min_timelimit;	/* = 0 */
 static int xpc_disengage_max_timelimit = 120;
 
+<<<<<<< HEAD
 static ctl_table xpc_sys_xpc_hb_dir[] = {
+=======
+static struct ctl_table xpc_sys_xpc_hb_dir[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 	 .procname = "hb_interval",
 	 .data = &xpc_hb_interval,
@@ -111,7 +115,11 @@ static ctl_table xpc_sys_xpc_hb_dir[] = {
 	 .extra2 = &xpc_hb_check_max_interval},
 	{}
 };
+<<<<<<< HEAD
 static ctl_table xpc_sys_xpc_dir[] = {
+=======
+static struct ctl_table xpc_sys_xpc_dir[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 	 .procname = "hb",
 	 .mode = 0555,
@@ -126,7 +134,11 @@ static ctl_table xpc_sys_xpc_dir[] = {
 	 .extra2 = &xpc_disengage_max_timelimit},
 	{}
 };
+<<<<<<< HEAD
 static ctl_table xpc_sys_dir[] = {
+=======
+static struct ctl_table xpc_sys_dir[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 	 .procname = "xpc",
 	 .mode = 0555,

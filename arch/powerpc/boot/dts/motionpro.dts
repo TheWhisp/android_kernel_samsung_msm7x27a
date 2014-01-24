@@ -12,11 +12,26 @@
 
 /include/ "mpc5200b.dtsi"
 
+<<<<<<< HEAD
+=======
+&gpt0 { fsl,has-wdt; };
+&gpt6 { // Motion-PRO status LED
+	compatible = "promess,motionpro-led";
+	label = "motionpro-statusled";
+	blink-delay = <100>; // 100 msec
+};
+&gpt7 { // Motion-PRO ready LED
+	compatible = "promess,motionpro-led";
+	label = "motionpro-readyled";
+};
+
+>>>>>>> refs/remotes/origin/master
 / {
 	model = "promess,motionpro";
 	compatible = "promess,motionpro";
 
 	soc5200@f0000000 {
+<<<<<<< HEAD
 		timer@600 {	// General Purpose Timer
 			fsl,has-wdt;
 		};
@@ -32,6 +47,8 @@
 			label = "motionpro-readyled";
 		};
 
+=======
+>>>>>>> refs/remotes/origin/master
 		can@900 {
 			status = "disabled";
 		};

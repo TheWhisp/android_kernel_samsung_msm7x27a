@@ -27,10 +27,17 @@
 #ifndef __NOUVEAU_DMA_H__
 #define __NOUVEAU_DMA_H__
 
+<<<<<<< HEAD
 #ifndef NOUVEAU_DMA_DEBUG
 #define NOUVEAU_DMA_DEBUG 0
 #endif
 
+=======
+#include "nouveau_bo.h"
+#include "nouveau_chan.h"
+
+int nouveau_dma_wait(struct nouveau_channel *, int slots, int size);
+>>>>>>> refs/remotes/origin/master
 void nv50_dma_push(struct nouveau_channel *, struct nouveau_bo *,
 		   int delta, int length);
 
@@ -48,12 +55,23 @@ void nv50_dma_push(struct nouveau_channel *, struct nouveau_bo *,
 
 /* Hardcoded object assignments to subchannels (subchannel id). */
 enum {
+<<<<<<< HEAD
 	NvSubM2MF	= 0,
 	NvSubSw		= 1,
 	NvSub2D		= 2,
 	NvSubCtxSurf2D  = 2,
 	NvSubGdiRect    = 3,
 	NvSubImageBlit  = 4
+=======
+	NvSubCtxSurf2D  = 0,
+	NvSubSw		= 1,
+	NvSubImageBlit  = 2,
+	NvSubGdiRect    = 3,
+
+	NvSub2D		= 3, /* DO NOT CHANGE - hardcoded for kepler gr fifo */
+	NvSubCopy	= 4, /* DO NOT CHANGE - hardcoded for kepler gr fifo */
+	FermiSw		= 5, /* DO NOT CHANGE (well.. 6/7 will work...) */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Object handles. */
@@ -73,6 +91,10 @@ enum {
 	NvSema		= 0x8000000f,
 	NvEvoSema0	= 0x80000010,
 	NvEvoSema1	= 0x80000011,
+<<<<<<< HEAD
+=======
+	NvNotify1       = 0x80000012,
+>>>>>>> refs/remotes/origin/master
 
 	/* G80+ display objects */
 	NvEvoVRAM	= 0x01000000,
@@ -115,18 +137,23 @@ RING_SPACE(struct nouveau_channel *chan, int size)
 static inline void
 OUT_RING(struct nouveau_channel *chan, int data)
 {
+<<<<<<< HEAD
 	if (NOUVEAU_DMA_DEBUG) {
 		NV_INFO(chan->dev, "Ch%d/0x%08x: 0x%08x\n",
 			chan->id, chan->dma.cur << 2, data);
 	}
 
 	nouveau_bo_wr32(chan->pushbuf_bo, chan->dma.cur++, data);
+=======
+	nouveau_bo_wr32(chan->push.buffer, chan->dma.cur++, data);
+>>>>>>> refs/remotes/origin/master
 }
 
 extern void
 OUT_RINGp(struct nouveau_channel *chan, const void *data, unsigned nr_dwords);
 
 static inline void
+<<<<<<< HEAD
 BEGIN_NVC0(struct nouveau_channel *chan, int op, int subc, int mthd, int size)
 {
 	OUT_RING(chan, (op << 28) | (size << 16) | (subc << 13) | (mthd >> 2));
@@ -136,28 +163,69 @@ static inline void
 BEGIN_RING(struct nouveau_channel *chan, int subc, int mthd, int size)
 {
 	OUT_RING(chan, (subc << 13) | (size << 18) | mthd);
+=======
+BEGIN_NV04(struct nouveau_channel *chan, int subc, int mthd, int size)
+{
+	OUT_RING(chan, 0x00000000 | (subc << 13) | (size << 18) | mthd);
+}
+
+static inline void
+BEGIN_NI04(struct nouveau_channel *chan, int subc, int mthd, int size)
+{
+	OUT_RING(chan, 0x40000000 | (subc << 13) | (size << 18) | mthd);
+}
+
+static inline void
+BEGIN_NVC0(struct nouveau_channel *chan, int subc, int mthd, int size)
+{
+	OUT_RING(chan, 0x20000000 | (size << 16) | (subc << 13) | (mthd >> 2));
+}
+
+static inline void
+BEGIN_NIC0(struct nouveau_channel *chan, int subc, int mthd, int size)
+{
+	OUT_RING(chan, 0x60000000 | (size << 16) | (subc << 13) | (mthd >> 2));
+}
+
+static inline void
+BEGIN_IMC0(struct nouveau_channel *chan, int subc, int mthd, u16 data)
+{
+	OUT_RING(chan, 0x80000000 | (data << 16) | (subc << 13) | (mthd >> 2));
+>>>>>>> refs/remotes/origin/master
 }
 
 #define WRITE_PUT(val) do {                                                    \
 	DRM_MEMORYBARRIER();                                                   \
+<<<<<<< HEAD
 	nouveau_bo_rd32(chan->pushbuf_bo, 0);                                  \
 	nvchan_wr32(chan, chan->user_put, ((val) << 2) + chan->pushbuf_base);  \
+=======
+	nouveau_bo_rd32(chan->push.buffer, 0);                                 \
+	nv_wo32(chan->object, chan->user_put, ((val) << 2) + chan->push.vma.offset);  \
+>>>>>>> refs/remotes/origin/master
 } while (0)
 
 static inline void
 FIRE_RING(struct nouveau_channel *chan)
 {
+<<<<<<< HEAD
 	if (NOUVEAU_DMA_DEBUG) {
 		NV_INFO(chan->dev, "Ch%d/0x%08x: PUSH!\n",
 			chan->id, chan->dma.cur << 2);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (chan->dma.cur == chan->dma.put)
 		return;
 	chan->accel_done = true;
 
 	if (chan->dma.ib_max) {
+<<<<<<< HEAD
 		nv50_dma_push(chan, chan->pushbuf_bo, chan->dma.put << 2,
+=======
+		nv50_dma_push(chan, chan->push.buffer, chan->dma.put << 2,
+>>>>>>> refs/remotes/origin/master
 			      (chan->dma.cur - chan->dma.put) << 2);
 	} else {
 		WRITE_PUT(chan->dma.cur);
@@ -172,4 +240,33 @@ WIND_RING(struct nouveau_channel *chan)
 	chan->dma.cur = chan->dma.put;
 }
 
+<<<<<<< HEAD
+=======
+/* FIFO methods */
+#define NV01_SUBCHAN_OBJECT                                          0x00000000
+#define NV84_SUBCHAN_SEMAPHORE_ADDRESS_HIGH                          0x00000010
+#define NV84_SUBCHAN_SEMAPHORE_ADDRESS_LOW                           0x00000014
+#define NV84_SUBCHAN_SEMAPHORE_SEQUENCE                              0x00000018
+#define NV84_SUBCHAN_SEMAPHORE_TRIGGER                               0x0000001c
+#define NV84_SUBCHAN_SEMAPHORE_TRIGGER_ACQUIRE_EQUAL                 0x00000001
+#define NV84_SUBCHAN_SEMAPHORE_TRIGGER_WRITE_LONG                    0x00000002
+#define NV84_SUBCHAN_SEMAPHORE_TRIGGER_ACQUIRE_GEQUAL                0x00000004
+#define NVC0_SUBCHAN_SEMAPHORE_TRIGGER_YIELD                         0x00001000
+#define NV84_SUBCHAN_UEVENT                                          0x00000020
+#define NV84_SUBCHAN_WRCACHE_FLUSH                                   0x00000024
+#define NV10_SUBCHAN_REF_CNT                                         0x00000050
+#define NV11_SUBCHAN_DMA_SEMAPHORE                                   0x00000060
+#define NV11_SUBCHAN_SEMAPHORE_OFFSET                                0x00000064
+#define NV11_SUBCHAN_SEMAPHORE_ACQUIRE                               0x00000068
+#define NV11_SUBCHAN_SEMAPHORE_RELEASE                               0x0000006c
+#define NV40_SUBCHAN_YIELD                                           0x00000080
+
+/* NV_SW object class */
+#define NV_SW_DMA_VBLSEM                                             0x0000018c
+#define NV_SW_VBLSEM_OFFSET                                          0x00000400
+#define NV_SW_VBLSEM_RELEASE_VALUE                                   0x00000404
+#define NV_SW_VBLSEM_RELEASE                                         0x00000408
+#define NV_SW_PAGE_FLIP                                              0x00000500
+
+>>>>>>> refs/remotes/origin/master
 #endif

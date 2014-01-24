@@ -198,7 +198,15 @@ int ccw_device_start_key(struct ccw_device *cdev, struct ccw1 *cpa,
 	if (cdev->private->state == DEV_STATE_VERIFY) {
 		/* Remember to fake irb when finished. */
 		if (!cdev->private->flags.fake_irb) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			cdev->private->flags.fake_irb = 1;
+=======
+			cdev->private->flags.fake_irb = FAKE_CMD_IRB;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			cdev->private->flags.fake_irb = FAKE_CMD_IRB;
+>>>>>>> refs/remotes/origin/master
 			cdev->private->intparm = intparm;
 			return 0;
 		} else
@@ -213,9 +221,21 @@ int ccw_device_start_key(struct ccw_device *cdev, struct ccw1 *cpa,
 	ret = cio_set_options (sch, flags);
 	if (ret)
 		return ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* Adjust requested path mask to excluded varied off paths. */
 	if (lpm) {
 		lpm &= sch->opm;
+=======
+	/* Adjust requested path mask to exclude unusable paths. */
+	if (lpm) {
+		lpm &= sch->lpm;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Adjust requested path mask to exclude unusable paths. */
+	if (lpm) {
+		lpm &= sch->lpm;
+>>>>>>> refs/remotes/origin/master
 		if (lpm == 0)
 			return -EACCES;
 	}
@@ -605,11 +625,35 @@ int ccw_device_tm_start_key(struct ccw_device *cdev, struct tcw *tcw,
 	sch = to_subchannel(cdev->dev.parent);
 	if (!sch->schib.pmcw.ena)
 		return -EINVAL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cdev->private->state != DEV_STATE_ONLINE)
 		return -EIO;
 	/* Adjust requested path mask to excluded varied off paths. */
 	if (lpm) {
 		lpm &= sch->opm;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (cdev->private->state == DEV_STATE_VERIFY) {
+		/* Remember to fake irb when finished. */
+		if (!cdev->private->flags.fake_irb) {
+			cdev->private->flags.fake_irb = FAKE_TM_IRB;
+			cdev->private->intparm = intparm;
+			return 0;
+		} else
+			/* There's already a fake I/O around. */
+			return -EBUSY;
+	}
+	if (cdev->private->state != DEV_STATE_ONLINE)
+		return -EIO;
+	/* Adjust requested path mask to exclude unusable paths. */
+	if (lpm) {
+		lpm &= sch->lpm;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (lpm == 0)
 			return -EACCES;
 	}
@@ -694,9 +738,15 @@ EXPORT_SYMBOL(ccw_device_tm_start_timeout);
 int ccw_device_get_mdc(struct ccw_device *cdev, u8 mask)
 {
 	struct subchannel *sch = to_subchannel(cdev->dev.parent);
+<<<<<<< HEAD
 	struct channel_path_desc_fmt1 desc;
 	struct chp_id chpid;
 	int mdc = 0, ret, i;
+=======
+	struct channel_path *chp;
+	struct chp_id chpid;
+	int mdc = 0, i;
+>>>>>>> refs/remotes/origin/master
 
 	/* Adjust requested path mask to excluded varied off paths. */
 	if (mask)
@@ -709,6 +759,7 @@ int ccw_device_get_mdc(struct ccw_device *cdev, u8 mask)
 		if (!(mask & (0x80 >> i)))
 			continue;
 		chpid.id = sch->schib.pmcw.chpid[i];
+<<<<<<< HEAD
 		ret = chsc_determine_fmt1_channel_path_desc(chpid, &desc);
 		if (ret)
 			return ret;
@@ -717,6 +768,22 @@ int ccw_device_get_mdc(struct ccw_device *cdev, u8 mask)
 		if (!desc.r)
 			mdc = 1;
 		mdc = mdc ? min(mdc, (int)desc.mdc) : desc.mdc;
+=======
+		chp = chpid_to_chp(chpid);
+		if (!chp)
+			continue;
+
+		mutex_lock(&chp->lock);
+		if (!chp->desc_fmt1.f) {
+			mutex_unlock(&chp->lock);
+			return 0;
+		}
+		if (!chp->desc_fmt1.r)
+			mdc = 1;
+		mdc = mdc ? min_t(int, mdc, chp->desc_fmt1.mdc) :
+			    chp->desc_fmt1.mdc;
+		mutex_unlock(&chp->lock);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return mdc;
@@ -745,6 +812,7 @@ int ccw_device_tm_intrg(struct ccw_device *cdev)
 }
 EXPORT_SYMBOL(ccw_device_tm_intrg);
 
+<<<<<<< HEAD
 // FIXME: these have to go:
 
 int
@@ -753,6 +821,20 @@ _ccw_device_get_subchannel_number(struct ccw_device *cdev)
 	return cdev->private->schid.sch_no;
 }
 
+=======
+/**
+ * ccw_device_get_schid - obtain a subchannel id
+ * @cdev: device to obtain the id for
+ * @schid: where to fill in the values
+ */
+void ccw_device_get_schid(struct ccw_device *cdev, struct subchannel_id *schid)
+{
+	struct subchannel *sch = to_subchannel(cdev->dev.parent);
+
+	*schid = sch->schid;
+}
+EXPORT_SYMBOL_GPL(ccw_device_get_schid);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 EXPORT_SYMBOL(ccw_device_set_options_mask);
@@ -767,5 +849,8 @@ EXPORT_SYMBOL(ccw_device_start_timeout_key);
 EXPORT_SYMBOL(ccw_device_start_key);
 EXPORT_SYMBOL(ccw_device_get_ciw);
 EXPORT_SYMBOL(ccw_device_get_path_mask);
+<<<<<<< HEAD
 EXPORT_SYMBOL(_ccw_device_get_subchannel_number);
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(ccw_device_get_chp_desc);

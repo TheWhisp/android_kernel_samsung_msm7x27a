@@ -44,7 +44,11 @@ struct bfin_can_priv {
 /*
  * bfin can timing parameters
  */
+<<<<<<< HEAD
 static struct can_bittiming_const bfin_can_bittiming_const = {
+=======
+static const struct can_bittiming_const bfin_can_bittiming_const = {
+>>>>>>> refs/remotes/origin/master
 	.name = DRV_NAME,
 	.tseg1_min = 1,
 	.tseg1_max = 16,
@@ -79,11 +83,24 @@ static int bfin_can_set_bittiming(struct net_device *dev)
 	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
 		timing |= SAM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_write16(&reg->clock, clk);
 	bfin_write16(&reg->timing, timing);
 
 	dev_info(dev->dev.parent, "setting CLOCK=0x%04x TIMING=0x%04x\n",
 			clk, timing);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	bfin_write(&reg->clock, clk);
+	bfin_write(&reg->timing, timing);
+
+	netdev_info(dev, "setting CLOCK=0x%04x TIMING=0x%04x\n", clk, timing);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -96,6 +113,8 @@ static void bfin_can_set_reset_mode(struct net_device *dev)
 	int i;
 
 	/* disable interrupts */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_write16(&reg->mbim1, 0);
 	bfin_write16(&reg->mbim2, 0);
 	bfin_write16(&reg->gim, 0);
@@ -110,6 +129,26 @@ static void bfin_can_set_reset_mode(struct net_device *dev)
 		if (--timeout == 0) {
 			dev_err(dev->dev.parent,
 					"fail to enter configuration mode\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	bfin_write(&reg->mbim1, 0);
+	bfin_write(&reg->mbim2, 0);
+	bfin_write(&reg->gim, 0);
+
+	/* reset can and enter configuration mode */
+	bfin_write(&reg->control, SRS | CCR);
+	SSYNC();
+	bfin_write(&reg->control, CCR);
+	SSYNC();
+	while (!(bfin_read(&reg->control) & CCA)) {
+		udelay(10);
+		if (--timeout == 0) {
+			netdev_err(dev, "fail to enter configuration mode\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			BUG();
 		}
 	}
@@ -119,6 +158,8 @@ static void bfin_can_set_reset_mode(struct net_device *dev)
 	 * by writing to CAN Mailbox Configuration Registers 1 and 2
 	 * For all bits: 0 - Mailbox disabled, 1 - Mailbox enabled
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_write16(&reg->mc1, 0);
 	bfin_write16(&reg->mc2, 0);
 
@@ -133,10 +174,33 @@ static void bfin_can_set_reset_mode(struct net_device *dev)
 		bfin_write16(&reg->chl[RECEIVE_STD_CHL + i].dlc, 0);
 		bfin_write16(&reg->msk[RECEIVE_STD_CHL + i].amh, 0x1FFF);
 		bfin_write16(&reg->msk[RECEIVE_STD_CHL + i].aml, 0xFFFF);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	bfin_write(&reg->mc1, 0);
+	bfin_write(&reg->mc2, 0);
+
+	/* Set Mailbox Direction */
+	bfin_write(&reg->md1, 0xFFFF);   /* mailbox 1-16 are RX */
+	bfin_write(&reg->md2, 0);   /* mailbox 17-32 are TX */
+
+	/* RECEIVE_STD_CHL */
+	for (i = 0; i < 2; i++) {
+		bfin_write(&reg->chl[RECEIVE_STD_CHL + i].id0, 0);
+		bfin_write(&reg->chl[RECEIVE_STD_CHL + i].id1, AME);
+		bfin_write(&reg->chl[RECEIVE_STD_CHL + i].dlc, 0);
+		bfin_write(&reg->msk[RECEIVE_STD_CHL + i].amh, 0x1FFF);
+		bfin_write(&reg->msk[RECEIVE_STD_CHL + i].aml, 0xFFFF);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* RECEIVE_EXT_CHL */
 	for (i = 0; i < 2; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		bfin_write16(&reg->chl[RECEIVE_EXT_CHL + i].id0, 0);
 		bfin_write16(&reg->chl[RECEIVE_EXT_CHL + i].id1, AME | IDE);
 		bfin_write16(&reg->chl[RECEIVE_EXT_CHL + i].dlc, 0);
@@ -146,6 +210,22 @@ static void bfin_can_set_reset_mode(struct net_device *dev)
 
 	bfin_write16(&reg->mc2, BIT(TRANSMIT_CHL - 16));
 	bfin_write16(&reg->mc1, BIT(RECEIVE_STD_CHL) + BIT(RECEIVE_EXT_CHL));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		bfin_write(&reg->chl[RECEIVE_EXT_CHL + i].id0, 0);
+		bfin_write(&reg->chl[RECEIVE_EXT_CHL + i].id1, AME | IDE);
+		bfin_write(&reg->chl[RECEIVE_EXT_CHL + i].dlc, 0);
+		bfin_write(&reg->msk[RECEIVE_EXT_CHL + i].amh, 0x1FFF);
+		bfin_write(&reg->msk[RECEIVE_EXT_CHL + i].aml, 0xFFFF);
+	}
+
+	bfin_write(&reg->mc2, BIT(TRANSMIT_CHL - 16));
+	bfin_write(&reg->mc1, BIT(RECEIVE_STD_CHL) + BIT(RECEIVE_EXT_CHL));
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	SSYNC();
 
 	priv->can.state = CAN_STATE_STOPPED;
@@ -160,6 +240,8 @@ static void bfin_can_set_normal_mode(struct net_device *dev)
 	/*
 	 * leave configuration mode
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_write16(&reg->control, bfin_read16(&reg->control) & ~CCR);
 
 	while (bfin_read16(&reg->status) & CCA) {
@@ -167,6 +249,19 @@ static void bfin_can_set_normal_mode(struct net_device *dev)
 		if (--timeout == 0) {
 			dev_err(dev->dev.parent,
 					"fail to leave configuration mode\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	bfin_write(&reg->control, bfin_read(&reg->control) & ~CCR);
+
+	while (bfin_read(&reg->status) & CCA) {
+		udelay(10);
+		if (--timeout == 0) {
+			netdev_err(dev, "fail to leave configuration mode\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			BUG();
 		}
 	}
@@ -174,25 +269,59 @@ static void bfin_can_set_normal_mode(struct net_device *dev)
 	/*
 	 * clear _All_  tx and rx interrupts
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_write16(&reg->mbtif1, 0xFFFF);
 	bfin_write16(&reg->mbtif2, 0xFFFF);
 	bfin_write16(&reg->mbrif1, 0xFFFF);
 	bfin_write16(&reg->mbrif2, 0xFFFF);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	bfin_write(&reg->mbtif1, 0xFFFF);
+	bfin_write(&reg->mbtif2, 0xFFFF);
+	bfin_write(&reg->mbrif1, 0xFFFF);
+	bfin_write(&reg->mbrif2, 0xFFFF);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * clear global interrupt status register
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_write16(&reg->gis, 0x7FF); /* overwrites with '1' */
+=======
+	bfin_write(&reg->gis, 0x7FF); /* overwrites with '1' */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfin_write(&reg->gis, 0x7FF); /* overwrites with '1' */
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Initialize Interrupts
 	 * - set bits in the mailbox interrupt mask register
 	 * - global interrupt mask
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_write16(&reg->mbim1, BIT(RECEIVE_STD_CHL) + BIT(RECEIVE_EXT_CHL));
 	bfin_write16(&reg->mbim2, BIT(TRANSMIT_CHL - 16));
 
 	bfin_write16(&reg->gim, EPIM | BOIM | RMLIM);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	bfin_write(&reg->mbim1, BIT(RECEIVE_STD_CHL) + BIT(RECEIVE_EXT_CHL));
+	bfin_write(&reg->mbim2, BIT(TRANSMIT_CHL - 16));
+
+	bfin_write(&reg->gim, EPIM | BOIM | RMLIM);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	SSYNC();
 }
 
@@ -224,6 +353,29 @@ static int bfin_can_set_mode(struct net_device *dev, enum can_mode mode)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int bfin_can_get_berr_counter(const struct net_device *dev,
+				     struct can_berr_counter *bec)
+{
+	struct bfin_can_priv *priv = netdev_priv(dev);
+	struct bfin_can_regs __iomem *reg = priv->membase;
+
+	u16 cec = bfin_read(&reg->cec);
+
+	bec->txerr = cec >> 8;
+	bec->rxerr = cec;
+
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int bfin_can_start_xmit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct bfin_can_priv *priv = netdev_priv(dev);
@@ -242,6 +394,8 @@ static int bfin_can_start_xmit(struct sk_buff *skb, struct net_device *dev)
 
 	/* fill id */
 	if (id & CAN_EFF_FLAG) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		bfin_write16(&reg->chl[TRANSMIT_CHL].id0, id);
 		if (id & CAN_RTR_FLAG)
 			writew(((id & 0x1FFF0000) >> 16) | IDE | AME | RTR,
@@ -258,21 +412,57 @@ static int bfin_can_start_xmit(struct sk_buff *skb, struct net_device *dev)
 			bfin_write16(&reg->chl[TRANSMIT_CHL].id1,
 					(id << 2) | AME);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		bfin_write(&reg->chl[TRANSMIT_CHL].id0, id);
+		val = ((id & 0x1FFF0000) >> 16) | IDE;
+	} else
+		val = (id << 2);
+	if (id & CAN_RTR_FLAG)
+		val |= RTR;
+	bfin_write(&reg->chl[TRANSMIT_CHL].id1, val | AME);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* fill payload */
 	for (i = 0; i < 8; i += 2) {
 		val = ((7 - i) < dlc ? (data[7 - i]) : 0) +
 			((6 - i) < dlc ? (data[6 - i] << 8) : 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		bfin_write16(&reg->chl[TRANSMIT_CHL].data[i], val);
 	}
 
 	/* fill data length code */
 	bfin_write16(&reg->chl[TRANSMIT_CHL].dlc, dlc);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		bfin_write(&reg->chl[TRANSMIT_CHL].data[i], val);
+	}
+
+	/* fill data length code */
+	bfin_write(&reg->chl[TRANSMIT_CHL].dlc, dlc);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	can_put_echo_skb(skb, dev, 0);
 
 	/* set transmit request */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_write16(&reg->trs2, BIT(TRANSMIT_CHL - 16));
+=======
+	bfin_write(&reg->trs2, BIT(TRANSMIT_CHL - 16));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfin_write(&reg->trs2, BIT(TRANSMIT_CHL - 16));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -295,13 +485,27 @@ static void bfin_can_rx(struct net_device *dev, u16 isrc)
 	/* get id */
 	if (isrc & BIT(RECEIVE_EXT_CHL)) {
 		/* extended frame format (EFF) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		cf->can_id = ((bfin_read16(&reg->chl[RECEIVE_EXT_CHL].id1)
 			     & 0x1FFF) << 16)
 			     + bfin_read16(&reg->chl[RECEIVE_EXT_CHL].id0);
+=======
+		cf->can_id = ((bfin_read(&reg->chl[RECEIVE_EXT_CHL].id1)
+			     & 0x1FFF) << 16)
+			     + bfin_read(&reg->chl[RECEIVE_EXT_CHL].id0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cf->can_id = ((bfin_read(&reg->chl[RECEIVE_EXT_CHL].id1)
+			     & 0x1FFF) << 16)
+			     + bfin_read(&reg->chl[RECEIVE_EXT_CHL].id0);
+>>>>>>> refs/remotes/origin/master
 		cf->can_id |= CAN_EFF_FLAG;
 		obj = RECEIVE_EXT_CHL;
 	} else {
 		/* standard frame format (SFF) */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		cf->can_id = (bfin_read16(&reg->chl[RECEIVE_STD_CHL].id1)
 			     & 0x1ffc) >> 2;
 		obj = RECEIVE_STD_CHL;
@@ -315,6 +519,26 @@ static void bfin_can_rx(struct net_device *dev, u16 isrc)
 	/* get payload */
 	for (i = 0; i < 8; i += 2) {
 		val = bfin_read16(&reg->chl[obj].data[i]);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		cf->can_id = (bfin_read(&reg->chl[RECEIVE_STD_CHL].id1)
+			     & 0x1ffc) >> 2;
+		obj = RECEIVE_STD_CHL;
+	}
+	if (bfin_read(&reg->chl[obj].id1) & RTR)
+		cf->can_id |= CAN_RTR_FLAG;
+
+	/* get data length code */
+	cf->can_dlc = get_can_dlc(bfin_read(&reg->chl[obj].dlc) & 0xF);
+
+	/* get payload */
+	for (i = 0; i < 8; i += 2) {
+		val = bfin_read(&reg->chl[obj].data[i]);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cf->data[7 - i] = (7 - i) < cf->can_dlc ? val : 0;
 		cf->data[6 - i] = (6 - i) < cf->can_dlc ? (val >> 8) : 0;
 	}
@@ -340,7 +564,15 @@ static int bfin_can_err(struct net_device *dev, u16 isrc, u16 status)
 
 	if (isrc & RMLIS) {
 		/* data overrun interrupt */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(dev->dev.parent, "data overrun interrupt\n");
+=======
+		netdev_dbg(dev, "data overrun interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_dbg(dev, "data overrun interrupt\n");
+>>>>>>> refs/remotes/origin/master
 		cf->can_id |= CAN_ERR_CRTL;
 		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
 		stats->rx_over_errors++;
@@ -348,7 +580,15 @@ static int bfin_can_err(struct net_device *dev, u16 isrc, u16 status)
 	}
 
 	if (isrc & BOIS) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(dev->dev.parent, "bus-off mode interrupt\n");
+=======
+		netdev_dbg(dev, "bus-off mode interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_dbg(dev, "bus-off mode interrupt\n");
+>>>>>>> refs/remotes/origin/master
 		state = CAN_STATE_BUS_OFF;
 		cf->can_id |= CAN_ERR_BUSOFF;
 		can_bus_off(dev);
@@ -356,19 +596,43 @@ static int bfin_can_err(struct net_device *dev, u16 isrc, u16 status)
 
 	if (isrc & EPIS) {
 		/* error passive interrupt */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(dev->dev.parent, "error passive interrupt\n");
+=======
+		netdev_dbg(dev, "error passive interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_dbg(dev, "error passive interrupt\n");
+>>>>>>> refs/remotes/origin/master
 		state = CAN_STATE_ERROR_PASSIVE;
 	}
 
 	if ((isrc & EWTIS) || (isrc & EWRIS)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(dev->dev.parent,
 				"Error Warning Transmit/Receive Interrupt\n");
+=======
+		netdev_dbg(dev, "Error Warning Transmit/Receive Interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_dbg(dev, "Error Warning Transmit/Receive Interrupt\n");
+>>>>>>> refs/remotes/origin/master
 		state = CAN_STATE_ERROR_WARNING;
 	}
 
 	if (state != priv->can.state && (state == CAN_STATE_ERROR_WARNING ||
 				state == CAN_STATE_ERROR_PASSIVE)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		u16 cec = bfin_read16(&reg->cec);
+=======
+		u16 cec = bfin_read(&reg->cec);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		u16 cec = bfin_read(&reg->cec);
+>>>>>>> refs/remotes/origin/master
 		u8 rxerr = cec;
 		u8 txerr = cec >> 8;
 
@@ -411,7 +675,11 @@ static int bfin_can_err(struct net_device *dev, u16 isrc, u16 status)
 	return 0;
 }
 
+<<<<<<< HEAD
 irqreturn_t bfin_can_interrupt(int irq, void *dev_id)
+=======
+static irqreturn_t bfin_can_interrupt(int irq, void *dev_id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = dev_id;
 	struct bfin_can_priv *priv = netdev_priv(dev);
@@ -419,6 +687,8 @@ irqreturn_t bfin_can_interrupt(int irq, void *dev_id)
 	struct net_device_stats *stats = &dev->stats;
 	u16 status, isrc;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if ((irq == priv->tx_irq) && bfin_read16(&reg->mbtif2)) {
 		/* transmission complete interrupt */
 		bfin_write16(&reg->mbtif2, 0xFFFF);
@@ -436,6 +706,30 @@ irqreturn_t bfin_can_interrupt(int irq, void *dev_id)
 		isrc = bfin_read16(&reg->gis);
 		status = bfin_read16(&reg->esr);
 		bfin_write16(&reg->gis, 0x7FF);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if ((irq == priv->tx_irq) && bfin_read(&reg->mbtif2)) {
+		/* transmission complete interrupt */
+		bfin_write(&reg->mbtif2, 0xFFFF);
+		stats->tx_packets++;
+		stats->tx_bytes += bfin_read(&reg->chl[TRANSMIT_CHL].dlc);
+		can_get_echo_skb(dev, 0);
+		netif_wake_queue(dev);
+	} else if ((irq == priv->rx_irq) && bfin_read(&reg->mbrif1)) {
+		/* receive interrupt */
+		isrc = bfin_read(&reg->mbrif1);
+		bfin_write(&reg->mbrif1, 0xFFFF);
+		bfin_can_rx(dev, isrc);
+	} else if ((irq == priv->err_irq) && bfin_read(&reg->gis)) {
+		/* error interrupt */
+		isrc = bfin_read(&reg->gis);
+		status = bfin_read(&reg->esr);
+		bfin_write(&reg->gis, 0x7FF);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bfin_can_err(dev, isrc, status);
 	} else {
 		return IRQ_NONE;
@@ -503,7 +797,11 @@ static int bfin_can_close(struct net_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct net_device *alloc_bfin_candev(void)
+=======
+static struct net_device *alloc_bfin_candev(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct bfin_can_priv *priv;
@@ -518,6 +816,14 @@ struct net_device *alloc_bfin_candev(void)
 	priv->can.bittiming_const = &bfin_can_bittiming_const;
 	priv->can.do_set_bittiming = bfin_can_set_bittiming;
 	priv->can.do_set_mode = bfin_can_set_mode;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	priv->can.do_get_berr_counter = bfin_can_get_berr_counter;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->can.do_get_berr_counter = bfin_can_get_berr_counter;
+>>>>>>> refs/remotes/origin/master
 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
 
 	return dev;
@@ -529,7 +835,11 @@ static const struct net_device_ops bfin_can_netdev_ops = {
 	.ndo_start_xmit         = bfin_can_start_xmit,
 };
 
+<<<<<<< HEAD
 static int __devinit bfin_can_probe(struct platform_device *pdev)
+=======
+static int bfin_can_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct net_device *dev;
@@ -537,7 +847,11 @@ static int __devinit bfin_can_probe(struct platform_device *pdev)
 	struct resource *res_mem, *rx_irq, *tx_irq, *err_irq;
 	unsigned short *pdata;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&pdev->dev, "No platform data provided!\n");
 		err = -EINVAL;
@@ -578,7 +892,11 @@ static int __devinit bfin_can_probe(struct platform_device *pdev)
 	priv->pin_list = pdata;
 	priv->can.clock.freq = get_sclk();
 
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, dev);
+=======
+	platform_set_drvdata(pdev, dev);
+>>>>>>> refs/remotes/origin/master
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
 	dev->flags |= IFF_ECHO;	/* we support local echo */
@@ -595,7 +913,11 @@ static int __devinit bfin_can_probe(struct platform_device *pdev)
 	dev_info(&pdev->dev,
 		"%s device registered"
 		"(&reg_base=%p, rx_irq=%d, tx_irq=%d, err_irq=%d, sclk=%d)\n",
+<<<<<<< HEAD
 		DRV_NAME, (void *)priv->membase, priv->rx_irq,
+=======
+		DRV_NAME, priv->membase, priv->rx_irq,
+>>>>>>> refs/remotes/origin/master
 		priv->tx_irq, priv->err_irq, priv->can.clock.freq);
 	return 0;
 
@@ -609,9 +931,15 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit bfin_can_remove(struct platform_device *pdev)
 {
 	struct net_device *dev = dev_get_drvdata(&pdev->dev);
+=======
+static int bfin_can_remove(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct bfin_can_priv *priv = netdev_priv(dev);
 	struct resource *res;
 
@@ -619,8 +947,11 @@ static int __devexit bfin_can_remove(struct platform_device *pdev)
 
 	unregister_candev(dev);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	release_mem_region(res->start, resource_size(res));
 
@@ -633,13 +964,19 @@ static int __devexit bfin_can_remove(struct platform_device *pdev)
 #ifdef CONFIG_PM
 static int bfin_can_suspend(struct platform_device *pdev, pm_message_t mesg)
 {
+<<<<<<< HEAD
 	struct net_device *dev = dev_get_drvdata(&pdev->dev);
+=======
+	struct net_device *dev = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct bfin_can_priv *priv = netdev_priv(dev);
 	struct bfin_can_regs __iomem *reg = priv->membase;
 	int timeout = BFIN_CAN_TIMEOUT;
 
 	if (netif_running(dev)) {
 		/* enter sleep mode */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		bfin_write16(&reg->control, bfin_read16(&reg->control) | SMR);
 		SSYNC();
 		while (!(bfin_read16(&reg->intr) & SMACK)) {
@@ -647,6 +984,19 @@ static int bfin_can_suspend(struct platform_device *pdev, pm_message_t mesg)
 			if (--timeout == 0) {
 				dev_err(dev->dev.parent,
 						"fail to enter sleep mode\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		bfin_write(&reg->control, bfin_read(&reg->control) | SMR);
+		SSYNC();
+		while (!(bfin_read(&reg->intr) & SMACK)) {
+			udelay(10);
+			if (--timeout == 0) {
+				netdev_err(dev, "fail to enter sleep mode\n");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				BUG();
 			}
 		}
@@ -657,13 +1007,25 @@ static int bfin_can_suspend(struct platform_device *pdev, pm_message_t mesg)
 
 static int bfin_can_resume(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct net_device *dev = dev_get_drvdata(&pdev->dev);
+=======
+	struct net_device *dev = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct bfin_can_priv *priv = netdev_priv(dev);
 	struct bfin_can_regs __iomem *reg = priv->membase;
 
 	if (netif_running(dev)) {
 		/* leave sleep mode */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		bfin_write16(&reg->intr, 0);
+=======
+		bfin_write(&reg->intr, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bfin_write(&reg->intr, 0);
+>>>>>>> refs/remotes/origin/master
 		SSYNC();
 	}
 
@@ -676,7 +1038,11 @@ static int bfin_can_resume(struct platform_device *pdev)
 
 static struct platform_driver bfin_can_driver = {
 	.probe = bfin_can_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(bfin_can_remove),
+=======
+	.remove = bfin_can_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = bfin_can_suspend,
 	.resume = bfin_can_resume,
 	.driver = {
@@ -685,6 +1051,8 @@ static struct platform_driver bfin_can_driver = {
 	},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init bfin_can_init(void)
 {
 	return platform_driver_register(&bfin_can_driver);
@@ -696,7 +1064,17 @@ static void __exit bfin_can_exit(void)
 	platform_driver_unregister(&bfin_can_driver);
 }
 module_exit(bfin_can_exit);
+=======
+module_platform_driver(bfin_can_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(bfin_can_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Blackfin on-chip CAN netdevice driver");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:" DRV_NAME);
+>>>>>>> refs/remotes/origin/master

@@ -21,8 +21,13 @@ static const __u8 root_hub_hub_des[] =
 	0x00,			/*   (per-port OC, no power switching) */
 	0x01,			/*  __u8  bPwrOn2pwrGood; 2ms */
 	0x00,			/*  __u8  bHubContrCurrent; 0 mA */
+<<<<<<< HEAD
 	0x00,			/*  __u8  DeviceRemovable; *** 7 Ports max *** */
 	0xff			/*  __u8  PortPwrCtrlMask; *** 7 ports max *** */
+=======
+	0x00,			/*  __u8  DeviceRemovable; *** 7 Ports max */
+	0xff			/*  __u8  PortPwrCtrlMask; *** 7 ports max */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define	UHCI_RH_MAXCHILD	7
@@ -75,8 +80,11 @@ static inline int get_hub_status_data(struct uhci_hcd *uhci, char *buf)
 	return !!*buf;
 }
 
+<<<<<<< HEAD
 #define OK(x)			len = (x); break
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define CLR_RH_PORTSTAT(x) \
 	status = uhci_readw(uhci, port_addr);	\
 	status &= ~(RWC_BITS|WZ_BITS); \
@@ -116,6 +124,10 @@ static void uhci_finish_suspend(struct uhci_hcd *uhci, int port,
 		}
 	}
 	clear_bit(port, &uhci->resuming_ports);
+<<<<<<< HEAD
+=======
+	usb_hcd_end_port_resume(&uhci_to_hcd(uhci)->self, port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Wait for the UHCI controller in HP's iLO2 server management chip.
@@ -167,6 +179,11 @@ static void uhci_check_ports(struct uhci_hcd *uhci)
 				set_bit(port, &uhci->resuming_ports);
 				uhci->ports_timeout = jiffies +
 						msecs_to_jiffies(25);
+<<<<<<< HEAD
+=======
+				usb_hcd_start_port_resume(
+						&uhci_to_hcd(uhci)->self, port);
+>>>>>>> refs/remotes/origin/master
 
 				/* Make sure we see the port again
 				 * after the resuming period is over. */
@@ -196,11 +213,26 @@ static int uhci_hub_status_data(struct usb_hcd *hcd, char *buf)
 	status = get_hub_status_data(uhci, buf);
 
 	switch (uhci->rh_state) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	    case UHCI_RH_SUSPENDING:
 	    case UHCI_RH_SUSPENDED:
 		/* if port change, ask to be resumed */
 		if (status || uhci->resuming_ports)
 			usb_hcd_resume_root_hub(hcd);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	    case UHCI_RH_SUSPENDED:
+		/* if port change, ask to be resumed */
+		if (status || uhci->resuming_ports) {
+			status = 1;
+			usb_hcd_resume_root_hub(hcd);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	    case UHCI_RH_AUTO_STOPPED:
@@ -240,7 +272,11 @@ static int uhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			u16 wIndex, char *buf, u16 wLength)
 {
 	struct uhci_hcd *uhci = hcd_to_uhci(hcd);
+<<<<<<< HEAD
 	int status, lstatus, retval = 0, len = 0;
+=======
+	int status, lstatus, retval = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned int port = wIndex - 1;
 	unsigned long port_addr = USBPORTSC1 + 2 * port;
 	u16 wPortChange, wPortStatus;
@@ -254,7 +290,12 @@ static int uhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 
 	case GetHubStatus:
 		*(__le32 *)buf = cpu_to_le32(0);
+<<<<<<< HEAD
 		OK(4);		/* hub power */
+=======
+		retval = 4; /* hub power */
+		break;
+>>>>>>> refs/remotes/origin/master
 	case GetPortStatus:
 		if (port >= uhci->rh_numports)
 			goto err;
@@ -307,13 +348,22 @@ static int uhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 
 		*(__le16 *)buf = cpu_to_le16(wPortStatus);
 		*(__le16 *)(buf + 2) = cpu_to_le16(wPortChange);
+<<<<<<< HEAD
 		OK(4);
+=======
+		retval = 4;
+		break;
+>>>>>>> refs/remotes/origin/master
 	case SetHubFeature:		/* We don't implement these */
 	case ClearHubFeature:
 		switch (wValue) {
 		case C_HUB_OVER_CURRENT:
 		case C_HUB_LOCAL_POWER:
+<<<<<<< HEAD
 			OK(0);
+=======
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			goto err;
 		}
@@ -325,7 +375,11 @@ static int uhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 		switch (wValue) {
 		case USB_PORT_FEAT_SUSPEND:
 			SET_RH_PORTSTAT(USBPORTSC_SUSP);
+<<<<<<< HEAD
 			OK(0);
+=======
+			break;
+>>>>>>> refs/remotes/origin/master
 		case USB_PORT_FEAT_RESET:
 			SET_RH_PORTSTAT(USBPORTSC_PR);
 
@@ -334,10 +388,17 @@ static int uhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 
 			/* USB v2.0 7.1.7.5 */
 			uhci->ports_timeout = jiffies + msecs_to_jiffies(50);
+<<<<<<< HEAD
 			OK(0);
 		case USB_PORT_FEAT_POWER:
 			/* UHCI has no power switching */
 			OK(0);
+=======
+			break;
+		case USB_PORT_FEAT_POWER:
+			/* UHCI has no power switching */
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			goto err;
 		}
@@ -352,10 +413,17 @@ static int uhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 
 			/* Disable terminates Resume signalling */
 			uhci_finish_suspend(uhci, port, port_addr);
+<<<<<<< HEAD
 			OK(0);
 		case USB_PORT_FEAT_C_ENABLE:
 			CLR_RH_PORTSTAT(USBPORTSC_PEC);
 			OK(0);
+=======
+			break;
+		case USB_PORT_FEAT_C_ENABLE:
+			CLR_RH_PORTSTAT(USBPORTSC_PEC);
+			break;
+>>>>>>> refs/remotes/origin/master
 		case USB_PORT_FEAT_SUSPEND:
 			if (!(uhci_readw(uhci, port_addr) & USBPORTSC_SUSP)) {
 
@@ -378,15 +446,23 @@ static int uhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 					uhci->ports_timeout = jiffies +
 						msecs_to_jiffies(20);
 			}
+<<<<<<< HEAD
 			OK(0);
 		case USB_PORT_FEAT_C_SUSPEND:
 			clear_bit(port, &uhci->port_c_suspend);
 			OK(0);
+=======
+			break;
+		case USB_PORT_FEAT_C_SUSPEND:
+			clear_bit(port, &uhci->port_c_suspend);
+			break;
+>>>>>>> refs/remotes/origin/master
 		case USB_PORT_FEAT_POWER:
 			/* UHCI has no power switching */
 			goto err;
 		case USB_PORT_FEAT_C_CONNECTION:
 			CLR_RH_PORTSTAT(USBPORTSC_CSC);
+<<<<<<< HEAD
 			OK(0);
 		case USB_PORT_FEAT_C_OVER_CURRENT:
 			CLR_RH_PORTSTAT(USBPORTSC_OCC);
@@ -394,16 +470,33 @@ static int uhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 		case USB_PORT_FEAT_C_RESET:
 			/* this driver won't report these */
 			OK(0);
+=======
+			break;
+		case USB_PORT_FEAT_C_OVER_CURRENT:
+			CLR_RH_PORTSTAT(USBPORTSC_OCC);
+			break;
+		case USB_PORT_FEAT_C_RESET:
+			/* this driver won't report these */
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			goto err;
 		}
 		break;
 	case GetHubDescriptor:
+<<<<<<< HEAD
 		len = min_t(unsigned int, sizeof(root_hub_hub_des), wLength);
 		memcpy(buf, root_hub_hub_des, len);
 		if (len > 2)
 			buf[2] = uhci->rh_numports;
 		OK(len);
+=======
+		retval = min_t(unsigned int, sizeof(root_hub_hub_des), wLength);
+		memcpy(buf, root_hub_hub_des, retval);
+		if (retval > 2)
+			buf[2] = uhci->rh_numports;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 err:
 		retval = -EPIPE;

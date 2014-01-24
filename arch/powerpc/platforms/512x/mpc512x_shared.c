@@ -35,8 +35,15 @@ static struct mpc512x_reset_module __iomem *reset_module_base;
 static void __init mpc512x_restart_init(void)
 {
 	struct device_node *np;
+<<<<<<< HEAD
 
 	np = of_find_compatible_node(NULL, NULL, "fsl,mpc5121-reset");
+=======
+	const char *reset_compat;
+
+	reset_compat = mpc512x_select_reset_compat();
+	np = of_find_compatible_node(NULL, NULL, reset_compat);
+>>>>>>> refs/remotes/origin/master
 	if (!np)
 		return;
 
@@ -66,8 +73,14 @@ struct fsl_diu_shared_fb {
 	bool		in_use;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int mpc512x_get_pixel_format(unsigned int bits_per_pixel,
 				      int monitor_port)
+=======
+u32 mpc512x_get_pixel_format(enum fsl_diu_monitor_port port,
+			     unsigned int bits_per_pixel)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (bits_per_pixel) {
 	case 32:
@@ -80,16 +93,29 @@ unsigned int mpc512x_get_pixel_format(unsigned int bits_per_pixel,
 	return 0x00000400;
 }
 
+<<<<<<< HEAD
 void mpc512x_set_gamma_table(int monitor_port, char *gamma_table_base)
 {
 }
 
 void mpc512x_set_monitor_port(int monitor_port)
+=======
+void mpc512x_set_gamma_table(enum fsl_diu_monitor_port port,
+			     char *gamma_table_base)
+{
+}
+
+void mpc512x_set_monitor_port(enum fsl_diu_monitor_port port)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 }
 
 #define DIU_DIV_MASK	0x000000ff
 void mpc512x_set_pixel_clock(unsigned int pixclock)
+=======
+#define DIU_DIV_MASK	0x000000ff
+static void mpc512x_set_pixel_clock(unsigned int pixclock)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long bestval, bestfreq, speed, busfreq;
 	unsigned long minpixclock, maxpixclock, pixval;
@@ -182,6 +208,8 @@ void mpc512x_set_pixel_clock(unsigned int pixclock)
 	iounmap(ccm);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ssize_t mpc512x_show_monitor_port(int monitor_port, char *buf)
 {
 	return sprintf(buf, "0 - 5121 LCD\n");
@@ -190,10 +218,23 @@ ssize_t mpc512x_show_monitor_port(int monitor_port, char *buf)
 int mpc512x_set_sysfs_monitor_port(int val)
 {
 	return 0;
+=======
+enum fsl_diu_monitor_port
+mpc512x_valid_monitor_port(enum fsl_diu_monitor_port port)
+{
+	return FSL_DIU_PORT_DVI;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static enum fsl_diu_monitor_port
+mpc512x_valid_monitor_port(enum fsl_diu_monitor_port port)
+{
+	return FSL_DIU_PORT_DVI;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct fsl_diu_shared_fb __attribute__ ((__aligned__(8))) diu_shared_fb;
 
+<<<<<<< HEAD
 #if defined(CONFIG_FB_FSL_DIU) || \
     defined(CONFIG_FB_FSL_DIU_MODULE)
 static inline void mpc512x_free_bootmem(struct page *page)
@@ -207,6 +248,16 @@ static inline void mpc512x_free_bootmem(struct page *page)
 }
 
 void mpc512x_release_bootmem(void)
+=======
+static inline void mpc512x_free_bootmem(struct page *page)
+{
+	BUG_ON(PageTail(page));
+	BUG_ON(atomic_read(&page->_count) > 1);
+	free_reserved_page(page);
+}
+
+static void mpc512x_release_bootmem(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long addr = diu_shared_fb.fb_phys & PAGE_MASK;
 	unsigned long size = diu_shared_fb.fb_len;
@@ -223,7 +274,10 @@ void mpc512x_release_bootmem(void)
 	}
 	diu_ops.release_bootmem	= NULL;
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Check if DIU was pre-initialized. If so, perform steps
@@ -233,7 +287,11 @@ void mpc512x_release_bootmem(void)
  * address range will be reserved in setup_arch() after bootmem
  * allocator is up.
  */
+<<<<<<< HEAD
 void __init mpc512x_init_diu(void)
+=======
+static void __init mpc512x_init_diu(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np;
 	struct diu __iomem *diu_reg;
@@ -256,7 +314,15 @@ void __init mpc512x_init_diu(void)
 	}
 
 	mode = in_be32(&diu_reg->diu_mode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (mode != MFB_MODE1) {
+=======
+	if (mode == MFB_MODE0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mode == MFB_MODE0) {
+>>>>>>> refs/remotes/origin/master
 		pr_info("%s: DIU OFF\n", __func__);
 		goto out;
 	}
@@ -302,7 +368,11 @@ out:
 	iounmap(diu_reg);
 }
 
+<<<<<<< HEAD
 void __init mpc512x_setup_diu(void)
+=======
+static void __init mpc512x_setup_diu(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -326,16 +396,26 @@ void __init mpc512x_setup_diu(void)
 		}
 	}
 
+<<<<<<< HEAD
 #if defined(CONFIG_FB_FSL_DIU) || \
     defined(CONFIG_FB_FSL_DIU_MODULE)
 	diu_ops.get_pixel_format	= mpc512x_get_pixel_format;
 	diu_ops.set_gamma_table		= mpc512x_set_gamma_table;
 	diu_ops.set_monitor_port	= mpc512x_set_monitor_port;
 	diu_ops.set_pixel_clock		= mpc512x_set_pixel_clock;
+<<<<<<< HEAD
 	diu_ops.show_monitor_port	= mpc512x_show_monitor_port;
 	diu_ops.set_sysfs_monitor_port	= mpc512x_set_sysfs_monitor_port;
+=======
+	diu_ops.valid_monitor_port	= mpc512x_valid_monitor_port;
+>>>>>>> refs/remotes/origin/cm-10.0
 	diu_ops.release_bootmem		= mpc512x_release_bootmem;
 #endif
+=======
+	diu_ops.set_pixel_clock		= mpc512x_set_pixel_clock;
+	diu_ops.valid_monitor_port	= mpc512x_valid_monitor_port;
+	diu_ops.release_bootmem		= mpc512x_release_bootmem;
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init mpc512x_init_IRQ(void)
@@ -362,6 +442,7 @@ void __init mpc512x_init_IRQ(void)
 static struct of_device_id __initdata of_bus_ids[] = {
 	{ .compatible = "fsl,mpc5121-immr", },
 	{ .compatible = "fsl,mpc5121-localbus", },
+<<<<<<< HEAD
 	{},
 };
 
@@ -378,10 +459,50 @@ void __init mpc512x_declare_of_platform_devices(void)
 		of_platform_device_create(np, NULL, NULL);
 		of_node_put(np);
 	}
+=======
+	{ .compatible = "fsl,mpc5121-mbx", },
+	{ .compatible = "fsl,mpc5121-nfc", },
+	{ .compatible = "fsl,mpc5121-sram", },
+	{ .compatible = "fsl,mpc5121-pci", },
+	{ .compatible = "gpio-leds", },
+	{},
+};
+
+static void __init mpc512x_declare_of_platform_devices(void)
+{
+	if (of_platform_bus_probe(NULL, of_bus_ids, NULL))
+		printk(KERN_ERR __FILE__ ": "
+			"Error while probing of_platform bus\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 #define DEFAULT_FIFO_SIZE 16
 
+<<<<<<< HEAD
+=======
+const char *mpc512x_select_psc_compat(void)
+{
+	if (of_machine_is_compatible("fsl,mpc5121"))
+		return "fsl,mpc5121-psc";
+
+	if (of_machine_is_compatible("fsl,mpc5125"))
+		return "fsl,mpc5125-psc";
+
+	return NULL;
+}
+
+const char *mpc512x_select_reset_compat(void)
+{
+	if (of_machine_is_compatible("fsl,mpc5121"))
+		return "fsl,mpc5121-reset";
+
+	if (of_machine_is_compatible("fsl,mpc5125"))
+		return "fsl,mpc5125-reset";
+
+	return NULL;
+}
+
+>>>>>>> refs/remotes/origin/master
 static unsigned int __init get_fifo_size(struct device_node *np,
 					 char *prop_name)
 {
@@ -401,15 +522,32 @@ static unsigned int __init get_fifo_size(struct device_node *np,
 		    ((u32)(_base) + sizeof(struct mpc52xx_psc)))
 
 /* Init PSC FIFO space for TX and RX slices */
+<<<<<<< HEAD
 void __init mpc512x_psc_fifo_init(void)
+=======
+static void __init mpc512x_psc_fifo_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np;
 	void __iomem *psc;
 	unsigned int tx_fifo_size;
 	unsigned int rx_fifo_size;
+<<<<<<< HEAD
 	int fifobase = 0; /* current fifo address in 32 bit words */
 
 	for_each_compatible_node(np, NULL, "fsl,mpc5121-psc") {
+=======
+	const char *psc_compat;
+	int fifobase = 0; /* current fifo address in 32 bit words */
+
+	psc_compat = mpc512x_select_psc_compat();
+	if (!psc_compat) {
+		pr_err("%s: no compatible devices found\n", __func__);
+		return;
+	}
+
+	for_each_compatible_node(np, NULL, psc_compat) {
+>>>>>>> refs/remotes/origin/master
 		tx_fifo_size = get_fifo_size(np, "fsl,tx-fifo-size");
 		rx_fifo_size = get_fifo_size(np, "fsl,rx-fifo-size");
 
@@ -456,6 +594,7 @@ void __init mpc512x_psc_fifo_init(void)
 	}
 }
 
+<<<<<<< HEAD
 void __init mpc512x_init(void)
 {
 	mpc512x_declare_of_platform_devices();
@@ -463,3 +602,54 @@ void __init mpc512x_init(void)
 	mpc512x_restart_init();
 	mpc512x_psc_fifo_init();
 }
+=======
+void __init mpc512x_init_early(void)
+{
+	mpc512x_restart_init();
+	if (IS_ENABLED(CONFIG_FB_FSL_DIU))
+		mpc512x_init_diu();
+}
+
+void __init mpc512x_init(void)
+{
+	mpc5121_clk_init();
+	mpc512x_declare_of_platform_devices();
+	mpc512x_psc_fifo_init();
+}
+
+void __init mpc512x_setup_arch(void)
+{
+	if (IS_ENABLED(CONFIG_FB_FSL_DIU))
+		mpc512x_setup_diu();
+}
+
+/**
+ * mpc512x_cs_config - Setup chip select configuration
+ * @cs: chip select number
+ * @val: chip select configuration value
+ *
+ * Perform chip select configuration for devices on LocalPlus Bus.
+ * Intended to dynamically reconfigure the chip select parameters
+ * for configurable devices on the bus.
+ */
+int mpc512x_cs_config(unsigned int cs, u32 val)
+{
+	static struct mpc512x_lpc __iomem *lpc;
+	struct device_node *np;
+
+	if (cs > 7)
+		return -EINVAL;
+
+	if (!lpc) {
+		np = of_find_compatible_node(NULL, NULL, "fsl,mpc5121-lpc");
+		lpc = of_iomap(np, 0);
+		of_node_put(np);
+		if (!lpc)
+			return -ENOMEM;
+	}
+
+	out_be32(&lpc->cs_cfg[cs], val);
+	return 0;
+}
+EXPORT_SYMBOL(mpc512x_cs_config);
+>>>>>>> refs/remotes/origin/master

@@ -74,8 +74,15 @@ struct davinci_nand_pdata {		/* platform_data */
 	nand_ecc_modes_t	ecc_mode;
 	u8			ecc_bits;
 
+<<<<<<< HEAD
 	/* e.g. NAND_BUSWIDTH_16 or NAND_USE_FLASH_BBT */
 	unsigned		options;
+=======
+	/* e.g. NAND_BUSWIDTH_16 */
+	unsigned		options;
+	/* e.g. NAND_BBT_USE_FLASH */
+	unsigned		bbt_options;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Main and mirror bbt descriptor overrides */
 	struct nand_bbt_descr	*bbt_td;

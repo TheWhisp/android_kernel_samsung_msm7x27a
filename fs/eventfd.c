@@ -16,9 +16,21 @@
 #include <linux/spinlock.h>
 #include <linux/anon_inodes.h>
 #include <linux/syscalls.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kref.h>
 #include <linux/eventfd.h>
+=======
+#include <linux/export.h>
+#include <linux/kref.h>
+#include <linux/eventfd.h>
+#include <linux/proc_fs.h>
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 
 struct eventfd_ctx {
 	struct kref kref;
@@ -46,6 +58,7 @@ struct eventfd_ctx {
  * value, and we signal this as overflow condition by returining a POLLERR
  * to poll(2).
  *
+<<<<<<< HEAD
  * Returns @n in case of success, a non-negative number lower than @n in case
  * of overflow, or the following error codes:
  *
@@ -60,6 +73,18 @@ int eventfd_signal(struct eventfd_ctx *ctx, int n)
 	spin_lock_irqsave(&ctx->wqh.lock, flags);
 	if (ULLONG_MAX - ctx->count < n)
 		n = (int) (ULLONG_MAX - ctx->count);
+=======
+ * Returns the amount by which the counter was incrememnted.  This will be less
+ * than @n if the counter has overflowed.
+ */
+__u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
+{
+	unsigned long flags;
+
+	spin_lock_irqsave(&ctx->wqh.lock, flags);
+	if (ULLONG_MAX - ctx->count < n)
+		n = ULLONG_MAX - ctx->count;
+>>>>>>> refs/remotes/origin/master
 	ctx->count += n;
 	if (waitqueue_active(&ctx->wqh))
 		wake_up_locked_poll(&ctx->wqh, POLLIN);
@@ -288,7 +313,29 @@ static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t c
 	return res;
 }
 
+<<<<<<< HEAD
 static const struct file_operations eventfd_fops = {
+=======
+#ifdef CONFIG_PROC_FS
+static int eventfd_show_fdinfo(struct seq_file *m, struct file *f)
+{
+	struct eventfd_ctx *ctx = f->private_data;
+	int ret;
+
+	spin_lock_irq(&ctx->wqh.lock);
+	ret = seq_printf(m, "eventfd-count: %16llx\n",
+			 (unsigned long long)ctx->count);
+	spin_unlock_irq(&ctx->wqh.lock);
+
+	return ret;
+}
+#endif
+
+static const struct file_operations eventfd_fops = {
+#ifdef CONFIG_PROC_FS
+	.show_fdinfo	= eventfd_show_fdinfo,
+#endif
+>>>>>>> refs/remotes/origin/master
 	.release	= eventfd_release,
 	.poll		= eventfd_poll,
 	.read		= eventfd_read,

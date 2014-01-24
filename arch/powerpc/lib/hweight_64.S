@@ -28,7 +28,11 @@ BEGIN_FTR_SECTION
 	nop
 	nop
 FTR_SECTION_ELSE
+<<<<<<< HEAD
 	PPC_POPCNTB(r3,r3)
+=======
+	PPC_POPCNTB(R3,R3)
+>>>>>>> refs/remotes/origin/master
 	clrldi	r3,r3,64-8
 	blr
 ALT_FTR_SECTION_END_IFCLR(CPU_FTR_POPCNTB)
@@ -42,14 +46,22 @@ BEGIN_FTR_SECTION
 	nop
 FTR_SECTION_ELSE
   BEGIN_FTR_SECTION_NESTED(50)
+<<<<<<< HEAD
 	PPC_POPCNTB(r3,r3)
+=======
+	PPC_POPCNTB(R3,R3)
+>>>>>>> refs/remotes/origin/master
 	srdi	r4,r3,8
 	add	r3,r4,r3
 	clrldi	r3,r3,64-8
 	blr
   FTR_SECTION_ELSE_NESTED(50)
 	clrlwi  r3,r3,16
+<<<<<<< HEAD
 	PPC_POPCNTW(r3,r3)
+=======
+	PPC_POPCNTW(R3,R3)
+>>>>>>> refs/remotes/origin/master
 	clrldi	r3,r3,64-8
 	blr
   ALT_FTR_SECTION_END_NESTED_IFCLR(CPU_FTR_POPCNTD, 50)
@@ -66,7 +78,11 @@ BEGIN_FTR_SECTION
 	nop
 FTR_SECTION_ELSE
   BEGIN_FTR_SECTION_NESTED(51)
+<<<<<<< HEAD
 	PPC_POPCNTB(r3,r3)
+=======
+	PPC_POPCNTB(R3,R3)
+>>>>>>> refs/remotes/origin/master
 	srdi	r4,r3,16
 	add	r3,r4,r3
 	srdi	r4,r3,8
@@ -74,7 +90,11 @@ FTR_SECTION_ELSE
 	clrldi	r3,r3,64-8
 	blr
   FTR_SECTION_ELSE_NESTED(51)
+<<<<<<< HEAD
 	PPC_POPCNTW(r3,r3)
+=======
+	PPC_POPCNTW(R3,R3)
+>>>>>>> refs/remotes/origin/master
 	clrldi	r3,r3,64-8
 	blr
   ALT_FTR_SECTION_END_NESTED_IFCLR(CPU_FTR_POPCNTD, 51)
@@ -93,7 +113,11 @@ BEGIN_FTR_SECTION
 	nop
 FTR_SECTION_ELSE
   BEGIN_FTR_SECTION_NESTED(52)
+<<<<<<< HEAD
 	PPC_POPCNTB(r3,r3)
+=======
+	PPC_POPCNTB(R3,R3)
+>>>>>>> refs/remotes/origin/master
 	srdi	r4,r3,32
 	add	r3,r4,r3
 	srdi	r4,r3,16
@@ -103,7 +127,11 @@ FTR_SECTION_ELSE
 	clrldi	r3,r3,64-8
 	blr
   FTR_SECTION_ELSE_NESTED(52)
+<<<<<<< HEAD
 	PPC_POPCNTD(r3,r3)
+=======
+	PPC_POPCNTD(R3,R3)
+>>>>>>> refs/remotes/origin/master
 	clrldi	r3,r3,64-8
 	blr
   ALT_FTR_SECTION_END_NESTED_IFCLR(CPU_FTR_POPCNTD, 52)

@@ -18,7 +18,11 @@
 #include <linux/genhd.h>
 
 #define REGBASE		0x18000000
+<<<<<<< HEAD
 #define IDT434_REG_BASE	((volatile void *) KSEG1ADDR(REGBASE))
+=======
+#define IDT434_REG_BASE ((volatile void *) KSEG1ADDR(REGBASE))
+>>>>>>> refs/remotes/origin/master
 #define UART0BASE	0x58000
 #define RST		(1 << 15)
 #define DEV0BASE	0x010000
@@ -80,10 +84,18 @@ struct cf_device {
 struct mpmc_device {
 	unsigned char	state;
 	spinlock_t	lock;
+<<<<<<< HEAD
 	void __iomem 	*base;
+=======
+	void __iomem	*base;
+>>>>>>> refs/remotes/origin/master
 };
 
 extern void set_latch_u5(unsigned char or_mask, unsigned char nand_mask);
 extern unsigned char get_latch_u5(void);
 
+<<<<<<< HEAD
 #endif  /* __ASM_RC32434_RB_H */
+=======
+#endif	/* __ASM_RC32434_RB_H */
+>>>>>>> refs/remotes/origin/master

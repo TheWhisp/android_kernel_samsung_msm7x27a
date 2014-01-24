@@ -24,6 +24,15 @@
 #include <asm/current.h>
 #include <asm/processor.h>
 #include <asm/machdep.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/debug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/debug.h>
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This table contains the mapping between PowerPC hardware trap types, and
@@ -100,6 +109,24 @@ static int computeSignal(unsigned int tt)
 	return SIGHUP;		/* default for things we don't know about */
 }
 
+<<<<<<< HEAD
+=======
+/**
+ *
+ *	kgdb_skipexception - Bail out of KGDB when we've been triggered.
+ *	@exception: Exception vector number
+ *	@regs: Current &struct pt_regs.
+ *
+ *	On some architectures we need to skip a breakpoint exception when
+ *	it occurs after a breakpoint has been removed.
+ *
+ */
+int kgdb_skipexception(int exception, struct pt_regs *regs)
+{
+	return kgdb_isremovedbreak(regs->nip);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int kgdb_call_nmi_hook(struct pt_regs *regs)
 {
 	kgdb_nmicallback(raw_smp_processor_id(), regs);
@@ -134,9 +161,18 @@ static int kgdb_handle_breakpoint(struct pt_regs *regs)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int kgdb_singlestep(struct pt_regs *regs)
 {
 	struct thread_info *thread_info, *exception_thread_info;
+=======
+static DEFINE_PER_CPU(struct thread_info, kgdb_thread_info);
+static int kgdb_singlestep(struct pt_regs *regs)
+{
+	struct thread_info *thread_info, *exception_thread_info;
+	struct thread_info *backup_current_thread_info =
+		&__get_cpu_var(kgdb_thread_info);
+>>>>>>> refs/remotes/origin/master
 
 	if (user_mode(regs))
 		return 0;
@@ -154,13 +190,26 @@ static int kgdb_singlestep(struct pt_regs *regs)
 	thread_info = (struct thread_info *)(regs->gpr[1] & ~(THREAD_SIZE-1));
 	exception_thread_info = current_thread_info();
 
+<<<<<<< HEAD
 	if (thread_info != exception_thread_info)
 		memcpy(exception_thread_info, thread_info, sizeof *thread_info);
+=======
+	if (thread_info != exception_thread_info) {
+		/* Save the original current_thread_info. */
+		memcpy(backup_current_thread_info, exception_thread_info, sizeof *thread_info);
+		memcpy(exception_thread_info, thread_info, sizeof *thread_info);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	kgdb_handle_exception(0, SIGTRAP, 0, regs);
 
 	if (thread_info != exception_thread_info)
+<<<<<<< HEAD
 		memcpy(thread_info, exception_thread_info, sizeof *thread_info);
+=======
+		/* Restore current_thread_info lastly. */
+		memcpy(exception_thread_info, backup_current_thread_info, sizeof *thread_info);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -175,7 +224,11 @@ static int kgdb_iabr_match(struct pt_regs *regs)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int kgdb_dabr_match(struct pt_regs *regs)
+=======
+static int kgdb_break_match(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	if (user_mode(regs))
 		return 0;
@@ -409,7 +462,10 @@ int kgdb_arch_handle_exception(int vector, int signo, int err_code,
 #else
 			linux_regs->msr |= MSR_SE;
 #endif
+<<<<<<< HEAD
 			kgdb_single_step = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 			atomic_set(&kgdb_cpu_doing_single_step,
 				   raw_smp_processor_id());
 		}
@@ -436,7 +492,11 @@ static void *old__debugger;
 static void *old__debugger_bpt;
 static void *old__debugger_sstep;
 static void *old__debugger_iabr_match;
+<<<<<<< HEAD
 static void *old__debugger_dabr_match;
+=======
+static void *old__debugger_break_match;
+>>>>>>> refs/remotes/origin/master
 static void *old__debugger_fault_handler;
 
 int kgdb_arch_init(void)
@@ -446,7 +506,11 @@ int kgdb_arch_init(void)
 	old__debugger_bpt = __debugger_bpt;
 	old__debugger_sstep = __debugger_sstep;
 	old__debugger_iabr_match = __debugger_iabr_match;
+<<<<<<< HEAD
 	old__debugger_dabr_match = __debugger_dabr_match;
+=======
+	old__debugger_break_match = __debugger_break_match;
+>>>>>>> refs/remotes/origin/master
 	old__debugger_fault_handler = __debugger_fault_handler;
 
 	__debugger_ipi = kgdb_call_nmi_hook;
@@ -454,7 +518,11 @@ int kgdb_arch_init(void)
 	__debugger_bpt = kgdb_handle_breakpoint;
 	__debugger_sstep = kgdb_singlestep;
 	__debugger_iabr_match = kgdb_iabr_match;
+<<<<<<< HEAD
 	__debugger_dabr_match = kgdb_dabr_match;
+=======
+	__debugger_break_match = kgdb_break_match;
+>>>>>>> refs/remotes/origin/master
 	__debugger_fault_handler = kgdb_not_implemented;
 
 	return 0;
@@ -467,6 +535,10 @@ void kgdb_arch_exit(void)
 	__debugger_bpt = old__debugger_bpt;
 	__debugger_sstep = old__debugger_sstep;
 	__debugger_iabr_match = old__debugger_iabr_match;
+<<<<<<< HEAD
 	__debugger_dabr_match = old__debugger_dabr_match;
+=======
+	__debugger_break_match = old__debugger_break_match;
+>>>>>>> refs/remotes/origin/master
 	__debugger_fault_handler = old__debugger_fault_handler;
 }

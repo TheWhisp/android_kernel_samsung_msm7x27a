@@ -7,7 +7,17 @@
  * Arbitrary resource management.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/ioport.h>
 #include <linux/init.h>
@@ -19,6 +29,10 @@
 #include <linux/seq_file.h>
 #include <linux/device.h>
 #include <linux/pfn.h>
+<<<<<<< HEAD
+=======
+#include <linux/mm.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 
@@ -48,6 +62,17 @@ struct resource_constraint {
 
 static DEFINE_RWLOCK(resource_lock);
 
+<<<<<<< HEAD
+=======
+/*
+ * For memory hotplug, there is no way to free resource entries allocated
+ * by boot mem after the system is up. So for reusing the resource entry
+ * we need to remember the resource.
+ */
+static struct resource *bootmem_resource_free;
+static DEFINE_SPINLOCK(bootmem_resource_lock);
+
+>>>>>>> refs/remotes/origin/master
 static void *r_next(struct seq_file *m, void *v, loff_t *pos)
 {
 	struct resource *p = v;
@@ -149,6 +174,43 @@ __initcall(ioresources_init);
 
 #endif /* CONFIG_PROC_FS */
 
+<<<<<<< HEAD
+=======
+static void free_resource(struct resource *res)
+{
+	if (!res)
+		return;
+
+	if (!PageSlab(virt_to_head_page(res))) {
+		spin_lock(&bootmem_resource_lock);
+		res->sibling = bootmem_resource_free;
+		bootmem_resource_free = res;
+		spin_unlock(&bootmem_resource_lock);
+	} else {
+		kfree(res);
+	}
+}
+
+static struct resource *alloc_resource(gfp_t flags)
+{
+	struct resource *res = NULL;
+
+	spin_lock(&bootmem_resource_lock);
+	if (bootmem_resource_free) {
+		res = bootmem_resource_free;
+		bootmem_resource_free = res->sibling;
+	}
+	spin_unlock(&bootmem_resource_lock);
+
+	if (res)
+		memset(res, 0, sizeof(struct resource));
+	else
+		res = kzalloc(sizeof(struct resource), flags);
+
+	return res;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Return the conflict entry if you can't request it */
 static struct resource * __request_resource(struct resource *root, struct resource *new)
 {
@@ -262,6 +324,10 @@ int request_resource(struct resource *root, struct resource *new)
 EXPORT_SYMBOL(request_resource);
 
 /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * locate_resource - locate an already reserved I/O or memory resource
  * @root: root resource descriptor
  * @search: resource descriptor to be located
@@ -280,6 +346,11 @@ struct resource *locate_resource(struct resource *root, struct resource *search)
 EXPORT_SYMBOL(locate_resource);
 
 /**
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
  * release_resource - release a previously reserved resource
  * @old: resource pointer
  */
@@ -357,12 +428,46 @@ int walk_system_ram_range(unsigned long start_pfn, unsigned long nr_pages,
 	while ((res.start < res.end) &&
 		(find_next_system_ram(&res, "System RAM") >= 0)) {
 		pfn = (res.start + PAGE_SIZE - 1) >> PAGE_SHIFT;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		end_pfn = (res.end + 1) >> PAGE_SHIFT;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (res.end + 1 <= 0)
+			end_pfn = res.end >> PAGE_SHIFT;
+		else
+			end_pfn = (res.end + 1) >> PAGE_SHIFT;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		end_pfn = (res.end + 1) >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		if (end_pfn > pfn)
 			ret = (*func)(pfn, end_pfn - pfn, arg);
 		if (ret)
 			break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		res.start = res.end + 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		if (res.end + 1 > res.start)
+			res.start = res.end + 1;
+		else
+			res.start = res.end;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		res.start = res.end + 1;
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		res.end = orig_end;
 	}
 	return ret;
@@ -382,6 +487,10 @@ int __weak page_is_ram(unsigned long pfn)
 {
 	return walk_system_ram_range(pfn, 1, NULL, __is_ram) == 1;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(page_is_ram);
+>>>>>>> refs/remotes/origin/master
 
 void __weak arch_remove_reservations(struct resource *avail)
 {
@@ -421,7 +530,10 @@ static int __find_resource(struct resource *root, struct resource *old,
 	struct resource *this = root->child;
 	struct resource tmp = *new, avail, alloc;
 
+<<<<<<< HEAD
 	tmp.flags = new->flags;
+=======
+>>>>>>> refs/remotes/origin/master
 	tmp.start = root->start;
 	/*
 	 * Skip past an allocated resource that starts at 0, since the assignment
@@ -533,8 +645,13 @@ out:
  * @root: root resource descriptor
  * @new: resource descriptor desired by caller
  * @size: requested resource region size
+<<<<<<< HEAD
  * @min: minimum size to allocate
  * @max: maximum size to allocate
+=======
+ * @min: minimum boundary to allocate
+ * @max: maximum boundary to allocate
+>>>>>>> refs/remotes/origin/master
  * @align: alignment requested, in bytes
  * @alignf: alignment function, optional, called if not NULL
  * @alignf_data: arbitrary data to pass to the @alignf function
@@ -576,6 +693,36 @@ int allocate_resource(struct resource *root, struct resource *new,
 
 EXPORT_SYMBOL(allocate_resource);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * lookup_resource - find an existing resource by a resource start address
+ * @root: root resource descriptor
+ * @start: resource start address
+ *
+ * Returns a pointer to the resource if found, NULL otherwise
+ */
+struct resource *lookup_resource(struct resource *root, resource_size_t start)
+{
+	struct resource *res;
+
+	read_lock(&resource_lock);
+	for (res = root->child; res; res = res->sibling) {
+		if (res->start == start)
+			break;
+	}
+	read_unlock(&resource_lock);
+
+	return res;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Insert a resource into the resource tree. If successful, return NULL,
  * otherwise return the conflicting resource (compare to __request_resource())
@@ -701,6 +848,7 @@ void insert_resource_expand_to_fit(struct resource *root, struct resource *new)
 	write_unlock(&resource_lock);
 }
 
+<<<<<<< HEAD
 /**
  * adjust_resource - modify a resource's start and size
  * @res: resource to modify
@@ -712,21 +860,33 @@ void insert_resource_expand_to_fit(struct resource *root, struct resource *new)
  * Existing children of the resource are assumed to be immutable.
  */
 int adjust_resource(struct resource *res, resource_size_t start, resource_size_t size)
+=======
+static int __adjust_resource(struct resource *res, resource_size_t start,
+				resource_size_t size)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *tmp, *parent = res->parent;
 	resource_size_t end = start + size - 1;
 	int result = -EBUSY;
 
+<<<<<<< HEAD
 	write_lock(&resource_lock);
+=======
+	if (!parent)
+		goto skip;
+>>>>>>> refs/remotes/origin/master
 
 	if ((start < parent->start) || (end > parent->end))
 		goto out;
 
+<<<<<<< HEAD
 	for (tmp = res->child; tmp; tmp = tmp->sibling) {
 		if ((tmp->start < start) || (tmp->end > end))
 			goto out;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (res->sibling && (res->sibling->start <= end))
 		goto out;
 
@@ -738,14 +898,53 @@ int adjust_resource(struct resource *res, resource_size_t start, resource_size_t
 			goto out;
 	}
 
+<<<<<<< HEAD
+=======
+skip:
+	for (tmp = res->child; tmp; tmp = tmp->sibling)
+		if ((tmp->start < start) || (tmp->end > end))
+			goto out;
+
+>>>>>>> refs/remotes/origin/master
 	res->start = start;
 	res->end = end;
 	result = 0;
 
  out:
+<<<<<<< HEAD
 	write_unlock(&resource_lock);
 	return result;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(adjust_resource);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return result;
+}
+
+/**
+ * adjust_resource - modify a resource's start and size
+ * @res: resource to modify
+ * @start: new start value
+ * @size: new size
+ *
+ * Given an existing resource, change its start and size to match the
+ * arguments.  Returns 0 on success, -EBUSY if it can't fit.
+ * Existing children of the resource are assumed to be immutable.
+ */
+int adjust_resource(struct resource *res, resource_size_t start,
+			resource_size_t size)
+{
+	int result;
+
+	write_lock(&resource_lock);
+	result = __adjust_resource(res, start, size);
+	write_unlock(&resource_lock);
+	return result;
+}
+EXPORT_SYMBOL(adjust_resource);
+>>>>>>> refs/remotes/origin/master
 
 static void __init __reserve_region_with_split(struct resource *root,
 		resource_size_t start, resource_size_t end,
@@ -753,7 +952,14 @@ static void __init __reserve_region_with_split(struct resource *root,
 {
 	struct resource *parent = root;
 	struct resource *conflict;
+<<<<<<< HEAD
 	struct resource *res = kzalloc(sizeof(*res), GFP_ATOMIC);
+<<<<<<< HEAD
+=======
+	struct resource *res = alloc_resource(GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct resource *next_res = NULL;
 
 	if (!res)
@@ -778,7 +984,15 @@ static void __init __reserve_region_with_split(struct resource *root,
 		/* conflict covered whole area */
 		if (conflict->start <= res->start &&
 				conflict->end >= res->end) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			kfree(res);
+=======
+			free_resource(res);
+>>>>>>> refs/remotes/origin/master
+=======
+			kfree(res);
+>>>>>>> refs/remotes/origin/cm-11.0
 			WARN_ON(next_res);
 			break;
 		}
@@ -788,10 +1002,22 @@ static void __init __reserve_region_with_split(struct resource *root,
 			end = res->end;
 			res->end = conflict->start - 1;
 			if (conflict->end < end) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				next_res = kzalloc(sizeof(*next_res),
 						GFP_ATOMIC);
 				if (!next_res) {
 					kfree(res);
+<<<<<<< HEAD
+=======
+				next_res = alloc_resource(GFP_ATOMIC);
+				if (!next_res) {
+					free_resource(res);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 					break;
 				}
 				next_res->name = name;
@@ -810,13 +1036,44 @@ void __init reserve_region_with_split(struct resource *root,
 		resource_size_t start, resource_size_t end,
 		const char *name)
 {
+<<<<<<< HEAD
 	write_lock(&resource_lock);
 	__reserve_region_with_split(root, start, end, name);
 	write_unlock(&resource_lock);
 }
 
+<<<<<<< HEAD
 EXPORT_SYMBOL(adjust_resource);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int abort = 0;
+
+	write_lock(&resource_lock);
+	if (root->start > start || root->end < end) {
+		pr_err("requested range [0x%llx-0x%llx] not in root %pr\n",
+		       (unsigned long long)start, (unsigned long long)end,
+		       root);
+		if (start > root->end || end < root->start)
+			abort = 1;
+		else {
+			if (end > root->end)
+				end = root->end;
+			if (start < root->start)
+				start = root->start;
+			pr_err("fixing request to [0x%llx-0x%llx]\n",
+			       (unsigned long long)start,
+			       (unsigned long long)end);
+		}
+		dump_stack();
+	}
+	if (!abort)
+		__reserve_region_with_split(root, start, end, name);
+	write_unlock(&resource_lock);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * resource_alignment - calculate resource's alignment
  * @res: resource pointer
@@ -863,7 +1120,11 @@ struct resource * __request_region(struct resource *parent,
 				   const char *name, int flags)
 {
 	DECLARE_WAITQUEUE(wait, current);
+<<<<<<< HEAD
 	struct resource *res = kzalloc(sizeof(*res), GFP_KERNEL);
+=======
+	struct resource *res = alloc_resource(GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 
 	if (!res)
 		return NULL;
@@ -897,7 +1158,11 @@ struct resource * __request_region(struct resource *parent,
 			continue;
 		}
 		/* Uhhuh, that didn't work out.. */
+<<<<<<< HEAD
 		kfree(res);
+=======
+		free_resource(res);
+>>>>>>> refs/remotes/origin/master
 		res = NULL;
 		break;
 	}
@@ -931,7 +1196,11 @@ int __check_region(struct resource *parent, resource_size_t start,
 		return -EBUSY;
 
 	release_resource(res);
+<<<<<<< HEAD
 	kfree(res);
+=======
+	free_resource(res);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(__check_region);
@@ -971,7 +1240,11 @@ void __release_region(struct resource *parent, resource_size_t start,
 			write_unlock(&resource_lock);
 			if (res->flags & IORESOURCE_MUXED)
 				wake_up(&muxed_resource_wait);
+<<<<<<< HEAD
 			kfree(res);
+=======
+			free_resource(res);
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 		p = &res->sibling;
@@ -985,6 +1258,112 @@ void __release_region(struct resource *parent, resource_size_t start,
 }
 EXPORT_SYMBOL(__release_region);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MEMORY_HOTREMOVE
+/**
+ * release_mem_region_adjustable - release a previously reserved memory region
+ * @parent: parent resource descriptor
+ * @start: resource start address
+ * @size: resource region size
+ *
+ * This interface is intended for memory hot-delete.  The requested region
+ * is released from a currently busy memory resource.  The requested region
+ * must either match exactly or fit into a single busy resource entry.  In
+ * the latter case, the remaining resource is adjusted accordingly.
+ * Existing children of the busy memory resource must be immutable in the
+ * request.
+ *
+ * Note:
+ * - Additional release conditions, such as overlapping region, can be
+ *   supported after they are confirmed as valid cases.
+ * - When a busy memory resource gets split into two entries, the code
+ *   assumes that all children remain in the lower address entry for
+ *   simplicity.  Enhance this logic when necessary.
+ */
+int release_mem_region_adjustable(struct resource *parent,
+			resource_size_t start, resource_size_t size)
+{
+	struct resource **p;
+	struct resource *res;
+	struct resource *new_res;
+	resource_size_t end;
+	int ret = -EINVAL;
+
+	end = start + size - 1;
+	if ((start < parent->start) || (end > parent->end))
+		return ret;
+
+	/* The alloc_resource() result gets checked later */
+	new_res = alloc_resource(GFP_KERNEL);
+
+	p = &parent->child;
+	write_lock(&resource_lock);
+
+	while ((res = *p)) {
+		if (res->start >= end)
+			break;
+
+		/* look for the next resource if it does not fit into */
+		if (res->start > start || res->end < end) {
+			p = &res->sibling;
+			continue;
+		}
+
+		if (!(res->flags & IORESOURCE_MEM))
+			break;
+
+		if (!(res->flags & IORESOURCE_BUSY)) {
+			p = &res->child;
+			continue;
+		}
+
+		/* found the target resource; let's adjust accordingly */
+		if (res->start == start && res->end == end) {
+			/* free the whole entry */
+			*p = res->sibling;
+			free_resource(res);
+			ret = 0;
+		} else if (res->start == start && res->end != end) {
+			/* adjust the start */
+			ret = __adjust_resource(res, end + 1,
+						res->end - end);
+		} else if (res->start != start && res->end == end) {
+			/* adjust the end */
+			ret = __adjust_resource(res, res->start,
+						start - res->start);
+		} else {
+			/* split into two entries */
+			if (!new_res) {
+				ret = -ENOMEM;
+				break;
+			}
+			new_res->name = res->name;
+			new_res->start = end + 1;
+			new_res->end = res->end;
+			new_res->flags = res->flags;
+			new_res->parent = res->parent;
+			new_res->sibling = res->sibling;
+			new_res->child = NULL;
+
+			ret = __adjust_resource(res, res->start,
+						start - res->start);
+			if (ret)
+				break;
+			res->sibling = new_res;
+			new_res = NULL;
+		}
+
+		break;
+	}
+
+	write_unlock(&resource_lock);
+	free_resource(new_res);
+	return ret;
+}
+#endif	/* CONFIG_MEMORY_HOTREMOVE */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Managed region resource
  */

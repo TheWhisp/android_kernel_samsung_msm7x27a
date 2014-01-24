@@ -2,6 +2,7 @@
 #define __ASM_HARDIRQ_H
 
 #include <asm/irq.h>
+<<<<<<< HEAD
 
 #define HARDIRQ_BITS	8
 
@@ -14,6 +15,8 @@
 # error HARDIRQ_BITS is too low!
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/hardirq.h>
 
 #endif /* __ASM_HARDIRQ_H */

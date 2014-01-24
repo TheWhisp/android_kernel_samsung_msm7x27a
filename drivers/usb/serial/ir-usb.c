@@ -22,6 +22,8 @@
  *
  * See Documentation/usb/usb-serial.txt for more information on using this
  * driver
+<<<<<<< HEAD
+<<<<<<< HEAD
  *
  * 2008_Jun_02  Felipe Balbi <me@felipebalbi.com>
  *	Introduced common header to be used also in USB Gadget Framework.
@@ -54,6 +56,10 @@
  *
  * 2001_Oct_07	greg kh
  *	initial version released.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/kernel.h>
@@ -70,6 +76,7 @@
 #include <linux/usb/serial.h>
 #include <linux/usb/irda.h>
 
+<<<<<<< HEAD
 /*
  * Version Information
  */
@@ -77,8 +84,17 @@
 #define DRIVER_AUTHOR "Greg Kroah-Hartman <greg@kroah.com>, Johan Hovold <jhovold@gmail.com>"
 #define DRIVER_DESC "USB IR Dongle driver"
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#define DRIVER_AUTHOR "Greg Kroah-Hartman <greg@kroah.com>, Johan Hovold <jhovold@gmail.com>"
+#define DRIVER_DESC "USB IR Dongle driver"
+
+>>>>>>> refs/remotes/origin/master
 /* if overridden by the user, then use their value for the size of the read and
  * write urbs */
 static int buffer_size;
@@ -109,21 +125,33 @@ static const struct usb_device_id ir_id_table[] = {
 
 MODULE_DEVICE_TABLE(usb, ir_id_table);
 
+<<<<<<< HEAD
 static struct usb_driver ir_driver = {
 	.name		= "ir-usb",
 	.probe		= usb_serial_probe,
 	.disconnect	= usb_serial_disconnect,
 	.id_table	= ir_id_table,
+<<<<<<< HEAD
 	.no_dynamic_id	= 1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_serial_driver ir_device = {
 	.driver	= {
 		.owner	= THIS_MODULE,
 		.name	= "ir-usb",
 	},
 	.description		= "IR Dongle",
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver		= &ir_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table		= ir_id_table,
 	.num_ports		= 1,
 	.set_termios		= ir_set_termios,
@@ -133,6 +161,17 @@ static struct usb_serial_driver ir_device = {
 	.process_read_urb	= ir_process_read_urb,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct usb_serial_driver * const serial_drivers[] = {
+	&ir_device, NULL
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void irda_usb_dump_class_desc(struct usb_irda_cs_descriptor *desc)
 {
 	dbg("bLength=%x", desc->bLength);
@@ -145,6 +184,23 @@ static inline void irda_usb_dump_class_desc(struct usb_irda_cs_descriptor *desc)
 	dbg("bmAdditionalBOFs=%x", desc->bmAdditionalBOFs);
 	dbg("bIrdaRateSniff=%x", desc->bIrdaRateSniff);
 	dbg("bMaxUnicastList=%x", desc->bMaxUnicastList);
+=======
+static inline void irda_usb_dump_class_desc(struct usb_serial *serial,
+					    struct usb_irda_cs_descriptor *desc)
+{
+	struct device *dev = &serial->dev->dev;
+
+	dev_dbg(dev, "bLength=%x\n", desc->bLength);
+	dev_dbg(dev, "bDescriptorType=%x\n", desc->bDescriptorType);
+	dev_dbg(dev, "bcdSpecRevision=%x\n", __le16_to_cpu(desc->bcdSpecRevision));
+	dev_dbg(dev, "bmDataSize=%x\n", desc->bmDataSize);
+	dev_dbg(dev, "bmWindowSize=%x\n", desc->bmWindowSize);
+	dev_dbg(dev, "bmMinTurnaroundTime=%d\n", desc->bmMinTurnaroundTime);
+	dev_dbg(dev, "wBaudRate=%x\n", __le16_to_cpu(desc->wBaudRate));
+	dev_dbg(dev, "bmAdditionalBOFs=%x\n", desc->bmAdditionalBOFs);
+	dev_dbg(dev, "bIrdaRateSniff=%x\n", desc->bIrdaRateSniff);
+	dev_dbg(dev, "bMaxUnicastList=%x\n", desc->bMaxUnicastList);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
@@ -160,8 +216,14 @@ static inline void irda_usb_dump_class_desc(struct usb_irda_cs_descriptor *desc)
  * Based on the same function in drivers/net/irda/irda-usb.c
  */
 static struct usb_irda_cs_descriptor *
+<<<<<<< HEAD
 irda_usb_find_class_desc(struct usb_device *dev, unsigned int ifnum)
 {
+=======
+irda_usb_find_class_desc(struct usb_serial *serial, unsigned int ifnum)
+{
+	struct usb_device *dev = serial->dev;
+>>>>>>> refs/remotes/origin/master
 	struct usb_irda_cs_descriptor *desc;
 	int ret;
 
@@ -174,6 +236,7 @@ irda_usb_find_class_desc(struct usb_device *dev, unsigned int ifnum)
 			USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
 			0, ifnum, desc, sizeof(*desc), 1000);
 
+<<<<<<< HEAD
 	dbg("%s -  ret=%d", __func__, ret);
 	if (ret < sizeof(*desc)) {
 		dbg("%s - class descriptor read %s (%d)",
@@ -188,6 +251,22 @@ irda_usb_find_class_desc(struct usb_device *dev, unsigned int ifnum)
 	}
 
 	irda_usb_dump_class_desc(desc);
+=======
+	dev_dbg(&serial->dev->dev, "%s -  ret=%d\n", __func__, ret);
+	if (ret < sizeof(*desc)) {
+		dev_dbg(&serial->dev->dev,
+			"%s - class descriptor read %s (%d)\n", __func__,
+			(ret < 0) ? "failed" : "too short", ret);
+		goto error;
+	}
+	if (desc->bDescriptorType != USB_DT_CS_IRDA) {
+		dev_dbg(&serial->dev->dev, "%s - bad class descriptor type\n",
+			__func__);
+		goto error;
+	}
+
+	irda_usb_dump_class_desc(serial, desc);
+>>>>>>> refs/remotes/origin/master
 	return desc;
 
 error:
@@ -237,14 +316,23 @@ static int ir_startup(struct usb_serial *serial)
 {
 	struct usb_irda_cs_descriptor *irda_desc;
 
+<<<<<<< HEAD
 	irda_desc = irda_usb_find_class_desc(serial->dev, 0);
+=======
+	irda_desc = irda_usb_find_class_desc(serial, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!irda_desc) {
 		dev_err(&serial->dev->dev,
 			"IRDA class descriptor not found, device not bound\n");
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	dbg("%s - Baud rates supported:%s%s%s%s%s%s%s%s%s",
+=======
+	dev_dbg(&serial->dev->dev,
+		"%s - Baud rates supported:%s%s%s%s%s%s%s%s%s\n",
+>>>>>>> refs/remotes/origin/master
 		__func__,
 		(irda_desc->wBaudRate & USB_IRDA_BR_2400) ? " 2400" : "",
 		(irda_desc->wBaudRate & USB_IRDA_BR_9600) ? " 9600" : "",
@@ -294,8 +382,11 @@ static int ir_open(struct tty_struct *tty, struct usb_serial_port *port)
 {
 	int i;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(port->write_urbs); ++i)
 		port->write_urbs[i]->transfer_flags = URB_ZERO_PACKET;
 
@@ -327,7 +418,10 @@ static void ir_process_read_urb(struct urb *urb)
 {
 	struct usb_serial_port *port = urb->context;
 	unsigned char *data = urb->transfer_buffer;
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!urb->actual_length)
 		return;
@@ -342,16 +436,22 @@ static void ir_process_read_urb(struct urb *urb)
 	if (urb->actual_length == 1)
 		return;
 
+<<<<<<< HEAD
 	tty = tty_port_tty_get(&port->port);
 	if (!tty)
 		return;
 	tty_insert_flip_string(tty, data + 1, urb->actual_length - 1);
 	tty_flip_buffer_push(tty);
 	tty_kref_put(tty);
+=======
+	tty_insert_flip_string(&port->port, data + 1, urb->actual_length - 1);
+	tty_flip_buffer_push(&port->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ir_set_termios_callback(struct urb *urb)
 {
+<<<<<<< HEAD
 	struct usb_serial_port *port = urb->context;
 	int status = urb->status;
 
@@ -361,6 +461,13 @@ static void ir_set_termios_callback(struct urb *urb)
 
 	if (status)
 		dbg("%s - non-zero urb status: %d", __func__, status);
+=======
+	kfree(urb->transfer_buffer);
+
+	if (urb->status)
+		dev_dbg(&urb->dev->dev, "%s - non-zero urb status: %d\n",
+			__func__, urb->status);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ir_set_termios(struct tty_struct *tty,
@@ -372,8 +479,11 @@ static void ir_set_termios(struct tty_struct *tty,
 	speed_t baud;
 	int ir_baud;
 
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	baud = tty_get_baud_rate(tty);
 
 	/*
@@ -421,13 +531,18 @@ static void ir_set_termios(struct tty_struct *tty,
 		ir_xbof = ir_xbof_change(xbof) ;
 
 	/* Only speed changes are supported */
+<<<<<<< HEAD
 	tty_termios_copy_hw(tty->termios, old_termios);
+=======
+	tty_termios_copy_hw(&tty->termios, old_termios);
+>>>>>>> refs/remotes/origin/master
 	tty_encode_baud_rate(tty, baud, baud);
 
 	/*
 	 * send the baud change out on an "empty" data packet
 	 */
 	urb = usb_alloc_urb(0, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!urb) {
 		dev_err(&port->dev, "%s - no more urbs\n", __func__);
 		return;
@@ -437,6 +552,14 @@ static void ir_set_termios(struct tty_struct *tty,
 		dev_err(&port->dev, "%s - out of memory\n", __func__);
 		goto err_buf;
 	}
+=======
+	if (!urb)
+		return;
+
+	transfer_buffer = kmalloc(1, GFP_KERNEL);
+	if (!transfer_buffer)
+		goto err_buf;
+>>>>>>> refs/remotes/origin/master
 
 	*transfer_buffer = ir_xbof | ir_baud;
 
@@ -470,13 +593,18 @@ err_buf:
 
 static int __init ir_init(void)
 {
+<<<<<<< HEAD
 	int retval;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (buffer_size) {
 		ir_device.bulk_in_size = buffer_size;
 		ir_device.bulk_out_size = buffer_size;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = usb_serial_register(&ir_device);
 	if (retval)
 		goto failed_usb_serial_register;
@@ -494,13 +622,30 @@ failed_usb_register:
 	usb_serial_deregister(&ir_device);
 
 failed_usb_serial_register:
+=======
+	retval = usb_serial_register_drivers(&ir_driver, serial_drivers);
+	if (retval == 0)
+		printk(KERN_INFO KBUILD_MODNAME ": " DRIVER_VERSION ":"
+			       DRIVER_DESC "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
+=======
+	return usb_serial_register_drivers(serial_drivers, KBUILD_MODNAME, ir_id_table);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit ir_exit(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	usb_deregister(&ir_driver);
 	usb_serial_deregister(&ir_device);
+=======
+	usb_serial_deregister_drivers(&ir_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_serial_deregister_drivers(serial_drivers);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -511,8 +656,11 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(xbof, int, 0);
 MODULE_PARM_DESC(xbof, "Force specific number of XBOFs");
 module_param(buffer_size, int, 0);

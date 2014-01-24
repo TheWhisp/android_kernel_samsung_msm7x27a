@@ -197,7 +197,11 @@ static enum power_supply_property max17040_battery_props[] = {
 	POWER_SUPPLY_PROP_CAPACITY,
 };
 
+<<<<<<< HEAD
 static int __devinit max17040_probe(struct i2c_client *client,
+=======
+static int max17040_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 			const struct i2c_device_id *id)
 {
 	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
@@ -207,7 +211,11 @@ static int __devinit max17040_probe(struct i2c_client *client,
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE))
 		return -EIO;
 
+<<<<<<< HEAD
 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+=======
+	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!chip)
 		return -ENOMEM;
 
@@ -225,25 +233,37 @@ static int __devinit max17040_probe(struct i2c_client *client,
 	ret = power_supply_register(&client->dev, &chip->battery);
 	if (ret) {
 		dev_err(&client->dev, "failed: power supply register\n");
+<<<<<<< HEAD
 		kfree(chip);
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	max17040_reset(client);
 	max17040_get_version(client);
 
+<<<<<<< HEAD
 	INIT_DELAYED_WORK_DEFERRABLE(&chip->work, max17040_work);
+=======
+	INIT_DEFERRABLE_WORK(&chip->work, max17040_work);
+>>>>>>> refs/remotes/origin/master
 	schedule_delayed_work(&chip->work, MAX17040_DELAY);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit max17040_remove(struct i2c_client *client)
+=======
+static int max17040_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max17040_chip *chip = i2c_get_clientdata(client);
 
 	power_supply_unregister(&chip->battery);
 	cancel_delayed_work(&chip->work);
+<<<<<<< HEAD
 	kfree(chip);
 	return 0;
 }
@@ -253,26 +273,53 @@ static int __devexit max17040_remove(struct i2c_client *client)
 static int max17040_suspend(struct i2c_client *client,
 		pm_message_t state)
 {
+=======
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+
+static int max17040_suspend(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+>>>>>>> refs/remotes/origin/master
 	struct max17040_chip *chip = i2c_get_clientdata(client);
 
 	cancel_delayed_work(&chip->work);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int max17040_resume(struct i2c_client *client)
 {
+=======
+static int max17040_resume(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+>>>>>>> refs/remotes/origin/master
 	struct max17040_chip *chip = i2c_get_clientdata(client);
 
 	schedule_delayed_work(&chip->work, MAX17040_DELAY);
 	return 0;
 }
 
+<<<<<<< HEAD
 #else
 
 #define max17040_suspend NULL
 #define max17040_resume NULL
 
 #endif /* CONFIG_PM */
+=======
+static SIMPLE_DEV_PM_OPS(max17040_pm_ops, max17040_suspend, max17040_resume);
+#define MAX17040_PM_OPS (&max17040_pm_ops)
+
+#else
+
+#define MAX17040_PM_OPS NULL
+
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 static const struct i2c_device_id max17040_id[] = {
 	{ "max17040", 0 },
@@ -283,6 +330,7 @@ MODULE_DEVICE_TABLE(i2c, max17040_id);
 static struct i2c_driver max17040_i2c_driver = {
 	.driver	= {
 		.name	= "max17040",
+<<<<<<< HEAD
 	},
 	.probe		= max17040_probe,
 	.remove		= __devexit_p(max17040_remove),
@@ -290,6 +338,7 @@ static struct i2c_driver max17040_i2c_driver = {
 	.resume		= max17040_resume,
 	.id_table	= max17040_id,
 };
+<<<<<<< HEAD
 
 static int __init max17040_init(void)
 {
@@ -302,6 +351,18 @@ static void __exit max17040_exit(void)
 	i2c_del_driver(&max17040_i2c_driver);
 }
 module_exit(max17040_exit);
+=======
+module_i2c_driver(max17040_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= MAX17040_PM_OPS,
+	},
+	.probe		= max17040_probe,
+	.remove		= max17040_remove,
+	.id_table	= max17040_id,
+};
+module_i2c_driver(max17040_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Minkyu Kang <mk7.kang@samsung.com>");
 MODULE_DESCRIPTION("MAX17040 Fuel Gauge");

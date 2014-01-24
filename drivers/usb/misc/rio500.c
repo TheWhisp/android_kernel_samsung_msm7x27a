@@ -36,7 +36,10 @@
 #include <linux/errno.h>
 #include <linux/random.h>
 #include <linux/poll.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/usb.h>
@@ -153,10 +156,17 @@ static long ioctl_rio(struct file *file, unsigned int cmd, unsigned long arg)
 
 		requesttype = rio_cmd.requesttype | USB_DIR_IN |
 		    USB_TYPE_VENDOR | USB_RECIP_DEVICE;
+<<<<<<< HEAD
 		dbg
 		    ("sending command:reqtype=%0x req=%0x value=%0x index=%0x len=%0x",
 		     requesttype, rio_cmd.request, rio_cmd.value,
 		     rio_cmd.index, rio_cmd.length);
+=======
+		dev_dbg(&rio->rio_dev->dev,
+			"sending command:reqtype=%0x req=%0x value=%0x index=%0x len=%0x\n",
+			requesttype, rio_cmd.request, rio_cmd.value,
+			rio_cmd.index, rio_cmd.length);
+>>>>>>> refs/remotes/origin/master
 		/* Send rio control message */
 		retries = 3;
 		while (retries) {
@@ -171,11 +181,22 @@ static long ioctl_rio(struct file *file, unsigned int cmd, unsigned long arg)
 			if (result == -ETIMEDOUT)
 				retries--;
 			else if (result < 0) {
+<<<<<<< HEAD
 				err("Error executing ioctrl. code = %d", result);
 				retries = 0;
 			} else {
 				dbg("Executed ioctl. Result = %d (data=%02x)",
 				     result, buffer[0]);
+=======
+				dev_err(&rio->rio_dev->dev,
+					"Error executing ioctrl. code = %d\n",
+					result);
+				retries = 0;
+			} else {
+				dev_dbg(&rio->rio_dev->dev,
+					"Executed ioctl. Result = %d (data=%02x)\n",
+					result, buffer[0]);
+>>>>>>> refs/remotes/origin/master
 				if (copy_to_user(rio_cmd.buffer, buffer,
 						 rio_cmd.length)) {
 					free_page((unsigned long) buffer);
@@ -221,9 +242,16 @@ static long ioctl_rio(struct file *file, unsigned int cmd, unsigned long arg)
 
 		requesttype = rio_cmd.requesttype | USB_DIR_OUT |
 		    USB_TYPE_VENDOR | USB_RECIP_DEVICE;
+<<<<<<< HEAD
 		dbg("sending command: reqtype=%0x req=%0x value=%0x index=%0x len=%0x",
 		     requesttype, rio_cmd.request, rio_cmd.value,
 		     rio_cmd.index, rio_cmd.length);
+=======
+		dev_dbg(&rio->rio_dev->dev,
+			"sending command: reqtype=%0x req=%0x value=%0x index=%0x len=%0x\n",
+			requesttype, rio_cmd.request, rio_cmd.value,
+			rio_cmd.index, rio_cmd.length);
+>>>>>>> refs/remotes/origin/master
 		/* Send rio control message */
 		retries = 3;
 		while (retries) {
@@ -238,10 +266,20 @@ static long ioctl_rio(struct file *file, unsigned int cmd, unsigned long arg)
 			if (result == -ETIMEDOUT)
 				retries--;
 			else if (result < 0) {
+<<<<<<< HEAD
 				err("Error executing ioctrl. code = %d", result);
 				retries = 0;
 			} else {
 				dbg("Executed ioctl. Result = %d", result);
+=======
+				dev_err(&rio->rio_dev->dev,
+					"Error executing ioctrl. code = %d\n",
+					result);
+				retries = 0;
+			} else {
+				dev_dbg(&rio->rio_dev->dev,
+					"Executed ioctl. Result = %d\n", result);
+>>>>>>> refs/remotes/origin/master
 				retries = 0;
 
 			}
@@ -313,8 +351,14 @@ write_rio(struct file *file, const char __user *buffer,
 					 usb_sndbulkpipe(rio->rio_dev, 2),
 					 obuf, thistime, &partial, 5000);
 
+<<<<<<< HEAD
 			dbg("write stats: result:%d thistime:%lu partial:%u",
 			     result, thistime, partial);
+=======
+			dev_dbg(&rio->rio_dev->dev,
+				"write stats: result:%d thistime:%lu partial:%u\n",
+				result, thistime, partial);
+>>>>>>> refs/remotes/origin/master
 
 			if (result == -ETIMEDOUT) {	/* NAK - so hold for a while */
 				if (!maxretry--) {
@@ -330,9 +374,16 @@ write_rio(struct file *file, const char __user *buffer,
 				thistime -= partial;
 			} else
 				break;
+<<<<<<< HEAD
 		};
 		if (result) {
 			err("Write Whoops - %x", result);
+=======
+		}
+		if (result) {
+			dev_err(&rio->rio_dev->dev, "Write Whoops - %x\n",
+				result);
+>>>>>>> refs/remotes/origin/master
 			errn = -EIO;
 			goto error;
 		}
@@ -393,15 +444,26 @@ read_rio(struct file *file, char __user *buffer, size_t count, loff_t * ppos)
 				      ibuf, this_read, &partial,
 				      8000);
 
+<<<<<<< HEAD
 		dbg("read stats: result:%d this_read:%u partial:%u",
 		       result, this_read, partial);
+=======
+		dev_dbg(&rio->rio_dev->dev,
+			"read stats: result:%d this_read:%u partial:%u\n",
+			result, this_read, partial);
+>>>>>>> refs/remotes/origin/master
 
 		if (partial) {
 			count = this_read = partial;
 		} else if (result == -ETIMEDOUT || result == 15) {	/* FIXME: 15 ??? */
 			if (!maxretry--) {
 				mutex_unlock(&(rio->lock));
+<<<<<<< HEAD
 				err("read_rio: maxretry timeout");
+=======
+				dev_err(&rio->rio_dev->dev,
+					"read_rio: maxretry timeout\n");
+>>>>>>> refs/remotes/origin/master
 				return -ETIME;
 			}
 			prepare_to_wait(&rio->wait_q, &wait, TASK_INTERRUPTIBLE);
@@ -410,8 +472,14 @@ read_rio(struct file *file, char __user *buffer, size_t count, loff_t * ppos)
 			continue;
 		} else if (result != -EREMOTEIO) {
 			mutex_unlock(&(rio->lock));
+<<<<<<< HEAD
 			err("Read Whoops - result:%u partial:%u this_read:%u",
 			     result, partial, this_read);
+=======
+			dev_err(&rio->rio_dev->dev,
+				"Read Whoops - result:%u partial:%u this_read:%u\n",
+				result, partial, this_read);
+>>>>>>> refs/remotes/origin/master
 			return -EIO;
 		} else {
 			mutex_unlock(&(rio->lock));
@@ -459,13 +527,19 @@ static int probe_rio(struct usb_interface *intf,
 
 	retval = usb_register_dev(intf, &usb_rio_class);
 	if (retval) {
+<<<<<<< HEAD
 		err("Not able to get a minor for this device.");
+=======
+		dev_err(&dev->dev,
+			"Not able to get a minor for this device.\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
 	rio->rio_dev = dev;
 
 	if (!(rio->obuf = kmalloc(OBUF_SIZE, GFP_KERNEL))) {
+<<<<<<< HEAD
 		err("probe_rio: Not enough memory for the output buffer");
 		usb_deregister_dev(intf, &usb_rio_class);
 		return -ENOMEM;
@@ -474,11 +548,27 @@ static int probe_rio(struct usb_interface *intf,
 
 	if (!(rio->ibuf = kmalloc(IBUF_SIZE, GFP_KERNEL))) {
 		err("probe_rio: Not enough memory for the input buffer");
+=======
+		dev_err(&dev->dev,
+			"probe_rio: Not enough memory for the output buffer\n");
+		usb_deregister_dev(intf, &usb_rio_class);
+		return -ENOMEM;
+	}
+	dev_dbg(&intf->dev, "obuf address:%p\n", rio->obuf);
+
+	if (!(rio->ibuf = kmalloc(IBUF_SIZE, GFP_KERNEL))) {
+		dev_err(&dev->dev,
+			"probe_rio: Not enough memory for the input buffer\n");
+>>>>>>> refs/remotes/origin/master
 		usb_deregister_dev(intf, &usb_rio_class);
 		kfree(rio->obuf);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	dbg("probe_rio: ibuf address:%p", rio->ibuf);
+=======
+	dev_dbg(&intf->dev, "ibuf address:%p\n", rio->ibuf);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&(rio->lock));
 
@@ -531,6 +621,8 @@ static struct usb_driver rio_driver = {
 	.id_table =	rio_table,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usb_rio_init(void)
 {
 	int retval;
@@ -558,6 +650,12 @@ static void __exit usb_rio_cleanup(void)
 
 module_init(usb_rio_init);
 module_exit(usb_rio_cleanup);
+=======
+module_usb_driver(rio_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(rio_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR( DRIVER_AUTHOR );
 MODULE_DESCRIPTION( DRIVER_DESC );

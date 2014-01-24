@@ -382,6 +382,10 @@ error:
 static char *cpio_replace_env(char *new_location)
 {
 	char expanded[PATH_MAX + 1];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	char env_var[PATH_MAX + 1];
 	char *start;
 	char *end;
@@ -400,12 +404,29 @@ static char *cpio_replace_env(char *new_location)
 			new_location[PATH_MAX] = 0;
 		} else
 			break;
+<<<<<<< HEAD
+=======
+	char *start, *end, *var;
+
+	while ((start = strstr(new_location, "${")) &&
+	       (end = strchr(start + 2, '}'))) {
+		*start = *end = 0;
+		var = getenv(start + 2);
+		snprintf(expanded, sizeof expanded, "%s%s%s",
+			 new_location, var ? var : "", end + 1);
+		strcpy(new_location, expanded);
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return new_location;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int cpio_mkfile_line(const char *line)
 {
 	char name[PATH_MAX + 1];

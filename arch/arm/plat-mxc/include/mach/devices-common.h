@@ -9,11 +9,35 @@
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 
 struct platform_device *imx_add_platform_device_dmamask(
 		const char *name, int id,
 		const struct resource *res, unsigned int num_resources,
 		const void *data, size_t size_data, u64 dmamask);
+=======
+#include <mach/sdma.h>
+
+extern struct device mxc_aips_bus;
+extern struct device mxc_ahb_bus;
+
+static inline struct platform_device *imx_add_platform_device_dmamask(
+		const char *name, int id,
+		const struct resource *res, unsigned int num_resources,
+		const void *data, size_t size_data, u64 dmamask)
+{
+	struct platform_device_info pdevinfo = {
+		.name = name,
+		.id = id,
+		.res = res,
+		.num_res = num_resources,
+		.data = data,
+		.size_data = size_data,
+		.dma_mask = dmamask,
+	};
+	return platform_device_register_full(&pdevinfo);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline struct platform_device *imx_add_platform_device(
 		const char *name, int id,
@@ -26,6 +50,10 @@ static inline struct platform_device *imx_add_platform_device(
 
 #include <linux/fec.h>
 struct imx_fec_data {
+<<<<<<< HEAD
+=======
+	const char *devid;
+>>>>>>> refs/remotes/origin/cm-10.0
 	resource_size_t iobase;
 	resource_size_t irq;
 };
@@ -206,6 +234,11 @@ struct imx_mx2_camera_data {
 struct platform_device *__init imx_add_mx2_camera(
 		const struct imx_mx2_camera_data *data,
 		const struct mx2_camera_platform_data *pdata);
+<<<<<<< HEAD
+=======
+struct platform_device *__init imx_add_mx2_emmaprp(
+		const struct imx_mx2_camera_data *data);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/mxc_ehci.h>
 struct imx_mxc_ehci_data {
@@ -246,6 +279,17 @@ struct platform_device *__init imx_add_mxc_nand(
 		const struct imx_mxc_nand_data *data,
 		const struct mxc_nand_platform_data *pdata);
 
+<<<<<<< HEAD
+=======
+struct imx_pata_imx_data {
+	resource_size_t iobase;
+	resource_size_t iosize;
+	resource_size_t irq;
+};
+struct platform_device *__init imx_add_pata_imx(
+		const struct imx_pata_imx_data *data);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct imx_mxc_pwm_data {
 	int id;
 	resource_size_t iobase;
@@ -272,6 +316,10 @@ struct platform_device *__init imx_add_mxc_w1(
 
 #include <mach/esdhc.h>
 struct imx_sdhci_esdhc_imx_data {
+<<<<<<< HEAD
+=======
+	const char *devid;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int id;
 	resource_size_t iobase;
 	resource_size_t irq;
@@ -291,3 +339,20 @@ struct imx_spi_imx_data {
 struct platform_device *__init imx_add_spi_imx(
 		const struct imx_spi_imx_data *data,
 		const struct spi_imx_master *pdata);
+<<<<<<< HEAD
+=======
+
+struct platform_device *imx_add_imx_dma(void);
+struct platform_device *imx_add_imx_sdma(char *name,
+	resource_size_t iobase, int irq, struct sdma_platform_data *pdata);
+
+#include <linux/ahci_platform.h>
+struct imx_ahci_imx_data {
+	const char *devid;
+	resource_size_t iobase;
+	resource_size_t irq;
+};
+struct platform_device *__init imx_add_ahci_imx(
+		const struct imx_ahci_imx_data *data,
+		const struct ahci_platform_data *pdata);
+>>>>>>> refs/remotes/origin/cm-10.0

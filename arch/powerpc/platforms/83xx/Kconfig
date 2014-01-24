@@ -114,14 +114,29 @@ config KMETER1
 
 endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 # used for usb
 config PPC_MPC831x
 	bool
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+# used for usb & gpio
+config PPC_MPC831x
+	bool
+	select ARCH_WANT_OPTIONAL_GPIOLIB
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 # used for math-emu
 config PPC_MPC832x
 	bool
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 # used for usb
 config PPC_MPC834x
 	bool
@@ -129,3 +144,19 @@ config PPC_MPC834x
 # used for usb
 config PPC_MPC837x
 	bool
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+# used for usb & gpio
+config PPC_MPC834x
+	bool
+	select ARCH_WANT_OPTIONAL_GPIOLIB
+
+# used for usb & gpio
+config PPC_MPC837x
+	bool
+	select ARCH_WANT_OPTIONAL_GPIOLIB
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

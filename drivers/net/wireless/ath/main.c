@@ -14,6 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 
@@ -49,7 +54,11 @@ struct sk_buff *ath_rxbuf_alloc(struct ath_common *common,
 		if (off != 0)
 			skb_reserve(skb, common->cachelsz - off);
 	} else {
+<<<<<<< HEAD
 		printk(KERN_ERR "skbuff alloc of size %u failed\n", len);
+=======
+		pr_err("skbuff alloc of size %u failed\n", len);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -57,6 +66,51 @@ struct sk_buff *ath_rxbuf_alloc(struct ath_common *common,
 }
 EXPORT_SYMBOL(ath_rxbuf_alloc);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#if 0 // by bbelief
+void ath_printk(const char *level, const char *fmt, ...)
+{
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
+	struct va_format vaf;
+#endif
+=======
+void ath_printk(const char *level, const struct ath_common* common,
+		const char *fmt, ...)
+=======
+#if 0 // by bbelief
+void ath_printk(const char *level, const char *fmt, ...)
+>>>>>>> refs/remotes/origin/cm-11.0
+{
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
+	struct va_format vaf;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
+	va_list args;
+
+	va_start(args, fmt);
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
+	vaf.fmt = fmt;
+	vaf.va = &args;
+
+	printk("%sath: %pV", level, &vaf);
+#else
+	printk("%sath: ", level);
+	vprintk(fmt, args);
+#endif
+
+	va_end(args);
+}
+#else
+>>>>>>> refs/remotes/origin/cm-10.0
 int ath_printk(const char *level, struct ath_common *common,
 	       const char *fmt, ...)
 {
@@ -75,4 +129,49 @@ int ath_printk(const char *level, struct ath_common *common,
 
 	return rtn;
 }
+<<<<<<< HEAD
+=======
+
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
+>>>>>>> refs/remotes/origin/cm-11.0
+	vaf.fmt = fmt;
+	vaf.va = &args;
+
+	printk("%sath: %pV", level, &vaf);
+#else
+	printk("%sath: ", level);
+	vprintk(fmt, args);
+#endif
+
+	va_end(args);
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
+#else
+int ath_printk(const char *level, struct ath_common *common,
+	       const char *fmt, ...)
+{
+	struct va_format vaf;
+	va_list args;
+	int rtn;
+
+	va_start(args, fmt);
+
+	vaf.fmt = fmt;
+	vaf.va = &args;
+
+	rtn = printk("%sath: %pV", level, &vaf);
+
+	va_end(args);
+
+	return rtn;
+}
+
+#endif
+>>>>>>> refs/remotes/origin/cm-11.0
 EXPORT_SYMBOL(ath_printk);

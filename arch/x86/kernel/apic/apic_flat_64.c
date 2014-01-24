@@ -14,7 +14,10 @@
 #include <linux/string.h>
 #include <linux/kernel.h>
 #include <linux/ctype.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/hardirq.h>
 #include <linux/module.h>
 #include <asm/smp.h>
@@ -36,6 +39,7 @@ static int flat_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
 	return 1;
 }
 
+<<<<<<< HEAD
 static const struct cpumask *flat_target_cpus(void)
 {
 	return cpu_online_mask;
@@ -55,6 +59,8 @@ static void flat_vector_allocation_domain(int cpu, struct cpumask *retmask)
 	cpumask_bits(retmask)[0] = APIC_ALL_CPUS;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Set up the logical destination ID.
  *
@@ -62,7 +68,15 @@ static void flat_vector_allocation_domain(int cpu, struct cpumask *retmask)
  * an APIC.  See e.g. "AP-388 82489DX User's Manual" (Intel
  * document number 292116).  So here it goes...
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void flat_init_apic_ldr(void)
+=======
+void flat_init_apic_ldr(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void flat_init_apic_ldr(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long val;
 	unsigned long num, id;
@@ -92,7 +106,11 @@ static void flat_send_IPI_mask(const struct cpumask *cpumask, int vector)
 }
 
 static void
+<<<<<<< HEAD
  flat_send_IPI_mask_allbutself(const struct cpumask *cpumask, int vector)
+=======
+flat_send_IPI_mask_allbutself(const struct cpumask *cpumask, int vector)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long mask = cpumask_bits(cpumask)[0];
 	int cpu = smp_processor_id();
@@ -171,16 +189,39 @@ static int flat_phys_pkg_id(int initial_apic_id, int index_msb)
 	return initial_apic_id >> index_msb;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct apic apic_flat =  {
 	.name				= "flat",
 	.probe				= NULL,
 	.acpi_madt_oem_check		= flat_acpi_madt_oem_check,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int flat_probe(void)
+{
+	return 1;
+}
+
+static struct apic apic_flat =  {
+	.name				= "flat",
+	.probe				= flat_probe,
+	.acpi_madt_oem_check		= flat_acpi_madt_oem_check,
+	.apic_id_valid			= default_apic_id_valid,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.apic_id_registered		= flat_apic_id_registered,
 
 	.irq_delivery_mode		= dest_LowestPrio,
 	.irq_dest_mode			= 1, /* logical */
 
+<<<<<<< HEAD
 	.target_cpus			= flat_target_cpus,
+=======
+	.target_cpus			= online_target_cpus,
+>>>>>>> refs/remotes/origin/master
 	.disable_esr			= 0,
 	.dest_logical			= APIC_DEST_LOGICAL,
 	.check_apicid_used		= NULL,
@@ -204,8 +245,12 @@ static struct apic apic_flat =  {
 	.set_apic_id			= set_apic_id,
 	.apic_id_mask			= 0xFFu << 24,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= default_cpu_mask_to_apicid,
 	.cpu_mask_to_apicid_and		= default_cpu_mask_to_apicid_and,
+=======
+	.cpu_mask_to_apicid_and		= flat_cpu_mask_to_apicid_and,
+>>>>>>> refs/remotes/origin/master
 
 	.send_IPI_mask			= flat_send_IPI_mask,
 	.send_IPI_mask_allbutself	= flat_send_IPI_mask_allbutself,
@@ -221,6 +266,10 @@ static struct apic apic_flat =  {
 
 	.read				= native_apic_mem_read,
 	.write				= native_apic_mem_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_mem_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_apic_icr_read,
 	.icr_write			= native_apic_icr_write,
 	.wait_icr_idle			= native_apic_wait_icr_idle,
@@ -255,6 +304,7 @@ static int physflat_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct cpumask *physflat_target_cpus(void)
 {
 	return cpu_online_mask;
@@ -266,6 +316,8 @@ static void physflat_vector_allocation_domain(int cpu, struct cpumask *retmask)
 	cpumask_set_cpu(cpu, retmask);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void physflat_send_IPI_mask(const struct cpumask *cpumask, int vector)
 {
 	default_send_IPI_mask_sequence_phys(cpumask, vector);
@@ -287,6 +339,7 @@ static void physflat_send_IPI_all(int vector)
 	physflat_send_IPI_mask(cpu_online_mask, vector);
 }
 
+<<<<<<< HEAD
 static unsigned int physflat_cpu_mask_to_apicid(const struct cpumask *cpumask)
 {
 	int cpu;
@@ -319,6 +372,8 @@ physflat_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
 	return per_cpu(x86_cpu_to_apicid, cpu);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int physflat_probe(void)
 {
 	if (apic == &apic_physflat || num_possible_cpus() > 8)
@@ -332,18 +387,34 @@ static struct apic apic_physflat =  {
 	.name				= "physical flat",
 	.probe				= physflat_probe,
 	.acpi_madt_oem_check		= physflat_acpi_madt_oem_check,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/master
 	.apic_id_registered		= flat_apic_id_registered,
 
 	.irq_delivery_mode		= dest_Fixed,
 	.irq_dest_mode			= 0, /* physical */
 
+<<<<<<< HEAD
 	.target_cpus			= physflat_target_cpus,
+=======
+	.target_cpus			= online_target_cpus,
+>>>>>>> refs/remotes/origin/master
 	.disable_esr			= 0,
 	.dest_logical			= 0,
 	.check_apicid_used		= NULL,
 	.check_apicid_present		= NULL,
 
+<<<<<<< HEAD
 	.vector_allocation_domain	= physflat_vector_allocation_domain,
+=======
+	.vector_allocation_domain	= default_vector_allocation_domain,
+>>>>>>> refs/remotes/origin/master
 	/* not needed, but shouldn't hurt: */
 	.init_apic_ldr			= flat_init_apic_ldr,
 
@@ -362,8 +433,12 @@ static struct apic apic_physflat =  {
 	.set_apic_id			= set_apic_id,
 	.apic_id_mask			= 0xFFu << 24,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= physflat_cpu_mask_to_apicid,
 	.cpu_mask_to_apicid_and		= physflat_cpu_mask_to_apicid_and,
+=======
+	.cpu_mask_to_apicid_and		= default_cpu_mask_to_apicid_and,
+>>>>>>> refs/remotes/origin/master
 
 	.send_IPI_mask			= physflat_send_IPI_mask,
 	.send_IPI_mask_allbutself	= physflat_send_IPI_mask_allbutself,
@@ -379,6 +454,10 @@ static struct apic apic_physflat =  {
 
 	.read				= native_apic_mem_read,
 	.write				= native_apic_mem_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_mem_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_apic_icr_read,
 	.icr_write			= native_apic_icr_write,
 	.wait_icr_idle			= native_apic_wait_icr_idle,

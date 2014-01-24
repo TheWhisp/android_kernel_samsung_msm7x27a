@@ -28,7 +28,15 @@
 
 #define DRV_NAME "ide_pci_generic"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ide_generic_all;		/* Set to claim all devices */
+=======
+static bool ide_generic_all;		/* Set to claim all devices */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool ide_generic_all;		/* Set to claim all devices */
+>>>>>>> refs/remotes/origin/master
 
 module_param_named(all_generic_ide, ide_generic_all, bool, 0444);
 MODULE_PARM_DESC(all_generic_ide, "IDE generic will claim all unknown PCI IDE storage controllers.");
@@ -53,7 +61,11 @@ static const struct ide_port_ops netcell_port_ops = {
 		.udma_mask	= ATA_UDMA6, \
 	}
 
+<<<<<<< HEAD
 static const struct ide_port_info generic_chipsets[] __devinitdata = {
+=======
+static const struct ide_port_info generic_chipsets[] = {
+>>>>>>> refs/remotes/origin/master
 	/*  0: Unknown */
 	DECLARE_GENERIC_PCI_DEV(0),
 
@@ -103,7 +115,11 @@ static const struct ide_port_info generic_chipsets[] __devinitdata = {
  *	finds a device matching our IDE device tables.
  */
 
+<<<<<<< HEAD
 static int __devinit generic_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int generic_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ide_port_info *d = &generic_chipsets[id->driver_data];
 	int ret = -ENODEV;

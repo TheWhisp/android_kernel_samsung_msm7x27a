@@ -153,7 +153,11 @@ ieee754dp ieee754dp_add(ieee754dp x, ieee754dp y)
 		xe = xe;
 		xs = xs;
 
+<<<<<<< HEAD
 		if (xm >> (DP_MBITS + 1 + 3)) {	/* carry out */
+=======
+		if (xm >> (DP_MBITS + 1 + 3)) { /* carry out */
+>>>>>>> refs/remotes/origin/master
 			xm = XDPSRS1(xm);
 			xe++;
 		}

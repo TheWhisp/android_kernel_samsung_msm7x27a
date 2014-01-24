@@ -81,10 +81,13 @@ struct r100_cs_track {
 
 int r100_cs_track_check(struct radeon_device *rdev, struct r100_cs_track *track);
 void r100_cs_track_clear(struct radeon_device *rdev, struct r100_cs_track *track);
+<<<<<<< HEAD
 int r100_cs_packet_next_reloc(struct radeon_cs_parser *p,
 			      struct radeon_cs_reloc **cs_reloc);
 void r100_cs_dump_packet(struct radeon_cs_parser *p,
 			 struct radeon_cs_packet *pkt);
+=======
+>>>>>>> refs/remotes/origin/master
 
 int r100_cs_packet_parse_vline(struct radeon_cs_parser *p);
 
@@ -92,6 +95,8 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 		       struct radeon_cs_packet *pkt,
 		       unsigned idx, unsigned reg);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
 static inline int r100_reloc_pitch_offset(struct radeon_cs_parser *p,
@@ -195,3 +200,17 @@ static inline int r100_packet3_load_vbpntr(struct radeon_cs_parser *p,
 	}
 	return r;
 }
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+int r100_reloc_pitch_offset(struct radeon_cs_parser *p,
+			    struct radeon_cs_packet *pkt,
+			    unsigned idx,
+			    unsigned reg);
+int r100_packet3_load_vbpntr(struct radeon_cs_parser *p,
+			     struct radeon_cs_packet *pkt,
+			     int idx);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

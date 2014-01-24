@@ -10,9 +10,27 @@
 
 #include <asm/unistd.h>
 #include <asm/ftrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/entry-macro.S>
 #include <asm/unwind.h>
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/unwind.h>
+
+#ifdef CONFIG_NEED_RET_TO_USER
+#include <mach/entry-macro.S>
+#else
+	.macro  arch_ret_to_user, tmp1, tmp2
+	.endm
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "entry-header.S"
 
 
@@ -29,12 +47,20 @@ ret_fast_syscall:
 	ldr	r1, [tsk, #TI_FLAGS]
 	tst	r1, #_TIF_WORK_MASK
 	bne	fast_work_pending
+<<<<<<< HEAD
 #if defined(CONFIG_IRQSOFF_TRACER)
 	asm_trace_hardirqs_on
 #endif
 
 	/* perform architecture specific actions before user return */
 	arch_ret_to_user r1, lr
+=======
+	asm_trace_hardirqs_on
+
+	/* perform architecture specific actions before user return */
+	arch_ret_to_user r1, lr
+	ct_user_enter
+>>>>>>> refs/remotes/origin/master
 
 	restore_user_regs fast = 1, offset = S_OFF
  UNWIND(.fnend		)
@@ -45,6 +71,7 @@ ret_fast_syscall:
 fast_work_pending:
 	str	r0, [sp, #S_R0+S_OFF]!		@ returned r0
 work_pending:
+<<<<<<< HEAD
 	tst	r1, #_TIF_NEED_RESCHED
 	bne	work_resched
 	tst	r1, #_TIF_SIGPENDING|_TIF_NOTIFY_RESUME
@@ -58,6 +85,17 @@ work_pending:
 
 work_resched:
 	bl	schedule
+=======
+	mov	r0, sp				@ 'regs'
+	mov	r2, why				@ 'syscall'
+	bl	do_work_pending
+	cmp	r0, #0
+	beq	no_work_pending
+	movlt	scno, #(__NR_restart_syscall - __NR_SYSCALL_BASE)
+	ldmia	sp, {r0 - r6}			@ have to reload r0 - r6
+	b	local_restart			@ ... and off we go
+
+>>>>>>> refs/remotes/origin/master
 /*
  * "slow" syscall return path.  "why" tells us if this was a real syscall.
  */
@@ -69,11 +107,19 @@ ENTRY(ret_to_user_from_irq)
 	tst	r1, #_TIF_WORK_MASK
 	bne	work_pending
 no_work_pending:
+<<<<<<< HEAD
 #if defined(CONFIG_IRQSOFF_TRACER)
 	asm_trace_hardirqs_on
 #endif
 	/* perform architecture specific actions before user return */
 	arch_ret_to_user r1, lr
+=======
+	asm_trace_hardirqs_on
+
+	/* perform architecture specific actions before user return */
+	arch_ret_to_user r1, lr
+	ct_user_enter save = 0
+>>>>>>> refs/remotes/origin/master
 
 	restore_user_regs fast = 0, offset = 0
 ENDPROC(ret_to_user_from_irq)
@@ -84,20 +130,44 @@ ENDPROC(ret_to_user)
  */
 ENTRY(ret_from_fork)
 	bl	schedule_tail
+<<<<<<< HEAD
 	get_thread_info tsk
 	ldr	r1, [tsk, #TI_FLAGS]		@ check for syscall tracing
 	mov	why, #1
+<<<<<<< HEAD
 	tst	r1, #_TIF_SYSCALL_TRACE		@ are we tracing syscalls?
+=======
+	tst	r1, #_TIF_SYSCALL_WORK		@ are we tracing syscalls?
+>>>>>>> refs/remotes/origin/cm-10.0
 	beq	ret_slow_syscall
 	mov	r1, sp
 	mov	r0, #1				@ trace exit [IP = 1]
 	bl	syscall_trace
+=======
+	cmp	r5, #0
+	movne	r0, r4
+	adrne	lr, BSYM(1f)
+	movne	pc, r5
+1:	get_thread_info tsk
+>>>>>>> refs/remotes/origin/master
 	b	ret_slow_syscall
 ENDPROC(ret_from_fork)
 
 	.equ NR_syscalls,0
 #define CALL(x) .equ NR_syscalls,NR_syscalls+1
 #include "calls.S"
+<<<<<<< HEAD
+=======
+
+/*
+ * Ensure that the system call table is equal to __NR_syscalls,
+ * which is the value the rest of the system sees
+ */
+.ifne NR_syscalls - __NR_syscalls
+.error "__NR_syscalls is not equal to the size of the syscall table"
+.endif
+
+>>>>>>> refs/remotes/origin/master
 #undef CALL
 #define CALL(x) .long x
 
@@ -149,6 +219,20 @@ ENDPROC(ret_from_fork)
 #endif
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+.macro mcount_adjust_addr rd, rn
+	bic	\rd, \rn, #1		@ clear the Thumb bit if present
+	sub	\rd, \rd, #MCOUNT_INSN_SIZE
+.endm
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 .macro __mcount suffix
 	mcount_enter
 	ldr	r0, =ftrace_trace_function
@@ -173,8 +257,16 @@ ENDPROC(ret_from_fork)
 	mcount_exit
 
 1: 	mcount_get_lr	r1			@ lr of instrumented func
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mov	r0, lr				@ instrumented function
 	sub	r0, r0, #MCOUNT_INSN_SIZE
+=======
+	mcount_adjust_addr	r0, lr		@ instrumented function
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mcount_adjust_addr	r0, lr		@ instrumented function
+>>>>>>> refs/remotes/origin/master
 	adr	lr, BSYM(2f)
 	mov	pc, r2
 2:	mcount_exit
@@ -184,8 +276,16 @@ ENDPROC(ret_from_fork)
 	mcount_enter
 
 	mcount_get_lr	r1			@ lr of instrumented func
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mov	r0, lr				@ instrumented function
 	sub	r0, r0, #MCOUNT_INSN_SIZE
+=======
+	mcount_adjust_addr	r0, lr		@ instrumented function
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mcount_adjust_addr	r0, lr		@ instrumented function
+>>>>>>> refs/remotes/origin/master
 
 	.globl ftrace_call\suffix
 ftrace_call\suffix:
@@ -205,11 +305,25 @@ ftrace_graph_call\suffix:
 #ifdef CONFIG_DYNAMIC_FTRACE
 	@ called from __ftrace_caller, saved in mcount_enter
 	ldr	r1, [sp, #16]		@ instrumented routine (func)
+<<<<<<< HEAD
+<<<<<<< HEAD
 #else
 	@ called from __mcount, untouched in lr
 	mov	r1, lr			@ instrumented routine (func)
 #endif
 	sub	r1, r1, #MCOUNT_INSN_SIZE
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	mcount_adjust_addr	r1, r1
+#else
+	@ called from __mcount, untouched in lr
+	mcount_adjust_addr	r1, lr	@ instrumented routine (func)
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	r2, fp			@ frame pointer
 	bl	prepare_ftrace_return
 	mcount_exit
@@ -265,7 +379,17 @@ ENDPROC(ftrace_graph_caller_old)
  */
 
 .macro mcount_enter
+<<<<<<< HEAD
 	stmdb	sp!, {r0-r3, lr}
+=======
+/*
+ * This pad compensates for the push {lr} at the call site.  Note that we are
+ * unable to unwind through a function which does not otherwise save its lr.
+ */
+ UNWIND(.pad	#4)
+	stmdb	sp!, {r0-r3, lr}
+ UNWIND(.save	{r0-r3, lr})
+>>>>>>> refs/remotes/origin/master
 .endm
 
 .macro mcount_get_lr reg
@@ -278,6 +402,10 @@ ENDPROC(ftrace_graph_caller_old)
 .endm
 
 ENTRY(__gnu_mcount_nc)
+<<<<<<< HEAD
+=======
+UNWIND(.fnstart)
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DYNAMIC_FTRACE
 	mov	ip, lr
 	ldmia	sp!, {lr}
@@ -285,17 +413,33 @@ ENTRY(__gnu_mcount_nc)
 #else
 	__mcount
 #endif
+<<<<<<< HEAD
+=======
+UNWIND(.fnend)
+>>>>>>> refs/remotes/origin/master
 ENDPROC(__gnu_mcount_nc)
 
 #ifdef CONFIG_DYNAMIC_FTRACE
 ENTRY(ftrace_caller)
+<<<<<<< HEAD
 	__ftrace_caller
+=======
+UNWIND(.fnstart)
+	__ftrace_caller
+UNWIND(.fnend)
+>>>>>>> refs/remotes/origin/master
 ENDPROC(ftrace_caller)
 #endif
 
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
 ENTRY(ftrace_graph_caller)
+<<<<<<< HEAD
 	__ftrace_graph_caller
+=======
+UNWIND(.fnstart)
+	__ftrace_graph_caller
+UNWIND(.fnend)
+>>>>>>> refs/remotes/origin/master
 ENDPROC(ftrace_graph_caller)
 #endif
 
@@ -326,6 +470,7 @@ ENDPROC(ftrace_stub)
  *-----------------------------------------------------------------------------
  */
 
+<<<<<<< HEAD
 	/* If we're optimising for StrongARM the resulting code won't 
 	   run on an ARM7 and we can save a couple of instructions.  
 								--pb */
@@ -342,6 +487,13 @@ ENDPROC(ftrace_stub)
 
 	.align	5
 ENTRY(vector_swi)
+=======
+	.align	5
+ENTRY(vector_swi)
+#ifdef CONFIG_CPU_V7M
+	v7m_exception_entry
+#else
+>>>>>>> refs/remotes/origin/master
 	sub	sp, sp, #S_FRAME_SIZE
 	stmia	sp, {r0 - r12}			@ Calling r0 - r12
  ARM(	add	r8, sp, #S_PC		)
@@ -352,8 +504,24 @@ ENTRY(vector_swi)
 	str	lr, [sp, #S_PC]			@ Save calling PC
 	str	r8, [sp, #S_PSR]		@ Save CPSR
 	str	r0, [sp, #S_OLD_R0]		@ Save OLD_R0
+<<<<<<< HEAD
 	zero_fp
 
+=======
+#endif
+	zero_fp
+
+#ifdef CONFIG_ALIGNMENT_TRAP
+	ldr	ip, __cr_alignment
+	ldr	ip, [ip]
+	mcr	p15, 0, ip, c1, c0		@ update control register
+#endif
+
+	enable_irq
+	ct_user_exit
+	get_thread_info tsk
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Get the system call number.
 	 */
@@ -367,6 +535,7 @@ ENTRY(vector_swi)
 #ifdef CONFIG_ARM_THUMB
 	tst	r8, #PSR_T_BIT
 	movne	r10, #0				@ no thumb OABI emulation
+<<<<<<< HEAD
 	ldreq	r10, [lr, #-4]			@ get SWI instruction
 #else
 	ldr	r10, [lr, #-4]			@ get SWI instruction
@@ -377,12 +546,20 @@ ENTRY(vector_swi)
 #ifdef CONFIG_CPU_ENDIAN_BE8
 	rev	r10, r10			@ little endian instruction
 #endif
+=======
+ USER(	ldreq	r10, [lr, #-4]		)	@ get SWI instruction
+#else
+ USER(	ldr	r10, [lr, #-4]		)	@ get SWI instruction
+#endif
+ ARM_BE8(rev	r10, r10)			@ little endian instruction
+>>>>>>> refs/remotes/origin/master
 
 #elif defined(CONFIG_AEABI)
 
 	/*
 	 * Pure EABI user space always put syscall number into scno (r7).
 	 */
+<<<<<<< HEAD
   A710(	ldr	ip, [lr, #-4]			@ get SWI instruction	)
   A710(	and	ip, ip, #0x0f000000		@ check for SWI		)
   A710(	teq	ip, #0x0f000000						)
@@ -413,6 +590,19 @@ ENTRY(vector_swi)
 	enable_irq
 
 	get_thread_info tsk
+=======
+#elif defined(CONFIG_ARM_THUMB)
+	/* Legacy ABI only, possibly thumb mode. */
+	tst	r8, #PSR_T_BIT			@ this is SPSR from save_user_regs
+	addne	scno, r7, #__NR_SYSCALL_BASE	@ put OS number in
+ USER(	ldreq	scno, [lr, #-4]		)
+
+#else
+	/* Legacy ABI only. */
+ USER(	ldr	scno, [lr, #-4]		)	@ get SWI instruction
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	adr	tbl, sys_call_table		@ load syscall table pointer
 
 #if defined(CONFIG_OABI_COMPAT)
@@ -430,6 +620,7 @@ ENTRY(vector_swi)
 	eor	scno, scno, #__NR_SYSCALL_BASE	@ check OS number
 #endif
 
+<<<<<<< HEAD
 	ldr	r10, [tsk, #TI_FLAGS]		@ check for syscall tracing
 	stmdb	sp!, {r4, r5}			@ push fifth and sixth args
 
@@ -443,7 +634,18 @@ ENTRY(vector_swi)
 1:
 #endif
 
+<<<<<<< HEAD
 	tst	r10, #_TIF_SYSCALL_TRACE		@ are we tracing syscalls?
+=======
+	tst	r10, #_TIF_SYSCALL_WORK		@ are we tracing syscalls?
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+local_restart:
+	ldr	r10, [tsk, #TI_FLAGS]		@ check for syscall tracing
+	stmdb	sp!, {r4, r5}			@ push fifth and sixth args
+
+	tst	r10, #_TIF_SYSCALL_WORK		@ are we tracing syscalls?
+>>>>>>> refs/remotes/origin/master
 	bne	__sys_trace
 
 	cmp	scno, #NR_syscalls		@ check upper syscall limit
@@ -451,11 +653,34 @@ ENTRY(vector_swi)
 	ldrcc	pc, [tbl, scno, lsl #2]		@ call sys_* routine
 
 	add	r1, sp, #S_OFF
+<<<<<<< HEAD
 2:	mov	why, #0				@ no longer a real syscall
 	cmp	scno, #(__ARM_NR_BASE - __NR_SYSCALL_BASE)
 	eor	r0, scno, #__NR_SYSCALL_BASE	@ put OS number back
 	bcs	arm_syscall	
 	b	sys_ni_syscall			@ not private func
+=======
+2:	cmp	scno, #(__ARM_NR_BASE - __NR_SYSCALL_BASE)
+	eor	r0, scno, #__NR_SYSCALL_BASE	@ put OS number back
+	bcs	arm_syscall
+	mov	why, #0				@ no longer a real syscall
+	b	sys_ni_syscall			@ not private func
+
+#if defined(CONFIG_OABI_COMPAT) || !defined(CONFIG_AEABI)
+	/*
+	 * We failed to handle a fault trying to access the page
+	 * containing the swi instruction, but we're not really in a
+	 * position to return -EFAULT. Instead, return back to the
+	 * instruction and re-enter the user fault handling path trying
+	 * to page it in. This will likely result in sending SEGV to the
+	 * current task.
+	 */
+9001:
+	sub	lr, lr, #4
+	str	lr, [sp, #S_PC]
+	b	ret_fast_syscall
+#endif
+>>>>>>> refs/remotes/origin/master
 ENDPROC(vector_swi)
 
 	/*
@@ -463,15 +688,22 @@ ENDPROC(vector_swi)
 	 * context switches, and waiting for our parent to respond.
 	 */
 __sys_trace:
+<<<<<<< HEAD
 	mov	r2, scno
 	add	r1, sp, #S_OFF
 	mov	r0, #0				@ trace entry [IP = 0]
 	bl	syscall_trace
+=======
+	mov	r1, scno
+	add	r0, sp, #S_OFF
+	bl	syscall_trace_enter
+>>>>>>> refs/remotes/origin/master
 
 	adr	lr, BSYM(__sys_trace_return)	@ return address
 	mov	scno, r0			@ syscall number (possibly new)
 	add	r1, sp, #S_R0 + S_OFF		@ pointer to regs
 	cmp	scno, #NR_syscalls		@ check upper syscall limit
+<<<<<<< HEAD
 	ldmccia	r1, {r0 - r3}			@ have to reload r0 - r3
 	ldrcc	pc, [tbl, scno, lsl #2]		@ call sys_* routine
 	b	2b
@@ -482,6 +714,20 @@ __sys_trace_return:
 	mov	r1, sp
 	mov	r0, #1				@ trace exit [IP = 1]
 	bl	syscall_trace
+=======
+	ldmccia	r1, {r0 - r6}			@ have to reload r0 - r6
+	stmccia	sp, {r4, r5}			@ and update the stack args
+	ldrcc	pc, [tbl, scno, lsl #2]		@ call sys_* routine
+	cmp	scno, #-1			@ skip the syscall?
+	bne	2b
+	add	sp, sp, #S_OFF			@ restore stack
+	b	ret_slow_syscall
+
+__sys_trace_return:
+	str	r0, [sp, #S_R0 + S_OFF]!	@ save returned r0
+	mov	r0, sp
+	bl	syscall_trace_exit
+>>>>>>> refs/remotes/origin/master
 	b	ret_slow_syscall
 
 	.align	5
@@ -527,6 +773,7 @@ sys_syscall:
 		b	sys_ni_syscall
 ENDPROC(sys_syscall)
 
+<<<<<<< HEAD
 sys_fork_wrapper:
 		add	r0, sp, #S_OFF
 		b	sys_fork
@@ -548,6 +795,8 @@ sys_clone_wrapper:
 		b	sys_clone
 ENDPROC(sys_clone_wrapper)
 
+=======
+>>>>>>> refs/remotes/origin/master
 sys_sigreturn_wrapper:
 		add	r0, sp, #S_OFF
 		mov	why, #0		@ prevent syscall restart handling
@@ -560,11 +809,14 @@ sys_rt_sigreturn_wrapper:
 		b	sys_rt_sigreturn
 ENDPROC(sys_rt_sigreturn_wrapper)
 
+<<<<<<< HEAD
 sys_sigaltstack_wrapper:
 		ldr	r2, [sp, #S_OFF + S_SP]
 		b	do_sigaltstack
 ENDPROC(sys_sigaltstack_wrapper)
 
+=======
+>>>>>>> refs/remotes/origin/master
 sys_statfs64_wrapper:
 		teq	r1, #88
 		moveq	r1, #84

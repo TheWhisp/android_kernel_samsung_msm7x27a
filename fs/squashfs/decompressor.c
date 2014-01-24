@@ -30,6 +30,10 @@
 #include "squashfs_fs_sb.h"
 #include "decompressor.h"
 #include "squashfs.h"
+<<<<<<< HEAD
+=======
+#include "page_actor.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This file (and decompressor.h) implements a decompressor framework for
@@ -37,23 +41,55 @@
  */
 
 static const struct squashfs_decompressor squashfs_lzma_unsupported_comp_ops = {
+<<<<<<< HEAD
 	NULL, NULL, NULL, LZMA_COMPRESSION, "lzma", 0
+=======
+	NULL, NULL, NULL, NULL, LZMA_COMPRESSION, "lzma", 0
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifndef CONFIG_SQUASHFS_LZO
 static const struct squashfs_decompressor squashfs_lzo_comp_ops = {
+<<<<<<< HEAD
 	NULL, NULL, NULL, LZO_COMPRESSION, "lzo", 0
+=======
+	NULL, NULL, NULL, NULL, LZO_COMPRESSION, "lzo", 0
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
 #ifndef CONFIG_SQUASHFS_XZ
 static const struct squashfs_decompressor squashfs_xz_comp_ops = {
+<<<<<<< HEAD
 	NULL, NULL, NULL, XZ_COMPRESSION, "xz", 0
 };
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_SQUASHFS_ZLIB
+static const struct squashfs_decompressor squashfs_zlib_comp_ops = {
+	NULL, NULL, NULL, ZLIB_COMPRESSION, "zlib", 0
+};
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct squashfs_decompressor squashfs_unknown_comp_ops = {
 	NULL, NULL, NULL, 0, "unknown", 0
+=======
+	NULL, NULL, NULL, NULL, XZ_COMPRESSION, "xz", 0
+};
+#endif
+
+#ifndef CONFIG_SQUASHFS_ZLIB
+static const struct squashfs_decompressor squashfs_zlib_comp_ops = {
+	NULL, NULL, NULL, NULL, ZLIB_COMPRESSION, "zlib", 0
+};
+#endif
+
+static const struct squashfs_decompressor squashfs_unknown_comp_ops = {
+	NULL, NULL, NULL, NULL, 0, "unknown", 0
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct squashfs_decompressor *decompressor[] = {
@@ -77,10 +113,18 @@ const struct squashfs_decompressor *squashfs_lookup_decompressor(int id)
 }
 
 
+<<<<<<< HEAD
 void *squashfs_decompressor_init(struct super_block *sb, unsigned short flags)
 {
 	struct squashfs_sb_info *msblk = sb->s_fs_info;
 	void *strm, *buffer = NULL;
+=======
+static void *get_comp_opts(struct super_block *sb, unsigned short flags)
+{
+	struct squashfs_sb_info *msblk = sb->s_fs_info;
+	void *buffer = NULL, *comp_opts;
+	struct squashfs_page_actor *actor = NULL;
+>>>>>>> refs/remotes/origin/master
 	int length = 0;
 
 	/*
@@ -88,6 +132,7 @@ void *squashfs_decompressor_init(struct super_block *sb, unsigned short flags)
 	 */
 	if (SQUASHFS_COMP_OPTS(flags)) {
 		buffer = kmalloc(PAGE_CACHE_SIZE, GFP_KERNEL);
+<<<<<<< HEAD
 		if (buffer == NULL)
 			return ERR_PTR(-ENOMEM);
 
@@ -107,4 +152,48 @@ finished:
 	kfree(buffer);
 
 	return strm;
+=======
+		if (buffer == NULL) {
+			comp_opts = ERR_PTR(-ENOMEM);
+			goto out;
+		}
+
+		actor = squashfs_page_actor_init(&buffer, 1, 0);
+		if (actor == NULL) {
+			comp_opts = ERR_PTR(-ENOMEM);
+			goto out;
+		}
+
+		length = squashfs_read_data(sb,
+			sizeof(struct squashfs_super_block), 0, NULL, actor);
+
+		if (length < 0) {
+			comp_opts = ERR_PTR(length);
+			goto out;
+		}
+	}
+
+	comp_opts = squashfs_comp_opts(msblk, buffer, length);
+
+out:
+	kfree(actor);
+	kfree(buffer);
+	return comp_opts;
+}
+
+
+void *squashfs_decompressor_setup(struct super_block *sb, unsigned short flags)
+{
+	struct squashfs_sb_info *msblk = sb->s_fs_info;
+	void *stream, *comp_opts = get_comp_opts(sb, flags);
+
+	if (IS_ERR(comp_opts))
+		return comp_opts;
+
+	stream = squashfs_decompressor_create(msblk, comp_opts);
+	if (IS_ERR(stream))
+		kfree(comp_opts);
+
+	return stream;
+>>>>>>> refs/remotes/origin/master
 }

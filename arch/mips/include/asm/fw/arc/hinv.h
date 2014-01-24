@@ -12,7 +12,11 @@ typedef enum configclass {
 	SystemClass,
 	ProcessorClass,
 	CacheClass,
+<<<<<<< HEAD
 #ifndef	_NT_PROM
+=======
+#ifndef _NT_PROM
+>>>>>>> refs/remotes/origin/master
 	MemoryClass,
 	AdapterClass,
 	ControllerClass,
@@ -34,7 +38,11 @@ typedef enum configtype {
 	SecondaryICache,
 	SecondaryDCache,
 	SecondaryCache,
+<<<<<<< HEAD
 #ifndef	_NT_PROM
+=======
+#ifndef _NT_PROM
+>>>>>>> refs/remotes/origin/master
 	Memory,
 #endif
 	EISAAdapter,
@@ -93,7 +101,11 @@ typedef enum {
 } IDENTIFIERFLAG;
 
 #ifndef NULL			/* for GetChild(NULL); */
+<<<<<<< HEAD
 #define	NULL	0
+=======
+#define NULL	0
+>>>>>>> refs/remotes/origin/master
 #endif
 
 union key_u {
@@ -125,7 +137,11 @@ typedef struct component {
 	IDENTIFIERFLAG	Flags;
 	USHORT		Version;
 	USHORT		Revision;
+<<<<<<< HEAD
 	ULONG 		Key;
+=======
+	ULONG		Key;
+>>>>>>> refs/remotes/origin/master
 	ULONG		AffinityMask;
 	ULONG		ConfigurationDataSize;
 	ULONG		IdentifierLength;
@@ -149,7 +165,11 @@ typedef struct systemid {
 typedef enum memorytype {
 	ExceptionBlock,
 	SPBPage,			/* ARCS == SystemParameterBlock */
+<<<<<<< HEAD
 #ifndef	_NT_PROM
+=======
+#ifndef _NT_PROM
+>>>>>>> refs/remotes/origin/master
 	FreeContiguous,
 	FreeMemory,
 	BadMemory,

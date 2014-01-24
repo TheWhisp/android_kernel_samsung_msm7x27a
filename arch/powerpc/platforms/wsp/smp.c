@@ -23,7 +23,11 @@
 #include "ics.h"
 #include "wsp.h"
 
+<<<<<<< HEAD
 static void __devinit smp_a2_setup_cpu(int cpu)
+=======
+static void smp_a2_setup_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	doorbell_setup_this_cpu();
 
@@ -31,7 +35,11 @@ static void __devinit smp_a2_setup_cpu(int cpu)
 		xics_setup_cpu();
 }
 
+<<<<<<< HEAD
 int __devinit smp_a2_kick_cpu(int nr)
+=======
+int smp_a2_kick_cpu(int nr)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *enable_method;
 	struct device_node *np;
@@ -71,11 +79,25 @@ int __devinit smp_a2_kick_cpu(int nr)
 
 static int __init smp_a2_probe(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return cpus_weight(cpu_possible_map);
 }
 
 static struct smp_ops_t a2_smp_ops = {
 	.message_pass	= smp_muxed_ipi_message_pass,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	return num_possible_cpus();
+}
+
+static struct smp_ops_t a2_smp_ops = {
+	.message_pass	= NULL,	/* Use smp_muxed_ipi_message_pass */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.cause_ipi	= doorbell_cause_ipi,
 	.probe		= smp_a2_probe,
 	.kick_cpu	= smp_a2_kick_cpu,

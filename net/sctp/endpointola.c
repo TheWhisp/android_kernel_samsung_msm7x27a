@@ -29,10 +29,14 @@
  *
  * Please send any bug reports or fixes you make to the
  * email address(es):
+<<<<<<< HEAD
  *    lksctp developers <lksctp-developers@lists.sourceforge.net>
  *
  * Or submit a bug report through the following website:
  *    http://www.sf.net/projects/lksctp
+=======
+ *    lksctp developers <linux-sctp@vger.kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Written or modified by:
  *    La Monte H.P. Yarroll <piggy@acm.org>
@@ -40,9 +44,12 @@
  *    Jon Grimm <jgrimm@austin.ibm.com>
  *    Daisy Chang <daisyc@us.ibm.com>
  *    Dajiang Zhang <dajiang.zhang@nokia.com>
+<<<<<<< HEAD
  *
  * Any bugs reported given to us we will try to fix... any fixes shared will
  * be incorporated into the next SCTP release.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/types.h>
@@ -65,6 +72,10 @@ static struct sctp_endpoint *sctp_endpoint_init(struct sctp_endpoint *ep,
 						struct sock *sk,
 						gfp_t gfp)
 {
+<<<<<<< HEAD
+=======
+	struct net *net = sock_net(sk);
+>>>>>>> refs/remotes/origin/master
 	struct sctp_hmac_algo_param *auth_hmacs = NULL;
 	struct sctp_chunks_param *auth_chunks = NULL;
 	struct sctp_shared_key *null_key;
@@ -74,7 +85,11 @@ static struct sctp_endpoint *sctp_endpoint_init(struct sctp_endpoint *ep,
 	if (!ep->digest)
 		return NULL;
 
+<<<<<<< HEAD
 	if (sctp_auth_enable) {
+=======
+	if (net->sctp.auth_enable) {
+>>>>>>> refs/remotes/origin/master
 		/* Allocate space for HMACS and CHUNKS authentication
 		 * variables.  There are arrays that we encode directly
 		 * into parameters to make the rest of the operations easier.
@@ -106,7 +121,11 @@ static struct sctp_endpoint *sctp_endpoint_init(struct sctp_endpoint *ep,
 		/* If the Add-IP functionality is enabled, we must
 		 * authenticate, ASCONF and ASCONF-ACK chunks
 		 */
+<<<<<<< HEAD
 		if (sctp_addip_enable) {
+=======
+		if (net->sctp.addip_enable) {
+>>>>>>> refs/remotes/origin/master
 			auth_chunks->chunks[0] = SCTP_CID_ASCONF;
 			auth_chunks->chunks[1] = SCTP_CID_ASCONF_ACK;
 			auth_chunks->param_hdr.length =
@@ -120,8 +139,12 @@ static struct sctp_endpoint *sctp_endpoint_init(struct sctp_endpoint *ep,
 
 	/* Initialize the basic object fields. */
 	atomic_set(&ep->base.refcnt, 1);
+<<<<<<< HEAD
 	ep->base.dead = 0;
 	ep->base.malloced = 1;
+=======
+	ep->base.dead = false;
+>>>>>>> refs/remotes/origin/master
 
 	/* Create an input queue.  */
 	sctp_inq_init(&ep->base.inqueue);
@@ -140,13 +163,18 @@ static struct sctp_endpoint *sctp_endpoint_init(struct sctp_endpoint *ep,
 	INIT_LIST_HEAD(&ep->asocs);
 
 	/* Use SCTP specific send buffer space queues.  */
+<<<<<<< HEAD
 	ep->sndbuf_policy = sctp_sndbuf_policy;
+=======
+	ep->sndbuf_policy = net->sctp.sndbuf_policy;
+>>>>>>> refs/remotes/origin/master
 
 	sk->sk_data_ready = sctp_data_ready;
 	sk->sk_write_space = sctp_write_space;
 	sock_set_flag(sk, SOCK_USE_WRITE_QUEUE);
 
 	/* Get the receive buffer policy for this endpoint */
+<<<<<<< HEAD
 	ep->rcvbuf_policy = sctp_rcvbuf_policy;
 
 	/* Initialize the secret key used with cookie. */
@@ -157,12 +185,26 @@ static struct sctp_endpoint *sctp_endpoint_init(struct sctp_endpoint *ep,
 	/* SCTP-AUTH extensions*/
 	INIT_LIST_HEAD(&ep->endpoint_shared_keys);
 	null_key = sctp_auth_shkey_create(0, GFP_KERNEL);
+=======
+	ep->rcvbuf_policy = net->sctp.rcvbuf_policy;
+
+	/* Initialize the secret key used with cookie. */
+	get_random_bytes(ep->secret_key, sizeof(ep->secret_key));
+
+	/* SCTP-AUTH extensions*/
+	INIT_LIST_HEAD(&ep->endpoint_shared_keys);
+	null_key = sctp_auth_shkey_create(0, gfp);
+>>>>>>> refs/remotes/origin/master
 	if (!null_key)
 		goto nomem;
 
 	list_add(&null_key->key_list, &ep->endpoint_shared_keys);
 
+<<<<<<< HEAD
 	/* Allocate and initialize transorms arrays for suported HMACs. */
+=======
+	/* Allocate and initialize transorms arrays for supported HMACs. */
+>>>>>>> refs/remotes/origin/master
 	err = sctp_auth_init_hmacs(ep, gfp);
 	if (err)
 		goto nomem_hmacs;
@@ -194,12 +236,22 @@ struct sctp_endpoint *sctp_endpoint_new(struct sock *sk, gfp_t gfp)
 	struct sctp_endpoint *ep;
 
 	/* Build a local endpoint. */
+<<<<<<< HEAD
 	ep = t_new(struct sctp_endpoint, gfp);
 	if (!ep)
 		goto fail;
 	if (!sctp_endpoint_init(ep, sk, gfp))
 		goto fail_init;
 	ep->base.malloced = 1;
+=======
+	ep = kzalloc(sizeof(*ep), gfp);
+	if (!ep)
+		goto fail;
+
+	if (!sctp_endpoint_init(ep, sk, gfp))
+		goto fail_init;
+
+>>>>>>> refs/remotes/origin/master
 	SCTP_DBG_OBJCNT_INC(ep);
 	return ep;
 
@@ -235,7 +287,11 @@ void sctp_endpoint_add_asoc(struct sctp_endpoint *ep,
  */
 void sctp_endpoint_free(struct sctp_endpoint *ep)
 {
+<<<<<<< HEAD
 	ep->base.dead = 1;
+=======
+	ep->base.dead = true;
+>>>>>>> refs/remotes/origin/master
 
 	ep->base.sk->sk_state = SCTP_SS_CLOSED;
 
@@ -248,12 +304,24 @@ void sctp_endpoint_free(struct sctp_endpoint *ep)
 /* Final destructor for endpoint.  */
 static void sctp_endpoint_destroy(struct sctp_endpoint *ep)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	int i;
 
 	SCTP_ASSERT(ep->base.dead, "Endpoint is not dead", return);
 
 	/* Free up the HMAC transform. */
 	crypto_free_hash(sctp_sk(ep->base.sk)->hmac);
+=======
+	struct sock *sk;
+
+	if (unlikely(!ep->base.dead)) {
+		WARN(1, "Attempt to destroy undead endpoint %p!\n", ep);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Free the digest buffer */
 	kfree(ep->digest);
@@ -272,6 +340,10 @@ static void sctp_endpoint_destroy(struct sctp_endpoint *ep)
 	sctp_inq_free(&ep->base.inqueue);
 	sctp_bind_addr_free(&ep->base.bind_addr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < SCTP_HOW_MANY_SECRETS; ++i)
 		memset(&ep->secret_key[i], 0, SCTP_SECRET_SIZE);
 
@@ -288,6 +360,22 @@ static void sctp_endpoint_destroy(struct sctp_endpoint *ep)
 		kfree(ep);
 		SCTP_DBG_OBJCNT_DEC(ep);
 	}
+=======
+	memset(ep->secret_key, 0, sizeof(ep->secret_key));
+
+	/* Give up our hold on the sock. */
+	sk = ep->base.sk;
+	if (sk != NULL) {
+		/* Remove and free the port */
+		if (sctp_sk(sk)->bind_hash)
+			sctp_put_port(sk);
+
+		sock_put(sk);
+	}
+
+	kfree(ep);
+	SCTP_DBG_OBJCNT_DEC(ep);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Hold a reference to an endpoint. */
@@ -307,11 +395,20 @@ void sctp_endpoint_put(struct sctp_endpoint *ep)
 
 /* Is this the endpoint we are looking for?  */
 struct sctp_endpoint *sctp_endpoint_is_match(struct sctp_endpoint *ep,
+<<<<<<< HEAD
+=======
+					       struct net *net,
+>>>>>>> refs/remotes/origin/master
 					       const union sctp_addr *laddr)
 {
 	struct sctp_endpoint *retval = NULL;
 
+<<<<<<< HEAD
 	if (htons(ep->base.bind_addr.port) == laddr->v4.sin_port) {
+=======
+	if ((htons(ep->base.bind_addr.port) == laddr->v4.sin_port) &&
+	    net_eq(sock_net(ep->base.sk), net)) {
+>>>>>>> refs/remotes/origin/master
 		if (sctp_bind_addr_match(&ep->base.bind_addr, laddr,
 					 sctp_sk(ep->base.sk)))
 			retval = ep;
@@ -334,7 +431,10 @@ static struct sctp_association *__sctp_endpoint_lookup_assoc(
 	struct sctp_transport *t = NULL;
 	struct sctp_hashbucket *head;
 	struct sctp_ep_common *epb;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	int hash;
 	int rport;
 
@@ -348,10 +448,18 @@ static struct sctp_association *__sctp_endpoint_lookup_assoc(
 
 	rport = ntohs(paddr->v4.sin_port);
 
+<<<<<<< HEAD
 	hash = sctp_assoc_hashfn(ep->base.bind_addr.port, rport);
 	head = &sctp_assoc_hashtable[hash];
 	read_lock(&head->lock);
 	sctp_for_each_hentry(epb, node, &head->chain) {
+=======
+	hash = sctp_assoc_hashfn(sock_net(ep->base.sk), ep->base.bind_addr.port,
+				 rport);
+	head = &sctp_assoc_hashtable[hash];
+	read_lock(&head->lock);
+	sctp_for_each_hentry(epb, &head->chain) {
+>>>>>>> refs/remotes/origin/master
 		tmp = sctp_assoc(epb);
 		if (tmp->ep != ep || rport != tmp->peer.port)
 			continue;
@@ -391,13 +499,21 @@ int sctp_endpoint_is_peeled_off(struct sctp_endpoint *ep,
 {
 	struct sctp_sockaddr_entry *addr;
 	struct sctp_bind_addr *bp;
+<<<<<<< HEAD
+=======
+	struct net *net = sock_net(ep->base.sk);
+>>>>>>> refs/remotes/origin/master
 
 	bp = &ep->base.bind_addr;
 	/* This function is called with the socket lock held,
 	 * so the address_list can not change.
 	 */
 	list_for_each_entry(addr, &bp->address_list, list) {
+<<<<<<< HEAD
 		if (sctp_has_association(&addr->a, paddr))
+=======
+		if (sctp_has_association(net, &addr->a, paddr))
+>>>>>>> refs/remotes/origin/master
 			return 1;
 	}
 
@@ -414,13 +530,25 @@ static void sctp_endpoint_bh_rcv(struct work_struct *work)
 			     base.inqueue.immediate);
 	struct sctp_association *asoc;
 	struct sock *sk;
+<<<<<<< HEAD
+=======
+	struct net *net;
+>>>>>>> refs/remotes/origin/master
 	struct sctp_transport *transport;
 	struct sctp_chunk *chunk;
 	struct sctp_inq *inqueue;
 	sctp_subtype_t subtype;
 	sctp_state_t state;
 	int error = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int first_time = 1;	/* is this the first time through the looop */
+=======
+	int first_time = 1;	/* is this the first time through the loop */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int first_time = 1;	/* is this the first time through the loop */
+>>>>>>> refs/remotes/origin/master
 
 	if (ep->base.dead)
 		return;
@@ -428,6 +556,10 @@ static void sctp_endpoint_bh_rcv(struct work_struct *work)
 	asoc = NULL;
 	inqueue = &ep->base.inqueue;
 	sk = ep->base.sk;
+<<<<<<< HEAD
+=======
+	net = sock_net(sk);
+>>>>>>> refs/remotes/origin/master
 
 	while (NULL != (chunk = sctp_inq_pop(inqueue))) {
 		subtype = SCTP_ST_CHUNK(chunk->chunk_hdr->type);
@@ -478,13 +610,25 @@ normal:
 		 */
 		if (asoc && sctp_chunk_is_data(chunk))
 			asoc->peer.last_data_from = chunk->transport;
+<<<<<<< HEAD
 		else
 			SCTP_INC_STATS(SCTP_MIB_INCTRLCHUNKS);
+=======
+		else {
+			SCTP_INC_STATS(sock_net(ep->base.sk), SCTP_MIB_INCTRLCHUNKS);
+			if (asoc)
+				asoc->stats.ictrlchunks++;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if (chunk->transport)
 			chunk->transport->last_time_heard = jiffies;
 
+<<<<<<< HEAD
 		error = sctp_do_sm(SCTP_EVENT_T_CHUNK, subtype, state,
+=======
+		error = sctp_do_sm(net, SCTP_EVENT_T_CHUNK, subtype, state,
+>>>>>>> refs/remotes/origin/master
 				   ep, asoc, chunk, GFP_ATOMIC);
 
 		if (error && chunk)

@@ -1,9 +1,21 @@
 /*
  * omap-mcpdm.h
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2009 Texas Instruments
  *
  * Contact: Misael Lopez Cruz <x0052729@ti.com>
+=======
+ * Copyright (C) 2009 - 2011 Texas Instruments
+ *
+ * Contact: Misael Lopez Cruz <misael.lopez@ti.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2009 - 2011 Texas Instruments
+ *
+ * Contact: Misael Lopez Cruz <misael.lopez@ti.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,6 +36,8 @@
 #ifndef __OMAP_MCPDM_H__
 #define __OMAP_MCPDM_H__
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 
 #define MCPDM_REVISION		0x00
@@ -42,6 +56,29 @@
 #define MCPDM_FIFO_CTRL_DN	0x50
 #define MCPDM_FIFO_CTRL_UP	0x54
 #define MCPDM_DN_OFFSET		0x58
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define MCPDM_REG_REVISION		0x00
+#define MCPDM_REG_SYSCONFIG		0x10
+#define MCPDM_REG_IRQSTATUS_RAW		0x24
+#define MCPDM_REG_IRQSTATUS		0x28
+#define MCPDM_REG_IRQENABLE_SET		0x2C
+#define MCPDM_REG_IRQENABLE_CLR		0x30
+#define MCPDM_REG_IRQWAKE_EN		0x34
+#define MCPDM_REG_DMAENABLE_SET		0x38
+#define MCPDM_REG_DMAENABLE_CLR		0x3C
+#define MCPDM_REG_DMAWAKEEN		0x40
+#define MCPDM_REG_CTRL			0x44
+#define MCPDM_REG_DN_DATA		0x48
+#define MCPDM_REG_UP_DATA		0x4C
+#define MCPDM_REG_FIFO_CTRL_DN		0x50
+#define MCPDM_REG_FIFO_CTRL_UP		0x54
+#define MCPDM_REG_DN_OFFSET		0x58
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * MCPDM_IRQ bit fields
@@ -65,13 +102,25 @@
  * MCPDM_DMAENABLE bit fields
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DMA_DN_ENABLE		0x1
 #define DMA_UP_ENABLE		0x2
+=======
+#define MCPDM_DMA_DN_ENABLE		(1 << 0)
+#define MCPDM_DMA_UP_ENABLE		(1 << 1)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MCPDM_DMA_DN_ENABLE		(1 << 0)
+#define MCPDM_DMA_UP_ENABLE		(1 << 1)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * MCPDM_CTRL bit fields
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define PDM_UP1_EN		0x0001
 #define PDM_UP2_EN		0x0002
 #define PDM_UP3_EN		0x0004
@@ -94,18 +143,51 @@
 
 #define PDMOUTFORMAT_LJUST	(0 << 8)
 #define PDMOUTFORMAT_RJUST	(1 << 8)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define MCPDM_PDM_UPLINK_EN(x)		(1 << (x - 1)) /* ch1 is at bit 0 */
+#define MCPDM_PDM_DOWNLINK_EN(x)	(1 << (x + 2)) /* ch1 is at bit 3 */
+#define MCPDM_PDMOUTFORMAT		(1 << 8)
+#define MCPDM_CMD_INT			(1 << 9)
+#define MCPDM_STATUS_INT		(1 << 10)
+#define MCPDM_SW_UP_RST			(1 << 11)
+#define MCPDM_SW_DN_RST			(1 << 12)
+#define MCPDM_WD_EN			(1 << 14)
+#define MCPDM_PDM_UP_MASK		0x7
+#define MCPDM_PDM_DN_MASK		(0x1f << 3)
+
+
+#define MCPDM_PDMOUTFORMAT_LJUST	(0 << 8)
+#define MCPDM_PDMOUTFORMAT_RJUST	(1 << 8)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * MCPDM_FIFO_CTRL bit fields
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define UP_THRES_MAX		0xF
 #define DN_THRES_MAX		0xF
+=======
+#define MCPDM_UP_THRES_MAX		0xF
+#define MCPDM_DN_THRES_MAX		0xF
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MCPDM_UP_THRES_MAX		0xF
+#define MCPDM_DN_THRES_MAX		0xF
+>>>>>>> refs/remotes/origin/master
 
 /*
  * MCPDM_DN_OFFSET bit fields
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define DN_OFST_RX1_EN		0x0001
 #define DN_OFST_RX2_EN		0x0100
 
@@ -115,5 +197,19 @@
 
 #define MCPDM_UPLINK		1
 #define MCPDM_DOWNLINK		2
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define MCPDM_DN_OFST_RX1_EN		(1 << 0)
+#define MCPDM_DNOFST_RX1(x)		((x & 0x1f) << 1)
+#define MCPDM_DN_OFST_RX2_EN		(1 << 8)
+#define MCPDM_DNOFST_RX2(x)		((x & 0x1f) << 9)
+
+void omap_mcpdm_configure_dn_offsets(struct snd_soc_pcm_runtime *rtd,
+				    u8 rx1, u8 rx2);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* End of __OMAP_MCPDM_H__ */

@@ -12,6 +12,14 @@
  */
 #include <linux/init.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/memblock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/memblock.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/mmzone.h>
 #include <linux/module.h>
@@ -30,8 +38,13 @@
 #include <asm/sn/sn_private.h>
 
 
+<<<<<<< HEAD
 #define SLOT_PFNSHIFT           (SLOT_SHIFT - PAGE_SHIFT)
 #define PFN_NASIDSHFT           (NASID_SHFT - PAGE_SHIFT)
+=======
+#define SLOT_PFNSHIFT		(SLOT_SHIFT - PAGE_SHIFT)
+#define PFN_NASIDSHFT		(NASID_SHFT - PAGE_SHIFT)
+>>>>>>> refs/remotes/origin/master
 
 struct node_data *__node_data[MAX_COMPACT_NODES];
 
@@ -42,7 +55,11 @@ static int fine_mode;
 static int is_fine_dirmode(void)
 {
 	return (((LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_REGIONSIZE_MASK)
+<<<<<<< HEAD
 	        >> NSRI_REGIONSIZE_SHFT) & REGIONSIZE_FINE);
+=======
+		>> NSRI_REGIONSIZE_SHFT) & REGIONSIZE_FINE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static hubreg_t get_region(cnodeid_t cnode)
@@ -65,7 +82,11 @@ static void gen_region_mask(hubreg_t *region_mask)
 	}
 }
 
+<<<<<<< HEAD
 #define	rou_rflag	rou_flags
+=======
+#define rou_rflag	rou_flags
+>>>>>>> refs/remotes/origin/master
 
 static int router_distance;
 
@@ -254,6 +275,7 @@ static void __init dump_topology(void)
 	}
 }
 
+<<<<<<< HEAD
 static pfn_t __init slot_getbasepfn(cnodeid_t cnode, int slot)
 {
 	nasid_t nasid = COMPACT_TO_NASID_NODEID(cnode);
@@ -262,6 +284,16 @@ static pfn_t __init slot_getbasepfn(cnodeid_t cnode, int slot)
 }
 
 static pfn_t __init slot_psize_compute(cnodeid_t node, int slot)
+=======
+static unsigned long __init slot_getbasepfn(cnodeid_t cnode, int slot)
+{
+	nasid_t nasid = COMPACT_TO_NASID_NODEID(cnode);
+
+	return ((unsigned long)nasid << PFN_NASIDSHFT) | (slot << SLOT_PFNSHIFT);
+}
+
+static unsigned long __init slot_psize_compute(cnodeid_t node, int slot)
+>>>>>>> refs/remotes/origin/master
 {
 	nasid_t nasid;
 	lboard_t *brd;
@@ -352,12 +384,19 @@ static void __init mlreset(void)
 
 static void __init szmem(void)
 {
+<<<<<<< HEAD
 	pfn_t slot_psize, slot0sz = 0, nodebytes;	/* Hack to detect problem configs */
 	int slot;
 	cnodeid_t node;
 
 	num_physpages = 0;
 
+=======
+	unsigned long slot_psize, slot0sz = 0, nodebytes;	/* Hack to detect problem configs */
+	int slot;
+	cnodeid_t node;
+
+>>>>>>> refs/remotes/origin/master
 	for_each_online_node(node) {
 		nodebytes = 0;
 		for (slot = 0; slot < MAX_MEM_SLOTS; slot++) {
@@ -380,19 +419,36 @@ static void __init szmem(void)
 				slot = MAX_MEM_SLOTS;
 				continue;
 			}
+<<<<<<< HEAD
 			num_physpages += slot_psize;
+<<<<<<< HEAD
 			add_active_range(node, slot_getbasepfn(node, slot),
 					 slot_getbasepfn(node, slot) + slot_psize);
+=======
+			memblock_add_node(PFN_PHYS(slot_getbasepfn(node, slot)),
+					  PFN_PHYS(slot_psize), node);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			memblock_add_node(PFN_PHYS(slot_getbasepfn(node, slot)),
+					  PFN_PHYS(slot_psize), node);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
 
 static void __init node_mem_init(cnodeid_t node)
 {
+<<<<<<< HEAD
 	pfn_t slot_firstpfn = slot_getbasepfn(node, 0);
 	pfn_t slot_freepfn = node_getfirstfree(node);
 	unsigned long bootmap_size;
 	pfn_t start_pfn, end_pfn;
+=======
+	unsigned long slot_firstpfn = slot_getbasepfn(node, 0);
+	unsigned long slot_freepfn = node_getfirstfree(node);
+	unsigned long bootmap_size;
+	unsigned long start_pfn, end_pfn;
+>>>>>>> refs/remotes/origin/master
 
 	get_pfn_range_for_nid(node, &start_pfn, &end_pfn);
 
@@ -400,6 +456,10 @@ static void __init node_mem_init(cnodeid_t node)
 	 * Allocate the node data structures on the node first.
 	 */
 	__node_data[node] = __va(slot_freepfn << PAGE_SHIFT);
+<<<<<<< HEAD
+=======
+	memset(__node_data[node], 0, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 	NODE_DATA(node)->bdata = &bootmem_node_data[node];
 	NODE_DATA(node)->node_start_pfn = start_pfn;
@@ -410,7 +470,11 @@ static void __init node_mem_init(cnodeid_t node)
 	slot_freepfn += PFN_UP(sizeof(struct pglist_data) +
 			       sizeof(struct hub_data));
 
+<<<<<<< HEAD
   	bootmap_size = init_bootmem_node(NODE_DATA(node), slot_freepfn,
+=======
+	bootmap_size = init_bootmem_node(NODE_DATA(node), slot_freepfn,
+>>>>>>> refs/remotes/origin/master
 					start_pfn, end_pfn);
 	free_bootmem_with_active_regions(node, end_pfn);
 	reserve_bootmem_node(NODE_DATA(node), slot_firstpfn << PAGE_SHIFT,
@@ -420,7 +484,11 @@ static void __init node_mem_init(cnodeid_t node)
 }
 
 /*
+<<<<<<< HEAD
  * A node with nothing.  We use it to avoid any special casing in
+=======
+ * A node with nothing.	 We use it to avoid any special casing in
+>>>>>>> refs/remotes/origin/master
  * cpumask_of_node
  */
 static struct node_data null_node = {
@@ -455,7 +523,11 @@ void __init prom_free_prom_memory(void)
 	/* We got nothing to free here ...  */
 }
 
+<<<<<<< HEAD
 extern unsigned long setup_zero_pages(void);
+=======
+extern void setup_zero_pages(void);
+>>>>>>> refs/remotes/origin/master
 
 void __init paging_init(void)
 {
@@ -465,7 +537,11 @@ void __init paging_init(void)
 	pagetable_init();
 
 	for_each_online_node(node) {
+<<<<<<< HEAD
 		pfn_t start_pfn, end_pfn;
+=======
+		unsigned long start_pfn, end_pfn;
+>>>>>>> refs/remotes/origin/master
 
 		get_pfn_range_for_nid(node, &start_pfn, &end_pfn);
 
@@ -478,6 +554,7 @@ void __init paging_init(void)
 
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	unsigned long codesize, datasize, initsize, tmp;
 	unsigned node;
 
@@ -506,4 +583,10 @@ void __init mem_init(void)
 	       datasize >> 10,
 	       initsize >> 10,
 	       totalhigh_pages << (PAGE_SHIFT-10));
+=======
+	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
+	free_all_bootmem();
+	setup_zero_pages();	/* This comes from node 0 */
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 }

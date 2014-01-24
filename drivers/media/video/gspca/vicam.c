@@ -26,6 +26,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MODULE_NAME "vicam"
 #define HEADER_SIZE 64
 
@@ -117,7 +122,11 @@ static int vicam_control_msg(struct gspca_dev *gspca_dev, u8 request,
 			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
 			      value, index, data, len, 1000);
 	if (ret < 0)
+<<<<<<< HEAD
 		err("control msg req %02X error %d", request, ret);
+=======
+		pr_err("control msg req %02X error %d\n", request, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -189,8 +198,13 @@ static int vicam_read_frame(struct gspca_dev *gspca_dev, u8 *data, int size)
 			   data, size, &act_len, 10000);
 	/* successful, it returns 0, otherwise  negative */
 	if (ret < 0 || act_len != size) {
+<<<<<<< HEAD
 		err("bulk read fail (%d) len %d/%d",
 			ret, act_len, size);
+=======
+		pr_err("bulk read fail (%d) len %d/%d\n",
+		       ret, act_len, size);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 	}
 	return 0;
@@ -216,7 +230,11 @@ static void vicam_dostream(struct work_struct *work)
 		   HEADER_SIZE;
 	buffer = kmalloc(frame_sz, GFP_KERNEL | GFP_DMA);
 	if (!buffer) {
+<<<<<<< HEAD
 		err("Couldn't allocate USB buffer");
+=======
+		pr_err("Couldn't allocate USB buffer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto exit;
 	}
 
@@ -269,7 +287,11 @@ static int sd_init(struct gspca_dev *gspca_dev)
 	ret = request_ihex_firmware(&fw, "vicam/firmware.fw",
 				    &gspca_dev->dev->dev);
 	if (ret) {
+<<<<<<< HEAD
 		err("Failed to load \"vicam/firmware.fw\": %d\n", ret);
+=======
+		pr_err("Failed to load \"vicam/firmware.fw\": %d\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret;
 	}
 
@@ -322,7 +344,12 @@ static void sd_stop0(struct gspca_dev *gspca_dev)
 	dev->work_thread = NULL;
 	mutex_lock(&gspca_dev->usb_lock);
 
+<<<<<<< HEAD
 	vicam_set_camera_power(gspca_dev, 0);
+=======
+	if (gspca_dev->present)
+		vicam_set_camera_power(gspca_dev, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Table of supported USB devices */
@@ -366,6 +393,7 @@ static struct usb_driver sd_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 /* -- module insert / remove -- */
 static int __init sd_mod_init(void)
 {
@@ -379,3 +407,6 @@ static void __exit sd_mod_exit(void)
 
 module_init(sd_mod_init);
 module_exit(sd_mod_exit);
+=======
+module_usb_driver(sd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -20,9 +20,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/ioctl.h>
 #include <linux/media.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/compat.h>
+#include <linux/export.h>
+#include <linux/ioctl.h>
+#include <linux/media.h>
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <media/media-device.h>
 #include <media/media-devnode.h>
@@ -58,7 +70,13 @@ static int media_device_get_info(struct media_device *dev,
 	info.hw_revision = dev->hw_revision;
 	info.driver_version = dev->driver_version;
 
+<<<<<<< HEAD
 	return copy_to_user(__info, &info, sizeof(*__info));
+=======
+	if (copy_to_user(__info, &info, sizeof(*__info)))
+		return -EFAULT;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct media_entity *find_entity(struct media_device *mdev, u32 id)
@@ -98,17 +116,34 @@ static long media_device_enum_entities(struct media_device *mdev,
 		return -EINVAL;
 
 	u_ent.id = ent->id;
+<<<<<<< HEAD
 	u_ent.name[0] = '\0';
 	if (ent->name)
 		strlcpy(u_ent.name, ent->name, sizeof(u_ent.name));
+=======
+	if (ent->name) {
+		strncpy(u_ent.name, ent->name, sizeof(u_ent.name));
+		u_ent.name[sizeof(u_ent.name) - 1] = '\0';
+	} else {
+		memset(u_ent.name, 0, sizeof(u_ent.name));
+	}
+>>>>>>> refs/remotes/origin/master
 	u_ent.type = ent->type;
 	u_ent.revision = ent->revision;
 	u_ent.flags = ent->flags;
 	u_ent.group_id = ent->group_id;
 	u_ent.pads = ent->num_pads;
 	u_ent.links = ent->num_links - ent->num_backlinks;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u_ent.v4l.major = ent->v4l.major;
 	u_ent.v4l.minor = ent->v4l.minor;
+=======
+	memcpy(&u_ent.raw, &ent->info, sizeof(ent->info));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(&u_ent.raw, &ent->info, sizeof(ent->info));
+>>>>>>> refs/remotes/origin/master
 	if (copy_to_user(uent, &u_ent, sizeof(u_ent)))
 		return -EFAULT;
 	return 0;
@@ -122,6 +157,7 @@ static void media_device_kpad_to_upad(const struct media_pad *kpad,
 	upad->flags = kpad->flags;
 }
 
+<<<<<<< HEAD
 static long media_device_enum_links(struct media_device *mdev,
 				    struct media_links_enum __user *ulinks)
 {
@@ -136,27 +172,58 @@ static long media_device_enum_links(struct media_device *mdev,
 		return -EINVAL;
 
 	if (links.pads) {
+=======
+static long __media_device_enum_links(struct media_device *mdev,
+				      struct media_links_enum *links)
+{
+	struct media_entity *entity;
+
+	entity = find_entity(mdev, links->entity);
+	if (entity == NULL)
+		return -EINVAL;
+
+	if (links->pads) {
+>>>>>>> refs/remotes/origin/master
 		unsigned int p;
 
 		for (p = 0; p < entity->num_pads; p++) {
 			struct media_pad_desc pad;
+<<<<<<< HEAD
 			media_device_kpad_to_upad(&entity->pads[p], &pad);
 			if (copy_to_user(&links.pads[p], &pad, sizeof(pad)))
+=======
+
+			memset(&pad, 0, sizeof(pad));
+			media_device_kpad_to_upad(&entity->pads[p], &pad);
+			if (copy_to_user(&links->pads[p], &pad, sizeof(pad)))
+>>>>>>> refs/remotes/origin/master
 				return -EFAULT;
 		}
 	}
 
+<<<<<<< HEAD
 	if (links.links) {
 		struct media_link_desc __user *ulink;
 		unsigned int l;
 
 		for (l = 0, ulink = links.links; l < entity->num_links; l++) {
+=======
+	if (links->links) {
+		struct media_link_desc __user *ulink;
+		unsigned int l;
+
+		for (l = 0, ulink = links->links; l < entity->num_links; l++) {
+>>>>>>> refs/remotes/origin/master
 			struct media_link_desc link;
 
 			/* Ignore backlinks. */
 			if (entity->links[l].source->entity != entity)
 				continue;
 
+<<<<<<< HEAD
+=======
+			memset(&link, 0, sizeof(link));
+>>>>>>> refs/remotes/origin/master
 			media_device_kpad_to_upad(entity->links[l].source,
 						  &link.source);
 			media_device_kpad_to_upad(entity->links[l].sink,
@@ -167,8 +234,31 @@ static long media_device_enum_links(struct media_device *mdev,
 			ulink++;
 		}
 	}
+<<<<<<< HEAD
 	if (copy_to_user(ulinks, &links, sizeof(*ulinks)))
 		return -EFAULT;
+=======
+
+	return 0;
+}
+
+static long media_device_enum_links(struct media_device *mdev,
+				    struct media_links_enum __user *ulinks)
+{
+	struct media_links_enum links;
+	int rval;
+
+	if (copy_from_user(&links, ulinks, sizeof(links)))
+		return -EFAULT;
+
+	rval = __media_device_enum_links(mdev, &links);
+	if (rval < 0)
+		return rval;
+
+	if (copy_to_user(ulinks, &links, sizeof(*ulinks)))
+		return -EFAULT;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -249,10 +339,77 @@ static long media_device_ioctl(struct file *filp, unsigned int cmd,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COMPAT
+
+struct media_links_enum32 {
+	__u32 entity;
+	compat_uptr_t pads; /* struct media_pad_desc * */
+	compat_uptr_t links; /* struct media_link_desc * */
+	__u32 reserved[4];
+};
+
+static long media_device_enum_links32(struct media_device *mdev,
+				      struct media_links_enum32 __user *ulinks)
+{
+	struct media_links_enum links;
+	compat_uptr_t pads_ptr, links_ptr;
+
+	memset(&links, 0, sizeof(links));
+
+	if (get_user(links.entity, &ulinks->entity)
+	    || get_user(pads_ptr, &ulinks->pads)
+	    || get_user(links_ptr, &ulinks->links))
+		return -EFAULT;
+
+	links.pads = compat_ptr(pads_ptr);
+	links.links = compat_ptr(links_ptr);
+
+	return __media_device_enum_links(mdev, &links);
+}
+
+#define MEDIA_IOC_ENUM_LINKS32		_IOWR('|', 0x02, struct media_links_enum32)
+
+static long media_device_compat_ioctl(struct file *filp, unsigned int cmd,
+				      unsigned long arg)
+{
+	struct media_devnode *devnode = media_devnode_data(filp);
+	struct media_device *dev = to_media_device(devnode);
+	long ret;
+
+	switch (cmd) {
+	case MEDIA_IOC_DEVICE_INFO:
+	case MEDIA_IOC_ENUM_ENTITIES:
+	case MEDIA_IOC_SETUP_LINK:
+		return media_device_ioctl(filp, cmd, arg);
+
+	case MEDIA_IOC_ENUM_LINKS32:
+		mutex_lock(&dev->graph_mutex);
+		ret = media_device_enum_links32(dev,
+				(struct media_links_enum32 __user *)arg);
+		mutex_unlock(&dev->graph_mutex);
+		break;
+
+	default:
+		ret = -ENOIOCTLCMD;
+	}
+
+	return ret;
+}
+#endif /* CONFIG_COMPAT */
+
+>>>>>>> refs/remotes/origin/master
 static const struct media_file_operations media_device_fops = {
 	.owner = THIS_MODULE,
 	.open = media_device_open,
 	.ioctl = media_device_ioctl,
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = media_device_compat_ioctl,
+#endif /* CONFIG_COMPAT */
+>>>>>>> refs/remotes/origin/master
 	.release = media_device_close,
 };
 

@@ -23,7 +23,13 @@
 #include <asm/asm-offsets.h>
 #include <asm/setup.h>
 #include <asm/fpu.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/siginfo.h>
@@ -467,6 +473,7 @@ asmlinkage void compound_exception(unsigned long esfr1,
 	BUG();
 } /* end compound_exception() */
 
+<<<<<<< HEAD
 /*****************************************************************************/
 /*
  * The architecture-independent backtrace generator
@@ -478,6 +485,8 @@ void dump_stack(void)
 
 EXPORT_SYMBOL(dump_stack);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void show_stack(struct task_struct *task, unsigned long *sp)
 {
 }
@@ -509,6 +518,10 @@ void show_regs(struct pt_regs *regs)
 	int loop;
 
 	printk("\n");
+<<<<<<< HEAD
+=======
+	show_regs_print_info(KERN_DEFAULT);
+>>>>>>> refs/remotes/origin/master
 
 	printk("Frame: @%08lx [%s]\n",
 	       (unsigned long) regs,
@@ -523,8 +536,11 @@ void show_regs(struct pt_regs *regs)
 		else
 			printk(" | ");
 	}
+<<<<<<< HEAD
 
 	printk("Process %s (pid: %d)\n", current->comm, current->pid);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void die_if_kernel(const char *str, ...)
@@ -536,7 +552,11 @@ void die_if_kernel(const char *str, ...)
 		return;
 
 	va_start(va, str);
+<<<<<<< HEAD
 	vsprintf(buffer, str, va);
+=======
+	vsnprintf(buffer, sizeof(buffer), str, va);
+>>>>>>> refs/remotes/origin/master
 	va_end(va);
 
 	console_verbose();

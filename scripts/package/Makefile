@@ -27,6 +27,7 @@ RPM := $(shell if [ -x "/usr/bin/rpmbuild" ]; then echo rpmbuild; \
 
 # Remove hyphens since they have special meaning in RPM filenames
 KERNELPATH := kernel-$(subst -,_,$(KERNELRELEASE))
+<<<<<<< HEAD
 MKSPEC     := $(srctree)/scripts/package/mkspec
 PREV       := set -e; cd -P ..;
 
@@ -37,12 +38,25 @@ $(objtree)/kernel.spec: $(MKSPEC) $(srctree)/Makefile
 
 rpm-pkg rpm: $(objtree)/kernel.spec FORCE
 	@if test -n "$(KBUILD_OUTPUT)"; then \
+=======
+# Include only those top-level files that are needed by make, plus the GPL copy
+TAR_CONTENT := $(KBUILD_ALLDIRS) kernel.spec .config .scmversion Makefile \
+               Kbuild Kconfig COPYING $(wildcard localversion*)
+TAR_CONTENT := $(addprefix $(KERNELPATH)/,$(TAR_CONTENT))
+MKSPEC     := $(srctree)/scripts/package/mkspec
+
+# rpm-pkg
+# ---------------------------------------------------------------------------
+rpm-pkg rpm: FORCE
+	@if test "$(objtree)" != "$(srctree)"; then \
+>>>>>>> refs/remotes/origin/master
 		echo "Building source + binary RPM is not possible outside the"; \
 		echo "kernel source tree. Don't set KBUILD_OUTPUT, or use the"; \
 		echo "binrpm-pkg target instead."; \
 		false; \
 	fi
 	$(MAKE) clean
+<<<<<<< HEAD
 	$(PREV) ln -sf $(srctree) $(KERNELPATH)
 	$(CONFIG_SHELL) $(srctree)/scripts/setlocalversion --save-scmversion
 	$(PREV) tar -cz $(RCS_TAR_IGNORE) -f $(KERNELPATH).tar.gz $(KERNELPATH)/.
@@ -74,6 +88,30 @@ binrpm-pkg: $(objtree)/binkernel.spec FORCE
 		$(UTS_MACHINE) -bb $<
 
 clean-files += $(objtree)/binkernel.spec
+=======
+	ln -sf $(srctree) $(KERNELPATH)
+	$(CONFIG_SHELL) $(MKSPEC) >$(objtree)/kernel.spec
+	$(CONFIG_SHELL) $(srctree)/scripts/setlocalversion --save-scmversion
+	tar -cz $(RCS_TAR_IGNORE) -f $(KERNELPATH).tar.gz $(TAR_CONTENT)
+	rm $(KERNELPATH)
+	rm -f $(objtree)/.scmversion
+	$(CONFIG_SHELL) $(srctree)/scripts/mkversion > $(objtree)/.tmp_version
+	mv -f $(objtree)/.tmp_version $(objtree)/.version
+	$(RPM) $(RPMOPTS) --target $(UTS_MACHINE) -ta $(KERNELPATH).tar.gz
+	rm $(KERNELPATH).tar.gz kernel.spec
+
+# binrpm-pkg
+# ---------------------------------------------------------------------------
+binrpm-pkg: FORCE
+	$(MAKE) KBUILD_SRC=
+	$(CONFIG_SHELL) $(MKSPEC) prebuilt > $(objtree)/binkernel.spec
+	$(CONFIG_SHELL) $(srctree)/scripts/mkversion > $(objtree)/.tmp_version
+	mv -f $(objtree)/.tmp_version $(objtree)/.version
+
+	$(RPM) $(RPMOPTS) --define "_builddir $(objtree)" --target \
+		$(UTS_MACHINE) -bb $(objtree)/binkernel.spec
+	rm binkernel.spec
+>>>>>>> refs/remotes/origin/master
 
 # Deb target
 # ---------------------------------------------------------------------------
@@ -118,11 +156,29 @@ perf-tar=perf-$(KERNELVERSION)
 
 quiet_cmd_perf_tar = TAR
       cmd_perf_tar = \
+<<<<<<< HEAD
+<<<<<<< HEAD
 git archive --prefix=$(perf-tar)/ HEAD^{tree}                       \
 	$$(cat $(srctree)/tools/perf/MANIFEST) -o $(perf-tar).tar;  \
 mkdir -p $(perf-tar);                                               \
 git rev-parse HEAD > $(perf-tar)/HEAD;                              \
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+git --git-dir=$(srctree)/.git archive --prefix=$(perf-tar)/         \
+	HEAD^{tree} $$(cd $(srctree);                               \
+		       echo $$(cat $(srctree)/tools/perf/MANIFEST)) \
+	-o $(perf-tar).tar;                                         \
+mkdir -p $(perf-tar);                                               \
+git --git-dir=$(srctree)/.git rev-parse HEAD > $(perf-tar)/HEAD;    \
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 tar rf $(perf-tar).tar $(perf-tar)/HEAD;                            \
+=======
+(cd $(srctree)/tools/perf;                                          \
+util/PERF-VERSION-GEN ../../$(perf-tar)/ 2>/dev/null);              \
+tar rf $(perf-tar).tar $(perf-tar)/HEAD $(perf-tar)/PERF-VERSION-FILE; \
+>>>>>>> refs/remotes/origin/master
 rm -r $(perf-tar);                                                  \
 $(if $(findstring tar-src,$@),,                                     \
 $(if $(findstring bz2,$@),bzip2,                                    \
@@ -139,7 +195,15 @@ perf-%pkg: FORCE
 help: FORCE
 	@echo '  rpm-pkg             - Build both source and binary RPM kernel packages'
 	@echo '  binrpm-pkg          - Build only the binary kernel package'
+<<<<<<< HEAD
+<<<<<<< HEAD
 	@echo '  deb-pkg             - Build the kernel as an deb package'
+=======
+	@echo '  deb-pkg             - Build the kernel as a deb package'
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	@echo '  deb-pkg             - Build the kernel as a deb package'
+>>>>>>> refs/remotes/origin/master
 	@echo '  tar-pkg             - Build the kernel as an uncompressed tarball'
 	@echo '  targz-pkg           - Build the kernel as a gzip compressed tarball'
 	@echo '  tarbz2-pkg          - Build the kernel as a bzip2 compressed tarball'

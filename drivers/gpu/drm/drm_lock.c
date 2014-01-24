@@ -33,7 +33,16 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
+=======
+#include <linux/export.h>
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 
 static int drm_notifier(void *priv);
 
@@ -69,10 +78,13 @@ int drm_lock(struct drm_device *dev, void *data, struct drm_file *file_priv)
 		  lock->context, task_pid_nr(current),
 		  master->lock.hw_lock->lock, lock->flags);
 
+<<<<<<< HEAD
 	if (drm_core_check_feature(dev, DRIVER_DMA_QUEUE))
 		if (lock->context < 0)
 			return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	add_wait_queue(&master->lock.lock_queue, &entry);
 	spin_lock_bh(&master->lock.spinlock);
 	master->lock.user_waiters++;
@@ -89,7 +101,10 @@ int drm_lock(struct drm_device *dev, void *data, struct drm_file *file_priv)
 		if (drm_lock_take(&master->lock, lock->context)) {
 			master->lock.file_priv = file_priv;
 			master->lock.lock_time = jiffies;
+<<<<<<< HEAD
 			atomic_inc(&dev->counts[_DRM_STAT_LOCKS]);
+=======
+>>>>>>> refs/remotes/origin/master
 			break;	/* Got lock */
 		}
 
@@ -160,8 +175,11 @@ int drm_unlock(struct drm_device *dev, void *data, struct drm_file *file_priv)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	atomic_inc(&dev->counts[_DRM_STAT_UNLOCKS]);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (drm_lock_free(&master->lock, lock->context)) {
 		/* FIXME: Should really bail out here. */
 	}
@@ -330,7 +348,11 @@ static int drm_notifier(void *priv)
 
 void drm_idlelock_take(struct drm_lock_data *lock_data)
 {
+<<<<<<< HEAD
 	int ret = 0;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_bh(&lock_data->spinlock);
 	lock_data->kernel_waiters++;
@@ -345,6 +367,14 @@ void drm_idlelock_take(struct drm_lock_data *lock_data)
 	}
 	spin_unlock_bh(&lock_data->spinlock);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(drm_idlelock_take);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(drm_idlelock_take);
+>>>>>>> refs/remotes/origin/master
 
 void drm_idlelock_release(struct drm_lock_data *lock_data)
 {
@@ -364,6 +394,14 @@ void drm_idlelock_release(struct drm_lock_data *lock_data)
 	}
 	spin_unlock_bh(&lock_data->spinlock);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(drm_idlelock_release);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(drm_idlelock_release);
+>>>>>>> refs/remotes/origin/master
 
 int drm_i_have_hw_lock(struct drm_device *dev, struct drm_file *file_priv)
 {

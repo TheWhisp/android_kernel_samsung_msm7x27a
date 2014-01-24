@@ -35,10 +35,24 @@
 #endif
 
 static int msm_vb2_ops_queue_setup(struct vb2_queue *vq,
+<<<<<<< HEAD
+<<<<<<< HEAD
 					unsigned int *num_buffers,
 					unsigned int *num_planes,
 					unsigned long sizes[],
 					void *alloc_ctxs[])
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+				const struct v4l2_format *fmt,
+				unsigned int *num_buffers,
+				unsigned int *num_planes,
+				unsigned int sizes[],
+				void *alloc_ctxs[])
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	/* get the video device */
 	struct msm_cam_v4l2_dev_inst *pcam_inst = vb2_get_drv_priv(vq);
@@ -53,9 +67,21 @@ static int msm_vb2_ops_queue_setup(struct vb2_queue *vq,
 
 	*num_planes = pcam_inst->plane_info.num_planes;
 	for (i = 0; i < pcam_inst->vid_fmt.fmt.pix_mp.num_planes; i++) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sizes[i] = PAGE_ALIGN(pcam_inst->plane_info.plane[i].size);
 		D("%s Inst %p : Plane %d Offset = %d Size = %ld"
 			"Aligned Size = %ld", __func__, pcam_inst, i,
+=======
+		sizes[i] = pcam_inst->plane_info.plane[i].size;
+		D("%s Inst %p : Plane %d Offset = %d Size = %ld" \
+			"Aligned Size = %d\n", __func__, pcam_inst, i,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sizes[i] = pcam_inst->plane_info.plane[i].size;
+		D("%s Inst %p : Plane %d Offset = %d Size = %ld" \
+			"Aligned Size = %d\n", __func__, pcam_inst, i,
+>>>>>>> refs/remotes/origin/cm-11.0
 			pcam_inst->plane_info.plane[i].offset,
 			pcam_inst->plane_info.plane[i].size, sizes[i]);
 	}
@@ -75,6 +101,14 @@ static int msm_vb2_ops_buf_init(struct vb2_buffer *vb)
 {
 	struct msm_cam_v4l2_dev_inst *pcam_inst;
 	struct msm_cam_v4l2_device *pcam;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct msm_cam_media_controller *pmctl;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *pmctl;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct videobuf2_contig_pmem *mem;
 	struct vb2_queue	*vq;
 	uint32_t buf_idx;
@@ -112,6 +146,14 @@ static int msm_vb2_ops_buf_init(struct vb2_buffer *vb)
 			pcam_inst->plane_info.plane[0].offset;
 	}
 	buf_idx = vb->v4l2_buf.index;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pmctl = msm_camera_get_mctl(pcam->mctl_handle);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pmctl = msm_camera_get_mctl(pcam->mctl_handle);
+>>>>>>> refs/remotes/origin/cm-11.0
 	for (i = 0; i < vb->num_planes; i++) {
 		mem = vb2_plane_cookie(vb, i);
 		if (buf_type == VIDEOBUF2_MULTIPLE_PLANES)
@@ -122,7 +164,15 @@ static int msm_vb2_ops_buf_init(struct vb2_buffer *vb)
 			rc = videobuf2_pmem_contig_user_get(mem, &offset,
 				buf_type,
 				pcam_inst->buf_offset[buf_idx][i].addr_offset,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				pcam_inst->path, pcam->mctl.client);
+=======
+				pcam_inst->path, pmctl->client);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pcam_inst->path, pmctl->client);
+>>>>>>> refs/remotes/origin/cm-11.0
 		else
 			rc = videobuf2_pmem_contig_mmap_get(mem, &offset,
 				buf_type, pcam_inst->path);
@@ -184,16 +234,34 @@ static int msm_vb2_ops_buf_finish(struct vb2_buffer *vb)
 	pcam = pcam_inst->pcam;
 	buf = container_of(vb, struct msm_frame_buffer, vidbuf);
 	buf->state = MSM_BUFFER_STATE_DEQUEUED;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	D("%s: inst=0x%x, buf=0x, %x, idx=%d\n", __func__,
 	(uint32_t)pcam_inst, (uint32_t)buf, vb->v4l2_buf.index);
 	D("%s: inst=%p, buf=%x, idx=%d\n", __func__,
 	pcam_inst, (uint32_t)buf, vb->v4l2_buf.index);
+=======
+	D("%s: inst=0x%x, buf=0x%x, idx=%d\n", __func__,
+	(uint32_t)pcam_inst, (uint32_t)buf, vb->v4l2_buf.index);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	D("%s: inst=0x%x, buf=0x%x, idx=%d\n", __func__,
+	(uint32_t)pcam_inst, (uint32_t)buf, vb->v4l2_buf.index);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
 static void msm_vb2_ops_buf_cleanup(struct vb2_buffer *vb)
 {
 	struct msm_cam_v4l2_dev_inst *pcam_inst;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct msm_cam_media_controller *pmctl;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *pmctl;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct msm_cam_v4l2_device *pcam;
 	struct videobuf2_contig_pmem *mem;
 	struct msm_frame_buffer *buf, *tmp;
@@ -248,14 +316,35 @@ static void msm_vb2_ops_buf_cleanup(struct vb2_buffer *vb)
 		}
 		spin_unlock_irqrestore(&pcam_inst->vq_irqlock, flags);
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < vb->num_planes; i++) {
 		mem = vb2_plane_cookie(vb, i);
 		videobuf2_pmem_contig_user_put(mem, pcam->mctl.client);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	pmctl = msm_camera_get_mctl(pcam->mctl_handle);
+	for (i = 0; i < vb->num_planes; i++) {
+		mem = vb2_plane_cookie(vb, i);
+		videobuf2_pmem_contig_user_put(mem, pmctl->client);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 	buf->state = MSM_BUFFER_STATE_UNUSED;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int msm_vb2_ops_start_streaming(struct vb2_queue *q)
+=======
+static int msm_vb2_ops_start_streaming(struct vb2_queue *q, unsigned int count)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msm_vb2_ops_start_streaming(struct vb2_queue *q, unsigned int count)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	return 0;
 }
@@ -328,12 +417,27 @@ int msm_mctl_img_mode_to_inst_index(struct msm_cam_media_controller *pmctl,
 					int image_mode, int node_type)
 {
 	if ((image_mode >= 0) && node_type &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pmctl->sync.pcam_sync->mctl_node.dev_inst_map[image_mode])
 		return pmctl->sync.pcam_sync->
 				mctl_node.dev_inst_map[image_mode]->my_index;
 	else if ((image_mode >= 0) &&
 		pmctl->sync.pcam_sync->dev_inst_map[image_mode])
 		return	pmctl->sync.pcam_sync->
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		pmctl->pcam_ptr->mctl_node.dev_inst_map[image_mode])
+		return pmctl->pcam_ptr->
+				mctl_node.dev_inst_map[image_mode]->my_index;
+	else if ((image_mode >= 0) &&
+		pmctl->pcam_ptr->dev_inst_map[image_mode])
+		return	pmctl->pcam_ptr->
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				dev_inst_map[image_mode]->my_index;
 	else
 		return -EINVAL;
@@ -427,8 +531,18 @@ int msm_mctl_buf_done(struct msm_cam_media_controller *p_mctl,
 	int pp_divert_type = 0, pp_type = 0;
 
 	msm_mctl_check_pp(p_mctl, image_mode, &pp_divert_type, &pp_type);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	D("%s: pp_type=%d, pp_divert_type = %d, frame_id = 0x%x",
 		__func__, pp_type, pp_divert_type, frame_id);
+=======
+	D("%s: pp_type=%d, pp_divert_type = %d, frame_id = 0x%x image_mode %d",
+		__func__, pp_type, pp_divert_type, frame_id, image_mode);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	D("%s: pp_type=%d, pp_divert_type = %d, frame_id = 0x%x image_mode %d",
+		__func__, pp_type, pp_divert_type, frame_id, image_mode);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (pp_type || pp_divert_type)
 		rc = msm_mctl_do_pp_divert(p_mctl,
 		image_mode, fbuf, frame_id, pp_type);
@@ -436,11 +550,42 @@ int msm_mctl_buf_done(struct msm_cam_media_controller *p_mctl,
 		idx = msm_mctl_img_mode_to_inst_index(
 				p_mctl, image_mode, 0);
 		if (idx < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s Invalid instance, dropping buffer\n",
 				__func__);
 			return idx;
 		}
 		pcam_inst = p_mctl->sync.pcam_sync->dev_inst[idx];
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			/* check mctl node */
+			if ((image_mode >= 0) &&
+				p_mctl->pcam_ptr->mctl_node.
+					dev_inst_map[image_mode]) {
+				int index = p_mctl->pcam_ptr->mctl_node.
+					   dev_inst_map[image_mode]->my_index;
+				pcam_inst = p_mctl->pcam_ptr->mctl_node.
+					dev_inst[index];
+				D("%s: Mctl node index %d inst %p",
+					__func__, index, pcam_inst);
+				rc = msm_mctl_buf_done_proc(p_mctl, pcam_inst,
+					image_mode, fbuf,
+					&frame_id, 1);
+				D("%s mctl node buf done %d\n", __func__, 0);
+				return -EINVAL;
+			} else {
+			  pr_err("%s Invalid instance, dropping buffer\n",
+				  __func__);
+			  return idx;
+			}
+		}
+		pcam_inst = p_mctl->pcam_ptr->dev_inst[idx];
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		rc = msm_mctl_buf_done_proc(p_mctl, pcam_inst,
 				image_mode, fbuf,
 				&frame_id, 1);
@@ -450,7 +595,19 @@ int msm_mctl_buf_done(struct msm_cam_media_controller *p_mctl,
 
 int msm_mctl_buf_init(struct msm_cam_v4l2_device *pcam)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pcam->mctl.mctl_vbqueue_init = msm_vbqueue_init;
+=======
+	struct msm_cam_media_controller *pmctl;
+	pmctl = msm_camera_get_mctl(pcam->mctl_handle);
+	pmctl->mctl_vbqueue_init = msm_vbqueue_init;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_media_controller *pmctl;
+	pmctl = msm_camera_get_mctl(pcam->mctl_handle);
+	pmctl->mctl_vbqueue_init = msm_vbqueue_init;
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -475,7 +632,15 @@ struct msm_cam_v4l2_dev_inst *msm_mctl_get_pcam_inst(
 				int image_mode)
 {
 	struct msm_cam_v4l2_dev_inst *pcam_inst = NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_cam_v4l2_device *pcam = pmctl->sync.pcam_sync;
+=======
+	struct msm_cam_v4l2_device *pcam = pmctl->pcam_ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_v4l2_device *pcam = pmctl->pcam_ptr;
+>>>>>>> refs/remotes/origin/cm-11.0
 	int idx;
 
 	if (image_mode >= 0) {
@@ -483,7 +648,17 @@ struct msm_cam_v4l2_dev_inst *msm_mctl_get_pcam_inst(
 		 * If mctl node doesnt have the instance, then
 		 * search in the user's video node */
 		if (pmctl->vfe_output_mode == VFE_OUTPUTS_MAIN_AND_THUMB
+<<<<<<< HEAD
+<<<<<<< HEAD
 		|| pmctl->vfe_output_mode == VFE_OUTPUTS_THUMB_AND_MAIN) {
+=======
+		|| pmctl->vfe_output_mode == VFE_OUTPUTS_THUMB_AND_MAIN
+		|| pmctl->vfe_output_mode == VFE_OUTPUTS_MAIN_AND_PREVIEW) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		|| pmctl->vfe_output_mode == VFE_OUTPUTS_THUMB_AND_MAIN
+		|| pmctl->vfe_output_mode == VFE_OUTPUTS_MAIN_AND_PREVIEW) {
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (pcam->mctl_node.dev_inst_map[image_mode]
 			&& is_buffer_queued(pcam, image_mode)) {
 				idx =
@@ -495,7 +670,15 @@ struct msm_cam_v4l2_dev_inst *msm_mctl_get_pcam_inst(
 			} else if (pcam->dev_inst_map[image_mode]) {
 				idx = pcam->dev_inst_map[image_mode]->my_index;
 				pcam_inst = pcam->dev_inst[idx];
+<<<<<<< HEAD
+<<<<<<< HEAD
 				D("%s Found instance %p in video device",
+=======
+				D("%s Found instance %p in video device\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				D("%s Found instance %p in video device\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				__func__, pcam_inst);
 			}
 		} else {
@@ -508,7 +691,15 @@ struct msm_cam_v4l2_dev_inst *msm_mctl_get_pcam_inst(
 			} else if (pcam->dev_inst_map[image_mode]) {
 				idx = pcam->dev_inst_map[image_mode]->my_index;
 				pcam_inst = pcam->dev_inst[idx];
+<<<<<<< HEAD
+<<<<<<< HEAD
 				D("%s Found instance %p in video device",
+=======
+				D("%s Found instance %p in video device\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				D("%s Found instance %p in video device\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 				__func__, pcam_inst);
 			}
 		}
@@ -567,6 +758,19 @@ int msm_mctl_reserve_free_buf(
 					plane_offset =
 					mem->offset.sp_off.cbcr_off;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+				D("%s: data off %d plane off %d",
+					__func__,
+					pcam_inst->buf_offset[buf_idx][i].
+					data_offset, plane_offset);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 				free_buf->ch_paddr[i] =	(uint32_t)
 				videobuf2_to_pmem_contig(&buf->vidbuf, i) +
 				pcam_inst->buf_offset[buf_idx][i].data_offset +
@@ -620,7 +824,15 @@ int msm_mctl_release_free_buf(struct msm_cam_media_controller *pmctl,
 		buf_phyaddr =
 			(uint32_t) videobuf2_to_pmem_contig(&buf->vidbuf, 0);
 		if (free_buf->ch_paddr[0] == buf_phyaddr) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			D("%s buf = 0x%x ", __func__, free_buf->ch_paddr[0]);
+=======
+			D("%s buf = 0x%x\n", __func__, free_buf->ch_paddr[0]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			D("%s buf = 0x%x\n", __func__, free_buf->ch_paddr[0]);
+>>>>>>> refs/remotes/origin/cm-11.0
 			buf->state = MSM_BUFFER_STATE_UNUSED;
 			rc = 0;
 			break;
@@ -646,9 +858,21 @@ int msm_mctl_buf_done_pp(struct msm_cam_media_controller *pmctl,
 		return idx;
 	}
 	if (node_type)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pcam_inst = pmctl->sync.pcam_sync->mctl_node.dev_inst[idx];
 	else
 		pcam_inst = pmctl->sync.pcam_sync->dev_inst[idx];
+=======
+		pcam_inst = pmctl->pcam_ptr->mctl_node.dev_inst[idx];
+	else
+		pcam_inst = pmctl->pcam_ptr->dev_inst[idx];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pcam_inst = pmctl->pcam_ptr->mctl_node.dev_inst[idx];
+	else
+		pcam_inst = pmctl->pcam_ptr->dev_inst[idx];
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pcam_inst) {
 		pr_err("%s Invalid instance, cannot send buf to user",
 			__func__);
@@ -682,7 +906,15 @@ struct msm_frame_buffer *msm_mctl_get_free_buf(
 		pr_err("%s Invalid instance, cant get buffer\n", __func__);
 		return NULL;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pcam_inst = pmctl->sync.pcam_sync->dev_inst[idx];
+=======
+	pcam_inst = pmctl->pcam_ptr->dev_inst[idx];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcam_inst = pmctl->pcam_ptr->dev_inst[idx];
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pcam_inst->streamon) {
 		D("%s: stream 0x%p is off\n", __func__, pcam_inst);
 		return NULL;
@@ -721,7 +953,15 @@ int msm_mctl_put_free_buf(
 		pr_err("%s Invalid instance, cant put buffer\n", __func__);
 		return idx;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pcam_inst = pmctl->sync.pcam_sync->dev_inst[idx];
+=======
+	pcam_inst = pmctl->pcam_ptr->dev_inst[idx];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcam_inst = pmctl->pcam_ptr->dev_inst[idx];
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (!pcam_inst->streamon) {
 		D("%s: stream 0x%p is off\n", __func__, pcam_inst);
 		return rc;
@@ -756,7 +996,15 @@ int msm_mctl_buf_del(struct msm_cam_media_controller *pmctl,
 		pr_err("%s Invalid instance, cant delete buffer\n", __func__);
 		return idx;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pcam_inst = pmctl->sync.pcam_sync->dev_inst[idx];
+=======
+	pcam_inst = pmctl->pcam_ptr->dev_inst[idx];
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcam_inst = pmctl->pcam_ptr->dev_inst[idx];
+>>>>>>> refs/remotes/origin/cm-11.0
 	D("%s: idx = %d, pinst=0x%p", __func__, idx, pcam_inst);
 	spin_lock_irqsave(&pcam_inst->vq_irqlock, flags);
 	if (!list_empty(&pcam_inst->free_vq)) {
@@ -780,7 +1028,15 @@ int msm_mctl_buf_return_buf(struct msm_cam_media_controller *pmctl,
 	int idx = 0;
 	struct msm_frame_buffer *buf = NULL;
 	struct msm_cam_v4l2_dev_inst *pcam_inst;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct msm_cam_v4l2_device *pcam = pmctl->sync.pcam_sync;
+=======
+	struct msm_cam_v4l2_device *pcam = pmctl->pcam_ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct msm_cam_v4l2_device *pcam = pmctl->pcam_ptr;
+>>>>>>> refs/remotes/origin/cm-11.0
 	unsigned long flags = 0;
 
 	if (pcam->mctl_node.dev_inst_map[image_mode]) {

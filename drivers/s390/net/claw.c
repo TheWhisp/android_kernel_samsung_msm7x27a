@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/net/claw.c
+=======
+>>>>>>> refs/remotes/origin/master
  *    ESCON CLAW network driver
  *
  *  Linux for zSeries version
@@ -63,7 +66,13 @@
 
 #define KMSG_COMPONENT "claw"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/kernel_stat.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/ccwdev.h>
 #include <asm/ccwgroup.h>
 #include <asm/debug.h>
@@ -137,7 +146,10 @@ static inline void
 claw_set_busy(struct net_device *dev)
 {
  ((struct claw_privbk *)dev->ml_priv)->tbusy = 1;
+<<<<<<< HEAD
  eieio();
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -145,13 +157,19 @@ claw_clear_busy(struct net_device *dev)
 {
 	clear_bit(0, &(((struct claw_privbk *) dev->ml_priv)->tbusy));
 	netif_wake_queue(dev);
+<<<<<<< HEAD
 	eieio();
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int
 claw_check_busy(struct net_device *dev)
 {
+<<<<<<< HEAD
 	eieio();
+=======
+>>>>>>> refs/remotes/origin/master
 	return ((struct claw_privbk *) dev->ml_priv)->tbusy;
 }
 
@@ -234,8 +252,11 @@ static ssize_t claw_rbuff_show(struct device *dev,
 static ssize_t claw_rbuff_write(struct device *dev,
 	struct device_attribute *attr,
 	const char *buf, size_t count);
+<<<<<<< HEAD
 static int claw_add_files(struct device *dev);
 static void claw_remove_files(struct device *dev);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*   Functions for System Validate  */
 static int claw_process_control( struct net_device *dev, struct ccwbk * p_ccw);
@@ -268,12 +289,19 @@ static struct ccwgroup_driver claw_group_driver = {
 		.owner	= THIS_MODULE,
 		.name	= "claw",
 	},
+<<<<<<< HEAD
         .max_slaves  = 2,
         .driver_id   = 0xC3D3C1E6,
         .probe       = claw_probe,
         .remove      = claw_remove_device,
         .set_online  = claw_new_device,
         .set_offline = claw_shutdown_device,
+=======
+	.setup	     = claw_probe,
+	.remove      = claw_remove_device,
+	.set_online  = claw_new_device,
+	.set_offline = claw_shutdown_device,
+>>>>>>> refs/remotes/origin/master
 	.prepare     = claw_pm_prepare,
 };
 
@@ -291,6 +319,11 @@ static struct ccw_driver claw_ccw_driver = {
 	.ids	= claw_ids,
 	.probe	= ccwgroup_probe_ccwdev,
 	.remove	= ccwgroup_remove_ccwdev,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.int_class = IOINT_CLW,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static ssize_t
@@ -317,6 +350,29 @@ static struct attribute_group claw_group_attr_group = {
 
 static const struct attribute_group *claw_group_attr_groups[] = {
 	&claw_group_attr_group,
+=======
+	.int_class = IRQIO_CLW,
+};
+
+static ssize_t claw_driver_group_store(struct device_driver *ddrv,
+				       const char *buf,	size_t count)
+{
+	int err;
+	err = ccwgroup_create_dev(claw_root_dev, &claw_group_driver, 2, buf);
+	return err ? err : count;
+}
+static DRIVER_ATTR(group, 0200, NULL, claw_driver_group_store);
+
+static struct attribute *claw_drv_attrs[] = {
+	&driver_attr_group.attr,
+	NULL,
+};
+static struct attribute_group claw_drv_attr_group = {
+	.attrs = claw_drv_attrs,
+};
+static const struct attribute_group *claw_drv_attr_groups[] = {
+	&claw_drv_attr_group,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -324,6 +380,7 @@ static const struct attribute_group *claw_group_attr_groups[] = {
 *       Key functions
 */
 
+<<<<<<< HEAD
 /*----------------------------------------------------------------*
  *   claw_probe                                                   *
  *      this function is called for each CLAW device.             *
@@ -378,6 +435,8 @@ claw_probe(struct ccwgroup_device *cgdev)
         return 0;
 }  /*  end of claw_probe       */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------*
  *   claw_tx                                                         *
  *-------------------------------------------------------------------*/
@@ -645,7 +704,13 @@ claw_irq_handler(struct ccw_device *cdev,
         struct claw_env  *p_env;
         struct chbk *p_ch_r=NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[IOINT_CLW]++;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	CLAW_DBF_TEXT(4, trace, "clawirq");
         /* Bypass all 'unsolicited interrupts' */
 	privptr = dev_get_drvdata(&cdev->dev);
@@ -3087,6 +3152,7 @@ claw_remove_device(struct ccwgroup_device *cgdev)
 {
 	struct claw_privbk *priv;
 
+<<<<<<< HEAD
 	BUG_ON(!cgdev);
 	CLAW_DBF_TEXT_(2, setup, "%s", dev_name(&cgdev->dev));
 	priv = dev_get_drvdata(&cgdev->dev);
@@ -3095,6 +3161,13 @@ claw_remove_device(struct ccwgroup_device *cgdev)
 	if (cgdev->state == CCWGROUP_ONLINE)
 		claw_shutdown_device(cgdev);
 	claw_remove_files(&cgdev->dev);
+=======
+	CLAW_DBF_TEXT_(2, setup, "%s", dev_name(&cgdev->dev));
+	priv = dev_get_drvdata(&cgdev->dev);
+	dev_info(&cgdev->dev, " will be removed.\n");
+	if (cgdev->state == CCWGROUP_ONLINE)
+		claw_shutdown_device(cgdev);
+>>>>>>> refs/remotes/origin/master
 	kfree(priv->p_mtc_envelope);
 	priv->p_mtc_envelope=NULL;
 	kfree(priv->p_env);
@@ -3322,7 +3395,10 @@ claw_rbuff_write(struct device *dev, struct device_attribute *attr,
 	CLAW_DBF_TEXT_(2, setup, "RB=%d", p_env->read_buffers);
 	return count;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static DEVICE_ATTR(read_buffer, 0644, claw_rbuff_show, claw_rbuff_write);
 
 static struct attribute *claw_attr[] = {
@@ -3333,6 +3409,7 @@ static struct attribute *claw_attr[] = {
 	&dev_attr_host_name.attr,
 	NULL,
 };
+<<<<<<< HEAD
 
 static struct attribute_group claw_attr_group = {
 	.attrs = claw_attr,
@@ -3351,22 +3428,87 @@ claw_remove_files(struct device *dev)
 	CLAW_DBF_TEXT(2, setup, "rem_file");
 	sysfs_remove_group(&dev->kobj, &claw_attr_group);
 }
+=======
+static struct attribute_group claw_attr_group = {
+	.attrs = claw_attr,
+};
+static const struct attribute_group *claw_attr_groups[] = {
+	&claw_attr_group,
+	NULL,
+};
+static const struct device_type claw_devtype = {
+	.name = "claw",
+	.groups = claw_attr_groups,
+};
+
+/*----------------------------------------------------------------*
+ *   claw_probe 						  *
+ *	this function is called for each CLAW device.		  *
+ *----------------------------------------------------------------*/
+static int claw_probe(struct ccwgroup_device *cgdev)
+{
+	struct claw_privbk *privptr = NULL;
+
+	CLAW_DBF_TEXT(2, setup, "probe");
+	if (!get_device(&cgdev->dev))
+		return -ENODEV;
+	privptr = kzalloc(sizeof(struct claw_privbk), GFP_KERNEL);
+	dev_set_drvdata(&cgdev->dev, privptr);
+	if (privptr == NULL) {
+		probe_error(cgdev);
+		put_device(&cgdev->dev);
+		CLAW_DBF_TEXT_(2, setup, "probex%d", -ENOMEM);
+		return -ENOMEM;
+	}
+	privptr->p_mtc_envelope = kzalloc(MAX_ENVELOPE_SIZE, GFP_KERNEL);
+	privptr->p_env = kzalloc(sizeof(struct claw_env), GFP_KERNEL);
+	if ((privptr->p_mtc_envelope == NULL) || (privptr->p_env == NULL)) {
+		probe_error(cgdev);
+		put_device(&cgdev->dev);
+		CLAW_DBF_TEXT_(2, setup, "probex%d", -ENOMEM);
+		return -ENOMEM;
+	}
+	memcpy(privptr->p_env->adapter_name, WS_NAME_NOT_DEF, 8);
+	memcpy(privptr->p_env->host_name, WS_NAME_NOT_DEF, 8);
+	memcpy(privptr->p_env->api_type, WS_NAME_NOT_DEF, 8);
+	privptr->p_env->packing = 0;
+	privptr->p_env->write_buffers = 5;
+	privptr->p_env->read_buffers = 5;
+	privptr->p_env->read_size = CLAW_FRAME_SIZE;
+	privptr->p_env->write_size = CLAW_FRAME_SIZE;
+	privptr->p_env->p_priv = privptr;
+	cgdev->cdev[0]->handler = claw_irq_handler;
+	cgdev->cdev[1]->handler = claw_irq_handler;
+	cgdev->dev.type = &claw_devtype;
+	CLAW_DBF_TEXT(2, setup, "prbext 0");
+
+	return 0;
+}  /*  end of claw_probe       */
+>>>>>>> refs/remotes/origin/master
 
 /*--------------------------------------------------------------------*
 *    claw_init  and cleanup                                           *
 *---------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static void __exit
 claw_cleanup(void)
 {
 	driver_remove_file(&claw_group_driver.driver,
 			   &driver_attr_group);
+=======
+static void __exit claw_cleanup(void)
+{
+>>>>>>> refs/remotes/origin/master
 	ccwgroup_driver_unregister(&claw_group_driver);
 	ccw_driver_unregister(&claw_ccw_driver);
 	root_device_unregister(claw_root_dev);
 	claw_unregister_debug_facility();
 	pr_info("Driver unloaded\n");
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -3375,8 +3517,12 @@ claw_cleanup(void)
  *
  * @return 0 on success, !0 on error.
  */
+<<<<<<< HEAD
 static int __init
 claw_init(void)
+=======
+static int __init claw_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 
@@ -3389,13 +3535,21 @@ claw_init(void)
 	}
 	CLAW_DBF_TEXT(2, setup, "init_mod");
 	claw_root_dev = root_device_register("claw");
+<<<<<<< HEAD
 	ret = IS_ERR(claw_root_dev) ? PTR_ERR(claw_root_dev) : 0;
+=======
+	ret = PTR_RET(claw_root_dev);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto register_err;
 	ret = ccw_driver_register(&claw_ccw_driver);
 	if (ret)
 		goto ccw_err;
+<<<<<<< HEAD
 	claw_group_driver.driver.groups = claw_group_attr_groups;
+=======
+	claw_group_driver.driver.groups = claw_drv_attr_groups;
+>>>>>>> refs/remotes/origin/master
 	ret = ccwgroup_driver_register(&claw_group_driver);
 	if (ret)
 		goto ccwgroup_err;
@@ -3418,5 +3572,9 @@ module_exit(claw_cleanup);
 
 MODULE_AUTHOR("Andy Richter <richtera@us.ibm.com>");
 MODULE_DESCRIPTION("Linux for System z CLAW Driver\n" \
+<<<<<<< HEAD
 			"Copyright 2000,2008 IBM Corporation\n");
+=======
+			"Copyright IBM Corp. 2000, 2008\n");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

@@ -52,7 +52,11 @@ void seq_printf_with_thousands_grouping(struct seq_file *seq, long v)
 	if (unlikely(v >= 1000000)) {
 		/* cool: > GiByte/s */
 		seq_printf(seq, "%ld,", v / 1000000);
+<<<<<<< HEAD
 		v /= 1000000;
+=======
+		v %= 1000000;
+>>>>>>> refs/remotes/origin/master
 		seq_printf(seq, "%03ld,%03ld", v/1000, v % 1000);
 	} else if (likely(v >= 1000))
 		seq_printf(seq, "%ld,%03ld", v/1000, v % 1000);
@@ -167,18 +171,38 @@ static void drbd_syncer_progress(struct drbd_conf *mdev, struct seq_file *seq)
 		 * we convert to sectors in the display below. */
 		unsigned long bm_bits = drbd_bm_bits(mdev);
 		unsigned long bit_pos;
+<<<<<<< HEAD
 		if (mdev->state.conn == C_VERIFY_S ||
 		    mdev->state.conn == C_VERIFY_T)
 			bit_pos = bm_bits - mdev->ov_left;
 		else
+=======
+		unsigned long long stop_sector = 0;
+		if (mdev->state.conn == C_VERIFY_S ||
+		    mdev->state.conn == C_VERIFY_T) {
+			bit_pos = bm_bits - mdev->ov_left;
+			if (verify_can_do_stop_sector(mdev))
+				stop_sector = mdev->ov_stop_sector;
+		} else
+>>>>>>> refs/remotes/origin/master
 			bit_pos = mdev->bm_resync_fo;
 		/* Total sectors may be slightly off for oddly
 		 * sized devices. So what. */
 		seq_printf(seq,
+<<<<<<< HEAD
 			"\t%3d%% sector pos: %llu/%llu\n",
 			(int)(bit_pos / (bm_bits/100+1)),
 			(unsigned long long)bit_pos * BM_SECT_PER_BIT,
 			(unsigned long long)bm_bits * BM_SECT_PER_BIT);
+=======
+			"\t%3d%% sector pos: %llu/%llu",
+			(int)(bit_pos / (bm_bits/100+1)),
+			(unsigned long long)bit_pos * BM_SECT_PER_BIT,
+			(unsigned long long)bm_bits * BM_SECT_PER_BIT);
+		if (stop_sector != 0 && stop_sector != ULLONG_MAX)
+			seq_printf(seq, " stop sector: %llu", stop_sector);
+		seq_printf(seq, "\n");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -194,9 +218,17 @@ static void resync_dump_detail(struct seq_file *seq, struct lc_element *e)
 
 static int drbd_seq_show(struct seq_file *seq, void *v)
 {
+<<<<<<< HEAD
 	int i, hole = 0;
 	const char *sn;
 	struct drbd_conf *mdev;
+=======
+	int i, prev_i = -1;
+	const char *sn;
+	struct drbd_conf *mdev;
+	struct net_conf *nc;
+	char wp;
+>>>>>>> refs/remotes/origin/master
 
 	static char write_ordering_chars[] = {
 		[WO_none] = 'n',
@@ -227,6 +259,7 @@ static int drbd_seq_show(struct seq_file *seq, void *v)
 	 oos .. known out-of-sync kB
 	*/
 
+<<<<<<< HEAD
 	for (i = 0; i < minor_count; i++) {
 		mdev = minor_to_mdev(i);
 		if (!mdev) {
@@ -237,6 +270,13 @@ static int drbd_seq_show(struct seq_file *seq, void *v)
 			hole = 0;
 			seq_printf(seq, "\n");
 		}
+=======
+	rcu_read_lock();
+	idr_for_each_entry(&minors, mdev, i) {
+		if (prev_i != i - 1)
+			seq_printf(seq, "\n");
+		prev_i = i;
+>>>>>>> refs/remotes/origin/master
 
 		sn = drbd_conn_str(mdev->state.conn);
 
@@ -245,6 +285,14 @@ static int drbd_seq_show(struct seq_file *seq, void *v)
 		    mdev->state.role == R_SECONDARY) {
 			seq_printf(seq, "%2d: cs:Unconfigured\n", i);
 		} else {
+<<<<<<< HEAD
+=======
+			/* reset mdev->congestion_reason */
+			bdi_rw_congested(&mdev->rq_queue->backing_dev_info);
+
+			nc = rcu_dereference(mdev->tconn->net_conf);
+			wp = nc ? nc->wire_protocol - DRBD_PROT_A + 'A' : ' ';
+>>>>>>> refs/remotes/origin/master
 			seq_printf(seq,
 			   "%2d: cs:%s ro:%s/%s ds:%s/%s %c %c%c%c%c%c%c\n"
 			   "    ns:%u nr:%u dw:%u dr:%u al:%u bm:%u "
@@ -254,9 +302,14 @@ static int drbd_seq_show(struct seq_file *seq, void *v)
 			   drbd_role_str(mdev->state.peer),
 			   drbd_disk_str(mdev->state.disk),
 			   drbd_disk_str(mdev->state.pdsk),
+<<<<<<< HEAD
 			   (mdev->net_conf == NULL ? ' ' :
 			    (mdev->net_conf->wire_protocol - DRBD_PROT_A+'A')),
 			   is_susp(mdev->state) ? 's' : 'r',
+=======
+			   wp,
+			   drbd_suspended(mdev) ? 's' : 'r',
+>>>>>>> refs/remotes/origin/master
 			   mdev->state.aftr_isp ? 'a' : '-',
 			   mdev->state.peer_isp ? 'p' : '-',
 			   mdev->state.user_isp ? 'u' : '-',
@@ -273,8 +326,13 @@ static int drbd_seq_show(struct seq_file *seq, void *v)
 			   atomic_read(&mdev->rs_pending_cnt),
 			   atomic_read(&mdev->unacked_cnt),
 			   atomic_read(&mdev->ap_bio_cnt),
+<<<<<<< HEAD
 			   mdev->epochs,
 			   write_ordering_chars[mdev->write_ordering]
+=======
+			   mdev->tconn->epochs,
+			   write_ordering_chars[mdev->tconn->write_ordering]
+>>>>>>> refs/remotes/origin/master
 			);
 			seq_printf(seq, " oos:%llu\n",
 				   Bit2KB((unsigned long long)
@@ -299,14 +357,29 @@ static int drbd_seq_show(struct seq_file *seq, void *v)
 			}
 		}
 	}
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int drbd_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	if (try_module_get(THIS_MODULE))
 		return single_open(file, drbd_seq_show, PDE(inode)->data);
+=======
+	int err;
+
+	if (try_module_get(THIS_MODULE)) {
+		err = single_open(file, drbd_seq_show, PDE_DATA(inode));
+		if (err)
+			module_put(THIS_MODULE);
+		return err;
+	}
+>>>>>>> refs/remotes/origin/master
 	return -ENODEV;
 }
 

@@ -1,7 +1,12 @@
 #ifndef _LINUX_PERSONALITY_H
 #define _LINUX_PERSONALITY_H
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/personality.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Handling of different ABIs (personalities).
@@ -14,6 +19,7 @@ extern int		register_exec_domain(struct exec_domain *);
 extern int		unregister_exec_domain(struct exec_domain *);
 extern int		__set_personality(unsigned int);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /*
@@ -80,6 +86,8 @@ enum {
 };
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Description of an execution domain.
@@ -116,6 +124,9 @@ struct exec_domain {
 #define set_personality(pers) \
 	((current->personality == (pers)) ? 0 : __set_personality(pers))
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_PERSONALITY_H */

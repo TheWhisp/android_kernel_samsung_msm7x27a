@@ -1,9 +1,23 @@
 /* $Id: b1pcmcia.c,v 1.1.2.2 2004/01/16 21:09:27 keil Exp $
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Module for AVM B1/M1/M2 PCMCIA-card.
  * 
  * Copyright 1999 by Carsten Paeth <calle@calle.de>
  * 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * Module for AVM B1/M1/M2 PCMCIA-card.
+ *
+ * Copyright 1999 by Carsten Paeth <calle@calle.de>
+ *
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -74,9 +88,21 @@ static int b1pcmcia_add_card(unsigned int port, unsigned irq,
 	cinfo = card->ctrlinfo;
 
 	switch (cardtype) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case avm_m1: sprintf(card->name, "m1-%x", port); break;
 		case avm_m2: sprintf(card->name, "m2-%x", port); break;
 		default: sprintf(card->name, "b1pcmcia-%x", port); break;
+=======
+	case avm_m1: sprintf(card->name, "m1-%x", port); break;
+	case avm_m2: sprintf(card->name, "m2-%x", port); break;
+	default: sprintf(card->name, "b1pcmcia-%x", port); break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case avm_m1: sprintf(card->name, "m1-%x", port); break;
+	case avm_m2: sprintf(card->name, "m2-%x", port); break;
+	default: sprintf(card->name, "b1pcmcia-%x", port); break;
+>>>>>>> refs/remotes/origin/master
 	}
 	card->port = port;
 	card->irq = irq;
@@ -117,9 +143,21 @@ static int b1pcmcia_add_card(unsigned int port, unsigned irq,
 		goto err_free_irq;
 	}
 	switch (cardtype) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		case avm_m1: cardname = "M1"; break;
 		case avm_m2: cardname = "M2"; break;
 		default    : cardname = "B1 PCMCIA"; break;
+=======
+	case avm_m1: cardname = "M1"; break;
+	case avm_m2: cardname = "M2"; break;
+	default: cardname = "B1 PCMCIA"; break;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case avm_m1: cardname = "M1"; break;
+	case avm_m2: cardname = "M2"; break;
+	default: cardname = "B1 PCMCIA"; break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	printk(KERN_INFO "b1pcmcia: AVM %s at i/o %#x, irq %d, revision %d\n",
@@ -128,11 +166,25 @@ static int b1pcmcia_add_card(unsigned int port, unsigned irq,
 	list_add(&card->list, &cards);
 	return cinfo->capi_ctrl.cnr;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
  err_free_irq:
 	free_irq(card->irq, card);
  err_free:
 	b1_free_card(card);
  err:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+err_free_irq:
+	free_irq(card->irq, card);
+err_free:
+	b1_free_card(card);
+err:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -175,7 +227,15 @@ int b1pcmcia_delcard(unsigned int port, unsigned irq)
 {
 	struct list_head *l;
 	avmcard *card;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	list_for_each(l, &cards) {
 		card = list_entry(l, avmcard, list);
 		if (card->port == port && card->irq == irq) {
@@ -204,7 +264,15 @@ static int __init b1pcmcia_init(void)
 	if ((p = strchr(revision, ':')) != NULL && p[1]) {
 		strlcpy(rev, p + 2, 32);
 		if ((p = strchr(rev, '$')) != NULL && p > rev)
+<<<<<<< HEAD
+<<<<<<< HEAD
 		   *(p-1) = 0;
+=======
+			*(p - 1) = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*(p - 1) = 0;
+>>>>>>> refs/remotes/origin/master
 	} else
 		strcpy(rev, "1.0");
 

@@ -1,7 +1,19 @@
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -18,10 +30,22 @@
  *      Notwithstanding the above, under no circumstances may you combine this
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: typedefs.h 290055 2011-10-15 21:26:26Z $
  */
 
 
+=======
+ * $Id: typedefs.h 286783 2011-09-29 06:18:57Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: typedefs.h 286783 2011-09-29 06:18:57Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifndef _TYPEDEFS_H_
 #define _TYPEDEFS_H_
 
@@ -66,7 +90,13 @@ typedef long unsigned int size_t;
 
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #if defined(__sparc__)
 #define TYPEDEF_ULONG
 #endif
@@ -260,7 +290,15 @@ typedef float64 float_t;
 
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(__GNUC__)
+=======
+#if defined(__GNUC__) || defined(__lint)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(__GNUC__) || defined(__lint)
+>>>>>>> refs/remotes/origin/cm-11.0
 	#define BWL_COMPILER_GNU
 #elif defined(__CC_ARM) && __CC_ARM
 	#define BWL_COMPILER_ARMCC

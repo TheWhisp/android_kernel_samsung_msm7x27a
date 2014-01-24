@@ -18,7 +18,15 @@
 #include <linux/poll.h>
 #include <linux/cdev.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/wakelock.h>
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "linux/types.h"
 
 #include <mach/board.h>
@@ -372,7 +380,15 @@ struct msm_sync {
 	struct msm_camvpe_fn vpefn;
 	struct msm_sensor_ctrl sctrl;
 	struct msm_strobe_flash_ctrl sfctrl;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct wake_lock wake_lock;
+=======
+	struct pm_qos_request idle_pm_qos;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pm_qos_request idle_pm_qos;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct platform_device *pdev;
 	int16_t ignore_qcmd_type;
 	uint8_t ignore_qcmd;

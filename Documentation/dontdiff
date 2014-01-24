@@ -66,7 +66,13 @@ GRTAGS
 GSYMS
 GTAGS
 Image
+<<<<<<< HEAD
+<<<<<<< HEAD
 Kerntypes
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Module.markers
 Module.symvers
 PENDING
@@ -151,7 +157,10 @@ keywords.c
 ksym.c*
 ksym.h*
 kxgettext
+<<<<<<< HEAD
 lkc_defs.h
+=======
+>>>>>>> refs/remotes/origin/master
 lex.c
 lex.*.c
 linux
@@ -159,13 +168,22 @@ logo_*.c
 logo_*_clut224.c
 logo_*_mono.c
 lxdialog
+<<<<<<< HEAD
+<<<<<<< HEAD
 mach
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 mach-types
 mach-types.h
 machtypes.h
 map
 map_hugetlb
+<<<<<<< HEAD
 maui_boot.h
+=======
+>>>>>>> refs/remotes/origin/master
 media
 mconf
 miboot*
@@ -185,7 +203,10 @@ modversions.h*
 nconf
 ncscope.*
 offset.h
+<<<<<<< HEAD
 offsets.h
+=======
+>>>>>>> refs/remotes/origin/master
 oui.c*
 page-types
 parse.c

@@ -3,7 +3,15 @@
  *
  * Firmware descriptor format
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2009, 2010, Christian Lamparter <chunkeey@googlemail.com>
+=======
+ * Copyright 2009-2011 Christian Lamparter <chunkeey@googlemail.com>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2009-2011 Christian Lamparter <chunkeey@googlemail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +80,24 @@ enum carl9170fw_feature_list {
 	/* Wake up on WLAN */
 	CARL9170FW_WOL,
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	/* Firmware supports PSM in the 5GHZ Band */
+	CARL9170FW_FIXED_5GHZ_PSM,
+
+	/* HW (ANI, CCA, MIB) tally counters */
+	CARL9170FW_HW_COUNTERS,
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Firmware will pass BA when BARs are queued */
+	CARL9170FW_RX_BA_FILTER,
+
+>>>>>>> refs/remotes/origin/master
 	/* KEEP LAST */
 	__CARL9170FW_FEATURE_NUM
 };
@@ -82,6 +108,14 @@ enum carl9170fw_feature_list {
 #define DBG_MAGIC	"DBG\0"
 #define CHK_MAGIC	"CHK\0"
 #define TXSQ_MAGIC	"TXSQ"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define WOL_MAGIC	"WOL\0"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WOL_MAGIC	"WOL\0"
+>>>>>>> refs/remotes/origin/master
 #define LAST_MAGIC	"LAST"
 
 #define CARL9170FW_SET_DAY(d) (((d) - 1) % 31)
@@ -104,7 +138,15 @@ struct carl9170fw_desc_head {
 	(sizeof(struct carl9170fw_desc_head))
 
 #define CARL9170FW_OTUS_DESC_MIN_VER		6
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define CARL9170FW_OTUS_DESC_CUR_VER		6
+=======
+#define CARL9170FW_OTUS_DESC_CUR_VER		7
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CARL9170FW_OTUS_DESC_CUR_VER		7
+>>>>>>> refs/remotes/origin/master
 struct carl9170fw_otus_desc {
 	struct carl9170fw_desc_head head;
 	__le32 feature_set;
@@ -186,6 +228,25 @@ struct carl9170fw_txsq_desc {
 #define CARL9170FW_TXSQ_DESC_SIZE			\
 	(sizeof(struct carl9170fw_txsq_desc))
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#define CARL9170FW_WOL_DESC_MIN_VER			1
+#define CARL9170FW_WOL_DESC_CUR_VER			1
+struct carl9170fw_wol_desc {
+	struct carl9170fw_desc_head head;
+
+	__le32 supported_triggers;	/* CARL9170_WOL_ */
+} __packed;
+#define CARL9170FW_WOL_DESC_SIZE			\
+	(sizeof(struct carl9170fw_wol_desc))
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CARL9170FW_LAST_DESC_MIN_VER			1
 #define CARL9170FW_LAST_DESC_CUR_VER			2
 struct carl9170fw_last_desc {

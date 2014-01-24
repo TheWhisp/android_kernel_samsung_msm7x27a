@@ -136,6 +136,7 @@ static inline struct bonding *__get_bond_by_port(struct port *port)
 }
 
 /**
+<<<<<<< HEAD
  * __get_first_port - get the first port in the bond
  * @bond: the bond we're looking at
  *
@@ -169,6 +170,8 @@ static inline struct port *__get_next_port(struct port *port)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * __get_first_agg - get the first aggregator in the bond
  * @bond: the bond we're looking at
  *
@@ -178,6 +181,7 @@ static inline struct port *__get_next_port(struct port *port)
 static inline struct aggregator *__get_first_agg(struct port *port)
 {
 	struct bonding *bond = __get_bond_by_port(port);
+<<<<<<< HEAD
 
 	// If there's no bond for this port, or bond has no slaves
 	if ((bond == NULL) || (bond->slave_cnt == 0))
@@ -203,6 +207,16 @@ static inline struct aggregator *__get_next_agg(struct aggregator *aggregator)
 		return NULL;
 
 	return &(SLAVE_AD_INFO(slave->next).aggregator);
+=======
+	struct slave *first_slave;
+
+	// If there's no bond for this port, or bond has no slaves
+	if (bond == NULL)
+		return NULL;
+	first_slave = bond_first_slave(bond);
+
+	return first_slave ? &(SLAVE_AD_INFO(first_slave).aggregator) : NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -262,7 +276,15 @@ static inline u32 __get_agg_selection_mode(struct port *port)
 	if (bond == NULL)
 		return BOND_AD_STABLE;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return BOND_AD_INFO(bond).agg_select_mode;
+=======
+	return bond->params.ad_select;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return bond->params.ad_select;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -389,6 +411,7 @@ static u8 __get_duplex(struct port *port)
 
 /**
  * __initialize_port_locks - initialize a port's STATE machine spinlock
+<<<<<<< HEAD
  * @port: the port we're looking at
  *
  */
@@ -396,6 +419,15 @@ static inline void __initialize_port_locks(struct port *port)
 {
 	// make sure it isn't called twice
 	spin_lock_init(&(SLAVE_AD_INFO(port->slave).state_machine_lock));
+=======
+ * @port: the slave of the port we're looking at
+ *
+ */
+static inline void __initialize_port_locks(struct slave *slave)
+{
+	// make sure it isn't called twice
+	spin_lock_init(&(SLAVE_AD_INFO(slave).state_machine_lock));
+>>>>>>> refs/remotes/origin/master
 }
 
 //conversions
@@ -660,7 +692,15 @@ static void __attach_bond_to_agg(struct port *port)
 static void __detach_bond_from_agg(struct port *port)
 {
 	port = NULL; /* just to satisfy the compiler */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	// This function does nothing sience the parser/multiplexer of the receive
+=======
+	// This function does nothing since the parser/multiplexer of the receive
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	// This function does nothing since the parser/multiplexer of the receive
+>>>>>>> refs/remotes/origin/master
 	// and the parser/multiplexer of the aggregator are already combined
 }
 
@@ -748,6 +788,7 @@ static u32 __get_agg_bandwidth(struct aggregator *aggregator)
  */
 static struct aggregator *__get_active_agg(struct aggregator *aggregator)
 {
+<<<<<<< HEAD
 	struct aggregator *retval = NULL;
 
 	for (; aggregator; aggregator = __get_next_agg(aggregator)) {
@@ -758,6 +799,17 @@ static struct aggregator *__get_active_agg(struct aggregator *aggregator)
 	}
 
 	return retval;
+=======
+	struct bonding *bond = aggregator->slave->bond;
+	struct list_head *iter;
+	struct slave *slave;
+
+	bond_for_each_slave(bond, slave, iter)
+		if (SLAVE_AD_INFO(slave).aggregator.is_active)
+			return &(SLAVE_AD_INFO(slave).aggregator);
+
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1127,7 +1179,11 @@ static void ad_rx_machine(struct lacpdu *lacpdu, struct port *port)
 				// INFO_RECEIVED_LOOPBACK_FRAMES
 				pr_err("%s: An illegal loopback occurred on adapter (%s).\n"
 				       "Check the configuration to verify that all adapters are connected to 802.3ad compliant switch ports\n",
+<<<<<<< HEAD
 				       port->slave->dev->master->name, port->slave->dev->name);
+=======
+				       port->slave->bond->dev->name, port->slave->dev->name);
+>>>>>>> refs/remotes/origin/master
 				return;
 			}
 			__update_selected(lacpdu, port);
@@ -1135,6 +1191,8 @@ static void ad_rx_machine(struct lacpdu *lacpdu, struct port *port)
 			__record_pdu(lacpdu, port);
 			port->sm_rx_timer_counter = __ad_timer_to_ticks(AD_CURRENT_WHILE_TIMER, (u16)(port->actor_oper_port_state & AD_STATE_LACP_TIMEOUT));
 			port->actor_oper_port_state &= ~AD_STATE_EXPIRED;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			// verify that if the aggregator is enabled, the port is enabled too.
 			//(because if the link goes down for a short time, the 802.3ad will not
 			// catch it, and the port will continue to be disabled)
@@ -1142,6 +1200,10 @@ static void ad_rx_machine(struct lacpdu *lacpdu, struct port *port)
 			    && port->aggregator->is_active
 			    && !__port_is_enabled(port))
 				__enable_port(port);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:    //to silence the compiler
 			break;
@@ -1274,12 +1336,23 @@ static void ad_port_selection_logic(struct port *port)
 {
 	struct aggregator *aggregator, *free_aggregator = NULL, *temp_aggregator;
 	struct port *last_port = NULL, *curr_port;
+<<<<<<< HEAD
+=======
+	struct list_head *iter;
+	struct bonding *bond;
+	struct slave *slave;
+>>>>>>> refs/remotes/origin/master
 	int found = 0;
 
 	// if the port is already Selected, do nothing
 	if (port->sm_vars & AD_PORT_SELECTED)
 		return;
 
+<<<<<<< HEAD
+=======
+	bond = __get_bond_by_port(port);
+
+>>>>>>> refs/remotes/origin/master
 	// if the port is connected to other aggregator, detach it
 	if (port->aggregator) {
 		// detach the port from its former aggregator
@@ -1313,15 +1386,24 @@ static void ad_port_selection_logic(struct port *port)
 		}
 		if (!curr_port) { // meaning: the port was related to an aggregator but was not on the aggregator port list
 			pr_warning("%s: Warning: Port %d (on %s) was related to aggregator %d but was not on its port list\n",
+<<<<<<< HEAD
 				   port->slave->dev->master->name,
+=======
+				   port->slave->bond->dev->name,
+>>>>>>> refs/remotes/origin/master
 				   port->actor_port_number,
 				   port->slave->dev->name,
 				   port->aggregator->aggregator_identifier);
 		}
 	}
 	// search on all aggregators for a suitable aggregator for this port
+<<<<<<< HEAD
 	for (aggregator = __get_first_agg(port); aggregator;
 	     aggregator = __get_next_agg(aggregator)) {
+=======
+	bond_for_each_slave(bond, slave, iter) {
+		aggregator = &(SLAVE_AD_INFO(slave).aggregator);
+>>>>>>> refs/remotes/origin/master
 
 		// keep a free aggregator for later use(if needed)
 		if (!aggregator->lag_ports) {
@@ -1393,7 +1475,11 @@ static void ad_port_selection_logic(struct port *port)
 				 port->aggregator->aggregator_identifier);
 		} else {
 			pr_err("%s: Port %d (on %s) did not find a suitable aggregator\n",
+<<<<<<< HEAD
 			       port->slave->dev->master->name,
+=======
+			       port->slave->bond->dev->name,
+>>>>>>> refs/remotes/origin/master
 			       port->actor_port_number, port->slave->dev->name);
 		}
 	}
@@ -1470,7 +1556,11 @@ static struct aggregator *ad_agg_selection_test(struct aggregator *best,
 
 	default:
 		pr_warning("%s: Impossible agg select mode %d\n",
+<<<<<<< HEAD
 			   curr->slave->dev->master->name,
+=======
+			   curr->slave->bond->dev->name,
+>>>>>>> refs/remotes/origin/master
 			   __get_agg_selection_mode(curr->lag_ports));
 		break;
 	}
@@ -1515,19 +1605,35 @@ static int agg_device_up(const struct aggregator *agg)
 static void ad_agg_selection_logic(struct aggregator *agg)
 {
 	struct aggregator *best, *active, *origin;
+<<<<<<< HEAD
+=======
+	struct bonding *bond = agg->slave->bond;
+	struct list_head *iter;
+	struct slave *slave;
+>>>>>>> refs/remotes/origin/master
 	struct port *port;
 
 	origin = agg;
 	active = __get_active_agg(agg);
 	best = (active && agg_device_up(active)) ? active : NULL;
 
+<<<<<<< HEAD
 	do {
+=======
+	bond_for_each_slave(bond, slave, iter) {
+		agg = &(SLAVE_AD_INFO(slave).aggregator);
+
+>>>>>>> refs/remotes/origin/master
 		agg->is_active = 0;
 
 		if (agg->num_of_ports && agg_device_up(agg))
 			best = ad_agg_selection_test(best, agg);
+<<<<<<< HEAD
 
 	} while ((agg = __get_next_agg(agg)));
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (best &&
 	    __get_agg_selection_mode(best->lag_ports) == BOND_AD_STABLE) {
@@ -1565,8 +1671,13 @@ static void ad_agg_selection_logic(struct aggregator *agg)
 			 best->lag_ports, best->slave,
 			 best->slave ? best->slave->dev->name : "NULL");
 
+<<<<<<< HEAD
 		for (agg = __get_first_agg(best->lag_ports); agg;
 		     agg = __get_next_agg(agg)) {
+=======
+		bond_for_each_slave(bond, slave, iter) {
+			agg = &(SLAVE_AD_INFO(slave).aggregator);
+>>>>>>> refs/remotes/origin/master
 
 			pr_debug("Agg=%d; P=%d; a k=%d; p k=%d; Ind=%d; Act=%d\n",
 				 agg->aggregator_identifier, agg->num_of_ports,
@@ -1578,7 +1689,11 @@ static void ad_agg_selection_logic(struct aggregator *agg)
 		// check if any partner replys
 		if (best->is_individual) {
 			pr_warning("%s: Warning: No 802.3ad response from the link partner for any adapters in the bond\n",
+<<<<<<< HEAD
 				   best->slave ? best->slave->dev->master->name : "NULL");
+=======
+				   best->slave ? best->slave->bond->dev->name : "NULL");
+>>>>>>> refs/remotes/origin/master
 		}
 
 		best->is_active = 1;
@@ -1614,6 +1729,7 @@ static void ad_agg_selection_logic(struct aggregator *agg)
 		}
 	}
 
+<<<<<<< HEAD
 	if (origin->slave) {
 		struct bonding *bond;
 
@@ -1621,6 +1737,9 @@ static void ad_agg_selection_logic(struct aggregator *agg)
 		if (bond)
 			bond_3ad_set_carrier(bond);
 	}
+=======
+	bond_3ad_set_carrier(bond);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1859,7 +1978,13 @@ static void ad_marker_response_received(struct bond_marker *marker,
 void bond_3ad_initiate_agg_selection(struct bonding *bond, int timeout)
 {
 	BOND_AD_INFO(bond).agg_select_timer = timeout;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BOND_AD_INFO(bond).agg_select_mode = bond->params.ad_select;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static u16 aggregator_identifier;
@@ -1868,11 +1993,24 @@ static u16 aggregator_identifier;
  * bond_3ad_initialize - initialize a bond's 802.3ad parameters and structures
  * @bond: bonding struct to work on
  * @tick_resolution: tick duration (millisecond resolution)
+<<<<<<< HEAD
+<<<<<<< HEAD
  * @lacp_fast: boolean. whether fast periodic should be used
  *
  * Can be called only after the mac address of the bond is set.
  */
 void bond_3ad_initialize(struct bonding *bond, u16 tick_resolution, int lacp_fast)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ *
+ * Can be called only after the mac address of the bond is set.
+ */
+void bond_3ad_initialize(struct bonding *bond, u16 tick_resolution)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	// check that the bond is not initialized yet
 	if (MAC_ADDRESS_COMPARE(&(BOND_AD_INFO(bond).system.sys_mac_addr),
@@ -1880,7 +2018,13 @@ void bond_3ad_initialize(struct bonding *bond, u16 tick_resolution, int lacp_fas
 
 		aggregator_identifier = 0;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		BOND_AD_INFO(bond).lacp_fast = lacp_fast;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		BOND_AD_INFO(bond).system.sys_priority = 0xFFFF;
 		BOND_AD_INFO(bond).system.sys_mac_addr = *((struct mac_addr *)bond->dev->dev_addr);
 
@@ -1908,7 +2052,11 @@ int bond_3ad_bind_slave(struct slave *slave)
 
 	if (bond == NULL) {
 		pr_err("%s: The slave %s is not attached to its bond\n",
+<<<<<<< HEAD
 		       slave->dev->master->name, slave->dev->name);
+=======
+		       slave->bond->dev->name, slave->dev->name);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -1918,8 +2066,18 @@ int bond_3ad_bind_slave(struct slave *slave)
 		// port initialization
 		port = &(SLAVE_AD_INFO(slave).port);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ad_initialize_port(port, BOND_AD_INFO(bond).lacp_fast);
+=======
+		ad_initialize_port(port, bond->params.lacp_fast);
+>>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+		ad_initialize_port(port, bond->params.lacp_fast);
+
+		__initialize_port_locks(slave);
+>>>>>>> refs/remotes/origin/master
 		port->slave = slave;
 		port->actor_port_number = SLAVE_AD_INFO(slave).id;
 		// key is determined according to the link speed, duplex and user key(which is yet not supported)
@@ -1942,8 +2100,11 @@ int bond_3ad_bind_slave(struct slave *slave)
 		port->next_port_in_aggregator = NULL;
 
 		__disable_port(port);
+<<<<<<< HEAD
 		__initialize_port_locks(port);
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 		// aggregator initialization
 		aggregator = &(SLAVE_AD_INFO(slave).aggregator);
@@ -1973,6 +2134,12 @@ void bond_3ad_unbind_slave(struct slave *slave)
 	struct port *port, *prev_port, *temp_port;
 	struct aggregator *aggregator, *new_aggregator, *temp_aggregator;
 	int select_new_active_agg = 0;
+<<<<<<< HEAD
+=======
+	struct bonding *bond = slave->bond;
+	struct slave *slave_iter;
+	struct list_head *iter;
+>>>>>>> refs/remotes/origin/master
 
 	// find the aggregator related to this slave
 	aggregator = &(SLAVE_AD_INFO(slave).aggregator);
@@ -1983,7 +2150,11 @@ void bond_3ad_unbind_slave(struct slave *slave)
 	// if slave is null, the whole port is not initialized
 	if (!port->slave) {
 		pr_warning("Warning: %s: Trying to unbind an uninitialized port on %s\n",
+<<<<<<< HEAD
 			   slave->dev->master->name, slave->dev->name);
+=======
+			   slave->bond->dev->name, slave->dev->name);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -2002,14 +2173,24 @@ void bond_3ad_unbind_slave(struct slave *slave)
 		// reason to search for new aggregator, and that we will find one
 		if ((aggregator->lag_ports != port) || (aggregator->lag_ports->next_port_in_aggregator)) {
 			// find new aggregator for the related port(s)
+<<<<<<< HEAD
 			new_aggregator = __get_first_agg(port);
 			for (; new_aggregator; new_aggregator = __get_next_agg(new_aggregator)) {
+=======
+			bond_for_each_slave(bond, slave_iter, iter) {
+				new_aggregator = &(SLAVE_AD_INFO(slave_iter).aggregator);
+>>>>>>> refs/remotes/origin/master
 				// if the new aggregator is empty, or it is connected to our port only
 				if (!new_aggregator->lag_ports
 				    || ((new_aggregator->lag_ports == port)
 					&& !new_aggregator->lag_ports->next_port_in_aggregator))
 					break;
 			}
+<<<<<<< HEAD
+=======
+			if (!slave_iter)
+				new_aggregator = NULL;
+>>>>>>> refs/remotes/origin/master
 			// if new aggregator found, copy the aggregator's parameters
 			// and connect the related lag_ports to the new aggregator
 			if ((new_aggregator) && ((!new_aggregator->lag_ports) || ((new_aggregator->lag_ports == port) && !new_aggregator->lag_ports->next_port_in_aggregator))) {
@@ -2019,7 +2200,11 @@ void bond_3ad_unbind_slave(struct slave *slave)
 
 				if ((new_aggregator->lag_ports == port) && new_aggregator->is_active) {
 					pr_info("%s: Removing an active aggregator\n",
+<<<<<<< HEAD
 						aggregator->slave->dev->master->name);
+=======
+						aggregator->slave->bond->dev->name);
+>>>>>>> refs/remotes/origin/master
 					// select new active aggregator
 					 select_new_active_agg = 1;
 				}
@@ -2050,7 +2235,11 @@ void bond_3ad_unbind_slave(struct slave *slave)
 					ad_agg_selection_logic(__get_first_agg(port));
 			} else {
 				pr_warning("%s: Warning: unbinding aggregator, and could not find a new aggregator for its ports\n",
+<<<<<<< HEAD
 					   slave->dev->master->name);
+=======
+					   slave->bond->dev->name);
+>>>>>>> refs/remotes/origin/master
 			}
 		} else { // in case that the only port related to this aggregator is the one we want to remove
 			select_new_active_agg = aggregator->is_active;
@@ -2058,17 +2247,30 @@ void bond_3ad_unbind_slave(struct slave *slave)
 			ad_clear_agg(aggregator);
 			if (select_new_active_agg) {
 				pr_info("%s: Removing an active aggregator\n",
+<<<<<<< HEAD
 					slave->dev->master->name);
 				// select new active aggregator
 				ad_agg_selection_logic(__get_first_agg(port));
+=======
+					slave->bond->dev->name);
+				// select new active aggregator
+				temp_aggregator = __get_first_agg(port);
+				if (temp_aggregator)
+					ad_agg_selection_logic(temp_aggregator);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
 
 	pr_debug("Unbinding port %d\n", port->actor_port_number);
 	// find the aggregator that this port is connected to
+<<<<<<< HEAD
 	temp_aggregator = __get_first_agg(port);
 	for (; temp_aggregator; temp_aggregator = __get_next_agg(temp_aggregator)) {
+=======
+	bond_for_each_slave(bond, slave_iter, iter) {
+		temp_aggregator = &(SLAVE_AD_INFO(slave_iter).aggregator);
+>>>>>>> refs/remotes/origin/master
 		prev_port = NULL;
 		// search the port in the aggregator's related ports
 		for (temp_port = temp_aggregator->lag_ports; temp_port;
@@ -2086,7 +2288,11 @@ void bond_3ad_unbind_slave(struct slave *slave)
 					ad_clear_agg(temp_aggregator);
 					if (select_new_active_agg) {
 						pr_info("%s: Removing an active aggregator\n",
+<<<<<<< HEAD
 							slave->dev->master->name);
+=======
+							slave->bond->dev->name);
+>>>>>>> refs/remotes/origin/master
 						// select new active aggregator
 						ad_agg_selection_logic(__get_first_agg(port));
 					}
@@ -2115,22 +2321,45 @@ void bond_3ad_state_machine_handler(struct work_struct *work)
 {
 	struct bonding *bond = container_of(work, struct bonding,
 					    ad_work.work);
+<<<<<<< HEAD
 	struct port *port;
 	struct aggregator *aggregator;
 
 	read_lock(&bond->lock);
 
+<<<<<<< HEAD
 	if (bond->kill_timers)
 		goto out;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	//check if there are any slaves
 	if (bond->slave_cnt == 0)
+=======
+	struct aggregator *aggregator;
+	struct list_head *iter;
+	struct slave *slave;
+	struct port *port;
+
+	read_lock(&bond->lock);
+
+	//check if there are any slaves
+	if (!bond_has_slaves(bond))
+>>>>>>> refs/remotes/origin/master
 		goto re_arm;
 
 	// check if agg_select_timer timer after initialize is timed out
 	if (BOND_AD_INFO(bond).agg_select_timer && !(--BOND_AD_INFO(bond).agg_select_timer)) {
+<<<<<<< HEAD
 		// select the active aggregator for the bond
 		if ((port = __get_first_port(bond))) {
+=======
+		slave = bond_first_slave(bond);
+		port = slave ? &(SLAVE_AD_INFO(slave).port) : NULL;
+
+		// select the active aggregator for the bond
+		if (port) {
+>>>>>>> refs/remotes/origin/master
 			if (!port->slave) {
 				pr_warning("%s: Warning: bond's first port is uninitialized\n",
 					   bond->dev->name);
@@ -2144,7 +2373,12 @@ void bond_3ad_state_machine_handler(struct work_struct *work)
 	}
 
 	// for each port run the state machines
+<<<<<<< HEAD
 	for (port = __get_first_port(bond); port; port = __get_next_port(port)) {
+=======
+	bond_for_each_slave(bond, slave, iter) {
+		port = &(SLAVE_AD_INFO(slave).port);
+>>>>>>> refs/remotes/origin/master
 		if (!port->slave) {
 			pr_warning("%s: Warning: Found an uninitialized port\n",
 				   bond->dev->name);
@@ -2172,7 +2406,15 @@ void bond_3ad_state_machine_handler(struct work_struct *work)
 
 re_arm:
 	queue_delayed_work(bond->wq, &bond->ad_work, ad_delta_in_ticks);
+<<<<<<< HEAD
+<<<<<<< HEAD
 out:
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	read_unlock(&bond->lock);
 }
 
@@ -2186,9 +2428,22 @@ out:
  * received frames (loopback). Since only the payload is given to this
  * function, it check for loopback.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void bond_3ad_rx_indication(struct lacpdu *lacpdu, struct slave *slave, u16 length)
 {
 	struct port *port;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int bond_3ad_rx_indication(struct lacpdu *lacpdu, struct slave *slave, u16 length)
+{
+	struct port *port;
+	int ret = RX_HANDLER_ANOTHER;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (length >= sizeof(struct lacpdu)) {
 
@@ -2196,12 +2451,29 @@ static void bond_3ad_rx_indication(struct lacpdu *lacpdu, struct slave *slave, u
 
 		if (!port->slave) {
 			pr_warning("%s: Warning: port of slave %s is uninitialized\n",
+<<<<<<< HEAD
 				   slave->dev->name, slave->dev->master->name);
+<<<<<<< HEAD
 			return;
+=======
+			return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   slave->dev->name, slave->bond->dev->name);
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		switch (lacpdu->subtype) {
 		case AD_TYPE_LACPDU:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			ret = RX_HANDLER_CONSUMED;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = RX_HANDLER_CONSUMED;
+>>>>>>> refs/remotes/origin/master
 			pr_debug("Received LACPDU on port %d\n",
 				 port->actor_port_number);
 			/* Protect against concurrent state machines */
@@ -2211,6 +2483,14 @@ static void bond_3ad_rx_indication(struct lacpdu *lacpdu, struct slave *slave, u
 			break;
 
 		case AD_TYPE_MARKER:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			ret = RX_HANDLER_CONSUMED;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = RX_HANDLER_CONSUMED;
+>>>>>>> refs/remotes/origin/master
 			// No need to convert fields to Little Endian since we don't use the marker's fields.
 
 			switch (((struct bond_marker *)lacpdu)->tlv_type) {
@@ -2232,6 +2512,14 @@ static void bond_3ad_rx_indication(struct lacpdu *lacpdu, struct slave *slave, u
 			}
 		}
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2246,6 +2534,7 @@ void bond_3ad_adapter_speed_changed(struct slave *slave)
 
 	port = &(SLAVE_AD_INFO(slave).port);
 
+<<<<<<< HEAD
 	// if slave is null, the whole port is not initialized
 	if (!port->slave) {
 		pr_warning("Warning: %s: speed changed for uninitialized port on %s\n",
@@ -2253,13 +2542,33 @@ void bond_3ad_adapter_speed_changed(struct slave *slave)
 		return;
 	}
 
+=======
+	/* if slave is null, the whole port is not initialized */
+	if (!port->slave) {
+		pr_warning("Warning: %s: speed changed for uninitialized port on %s\n",
+			   slave->bond->dev->name, slave->dev->name);
+		return;
+	}
+
+	__get_state_machine_lock(port);
+
+>>>>>>> refs/remotes/origin/master
 	port->actor_admin_port_key &= ~AD_SPEED_KEY_BITS;
 	port->actor_oper_port_key = port->actor_admin_port_key |=
 		(__get_link_speed(port) << 1);
 	pr_debug("Port %d changed speed\n", port->actor_port_number);
+<<<<<<< HEAD
 	// there is no need to reselect a new aggregator, just signal the
 	// state machines to reinitialize
 	port->sm_vars |= AD_PORT_BEGIN;
+=======
+	/* there is no need to reselect a new aggregator, just signal the
+	 * state machines to reinitialize
+	 */
+	port->sm_vars |= AD_PORT_BEGIN;
+
+	__release_state_machine_lock(port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2274,6 +2583,7 @@ void bond_3ad_adapter_duplex_changed(struct slave *slave)
 
 	port = &(SLAVE_AD_INFO(slave).port);
 
+<<<<<<< HEAD
 	// if slave is null, the whole port is not initialized
 	if (!port->slave) {
 		pr_warning("%s: Warning: duplex changed for uninitialized port on %s\n",
@@ -2281,13 +2591,33 @@ void bond_3ad_adapter_duplex_changed(struct slave *slave)
 		return;
 	}
 
+=======
+	/* if slave is null, the whole port is not initialized */
+	if (!port->slave) {
+		pr_warning("%s: Warning: duplex changed for uninitialized port on %s\n",
+			   slave->bond->dev->name, slave->dev->name);
+		return;
+	}
+
+	__get_state_machine_lock(port);
+
+>>>>>>> refs/remotes/origin/master
 	port->actor_admin_port_key &= ~AD_DUPLEX_KEY_BITS;
 	port->actor_oper_port_key = port->actor_admin_port_key |=
 		__get_duplex(port);
 	pr_debug("Port %d changed duplex\n", port->actor_port_number);
+<<<<<<< HEAD
 	// there is no need to reselect a new aggregator, just signal the
 	// state machines to reinitialize
 	port->sm_vars |= AD_PORT_BEGIN;
+=======
+	/* there is no need to reselect a new aggregator, just signal the
+	 * state machines to reinitialize
+	 */
+	port->sm_vars |= AD_PORT_BEGIN;
+
+	__release_state_machine_lock(port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2303,6 +2633,7 @@ void bond_3ad_handle_link_change(struct slave *slave, char link)
 
 	port = &(SLAVE_AD_INFO(slave).port);
 
+<<<<<<< HEAD
 	// if slave is null, the whole port is not initialized
 	if (!port->slave) {
 		pr_warning("Warning: %s: link status changed for uninitialized port on %s\n",
@@ -2312,6 +2643,23 @@ void bond_3ad_handle_link_change(struct slave *slave, char link)
 
 	// on link down we are zeroing duplex and speed since some of the adaptors(ce1000.lan) report full duplex/speed instead of N/A(duplex) / 0(speed)
 	// on link up we are forcing recheck on the duplex and speed since some of he adaptors(ce1000.lan) report
+=======
+	/* if slave is null, the whole port is not initialized */
+	if (!port->slave) {
+		pr_warning("Warning: %s: link status changed for uninitialized port on %s\n",
+			   slave->bond->dev->name, slave->dev->name);
+		return;
+	}
+
+	__get_state_machine_lock(port);
+	/* on link down we are zeroing duplex and speed since
+	 * some of the adaptors(ce1000.lan) report full duplex/speed
+	 * instead of N/A(duplex) / 0(speed).
+	 *
+	 * on link up we are forcing recheck on the duplex and speed since
+	 * some of he adaptors(ce1000.lan) report.
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (link == BOND_LINK_UP) {
 		port->is_enabled = true;
 		port->actor_admin_port_key &= ~AD_DUPLEX_KEY_BITS;
@@ -2327,10 +2675,22 @@ void bond_3ad_handle_link_change(struct slave *slave, char link)
 		port->actor_oper_port_key = (port->actor_admin_port_key &=
 					     ~AD_SPEED_KEY_BITS);
 	}
+<<<<<<< HEAD
 	//BOND_PRINT_DBG(("Port %d changed link status to %s", port->actor_port_number, ((link == BOND_LINK_UP)?"UP":"DOWN")));
 	// there is no need to reselect a new aggregator, just signal the
 	// state machines to reinitialize
 	port->sm_vars |= AD_PORT_BEGIN;
+=======
+	pr_debug("Port %d changed link status to %s",
+		port->actor_port_number,
+		(link == BOND_LINK_UP) ? "UP" : "DOWN");
+	/* there is no need to reselect a new aggregator, just signal the
+	 * state machines to reinitialize
+	 */
+	port->sm_vars |= AD_PORT_BEGIN;
+
+	__release_state_machine_lock(port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2345,8 +2705,35 @@ void bond_3ad_handle_link_change(struct slave *slave, char link)
  */
 int bond_3ad_set_carrier(struct bonding *bond)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (__get_active_agg(&(SLAVE_AD_INFO(bond->first_slave).aggregator))) {
 		if (!netif_carrier_ok(bond->dev)) {
+=======
+	struct aggregator *active;
+
+	active = __get_active_agg(&(SLAVE_AD_INFO(bond->first_slave).aggregator));
+=======
+	struct aggregator *active;
+	struct slave *first_slave;
+
+	first_slave = bond_first_slave(bond);
+	if (!first_slave)
+		return 0;
+	active = __get_active_agg(&(SLAVE_AD_INFO(first_slave).aggregator));
+>>>>>>> refs/remotes/origin/master
+	if (active) {
+		/* are enough slaves available to consider link up? */
+		if (active->num_of_ports < bond->params.min_links) {
+			if (netif_carrier_ok(bond->dev)) {
+				netif_carrier_off(bond->dev);
+				return 1;
+			}
+		} else if (!netif_carrier_ok(bond->dev)) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			netif_carrier_on(bond->dev);
 			return 1;
 		}
@@ -2361,19 +2748,36 @@ int bond_3ad_set_carrier(struct bonding *bond)
 }
 
 /**
+<<<<<<< HEAD
  * bond_3ad_get_active_agg_info - get information of the active aggregator
+=======
+ * __bond_3ad_get_active_agg_info - get information of the active aggregator
+>>>>>>> refs/remotes/origin/master
  * @bond: bonding struct to work on
  * @ad_info: ad_info struct to fill with the bond's info
  *
  * Returns:   0 on success
  *          < 0 on error
  */
+<<<<<<< HEAD
 int bond_3ad_get_active_agg_info(struct bonding *bond, struct ad_info *ad_info)
 {
 	struct aggregator *aggregator = NULL;
 	struct port *port;
 
 	for (port = __get_first_port(bond); port; port = __get_next_port(port)) {
+=======
+int __bond_3ad_get_active_agg_info(struct bonding *bond,
+				   struct ad_info *ad_info)
+{
+	struct aggregator *aggregator = NULL;
+	struct list_head *iter;
+	struct slave *slave;
+	struct port *port;
+
+	bond_for_each_slave_rcu(bond, slave, iter) {
+		port = &(SLAVE_AD_INFO(slave).port);
+>>>>>>> refs/remotes/origin/master
 		if (port->aggregator && port->aggregator->is_active) {
 			aggregator = port->aggregator;
 			break;
@@ -2392,6 +2796,7 @@ int bond_3ad_get_active_agg_info(struct bonding *bond, struct ad_info *ad_info)
 	return -1;
 }
 
+<<<<<<< HEAD
 int bond_3ad_xmit_xor(struct sk_buff *skb, struct net_device *dev)
 {
 	struct slave *slave, *start_at;
@@ -2405,6 +2810,34 @@ int bond_3ad_xmit_xor(struct sk_buff *skb, struct net_device *dev)
 
 	if (bond_3ad_get_active_agg_info(bond, &ad_info)) {
 		pr_debug("%s: Error: bond_3ad_get_active_agg_info failed\n",
+=======
+/* Wrapper used to hold bond->lock so no slave manipulation can occur */
+int bond_3ad_get_active_agg_info(struct bonding *bond, struct ad_info *ad_info)
+{
+	int ret;
+
+	rcu_read_lock();
+	ret = __bond_3ad_get_active_agg_info(bond, ad_info);
+	rcu_read_unlock();
+
+	return ret;
+}
+
+int bond_3ad_xmit_xor(struct sk_buff *skb, struct net_device *dev)
+{
+	struct bonding *bond = netdev_priv(dev);
+	struct slave *slave, *first_ok_slave;
+	struct aggregator *agg;
+	struct ad_info ad_info;
+	struct list_head *iter;
+	int slaves_in_agg;
+	int slave_agg_no;
+	int res = 1;
+	int agg_id;
+
+	if (__bond_3ad_get_active_agg_info(bond, &ad_info)) {
+		pr_debug("%s: Error: __bond_3ad_get_active_agg_info failed\n",
+>>>>>>> refs/remotes/origin/master
 			 dev->name);
 		goto out;
 	}
@@ -2413,11 +2846,15 @@ int bond_3ad_xmit_xor(struct sk_buff *skb, struct net_device *dev)
 	agg_id = ad_info.aggregator_id;
 
 	if (slaves_in_agg == 0) {
+<<<<<<< HEAD
 		/*the aggregator is empty*/
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_debug("%s: Error: active aggregator is empty\n", dev->name);
 		goto out;
 	}
 
+<<<<<<< HEAD
 	slave_agg_no = bond->xmit_hash_policy(skb, slaves_in_agg);
 
 	bond_for_each_slave(bond, slave, i) {
@@ -2427,6 +2864,26 @@ int bond_3ad_xmit_xor(struct sk_buff *skb, struct net_device *dev)
 			slave_agg_no--;
 			if (slave_agg_no < 0)
 				break;
+=======
+	slave_agg_no = bond_xmit_hash(bond, skb, slaves_in_agg);
+	first_ok_slave = NULL;
+
+	bond_for_each_slave_rcu(bond, slave, iter) {
+		agg = SLAVE_AD_INFO(slave).port.aggregator;
+		if (!agg || agg->aggregator_identifier != agg_id)
+			continue;
+
+		if (slave_agg_no >= 0) {
+			if (!first_ok_slave && SLAVE_IS_OK(slave))
+				first_ok_slave = slave;
+			slave_agg_no--;
+			continue;
+		}
+
+		if (SLAVE_IS_OK(slave)) {
+			res = bond_dev_queue_xmit(bond, skb, slave->dev);
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -2436,6 +2893,7 @@ int bond_3ad_xmit_xor(struct sk_buff *skb, struct net_device *dev)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	start_at = slave;
 
 	bond_for_each_slave_from(bond, slave, i, start_at) {
@@ -2450,16 +2908,28 @@ int bond_3ad_xmit_xor(struct sk_buff *skb, struct net_device *dev)
 			break;
 		}
 	}
+=======
+	/* we couldn't find any suitable slave after the agg_no, so use the
+	 * first suitable found, if found. */
+	if (first_ok_slave)
+		res = bond_dev_queue_xmit(bond, skb, first_ok_slave->dev);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	if (res) {
 		/* no suitable interface, frame not sent */
+<<<<<<< HEAD
 		dev_kfree_skb(skb);
+=======
+		kfree_skb(skb);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return NETDEV_TX_OK;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void bond_3ad_lacpdu_recv(struct sk_buff *skb, struct bonding *bond,
 			  struct slave *slave)
 {
@@ -2471,5 +2941,81 @@ void bond_3ad_lacpdu_recv(struct sk_buff *skb, struct bonding *bond,
 
 	read_lock(&bond->lock);
 	bond_3ad_rx_indication((struct lacpdu *) skb->data, slave, skb->len);
+=======
+int bond_3ad_lacpdu_recv(struct sk_buff *skb, struct bonding *bond,
+			  struct slave *slave)
+{
+	int ret = RX_HANDLER_ANOTHER;
+	if (skb->protocol != PKT_TYPE_LACPDU)
+		return ret;
+
+	if (!pskb_may_pull(skb, sizeof(struct lacpdu)))
+		return ret;
+
+	read_lock(&bond->lock);
+	ret = bond_3ad_rx_indication((struct lacpdu *) skb->data, slave, skb->len);
+=======
+int bond_3ad_lacpdu_recv(const struct sk_buff *skb, struct bonding *bond,
+			 struct slave *slave)
+{
+	int ret = RX_HANDLER_ANOTHER;
+	struct lacpdu *lacpdu, _lacpdu;
+
+	if (skb->protocol != PKT_TYPE_LACPDU)
+		return ret;
+
+	lacpdu = skb_header_pointer(skb, 0, sizeof(_lacpdu), &_lacpdu);
+	if (!lacpdu)
+		return ret;
+
+	read_lock(&bond->lock);
+	ret = bond_3ad_rx_indication(lacpdu, slave, skb->len);
+>>>>>>> refs/remotes/origin/master
 	read_unlock(&bond->lock);
+	return ret;
+}
+
+/*
+ * When modify lacp_rate parameter via sysfs,
+ * update actor_oper_port_state of each port.
+ *
+ * Hold slave->state_machine_lock,
+ * so we can modify port->actor_oper_port_state,
+ * no matter bond is up or down.
+ */
+void bond_3ad_update_lacp_rate(struct bonding *bond)
+{
+<<<<<<< HEAD
+	int i;
+	struct slave *slave;
+	struct port *port = NULL;
+	int lacp_fast;
+
+	read_lock(&bond->lock);
+	lacp_fast = bond->params.lacp_fast;
+
+	bond_for_each_slave(bond, slave, i) {
+=======
+	struct port *port = NULL;
+	struct list_head *iter;
+	struct slave *slave;
+	int lacp_fast;
+
+	lacp_fast = bond->params.lacp_fast;
+	bond_for_each_slave(bond, slave, iter) {
+>>>>>>> refs/remotes/origin/master
+		port = &(SLAVE_AD_INFO(slave).port);
+		__get_state_machine_lock(port);
+		if (lacp_fast)
+			port->actor_oper_port_state |= AD_STATE_LACP_TIMEOUT;
+		else
+			port->actor_oper_port_state &= ~AD_STATE_LACP_TIMEOUT;
+		__release_state_machine_lock(port);
+	}
+<<<<<<< HEAD
+
+>>>>>>> refs/remotes/origin/cm-10.0
+	read_unlock(&bond->lock);
+=======
+>>>>>>> refs/remotes/origin/master
 }

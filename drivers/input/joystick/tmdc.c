@@ -436,6 +436,7 @@ static struct gameport_driver tmdc_drv = {
 	.disconnect	= tmdc_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init tmdc_init(void)
 {
 	return gameport_register_driver(&tmdc_drv);
@@ -448,3 +449,6 @@ static void __exit tmdc_exit(void)
 
 module_init(tmdc_init);
 module_exit(tmdc_exit);
+=======
+module_gameport_driver(tmdc_drv);
+>>>>>>> refs/remotes/origin/master

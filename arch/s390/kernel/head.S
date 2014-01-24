@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright IBM Corp. 1999,2010
+=======
+ * Copyright IBM Corp. 1999, 2010
+>>>>>>> refs/remotes/origin/master
  *
  *    Author(s): Hartmut Penner <hp@de.ibm.com>
  *		 Martin Schwidefsky <schwidefsky@de.ibm.com>
@@ -22,6 +26,14 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 #include <asm/thread_info.h>
 #include <asm/page.h>
@@ -33,6 +45,7 @@
 #endif
 
 __HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_IPL
 	.org   0
 	.long  0x00080000,0x80000000+startup	# Just a restart PSW
@@ -152,6 +165,9 @@ __HEAD
 #endif	/* CONFIG_IPL_TAPE */
 
 #ifdef CONFIG_IPL_VM
+=======
+
+>>>>>>> refs/remotes/origin/master
 #define IPL_BS	0x730
 	.org	0
 	.long	0x00080000,0x80000000+iplstart	# The first 24 bytes are loaded
@@ -169,7 +185,11 @@ __HEAD
 	.long	0x02000370,0x60000050		# the channel program the PSW
 	.long	0x020003c0,0x60000050		# at location 0 is loaded.
 	.long	0x02000410,0x60000050		# Initial processing starts
+<<<<<<< HEAD
 	.long	0x02000460,0x60000050		# at 0xf0 = iplstart.
+=======
+	.long	0x02000460,0x60000050		# at 0x200 = iplstart.
+>>>>>>> refs/remotes/origin/master
 	.long	0x020004b0,0x60000050
 	.long	0x02000500,0x60000050
 	.long	0x02000550,0x60000050
@@ -179,11 +199,61 @@ __HEAD
 	.long	0x02000690,0x60000050
 	.long	0x020006e0,0x20000050
 
+<<<<<<< HEAD
 	.org	0xf0
+=======
+	.org	0x200
+#
+# subroutine to set architecture mode
+#
+.Lsetmode:
+#ifdef CONFIG_64BIT
+	mvi	__LC_AR_MODE_ID,1	# set esame flag
+	slr	%r0,%r0 		# set cpuid to zero
+	lhi	%r1,2			# mode 2 = esame (dump)
+	sigp	%r1,%r0,0x12		# switch to esame mode
+	bras	%r13,0f
+	.fill	16,4,0x0
+0:	lmh	%r0,%r15,0(%r13)	# clear high-order half of gprs
+	sam31				# switch to 31 bit addressing mode
+#else
+	mvi	__LC_AR_MODE_ID,0	# set ESA flag (mode 0)
+#endif
+	br	%r14
+
+#
+# subroutine to wait for end I/O
+#
+.Lirqwait:
+#ifdef CONFIG_64BIT
+	mvc	0x1f0(16),.Lnewpsw	# set up IO interrupt psw
+	lpsw	.Lwaitpsw
+.Lioint:
+	br	%r14
+	.align	8
+.Lnewpsw:
+	.quad	0x0000000080000000,.Lioint
+#else
+	mvc	0x78(8),.Lnewpsw	# set up IO interrupt psw
+	lpsw	.Lwaitpsw
+.Lioint:
+	br	%r14
+	.align	8
+.Lnewpsw:
+	.long	0x00080000,0x80000000+.Lioint
+#endif
+.Lwaitpsw:
+	.long	0x020a0000,0x80000000+.Lioint
+
+>>>>>>> refs/remotes/origin/master
 #
 # subroutine for loading cards from the reader
 #
 .Lloader:
+<<<<<<< HEAD
+=======
+	la	%r4,0(%r14)
+>>>>>>> refs/remotes/origin/master
 	la	%r3,.Lorb		# r2 = address of orb into r2
 	la	%r5,.Lirb		# r4 = address of irb
 	la	%r6,.Lccws
@@ -200,9 +270,13 @@ __HEAD
 	ssch	0(%r3)			# load chunk of 1600 bytes
 	bnz	.Llderr
 .Lwait4irq:
+<<<<<<< HEAD
 	mvc	0x78(8),.Lnewpsw	# set up IO interrupt psw
 	lpsw	.Lwaitpsw
 .Lioint:
+=======
+	bas	%r14,.Lirqwait
+>>>>>>> refs/remotes/origin/master
 	c	%r1,0xb8		# compare subchannel number
 	bne	.Lwait4irq
 	tsch	0(%r5)
@@ -221,7 +295,11 @@ __HEAD
 	sr	%r0,%r3 		# #ccws*80-residual=#bytes read
 	ar	%r2,%r0
 
+<<<<<<< HEAD
 	br	%r14			# r2 contains the total size
+=======
+	br	%r4			# r2 contains the total size
+>>>>>>> refs/remotes/origin/master
 
 .Lcont:
 	ahi	%r2,0x640		# add 0x640 to total size
@@ -245,19 +323,28 @@ __HEAD
 .Lloadp:.long	0,0
 	.align	8
 .Lcrash:.long	0x000a0000,0x00000000
+<<<<<<< HEAD
 .Lnewpsw:
 	.long	0x00080000,0x80000000+.Lioint
 .Lwaitpsw:
 	.long	0x020a0000,0x80000000+.Lioint
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align	8
 .Lccws: .rept	19
 	.long	0x02600050,0x00000000
 	.endr
 	.long	0x02200050,0x00000000
+<<<<<<< HEAD
 #endif	/* CONFIG_IPL_VM */
 
 iplstart:
+=======
+
+iplstart:
+	bas	%r14,.Lsetmode		# Immediately switch to 64 bit mode
+>>>>>>> refs/remotes/origin/master
 	lh	%r1,0xb8		# test if subchannel number
 	bct	%r1,.Lnoload		#  is valid
 	l	%r1,0xb8		# load ipl subchannel number
@@ -324,12 +411,25 @@ iplstart:
 	clc	0(3,%r2),.L_eof
 	bz	.Lagain2
 
+<<<<<<< HEAD
 #ifdef CONFIG_IPL_VM
 #
 # reset files in VM reader
 #
+<<<<<<< HEAD
 	stidp	__LC_SAVE_AREA		# store cpuid
 	tm	__LC_SAVE_AREA,0xff	# running VM ?
+=======
+	stidp	__LC_SAVE_AREA_SYNC	# store cpuid
+	tm	__LC_SAVE_AREA_SYNC,0xff# running VM ?
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#
+# reset files in VM reader
+#
+	stidp	.Lcpuid			# store cpuid
+	tm	.Lcpuid,0xff		# running VM ?
+>>>>>>> refs/remotes/origin/master
 	bno	.Lnoreset
 	la	%r2,.Lreset
 	lhi	%r3,26
@@ -341,17 +441,24 @@ iplstart:
 	tm	31(%r5),0xff		# bits is set in the schib
 	bz	.Lnoreset
 .Lwaitforirq:
+<<<<<<< HEAD
 	mvc	0x78(8),.Lrdrnewpsw	# set up IO interrupt psw
 .Lwaitrdrirq:
 	lpsw	.Lrdrwaitpsw
 .Lrdrint:
 	c	%r1,0xb8		# compare subchannel number
 	bne	.Lwaitrdrirq
+=======
+	bas	%r14,.Lirqwait		# wait for IO interrupt
+	c	%r1,0xb8		# compare subchannel number
+	bne	.Lwaitforirq
+>>>>>>> refs/remotes/origin/master
 	la	%r5,.Lirb
 	tsch	0(%r5)
 .Lnoreset:
 	b	.Lnoload
 
+<<<<<<< HEAD
 	.align	8
 .Lrdrnewpsw:
 	.long	0x00080000,0x80000000+.Lrdrint
@@ -359,6 +466,8 @@ iplstart:
 	.long	0x020a0000,0x80000000+.Lrdrint
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #
 # everything loaded, go for it
 #
@@ -374,8 +483,13 @@ iplstart:
 	.byte	0xc8,0xd6,0xd3,0xc4	# "change rdr all keep nohold"
 .L_eof: .long	0xc5d6c600	 /* C'EOF' */
 .L_hdr: .long	0xc8c4d900	 /* C'HDR' */
+<<<<<<< HEAD
 
 #endif	/* CONFIG_IPL */
+=======
+	.align	8
+.Lcpuid:.fill	8,1,0
+>>>>>>> refs/remotes/origin/master
 
 #
 # SALIPL loader support. Based on a patch by Rob van der Heij.
@@ -383,9 +497,19 @@ iplstart:
 # doesn't need a builtin ipl record.
 #
 	.org	0x800
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.globl	start
 start:
+=======
+ENTRY(start)
+>>>>>>> refs/remotes/origin/cm-10.0
 	stm	%r0,%r15,0x07b0		# store registers
+=======
+ENTRY(start)
+	stm	%r0,%r15,0x07b0		# store registers
+	bas	%r14,.Lsetmode		# Immediately switch to 64 bit mode
+>>>>>>> refs/remotes/origin/master
 	basr	%r12,%r0
 .base:
 	l	%r11,.parm
@@ -448,18 +572,68 @@ start:
 # or linload or SALIPL
 #
 	.org	0x10000
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.globl	startup
 startup:
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ENTRY(startup)
+	j	.Lep_startup_normal
+	.org	0x10008
+#
+# This is a list of s390 kernel entry points. At address 0x1000f the number of
+# valid entry points is stored.
+#
+# IMPORTANT: Do not change this table, it is s390 kernel ABI!
+#
+	.ascii	"S390EP"
+	.byte	0x00,0x01
+#
+# kdump startup-code at 0x10010, running in 64 bit absolute addressing mode
+#
+	.org	0x10010
+ENTRY(startup_kdump)
+	j	.Lep_startup_kdump
+.Lep_startup_normal:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_64BIT
+	mvi	__LC_AR_MODE_ID,1	# set esame flag
+	slr	%r0,%r0 		# set cpuid to zero
+	lhi	%r1,2			# mode 2 = esame (dump)
+	sigp	%r1,%r0,0x12		# switch to esame mode
+	bras	%r13,0f
+	.fill	16,4,0x0
+0:	lmh	%r0,%r15,0(%r13)	# clear high-order half of gprs
+	sam31				# switch to 31 bit addressing mode
+#else
+	mvi	__LC_AR_MODE_ID,0	# set ESA flag (mode 0)
+#endif
+>>>>>>> refs/remotes/origin/master
 	basr	%r13,0			# get base
 .LPG0:
 	xc	0x200(256),0x200	# partially clear lowcore
 	xc	0x300(256),0x300
+<<<<<<< HEAD
+<<<<<<< HEAD
 	stck	__LC_LAST_UPDATE_CLOCK
 	spt	5f-.LPG0(%r13)
 	mvc	__LC_LAST_UPDATE_TIMER(8),5f-.LPG0(%r13)
 #ifndef CONFIG_MARCH_G5
 	# check capabilities against MARCH_{G5,Z900,Z990,Z9_109,Z10}
 	xc	__LC_STFL_FAC_LIST(8),__LC_STFL_FAC_LIST
+=======
+	xc	0xe00(256),0xe00
+	stck	__LC_LAST_UPDATE_CLOCK
+	spt	5f-.LPG0(%r13)
+	mvc	__LC_LAST_UPDATE_TIMER(8),5f-.LPG0(%r13)
+	xc	__LC_STFL_FAC_LIST(8),__LC_STFL_FAC_LIST
+#ifndef CONFIG_MARCH_G5
+	# check capabilities against MARCH_{G5,Z900,Z990,Z9_109,Z10}
+>>>>>>> refs/remotes/origin/cm-10.0
 	.insn	s,0xb2b10000,__LC_STFL_FAC_LIST	# store facility list
 	tm	__LC_STFL_FAC_LIST,0x01	# stfle available ?
 	jz	0f
@@ -474,11 +648,43 @@ startup:
 	cl	%r0,2f+12-.LPG0(%r13)
 	je	3f
 1:	l	%r15,.Lstack-.LPG0(%r13)
+=======
+	xc	0xe00(256),0xe00
+	stck	__LC_LAST_UPDATE_CLOCK
+	spt	6f-.LPG0(%r13)
+	mvc	__LC_LAST_UPDATE_TIMER(8),6f-.LPG0(%r13)
+	xc	__LC_STFL_FAC_LIST(8),__LC_STFL_FAC_LIST
+#ifndef CONFIG_MARCH_G5
+	# check capabilities against MARCH_{G5,Z900,Z990,Z9_109,Z10}
+	.insn	s,0xb2b10000,__LC_STFL_FAC_LIST	# store facility list
+	tm	__LC_STFL_FAC_LIST,0x01	# stfle available ?
+	jz	0f
+	la	%r0,1
+	.insn	s,0xb2b00000,__LC_STFL_FAC_LIST	# store facility list extended
+	# verify if all required facilities are supported by the machine
+0:	la	%r1,__LC_STFL_FAC_LIST
+	la	%r2,3f+8-.LPG0(%r13)
+	l	%r3,0(%r2)
+1:	l	%r0,0(%r1)
+	n	%r0,4(%r2)
+	cl	%r0,4(%r2)
+	jne	2f
+	la	%r1,4(%r1)
+	la	%r2,4(%r2)
+	ahi	%r3,-1
+	jnz	1b
+	j	4f
+2:	l	%r15,.Lstack-.LPG0(%r13)
+>>>>>>> refs/remotes/origin/master
 	ahi	%r15,-96
 	la	%r2,.Lals_string-.LPG0(%r13)
 	l	%r3,.Lsclp_print-.LPG0(%r13)
 	basr	%r14,%r3
+<<<<<<< HEAD
 	lpsw	2f-.LPG0(%r13)		# machine type not good enough, crash
+=======
+	lpsw	3f-.LPG0(%r13)		# machine type not good enough, crash
+>>>>>>> refs/remotes/origin/master
 .Lals_string:
 	.asciz	"The Linux kernel requires more recent processor hardware"
 .Lsclp_print:
@@ -486,6 +692,7 @@ startup:
 .Lstack:
 	.long	0x8000 + (1<<(PAGE_SHIFT+THREAD_ORDER))
 	.align 16
+<<<<<<< HEAD
 2:	.long	0x000a0000,0x8badcccc
 #if defined(CONFIG_64BIT)
 #if defined(CONFIG_MARCH_Z196)
@@ -535,6 +742,68 @@ startup:
 	.align	8
 5:	.long	0x7fffffff,0xffffffff
 
+<<<<<<< HEAD
+=======
+#include "head_kdump.S"
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+3:	.long	0x000a0000,0x8badcccc
+
+# List of facilities that are required. If not all facilities are present
+# the kernel will crash. Format is number of facility words with bits set,
+# followed by the facility words.
+
+#if defined(CONFIG_64BIT)
+#if defined(CONFIG_MARCH_ZEC12)
+	.long 3, 0xc100efe3, 0xf46ce800, 0x00400000
+#elif defined(CONFIG_MARCH_Z196)
+	.long 2, 0xc100efe3, 0xf46c0000
+#elif defined(CONFIG_MARCH_Z10)
+	.long 2, 0xc100efe3, 0xf0680000
+#elif defined(CONFIG_MARCH_Z9_109)
+	.long 1, 0xc100efc3
+#elif defined(CONFIG_MARCH_Z990)
+	.long 1, 0xc0002000
+#elif defined(CONFIG_MARCH_Z900)
+	.long 1, 0xc0000000
+#endif
+#else
+#if defined(CONFIG_MARCH_ZEC12)
+	.long 1, 0x8100c880
+#elif defined(CONFIG_MARCH_Z196)
+	.long 1, 0x8100c880
+#elif defined(CONFIG_MARCH_Z10)
+	.long 1, 0x8100c880
+#elif defined(CONFIG_MARCH_Z9_109)
+	.long 1, 0x8100c880
+#elif defined(CONFIG_MARCH_Z990)
+	.long 1, 0x80002000
+#elif defined(CONFIG_MARCH_Z900)
+	.long 1, 0x80000000
+#endif
+#endif
+4:
+#endif
+
+#ifdef CONFIG_64BIT
+	/* Continue with 64bit startup code in head64.S */
+	sam64				# switch to 64 bit mode
+	jg	startup_continue
+#else
+	/* Continue with 31bit startup code in head31.S */
+	l	%r13,5f-.LPG0(%r13)
+	b	0(%r13)
+	.align	8
+5:	.long	startup_continue
+#endif
+
+	.align	8
+6:	.long	0x7fffffff,0xffffffff
+
+#include "head_kdump.S"
+
+>>>>>>> refs/remotes/origin/master
 #
 # params at 10400 (setup.h)
 #
@@ -542,6 +811,16 @@ startup:
 	.long	0,0			# IPL_DEVICE
 	.long	0,0			# INITRD_START
 	.long	0,0			# INITRD_SIZE
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	.long	0,0			# OLDMEM_BASE
+	.long	0,0			# OLDMEM_SIZE
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long	0,0			# OLDMEM_BASE
+	.long	0,0			# OLDMEM_SIZE
+>>>>>>> refs/remotes/origin/master
 
 	.org	COMMAND_LINE
 	.byte	"root=/dev/ram0 ro"

@@ -21,7 +21,13 @@
 #include <linux/seq_file.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -39,6 +45,7 @@
 static void __init
 sbc8641_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
@@ -51,11 +58,21 @@ sbc8641_setup_arch(void)
 		fsl_add_bridge(np, 0);
 #endif
 
+=======
+	if (ppc_md.progress)
+		ppc_md.progress("sbc8641_setup_arch()", 0);
+
+>>>>>>> refs/remotes/origin/master
 	printk("SBC8641 board from Wind River\n");
 
 #ifdef CONFIG_SMP
 	mpc86xx_smp_init();
 #endif
+<<<<<<< HEAD
+=======
+
+	fsl_pci_assign_primary();
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -103,6 +120,10 @@ mpc86xx_time_init(void)
 static __initdata struct of_device_id of_bus_ids[] = {
 	{ .compatible = "simple-bus", },
 	{ .compatible = "gianfar", },
+<<<<<<< HEAD
+=======
+	{ .compatible = "fsl,mpc8641-pcie", },
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 
@@ -112,7 +133,11 @@ static int __init declare_of_platform_devices(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 machine_device_initcall(sbc8641, declare_of_platform_devices);
+=======
+machine_arch_initcall(sbc8641, declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/master
 
 define_machine(sbc8641) {
 	.name			= "SBC8641D",

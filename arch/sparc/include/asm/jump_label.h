@@ -7,9 +7,19 @@
 
 #define JUMP_LABEL_NOP_SIZE 4
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static __always_inline bool arch_static_branch(struct jump_label_key *key)
+=======
+static __always_inline bool arch_static_branch(struct static_key *key)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 		asm goto("1:\n\t"
+=======
+static __always_inline bool arch_static_branch(struct static_key *key)
+{
+		asm_volatile_goto("1:\n\t"
+>>>>>>> refs/remotes/origin/master
 			 "nop\n\t"
 			 "nop\n\t"
 			 ".pushsection __jump_table,  \"aw\"\n\t"

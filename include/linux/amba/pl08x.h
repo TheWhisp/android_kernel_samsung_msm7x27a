@@ -21,8 +21,14 @@
 #include <linux/dmaengine.h>
 #include <linux/interrupt.h>
 
+<<<<<<< HEAD
 struct pl08x_lli;
 struct pl08x_driver_data;
+=======
+struct pl08x_driver_data;
+struct pl08x_phy_chan;
+struct pl08x_txd;
+>>>>>>> refs/remotes/origin/master
 
 /* Bitmasks for selecting AHB ports for DMA transfers */
 enum {
@@ -46,20 +52,29 @@ enum {
  * devices with static assignments
  * @muxval: a number usually used to poke into some mux regiser to
  * mux in the signal to this channel
+<<<<<<< HEAD
  * @cctl_opt: default options for the channel control register
+=======
+ * @cctl_memcpy: options for the channel control register for memcpy
+ *  *** not used for slave channels ***
+>>>>>>> refs/remotes/origin/master
  * @addr: source/target address in physical memory for this DMA channel,
  * can be the address of a FIFO register for burst requests for example.
  * This can be left undefined if the PrimeCell API is used for configuring
  * this.
+<<<<<<< HEAD
  * @circular_buffer: whether the buffer passed in is circular and
  * shall simply be looped round round (like a record baby round
  * round round round)
+=======
+>>>>>>> refs/remotes/origin/master
  * @single: the device connected to this channel will request single DMA
  * transfers, not bursts. (Bursts are default.)
  * @periph_buses: the device connected to this channel is accessible via
  * these buses (use PL08X_AHB1 | PL08X_AHB2).
  */
 struct pl08x_channel_data {
+<<<<<<< HEAD
 	char *bus_id;
 	int min_signal;
 	int max_signal;
@@ -67,23 +82,38 @@ struct pl08x_channel_data {
 	u32 cctl;
 	dma_addr_t addr;
 	bool circular_buffer;
+=======
+	const char *bus_id;
+	int min_signal;
+	int max_signal;
+	u32 muxval;
+	u32 cctl_memcpy;
+	dma_addr_t addr;
+>>>>>>> refs/remotes/origin/master
 	bool single;
 	u8 periph_buses;
 };
 
 /**
+<<<<<<< HEAD
  * Struct pl08x_bus_data - information of source or destination
  * busses for a transfer
  * @addr: current address
  * @maxwidth: the maximum width of a transfer on this bus
  * @buswidth: the width of this bus in bytes: 1, 2 or 4
+<<<<<<< HEAD
  * @fill_bytes: bytes required to fill to the next bus memory boundary
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct pl08x_bus_data {
 	dma_addr_t addr;
 	u8 maxwidth;
 	u8 buswidth;
+<<<<<<< HEAD
 	size_t fill_bytes;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -104,17 +134,48 @@ struct pl08x_phy_chan {
 };
 
 /**
+<<<<<<< HEAD
  * struct pl08x_txd - wrapper for struct dma_async_tx_descriptor
  * @llis_bus: DMA memory address (physical) start for the LLIs
  * @llis_va: virtual memory address start for the LLIs
+=======
+ * struct pl08x_sg - structure containing data per sg
+ * @src_addr: src address of sg
+ * @dst_addr: dst address of sg
+ * @len: transfer len in bytes
+ * @node: node for txd's dsg_list
+ */
+struct pl08x_sg {
+	dma_addr_t src_addr;
+	dma_addr_t dst_addr;
+	size_t len;
+	struct list_head node;
+};
+
+/**
+ * struct pl08x_txd - wrapper for struct dma_async_tx_descriptor
+ * @tx: async tx descriptor
+ * @node: node for txd list for channels
+ * @dsg_list: list of children sg's
+ * @direction: direction of transfer
+ * @llis_bus: DMA memory address (physical) start for the LLIs
+ * @llis_va: virtual memory address start for the LLIs
+ * @cctl: control reg values for current txd
+ * @ccfg: config reg values for current txd
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct pl08x_txd {
 	struct dma_async_tx_descriptor tx;
 	struct list_head node;
+<<<<<<< HEAD
 	enum dma_data_direction	direction;
 	dma_addr_t src_addr;
 	dma_addr_t dst_addr;
 	size_t len;
+=======
+	struct list_head dsg_list;
+	enum dma_transfer_direction direction;
+>>>>>>> refs/remotes/origin/cm-10.0
 	dma_addr_t llis_bus;
 	struct pl08x_lli *llis_va;
 	/* Default cctl value for LLIs */
@@ -156,13 +217,22 @@ enum pl08x_dma_chan_state {
  * @runtime_addr: address for RX/TX according to the runtime config
  * @runtime_direction: current direction of this channel according to
  * runtime config
+<<<<<<< HEAD
  * @lc: last completed transaction on this channel
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @pend_list: queued transactions pending on this channel
  * @at: active transaction on this channel
  * @lock: a lock for this channel data
  * @host: a pointer to the host (internal use)
  * @state: whether the channel is idle, paused, running etc
  * @slave: whether this channel is a device (slave) or for memcpy
+<<<<<<< HEAD
+=======
+ * @device_fc: Flow Controller Settings for ccfg register. Only valid for slave
+ * channels. Fill with 'true' if peripheral should be flow controller. Direction
+ * will be selected at Runtime.
+>>>>>>> refs/remotes/origin/cm-10.0
  * @waiting: a TX descriptor on this channel which is waiting for a physical
  * channel to become available
  */
@@ -172,41 +242,76 @@ struct pl08x_dma_chan {
 	int phychan_hold;
 	struct tasklet_struct tasklet;
 	char *name;
+<<<<<<< HEAD
 	struct pl08x_channel_data *cd;
 	dma_addr_t runtime_addr;
 	enum dma_data_direction	runtime_direction;
 	dma_cookie_t lc;
+=======
+	const struct pl08x_channel_data *cd;
+	dma_addr_t src_addr;
+	dma_addr_t dst_addr;
+	u32 src_cctl;
+	u32 dst_cctl;
+	enum dma_transfer_direction runtime_direction;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head pend_list;
 	struct pl08x_txd *at;
 	spinlock_t lock;
 	struct pl08x_driver_data *host;
 	enum pl08x_dma_chan_state state;
 	bool slave;
+<<<<<<< HEAD
+=======
+	bool device_fc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pl08x_txd *waiting;
 };
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * struct pl08x_platform_data - the platform configuration for the PL08x
  * PrimeCells.
  * @slave_channels: the channels defined for the different devices on the
  * platform, all inclusive, including multiplexed channels. The available
  * physical channels will be multiplexed around these signals as they are
  * requested, just enumerate all possible channels.
+<<<<<<< HEAD
  * @get_signal: request a physical signal to be used for a DMA transfer
  * immediately: if there is some multiplexing or similar blocking the use
  * of the channel the transfer can be denied by returning less than zero,
  * else it returns the allocated signal number
  * @put_signal: indicate to the platform that this physical signal is not
+=======
+ * @get_xfer_signal: request a physical signal to be used for a DMA transfer
+ * immediately: if there is some multiplexing or similar blocking the use
+ * of the channel the transfer can be denied by returning less than zero,
+ * else it returns the allocated signal number
+ * @put_xfer_signal: indicate to the platform that this physical signal is not
+>>>>>>> refs/remotes/origin/master
  * running any DMA transfer and multiplexing can be recycled
  * @lli_buses: buses which LLIs can be fetched from: PL08X_AHB1 | PL08X_AHB2
  * @mem_buses: buses which memory can be accessed from: PL08X_AHB1 | PL08X_AHB2
  */
 struct pl08x_platform_data {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct pl08x_channel_data *slave_channels;
+=======
+	const struct pl08x_channel_data *slave_channels;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int num_slave_channels;
 	struct pl08x_channel_data memcpy_channel;
 	int (*get_signal)(struct pl08x_dma_chan *);
 	void (*put_signal)(struct pl08x_dma_chan *);
+=======
+	const struct pl08x_channel_data *slave_channels;
+	unsigned int num_slave_channels;
+	struct pl08x_channel_data memcpy_channel;
+	int (*get_xfer_signal)(const struct pl08x_channel_data *);
+	void (*put_xfer_signal)(const struct pl08x_channel_data *, int);
+>>>>>>> refs/remotes/origin/master
 	u8 lli_buses;
 	u8 mem_buses;
 };

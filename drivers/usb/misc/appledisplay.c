@@ -29,7 +29,15 @@
 #include <linux/backlight.h>
 #include <linux/timer.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #define APPLE_VENDOR_ID		0x05AC
 
@@ -89,6 +97,10 @@ static struct workqueue_struct *wq;
 static void appledisplay_complete(struct urb *urb)
 {
 	struct appledisplay *pdata = urb->context;
+<<<<<<< HEAD
+=======
+	struct device *dev = &pdata->udev->dev;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int status = urb->status;
 	int retval;
@@ -98,18 +110,31 @@ static void appledisplay_complete(struct urb *urb)
 		/* success */
 		break;
 	case -EOVERFLOW:
+<<<<<<< HEAD
 		printk(KERN_ERR "appletouch: OVERFLOW with data "
 			"length %d, actual length is %d\n",
+=======
+		dev_err(dev,
+			"OVERFLOW with data length %d, actual length is %d\n",
+>>>>>>> refs/remotes/origin/master
 			ACD_URB_BUFFER_LEN, pdata->urb->actual_length);
 	case -ECONNRESET:
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* This urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shuttingdown with status: %d",
 			__func__, status);
 		return;
 	default:
 		dbg("%s - nonzero urb status received: %d",
+=======
+		dev_dbg(dev, "%s - urb shuttingdown with status: %d\n",
+			__func__, status);
+		return;
+	default:
+		dev_dbg(dev, "%s - nonzero urb status received: %d/n",
+>>>>>>> refs/remotes/origin/master
 			__func__, status);
 		goto exit;
 	}
@@ -133,8 +158,12 @@ static void appledisplay_complete(struct urb *urb)
 exit:
 	retval = usb_submit_urb(pdata->urb, GFP_ATOMIC);
 	if (retval) {
+<<<<<<< HEAD
 		dev_err(&pdata->udev->dev,
 			"%s - usb_submit_urb failed with result %d\n",
+=======
+		dev_err(dev, "%s - usb_submit_urb failed with result %d\n",
+>>>>>>> refs/remotes/origin/master
 			__func__, retval);
 	}
 }

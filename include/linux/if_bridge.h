@@ -9,6 +9,7 @@
  *	as published by the Free Software Foundation; either version
  *	2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_IF_BRIDGE_H
 #define _LINUX_IF_BRIDGE_H
@@ -100,6 +101,14 @@ struct __fdb_entry {
 #ifdef __KERNEL__
 
 #include <linux/netdevice.h>
+=======
+#ifndef _LINUX_IF_BRIDGE_H
+#define _LINUX_IF_BRIDGE_H
+
+
+#include <linux/netdevice.h>
+#include <uapi/linux/if_bridge.h>
+>>>>>>> refs/remotes/origin/master
 
 extern void brioctl_set(int (*ioctl_hook)(struct net *, unsigned int, void __user *));
 
@@ -107,5 +116,8 @@ typedef int br_should_route_hook_t(struct sk_buff *skb);
 extern br_should_route_hook_t __rcu *br_should_route_hook;
 
 #endif
+<<<<<<< HEAD
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

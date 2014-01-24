@@ -10,6 +10,10 @@ input-core-y := input.o input-compat.o input-mt.o ff-core.o
 obj-$(CONFIG_INPUT_FF_MEMLESS)	+= ff-memless.o
 obj-$(CONFIG_INPUT_POLLDEV)	+= input-polldev.o
 obj-$(CONFIG_INPUT_SPARSEKMAP)	+= sparse-keymap.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_INPUT_MATRIXKMAP)	+= matrix-keymap.o
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_INPUT_MOUSEDEV)	+= mousedev.o
 obj-$(CONFIG_INPUT_JOYDEV)	+= joydev.o
@@ -24,4 +28,15 @@ obj-$(CONFIG_INPUT_TOUCHSCREEN)	+= touchscreen/
 obj-$(CONFIG_INPUT_MISC)	+= misc/
 
 obj-$(CONFIG_INPUT_APMPOWER)	+= apm-power.o
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_INPUT_OF_MATRIX_KEYMAP) += of_keymap.o
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_INPUT_KEYRESET)	+= keyreset.o
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+obj-$(CONFIG_INPUT_KEYRESET)	+= keyreset.o
+>>>>>>> refs/remotes/origin/cm-11.0

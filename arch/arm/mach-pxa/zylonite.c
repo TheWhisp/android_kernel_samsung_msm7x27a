@@ -24,7 +24,12 @@
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/hardware.h>
+=======
+#include <mach/pxa3xx.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/audio.h>
 #include <mach/pxafb.h>
 #include <mach/zylonite.h>
@@ -32,6 +37,16 @@
 #include <mach/ohci.h>
 #include <plat/pxa27x_keypad.h>
 #include <plat/pxa3xx_nand.h>
+=======
+#include <mach/pxa3xx.h>
+#include <mach/audio.h>
+#include <linux/platform_data/video-pxafb.h>
+#include <mach/zylonite.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <linux/platform_data/keypad-pxa27x.h>
+#include <linux/platform_data/mtd-nand-pxa3xx.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "devices.h"
 #include "generic.h"
@@ -125,6 +140,10 @@ static struct platform_pwm_backlight_data zylonite_backlight_data = {
 	.max_brightness	= 100,
 	.dft_brightness	= 100,
 	.pwm_period_ns	= 10000,
+<<<<<<< HEAD
+=======
+	.enable_gpio	= -1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device zylonite_backlight_device = {
@@ -263,7 +282,11 @@ static inline void zylonite_init_mmc(void) {}
 #endif
 
 #if defined(CONFIG_KEYBOARD_PXA27x) || defined(CONFIG_KEYBOARD_PXA27x_MODULE)
+<<<<<<< HEAD
 static unsigned int zylonite_matrix_key_map[] = {
+=======
+static const unsigned int zylonite_matrix_key_map[] = {
+>>>>>>> refs/remotes/origin/master
 	/* KEY(row, col, key_code) */
 	KEY(0, 0, KEY_A), KEY(0, 1, KEY_B), KEY(0, 2, KEY_C), KEY(0, 5, KEY_D),
 	KEY(1, 0, KEY_E), KEY(1, 1, KEY_F), KEY(1, 2, KEY_G), KEY(1, 5, KEY_H),
@@ -306,11 +329,23 @@ static unsigned int zylonite_matrix_key_map[] = {
 	KEY(0, 3, KEY_AUX),	/* contact */
 };
 
+<<<<<<< HEAD
 static struct pxa27x_keypad_platform_data zylonite_keypad_info = {
 	.matrix_key_rows	= 8,
 	.matrix_key_cols	= 8,
 	.matrix_key_map		= zylonite_matrix_key_map,
 	.matrix_key_map_size	= ARRAY_SIZE(zylonite_matrix_key_map),
+=======
+static struct matrix_keymap_data zylonite_matrix_keymap_data = {
+	.keymap			= zylonite_matrix_key_map,
+	.keymap_size		= ARRAY_SIZE(zylonite_matrix_key_map),
+};
+
+static struct pxa27x_keypad_platform_data zylonite_keypad_info = {
+	.matrix_key_rows	= 8,
+	.matrix_key_cols	= 8,
+	.matrix_keymap_data	= &zylonite_matrix_keymap_data,
+>>>>>>> refs/remotes/origin/master
 
 	.enable_rotary0		= 1,
 	.rotary0_up_key		= KEY_UP,
@@ -366,8 +401,20 @@ static struct mtd_partition zylonite_nand_partitions[] = {
 
 static struct pxa3xx_nand_platform_data zylonite_nand_info = {
 	.enable_arbiter	= 1,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.parts		= zylonite_nand_partitions,
 	.nr_parts	= ARRAY_SIZE(zylonite_nand_partitions),
+=======
+	.num_cs		= 1,
+	.parts[0]	= zylonite_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(zylonite_nand_partitions),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_cs		= 1,
+	.parts[0]	= zylonite_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(zylonite_nand_partitions),
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init zylonite_init_nand(void)
@@ -407,8 +454,18 @@ static void __init zylonite_init(void)
 	 * Note: We depend that the bootloader set
 	 * the correct value to MSC register for SMC91x.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	smc91x_resources[1].start = gpio_to_irq(gpio_eth_irq);
 	smc91x_resources[1].end   = gpio_to_irq(gpio_eth_irq);
+=======
+	smc91x_resources[1].start = PXA_GPIO_TO_IRQ(gpio_eth_irq);
+	smc91x_resources[1].end   = PXA_GPIO_TO_IRQ(gpio_eth_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	smc91x_resources[1].start = PXA_GPIO_TO_IRQ(gpio_eth_irq);
+	smc91x_resources[1].end   = PXA_GPIO_TO_IRQ(gpio_eth_irq);
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&smc91x_device);
 
 	pxa_set_ac97_info(NULL);
@@ -422,10 +479,30 @@ static void __init zylonite_init(void)
 }
 
 MACHINE_START(ZYLONITE, "PXA3xx Platform Development Kit (aka Zylonite)")
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= pxa3xx_map_io,
 	.nr_irqs	= ZYLONITE_NR_IRQS,
 	.init_irq	= pxa3xx_init_irq,
 	.timer		= &pxa_timer,
 	.init_machine	= zylonite_init,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	.atag_offset	= 0x100,
+	.map_io		= pxa3xx_map_io,
+	.nr_irqs	= ZYLONITE_NR_IRQS,
+	.init_irq	= pxa3xx_init_irq,
+	.handle_irq	= pxa3xx_handle_irq,
+<<<<<<< HEAD
+	.timer		= &pxa_timer,
+	.init_machine	= zylonite_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.init_machine	= zylonite_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

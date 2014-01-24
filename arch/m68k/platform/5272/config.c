@@ -30,6 +30,7 @@ unsigned char ledbank = 0xff;
 
 /***************************************************************************/
 
+<<<<<<< HEAD
 static struct mcf_platform_uart m5272_uart_platform[] = {
 	{
 		.mapbase	= MCF_MBAR + MCFUART_BASE1,
@@ -108,6 +109,20 @@ static void __init m5272_uarts_init(void)
 
 	for (line = 0; (line < nrlines); line++)
 		m5272_uart_init_line(line, m5272_uart_platform[line].irq);
+=======
+static void __init m5272_uarts_init(void)
+{
+	u32 v;
+
+	/* Enable the output lines for the serial ports */
+	v = readl(MCF_MBAR + MCFSIM_PBCNT);
+	v = (v & ~0x000000ff) | 0x00000055;
+	writel(v, MCF_MBAR + MCFSIM_PBCNT);
+
+	v = readl(MCF_MBAR + MCFSIM_PDCNT);
+	v = (v & ~0x000003fc) | 0x000002a8;
+	writel(v, MCF_MBAR + MCFSIM_PDCNT);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /***************************************************************************/
@@ -146,6 +161,10 @@ void __init config_BSP(char *commandp, int size)
 #endif
 
 	mach_reset = m5272_cpu_reset;
+<<<<<<< HEAD
+=======
+	mach_sched_init = hw_timer_init;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /***************************************************************************/
@@ -167,7 +186,10 @@ static int __init init_BSP(void)
 {
 	m5272_uarts_init();
 	fixed_phy_add(PHY_POLL, 0, &nettel_fixed_phy_status);
+<<<<<<< HEAD
 	platform_add_devices(m5272_devices, ARRAY_SIZE(m5272_devices));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

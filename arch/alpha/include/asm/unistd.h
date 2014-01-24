@@ -1,6 +1,7 @@
 #ifndef _ALPHA_UNISTD_H
 #define _ALPHA_UNISTD_H
 
+<<<<<<< HEAD
 #define __NR_osf_syscall	  0	/* not implemented */
 #define __NR_exit		  1
 #define __NR_fork		  2
@@ -457,12 +458,27 @@
 #define __NR_clock_adjtime		499
 #define __NR_syncfs			500
 #define __NR_setns			501
+<<<<<<< HEAD
 
 #ifdef __KERNEL__
 
 #define NR_SYSCALLS			502
+=======
+#define __NR_accept4			502
+#define __NR_sendmmsg			503
+
+#ifdef __KERNEL__
+
+#define NR_SYSCALLS			504
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+#include <uapi/asm/unistd.h>
+
+#define NR_SYSCALLS			508
+
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_OLD_READDIR
 #define __ARCH_WANT_STAT64
 #define __ARCH_WANT_SYS_GETHOSTNAME
@@ -471,6 +487,7 @@
 #define __ARCH_WANT_SYS_OLD_GETRLIMIT
 #define __ARCH_WANT_SYS_OLDUMOUNT
 #define __ARCH_WANT_SYS_SIGPENDING
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 
 /* "Conditional" syscalls.  What we want is
@@ -486,4 +503,10 @@
 #define cond_syscall(x)  asm(".weak\t" #x "\n" #x " = sys_ni_syscall")
 
 #endif /* __KERNEL__ */
+=======
+#define __ARCH_WANT_SYS_FORK
+#define __ARCH_WANT_SYS_VFORK
+#define __ARCH_WANT_SYS_CLONE
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ALPHA_UNISTD_H */

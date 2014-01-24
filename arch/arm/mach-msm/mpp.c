@@ -17,10 +17,23 @@
 #include <linux/device.h>
 #include <linux/init.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/mpp.h>
 
 #include "proc_comm.h"
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/module.h>
+
+#include <mach/mpp.h>
+#include <mach/proc_comm.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int mpp_config_digital_out(unsigned mpp, unsigned config)
 {

@@ -156,12 +156,22 @@ static int simtec_i2c_remove(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 /* device driver */
 
 /* work with hotplug and coldplug */
 MODULE_ALIAS("platform:simtec-i2c");
 
+=======
+/* device driver */
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* device driver */
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver simtec_i2c_driver = {
 	.driver		= {
 		.name		= "simtec-i2c",
@@ -171,6 +181,8 @@ static struct platform_driver simtec_i2c_driver = {
 	.remove		= simtec_i2c_remove,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init i2c_adap_simtec_init(void)
 {
 	return platform_driver_register(&simtec_i2c_driver);
@@ -183,7 +195,21 @@ static void __exit i2c_adap_simtec_exit(void)
 
 module_init(i2c_adap_simtec_init);
 module_exit(i2c_adap_simtec_exit);
+=======
+module_platform_driver(simtec_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(simtec_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Simtec Generic I2C Bus driver");
 MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:simtec-i2c");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:simtec-i2c");
+>>>>>>> refs/remotes/origin/master

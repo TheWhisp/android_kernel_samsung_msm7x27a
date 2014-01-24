@@ -1,5 +1,15 @@
 # S/390 __udiv_qrnnd
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/linkage.h>
+
+>>>>>>> refs/remotes/origin/master
 # r2 : &__r
 # r3 : upper half of 64 bit word n
 # r4 : lower half of 64 bit word n
@@ -8,8 +18,16 @@
 # the quotient q is to be returned
 
 	.text
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.globl __udiv_qrnnd
 __udiv_qrnnd:
+=======
+ENTRY(__udiv_qrnnd)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(__udiv_qrnnd)
+>>>>>>> refs/remotes/origin/master
 	st    %r2,24(%r15)	  # store pointer to reminder for later
 	lr    %r0,%r3		  # reload n
 	lr    %r1,%r4

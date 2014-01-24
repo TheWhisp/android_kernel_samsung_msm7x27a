@@ -35,6 +35,14 @@
 #include <rdma/ib_user_verbs.h>
 #include <linux/io.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/utsname.h>
 #include <linux/rculist.h>
 
@@ -619,7 +627,11 @@ void ipath_ib_rcv(struct ipath_ibdev *dev, void *rhdr, void *data,
 		goto bail;
 	}
 
+<<<<<<< HEAD
 	opcode = be32_to_cpu(ohdr->bth[0]) >> 24;
+=======
+	opcode = (be32_to_cpu(ohdr->bth[0]) >> 24) & 0x7f;
+>>>>>>> refs/remotes/origin/master
 	dev->opstats[opcode].n_bytes += tlen;
 	dev->opstats[opcode].n_packets++;
 
@@ -2186,7 +2198,12 @@ int ipath_register_ib_device(struct ipath_devdata *dd)
 	if (ret)
 		goto err_reg;
 
+<<<<<<< HEAD
 	if (ipath_verbs_register_sysfs(dev))
+=======
+	ret = ipath_verbs_register_sysfs(dev);
+	if (ret)
+>>>>>>> refs/remotes/origin/master
 		goto err_class;
 
 	enable_timer(dd);
@@ -2326,6 +2343,7 @@ static int ipath_verbs_register_sysfs(struct ib_device *dev)
 	int i;
 	int ret;
 
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(ipath_class_attributes); ++i)
 		if (device_create_file(&dev->dev,
 				       ipath_class_attributes[i])) {
@@ -2336,5 +2354,17 @@ static int ipath_verbs_register_sysfs(struct ib_device *dev)
 	ret = 0;
 
 bail:
+=======
+	for (i = 0; i < ARRAY_SIZE(ipath_class_attributes); ++i) {
+		ret = device_create_file(&dev->dev,
+				       ipath_class_attributes[i]);
+		if (ret)
+			goto bail;
+	}
+	return 0;
+bail:
+	for (i = 0; i < ARRAY_SIZE(ipath_class_attributes); ++i)
+		device_remove_file(&dev->dev, ipath_class_attributes[i]);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }

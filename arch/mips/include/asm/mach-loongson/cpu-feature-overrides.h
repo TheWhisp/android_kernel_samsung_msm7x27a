@@ -8,9 +8,15 @@
  * Copyright (C) 2009 Zhang Le <r0bertz@gentoo.org>
  *
  * reference: /proc/cpuinfo,
+<<<<<<< HEAD
  * 	arch/mips/kernel/cpu-probe.c(cpu_probe_legacy),
  * 	arch/mips/kernel/proc.c(show_cpuinfo),
  *      loongson2f user manual.
+=======
+ *	arch/mips/kernel/cpu-probe.c(cpu_probe_legacy),
+ *	arch/mips/kernel/proc.c(show_cpuinfo),
+ *	loongson2f user manual.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __ASM_MACH_LOONGSON_CPU_FEATURE_OVERRIDES_H
@@ -32,11 +38,19 @@
 #define cpu_has_dc_aliases	(PAGE_SIZE < 0x4000)
 #define cpu_has_divec		0
 #define cpu_has_dsp		0
+<<<<<<< HEAD
+=======
+#define cpu_has_dsp2		0
+>>>>>>> refs/remotes/origin/master
 #define cpu_has_ejtag		0
 #define cpu_has_fpu		1
 #define cpu_has_ic_fills_f_dc	0
 #define cpu_has_inclusive_pcaches	1
+<<<<<<< HEAD
 #define cpu_has_llsc 		1
+=======
+#define cpu_has_llsc		1
+>>>>>>> refs/remotes/origin/master
 #define cpu_has_mcheck		0
 #define cpu_has_mdmx		0
 #define cpu_has_mips16		0
@@ -56,5 +70,9 @@
 #define cpu_has_vint		0
 #define cpu_has_vtag_icache	0
 #define cpu_has_watch		1
+<<<<<<< HEAD
+=======
+#define cpu_has_local_ebase	0
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_MACH_LOONGSON_CPU_FEATURE_OVERRIDES_H */

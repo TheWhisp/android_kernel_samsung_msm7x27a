@@ -166,6 +166,11 @@ static struct dvb_usb_device_properties nova_t_properties = {
 	.num_adapters     = 1,
 	.adapter          = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.caps = DVB_USB_ADAP_HAS_PID_FILTER | DVB_USB_ADAP_PID_FILTER_CAN_BE_TURNED_OFF,
 			.pid_filter_count = 32,
 
@@ -186,7 +191,11 @@ static struct dvb_usb_device_properties nova_t_properties = {
 					}
 				}
 			},
+<<<<<<< HEAD
 
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 			.size_of_priv     = sizeof(struct dibusb_state),
 		}
 	},
@@ -223,6 +232,7 @@ static struct usb_driver nova_t_driver = {
 	.id_table	= nova_t_table,
 };
 
+<<<<<<< HEAD
 /* module stuff */
 static int __init nova_t_module_init(void)
 {
@@ -243,6 +253,9 @@ static void __exit nova_t_module_exit(void)
 
 module_init (nova_t_module_init);
 module_exit (nova_t_module_exit);
+=======
+module_usb_driver(nova_t_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Patrick Boettcher <patrick.boettcher@desy.de>");
 MODULE_DESCRIPTION("Hauppauge WinTV-NOVA-T usb2");

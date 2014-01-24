@@ -2,7 +2,11 @@
  * tegra_pcm.h - Definitions for Tegra PCM driver
  *
  * Author: Stephen Warren <swarren@nvidia.com>
+<<<<<<< HEAD
  * Copyright (C) 2010 - NVIDIA, Inc.
+=======
+ * Copyright (C) 2010,2012 - NVIDIA, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Based on code copyright/by:
  *
@@ -31,6 +35,7 @@
 #ifndef __TEGRA_PCM_H__
 #define __TEGRA_PCM_H__
 
+<<<<<<< HEAD
 #include <mach/dma.h>
 
 struct tegra_pcm_dma_params {
@@ -51,5 +56,9 @@ struct tegra_runtime_data {
 	struct tegra_dma_req dma_req[2];
 	struct tegra_dma_channel *dma_chan;
 };
+=======
+int tegra_pcm_platform_register(struct device *dev);
+void tegra_pcm_platform_unregister(struct device *dev);
+>>>>>>> refs/remotes/origin/master
 
 #endif

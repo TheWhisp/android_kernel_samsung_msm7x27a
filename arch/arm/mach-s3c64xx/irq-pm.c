@@ -12,17 +12,31 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+=======
+/*
+ * NOTE: Code in this file is not used when booting with Device Tree support.
+ */
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/syscore_ops.h>
 #include <linux/interrupt.h>
 #include <linux/serial_core.h>
 #include <linux/irq.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/map.h>
 
 #include <plat/regs-serial.h>
+<<<<<<< HEAD
 #include <plat/regs-timer.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/regs-gpio.h>
 #include <plat/cpu.h>
 #include <plat/pm.h>
@@ -43,7 +57,10 @@ static struct sleep_save irq_save[] = {
 	SAVE_ITEM(S3C64XX_EINT0FLTCON2),
 	SAVE_ITEM(S3C64XX_EINT0FLTCON3),
 	SAVE_ITEM(S3C64XX_EINT0MASK),
+<<<<<<< HEAD
 	SAVE_ITEM(S3C64XX_TINT_CSTAT),
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct irq_grp_save {
@@ -96,13 +113,28 @@ static void s3c64xx_irq_pm_resume(void)
 	S3C_PMDBG("%s: IRQ configuration restored\n", __func__);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct syscore_ops s3c64xx_irq_syscore_ops = {
+=======
+static struct syscore_ops s3c64xx_irq_syscore_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct syscore_ops s3c64xx_irq_syscore_ops = {
+>>>>>>> refs/remotes/origin/master
 	.suspend = s3c64xx_irq_pm_suspend,
 	.resume	 = s3c64xx_irq_pm_resume,
 };
 
 static __init int s3c64xx_syscore_init(void)
 {
+<<<<<<< HEAD
+=======
+	/* Appropriate drivers (pinctrl, uart) handle this when using DT. */
+	if (of_have_populated_dt())
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	register_syscore_ops(&s3c64xx_irq_syscore_ops);
 
 	return 0;

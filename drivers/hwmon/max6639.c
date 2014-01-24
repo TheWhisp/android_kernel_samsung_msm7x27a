@@ -74,7 +74,11 @@ static const int rpm_ranges[] = { 2000, 4000, 8000, 16000 };
 
 #define FAN_FROM_REG(val, rpm_range)	((val) == 0 || (val) == 255 ? \
 				0 : (rpm_ranges[rpm_range] * 30) / (val))
+<<<<<<< HEAD
 #define TEMP_LIMIT_TO_REG(val)	SENSORS_LIMIT((val) / 1000, 0, 255)
+=======
+#define TEMP_LIMIT_TO_REG(val)	clamp_val((val) / 1000, 0, 255)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Client data (each client gets its own)
@@ -208,7 +212,15 @@ static ssize_t set_temp_max(struct device *dev,
 	unsigned long val;
 	int res;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	res = strict_strtoul(buf, 10, &val);
+=======
+	res = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (res)
 		return res;
 
@@ -241,7 +253,15 @@ static ssize_t set_temp_crit(struct device *dev,
 	unsigned long val;
 	int res;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	res = strict_strtoul(buf, 10, &val);
+=======
+	res = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (res)
 		return res;
 
@@ -275,7 +295,15 @@ static ssize_t set_temp_emergency(struct device *dev,
 	unsigned long val;
 	int res;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	res = strict_strtoul(buf, 10, &val);
+=======
+	res = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (res)
 		return res;
 
@@ -308,11 +336,23 @@ static ssize_t set_pwm(struct device *dev,
 	unsigned long val;
 	int res;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	res = strict_strtoul(buf, 10, &val);
+=======
+	res = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (res)
 		return res;
 
 	val = SENSORS_LIMIT(val, 0, 255);
+=======
+	res = kstrtoul(buf, 10, &val);
+	if (res)
+		return res;
+
+	val = clamp_val(val, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->pwm[attr->index] = (u8)(val * 120 / 255);
@@ -428,7 +468,11 @@ static int max6639_init_client(struct i2c_client *client)
 {
 	struct max6639_data *data = i2c_get_clientdata(client);
 	struct max6639_platform_data *max6639_info =
+<<<<<<< HEAD
 		client->dev.platform_data;
+=======
+		dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int rpm_range = 1; /* default: 4000 RPM */
 	int err;
@@ -548,11 +592,18 @@ static int max6639_probe(struct i2c_client *client,
 	struct max6639_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct max6639_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct max6639_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->update_lock);
@@ -560,12 +611,20 @@ static int max6639_probe(struct i2c_client *client,
 	/* Initialize the max6639 chip */
 	err = max6639_init_client(client);
 	if (err < 0)
+<<<<<<< HEAD
 		goto error_free;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	/* Register sysfs hooks */
 	err = sysfs_create_group(&client->dev.kobj, &max6639_group);
 	if (err)
+<<<<<<< HEAD
 		goto error_free;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -579,9 +638,12 @@ static int max6639_probe(struct i2c_client *client,
 
 error_remove:
 	sysfs_remove_group(&client->dev.kobj, &max6639_group);
+<<<<<<< HEAD
 error_free:
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -592,12 +654,28 @@ static int max6639_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &max6639_group);
 
+<<<<<<< HEAD
 	kfree(data);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int max6639_suspend(struct i2c_client *client, pm_message_t mesg)
 {
+=======
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_PM_SLEEP
+static int max6639_suspend(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int data = i2c_smbus_read_byte_data(client, MAX6639_REG_GCONFIG);
 	if (data < 0)
 		return data;
@@ -606,8 +684,20 @@ static int max6639_suspend(struct i2c_client *client, pm_message_t mesg)
 			MAX6639_REG_GCONFIG, data | MAX6639_GCONFIG_STANDBY);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int max6639_resume(struct i2c_client *client)
 {
+=======
+static int max6639_resume(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int max6639_resume(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+>>>>>>> refs/remotes/origin/master
 	int data = i2c_smbus_read_byte_data(client, MAX6639_REG_GCONFIG);
 	if (data < 0)
 		return data;
@@ -615,6 +705,14 @@ static int max6639_resume(struct i2c_client *client)
 	return i2c_smbus_write_byte_data(client,
 			MAX6639_REG_GCONFIG, data & ~MAX6639_GCONFIG_STANDBY);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 static const struct i2c_device_id max6639_id[] = {
 	{"max6639", 0},
@@ -623,20 +721,48 @@ static const struct i2c_device_id max6639_id[] = {
 
 MODULE_DEVICE_TABLE(i2c, max6639_id);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static const struct dev_pm_ops max6639_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(max6639_suspend, max6639_resume)
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct i2c_driver max6639_driver = {
 	.class = I2C_CLASS_HWMON,
 	.driver = {
 		   .name = "max6639",
+<<<<<<< HEAD
+<<<<<<< HEAD
 		   },
 	.probe = max6639_probe,
 	.remove = max6639_remove,
 	.suspend = max6639_suspend,
 	.resume = max6639_resume,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		   .pm = &max6639_pm_ops,
+		   },
+	.probe = max6639_probe,
+	.remove = max6639_remove,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table = max6639_id,
 	.detect = max6639_detect,
 	.address_list = normal_i2c,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init max6639_init(void)
 {
 	return i2c_add_driver(&max6639_driver);
@@ -646,10 +772,22 @@ static void __exit max6639_exit(void)
 {
 	i2c_del_driver(&max6639_driver);
 }
+=======
+module_i2c_driver(max6639_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(max6639_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Roland Stigge <stigge@antcom.de>");
 MODULE_DESCRIPTION("max6639 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(max6639_init);
 module_exit(max6639_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

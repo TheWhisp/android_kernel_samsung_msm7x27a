@@ -54,6 +54,19 @@ static inline int test_bit_le(int nr, const void *addr)
 	return test_bit(nr ^ BITOP_LE_SWIZZLE, addr);
 }
 
+<<<<<<< HEAD
+=======
+static inline void set_bit_le(int nr, void *addr)
+{
+	set_bit(nr ^ BITOP_LE_SWIZZLE, addr);
+}
+
+static inline void clear_bit_le(int nr, void *addr)
+{
+	clear_bit(nr ^ BITOP_LE_SWIZZLE, addr);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void __set_bit_le(int nr, void *addr)
 {
 	__set_bit(nr ^ BITOP_LE_SWIZZLE, addr);

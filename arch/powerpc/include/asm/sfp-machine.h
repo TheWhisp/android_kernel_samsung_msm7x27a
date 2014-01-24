@@ -125,7 +125,11 @@
 #define FP_EX_DIVZERO         (1 << (31 - 5))
 #define FP_EX_INEXACT         (1 << (31 - 6))
 
+<<<<<<< HEAD
 #define __FPU_FPSCR	(current->thread.fpscr.val)
+=======
+#define __FPU_FPSCR	(current->thread.fp_state.fpscr)
+>>>>>>> refs/remotes/origin/master
 
 /* We only actually write to the destination register
  * if exceptions signalled (if any) will not trap.

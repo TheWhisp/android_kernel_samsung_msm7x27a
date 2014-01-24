@@ -11,6 +11,8 @@
  *        David S. Miller (davem@caip.rutgers.edu), 1995
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/time.h>
 #include <linux/capability.h>
 #include <linux/fs.h>
@@ -21,6 +23,16 @@
 #include <linux/quotaops.h>
 #include <linux/buffer_head.h>
 #include <linux/blkdev.h>
+=======
+#include <linux/quotaops.h>
+#include <linux/blkdev.h>
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/quotaops.h>
+#include <linux/blkdev.h>
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * balloc.c contains the blocks allocation and deallocation routines
@@ -161,6 +173,14 @@ read_block_bitmap(struct super_block *sb, unsigned int block_group)
 	desc = ext3_get_group_desc(sb, block_group, NULL);
 	if (!desc)
 		return NULL;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_read_block_bitmap(sb, block_group);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_read_block_bitmap(sb, block_group);
+>>>>>>> refs/remotes/origin/master
 	bitmap_blk = le32_to_cpu(desc->bg_block_bitmap);
 	bh = sb_getblk(sb, bitmap_blk);
 	if (unlikely(!bh)) {
@@ -351,6 +371,14 @@ void ext3_rsv_window_add(struct super_block *sb,
 	struct rb_node * parent = NULL;
 	struct ext3_reserve_window_node *this;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_rsv_window_add(sb, rsv);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_rsv_window_add(sb, rsv);
+>>>>>>> refs/remotes/origin/master
 	while (*p)
 	{
 		parent = *p;
@@ -424,7 +452,15 @@ static inline int rsv_is_empty(struct ext3_reserve_window *rsv)
 void ext3_init_block_alloc_info(struct inode *inode)
 {
 	struct ext3_inode_info *ei = EXT3_I(inode);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ext3_block_alloc_info *block_i = ei->i_block_alloc_info;
+=======
+	struct ext3_block_alloc_info *block_i;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ext3_block_alloc_info *block_i;
+>>>>>>> refs/remotes/origin/master
 	struct super_block *sb = inode->i_sb;
 
 	block_i = kmalloc(sizeof(*block_i), GFP_NOFS);
@@ -476,8 +512,21 @@ void ext3_discard_reservation(struct inode *inode)
 	rsv = &block_i->rsv_window_node;
 	if (!rsv_is_empty(&rsv->rsv_window)) {
 		spin_lock(rsv_lock);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if (!rsv_is_empty(&rsv->rsv_window))
 			rsv_window_remove(inode->i_sb, rsv);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (!rsv_is_empty(&rsv->rsv_window)) {
+			trace_ext3_discard_reservation(inode, rsv);
+			rsv_window_remove(inode->i_sb, rsv);
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(rsv_lock);
 	}
 }
@@ -486,7 +535,11 @@ void ext3_discard_reservation(struct inode *inode)
  * ext3_free_blocks_sb() -- Free given blocks and update quota
  * @handle:			handle to this transaction
  * @sb:				super block
+<<<<<<< HEAD
  * @block:			start physcial block to free
+=======
+ * @block:			start physical block to free
+>>>>>>> refs/remotes/origin/master
  * @count:			number of blocks to free
  * @pdquot_freed_blocks:	pointer to quota
  */
@@ -683,6 +736,8 @@ error_return:
 void ext3_free_blocks(handle_t *handle, struct inode *inode,
 			ext3_fsblk_t block, unsigned long count)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct super_block * sb;
 	unsigned long dquot_freed_blocks;
 
@@ -691,6 +746,17 @@ void ext3_free_blocks(handle_t *handle, struct inode *inode,
 		printk ("ext3_free_blocks: nonexistent device");
 		return;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct super_block *sb = inode->i_sb;
+	unsigned long dquot_freed_blocks;
+
+	trace_ext3_free_blocks(inode, block, count);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ext3_free_blocks_sb(handle, sb, block, count, &dquot_freed_blocks);
 	if (dquot_freed_blocks)
 		dquot_free_block(inode, dquot_freed_blocks);
@@ -1136,6 +1202,14 @@ static int alloc_new_reservation(struct ext3_reserve_window_node *my_rsv,
 	else
 		start_block = grp_goal + group_first_block;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	trace_ext3_alloc_new_reservation(sb, start_block);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_alloc_new_reservation(sb, start_block);
+>>>>>>> refs/remotes/origin/master
 	size = my_rsv->rsv_goal_size;
 
 	if (!rsv_is_empty(&my_rsv->rsv_window)) {
@@ -1230,8 +1304,22 @@ retry:
 	 * check if the first free block is within the
 	 * free space we just reserved
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (start_block >= my_rsv->rsv_start && start_block <= my_rsv->rsv_end)
 		return 0;		/* success */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (start_block >= my_rsv->rsv_start &&
+	    start_block <= my_rsv->rsv_end) {
+		trace_ext3_reserved(sb, start_block, my_rsv);
+		return 0;		/* success */
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * if the first free bit we found is out of the reservable space
 	 * continue search for next reservable space,
@@ -1435,15 +1523,33 @@ out:
  *
  * Check if filesystem has at least 1 free block available for allocation.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ext3_has_free_blocks(struct ext3_sb_info *sbi)
+=======
+static int ext3_has_free_blocks(struct ext3_sb_info *sbi, int use_reservation)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ext3_has_free_blocks(struct ext3_sb_info *sbi, int use_reservation)
+>>>>>>> refs/remotes/origin/master
 {
 	ext3_fsblk_t free_blocks, root_blocks;
 
 	free_blocks = percpu_counter_read_positive(&sbi->s_freeblocks_counter);
 	root_blocks = le32_to_cpu(sbi->s_es->s_r_blocks_count);
 	if (free_blocks < root_blocks + 1 && !capable(CAP_SYS_RESOURCE) &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sbi->s_resuid != current_fsuid() &&
+=======
+		!use_reservation && sbi->s_resuid != current_fsuid() &&
+>>>>>>> refs/remotes/origin/cm-10.0
 		(sbi->s_resgid == 0 || !in_group_p (sbi->s_resgid))) {
+=======
+		!use_reservation && !uid_eq(sbi->s_resuid, current_fsuid()) &&
+		(gid_eq(sbi->s_resgid, GLOBAL_ROOT_GID) ||
+		 !in_group_p (sbi->s_resgid))) {
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	return 1;
@@ -1463,7 +1569,15 @@ static int ext3_has_free_blocks(struct ext3_sb_info *sbi)
  */
 int ext3_should_retry_alloc(struct super_block *sb, int *retries)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ext3_has_free_blocks(EXT3_SB(sb)) || (*retries)++ > 3)
+=======
+	if (!ext3_has_free_blocks(EXT3_SB(sb), 0) || (*retries)++ > 3)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ext3_has_free_blocks(EXT3_SB(sb), 0) || (*retries)++ > 3)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	jbd_debug(1, "%s: retrying operation after ENOSPC\n", sb->s_id);
@@ -1514,10 +1628,16 @@ ext3_fsblk_t ext3_new_blocks(handle_t *handle, struct inode *inode,
 
 	*errp = -ENOSPC;
 	sb = inode->i_sb;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sb) {
 		printk("ext3_new_block: nonexistent device");
 		return 0;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check quota for allocation of this block.
@@ -1528,8 +1648,21 @@ ext3_fsblk_t ext3_new_blocks(handle_t *handle, struct inode *inode,
 		return 0;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sbi = EXT3_SB(sb);
 	es = EXT3_SB(sb)->s_es;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	trace_ext3_request_blocks(inode, goal, num);
+
+	sbi = EXT3_SB(sb);
+	es = sbi->s_es;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ext3_debug("goal=%lu.\n", goal);
 	/*
 	 * Allocate a block from reservation only when
@@ -1543,7 +1676,15 @@ ext3_fsblk_t ext3_new_blocks(handle_t *handle, struct inode *inode,
 	if (block_i && ((windowsz = block_i->rsv_window_node.rsv_goal_size) > 0))
 		my_rsv = &block_i->rsv_window_node;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ext3_has_free_blocks(sbi)) {
+=======
+	if (!ext3_has_free_blocks(sbi, IS_NOQUOTA(inode))) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ext3_has_free_blocks(sbi, IS_NOQUOTA(inode))) {
+>>>>>>> refs/remotes/origin/master
 		*errp = -ENOSPC;
 		goto out;
 	}
@@ -1740,8 +1881,26 @@ allocated:
 
 	*errp = 0;
 	brelse(bitmap_bh);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dquot_free_block(inode, *count-num);
 	*count = num;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	if (num < *count) {
+		dquot_free_block(inode, *count-num);
+		*count = num;
+	}
+
+	trace_ext3_allocate_blocks(inode, goal, num,
+				   (unsigned long long)ret_block);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret_block;
 
 io_error:
@@ -1810,7 +1969,11 @@ ext3_fsblk_t ext3_count_free_blocks(struct super_block *sb)
 	brelse(bitmap_bh);
 	printk("ext3_count_free_blocks: stored = "E3FSBLK
 		", computed = "E3FSBLK", "E3FSBLK"\n",
+<<<<<<< HEAD
 	       le32_to_cpu(es->s_free_blocks_count),
+=======
+	       (ext3_fsblk_t)le32_to_cpu(es->s_free_blocks_count),
+>>>>>>> refs/remotes/origin/master
 		desc_count, bitmap_count);
 	return bitmap_count;
 #else
@@ -1917,9 +2080,22 @@ unsigned long ext3_bg_num_gdb(struct super_block *sb, int group)
  * reaches any used block. Then issue a TRIM command on this extent and free
  * the extent in the block bitmap. This is done until whole group is scanned.
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 ext3_grpblk_t ext3_trim_all_free(struct super_block *sb, unsigned int group,
 				ext3_grpblk_t start, ext3_grpblk_t max,
 				ext3_grpblk_t minblocks)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static ext3_grpblk_t ext3_trim_all_free(struct super_block *sb,
+					unsigned int group,
+					ext3_grpblk_t start, ext3_grpblk_t max,
+					ext3_grpblk_t minblocks)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	handle_t *handle;
 	ext3_grpblk_t next, free_blocks, bit, freed, count = 0;
@@ -1962,7 +2138,15 @@ ext3_grpblk_t ext3_trim_all_free(struct super_block *sb, unsigned int group,
 	sbi = EXT3_SB(sb);
 
 	 /* Walk through the whole group */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	while (start < max) {
+=======
+	while (start <= max) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (start <= max) {
+>>>>>>> refs/remotes/origin/master
 		start = bitmap_search_next_usable_block(start, bitmap_bh, max);
 		if (start < 0)
 			break;
@@ -1972,7 +2156,15 @@ ext3_grpblk_t ext3_trim_all_free(struct super_block *sb, unsigned int group,
 		 * Allocate contiguous free extents by setting bits in the
 		 * block bitmap
 		 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		while (next < max
+=======
+		while (next <= max
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		while (next <= max
+>>>>>>> refs/remotes/origin/master
 			&& claim_block(sb_bgl_lock(sbi, group),
 					next, bitmap_bh)) {
 			next++;
@@ -1996,6 +2188,14 @@ ext3_grpblk_t ext3_trim_all_free(struct super_block *sb, unsigned int group,
 		if ((next - start) < minblocks)
 			goto free_extent;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		trace_ext3_discard_blocks(sb, discard_block, next - start);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		trace_ext3_discard_blocks(sb, discard_block, next - start);
+>>>>>>> refs/remotes/origin/master
 		 /* Send the TRIM command down to the device */
 		err = sb_issue_discard(sb, discard_block, next - start,
 				       GFP_NOFS, 0);
@@ -2082,6 +2282,8 @@ err_out:
  */
 int ext3_trim_fs(struct super_block *sb, struct fstrim_range *range)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ext3_grpblk_t last_block, first_block, free_blocks;
 	unsigned long first_group, last_group;
 	unsigned long group, ngroups;
@@ -2105,11 +2307,50 @@ int ext3_trim_fs(struct super_block *sb, struct fstrim_range *range)
 		len = max_blks - start;
 
 	ngroups = EXT3_SB(sb)->s_groups_count;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ext3_grpblk_t last_block, first_block;
+	unsigned long group, first_group, last_group;
+	struct ext3_group_desc *gdp;
+	struct ext3_super_block *es = EXT3_SB(sb)->s_es;
+	uint64_t start, minlen, end, trimmed = 0;
+	ext3_fsblk_t first_data_blk =
+			le32_to_cpu(EXT3_SB(sb)->s_es->s_first_data_block);
+	ext3_fsblk_t max_blks = le32_to_cpu(es->s_blocks_count);
+	int ret = 0;
+
+	start = range->start >> sb->s_blocksize_bits;
+	end = start + (range->len >> sb->s_blocksize_bits) - 1;
+	minlen = range->minlen >> sb->s_blocksize_bits;
+
+<<<<<<< HEAD
+	if (unlikely(minlen > EXT3_BLOCKS_PER_GROUP(sb)) ||
+	    unlikely(start >= max_blks))
+=======
+	if (minlen > EXT3_BLOCKS_PER_GROUP(sb) ||
+	    start >= max_blks ||
+	    range->len < sb->s_blocksize)
+>>>>>>> refs/remotes/origin/master
+		return -EINVAL;
+	if (end >= max_blks)
+		end = max_blks - 1;
+	if (end <= first_data_blk)
+		goto out;
+	if (start < first_data_blk)
+		start = first_data_blk;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	smp_rmb();
 
 	/* Determine first and last group to examine based on start and len */
 	ext3_get_group_no_and_offset(sb, (ext3_fsblk_t) start,
 				     &first_group, &first_block);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ext3_get_group_no_and_offset(sb, (ext3_fsblk_t) (start + len),
 				     &last_group, &last_block);
 	last_group = (last_group > ngroups - 1) ? ngroups - 1 : last_group;
@@ -2117,12 +2358,26 @@ int ext3_trim_fs(struct super_block *sb, struct fstrim_range *range)
 
 	if (first_group > last_group)
 		return -EINVAL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ext3_get_group_no_and_offset(sb, (ext3_fsblk_t) end,
+				     &last_group, &last_block);
+
+	/* end now represents the last block to discard in this group */
+	end = EXT3_BLOCKS_PER_GROUP(sb) - 1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (group = first_group; group <= last_group; group++) {
 		gdp = ext3_get_group_desc(sb, group, NULL);
 		if (!gdp)
 			break;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		free_blocks = le16_to_cpu(gdp->bg_free_blocks_count);
 		if (free_blocks < minlen)
 			continue;
@@ -2147,10 +2402,48 @@ int ext3_trim_fs(struct super_block *sb, struct fstrim_range *range)
 	}
 
 	if (ret >= 0)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/*
+		 * For all the groups except the last one, last block will
+		 * always be EXT3_BLOCKS_PER_GROUP(sb)-1, so we only need to
+		 * change it for the last group, note that last_block is
+		 * already computed earlier by ext3_get_group_no_and_offset()
+		 */
+		if (group == last_group)
+			end = last_block;
+
+		if (le16_to_cpu(gdp->bg_free_blocks_count) >= minlen) {
+			ret = ext3_trim_all_free(sb, group, first_block,
+						 end, minlen);
+			if (ret < 0)
+				break;
+			trimmed += ret;
+		}
+
+		/*
+		 * For every group except the first one, we are sure
+		 * that the first block to discard will be block #0.
+		 */
+		first_block = 0;
+	}
+
+	if (ret > 0)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 
 out:
 	range->len = trimmed * sb->s_blocksize;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }

@@ -14,7 +14,11 @@
  */
 #include <linux/mutex.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/poison.h>
 #include <linux/sched.h>
 #include <linux/spinlock.h>

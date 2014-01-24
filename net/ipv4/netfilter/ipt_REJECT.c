@@ -81,6 +81,10 @@ static void send_reset(struct sk_buff *oldskb, int hook)
 	niph->saddr	= oiph->daddr;
 	niph->daddr	= oiph->saddr;
 
+<<<<<<< HEAD
+=======
+	skb_reset_transport_header(nskb);
+>>>>>>> refs/remotes/origin/master
 	tcph = (struct tcphdr *)skb_put(nskb, sizeof(struct tcphdr));
 	memset(tcph, 0, sizeof(*tcph));
 	tcph->source	= oth->dest;
@@ -118,7 +122,30 @@ static void send_reset(struct sk_buff *oldskb, int hook)
 
 	nf_ct_attach(nskb, oldskb);
 
+<<<<<<< HEAD
 	ip_local_out(nskb);
+=======
+#ifdef CONFIG_BRIDGE_NETFILTER
+	/* If we use ip_local_out for bridged traffic, the MAC source on
+	 * the RST will be ours, instead of the destination's.  This confuses
+	 * some routers/firewalls, and they drop the packet.  So we need to
+	 * build the eth header using the original destination's MAC as the
+	 * source, and send the RST packet directly.
+	 */
+	if (oldskb->nf_bridge) {
+		struct ethhdr *oeth = eth_hdr(oldskb);
+		nskb->dev = oldskb->nf_bridge->physindev;
+		niph->tot_len = htons(nskb->len);
+		ip_send_check(niph);
+		if (dev_hard_header(nskb, nskb->dev, ntohs(nskb->protocol),
+				    oeth->h_source, oeth->h_dest, nskb->len) < 0)
+			goto free_nskb;
+		dev_queue_xmit(nskb);
+	} else
+#endif
+		ip_local_out(nskb);
+
+>>>>>>> refs/remotes/origin/master
 	return;
 
  free_nskb:
@@ -128,6 +155,10 @@ static void send_reset(struct sk_buff *oldskb, int hook)
 static inline void send_unreach(struct sk_buff *skb_in, int code)
 {
 	icmp_send(skb_in, ICMP_DEST_UNREACH, code, 0);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_IP_NF_TARGET_REJECT_SKERR
 	if (skb_in->sk) {
 		skb_in->sk->sk_err = icmp_err_convert[code].errno;
@@ -136,6 +167,11 @@ static inline void send_unreach(struct sk_buff *skb_in, int code)
 			skb_in->sk->sk_err, skb_in, skb_in->sk);
 	}
 #endif
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static unsigned int

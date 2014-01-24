@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 1999-2003 Petko Manolov - Petkan (petkan@users.sourceforge.net)
+=======
+ * Copyright (c) 1999-2013 Petko Manolov (petkan@nucleusys.com)
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as published
@@ -13,7 +17,10 @@
 #define	HAS_HOME_PNA		0x40000000
 
 #define	PEGASUS_MTU		1536
+<<<<<<< HEAD
 #define	RX_SKBS			4
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define	EPROM_WRITE		0x01
 #define	EPROM_READ		0x02
@@ -34,8 +41,11 @@
 #define	CTRL_URB_SLEEP		0x00000020
 #define	PEGASUS_UNPLUG		0x00000040
 #define	PEGASUS_RX_URB_FAIL	0x00000080
+<<<<<<< HEAD
 #define	ETH_REGS_CHANGE		0x40000000
 #define	ETH_REGS_CHANGED	0x80000000
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define	RX_MULTICAST		2
 #define	RX_PROMISCUOUS		4
@@ -96,12 +106,17 @@ typedef struct pegasus {
 	int			intr_interval;
 	struct tasklet_struct	rx_tl;
 	struct delayed_work	carrier_check;
+<<<<<<< HEAD
 	struct urb		*ctrl_urb, *rx_urb, *tx_urb, *intr_urb;
 	struct sk_buff		*rx_pool[RX_SKBS];
 	struct sk_buff		*rx_skb;
 	struct usb_ctrlrequest	dr;
 	wait_queue_head_t	ctrl_wait;
 	spinlock_t		rx_pool_lock;
+=======
+	struct urb		*rx_urb, *tx_urb, *intr_urb;
+	struct sk_buff		*rx_skb;
+>>>>>>> refs/remotes/origin/master
 	int			chip;
 	unsigned char		intr_buff[8];
 	__u8			tx_buff[PEGASUS_MTU];

@@ -4,9 +4,15 @@
  */
 
 #include <asm/errno.h>
+<<<<<<< HEAD
 #include "init.h"
 #include "kern.h"
 #include "os.h"
+=======
+#include <init.h>
+#include <kern.h>
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Changed by set_umid_arg */
 static int umid_inited = 0;

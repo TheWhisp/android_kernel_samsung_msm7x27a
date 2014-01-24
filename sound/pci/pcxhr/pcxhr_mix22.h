@@ -34,6 +34,10 @@ int hr222_get_external_clock(struct pcxhr_mgr *mgr,
 
 int hr222_read_gpio(struct pcxhr_mgr *mgr, int is_gpi, int *value);
 int hr222_write_gpo(struct pcxhr_mgr *mgr, int value);
+<<<<<<< HEAD
+=======
+int hr222_manage_timecode(struct pcxhr_mgr *mgr, int enable);
+>>>>>>> refs/remotes/origin/master
 
 #define HR222_LINE_PLAYBACK_LEVEL_MIN		0	/* -25.5 dB */
 #define HR222_LINE_PLAYBACK_ZERO_LEVEL		51	/* 0.0 dB */

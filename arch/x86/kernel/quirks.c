@@ -8,9 +8,19 @@
 
 #if defined(CONFIG_X86_IO_APIC) && defined(CONFIG_SMP) && defined(CONFIG_PCI)
 
+<<<<<<< HEAD
 static void __devinit quirk_intel_irqbalance(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	u8 config, rev;
+=======
+	u8 config;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void quirk_intel_irqbalance(struct pci_dev *dev)
+{
+	u8 config;
+>>>>>>> refs/remotes/origin/master
 	u16 word;
 
 	/* BIOS may enable hardware IRQ balancing for
@@ -18,8 +28,16 @@ static void __devinit quirk_intel_irqbalance(struct pci_dev *dev)
 	 * based platforms.
 	 * Disable SW irqbalance/affinity on those platforms.
 	 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	pci_read_config_byte(dev, PCI_CLASS_REVISION, &rev);
 	if (rev > 0x9)
+=======
+	if (dev->revision > 0x9)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->revision > 0x9)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/* enable access to config space*/
@@ -355,6 +373,7 @@ static void ati_force_hpet_resume(void)
 
 static u32 ati_ixp4x0_rev(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	u32 d;
 	u8  b;
 
@@ -367,6 +386,24 @@ static u32 ati_ixp4x0_rev(struct pci_dev *dev)
 	pci_read_config_dword(dev, 0x8, &d);
 	d &= 0xff;
 	dev_printk(KERN_DEBUG, &dev->dev, "SB4X0 revision 0x%x\n", d);
+=======
+	int err = 0;
+	u32 d = 0;
+	u8  b = 0;
+
+	err = pci_read_config_byte(dev, 0xac, &b);
+	b &= ~(1<<5);
+	err |= pci_write_config_byte(dev, 0xac, b);
+	err |= pci_read_config_dword(dev, 0x70, &d);
+	d |= 1<<8;
+	err |= pci_write_config_dword(dev, 0x70, d);
+	err |= pci_read_config_dword(dev, 0x8, &d);
+	d &= 0xff;
+	dev_printk(KERN_DEBUG, &dev->dev, "SB4X0 revision 0x%x\n", d);
+
+	WARN_ON_ONCE(err);
+
+>>>>>>> refs/remotes/origin/master
 	return d;
 }
 
@@ -513,7 +550,11 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATI, PCI_DEVICE_ID_ATI_SBX00_SMBUS,
 
 #if defined(CONFIG_PCI) && defined(CONFIG_NUMA)
 /* Set correct numa_node information for AMD NB functions */
+<<<<<<< HEAD
 static void __init quirk_amd_nb_node(struct pci_dev *dev)
+=======
+static void quirk_amd_nb_node(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *nb_ht;
 	unsigned int devfn;
@@ -554,4 +595,26 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_10H_NB_MISC,
 			quirk_amd_nb_node);
 DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_10H_NB_LINK,
 			quirk_amd_nb_node);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F0,
+			quirk_amd_nb_node);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F1,
+			quirk_amd_nb_node);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F2,
+			quirk_amd_nb_node);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F3,
+			quirk_amd_nb_node);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F4,
+			quirk_amd_nb_node);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F5,
+			quirk_amd_nb_node);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

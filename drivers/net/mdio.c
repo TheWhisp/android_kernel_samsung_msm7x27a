@@ -190,6 +190,18 @@ void mdio45_ethtool_gset_npage(const struct mdio_if_info *mdio,
 	int reg;
 	u32 speed;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	BUILD_BUG_ON(MDIO_SUPPORTS_C22 != ETH_MDIO_SUPPORTS_C22);
+	BUILD_BUG_ON(MDIO_SUPPORTS_C45 != ETH_MDIO_SUPPORTS_C45);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUILD_BUG_ON(MDIO_SUPPORTS_C22 != ETH_MDIO_SUPPORTS_C22);
+	BUILD_BUG_ON(MDIO_SUPPORTS_C45 != ETH_MDIO_SUPPORTS_C45);
+
+>>>>>>> refs/remotes/origin/master
 	ecmd->transceiver = XCVR_INTERNAL;
 	ecmd->phy_address = mdio->prtad;
 	ecmd->mdio_support =

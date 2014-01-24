@@ -111,7 +111,11 @@ static struct mdiobb_ctrl ep8248e_mdio_ctrl = {
 	.ops = &ep8248e_mdio_ops,
 };
 
+<<<<<<< HEAD
 static int __devinit ep8248e_mdio_probe(struct platform_device *ofdev)
+=======
+static int ep8248e_mdio_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mii_bus *bus;
 	struct resource res;

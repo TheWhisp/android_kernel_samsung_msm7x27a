@@ -29,10 +29,16 @@
 #define PLAT_PHYS_OFFSET		UL(0x00000000)
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ZONE_DMA
 #define ARM_DMA_ZONE_SIZE	SZ_256M
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SPARSEMEM
 
 /*

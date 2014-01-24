@@ -58,5 +58,8 @@
 #endif
 
 #endif // __TMACRO_H__
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master

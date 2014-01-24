@@ -82,10 +82,23 @@ int alloc_event_buffer(void)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&oprofilefs_lock, flags);
 	buffer_size = oprofile_buffer_size;
 	buffer_watershed = oprofile_buffer_watershed;
 	spin_unlock_irqrestore(&oprofilefs_lock, flags);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	raw_spin_lock_irqsave(&oprofilefs_lock, flags);
+	buffer_size = oprofile_buffer_size;
+	buffer_watershed = oprofile_buffer_watershed;
+	raw_spin_unlock_irqrestore(&oprofilefs_lock, flags);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (buffer_watershed >= buffer_size)
 		return -EINVAL;

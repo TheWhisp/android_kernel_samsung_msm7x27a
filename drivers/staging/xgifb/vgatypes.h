@@ -1,7 +1,19 @@
 #ifndef _VGATYPES_
 #define _VGATYPES_
 
+<<<<<<< HEAD
 #include <linux/ioctl.h>
+<<<<<<< HEAD
+=======
+#include <linux/fb.h>	/* for struct fb_var_screeninfo for sis.h */
+#include "../../video/sis/vgatypes.h"
+#include "../../video/sis/sis.h"		/* for LCD_TYPE */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/fb.h>	/* for struct fb_var_screeninfo for sis.h */
+#include "../../video/sis/vgatypes.h"
+#include "../../video/sis/sis.h"		/* for LCD_TYPE */
+>>>>>>> refs/remotes/origin/master
 
 #ifndef XGI_VB_CHIP_TYPE
 enum XGI_VB_CHIP_TYPE {
@@ -19,6 +31,16 @@ enum XGI_VB_CHIP_TYPE {
 };
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+#define XGI_LCD_TYPE
+/* Since the merge with video/sis the LCD_TYPEs are used from
+ drivers/video/sis/sis.h . Nevertheless we keep this (for the moment) for
+ future reference until the code is merged completely and we are sure
+ nothing of this should be added to the sis.h header */
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef XGI_LCD_TYPE
 enum XGI_LCD_TYPE {
 	LCD_INVALID = 0,
@@ -47,25 +69,41 @@ enum XGI_LCD_TYPE {
 };
 #endif
 
+<<<<<<< HEAD
 struct XGI_DSReg {
 	unsigned char jIdx;
 	unsigned char jVal;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct xgi_hw_device_info {
 	unsigned long ulExternalChip; /* NO VB or other video bridge*/
 				      /* if ujVBChipID = VB_CHIP_UNKNOWN, */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char *pjVirtualRomBase; /* ROM image */
 
 	unsigned char *pjVideoMemoryAddress;/* base virtual memory address */
+=======
+	void __iomem *pjVideoMemoryAddress;/* base virtual memory address */
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __iomem *pjVideoMemoryAddress;/* base virtual memory address */
+>>>>>>> refs/remotes/origin/master
 					    /* of Linear VGA memory */
 
 	unsigned long ulVideoMemorySize; /* size, in bytes, of the
 					    memory on the board */
 
+<<<<<<< HEAD
 	unsigned char *pjIOAddress; /* base I/O address of VGA ports (0x3B0) */
 
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char jChipType; /* Used to Identify Graphics Chip */
 				 /* defined in the data structure type  */
 				 /* "XGI_CHIP_TYPE" */
@@ -78,10 +116,16 @@ struct xgi_hw_device_info {
 				  /* "XGI_VB_CHIP_TYPE" */
 
 	unsigned long ulCRT2LCDType; /* defined in the data structure type */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	unsigned char(*pQueryVGAConfigSpace)(struct xgi_hw_device_info *,
 					    unsigned long, unsigned long,
 					    unsigned long *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Additional IOCTL for communication xgifb <> X driver        */

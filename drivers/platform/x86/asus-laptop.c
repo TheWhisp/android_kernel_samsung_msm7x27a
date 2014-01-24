@@ -4,6 +4,14 @@
  *
  *  Copyright (C) 2002-2005 Julien Lerouge, 2003-2006 Karol Kozimor
  *  Copyright (C) 2006-2007 Corentin Chary
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *  Copyright (C) 2011 Wind River Systems
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Copyright (C) 2011 Wind River Systems
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,6 +56,14 @@
 #include <linux/uaccess.h>
 #include <linux/input.h>
 #include <linux/input/sparse-keymap.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/input-polldev.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/input-polldev.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/rfkill.h>
 #include <linux/slab.h>
 #include <linux/dmi.h>
@@ -70,48 +86,143 @@ MODULE_LICENSE("GPL");
  * WAPF defines the behavior of the Fn+Fx wlan key
  * The significance of values is yet to be found, but
  * most of the time:
+<<<<<<< HEAD
+<<<<<<< HEAD
  * 0x0 will do nothing
  * 0x1 will allow to control the device with Fn+Fx key.
  * 0x4 will send an ACPI event (0x88) while pressing the Fn+Fx key
  * 0x5 like 0x1 or 0x4
  * So, if something doesn't work as you want, just try other values =)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Bit | Bluetooth | WLAN
+ *  0  | Hardware  | Hardware
+ *  1  | Hardware  | Software
+ *  4  | Software  | Software
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static uint wapf = 1;
 module_param(wapf, uint, 0444);
 MODULE_PARM_DESC(wapf, "WAPF value");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static char *wled_type = "unknown";
+static char *bled_type = "unknown";
+
+module_param(wled_type, charp, 0444);
+<<<<<<< HEAD
+MODULE_PARM_DESC(wlan_status, "Set the wled type on boot "
+=======
+MODULE_PARM_DESC(wled_type, "Set the wled type on boot "
+>>>>>>> refs/remotes/origin/master
+		 "(unknown, led or rfkill). "
+		 "default is unknown");
+
+module_param(bled_type, charp, 0444);
+MODULE_PARM_DESC(bled_type, "Set the bled type on boot "
+		 "(unknown, led or rfkill). "
+		 "default is unknown");
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int wlan_status = 1;
 static int bluetooth_status = 1;
 static int wimax_status = -1;
 static int wwan_status = -1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static int als_status;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int als_status;
+>>>>>>> refs/remotes/origin/master
 
 module_param(wlan_status, int, 0444);
 MODULE_PARM_DESC(wlan_status, "Set the wireless status on boot "
 		 "(0 = disabled, 1 = enabled, -1 = don't do anything). "
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 "default is 1");
+=======
+		 "default is -1");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 "default is -1");
+>>>>>>> refs/remotes/origin/master
 
 module_param(bluetooth_status, int, 0444);
 MODULE_PARM_DESC(bluetooth_status, "Set the wireless status on boot "
 		 "(0 = disabled, 1 = enabled, -1 = don't do anything). "
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 "default is 1");
+=======
+		 "default is -1");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 "default is -1");
+>>>>>>> refs/remotes/origin/master
 
 module_param(wimax_status, int, 0444);
 MODULE_PARM_DESC(wimax_status, "Set the wireless status on boot "
 		 "(0 = disabled, 1 = enabled, -1 = don't do anything). "
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 "default is 1");
+=======
+		 "default is -1");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 "default is -1");
+>>>>>>> refs/remotes/origin/master
 
 module_param(wwan_status, int, 0444);
 MODULE_PARM_DESC(wwan_status, "Set the wireless status on boot "
 		 "(0 = disabled, 1 = enabled, -1 = don't do anything). "
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 "default is 1");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		 "default is -1");
+
+module_param(als_status, int, 0444);
+MODULE_PARM_DESC(als_status, "Set the ALS status on boot "
+		 "(0 = disabled, 1 = enabled). "
+		 "default is 0");
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Some events we use, same for all Asus
  */
+<<<<<<< HEAD
 #define ATKD_BR_UP	0x10	/* (event & ~ATKD_BR_UP) = brightness level */
 #define ATKD_BR_DOWN	0x20	/* (event & ~ATKD_BR_DOWN) = britghness level */
 #define ATKD_BR_MIN	ATKD_BR_UP
 #define ATKD_BR_MAX	(ATKD_BR_DOWN | 0xF)	/* 0x2f */
+=======
+#define ATKD_BRNUP_MIN		0x10
+#define ATKD_BRNUP_MAX		0x1f
+#define ATKD_BRNDOWN_MIN	0x20
+#define ATKD_BRNDOWN_MAX	0x2f
+#define ATKD_BRNDOWN		0x20
+#define ATKD_BRNUP		0x2f
+>>>>>>> refs/remotes/origin/master
 #define ATKD_LCD_ON	0x33
 #define ATKD_LCD_OFF	0x34
 
@@ -130,6 +241,20 @@ MODULE_PARM_DESC(wwan_status, "Set the wireless status on boot "
 #define WM_RSTS		0x08    /* internal wimax */
 #define WW_RSTS		0x20    /* internal wwan */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* WLED and BLED type */
+#define TYPE_UNKNOWN	0
+#define TYPE_LED	1
+#define TYPE_RFKILL	2
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* LED */
 #define METHOD_MLED		"MLED"
 #define METHOD_TLED		"TLED"
@@ -174,6 +299,38 @@ MODULE_PARM_DESC(wwan_status, "Set the wireless status on boot "
 #define METHOD_KBD_LIGHT_SET	"SLKB"
 #define METHOD_KBD_LIGHT_GET	"GLKB"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* For Pegatron Lucid tablet */
+#define DEVICE_NAME_PEGA	"Lucid"
+
+#define METHOD_PEGA_ENABLE	"ENPR"
+#define METHOD_PEGA_DISABLE	"DAPR"
+#define PEGA_WLAN	0x00
+#define PEGA_BLUETOOTH	0x01
+#define PEGA_WWAN	0x02
+#define PEGA_ALS	0x04
+#define PEGA_ALS_POWER	0x05
+
+#define METHOD_PEGA_READ	"RDLN"
+#define PEGA_READ_ALS_H	0x02
+#define PEGA_READ_ALS_L	0x03
+
+#define PEGA_ACCEL_NAME "pega_accel"
+#define PEGA_ACCEL_DESC "Pegatron Lucid Tablet Accelerometer"
+#define METHOD_XLRX "XLRX"
+#define METHOD_XLRY "XLRY"
+#define METHOD_XLRZ "XLRZ"
+#define PEGA_ACC_CLAMP 512 /* 1G accel is reported as ~256, so clamp to 2G */
+#define PEGA_ACC_RETRIES 3
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Define a specific led structure to keep the main structure clean
  */
@@ -186,6 +343,25 @@ struct asus_led {
 };
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+ * Same thing for rfkill
+ */
+struct asus_rfkill {
+	/* type of control. Maps to PEGA_* values or *_RSTS  */
+	int control_id;
+	struct rfkill *rfkill;
+	struct asus_laptop *asus;
+};
+
+/*
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This is the main structure, we can use it to store anything interesting
  * about the hotk device
  */
@@ -199,7 +375,20 @@ struct asus_laptop {
 
 	struct input_dev *inputdev;
 	struct key_entry *keymap;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct input_polled_dev *pega_accel_poll;
+
+	struct asus_led wled;
+	struct asus_led bled;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct asus_led mled;
 	struct asus_led tled;
 	struct asus_led rled;
@@ -208,10 +397,34 @@ struct asus_laptop {
 	struct asus_led kled;
 	struct workqueue_struct *led_workqueue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int wireless_status;
 	bool have_rsts;
 
 	struct rfkill *gps_rfkill;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int wled_type;
+	int bled_type;
+	int wireless_status;
+	bool have_rsts;
+	bool is_pega_lucid;
+	bool pega_acc_live;
+	int pega_acc_x;
+	int pega_acc_y;
+	int pega_acc_z;
+
+	struct asus_rfkill wlan;
+	struct asus_rfkill bluetooth;
+	struct asus_rfkill wwan;
+	struct asus_rfkill wimax;
+	struct asus_rfkill gps;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	acpi_handle handle;	/* the handle of the hotk device */
 	u32 ledd_status;	/* status of the LED display */
@@ -225,6 +438,11 @@ static const struct key_entry asus_keymap[] = {
 	{KE_KEY, 0x02, { KEY_SCREENLOCK } },
 	{KE_KEY, 0x05, { KEY_WLAN } },
 	{KE_KEY, 0x08, { KEY_F13 } },
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	{KE_KEY, 0x09, { KEY_PROG2 } }, /* Dock */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{KE_KEY, 0x17, { KEY_ZOOM } },
 	{KE_KEY, 0x1f, { KEY_BATTERY } },
 	/* End of Lenovo SL Specific keycodes */
@@ -250,6 +468,11 @@ static const struct key_entry asus_keymap[] = {
 	{KE_KEY, 0x62, { KEY_SWITCHVIDEOMODE } },
 	{KE_KEY, 0x63, { KEY_SWITCHVIDEOMODE } },
 	{KE_KEY, 0x6B, { KEY_F13 } }, /* Lock Touchpad */
+<<<<<<< HEAD
+=======
+	{KE_KEY, 0x6C, { KEY_SLEEP } }, /* Suspend */
+	{KE_KEY, 0x6D, { KEY_SLEEP } }, /* Hibernate */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{KE_KEY, 0x7E, { KEY_BLUETOOTH } },
 	{KE_KEY, 0x7D, { KEY_BLUETOOTH } },
 	{KE_KEY, 0x82, { KEY_CAMERA } },
@@ -260,6 +483,71 @@ static const struct key_entry asus_keymap[] = {
 	{KE_KEY, 0xc4, { KEY_KBDILLUMUP } },
 	{KE_KEY, 0xc5, { KEY_KBDILLUMDOWN } },
 	{KE_KEY, 0xb5, { KEY_CALC } },
+=======
+	{KE_KEY, 0x09, { KEY_PROG2 } }, /* Dock */
+	{KE_KEY, 0x17, { KEY_ZOOM } },
+	{KE_KEY, 0x1f, { KEY_BATTERY } },
+	/* End of Lenovo SL Specific keycodes */
+	{KE_KEY, ATKD_BRNDOWN, { KEY_BRIGHTNESSDOWN } },
+	{KE_KEY, ATKD_BRNUP, { KEY_BRIGHTNESSUP } },
+	{KE_KEY, 0x30, { KEY_VOLUMEUP } },
+	{KE_KEY, 0x31, { KEY_VOLUMEDOWN } },
+	{KE_KEY, 0x32, { KEY_MUTE } },
+	{KE_KEY, 0x33, { KEY_DISPLAYTOGGLE } }, /* LCD on */
+	{KE_KEY, 0x34, { KEY_DISPLAY_OFF } }, /* LCD off */
+	{KE_KEY, 0x40, { KEY_PREVIOUSSONG } },
+	{KE_KEY, 0x41, { KEY_NEXTSONG } },
+	{KE_KEY, 0x43, { KEY_STOPCD } }, /* Stop/Eject */
+	{KE_KEY, 0x45, { KEY_PLAYPAUSE } },
+	{KE_KEY, 0x4c, { KEY_MEDIA } }, /* WMP Key */
+	{KE_KEY, 0x50, { KEY_EMAIL } },
+	{KE_KEY, 0x51, { KEY_WWW } },
+	{KE_KEY, 0x55, { KEY_CALC } },
+	{KE_IGNORE, 0x57, },  /* Battery mode */
+	{KE_IGNORE, 0x58, },  /* AC mode */
+	{KE_KEY, 0x5C, { KEY_SCREENLOCK } },  /* Screenlock */
+	{KE_KEY, 0x5D, { KEY_WLAN } }, /* WLAN Toggle */
+	{KE_KEY, 0x5E, { KEY_WLAN } }, /* WLAN Enable */
+	{KE_KEY, 0x5F, { KEY_WLAN } }, /* WLAN Disable */
+	{KE_KEY, 0x60, { KEY_TOUCHPAD_ON } },
+	{KE_KEY, 0x61, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD only */
+	{KE_KEY, 0x62, { KEY_SWITCHVIDEOMODE } }, /* SDSP CRT only */
+	{KE_KEY, 0x63, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + CRT */
+	{KE_KEY, 0x64, { KEY_SWITCHVIDEOMODE } }, /* SDSP TV */
+	{KE_KEY, 0x65, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + TV */
+	{KE_KEY, 0x66, { KEY_SWITCHVIDEOMODE } }, /* SDSP CRT + TV */
+	{KE_KEY, 0x67, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + CRT + TV */
+	{KE_KEY, 0x6B, { KEY_TOUCHPAD_TOGGLE } }, /* Lock Touchpad */
+	{KE_KEY, 0x6C, { KEY_SLEEP } }, /* Suspend */
+	{KE_KEY, 0x6D, { KEY_SLEEP } }, /* Hibernate */
+	{KE_IGNORE, 0x6E, },  /* Low Battery notification */
+	{KE_KEY, 0x7D, { KEY_BLUETOOTH } }, /* Bluetooth Enable */
+	{KE_KEY, 0x7E, { KEY_BLUETOOTH } }, /* Bluetooth Disable */
+	{KE_KEY, 0x82, { KEY_CAMERA } },
+	{KE_KEY, 0x88, { KEY_RFKILL  } }, /* Radio Toggle Key */
+	{KE_KEY, 0x8A, { KEY_PROG1 } }, /* Color enhancement mode */
+	{KE_KEY, 0x8C, { KEY_SWITCHVIDEOMODE } }, /* SDSP DVI only */
+	{KE_KEY, 0x8D, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + DVI */
+	{KE_KEY, 0x8E, { KEY_SWITCHVIDEOMODE } }, /* SDSP CRT + DVI */
+	{KE_KEY, 0x8F, { KEY_SWITCHVIDEOMODE } }, /* SDSP TV + DVI */
+	{KE_KEY, 0x90, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + CRT + DVI */
+	{KE_KEY, 0x91, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + TV + DVI */
+	{KE_KEY, 0x92, { KEY_SWITCHVIDEOMODE } }, /* SDSP CRT + TV + DVI */
+	{KE_KEY, 0x93, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + CRT + TV + DVI */
+	{KE_KEY, 0x95, { KEY_MEDIA } },
+	{KE_KEY, 0x99, { KEY_PHONE } },
+	{KE_KEY, 0xA0, { KEY_SWITCHVIDEOMODE } }, /* SDSP HDMI only */
+	{KE_KEY, 0xA1, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + HDMI */
+	{KE_KEY, 0xA2, { KEY_SWITCHVIDEOMODE } }, /* SDSP CRT + HDMI */
+	{KE_KEY, 0xA3, { KEY_SWITCHVIDEOMODE } }, /* SDSP TV + HDMI */
+	{KE_KEY, 0xA4, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + CRT + HDMI */
+	{KE_KEY, 0xA5, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + TV + HDMI */
+	{KE_KEY, 0xA6, { KEY_SWITCHVIDEOMODE } }, /* SDSP CRT + TV + HDMI */
+	{KE_KEY, 0xA7, { KEY_SWITCHVIDEOMODE } }, /* SDSP LCD + CRT + TV + HDMI */
+	{KE_KEY, 0xB5, { KEY_CALC } },
+	{KE_KEY, 0xC4, { KEY_KBDILLUMUP } },
+	{KE_KEY, 0xC5, { KEY_KBDILLUMDOWN } },
+>>>>>>> refs/remotes/origin/master
 	{KE_END, 0},
 };
 
@@ -324,6 +612,136 @@ static int acpi_check_handle(acpi_handle handle, const char *method,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static bool asus_check_pega_lucid(struct asus_laptop *asus)
+{
+	return !strcmp(asus->name, DEVICE_NAME_PEGA) &&
+	   !acpi_check_handle(asus->handle, METHOD_PEGA_ENABLE, NULL) &&
+	   !acpi_check_handle(asus->handle, METHOD_PEGA_DISABLE, NULL) &&
+	   !acpi_check_handle(asus->handle, METHOD_PEGA_READ, NULL);
+}
+
+static int asus_pega_lucid_set(struct asus_laptop *asus, int unit, bool enable)
+{
+	char *method = enable ? METHOD_PEGA_ENABLE : METHOD_PEGA_DISABLE;
+	return write_acpi_int(asus->handle, method, unit);
+}
+
+static int pega_acc_axis(struct asus_laptop *asus, int curr, char *method)
+{
+	int i, delta;
+	unsigned long long val;
+	for (i = 0; i < PEGA_ACC_RETRIES; i++) {
+		acpi_evaluate_integer(asus->handle, method, NULL, &val);
+
+		/* The output is noisy.  From reading the ASL
+		 * dissassembly, timeout errors are returned with 1's
+		 * in the high word, and the lack of locking around
+		 * thei hi/lo byte reads means that a transition
+		 * between (for example) -1 and 0 could be read as
+		 * 0xff00 or 0x00ff. */
+		delta = abs(curr - (short)val);
+		if (delta < 128 && !(val & ~0xffff))
+			break;
+	}
+	return clamp_val((short)val, -PEGA_ACC_CLAMP, PEGA_ACC_CLAMP);
+}
+
+static void pega_accel_poll(struct input_polled_dev *ipd)
+{
+	struct device *parent = ipd->input->dev.parent;
+	struct asus_laptop *asus = dev_get_drvdata(parent);
+
+	/* In some cases, the very first call to poll causes a
+	 * recursive fault under the polldev worker.  This is
+	 * apparently related to very early userspace access to the
+	 * device, and perhaps a firmware bug. Fake the first report. */
+	if (!asus->pega_acc_live) {
+		asus->pega_acc_live = true;
+		input_report_abs(ipd->input, ABS_X, 0);
+		input_report_abs(ipd->input, ABS_Y, 0);
+		input_report_abs(ipd->input, ABS_Z, 0);
+		input_sync(ipd->input);
+		return;
+	}
+
+	asus->pega_acc_x = pega_acc_axis(asus, asus->pega_acc_x, METHOD_XLRX);
+	asus->pega_acc_y = pega_acc_axis(asus, asus->pega_acc_y, METHOD_XLRY);
+	asus->pega_acc_z = pega_acc_axis(asus, asus->pega_acc_z, METHOD_XLRZ);
+
+	/* Note transform, convert to "right/up/out" in the native
+	 * landscape orientation (i.e. the vector is the direction of
+	 * "real up" in the device's cartiesian coordinates). */
+	input_report_abs(ipd->input, ABS_X, -asus->pega_acc_x);
+	input_report_abs(ipd->input, ABS_Y, -asus->pega_acc_y);
+	input_report_abs(ipd->input, ABS_Z,  asus->pega_acc_z);
+	input_sync(ipd->input);
+}
+
+static void pega_accel_exit(struct asus_laptop *asus)
+{
+	if (asus->pega_accel_poll) {
+		input_unregister_polled_device(asus->pega_accel_poll);
+		input_free_polled_device(asus->pega_accel_poll);
+	}
+	asus->pega_accel_poll = NULL;
+}
+
+static int pega_accel_init(struct asus_laptop *asus)
+{
+	int err;
+	struct input_polled_dev *ipd;
+
+	if (!asus->is_pega_lucid)
+		return -ENODEV;
+
+	if (acpi_check_handle(asus->handle, METHOD_XLRX, NULL) ||
+	    acpi_check_handle(asus->handle, METHOD_XLRY, NULL) ||
+	    acpi_check_handle(asus->handle, METHOD_XLRZ, NULL))
+		return -ENODEV;
+
+	ipd = input_allocate_polled_device();
+	if (!ipd)
+		return -ENOMEM;
+
+	ipd->poll = pega_accel_poll;
+	ipd->poll_interval = 125;
+	ipd->poll_interval_min = 50;
+	ipd->poll_interval_max = 2000;
+
+	ipd->input->name = PEGA_ACCEL_DESC;
+	ipd->input->phys = PEGA_ACCEL_NAME "/input0";
+	ipd->input->dev.parent = &asus->platform_device->dev;
+	ipd->input->id.bustype = BUS_HOST;
+
+	set_bit(EV_ABS, ipd->input->evbit);
+	input_set_abs_params(ipd->input, ABS_X,
+			     -PEGA_ACC_CLAMP, PEGA_ACC_CLAMP, 0, 0);
+	input_set_abs_params(ipd->input, ABS_Y,
+			     -PEGA_ACC_CLAMP, PEGA_ACC_CLAMP, 0, 0);
+	input_set_abs_params(ipd->input, ABS_Z,
+			     -PEGA_ACC_CLAMP, PEGA_ACC_CLAMP, 0, 0);
+
+	err = input_register_polled_device(ipd);
+	if (err)
+		goto exit;
+
+	asus->pega_accel_poll = ipd;
+	return 0;
+
+exit:
+	input_free_polled_device(ipd);
+	return err;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Generic LED function */
 static int asus_led_set(struct asus_laptop *asus, const char *method,
 			 int value)
@@ -431,6 +849,8 @@ static enum led_brightness asus_kled_cdev_get(struct led_classdev *led_cdev)
 
 static void asus_led_exit(struct asus_laptop *asus)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (asus->mled.led.dev)
 		led_classdev_unregister(&asus->mled.led);
 	if (asus->tled.led.dev)
@@ -442,6 +862,28 @@ static void asus_led_exit(struct asus_laptop *asus)
 	if (asus->gled.led.dev)
 		led_classdev_unregister(&asus->gled.led);
 	if (asus->kled.led.dev)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!IS_ERR_OR_NULL(asus->wled.led.dev))
+		led_classdev_unregister(&asus->wled.led);
+	if (!IS_ERR_OR_NULL(asus->bled.led.dev))
+		led_classdev_unregister(&asus->bled.led);
+	if (!IS_ERR_OR_NULL(asus->mled.led.dev))
+		led_classdev_unregister(&asus->mled.led);
+	if (!IS_ERR_OR_NULL(asus->tled.led.dev))
+		led_classdev_unregister(&asus->tled.led);
+	if (!IS_ERR_OR_NULL(asus->pled.led.dev))
+		led_classdev_unregister(&asus->pled.led);
+	if (!IS_ERR_OR_NULL(asus->rled.led.dev))
+		led_classdev_unregister(&asus->rled.led);
+	if (!IS_ERR_OR_NULL(asus->gled.led.dev))
+		led_classdev_unregister(&asus->gled.led);
+	if (!IS_ERR_OR_NULL(asus->kled.led.dev))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		led_classdev_unregister(&asus->kled.led);
 	if (asus->led_workqueue) {
 		destroy_workqueue(asus->led_workqueue);
@@ -472,7 +914,24 @@ static int asus_led_register(struct asus_laptop *asus,
 
 static int asus_led_init(struct asus_laptop *asus)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int r;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int r = 0;
+
+	/*
+	 * The Pegatron Lucid has no physical leds, but all methods are
+	 * available in the DSDT...
+	 */
+	if (asus->is_pega_lucid)
+		return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Functions that actually update the LED's are called from a
@@ -484,6 +943,25 @@ static int asus_led_init(struct asus_laptop *asus)
 	if (!asus->led_workqueue)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (asus->wled_type == TYPE_LED)
+		r = asus_led_register(asus, &asus->wled, "asus::wlan",
+				      METHOD_WLAN);
+	if (r)
+		goto error;
+	if (asus->bled_type == TYPE_LED)
+		r = asus_led_register(asus, &asus->bled, "asus::bluetooth",
+				      METHOD_BLUETOOTH);
+	if (r)
+		goto error;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	r = asus_led_register(asus, &asus->mled, "asus::mail", METHOD_MLED);
 	if (r)
 		goto error;
@@ -788,7 +1266,15 @@ static ssize_t store_wlan(struct device *dev, struct device_attribute *attr,
 	return sysfs_acpi_set(asus, buf, count, METHOD_WLAN);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
+=======
+/*e
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*e
+>>>>>>> refs/remotes/origin/master
  * Bluetooth
  */
 static int asus_bluetooth_set(struct asus_laptop *asus, int status)
@@ -910,8 +1396,29 @@ static ssize_t store_disp(struct device *dev, struct device_attribute *attr,
  */
 static void asus_als_switch(struct asus_laptop *asus, int value)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (write_acpi_int(asus->handle, METHOD_ALS_CONTROL, value))
 		pr_warn("Error setting light sensor switch\n");
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	int ret;
+
+	if (asus->is_pega_lucid) {
+		ret = asus_pega_lucid_set(asus, PEGA_ALS, value);
+		if (!ret)
+			ret = asus_pega_lucid_set(asus, PEGA_ALS_POWER, value);
+	} else {
+		ret = write_acpi_int(asus->handle, METHOD_ALS_CONTROL, value);
+	}
+	if (ret)
+		pr_warning("Error setting light sensor switch\n");
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	asus->light_switch = value;
 }
 
@@ -967,6 +1474,44 @@ static ssize_t store_lslvl(struct device *dev, struct device_attribute *attr,
 	return rv;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int pega_int_read(struct asus_laptop *asus, int arg, int *result)
+{
+	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+	int err = write_acpi_int_ret(asus->handle, METHOD_PEGA_READ, arg,
+				     &buffer);
+	if (!err) {
+		union acpi_object *obj = buffer.pointer;
+		if (obj && obj->type == ACPI_TYPE_INTEGER)
+			*result = obj->integer.value;
+		else
+			err = -EIO;
+	}
+	return err;
+}
+
+static ssize_t show_lsvalue(struct device *dev,
+			    struct device_attribute *attr, char *buf)
+{
+	struct asus_laptop *asus = dev_get_drvdata(dev);
+	int err, hi, lo;
+
+	err = pega_int_read(asus, PEGA_READ_ALS_H, &hi);
+	if (!err)
+		err = pega_int_read(asus, PEGA_READ_ALS_L, &lo);
+	if (!err)
+		return sprintf(buf, "%d\n", 10 * hi + lo);
+	return err;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * GPS
  */
@@ -1014,7 +1559,15 @@ static ssize_t store_gps(struct device *dev, struct device_attribute *attr,
 	ret = asus_gps_switch(asus, !!value);
 	if (ret)
 		return ret;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rfkill_set_sw_state(asus->gps_rfkill, !value);
+=======
+	rfkill_set_sw_state(asus->gps.rfkill, !value);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rfkill_set_sw_state(asus->gps.rfkill, !value);
+>>>>>>> refs/remotes/origin/master
 	return rv;
 }
 
@@ -1032,6 +1585,8 @@ static const struct rfkill_ops asus_gps_rfkill_ops = {
 	.set_block = asus_gps_rfkill_set,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static void asus_rfkill_exit(struct asus_laptop *asus)
 {
 	if (asus->gps_rfkill) {
@@ -1060,18 +1615,204 @@ static int asus_rfkill_init(struct asus_laptop *asus)
 	if (result) {
 		rfkill_destroy(asus->gps_rfkill);
 		asus->gps_rfkill = NULL;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int asus_rfkill_set(void *data, bool blocked)
+{
+	struct asus_rfkill *rfk = data;
+	struct asus_laptop *asus = rfk->asus;
+
+	if (rfk->control_id == WL_RSTS)
+		return asus_wlan_set(asus, !blocked);
+	else if (rfk->control_id == BT_RSTS)
+		return asus_bluetooth_set(asus, !blocked);
+	else if (rfk->control_id == WM_RSTS)
+		return asus_wimax_set(asus, !blocked);
+	else if (rfk->control_id == WW_RSTS)
+		return asus_wwan_set(asus, !blocked);
+
+	return -EINVAL;
+}
+
+static const struct rfkill_ops asus_rfkill_ops = {
+	.set_block = asus_rfkill_set,
+};
+
+static void asus_rfkill_terminate(struct asus_rfkill *rfk)
+{
+	if (!rfk->rfkill)
+		return ;
+
+	rfkill_unregister(rfk->rfkill);
+	rfkill_destroy(rfk->rfkill);
+	rfk->rfkill = NULL;
+}
+
+static void asus_rfkill_exit(struct asus_laptop *asus)
+{
+	asus_rfkill_terminate(&asus->wwan);
+	asus_rfkill_terminate(&asus->bluetooth);
+	asus_rfkill_terminate(&asus->wlan);
+	asus_rfkill_terminate(&asus->gps);
+}
+
+static int asus_rfkill_setup(struct asus_laptop *asus, struct asus_rfkill *rfk,
+			     const char *name, int control_id, int type,
+			     const struct rfkill_ops *ops)
+{
+	int result;
+
+	rfk->control_id = control_id;
+	rfk->asus = asus;
+	rfk->rfkill = rfkill_alloc(name, &asus->platform_device->dev,
+				   type, ops, rfk);
+	if (!rfk->rfkill)
+		return -EINVAL;
+
+	result = rfkill_register(rfk->rfkill);
+	if (result) {
+		rfkill_destroy(rfk->rfkill);
+		rfk->rfkill = NULL;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return result;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int asus_rfkill_init(struct asus_laptop *asus)
+{
+	int result = 0;
+
+	if (asus->is_pega_lucid)
+		return -ENODEV;
+
+	if (!acpi_check_handle(asus->handle, METHOD_GPS_ON, NULL) &&
+	    !acpi_check_handle(asus->handle, METHOD_GPS_OFF, NULL) &&
+	    !acpi_check_handle(asus->handle, METHOD_GPS_STATUS, NULL))
+		result = asus_rfkill_setup(asus, &asus->gps, "asus-gps",
+					   -1, RFKILL_TYPE_GPS,
+					   &asus_gps_rfkill_ops);
+	if (result)
+		goto exit;
+
+
+	if (!acpi_check_handle(asus->handle, METHOD_WLAN, NULL) &&
+	    asus->wled_type == TYPE_RFKILL)
+		result = asus_rfkill_setup(asus, &asus->wlan, "asus-wlan",
+					   WL_RSTS, RFKILL_TYPE_WLAN,
+					   &asus_rfkill_ops);
+	if (result)
+		goto exit;
+
+	if (!acpi_check_handle(asus->handle, METHOD_BLUETOOTH, NULL) &&
+	    asus->bled_type == TYPE_RFKILL)
+		result = asus_rfkill_setup(asus, &asus->bluetooth,
+					   "asus-bluetooth", BT_RSTS,
+					   RFKILL_TYPE_BLUETOOTH,
+					   &asus_rfkill_ops);
+	if (result)
+		goto exit;
+
+	if (!acpi_check_handle(asus->handle, METHOD_WWAN, NULL))
+		result = asus_rfkill_setup(asus, &asus->wwan, "asus-wwan",
+					   WW_RSTS, RFKILL_TYPE_WWAN,
+					   &asus_rfkill_ops);
+	if (result)
+		goto exit;
+
+	if (!acpi_check_handle(asus->handle, METHOD_WIMAX, NULL))
+		result = asus_rfkill_setup(asus, &asus->wimax, "asus-wimax",
+					   WM_RSTS, RFKILL_TYPE_WIMAX,
+					   &asus_rfkill_ops);
+	if (result)
+		goto exit;
+
+exit:
+	if (result)
+		asus_rfkill_exit(asus);
+
+	return result;
+}
+
+static int pega_rfkill_set(void *data, bool blocked)
+{
+	struct asus_rfkill *rfk = data;
+
+	int ret = asus_pega_lucid_set(rfk->asus, rfk->control_id, !blocked);
+	return ret;
+}
+
+static const struct rfkill_ops pega_rfkill_ops = {
+	.set_block = pega_rfkill_set,
+};
+
+static int pega_rfkill_setup(struct asus_laptop *asus, struct asus_rfkill *rfk,
+			     const char *name, int controlid, int rfkill_type)
+{
+	return asus_rfkill_setup(asus, rfk, name, controlid, rfkill_type,
+				 &pega_rfkill_ops);
+}
+
+static int pega_rfkill_init(struct asus_laptop *asus)
+{
+	int ret = 0;
+
+	if(!asus->is_pega_lucid)
+		return -ENODEV;
+
+	ret = pega_rfkill_setup(asus, &asus->wlan, "pega-wlan",
+				PEGA_WLAN, RFKILL_TYPE_WLAN);
+	if(ret)
+		goto exit;
+
+	ret = pega_rfkill_setup(asus, &asus->bluetooth, "pega-bt",
+				PEGA_BLUETOOTH, RFKILL_TYPE_BLUETOOTH);
+	if(ret)
+		goto exit;
+
+	ret = pega_rfkill_setup(asus, &asus->wwan, "pega-wwan",
+				PEGA_WWAN, RFKILL_TYPE_WWAN);
+
+exit:
+	if (ret)
+		asus_rfkill_exit(asus);
+
+	return ret;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Input device (i.e. hotkeys)
  */
 static void asus_input_notify(struct asus_laptop *asus, int event)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (asus->inputdev)
 		sparse_keymap_report_event(asus->inputdev, event, 1, true);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!asus->inputdev)
+		return ;
+	if (!sparse_keymap_report_event(asus->inputdev, event, 1, true))
+		pr_info("Unknown key %x pressed\n", event);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int asus_input_init(struct asus_laptop *asus)
@@ -1080,10 +1821,20 @@ static int asus_input_init(struct asus_laptop *asus)
 	int error;
 
 	input = input_allocate_device();
+<<<<<<< HEAD
 	if (!input) {
+<<<<<<< HEAD
 		pr_info("Unable to allocate input device\n");
+=======
+		pr_warn("Unable to allocate input device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
+=======
+	if (!input)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	input->name = "Asus Laptop extra buttons";
 	input->phys = ASUS_LAPTOP_FILE "/input0";
 	input->id.bustype = BUS_HOST;
@@ -1096,7 +1847,15 @@ static int asus_input_init(struct asus_laptop *asus)
 	}
 	error = input_register_device(input);
 	if (error) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		pr_info("Unable to register input device\n");
+=======
+		pr_warn("Unable to register input device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("Unable to register input device\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_free_keymap;
 	}
 
@@ -1129,11 +1888,15 @@ static void asus_acpi_notify(struct acpi_device *device, u32 event)
 
 	/* TODO Find a better way to handle events count. */
 	count = asus->event_count[event % 128]++;
+<<<<<<< HEAD
 	acpi_bus_generate_proc_event(asus->device, event, count);
+=======
+>>>>>>> refs/remotes/origin/master
 	acpi_bus_generate_netlink_event(asus->device->pnp.device_class,
 					dev_name(&asus->device->dev), event,
 					count);
 
+<<<<<<< HEAD
 	/* Brightness events are special */
 	if (event >= ATKD_BR_MIN && event <= ATKD_BR_MAX) {
 
@@ -1144,6 +1907,36 @@ static void asus_acpi_notify(struct acpi_device *device, u32 event)
 		}
 		return ;
 	}
+<<<<<<< HEAD
+=======
+=======
+	if (event >= ATKD_BRNUP_MIN && event <= ATKD_BRNUP_MAX)
+		event = ATKD_BRNUP;
+	else if (event >= ATKD_BRNDOWN_MIN &&
+		 event <= ATKD_BRNDOWN_MAX)
+		event = ATKD_BRNDOWN;
+
+	/* Brightness events are special */
+	if (event == ATKD_BRNDOWN || event == ATKD_BRNUP) {
+		if (asus->backlight_device != NULL) {
+			/* Update the backlight device. */
+			asus_backlight_notify(asus);
+			return ;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
+
+	/* Accelerometer "coarse orientation change" event */
+	if (asus->pega_accel_poll && event == 0xEA) {
+		kobject_uevent(&asus->pega_accel_poll->input->dev.kobj,
+			       KOBJ_CHANGE);
+		return ;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	asus_input_notify(asus, event);
 }
 
@@ -1155,6 +1948,14 @@ static DEVICE_ATTR(wimax, S_IRUGO | S_IWUSR, show_wimax, store_wimax);
 static DEVICE_ATTR(wwan, S_IRUGO | S_IWUSR, show_wwan, store_wwan);
 static DEVICE_ATTR(display, S_IWUSR, NULL, store_disp);
 static DEVICE_ATTR(ledd, S_IRUGO | S_IWUSR, show_ledd, store_ledd);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(ls_value, S_IRUGO, show_lsvalue, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR(ls_value, S_IRUGO, show_lsvalue, NULL);
+>>>>>>> refs/remotes/origin/master
 static DEVICE_ATTR(ls_level, S_IRUGO | S_IWUSR, show_lslvl, store_lslvl);
 static DEVICE_ATTR(ls_switch, S_IRUGO | S_IWUSR, show_lssw, store_lssw);
 static DEVICE_ATTR(gps, S_IRUGO | S_IWUSR, show_gps, store_gps);
@@ -1167,13 +1968,29 @@ static struct attribute *asus_attributes[] = {
 	&dev_attr_wwan.attr,
 	&dev_attr_display.attr,
 	&dev_attr_ledd.attr,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	&dev_attr_ls_value.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_ls_value.attr,
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_ls_level.attr,
 	&dev_attr_ls_switch.attr,
 	&dev_attr_gps.attr,
 	NULL
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t asus_sysfs_is_visible(struct kobject *kobj,
+=======
+static umode_t asus_sysfs_is_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static umode_t asus_sysfs_is_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/master
 				    struct attribute *attr,
 				    int idx)
 {
@@ -1183,6 +2000,28 @@ static mode_t asus_sysfs_is_visible(struct kobject *kobj,
 	acpi_handle handle = asus->handle;
 	bool supported;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (asus->is_pega_lucid) {
+		/* no ls_level interface on the Lucid */
+		if (attr == &dev_attr_ls_switch.attr)
+			supported = true;
+		else if (attr == &dev_attr_ls_level.attr)
+			supported = false;
+		else
+			goto normal;
+
+		return supported;
+	}
+
+normal:
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (attr == &dev_attr_wlan.attr) {
 		supported = !acpi_check_handle(handle, METHOD_WLAN, NULL);
 
@@ -1205,8 +2044,20 @@ static mode_t asus_sysfs_is_visible(struct kobject *kobj,
 	} else if (attr == &dev_attr_ls_switch.attr ||
 		   attr == &dev_attr_ls_level.attr) {
 		supported = !acpi_check_handle(handle, METHOD_ALS_CONTROL, NULL) &&
+<<<<<<< HEAD
+<<<<<<< HEAD
 			    !acpi_check_handle(handle, METHOD_ALS_LEVEL, NULL);
 
+=======
+			!acpi_check_handle(handle, METHOD_ALS_LEVEL, NULL);
+	} else if (attr == &dev_attr_ls_value.attr) {
+		supported = asus->is_pega_lucid;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			!acpi_check_handle(handle, METHOD_ALS_LEVEL, NULL);
+	} else if (attr == &dev_attr_ls_value.attr) {
+		supported = asus->is_pega_lucid;
+>>>>>>> refs/remotes/origin/master
 	} else if (attr == &dev_attr_gps.attr) {
 		supported = !acpi_check_handle(handle, METHOD_GPS_ON, NULL) &&
 			    !acpi_check_handle(handle, METHOD_GPS_OFF, NULL) &&
@@ -1261,7 +2112,15 @@ static struct platform_driver platform_driver = {
 	.driver = {
 		.name = ASUS_LAPTOP_FILE,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
+<<<<<<< HEAD
 	}
+=======
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1332,7 +2191,11 @@ static int asus_laptop_get_info(struct asus_laptop *asus)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	if (*string)
+=======
+	if (string)
+>>>>>>> refs/remotes/origin/master
 		pr_notice("  %s model detected\n", string);
 
 	if (!acpi_check_handle(asus->handle, METHOD_WL_STATUS, NULL))
@@ -1343,7 +2206,11 @@ static int asus_laptop_get_info(struct asus_laptop *asus)
 	return AE_OK;
 }
 
+<<<<<<< HEAD
 static int __devinit asus_acpi_init(struct asus_laptop *asus)
+=======
+static int asus_acpi_init(struct asus_laptop *asus)
+>>>>>>> refs/remotes/origin/master
 {
 	int result = 0;
 
@@ -1359,7 +2226,26 @@ static int __devinit asus_acpi_init(struct asus_laptop *asus)
 	if (result)
 		return result;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* WLED and BLED are on by default */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!strcmp(bled_type, "led"))
+		asus->bled_type = TYPE_LED;
+	else if (!strcmp(bled_type, "rfkill"))
+		asus->bled_type = TYPE_RFKILL;
+
+	if (!strcmp(wled_type, "led"))
+		asus->wled_type = TYPE_LED;
+	else if (!strcmp(wled_type, "rfkill"))
+		asus->wled_type = TYPE_RFKILL;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (bluetooth_status >= 0)
 		asus_bluetooth_set(asus, !!bluetooth_status);
 
@@ -1380,11 +2266,27 @@ static int __devinit asus_acpi_init(struct asus_laptop *asus)
 	asus->ledd_status = 0xFFF;
 
 	/* Set initial values of light sensor and level */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	asus->light_switch = 0;	/* Default to light sensor disabled */
 	asus->light_level = 5;	/* level 5 for sensor sensitivity */
 
 	if (!acpi_check_handle(asus->handle, METHOD_ALS_CONTROL, NULL) &&
 	    !acpi_check_handle(asus->handle, METHOD_ALS_LEVEL, NULL)) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	asus->light_switch = !!als_status;
+	asus->light_level = 5;	/* level 5 for sensor sensitivity */
+
+	if (asus->is_pega_lucid) {
+		asus_als_switch(asus, asus->light_switch);
+	} else if (!acpi_check_handle(asus->handle, METHOD_ALS_CONTROL, NULL) &&
+		   !acpi_check_handle(asus->handle, METHOD_ALS_LEVEL, NULL)) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		asus_als_switch(asus, asus->light_switch);
 		asus_als_level(asus, asus->light_level);
 	}
@@ -1392,7 +2294,11 @@ static int __devinit asus_acpi_init(struct asus_laptop *asus)
 	return result;
 }
 
+<<<<<<< HEAD
 static void __devinit asus_dmi_check(void)
+=======
+static void asus_dmi_check(void)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *model;
 
@@ -1408,7 +2314,11 @@ static void __devinit asus_dmi_check(void)
 
 static bool asus_device_present;
 
+<<<<<<< HEAD
 static int __devinit asus_acpi_add(struct acpi_device *device)
+=======
+static int asus_acpi_add(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct asus_laptop *asus;
 	int result;
@@ -1431,9 +2341,22 @@ static int __devinit asus_acpi_add(struct acpi_device *device)
 		goto fail_platform;
 
 	/*
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * Register the platform device first.  It is used as a parent for the
 	 * sub-devices below.
 	 */
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	 * Need platform type detection first, then the platform
+	 * device.  It is used as a parent for the sub-devices below.
+	 */
+	asus->is_pega_lucid = asus_check_pega_lucid(asus);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	result = asus_platform_init(asus);
 	if (result)
 		goto fail_platform;
@@ -1454,12 +2377,39 @@ static int __devinit asus_acpi_add(struct acpi_device *device)
 		goto fail_led;
 
 	result = asus_rfkill_init(asus);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (result)
 		goto fail_rfkill;
 
 	asus_device_present = true;
 	return 0;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (result && result != -ENODEV)
+		goto fail_rfkill;
+
+	result = pega_accel_init(asus);
+	if (result && result != -ENODEV)
+		goto fail_pega_accel;
+
+	result = pega_rfkill_init(asus);
+	if (result && result != -ENODEV)
+		goto fail_pega_rfkill;
+
+	asus_device_present = true;
+	return 0;
+
+fail_pega_rfkill:
+	pega_accel_exit(asus);
+fail_pega_accel:
+	asus_rfkill_exit(asus);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 fail_rfkill:
 	asus_led_exit(asus);
 fail_led:
@@ -1469,13 +2419,20 @@ fail_input:
 fail_backlight:
 	asus_platform_exit(asus);
 fail_platform:
+<<<<<<< HEAD
 	kfree(asus->name);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(asus);
 
 	return result;
 }
 
+<<<<<<< HEAD
 static int asus_acpi_remove(struct acpi_device *device, int type)
+=======
+static int asus_acpi_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct asus_laptop *asus = acpi_driver_data(device);
 
@@ -1483,6 +2440,14 @@ static int asus_acpi_remove(struct acpi_device *device, int type)
 	asus_rfkill_exit(asus);
 	asus_led_exit(asus);
 	asus_input_exit(asus);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	pega_accel_exit(asus);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pega_accel_exit(asus);
+>>>>>>> refs/remotes/origin/master
 	asus_platform_exit(asus);
 
 	kfree(asus->name);

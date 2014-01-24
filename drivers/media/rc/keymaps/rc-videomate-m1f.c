@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* videomate-m1f.h - Keytable for videomate_m1f Remote Controller
+=======
+/* videomate-k100.h - Keytable for videomate_k100 Remote Controller
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* videomate-k100.h - Keytable for videomate_k100 Remote Controller
+>>>>>>> refs/remotes/origin/master
  *
  * keymap imported from ir-keymaps.c
  *
@@ -11,8 +19,20 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 static struct rc_map_table videomate_m1f[] = {
+=======
+#include <linux/module.h>
+
+static struct rc_map_table videomate_k100[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+
+static struct rc_map_table videomate_k100[] = {
+>>>>>>> refs/remotes/origin/master
 	{ 0x01, KEY_POWER },
 	{ 0x31, KEY_TUNER },
 	{ 0x33, KEY_VIDEO },
@@ -66,6 +86,8 @@ static struct rc_map_table videomate_m1f[] = {
 	{ 0x18, KEY_TEXT },
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct rc_map_list videomate_m1f_map = {
 	.map = {
 		.scan    = videomate_m1f,
@@ -87,6 +109,34 @@ static void __exit exit_rc_map_videomate_m1f(void)
 
 module_init(init_rc_map_videomate_m1f)
 module_exit(exit_rc_map_videomate_m1f)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static struct rc_map_list videomate_k100_map = {
+	.map = {
+		.scan    = videomate_k100,
+		.size    = ARRAY_SIZE(videomate_k100),
+		.rc_type = RC_TYPE_UNKNOWN,     /* Legacy IR type */
+		.name    = RC_MAP_VIDEOMATE_K100,
+	}
+};
+
+static int __init init_rc_map_videomate_k100(void)
+{
+	return rc_map_register(&videomate_k100_map);
+}
+
+static void __exit exit_rc_map_videomate_k100(void)
+{
+	rc_map_unregister(&videomate_k100_map);
+}
+
+module_init(init_rc_map_videomate_k100)
+module_exit(exit_rc_map_videomate_k100)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Pavel Osnova <pvosnova@gmail.com>");

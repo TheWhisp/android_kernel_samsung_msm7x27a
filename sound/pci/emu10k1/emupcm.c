@@ -1127,7 +1127,11 @@ static int snd_emu10k1_playback_open(struct snd_pcm_substream *substream)
 	struct snd_emu10k1_pcm *epcm;
 	struct snd_emu10k1_pcm_mixer *mix;
 	struct snd_pcm_runtime *runtime = substream->runtime;
+<<<<<<< HEAD
 	int i, err;
+=======
+	int i, err, sample_rate;
+>>>>>>> refs/remotes/origin/master
 
 	epcm = kzalloc(sizeof(*epcm), GFP_KERNEL);
 	if (epcm == NULL)
@@ -1146,6 +1150,25 @@ static int snd_emu10k1_playback_open(struct snd_pcm_substream *substream)
 		kfree(epcm);
 		return err;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	err = snd_pcm_hw_rule_noresample(runtime, 48000);
+=======
+	if (emu->card_capabilities->emu_model && emu->emu1010.internal_clock == 0)
+		sample_rate = 44100;
+	else
+		sample_rate = 48000;
+	err = snd_pcm_hw_rule_noresample(runtime, sample_rate);
+>>>>>>> refs/remotes/origin/master
+	if (err < 0) {
+		kfree(epcm);
+		return err;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mix = &emu->pcm_mixer[substream->number];
 	for (i = 0; i < 4; i++)
 		mix->send_routing[0][i] = mix->send_routing[1][i] = mix->send_routing[2][i] = i;
@@ -1305,7 +1328,11 @@ static int snd_emu10k1_capture_efx_open(struct snd_pcm_substream *substream)
 			runtime->hw.channels_min =
 				runtime->hw.channels_max = 16;
 			break;
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 #endif
 #if 0
 		/* For 96kHz */
@@ -1386,7 +1413,11 @@ static struct snd_pcm_ops snd_emu10k1_efx_playback_ops = {
 	.page =			snd_pcm_sgbuf_ops_page,
 };
 
+<<<<<<< HEAD
 int __devinit snd_emu10k1_pcm(struct snd_emu10k1 * emu, int device, struct snd_pcm ** rpcm)
+=======
+int snd_emu10k1_pcm(struct snd_emu10k1 *emu, int device, struct snd_pcm **rpcm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	struct snd_pcm_substream *substream;
@@ -1421,7 +1452,12 @@ int __devinit snd_emu10k1_pcm(struct snd_emu10k1 * emu, int device, struct snd_p
 	return 0;
 }
 
+<<<<<<< HEAD
 int __devinit snd_emu10k1_pcm_multi(struct snd_emu10k1 * emu, int device, struct snd_pcm ** rpcm)
+=======
+int snd_emu10k1_pcm_multi(struct snd_emu10k1 *emu, int device,
+			  struct snd_pcm **rpcm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	struct snd_pcm_substream *substream;
@@ -1464,7 +1500,12 @@ static struct snd_pcm_ops snd_emu10k1_capture_mic_ops = {
 	.pointer =		snd_emu10k1_capture_pointer,
 };
 
+<<<<<<< HEAD
 int __devinit snd_emu10k1_pcm_mic(struct snd_emu10k1 * emu, int device, struct snd_pcm ** rpcm)
+=======
+int snd_emu10k1_pcm_mic(struct snd_emu10k1 *emu, int device,
+			struct snd_pcm **rpcm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -1805,7 +1846,12 @@ static struct snd_pcm_ops snd_emu10k1_fx8010_playback_ops = {
 	.ack =			snd_emu10k1_fx8010_playback_transfer,
 };
 
+<<<<<<< HEAD
 int __devinit snd_emu10k1_pcm_efx(struct snd_emu10k1 * emu, int device, struct snd_pcm ** rpcm)
+=======
+int snd_emu10k1_pcm_efx(struct snd_emu10k1 *emu, int device,
+			struct snd_pcm **rpcm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	struct snd_kcontrol *kctl;

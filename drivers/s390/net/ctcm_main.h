@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *	drivers/s390/net/ctcm_main.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *	Copyright IBM Corp. 2001, 2007
  *	Authors:	Fritz Elfert (felfert@millenux.com)
  *			Peter Tiedemann (ptiedem@de.ibm.com)
@@ -225,6 +228,7 @@ struct ctcm_priv {
 int ctcm_open(struct net_device *dev);
 int ctcm_close(struct net_device *dev);
 
+<<<<<<< HEAD
 /*
  * prototypes for non-static sysfs functions
  */
@@ -232,6 +236,9 @@ int ctcm_add_attributes(struct device *dev);
 void ctcm_remove_attributes(struct device *dev);
 int ctcm_add_files(struct device *dev);
 void ctcm_remove_files(struct device *dev);
+=======
+extern const struct attribute_group *ctcm_attr_groups[];
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Compatibility macros for busy handling

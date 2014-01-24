@@ -23,12 +23,24 @@
 #include <linux/swap.h>
 #include <linux/slab.h>
 #include <linux/sysctl.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/bitmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bitmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/signal.h>
 #include <linux/printk.h>
 #include <linux/proc_fs.h>
 #include <linux/security.h>
 #include <linux/ctype.h>
 #include <linux/kmemcheck.h>
+<<<<<<< HEAD
+=======
+#include <linux/kmemleak.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
@@ -57,6 +69,17 @@
 #include <linux/pipe_fs_i.h>
 #include <linux/oom.h>
 #include <linux/kmod.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/capability.h>
+#include <linux/binfmts.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/capability.h>
+#include <linux/binfmts.h>
+#include <linux/sched/sysctl.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 #include <asm/processor.h>
@@ -66,6 +89,18 @@
 #include <asm/stacktrace.h>
 #include <asm/io.h>
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SPARC
+#include <asm/setup.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_SPARC
+#include <asm/setup.h>
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_BSD_PROCESS_ACCT
 #include <linux/acct.h>
 #endif
@@ -87,6 +122,7 @@
 #if defined(CONFIG_SYSCTL)
 
 /* External variables not in a header file. */
+<<<<<<< HEAD
 extern int sysctl_overcommit_memory;
 extern int sysctl_overcommit_ratio;
 extern int max_threads;
@@ -96,9 +132,24 @@ extern char core_pattern[];
 extern unsigned int core_pipe_limit;
 extern int pid_max;
 extern int min_free_kbytes;
+<<<<<<< HEAD
+=======
+extern int extra_free_kbytes;
+>>>>>>> refs/remotes/origin/cm-11.0
 extern int min_free_order_shift;
 extern int pid_max_min, pid_max_max;
 extern int sysctl_drop_caches;
+=======
+extern int max_threads;
+extern int suid_dumpable;
+#ifdef CONFIG_COREDUMP
+extern int core_uses_pid;
+extern char core_pattern[];
+extern unsigned int core_pipe_limit;
+#endif
+extern int pid_max;
+extern int pid_max_min, pid_max_max;
+>>>>>>> refs/remotes/origin/master
 extern int percpu_pagelist_fraction;
 extern int compat_log;
 extern int latencytop_enabled;
@@ -113,7 +164,10 @@ extern int blk_iopoll_enabled;
 /* Constants used for minimum and  maximum */
 #ifdef CONFIG_LOCKUP_DETECTOR
 static int sixty = 60;
+<<<<<<< HEAD
 static int neg_one = -1;
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int zero;
@@ -135,12 +189,26 @@ static int minolduid;
 static int min_percpu_pagelist_fract = 8;
 
 static int ngroups_max = NGROUPS_MAX;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static const int cap_last_cap = CAP_LAST_CAP;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const int cap_last_cap = CAP_LAST_CAP;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_INOTIFY_USER
 #include <linux/inotify.h>
 #endif
 #ifdef CONFIG_SPARC
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_SPARC64
@@ -149,9 +217,11 @@ extern int sysctl_tsb_ratio;
 
 #ifdef __hppa__
 extern int pwrsw_enabled;
+<<<<<<< HEAD
 extern int unaligned_enabled;
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_S390
 #ifdef CONFIG_MATHEMU
 extern int sysctl_ieee_emulation_warnings;
@@ -160,11 +230,29 @@ extern int sysctl_userprocess_debug;
 extern int spin_retry;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_IA64
 extern int no_unaligned_warning;
 extern int unaligned_dump_stack;
 #endif
 
+=======
+#endif
+
+#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW
+extern int unaligned_enabled;
+#endif
+
+#ifdef CONFIG_IA64
+extern int unaligned_dump_stack;
+#endif
+
+#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_NO_WARN
+extern int no_unaligned_warning;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PROC_SYSCTL
 static int proc_do_cad_pid(struct ctl_table *table, int write,
 		  void __user *buffer, size_t *lenp, loff_t *ppos);
@@ -177,9 +265,22 @@ static int proc_dointvec_minmax_sysadmin(struct ctl_table *table, int write,
 				void __user *buffer, size_t *lenp, loff_t *ppos);
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_MAGIC_SYSRQ
 /* Note: sysrq code uses it's own private copy */
 static int __sysrq_enabled = SYSRQ_DEFAULT_ENABLE;
+=======
+static int proc_dointvec_minmax_coredump(struct ctl_table *table, int write,
+		void __user *buffer, size_t *lenp, loff_t *ppos);
+#ifdef CONFIG_COREDUMP
+static int proc_dostring_coredump(struct ctl_table *table, int write,
+		void __user *buffer, size_t *lenp, loff_t *ppos);
+#endif
+
+#ifdef CONFIG_MAGIC_SYSRQ
+/* Note: sysrq code uses it's own private copy */
+static int __sysrq_enabled = CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE;
+>>>>>>> refs/remotes/origin/master
 
 static int sysrq_sysctl_handler(ctl_table *table, int write,
 				void __user *buffer, size_t *lenp,
@@ -199,6 +300,8 @@ static int sysrq_sysctl_handler(ctl_table *table, int write,
 
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct ctl_table root_table[];
 static struct ctl_table_root sysctl_table_root;
 static struct ctl_table_header root_table_header = {
@@ -213,6 +316,10 @@ static struct ctl_table_root sysctl_table_root = {
 	.default_set.list = LIST_HEAD_INIT(root_table_header.ctl_entry),
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ctl_table kern_table[];
 static struct ctl_table vm_table[];
 static struct ctl_table fs_table[];
@@ -229,7 +336,15 @@ int sysctl_legacy_va_layout;
 
 /* The default sysctl tables: */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct ctl_table root_table[] = {
+=======
+static struct ctl_table sysctl_base_table[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct ctl_table sysctl_base_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "kernel",
 		.mode		= 0555,
@@ -263,9 +378,17 @@ static int min_sched_granularity_ns = 100000;		/* 100 usecs */
 static int max_sched_granularity_ns = NSEC_PER_SEC;	/* 1 second */
 static int min_wakeup_granularity_ns;			/* 0 usecs */
 static int max_wakeup_granularity_ns = NSEC_PER_SEC;	/* 1 second */
+<<<<<<< HEAD
 static int min_sched_tunable_scaling = SCHED_TUNABLESCALING_NONE;
 static int max_sched_tunable_scaling = SCHED_TUNABLESCALING_END-1;
 #endif
+=======
+#ifdef CONFIG_SMP
+static int min_sched_tunable_scaling = SCHED_TUNABLESCALING_NONE;
+static int max_sched_tunable_scaling = SCHED_TUNABLESCALING_END-1;
+#endif /* CONFIG_SMP */
+#endif /* CONFIG_SCHED_DEBUG */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_COMPACTION
 static int min_extfrag_threshold;
@@ -308,6 +431,10 @@ static struct ctl_table kern_table[] = {
 		.extra1		= &min_wakeup_granularity_ns,
 		.extra2		= &max_wakeup_granularity_ns,
 	},
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SMP
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "sched_tunable_scaling",
 		.data		= &sysctl_sched_tunable_scaling,
@@ -318,7 +445,11 @@ static struct ctl_table kern_table[] = {
 		.extra2		= &max_sched_tunable_scaling,
 	},
 	{
+<<<<<<< HEAD
 		.procname	= "sched_migration_cost",
+=======
+		.procname	= "sched_migration_cost_ns",
+>>>>>>> refs/remotes/origin/master
 		.data		= &sysctl_sched_migration_cost,
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
@@ -332,14 +463,22 @@ static struct ctl_table kern_table[] = {
 		.proc_handler	= proc_dointvec,
 	},
 	{
+<<<<<<< HEAD
 		.procname	= "sched_time_avg",
+=======
+		.procname	= "sched_time_avg_ms",
+>>>>>>> refs/remotes/origin/master
 		.data		= &sysctl_sched_time_avg,
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
 	{
+<<<<<<< HEAD
 		.procname	= "sched_shares_window",
+=======
+		.procname	= "sched_shares_window_ns",
+>>>>>>> refs/remotes/origin/master
 		.data		= &sysctl_sched_shares_window,
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
@@ -354,7 +493,49 @@ static struct ctl_table kern_table[] = {
 		.extra1		= &zero,
 		.extra2		= &one,
 	},
+<<<<<<< HEAD
 #endif
+=======
+#endif /* CONFIG_SMP */
+#ifdef CONFIG_NUMA_BALANCING
+	{
+		.procname	= "numa_balancing_scan_delay_ms",
+		.data		= &sysctl_numa_balancing_scan_delay,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+	{
+		.procname	= "numa_balancing_scan_period_min_ms",
+		.data		= &sysctl_numa_balancing_scan_period_min,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+	{
+		.procname	= "numa_balancing_scan_period_max_ms",
+		.data		= &sysctl_numa_balancing_scan_period_max,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+	{
+		.procname	= "numa_balancing_scan_size_mb",
+		.data		= &sysctl_numa_balancing_scan_size,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+	{
+		.procname       = "numa_balancing_migrate_deferred",
+		.data           = &sysctl_numa_balancing_migrate_deferred,
+		.maxlen         = sizeof(unsigned int),
+		.mode           = 0644,
+		.proc_handler   = proc_dointvec,
+	},
+#endif /* CONFIG_NUMA_BALANCING */
+#endif /* CONFIG_SCHED_DEBUG */
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "sched_rt_period_us",
 		.data		= &sysctl_sched_rt_period,
@@ -369,6 +550,16 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= sched_rt_handler,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.procname	= "sched_rr_timeslice_ms",
+		.data		= &sched_rr_timeslice,
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= sched_rr_handler,
+	},
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SCHED_AUTOGROUP
 	{
 		.procname	= "sched_autogroup_enabled",
@@ -380,6 +571,25 @@ static struct ctl_table kern_table[] = {
 		.extra2		= &one,
 	},
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_CFS_BANDWIDTH
+	{
+		.procname	= "sched_cfs_bandwidth_slice_us",
+		.data		= &sysctl_sched_cfs_bandwidth_slice,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &one,
+	},
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PROVE_LOCKING
 	{
 		.procname	= "prove_locking",
@@ -405,6 +615,10 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COREDUMP
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "core_uses_pid",
 		.data		= &core_uses_pid,
@@ -417,7 +631,11 @@ static struct ctl_table kern_table[] = {
 		.data		= core_pattern,
 		.maxlen		= CORENAME_MAX_SIZE,
 		.mode		= 0644,
+<<<<<<< HEAD
 		.proc_handler	= proc_dostring,
+=======
+		.proc_handler	= proc_dostring_coredump,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.procname	= "core_pipe_limit",
@@ -426,6 +644,10 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PROC_SYSCTL
 	{
 		.procname	= "tainted",
@@ -499,6 +721,11 @@ static struct ctl_table kern_table[] = {
 	 	.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
+<<<<<<< HEAD
+=======
+#endif
+#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "unaligned-trap",
 		.data		= &unaligned_enabled,
@@ -540,6 +767,16 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.procname	= "traceoff_on_warning",
+		.data		= &__disable_trace_on_warning,
+		.maxlen		= sizeof(__disable_trace_on_warning),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+>>>>>>> refs/remotes/origin/master
 #endif
 #ifdef CONFIG_MODULES
 	{
@@ -560,7 +797,11 @@ static struct ctl_table kern_table[] = {
 		.extra2		= &one,
 	},
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
+=======
+
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "hotplug",
 		.data		= &uevent_helper,
@@ -568,7 +809,11 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dostring,
 	},
+<<<<<<< HEAD
 #endif
+=======
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CHR_DEV_SG
 	{
 		.procname	= "sg-big-buff",
@@ -731,10 +976,30 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0444,
 		.proc_handler	= proc_dointvec,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	{
+		.procname	= "cap_last_cap",
+		.data		= (void *)&cap_last_cap,
+		.maxlen		= sizeof(int),
+		.mode		= 0444,
+		.proc_handler	= proc_dointvec,
+	},
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_LOCKUP_DETECTOR)
 	{
 		.procname       = "watchdog",
 		.data           = &watchdog_enabled,
+=======
+#if defined(CONFIG_LOCKUP_DETECTOR)
+	{
+		.procname       = "watchdog",
+		.data           = &watchdog_user_enabled,
+>>>>>>> refs/remotes/origin/master
 		.maxlen         = sizeof (int),
 		.mode           = 0644,
 		.proc_handler   = proc_dowatchdog,
@@ -747,7 +1012,11 @@ static struct ctl_table kern_table[] = {
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
 		.proc_handler	= proc_dowatchdog,
+<<<<<<< HEAD
 		.extra1		= &neg_one,
+=======
+		.extra1		= &zero,
+>>>>>>> refs/remotes/origin/master
 		.extra2		= &sixty,
 	},
 	{
@@ -761,7 +1030,11 @@ static struct ctl_table kern_table[] = {
 	},
 	{
 		.procname       = "nmi_watchdog",
+<<<<<<< HEAD
 		.data           = &watchdog_enabled,
+=======
+		.data           = &watchdog_user_enabled,
+>>>>>>> refs/remotes/origin/master
 		.maxlen         = sizeof (int),
 		.mode           = 0644,
 		.proc_handler   = proc_dowatchdog,
@@ -793,6 +1066,24 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_DEBUG_STACKOVERFLOW
+	{
+		.procname	= "panic_on_stackoverflow",
+		.data		= &sysctl_panic_on_stackoverflow,
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "bootloader_type",
 		.data		= &bootloader_type,
@@ -849,7 +1140,11 @@ static struct ctl_table kern_table[] = {
 		.proc_handler	= proc_doulongvec_minmax,
 	},
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_IA64
+=======
+#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_NO_WARN
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "ignore-unaligned-usertrap",
 		.data		= &no_unaligned_warning,
@@ -857,6 +1152,11 @@ static struct ctl_table kern_table[] = {
 	 	.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
+<<<<<<< HEAD
+=======
+#endif
+#ifdef CONFIG_IA64
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "unaligned-dump-stack",
 		.data		= &unaligned_dump_stack,
@@ -878,9 +1178,16 @@ static struct ctl_table kern_table[] = {
 	{
 		.procname	= "hung_task_check_count",
 		.data		= &sysctl_hung_task_check_count,
+<<<<<<< HEAD
 		.maxlen		= sizeof(unsigned long),
 		.mode		= 0644,
 		.proc_handler	= proc_doulongvec_minmax,
+=======
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &zero,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.procname	= "hung_task_timeout_secs",
@@ -965,6 +1272,19 @@ static struct ctl_table kern_table[] = {
 		.maxlen		= sizeof(sysctl_perf_event_sample_rate),
 		.mode		= 0644,
 		.proc_handler	= perf_proc_update_handler,
+<<<<<<< HEAD
+=======
+		.extra1		= &one,
+	},
+	{
+		.procname	= "perf_cpu_time_max_percent",
+		.data		= &sysctl_perf_cpu_time_max_percent,
+		.maxlen		= sizeof(sysctl_perf_cpu_time_max_percent),
+		.mode		= 0644,
+		.proc_handler	= perf_cpu_time_max_percent_handler,
+		.extra1		= &zero,
+		.extra2		= &one_hundred,
+>>>>>>> refs/remotes/origin/master
 	},
 #endif
 #ifdef CONFIG_KMEMCHECK
@@ -985,6 +1305,10 @@ static struct ctl_table kern_table[] = {
 		.proc_handler	= proc_dointvec,
 	},
 #endif
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #ifdef CONFIG_ARM
 	{
 		.procname	= "boot_reason",
@@ -998,6 +1322,11 @@ static struct ctl_table kern_table[] = {
  * NOTE: do not add new entries to this table unless you have read
  * Documentation/sysctl/ctl_unnumbered.txt
  */
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	{ }
 };
 
@@ -1039,7 +1368,18 @@ static struct ctl_table vm_table[] = {
 		.data		= &sysctl_overcommit_ratio,
 		.maxlen		= sizeof(sysctl_overcommit_ratio),
 		.mode		= 0644,
+<<<<<<< HEAD
 		.proc_handler	= proc_dointvec,
+=======
+		.proc_handler	= overcommit_ratio_handler,
+	},
+	{
+		.procname	= "overcommit_kbytes",
+		.data		= &sysctl_overcommit_kbytes,
+		.maxlen		= sizeof(sysctl_overcommit_kbytes),
+		.mode		= 0644,
+		.proc_handler	= overcommit_kbytes_handler,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.procname	= "page-cluster", 
@@ -1099,11 +1439,17 @@ static struct ctl_table vm_table[] = {
 		.extra1		= &zero,
 	},
 	{
+<<<<<<< HEAD
 		.procname	= "nr_pdflush_threads",
 		.data		= &nr_pdflush_threads,
 		.maxlen		= sizeof nr_pdflush_threads,
 		.mode		= 0444 /* read-only*/,
 		.proc_handler	= proc_dointvec,
+=======
+		.procname       = "nr_pdflush_threads",
+		.mode           = 0444 /* read-only */,
+		.proc_handler   = pdflush_proc_obsolete,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.procname	= "swappiness",
@@ -1147,7 +1493,11 @@ static struct ctl_table vm_table[] = {
 		.data		= &hugepages_treat_as_movable,
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
+<<<<<<< HEAD
 		.proc_handler	= hugetlb_treat_movable_handler,
+=======
+		.proc_handler	= proc_dointvec,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.procname	= "nr_overcommit_hugepages",
@@ -1203,6 +1553,18 @@ static struct ctl_table vm_table[] = {
 		.extra1		= &zero,
 	},
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		.procname	= "extra_free_kbytes",
+		.data		= &extra_free_kbytes,
+		.maxlen		= sizeof(extra_free_kbytes),
+		.mode		= 0644,
+		.proc_handler	= min_free_kbytes_sysctl_handler,
+		.extra1		= &zero,
+	},
+	{
+>>>>>>> refs/remotes/origin/cm-11.0
 		.procname	= "min_free_order_shift",
 		.data		= &min_free_order_shift,
 		.maxlen		= sizeof(min_free_order_shift),
@@ -1210,6 +1572,11 @@ static struct ctl_table vm_table[] = {
 		.proc_handler	= &proc_dointvec
 	},
 	{
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		.procname	= "percpu_pagelist_fraction",
 		.data		= &percpu_pagelist_fraction,
 		.maxlen		= sizeof(percpu_pagelist_fraction),
@@ -1373,6 +1740,23 @@ static struct ctl_table vm_table[] = {
 		.extra2		= &one,
 	},
 #endif
+<<<<<<< HEAD
+=======
+	{
+		.procname	= "user_reserve_kbytes",
+		.data		= &sysctl_user_reserve_kbytes,
+		.maxlen		= sizeof(sysctl_user_reserve_kbytes),
+		.mode		= 0644,
+		.proc_handler	= proc_doulongvec_minmax,
+	},
+	{
+		.procname	= "admin_reserve_kbytes",
+		.data		= &sysctl_admin_reserve_kbytes,
+		.maxlen		= sizeof(sysctl_admin_reserve_kbytes),
+		.mode		= 0644,
+		.proc_handler	= proc_doulongvec_minmax,
+	},
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 
@@ -1386,14 +1770,22 @@ static struct ctl_table fs_table[] = {
 	{
 		.procname	= "inode-nr",
 		.data		= &inodes_stat,
+<<<<<<< HEAD
 		.maxlen		= 2*sizeof(int),
+=======
+		.maxlen		= 2*sizeof(long),
+>>>>>>> refs/remotes/origin/master
 		.mode		= 0444,
 		.proc_handler	= proc_nr_inodes,
 	},
 	{
 		.procname	= "inode-state",
 		.data		= &inodes_stat,
+<<<<<<< HEAD
 		.maxlen		= 7*sizeof(int),
+=======
+		.maxlen		= 7*sizeof(long),
+>>>>>>> refs/remotes/origin/master
 		.mode		= 0444,
 		.proc_handler	= proc_nr_inodes,
 	},
@@ -1423,7 +1815,11 @@ static struct ctl_table fs_table[] = {
 	{
 		.procname	= "dentry-state",
 		.data		= &dentry_stat,
+<<<<<<< HEAD
 		.maxlen		= 6*sizeof(int),
+=======
+		.maxlen		= 6*sizeof(long),
+>>>>>>> refs/remotes/origin/master
 		.mode		= 0444,
 		.proc_handler	= proc_nr_dentry,
 	},
@@ -1505,11 +1901,36 @@ static struct ctl_table fs_table[] = {
 #endif
 #endif
 	{
+<<<<<<< HEAD
+=======
+		.procname	= "protected_symlinks",
+		.data		= &sysctl_protected_symlinks,
+		.maxlen		= sizeof(int),
+		.mode		= 0600,
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &zero,
+		.extra2		= &one,
+	},
+	{
+		.procname	= "protected_hardlinks",
+		.data		= &sysctl_protected_hardlinks,
+		.maxlen		= sizeof(int),
+		.mode		= 0600,
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &zero,
+		.extra2		= &one,
+	},
+	{
+>>>>>>> refs/remotes/origin/master
 		.procname	= "suid_dumpable",
 		.data		= &suid_dumpable,
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
+<<<<<<< HEAD
 		.proc_handler	= proc_dointvec_minmax,
+=======
+		.proc_handler	= proc_dointvec_minmax_coredump,
+>>>>>>> refs/remotes/origin/master
 		.extra1		= &zero,
 		.extra2		= &two,
 	},
@@ -1532,8 +1953,12 @@ static struct ctl_table fs_table[] = {
 };
 
 static struct ctl_table debug_table[] = {
+<<<<<<< HEAD
 #if defined(CONFIG_X86) || defined(CONFIG_PPC) || defined(CONFIG_SPARC) || \
     defined(CONFIG_S390) || defined(CONFIG_TILE)
+=======
+#ifdef CONFIG_SYSCTL_EXCEPTION_TRACE
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "exception-trace",
 		.data		= &show_unhandled_signals,
@@ -1560,6 +1985,8 @@ static struct ctl_table dev_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(sysctl_lock);
 
 /* called under sysctl_lock */
@@ -2049,6 +2476,25 @@ void sysctl_head_put(struct ctl_table_header *head)
 {
 }
 
+=======
+int __init sysctl_init(void)
+{
+	register_sysctl_table(sysctl_base_table);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init sysctl_init(void)
+{
+	struct ctl_table_header *hdr;
+
+	hdr = register_sysctl_table(sysctl_base_table);
+	kmemleak_not_leak(hdr);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_SYSCTL */
 
 /*
@@ -2429,7 +2875,11 @@ static int proc_taint(struct ctl_table *table, int write,
 		int i;
 		for (i = 0; i < BITS_PER_LONG && tmptaint >> i; i++) {
 			if ((tmptaint >> i) & 1)
+<<<<<<< HEAD
 				add_taint(i);
+=======
+				add_taint(i, LOCKDEP_STILL_OK);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -2503,6 +2953,41 @@ int proc_dointvec_minmax(struct ctl_table *table, int write,
 				do_proc_dointvec_minmax_conv, &param);
 }
 
+<<<<<<< HEAD
+=======
+static void validate_coredump_safety(void)
+{
+#ifdef CONFIG_COREDUMP
+	if (suid_dumpable == SUID_DUMP_ROOT &&
+	    core_pattern[0] != '/' && core_pattern[0] != '|') {
+		printk(KERN_WARNING "Unsafe core_pattern used with "\
+			"suid_dumpable=2. Pipe handler or fully qualified "\
+			"core dump path required.\n");
+	}
+#endif
+}
+
+static int proc_dointvec_minmax_coredump(struct ctl_table *table, int write,
+		void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	int error = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+	if (!error)
+		validate_coredump_safety();
+	return error;
+}
+
+#ifdef CONFIG_COREDUMP
+static int proc_dostring_coredump(struct ctl_table *table, int write,
+		  void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	int error = proc_dostring(table, write, buffer, lenp, ppos);
+	if (!error)
+		validate_coredump_safety();
+	return error;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int __do_proc_doulongvec_minmax(void *data, struct ctl_table *table, int write,
 				     void __user *buffer,
 				     size_t *lenp, loff_t *ppos,
@@ -2560,8 +3045,16 @@ static int __do_proc_doulongvec_minmax(void *data, struct ctl_table *table, int 
 			*i = val;
 		} else {
 			val = convdiv * (*i) / convmul;
+<<<<<<< HEAD
 			if (!first)
 				err = proc_put_char(&buffer, &left, '\t');
+=======
+			if (!first) {
+				err = proc_put_char(&buffer, &left, '\t');
+				if (err)
+					break;
+			}
+>>>>>>> refs/remotes/origin/master
 			err = proc_put_long(&buffer, &left, val, false);
 			if (err)
 				break;
@@ -2692,7 +3185,15 @@ static int do_proc_dointvec_ms_jiffies_conv(bool *negp, unsigned long *lvalp,
 					    int write, void *data)
 {
 	if (write) {
+<<<<<<< HEAD
 		*valp = msecs_to_jiffies(*negp ? -*lvalp : *lvalp);
+=======
+		unsigned long jif = msecs_to_jiffies(*negp ? -*lvalp : *lvalp);
+
+		if (jif > INT_MAX)
+			return 1;
+		*valp = (int)jif;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		int val = *valp;
 		unsigned long lval;
@@ -2890,9 +3391,17 @@ int proc_do_large_bitmap(struct ctl_table *table, int write,
 				}
 			}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			while (val_a <= val_b)
 				set_bit(val_a++, tmp_bitmap);
 
+=======
+			bitmap_set(tmp_bitmap, val_a, val_b - val_a + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			bitmap_set(tmp_bitmap, val_a, val_b - val_a + 1);
+>>>>>>> refs/remotes/origin/master
 			first = 0;
 			proc_skip_char(&kbuf, &left, '\n');
 		}
@@ -2935,8 +3444,16 @@ int proc_do_large_bitmap(struct ctl_table *table, int write,
 			if (*ppos)
 				bitmap_or(bitmap, bitmap, tmp_bitmap, bitmap_len);
 			else
+<<<<<<< HEAD
+<<<<<<< HEAD
 				memcpy(bitmap, tmp_bitmap,
 					BITS_TO_LONGS(bitmap_len) * sizeof(unsigned long));
+=======
+				bitmap_copy(bitmap, tmp_bitmap, bitmap_len);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				bitmap_copy(bitmap, tmp_bitmap, bitmap_len);
+>>>>>>> refs/remotes/origin/master
 		}
 		kfree(tmp_bitmap);
 		*lenp -= left;
@@ -3014,6 +3531,12 @@ EXPORT_SYMBOL(proc_dointvec_ms_jiffies);
 EXPORT_SYMBOL(proc_dostring);
 EXPORT_SYMBOL(proc_doulongvec_minmax);
 EXPORT_SYMBOL(proc_doulongvec_ms_jiffies_minmax);
+<<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(register_sysctl_table);
 EXPORT_SYMBOL(register_sysctl_paths);
 EXPORT_SYMBOL(unregister_sysctl_table);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

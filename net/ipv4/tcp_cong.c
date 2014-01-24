@@ -1,11 +1,25 @@
 /*
  * Plugable TCP congestion control support and newReno
  * congestion control.
+<<<<<<< HEAD
  * Based on ideas from I/O scheduler suport and Web100.
+=======
+ * Based on ideas from I/O scheduler support and Web100.
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2005 Stephen Hemminger <shemminger@osdl.org>
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "TCP: " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "TCP: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/mm.h>
 #include <linux/types.h>
@@ -13,8 +27,11 @@
 #include <linux/gfp.h>
 #include <net/tcp.h>
 
+<<<<<<< HEAD
 int sysctl_tcp_max_ssthresh = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 static DEFINE_SPINLOCK(tcp_cong_list_lock);
 static LIST_HEAD(tcp_cong_list);
 
@@ -41,18 +58,40 @@ int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
 
 	/* all algorithms must implement ssthresh and cong_avoid ops */
 	if (!ca->ssthresh || !ca->cong_avoid) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "TCP %s does not implement required ops\n",
 		       ca->name);
+=======
+		pr_err("%s does not implement required ops\n", ca->name);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s does not implement required ops\n", ca->name);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	spin_lock(&tcp_cong_list_lock);
 	if (tcp_ca_find(ca->name)) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "TCP %s already registered\n", ca->name);
 		ret = -EEXIST;
 	} else {
 		list_add_tail_rcu(&ca->list, &tcp_cong_list);
 		printk(KERN_INFO "TCP %s registered\n", ca->name);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		pr_notice("%s already registered\n", ca->name);
+		ret = -EEXIST;
+	} else {
+		list_add_tail_rcu(&ca->list, &tcp_cong_list);
+		pr_info("%s registered\n", ca->name);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock(&tcp_cong_list_lock);
 
@@ -258,7 +297,12 @@ int tcp_set_congestion_control(struct sock *sk, const char *name)
 	if (!ca)
 		err = -ENOENT;
 
+<<<<<<< HEAD
 	else if (!((ca->flags & TCP_CONG_NON_RESTRICTED) || capable(CAP_NET_ADMIN)))
+=======
+	else if (!((ca->flags & TCP_CONG_NON_RESTRICTED) ||
+		   ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN)))
+>>>>>>> refs/remotes/origin/master
 		err = -EPERM;
 
 	else if (!try_module_get(ca->owner))
@@ -279,21 +323,37 @@ int tcp_set_congestion_control(struct sock *sk, const char *name)
 /* RFC2861 Check whether we are limited by application or congestion window
  * This is the inverse of cwnd check in tcp_tso_should_defer
  */
+<<<<<<< HEAD
 int tcp_is_cwnd_limited(const struct sock *sk, u32 in_flight)
+=======
+bool tcp_is_cwnd_limited(const struct sock *sk, u32 in_flight)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct tcp_sock *tp = tcp_sk(sk);
 	u32 left;
 
 	if (in_flight >= tp->snd_cwnd)
+<<<<<<< HEAD
 		return 1;
+=======
+		return true;
+>>>>>>> refs/remotes/origin/master
 
 	left = tp->snd_cwnd - in_flight;
 	if (sk_can_gso(sk) &&
 	    left * sysctl_tcp_tso_win_divisor < tp->snd_cwnd &&
 	    left * tp->mss_cache < sk->sk_gso_max_size &&
 	    left < sk->sk_gso_max_segs)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return 1;
+<<<<<<< HEAD
 	return left <= tcp_max_burst(tp);
+=======
+	return left <= tcp_max_tso_deferred_mss(tp);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(tcp_is_cwnd_limited);
 
@@ -336,6 +396,31 @@ void tcp_slow_start(struct tcp_sock *tp)
 		if (tp->snd_cwnd < tp->snd_cwnd_clamp)
 			tp->snd_cwnd++;
 	}
+=======
+		return true;
+	return left <= tcp_max_tso_deferred_mss(tp);
+}
+EXPORT_SYMBOL_GPL(tcp_is_cwnd_limited);
+
+/* Slow start is used when congestion window is no greater than the slow start
+ * threshold. We base on RFC2581 and also handle stretch ACKs properly.
+ * We do not implement RFC3465 Appropriate Byte Counting (ABC) per se but
+ * something better;) a packet is only considered (s)acked in its entirety to
+ * defend the ACK attacks described in the RFC. Slow start processes a stretch
+ * ACK of degree N as if N acks of degree 1 are received back to back except
+ * ABC caps N to 2. Slow start exits when cwnd grows over ssthresh and
+ * returns the leftover acks to adjust cwnd in congestion avoidance mode.
+ */
+int tcp_slow_start(struct tcp_sock *tp, u32 acked)
+{
+	u32 cwnd = tp->snd_cwnd + acked;
+
+	if (cwnd > tp->snd_ssthresh)
+		cwnd = tp->snd_ssthresh + 1;
+	acked -= cwnd - tp->snd_cwnd;
+	tp->snd_cwnd = min(cwnd, tp->snd_cwnd_clamp);
+	return acked;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(tcp_slow_start);
 
@@ -359,7 +444,11 @@ EXPORT_SYMBOL_GPL(tcp_cong_avoid_ai);
 /* This is Jacobson's slow start and congestion avoidance.
  * SIGCOMM '88, p. 328.
  */
+<<<<<<< HEAD
 void tcp_reno_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
+=======
+void tcp_reno_cong_avoid(struct sock *sk, u32 ack, u32 acked, u32 in_flight)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 
@@ -368,6 +457,7 @@ void tcp_reno_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 
 	/* In "safe" area, increase. */
 	if (tp->snd_cwnd <= tp->snd_ssthresh)
+<<<<<<< HEAD
 		tcp_slow_start(tp);
 
 	/* In dangerous area, increase slowly. */
@@ -383,6 +473,12 @@ void tcp_reno_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 	} else {
 		tcp_cong_avoid_ai(tp, tp->snd_cwnd);
 	}
+=======
+		tcp_slow_start(tp, acked);
+	/* In dangerous area, increase slowly. */
+	else
+		tcp_cong_avoid_ai(tp, tp->snd_cwnd);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(tcp_reno_cong_avoid);
 

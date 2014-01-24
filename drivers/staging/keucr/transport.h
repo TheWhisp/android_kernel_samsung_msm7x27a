@@ -3,6 +3,8 @@
 
 #include <linux/blkdev.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /* Bulk only data structures */
 
 /* command block wrapper */
@@ -40,6 +42,10 @@ struct bulk_cs_wrap {
 #define US_BULK_RESET_REQUEST	0xff
 #define US_BULK_GET_MAX_LUN	0xfe
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* usb_stor_bulk_transfer_xxx() return codes, in order of severity */
 #define USB_STOR_XFER_GOOD	0	/* good transfer                 */
 #define USB_STOR_XFER_SHORT	1	/* transferred less than expected */
@@ -66,7 +72,10 @@ struct bulk_cs_wrap {
 extern int usb_stor_Bulk_transport(struct scsi_cmnd *, struct us_data*);
 extern int usb_stor_Bulk_max_lun(struct us_data *);
 extern int usb_stor_Bulk_reset(struct us_data *);
+<<<<<<< HEAD
 extern void usb_stor_print_cmd(struct scsi_cmnd *);
+=======
+>>>>>>> refs/remotes/origin/master
 extern void usb_stor_invoke_transport(struct scsi_cmnd *, struct us_data*);
 extern void usb_stor_stop_transport(struct us_data *);
 extern int usb_stor_control_msg(struct us_data *us, unsigned int pipe,
@@ -95,11 +104,21 @@ extern void usb_stor_set_xfer_buf(struct us_data*, unsigned char *buffer,
  */
 extern void ENE_stor_invoke_transport(struct scsi_cmnd *, struct us_data *);
 extern int ENE_InitMedia(struct us_data *);
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int ENE_MSInit(struct us_data *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int ENE_SMInit(struct us_data *);
 extern int ENE_SendScsiCmd(struct us_data*, BYTE, void*, int);
 extern int ENE_LoadBinCode(struct us_data*, BYTE);
 extern int ENE_Read_BYTE(struct us_data*, WORD index, void *buf);
+=======
+extern int ENE_SMInit(struct us_data *);
+extern int ENE_SendScsiCmd(struct us_data*, BYTE, void*, int);
+extern int ENE_LoadBinCode(struct us_data*, BYTE);
+extern int ene_read_byte(struct us_data*, WORD index, void *buf);
+>>>>>>> refs/remotes/origin/master
 extern int ENE_Read_Data(struct us_data*, void *buf, unsigned int length);
 extern int ENE_Write_Data(struct us_data*, void *buf, unsigned int length);
 extern void BuildSenseBuffer(struct scsi_cmnd *, int);
@@ -107,6 +126,8 @@ extern void BuildSenseBuffer(struct scsi_cmnd *, int);
 /*
  * ENE scsi function
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int MS_SCSIIrp(struct us_data *us, struct scsi_cmnd *srb);
 extern int SM_SCSIIrp(struct us_data *us, struct scsi_cmnd *srb);
 
@@ -154,4 +175,12 @@ extern int	MS_CountFreeBlock(struct us_data *us, WORD PhyBlock);
 extern int	MS_LibSearchBlockFromLogical(struct us_data *us, WORD logblk);
 extern int	MS_LibSearchBlockFromPhysical(struct us_data *us, WORD phyblk);
 
+=======
+extern int SM_SCSIIrp(struct us_data *us, struct scsi_cmnd *srb);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int SM_SCSIIrp(struct us_data *us, struct scsi_cmnd *srb);
+
+>>>>>>> refs/remotes/origin/master
 #endif

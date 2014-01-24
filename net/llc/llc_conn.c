@@ -478,8 +478,13 @@ static inline bool llc_estab_match(const struct llc_sap *sap,
 
 	return llc->laddr.lsap == laddr->lsap &&
 		llc->daddr.lsap == daddr->lsap &&
+<<<<<<< HEAD
 		llc_mac_match(llc->laddr.mac, laddr->mac) &&
 		llc_mac_match(llc->daddr.mac, daddr->mac);
+=======
+		ether_addr_equal(llc->laddr.mac, laddr->mac) &&
+		ether_addr_equal(llc->daddr.mac, daddr->mac);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -550,7 +555,11 @@ static inline bool llc_listener_match(const struct llc_sap *sap,
 
 	return sk->sk_type == SOCK_STREAM && sk->sk_state == TCP_LISTEN &&
 		llc->laddr.lsap == laddr->lsap &&
+<<<<<<< HEAD
 		llc_mac_match(llc->laddr.mac, laddr->mac);
+=======
+		ether_addr_equal(llc->laddr.mac, laddr->mac);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct sock *__llc_lookup_listener(struct llc_sap *sap,
@@ -828,7 +837,11 @@ void llc_conn_handler(struct llc_sap *sap, struct sk_buff *skb)
 	else {
 		dprintk("%s: adding to backlog...\n", __func__);
 		llc_set_backlog_type(skb, LLC_PACKET);
+<<<<<<< HEAD
 		if (sk_add_backlog(sk, skb))
+=======
+		if (sk_add_backlog(sk, skb, sk->sk_rcvbuf))
+>>>>>>> refs/remotes/origin/master
 			goto drop_unlock;
 	}
 out:

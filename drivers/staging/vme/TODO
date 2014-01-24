@@ -1,6 +1,7 @@
 				TODO
 				====
 
+<<<<<<< HEAD
 API
 ===
 
@@ -67,4 +68,7 @@ Universe I (ca91x042)
 ---------------------
 
 Currently completely unsupported.
+=======
+- Add one or more device drivers which use the VME framework.
+>>>>>>> refs/remotes/origin/cm-10.0
 

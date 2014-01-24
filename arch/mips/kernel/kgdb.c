@@ -40,7 +40,11 @@ static struct hard_trap_info {
 	{ 6, SIGBUS },		/* instruction bus error */
 	{ 7, SIGBUS },		/* data bus error */
 	{ 9, SIGTRAP },		/* break */
+<<<<<<< HEAD
 /*	{ 11, SIGILL },	*/	/* CPU unusable */
+=======
+/*	{ 11, SIGILL }, */	/* CPU unusable */
+>>>>>>> refs/remotes/origin/master
 	{ 12, SIGFPE },		/* overflow */
 	{ 13, SIGTRAP },	/* trap */
 	{ 14, SIGSEGV },	/* virtual instruction cache coherency */
@@ -321,7 +325,11 @@ int kgdb_ll_trap(int cmd, const char *str,
 		.regs	= regs,
 		.str	= str,
 		.err	= err,
+<<<<<<< HEAD
 		.trapnr	= trap,
+=======
+		.trapnr = trap,
+>>>>>>> refs/remotes/origin/master
 		.signr	= sig,
 
 	};
@@ -371,7 +379,11 @@ int kgdb_arch_init(void)
 	union mips_instruction insn = {
 		.r_format = {
 			.opcode = spec_op,
+<<<<<<< HEAD
 			.func   = break_op,
+=======
+			.func	= break_op,
+>>>>>>> refs/remotes/origin/master
 		}
 	};
 	memcpy(arch_kgdb_ops.gdb_bpt_instr, insn.byte, BREAK_INSTR_SIZE);

@@ -25,7 +25,11 @@
 static struct mtd_partition cobalt_mtd_partitions[] = {
 	{
 		.name	= "firmware",
+<<<<<<< HEAD
 		.offset	= 0x0,
+=======
+		.offset = 0x0,
+>>>>>>> refs/remotes/origin/master
 		.size	= 0x80000,
 	},
 };

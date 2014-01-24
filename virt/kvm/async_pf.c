@@ -56,7 +56,10 @@ void kvm_async_pf_vcpu_init(struct kvm_vcpu *vcpu)
 
 static void async_pf_execute(struct work_struct *work)
 {
+<<<<<<< HEAD
 	struct page *page = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct kvm_async_pf *apf =
 		container_of(work, struct kvm_async_pf, work);
 	struct mm_struct *mm = apf->mm;
@@ -68,14 +71,21 @@ static void async_pf_execute(struct work_struct *work)
 
 	use_mm(mm);
 	down_read(&mm->mmap_sem);
+<<<<<<< HEAD
 	get_user_pages(current, mm, addr, 1, 1, 0, &page, NULL);
+=======
+	get_user_pages(current, mm, addr, 1, 1, 0, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 	up_read(&mm->mmap_sem);
 	unuse_mm(mm);
 
 	spin_lock(&vcpu->async_pf.lock);
 	list_add_tail(&apf->link, &vcpu->async_pf.done);
+<<<<<<< HEAD
 	apf->page = page;
 	apf->done = true;
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&vcpu->async_pf.lock);
 
 	/*
@@ -83,7 +93,11 @@ static void async_pf_execute(struct work_struct *work)
 	 * this point
 	 */
 
+<<<<<<< HEAD
 	trace_kvm_async_pf_completed(addr, page, gva);
+=======
+	trace_kvm_async_pf_completed(addr, gva);
+>>>>>>> refs/remotes/origin/master
 
 	if (waitqueue_active(&vcpu->wq))
 		wake_up_interruptible(&vcpu->wq);
@@ -99,10 +113,19 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
 		struct kvm_async_pf *work =
 			list_entry(vcpu->async_pf.queue.next,
 				   typeof(*work), queue);
+<<<<<<< HEAD
 		cancel_work_sync(&work->work);
 		list_del(&work->queue);
 		if (!work->done) /* work was canceled */
 			kmem_cache_free(async_pf_cache, work);
+=======
+		list_del(&work->queue);
+		if (cancel_work_sync(&work->work)) {
+			mmdrop(work->mm);
+			kvm_put_kvm(vcpu->kvm); /* == work->vcpu->kvm */
+			kmem_cache_free(async_pf_cache, work);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock(&vcpu->async_pf.lock);
@@ -111,8 +134,11 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
 			list_entry(vcpu->async_pf.done.next,
 				   typeof(*work), link);
 		list_del(&work->link);
+<<<<<<< HEAD
 		if (work->page)
 			put_page(work->page);
+=======
+>>>>>>> refs/remotes/origin/master
 		kmem_cache_free(async_pf_cache, work);
 	}
 	spin_unlock(&vcpu->async_pf.lock);
@@ -132,14 +158,21 @@ void kvm_check_async_pf_completion(struct kvm_vcpu *vcpu)
 		list_del(&work->link);
 		spin_unlock(&vcpu->async_pf.lock);
 
+<<<<<<< HEAD
 		if (work->page)
 			kvm_arch_async_page_ready(vcpu, work);
+=======
+		kvm_arch_async_page_ready(vcpu, work);
+>>>>>>> refs/remotes/origin/master
 		kvm_arch_async_page_present(vcpu, work);
 
 		list_del(&work->queue);
 		vcpu->async_pf.queued--;
+<<<<<<< HEAD
 		if (work->page)
 			put_page(work->page);
+=======
+>>>>>>> refs/remotes/origin/master
 		kmem_cache_free(async_pf_cache, work);
 	}
 }
@@ -162,8 +195,12 @@ int kvm_setup_async_pf(struct kvm_vcpu *vcpu, gva_t gva, gfn_t gfn,
 	if (!work)
 		return 0;
 
+<<<<<<< HEAD
 	work->page = NULL;
 	work->done = false;
+=======
+	work->wakeup_all = false;
+>>>>>>> refs/remotes/origin/master
 	work->vcpu = vcpu;
 	work->gva = gva;
 	work->addr = gfn_to_hva(vcpu->kvm, gfn);
@@ -203,8 +240,12 @@ int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu)
 	if (!work)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	work->page = bad_page;
 	get_page(bad_page);
+=======
+	work->wakeup_all = true;
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&work->queue); /* for list_del to work */
 
 	spin_lock(&vcpu->async_pf.lock);

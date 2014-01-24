@@ -1,12 +1,17 @@
 #ifndef _ASMARM_SIGNAL_H
 #define _ASMARM_SIGNAL_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 /* Avoid too many header ordering problems.  */
 struct siginfo;
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/signal.h>
+
+>>>>>>> refs/remotes/origin/master
 /* Most things should be clean enough to redefine this at will, if care
    is taken to make libc match.  */
 
@@ -20,6 +25,7 @@ typedef struct {
 	unsigned long sig[_NSIG_WORDS];
 } sigset_t;
 
+<<<<<<< HEAD
 #else
 /* Here we must cater to libcs that poke about in kernel headers.  */
 
@@ -162,4 +168,9 @@ typedef struct sigaltstack {
 #define ptrace_signal_deliver(regs, cookie) do { } while (0)
 #endif
 
+=======
+#define __ARCH_HAS_SA_RESTORER
+
+#include <asm/sigcontext.h>
+>>>>>>> refs/remotes/origin/master
 #endif

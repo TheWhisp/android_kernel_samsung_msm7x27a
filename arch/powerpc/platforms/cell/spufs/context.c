@@ -22,9 +22,21 @@
 
 #include <linux/fs.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <asm/atomic.h>
+=======
+#include <linux/slab.h>
+#include <linux/atomic.h>
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+#include <linux/atomic.h>
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/spu.h>
 #include <asm/spu_csa.h>
 #include "spufs.h"

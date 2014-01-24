@@ -19,7 +19,15 @@
 #endif
 
 #ifdef CONFIG_ROMFS_ON_MTD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define ROMFS_MTD_READ(sb, ...) ((sb)->s_mtd->read((sb)->s_mtd, ##__VA_ARGS__))
+=======
+#define ROMFS_MTD_READ(sb, ...) mtd_read((sb)->s_mtd, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ROMFS_MTD_READ(sb, ...) mtd_read((sb)->s_mtd, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * read data from an romfs image on an MTD device

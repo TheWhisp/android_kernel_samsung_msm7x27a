@@ -6,6 +6,15 @@
 #include <linux/percpu.h>
 #include <linux/cpumask.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>
+#include <linux/vtime.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/cputime.h>
 
@@ -15,6 +24,8 @@
  * used by rstatd/perfmeter
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct cpu_usage_stat {
 	cputime64_t user;
 	cputime64_t nice;
@@ -30,18 +41,58 @@ struct cpu_usage_stat {
 
 struct kernel_stat {
 	struct cpu_usage_stat	cpustat;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+enum cpu_usage_stat {
+	CPUTIME_USER,
+	CPUTIME_NICE,
+	CPUTIME_SYSTEM,
+	CPUTIME_SOFTIRQ,
+	CPUTIME_IRQ,
+	CPUTIME_IDLE,
+	CPUTIME_IOWAIT,
+	CPUTIME_STEAL,
+	CPUTIME_GUEST,
+	CPUTIME_GUEST_NICE,
+	NR_STATS,
+};
+
+struct kernel_cpustat {
+	u64 cpustat[NR_STATS];
+};
+
+struct kernel_stat {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef CONFIG_GENERIC_HARDIRQS
        unsigned int irqs[NR_IRQS];
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long irqs_sum;
 	unsigned int softirqs[NR_SOFTIRQS];
 };
 
 DECLARE_PER_CPU(struct kernel_stat, kstat);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 #define kstat_cpu(cpu)	per_cpu(kstat, cpu)
 /* Must have preemption disabled for this to be meaningful. */
 #define kstat_this_cpu	__get_cpu_var(kstat)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+DECLARE_PER_CPU(struct kernel_cpustat, kernel_cpustat);
+
+/* Must have preemption disabled for this to be meaningful. */
+#define kstat_this_cpu (&__get_cpu_var(kstat))
+#define kcpustat_this_cpu (&__get_cpu_var(kernel_cpustat))
+#define kstat_cpu(cpu) per_cpu(kstat, cpu)
+#define kcpustat_cpu(cpu) per_cpu(kernel_cpustat, cpu)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern unsigned long long nr_context_switches(void);
 
@@ -61,6 +112,11 @@ static inline unsigned int kstat_irqs_cpu(unsigned int irq, int cpu)
        return kstat_cpu(cpu).irqs[irq];
 }
 #else
+=======
+
+extern unsigned long long nr_context_switches(void);
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/irq.h>
 extern unsigned int kstat_irqs_cpu(unsigned int irq, int cpu);
 
@@ -70,8 +126,11 @@ do {							\
 	__this_cpu_inc(kstat.irqs_sum);			\
 } while (0)
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void kstat_incr_softirqs_this_cpu(unsigned int irq)
 {
 	__this_cpu_inc(kstat.softirqs[irq]);
@@ -85,6 +144,7 @@ static inline unsigned int kstat_softirqs_cpu(unsigned int irq, int cpu)
 /*
  * Number of interrupts per specific IRQ source, since bootup
  */
+<<<<<<< HEAD
 #ifndef CONFIG_GENERIC_HARDIRQS
 static inline unsigned int kstat_irqs(unsigned int irq)
 {
@@ -99,6 +159,9 @@ static inline unsigned int kstat_irqs(unsigned int irq)
 #else
 extern unsigned int kstat_irqs(unsigned int irq);
 #endif
+=======
+extern unsigned int kstat_irqs(unsigned int irq);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Number of interrupts per cpu, since bootup
@@ -118,7 +181,19 @@ extern void account_system_time(struct task_struct *, int, cputime_t, cputime_t)
 extern void account_steal_time(cputime_t);
 extern void account_idle_time(cputime_t);
 
+<<<<<<< HEAD
 extern void account_process_tick(struct task_struct *, int user);
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+static inline void account_process_tick(struct task_struct *tsk, int user)
+{
+	vtime_account_user(tsk);
+}
+#else
+extern void account_process_tick(struct task_struct *, int user);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 extern void account_steal_ticks(unsigned long ticks);
 extern void account_idle_ticks(unsigned long ticks);
 

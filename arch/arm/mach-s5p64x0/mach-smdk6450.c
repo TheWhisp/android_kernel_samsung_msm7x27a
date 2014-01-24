@@ -23,7 +23,24 @@
 #include <linux/clk.h>
 #include <linux/gpio.h>
 #include <linux/pwm_backlight.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/fb.h>
+#include <linux/mmc/host.h>
+
+#include <video/platform_lcd.h>
+<<<<<<< HEAD
+
+#include <asm/hardware/vic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <video/samsung_fimd.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/irq.h>
@@ -32,12 +49,19 @@
 #include <mach/hardware.h>
 #include <mach/map.h>
 #include <mach/regs-clock.h>
+<<<<<<< HEAD
 #include <mach/i2c.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/regs-gpio.h>
 
 #include <plat/regs-serial.h>
 #include <plat/gpio-cfg.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/s5p6450.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/clock.h>
 #include <plat/devs.h>
 #include <plat/cpu.h>
@@ -46,6 +70,31 @@
 #include <plat/adc.h>
 #include <plat/ts.h>
 #include <plat/s5p-time.h>
+<<<<<<< HEAD
+=======
+#include <plat/backlight.h>
+#include <plat/fb.h>
+#include <plat/regs-fb.h>
+#include <plat/sdhci.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <plat/clock.h>
+#include <plat/devs.h>
+#include <plat/cpu.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <plat/pll.h>
+#include <plat/adc.h>
+#include <linux/platform_data/touchscreen-s3c2410.h>
+#include <plat/samsung-time.h>
+#include <plat/backlight.h>
+#include <plat/fb.h>
+#include <plat/sdhci.h>
+
+#include "common.h"
+#include "i2c.h"
+>>>>>>> refs/remotes/origin/master
 
 #define SMDK6450_UCON_DEFAULT	(S3C2410_UCON_TXILEVEL |	\
 				S3C2410_UCON_RXILEVEL |		\
@@ -109,6 +158,8 @@ static struct s3c2410_uartcfg smdk6450_uartcfgs[] __initdata = {
 #endif
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int smdk6450_backlight_init(struct device *dev)
 {
 	int ret;
@@ -146,6 +197,85 @@ static struct platform_device smdk6450_backlight_device = {
 		.parent		= &s3c_device_timer[1].dev,
 		.platform_data	= &smdk6450_backlight_data,
 	},
+=======
+/* Frame Buffer */
+static struct s3c_fb_pd_win smdk6450_fb_win0 = {
+	.win_mode	= {
+		.left_margin	= 8,
+		.right_margin	= 13,
+		.upper_margin	= 7,
+		.lower_margin	= 5,
+		.hsync_len	= 3,
+		.vsync_len	= 1,
+		.xres		= 800,
+		.yres		= 480,
+	},
+	.max_bpp	= 32,
+	.default_bpp	= 24,
+=======
+/* Frame Buffer */
+static struct s3c_fb_pd_win smdk6450_fb_win0 = {
+	.max_bpp	= 32,
+	.default_bpp	= 24,
+	.xres		= 800,
+	.yres		= 480,
+};
+
+static struct fb_videomode smdk6450_lcd_timing = {
+	.left_margin	= 8,
+	.right_margin	= 13,
+	.upper_margin	= 7,
+	.lower_margin	= 5,
+	.hsync_len	= 3,
+	.vsync_len	= 1,
+	.xres		= 800,
+	.yres		= 480,
+>>>>>>> refs/remotes/origin/master
+};
+
+static struct s3c_fb_platdata smdk6450_lcd_pdata __initdata = {
+	.win[0]		= &smdk6450_fb_win0,
+<<<<<<< HEAD
+=======
+	.vtiming	= &smdk6450_lcd_timing,
+>>>>>>> refs/remotes/origin/master
+	.vidcon0	= VIDCON0_VIDOUT_RGB | VIDCON0_PNRMODE_RGB,
+	.vidcon1	= VIDCON1_INV_HSYNC | VIDCON1_INV_VSYNC,
+	.setup_gpio	= s5p64x0_fb_gpio_setup_24bpp,
+};
+
+/* LCD power controller */
+static void smdk6450_lte480_reset_power(struct plat_lcd_data *pd,
+					 unsigned int power)
+{
+	int err;
+
+	if (power) {
+		err = gpio_request(S5P6450_GPN(5), "GPN");
+		if (err) {
+			printk(KERN_ERR "failed to request GPN for lcd reset\n");
+			return;
+		}
+
+		gpio_direction_output(S5P6450_GPN(5), 1);
+		gpio_set_value(S5P6450_GPN(5), 0);
+		gpio_set_value(S5P6450_GPN(5), 1);
+		gpio_free(S5P6450_GPN(5));
+	}
+}
+
+static struct plat_lcd_data smdk6450_lcd_power_data = {
+	.set_power	= smdk6450_lte480_reset_power,
+};
+
+static struct platform_device smdk6450_lcd_lte480wv = {
+	.name			= "platform-lcd",
+	.dev.parent		= &s3c_device_fb.dev,
+	.dev.platform_data	= &smdk6450_lcd_power_data,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *smdk6450_devices[] __initdata = {
@@ -153,15 +283,52 @@ static struct platform_device *smdk6450_devices[] __initdata = {
 	&s3c_device_rtc,
 	&s3c_device_i2c0,
 	&s3c_device_i2c1,
+<<<<<<< HEAD
 	&s3c_device_ts,
 	&s3c_device_wdt,
 	&samsung_asoc_dma,
 	&s5p6450_device_iis0,
+<<<<<<< HEAD
 	&s3c_device_timer[1],
 	&smdk6450_backlight_device,
 	/* s5p6450_device_spi0 will be added */
 };
 
+=======
+=======
+	&samsung_device_pwm,
+	&s3c_device_ts,
+	&s3c_device_wdt,
+	&s5p6450_device_iis0,
+>>>>>>> refs/remotes/origin/master
+	&s3c_device_fb,
+	&smdk6450_lcd_lte480wv,
+	&s3c_device_hsmmc0,
+	&s3c_device_hsmmc1,
+	&s3c_device_hsmmc2,
+	/* s5p6450_device_spi0 will be added */
+};
+
+static struct s3c_sdhci_platdata smdk6450_hsmmc0_pdata __initdata = {
+	.cd_type	= S3C_SDHCI_CD_NONE,
+};
+
+static struct s3c_sdhci_platdata smdk6450_hsmmc1_pdata __initdata = {
+	.cd_type	= S3C_SDHCI_CD_NONE,
+#if defined(CONFIG_S5P64X0_SD_CH1_8BIT)
+	.max_width	= 8,
+	.host_caps	= MMC_CAP_8_BIT_DATA,
+#endif
+};
+
+static struct s3c_sdhci_platdata smdk6450_hsmmc2_pdata __initdata = {
+	.cd_type	= S3C_SDHCI_CD_NONE,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct s3c2410_platform_i2c s5p6450_i2c0_data __initdata = {
 	.flags		= 0,
 	.slave_addr	= 0x10,
@@ -188,23 +355,74 @@ static struct i2c_board_info smdk6450_i2c_devs1[] __initdata = {
 	{ I2C_BOARD_INFO("24c128", 0x57), },/* Samsung S524AD0XD1 EEPROM */
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct s3c2410_ts_mach_info s3c_ts_platform __initdata = {
 	.delay			= 10000,
 	.presc			= 49,
 	.oversampling_shift	= 2,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/* LCD Backlight data */
+static struct samsung_bl_gpio_info smdk6450_bl_gpio_info = {
+	.no = S5P6450_GPF(15),
+	.func = S3C_GPIO_SFN(2),
+};
+
+static struct platform_pwm_backlight_data smdk6450_bl_data = {
+	.pwm_id = 1,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.enable_gpio = -1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init smdk6450_map_io(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	s5p_init_io(NULL, 0, S5P64X0_SYS_ID);
+=======
+	s5p64x0_init_io(NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	s3c24xx_init_clocks(19200000);
 	s3c24xx_init_uarts(smdk6450_uartcfgs, ARRAY_SIZE(smdk6450_uartcfgs));
 	s5p_set_timer_source(S5P_PWM3, S5P_PWM4);
 }
 
+<<<<<<< HEAD
 static void __init smdk6450_machine_init(void)
 {
 	s3c24xx_ts_set_platdata(&s3c_ts_platform);
+=======
+=======
+	s5p64x0_init_io(NULL, 0);
+	s3c24xx_init_clocks(19200000);
+	s3c24xx_init_uarts(smdk6450_uartcfgs, ARRAY_SIZE(smdk6450_uartcfgs));
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+}
+
+>>>>>>> refs/remotes/origin/master
+static void s5p6450_set_lcd_interface(void)
+{
+	unsigned int cfg;
+
+	/* select TFT LCD type (RGB I/F) */
+	cfg = __raw_readl(S5P64X0_SPCON0);
+	cfg &= ~S5P64X0_SPCON0_LCD_SEL_MASK;
+	cfg |= S5P64X0_SPCON0_LCD_SEL_RGB;
+	__raw_writel(cfg, S5P64X0_SPCON0);
+}
+
+static void __init smdk6450_machine_init(void)
+{
+	s3c24xx_ts_set_platdata(NULL);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	s3c_i2c0_set_platdata(&s5p6450_i2c0_data);
 	s3c_i2c1_set_platdata(&s5p6450_i2c1_data);
@@ -213,15 +431,57 @@ static void __init smdk6450_machine_init(void)
 	i2c_register_board_info(1, smdk6450_i2c_devs1,
 			ARRAY_SIZE(smdk6450_i2c_devs1));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	samsung_bl_set(&smdk6450_bl_gpio_info, &smdk6450_bl_data);
+
+=======
+>>>>>>> refs/remotes/origin/master
+	s5p6450_set_lcd_interface();
+	s3c_fb_set_platdata(&smdk6450_lcd_pdata);
+
+	s3c_sdhci0_set_platdata(&smdk6450_hsmmc0_pdata);
+	s3c_sdhci1_set_platdata(&smdk6450_hsmmc1_pdata);
+	s3c_sdhci2_set_platdata(&smdk6450_hsmmc2_pdata);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_add_devices(smdk6450_devices, ARRAY_SIZE(smdk6450_devices));
+=======
+	platform_add_devices(smdk6450_devices, ARRAY_SIZE(smdk6450_devices));
+
+	samsung_bl_set(&smdk6450_bl_gpio_info, &smdk6450_bl_data);
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(SMDK6450, "SMDK6450")
 	/* Maintainer: Kukjin Kim <kgene.kim@samsung.com> */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= S5P64X0_PA_SDRAM + 0x100,
 
 	.init_irq	= s5p6450_init_irq,
 	.map_io		= smdk6450_map_io,
 	.init_machine	= smdk6450_machine_init,
 	.timer		= &s5p_timer,
+=======
+	.atag_offset	= 0x100,
+
+	.init_irq	= s5p6450_init_irq,
+	.handle_irq	= vic_handle_irq,
+	.map_io		= smdk6450_map_io,
+	.init_machine	= smdk6450_machine_init,
+	.timer		= &s5p_timer,
+	.restart	= s5p64x0_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+
+	.init_irq	= s5p6450_init_irq,
+	.map_io		= smdk6450_map_io,
+	.init_machine	= smdk6450_machine_init,
+	.init_time	= samsung_timer_init,
+	.restart	= s5p64x0_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

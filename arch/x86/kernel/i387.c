@@ -16,6 +16,11 @@
 #include <asm/uaccess.h>
 #include <asm/ptrace.h>
 #include <asm/i387.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <asm/fpu-internal.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/user.h>
 
 #ifdef CONFIG_X86_64
@@ -32,6 +37,141 @@
 # define user32_fxsr_struct	user_fxsr_struct
 #endif
 
+<<<<<<< HEAD
+=======
+/*
+ * Were we in an interrupt that interrupted kernel mode?
+ *
+ * We can do a kernel_fpu_begin/end() pair *ONLY* if that
+=======
+#include <asm/fpu-internal.h>
+#include <asm/user.h>
+
+/*
+ * Were we in an interrupt that interrupted kernel mode?
+ *
+ * On others, we can do a kernel_fpu_begin/end() pair *ONLY* if that
+>>>>>>> refs/remotes/origin/master
+ * pair does nothing at all: the thread must not have fpu (so
+ * that we don't try to save the FPU state), and TS must
+ * be set (so that the clts/stts pair does nothing that is
+ * visible in the interrupted kernel thread).
+<<<<<<< HEAD
+ */
+static inline bool interrupted_kernel_fpu_idle(void)
+{
+=======
+ *
+ * Except for the eagerfpu case when we return 1 unless we've already
+ * been eager and saved the state in kernel_fpu_begin().
+ */
+static inline bool interrupted_kernel_fpu_idle(void)
+{
+	if (use_eager_fpu())
+		return __thread_has_fpu(current);
+
+>>>>>>> refs/remotes/origin/master
+	return !__thread_has_fpu(current) &&
+		(read_cr0() & X86_CR0_TS);
+}
+
+/*
+ * Were we in user mode (or vm86 mode) when we were
+ * interrupted?
+ *
+ * Doing kernel_fpu_begin/end() is ok if we are running
+ * in an interrupt context from user mode - we'll just
+ * save the FPU state as required.
+ */
+static inline bool interrupted_user_mode(void)
+{
+	struct pt_regs *regs = get_irq_regs();
+	return regs && user_mode_vm(regs);
+}
+
+/*
+ * Can we use the FPU in kernel mode with the
+ * whole "kernel_fpu_begin/end()" sequence?
+ *
+ * It's always ok in process context (ie "not interrupt")
+ * but it is sometimes ok even from an irq.
+ */
+bool irq_fpu_usable(void)
+{
+	return !in_interrupt() ||
+		interrupted_user_mode() ||
+		interrupted_kernel_fpu_idle();
+}
+EXPORT_SYMBOL(irq_fpu_usable);
+
+<<<<<<< HEAD
+void kernel_fpu_begin(void)
+{
+	struct task_struct *me = current;
+
+	WARN_ON_ONCE(!irq_fpu_usable());
+	preempt_disable();
+	if (__thread_has_fpu(me)) {
+		__save_init_fpu(me);
+		__thread_clear_has_fpu(me);
+		/* We do 'stts()' in kernel_fpu_end() */
+	} else {
+		percpu_write(fpu_owner_task, NULL);
+		clts();
+	}
+}
+EXPORT_SYMBOL(kernel_fpu_begin);
+
+void kernel_fpu_end(void)
+{
+	stts();
+	preempt_enable();
+}
+EXPORT_SYMBOL(kernel_fpu_end);
+=======
+void __kernel_fpu_begin(void)
+{
+	struct task_struct *me = current;
+
+	if (__thread_has_fpu(me)) {
+		__thread_clear_has_fpu(me);
+		__save_init_fpu(me);
+		/* We do 'stts()' in __kernel_fpu_end() */
+	} else if (!use_eager_fpu()) {
+		this_cpu_write(fpu_owner_task, NULL);
+		clts();
+	}
+}
+EXPORT_SYMBOL(__kernel_fpu_begin);
+
+void __kernel_fpu_end(void)
+{
+	if (use_eager_fpu())
+		math_state_restore();
+	else
+		stts();
+}
+EXPORT_SYMBOL(__kernel_fpu_end);
+>>>>>>> refs/remotes/origin/master
+
+void unlazy_fpu(struct task_struct *tsk)
+{
+	preempt_disable();
+	if (__thread_has_fpu(tsk)) {
+		__save_init_fpu(tsk);
+		__thread_fpu_end(tsk);
+	} else
+<<<<<<< HEAD
+		tsk->fpu_counter = 0;
+=======
+		tsk->thread.fpu_counter = 0;
+>>>>>>> refs/remotes/origin/master
+	preempt_enable();
+}
+EXPORT_SYMBOL(unlazy_fpu);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_MATH_EMULATION
 # define HAVE_HWFP		(boot_cpu_data.hard_math)
 #else
@@ -44,11 +184,26 @@ EXPORT_SYMBOL_GPL(xstate_size);
 unsigned int sig_xstate_ia32_size = sizeof(struct _fpstate_ia32);
 static struct i387_fxsave_struct fx_scratch __cpuinitdata;
 
+<<<<<<< HEAD
 void __cpuinit mxcsr_feature_mask_init(void)
+=======
+static void __cpuinit mxcsr_feature_mask_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long mask = 0;
 
 	clts();
+=======
+unsigned int mxcsr_feature_mask __read_mostly = 0xffffffffu;
+unsigned int xstate_size;
+EXPORT_SYMBOL_GPL(xstate_size);
+static struct i387_fxsave_struct fx_scratch;
+
+static void mxcsr_feature_mask_init(void)
+{
+	unsigned long mask = 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (cpu_has_fxsr) {
 		memset(&fx_scratch, 0, sizeof(struct i387_fxsave_struct));
 		asm volatile("fxsave %0" : "+m" (fx_scratch));
@@ -57,17 +212,27 @@ void __cpuinit mxcsr_feature_mask_init(void)
 			mask = 0x0000ffbf;
 	}
 	mxcsr_feature_mask &= mask;
+<<<<<<< HEAD
 	stts();
 }
 
 static void __cpuinit init_thread_xstate(void)
+=======
+}
+
+static void init_thread_xstate(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Note that xstate_size might be overwriten later during
 	 * xsave_init().
 	 */
 
+<<<<<<< HEAD
 	if (!HAVE_HWFP) {
+=======
+	if (!cpu_has_fpu) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Disable xsave as we do not support it if i387
 		 * emulation is enabled.
@@ -89,11 +254,26 @@ static void __cpuinit init_thread_xstate(void)
  * into all processes.
  */
 
+<<<<<<< HEAD
 void __cpuinit fpu_init(void)
+=======
+void fpu_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long cr0;
 	unsigned long cr4_mask = 0;
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_MATH_EMULATION
+	if (!cpu_has_fpu) {
+		pr_emerg("No FPU found and no math emulation present\n");
+		pr_emerg("Giving up\n");
+		for (;;)
+			asm volatile("hlt");
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 	if (cpu_has_fxsr)
 		cr4_mask |= X86_CR4_OSFXSR;
 	if (cpu_has_xmm)
@@ -103,6 +283,7 @@ void __cpuinit fpu_init(void)
 
 	cr0 = read_cr0();
 	cr0 &= ~(X86_CR0_TS|X86_CR0_EM); /* clear TS and EM */
+<<<<<<< HEAD
 	if (!HAVE_HWFP)
 		cr0 |= X86_CR0_EM;
 	write_cr0(cr0);
@@ -114,22 +295,46 @@ void __cpuinit fpu_init(void)
 	/* clean state in init */
 	current_thread_info()->status = 0;
 	clear_used_math();
+=======
+	if (!cpu_has_fpu)
+		cr0 |= X86_CR0_EM;
+	write_cr0(cr0);
+
+	/*
+	 * init_thread_xstate is only called once to avoid overriding
+	 * xstate_size during boot time or during CPU hotplug.
+	 */
+	if (xstate_size == 0)
+		init_thread_xstate();
+
+	mxcsr_feature_mask_init();
+	xsave_init();
+	eager_fpu_init();
+>>>>>>> refs/remotes/origin/master
 }
 
 void fpu_finit(struct fpu *fpu)
 {
+<<<<<<< HEAD
 	if (!HAVE_HWFP) {
+=======
+	if (!cpu_has_fpu) {
+>>>>>>> refs/remotes/origin/master
 		finit_soft_fpu(&fpu->state->soft);
 		return;
 	}
 
 	if (cpu_has_fxsr) {
+<<<<<<< HEAD
 		struct i387_fxsave_struct *fx = &fpu->state->fxsave;
 
 		memset(fx, 0, xstate_size);
 		fx->cwd = 0x37f;
 		if (cpu_has_xmm)
 			fx->mxcsr = MXCSR_DEFAULT;
+=======
+		fx_finit(&fpu->state->fxsave);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		struct i387_fsave_struct *fp = &fpu->state->fsave;
 		memset(fp, 0, xstate_size);
@@ -152,8 +357,18 @@ int init_fpu(struct task_struct *tsk)
 	int ret;
 
 	if (tsk_used_math(tsk)) {
+<<<<<<< HEAD
 		if (HAVE_HWFP && tsk == current)
 			unlazy_fpu(tsk);
+<<<<<<< HEAD
+=======
+		tsk->thread.fpu.last_cpu = ~0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (cpu_has_fpu && tsk == current)
+			unlazy_fpu(tsk);
+		tsk->thread.fpu.last_cpu = ~0;
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -321,7 +536,15 @@ static inline unsigned short twd_i387_to_fxsr(unsigned short twd)
 	return tmp;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define FPREG_ADDR(f, n)	((void *)&(f)->st_space + (n) * 16);
+=======
+#define FPREG_ADDR(f, n)	((void *)&(f)->st_space + (n) * 16)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FPREG_ADDR(f, n)	((void *)&(f)->st_space + (n) * 16)
+>>>>>>> refs/remotes/origin/master
 #define FP_EXP_TAG_VALID	0
 #define FP_EXP_TAG_ZERO		1
 #define FP_EXP_TAG_SPECIAL	2
@@ -372,7 +595,11 @@ static inline u32 twd_fxsr_to_i387(struct i387_fxsave_struct *fxsave)
  * FXSR floating point environment conversions.
  */
 
+<<<<<<< HEAD
 static void
+=======
+void
+>>>>>>> refs/remotes/origin/master
 convert_from_fxsr(struct user_i387_ia32_struct *env, struct task_struct *tsk)
 {
 	struct i387_fxsave_struct *fxsave = &tsk->thread.fpu.state->fxsave;
@@ -409,8 +636,13 @@ convert_from_fxsr(struct user_i387_ia32_struct *env, struct task_struct *tsk)
 		memcpy(&to[i], &from[i], sizeof(to[0]));
 }
 
+<<<<<<< HEAD
 static void convert_to_fxsr(struct task_struct *tsk,
 			    const struct user_i387_ia32_struct *env)
+=======
+void convert_to_fxsr(struct task_struct *tsk,
+		     const struct user_i387_ia32_struct *env)
+>>>>>>> refs/remotes/origin/master
 
 {
 	struct i387_fxsave_struct *fxsave = &tsk->thread.fpu.state->fxsave;
@@ -448,6 +680,7 @@ int fpregs_get(struct task_struct *target, const struct user_regset *regset,
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	if (!HAVE_HWFP)
 		return fpregs_soft_get(target, regset, pos, count, kbuf, ubuf);
 
@@ -456,6 +689,15 @@ int fpregs_get(struct task_struct *target, const struct user_regset *regset,
 					   &target->thread.fpu.state->fsave, 0,
 					   -1);
 	}
+=======
+	if (!static_cpu_has(X86_FEATURE_FPU))
+		return fpregs_soft_get(target, regset, pos, count, kbuf, ubuf);
+
+	if (!cpu_has_fxsr)
+		return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+					   &target->thread.fpu.state->fsave, 0,
+					   -1);
+>>>>>>> refs/remotes/origin/master
 
 	sanitize_i387_state(target);
 
@@ -482,6 +724,7 @@ int fpregs_set(struct task_struct *target, const struct user_regset *regset,
 
 	sanitize_i387_state(target);
 
+<<<<<<< HEAD
 	if (!HAVE_HWFP)
 		return fpregs_soft_set(target, regset, pos, count, kbuf, ubuf);
 
@@ -489,6 +732,15 @@ int fpregs_set(struct task_struct *target, const struct user_regset *regset,
 		return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
 					  &target->thread.fpu.state->fsave, 0, -1);
 	}
+=======
+	if (!static_cpu_has(X86_FEATURE_FPU))
+		return fpregs_soft_set(target, regset, pos, count, kbuf, ubuf);
+
+	if (!cpu_has_fxsr)
+		return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+					  &target->thread.fpu.state->fsave, 0,
+					  -1);
+>>>>>>> refs/remotes/origin/master
 
 	if (pos > 0 || count < sizeof(env))
 		convert_from_fxsr(&env, target);
@@ -507,6 +759,7 @@ int fpregs_set(struct task_struct *target, const struct user_regset *regset,
 }
 
 /*
+<<<<<<< HEAD
  * Signal frame handlers.
  */
 
@@ -724,6 +977,8 @@ int restore_i387_xstate_ia32(void __user *buf)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * FPU state for core dumps.
  * This is only used for a.out dumps now.
  * It is declared generically using elf_fpregset_t (which is
@@ -746,3 +1001,36 @@ int dump_fpu(struct pt_regs *regs, struct user_i387_struct *fpu)
 EXPORT_SYMBOL(dump_fpu);
 
 #endif	/* CONFIG_X86_32 || CONFIG_IA32_EMULATION */
+<<<<<<< HEAD
+=======
+
+static int __init no_387(char *s)
+{
+	setup_clear_cpu_cap(X86_FEATURE_FPU);
+	return 1;
+}
+
+__setup("no387", no_387);
+
+void fpu_detect(struct cpuinfo_x86 *c)
+{
+	unsigned long cr0;
+	u16 fsw, fcw;
+
+	fsw = fcw = 0xffff;
+
+	cr0 = read_cr0();
+	cr0 &= ~(X86_CR0_TS | X86_CR0_EM);
+	write_cr0(cr0);
+
+	asm volatile("fninit ; fnstsw %0 ; fnstcw %1"
+		     : "+m" (fsw), "+m" (fcw));
+
+	if (fsw == 0 && (fcw & 0x103f) == 0x003f)
+		set_cpu_cap(c, X86_FEATURE_FPU);
+	else
+		clear_cpu_cap(c, X86_FEATURE_FPU);
+
+	/* The final cr0 value is set in fpu_init() */
+}
+>>>>>>> refs/remotes/origin/master

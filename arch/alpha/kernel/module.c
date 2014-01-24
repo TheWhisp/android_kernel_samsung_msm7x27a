@@ -29,6 +29,8 @@
 #define DEBUGP(fmt...)
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void *
 module_alloc(unsigned long size)
 {
@@ -43,6 +45,10 @@ module_free(struct module *mod, void *module_region)
 	vfree(module_region);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Allocate the GOT at the end of the core sections.  */
 
 struct got_entry {
@@ -156,6 +162,8 @@ module_frob_arch_sections(Elf64_Ehdr *hdr, Elf64_Shdr *sechdrs,
 }
 
 int
+<<<<<<< HEAD
+<<<<<<< HEAD
 apply_relocate(Elf64_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 	       unsigned int relsec, struct module *me)
 {
@@ -164,6 +172,10 @@ apply_relocate(Elf64_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 }
 
 int
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 apply_relocate_add(Elf64_Shdr *sechdrs, const char *strtab,
 		   unsigned int symindex, unsigned int relsec,
 		   struct module *me)
@@ -302,6 +314,8 @@ apply_relocate_add(Elf64_Shdr *sechdrs, const char *strtab,
 
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 int
 module_finalize(const Elf_Ehdr *hdr, const Elf_Shdr *sechdrs,
@@ -314,3 +328,7 @@ void
 module_arch_cleanup(struct module *mod)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

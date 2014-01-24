@@ -2,9 +2,21 @@
  * Misc utility routines for accessing chip-specific features
  * of the SiliconBackplane-based Broadcom chips.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-11.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -22,10 +34,22 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * $Id: aiutils.c,v 1.26.2.1 2010-03-09 18:41:21 $
  */
 
 
+=======
+ * $Id: aiutils.c 321247 2012-03-14 21:14:33Z $
+ */
+#include <bcm_cfg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * $Id: aiutils.c 321247 2012-03-14 21:14:33Z $
+ */
+#include <bcm_cfg.h>
+>>>>>>> refs/remotes/origin/cm-11.0
 #include <typedefs.h>
 #include <bcmdefs.h>
 #include <osl.h>
@@ -37,7 +61,20 @@
 
 #include "siutils_priv.h"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#define BCM47162_DMP() (0)
+#define BCM5357_DMP() (0)
+#define remap_coreid(sih, coreid)	(coreid)
+#define remap_corerev(sih, corerev)	(corerev)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 
 
@@ -116,6 +153,14 @@ ai_hwfixup(si_info_t *sii)
 }
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 void
 ai_scan(si_t *sih, void *regs, uint devid)
 {
@@ -157,7 +202,13 @@ ai_scan(si_t *sih, void *regs, uint devid)
 	while (eromptr < eromlim) {
 		uint32 cia, cib, cid, mfg, crev, nmw, nsw, nmp, nsp;
 		uint32 mpd, asd, addrl, addrh, sizel, sizeh;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		uint32 *base;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		uint i, j, idx;
 		bool br;
 
@@ -170,7 +221,15 @@ ai_scan(si_t *sih, void *regs, uint devid)
 			ai_hwfixup(sii);
 			return;
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		base = eromptr - 1;
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		cib = get_erom_ent(sih, &eromptr, 0, 0);
 
 		if ((cib & ER_TAG) != ER_CI) {
@@ -186,9 +245,25 @@ ai_scan(si_t *sih, void *regs, uint devid)
 		nmp = (cib & CIB_NMP_MASK) >> CIB_NMP_SHIFT;
 		nsp = (cib & CIB_NSP_MASK) >> CIB_NSP_SHIFT;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		SI_VMSG(("Found component 0x%04x/0x%04x rev %d at erom addr 0x%p, with nmw = %d, "
 		         "nsw = %d, nmp = %d & nsp = %d\n",
 		         mfg, cid, crev, base, nmw, nsw, nmp, nsp));
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef BCMDBG_SI
+		SI_VMSG(("Found component 0x%04x/0x%04x rev %d at erom addr 0x%p, with nmw = %d, "
+		         "nsw = %d, nmp = %d & nsp = %d\n",
+		         mfg, cid, crev, eromptr - 1, nmw, nsw, nmp, nsp));
+#else
+		BCM_REFERENCE(crev);
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		if (((mfg == MFGID_ARM) && (cid == DEF_AI_COMP)) || (nsp == 0))
 			continue;
@@ -201,14 +276,32 @@ ai_scan(si_t *sih, void *regs, uint devid)
 					sii->oob_router = addrl;
 				}
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			continue;
+=======
+			if (cid != GMAC_COMMON_4706_CORE_ID)
+				continue;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (cid != GMAC_COMMON_4706_CORE_ID)
+				continue;
+>>>>>>> refs/remotes/origin/cm-11.0
 		}
 
 		idx = sii->numcores;
 
 		sii->cia[idx] = cia;
 		sii->cib[idx] = cib;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		sii->coreid[idx] = cid;
+=======
+		sii->coreid[idx] = remap_coreid(sih, cid);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sii->coreid[idx] = remap_coreid(sih, cid);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 		for (i = 0; i < nmp; i++) {
 			mpd = get_erom_ent(sih, &eromptr, ER_VALID, ER_VALID);
@@ -254,9 +347,25 @@ ai_scan(si_t *sih, void *regs, uint devid)
 		for (i = 1; i < nsp; i++) {
 			j = 0;
 			do {
+<<<<<<< HEAD
+<<<<<<< HEAD
 				asd = get_asd(sih, &eromptr, i, j++, AD_ST_SLAVE, &addrl, &addrh,
 				              &sizel, &sizeh);
 			} while (asd != 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+				asd = get_asd(sih, &eromptr, i, j, AD_ST_SLAVE, &addrl, &addrh,
+				              &sizel, &sizeh);
+
+				if (asd == 0)
+					break;
+				j++;
+			} while (1);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 			if (j == 0) {
 				SI_ERROR((" SP %d has no address descriptors\n", i));
 				goto error;
@@ -296,6 +405,14 @@ ai_scan(si_t *sih, void *regs, uint devid)
 				sii->wrapba[idx] = addrl;
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/cm-11.0
 		
 		if (br)
 			continue;
@@ -316,6 +433,8 @@ void *
 ai_setcoreidx(si_t *sih, uint coreidx)
 {
 	si_info_t *sii = SI_INFO(sih);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	uint32 addr = sii->coresba[coreidx];
 	uint32 wrap = sii->wrapba[coreidx];
 	void *regs;
@@ -323,6 +442,22 @@ ai_setcoreidx(si_t *sih, uint coreidx)
 	if (coreidx >= sii->numcores)
 		return (NULL);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	uint32 addr, wrap;
+	void *regs;
+
+	if (coreidx >= MIN(sii->numcores, SI_MAXCORES))
+		return (NULL);
+
+	addr = sii->coresba[coreidx];
+	wrap = sii->wrapba[coreidx];
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	
 	ASSERT((sii->intrsenabled_fn == NULL) || !(*(sii)->intrsenabled_fn)((sii)->intr_arg));
 
@@ -361,6 +496,100 @@ ai_setcoreidx(si_t *sih, uint coreidx)
 	return regs;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+void
+ai_coreaddrspaceX(si_t *sih, uint asidx, uint32 *addr, uint32 *size)
+{
+	si_info_t *sii = SI_INFO(sih);
+	chipcregs_t *cc = NULL;
+	uint32 erombase, *eromptr, *eromlim;
+	uint i, j, cidx;
+	uint32 cia, cib, nmp, nsp;
+	uint32 asd, addrl, addrh, sizel, sizeh;
+
+	for (i = 0; i < sii->numcores; i++) {
+		if (sii->coreid[i] == CC_CORE_ID) {
+			cc = (chipcregs_t *)sii->regs[i];
+			break;
+		}
+	}
+	if (cc == NULL)
+		goto error;
+
+	erombase = R_REG(sii->osh, &cc->eromptr);
+	eromptr = (uint32 *)REG_MAP(erombase, SI_CORE_SIZE);
+	eromlim = eromptr + (ER_REMAPCONTROL / sizeof(uint32));
+
+	cidx = sii->curidx;
+	cia = sii->cia[cidx];
+	cib = sii->cib[cidx];
+
+	nmp = (cib & CIB_NMP_MASK) >> CIB_NMP_SHIFT;
+	nsp = (cib & CIB_NSP_MASK) >> CIB_NSP_SHIFT;
+
+	
+	while (eromptr < eromlim) {
+		if ((get_erom_ent(sih, &eromptr, ER_TAG, ER_CI) == cia) &&
+			(get_erom_ent(sih, &eromptr, 0, 0) == cib)) {
+			break;
+		}
+	}
+
+	
+	for (i = 0; i < nmp; i++)
+		get_erom_ent(sih, &eromptr, ER_VALID, ER_VALID);
+
+	
+	asd = get_asd(sih, &eromptr, 0, 0, AD_ST_SLAVE, &addrl, &addrh, &sizel, &sizeh);
+	if (asd == 0) {
+		
+		asd = get_asd(sih, &eromptr, 0, 0, AD_ST_BRIDGE, &addrl, &addrh,
+		              &sizel, &sizeh);
+	}
+
+	j = 1;
+	do {
+		asd = get_asd(sih, &eromptr, 0, j, AD_ST_SLAVE, &addrl, &addrh,
+		              &sizel, &sizeh);
+		j++;
+	} while (asd != 0);
+
+	
+	for (i = 1; i < nsp; i++) {
+		j = 0;
+		do {
+			asd = get_asd(sih, &eromptr, i, j, AD_ST_SLAVE, &addrl, &addrh,
+				&sizel, &sizeh);
+			if (asd == 0)
+				break;
+
+			if (!asidx--) {
+				*addr = addrl;
+				*size = sizel;
+				return;
+			}
+			j++;
+		} while (1);
+
+		if (j == 0) {
+			SI_ERROR((" SP %d has no address descriptors\n", i));
+			break;
+		}
+	}
+
+error:
+	*size = 0;
+	return;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 int
 ai_numaddrspaces(si_t *sih)
@@ -417,6 +646,23 @@ ai_flag(si_t *sih)
 	aidmp_t *ai;
 
 	sii = SI_INFO(sih);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (BCM47162_DMP()) {
+		SI_ERROR(("%s: Attempting to read MIPS DMP registers on 47162a0", __FUNCTION__));
+		return sii->curidx;
+	}
+	if (BCM5357_DMP()) {
+		SI_ERROR(("%s: Attempting to read USB20H DMP registers on 5357b0\n", __FUNCTION__));
+		return sii->curidx;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ai = sii->curwrap;
 
 	return (R_REG(sii->osh, &ai->oobselouta30) & 0x1f);
@@ -462,7 +708,15 @@ ai_corerev(si_t *sih)
 
 	sii = SI_INFO(sih);
 	cib = sii->cib[sii->curidx];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	return ((cib & CIB_REV_MASK) >> CIB_REV_SHIFT);
+=======
+	return remap_corerev(sih, (cib & CIB_REV_MASK) >> CIB_REV_SHIFT);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return remap_corerev(sih, (cib & CIB_REV_MASK) >> CIB_REV_SHIFT);
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 bool
@@ -566,6 +820,14 @@ ai_core_disable(si_t *sih, uint32 bits)
 {
 	si_info_t *sii;
 	volatile uint32 dummy;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	uint32 status;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32 status;
+>>>>>>> refs/remotes/origin/cm-11.0
 	aidmp_t *ai;
 
 	sii = SI_INFO(sih);
@@ -577,11 +839,40 @@ ai_core_disable(si_t *sih, uint32 bits)
 	if (R_REG(sii->osh, &ai->resetctrl) & AIRC_RESET)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	W_REG(sii->osh, &ai->ioctrl, bits);
 	dummy = R_REG(sii->osh, &ai->ioctrl);
 	OSL_DELAY(10);
 
 	W_REG(sii->osh, &ai->resetctrl, AIRC_RESET);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	
+	SPINWAIT(((status = R_REG(sii->osh, &ai->resetstatus)) != 0), 300);
+
+	
+	if (status != 0) {
+		
+		
+		SPINWAIT(((status = R_REG(sii->osh, &ai->resetstatus)) != 0), 10000);
+		
+		
+	}
+
+	W_REG(sii->osh, &ai->ioctrl, bits);
+	dummy = R_REG(sii->osh, &ai->ioctrl);
+	BCM_REFERENCE(dummy);
+	OSL_DELAY(10);
+
+	W_REG(sii->osh, &ai->resetctrl, AIRC_RESET);
+	dummy = R_REG(sii->osh, &ai->resetctrl);
+	BCM_REFERENCE(dummy);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	OSL_DELAY(1);
 }
 
@@ -603,15 +894,42 @@ ai_core_reset(si_t *sih, uint32 bits, uint32 resetbits)
 	
 	W_REG(sii->osh, &ai->ioctrl, (bits | SICF_FGC | SICF_CLOCK_EN));
 	dummy = R_REG(sii->osh, &ai->ioctrl);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	W_REG(sii->osh, &ai->resetctrl, 0);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	BCM_REFERENCE(dummy);
+
+	W_REG(sii->osh, &ai->resetctrl, 0);
+	dummy = R_REG(sii->osh, &ai->resetctrl);
+	BCM_REFERENCE(dummy);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	OSL_DELAY(1);
 
 	W_REG(sii->osh, &ai->ioctrl, (bits | SICF_CLOCK_EN));
 	dummy = R_REG(sii->osh, &ai->ioctrl);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	OSL_DELAY(1);
 }
 
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	BCM_REFERENCE(dummy);
+	OSL_DELAY(1);
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void
 ai_core_cflags_wo(si_t *sih, uint32 mask, uint32 val)
 {
@@ -620,6 +938,27 @@ ai_core_cflags_wo(si_t *sih, uint32 mask, uint32 val)
 	uint32 w;
 
 	sii = SI_INFO(sih);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	if (BCM47162_DMP()) {
+		SI_ERROR(("%s: Accessing MIPS DMP register (ioctrl) on 47162a0",
+		          __FUNCTION__));
+		return;
+	}
+	if (BCM5357_DMP()) {
+		SI_ERROR(("%s: Accessing USB20H DMP register (ioctrl) on 5357\n",
+		          __FUNCTION__));
+		return;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ASSERT(GOODREGS(sii->curwrap));
 	ai = sii->curwrap;
 
@@ -639,6 +978,26 @@ ai_core_cflags(si_t *sih, uint32 mask, uint32 val)
 	uint32 w;
 
 	sii = SI_INFO(sih);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (BCM47162_DMP()) {
+		SI_ERROR(("%s: Accessing MIPS DMP register (ioctrl) on 47162a0",
+		          __FUNCTION__));
+		return 0;
+	}
+	if (BCM5357_DMP()) {
+		SI_ERROR(("%s: Accessing USB20H DMP register (ioctrl) on 5357\n",
+		          __FUNCTION__));
+		return 0;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ASSERT(GOODREGS(sii->curwrap));
 	ai = sii->curwrap;
 
@@ -660,6 +1019,26 @@ ai_core_sflags(si_t *sih, uint32 mask, uint32 val)
 	uint32 w;
 
 	sii = SI_INFO(sih);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (BCM47162_DMP()) {
+		SI_ERROR(("%s: Accessing MIPS DMP register (iostatus) on 47162a0",
+		          __FUNCTION__));
+		return 0;
+	}
+	if (BCM5357_DMP()) {
+		SI_ERROR(("%s: Accessing USB20H DMP register (iostatus) on 5357\n",
+		          __FUNCTION__));
+		return 0;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	ASSERT(GOODREGS(sii->curwrap));
 	ai = sii->curwrap;
 

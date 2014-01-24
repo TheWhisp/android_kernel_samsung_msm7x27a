@@ -267,7 +267,13 @@
 
 #include <linux/module.h>
 #include <linux/fs.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/major.h>
 #include <linux/types.h>
 #include <linux/errno.h>
@@ -286,6 +292,8 @@
 #include <asm/uaccess.h>
 
 /* used to tell the module to turn on full debugging messages */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int debug;
 /* used to keep tray locked at all times */
 static int keeplocked;
@@ -297,6 +305,22 @@ static int lockdoor = 1;
 static int check_media_type;
 /* automatically restart mrw format */
 static int mrw_format_restart = 1;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static bool debug;
+/* default compatibility mode */
+static bool autoclose=1;
+static bool autoeject;
+static bool lockdoor = 1;
+/* will we ever get to use this... sigh. */
+static bool check_media_type;
+/* automatically restart mrw format */
+static bool mrw_format_restart = 1;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(debug, bool, 0);
 module_param(autoclose, bool, 0);
 module_param(autoeject, bool, 0);
@@ -1205,7 +1229,15 @@ void cdrom_release(struct cdrom_device_info *cdi, fmode_t mode)
 		cdinfo(CD_CLOSE, "Use count for \"/dev/%s\" now zero\n", cdi->name);
 		cdrom_dvd_rw_close_write(cdi);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		if ((cdo->capability & CDC_LOCK) && !keeplocked) {
+=======
+		if ((cdo->capability & CDC_LOCK) && !cdi->keeplocked) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((cdo->capability & CDC_LOCK) && !cdi->keeplocked) {
+>>>>>>> refs/remotes/origin/master
 			cdinfo(CD_CLOSE, "Unlocking door!\n");
 			cdo->lock_door(cdi, 0);
 		}
@@ -1372,7 +1404,15 @@ static int cdrom_select_disc(struct cdrom_device_info *cdi, int slot)
 	curslot = info->hdr.curslot;
 	kfree(info);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cdi->use_count > 1 || keeplocked) {
+=======
+	if (cdi->use_count > 1 || cdi->keeplocked) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cdi->use_count > 1 || cdi->keeplocked) {
+>>>>>>> refs/remotes/origin/master
 		if (slot == CDSL_CURRENT) {
 	    		return curslot;
 		} else {
@@ -1929,11 +1969,34 @@ static int dvd_read_manufact(struct cdrom_device_info *cdi, dvd_struct *s,
 		goto out;
 
 	s->manufact.len = buf[0] << 8 | buf[1];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (s->manufact.len < 0 || s->manufact.len > 2048) {
+=======
+	if (s->manufact.len < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (s->manufact.len < 0) {
+>>>>>>> refs/remotes/origin/master
 		cdinfo(CD_WARNING, "Received invalid manufacture info length"
 				   " (%d)\n", s->manufact.len);
 		ret = -EIO;
 	} else {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		if (s->manufact.len > 2048) {
+			cdinfo(CD_WARNING, "Received invalid manufacture info "
+					"length (%d): truncating to 2048\n",
+					s->manufact.len);
+			s->manufact.len = 2048;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		memcpy(s->manufact.value, &buf[4], s->manufact.len);
 	}
 
@@ -2284,7 +2347,15 @@ static int cdrom_ioctl_eject(struct cdrom_device_info *cdi)
 
 	if (!CDROM_CAN(CDC_OPEN_TRAY))
 		return -ENOSYS;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (cdi->use_count != 1 || keeplocked)
+=======
+	if (cdi->use_count != 1 || cdi->keeplocked)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cdi->use_count != 1 || cdi->keeplocked)
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	if (CDROM_CAN(CDC_LOCK)) {
 		int ret = cdi->ops->lock_door(cdi, 0);
@@ -2311,7 +2382,15 @@ static int cdrom_ioctl_eject_sw(struct cdrom_device_info *cdi,
 
 	if (!CDROM_CAN(CDC_OPEN_TRAY))
 		return -ENOSYS;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (keeplocked)
+=======
+	if (cdi->keeplocked)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cdi->keeplocked)
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 
 	cdi->options &= ~(CDO_AUTO_CLOSE | CDO_AUTO_EJECT);
@@ -2442,7 +2521,15 @@ static int cdrom_ioctl_lock_door(struct cdrom_device_info *cdi,
 	if (!CDROM_CAN(CDC_LOCK))
 		return -EDRIVE_CANT_DO_THIS;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	keeplocked = arg ? 1 : 0;
+=======
+	cdi->keeplocked = arg ? 1 : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cdi->keeplocked = arg ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Don't unlock the door on multiple opens by default, but allow

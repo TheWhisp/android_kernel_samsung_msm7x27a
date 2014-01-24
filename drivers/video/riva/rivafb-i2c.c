@@ -86,9 +86,14 @@ static int riva_gpio_getsda(void* data)
 	return val;
 }
 
+<<<<<<< HEAD
 static int __devinit riva_setup_i2c_bus(struct riva_i2c_chan *chan,
 					const char *name,
 					unsigned int i2c_class)
+=======
+static int riva_setup_i2c_bus(struct riva_i2c_chan *chan, const char *name,
+			      unsigned int i2c_class)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
@@ -124,7 +129,11 @@ static int __devinit riva_setup_i2c_bus(struct riva_i2c_chan *chan,
 	return rc;
 }
 
+<<<<<<< HEAD
 void __devinit riva_create_i2c_busses(struct riva_par *par)
+=======
+void riva_create_i2c_busses(struct riva_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	par->chan[0].par	= par;
 	par->chan[1].par	= par;
@@ -150,7 +159,11 @@ void riva_delete_i2c_busses(struct riva_par *par)
 	}
 }
 
+<<<<<<< HEAD
 int __devinit riva_probe_i2c_connector(struct riva_par *par, int conn, u8 **out_edid)
+=======
+int riva_probe_i2c_connector(struct riva_par *par, int conn, u8 **out_edid)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 *edid = NULL;
 

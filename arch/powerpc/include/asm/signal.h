@@ -1,6 +1,7 @@
 #ifndef _ASM_POWERPC_SIGNAL_H
 #define _ASM_POWERPC_SIGNAL_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #define _NSIG		64
@@ -146,5 +147,12 @@ struct sig_dbg_op {
 /* Enable or disable branch tracing.  The value sets the state. */
 #define SIG_DBG_BRANCH_TRACING		2
 #endif /* ! __powerpc64__ */
+=======
+#define __ARCH_HAS_SA_RESTORER
+#include <uapi/asm/signal.h>
+#include <uapi/asm/ptrace.h>
+
+extern unsigned long get_tm_stackpointer(struct pt_regs *regs);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_POWERPC_SIGNAL_H */

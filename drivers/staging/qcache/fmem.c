@@ -13,9 +13,26 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fmem.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#include <linux/export.h>
+#include <linux/fmem.h>
+#include <linux/platform_device.h>
+#include <linux/io.h>
+#ifdef CONFIG_MEMORY_HOTPLUG
+#include <linux/memory.h>
+#include <linux/memory_hotplug.h>
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #include "tmem.h"
 #include <asm/mach/map.h>
 
@@ -23,6 +40,20 @@ struct fmem_data fmem_data;
 enum fmem_state fmem_state;
 static spinlock_t fmem_state_lock;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef CONFIG_MEMORY_HOTPLUG
+static unsigned int section_powered_off[NR_MEM_SECTIONS];
+static unsigned int fmem_section_start, fmem_section_end;
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 void *fmem_map_virtual_area(int cacheability)
 {
 	unsigned long addr;
@@ -31,8 +62,16 @@ void *fmem_map_virtual_area(int cacheability)
 
 	addr = (unsigned long) fmem_data.area->addr;
 	type = get_mem_type(cacheability);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ret = ioremap_page_range(addr, addr + fmem_data.size,
 			fmem_data.phys, __pgprot(type->prot_pte));
+=======
+	ret = ioremap_pages(addr, fmem_data.phys, fmem_data.size, type);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = ioremap_pages(addr, fmem_data.phys, fmem_data.size, type);
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		return ERR_PTR(ret);
 
@@ -51,6 +90,23 @@ static int fmem_probe(struct platform_device *pdev)
 {
 	struct fmem_platform_data *pdata = pdev->dev.platform_data;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!pdata->phys)
+		pdata->phys = allocate_contiguous_ebi_nomap(pdata->size,
+			pdata->align);
+
+#ifdef CONFIG_MEMORY_HOTPLUG
+	fmem_section_start = pdata->phys >> PA_SECTION_SHIFT;
+	fmem_section_end = (pdata->phys - 1 + pdata->size) >> PA_SECTION_SHIFT;
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	fmem_data.phys = pdata->phys + pdata->reserved_size_low;
 	fmem_data.size = pdata->size - pdata->reserved_size_low -
 					pdata->reserved_size_high;
@@ -96,6 +152,19 @@ static ssize_t fmem_state_show(struct kobject *kobj,
 		return snprintf(buf, 3, "t\n");
 	else if (fmem_state == FMEM_C_STATE)
 		return snprintf(buf, 3, "c\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef CONFIG_MEMORY_HOTPLUG
+	else if (fmem_state == FMEM_O_STATE)
+		return snprintf(buf, 3, "o\n");
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	else if (fmem_state == FMEM_UNINITIALIZED)
 		return snprintf(buf, 15, "uninitialized\n");
 	return snprintf(buf, 3, "?\n");
@@ -111,6 +180,19 @@ static ssize_t fmem_state_store(struct kobject *kobj,
 		ret = fmem_set_state(FMEM_T_STATE);
 	else if (!strncmp(buf, "c", 1))
 		ret = fmem_set_state(FMEM_C_STATE);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef CONFIG_MEMORY_HOTPLUG
+	else if (!strncmp(buf, "o", 1))
+		ret = fmem_set_state(FMEM_O_STATE);
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (ret)
 		return ret;
 	return 1;
@@ -144,8 +226,106 @@ static int fmem_create_sysfs(void)
 
 #endif
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init fmem_init(void)
 {
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef CONFIG_MEMORY_HOTPLUG
+bool fmem_is_disjoint(unsigned long start_pfn, unsigned long nr_pages)
+{
+	unsigned long fmem_start_pfn, fmem_end_pfn;
+	unsigned long unstable_end_pfn;
+	unsigned long highest_start_pfn, lowest_end_pfn;
+
+	fmem_start_pfn = (fmem_data.phys - fmem_data.reserved_size_low)
+		>> PAGE_SHIFT;
+	fmem_end_pfn = (fmem_data.phys + fmem_data.size +
+		fmem_data.reserved_size_high - 1) >> PAGE_SHIFT;
+	unstable_end_pfn = start_pfn + nr_pages - 1;
+
+	highest_start_pfn = max(fmem_start_pfn, start_pfn);
+	lowest_end_pfn = min(fmem_end_pfn, unstable_end_pfn);
+
+	return lowest_end_pfn < highest_start_pfn;
+}
+
+static int fmem_mem_going_offline_callback(void *arg)
+{
+	struct memory_notify *marg = arg;
+
+	if (fmem_is_disjoint(marg->start_pfn, marg->nr_pages))
+		return 0;
+	return fmem_set_state(FMEM_O_STATE);
+}
+
+static void fmem_mem_online_callback(void *arg)
+{
+	struct memory_notify *marg = arg;
+	int i;
+
+	section_powered_off[marg->start_pfn >> PFN_SECTION_SHIFT] = 0;
+
+	if (fmem_state != FMEM_O_STATE)
+		return;
+
+	for (i = fmem_section_start; i <= fmem_section_end; i++) {
+		if (section_powered_off[i])
+			return;
+	}
+
+	fmem_set_state(FMEM_T_STATE);
+}
+
+static void fmem_mem_offline_callback(void *arg)
+{
+	struct memory_notify *marg = arg;
+
+	section_powered_off[marg->start_pfn >> PFN_SECTION_SHIFT] = 1;
+}
+
+static int fmem_memory_callback(struct notifier_block *self,
+				unsigned long action, void *arg)
+{
+	int ret = 0;
+
+	if (fmem_state == FMEM_UNINITIALIZED)
+		return NOTIFY_OK;
+
+	switch (action) {
+	case MEM_ONLINE:
+		fmem_mem_online_callback(arg);
+		break;
+	case MEM_GOING_OFFLINE:
+		ret = fmem_mem_going_offline_callback(arg);
+		break;
+	case MEM_OFFLINE:
+		fmem_mem_offline_callback(arg);
+		break;
+	case MEM_GOING_ONLINE:
+	case MEM_CANCEL_ONLINE:
+	case MEM_CANCEL_OFFLINE:
+		break;
+	}
+	if (ret)
+		ret = notifier_from_errno(ret);
+	else
+		ret = NOTIFY_OK;
+	return ret;
+}
+#endif
+
+static int __init fmem_init(void)
+{
+#ifdef CONFIG_MEMORY_HOTPLUG
+	hotplug_memory_notifier(fmem_memory_callback, 0);
+#endif
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return platform_driver_register(&fmem_driver);
 }
 
@@ -184,13 +364,43 @@ int fmem_set_state(enum fmem_state new_state)
 			tmem_enable();
 			create_sysfs = 1;
 			goto out_set;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		if (new_state == FMEM_C_STATE) {
+=======
+		} else {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+>>>>>>> refs/remotes/origin/cm-11.0
 			ret = -EINVAL;
 			goto out;
 		}
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+#ifdef CONFIG_MEMORY_HOTPLUG
+	if (fmem_state == FMEM_C_STATE && new_state == FMEM_O_STATE) {
+		ret = -EAGAIN;
+		goto out;
+	}
+
+	if (fmem_state == FMEM_O_STATE && new_state == FMEM_C_STATE) {
+		pr_warn("attempting to use powered off memory as fmem\n");
+		ret = -EAGAIN;
+		goto out;
+	}
+#endif
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (new_state == FMEM_T_STATE) {
 		void *v;
 		v = fmem_map_virtual_area(MT_DEVICE_CACHED);

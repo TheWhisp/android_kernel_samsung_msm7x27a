@@ -194,6 +194,16 @@ struct b43_phy_a;
 struct b43_phy_g;
 struct b43_phy_n;
 struct b43_phy_lp;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+struct b43_phy_ht;
+struct b43_phy_lcn;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct b43_phy_ht;
+struct b43_phy_lcn;
+>>>>>>> refs/remotes/origin/master
 
 struct b43_phy {
 	/* Hardware operation callbacks. */
@@ -216,6 +226,19 @@ struct b43_phy {
 		struct b43_phy_n *n;
 		/* LP-PHY specific information */
 		struct b43_phy_lp *lp;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		/* HT-PHY specific information */
+		struct b43_phy_ht *ht;
+		/* LCN-PHY specific information */
+		struct b43_phy_lcn *lcn;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* Band support flags. */
@@ -359,6 +382,15 @@ void b43_radio_set(struct b43_wldev *dev, u16 offset, u16 set);
 void b43_radio_maskset(struct b43_wldev *dev, u16 offset, u16 mask, u16 set);
 
 /**
+<<<<<<< HEAD
+=======
+ * b43_radio_wait_value - Waits for a given value in masked register read
+ */
+bool b43_radio_wait_value(struct b43_wldev *dev, u16 offset, u16 mask,
+			  u16 value, int delay, int timeout);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * b43_radio_lock - Lock firmware radio register access
  */
 void b43_radio_lock(struct b43_wldev *dev);
@@ -438,6 +470,16 @@ void b43_phyop_switch_analog_generic(struct b43_wldev *dev, bool on);
 
 bool b43_channel_type_is_40mhz(enum nl80211_channel_type channel_type);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void b43_phy_force_clock(struct b43_wldev *dev, bool force);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+void b43_phy_force_clock(struct b43_wldev *dev, bool force);
+
+>>>>>>> refs/remotes/origin/master
 struct b43_c32 b43_cordic(int theta);
 
 #endif /* LINUX_B43_PHY_COMMON_H_ */

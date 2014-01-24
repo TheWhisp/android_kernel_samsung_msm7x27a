@@ -1,6 +1,7 @@
 #ifndef _ASM_X86_VM86_H
 #define _ASM_X86_VM86_H
 
+<<<<<<< HEAD
 /*
  * I'm guessing at the VIF/VIP flag usage, but hope that this is how
  * the Pentium uses them. Linux will return from vm86 mode when both
@@ -128,6 +129,11 @@ struct vm86plus_struct {
 #ifdef __KERNEL__
 
 #include <asm/ptrace.h>
+=======
+
+#include <asm/ptrace.h>
+#include <uapi/asm/vm86.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is the (kernel) stack-layout when we have done a "SAVE_ALL" from vm86
@@ -203,6 +209,9 @@ static inline int handle_vm86_trap(struct kernel_vm86_regs *a, long b, int c)
 
 #endif /* CONFIG_VM86 */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_VM86_H */

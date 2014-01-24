@@ -27,6 +27,14 @@
 #include <linux/poll.h>
 #include <linux/sched.h>
 #include <linux/hid-roccat.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define ROCCAT_FIRST_MINOR 0
 #define ROCCAT_MAX_DEVICES 8
@@ -162,6 +170,8 @@ static int roccat_open(struct inode *inode, struct file *file)
 
 	device = devices[minor];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&device->readers_lock);
 
 	if (!device) {
@@ -170,19 +180,50 @@ static int roccat_open(struct inode *inode, struct file *file)
 		goto exit_err;
 	}
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!device) {
+		pr_emerg("roccat device with minor %d doesn't exist\n", minor);
+		error = -ENODEV;
+		goto exit_err_devices;
+	}
+
+	mutex_lock(&device->readers_lock);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!device->open++) {
 		/* power on device on adding first reader */
 		error = hid_hw_power(device->hid, PM_HINT_FULLON);
 		if (error < 0) {
 			--device->open;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			goto exit_err;
+=======
+			goto exit_err_readers;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto exit_err_readers;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		error = hid_hw_open(device->hid);
 		if (error < 0) {
 			hid_hw_power(device->hid, PM_HINT_NORMAL);
 			--device->open;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			goto exit_err;
+=======
+			goto exit_err_readers;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto exit_err_readers;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -193,6 +234,8 @@ static int roccat_open(struct inode *inode, struct file *file)
 	list_add_tail(&reader->node, &device->readers);
 	file->private_data = reader;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 exit_unlock:
 	mutex_unlock(&device->readers_lock);
 	mutex_unlock(&devices_lock);
@@ -200,6 +243,20 @@ exit_unlock:
 exit_err:
 	kfree(reader);
 	goto exit_unlock;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+exit_err_readers:
+	mutex_unlock(&device->readers_lock);
+exit_err_devices:
+	mutex_unlock(&devices_lock);
+	if (error)
+		kfree(reader);
+	return error;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int roccat_release(struct inode *inode, struct file *file)
@@ -241,7 +298,10 @@ static int roccat_release(struct inode *inode, struct file *file)
  * roccat_report_event() - output data to readers
  * @minor: minor device number returned by roccat_connect()
  * @data: pointer to data
+<<<<<<< HEAD
  * @len: size of data
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Return value is zero on success, a negative error code on failure.
  *
@@ -289,6 +349,10 @@ EXPORT_SYMBOL_GPL(roccat_report_event);
  * @class: the class thats used to create the device. Meant to hold device
  * specific sysfs attributes.
  * @hid: the hid device the char device should be connected to.
+<<<<<<< HEAD
+=======
+ * @report_size: size of reports
+>>>>>>> refs/remotes/origin/master
  *
  * Return value is minor device number in Range [0, ROCCAT_MAX_DEVICES] on
  * success, a negative error code on failure.
@@ -365,7 +429,11 @@ void roccat_disconnect(int minor)
 	mutex_lock(&devices_lock);
 	devices[minor] = NULL;
 	mutex_unlock(&devices_lock);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (device->open) {
 		hid_hw_close(device->hid);
 		wake_up_interruptible(&device->wait);
@@ -377,7 +445,11 @@ EXPORT_SYMBOL_GPL(roccat_disconnect);
 
 static long roccat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct roccat_device *device;
 	unsigned int minor = iminor(inode);
 	long retval = 0;
@@ -425,6 +497,7 @@ static int __init roccat_init(void)
 
 	if (retval < 0) {
 		pr_warn("can't get major number\n");
+<<<<<<< HEAD
 		return retval;
 	}
 
@@ -432,6 +505,25 @@ static int __init roccat_init(void)
 	cdev_add(&roccat_cdev, dev_id, ROCCAT_MAX_DEVICES);
 
 	return 0;
+=======
+		goto error;
+	}
+
+	cdev_init(&roccat_cdev, &roccat_ops);
+	retval = cdev_add(&roccat_cdev, dev_id, ROCCAT_MAX_DEVICES);
+
+	if (retval < 0) {
+		pr_warn("cannot add cdev\n");
+		goto cleanup_alloc_chrdev_region;
+	}
+	return 0;
+
+
+ cleanup_alloc_chrdev_region:
+	unregister_chrdev_region(dev_id, ROCCAT_MAX_DEVICES);
+ error:
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit roccat_exit(void)

@@ -23,6 +23,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+<<<<<<< HEAD
 
 #ifndef _I915_DRM_H_
 #define _I915_DRM_H_
@@ -34,12 +35,21 @@
  */
 
 #ifdef __KERNEL__
+=======
+#ifndef _I915_DRM_H_
+#define _I915_DRM_H_
+
+#include <drm/i915_pciids.h>
+#include <uapi/drm/i915_drm.h>
+
+>>>>>>> refs/remotes/origin/master
 /* For use by IPS driver */
 extern unsigned long i915_read_mch_val(void);
 extern bool i915_gpu_raise(void);
 extern bool i915_gpu_lower(void);
 extern bool i915_gpu_busy(void);
 extern bool i915_gpu_turbo_disable(void);
+<<<<<<< HEAD
 #endif
 
 /* Each region is a minimum of 16k, and there are at most 255 of them.
@@ -198,6 +208,11 @@ typedef struct _drm_i915_sarea {
 #define DRM_I915_OVERLAY_PUT_IMAGE	0x27
 #define DRM_I915_OVERLAY_ATTRS	0x28
 #define DRM_I915_GEM_EXECBUFFER2	0x29
+<<<<<<< HEAD
+=======
+#define DRM_I915_GET_SPRITE_COLORKEY	0x2a
+#define DRM_I915_SET_SPRITE_COLORKEY	0x2b
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRM_IOCTL_I915_INIT		DRM_IOW( DRM_COMMAND_BASE + DRM_I915_INIT, drm_i915_init_t)
 #define DRM_IOCTL_I915_FLUSH		DRM_IO ( DRM_COMMAND_BASE + DRM_I915_FLUSH)
@@ -239,6 +254,11 @@ typedef struct _drm_i915_sarea {
 #define DRM_IOCTL_I915_GEM_MADVISE	DRM_IOWR(DRM_COMMAND_BASE + DRM_I915_GEM_MADVISE, struct drm_i915_gem_madvise)
 #define DRM_IOCTL_I915_OVERLAY_PUT_IMAGE	DRM_IOW(DRM_COMMAND_BASE + DRM_I915_OVERLAY_PUT_IMAGE, struct drm_intel_overlay_put_image)
 #define DRM_IOCTL_I915_OVERLAY_ATTRS	DRM_IOWR(DRM_COMMAND_BASE + DRM_I915_OVERLAY_ATTRS, struct drm_intel_overlay_attrs)
+<<<<<<< HEAD
+=======
+#define DRM_IOCTL_I915_SET_SPRITE_COLORKEY DRM_IOWR(DRM_COMMAND_BASE + DRM_I915_SET_SPRITE_COLORKEY, struct drm_intel_sprite_colorkey)
+#define DRM_IOCTL_I915_GET_SPRITE_COLORKEY DRM_IOWR(DRM_COMMAND_BASE + DRM_I915_SET_SPRITE_COLORKEY, struct drm_intel_sprite_colorkey)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Allow drivers to submit batchbuffers directly to hardware, relying
  * on the security mechanisms provided by hardware.
@@ -291,6 +311,11 @@ typedef struct drm_i915_irq_wait {
 #define I915_PARAM_HAS_COHERENT_RINGS	 13
 #define I915_PARAM_HAS_EXEC_CONSTANTS	 14
 #define I915_PARAM_HAS_RELAXED_DELTA	 15
+<<<<<<< HEAD
+=======
+#define I915_PARAM_HAS_GEN7_SOL_RESET	 16
+#define I915_PARAM_HAS_LLC     	 17
+>>>>>>> refs/remotes/origin/cm-10.0
 
 typedef struct drm_i915_getparam {
 	int param;
@@ -653,6 +678,12 @@ struct drm_i915_gem_execbuffer2 {
 	__u64 rsvd2;
 };
 
+<<<<<<< HEAD
+=======
+/** Resets the SO write offset registers for transform feedback on gen7. */
+#define I915_EXEC_GEN7_SOL_RESET	(1<<8)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct drm_i915_gem_pin {
 	/** Handle of the buffer to be pinned. */
 	__u32 handle;
@@ -844,4 +875,78 @@ struct drm_intel_overlay_attrs {
 	__u32 gamma5;
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * Intel sprite handling
+ *
+ * Color keying works with a min/mask/max tuple.  Both source and destination
+ * color keying is allowed.
+ *
+ * Source keying:
+ * Sprite pixels within the min & max values, masked against the color channels
+ * specified in the mask field, will be transparent.  All other pixels will
+ * be displayed on top of the primary plane.  For RGB surfaces, only the min
+ * and mask fields will be used; ranged compares are not allowed.
+ *
+ * Destination keying:
+ * Primary plane pixels that match the min value, masked against the color
+ * channels specified in the mask field, will be replaced by corresponding
+ * pixels from the sprite plane.
+ *
+ * Note that source & destination keying are exclusive; only one can be
+ * active on a given plane.
+ */
+
+#define I915_SET_COLORKEY_NONE		(1<<0) /* disable color key matching */
+#define I915_SET_COLORKEY_DESTINATION	(1<<1)
+#define I915_SET_COLORKEY_SOURCE	(1<<2)
+struct drm_intel_sprite_colorkey {
+	__u32 plane_id;
+	__u32 min_value;
+	__u32 channel_mask;
+	__u32 max_value;
+	__u32 flags;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/*
+ * The Bridge device's PCI config space has information about the
+ * fb aperture size and the amount of pre-reserved memory.
+ * This is all handled in the intel-gtt.ko module. i915.ko only
+ * cares about the vga bit for the vga rbiter.
+ */
+#define INTEL_GMCH_CTRL		0x52
+#define INTEL_GMCH_VGA_DISABLE  (1 << 1)
+#define SNB_GMCH_CTRL		0x50
+#define    SNB_GMCH_GGMS_SHIFT	8 /* GTT Graphics Memory Size */
+#define    SNB_GMCH_GGMS_MASK	0x3
+#define    SNB_GMCH_GMS_SHIFT   3 /* Graphics Mode Select */
+#define    SNB_GMCH_GMS_MASK    0x1f
+#define    BDW_GMCH_GGMS_SHIFT	6
+#define    BDW_GMCH_GGMS_MASK	0x3
+#define    BDW_GMCH_GMS_SHIFT   8
+#define    BDW_GMCH_GMS_MASK    0xff
+
+#define I830_GMCH_CTRL			0x52
+
+#define I855_GMCH_GMS_MASK		0xF0
+#define I855_GMCH_GMS_STOLEN_0M		0x0
+#define I855_GMCH_GMS_STOLEN_1M		(0x1 << 4)
+#define I855_GMCH_GMS_STOLEN_4M		(0x2 << 4)
+#define I855_GMCH_GMS_STOLEN_8M		(0x3 << 4)
+#define I855_GMCH_GMS_STOLEN_16M	(0x4 << 4)
+#define I855_GMCH_GMS_STOLEN_32M	(0x5 << 4)
+#define I915_GMCH_GMS_STOLEN_48M	(0x6 << 4)
+#define I915_GMCH_GMS_STOLEN_64M	(0x7 << 4)
+#define G33_GMCH_GMS_STOLEN_128M	(0x8 << 4)
+#define G33_GMCH_GMS_STOLEN_256M	(0x9 << 4)
+#define INTEL_GMCH_GMS_STOLEN_96M	(0xa << 4)
+#define INTEL_GMCH_GMS_STOLEN_160M	(0xb << 4)
+#define INTEL_GMCH_GMS_STOLEN_224M	(0xc << 4)
+#define INTEL_GMCH_GMS_STOLEN_352M	(0xd << 4)
+
+>>>>>>> refs/remotes/origin/master
 #endif				/* _I915_DRM_H_ */

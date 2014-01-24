@@ -22,17 +22,36 @@
 
 #include <asm/io.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <asm/page.h>
+#include <asm/pgtable.h>
+#include <asm/gio_device.h>
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <video/newport.h>
 
 #include <linux/linux_logo.h>
 #include <linux/font.h>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 extern unsigned long sgi_gfxaddr;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FONT_DATA ((unsigned char *)font_vga_8x16.data)
 
 /* borrowed from fbcon.c */
@@ -299,17 +318,27 @@ static void newport_exit(void)
 		newport_set_def_font(i, NULL);
 }
 
+<<<<<<< HEAD
 /* Can't be __init, take_over_console may call it later */
+=======
+/* Can't be __init, do_take_over_console may call it later */
+>>>>>>> refs/remotes/origin/master
 static const char *newport_startup(void)
 {
 	int i;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sgi_gfxaddr)
 		return NULL;
 
 	if (!npregs)
 		npregs = (struct newport_regs *)/* ioremap cannot fail */
 			ioremap(sgi_gfxaddr, sizeof(struct newport_regs));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	npregs->cset.config = NPORT_CFG_GD0;
 
 	if (newport_wait(npregs))
@@ -335,9 +364,22 @@ out_unmap:
 
 static void newport_init(struct vc_data *vc, int init)
 {
+<<<<<<< HEAD
 	vc->vc_cols = newport_xsize / 8;
 	vc->vc_rows = newport_ysize / 16;
 	vc->vc_can_do_color = 1;
+=======
+	int cols, rows;
+
+	cols = newport_xsize / 8;
+	rows = newport_ysize / 16;
+	vc->vc_can_do_color = 1;
+	if (init) {
+		vc->vc_cols = cols;
+		vc->vc_rows = rows;
+	} else
+		vc_resize(vc, cols, rows);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void newport_deinit(struct vc_data *c)
@@ -743,6 +785,8 @@ const struct consw newport_con = {
 	.con_save_screen  = DUMMY
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef MODULE
 static int __init newport_console_init(void)
 {
@@ -758,11 +802,87 @@ static int __init newport_console_init(void)
 module_init(newport_console_init);
 
 static void __exit newport_console_exit(void)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+static int newport_probe(struct gio_device *dev,
+			 const struct gio_device_id *id)
+{
+	unsigned long newport_addr;
+<<<<<<< HEAD
+=======
+	int err;
+>>>>>>> refs/remotes/origin/master
+
+	if (!dev->resource.start)
+		return -EINVAL;
+
+	if (npregs)
+		return -EBUSY; /* we only support one Newport as console */
+
+	newport_addr = dev->resource.start + 0xF0000;
+	if (!request_mem_region(newport_addr, 0x10000, "Newport"))
+		return -ENODEV;
+
+	npregs = (struct newport_regs *)/* ioremap cannot fail */
+		ioremap(newport_addr, sizeof(struct newport_regs));
+<<<<<<< HEAD
+
+	return take_over_console(&newport_con, 0, MAX_NR_CONSOLES - 1, 1);
+}
+
+static void newport_remove(struct gio_device *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	console_lock();
+	err = do_take_over_console(&newport_con, 0, MAX_NR_CONSOLES - 1, 1);
+	console_unlock();
+	return err;
+}
+
+static void newport_remove(struct gio_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	give_up_console(&newport_con);
 	iounmap((void *)npregs);
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
 module_exit(newport_console_exit);
 #endif
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+static struct gio_device_id newport_ids[] = {
+	{ .id = 0x7e },
+	{ .id = 0xff }
+};
+
+MODULE_ALIAS("gio:7e");
+
+static struct gio_driver newport_driver = {
+	.name = "newport",
+	.id_table = newport_ids,
+	.probe = newport_probe,
+	.remove = newport_remove,
+};
+
+int __init newport_console_init(void)
+{
+	return gio_register_driver(&newport_driver);
+}
+
+void __exit newport_console_exit(void)
+{
+	gio_unregister_driver(&newport_driver);
+}
+
+module_init(newport_console_init);
+module_exit(newport_console_exit);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

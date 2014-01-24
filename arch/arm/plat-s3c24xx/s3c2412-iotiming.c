@@ -17,7 +17,11 @@
 #include <linux/ioport.h>
 #include <linux/cpufreq.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <linux/clk.h>
 #include <linux/err.h>

@@ -17,7 +17,15 @@
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/syscalls.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/poll.h>
 #include <linux/personality.h> /* for STICKY_TIMEOUTS */
@@ -26,6 +34,12 @@
 #include <linux/fs.h>
 #include <linux/rcupdate.h>
 #include <linux/hrtimer.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched/rt.h>
+#include <linux/freezer.h>
+#include <net/busy_poll.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 
@@ -220,10 +234,20 @@ static void __pollwait(struct file *filp, wait_queue_head_t *wait_address,
 	struct poll_table_entry *entry = poll_get_entry(pwq);
 	if (!entry)
 		return;
+<<<<<<< HEAD
 	get_file(filp);
 	entry->filp = filp;
 	entry->wait_address = wait_address;
+<<<<<<< HEAD
 	entry->key = p->key;
+=======
+	entry->key = p->_key;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	entry->filp = get_file(filp);
+	entry->wait_address = wait_address;
+	entry->key = p->_key;
+>>>>>>> refs/remotes/origin/master
 	init_waitqueue_func_entry(&entry->wait, pollwake);
 	entry->wait.private = pwq;
 	add_wait_queue(wait_address, &entry->wait);
@@ -345,10 +369,28 @@ static int max_select_fd(unsigned long n, fd_set_bits *fds)
 	struct fdtable *fdt;
 
 	/* handle last in-complete long-word first */
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 	set = ~(~0UL << (n & (__NFDBITS-1)));
 	n /= __NFDBITS;
+=======
+	set = ~(~0UL << (n & (BITS_PER_LONG-1)));
+	n /= BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-11.0
 	fdt = files_fdtable(current->files);
 	open_fds = fdt->open_fds->fds_bits+n;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	set = ~(~0UL << (n & (BITS_PER_LONG-1)));
+	n /= BITS_PER_LONG;
+	fdt = files_fdtable(current->files);
+	open_fds = fdt->open_fds + n;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	max = 0;
 	if (set) {
 		set &= BITS(fds, n);
@@ -373,7 +415,19 @@ get_max:
 			max++;
 			set >>= 1;
 		} while (set);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 		max += n * __NFDBITS;
+=======
+		max += n * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		max += n * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/master
+=======
+		max += n * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	return max;
@@ -384,8 +438,10 @@ get_max:
 #define POLLEX_SET (POLLPRI)
 
 static inline void wait_key_set(poll_table *wait, unsigned long in,
+<<<<<<< HEAD
 				unsigned long out, unsigned long bit)
 {
+<<<<<<< HEAD
 	if (wait) {
 		wait->key = POLLEX_SET;
 		if (in & bit)
@@ -393,6 +449,22 @@ static inline void wait_key_set(poll_table *wait, unsigned long in,
 		if (out & bit)
 			wait->key |= POLLOUT_SET;
 	}
+=======
+	wait->_key = POLLEX_SET;
+=======
+				unsigned long out, unsigned long bit,
+				unsigned int ll_flag)
+{
+	wait->_key = POLLEX_SET | ll_flag;
+>>>>>>> refs/remotes/origin/master
+	if (in & bit)
+		wait->_key |= POLLIN_SET;
+	if (out & bit)
+		wait->_key |= POLLOUT_SET;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
@@ -402,6 +474,11 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 	poll_table *wait;
 	int retval, i, timed_out = 0;
 	unsigned long slack = 0;
+<<<<<<< HEAD
+=======
+	unsigned int busy_flag = net_busy_loop_on() ? POLL_BUSY_LOOP : 0;
+	unsigned long busy_end = 0;
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 	retval = max_select_fd(n, fds);
@@ -414,7 +491,15 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 	poll_initwait(&table);
 	wait = &table.pt;
 	if (end_time && !end_time->tv_sec && !end_time->tv_nsec) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		wait = NULL;
+=======
+		wait->_qproc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wait->_qproc = NULL;
+>>>>>>> refs/remotes/origin/master
 		timed_out = 1;
 	}
 
@@ -424,6 +509,10 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 	retval = 0;
 	for (;;) {
 		unsigned long *rinp, *routp, *rexp, *inp, *outp, *exp;
+<<<<<<< HEAD
+=======
+		bool can_busy_loop = false;
+>>>>>>> refs/remotes/origin/master
 
 		inp = fds->in; outp = fds->out; exp = fds->ex;
 		rinp = fds->res_in; routp = fds->res_out; rexp = fds->res_ex;
@@ -431,22 +520,49 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 		for (i = 0; i < n; ++rinp, ++routp, ++rexp) {
 			unsigned long in, out, ex, all_bits, bit = 1, mask, j;
 			unsigned long res_in = 0, res_out = 0, res_ex = 0;
+<<<<<<< HEAD
 			const struct file_operations *f_op = NULL;
 			struct file *file = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 
 			in = *inp++; out = *outp++; ex = *exp++;
 			all_bits = in | out | ex;
 			if (all_bits == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 				i += __NFDBITS;
 				continue;
 			}
 
 			for (j = 0; j < __NFDBITS; ++j, ++i, bit <<= 1) {
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+				i += BITS_PER_LONG;
+				continue;
+			}
+
+			for (j = 0; j < BITS_PER_LONG; ++j, ++i, bit <<= 1) {
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				i += BITS_PER_LONG;
+				continue;
+			}
+
+			for (j = 0; j < BITS_PER_LONG; ++j, ++i, bit <<= 1) {
+>>>>>>> refs/remotes/origin/cm-11.0
 				int fput_needed;
+=======
+				struct fd f;
+>>>>>>> refs/remotes/origin/master
 				if (i >= n)
 					break;
 				if (!(bit & all_bits))
 					continue;
+<<<<<<< HEAD
 				file = fget_light(i, &fput_needed);
 				if (file) {
 					f_op = file->f_op;
@@ -459,18 +575,68 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 					if ((mask & POLLIN_SET) && (in & bit)) {
 						res_in |= bit;
 						retval++;
+<<<<<<< HEAD
 						wait = NULL;
+=======
+						wait->_qproc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				f = fdget(i);
+				if (f.file) {
+					const struct file_operations *f_op;
+					f_op = f.file->f_op;
+					mask = DEFAULT_POLLMASK;
+					if (f_op->poll) {
+						wait_key_set(wait, in, out,
+							     bit, busy_flag);
+						mask = (*f_op->poll)(f.file, wait);
+					}
+					fdput(f);
+					if ((mask & POLLIN_SET) && (in & bit)) {
+						res_in |= bit;
+						retval++;
+						wait->_qproc = NULL;
+>>>>>>> refs/remotes/origin/master
 					}
 					if ((mask & POLLOUT_SET) && (out & bit)) {
 						res_out |= bit;
 						retval++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 						wait = NULL;
+=======
+						wait->_qproc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						wait->_qproc = NULL;
+>>>>>>> refs/remotes/origin/master
 					}
 					if ((mask & POLLEX_SET) && (ex & bit)) {
 						res_ex |= bit;
 						retval++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 						wait = NULL;
+=======
+						wait->_qproc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 					}
+=======
+						wait->_qproc = NULL;
+					}
+					/* got something, stop busy polling */
+					if (retval) {
+						can_busy_loop = false;
+						busy_flag = 0;
+
+					/*
+					 * only remember a returned
+					 * POLL_BUSY_LOOP if we asked for it
+					 */
+					} else if (busy_flag & mask)
+						can_busy_loop = true;
+
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 			if (res_in)
@@ -481,7 +647,15 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 				*rexp = res_ex;
 			cond_resched();
 		}
+<<<<<<< HEAD
+<<<<<<< HEAD
 		wait = NULL;
+=======
+		wait->_qproc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wait->_qproc = NULL;
+>>>>>>> refs/remotes/origin/master
 		if (retval || timed_out || signal_pending(current))
 			break;
 		if (table.error) {
@@ -489,6 +663,20 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 			break;
 		}
 
+<<<<<<< HEAD
+=======
+		/* only if found POLL_BUSY_LOOP sockets && not out of time */
+		if (can_busy_loop && !need_resched()) {
+			if (!busy_end) {
+				busy_end = busy_loop_end_time();
+				continue;
+			}
+			if (!busy_loop_timeout(busy_end))
+				continue;
+		}
+		busy_flag = 0;
+
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * If this is the first loop and we have a timeout
 		 * given, then we convert to ktime_t and set the to
@@ -616,7 +804,10 @@ SYSCALL_DEFINE5(select, int, n, fd_set __user *, inp, fd_set __user *, outp,
 	return ret;
 }
 
+<<<<<<< HEAD
 #ifdef HAVE_SET_RESTORE_SIGMASK
+=======
+>>>>>>> refs/remotes/origin/master
 static long do_pselect(int n, fd_set __user *inp, fd_set __user *outp,
 		       fd_set __user *exp, struct timespec __user *tsp,
 		       const sigset_t __user *sigmask, size_t sigsetsize)
@@ -688,7 +879,10 @@ SYSCALL_DEFINE6(pselect6, int, n, fd_set __user *, inp, fd_set __user *, outp,
 
 	return do_pselect(n, inp, outp, exp, tsp, up, sigsetsize);
 }
+<<<<<<< HEAD
 #endif /* HAVE_SET_RESTORE_SIGMASK */
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __ARCH_WANT_SYS_OLD_SELECT
 struct sel_arg_struct {
@@ -720,9 +914,21 @@ struct poll_list {
  * interested in events matching the pollfd->events mask, and the result
  * matching that mask is both recorded in pollfd->revents and returned. The
  * pwait poll_table will be used by the fd-provided poll handler for waiting,
+<<<<<<< HEAD
+<<<<<<< HEAD
  * if non-NULL.
+=======
+ * if pwait->_qproc is non-NULL.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static inline unsigned int do_pollfd(struct pollfd *pollfd, poll_table *pwait)
+=======
+ * if pwait->_qproc is non-NULL.
+ */
+static inline unsigned int do_pollfd(struct pollfd *pollfd, poll_table *pwait,
+				     bool *can_busy_poll,
+				     unsigned int busy_flag)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int mask;
 	int fd;
@@ -730,6 +936,7 @@ static inline unsigned int do_pollfd(struct pollfd *pollfd, poll_table *pwait)
 	mask = 0;
 	fd = pollfd->fd;
 	if (fd >= 0) {
+<<<<<<< HEAD
 		int fput_needed;
 		struct file * file;
 
@@ -738,14 +945,34 @@ static inline unsigned int do_pollfd(struct pollfd *pollfd, poll_table *pwait)
 		if (file != NULL) {
 			mask = DEFAULT_POLLMASK;
 			if (file->f_op && file->f_op->poll) {
+<<<<<<< HEAD
 				if (pwait)
 					pwait->key = pollfd->events |
 							POLLERR | POLLHUP;
+=======
+				pwait->_key = pollfd->events|POLLERR|POLLHUP;
+>>>>>>> refs/remotes/origin/cm-10.0
 				mask = file->f_op->poll(file, pwait);
 			}
 			/* Mask out unneeded events. */
 			mask &= pollfd->events | POLLERR | POLLHUP;
 			fput_light(file, fput_needed);
+=======
+		struct fd f = fdget(fd);
+		mask = POLLNVAL;
+		if (f.file) {
+			mask = DEFAULT_POLLMASK;
+			if (f.file->f_op->poll) {
+				pwait->_key = pollfd->events|POLLERR|POLLHUP;
+				pwait->_key |= busy_flag;
+				mask = f.file->f_op->poll(f.file, pwait);
+				if (mask & busy_flag)
+					*can_busy_poll = true;
+			}
+			/* Mask out unneeded events. */
+			mask &= pollfd->events | POLLERR | POLLHUP;
+			fdput(f);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	pollfd->revents = mask;
@@ -760,10 +987,23 @@ static int do_poll(unsigned int nfds,  struct poll_list *list,
 	ktime_t expire, *to = NULL;
 	int timed_out = 0, count = 0;
 	unsigned long slack = 0;
+<<<<<<< HEAD
 
 	/* Optimise the no-wait case */
 	if (end_time && !end_time->tv_sec && !end_time->tv_nsec) {
+<<<<<<< HEAD
 		pt = NULL;
+=======
+		pt->_qproc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int busy_flag = net_busy_loop_on() ? POLL_BUSY_LOOP : 0;
+	unsigned long busy_end = 0;
+
+	/* Optimise the no-wait case */
+	if (end_time && !end_time->tv_sec && !end_time->tv_nsec) {
+		pt->_qproc = NULL;
+>>>>>>> refs/remotes/origin/master
 		timed_out = 1;
 	}
 
@@ -772,6 +1012,10 @@ static int do_poll(unsigned int nfds,  struct poll_list *list,
 
 	for (;;) {
 		struct poll_list *walk;
+<<<<<<< HEAD
+=======
+		bool can_busy_loop = false;
+>>>>>>> refs/remotes/origin/master
 
 		for (walk = list; walk != NULL; walk = walk->next) {
 			struct pollfd * pfd, * pfd_end;
@@ -781,22 +1025,56 @@ static int do_poll(unsigned int nfds,  struct poll_list *list,
 			for (; pfd != pfd_end; pfd++) {
 				/*
 				 * Fish for events. If we found one, record it
+<<<<<<< HEAD
+<<<<<<< HEAD
 				 * and kill the poll_table, so we don't
+=======
+				 * and kill poll_table->_qproc, so we don't
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 * and kill poll_table->_qproc, so we don't
+>>>>>>> refs/remotes/origin/master
 				 * needlessly register any other waiters after
 				 * this. They'll get immediately deregistered
 				 * when we break out and return.
 				 */
+<<<<<<< HEAD
 				if (do_pollfd(pfd, pt)) {
 					count++;
+<<<<<<< HEAD
 					pt = NULL;
+=======
+					pt->_qproc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (do_pollfd(pfd, pt, &can_busy_loop,
+					      busy_flag)) {
+					count++;
+					pt->_qproc = NULL;
+					/* found something, stop busy polling */
+					busy_flag = 0;
+					can_busy_loop = false;
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 		}
 		/*
 		 * All waiters have already been registered, so don't provide
+<<<<<<< HEAD
+<<<<<<< HEAD
 		 * a poll_table to them on the next loop iteration.
 		 */
 		pt = NULL;
+=======
+		 * a poll_table->_qproc to them on the next loop iteration.
+		 */
+		pt->_qproc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * a poll_table->_qproc to them on the next loop iteration.
+		 */
+		pt->_qproc = NULL;
+>>>>>>> refs/remotes/origin/master
 		if (!count) {
 			count = wait->error;
 			if (signal_pending(current))
@@ -805,6 +1083,20 @@ static int do_poll(unsigned int nfds,  struct poll_list *list,
 		if (count || timed_out)
 			break;
 
+<<<<<<< HEAD
+=======
+		/* only if found POLL_BUSY_LOOP sockets && not out of time */
+		if (can_busy_loop && !need_resched()) {
+			if (!busy_end) {
+				busy_end = busy_loop_end_time();
+				continue;
+			}
+			if (!busy_loop_timeout(busy_end))
+				continue;
+		}
+		busy_flag = 0;
+
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * If this is the first loop and we have a timeout
 		 * given, then we convert to ktime_t and set the to
@@ -912,7 +1204,15 @@ static long do_restart_poll(struct restart_block *restart_block)
 }
 
 SYSCALL_DEFINE3(poll, struct pollfd __user *, ufds, unsigned int, nfds,
+<<<<<<< HEAD
+<<<<<<< HEAD
 		long, timeout_msecs)
+=======
+		int, timeout_msecs)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int, timeout_msecs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct timespec end_time, *to = NULL;
 	int ret;
@@ -945,7 +1245,10 @@ SYSCALL_DEFINE3(poll, struct pollfd __user *, ufds, unsigned int, nfds,
 	return ret;
 }
 
+<<<<<<< HEAD
 #ifdef HAVE_SET_RESTORE_SIGMASK
+=======
+>>>>>>> refs/remotes/origin/master
 SYSCALL_DEFINE5(ppoll, struct pollfd __user *, ufds, unsigned int, nfds,
 		struct timespec __user *, tsp, const sigset_t __user *, sigmask,
 		size_t, sigsetsize)
@@ -996,4 +1299,7 @@ SYSCALL_DEFINE5(ppoll, struct pollfd __user *, ufds, unsigned int, nfds,
 
 	return ret;
 }
+<<<<<<< HEAD
 #endif /* HAVE_SET_RESTORE_SIGMASK */
+=======
+>>>>>>> refs/remotes/origin/master

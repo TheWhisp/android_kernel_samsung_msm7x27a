@@ -262,7 +262,11 @@ void snd_pdacf_powerdown(struct snd_pdacf *chip)
 
 #ifdef CONFIG_PM
 
+<<<<<<< HEAD
 int snd_pdacf_suspend(struct snd_pdacf *chip, pm_message_t state)
+=======
+int snd_pdacf_suspend(struct snd_pdacf *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 val;
 	

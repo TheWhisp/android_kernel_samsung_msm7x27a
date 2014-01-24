@@ -15,7 +15,11 @@
 
 /* Tcp Hybla structure. */
 struct hybla {
+<<<<<<< HEAD
 	u8    hybla_en;
+=======
+	bool  hybla_en;
+>>>>>>> refs/remotes/origin/master
 	u32   snd_cwnd_cents; /* Keeps increment values when it is <1, <<7 */
 	u32   rho;	      /* Rho parameter, integer part  */
 	u32   rho2;	      /* Rho * Rho, integer part */
@@ -24,8 +28,12 @@ struct hybla {
 	u32   minrtt;	      /* Minimum smoothed round trip time value seen */
 };
 
+<<<<<<< HEAD
 /* Hybla reference round trip time (default= 1/40 sec = 25 ms),
    expressed in jiffies */
+=======
+/* Hybla reference round trip time (default= 1/40 sec = 25 ms), in ms */
+>>>>>>> refs/remotes/origin/master
 static int rtt0 = 25;
 module_param(rtt0, int, 0644);
 MODULE_PARM_DESC(rtt0, "reference rout trip time (ms)");
@@ -39,7 +47,11 @@ static inline void hybla_recalc_param (struct sock *sk)
 	ca->rho_3ls = max_t(u32, tcp_sk(sk)->srtt / msecs_to_jiffies(rtt0), 8);
 	ca->rho = ca->rho_3ls >> 3;
 	ca->rho2_7ls = (ca->rho_3ls * ca->rho_3ls) << 1;
+<<<<<<< HEAD
 	ca->rho2 = ca->rho2_7ls >>7;
+=======
+	ca->rho2 = ca->rho2_7ls >> 7;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hybla_init(struct sock *sk)
@@ -52,7 +64,11 @@ static void hybla_init(struct sock *sk)
 	ca->rho_3ls = 0;
 	ca->rho2_7ls = 0;
 	ca->snd_cwnd_cents = 0;
+<<<<<<< HEAD
 	ca->hybla_en = 1;
+=======
+	ca->hybla_en = true;
+>>>>>>> refs/remotes/origin/master
 	tp->snd_cwnd = 2;
 	tp->snd_cwnd_clamp = 65535;
 
@@ -67,6 +83,10 @@ static void hybla_init(struct sock *sk)
 static void hybla_state(struct sock *sk, u8 ca_state)
 {
 	struct hybla *ca = inet_csk_ca(sk);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	ca->hybla_en = (ca_state == TCP_CA_Open);
 }
 
@@ -85,7 +105,12 @@ static inline u32 hybla_fraction(u32 odds)
  *     o Give cwnd a new value based on the model proposed
  *     o remember increments <1
  */
+<<<<<<< HEAD
 static void hybla_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
+=======
+static void hybla_cong_avoid(struct sock *sk, u32 ack, u32 acked,
+			     u32 in_flight)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct hybla *ca = inet_csk_ca(sk);
@@ -102,7 +127,11 @@ static void hybla_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 		return;
 
 	if (!ca->hybla_en) {
+<<<<<<< HEAD
 		tcp_reno_cong_avoid(sk, ack, in_flight);
+=======
+		tcp_reno_cong_avoid(sk, ack, acked, in_flight);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 

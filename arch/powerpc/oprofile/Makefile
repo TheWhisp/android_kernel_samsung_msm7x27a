@@ -1,6 +1,10 @@
 subdir-ccflags-$(CONFIG_PPC_WERROR) := -Werror
 
+<<<<<<< HEAD
 ccflags-$(CONFIG_PPC64)	:= -mno-minimal-toc
+=======
+ccflags-$(CONFIG_PPC64)	:= $(NO_MINIMAL_TOC)
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_OPROFILE) += oprofile.o
 

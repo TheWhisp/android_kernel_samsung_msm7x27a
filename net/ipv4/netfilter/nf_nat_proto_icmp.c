@@ -8,14 +8,26 @@
 
 #include <linux/types.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ip.h>
 #include <linux/icmp.h>
 
 #include <linux/netfilter.h>
 #include <net/netfilter/nf_nat.h>
 #include <net/netfilter/nf_nat_core.h>
+<<<<<<< HEAD
 #include <net/netfilter/nf_nat_rule.h>
 #include <net/netfilter/nf_nat_protocol.h>
+=======
+#include <net/netfilter/nf_nat_l4proto.h>
+>>>>>>> refs/remotes/origin/master
 
 static bool
 icmp_in_range(const struct nf_conntrack_tuple *tuple,
@@ -28,8 +40,18 @@ icmp_in_range(const struct nf_conntrack_tuple *tuple,
 }
 
 static void
+<<<<<<< HEAD
 icmp_unique_tuple(struct nf_conntrack_tuple *tuple,
+<<<<<<< HEAD
 		  const struct nf_nat_range *range,
+=======
+		  const struct nf_nat_ipv4_range *range,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+icmp_unique_tuple(const struct nf_nat_l3proto *l3proto,
+		  struct nf_conntrack_tuple *tuple,
+		  const struct nf_nat_range *range,
+>>>>>>> refs/remotes/origin/master
 		  enum nf_nat_manip_type maniptype,
 		  const struct nf_conn *ct)
 {
@@ -37,13 +59,28 @@ icmp_unique_tuple(struct nf_conntrack_tuple *tuple,
 	unsigned int range_size;
 	unsigned int i;
 
+<<<<<<< HEAD
 	range_size = ntohs(range->max.icmp.id) - ntohs(range->min.icmp.id) + 1;
 	/* If no range specified... */
+<<<<<<< HEAD
 	if (!(range->flags & IP_NAT_RANGE_PROTO_SPECIFIED))
+=======
+	if (!(range->flags & NF_NAT_RANGE_PROTO_SPECIFIED))
+>>>>>>> refs/remotes/origin/cm-10.0
 		range_size = 0xFFFF;
 
 	for (i = 0; ; ++id) {
 		tuple->src.u.icmp.id = htons(ntohs(range->min.icmp.id) +
+=======
+	range_size = ntohs(range->max_proto.icmp.id) -
+		     ntohs(range->min_proto.icmp.id) + 1;
+	/* If no range specified... */
+	if (!(range->flags & NF_NAT_RANGE_PROTO_SPECIFIED))
+		range_size = 0xFFFF;
+
+	for (i = 0; ; ++id) {
+		tuple->src.u.icmp.id = htons(ntohs(range->min_proto.icmp.id) +
+>>>>>>> refs/remotes/origin/master
 					     (id % range_size));
 		if (++i == range_size || !nf_nat_used_tuple(tuple, ct))
 			return;
@@ -53,6 +90,7 @@ icmp_unique_tuple(struct nf_conntrack_tuple *tuple,
 
 static bool
 icmp_manip_pkt(struct sk_buff *skb,
+<<<<<<< HEAD
 	       unsigned int iphdroff,
 	       const struct nf_conntrack_tuple *tuple,
 	       enum nf_nat_manip_type maniptype)
@@ -60,6 +98,14 @@ icmp_manip_pkt(struct sk_buff *skb,
 	const struct iphdr *iph = (struct iphdr *)(skb->data + iphdroff);
 	struct icmphdr *hdr;
 	unsigned int hdroff = iphdroff + iph->ihl*4;
+=======
+	       const struct nf_nat_l3proto *l3proto,
+	       unsigned int iphdroff, unsigned int hdroff,
+	       const struct nf_conntrack_tuple *tuple,
+	       enum nf_nat_manip_type maniptype)
+{
+	struct icmphdr *hdr;
+>>>>>>> refs/remotes/origin/master
 
 	if (!skb_make_writable(skb, hdroff + sizeof(*hdr)))
 		return false;
@@ -71,14 +117,29 @@ icmp_manip_pkt(struct sk_buff *skb,
 	return true;
 }
 
+<<<<<<< HEAD
 const struct nf_nat_protocol nf_nat_protocol_icmp = {
 	.protonum		= IPPROTO_ICMP,
+<<<<<<< HEAD
 	.me			= THIS_MODULE,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+const struct nf_nat_l4proto nf_nat_l4proto_icmp = {
+	.l4proto		= IPPROTO_ICMP,
+>>>>>>> refs/remotes/origin/master
 	.manip_pkt		= icmp_manip_pkt,
 	.in_range		= icmp_in_range,
 	.unique_tuple		= icmp_unique_tuple,
 #if defined(CONFIG_NF_CT_NETLINK) || defined(CONFIG_NF_CT_NETLINK_MODULE)
+<<<<<<< HEAD
+<<<<<<< HEAD
 	.range_to_nlattr	= nf_nat_proto_range_to_nlattr,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.nlattr_to_range	= nf_nat_proto_nlattr_to_range,
+=======
+	.nlattr_to_range	= nf_nat_l4proto_nlattr_to_range,
+>>>>>>> refs/remotes/origin/master
 #endif
 };

@@ -1,6 +1,14 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -55,7 +63,13 @@ enum country_code_type_t {
 };
 
 int rtl_regd_init(struct ieee80211_hw *hw,
+<<<<<<< HEAD
 		  int (*reg_notifier) (struct wiphy *wiphy,
 				       struct regulatory_request *request));
 int rtl_reg_notifier(struct wiphy *wiphy, struct regulatory_request *request);
+=======
+		  void (*reg_notifier) (struct wiphy *wiphy,
+					struct regulatory_request *request));
+void rtl_reg_notifier(struct wiphy *wiphy, struct regulatory_request *request);
+>>>>>>> refs/remotes/origin/master
 #endif

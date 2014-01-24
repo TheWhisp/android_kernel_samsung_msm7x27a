@@ -16,6 +16,11 @@
 
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
+=======
+struct irq_domain;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This struct describes the MFD part ("cell").
  * After registration the copy of this structure will become the platform data
@@ -36,6 +41,14 @@ struct mfd_cell {
 	/* platform data passed to the sub devices drivers */
 	void			*platform_data;
 	size_t			pdata_size;
+<<<<<<< HEAD
+=======
+	/*
+	 * Device Tree compatible string
+	 * See: Documentation/devicetree/usage-model.txt Chapter 2.2 for details
+	 */
+	const char		*of_compatible;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * These resources can be specified relative to the parent device.
@@ -52,6 +65,15 @@ struct mfd_cell {
 	 * pm_runtime_no_callbacks().
 	 */
 	bool			pm_runtime_no_callbacks;
+<<<<<<< HEAD
+=======
+
+	/* A list of regulator supplies that should be mapped to the MFD
+	 * device rather than the child device when requested
+	 */
+	const char		**parent_supplies;
+	int			num_parent_supplies;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -91,9 +113,15 @@ static inline const struct mfd_cell *mfd_get_cell(struct platform_device *pdev)
 }
 
 extern int mfd_add_devices(struct device *parent, int id,
+<<<<<<< HEAD
 			   struct mfd_cell *cells, int n_devs,
 			   struct resource *mem_base,
 			   int irq_base);
+=======
+			   const struct mfd_cell *cells, int n_devs,
+			   struct resource *mem_base,
+			   int irq_base, struct irq_domain *irq_domain);
+>>>>>>> refs/remotes/origin/master
 
 extern void mfd_remove_devices(struct device *parent);
 

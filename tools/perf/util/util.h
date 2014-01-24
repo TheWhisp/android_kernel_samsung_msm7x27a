@@ -1,8 +1,11 @@
 #ifndef GIT_COMPAT_UTIL_H
 #define GIT_COMPAT_UTIL_H
 
+<<<<<<< HEAD
 #define _FILE_OFFSET_BITS 64
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef FLEX_ARRAY
 /*
  * See if our compiler is known to support flexible array members.
@@ -40,7 +43,13 @@
 #define decimal_length(x)	((int)(sizeof(x) * 2.56 + 0.5) + 1)
 
 #define _ALL_SOURCE 1
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define _GNU_SOURCE 1
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define _BSD_SOURCE 1
 #define HAS_BOOL
 
@@ -70,6 +79,7 @@
 #include <sys/poll.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
+<<<<<<< HEAD
 #include <sys/select.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -80,10 +90,28 @@
 #include "../../../include/linux/magic.h"
 #include "types.h"
 #include <sys/ttydefaults.h>
+=======
+#include <inttypes.h>
+#include <linux/magic.h>
+#include "types.h"
+#include <sys/ttydefaults.h>
+#include <api/fs/debugfs.h>
+#include <termios.h>
+#include <linux/bitops.h>
+>>>>>>> refs/remotes/origin/master
 
 extern const char *graph_line;
 extern const char *graph_dotted_line;
 extern char buildid_dir[];
+<<<<<<< HEAD
+=======
+extern char tracing_events_path[];
+extern void perf_debugfs_set_path(const char *mountpoint);
+const char *perf_debugfs_mount(const char *mountpoint);
+const char *find_tracing_dir(void);
+char *get_tracing_file(const char *name);
+void put_tracing_file(char *file);
+>>>>>>> refs/remotes/origin/master
 
 /* On most systems <limits.h> would have given us this, but
  * not on some systems (e.g. GNU/Hurd).
@@ -129,6 +157,11 @@ extern char buildid_dir[];
 #endif
 #endif
 
+<<<<<<< HEAD
+=======
+#define PERF_GTK_DSO  "libperf-gtk.so"
+
+>>>>>>> refs/remotes/origin/master
 /* General helper functions */
 extern void usage(const char *err) NORETURN;
 extern void die(const char *err, ...) NORETURN __attribute__((format (printf, 1, 2)));
@@ -184,6 +217,11 @@ static inline void *zalloc(size_t size)
 	return calloc(1, size);
 }
 
+<<<<<<< HEAD
+=======
+#define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
+
+>>>>>>> refs/remotes/origin/master
 static inline int has_extension(const char *filename, const char *ext)
 {
 	size_t len = strlen(filename);
@@ -200,9 +238,28 @@ static inline int has_extension(const char *filename, const char *ext)
 #undef isalpha
 #undef isprint
 #undef isalnum
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#undef islower
+#undef isupper
+>>>>>>> refs/remotes/origin/cm-10.0
 #undef tolower
 #undef toupper
 
+=======
+#undef islower
+#undef isupper
+#undef tolower
+#undef toupper
+
+#ifndef NSEC_PER_MSEC
+#define NSEC_PER_MSEC	1000000L
+#endif
+
+int parse_nsec_time(const char *str, u64 *ptime);
+
+>>>>>>> refs/remotes/origin/master
 extern unsigned char sane_ctype[256];
 #define GIT_SPACE		0x01
 #define GIT_DIGIT		0x02
@@ -220,6 +277,16 @@ extern unsigned char sane_ctype[256];
 #define isalpha(x) sane_istest(x,GIT_ALPHA)
 #define isalnum(x) sane_istest(x,GIT_ALPHA | GIT_DIGIT)
 #define isprint(x) sane_istest(x,GIT_PRINT)
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define islower(x) (sane_istest(x,GIT_ALPHA) && sane_istest(x,0x20))
+#define isupper(x) (sane_istest(x,GIT_ALPHA) && !sane_istest(x,0x20))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define islower(x) (sane_istest(x,GIT_ALPHA) && (x & 0x20))
+#define isupper(x) (sane_istest(x,GIT_ALPHA) && !(x & 0x20))
+>>>>>>> refs/remotes/origin/master
 #define tolower(x) sane_case((unsigned char)(x), 0x20)
 #define toupper(x) sane_case((unsigned char)(x), 0)
 
@@ -232,16 +299,114 @@ static inline int sane_case(int x, int high)
 
 int mkdir_p(char *path, mode_t mode);
 int copyfile(const char *from, const char *to);
+<<<<<<< HEAD
+=======
+int copyfile_mode(const char *from, const char *to, mode_t mode);
+>>>>>>> refs/remotes/origin/master
 
 s64 perf_atoll(const char *str);
 char **argv_split(const char *str, int *argcp);
 void argv_free(char **argv);
 bool strglobmatch(const char *str, const char *pat);
 bool strlazymatch(const char *str, const char *pat);
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long convert_unit(unsigned long value, char *unit);
 int readn(int fd, void *buf, size_t size);
 
 #define _STR(x) #x
 #define STR(x) _STR(x)
 
+=======
+int strtailcmp(const char *s1, const char *s2);
+unsigned long convert_unit(unsigned long value, char *unit);
+int readn(int fd, void *buf, size_t size);
+=======
+int strtailcmp(const char *s1, const char *s2);
+char *strxfrchar(char *s, char from, char to);
+unsigned long convert_unit(unsigned long value, char *unit);
+ssize_t readn(int fd, void *buf, size_t n);
+ssize_t writen(int fd, void *buf, size_t n);
+>>>>>>> refs/remotes/origin/master
+
+struct perf_event_attr;
+
+void event_attr_init(struct perf_event_attr *attr);
+
+<<<<<<< HEAD
+uid_t parse_target_uid(const char *str, const char *tid, const char *pid);
+
+=======
+>>>>>>> refs/remotes/origin/master
+#define _STR(x) #x
+#define STR(x) _STR(x)
+
+/*
+ *  Determine whether some value is a power of two, where zero is
+ * *not* considered a power of two.
+ */
+
+static inline __attribute__((const))
+bool is_power_of_2(unsigned long n)
+{
+	return (n != 0 && ((n & (n - 1)) == 0));
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+static inline unsigned next_pow2(unsigned x)
+{
+	if (!x)
+		return 1;
+	return 1ULL << (32 - __builtin_clz(x - 1));
+}
+
+static inline unsigned long next_pow2_l(unsigned long x)
+{
+#if BITS_PER_LONG == 64
+	if (x <= (1UL << 31))
+		return next_pow2(x);
+	return (unsigned long)next_pow2(x >> 32) << 32;
+#else
+	return next_pow2(x);
+#endif
+}
+
+size_t hex_width(u64 v);
+int hex2u64(const char *ptr, u64 *val);
+
+char *ltrim(char *s);
+char *rtrim(char *s);
+
+void dump_stack(void);
+
+extern unsigned int page_size;
+
+void get_term_dimensions(struct winsize *ws);
+
+struct parse_tag {
+	char tag;
+	int mult;
+};
+
+unsigned long parse_tag_value(const char *str, struct parse_tag *tags);
+
+#define SRCLINE_UNKNOWN  ((char *) "??:0")
+
+struct dso;
+
+char *get_srcline(struct dso *dso, unsigned long addr);
+void free_srcline(char *srcline);
+
+int filename__read_int(const char *filename, int *value);
+int filename__read_str(const char *filename, char **buf, size_t *sizep);
+int perf_event_paranoid(void);
+
+void mem_bswap_64(void *src, int byte_size);
+void mem_bswap_32(void *src, int byte_size);
+
+const char *get_filename_for_perf_kvm(void);
+#endif /* GIT_COMPAT_UTIL_H */
+>>>>>>> refs/remotes/origin/master

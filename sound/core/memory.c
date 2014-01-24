@@ -20,6 +20,14 @@
  *
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/uaccess.h>
 #include <sound/core.h>
@@ -32,7 +40,11 @@
  *
  * Copies the data from mmio-space to user-space.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or non-zero on failure.
+=======
+ * Return: Zero if successful, or non-zero on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int copy_to_user_fromio(void __user *dst, const volatile void __iomem *src, size_t count)
 {
@@ -65,7 +77,11 @@ EXPORT_SYMBOL(copy_to_user_fromio);
  *
  * Copies the data from user-space to mmio-space.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or non-zero on failure.
+=======
+ * Return: Zero if successful, or non-zero on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int copy_from_user_toio(volatile void __iomem *dst, const void __user *src, size_t count)
 {

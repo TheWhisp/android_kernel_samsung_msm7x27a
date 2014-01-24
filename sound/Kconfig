@@ -52,14 +52,25 @@ config SOUND_OSS_CORE_PRECLAIM
 
 	  Disabling this allows alternative OSS implementations.
 
+<<<<<<< HEAD
 	  Please read Documentation/feature-removal-schedule.txt for
 	  details.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	  If unsure, say Y.
 
 source "sound/oss/dmasound/Kconfig"
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 if !M68K
+=======
+if !M68K && !UML
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+if !M68K && !UML
+>>>>>>> refs/remotes/origin/master
 
 menuconfig SND
 	tristate "Advanced Linux Sound Architecture"

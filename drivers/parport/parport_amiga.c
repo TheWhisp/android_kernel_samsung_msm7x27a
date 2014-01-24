@@ -48,6 +48,7 @@ static unsigned char amiga_read_data(struct parport *p)
 	return ciaa.prb;
 }
 
+<<<<<<< HEAD
 #if 0
 static unsigned char control_pc_to_amiga(unsigned char control)
 {
@@ -65,6 +66,8 @@ static unsigned char control_pc_to_amiga(unsigned char control)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned char control_amiga_to_pc(unsigned char control)
 {
 	return PARPORT_CONTROL_SELECT |
@@ -95,6 +98,7 @@ static unsigned char amiga_frob_control( struct parport *p, unsigned char mask, 
 	return old;
 }
 
+<<<<<<< HEAD
 #if 0 /* currently unused */
 static unsigned char status_pc_to_amiga(unsigned char status)
 {
@@ -114,6 +118,8 @@ static unsigned char status_pc_to_amiga(unsigned char status)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned char status_amiga_to_pc(unsigned char status)
 {
 	unsigned char ret = PARPORT_STATUS_BUSY | PARPORT_STATUS_ACK | PARPORT_STATUS_ERROR;
@@ -268,7 +274,10 @@ static int __exit amiga_parallel_remove(struct platform_device *pdev)
 	if (port->irq != PARPORT_IRQ_NONE)
 		free_irq(IRQ_AMIGA_CIAA_FLG, port);
 	parport_put_port(port);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -280,6 +289,7 @@ static struct platform_driver amiga_parallel_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init amiga_parallel_init(void)
 {
 	return platform_driver_probe(&amiga_parallel_driver,
@@ -294,6 +304,9 @@ static void __exit amiga_parallel_exit(void)
 }
 
 module_exit(amiga_parallel_exit);
+=======
+module_platform_driver_probe(amiga_parallel_driver, amiga_parallel_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Joerg Dorchain <joerg@dorchain.net>");
 MODULE_DESCRIPTION("Parport Driver for Amiga builtin Port");

@@ -6,7 +6,11 @@
  *
  * Copyright (C) 1998,2001-2005 Pavel Machek <pavel@ucw.cz>
  * Copyright (C) 2006 Rafael J. Wysocki <rjw@sisk.pl>
+<<<<<<< HEAD
  * Copyright (C) 2010 Bojan Smojver <bojan@rexursive.com>
+=======
+ * Copyright (C) 2010-2012 Bojan Smojver <bojan@rexursive.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This file is released under the GPLv2.
  *
@@ -18,7 +22,13 @@
 #include <linux/bitops.h>
 #include <linux/genhd.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/bio.h>
 #include <linux/blkdev.h>
 #include <linux/swap.h>
@@ -27,6 +37,19 @@
 #include <linux/slab.h>
 #include <linux/lzo.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+#include <linux/cpumask.h>
+#include <linux/atomic.h>
+#include <linux/kthread.h>
+#include <linux/crc32.h>
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "power.h"
 
@@ -43,17 +66,65 @@
  *	allocated and populated one at a time, so we only need one memory
  *	page to set up the entire structure.
  *
+<<<<<<< HEAD
+<<<<<<< HEAD
  *	During resume we also only need to use one swap_map_page structure
  *	at a time.
+=======
+ *	During resume we pick up all swap_map_page structures into a list.
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	During resume we pick up all swap_map_page structures into a list.
+>>>>>>> refs/remotes/origin/master
  */
 
 #define MAP_PAGE_ENTRIES	(PAGE_SIZE / sizeof(sector_t) - 1)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/*
+ * Number of free pages that are not high.
+ */
+static inline unsigned long low_free_pages(void)
+{
+	return nr_free_pages() - nr_free_highpages();
+}
+
+/*
+ * Number of pages required to be kept free while writing the image. Always
+ * half of all available low pages before the writing starts.
+ */
+static inline unsigned long reqd_free_pages(void)
+{
+	return low_free_pages() / 2;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct swap_map_page {
 	sector_t entries[MAP_PAGE_ENTRIES];
 	sector_t next_swap;
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct swap_map_page_list {
+	struct swap_map_page *map;
+	struct swap_map_page_list *next;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	The swap_map_handle structure is used for handling swap in
  *	a file-alike way
@@ -61,6 +132,8 @@ struct swap_map_page {
 
 struct swap_map_handle {
 	struct swap_map_page *cur;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	sector_t cur_swap;
 	sector_t first_sector;
 	unsigned int k;
@@ -68,6 +141,25 @@ struct swap_map_handle {
 
 struct swsusp_header {
 	char reserved[PAGE_SIZE - 20 - sizeof(sector_t) - sizeof(int)];
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct swap_map_page_list *maps;
+	sector_t cur_swap;
+	sector_t first_sector;
+	unsigned int k;
+	unsigned long reqd_free_pages;
+	u32 crc32;
+};
+
+struct swsusp_header {
+	char reserved[PAGE_SIZE - 20 - sizeof(sector_t) - sizeof(int) -
+	              sizeof(u32)];
+	u32	crc32;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sector_t image;
 	unsigned int flags;	/* Flags to pass to the "boot" kernel */
 	char	orig_sig[10];
@@ -97,7 +189,11 @@ static int swsusp_extents_insert(unsigned long swap_offset)
 
 	/* Figure out where to put the new node */
 	while (*new) {
+<<<<<<< HEAD
 		ext = container_of(*new, struct swsusp_extent, node);
+=======
+		ext = rb_entry(*new, struct swsusp_extent, node);
+>>>>>>> refs/remotes/origin/master
 		parent = *new;
 		if (swap_offset < ext->start) {
 			/* Try to merge */
@@ -199,6 +295,16 @@ static int mark_swapfiles(struct swap_map_handle *handle, unsigned int flags)
 		memcpy(swsusp_header->sig, HIBERNATE_SIG, 10);
 		swsusp_header->image = handle->first_sector;
 		swsusp_header->flags = flags;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if (flags & SF_CRC32_MODE)
+			swsusp_header->crc32 = handle->crc32;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (flags & SF_CRC32_MODE)
+			swsusp_header->crc32 = handle->crc32;
+>>>>>>> refs/remotes/origin/master
 		error = hib_bio_write_page(swsusp_resume_block,
 					swsusp_header, NULL);
 	} else {
@@ -245,18 +351,57 @@ static int swsusp_swap_check(void)
 static int write_page(void *buf, sector_t offset, struct bio **bio_chain)
 {
 	void *src;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!offset)
 		return -ENOSPC;
 
 	if (bio_chain) {
+<<<<<<< HEAD
 		src = (void *)__get_free_page(__GFP_WAIT | __GFP_HIGH);
 		if (src) {
 			copy_page(src, buf);
 		} else {
+<<<<<<< HEAD
 			WARN_ON_ONCE(1);
 			bio_chain = NULL;	/* Go synchronous */
 			src = buf;
+=======
+			ret = hib_wait_on_bio_chain(bio_chain); /* Free pages */
+			if (ret)
+				return ret;
+			src = (void *)__get_free_page(__GFP_WAIT | __GFP_HIGH);
+=======
+		src = (void *)__get_free_page(__GFP_WAIT | __GFP_NOWARN |
+		                              __GFP_NORETRY);
+		if (src) {
+			copy_page(src, buf);
+		} else {
+			ret = hib_wait_on_bio_chain(bio_chain); /* Free pages */
+			if (ret)
+				return ret;
+			src = (void *)__get_free_page(__GFP_WAIT |
+			                              __GFP_NOWARN |
+			                              __GFP_NORETRY);
+>>>>>>> refs/remotes/origin/master
+			if (src) {
+				copy_page(src, buf);
+			} else {
+				WARN_ON_ONCE(1);
+				bio_chain = NULL;	/* Go synchronous */
+				src = buf;
+			}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		src = buf;
@@ -293,6 +438,14 @@ static int get_swap_writer(struct swap_map_handle *handle)
 		goto err_rel;
 	}
 	handle->k = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	handle->reqd_free_pages = reqd_free_pages();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	handle->reqd_free_pages = reqd_free_pages();
+>>>>>>> refs/remotes/origin/master
 	handle->first_sector = handle->cur_swap;
 	return 0;
 err_rel:
@@ -316,20 +469,58 @@ static int swap_write_page(struct swap_map_handle *handle, void *buf,
 		return error;
 	handle->cur->entries[handle->k++] = offset;
 	if (handle->k >= MAP_PAGE_ENTRIES) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = hib_wait_on_bio_chain(bio_chain);
 		if (error)
 			goto out;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		offset = alloc_swapdev_block(root_swap);
 		if (!offset)
 			return -ENOSPC;
 		handle->cur->next_swap = offset;
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = write_page(handle->cur, handle->cur_swap, NULL);
+=======
+		error = write_page(handle->cur, handle->cur_swap, bio_chain);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = write_page(handle->cur, handle->cur_swap, bio_chain);
+>>>>>>> refs/remotes/origin/master
 		if (error)
 			goto out;
 		clear_page(handle->cur);
 		handle->cur_swap = offset;
 		handle->k = 0;
+<<<<<<< HEAD
 	}
+<<<<<<< HEAD
+=======
+	if (bio_chain && low_free_pages() <= handle->reqd_free_pages) {
+		error = hib_wait_on_bio_chain(bio_chain);
+		if (error)
+			goto out;
+		handle->reqd_free_pages = reqd_free_pages();
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		if (bio_chain && low_free_pages() <= handle->reqd_free_pages) {
+			error = hib_wait_on_bio_chain(bio_chain);
+			if (error)
+				goto out;
+			/*
+			 * Recalculate the number of required free pages, to
+			 * make sure we never take more than half.
+			 */
+			handle->reqd_free_pages = reqd_free_pages();
+		}
+	}
+>>>>>>> refs/remotes/origin/master
  out:
 	return error;
 }
@@ -372,6 +563,27 @@ static int swap_writer_finish(struct swap_map_handle *handle,
 			             LZO_HEADER, PAGE_SIZE)
 #define LZO_CMP_SIZE	(LZO_CMP_PAGES * PAGE_SIZE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* Maximum number of threads for compression/decompression. */
+#define LZO_THREADS	3
+
+/* Maximum number of pages for read buffering. */
+#define LZO_READ_PAGES	(MAP_PAGE_ENTRIES * 8)
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Maximum number of threads for compression/decompression. */
+#define LZO_THREADS	3
+
+/* Minimum/maximum number of pages for read buffering. */
+#define LZO_MIN_RD_PAGES	1024
+#define LZO_MAX_RD_PAGES	8192
+
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	save_image - save the suspend image data
  */
@@ -388,9 +600,15 @@ static int save_image(struct swap_map_handle *handle,
 	struct timeval start;
 	struct timeval stop;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "PM: Saving image data pages (%u pages) ...     ",
 		nr_to_write);
 	m = nr_to_write / 100;
+=======
+	printk(KERN_INFO "PM: Saving image data pages (%u pages)...\n",
+		nr_to_write);
+	m = nr_to_write / 10;
+>>>>>>> refs/remotes/origin/master
 	if (!m)
 		m = 1;
 	nr_pages = 0;
@@ -404,7 +622,12 @@ static int save_image(struct swap_map_handle *handle,
 		if (ret)
 			break;
 		if (!(nr_pages % m))
+<<<<<<< HEAD
 			printk(KERN_CONT "\b\b\b\b%3d%%", nr_pages / m);
+=======
+			printk(KERN_INFO "PM: Image saving progress: %3d%%\n",
+			       nr_pages / m * 10);
+>>>>>>> refs/remotes/origin/master
 		nr_pages++;
 	}
 	err2 = hib_wait_on_bio_chain(&bio);
@@ -412,13 +635,112 @@ static int save_image(struct swap_map_handle *handle,
 	if (!ret)
 		ret = err2;
 	if (!ret)
+<<<<<<< HEAD
 		printk(KERN_CONT "\b\b\b\bdone\n");
 	else
 		printk(KERN_CONT "\n");
+=======
+		printk(KERN_INFO "PM: Image saving done.\n");
+>>>>>>> refs/remotes/origin/master
 	swsusp_show_speed(&start, &stop, nr_to_write, "Wrote");
 	return ret;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+/**
+ * Structure used for CRC32.
+ */
+struct crc_data {
+	struct task_struct *thr;                  /* thread */
+	atomic_t ready;                           /* ready to start flag */
+	atomic_t stop;                            /* ready to stop flag */
+	unsigned run_threads;                     /* nr current threads */
+	wait_queue_head_t go;                     /* start crc update */
+	wait_queue_head_t done;                   /* crc update done */
+	u32 *crc32;                               /* points to handle's crc32 */
+	size_t *unc_len[LZO_THREADS];             /* uncompressed lengths */
+	unsigned char *unc[LZO_THREADS];          /* uncompressed data */
+};
+
+/**
+ * CRC32 update function that runs in its own thread.
+ */
+static int crc32_threadfn(void *data)
+{
+	struct crc_data *d = data;
+	unsigned i;
+
+	while (1) {
+		wait_event(d->go, atomic_read(&d->ready) ||
+		                  kthread_should_stop());
+		if (kthread_should_stop()) {
+			d->thr = NULL;
+			atomic_set(&d->stop, 1);
+			wake_up(&d->done);
+			break;
+		}
+		atomic_set(&d->ready, 0);
+
+		for (i = 0; i < d->run_threads; i++)
+			*d->crc32 = crc32_le(*d->crc32,
+			                     d->unc[i], *d->unc_len[i]);
+		atomic_set(&d->stop, 1);
+		wake_up(&d->done);
+	}
+	return 0;
+}
+/**
+ * Structure used for LZO data compression.
+ */
+struct cmp_data {
+	struct task_struct *thr;                  /* thread */
+	atomic_t ready;                           /* ready to start flag */
+	atomic_t stop;                            /* ready to stop flag */
+	int ret;                                  /* return code */
+	wait_queue_head_t go;                     /* start compression */
+	wait_queue_head_t done;                   /* compression done */
+	size_t unc_len;                           /* uncompressed length */
+	size_t cmp_len;                           /* compressed length */
+	unsigned char unc[LZO_UNC_SIZE];          /* uncompressed buffer */
+	unsigned char cmp[LZO_CMP_SIZE];          /* compressed buffer */
+	unsigned char wrk[LZO1X_1_MEM_COMPRESS];  /* compression workspace */
+};
+
+/**
+ * Compression function that runs in its own thread.
+ */
+static int lzo_compress_threadfn(void *data)
+{
+	struct cmp_data *d = data;
+
+	while (1) {
+		wait_event(d->go, atomic_read(&d->ready) ||
+		                  kthread_should_stop());
+		if (kthread_should_stop()) {
+			d->thr = NULL;
+			d->ret = -1;
+			atomic_set(&d->stop, 1);
+			wake_up(&d->done);
+			break;
+		}
+		atomic_set(&d->ready, 0);
+
+		d->ret = lzo1x_1_compress(d->unc, d->unc_len,
+		                          d->cmp + LZO_HEADER, &d->cmp_len,
+		                          d->wrk);
+		atomic_set(&d->stop, 1);
+		wake_up(&d->done);
+	}
+	return 0;
+}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * save_image_lzo - Save the suspend image data compressed with LZO.
@@ -437,12 +759,35 @@ static int save_image_lzo(struct swap_map_handle *handle,
 	struct bio *bio;
 	struct timeval start;
 	struct timeval stop;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	size_t off, unc_len, cmp_len;
 	unsigned char *unc, *cmp, *wrk, *page;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	size_t off;
+	unsigned thr, run_threads, nr_threads;
+	unsigned char *page = NULL;
+	struct cmp_data *data = NULL;
+	struct crc_data *crc = NULL;
+
+	/*
+	 * We'll limit the number of threads for compression to limit memory
+	 * footprint.
+	 */
+	nr_threads = num_online_cpus() - 1;
+	nr_threads = clamp_val(nr_threads, 1, LZO_THREADS);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	page = (void *)__get_free_page(__GFP_WAIT | __GFP_HIGH);
 	if (!page) {
 		printk(KERN_ERR "PM: Failed to allocate LZO page\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENOMEM;
 	}
 
@@ -473,13 +818,107 @@ static int save_image_lzo(struct swap_map_handle *handle,
 	printk(KERN_INFO
 		"PM: Compressing and saving image data (%u pages) ...     ",
 		nr_to_write);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ret = -ENOMEM;
+		goto out_clean;
+	}
+
+	data = vmalloc(sizeof(*data) * nr_threads);
+	if (!data) {
+		printk(KERN_ERR "PM: Failed to allocate LZO data\n");
+		ret = -ENOMEM;
+		goto out_clean;
+	}
+	for (thr = 0; thr < nr_threads; thr++)
+		memset(&data[thr], 0, offsetof(struct cmp_data, go));
+
+	crc = kmalloc(sizeof(*crc), GFP_KERNEL);
+	if (!crc) {
+		printk(KERN_ERR "PM: Failed to allocate crc\n");
+		ret = -ENOMEM;
+		goto out_clean;
+	}
+	memset(crc, 0, offsetof(struct crc_data, go));
+
+	/*
+	 * Start the compression threads.
+	 */
+	for (thr = 0; thr < nr_threads; thr++) {
+		init_waitqueue_head(&data[thr].go);
+		init_waitqueue_head(&data[thr].done);
+
+		data[thr].thr = kthread_run(lzo_compress_threadfn,
+		                            &data[thr],
+		                            "image_compress/%u", thr);
+		if (IS_ERR(data[thr].thr)) {
+			data[thr].thr = NULL;
+			printk(KERN_ERR
+			       "PM: Cannot start compression threads\n");
+			ret = -ENOMEM;
+			goto out_clean;
+		}
+	}
+
+	/*
+<<<<<<< HEAD
+	 * Adjust number of free pages after all allocations have been done.
+	 * We don't want to run out of pages when writing.
+	 */
+	handle->reqd_free_pages = reqd_free_pages();
+
+	/*
+=======
+>>>>>>> refs/remotes/origin/master
+	 * Start the CRC32 thread.
+	 */
+	init_waitqueue_head(&crc->go);
+	init_waitqueue_head(&crc->done);
+
+	handle->crc32 = 0;
+	crc->crc32 = &handle->crc32;
+	for (thr = 0; thr < nr_threads; thr++) {
+		crc->unc[thr] = data[thr].unc;
+		crc->unc_len[thr] = &data[thr].unc_len;
+	}
+
+	crc->thr = kthread_run(crc32_threadfn, crc, "image_crc32");
+	if (IS_ERR(crc->thr)) {
+		crc->thr = NULL;
+		printk(KERN_ERR "PM: Cannot start CRC32 thread\n");
+		ret = -ENOMEM;
+		goto out_clean;
+	}
+
+<<<<<<< HEAD
+	printk(KERN_INFO
+		"PM: Using %u thread(s) for compression.\n"
+		"PM: Compressing and saving image data (%u pages) ...     ",
+		nr_threads, nr_to_write);
+>>>>>>> refs/remotes/origin/cm-10.0
 	m = nr_to_write / 100;
+=======
+	/*
+	 * Adjust the number of required free pages after all allocations have
+	 * been done. We don't want to run out of pages when writing.
+	 */
+	handle->reqd_free_pages = reqd_free_pages();
+
+	printk(KERN_INFO
+		"PM: Using %u thread(s) for compression.\n"
+		"PM: Compressing and saving image data (%u pages)...\n",
+		nr_threads, nr_to_write);
+	m = nr_to_write / 10;
+>>>>>>> refs/remotes/origin/master
 	if (!m)
 		m = 1;
 	nr_pages = 0;
 	bio = NULL;
 	do_gettimeofday(&start);
 	for (;;) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		for (off = 0; off < LZO_UNC_SIZE; off += PAGE_SIZE) {
 			ret = snapshot_read_next(snapshot);
 			if (ret < 0)
@@ -529,6 +968,97 @@ static int save_image_lzo(struct swap_map_handle *handle,
 			if (ret)
 				goto out_finish;
 		}
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		for (thr = 0; thr < nr_threads; thr++) {
+			for (off = 0; off < LZO_UNC_SIZE; off += PAGE_SIZE) {
+				ret = snapshot_read_next(snapshot);
+				if (ret < 0)
+					goto out_finish;
+
+				if (!ret)
+					break;
+
+				memcpy(data[thr].unc + off,
+				       data_of(*snapshot), PAGE_SIZE);
+
+				if (!(nr_pages % m))
+<<<<<<< HEAD
+					printk(KERN_CONT "\b\b\b\b%3d%%",
+				               nr_pages / m);
+=======
+					printk(KERN_INFO
+					       "PM: Image saving progress: "
+					       "%3d%%\n",
+				               nr_pages / m * 10);
+>>>>>>> refs/remotes/origin/master
+				nr_pages++;
+			}
+			if (!off)
+				break;
+
+			data[thr].unc_len = off;
+
+			atomic_set(&data[thr].ready, 1);
+			wake_up(&data[thr].go);
+		}
+
+		if (!thr)
+			break;
+
+		crc->run_threads = thr;
+		atomic_set(&crc->ready, 1);
+		wake_up(&crc->go);
+
+		for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
+			wait_event(data[thr].done,
+			           atomic_read(&data[thr].stop));
+			atomic_set(&data[thr].stop, 0);
+
+			ret = data[thr].ret;
+
+			if (ret < 0) {
+				printk(KERN_ERR "PM: LZO compression failed\n");
+				goto out_finish;
+			}
+
+			if (unlikely(!data[thr].cmp_len ||
+			             data[thr].cmp_len >
+			             lzo1x_worst_compress(data[thr].unc_len))) {
+				printk(KERN_ERR
+				       "PM: Invalid LZO compressed length\n");
+				ret = -1;
+				goto out_finish;
+			}
+
+			*(size_t *)data[thr].cmp = data[thr].cmp_len;
+
+			/*
+			 * Given we are writing one page at a time to disk, we
+			 * copy that much from the buffer, although the last
+			 * bit will likely be smaller than full page. This is
+			 * OK - we saved the length of the compressed data, so
+			 * any garbage at the end will be discarded when we
+			 * read it.
+			 */
+			for (off = 0;
+			     off < LZO_HEADER + data[thr].cmp_len;
+			     off += PAGE_SIZE) {
+				memcpy(page, data[thr].cmp + off, PAGE_SIZE);
+
+				ret = swap_write_page(handle, page, &bio);
+				if (ret)
+					goto out_finish;
+			}
+		}
+
+		wait_event(crc->done, atomic_read(&crc->stop));
+		atomic_set(&crc->stop, 0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 out_finish:
@@ -536,6 +1066,8 @@ out_finish:
 	do_gettimeofday(&stop);
 	if (!ret)
 		ret = err2;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ret)
 		printk(KERN_CONT "\b\b\b\bdone\n");
 	else
@@ -546,6 +1078,34 @@ out_finish:
 	vfree(unc);
 	vfree(wrk);
 	free_page((unsigned long)page);
+=======
+	if (!ret) {
+		printk(KERN_CONT "\b\b\b\bdone\n");
+	} else {
+		printk(KERN_CONT "\n");
+	}
+=======
+	if (!ret)
+		printk(KERN_INFO "PM: Image saving done.\n");
+>>>>>>> refs/remotes/origin/master
+	swsusp_show_speed(&start, &stop, nr_to_write, "Wrote");
+out_clean:
+	if (crc) {
+		if (crc->thr)
+			kthread_stop(crc->thr);
+		kfree(crc);
+	}
+	if (data) {
+		for (thr = 0; thr < nr_threads; thr++)
+			if (data[thr].thr)
+				kthread_stop(data[thr].thr);
+		vfree(data);
+	}
+	if (page) free_page((unsigned long)page);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -564,8 +1124,16 @@ static int enough_swap(unsigned int nr_pages, unsigned int flags)
 
 	pr_debug("PM: Free swap pages: %u\n", free_swap);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	required = PAGES_FOR_IO + ((flags & SF_NOCOMPRESS_MODE) ?
 		nr_pages : (nr_pages * LZO_CMP_PAGES) / LZO_UNC_PAGES + 1);
+=======
+	required = PAGES_FOR_IO + nr_pages;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	required = PAGES_FOR_IO + nr_pages;
+>>>>>>> refs/remotes/origin/master
 	return free_swap > required;
 }
 
@@ -593,10 +1161,25 @@ int swsusp_write(unsigned int flags)
 		printk(KERN_ERR "PM: Cannot get swap writer\n");
 		return error;
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!enough_swap(pages, flags)) {
 		printk(KERN_ERR "PM: Not enough free swap\n");
 		error = -ENOSPC;
 		goto out_finish;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (flags & SF_NOCOMPRESS_MODE) {
+		if (!enough_swap(pages, flags)) {
+			printk(KERN_ERR "PM: Not enough free swap\n");
+			error = -ENOSPC;
+			goto out_finish;
+		}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	memset(&snapshot, 0, sizeof(struct snapshot_handle));
 	error = snapshot_read_next(&snapshot);
@@ -625,8 +1208,26 @@ out_finish:
 
 static void release_swap_reader(struct swap_map_handle *handle)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (handle->cur)
 		free_page((unsigned long)handle->cur);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	struct swap_map_page_list *tmp;
+
+	while (handle->maps) {
+		if (handle->maps->map)
+			free_page((unsigned long)handle->maps->map);
+		tmp = handle->maps;
+		handle->maps = handle->maps->next;
+		kfree(tmp);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	handle->cur = NULL;
 }
 
@@ -634,12 +1235,24 @@ static int get_swap_reader(struct swap_map_handle *handle,
 		unsigned int *flags_p)
 {
 	int error;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct swap_map_page_list *tmp, *last;
+	sector_t offset;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct swap_map_page_list *tmp, *last;
+	sector_t offset;
+>>>>>>> refs/remotes/origin/master
 
 	*flags_p = swsusp_header->flags;
 
 	if (!swsusp_header->image) /* how can this happen? */
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	handle->cur = (struct swap_map_page *)get_zeroed_page(__GFP_WAIT | __GFP_HIGH);
 	if (!handle->cur)
 		return -ENOMEM;
@@ -650,6 +1263,45 @@ static int get_swap_reader(struct swap_map_handle *handle,
 		return error;
 	}
 	handle->k = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	handle->cur = NULL;
+	last = handle->maps = NULL;
+	offset = swsusp_header->image;
+	while (offset) {
+		tmp = kmalloc(sizeof(*handle->maps), GFP_KERNEL);
+		if (!tmp) {
+			release_swap_reader(handle);
+			return -ENOMEM;
+		}
+		memset(tmp, 0, sizeof(*tmp));
+		if (!handle->maps)
+			handle->maps = tmp;
+		if (last)
+			last->next = tmp;
+		last = tmp;
+
+		tmp->map = (struct swap_map_page *)
+		           __get_free_page(__GFP_WAIT | __GFP_HIGH);
+		if (!tmp->map) {
+			release_swap_reader(handle);
+			return -ENOMEM;
+		}
+
+		error = hib_bio_read_page(offset, tmp->map, NULL);
+		if (error) {
+			release_swap_reader(handle);
+			return error;
+		}
+		offset = tmp->map->next_swap;
+	}
+	handle->k = 0;
+	handle->cur = handle->maps->map;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -658,6 +1310,14 @@ static int swap_read_page(struct swap_map_handle *handle, void *buf,
 {
 	sector_t offset;
 	int error;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct swap_map_page_list *tmp;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct swap_map_page_list *tmp;
+>>>>>>> refs/remotes/origin/master
 
 	if (!handle->cur)
 		return -EINVAL;
@@ -668,6 +1328,8 @@ static int swap_read_page(struct swap_map_handle *handle, void *buf,
 	if (error)
 		return error;
 	if (++handle->k >= MAP_PAGE_ENTRIES) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = hib_wait_on_bio_chain(bio_chain);
 		handle->k = 0;
 		offset = handle->cur->next_swap;
@@ -675,6 +1337,22 @@ static int swap_read_page(struct swap_map_handle *handle, void *buf,
 			release_swap_reader(handle);
 		else if (!error)
 			error = hib_bio_read_page(offset, handle->cur, NULL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		handle->k = 0;
+		free_page((unsigned long)handle->maps->map);
+		tmp = handle->maps;
+		handle->maps = handle->maps->next;
+		kfree(tmp);
+		if (!handle->maps)
+			release_swap_reader(handle);
+		else
+			handle->cur = handle->maps->map;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return error;
 }
@@ -697,22 +1375,38 @@ static int load_image(struct swap_map_handle *handle,
                       unsigned int nr_to_read)
 {
 	unsigned int m;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int error = 0;
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 	struct timeval start;
 	struct timeval stop;
 	struct bio *bio;
 	int err2;
 	unsigned nr_pages;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "PM: Loading image data pages (%u pages) ...     ",
 		nr_to_read);
 	m = nr_to_read / 100;
+=======
+	printk(KERN_INFO "PM: Loading image data pages (%u pages)...\n",
+		nr_to_read);
+	m = nr_to_read / 10;
+>>>>>>> refs/remotes/origin/master
 	if (!m)
 		m = 1;
 	nr_pages = 0;
 	bio = NULL;
 	do_gettimeofday(&start);
 	for ( ; ; ) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		error = snapshot_write_next(snapshot);
 		if (error <= 0)
 			break;
@@ -722,13 +1416,35 @@ static int load_image(struct swap_map_handle *handle,
 		if (snapshot->sync_read)
 			error = hib_wait_on_bio_chain(&bio);
 		if (error)
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		ret = snapshot_write_next(snapshot);
+		if (ret <= 0)
+			break;
+		ret = swap_read_page(handle, data_of(*snapshot), &bio);
+		if (ret)
+			break;
+		if (snapshot->sync_read)
+			ret = hib_wait_on_bio_chain(&bio);
+		if (ret)
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		if (!(nr_pages % m))
 			printk("\b\b\b\b%3d%%", nr_pages / m);
+=======
+			break;
+		if (!(nr_pages % m))
+			printk(KERN_INFO "PM: Image loading progress: %3d%%\n",
+			       nr_pages / m * 10);
+>>>>>>> refs/remotes/origin/master
 		nr_pages++;
 	}
 	err2 = hib_wait_on_bio_chain(&bio);
 	do_gettimeofday(&stop);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!error)
 		error = err2;
 	if (!error) {
@@ -740,6 +1456,76 @@ static int load_image(struct swap_map_handle *handle,
 		printk("\n");
 	swsusp_show_speed(&start, &stop, nr_to_read, "Read");
 	return error;
+=======
+	if (!ret)
+		ret = err2;
+	if (!ret) {
+		printk("\b\b\b\bdone\n");
+		snapshot_write_finalize(snapshot);
+		if (!snapshot_image_loaded(snapshot))
+			ret = -ENODATA;
+	} else
+		printk("\n");
+=======
+	if (!ret)
+		ret = err2;
+	if (!ret) {
+		printk(KERN_INFO "PM: Image loading done.\n");
+		snapshot_write_finalize(snapshot);
+		if (!snapshot_image_loaded(snapshot))
+			ret = -ENODATA;
+	}
+>>>>>>> refs/remotes/origin/master
+	swsusp_show_speed(&start, &stop, nr_to_read, "Read");
+	return ret;
+}
+
+/**
+ * Structure used for LZO data decompression.
+ */
+struct dec_data {
+	struct task_struct *thr;                  /* thread */
+	atomic_t ready;                           /* ready to start flag */
+	atomic_t stop;                            /* ready to stop flag */
+	int ret;                                  /* return code */
+	wait_queue_head_t go;                     /* start decompression */
+	wait_queue_head_t done;                   /* decompression done */
+	size_t unc_len;                           /* uncompressed length */
+	size_t cmp_len;                           /* compressed length */
+	unsigned char unc[LZO_UNC_SIZE];          /* uncompressed buffer */
+	unsigned char cmp[LZO_CMP_SIZE];          /* compressed buffer */
+};
+
+/**
+ * Deompression function that runs in its own thread.
+ */
+static int lzo_decompress_threadfn(void *data)
+{
+	struct dec_data *d = data;
+
+	while (1) {
+		wait_event(d->go, atomic_read(&d->ready) ||
+		                  kthread_should_stop());
+		if (kthread_should_stop()) {
+			d->thr = NULL;
+			d->ret = -1;
+			atomic_set(&d->stop, 1);
+			wake_up(&d->done);
+			break;
+		}
+		atomic_set(&d->ready, 0);
+
+		d->unc_len = LZO_UNC_SIZE;
+		d->ret = lzo1x_decompress_safe(d->cmp + LZO_HEADER, d->cmp_len,
+		                               d->unc, &d->unc_len);
+		atomic_set(&d->stop, 1);
+		wake_up(&d->done);
+	}
+	return 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -753,11 +1539,23 @@ static int load_image_lzo(struct swap_map_handle *handle,
                           unsigned int nr_to_read)
 {
 	unsigned int m;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int error = 0;
+=======
+	int ret = 0;
+	int eof = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+	int eof = 0;
+>>>>>>> refs/remotes/origin/master
 	struct bio *bio;
 	struct timeval start;
 	struct timeval stop;
 	unsigned nr_pages;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	size_t i, off, unc_len, cmp_len;
 	unsigned char *unc, *cmp, *page[LZO_CMP_PAGES];
 
@@ -797,13 +1595,159 @@ static int load_image_lzo(struct swap_map_handle *handle,
 	printk(KERN_INFO
 		"PM: Loading and decompressing image data (%u pages) ...     ",
 		nr_to_read);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	size_t off;
+	unsigned i, thr, run_threads, nr_threads;
+	unsigned ring = 0, pg = 0, ring_size = 0,
+	         have = 0, want, need, asked = 0;
+<<<<<<< HEAD
+	unsigned long read_pages;
+=======
+	unsigned long read_pages = 0;
+>>>>>>> refs/remotes/origin/master
+	unsigned char **page = NULL;
+	struct dec_data *data = NULL;
+	struct crc_data *crc = NULL;
+
+	/*
+	 * We'll limit the number of threads for decompression to limit memory
+	 * footprint.
+	 */
+	nr_threads = num_online_cpus() - 1;
+	nr_threads = clamp_val(nr_threads, 1, LZO_THREADS);
+
+<<<<<<< HEAD
+	page = vmalloc(sizeof(*page) * LZO_READ_PAGES);
+=======
+	page = vmalloc(sizeof(*page) * LZO_MAX_RD_PAGES);
+>>>>>>> refs/remotes/origin/master
+	if (!page) {
+		printk(KERN_ERR "PM: Failed to allocate LZO page\n");
+		ret = -ENOMEM;
+		goto out_clean;
+	}
+
+	data = vmalloc(sizeof(*data) * nr_threads);
+	if (!data) {
+		printk(KERN_ERR "PM: Failed to allocate LZO data\n");
+		ret = -ENOMEM;
+		goto out_clean;
+	}
+	for (thr = 0; thr < nr_threads; thr++)
+		memset(&data[thr], 0, offsetof(struct dec_data, go));
+
+	crc = kmalloc(sizeof(*crc), GFP_KERNEL);
+	if (!crc) {
+		printk(KERN_ERR "PM: Failed to allocate crc\n");
+		ret = -ENOMEM;
+		goto out_clean;
+	}
+	memset(crc, 0, offsetof(struct crc_data, go));
+
+	/*
+	 * Start the decompression threads.
+	 */
+	for (thr = 0; thr < nr_threads; thr++) {
+		init_waitqueue_head(&data[thr].go);
+		init_waitqueue_head(&data[thr].done);
+
+		data[thr].thr = kthread_run(lzo_decompress_threadfn,
+		                            &data[thr],
+		                            "image_decompress/%u", thr);
+		if (IS_ERR(data[thr].thr)) {
+			data[thr].thr = NULL;
+			printk(KERN_ERR
+			       "PM: Cannot start decompression threads\n");
+			ret = -ENOMEM;
+			goto out_clean;
+		}
+	}
+
+	/*
+	 * Start the CRC32 thread.
+	 */
+	init_waitqueue_head(&crc->go);
+	init_waitqueue_head(&crc->done);
+
+	handle->crc32 = 0;
+	crc->crc32 = &handle->crc32;
+	for (thr = 0; thr < nr_threads; thr++) {
+		crc->unc[thr] = data[thr].unc;
+		crc->unc_len[thr] = &data[thr].unc_len;
+	}
+
+	crc->thr = kthread_run(crc32_threadfn, crc, "image_crc32");
+	if (IS_ERR(crc->thr)) {
+		crc->thr = NULL;
+		printk(KERN_ERR "PM: Cannot start CRC32 thread\n");
+		ret = -ENOMEM;
+		goto out_clean;
+	}
+
+	/*
+<<<<<<< HEAD
+	 * Adjust number of pages for read buffering, in case we are short.
+	 */
+	read_pages = (nr_free_pages() - snapshot_get_image_size()) >> 1;
+	read_pages = clamp_val(read_pages, LZO_CMP_PAGES, LZO_READ_PAGES);
+=======
+	 * Set the number of pages for read buffering.
+	 * This is complete guesswork, because we'll only know the real
+	 * picture once prepare_image() is called, which is much later on
+	 * during the image load phase. We'll assume the worst case and
+	 * say that none of the image pages are from high memory.
+	 */
+	if (low_free_pages() > snapshot_get_image_size())
+		read_pages = (low_free_pages() - snapshot_get_image_size()) / 2;
+	read_pages = clamp_val(read_pages, LZO_MIN_RD_PAGES, LZO_MAX_RD_PAGES);
+>>>>>>> refs/remotes/origin/master
+
+	for (i = 0; i < read_pages; i++) {
+		page[i] = (void *)__get_free_page(i < LZO_CMP_PAGES ?
+		                                  __GFP_WAIT | __GFP_HIGH :
+<<<<<<< HEAD
+		                                  __GFP_WAIT);
+=======
+		                                  __GFP_WAIT | __GFP_NOWARN |
+		                                  __GFP_NORETRY);
+
+>>>>>>> refs/remotes/origin/master
+		if (!page[i]) {
+			if (i < LZO_CMP_PAGES) {
+				ring_size = i;
+				printk(KERN_ERR
+				       "PM: Failed to allocate LZO pages\n");
+				ret = -ENOMEM;
+				goto out_clean;
+			} else {
+				break;
+			}
+		}
+	}
+	want = ring_size = i;
+
+	printk(KERN_INFO
+		"PM: Using %u thread(s) for decompression.\n"
+<<<<<<< HEAD
+		"PM: Loading and decompressing image data (%u pages) ...     ",
+		nr_threads, nr_to_read);
+>>>>>>> refs/remotes/origin/cm-10.0
 	m = nr_to_read / 100;
+=======
+		"PM: Loading and decompressing image data (%u pages)...\n",
+		nr_threads, nr_to_read);
+	m = nr_to_read / 10;
+>>>>>>> refs/remotes/origin/master
 	if (!m)
 		m = 1;
 	nr_pages = 0;
 	bio = NULL;
 	do_gettimeofday(&start);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	error = snapshot_write_next(snapshot);
 	if (error <= 0)
 		goto out_finish;
@@ -883,6 +1827,211 @@ out_finish:
 		free_page((unsigned long)page[i]);
 
 	return error;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	ret = snapshot_write_next(snapshot);
+	if (ret <= 0)
+		goto out_finish;
+
+	for(;;) {
+		for (i = 0; !eof && i < want; i++) {
+			ret = swap_read_page(handle, page[ring], &bio);
+			if (ret) {
+				/*
+				 * On real read error, finish. On end of data,
+				 * set EOF flag and just exit the read loop.
+				 */
+				if (handle->cur &&
+				    handle->cur->entries[handle->k]) {
+					goto out_finish;
+				} else {
+					eof = 1;
+					break;
+				}
+			}
+			if (++ring >= ring_size)
+				ring = 0;
+		}
+		asked += i;
+		want -= i;
+
+		/*
+		 * We are out of data, wait for some more.
+		 */
+		if (!have) {
+			if (!asked)
+				break;
+
+			ret = hib_wait_on_bio_chain(&bio);
+			if (ret)
+				goto out_finish;
+			have += asked;
+			asked = 0;
+			if (eof)
+				eof = 2;
+		}
+
+		if (crc->run_threads) {
+			wait_event(crc->done, atomic_read(&crc->stop));
+			atomic_set(&crc->stop, 0);
+			crc->run_threads = 0;
+		}
+
+		for (thr = 0; have && thr < nr_threads; thr++) {
+			data[thr].cmp_len = *(size_t *)page[pg];
+			if (unlikely(!data[thr].cmp_len ||
+			             data[thr].cmp_len >
+			             lzo1x_worst_compress(LZO_UNC_SIZE))) {
+				printk(KERN_ERR
+				       "PM: Invalid LZO compressed length\n");
+				ret = -1;
+				goto out_finish;
+			}
+
+			need = DIV_ROUND_UP(data[thr].cmp_len + LZO_HEADER,
+			                    PAGE_SIZE);
+			if (need > have) {
+				if (eof > 1) {
+					ret = -1;
+					goto out_finish;
+				}
+				break;
+			}
+
+			for (off = 0;
+			     off < LZO_HEADER + data[thr].cmp_len;
+			     off += PAGE_SIZE) {
+				memcpy(data[thr].cmp + off,
+				       page[pg], PAGE_SIZE);
+				have--;
+				want++;
+				if (++pg >= ring_size)
+					pg = 0;
+			}
+
+			atomic_set(&data[thr].ready, 1);
+			wake_up(&data[thr].go);
+		}
+
+		/*
+		 * Wait for more data while we are decompressing.
+		 */
+		if (have < LZO_CMP_PAGES && asked) {
+			ret = hib_wait_on_bio_chain(&bio);
+			if (ret)
+				goto out_finish;
+			have += asked;
+			asked = 0;
+			if (eof)
+				eof = 2;
+		}
+
+		for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
+			wait_event(data[thr].done,
+			           atomic_read(&data[thr].stop));
+			atomic_set(&data[thr].stop, 0);
+
+			ret = data[thr].ret;
+
+			if (ret < 0) {
+				printk(KERN_ERR
+				       "PM: LZO decompression failed\n");
+				goto out_finish;
+			}
+
+			if (unlikely(!data[thr].unc_len ||
+			             data[thr].unc_len > LZO_UNC_SIZE ||
+			             data[thr].unc_len & (PAGE_SIZE - 1))) {
+				printk(KERN_ERR
+				       "PM: Invalid LZO uncompressed length\n");
+				ret = -1;
+				goto out_finish;
+			}
+
+			for (off = 0;
+			     off < data[thr].unc_len; off += PAGE_SIZE) {
+				memcpy(data_of(*snapshot),
+				       data[thr].unc + off, PAGE_SIZE);
+
+				if (!(nr_pages % m))
+<<<<<<< HEAD
+					printk("\b\b\b\b%3d%%", nr_pages / m);
+=======
+					printk(KERN_INFO
+					       "PM: Image loading progress: "
+					       "%3d%%\n",
+					       nr_pages / m * 10);
+>>>>>>> refs/remotes/origin/master
+				nr_pages++;
+
+				ret = snapshot_write_next(snapshot);
+				if (ret <= 0) {
+					crc->run_threads = thr + 1;
+					atomic_set(&crc->ready, 1);
+					wake_up(&crc->go);
+					goto out_finish;
+				}
+			}
+		}
+
+		crc->run_threads = thr;
+		atomic_set(&crc->ready, 1);
+		wake_up(&crc->go);
+	}
+
+out_finish:
+	if (crc->run_threads) {
+		wait_event(crc->done, atomic_read(&crc->stop));
+		atomic_set(&crc->stop, 0);
+	}
+	do_gettimeofday(&stop);
+	if (!ret) {
+<<<<<<< HEAD
+		printk("\b\b\b\bdone\n");
+=======
+		printk(KERN_INFO "PM: Image loading done.\n");
+>>>>>>> refs/remotes/origin/master
+		snapshot_write_finalize(snapshot);
+		if (!snapshot_image_loaded(snapshot))
+			ret = -ENODATA;
+		if (!ret) {
+			if (swsusp_header->flags & SF_CRC32_MODE) {
+				if(handle->crc32 != swsusp_header->crc32) {
+					printk(KERN_ERR
+					       "PM: Invalid image CRC32!\n");
+					ret = -ENODATA;
+				}
+			}
+		}
+<<<<<<< HEAD
+	} else
+		printk("\n");
+=======
+	}
+>>>>>>> refs/remotes/origin/master
+	swsusp_show_speed(&start, &stop, nr_to_read, "Read");
+out_clean:
+	for (i = 0; i < ring_size; i++)
+		free_page((unsigned long)page[i]);
+	if (crc) {
+		if (crc->thr)
+			kthread_stop(crc->thr);
+		kfree(crc);
+	}
+	if (data) {
+		for (thr = 0; thr < nr_threads; thr++)
+			if (data[thr].thr)
+				kthread_stop(data[thr].thr);
+		vfree(data);
+	}
+	if (page) vfree(page);
+
+	return ret;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -978,6 +2127,37 @@ void swsusp_close(fmode_t mode)
 	blkdev_put(hib_resume_bdev, mode);
 }
 
+<<<<<<< HEAD
+=======
+/**
+ *      swsusp_unmark - Unmark swsusp signature in the resume device
+ */
+
+#ifdef CONFIG_SUSPEND
+int swsusp_unmark(void)
+{
+	int error;
+
+	hib_bio_read_page(swsusp_resume_block, swsusp_header, NULL);
+	if (!memcmp(HIBERNATE_SIG,swsusp_header->sig, 10)) {
+		memcpy(swsusp_header->sig,swsusp_header->orig_sig, 10);
+		error = hib_bio_write_page(swsusp_resume_block,
+					swsusp_header, NULL);
+	} else {
+		printk(KERN_ERR "PM: Cannot find swsusp signature!\n");
+		error = -ENODEV;
+	}
+
+	/*
+	 * We just returned from suspend, we don't need the image any more.
+	 */
+	free_all_swap_pages(root_swap);
+
+	return error;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int swsusp_header_init(void)
 {
 	swsusp_header = (struct swsusp_header*) __get_free_page(GFP_KERNEL);

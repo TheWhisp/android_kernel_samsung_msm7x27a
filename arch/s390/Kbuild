@@ -1,6 +1,24 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 obj-y += kernel/
 obj-y += mm/
 obj-y += crypto/
 obj-y += appldata/
 obj-y += hypfs/
 obj-y += kvm/
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+obj-y				+= kernel/
+obj-y				+= mm/
+obj-$(CONFIG_KVM)		+= kvm/
+obj-$(CONFIG_CRYPTO_HW)		+= crypto/
+obj-$(CONFIG_S390_HYPFS_FS)	+= hypfs/
+obj-$(CONFIG_APPLDATA_BASE)	+= appldata/
+obj-$(CONFIG_MATHEMU)		+= math-emu/
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-y				+= net/
+obj-$(CONFIG_PCI)		+= pci/
+>>>>>>> refs/remotes/origin/master

@@ -16,6 +16,14 @@
 
 #include "hw.h"
 #include "hw-ops.h"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Common calibration code */
 
@@ -62,13 +70,52 @@ static s16 ath9k_hw_get_default_nf(struct ath_hw *ah,
 	return ath9k_hw_get_nf_limits(ah, chan)->nominal;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+s16 ath9k_hw_getchan_noise(struct ath_hw *ah, struct ath9k_channel *chan)
+{
+	s8 noise = ATH_DEFAULT_NOISE_FLOOR;
+
+	if (chan && chan->noisefloor) {
+		s8 delta = chan->noisefloor -
+			   ATH9K_NF_CAL_NOISE_THRESH -
+<<<<<<< HEAD
+=======
+s16 ath9k_hw_getchan_noise(struct ath_hw *ah, struct ath9k_channel *chan,
+			   s16 nf)
+{
+	s8 noise = ATH_DEFAULT_NOISE_FLOOR;
+
+	if (nf) {
+		s8 delta = nf - ATH9K_NF_CAL_NOISE_THRESH -
+>>>>>>> refs/remotes/origin/master
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+			   ath9k_hw_get_default_nf(ah, chan);
+		if (delta > 0)
+			noise += delta;
+	}
+	return noise;
+}
+EXPORT_SYMBOL(ath9k_hw_getchan_noise);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void ath9k_hw_update_nfcal_hist_buffer(struct ath_hw *ah,
 					      struct ath9k_hw_cal_data *cal,
 					      int16_t *nfarray)
 {
 	struct ath_common *common = ath9k_hw_common(ah);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct ieee80211_conf *conf = &common->hw->conf;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ath_nf_limits *limit;
 	struct ath9k_nfcal_hist *h;
 	bool high_nf_mid = false;
@@ -80,7 +127,15 @@ static void ath9k_hw_update_nfcal_hist_buffer(struct ath_hw *ah,
 
 	for (i = 0; i < NUM_NF_READINGS; i++) {
 		if (!(chainmask & (1 << i)) ||
+<<<<<<< HEAD
+<<<<<<< HEAD
 		    ((i >= AR5416_MAX_CHAINS) && !conf_is_ht40(conf)))
+=======
+		    ((i >= AR5416_MAX_CHAINS) && !IS_CHAN_HT40(ah->curchan)))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    ((i >= AR5416_MAX_CHAINS) && !IS_CHAN_HT40(ah->curchan)))
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		h[i].nfCalBuffer[h[i].currIndex] = nfarray[i];
@@ -102,10 +157,21 @@ static void ath9k_hw_update_nfcal_hist_buffer(struct ath_hw *ah,
 		if (h[i].privNF > limit->max) {
 			high_nf_mid = true;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"NFmid[%d] (%d) > MAX (%d), %s\n",
 				i, h[i].privNF, limit->max,
 				(cal->nfcal_interference ?
+=======
+			ath_dbg(common, CALIBRATE,
+				"NFmid[%d] (%d) > MAX (%d), %s\n",
+				i, h[i].privNF, limit->max,
+				(test_bit(NFCAL_INTF, &cal->cal_flags) ?
+>>>>>>> refs/remotes/origin/master
 				 "not corrected (due to interference)" :
 				 "correcting to MAX"));
 
@@ -116,7 +182,11 @@ static void ath9k_hw_update_nfcal_hist_buffer(struct ath_hw *ah,
 			 * we bypass this limit here in order to better deal
 			 * with our environment.
 			 */
+<<<<<<< HEAD
 			if (!cal->nfcal_interference)
+=======
+			if (!test_bit(NFCAL_INTF, &cal->cal_flags))
+>>>>>>> refs/remotes/origin/master
 				h[i].privNF = limit->max;
 		}
 	}
@@ -127,7 +197,11 @@ static void ath9k_hw_update_nfcal_hist_buffer(struct ath_hw *ah,
 	 * Re-enable the enforcement of the NF maximum again.
 	 */
 	if (!high_nf_mid)
+<<<<<<< HEAD
 		cal->nfcal_interference = false;
+=======
+		clear_bit(NFCAL_INTF, &cal->cal_flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static bool ath9k_hw_get_nf_thresh(struct ath_hw *ah,
@@ -172,7 +246,10 @@ void ath9k_hw_reset_calibration(struct ath_hw *ah,
 bool ath9k_hw_reset_calvalid(struct ath_hw *ah)
 {
 	struct ath_common *common = ath9k_hw_common(ah);
+<<<<<<< HEAD
 	struct ieee80211_conf *conf = &common->hw->conf;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ath9k_cal_list *currCal = ah->cal_list_curr;
 
 	if (!ah->caldata)
@@ -185,8 +262,16 @@ bool ath9k_hw_reset_calvalid(struct ath_hw *ah)
 		return true;
 
 	if (currCal->calState != CAL_DONE) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
 			"Calibration state incorrect, %d\n",
+=======
+		ath_dbg(common, CALIBRATE, "Calibration state incorrect, %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CALIBRATE, "Calibration state incorrect, %d\n",
+>>>>>>> refs/remotes/origin/master
 			currCal->calState);
 		return true;
 	}
@@ -194,9 +279,18 @@ bool ath9k_hw_reset_calvalid(struct ath_hw *ah)
 	if (!(ah->supp_cals & currCal->calData->calType))
 		return true;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CALIBRATE,
 		"Resetting Cal %d state for channel %u\n",
+=======
+	ath_dbg(common, CALIBRATE, "Resetting Cal %d state for channel %u\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		currCal->calData->calType, conf->channel->center_freq);
+=======
+	ath_dbg(common, CALIBRATE, "Resetting Cal %d state for channel %u\n",
+		currCal->calData->calType, ah->curchan->chan->center_freq);
+>>>>>>> refs/remotes/origin/master
 
 	ah->caldata->CalValid &= ~currCal->calData->calType;
 	currCal->calState = CAL_WAITING;
@@ -208,7 +302,11 @@ EXPORT_SYMBOL(ath9k_hw_reset_calvalid);
 void ath9k_hw_start_nfcal(struct ath_hw *ah, bool update)
 {
 	if (ah->caldata)
+<<<<<<< HEAD
 		ah->caldata->nfcal_pending = true;
+=======
+		set_bit(NFCAL_PENDING, &ah->caldata->cal_flags);
+>>>>>>> refs/remotes/origin/master
 
 	REG_SET_BIT(ah, AR_PHY_AGC_CONTROL,
 		    AR_PHY_AGC_CONTROL_ENABLE_NF);
@@ -230,7 +328,10 @@ void ath9k_hw_loadnf(struct ath_hw *ah, struct ath9k_channel *chan)
 	int32_t val;
 	u8 chainmask = (ah->rxchainmask << 3) | ah->rxchainmask;
 	struct ath_common *common = ath9k_hw_common(ah);
+<<<<<<< HEAD
 	struct ieee80211_conf *conf = &common->hw->conf;
+=======
+>>>>>>> refs/remotes/origin/master
 	s16 default_nf = ath9k_hw_get_default_nf(ah, chan);
 
 	if (ah->caldata)
@@ -240,7 +341,11 @@ void ath9k_hw_loadnf(struct ath_hw *ah, struct ath9k_channel *chan)
 		if (chainmask & (1 << i)) {
 			s16 nfval;
 
+<<<<<<< HEAD
 			if ((i >= AR5416_MAX_CHAINS) && !conf_is_ht40(conf))
+=======
+			if ((i >= AR5416_MAX_CHAINS) && !IS_CHAN_HT40(chan))
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 			if (h)
@@ -288,7 +393,15 @@ void ath9k_hw_loadnf(struct ath_hw *ah, struct ath9k_channel *chan)
 	 * noisefloor until the next calibration timer.
 	 */
 	if (j == 10000) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_ANY,
+=======
+		ath_dbg(common, ANY,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, ANY,
+>>>>>>> refs/remotes/origin/master
 			"Timeout while waiting for nf to load: AR_PHY_AGC_CONTROL=0x%x\n",
 			REG_READ(ah, AR_PHY_AGC_CONTROL));
 		return;
@@ -302,7 +415,11 @@ void ath9k_hw_loadnf(struct ath_hw *ah, struct ath9k_channel *chan)
 	ENABLE_REGWRITE_BUFFER(ah);
 	for (i = 0; i < NUM_NF_READINGS; i++) {
 		if (chainmask & (1 << i)) {
+<<<<<<< HEAD
 			if ((i >= AR5416_MAX_CHAINS) && !conf_is_ht40(conf))
+=======
+			if ((i >= AR5416_MAX_CHAINS) && !IS_CHAN_HT40(chan))
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 			val = REG_READ(ah, ah->nf_regs[i]);
@@ -330,17 +447,41 @@ static void ath9k_hw_nf_sanitize(struct ath_hw *ah, s16 *nf)
 		if (!nf[i])
 			continue;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 			"NF calibrated [%s] [chain %d] is %d\n",
 			(i >= 3 ? "ext" : "ctl"), i % 3, nf[i]);
 
 		if (nf[i] > limit->max) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 				"NF[%d] (%d) > MAX (%d), correcting to MAX\n",
 				i, nf[i], limit->max);
 			nf[i] = limit->max;
 		} else if (nf[i] < limit->min) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 				"NF[%d] (%d) < MIN (%d), correcting to NOM\n",
 				i, nf[i], limit->min);
 			nf[i] = limit->nominal;
@@ -357,9 +498,18 @@ bool ath9k_hw_getnf(struct ath_hw *ah, struct ath9k_channel *chan)
 	struct ieee80211_channel *c = chan->chan;
 	struct ath9k_hw_cal_data *caldata = ah->caldata;
 
+<<<<<<< HEAD
 	chan->channelFlags &= (~CHANNEL_CW_INT);
 	if (REG_READ(ah, AR_PHY_AGC_CONTROL) & AR_PHY_AGC_CONTROL_NF) {
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (REG_READ(ah, AR_PHY_AGC_CONTROL) & AR_PHY_AGC_CONTROL_NF) {
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 			"NF did not complete in calibration window\n");
 		return false;
 	}
@@ -369,10 +519,20 @@ bool ath9k_hw_getnf(struct ath_hw *ah, struct ath9k_channel *chan)
 	nf = nfarray[0];
 	if (ath9k_hw_get_nf_thresh(ah, c->band, &nfThresh)
 	    && nf > nfThresh) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CALIBRATE,
+=======
+		ath_dbg(common, CALIBRATE,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"noise floor failed detected; detected %d, threshold %d\n",
 			nf, nfThresh);
 		chan->channelFlags |= CHANNEL_CW_INT;
+=======
+		ath_dbg(common, CALIBRATE,
+			"noise floor failed detected; detected %d, threshold %d\n",
+			nf, nfThresh);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!caldata) {
@@ -381,11 +541,28 @@ bool ath9k_hw_getnf(struct ath_hw *ah, struct ath9k_channel *chan)
 	}
 
 	h = caldata->nfCalHist;
+<<<<<<< HEAD
 	caldata->nfcal_pending = false;
 	ath9k_hw_update_nfcal_hist_buffer(ah, caldata, nfarray);
 	chan->noisefloor = h[0].privNF;
+<<<<<<< HEAD
 	return true;
 }
+=======
+	ah->noise = ath9k_hw_getchan_noise(ah, chan);
+	return true;
+}
+EXPORT_SYMBOL(ath9k_hw_getnf);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clear_bit(NFCAL_PENDING, &caldata->cal_flags);
+	ath9k_hw_update_nfcal_hist_buffer(ah, caldata, nfarray);
+	chan->noisefloor = h[0].privNF;
+	ah->noise = ath9k_hw_getchan_noise(ah, chan, chan->noisefloor);
+	return true;
+}
+EXPORT_SYMBOL(ath9k_hw_getnf);
+>>>>>>> refs/remotes/origin/master
 
 void ath9k_init_nfcal_hist_buffer(struct ath_hw *ah,
 				  struct ath9k_channel *chan)
@@ -395,7 +572,11 @@ void ath9k_init_nfcal_hist_buffer(struct ath_hw *ah,
 	int i, j;
 
 	ah->caldata->channel = chan->channel;
+<<<<<<< HEAD
 	ah->caldata->channelFlags = chan->channelFlags & ~CHANNEL_CW_INT;
+=======
+	ah->caldata->channelFlags = chan->channelFlags;
+>>>>>>> refs/remotes/origin/master
 	h = ah->caldata->nfCalHist;
 	default_nf = ath9k_hw_get_default_nf(ah, chan);
 	for (i = 0; i < NUM_NF_READINGS; i++) {
@@ -424,12 +605,20 @@ void ath9k_hw_bstuck_nfcal(struct ath_hw *ah)
 	 * the baseband update the internal NF value itself, similar to
 	 * what is being done after a full reset.
 	 */
+<<<<<<< HEAD
 	if (!caldata->nfcal_pending)
+=======
+	if (!test_bit(NFCAL_PENDING, &caldata->cal_flags))
+>>>>>>> refs/remotes/origin/master
 		ath9k_hw_start_nfcal(ah, true);
 	else if (!(REG_READ(ah, AR_PHY_AGC_CONTROL) & AR_PHY_AGC_CONTROL_NF))
 		ath9k_hw_getnf(ah, ah->curchan);
 
+<<<<<<< HEAD
 	caldata->nfcal_interference = true;
+=======
+	set_bit(NFCAL_INTF, &caldata->cal_flags);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(ath9k_hw_bstuck_nfcal);
 

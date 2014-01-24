@@ -58,13 +58,29 @@ struct configfs_dirent {
 extern struct mutex configfs_symlink_mutex;
 extern spinlock_t configfs_dirent_lock;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern struct vfsmount * configfs_mount;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct kmem_cache *configfs_dir_cachep;
 
 extern int configfs_is_root(struct config_item *item);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern struct inode * configfs_new_inode(mode_t mode, struct configfs_dirent *);
 extern int configfs_create(struct dentry *, int mode, int (*init)(struct inode *));
+=======
+extern struct inode * configfs_new_inode(umode_t mode, struct configfs_dirent *, struct super_block *);
+extern int configfs_create(struct dentry *, umode_t mode, int (*init)(struct inode *));
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct inode * configfs_new_inode(umode_t mode, struct configfs_dirent *, struct super_block *);
+extern int configfs_create(struct dentry *, umode_t mode, int (*init)(struct inode *));
+>>>>>>> refs/remotes/origin/master
 extern int configfs_inode_init(void);
 extern void configfs_inode_exit(void);
 
@@ -80,15 +96,36 @@ extern const unsigned char * configfs_get_name(struct configfs_dirent *sd);
 extern void configfs_drop_dentry(struct configfs_dirent *sd, struct dentry *parent);
 extern int configfs_setattr(struct dentry *dentry, struct iattr *iattr);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 extern int configfs_pin_fs(void);
 extern void configfs_release_fs(void);
 
 extern struct rw_semaphore configfs_rename_sem;
 extern struct super_block * configfs_sb;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+extern struct dentry *configfs_pin_fs(void);
+extern void configfs_release_fs(void);
+
+extern struct rw_semaphore configfs_rename_sem;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern const struct file_operations configfs_dir_operations;
 extern const struct file_operations configfs_file_operations;
 extern const struct file_operations bin_fops;
 extern const struct inode_operations configfs_dir_inode_operations;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+extern const struct inode_operations configfs_root_inode_operations;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern const struct inode_operations configfs_root_inode_operations;
+>>>>>>> refs/remotes/origin/master
 extern const struct inode_operations configfs_symlink_inode_operations;
 extern const struct dentry_operations configfs_dentry_ops;
 

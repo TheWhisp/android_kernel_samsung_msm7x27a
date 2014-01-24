@@ -19,8 +19,14 @@
 #include <linux/interrupt.h>
 #include <linux/ioctl.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 #include <mach/board.h>
+=======
+#include <linux/platform_data/atmel.h>
+#include <linux/io.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <mach/at91_rtt.h>
 #include <mach/cpu.h>
 
@@ -57,6 +63,15 @@ struct sam9_rtc {
 	void __iomem		*rtt;
 	struct rtc_device	*rtcdev;
 	u32			imr;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	void __iomem		*gpbr;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __iomem		*gpbr;
+	int 			irq;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define rtt_readl(rtc, field) \
@@ -65,9 +80,21 @@ struct sam9_rtc {
 	__raw_writel((val), (rtc)->rtt + AT91_RTT_ ## field)
 
 #define gpbr_readl(rtc) \
+<<<<<<< HEAD
+<<<<<<< HEAD
 	at91_sys_read(AT91_GPBR + 4 * CONFIG_RTC_DRV_AT91SAM9_GPBR)
 #define gpbr_writel(rtc, val) \
 	at91_sys_write(AT91_GPBR + 4 * CONFIG_RTC_DRV_AT91SAM9_GPBR, (val))
+=======
+	__raw_readl((rtc)->gpbr)
+#define gpbr_writel(rtc, val) \
+	__raw_writel((val), (rtc)->gpbr)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__raw_readl((rtc)->gpbr)
+#define gpbr_writel(rtc, val) \
+	__raw_writel((val), (rtc)->gpbr)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Read current time and date in RTC
@@ -287,28 +314,100 @@ static const struct rtc_class_ops at91_rtc_ops = {
 /*
  * Initialize and install RTC driver
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __init at91_rtc_probe(struct platform_device *pdev)
 {
 	struct resource	*r;
+=======
+static int __devinit at91_rtc_probe(struct platform_device *pdev)
+{
+	struct resource	*r, *r_gpbr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sam9_rtc	*rtc;
 	int		ret;
 	u32		mr;
 
 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!r)
 		return -ENODEV;
+=======
+=======
+static int at91_rtc_probe(struct platform_device *pdev)
+{
+	struct resource	*r, *r_gpbr;
+	struct sam9_rtc	*rtc;
+	int		ret, irq;
+	u32		mr;
+
+	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>>>>>> refs/remotes/origin/master
+	r_gpbr = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+	if (!r || !r_gpbr) {
+		dev_err(&pdev->dev, "need 2 ressources\n");
+		return -ENODEV;
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rtc = kzalloc(sizeof *rtc, GFP_KERNEL);
 	if (!rtc)
 		return -ENOMEM;
 
+=======
+
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0) {
+		dev_err(&pdev->dev, "failed to get interrupt resource\n");
+		return irq;
+	}
+
+	rtc = devm_kzalloc(&pdev->dev, sizeof(*rtc), GFP_KERNEL);
+	if (!rtc)
+		return -ENOMEM;
+
+	rtc->irq = irq;
+
+>>>>>>> refs/remotes/origin/master
 	/* platform setup code should have handled this; sigh */
 	if (!device_can_wakeup(&pdev->dev))
 		device_init_wakeup(&pdev->dev, 1);
 
 	platform_set_drvdata(pdev, rtc);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	rtc->rtt = (void __force __iomem *) (AT91_VA_BASE_SYS - AT91_BASE_SYS);
 	rtc->rtt += r->start;
+=======
+	rtc->rtt = ioremap(r->start, resource_size(r));
+	if (!rtc->rtt) {
+		dev_err(&pdev->dev, "failed to map registers, aborting.\n");
+		ret = -ENOMEM;
+		goto fail;
+	}
+
+	rtc->gpbr = ioremap(r_gpbr->start, resource_size(r_gpbr));
+	if (!rtc->gpbr) {
+		dev_err(&pdev->dev, "failed to map gpbr registers, aborting.\n");
+		ret = -ENOMEM;
+		goto fail_gpbr;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rtc->rtt = devm_ioremap(&pdev->dev, r->start, resource_size(r));
+	if (!rtc->rtt) {
+		dev_err(&pdev->dev, "failed to map registers, aborting.\n");
+		return -ENOMEM;
+	}
+
+	rtc->gpbr = devm_ioremap(&pdev->dev, r_gpbr->start,
+				resource_size(r_gpbr));
+	if (!rtc->gpbr) {
+		dev_err(&pdev->dev, "failed to map gpbr registers, aborting.\n");
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	mr = rtt_readl(rtc, MR);
 
@@ -322,21 +421,47 @@ static int __init at91_rtc_probe(struct platform_device *pdev)
 	mr &= ~(AT91_RTT_ALMIEN | AT91_RTT_RTTINCIEN);
 	rtt_writel(rtc, MR, mr);
 
+<<<<<<< HEAD
 	rtc->rtcdev = rtc_device_register(pdev->name, &pdev->dev,
 				&at91_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc->rtcdev)) {
 		ret = PTR_ERR(rtc->rtcdev);
+<<<<<<< HEAD
 		goto fail;
+=======
+		goto fail_register;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* register irq handler after we know what name we'll use */
 	ret = request_irq(AT91_ID_SYS, at91_rtc_interrupt,
+<<<<<<< HEAD
 				IRQF_DISABLED | IRQF_SHARED,
+=======
+				IRQF_SHARED,
+>>>>>>> refs/remotes/origin/cm-10.0
 				dev_name(&rtc->rtcdev->dev), rtc);
 	if (ret) {
 		dev_dbg(&pdev->dev, "can't share IRQ %d?\n", AT91_ID_SYS);
 		rtc_device_unregister(rtc->rtcdev);
+<<<<<<< HEAD
 		goto fail;
+=======
+		goto fail_register;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rtc->rtcdev = devm_rtc_device_register(&pdev->dev, pdev->name,
+					&at91_rtc_ops, THIS_MODULE);
+	if (IS_ERR(rtc->rtcdev))
+		return PTR_ERR(rtc->rtcdev);
+
+	/* register irq handler after we know what name we'll use */
+	ret = devm_request_irq(&pdev->dev, rtc->irq, at91_rtc_interrupt,
+				IRQF_SHARED, dev_name(&rtc->rtcdev->dev), rtc);
+	if (ret) {
+		dev_dbg(&pdev->dev, "can't share IRQ %d?\n", rtc->irq);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* NOTE:  sam9260 rev A silicon has a ROM bug which resets the
@@ -350,29 +475,56 @@ static int __init at91_rtc_probe(struct platform_device *pdev)
 				dev_name(&rtc->rtcdev->dev));
 
 	return 0;
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+fail_register:
+	iounmap(rtc->gpbr);
+fail_gpbr:
+	iounmap(rtc->rtt);
+>>>>>>> refs/remotes/origin/cm-10.0
 fail:
 	platform_set_drvdata(pdev, NULL);
 	kfree(rtc);
 	return ret;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Disable and remove the RTC driver
  */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int __exit at91_rtc_remove(struct platform_device *pdev)
+=======
+static int __devexit at91_rtc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int at91_rtc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sam9_rtc	*rtc = platform_get_drvdata(pdev);
 	u32		mr = rtt_readl(rtc, MR);
 
 	/* disable all interrupts */
 	rtt_writel(rtc, MR, mr & ~(AT91_RTT_ALMIEN | AT91_RTT_RTTINCIEN));
+<<<<<<< HEAD
 	free_irq(AT91_ID_SYS, rtc);
 
 	rtc_device_unregister(rtc->rtcdev);
 
+<<<<<<< HEAD
+=======
+	iounmap(rtc->gpbr);
+	iounmap(rtc->rtt);
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_set_drvdata(pdev, NULL);
 	kfree(rtc);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -385,6 +537,7 @@ static void at91_rtc_shutdown(struct platform_device *pdev)
 	rtt_writel(rtc, MR, mr & ~rtc->imr);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 
 /* AT91SAM9 RTC Power management control */
@@ -393,6 +546,15 @@ static int at91_rtc_suspend(struct platform_device *pdev,
 					pm_message_t state)
 {
 	struct sam9_rtc	*rtc = platform_get_drvdata(pdev);
+=======
+#ifdef CONFIG_PM_SLEEP
+
+/* AT91SAM9 RTC Power management control */
+
+static int at91_rtc_suspend(struct device *dev)
+{
+	struct sam9_rtc	*rtc = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	u32		mr = rtt_readl(rtc, MR);
 
 	/*
@@ -401,8 +563,13 @@ static int at91_rtc_suspend(struct platform_device *pdev,
 	 */
 	rtc->imr = mr & (AT91_RTT_ALMIEN | AT91_RTT_RTTINCIEN);
 	if (rtc->imr) {
+<<<<<<< HEAD
 		if (device_may_wakeup(&pdev->dev) && (mr & AT91_RTT_ALMIEN)) {
 			enable_irq_wake(AT91_ID_SYS);
+=======
+		if (device_may_wakeup(dev) && (mr & AT91_RTT_ALMIEN)) {
+			enable_irq_wake(rtc->irq);
+>>>>>>> refs/remotes/origin/master
 			/* don't let RTTINC cause wakeups */
 			if (mr & AT91_RTT_RTTINCIEN)
 				rtt_writel(rtc, MR, mr & ~AT91_RTT_RTTINCIEN);
@@ -413,6 +580,7 @@ static int at91_rtc_suspend(struct platform_device *pdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int at91_rtc_resume(struct platform_device *pdev)
 {
 	struct sam9_rtc	*rtc = platform_get_drvdata(pdev);
@@ -421,18 +589,30 @@ static int at91_rtc_resume(struct platform_device *pdev)
 	if (rtc->imr) {
 		if (device_may_wakeup(&pdev->dev))
 			disable_irq_wake(AT91_ID_SYS);
+=======
+static int at91_rtc_resume(struct device *dev)
+{
+	struct sam9_rtc	*rtc = dev_get_drvdata(dev);
+	u32		mr;
+
+	if (rtc->imr) {
+		if (device_may_wakeup(dev))
+			disable_irq_wake(rtc->irq);
+>>>>>>> refs/remotes/origin/master
 		mr = rtt_readl(rtc, MR);
 		rtt_writel(rtc, MR, mr | rtc->imr);
 	}
 
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define at91_rtc_suspend	NULL
 #define at91_rtc_resume		NULL
 #endif
 
 static struct platform_driver at91_rtc_driver = {
+<<<<<<< HEAD
 	.driver.name	= "rtc-at91sam9",
 	.driver.owner	= THIS_MODULE,
 	.remove		= __exit_p(at91_rtc_remove),
@@ -490,6 +670,22 @@ static int __init at91_rtc_init(void)
 	if (!rtc)
 		platform_driver_unregister(&at91_rtc_driver);
 	return rtc ? 0 : -ENODEV;
+=======
+	.probe		= at91_rtc_probe,
+	.remove		= __devexit_p(at91_rtc_remove),
+	.shutdown	= at91_rtc_shutdown,
+	.suspend	= at91_rtc_suspend,
+	.resume		= at91_rtc_resume,
+	.driver		= {
+		.name	= "rtc-at91sam9",
+		.owner	= THIS_MODULE,
+	},
+};
+
+static int __init at91_rtc_init(void)
+{
+	return platform_driver_register(&at91_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 module_init(at91_rtc_init);
 
@@ -499,6 +695,24 @@ static void __exit at91_rtc_exit(void)
 }
 module_exit(at91_rtc_exit);
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(at91_rtc_pm_ops, at91_rtc_suspend, at91_rtc_resume);
+
+static struct platform_driver at91_rtc_driver = {
+	.probe		= at91_rtc_probe,
+	.remove		= at91_rtc_remove,
+	.shutdown	= at91_rtc_shutdown,
+	.driver		= {
+		.name	= "rtc-at91sam9",
+		.owner	= THIS_MODULE,
+		.pm	= &at91_rtc_pm_ops,
+	},
+};
+
+module_platform_driver(at91_rtc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michel Benoit");
 MODULE_DESCRIPTION("RTC driver for Atmel AT91SAM9x");

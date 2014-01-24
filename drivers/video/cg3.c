@@ -243,8 +243,13 @@ static int cg3_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg)
  *  Initialisation
  */
 
+<<<<<<< HEAD
 static void __devinit cg3_init_fix(struct fb_info *info, int linebytes,
 				   struct device_node *dp)
+=======
+static void cg3_init_fix(struct fb_info *info, int linebytes,
+			 struct device_node *dp)
+>>>>>>> refs/remotes/origin/master
 {
 	strlcpy(info->fix.id, dp->name, sizeof(info->fix.id));
 
@@ -256,8 +261,13 @@ static void __devinit cg3_init_fix(struct fb_info *info, int linebytes,
 	info->fix.accel = FB_ACCEL_SUN_CGTHREE;
 }
 
+<<<<<<< HEAD
 static void __devinit cg3_rdi_maybe_fixup_var(struct fb_var_screeninfo *var,
 					      struct device_node *dp)
+=======
+static void cg3_rdi_maybe_fixup_var(struct fb_var_screeninfo *var,
+				    struct device_node *dp)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *params;
 	char *p;
@@ -279,27 +289,40 @@ static void __devinit cg3_rdi_maybe_fixup_var(struct fb_var_screeninfo *var,
 	}
 }
 
+<<<<<<< HEAD
 static u8 cg3regvals_66hz[] __devinitdata = {	/* 1152 x 900, 66 Hz */
+=======
+static u8 cg3regvals_66hz[] = {	/* 1152 x 900, 66 Hz */
+>>>>>>> refs/remotes/origin/master
 	0x14, 0xbb,	0x15, 0x2b,	0x16, 0x04,	0x17, 0x14,
 	0x18, 0xae,	0x19, 0x03,	0x1a, 0xa8,	0x1b, 0x24,
 	0x1c, 0x01,	0x1d, 0x05,	0x1e, 0xff,	0x1f, 0x01,
 	0x10, 0x20,	0
 };
 
+<<<<<<< HEAD
 static u8 cg3regvals_76hz[] __devinitdata = {	/* 1152 x 900, 76 Hz */
+=======
+static u8 cg3regvals_76hz[] = {	/* 1152 x 900, 76 Hz */
+>>>>>>> refs/remotes/origin/master
 	0x14, 0xb7,	0x15, 0x27,	0x16, 0x03,	0x17, 0x0f,
 	0x18, 0xae,	0x19, 0x03,	0x1a, 0xae,	0x1b, 0x2a,
 	0x1c, 0x01,	0x1d, 0x09,	0x1e, 0xff,	0x1f, 0x01,
 	0x10, 0x24,	0
 };
 
+<<<<<<< HEAD
 static u8 cg3regvals_rdi[] __devinitdata = {	/* 640 x 480, cgRDI */
+=======
+static u8 cg3regvals_rdi[] = {	/* 640 x 480, cgRDI */
+>>>>>>> refs/remotes/origin/master
 	0x14, 0x70,	0x15, 0x20,	0x16, 0x08,	0x17, 0x10,
 	0x18, 0x06,	0x19, 0x02,	0x1a, 0x31,	0x1b, 0x51,
 	0x1c, 0x06,	0x1d, 0x0c,	0x1e, 0xff,	0x1f, 0x01,
 	0x10, 0x22,	0
 };
 
+<<<<<<< HEAD
 static u8 *cg3_regvals[] __devinitdata = {
 	cg3regvals_66hz, cg3regvals_76hz, cg3regvals_rdi
 };
@@ -309,6 +332,17 @@ static u_char cg3_dacvals[] __devinitdata = {
 };
 
 static int __devinit cg3_do_default_mode(struct cg3_par *par)
+=======
+static u8 *cg3_regvals[] = {
+	cg3regvals_66hz, cg3regvals_76hz, cg3regvals_rdi
+};
+
+static u_char cg3_dacvals[] = {
+	4, 0xff,	5, 0x00,	6, 0x70,	7, 0x00,	0
+};
+
+static int cg3_do_default_mode(struct cg3_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	enum cg3_type type;
 	u8 *p;
@@ -346,7 +380,11 @@ static int __devinit cg3_do_default_mode(struct cg3_par *par)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit cg3_probe(struct platform_device *op)
+=======
+static int cg3_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	struct fb_info *info;
@@ -398,7 +436,12 @@ static int __devinit cg3_probe(struct platform_device *op)
 			goto out_unmap_screen;
 	}
 
+<<<<<<< HEAD
 	if (fb_alloc_cmap(&info->cmap, 256, 0))
+=======
+	err = fb_alloc_cmap(&info->cmap, 256, 0);
+	if (err)
+>>>>>>> refs/remotes/origin/master
 		goto out_unmap_screen;
 
 	fb_set_cmap(&info->cmap, info);
@@ -432,7 +475,11 @@ out_err:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit cg3_remove(struct platform_device *op)
+=======
+static int cg3_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = dev_get_drvdata(&op->dev);
 	struct cg3_par *par = info->par;
@@ -445,8 +492,11 @@ static int __devexit cg3_remove(struct platform_device *op)
 
 	framebuffer_release(info);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -468,7 +518,11 @@ static struct platform_driver cg3_driver = {
 		.of_match_table = cg3_match,
 	},
 	.probe		= cg3_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cg3_remove),
+=======
+	.remove		= cg3_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init cg3_init(void)

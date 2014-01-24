@@ -13,6 +13,8 @@
 #define MCI_PWR_ON		0x03
 #define MCI_OD			(1 << 6)
 #define MCI_ROD			(1 << 7)
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * The ST Micro version does not have ROD and reuse the voltage registers
  * for direction settings
@@ -23,6 +25,10 @@
 #define MCI_ST_DATA31DIREN	(1 << 5)
 #define MCI_ST_FBCLKEN		(1 << 7)
 #define MCI_ST_DATA74DIREN	(1 << 8)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define MMCICLOCK		0x004
 #define MCI_CLK_ENABLE		(1 << 8)
@@ -38,6 +44,11 @@
 #define MCI_ST_UX500_NEG_EDGE	(1 << 13)
 #define MCI_ST_UX500_HWFCEN	(1 << 14)
 #define MCI_ST_UX500_CLK_INV	(1 << 15)
+<<<<<<< HEAD
+=======
+/* Modified PL180 on Versatile Express platform */
+#define MCI_ARM_HWFCEN		(1 << 12)
+>>>>>>> refs/remotes/origin/master
 
 #define MMCIARGUMENT		0x008
 #define MMCICOMMAND		0x00c
@@ -102,6 +113,10 @@
 /* Extended status bits for the ST Micro variants */
 #define MCI_ST_SDIOIT		(1 << 22)
 #define MCI_ST_CEATAEND		(1 << 23)
+<<<<<<< HEAD
+=======
+#define MCI_ST_CARDBUSY		(1 << 24)
+>>>>>>> refs/remotes/origin/master
 
 #define MMCICLEAR		0x038
 #define MCI_CMDCRCFAILCLR	(1 << 0)
@@ -118,6 +133,10 @@
 /* Extended status bits for the ST Micro variants */
 #define MCI_ST_SDIOITC		(1 << 22)
 #define MCI_ST_CEATAENDC	(1 << 23)
+<<<<<<< HEAD
+=======
+#define MCI_ST_BUSYENDC		(1 << 24)
+>>>>>>> refs/remotes/origin/master
 
 #define MMCIMASK0		0x03c
 #define MCI_CMDCRCFAILMASK	(1 << 0)
@@ -160,12 +179,35 @@
 	(MCI_RXFIFOHALFFULLMASK | MCI_RXDATAAVLBLMASK | \
 	 MCI_TXFIFOHALFEMPTYMASK)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define NR_SG		16
+=======
+#define NR_SG		128
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NR_SG		128
+>>>>>>> refs/remotes/origin/master
 
 struct clk;
 struct variant_data;
 struct dma_chan;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+struct mmci_host_next {
+	struct dma_async_tx_descriptor	*dma_desc;
+	struct dma_chan			*dma_chan;
+	s32				cookie;
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct mmci_host {
 	phys_addr_t		phybase;
 	void __iomem		*base;
@@ -183,7 +225,19 @@ struct mmci_host {
 
 	unsigned int		mclk;
 	unsigned int		cclk;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	u32			pwr;
+=======
+	u32			pwr_reg;
+	u32			clk_reg;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32			pwr_reg;
+	u32			clk_reg;
+	u32			datactrl_reg;
+	bool			vqmmc_enabled;
+>>>>>>> refs/remotes/origin/master
 	struct mmci_platform_data *plat;
 	struct variant_data	*variant;
 
@@ -196,13 +250,26 @@ struct mmci_host {
 	/* pio stuff */
 	struct sg_mapping_iter	sg_miter;
 	unsigned int		size;
+<<<<<<< HEAD
 	struct regulator	*vcc;
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DMA_ENGINE
 	/* DMA stuff */
 	struct dma_chan		*dma_current;
 	struct dma_chan		*dma_rx_channel;
 	struct dma_chan		*dma_tx_channel;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct dma_async_tx_descriptor	*dma_desc_current;
+	struct mmci_host_next	next_data;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dma_async_tx_descriptor	*dma_desc_current;
+	struct mmci_host_next	next_data;
+>>>>>>> refs/remotes/origin/master
 
 #define dma_inprogress(host)	((host)->dma_current)
 #else

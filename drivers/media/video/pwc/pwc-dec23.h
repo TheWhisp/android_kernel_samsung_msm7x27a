@@ -25,15 +25,30 @@
 #ifndef PWC_DEC23_H
 #define PWC_DEC23_H
 
+<<<<<<< HEAD
 #include "pwc.h"
 
 struct pwc_dec23_private
 {
+=======
+struct pwc_device;
+
+struct pwc_dec23_private
+{
+	struct mutex lock;
+
+	unsigned char last_cmd, last_cmd_valid;
+
+>>>>>>> refs/remotes/origin/cm-10.0
   unsigned int scalebits;
   unsigned int nbitsmask, nbits; /* Number of bits of a color in the compressed stream */
 
   unsigned int reservoir;
   unsigned int nbits_in_reservoir;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
   const unsigned char *stream;
   int temp_colors[16];
 
@@ -49,6 +64,7 @@ struct pwc_dec23_private
 
 };
 
+<<<<<<< HEAD
 
 int pwc_dec23_alloc(struct pwc_device *pwc);
 int pwc_dec23_init(struct pwc_device *pwc, int type, unsigned char *cmd);
@@ -65,3 +81,10 @@ void pwc_dec23_decompress(const struct pwc_device *pwc,
 
 /* vim: set cino= formatoptions=croql cindent shiftwidth=8 tabstop=8: */
 
+=======
+void pwc_dec23_init(struct pwc_device *pdev, const unsigned char *cmd);
+void pwc_dec23_decompress(struct pwc_device *pdev,
+			  const void *src,
+			  void *dst);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -23,8 +23,16 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/spi/spi.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+#include <linux/spi/spi.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -110,8 +118,18 @@
 
 #define WM8900_REG_CLOCKING1_BCLK_DIR   0x1
 #define WM8900_REG_CLOCKING1_MCLK_SRC   0x100
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define WM8900_REG_CLOCKING1_BCLK_MASK  (~0x01e)
 #define WM8900_REG_CLOCKING1_OPCLK_MASK (~0x7000)
+=======
+#define WM8900_REG_CLOCKING1_BCLK_MASK  0x01e
+#define WM8900_REG_CLOCKING1_OPCLK_MASK 0x7000
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM8900_REG_CLOCKING1_BCLK_MASK  0x01e
+#define WM8900_REG_CLOCKING1_OPCLK_MASK 0x7000
+>>>>>>> refs/remotes/origin/master
 
 #define WM8900_REG_CLOCKING2_ADC_CLKDIV 0xe0
 #define WM8900_REG_CLOCKING2_DAC_CLKDIV 0x1c
@@ -135,10 +153,21 @@
 #define WM8900_REG_HPCTL1_HP_SHORT       0x08
 #define WM8900_REG_HPCTL1_HP_SHORT2      0x04
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 #define WM8900_LRC_MASK 0xfc00
+=======
+#define WM8900_LRC_MASK 0x03ff
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct wm8900_priv {
 	enum snd_soc_control_type control_type;
+=======
+#define WM8900_LRC_MASK 0x03ff
+
+struct wm8900_priv {
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 
 	u32 fll_in; /* FLL input frequency */
 	u32 fll_out; /* FLL output frequency */
@@ -148,6 +177,7 @@ struct wm8900_priv {
  * wm8900 register cache.  We can't read the entire register space and we
  * have slow control buses so we cache the registers.
  */
+<<<<<<< HEAD
 static const u16 wm8900_reg_defaults[WM8900_MAXREG] = {
 	0x8900, 0x0000,
 	0xc000, 0x0000,
@@ -187,15 +217,85 @@ static int wm8900_volatile_register(struct snd_soc_codec *codec, unsigned int re
 		return 1;
 	default:
 		return 0;
+=======
+static const struct reg_default wm8900_reg_defaults[] = {
+	{  1, 0x0000 },
+	{  2, 0xc000 },
+	{  3, 0x0000 },
+	{  4, 0x4050 },
+	{  5, 0x4000 },
+	{  6, 0x0008 },
+	{  7, 0x0000 },
+	{  8, 0x0040 },
+	{  9, 0x0040 },
+	{ 10, 0x1004 },
+	{ 11, 0x00c0 },
+	{ 12, 0x00c0 },
+	{ 13, 0x0000 },
+	{ 14, 0x0100 },
+	{ 15, 0x00c0 },
+	{ 16, 0x00c0 },
+	{ 17, 0x0000 },
+	{ 18, 0xb001 },
+	{ 19, 0x0000 },
+	{ 20, 0x0000 },
+	{ 21, 0x0044 },
+	{ 22, 0x004c },
+	{ 23, 0x004c },
+	{ 24, 0x0044 },
+	{ 25, 0x0044 },
+	{ 26, 0x0000 },
+	{ 27, 0x0044 },
+	{ 28, 0x0000 },
+	{ 29, 0x0000 },
+	{ 30, 0x0002 },
+	{ 31, 0x0000 },
+	{ 32, 0x0000 },
+	{ 33, 0x0000 },
+	{ 34, 0x0000 },
+	{ 35, 0x0000 },
+	{ 36, 0x0008 },
+	{ 37, 0x0000 },
+	{ 38, 0x0000 },
+	{ 39, 0x0008 },
+	{ 40, 0x0097 },
+	{ 41, 0x0100 },
+	{ 42, 0x0000 },
+	{ 43, 0x0000 },
+	{ 44, 0x0050 },
+	{ 45, 0x0050 },
+	{ 46, 0x0055 },
+	{ 47, 0x0055 },
+	{ 48, 0x0055 },
+	{ 49, 0x0000 },
+	{ 50, 0x0000 },
+	{ 51, 0x0079 },
+	{ 52, 0x0079 },
+	{ 53, 0x0079 },
+	{ 54, 0x0079 },
+	{ 55, 0x0000 },
+};
+
+static bool wm8900_volatile_register(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8900_REG_ID:
+		return true;
+	default:
+		return false;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static void wm8900_reset(struct snd_soc_codec *codec)
 {
 	snd_soc_write(codec, WM8900_REG_RESET, 0);
+<<<<<<< HEAD
 
 	memcpy(codec->reg_cache, wm8900_reg_defaults,
 	       sizeof(wm8900_reg_defaults));
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wm8900_hp_event(struct snd_soc_dapm_widget *w,
@@ -256,7 +356,12 @@ static int wm8900_hp_event(struct snd_soc_dapm_widget *w,
 		break;
 
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Invalid event %d\n", event);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -470,10 +575,17 @@ SOC_DAPM_SINGLE("RINPUT2 Switch", WM8900_REG_INCTL, 1, 1, 0),
 SOC_DAPM_SINGLE("RINPUT3 Switch", WM8900_REG_INCTL, 0, 1, 0),
 };
 
+<<<<<<< HEAD
 static const char *wm9700_lp_mux[] = { "Disabled", "Enabled" };
 
 static const struct soc_enum wm8900_lineout2_lp_mux =
 SOC_ENUM_SINGLE(WM8900_REG_LOUTMIXCTL1, 1, 2, wm9700_lp_mux);
+=======
+static const char *wm8900_lp_mux[] = { "Disabled", "Enabled" };
+
+static const struct soc_enum wm8900_lineout2_lp_mux =
+SOC_ENUM_SINGLE(WM8900_REG_LOUTMIXCTL1, 1, 2, wm8900_lp_mux);
+>>>>>>> refs/remotes/origin/master
 
 static const struct snd_kcontrol_new wm8900_lineout2_lp =
 SOC_DAPM_ENUM("Route", wm8900_lineout2_lp_mux);
@@ -513,7 +625,15 @@ SND_SOC_DAPM_MIXER("Right Input Mixer", WM8900_REG_POWER2, 4, 0,
 		   wm8900_rinmix_controls,
 		   ARRAY_SIZE(wm8900_rinmix_controls)),
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 SND_SOC_DAPM_MICBIAS("Mic Bias", WM8900_REG_POWER1, 4, 0),
+=======
+SND_SOC_DAPM_SUPPLY("Mic Bias", WM8900_REG_POWER1, 4, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+SND_SOC_DAPM_SUPPLY("Mic Bias", WM8900_REG_POWER1, 4, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/master
 
 SND_SOC_DAPM_ADC("ADCL", "Left HiFi Capture", WM8900_REG_POWER2, 1, 0),
 SND_SOC_DAPM_ADC("ADCR", "Right HiFi Capture", WM8900_REG_POWER2, 0, 0),
@@ -543,7 +663,15 @@ SND_SOC_DAPM_MIXER("Right Output Mixer", WM8900_REG_POWER3, 2, 0,
 };
 
 /* Target, Path, Source */
+<<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route wm8900_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route wm8900_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 /* Inputs */
 {"Left Input PGA", "LINPUT1 Switch", "LINPUT1"},
 {"Left Input PGA", "LINPUT2 Switch", "LINPUT2"},
@@ -607,6 +735,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
 {"HP_R", NULL, "Headphone Amplifier"},
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8900_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -618,12 +748,20 @@ static int wm8900_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm8900_hw_params(struct snd_pcm_substream *substream,
 	struct snd_pcm_hw_params *params,
 	struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	u16 reg;
 
 	reg = snd_soc_read(codec, WM8900_REG_AUDIO1) & ~0x60;
@@ -680,7 +818,12 @@ static int fll_factors(struct _fll_div *fll_div, unsigned int Fref,
 	unsigned int K, Ndiv, Nmod, target;
 	unsigned int div;
 
+<<<<<<< HEAD
 	BUG_ON(!Fout);
+=======
+	if (WARN_ON(!Fout))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	/* The FLL must run at 90-100MHz which is then scaled down to
 	 * the output value by FLLCLK_DIV. */
@@ -731,8 +874,14 @@ static int fll_factors(struct _fll_div *fll_div, unsigned int Fref,
 	/* Move down to proper range now rounding is done */
 	fll_div->k = K / 10;
 
+<<<<<<< HEAD
 	BUG_ON(target != Fout * (fll_div->fllclk_div << 2));
 	BUG_ON(!K && target != Fref * fll_div->fll_ratio * fll_div->n);
+=======
+	if (WARN_ON(target != Fout * (fll_div->fllclk_div << 2)) ||
+	    WARN_ON(!K && target != Fref * fll_div->fll_ratio * fll_div->n))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -742,12 +891,20 @@ static int wm8900_set_fll(struct snd_soc_codec *codec,
 {
 	struct wm8900_priv *wm8900 = snd_soc_codec_get_drvdata(codec);
 	struct _fll_div fll_div;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int reg;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (wm8900->fll_in == freq_in && wm8900->fll_out == freq_out)
 		return 0;
 
 	/* The digital side should be disabled during any change. */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reg = snd_soc_read(codec, WM8900_REG_POWER1);
 	snd_soc_write(codec, WM8900_REG_POWER1,
 		     reg & (~WM8900_REG_POWER1_FLL_ENA));
@@ -762,6 +919,22 @@ static int wm8900_set_fll(struct snd_soc_codec *codec,
 		snd_soc_write(codec, WM8900_REG_FLLCTL1,
 			     reg & (~WM8900_REG_FLLCTL1_OSC_ENA));
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	snd_soc_update_bits(codec, WM8900_REG_POWER1,
+			    WM8900_REG_POWER1_FLL_ENA, 0);
+
+	/* Disable the FLL? */
+	if (!freq_in || !freq_out) {
+		snd_soc_update_bits(codec, WM8900_REG_CLOCKING1,
+				    WM8900_REG_CLOCKING1_MCLK_SRC, 0);
+		snd_soc_update_bits(codec, WM8900_REG_FLLCTL1,
+				    WM8900_REG_FLLCTL1_OSC_ENA, 0);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		wm8900->fll_in = freq_in;
 		wm8900->fll_out = freq_out;
 
@@ -796,6 +969,8 @@ static int wm8900_set_fll(struct snd_soc_codec *codec,
 	else
 		snd_soc_write(codec, WM8900_REG_FLLCTL6, 0);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	reg = snd_soc_read(codec, WM8900_REG_POWER1);
 	snd_soc_write(codec, WM8900_REG_POWER1,
 		     reg | WM8900_REG_POWER1_FLL_ENA);
@@ -805,6 +980,21 @@ reenable:
 	snd_soc_write(codec, WM8900_REG_CLOCKING1,
 		     reg | WM8900_REG_CLOCKING1_MCLK_SRC);
 
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	snd_soc_update_bits(codec, WM8900_REG_POWER1,
+			    WM8900_REG_POWER1_FLL_ENA,
+			    WM8900_REG_POWER1_FLL_ENA);
+
+reenable:
+	snd_soc_update_bits(codec, WM8900_REG_CLOCKING1,
+			    WM8900_REG_CLOCKING1_MCLK_SRC,
+			    WM8900_REG_CLOCKING1_MCLK_SRC);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -818,6 +1008,8 @@ static int wm8900_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
 				 int div_id, int div)
 {
 	struct snd_soc_codec *codec = codec_dai->codec;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int reg;
 
 	switch (div_id) {
@@ -855,6 +1047,42 @@ static int wm8900_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
 		reg = snd_soc_read(codec, WM8900_REG_DACCTRL);
 		snd_soc_write(codec, WM8900_REG_DACCTRL,
 			     div | (reg & WM8900_REG_DACCTRL_AIF_LRCLKRATE));
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	switch (div_id) {
+	case WM8900_BCLK_DIV:
+		snd_soc_update_bits(codec, WM8900_REG_CLOCKING1,
+				    WM8900_REG_CLOCKING1_BCLK_MASK, div);
+		break;
+	case WM8900_OPCLK_DIV:
+		snd_soc_update_bits(codec, WM8900_REG_CLOCKING1,
+				    WM8900_REG_CLOCKING1_OPCLK_MASK, div);
+		break;
+	case WM8900_DAC_LRCLK:
+		snd_soc_update_bits(codec, WM8900_REG_AUDIO4,
+				    WM8900_LRC_MASK, div);
+		break;
+	case WM8900_ADC_LRCLK:
+		snd_soc_update_bits(codec, WM8900_REG_AUDIO3,
+				    WM8900_LRC_MASK, div);
+		break;
+	case WM8900_DAC_CLKDIV:
+		snd_soc_update_bits(codec, WM8900_REG_CLOCKING2,
+				    WM8900_REG_CLOCKING2_DAC_CLKDIV, div);
+		break;
+	case WM8900_ADC_CLKDIV:
+		snd_soc_update_bits(codec, WM8900_REG_CLOCKING2,
+				    WM8900_REG_CLOCKING2_ADC_CLKDIV, div);
+		break;
+	case WM8900_LRCLK_MODE:
+		snd_soc_update_bits(codec, WM8900_REG_DACCTRL,
+				    WM8900_REG_DACCTRL_AIF_LRCLKRATE, div);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
@@ -1002,7 +1230,15 @@ static int wm8900_digital_mute(struct snd_soc_dai *codec_dai, int mute)
 	(SNDRV_PCM_FORMAT_S16_LE | SNDRV_PCM_FORMAT_S20_3LE | \
 	 SNDRV_PCM_FORMAT_S24_LE)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8900_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8900_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8900_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= wm8900_hw_params,
 	.set_clkdiv	= wm8900_set_dai_clkdiv,
 	.set_pll	= wm8900_set_dai_pll,
@@ -1037,12 +1273,27 @@ static int wm8900_set_bias_level(struct snd_soc_codec *codec,
 	switch (level) {
 	case SND_SOC_BIAS_ON:
 		/* Enable thermal shutdown */
+<<<<<<< HEAD
+<<<<<<< HEAD
 		reg = snd_soc_read(codec, WM8900_REG_GPIO);
 		snd_soc_write(codec, WM8900_REG_GPIO,
 			     reg | WM8900_REG_GPIO_TEMP_ENA);
 		reg = snd_soc_read(codec, WM8900_REG_ADDCTL);
 		snd_soc_write(codec, WM8900_REG_ADDCTL,
 			     reg | WM8900_REG_ADDCTL_TEMP_SD);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		snd_soc_update_bits(codec, WM8900_REG_GPIO,
+				    WM8900_REG_GPIO_TEMP_ENA,
+				    WM8900_REG_GPIO_TEMP_ENA);
+		snd_soc_update_bits(codec, WM8900_REG_ADDCTL,
+				    WM8900_REG_ADDCTL_TEMP_SD,
+				    WM8900_REG_ADDCTL_TEMP_SD);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case SND_SOC_BIAS_PREPARE:
@@ -1122,7 +1373,15 @@ static int wm8900_set_bias_level(struct snd_soc_codec *codec,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8900_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8900_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8900_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8900_priv *wm8900 = snd_soc_codec_get_drvdata(codec);
 	int fll_out = wm8900->fll_out;
@@ -1147,6 +1406,7 @@ static int wm8900_suspend(struct snd_soc_codec *codec, pm_message_t state)
 static int wm8900_resume(struct snd_soc_codec *codec)
 {
 	struct wm8900_priv *wm8900 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	u16 *cache;
 	int i, ret;
 
@@ -1154,6 +1414,18 @@ static int wm8900_resume(struct snd_soc_codec *codec)
 			GFP_KERNEL);
 
 	wm8900_reset(codec);
+=======
+	int ret;
+
+	wm8900_reset(codec);
+
+	ret = regcache_sync(wm8900->regmap);
+	if (ret != 0) {
+		dev_err(codec->dev, "Failed to restore cache: %d\n", ret);
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	wm8900_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
 	/* Restart the FLL? */
@@ -1167,10 +1439,18 @@ static int wm8900_resume(struct snd_soc_codec *codec)
 		ret = wm8900_set_fll(codec, 0, fll_in, fll_out);
 		if (ret != 0) {
 			dev_err(codec->dev, "Failed to restart FLL\n");
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			kfree(cache);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return ret;
 		}
 	}
 
+<<<<<<< HEAD
 	if (cache) {
 		for (i = 0; i < WM8900_MAXREG; i++)
 			snd_soc_write(codec, i, cache[i]);
@@ -1178,15 +1458,23 @@ static int wm8900_resume(struct snd_soc_codec *codec)
 	} else
 		dev_err(codec->dev, "Unable to allocate register cache\n");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int wm8900_probe(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	struct wm8900_priv *wm8900 = snd_soc_codec_get_drvdata(codec);
 	int ret = 0, reg;
 
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, wm8900->control_type);
+=======
+	int ret = 0, reg;
+
+	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -1204,6 +1492,8 @@ static int wm8900_probe(struct snd_soc_codec *codec)
 	wm8900_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
 	/* Latch the volume update bits */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_write(codec, WM8900_REG_LINVOL,
 		      snd_soc_read(codec, WM8900_REG_LINVOL) | 0x100);
 	snd_soc_write(codec, WM8900_REG_RINVOL,
@@ -1224,14 +1514,37 @@ static int wm8900_probe(struct snd_soc_codec *codec)
 		      snd_soc_read(codec, WM8900_REG_LADC_DV) | 0x100);
 	snd_soc_write(codec, WM8900_REG_RADC_DV,
 		      snd_soc_read(codec, WM8900_REG_RADC_DV) | 0x100);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	snd_soc_update_bits(codec, WM8900_REG_LINVOL, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8900_REG_RINVOL, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8900_REG_LOUT1CTL, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8900_REG_ROUT1CTL, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8900_REG_LOUT2CTL, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8900_REG_ROUT2CTL, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8900_REG_LDAC_DV, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8900_REG_RDAC_DV, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8900_REG_LADC_DV, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8900_REG_RADC_DV, 0x100, 0x100);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Set the DAC and mixer output bias */
 	snd_soc_write(codec, WM8900_REG_OUTBIASCTL, 0x81);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8900_snd_controls,
 				ARRAY_SIZE(wm8900_snd_controls));
 	wm8900_add_widgets(codec);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1248,27 +1561,72 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8900 = {
 	.suspend =	wm8900_suspend,
 	.resume =	wm8900_resume,
 	.set_bias_level = wm8900_set_bias_level,
+<<<<<<< HEAD
 	.volatile_register = wm8900_volatile_register,
 	.reg_cache_size = ARRAY_SIZE(wm8900_reg_defaults),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8900_reg_defaults,
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+
+	.controls = wm8900_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8900_snd_controls),
+	.dapm_widgets = wm8900_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8900_dapm_widgets),
+	.dapm_routes = wm8900_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8900_dapm_routes),
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #if defined(CONFIG_SPI_MASTER)
 static int __devinit wm8900_spi_probe(struct spi_device *spi)
+=======
+};
+
+static const struct regmap_config wm8900_regmap = {
+	.reg_bits = 8,
+	.val_bits = 16,
+	.max_register = WM8900_MAXREG,
+
+	.reg_defaults = wm8900_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8900_reg_defaults),
+	.cache_type = REGCACHE_RBTREE,
+
+	.volatile_reg = wm8900_volatile_register,
+};
+
+#if defined(CONFIG_SPI_MASTER)
+static int wm8900_spi_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8900_priv *wm8900;
 	int ret;
 
+<<<<<<< HEAD
 	wm8900 = kzalloc(sizeof(struct wm8900_priv), GFP_KERNEL);
 	if (wm8900 == NULL)
 		return -ENOMEM;
 
 	wm8900->control_type = SND_SOC_SPI;
+=======
+	wm8900 = devm_kzalloc(&spi->dev, sizeof(struct wm8900_priv),
+			      GFP_KERNEL);
+	if (wm8900 == NULL)
+		return -ENOMEM;
+
+	wm8900->regmap = devm_regmap_init_spi(spi, &wm8900_regmap);
+	if (IS_ERR(wm8900->regmap))
+		return PTR_ERR(wm8900->regmap);
+
+>>>>>>> refs/remotes/origin/master
 	spi_set_drvdata(spi, wm8900);
 
 	ret = snd_soc_register_codec(&spi->dev,
 			&soc_codec_dev_wm8900, &wm8900_dai, 1);
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8900);
 	return ret;
@@ -1278,12 +1636,26 @@ static int __devexit wm8900_spi_remove(struct spi_device *spi)
 {
 	snd_soc_unregister_codec(&spi->dev);
 	kfree(spi_get_drvdata(spi));
+=======
+
+	return ret;
+}
+
+static int wm8900_spi_remove(struct spi_device *spi)
+{
+	snd_soc_unregister_codec(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct spi_driver wm8900_spi_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name	= "wm8900-codec",
+=======
+		.name	= "wm8900",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner	= THIS_MODULE,
 	},
 	.probe		= wm8900_spi_probe,
@@ -1294,10 +1666,24 @@ static struct spi_driver wm8900_spi_driver = {
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static __devinit int wm8900_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+		.name	= "wm8900",
+		.owner	= THIS_MODULE,
+	},
+	.probe		= wm8900_spi_probe,
+	.remove		= wm8900_spi_remove,
+};
+#endif /* CONFIG_SPI_MASTER */
+
+#if IS_ENABLED(CONFIG_I2C)
+static int wm8900_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8900_priv *wm8900;
 	int ret;
 
+<<<<<<< HEAD
 	wm8900 = kzalloc(sizeof(struct wm8900_priv), GFP_KERNEL);
 	if (wm8900 == NULL)
 		return -ENOMEM;
@@ -1316,6 +1702,28 @@ static __devexit int wm8900_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
 	kfree(i2c_get_clientdata(client));
+=======
+	wm8900 = devm_kzalloc(&i2c->dev, sizeof(struct wm8900_priv),
+			      GFP_KERNEL);
+	if (wm8900 == NULL)
+		return -ENOMEM;
+
+	wm8900->regmap = devm_regmap_init_i2c(i2c, &wm8900_regmap);
+	if (IS_ERR(wm8900->regmap))
+		return PTR_ERR(wm8900->regmap);
+
+	i2c_set_clientdata(i2c, wm8900);
+
+	ret =  snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_wm8900, &wm8900_dai, 1);
+
+	return ret;
+}
+
+static int wm8900_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1327,11 +1735,23 @@ MODULE_DEVICE_TABLE(i2c, wm8900_i2c_id);
 
 static struct i2c_driver wm8900_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8900-codec",
+=======
+		.name = "wm8900",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm8900_i2c_probe,
 	.remove =   __devexit_p(wm8900_i2c_remove),
+=======
+		.name = "wm8900",
+		.owner = THIS_MODULE,
+	},
+	.probe =    wm8900_i2c_probe,
+	.remove =   wm8900_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = wm8900_i2c_id,
 };
 #endif
@@ -1339,7 +1759,11 @@ static struct i2c_driver wm8900_i2c_driver = {
 static int __init wm8900_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	ret = i2c_add_driver(&wm8900_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register wm8900 I2C driver: %d\n",
@@ -1359,7 +1783,11 @@ module_init(wm8900_modinit);
 
 static void __exit wm8900_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	i2c_del_driver(&wm8900_i2c_driver);
 #endif
 #if defined(CONFIG_SPI_MASTER)

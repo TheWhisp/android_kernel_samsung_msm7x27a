@@ -51,6 +51,18 @@ module_param(max_rx_urbs, uint, S_IRUGO | S_IWUSR);
 unsigned int	stop_submit_urb_limit = STOP_SUBMIT_URB_LIMIT;
 module_param(stop_submit_urb_limit, uint, S_IRUGO | S_IWUSR);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static unsigned tx_urb_mult = 20;
+module_param(tx_urb_mult, uint, S_IRUGO|S_IWUSR);
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned tx_urb_mult = 20;
+module_param(tx_urb_mult, uint, S_IRUGO|S_IWUSR);
+
+>>>>>>> refs/remotes/origin/cm-11.0
 #define TX_HALT   BIT(0)
 #define RX_HALT   BIT(1)
 #define SUSPENDED BIT(2)
@@ -58,8 +70,22 @@ module_param(stop_submit_urb_limit, uint, S_IRUGO | S_IWUSR);
 struct data_bridge {
 	struct usb_interface		*intf;
 	struct usb_device		*udev;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int			bulk_in;
 	unsigned int			bulk_out;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	int				id;
+
+	unsigned int			bulk_in;
+	unsigned int			bulk_out;
+	int				err;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* keep track of in-flight URBs */
 	struct usb_anchor		tx_active;
@@ -99,6 +125,16 @@ static struct data_bridge	*__dev[MAX_BRIDGE_DEVICES];
 /* counter used for indexing data bridge devices */
 static int	ch_id;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+static unsigned int get_timestamp(void);
+static void dbg_timestamp(char *, struct sk_buff *);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int get_timestamp(void);
+static void dbg_timestamp(char *, struct sk_buff *);
+>>>>>>> refs/remotes/origin/cm-11.0
 static int submit_rx_urb(struct data_bridge *dev, struct urb *urb,
 		gfp_t flags);
 
@@ -136,6 +172,14 @@ static void data_bridge_process_rx(struct work_struct *work)
 	unsigned long		flags;
 	struct urb		*rx_idle;
 	struct sk_buff		*skb;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	struct timestamp_info	*info;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct timestamp_info	*info;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct data_bridge	*dev =
 		container_of(work, struct data_bridge, process_rx_w);
 
@@ -146,6 +190,16 @@ static void data_bridge_process_rx(struct work_struct *work)
 
 	while (!rx_throttled(brdg) && (skb = skb_dequeue(&dev->rx_done))) {
 		dev->to_host++;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		info = (struct timestamp_info *)skb->cb;
+		info->rx_done_sent = get_timestamp();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		info = (struct timestamp_info *)skb->cb;
+		info->rx_done_sent = get_timestamp();
+>>>>>>> refs/remotes/origin/cm-11.0
 		/* hand off sk_buff to client,they'll need to free it */
 		retval = brdg->ops.send_pkt(brdg->ctx, skb, skb->len);
 		if (retval == -ENOTCONN || retval == -EINVAL) {
@@ -178,16 +232,38 @@ static void data_bridge_read_cb(struct urb *urb)
 {
 	struct bridge		*brdg;
 	struct sk_buff		*skb = urb->context;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct data_bridge	*dev = *(struct data_bridge **)skb->cb;
 	bool			queue = 0;
 
 	brdg = dev->brdg;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct timestamp_info	*info = (struct timestamp_info *)skb->cb;
+	struct data_bridge	*dev = info->dev;
+	bool			queue = 0;
+
+	brdg = dev->brdg;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb_put(skb, urb->actual_length);
 
 	switch (urb->status) {
 	case 0: /* success */
 		queue = 1;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		info->rx_done = get_timestamp();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		info->rx_done = get_timestamp();
+>>>>>>> refs/remotes/origin/cm-11.0
 		spin_lock(&dev->rx_done.lock);
 		__skb_queue_tail(&dev->rx_done, skb);
 		spin_unlock(&dev->rx_done.lock);
@@ -196,7 +272,15 @@ static void data_bridge_read_cb(struct urb *urb)
 	/*do not resubmit*/
 	case -EPIPE:
 		set_bit(RX_HALT, &dev->flags);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&dev->udev->dev, "%s: epout halted\n", __func__);
+=======
+		dev_err(&dev->intf->dev, "%s: epout halted\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&dev->intf->dev, "%s: epout halted\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		schedule_work(&dev->kevent);
 		/* FALLTHROUGH */
 	case -ESHUTDOWN:
@@ -227,14 +311,41 @@ static void data_bridge_read_cb(struct urb *urb)
 static int submit_rx_urb(struct data_bridge *dev, struct urb *rx_urb,
 	gfp_t flags)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff	*skb;
 	int		retval = -EINVAL;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct sk_buff		*skb;
+	struct timestamp_info	*info;
+	int			retval = -EINVAL;
+	unsigned int		created;
+
+	created = get_timestamp();
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	skb = alloc_skb(RMNET_RX_BUFSIZE, flags);
 	if (!skb)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*((struct data_bridge **)skb->cb) = dev;
+=======
+	info = (struct timestamp_info *)skb->cb;
+	info->dev = dev;
+	info->created = created;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info = (struct timestamp_info *)skb->cb;
+	info->dev = dev;
+	info->created = created;
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	usb_fill_bulk_urb(rx_urb, dev->udev, dev->bulk_in,
 			  skb->data, RMNET_RX_BUFSIZE,
@@ -244,10 +355,26 @@ static int submit_rx_urb(struct data_bridge *dev, struct urb *rx_urb,
 		goto suspended;
 
 	usb_anchor_urb(rx_urb, &dev->rx_active);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	info->rx_queued = get_timestamp();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->rx_queued = get_timestamp();
+>>>>>>> refs/remotes/origin/cm-11.0
 	retval = usb_submit_urb(rx_urb, flags);
 	if (retval)
 		goto fail;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	usb_mark_last_busy(dev->udev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_mark_last_busy(dev->udev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 fail:
 	usb_unanchor_urb(rx_urb);
@@ -290,9 +417,22 @@ int data_bridge_open(struct bridge *brdg)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(&dev->udev->dev, "%s: dev:%p\n", __func__, dev);
 
 	dev->brdg = brdg;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	dev_dbg(&dev->intf->dev, "%s: dev:%p\n", __func__, dev);
+
+	dev->brdg = brdg;
+	dev->err = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	atomic_set(&dev->pending_txurbs, 0);
 	dev->to_host = 0;
 	dev->to_modem = 0;
@@ -321,7 +461,15 @@ void data_bridge_close(unsigned int id)
 	if (!dev || !dev->brdg)
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(&dev->udev->dev, "%s:\n", __func__);
+=======
+	dev_dbg(&dev->intf->dev, "%s:\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&dev->intf->dev, "%s:\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	usb_unlink_anchored_urbs(&dev->tx_active);
 	usb_unlink_anchored_urbs(&dev->rx_active);
@@ -350,7 +498,15 @@ static void defer_kevent(struct work_struct *work)
 
 		status = usb_autopm_get_interface(dev->intf);
 		if (status < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(&dev->udev->dev,
+=======
+			dev_dbg(&dev->intf->dev,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_dbg(&dev->intf->dev,
+>>>>>>> refs/remotes/origin/cm-11.0
 				"can't acquire interface, status %d\n", status);
 			return;
 		}
@@ -358,7 +514,15 @@ static void defer_kevent(struct work_struct *work)
 		status = usb_clear_halt(dev->udev, dev->bulk_out);
 		usb_autopm_put_interface(dev->intf);
 		if (status < 0 && status != -EPIPE && status != -ESHUTDOWN)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(&dev->udev->dev,
+=======
+			dev_err(&dev->intf->dev,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&dev->intf->dev,
+>>>>>>> refs/remotes/origin/cm-11.0
 				"can't clear tx halt, status %d\n", status);
 		else
 			clear_bit(TX_HALT, &dev->flags);
@@ -369,7 +533,15 @@ static void defer_kevent(struct work_struct *work)
 
 		status = usb_autopm_get_interface(dev->intf);
 		if (status < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(&dev->udev->dev,
+=======
+			dev_dbg(&dev->intf->dev,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_dbg(&dev->intf->dev,
+>>>>>>> refs/remotes/origin/cm-11.0
 				"can't acquire interface, status %d\n", status);
 			return;
 		}
@@ -377,7 +549,15 @@ static void defer_kevent(struct work_struct *work)
 		status = usb_clear_halt(dev->udev, dev->bulk_in);
 		usb_autopm_put_interface(dev->intf);
 		if (status < 0 && status != -EPIPE && status != -ESHUTDOWN)
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(&dev->udev->dev,
+=======
+			dev_err(&dev->intf->dev,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&dev->intf->dev,
+>>>>>>> refs/remotes/origin/cm-11.0
 				"can't clear rx halt, status %d\n", status);
 		else {
 			clear_bit(RX_HALT, &dev->flags);
@@ -390,7 +570,17 @@ static void defer_kevent(struct work_struct *work)
 static void data_bridge_write_cb(struct urb *urb)
 {
 	struct sk_buff		*skb = urb->context;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct data_bridge	*dev = *(struct data_bridge **)skb->cb;
+=======
+	struct timestamp_info	*info = (struct timestamp_info *)skb->cb;
+	struct data_bridge	*dev = info->dev;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct timestamp_info	*info = (struct timestamp_info *)skb->cb;
+	struct data_bridge	*dev = info->dev;
+>>>>>>> refs/remotes/origin/cm-11.0
 	struct bridge		*brdg = dev->brdg;
 	int			pending;
 
@@ -398,10 +588,27 @@ static void data_bridge_write_cb(struct urb *urb)
 
 	switch (urb->status) {
 	case 0: /*success*/
+<<<<<<< HEAD
+<<<<<<< HEAD
 		break;
 	case -EPIPE:
 		set_bit(TX_HALT, &dev->flags);
 		dev_err(&dev->udev->dev, "%s: epout halted\n", __func__);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+		dbg_timestamp("UL", skb);
+		break;
+	case -EPROTO:
+		dev->err = -EPROTO;
+		break;
+	case -EPIPE:
+		set_bit(TX_HALT, &dev->flags);
+		dev_err(&dev->intf->dev, "%s: epout halted\n", __func__);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		schedule_work(&dev->kevent);
 		/* FALLTHROUGH */
 	case -ESHUTDOWN:
@@ -438,38 +645,95 @@ int data_bridge_write(unsigned int id, struct sk_buff *skb)
 	int			size = skb->len;
 	int			pending;
 	struct urb		*txurb;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct data_bridge	*dev = __dev[id];
 	struct bridge		*brdg;
 
 	if (!dev || !dev->brdg || !usb_get_intfdata(dev->intf))
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	struct timestamp_info	*info = (struct timestamp_info *)skb->cb;
+	struct data_bridge	*dev = __dev[id];
+	struct bridge		*brdg;
+
+	if (!dev || !dev->brdg || dev->err || !usb_get_intfdata(dev->intf))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		return -ENODEV;
 
 	brdg = dev->brdg;
 	if (!brdg)
 		return -ENODEV;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(&dev->udev->dev, "%s: write (%d bytes)\n", __func__, skb->len);
 
 	result = usb_autopm_get_interface(dev->intf);
 	if (result < 0) {
 		dev_err(&dev->udev->dev, "%s: resume failure\n", __func__);
 		goto error;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	dev_dbg(&dev->intf->dev, "%s: write (%d bytes)\n", __func__, skb->len);
+
+	result = usb_autopm_get_interface(dev->intf);
+	if (result < 0) {
+		dev_dbg(&dev->intf->dev, "%s: resume failure\n", __func__);
+		goto pm_error;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	}
 
 	txurb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!txurb) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&dev->udev->dev, "%s: error allocating read urb\n",
+=======
+		dev_err(&dev->intf->dev, "%s: error allocating read urb\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&dev->intf->dev, "%s: error allocating read urb\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__);
 		result = -ENOMEM;
 		goto error;
 	}
 
 	/* store dev pointer in skb */
+<<<<<<< HEAD
+<<<<<<< HEAD
 	*((struct data_bridge **)skb->cb) = dev;
+=======
+	info->dev = dev;
+	info->tx_queued = get_timestamp();
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->dev = dev;
+	info->tx_queued = get_timestamp();
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	usb_fill_bulk_urb(txurb, dev->udev, dev->bulk_out,
 			skb->data, skb->len, data_bridge_write_cb, skb);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	txurb->transfer_flags |= URB_ZERO_PACKET;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	txurb->transfer_flags |= URB_ZERO_PACKET;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (test_bit(SUSPENDED, &dev->flags)) {
 		usb_anchor_urb(txurb, &dev->delayed);
 		goto free_urb;
@@ -478,17 +742,45 @@ int data_bridge_write(unsigned int id, struct sk_buff *skb)
 	pending = atomic_inc_return(&dev->pending_txurbs);
 	usb_anchor_urb(txurb, &dev->tx_active);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (atomic_read(&dev->pending_txurbs) % tx_urb_mult)
+		txurb->transfer_flags |= URB_NO_INTERRUPT;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (atomic_read(&dev->pending_txurbs) % tx_urb_mult)
+		txurb->transfer_flags |= URB_NO_INTERRUPT;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	result = usb_submit_urb(txurb, GFP_KERNEL);
 	if (result < 0) {
 		usb_unanchor_urb(txurb);
 		atomic_dec(&dev->pending_txurbs);
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&dev->udev->dev, "%s: submit URB error %d\n",
+=======
+		dev_err(&dev->intf->dev, "%s: submit URB error %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&dev->intf->dev, "%s: submit URB error %d\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 			__func__, result);
 		goto free_urb;
 	}
 
 	dev->to_modem++;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(&dev->udev->dev, "%s: pending_txurbs: %u\n", __func__, pending);
+=======
+	dev_dbg(&dev->intf->dev, "%s: pending_txurbs: %u\n", __func__, pending);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&dev->intf->dev, "%s: pending_txurbs: %u\n", __func__, pending);
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	/* flow control: last urb submitted but return -EBUSY */
 	if (fctrl_support && pending > fctrl_en_thld) {
@@ -506,7 +798,15 @@ free_urb:
 error:
 	dev->txurb_drp_cnt++;
 	usb_autopm_put_interface(dev->intf);
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+pm_error:
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+pm_error:
+>>>>>>> refs/remotes/origin/cm-11.0
 	return result;
 }
 EXPORT_SYMBOL(data_bridge_write);
@@ -516,6 +816,18 @@ static int data_bridge_resume(struct data_bridge *dev)
 	struct urb	*urb;
 	int		retval;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	if (!test_and_clear_bit(SUSPENDED, &dev->flags))
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!test_and_clear_bit(SUSPENDED, &dev->flags))
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-11.0
 	while ((urb = usb_get_from_anchor(&dev->delayed))) {
 		usb_anchor_urb(urb, &dev->tx_active);
 		atomic_inc(&dev->pending_txurbs);
@@ -532,8 +844,14 @@ static int data_bridge_resume(struct data_bridge *dev)
 		dev->txurb_drp_cnt--;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	clear_bit(SUSPENDED, &dev->flags);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	if (dev->brdg)
 		queue_work(dev->wq, &dev->process_rx_w);
 
@@ -545,16 +863,37 @@ static int bridge_resume(struct usb_interface *iface)
 	int			retval = 0;
 	int			oldstate;
 	struct data_bridge	*dev = usb_get_intfdata(iface);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct bridge		*brdg = dev->brdg;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	oldstate = iface->dev.power.power_state.event;
 	iface->dev.power.power_state.event = PM_EVENT_ON;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	retval = data_bridge_resume(dev);
 	if (!retval) {
 		if (oldstate & PM_EVENT_SUSPEND && brdg)
 			retval = ctrl_bridge_resume(brdg->ch_id);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (oldstate & PM_EVENT_SUSPEND) {
+		retval = data_bridge_resume(dev);
+		if (!retval)
+			retval = ctrl_bridge_resume(dev->id);
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return retval;
 }
 
@@ -576,6 +915,8 @@ static int bridge_suspend(struct usb_interface *intf, pm_message_t message)
 {
 	int			retval;
 	struct data_bridge	*dev = usb_get_intfdata(intf);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	struct bridge		*brdg = dev->brdg;
 
 	retval = data_bridge_suspend(dev, message);
@@ -589,6 +930,20 @@ static int bridge_suspend(struct usb_interface *intf, pm_message_t message)
 		dev_dbg(&dev->udev->dev, "%s: device is busy,cannot suspend\n",
 			__func__);
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+	retval = data_bridge_suspend(dev, message);
+	if (!retval) {
+		retval = ctrl_bridge_suspend(dev->id);
+		intf->dev.power.power_state.event = message.event;
+	}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return retval;
 }
 
@@ -619,7 +974,15 @@ static int data_bridge_probe(struct usb_interface *iface,
 	skb_queue_head_init(&dev->rx_done);
 
 	dev->wq = bridge_wq;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	dev->id = id;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->id = id;
+>>>>>>> refs/remotes/origin/cm-11.0
 	dev->udev = interface_to_usbdev(iface);
 	dev->intf = iface;
 
@@ -646,6 +1009,112 @@ static int data_bridge_probe(struct usb_interface *iface,
 
 #if defined(CONFIG_DEBUG_FS)
 #define DEBUG_BUF_SIZE	1024
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+
+static unsigned int	record_timestamp;
+module_param(record_timestamp, uint, S_IRUGO | S_IWUSR);
+
+static struct timestamp_buf dbg_data = {
+	.idx = 0,
+	.lck = __RW_LOCK_UNLOCKED(lck)
+};
+
+/*get_timestamp - returns time of day in us */
+static unsigned int get_timestamp(void)
+{
+	struct timeval	tval;
+	unsigned int	stamp;
+
+	if (!record_timestamp)
+		return 0;
+
+	do_gettimeofday(&tval);
+	/* 2^32 = 4294967296. Limit to 4096s. */
+	stamp = tval.tv_sec & 0xFFF;
+	stamp = stamp * 1000000 + tval.tv_usec;
+	return stamp;
+}
+
+static void dbg_inc(unsigned *idx)
+{
+	*idx = (*idx + 1) & (DBG_DATA_MAX-1);
+}
+
+/**
+* dbg_timestamp - Stores timestamp values of a SKB life cycle
+*	to debug buffer
+* @event: "UL": Uplink Data
+* @skb: SKB used to store timestamp values to debug buffer
+*/
+static void dbg_timestamp(char *event, struct sk_buff * skb)
+{
+	unsigned long		flags;
+	struct timestamp_info	*info = (struct timestamp_info *)skb->cb;
+
+	if (!record_timestamp)
+		return;
+
+	write_lock_irqsave(&dbg_data.lck, flags);
+
+	scnprintf(dbg_data.buf[dbg_data.idx], DBG_DATA_MSG,
+		  "%p %u[%s] %u %u %u %u %u %u\n",
+		  skb, skb->len, event, info->created, info->rx_queued,
+		  info->rx_done, info->rx_done_sent, info->tx_queued,
+		  get_timestamp());
+
+	dbg_inc(&dbg_data.idx);
+
+	write_unlock_irqrestore(&dbg_data.lck, flags);
+}
+
+/* show_timestamp: displays the timestamp buffer */
+static ssize_t show_timestamp(struct file *file, char __user *ubuf,
+		size_t count, loff_t *ppos)
+{
+	unsigned long	flags;
+	unsigned	i;
+	unsigned	j = 0;
+	char		*buf;
+	int		ret = 0;
+
+	if (!record_timestamp)
+		return 0;
+
+	buf = kzalloc(sizeof(char) * 4 * DEBUG_BUF_SIZE, GFP_KERNEL);
+	if (!buf)
+		return -ENOMEM;
+
+	read_lock_irqsave(&dbg_data.lck, flags);
+
+	i = dbg_data.idx;
+	for (dbg_inc(&i); i != dbg_data.idx; dbg_inc(&i)) {
+		if (!strnlen(dbg_data.buf[i], DBG_DATA_MSG))
+			continue;
+		j += scnprintf(buf + j, (4 * DEBUG_BUF_SIZE) - j,
+			       "%s\n", dbg_data.buf[i]);
+	}
+
+	read_unlock_irqrestore(&dbg_data.lck, flags);
+
+	ret = simple_read_from_buffer(ubuf, count, ppos, buf, j);
+
+	kfree(buf);
+
+	return ret;
+}
+
+const struct file_operations data_timestamp_ops = {
+	.read = show_timestamp,
+};
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static ssize_t data_bridge_read_stats(struct file *file, char __user *ubuf,
 		size_t count, loff_t *ppos)
 {
@@ -675,6 +1144,14 @@ static ssize_t data_bridge_read_stats(struct file *file, char __user *ubuf,
 				"rx throttled cnt:   %u\n"
 				"rx unthrottled cnt: %u\n"
 				"rx done skb qlen:   %u\n"
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				"dev err:            %d\n"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				"dev err:            %d\n"
+>>>>>>> refs/remotes/origin/cm-11.0
 				"suspended:          %d\n"
 				"TX_HALT:            %d\n"
 				"RX_HALT:            %d\n",
@@ -688,6 +1165,14 @@ static ssize_t data_bridge_read_stats(struct file *file, char __user *ubuf,
 				dev->rx_throttled_cnt,
 				dev->rx_unthrottled_cnt,
 				dev->rx_done.qlen,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				dev->err,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dev->err,
+>>>>>>> refs/remotes/origin/cm-11.0
 				test_bit(SUSPENDED, &dev->flags),
 				test_bit(TX_HALT, &dev->flags),
 				test_bit(RX_HALT, &dev->flags));
@@ -728,29 +1213,90 @@ const struct file_operations data_stats_ops = {
 	.write = data_bridge_reset_stats,
 };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry	*data_dent;
 struct dentry	*data_dfile;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static struct dentry	*data_dent;
+static struct dentry	*data_dfile_stats;
+static struct dentry	*data_dfile_tstamp;
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 static void data_bridge_debugfs_init(void)
 {
 	data_dent = debugfs_create_dir("data_hsic_bridge", 0);
 	if (IS_ERR(data_dent))
 		return;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	data_dfile = debugfs_create_file("status", 0644, data_dent, 0,
 			&data_stats_ops);
 	if (!data_dfile || IS_ERR(data_dfile))
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	data_dfile_stats = debugfs_create_file("status", 0644, data_dent, 0,
+				&data_stats_ops);
+	if (!data_dfile_stats || IS_ERR(data_dfile_stats)) {
+		debugfs_remove(data_dent);
+		return;
+	}
+
+	data_dfile_tstamp = debugfs_create_file("timestamp", 0644, data_dent,
+				0, &data_timestamp_ops);
+	if (!data_dfile_tstamp || IS_ERR(data_dfile_tstamp))
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 		debugfs_remove(data_dent);
 }
 
 static void data_bridge_debugfs_exit(void)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	debugfs_remove(data_dfile);
+=======
+	debugfs_remove(data_dfile_stats);
+	debugfs_remove(data_dfile_tstamp);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	debugfs_remove(data_dfile_stats);
+	debugfs_remove(data_dfile_tstamp);
+>>>>>>> refs/remotes/origin/cm-11.0
 	debugfs_remove(data_dent);
 }
 
 #else
 static void data_bridge_debugfs_init(void) { }
 static void data_bridge_debugfs_exit(void) { }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+static void dbg_timestamp(char *event, struct sk_buff * skb)
+{
+	return;
+}
+
+static unsigned int get_timestamp(void)
+{
+	return 0;
+}
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 #endif
 
 static int __devinit
@@ -774,17 +1320,40 @@ bridge_probe(struct usb_interface *iface, const struct usb_device_id *id)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	udev = interface_to_usbdev(iface);
 	usb_get_dev(udev);
 
 	if (!test_bit(iface_num, &id->driver_info))
 		return -ENODEV;
 
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (!test_bit(iface_num, &id->driver_info))
+		return -ENODEV;
+
+	udev = interface_to_usbdev(iface);
+	usb_get_dev(udev);
+
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	numends = iface->cur_altsetting->desc.bNumEndpoints;
 	for (i = 0; i < numends; i++) {
 		endpoint = iface->cur_altsetting->endpoint + i;
 		if (!endpoint) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(&udev->dev, "%s: invalid endpoint %u\n",
+=======
+			dev_err(&iface->dev, "%s: invalid endpoint %u\n",
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&iface->dev, "%s: invalid endpoint %u\n",
+>>>>>>> refs/remotes/origin/cm-11.0
 					__func__, i);
 			status = -EINVAL;
 			goto out;
@@ -799,20 +1368,44 @@ bridge_probe(struct usb_interface *iface, const struct usb_device_id *id)
 	}
 
 	if (!bulk_in || !bulk_out || !int_in) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&udev->dev, "%s: invalid endpoints\n", __func__);
+=======
+		dev_err(&iface->dev, "%s: invalid endpoints\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&iface->dev, "%s: invalid endpoints\n", __func__);
+>>>>>>> refs/remotes/origin/cm-11.0
 		status = -EINVAL;
 		goto out;
 	}
 
 	status = data_bridge_probe(iface, bulk_in, bulk_out, ch_id);
 	if (status < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&udev->dev, "data_bridge_probe failed %d\n", status);
+=======
+		dev_err(&iface->dev, "data_bridge_probe failed %d\n", status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&iface->dev, "data_bridge_probe failed %d\n", status);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto out;
 	}
 
 	status = ctrl_bridge_probe(iface, int_in, ch_id);
 	if (status < 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&udev->dev, "ctrl_bridge_probe failed %d\n", status);
+=======
+		dev_err(&iface->dev, "ctrl_bridge_probe failed %d\n", status);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&iface->dev, "ctrl_bridge_probe failed %d\n", status);
+>>>>>>> refs/remotes/origin/cm-11.0
 		goto free_data_bridge;
 	}
 
@@ -821,7 +1414,15 @@ bridge_probe(struct usb_interface *iface, const struct usb_device_id *id)
 	return 0;
 
 free_data_bridge:
+<<<<<<< HEAD
+<<<<<<< HEAD
 	platform_device_del(__dev[ch_id]->pdev);
+=======
+	platform_device_unregister(__dev[ch_id]->pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_device_unregister(__dev[ch_id]->pdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_set_intfdata(iface, NULL);
 	kfree(__dev[ch_id]);
 	__dev[ch_id] = NULL;
@@ -845,7 +1446,15 @@ static void bridge_disconnect(struct usb_interface *intf)
 
 	ch_id--;
 	ctrl_bridge_disconnect(ch_id);
+<<<<<<< HEAD
+<<<<<<< HEAD
 	platform_device_del(dev->pdev);
+=======
+	platform_device_unregister(dev->pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_device_unregister(dev->pdev);
+>>>>>>> refs/remotes/origin/cm-11.0
 	usb_set_intfdata(intf, NULL);
 	__dev[ch_id] = NULL;
 
@@ -870,6 +1479,14 @@ static void bridge_disconnect(struct usb_interface *intf)
 #define PID9001_IFACE_MASK	0xC
 #define PID9034_IFACE_MASK	0xC
 #define PID9048_IFACE_MASK	0x18
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#define PID904C_IFACE_MASK	0x28
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PID904C_IFACE_MASK	0x28
+>>>>>>> refs/remotes/origin/cm-11.0
 
 static const struct usb_device_id bridge_ids[] = {
 	{ USB_DEVICE(0x5c6, 0x9001),
@@ -881,6 +1498,18 @@ static const struct usb_device_id bridge_ids[] = {
 	{ USB_DEVICE(0x5c6, 0x9048),
 	.driver_info = PID9048_IFACE_MASK,
 	},
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	{ USB_DEVICE(0x5c6, 0x904c),
+	.driver_info = PID904C_IFACE_MASK,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(0x5c6, 0x904c),
+	.driver_info = PID904C_IFACE_MASK,
+	},
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	{ } /* Terminating entry */
 };

@@ -32,6 +32,14 @@
 #include <linux/netdevice.h>
 #include <linux/bootmem.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <linux/arcdevice.h>
 
@@ -88,16 +96,38 @@ static int __init arcrimi_probe(struct net_device *dev)
 	BUGLVL(D_NORMAL) printk(VERSION);
 	BUGLVL(D_NORMAL) printk("E-mail me if you actually test the RIM I driver, please!\n");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	BUGMSG(D_NORMAL, "Given: node %02Xh, shmem %lXh, irq %d\n",
 	       dev->dev_addr[0], dev->mem_start, dev->irq);
 
 	if (dev->mem_start <= 0 || dev->irq <= 0) {
 		BUGMSG(D_NORMAL, "No autoprobe for RIM I; you "
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	BUGLVL(D_NORMAL) printk("Given: node %02Xh, shmem %lXh, irq %d\n",
+	       dev->dev_addr[0], dev->mem_start, dev->irq);
+
+	if (dev->mem_start <= 0 || dev->irq <= 0) {
+		BUGLVL(D_NORMAL) printk("No autoprobe for RIM I; you "
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		       "must specify the shmem and irq!\n");
 		return -ENODEV;
 	}
 	if (dev->dev_addr[0] == 0) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		BUGMSG(D_NORMAL, "You need to specify your card's station "
+=======
+		BUGLVL(D_NORMAL) printk("You need to specify your card's station "
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BUGLVL(D_NORMAL) printk("You need to specify your card's station "
+>>>>>>> refs/remotes/origin/master
 		       "ID!\n");
 		return -ENODEV;
 	}
@@ -108,7 +138,15 @@ static int __init arcrimi_probe(struct net_device *dev)
 	 * will be taken.
 	 */
 	if (!request_mem_region(dev->mem_start, MIRROR_SIZE, "arcnet (90xx)")) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		BUGMSG(D_NORMAL, "Card memory already allocated\n");
+=======
+		BUGLVL(D_NORMAL) printk("Card memory already allocated\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BUGLVL(D_NORMAL) printk("Card memory already allocated\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 	return arcrimi_found(dev);

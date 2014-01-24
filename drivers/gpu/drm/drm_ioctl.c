@@ -33,10 +33,25 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm_core.h"
 
 #include "linux/pci.h"
+<<<<<<< HEAD
+=======
+#include "linux/export.h"
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <drm/drmP.h>
+#include <drm/drm_core.h>
+
+#include <linux/pci.h>
+#include <linux/export.h>
+#ifdef CONFIG_X86
+#include <asm/mtrr.h>
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Get the bus id.
@@ -158,6 +173,8 @@ int drm_getmap(struct drm_device *dev, void *data,
 	int i;
 
 	idx = map->offset;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 	mutex_lock(&dev->struct_mutex);
 	if (idx < 0) {
@@ -166,6 +183,18 @@ int drm_getmap(struct drm_device *dev, void *data,
 	}
 
 	i = 0;
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (idx < 0)
+		return -EINVAL;
+
+	i = 0;
+	mutex_lock(&dev->struct_mutex);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each(list, &dev->maplist) {
 		if (i == idx) {
 			r_list = list_entry(list, struct drm_map_list, head);
@@ -183,7 +212,21 @@ int drm_getmap(struct drm_device *dev, void *data,
 	map->type = r_list->map->type;
 	map->flags = r_list->map->flags;
 	map->handle = (void *)(unsigned long) r_list->user_token;
+<<<<<<< HEAD
 	map->mtrr = r_list->map->mtrr;
+=======
+
+#ifdef CONFIG_X86
+	/*
+	 * There appears to be exactly one user of the mtrr index: dritest.
+	 * It's easy enough to keep it working on non-PAT systems.
+	 */
+	map->mtrr = phys_wc_to_mtrr_index(r_list->map->mtrr);
+#else
+	map->mtrr = -1;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&dev->struct_mutex);
 
 	return 0;
@@ -206,14 +249,21 @@ int drm_getclient(struct drm_device *dev, void *data,
 		  struct drm_file *file_priv)
 {
 	struct drm_client *client = data;
+<<<<<<< HEAD
 	struct drm_file *pt;
 	int idx;
 	int i;
 
 	idx = client->idx;
+<<<<<<< HEAD
 	mutex_lock(&dev->struct_mutex);
 
 	i = 0;
+=======
+	i = 0;
+
+	mutex_lock(&dev->struct_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_for_each_entry(pt, &dev->filelist, lhead) {
 		if (i++ >= idx) {
 			client->auth = pt->authenticated;
@@ -229,6 +279,32 @@ int drm_getclient(struct drm_device *dev, void *data,
 	mutex_unlock(&dev->struct_mutex);
 
 	return -EINVAL;
+=======
+
+	/*
+	 * Hollowed-out getclient ioctl to keep some dead old drm tests/tools
+	 * not breaking completely. Userspace tools stop enumerating one they
+	 * get -EINVAL, hence this is the return value we need to hand back for
+	 * no clients tracked.
+	 *
+	 * Unfortunately some clients (*cough* libva *cough*) use this in a fun
+	 * attempt to figure out whether they're authenticated or not. Since
+	 * that's the only thing they care about, give it to the directly
+	 * instead of walking one giant list.
+	 */
+	if (client->idx == 0) {
+		client->auth = file_priv->authenticated;
+		client->pid = pid_vnr(file_priv->pid);
+		client->uid = from_kuid_munged(current_user_ns(),
+					       file_priv->uid);
+		client->magic = 0;
+		client->iocs = 0;
+
+		return 0;
+	} else {
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -245,12 +321,16 @@ int drm_getstats(struct drm_device *dev, void *data,
 		 struct drm_file *file_priv)
 {
 	struct drm_stats *stats = data;
+<<<<<<< HEAD
 	int i;
 
 	memset(stats, 0, sizeof(*stats));
 
+<<<<<<< HEAD
 	mutex_lock(&dev->struct_mutex);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < dev->counters; i++) {
 		if (dev->types[i] == _DRM_STAT_LOCK)
 			stats->data[i].value =
@@ -262,8 +342,17 @@ int drm_getstats(struct drm_device *dev, void *data,
 
 	stats->count = dev->counters;
 
+<<<<<<< HEAD
 	mutex_unlock(&dev->struct_mutex);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* Clear stats to prevent userspace from eating its stack garbage. */
+	memset(stats, 0, sizeof(*stats));
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -283,6 +372,31 @@ int drm_getcap(struct drm_device *dev, void *data, struct drm_file *file_priv)
 	case DRM_CAP_VBLANK_HIGH_CRTC:
 		req->value = 1;
 		break;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	case DRM_CAP_DUMB_PREFERRED_DEPTH:
+		req->value = dev->mode_config.preferred_depth;
+		break;
+	case DRM_CAP_DUMB_PREFER_SHADOW:
+		req->value = dev->mode_config.prefer_shadow;
+		break;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case DRM_CAP_PRIME:
+		req->value |= dev->driver->prime_fd_to_handle ? DRM_PRIME_CAP_IMPORT : 0;
+		req->value |= dev->driver->prime_handle_to_fd ? DRM_PRIME_CAP_EXPORT : 0;
+		break;
+	case DRM_CAP_TIMESTAMP_MONOTONIC:
+		req->value = drm_timestamp_monotonic;
+		break;
+	case DRM_CAP_ASYNC_PAGE_FLIP:
+		req->value = dev->mode_config.async_page_flip;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EINVAL;
 	}
@@ -290,6 +404,30 @@ int drm_getcap(struct drm_device *dev, void *data, struct drm_file *file_priv)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * Set device/driver capabilities
+ */
+int
+drm_setclientcap(struct drm_device *dev, void *data, struct drm_file *file_priv)
+{
+	struct drm_set_client_cap *req = data;
+
+	switch (req->capability) {
+	case DRM_CLIENT_CAP_STEREO_3D:
+		if (req->value > 1)
+			return -EINVAL;
+		file_priv->stereo_allowed = req->value;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * Setversion ioctl.
  *
  * \param inode device inode.
@@ -332,9 +470,12 @@ int drm_setversion(struct drm_device *dev, void *data, struct drm_file *file_pri
 			retcode = -EINVAL;
 			goto done;
 		}
+<<<<<<< HEAD
 
 		if (dev->driver->set_version)
 			dev->driver->set_version(dev, sv);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 done:
@@ -353,3 +494,11 @@ int drm_noop(struct drm_device *dev, void *data,
 	DRM_DEBUG("\n");
 	return 0;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(drm_noop);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(drm_noop);
+>>>>>>> refs/remotes/origin/master

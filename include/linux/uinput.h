@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 #ifndef __UINPUT_H_
 #define __UINPUT_H_
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  User level driver support for input subsystem
  *
@@ -31,12 +34,20 @@
  *	0.1	20/06/2002
  *		- first public version
  */
+<<<<<<< HEAD
 
 #include <linux/input.h>
 
 #define UINPUT_VERSION		3
 
 #ifdef __KERNEL__
+=======
+#ifndef __UINPUT_H_
+#define __UINPUT_H_
+
+#include <uapi/linux/uinput.h>
+
+>>>>>>> refs/remotes/origin/master
 #define UINPUT_NAME		"uinput"
 #define UINPUT_BUFFER_SIZE	16
 #define UINPUT_NUM_REQUESTS	16
@@ -44,14 +55,23 @@
 enum uinput_state { UIST_NEW_DEVICE, UIST_SETUP_COMPLETE, UIST_CREATED };
 
 struct uinput_request {
+<<<<<<< HEAD
 	int			id;
 	int			code;	/* UI_FF_UPLOAD, UI_FF_ERASE */
+=======
+	unsigned int		id;
+	unsigned int		code;	/* UI_FF_UPLOAD, UI_FF_ERASE */
+>>>>>>> refs/remotes/origin/master
 
 	int			retval;
 	struct completion	done;
 
 	union {
+<<<<<<< HEAD
 		int		effect_id;
+=======
+		unsigned int	effect_id;
+>>>>>>> refs/remotes/origin/master
 		struct {
 			struct ff_effect *effect;
 			struct ff_effect *old;
@@ -68,12 +88,21 @@ struct uinput_device {
 	unsigned char		head;
 	unsigned char		tail;
 	struct input_event	buff[UINPUT_BUFFER_SIZE];
+<<<<<<< HEAD
+<<<<<<< HEAD
 	int			ff_effects_max;
+=======
+	unsigned int		ff_effects_max;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int		ff_effects_max;
+>>>>>>> refs/remotes/origin/master
 
 	struct uinput_request	*requests[UINPUT_NUM_REQUESTS];
 	wait_queue_head_t	requests_waitq;
 	spinlock_t		requests_lock;
 };
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
 struct uinput_ff_upload {
@@ -174,3 +203,6 @@ struct uinput_user_dev {
 };
 #endif	/* __UINPUT_H_ */
 
+=======
+#endif	/* __UINPUT_H_ */
+>>>>>>> refs/remotes/origin/master

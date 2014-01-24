@@ -56,7 +56,15 @@ ion_phys_addr_t ion_carveout_allocate(struct ion_heap *heap,
 
 	if (!offset) {
 		if ((carveout_heap->total_size -
+<<<<<<< HEAD
+<<<<<<< HEAD
 		      carveout_heap->allocated_bytes) > size)
+=======
+		      carveout_heap->allocated_bytes) >= size)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      carveout_heap->allocated_bytes) >= size)
+>>>>>>> refs/remotes/origin/cm-11.0
 			pr_debug("%s: heap %s has enough memory (%lx) but"
 				" the allocation of size %lx still failed."
 				" Memory is probably fragmented.",
@@ -108,6 +116,8 @@ static void ion_carveout_heap_free(struct ion_buffer *buffer)
 	buffer->priv_phys = ION_CARVEOUT_ALLOCATE_FAIL;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 struct scatterlist *ion_carveout_heap_map_dma(struct ion_heap *heap,
 					      struct ion_buffer *buffer)
 {
@@ -123,13 +133,56 @@ struct scatterlist *ion_carveout_heap_map_dma(struct ion_heap *heap,
 	sglist->dma_address = buffer->priv_phys;
 
 	return sglist;
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+struct sg_table *ion_carveout_heap_map_dma(struct ion_heap *heap,
+					      struct ion_buffer *buffer)
+{
+	struct sg_table *table;
+	int ret;
+
+	table = kzalloc(sizeof(struct sg_table), GFP_KERNEL);
+	if (!table)
+		return ERR_PTR(-ENOMEM);
+
+	ret = sg_alloc_table(table, 1, GFP_KERNEL);
+	if (ret)
+		goto err0;
+
+	table->sgl->length = buffer->size;
+	table->sgl->offset = 0;
+	table->sgl->dma_address = buffer->priv_phys;
+
+	return table;
+
+err0:
+	kfree(table);
+	return ERR_PTR(ret);
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 void ion_carveout_heap_unmap_dma(struct ion_heap *heap,
 				 struct ion_buffer *buffer)
 {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (buffer->sglist)
 		vfree(buffer->sglist);
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (buffer->sg_table)
+		sg_free_table(buffer->sg_table);
+	kfree(buffer->sg_table);
+	buffer->sg_table = 0;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 }
 
 static int ion_carveout_request_region(struct ion_carveout_heap *carveout_heap)
@@ -163,8 +216,16 @@ static int ion_carveout_release_region(struct ion_carveout_heap *carveout_heap)
 }
 
 void *ion_carveout_heap_map_kernel(struct ion_heap *heap,
+<<<<<<< HEAD
+<<<<<<< HEAD
 				   struct ion_buffer *buffer,
 				   unsigned long flags)
+=======
+				   struct ion_buffer *buffer)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   struct ion_buffer *buffer)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct ion_carveout_heap *carveout_heap =
 		container_of(heap, struct ion_carveout_heap, heap);
@@ -173,7 +234,15 @@ void *ion_carveout_heap_map_kernel(struct ion_heap *heap,
 	if (ion_carveout_request_region(carveout_heap))
 		return NULL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (ION_IS_CACHED(flags))
+=======
+	if (ION_IS_CACHED(buffer->flags))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ION_IS_CACHED(buffer->flags))
+>>>>>>> refs/remotes/origin/cm-11.0
 		ret_value = ioremap_cached(buffer->priv_phys, buffer->size);
 	else
 		ret_value = ioremap(buffer->priv_phys, buffer->size);
@@ -189,7 +258,15 @@ void ion_carveout_heap_unmap_kernel(struct ion_heap *heap,
 	struct ion_carveout_heap *carveout_heap =
 		container_of(heap, struct ion_carveout_heap, heap);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	__arch_iounmap(buffer->vaddr);
+=======
+	__arm_iounmap(buffer->vaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__arm_iounmap(buffer->vaddr);
+>>>>>>> refs/remotes/origin/cm-11.0
 	buffer->vaddr = NULL;
 
 	ion_carveout_release_region(carveout_heap);
@@ -197,7 +274,15 @@ void ion_carveout_heap_unmap_kernel(struct ion_heap *heap,
 }
 
 int ion_carveout_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
+<<<<<<< HEAD
+<<<<<<< HEAD
 			       struct vm_area_struct *vma, unsigned long flags)
+=======
+			       struct vm_area_struct *vma)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       struct vm_area_struct *vma)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct ion_carveout_heap *carveout_heap =
 		container_of(heap, struct ion_carveout_heap, heap);
@@ -206,7 +291,15 @@ int ion_carveout_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
 	if (ion_carveout_request_region(carveout_heap))
 		return -EINVAL;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ION_IS_CACHED(flags))
+=======
+	if (!ION_IS_CACHED(buffer->flags))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ION_IS_CACHED(buffer->flags))
+>>>>>>> refs/remotes/origin/cm-11.0
 		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
 
 	ret_value =  remap_pfn_range(vma, vma->vm_start,
@@ -259,7 +352,17 @@ int ion_carveout_cache_ops(struct ion_heap *heap, struct ion_buffer *buffer,
 	return 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 static int ion_carveout_print_debug(struct ion_heap *heap, struct seq_file *s)
+=======
+static int ion_carveout_print_debug(struct ion_heap *heap, struct seq_file *s,
+				    const struct rb_root *mem_map)
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ion_carveout_print_debug(struct ion_heap *heap, struct seq_file *s,
+				    const struct rb_root *mem_map)
+>>>>>>> refs/remotes/origin/cm-11.0
 {
 	struct ion_carveout_heap *carveout_heap =
 		container_of(heap, struct ion_carveout_heap, heap);
@@ -268,6 +371,53 @@ static int ion_carveout_print_debug(struct ion_heap *heap, struct seq_file *s)
 		carveout_heap->allocated_bytes);
 	seq_printf(s, "total heap size: %lx\n", carveout_heap->total_size);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	if (mem_map) {
+		unsigned long base = carveout_heap->base;
+		unsigned long size = carveout_heap->total_size;
+		unsigned long end = base+size;
+		unsigned long last_end = base;
+		struct rb_node *n;
+
+		seq_printf(s, "\nMemory Map\n");
+		seq_printf(s, "%16.s %14.s %14.s %14.s\n",
+			   "client", "start address", "end address",
+			   "size (hex)");
+
+		for (n = rb_first(mem_map); n; n = rb_next(n)) {
+			struct mem_map_data *data =
+					rb_entry(n, struct mem_map_data, node);
+			const char *client_name = "(null)";
+
+			if (last_end < data->addr) {
+				seq_printf(s, "%16.s %14lx %14lx %14lu (%lx)\n",
+					   "FREE", last_end, data->addr-1,
+					   data->addr-last_end,
+					   data->addr-last_end);
+			}
+
+			if (data->client_name)
+				client_name = data->client_name;
+
+			seq_printf(s, "%16.s %14lx %14lx %14lu (%lx)\n",
+				   client_name, data->addr,
+				   data->addr_end,
+				   data->size, data->size);
+			last_end = data->addr_end+1;
+		}
+		if (last_end < end) {
+			seq_printf(s, "%16.s %14lx %14lx %14lu (%lx)\n", "FREE",
+				last_end, end-1, end-last_end, end-last_end);
+		}
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 	return 0;
 }
 
@@ -295,6 +445,8 @@ int ion_carveout_heap_map_iommu(struct ion_buffer *buffer,
 
 	extra = iova_length - buffer->size;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	data->iova_addr = msm_allocate_iova_address(domain_num, partition_num,
 						data->mapped_size, align);
 
@@ -302,6 +454,19 @@ int ion_carveout_heap_map_iommu(struct ion_buffer *buffer,
 		ret = -ENOMEM;
 		goto out;
 	}
+=======
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
+	ret = msm_allocate_iova_address(domain_num, partition_num,
+						data->mapped_size, align,
+						&data->iova_addr);
+
+	if (ret)
+		goto out;
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/cm-11.0
 
 	domain = msm_get_iommu_domain(domain_num);
 

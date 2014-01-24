@@ -286,7 +286,11 @@ static void ca_rmidi_free(struct snd_rawmidi *rmidi)
 	ca_midi_free(rmidi->private_data);
 }
 
+<<<<<<< HEAD
 int __devinit ca_midi_init(void *dev_id, struct snd_ca_midi *midi, int device, char *name)
+=======
+int ca_midi_init(void *dev_id, struct snd_ca_midi *midi, int device, char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_rawmidi *rmidi;
 	int err;

@@ -31,6 +31,14 @@
 #include <linux/stddef.h>
 #include <linux/unistd.h>
 #include <linux/ptrace.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/user.h>
 #include <linux/tty.h>
 #include <linux/string.h>
@@ -56,7 +64,13 @@
 #include <asm/reg.h>
 #include <asm/sections.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/io.h>
 #include <asm/pci-bridge.h>
@@ -355,9 +369,15 @@ static int initializing = 1;
 static int pmac_late_init(void)
 {
 	initializing = 0;
+<<<<<<< HEAD
+<<<<<<< HEAD
 	/* this is udbg (which is __init) and we can later use it during
 	 * cpu hotplug (in smp_core99_kick_cpu) */
 	ppc_md.progress = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 machine_late_initcall(powermac, pmac_late_init);
@@ -496,11 +516,29 @@ static int __init pmac_declare_of_platform_devices(void)
 		return -1;
 
 	np = of_find_node_by_name(NULL, "valkyrie");
+<<<<<<< HEAD
+<<<<<<< HEAD
 	if (np)
 		of_platform_device_create(np, "valkyrie", NULL);
 	np = of_find_node_by_name(NULL, "platinum");
 	if (np)
 		of_platform_device_create(np, "platinum", NULL);
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+	if (np) {
+		of_platform_device_create(np, "valkyrie", NULL);
+		of_node_put(np);
+	}
+	np = of_find_node_by_name(NULL, "platinum");
+	if (np) {
+		of_platform_device_create(np, "platinum", NULL);
+		of_node_put(np);
+	}
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
         np = of_find_node_by_type(NULL, "smu");
         if (np) {
 		of_platform_device_create(np, "smu", NULL);

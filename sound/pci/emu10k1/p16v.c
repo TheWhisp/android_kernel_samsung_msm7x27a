@@ -637,7 +637,11 @@ int snd_p16v_free(struct snd_emu10k1 *chip)
 	return 0;
 }
 
+<<<<<<< HEAD
 int __devinit snd_p16v_pcm(struct snd_emu10k1 *emu, int device, struct snd_pcm **rpcm)
+=======
+int snd_p16v_pcm(struct snd_emu10k1 *emu, int device, struct snd_pcm **rpcm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	struct snd_pcm_substream *substream;
@@ -854,7 +858,11 @@ static const DECLARE_TLV_DB_SCALE(snd_p16v_db_scale1, -5175, 25, 1);
 	.private_value = ((xreg) | ((xhl) << 8)) \
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new p16v_mixer_controls[] __devinitdata = {
+=======
+static struct snd_kcontrol_new p16v_mixer_controls[] = {
+>>>>>>> refs/remotes/origin/master
 	P16V_VOL("HD Analog Front Playback Volume", PLAYBACK_VOLUME_MIXER9, 0),
 	P16V_VOL("HD Analog Rear Playback Volume", PLAYBACK_VOLUME_MIXER10, 1),
 	P16V_VOL("HD Analog Center/LFE Playback Volume", PLAYBACK_VOLUME_MIXER9, 1),
@@ -880,7 +888,11 @@ static struct snd_kcontrol_new p16v_mixer_controls[] __devinitdata = {
 };
 
 
+<<<<<<< HEAD
 int __devinit snd_p16v_mixer(struct snd_emu10k1 *emu)
+=======
+int snd_p16v_mixer(struct snd_emu10k1 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err;
         struct snd_card *card = emu->card;
@@ -893,11 +905,19 @@ int __devinit snd_p16v_mixer(struct snd_emu10k1 *emu)
         return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 
 #define NUM_CHS	1	/* up to 4, but only first channel is used */
 
 int __devinit snd_p16v_alloc_pm_buffer(struct snd_emu10k1 *emu)
+=======
+#ifdef CONFIG_PM_SLEEP
+
+#define NUM_CHS	1	/* up to 4, but only first channel is used */
+
+int snd_p16v_alloc_pm_buffer(struct snd_emu10k1 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	emu->p16v_saved = vmalloc(NUM_CHS * 4 * 0x80);
 	if (! emu->p16v_saved)
